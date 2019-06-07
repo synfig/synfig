@@ -21,29 +21,21 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifdef USING_PCH
-#	include "pch.h"
-#else
-#ifdef HAVE_CONFIG_H
-#	include <config.h>
-#endif
 #include "polygonizerclasses.h"
-
+#include <synfig/surface.h>
+#include <synfig/rendering/software/surfacesw.h>
+#include <math.h>
 #include <ETL/handle>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/vector.h>
 
-/*
-** Insert headers here
-*/
-
-#endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
 using namespace etl;
 using namespace studio;
+using namespace synfig;
 
 typedef etl::handle<synfig::Layer_Bitmap> Handle;
 /* === M A C R O S ========================================================= */
@@ -145,7 +137,6 @@ enum { inner = 0, outer = 1, none = 2, invalid = 3 };
 //-------------------------------
 
 //--------------------------------------------------------------------------
-/*
 class PixelEvaluator 
 {
   Handle m_ras;
@@ -162,10 +153,15 @@ public:
 
 inline unsigned char PixelEvaluator::getBlackOrWhite(int x, int y) 
 {
-  
-  // return std::max(m_ras->pixels(y)[x].r,
-  //                 std::max(m_ras->pixels(y)[x].g, m_ras->pixels(y)[x].b)) <
-  //        m_threshold * (m_ras->pixels(y)[x].m / 255.0);
+  synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( m_ras->rendering_surface ); 
+	const Surface &surface = lock->get_surface(); 
+	const Color *row = surface[x]; 
+	int r = 255.0*pow(row[y].get_r(),1/2.2);
+	int g = 255.0*pow(row[y].get_g(),1/2.2);
+	int b = 255.0*pow(row[y].get_b(),1/2.2);
+	int a = 255.0*pow(row[y].get_a(),1/2.2);
+
+   return std::max(r,std::max(g,b)) < m_threshold * (a / 255.0);
 }
 
 //--------------------------------------------------------------------------
@@ -223,20 +219,27 @@ Signaturemap::Signaturemap(const Handle &ras, int threshold)
 
   PixelEvaluator evaluator(ras, threshold);//evaluator object with ras, threshold as constructor args
 
-  // TODO replace with pixel width and height 
-  m_rowSize = ras->getLx() + 2;
-  m_colSize = ras->getLy() + 2;
+  // 	std::cout<<"Height: "<<height<<"\n";
+	// 	std::cout<<"R:"<<255.0*pow(row5[2].get_r(),1/2.2)<<"\n";
+	// 	std::cout<<"G:"<<255.0*pow(row5[2].get_g(),1/2.2)<<"\n";
+	// 	std::cout<<"B:"<<255.0*pow(row5[2].get_b(),1/2.2)<<"\n";
+	// 	std::cout<<"A:"<<255.0*pow(row5[1].get_a(),1/2.2)<<"\n";
+
+  rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock( ras->rendering_surface );
+	const Surface &surface = lock->get_surface(); 
+	m_rowSize = surface.get_w() + 2;
+  m_colSize = surface.get_h() + 2;
   m_array.reset(new unsigned char[m_rowSize * m_colSize]);
 
   memset(m_array.get(), none << 1, m_rowSize);
 
   currByte = m_array.get() + m_rowSize;
-  for (y = 0; y < ras->getLy(); ++y) 
+  for (y = 0; y <m_colSize - 2 ; ++y) 
   {
     *currByte = none << 1;
     currByte++;
 
-    for (x = 0; x < ras->getLx(); ++x, ++currByte)
+    for (x = 0; x < m_rowSize - 2; ++x, ++currByte)
       *currByte = evaluator.getBlackOrWhite(x, y) | (none << 1);
 
     *currByte = none << 1;
@@ -409,12 +412,16 @@ static BorderList *extractBorders(const Handle &ras, int threshold, int despeckl
   bool enteredRegionType;
   unsigned char signature;
   //TODO replace pixel functions
-  // Traverse image to extract raw borders
-  for (y = 0; y < ras->getLy(); ++y) 
+  rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock( ras->rendering_surface );
+	const Surface &surface = lock->get_surface(); 
+	int width = surface.get_w(); 
+	int height = surface.get_h(); 
+	
+  for (y = 0; y < height; ++y) 
   {
     oldColor          = white;
     enteredRegionType = outer;
-    for (x = 0; x < ras->getLx(); ++x) 
+    for (x = 0; x < width; ++x) 
     {
       if (oldColor ^ (Color = byteImage.getBitmapColor(x, y))) 
       {
@@ -560,6 +567,8 @@ inline std::unique_ptr<int[]> furthestKs(RawBorder &path, std::unique_ptr<int[]>
   synfig::PointInt leftConstraint, rightConstraint, violatedConstraint;
   synfig::PointInt newLeftConstraint, newRightConstraint;
   synfig::PointInt jPoint, jNextPoint, iPoint, temp;
+  synfig::Point tempD;
+  synfig::PointInt direction;
 
   int directionSignature;
 
@@ -643,9 +652,11 @@ inline std::unique_ptr<int[]> furthestKs(RawBorder &path, std::unique_ptr<int[]>
     // At this point, constraints are violated by the next corner.
     // Then, search for the last k between j and corners[j] not violating them.
     temp =  jNextPoint - jPoint;
-    synfig::Point tempD(temp[0],temp[1]);
+    tempD[0]=temp[0];
+    tempD[1]=temp[1];
     tempD = tempD.norm();
-    synfig::PointInt direction(round(tempD[0]),round(tempD[1])) ;
+    direction[0]=round(tempD[0]);
+    direction[1]=round(tempD[1]) ;
     k = (j + cross(jPoint - iPoint, violatedConstraint) / cross(violatedConstraint, direction)) % n;
 
   foundK:
@@ -770,8 +781,10 @@ inline void calculateSums(RawBorder &path)
 // Then return its penalty.
 inline double penalty(RawBorder &path, int a, int b) 
 {
+  synfig::PointInt p;
+
   int n = b - a + 1;
-  PonitInt p = path[b == path.size() ? 0 : b].pos() - path[a].pos();
+  p = path[b == path.size() ? 0 : b].pos() - path[a].pos();
 
   synfig::Point v(-p[1],p[0]);//convert(rotate90(p))
   synfig::Point sum   = path.sums()[b] - path.sums()[a];
@@ -896,12 +909,12 @@ inline void reduceBorders(BorderList &borders, Contours &result,bool ambiguities
 void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons, VectorizerCoreGlobals &g) 
 {
   std::cout<<"Welcome to polygonize\n";
-
-  // BorderList *borders;
   
-  // borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
+  BorderList *borders;
   
-  // reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
+  borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
+  
+  reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
 }
 
 
