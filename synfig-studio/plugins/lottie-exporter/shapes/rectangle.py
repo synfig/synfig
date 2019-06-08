@@ -94,21 +94,13 @@ def gen_shapes_rectangle(lottie, layer, idx):
     p2_animate = is_animated(points["2"][0])
 
     # If expand parameter is not animated
-    if expand_animate in {0, 1}:
-        param_expand = gen_dummy_waypoint(param_expand, expand_animate, "real")
+    param_expand = gen_dummy_waypoint(param_expand, expand_animate, "real")
 
-    # p1 not animated and p2 not animated
-    if p1_animate in {0, 1} and p2_animate in {0, 1}:
-        points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
-        points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
+    # If p1 not animated
+    points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
 
-    # p1 is animated and p2 is not animated
-    elif p1_animate == 2 and p2_animate in {0, 1}:
-        points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
-
-    # p1 is not animated and p2 is animated
-    elif p1_animate in {0, 1} and p2_animate == 2:
-        points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
+    # If p2 not animated
+    points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
 
     both_points_animated(points["1"], points["2"], param_expand, lottie, index)
 
@@ -126,7 +118,10 @@ def gen_dummy_waypoint(non_animated, is_animate, anim_type):
     Returns:
         (lxml.etree._Element) : Updated non-animated parameter, which is now animated
     """
-    if is_animate == 0:
+    if is_animate == 2:
+        # If already animated, no need to add waypoints
+        return non_animated
+    elif is_animate == 0:
         st = '<param name="anything"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></param>'
         st = st.format(anim_type=anim_type)
         root = etree.fromstring(st)
