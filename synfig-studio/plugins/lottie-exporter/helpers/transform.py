@@ -43,7 +43,6 @@ def gen_helpers_transform(lottie, layer, pos=[0, 0], anchor=[0, 0, 0], scale=[10
     else:
         is_animate = is_animated(pos)
         if is_animate == 2:
-            pos.attrib["transform_axis"] = "true"
             gen_properties_multi_dimensional_keyframed(lottie["p"],
                                                        pos,
                                                        index.inc())
