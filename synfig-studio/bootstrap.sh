@@ -2,19 +2,22 @@
 
 set -e
 
-AUTORECONF=`command -v autoreconf || true`
-if test -z $AUTORECONF; then
+AUTORECONF=`command -v autoreconf || true` #if don't set true, script fails with no messages
+if [ -z $AUTORECONF ]; then
         echo "*** No autoreconf found, please install it ***"
         exit 1
 fi
 
 INTLTOOLIZE=`command -v intltoolize || true`
-if test -z $INTLTOOLIZE; then
+if [ -z $INTLTOOLIZE ]; then
         echo "*** No intltoolize found, please install the intltool package ***"
         exit 1
 fi
 
+echo "running autopoint..."
 autopoint --force
+
+echo "running autoreconf..."
 AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
 
 # WORKAROUND 2013-08-15:
@@ -26,7 +29,9 @@ AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
 # TODO: Drop this hack, and bump our intltool version requiement once the issue
 #       is fixed in intltool
 
+echo "patching po/Makefile.in.in..."
 sed 's/itlocaledir = $(prefix)\/$(DATADIRNAME)\/locale/itlocaledir = $(datarootdir)\/locale/' < po/Makefile.in.in > po/Makefile.in.in.tmp
+# -- force didn't work under MacOS
 mv -f po/Makefile.in.in.tmp po/Makefile.in.in
 
 echo "Done! Please run ./configure now."

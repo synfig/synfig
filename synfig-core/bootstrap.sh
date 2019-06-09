@@ -50,5 +50,4 @@ sed 's/itlocaledir = $(prefix)\/$(DATADIRNAME)\/locale/itlocaledir = $(datarootd
 # -- force didn't work under MacOS
 mv -f po/Makefile.in.in.tmp po/Makefile.in.in
 
-
 echo "Done! Please run ./configure now."
