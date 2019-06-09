@@ -120,6 +120,9 @@ def gen_dummy_waypoint(non_animated, is_animate, anim_type):
     """
     if is_animate == 2:
         # If already animated, no need to add waypoints
+        # Forcibly set it's animation type to the given anim_type :needed in:->
+        # properties/shapePropKeyframe.py #31
+        non_animated[0].attrib["type"] = anim_type
         return non_animated
     elif is_animate == 0:
         st = '<param name="anything"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></param>'
@@ -128,6 +131,9 @@ def gen_dummy_waypoint(non_animated, is_animate, anim_type):
         root[0][0].append(copy.deepcopy(non_animated[0]))
         non_animated = root
     elif is_animate == 1:
+        # Forcibly set it's animation type to the given anim_type 
+        non_animated[0].attrib["type"] = anim_type
+
         non_animated[0][0].attrib["before"] = non_animated[0][0].attrib["after"] = "constant"
 
     new_waypoint = copy.deepcopy(non_animated[0][0])

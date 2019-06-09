@@ -3,11 +3,13 @@
 
 import sys
 import ast
+from lxml import etree
 import settings
-from misc import change_axis, get_vector, is_animated
+from misc import get_frame, Vector, change_axis, get_vector, is_animated, radial_to_tangent
 from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
+from shapes.rectangle import print_animation
 sys.path.append("../")
 
 
@@ -26,7 +28,7 @@ def animate_radial_composite(radial_composite, window):
     update_frame_window(theta[0], window)
 
     radius = gen_dummy_waypoint(radius, is_animated(radius[0]), "real")
-    theta = gen_dummy_waypoint(theta, is_animated(theta[0]), "real")
+    theta = gen_dummy_waypoint(theta, is_animated(theta[0]), "region_angle")
 
     # Empty the radial_composite and fill in new values
     for child in radial_composite:
@@ -47,7 +49,7 @@ def animate_radial_composite(radial_composite, window):
     gen_value_Keyframed(theta_dict, theta[0], 0)
     # Store in lxml element
     theta_lxml = etree.Element("theta_path")
-    theta_lxml.text = str(theta_dic)
+    theta_lxml.text = str(theta_dict)
     radial_composite.append(theta_lxml)
 
 
@@ -101,7 +103,7 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
         # Store in lxml element
         path_lxml = etree.Element("point_path")
         path_lxml.text = str(path_dict)
-        composite.append(path_dict)
+        composite.append(path_lxml)
 
         animate_radial_composite(t1[0], window)
         animate_radial_composite(t2[0], window)
@@ -127,13 +129,66 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
         st_val, en_val = st_val[0], en_val[0]
         st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], False
         en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], False
-        for entry in bline_points:
+        for entry in bline_point:
             composite = entry[0]
             for child in composite:
                 if child.tag == "point_path":
-                    pos = get_vector_at_frame(ast.literal_eval(child.text), fr) 
-                    st_val["v"].append(pos)
+                    dictionary = ast.literal_eval(child.text)
+                    pos_cur = get_vector_at_frame(dictionary, fr) 
+                    pos_next = get_vector_at_frame(dictionary, fr + 1)
                 elif child.tag == "t1":
-                    pass
+                    t1 = child[0]
+                    for chld in t1:
+                        if chld.tag == "radius_path":
+                            dictionary = ast.literal_eval(chld.text)
+                            r1_cur = get_vector_at_frame(dictionary, fr)
+                            r1_next = get_vector_at_frame(dictionary, fr + 1)
+                        elif chld.tag == "theta_path":
+                            dictionary = ast.literal_eval(chld.text)
+                            a1_cur = get_vector_at_frame(dictionary, fr)
+                            a1_next = get_vector_at_frame(dictionary, fr + 1)
+                    x, y = radial_to_tangent(r1_cur, a1_cur)
+                    tangent1_cur = Vector(x, y)
+                    x, y = radial_to_tangent(r1_next, a1_next)
+                    tangent1_next = Vector(x, y)
                 elif child.tag == "t2":
-                    pass
+                    t2 = child[0]
+                    for chld in t2:
+                        if chld.tag == "radius_path":
+                            dictionary = ast.literal_eval(chld.text)
+                            r2_cur = get_vector_at_frame(dictionary, fr)
+                            r2_next = get_vector_at_frame(dictionary, fr + 1)
+                        elif chld.tag == "theta_path":
+                            dictionary = ast.literal_eval(chld.text)
+                            a2_cur = get_vector_at_frame(dictionary, fr)
+                            a2_next = get_vector_at_frame(dictionary, fr + 1)
+                    x, y = radial_to_tangent(r2_cur, a2_cur)
+                    tangent2_cur = Vector(x, y)
+                    x, y = radial_to_tangent(r2_next, a2_next)
+                    tangent2_next = Vector(x, y)
+
+            # Convert to Lottie format
+            tangent1_cur /= 3
+            tangent1_next /= 3
+            tangent2_cur /= 3
+            tangent2_next /= 3
+
+            # Synfig and Lottie use different in tangents SEE DOCUMENTATION
+            tangent1_cur *= -1
+            tangent1_next *= -1
+
+            # Important: t1 and t2 have to be relative
+            # The y-axis is different in lottie
+            tangent1_cur.val2 = -tangent1_cur.val2
+            tangent2_cur.val2 = -tangent2_cur.val2
+            tangent1_next.val2 = -tangent1_next.val2
+            tangent2_next.val2 = -tangent2_next.val2
+
+            # Store values in dictionary
+            st_val["i"].append([tangent1_cur.val1, tangent1_cur.val2])
+            st_val["o"].append([tangent2_cur.val1, tangent2_cur.val2])
+            st_val["v"].append(pos_cur)
+            en_val["i"].append([tangent1_next.val1, tangent1_next.val2])
+            en_val["o"].append([tangent2_next.val1, tangent2_next.val2])
+            en_val["v"].append(pos_next)
+        fr += 1

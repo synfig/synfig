@@ -285,6 +285,10 @@ def parse_position(animated, i):
         pos = [get_angle(float(animated[i][0].attrib["value"])),
                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
 
+    elif animated.attrib["type"] == "region_angle":
+        pos = [float(animated[i][0].attrib["value"]),
+               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+
     elif animated.attrib["type"] == "opacity":
         pos = [float(animated[i][0].attrib["value"]) * settings.OPACITY_CONSTANT,
                float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
@@ -474,13 +478,21 @@ def get_vector(waypoint):
                 radius *= settings.PIX_PER_UNIT
             elif child.tag == "theta":
                 angle = float(child[0].attrib["value"])
-                angle = math.radians(angle)
-        x = radius * math.cos(angle)
-        y = radius * math.sin(angle)
+        x, y = radial_to_tangent(radius, angle)
     else:
         x = float(waypoint[0][0].text)
         y = float(waypoint[0][1].text)
     return Vector(x, y)
+
+def radial_to_tangent(radius, angle):
+    """
+    Converts a tangent from radius and angle format to x, y axis co-ordinate
+    system
+    """
+    angle = math.radians(angle)
+    x = radius * math.cos(angle)
+    y = radius * math.sin(angle)
+    return x, y
 
 def set_vector(waypoint, pos):
     """

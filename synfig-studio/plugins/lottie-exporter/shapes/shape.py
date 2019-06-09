@@ -6,6 +6,7 @@ import sys
 import settings
 from misc import Count
 from properties.shape import gen_properties_shape
+from properties.shapeKeyframed import gen_properties_shapeKeyframed
 sys.path.append("..")
 
 
@@ -17,6 +18,6 @@ def gen_shapes_shape(lottie, layer, idx):
     for child in layer:
         if child.tag == "param":
             if child.attrib["name"] == "bline":
-                # Assuming non-animated
                 bline_point = child[0]
-                gen_properties_shape(lottie["ks"], bline_point, index.inc())
+                gen_properties_shapeKeyframed(lottie["ks"], bline_point, index.inc())
+                #gen_properties_shape(lottie["ks"], bline_point, index.inc())
