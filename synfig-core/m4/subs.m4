@@ -228,18 +228,3 @@ esac
 
 
 ])
-
-AC_DEFUN([AC_LIBTOOL_PATCH],
-[
-
-if [[ "$LIBTOOL_PATCH_SED""x" != "x" ]] ; then {
-    printf "Patching libtool... "
-    cat libtool | sed "$LIBTOOL_PATCH_SED" > libtool2
-    rm libtool
-    mv libtool2 libtool
-    chmod +x libtool
-    AC_MSG_RESULT([patched])
-} fi ;
-
-
-])

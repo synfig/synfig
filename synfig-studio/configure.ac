@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_PREREQ([2.59])
+AC_PREREQ([2.60])
 AC_INIT([Synfig Studio],[1.3.11],[https://github.com/synfig/synfig/issues],[synfigstudio])
 AC_REVISION()
 
@@ -14,6 +14,11 @@ AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
+
+LT_INIT([dlopen, win32-dll, disable-static])
+AC_SUBST(LIBTOOL_DEPS)
+
+AC_CONFIG_MACRO_DIRS([m4])
 
 # -- V A R I A B L E S ----------------------------------------
 
@@ -30,7 +35,6 @@ LOCALEDIR=[${prefix}/${DATADIRNAME}/locale]
 # -- P R O G R A M S ------------------------------------------
 
 AC_PROG_CC
-AC_GNU_SOURCE
 AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_CXXCPP
@@ -59,14 +63,6 @@ AC_ARG_ENABLE(g5opt,[
 ])
 
 AC_WIN32_QUIRKS
-
-AC_LIBTOOL_WIN32_DLL
-AC_LIBTOOL_DLOPEN
-AC_DISABLE_STATIC
-AC_ENABLE_SHARED
-AC_PROG_LIBTOOL
-AC_SUBST(LIBTOOL_DEPS)
-AC_LIBTOOL_PATCH
 
 ## AM_GLIB_GNU_GETTEXT([external])
 IT_PROG_INTLTOOL([0.35.0])
