@@ -1,7 +1,7 @@
 # $Id$
 
 # -- I N I T --------------------------------------------------
-AC_PREREQ(2.59)
+AC_PREREQ(2.60)
 AC_INIT([Extended Template Library],[1.3.11],[https://github.com/synfig/synfig/issues],[ETL])
 AC_REVISION
 
