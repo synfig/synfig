@@ -31,4 +31,3 @@ def gen_shapes_shape(lottie, layer, idx):
             if child.attrib["name"] == "bline":
                 bline_point = child[0]
                 gen_properties_shapeKeyframed(lottie["ks"], bline_point, index.inc())
-                #gen_properties_shape(lottie["ks"], bline_point, index.inc())

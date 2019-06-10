@@ -7,8 +7,6 @@ EXTRA_FILES = \
 			  offsetKeyframe.py \
 			  shapeKeyframed.py \
 			  shapePropKeyframe.py \
-			  shapeProp.py \
-			  shape.py \
 			  timeAdjust.py \
 			  valueKeyframed.py \
 			  valueKeyframe.py \
