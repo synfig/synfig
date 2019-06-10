@@ -6,10 +6,10 @@ import ast
 from lxml import etree
 import settings
 from misc import get_frame, Vector, change_axis, get_vector, is_animated, radial_to_tangent
-from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame
+from synfig.animation import gen_dummy_waypoint, get_vector_at_frame
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from shapes.rectangle import print_animation
+from synfig.animation import print_animation
 sys.path.append("../")
 
 

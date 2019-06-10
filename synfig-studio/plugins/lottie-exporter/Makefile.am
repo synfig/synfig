@@ -28,4 +28,5 @@ SUBDIRS = \
           layers \
           properties \
           shapes \
-		  sources
+		  sources \
+		  synfig

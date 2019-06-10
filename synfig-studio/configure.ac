@@ -213,6 +213,7 @@ AC_CONFIG_FILES([
     plugins/lottie-exporter/properties/Makefile
     plugins/lottie-exporter/shapes/Makefile
     plugins/lottie-exporter/sources/Makefile
+    plugins/lottie-exporter/synfig/Makefile
     sounds/Makefile
 ])
 AC_OUTPUT
