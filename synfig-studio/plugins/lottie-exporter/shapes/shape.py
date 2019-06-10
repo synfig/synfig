@@ -5,7 +5,6 @@ Will store all functions needed to generate the shape(path) layer in lottie
 import sys
 import settings
 from misc import Count
-from properties.shape import gen_properties_shape
 from properties.shapeKeyframed import gen_properties_shapeKeyframed
 sys.path.append("..")
 
