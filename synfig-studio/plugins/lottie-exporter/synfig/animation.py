@@ -249,34 +249,24 @@ def get_vector_at_frame(path, t):
 
     if isinstance(pos, Vector):
         return [pos.val1, pos.val2]
-    else:
-        return pos
+    return pos
 
 
 def get_bool_at_frame(anim, frame):
     """
-    animation needs to be filtered out if it is not yet filtered out, that is
-    consecutive waypoints with same boolean value need to be merged together
-    if "filtered" not in anim.keys():
-        i = 0
-        while i < len(anim) - 1:
-            # assuming the waypoints are sorted according to time
-            assert get_frame(anim[i]) < get_frame(anim[i+1])
-            j = i + 1
-            while j < len(anim) and anim[i][0].attrib["value"] == anim[j][0].attrib["value"]:
-                j += 1
-            cnt = j - (i + 1)
-            while cnt != 0:
-                anim.remove(anim[i+1])  # Index i + 1 remains the same, as anim is updated
-                cnt -= 1
-            i += 1
-        
-        anim.attrib["filtered"] = "true"
+    Calculates the boolean value at a given frame, given a boolean animation
 
+    Args:
+        anim  (lxml.etree._Element): Boolean animation
+        frame (int)                : Frame at which the value is to be calculated
+
+    Returns:
+        (str) : "true" if the value is True at that frame
+              : "false" otherwise
     """
     i = 0
     while i < len(anim):
-        cur_fr = get_frame(anim[i]) 
+        cur_fr = get_frame(anim[i])
         if frame <= cur_fr:
             break
         i += 1
@@ -285,7 +275,7 @@ def get_bool_at_frame(anim, frame):
     elif i < len(anim):
         # frame lies between i-1 and i'th value of animation
         prev = anim[i-1][0].attrib["value"]
-        cur  = anim[i][0].attrib["value"]
+        cur = anim[i][0].attrib["value"]
         cur_frame = get_frame(anim[i])
         if frame == cur_frame:
             val = cur

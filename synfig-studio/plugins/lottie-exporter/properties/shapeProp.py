@@ -1,4 +1,6 @@
 """
+Implements all the functions required for generating the shapeProperties
+required for shape/path layer required by lottie
 """
 
 import sys
@@ -8,6 +10,16 @@ sys.path.append("../")
 
 
 def get_entity_val(elem, elem_type):
+    """
+    Returns the element value, given it's tag and parent
+
+    Args:
+        elem      (lxml.etree._Element) : Node at which the value is to be found
+        elem_type (str)                 : Tag of the element, which is searched
+
+    Returns:
+        (str) : Element value of the tag
+    """
     for child in elem:
         if child.tag == elem_type:
             val = child[0].attrib["value"]
@@ -15,6 +27,17 @@ def get_entity_val(elem, elem_type):
 
 
 def set_entity_val(elem, elem_type, val):
+    """
+    Sets the element value, given it's tag and parent
+
+    Args:
+        elem      (lxml.etree._Element) : Node at which the value is to be set
+        elem_type (str) : Tag of the element, which is seached
+        val       (str) : Value to be set
+
+    Returns:
+        (None)
+    """
     for child in elem:
         if child.tag == elem_type:
             child[0].attrib["value"] = val
@@ -22,6 +45,15 @@ def set_entity_val(elem, elem_type, val):
 
 def gen_properties_shape_prop(lottie, bline_point):
     """
+    Generates the dictionary corresponding to properties/shapeProp.json in
+    lottie documentation
+
+    Args:
+        lottie      (dict) : Stores some parts of lottie shape layer
+        bline_point (lxml.etree._Element) : Stores the shape/path in Synfig format
+
+    Returns:
+        (None)
     """
     # Bezier curve in points. Array of 2 dimensional arrays
     lottie["i"] = []
@@ -30,10 +62,10 @@ def gen_properties_shape_prop(lottie, bline_point):
     # Bezier curve vertices. Array of 2 dimensional arrays
     lottie["v"] = []
     for entry in bline_point:
-        composite = entry[0] 
+        composite = entry[0]
         for child in composite:
             if child.tag == "point":
-                pos = get_vector(child) 
+                pos = get_vector(child)
             elif child.tag == "t1":
                 # t1 serves as t_in
                 t1 = child[0]
@@ -70,7 +102,7 @@ def gen_properties_shape_prop(lottie, bline_point):
         # Convert the point to Lottie axis
         pos *= settings.PIX_PER_UNIT
         pos = change_axis(pos.val1, pos.val2)
-        
+
         # Store values in dictionary
         lottie["i"].append([tangent1.val1, tangent1.val2])
         lottie["o"].append([tangent2.val1, tangent2.val2])

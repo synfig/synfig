@@ -1,15 +1,16 @@
+# pylint: disable=line-too-long
 """
+Will store all the functions and modules for generation of shapPropKeyframe file
+in Lottie format
 """
 
 import sys
 import ast
 from lxml import etree
-import settings
-from misc import get_frame, Vector, change_axis, get_vector, is_animated, radial_to_tangent
-from synfig.animation import gen_dummy_waypoint, get_vector_at_frame
+from misc import get_frame, Vector, is_animated, radial_to_tangent
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import print_animation, get_bool_at_frame, gen_dummy_waypoint
+from synfig.animation import get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
 sys.path.append("../")
 
 
@@ -18,6 +19,13 @@ def animate_radial_composite(radial_composite, window):
     Animates the radial composite and updates the window of frame if radial
     composite's parameters are already animated
     Also generate the Lottie path and stores in radial_composite
+
+    Args:
+        radial_composite (lxml.etree._Element) : Synfig format radial composite-> stores radius and angle
+        window           (dict)                : max and min frame of overall animations stored in this
+
+    Returns:
+        (None)
     """
     for child in radial_composite:
         if child.tag == "radius":
@@ -52,6 +60,17 @@ def animate_radial_composite(radial_composite, window):
 
 
 def update_frame_window(node, window):
+    """
+    Given an animation, finds the minimum and maximum frame at which the
+    waypoints are located
+
+    Args:
+        node    (lxml.etree._Element) : Animation to be searched in
+        window  (dict)                : max and min frame will be stored in this
+
+    Returns:
+        (None)
+    """
     if is_animated(node) == 2:
         for waypoint in node:
             fr = get_frame(waypoint)
@@ -62,6 +81,17 @@ def update_frame_window(node, window):
 
 
 def update_child_at_parent(parent, new_child, tag):
+    """
+    Given a node, replaces the child with tag `tag` with new_child
+
+    Args:
+        parent    (lxml.etree._Element) : Node whose child needs to be replaced
+        new_child (lxml.etree._Element) : Updated child of the parent
+        tag       (str)                 : To identify the appropriate child
+
+    Returns:
+        (None)
+    """
     for chld in parent:
         if chld.tag == tag:
             chld.getparent().remove(chld)
@@ -70,6 +100,14 @@ def update_child_at_parent(parent, new_child, tag):
 
 def gen_properties_shapePropKeyframe(lottie, bline_point):
     """
+    Generates the dictionary corresponding to properties/shapePropKeyframe.json
+
+    Args:
+        lottie     (dict) : Lottie generated keyframes will be stored here for shape/path
+        bline_path (lxml.etree._Element) : shape/path store in Synfig format
+
+    Returns:
+        (None)
     """
     # Assuming split angle and split radius both are ticked for now
 
@@ -94,7 +132,7 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
                 split_r = child
             elif child.tag == "split_angle":
                 split_a = child
-                
+
         # Necassary to update this before inserting new waypoints, as new
         # waypoints might include there on time: 0 seconds
         update_frame_window(pos[0], window)
@@ -126,7 +164,7 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
     ################# END OF SECTION 1 ###################
 
     ################ SECTION 2 ###########################
-    # Generating values for all the frames in the window 
+    # Generating values for all the frames in the window
     fr = window["first"]
     while fr <= window["last"]:
         lottie.append({})
@@ -146,7 +184,7 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
             for child in composite:
                 if child.tag == "point_path":
                     dictionary = ast.literal_eval(child.text)
-                    pos_cur = get_vector_at_frame(dictionary, fr) 
+                    pos_cur = get_vector_at_frame(dictionary, fr)
                     pos_next = get_vector_at_frame(dictionary, fr + 1)
                 elif child.tag == "t1":
                     t1 = child[0]
@@ -191,6 +229,20 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
 
 
 def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
+    """
+    Given a frame, returns the in-tangent and out-tangent at a bline point
+    depending on whether split_radius and split_angle is "true"/"false"
+
+    Args:
+        t1      (lxml.etree._Element) : Holds Tangent 1/In Tangent
+        t2      (lxml.etree._Element) : Holds Tangent 2/Out Tangent
+        split_r (lxml.etree._Element) : Holds animation of split radius parameter
+        split_a (lxml.etree._Element) : Holds animation of split angle parameter
+        fr      (int)                 : Holds the frame value
+
+    Returns:
+        (misc.Vector, misc.Vector) : In-tangent and out-tangent at the given frame
+    """
 
     # Get value of split_radius and split_angle at frame
     sp_r = get_bool_at_frame(split_r[0], fr)
@@ -223,5 +275,4 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
                 a2 = a1
     x, y = radial_to_tangent(r2, a2)
     tangent2 = Vector(x, y)
-    
     return tangent1, tangent2
