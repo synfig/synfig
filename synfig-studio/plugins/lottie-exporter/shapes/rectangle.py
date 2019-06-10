@@ -93,16 +93,16 @@ def gen_shapes_rectangle(lottie, layer, idx):
     p2_animate = is_animated(points["2"][0])
 
     # If expand parameter is not animated
-    param_expand = gen_dummy_waypoint(param_expand, expand_animate, "real")
+    param_expand = gen_dummy_waypoint(param_expand, expand_animate, "param", "real")
 
     # expand parameter needs to be positive: required by Synfig
     make_positive_valued(param_expand)
 
     # If p1 not animated
-    points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
+    points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "param", "vector")
 
     # If p2 not animated
-    points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
+    points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "param", "vector")
 
     both_points_animated(points["1"], points["2"], param_expand, lottie, index)
 

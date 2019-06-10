@@ -8,15 +8,12 @@ import sys
 import copy
 from lxml import etree
 import settings
-from properties.value import gen_properties_value
-from misc import Count, is_animated, Vector, get_frame, get_vector, set_vector
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.valueKeyframed import gen_value_Keyframed
+from misc import is_animated, Vector, get_frame
 from helpers.bezier import get_bezier_val
 sys.path.append("..")
 
 
-def gen_dummy_waypoint(non_animated, is_animate, anim_type):
+def gen_dummy_waypoint(non_animated, is_animate, animated_name, anim_type):
     """
     Makes a non animated parameter to animated parameter by creating a new dummy
     waypoint with constant animation
@@ -36,13 +33,13 @@ def gen_dummy_waypoint(non_animated, is_animate, anim_type):
         non_animated[0].attrib["type"] = anim_type
         return non_animated
     elif is_animate == 0:
-        st = '<param name="anything"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></param>'
-        st = st.format(anim_type=anim_type)
+        st = '<{animated_name} name="anything"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></{animated_name}>'
+        st = st.format(anim_type=anim_type, animated_name=animated_name)
         root = etree.fromstring(st)
         root[0][0].append(copy.deepcopy(non_animated[0]))
         non_animated = root
     elif is_animate == 1:
-        # Forcibly set it's animation type to the given anim_type 
+        # Forcibly set it's animation type to the given anim_type
         non_animated[0].attrib["type"] = anim_type
 
         non_animated[0][0].attrib["before"] = non_animated[0][0].attrib["after"] = "constant"
@@ -254,6 +251,57 @@ def get_vector_at_frame(path, t):
         return [pos.val1, pos.val2]
     else:
         return pos
+
+
+def get_bool_at_frame(anim, frame):
+    """
+    animation needs to be filtered out if it is not yet filtered out, that is
+    consecutive waypoints with same boolean value need to be merged together
+    if "filtered" not in anim.keys():
+        i = 0
+        while i < len(anim) - 1:
+            # assuming the waypoints are sorted according to time
+            assert get_frame(anim[i]) < get_frame(anim[i+1])
+            j = i + 1
+            while j < len(anim) and anim[i][0].attrib["value"] == anim[j][0].attrib["value"]:
+                j += 1
+            cnt = j - (i + 1)
+            while cnt != 0:
+                anim.remove(anim[i+1])  # Index i + 1 remains the same, as anim is updated
+                cnt -= 1
+            i += 1
+        
+        anim.attrib["filtered"] = "true"
+
+    """
+    i = 0
+    while i < len(anim):
+        cur_fr = get_frame(anim[i]) 
+        if frame <= cur_fr:
+            break
+        i += 1
+    if i == 0:
+        val = anim[0][0].attrib["value"]
+    elif i < len(anim):
+        # frame lies between i-1 and i'th value of animation
+        prev = anim[i-1][0].attrib["value"]
+        cur  = anim[i][0].attrib["value"]
+        cur_frame = get_frame(anim[i])
+        if frame == cur_frame:
+            val = cur
+        else:
+            if prev == "true" and cur == "false":
+                val = prev
+            elif prev == "false" and cur == "true":
+                val = cur
+            elif prev == "true" and cur == "true":
+                val = cur
+            elif prev == "false" and cur == "false":
+                val = cur
+    elif i >= len(anim):
+        val = anim[-1][0].attrib["value"]
+
+    return val
 
 
 def get_animated_time_list(child, time_list):

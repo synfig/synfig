@@ -9,7 +9,7 @@ from misc import get_frame, Vector, change_axis, get_vector, is_animated, radial
 from synfig.animation import gen_dummy_waypoint, get_vector_at_frame
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import print_animation
+from synfig.animation import print_animation, get_bool_at_frame, gen_dummy_waypoint
 sys.path.append("../")
 
 
@@ -27,14 +27,12 @@ def animate_radial_composite(radial_composite, window):
     update_frame_window(radius[0], window)
     update_frame_window(theta[0], window)
 
-    radius = gen_dummy_waypoint(radius, is_animated(radius[0]), "real")
-    theta = gen_dummy_waypoint(theta, is_animated(theta[0]), "region_angle")
+    radius = gen_dummy_waypoint(radius, is_animated(radius[0]), "radius", "real")
+    theta = gen_dummy_waypoint(theta, is_animated(theta[0]), "theta", "region_angle")
 
-    # Empty the radial_composite and fill in new values
-    for child in radial_composite:
-        child.getparent().remove(child)
-    radial_composite.insert(0, radius)
-    radial_composite.insert(1, theta)
+    # Update the newly computed radius and theta
+    update_child_at_parent(radial_composite, radius, "radius")
+    update_child_at_parent(radial_composite, theta, "theta")
 
     # Generating the radial path and store in the lxml element
     radius_dict = {}
@@ -63,6 +61,13 @@ def update_frame_window(node, window):
                 window["first"] = fr
 
 
+def update_child_at_parent(parent, new_child, tag):
+    for chld in parent:
+        if chld.tag == tag:
+            chld.getparent().remove(chld)
+    parent.insert(0, new_child)
+
+
 def gen_properties_shapePropKeyframe(lottie, bline_point):
     """
     """
@@ -85,17 +90,24 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
                 t1 = child
             elif child.tag == "t2":
                 t2 = child
+            elif child.tag == "split_radius":
+                split_r = child
+            elif child.tag == "split_angle":
+                split_a = child
                 
         # Necassary to update this before inserting new waypoints, as new
         # waypoints might include there on time: 0 seconds
         update_frame_window(pos[0], window)
 
         # Empty the pos and fill in the new animated pos
-        pos = gen_dummy_waypoint(pos, is_animated(pos[0]), "vector")
-        for child in composite:
-            if child.tag == "point":
-                child.getparent().remove(child)
-        composite.insert(0, pos)
+        pos = gen_dummy_waypoint(pos, is_animated(pos[0]), "point", "vector")
+        update_child_at_parent(composite, pos, "point")
+
+        split_r = gen_dummy_waypoint(split_r, is_animated(split_r[0]), "split_radius", "bool")
+        update_child_at_parent(composite, split_r, "split_radius")
+
+        split_a = gen_dummy_waypoint(split_a, is_animated(split_a[0]), "split_angle", "bool")
+        update_child_at_parent(composite, split_r, "split_angle")
 
         # Generate path for Lottie format
         path_dict = {}
@@ -138,34 +150,15 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
                     pos_next = get_vector_at_frame(dictionary, fr + 1)
                 elif child.tag == "t1":
                     t1 = child[0]
-                    for chld in t1:
-                        if chld.tag == "radius_path":
-                            dictionary = ast.literal_eval(chld.text)
-                            r1_cur = get_vector_at_frame(dictionary, fr)
-                            r1_next = get_vector_at_frame(dictionary, fr + 1)
-                        elif chld.tag == "theta_path":
-                            dictionary = ast.literal_eval(chld.text)
-                            a1_cur = get_vector_at_frame(dictionary, fr)
-                            a1_next = get_vector_at_frame(dictionary, fr + 1)
-                    x, y = radial_to_tangent(r1_cur, a1_cur)
-                    tangent1_cur = Vector(x, y)
-                    x, y = radial_to_tangent(r1_next, a1_next)
-                    tangent1_next = Vector(x, y)
                 elif child.tag == "t2":
                     t2 = child[0]
-                    for chld in t2:
-                        if chld.tag == "radius_path":
-                            dictionary = ast.literal_eval(chld.text)
-                            r2_cur = get_vector_at_frame(dictionary, fr)
-                            r2_next = get_vector_at_frame(dictionary, fr + 1)
-                        elif chld.tag == "theta_path":
-                            dictionary = ast.literal_eval(chld.text)
-                            a2_cur = get_vector_at_frame(dictionary, fr)
-                            a2_next = get_vector_at_frame(dictionary, fr + 1)
-                    x, y = radial_to_tangent(r2_cur, a2_cur)
-                    tangent2_cur = Vector(x, y)
-                    x, y = radial_to_tangent(r2_next, a2_next)
-                    tangent2_next = Vector(x, y)
+                elif child.tag == "split_radius":
+                    split_r = child
+                elif child.tag == "split_angle":
+                    split_a = child
+
+            tangent1_cur, tangent2_cur = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
+            tangent1_next, tangent2_next = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
 
             # Convert to Lottie format
             tangent1_cur /= 3
@@ -195,3 +188,40 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
         # Setting final time
         lottie.append({})
         lottie[-1]["t"] = fr
+
+
+def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
+
+    # Get value of split_radius and split_angle at frame
+    sp_r = get_bool_at_frame(split_r[0], fr)
+    sp_a = get_bool_at_frame(split_a[0], fr)
+
+    # Setting tangent 1
+    for chld in t1:
+        if chld.tag == "radius_path":
+            dictionary = ast.literal_eval(chld.text)
+            r1 = get_vector_at_frame(dictionary, fr)
+        elif chld.tag == "theta_path":
+            dictionary = ast.literal_eval(chld.text)
+            a1 = get_vector_at_frame(dictionary, fr)
+    x, y = radial_to_tangent(r1, a1)
+    tangent1 = Vector(x, y)
+
+    # Setting tangent 2
+    for chld in t2:
+        if chld.tag == "radius_path":
+            dictionary = ast.literal_eval(chld.text)
+            r2 = get_vector_at_frame(dictionary, fr)
+            if sp_r == "false":
+                # Use t1's radius
+                r2 = r1
+        elif chld.tag == "theta_path":
+            dictionary = ast.literal_eval(chld.text)
+            a2 = get_vector_at_frame(dictionary, fr)
+            if sp_a == "false":
+                # Use t1's angle
+                a2 = a1
+    x, y = radial_to_tangent(r2, a2)
+    tangent2 = Vector(x, y)
+    
+    return tangent1, tangent2
