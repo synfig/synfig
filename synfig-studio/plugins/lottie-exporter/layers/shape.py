@@ -43,7 +43,7 @@ def gen_layer_shape(lottie, layer, idx):
             if chld.tag == "param":
                 if chld.attrib["name"] == "origin":
                     pos = chld[0]
-    pos.attrib["transform_axis"] = "true"
+        pos.attrib["transform_axis"] = "true"
     gen_helpers_transform(lottie["ks"], layer, pos, anchor, scale)
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT

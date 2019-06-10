@@ -96,6 +96,9 @@ def gen_shapes_rectangle(lottie, layer, idx):
     # If expand parameter is not animated
     param_expand = gen_dummy_waypoint(param_expand, expand_animate, "real")
 
+    # expand parameter needs to be positive: required by Synfig
+    make_positive_valued(param_expand)
+
     # If p1 not animated
     points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
 
@@ -103,6 +106,18 @@ def gen_shapes_rectangle(lottie, layer, idx):
     points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
 
     both_points_animated(points["1"], points["2"], param_expand, lottie, index)
+
+
+def make_positive_valued(param):
+    """
+    User might mistakenly provide negative values to expand parameter; This is
+    taken care of in this function
+    """
+    animated = param[0]
+    for waypoint in animated:
+        val = float(waypoint[0].attrib["value"])
+        val = abs(val)
+        waypoint[0].attrib["value"] = str(val)
 
 
 def gen_dummy_waypoint(non_animated, is_animate, anim_type):

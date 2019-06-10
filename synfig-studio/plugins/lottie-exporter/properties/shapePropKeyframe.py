@@ -192,3 +192,6 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
             en_val["o"].append([tangent2_next.val1, tangent2_next.val2])
             en_val["v"].append(pos_next)
         fr += 1
+        # Setting final time
+        lottie.append({})
+        lottie[-1]["t"] = fr
