@@ -155,17 +155,12 @@ inline unsigned char PixelEvaluator::getBlackOrWhite(int x, int y)
 {
   synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( m_ras->rendering_surface ); 
 	const Surface &surface = lock->get_surface(); 
-	const Color *row = surface[x]; 
-	int r = 255.0*pow(row[y].get_r(),1/2.2);
-	int g = 255.0*pow(row[y].get_g(),1/2.2);
-	int b = 255.0*pow(row[y].get_b(),1/2.2);
-	int a = 255.0*pow(row[y].get_a(),1/2.2);
+	const Color *row = surface[y]; 
+	int r = 255.0*pow(row[x].get_r(),1/2.2);
+	int g = 255.0*pow(row[x].get_g(),1/2.2);
+	int b = 255.0*pow(row[x].get_b(),1/2.2);
+	int a = 255.0*pow(row[x].get_a(),1/2.2);
 
-if(std::max(r,std::max(g,b)) < m_threshold * (a / 255.0))
-  { 
-    std::cout<<"Pixel is 1 here : ("<<x<<", "<<y<<") "<<"R :"<<r<<" G :"<< g<<" B :"<<b<<" A :"<<a<<"\n";
-
-  }
   return std::max(r,std::max(g,b)) < m_threshold * (a / 255.0);
 }
 
@@ -230,7 +225,6 @@ Signaturemap::Signaturemap(const Handle &ras, int threshold)
   m_array.reset(new unsigned char[m_rowSize * m_colSize]);
 
   memset(m_array.get(), none << 1, m_rowSize);
-  cout<<"Col and row :"<<m_colSize<<", "<<m_rowSize;
 
   currByte = m_array.get() + m_rowSize;
   for (y = 0; y <m_colSize - 2 ; ++y) 
@@ -240,15 +234,13 @@ Signaturemap::Signaturemap(const Handle &ras, int threshold)
 
     for (x = 0; x < m_rowSize - 2; ++x, ++currByte){
       *currByte = evaluator.getBlackOrWhite(x, y) | (none << 1);
-      // cout<<"Read raster ("<<x<<", "<<y<<") :"<<*currByte;
+      
     }
-    // std::cout<<"\n";
     *currByte = none << 1;
     currByte++;
   }
 
   memset(currByte, none << 1, m_rowSize);
-    cout<<"After Col and row :"<<m_colSize<<", "<<m_rowSize;
 
 }
 
@@ -433,7 +425,6 @@ static BorderList *extractBorders(const Handle &ras, int threshold, int despeckl
 
         if ((signature = byteImage.getSignature(x, y)) == none) 
         {
-          // cout<<"We've found a border at : ("<<x<<", "<<y<<") \n";
           if ((foundPath = extractPath(byteImage, x, y, !enteredRegionType,
                                        xOuterPixel, despeckling)))
             if (enteredRegionType == outer)
@@ -656,13 +647,11 @@ inline std::unique_ptr<int[]> furthestKs(RawBorder &path, std::unique_ptr<int[]>
     // At this point, constraints are violated by the next corner.
     // Then, search for the last k between j and corners[j] not violating them.
     temp =  jNextPoint - jPoint;
-    // std::cout<<"Before: ("<<temp[0]<<", "<<temp[1]<<") | ";
     tempD[0]=temp[0];
     tempD[1]=temp[1];
     tempD = tempD.norm();
     direction[0]=round(tempD[0]);
     direction[1]=round(tempD[1]) ;
-        // std::cout<<"After: ("<<direction[0]<<", "<<direction[1]<<") | \n";
 
     k = (j + cross(jPoint - iPoint, violatedConstraint) / cross(violatedConstraint, direction)) % n;
 
@@ -802,7 +791,6 @@ inline double penalty(RawBorder &path, int a, int b)
   double F2 = sum2[1] - 2 * sum[1] * path[a].y() + n * path[a].y() * path[a].y();
   double F3 = sumMix - sum[0] * path[a].y() - sum[1] * path[a].x() +
               n * path[a].x() * path[a].y();
-  // cout<<"Inside penalty:"<<"v: ("<<v[0]<<", "<<v[1]<<") "<<" F1:"<<F1<<" F2:"<<F2<<" F3:"<<F3<<"\n";
   return sqrt((v[1] * v[1] * F1 + v[0] * v[0] * F2 - 2 * v[0] * v[1] * F3) / n);
 }
 
@@ -918,7 +906,6 @@ void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &
   std::cout<<"Welcome to polygonize\n";
   
   BorderList *borders;
-  std::cout<<"Threshold: "<<g.currConfig->m_threshold<<" Despeckling: "<<g.currConfig->m_despeckling;
 
   borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
   
