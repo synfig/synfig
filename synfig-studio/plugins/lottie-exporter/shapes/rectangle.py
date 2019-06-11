@@ -162,8 +162,9 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
     ### SECTION TRY ###
     # Every frames value is precomputed in order to achieve maximum similarity
     # to that of Synfig
+    st_fr = min(get_frame(animated_1[0]), get_frame(animated_2[0]))
     en_fr = max(get_frame(animated_1[-1]), get_frame(animated_2[-1]))
-    fra = 1
+    fra = st_fr
     while fra <= en_fr:
         insert_waypoint_at_frame(animated_1, orig_path_1, fra, "vector")
         insert_waypoint_at_frame(animated_2, orig_path_2, fra, "vector")
