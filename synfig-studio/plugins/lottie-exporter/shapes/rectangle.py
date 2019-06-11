@@ -64,6 +64,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
     lottie["ix"] = idx      # setting the index
     lottie["r"] = {}        # Rounded corners of rectangle
     points = {}
+    bevel_found = False
 
     for child in layer:
         if child.tag == "param":
@@ -78,6 +79,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
                 param_expand = child
 
             elif child.attrib["name"] == "bevel":
+                bevel_found = True
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
                     gen_value_Keyframed(lottie["r"], child[0], index.inc())
@@ -89,6 +91,10 @@ def gen_shapes_rectangle(lottie, layer, idx):
                                          index.inc(),
                                          settings.DEFAULT_ANIMATED,
                                          settings.NO_INFO)
+    if not bevel_found:
+        bevel = 0
+        gen_properties_value(lottie["r"], bevel, index.inc(),
+                             settings.DEFAULT_ANIMATED, settings.NO_INFO)
     p1_animate = is_animated(points["1"][0])
     p2_animate = is_animated(points["2"][0])
 
