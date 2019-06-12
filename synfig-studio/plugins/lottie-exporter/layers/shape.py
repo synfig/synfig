@@ -38,7 +38,7 @@ def gen_layer_shape(lottie, layer, idx):
     anchor = [0, 0, 0]      # default
     scale = [100, 100, 100]  # default
     
-    if layer.attrib["type"] == "region":    # region uses position of whole layer
+    if layer.attrib["type"] in {"region", "polygon"}:    # region uses position of whole layer
         for chld in layer:
             if chld.tag == "param":
                 if chld.attrib["name"] == "origin":
@@ -56,6 +56,8 @@ def gen_layer_shape(lottie, layer, idx):
     elif layer.attrib["type"] == "rectangle":
         gen_shapes_rectangle(lottie["shapes"][0], layer, index.inc())
     elif layer.attrib["type"] == "region":
+        gen_shapes_shape(lottie["shapes"][0], layer, index.inc())
+    elif layer.attrib["type"] == "polygon":
         gen_shapes_shape(lottie["shapes"][0], layer, index.inc())
 
     lottie["shapes"].append({})  # For the fill or color

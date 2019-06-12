@@ -98,9 +98,60 @@ def update_child_at_parent(parent, new_child, tag):
     parent.insert(0, new_child)
 
 
-def gen_properties_shapePropKeyframe(lottie, bline_point):
+def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     """
-    Generates the dictionary corresponding to properties/shapePropKeyframe.json
+    Given a frame, returns the in-tangent and out-tangent at a bline point
+    depending on whether split_radius and split_angle is "true"/"false"
+
+    Args:
+        t1      (lxml.etree._Element) : Holds Tangent 1/In Tangent
+        t2      (lxml.etree._Element) : Holds Tangent 2/Out Tangent
+        split_r (lxml.etree._Element) : Holds animation of split radius parameter
+        split_a (lxml.etree._Element) : Holds animation of split angle parameter
+        fr      (int)                 : Holds the frame value
+
+    Returns:
+        (misc.Vector, misc.Vector) : In-tangent and out-tangent at the given frame
+    """
+
+    # Get value of split_radius and split_angle at frame
+    sp_r = get_bool_at_frame(split_r[0], fr)
+    sp_a = get_bool_at_frame(split_a[0], fr)
+
+    # Setting tangent 1
+    for chld in t1:
+        if chld.tag == "radius_path":
+            dictionary = ast.literal_eval(chld.text)
+            r1 = get_vector_at_frame(dictionary, fr)
+        elif chld.tag == "theta_path":
+            dictionary = ast.literal_eval(chld.text)
+            a1 = get_vector_at_frame(dictionary, fr)
+    x, y = radial_to_tangent(r1, a1)
+    tangent1 = Vector(x, y)
+
+    # Setting tangent 2
+    for chld in t2:
+        if chld.tag == "radius_path":
+            dictionary = ast.literal_eval(chld.text)
+            r2 = get_vector_at_frame(dictionary, fr)
+            if sp_r == "false":
+                # Use t1's radius
+                r2 = r1
+        elif chld.tag == "theta_path":
+            dictionary = ast.literal_eval(chld.text)
+            a2 = get_vector_at_frame(dictionary, fr)
+            if sp_a == "false":
+                # Use t1's angle
+                a2 = a1
+    x, y = radial_to_tangent(r2, a2)
+    tangent2 = Vector(x, y)
+    return tangent1, tangent2
+
+
+def gen_bline_shapePropKeyframe(lottie, bline_point):
+    """
+    Generates the dictionary corresponding to properties/shapePropKeyframe.json,
+    given a bline/spline
 
     Args:
         lottie     (dict) : Lottie generated keyframes will be stored here for shape/path
@@ -109,8 +160,6 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
     Returns:
         (None)
     """
-    # Assuming split angle and split radius both are ticked for now
-
     ################### SECTION 2 #########################
     # Inserting waypoints if not animated and finding the first and last frame
     # AFter that, there path will be calculated in lottie format which can
@@ -223,56 +272,77 @@ def gen_properties_shapePropKeyframe(lottie, bline_point):
             en_val["o"].append([tangent2_next.val1, tangent2_next.val2])
             en_val["v"].append(pos_next)
         fr += 1
-        # Setting final time
+    # Setting final time
+    lottie.append({})
+    lottie[-1]["t"] = fr
+
+def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list):
+    """
+    
+    """
+    ################## SECTION 1 ################
+    # Inserting the waypoints if not animated, finding the first and last frame
+    # Calculating the path after this
+    window = {}
+    window["first"] = sys.maxsize
+    window["last"] = -1
+    count = 0
+
+    for entry in dynamic_list:
+        pos = entry
+        update_frame_window(pos[0], window)
+
+        new_pos = gen_dummy_waypoint(pos, is_animated(pos[0]), "entry", "vector")
+        pos.getparent().remove(pos)
+        dynamic_list.insert(count, new_pos)
+
+        # Generate path for lottie format
+        path_dict = {}
+        gen_properties_multi_dimensional_keyframed(path_dict, new_pos[0], 0)
+        # Store in lxml element
+        path_lxml = etree.Element("pos_path")
+        path_lxml.text = str(path_dict)
+        dynamic_list[count].append(path_lxml)
+
+        if window["first"] == sys.maxsize and window["last"] == -1:
+            window["first"] = window["last"] = 0
+    ################ END OF SECTION 1 ##############
+
+    ################ SECTION 2 #####################
+    # Generating values for all the frames in the window
+    fr = window["first"]
+    while fr <= window["last"]:
         lottie.append({})
+        lottie[-1]["i"], lottie[-1]["o"] = {}, {}
+        lottie[-1]["i"]["x"] = lottie[-1]["i"]["y"] = 0.5   # Does not matter because frames are adjacent
+        lottie[-1]["o"]["x"] = lottie[-1]["o"]["y"] = 0.5   # Does not matter because frames are adjacent
         lottie[-1]["t"] = fr
+        lottie[-1]["s"], lottie[-1]["e"] = [], []           # Start and end value of the path
+        st_val, en_val = lottie[-1]["s"], lottie[-1]["e"]
+        st_val.append({})
+        en_val.append({})
+        st_val, en_val = st_val[0], en_val[0]
+        st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], False
+        en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], False
+        for entry in dynamic_list:
+            # Only two childs, one should be animated, other one is path
+            for child in entry:
+                if child.tag == "pos_path":
+                    dictionary = ast.literal_eval(child.text)
+                    pos_cur = get_vector_at_frame(dictionary, fr)
+                    pos_next = get_vector_at_frame(dictionary, fr + 1)
 
+            tangent1_cur, tangent2_cur = Vector(0, 0), Vector(0, 0)
+            tangent1_next, tangent2_next = Vector(0, 0), Vector(0, 0)
 
-def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
-    """
-    Given a frame, returns the in-tangent and out-tangent at a bline point
-    depending on whether split_radius and split_angle is "true"/"false"
-
-    Args:
-        t1      (lxml.etree._Element) : Holds Tangent 1/In Tangent
-        t2      (lxml.etree._Element) : Holds Tangent 2/Out Tangent
-        split_r (lxml.etree._Element) : Holds animation of split radius parameter
-        split_a (lxml.etree._Element) : Holds animation of split angle parameter
-        fr      (int)                 : Holds the frame value
-
-    Returns:
-        (misc.Vector, misc.Vector) : In-tangent and out-tangent at the given frame
-    """
-
-    # Get value of split_radius and split_angle at frame
-    sp_r = get_bool_at_frame(split_r[0], fr)
-    sp_a = get_bool_at_frame(split_a[0], fr)
-
-    # Setting tangent 1
-    for chld in t1:
-        if chld.tag == "radius_path":
-            dictionary = ast.literal_eval(chld.text)
-            r1 = get_vector_at_frame(dictionary, fr)
-        elif chld.tag == "theta_path":
-            dictionary = ast.literal_eval(chld.text)
-            a1 = get_vector_at_frame(dictionary, fr)
-    x, y = radial_to_tangent(r1, a1)
-    tangent1 = Vector(x, y)
-
-    # Setting tangent 2
-    for chld in t2:
-        if chld.tag == "radius_path":
-            dictionary = ast.literal_eval(chld.text)
-            r2 = get_vector_at_frame(dictionary, fr)
-            if sp_r == "false":
-                # Use t1's radius
-                r2 = r1
-        elif chld.tag == "theta_path":
-            dictionary = ast.literal_eval(chld.text)
-            a2 = get_vector_at_frame(dictionary, fr)
-            if sp_a == "false":
-                # Use t1's angle
-                a2 = a1
-    x, y = radial_to_tangent(r2, a2)
-    tangent2 = Vector(x, y)
-    return tangent1, tangent2
+            # Store values in dictionary
+            st_val["i"].append([tangent1_cur.val1, tangent1_cur.val2])
+            st_val["o"].append([tangent2_cur.val1, tangent2_cur.val2])
+            st_val["v"].append(pos_cur)
+            en_val["i"].append([tangent1_next.val1, tangent1_next.val2])
+            en_val["o"].append([tangent2_next.val1, tangent2_next.val2])
+            en_val["v"].append(pos_next)
+        fr += 1
+    # Setting the final time
+    lottie.append({})
+    lottie[-1]["t"] = fr
