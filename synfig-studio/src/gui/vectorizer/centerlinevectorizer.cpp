@@ -67,27 +67,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
   // Extracts a polygonal, minimal yet faithful representation of image contours
   Contours polygons;
   studio::polygonize(image, polygons, globals);
-  // for (int i = 0; i < polygons.size(); ++i) 
-  // {
-  //   for (int j = 0; j < polygons[i].size(); ++j) 
-  //   {
-  //     for (int k = 0; k < polygons[i][j].size(); ++k)
-  //     {
-  //     std::cout<<"i= "<<i<<" j= "<<j<<" k="<<k<<" Data: ";
-  //     std::cout<< "[(" << polygons[i][j][k].m_position[0]<<", "<<polygons[i][j][k].m_position[1]<<", "<<polygons[i][j][k].m_position[2] <<")("
-  //     << polygons[i][j][k].m_direction[0]<<", "<<polygons[i][j][k].m_direction[1]<<", "<<polygons[i][j][k].m_direction[2] <<")("
-  //     << polygons[i][j][k].m_AngularMomentum[0]<<", "<<polygons[i][j][k].m_AngularMomentum[1]<<", "<<polygons[i][j][k].m_AngularMomentum[2] <<")("
-  //     << polygons[i][j][k].m_AuxiliaryMomentum1[0]<<", "<<polygons[i][j][k].m_AuxiliaryMomentum1[1]<<", "<<polygons[i][j][k].m_AuxiliaryMomentum1[2] <<")("
-  //     << polygons[i][j][k].m_AuxiliaryMomentum2[0]<<", "<<polygons[i][j][k].m_AuxiliaryMomentum2[1]<<", "<<polygons[i][j][k].m_AuxiliaryMomentum2[2] <<")"
-  //     <<" Concave: "<< polygons[i][j][k].m_concave << " Attr: "
-  //     << polygons[i][j][k].m_attributes <<" Time: "<< polygons[i][j][k].m_updateTime
-  //     <<" Ancestor"<< polygons[i][j][k].m_ancestor 
-  //     <<" AncC: "<< polygons[i][j][k].m_ancestorContour << "]\n";
-  //     }
-  //   }
-  // }
   
-
   // step 3
   // The process of skeletonization reduces all objects in an image to lines, 
   //  without changing the essential structure of the image.

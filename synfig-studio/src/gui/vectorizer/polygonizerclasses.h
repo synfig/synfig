@@ -35,6 +35,157 @@
 
 namespace studio {
 
+//*********************************
+//       Traversable Graphs
+//*********************************
+
+typedef unsigned int UINT;
+
+/*!
+  \brief    Graph class used by the centerline vectorization process.
+
+  \details  Introducing a directed graph structure that allows local access:
+  main feature is that a graph edge
+            physically belongs to the node that emitted it, by storing it in a
+  'link vector' inside the node.
+            No full-scale edge search method is therefore needed to find node
+  neighbours.
+
+            No specific iterator class is needed, just use unsigned ints to
+  perform random access to nodes and
+            links vectors.
+*/
+template <typename NodeContentType, typename ArcType>
+class Graph {
+public:
+  class Link {
+    UINT m_next;    //!< Index of the node pointed by this link.
+    ArcType m_arc;  //!< Edge data associated to this link.
+    int m_access;   //!< Whether access to a node is allowed
+                    //!  through this link.
+  public:
+    Link() : m_access(1) {}
+    Link(UINT _next) : m_next(_next), m_access(1) {}
+    Link(UINT _next, ArcType _arc) : m_next(_next), m_arc(_arc), m_access(1) {}
+    ~Link() {}
+
+    ArcType &operator*() { return m_arc; }
+    const ArcType &operator*() const { return m_arc; }
+
+    ArcType *operator->() { return &m_arc; }
+    const ArcType *operator->() const { return &m_arc; }
+
+    UINT getNext() const { return m_next; }
+    void setNext(UINT _next) { m_next = _next; }
+
+    int getAccess() const { return m_access; }
+    void setAccess(int acc) { m_access = acc; }
+  };
+
+  //--------------------------------------------------------------------------
+
+  class Node {
+    friend class Graph;  // Grant Graph access to m_links
+
+    std::vector<Link> m_links;  //!< Links to neighbouring nodes.
+    NodeContentType m_content;  //!< The node's content.
+    int m_attributes;           //!< Node attributes.
+
+  public:
+    Node() : m_attributes(0) {}
+    Node(const NodeContentType &_cont) : m_content(_cont), m_attributes(0) {}
+    ~Node() {}
+
+    Link &link(UINT i) { return m_links[i]; }
+    const Link &getLink(UINT i) const { return m_links[i]; }
+    UINT getLinksCount() const { return m_links.size(); }
+
+    NodeContentType &operator*() { return m_content; }
+    const NodeContentType &operator*() const { return m_content; }
+
+    NodeContentType *operator->() { return &m_content; }
+    const NodeContentType *operator->() const { return &m_content; }
+
+    // Attributes
+    int hasAttribute(int attr) const { return m_attributes & attr; }
+    void setAttribute(int attr) { m_attributes |= attr; }
+    void clearAttribute(int attr) { m_attributes &= ~attr; }
+
+    // Others
+    int degree() const { return int(m_links.size()); }
+
+    /*!
+\warning    If more links can be set between the same nodes, the
+      returned link index will be ambiguous.
+*/
+    UINT linkOfNode(UINT next) const {
+      UINT i = 0;
+      for (; i < m_links.size() && m_links[i].getNext() != next; ++i)
+        ;
+      return i;
+    }
+  };
+
+public:
+  std::vector<Node> m_nodes;  //!< Nodes container.
+  UINT m_linksCount;          //!< Links counter.
+
+public:
+  Graph() : m_linksCount(0) {}
+  virtual ~Graph() {}
+
+  Node &node(UINT i) { return m_nodes[i]; }
+  const Node &getNode(UINT i) const { return m_nodes[i]; }
+
+  UINT getNodesCount() const { return m_nodes.size(); }
+  UINT getLinksCount() const { return m_linksCount; }
+
+  // Nodes/Links insertions
+  UINT newNode() {
+    m_nodes.push_back(Node());
+    return m_nodes.size() - 1;
+  }
+
+  UINT newNode(const NodeContentType &content) {
+    m_nodes.push_back(Node(content));
+    return m_nodes.size() - 1;
+  }
+
+  UINT newLink(UINT first, UINT last) {
+    assert(first < m_nodes.size() && last < m_nodes.size());
+    m_nodes[first].m_links.push_back(Link(last));
+    ++m_linksCount;
+    return m_nodes[first].m_links.size() - 1;
+  }
+
+  UINT newLink(UINT first, UINT last, const ArcType &arc) {
+    assert(first < m_nodes.size() && last < m_nodes.size());
+    m_nodes[first].m_links.push_back(Link(last, arc));
+    ++m_linksCount;
+    return m_nodes[first].m_links.size() - 1;
+  }
+
+  void insert(UINT inserted, UINT afterNode, UINT onLink) {
+    newLink(inserted, getNode(afterNode).getLink(onLink).getNext());
+    node(afterNode).link(onLink).setNext(inserted);
+  }
+};
+
+//********************************
+//*    Polygonization classes    *
+//********************************
+
+//--------------------------------------------------------------------------
+
+// Of course we don't want RawBorders to be entirely copied whenever STL
+// requires to resize a BorderFamily...
+class RawBorder;
+
+typedef std::vector<RawBorder *> BorderFamily;
+typedef std::vector<BorderFamily> BorderList;
+
+//--------------------------------------------------------------------------
+
 class ContourEdge;
 
 // NOTE: The following class is mainly used in the later 'straight skeleton
@@ -105,6 +256,60 @@ public:
 typedef std::vector<ContourNode> Contour;
 typedef std::vector<Contour> ContourFamily;
 typedef std::vector<ContourFamily> Contours;
+//-----------------------------------
+//    Straight Skeleton Classes
+//-----------------------------------
+
+class SkeletonArc {
+  double m_slope;
+  unsigned int m_leftGeneratingNode, m_leftContour, m_rightGeneratingNode,
+      m_rightContour;
+  int m_attributes;
+
+  // NOTE:  Typically an arc is generated by a couple of *edges* of the original
+  //        contours; but we store instead the *nodes* which address those
+  //        edges.
+
+public:
+  SkeletonArc() : m_attributes(0) {}
+  SkeletonArc(ContourNode *node)
+      : m_slope(node->m_direction.z)
+      , m_leftGeneratingNode(node->m_ancestor)
+      , m_leftContour(node->m_ancestorContour)
+      , m_rightGeneratingNode(node->m_prev->m_ancestor)
+      , m_rightContour(node->m_prev->m_ancestorContour)
+      , m_attributes(0) {}
+
+  enum { ROAD = 0x1 };
+
+  double getSlope() const { return m_slope; }
+
+  unsigned int getLeftGenerator() const { return m_leftGeneratingNode; }
+  unsigned int getRightGenerator() const { return m_rightGeneratingNode; }
+  unsigned int getLeftContour() const { return m_leftContour; }
+  unsigned int getRightContour() const { return m_rightContour; }
+
+  enum { SS_OUTLINE = 0x10, SS_OUTLINE_REVERSED = 0x20 };
+
+  int hasAttribute(int attr) const { return m_attributes & attr; }
+  void setAttribute(int attr) { m_attributes |= attr; }
+
+  void turn() {
+    m_slope = -m_slope;
+
+    std::swap(m_leftGeneratingNode, m_rightGeneratingNode);
+    std::swap(m_leftContour, m_rightContour);
+  }
+};
+
+//--------------------------------------------------------------------------
+
+typedef Graph<synfig::Point3, SkeletonArc> SkeletonGraph;
+typedef std::vector<SkeletonGraph *> SkeletonList;
+
+//==========================================================================
+
+
 
 class VectorizerCoreGlobals {
 public:
