@@ -5,6 +5,7 @@ Will store all functions needed to generate the rectangle layer in lottie
 
 import sys
 import copy
+from lxml import etree
 import settings
 from properties.value import gen_properties_value
 from misc import Count, is_animated, Vector, get_frame, get_vector, set_vector
@@ -65,6 +66,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
     lottie["r"] = {}        # Rounded corners of rectangle
     points = {}
     bevel_found = False
+    expand_found = False    # For filled rectangle layers
 
     for child in layer:
         if child.tag == "param":
@@ -75,6 +77,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
                 points["2"] = child # Store address of child here
 
             elif child.attrib["name"] == "expand":
+                expand_found = True
                 param_expand = child
 
             elif child.attrib["name"] == "bevel":
@@ -90,10 +93,14 @@ def gen_shapes_rectangle(lottie, layer, idx):
                                          index.inc(),
                                          settings.DEFAULT_ANIMATED,
                                          settings.NO_INFO)
-    if not bevel_found:
+    if not bevel_found:     # For rectangle layer in stable version 1.2.2
         bevel = 0
         gen_properties_value(lottie["r"], bevel, index.inc(),
                              settings.DEFAULT_ANIMATED, settings.NO_INFO)
+
+    if not expand_found:    # Means filled rectangle layer, gen expand param
+        st = "<param name='expand'><real value='0.0'/></param>"
+        param_expand = etree.fromstring(st)
 
     # If expand parameter is not animated
     param_expand = gen_dummy_waypoint(param_expand, "param", "real")

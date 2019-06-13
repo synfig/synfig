@@ -53,7 +53,7 @@ def gen_layer_shape(lottie, layer, idx):
         gen_shapes_star(lottie["shapes"][0], layer, index.inc())
     elif layer.attrib["type"] in {"circle", "simple_circle"}:
         gen_shapes_circle(lottie["shapes"][0], layer, index.inc())
-    elif layer.attrib["type"] == "rectangle":
+    elif layer.attrib["type"] in {"filled_rectangle", "rectangle"}:
         gen_shapes_rectangle(lottie["shapes"][0], layer, index.inc())
     elif layer.attrib["type"] == "region":
         gen_shapes_shape(lottie["shapes"][0], layer, index.inc())
