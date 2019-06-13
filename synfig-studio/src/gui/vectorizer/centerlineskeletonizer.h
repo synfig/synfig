@@ -43,12 +43,12 @@ public:
   enum { NOT_OPPOSITE = 0x1 };
 
 public:
-  TPointD m_direction;
+  synfig::Point m_direction;
   unsigned short m_attributes;
 
 public:
   ContourEdge() : m_attributes(0) {}
-  ContourEdge(TPointD dir) : m_direction(dir), m_attributes(0) {}
+  ContourEdge(synfig::Point dir) : m_direction(dir), m_attributes(0) {}
 
   int hasAttribute(int attr) const { return m_attributes & attr; }
   void setAttribute(int attr) { m_attributes |= attr; }
