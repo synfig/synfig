@@ -75,7 +75,6 @@ def gen_shapes_rectangle(lottie, layer, idx):
                 points["2"] = child # Store address of child here
 
             elif child.attrib["name"] == "expand":
-                expand_animate = is_animated(child[0])
                 param_expand = child
 
             elif child.attrib["name"] == "bevel":
@@ -95,20 +94,18 @@ def gen_shapes_rectangle(lottie, layer, idx):
         bevel = 0
         gen_properties_value(lottie["r"], bevel, index.inc(),
                              settings.DEFAULT_ANIMATED, settings.NO_INFO)
-    p1_animate = is_animated(points["1"][0])
-    p2_animate = is_animated(points["2"][0])
 
     # If expand parameter is not animated
-    param_expand = gen_dummy_waypoint(param_expand, expand_animate, "param", "real")
+    param_expand = gen_dummy_waypoint(param_expand, "param", "real")
 
     # expand parameter needs to be positive: required by Synfig
     make_positive_valued(param_expand)
 
     # If p1 not animated
-    points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "param", "vector")
+    points["1"] = gen_dummy_waypoint(points["1"], "param", "vector")
 
     # If p2 not animated
-    points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "param", "vector")
+    points["2"] = gen_dummy_waypoint(points["2"], "param", "vector")
 
     both_points_animated(points["1"], points["2"], param_expand, lottie, index)
 

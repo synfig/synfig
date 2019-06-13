@@ -50,10 +50,10 @@ def gen_layer_image(lottie, layer, idx):
     pos2_animate = is_animated(st["br"][0])
     # If pos1 is not animated
     if pos1_animate in {0, 1}:
-        st["tl"] = gen_dummy_waypoint(st["tl"], pos1_animate, "vector")
+        st["tl"] = gen_dummy_waypoint(st["tl"], "param", "vector")
     # If pos2 is not animated
     if pos2_animate in {0, 1}:
-        st["br"] = gen_dummy_waypoint(st["br"], pos2_animate, "vector")
+        st["br"] = gen_dummy_waypoint(st["br"], "param", "vector")
 
     st["scale"] = gen_image_scale(st["tl"][0], st["br"][0], asset["w"], asset["h"])
     anchor = [0, 0, 0]
@@ -86,8 +86,7 @@ def gen_image_scale(animated_1, animated_2, width, height):
     """
     st = '<param name="image_scale"><real value="0.0000000000"/></param>'
     root = etree.fromstring(st)
-    is_animate = is_animated(root)
-    root = gen_dummy_waypoint(root, is_animate, "image_scale")
+    root = gen_dummy_waypoint(root, "param", "image_scale")
 
     anim1_path, anim2_path = {}, {}
     gen_properties_multi_dimensional_keyframed(anim1_path, animated_1, 0)

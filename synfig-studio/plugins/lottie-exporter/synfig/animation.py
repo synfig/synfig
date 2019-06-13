@@ -13,19 +13,20 @@ from helpers.bezier import get_bezier_val
 sys.path.append("..")
 
 
-def gen_dummy_waypoint(non_animated, is_animate, animated_name, anim_type):
+def gen_dummy_waypoint(non_animated, animated_name, anim_type):
     """
     Makes a non animated parameter to animated parameter by creating a new dummy
     waypoint with constant animation
 
     Args:
         non_animated (lxml.etree._Element): Holds the non-animated parameter in Synfig xml format
-        is_animate   (int)                : Decides if a waypoint is animated
+        animated_name(str)                : Decides the tag of the animation
         anim_type    (str)                : Decides the animation type
 
     Returns:
         (lxml.etree._Element) : Updated non-animated parameter, which is now animated
     """
+    is_animate = is_animated(non_animated[0])
     if is_animate == 2:
         # If already animated, no need to add waypoints
         # Forcibly set it's animation type to the given anim_type :needed in:->

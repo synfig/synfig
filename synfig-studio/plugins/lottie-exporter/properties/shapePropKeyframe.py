@@ -35,8 +35,8 @@ def animate_radial_composite(radial_composite, window):
     update_frame_window(radius[0], window)
     update_frame_window(theta[0], window)
 
-    radius = gen_dummy_waypoint(radius, is_animated(radius[0]), "radius", "real")
-    theta = gen_dummy_waypoint(theta, is_animated(theta[0]), "theta", "region_angle")
+    radius = gen_dummy_waypoint(radius, "radius", "real")
+    theta = gen_dummy_waypoint(theta, "theta", "region_angle")
 
     # Update the newly computed radius and theta
     update_child_at_parent(radial_composite, radius, "radius")
@@ -187,13 +187,13 @@ def gen_bline_shapePropKeyframe(lottie, bline_point):
         update_frame_window(pos[0], window)
 
         # Empty the pos and fill in the new animated pos
-        pos = gen_dummy_waypoint(pos, is_animated(pos[0]), "point", "vector")
+        pos = gen_dummy_waypoint(pos, "point", "vector")
         update_child_at_parent(composite, pos, "point")
 
-        split_r = gen_dummy_waypoint(split_r, is_animated(split_r[0]), "split_radius", "bool")
+        split_r = gen_dummy_waypoint(split_r, "split_radius", "bool")
         update_child_at_parent(composite, split_r, "split_radius")
 
-        split_a = gen_dummy_waypoint(split_a, is_animated(split_a[0]), "split_angle", "bool")
+        split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
         update_child_at_parent(composite, split_r, "split_angle")
 
         # Generate path for Lottie format
@@ -292,7 +292,7 @@ def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list):
         pos = entry
         update_frame_window(pos[0], window)
 
-        new_pos = gen_dummy_waypoint(pos, is_animated(pos[0]), "entry", "vector")
+        new_pos = gen_dummy_waypoint(pos, "entry", "vector")
         pos.getparent().remove(pos)
         dynamic_list.insert(count, new_pos)
 
