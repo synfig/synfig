@@ -656,7 +656,7 @@ CellRenderer_TimeTrack::render_vfunc(
 					cell_area.get_height()*2,
 					cell_area.get_x() + xstart,
 					cell_area.get_y(),
-					x - xstart,
+					cell_area.get_x() + x,
 					cell_area.get_y() );
 				is_off = false;
 			}
@@ -681,7 +681,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				cell_area.get_height()*2,
 				cell_area.get_x() + xstart,
 				cell_area.get_y(),
-				cell_area.get_width() - xstart,
+				cell_area.get_width(),
 				cell_area.get_y() );
 		}
 	}
