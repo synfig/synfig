@@ -64,6 +64,9 @@ public:
   VectorizerCore() : m_currPartial(0), m_isCanceled(false) {}
   ~VectorizerCore() {}
 
+  //! Returns true if vectorization was aborted at user's request
+  bool isCanceled() { return m_isCanceled; }
+
   /*!Calls the appropriate technique to convert \b image to vectors depending on c.*/
  
   void vectorize(const etl::handle<synfig::Layer_Bitmap> &image, const VectorizerConfiguration &c);
