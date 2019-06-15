@@ -273,7 +273,7 @@ class SkeletonArc {
 public:
   SkeletonArc() : m_attributes(0) {}
   SkeletonArc(ContourNode *node)
-      : m_slope(node->m_direction.z)
+      : m_slope(node->m_direction[2])
       , m_leftGeneratingNode(node->m_ancestor)
       , m_leftContour(node->m_ancestorContour)
       , m_rightGeneratingNode(node->m_prev->m_ancestor)
