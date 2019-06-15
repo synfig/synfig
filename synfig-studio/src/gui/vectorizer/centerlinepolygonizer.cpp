@@ -92,7 +92,7 @@ public:
 
 //--------------------------------------------------------------------------
 
-class RawBorder final : public std::vector<RawBorderPoint> 
+class studio::RawBorder final : public std::vector<RawBorderPoint> 
 {
   int m_xExternal;  // x coordinate of a specific vertex in the outer
   // RawBorder which contains this inner one.
@@ -155,12 +155,12 @@ inline unsigned char PixelEvaluator::getBlackOrWhite(int x, int y)
 {
   synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( m_ras->rendering_surface ); 
 	const Surface &surface = lock->get_surface(); 
-	const Color *row = surface[y]; 
+  const int Y = surface.get_h() - y -1; 
+	const Color *row = surface[Y]; 
 	int r = 255.0*pow(row[x].get_r(),1/2.2);
 	int g = 255.0*pow(row[x].get_g(),1/2.2);
 	int b = 255.0*pow(row[x].get_b(),1/2.2);
 	int a = 255.0*pow(row[x].get_a(),1/2.2);
-
   return std::max(r,std::max(g,b)) < m_threshold * (a / 255.0);
 }
 
@@ -205,7 +205,7 @@ public:
   {
     unsigned char *pixel = pixelByte(x, y);
     *pixel &= 1;
-    *pixel |= (val << 1);  // Si puo' fare meglio??
+    *pixel |= (val << 1);  
   }
 };
 
