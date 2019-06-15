@@ -55,6 +55,16 @@ typedef unsigned int UINT;
   perform random access to nodes and
             links vectors.
 */
+template <class T, class I>
+void append(T &cont1, T &cont2) 
+{
+  I i, j;
+
+  cont1.resize(cont1.size() + cont2.size());
+  for (i = cont2.rbegin(), j = cont1.rbegin(); i != cont2.rend(); ++i, ++j)
+    *j = *i;
+}
+
 template <typename NodeContentType, typename ArcType>
 class Graph {
 public:
@@ -341,8 +351,8 @@ const int infinity = 1000000;  // just a great enough number
 
 void polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons,VectorizerCoreGlobals &g);
 
-// SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
-//                           VectorizerCoreGlobals &g);
+SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
+                          VectorizerCoreGlobals &g);
 
 // void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 
