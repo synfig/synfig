@@ -13,7 +13,7 @@
 SCRIPT_DIR=`dirname "$0"`
 
 # set environment variables
-source ${SCRIPT_DIR}/set_env.sh
+source ${SCRIPT_DIR}/autobuild/msys2/set_env.sh
 
 echo "Selected ARCH: ${ARCH}"
 
@@ -44,8 +44,13 @@ $ARCH-libxml++2.6 \
 $ARCH-pango \
 $ARCH-gtkmm3
 
+# build mlt
+bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
+
 # Apply patch to libintl.h. This required because libintl.h redefines sprintf
 # and std::sprintf is stop working. But std::sprintf is used by Boost::Odeint library
 # so we need it.
 
-patch $PREFIX/include/libintl.h < $SCRIPT_DIR/libintl.h.patch
+patch $PREFIX/include/libintl.h < ${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch
+
+

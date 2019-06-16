@@ -74,6 +74,21 @@ fi
 if [[ `uname` == "Linux" ]]; then
 	export PKG_CONFIG_PATH=${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/`uname -i`-linux-gnu/pkgconfig/:${PKG_CONFIG_PATH}
 fi
+if [[ `uname -o` == "Msys" ]]; then
+	PATH="${PREFIX}/lib/ccache/bin:${PATH}"
+	# copy MLT
+	MLT_REV=1   # Change this when something is changed inside of if block below
+	if [ ! -f ${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done ]; then
+		VERSION_MLT="6.16.0"
+		cp -rf /opt/mlt-${VERSION_MLT}/*.dll ${PREFIX}/bin/
+		cp -rf /opt/mlt-${VERSION_MLT}/*.exe ${PREFIX}/bin/
+		cp -rf /opt/mlt-${VERSION_MLT}/share ${PREFIX}/bin/
+		mkdir -p ${PREFIX}/bin/lib/
+		cp -rf /opt/mlt-${VERSION_MLT}/lib/mlt ${PREFIX}/bin/lib/
+		touch ${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done
+	fi
+	export PKG_CONFIG_PATH="/opt/mlt-${VERSION_MLT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+fi
 if [[ `uname` == "Darwin" ]]; then
 	# autopoint is not in PATH after install via brew (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)
 	# so we can do `brew link --force gettext` or just add it to PATH before configuring which is preferable because we need it only for compiling
@@ -116,6 +131,13 @@ travis_fold_end()
 	fi
 }
 
+ccache_show_stats()
+{
+	if ( which ccache > /dev/null ); then
+	ccache -s
+	fi
+}
+
 #============================== ETL ====================================
 
 etl_clean() {
@@ -143,6 +165,9 @@ make -j$MAKE_THREADS
 sed -i.bak "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
 make install
 cd ..
+
+ccache_show_stats
+
 }
 
 etl_build()
@@ -199,6 +224,9 @@ make -j$MAKE_THREADS
 sed -i.bak "s|^includedir=.*$|includedir=$REPO_DIR\/synfig-core\/src|" synfig.pc
 make install
 cd ..
+
+ccache_show_stats
+
 }
 
 core_build()
@@ -232,6 +260,10 @@ pushd ${REPO_DIR}/synfig-studio/ >/dev/null
 popd >/dev/null
 if [[ `uname` == "Linux" ]]; then
 	export CONFIGURE_OPTIONS="--enable-jack"
+elif [[ `uname -o` == "Msys" ]]; then
+	# currently where is a bug in synfig-core (in MinGW build) which causes 
+	# synfig-core to halt before exit, so we skip image generation
+	export CONFIGURE_OPTIONS="--without-images"
 else
 	export CONFIGURE_OPTIONS=""
 fi
@@ -248,8 +280,12 @@ cd ..
 studio_make()
 {
 cd synfig-studio
+
 make -j$MAKE_THREADS
 make install
+
+ccache_show_stats
+
 for n in AUTHORS COPYING NEWS README
 do
   	cp -f ${REPO_DIR}/synfig-studio/$n ${PREFIX}
