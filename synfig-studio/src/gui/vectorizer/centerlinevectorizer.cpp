@@ -50,6 +50,14 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+inline void deleteSkeletonList(SkeletonList *skeleton) {
+  unsigned int i;
+  for (i = 0; i < skeleton->size(); ++i) delete (*skeleton)[i];
+
+  delete skeleton;
+}
+
+
 /* === E N T R Y P O I N T ================================================= */
 
 //************************
@@ -74,14 +82,13 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 
   // Most time-consuming part of vectorization, 'this' is passed to inform of
   // partial progresses
-//   SkeletonList *skeletons = skeletonize(polygons, this, globals);
+  SkeletonList *skeletons = studio::skeletonize(polygons, this, globals);
 
-//   if (isCanceled()) {
-//     // Clean and return 0 at cancel command
-//     deleteSkeletonList(skeletons);
-
-//     return TVectorImageP();
-//   }
+  if (isCanceled()) {
+    // Clean and return 0 at cancel command
+    deleteSkeletonList(skeletons);
+    std::cout<<"CenterlineVectorize cancelled\n";
+  }
 
 //   // step 4
 //   // The raw skeleton data obtained from StraightSkeletonizer

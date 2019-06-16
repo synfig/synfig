@@ -22,11 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_TEMPLATE_H
-#define __SYNFIG_STUDIO_TEMPLATE_H
+#ifndef __SYNFIG_STUDIO_CENTERLINESKELETONIZER_H
+#define __SYNFIG_STUDIO_CENTERLINESKELETONIZER_H
 
 /* === H E A D E R S ======================================================= */
 #include "polygonizerclasses.h"
+#include <queue>
 
 /* === M A C R O S ========================================================= */
 
@@ -203,6 +204,25 @@ public:
 
   inline void newSkeletonLink(unsigned int cur, ContourNode *node);
 };
+
+//<---------------------------Some Useful functions----------------------------->
+inline double cross(const synfig::Point &a, const synfig::Point &b) 
+{
+  return a[0] * b[1] - a[1] * b[0];
+}
+inline synfig::Point3 cross(const synfig::Point3 &a, const synfig::Point3 &b) {
+  return synfig::Point3(a[1] * b[2] - b[1] * a[2], a[2] * b[0] - b[2] * a[0],
+                      a[0] * b[1] - b[0] * a[1]);
+}
+inline bool angleLess(const synfig::Point &a, const synfig::Point &b) {
+  return a[1] >= 0 ? b[1] >= 0 ? a[0] > b[0] : 1 : b[1] < 0 ? a[0] < b[0] : 0;
+}
+
+// a, b, ref assumed normalized
+inline bool angleLess(const synfig::Point &a, const synfig::Point &b, const synfig::Point &ref) {
+  return angleLess(a, ref) ? angleLess(b, ref) ? angleLess(a, b) : 0
+                           : angleLess(b, ref) ? 1 : angleLess(a, b);
+}
 
 }; // END of namespace studio
 

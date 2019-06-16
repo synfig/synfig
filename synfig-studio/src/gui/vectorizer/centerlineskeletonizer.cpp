@@ -324,7 +324,7 @@ inline void VectorizationContext::prepareContours(ContourFamily &family) {
 
       // Push on nodes having AMBIGUOUS_RIGHT attribute
       if (family[i][j].hasAttribute(ContourNode::AMBIGUOUS_RIGHT))
-        family[i][j].m_position += 0.02 * family[i][j].m_direction;
+        family[i][j].m_position += (family[i][j].m_direction) * 0.02;
     }
   }
 
@@ -455,8 +455,8 @@ void Timeline::build(ContourFamily &polygons, VectorizationContext &context, Vec
     Event currentEvent(nodesToBeTreated[i].m_node, &context);
 
     // Notify event calculation
-    if (!nodesToBeTreated[i].m_node->hasAttribute(ContourNode::LINEAR_ADDED))
-      thisVectorizer->emitPartialDone();
+    // if (!nodesToBeTreated[i].m_node->hasAttribute(ContourNode::LINEAR_ADDED))
+    //   thisVectorizer->emitPartialDone();
 
     if (currentEvent.m_type != Event::failure &&
         currentEvent.m_height < maxThickness)
@@ -1419,8 +1419,8 @@ inline void Event::processSpecialEvent()
 //    Straight Skeleton mains
 //-------------------------------
 
-static SkeletonGraph *skeletonize(ContourFamily &regionContours, VectorizationContext &context,
-                                  VectorizerCore *thisVectorizer) 
+static SkeletonGraph *sskeletonize(ContourFamily &regionContours,
+ VectorizationContext &context, VectorizerCore *thisVectorizer) 
 {
   SkeletonGraph *output = context.m_output = new SkeletonGraph;
 
@@ -1484,11 +1484,8 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours, VectorizationCo
       unsigned int addedNode;
       for (k = *j; !k->hasAttribute(ContourNode::HEAD) || !count; k = k->m_next) 
       {
-        addedNode = output->newNode(
-            k->m_position +
-            k->m_direction *
-                ((maxThickness - k->m_position[2]) /
-                 (k->m_direction[2] > 0.01 ? k->m_direction[2] : 1)));
+        addedNode = output->newNode(k->m_position +
+        k->m_direction *((maxThickness - k->m_position[2]) / (k->m_direction[2] > 0.01 ? k->m_direction[2] : 1)));
         context.newSkeletonLink(addedNode, k);
         ++count;
       }
@@ -1499,7 +1496,8 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours, VectorizationCo
       SkeletonArc arcCopyRev;
       arcCopy.setAttribute(SkeletonArc::SS_OUTLINE);
       arcCopyRev.setAttribute(SkeletonArc::SS_OUTLINE_REVERSED);
-      for (l = 1; l < count; ++l) {
+      for (l = 1; l < count; ++l) 
+      {
         output->newLink(n - l, n - l - 1, arcCopyRev);
         output->newLink(n - l - 1, n - l, arcCopy);
       }
@@ -1518,8 +1516,8 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours, VectorizationCo
 
 //--------------------------------------------------------------------------
 
-SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
-                          VectorizerCoreGlobals &g) {
+SkeletonList* studio::skeletonize(Contours &contours, VectorizerCore *thisVectorizer, VectorizerCoreGlobals &g) 
+{
   VectorizationContext context(&g);
 
   SkeletonList *res = new SkeletonList;
@@ -1535,8 +1533,8 @@ SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
 
   for (i = 0; i < contours.size(); ++i) 
   {
-    res->push_back(skeletonize(contours[i], context, thisVectorizer));
-    // if (thisVectorizer->isCanceled()) break;
+    res->push_back(sskeletonize(contours[i], context, thisVectorizer));
+    if (thisVectorizer->isCanceled()) break;
   }
 
   return res;
