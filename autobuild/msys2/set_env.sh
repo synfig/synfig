@@ -24,6 +24,3 @@ case "$MSYSTEM" in
     # TODO: need to check compilation for both architectures
     ;;
 esac
-
-NUM_THREADS=2
-PATH="${PREFIX}/lib/ccache/bin:${PATH}" # add ccache to path
