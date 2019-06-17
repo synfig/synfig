@@ -70,8 +70,6 @@ def parse(file_name):
         if child.tag == "layer":
             if child.attrib["active"] == "false":   # Only render the active layers
                 continue
-            if child.attrib["exclude_from_rendering"] == "true":    # Exclude this layer from rendering
-                continue
             if child.attrib["type"] not in supported_layers:  # Only supported layers
                 continue
             settings.lottie_format["layers"].insert(0, {})
