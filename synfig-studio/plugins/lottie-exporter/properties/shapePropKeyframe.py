@@ -168,6 +168,14 @@ def gen_bline_shapePropKeyframe(lottie, bline_point):
     window["first"] = sys.maxsize
     window["last"] = -1
 
+    loop = False
+    if "loop" in bline_point.keys():
+        val = bline_point.attrib["loop"]
+        if val == "false":
+            loop = False
+        else:
+            loop = True
+
     for entry in bline_point:
         composite = entry[0]
         for child in composite:
@@ -226,8 +234,8 @@ def gen_bline_shapePropKeyframe(lottie, bline_point):
         st_val.append({})
         en_val.append({})
         st_val, en_val = st_val[0], en_val[0]
-        st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], False
-        en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], False
+        st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop 
+        en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
         for entry in bline_point:
             composite = entry[0]
             for child in composite:
