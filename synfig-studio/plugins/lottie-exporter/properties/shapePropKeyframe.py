@@ -10,7 +10,7 @@ from lxml import etree
 from misc import get_frame, Vector, is_animated, radial_to_tangent
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
+from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
 sys.path.append("../")
 
 
@@ -202,7 +202,7 @@ def gen_bline_shapePropKeyframe(lottie, bline_point):
         update_child_at_parent(composite, split_r, "split_radius")
 
         split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
-        update_child_at_parent(composite, split_r, "split_angle")
+        update_child_at_parent(composite, split_a, "split_angle")
 
         # Generate path for Lottie format
         path_dict = {}
