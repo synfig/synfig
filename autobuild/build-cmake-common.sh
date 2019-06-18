@@ -10,6 +10,7 @@ make_jobs=1
 print_build_settings_and_exit="false"
 write_portable_run_code="true"
 synfigstudio_data_prefix=""
+incremental_build="false"
 
 # Define build dirs
 cmake_debug_build_dir="_debug"
@@ -82,8 +83,17 @@ build_synfig_studio() {
     cd ${absolute_base_dir}
     cd "./${cmake_build_dir}/${synfigstudio_build_dir}"
     
+    # Configure make command
+    synfig_studio_make_cmd="make build_images"
+    
+    # Don't rerender the images if incremental is activated
+    if [ "$incremental_build" == "true" ]
+        then
+            synfig_studio_make_cmd="make synfigstudio"
+    fi
+    
     # Configure, make and install
-    cmake "$cmake_build_type_option" "$cmake_prefix_option" "$cmake_install_prefix_option" "$cmake_cxxflags_option" "$cmake_dataprefix_option" ../../synfig-studio/ && $make_build_command && run_command_in_outenv "make build_images" && make install
+    cmake "$cmake_build_type_option" "$cmake_prefix_option" "$cmake_install_prefix_option" "$cmake_cxxflags_option" "$cmake_dataprefix_option" ../../synfig-studio/ && $make_build_command && run_command_in_outenv "$synfig_studio_make_cmd" && make install
     
     if [ $? -ne 0 ]
         then
@@ -96,24 +106,30 @@ build_synfig_studio() {
 }
 
 clean_build_dir() {
-    echo "Removing old cmake build dir if exist"
+    if [ "$incremental_build" == "false" ]
+        then
+            echo "Removing old cmake build dir if exist"
 
-    cd ${absolute_base_dir}
-    rm -rf "./${cmake_build_dir}/"
-    
-    echo "Removed old cmake build dir"
+            cd ${absolute_base_dir}
+            rm -rf "./${cmake_build_dir}/"
+            
+            echo "Removed old cmake build dir"
+    fi
 }
 
 gen_dir_structure() {
-    echo "Construct directory structure"
+    if [ "$incremental_build" == "false" ]
+        then
+            echo "Construct directory structure"
 
-    cd ${absolute_base_dir}
-    mkdir -p "./${cmake_build_dir}/${etl_build_dir}"
-    mkdir -p "./${cmake_build_dir}/${synfig_build_dir}"
-    mkdir -p "./${cmake_build_dir}/${synfigstudio_build_dir}"
-    mkdir -p "./${cmake_build_dir}/${out_dir}"
-    
-    echo "Constructed directory structure"
+            cd ${absolute_base_dir}
+            mkdir -p "./${cmake_build_dir}/${etl_build_dir}"
+            mkdir -p "./${cmake_build_dir}/${synfig_build_dir}"
+            mkdir -p "./${cmake_build_dir}/${synfigstudio_build_dir}"
+            mkdir -p "./${cmake_build_dir}/${out_dir}"
+            
+            echo "Constructed directory structure"
+    fi
 }
 
 get_run_cmd_prefix() {
@@ -130,6 +146,7 @@ parse_build_arguments() {
             [ $1 == "-r" ] && build_mode="Release"
             [ $1 == "-p" ] && print_build_settings_and_exit="true"
             [ $1 == "-n" ] && write_portable_run_code="false"
+            [ $1 == "-i" ] && incremental_build="true"
             [ $1 == "-j" ] && make_jobs_parameter=$2 && shift
             [ $1 == "--data-prefix" ] && synfigstudio_data_prefix=$2 && shift
             shift
@@ -169,6 +186,7 @@ print_build_settings() {
     echo "Build mode: $build_mode"
     echo "Build dir: $cmake_build_dir"
     echo "Build jobs: $make_jobs"
+    echo "Incremental build: $incremental_build"
     [ ! $synfigstudio_data_prefix == "" ] && echo "Custom data prefix: $synfigstudio_data_prefix"
     
     # If script was started with '-p' stop the script here
