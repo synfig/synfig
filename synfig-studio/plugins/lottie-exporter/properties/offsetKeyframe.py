@@ -6,7 +6,7 @@ keyframe in lottie
 import sys
 import copy
 import settings
-from misc import parse_position, change_axis, Vector
+from misc import get_frame, parse_position, change_axis, Vector
 sys.path.append("..")
 
 
@@ -44,9 +44,9 @@ def clamped_tangent(p1, p2, p3, animated, i):
     """
     # pw -> prev_waypoint, w -> waypoint, nw -> next_waypoint
     pw, w, nw = animated[i-1], animated[i], animated[i+1]
-    t1 = float(pw.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    t2 = float(w.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    t3 = float(nw.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    t1 = get_frame(pw)
+    t2 = get_frame(w)
+    t3 = get_frame(nw)
     bias = 0.0
     tangent = 0.0
     pm = p1 + (p3 - p1)*(t2 - t1)/(t3 - t1)
@@ -292,7 +292,7 @@ def calc_tangent(animated, lottie, i):
         # same for the rest of the interval
         if animated.attrib["type"] == "points":
             if i > 0 and prev_pos.val1 > cur_pos.val1:
-                t_now = float(animated[i-1].attrib["time"][:-1]) * settings.lottie_format["fr"] + 1
+                t_now = get_frame(animated[i-1]) + 1
                 lottie["t"] = t_now
         return
 
@@ -361,7 +361,7 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         ease_out(lottie)
     if next_get_before == "halt": # For ease in
         ease_in(lottie)
-    lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    lottie["t"] = get_frame(waypoint)
 
     is_transform_axis = False
     if "transform_axis" in animated.keys():

@@ -283,23 +283,23 @@ def parse_position(animated, i):
 
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "region_angle":
         pos = [float(animated[i][0].attrib["value"]),
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "opacity":
         pos = [float(animated[i][0].attrib["value"]) * settings.OPACITY_CONSTANT,
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "effects_opacity":
         pos = [float(animated[i][0].attrib["value"]),
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "points":
         pos = [int(animated[i][0].attrib["value"]),
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "rectangle_size":
         pos = parse_value(animated, i)
@@ -340,7 +340,7 @@ def parse_value(animated, i):
         (list)  : [value, time] is returned
     """
     pos = [float(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
-           float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+           get_frame(animated[i])]
     return pos
 
 
@@ -442,7 +442,8 @@ def get_frame(waypoint):
     Returns:
         (int) : the frame at which waypoint is present
     """
-    frame = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    time = get_time(waypoint)
+    frame = time * settings.lottie_format["fr"]
     frame = round(frame)
     return frame
 
@@ -456,8 +457,18 @@ def get_time(waypoint):
     Returns:
         (float) : the time in seconds at which the waypoint is present
     """
-    time = float(waypoint.attrib["time"][:-1])
-    return time
+    time = waypoint.attrib["time"].split(" ")
+    final = 0
+    for frame in time:
+        if frame[-1] == "h":
+            final += float(frame[:-1]) * 60 * 60
+        elif frame[-1] == "m":
+            final += float(frame[:-1]) * 60
+        elif frame[-1] == "s":
+            final += float(frame[:-1])
+        elif frame[-1] == "f":  # This should never happen according to my code
+            raise ValueError("In waypoint, time is never expected in frames.")
+    return final 
 
 def get_vector(waypoint):
     """

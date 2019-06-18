@@ -6,7 +6,7 @@ Implements function required for generating tangent between two value key frames
 import sys
 import random
 import settings
-from misc import parse_position
+from misc import get_frame, parse_position
 from properties.offsetKeyframe import calc_tangent
 sys.path.append("../")
 
@@ -107,7 +107,7 @@ def gen_value_Keyframe(curve_list, animated, i):
     cur_pos = parse_position(animated, i)
     next_pos = parse_position(animated, i + 1)
 
-    lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    lottie["t"] = get_frame(waypoint)
     lottie["s"] = cur_pos.get_val()
     lottie["e"] = next_pos.get_val()
 

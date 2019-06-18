@@ -5,7 +5,7 @@ Will store all functions needed to generate the star layer in lottie
 import sys
 import settings
 from properties.value import gen_properties_value
-from misc import get_angle, Count, change_axis, is_animated
+from misc import get_frame, get_angle, Count, change_axis, is_animated
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
@@ -195,7 +195,7 @@ def polygon_correction(lottie, animated):
     for st in range(len(true_arr["arr"])):
         if now == "false":
             i = true_arr["arr"][st]
-            s_frame = float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]
+            s_frame = get_frame(animated[i])
             s_frame += 1
 
             # Till the end it is a star
@@ -203,7 +203,7 @@ def polygon_correction(lottie, animated):
                 break
             else:
                 j = true_arr["arr"][st+1]
-                e_frame = float(animated[j].attrib["time"][:-1]) * settings.lottie_format["fr"]
+                e_frame = get_frame(animated[j])
                 e_frame -= 1
         elif now == "true":
             pass

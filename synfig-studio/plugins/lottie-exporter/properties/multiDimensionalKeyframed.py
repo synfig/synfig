@@ -7,6 +7,7 @@ import sys
 import settings
 from properties.offsetKeyframe import gen_properties_offset_keyframe
 from properties.timeAdjust import time_adjust
+from misc import get_frame
 sys.path.append("..")
 
 
@@ -29,9 +30,9 @@ def gen_properties_multi_dimensional_keyframed(lottie, animated, idx):
     for i in range(len(animated) - 1):
         lottie["k"].append({})
         gen_properties_offset_keyframe(lottie["k"], animated, i)
-    last_waypoint_time = float(animated[-1].attrib["time"][:-1]) * settings.lottie_format["fr"]
+    last_waypoint_frame = get_frame(animated[-1])
     lottie["k"].append({})
-    lottie["k"][-1]["t"] = last_waypoint_time
+    lottie["k"][-1]["t"] = last_waypoint_frame
 
     if  "h" in lottie["k"][-2].keys():
         lottie["k"][-1]["h"] = 1

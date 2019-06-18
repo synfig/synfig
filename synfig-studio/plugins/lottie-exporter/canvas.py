@@ -24,8 +24,14 @@ def calc_time(root, lottie, which):
     time = root.attrib[phase].split(" ")
     lottie[which] = 0
     for frame in time:
+        # Adding time in hours
+        if frame[-1] == "h":
+            lottie[which] += float(frame[:-1]) * 60 * 60 * lottie["fr"]
+        # Adding time in minutes
+        elif frame[-1] == "m":
+            lottie[which] += float(frame[:-1]) * 60 * lottie["fr"]
         # Adding time in seconds
-        if frame[-1] == "s":
+        elif frame[-1] == "s":
             lottie[which] += float(frame[:-1]) * lottie["fr"]
         # Adding time in frames
         elif frame[-1] == "f":
