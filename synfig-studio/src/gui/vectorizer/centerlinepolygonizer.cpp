@@ -537,6 +537,11 @@ inline std::unique_ptr<int[]> findNextCorners(RawBorder &path)
   return corners;
 }
 
+inline int cross(const synfig::PointInt &a, const synfig::PointInt &b) 
+{
+  return a[0] * b[1] - a[1] * b[0];
+}
+
 // Calculate furthest k satisfying 1) for all fixed i.
 inline std::unique_ptr<int[]> furthestKs(RawBorder &path, std::unique_ptr<int[]> &nextCorners) 
 {
