@@ -319,15 +319,97 @@ typedef std::vector<SkeletonGraph *> SkeletonList;
 
 //==========================================================================
 
+//----------------------------------------
+//    Joints and Sequences definition
+//----------------------------------------
+
+class Sequence 
+{
+public:
+  UINT m_head;
+  UINT m_headLink;
+  UINT m_tail;
+  UINT m_tailLink;
+  SkeletonGraph *m_graphHolder;
+
+  // Stroke color-sensible data
+  int m_color;
+  int m_strokeIndex;
+  int m_strokeHeight;
+
+public:
+  Sequence() : m_graphHolder(0) {}
+  ~Sequence() {}
+
+  // Impose a property dependant only on the extremity we consider first
+  // - so that the same sequence is not considered twice when head and tail
+  // are exchanged
+  bool isForward() const 
+  {
+    return (m_head < m_tail) || (m_head == m_tail && m_headLink < m_tailLink);
+  }
+
+  // Advances a couple (old, current) of sequence nodes
+  void advance(UINT &old, UINT &current) const 
+  {
+    UINT temp = current;
+    current   = m_graphHolder->getNode(current).getLink(0).getNext() == old
+                  ? m_graphHolder->getNode(current).getLink(1).getNext()
+                  : m_graphHolder->getNode(current).getLink(0).getNext();
+    old = temp;
+  }
+
+  // Advances a couple (current, link) of a sequence node plus its link
+  // direction
+  void next(UINT &current, UINT &link) const 
+  {
+    UINT temp = current;
+    current   = m_graphHolder->getNode(current).getLink(link).getNext();
+    link = m_graphHolder->getNode(current).getLink(0).getNext() == temp ? 1 : 0;
+  }
+};
+
+//--------------------------------------------------------------------------
+
+class JointSequenceGraph final : public Graph<UINT, Sequence> {
+public:
+  JointSequenceGraph() {}
+  ~JointSequenceGraph() {}
+
+  enum { REACHED = 0x1, ELIMINATED = 0x2 };
+
+  // Extracts JSG tail link of input node-link
+  inline UINT tailLinkOf(UINT node, UINT link) 
+  {
+    UINT i, next = getNode(node).getLink(link).getNext();
+
+    for (i = 0; getNode(next).getLink(i)->m_tail !=
+                    getNode(node).getLink(link)->m_head ||
+                getNode(next).getLink(i)->m_tailLink !=
+                    getNode(node).getLink(link)->m_headLink;
+         ++i)
+      ;
+    return i;
+  }
+};
+
+typedef std::vector<JointSequenceGraph> JointSequenceGraphList;
+
+typedef std::vector<Sequence> SequenceList;
+typedef std::vector<synfig::Point3> PointList;
+
+
+//==========================================================================
+
 
 
 class VectorizerCoreGlobals {
 public:
   const CenterlineConfiguration *currConfig;
 
-  // JointSequenceGraphList organizedGraphs;
-  // SequenceList singleSequences;
-  // PointList singlePoints;
+  JointSequenceGraphList organizedGraphs;
+  SequenceList singleSequences;
+  PointList singlePoints;
 
   VectorizerCoreGlobals() {}
   ~VectorizerCoreGlobals() {}
