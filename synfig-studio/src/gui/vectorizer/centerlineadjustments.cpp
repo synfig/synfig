@@ -36,6 +36,11 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+VectorizerCoreGlobals *globals;
+std::vector<unsigned int> contourFamilyOfOrganized;
+JointSequenceGraph *currJSGraph;
+ContourFamily *currContourFamily;
+
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -60,7 +65,8 @@ using namespace studio;
 typedef std::map<UINT, UINT, std::less<UINT>> uintMap;
 
 // void organizeGraphs(SkeletonList* skeleton)
-void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) {
+void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) 
+{
   globals = &g;
 
   SkeletonList::iterator currGraphPtr;
@@ -90,12 +96,16 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) {
     // ones
     bool has1DegreePoint = 0;
     for (i = 0; i < currGraph.getNodesCount(); ++i)
-      if (currGraph.getNode(i).degree() != 2)
-        if (currGraph.getNode(i).degree() == 1)
-          has1DegreePoint = 1;
-        else
-          goto _graph;
-
+    {
+        if (currGraph.getNode(i).degree() != 2)
+        {
+            if (currGraph.getNode(i).degree() == 1)
+                has1DegreePoint = 1;
+            else
+                goto _graph;
+        }
+    }
+      
     if (has1DegreePoint)
       goto _two_endpoint;
     else
@@ -103,17 +113,14 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) {
 
   _two_endpoint : {
     // Find head
-    for (i = 0; currGraph.getNode(i).degree() != 1; ++i)
-      ;
+    for (i = 0; currGraph.getNode(i).degree() != 1; ++i);
 
     currSequence.m_head     = i;
     currSequence.m_headLink = 0;
 
     // Find tail
-    for (++i;
-         i < currGraph.getNodesCount() && currGraph.getNode(i).degree() == 2;
-         ++i)
-      ;
+    for (++i; i < currGraph.getNodesCount() && currGraph.getNode(i).degree() == 2;  ++i);
+
     currSequence.m_tail     = i;
     currSequence.m_tailLink = 0;
 
@@ -132,8 +139,10 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) {
     jointsMap.clear();
 
     // Gather all sequence extremities
-    for (i = 0; i < currGraph.getNodesCount(); ++i) {
-      if (currGraph.getNode(i).degree() != 2) {
+    for (i = 0; i < currGraph.getNodesCount(); ++i) 
+    {
+      if (currGraph.getNode(i).degree() != 2) 
+      {
         j = JSGraph.newNode(i);
         // Using a map to keep one-to-one relation between j and i
         jointsMap.insert(uintMap::value_type(i, j));
@@ -141,24 +150,26 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) {
     }
 
     // Extract Sequences
-    for (i = 0; i < JSGraph.getNodesCount(); ++i) {
+    for (i = 0; i < JSGraph.getNodesCount(); ++i) 
+    {
       UINT joint = *JSGraph.getNode(i);
-      for (j = 0; j < currGraph.getNode(joint).getLinksCount(); ++j) {
+      for (j = 0; j < currGraph.getNode(joint).getLinksCount(); ++j) 
+      {
         currSequence.m_head     = joint;
         currSequence.m_headLink = j;
 
         // Seek tail
         UINT oldNode  = joint,
              thisNode = currGraph.getNode(joint).getLink(j).getNext();
-        while (currGraph.getNode(thisNode).degree() == 2) {
+        while (currGraph.getNode(thisNode).degree() == 2) 
+        {
           currGraph.node(thisNode).setAttribute(
               ORGANIZEGRAPHS_SIGN);  // Sign thisNode as part of a JSGraph
           currSequence.advance(oldNode, thisNode);
         }
 
         currSequence.m_tail = thisNode;
-        currSequence.m_tailLink =
-            currGraph.getNode(thisNode).linkOfNode(oldNode);
+        currSequence.m_tailLink = currGraph.getNode(thisNode).linkOfNode(oldNode);
 
         JSGraph.newLink(i, jointsMap.find(thisNode)->second, currSequence);
       }
@@ -177,7 +188,8 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) {
   _circulars : {
     // Extract all circular sequences
     // Find a sequence point
-    for (i = 0; i < currGraph.getNodesCount(); ++i) {
+    for (i = 0; i < currGraph.getNodesCount(); ++i)
+    {
       if (!currGraph.getNode(i).hasAttribute(ORGANIZEGRAPHS_SIGN) &&
           currGraph.getNode(i).degree() == 2) {
         unsigned int curr = i, currLink = 0;
