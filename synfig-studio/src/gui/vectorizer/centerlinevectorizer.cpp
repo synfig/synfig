@@ -29,9 +29,6 @@
 #	include <config.h>
 #endif
 
-/*
-** Insert headers here
-*/
 #include "centerlinevectorizer.h"
 #include "polygonizerclasses.h"
 #endif
@@ -91,6 +88,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
     std::cout<<"Link Count :"<<currGraph.getLinksCount()<<"Node Count :"<<currGraph.getNodesCount()<<"\n";
     for (int i = 0; i < currGraph.getNodesCount(); ++i)
     {
+
       std::cout<<"m_content :"<<currGraph.getNode(i)->operator[](0) <<", "<<currGraph.getNode(i)->operator[](1)<<", "
       <<currGraph.getNode(i)->operator[](2)<<"\n";
 
@@ -106,7 +104,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
   // step 4
   // The raw skeleton data obtained from StraightSkeletonizer
   // class need to be grouped in joints and sequences before proceding further
-  organizeGraphs(skeletons, globals);
+  studio::organizeGraphs(skeletons, globals);
 
 //   // junctionRecovery(polygons);   //Da' problemi per maxThickness<inf...
 //   // sarebbe da rendere compatibile

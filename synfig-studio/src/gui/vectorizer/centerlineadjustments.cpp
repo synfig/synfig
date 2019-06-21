@@ -65,7 +65,7 @@ ContourFamily *currContourFamily;
 typedef std::map<UINT, UINT, std::less<UINT>> uintMap;
 
 // void organizeGraphs(SkeletonList* skeleton)
-void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) 
+void studio::organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g) 
 {
   globals = &g;
 

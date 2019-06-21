@@ -436,7 +436,7 @@ void polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons
 SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
                           VectorizerCoreGlobals &g);
 
-// void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
+void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 
 // void junctionRecovery(Contours *polygons, VectorizerCoreGlobals &g);
 

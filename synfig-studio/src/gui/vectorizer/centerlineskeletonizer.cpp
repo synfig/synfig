@@ -1522,7 +1522,7 @@ SkeletonList* studio::skeletonize(Contours &contours, VectorizerCore *thisVector
 
   SkeletonList *res = new SkeletonList;
   unsigned int i, j;
-
+  // TODO
   // Find overall number of nodes
   // unsigned int overallNodes = 0;
   // for (i = 0; i < contours.size(); ++i)
