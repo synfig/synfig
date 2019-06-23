@@ -10,6 +10,7 @@ Supported Layers are mentioned below
 import os
 import json
 import sys
+import gzip
 from lxml import etree
 from canvas import gen_canvas
 from layers.shape import gen_layer_shape
@@ -61,7 +62,7 @@ def parse(file_name):
 
     num_layers = Count()
     settings.lottie_format["layers"] = []
-    shape_layer = {"star", "circle", "rectangle", "filled_rectangle", "simple_circle", "region", "polygon"}
+    shape_layer = {"star", "circle", "rectangle", "filled_rectangle", "simple_circle", "region", "polygon", "outline"}
     solid_layer = {"SolidColor"}
     image_layer = {"import"}
     supported_layers = shape_layer.union(solid_layer)

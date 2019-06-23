@@ -4,7 +4,7 @@ lottie
 """
 
 import sys
-from properties.shapePropKeyframe import gen_bline_shapePropKeyframe, gen_dynamic_list_shapePropKeyframe
+from properties.shapePropKeyframe import gen_bline_outline, gen_bline_shapePropKeyframe, gen_dynamic_list_shapePropKeyframe
 sys.path.append("../")
 
 
@@ -24,7 +24,9 @@ def gen_properties_shapeKeyframed(lottie, node, idx):
     lottie["ix"] = idx
     lottie["a"] = 1
     lottie["k"] = []
-    if node.tag == "bline":
+    if node.getparent().getparent().attrib["type"] == "region":
         gen_bline_shapePropKeyframe(lottie["k"], node)
-    elif node.tag == "dynamic_list":
+    elif node.getparent().getparent().attrib["type"] == "polygon":
         gen_dynamic_list_shapePropKeyframe(lottie["k"], node)
+    elif node.getparent().getparent().attrib["type"] == "outline":
+        gen_bline_outline(lottie["k"], node) 
