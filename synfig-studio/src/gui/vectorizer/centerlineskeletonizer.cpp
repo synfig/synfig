@@ -380,10 +380,10 @@ inline void ContourNode::buildNodeInfos(bool forceConvex) {
   } 
   else 
   {
-    m_AuxiliaryMomentum1 = cross(m_position, synfig::Point3(m_edge->m_direction[0],
-                                   -m_edge->m_direction[0], 1));
-    m_AuxiliaryMomentum2 = cross(m_position, synfig::Point3(m_prev->m_edge->m_direction[0],
-                                    -m_prev->m_edge->m_direction[0], 1));
+    m_AuxiliaryMomentum1 = cross(m_position, synfig::Point3(m_edge->m_direction[1],
+                                   -(m_edge->m_direction[0]), 1));
+    m_AuxiliaryMomentum2 = cross(m_position, synfig::Point3(m_prev->m_edge->m_direction[1],
+                                    -(m_prev->m_edge->m_direction[0]), 1));
   }
 }
 
@@ -429,7 +429,7 @@ void Timeline::build(ContourFamily &polygons, VectorizationContext &context, Vec
 {
   unsigned int i, j, current;
   std::vector<RandomizedNode> nodesToBeTreated(context.m_totalNodes);
-  synfig::Point3 momentum, ray;
+  //synfig::Point3 momentum, ray;
 
   // Build casual ordered node-array
   for (i = 0, current = 0; i < polygons.size(); ++i)
@@ -506,15 +506,16 @@ inline void Event::calculateEdgeEvent() {
         return;
       }
 
-      double det = edgeFirst->m_direction[0] * edgeSecond->m_direction[0] -
-                   edgeFirst->m_direction[0] * edgeSecond->m_direction[0];
+      double det = edgeFirst->m_direction[1] * edgeSecond->m_direction[0] -
+                   edgeFirst->m_direction[0] * edgeSecond->m_direction[1];
 
       double cx = edgeSecond->m_position[0] - edgeFirst->m_position[0],
-             cy = edgeSecond->m_position[0] - edgeFirst->m_position[0];
+             cy = edgeSecond->m_position[1] - edgeFirst->m_position[1];
 
-      d1 = (edgeSecond->m_direction[0] * cy - edgeSecond->m_direction[0] * cx) / det;
-
-      d2 = (edgeFirst->m_direction[0] * cy - edgeFirst->m_direction[0] * cx) / det;
+      d1 = (edgeSecond->m_direction[0] * cy - edgeSecond->m_direction[1] * cx) /
+           det;
+      d2 =
+          (edgeFirst->m_direction[0] * cy - edgeFirst->m_direction[1] * cx) / det;
     }
 
     static inline double height(ContourNode *node, double displacement) {
@@ -692,15 +693,15 @@ inline bool Event::testRayEdgeCollision(ContourNode *opposite,
 
   synfig::Point3 firstSlabGuard =
       opposite->m_concave ? opposite->m_direction
-                          : synfig::Point3(opposite->m_edge->m_direction[0],
-                                      -opposite->m_edge->m_direction[0], 1);
+                          : synfig::Point3(opposite->m_edge->m_direction[1],
+                                      -(opposite->m_edge->m_direction[0]), 1);
   synfig::Point3 lastSlabGuard =
       opposite->m_next->m_concave
           ? opposite->m_next->m_direction
-          : synfig::Point3(opposite->m_edge->m_direction[0],
-                      -opposite->m_edge->m_direction[0], 1);
+          : synfig::Point3(opposite->m_edge->m_direction[1],
+                      -(opposite->m_edge->m_direction[0]), 1);
 
-  synfig::Point3 roofSlabOrthogonal(-opposite->m_edge->m_direction[0],
+  synfig::Point3 roofSlabOrthogonal(-(opposite->m_edge->m_direction[1]),
                                opposite->m_edge->m_direction[0], 1);
 
   if (roofSlabOrthogonal * (opposite->m_position - m_generator->m_position) >
@@ -735,7 +736,7 @@ inline bool Event::testRayEdgeCollision(ContourNode *opposite,
     //----------------------------------------
 
     if (displacement > -0.01 && displacement < 0.01) {
-      synfig::Point3 slabLeftOrthogonal(-opposite->m_edge->m_direction[0],
+      synfig::Point3 slabLeftOrthogonal(-(opposite->m_edge->m_direction[1]),
                                    opposite->m_edge->m_direction[0], 1);
       double check1 =
           (m_generator->m_position - opposite->m_position) *
@@ -848,10 +849,10 @@ inline bool Event::tryRayEdgeCollisionWith(ContourNode *opposite)
 
 inline double Event::splitDisplacementWith(ContourNode *slab) 
 {
-  synfig::Point slabLeftOrthogonal(-slab->m_edge->m_direction[0],
+  synfig::Point slabLeftOrthogonal(-(slab->m_edge->m_direction[1]),
                              slab->m_edge->m_direction[0]);
   double denom = m_generator->m_direction[2] +
-                 slabLeftOrthogonal * synfig::Point(m_generator->m_direction[0],
+                 slabLeftOrthogonal * synfig::Point(m_generator->m_direction[1],
                                               m_generator->m_direction[0]);
 
   if (denom < 0.01)
