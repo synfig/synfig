@@ -31,6 +31,10 @@ export HOMEBREW_NO_ANALYTICS=1
 export OS=`uname -r | cut -d "." -f1`
 
 if [ $OS -lt 15 ] && [ -z "$TRAVIS_BUILD_DIR" ]; then # For OSX < 10.11
+    # We need librsvg package, but the latest version shipped by Homebrew
+    # depends on Rust, which is fails to compile on OSX < 10.11.
+    # So, we are rolling back Homebrew's history of packages to use older
+    # version of librsvg.
     cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/
     git fetch --unshallow || true
     git checkout a91becd6afc177b0cada2cf9cce2e3bde514053b # librsvg 2.40.20 (without rust) 2017.12.16
