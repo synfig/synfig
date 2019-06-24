@@ -6,6 +6,8 @@ in Lottie format
 
 import sys
 import ast
+import copy
+import settings
 from lxml import etree
 from misc import get_frame, Vector, is_animated, radial_to_tangent
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
@@ -424,6 +426,7 @@ def gen_bline_outline(lottie, bline_point):
                     dictionary = ast.literal_eval(child.text)
                     width_cur = get_vector_at_frame(dictionary, fr)
                     width_next = get_vector_at_frame(dictionary, fr + 1)
+                    width_cur, width_next = width_cur / settings.PIX_PER_UNIT, width_next / settings.PIX_PER_UNIT
                 elif child.tag == "t1":
                     t1 = child[0]
                 elif child.tag == "t2":
@@ -436,39 +439,29 @@ def gen_bline_outline(lottie, bline_point):
             tangent1_cur, tangent2_cur = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
             tangent1_next, tangent2_next = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
 
-            # Convert to Lottie format
-            tangent1_cur /= 3
-            tangent1_next /= 3
-            tangent2_cur /= 3
-            tangent2_next /= 3
-
-            # Synfig and Lottie use different in tangents SEE DOCUMENTATION
-            tangent1_cur *= -1
-            tangent1_next *= -1
-
-            # Important: t1 and t2 have to be relative
-            # The y-axis is different in lottie
-            tangent1_cur.val2 = -tangent1_cur.val2
-            tangent2_cur.val2 = -tangent2_cur.val2
-            tangent1_next.val2 = -tangent1_next.val2
-            tangent2_next.val2 = -tangent2_next.val2
+            tangent3_cur, tangent4_cur = convert_tangent_to_lottie(tangent2_cur, tangent1_cur)
+            tangent3_next, tangent4_next = convert_tangent_to_lottie(tangent2_next, tangent1_next)
+            tangent1_cur, tangent2_cur = convert_tangent_to_lottie(tangent1_cur, tangent2_cur)
+            tangent1_next, tangent2_next = convert_tangent_to_lottie(tangent1_next, tangent2_next)
 
             # Calculate outline points from the main spline
             angle1_cur, angle2_cur = get_tangent_angle_at_frame(t1, t2, split_r, split_a, fr)
             angle1_next, angle2_next = get_tangent_angle_at_frame(t1, t2, split_r, split_a, fr+1)
 
-            r_cur = width_cur * get_vector_at_frame(outer_width_dict, fr) / 2
-            r_next = width_next * get_vector_at_frame(outer_width_dict, fr + 1) / 2
+            r_cur = width_cur * get_vector_at_frame(outer_width_dict, fr) 
+            r_next = width_next * get_vector_at_frame(outer_width_dict, fr + 1) 
 
-            x, y = radial_to_tangent(r_cur, angle1_cur + 90)
+            x, y = radial_to_tangent(r_cur, angle1_cur - 90)
             t11_cur = Vector(x, y)
-            x, y = radial_to_tangent(r_next, angle1_next + 90)
+            x, y = radial_to_tangent(r_next, angle1_next - 90)
             t11_next = Vector(x, y)
+            print("t11_cur: ", t11_cur)
 
-            x, y = radial_to_tangent(r_cur, angle1_cur + 270)
+            x, y = radial_to_tangent(r_cur, angle1_cur - 270)
             t12_cur = Vector(x, y)
-            x, y = radial_to_tangent(r_next, angle1_next + 270)
+            x, y = radial_to_tangent(r_next, angle1_next - 270)
             t12_next = Vector(x, y)
+            print("t12_cur: ", t12_cur)
 
             x, y = radial_to_tangent(r_cur, angle2_cur + 90)
             t21_cur = Vector(x, y)
@@ -479,6 +472,11 @@ def gen_bline_outline(lottie, bline_point):
             t22_cur = Vector(x, y)
             x, y = radial_to_tangent(r_next, angle2_next + 270)
             t22_next = Vector(x, y)
+            ######## TRY #########
+            t11_cur, t21_cur = convert_tangent_to_lottie(t11_cur, t21_cur)
+            t12_cur, t22_cur = convert_tangent_to_lottie(t12_cur, t22_cur)
+            t11_next, t21_next = convert_tangent_to_lottie(t11_next, t21_next)
+            t12_next, t22_next = convert_tangent_to_lottie(t12_next, t22_next)
 
             # Store values in the dictionary
             if i != 0:
@@ -503,30 +501,34 @@ def gen_bline_outline(lottie, bline_point):
 
             # Store values in reverse order for mirror positions and tangents will also be reversed
             if i != 0:
-                back1["i"].insert(0, tangent2_cur.get_list())
-                back1["o"].insert(0, tangent1_cur.get_list())
+                back1["i"].insert(0, tangent4_cur.get_list())
+                back1["o"].insert(0, tangent3_cur.get_list())
                 back1["v"].insert(0, [pos_cur[0] + t12_cur.val1, pos_cur[1] + t12_cur.val2])
 
             if i != len(bline_point) - 1:
-                back1["i"].insert(0, tangent2_cur.get_list())
-                back1["o"].insert(0, tangent1_cur.get_list())
+                back1["i"].insert(0, tangent4_cur.get_list())
+                back1["o"].insert(0, tangent3_cur.get_list())
                 back1["v"].insert(0, [pos_cur[0] + t22_cur.val1, pos_cur[1] + t22_cur.val2])
             
             if i != 0:
-                back2["i"].insert(0, tangent2_next.get_list())
-                back2["o"].insert(0, tangent1_next.get_list())
+                back2["i"].insert(0, tangent4_next.get_list())
+                back2["o"].insert(0, tangent3_next.get_list())
                 back2["v"].insert(0, [pos_next[0] + t12_next.val1, pos_next[1] + t12_next.val2])
 
             if i != len(bline_point) - 1:
-                back2["i"].insert(0, tangent2_next.get_list())
-                back2["o"].insert(0, tangent1_next.get_list())
+                back2["i"].insert(0, tangent4_next.get_list())
+                back2["o"].insert(0, tangent3_next.get_list())
                 back2["v"].insert(0, [pos_next[0] + t22_next.val1, pos_next[1] + t22_next.val2])
 
         # Need to connect main spline's data with backwards spline's data
+        st_val["o"][-1] = [0, 0]
+        back1["i"][0] = [0, 0]
         st_val["i"].extend(back1["i"])
         st_val["o"].extend(back1["o"])
         st_val["v"].extend(back1["v"])
 
+        en_val["o"][-1] = [0, 0]
+        back2["i"][0] = [0, 0]
         en_val["i"].extend(back2["i"])
         en_val["o"].extend(back2["o"])
         en_val["v"].extend(back2["v"])
@@ -535,6 +537,21 @@ def gen_bline_outline(lottie, bline_point):
     # Setting the final time
     lottie.append({})
     lottie[-1]["t"] = fr
+
+
+def convert_tangent_to_lottie(t1, t2):
+    # Convert to Lottie format
+    t1 /= 3
+    t2 /= 3
+
+    # Synfig and Lottie use different in tangents SEE DOCUMENTATION
+    t1 *= -1
+
+    # Important: t1 and t2 have to be relative
+    # The y-axis is different in lottie
+    t1.val2 = -t1.val2
+    t2.val2 = -t2.val2
+    return t1, t2
 
 
 def insert_dict_at(lottie, idx, fr, loop):
