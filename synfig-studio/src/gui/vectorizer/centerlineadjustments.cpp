@@ -86,7 +86,8 @@ void studio::organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g)
 
     // Separate single Points - can happen only when a single node gets stored
     // in a SkeletonGraph.
-    if (currGraph.getNodesCount() == 1) {
+    if (currGraph.getNodesCount() == 1) 
+    {
       globals->singlePoints.push_back(*currGraph.getNode(0));
       ++counter;
       continue;

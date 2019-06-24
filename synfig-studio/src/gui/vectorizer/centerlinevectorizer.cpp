@@ -81,21 +81,22 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
   // partial progresses
   SkeletonList *skeletons = studio::skeletonize(polygons, this, globals);
 
-  for (SkeletonList::iterator currGraphPtr = skeletons->begin(); currGraphPtr != skeletons->end(); ++currGraphPtr) 
+  // for (SkeletonList::iterator currGraphPtr = skeletons->begin(); currGraphPtr != skeletons->end(); ++currGraphPtr) 
+  // {
+  //   std::cout<<"Skeleton data\n";
+  //   SkeletonGraph &currGraph   = **currGraphPtr;
+  //   std::cout<<"Link Count :"<<currGraph.getLinksCount()<<"Node Count :"<<currGraph.getNodesCount()<<"\n";
+  //   for (int i = 0; i < currGraph.getNodesCount(); ++i)
+  //   {
+
+  //     std::cout<<"m_content :"<<currGraph.getNode(i)->operator[](0) <<", "<<currGraph.getNode(i)->operator[](1)<<", "
+  //     <<currGraph.getNode(i)->operator[](2)<<"\n";
+
+  //   }
+  // }
+
+  if (isCanceled()) 
   {
-    std::cout<<"Skeleton data\n";
-    SkeletonGraph &currGraph   = **currGraphPtr;
-    std::cout<<"Link Count :"<<currGraph.getLinksCount()<<"Node Count :"<<currGraph.getNodesCount()<<"\n";
-    for (int i = 0; i < currGraph.getNodesCount(); ++i)
-    {
-
-      std::cout<<"m_content :"<<currGraph.getNode(i)->operator[](0) <<", "<<currGraph.getNode(i)->operator[](1)<<", "
-      <<currGraph.getNode(i)->operator[](2)<<"\n";
-
-    }
-  }
-
-  if (isCanceled()) {
     // Clean and return 0 at cancel command
     deleteSkeletonList(skeletons);
     std::cout<<"CenterlineVectorize cancelled\n";
