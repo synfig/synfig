@@ -43,6 +43,7 @@ EFFECTS_INVERT = 7  # same as All mask, don't know why
 EFFECTS_HFEATHER = 0    # horizontal feather
 EFFECTS_VFEATHER = 0    # vertical feather
 EFFECTS_OPACITY = 0     # Opacity ty = 0
+MASK_ADDITIVE = "a"
 
 
 def init():

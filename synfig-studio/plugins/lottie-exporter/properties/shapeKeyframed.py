@@ -8,7 +8,7 @@ from properties.shapePropKeyframe import gen_bline_outline, gen_bline_shapePropK
 sys.path.append("../")
 
 
-def gen_properties_shapeKeyframed(lottie, node, idx):
+def gen_properties_shapeKeyframed(lottie, node, origin, idx):
     """
     Will convert bline points/dynamic_list to bezier points as required by lottie if they are
     animated
@@ -25,8 +25,9 @@ def gen_properties_shapeKeyframed(lottie, node, idx):
     lottie["a"] = 1
     lottie["k"] = []
     if node.getparent().getparent().attrib["type"] == "region":
-        gen_bline_shapePropKeyframe(lottie["k"], node)
+        gen_bline_shapePropKeyframe(lottie["k"], node, origin)
     elif node.getparent().getparent().attrib["type"] == "polygon":
-        gen_dynamic_list_shapePropKeyframe(lottie["k"], node)
+        gen_dynamic_list_shapePropKeyframe(lottie["k"], node, origin)
+# Need to correct these 2 below lines
     elif node.getparent().getparent().attrib["type"] == "outline":
         gen_bline_outline(lottie["k"], node) 

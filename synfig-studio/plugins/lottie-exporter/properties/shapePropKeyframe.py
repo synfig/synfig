@@ -175,7 +175,7 @@ def get_tangent_angle_at_frame(t1, t2, split_r, split_a, fr):
     return a1, a2
 
 
-def gen_bline_shapePropKeyframe(lottie, bline_point):
+def gen_bline_shapePropKeyframe(lottie, bline_point, origin):
     """
     Generates the dictionary corresponding to properties/shapePropKeyframe.json,
     given a bline/spline
@@ -242,6 +242,18 @@ def gen_bline_shapePropKeyframe(lottie, bline_point):
         animate_radial_composite(t1[0], window)
         animate_radial_composite(t2[0], window)
 
+    # Animating the origin
+    origin_parent = origin.getparent()
+    origin = gen_dummy_waypoint(origin, "param", "vector")
+    origin.attrib["name"] = "origin"
+    update_child_at_parent(origin_parent, origin, "param", "origin")
+    update_frame_window(origin[0], window)
+
+    # Generate path for the origin component
+    origin_dict = {}
+    origin[0].attrib["transform_axis"] = "true"
+    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:
         window["first"] = window["last"] = 0
@@ -288,6 +300,14 @@ def gen_bline_shapePropKeyframe(lottie, bline_point):
             tangent2_cur.val2 = -tangent2_cur.val2
             tangent1_next.val2 = -tangent1_next.val2
             tangent2_next.val2 = -tangent2_next.val2
+
+            # Adding origin to each vertex
+            origin_cur = get_vector_at_frame(origin_dict, fr)
+            origin_next = get_vector_at_frame(origin_dict, fr + 1)
+            for i in range(len(pos_cur)):
+                pos_cur[i] += origin_cur[i]
+            for i in range(len(pos_next)):
+                pos_next[i] += origin_next[i]
 
             # Store values in dictionary
             st_val["i"].append([tangent1_cur.val1, tangent1_cur.val2])
@@ -574,7 +594,7 @@ def insert_dict_at(lottie, idx, fr, loop):
          
 
 
-def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list):
+def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list, origin):
     """
     Generates the bline corresponding to polygon layer 
     """
@@ -601,9 +621,22 @@ def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list):
         path_lxml = etree.Element("pos_path")
         path_lxml.text = str(path_dict)
         dynamic_list[count].append(path_lxml)
+        count += 1
 
-        if window["first"] == sys.maxsize and window["last"] == -1:
-            window["first"] = window["last"] = 0
+    # Animating the origin
+    origin_parent = origin.getparent()
+    origin = gen_dummy_waypoint(origin, "param", "vector")
+    origin.attrib["name"] = "origin"
+    update_child_at_parent(origin_parent, origin, "param", "origin")
+    update_frame_window(origin[0], window)
+
+    # Generate path for the origin component
+    origin_dict = {}
+    origin[0].attrib["transform_axis"] = "true"
+    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+
+    if window["first"] == sys.maxsize and window["last"] == -1:
+        window["first"] = window["last"] = 0
     ################ END OF SECTION 1 ##############
 
     ################ SECTION 2 #####################
@@ -622,6 +655,14 @@ def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list):
 
             tangent1_cur, tangent2_cur = Vector(0, 0), Vector(0, 0)
             tangent1_next, tangent2_next = Vector(0, 0), Vector(0, 0)
+
+            # Adding origin to each vertex
+            origin_cur = get_vector_at_frame(origin_dict, fr)
+            origin_next = get_vector_at_frame(origin_dict, fr + 1)
+            for i in range(len(pos_cur)):
+                pos_cur[i] += origin_cur[i]
+            for i in range(len(pos_next)):
+                pos_next[i] += origin_next[i]
 
             # Store values in dictionary
             st_val["i"].append([tangent1_cur.val1, tangent1_cur.val2])

@@ -27,12 +27,6 @@ def gen_shapes_shape(lottie, layer, idx):
     lottie["ks"] = {}
     for child in layer:
         if child.tag == "param":
-            if child.attrib["name"] == "bline" and layer.attrib["type"] == "region": # For region layer
-                bline_point = child[0]
-                gen_properties_shapeKeyframed(lottie["ks"], bline_point, index.inc())
-            elif child.attrib["name"] == "vector_list" and layer.attrib["type"] == "polygon": # For polygon layer
-                dynamic_list = child[0]
-                gen_properties_shapeKeyframed(lottie["ks"], dynamic_list, index.inc())
-            elif child.attrib["name"] == "bline" and layer.attrib["type"] == "outline":  # For outline layer
+            if child.attrib["name"] == "bline" and layer.attrib["type"] == "outline":  # For outline layer
                 bline_point = child[0]
                 gen_properties_shapeKeyframed(lottie["ks"], bline_point, index.inc())
