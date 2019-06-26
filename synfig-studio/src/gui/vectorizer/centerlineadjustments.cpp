@@ -79,8 +79,8 @@ void studio::organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g)
 
   contourFamilyOfOrganized.clear();
 
-  for (currGraphPtr = skeleton->begin(); currGraphPtr != skeleton->end();
-       ++currGraphPtr) {
+  for (currGraphPtr = skeleton->begin(); currGraphPtr != skeleton->end();++currGraphPtr) 
+  {
     SkeletonGraph &currGraph   = **currGraphPtr;
     currSequence.m_graphHolder = &currGraph;
 
