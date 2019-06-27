@@ -32,14 +32,17 @@ def gen_mask(lottie, invert, bline_point, idx):
 
 
 def convert_non_loop(lottie):
+    print("reached")
     for chld in lottie["k"]:
         try:
             char_dict = {"s", "e"}
             for char in char_dict:
                 posi = chld[char][0]
+                print(posi["c"])
                 if posi["c"] == False:
                     posi["o"][-1][0] = posi["o"][-1][1] = 0
                     posi["i"][0][0] = posi["i"][0][1] = 0
                     posi["c"] = True
+                print(posi["c"])
         except:
             pass

@@ -35,6 +35,38 @@ class Count:
         return self.idx
 
 
+class Hermite:
+    """
+    To keep the hermite curve stored inside this
+    """
+    def __init__(self, p1, p2, t1, t2):
+        self.p1 = p1
+        self.p2 = p2
+        self.t1 = t1
+        self.t2 = t2
+        self.sync()
+
+    def sync(self):
+        self.a = self.p1
+        self.b = self.p1 + self.t1/3
+        self.c = self.p2 - self.t2/3
+        self.d = self.p2
+
+        self.coeff0 = self.a
+        self.coeff1 = self.b*3- self.a*3
+        self.coeff2 = self.c*3 - self.b*6 + self.a*3
+        self.coeff3 = self.d - self.c*3 + self.b*3 - self.a
+
+    def derivative(self, x):
+        y = 1 - x
+        ret = (self.b - self.a) * y * y + (self.c - self.b) * x * y * 2 + (self.d - self.c) * x * x * 3
+        return ret
+
+    def value(self, t):
+        ret = self.coeff0 + (self.coeff1 + (self.coeff2 + (self.coeff3)*t)*t)*t 
+        return ret
+
+
 class Vector:
     """
     To store the position of layers
@@ -74,6 +106,22 @@ class Vector:
         val1 = self.val1 - other.val1
         val2 = self.val2 - other.val2
         return Vector(val1, val2, self.type)
+
+    def mag(self):
+        ret = self.val1 * self.val1 + self.val2 * self.val2
+        ret = math.sqrt(ret)
+        return ret
+
+    def inv_mag(self):
+        return 1.0 / self.mag()
+
+    def perp(self):
+        return Vector(self.val2, -self.val1)
+
+    # returns a normalised version of the vector
+    def norm(self):
+        self = self * self.inv_mag()
+        return self
 
     # other can only be of type real
     def __mul__(self, other):

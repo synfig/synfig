@@ -28,6 +28,5 @@ def gen_properties_shapeKeyframed(lottie, node, origin, idx):
         gen_bline_shapePropKeyframe(lottie["k"], node, origin)
     elif node.getparent().getparent().attrib["type"] == "polygon":
         gen_dynamic_list_shapePropKeyframe(lottie["k"], node, origin)
-# Need to correct these 2 below lines
     elif node.getparent().getparent().attrib["type"] == "outline":
-        gen_bline_outline(lottie["k"], node) 
+        gen_bline_outline(lottie["k"], node, origin)
