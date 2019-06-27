@@ -59,7 +59,7 @@ class Hermite:
 
     def derivative(self, x):
         y = 1 - x
-        ret = (self.b - self.a) * y * y + (self.c - self.b) * x * y * 2 + (self.d - self.c) * x * x * 3
+        ret = ((self.b - self.a) * y * y + (self.c - self.b) * x * y * 2 + (self.d - self.c) * x * x) * 3
         return ret
 
     def value(self, t):
@@ -106,6 +106,9 @@ class Vector:
         val1 = self.val1 - other.val1
         val2 = self.val2 - other.val2
         return Vector(val1, val2, self.type)
+
+    def __neg__(self):
+        return -1 * self
 
     def mag(self):
         ret = self.val1 * self.val1 + self.val2 * self.val2
@@ -300,7 +303,7 @@ def change_axis(x_val, y_val, is_transform=False):
         x_val, y_val = x_val, -y_val
     else:
         x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
-    return [int(x_val), int(y_val)]
+    return [x_val, y_val]
 
 
 def parse_position(animated, i):

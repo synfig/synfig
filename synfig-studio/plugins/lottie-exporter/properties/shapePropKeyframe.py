@@ -9,6 +9,7 @@ import ast
 import copy
 import settings
 from lxml import etree
+from synfig.animation import to_Synfig_axis
 from misc import change_axis, get_frame, Vector, Hermite, is_animated, radial_to_tangent
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
@@ -541,8 +542,7 @@ def get_outline_param_at_frame(composite, fr):
             split_a = child
 
     # Convert pos back to Synfig coordinates
-    pos[0], pos[1] = pos[0] - settings.lottie_format["w"]/2, pos[1] - settings.lottie_format["h"]/2
-    pos[1] = -pos[1]
+    pos = to_Synfig_axis(pos, "vector")
     pos_ret = Vector(pos[0], pos[1])
 
     return pos_ret, width, t1, t2, split_r, split_a
@@ -557,6 +557,7 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
     SAMPLES = 50
     CUSP_TANGENT_ADJUST = 0.025
     outer_width = get_vector_at_frame(outer_width_dict, fr)
+    outer_width /= settings.PIX_PER_UNIT
 
     # Setup chunk list
     side_a, side_b = [], []
@@ -572,6 +573,12 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
 
         t1_c, t2_c = get_tangent_at_frame(t1_c, t2_c, split_r_c, split_a_c, fr)
         t1_n, t2_n = get_tangent_at_frame(t1_n, t2_n, split_r_n, split_a_n, fr)
+
+        # Convert to Synfig format
+        t1_c /= settings.PIX_PER_UNIT
+        t2_c /= settings.PIX_PER_UNIT
+        t1_n /= settings.PIX_PER_UNIT
+        t2_n /= settings.PIX_PER_UNIT
 
         # Setup tangents
         prev_t = t1_c
@@ -614,7 +621,7 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
         itr = 0
         while n < 1.000001:
             t = curve.derivative(min(max(n, CUSP_TANGENT_ADJUST), 1.0 - CUSP_TANGENT_ADJUST)) / 3 
-            d = t.perp().norm() 
+            d = t.perp().norm()
             k = dists[itr] * div_length
             w = (next_w - iter_w)*k + iter_w
             if False and n:
@@ -627,17 +634,17 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
                 a = points[itr-1] - d*w
                 b = points[itr] - d*w
                 tk = (b - a).mag() * div_length
-                side_b.append([b, pt*tk, t*tk])
+                side_b.append([b, pt*tk, -t*tk])
             else:
-                side_a.append([points[itr] + d*w, 0, 0])
-                side_b.append([points[itr] - d*w, 0, 0])
+                side_a.append([points[itr] + d*w, Vector(0, 0), Vector(0, 0)])
+                side_b.append([points[itr] - d*w, Vector(0, 0), Vector(0, 0)])
             pt = t
             itr += 1
             n += 1.0/SAMPLES
 
         last_tangent = curve.derivative(1.0 - CUSP_TANGENT_ADJUST)
-        side_a.append([curve.value(1.0) + last_tangent.perp().norm()*next_w, 0, 0])
-        side_b.append([curve.value(1.0) - last_tangent.perp().norm()*next_w, 0, 0])
+        side_a.append([curve.value(1.0) + last_tangent.perp().norm()*next_w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([curve.value(1.0) - last_tangent.perp().norm()*next_w, Vector(0, 0), Vector(0, 0)])
         i += 1
 
     if len(side_a) < 2 or len(side_b) < 2:
@@ -654,8 +661,11 @@ def add(side, lottie):
     Does not take care of tangent putting order because the tangents are all
     zero for now according to the code
     """
-    for val in side:
-        move_to(val[0], lottie)
+    i = 0
+    while i + 1 < len(side):
+        cubic_to(side[i][0], side[i][2], side[i+1][1], lottie)
+        i += 1
+    cubic_to(side[i][0], side[i][2], Vector(0, 0), lottie)
 
 
 def add_reverse(side, lottie):
@@ -667,7 +677,23 @@ def add_reverse(side, lottie):
         move_to(val[0], lottie)
 
 
+def cubic_to(vec, tan1, tan2, lottie):
+    """
+    Will have to manipulate the tangents here
+    """
+    vec *= settings.PIX_PER_UNIT
+    tan1 *= settings.PIX_PER_UNIT
+    tan2 *= settings.PIX_PER_UNIT
+    lottie["i"].append(tan1.get_list())
+    lottie["o"].append(tan2.get_list())
+    lottie["v"].append(change_axis(vec.val1, vec.val2))
+
+
 def move_to(vec, lottie):
+    """
+    Don't have to manipulate the tangents because all of them are zero here
+    """
+    vec *= settings.PIX_PER_UNIT
     lottie["i"].append([0, 0])
     lottie["o"].append([0, 0])
     lottie["v"].append(change_axis(vec.val1, vec.val2))
