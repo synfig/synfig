@@ -111,15 +111,30 @@ class Vector:
         return -1 * self
 
     def mag(self):
-        ret = self.val1 * self.val1 + self.val2 * self.val2
-        ret = math.sqrt(ret)
-        return ret
+        return math.sqrt(self.mag_squared())
 
     def inv_mag(self):
         return 1.0 / self.mag()
 
     def perp(self):
         return Vector(self.val2, -self.val1)
+
+    def approximate_equal(self, a, b):
+        """
+        Need to define this function somewhere else, a and b are of type "float"
+        """
+        precision = 1e-8
+        if a < b:
+            return b - a < precision
+        else:
+            return a - b < precision
+
+    def is_equal_to(self, other):
+        return self.approximate_equal((self - other).mag_squared(), 0)
+
+    def mag_squared(self):
+        ret = self.val1 * self.val1 + self.val2 * self.val2
+        return ret
 
     # returns a normalised version of the vector
     def norm(self):
@@ -132,6 +147,8 @@ class Vector:
             val1 = self.val1 * other
             val2 = self.val2 * other
             return Vector(val1, val2, self.type)
+        elif isinstance(other, self.__class__):
+            return self.val1*other.val1 + self.val2*other.val2
         raise Exception('Multiplication with {} not defined'.format(type(other)))
 
     def __rmul__(self, other):

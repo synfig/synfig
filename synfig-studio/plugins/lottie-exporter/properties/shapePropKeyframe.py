@@ -142,38 +142,18 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
         if chld.tag == "radius_path":
             dictionary = ast.literal_eval(chld.text)
             r2 = get_vector_at_frame(dictionary, fr)
-            if sp_r == "false":
+            if not sp_r:
                 # Use t1's radius
                 r2 = r1
         elif chld.tag == "theta_path":
             dictionary = ast.literal_eval(chld.text)
             a2 = get_vector_at_frame(dictionary, fr)
-            if sp_a == "false":
+            if not sp_a:
                 # Use t1's angle
                 a2 = a1
     x, y = radial_to_tangent(r2, a2)
     tangent2 = Vector(x, y)
     return tangent1, tangent2
-
-
-def get_tangent_angle_at_frame(t1, t2, split_r, split_a, fr):
-    sp_a = get_bool_at_frame(split_a[0], fr)
-
-    # Setting angle 1
-    for chld in t1:
-        if chld.tag == "theta_path":
-            dictionary = ast.literal_eval(chld.text)
-            a1 = get_vector_at_frame(dictionary, fr)
-
-    # Setting angle 2
-    for chld in t2:
-        if chld.tag == "theta_path":
-            dictionary = ast.literal_eval(chld.text)
-            a2 = get_vector_at_frame(dictionary, fr)
-            if sp_a == "false":
-                # Use t1's angle
-                a2 = a1
-    return a1, a2
 
 
 def gen_bline_shapePropKeyframe(lottie, bline_point, origin):
@@ -479,11 +459,22 @@ def gen_bline_outline(lottie, bline_point, origin):
     # Animating the outermost outline width
     layer = bline_point.getparent().getparent()
     for chld in layer:
-        if chld.tag == "param" and chld.attrib["name"] == "width":
-            outer_width = chld
+        if chld.tag == "param":
+            if chld.attrib["name"] == "width":
+                outer_width = chld
+            elif chld.attrib["name"] == "sharp_cusps":
+                sharp_cusps = chld
+            elif chld.attrib["name"] == "expand":
+                expand = chld
+            elif chld.attrib["name"] == "round_tip[0]":
+                r_tip0 = chld
+            elif chld.attrib["name"] == "round_tip[1]":
+                r_tip1 = chld
+            elif chld.attrib["name"] == "homogeneous_width":
+                homo_width = chld
+
     outer_width = gen_dummy_waypoint(outer_width, "param", "real")
     outer_width.attrib["name"] = "width"
-
     # Update the layer with this animated outline width
     update_child_at_parent(layer, outer_width, "param", "width")
 
@@ -491,6 +482,31 @@ def gen_bline_outline(lottie, bline_point, origin):
     # No need to store this dictionary in lxml element, as it will be used in this function and will not be rewritten
     outer_width_dict = {}
     gen_value_Keyframed(outer_width_dict, outer_width[0], 0)
+
+    # Animating the sharp_cusps
+    sharp_cusps = gen_dummy_waypoint(sharp_cusps, "param", "bool")
+    sharp_cusps.attrib["name"] = "sharp_cusps"
+
+    # Update the layer with this animated outline sharp cusps
+    update_child_at_parent(layer, sharp_cusps, "param", "sharp_cusps")
+
+    expand = gen_dummy_waypoint(expand, "param", "real")
+    expand.attrib["name"] = "expand"
+    update_child_at_parent(layer, expand, "param", "expand")
+    expand_dict = {}
+    gen_value_Keyframed(expand_dict, expand[0], 0)
+
+    r_tip0 = gen_dummy_waypoint(r_tip0, "param", "bool")
+    r_tip0.attrib["name"] = "round_tip[0]"
+    update_child_at_parent(layer, r_tip0, "param", "round_tip[0]")
+
+    r_tip1 = gen_dummy_waypoint(r_tip1, "param", "bool")
+    r_tip1.attrib["name"] = "round_tip[1]"
+    update_child_at_parent(layer, r_tip1, "param", "round_tip[1]")
+
+    homo_width = gen_dummy_waypoint(homo_width, "param", "bool")
+    homo_width.attrib["name"] = "homogeneous_width"
+    update_child_at_parent(layer, homo_width, "param", "homogeneous_width")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:
@@ -505,8 +521,10 @@ def gen_bline_outline(lottie, bline_point, origin):
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
 
-        synfig_outline(bline_point, st_val, outer_width_dict, fr)
-        synfig_outline(bline_point, en_val, outer_width_dict, fr + 1)
+        synfig_outline(bline_point, st_val, outer_width_dict, sharp_cusps,
+                       expand_dict, r_tip0, r_tip1, homo_width, fr)
+        synfig_outline(bline_point, en_val, outer_width_dict, sharp_cusps,
+                       expand_dict, r_tip0, r_tip1, homo_width, fr + 1)
 
         fr += 1
     # Setting the final time
@@ -521,8 +539,7 @@ def get_outline_param_at_frame(composite, fr):
             pos = get_vector_at_frame(dictionary, fr)
         elif child.tag == "width_path":
             dictionary = ast.literal_eval(child.text)
-            width = get_vector_at_frame(dictionary, fr)
-            width = width / settings.PIX_PER_UNIT
+            width = to_Synfig_axis(get_vector_at_frame(dictionary, fr), "real")
         elif child.tag == "t1":
             t1 = child[0]
         elif child.tag == "t2":
@@ -536,10 +553,18 @@ def get_outline_param_at_frame(composite, fr):
     pos = to_Synfig_axis(pos, "vector")
     pos_ret = Vector(pos[0], pos[1])
 
-    return pos_ret, width, t1, t2, split_r, split_a
+    t1, t2 = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
+    # Convert to Synfig units
+    t1 /= settings.PIX_PER_UNIT
+    t2 /= settings.PIX_PER_UNIT
+
+    split_r_val = get_bool_at_frame(split_r[0], fr)
+    split_a_val = get_bool_at_frame(split_a[0], fr)
+
+    return pos_ret, width, t1, t2, split_r_val, split_a_val
 
 
-def synfig_outline(bline_point, st_val, outer_width_dict, fr):
+def synfig_outline(bline_point, st_val, outer_width_dict, sharp_cusps_anim, expand_dict, r_tip0_anim, r_tip1_anim, homo_width_anim, fr):
     """
     calculate for only frame, then in the parent function call for fr + 1
     """
@@ -547,8 +572,15 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
     EPSILON = 0.000000001
     SAMPLES = 50
     CUSP_TANGENT_ADJUST = 0.025
-    outer_width = get_vector_at_frame(outer_width_dict, fr)
-    outer_width /= settings.PIX_PER_UNIT
+    CUSP_THRESHOLD = 0.40
+    SPIKE_AMOUNT = 4
+    ROUND_END_FACTOR = 4
+    outer_width = to_Synfig_axis(get_vector_at_frame(outer_width_dict, fr), "real")
+    expand = to_Synfig_axis(get_vector_at_frame(expand_dict, fr), "real")
+    sharp_cusps = get_bool_at_frame(sharp_cusps_anim[0], fr)
+    r_tip0 = get_bool_at_frame(r_tip0_anim[0], fr)
+    r_tip1 = get_bool_at_frame(r_tip1_anim[0], fr)
+    homo_width = get_bool_at_frame(homo_width_anim[0], fr)
 
     # Setup chunk list
     side_a, side_b = [], []
@@ -566,37 +598,90 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
     else:
         iter_it = next_it
         next_it += 1
+
+    first_point = bline_point[iter_it][0]
+    first_tangent = get_outline_param_at_frame(bline_point[0][0], fr)[3]
+    last_tangent = get_outline_param_at_frame(first_point, fr)[2]
+
+    # If we are looped and drawing sharp cusps, we 'll need a value
+    # for the incoming tangent. This code fails if we have a "degraded" spline
+    # with just one vertex, so we avoid such case.
+    if loop and sharp_cusps and last_tangent.is_equal_to(Vector(0, 0)) and len(bline_point) > 1:
+        prev_it = iter_it
+        prev_it -= 1
+        prev_it %= len(bline_point)
+        prev_point = bline_point[prev_it][0]
+        curve = Hermite(get_outline_param_at_frame(prev_point, fr)[0],
+                        get_outline_param_at_frame(first_point, fr)[0],
+                        get_outline_param_at_frame(prev_point, fr)[3],
+                        get_outline_param_at_frame(first_point, fr)[2])
+        last_tangent = curve.derivative(1.0 - CUSP_TANGENT_ADJUST)
+
     first = not loop
     while next_it != end_it:
-        composite1 = bline_point[iter_it][0] 
-        composite2 = bline_point[next_it][0]
+        bp1 = bline_point[iter_it][0] 
+        bp2 = bline_point[next_it][0]
 
         # Calculate current vertex and next vertex parameters
-        pos_c, width_c, t1_c, t2_c, split_r_c, split_a_c = get_outline_param_at_frame(composite1, fr)
-        pos_n, width_n, t1_n, t2_n, split_r_n, split_a_n = get_outline_param_at_frame(composite2, fr)
-
-        t1_c, t2_c = get_tangent_at_frame(t1_c, t2_c, split_r_c, split_a_c, fr)
-        t1_n, t2_n = get_tangent_at_frame(t1_n, t2_n, split_r_n, split_a_n, fr)
-
-        # Convert to Synfig format
-        t1_c /= settings.PIX_PER_UNIT
-        t2_c /= settings.PIX_PER_UNIT
-        t1_n /= settings.PIX_PER_UNIT
-        t2_n /= settings.PIX_PER_UNIT
+        pos_c, width_c, t1_c, t2_c, split_r_c, split_a_c = get_outline_param_at_frame(bp1, fr)
+        pos_n, width_n, t1_n, t2_n, split_r_n, split_a_n = get_outline_param_at_frame(bp2, fr)
 
         # Setup tangents
         prev_t = t1_c
         iter_t = t2_c
         next_t = t1_n
 
+        split_flag = split_a_c or split_r_c
+
+        # If iter_it.t2 == 0 and next.t1 == 0, this is a straight line
+        if iter_t.is_equal_to(Vector(0, 0)) and next_t.is_equal_to(Vector(0, 0)):
+            iter_t = next_t = pos_n - pos_c
+
+            # If the 2 points are on top of each other, ignore this segment
+            # leave 'first' true if was before
+            if iter_t.is_equal_to(Vector(0, 0)):
+                iter_it = next_it
+                iter_it %= len(bline_point)
+                next_it += 1
+                continue
+
         # Setup the curve
         curve = Hermite(pos_c, pos_n, iter_t, next_t)
 
         # Setup width's
-        iter_w = width_c * outer_width * 0.5 
-        next_w = width_n * outer_width * 0.5
+        iter_w = width_c * outer_width * 0.5 + expand 
+        next_w = width_n * outer_width * 0.5 + expand
 
-        ######## IGNORING CUSPS FOR NOW #######
+        if first:
+            first_tangent = curve.derivative(CUSP_TANGENT_ADJUST)
+
+        # Make cusps as necassary
+        if not first and \
+           sharp_cusps and \
+           split_flag and \
+           ((not prev_t.is_equal_to(iter_t)) or (iter_t.is_equal_to(Vector(0, 0)))) and \
+           (not last_tangent.is_equal_to(Vector(0, 0))):
+
+            curr_tangent = curve.derivative(CUSP_TANGENT_ADJUST) 
+            t1 = last_tangent.perp().norm()
+            t2 = curr_tangent.perp().norm()
+
+            cross = t1*t2.perp()
+            perp = (t1 - t2).mag()
+            if cross > CUSP_THRESHOLD:
+                p1 = pos_c + t1*iter_w
+                p2 = pos_c + t2*iter_w
+                side_a.append([line_intersection(p1, last_tangent, p2, curr_tangent), Vector(0, 0), Vector(0, 0)])
+            elif cross < -CUSP_THRESHOLD:
+                p1 = pos_c - t1*iter_w
+                p2 = pos_c - t2*iter_w
+                side_b.append([line_intersection(p1, last_tangent, p2, curr_tangent), Vector(0, 0), Vector(0, 0)])
+            elif cross > 0.0 and perp > 1.0:
+                amount = max(0.0, cross/CUSP_THRESHOLD) * (SPIKE_AMOUNT - 1.0) + 1.0
+                side_a.append([pos_c + (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
+            elif cross < 0 and perp > 1:
+                amount = max(0.0, -cross/CUSP_THRESHOLD) * (SPIKE_AMOUNT - 1.0) + 1.0
+                side_b.append([pos_c - (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
 
         # Precalculate positions and coefficients
         length = 0.0
@@ -627,6 +712,8 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
             t = curve.derivative(min(max(n, CUSP_TANGENT_ADJUST), 1.0 - CUSP_TANGENT_ADJUST)) / 3 
             d = t.perp().norm()
             k = dists[itr] * div_length
+            if not homo_width:
+                k = n
             w = (next_w - iter_w)*k + iter_w
             if False and n:
                 # create curve
@@ -649,6 +736,8 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
         last_tangent = curve.derivative(1.0 - CUSP_TANGENT_ADJUST)
         side_a.append([curve.value(1.0) + last_tangent.perp().norm()*next_w, Vector(0, 0), Vector(0, 0)])
         side_b.append([curve.value(1.0) - last_tangent.perp().norm()*next_w, Vector(0, 0), Vector(0, 0)])
+        first = False
+
         iter_it = next_it
         iter_it %= len(bline_point)
         next_it += 1
@@ -656,11 +745,50 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
     if len(side_a) < 2 or len(side_b) < 2:
         return
 
-    # move_to(side_a.front().p1);
-    # means insert side_a[0][0] with tangent's 0, 0 at first
     move_to(side_a[0][0], st_val)
-    add(side_a, st_val)
-    add_reverse(side_b, st_val)
+
+    if loop:
+        add(side_a, st_val)
+        add_reverse(side_b, st_val)
+    else:
+        # Insert code for adding end tip
+        if r_tip1:
+            bp = bline_point[-1][0]
+            vertex = get_outline_param_at_frame(bp, fr)[0]
+            tangent = last_tangent.norm()
+            w = get_outline_param_at_frame(bp, fr)[1] * outer_width + expand
+
+            a = vertex + tangent.perp()*w
+            b = vertex - tangent.perp()*w
+            p1 = a + tangent*w*(ROUND_END_FACTOR/3.0)
+            p2 = b + tangent*w*(ROUND_END_FACTOR/3.0)
+
+            # replace the last point
+            side_a[-1] = [a, Vector(0, 0), Vector(0, 0)]
+            add(side_a, st_val)
+            add([[b, p1, p2]], st_val)
+        else:
+            add(side_a, st_val)
+
+        # Insert code for adding beginning tip
+        if r_tip0:
+            bp = bline_point[0][0]
+            vertex = get_outline_param_at_frame(bp, fr)[0]
+            tangent = first_tangent.norm()
+            w = get_outline_param_at_frame(bp, fr)[1] * outer_width + expand
+
+            a = vertex - tangent.perp()*w
+            b = vertex + tangent.perp()*w
+            p1 = a - tangent*w*(ROUND_END_FACTOR/3.0)
+            p2 = b - tangent*w*(ROUND_END_FACTOR/3.0)
+
+            # replace the first point
+            side_b[0] = [a, Vector(0, 0), Vector(0, 0)]
+            add_reverse(side_b, st_val)
+            add([[b, p1, p2]], st_val)
+        else:
+            add_reverse(side_b, st_val)
+         
 
 def add(side, lottie):
     """
@@ -738,3 +866,48 @@ def insert_dict_at(lottie, idx, fr, loop):
     st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop
     en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
     return st_val, en_val
+
+def line_intersection(p1, t1, p2, t2):
+    """
+    This function was adapted from what was
+    described on http://www.whisqu.se/per/docs/math28.htm
+    """
+    x0 = p1.val1
+    y0 = p1.val2
+    
+    x1 = p1.val1 + t1.val1
+    y1 = p1.val2 + t1.val2
+
+    x2 = p2.val1
+    y2 = p2.val2
+
+    x3 = p2.val1 + t2.val1
+    y3 = p2.val2 + t2.val2
+
+    near_infinity = 1e+10
+
+    # compute slopes, not the kluge for infinity, however, this will
+    # be close enough
+
+    if (x1 - x0) != 0:
+        m1 = (y1 - y0) / (x1 - x0)
+    else:
+        m1 = near_infinity
+
+    if (x3 - x2) != 0:
+        m2 = (y3 - y2) / (x3 - x2)
+    else:
+        near_infinity
+
+    a1 = m1
+    a2 = m2
+    b1 = -1.0
+    b2 = -1.0
+    c1 = y0 - m1*x0
+    c2 = y2 - m2*x2
+
+    # compute the inverse of the determinate
+    det_inv = 1.0 / (a1*b2 - a2*b1)
+
+    # Use kramer's rule to compute intersection
+    return Vector((b1*c2 - b2*c1)*det_inv, (a2*c1 - a1*c2)*det_inv)

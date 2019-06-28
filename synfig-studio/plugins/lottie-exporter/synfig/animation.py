@@ -262,8 +262,8 @@ def get_bool_at_frame(anim, frame):
         frame (int)                : Frame at which the value is to be calculated
 
     Returns:
-        (str) : "true" if the value is True at that frame
-              : "false" otherwise
+        (bool) : True if the value is "true" at that frame
+               : False otherwise
     """
     i = 0
     while i < len(anim):
@@ -292,6 +292,10 @@ def get_bool_at_frame(anim, frame):
     elif i >= len(anim):
         val = anim[-1][0].attrib["value"]
 
+    if val == "false":
+        val = False
+    else:
+        val = True
     return val
 
 
