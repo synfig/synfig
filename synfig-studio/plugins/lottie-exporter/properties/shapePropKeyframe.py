@@ -422,14 +422,6 @@ def gen_bline_outline(lottie, bline_point, origin):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    loop = False
-    if "loop" in bline_point.keys():
-        val = bline_point.attrib["loop"]
-        if val == "false":
-            loop = False
-        else:
-            loop = True
-
     for entry in bline_point:
         composite = entry[0]
         for child in composite:
@@ -511,7 +503,6 @@ def gen_bline_outline(lottie, bline_point, origin):
 
     fr = window["first"]
     while fr <= window["last"]:
-        #st_val, en_val = insert_dict_at(lottie, -1, fr, loop)
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
 
         synfig_outline(bline_point, st_val, outer_width_dict, fr)
@@ -562,10 +553,23 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
     # Setup chunk list
     side_a, side_b = [], []
 
-    i = 0
-    while i + 1 < len(bline_point):
-        composite1 = bline_point[i][0] 
-        composite2 = bline_point[i+1][0]
+    # Check if looped
+    loop = False
+    if "loop" in bline_point.keys() and bline_point.attrib["loop"] == "true":
+        loop = True
+    
+    # Iterators
+    end_it = len(bline_point)
+    next_it = 0
+    if loop:
+        iter_it = end_it - 1
+    else:
+        iter_it = next_it
+        next_it += 1
+    first = not loop
+    while next_it != end_it:
+        composite1 = bline_point[iter_it][0] 
+        composite2 = bline_point[next_it][0]
 
         # Calculate current vertex and next vertex parameters
         pos_c, width_c, t1_c, t2_c, split_r_c, split_a_c = get_outline_param_at_frame(composite1, fr)
@@ -645,7 +649,9 @@ def synfig_outline(bline_point, st_val, outer_width_dict, fr):
         last_tangent = curve.derivative(1.0 - CUSP_TANGENT_ADJUST)
         side_a.append([curve.value(1.0) + last_tangent.perp().norm()*next_w, Vector(0, 0), Vector(0, 0)])
         side_b.append([curve.value(1.0) - last_tangent.perp().norm()*next_w, Vector(0, 0), Vector(0, 0)])
-        i += 1
+        iter_it = next_it
+        iter_it %= len(bline_point)
+        next_it += 1
 
     if len(side_a) < 2 or len(side_b) < 2:
         return
@@ -679,7 +685,8 @@ def add_reverse(side, lottie):
 
 def cubic_to(vec, tan1, tan2, lottie):
     """
-    Will have to manipulate the tangents here
+    Will have to manipulate the tangents here, but they are not managed as tan1
+    and tan2 both are zero always
     """
     vec *= settings.PIX_PER_UNIT
     tan1 *= settings.PIX_PER_UNIT
