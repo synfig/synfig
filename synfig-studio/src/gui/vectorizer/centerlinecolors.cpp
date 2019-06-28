@@ -75,7 +75,7 @@ using namespace studio;
 // NOTE: The J-S 'upper' graph structure is not altered in here.
 // Eventualm. to do outside.
 
-static void sampleColor(const TRasterCM32P &ras, int threshold, Sequence &seq,
+static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int threshold, Sequence &seq,
                         Sequence &seqOpposite, SequenceList &singleSequences) {
   SkeletonGraph *currGraph = seq.m_graphHolder;
 
@@ -87,15 +87,21 @@ static void sampleColor(const TRasterCM32P &ras, int threshold, Sequence &seq,
   // occured
   // in the thinning process and it's better avoid sampling procedure. Only
   // exception, when
-  // a point has x==ras->getLx() || y==ras->getLy(); that is accepted.
+  // a point has x==surface.get_w() || y==surface.get_h(); that is accepted.
+  synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( ras->rendering_surface ); 
+	const Surface &surface = lock->get_surface(); 
+  const int Y = surface.get_h() - y -1; 
+	// const Color *row = surface[Y]; 
+	// int r = 255.0*pow(row[x].get_r(),1/2.2);
+	// int g = 255.0*pow(row[x].get_g(),1/2.2);
+	// int b = 255.0*pow(row[x].get_b(),1/2.2);
+  //       int a = 255.0*pow(row[x].get_a(),1/2.2);
   {
     const synfig::Point3 &headPos = *currGraph->getNode(seq.m_head);
     // get bounds rectangle with = 0,0,lx -1, ly-1
-    if (!ras->getBounds().contains(synfig::Point(headPos[0], headPos[1]))) // not in rectangle
-    {
-      if (headPos[0] < 0 || ras->getLx() < headPos[0] || headPos[1] < 0 || ras->getLy() < headPos[1])// check again and return
+    if (headPos[0] < 0 || surface.get_w() < headPos[0] || headPos[1] < 0 || surface.get_h() < headPos[1])// check again and return
         return;
-    }
+    
   }
 
   unsigned int curr, currLink, next;
@@ -110,14 +116,12 @@ static void sampleColor(const TRasterCM32P &ras, int threshold, Sequence &seq,
     next = currGraph->getNode(curr).getLink(currLink).getNext();
 
     const synfig::Point3 &nextPos = *currGraph->getNode(next);
-    if (!ras->getBounds().contains(synfig::Point(nextPos[0], nextPos[1]))) 
+    if (nextPos[0] < 0 || surface.get_w() < nextPos[0] || nextPos[1] < 0 || surface.get_h() < nextPos[1]) 
     {
-      if (nextPos[0] < 0 || ras->getLx() < nextPos[0] || nextPos[1] < 0 || ras->getLy() < nextPos[1])
-        return;
+      return;
     }
 
-    params.push_back(params.back() + tdistance(*currGraph->getNode(next),
-                                               *currGraph->getNode(curr)));
+    params.push_back(params.back() + (*currGraph->getNode(next) - *currGraph->getNode(curr)).mag());
     nodes.push_back(next);
 
     meanThickness += currGraph->getNode(next)->z;
@@ -126,9 +130,10 @@ static void sampleColor(const TRasterCM32P &ras, int threshold, Sequence &seq,
   meanThickness /= params.size();
 
   // Exclude 0-length sequences
-  if (params.back() < 0.01) {
-    seq.m_color = pixel(*ras, currGraph->getNode(seq.m_head)->x,
-                        currGraph->getNode(seq.m_head)->y)
+  if (params.back() < 0.01) 
+  {
+    seq.m_color = pixel(*ras, currGraph->getNode(seq.m_head)->operator[](0),
+                        currGraph->getNode(seq.m_head)->operator[](1))
                       .getInk();
     return;
   }
@@ -136,22 +141,19 @@ static void sampleColor(const TRasterCM32P &ras, int threshold, Sequence &seq,
   // Prepare sampling procedure
   int paramCount = params.size(), paramMax = paramCount - 1;
 
-  int sampleMax = std::max(params.back() / std::max(meanThickness, 1.0),
-                           3.0),    // Number of color samples depends on
+  int sampleMax = std::max(params.back() / std::max(meanThickness, 1.0),3.0),    // Number of color samples depends on
       sampleCount = sampleMax + 1;  // the ratio params.back() / meanThickness
 
   std::vector<double> sampleParams(sampleCount);  // Sampling lengths
-  std::vector<synfig::Point> samplePoints(
-      sampleCount);  // Image points for color sampling
-  std::vector<int> sampleSegments(
-      sampleCount);  // Sequence segment index for the above
+  std::vector<synfig::Point> samplePoints(sampleCount);  // Image points for color sampling
+  std::vector<int> sampleSegments(sampleCount);  // Sequence segment index for the above
 
   // Sample colors
-  for (int s = 0, j = 0; s != sampleCount; ++s) {
+  for (int s = 0, j = 0; s != sampleCount; ++s) 
+  {
     double samplePar = params.back() * (s / double(sampleMax));
 
-    while (j != paramMax &&
-           params[j + 1] < samplePar)  // params[j] < samplePar <= params[j+1]
+    while (j != paramMax && params[j + 1] < samplePar)  // params[j] < samplePar <= params[j+1]
       ++j;
 
     double t = (samplePar - params[j]) / (params[j + 1] - params[j]);
@@ -162,9 +164,9 @@ static void sampleColor(const TRasterCM32P &ras, int threshold, Sequence &seq,
     sampleParams[s] = samplePar;
     samplePoints[s] = synfig::Point(
         std::min(samplePoint[0],
-                 double(ras->getLx() - 1)),  // This deals with sample points at
+                 double(surface.get_w() - 1)),  // This deals with sample points at
         std::min(samplePoint[1],
-                 double(ras->getLy() - 1)));  // the top/right raster border
+                 double(surface.get_h() - 1)));  // the top/right raster border
     sampleSegments[s] = j;
   }
 
@@ -338,11 +340,10 @@ void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, Vecto
   SequenceList &singleSequences           = g.singleSequences;
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;
 
-  //TRasterCM32P cm = ras;
   unsigned int i, j, k;
   int l;
 
-  if (cm && g.currConfig->m_maxThickness > 0.0) 
+  if (ras && g.currConfig->m_maxThickness > 0.0) 
   {
     // singleSequence is traversed back-to-front because new, possibly splitted
     // sequences
@@ -350,7 +351,7 @@ void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, Vecto
     for (l = singleSequences.size() - 1; l >= 0; --l) 
     {
       Sequence rear;
-     // sampleColor(ras, threshold, singleSequences[l], rear, singleSequences);
+      sampleColor(ras, threshold, singleSequences[l], rear, singleSequences);
       // If rear is built, a split occurred and the rear of this
       // single sequence has to be pushed back.
       if (rear.m_graphHolder) singleSequences.push_back(rear);
@@ -360,21 +361,20 @@ void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, Vecto
     {
         for (j = 0; j < organizedGraphs[i].getNodesCount(); ++j)
         {
-                  // due to junction recovery
-        if (!organizedGraphs[i].getNode(j).hasAttribute(JointSequenceGraph::ELIMINATED))
-        {
-            for (k = 0; k < organizedGraphs[i].getNode(j).getLinksCount(); ++k) 
-            {
-                Sequence &s = *organizedGraphs[i].node(j).link(k);
-                if (s.isForward() && !s.m_graphHolder->getNode(s.m_tail).hasAttribute(SAMPLECOLOR_SIGN))
-                {
+          if (!organizedGraphs[i].getNode(j).hasAttribute(JointSequenceGraph::ELIMINATED))
+          {
+              for (k = 0; k < organizedGraphs[i].getNode(j).getLinksCount(); ++k) 
+              {
+                  Sequence &s = *organizedGraphs[i].node(j).link(k);
+                  if (s.isForward() && !s.m_graphHolder->getNode(s.m_tail).hasAttribute(SAMPLECOLOR_SIGN))
+                  {
                     unsigned int next = organizedGraphs[i].node(j).link(k).getNext();
                     unsigned int nextLink = organizedGraphs[i].tailLinkOf(j, k);
                     Sequence &sOpposite = *organizedGraphs[i].node(next).link(nextLink);
-                   // sampleColor(cm, threshold, s, sOpposite, singleSequences);
-                }
-            }
-        }  
+                    sampleColor(ras, threshold, s, sOpposite, singleSequences);
+                  }
+              }
+          }  
 
         }
     }

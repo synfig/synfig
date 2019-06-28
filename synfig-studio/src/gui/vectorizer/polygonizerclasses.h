@@ -433,8 +433,7 @@ const int infinity = 1000000;  // just a great enough number
 
 void polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons,VectorizerCoreGlobals &g);
 
-SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
-                          VectorizerCoreGlobals &g);
+SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer, VectorizerCoreGlobals &g);
 
 void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 
@@ -443,7 +442,7 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 // void conversionToStrokes(std::vector<TStroke *> &strokes,
 //                          VectorizerCoreGlobals &g);
 
-// void calculateSequenceColors(const TRasterP &ras, VectorizerCoreGlobals &g);
+ void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g);
 
 // void applyStrokeColors(std::vector<TStroke *> &strokes, const TRasterP &ras,
 //                        TPalette *palette, VectorizerCoreGlobals &g);
