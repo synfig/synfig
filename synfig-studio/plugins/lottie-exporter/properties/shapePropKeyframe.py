@@ -206,9 +206,11 @@ def gen_bline_shapePropKeyframe(lottie, bline_point, origin):
         pos = gen_dummy_waypoint(pos, "point", "vector")
         update_child_at_parent(composite, pos, "point")
 
+        update_frame_window(split_r[0], window)
         split_r = gen_dummy_waypoint(split_r, "split_radius", "bool")
         update_child_at_parent(composite, split_r, "split_radius")
 
+        update_frame_window(split_a[0], window)
         split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
         update_child_at_parent(composite, split_a, "split_angle")
 
@@ -224,11 +226,11 @@ def gen_bline_shapePropKeyframe(lottie, bline_point, origin):
         animate_radial_composite(t2[0], window)
 
     # Animating the origin
+    update_frame_window(origin[0], window)
     origin_parent = origin.getparent()
     origin = gen_dummy_waypoint(origin, "param", "vector")
     origin.attrib["name"] = "origin"
     update_child_at_parent(origin_parent, origin, "param", "origin")
-    update_frame_window(origin[0], window)
 
     # Generate path for the origin component
     origin_dict = {}
@@ -333,11 +335,11 @@ def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list, origin):
         count += 1
 
     # Animating the origin
+    update_frame_window(origin[0], window)
     origin_parent = origin.getparent()
     origin = gen_dummy_waypoint(origin, "param", "vector")
     origin.attrib["name"] = "origin"
     update_child_at_parent(origin_parent, origin, "param", "origin")
-    update_frame_window(origin[0], window)
 
     # Generate path for the origin component
     origin_dict = {}
@@ -427,12 +429,15 @@ def gen_bline_outline(lottie, bline_point, origin):
         update_child_at_parent(composite, pos, "point")
 
         # Empty the width and fill in the new animated width
+        update_frame_window(width[0], window)
         width = gen_dummy_waypoint(width, "width", "real")
         update_child_at_parent(composite, width, "width")
 
+        update_frame_window(split_r[0], window)
         split_r = gen_dummy_waypoint(split_r, "split_radius", "bool")
         update_child_at_parent(composite, split_r, "split_radius")
 
+        update_frame_window(split_a[0], window)
         split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
         update_child_at_parent(composite, split_a, "split_angle")
 
@@ -473,6 +478,18 @@ def gen_bline_outline(lottie, bline_point, origin):
             elif chld.attrib["name"] == "homogeneous_width":
                 homo_width = chld
 
+    # Animating the origin
+    update_frame_window(origin[0], window)
+    origin_parent = origin.getparent()
+    origin = gen_dummy_waypoint(origin, "param", "vector")
+    origin.attrib["name"] = "origin"
+    update_child_at_parent(origin_parent, origin, "param", "origin")
+    # Generate path for the origin component
+    origin_dict = {}
+    origin[0].attrib["transform_axis"] = "true"
+    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+
+    update_frame_window(outer_width[0], window)
     outer_width = gen_dummy_waypoint(outer_width, "param", "real")
     outer_width.attrib["name"] = "width"
     # Update the layer with this animated outline width
@@ -484,26 +501,31 @@ def gen_bline_outline(lottie, bline_point, origin):
     gen_value_Keyframed(outer_width_dict, outer_width[0], 0)
 
     # Animating the sharp_cusps
+    update_frame_window(sharp_cusps[0], window)
     sharp_cusps = gen_dummy_waypoint(sharp_cusps, "param", "bool")
     sharp_cusps.attrib["name"] = "sharp_cusps"
 
     # Update the layer with this animated outline sharp cusps
     update_child_at_parent(layer, sharp_cusps, "param", "sharp_cusps")
 
+    update_frame_window(expand[0], window)
     expand = gen_dummy_waypoint(expand, "param", "real")
     expand.attrib["name"] = "expand"
     update_child_at_parent(layer, expand, "param", "expand")
     expand_dict = {}
     gen_value_Keyframed(expand_dict, expand[0], 0)
 
+    update_frame_window(r_tip0[0], window)
     r_tip0 = gen_dummy_waypoint(r_tip0, "param", "bool")
     r_tip0.attrib["name"] = "round_tip[0]"
     update_child_at_parent(layer, r_tip0, "param", "round_tip[0]")
 
+    update_frame_window(r_tip1[0], window)
     r_tip1 = gen_dummy_waypoint(r_tip1, "param", "bool")
     r_tip1.attrib["name"] = "round_tip[1]"
     update_child_at_parent(layer, r_tip1, "param", "round_tip[1]")
 
+    update_frame_window(homo_width[0], window)
     homo_width = gen_dummy_waypoint(homo_width, "param", "bool")
     homo_width.attrib["name"] = "homogeneous_width"
     update_child_at_parent(layer, homo_width, "param", "homogeneous_width")
@@ -521,9 +543,9 @@ def gen_bline_outline(lottie, bline_point, origin):
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
 
-        synfig_outline(bline_point, st_val, outer_width_dict, sharp_cusps,
+        synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cusps,
                        expand_dict, r_tip0, r_tip1, homo_width, fr)
-        synfig_outline(bline_point, en_val, outer_width_dict, sharp_cusps,
+        synfig_outline(bline_point, en_val, origin_dict, outer_width_dict, sharp_cusps,
                        expand_dict, r_tip0, r_tip1, homo_width, fr + 1)
 
         fr += 1
@@ -564,7 +586,7 @@ def get_outline_param_at_frame(composite, fr):
     return pos_ret, width, t1, t2, split_r_val, split_a_val
 
 
-def synfig_outline(bline_point, st_val, outer_width_dict, sharp_cusps_anim, expand_dict, r_tip0_anim, r_tip1_anim, homo_width_anim, fr):
+def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cusps_anim, expand_dict, r_tip0_anim, r_tip1_anim, homo_width_anim, fr):
     """
     calculate for only frame, then in the parent function call for fr + 1
     """
@@ -745,11 +767,12 @@ def synfig_outline(bline_point, st_val, outer_width_dict, sharp_cusps_anim, expa
     if len(side_a) < 2 or len(side_b) < 2:
         return
 
-    move_to(side_a[0][0], st_val)
+    origin_cur = get_vector_at_frame(origin_dict, fr)
+    move_to(side_a[0][0], st_val, origin_cur)
 
     if loop:
-        add(side_a, st_val)
-        add_reverse(side_b, st_val)
+        add(side_a, st_val, origin_cur)
+        add_reverse(side_b, st_val, origin_cur)
     else:
         # Insert code for adding end tip
         if r_tip1:
@@ -765,10 +788,11 @@ def synfig_outline(bline_point, st_val, outer_width_dict, sharp_cusps_anim, expa
 
             # replace the last point
             side_a[-1] = [a, Vector(0, 0), Vector(0, 0)]
-            add(side_a, st_val)
-            add([[b, p1, p2]], st_val)
+            add(side_a, st_val, origin_cur)
+            #add([[b, p1, p2]], st_val, origin_cur)
+            add([[b, Vector(0, 0), Vector(0, 0)]], st_val, origin_cur)
         else:
-            add(side_a, st_val)
+            add(side_a, st_val, origin_cur)
 
         # Insert code for adding beginning tip
         if r_tip0:
@@ -784,34 +808,35 @@ def synfig_outline(bline_point, st_val, outer_width_dict, sharp_cusps_anim, expa
 
             # replace the first point
             side_b[0] = [a, Vector(0, 0), Vector(0, 0)]
-            add_reverse(side_b, st_val)
-            add([[b, p1, p2]], st_val)
+            add_reverse(side_b, st_val, origin_cur)
+            #add([[b, p1, p2]], st_val, origin_cur)
+            add([[b, Vector(0, 0), Vector(0, 0)]], st_val, origin_cur)
         else:
-            add_reverse(side_b, st_val)
+            add_reverse(side_b, st_val, origin_cur)
          
 
-def add(side, lottie):
+def add(side, lottie, origin_cur):
     """
     Does not take care of tangent putting order because the tangents are all
     zero for now according to the code
     """
     i = 0
     while i + 1 < len(side):
-        cubic_to(side[i][0], side[i][2], side[i+1][1], lottie)
+        cubic_to(side[i][0], side[i][2], side[i+1][1], lottie, origin_cur)
         i += 1
-    cubic_to(side[i][0], side[i][2], Vector(0, 0), lottie)
+    cubic_to(side[i][0], side[i][2], Vector(0, 0), lottie, origin_cur)
 
 
-def add_reverse(side, lottie):
+def add_reverse(side, lottie, origin_cur):
     """
     Does not take care of tangents putting order because the tangents are all
     zero for now according to the code:
     """
     for val in reversed(side):
-        move_to(val[0], lottie)
+        move_to(val[0], lottie, origin_cur)
 
 
-def cubic_to(vec, tan1, tan2, lottie):
+def cubic_to(vec, tan1, tan2, lottie, origin_cur):
     """
     Will have to manipulate the tangents here, but they are not managed as tan1
     and tan2 both are zero always
@@ -821,17 +846,23 @@ def cubic_to(vec, tan1, tan2, lottie):
     tan2 *= settings.PIX_PER_UNIT
     lottie["i"].append(tan1.get_list())
     lottie["o"].append(tan2.get_list())
-    lottie["v"].append(change_axis(vec.val1, vec.val2))
+    pos = change_axis(vec.val1, vec.val2)
+    for i in range(len(pos)):
+        pos[i] += origin_cur[i]
+    lottie["v"].append(pos)
 
 
-def move_to(vec, lottie):
+def move_to(vec, lottie, origin_cur):
     """
     Don't have to manipulate the tangents because all of them are zero here
     """
     vec *= settings.PIX_PER_UNIT
     lottie["i"].append([0, 0])
     lottie["o"].append([0, 0])
-    lottie["v"].append(change_axis(vec.val1, vec.val2))
+    pos = change_axis(vec.val1, vec.val2)
+    for i in range(len(pos)):
+        pos[i] += origin_cur[i]
+    lottie["v"].append(pos)
 
 
 def convert_tangent_to_lottie(t1, t2):
