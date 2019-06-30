@@ -304,7 +304,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 }
 
 bool
-synfig::Target_Tile::async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb)
+synfig::Target_Tile::async_render_tile(const RectInt &rect, Context &context, const RendDesc &tile_desc, ProgressCallback *cb)
 {
 	SurfaceResource::Handle surface = new rendering::SurfaceResource();
 

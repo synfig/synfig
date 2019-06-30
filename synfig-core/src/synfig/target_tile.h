@@ -79,7 +79,7 @@ public:
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback *cb=NULL);
 
-	virtual bool async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb=NULL);
+	virtual bool async_render_tile(const RectInt &rect, Context &context, const RendDesc& tile_desc, ProgressCallback *cb=NULL);
 	virtual bool wait_render_tiles(ProgressCallback *cb=NULL);
 
 	//! Determines which tile needs to be rendered next.

@@ -120,7 +120,7 @@ public:
 		alive_flag=false;
 	}
 
-	virtual bool async_render_tile(synfig::RectInt rect, synfig::Context context, synfig::RendDesc tile_desc, synfig::ProgressCallback *cb=NULL)
+	virtual bool async_render_tile(const synfig::RectInt &rect, synfig::Context &context, const synfig::RendDesc &tile_desc, synfig::ProgressCallback *cb=NULL)
 	{
 		if(!alive_flag)
 			return false;
@@ -150,7 +150,7 @@ public:
 		return true;
 	}
 
-	bool sync_render_tile(synfig::RectInt rect, synfig::Context context, synfig::RendDesc tile_desc, synfig::ProgressCallback *cb)
+	bool sync_render_tile(const synfig::RectInt &rect, synfig::Context &context, const synfig::RendDesc &tile_desc, synfig::ProgressCallback *cb)
 	{
 		if(!alive_flag)
 			return false;
