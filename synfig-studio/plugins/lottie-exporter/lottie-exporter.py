@@ -78,9 +78,13 @@ def parse(file_name):
             if child.attrib["type"] not in supported_layers:  # Only supported layers
                 logging.warning("Layer '{name}' is not supported yet. For more information, contact us on Synfig forums or Github page".format(name=child.attrib["type"]))
                 continue
-            if child.attrib["active"] == "false":   # Only render the active layers
+            elif child.attrib["active"] == "false":   # Only render the active layers
                 logging.info("Layer '{name}' is not active".format(name=child.attrib["type"]))
                 continue
+            elif child.attrib["exclude_from_rendering"] == "true":
+                logging.info("Layer '{name}' is excluded from rendering".format(name=child.attrib["type"]))
+                continue
+
             settings.lottie_format["layers"].insert(0, {})
             if child.attrib["type"] in shape_layer:           # Goto shape layer
                 gen_layer_shape(settings.lottie_format["layers"][0],
