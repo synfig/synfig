@@ -786,12 +786,11 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             p1 = a + tangent*w*(ROUND_END_FACTOR/3.0)
             p2 = b + tangent*w*(ROUND_END_FACTOR/3.0)
 
-            print("a: ", a, " b: ", b, " p1: " , p1, " p2: ", p2)
             # replace the last point
             side_a[-1] = [a, Vector(0, 0), Vector(0, 0)]
             add(side_a, st_val, origin_cur)
             #add([[b, Vector(0, 0), Vector(0, 0)]], st_val, origin_cur)
-            add([[b, p1, p2 + b]], st_val, origin_cur)
+            add([[b, p1, p2 - b]], st_val, origin_cur)
         else:
             add(side_a, st_val, origin_cur)
 
@@ -832,8 +831,15 @@ def add_reverse(side, lottie, origin_cur):
     Does not take care of tangents putting order because the tangents are all
     zero for now according to the code:
     """
+    i = len(side) - 1
+    while i > 0:
+        cubic_to(side[i][0], side[i][2], side[i-1][1], lottie, origin_cur)
+        i -= 1
+    cubic_to(side[i][0], side[i][2], Vector(0, 0), lottie, origin_cur)
+    """
     for val in reversed(side):
         move_to(val[0], lottie, origin_cur)
+    """
 
 
 def cubic_to(vec, tan1, tan2, lottie, origin_cur):

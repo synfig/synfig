@@ -10,7 +10,7 @@ Supported Layers are mentioned below
 import os
 import json
 import sys
-import gzip
+import logging
 from lxml import etree
 from canvas import gen_canvas
 from layers.shape import gen_layer_shape
@@ -61,6 +61,9 @@ def parse(file_name):
     # Storing the file directory
     settings.file_name["fd"] = os.path.dirname(file_name)
 
+    # Initialize the logging
+    init_logs()
+
     num_layers = Count()
     settings.lottie_format["layers"] = []
     shape_layer = {"star", "circle", "rectangle", "filled_rectangle", "simple_circle"}
@@ -72,9 +75,11 @@ def parse(file_name):
     supported_layers = supported_layers.union(image_layer)
     for child in root:
         if child.tag == "layer":
-            if child.attrib["active"] == "false":   # Only render the active layers
-                continue
             if child.attrib["type"] not in supported_layers:  # Only supported layers
+                logging.warning("Layer '{name}' is not supported yet. For more information, contact us on Synfig forums or Github page".format(name=child.attrib["type"]))
+                continue
+            if child.attrib["active"] == "false":   # Only render the active layers
+                logging.info("Layer '{name}' is not active".format(name=child.attrib["type"]))
                 continue
             settings.lottie_format["layers"].insert(0, {})
             if child.attrib["type"] in shape_layer:           # Goto shape layer
@@ -137,6 +142,18 @@ def gen_html(file_name):
 </html>"""
 
     write_to(file_name, "html", html_text.format(file_name=store_file_name))
+
+
+def init_logs():
+    name = settings.file_name['fn']
+    name = name.split(".")
+    name[-1] = 'log'
+    name = '.'.join(name)
+    path = os.path.join(settings.file_name['fd'], name)
+    path = os.path.abspath(name)
+    logging.basicConfig(filename=path, filemode='w',
+            format='%(name)s - %(levelname)s - %(message)s')
+    logging.getLogger().setLevel(logging.DEBUG)
 
 
 if len(sys.argv) < 2:
