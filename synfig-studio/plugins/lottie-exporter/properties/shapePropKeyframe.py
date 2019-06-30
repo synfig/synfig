@@ -779,18 +779,19 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             bp = bline_point[-1][0]
             vertex = get_outline_param_at_frame(bp, fr)[0]
             tangent = last_tangent.norm()
-            w = get_outline_param_at_frame(bp, fr)[1] * outer_width + expand
+            w = get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand
 
             a = vertex + tangent.perp()*w
             b = vertex - tangent.perp()*w
             p1 = a + tangent*w*(ROUND_END_FACTOR/3.0)
             p2 = b + tangent*w*(ROUND_END_FACTOR/3.0)
 
+            print("a: ", a, " b: ", b, " p1: " , p1, " p2: ", p2)
             # replace the last point
             side_a[-1] = [a, Vector(0, 0), Vector(0, 0)]
             add(side_a, st_val, origin_cur)
-            #add([[b, p1, p2]], st_val, origin_cur)
-            add([[b, Vector(0, 0), Vector(0, 0)]], st_val, origin_cur)
+            #add([[b, Vector(0, 0), Vector(0, 0)]], st_val, origin_cur)
+            add([[b, p1, p2 + b]], st_val, origin_cur)
         else:
             add(side_a, st_val, origin_cur)
 
@@ -799,7 +800,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             bp = bline_point[0][0]
             vertex = get_outline_param_at_frame(bp, fr)[0]
             tangent = first_tangent.norm()
-            w = get_outline_param_at_frame(bp, fr)[1] * outer_width + expand
+            w = get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand
 
             a = vertex - tangent.perp()*w
             b = vertex + tangent.perp()*w
@@ -809,8 +810,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             # replace the first point
             side_b[0] = [a, Vector(0, 0), Vector(0, 0)]
             add_reverse(side_b, st_val, origin_cur)
-            #add([[b, p1, p2]], st_val, origin_cur)
-            add([[b, Vector(0, 0), Vector(0, 0)]], st_val, origin_cur)
+            add([[b, p1, p2]], st_val, origin_cur)
         else:
             add_reverse(side_b, st_val, origin_cur)
          
