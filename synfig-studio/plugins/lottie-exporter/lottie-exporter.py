@@ -82,7 +82,7 @@ def parse(file_name):
             elif child.attrib["active"] == "false":   # Only render the active layers
                 logging.info("Layer '%s' is not active", child.attrib["type"])
                 continue
-            elif child.attrib["exclude_from_rendering"] == "true":
+            elif "exclude_from_rendering" in child.keys() and child.attrib["exclude_from_rendering"] == "true":
                 logging.info("Layer '%s' is excluded from rendering", child.attrib["type"])
                 continue
 
