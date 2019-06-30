@@ -252,6 +252,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		}
 		if(nodename.compare("g")==0){
 			parser_layer (node,root->add_child("layer"),parent_style,mtx);
+			free(mtx);
 			return;
 		}
 
@@ -302,6 +303,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				build_fill (child_fill,fill,NULL);
 			}
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
+			free(mtx);
 			return;
 		}
 		if ((!(SVG_RESOLVE_BLINE) && mtx) || typeFill==2 || typeStroke==2)
@@ -416,6 +418,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			parser_effects(nodeElement,child_layer,parent_style,NULL);
 		else
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
+		free(mtx);
 	}
 }
 
@@ -1633,6 +1636,8 @@ Svg_parser::parser_transform(const String transform){
 			else
 				multiplySVGMatrix(&a,newSVGMatrix((*aux).substr(start,end-start)));
 		}else{
+			if (!matrixIsNull(a))
+				free(a);
 			a=newSVGMatrix(1,0,0,1,0,0);
 		}
 		aux++;
@@ -1707,6 +1712,7 @@ Svg_parser::multiplySVGMatrix(SVGMatrix **mtx1,SVGMatrix *mtx2){
 	(*mtx1)->d=aux->d;
 	(*mtx1)->e=aux->e;
 	(*mtx1)->f=aux->f;
+	free(aux);
 }
 bool
 Svg_parser::matrixIsNull(SVGMatrix *mtx){
