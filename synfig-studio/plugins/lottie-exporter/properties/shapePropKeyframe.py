@@ -277,11 +277,11 @@ def gen_bline_shapePropKeyframe(lottie, bline_point, origin):
                 pos_next[i] += origin_next[i]
 
             # Store values in dictionary
-            st_val["i"].append([tangent1_cur.val1, tangent1_cur.val2])
-            st_val["o"].append([tangent2_cur.val1, tangent2_cur.val2])
+            st_val["i"].append(tangent1_cur.get_list())
+            st_val["o"].append(tangent2_cur.get_list())
             st_val["v"].append(pos_cur)
-            en_val["i"].append([tangent1_next.val1, tangent1_next.val2])
-            en_val["o"].append([tangent2_next.val1, tangent2_next.val2])
+            en_val["i"].append(tangent1_next.get_list())
+            en_val["o"].append(tangent2_next.get_list())
             en_val["v"].append(pos_next)
         fr += 1
     # Setting final time
@@ -368,11 +368,11 @@ def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list, origin):
                 pos_next[i] += origin_next[i]
 
             # Store values in dictionary
-            st_val["i"].append([tangent1_cur.val1, tangent1_cur.val2])
-            st_val["o"].append([tangent2_cur.val1, tangent2_cur.val2])
+            st_val["i"].append(tangent1_cur.get_list())
+            st_val["o"].append(tangent2_cur.get_list())
             st_val["v"].append(pos_cur)
-            en_val["i"].append([tangent1_next.val1, tangent1_next.val2])
-            en_val["o"].append([tangent2_next.val1, tangent2_next.val2])
+            en_val["i"].append(tangent1_next.get_list())
+            en_val["o"].append(tangent2_next.get_list())
             en_val["v"].append(pos_next)
         fr += 1
     # Setting the final time
@@ -906,7 +906,7 @@ def cubic_to(vec, tan1, tan2, lottie, origin_cur):
     tan2 *= settings.PIX_PER_UNIT
     lottie["i"].append(tan1.get_list())
     lottie["o"].append(tan2.get_list())
-    pos = change_axis(vec.val1, vec.val2)
+    pos = change_axis(vec[0], vec[1])
     for i in range(len(pos)):
         pos[i] += origin_cur[i]
     lottie["v"].append(pos)
@@ -927,7 +927,7 @@ def move_to(vec, lottie, origin_cur):
     vec *= settings.PIX_PER_UNIT
     lottie["i"].append([0, 0])
     lottie["o"].append([0, 0])
-    pos = change_axis(vec.val1, vec.val2)
+    pos = change_axis(vec[0], vec[1])
     for i in range(len(pos)):
         pos[i] += origin_cur[i]
     lottie["v"].append(pos)
@@ -954,8 +954,8 @@ def convert_tangent_to_lottie(t1, t2):
 
     # Important: t1 and t2 have to be relative
     # The y-axis is different in lottie
-    t1.val2 = -t1.val2
-    t2.val2 = -t2.val2
+    t1[1] = -t1[1]
+    t2[1] = -t2[1]
     return t1, t2
 
 
@@ -1006,17 +1006,17 @@ def line_intersection(p1, t1, p2, t2):
     Returns:
         (misc.Vector) : intersection of the both the lines
     """
-    x0 = p1.val1
-    y0 = p1.val2
+    x0 = p1[0]
+    y0 = p1[1]
 
-    x1 = p1.val1 + t1.val1
-    y1 = p1.val2 + t1.val2
+    x1 = p1[0] + t1[0]
+    y1 = p1[1] + t1[1]
 
-    x2 = p2.val1
-    y2 = p2.val2
+    x2 = p2[0]
+    y2 = p2[1]
 
-    x3 = p2.val1 + t2.val1
-    y3 = p2.val2 + t2.val2
+    x3 = p2[0] + t2[0]
+    y3 = p2[1] + t2[1]
 
     near_infinity = 1e+10
 

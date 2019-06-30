@@ -199,19 +199,19 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
 
         pos1, pos2 = get_vector(waypoint1), get_vector(waypoint2)
         # Comparing the x-coordinates
-        if pos1.val1 > pos2.val1:
-            pos1.val1 += expand_amount
-            pos2.val1 -= expand_amount
+        if pos1[0] > pos2[0]:
+            pos1[0] += expand_amount
+            pos2[0] -= expand_amount
         else:
-            pos1.val1 -= expand_amount
-            pos2.val1 += expand_amount
+            pos1[0] -= expand_amount
+            pos2[0] += expand_amount
         # Comparing the y-coordinates
-        if pos1.val2 > pos2.val2:
-            pos1.val2 += expand_amount
-            pos2.val2 -= expand_amount
+        if pos1[1] > pos2[1]:
+            pos1[1] += expand_amount
+            pos2[1] -= expand_amount
         else:
-            pos1.val2 -= expand_amount
-            pos2.val2 += expand_amount
+            pos1[1] -= expand_amount
+            pos2[1] += expand_amount
         set_vector(waypoint1, pos1)
         set_vector(waypoint2, pos2)
     ##################### END OF SECTION 3 #######################

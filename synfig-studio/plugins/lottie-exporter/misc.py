@@ -145,6 +145,17 @@ class Vector:
     def __neg__(self):
         return -1 * self
 
+    def __getitem__(self, key):
+        if key:
+            return self.val2
+        return self.val1
+
+    def __setitem__(self, key, value):
+        if key:
+            self.val2 = value
+        else:
+            self.val1 = value
+
     def mag(self):
         """
         Returns the magnitude of the vector

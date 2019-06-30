@@ -249,7 +249,7 @@ def get_vector_at_frame(path, t):
         pos = get_last_control_point(keyfr[-2])
 
     if isinstance(pos, Vector):
-        return [pos.val1, pos.val2]
+        return pos.get_list()
     return pos
 
 

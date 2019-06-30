@@ -93,8 +93,8 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     Returns:
         (misc.Vector) : Clamped Vector is returned
     """
-    x_tan = clamped_tangent(p1.val1, p2.val1, p3.val1, animated, i)
-    y_tan = clamped_tangent(p1.val2, p2.val2, p3.val2, animated, i)
+    x_tan = clamped_tangent(p1[0], p2[0], p3[0], animated, i)
+    y_tan = clamped_tangent(p1[1], p2[1], p3[1], animated, i)
 
     if isclose(x_tan, 0.0) or isclose(y_tan, 0.0):
         if ease == "in":
@@ -291,7 +291,7 @@ def calc_tangent(animated, lottie, i):
         # have reverse effect. The value should instantly decrease and remain
         # same for the rest of the interval
         if animated.attrib["type"] == "points":
-            if i > 0 and prev_pos.val1 > cur_pos.val1:
+            if i > 0 and prev_pos[0] > cur_pos[0]:
                 t_now = get_frame(animated[i-1]) + 1
                 lottie["t"] = t_now
         return
@@ -366,8 +366,8 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     is_transform_axis = False
     if "transform_axis" in animated.keys():
         is_transform_axis = True
-    lottie["s"] = change_axis(cur_pos.val1, cur_pos.val2, is_transform_axis)
-    lottie["e"] = change_axis(next_pos.val1, next_pos.val2, is_transform_axis)
+    lottie["s"] = change_axis(cur_pos[0], cur_pos[1], is_transform_axis)
+    lottie["e"] = change_axis(next_pos[0], next_pos[1], is_transform_axis)
     lottie["to"] = []
     lottie["ti"] = []
 
