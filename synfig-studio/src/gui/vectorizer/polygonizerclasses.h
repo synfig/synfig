@@ -333,7 +333,7 @@ public:
   SkeletonGraph *m_graphHolder;
 
   // Stroke color-sensible data
-  int m_color;
+  synfig::Color m_color;
   int m_strokeIndex;
   int m_strokeHeight;
 

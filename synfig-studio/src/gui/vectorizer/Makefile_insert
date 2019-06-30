@@ -9,7 +9,8 @@ VECTORIZER_CC = \
 	vectorizer/centerlineskeletonizer.cpp\
 	vectorizer/centerlinevectorizer.cpp\
 	vectorizer/outlinevectorizer.cpp\
-	vectorizer/centerlineadjustments.cpp
+	vectorizer/centerlineadjustments.cpp\
+	vectorizer/centerlinecolors.cpp
 	
 synfigstudio_src += \
 	$(VECTORIZER_HH) \

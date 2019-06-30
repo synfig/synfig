@@ -116,7 +116,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
   // step 5
   // Take samples of image colors to associate each sequence to its corresponding
   // palette color
-  calculateSequenceColors(ras, globals);  // Extract stroke colors here
+  studio::calculateSequenceColors(image, globals);  // Extract stroke colors here
 
 //   // step 6
 //   // Converts each forward or single Sequence of the image in its corresponding Stroke.
