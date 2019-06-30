@@ -6,14 +6,12 @@ in Lottie format
 
 import sys
 import ast
-import copy
-import settings
 from lxml import etree
-from synfig.animation import to_Synfig_axis
+import settings
 from misc import change_axis, get_frame, Vector, Hermite, is_animated, radial_to_tangent
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
+from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
 sys.path.append("../")
 
 
@@ -267,22 +265,8 @@ def gen_bline_shapePropKeyframe(lottie, bline_point, origin):
             tangent1_cur, tangent2_cur = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
             tangent1_next, tangent2_next = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
 
-            # Convert to Lottie format
-            tangent1_cur /= 3
-            tangent1_next /= 3
-            tangent2_cur /= 3
-            tangent2_next /= 3
-
-            # Synfig and Lottie use different in tangents SEE DOCUMENTATION
-            tangent1_cur *= -1
-            tangent1_next *= -1
-
-            # Important: t1 and t2 have to be relative
-            # The y-axis is different in lottie
-            tangent1_cur.val2 = -tangent1_cur.val2
-            tangent2_cur.val2 = -tangent2_cur.val2
-            tangent1_next.val2 = -tangent1_next.val2
-            tangent2_next.val2 = -tangent2_next.val2
+            tangent1_cur, tangent2_cur = convert_tangent_to_lottie(tangent1_cur, tangent2_cur)
+            tangent1_next, tangent2_next = convert_tangent_to_lottie(tangent1_next, tangent2_next)
 
             # Adding origin to each vertex
             origin_cur = get_vector_at_frame(origin_dict, fr)
@@ -307,7 +291,15 @@ def gen_bline_shapePropKeyframe(lottie, bline_point, origin):
 
 def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list, origin):
     """
-    Generates the bline corresponding to polygon layer 
+    Generates the bline corresponding to polygon layer
+
+    Args:
+        lottie (dict) : Lottie format polygon layer will be stored here
+        dynamic_list (lxml.etree._Element) : Synfig format points of polygon
+        origin (lxml.etree._Element) : Synfig format origin of polygon
+
+    Returns:
+        (None)
     """
     ################## SECTION 1 ################
     # Inserting the waypoints if not animated, finding the first and last frame
@@ -355,7 +347,7 @@ def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list, origin):
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)
-        
+
         for entry in dynamic_list:
             # Only two childs, one should be animated, other one is path
             for child in entry:
@@ -395,7 +387,15 @@ def gen_bline_outline(lottie, bline_point, origin):
 
     Some parts are common with gen_bline_shapePropKeyframe(), which will be
     placed in a common function latter
-    """ 
+
+    Args:
+        lottie (dict) : Lottie format outline layer will be stored in this
+        bline_point (lxml.etree._Element) : Synfig format bline points
+        origin (lxml.etree._Element) : Synfig format origin
+
+    Returns:
+        (None)
+    """
     ################### SECTION 1 #########################
     # Inserting waypoints if not animated and finding the first and last frame
     # AFter that, there path will be calculated in lottie format which can
@@ -555,6 +555,22 @@ def gen_bline_outline(lottie, bline_point, origin):
 
 
 def get_outline_param_at_frame(composite, fr):
+    """
+    Given a composite and frame, returns the parameters of the outline layer at
+    that frame
+
+    Args:
+        composite (lxml.etree._Element) : Vertex of outline layer in Synfig format
+        fr        (int)                 : frame number
+
+    Returns:
+        (misc.Vector) : position of the vertex
+        (float)       : width of the vertex
+        (misc.Vector) : Tangent 1 of the vertex
+        (misc.Vector) : Tangent 2 of the vertex
+        (bool)        : True if radius split is ticked at this frame
+        (bool)        : True if tangent split is ticked at this frame
+    """
     for child in composite:
         if child.tag == "point_path":
             dictionary = ast.literal_eval(child.text)
@@ -588,7 +604,23 @@ def get_outline_param_at_frame(composite, fr):
 
 def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cusps_anim, expand_dict, r_tip0_anim, r_tip1_anim, homo_width_anim, fr):
     """
-    calculate for only frame, then in the parent function call for fr + 1
+    Calculates the points for the outline layer as in Synfig:
+    https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/outline.cpp
+
+    Args:
+        bline_point (lxml.etree._Element) : Synfig format bline points of outline layer
+        st_val (dict) : Lottie format outline stored in this
+        origin_dict (dict) : Lottie format origin of outline layer
+        outer_width_dict (dict) : Lottie format outer width
+        sharp_cusps_anim (lxml.etree._Element) : sharp cusps in Synfig format
+        expand_dict (dict) : Lottie format expand parameter
+        r_tip0_anim (lxml.etree._Element) : Round tip[0] in Synfig format
+        r_tip1_anim (lxml.etree._Element) : Round tip[1] in Synfig format
+        homo_width_anim (lxml.etree._Element) : Homogeneous width in Synfig format
+        fr (int) : Frame number
+
+    Returns:
+        (None)
     """
 
     EPSILON = 0.000000001
@@ -611,7 +643,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
     loop = False
     if "loop" in bline_point.keys() and bline_point.attrib["loop"] == "true":
         loop = True
-    
+
     # Iterators
     end_it = len(bline_point)
     next_it = 0
@@ -641,7 +673,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
 
     first = not loop
     while next_it != end_it:
-        bp1 = bline_point[iter_it][0] 
+        bp1 = bline_point[iter_it][0]
         bp2 = bline_point[next_it][0]
 
         # Calculate current vertex and next vertex parameters
@@ -671,7 +703,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
         curve = Hermite(pos_c, pos_n, iter_t, next_t)
 
         # Setup width's
-        iter_w = width_c * outer_width * 0.5 + expand 
+        iter_w = width_c * outer_width * 0.5 + expand
         next_w = width_n * outer_width * 0.5 + expand
 
         if first:
@@ -684,7 +716,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
            ((not prev_t.is_equal_to(iter_t)) or (iter_t.is_equal_to(Vector(0, 0)))) and \
            (not last_tangent.is_equal_to(Vector(0, 0))):
 
-            curr_tangent = curve.derivative(CUSP_TANGENT_ADJUST) 
+            curr_tangent = curve.derivative(CUSP_TANGENT_ADJUST)
             t1 = last_tangent.perp().norm()
             t2 = curr_tangent.perp().norm()
 
@@ -712,7 +744,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
         n = 0.0
         itr = 0
         while n < 1.000001:
-            points.append(curve.value(n)) 
+            points.append(curve.value(n))
             if n:
                 length += (points[itr] - points[itr-1]).mag()
             dists.append(length)
@@ -731,7 +763,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
         n = 0.0
         itr = 0
         while n < 1.000001:
-            t = curve.derivative(min(max(n, CUSP_TANGENT_ADJUST), 1.0 - CUSP_TANGENT_ADJUST)) / 3 
+            t = curve.derivative(min(max(n, CUSP_TANGENT_ADJUST), 1.0 - CUSP_TANGENT_ADJUST)) / 3
             d = t.perp().norm()
             k = dists[itr] * div_length
             if not homo_width:
@@ -812,12 +844,20 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             add([[b, p1, p2]], st_val, origin_cur)
         else:
             add_reverse(side_b, st_val, origin_cur)
-         
+
 
 def add(side, lottie, origin_cur):
     """
     Does not take care of tangent putting order because the tangents are all
     zero for now according to the code
+
+    Args:
+        side (list) : Stores the newly calculated vertex and tangents of outline layer
+        lottie (dict) : These vertices will be stored in this dictionary
+        origin_cur (list) : Value of origin at specific frame
+
+    Returns:
+        (None)
     """
     i = 0
     while i + 1 < len(side):
@@ -830,22 +870,36 @@ def add_reverse(side, lottie, origin_cur):
     """
     Does not take care of tangents putting order because the tangents are all
     zero for now according to the code:
+
+    Args:
+        side (list) : Stores the newly calculated vertex and tangents of outline layer
+        lottie (dict) : These vertices will be stored in this dictionary
+        origin_cur (list) : Value of origin at specific frame
+
+    Returns:
+        (None)
     """
     i = len(side) - 1
     while i > 0:
         cubic_to(side[i][0], side[i][2], side[i-1][1], lottie, origin_cur)
         i -= 1
     cubic_to(side[i][0], side[i][2], Vector(0, 0), lottie, origin_cur)
-    """
-    for val in reversed(side):
-        move_to(val[0], lottie, origin_cur)
-    """
 
 
 def cubic_to(vec, tan1, tan2, lottie, origin_cur):
     """
     Will have to manipulate the tangents here, but they are not managed as tan1
     and tan2 both are zero always
+
+    Args:
+        vec (misc.Vector) : position of the point
+        tan1 (misc.Vector) : tangent 1 of the point
+        tan2 (misc.Vector) : tangent 2 of the point
+        lottie (dict) : Final position and tangents will be stored here
+        origin_cur (list) : value of the origin at specific frame
+
+    Returns:
+        (None)
     """
     vec *= settings.PIX_PER_UNIT
     tan1 *= settings.PIX_PER_UNIT
@@ -861,6 +915,14 @@ def cubic_to(vec, tan1, tan2, lottie, origin_cur):
 def move_to(vec, lottie, origin_cur):
     """
     Don't have to manipulate the tangents because all of them are zero here
+
+    Args:
+        vec (misc.Vector) : position of the point
+        lottie (dict) : Final position and tangents will be stored here
+        origin_cur (list) : value of the origin at specific frame
+
+    Returns:
+        (None)
     """
     vec *= settings.PIX_PER_UNIT
     lottie["i"].append([0, 0])
@@ -872,6 +934,17 @@ def move_to(vec, lottie, origin_cur):
 
 
 def convert_tangent_to_lottie(t1, t2):
+    """
+    Converts tangent from Synfig format to lottie format
+
+    Args:
+        t1 (misc.Vector) : tangent 1 of a point
+        t2 (misc.Vector) : tangent 2 of a point
+
+    Returns:
+        (misc.Vector) : Converted tangent 1
+        (misc.Vector) : Converted tangent 2
+    """
     # Convert to Lottie format
     t1 /= 3
     t2 /= 3
@@ -887,6 +960,20 @@ def convert_tangent_to_lottie(t1, t2):
 
 
 def insert_dict_at(lottie, idx, fr, loop):
+    """
+    Inserts dictionary values in the main dictionary, required by shape layer of
+    lottie format
+
+    Args:
+        lottie (dict) : Shape layer will be stored in this main dictionary
+        idx    (int)  : index at which dicionary needs to be stored
+        fr     (int)  : frame number
+        loop   (bool) : Specifies if the shape is loop or not
+
+    Returns:
+        (dict) : Starting dictionary for shape interpolation
+        (dict) : Ending dictionary for shape interpolation
+    """
     if idx != -1:
         lottie.insert(idx, {})
     else:
@@ -897,21 +984,31 @@ def insert_dict_at(lottie, idx, fr, loop):
     lottie[-1]["t"] = fr
     lottie[idx]["s"], lottie[idx]["e"] = [], []
     st_val, en_val = lottie[idx]["s"], lottie[idx]["e"]
-    
+
     st_val.append({}), en_val.append({})
     st_val, en_val = st_val[0], en_val[0]
     st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop
     en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
     return st_val, en_val
 
+
 def line_intersection(p1, t1, p2, t2):
     """
     This function was adapted from what was
     described on http://www.whisqu.se/per/docs/math28.htm
+
+    Args:
+        p1 (misc.Vector) : First point
+        t1 (misc.Vector) : First tangent
+        p2 (misc.Vector) : Second point
+        t2 (misc.Vector) : Second tangent
+
+    Returns:
+        (misc.Vector) : intersection of the both the lines
     """
     x0 = p1.val1
     y0 = p1.val2
-    
+
     x1 = p1.val1 + t1.val1
     y1 = p1.val2 + t1.val2
 
@@ -934,7 +1031,7 @@ def line_intersection(p1, t1, p2, t2):
     if (x3 - x2) != 0:
         m2 = (y3 - y2) / (x3 - x2)
     else:
-        near_infinity
+        m2 = near_infinity
 
     a1 = m1
     a2 = m2

@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 Will store all the functions required for generation of shapeKeyframed file in
 lottie
@@ -16,6 +17,7 @@ def gen_properties_shapeKeyframed(lottie, node, origin, idx):
     Args:
         lottie      (dict) : Lottie generated shape keyframes will be stored here
         node        (lxml.etree._Element) : Shape/path in Synfig format :- Could be bline_point or dynamic_list
+        origin      (lxml.etree._Element) : Origin in Synfig format
         idx         (int) : Index/Count of shape/path
 
     Returns:

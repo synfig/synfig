@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 misc.py
 Some miscellaneous functions will be provided here
@@ -40,6 +41,16 @@ class Hermite:
     To keep the hermite curve stored inside this
     """
     def __init__(self, p1, p2, t1, t2):
+        """
+        Args:
+            p1 (float)  : First control point of bezier curve
+            p2 (float)  : Fourth control point
+            t1 (float)  : Second control point
+            t2 (float)  : Third control point
+
+        Returns:
+            (None)
+        """
         self.p1 = p1
         self.p2 = p2
         self.t1 = t1
@@ -47,6 +58,12 @@ class Hermite:
         self.sync()
 
     def sync(self):
+        """
+        Calculates the coefficients and variables required in calculation of
+        derivative and value of the curve at time t.
+        Here p1, p2, t1, t2 are control points of bezier curve and a, b, c, d
+        are control points of hermite
+        """
         self.a = self.p1
         self.b = self.p1 + self.t1/3
         self.c = self.p2 - self.t2/3
@@ -58,12 +75,30 @@ class Hermite:
         self.coeff3 = self.d - self.c*3 + self.b*3 - self.a
 
     def derivative(self, x):
+        """
+        Calculates the derivative of the curve at x
+
+        Args:
+            x (float) : Time at which the derivative is needed
+
+        Returns:
+            (float) : The value of the derivative at time x
+        """
         y = 1 - x
         ret = ((self.b - self.a) * y * y + (self.c - self.b) * x * y * 2 + (self.d - self.c) * x * x) * 3
         return ret
 
     def value(self, t):
-        ret = self.coeff0 + (self.coeff1 + (self.coeff2 + (self.coeff3)*t)*t)*t 
+        """
+        Calculates the value of the curve at time t
+
+        Args:
+            t (float) : Time at which the value is needed
+
+        Returns:
+            (float) : Value of the curve at time t
+        """
+        ret = self.coeff0 + (self.coeff1 + (self.coeff2 + (self.coeff3)*t)*t)*t
         return ret
 
 
@@ -111,34 +146,74 @@ class Vector:
         return -1 * self
 
     def mag(self):
+        """
+        Returns the magnitude of the vector
+
+        Args:
+            (None)
+        Returns:
+            (float) : The magnitude of the vector
+        """
         return math.sqrt(self.mag_squared())
 
     def inv_mag(self):
+        """
+        Returns the inverse of the magnitude of the vector
+
+        Args:
+            (None)
+        Returns:
+            (float) : Magnitude inversed
+        """
         return 1.0 / self.mag()
 
     def perp(self):
+        """
+        Returns a perpendicular version of the vector
+
+        Args:
+            (None)
+        Returns:
+            (misc.Vector) : Perpendicular vector with same magnitude
+        """
         return Vector(self.val2, -self.val1)
 
-    def approximate_equal(self, a, b):
-        """
-        Need to define this function somewhere else, a and b are of type "float"
-        """
-        precision = 1e-8
-        if a < b:
-            return b - a < precision
-        else:
-            return a - b < precision
-
     def is_equal_to(self, other):
-        return self.approximate_equal((self - other).mag_squared(), 0)
+        """
+        Tells if the current vector is equal to `other` vector
+
+        Args:
+            other (misc.Vector) : The vector to be compared with
+
+        Returns:
+            (bool) : True if the vectors are equal
+                   : False otherwise
+        """
+        return approximate_equal((self - other).mag_squared(), 0)
 
     def mag_squared(self):
+        """
+        Returns the squared magnitude of the vector
+
+        Args:
+            (None)
+        Returns:
+            (float) : squared magnitude
+        """
         ret = self.val1 * self.val1 + self.val2 * self.val2
         return ret
 
-    # returns a normalised version of the vector
     def norm(self):
-        self = self * self.inv_mag()
+        """
+        Returns a normalised version of the vector
+
+        Args:
+            (None)
+        Returns:
+            (misc.Vector) : itselves whose magnitude is 1
+        """
+        obj = self * self.inv_mag()
+        self.__dict__.update(obj.__dict__)
         return self
 
     # other can only be of type real
@@ -285,6 +360,24 @@ class Color:
             (list) : Stores color in list format
         """
         return [self.red, self.green, self.blue, self.alpha]
+
+
+def approximate_equal(a, b):
+    """
+    Need to define this function somewhere else, a and b are of type "float"
+
+    Args:
+        a (float) : First number to be compared
+        b (float) : Second number to be compared
+
+    Returns:
+        (bool) : True if the numbers are approximately equal under precision
+               : False otherwise
+    """
+    precision = 1e-8
+    if a < b:
+        return b - a < precision
+    return a - b < precision
 
 
 def calculate_pixels_per_unit():
@@ -536,7 +629,7 @@ def get_time(waypoint):
             final += float(frame[:-1])
         elif frame[-1] == "f":  # This should never happen according to my code
             raise ValueError("In waypoint, time is never expected in frames.")
-    return final 
+    return final
 
 def get_vector(waypoint):
     """

@@ -1,6 +1,6 @@
+# pylint: disable=line-too-long
 """
-Implements all the functions required for generating value for properties
-related to layers in Synfig
+Implements all the functions required for generating a lottie mask
 """
 
 import sys
@@ -13,13 +13,24 @@ sys.path.append("../")
 
 def gen_mask(lottie, invert, bline_point, idx):
     """
+    Generates a mask. This was specifically needed to support the invert
+    parameter
+
+    Args:
+        lottie      (dict) : The final mask will be stored in this dict
+        invert      (bool) : Tells if the invert parameter is set or not
+        bline_point (lxml.etree._Element) : Synfig format shape
+        idx         (int)  : Specifies the index of this mask
+
+    Returns:
+        (None)
     """
     lottie["inv"] = invert
     lottie["mode"] = settings.MASK_ADDITIVE
     lottie["pt"] = {}
     lottie["o"] = {}    # Opacity
     lottie["x"] = {}    # Expression
-    lottie["nm"] = "Mask " + str(idx.idx) 
+    lottie["nm"] = "Mask " + str(idx)
     index = Count()
     for chld in bline_point.getparent().getparent():
         if chld.tag == "param" and chld.attrib["name"] == "origin":
@@ -32,14 +43,22 @@ def gen_mask(lottie, invert, bline_point, idx):
 
 
 def convert_non_loop(lottie):
+    """
+    Converts the non loop shapes to looped shapes by changing the in and out
+    tangents accordingly
+
+    Args:
+        lottie (dict) : The shape to be modified
+
+    Returns:
+        (None)
+    """
     for chld in lottie["k"]:
-        try:
+        if "s" in chld.keys() and "e" in chld.keys():
             char_dict = {"s", "e"}
             for char in char_dict:
                 posi = chld[char][0]
-                if posi["c"] == False:
+                if not posi["c"]:
                     posi["o"][-1][0] = posi["o"][-1][1] = 0
                     posi["i"][0][0] = posi["i"][0][1] = 0
                     posi["c"] = True
-        except:
-            pass

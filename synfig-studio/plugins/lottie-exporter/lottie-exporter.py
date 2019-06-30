@@ -4,6 +4,7 @@ Python plugin to convert the .sif format into lottie json format
 input   : FILE_NAME.sif
 output  : FILE_NAME.json
         : FILE_NAME.html
+        : FILE_NAME.log
 
 Supported Layers are mentioned below
 """
@@ -76,13 +77,13 @@ def parse(file_name):
     for child in root:
         if child.tag == "layer":
             if child.attrib["type"] not in supported_layers:  # Only supported layers
-                logging.warning("Layer '{name}' is not supported yet. For more information, contact us on Synfig forums or Github page".format(name=child.attrib["type"]))
+                logging.warning("Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page", child.attrib["type"])
                 continue
             elif child.attrib["active"] == "false":   # Only render the active layers
-                logging.info("Layer '{name}' is not active".format(name=child.attrib["type"]))
+                logging.info("Layer '%s' is not active", child.attrib["type"])
                 continue
             elif child.attrib["exclude_from_rendering"] == "true":
-                logging.info("Layer '{name}' is excluded from rendering".format(name=child.attrib["type"]))
+                logging.info("Layer '%s' is excluded from rendering", child.attrib["type"])
                 continue
 
             settings.lottie_format["layers"].insert(0, {})
@@ -149,6 +150,11 @@ def gen_html(file_name):
 
 
 def init_logs():
+    """
+    Initializes the logger, sets the file name in which the logs will be stored
+    and sets the level of the logging(DEBUG | INFO : depending on what is
+    specified)
+    """
     name = settings.file_name['fn']
     name = name.split(".")
     name[-1] = 'log'
@@ -156,7 +162,7 @@ def init_logs():
     path = os.path.join(settings.file_name['fd'], name)
     path = os.path.abspath(name)
     logging.basicConfig(filename=path, filemode='w',
-            format='%(name)s - %(levelname)s - %(message)s')
+                        format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
 

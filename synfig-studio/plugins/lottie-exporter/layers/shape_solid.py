@@ -64,8 +64,6 @@ def gen_layer_shape_solid(lottie, layer, idx):
                     invert = True
             elif chld.attrib["name"] in {"bline", "vector_list"}:
                 bline_point = chld[0]
-            elif chld.attrib["name"] == "origin":
-                origin = chld
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
@@ -79,4 +77,4 @@ def gen_layer_shape_solid(lottie, layer, idx):
     lottie["masksProperties"] = []
     lottie["masksProperties"].append({})
 
-    gen_mask(lottie["masksProperties"][0], invert, bline_point, index)
+    gen_mask(lottie["masksProperties"][0], invert, bline_point, index.inc())
