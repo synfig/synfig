@@ -433,6 +433,55 @@ void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ra
 }
 
 //==========================================================================
+//==========================================================================
+
+// Take samples of image colors to associate each stroke to its corresponding
+// palette color. Currently working on colormaps, closest-to-black strokes
+// otherwise.
+void applyStrokeColors(std::vector<TStroke *> &strokes, const TRasterP &ras,
+                       TPalette *palette, VectorizerCoreGlobals &g) {
+  JointSequenceGraphList &organizedGraphs = g.organizedGraphs;
+  SequenceList &singleSequences           = g.singleSequences;
+
+  TRasterCM32P cm = ras;
+  unsigned int i, j, k, n;
+
+  if (cm && g.currConfig->m_maxThickness > 0.0) 
+  {
+    applyStrokeIndices(&g);
+
+    // Treat single sequences before, like conversionToStrokes(..)
+    for (i = 0; i < singleSequences.size(); ++i)
+      strokes[i]->setStyle(singleSequences[i].m_color);
+
+    // Then, treat remaining graph-strokes
+    n = i;
+
+    for (i = 0; i < organizedGraphs.size(); ++i)
+      for (j = 0; j < organizedGraphs[i].getNodesCount(); ++j)
+        if (!organizedGraphs[i].getNode(j).hasAttribute(
+                JointSequenceGraph::ELIMINATED))  // due to junction recovery
+          for (k = 0; k < organizedGraphs[i].getNode(j).getLinksCount(); ++k) {
+            Sequence &s = *organizedGraphs[i].node(j).link(k);
+            if (s.isForward()) {
+              // vi->getStroke(n)->setStyle(s.m_color);
+              strokes[n]->setStyle(s.m_color);
+              ++n;
+            }
+          }
+
+    // Order vector image according to actual color-coverings at junctions.
+    orderColoredStrokes(organizedGraphs, strokes, cm, palette);
+  }
+  else
+  {
+    // Choose closest-to-black palette color
+    int blackStyleId = palette->getClosestStyle(TPixel32::Black);
+
+    unsigned int i;
+    for (i = 0; i < strokes.size(); ++i) strokes[i]->setStyle(blackStyleId);
+  }
+}
 
 
 
