@@ -3,7 +3,10 @@
 PLUGIN_NAME = layers
 
 EXTRA_FILES = \
+			  driver.py \
 			  image.py \
+			  preComp.py \
+			  rotate_layer.py \
               shape.py \
 			  solid.py \
 			  shape_solid.py

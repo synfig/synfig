@@ -14,11 +14,7 @@ import sys
 import logging
 from lxml import etree
 from canvas import gen_canvas
-from layers.shape import gen_layer_shape
-from layers.solid import gen_layer_solid
-from layers.image import gen_layer_image
-from layers.shape_solid import gen_layer_shape_solid
-from misc import Count
+from layers.driver import gen_layers
 import settings
 
 
@@ -65,44 +61,8 @@ def parse(file_name):
     # Initialize the logging
     init_logs()
 
-    num_layers = Count()
     settings.lottie_format["layers"] = []
-    shape_layer = {"star", "circle", "rectangle", "filled_rectangle", "simple_circle"}
-    solid_layer = {"SolidColor"}
-    shape_solid_layer = {"region", "polygon", "outline"}
-    image_layer = {"import"}
-    supported_layers = shape_layer.union(solid_layer)
-    supported_layers = supported_layers.union(shape_solid_layer)
-    supported_layers = supported_layers.union(image_layer)
-    for child in root:
-        if child.tag == "layer":
-            if child.attrib["type"] not in supported_layers:  # Only supported layers
-                logging.warning("Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page", child.attrib["type"])
-                continue
-            elif child.attrib["active"] == "false":   # Only render the active layers
-                logging.info("Layer '%s' is not active", child.attrib["type"])
-                continue
-            elif "exclude_from_rendering" in child.keys() and child.attrib["exclude_from_rendering"] == "true":
-                logging.info("Layer '%s' is excluded from rendering", child.attrib["type"])
-                continue
-
-            settings.lottie_format["layers"].insert(0, {})
-            if child.attrib["type"] in shape_layer:           # Goto shape layer
-                gen_layer_shape(settings.lottie_format["layers"][0],
-                                child,
-                                num_layers.inc())
-            elif child.attrib["type"] in solid_layer:         # Goto solid layer
-                gen_layer_solid(settings.lottie_format["layers"][0],
-                                child,
-                                num_layers.inc())
-            elif child.attrib["type"] in shape_solid_layer:   # Goto shape_solid layer
-                gen_layer_shape_solid(settings.lottie_format["layers"][0],
-                                      child,
-                                      num_layers.inc())
-            elif child.attrib["type"] in image_layer:   # Goto image layer
-                gen_layer_image(settings.lottie_format["layers"][0],
-                                child,
-                                num_layers.inc())
+    gen_layers(settings.lottie_format["layers"], root, len(root) - 1)
 
     lottie_string = json.dumps(settings.lottie_format)
     return write_to(file_name, "json", lottie_string)

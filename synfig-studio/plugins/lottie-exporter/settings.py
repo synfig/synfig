@@ -20,6 +20,8 @@ LAYER_SOLID_TYPE = 1
 LAYER_SOLID_NAME = "Solid Layer "
 LAYER_IMAGE_TYPE = 2
 LAYER_IMAGE_NAME = "Image Layer "
+LAYER_PRECOMP_TYPE = 0
+LAYER_PRECOMP_NAME = "Pre Comp Layer "
 LAYER_DEFAULT_STRETCH = 1
 LAYER_DEFAULT_AUTO_ORIENT = 0
 OPACITY_CONSTANT = 100
@@ -66,3 +68,5 @@ def init():
     num_images = Count()
     global file_name
     file_name = {}
+    global num_precomp
+    num_precomp = Count()
