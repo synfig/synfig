@@ -817,12 +817,12 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             b = vertex - tangent.perp()*w
             p1 = a + tangent*w*(ROUND_END_FACTOR/3.0)
             p2 = b + tangent*w*(ROUND_END_FACTOR/3.0)
+            tan = tangent*w*(ROUND_END_FACTOR/3.0)
 
             # replace the last point
-            side_a[-1] = [a, Vector(0, 0), Vector(0, 0)]
+            side_a[-1] = [a, Vector(0, 0), tan]
             add(side_a, st_val, origin_cur)
-            #add([[b, Vector(0, 0), Vector(0, 0)]], st_val, origin_cur)
-            add([[b, p1, p2 - b]], st_val, origin_cur)
+            add([[b, -tan, Vector(0, 0)]], st_val, origin_cur)
         else:
             add(side_a, st_val, origin_cur)
 
@@ -837,11 +837,12 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             b = vertex + tangent.perp()*w
             p1 = a - tangent*w*(ROUND_END_FACTOR/3.0)
             p2 = b - tangent*w*(ROUND_END_FACTOR/3.0)
+            tan = -tangent*w*(ROUND_END_FACTOR/3.0)
 
             # replace the first point
-            side_b[0] = [a, Vector(0, 0), Vector(0, 0)]
+            side_b[0] = [a, Vector(0, 0), tan]
             add_reverse(side_b, st_val, origin_cur)
-            add([[b, p1, p2]], st_val, origin_cur)
+            add([[b, -tan, Vector(0, 0)]], st_val, origin_cur)
         else:
             add_reverse(side_b, st_val, origin_cur)
 
@@ -860,10 +861,9 @@ def add(side, lottie, origin_cur):
         (None)
     """
     i = 0
-    while i + 1 < len(side):
-        cubic_to(side[i][0], side[i][2], side[i+1][1], lottie, origin_cur)
+    while i < len(side):
+        cubic_to(side[i][0], side[i][1], side[i][2], lottie, origin_cur)
         i += 1
-    cubic_to(side[i][0], side[i][2], Vector(0, 0), lottie, origin_cur)
 
 
 def add_reverse(side, lottie, origin_cur):
@@ -880,10 +880,9 @@ def add_reverse(side, lottie, origin_cur):
         (None)
     """
     i = len(side) - 1
-    while i > 0:
-        cubic_to(side[i][0], side[i][2], side[i-1][1], lottie, origin_cur)
+    while i >= 0:
+        cubic_to(side[i][0], side[i][1], side[i][2], lottie, origin_cur)
         i -= 1
-    cubic_to(side[i][0], side[i][2], Vector(0, 0), lottie, origin_cur)
 
 
 def cubic_to(vec, tan1, tan2, lottie, origin_cur):
@@ -904,6 +903,7 @@ def cubic_to(vec, tan1, tan2, lottie, origin_cur):
     vec *= settings.PIX_PER_UNIT
     tan1 *= settings.PIX_PER_UNIT
     tan2 *= settings.PIX_PER_UNIT
+    tan1, tan2 = convert_tangent_to_lottie(3*tan1, 3*tan2)
     lottie["i"].append(tan1.get_list())
     lottie["o"].append(tan2.get_list())
     pos = change_axis(vec[0], vec[1])
