@@ -69,7 +69,6 @@ def gen_layer_shape_solid(lottie, layer, idx):
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
     get_blend(lottie, layer)
-    lottie["markers"] = []      # Markers to be filled yet
 
     hasMask = True
 

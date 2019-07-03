@@ -37,4 +37,3 @@ def gen_layer_precomp(lottie, layer, idx):
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
     lottie["bm"] = settings.DEFAULT_BLEND    # Always have the default blend 
-    lottie["markers"] = []      # Markers to be filled yet
