@@ -64,10 +64,10 @@ class VectorizerSettings : public Gtk::Dialog
 	Gtk::SpinButton entry_despeckling2;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_maxthickness;
 	Gtk::SpinButton entry_maxthickness;
-	Glib::RefPtr<Gtk::Adjustment> adjustment_tcalibration_start;
-	Gtk::SpinButton entry_tcalibration_start;
-	Glib::RefPtr<Gtk::Adjustment> adjustment_tcalibration_end;
-	Gtk::SpinButton entry_tcalibration_end;
+	// Glib::RefPtr<Gtk::Adjustment> adjustment_tcalibration_start;
+	// Gtk::SpinButton entry_tcalibration_start;
+	// Glib::RefPtr<Gtk::Adjustment> adjustment_tcalibration_end;
+	// Gtk::SpinButton entry_tcalibration_end;
 
 	Glib::RefPtr<Gtk::Adjustment> adjustment_radius;
 	Gtk::SpinButton entry_radius;
@@ -91,14 +91,14 @@ public:
 	bool isOutline;
 	VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap);
 	~VectorizerSettings();
-	CenterlineConfiguration getCenterlineConfiguration(double weight) const;
+	CenterlineConfiguration getCenterlineConfiguration() const;
   	NewOutlineConfiguration getOutlineConfiguration(double weight) const;
 
 	void doVectorize(const VectorizerConfiguration &conf); 
 
   	VectorizerConfiguration *getCurrentConfiguration(double weight) const {
     	return isOutline ? (VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration(weight))
-                       : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration(weight));
+                       : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
   	}
 	
 private:

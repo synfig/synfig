@@ -66,10 +66,6 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	entry_despeckling2(adjustment_despeckling2,1,0),
 	adjustment_maxthickness(Gtk::Adjustment::create(200,0,500)),
 	entry_maxthickness(adjustment_maxthickness,1,0),
-	adjustment_tcalibration_start(Gtk::Adjustment::create(100,0,100)),
-	entry_tcalibration_start(adjustment_tcalibration_start,1,0),
-	adjustment_tcalibration_end(Gtk::Adjustment::create(100,1,100)),
-	entry_tcalibration_end(adjustment_tcalibration_end,1,0),
 	adjustment_radius(Gtk::Adjustment::create(100,1,100)),
 	entry_radius(adjustment_radius,1,0),
 	adjustment_adherence(Gtk::Adjustment::create(100,1,100)),
@@ -135,21 +131,6 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	Centerline_setting_grid->attach(*thickness_label, 0, 3, 1, 1);
 	Centerline_setting_grid->attach(entry_maxthickness, 1, 3, 1, 1);
 
-	Gtk::Label *tcalibration_start_label = manage(new Gtk::Label(_("_Thickness Calibration (Start)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	tcalibration_start_label->set_mnemonic_widget(entry_tcalibration_start);
-	tcalibration_start_label->set_margin_right(10);
-	tcalibration_start_label->set_margin_left(10);
-
-	Centerline_setting_grid->attach(*tcalibration_start_label, 0, 4, 1, 1);
-	Centerline_setting_grid->attach(entry_tcalibration_start, 1, 4, 1, 1);
-	
-	Gtk::Label *tcalibration_end_label = manage(new Gtk::Label(_("_Thickness Calibration (End)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	tcalibration_end_label->set_mnemonic_widget(entry_tcalibration_end);
-	tcalibration_end_label->set_margin_right(10);
-
-	Centerline_setting_grid->attach(*tcalibration_end_label, 0, 5, 1, 1);
-	Centerline_setting_grid->attach(entry_tcalibration_end, 1, 5, 1, 1);
-	
 	Gtk::Label *ppa_label = manage(new Gtk::Label(_("_Preserve Painted Areas"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	ppa_label->set_mnemonic_widget(toggle_pparea);
 	ppa_label->set_margin_right(10);
@@ -266,8 +247,7 @@ VectorizerSettings::on_finished()
 // after conversion is finished
 }
 
-// what is frame????
-CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( double frame) const 
+CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( ) const 
 {
   CenterlineConfiguration conf;
 
@@ -276,9 +256,7 @@ CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( double f
   conf.m_penalty      = 10 - ((int)adjustment_accuracy->get_value());  // adjustment_accuracy in [1,10]
   conf.m_despeckling  = ((int)adjustment_despeckling->get_value()) * 2;
   conf.m_maxThickness = ((int)adjustment_maxthickness->get_value()) / 2.0;
-  conf.m_thicknessRatio =
-      (1 - frame) * ((int)adjustment_tcalibration_start->get_value()) + 
-	  frame * ((int)adjustment_tcalibration_end->get_value());
+  conf.m_thicknessRatio = 1.0;
   conf.m_leaveUnpainted = toggle_pparea.get_state();
   conf.m_makeFrame      = toggle_add_border.get_state();
   conf.m_naaSource      = false;//currently not in use
@@ -322,7 +300,7 @@ VectorizerSettings::on_convert_pressed()
     if (isOutline)
         m_oConf = getOutlineConfiguration(0.0);
     else
-        m_cConf = getCenterlineConfiguration(0.0);
+        m_cConf = getCenterlineConfiguration();
     
 	doVectorize(configuration);
 	std::cout<<"Convert Pressed....";
