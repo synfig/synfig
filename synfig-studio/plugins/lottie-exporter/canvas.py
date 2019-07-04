@@ -37,6 +37,10 @@ def calc_time(root, lottie, which):
         elif frame[-1] == "f":
             lottie[which] += float(frame[:-1])
 
+    # To support canvas with single frames
+    if which == "op":
+        lottie[which] += 1
+
 
 def gen_canvas(lottie, root):
     """
