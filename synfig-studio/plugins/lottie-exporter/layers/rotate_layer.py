@@ -6,6 +6,7 @@ import sys
 import settings
 from helpers.transform import gen_helpers_transform
 from synfig.animation import print_animation, gen_dummy_waypoint
+from synfig.group import update_precomp
 sys.path.append("..")
 
 
@@ -13,13 +14,15 @@ def gen_layer_rotate_layer(lottie, layer):
     """
     Help generate transform properties
     """
-    pos = [settings.lottie_format["w"]/2, settings.lottie_format["h"]/2]
-    anchor = [0, 0, 0]
+    # Update the positions if inside another comp
+    update_precomp(layer)
+
     scale = [100, 100, 100]
     for child in layer:
         if child.tag == "param":
             if child.attrib["name"] == "origin":
                 anchor = gen_dummy_waypoint(child, "param", "vector")[0]
+                pos = anchor
             elif child.attrib["name"] == "amount":  # This is rotation
                 rotation = gen_dummy_waypoint(child, "param", "angle")[0]
                 rotation.attrib["type"] = "rotate_layer_angle"
@@ -27,4 +30,4 @@ def gen_layer_rotate_layer(lottie, layer):
                 for waypoint in rotation:
                     waypoint[0].attrib["value"] = str(-float(waypoint[0].attrib["value"]))
 
-    gen_helpers_transform(lottie, layer, anchor, anchor, scale, rotation)
+    gen_helpers_transform(lottie, layer, pos, anchor, scale, rotation)

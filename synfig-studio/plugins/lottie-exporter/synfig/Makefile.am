@@ -3,7 +3,8 @@
 PLUGIN_NAME = synfig
 
 EXTRA_FILES = \
-			  animation.py
+			  animation.py \
+			  group.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \

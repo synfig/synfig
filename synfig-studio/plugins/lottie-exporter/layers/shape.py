@@ -11,6 +11,7 @@ from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill
 from shapes.rectangle import gen_shapes_rectangle
 from helpers.blendMode import get_blend
+from synfig.group import update_precomp
 sys.path.append("..")
 
 
@@ -26,6 +27,8 @@ def gen_layer_shape(lottie, layer, idx):
     Returns:
         (None)
     """
+    update_precomp(layer)
+
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx

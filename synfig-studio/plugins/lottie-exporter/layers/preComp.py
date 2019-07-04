@@ -22,16 +22,18 @@ def gen_layer_precomp(lottie, layer, idx):
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 
+    if layer.attrib["type"] == "rotate":
+        # transform properties will be written inside this now
+        gen_layer_rotate_layer(lottie["ks"], layer)
+        settings.INSIDE_PRECOMP = True
+
     settings.lottie_format["assets"].append({})
     asset = add_precomp_asset(settings.lottie_format["assets"][-1], layer.getparent(), idx)
     lottie["refId"] = asset
 
-    if layer.attrib["type"] == "rotate":
-        # transform properties will be written inside this now
-        gen_layer_rotate_layer(lottie["ks"], layer)
 
-    lottie["w"] = settings.lottie_format["w"]
-    lottie["h"] = settings.lottie_format["h"]
+    lottie["w"] = 3*settings.lottie_format["w"] # Experimental increase in width and height of precomposition
+    lottie["h"] = 3*settings.lottie_format["h"]
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
