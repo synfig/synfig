@@ -203,12 +203,12 @@ Color::clamped()const
 
 
 Color
-Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
+Color::blend(Color a, Color b, float amount, Color::BlendMethod type)
 {
 	// No matter what blend method is being used,
 	// if the amount is equal to zero, then only B
 	// will shine through
-	if(fabsf(amount)<=COLOR_EPSILON)return b;
+	if(fabsf(amount)<=COLOR_EPSILON) return b;
 
 	assert(type<BLEND_END);
 
@@ -239,6 +239,7 @@ Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 		blendfunc_ALPHA_OVER<Color>,
 		blendfunc_OVERLAY<Color>,		// 20
 		blendfunc_STRAIGHT_ONTO<Color>,
+		blendfunc_ADD_COMPOSITE<Color>,
 	};
 
 	return vtable[type](a,b,amount);

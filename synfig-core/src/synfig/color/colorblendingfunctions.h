@@ -150,6 +150,27 @@ C blendfunc_DARKEN(C &a,C &b,float amount)
 template <class C>
 C blendfunc_ADD(C &a,C &b,float amount)
 {
+	// Color b = background color
+	// Color a = color to blend on b
+
+	float ba = b.get_a(); // Alpha from color b
+	float aa = a.get_a() * amount; // Alpha from color a (multiplied with the current amount)
+
+	// Calc alpha of the result color
+	float alpha_result = ba; // Alpha value is the background pixel alpha value (this crops the outer part of the foreground object)
+
+	// Calc the resulting rgb colors and set alpha
+	b.set_r(b.get_r() * ba + a.get_r() * aa);
+	b.set_g(b.get_g() * ba + a.get_g() * aa);
+	b.set_b(b.get_b() * ba + a.get_b() * aa);
+	b.set_a(alpha_result);
+
+	return b;
+}
+
+template <class C>
+C blendfunc_ADD_COMPOSITE(C &a,C &b,float amount)
+{
 	float ba(b.get_a());
 	float aa(a.get_a()*amount);
 	const float alpha(std::max(0.f, std::min(1.f, ba + aa)));
@@ -167,16 +188,20 @@ C blendfunc_ADD(C &a,C &b,float amount)
 template <class C>
 C blendfunc_SUBTRACT(C &a,C &b,float amount)
 {
-	float ba(b.get_a());
-	float aa(a.get_a()*amount);
-	const float alpha(std::max(0.f, std::min(1.f, ba + aa)));
-	const float k = fabs(alpha) > 1e-8 ? 1.0/alpha : 0.0;
-	aa *= k; ba *= k;
+	// Color b = background color
+	// Color a = color to blend on b
 
-	b.set_r(b.get_r()*ba-a.get_r()*aa);
-	b.set_g(b.get_g()*ba-a.get_g()*aa);
-	b.set_b(b.get_b()*ba-a.get_b()*aa);
-	b.set_a(alpha);
+	float ba = b.get_a(); // Alpha from color b
+	float aa = a.get_a() * amount; // Alpha from color a (multiplied with the current amount)
+
+	// Calc alpha of the result color
+	float alpha_result = ba; // Alpha value is the background pixel alpha value (this crops the outer part of the foreground object)
+
+	// Calc the resulting rgb colors and set alpha
+	b.set_r(b.get_r() * ba - a.get_r() * aa);
+	b.set_g(b.get_g() * ba - a.get_g() * aa);
+	b.set_b(b.get_b() * ba - a.get_b() * aa);
+	b.set_a(alpha_result);
 
 	return b;
 }
@@ -184,16 +209,20 @@ C blendfunc_SUBTRACT(C &a,C &b,float amount)
 template <class C>
 C blendfunc_DIFFERENCE(C &a,C &b,float amount)
 {
-	float ba(b.get_a());
-	float aa(a.get_a()*amount);
-	const float alpha(std::max(0.f, std::min(1.f, ba + aa)));
-	const float k = fabs(alpha) > 1e-8 ? 1.0/alpha : 0.0;
-	aa *= k; ba *= k;
+	// Color b = background color
+	// Color a = color to blend on b
 
-	b.set_r(std::abs(b.get_r()*ba-a.get_r()*aa));
-	b.set_g(std::abs(b.get_g()*ba-a.get_g()*aa));
-	b.set_b(std::abs(b.get_b()*ba-a.get_b()*aa));
-	b.set_a(alpha);
+	float ba = b.get_a(); // Alpha from color b
+	float aa = a.get_a() * amount; // Alpha from color a (multiplied with the current amount)
+
+	// Calc alpha of the result color
+	float alpha_result = ba; // Alpha value is the background pixel alpha value (this crops the outer part of the foreground object)
+
+	// Calc the resulting rgb colors and set alpha
+	b.set_r(std::abs(b.get_r() * ba - a.get_r() * aa));
+	b.set_g(std::abs(b.get_g() * ba - a.get_g() * aa));
+	b.set_b(std::abs(b.get_b() * ba - a.get_b() * aa));
+	b.set_a(alpha_result);
 
 	return b;
 }

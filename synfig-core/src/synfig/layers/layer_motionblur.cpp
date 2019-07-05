@@ -463,7 +463,7 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 
 		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
 		task_blend->amount = scales[i]*k;
-		task_blend->blend_method = Color::BLEND_ADD;
+		task_blend->blend_method = Color::BLEND_ADD_COMPOSITE;
 		task_blend->sub_task_a() = task;
 		task_blend->sub_task_b() = context.build_rendering_task();
 		task = task_blend;
