@@ -169,7 +169,7 @@ C blendfunc_ADD(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_ADD_NOCROP(C &a,C &b,float amount)
+C blendfunc_ADD_COMPOSITE(C &a,C &b,float amount)
 {
 	float ba(b.get_a());
 	float aa(a.get_a()*amount);
