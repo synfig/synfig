@@ -105,25 +105,23 @@ def insert_waypoint_at_frame(animated, orig_path, frame, animated_name):
     animated.insert(i, new_waypoint)
 
 
-def print_animation(b):
+def print_animation(*argv):
     """
     Given any animation, b, It prints the animation in pretty way.
     Helpful in debugging
 
     Args:
-        b (lxml.etree._Element): Holds the animation to be printed
+        argv (tuple): Holds the animations to be printed
+        arg will be of type lxml.etree._Element
 
     Returns:
         (None)
     """
-    a = copy.deepcopy(b)
-    """
-    for i in range(len(a)):
-        a[i].attrib["frames"] = str(get_frame(a[i]))
-        a[i][0][0].text = str(float(a[i][0][0].text) * settings.PIX_PER_UNIT)
-        a[i][0][1].text = str(float(a[i][0][1].text) * settings.PIX_PER_UNIT)
-        """
-    print(etree.tostring(a, method='xml', encoding='utf8', pretty_print=True).decode())
+    print("####################### START ########################")
+    for arg in argv:
+        a = copy.deepcopy(arg)
+        print(etree.tostring(a, method='xml', encoding='utf8', pretty_print=True).decode())
+    print("####################### END ##########################")
 
 
 def to_Synfig_axis(pos, animated_name):

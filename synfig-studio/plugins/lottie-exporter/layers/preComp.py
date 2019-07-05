@@ -6,7 +6,8 @@ import sys
 import settings
 from misc import Count
 from sources.precomp import add_precomp_asset
-from layers.rotate_layer import gen_layer_rotate_layer
+from layers.rotate_layer import gen_layer_rotate
+from layers.scale_layer import gen_layer_scale
 sys.path.append("..")
 
 
@@ -24,7 +25,10 @@ def gen_layer_precomp(lottie, layer, idx):
 
     if layer.attrib["type"] == "rotate":
         # transform properties will be written inside this now
-        gen_layer_rotate_layer(lottie["ks"], layer)
+        gen_layer_rotate(lottie["ks"], layer)
+        settings.INSIDE_PRECOMP = True
+    elif layer.attrib["type"] == "zoom":
+        gen_layer_scale(lottie["ks"], layer)
         settings.INSIDE_PRECOMP = True
 
     settings.lottie_format["assets"].append({})

@@ -61,8 +61,6 @@ def parse(file_name):
     # Initialize the logging
     init_logs()
 
-    #update_origins(root)
-
     settings.lottie_format["layers"] = []
     gen_layers(settings.lottie_format["layers"], root, len(root) - 1)
 

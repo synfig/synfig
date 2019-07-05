@@ -273,7 +273,7 @@ class Vector:
             return [self.val1, self.val2]
         elif self.type == "circle_radius":
             return [self.val1, self.val1]
-        elif self.type in {"rectangle_size", "image_scale"}:
+        elif self.type in {"rectangle_size", "image_scale", "scale_layer_zoom"}:
             return [self.val1, self.val3]
         else:
             return [self.val1]
@@ -457,8 +457,13 @@ def parse_position(animated, i):
         pos = [get_angle(float(animated[i][0].attrib["value"])),
                get_frame(animated[i])]
 
-    elif animated.attrib["type"] in {"region_angle", "rotate_layer_angle"}:
+    elif animated.attrib["type"] == "region_angle":
         pos = [float(animated[i][0].attrib["value"]),
+               get_frame(animated[i])]
+
+    elif animated.attrib["type"] == "rotate_layer_angle":
+        # Angle needs to made neg of what they are
+        pos = [-float(animated[i][0].attrib["value"]),
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "opacity":
@@ -484,6 +489,13 @@ def parse_position(animated, i):
         val2 = get_frame(animated[i])
         vec = Vector(val, val2, animated.attrib["type"])
         vec.add_new_val(float(animated[i][0].attrib["value2"]))
+        return vec
+
+    elif animated.attrib["type"] == "scale_layer_zoom":
+        val = (math.e ** float(animated[i][0].attrib["value"])) * 100
+        val2 = get_frame(animated[i])
+        vec = Vector(val, val2, animated.attrib["type"])
+        vec.add_new_val(val)
         return vec
 
     elif animated.attrib["type"] == "color":

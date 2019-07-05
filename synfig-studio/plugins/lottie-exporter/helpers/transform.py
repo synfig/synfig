@@ -126,4 +126,18 @@ def gen_helpers_transform(lottie, layer, pos=[0, 0], anchor=[0, 0, 0], scale=[10
                              settings.NO_INFO)
     # This means scale parameter is animated
     else:
-        gen_value_Keyframed(lottie["s"], scale, index.inc())
+        is_animate = is_animated(scale)
+        if is_animate == 2:
+            gen_value_Keyframed(lottie["s"], scale, index.inc())
+        else:
+            zoom = 0
+            if is_animated == 0:
+                zoom = float(scale.attrib["value"])
+            else:
+                zoom = float(scale[0][0].attrib["value"])
+            zoom = (math.e ** zoom) * 100
+            gen_properties_value(lottie["s"],
+                                 [zoom, zoom],
+                                 index.inc(),
+                                 settings.DEFAULT_ANIMATED,
+                                 settings.NO_INFO)
