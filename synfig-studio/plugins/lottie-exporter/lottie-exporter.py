@@ -15,6 +15,7 @@ import logging
 from lxml import etree
 from canvas import gen_canvas
 from layers.driver import gen_layers
+from synfig.group import update_origins
 import settings
 
 
@@ -60,6 +61,8 @@ def parse(file_name):
 
     # Initialize the logging
     init_logs()
+
+    #update_origins(root)
 
     settings.lottie_format["layers"] = []
     gen_layers(settings.lottie_format["layers"], root, len(root) - 1)
