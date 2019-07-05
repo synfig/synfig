@@ -21,7 +21,7 @@ def gen_layers(lottie, root, layer_itr):
     solid_layer = {"SolidColor"}
     shape_solid_layer = {"region", "polygon", "outline"}
     image_layer = {"import"}
-    pre_comp_layer = {"rotate", "zoom"}
+    pre_comp_layer = {"rotate", "zoom", "translate"}
     supported_layers = shape_layer.union(solid_layer)
     supported_layers = supported_layers.union(shape_solid_layer)
     supported_layers = supported_layers.union(image_layer)
@@ -30,19 +30,18 @@ def gen_layers(lottie, root, layer_itr):
         child = root[itr]
         if child.tag == "layer":
             if child.attrib["type"] not in supported_layers:  # Only supported layers
-                logging.warning("Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page", child.attrib["type"])
+                logging.warning(settings.NOT_SUPPORTED_TEXT, child.attrib["type"])
                 itr -= 1
                 continue
             elif child.attrib["active"] == "false":   # Only render the active layers
-                logging.info("Layer '%s' is not active", child.attrib["type"])
+                logging.info(settings.NOT_ACTIVE_TEXT, child.attrib["type"])
                 itr -= 1
                 continue
             elif "exclude_from_rendering" in child.keys() and child.attrib["exclude_from_rendering"] == "true":
-                logging.info("Layer '%s' is excluded from rendering", child.attrib["type"])
+                logging.info(settings.EXCLUDE_FROM_RENDERING, child.attrib["type"])
                 itr -= 1
                 continue
 
-            #lottie.insert(0, {})
             lottie.append({})
             if child.attrib["type"] in shape_layer:           # Goto shape layer
                 gen_layer_shape(lottie[-1],

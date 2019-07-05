@@ -49,6 +49,9 @@ MASK_ADDITIVE = "a"
 INSIDE_PRECOMP = False  # specifies if we are inside a precomp or not
 ADDITIONAL_PRECOMP_WIDTH = 0
 ADDITIONAL_PRECOMP_HEIGHT = 0
+NOT_SUPPORTED_TEXT = "Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page"
+NOT_ACTIVE_TEXT = "Layer '%s' is not active"
+EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
 
 
 def init():
