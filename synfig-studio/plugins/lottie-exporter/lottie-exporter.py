@@ -15,7 +15,6 @@ import logging
 from lxml import etree
 from canvas import gen_canvas
 from layers.driver import gen_layers
-from synfig.group import update_origins
 import settings
 
 

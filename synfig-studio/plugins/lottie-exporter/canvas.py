@@ -65,6 +65,9 @@ def gen_canvas(lottie, root):
     else:
         lottie["h"] = settings.DEFAULT_HEIGHT
 
+    settings.ADDITIONAL_PRECOMP_WIDTH = 2*lottie["w"]
+    settings.ADDITIONAL_PRECOMP_HEIGHT = 2*lottie["h"]
+
     name = settings.DEFAULT_NAME
     for child in root:
         if child.tag == "name":

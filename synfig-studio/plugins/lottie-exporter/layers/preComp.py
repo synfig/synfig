@@ -32,8 +32,8 @@ def gen_layer_precomp(lottie, layer, idx):
     lottie["refId"] = asset
 
 
-    lottie["w"] = 3*settings.lottie_format["w"] # Experimental increase in width and height of precomposition
-    lottie["h"] = 3*settings.lottie_format["h"]
+    lottie["w"] = settings.lottie_format["w"] + settings.ADDITIONAL_PRECOMP_WIDTH # Experimental increase in width and height of precomposition
+    lottie["h"] = settings.lottie_format["h"] + settings.ADDITIONAL_PRECOMP_HEIGHT
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]

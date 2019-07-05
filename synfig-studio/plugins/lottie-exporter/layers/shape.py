@@ -27,7 +27,8 @@ def gen_layer_shape(lottie, layer, idx):
     Returns:
         (None)
     """
-    update_precomp(layer)
+    if settings.INSIDE_PRECOMP:
+        update_precomp(layer)
 
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D

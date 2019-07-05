@@ -33,5 +33,4 @@ def gen_layer_rotate_layer(lottie, layer):
     update_precomp(anchor)
     if settings.INSIDE_PRECOMP:
         update_precomp(pos)
-    print_animation(anchor)
     gen_helpers_transform(lottie, layer, pos, anchor, scale, rotation)

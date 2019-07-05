@@ -47,6 +47,8 @@ EFFECTS_VFEATHER = 0    # vertical feather
 EFFECTS_OPACITY = 0     # Opacity ty = 0
 MASK_ADDITIVE = "a"
 INSIDE_PRECOMP = False  # specifies if we are inside a precomp or not
+ADDITIONAL_PRECOMP_WIDTH = 0
+ADDITIONAL_PRECOMP_HEIGHT = 0
 
 
 def init():
