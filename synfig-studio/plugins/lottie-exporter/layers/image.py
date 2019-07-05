@@ -13,6 +13,7 @@ from helpers.blendMode import get_blend
 from sources.image import add_image_asset
 from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame, to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
+import synfig.group as group
 sys.path.append("..")
 
 
@@ -28,6 +29,8 @@ def gen_layer_image(lottie, layer, idx):
     Returns:
         (None)
     """
+    group.update_layer(layer)
+
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx

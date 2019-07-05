@@ -7,7 +7,7 @@ import copy
 import settings
 from helpers.transform import gen_helpers_transform
 from synfig.animation import print_animation, gen_dummy_waypoint
-from synfig.group import update_precomp
+import synfig.group as group
 sys.path.append("..")
 
 
@@ -19,18 +19,18 @@ def gen_layer_rotate_layer(lottie, layer):
     for child in layer:
         if child.tag == "param":
             if child.attrib["name"] == "origin":
-                anchor = gen_dummy_waypoint(child, "param", "vector")[0]
-                anchor.attrib["name"] = "origin"
+                anchor = gen_dummy_waypoint(child, "param", "vector")
+                anchor[0].attrib["name"] = "origin"
                 pos = anchor
             elif child.attrib["name"] == "amount":  # This is rotation
-                rotation = gen_dummy_waypoint(child, "param", "angle")[0]
-                rotation.attrib["type"] = "rotate_layer_angle"
+                rotation = gen_dummy_waypoint(child, "param", "angle")
+                rotation[0].attrib["type"] = "rotate_layer_angle"
                 # Angle needs to made neg of what they are
-                for waypoint in rotation:
+                for waypoint in rotation[0]:
                     waypoint[0].attrib["value"] = str(-float(waypoint[0].attrib["value"]))
 
     anchor = copy.deepcopy(anchor)
-    update_precomp(anchor)
+    group.update_pos(anchor)
     if settings.INSIDE_PRECOMP:
-        update_precomp(pos)
-    gen_helpers_transform(lottie, layer, pos, anchor, scale, rotation)
+        group.update_pos(pos)
+    gen_helpers_transform(lottie, layer, pos[0], anchor[0], scale, rotation[0])

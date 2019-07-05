@@ -10,7 +10,7 @@ from helpers.blendMode import get_blend
 from helpers.mask import gen_mask
 from misc import Count, get_color_hex, is_animated
 from effects.fill import gen_effects_fill
-from synfig.group import update_precomp, get_additional_width, get_additional_height
+from synfig.group import update_layer, get_additional_width, get_additional_height
 sys.path.append("..")
 
 
@@ -26,8 +26,7 @@ def gen_layer_shape_solid(lottie, layer, idx):
     Returns:
         (None)
     """
-    if settings.INSIDE_PRECOMP:
-        update_precomp(layer)
+    update_layer(layer)
 
     # Setting the solid layer which will be masked
     index = Count()

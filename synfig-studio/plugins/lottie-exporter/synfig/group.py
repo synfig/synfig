@@ -12,29 +12,47 @@ from synfig.animation import print_animation
 sys.path.append("..")
 
 
-def update_precomp(node):
+def get_offset():
     """
-    Inserts necassary offset in the positions of the layers if they lie inside
-    another composition of Lottie
-    """ 
+    """
     x = settings.ADDITIONAL_PRECOMP_WIDTH / 2
     y = settings.ADDITIONAL_PRECOMP_HEIGHT / 2
     offset = Vector(x, -y)
     offset /= settings.PIX_PER_UNIT
+    return offset
 
+
+def update_layer(node):
+    """
+    Inserts necassary offset in the positions of the layers if they lie inside
+    another composition of Lottie
+    """ 
+    # This if condition is not applicable for group, rotate, precomp... layers
+    if not settings.INSIDE_PRECOMP:
+        return
+
+    update_dict = []
     if node.tag == "layer":
+        compare = {"origin", "point1", "point2", "tl", "br"}
         for child in node:
-            if child.tag == "param" and child.attrib["name"] == "origin":
-                origin = child 
-        is_animate = is_animated(origin[0])
-        if is_animate == 0:
-            add(origin[0], offset)
-        else:
-            for waypoint in origin[0]:
-                add(waypoint[0], offset)
+            if child.tag == "param" and child.attrib["name"] in compare:
+                update_dict.append(child)
     else:
-        origin = node
-        for waypoint in origin:
+        update_dict.append(node)
+
+    for param in update_dict:
+        update_pos(param)
+
+
+def update_pos(origin):
+    """
+    """
+    offset = get_offset()
+    is_animate = is_animated(origin[0])
+    if is_animate == 0:
+        add(origin[0], offset)
+    else:
+        for waypoint in origin[0]:
             add(waypoint[0], offset)
 
 
