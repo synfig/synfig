@@ -19,7 +19,6 @@ def update_precomp(node):
     """ 
     x = settings.ADDITIONAL_PRECOMP_WIDTH / 2
     y = settings.ADDITIONAL_PRECOMP_HEIGHT / 2
-    print(x, y)
     offset = Vector(x, -y)
     offset /= settings.PIX_PER_UNIT
 
@@ -44,5 +43,17 @@ def add(vector, offset):
     """
     vector[0].text = str(float(vector[0].text) + offset[0])
     vector[1].text = str(float(vector[1].text) + offset[1])
+
+
+def get_additional_width():
+    if settings.INSIDE_PRECOMP:
+        return settings.ADDITIONAL_PRECOMP_WIDTH
+    return 0
+
+
+def get_additional_height():
+    if settings.INSIDE_PRECOMP:
+        return settings.ADDITIONAL_PRECOMP_HEIGHT
+    return 0
 
 # Should be -x, +y -> the offset
