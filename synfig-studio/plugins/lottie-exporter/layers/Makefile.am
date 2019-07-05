@@ -7,6 +7,7 @@ EXTRA_FILES = \
 			  image.py \
 			  preComp.py \
 			  rotate_layer.py \
+			  scale_layer.py \
               shape.py \
 			  solid.py \
 			  shape_solid.py
