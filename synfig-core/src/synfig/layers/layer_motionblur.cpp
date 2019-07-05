@@ -68,7 +68,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_MotionBlur,"$Id$");
 
 Layer_MotionBlur::Layer_MotionBlur():
 	Layer_CompositeFork     (1.0,Color::BLEND_STRAIGHT),
-	param_aperture          (ValueBase(Time(0))),
+	param_aperture          (ValueBase(Time(1.0))),
 	param_subsamples_factor (ValueBase(Real(1.0))),
 	param_subsampling_type  (ValueBase(int(SUBSAMPLING_HYPERBOLIC))),
 	param_subsample_start   (ValueBase(Real(0.0))),
