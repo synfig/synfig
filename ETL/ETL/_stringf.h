@@ -55,7 +55,7 @@
 
 /* === T Y P E D E F S ===================================================== */
 
-_ETL_BEGIN_CDECLS
+extern "C" {
 
 #if defined(__APPLE__) || defined(__CYGWIN__) || defined(_WIN32)
 #define ETL_NO_THROW
@@ -97,7 +97,7 @@ _ETL_BEGIN_CDECLS
 
 #include <unistd.h>
 
-_ETL_END_CDECLS
+}
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 

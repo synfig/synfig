@@ -33,9 +33,11 @@
 #include <synfig/importer.h>
 #include <synfig/string.h>
 #include <synfig/surface.h>
-_ETL_BEGIN_CDECLS
+
+extern "C" {
 #include <jpeglib.h>
-_ETL_END_CDECLS
+}
+
 #include <setjmp.h>
 
 /* === M A C R O S ========================================================= */
