@@ -31,6 +31,7 @@
 
 #include "centerlinevectorizer.h"
 #include "polygonizerclasses.h"
+#include "modules/mod_geometry/outline.h"
 #endif
 
 /* === U S I N G =========================================================== */
@@ -110,7 +111,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 //   // junctionRecovery(polygons);   //Da' problemi per maxThickness<inf...
 //   // sarebbe da rendere compatibile
 
-//   std::vector<TStroke *> sortibleResult;
+  std::vector< Outline *> sortibleResult;
 //   TVectorImageP result;
   
   // step 5
@@ -120,7 +121,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 
 //   // step 6
 //   // Converts each forward or single Sequence of the image in its corresponding Stroke.
-//   conversionToStrokes(sortibleResult, globals);
+  studio::conversionToStrokes(sortibleResult, globals);
 
 //   // step 7
 
