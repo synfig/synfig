@@ -39,7 +39,7 @@ def gen_layer_shape_solid(lottie, layer, idx):
     lottie["ef"] = []   # Stores the effects
 
     pos = [settings.lottie_format["w"]/2 + get_additional_width()/2,
-            settings.lottie_format["h"]/2 + get_additional_height()/2]
+           settings.lottie_format["h"]/2 + get_additional_height()/2]
     anchor = pos
     gen_helpers_transform(lottie["ks"], layer, pos, anchor)
 

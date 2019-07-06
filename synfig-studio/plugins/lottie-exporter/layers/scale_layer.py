@@ -6,14 +6,21 @@ import sys
 import copy
 import settings
 from helpers.transform import gen_helpers_transform
-from synfig.animation import print_animation, gen_dummy_waypoint
+from synfig.animation import gen_dummy_waypoint
 import synfig.group as group
 sys.path.append("..")
 
 
 def gen_layer_scale(lottie, layer):
     """
-    Help generate transform properties
+    Help generate transform properties of a scale layer
+
+    Args:
+        lottie (dict) : Store transform properties in lottie format
+        layer  (lxml.etree._Element) Transform properties in Synfig format
+
+    Returns:
+        (None)
     """
     for child in layer:
         if child.tag == "param":

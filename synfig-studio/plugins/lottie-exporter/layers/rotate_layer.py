@@ -6,14 +6,21 @@ import sys
 import copy
 import settings
 from helpers.transform import gen_helpers_transform
-from synfig.animation import print_animation, gen_dummy_waypoint
+from synfig.animation import gen_dummy_waypoint
 import synfig.group as group
 sys.path.append("..")
 
 
 def gen_layer_rotate(lottie, layer):
     """
-    Help generate transform properties
+    Help generate transform properties of a rotate layer
+
+    Args:
+        lottie (dict) : Will store the transform properties in lottie format
+        layer  (lxml.etree._Element) : Tranform properties in Synfig format
+
+    Returns:
+        (None)
     """
     scale = [100, 100, 100]
     for child in layer:

@@ -15,6 +15,23 @@ from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_fr
 sys.path.append("../")
 
 
+def append_path(element, parent, element_name, typ="real"):
+    """
+    Generates a dictionary corresponding to the path followed by that element
+    and appends it at the parent which will be needed later
+    """
+    # Generating the path and store in the lxml element
+    element_dict = {}
+    if typ == "real":
+        gen_value_Keyframed(element_dict, element, 0)
+    else:
+        gen_properties_multi_dimensional_keyframed(element_dict, element, 0)
+    # Store in lxml element
+    element_lxml = etree.Element(element_name)
+    element_lxml.text = str(element_dict)
+    parent.append(element_lxml)
+
+
 def animate_radial_composite(radial_composite, window):
     """
     Animates the radial composite and updates the window of frame if radial
@@ -43,21 +60,8 @@ def animate_radial_composite(radial_composite, window):
     update_child_at_parent(radial_composite, radius, "radius")
     update_child_at_parent(radial_composite, theta, "theta")
 
-    # Generating the radial path and store in the lxml element
-    radius_dict = {}
-    gen_value_Keyframed(radius_dict, radius[0], 0)
-    # Store in lxml element
-    radius_lxml = etree.Element("radius_path")
-    radius_lxml.text = str(radius_dict)
-    radial_composite.append(radius_lxml)
-
-    # Generating the theta path and store in the lxml element
-    theta_dict = {}
-    gen_value_Keyframed(theta_dict, theta[0], 0)
-    # Store in lxml element
-    theta_lxml = etree.Element("theta_path")
-    theta_lxml.text = str(theta_dict)
-    radial_composite.append(theta_lxml)
+    append_path(radius[0], radial_composite, "radius_path")
+    append_path(theta[0], radial_composite, "theta_path")
 
 
 def update_frame_window(node, window):
@@ -212,13 +216,7 @@ def gen_bline_shapePropKeyframe(lottie, bline_point, origin):
         split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
         update_child_at_parent(composite, split_a, "split_angle")
 
-        # Generate path for Lottie format
-        path_dict = {}
-        gen_properties_multi_dimensional_keyframed(path_dict, pos[0], 0)
-        # Store in lxml element
-        path_lxml = etree.Element("point_path")
-        path_lxml.text = str(path_dict)
-        composite.append(path_lxml)
+        append_path(pos[0], composite, "point_path", "vector")
 
         animate_radial_composite(t1[0], window)
         animate_radial_composite(t2[0], window)
@@ -317,13 +315,8 @@ def gen_dynamic_list_shapePropKeyframe(lottie, dynamic_list, origin):
         pos.getparent().remove(pos)
         dynamic_list.insert(count, new_pos)
 
-        # Generate path for lottie format
-        path_dict = {}
-        gen_properties_multi_dimensional_keyframed(path_dict, new_pos[0], 0)
-        # Store in lxml element
-        path_lxml = etree.Element("pos_path")
-        path_lxml.text = str(path_dict)
-        dynamic_list[count].append(path_lxml)
+        append_path(new_pos[0], dynamic_list[count], "pos_path", "vector")
+
         count += 1
 
     # Animating the origin
@@ -441,21 +434,8 @@ def gen_bline_outline(lottie, bline_point, origin):
         split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
         update_child_at_parent(composite, split_a, "split_angle")
 
-        # Generate path for Lottie format
-        path_dict = {}
-        gen_properties_multi_dimensional_keyframed(path_dict, pos[0], 0)
-        # Store in lxml element
-        path_lxml = etree.Element("point_path")
-        path_lxml.text = str(path_dict)
-        composite.append(path_lxml)
-
-        # Generate width for Lottie format
-        width_dict = {}
-        gen_value_Keyframed(width_dict, width[0], 0)
-        # Store in lxml element
-        width_lxml = etree.Element("width_path")
-        width_lxml.text = str(width_dict)
-        composite.append(width_lxml)
+        append_path(pos[0], composite, "point_path", "vector")
+        append_path(width[0], composite, "width_path")
 
         animate_radial_composite(t1[0], window)
         animate_radial_composite(t2[0], window)
@@ -629,6 +609,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
     CUSP_THRESHOLD = 0.40
     SPIKE_AMOUNT = 4
     ROUND_END_FACTOR = 4
+
     outer_width = to_Synfig_axis(get_vector_at_frame(outer_width_dict, fr), "real")
     expand = to_Synfig_axis(get_vector_at_frame(expand_dict, fr), "real")
     sharp_cusps = get_bool_at_frame(sharp_cusps_anim[0], fr)

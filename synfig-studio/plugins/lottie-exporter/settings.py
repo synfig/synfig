@@ -1,5 +1,5 @@
+# pylint: disable=line-too-long
 """
-settings.py
 This module contains all the global variables and constants
 """
 
@@ -30,6 +30,9 @@ NO_INFO = "no_info"
 DEFAULT_ROTATION = 0
 DEFAULT_OPACITY = 100
 DEFAULT_DIRECTION = 1
+DEFAULT_POSITION = [0, 0]
+DEFAULT_ANCHOR = [0, 0, 0]
+DEFAULT_SCALE = [100, 100, 100]
 GAMMA = 2.2
 PIX_PER_UNIT = 0
 TANGENT_FACTOR = 3.0

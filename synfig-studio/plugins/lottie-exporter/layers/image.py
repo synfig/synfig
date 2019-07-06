@@ -8,8 +8,8 @@ import copy
 from lxml import etree
 import settings
 from helpers.transform import gen_helpers_transform
-from misc import Count, is_animated, get_frame
 from helpers.blendMode import get_blend
+from misc import is_animated, get_frame
 from sources.image import add_image_asset
 from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame, to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
@@ -31,7 +31,6 @@ def gen_layer_image(lottie, layer, idx):
     """
     group.update_layer(layer)
 
-    index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_IMAGE_TYPE

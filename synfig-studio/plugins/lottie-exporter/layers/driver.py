@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 Main driver functions to generate layers
 """
@@ -15,6 +16,16 @@ sys.path.append("..")
 
 def gen_layers(lottie, root, layer_itr):
     """
+    This function will be called for each canvas/composition. Main function to
+    generate all the layers
+
+    Args:
+        lottie (dict) : Layers in Lottie format
+        root   (lxml.etree._Element) : All layers of a canvas in Synfig format
+        layer_itr (int) : position of layer in canvas
+
+    Returns:
+        (None)
     """
     itr = layer_itr
     shape_layer = {"star", "circle", "rectangle", "filled_rectangle", "simple_circle"}

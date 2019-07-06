@@ -1,10 +1,10 @@
+# pylint: disable=line-too-long
 """
 Store all functions corresponding to pre composition in lottie
 """
 
 import sys
 import settings
-from misc import Count
 from sources.precomp import add_precomp_asset
 from layers.rotate_layer import gen_layer_rotate
 from layers.scale_layer import gen_layer_scale
@@ -14,9 +14,18 @@ sys.path.append("..")
 
 def gen_layer_precomp(lottie, layer, idx):
     """
+    Generates a pre-composition layer depending upon the layers inside that
+    pre-comp
     Here idx represents the position of layer in the .sif file also
+
+    Args:
+        lottie (dict) : Will store the pre-comp layer
+        layer  (lxml.etree._Element) : Specifies which layer it is
+        idx    (int)  : Index of the layer
+
+    Returns:
+        (None)
     """
-    index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_PRECOMP_TYPE
@@ -46,4 +55,4 @@ def gen_layer_precomp(lottie, layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    lottie["bm"] = settings.DEFAULT_BLEND    # Always have the default blend 
+    lottie["bm"] = settings.DEFAULT_BLEND    # Always have the default blend

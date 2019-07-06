@@ -4,11 +4,11 @@ Will store all the functions corresponding to solids in lottie
 
 import sys
 import settings
-from helpers.transform import gen_helpers_transform
 from misc import Count, get_color_hex
 from helpers.blendMode import get_blend
+from helpers.transform import gen_helpers_transform
 from effects.fill import gen_effects_fill
-from synfig.group import update_layer, get_additional_width, get_additional_height
+from synfig.group import get_additional_width, get_additional_height
 sys.path.append("..")
 
 
@@ -34,7 +34,7 @@ def gen_layer_solid(lottie, layer, idx):
     lottie["ef"] = []   # Stores the effects
 
     pos = [settings.lottie_format["w"]/2 + get_additional_width()/2,
-        settings.lottie_format["h"]/2 + get_additional_height()/2]
+           settings.lottie_format["h"]/2 + get_additional_height()/2]
 
     anchor = pos
     gen_helpers_transform(lottie["ks"], layer, pos, anchor)

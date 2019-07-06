@@ -1,18 +1,20 @@
+# pylint: disable=line-too-long
 """
 This module will store all the functions required for transformations
 corresponding to lottie
 """
 
 import sys
+import math
 import settings
-from misc import get_angle, Count, is_animated, change_axis
+from misc import Count, is_animated, change_axis
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 sys.path.append("../")
 
 
-def gen_helpers_transform(lottie, layer, pos=[0, 0], anchor=[0, 0, 0], scale=[100, 100, 100], rotation=settings.DEFAULT_ROTATION):
+def gen_helpers_transform(lottie, layer, pos=settings.DEFAULT_POSITION, anchor=settings.DEFAULT_ANCHOR, scale=settings.DEFAULT_SCALE, rotation=settings.DEFAULT_ROTATION):
     """
     Generates the dictionary corresponding to helpers/transform.json
 
@@ -68,7 +70,7 @@ def gen_helpers_transform(lottie, layer, pos=[0, 0], anchor=[0, 0, 0], scale=[10
                          settings.NO_INFO)
 
     # setting the rotation
-    if isinstance(rotation, float) or isinstance(rotation, int):
+    if isinstance(rotation, (float, int)):
         gen_properties_value(lottie["r"],
                              rotation,
                              index.inc(),
@@ -131,7 +133,7 @@ def gen_helpers_transform(lottie, layer, pos=[0, 0], anchor=[0, 0, 0], scale=[10
             gen_value_Keyframed(lottie["s"], scale, index.inc())
         else:
             zoom = 0
-            if is_animated == 0:
+            if is_animate == 0:
                 zoom = float(scale.attrib["value"])
             else:
                 zoom = float(scale[0][0].attrib["value"])
