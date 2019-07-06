@@ -37,10 +37,6 @@
 #define _ETL_BEGIN_CDECLS		extern "C" {
 #define _ETL_END_CDECLS			}
 
-#ifdef _REENTRANT
-#define ETL_REENTRANT	1
-#endif
-
 /* If __FUNC__ is not defined,
 ** try to define it. If we cannot,
 ** then just leave it undefined.
