@@ -28,9 +28,6 @@
 # define _STD_END_NAMESPACE
 #endif
 
-#define _ETL_BEGIN_CDECLS		extern "C" {
-#define _ETL_END_CDECLS			}
-
 /* If __FUNC__ is not defined,
 ** try to define it. If we cannot,
 ** then just leave it undefined.

@@ -34,9 +34,11 @@
 #include <synfig/string.h>
 #include <synfig/targetparam.h>
 #include <cstdio>
-_ETL_BEGIN_CDECLS
-#include <jpeglib.h>
-_ETL_END_CDECLS
+
+extern "C" {
+	#include <jpeglib.h>
+}
+
 #include <setjmp.h>
 
 /* === M A C R O S ========================================================= */
