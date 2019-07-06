@@ -296,6 +296,7 @@ src/synfig/rendering/software/rendererdraftsw.cpp
 src/synfig/rendering/software/rendererlowressw.cpp
 src/synfig/rendering/software/renderersafe.cpp
 src/synfig/rendering/software/renderersw.cpp
+src/synfig/rendering/software/rendererpreviewsw.cpp
 src/synfig/savecanvas.cpp
 src/synfig/savecanvas.h
 src/synfig/segment.h

@@ -3,6 +3,7 @@ org.synfig.SynfigStudio.appdata.xml.in
 synfigstudio-thumbnailer.schemas.in
 synfigstudio.keys.in
 plugins/add-skeleton-simple/plugin.xml.in
+plugins/lottie-exporter/plugin.xml.in
 plugins/view-unhide-all-layers/plugin.xml.in
 src/brushlib/brushsettings.py
 src/gui/actionmanagers/groupactionmanager.cpp
