@@ -5,11 +5,13 @@ lottie
 """
 
 import sys
-from properties.shapePropKeyframe import gen_bline_outline, gen_bline_shapePropKeyframe, gen_dynamic_list_shapePropKeyframe
+from properties.shapePropKeyframe.outline import gen_bline_outline
+from properties.shapePropKeyframe.region import gen_bline_region
+from properties.shapePropKeyframe.polygon import gen_dynamic_list_polygon
 sys.path.append("../")
 
 
-def gen_properties_shapeKeyframed(lottie, node, origin, idx):
+def gen_properties_shapeKeyframed(lottie, node, idx):
     """
     Will convert bline points/dynamic_list to bezier points as required by lottie if they are
     animated
@@ -17,7 +19,6 @@ def gen_properties_shapeKeyframed(lottie, node, origin, idx):
     Args:
         lottie      (dict) : Lottie generated shape keyframes will be stored here
         node        (lxml.etree._Element) : Shape/path in Synfig format :- Could be bline_point or dynamic_list
-        origin      (lxml.etree._Element) : Origin in Synfig format
         idx         (int) : Index/Count of shape/path
 
     Returns:
@@ -27,8 +28,11 @@ def gen_properties_shapeKeyframed(lottie, node, origin, idx):
     lottie["a"] = 1
     lottie["k"] = []
     if node.getparent().getparent().attrib["type"] == "region":
-        gen_bline_shapePropKeyframe(lottie["k"], node, origin)
+        gen_bline_region(lottie["k"], node)
     elif node.getparent().getparent().attrib["type"] == "polygon":
-        gen_dynamic_list_shapePropKeyframe(lottie["k"], node, origin)
+        gen_dynamic_list_polygon(lottie["k"], node)
     elif node.getparent().getparent().attrib["type"] == "outline":
-        gen_bline_outline(lottie["k"], node, origin)
+        gen_bline_outline(lottie["k"], node)
+    elif node.getparent().getparent().attrib["type"] == "circle":
+        #gen_list_circle(lottie["k"], node)
+        pass

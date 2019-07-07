@@ -32,10 +32,8 @@ def gen_mask(lottie, invert, bline_point, idx):
     lottie["x"] = {}    # Expression
     lottie["nm"] = "Mask " + str(idx)
     index = Count()
-    for chld in bline_point.getparent().getparent():
-        if chld.tag == "param" and chld.attrib["name"] == "origin":
-            origin = chld
-    gen_properties_shapeKeyframed(lottie["pt"], bline_point, origin, index.inc())
+
+    gen_properties_shapeKeyframed(lottie["pt"], bline_point, index.inc())
     gen_properties_value(lottie["o"], settings.DEFAULT_OPACITY, index.inc(), settings.DEFAULT_ANIMATED, settings.NO_INFO)
     gen_properties_value(lottie["x"], 0, index.inc(), settings.DEFAULT_ANIMATED, settings.NO_INFO)
 

@@ -207,6 +207,7 @@ AC_CONFIG_FILES([
     plugins/lottie-exporter/helpers/Makefile
     plugins/lottie-exporter/layers/Makefile
     plugins/lottie-exporter/properties/Makefile
+    plugins/lottie-exporter/properties/shapePropKeyframe/Makefile
     plugins/lottie-exporter/shapes/Makefile
     plugins/lottie-exporter/sources/Makefile
     plugins/lottie-exporter/synfig/Makefile
