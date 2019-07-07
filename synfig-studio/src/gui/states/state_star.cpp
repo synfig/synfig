@@ -427,7 +427,7 @@ StateStar_Context::load_settings()
 		if(settings.get_value("star.angle_offset",value))
 			set_angle_offset(atof(value.c_str()));
 		else
-			set_angle_offset(0);
+			set_angle_offset(90.0);
 
 		if(settings.get_value("star.invert",value) && value != "0")
 			set_invert(true);
