@@ -161,7 +161,6 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::Label angle_offset_label;
 	Glib::RefPtr<Gtk::Adjustment> angle_offset_adj;
 	Gtk::SpinButton	angle_offset_spin;
-	Gtk::HBox angle_offset_box;
 
 	// regular polygon
 	Gtk::Label regular_polygon_label;
@@ -687,11 +686,8 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	number_of_points_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	// 7, angle offset
-	SPACING(angle_offset_indent, INDENTATION);
 	angle_offset_label.set_label(_("Offset:"));
 	angle_offset_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	angle_offset_box.pack_start(*angle_offset_indent, Gtk::PACK_SHRINK);
-	angle_offset_box.pack_start(angle_offset_label, Gtk::PACK_SHRINK);
 
 	// 8, radius ratio
 	radius_ratio_label.set_label(_("Radius Ratio:"));
@@ -801,7 +797,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	// 7, star points offset
-	options_table.attach(angle_offset_box,
+	options_table.attach(angle_offset_label,
 		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
 	options_table.attach(angle_offset_spin,
