@@ -438,6 +438,7 @@ void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ra
 // Take samples of image colors to associate each stroke to its corresponding
 // palette color. Currently working on colormaps, closest-to-black strokes
 // otherwise.
+/*
 void applyStrokeColors(std::vector<TStroke *> &strokes, const TRasterP &ras,
                        TPalette *palette, VectorizerCoreGlobals &g) {
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;
@@ -483,5 +484,5 @@ void applyStrokeColors(std::vector<TStroke *> &strokes, const TRasterP &ras,
   }
 }
 
-
+*/
 
