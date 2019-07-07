@@ -298,7 +298,7 @@ public:
 
 // Changes in stroke thickness are considered more penalizating
 inline double ellProd(const synfig::Point3 &a, const synfig::Point3 &b) {
-  return a.x * b.x + a.y * b.y + 5 * a.z * b.z;
+  return a[0] * b[0] + a[1] * b[1] + 5 * a[2] * b[2];
 }
 
 //--------------------------------------------------------------------------
@@ -584,8 +584,8 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   // Infine, ho il termine noto
   l = TPointD(ellProd(IH, x) - HxL + ellProd(IM, x) - MxO,
               ellProd(IK, y) - KyL + ellProd(IN_, y) - NyO);
-  M.a13 = -l.x;
-  M.a23 = -l.y;
+  M.a13 = -l[0];
+  M.a23 = -l[1];
 
   // Check validity conditions:
   //  a) System is not singular
@@ -599,7 +599,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   synfig::Point3 d = e + M.a23 * y;
 
   //  c) The height of every CP must be >=0
-  if (b.z < 0 || d.z < 0) return 0;
+  if (b[2] < 0 || d[2] < 0) return 0;
   len.set_CPs(a, b, (b + d) * 0.5, d, e);
 
   return 1;
@@ -662,10 +662,10 @@ bool SequenceConverter::penalty(unsigned int a, unsigned int b, Length &len)
   p_max = 0;
   for (curr = a + 1, old = a, k = 0; curr < b; ++k, old = curr, curr += 2) 
   {
-    p_max += (middleAddedSequence[curr].z + middleAddedSequence[old].z) *
+    p_max += (middleAddedSequence[curr][2] + middleAddedSequence[old][2]) *
              (pars[k + 1] - pars[k]) / 2;
   }
-  p_max += (middleAddedSequence[b].z + middleAddedSequence[old].z) *
+  p_max += (middleAddedSequence[b][2] + middleAddedSequence[old][2]) *
            (pars[k + 1] - pars[k]) / 2;
 
   // Confronting 4th power of error with mean polygonal thickness
