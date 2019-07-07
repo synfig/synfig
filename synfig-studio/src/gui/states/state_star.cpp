@@ -423,9 +423,9 @@ StateStar_Context::load_settings()
 		else
 			set_radius_ratio(0.5);
 
-		if(settings.get_value("star.angle_offset",value))
-			set_angle_offset(atof(value.c_str()));
-		else
+		//if(settings.get_value("star.angle_offset",value))
+		//	set_angle_offset(atof(value.c_str()));
+		//else
 			set_angle_offset(90.0);
 
 		if(settings.get_value("star.invert",value) && value != "0")
@@ -509,7 +509,7 @@ StateStar_Context::save_settings()
 		settings.set_value("star.inner_width",strprintf("%f",(float)get_inner_width()));
 		settings.set_value("star.outer_width",strprintf("%f",(float)get_outer_width()));
 		settings.set_value("star.radius_ratio",strprintf("%f",(float)get_radius_ratio()));
-		settings.set_value("star.angle_offset",strprintf("%f",(float)get_angle_offset()));
+		//settings.set_value("star.angle_offset",strprintf("%f",(float)get_angle_offset()));
 		settings.set_value("star.invert",get_invert()?"1":"0");
 		settings.set_value("star.regular_polygon",get_regular_polygon()?"1":"0");
 		settings.set_value("star.layer_star",get_layer_star_flag()?"1":"0");
