@@ -1014,7 +1014,7 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 	if(!valid_id(id))
 		throw runtime_error("Invalid ID");
 	
-	child_canvas->rend_desc().set_time_end(rend_desc().get_time_end());
+	child_canvas->rend_desc()=rend_desc();
 	
 	try
 	{
