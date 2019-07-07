@@ -101,18 +101,7 @@ using namespace synfig;
 static etl::reference_counter synfig_ref_count_(0);
 Main *Main::instance = NULL;
 
-class GeneralIOMutexHolder {
-private:
-	Mutex mutex;
-	bool initialized;
-public:
-	GeneralIOMutexHolder(): initialized(true) { }
-	~GeneralIOMutexHolder() { initialized = false; }
-	void lock() { if (initialized) mutex.lock(); }
-	void unlock() { if (initialized) mutex.unlock(); }
-};
-
-GeneralIOMutexHolder general_io_mutex;
+Mutex general_io_mutex;
 
 /* === P R O C E D U R E S ================================================= */
 
