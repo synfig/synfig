@@ -7,6 +7,7 @@ EXTRA_FILES = \
 			  helper.py \
 			  outline.py \
 			  polygon.py \
+			  rectanle.py \
 			  region.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)

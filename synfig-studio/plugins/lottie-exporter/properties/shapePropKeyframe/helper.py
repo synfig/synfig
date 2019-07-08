@@ -301,3 +301,14 @@ def insert_dict_at(lottie, idx, fr, loop):
     st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop
     en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
     return st_val, en_val
+
+
+def quadratic_to_cubic(qp0, qp1, qp2):
+    """
+    Converts quadratic bezier curve to cubic bezier curve
+    """
+    cp0 = qp0
+    cp3 = qp2
+    cp1 = qp0 + 2/3*(qp1 - qp0)
+    cp2 = qp2 + 2/3*(qp1 - qp2)
+    return cp1, cp2

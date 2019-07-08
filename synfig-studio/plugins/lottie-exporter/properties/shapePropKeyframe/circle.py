@@ -1,6 +1,6 @@
 # pylint: disable=line-too-long
 """
-Will store all the functions and modules for generation of outline layer
+Will store all the functions and modules for generation of circle layer
 in Lottie format
 """
 
@@ -10,7 +10,7 @@ from misc import Matrix2, Vector
 from synfig.animation import to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window
+from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window, quadratic_to_cubic
 sys.path.append("../../")
 
 
@@ -115,13 +115,3 @@ def synfig_circle(st_val, origin_dict, radius_dict, fr):
         i += 1
 
     add(chunk_list, st_val, origin)
-
-def quadratic_to_cubic(qp0, qp1, qp2):
-    """
-    Converts quadratic bezier curve to cubic bezier curve
-    """
-    cp0 = qp0
-    cp3 = qp2
-    cp1 = qp0 + 2/3*(qp1 - qp0)
-    cp2 = qp2 + 2/3*(qp1 - qp2)
-    return cp1, cp2
