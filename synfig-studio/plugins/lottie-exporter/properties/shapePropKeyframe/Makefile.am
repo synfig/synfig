@@ -3,6 +3,7 @@
 PLUGIN_NAME = properties/shapePropKeyframe
 
 EXTRA_FILES = \
+			  circle.py \
 			  helper.py \
 			  outline.py \
 			  polygon.py \

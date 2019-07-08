@@ -1,6 +1,6 @@
 # pylint: disable=line-too-long
 """
-Will store all the functions and modules for generation of shapPropKeyframe file
+Will store all the helper functions and modules for generation of shapPropKeyframe file
 in Lottie format
 """
 
@@ -8,10 +8,10 @@ import sys
 import ast
 from lxml import etree
 import settings
-from misc import change_axis, get_frame, Vector, Hermite, is_animated, radial_to_tangent
+from misc import change_axis, get_frame, Vector, is_animated, radial_to_tangent
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
+from synfig.animation import get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
 sys.path.append("../../")
 
 

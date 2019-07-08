@@ -1,14 +1,14 @@
 # pylint: disable=line-too-long
 """
-Will store all the functions and modules for generation of shapPropKeyframe file
+Will store all the functions and modules for generation of polygon layer
 in Lottie format
 """
 
 import sys
 import ast
 from misc import Vector
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from synfig.animation import get_vector_at_frame, gen_dummy_waypoint
+from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import append_path, update_frame_window, update_child_at_parent, insert_dict_at
 sys.path.append("../../")
 

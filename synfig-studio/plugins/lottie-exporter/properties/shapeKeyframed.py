@@ -8,6 +8,7 @@ import sys
 from properties.shapePropKeyframe.outline import gen_bline_outline
 from properties.shapePropKeyframe.region import gen_bline_region
 from properties.shapePropKeyframe.polygon import gen_dynamic_list_polygon
+from properties.shapePropKeyframe.circle import gen_list_circle
 sys.path.append("../")
 
 
@@ -27,12 +28,11 @@ def gen_properties_shapeKeyframed(lottie, node, idx):
     lottie["ix"] = idx
     lottie["a"] = 1
     lottie["k"] = []
-    if node.getparent().getparent().attrib["type"] == "region":
+    if node.tag == "layer" and node.attrib["type"] == "circle":
+        gen_list_circle(lottie["k"], node)
+    elif node.getparent().getparent().attrib["type"] == "region":
         gen_bline_region(lottie["k"], node)
     elif node.getparent().getparent().attrib["type"] == "polygon":
         gen_dynamic_list_polygon(lottie["k"], node)
     elif node.getparent().getparent().attrib["type"] == "outline":
         gen_bline_outline(lottie["k"], node)
-    elif node.getparent().getparent().attrib["type"] == "circle":
-        #gen_list_circle(lottie["k"], node)
-        pass

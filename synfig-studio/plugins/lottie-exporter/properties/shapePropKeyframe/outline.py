@@ -1,6 +1,6 @@
 # pylint: disable=line-too-long
 """
-Will store all the functions and modules for generation of shapPropKeyframe file
+Will store all the functions and modules for generation of outline layer
 in Lottie format
 """
 
@@ -8,9 +8,9 @@ import sys
 import ast
 import settings
 from misc import Vector, Hermite
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.valueKeyframed import gen_value_Keyframed
 from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
+from properties.valueKeyframed import gen_value_Keyframed
+from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_radial_composite, append_path, update_child_at_parent, update_frame_window
 sys.path.append("../../")
 

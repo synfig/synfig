@@ -28,9 +28,9 @@ def gen_layers(lottie, root, layer_itr):
         (None)
     """
     itr = layer_itr
-    shape_layer = {"star", "circle", "rectangle", "filled_rectangle", "simple_circle"}
+    shape_layer = {"star", "rectangle", "filled_rectangle", "simple_circle"}
     solid_layer = {"SolidColor"}
-    shape_solid_layer = {"region", "polygon", "outline"}
+    shape_solid_layer = {"region", "polygon", "outline", "circle"}
     image_layer = {"import"}
     pre_comp_layer = {"rotate", "zoom", "translate"}
     supported_layers = shape_layer.union(solid_layer)

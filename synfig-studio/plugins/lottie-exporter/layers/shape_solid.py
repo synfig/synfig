@@ -80,4 +80,7 @@ def gen_layer_shape_solid(lottie, layer, idx):
     lottie["masksProperties"] = []
     lottie["masksProperties"].append({})
 
+    if layer.attrib["type"] == "circle":
+        bline_point = layer
+
     gen_mask(lottie["masksProperties"][0], invert, bline_point, index.inc())
