@@ -113,7 +113,6 @@ def gen_list_star(lottie, layer):
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)
-
         synfig_star(st_val, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr)
         synfig_star(en_val, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr + 1)
 

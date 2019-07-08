@@ -233,7 +233,7 @@ def get_vector_at_frame(path, t):
     i -= 1
     if i < 0:
         pos = get_first_control_point(keyfr[0])
-    if i < len(keyfr) - 1:
+    elif i < len(keyfr) - 1:
         # If hold interpolation
         if 'h' in keyfr[i].keys():
             pos = get_first_control_point(keyfr[i])

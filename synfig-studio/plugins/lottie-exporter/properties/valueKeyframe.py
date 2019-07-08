@@ -76,6 +76,7 @@ def gen_value_Keyframe(curve_list, animated, i):
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
     # Calculate positions of waypoints
     if animated.attrib["type"] in {"angle", "star_angle_new", "region_angle"}:
+    #if animated.attrib["type"] in {"angle"}:
         if cur_get_after == "auto":
             cur_get_after = "linear"
         if cur_get_before == "auto":
