@@ -52,8 +52,8 @@ def gen_list_circle(lottie, layer):
     gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
 
     update_frame_window(radius[0], window)
-    outer_width = gen_dummy_waypoint(radius, "param", "real")
-    outer_width.attrib["name"] = "radius"
+    radius = gen_dummy_waypoint(radius, "param", "real")
+    radius.attrib["name"] = "radius"
     update_child_at_parent(layer, radius, "param", "width")
 
     # Generate radius for Lottie format
