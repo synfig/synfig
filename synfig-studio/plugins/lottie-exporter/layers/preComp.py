@@ -43,6 +43,8 @@ def gen_layer_precomp(lottie, layer, idx):
     elif layer.attrib["type"] == "translate":
         gen_layer_translate(lottie["ks"], layer)
         settings.INSIDE_PRECOMP = True
+    elif layer.attrib["type"] == "group":
+        pass
 
     settings.lottie_format["assets"].append({})
     asset = add_precomp_asset(settings.lottie_format["assets"][-1], layer.getparent(), idx)
