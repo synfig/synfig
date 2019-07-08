@@ -522,8 +522,8 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
 {
   unsigned int curr, old;
 
-  TAffine M;
-  TPointD l;
+  synfig::Matrix M;
+  synfig::Point l;
   synfig::Point3 a, e, x, y, A, B;
   synfig::Point3 IH, IK, IM, IN_;  //"IN" seems to be reserved word
   double HxL, KyL, MxO, NyO;
@@ -535,7 +535,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
 
   // Build TAffine M
   double par = ellProd(x, y) / 5;
-  M          = TAffine( TPointD(ellProd(x, x)/3, par), TPointD(par, ellProd(y, y)/3) );
+  M = synfig::Matrix( synfig::Point(ellProd(x, x)/3, par), synfig::Point(par, ellProd(y, y)/3),synfig::Point() );
 
   // Costruisco il termine noto b:
   // Calculate polygonal integrals
@@ -582,10 +582,10 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   MxO         = ((e * x) / 15.0) + (ellProd(f, x) / 10.0);
 
   // Infine, ho il termine noto
-  l = TPointD(ellProd(IH, x) - HxL + ellProd(IM, x) - MxO,
+  l = synfig::Point(ellProd(IH, x) - HxL + ellProd(IM, x) - MxO,
               ellProd(IK, y) - KyL + ellProd(IN_, y) - NyO);
-  M.a13 = -l[0];
-  M.a23 = -l[1];
+  double a13 = -l[0];
+  double a23 = -l[1];
 
   // Check validity conditions:
   //  a) System is not singular
@@ -594,9 +594,9 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   M = M.inv();
 
   //  b) Shift (solution) is positive
-  if (M.a13 < 0 || M.a23 < 0) return 0;
-  synfig::Point3 b = a + M.a13 * x;
-  synfig::Point3 d = e + M.a23 * y;
+  if (a13 < 0 || a23 < 0) return 0;
+  synfig::Point3 b = a + a13 * x;
+  synfig::Point3 d = e + a23 * y;
 
   //  c) The height of every CP must be >=0
   if (b[2] < 0 || d[2] < 0) return 0;
