@@ -96,6 +96,8 @@ def gen_list_star(lottie, layer):
     points_dict = {}
     gen_value_Keyframed(points_dict, points[0], 0)
 
+    mx_points = get_max_points(points)
+
     # Animating regular_polygon
     update_frame_window(regular_polygon[0], window)
     regular_polygon = gen_dummy_waypoint(regular_polygon, "param", "bool")
@@ -113,8 +115,8 @@ def gen_list_star(lottie, layer):
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)
-        synfig_star(st_val, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr)
-        synfig_star(en_val, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr + 1)
+        synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr)
+        synfig_star(en_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr + 1)
 
         fr += 1
     # Setting the final time
@@ -122,7 +124,20 @@ def gen_list_star(lottie, layer):
     lottie[-1]["t"] = fr
 
 
-def synfig_star(st_val, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon_anim, fr):
+def get_max_points(points):
+    """
+    As a shape layer needs to have same number of vertices at each frame, we
+    will draw a shape with max number of points. When number of points at a
+    frame is less than mx, redundant vertices on the shape will be added
+    """
+    mx = -1
+    for waypoint in points[0]:
+        val = float(waypoint[0].attrib["value"])
+        mx = max(mx, val)
+    return mx
+
+
+def synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon_anim, fr):
     """
     Calculates the points for the rectangle layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/star.cpp
@@ -139,6 +154,9 @@ def synfig_star(st_val, origin_dict, radius1_dict, radius2_dict, angle_dict, poi
     dist_between_points = (math.pi * 2) / float(points)
     vector_list = []
 
+    ####
+    tot_points = 2*mx_points
+
     i = 0
     while i < points:
         dist1 = dist_between_points*i + angle
@@ -151,11 +169,16 @@ def synfig_star(st_val, origin_dict, radius1_dict, radius2_dict, angle_dict, poi
             # number of vertices at each frame
             vector_list.append(Vector(math.cos(dist1)*radius1, math.sin(dist1)*radius1))
 
+        tot_points -= 2
         i += 1
 
     if len(vector_list) < 3:
         # Should throw error
         return
+
+    while tot_points > 0:
+        vector_list.append(vector_list[-1])
+        tot_points -= 1
 
     # Setup chunk list
     chunk_list = []
