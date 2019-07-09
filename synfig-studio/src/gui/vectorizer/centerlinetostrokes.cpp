@@ -51,8 +51,8 @@ Outline* BezierToOutline(studio::PointList segment)
     case 3:{ synfig::BLinePoint p1,p2;
             p1.set_vertex(segment[0].to_2d());// first point 
             p2.set_vertex(segment[2].to_2d());// last point
-            p1.set_tangent(2 * (segment[1].to_2d() - segment[0].to_2d()));
-            p2.set_tangent(2 * (segment[2].to_2d() - segment[1].to_2d()));
+            p1.set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
+            p2.set_tangent((segment[2].to_2d() - segment[1].to_2d()) * 2);
             param2.add(p1);
             param2.add(p2);
     }break;
@@ -60,8 +60,8 @@ Outline* BezierToOutline(studio::PointList segment)
     case 4:{  synfig::BLinePoint p1,p2;
             p1.set_vertex(segment[0].to_2d());// first point
             p2.set_vertex(segment[3].to_2d());// last point
-            p1.set_tangent(3 * (segment[1].to_2d() - segment[0].to_2d()));
-            p2.set_tangent(3 * (segment[3].to_2d() - segment[2].to_2d()));
+            p1.set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 3);
+            p2.set_tangent((segment[3].to_2d() - segment[2].to_2d()) * 3);
             param2.add(p1);
             param2.add(p2);
     }break;
