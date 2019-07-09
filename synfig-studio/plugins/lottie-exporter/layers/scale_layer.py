@@ -27,7 +27,7 @@ def gen_layer_scale(lottie, layer):
             if child.attrib["name"] == "center":
                 anchor = gen_dummy_waypoint(child, "param", "vector")
                 pos = anchor
-            elif child.attrib["name"] == "amount":  # This is rotation
+            elif child.attrib["name"] == "amount":  # This is scale
                 scale = gen_dummy_waypoint(child, "param", "amount")
                 scale[0].attrib["type"] = "scale_layer_zoom"
 

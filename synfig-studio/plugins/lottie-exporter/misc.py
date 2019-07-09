@@ -303,7 +303,7 @@ class Vector:
             return [self.val1, self.val2]
         elif self.type == "circle_radius":
             return [self.val1, self.val1]
-        elif self.type in {"rectangle_size", "image_scale", "scale_layer_zoom"}:
+        elif self.type in {"rectangle_size", "image_scale", "scale_layer_zoom", "group_layer_scale"}:
             return [self.val1, self.val3]
         else:
             return [self.val1]
@@ -526,6 +526,13 @@ def parse_position(animated, i):
         val2 = get_frame(animated[i])
         vec = Vector(val, val2, animated.attrib["type"])
         vec.add_new_val(val)
+        return vec
+
+    elif animated.attrib["type"] == "group_layer_scale":
+        val1 = float(animated[i][0][0].text) * 100
+        val3 = float(animated[i][0][1].text) * 100
+        vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
+        vec.add_new_val(val3)
         return vec
 
     elif animated.attrib["type"] == "color":

@@ -22,7 +22,7 @@ def gen_layer_rotate(lottie, layer):
     Returns:
         (None)
     """
-    scale = [100, 100, 100]
+    scale = settings.DEFAULT_SCALE
     for child in layer:
         if child.tag == "param":
             if child.attrib["name"] == "origin":

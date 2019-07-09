@@ -11,6 +11,7 @@ from layers.solid import gen_layer_solid
 from layers.image import gen_layer_image
 from layers.shape_solid import gen_layer_shape_solid
 from layers.preComp import gen_layer_precomp
+from layers.group import gen_layer_group
 sys.path.append("..")
 
 
@@ -32,11 +33,9 @@ def gen_layers(lottie, root, layer_itr):
     solid_layer = {"SolidColor"}
     shape_solid_layer = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"}
     image_layer = {"import"}
-    pre_comp_layer = {"rotate", "zoom", "translate", "group"}
-    supported_layers = shape_layer.union(solid_layer)
-    supported_layers = supported_layers.union(shape_solid_layer)
-    supported_layers = supported_layers.union(image_layer)
-    supported_layers = supported_layers.union(pre_comp_layer)
+    pre_comp_layer = {"rotate", "zoom", "translate"}
+    group_layer = {"group"}
+    supported_layers = set.union(shape_layer, solid_layer, shape_solid_layer, image_layer, pre_comp_layer, group_layer)
     while itr >= 0:
         child = root[itr]
         if child.tag == "layer":
@@ -75,4 +74,9 @@ def gen_layers(lottie, root, layer_itr):
                                   child,
                                   itr)
                 return  # other layers will be generated inside the precomp
+            elif child.attrib["type"] in group_layer:       # Goto group layer
+                gen_layer_group(lottie[-1],
+                                child,
+                                itr)
+                # No return statement here
         itr -= 1
