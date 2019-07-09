@@ -24,6 +24,8 @@
 
 #include "polygonizerclasses.h"
 #include "modules/mod_geometry/outline.h"
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/blinepoint.h>
 
 /* === U S I N G =========================================================== */
 
@@ -40,12 +42,82 @@ const double Quad_eps_max =  infinity;  // As above, for sequence conversion int
 
 
 /* === P R O C E D U R E S ================================================= */
+Outline* BezierToOutline(studio::PointList segment)
+{
+  Outline *curve = new Outline; 
+  synfig::ValueNode_BLine param2;
+  switch(segment.size())// in any case size>=3
+  {
+    case 3:{ synfig::BLinePoint p1,p2;
+            p1.set_vertex(segment[0].to_2d());// first point 
+            p2.set_vertex(segment[2].to_2d());// last point
+            p1.set_tangent(2 * (segment[1].to_2d() - segment[0].to_2d()));
+            p2.set_tangent(2 * (segment[2].to_2d() - segment[1].to_2d()));
+            param2.add(p1);
+            param2.add(p2);
+    }break;
+
+    case 4:{  synfig::BLinePoint p1,p2;
+            p1.set_vertex(segment[0].to_2d());// first point
+            p2.set_vertex(segment[3].to_2d());// last point
+            p1.set_tangent(3 * (segment[1].to_2d() - segment[0].to_2d()));
+            p2.set_tangent(3 * (segment[3].to_2d() - segment[2].to_2d()));
+            param2.add(p1);
+            param2.add(p2);
+    }break;
+
+    default:{/*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
+                Even : 1 2 3 4, 4 5 6, 6 7 8 */
+                synfig::BLinePoint p1,p2;
+                int num =0;
+                if(segment.size() & 1)
+                {
+                  p1.set_vertex(segment[0].to_2d());// first point 
+                  p2.set_vertex(segment[2].to_2d());// last point
+                  p1.set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
+                  p2.set_tangent1((segment[2].to_2d() - segment[1].to_2d()) * 2);
+                  param2.add(p1);
+                  num = 2;
+                }
+                else
+                {
+                  p1.set_vertex(segment[0].to_2d());// first point
+                  p2.set_vertex(segment[3].to_2d());// last point
+                  p1.set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 3);
+                  p2.set_tangent1((segment[3].to_2d() - segment[2].to_2d()) * 3);
+                  param2.add(p1);
+                  num = 3;
+                }
+                
+                for (int i = num; i < segment.size() - 3; i += 2) 
+                { 
+                  p2.set_vertex(segment[i].to_2d());// first point, previous last point 
+                  p1.set_vertex(segment[i+2].to_2d());// last point
+                  p2.set_tangent2((segment[i+1].to_2d() - segment[i].to_2d()) * 2);
+                  p1.set_tangent1((segment[i+2].to_2d() - segment[i+1].to_2d()) * 2);
+                  param2.add(p2);// add previous last and current first
+                  p2 = p1;
+                }
+                num = segment.size() - 3;
+                p2.set_vertex(segment[num].to_2d());// first point, previous last point 
+                p1.set_vertex(segment[num+2].to_2d());// last point
+                p2.set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
+                p1.set_tangent((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
+                param2.add(p2);
+                param2.add(p1);
+
+    }break;
+
+  }
+  curve ->set_shape_param("bline",param2);
+  return curve;
+}
 
 /* === M E T H O D S ======================================================= */
 inline double distance2(const synfig::Point3 &P, const synfig::Point3 &v, const synfig::Point3 &B) 
 {
   double t    = P * v - B * v;
-  synfig::Point3 Q = B + (t * v) - P;
+  synfig::Point3 Q = B + (v * t) - P;
 
   return Q * Q;
 }
@@ -55,7 +127,7 @@ inline double tdistance(synfig::Point3 P, synfig::Point3 v, synfig::Point3 B) {
   if (vv < 0.01) return -1;
 
   double t = (P * v - B * v) / vv;
-  synfig::Point3 Q = B + t * v - P;
+  synfig::Point3 Q = B + v * t - P;
 
   return Q.mag();
 }
@@ -174,7 +246,7 @@ SequenceSimplifier::Length SequenceSimplifier::lengthOf(UINT a, UINT aLink, UINT
   res.secondNode = b;
 
   v  = *m_graph->getNode(b) - *m_graph->getNode(a);
-  vv = norm(v);
+  vv = v.mag();
 
   curr = m_graph->getNode(a).getLink(aLink).getNext();
   old  = a;
@@ -197,7 +269,7 @@ SequenceSimplifier::Length SequenceSimplifier::lengthOf(UINT a, UINT aLink, UINT
   for (; curr != b; m_s->advance(old, curr)) 
   {
     d = distance2(*m_graph->getNode(curr), v, *m_graph->getNode(a));
-    if (d > std::min(m_graph->getNode(curr)->z * Polyg_eps_mul, Polyg_eps_max)) 
+    if (d > std::min(m_graph->getNode(curr)->operator[](2) * Polyg_eps_mul, Polyg_eps_max)) 
     {
       res.infty();
       return res;
@@ -396,7 +468,7 @@ Outline *SequenceConverter::operator()(std::vector<unsigned int> *indices) {
   controlPoints[0] = middleAddedSequence[0];
 
   //TODO 
-  Outline *res = new Outline(controlPoints);
+  Outline *res = BezierToOutline(controlPoints);
 
   return res;
 }
@@ -444,7 +516,7 @@ void SequenceConverter::lengthOfTriplet(unsigned int i, Length &len)
   {
     len.n       = 2;
     d           = (d - 1) / d;
-    synfig::Point3 U = A + d * (B - A), V = C + d * (B - C);
+    synfig::Point3 U = A + (B - A) * d, V = C + (B - C) * d;
     len.set_CPs(A, U, (U + V) * 0.5, V, C);
   } 
   else 
@@ -503,17 +575,17 @@ bool SequenceConverter::parametrize(unsigned int a, unsigned int b)
 
 inline synfig::Point3 int_H(const synfig::Point3 &A, const synfig::Point3 &B, double t1, double t2) 
 {
-  return -(0.375 * (pow(t2, 4) - pow(t1, 4))) * B +
-         (pow(t2, 3) - pow(t1, 3)) * (B * 0.6667 - A * 0.5) +
-         (pow(t2, 2) - pow(t1, 2)) * A;
+  return  B * -(0.375 * (pow(t2, 4) - pow(t1, 4))) +
+         (B * 0.6667 - A * 0.5) * (pow(t2, 3) - pow(t1, 3)) +
+         A * (pow(t2, 2) - pow(t1, 2));
 }
 
 //--------------------------------------------------------------------------
 
 inline synfig::Point3 int_K(const synfig::Point3 &A, const synfig::Point3 &B, double t1, double t2) 
 {
-  return (pow(t2, 4) - pow(t1, 4)) * (B * 0.125) +
-         (pow(t2, 3) - pow(t1, 3)) * (A * 0.1667);
+  return (B * 0.125) * (pow(t2, 4) - pow(t1, 4)) +
+         (A * 0.1667) * (pow(t2, 3) - pow(t1, 3));
 }
 
 //--------------------------------------------------------------------------
@@ -545,7 +617,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   {
     B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
         (1 / (pars[k + 1] - pars[k]));
-    A = middleAddedSequence[old] - pars[k] * B;
+    A = middleAddedSequence[old] - B * pars[k];
     IH += int_H(A, B, pars[k], pars[k + 1]);
     IK += int_K(A, B, pars[k], pars[k + 1]);
   }
@@ -553,7 +625,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   if (curr == j + 1) curr = j;
   B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
       (1 / (pars[k + 1] - pars[k]));
-  A = middleAddedSequence[old] - pars[k] * B;
+  A = middleAddedSequence[old] - B * pars[k];
   IH += int_H(A, B, pars[k], 1.0);
   IK += int_K(A, B, pars[k], 1.0);
 
@@ -562,7 +634,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
        --k, old = curr, curr -= 2) {
     B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
         (1 / (pars[k] - pars[k - 1]));
-    A = middleAddedSequence[curr] - (2 - pars[k - 1]) * B;
+    A = middleAddedSequence[curr] - B * (2 - pars[k - 1]);
     IM += int_K(A, B, 2 - pars[k], 2 - pars[k - 1]);
     IN_ += int_H(A, B, 2 - pars[k], 2 - pars[k - 1]);
   }
@@ -570,7 +642,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   if (old == i + 1) curr = i;
   B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
       (1 / (pars[k] - pars[k - 1]));
-  A = middleAddedSequence[curr] - (2 - pars[k - 1]) * B;
+  A = middleAddedSequence[curr] - B * (2 - pars[k - 1]);
   IM += int_K(A, B, 2 - pars[k], 1.0);
   IN_ += int_H(A, B, 2 - pars[k], 1.0);
 
@@ -591,12 +663,12 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   //  a) System is not singular
   if (fabs(M.det()) < 0.01) return 0;
 
-  M = M.inv();
+  M = M.invert();
 
   //  b) Shift (solution) is positive
   if (a13 < 0 || a23 < 0) return 0;
-  synfig::Point3 b = a + a13 * x;
-  synfig::Point3 d = e + a23 * y;
+  synfig::Point3 b = a + x * a13;
+  synfig::Point3 d = e + y * a23;
 
   //  c) The height of every CP must be >=0
   if (b[2] < 0 || d[2] < 0) return 0;
@@ -613,26 +685,25 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
 
 inline synfig::Point3 int_B0a(const synfig::Point3 &A, const synfig::Point3 &B, double t1,
                          double t2) {
-  return (0.25 * (pow(t2, 4) - pow(t1, 4))) * B +
-         ((pow(t2, 3) - pow(t1, 3)) / 3.0) * (A - 2.0 * B) +
-         (0.5 * (pow(t2, 2) - pow(t1, 2))) * (B - 2.0 * A) + (t2 - t1) * A;
+  return B * (0.25 * (pow(t2, 4) - pow(t1, 4))) +
+         (A - B * 2.0) * ((pow(t2, 3) - pow(t1, 3)) / 3.0) +
+         (B - A * 2.0) * (0.5 * (pow(t2, 2) - pow(t1, 2))) + A * (t2 - t1);
 }
 
 //--------------------------------------------------------------------------
 
 inline synfig::Point3 int_B1a(const synfig::Point3 &A, const synfig::Point3 &B, double t1,
                          double t2) {
-  return -(0.5 * (pow(t2, 4) - pow(t1, 4))) * B +
-         (2.0 * ((pow(t2, 3) - pow(t1, 3)) / 3.0) * (B - A) +
-          (pow(t2, 2) - pow(t1, 2)) * A);
+return B * -(0.5 * (pow(t2, 4) - pow(t1, 4))) + ((B - A) * 2.0 * ((pow(t2, 3) - pow(t1, 3)) / 3.0) +
+          A * (pow(t2, 2) - pow(t1, 2)));
 }
 
 //--------------------------------------------------------------------------
 
 inline synfig::Point3 int_B2a(const synfig::Point3 &A, const synfig::Point3 &B, double t1,
                          double t2) {
-  return (0.25 * (pow(t2, 4) - pow(t1, 4))) * B +
-         ((pow(t2, 3) - pow(t1, 3)) / 3.0) * A;
+  return B * (0.25 * (pow(t2, 4) - pow(t1, 4))) +
+         A * ((pow(t2, 3) - pow(t1, 3)) / 3.0);
 }
 
 //--------------------------------------------------------------------------
@@ -688,7 +759,7 @@ bool SequenceConverter::penalty(unsigned int a, unsigned int b, Length &len)
   {
     B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
         (1 / (pars[k + 1] - pars[k]));
-    A = middleAddedSequence[old] - pars[k] * B;
+    A = middleAddedSequence[old] - B * pars[k];
 
     // Mixed integral
     P0 += int_B0a(A, B, pars[k], pars[k + 1]);
@@ -702,7 +773,7 @@ bool SequenceConverter::penalty(unsigned int a, unsigned int b, Length &len)
   if (curr == b + 1) curr = b;
   B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
       (1 / (pars[k + 1] - pars[k]));
-  A = middleAddedSequence[old] - pars[k] * B;
+  A = middleAddedSequence[old] - B * pars[k];
 
   // Mixed integral
   P0 += int_B0a(A, B, pars[k], 1.0);
@@ -720,7 +791,7 @@ bool SequenceConverter::penalty(unsigned int a, unsigned int b, Length &len)
   {
     B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
         (1 / (pars[k] - pars[k - 1]));
-    A = middleAddedSequence[curr] - (2 - pars[k - 1]) * B;
+    A = middleAddedSequence[curr] - B * (2 - pars[k - 1]);
 
     // Mixed integral
     P0 += int_B0a(A, B, 2 - pars[k], 2 - pars[k - 1]);
@@ -734,7 +805,7 @@ bool SequenceConverter::penalty(unsigned int a, unsigned int b, Length &len)
   if (old == a + 1) curr = a;
   B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
       (1 / (pars[k] - pars[k - 1]));
-  A = middleAddedSequence[curr] - (2 - pars[k - 1]) * B;
+  A = middleAddedSequence[curr] - B * (2 - pars[k - 1]);
 
   // Mixed integral
   P0 += int_B0a(A, B, 2 - pars[k], 1.0);
@@ -797,7 +868,7 @@ inline Outline *convert(const Sequence &s, double penalty)
     segment[1] = (*graph->getNode(s.m_head) + *graph->getNode(s.m_tail)) * 0.5;
     segment[2] = *graph->getNode(s.m_tail);
     //TODO
-    return new Outline(segment);
+    return BezierToOutline(segment);
   }
   // when calculating sequence with 3 thick points where x,y are coordinates and z is thickness of stroke
   // it then build quadratic chunk using the three control points
@@ -807,14 +878,14 @@ inline Outline *convert(const Sequence &s, double penalty)
   result = converter(&reducedIndices);
 
   // Pass the SkeletonArc::SS_OUTLINE attribute to the output stroke
-  if (graph->getNode(s.m_head)
-          .getLink(s.m_headLink)
-          ->hasAttribute(SkeletonArc::SS_OUTLINE))
-    result->setFlag(SkeletonArc::SS_OUTLINE, true);
-  else if (graph->getNode(s.m_head)
-               .getLink(s.m_headLink)
-               ->hasAttribute(SkeletonArc::SS_OUTLINE_REVERSED))
-    result->setFlag(SkeletonArc::SS_OUTLINE_REVERSED, true);
+  // if (graph->getNode(s.m_head)
+  //         .getLink(s.m_headLink)
+  //         ->hasAttribute(SkeletonArc::SS_OUTLINE))
+  //   result->setFlag(SkeletonArc::SS_OUTLINE, true);
+  // else if (graph->getNode(s.m_head)
+  //              .getLink(s.m_headLink)
+  //              ->hasAttribute(SkeletonArc::SS_OUTLINE_REVERSED))
+  //   result->setFlag(SkeletonArc::SS_OUTLINE_REVERSED, true);
 
   return result;
 }
@@ -823,7 +894,7 @@ inline Outline *convert(const Sequence &s, double penalty)
 // Stroke. 
 // In synfig we will be using outline layer instead of TStroke  
 
-void conversionToStrokes(std::vector< *> &strokes, VectorizerCoreGlobals &g) 
+void studio::conversionToStrokes(std::vector< Outline *> &strokes, VectorizerCoreGlobals &g) 
 {
   SequenceList &singleSequences           = g.singleSequences;
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;
