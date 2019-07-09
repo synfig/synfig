@@ -6,6 +6,7 @@ in Lottie format
 
 import sys
 import ast
+import math
 import settings
 from misc import Vector, Hermite
 from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
@@ -176,6 +177,20 @@ def gen_bline_outline(lottie, bline_point):
     lottie[-1]["t"] = fr
 
 
+def get_outline_grow(fr):
+    """
+    Gives the value of outline grow parameter at a particular frame
+    """
+    if isinstance(settings.OUTLINE_GROW, (float, int)):
+        return settings.OUTLINE_GROW
+    for chld in settings.OUTLINE_GROW:
+        if chld.tag == "outline_grow_path":
+            dictionary = ast.literal_eval(chld.text)
+            val = to_Synfig_axis(get_vector_at_frame(dictionary, fr), "real")
+    val = math.e ** val
+    return val
+
+
 def get_outline_param_at_frame(composite, fr):
     """
     Given a composite and frame, returns the parameters of the outline layer at
@@ -259,6 +274,8 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
     r_tip1 = get_bool_at_frame(r_tip1_anim[0], fr)
     homo_width = get_bool_at_frame(homo_width_anim[0], fr)
 
+    gv = get_outline_grow(fr)
+
     # Setup chunk list
     side_a, side_b = [], []
 
@@ -326,8 +343,8 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
         curve = Hermite(pos_c, pos_n, iter_t, next_t)
 
         # Setup width's
-        iter_w = width_c * outer_width * 0.5 + expand
-        next_w = width_n * outer_width * 0.5 + expand
+        iter_w = gv*(width_c * outer_width * 0.5 + expand)
+        next_w = gv*(width_n * outer_width * 0.5 + expand)
 
         if first:
             first_tangent = curve.derivative(CUSP_TANGENT_ADJUST)
@@ -434,7 +451,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             bp = bline_point[-1][0]
             vertex = get_outline_param_at_frame(bp, fr)[0]
             tangent = last_tangent.norm()
-            w = get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand
+            w = gv*(get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand)
 
             a = vertex + tangent.perp()*w
             b = vertex - tangent.perp()*w
@@ -454,7 +471,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             bp = bline_point[0][0]
             vertex = get_outline_param_at_frame(bp, fr)[0]
             tangent = first_tangent.norm()
-            w = get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand
+            w = gv*(get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand)
 
             a = vertex - tangent.perp()*w
             b = vertex + tangent.perp()*w

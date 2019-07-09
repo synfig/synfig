@@ -55,6 +55,7 @@ ADDITIONAL_PRECOMP_HEIGHT = 0
 NOT_SUPPORTED_TEXT = "Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page"
 NOT_ACTIVE_TEXT = "Layer '%s' is not active"
 EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
+OUTLINE_GROW = 1    # Outline grow parameter of group layer
 
 
 def init():

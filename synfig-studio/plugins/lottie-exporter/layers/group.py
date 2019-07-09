@@ -8,6 +8,7 @@ import settings
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from synfig.animation import print_animation, gen_dummy_waypoint
+from properties.shapePropKeyframe.helper import append_path
 from helpers.blendMode import get_blend
 import synfig.group as group
 sys.path.append("..")
@@ -42,6 +43,11 @@ def gen_layer_group(lottie, layer, idx):
                 origin = chld
             elif chld.attrib["name"] == "amount":
                 opacity = chld
+            elif chld.attrib["name"] == "outline_grow":
+                outline_grow = chld
+
+    outline_grow = gen_dummy_waypoint(outline_grow, "param", "real")
+    append_path(outline_grow[0], outline_grow, "outline_grow_path")
 
     origin = gen_dummy_waypoint(origin, "param", "vector")
     anchor = origin
@@ -58,7 +64,11 @@ def gen_layer_group(lottie, layer, idx):
     # Generate the transform properties here
     gen_helpers_transform(lottie["ks"], layer, pos[0], anchor[0], scale[0], angle[0], opacity[0])
 
+    # Store previous states, to be recovered at the end of group layer
+    prev_outline_grow = settings.OUTLINE_GROW
     prev_state = settings.INSIDE_PRECOMP
+
+    settings.OUTLINE_GROW = outline_grow
     settings.INSIDE_PRECOMP = True
 
     settings.lottie_format["assets"].append({})
@@ -75,3 +85,4 @@ def gen_layer_group(lottie, layer, idx):
 
     # Return to previous state, when we go outside the group layer
     settings.INSIDE_PRECOMP = prev_state
+    settings.OUTLINE_GROW = prev_outline_grow
