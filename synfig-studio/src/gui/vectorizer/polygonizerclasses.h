@@ -26,6 +26,7 @@
 /* === H E A D E R S ======================================================= */
 #include <synfig/vector.h>
 #include "centerlinevectorizer.h"
+#include "modules/mod_geometry/outline.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -439,8 +440,7 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 
 // void junctionRecovery(Contours *polygons, VectorizerCoreGlobals &g);
 
-// void conversionToStrokes(std::vector<TStroke *> &strokes,
-//                          VectorizerCoreGlobals &g);
+void conversionToStrokes(std::vector< Outline *> &strokes, VectorizerCoreGlobals &g) ;
 
  void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g);
 
