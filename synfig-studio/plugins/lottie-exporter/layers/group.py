@@ -8,6 +8,7 @@ import settings
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from synfig.animation import print_animation, gen_dummy_waypoint
+from helpers.blendMode import get_blend
 import synfig.group as group
 sys.path.append("..")
 
@@ -39,6 +40,8 @@ def gen_layer_group(lottie, layer, idx):
                         angle = child
             elif chld.attrib["name"] == "origin":
                 origin = chld
+            elif chld.attrib["name"] == "amount":
+                opacity = chld
 
     origin = gen_dummy_waypoint(origin, "param", "vector")
     anchor = origin
@@ -53,7 +56,7 @@ def gen_layer_group(lottie, layer, idx):
     scale = gen_dummy_waypoint(scale, "scale", "vector")
     scale[0].attrib["type"] = "group_layer_scale"
     # Generate the transform properties here
-    gen_helpers_transform(lottie["ks"], layer, pos[0], anchor[0], scale[0], angle[0])
+    gen_helpers_transform(lottie["ks"], layer, pos[0], anchor[0], scale[0], angle[0], opacity[0])
 
     prev_state = settings.INSIDE_PRECOMP
     settings.INSIDE_PRECOMP = True
@@ -68,7 +71,7 @@ def gen_layer_group(lottie, layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    lottie["bm"] = settings.DEFAULT_BLEND    # This will change in group layer 
+    get_blend(lottie, layer)
 
     # Return to previous state, when we go outside the group layer
     settings.INSIDE_PRECOMP = prev_state

@@ -14,7 +14,7 @@ from properties.multiDimensionalKeyframed import gen_properties_multi_dimensiona
 sys.path.append("../")
 
 
-def gen_helpers_transform(lottie, layer, pos=settings.DEFAULT_POSITION, anchor=settings.DEFAULT_ANCHOR, scale=settings.DEFAULT_SCALE, rotation=settings.DEFAULT_ROTATION):
+def gen_helpers_transform(lottie, layer, pos=settings.DEFAULT_POSITION, anchor=settings.DEFAULT_ANCHOR, scale=settings.DEFAULT_SCALE, rotation=settings.DEFAULT_ROTATION, opacity=settings.DEFAULT_OPACITY):
     """
     Generates the dictionary corresponding to helpers/transform.json
 
@@ -62,12 +62,28 @@ def gen_helpers_transform(lottie, layer, pos=settings.DEFAULT_POSITION, anchor=s
                                  settings.DEFAULT_ANIMATED,
                                  settings.NO_INFO)
 
-    # setting the default opacity i.e. 100
-    gen_properties_value(lottie["o"],
-                         settings.DEFAULT_OPACITY,
-                         index.inc(),
-                         settings.DEFAULT_ANIMATED,
-                         settings.NO_INFO)
+    # setting the opacity
+    if isinstance(opacity, (float, int)):
+        gen_properties_value(lottie["o"],
+                             opacity,
+                             index.inc(),
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+    else:
+        is_animate = is_animated(opacity)
+        if is_animate == 2:
+            opacity.attrib["type"] = "opacity"
+            gen_value_Keyframed(lottie["o"], opacity, index.inc())
+        else:
+            if is_animate == 0:
+                val = float(opacity.attrib["value"]) * settings.OPACITY_CONSTANT
+            else:
+                val = float(opacity[0][0].attrib["value"]) * settings.OPACITY_CONSTANT
+            gen_properties_value(lottie["o"],
+                                 val,
+                                 index.inc(),
+                                 settings.DEFAULT_ANIMATED,
+                                 settings.NO_INFO)
 
     # setting the rotation
     if isinstance(rotation, (float, int)):
