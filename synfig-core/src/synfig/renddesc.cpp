@@ -51,13 +51,6 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-RendDesc &
-RendDesc::apply(const RendDesc &x)
-{
-	operator=(x);
-	return *this;
-}
-
 const Color &
 RendDesc::get_bg_color()const
 {
