@@ -181,14 +181,18 @@ def get_outline_grow(fr):
     """
     Gives the value of outline grow parameter at a particular frame
     """
-    if isinstance(settings.OUTLINE_GROW, (float, int)):
-        return settings.OUTLINE_GROW
-    for chld in settings.OUTLINE_GROW:
-        if chld.tag == "outline_grow_path":
-            dictionary = ast.literal_eval(chld.text)
-            val = to_Synfig_axis(get_vector_at_frame(dictionary, fr), "real")
-    val = math.e ** val
-    return val
+    ret = 0
+    for og in settings.OUTLINE_GROW:
+        if isinstance(og, (float, int)):
+            ret += og
+        else:
+            for chld in og:
+                if chld.tag == "outline_grow_path":
+                    dictionary = ast.literal_eval(chld.text)
+                    val = to_Synfig_axis(get_vector_at_frame(dictionary, fr), "real")
+            ret += val
+    ret = math.e ** ret
+    return ret
 
 
 def get_outline_param_at_frame(composite, fr):

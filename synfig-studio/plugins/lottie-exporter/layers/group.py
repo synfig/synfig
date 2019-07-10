@@ -57,7 +57,8 @@ def gen_layer_group(lottie, layer, idx):
     angle[0].attrib["type"] = "rotate_layer_angle"
 
     pos = gen_dummy_waypoint(pos, "offset", "vector")
-    #group.update_pos(pos)
+    if settings.INSIDE_PRECOMP:
+        group.update_pos(pos)
 
     scale = gen_dummy_waypoint(scale, "scale", "vector")
     scale[0].attrib["type"] = "group_layer_scale"
@@ -65,10 +66,9 @@ def gen_layer_group(lottie, layer, idx):
     gen_helpers_transform(lottie["ks"], layer, pos[0], anchor[0], scale[0], angle[0], opacity[0])
 
     # Store previous states, to be recovered at the end of group layer
-    prev_outline_grow = settings.OUTLINE_GROW
     prev_state = settings.INSIDE_PRECOMP
 
-    settings.OUTLINE_GROW = outline_grow
+    settings.OUTLINE_GROW.append(outline_grow)
     settings.INSIDE_PRECOMP = True
 
     settings.lottie_format["assets"].append({})
@@ -85,4 +85,4 @@ def gen_layer_group(lottie, layer, idx):
 
     # Return to previous state, when we go outside the group layer
     settings.INSIDE_PRECOMP = prev_state
-    settings.OUTLINE_GROW = prev_outline_grow
+    settings.OUTLINE_GROW.pop()
