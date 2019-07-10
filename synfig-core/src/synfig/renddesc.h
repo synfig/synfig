@@ -152,9 +152,6 @@ public:
 	bool is_zero() const
 		{ return get_w() <= 0 || get_h() <= 0; }
 
-	//! Applies the given Render Description \x to the current one
-	RendDesc &apply(const RendDesc &x);
-
 	//! Gets the background color
 	const Color &get_bg_color()const;
 
