@@ -40,7 +40,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template<typename T>
 class generic_pen_row_iterator
@@ -403,7 +403,7 @@ public:
 	}
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 

@@ -47,7 +47,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 // ========================================================================
 /*!	\class	angle	_angle.h	ETL/angle
@@ -473,7 +473,7 @@ public:
 }; // END of class angle::tan
 // inline angle::tan::operator angle::value_type()const { return get(); }
 
-_ETL_END_NAMESPACE
+};
 
 //#include <iostream>
 

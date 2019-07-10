@@ -46,7 +46,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 /*! ========================================================================
 ** \class	fastangle
@@ -425,7 +425,7 @@ public:
 	value_type get()const { return (value_type)_fastangle_tan_table[v.data()&( (1<<ETL_FASTANGLE_LOOKUP_RES)-1)]; }
 }; // END of class fastangle::tan
 
-_ETL_END_NAMESPACE
+};
 
 template <>
 struct affine_combo<etl::fastangle,float>

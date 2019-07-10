@@ -49,7 +49,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 /*! ========================================================================
 ** \class	smach
@@ -588,7 +588,7 @@ public:
 
 }; // END of template class smach
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 

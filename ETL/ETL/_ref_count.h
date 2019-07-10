@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 class weak_reference_counter;
 
@@ -149,7 +149,7 @@ inline reference_counter::reference_counter(const weak_reference_counter &x):
 	if(counter_) (*counter_)++;
 }
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 

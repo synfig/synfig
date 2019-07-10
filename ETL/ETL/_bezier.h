@@ -60,7 +60,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template<typename V,typename T> class bezier;
 
@@ -984,7 +984,7 @@ private:
 	}
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 

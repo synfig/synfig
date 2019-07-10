@@ -55,7 +55,7 @@ extern time_t _time(time_t *);
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 class clock_desc_sys_clock
 {
@@ -140,7 +140,7 @@ protected:
 	{ return (timestamp)(x+(value_type)0.5f); }
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

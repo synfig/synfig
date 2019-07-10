@@ -51,7 +51,7 @@
 #endif
 
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 // Forward Declarations
 template <class T> class handle;
@@ -831,7 +831,7 @@ template <class T>		   bool operator<(const loose_handle<T>&  lhs,const T*				 r
 template <class T>		   bool operator<(const T*				  lhs,const handle<T>&		 rhs) { return (lhs		 <rhs.get());  }
 template <class T>		   bool operator<(const T*				  lhs,const loose_handle<T>& rhs) { return (lhs		 <rhs.get());  }
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

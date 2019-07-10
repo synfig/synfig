@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template<typename T> void
 gaussian_blur_5x5_(T pen,int w, int h,
@@ -309,7 +309,7 @@ gaussian_blur(T begin, T end,int w)
 	gaussian_blur(begin,size.x,size.y,w,w);
 }
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 

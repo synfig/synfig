@@ -62,33 +62,33 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 // Forward declarations
 template<typename T, unsigned int FIXED_BITS> class fixed_base;
 //template<> class fixed_base<char>;
 
-_ETL_END_NAMESPACE
+};
 
-_STD_BEGIN_NAMESPACE
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> abs(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> cos(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> cosh(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> exp(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> log(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> log10(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&, int);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&, const T&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&,
-					const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&, const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> sin(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> sinh(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> sqrt(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> tan(const _ETL::fixed_base<T,FIXED_BITS>&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> tanh(const _ETL::fixed_base<T,FIXED_BITS>&);
-_STD_END_NAMESPACE
-_ETL_BEGIN_NAMESPACE
+namespace std {
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> abs(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> cos(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> cosh(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> exp(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> log(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> log10(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> pow(const etl::fixed_base<T,FIXED_BITS>&, int);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> pow(const etl::fixed_base<T,FIXED_BITS>&, const T&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> pow(const etl::fixed_base<T,FIXED_BITS>&,
+					const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> pow(const etl::fixed_base<T,FIXED_BITS>&, const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> sin(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> sinh(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> sqrt(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> tan(const etl::fixed_base<T,FIXED_BITS>&);
+template<typename T, unsigned int FIXED_BITS> etl::fixed_base<T,FIXED_BITS> tanh(const etl::fixed_base<T,FIXED_BITS>&);
+};
+namespace etl {
 
 /*! ========================================================================
 ** \class	fixed_base
@@ -548,92 +548,92 @@ fixed_base<T,FIXED_BITS>::round()const
 
 typedef fixed_base<ETL_FIXED_TYPE,ETL_FIXED_BITS> fixed;
 
-_ETL_END_NAMESPACE
+};
 
-_STD_BEGIN_NAMESPACE
+namespace std {
 
 template <class T,unsigned int FIXED_BITS>
-inline _ETL::fixed_base<T,FIXED_BITS>
-ceil(const _ETL::fixed_base<T,FIXED_BITS> &rhs)
+inline etl::fixed_base<T,FIXED_BITS>
+ceil(const etl::fixed_base<T,FIXED_BITS> &rhs)
 { return rhs.ceil(); }
 
 template <class T,unsigned int FIXED_BITS>
-_ETL::fixed_base<T,FIXED_BITS>
-floor(const _ETL::fixed_base<T,FIXED_BITS> &rhs)
+etl::fixed_base<T,FIXED_BITS>
+floor(const etl::fixed_base<T,FIXED_BITS> &rhs)
 { return rhs.floor(); }
 
 template <class T,unsigned int FIXED_BITS>
-_ETL::fixed_base<T,FIXED_BITS>
-round(const _ETL::fixed_base<T,FIXED_BITS> &rhs)
+etl::fixed_base<T,FIXED_BITS>
+round(const etl::fixed_base<T,FIXED_BITS> &rhs)
 { return rhs.round(); }
 
 template <class T,unsigned int FIXED_BITS>
-_ETL::fixed_base<T,FIXED_BITS>
-abs(const _ETL::fixed_base<T,FIXED_BITS> &rhs)
-{ return rhs<_ETL::fixed_base<T,FIXED_BITS>(0)?-rhs:rhs; }
+etl::fixed_base<T,FIXED_BITS>
+abs(const etl::fixed_base<T,FIXED_BITS> &rhs)
+{ return rhs<etl::fixed_base<T,FIXED_BITS>(0)?-rhs:rhs; }
 
-_STD_END_NAMESPACE
+};
 
 /*
 template <class T,unsigned int FIXED_BITS, typename U> bool
-operator==(const _ETL::fixed_base<T,FIXED_BITS>& lhs, const _ETL::fixed_base<T,FIXED_BITS>& rhs)
+operator==(const etl::fixed_base<T,FIXED_BITS>& lhs, const etl::fixed_base<T,FIXED_BITS>& rhs)
 { return lhs.data()==rhs.data(); }
 
 template <class T,unsigned int FIXED_BITS, typename U> bool
-operator!=(const _ETL::fixed_base<T,FIXED_BITS>& lhs, const _ETL::fixed_base<T,FIXED_BITS>& rhs)
+operator!=(const etl::fixed_base<T,FIXED_BITS>& lhs, const etl::fixed_base<T,FIXED_BITS>& rhs)
 { return lhs.data()!=rhs.data(); }
 
 template <class T,unsigned int FIXED_BITS, typename U> bool
-operator>(const _ETL::fixed_base<T,FIXED_BITS>& lhs, const _ETL::fixed_base<T,FIXED_BITS>& rhs)
+operator>(const etl::fixed_base<T,FIXED_BITS>& lhs, const etl::fixed_base<T,FIXED_BITS>& rhs)
 { return lhs.data()>rhs.data(); }
 
 template <class T,unsigned int FIXED_BITS, typename U> bool
-operator<(const _ETL::fixed_base<T,FIXED_BITS>& lhs, const _ETL::fixed_base<T,FIXED_BITS>& rhs)
+operator<(const etl::fixed_base<T,FIXED_BITS>& lhs, const etl::fixed_base<T,FIXED_BITS>& rhs)
 { return lhs.data()<rhs.data(); }
 
 template <class T,unsigned int FIXED_BITS, typename U> bool
-operator>=(const _ETL::fixed_base<T,FIXED_BITS>& lhs, const _ETL::fixed_base<T,FIXED_BITS>& rhs)
+operator>=(const etl::fixed_base<T,FIXED_BITS>& lhs, const etl::fixed_base<T,FIXED_BITS>& rhs)
 { return lhs.data()>=rhs.data(); }
 
 template <class T,unsigned int FIXED_BITS, typename U> bool
-operator<=(const _ETL::fixed_base<T,FIXED_BITS>& lhs, const _ETL::fixed_base<T,FIXED_BITS>& rhs)
+operator<=(const etl::fixed_base<T,FIXED_BITS>& lhs, const etl::fixed_base<T,FIXED_BITS>& rhs)
 { return lhs.data()<=rhs.data(); }
 */
 
 
 #if defined(__GNUC__) && __GNUC__ == 3
 template <class T,unsigned int FIXED_BITS, typename U> U
-operator*(const U &a,const _ETL::fixed_base<T,FIXED_BITS> &b)
+operator*(const U &a,const etl::fixed_base<T,FIXED_BITS> &b)
 	{ return a*static_cast<double>(b); }
 
 template <class T,unsigned int FIXED_BITS, typename U> U
-operator/(const U &a,const _ETL::fixed_base<T,FIXED_BITS> &b)
+operator/(const U &a,const etl::fixed_base<T,FIXED_BITS> &b)
 	{ return a/static_cast<double>(b); }
 
 template <class T,unsigned int FIXED_BITS, typename U> U
-operator+(const U &a,const _ETL::fixed_base<T,FIXED_BITS> &b)
+operator+(const U &a,const etl::fixed_base<T,FIXED_BITS> &b)
 	{ return a+static_cast<double>(b); }
 
 template <class T,unsigned int FIXED_BITS, typename U> U
-operator-(const U &a,const _ETL::fixed_base<T,FIXED_BITS> &b)
+operator-(const U &a,const etl::fixed_base<T,FIXED_BITS> &b)
 	{ return a-static_cast<double>(b); }
 
 
 /*
 inline const float &
-operator*=(float &a,const _ETL::fixed &b)
+operator*=(float &a,const etl::fixed &b)
 	{ a*=(float)b; return a; }
 
 inline const float &
-operator/=(float &a,const _ETL::fixed &b)
+operator/=(float &a,const etl::fixed &b)
 	{ a/=(float)b; return a; }
 
 inline const float &
-operator-=(float &a,const _ETL::fixed &b)
+operator-=(float &a,const etl::fixed &b)
 	{ a-=(float)b; return a; }
 
 inline const float &
-operator+=(float &a,const _ETL::fixed &b)
+operator+=(float &a,const etl::fixed &b)
 	{ a+=(float)b; return a; }
 */
 #endif

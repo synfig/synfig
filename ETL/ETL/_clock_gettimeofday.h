@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 class clock_desc_gettimeofday
 {
@@ -128,7 +128,7 @@ protected:
 	{ return timestamp((int)floor(x), (int)((x-floor(x))/precision()+0.5)); }
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

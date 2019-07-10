@@ -34,7 +34,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template<typename I, typename T> inline I
 binary_find(I begin, I end, const T& value)
@@ -92,7 +92,7 @@ inline int ceil_to_int(const double x) { return static_cast<int>(ceil(x)); }
 inline int floor_to_int(const float x) { return static_cast<int>(floor(x)); }
 inline int floor_to_int(const double x) { return static_cast<int>(floor(x)); }
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 
