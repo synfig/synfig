@@ -293,7 +293,7 @@ void
 VectorizerSettings::on_convert_pressed()
 {
 	CenterlineConfiguration m_cConf;
-  NewOutlineConfiguration m_oConf;
+  	NewOutlineConfiguration m_oConf;
 	VectorizerConfiguration &configuration = isOutline ? static_cast<VectorizerConfiguration &>(m_oConf)
         									  : static_cast<VectorizerConfiguration &>(m_cConf);
 
@@ -304,6 +304,7 @@ VectorizerSettings::on_convert_pressed()
     
 	doVectorize(configuration);
 	std::cout<<"Convert Pressed....";
+	hide();
 
 }
 
