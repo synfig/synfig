@@ -32,6 +32,8 @@
 #include "centerlinevectorizer.h"
 #include "polygonizerclasses.h"
 #include "modules/mod_geometry/outline.h"
+#include <synfig/layer.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -111,7 +113,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 //   // junctionRecovery(polygons);   //Da' problemi per maxThickness<inf...
 //   // sarebbe da rendere compatibile
 
-  std::vector< Outline *> sortibleResult;
+  std::vector< etl::handle<synfig::Layer> > sortibleResult;
 //   TVectorImageP result;
   
   // step 5

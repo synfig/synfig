@@ -26,6 +26,7 @@
 #include "modules/mod_geometry/outline.h"
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/blinepoint.h>
+#include <synfig/layer.h>
 
 /* === U S I N G =========================================================== */
 
@@ -42,9 +43,9 @@ const double Quad_eps_max =  infinity;  // As above, for sequence conversion int
 
 
 /* === P R O C E D U R E S ================================================= */
-Outline* BezierToOutline(studio::PointList segment)
+etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
-  Outline *curve = new Outline();
+  synfig::Layer::Handle layer(synfig::Layer::create("Outline"));
   synfig::ValueBase param2;
   switch(segment.size())// in any case size>=3
   {
@@ -120,8 +121,10 @@ Outline* BezierToOutline(studio::PointList segment)
     }break;
 
   }
-  curve ->set_shape_param("bline",param2);
-  return curve;
+  if(!layer->set_param("bline",param2)) info("Vectorizer was not able to create Outline layer");
+  //("text",ValueBase(selection_data)))
+   //->set_shape_param("bline",param2);
+  return layer;
 }
 
 /* === M E T H O D S ======================================================= */
@@ -368,7 +371,7 @@ public:
 
   Length lengthOf(unsigned int a, unsigned int b);
   void addMiddlePoints();
-  Outline *operator()(std::vector<unsigned int> *indices);
+  etl::handle<synfig::Layer> operator()(std::vector<unsigned int> *indices);
 
   // Length construction methods
   bool parametrize(unsigned int a, unsigned int b);
@@ -424,7 +427,7 @@ inline void SequenceConverter::addMiddlePoints()
 
 //--------------------------------------------------------------------------
 
-Outline *SequenceConverter::operator()(std::vector<unsigned int> *indices) {
+etl::handle<synfig::Layer> SequenceConverter::operator()(std::vector<unsigned int> *indices) {
   // Prepare Sequence
   inputIndices = indices;
   addMiddlePoints();
@@ -479,7 +482,7 @@ Outline *SequenceConverter::operator()(std::vector<unsigned int> *indices) {
   controlPoints[0] = middleAddedSequence[0];
 
   //TODO 
-  Outline *res = BezierToOutline(controlPoints);
+  etl::handle<synfig::Layer> res = BezierToOutline(controlPoints);
 
   return res;
 }
@@ -838,11 +841,11 @@ bool SequenceConverter::penalty(unsigned int a, unsigned int b, Length &len)
 }
 
 //--------------------------------------------------------------------------
-inline Outline *convert(const Sequence &s, double penalty) 
+inline etl::handle<synfig::Layer> convert(const Sequence &s, double penalty) 
 {
   SkeletonGraph *graph = s.m_graphHolder;
 
-  Outline *result;
+  etl::handle<synfig::Layer> result;
 
   // First, we simplify the skeleton sequences found
   std::vector<unsigned int> reducedIndices;
@@ -905,7 +908,7 @@ inline Outline *convert(const Sequence &s, double penalty)
 // Stroke. 
 // In synfig we will be using outline layer instead of TStroke  
 
-void studio::conversionToStrokes(std::vector< Outline *> &strokes, VectorizerCoreGlobals &g) 
+void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &strokes, VectorizerCoreGlobals &g) 
 {
   SequenceList &singleSequences           = g.singleSequences;
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;
