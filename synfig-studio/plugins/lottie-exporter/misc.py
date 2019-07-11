@@ -535,6 +535,11 @@ def parse_position(animated, i):
         vec.add_new_val(val3)
         return vec
 
+    elif animated.attrib["type"] == "time":
+        val = parse_time(animated[i][0].attrib["value"])    # Needed in seconds
+        val2 = get_frame(animated[i])   # Needed in frames
+        return Vector(val, val2, animated.attrib["type"])
+
     elif animated.attrib["type"] == "color":
         red = float(animated[i][0][0].text)
         green = float(animated[i][0][1].text)
@@ -668,6 +673,7 @@ def get_frame(waypoint):
     frame = round(frame)
     return frame
 
+
 def get_time(waypoint):
     """
     Given a waypoint, it parses the string time to float time
@@ -678,7 +684,20 @@ def get_time(waypoint):
     Returns:
         (float) : the time in seconds at which the waypoint is present
     """
-    time = waypoint.attrib["time"].split(" ")
+    return parse_time(waypoint.attrib["time"])
+
+
+def parse_time(time_in_str):
+    """
+    Given a string, it parses time to float time
+
+    Args:
+        time_in_str (str) : Time in string format
+
+    Returns:
+        (float) : the time in seconds at represented by the string
+    """
+    time = time_in_str.split(" ")
     final = 0
     for frame in time:
         if frame[-1] == "h":
@@ -690,6 +709,7 @@ def get_time(waypoint):
         elif frame[-1] == "f":  # This should never happen according to my code
             raise ValueError("In waypoint, time is never expected in frames.")
     return final
+
 
 def get_vector(waypoint):
     """

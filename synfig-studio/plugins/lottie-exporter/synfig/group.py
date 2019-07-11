@@ -7,6 +7,7 @@ Synfig/precomp layer of Lottie
 import sys
 import settings
 from misc import is_animated, Vector
+from synfig.animation import print_animation
 sys.path.append("..")
 
 
