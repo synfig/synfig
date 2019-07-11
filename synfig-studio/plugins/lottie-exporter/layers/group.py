@@ -10,7 +10,7 @@ from misc import Count
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from synfig.animation import print_animation, gen_dummy_waypoint, get_vector_at_frame
+from synfig.animation import to_Synfig_axis, print_animation, gen_dummy_waypoint, get_vector_at_frame
 import synfig.group as group
 from properties.shapePropKeyframe.helper import append_path
 from properties.valueKeyframed import gen_value_Keyframed
@@ -51,6 +51,8 @@ def gen_layer_group(lottie, layer, idx):
                 outline_grow = chld
             elif chld.attrib["name"] == "time_offset":
                 time_offset = chld
+            elif chld.attrib["name"] == "time_dilation":
+                time_dilation = chld
 
     outline_grow = gen_dummy_waypoint(outline_grow, "param", "real")
     append_path(outline_grow[0], outline_grow, "outline_grow_path")
@@ -91,24 +93,28 @@ def gen_layer_group(lottie, layer, idx):
 
     # Time offset
     lottie["tm"] = {}
-    gen_time_remap(lottie["tm"], time_offset, index.inc())
+    gen_time_remap(lottie["tm"], time_offset, time_dilation, index.inc())
 
     # Return to previous state, when we go outside the group layer
     settings.INSIDE_PRECOMP = prev_state
     settings.OUTLINE_GROW.pop()
 
-def gen_time_remap(lottie, time_offset, idx):
+def gen_time_remap(lottie, time_offset, time_dilation, idx):
     """
     Time offset will be converted to time remap here
     Currently time remapping will be done for each frame, but this function can
     be intelligently written only for some particular frames,hence reducing the
     space
     """
-    temp = {}
+    offset_dict = {}
     time_offset = gen_dummy_waypoint(time_offset, "param", "time")
     time_offset[0].attrib["type"] = "time"
+    gen_value_Keyframed(offset_dict, time_offset[0], 0)
 
-    gen_value_Keyframed(temp, time_offset[0], 0)
+    dilation_dict = {}
+    time_dilation = gen_dummy_waypoint(time_dilation, "param", "real")
+    time_dilation[0].attrib["type"] = "real"
+    gen_value_Keyframed(dilation_dict, time_dilation[0], 0)
 
     fr, lst = settings.lottie_format["ip"], settings.lottie_format["op"]
     lottie["a"] = 1 # Animated
@@ -117,11 +123,11 @@ def gen_time_remap(lottie, time_offset, idx):
 
     while fr <= lst:
         lottie["k"].append({}) 
-        gen_dict(lottie["k"][-1], temp, fr)
+        gen_dict(lottie["k"][-1], offset_dict, dilation_dict, fr)
         fr += 1
 
 
-def gen_dict(lottie, temp, fr):
+def gen_dict(lottie, offset_dict, dilation_dict, fr):
     """
     Generates the constant values for each frame
     """
@@ -134,8 +140,10 @@ def gen_dict(lottie, temp, fr):
     lottie["o"]["y"].append(0.5)
     lottie["t"] = fr
 
-    first = get_vector_at_frame(temp, fr) + fr/settings.lottie_format["fr"]
-    second = get_vector_at_frame(temp, fr + 1) + (fr + 1)/settings.lottie_format["fr"]
+    speed_f = to_Synfig_axis(get_vector_at_frame(dilation_dict, fr), "real")
+    speed_s = to_Synfig_axis(get_vector_at_frame(dilation_dict, fr + 1), "real")
+    first = get_vector_at_frame(offset_dict, fr) + (fr/settings.lottie_format["fr"])*speed_f
+    second = get_vector_at_frame(offset_dict, fr + 1) + ((fr + 1)/settings.lottie_format["fr"])*speed_s
     first = min(max(get_time_bound("ip"), first), get_time_bound("op"))
     second = min(max(get_time_bound("ip"), second), get_time_bound("op"))
 
