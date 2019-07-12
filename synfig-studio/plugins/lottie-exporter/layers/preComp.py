@@ -5,6 +5,7 @@ Store all functions corresponding to pre composition in lottie
 
 import sys
 import settings
+from misc import set_layer_desc
 from sources.precomp import add_precomp_asset
 from layers.rotate_layer import gen_layer_rotate
 from layers.scale_layer import gen_layer_scale
@@ -29,7 +30,7 @@ def gen_layer_precomp(lottie, layer, idx):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_PRECOMP_TYPE
-    lottie["nm"] = settings.LAYER_PRECOMP_NAME + str(idx)
+    set_layer_desc(layer, settings.LAYER_PRECOMP_NAME + str(idx), lottie)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 

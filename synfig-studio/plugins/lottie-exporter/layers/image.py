@@ -9,7 +9,7 @@ from lxml import etree
 import settings
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from misc import is_animated, get_frame
+from misc import set_layer_desc, is_animated, get_frame
 from sources.image import add_image_asset
 from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame, to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
@@ -34,7 +34,7 @@ def gen_layer_image(lottie, layer, idx):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_IMAGE_TYPE
-    lottie["nm"] = settings.LAYER_IMAGE_NAME + str(idx)
+    set_layer_desc(layer, settings.LAYER_IMAGE_NAME + str(idx), lottie)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 

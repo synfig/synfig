@@ -4,7 +4,7 @@ Will store all the functions corresponding to solids in lottie
 
 import sys
 import settings
-from misc import Count, get_color_hex
+from misc import set_layer_desc, Count, get_color_hex
 from helpers.blendMode import get_blend
 from helpers.transform import gen_helpers_transform
 from effects.fill import gen_effects_fill
@@ -28,7 +28,7 @@ def gen_layer_solid(lottie, layer, idx):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_SOLID_TYPE
-    lottie["nm"] = settings.LAYER_SOLID_NAME + str(idx)
+    set_layer_desc(layer, settings.LAYER_SOLID_NAME + str(idx), lottie)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
     lottie["ef"] = []   # Stores the effects

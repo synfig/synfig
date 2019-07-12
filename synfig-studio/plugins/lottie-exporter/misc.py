@@ -758,3 +758,11 @@ def set_vector(waypoint, pos):
     """
     waypoint[0][0].text = str(pos.val1)
     waypoint[0][1].text = str(pos.val2)
+
+def set_layer_desc(layer, default, lottie):
+    """
+    Sets layer description if provided, else defaults to the given value
+    """
+    lottie["nm"] = default
+    if "desc" in layer.keys():
+        lottie["nm"] = layer.attrib["desc"] 

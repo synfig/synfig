@@ -6,7 +6,7 @@ Store all functions corresponding to group layer in Synfig
 import sys
 import copy
 import settings
-from misc import Count
+from misc import Count, set_layer_desc
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
@@ -26,9 +26,9 @@ def gen_layer_group(lottie, layer, idx):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_PRECOMP_TYPE
-    lottie["nm"] = settings.LAYER_PRECOMP_NAME + str(idx)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
+    set_layer_desc(layer, settings.LAYER_PRECOMP_NAME + str(idx), lottie)
     index = Count()
 
     for chld in layer:
@@ -108,8 +108,18 @@ def change_opacity(layer, lottie):
     Will make the opacity of underlying layers 0 according to the active layer
     """
     for chld in layer:
-        if chld.tag == "param" and chld.attrib["name"] == "layer_name":
-            layer_name = chld 
+        if chld.tag == "param":
+            if chld.attrib["name"] == "layer_name":
+                layer_name = chld 
+            elif chld.attrib["name"] == "canvas":
+                canvas = chld
+
+    for assets in settings.lottie_format["assets"]:
+        if assets["id"] == lottie["refId"]:
+            root = assets
+            break
+
+    # root["layers"]
 
     
 

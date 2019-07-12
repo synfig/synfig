@@ -4,7 +4,7 @@ Will store all the functions corresponding to shapes in lottie
 
 import sys
 import settings
-from misc import Count
+from misc import set_layer_desc, Count
 from shapes.star import gen_shapes_star
 from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill
@@ -33,14 +33,11 @@ def gen_layer_shape(lottie, layer, idx):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_SHAPE_TYPE
-    lottie["nm"] = settings.LAYER_SHAPE_NAME + str(idx)
+    set_layer_desc(layer, settings.LAYER_SHAPE_NAME + str(idx), lottie)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
-    pos = [0, 0]            # default
-    anchor = [0, 0, 0]      # default
-    scale = [100, 100, 100]  # default
 
-    gen_helpers_transform(lottie["ks"], layer, pos, anchor, scale)
+    gen_helpers_transform(lottie["ks"], layer)
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["shapes"] = []   # Shapes to be filled yet
