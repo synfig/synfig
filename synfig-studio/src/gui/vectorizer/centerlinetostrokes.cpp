@@ -121,7 +121,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
     }break;
 
   }
-  if(!layer->set_param("bline",param2)) info("Vectorizer was not able to create Outline layer");
+  if(!layer->set_param("bline",param2)) ;//synfig::info("Vectorizer was not able to create Outline layer");
   //("text",ValueBase(selection_data)))
    //->set_shape_param("bline",param2);
   return layer;

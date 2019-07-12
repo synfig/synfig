@@ -33,7 +33,8 @@
 #include "polygonizerclasses.h"
 #include "modules/mod_geometry/outline.h"
 #include <synfig/layer.h>
-
+#include "synfigapp/actions/layeradd.h"
+#include "synfigapp/canvasinterface.h"
 #endif
 
 /* === U S I N G =========================================================== */
@@ -125,6 +126,11 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 //   // Converts each forward or single Sequence of the image in its corresponding Stroke.
   studio::conversionToStrokes(sortibleResult, globals);
 
+  for(int i=0;i < sortibleResult.size();i++)
+  {
+      sortibleResult[i]->set_canvas(image->get_canvas());
+      image->get_canvas()->push_front(sortibleResult[i]);
+  }
 //   // step 7
 
 //   // Take samples of image colors to associate each stroke to its corresponding
