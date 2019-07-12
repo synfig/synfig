@@ -8,7 +8,7 @@ import sys
 import copy
 from lxml import etree
 import settings
-from misc import is_animated, Vector, get_frame
+from misc import approximate_equal, is_animated, Vector, get_frame
 from helpers.bezier import get_bezier_val
 sys.path.append("..")
 
@@ -72,7 +72,7 @@ def insert_waypoint_at_frame(animated, orig_path, frame, animated_name):
     i = 0
     while i < len(animated):
         at_frame = get_frame(animated[i])
-        if frame == at_frame:
+        if approximate_equal(frame, at_frame):
             return
         elif frame < at_frame:
             break
@@ -143,6 +143,8 @@ def to_Synfig_axis(pos, animated_name):
         ret = [x/settings.PIX_PER_UNIT for x in pos]
     elif animated_name == "real":
         ret = pos / settings.PIX_PER_UNIT
+    elif animated_name == "amount":
+        ret = pos / settings.OPACITY_CONSTANT
     return ret
 
 

@@ -7,11 +7,11 @@ import sys
 import copy
 from lxml import etree
 import settings
-from misc import approximate_equal, get_time,Count, set_layer_desc
+from misc import get_frame, approximate_equal, get_time,Count, set_layer_desc
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from synfig.animation import to_Synfig_axis, print_animation, gen_dummy_waypoint, get_vector_at_frame
+from synfig.animation import insert_waypoint_at_frame, to_Synfig_axis, print_animation, gen_dummy_waypoint, get_vector_at_frame
 import synfig.group as group
 from properties.shapePropKeyframe.helper import append_path
 from properties.valueKeyframed import gen_value_Keyframed
@@ -135,46 +135,69 @@ def change_opacity(layer, lottie):
             waypoint_itr += 1
 
         active_time = sorted(active_time)
-        animation = gen_hold_waypoints(active_time, "param", "opacity", "real")
+        deactive_time = sorted(flip_time(active_time))
+        animation = gen_hold_waypoints(deactive_time, c_layer)
 
         gen_value_Keyframed(root["layers"][it]["ks"]["o"], animation[0], 0)
 
         it += 1
 
 
-def gen_hold_waypoints(active_time, animated_tag, animated_type, waypoint_tag):
+def flip_time(time):
     """
-    Will generate constant/hold waypoints according to the provided list
+    time  will be set();
+    Example: input: ((2, 3), (4, 5))
+             output: ((0, 2), (3, 4), (5, frame_last_time))
     """
-    st = '<{animated_tag} name="anything"><animated type="{anim_type}"></animated></{animated_tag}>'
-    st = st.format(animated_tag=animated_tag, anim_type=animated_type)
-    animation = etree.fromstring(st)
-    root = animation[0]
-    val = etree.fromstring('<waypoint time="0s" before="constant" after="constant"><{waypoint_tag} value="0"/></waypoint>'.format(waypoint_tag=waypoint_tag))
+    ret = set()
+    last = settings.lottie_format["op"]/settings.lottie_format["fr"]
+    z = 0
+    for it in time:
+        if (not approximate_equal(z, it[0])) and (not approximate_equal(it[0], it[1])):
+            ret.add((z, it[0]))
+        z = it[1]
+    if not approximate_equal(z, last):
+        ret.add((z, last))
+    return ret
 
-    last_frame_time = settings.lottie_format["op"]/settings.lottie_format["fr"]
-    active_time = list(active_time)
-    # Handle corner cases now
-    if (len(active_time) > 0 and (not approximate_equal(active_time[0][0], 0))) or (len(active_time) == 0):
-        root.append(copy.deepcopy(val))
-        root[-1].attrib['time'] = '0s'
-        root[-1][0].attrib['value'] = str(0)
 
-    i = 0
-    while i < len(active_time):
-        it = active_time[i]
-        root.append(copy.deepcopy(val))
-        root[-1].attrib["time"] = str(it[0]) + 's'
-        root[-1][0].attrib['value'] = str(1)
+def gen_hold_waypoints(deactive_time, layer):
+    """
+    Will only be used to modify opacity waypoints
+    """
+    for chld in layer:
+        if chld.tag == "param" and chld.attrib["name"] == "amount":
+            opacity = chld
 
-        if (i + 1 < len(active_time) and it[1] != active_time[i+1][0]) or (i == len(active_time) - 1):
-            root.append(copy.deepcopy(val))
-            root[-1].attrib['time'] = str(it[1]) + 's'
-            root[-1][0].attrib['value'] = str(0)
+    opacity = gen_dummy_waypoint(opacity, "param", "opacity", "amount")
+    opacity_dict = {}
+    gen_value_Keyframed(opacity_dict, opacity[0], 0)
 
-        i += 1
-    animation = gen_dummy_waypoint(animation, animated_tag, animated_type)
-    return animation
+    for it in deactive_time:
+        # First add waypoints at both points, make it constant interval
+        # then remove any in-between waypoints
+        first = round(it[0] * settings.lottie_format["fr"])
+        second = round(it[1] * settings.lottie_format["fr"])
+        insert_waypoint_at_frame(opacity[0], opacity_dict, first, "amount")
+        insert_waypoint_at_frame(opacity[0], opacity_dict, second, "amount")
+
+        # Making it a constant interval
+        for waypoint in opacity[0]:
+            if approximate_equal(get_frame(waypoint), first):
+                st_waypoint = waypoint
+                break
+        st_waypoint.attrib["after"] = "constant"
+        st_waypoint[0].attrib["value"] = str(0)
+
+        # removing the in between waypoints
+        for waypoint in opacity[0]:
+            this_frame = get_frame(waypoint)
+            if (not approximate_equal(this_frame, first)) and \
+               (not approximate_equal(this_frame, second)) and \
+               (this_frame > first and this_frame < second):
+                waypoint.getparent().remove(waypoint)
+
+    return opacity
 
 
 def update_time(active_time, animated, itr):
