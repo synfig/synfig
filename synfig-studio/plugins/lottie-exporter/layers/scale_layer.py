@@ -28,8 +28,7 @@ def gen_layer_scale(lottie, layer):
                 anchor = gen_dummy_waypoint(child, "param", "vector")
                 pos = anchor
             elif child.attrib["name"] == "amount":  # This is scale
-                scale = gen_dummy_waypoint(child, "param", "amount")
-                scale[0].attrib["type"] = "scale_layer_zoom"
+                scale = gen_dummy_waypoint(child, "param", "scale_layer_zoom")
 
     anchor = copy.deepcopy(anchor)
     group.update_pos(anchor)

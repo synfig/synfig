@@ -34,7 +34,7 @@ def gen_layers(lottie, root, layer_itr):
     shape_solid_layer = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"}
     image_layer = {"import"}
     pre_comp_layer = {"rotate", "zoom", "translate"}
-    group_layer = {"group"}
+    group_layer = {"group", "switch"}
     supported_layers = set.union(shape_layer, solid_layer, shape_solid_layer, image_layer, pre_comp_layer, group_layer)
     while itr >= 0:
         child = root[itr]

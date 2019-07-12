@@ -104,8 +104,7 @@ def gen_bline_outline(lottie, bline_point):
     # Animating the origin
     update_frame_window(origin[0], window)
     origin_parent = origin.getparent()
-    origin = gen_dummy_waypoint(origin, "param", "vector")
-    origin.attrib["name"] = "origin"
+    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
     update_child_at_parent(origin_parent, origin, "param", "origin")
     # Generate path for the origin component
     origin_dict = {}
@@ -113,8 +112,7 @@ def gen_bline_outline(lottie, bline_point):
     gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
 
     update_frame_window(outer_width[0], window)
-    outer_width = gen_dummy_waypoint(outer_width, "param", "real")
-    outer_width.attrib["name"] = "width"
+    outer_width = gen_dummy_waypoint(outer_width, "param", "real", "width")
     # Update the layer with this animated outline width
     update_child_at_parent(layer, outer_width, "param", "width")
 
@@ -125,32 +123,27 @@ def gen_bline_outline(lottie, bline_point):
 
     # Animating the sharp_cusps
     update_frame_window(sharp_cusps[0], window)
-    sharp_cusps = gen_dummy_waypoint(sharp_cusps, "param", "bool")
-    sharp_cusps.attrib["name"] = "sharp_cusps"
+    sharp_cusps = gen_dummy_waypoint(sharp_cusps, "param", "bool", "sharp_cusps")
 
     # Update the layer with this animated outline sharp cusps
     update_child_at_parent(layer, sharp_cusps, "param", "sharp_cusps")
 
     update_frame_window(expand[0], window)
-    expand = gen_dummy_waypoint(expand, "param", "real")
-    expand.attrib["name"] = "expand"
+    expand = gen_dummy_waypoint(expand, "param", "real", "expand")
     update_child_at_parent(layer, expand, "param", "expand")
     expand_dict = {}
     gen_value_Keyframed(expand_dict, expand[0], 0)
 
     update_frame_window(r_tip0[0], window)
-    r_tip0 = gen_dummy_waypoint(r_tip0, "param", "bool")
-    r_tip0.attrib["name"] = "round_tip[0]"
+    r_tip0 = gen_dummy_waypoint(r_tip0, "param", "bool", "round_tip[0]")
     update_child_at_parent(layer, r_tip0, "param", "round_tip[0]")
 
     update_frame_window(r_tip1[0], window)
-    r_tip1 = gen_dummy_waypoint(r_tip1, "param", "bool")
-    r_tip1.attrib["name"] = "round_tip[1]"
+    r_tip1 = gen_dummy_waypoint(r_tip1, "param", "bool", "round_tip[1]")
     update_child_at_parent(layer, r_tip1, "param", "round_tip[1]")
 
     update_frame_window(homo_width[0], window)
-    homo_width = gen_dummy_waypoint(homo_width, "param", "bool")
-    homo_width.attrib["name"] = "homogeneous_width"
+    homo_width = gen_dummy_waypoint(homo_width, "param", "bool", "homogeneous_width")
     update_child_at_parent(layer, homo_width, "param", "homogeneous_width")
 
     # Minimizing the window size

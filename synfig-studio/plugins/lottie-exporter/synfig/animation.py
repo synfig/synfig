@@ -13,14 +13,14 @@ from helpers.bezier import get_bezier_val
 sys.path.append("..")
 
 
-def gen_dummy_waypoint(non_animated, animated_name, anim_type):
+def gen_dummy_waypoint(non_animated, animated_tag, anim_type, animated_name="anything"):
     """
     Makes a non animated parameter to animated parameter by creating a new dummy
     waypoint with constant animation
 
     Args:
         non_animated (lxml.etree._Element): Holds the non-animated parameter in Synfig xml format
-        animated_name(str)                : Decides the tag of the animation
+        animated_tag(str)                : Decides the tag of the animation
         anim_type    (str)                : Decides the animation type
 
     Returns:
@@ -34,8 +34,8 @@ def gen_dummy_waypoint(non_animated, animated_name, anim_type):
         non_animated[0].attrib["type"] = anim_type
         return non_animated
     elif is_animate == 0:
-        st = '<{animated_name} name="anything"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></{animated_name}>'
-        st = st.format(anim_type=anim_type, animated_name=animated_name)
+        st = '<{animated_tag} name="{animated_name}"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></{animated_tag}>'
+        st = st.format(anim_type=anim_type, animated_name=animated_name, animated_tag=animated_tag)
         root = etree.fromstring(st)
         root[0][0].append(copy.deepcopy(non_animated[0]))
         non_animated = root

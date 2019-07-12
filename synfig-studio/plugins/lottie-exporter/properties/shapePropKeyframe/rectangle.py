@@ -63,8 +63,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating point1
     update_frame_window(point1[0], window)
-    point1 = gen_dummy_waypoint(point1, "param", "vector")
-    point1.attrib["name"] = "point1"
+    point1 = gen_dummy_waypoint(point1, "param", "vector", "point1")
     update_child_at_parent(layer, point1, "param", "point1")
     # Generate path for the point1 component
     p1_dict = {}
@@ -73,8 +72,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating point2
     update_frame_window(point2[0], window)
-    point2 = gen_dummy_waypoint(point2, "param", "vector")
-    point2.attrib["name"] = "point2"
+    point2 = gen_dummy_waypoint(point2, "param", "vector", "point2")
     update_child_at_parent(layer, point2, "param", "point2")
     # Generate path for the point2 component
     p2_dict = {}
@@ -82,8 +80,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating expand
     update_frame_window(expand[0], window)
-    expand = gen_dummy_waypoint(expand, "param", "real")
-    expand.attrib["name"] = "expand"
+    expand = gen_dummy_waypoint(expand, "param", "real", "expand")
     update_child_at_parent(layer, expand, "param", "expand")
     # Generate expand param for Lottie format
     expand_dict = {}
@@ -91,8 +88,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating bevel
     update_frame_window(bevel[0], window)
-    bevel = gen_dummy_waypoint(bevel, "param", "real")
-    bevel.attrib["name"] = "bevel"
+    bevel = gen_dummy_waypoint(bevel, "param", "real", "bevel")
     update_child_at_parent(layer, bevel, "param", "bevel")
     # Generate bevel param for Lottie format
     bevel_dict = {}
@@ -100,8 +96,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating bevCircle
     update_frame_window(bevCircle[0], window)
-    bevCircle = gen_dummy_waypoint(bevCircle, "param", "bool")
-    bevCircle.attrib["name"] = "bevCircle"
+    bevCircle = gen_dummy_waypoint(bevCircle, "param", "bool", "bevCircle")
     update_child_at_parent(layer, bevCircle, "param", "bevCircle")
 
     # Minimizing the window size

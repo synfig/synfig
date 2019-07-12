@@ -21,6 +21,7 @@ def gen_layer_group(lottie, layer, idx):
     """
     Will generate a pre composition but has small differences than pre-comp layer used in
     layers/preComp.py
+    This function will be used for group layer as well as switch group layer
     """
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
@@ -61,15 +62,13 @@ def gen_layer_group(lottie, layer, idx):
     anchor = origin
     group.update_pos(anchor)
 
-    angle = gen_dummy_waypoint(angle, "angle", "angle")
-    angle[0].attrib["type"] = "rotate_layer_angle"
+    angle = gen_dummy_waypoint(angle, "angle", "rotate_layer_angle")
 
     pos = gen_dummy_waypoint(pos, "offset", "vector")
     if settings.INSIDE_PRECOMP:
         group.update_pos(pos)
 
-    scale = gen_dummy_waypoint(scale, "scale", "vector")
-    scale[0].attrib["type"] = "group_layer_scale"
+    scale = gen_dummy_waypoint(scale, "scale", "group_layer_scale")
     # Generate the transform properties here
     gen_helpers_transform(lottie["ks"], layer, pos[0], anchor[0], scale[0], angle[0], opacity[0])
 
@@ -91,13 +90,28 @@ def gen_layer_group(lottie, layer, idx):
     lottie["st"] = 0            # Don't know yet
     get_blend(lottie, layer)
 
-    # Time offset
+    # Time offset and speed
     lottie["tm"] = {}
     gen_time_remap(lottie["tm"], time_offset, time_dilation, index.inc())
+
+    # Change opacity of layers for switch-group layers
+    if layer.attrib["type"] == "switch":
+        change_opacity(layer, lottie)
 
     # Return to previous state, when we go outside the group layer
     settings.INSIDE_PRECOMP = prev_state
     settings.OUTLINE_GROW.pop()
+
+
+def change_opacity(layer, lottie):
+    """
+    Will make the opacity of underlying layers 0 according to the active layer
+    """
+    for chld in layer:
+        if chld.tag == "param" and chld.attrib["name"] == "layer_name":
+            layer_name = chld 
+
+    
 
 def gen_time_remap(lottie, time_offset, time_dilation, idx):
     """
@@ -108,12 +122,10 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
     """
     offset_dict = {}
     time_offset = gen_dummy_waypoint(time_offset, "param", "time")
-    time_offset[0].attrib["type"] = "time"
     gen_value_Keyframed(offset_dict, time_offset[0], 0)
 
     dilation_dict = {}
     time_dilation = gen_dummy_waypoint(time_dilation, "param", "real")
-    time_dilation[0].attrib["type"] = "real"
     gen_value_Keyframed(dilation_dict, time_dilation[0], 0)
 
     fr, lst = settings.lottie_format["ip"], settings.lottie_format["op"]
@@ -148,6 +160,7 @@ def gen_dict(lottie, offset_dict, dilation_dict, fr):
     second = min(max(get_time_bound("ip"), second), get_time_bound("op"))
 
     lottie["s"], lottie["e"] = [first], [second]
+
 
 def get_time_bound(st):
     ret = settings.lottie_format[st]

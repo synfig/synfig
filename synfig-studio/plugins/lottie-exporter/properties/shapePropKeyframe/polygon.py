@@ -53,8 +53,7 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
     # Animating the origin
     update_frame_window(origin[0], window)
     origin_parent = origin.getparent()
-    origin = gen_dummy_waypoint(origin, "param", "vector")
-    origin.attrib["name"] = "origin"
+    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
     update_child_at_parent(origin_parent, origin, "param", "origin")
 
     # Generate path for the origin component

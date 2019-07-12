@@ -43,8 +43,7 @@ def gen_list_circle(lottie, layer):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin = gen_dummy_waypoint(origin, "param", "vector")
-    origin.attrib["name"] = "origin"
+    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
     update_child_at_parent(layer, origin, "param", "origin")
     # Generate path for the origin component
     origin_dict = {}
@@ -52,8 +51,7 @@ def gen_list_circle(lottie, layer):
     gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
 
     update_frame_window(radius[0], window)
-    radius = gen_dummy_waypoint(radius, "param", "real")
-    radius.attrib["name"] = "radius"
+    radius = gen_dummy_waypoint(radius, "param", "real", "radius")
     update_child_at_parent(layer, radius, "param", "width")
 
     # Generate radius for Lottie format
