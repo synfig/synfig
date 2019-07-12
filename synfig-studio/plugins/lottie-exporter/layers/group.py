@@ -5,8 +5,9 @@ Store all functions corresponding to group layer in Synfig
 
 import sys
 import copy
+from lxml import etree
 import settings
-from misc import Count, set_layer_desc
+from misc import approximate_equal, get_time,Count, set_layer_desc
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
@@ -114,13 +115,79 @@ def change_opacity(layer, lottie):
             elif chld.attrib["name"] == "canvas":
                 canvas = chld
 
+    layer_name = gen_dummy_waypoint(layer_name, "param", "string", "layer_name")
     for assets in settings.lottie_format["assets"]:
         if assets["id"] == lottie["refId"]:
             root = assets
             break
 
-    # root["layers"]
+    it = 0
+    for c_layer in reversed(canvas[0]):
+        active_time = set()
+        description = root["layers"][it]["nm"]
 
+        waypoint_itr = 0
+        while waypoint_itr < len(layer_name[0]):
+            waypoint = layer_name[0][waypoint_itr]
+            l_name = waypoint[0].text
+            if (l_name == description) or (l_name == None and it == 0):
+                update_time(active_time, layer_name[0], waypoint_itr)
+            waypoint_itr += 1
+
+        active_time = sorted(active_time)
+        animation = gen_hold_waypoints(active_time, "param", "opacity", "real")
+
+        gen_value_Keyframed(root["layers"][it]["ks"]["o"], animation[0], 0)
+
+        it += 1
+
+
+def gen_hold_waypoints(active_time, animated_tag, animated_type, waypoint_tag):
+    """
+    Will generate constant/hold waypoints according to the provided list
+    """
+    st = '<{animated_tag} name="anything"><animated type="{anim_type}"></animated></{animated_tag}>'
+    st = st.format(animated_tag=animated_tag, anim_type=animated_type)
+    animation = etree.fromstring(st)
+    root = animation[0]
+    val = etree.fromstring('<waypoint time="0s" before="constant" after="constant"><{waypoint_tag} value="0"/></waypoint>'.format(waypoint_tag=waypoint_tag))
+
+    last_frame_time = settings.lottie_format["op"]/settings.lottie_format["fr"]
+    active_time = list(active_time)
+    # Handle corner cases now
+    if (len(active_time) > 0 and (not approximate_equal(active_time[0][0], 0))) or (len(active_time) == 0):
+        root.append(copy.deepcopy(val))
+        root[-1].attrib['time'] = '0s'
+        root[-1][0].attrib['value'] = str(0)
+
+    i = 0
+    while i < len(active_time):
+        it = active_time[i]
+        root.append(copy.deepcopy(val))
+        root[-1].attrib["time"] = str(it[0]) + 's'
+        root[-1][0].attrib['value'] = str(1)
+
+        if (i + 1 < len(active_time) and it[1] != active_time[i+1][0]) or (i == len(active_time) - 1):
+            root.append(copy.deepcopy(val))
+            root[-1].attrib['time'] = str(it[1]) + 's'
+            root[-1][0].attrib['value'] = str(0)
+
+        i += 1
+    animation = gen_dummy_waypoint(animation, animated_tag, animated_type)
+    return animation
+
+
+def update_time(active_time, animated, itr):
+    """
+    """
+    # Tuples will be added to the set
+    first = get_time(animated[itr])
+    if itr == 0:
+        first = 0   # can use settings.lf["ip"]
+    second = settings.lottie_format["op"]/settings.lottie_format["fr"]
+    if itr + 1 <= len(animated) - 1:
+        second = get_time(animated[itr+1])
+    active_time.add((first, second))
     
 
 def gen_time_remap(lottie, time_offset, time_dilation, idx):
