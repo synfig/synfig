@@ -274,6 +274,8 @@ Action::ValueDescExport::prepare()
 			// scan all layers and canvases and relink value nodes
 			scan_canvas(prev_canvas, canvas, get_canvas());
 			scan_canvas(prev_canvas, canvas, canvas);
+		} else {
+			canvas->rend_desc()=get_canvas()->rend_desc();
 		}
 
 		Action::Handle action(CanvasAdd::create());
