@@ -136,9 +136,19 @@ def change_opacity(layer, lottie):
 
         active_time = sorted(active_time)
         deactive_time = sorted(flip_time(active_time))
-        animation = gen_hold_waypoints(deactive_time, c_layer)
 
-        gen_value_Keyframed(root["layers"][it]["ks"]["o"], animation[0], 0)
+        if c_layer.attrib["type"] in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
+            anim_type = "effects_opacity"
+            dic = root["layers"][it]["ef"][0]["ef"][-1]["v"]
+        elif c_layer.attrib["type"] in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER):
+            anim_type = "opacity"
+            dic = root["layers"][it]["ks"]["o"]
+        elif c_layer.attrib["type"] in settings.SHAPE_LAYER:
+            anim_type = "opacity"
+            dic = root["layers"][it]["shapes"][1]["o"]
+
+        animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
+        gen_value_Keyframed(dic, animation[0], 0)
 
         it += 1
 
@@ -161,7 +171,7 @@ def flip_time(time):
     return ret
 
 
-def gen_hold_waypoints(deactive_time, layer):
+def gen_hold_waypoints(deactive_time, layer, anim_type):
     """
     Will only be used to modify opacity waypoints
     """
@@ -169,7 +179,7 @@ def gen_hold_waypoints(deactive_time, layer):
         if chld.tag == "param" and chld.attrib["name"] == "amount":
             opacity = chld
 
-    opacity = gen_dummy_waypoint(opacity, "param", "opacity", "amount")
+    opacity = gen_dummy_waypoint(opacity, "param", anim_type, "amount")
     opacity_dict = {}
     gen_value_Keyframed(opacity_dict, opacity[0], 0)
 

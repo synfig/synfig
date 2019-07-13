@@ -55,6 +55,12 @@ ADDITIONAL_PRECOMP_HEIGHT = 0
 NOT_SUPPORTED_TEXT = "Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page"
 NOT_ACTIVE_TEXT = "Layer '%s' is not active"
 EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
+SHAPE_LAYER = {"simple_circle"}
+SOLID_LAYER = {"SolidColor"}
+SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"}
+IMAGE_LAYER = {"import"}
+PRE_COMP_LAYER = {"rotate", "zoom", "translate"}
+GROUP_LAYER = {"group", "switch"}
 
 
 def init():
