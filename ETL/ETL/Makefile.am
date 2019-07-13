@@ -24,7 +24,6 @@ etl_HEADERS = \
 	ipc \
 	thread \
 	fixed \
-	random \
 	clock \
 	hermite \
 	calculus \
@@ -40,7 +39,6 @@ etl_HEADERS = \
 	_clock_base.h \
 	_clock_system.h \
 	_clock_gettimeofday.h \
-	_random.h \
 	_angle.h \
 	_fastangle.h \
 	_handle.h \
