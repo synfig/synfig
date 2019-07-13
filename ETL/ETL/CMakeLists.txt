@@ -42,7 +42,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_thread.h"
         "${CMAKE_CURRENT_LIST_DIR}/_boxblur.h"
         "${CMAKE_CURRENT_LIST_DIR}/_rect.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_curve.h"
         "${CMAKE_CURRENT_LIST_DIR}/_mutex_pthreads.h"
         "${CMAKE_CURRENT_LIST_DIR}/_angle.h"
         "${CMAKE_CURRENT_LIST_DIR}/_clock_base.h"

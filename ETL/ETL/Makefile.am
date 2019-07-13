@@ -43,7 +43,6 @@ etl_HEADERS = \
 	_random.h \
 	_angle.h \
 	_fastangle.h \
-	_curve.h \
 	_handle.h \
 	_thread.h \
 	_mutex_pthreads.h \
