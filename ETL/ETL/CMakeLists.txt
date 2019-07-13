@@ -45,7 +45,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_mutex_pthreads.h"
         "${CMAKE_CURRENT_LIST_DIR}/_angle.h"
         "${CMAKE_CURRENT_LIST_DIR}/_clock_base.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_condition.h"
         "${CMAKE_CURRENT_LIST_DIR}/_mutex_null.h"
         "${CMAKE_CURRENT_LIST_DIR}/_clock_win32hpcount.h"
         "${CMAKE_CURRENT_LIST_DIR}/_fastangle_tables.h"

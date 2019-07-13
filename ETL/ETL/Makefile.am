@@ -47,7 +47,6 @@ etl_HEADERS = \
 	_thread.h \
 	_mutex_pthreads.h \
 	_mutex_win32.h \
-	_condition.h \
 	_rwlock.h \
 	smach \
 	_smach.h \
