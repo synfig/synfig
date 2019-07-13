@@ -28,7 +28,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/gaussian"
         "${CMAKE_CURRENT_LIST_DIR}/mutex"
         "${CMAKE_CURRENT_LIST_DIR}/handle"
-        "${CMAKE_CURRENT_LIST_DIR}/status"
 #     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/_ref_count.h"
         "${CMAKE_CURRENT_LIST_DIR}/_mutex_win32.h"
@@ -61,7 +60,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_hermite.h"
         "${CMAKE_CURRENT_LIST_DIR}/_clock_system.h"
         "${CMAKE_CURRENT_LIST_DIR}/_bit_rotate.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_status.h"
         "${CMAKE_CURRENT_LIST_DIR}/_fixed.h"
         "${CMAKE_CURRENT_LIST_DIR}/_mutex_pthreads_simple.h"
         "${CMAKE_CURRENT_LIST_DIR}/_bezier.h"

@@ -60,8 +60,6 @@ etl_HEADERS = \
 	bezier \
 	_bezier.h \
 	_bezier_angle.h \
-	_status.h \
-	status \
 	pen \
 	_pen.h \
 	boxblur \
