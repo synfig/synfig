@@ -101,7 +101,7 @@ using namespace synfig;
 static etl::reference_counter synfig_ref_count_(0);
 Main *Main::instance = NULL;
 
-Mutex general_io_mutex;
+static Mutex general_io_mutex;
 
 /* === P R O C E D U R E S ================================================= */
 
