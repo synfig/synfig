@@ -55,7 +55,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_misc.h"
         "${CMAKE_CURRENT_LIST_DIR}/_hermite.h"
         "${CMAKE_CURRENT_LIST_DIR}/_clock_system.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_bit_rotate.h"
         "${CMAKE_CURRENT_LIST_DIR}/_fixed.h"
         "${CMAKE_CURRENT_LIST_DIR}/_mutex_pthreads_simple.h"
         "${CMAKE_CURRENT_LIST_DIR}/_bezier.h"
