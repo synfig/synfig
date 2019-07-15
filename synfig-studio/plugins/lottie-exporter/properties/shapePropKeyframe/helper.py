@@ -215,12 +215,12 @@ def cubic_to(vec, tan1, tan2, lottie, origin_cur):
     tan1 *= settings.PIX_PER_UNIT
     tan2 *= settings.PIX_PER_UNIT
     tan1, tan2 = convert_tangent_to_lottie(3*tan1, 3*tan2)
-    lottie["i"].append(tan1.get_list())
-    lottie["o"].append(tan2.get_list())
     pos = change_axis(vec[0], vec[1])
     for i in range(len(pos)):
         pos[i] += origin_cur[i]
-    lottie["v"].append(pos)
+    lottie["i"].append(round_to(tan1.get_list()))
+    lottie["o"].append(round_to(tan2.get_list()))
+    lottie["v"].append(round_to(pos))
 
 
 def move_to(vec, lottie, origin_cur):
@@ -241,7 +241,17 @@ def move_to(vec, lottie, origin_cur):
     pos = change_axis(vec[0], vec[1])
     for i in range(len(pos)):
         pos[i] += origin_cur[i]
-    lottie["v"].append(pos)
+    lottie["v"].append(round_to(pos))
+
+
+def round_to(my_list, decimal_places=3):
+    """
+    rounds the provided list to the given decimal places and returns it
+    """
+    ret = []
+    for num in my_list:
+        ret.append(round(num, decimal_places))
+    return ret
 
 
 def convert_tangent_to_lottie(t1, t2):
