@@ -179,7 +179,7 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
         if chld.tag == "param" and chld.attrib["name"] == "amount":
             opacity = chld
 
-    opacity = gen_dummy_waypoint(opacity, "param", anim_type, "amount")
+    opacity = gen_dummy_waypoint(copy.deepcopy(opacity), "param", anim_type, "amount")
     opacity_dict = {}
     gen_value_Keyframed(opacity_dict, opacity[0], 0)
 
@@ -188,8 +188,8 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
         # then remove any in-between waypoints
         first = round(it[0] * settings.lottie_format["fr"])
         second = round(it[1] * settings.lottie_format["fr"])
-        insert_waypoint_at_frame(opacity[0], opacity_dict, first, "amount")
-        insert_waypoint_at_frame(opacity[0], opacity_dict, second, "amount")
+        insert_waypoint_at_frame(opacity[0], opacity_dict, first, "effects_opacity")
+        insert_waypoint_at_frame(opacity[0], opacity_dict, second, "effects_opacity")
 
         # Making it a constant interval
         for waypoint in opacity[0]:

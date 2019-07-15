@@ -79,8 +79,9 @@ def gen_html(file_name):
     Returns:
         (None)
     """
+    bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "bodymovin.js")
 
-    with open("bodymovin.js", "r") as f:
+    with open(bodymovin_path, "r") as f:
         bodymovin_script = f.read()
 
     html_text = \
