@@ -179,7 +179,7 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
         if chld.tag == "param" and chld.attrib["name"] == "amount":
             opacity = chld
 
-    opacity = gen_dummy_waypoint(copy.deepcopy(opacity), "param", anim_type, "amount")
+    opacity = gen_dummy_waypoint(opacity, "param", anim_type, "amount")
     opacity_dict = {}
     gen_value_Keyframed(opacity_dict, opacity[0], 0)
 

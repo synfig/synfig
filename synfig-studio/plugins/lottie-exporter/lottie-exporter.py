@@ -18,6 +18,7 @@ from layers.driver import gen_layers
 import settings
 
 
+
 def write_to(filename, extension, data):
     """
     Helps in writing data to a specified file name

@@ -177,8 +177,8 @@ class Vector:
 
     def __getitem__(self, key):
         if key:
-            return self.val2
-        return self.val1
+            return round(self.val2, 3)
+        return round(self.val1, 3)
 
     def __setitem__(self, key, value):
         if key:
@@ -287,7 +287,7 @@ class Vector:
         Returns:
             (list) : Contains the Vector in list format
         """
-        return [self.val1, self.val2]
+        return round_to([self.val1, self.val2])
 
     def get_val(self):
         """
@@ -300,13 +300,15 @@ class Vector:
             (list) : Depending upon _type a list is returned
         """
         if self.type == "origin":
-            return [self.val1, self.val2]
+            ret = [self.val1, self.val2]
         elif self.type == "circle_radius":
-            return [self.val1, self.val1]
+            ret = [self.val1, self.val1]
         elif self.type in {"rectangle_size", "image_scale", "scale_layer_zoom", "group_layer_scale"}:
-            return [self.val1, self.val3]
+            ret = [self.val1, self.val3]
         else:
-            return [self.val1]
+            ret = [self.val1]
+        ret = round_to(ret)
+        return ret
 
     def add_new_val(self, val3):
         """
@@ -658,6 +660,7 @@ def get_color_hex(node):
     ret = "#{0:02x}{1:02x}{2:02x}".format(red, green, blue)
     return ret
 
+
 def get_frame(waypoint):
     """
     Given a waypoint, it parses the time to frames
@@ -736,6 +739,7 @@ def get_vector(waypoint):
         y = float(waypoint[0][1].text)
     return Vector(x, y)
 
+
 def radial_to_tangent(radius, angle):
     """
     Converts a tangent from radius and angle format to x, y axis co-ordinate
@@ -745,6 +749,7 @@ def radial_to_tangent(radius, angle):
     x = radius * math.cos(angle)
     y = radius * math.sin(angle)
     return x, y
+
 
 def set_vector(waypoint, pos):
     """
@@ -759,6 +764,7 @@ def set_vector(waypoint, pos):
     waypoint[0][0].text = str(pos.val1)
     waypoint[0][1].text = str(pos.val2)
 
+
 def set_layer_desc(layer, default, lottie):
     """
     Sets layer description if provided, else defaults to the given value
@@ -766,3 +772,13 @@ def set_layer_desc(layer, default, lottie):
     lottie["nm"] = default
     if "desc" in layer.keys():
         lottie["nm"] = layer.attrib["desc"] 
+
+
+def round_to(my_list, decimal_places=3):
+    """
+    rounds the provided list to the given decimal places and returns it
+    """
+    ret = []
+    for num in my_list:
+        ret.append(round(num, decimal_places))
+    return ret
