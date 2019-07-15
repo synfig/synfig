@@ -1667,7 +1667,6 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 	if (etl::handle<Layer_Bitmap> bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(child_layer)) 
 	{
 		my_layer_bitmap = bitmap;
-		std::cout<<"found layer bitmap and assigned\n";
 	}	
 
 	ParamVocab vocab = layerfinal->get_param_vocab();
