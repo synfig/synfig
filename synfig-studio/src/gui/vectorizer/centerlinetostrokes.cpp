@@ -45,19 +45,20 @@ const double Quad_eps_max =  infinity;  // As above, for sequence conversion int
 /* === P R O C E D U R E S ================================================= */
 etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
-  synfig::Layer::Handle layer(synfig::Layer::create("Outline"));
+  synfig::Layer::Handle layer(synfig::Layer::create("outline"));
   synfig::ValueBase param2;
-  switch(segment.size())// in any case size>=3
+  /*switch(segment.size())// in any case size>=3
   {
-    case 3:{  std::vector<synfig::BLinePoint> bline_point_list; 
+    case 3:{std::cout<<"This is case 3\n";
+        std::vector<synfig::BLinePoint> bline_point_list; 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
             bline_point_list[1].set_vertex(segment[2].to_2d());// last point
             bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
             bline_point_list[1].set_tangent((segment[2].to_2d() - segment[1].to_2d()) * 2);
-            bline_point_list[0].set_width(segment[0][2]);
-            bline_point_list[1].set_width(segment[1][2]); 
+            //bline_point_list[0].set_width(segment[0][2]);
+            //bline_point_list[1].set_width(segment[1][2]); 
             param2.set_list_of(bline_point_list); 
             
     }break;
@@ -69,14 +70,14 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
             bline_point_list[1].set_vertex(segment[2].to_2d());// last point
             bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
             bline_point_list[1].set_tangent((segment[3].to_2d() - segment[2].to_2d()) * 2);
-            bline_point_list[0].set_width(segment[0][2]);
-            bline_point_list[1].set_width(segment[2][2]); 
+           // bline_point_list[0].set_width(segment[0][2]);
+            //bline_point_list[1].set_width(segment[2][2]); 
             param2.set_list_of(bline_point_list); 
             
     }break;
 
     default:{/*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
-                Even : 1 2 3 4, 4 5 6, 6 7 8 */
+                Even : 1 2 3 4, 4 5 6, 6 7 8 *//*
                 std::vector<synfig::BLinePoint> bline_point_list;
                 int num =0,point =0;
                 if(segment.size() & 1)
@@ -121,6 +122,21 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
     }break;
 
   }
+  */
+  std::vector<synfig::BLinePoint> bline_point_list;
+	bline_point_list.push_back(synfig::BLinePoint());
+	bline_point_list.push_back(synfig::BLinePoint());
+	bline_point_list.push_back(synfig::BLinePoint());
+	bline_point_list[0].set_vertex(synfig::Point(0,1));
+	bline_point_list[1].set_vertex(synfig::Point(0,-1));
+	bline_point_list[2].set_vertex(synfig::Point(1,0));
+	bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
+	bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
+	bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
+	bline_point_list[0].set_width(1.0f);
+	bline_point_list[1].set_width(1.0f);
+	bline_point_list[2].set_width(1.0f);
+  param2.set_list_of(bline_point_list);
   if(!layer->set_param("bline",param2)) ;//synfig::info("Vectorizer was not able to create Outline layer");
   //("text",ValueBase(selection_data)))
    //->set_shape_param("bline",param2);
