@@ -58,9 +58,16 @@ def gen_layer_image(lottie, layer, idx):
         st["br"] = gen_dummy_waypoint(st["br"], "param", "vector")
 
     st["scale"] = gen_image_scale(st["tl"][0], st["br"][0], asset["w"], asset["h"])
-    anchor = [0, 0, 0]
 
-    gen_helpers_transform(lottie["ks"], layer, st["tl"][0], anchor, st["scale"][0])
+    anchor = settings.DEFAULT_ANCHOR
+    rotation = settings.DEFAULT_ROTATION
+
+    # Setting opacity in transform
+    for chld in layer:
+        if chld.tag == "param" and chld.attrib["name"] == "amount":
+            opacity = chld
+
+    gen_helpers_transform(lottie["ks"], layer, st["tl"][0], anchor, st["scale"][0], rotation, opacity[0])
 
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT

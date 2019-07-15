@@ -140,7 +140,7 @@ def change_opacity(layer, lottie):
         if c_layer.attrib["type"] in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
             anim_type = "effects_opacity"
             dic = root["layers"][it]["ef"][0]["ef"][-1]["v"]
-        elif c_layer.attrib["type"] in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER):
+        elif c_layer.attrib["type"] in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER, settings.IMAGE_LAYER):
             anim_type = "opacity"
             dic = root["layers"][it]["ks"]["o"]
         elif c_layer.attrib["type"] in settings.SHAPE_LAYER:
