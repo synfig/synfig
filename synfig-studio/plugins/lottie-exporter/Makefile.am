@@ -2,7 +2,8 @@
 
 PLUGIN_NAME = lottie-exporter
 
-EXTRA_FILES = canvas.py \
+EXTRA_FILES = bodymovin.js \
+			  canvas.py \
 			  misc.py \
 			  settings.py
 

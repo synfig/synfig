@@ -80,33 +80,58 @@ def gen_html(file_name):
         (None)
     """
 
-    # Take only the file name, to take relative file path
-    store_file_name = os.path.basename(file_name)
+    with open("bodymovin.js", "r") as f:
+        bodymovin_script = f.read()
 
     html_text = \
-"""<!DOCTYPE html>
-<html style="width: 100%;height: 100%">
+"""<html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
 <head>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.3/lottie.js"></script>
+    <style>
+        body{{
+            background-color:#fff;
+            margin: 0px;
+            height: 100%;
+            overflow: hidden;
+        }}
+        #lottie{{
+            background-color:#fff;
+            width:100%;
+            height:100%;
+            display:block;
+            overflow: hidden;
+            transform: translate3d(0,0,0);
+            text-align: center;
+            opacity: 1;
+        }}
+
+    </style>
 </head>
-<body style="background-color:#ccc; margin: 0px;height: 100%; font-family: sans-serif;font-size: 10px">
+<body>
 
-<div style="width:100%;height:100%;background-color:#333;" id="bodymovin"></div>
+{bodymovin_script}
 
+<div id="lottie"></div>
 <script>
-    var animData = {{
-        container: document.getElementById('bodymovin'),
+    var animationData = {file_name_data};
+    var params = {{
+        container: document.getElementById('lottie'),
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        path:'{file_name}'
+        animationData: animationData
     }};
-    var anim = bodymovin.loadAnimation(animData);
+
+    var anim;
+
+    anim = lottie.loadAnimation(params);
+
 </script>
 </body>
-</html>"""
+</html>
+"""
 
-    write_to(file_name, "html", html_text.format(file_name=store_file_name))
+    write_to(file_name, "html", html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(settings.lottie_format)))
 
 
 def init_logs():
