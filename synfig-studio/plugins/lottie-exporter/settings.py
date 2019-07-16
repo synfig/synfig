@@ -6,6 +6,7 @@ This module contains all the global variables and constants
 from misc import Count
 
 # Constants
+FLOAT_PRECISION = 3
 LOTTIE_VERSION = "5.3.4"
 IN_POINT = 0
 OUT_POINT = 1.00000004073083

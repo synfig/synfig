@@ -287,7 +287,7 @@ class Vector:
         Returns:
             (list) : Contains the Vector in list format
         """
-        return round_to([self.val1, self.val2])
+        return [self.val1, self.val2]
 
     def get_val(self):
         """
@@ -307,7 +307,6 @@ class Vector:
             ret = [self.val1, self.val3]
         else:
             ret = [self.val1]
-        ret = round_to(ret)
         return ret
 
     def add_new_val(self, val3):
@@ -774,11 +773,11 @@ def set_layer_desc(layer, default, lottie):
         lottie["nm"] = layer.attrib["desc"] 
 
 
-def round_to(my_list, decimal_places=3):
-    """
-    rounds the provided list to the given decimal places and returns it
-    """
-    ret = []
-    for num in my_list:
-        ret.append(round(num, decimal_places))
-    return ret
+def modify_final_dump(obj):
+    if isinstance(obj, float):
+        return round(obj, settings.FLOAT_PRECISION)
+    elif isinstance(obj, dict):
+        return dict((k, modify_final_dump(v)) for k, v in obj.items() if k not in ["synfig_i", "synfig_o"])
+    elif isinstance(obj, (list, tuple)):
+        return list(map(modify_final_dump, obj))
+    return obj

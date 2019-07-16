@@ -15,8 +15,8 @@ import logging
 from lxml import etree
 from canvas import gen_canvas
 from layers.driver import gen_layers
+from misc import modify_final_dump
 import settings
-
 
 
 def write_to(filename, extension, data):
@@ -65,7 +65,7 @@ def parse(file_name):
     settings.lottie_format["layers"] = []
     gen_layers(settings.lottie_format["layers"], root, len(root) - 1)
 
-    lottie_string = json.dumps(settings.lottie_format)
+    lottie_string = json.dumps(modify_final_dump(settings.lottie_format))
     return write_to(file_name, "json", lottie_string)
 
 
@@ -133,7 +133,7 @@ def gen_html(file_name):
 </html>
 """
 
-    write_to(file_name, "html", html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(settings.lottie_format)))
+    write_to(file_name, "html", html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(modify_final_dump(settings.lottie_format))))
 
 
 def init_logs():
