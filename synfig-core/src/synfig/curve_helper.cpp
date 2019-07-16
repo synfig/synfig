@@ -535,7 +535,7 @@ static int recurse_intersect(const CIntersect::SCurve &b, const Point &p1, int d
 			//solve for the y_value
 			Vector v = b.b[i+1] - b.b[i];
 
-			if(v[1] > ERROR && v[1] < ERROR)
+			if(v[1] > ERROR || v[1] < -ERROR)
 			{
 				Real xi = (p1[1] - b.b[i][1])/v[1];
 

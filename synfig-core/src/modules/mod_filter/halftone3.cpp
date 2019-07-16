@@ -281,14 +281,14 @@ Halftone3::set_param(const String & param, const ValueBase &value)
 
 	IMPORT_VALUE_PLUS(param_subtractive,sync());
 	for(int i=0;i<3;i++)
-		if ((param==strprintf("tone[%d].angle",i) || param==strprintf("tone[%d].angle",i))
+		if (param==strprintf("tone[%d].angle",i)
 			&& tone[i].param_angle.get_type()==value.get_type())
 		{
 			tone[i].param_angle=value;
 			return true;
 		}
 	for(int i=0;i<3;i++)
-		if ((param==strprintf("tone[%d].origin",i) || param==strprintf("tone[%d].origin",i))
+		if ((param==strprintf("tone[%d].origin",i) || param==strprintf("tone[%d].offset",i))
 			&& tone[i].param_origin.get_type()==value.get_type())
 		{
 			tone[i].param_origin=value;
