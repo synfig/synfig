@@ -651,8 +651,6 @@ Renderer_Canvas::clear_render()
 		tiles.clear();
 	}
 	rendering::Renderer::cancel(events);
-	assert(enqueued_tasks == 0);
-	enqueued_tasks = 0;
 	if (cleared && get_work_area())
 		get_work_area()->signal_rendering()();
 }
