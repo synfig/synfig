@@ -143,7 +143,7 @@ def to_Synfig_axis(pos, animated_name):
         ret = [x/settings.PIX_PER_UNIT for x in pos]
     elif animated_name == "real":
         ret = pos / settings.PIX_PER_UNIT
-    elif animated_name == "amount":
+    elif animated_name in ["amount", "opacity"]:
         ret = pos / settings.OPACITY_CONSTANT
     elif animated_name == "effects_opacity":
         ret = pos

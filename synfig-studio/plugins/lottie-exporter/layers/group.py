@@ -5,6 +5,7 @@ Store all functions corresponding to group layer in Synfig
 
 import sys
 import copy
+import math
 from lxml import etree
 import settings
 from misc import get_frame, approximate_equal, get_time,Count, set_layer_desc
@@ -13,7 +14,7 @@ from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
 from synfig.animation import insert_waypoint_at_frame, to_Synfig_axis, print_animation, gen_dummy_waypoint, get_vector_at_frame
 import synfig.group as group
-from properties.shapePropKeyframe.helper import append_path
+from properties.shapePropKeyframe.helper import update_frame_window, append_path
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
 
@@ -97,14 +98,96 @@ def gen_layer_group(lottie, layer, idx):
 
     # Change opacity of layers for switch-group layers
     if layer.attrib["type"] == "switch":
-        change_opacity(layer, lottie)
+        change_opacity_switch(layer, lottie)
+    # Change opacity of layers for group layers
+    elif layer.attrib["type"] == "group":
+        change_opacity_group(layer, lottie)
 
     # Return to previous state, when we go outside the group layer
     settings.INSIDE_PRECOMP = prev_state
     settings.OUTLINE_GROW.pop()
 
 
-def change_opacity(layer, lottie):
+def change_opacity_group(layer, lottie):
+    """
+    Will make the opacity of underlying layers 0 according to the layers lying
+    inside z range(if it is active)[z-range is non-animatable]
+    """
+    for chld in layer:
+        if chld.tag == "param":
+            if chld.attrib["name"] == "z_range":
+                z_range = chld
+            elif chld.attrib["name"] == "z_range_position":
+                z_range_pos = chld
+            elif chld.attrib["name"] == "z_range_depth":
+                z_range_depth = chld
+            elif chld.attrib["name"] == "canvas":
+                canvas = chld
+
+    for assets in settings.lottie_format["assets"]:
+        if assets["id"] == lottie["refId"]:
+            root = assets
+            break
+
+    # If z-range is non-active (static value)
+    if z_range[0].attrib["value"] == "false":
+        return
+
+    pos = gen_dummy_waypoint(z_range_pos, "param", "real", "z_range_position")
+    depth = gen_dummy_waypoint(z_range_depth, "param", "real", "z_range_depth")
+    pos_dict, depth_dict = {}, {}
+    gen_value_Keyframed(pos_dict, pos[0], 0)
+    gen_value_Keyframed(depth_dict, depth[0], 0)
+
+    z_st, z_en = float('-inf'), float('-inf')
+    active_range = [] # Stores the time and change of layers in z-range
+    fr = settings.lottie_format["ip"]
+    while fr <= settings.lottie_format["op"]:
+        pos_val = to_Synfig_axis(get_vector_at_frame(pos_dict, fr), "real")
+        depth_val = to_Synfig_axis(get_vector_at_frame(depth_dict, fr), "real")
+        st, en = math.ceil(pos_val), math.floor(pos_val + depth_val)
+        if st > en or en < 0:
+            if (fr == settings.lottie_format["ip"]) or (z_st != -1 and z_en != -1):
+                z_st, z_en = -1, -1
+                active_range.append([fr, z_st, z_en])
+        elif (st != z_st) or (en != z_en):
+            z_st, z_en = st, en
+            active_range.append([fr, z_st, z_en])
+        fr += 1
+
+    z_value = 0
+    for c_layer in reversed(canvas[0]):
+        active_time = set()
+        itr = 0
+        while itr < len(active_range):
+            st, en = active_range[itr][1], active_range[itr][2]
+            if z_value <= en and z_value >= st:
+                now = active_range[itr][0] / settings.lottie_format["fr"]
+                later = get_time_bound("op")
+                if itr + 1 < len(active_range):
+                    later = active_range[itr + 1][0] / settings.lottie_format["fr"]
+                active_time.add((now, later))
+            itr += 1
+        active_time = sorted(active_time)
+        deactive_time = sorted(flip_time(active_time))
+
+        if c_layer.attrib["type"] in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
+            anim_type = "effects_opacity"
+            dic = root["layers"][z_value]["ef"][0]["ef"][-1]["v"]
+        elif c_layer.attrib["type"] in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER, settings.IMAGE_LAYER):
+            anim_type = "opacity"
+            dic = root["layers"][z_value]["ks"]["o"]
+        elif c_layer.attrib["type"] in settings.SHAPE_LAYER:
+            anim_type = "opacity"
+            dic = root["layers"][z_value]["shapes"][1]["o"]
+        
+        animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
+        gen_value_Keyframed(dic, animation[0], 0)
+        z_value += 1
+
+
+
+def change_opacity_switch(layer, lottie):
     """
     Will make the opacity of underlying layers 0 according to the active layer
     """
@@ -188,8 +271,8 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
         # then remove any in-between waypoints
         first = round(it[0] * settings.lottie_format["fr"])
         second = round(it[1] * settings.lottie_format["fr"])
-        insert_waypoint_at_frame(opacity[0], opacity_dict, first, "effects_opacity")
-        insert_waypoint_at_frame(opacity[0], opacity_dict, second, "effects_opacity")
+        insert_waypoint_at_frame(opacity[0], opacity_dict, first, anim_type)
+        insert_waypoint_at_frame(opacity[0], opacity_dict, second, anim_type)
 
         # Making it a constant interval
         for waypoint in opacity[0]:
@@ -274,5 +357,7 @@ def gen_dict(lottie, offset_dict, dilation_dict, fr):
 
 def get_time_bound(st):
     ret = settings.lottie_format[st]
+    if st == "op":
+        ret -= 1
     ret /= settings.lottie_format["fr"]
     return ret
