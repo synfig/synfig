@@ -83,6 +83,15 @@ def synfig_circle(st_val, origin_dict, radius_dict, fr):
     """
     Calculates the points for the circle layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/circle.cpp
+
+    Args:
+        st_val (dict) : Lottie format circle is stored in this
+        origin_dict (dict) : Lottie format origin of circle
+        radius_dict (dict) : Lottie format radius of circle
+        fr (int) : Frame number
+
+    Returns:
+        (None)
     """
 
     num_splines = 8

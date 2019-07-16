@@ -63,6 +63,11 @@ class Hermite:
         derivative and value of the curve at time t.
         Here p1, p2, t1, t2 are control points of bezier curve and a, b, c, d
         are control points of hermite
+
+        Args:
+            (None)
+        Returns:
+            (None)
         """
         self.a = self.p1
         self.b = self.p1 + self.t1/3
@@ -107,6 +112,16 @@ class Matrix2:
     Will store a Matrix 2X2
     """
     def __init__(self, m00=1.0, m01=0.0, m10=0.0, m11=1.0):
+        """
+        Args:
+            m00 (:obj: `float`, optional) : 0th row, 0th column value
+            m01 (:obj: `float`, optional) : 0th row, 1st column value
+            m10 (:obj: `float`, optional) : 1st row, 0th column value
+            m11 (:obj: `float`, optional) : 1st row, 1st column value
+
+        Returns:
+            (None)
+        """
         self.m00 = m00
         self.m01 = m01
         self.m10 = m10
@@ -115,6 +130,12 @@ class Matrix2:
     def set_rotate(self, angle):
         """
         This will serve as a rotation matrix with angle `angle`
+
+        Args:
+            angle (float) : Angle in radians
+
+        Returns:
+            (None)
         """
         c = math.cos(angle)
         s = math.sin(angle)
@@ -124,6 +145,12 @@ class Matrix2:
     def get_transformed(self, v):
         """
         Rotate or transform a vector using this Matrix
+
+        Args:
+            v (misc.Vector) : Vector to be rotated using this matrix
+
+        Returns:
+            (misc.Vector) : Rotated vector
         """
         ret = Vector()
         x, y = v[0], v[1]
@@ -743,6 +770,14 @@ def radial_to_tangent(radius, angle):
     """
     Converts a tangent from radius and angle format to x, y axis co-ordinate
     system
+
+    Args:
+        radius (float) : radius of a vector
+        angle  (float) : angle in degrees
+
+    Returns:
+        (float) : The x-coordinate of the vector
+        (float) : The y-coordinate of the vector
     """
     angle = math.radians(angle)
     x = radius * math.cos(angle)
@@ -767,13 +802,31 @@ def set_vector(waypoint, pos):
 def set_layer_desc(layer, default, lottie):
     """
     Sets layer description if provided, else defaults to the given value
+
+    Args:
+        layer (lxml.etree._Element) : Synfig format layer
+        default (str)               : default name of the layer
+        lottie  (dict)              : Lottie format layer
+
+    Returns:
+        (None)
     """
     lottie["nm"] = default
     if "desc" in layer.keys():
-        lottie["nm"] = layer.attrib["desc"] 
+        lottie["nm"] = layer.attrib["desc"]
 
 
 def modify_final_dump(obj):
+    """
+    This function will remove unwanted keys from the final dictionary and also
+    modify the floats according to our precision
+
+    Args:
+        obj (float | dict | list | tuple) : The object to be modified
+
+    Returns:
+        (float | dict | list) : Depending upon arguments, obj type is decided
+    """
     if isinstance(obj, float):
         return round(obj, settings.FLOAT_PRECISION)
     elif isinstance(obj, dict):

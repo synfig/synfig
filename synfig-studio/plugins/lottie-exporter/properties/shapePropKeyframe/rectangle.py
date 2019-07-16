@@ -124,6 +124,18 @@ def synfig_rectangle(st_val, p1_dict, p2_dict, expand_dict, bevel_dict, bevCircl
     """
     Calculates the points for the rectangle layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/rectangle.cpp
+
+    Args:
+        st_val (dict) : Lottie format rectangle will be stored in this
+        p1_dict (dict) : Lottie format point1 animation
+        p2_dict (dict) : Lottie format point2 animation
+        expand_dict (dict) : Lottie format expand parameter animation
+        bevel_dict (dict) : Lottie format bevel parameter animation
+        bevCircle (lxml.etree._Element) : Animation of bevCircle in Synfig format
+        fr (int) : Frame Number
+
+    Returns:
+        (None)
     """
 
     expand = abs(to_Synfig_axis(get_vector_at_frame(expand_dict, fr), "real"))

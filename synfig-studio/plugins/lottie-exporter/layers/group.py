@@ -4,17 +4,15 @@ Store all functions corresponding to group layer in Synfig
 """
 
 import sys
-import copy
 import math
-from lxml import etree
 import settings
-from misc import get_frame, approximate_equal, get_time,Count, set_layer_desc
+from misc import get_frame, approximate_equal, get_time, Count, set_layer_desc
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from synfig.animation import insert_waypoint_at_frame, to_Synfig_axis, print_animation, gen_dummy_waypoint, get_vector_at_frame
+from synfig.animation import insert_waypoint_at_frame, to_Synfig_axis, gen_dummy_waypoint, get_vector_at_frame
 import synfig.group as group
-from properties.shapePropKeyframe.helper import update_frame_window, append_path
+from properties.shapePropKeyframe.helper import append_path
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
 
@@ -24,6 +22,14 @@ def gen_layer_group(lottie, layer, idx):
     Will generate a pre composition but has small differences than pre-comp layer used in
     layers/preComp.py
     This function will be used for group layer as well as switch group layer
+
+    Args:
+        lottie (dict)               : Lottie format layer will be stored here
+        layer (lxml.etree._Element) : Synfig format group/switch layer
+        idx   (int)                 : Index of the layer
+
+    Returns:
+        (None)
     """
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
@@ -112,6 +118,13 @@ def change_opacity_group(layer, lottie):
     """
     Will make the opacity of underlying layers 0 according to the layers lying
     inside z range(if it is active)[z-range is non-animatable]
+
+    Args:
+        layer (lxml.etree._Element) : Synfig format layer
+        lottie (dict)               : Lottie format layer
+
+    Returns:
+        (None)
     """
     for chld in layer:
         if chld.tag == "param":
@@ -180,7 +193,7 @@ def change_opacity_group(layer, lottie):
         elif c_layer.attrib["type"] in settings.SHAPE_LAYER:
             anim_type = "opacity"
             dic = root["layers"][z_value]["shapes"][1]["o"]
-        
+
         animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
         gen_value_Keyframed(dic, animation[0], 0)
         z_value += 1
@@ -190,11 +203,18 @@ def change_opacity_group(layer, lottie):
 def change_opacity_switch(layer, lottie):
     """
     Will make the opacity of underlying layers 0 according to the active layer
+
+    Args:
+        layer (lxml.etree._Element) : Synfig format layer
+        lottie (dict)               : Lottie format layer
+
+    Returns:
+        (None)
     """
     for chld in layer:
         if chld.tag == "param":
             if chld.attrib["name"] == "layer_name":
-                layer_name = chld 
+                layer_name = chld
             elif chld.attrib["name"] == "canvas":
                 canvas = chld
 
@@ -213,7 +233,7 @@ def change_opacity_switch(layer, lottie):
         while waypoint_itr < len(layer_name[0]):
             waypoint = layer_name[0][waypoint_itr]
             l_name = waypoint[0].text
-            if (l_name == description) or (l_name == None and it == 0):
+            if (l_name == description) or (l_name is None and it == 0):
                 update_time(active_time, layer_name[0], waypoint_itr)
             waypoint_itr += 1
 
@@ -238,9 +258,15 @@ def change_opacity_switch(layer, lottie):
 
 def flip_time(time):
     """
-    time  will be set();
+    Time will be in a set();
     Example: input: ((2, 3), (4, 5))
              output: ((0, 2), (3, 4), (5, frame_last_time))
+
+    Args:
+        time (set) : Range of time is stored in this
+
+    Returns:
+        (set) : Flipped/opposite of `time` is returned
     """
     ret = set()
     last = settings.lottie_format["op"]/settings.lottie_format["fr"]
@@ -256,7 +282,17 @@ def flip_time(time):
 
 def gen_hold_waypoints(deactive_time, layer, anim_type):
     """
-    Will only be used to modify opacity waypoints
+    Will only be used to modify opacity waypoints, and set zero values where the
+    layer is deactive
+
+    Args:
+        deactive_time (set) : Range of time when the layer will be deactive
+        layer (lxml.etree._Element) : Synfig format layer
+        anim_type (str) : Specifies whether it is effects_opacity or opacity (it
+                          will effect a factor of 100)
+
+    Returns:
+        (lxml.etree._Element) : Modified opacity animation is returned
     """
     for chld in layer:
         if chld.tag == "param" and chld.attrib["name"] == "amount":
@@ -295,6 +331,15 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
 
 def update_time(active_time, animated, itr):
     """
+    Depending on the waypoints, the active time set is updated accordingly
+
+    Args:
+        active_time (set) : Stores the active time ranges of the layer till now
+        animated (lxml.etree._Element) : Animation in Synfig format
+        itr (int) : Position of the waypoint in the animation
+
+    Returns:
+        (None)
     """
     # Tuples will be added to the set
     first = get_time(animated[itr])
@@ -304,7 +349,7 @@ def update_time(active_time, animated, itr):
     if itr + 1 <= len(animated) - 1:
         second = get_time(animated[itr+1])
     active_time.add((first, second))
-    
+
 
 def gen_time_remap(lottie, time_offset, time_dilation, idx):
     """
@@ -312,6 +357,15 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
     Currently time remapping will be done for each frame, but this function can
     be intelligently written only for some particular frames,hence reducing the
     space
+
+    Args:
+        lottie (dict) : Time remapping in Lottie format
+        time_offset (lxml.etree._Element) : Offset for time in Synfig format
+        time_dilation (lxml.etree._Element) : Speed/dilation for time in Synfig format
+        idx (itr) : Index of this property in the layer
+
+    Returns:
+        (None)
     """
     offset_dict = {}
     time_offset = gen_dummy_waypoint(time_offset, "param", "time")
@@ -327,7 +381,7 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
     lottie["k"] = []
 
     while fr <= lst:
-        lottie["k"].append({}) 
+        lottie["k"].append({})
         gen_dict(lottie["k"][-1], offset_dict, dilation_dict, fr)
         fr += 1
 
@@ -335,6 +389,15 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
 def gen_dict(lottie, offset_dict, dilation_dict, fr):
     """
     Generates the constant values for each frame
+
+    Args:
+        lottie (dict) : Bezier values will be stored in here
+        offset_dict (dict) : Animation of offset in lottie format
+        dilation_dict (dict) : Animation of dilation/speed in lottie format
+        fr (int) : frame number
+
+    Returns:
+        (None)
     """
     lottie["i"], lottie["o"] = {}, {}
     lottie["i"]["x"], lottie["i"]["y"] = [], []
@@ -356,6 +419,15 @@ def gen_dict(lottie, offset_dict, dilation_dict, fr):
 
 
 def get_time_bound(st):
+    """
+    Returns the extreme values of time in seconds
+
+    Args:
+        st (str) : Specifies in-time or out-time
+
+    Returns:
+        (float) : Extreme value of time in seconds
+    """
     ret = settings.lottie_format[st]
     if st == "op":
         ret -= 1

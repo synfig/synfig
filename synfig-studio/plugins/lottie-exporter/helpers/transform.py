@@ -22,8 +22,10 @@ def gen_helpers_transform(lottie, layer, pos=settings.DEFAULT_POSITION, anchor=s
         lottie (dict)                : Lottie format layer
         layer  (lxml.etree._Element) : Synfig format layer
         pos    (:obj: `list | lxml.etree._Element`, optional) : position of layer
-        anchor (:obj: `list`) : anchor point of layer
+        anchor (:obj: `list | lxml.etree._Element`, optional) : anchor point of layer
         scale (:obj: `list | lxml.etree._Element`, optional) : scale of layer
+        rotation (:obj: `float | lxml.etree._Element`, optional) : rotation of layer
+        opacity (:obj: `float | lxml.etree._Element`, optional) : Opacity of layer
 
     Returns:
         (None)

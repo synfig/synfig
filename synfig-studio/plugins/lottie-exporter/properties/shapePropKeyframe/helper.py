@@ -19,6 +19,15 @@ def append_path(element, parent, element_name, typ="real"):
     """
     Generates a dictionary corresponding to the path followed by that element
     and appends it at the parent which will be needed later
+
+    Args:
+        element (lxml.etree._Element) : Synfig format element/parameter
+        parent  (lxml.etree._Element) : Parent of the element/parameter
+        element_name (str)            : Tag of the dictionary to be stored in parent
+        typ (:obj: str, optional)     : Specifies the type of dictionary to be created
+
+    Returns:
+        (None)
     """
     # Generating the path and store in the lxml element
     element_dict = {}
@@ -306,6 +315,15 @@ def insert_dict_at(lottie, idx, fr, loop):
 def quadratic_to_cubic(qp0, qp1, qp2):
     """
     Converts quadratic bezier curve to cubic bezier curve
+
+    Args:
+        qp0 (misc.Vector) First control point of quadratic bezier
+        qp1 (misc.Vector) Second control point of quadratic bezier
+        qp2 (misc.Vector) Third control point of quadratic bezier
+
+    Returns:
+        (misc.Vector) Second control point of Cubic bezier
+        (misc.Vector) Third control point of Cubic bezier
     """
     cp0 = qp0
     cp3 = qp2

@@ -122,6 +122,16 @@ def get_max_points(points):
     As a shape layer needs to have same number of vertices at each frame, we
     will draw a shape with max number of points. When number of points at a
     frame is less than mx, redundant vertices on the shape will be added
+
+    NOTE/IMPORTANT: There might come a case when somewhere between two
+    waypoints, the number of points is greater than both those 2 waypoints(very
+    rare). This case is not handled here
+
+    Args:
+        points (lxml.etree._Element) : Animation of points param in Synfig format
+
+    Returns:
+        mx (int) : Maximum number of points ever in the animation
     """
     mx = -1
     for waypoint in points[0]:
@@ -134,6 +144,19 @@ def synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angl
     """
     Calculates the points for the rectangle layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/star.cpp
+
+    Args:
+        st_val (dict) : Lottie format star will be stored here
+        mx_points (int) : Maximum points ever in star animation
+        radius1_dict (dict) : Lottie format radius1 animation
+        radius2_dict (dict) : Lottie format radius2 animation
+        angle_dict   (dict) : Lottie format angle animation
+        points_dict  (dict) : Lottie format points animation
+        regular_polygon_anim (lxml.etree._Element) : Synfig format regularPolygon animation
+        fr (int) : Frame number
+
+    Returns:
+        (None)
     """
 
     angle = get_vector_at_frame(angle_dict, fr)
