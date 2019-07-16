@@ -274,8 +274,7 @@ public:
 	{
 		int batch_index;
 		int index;
-		int deps_count;
-		Set deps; // always empty (deps_count is enough), used inside of Renderer::find_deps only
+		Set deps;
 		Set back_deps;
 
 		Set tmp_deps;
@@ -284,7 +283,7 @@ public:
 		RunParams params;
 		bool success;
 
-		RendererData(): batch_index(), index(), deps_count(), success() { }
+		RendererData(): batch_index(), index(), success() { }
 	};
 
 	class LockReadBase: public SurfaceResource::LockReadBase

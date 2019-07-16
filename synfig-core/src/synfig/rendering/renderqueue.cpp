@@ -201,8 +201,8 @@ RenderQueue::done(int thread_index, const Task::Handle &task)
 	for(Task::Set::iterator i = task->renderer_data.back_deps.begin(); i != task->renderer_data.back_deps.end(); ++i)
 	{
 		assert(*i);
-		(*i)->renderer_data.deps_count--;
-		if ((*i)->renderer_data.deps_count == 0)
+		(*i)->renderer_data.deps.erase(task);
+		if ((*i)->renderer_data.deps.empty())
 		{
 			bool mt = (*i)->get_allow_multithreading();
 			TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
@@ -301,22 +301,15 @@ RenderQueue::remove_if_orphan(const Task::Handle &task, bool in_queue)
 		if (!task_event->is_finished())
 			return false;
 
-	for(TaskSet::iterator i = task->renderer_data.back_deps.begin(); i != task->renderer_data.back_deps.end();)
-		if (remove_if_orphan(*i, false)) {
-			if (*i) {
-				(*i)->renderer_data.deps.erase(task);
-				(*i)->renderer_data.deps_count--;
-			}
-			task->renderer_data.back_deps.erase(i++);
-		} else ++i;
-
 	if (!task->renderer_data.back_deps.empty())
 		return false;
-
-	// usually deps is empty and only back_deps is used, but it's easy to check it anyway
+		
 	for(TaskSet::iterator i = task->renderer_data.deps.begin(); i != task->renderer_data.deps.end(); ++i)
-		if (*i) (*i)->renderer_data.back_deps.erase(task);
-	task->renderer_data.deps_count -= (int)task->renderer_data.deps.size();
+		if (*i) {
+			(*i)->renderer_data.back_deps.erase(task);
+			if ((*i)->renderer_data.back_deps.empty())
+				remove_if_orphan(*i, false);
+		}
 	task->renderer_data.deps.clear();
 
 	// don't remove task if 'in_queue' is set (it will removed by caller)
@@ -351,7 +344,7 @@ RenderQueue::enqueue(const Task::Handle &task, const Task::RunParams &params)
 	bool mt = task->get_allow_multithreading();
 	TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
 	TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
-	if (task->renderer_data.deps_count == 0) {
+	if (task->renderer_data.deps.empty()) {
 		queue.push_back(task);
 		(mt ? cond : single_cond).signal();
 	}
@@ -383,7 +376,7 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 			bool mt = (*i)->get_allow_multithreading();
 			TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
 			TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
-			if ((*i)->renderer_data.deps_count == 0) {
+			if ((*i)->renderer_data.deps.empty()) {
 				queue.push_back(*i);
 				++(mt ? signals : single_signals);
 			} else {
