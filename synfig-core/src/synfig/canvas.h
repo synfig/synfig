@@ -592,6 +592,13 @@ public:
 	//! Retireves sorted double queue of Layers and Context of the first layer with rendering parameters
 	Context get_context_sorted(const ContextParams &params, CanvasBase &out_queue) const;
 
+	int indexof(const const_iterator &iter) const;
+	iterator byindex(int index);
+	const_iterator byindex(int index) const;
+	
+	iterator find_index(const etl::handle<Layer> &layer, int &index);
+	const_iterator find_index(const etl::handle<Layer> &layer, int &index) const;
+	
 	//! Returns the last Canvas layer queue iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
 	 * just past the last element of the queue.*/

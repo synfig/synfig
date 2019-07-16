@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <deque>
+#include <list>
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
@@ -38,7 +38,7 @@ namespace synfig {
 
 class Layer;
 
-typedef std::deque< etl::handle< Layer > > CanvasBase;
+typedef std::list< etl::handle< Layer > > CanvasBase;
 
 }; // END of namespace synfig
 

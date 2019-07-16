@@ -183,7 +183,7 @@ Action::LayerRemove::undo()
 		set_dirty(layer->active());
 
 		// Insert the layer into the canvas at the desired depth
-		get_canvas()->insert(get_canvas()->begin()+depth,layer);
+		get_canvas()->insert(get_canvas()->byindex(depth), layer);
 
 		// Signal that a layer has been inserted
 		if(get_canvas_interface())

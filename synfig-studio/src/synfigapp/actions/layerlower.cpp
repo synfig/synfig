@@ -134,8 +134,9 @@ Action::LayerLower::prepare()
 
 		Canvas::Handle subcanvas(layer->get_canvas());
 
-		// Find the iterator for the layer
-		Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),layer);
+		// Find the index of the layer
+		int new_index = -1;
+		Canvas::iterator iter = subcanvas->find_index(layer, new_index);
 
 		// If we couldn't find the layer in the canvas, then bail
 		if(*iter!=layer)
@@ -147,12 +148,11 @@ Action::LayerLower::prepare()
 		//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 		//	throw Error(_("This layer doesn't belong to this canvas anymore"));
 
-		int new_index=iter-subcanvas->begin();
-
-		new_index++;
+		++iter;
+		++new_index;
 
 		// If this lowers the layer past the bottom then don't bother
-		if(new_index==subcanvas->size())
+		if(iter == subcanvas->end())
 			continue;
 
 		Action::Handle layer_move(LayerMove::create());

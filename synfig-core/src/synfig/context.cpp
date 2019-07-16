@@ -105,13 +105,14 @@ IndependentContext::set_time(Time time, bool force)const
 	}
 	if (!*context) return;
 
-	// Set up a writer lock
-	RWLock::WriterLock lock((*context)->get_rw_lock());
-	(*context)->set_time(context+1,time);
+	Layer::Handle layer(*context);
+	++context;
+	RWLock::WriterLock lock(layer->get_rw_lock());
+	layer->set_time(context, time);
 }
 
 void
-IndependentContext::load_resources(Time time, bool force)const
+IndependentContext::load_resources(Time time, bool /*force*/)const
 {
 	IndependentContext context(*this);
 	while(*context)
@@ -122,9 +123,10 @@ IndependentContext::load_resources(Time time, bool force)const
 	}
 	if (!*context) return;
 
-	// Set up a writer lock
-	//RWLock::WriterLock lock((*context)->get_rw_lock());
-	(*context)->load_resources(context+1,time);
+	Layer::Handle layer(*context);
+	++context;
+	//RWLock::WriterLock lock(layer->get_rw_lock());
+	layer->load_resources(context, time);
 }
 
 void
@@ -141,8 +143,11 @@ IndependentContext::set_outline_grow(Real outline_grow)const
 	if (!*context) return;
 
 	// Set up a writer lock
-	RWLock::WriterLock lock((*context)->get_rw_lock());
-	(*context)->set_outline_grow(context+1, outline_grow);
+	
+	Layer::Handle layer(*context);
+	++context;
+	RWLock::WriterLock lock(layer->get_rw_lock());
+	layer->set_outline_grow(context, outline_grow);
 }
 
 Color

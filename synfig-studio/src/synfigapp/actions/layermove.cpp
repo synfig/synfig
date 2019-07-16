@@ -156,10 +156,8 @@ Action::LayerMove::perform()
 		dest_canvas=subcanvas;
 
 	// Find the iterator for the layer
-	Canvas::iterator iter=find(src_canvas->begin(),src_canvas->end(),layer);
-
-	// If we couldn't find the layer in the canvas, then bail
-	if(*iter!=layer)
+	Canvas::iterator iter = subcanvas->find_index(layer, old_index);
+	if (*iter != layer)
 		throw Error(_("This layer doesn't exist anymore."));
 
 	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
@@ -171,13 +169,9 @@ Action::LayerMove::perform()
 	if(get_canvas()->get_root()!=dest_canvas->get_root() || get_canvas()->get_root()!=src_canvas->get_root())
 		throw Error(_("You cannot directly move layers across compositions"));
 
-	old_index=iter-src_canvas->begin();
-	int depth;
-
-	if(new_index<0)
-		depth=dest_canvas->size()+new_index+1;
-	else
-		depth=new_index;
+	int depth = new_index < 0
+		      ? dest_canvas->size() + new_index + 1
+		      : new_index;
 
 	set_dirty(layer->active());
 
@@ -193,8 +187,7 @@ Action::LayerMove::perform()
 		depth=0;
 
 	src_canvas->erase(iter);
-
-	dest_canvas->insert(dest_canvas->begin()+depth,layer);
+	dest_canvas->insert(dest_canvas->byindex(depth), layer);
 	layer->set_canvas(dest_canvas);
 
 	layer->changed();
@@ -229,7 +222,8 @@ void
 Action::LayerMove::undo()
 {
 	// Find the iterator for the layer
-	Canvas::iterator iter=find(dest_canvas->begin(),dest_canvas->end(),layer);
+	int index = -1;
+	Canvas::iterator iter=dest_canvas->find_index(layer, index);
 
 	// If we couldn't find the layer in the canvas, then bail
 	if(*iter!=layer || (get_canvas()!=dest_canvas && !dest_canvas->is_inline()))
@@ -244,7 +238,7 @@ Action::LayerMove::undo()
 
 	dest_canvas->erase(iter);
 
-	src_canvas->insert(src_canvas->begin()+old_index,layer);
+	src_canvas->insert(src_canvas->byindex(old_index), layer);
 	layer->set_canvas(src_canvas);
 
 	layer->changed();

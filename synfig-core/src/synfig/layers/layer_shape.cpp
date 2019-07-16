@@ -33,7 +33,6 @@
 
 #include <cfloat>
 
-#include <deque>
 #include <vector>
 
 #include "layer_shape.h"

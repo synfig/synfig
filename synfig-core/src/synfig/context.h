@@ -136,10 +136,16 @@ public:
 		IndependentContext(x), params(context.params) { }
 
 	//! Returns next iterator.
-	Context get_next()const { return Context(*this+1, params); }
+	Context get_next() const {
+		IndependentContext c(*this);
+		return Context(++c, params);
+	}
 
 	//! Returns previous iterator.
-	Context get_previous()const { return Context(*this-1, params); }
+	Context get_previous() const {
+		IndependentContext c(*this);
+		return Context(--c, params);
+	}
 
 	//! Get rendering parameters.
 	const ContextParams& get_params()const { return params; }

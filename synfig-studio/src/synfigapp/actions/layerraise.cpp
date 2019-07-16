@@ -131,11 +131,10 @@ Action::LayerRaise::prepare()
 
 		Canvas::Handle subcanvas(layer->get_canvas());
 
-		// Find the iterator for the layer
-		Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),layer);
-
-		// If we couldn't find the layer in the canvas, then bail
-		if(*iter!=layer)
+		// Find the index of the layer
+		int new_index = -1;
+		Canvas::iterator iter = subcanvas->find_index(layer, new_index);
+		if (*iter != layer)
 			throw Error(_("This layer doesn't exist anymore."));
 
 		// If the subcanvas isn't the same as the canvas,
@@ -143,8 +142,6 @@ Action::LayerRaise::prepare()
 		// bail
 		//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 		//	throw Error(_("This layer doesn't belong to this canvas anymore"));
-
-		int new_index=iter-subcanvas->begin();
 
 		if(new_index==0)
 			continue;

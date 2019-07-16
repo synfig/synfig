@@ -138,28 +138,78 @@ Canvas::~Canvas()
 	begin_delete();
 }
 
-Canvas::iterator
-Canvas::end()
+int
+Canvas::indexof(const const_iterator &iter) const
 {
-	return CanvasBase::end()-1;
+	int index = 0;
+	for(const_iterator i = begin(); i != end(); ++i, ++index)
+		if (i == iter)
+			return index;
+	return -1;
+}
+
+Canvas::iterator
+Canvas::byindex(int index)
+{
+	for(iterator i = begin(); i != end(); ++i, --index)
+		if (!index) return i;
+	return end();
 }
 
 Canvas::const_iterator
-Canvas::end()const
+Canvas::byindex(int index) const
 {
-	return CanvasBase::end()-1;
+	for(const_iterator i = begin(); i != end(); ++i, --index)
+		if (!index) return i;
+	return end();
+}
+
+Canvas::iterator
+Canvas::find_index(const etl::handle<Layer> &layer, int &index)
+{
+	index = -1;
+	int idx = 0;
+	for(iterator iter = begin(); iter != end(); ++iter, ++idx)
+		if (*iter == layer) { index = idx; return iter; }
+	return end();
+}
+
+Canvas::const_iterator
+Canvas::find_index(const etl::handle<Layer> &layer, int &index) const
+{
+	index = -1;
+	int idx = 0;
+	for(const_iterator iter = begin(); iter != end(); ++iter, ++idx)
+		if (*iter == layer) { index = idx; return iter; }
+	return end();
+}
+
+Canvas::iterator
+Canvas::end()
+{
+	Canvas::iterator i = CanvasBase::end();
+	return --i;
+}
+
+Canvas::const_iterator
+Canvas::end() const
+{
+	Canvas::const_iterator i = CanvasBase::end();
+	return --i;
 }
 
 Canvas::reverse_iterator
 Canvas::rbegin()
 {
-	return CanvasBase::rbegin()+1;
+	Canvas::reverse_iterator i = CanvasBase::rbegin();
+	return ++i;
 }
 
 Canvas::const_reverse_iterator
 Canvas::rbegin()const
 {
-	return CanvasBase::rbegin()+1;
+	Canvas::const_reverse_iterator i = CanvasBase::rbegin();
+	return ++i;
 }
 
 int
@@ -200,13 +250,15 @@ Canvas::empty()const
 Layer::Handle &
 Canvas::back()
 {
-	return *(end()-1);
+	iterator i = end();
+	return *--i;
 }
 
 const Layer::Handle &
 Canvas::back()const
 {
-	return *(end()-1);
+	const_iterator i = end();
+	return *--i;
 }
 
 IndependentContext

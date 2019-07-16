@@ -31,7 +31,6 @@
 #	include <config.h>
 #endif
 
-#include <deque>
 #include <vector>
 
 #include "layer_polygon.h"
@@ -47,8 +46,6 @@
 #include <synfig/time.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-
-using std::deque;
 
 #endif
 
