@@ -285,7 +285,7 @@ public:
 
 class synfig::ValueNode_AnimatedInterfaceConst::Internal {
 public:
-	template<typename T>
+	template<typename T, int premult = 0>
 	class Hermite: public Interpolator
 	{
 	public:
@@ -330,7 +330,7 @@ public:
 					second.sync();
 				}
 
-				return second(first(t));
+				return premult ? second(first(t))/premult : second(first(t));
 			}
 		}; // END of struct PathSegment
 
@@ -631,6 +631,13 @@ public:
 
 
 				curve.first.sync();
+				if (premult) {
+					// for proper integer interpolation
+					curve.second.p1() *= premult;
+					curve.second.p2() *= premult;
+					curve.second.t1() *= premult;
+					curve.second.t2() *= premult;
+				}
 				curve.second.sync();
 
 				curve_list.push_back(curve);
@@ -1153,10 +1160,10 @@ ValueNode_AnimatedInterfaceConst::set_type(Type &t)
 		interpolator_ = new Internal::Hermite<Time>(*this);
 	else
 	if (t == type_real)
-		interpolator_ = new Internal::Hermite<Vector::value_type>(*this);
+		interpolator_ = new Internal::Hermite<Real>(*this);
 	else
 	if (t == type_integer)
-		interpolator_ = new Internal::Hermite<int>(*this);
+		interpolator_ = new Internal::Hermite<int, 3*256>(*this);
 	else
 	if (t == type_angle)
 		interpolator_ = new Internal::Hermite<Angle>(*this);
