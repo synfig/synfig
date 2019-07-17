@@ -146,7 +146,6 @@ Outline::Outline()
 	param_round_tip[1]=ValueBase(true);
 	param_sharp_cusps=ValueBase(true);
 	param_width=ValueBase(Real(1.0f));
-	param_loopyness=ValueBase(Real(1.0f));
 	param_expand=ValueBase(Real(0));
 	param_homogeneous_width=ValueBase(true);
 	clear();
@@ -442,7 +441,6 @@ Outline::set_shape_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_round_tip[1]);
 	IMPORT_VALUE(param_sharp_cusps);
 	IMPORT_VALUE_PLUS(param_width,if(old_version){param_width.set(param_width.get(Real())*2.0);});
-	IMPORT_VALUE(param_loopyness);
 	IMPORT_VALUE(param_expand);
 	IMPORT_VALUE(param_homogeneous_width);
 
@@ -459,7 +457,6 @@ Outline::get_param(const String& param)const
 	EXPORT_VALUE(param_round_tip[1]);
 	EXPORT_VALUE(param_sharp_cusps);
 	EXPORT_VALUE(param_width);
-	EXPORT_VALUE(param_loopyness);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -504,10 +501,6 @@ Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("round_tip[1]")
 		.set_local_name(_("Rounded End"))
 		.set_description(_("Round off the tip"))
-	);
-	ret.push_back(ParamDesc("loopyness")
-		.set_local_name(_("Loopyness"))
-		.set_description(_("(Currently not used)"))
 	);
 	ret.push_back(ParamDesc("homogeneous_width")
 		.set_local_name(_("Homogeneous"))

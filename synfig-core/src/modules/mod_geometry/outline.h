@@ -57,8 +57,6 @@ private:
 	synfig::ValueBase param_width;
 	//! Parameter: (Real)
 	synfig::ValueBase param_expand;
-	//! Parameter: (Real)
-	synfig::ValueBase param_loopyness;
 	//! Parameter: (bool)
 	synfig::ValueBase param_homogeneous_width;
 
