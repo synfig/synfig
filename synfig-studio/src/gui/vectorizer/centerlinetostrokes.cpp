@@ -27,6 +27,9 @@
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/blinepoint.h>
 #include <synfig/layer.h>
+#include <synfig/canvas.h>
+#include <synfig/valuenode.h>
+
 
 /* === U S I N G =========================================================== */
 
@@ -40,13 +43,13 @@ using namespace studio;
 const double Polyg_eps_max = 1;     // Sequence simplification max error
 const double Polyg_eps_mul = 0.75;  // Sequence simpl. thickness-multiplier error
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
-
+synfig::CanvasHandle canvas;
 
 /* === P R O C E D U R E S ================================================= */
 etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
   synfig::Layer::Handle layer(synfig::Layer::create("outline"));
-  synfig::ValueBase param2;
+  //synfig::ValueBase param2;
   /*switch(segment.size())// in any case size>=3
   {
     case 3:{std::cout<<"This is case 3\n";
@@ -123,21 +126,56 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 
   }
   */
-  std::vector<synfig::BLinePoint> bline_point_list;
-	bline_point_list.push_back(synfig::BLinePoint());
-	bline_point_list.push_back(synfig::BLinePoint());
-	bline_point_list.push_back(synfig::BLinePoint());
-	bline_point_list[0].set_vertex(synfig::Point(0,1));
-	bline_point_list[1].set_vertex(synfig::Point(0,-1));
-	bline_point_list[2].set_vertex(synfig::Point(1,0));
-	bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
-	bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
-	bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
-	bline_point_list[0].set_width(1.0f);
-	bline_point_list[1].set_width(1.0f);
-	bline_point_list[2].set_width(1.0f);
-  param2.set_list_of(bline_point_list);
-  if(!layer->set_param("bline",param2)) ;//synfig::info("Vectorizer was not able to create Outline layer");
+  // std::vector<synfig::BLinePoint> bline_point_list;
+
+	// handle<synfig::ValueNode_BLine> bline_value_node;
+
+	// bline_point_list.push_back(synfig::BLinePoint());
+	// bline_point_list.push_back(synfig::BLinePoint());
+	// bline_point_list.push_back(synfig::BLinePoint());
+	// bline_point_list[0].set_vertex(synfig::Point(0,1));
+	// bline_point_list[1].set_vertex(synfig::Point(0,-1));
+	// bline_point_list[2].set_vertex(synfig::Point(1,0));
+	// bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
+	// bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
+	// bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
+	// bline_point_list[0].set_width(1.0f);
+	// bline_point_list[1].set_width(1.0f);
+	// bline_point_list[2].set_width(1.0f);
+  // param2.set_list_of(bline_point_list);
+	// bline_value_node=ValueNode_BLine::create(param2, canvas);
+
+
+  etl::handle<synfig::ValueNode_BLine> bline_value_node; 
+  etl::handle<synfig::ValueNode_DynamicList> value_node;
+  value_node=bline_value_node=ValueNode_BLine::create(synfig::type_list, canvas);
+  bline_value_node->set_loop(false); 
+  value_node->set_root_canvas(canvas->get_root());
+  synfig::ValueNode_DynamicList::ListEntry list_entry;
+  synfig::BLinePoint bline_point_list0,bline_point_list1,bline_point_list2;
+  bline_point_list0.set_vertex(synfig::Point(0,1));
+	bline_point_list1.set_vertex(synfig::Point(0,-1));
+	bline_point_list2.set_vertex(synfig::Point(1,0));
+	bline_point_list0.set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
+	bline_point_list1.set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
+	bline_point_list2.set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
+	bline_point_list0.set_width(1.0f);
+	bline_point_list1.set_width(1.0f);
+	bline_point_list2.set_width(1.0f); 
+  list_entry.value_node=bline_point_list0;
+
+  value_node->add(list_entry); 
+  value_node->set_link(value_node->link_count()-1,list_entry.value_node);  
+  list_entry.value_node=bline_point_list1;
+
+  value_node->add(list_entry); 
+  value_node->set_link(value_node->link_count()-1,list_entry.value_node);  
+  list_entry.value_node=bline_point_list2;
+
+  value_node->add(list_entry); 
+  value_node->set_link(value_node->link_count()-1,list_entry.value_node);  
+  
+  if(!layer->set_param("bline",value_node)) ;//synfig::info("Vectorizer was not able to create Outline layer");
   //("text",ValueBase(selection_data)))
    //->set_shape_param("bline",param2);
   return layer;
@@ -924,14 +962,14 @@ inline etl::handle<synfig::Layer> convert(const Sequence &s, double penalty)
 // Stroke. 
 // In synfig we will be using outline layer instead of TStroke  
 
-void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &strokes, VectorizerCoreGlobals &g) 
+void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &strokes, VectorizerCoreGlobals &g,const etl::handle<synfig::Layer_Bitmap> &image) 
 {
   SequenceList &singleSequences           = g.singleSequences;
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;
   double penalty                          = g.currConfig->m_penalty;
 
   unsigned int i, j, k;
-
+  canvas = image->get_canvas();
   // Convert single sequences
   for (i = 0; i < singleSequences.size(); ++i) 
   {
