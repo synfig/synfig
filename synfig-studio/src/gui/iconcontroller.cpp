@@ -67,13 +67,8 @@ using namespace synfig;
 static std::map< int, Glib::RefPtr<Gdk::Pixbuf> > _tree_pixbuf_table_value_type;
 static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[(int)INTERPOLATION_CLAMPED+1];
 
-#ifdef _WIN32
-IconController::IconController(const synfig::String& basepath)
-#else
-IconController::IconController(const synfig::String& /*basepath*/)
-#endif
+IconController::IconController()
 {
-	
 	icon_factory=Gtk::IconFactory::create();
 }
 
