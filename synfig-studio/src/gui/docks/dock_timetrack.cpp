@@ -472,8 +472,6 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 {
 	if(grid_)
 	{
-		clear_previous();
-
 		hscrollbar_.unset_adjustment();
 		vscrollbar_.unset_adjustment();
 
@@ -566,10 +564,6 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		//add(*last_widget_curves_);
 		grid_->show_all();
 		show_all();
-	}
-	else
-	{
-		//clear_previous();
 	}
 }
 

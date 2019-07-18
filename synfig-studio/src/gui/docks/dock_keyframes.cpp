@@ -170,7 +170,5 @@ Dock_Keyframes::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 			keyframe_action_manager->set_keyframe_tree(0);
 			keyframe_action_manager->set_canvas_interface(0);
 		}
-
-		clear_previous();
 	}
 }

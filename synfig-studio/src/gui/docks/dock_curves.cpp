@@ -188,10 +188,6 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		table_->show_all();
 		show_all();
 	}
-	else
-	{
-		//clear_previous();
-	}
 }
 
 void
