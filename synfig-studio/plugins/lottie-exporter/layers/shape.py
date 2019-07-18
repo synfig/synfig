@@ -4,7 +4,8 @@ Will store all the functions corresponding to shapes in lottie
 
 import sys
 import settings
-from misc import set_layer_desc, Count
+from common.misc import set_layer_desc
+from common.Count import Count
 from shapes.star import gen_shapes_star
 from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill

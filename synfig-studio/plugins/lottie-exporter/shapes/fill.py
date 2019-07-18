@@ -6,7 +6,8 @@ import sys
 import settings
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
-from misc import Count, is_animated
+from common.misc import is_animated
+from common.Count import Count
 sys.path.append("..")
 
 

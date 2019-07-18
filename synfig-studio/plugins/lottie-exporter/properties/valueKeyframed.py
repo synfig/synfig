@@ -6,7 +6,7 @@ import sys
 import settings
 from properties.timeAdjust import time_adjust
 from properties.valueKeyframe import gen_value_Keyframe
-from misc import get_frame
+from common.misc import get_frame
 sys.path.append("../")
 
 

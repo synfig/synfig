@@ -8,7 +8,8 @@ import sys
 import ast
 import math
 import settings
-from misc import Vector, Hermite
+from common.Vector import Vector
+from common.Hermite import Hermite
 from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed

@@ -7,7 +7,8 @@ corresponding to lottie
 import sys
 import math
 import settings
-from misc import Count, is_animated, change_axis
+from common.Count import Count
+from common.misc import is_animated, change_axis
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed

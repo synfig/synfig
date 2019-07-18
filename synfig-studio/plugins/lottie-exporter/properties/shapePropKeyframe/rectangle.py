@@ -6,7 +6,8 @@ in Lottie format
 
 import sys
 from lxml import etree
-from misc import Vector, approximate_equal
+from common.misc import approximate_equal
+from common.Vector import Vector
 from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed

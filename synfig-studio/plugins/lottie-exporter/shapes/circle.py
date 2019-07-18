@@ -6,7 +6,8 @@ This will also support the simple_circle layer of Synfig
 import sys
 import settings
 from properties.value import gen_properties_value
-from misc import Count, is_animated, change_axis
+from common.misc import is_animated, change_axis
+from common.Count import Count
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")

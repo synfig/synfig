@@ -8,7 +8,8 @@ import sys
 import ast
 from lxml import etree
 import settings
-from misc import change_axis, get_frame, Vector, is_animated, radial_to_tangent
+from common.misc import change_axis, get_frame, is_animated, radial_to_tangent
+from common.Vector import Vector
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 from synfig.animation import get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint

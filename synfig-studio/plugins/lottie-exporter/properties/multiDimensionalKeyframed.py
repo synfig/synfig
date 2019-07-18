@@ -7,7 +7,7 @@ import sys
 import settings
 from properties.offsetKeyframe import gen_properties_offset_keyframe
 from properties.timeAdjust import time_adjust
-from misc import get_frame
+from common.misc import get_frame
 sys.path.append("..")
 
 

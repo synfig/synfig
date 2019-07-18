@@ -5,7 +5,7 @@ Implements all the functions required for generating a lottie mask
 
 import sys
 import settings
-from misc import Count
+from common.Count import Count
 from properties.shapeKeyframed import gen_properties_shapeKeyframed
 from properties.value import gen_properties_value
 sys.path.append("../")

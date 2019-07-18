@@ -15,7 +15,7 @@ import logging
 from lxml import etree
 from canvas import gen_canvas
 from layers.driver import gen_layers
-from misc import modify_final_dump
+from common.misc import modify_final_dump
 import settings
 
 

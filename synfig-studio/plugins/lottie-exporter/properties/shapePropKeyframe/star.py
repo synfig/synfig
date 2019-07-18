@@ -6,7 +6,7 @@ in Lottie format
 
 import sys
 import math
-from misc import Vector
+from common.Vector import Vector
 from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed

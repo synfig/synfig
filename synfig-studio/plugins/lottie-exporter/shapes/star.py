@@ -5,7 +5,8 @@ Will store all functions needed to generate the star layer in lottie
 import sys
 import settings
 from properties.value import gen_properties_value
-from misc import get_frame, get_angle, Count, change_axis, is_animated
+from common.misc import get_frame, get_angle, change_axis, is_animated
+from common.Count import Count
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")

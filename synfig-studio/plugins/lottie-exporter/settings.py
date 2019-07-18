@@ -3,7 +3,7 @@
 This module contains all the global variables and constants
 """
 
-from misc import Count
+from common.Count import Count
 
 # Constants
 FLOAT_PRECISION = 3

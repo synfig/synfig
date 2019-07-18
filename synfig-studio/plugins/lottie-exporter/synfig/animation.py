@@ -8,7 +8,8 @@ import sys
 import copy
 from lxml import etree
 import settings
-from misc import approximate_equal, is_animated, Vector, get_frame
+from common.misc import approximate_equal, is_animated, get_frame
+from common.Vector import Vector
 from helpers.bezier import get_bezier_val
 sys.path.append("..")
 

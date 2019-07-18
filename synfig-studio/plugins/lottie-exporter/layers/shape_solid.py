@@ -8,7 +8,8 @@ import settings
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
 from helpers.mask import gen_mask
-from misc import set_layer_desc, Count, get_color_hex, is_animated
+from common.misc import set_layer_desc, get_color_hex, is_animated
+from common.Count import Count
 from effects.fill import gen_effects_fill
 from synfig.group import update_layer, get_additional_width, get_additional_height
 sys.path.append("..")

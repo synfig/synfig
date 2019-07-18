@@ -4,7 +4,8 @@ Will store all the functions corresponding to solids in lottie
 
 import sys
 import settings
-from misc import set_layer_desc, Count, get_color_hex
+from common.misc import set_layer_desc, get_color_hex
+from common.Count import Count
 from helpers.blendMode import get_blend
 from helpers.transform import gen_helpers_transform
 from effects.fill import gen_effects_fill

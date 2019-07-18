@@ -6,7 +6,8 @@ keyframe in lottie
 import sys
 import copy
 import settings
-from misc import get_frame, parse_position, change_axis, Vector
+from common.misc import get_frame, parse_position, change_axis
+from common.Vector import Vector
 sys.path.append("..")
 
 

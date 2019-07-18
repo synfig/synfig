@@ -5,7 +5,7 @@ Store all functions corresponding to pre composition in lottie
 
 import sys
 import settings
-from misc import set_layer_desc
+from common.misc import set_layer_desc
 from sources.precomp import add_precomp_asset
 from layers.rotate_layer import gen_layer_rotate
 from layers.scale_layer import gen_layer_scale

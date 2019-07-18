@@ -4,7 +4,7 @@ This module will store all the functions required for fill effects of lottie
 
 import sys
 import settings
-from misc import Count
+from common.Count import Count
 from effects.fillmask import gen_effects_fillmask
 from effects.allmask import gen_effects_allmask
 from effects.color import gen_effects_color

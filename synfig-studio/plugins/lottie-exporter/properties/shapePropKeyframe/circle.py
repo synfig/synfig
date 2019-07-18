@@ -6,7 +6,8 @@ in Lottie format
 
 import sys
 import math
-from misc import Matrix2, Vector
+from common.Matrix2 import Matrix2
+from common.Vector import Vector
 from synfig.animation import to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed

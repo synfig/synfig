@@ -6,7 +6,8 @@ Store all functions corresponding to group layer in Synfig
 import sys
 import math
 import settings
-from misc import get_frame, approximate_equal, get_time, Count, set_layer_desc
+from common.Count import Count
+from common.misc import get_frame, approximate_equal, get_time, set_layer_desc
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend

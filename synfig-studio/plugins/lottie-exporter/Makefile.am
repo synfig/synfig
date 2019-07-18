@@ -4,7 +4,6 @@ PLUGIN_NAME = lottie-exporter
 
 EXTRA_FILES = bodymovin.js \
 			  canvas.py \
-			  misc.py \
 			  settings.py
 
 plugindir = ${datadir}/synfig/plugins/$(PLUGIN_NAME)
@@ -24,6 +23,7 @@ MAINTAINERCLEANFILES = Makefile.in
 DISTCLEANFILES = plugin.xml
 
 SUBDIRS = \
+		  common \
 		  effects \
           helpers \
           layers \

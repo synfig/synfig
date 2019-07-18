@@ -7,8 +7,10 @@ import sys
 import copy
 from lxml import etree
 import settings
+from common.Count import Count
+from common.Vector import Vector
+from common.misc import is_animated, get_frame, get_vector, set_vector
 from properties.value import gen_properties_value
-from misc import Count, is_animated, Vector, get_frame, get_vector, set_vector
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 from synfig.animation import gen_dummy_waypoint, insert_waypoint_at_frame, print_animation, to_Synfig_axis, get_vector_at_frame, get_animated_time_list, copy_tcb_average, copy_tcb

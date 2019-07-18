@@ -6,7 +6,7 @@ in Lottie format
 
 import sys
 import ast
-from misc import Vector
+from common.Vector import Vector
 from synfig.animation import get_vector_at_frame, gen_dummy_waypoint
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import append_path, update_frame_window, update_child_at_parent, insert_dict_at

@@ -6,7 +6,7 @@ Implements function required for generating tangent between two value key frames
 import sys
 import random
 import settings
-from misc import get_frame, parse_position
+from common.misc import get_frame, parse_position
 from properties.offsetKeyframe import calc_tangent
 sys.path.append("../")
 
