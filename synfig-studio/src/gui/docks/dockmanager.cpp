@@ -199,6 +199,7 @@ DockManager::register_dockable(Dockable& x)
 bool
 DockManager::unregister_dockable(Dockable& x)
 {
+	x.clear();
 	for(std::list<Dockable*>::iterator iter = dockable_list_.begin(); iter != dockable_list_.end(); ++iter)
 	{
 		if (&x == *iter)
