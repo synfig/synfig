@@ -440,7 +440,7 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 
 // void junctionRecovery(Contours *polygons, VectorizerCoreGlobals &g);
 
-void conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &strokes, VectorizerCoreGlobals &g) ;
+void conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &strokes, VectorizerCoreGlobals &g, const etl::handle<synfig::Layer_Bitmap> &image) ;
 
  void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g);
 

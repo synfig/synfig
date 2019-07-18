@@ -124,7 +124,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 
 //   // step 6
 //   // Converts each forward or single Sequence of the image in its corresponding Stroke.
-  studio::conversionToStrokes(sortibleResult, globals);
+  studio::conversionToStrokes(sortibleResult, globals, image);
 
   for(int i=0;i < sortibleResult.size();i++)
   {
