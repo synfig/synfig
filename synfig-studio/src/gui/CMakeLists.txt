@@ -45,6 +45,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/preview.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renddesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/render.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/resourcehelper.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/splash.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/statemanager.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuelink.cpp"
