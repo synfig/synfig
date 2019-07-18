@@ -126,7 +126,6 @@ Dock_LayerGroups::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas
 	}
 	else
 	{
-		clear_previous();
 		group_action_manager->clear();
 		group_action_manager->set_canvas_interface(0);
 		group_action_manager->set_group_tree(0);

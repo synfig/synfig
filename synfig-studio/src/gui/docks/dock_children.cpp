@@ -99,6 +99,4 @@ Dock_Children::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_vi
 		add(*tree_view);
 		tree_view->show();
 	}
-	else clear_previous();
-
 }

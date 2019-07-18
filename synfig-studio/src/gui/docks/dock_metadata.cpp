@@ -137,7 +137,6 @@ Dock_MetaData::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_vi
 	}
 	else
 	{
-		clear_previous();
 		action_group->set_sensitive(false);
 	}
 }

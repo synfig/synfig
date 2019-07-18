@@ -293,8 +293,6 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 			layer_action_manager->set_canvas_interface(0);
 			layer_action_manager->set_layer_tree(0);
 		}
-
-		clear_previous();
 	}
 }
 

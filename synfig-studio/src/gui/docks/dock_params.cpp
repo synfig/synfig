@@ -123,5 +123,4 @@ Dock_Params::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		tree_view->show();
 		show_all();
 	}
-	else clear_previous();
 }
