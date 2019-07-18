@@ -516,10 +516,11 @@ void
 Dialog_Setup::on_choose_editor_pressed()
 {
 	//set the image editor path = filepath from dialog
-	String filepath=image_editor_path_entry.get_text();
-	if(select_path_dialog("Select Editor", filepath ))
+	String filepath = image_editor_path_entry.get_text();
+	if (select_path_dialog("Select Editor", filepath)) {
 		image_editor_path_entry.set_text(filepath);
 		App::image_editor_path = filepath;
+	}
 }
 
 bool 
