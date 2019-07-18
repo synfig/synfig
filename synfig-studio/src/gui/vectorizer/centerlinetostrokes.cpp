@@ -51,38 +51,37 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
   synfig::Layer::Handle layer(synfig::Layer::create("outline"));
   //synfig::ValueBase param2;
-  /*switch(segment.size())// in any case size>=3
+  std::vector<synfig::BLinePoint> bline_point_list; 
+
+  switch(segment.size())// in any case size>=3
   {
     case 3:{std::cout<<"This is case 3\n";
-        std::vector<synfig::BLinePoint> bline_point_list; 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
             bline_point_list[1].set_vertex(segment[2].to_2d());// last point
             bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
             bline_point_list[1].set_tangent((segment[2].to_2d() - segment[1].to_2d()) * 2);
-            //bline_point_list[0].set_width(segment[0][2]);
-            //bline_point_list[1].set_width(segment[1][2]); 
-            param2.set_list_of(bline_point_list); 
+            bline_point_list[0].set_width(1.0f);
+            bline_point_list[1].set_width(1.0f); 
             
     }break;
 
-    case 4:{  std::vector<synfig::BLinePoint> bline_point_list; 
+    case 4:{  //std::vector<synfig::BLinePoint> bline_point_list; 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
             bline_point_list[1].set_vertex(segment[2].to_2d());// last point
             bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
             bline_point_list[1].set_tangent((segment[3].to_2d() - segment[2].to_2d()) * 2);
-           // bline_point_list[0].set_width(segment[0][2]);
-            //bline_point_list[1].set_width(segment[2][2]); 
-            param2.set_list_of(bline_point_list); 
+            bline_point_list[0].set_width(1.0f);
+            bline_point_list[1].set_width(1.0f); 
             
     }break;
 
     default:{/*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
-                Even : 1 2 3 4, 4 5 6, 6 7 8 *//*
-                std::vector<synfig::BLinePoint> bline_point_list;
+                Even : 1 2 3 4, 4 5 6, 6 7 8 */
+                //std::vector<synfig::BLinePoint> bline_point_list;
                 int num =0,point =0;
                 if(segment.size() & 1)
                 {
@@ -92,8 +91,8 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
                   bline_point_list[1].set_vertex(segment[2].to_2d());// last point
                   bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
                   bline_point_list[1].set_tangent1((segment[2].to_2d() - segment[1].to_2d()) * 2);
-                  bline_point_list[0].set_width(segment[0][2]);
-                  bline_point_list[1].set_width(segment[2][2]);
+                  bline_point_list[0].set_width(1.0f);
+                  bline_point_list[1].set_width(1.0f);
                   num = 2;
                 }
                 else
@@ -104,8 +103,8 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
                   bline_point_list[1].set_vertex(segment[3].to_2d());// last point
                   bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
                   bline_point_list[1].set_tangent1((segment[3].to_2d() - segment[2].to_2d()) * 2);
-                  bline_point_list[0].set_width(segment[0][2]);
-                  bline_point_list[1].set_width(segment[3][2]); 
+                  bline_point_list[0].set_width(1.0f);
+                  bline_point_list[1].set_width(1.0f); 
                   num = 3;
                 }
               
@@ -114,85 +113,41 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
                   //bline_point_list[point].set_vertex(segment[i].to_2d());// first point, previous last point 
                   bline_point_list.push_back(synfig::BLinePoint()); 
                   bline_point_list[point + 1].set_vertex(segment[num+2].to_2d());// last point
+                  bline_point_list[point + 1].set_width(1.0f);// last point
                   bline_point_list[point].set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
                   bline_point_list[point + 1].set_tangent1((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
                 }
                 num = segment.size() - 3;
                 bline_point_list.push_back(synfig::BLinePoint());
                 bline_point_list[point + 2].set_vertex(segment[num+2].to_2d());// last point
+                bline_point_list[point + 2].set_width(1.0f);// last point
                 bline_point_list[point + 1].set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
                 bline_point_list[point + 2].set_tangent((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
-                param2.set_list_of(bline_point_list); 
     }break;
 
   }
-  */
-   std::vector<synfig::BLinePoint> bline_point_list;
-
-	 etl::handle<synfig::ValueNode_BLine> bline_value_node; 
-  etl::handle<synfig::ValueNode_DynamicList> value_node;
-  etl::handle<synfig::ValueNode> vn;
-
-	 bline_point_list.push_back(synfig::BLinePoint());
-	 bline_point_list.push_back(synfig::BLinePoint());
-	 bline_point_list.push_back(synfig::BLinePoint());
-	 bline_point_list[0].set_vertex(synfig::Point(0,1));
-	 bline_point_list[1].set_vertex(synfig::Point(0,-1));
-	 bline_point_list[2].set_vertex(synfig::Point(1,0));
-	 bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
-	 bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
-	 bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
-	 bline_point_list[0].set_width(1.0f);
-	 bline_point_list[1].set_width(1.0f);
-	 bline_point_list[2].set_width(1.0f);
- //param2.set_list_of(bline_point_list);
-	vn=value_node=bline_value_node=synfig::ValueNode_BLine::create(bline_point_list, canvas);
-
-/*
+  
   etl::handle<synfig::ValueNode_BLine> bline_value_node; 
   etl::handle<synfig::ValueNode_DynamicList> value_node;
   etl::handle<synfig::ValueNode> vn;
-  vn=value_node=bline_value_node=synfig::ValueNode_BLine::create(synfig::type_list, canvas);
-  bline_value_node->set_loop(false); 
-  value_node->set_root_canvas(canvas->get_root());
-  
-  synfig::BLinePoint bline_point_list0,bline_point_list1,bline_point_list2;
-  bline_point_list0.set_vertex(synfig::Point(0,1));
-	bline_point_list1.set_vertex(synfig::Point(0,-1));
-	bline_point_list2.set_vertex(synfig::Point(1,0));
-	bline_point_list0.set_tangent(bline_point_list1.get_vertex()-bline_point_list2.get_vertex()*0.5f);
-	bline_point_list1.set_tangent(bline_point_list2.get_vertex()-bline_point_list0.get_vertex()*0.5f);
-	bline_point_list2.set_tangent(bline_point_list0.get_vertex()-bline_point_list1.get_vertex()*0.5f);
-	bline_point_list0.set_width(1.0f);
-	bline_point_list1.set_width(1.0f);
-	bline_point_list2.set_width(1.0f);
-	synfig::ValueNode_DynamicList::ListEntry list_entry1;
-  list_entry1.value_node=synfig::ValueNode_Const::create(bline_point_list0);
 
-  value_node->add(list_entry1); 
-  value_node->set_link(value_node->link_count()-1,list_entry1.value_node);
-  
-  synfig::ValueNode_DynamicList::ListEntry list_entry2;
-  list_entry2.value_node=synfig::ValueNode_Const::create(bline_point_list1);
+	//  bline_point_list.push_back(synfig::BLinePoint());
+	//  bline_point_list.push_back(synfig::BLinePoint());
+	//  bline_point_list.push_back(synfig::BLinePoint());
+	//  bline_point_list[0].set_vertex(synfig::Point(0,1));
+	//  bline_point_list[1].set_vertex(synfig::Point(0,-1));
+	//  bline_point_list[2].set_vertex(synfig::Point(1,0));
+	//  bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
+	//  bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
+	//  bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
+	//  bline_point_list[0].set_width(1.0f);
+	//  bline_point_list[1].set_width(1.0f);
+	//  bline_point_list[2].set_width(1.0f);
+ //param2.set_list_of(bline_point_list);
+	vn=value_node=bline_value_node=synfig::ValueNode_BLine::create(bline_point_list, canvas);
 
-  value_node->add(list_entry2); 
-  value_node->set_link(value_node->link_count()-1,list_entry2.value_node); 
-  
-  synfig::ValueNode_DynamicList::ListEntry list_entry3;
-  list_entry3.value_node=synfig::ValueNode_Const::create(bline_point_list2);
-
-  value_node->add(list_entry3); 
-  value_node->set_link(value_node->link_count()-1,list_entry3.value_node);  
-  */
-  //layer->set_param("bline",(*value_node)(0));
   layer->connect_dynamic_param("bline",vn);
   
-  //layer->changed();
-//vn->changed();
-  
-  //if(!layer->set_param("bline",value_node)) ;//synfig::info("Vectorizer was not able to create Outline layer");
-  //("text",ValueBase(selection_data)))
-   //->set_shape_param("bline",param2);
   return layer;
 }
 
