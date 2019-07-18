@@ -1,4 +1,4 @@
-/* === S Y N F I G ========================================================= */
+// /* === S Y N F I G ========================================================= */
 /*!	\file app.cpp
 **	\brief writeme
 **
@@ -2372,9 +2372,10 @@ App::shutdown_request(GdkEventAny*)
 void
 App::quit()
 {
-	if(shutdown_in_progress)return;
+	if (shutdown_in_progress) return;
 
 	get_ui_interface()->task(_("Quit Request"));
+	
 	if(Busy::count)
 	{
 		dialog_message_1b(
@@ -2382,68 +2383,15 @@ App::quit()
 			_("Tasks are currently running. Please cancel the current tasks and try again"),
 			"details",
 			_("Close"));
-
 		return;
 	}
 
-	std::list<etl::handle<Instance> >::iterator iter;
-	for(iter=instance_list.begin();!instance_list.empty();iter=instance_list.begin())
-	{
-		if(!(*iter)->safe_close())
+	while(!instance_list.empty())
+		if (!instance_list.front()->safe_close())
 			return;
 
-/*
-		if((*iter)->synfigapp::Instance::get_action_count())
-		{
-			handle<synfigapp::UIInterface> uim;
-			uim=(*iter)->find_canvas_view((*iter)->get_canvas())->get_ui_interface();
-			assert(uim);
-			string str=strprintf(_("Would you like to save your changes to %s?"),(*iter)->get_file_name().c_str() );
-			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES))
-			{
-				case synfigapp::UIInterface::RESPONSE_NO:
-					break;
-				case synfigapp::UIInterface::RESPONSE_YES:
-					(*iter)->save();
-					break;
-				case synfigapp::UIInterface::RESPONSE_CANCEL:
-					return;
-				default:
-					assert(0);
-					return;
-			}
-		}
-
-
-		if((*iter)->synfigapp::Instance::is_modified())
-		{
-			handle<synfigapp::UIInterface> uim;
-			uim=(*iter)->find_canvas_view((*iter)->get_canvas())->get_ui_interface();
-			assert(uim);
-			string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),(*iter)->get_file_name().c_str() );
-			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES))
-			{
-				case synfigapp::UIInterface::RESPONSE_NO:
-					break;
-				case synfigapp::UIInterface::RESPONSE_YES:
-					(*iter)->dialog_cvs_commit();
-					break;
-				case synfigapp::UIInterface::RESPONSE_CANCEL:
-					return;
-				default:
-					assert(0);
-					return;
-			}
-		}
-*/
-
-		// This next line causes things to crash for some reason
-		//(*iter)->close();
-	}
-
-	instance_list.clear();
-
-	while(studio::App::events_pending())studio::App::iteration(false);
+	while (studio::App::events_pending())
+		studio::App::iteration(true);
 
 	Gtk::Main::quit();
 
@@ -4105,60 +4053,45 @@ App::dialog_open(string filename)
 void
 App::set_selected_instance(etl::loose_handle<Instance> instance)
 {
-/*	if(get_selected_instance()==instance)
-	{
-		selected_instance=instance;
-		signal_instance_selected()(instance);
+	if (selected_instance == instance)
 		return;
-	}
-	else
-	{
-*/
-		selected_instance=instance;
-		if(get_selected_canvas_view() && get_selected_canvas_view()->get_instance()!=instance)
-		{
-			if(instance)
-			{
-				instance->focus(instance->get_canvas());
-			}
-			else
-				set_selected_canvas_view(0);
+	
+	if (get_selected_canvas_view() && get_selected_canvas_view()->get_instance() != instance) {
+		if (instance) {
+			instance->focus( instance->get_canvas() );
+		} else {
+			set_selected_canvas_view(0);
 		}
-		signal_instance_selected()(instance);
+	} else {
+		selected_instance = instance;
+		signal_instance_selected()(selected_instance);
+	}
 }
 
 void
 App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 {
-	if(selected_canvas_view != canvas_view)
-	{
-		etl::loose_handle<CanvasView> prev = selected_canvas_view;
-		selected_canvas_view = NULL;
-		if (prev) prev->deactivate();
-		selected_canvas_view = canvas_view;
-		signal_canvas_view_focus()(selected_canvas_view);
-		if (selected_canvas_view) selected_canvas_view->activate();
-	}
-
-	if(canvas_view)
-	{
-		selected_instance=canvas_view->get_instance();
-		signal_instance_selected()(selected_instance);
-		canvas_view->grab_focus();
-	}
-
-/*
-	if(get_selected_canvas_view()==canvas_view)
-	{
-		signal_canvas_view_focus()(selected_canvas_view);
-		signal_instance_selected()(canvas_view->get_instance());
+	if (selected_canvas_view == canvas_view)
 		return;
+	
+	etl::loose_handle<CanvasView> prev = selected_canvas_view;
+	etl::loose_handle<Instance> prev_instance = selected_instance;
+
+	selected_canvas_view.reset();
+	if (prev)
+		prev->deactivate();
+
+	selected_canvas_view = canvas_view;
+	if (selected_canvas_view) {
+		selected_instance = canvas_view->get_instance();
+		selected_canvas_view->activate();
+	} else {
+		selected_instance.reset();
 	}
-	selected_canvas_view=canvas_view;
-	if(canvas_view && canvas_view->get_instance() != get_selected_instance())
-		set_selected_instance(canvas_view->get_instance());
+
 	signal_canvas_view_focus()(selected_canvas_view);
-*/
+	if (selected_instance != prev_instance)
+		signal_instance_selected()(selected_instance);
 }
 
 etl::loose_handle<Instance>

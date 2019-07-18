@@ -738,6 +738,7 @@ void CanvasView::activate()
 	this->_action_group_removed = false;
 	update_title();
 	present();
+	grab_focus();
 }
 
 void CanvasView::deactivate()
@@ -751,10 +752,7 @@ void CanvasView::deactivate()
 void CanvasView::present()
 {
 	App::set_selected_canvas_view(this);
-
 	Dockable::present();
-	// If hidden by CanvasView::close_view, time to come back to the show
-	if(!get_visible())show();
 	update_title();
 }
 
