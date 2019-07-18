@@ -407,7 +407,7 @@ public:
 
 Dock_Timetrack::Dock_Timetrack():
 	Dock_CanvasSpecific("timetrack",_("Timetrack"),Gtk::StockID("synfig-timetrack")),
-	table_(),
+	grid_(),
 	mimic_tree_view()
 {
 	set_use_scrolled(false);
@@ -415,7 +415,7 @@ Dock_Timetrack::Dock_Timetrack():
 
 Dock_Timetrack::~Dock_Timetrack()
 {
-	if (table_) delete table_;
+	if (grid_) delete grid_;
 }
 
 void
@@ -470,7 +470,7 @@ Dock_Timetrack::refresh_selected_param()
 void
 Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-	if(table_)
+	if(grid_)
 	{
 		clear_previous();
 
@@ -482,22 +482,24 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		widget_kf_list_.set_time_model( etl::handle<TimeModel>() );
 		widget_kf_list_.set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
 
-		delete table_;
-		table_=0;
+		delete grid_;
+		grid_=0;
 	}
 
 	if(canvas_view)
 	{
 		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
 		Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
+		assert(tree_view);
+		assert(param_tree_view);
+
 		Gtk::ScrolledWindow* scrolled = Gtk::manage(new Gtk::ScrolledWindow);
+		scrolled->set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_ALWAYS);
 		scrolled->get_vscrollbar()->hide();
 		scrolled->add(*tree_view);
-		scrolled->set_policy(Gtk::POLICY_NEVER,Gtk::POLICY_AUTOMATIC);
 		scrolled->set_vadjustment(param_tree_view->get_vadjustment());
 		scrolled->show_all();
 
-		assert(tree_view);
 		// Fixed size drawing areas to align the widget_timeslider and tree_view time cursors
 		// TODO ?: one align_drawingArea.(0, 1, 0, 1) modify_bg KF's color another (0, 1, 1, 2) modify_bg TS's color
 		Gtk::DrawingArea* align_drawingArea1 = Gtk::manage(new Gtk::DrawingArea);
@@ -516,20 +518,22 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		widget_kf_list_.set_time_model(canvas_view->time_model());
 		widget_kf_list_.set_canvas_interface(canvas_view->canvas_interface());
 
-		vscrollbar_.set_adjustment(tree_view->get_vadjustment());
+		vscrollbar_.set_adjustment(scrolled->get_vadjustment());
 		hscrollbar_.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
 		//  0------1------2------3------4
 		//  |  A   |  KF  |  A   |  v   |
 		//  |  L   |      |  L   |  s   |
-		//  1--I---x------x--I---x--c---x
+		//  1  I   x------x  I   x  c   x
 		//  |  G   |  TS  |  G   |  r   |
 		//  |  N1  |      |  N2  |  o   |
-		//  2------x------x------x--l---x
-		//  |  TV  |  TV  |  TV  |  l   |
-		//  |      |      |      |  b   |
+		//  2------x------x------x  l   x
+		//  |  TV     TV     TV  |  l   |
+		//  |                    |  b   |
 		//  3------x------x------x------x
-		//  | hscrollbar
+		//  | hscrollbar                |
+		//  |                           |
+		//  4------x------x------x------x
 		//
 		// KF = widget_kf_list
 		// TS = widget_timeslider
@@ -537,21 +541,30 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		// ALIGN1 = align_drawingArea1
 		// ALIGN2 = align_drawingArea2
 
-		table_=new Gtk::Table(3,4);
-		table_->attach(*align_drawingArea1, 0, 1, 0, 2, Gtk::SHRINK, Gtk::FILL);
-		table_->attach(widget_kf_list_,     1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(widget_timeslider_,  1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(*align_drawingArea2, 2, 3, 0, 2, Gtk::SHRINK, Gtk::FILL);
-		table_->attach(*scrolled,           0, 3, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
-		table_->attach(hscrollbar_,         0, 3, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
-		table_->attach(vscrollbar_,         3, 4, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
-		add(*table_);
+		widget_kf_list_.set_hexpand();
+		widget_timeslider_.set_hexpand();
+		scrolled->set_hexpand();
+		scrolled->set_vexpand();
+		vscrollbar_.set_vexpand();
+		hscrollbar_.set_hexpand();
+		
+		grid_=new Gtk::Grid();
+		grid_->set_column_homogeneous(false);
+		grid_->set_row_homogeneous(false);
+		grid_->attach(*align_drawingArea1, 0, 0, 1, 2);
+		grid_->attach(widget_kf_list_,     1, 0, 1, 1);
+		grid_->attach(widget_timeslider_,  1, 1, 1, 1);
+		grid_->attach(*align_drawingArea2, 2, 0, 1, 2);
+		grid_->attach(*scrolled,           0, 2, 3, 1);
+		grid_->attach(vscrollbar_,         3, 0, 1, 3);
+		grid_->attach(hscrollbar_,         0, 3, 4, 1);
+		add(*grid_);
 		
 		// Should be here, after the widget was attached to table
 		tree_view->add_events(Gdk::SCROLL_MASK);
 
 		//add(*last_widget_curves_);
-		table_->show_all();
+		grid_->show_all();
 		show_all();
 	}
 	else
