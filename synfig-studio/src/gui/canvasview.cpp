@@ -50,7 +50,7 @@
 #include <gtkmm/eventbox.h>
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/imagemenuitem.h>
@@ -578,6 +578,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	toggling_onion_skin=false;
 	toggling_background_rendering=false;
 
+	set_use_scrolled(false);
+
 	//info("Canvasview: Entered constructor");
 	// Minor hack
 	get_canvas()->set_time(0);
@@ -589,28 +591,29 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	//info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
-	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-	space->set_size_request(4,4);
-        space->show();
+	Gtk::Alignment *widget_space = Gtk::manage(new Gtk::Alignment());
+	widget_space->set_size_request(4,4);
+	widget_space->show();
 
-	Gtk::Table *layout_table= manage(new class Gtk::Table(4, 1, false));
-	layout_table->attach(*create_work_area(),   0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	layout_table->attach(*space, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	Gtk::Widget *widget_work_area = create_work_area();
 	init_menus();
-	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_time_bar(),    0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-
-	update_title();
-
-	layout_table->show();
+	Gtk::Widget *widget_display_bar = create_display_bar();
+	Gtk::Widget *widget_time_bar = create_time_bar();
+	
+	Gtk::Grid *layout_grid = manage(new Gtk::Grid());
+	layout_grid->attach(*widget_display_bar, 0, 0, 1, 1);
+	layout_grid->attach(*widget_space,       0, 1, 1, 1);
+	layout_grid->attach(*widget_work_area,   0, 2, 1, 1);
+	layout_grid->attach(*widget_time_bar,    0, 3, 1, 1);
+	layout_grid->show();
 
 	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
-	event_box->add(*layout_table);
+	event_box->add(*layout_grid);
 	event_box->show();
 	event_box->signal_button_press_event().connect(sigc::mem_fun(*this,&CanvasView::on_button_press_event));
-
-	set_use_scrolled(false);
 	add(*event_box);
+
+	update_title();
 
 	smach_.set_default_state(&state_normal);
 
@@ -1045,6 +1048,7 @@ CanvasView::create_time_bar()
 	timebar = Gtk::manage(new Gtk::VBox());
 	timebar->pack_end(*timetrack, false, true);
 	timebar->pack_end(*controls, false, true);
+	timebar->set_hexpand();
 	timebar->show();
 
 	return timebar;
@@ -1059,6 +1063,8 @@ CanvasView::create_work_area()
 	work_area->set_canvas_view(this);
 	work_area->set_progress_callback(get_ui_interface().get());
 	work_area->signal_popup_menu().connect(sigc::mem_fun(*this, &CanvasView::popup_main_menu));
+	work_area->set_hexpand();
+	work_area->set_vexpand();
 	work_area->show();
 	return work_area;
 }
@@ -1359,6 +1365,7 @@ CanvasView::create_display_bar()
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 	hbox->pack_start(*displaybar, false, true);
 	hbox->pack_end(*stopbutton, false, false);
+	hbox->set_hexpand();
 	hbox->show();
 
 	return hbox;
