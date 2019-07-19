@@ -25,7 +25,6 @@
 #include "polygonizerclasses.h"
 #include "modules/mod_geometry/outline.h"
 #include <synfig/valuenodes/valuenode_bline.h>
-//#include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/blinepoint.h>
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
@@ -53,96 +52,96 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   //synfig::ValueBase param2;
   std::vector<synfig::BLinePoint> bline_point_list; 
 
-  switch(segment.size())// in any case size>=3
-  {
-    case 3:{//std::cout<<"This is case 3\n";
-            bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
-            bline_point_list[1].set_vertex(segment[2].to_2d());// last point
-            bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
-            bline_point_list[1].set_tangent((segment[2].to_2d() - segment[1].to_2d()) * 2);
-            bline_point_list[0].set_width(1.0f);
-            bline_point_list[1].set_width(1.0f); 
+  // switch(segment.size())// in any case size>=3
+  // {
+  //   case 3:{//std::cout<<"This is case 3\n";
+  //           bline_point_list.push_back(synfig::BLinePoint()); 
+  //           bline_point_list.push_back(synfig::BLinePoint()); 
+  //           bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
+  //           bline_point_list[1].set_vertex(segment[2].to_2d());// last point
+  //           bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
+  //           bline_point_list[1].set_tangent((segment[2].to_2d() - segment[1].to_2d()) * 2);
+  //           bline_point_list[0].set_width(1.0f);
+  //           bline_point_list[1].set_width(1.0f); 
             
-    }break;
+  //   }break;
 
-    case 4:{  //std::vector<synfig::BLinePoint> bline_point_list; 
-            bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
-            bline_point_list[1].set_vertex(segment[2].to_2d());// last point
-            bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
-            bline_point_list[1].set_tangent((segment[3].to_2d() - segment[2].to_2d()) * 2);
-            bline_point_list[0].set_width(1.0f);
-            bline_point_list[1].set_width(1.0f); 
+  //   case 4:{  //std::vector<synfig::BLinePoint> bline_point_list; 
+  //           bline_point_list.push_back(synfig::BLinePoint()); 
+  //           bline_point_list.push_back(synfig::BLinePoint()); 
+  //           bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
+  //           bline_point_list[1].set_vertex(segment[2].to_2d());// last point
+  //           bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
+  //           bline_point_list[1].set_tangent((segment[3].to_2d() - segment[2].to_2d()) * 2);
+  //           bline_point_list[0].set_width(1.0f);
+  //           bline_point_list[1].set_width(1.0f); 
             
-    }break;
+  //   }break;
 
-    default:{/*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
-                Even : 1 2 3 4, 4 5 6, 6 7 8 */
-                //std::vector<synfig::BLinePoint> bline_point_list;
-                int num =0,point =0;
-                if(segment.size() & 1)
-                {
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
-                  bline_point_list[1].set_vertex(segment[2].to_2d());// last point
-                  bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
-                  bline_point_list[1].set_tangent1((segment[2].to_2d() - segment[1].to_2d()) * 2);
-                  bline_point_list[0].set_width(1.0f);
-                  bline_point_list[1].set_width(1.0f);
-                  num = 2;
-                }
-                else
-                {
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
-                  bline_point_list[1].set_vertex(segment[3].to_2d());// last point
-                  bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
-                  bline_point_list[1].set_tangent1((segment[3].to_2d() - segment[2].to_2d()) * 2);
-                  bline_point_list[0].set_width(1.0f);
-                  bline_point_list[1].set_width(1.0f); 
-                  num = 3;
-                }
+  //   default:{/*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
+  //               Even : 1 2 3 4, 4 5 6, 6 7 8 */
+  //               //std::vector<synfig::BLinePoint> bline_point_list;
+  //               int num =0,point =0;
+  //               if(segment.size() & 1)
+  //               {
+  //                 bline_point_list.push_back(synfig::BLinePoint()); 
+  //                 bline_point_list.push_back(synfig::BLinePoint()); 
+  //                 bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
+  //                 bline_point_list[1].set_vertex(segment[2].to_2d());// last point
+  //                 bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
+  //                 bline_point_list[1].set_tangent1((segment[2].to_2d() - segment[1].to_2d()) * 2);
+  //                 bline_point_list[0].set_width(1.0f);
+  //                 bline_point_list[1].set_width(1.0f);
+  //                 num = 2;
+  //               }
+  //               else
+  //               {
+  //                 bline_point_list.push_back(synfig::BLinePoint()); 
+  //                 bline_point_list.push_back(synfig::BLinePoint()); 
+  //                 bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
+  //                 bline_point_list[1].set_vertex(segment[3].to_2d());// last point
+  //                 bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
+  //                 bline_point_list[1].set_tangent1((segment[3].to_2d() - segment[2].to_2d()) * 2);
+  //                 bline_point_list[0].set_width(1.0f);
+  //                 bline_point_list[1].set_width(1.0f); 
+  //                 num = 3;
+  //               }
               
-                for (num,point = 1; num < segment.size() - 3;point++, num += 2) 
-                { 
-                  //bline_point_list[point].set_vertex(segment[i].to_2d());// first point, previous last point 
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list[point + 1].set_vertex(segment[num+2].to_2d());// last point
-                  bline_point_list[point + 1].set_width(1.0f);// last point
-                  bline_point_list[point].set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
-                  bline_point_list[point + 1].set_tangent1((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
-                }
-                num = segment.size() - 3;
-                bline_point_list.push_back(synfig::BLinePoint());
-                bline_point_list[point + 2].set_vertex(segment[num+2].to_2d());// last point
-                bline_point_list[point + 2].set_width(1.0f);// last point
-                bline_point_list[point + 1].set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
-                bline_point_list[point + 2].set_tangent((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
-    }break;
+  //               for (num,point = 1; num < segment.size() - 3;point++, num += 2) 
+  //               { 
+  //                 //bline_point_list[point].set_vertex(segment[i].to_2d());// first point, previous last point 
+  //                 bline_point_list.push_back(synfig::BLinePoint()); 
+  //                 bline_point_list[point + 1].set_vertex(segment[num+2].to_2d());// last point
+  //                 bline_point_list[point + 1].set_width(1.0f);// last point
+  //                 bline_point_list[point].set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
+  //                 bline_point_list[point + 1].set_tangent1((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
+  //               }
+  //               num = segment.size() - 3;
+  //               bline_point_list.push_back(synfig::BLinePoint());
+  //               bline_point_list[point + 2].set_vertex(segment[num+2].to_2d());// last point
+  //               bline_point_list[point + 2].set_width(1.0f);// last point
+  //               bline_point_list[point + 1].set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
+  //               bline_point_list[point + 2].set_tangent((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
+  //   }break;
 
-  }
+  // }
   
   etl::handle<synfig::ValueNode_BLine> bline_value_node; 
   etl::handle<synfig::ValueNode_DynamicList> value_node;
   etl::handle<synfig::ValueNode> vn;
 
-	//  bline_point_list.push_back(synfig::BLinePoint());
-	//  bline_point_list.push_back(synfig::BLinePoint());
-	//  bline_point_list.push_back(synfig::BLinePoint());
-	//  bline_point_list[0].set_vertex(synfig::Point(0,1));
-	//  bline_point_list[1].set_vertex(synfig::Point(0,-1));
-	//  bline_point_list[2].set_vertex(synfig::Point(1,0));
-	//  bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
-	//  bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
-	//  bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
-	//  bline_point_list[0].set_width(1.0f);
-	//  bline_point_list[1].set_width(1.0f);
-	//  bline_point_list[2].set_width(1.0f);
+	 bline_point_list.push_back(synfig::BLinePoint());
+	 bline_point_list.push_back(synfig::BLinePoint());
+	 bline_point_list.push_back(synfig::BLinePoint());
+	 bline_point_list[0].set_vertex(synfig::Point(0,1));
+	 bline_point_list[1].set_vertex(synfig::Point(0,-1));
+	 bline_point_list[2].set_vertex(synfig::Point(1,0));
+	 bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
+	 bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
+	 bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
+	 bline_point_list[0].set_width(1.0f);
+	 bline_point_list[1].set_width(1.0f);
+	 bline_point_list[2].set_width(1.0f);
  //param2.set_list_of(bline_point_list);
 	vn=value_node=bline_value_node=synfig::ValueNode_BLine::create(bline_point_list, canvas);
 
@@ -696,19 +695,19 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   // Infine, ho il termine noto
   l = synfig::Point(ellProd(IH, x) - HxL + ellProd(IM, x) - MxO,
               ellProd(IK, y) - KyL + ellProd(IN_, y) - NyO);
-  double a13 = -l[0];
-  double a23 = -l[1];
+  M.m20 = -l[0];
+  M.m21 = -l[1];
 
   // Check validity conditions:
   //  a) System is not singular
   if (fabs(M.det()) < 0.01) return 0;
 
-  M = M.invert();
+  M.invert();
 
   //  b) Shift (solution) is positive
-  if (a13 < 0 || a23 < 0) return 0;
-  synfig::Point3 b = a + x * a13;
-  synfig::Point3 d = e + y * a23;
+  if (M.m20 < 0 || M.m21 < 0) return 0;
+  synfig::Point3 b = a + x * M.m20;
+  synfig::Point3 d = e + y * M.m21;
 
   //  c) The height of every CP must be >=0
   if (b[2] < 0 || d[2] < 0) return 0;
