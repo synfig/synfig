@@ -10,31 +10,32 @@ from helpers.blendMode import get_blend
 from helpers.mask import gen_mask
 from common.misc import set_layer_desc, get_color_hex, is_animated
 from common.Count import Count
+from common.Layer import Layer
 from effects.fill import gen_effects_fill
 from synfig.group import update_layer, get_additional_width, get_additional_height
 sys.path.append("..")
 
 
-def gen_layer_shape_solid(lottie, layer, idx):
+def gen_layer_shape_solid(lottie, cl_layer, idx):
     """
     Generates the dictionary corresponding to layers/shapes.json
 
     Args:
-        lottie (dict)               : Lottie generated solid layer stored here
-        layer  (lxml.etree._Element): Synfig format solid layer
-        idx    (int)                : Stores the index(number of) of solid layer
+        lottie (dict)       : Lottie generated solid layer stored here
+        layer  (misc.Layer) : Synfig format solid layer
+        idx    (int)        : Stores the index(number of) of solid layer
 
     Returns:
         (None)
     """
-    update_layer(layer)
+    update_layer(cl_layer.get_layer())
 
     # Setting the solid layer which will be masked
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_SOLID_TYPE
-    set_layer_desc(layer, settings.LAYER_SOLID_NAME + str(idx), lottie)
+    set_layer_desc(cl_layer.get_layer(), settings.LAYER_SOLID_NAME + str(idx), lottie)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
     lottie["ef"] = []   # Stores the effects
@@ -42,38 +43,35 @@ def gen_layer_shape_solid(lottie, layer, idx):
     pos = [settings.lottie_format["w"]/2 + get_additional_width()/2,
            settings.lottie_format["h"]/2 + get_additional_height()/2]
     anchor = pos
-    gen_helpers_transform(lottie["ks"], layer, pos, anchor)
+    gen_helpers_transform(lottie["ks"], cl_layer.get_layer(), pos, anchor)
 
     lottie["ef"].append({})
-    gen_effects_fill(lottie["ef"][-1], layer, index.inc())
+    gen_effects_fill(lottie["ef"][-1], cl_layer.get_layer(), index.inc())
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["sw"] = settings.lottie_format["w"] + get_additional_width() # Solid Width
     lottie["sh"] = settings.lottie_format["h"] + get_additional_height() # Solid Height
 
+    lottie["sc"] = get_color_hex(cl_layer.get_param("color")[0])
+
     invert = False
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "color":
-                lottie["sc"] = get_color_hex(chld[0])   # Solid Color
-            elif chld.attrib["name"] == "invert":
-                is_animate = is_animated(chld[0])
-                if is_animate == 0:
-                    val = chld[0].attrib["value"]
-                elif is_animate == 1:
-                    val = chld[0][0][0].attrib["value"]
-                else:
-                    # If animated, always set invert to false
-                    val = "false"
-                if val == "true":
-                    invert = True
-            elif chld.attrib["name"] in {"bline", "vector_list"}:
-                bline_point = chld[0]
+    Inv = cl_layer.get_param("invert")
+    if Inv is not None:
+        is_animate = is_animated(Inv[0])
+        if is_animate == 0:
+            val = Inv[0].attrib["value"]
+        elif is_animate == 1:
+            val = Inv[0][0][0].attrib["value"]
+        else:
+            # If animated, always set invert to false
+            val = "false"
+        if val == "true":
+            invert = True
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, layer)
+    get_blend(lottie, cl_layer.get_layer())
 
     hasMask = True
 
@@ -81,7 +79,9 @@ def gen_layer_shape_solid(lottie, layer, idx):
     lottie["masksProperties"] = []
     lottie["masksProperties"].append({})
 
-    if layer.attrib["type"] in {"star", "circle", "rectangle", "filled_rectangle"}:
-        bline_point = layer
+    if cl_layer.get_type() in {"star", "circle", "rectangle", "filled_rectangle"}:
+        bline_point = cl_layer.get_layer()
+    else:
+        bline_point = cl_layer.get_param("bline", "vector_list")[0]
 
     gen_mask(lottie["masksProperties"][0], invert, bline_point, index.inc())

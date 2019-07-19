@@ -17,21 +17,20 @@ def gen_layer_scale(lottie, layer):
 
     Args:
         lottie (dict) : Store transform properties in lottie format
-        layer  (lxml.etree._Element) Transform properties in Synfig format
+        layer  (misc.Layer) Transform properties in Synfig format
 
     Returns:
         (None)
     """
-    for child in layer:
-        if child.tag == "param":
-            if child.attrib["name"] == "center":
-                anchor = gen_dummy_waypoint(child, "param", "vector")
-                pos = anchor
-            elif child.attrib["name"] == "amount":  # This is scale
-                scale = gen_dummy_waypoint(child, "param", "scale_layer_zoom")
+    center = layer.get_param("center")
+    anchor = gen_dummy_waypoint(center, "param", "vector")
+    pos = anchor
+
+    amount = layer.get_param("amount")  # This is scale amount
+    scale = gen_dummy_waypoint(amount, "param", "scale_layer_zoom")
 
     anchor = copy.deepcopy(anchor)
     group.update_pos(anchor)
     if settings.INSIDE_PRECOMP:
         group.update_pos(pos)
-    gen_helpers_transform(lottie, layer, pos[0], anchor[0], scale[0])
+    gen_helpers_transform(lottie, layer.get_layer(), pos[0], anchor[0], scale[0])

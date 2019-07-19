@@ -6,6 +6,7 @@ Store all functions corresponding to group layer in Synfig
 import sys
 import math
 import settings
+from common.Layer import Layer
 from common.Count import Count
 from common.misc import get_frame, approximate_equal, get_time, set_layer_desc
 from sources.precomp import add_precomp_asset
@@ -18,7 +19,7 @@ from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
 
 
-def gen_layer_group(lottie, layer, idx):
+def gen_layer_group(lottie, cl_layer, idx):
     """
     Will generate a pre composition but has small differences than pre-comp layer used in
     layers/preComp.py
@@ -26,7 +27,7 @@ def gen_layer_group(lottie, layer, idx):
 
     Args:
         lottie (dict)               : Lottie format layer will be stored here
-        layer (lxml.etree._Element) : Synfig format group/switch layer
+        layer (misc.Layer) : Synfig format group/switch layer
         idx   (int)                 : Index of the layer
 
     Returns:
@@ -37,32 +38,25 @@ def gen_layer_group(lottie, layer, idx):
     lottie["ty"] = settings.LAYER_PRECOMP_TYPE
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
-    set_layer_desc(layer, settings.LAYER_PRECOMP_NAME + str(idx), lottie)
+    set_layer_desc(cl_layer.get_layer(), settings.LAYER_PRECOMP_NAME + str(idx), lottie)
     index = Count()
 
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "canvas":
-                canvas = chld
-            elif chld.attrib["name"] == "transformation":
-                transform = chld[0]
-                for child in transform:
-                    if child.tag == "scale":
-                        scale = child
-                    elif child.tag == "offset":
-                        pos = child
-                    elif child.tag == "angle":
-                        angle = child
-            elif chld.attrib["name"] == "origin":
-                origin = chld
-            elif chld.attrib["name"] == "amount":
-                opacity = chld
-            elif chld.attrib["name"] == "outline_grow":
-                outline_grow = chld
-            elif chld.attrib["name"] == "time_offset":
-                time_offset = chld
-            elif chld.attrib["name"] == "time_dilation":
-                time_dilation = chld
+    # Extract parameters
+    canvas = cl_layer.get_param("canvas")
+    origin = cl_layer.get_param("origin")
+    opacity = cl_layer.get_param("amount")
+    outline_grow = cl_layer.get_param("outline_grow")
+    time_offset = cl_layer.get_param("time_offset")
+    time_dilation = cl_layer.get_param("time_dilation")
+    transformation = cl_layer.get_param("transformation")
+    transform = transformation[0]
+    for child in transform:
+        if child.tag == "scale":
+            scale = child
+        elif child.tag == "offset":
+            pos = child
+        elif child.tag == "angle":
+            angle = child
 
     outline_grow = gen_dummy_waypoint(outline_grow, "param", "real")
     append_path(outline_grow[0], outline_grow, "outline_grow_path")
@@ -79,7 +73,7 @@ def gen_layer_group(lottie, layer, idx):
 
     scale = gen_dummy_waypoint(scale, "scale", "group_layer_scale")
     # Generate the transform properties here
-    gen_helpers_transform(lottie["ks"], layer, pos[0], anchor[0], scale[0], angle[0], opacity[0])
+    gen_helpers_transform(lottie["ks"], cl_layer.get_layer(), pos[0], anchor[0], scale[0], angle[0], opacity[0])
 
     # Store previous states, to be recovered at the end of group layer
     prev_state = settings.INSIDE_PRECOMP
@@ -97,18 +91,18 @@ def gen_layer_group(lottie, layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, layer)
+    get_blend(lottie, cl_layer.get_layer())
 
     # Time offset and speed
     lottie["tm"] = {}
     gen_time_remap(lottie["tm"], time_offset, time_dilation, index.inc())
 
     # Change opacity of layers for switch-group layers
-    if layer.attrib["type"] == "switch":
-        change_opacity_switch(layer, lottie)
+    if cl_layer.get_type() == "switch":
+        change_opacity_switch(cl_layer.get_layer(), lottie)
     # Change opacity of layers for group layers
-    elif layer.attrib["type"] == "group":
-        change_opacity_group(layer, lottie)
+    elif cl_layer.get_type() == "group":
+        change_opacity_group(cl_layer.get_layer(), lottie)
 
     # Return to previous state, when we go outside the group layer
     settings.INSIDE_PRECOMP = prev_state

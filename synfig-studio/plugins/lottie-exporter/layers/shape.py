@@ -6,6 +6,7 @@ import sys
 import settings
 from common.misc import set_layer_desc
 from common.Count import Count
+from common.Layer import Layer
 from shapes.star import gen_shapes_star
 from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill
@@ -16,44 +17,44 @@ import synfig.group as group
 sys.path.append("..")
 
 
-def gen_layer_shape(lottie, layer, idx):
+def gen_layer_shape(lottie, cl_layer, idx):
     """
     Generates the dictionary corresponding to layers/shape.json
 
     Args:
-        lottie (dict)               : Lottie generate shape stored here
-        layer  (lxml.etree._Element): Synfig format shape layer
-        idx    (int)                : Stores the index(number of) of shape layer
+        lottie (dict)       : Lottie generate shape stored here
+        layer  (misc.Layer) : Synfig format shape layer
+        idx    (int)        : Stores the index(number of) of shape layer
 
     Returns:
         (None)
     """
-    group.update_layer(layer)
+    group.update_layer(cl_layer.get_layer())
 
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_SHAPE_TYPE
-    set_layer_desc(layer, settings.LAYER_SHAPE_NAME + str(idx), lottie)
+    set_layer_desc(cl_layer.get_layer(), settings.LAYER_SHAPE_NAME + str(idx), lottie)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 
-    gen_helpers_transform(lottie["ks"], layer)
+    gen_helpers_transform(lottie["ks"], cl_layer.get_layer())
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["shapes"] = []   # Shapes to be filled yet
     lottie["shapes"].append({})
-    if layer.attrib["type"] == "star":
-        gen_shapes_star(lottie["shapes"][0], layer, index.inc())
-    elif layer.attrib["type"] in {"circle", "simple_circle"}:
-        gen_shapes_circle(lottie["shapes"][0], layer, index.inc())
-    elif layer.attrib["type"] in {"filled_rectangle", "rectangle"}:
-        gen_shapes_rectangle(lottie["shapes"][0], layer, index.inc())
+    if cl_layer.get_type() == "star":
+        gen_shapes_star(lottie["shapes"][0], cl_layer.get_layer(), index.inc())
+    elif cl_layer.get_type() in {"circle", "simple_circle"}:
+        gen_shapes_circle(lottie["shapes"][0], cl_layer.get_layer(), index.inc())
+    elif cl_layer.get_type() in {"filled_rectangle", "rectangle"}:
+        gen_shapes_rectangle(lottie["shapes"][0], cl_layer.get_layer(), index.inc())
 
     lottie["shapes"].append({})  # For the fill or color
-    gen_shapes_fill(lottie["shapes"][1], layer)
+    gen_shapes_fill(lottie["shapes"][1], cl_layer.get_layer())
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, layer)
+    get_blend(lottie, cl_layer.get_layer())

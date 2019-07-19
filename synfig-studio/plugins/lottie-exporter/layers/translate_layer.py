@@ -17,17 +17,15 @@ def gen_layer_translate(lottie, layer):
 
     Args:
         lottie (dict) : Transform properties in lottie format
-        layer  (lxml.etree._Element) : Transform properties in Synfig format
+        layer  (misc.Layer) : Transform properties in Synfig format
 
     Returns:
         (None)
     """
 
-    for child in layer:
-        if child.tag == "param":
-            if child.attrib["name"] == "origin":
-                anchor = gen_dummy_waypoint(child, "param", "vector")
-                pos = anchor
+    origin = layer.get_param("origin")
+    anchor = gen_dummy_waypoint(origin, "param", "vector")
+    pos = anchor
 
     anchor = copy.deepcopy(anchor)
     for waypoint in anchor[0]:
@@ -38,4 +36,4 @@ def gen_layer_translate(lottie, layer):
     if settings.INSIDE_PRECOMP:
         group.update_pos(pos)
 
-    gen_helpers_transform(lottie, layer, pos[0], anchor[0])
+    gen_helpers_transform(lottie, layer.get_layer(), pos[0], anchor[0])
