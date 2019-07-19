@@ -31,7 +31,6 @@
 
 #include "resourcehelper.h"
 
-#include "ETL/etl_config.h"
 #include "app.h"
 
 #endif
@@ -41,7 +40,7 @@ synfig::String studio::ResourceHelper::get_image_path()
 #ifdef _WIN32
 #	ifdef IMAGE_DIR
 #		undef IMAGE_DIR
-#		define IMAGE_DIR "share\\pixmaps"
+#		define IMAGE_DIR "share/pixmaps"
 #	endif
 #endif
 
@@ -51,7 +50,7 @@ synfig::String studio::ResourceHelper::get_image_path()
 
 	std::string imagepath;
 #ifdef _WIN32
-	imagepath=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
+	imagepath=App::get_base_path()+'/'+IMAGE_DIR;
 #else
 	imagepath=IMAGE_DIR;
 #endif
