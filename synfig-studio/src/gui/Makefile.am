@@ -127,4 +127,5 @@ synfigstudio_CXXFLAGS = \
 	-DIMAGE_EXT=\"$(imageext)\" \
 	-DPLUGIN_DIR=\"$(plugindir)\" \
 	-DSOUND_DIR=\"$(sounddir)\" \
+	-DUI_DIR=\"$(uidir)\" \
 	-DLOCALEDIR=\"${LOCALEDIR}\"

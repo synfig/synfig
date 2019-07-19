@@ -35,6 +35,9 @@ public:
 
 	static synfig::String get_image_path();
 	static synfig::String get_image_path(const synfig::String& image_filename);
+
+	static synfig::String get_ui_path();
+	static synfig::String get_ui_path(const synfig::String& ui_filename);
 };
 
 };

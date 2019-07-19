@@ -71,3 +71,35 @@ synfig::String studio::ResourceHelper::get_image_path(const synfig::String& imag
 {
 	return get_image_path() + '/' + image_filename;
 }
+
+synfig::String studio::ResourceHelper::get_ui_path()
+{
+#ifdef _WIN32
+# ifdef UI_DIR
+#  undef UI_DIR
+#  define UI_DIR "share/ui"
+# endif
+#endif
+
+#ifndef UI_DIR
+# define UI_DIR "/usr/local/share/synfig/ui"
+#endif
+
+	std::string uipath;
+#ifdef _WIN32
+	uipath=App::get_base_path()+'/'+UI_DIR;
+#else
+	uipath=UI_DIR;
+#endif
+	char* synfig_root=getenv("SYNFIG_ROOT");
+	if(synfig_root) {
+		uipath=synfig_root;
+		uipath+="/share/synfig/ui";
+	}
+	return uipath;
+}
+
+synfig::String studio::ResourceHelper::get_ui_path(const synfig::String& ui_filename)
+{
+	return get_ui_path() + '/' + ui_filename;
+}
