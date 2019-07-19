@@ -164,7 +164,7 @@ public:
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
 
-	synfig::Canvas::Handle get_canvas()const { return canvas_; }
+	const synfig::Canvas::Handle& get_canvas()const { return canvas_; }
 
 	void convert_animated_filenames(const synfig::Canvas::Handle &canvas, const synfig::String &old_path, const synfig::String &new_path);
 

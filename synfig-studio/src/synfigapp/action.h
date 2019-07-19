@@ -257,8 +257,8 @@ public:
 	void set_canvas(synfig::Canvas::Handle x) { canvas_=x; }
 	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> x) { canvas_interface_=x; }
 
-	synfig::Canvas::Handle get_canvas()const { return canvas_; }
-	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	const synfig::Canvas::Handle& get_canvas()const { return canvas_; }
+	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface()const { return canvas_interface_; }
 
 	static ParamVocab get_param_vocab();
 	virtual bool set_param(const synfig::String& name, const Param &);
