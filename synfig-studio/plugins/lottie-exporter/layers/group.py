@@ -19,7 +19,7 @@ from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
 
 
-def gen_layer_group(lottie, cl_layer, idx):
+def gen_layer_group(lottie, layer, idx):
     """
     Will generate a pre composition but has small differences than pre-comp layer used in
     layers/preComp.py
@@ -38,17 +38,17 @@ def gen_layer_group(lottie, cl_layer, idx):
     lottie["ty"] = settings.LAYER_PRECOMP_TYPE
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
-    set_layer_desc(cl_layer.get_layer(), settings.LAYER_PRECOMP_NAME + str(idx), lottie)
+    set_layer_desc(layer.get_layer(), settings.LAYER_PRECOMP_NAME + str(idx), lottie)
     index = Count()
 
     # Extract parameters
-    canvas = cl_layer.get_param("canvas")
-    origin = cl_layer.get_param("origin")
-    opacity = cl_layer.get_param("amount")
-    outline_grow = cl_layer.get_param("outline_grow")
-    time_offset = cl_layer.get_param("time_offset")
-    time_dilation = cl_layer.get_param("time_dilation")
-    transformation = cl_layer.get_param("transformation")
+    canvas = layer.get_param("canvas")
+    origin = layer.get_param("origin")
+    opacity = layer.get_param("amount")
+    outline_grow = layer.get_param("outline_grow")
+    time_offset = layer.get_param("time_offset")
+    time_dilation = layer.get_param("time_dilation")
+    transformation = layer.get_param("transformation")
     transform = transformation[0]
     for child in transform:
         if child.tag == "scale":
@@ -73,7 +73,7 @@ def gen_layer_group(lottie, cl_layer, idx):
 
     scale = gen_dummy_waypoint(scale, "scale", "group_layer_scale")
     # Generate the transform properties here
-    gen_helpers_transform(lottie["ks"], cl_layer.get_layer(), pos[0], anchor[0], scale[0], angle[0], opacity[0])
+    gen_helpers_transform(lottie["ks"], layer.get_layer(), pos[0], anchor[0], scale[0], angle[0], opacity[0])
 
     # Store previous states, to be recovered at the end of group layer
     prev_state = settings.INSIDE_PRECOMP
@@ -91,18 +91,18 @@ def gen_layer_group(lottie, cl_layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, cl_layer.get_layer())
+    get_blend(lottie, layer.get_layer())
 
     # Time offset and speed
     lottie["tm"] = {}
     gen_time_remap(lottie["tm"], time_offset, time_dilation, index.inc())
 
     # Change opacity of layers for switch-group layers
-    if cl_layer.get_type() == "switch":
-        change_opacity_switch(cl_layer.get_layer(), lottie)
+    if layer.get_type() == "switch":
+        change_opacity_switch(layer, lottie)
     # Change opacity of layers for group layers
-    elif cl_layer.get_type() == "group":
-        change_opacity_group(cl_layer.get_layer(), lottie)
+    elif layer.get_type() == "group":
+        change_opacity_group(layer, lottie)
 
     # Return to previous state, when we go outside the group layer
     settings.INSIDE_PRECOMP = prev_state
@@ -115,22 +115,16 @@ def change_opacity_group(layer, lottie):
     inside z range(if it is active)[z-range is non-animatable]
 
     Args:
-        layer (lxml.etree._Element) : Synfig format layer
-        lottie (dict)               : Lottie format layer
+        layer (misc.Layer) : Synfig format layer
+        lottie (dict)      : Lottie format layer
 
     Returns:
         (None)
     """
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "z_range":
-                z_range = chld
-            elif chld.attrib["name"] == "z_range_position":
-                z_range_pos = chld
-            elif chld.attrib["name"] == "z_range_depth":
-                z_range_depth = chld
-            elif chld.attrib["name"] == "canvas":
-                canvas = chld
+    z_range = layer.get_param("z_range")
+    z_range_pos = layer.get_param("z_range_position")
+    z_range_depth = layer.get_param("z_range_depth")
+    canvas = layer.get_param("canvas")
 
     for assets in settings.lottie_format["assets"]:
         if assets["id"] == lottie["refId"]:
@@ -200,18 +194,14 @@ def change_opacity_switch(layer, lottie):
     Will make the opacity of underlying layers 0 according to the active layer
 
     Args:
-        layer (lxml.etree._Element) : Synfig format layer
-        lottie (dict)               : Lottie format layer
+        layer (misc.Layer) : Synfig format layer
+        lottie (dict)      : Lottie format layer
 
     Returns:
         (None)
     """
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "layer_name":
-                layer_name = chld
-            elif chld.attrib["name"] == "canvas":
-                canvas = chld
+    layer_name = layer.get_param("layer_name")
+    canvas = layer.get_param("canvas")
 
     layer_name = gen_dummy_waypoint(layer_name, "param", "string", "layer_name")
     for assets in settings.lottie_format["assets"]:
