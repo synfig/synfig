@@ -55,7 +55,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 
   switch(segment.size())// in any case size>=3
   {
-    case 3:{std::cout<<"This is case 3\n";
+    case 3:{//std::cout<<"This is case 3\n";
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
@@ -504,6 +504,11 @@ etl::handle<synfig::Layer> SequenceConverter::operator()(std::vector<unsigned in
       controlPoints[a] = K[b].CPs[i];
   }
   controlPoints[0] = middleAddedSequence[0];
+  std::cout<<"\n several control point segment \n";
+  for(i=0;i<controlPoints.size();i++)
+  {
+    std::cout<<"("<<controlPoints[i][0]<<", "<<controlPoints[i][1]<<", "<<controlPoints[i][2]<<") ";
+  }
 
   //TODO 
   etl::handle<synfig::Layer> res = BezierToOutline(controlPoints);
@@ -647,10 +652,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   double par = ellProd(x, y) / 5;
   M = synfig::Matrix( synfig::Point(ellProd(x, x)/3, par), synfig::Point(par, ellProd(y, y)/3),synfig::Point() );
 
-  // Costruisco il termine noto b:
-  // Calculate polygonal integrals
-
-  // Integral from 0.0 to 1.0
+   // Integral from 0.0 to 1.0
   for (k = 0, old = i, curr = i + 1; k < middle; ++k, old = curr, curr += 2) 
   {
     B = (middleAddedSequence[curr] - middleAddedSequence[old]) *
@@ -732,7 +734,8 @@ inline synfig::Point3 int_B0a(const synfig::Point3 &A, const synfig::Point3 &B, 
 
 inline synfig::Point3 int_B1a(const synfig::Point3 &A, const synfig::Point3 &B, double t1,
                          double t2) {
-return B * -(0.5 * (pow(t2, 4) - pow(t1, 4))) + ((B - A) * 2.0 * ((pow(t2, 3) - pow(t1, 3)) / 3.0) +
+return B * -(0.5 * (pow(t2, 4) - pow(t1, 4))) + 
+          ((B - A) * 2.0 * ((pow(t2, 3) - pow(t1, 3)) / 3.0) +
           A * (pow(t2, 2) - pow(t1, 2)));
 }
 
@@ -906,6 +909,11 @@ inline etl::handle<synfig::Layer> convert(const Sequence &s, double penalty)
     segment[1] = (*graph->getNode(s.m_head) + *graph->getNode(s.m_tail)) * 0.5;
     segment[2] = *graph->getNode(s.m_tail);
     //TODO
+    std::cout<<"this is 3 segment region :";
+    std::cout<<"("<<segment[0][0]<<", "<<segment[0][1]<<", "<<segment[0][2]<<") ";
+    std::cout<<"("<<segment[1][0]<<", "<<segment[1][1]<<", "<<segment[1][2]<<") ";
+    std::cout<<"("<<segment[2][0]<<", "<<segment[2][1]<<", "<<segment[2][2]<<") ";
+
     return BezierToOutline(segment);
   }
   // when calculating sequence with 3 thick points where x,y are coordinates and z is thickness of stroke
@@ -977,23 +985,16 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
 
   // Convert graph sequences
   for (i = 0; i < organizedGraphs.size(); ++i)
-  {
     for (j = 0; j < organizedGraphs[i].getNodesCount(); ++j)
-    {
-      if (!organizedGraphs[i].getNode(j).hasAttribute(JointSequenceGraph::ELIMINATED))
-      {
+      if (!organizedGraphs[i].getNode(j).hasAttribute(
+              JointSequenceGraph::ELIMINATED))
         // Otherwise eliminated by junction recovery
-        for (k = 0; k < organizedGraphs[i].getNode(j).getLinksCount(); ++k) 
-        {
+        for (k = 0; k < organizedGraphs[i].getNode(j).getLinksCount(); ++k) {
           // A sequence is taken at both extremities in our organized graphs
           if (organizedGraphs[i].getNode(j).getLink(k)->isForward())
-            strokes.push_back(convert(*organizedGraphs[i].getNode(j).getLink(k), penalty));
+            strokes.push_back(
+                convert(*organizedGraphs[i].getNode(j).getLink(k), penalty));
         }
-      }
-    }
-  }
-      
-        
 }
 
-
+  
