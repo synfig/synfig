@@ -15,6 +15,7 @@ add_definitions(-DIMAGE_EXT="${IMG_EXT}")
 add_definitions(-DIMAGE_DIR="${DATA_PREFIX}/share/pixmaps")
 add_definitions(-DSOUND_DIR="${DATA_PREFIX}/share/synfig/sounds")
 add_definitions(-DPLUGIN_DIR="${DATA_PREFIX}/share/synfig/plugins")
+add_definitions(-DUI_DIR="${DATA_PREFIX}/share/synfig/ui")
 add_definitions(-DLOCALEDIR="${DATA_PREFIX}/share/locale")
 
 ##
