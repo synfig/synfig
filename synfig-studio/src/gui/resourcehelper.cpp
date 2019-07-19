@@ -46,7 +46,7 @@ synfig::String studio::ResourceHelper::get_image_path()
 #endif
 
 #ifndef IMAGE_DIR
-#	define IMAGE_DIR "/usr/local/share/pixmaps"
+#	define IMAGE_DIR "/usr/local/share/pixmaps/synfigstudio"
 #endif
 
 	std::string imagepath;
@@ -58,7 +58,12 @@ synfig::String studio::ResourceHelper::get_image_path()
 	char* synfig_root=getenv("SYNFIG_ROOT");
 	if(synfig_root) {
 		imagepath=synfig_root;
-		imagepath+="/share/pixmaps";
+		// Only class About didn't use the synfigstudio directory when using
+		//  SYNFIG_ROOT env variable. However, if it weren't set, it would use
+		//  IMAGE_DIR builtin variable that includes "synfigstudio". It means
+		//  that that About icon is in both folders. Therefore, it is safe to
+		//  choose this path.
+		imagepath+="/share/pixmaps/synfigstudio";
 	}
 	return imagepath;
 }
