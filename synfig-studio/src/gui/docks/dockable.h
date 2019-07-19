@@ -60,9 +60,10 @@ private:
 	synfig::String name_;
 	synfig::String local_name_;
 	Gtk::StockID stock_id_;
+	bool use_scrolled;
 
-	Gtk::ScrolledWindow container;
-	Gtk::EventBox toolbar_container;
+	Gtk::ScrolledWindow *container;
+	Gtk::EventBox *toolbar_container;
 	bool dnd_success_;
 
 public:
@@ -87,6 +88,8 @@ public:
 	void set_toolbar(Gtk::Toolbar& toolbar);
 	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip = synfig::String());
 
+	void reset_container();
+	void reset_toolbar();
 	void clear();
 
 	void attach_dnd_to(Gtk::Widget& widget);

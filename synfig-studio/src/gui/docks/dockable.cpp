@@ -76,20 +76,13 @@ Dockable::Dockable(const synfig::String& name, const synfig::String& local_name,
 	name_(name),
 	local_name_(local_name),
 	stock_id_(stock_id),
+	use_scrolled(true),
+	container(),
+	toolbar_container(),
 	dnd_success_()
 {
-	container.set_shadow_type(Gtk::SHADOW_NONE);
-	container.set_hexpand();
-	container.set_vexpand();
-	container.show();
-	attach(container, 0, 0, 1, 1);
-
-	toolbar_container.set_hexpand();
-	toolbar_container.show();
-	attach(toolbar_container, 0, 1, 1, 1);
-	
+	clear();
 	set_size_request(175, 120);
-	set_use_scrolled(true);
 	show();
 }
 
@@ -98,16 +91,14 @@ Dockable::~Dockable()
 
 bool
 Dockable::get_use_scrolled() const
-{
-	Gtk::PolicyType h = Gtk::POLICY_NEVER, v = Gtk::POLICY_NEVER;
-	container.get_policy(h, v);
-	return h != Gtk::POLICY_NEVER || v != Gtk::POLICY_NEVER;
-}
+	{ return use_scrolled; }
 
 void
 Dockable::set_use_scrolled(bool x) {
-	Gtk::PolicyType policy = x ? Gtk::POLICY_AUTOMATIC : Gtk::POLICY_NEVER;
-	container.set_policy(policy, policy);
+	use_scrolled = x;
+	if (!container) return;
+	Gtk::PolicyType policy = use_scrolled ? Gtk::POLICY_AUTOMATIC : Gtk::POLICY_NEVER;
+	container->set_policy(policy, policy);
 }
 
 void
@@ -184,29 +175,30 @@ Dockable::attach_dnd_to(Gtk::Widget& widget)
 void
 Dockable::add(Gtk::Widget& x)
 {
-	container.remove();
+	reset_container();
 	x.set_hexpand();
 	x.set_vexpand();
 	x.show();
-	container.add(x);
+	container->add(x);
 }
 
 void
 Dockable::set_toolbar(Gtk::Toolbar& toolbar)
 {
-	toolbar_container.remove();
+	reset_toolbar();
 	toolbar.set_icon_size(Gtk::IconSize(1) /*GTK::ICON_SIZE_MENU*/);
 	toolbar.set_toolbar_style(Gtk::TOOLBAR_ICONS);
 	toolbar.set_hexpand(true);
 	toolbar.set_vexpand(false);
 	toolbar.show();
-	toolbar_container.add(toolbar);
+	toolbar_container->add(toolbar);
 }
 
 Gtk::ToolButton*
 Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip)
 {
-	Gtk::Toolbar *toolbar = dynamic_cast<Gtk::Toolbar*>(toolbar_container.get_child());
+	if (!toolbar_container) reset_toolbar();
+	Gtk::Toolbar *toolbar = dynamic_cast<Gtk::Toolbar*>(toolbar_container->get_child());
 	if (!toolbar) {
 		toolbar = manage(new Gtk::Toolbar());
 		set_toolbar(*toolbar);
@@ -221,10 +213,33 @@ Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip
 }
 
 void
+Dockable::reset_container()
+{
+	if (container) delete container;
+	container = manage(new Gtk::ScrolledWindow);
+	container->set_shadow_type(Gtk::SHADOW_NONE);
+	container->set_hexpand();
+	container->set_vexpand();
+	container->show();
+	set_use_scrolled(use_scrolled);
+	attach(*container, 0, 0, 1, 1);
+}
+
+void
+Dockable::reset_toolbar()
+{
+	if (toolbar_container) delete toolbar_container;
+	toolbar_container = manage(new Gtk::EventBox);
+	toolbar_container->set_hexpand();
+	toolbar_container->show();
+	attach(*toolbar_container, 0, 1, 1, 1);
+}
+
+void
 Dockable::clear()
 {
-	container.remove();
-	toolbar_container.remove();
+	reset_container();
+	reset_toolbar();
 }
 
 void
