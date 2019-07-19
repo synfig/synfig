@@ -50,6 +50,7 @@
 #include "app.h"
 
 #include <gui/localization.h>
+#include "gui/resourcehelper.h"
 
 #endif
 
@@ -62,17 +63,6 @@ using namespace studio;
 #ifndef VERSION
 #define VERSION	"unknown"
 #define PACKAGE	"synfigstudio"
-#endif
-
-#ifdef _WIN32
-#	ifdef IMAGE_DIR
-#		undef IMAGE_DIR
-#		define IMAGE_DIR "share\\pixmaps"
-#	endif
-#endif
-
-#ifndef IMAGE_DIR
-#	define IMAGE_DIR "/usr/local/share/pixmaps"
 #endif
 
 #ifndef IMAGE_EXT
@@ -151,23 +141,7 @@ public:
 Splash::Splash():
 	Gtk::Window(Gtk::WINDOW_TOPLEVEL)
 {
-	std::string imagepath;
-#ifdef _WIN32
-	imagepath=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
-#else
-	imagepath=IMAGE_DIR;
-#endif
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		imagepath=synfig_root;
-		imagepath+=ETL_DIRECTORY_SEPARATOR;
-		imagepath+="share";
-		imagepath+=ETL_DIRECTORY_SEPARATOR;
-		imagepath+="pixmaps";
-		imagepath+=ETL_DIRECTORY_SEPARATOR;
-		imagepath+="synfigstudio";
-	}
-	imagepath+=ETL_DIRECTORY_SEPARATOR;
+	std::string imagepath = ResourceHelper::get_image_path() + '/';
 
 	// Create the splash image
 	Gtk::Image* splash_image = manage(new class Gtk::Image());
@@ -180,7 +154,7 @@ Splash::Splash():
 	//synfig::info("%s", strprintf("%d",number).c_str());
 	splash_image->set(imagepath+"splash_screen"+strprintf("%d",number)+"." IMAGE_EXT);
 	*/
-	splash_image->set(imagepath+"splash_screen." IMAGE_EXT);
+	splash_image->set(imagepath + "splash_screen." IMAGE_EXT);
 	splash_image->set_alignment(0.5,0.5);
 	splash_image->set_padding(0,0);
 
