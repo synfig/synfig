@@ -320,7 +320,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	drawing_area->set_can_focus(true);
 	refresh_dimension_info();
-	queue_draw();
 }
 
 WorkArea::~WorkArea()
@@ -328,6 +327,8 @@ WorkArea::~WorkArea()
 	set_drag_mode(DRAG_NONE);
 	while(!renderer_set_.empty())
 		erase_renderer(*renderer_set_.begin());
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		info("WorkArea::~WorkArea(): Deleted");
 }
 
 void
