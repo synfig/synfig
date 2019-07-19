@@ -168,8 +168,8 @@ public:
 	int		get_quality() const {return quality;}
 	void	set_quality(int i)	{quality = i;}
 
-	etl::handle<synfig::Canvas> get_canvas() const;
-	etl::handle<CanvasView> get_canvasview() const;
+	const etl::handle<synfig::Canvas>& get_canvas() const;
+	const etl::loose_handle<CanvasView>& get_canvasview() const;
 
 	void set_canvasview(const etl::loose_handle<CanvasView> &h);
 

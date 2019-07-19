@@ -196,8 +196,7 @@ public:
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
 	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
-	synfig::Canvas::Handle get_canvas() { return canvas_interface()->get_canvas(); }
-	synfig::Canvas::Handle get_canvas()const { return canvas_interface()->get_canvas(); }
+	const synfig::Canvas::Handle& get_canvas()const { return canvas_interface()->get_canvas(); }
 
 	Gtk::TreeModel::Row find_row(const synfig::Keyframe &keyframe);
 

@@ -552,10 +552,10 @@ public:
 	void set_time(synfig::Time t) { time_model()->set_time(t); }
 	synfig::Time get_time() { return time_model()->get_time(); }
 
-	etl::handle<synfig::Canvas> get_canvas()const { return canvas_interface_->get_canvas(); }
-	etl::handle<Instance> get_instance()const { return instance_; }
+	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_interface_->get_canvas(); }
+	const etl::loose_handle<Instance>& get_instance()const { return instance_; }
 
-	etl::handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	const etl::handle<synfigapp::CanvasInterface>& canvas_interface() { return canvas_interface_; }
 	etl::handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
 	void add_actions_to_menu(Gtk::Menu *menu,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
