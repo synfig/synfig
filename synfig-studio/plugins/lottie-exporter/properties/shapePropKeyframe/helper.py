@@ -131,7 +131,7 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
         fr      (int)                 : Holds the frame value
 
     Returns:
-        (misc.Vector, misc.Vector) : In-tangent and out-tangent at the given frame
+        (common.Vector.Vector, common.Vector.Vector) : In-tangent and out-tangent at the given frame
     """
 
     # Get value of split_radius and split_angle at frame
@@ -212,9 +212,9 @@ def cubic_to(vec, tan1, tan2, lottie, origin_cur):
     and tan2 both are zero always
 
     Args:
-        vec (misc.Vector) : position of the point
-        tan1 (misc.Vector) : tangent 1 of the point
-        tan2 (misc.Vector) : tangent 2 of the point
+        vec (common.Vector.Vector) : position of the point
+        tan1 (common.Vector.Vector) : tangent 1 of the point
+        tan2 (common.Vector.Vector) : tangent 2 of the point
         lottie (dict) : Final position and tangents will be stored here
         origin_cur (list) : value of the origin at specific frame
 
@@ -238,7 +238,7 @@ def move_to(vec, lottie, origin_cur):
     Don't have to manipulate the tangents because all of them are zero here
 
     Args:
-        vec (misc.Vector) : position of the point
+        vec (common.Vector.Vector) : position of the point
         lottie (dict) : Final position and tangents will be stored here
         origin_cur (list) : value of the origin at specific frame
 
@@ -259,12 +259,12 @@ def convert_tangent_to_lottie(t1, t2):
     Converts tangent from Synfig format to lottie format
 
     Args:
-        t1 (misc.Vector) : tangent 1 of a point
-        t2 (misc.Vector) : tangent 2 of a point
+        t1 (common.Vector.Vector) : tangent 1 of a point
+        t2 (common.Vector.Vector) : tangent 2 of a point
 
     Returns:
-        (misc.Vector) : Converted tangent 1
-        (misc.Vector) : Converted tangent 2
+        (common.Vector.Vector) : Converted tangent 1
+        (common.Vector.Vector) : Converted tangent 2
     """
     # Convert to Lottie format
     t1 /= 3
@@ -318,13 +318,13 @@ def quadratic_to_cubic(qp0, qp1, qp2):
     Converts quadratic bezier curve to cubic bezier curve
 
     Args:
-        qp0 (misc.Vector) First control point of quadratic bezier
-        qp1 (misc.Vector) Second control point of quadratic bezier
-        qp2 (misc.Vector) Third control point of quadratic bezier
+        qp0 (common.Vector.Vector) First control point of quadratic bezier
+        qp1 (common.Vector.Vector) Second control point of quadratic bezier
+        qp2 (common.Vector.Vector) Third control point of quadratic bezier
 
     Returns:
-        (misc.Vector) Second control point of Cubic bezier
-        (misc.Vector) Third control point of Cubic bezier
+        (common.Vector.Vector) Second control point of Cubic bezier
+        (common.Vector.Vector) Third control point of Cubic bezier
     """
     cp0 = qp0
     cp3 = qp2

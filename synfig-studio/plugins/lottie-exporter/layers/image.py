@@ -24,7 +24,7 @@ def gen_layer_image(lottie, layer, idx):
 
     Args:
         lottie (dict)       : Lottie generated image stored here
-        layer  (misc.Layer) : Synfig format image layer
+        layer  (common.Layer.Layer) : Synfig format image layer
         idx    (int)        : Stores the index(number of) of image layer
 
     Returns:
@@ -64,7 +64,7 @@ def gen_layer_image(lottie, layer, idx):
     rotation = settings.DEFAULT_ROTATION
     opacity = layer.get_param("amount")
 
-    gen_helpers_transform(lottie["ks"], layer.get_layer(), st["tl"][0], anchor, st["scale"][0], rotation, opacity[0])
+    gen_helpers_transform(lottie["ks"], st["tl"][0], anchor, st["scale"][0], rotation, opacity[0])
 
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
@@ -72,7 +72,7 @@ def gen_layer_image(lottie, layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, layer.get_layer())
+    get_blend(lottie, layer)
 
 
 def gen_image_scale(animated_1, animated_2, width, height):

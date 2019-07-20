@@ -25,19 +25,18 @@ def get_blend(lottie, layer):
     Screen     : 16
 
     Args:
-        lottie (dict)                : Lottie format layer
-        layer  (lxml.etree._Element) : Synfig format layer
+        lottie (dict)               : Lottie format layer
+        layer  (common.Layer.Layer)  : Synfig format layer
 
     Returns:
         (None)
     """
     blend_map = {0 : 0, 18 : 10, 6 : 1, 17 : 8, 11 : 15, 10 : 13, 9 : 12, 8 : 14,
                  3 : 4, 2 : 5, 20 : 3, 16 : 2}
-    for child in layer:
-        if child.tag == "param":
-            if child.attrib["name"] == "blend_method":
-                key = int(child[0].attrib["value"])
-                if key in blend_map.keys():
-                    lottie["bm"] = blend_map[key]
-                else:
-                    lottie["bm"] = settings.DEFAULT_BLEND
+
+    blend = layer.get_param("blend_method")
+    key = int(blend[0].attrib["value"])
+    if key in blend_map.keys():
+        lottie["bm"] = blend_map[key]
+    else:
+        lottie["bm"] = settings.DEFAULT_BLEND

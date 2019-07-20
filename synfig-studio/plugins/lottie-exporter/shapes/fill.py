@@ -17,9 +17,9 @@ def gen_shapes_fill(lottie, layer):
     Generates the dictionary corresponding to shapes/fill.json
 
     Args:
-        lottie (dict)       : The lottie generated fill layer will be stored in it
-        layer  (misc.Layer) : Synfig format fill (can be shape/solid anything, we
-                              only need color and opacity part from it) layer
+        lottie (dict)               : The lottie generated fill layer will be stored in it
+        layer  (common.Layer.Layer)  : Synfig format fill (can be shape/solid anything, we
+                                    only need color and opacity part from it) layer
 
     Returns:
         (None)

@@ -15,13 +15,12 @@ from properties.multiDimensionalKeyframed import gen_properties_multi_dimensiona
 sys.path.append("../")
 
 
-def gen_helpers_transform(lottie, layer, pos=settings.DEFAULT_POSITION, anchor=settings.DEFAULT_ANCHOR, scale=settings.DEFAULT_SCALE, rotation=settings.DEFAULT_ROTATION, opacity=settings.DEFAULT_OPACITY):
+def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings.DEFAULT_ANCHOR, scale=settings.DEFAULT_SCALE, rotation=settings.DEFAULT_ROTATION, opacity=settings.DEFAULT_OPACITY):
     """
     Generates the dictionary corresponding to helpers/transform.json
 
     Args:
         lottie (dict)                : Lottie format layer
-        layer  (lxml.etree._Element) : Synfig format layer
         pos    (:obj: `list | lxml.etree._Element`, optional) : position of layer
         anchor (:obj: `list | lxml.etree._Element`, optional) : anchor point of layer
         scale (:obj: `list | lxml.etree._Element`, optional) : scale of layer

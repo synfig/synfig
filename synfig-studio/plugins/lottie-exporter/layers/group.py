@@ -27,7 +27,7 @@ def gen_layer_group(lottie, layer, idx):
 
     Args:
         lottie (dict)               : Lottie format layer will be stored here
-        layer (misc.Layer) : Synfig format group/switch layer
+        layer (common.Layer.Layer) : Synfig format group/switch layer
         idx   (int)                 : Index of the layer
 
     Returns:
@@ -73,7 +73,7 @@ def gen_layer_group(lottie, layer, idx):
 
     scale = gen_dummy_waypoint(scale, "scale", "group_layer_scale")
     # Generate the transform properties here
-    gen_helpers_transform(lottie["ks"], layer.get_layer(), pos[0], anchor[0], scale[0], angle[0], opacity[0])
+    gen_helpers_transform(lottie["ks"], pos[0], anchor[0], scale[0], angle[0], opacity[0])
 
     # Store previous states, to be recovered at the end of group layer
     prev_state = settings.INSIDE_PRECOMP
@@ -91,7 +91,7 @@ def gen_layer_group(lottie, layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, layer.get_layer())
+    get_blend(lottie, layer)
 
     # Time offset and speed
     lottie["tm"] = {}
@@ -115,7 +115,7 @@ def change_opacity_group(layer, lottie):
     inside z range(if it is active)[z-range is non-animatable]
 
     Args:
-        layer (misc.Layer) : Synfig format layer
+        layer (common.Layer.Layer) : Synfig format layer
         lottie (dict)      : Lottie format layer
 
     Returns:
@@ -194,7 +194,7 @@ def change_opacity_switch(layer, lottie):
     Will make the opacity of underlying layers 0 according to the active layer
 
     Args:
-        layer (misc.Layer) : Synfig format layer
+        layer (common.Layer.Layer) : Synfig format layer
         lottie (dict)      : Lottie format layer
 
     Returns:

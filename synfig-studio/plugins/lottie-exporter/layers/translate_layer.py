@@ -17,7 +17,7 @@ def gen_layer_translate(lottie, layer):
 
     Args:
         lottie (dict) : Transform properties in lottie format
-        layer  (misc.Layer) : Transform properties in Synfig format
+        layer  (common.Layer.Layer) : Transform properties in Synfig format
 
     Returns:
         (None)
@@ -36,4 +36,4 @@ def gen_layer_translate(lottie, layer):
     if settings.INSIDE_PRECOMP:
         group.update_pos(pos)
 
-    gen_helpers_transform(lottie, layer.get_layer(), pos[0], anchor[0])
+    gen_helpers_transform(lottie, pos[0], anchor[0])

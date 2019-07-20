@@ -50,10 +50,10 @@ class Matrix2:
         Rotate or transform a vector using this Matrix
 
         Args:
-            v (misc.Vector) : Vector to be rotated using this matrix
+            v (common.Vector.Vector) : Vector to be rotated using this matrix
 
         Returns:
-            (misc.Vector) : Rotated vector
+            (common.Vector.Vector) : Rotated vector
         """
         ret = Vector()
         x, y = v[0], v[1]

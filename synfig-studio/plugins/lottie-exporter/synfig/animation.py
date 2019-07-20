@@ -159,7 +159,7 @@ def get_first_control_point(interval):
         interval (dict) : Holds one interval of the bezier curve that is two waypoints
 
     Returns:
-        (misc.Vector) If the interval holds position bezier
+        (common.Vector.Vector) If the interval holds position bezier
         (float)       Else : the interval holds value bezier
     """
     if len(interval["s"]) >= 2:
@@ -177,7 +177,7 @@ def get_last_control_point(interval):
         interval (dict) : Holds one interval of the bezier curve that is two waypoints
 
     Returns:
-        (misc.Vector) If the interval holds position bezier
+        (common.Vector.Vector) If the interval holds position bezier
         (float)       Else : the interval holds value bezier
     """
     if len(interval["e"]) >= 2:
@@ -195,7 +195,7 @@ def get_control_points(interval):
         interval (dict) : Holds one interval of the bezier curve that is two waypoints
 
     Returns:
-        (misc.Vector, misc.Vector, misc.Vector, misc.Vector) If the interval holds position bezier
+        (common.Vector.Vector, common.Vector.Vector, common.Vector.Vector, common.Vector.Vector) If the interval holds position bezier
         (float, float, float, float)       Else : the interval holds value bezier
     """
     # If the interval is for position or vector

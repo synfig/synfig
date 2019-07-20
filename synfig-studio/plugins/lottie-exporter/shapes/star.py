@@ -17,9 +17,9 @@ def gen_shapes_star(lottie, layer, idx):
     Generates the dictionary corresponding to shapes/star.json
 
     Args:
-        lottie (dict)       : The lottie generated star layer will be stored in it
-        layer  (misc.Layer) : Synfig format star layer
-        idx    (int)        : Stores the index of the star layer
+        lottie (dict)               : The lottie generated star layer will be stored in it
+        layer  (common.Layer.Layer)  : Synfig format star layer
+        idx    (int)                : Stores the index of the star layer
 
     Returns:
         (None)

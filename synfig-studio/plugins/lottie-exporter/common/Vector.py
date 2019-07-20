@@ -93,7 +93,7 @@ class Vector:
         Args:
             (None)
         Returns:
-            (misc.Vector) : Perpendicular vector with same magnitude
+            (common.Vector.Vector) : Perpendicular vector with same magnitude
         """
         return Vector(self.val2, -self.val1)
 
@@ -102,7 +102,7 @@ class Vector:
         Tells if the current vector is equal to `other` vector
 
         Args:
-            other (misc.Vector) : The vector to be compared with
+            other (common.Vector.Vector) : The vector to be compared with
 
         Returns:
             (bool) : True if the vectors are equal
@@ -129,7 +129,7 @@ class Vector:
         Args:
             (None)
         Returns:
-            (misc.Vector) : itselves whose magnitude is 1
+            (common.Vector.Vector) : itselves whose magnitude is 1
         """
         obj = self * self.inv_mag()
         self.__dict__.update(obj.__dict__)

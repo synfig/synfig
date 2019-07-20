@@ -19,9 +19,9 @@ def gen_shapes_circle(lottie, layer, idx):
     will always be considered as circle
 
     Args:
-        lottie (dict)       : The lottie generated circle layer will be stored in it
-        layer  (misc.Layer) : Synfig format circle layer
-        idx    (int)        : Stores the index of the circle layer
+        lottie (dict)               : The lottie generated circle layer will be stored in it
+        layer  (common.Layer.Layer)  : Synfig format circle layer
+        idx    (int)                : Stores the index of the circle layer
 
     Returns:
         (None)

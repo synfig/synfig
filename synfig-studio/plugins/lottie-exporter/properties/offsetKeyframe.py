@@ -84,15 +84,15 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     when clamped waypoints are used
 
     Args:
-        p1       (misc.Vector)         : First point in Co-ordinate System
-        p2       (misc.Vector)         : Second point in Co-ordinate System
-        p3       (misc.Vector)         : Third point in Co-ordinate System
+        p1       (common.Vector.Vector)         : First point in Co-ordinate System
+        p2       (common.Vector.Vector)         : Second point in Co-ordinate System
+        p3       (common.Vector.Vector)         : Third point in Co-ordinate System
         animated (lxml.etree._Element) : Synfig format animation
         i        (int)                 : Iterator over animation
         ease     (str)                 : Specifies if it is an ease in animation ease out
 
     Returns:
-        (misc.Vector) : Clamped Vector is returned
+        (common.Vector.Vector) : Clamped Vector is returned
     """
     x_tan = clamped_tangent(p1[0], p2[0], p3[0], animated, i)
     y_tan = clamped_tangent(p1[1], p2[1], p3[1], animated, i)
@@ -141,7 +141,7 @@ def handle_color():
         (None)
 
     Returns:
-        (misc.Vector, misc.Vector) : out and in tangents for color parameter
+        (common.Vector.Vector, common.Vector.Vector) : out and in tangents for color parameter
     """
     out_val = Vector(0.5, 0.5, "color")
     in_val = Vector(0.5, 0.5, "color")
@@ -158,8 +158,8 @@ def calc_tangent(animated, lottie, i):
         i        (int)                 : Iterator for animation
 
     Returns:
-        (Misc.Vector) : If waypoint's value is parsed to misc.Vector by misc.parse_position()
-        (Misc.Color)  : If waypoint's value is parsed to misc.Color ...
+        (common.Vector.Vector) : If waypoint's value is parsed to common.Vector.Vector by misc.parse_position()
+        (common.Color.Color)  : If waypoint's value is parsed to common.Color.Color ...
         (float)       : If waypoint's value is parsed to float ...
         (None)        : If "constant" interval is detected
     """

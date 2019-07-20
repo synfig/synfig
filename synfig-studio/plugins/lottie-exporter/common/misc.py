@@ -77,8 +77,8 @@ def parse_position(animated, i):
         i        (int)                 : Iterator over animation
 
     Returns:
-        (misc.Vector) If the animated type is not color
-        (misc.Color)  Else if the animated type is color
+        (common.Vector.Vector) If the animated type is not color
+        (common.Color.Color)  Else if the animated type is color
     """
     if animated.attrib["type"] == "vector":
         pos = [float(animated[i][0][0].text),
@@ -330,7 +330,7 @@ def get_vector(waypoint):
         waypoint (lxml.etree._Element) : Synfig format waypoint
 
     Returns:
-        (misc.Vector) : x and y axis values stores in Vector format
+        (common.Vector.Vector) : x and y axis values stores in Vector format
     """
     # converting radius and angle to a vector
     if waypoint.tag == "radial_composite":

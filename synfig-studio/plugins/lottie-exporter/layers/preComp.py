@@ -21,7 +21,7 @@ def gen_layer_precomp(lottie, layer, idx):
 
     Args:
         lottie (dict) : Will store the pre-comp layer
-        layer  (misc.Layer) : Specifies which layer it is
+        layer  (common.Layer.Layer) : Specifies which layer it is
         idx    (int)  : Index of the layer
 
     Returns:

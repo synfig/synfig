@@ -22,7 +22,7 @@ def gen_layer_shape(lottie, layer, idx):
 
     Args:
         lottie (dict)       : Lottie generate shape stored here
-        layer  (misc.Layer) : Synfig format shape layer
+        layer  (common.Layer.Layer) : Synfig format shape layer
         idx    (int)        : Stores the index(number of) of shape layer
 
     Returns:
@@ -38,7 +38,7 @@ def gen_layer_shape(lottie, layer, idx):
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 
-    gen_helpers_transform(lottie["ks"], layer.get_layer())
+    gen_helpers_transform(lottie["ks"])
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["shapes"] = []   # Shapes to be filled yet
@@ -56,4 +56,4 @@ def gen_layer_shape(lottie, layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, layer.get_layer())
+    get_blend(lottie, layer)

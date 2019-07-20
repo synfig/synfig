@@ -91,7 +91,8 @@ class Layer:
                 desc = settings.LAYER_IMAGE_NAME
             elif self.get_type() in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER):
                 desc = settings.LAYER_PRECOMP_NAME
-
+            else:
+                desc = settings.UNKNOWN_LAYER
             desc += str(settings.layer_count.inc())
             self.description = desc
 

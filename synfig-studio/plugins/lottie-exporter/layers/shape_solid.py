@@ -22,7 +22,7 @@ def gen_layer_shape_solid(lottie, layer, idx):
 
     Args:
         lottie (dict)       : Lottie generated solid layer stored here
-        layer  (misc.Layer) : Synfig format solid layer
+        layer  (common.Layer.Layer) : Synfig format solid layer
         idx    (int)        : Stores the index(number of) of solid layer
 
     Returns:
@@ -43,10 +43,10 @@ def gen_layer_shape_solid(lottie, layer, idx):
     pos = [settings.lottie_format["w"]/2 + get_additional_width()/2,
            settings.lottie_format["h"]/2 + get_additional_height()/2]
     anchor = pos
-    gen_helpers_transform(lottie["ks"], layer.get_layer(), pos, anchor)
+    gen_helpers_transform(lottie["ks"], pos, anchor)
 
     lottie["ef"].append({})
-    gen_effects_fill(lottie["ef"][-1], layer.get_layer(), index.inc())
+    gen_effects_fill(lottie["ef"][-1], layer, index.inc())
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["sw"] = settings.lottie_format["w"] + get_additional_width() # Solid Width
@@ -71,7 +71,7 @@ def gen_layer_shape_solid(lottie, layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, layer.get_layer())
+    get_blend(lottie, layer)
 
     hasMask = True
 

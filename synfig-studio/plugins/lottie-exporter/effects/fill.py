@@ -5,6 +5,7 @@ This module will store all the functions required for fill effects of lottie
 import sys
 import settings
 from common.Count import Count
+from common.Layer import Layer
 from effects.fillmask import gen_effects_fillmask
 from effects.allmask import gen_effects_allmask
 from effects.color import gen_effects_color
@@ -19,9 +20,9 @@ def gen_effects_fill(lottie, layer, idx):
     Generates the dictionary corresponding to effects/fill.json
 
     Args:
-        lottie (dict)                : Lottie format layer
-        layer  (lxml.etree._Element) : Synfig format layer
-        idx    (int)                 : Index/Count of effect
+        lottie (dict)               : Lottie format layer
+        layer  (common.Layer.Layer)  : Synfig format layer
+        idx    (int)                : Index/Count of effect
 
     Returns:
         (None)
@@ -35,11 +36,11 @@ def gen_effects_fill(lottie, layer, idx):
     # generating the fill mask, has no use in Synfig. But a necessity for
     # running the .json file
     lottie["ef"].append({})
-    gen_effects_fillmask(lottie["ef"][-1], layer, index.inc())
+    gen_effects_fillmask(lottie["ef"][-1], index.inc())
 
     # generating the all mask property as required by lottie
     lottie["ef"].append({})
-    gen_effects_allmask(lottie["ef"][-1], layer, index.inc())
+    gen_effects_allmask(lottie["ef"][-1], index.inc())
 
     # generating the color property
     lottie["ef"].append({})
@@ -47,15 +48,15 @@ def gen_effects_fill(lottie, layer, idx):
 
     # generating the invert property as required by lottie
     lottie["ef"].append({})
-    gen_effects_invert(lottie["ef"][-1], layer, index.inc())
+    gen_effects_invert(lottie["ef"][-1], index.inc())
 
     # generating the horizontal feather as required by lottie
     lottie["ef"].append({})
-    gen_effects_hfeather(lottie["ef"][-1], layer, index.inc())
+    gen_effects_hfeather(lottie["ef"][-1], index.inc())
 
     # generating the vertical feather as required by lottie
     lottie["ef"].append({})
-    gen_effects_vfeather(lottie["ef"][-1], layer, index.inc())
+    gen_effects_vfeather(lottie["ef"][-1], index.inc())
 
     # generating the opacity
     lottie["ef"].append({})

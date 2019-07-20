@@ -199,10 +199,10 @@ def get_outline_param_at_frame(composite, fr):
         fr        (int)                 : frame number
 
     Returns:
-        (misc.Vector) : position of the vertex
+        (common.Vector.Vector) : position of the vertex
         (float)       : width of the vertex
-        (misc.Vector) : Tangent 1 of the vertex
-        (misc.Vector) : Tangent 2 of the vertex
+        (common.Vector.Vector) : Tangent 1 of the vertex
+        (common.Vector.Vector) : Tangent 2 of the vertex
         (bool)        : True if radius split is ticked at this frame
         (bool)        : True if tangent split is ticked at this frame
     """
@@ -491,13 +491,13 @@ def line_intersection(p1, t1, p2, t2):
     described on http://www.whisqu.se/per/docs/math28.htm
 
     Args:
-        p1 (misc.Vector) : First point
-        t1 (misc.Vector) : First tangent
-        p2 (misc.Vector) : Second point
-        t2 (misc.Vector) : Second tangent
+        p1 (common.Vector.Vector) : First point
+        t1 (common.Vector.Vector) : First tangent
+        p2 (common.Vector.Vector) : Second point
+        t2 (common.Vector.Vector) : Second tangent
 
     Returns:
-        (misc.Vector) : intersection of the both the lines
+        (common.Vector.Vector) : intersection of the both the lines
     """
     x0 = p1[0]
     y0 = p1[1]

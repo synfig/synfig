@@ -20,7 +20,7 @@ def get_offset():
     Args:
         (None)
     Returns:
-        (misc.Vector) : offset
+        (common.Vector.Vector) : offset
     """
     x = settings.ADDITIONAL_PRECOMP_WIDTH / 2
     y = settings.ADDITIONAL_PRECOMP_HEIGHT / 2
@@ -35,7 +35,7 @@ def update_layer(node):
     another composition of Lottie
 
     Args:
-        node (misc.Layer | lxml.etree._Element) : Can be a layer or parameter of a layer
+        node (common.Layer.Layer | lxml.etree._Element) : Can be a layer or parameter of a layer
 
     Returns:
         (None)
@@ -83,7 +83,7 @@ def add(vector, offset):
 
     Args:
         vector (lxml.etree._Element) : Position in Synfig format
-        offset (misc.Vector) : offset to be added to that position
+        offset (common.Vector.Vector) : offset to be added to that position
 
     Returns:
         (None)
