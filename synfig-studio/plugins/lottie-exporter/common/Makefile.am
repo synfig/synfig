@@ -1,10 +1,14 @@
 # Id $
 
-PLUGIN_NAME = sources
+PLUGIN_NAME = common
 
 EXTRA_FILES = \
-			  image.py \
-			  precomp.py
+			  Color.py \
+			  Count.py \
+			  Hermite.py \
+			  Matrix2.py \
+			  misc.py \
+			  Vector.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \

@@ -3,9 +3,16 @@
 PLUGIN_NAME = layers
 
 EXTRA_FILES = \
+			  driver.py \
+			  group.py \
 			  image.py \
+			  preComp.py \
+			  rotate_layer.py \
+			  scale_layer.py \
               shape.py \
-			  solid.py
+			  solid.py \
+			  shape_solid.py \
+			  translate_layer.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \

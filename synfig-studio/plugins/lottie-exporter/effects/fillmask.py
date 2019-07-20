@@ -4,7 +4,7 @@ This module will store all the functions required for fill mask property of lott
 
 import sys
 import settings
-from misc import Count
+from common.Count import Count
 from properties.value import gen_properties_value
 sys.path.append("../")
 

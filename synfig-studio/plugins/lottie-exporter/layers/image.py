@@ -8,11 +8,12 @@ import copy
 from lxml import etree
 import settings
 from helpers.transform import gen_helpers_transform
-from misc import Count, is_animated, get_frame
 from helpers.blendMode import get_blend
+from common.misc import set_layer_desc, is_animated, get_frame
 from sources.image import add_image_asset
 from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame, to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
+import synfig.group as group
 sys.path.append("..")
 
 
@@ -28,11 +29,12 @@ def gen_layer_image(lottie, layer, idx):
     Returns:
         (None)
     """
-    index = Count()
+    group.update_layer(layer)
+
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_IMAGE_TYPE
-    lottie["nm"] = settings.LAYER_IMAGE_NAME + str(idx)
+    set_layer_desc(layer, settings.LAYER_IMAGE_NAME + str(idx), lottie)
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 
@@ -50,15 +52,22 @@ def gen_layer_image(lottie, layer, idx):
     pos2_animate = is_animated(st["br"][0])
     # If pos1 is not animated
     if pos1_animate in {0, 1}:
-        st["tl"] = gen_dummy_waypoint(st["tl"], pos1_animate, "vector")
+        st["tl"] = gen_dummy_waypoint(st["tl"], "param", "vector")
     # If pos2 is not animated
     if pos2_animate in {0, 1}:
-        st["br"] = gen_dummy_waypoint(st["br"], pos2_animate, "vector")
+        st["br"] = gen_dummy_waypoint(st["br"], "param", "vector")
 
     st["scale"] = gen_image_scale(st["tl"][0], st["br"][0], asset["w"], asset["h"])
-    anchor = [0, 0, 0]
 
-    gen_helpers_transform(lottie["ks"], layer, st["tl"][0], anchor, st["scale"][0])
+    anchor = settings.DEFAULT_ANCHOR
+    rotation = settings.DEFAULT_ROTATION
+
+    # Setting opacity in transform
+    for chld in layer:
+        if chld.tag == "param" and chld.attrib["name"] == "amount":
+            opacity = chld
+
+    gen_helpers_transform(lottie["ks"], layer, st["tl"][0], anchor, st["scale"][0], rotation, opacity[0])
 
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
@@ -67,7 +76,6 @@ def gen_layer_image(lottie, layer, idx):
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
     get_blend(lottie, layer)
-    lottie["markers"] = []      # Markers to be filled yet
 
 
 def gen_image_scale(animated_1, animated_2, width, height):
@@ -86,8 +94,7 @@ def gen_image_scale(animated_1, animated_2, width, height):
     """
     st = '<param name="image_scale"><real value="0.0000000000"/></param>'
     root = etree.fromstring(st)
-    is_animate = is_animated(root)
-    root = gen_dummy_waypoint(root, is_animate, "image_scale")
+    root = gen_dummy_waypoint(root, "param", "image_scale")
 
     anim1_path, anim2_path = {}, {}
     gen_properties_multi_dimensional_keyframed(anim1_path, animated_1, 0)

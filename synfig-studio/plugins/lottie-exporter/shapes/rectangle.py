@@ -7,11 +7,13 @@ import sys
 import copy
 from lxml import etree
 import settings
+from common.Count import Count
+from common.Vector import Vector
+from common.misc import is_animated, get_frame, get_vector, set_vector
 from properties.value import gen_properties_value
-from misc import Count, is_animated, Vector, get_frame, get_vector, set_vector
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from helpers.bezier import get_bezier_val
+from synfig.animation import gen_dummy_waypoint, insert_waypoint_at_frame, print_animation, to_Synfig_axis, get_vector_at_frame, get_animated_time_list, copy_tcb_average, copy_tcb
 sys.path.append("..")
 
 
@@ -65,6 +67,8 @@ def gen_shapes_rectangle(lottie, layer, idx):
     lottie["ix"] = idx      # setting the index
     lottie["r"] = {}        # Rounded corners of rectangle
     points = {}
+    bevel_found = False
+    expand_found = False    # For filled rectangle layers
 
     for child in layer:
         if child.tag == "param":
@@ -75,10 +79,11 @@ def gen_shapes_rectangle(lottie, layer, idx):
                 points["2"] = child # Store address of child here
 
             elif child.attrib["name"] == "expand":
-                expand_animate = is_animated(child[0])
+                expand_found = True
                 param_expand = child
 
             elif child.attrib["name"] == "bevel":
+                bevel_found = True
                 is_animate = is_animated(child[0])
                 if is_animate == 2:
                     gen_value_Keyframed(lottie["r"], child[0], index.inc())
@@ -90,59 +95,40 @@ def gen_shapes_rectangle(lottie, layer, idx):
                                          index.inc(),
                                          settings.DEFAULT_ANIMATED,
                                          settings.NO_INFO)
-    p1_animate = is_animated(points["1"][0])
-    p2_animate = is_animated(points["2"][0])
+    if not bevel_found:     # For rectangle layer in stable version 1.2.2
+        bevel = 0
+        gen_properties_value(lottie["r"], bevel, index.inc(),
+                             settings.DEFAULT_ANIMATED, settings.NO_INFO)
+
+    if not expand_found:    # Means filled rectangle layer, gen expand param
+        st = "<param name='expand'><real value='0.0'/></param>"
+        param_expand = etree.fromstring(st)
 
     # If expand parameter is not animated
-    if expand_animate in {0, 1}:
-        param_expand = gen_dummy_waypoint(param_expand, expand_animate, "real")
+    param_expand = gen_dummy_waypoint(param_expand, "param", "real")
 
-    # p1 not animated and p2 not animated
-    if p1_animate in {0, 1} and p2_animate in {0, 1}:
-        points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
-        points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
+    # expand parameter needs to be positive: required by Synfig
+    make_positive_valued(param_expand)
 
-    # p1 is animated and p2 is not animated
-    elif p1_animate == 2 and p2_animate in {0, 1}:
-        points["2"] = gen_dummy_waypoint(points["2"], p2_animate, "vector")
+    # If p1 not animated
+    points["1"] = gen_dummy_waypoint(points["1"], "param", "vector")
 
-    # p1 is not animated and p2 is animated
-    elif p1_animate in {0, 1} and p2_animate == 2:
-        points["1"] = gen_dummy_waypoint(points["1"], p1_animate, "vector")
+    # If p2 not animated
+    points["2"] = gen_dummy_waypoint(points["2"], "param", "vector")
 
     both_points_animated(points["1"], points["2"], param_expand, lottie, index)
 
 
-def gen_dummy_waypoint(non_animated, is_animate, anim_type):
+def make_positive_valued(param):
     """
-    Makes a non animated parameter to animated parameter by creating a new dummy
-    waypoint with constant animation
-
-    Args:
-        non_animated (lxml.etree._Element): Holds the non-animated parameter in Synfig xml format
-        is_animate   (int)                : Decides if a waypoint is animated
-        anim_type    (str)                : Decides the animation type
-
-    Returns:
-        (lxml.etree._Element) : Updated non-animated parameter, which is now animated
+    User might mistakenly provide negative values to expand parameter; This is
+    taken care of in this function
     """
-    if is_animate == 0:
-        st = '<param name="anything"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></param>'
-        st = st.format(anim_type=anim_type)
-        root = etree.fromstring(st)
-        root[0][0].append(copy.deepcopy(non_animated[0]))
-        non_animated = root
-    elif is_animate == 1:
-        non_animated[0][0].attrib["before"] = non_animated[0][0].attrib["after"] = "constant"
-
-    new_waypoint = copy.deepcopy(non_animated[0][0])
-    frame = get_frame(non_animated[0][0])
-    frame += 1
-    time = frame / settings.lottie_format["fr"]
-    time = str(time) + "s"
-    new_waypoint.attrib["time"] = time
-    non_animated[0].insert(1, new_waypoint)
-    return non_animated
+    animated = param[0]
+    for waypoint in animated:
+        val = float(waypoint[0].attrib["value"])
+        val = abs(val)
+        waypoint[0].attrib["value"] = str(val)
 
 
 def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
@@ -182,8 +168,9 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
     ### SECTION TRY ###
     # Every frames value is precomputed in order to achieve maximum similarity
     # to that of Synfig
+    st_fr = min(get_frame(animated_1[0]), get_frame(animated_2[0]))
     en_fr = max(get_frame(animated_1[-1]), get_frame(animated_2[-1]))
-    fra = 1
+    fra = st_fr
     while fra <= en_fr:
         insert_waypoint_at_frame(animated_1, orig_path_1, fra, "vector")
         insert_waypoint_at_frame(animated_2, orig_path_2, fra, "vector")
@@ -214,19 +201,19 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
 
         pos1, pos2 = get_vector(waypoint1), get_vector(waypoint2)
         # Comparing the x-coordinates
-        if pos1.val1 > pos2.val1:
-            pos1.val1 += expand_amount
-            pos2.val1 -= expand_amount
+        if pos1[0] > pos2[0]:
+            pos1[0] += expand_amount
+            pos2[0] -= expand_amount
         else:
-            pos1.val1 -= expand_amount
-            pos2.val1 += expand_amount
+            pos1[0] -= expand_amount
+            pos2[0] += expand_amount
         # Comparing the y-coordinates
-        if pos1.val2 > pos2.val2:
-            pos1.val2 += expand_amount
-            pos2.val2 -= expand_amount
+        if pos1[1] > pos2[1]:
+            pos1[1] += expand_amount
+            pos2[1] -= expand_amount
         else:
-            pos1.val2 -= expand_amount
-            pos2.val2 += expand_amount
+            pos1[1] -= expand_amount
+            pos2[1] += expand_amount
         set_vector(waypoint1, pos1)
         set_vector(waypoint2, pos2)
     ##################### END OF SECTION 3 #######################
@@ -298,56 +285,6 @@ def both_points_animated(animated_1, animated_2, param_expand, lottie, index):
     ########################## END OF SECTION 6 ###########################
 
 
-def insert_waypoint_at_frame(animated, orig_path, frame, animated_name):
-    """
-    This function will only insert a waypoint at 'frame' if no waypoint is
-    present at that 'frame' already
-
-    Args:
-        animated      (lxml.etree._Element): Holds the animation in Synfig xml format
-        orig_path     (dict)               : Holds the animation in Lottie format
-        frame         (int)                : The frame at which the waypoint is to be inserted
-        animated_name (str)                : The name/type of animation
-
-    Returns:
-        (None)
-    """
-    i = 0
-    while i < len(animated):
-        at_frame = get_frame(animated[i])
-        if frame == at_frame:
-            return
-        elif frame < at_frame:
-            break
-        i += 1
-    pos = get_vector_at_frame(orig_path, frame)
-    pos = to_Synfig_axis(pos, animated_name)
-
-    if i == len(animated):
-        new_waypoint = copy.deepcopy(animated[i-1])
-    else:
-        new_waypoint = copy.deepcopy(animated[i])
-    if animated_name == "vector":
-        new_waypoint[0][0].text = str(pos[0])
-        new_waypoint[0][1].text = str(pos[1])
-    else:
-        new_waypoint[0].attrib["value"] = str(pos)
-
-    new_waypoint.attrib["time"] = str(frame/settings.lottie_format["fr"]) + "s"
-    if i == 0 or i == len(animated):
-        # No need of tcb value copy as halt interpolation need to be copied here
-        new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "constant"
-    else:
-        copy_tcb_average(new_waypoint, animated[i], animated[i-1])
-        new_waypoint.attrib["before"] = animated[i-1].attrib["after"]
-        new_waypoint.attrib["after"] = animated[i].attrib["before"]
-        # If the interval was constant before, then the whole interval should
-        # remain constant now also
-        if new_waypoint.attrib["before"] == "constant" or new_waypoint.attrib["after"] == "constant":
-            new_waypoint.attrib["before"] = new_waypoint.attrib["after"] = "constant"
-    animated.insert(i, new_waypoint)
-
-
 def get_cross_list(animation_1, animation_2, orig_path_1, orig_path_2):
     """
     This function will return a list('set' technically) at which the point1 and point2 of rectangle
@@ -390,27 +327,6 @@ def get_cross_list(animation_1, animation_2, orig_path_1, orig_path_2):
         prev_1, prev_2 = now_1, now_2
         frame += 1
     return ret_list
-
-
-def print_animation(b):
-    """
-    Given any animation, b, It prints the animation in pretty way.
-    Helpful in debugging
-
-    Args:
-        b (lxml.etree._Element): Holds the animation to be printed
-
-    Returns:
-        (None)
-    """
-    a = copy.deepcopy(b)
-    """
-    for i in range(len(a)):
-        a[i].attrib["frames"] = str(get_frame(a[i]))
-        a[i][0][0].text = str(float(a[i][0][0].text) * settings.PIX_PER_UNIT)
-        a[i][0][1].text = str(float(a[i][0][1].text) * settings.PIX_PER_UNIT)
-        """
-    print(etree.tostring(a, method='xml', encoding='utf8', pretty_print=True).decode())
 
 
 def calc_pos_and_size(size_animated, pos_animated, animated_1, animated_2, orig_path, i, i1):
@@ -468,155 +384,6 @@ def calc_pos_and_size(size_animated, pos_animated, animated_1, animated_2, orig_
     return i, i1
 
 
-def to_Synfig_axis(pos, animated_name):
-    """
-    Converts a Lottie format vector or values into Synfig format vector or
-    values
-
-    Args:
-        pos             (float | list) : Stores the position/value to be converted to the Synfig format
-        animated_name   (str)          : Distinguishes between position and value
-
-    Returns:
-        (float) If pos is of type float
-        (list)  Else
-    """
-    if animated_name == "vector":
-        pos[0], pos[1] = pos[0] - settings.lottie_format["w"]/2, pos[1] - settings.lottie_format["h"]/2
-        pos[1] = -pos[1]
-        ret = [x/settings.PIX_PER_UNIT for x in pos]
-    elif animated_name == "real":
-        ret = pos / settings.PIX_PER_UNIT
-    return ret
-
-
-def get_first_control_point(interval):
-    """
-    Returns the first control point of a bezier interval
-
-    Args:
-        interval (dict) : Holds one interval of the bezier curve that is two waypoints
-
-    Returns:
-        (misc.Vector) If the interval holds position bezier
-        (float)       Else : the interval holds value bezier
-    """
-    if len(interval["s"]) >= 2:
-        st = Vector(interval["s"][0], interval["s"][1])
-    else:
-        st = interval["s"][0]
-    return st
-
-
-def get_last_control_point(interval):
-    """
-    Returns the last control point of a bezier interval
-
-    Args:
-        interval (dict) : Holds one interval of the bezier curve that is two waypoints
-
-    Returns:
-        (misc.Vector) If the interval holds position bezier
-        (float)       Else : the interval holds value bezier
-    """
-    if len(interval["e"]) >= 2:
-        en = Vector(interval["e"][0], interval["e"][1])
-    else:
-        en = interval["e"][0]
-    return en
-
-
-def get_control_points(interval):
-    """
-    Returns all 4 control points of a bezier interval
-
-    Args:
-        interval (dict) : Holds one interval of the bezier curve that is two waypoints
-
-    Returns:
-        (misc.Vector, misc.Vector, misc.Vector, misc.Vector) If the interval holds position bezier
-        (float, float, float, float)       Else : the interval holds value bezier
-    """
-    # If the interval is for position or vector
-    if "to" in interval.keys():
-        st = Vector(interval["s"][0], interval["s"][1])
-        en = Vector(interval["e"][0], interval["e"][1])
-        to = Vector(interval["synfig_to"][0], interval["synfig_to"][1])
-        ti = Vector(interval["synfig_ti"][0], interval["synfig_ti"][1])
-
-    # If the interval is for real values
-    else:
-        st = interval["s"][0]
-        en = interval["e"][0]
-        to = interval["synfig_o"][0]
-        ti = interval["synfig_i"][0]
-    return st, to, ti, en
-
-
-def get_vector_at_frame(path, t):
-    """
-    Given 'path' in lottie format and t(in frames), this function returns the
-    vector or real value at frame t depending on the type of path supplied to it
-
-    Args:
-        path (dict): Contains the bezier curve in Lottie JSON format
-        t    (int) : Contains the frame at which the vector/value is requested
-
-    Returns:
-        (list)  If a positional bezier is queried
-        (float) If a value bezier is queried
-    """
-    keyfr = path["k"]
-    # Find the interval in which it lies
-    i = 0
-    while i < len(keyfr):
-        t_key = keyfr[i]["t"]
-        if t < t_key:
-            break
-        i += 1
-    i -= 1
-    if i < 0:
-        pos = get_first_control_point(keyfr[0])
-    if i < len(keyfr) - 1:
-        # If hold interpolation
-        if 'h' in keyfr[i].keys():
-            pos = get_first_control_point(keyfr[i])
-        else:
-            st, to, ti, en = get_control_points(keyfr[i])
-            this_fr = keyfr[i]["t"]
-            next_fr = keyfr[i+1]["t"]
-            percent = (t - this_fr) / (next_fr - this_fr)
-            pos = get_bezier_val(st, st + to, en - ti, en, percent)
-    elif i >= len(keyfr) - 1:
-        pos = get_last_control_point(keyfr[-2])
-
-    if isinstance(pos, Vector):
-        return [pos.val1, pos.val2]
-    else:
-        return pos
-
-
-def get_animated_time_list(child, time_list):
-    """
-    Appends all the frames corresponding to the waypoints in the
-    animated(child[0]) list, in time_list
-
-    Args:
-        child     (lxml.etree._Element) : Parent Element of animation
-        time_list (set)                 : Will store all the frames at which waypoints are present
-
-    Returns:
-        (None)
-    """
-    animated = child[0]
-    is_animate = is_animated(animated)
-    if is_animate in {0, 1}:
-        return
-    for waypoint in animated:
-        frame = get_frame(waypoint)
-        time_list.add(frame)
-
-
 def get_difference(waypoint, way_1, way_2):
     """
     Returns the absolute difference of vector's of way_1 and way_2 in "waypoint"
@@ -652,64 +419,3 @@ def get_average(waypoint, way_1, way_2):
     """
     waypoint[0][0].text = str((float(way_1[0][0].text) + float(way_2[0][0].text)) / 2)
     waypoint[0][1].text = str((float(way_1[0][1].text) + float(way_2[0][1].text)) / 2)
-
-
-def copy_tcb_average(new_waypoint, waypoint, next_waypoint):
-    """
-    Copies the average of TCB values of waypoint and next_waypoint to
-    'new_waypoint'
-    This is just a way around to determine TCB values at in-between intervals,
-    where new waypoints are introduced. Technically we will first calculate the
-    tangents at those new waypoints and then calculate any random TCB values
-    from those tangents: IMPROVEMENT
-
-    Args:
-        new_waypoint  (lxml.etree._Element) : Waypoint at which the values will be averaged
-        waypoint      (lxml.etree._Element) : Waypoint contributing in average
-        next_waypoint (lxml.etree._Element) : Waypoint contributing in average
-
-    Returns:
-        (None)
-    """
-    tens, bias, cont = 0, 0, 0      # default values
-    tens1, bias1, cont1 = 0, 0, 0   # default values
-    if "tension" in waypoint.keys():
-        tens = float(waypoint.attrib["tension"])
-    if "continuity" in waypoint.keys():
-        cont = float(waypoint.attrib["continuity"])
-    if "bias" in waypoint.keys():
-        bias = float(waypoint.attrib["bias"])
-    if "tension" in next_waypoint.keys():
-        tens1 = float(next_waypoint.attrib["tension"])
-    if "continuity" in next_waypoint.keys():
-        cont1 = float(next_waypoint.attrib["continuity"])
-    if "bias" in next_waypoint.keys():
-        bias1 = float(next_waypoint.attrib["bias"])
-    f_tens, f_bias, f_cont = (tens + tens1) / 2, (bias + bias1) / 2, (cont + cont1) / 2
-    new_waypoint.attrib["tension"] = str(f_tens)
-    new_waypoint.attrib["continuity"] = str(f_cont)
-    new_waypoint.attrib["bias"] = str(f_bias)
-
-
-def copy_tcb(new_waypoint, waypoint):
-    """
-    Copies the tension, bias and continuity values from 'waypoint' to
-    'new_waypoint'
-
-    Args:
-        new_waypoint (lxml.etree._Element) : Waypoint at which the values will be copied
-        waypoint     (lxml.etree._Element) : Waypoint to be copied from
-
-    Returns:
-        (None)
-    """
-    tens, bias, cont = 0, 0, 0      # default values
-    if "tension" in waypoint.keys():
-        tens = float(waypoint.attrib["tension"])
-    if "continuity" in waypoint.keys():
-        cont = float(waypoint.attrib["continuity"])
-    if "bias" in waypoint.keys():
-        bias = float(waypoint.attrib["bias"])
-    new_waypoint.attrib["tension"] = str(tens)
-    new_waypoint.attrib["continuity"] = str(cont)
-    new_waypoint.attrib["bias"] = str(bias)

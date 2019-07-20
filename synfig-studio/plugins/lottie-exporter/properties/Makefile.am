@@ -5,6 +5,7 @@ PLUGIN_NAME = properties
 EXTRA_FILES = \
 			  multiDimensionalKeyframed.py \
 			  offsetKeyframe.py \
+			  shapeKeyframed.py \
 			  timeAdjust.py \
 			  valueKeyframed.py \
 			  valueKeyframe.py \
@@ -19,3 +20,5 @@ EXTRA_DIST = \
 
 MAINTAINERCLEANFILES = Makefile.in
 
+SUBDIRS = \
+		  shapePropKeyframe

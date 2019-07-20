@@ -2,7 +2,7 @@
 This module converts the canvas to lottie format
 """
 import settings
-from misc import calculate_pixels_per_unit
+from common.misc import calculate_pixels_per_unit
 
 
 def calc_time(root, lottie, which):
@@ -24,12 +24,22 @@ def calc_time(root, lottie, which):
     time = root.attrib[phase].split(" ")
     lottie[which] = 0
     for frame in time:
+        # Adding time in hours
+        if frame[-1] == "h":
+            lottie[which] += float(frame[:-1]) * 60 * 60 * lottie["fr"]
+        # Adding time in minutes
+        elif frame[-1] == "m":
+            lottie[which] += float(frame[:-1]) * 60 * lottie["fr"]
         # Adding time in seconds
-        if frame[-1] == "s":
+        elif frame[-1] == "s":
             lottie[which] += float(frame[:-1]) * lottie["fr"]
         # Adding time in frames
         elif frame[-1] == "f":
             lottie[which] += float(frame[:-1])
+
+    # To support canvas with single frames
+    if which == "op":
+        lottie[which] += 1
 
 
 def gen_canvas(lottie, root):
@@ -55,6 +65,9 @@ def gen_canvas(lottie, root):
     else:
         lottie["h"] = settings.DEFAULT_HEIGHT
 
+    settings.ADDITIONAL_PRECOMP_WIDTH = 3*lottie["w"]
+    settings.ADDITIONAL_PRECOMP_HEIGHT = 3*lottie["h"]
+
     name = settings.DEFAULT_NAME
     for child in root:
         if child.tag == "name":
@@ -65,6 +78,7 @@ def gen_canvas(lottie, root):
     lottie["v"] = settings.LOTTIE_VERSION
     lottie["fr"] = float(root.attrib["fps"])
     lottie["assets"] = []       # Creating array for storing assets
+    lottie["markers"] = []      # Creating array for storing markers
     calc_time(root, lottie, "ip")
     calc_time(root, lottie, "op")
     calculate_pixels_per_unit()

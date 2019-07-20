@@ -1,18 +1,17 @@
 # Id $
 
-PLUGIN_NAME = helpers
+PLUGIN_NAME = synfig
 
 EXTRA_FILES = \
-			  transform.py \
-			  bezier.py \
-			  blendMode.py \
-			  mask.py
+			  animation.py \
+			  group.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \
-				$(EXTRA_FILES)
+                $(EXTRA_FILES)
 
 EXTRA_DIST = \
-			 $(EXTRA_FILES)
+             $(EXTRA_FILES)
 
 MAINTAINERCLEANFILES = Makefile.in
+

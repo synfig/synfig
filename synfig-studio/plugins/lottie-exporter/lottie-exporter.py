@@ -4,18 +4,18 @@ Python plugin to convert the .sif format into lottie json format
 input   : FILE_NAME.sif
 output  : FILE_NAME.json
         : FILE_NAME.html
+        : FILE_NAME.log
 
 Supported Layers are mentioned below
 """
 import os
 import json
 import sys
+import logging
 from lxml import etree
 from canvas import gen_canvas
-from layers.shape import gen_layer_shape
-from layers.solid import gen_layer_solid
-from layers.image import gen_layer_image
-from misc import Count
+from layers.driver import gen_layers
+from common.misc import modify_final_dump
 import settings
 
 
@@ -59,34 +59,13 @@ def parse(file_name):
     # Storing the file directory
     settings.file_name["fd"] = os.path.dirname(file_name)
 
-    num_layers = Count()
-    settings.lottie_format["layers"] = []
-    shape_layer = {"star", "circle", "rectangle", "simple_circle"}
-    solid_layer = {"SolidColor"}
-    image_layer = {"import"}
-    supported_layers = shape_layer.union(solid_layer)
-    supported_layers = supported_layers.union(image_layer)
-    for child in root:
-        if child.tag == "layer":
-            if child.attrib["active"] == "false":   # Only render the active layers
-                continue
-            if child.attrib["type"] not in supported_layers:  # Only supported layers
-                continue
-            settings.lottie_format["layers"].insert(0, {})
-            if child.attrib["type"] in shape_layer:           # Goto shape layer
-                gen_layer_shape(settings.lottie_format["layers"][0],
-                                child,
-                                num_layers.inc())
-            elif child.attrib["type"] in solid_layer:         # Goto solid layer
-                gen_layer_solid(settings.lottie_format["layers"][0],
-                                child,
-                                num_layers.inc())
-            elif child.attrib["type"] in image_layer:
-                gen_layer_image(settings.lottie_format["layers"][0],
-                                child,
-                                num_layers.inc())
+    # Initialize the logging
+    init_logs()
 
-    lottie_string = json.dumps(settings.lottie_format)
+    settings.lottie_format["layers"] = []
+    gen_layers(settings.lottie_format["layers"], root, len(root) - 1)
+
+    lottie_string = json.dumps(modify_final_dump(settings.lottie_format))
     return write_to(file_name, "json", lottie_string)
 
 
@@ -101,34 +80,77 @@ def gen_html(file_name):
     Returns:
         (None)
     """
+    bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "bodymovin.js")
 
-    # Take only the file name, to take relative file path
-    store_file_name = os.path.basename(file_name)
+    with open(bodymovin_path, "r") as f:
+        bodymovin_script = f.read()
 
     html_text = \
-"""<!DOCTYPE html>
-<html style="width: 100%;height: 100%">
+"""<html xmlns="http://www.w3.org/1999/xhtml">
+<meta charset="UTF-8">
 <head>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.5.3/lottie.js"></script>
+    <style>
+        body{{
+            background-color:#fff;
+            margin: 0px;
+            height: 100%;
+            overflow: hidden;
+        }}
+        #lottie{{
+            background-color:#fff;
+            width:100%;
+            height:100%;
+            display:block;
+            overflow: hidden;
+            transform: translate3d(0,0,0);
+            text-align: center;
+            opacity: 1;
+        }}
+
+    </style>
 </head>
-<body style="background-color:#ccc; margin: 0px;height: 100%; font-family: sans-serif;font-size: 10px">
+<body>
 
-<div style="width:100%;height:100%;background-color:#333;" id="bodymovin"></div>
+{bodymovin_script}
 
+<div id="lottie"></div>
 <script>
-    var animData = {{
-        container: document.getElementById('bodymovin'),
+    var animationData = {file_name_data};
+    var params = {{
+        container: document.getElementById('lottie'),
         renderer: 'svg',
         loop: true,
         autoplay: true,
-        path:'{file_name}'
+        animationData: animationData
     }};
-    var anim = bodymovin.loadAnimation(animData);
+
+    var anim;
+
+    anim = lottie.loadAnimation(params);
+
 </script>
 </body>
-</html>"""
+</html>
+"""
 
-    write_to(file_name, "html", html_text.format(file_name=store_file_name))
+    write_to(file_name, "html", html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(modify_final_dump(settings.lottie_format))))
+
+
+def init_logs():
+    """
+    Initializes the logger, sets the file name in which the logs will be stored
+    and sets the level of the logging(DEBUG | INFO : depending on what is
+    specified)
+    """
+    name = settings.file_name['fn']
+    name = name.split(".")
+    name[-1] = 'log'
+    name = '.'.join(name)
+    path = os.path.join(settings.file_name['fd'], name)
+    path = os.path.abspath(name)
+    logging.basicConfig(filename=path, filemode='w',
+                        format='%(name)s - %(levelname)s - %(message)s')
+    logging.getLogger().setLevel(logging.DEBUG)
 
 
 if len(sys.argv) < 2:

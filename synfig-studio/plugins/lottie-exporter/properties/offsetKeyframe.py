@@ -6,7 +6,8 @@ keyframe in lottie
 import sys
 import copy
 import settings
-from misc import parse_position, change_axis, Vector
+from common.misc import get_frame, parse_position, change_axis
+from common.Vector import Vector
 sys.path.append("..")
 
 
@@ -44,9 +45,9 @@ def clamped_tangent(p1, p2, p3, animated, i):
     """
     # pw -> prev_waypoint, w -> waypoint, nw -> next_waypoint
     pw, w, nw = animated[i-1], animated[i], animated[i+1]
-    t1 = float(pw.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    t2 = float(w.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    t3 = float(nw.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    t1 = get_frame(pw)
+    t2 = get_frame(w)
+    t3 = get_frame(nw)
     bias = 0.0
     tangent = 0.0
     pm = p1 + (p3 - p1)*(t2 - t1)/(t3 - t1)
@@ -93,8 +94,8 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     Returns:
         (misc.Vector) : Clamped Vector is returned
     """
-    x_tan = clamped_tangent(p1.val1, p2.val1, p3.val1, animated, i)
-    y_tan = clamped_tangent(p1.val2, p2.val2, p3.val2, animated, i)
+    x_tan = clamped_tangent(p1[0], p2[0], p3[0], animated, i)
+    y_tan = clamped_tangent(p1[1], p2[1], p3[1], animated, i)
 
     if isclose(x_tan, 0.0) or isclose(y_tan, 0.0):
         if ease == "in":
@@ -166,7 +167,8 @@ def calc_tangent(animated, lottie, i):
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
 
-    if animated.attrib["type"] == "angle":
+    if animated.attrib["type"] in {"angle", "star_angle_new", "region_angle"}:
+    #if animated.attrib["type"] in {"angle"}:
         if cur_get_after == "auto":
             cur_get_after = "linear"
         if cur_get_before == "auto":
@@ -291,8 +293,8 @@ def calc_tangent(animated, lottie, i):
         # have reverse effect. The value should instantly decrease and remain
         # same for the rest of the interval
         if animated.attrib["type"] == "points":
-            if i > 0 and prev_pos.val1 > cur_pos.val1:
-                t_now = float(animated[i-1].attrib["time"][:-1]) * settings.lottie_format["fr"] + 1
+            if i > 0 and prev_pos[0] > cur_pos[0]:
+                t_now = get_frame(animated[i-1]) + 1
                 lottie["t"] = t_now
         return
 
@@ -361,11 +363,13 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
         ease_out(lottie)
     if next_get_before == "halt": # For ease in
         ease_in(lottie)
-    lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
-    #lottie["s"] = [cur_pos.val1, cur_pos.val2]
-    #lottie["e"] = [next_pos.val1, next_pos.val2]
-    lottie["s"] = change_axis(cur_pos.val1, cur_pos.val2)
-    lottie["e"] = change_axis(next_pos.val1, next_pos.val2)
+    lottie["t"] = get_frame(waypoint)
+
+    is_transform_axis = False
+    if "transform_axis" in animated.keys():
+        is_transform_axis = True
+    lottie["s"] = change_axis(cur_pos[0], cur_pos[1], is_transform_axis)
+    lottie["e"] = change_axis(next_pos[0], next_pos[1], is_transform_axis)
     lottie["to"] = []
     lottie["ti"] = []
 
