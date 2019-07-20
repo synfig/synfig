@@ -67,6 +67,8 @@ class Widget_Vector : public Gtk::HBox
 
 	synfig::Canvas::LooseHandle canvas_;
 
+	void init();
+
 public:
 
 	void activate() { signal_activate_(); }
@@ -87,11 +89,20 @@ public:
 	const synfig::Vector &get_value();
 	void set_has_frame(bool x);
 	void set_digits(int x);
+
 	Widget_Vector();
 	~Widget_Vector();
 
 protected:
 	void show_all_vfunc();
+
+// Glade & GtkBuilder related
+public:
+	Widget_Vector(BaseObjectType* cobject);
+	static Glib::ObjectBase* wrap_new(GObject* o);
+	static void register_type();
+private:
+	static GType gtype;
 }; // END of class Widget_Vector
 
 }; // END of namespace studio

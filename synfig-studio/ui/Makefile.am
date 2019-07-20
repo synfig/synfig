@@ -2,6 +2,6 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-UIFILES     = 
+UIFILES     = canvas_options.ui
 
-ui_DATA = $(UIFILES)
+dist_ui_DATA = $(UIFILES)

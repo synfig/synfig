@@ -395,7 +395,7 @@ private:
 public:
 
 	CanvasProperties canvas_properties;
-	CanvasOptions canvas_options;
+	CanvasOptions *canvas_options;
 	RenderSettings render_settings;
 	Dialog_Waypoint waypoint_dialog;
 	Dialog_Keyframe keyframe_dialog;
