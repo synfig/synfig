@@ -89,3 +89,5 @@ def init():
     num_precomp = Count()
     global OUTLINE_GROW     # outline grow param of group layer
     OUTLINE_GROW = [0]
+    global layer_count
+    layer_count = Count()

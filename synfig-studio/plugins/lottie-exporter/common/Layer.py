@@ -18,6 +18,7 @@ class Layer:
         self.layer = layer
         self.params = {}
         self.extract_params(self.params)
+        self.set_description()
 
     def get_layer(self):
         """
@@ -72,3 +73,30 @@ class Layer:
         if key in self.layer.keys() and self.layer.attrib[key] == "true":
             return False
         return True
+
+    def set_description(self):
+        """
+        Sets the layer description if given, otherwise the default description
+        is set
+        """
+        if "desc" in self.layer.keys():
+            self.description = self.layer.attrib["desc"]
+        else:
+            # Set the default name
+            if self.get_type() in settings.SHAPE_LAYER:
+                desc = settings.LAYER_SHAPE_NAME
+            elif self.get_type() in set.union(settings.SOLID_LAYER, settings.SHAPE_SOLID_LAYER):
+                desc = settings.LAYER_SOLID_NAME
+            elif self.get_type() in settings.IMAGE_LAYER:
+                desc = settings.LAYER_IMAGE_NAME
+            elif self.get_type() in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER):
+                desc = settings.LAYER_PRECOMP_NAME
+
+            desc += str(settings.layer_count.inc())
+            self.description = desc
+
+    def get_description(self):
+        """
+        Getter for description of the layer
+        """
+        return self.description

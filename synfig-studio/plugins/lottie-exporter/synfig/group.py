@@ -8,6 +8,7 @@ import sys
 import settings
 from common.misc import is_animated
 from common.Vector import Vector
+from common.Layer import Layer
 from synfig.animation import print_animation
 sys.path.append("..")
 
@@ -34,7 +35,7 @@ def update_layer(node):
     another composition of Lottie
 
     Args:
-        node (lxml.etree._Element) : Can be a layer or parameter of a layer
+        node (misc.Layer | lxml.etree._Element) : Can be a layer or parameter of a layer
 
     Returns:
         (None)
@@ -44,11 +45,12 @@ def update_layer(node):
         return
 
     update_dict = []
-    if node.tag == "layer":
+    if isinstance(node, Layer):
         compare = {"center", "origin", "point1", "point2", "tl", "br"}
-        for child in node:
-            if child.tag == "param" and child.attrib["name"] in compare:
-                update_dict.append(child)
+        for param in compare:
+            get = node.get_param(param)
+            if get is not None:
+                update_dict.append(get)
     else:
         update_dict.append(node)
 

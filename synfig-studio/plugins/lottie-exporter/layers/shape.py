@@ -4,7 +4,6 @@ Will store all the functions corresponding to shapes in lottie
 
 import sys
 import settings
-from common.misc import set_layer_desc
 from common.Count import Count
 from common.Layer import Layer
 from shapes.star import gen_shapes_star
@@ -29,13 +28,13 @@ def gen_layer_shape(lottie, layer, idx):
     Returns:
         (None)
     """
-    group.update_layer(layer.get_layer())
+    group.update_layer(layer)
 
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_SHAPE_TYPE
-    set_layer_desc(layer.get_layer(), settings.LAYER_SHAPE_NAME + str(idx), lottie)
+    lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 
@@ -52,7 +51,7 @@ def gen_layer_shape(lottie, layer, idx):
         gen_shapes_rectangle(lottie["shapes"][0], layer.get_layer(), index.inc())
 
     lottie["shapes"].append({})  # For the fill or color
-    gen_shapes_fill(lottie["shapes"][1], layer.get_layer())
+    gen_shapes_fill(lottie["shapes"][1], layer)
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]

@@ -8,7 +8,7 @@ import settings
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
 from helpers.mask import gen_mask
-from common.misc import set_layer_desc, get_color_hex, is_animated
+from common.misc import get_color_hex, is_animated
 from common.Count import Count
 from common.Layer import Layer
 from effects.fill import gen_effects_fill
@@ -16,7 +16,7 @@ from synfig.group import update_layer, get_additional_width, get_additional_heig
 sys.path.append("..")
 
 
-def gen_layer_shape_solid(lottie, cl_layer, idx):
+def gen_layer_shape_solid(lottie, layer, idx):
     """
     Generates the dictionary corresponding to layers/shapes.json
 
@@ -28,14 +28,14 @@ def gen_layer_shape_solid(lottie, cl_layer, idx):
     Returns:
         (None)
     """
-    update_layer(cl_layer.get_layer())
+    update_layer(layer)
 
     # Setting the solid layer which will be masked
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_SOLID_TYPE
-    set_layer_desc(cl_layer.get_layer(), settings.LAYER_SOLID_NAME + str(idx), lottie)
+    lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
     lottie["ef"] = []   # Stores the effects
@@ -43,19 +43,19 @@ def gen_layer_shape_solid(lottie, cl_layer, idx):
     pos = [settings.lottie_format["w"]/2 + get_additional_width()/2,
            settings.lottie_format["h"]/2 + get_additional_height()/2]
     anchor = pos
-    gen_helpers_transform(lottie["ks"], cl_layer.get_layer(), pos, anchor)
+    gen_helpers_transform(lottie["ks"], layer.get_layer(), pos, anchor)
 
     lottie["ef"].append({})
-    gen_effects_fill(lottie["ef"][-1], cl_layer.get_layer(), index.inc())
+    gen_effects_fill(lottie["ef"][-1], layer.get_layer(), index.inc())
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["sw"] = settings.lottie_format["w"] + get_additional_width() # Solid Width
     lottie["sh"] = settings.lottie_format["h"] + get_additional_height() # Solid Height
 
-    lottie["sc"] = get_color_hex(cl_layer.get_param("color")[0])
+    lottie["sc"] = get_color_hex(layer.get_param("color")[0])
 
     invert = False
-    Inv = cl_layer.get_param("invert")
+    Inv = layer.get_param("invert")
     if Inv is not None:
         is_animate = is_animated(Inv[0])
         if is_animate == 0:
@@ -71,7 +71,7 @@ def gen_layer_shape_solid(lottie, cl_layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, cl_layer.get_layer())
+    get_blend(lottie, layer.get_layer())
 
     hasMask = True
 
@@ -79,9 +79,9 @@ def gen_layer_shape_solid(lottie, cl_layer, idx):
     lottie["masksProperties"] = []
     lottie["masksProperties"].append({})
 
-    if cl_layer.get_type() in {"star", "circle", "rectangle", "filled_rectangle"}:
-        bline_point = cl_layer.get_layer()
+    if layer.get_type() in {"star", "circle", "rectangle", "filled_rectangle"}:
+        bline_point = layer.get_layer()
     else:
-        bline_point = cl_layer.get_param("bline", "vector_list")[0]
+        bline_point = layer.get_param("bline", "vector_list")[0]
 
     gen_mask(lottie["masksProperties"][0], invert, bline_point, index.inc())

@@ -4,7 +4,7 @@ Will store all the functions corresponding to solids in lottie
 
 import sys
 import settings
-from common.misc import set_layer_desc, get_color_hex
+from common.misc import get_color_hex
 from common.Count import Count
 from common.Layer import Layer
 from helpers.blendMode import get_blend
@@ -14,7 +14,7 @@ from synfig.group import get_additional_width, get_additional_height
 sys.path.append("..")
 
 
-def gen_layer_solid(lottie, cl_layer, idx):
+def gen_layer_solid(lottie, layer, idx):
     """
     Generates the dictionary corresponding to layers/solid.json
 
@@ -30,7 +30,7 @@ def gen_layer_solid(lottie, cl_layer, idx):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_SOLID_TYPE
-    set_layer_desc(cl_layer.get_layer(), settings.LAYER_SOLID_NAME + str(idx), lottie)
+    lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
     lottie["ef"] = []   # Stores the effects
@@ -39,18 +39,18 @@ def gen_layer_solid(lottie, cl_layer, idx):
            settings.lottie_format["h"]/2 + get_additional_height()/2]
 
     anchor = pos
-    gen_helpers_transform(lottie["ks"], cl_layer.get_layer(), pos, anchor)
+    gen_helpers_transform(lottie["ks"], layer.get_layer(), pos, anchor)
 
     lottie["ef"].append({})
-    gen_effects_fill(lottie["ef"][-1], cl_layer.get_layer(), index.inc())
+    gen_effects_fill(lottie["ef"][-1], layer.get_layer(), index.inc())
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["sw"] = settings.lottie_format["w"] + get_additional_width() # Solid Width
     lottie["sh"] = settings.lottie_format["h"] + get_additional_height() # Solid Height
 
-    lottie["sc"] = get_color_hex(cl_layer.get_param("color")[0])
+    lottie["sc"] = get_color_hex(layer.get_param("color")[0])
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, cl_layer.get_layer())
+    get_blend(lottie, layer.get_layer())

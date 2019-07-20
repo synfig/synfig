@@ -8,7 +8,7 @@ import math
 import settings
 from common.Layer import Layer
 from common.Count import Count
-from common.misc import get_frame, approximate_equal, get_time, set_layer_desc
+from common.misc import get_frame, approximate_equal, get_time
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
@@ -38,7 +38,7 @@ def gen_layer_group(lottie, layer, idx):
     lottie["ty"] = settings.LAYER_PRECOMP_TYPE
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
-    set_layer_desc(layer.get_layer(), settings.LAYER_PRECOMP_NAME + str(idx), lottie)
+    lottie["nm"] = layer.get_description()
     index = Count()
 
     # Extract parameters

@@ -380,23 +380,6 @@ def set_vector(waypoint, pos):
     waypoint[0][1].text = str(pos.val2)
 
 
-def set_layer_desc(layer, default, lottie):
-    """
-    Sets layer description if provided, else defaults to the given value
-
-    Args:
-        layer (lxml.etree._Element) : Synfig format layer
-        default (str)               : default name of the layer
-        lottie  (dict)              : Lottie format layer
-
-    Returns:
-        (None)
-    """
-    lottie["nm"] = default
-    if "desc" in layer.keys():
-        lottie["nm"] = layer.attrib["desc"]
-
-
 def modify_final_dump(obj):
     """
     This function will remove unwanted keys from the final dictionary and also

@@ -9,7 +9,7 @@ from lxml import etree
 import settings
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from common.misc import set_layer_desc, is_animated, get_frame
+from common.misc import is_animated, get_frame
 from common.Layer import Layer
 from sources.image import add_image_asset
 from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame, to_Synfig_axis
@@ -18,7 +18,7 @@ import synfig.group as group
 sys.path.append("..")
 
 
-def gen_layer_image(lottie, cl_layer, idx):
+def gen_layer_image(lottie, layer, idx):
     """
     Generates the dictionary corresponding to layers/image.json
 
@@ -30,17 +30,17 @@ def gen_layer_image(lottie, cl_layer, idx):
     Returns:
         (None)
     """
-    group.update_layer(cl_layer.get_layer())
+    group.update_layer(layer)
 
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_IMAGE_TYPE
-    set_layer_desc(cl_layer.get_layer(), settings.LAYER_IMAGE_NAME + str(idx), lottie)
+    lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 
     settings.lottie_format["assets"].append({})
-    st = add_image_asset(settings.lottie_format["assets"][-1], cl_layer.get_layer())
+    st = add_image_asset(settings.lottie_format["assets"][-1], layer.get_layer())
     asset = settings.lottie_format["assets"][-1]
 
     # setting class (jpg, png)
@@ -62,9 +62,9 @@ def gen_layer_image(lottie, cl_layer, idx):
 
     anchor = settings.DEFAULT_ANCHOR
     rotation = settings.DEFAULT_ROTATION
-    opacity = cl_layer.get_param("amount")
+    opacity = layer.get_param("amount")
 
-    gen_helpers_transform(lottie["ks"], cl_layer.get_layer(), st["tl"][0], anchor, st["scale"][0], rotation, opacity[0])
+    gen_helpers_transform(lottie["ks"], layer.get_layer(), st["tl"][0], anchor, st["scale"][0], rotation, opacity[0])
 
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
@@ -72,7 +72,7 @@ def gen_layer_image(lottie, cl_layer, idx):
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
     lottie["st"] = 0            # Don't know yet
-    get_blend(lottie, cl_layer.get_layer())
+    get_blend(lottie, layer.get_layer())
 
 
 def gen_image_scale(animated_1, animated_2, width, height):
