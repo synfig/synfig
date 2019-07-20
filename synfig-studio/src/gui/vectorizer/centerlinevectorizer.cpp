@@ -126,10 +126,16 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 //   // Converts each forward or single Sequence of the image in its corresponding Stroke.
   studio::conversionToStrokes(sortibleResult, globals, image);
 
+	synfig::Canvas::Handle child_canvas;
+  child_canvas=synfig::Canvas::create_inline(image->get_canvas());
+	synfig::Layer::Handle new_layer(synfig::Layer::create("group"));
+  new_layer->set_description("description");
+	new_layer->set_param("canvas",child_canvas);
+  image->get_canvas()->parent()->push_front(new_layer);
   for(int i=0;i < sortibleResult.size();i++)
   {
-      sortibleResult[i]->set_canvas(image->get_canvas());
-      image->get_canvas()->push_front(sortibleResult[i]);
+      sortibleResult[i]->set_canvas(new_layer->get_canvas());
+      new_layer->get_canvas()->push_front(sortibleResult[i]);
   }
 //   // step 7
 
