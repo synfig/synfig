@@ -562,12 +562,13 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	cancel                   (false),
 
 	canvas_properties        (*App::main_window,canvas_interface_),
-	canvas_options           (*App::main_window,this),
 	render_settings          (*App::main_window,canvas_interface_),
 	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
 	keyframe_dialog          (*App::main_window,canvas_interface_),
 	preview_dialog           ()
 {
+	canvas_options = CanvasOptions::create(*App::main_window, this);
+
 	layer_tree=0;
 	children_tree=0;
 	toggling_ducks_=false;
@@ -718,6 +719,8 @@ CanvasView::~CanvasView()
 	// don't be calling on_dirty_preview once this object has been deleted;
 	// this was causing a crash before
 	canvas_interface()->signal_dirty_preview().clear();
+
+	delete canvas_options;
 
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		info("CanvasView::~CanvasView(): Deleted");
