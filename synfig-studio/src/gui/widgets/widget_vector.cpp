@@ -61,13 +61,8 @@ Widget_Vector::Widget_Vector():
 	x_adjustment(Gtk::Adjustment::create(0,-100000000,100000000,0.05,0.05,0)),
 	y_adjustment(Gtk::Adjustment::create(0,-100000000,100000000,0.05,0.05,0))
 {
-	Gtk::Label *label;
 	int width_chars = 5;
 
-	label=manage(new class Gtk::Label("X:"));
-	label->set_alignment(0, 0.5);
-	//pack_start(*label, Gtk::PACK_SHRINK);
-	
 	entry_x=manage(new class Gtk::Entry());
 	entry_x->set_width_chars(width_chars);
 	entry_x->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_entry_x_changed));
@@ -86,11 +81,6 @@ Widget_Vector::Widget_Vector():
 	distance_x->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
 	pack_start(*distance_x, Gtk::PACK_EXPAND_WIDGET);
 
-	label=manage(new class Gtk::Label("Y:"));
-	label->set_alignment(0, 0.5);
-	label->show();
-	//pack_start(*label, Gtk::PACK_SHRINK);
-	
 	entry_y=manage(new class Gtk::Entry());
 	entry_y->set_width_chars(width_chars);
 	entry_y->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_entry_y_changed));
