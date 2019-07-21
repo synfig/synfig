@@ -38,7 +38,6 @@
 #include <gtkmm/toolpalette.h>
 #include <gtkmm/toolitemgroup.h>
 #include <gtkmm/alignment.h>
-#include <gtkmm/separator.h>
 #include <gtkmm/table.h>
 #include <gtkmm/box.h>
 #include <synfig/string.h>
@@ -66,7 +65,6 @@ class Dock_Toolbox : public Dockable
 	friend class studio::StateManager;
 
 	Gtk::ToolItemGroup *tool_item_group;
-	Gtk::HSeparator *separator;
 	Gtk::VBox *tool_box;
 
 	std::map<synfig::String,Gtk::ToggleToolButton *> state_button_map;

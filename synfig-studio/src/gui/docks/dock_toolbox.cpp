@@ -98,8 +98,6 @@ Dock_Toolbox::Dock_Toolbox():
 	scrolled_window->set_border_width(2);
 	scrolled_window->show();
 
-	separator = manage(new class Gtk::HSeparator());
-
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 
 	// pack tools and default widgets
