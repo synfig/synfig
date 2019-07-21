@@ -198,6 +198,7 @@ About::About()
 
 	Gtk::Image *Logo = manage(new class Gtk::Image());
 	Logo->set(imagepath+"synfig_icon." IMAGE_EXT);
+	Logo->set_parent(*this);
 	set_logo(Logo->get_pixbuf());
 
 #ifdef SHOW_EXTRA_INFO
