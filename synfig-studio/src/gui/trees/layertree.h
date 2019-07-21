@@ -165,8 +165,8 @@ private:
 
 private:
 
-	Gtk::Widget* create_layer_tree();
-	Gtk::Widget* create_param_tree();
+	void create_layer_tree();
+	void create_param_tree();
 	//! Update the param_tree_view header height.
 	/*! \return true if param_tree_header_height updated, else false
 	*/
