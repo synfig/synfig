@@ -59,6 +59,7 @@ private:
 
 	synfig::String name_;
 	synfig::String local_name_;
+
 	Gtk::StockID stock_id_;
 	bool use_scrolled;
 
