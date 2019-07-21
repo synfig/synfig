@@ -47,11 +47,6 @@
 
 /* === M A C R O S ========================================================= */
 
-// uncomment to enable the blend method selector in the tool options
-// panel for the circle and gradient tools
-//
-// #define BLEND_METHOD_IN_TOOL_OPTIONS
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
