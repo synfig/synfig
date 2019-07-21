@@ -3,6 +3,7 @@
 PLUGIN_NAME = common
 
 EXTRA_FILES = \
+			  Canvas.py \
 			  Color.py \
 			  Count.py \
 			  Hermite.py \

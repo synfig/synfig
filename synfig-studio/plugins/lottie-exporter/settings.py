@@ -23,6 +23,7 @@ LAYER_IMAGE_TYPE = 2
 LAYER_IMAGE_NAME = "Image Layer "
 LAYER_PRECOMP_TYPE = 0
 LAYER_PRECOMP_NAME = "Pre Comp Layer "
+CANVAS_NAME = "Canvas "
 LAYER_DEFAULT_STRETCH = 1
 LAYER_DEFAULT_AUTO_ORIENT = 0
 OPACITY_CONSTANT = 100
@@ -89,5 +90,7 @@ def init():
     num_precomp = Count()
     global OUTLINE_GROW     # outline grow param of group layer
     OUTLINE_GROW = [0]
-    global layer_count
+    global layer_count  # Will only count the layers which do not have there desc set
     layer_count = Count()
+    global canvas_count # will only cound the canvas which do not have any names
+    canvas_count = Count()

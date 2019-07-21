@@ -63,7 +63,7 @@ def add_image_asset(lottie, layer):
 
     Args:
         lottie (dict)                : Lottie layer
-        layer  (lxml.etree._Element) : Synfig layer
+        layer  (commong.Layer.Layer) : Synfig layer
 
     Returns:
         (dict) : Stores address of parameters: "tl", "br", "filename"
@@ -71,14 +71,9 @@ def add_image_asset(lottie, layer):
     lottie["id"] = "image_" + str(settings.num_images.inc())
     st = {}     # Store the address of children
 
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "tl":
-                st["tl"] = chld
-            elif chld.attrib["name"] == "br":
-                st["br"] = chld
-            elif chld.attrib["name"] == "filename":
-                st["filename"] = chld
+    st["tl"] = layer.get_param("tl")
+    st["br"] = layer.get_param("br")
+    st["filename"] = layer.get_param("filename")
 
     file_path = os.path.join(settings.file_name["fd"], st["filename"][0].text)
     file_path = os.path.abspath(file_path)

@@ -101,3 +101,9 @@ class Layer:
         Getter for description of the layer
         """
         return self.description
+
+    def getparent(self):
+        """
+        Returns the parent of this Layer
+        """
+        return self.layer.getparent()

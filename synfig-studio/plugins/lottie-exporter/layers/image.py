@@ -40,7 +40,7 @@ def gen_layer_image(lottie, layer, idx):
     lottie["ks"] = {}   # Transform properties to be filled
 
     settings.lottie_format["assets"].append({})
-    st = add_image_asset(settings.lottie_format["assets"][-1], layer.get_layer())
+    st = add_image_asset(settings.lottie_format["assets"][-1], layer)
     asset = settings.lottie_format["assets"][-1]
 
     # setting class (jpg, png)

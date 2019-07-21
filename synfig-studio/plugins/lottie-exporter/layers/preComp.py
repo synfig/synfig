@@ -46,7 +46,7 @@ def gen_layer_precomp(lottie, layer, idx):
         settings.INSIDE_PRECOMP = True
 
     settings.lottie_format["assets"].append({})
-    asset = add_precomp_asset(settings.lottie_format["assets"][-1], layer.get_layer().getparent(), idx)
+    asset = add_precomp_asset(settings.lottie_format["assets"][-1], layer.getparent(), idx)
     lottie["refId"] = asset
 
 

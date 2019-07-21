@@ -16,14 +16,14 @@ from layers.group import gen_layer_group
 sys.path.append("..")
 
 
-def gen_layers(lottie, root, layer_itr):
+def gen_layers(lottie, canvas, layer_itr):
     """
     This function will be called for each canvas/composition. Main function to
     generate all the layers
 
     Args:
         lottie (dict) : Layers in Lottie format
-        root   (lxml.etree._Element) : All layers of a canvas in Synfig format
+        canvas (common.Canvas.Canvas) : Synfig format canvas
         layer_itr (int) : position of layer in canvas
 
     Returns:
@@ -38,7 +38,7 @@ def gen_layers(lottie, root, layer_itr):
     group = settings.GROUP_LAYER
     supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group)
     while itr >= 0:
-        child = root[itr]
+        child = canvas[itr]
         if child.tag == "layer":
             layer = Layer(child)
             if layer.get_type() not in supported_layers:  # Only supported layers
