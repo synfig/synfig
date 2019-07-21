@@ -285,7 +285,13 @@ public:
 
 class synfig::ValueNode_AnimatedInterfaceConst::Internal {
 public:
-	template<typename T, int premult = 0>
+	template<typename T>
+	static T pass(const T &x) { return x; }
+	
+	static int int_premult(const int &x) { return x*(3*256); }
+	static int int_demult(const int &x) { return (x + 3*128)/(3*256); }
+	
+	template< typename T, T premult(const T&) = pass<T>, T demult(const T&)  = pass<T> >
 	class Hermite: public Interpolator
 	{
 	public:
@@ -330,7 +336,7 @@ public:
 					second.sync();
 				}
 
-				return premult ? second(first(t))/premult : second(first(t));
+				return demult(second(first(t)));
 			}
 		}; // END of struct PathSegment
 
@@ -631,13 +637,12 @@ public:
 
 
 				curve.first.sync();
-				if (premult) {
-					// for proper integer interpolation
-					curve.second.p1() *= premult;
-					curve.second.p2() *= premult;
-					curve.second.t1() *= premult;
-					curve.second.t2() *= premult;
-				}
+				
+				// for proper integer interpolation
+				curve.second.p1() = premult( curve.second.p1() );
+				curve.second.p2() = premult( curve.second.p2() );
+				curve.second.t1() = premult( curve.second.t1() );
+				curve.second.t2() = premult( curve.second.t2() );
 				curve.second.sync();
 
 				curve_list.push_back(curve);
@@ -1163,7 +1168,7 @@ ValueNode_AnimatedInterfaceConst::set_type(Type &t)
 		interpolator_ = new Internal::Hermite<Real>(*this);
 	else
 	if (t == type_integer)
-		interpolator_ = new Internal::Hermite<int, 3*256>(*this);
+		interpolator_ = new Internal::Hermite<int, Internal::int_premult, Internal::int_demult>(*this);
 	else
 	if (t == type_angle)
 		interpolator_ = new Internal::Hermite<Angle>(*this);
