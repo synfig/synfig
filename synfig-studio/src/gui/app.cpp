@@ -2349,6 +2349,8 @@ App::apply_gtk_settings()
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
 	if ( String(theme_name) == "Adwaita" )
 		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }\n";
+	g_free(theme_name);
+
 	if (!data.empty()) {
 		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
 		try {
