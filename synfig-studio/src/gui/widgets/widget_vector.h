@@ -45,7 +45,7 @@ namespace studio {
 
 class Widget_Distance;
 
-class Widget_Vector : public Gtk::HBox
+class Widget_Vector : public Gtk::Box
 {
 	Gtk::Entry* entry_x;
 	Gtk::Entry* entry_y;
