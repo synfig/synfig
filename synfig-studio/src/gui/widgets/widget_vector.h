@@ -30,7 +30,6 @@
 #include <gtkmm/box.h>
 #include <gtkmm/adjustment.h>
 #include <synfig/vector.h>
-#include <synfig/distance.h>
 #include <synfig/canvas.h>
 
 /* === M A C R O S ========================================================= */
@@ -39,7 +38,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class SpinButton; };
+namespace Gtk {
+	class SpinButton;
+	class Entry;
+};
 
 namespace studio {
 
