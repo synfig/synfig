@@ -135,7 +135,7 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
   for(int i=0;i < sortibleResult.size();i++)
   {
       sortibleResult[i]->set_canvas(child_canvas);
-      new_layer->get_canvas()->push_front(sortibleResult[i]);
+      child_canvas->push_front(sortibleResult[i]);
   }
 //   // step 7
 
