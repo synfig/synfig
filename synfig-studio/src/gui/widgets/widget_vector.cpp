@@ -64,14 +64,15 @@ Widget_Vector::Widget_Vector():
 	init();
 }
 
-Widget_Vector::Widget_Vector(Gtk::HBox::BaseObjectType* cobject) :
+Widget_Vector::Widget_Vector(BaseObjectType* cobject) :
 	Glib::ObjectBase("widget_vector"),
-	Gtk::HBox(cobject)
+	Gtk::Box(cobject)
 {
 	init();
 }
 
 void Widget_Vector::init() {
+	set_orientation(Gtk::ORIENTATION_HORIZONTAL);
 	set_homogeneous(false);
 	set_spacing(5);
 
@@ -329,13 +330,9 @@ Glib::ObjectBase *
 Widget_Vector::wrap_new (GObject *o)
 {
 	if (gtk_widget_is_toplevel (GTK_WIDGET (o)))
-	{
-		return new Widget_Vector (GTK_HBOX(o));
-	}
+		return new Widget_Vector (GTK_BOX(o));
 	else
-	{
-		return Gtk::manage(new Widget_Vector(GTK_HBOX(o)));
-	}
+		return Gtk::manage(new Widget_Vector(GTK_BOX(o)));
 }
 
 void
