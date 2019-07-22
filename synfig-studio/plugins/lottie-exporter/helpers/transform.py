@@ -15,7 +15,7 @@ from properties.multiDimensionalKeyframed import gen_properties_multi_dimensiona
 sys.path.append("../")
 
 
-def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings.DEFAULT_ANCHOR, scale=settings.DEFAULT_SCALE, rotation=settings.DEFAULT_ROTATION, opacity=settings.DEFAULT_OPACITY):
+def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings.DEFAULT_ANCHOR, scale=settings.DEFAULT_SCALE, rotation=settings.DEFAULT_ROTATION, opacity=settings.DEFAULT_OPACITY, skew=settings.DEFAULT_SKEW):
     """
     Generates the dictionary corresponding to helpers/transform.json
 
@@ -36,6 +36,8 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
     lottie["p"] = {}    # Position of the layer
     lottie["a"] = {}    # Anchor point of the layer
     lottie["s"] = {}    # Scale of the layer
+    lottie["sk"] = {}   # skew of the layer
+    lottie["sa"] = {}   # skew axis of the layer
 
     # setting the position
     if isinstance(pos, list):
@@ -161,3 +163,33 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                                  index.inc(),
                                  settings.DEFAULT_ANIMATED,
                                  settings.NO_INFO)
+
+    # setting the skew angle
+    if isinstance(skew, (float, int)):
+        gen_properties_value(lottie["sk"],
+                             skew,
+                             index.inc(),
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+    else:
+        is_animate = is_animated(skew)
+        if is_animate == 2:
+            gen_value_Keyframed(lottie["sk"], skew, index.inc())
+        else:
+            skew_val = 0
+            if is_animate == 0:
+                skew_val = float(skew.attrib["value"])
+            else:
+                skew_val = float(skew[0][0].attrib["value"])
+            gen_properties_value(lottie["sk"],
+                                 -skew_val,
+                                 index.inc(),
+                                 settings.DEFAULT_ANIMATED,
+                                 settings.NO_INFO)
+
+    # setting the skew axis
+    gen_properties_value(lottie["sa"],
+                         0,
+                         index.inc(),
+                         settings.DEFAULT_ANIMATED,
+                         settings.NO_INFO)

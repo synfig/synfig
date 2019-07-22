@@ -57,6 +57,8 @@ def gen_layer_group(lottie, layer, idx):
             pos = child
         elif child.tag == "angle":
             angle = child
+        elif child.tag == "skew_angle":
+            skew = child
 
     outline_grow = gen_dummy_waypoint(outline_grow, "param", "real")
     append_path(outline_grow[0], outline_grow, "outline_grow_path")
@@ -72,8 +74,12 @@ def gen_layer_group(lottie, layer, idx):
         group.update_pos(pos)
 
     scale = gen_dummy_waypoint(scale, "scale", "group_layer_scale")
+
+    # Generating animation for skew
+    skew = gen_dummy_waypoint(skew, "skew_angle", "rotate_layer_angle")
+
     # Generate the transform properties here
-    gen_helpers_transform(lottie["ks"], pos[0], anchor[0], scale[0], angle[0], opacity[0])
+    gen_helpers_transform(lottie["ks"], pos[0], anchor[0], scale[0], angle[0], opacity[0], skew[0])
 
     # Store previous states, to be recovered at the end of group layer
     prev_state = settings.INSIDE_PRECOMP
