@@ -39,6 +39,7 @@
 #include <gui/localization.h>
 
 #include "gui/resourcehelper.h"
+#include "widgets/widget_vector.h"
 
 #endif
 

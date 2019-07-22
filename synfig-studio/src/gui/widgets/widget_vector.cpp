@@ -30,6 +30,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/distance.h>
 
 #include <gtkmm/spinbutton.h>
 #include "widgets/widget_vector.h"

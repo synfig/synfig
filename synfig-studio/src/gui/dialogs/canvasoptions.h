@@ -30,8 +30,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/builder.h>
 
-#include "widgets/widget_value.h"
-#include "widgets/widget_vector.h"
+#include "ETL/handle"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,10 +38,15 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace Gtk {
+	class CheckButton;
+};
+
 namespace studio
 {
 
 class CanvasView;
+class Widget_Vector;
 
 class CanvasOptions  :  public Gtk::Dialog
 {
