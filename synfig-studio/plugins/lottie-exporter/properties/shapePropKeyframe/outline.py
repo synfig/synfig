@@ -5,9 +5,10 @@ in Lottie format
 """
 
 import sys
-import ast
 import math
 import settings
+from common.Bline import Bline
+from common.Param import Param
 from common.Vector import Vector
 from common.Hermite import Hermite
 from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
@@ -27,7 +28,7 @@ def gen_bline_outline(lottie, bline_point):
 
     Args:
         lottie (dict) : Lottie format outline layer will be stored in this
-        bline_point (lxml.etree._Element) : Synfig format bline points
+        bline_point (common.Param.Param) : Synfig format bline points
 
     Returns:
         (None)
@@ -40,82 +41,67 @@ def gen_bline_outline(lottie, bline_point):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    for entry in bline_point:
-        composite = entry[0]
-        for child in composite:
-            if child.tag == "point":
-                pos = child
-            elif child.tag == "width":
-                width = child
-            elif child.tag == "t1":
-                t1 = child
-            elif child.tag == "t2":
-                t2 = child
-            elif child.tag == "split_radius":
-                split_r = child
-            elif child.tag == "split_angle":
-                split_a = child
+    bline = Bline(bline_point[0], bline_point)
 
-        # Necassary to update this before inserting new waypoints, as new
-        # waypoints might include there on time: 0 seconds
+    for entry in bline.get_entry_list():
+        pos = entry["point"]
+        width = entry["width"]
+        t1 = entry["t1"]
+        t2 = entry["t2"]
+        split_r = entry["split_radius"]
+        split_a = entry["split_angle"]
+
         update_frame_window(pos[0], window)
 
         # Empty the pos and fill in the new animated pos
-        pos = gen_dummy_waypoint(pos, "point", "vector")
-        update_child_at_parent(composite, pos, "point")
+        pos = gen_dummy_waypoint(pos.get(), "point", "vector")
+        update_child_at_parent(entry["composite"], pos, "point")
+        entry["point"] = Param(pos, entry["composite"])
 
-        # Empty the width and fill in the new animated width
         update_frame_window(width[0], window)
-        width = gen_dummy_waypoint(width, "width", "real")
-        update_child_at_parent(composite, width, "width")
+        width = gen_dummy_waypoint(width.get(), "width", "real")
+        update_child_at_parent(entry["composite"], width, "width")
+        entry["width"] = Param(width, entry["composite"])
 
         update_frame_window(split_r[0], window)
-        split_r = gen_dummy_waypoint(split_r, "split_radius", "bool")
-        update_child_at_parent(composite, split_r, "split_radius")
+        split_r = gen_dummy_waypoint(split_r.get(), "split_radius", "bool")
+        update_child_at_parent(entry["composite"], split_r, "split_radius")
+        entry["split_radius"] = Param(split_r, entry["composite"])
 
         update_frame_window(split_a[0], window)
-        split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
-        update_child_at_parent(composite, split_a, "split_angle")
+        split_a = gen_dummy_waypoint(split_a.get(), "split_angle", "bool")
+        update_child_at_parent(entry["composite"], split_a, "split_angle")
+        entry["split_angle"] = Param(split_a, entry["composite"])
 
-        append_path(pos[0], composite, "point_path", "vector")
-        append_path(width[0], composite, "width_path")
+        append_path(pos[0], entry, "point_path", "vector")
+        append_path(width[0], entry, "width_path")
 
-        animate_radial_composite(t1[0], window)
-        animate_radial_composite(t2[0], window)
+        animate_tangents(t1, window)
+        animate_tangents(t2, window)
 
-
-    layer = bline_point.getparent().getparent()
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "width":
-                outer_width = chld
-            elif chld.attrib["name"] == "sharp_cusps":
-                sharp_cusps = chld
-            elif chld.attrib["name"] == "expand":
-                expand = chld
-            elif chld.attrib["name"] == "round_tip[0]":
-                r_tip0 = chld
-            elif chld.attrib["name"] == "round_tip[1]":
-                r_tip1 = chld
-            elif chld.attrib["name"] == "homogeneous_width":
-                homo_width = chld
-            elif chld.attrib["name"] == "origin":
-                origin = chld
+    layer = bline.get_layer()
+    outer_width = layer.get_param("width")
+    sharp_cusps = layer.get_param("sharp_cusps")
+    expand = layer.get_param("expand")
+    r_tip0 = layer.get_param("round_tip[0]")
+    r_tip1 = layer.get_param("round_tip[1]")
+    homo_width = layer.get_param("homogeneous_width")
+    origin = layer.get_param("origin")
 
     # Animating the origin
     update_frame_window(origin[0], window)
     origin_parent = origin.getparent()
-    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
-    update_child_at_parent(origin_parent, origin, "param", "origin")
+    origin = gen_dummy_waypoint(origin.get(), "param", "vector", "origin")
+    update_child_at_parent(origin_parent.get_layer(), origin, "param", "origin")
     # Generate path for the origin component
     origin_dict = {}
     origin[0].attrib["transform_axis"] = "true"
     gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
 
     update_frame_window(outer_width[0], window)
-    outer_width = gen_dummy_waypoint(outer_width, "param", "real", "width")
+    outer_width = gen_dummy_waypoint(outer_width.get(), "param", "real", "width")
     # Update the layer with this animated outline width
-    update_child_at_parent(layer, outer_width, "param", "width")
+    update_child_at_parent(layer.get_layer(), outer_width, "param", "width")
 
     # Generate outline width for Lottie format
     # No need to store this dictionary in lxml element, as it will be used in this function and will not be rewritten
@@ -124,28 +110,28 @@ def gen_bline_outline(lottie, bline_point):
 
     # Animating the sharp_cusps
     update_frame_window(sharp_cusps[0], window)
-    sharp_cusps = gen_dummy_waypoint(sharp_cusps, "param", "bool", "sharp_cusps")
+    sharp_cusps = gen_dummy_waypoint(sharp_cusps.get(), "param", "bool", "sharp_cusps")
 
     # Update the layer with this animated outline sharp cusps
-    update_child_at_parent(layer, sharp_cusps, "param", "sharp_cusps")
+    update_child_at_parent(layer.get_layer(), sharp_cusps, "param", "sharp_cusps")
 
     update_frame_window(expand[0], window)
-    expand = gen_dummy_waypoint(expand, "param", "real", "expand")
-    update_child_at_parent(layer, expand, "param", "expand")
+    expand = gen_dummy_waypoint(expand.get(), "param", "real", "expand")
+    update_child_at_parent(layer.get_layer(), expand, "param", "expand")
     expand_dict = {}
     gen_value_Keyframed(expand_dict, expand[0], 0)
 
     update_frame_window(r_tip0[0], window)
-    r_tip0 = gen_dummy_waypoint(r_tip0, "param", "bool", "round_tip[0]")
-    update_child_at_parent(layer, r_tip0, "param", "round_tip[0]")
+    r_tip0 = gen_dummy_waypoint(r_tip0.get(), "param", "bool", "round_tip[0]")
+    update_child_at_parent(layer.get_layer(), r_tip0, "param", "round_tip[0]")
 
     update_frame_window(r_tip1[0], window)
-    r_tip1 = gen_dummy_waypoint(r_tip1, "param", "bool", "round_tip[1]")
-    update_child_at_parent(layer, r_tip1, "param", "round_tip[1]")
+    r_tip1 = gen_dummy_waypoint(r_tip1.get(), "param", "bool", "round_tip[1]")
+    update_child_at_parent(layer.get_layer(), r_tip1, "param", "round_tip[1]")
 
     update_frame_window(homo_width[0], window)
-    homo_width = gen_dummy_waypoint(homo_width, "param", "bool", "homogeneous_width")
-    update_child_at_parent(layer, homo_width, "param", "homogeneous_width")
+    homo_width = gen_dummy_waypoint(homo_width.get(), "param", "bool", "homogeneous_width")
+    update_child_at_parent(layer.get_layer(), homo_width, "param", "homogeneous_width")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:
@@ -160,9 +146,9 @@ def gen_bline_outline(lottie, bline_point):
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
 
-        synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cusps,
+        synfig_outline(bline, st_val, origin_dict, outer_width_dict, sharp_cusps,
                        expand_dict, r_tip0, r_tip1, homo_width, fr)
-        synfig_outline(bline_point, en_val, origin_dict, outer_width_dict, sharp_cusps,
+        synfig_outline(bline, en_val, origin_dict, outer_width_dict, sharp_cusps,
                        expand_dict, r_tip0, r_tip1, homo_width, fr + 1)
 
         fr += 1
@@ -179,23 +165,21 @@ def get_outline_grow(fr):
     for og in settings.OUTLINE_GROW:
         if isinstance(og, (float, int)):
             ret += og
-        else:
-            for chld in og:
-                if chld.tag == "outline_grow_path":
-                    dictionary = ast.literal_eval(chld.text)
-                    val = to_Synfig_axis(get_vector_at_frame(dictionary, fr), "real")
+        else:   # should be dict
+            dictionary = og['outline_grow_path']
+            val = to_Synfig_axis(get_vector_at_frame(dictionary, fr), "real")
             ret += val
     ret = math.e ** ret
     return ret
 
 
-def get_outline_param_at_frame(composite, fr):
+def get_outline_param_at_frame(entry, fr):
     """
-    Given a composite and frame, returns the parameters of the outline layer at
+    Given a entry and frame, returns the parameters of the outline layer at
     that frame
 
     Args:
-        composite (lxml.etree._Element) : Vertex of outline layer in Synfig format
+        entry (dict) : Vertex of outline layer in Synfig format
         fr        (int)                 : frame number
 
     Returns:
@@ -206,25 +190,18 @@ def get_outline_param_at_frame(composite, fr):
         (bool)        : True if radius split is ticked at this frame
         (bool)        : True if tangent split is ticked at this frame
     """
-    for child in composite:
-        if child.tag == "point_path":
-            dictionary = ast.literal_eval(child.text)
-            pos = get_vector_at_frame(dictionary, fr)
-        elif child.tag == "width_path":
-            dictionary = ast.literal_eval(child.text)
-            width = to_Synfig_axis(get_vector_at_frame(dictionary, fr), "real")
-        elif child.tag == "t1":
-            t1 = child[0]
-        elif child.tag == "t2":
-            t2 = child[0]
-        elif child.tag == "split_radius":
-            split_r = child
-        elif child.tag == "split_angle":
-            split_a = child
-
+    pos = get_vector_at_frame(entry["point_path"], fr)
     # Convert pos back to Synfig coordinates
     pos = to_Synfig_axis(pos, "vector")
     pos_ret = Vector(pos[0], pos[1])
+
+    width = get_vector_at_frame(entry["width_path"], fr)
+    width = to_Synfig_axis(width, "real")
+    t1 = entry["t1"]
+    t2 = entry["t2"]
+    split_r = entry["split_radius"]
+    split_a = entry["split_angle"]
+
 
     t1, t2 = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
     # Convert to Synfig units
@@ -237,13 +214,13 @@ def get_outline_param_at_frame(composite, fr):
     return pos_ret, width, t1, t2, split_r_val, split_a_val
 
 
-def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cusps_anim, expand_dict, r_tip0_anim, r_tip1_anim, homo_width_anim, fr):
+def synfig_outline(bline, st_val, origin_dict, outer_width_dict, sharp_cusps_anim, expand_dict, r_tip0_anim, r_tip1_anim, homo_width_anim, fr):
     """
     Calculates the points for the outline layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/outline.cpp
 
     Args:
-        bline_point (lxml.etree._Element) : Synfig format bline points of outline layer
+        bline_point (common.Bline.Bline) : Synfig format bline points of outline layer
         st_val (dict) : Lottie format outline stored in this
         origin_dict (dict) : Lottie format origin of outline layer
         outer_width_dict (dict) : Lottie format outer width
@@ -278,12 +255,10 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
     side_a, side_b = [], []
 
     # Check if looped
-    loop = False
-    if "loop" in bline_point.keys() and bline_point.attrib["loop"] == "true":
-        loop = True
+    loop = bline.get_loop()
 
     # Iterators
-    end_it = len(bline_point)
+    end_it = bline.get_len()
     next_it = 0
     if loop:
         iter_it = end_it - 1
@@ -291,18 +266,18 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
         iter_it = next_it
         next_it += 1
 
-    first_point = bline_point[iter_it][0]
-    first_tangent = get_outline_param_at_frame(bline_point[0][0], fr)[3]
+    first_point = bline[iter_it]
+    first_tangent = get_outline_param_at_frame(bline[0], fr)[3]
     last_tangent = get_outline_param_at_frame(first_point, fr)[2]
 
     # If we are looped and drawing sharp cusps, we 'll need a value
     # for the incoming tangent. This code fails if we have a "degraded" spline
     # with just one vertex, so we avoid such case.
-    if loop and sharp_cusps and last_tangent.is_equal_to(Vector(0, 0)) and len(bline_point) > 1:
+    if loop and sharp_cusps and last_tangent.is_equal_to(Vector(0, 0)) and bline.get_len() > 1:
         prev_it = iter_it
         prev_it -= 1
-        prev_it %= len(bline_point)
-        prev_point = bline_point[prev_it][0]
+        prev_it %= bline.get_len()
+        prev_point = bline[prev_it]
         curve = Hermite(get_outline_param_at_frame(prev_point, fr)[0],
                         get_outline_param_at_frame(first_point, fr)[0],
                         get_outline_param_at_frame(prev_point, fr)[3],
@@ -311,8 +286,8 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
 
     first = not loop
     while next_it != end_it:
-        bp1 = bline_point[iter_it][0]
-        bp2 = bline_point[next_it][0]
+        bp1 = bline[iter_it]
+        bp2 = bline[next_it]
 
         # Calculate current vertex and next vertex parameters
         pos_c, width_c, t1_c, t2_c, split_r_c, split_a_c = get_outline_param_at_frame(bp1, fr)
@@ -333,7 +308,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
             # leave 'first' true if was before
             if iter_t.is_equal_to(Vector(0, 0)):
                 iter_it = next_it
-                iter_it %= len(bline_point)
+                iter_it %= bline.get_len()
                 next_it += 1
                 continue
 
@@ -431,7 +406,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
         first = False
 
         iter_it = next_it
-        iter_it %= len(bline_point)
+        iter_it %= bline.get_len()
         next_it += 1
 
     if len(side_a) < 2 or len(side_b) < 2:
@@ -446,7 +421,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
     else:
         # Insert code for adding end tip
         if r_tip1:
-            bp = bline_point[-1][0]
+            bp = bline[-1]
             vertex = get_outline_param_at_frame(bp, fr)[0]
             tangent = last_tangent.norm()
             w = gv*(get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand)
@@ -466,7 +441,7 @@ def synfig_outline(bline_point, st_val, origin_dict, outer_width_dict, sharp_cus
 
         # Insert code for adding beginning tip
         if r_tip0:
-            bp = bline_point[0][0]
+            bp = bline[0]
             vertex = get_outline_param_at_frame(bp, fr)[0]
             tangent = first_tangent.norm()
             w = gv*(get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand)

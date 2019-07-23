@@ -33,13 +33,13 @@ class Bline:
         """
         Returns the child corresponding to itr
         """
-        return self.bline[itr]
+        return self.entry_list[itr]
 
     def __setitem__(self, itr, val):
         """
         Sets the value of child corresponding to itr
         """
-        self.bline[itr] = val
+        self.entry_list[itr] = val
 
     def get_layer_type(self):
         """
@@ -81,13 +81,33 @@ class Bline:
         for entry in self.bline:
             # Assuming it's child is always composite for now
             entry_list.append({})
-            for param in entry[0]:
+            if entry[0].tag == "composite":
+                element = entry[0]
+            else:
+                element = entry
+            for param in element:
                 tag = param.tag
-                entry_list[-1][tag] = common.Param.Param(param, entry[0])
-            entry_list[-1]["composite"] = entry[0]
+                if tag == "animated":   # For dynamic list
+                    tag = param.attrib["type"]
+                entry_list[-1][tag] = common.Param.Param(param, element)
+            if entry[0].tag == "composite":
+                entry_list[-1]["composite"] = element
 
     def get_entry_list(self):
         """
         Returns the entry list
         """
         return self.entry_list
+
+    def get_len(self):
+        """
+        Returns the number of entries
+        """
+        return len(self.entry_list)
+
+    def set_entry(self, itr, entry, tag="vector"):
+        """
+        Sets the entry at itr to val
+        """
+        for param in entry:
+            self.entry_list[itr][tag] = common.Param.Param(param, entry)

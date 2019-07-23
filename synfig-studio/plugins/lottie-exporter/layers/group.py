@@ -62,7 +62,8 @@ def gen_layer_group(lottie, layer, idx):
             skew = Param(child, transform)
 
     outline_grow = gen_dummy_waypoint(outline_grow.get(), "param", "real")
-    append_path(outline_grow[0], outline_grow, "outline_grow_path")
+    settings.OUTLINE_GROW.append({})    # Storing the outline grow in settings, will be used inside child outlines
+    append_path(outline_grow[0], settings.OUTLINE_GROW[-1], "outline_grow_path")
 
     origin = gen_dummy_waypoint(origin.get(), "param", "vector")
     anchor = origin
@@ -85,7 +86,6 @@ def gen_layer_group(lottie, layer, idx):
     # Store previous states, to be recovered at the end of group layer
     prev_state = settings.INSIDE_PRECOMP
 
-    settings.OUTLINE_GROW.append(outline_grow)
     settings.INSIDE_PRECOMP = True
 
     settings.lottie_format["assets"].append({})
