@@ -44,31 +44,18 @@ const double Polyg_eps_max = 1;     // Sequence simplification max error
 const double Polyg_eps_mul = 0.75;  // Sequence simpl. thickness-multiplier error
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
 synfig::CanvasHandle canvas;
-bool check = false;
-synfig::Point foo;
 /* === P R O C E D U R E S ================================================= */
 etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
-  synfig::Point Origin;
-  if(check == 0 )
-  {
-    check = 1;
-    Origin = segment.front().to_2d();
-    foo = segment.back().to_2d();
-  }
-  else
-  {
-    Origin = foo;
-    foo = segment.back().to_2d();
-  }
-  
   synfig::Layer::Handle layer(synfig::Layer::create("outline"));
   //synfig::ValueBase param2;
   std::vector<synfig::BLinePoint> bline_point_list; 
-  std::cout<<"\nsegment opened\n";
+  synfig::Point q = (canvas->rend_desc().get_br() - canvas->rend_desc().get_tl());
+  float p = canvas->rend_desc().get_w();
+  float unit_size = p/q[0];
   for(int i=0;i<segment.size();i++)
   {
-    segment[i] = segment[i]/60;
+    segment[i] = segment[i]/unit_size;
   }
   switch(segment.size())// in any case size>=3
   {
@@ -162,7 +149,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
  //param2.set_list_of(bline_point_list);
 	vn=value_node=bline_value_node=synfig::ValueNode_BLine::create(bline_point_list, canvas);
   layer->connect_dynamic_param("bline",vn);
-  layer->set_param("origin",Origin/60);
+  //layer->set_param("origin",Origin/60);
   return layer;
 }
 
