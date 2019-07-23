@@ -6,6 +6,7 @@ Will store the Canvas class required for Synfig canvases
 import sys
 import settings
 from common.Layer import Layer
+from common.Param import Param
 sys.path.append("..")
 
 
@@ -16,7 +17,10 @@ class Canvas:
     def __init__(self, canvas):
         """
         """
-        self.canvas = canvas
+        if isinstance(canvas, Param):
+            self.canvas = canvas.get()[0]
+        else:
+            self.canvas = canvas
         self.defs = {}
         self.extract_defs(self.defs)
         self.layers = []
@@ -83,3 +87,9 @@ class Canvas:
         Returns the number of layers in the canvas
         """
         return len(self.layers)
+
+    def get_layer_list(self):
+        """
+        Returns the list of layers in the canvas
+        """
+        return self.layers

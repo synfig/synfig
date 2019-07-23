@@ -71,9 +71,9 @@ def add_image_asset(lottie, layer):
     lottie["id"] = "image_" + str(settings.num_images.inc())
     st = {}     # Store the address of children
 
-    st["tl"] = layer.get_param("tl").get()
-    st["br"] = layer.get_param("br").get()
-    st["filename"] = layer.get_param("filename").get()
+    st["tl"] = layer.get_param("tl")
+    st["br"] = layer.get_param("br")
+    st["filename"] = layer.get_param("filename")
 
     file_path = os.path.join(settings.file_name["fd"], st["filename"][0].text)
     file_path = os.path.abspath(file_path)

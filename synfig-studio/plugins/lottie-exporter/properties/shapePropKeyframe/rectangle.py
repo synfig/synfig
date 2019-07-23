@@ -9,6 +9,7 @@ from lxml import etree
 from common.misc import approximate_equal
 from common.Vector import Vector
 from common.Layer import Layer
+from common.Param import Param
 from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
@@ -36,25 +37,28 @@ def gen_list_rectangle(lottie, layer):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    point1 = layer.get_param("point1").get()
-    point2 = layer.get_param("point2").get()
-    expand = layer.get_param("expand").get()
-    bevel = layer.get_param("bevel").get()
-    bevCircle = layer.get_param("bevCircle").get()
+    point1 = layer.get_param("point1")
+    point2 = layer.get_param("point2")
+    expand = layer.get_param("expand")
+    bevel = layer.get_param("bevel")
+    bevCircle = layer.get_param("bevCircle")
 
-    if expand is None:    # Means filled rectangle layer
+    if expand.get() is None:    # Means filled rectangle layer
         st = "<param name='expand'><real value='0.0'/></param>"
         expand = etree.fromstring(st)
+        expand = layer.add_param("expand", expand)
 
-    if bevel is None:     # For rectangle layer in stable version 1.2.2
+    if bevel.get() is None:     # For rectangle layer in stable version 1.2.2
         st = "<param name='bevel'><real value='0.0'/></param>"
         bevel = etree.fromstring(st)
+        bevel = layer.add_param("bevel", bevel)
         st = "<param name='bevCircle'><bool value='false'/></param>"
         bevCircle = etree.fromstring(st)
+        bevCircle = layer.add_param("bevCircle", bevCircle)
 
     # Animating point1
     update_frame_window(point1[0], window)
-    point1 = gen_dummy_waypoint(point1, "param", "vector", "point1")
+    point1 = gen_dummy_waypoint(point1.get(), "param", "vector", "point1")
     update_child_at_parent(layer.get_layer(), point1, "param", "point1")
     # Generate path for the point1 component
     p1_dict = {}
@@ -63,7 +67,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating point2
     update_frame_window(point2[0], window)
-    point2 = gen_dummy_waypoint(point2, "param", "vector", "point2")
+    point2 = gen_dummy_waypoint(point2.get(), "param", "vector", "point2")
     update_child_at_parent(layer.get_layer(), point2, "param", "point2")
     # Generate path for the point2 component
     p2_dict = {}
@@ -71,7 +75,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating expand
     update_frame_window(expand[0], window)
-    expand = gen_dummy_waypoint(expand, "param", "real", "expand")
+    expand = gen_dummy_waypoint(expand.get(), "param", "real", "expand")
     update_child_at_parent(layer.get_layer(), expand, "param", "expand")
     # Generate expand param for Lottie format
     expand_dict = {}
@@ -79,7 +83,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating bevel
     update_frame_window(bevel[0], window)
-    bevel = gen_dummy_waypoint(bevel, "param", "real", "bevel")
+    bevel = gen_dummy_waypoint(bevel.get(), "param", "real", "bevel")
     update_child_at_parent(layer.get_layer(), bevel, "param", "bevel")
     # Generate bevel param for Lottie format
     bevel_dict = {}
@@ -87,7 +91,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating bevCircle
     update_frame_window(bevCircle[0], window)
-    bevCircle = gen_dummy_waypoint(bevCircle, "param", "bool", "bevCircle")
+    bevCircle = gen_dummy_waypoint(bevCircle.get(), "param", "bool", "bevCircle")
     update_child_at_parent(layer.get_layer(), bevCircle, "param", "bevCircle")
 
     # Minimizing the window size

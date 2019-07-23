@@ -22,12 +22,12 @@ def gen_layer_scale(lottie, layer):
     Returns:
         (None)
     """
-    center = layer.get_param("center").get()
-    anchor = gen_dummy_waypoint(center, "param", "vector")
+    center = layer.get_param("center")
+    anchor = gen_dummy_waypoint(center.get(), "param", "vector")
     pos = anchor
 
-    amount = layer.get_param("amount").get()  # This is scale amount
-    scale = gen_dummy_waypoint(amount, "param", "scale_layer_zoom")
+    amount = layer.get_param("amount")  # This is scale amount
+    scale = gen_dummy_waypoint(amount.get(), "param", "scale_layer_zoom")
 
     anchor = copy.deepcopy(anchor)
     group.update_pos(anchor)

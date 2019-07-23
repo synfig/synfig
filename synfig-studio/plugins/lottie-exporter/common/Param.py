@@ -12,8 +12,11 @@ class Param:
     """
     Class to keep Synfig format parameters
     """
-    def __init__(self, param, parent_layer):
-        self.parent_layer = parent_layer
+    def __init__(self, param, parent):
+        """
+        This parent can be another parameter or a Layer
+        """
+        self.parent_layer = parent
         self.param = param
 
     def get(self):
@@ -21,3 +24,21 @@ class Param:
         Returns the original param
         """
         return self.param
+
+    def get_text(self):
+        """
+        Returns the text stored inside
+        """
+        return self.param.text
+
+    def __getitem__(self, itr):
+        """
+        Returns the child corresponding to itr
+        """
+        return self.param[itr]
+
+    def __setitem__(self, itr, val):
+        """
+        Sets the value of child corresponding to itr
+        """
+        self.param[itr] = val

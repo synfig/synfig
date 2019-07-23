@@ -6,6 +6,7 @@ Store all functions corresponding to group layer in Synfig
 import sys
 import math
 import settings
+from common.Param import Param
 from common.Canvas import Canvas
 from common.Count import Count
 from common.misc import get_frame, approximate_equal, get_time
@@ -42,41 +43,41 @@ def gen_layer_group(lottie, layer, idx):
     index = Count()
 
     # Extract parameters
-    canvas = layer.get_param("canvas").get()
-    origin = layer.get_param("origin").get()
-    opacity = layer.get_param("amount").get()
-    outline_grow = layer.get_param("outline_grow").get()
-    time_offset = layer.get_param("time_offset").get()
-    time_dilation = layer.get_param("time_dilation").get()
-    transformation = layer.get_param("transformation").get()
+    canvas = Canvas(layer.get_param("canvas"))
+    origin = layer.get_param("origin")
+    opacity = layer.get_param("amount")
+    outline_grow = layer.get_param("outline_grow")
+    time_offset = layer.get_param("time_offset")
+    time_dilation = layer.get_param("time_dilation")
+    transformation = layer.get_param("transformation")
     transform = transformation[0]
     for child in transform:
         if child.tag == "scale":
-            scale = child
+            scale = Param(child, transform)
         elif child.tag == "offset":
-            pos = child
+            pos = Param(child, transform)
         elif child.tag == "angle":
-            angle = child
+            angle = Param(child, transform)
         elif child.tag == "skew_angle":
-            skew = child
+            skew = Param(child, transform)
 
-    outline_grow = gen_dummy_waypoint(outline_grow, "param", "real")
+    outline_grow = gen_dummy_waypoint(outline_grow.get(), "param", "real")
     append_path(outline_grow[0], outline_grow, "outline_grow_path")
 
-    origin = gen_dummy_waypoint(origin, "param", "vector")
+    origin = gen_dummy_waypoint(origin.get(), "param", "vector")
     anchor = origin
     group.update_pos(anchor)
 
-    angle = gen_dummy_waypoint(angle, "angle", "rotate_layer_angle")
+    angle = gen_dummy_waypoint(angle.get(), "angle", "rotate_layer_angle")
 
-    pos = gen_dummy_waypoint(pos, "offset", "vector")
+    pos = gen_dummy_waypoint(pos.get(), "offset", "vector")
     if settings.INSIDE_PRECOMP:
         group.update_pos(pos)
 
-    scale = gen_dummy_waypoint(scale, "scale", "group_layer_scale")
+    scale = gen_dummy_waypoint(scale.get(), "scale", "group_layer_scale")
 
     # Generating animation for skew
-    skew = gen_dummy_waypoint(skew, "skew_angle", "rotate_layer_angle")
+    skew = gen_dummy_waypoint(skew.get(), "skew_angle", "rotate_layer_angle")
 
     # Generate the transform properties here
     gen_helpers_transform(lottie["ks"], pos[0], anchor[0], scale[0], angle[0], opacity[0], skew[0])
@@ -88,7 +89,6 @@ def gen_layer_group(lottie, layer, idx):
     settings.INSIDE_PRECOMP = True
 
     settings.lottie_format["assets"].append({})
-    canvas = Canvas(canvas[0])
     asset = add_precomp_asset(settings.lottie_format["assets"][-1], canvas, canvas.get_num_layers())
     lottie["refId"] = asset
 
@@ -128,10 +128,10 @@ def change_opacity_group(layer, lottie):
     Returns:
         (None)
     """
-    z_range = layer.get_param("z_range").get()
-    z_range_pos = layer.get_param("z_range_position").get()
-    z_range_depth = layer.get_param("z_range_depth").get()
-    canvas = layer.get_param("canvas").get()
+    z_range = layer.get_param("z_range")
+    z_range_pos = layer.get_param("z_range_position")
+    z_range_depth = layer.get_param("z_range_depth")
+    canvas = Canvas(layer.get_param("canvas"))
 
     for assets in settings.lottie_format["assets"]:
         if assets["id"] == lottie["refId"]:
@@ -142,8 +142,8 @@ def change_opacity_group(layer, lottie):
     if z_range[0].attrib["value"] == "false":
         return
 
-    pos = gen_dummy_waypoint(z_range_pos, "param", "real", "z_range_position")
-    depth = gen_dummy_waypoint(z_range_depth, "param", "real", "z_range_depth")
+    pos = gen_dummy_waypoint(z_range_pos.get(), "param", "real", "z_range_position")
+    depth = gen_dummy_waypoint(z_range_depth.get(), "param", "real", "z_range_depth")
     pos_dict, depth_dict = {}, {}
     gen_value_Keyframed(pos_dict, pos[0], 0)
     gen_value_Keyframed(depth_dict, depth[0], 0)
@@ -165,7 +165,7 @@ def change_opacity_group(layer, lottie):
         fr += 1
 
     z_value = 0
-    for c_layer in reversed(canvas[0]):
+    for c_layer in reversed(canvas.get_layer_list()):
         active_time = set()
         itr = 0
         while itr < len(active_range):
@@ -180,13 +180,13 @@ def change_opacity_group(layer, lottie):
         active_time = sorted(active_time)
         deactive_time = sorted(flip_time(active_time))
 
-        if c_layer.attrib["type"] in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
+        if c_layer.get_type() in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
             anim_type = "effects_opacity"
             dic = root["layers"][z_value]["ef"][0]["ef"][-1]["v"]
-        elif c_layer.attrib["type"] in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER, settings.IMAGE_LAYER):
+        elif c_layer.get_type() in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER, settings.IMAGE_LAYER):
             anim_type = "opacity"
             dic = root["layers"][z_value]["ks"]["o"]
-        elif c_layer.attrib["type"] in settings.SHAPE_LAYER:
+        elif c_layer.get_type() in settings.SHAPE_LAYER:
             anim_type = "opacity"
             dic = root["layers"][z_value]["shapes"][1]["o"]
 
@@ -207,17 +207,17 @@ def change_opacity_switch(layer, lottie):
     Returns:
         (None)
     """
-    layer_name = layer.get_param("layer_name").get()
-    canvas = layer.get_param("canvas").get()
+    layer_name = layer.get_param("layer_name")
+    canvas = Canvas(layer.get_param("canvas"))
 
-    layer_name = gen_dummy_waypoint(layer_name, "param", "string", "layer_name")
+    layer_name = gen_dummy_waypoint(layer_name.get(), "param", "string", "layer_name")
     for assets in settings.lottie_format["assets"]:
         if assets["id"] == lottie["refId"]:
             root = assets
             break
 
     it = 0
-    for c_layer in reversed(canvas[0]):
+    for c_layer in reversed(canvas.get_layer_list()):
         active_time = set()
         description = root["layers"][it]["nm"]
 
@@ -232,13 +232,13 @@ def change_opacity_switch(layer, lottie):
         active_time = sorted(active_time)
         deactive_time = sorted(flip_time(active_time))
 
-        if c_layer.attrib["type"] in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
+        if c_layer.get_type() in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
             anim_type = "effects_opacity"
             dic = root["layers"][it]["ef"][0]["ef"][-1]["v"]
-        elif c_layer.attrib["type"] in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER, settings.IMAGE_LAYER):
+        elif c_layer.get_type() in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER, settings.IMAGE_LAYER):
             anim_type = "opacity"
             dic = root["layers"][it]["ks"]["o"]
-        elif c_layer.attrib["type"] in settings.SHAPE_LAYER:
+        elif c_layer.get_type() in settings.SHAPE_LAYER:
             anim_type = "opacity"
             dic = root["layers"][it]["shapes"][1]["o"]
 
@@ -279,18 +279,16 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
 
     Args:
         deactive_time (set) : Range of time when the layer will be deactive
-        layer (lxml.etree._Element) : Synfig format layer
+        layer (common.Layer.Layer) : Synfig format layer
         anim_type (str) : Specifies whether it is effects_opacity or opacity (it
                           will effect a factor of 100)
 
     Returns:
         (lxml.etree._Element) : Modified opacity animation is returned
     """
-    for chld in layer:
-        if chld.tag == "param" and chld.attrib["name"] == "amount":
-            opacity = chld
+    opacity = layer.get_param("amount")
 
-    opacity = gen_dummy_waypoint(opacity, "param", anim_type, "amount")
+    opacity = gen_dummy_waypoint(opacity.get(), "param", anim_type, "amount")
     opacity_dict = {}
     gen_value_Keyframed(opacity_dict, opacity[0], 0)
 
@@ -352,19 +350,19 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
 
     Args:
         lottie (dict) : Time remapping in Lottie format
-        time_offset (lxml.etree._Element) : Offset for time in Synfig format
-        time_dilation (lxml.etree._Element) : Speed/dilation for time in Synfig format
+        time_offset (common.Param.Param) : Offset for time in Synfig format
+        time_dilation (common.Param.Param) : Speed/dilation for time in Synfig format
         idx (itr) : Index of this property in the layer
 
     Returns:
         (None)
     """
     offset_dict = {}
-    time_offset = gen_dummy_waypoint(time_offset, "param", "time")
+    time_offset = gen_dummy_waypoint(time_offset.get(), "param", "time")
     gen_value_Keyframed(offset_dict, time_offset[0], 0)
 
     dilation_dict = {}
-    time_dilation = gen_dummy_waypoint(time_dilation, "param", "real")
+    time_dilation = gen_dummy_waypoint(time_dilation.get(), "param", "real")
     gen_value_Keyframed(dilation_dict, time_dilation[0], 0)
 
     fr, lst = settings.lottie_format["ip"], settings.lottie_format["op"]

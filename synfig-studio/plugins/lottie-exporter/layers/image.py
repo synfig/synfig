@@ -49,14 +49,8 @@ def gen_layer_image(lottie, layer, idx):
     # setting the reference id
     lottie["refId"] = asset["id"]
 
-    pos1_animate = is_animated(st["tl"][0])
-    pos2_animate = is_animated(st["br"][0])
-    # If pos1 is not animated
-    if pos1_animate in {0, 1}:
-        st["tl"] = gen_dummy_waypoint(st["tl"], "param", "vector")
-    # If pos2 is not animated
-    if pos2_animate in {0, 1}:
-        st["br"] = gen_dummy_waypoint(st["br"], "param", "vector")
+    st["tl"] = gen_dummy_waypoint(st["tl"].get(), "param", "vector")
+    st["br"] = gen_dummy_waypoint(st["br"].get(), "param", "vector")
 
     st["scale"] = gen_image_scale(st["tl"][0], st["br"][0], asset["w"], asset["h"])
 

@@ -38,6 +38,14 @@ class Layer:
             return self.layer.attrib["type"]
         return settings.UNKNOWN_LAYER
 
+    def add_param(self, key, param):
+        """
+        param is of type __something__
+        Manually adding some parameter
+        """
+        self.params[key] = Param(param, self)
+        return self.params[key]
+
     def extract_params(self, params):
         """
         Will extract the parameters from the layer and store in params

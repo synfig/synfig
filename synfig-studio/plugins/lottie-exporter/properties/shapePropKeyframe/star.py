@@ -35,16 +35,16 @@ def gen_list_star(lottie, layer):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    origin = layer.get_param("origin").get()
-    radius1 = layer.get_param("radius1").get()
-    radius2 = layer.get_param("radius2").get()
-    angle = layer.get_param("angle").get()
-    points = layer.get_param("points").get()
-    regular_polygon = layer.get_param("regular_polygon").get()
+    origin = layer.get_param("origin")
+    radius1 = layer.get_param("radius1")
+    radius2 = layer.get_param("radius2")
+    angle = layer.get_param("angle")
+    points = layer.get_param("points")
+    regular_polygon = layer.get_param("regular_polygon")
 
     # Animating origin
     update_frame_window(origin[0], window)
-    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
+    origin = gen_dummy_waypoint(origin.get(), "param", "vector", "origin")
     update_child_at_parent(layer.get_layer(), origin, "param", "origin")
     # Generate path for the origin component
     origin_dict = {}
@@ -53,7 +53,7 @@ def gen_list_star(lottie, layer):
 
     # Animating radius1
     update_frame_window(radius1[0], window)
-    radius1 = gen_dummy_waypoint(radius1, "param", "real", "radius1")
+    radius1 = gen_dummy_waypoint(radius1.get(), "param", "real", "radius1")
     update_child_at_parent(layer.get_layer(), radius1, "param", "radius1")
     # Generate expand param for Lottie format
     radius1_dict = {}
@@ -61,7 +61,7 @@ def gen_list_star(lottie, layer):
 
     # Animating radius2
     update_frame_window(radius2[0], window)
-    radius2 = gen_dummy_waypoint(radius2, "param", "real", "radius2")
+    radius2 = gen_dummy_waypoint(radius2.get(), "param", "real", "radius2")
     update_child_at_parent(layer.get_layer(), radius2, "param", "radius2")
     # Generate expand param for Lottie format
     radius2_dict = {}
@@ -69,7 +69,7 @@ def gen_list_star(lottie, layer):
 
     # Animating angle
     update_frame_window(angle[0], window)
-    angle = gen_dummy_waypoint(angle, "param", "star_angle_new", "angle")
+    angle = gen_dummy_waypoint(angle.get(), "param", "star_angle_new", "angle")
     update_child_at_parent(layer.get_layer(), angle, "param", "angle")
     # Generate expand param for Lottie format
     angle_dict = {}
@@ -77,7 +77,7 @@ def gen_list_star(lottie, layer):
 
     # Animating points
     update_frame_window(points[0], window)
-    points = gen_dummy_waypoint(points, "param", "real", "points")
+    points = gen_dummy_waypoint(points.get(), "param", "real", "points")
     update_child_at_parent(layer.get_layer(), points, "param", "points")
     # Generate expand param for Lottie format
     points_dict = {}
@@ -87,7 +87,7 @@ def gen_list_star(lottie, layer):
 
     # Animating regular_polygon
     update_frame_window(regular_polygon[0], window)
-    regular_polygon = gen_dummy_waypoint(regular_polygon, "param", "bool", "regular_polygon")
+    regular_polygon = gen_dummy_waypoint(regular_polygon.get(), "param", "bool", "regular_polygon")
     update_child_at_parent(layer.get_layer(), regular_polygon, "param", "regular_polygon")
 
     # Minimizing the window size

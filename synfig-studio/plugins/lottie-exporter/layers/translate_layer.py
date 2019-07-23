@@ -23,8 +23,8 @@ def gen_layer_translate(lottie, layer):
         (None)
     """
 
-    origin = layer.get_param("origin").get()
-    anchor = gen_dummy_waypoint(origin, "param", "vector")
+    origin = layer.get_param("origin")
+    anchor = gen_dummy_waypoint(origin.get(), "param", "vector")
     pos = anchor
 
     anchor = copy.deepcopy(anchor)
