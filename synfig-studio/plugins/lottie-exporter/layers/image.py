@@ -62,7 +62,7 @@ def gen_layer_image(lottie, layer, idx):
 
     anchor = settings.DEFAULT_ANCHOR
     rotation = settings.DEFAULT_ROTATION
-    opacity = layer.get_param("amount")
+    opacity = layer.get_param("amount").get()
 
     gen_helpers_transform(lottie["ks"], st["tl"][0], anchor, st["scale"][0], rotation, opacity[0])
 

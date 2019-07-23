@@ -48,7 +48,7 @@ def gen_layer_solid(lottie, layer, idx):
     lottie["sw"] = settings.lottie_format["w"] + get_additional_width() # Solid Width
     lottie["sh"] = settings.lottie_format["h"] + get_additional_height() # Solid Height
 
-    lottie["sc"] = get_color_hex(layer.get_param("color")[0])
+    lottie["sc"] = get_color_hex(layer.get_param("color").get()[0])
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]

@@ -5,6 +5,7 @@ Will store the Layer class for Synfig layers
 
 import sys
 import settings
+from common.Param import Param
 sys.path.append("..")
 
 
@@ -44,7 +45,7 @@ class Layer:
         for child in self.layer:
             if child.tag == "param":
                 key = child.attrib["name"]
-                params[key] = child
+                params[key] = Param(child, self)
 
     def get_param(self, *keys):
         """
@@ -55,7 +56,7 @@ class Layer:
         for key in keys:
             if key in self.params.keys():
                 return self.params[key]
-        return None
+        return Param(None, None)
         #raise KeyError("No parameter %s in Layer %s", key, self.get_type())
 
     def is_active(self):

@@ -52,10 +52,10 @@ def gen_layer_shape_solid(lottie, layer, idx):
     lottie["sw"] = settings.lottie_format["w"] + get_additional_width() # Solid Width
     lottie["sh"] = settings.lottie_format["h"] + get_additional_height() # Solid Height
 
-    lottie["sc"] = get_color_hex(layer.get_param("color")[0])
+    lottie["sc"] = get_color_hex(layer.get_param("color").get()[0])
 
     invert = False
-    Inv = layer.get_param("invert")
+    Inv = layer.get_param("invert").get()
     if Inv is not None:
         is_animate = is_animated(Inv[0])
         if is_animate == 0:
@@ -82,6 +82,6 @@ def gen_layer_shape_solid(lottie, layer, idx):
     if layer.get_type() in {"star", "circle", "rectangle", "filled_rectangle"}:
         bline_point = layer
     else:
-        bline_point = layer.get_param("bline", "vector_list")[0]
+        bline_point = layer.get_param("bline", "vector_list").get()[0]
 
     gen_mask(lottie["masksProperties"][0], invert, bline_point, index.inc())

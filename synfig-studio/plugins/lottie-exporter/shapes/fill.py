@@ -30,7 +30,7 @@ def gen_shapes_fill(lottie, layer):
     lottie["o"] = {}       # Opacity of the fill layer
     
     # Color
-    color = layer.get_param("color")
+    color = layer.get_param("color").get()
     is_animate = is_animated(color[0])
     if is_animate == 2:
         gen_value_Keyframed(lottie["c"], color[0], index.inc())
@@ -52,7 +52,7 @@ def gen_shapes_fill(lottie, layer):
                              settings.NO_INFO)
 
     # Color Opacity
-    opacity = layer.get_param("amount")
+    opacity = layer.get_param("amount").get()
     is_animate = is_animated(opacity[0])
     if is_animate == 2:
         # Telling the function that this is for opacity

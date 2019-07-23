@@ -7,8 +7,10 @@ EXTRA_FILES = \
 			  Color.py \
 			  Count.py \
 			  Hermite.py \
+			  Layer.py \
 			  Matrix2.py \
 			  misc.py \
+			  Param.py \
 			  Vector.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)

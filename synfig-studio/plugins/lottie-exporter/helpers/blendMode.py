@@ -34,7 +34,7 @@ def get_blend(lottie, layer):
     blend_map = {0 : 0, 18 : 10, 6 : 1, 17 : 8, 11 : 15, 10 : 13, 9 : 12, 8 : 14,
                  3 : 4, 2 : 5, 20 : 3, 16 : 2}
 
-    blend = layer.get_param("blend_method")
+    blend = layer.get_param("blend_method").get()
     key = int(blend[0].attrib["value"])
     if key in blend_map.keys():
         lottie["bm"] = blend_map[key]

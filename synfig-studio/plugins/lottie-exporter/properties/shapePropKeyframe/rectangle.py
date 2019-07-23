@@ -36,11 +36,11 @@ def gen_list_rectangle(lottie, layer):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    point1 = layer.get_param("point1")
-    point2 = layer.get_param("point2")
-    expand = layer.get_param("expand")
-    bevel = layer.get_param("bevel")
-    bevCircle = layer.get_param("bevCircle")
+    point1 = layer.get_param("point1").get()
+    point2 = layer.get_param("point2").get()
+    expand = layer.get_param("expand").get()
+    bevel = layer.get_param("bevel").get()
+    bevCircle = layer.get_param("bevCircle").get()
 
     if expand is None:    # Means filled rectangle layer
         st = "<param name='expand'><real value='0.0'/></param>"

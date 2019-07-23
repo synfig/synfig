@@ -36,7 +36,7 @@ def gen_shapes_star(lottie, layer, idx):
     regular_polygon = {"prop" : "false"}
 
     # Regular polygon
-    rp = layer.get_param("regular_polygon")
+    rp = layer.get_param("regular_polygon").get()
     is_animate = is_animated(rp[0])
     if is_animate == 2:
         regular_polygon["prop"] = "changing"
@@ -48,7 +48,7 @@ def gen_shapes_star(lottie, layer, idx):
     regular_polygon["animate"] = is_animate
 
     # Points
-    points = layer.get_param("points")
+    points = layer.get_param("points").get()
     is_animate = is_animated(points[0])
     if is_animate == 2:
         # To uniquely identify the points, attribute type is changed
@@ -67,7 +67,7 @@ def gen_shapes_star(lottie, layer, idx):
                              settings.NO_INFO)
 
     # Angle
-    angle = layer.get_param("angle")
+    angle = layer.get_param("angle").get()
     is_animate = is_animated(angle[0])
     if is_animate == 2:
         gen_value_Keyframed(lottie["r"], angle[0], index.inc())
@@ -84,7 +84,7 @@ def gen_shapes_star(lottie, layer, idx):
                              settings.NO_INFO)
 
     # Radius1
-    radius1 = layer.get_param("radius1")
+    radius1 = layer.get_param("radius1").get()
     is_animate = is_animated(radius1[0])
     if is_animate == 2:
         gen_value_Keyframed(lottie["or"], radius1[0], index.inc())
@@ -101,7 +101,7 @@ def gen_shapes_star(lottie, layer, idx):
                              settings.NO_INFO)
 
     # Radius2
-    radius2 = layer.get_param("radius2")
+    radius2 = layer.get_param("radius2").get()
     is_animate = is_animated(radius2[0])
     if is_animate == 2:
         gen_value_Keyframed(lottie["ir"], radius2[0], index.inc())
@@ -118,7 +118,7 @@ def gen_shapes_star(lottie, layer, idx):
                              settings.NO_INFO)
 
     # Origin
-    origin = layer.get_param("origin")
+    origin = layer.get_param("origin").get()
     is_animate = is_animated(origin[0])
     if is_animate == 2:
         gen_properties_multi_dimensional_keyframed(lottie["p"],

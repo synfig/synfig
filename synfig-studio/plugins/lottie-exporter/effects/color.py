@@ -30,7 +30,7 @@ def gen_effects_color(lottie, layer, idx):
     lottie["ix"] = idx                      # Index
     lottie["v"] = {}                        # Value of color
 
-    color = layer.get_param("color")
+    color = layer.get_param("color").get()
     is_animate = is_animated(color[0])
     if is_animate == 2: 
         gen_value_Keyframed(lottie["v"], color[0], index.inc())

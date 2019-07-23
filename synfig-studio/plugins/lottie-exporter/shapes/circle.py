@@ -34,7 +34,7 @@ def gen_shapes_circle(lottie, layer, idx):
     lottie["ix"] = idx      # setting the index
 
     # Origin
-    origin = layer.get_param("origin", "center")
+    origin = layer.get_param("origin", "center").get()
     is_animate = is_animated(origin[0])
     if is_animate == 2:
         gen_properties_multi_dimensional_keyframed(lottie["p"],
@@ -55,7 +55,7 @@ def gen_shapes_circle(lottie, layer, idx):
                              settings.NO_INFO)
     
     # Radius
-    radius = layer.get_param("radius")
+    radius = layer.get_param("radius").get()
     # This will be exported as size of ellipse in lottie format
     is_animate = is_animated(radius[0])
     if is_animate == 2:

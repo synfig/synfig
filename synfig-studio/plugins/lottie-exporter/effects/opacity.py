@@ -29,7 +29,7 @@ def gen_effects_opacity(lottie, layer, idx):
     lottie["ix"] = idx                          # Index
     lottie["v"] = {}                            # Value of opacity
 
-    opacity = layer.get_param("amount")
+    opacity = layer.get_param("amount").get()
     is_animate = is_animated(opacity[0])
     if is_animate == 2:
         # Telling the function that this is for opacity

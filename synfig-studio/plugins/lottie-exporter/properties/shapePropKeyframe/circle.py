@@ -36,8 +36,8 @@ def gen_list_circle(lottie, layer):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    origin = layer.get_param("origin")
-    radius = layer.get_param("radius")
+    origin = layer.get_param("origin").get()
+    radius = layer.get_param("radius").get()
 
     # Animating the origin
     update_frame_window(origin[0], window)

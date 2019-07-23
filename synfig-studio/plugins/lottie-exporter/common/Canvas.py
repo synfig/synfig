@@ -5,8 +5,8 @@ Will store the Canvas class required for Synfig canvases
 
 import sys
 import settings
-sys.path.append("..")
 from common.Layer import Layer
+sys.path.append("..")
 
 
 class Canvas:

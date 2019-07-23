@@ -23,11 +23,11 @@ def gen_layer_rotate(lottie, layer):
         (None)
     """
     scale = settings.DEFAULT_SCALE
-    origin = layer.get_param("origin")
+    origin = layer.get_param("origin").get()
     anchor = gen_dummy_waypoint(origin, "param", "vector")
     pos = anchor
 
-    amount = layer.get_param("amount")  # This is rotation amount
+    amount = layer.get_param("amount").get()  # This is rotation amount
     rotation = gen_dummy_waypoint(amount, "param", "rotate_layer_angle")
 
     anchor = copy.deepcopy(anchor)

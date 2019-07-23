@@ -35,12 +35,12 @@ def gen_list_star(lottie, layer):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    origin = layer.get_param("origin")
-    radius1 = layer.get_param("radius1")
-    radius2 = layer.get_param("radius2")
-    angle = layer.get_param("angle")
-    points = layer.get_param("points")
-    regular_polygon = layer.get_param("regular_polygon")
+    origin = layer.get_param("origin").get()
+    radius1 = layer.get_param("radius1").get()
+    radius2 = layer.get_param("radius2").get()
+    angle = layer.get_param("angle").get()
+    points = layer.get_param("points").get()
+    regular_polygon = layer.get_param("regular_polygon").get()
 
     # Animating origin
     update_frame_window(origin[0], window)

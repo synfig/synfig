@@ -48,7 +48,7 @@ def update_layer(node):
     if isinstance(node, Layer):
         compare = {"center", "origin", "point1", "point2", "tl", "br"}
         for param in compare:
-            get = node.get_param(param)
+            get = node.get_param(param).get()
             if get is not None:
                 update_dict.append(get)
     else:

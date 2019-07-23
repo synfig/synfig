@@ -42,13 +42,13 @@ def gen_layer_group(lottie, layer, idx):
     index = Count()
 
     # Extract parameters
-    canvas = layer.get_param("canvas")
-    origin = layer.get_param("origin")
-    opacity = layer.get_param("amount")
-    outline_grow = layer.get_param("outline_grow")
-    time_offset = layer.get_param("time_offset")
-    time_dilation = layer.get_param("time_dilation")
-    transformation = layer.get_param("transformation")
+    canvas = layer.get_param("canvas").get()
+    origin = layer.get_param("origin").get()
+    opacity = layer.get_param("amount").get()
+    outline_grow = layer.get_param("outline_grow").get()
+    time_offset = layer.get_param("time_offset").get()
+    time_dilation = layer.get_param("time_dilation").get()
+    transformation = layer.get_param("transformation").get()
     transform = transformation[0]
     for child in transform:
         if child.tag == "scale":
@@ -128,10 +128,10 @@ def change_opacity_group(layer, lottie):
     Returns:
         (None)
     """
-    z_range = layer.get_param("z_range")
-    z_range_pos = layer.get_param("z_range_position")
-    z_range_depth = layer.get_param("z_range_depth")
-    canvas = layer.get_param("canvas")
+    z_range = layer.get_param("z_range").get()
+    z_range_pos = layer.get_param("z_range_position").get()
+    z_range_depth = layer.get_param("z_range_depth").get()
+    canvas = layer.get_param("canvas").get()
 
     for assets in settings.lottie_format["assets"]:
         if assets["id"] == lottie["refId"]:
@@ -207,8 +207,8 @@ def change_opacity_switch(layer, lottie):
     Returns:
         (None)
     """
-    layer_name = layer.get_param("layer_name")
-    canvas = layer.get_param("canvas")
+    layer_name = layer.get_param("layer_name").get()
+    canvas = layer.get_param("canvas").get()
 
     layer_name = gen_dummy_waypoint(layer_name, "param", "string", "layer_name")
     for assets in settings.lottie_format["assets"]:
