@@ -9,14 +9,14 @@ from common.Canvas import Canvas
 sys.path.append("..")
 
 
-def add_precomp_asset(lottie, root, layer_itr):
+def add_precomp_asset(lottie, canvas, layer_itr):
     """
     Generates a unique ID for precomp asset and returns it to the caller
     function
 
     Args:
         lottie (dict) : Asset will be stored here in lottie format
-        root   (lxml.etree._Element) : Canvas for which layers are to be generated
+        cavas (common.Canvas.Canvas) : Canvas for which layers are to be generated
         layer_itr (int) : Index of the layer in canvas
 
     Returns:
@@ -26,6 +26,5 @@ def add_precomp_asset(lottie, root, layer_itr):
     lottie["layers"] = []   # If no layer is added, then might result in an error, keep in mind
 
     # Parsing the canvas to class canvas
-    canvas = Canvas(root)
     layers.driver.gen_layers(lottie["layers"], canvas, layer_itr-1)
     return lottie["id"]

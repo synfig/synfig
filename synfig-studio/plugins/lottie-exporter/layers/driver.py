@@ -6,7 +6,6 @@ Main driver functions to generate layers
 import sys
 import logging
 import settings
-from common.Layer import Layer
 from layers.shape import gen_layer_shape
 from layers.solid import gen_layer_solid
 from layers.image import gen_layer_image
@@ -38,47 +37,45 @@ def gen_layers(lottie, canvas, layer_itr):
     group = settings.GROUP_LAYER
     supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group)
     while itr >= 0:
-        child = canvas[itr]
-        if child.tag == "layer":
-            layer = Layer(child)
-            if layer.get_type() not in supported_layers:  # Only supported layers
-                logging.warning(settings.NOT_SUPPORTED_TEXT, layer.get_type())
-                itr -= 1
-                continue
-            elif not layer.is_active():   # Only render the active layers
-                logging.info(settings.NOT_ACTIVE_TEXT, layer.get_type())
-                itr -= 1
-                continue
-            elif not layer.to_render():   # If we don't have to render the layer
-                logging.info(settings.EXCLUDE_FROM_RENDERING, layer.get_type())
-                itr -= 1
-                continue
+        layer = canvas[itr]
+        if layer.get_type() not in supported_layers:  # Only supported layers
+            logging.warning(settings.NOT_SUPPORTED_TEXT, layer.get_type())
+            itr -= 1
+            continue
+        elif not layer.is_active():   # Only render the active layers
+            logging.info(settings.NOT_ACTIVE_TEXT, layer.get_type())
+            itr -= 1
+            continue
+        elif not layer.to_render():   # If we don't have to render the layer
+            logging.info(settings.EXCLUDE_FROM_RENDERING, layer.get_type())
+            itr -= 1
+            continue
 
-            lottie.append({})
-            if layer.get_type() in shape:           # Goto shape layer
-                gen_layer_shape(lottie[-1],
-                                layer,
-                                itr)
-            elif layer.get_type() in solid:         # Goto solid layer
-                gen_layer_solid(lottie[-1],
-                                layer,
-                                itr)
-            elif layer.get_type() in shape_solid:   # Goto shape_solid layer
-                gen_layer_shape_solid(lottie[-1],
-                                      layer,
-                                      itr)
-            elif layer.get_type() in image:   # Goto image layer
-                gen_layer_image(lottie[-1],
-                                layer,
-                                itr)
-            elif layer.get_type() in pre_comp:      # Goto precomp layer
-                gen_layer_precomp(lottie[-1],
+        lottie.append({})
+        if layer.get_type() in shape:           # Goto shape layer
+            gen_layer_shape(lottie[-1],
+                            layer,
+                            itr)
+        elif layer.get_type() in solid:         # Goto solid layer
+            gen_layer_solid(lottie[-1],
+                            layer,
+                            itr)
+        elif layer.get_type() in shape_solid:   # Goto shape_solid layer
+            gen_layer_shape_solid(lottie[-1],
                                   layer,
                                   itr)
-                return  # other layers will be generated inside the precomp
-            elif layer.get_type() in group:       # Goto group layer
-                gen_layer_group(lottie[-1],
-                                layer,
-                                itr)
-                # No return statement here
+        elif layer.get_type() in image:   # Goto image layer
+            gen_layer_image(lottie[-1],
+                            layer,
+                            itr)
+        elif layer.get_type() in pre_comp:      # Goto precomp layer
+            gen_layer_precomp(lottie[-1],
+                              layer,
+                              itr)
+            return  # other layers will be generated inside the precomp
+        elif layer.get_type() in group:       # Goto group layer
+            gen_layer_group(lottie[-1],
+                            layer,
+                            itr)
+            # No return statement here
         itr -= 1

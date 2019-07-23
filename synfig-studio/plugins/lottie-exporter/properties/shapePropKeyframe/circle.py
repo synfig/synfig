@@ -8,6 +8,7 @@ import sys
 import math
 from common.Matrix2 import Matrix2
 from common.Vector import Vector
+from common.Layer import Layer
 from synfig.animation import to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
@@ -22,7 +23,7 @@ def gen_list_circle(lottie, layer):
 
     Args:
         lottie (dict) : Lottie format circle layer will be stored in this
-        layer (lxml.etree._Element) : Synfig format circle layer
+        layer  (common.Layer.Layer) : Synfig format circle layer
 
     Returns:
         (None)
@@ -35,17 +36,13 @@ def gen_list_circle(lottie, layer):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "origin":
-                origin = chld
-            elif chld.attrib["name"] == "radius":
-                radius = chld
+    origin = layer.get_param("origin")
+    radius = layer.get_param("radius")
 
     # Animating the origin
     update_frame_window(origin[0], window)
     origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
-    update_child_at_parent(layer, origin, "param", "origin")
+    update_child_at_parent(layer.get_layer(), origin, "param", "origin")
     # Generate path for the origin component
     origin_dict = {}
     origin[0].attrib["transform_axis"] = "true"
@@ -53,7 +50,7 @@ def gen_list_circle(lottie, layer):
 
     update_frame_window(radius[0], window)
     radius = gen_dummy_waypoint(radius, "param", "real", "radius")
-    update_child_at_parent(layer, radius, "param", "width")
+    update_child_at_parent(layer.get_layer(), radius, "param", "width")
 
     # Generate radius for Lottie format
     radius_dict = {}

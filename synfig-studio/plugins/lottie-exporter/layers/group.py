@@ -6,7 +6,7 @@ Store all functions corresponding to group layer in Synfig
 import sys
 import math
 import settings
-from common.Layer import Layer
+from common.Canvas import Canvas
 from common.Count import Count
 from common.misc import get_frame, approximate_equal, get_time
 from sources.precomp import add_precomp_asset
@@ -88,7 +88,8 @@ def gen_layer_group(lottie, layer, idx):
     settings.INSIDE_PRECOMP = True
 
     settings.lottie_format["assets"].append({})
-    asset = add_precomp_asset(settings.lottie_format["assets"][-1], canvas[0], len(canvas[0]))
+    canvas = Canvas(canvas[0])
+    asset = add_precomp_asset(settings.lottie_format["assets"][-1], canvas, canvas.get_num_layers())
     lottie["refId"] = asset
 
     lottie["w"] = settings.lottie_format["w"] + settings.ADDITIONAL_PRECOMP_WIDTH # Experimental increase in width and height of precomposition

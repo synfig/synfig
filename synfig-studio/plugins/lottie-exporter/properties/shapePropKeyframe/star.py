@@ -7,6 +7,7 @@ in Lottie format
 import sys
 import math
 from common.Vector import Vector
+from common.Layer import Layer
 from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
@@ -21,7 +22,7 @@ def gen_list_star(lottie, layer):
 
     Args:
         lottie (dict) : Lottie format rectangle layer will be stored in this
-        layer (lxml.etree._Element) : Synfig format rectangle layer
+        layer  (common.Layer.Layer) : Synfig format rectangle layer
 
     Returns:
         (None)
@@ -34,25 +35,17 @@ def gen_list_star(lottie, layer):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "origin":
-                origin = chld
-            elif chld.attrib["name"] == "radius1":
-                radius1 = chld
-            elif chld.attrib["name"] == "radius2":
-                radius2 = chld
-            elif chld.attrib["name"] == "angle":
-                angle = chld
-            elif chld.attrib["name"] == "points":
-                points = chld
-            elif chld.attrib["name"] == "regular_polygon":
-                regular_polygon = chld
+    origin = layer.get_param("origin")
+    radius1 = layer.get_param("radius1")
+    radius2 = layer.get_param("radius2")
+    angle = layer.get_param("angle")
+    points = layer.get_param("points")
+    regular_polygon = layer.get_param("regular_polygon")
 
     # Animating origin
     update_frame_window(origin[0], window)
     origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
-    update_child_at_parent(layer, origin, "param", "origin")
+    update_child_at_parent(layer.get_layer(), origin, "param", "origin")
     # Generate path for the origin component
     origin_dict = {}
     origin[0].attrib["transform_axis"] = "true"
@@ -61,7 +54,7 @@ def gen_list_star(lottie, layer):
     # Animating radius1
     update_frame_window(radius1[0], window)
     radius1 = gen_dummy_waypoint(radius1, "param", "real", "radius1")
-    update_child_at_parent(layer, radius1, "param", "radius1")
+    update_child_at_parent(layer.get_layer(), radius1, "param", "radius1")
     # Generate expand param for Lottie format
     radius1_dict = {}
     gen_value_Keyframed(radius1_dict, radius1[0], 0)
@@ -69,7 +62,7 @@ def gen_list_star(lottie, layer):
     # Animating radius2
     update_frame_window(radius2[0], window)
     radius2 = gen_dummy_waypoint(radius2, "param", "real", "radius2")
-    update_child_at_parent(layer, radius2, "param", "radius2")
+    update_child_at_parent(layer.get_layer(), radius2, "param", "radius2")
     # Generate expand param for Lottie format
     radius2_dict = {}
     gen_value_Keyframed(radius2_dict, radius2[0], 0)
@@ -77,7 +70,7 @@ def gen_list_star(lottie, layer):
     # Animating angle
     update_frame_window(angle[0], window)
     angle = gen_dummy_waypoint(angle, "param", "star_angle_new", "angle")
-    update_child_at_parent(layer, angle, "param", "angle")
+    update_child_at_parent(layer.get_layer(), angle, "param", "angle")
     # Generate expand param for Lottie format
     angle_dict = {}
     gen_value_Keyframed(angle_dict, angle[0], 0)
@@ -85,7 +78,7 @@ def gen_list_star(lottie, layer):
     # Animating points
     update_frame_window(points[0], window)
     points = gen_dummy_waypoint(points, "param", "real", "points")
-    update_child_at_parent(layer, points, "param", "points")
+    update_child_at_parent(layer.get_layer(), points, "param", "points")
     # Generate expand param for Lottie format
     points_dict = {}
     gen_value_Keyframed(points_dict, points[0], 0)
@@ -95,7 +88,7 @@ def gen_list_star(lottie, layer):
     # Animating regular_polygon
     update_frame_window(regular_polygon[0], window)
     regular_polygon = gen_dummy_waypoint(regular_polygon, "param", "bool", "regular_polygon")
-    update_child_at_parent(layer, regular_polygon, "param", "regular_polygon")
+    update_child_at_parent(layer.get_layer(), regular_polygon, "param", "regular_polygon")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:

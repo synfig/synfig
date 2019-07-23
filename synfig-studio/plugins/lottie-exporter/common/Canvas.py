@@ -6,6 +6,7 @@ Will store the Canvas class required for Synfig canvases
 import sys
 import settings
 sys.path.append("..")
+from common.Layer import Layer
 
 
 class Canvas:
@@ -69,7 +70,7 @@ class Canvas:
         """
         for child in self.canvas:
             if child.tag == "layer":
-                layer_list.append(child)
+                layer_list.append(Layer(child, self))
 
     def __getitem__(self, itr):
         """

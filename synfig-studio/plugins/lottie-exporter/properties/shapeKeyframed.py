@@ -11,6 +11,7 @@ from properties.shapePropKeyframe.polygon import gen_dynamic_list_polygon
 from properties.shapePropKeyframe.circle import gen_list_circle
 from properties.shapePropKeyframe.rectangle import gen_list_rectangle
 from properties.shapePropKeyframe.star import gen_list_star
+from common.Layer import Layer
 sys.path.append("../")
 
 
@@ -20,9 +21,9 @@ def gen_properties_shapeKeyframed(lottie, node, idx):
     animated
 
     Args:
-        lottie      (dict) : Lottie generated shape keyframes will be stored here
-        node        (lxml.etree._Element) : Shape/path in Synfig format :- Could be bline_point or dynamic_list
-        idx         (int) : Index/Count of shape/path
+        lottie (dict) : Lottie generated shape keyframes will be stored here
+        node   (common.Layer.Layer | lxml.etree._Element) : Shape/path in Synfig format :- Could be bline_point or dynamic_list
+        idx    (int) : Index/Count of shape/path
 
     Returns:
         (None)
@@ -30,11 +31,11 @@ def gen_properties_shapeKeyframed(lottie, node, idx):
     lottie["ix"] = idx
     lottie["a"] = 1
     lottie["k"] = []
-    if node.tag == "layer" and node.attrib["type"] == "circle":
+    if isinstance(node, Layer) and node.get_type() == "circle":
         gen_list_circle(lottie["k"], node)
-    elif node.tag == "layer" and node.attrib["type"] in {"rectangle", "filled_rectangle"}:
+    elif isinstance(node, Layer) and node.get_type() in {"rectangle", "filled_rectangle"}:
         gen_list_rectangle(lottie["k"], node)
-    elif node.tag == "layer" and node.attrib["type"] == "star":
+    elif isinstance(node, Layer) and node.get_type() == "star":
         gen_list_star(lottie["k"], node)
     elif node.getparent().getparent().attrib["type"] == "region":
         gen_bline_region(lottie["k"], node)

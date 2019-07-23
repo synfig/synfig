@@ -12,9 +12,10 @@ class Layer:
     """
     Class to keep Synfig Layers
     """
-    def __init__(self, layer):
+    def __init__(self, layer, parent_canvas):
         """
         """
+        self.parent_canvas = parent_canvas
         self.layer = layer
         self.params = {}
         self.extract_params(self.params)
@@ -105,5 +106,6 @@ class Layer:
     def getparent(self):
         """
         Returns the parent of this Layer
+        return type: common.Canvas.Canvas
         """
-        return self.layer.getparent()
+        return self.parent_canvas
