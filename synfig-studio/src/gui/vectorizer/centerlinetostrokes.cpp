@@ -62,8 +62,8 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
     case 3:{//std::cout<<"This is case 3\n";
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list[0].set_vertex(synfig::Point(segment[0].to_2d().operator[](0),segment[0].to_2d().operator[](1)));// first point 
-            bline_point_list[1].set_vertex(synfig::Point(segment[2].to_2d().operator[](0),segment[2].to_2d().operator[](1)));// last point
+            bline_point_list[0].set_vertex(segment[0].to_2d());
+            bline_point_list[1].set_vertex(segment[2].to_2d());
             bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
             bline_point_list[1].set_tangent((segment[2].to_2d() - segment[1].to_2d()) * 2);
             bline_point_list[0].set_width(1.0f);
@@ -74,8 +74,9 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
     case 4:{  //std::vector<synfig::BLinePoint> bline_point_list; 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list[0].set_vertex(synfig::Point(segment[0].to_2d().operator[](0),segment[0].to_2d().operator[](1)));// first point 
-            bline_point_list[1].set_vertex(synfig::Point(segment[2].to_2d().operator[](0),segment[2].to_2d().operator[](1)));// last point            bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
+            bline_point_list[0].set_vertex(segment[0].to_2d());
+            bline_point_list[1].set_vertex(segment[3].to_2d());
+            bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
             bline_point_list[1].set_tangent((segment[3].to_2d() - segment[2].to_2d()) * 2);
             bline_point_list[0].set_width(1.0f);
             bline_point_list[1].set_width(1.0f); 
@@ -90,8 +91,8 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
                 {
                   bline_point_list.push_back(synfig::BLinePoint()); 
                   bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list[0].set_vertex(synfig::Point(segment[0].to_2d().operator[](0),segment[0].to_2d().operator[](1)));// first point 
-            bline_point_list[1].set_vertex(synfig::Point(segment[2].to_2d().operator[](0),segment[2].to_2d().operator[](1)));// last point
+                  bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
+                  bline_point_list[1].set_vertex(segment[2].to_2d());// last point
                   bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
                   bline_point_list[1].set_tangent1((segment[2].to_2d() - segment[1].to_2d()) * 2);
                   bline_point_list[0].set_width(1.0f);
@@ -102,8 +103,8 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
                 {
                   bline_point_list.push_back(synfig::BLinePoint()); 
                   bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list[0].set_vertex(synfig::Point(segment[0].to_2d().operator[](0),segment[0].to_2d().operator[](1)));// first point 
-                  bline_point_list[1].set_vertex(synfig::Point(segment[3].to_2d().operator[](0),segment[3].to_2d().operator[](1)));// last point
+                  bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
+                  bline_point_list[1].set_vertex(segment[3].to_2d());// last point
                   bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
                   bline_point_list[1].set_tangent1((segment[3].to_2d() - segment[2].to_2d()) * 2);
                   bline_point_list[0].set_width(1.0f);
