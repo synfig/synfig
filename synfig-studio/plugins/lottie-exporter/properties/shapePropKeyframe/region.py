@@ -6,9 +6,11 @@ in Lottie format
 
 import sys
 import ast
+from common.Bline import Bline
+from common.Param import Param
 from synfig.animation import get_vector_at_frame, gen_dummy_waypoint
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import insert_dict_at, update_frame_window, update_child_at_parent, append_path, animate_radial_composite, get_tangent_at_frame, convert_tangent_to_lottie
+from properties.shapePropKeyframe.helper import insert_dict_at, update_frame_window, update_child_at_parent, append_path, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
 sys.path.append("../../")
 
 
@@ -19,7 +21,7 @@ def gen_bline_region(lottie, bline_point):
 
     Args:
         lottie     (dict) : Lottie generated keyframes will be stored here for shape/path
-        bline_path (lxml.etree._Element) : shape/path store in Synfig format
+        bline_path (common.Param.Param) : shape/path store in Synfig format
 
     Returns:
         (None)
@@ -32,59 +34,48 @@ def gen_bline_region(lottie, bline_point):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    loop = False
-    if "loop" in bline_point.keys():
-        val = bline_point.attrib["loop"]
-        if val == "false":
-            loop = False
-        else:
-            loop = True
+    bline = Bline(bline_point[0], bline_point)
+    loop = bline.get_loop()
 
-    for entry in bline_point:
-        composite = entry[0]
-        for child in composite:
-            if child.tag == "point":
-                pos = child
-            elif child.tag == "t1":
-                t1 = child
-            elif child.tag == "t2":
-                t2 = child
-            elif child.tag == "split_radius":
-                split_r = child
-            elif child.tag == "split_angle":
-                split_a = child
+    for entry in bline.get_entry_list():
+        pos = entry["point"]
+        t1 = entry["t1"]
+        t2 = entry["t2"]
+        split_r = entry["split_radius"]
+        split_a = entry["split_angle"]
 
         # Necassary to update this before inserting new waypoints, as new
         # waypoints might include there on time: 0 seconds
         update_frame_window(pos[0], window)
 
         # Empty the pos and fill in the new animated pos
-        pos = gen_dummy_waypoint(pos, "point", "vector")
-        update_child_at_parent(composite, pos, "point")
+        pos = gen_dummy_waypoint(pos.get(), "point", "vector")
+        update_child_at_parent(entry["composite"], pos, "point")
+        entry["point"] = Param(pos, entry["composite"])
 
         update_frame_window(split_r[0], window)
-        split_r = gen_dummy_waypoint(split_r, "split_radius", "bool")
-        update_child_at_parent(composite, split_r, "split_radius")
+        split_r = gen_dummy_waypoint(split_r.get(), "split_radius", "bool")
+        update_child_at_parent(entry["composite"], split_r, "split_radius")
+        entry["split_radius"] = Param(split_r, entry["composite"])
 
         update_frame_window(split_a[0], window)
-        split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
-        update_child_at_parent(composite, split_a, "split_angle")
+        split_a = gen_dummy_waypoint(split_a.get(), "split_angle", "bool")
+        update_child_at_parent(entry["composite"], split_a, "split_angle")
+        entry["split_angle"] = Param(split_a, entry["composite"])
 
-        append_path(pos[0], composite, "point_path", "vector")
+        append_path(pos[0], entry, "point_path", "vector")
 
-        animate_radial_composite(t1[0], window)
-        animate_radial_composite(t2[0], window)
+        animate_tangents(t1, window)
+        animate_tangents(t2, window)
 
-    layer = bline_point.getparent().getparent()
-    for chld in layer:
-        if chld.tag == "param" and chld.attrib["name"] == "origin":
-            origin = chld
+    layer = bline.get_layer()
+    origin = layer.get_param("origin")
 
     # Animating the origin
     update_frame_window(origin[0], window)
     origin_parent = origin.getparent()
-    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
-    update_child_at_parent(origin_parent, origin, "param", "origin")
+    origin = gen_dummy_waypoint(origin.get(), "param", "vector", "origin")
+    update_child_at_parent(origin_parent.get_layer(), origin, "param", "origin")
 
     # Generate path for the origin component
     origin_dict = {}
@@ -102,24 +93,17 @@ def gen_bline_region(lottie, bline_point):
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, loop)
 
-        for entry in bline_point:
-            composite = entry[0]
-            for child in composite:
-                if child.tag == "point_path":
-                    dictionary = ast.literal_eval(child.text)
-                    pos_cur = get_vector_at_frame(dictionary, fr)
-                    pos_next = get_vector_at_frame(dictionary, fr + 1)
-                elif child.tag == "t1":
-                    t1 = child[0]
-                elif child.tag == "t2":
-                    t2 = child[0]
-                elif child.tag == "split_radius":
-                    split_r = child
-                elif child.tag == "split_angle":
-                    split_a = child
+        for entry in bline.get_entry_list():
+            point_path_dict = entry["point_path"]
+            pos_cur = get_vector_at_frame(point_path_dict, fr)
+            pos_next = get_vector_at_frame(point_path_dict, fr + 1)
+            t1 = entry["t1"]
+            t2 = entry["t2"]
+            split_r = entry["split_radius"]
+            split_a = entry["split_angle"]
 
             tangent1_cur, tangent2_cur = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
-            tangent1_next, tangent2_next = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
+            tangent1_next, tangent2_next = get_tangent_at_frame(t1, t2, split_r, split_a, fr + 1)
 
             tangent1_cur, tangent2_cur = convert_tangent_to_lottie(tangent1_cur, tangent2_cur)
             tangent1_next, tangent2_next = convert_tangent_to_lottie(tangent1_next, tangent2_next)

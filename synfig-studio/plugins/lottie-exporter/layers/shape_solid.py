@@ -82,6 +82,6 @@ def gen_layer_shape_solid(lottie, layer, idx):
     if layer.get_type() in {"star", "circle", "rectangle", "filled_rectangle"}:
         bline_point = layer
     else:
-        bline_point = layer.get_param("bline", "vector_list").get()[0]
+        bline_point = layer.get_param("bline", "vector_list")
 
     gen_mask(lottie["masksProperties"][0], invert, bline_point, index.inc())

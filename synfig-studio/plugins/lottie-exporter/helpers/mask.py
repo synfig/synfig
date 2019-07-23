@@ -19,7 +19,7 @@ def gen_mask(lottie, invert, bline_point, idx):
     Args:
         lottie      (dict) : The final mask will be stored in this dict
         invert      (bool) : Tells if the invert parameter is set or not
-        bline_point (common.Layer.Layer | lxml.etree._Element) : Synfig format shape
+        bline_point (common.Layer.Layer | common.Param.Param) : Synfig format shape
         idx         (int)  : Specifies the index of this mask
 
     Returns:

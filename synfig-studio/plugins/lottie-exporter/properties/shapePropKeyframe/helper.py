@@ -10,68 +10,67 @@ from lxml import etree
 import settings
 from common.misc import change_axis, get_frame, is_animated, radial_to_tangent
 from common.Vector import Vector
+from common.Param import Param
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
+from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
 sys.path.append("../../")
 
 
-def append_path(element, parent, element_name, typ="real"):
+def append_path(element, parent, key, typ="real"):
     """
-    Generates a dictionary corresponding to the path followed by that element
-    and appends it at the parent which will be needed later
+    Generates dictionary corresponding to path followed by element and appends
+    it at the parent
 
     Args:
-        element (lxml.etree._Element) : Synfig format element/parameter
-        parent  (lxml.etree._Element) : Parent of the element/parameter
-        element_name (str)            : Tag of the dictionary to be stored in parent
-        typ (:obj: str, optional)     : Specifies the type of dictionary to be created
+        element(lxml.etree._Element) : Synfig format element/parameter
+        parent (dict)                : path will be stored here
+        key (str)           : Key of the dictionary to be stored in parent
+        typ (:obj: str, optional)    : Specifies the type of dictionary to be created
 
     Returns:
         (None)
     """
-    # Generating the path and store in the lxml element
+    # Generating the path
     element_dict = {}
     if typ == "real":
         gen_value_Keyframed(element_dict, element, 0)
     else:
         gen_properties_multi_dimensional_keyframed(element_dict, element, 0)
-    # Store in lxml element
-    element_lxml = etree.Element(element_name)
-    element_lxml.text = str(element_dict)
-    parent.append(element_lxml)
+    parent[key] = element_dict
 
 
-def animate_radial_composite(radial_composite, window):
+def animate_tangents(tangent, window):
     """
     Animates the radial composite and updates the window of frame if radial
     composite's parameters are already animated
     Also generate the Lottie path and stores in radial_composite
 
     Args:
-        radial_composite (lxml.etree._Element) : Synfig format radial composite-> stores radius and angle
+        radial_composite (common.Param.Param)  : Synfig format radial composite's parent-> stores radius and angle
         window           (dict)                : max and min frame of overall animations stored in this
 
     Returns:
         (None)
     """
-    for child in radial_composite:
+    for child in tangent[0]:
+        # Assuming tangent[0] is always radial_composite
         if child.tag == "radius":
-            radius = child
+            radius = Param(child, tangent[0])
         elif child.tag == "theta":
-            theta = child
+            theta = Param(child, tangent[0])
     update_frame_window(radius[0], window)
     update_frame_window(theta[0], window)
 
-    radius = gen_dummy_waypoint(radius, "radius", "real")
-    theta = gen_dummy_waypoint(theta, "theta", "region_angle")
+    radius = gen_dummy_waypoint(radius.get(), "radius", "real")
+    theta = gen_dummy_waypoint(theta.get(), "theta", "region_angle")
 
     # Update the newly computed radius and theta
-    update_child_at_parent(radial_composite, radius, "radius")
-    update_child_at_parent(radial_composite, theta, "theta")
+    update_child_at_parent(tangent[0], radius, "radius")
+    update_child_at_parent(tangent[0], theta, "theta")
 
-    append_path(radius[0], radial_composite, "radius_path")
-    append_path(theta[0], radial_composite, "theta_path")
+    append_path(radius[0], tangent.get_subparam_dict(), "radius_path")
+    append_path(theta[0], tangent.get_subparam_dict(), "theta_path")
 
 
 def update_frame_window(node, window):
@@ -124,10 +123,10 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     depending on whether split_radius and split_angle is "true"/"false"
 
     Args:
-        t1      (lxml.etree._Element) : Holds Tangent 1/In Tangent
-        t2      (lxml.etree._Element) : Holds Tangent 2/Out Tangent
-        split_r (lxml.etree._Element) : Holds animation of split radius parameter
-        split_a (lxml.etree._Element) : Holds animation of split angle parameter
+        t1      (common.Param.Param)  : Holds Tangent 1/In Tangent
+        t2      (common.Param.Param)  : Holds Tangent 2/Out Tangent
+        split_r (common.Param.Param) : Holds animation of split radius parameter
+        split_a (common.Param.Param) : Holds animation of split angle parameter
         fr      (int)                 : Holds the frame value
 
     Returns:
@@ -139,30 +138,22 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     sp_a = get_bool_at_frame(split_a[0], fr)
 
     # Setting tangent 1
-    for chld in t1:
-        if chld.tag == "radius_path":
-            dictionary = ast.literal_eval(chld.text)
-            r1 = get_vector_at_frame(dictionary, fr)
-        elif chld.tag == "theta_path":
-            dictionary = ast.literal_eval(chld.text)
-            a1 = get_vector_at_frame(dictionary, fr)
+    r1 = get_vector_at_frame(t1.get_subparam("radius_path"), fr)
+    a1 = get_vector_at_frame(t1.get_subparam("theta_path"), fr)
+
     x, y = radial_to_tangent(r1, a1)
     tangent1 = Vector(x, y)
 
     # Setting tangent 2
-    for chld in t2:
-        if chld.tag == "radius_path":
-            dictionary = ast.literal_eval(chld.text)
-            r2 = get_vector_at_frame(dictionary, fr)
-            if not sp_r:
-                # Use t1's radius
-                r2 = r1
-        elif chld.tag == "theta_path":
-            dictionary = ast.literal_eval(chld.text)
-            a2 = get_vector_at_frame(dictionary, fr)
-            if not sp_a:
-                # Use t1's angle
-                a2 = a1
+    r2 = get_vector_at_frame(t2.get_subparam("radius_path"), fr)
+    a2 = get_vector_at_frame(t2.get_subparam("theta_path"), fr)
+    if not sp_r:
+        # Use t1's radius
+        r2 = r1
+    if not sp_a:
+        # Use t1's angle
+        a2 = a1
+
     x, y = radial_to_tangent(r2, a2)
     tangent2 = Vector(x, y)
     return tangent1, tangent2
