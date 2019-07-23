@@ -150,7 +150,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
  //param2.set_list_of(bline_point_list);
 	vn=value_node=bline_value_node=synfig::ValueNode_BLine::create(bline_point_list, canvas);
   layer->connect_dynamic_param("bline",vn);
-  //layer->set_param("origin",Origin/60);
+  layer->set_param("width",5.0/unit_size);
   return layer;
 }
 
