@@ -170,7 +170,7 @@ private:
 	//! Update the param_tree_view header height.
 	/*! \return true if param_tree_header_height updated, else false
 	*/
-	bool update_param_tree_header_height();
+	void update_param_tree_header_height();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

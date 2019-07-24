@@ -38,7 +38,7 @@
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
 
-#include <gui/helpers.h>
+#include <helpers.h>
 #include <app.h>
 #include <instance.h>
 #include <canvasview.h>
@@ -67,13 +67,13 @@ using namespace studio;
 
 class TimeTrackView : public Gtk::TreeView
 {
+private:
+	sigc::connection expand_connection;
+	sigc::connection collapse_connection;
+	
 	CellRenderer_TimeTrack *cellrenderer_time_track;
 
-	Glib::RefPtr<LayerParamTreeStore> param_tree_store_;
-
-	Gtk::TreeView *mimic_tree_view;
 public:
-
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint, std::less<UniqueID> >,int> signal_waypoint_clicked_timetrackview;
 
 	LayerParamTreeStore::Model model;
@@ -153,31 +153,12 @@ public:
 		set_size_request(-1,64);
 	}
 
+
 	bool
 	on_event(GdkEvent *event)
 	{
 		switch(event->type)
 		{
-		case GDK_SCROLL:
-			if (mimic_tree_view) {
-				if(event->scroll.direction==GDK_SCROLL_DOWN)
-					ConfigureAdjustment(mimic_tree_view->get_vadjustment())
-						.set_value( std::min(
-							mimic_tree_view->get_vadjustment()->get_value()
-						  +	mimic_tree_view->get_vadjustment()->get_step_increment(),
-							mimic_tree_view->get_vadjustment()->get_upper()
-						  - mimic_tree_view->get_vadjustment()->get_page_size() ))
-						.finish();
-				else
-				if(event->scroll.direction==GDK_SCROLL_UP)
-					ConfigureAdjustment(mimic_tree_view->get_vadjustment())
-						.set_value( std::max(
-							mimic_tree_view->get_vadjustment()->get_value()
-						  -	mimic_tree_view->get_vadjustment()->get_step_increment(),
-							mimic_tree_view->get_vadjustment()->get_lower() ))
-						.finish();
-			}
-			break;
 		case GDK_BUTTON_PRESS:
 			{
 				Gtk::TreeModel::Path path;
@@ -205,7 +186,6 @@ public:
 				}
 			}
 			break;
-
 		case GDK_MOTION_NOTIFY:
 			{
 				Gtk::TreeModel::Path path;
@@ -237,19 +217,6 @@ public:
 					//queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 					return true;
 				}
-/*				else
-				if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
-				{
-					tooltips_.unset_tip(*this);
-					Glib::ustring tooltips_string(row[layer_model.tooltip]);
-					last_tooltip_path=path;
-					if(!tooltips_string.empty())
-					{
-						tooltips_.set_tip(*this,tooltips_string);
-						tooltips_.force_window();
-					}
-				}
-*/
 				return true;
 			}
 			break;
@@ -279,7 +246,7 @@ public:
 					cellrenderer_time_track->property_canvas()=row[model.canvas];
 					cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
 					queue_draw();
-					queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
+					//queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 					return true;
 				}
 			}
@@ -287,22 +254,13 @@ public:
 		default:
 			break;
 		}
-		mimic_resync();
 		return Gtk::TreeView::on_event(event);
 	}
 
-	void
-	queue_draw_msg()
-	{
-		synfig::info("*************QUEUE_DRAW***************** (time track view)");
-		Widget::queue_draw();
-	}
 	void set_model(Glib::RefPtr<LayerParamTreeStore> store)
 	{
 		Gtk::TreeView::set_model(store);
-		param_tree_store_=store;
-		cellrenderer_time_track->set_canvas_interface(param_tree_store_->canvas_interface());
-		store->signal_changed().connect(sigc::mem_fun(*this, &TimeTrackView::queue_draw));
+		cellrenderer_time_track->set_canvas_interface( store->canvas_interface() );
 	}
 
 	void
@@ -311,20 +269,26 @@ public:
 		// \todo is this code used?
 		assert(0);
 
+		Glib::RefPtr<LayerParamTreeStore> store =
+			Glib::RefPtr<LayerParamTreeStore>::cast_dynamic( get_model() );
+		assert(store);
+		
 		synfigapp::Action::ParamList param_list;
-		param_list.add("canvas",param_tree_store_->canvas_interface()->get_canvas());
-		param_list.add("canvas_interface",param_tree_store_->canvas_interface());
-		param_list.add("value_node",value_node);
-		param_list.add("waypoint",waypoint);
-	//	param_list.add("time",canvas_interface()->get_time());
+		param_list.add("canvas", store->canvas_interface()->get_canvas());
+		param_list.add("canvas_interface", store->canvas_interface());
+		param_list.add("value_node", value_node);
+		param_list.add("waypoint", waypoint);
+	//	param_list.add("time", canvas_interface()->get_time());
 
-		etl::handle<studio::Instance>::cast_static(param_tree_store_->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
+		etl::handle<studio::Instance>::cast_static(store->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
 	}
 
-	void mimic(Gtk::TreeView *param_tree_view)
+	void mimic(Gtk::TreeView *tree_view)
 	{
-		mimic_tree_view=param_tree_view;
-		param_tree_view->signal_row_expanded().connect(
+		expand_connection.disconnect();
+		collapse_connection.disconnect();
+		
+		expand_connection = tree_view->signal_row_expanded().connect(
 			sigc::hide<0>(
 			sigc::hide_return(
 				sigc::bind<-1>(
@@ -336,7 +300,7 @@ public:
 				)
 			))
 		);
-		param_tree_view->signal_row_collapsed().connect(
+		collapse_connection = tree_view->signal_row_collapsed().connect(
 			sigc::hide<0>(
 			sigc::hide_return(
 					sigc::mem_fun(
@@ -345,38 +309,13 @@ public:
 					)
 			))
 		);
-		mimic_resync();
-	}
-
-	void mimic_resync()
-	{
-		if(mimic_tree_view)
-		{
-			Glib::RefPtr<Gtk::Adjustment> adjustment(mimic_tree_view->get_vadjustment());
-			set_vadjustment(adjustment);
-
-			if (adjustment->get_page_size()>get_height())
-				ConfigureAdjustment(adjustment)
-					.set_page_size(get_height())
-					.finish();
-/* Commented during Align rows fixing
-// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
-			int row_height = 0;
-			if(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"))
-				row_height = atoi(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"));
-			if (row_height < 3)
-				row_height = 18;
-
-			cellrenderer_time_track->set_fixed_size(-1,row_height);
-*/
-		}
 	}
 
 	void
 	on_waypoint_clicked_timetrackview(const etl::handle<synfig::Node>& node,
 									  const synfig::Time& time,
-									  const synfig::Time& time_offset __attribute__ ((unused)),
-									  const synfig::Time& time_dilation __attribute__ ((unused)),
+									  const synfig::Time& /*time_offset*/,
+									  const synfig::Time& /*time_dilation*/,
 									  int button)
 	{
 		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
@@ -389,8 +328,12 @@ public:
 			ValueNode::Handle value_node(waypoint_set.begin()->get_parent_value_node());
 			assert(value_node);
 
+			Glib::RefPtr<LayerParamTreeStore> store =
+				Glib::RefPtr<LayerParamTreeStore>::cast_dynamic( get_model() );
+			assert(store);
+			
 			Gtk::TreeRow row;
-			if (param_tree_store_->find_first_value_node(value_node, row) && row)
+			if (store && store->find_first_value_node(value_node, row) && row)
 				value_desc = static_cast<synfigapp::ValueDesc>(row[model.value_desc]);
 		}
 
@@ -407,8 +350,7 @@ public:
 
 Dock_Timetrack::Dock_Timetrack():
 	Dock_CanvasSpecific("timetrack",_("Timetrack"),Gtk::StockID("synfig-timetrack")),
-	grid_(),
-	mimic_tree_view()
+	grid_()
 {
 	set_use_scrolled(false);
 }
@@ -423,57 +365,35 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 {
 	LayerParamTreeStore::Model model;
 
-	Glib::RefPtr<LayerParamTreeStore> tree_store(
-		Glib::RefPtr<LayerParamTreeStore>::cast_dynamic(
-			canvas_view->get_tree_model("params")
-		)
-	);
+	Glib::RefPtr<LayerParamTreeStore> tree_store = Glib::RefPtr<LayerParamTreeStore>::cast_dynamic( canvas_view->get_tree_model("params") );
+	Gtk::TreeView *mimic_tree_view = dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"));
+	assert(mimic_tree_view);
 
-	TimeTrackView* tree_view(new TimeTrackView());
+	TimeTrackView* tree_view = new TimeTrackView();
 	tree_view->set_canvas_view(canvas_view);
 	tree_view->set_model(tree_store);
-	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
-	tree_view->mimic(param_tree_view);
-	mimic_tree_view=param_tree_view;
+	tree_view->mimic(mimic_tree_view);
+	tree_view->signal_waypoint_clicked_timetrackview.connect(
+		sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview) );
+	canvas_view->time_model()->signal_changed().connect(
+		sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw) );
+	canvas_view->set_ext_widget(get_name(), tree_view);
+	tree_view->show();
 
-	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
-
-	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
-
-	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height));
-	canvas_view->time_model()->signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
-	canvas_view->set_ext_widget(get_name(),tree_view);
-}
-
-void
-Dock_Timetrack::refresh_selected_param()
-{
-/*	Gtk::TreeView* tree_view(
-		static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name()))
-	);
-	Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
-
-	if(iter)
-	{
-		LayerParamTreeStore::Model model;
-		get_canvas_view()->work_area->set_selected_value_node(
-			(synfig::ValueNode::Handle)(*iter)[model.value_node]
-		);
-	}
-	else
-	{
-		get_canvas_view()->work_area->set_selected_value_node(0);
-	}
-*/
+	canvas_view->get_adjustment_group("params")->add(vscrollbar_.get_adjustment());
+	
+	studio::LayerTree *tree_layer = dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp") );
+	assert(tree_layer);
+	tree_layer->signal_param_tree_header_height_changed().connect(
+		sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height) );
 }
 
 void
 Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-	if(grid_)
+	if (grid_)
 	{
 		hscrollbar_.unset_adjustment();
-		vscrollbar_.unset_adjustment();
 
 		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
@@ -483,20 +403,21 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		delete grid_;
 		grid_=0;
 	}
-
-	if(canvas_view)
+	
+	if (canvas_view)
 	{
-		TimeTrackView* tree_view(dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name())));
-		Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
+		TimeTrackView *tree_view = dynamic_cast<TimeTrackView*>(canvas_view->get_ext_widget(get_name()));
 		assert(tree_view);
-		assert(param_tree_view);
 
+		vscrollbar_.get_adjustment()->set_value(0);
+		tree_view->show();
+		
 		Gtk::ScrolledWindow* scrolled = Gtk::manage(new Gtk::ScrolledWindow);
 		scrolled->set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_ALWAYS);
-		scrolled->get_vscrollbar()->hide();
 		scrolled->add(*tree_view);
-		scrolled->set_vadjustment(param_tree_view->get_vadjustment());
-		scrolled->show_all();
+		scrolled->set_vadjustment(vscrollbar_.get_adjustment());
+		scrolled->get_vscrollbar()->hide();
+		scrolled->show();
 
 		// Fixed size drawing areas to align the widget_timeslider and tree_view time cursors
 		// TODO ?: one align_drawingArea.(0, 1, 0, 1) modify_bg KF's color another (0, 1, 1, 2) modify_bg TS's color
@@ -510,14 +431,19 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		align_drawingArea1->set_size_request(2,-1);
 		align_drawingArea2->set_size_request(4,-1);
 #endif
+		align_drawingArea1->show();
+		align_drawingArea2->show();
 
 		widget_timeslider_.set_canvas_view(canvas_view);
+		widget_timeslider_.show();
 
 		widget_kf_list_.set_time_model(canvas_view->time_model());
 		widget_kf_list_.set_canvas_interface(canvas_view->canvas_interface());
+		widget_kf_list_.show();
 
-		vscrollbar_.set_adjustment(scrolled->get_vadjustment());
 		hscrollbar_.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
+		vscrollbar_.show();
+		hscrollbar_.show();
 
 		//  0------1------2------3------4
 		//  |  A   |  KF  |  A   |  v   |
@@ -526,7 +452,7 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		//  |  G   |  TS  |  G   |  r   |
 		//  |  N1  |      |  N2  |  o   |
 		//  2------x------x------x  l   x
-		//  |  TV     TV     TV  |  l   |
+		//  |  tree_view         |  l   |
 		//  |                    |  b   |
 		//  3------x------x------x------x
 		//  | hscrollbar                |
@@ -535,7 +461,6 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		//
 		// KF = widget_kf_list
 		// TS = widget_timeslider
-		// TV = tree_view
 		// ALIGN1 = align_drawingArea1
 		// ALIGN2 = align_drawingArea2
 
@@ -556,24 +481,19 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		grid_->attach(*scrolled,           0, 2, 3, 1);
 		grid_->attach(vscrollbar_,         3, 0, 1, 3);
 		grid_->attach(hscrollbar_,         0, 3, 4, 1);
+		grid_->show();
 		add(*grid_);
-		
-		// Should be here, after the widget was attached to table
-		tree_view->add_events(Gdk::SCROLL_MASK);
-
-		//add(*last_widget_curves_);
-		grid_->show_all();
-		show_all();
 	}
 }
 
 void
-Dock_Timetrack::on_update_header_height( int /*header_height*/)
+Dock_Timetrack::on_update_header_height(int height)
 {
-	int width=0;
-	int height=0;
-	int kf_list_height=10;
-	mimic_tree_view->convert_bin_window_to_widget_coords(0, 0, width, height);
-	widget_timeslider_.set_size_request(-1,height-kf_list_height);
-	widget_kf_list_.set_size_request(-1,kf_list_height);
+	int w = 0, h = 0;
+	widget_kf_list_.get_size_request(w, h);
+	int ts_height = std::max(1, height - h);
+
+	widget_timeslider_.get_size_request(w, h);
+	if (h != ts_height)
+		widget_timeslider_.set_size_request(-1, ts_height);
 }

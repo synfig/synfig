@@ -71,7 +71,7 @@ public:
 private:
 	//! Signal handler for studio::LayerTree::signal_param_tree_header_height_changed
 	/* \see studio::LayerTree::signal_param_tree_header_height_changed */
-	void on_update_header_height( int header_height);
+	void on_update_header_height(int height);
 }; // END of Dock_Curves
 
 }; // END of namespace studio

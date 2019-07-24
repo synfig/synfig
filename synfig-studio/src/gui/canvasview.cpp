@@ -3617,6 +3617,22 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y)
 		keyframe_tree=dynamic_cast<KeyframeTree*>(y);
 }
 
+AdjustmentGroup::Handle
+CanvasView::get_adjustment_group(const synfig::String& x)
+{
+	std::map<synfig::String,AdjustmentGroup::Handle>::const_iterator i = adjustment_group_book_.find(x);
+	return i == adjustment_group_book_.end() ? AdjustmentGroup::Handle() : i->second;
+}
+
+void
+CanvasView::set_adjustment_group(const synfig::String& x, AdjustmentGroup::Handle y)
+{
+	if (y)
+		adjustment_group_book_[x] = y;
+	else
+		adjustment_group_book_.erase(x);
+}
+
 Gtk::UIManager::ui_merge_id
 CanvasView::get_popup_id()
 {
