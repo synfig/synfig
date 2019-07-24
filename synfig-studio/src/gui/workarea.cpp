@@ -428,6 +428,12 @@ WorkArea::have_meta_data()
 	return true;
 }
 
+void WorkArea::grab_focus()
+{
+	if (drawing_area)
+		drawing_area->grab_focus();
+}
+
 void
 WorkArea::load_meta_data()
 {

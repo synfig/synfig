@@ -1366,6 +1366,11 @@ CanvasView::create_display_bar()
 	return hbox;
 }
 
+void CanvasView::grab_focus()
+{
+	work_area->grab_focus();
+}
+
 void
 CanvasView::on_current_time_widget_changed()
 {
@@ -1965,12 +1970,26 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 	if(focused_widget && focused_widget_has_priority(focused_widget))
 	{
 		if(focused_widget->event((GdkEvent*)event))
-		return true;
+			return true;
 	}
 	else if(Dockable::on_key_press_event(event))
 			return true;
 		else
-			if (focused_widget) return focused_widget->event((GdkEvent*)event);
+			if (focused_widget) {
+				if (focused_widget->event((GdkEvent*)event))
+					return true;
+			}
+
+	if (event->type == GDK_KEY_PRESS) {
+		switch (event->keyval) {
+		case GDK_KEY_Home:
+			action_group->get_action("seek-begin")->activate();
+			return  true;
+		case GDK_KEY_End:
+			action_group->get_action("seek-end")->activate();
+			return  true;
+		}
+	}
 	return false;
 }
 

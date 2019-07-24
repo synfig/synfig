@@ -451,6 +451,8 @@ public:
 	//! Test initial meta data values
 	bool have_meta_data();
 
+	void grab_focus();
+
 private:
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
