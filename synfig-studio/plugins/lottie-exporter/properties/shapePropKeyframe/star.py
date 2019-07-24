@@ -8,7 +8,7 @@ import sys
 import math
 from common.Vector import Vector
 from common.Layer import Layer
-from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame
+from synfig.animation import to_Synfig_axis
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window
@@ -29,8 +29,6 @@ def gen_list_star(lottie, layer):
     """
     ################### SECTION 1 #########################
     # Inserting waypoints if not animated and finding the first and last frame
-    # AFter that, there path will be calculated in lottie format which can
-    # latter be used in get_vector_at_frame() function
     window = {}
     window["first"] = sys.maxsize
     window["last"] = -1
@@ -46,31 +44,26 @@ def gen_list_star(lottie, layer):
     update_frame_window(origin[0], window)
     origin.animate("vector")
     origin.gen_path_with_transform()
-    origin_dict = origin.get_path()
 
     # Animating radius1
     update_frame_window(radius1[0], window)
     radius1.animate("real")
     radius1.gen_path()
-    radius1_dict = radius1.get_path()
 
     # Animating radius2
     update_frame_window(radius2[0], window)
     radius2.animate("real")
     radius2.gen_path()
-    radius2_dict = radius2.get_path()
 
     # Animating angle
     update_frame_window(angle[0], window)
     angle.animate("star_angle_new")
     angle.gen_path()
-    angle_dict = angle.get_path()
 
     # Animating points
     update_frame_window(points[0], window)
     points.animate("real")
     points.gen_path()
-    points_dict = points.get_path()
 
     mx_points = get_max_points(points)
 
@@ -89,8 +82,8 @@ def gen_list_star(lottie, layer):
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)
-        synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr)
-        synfig_star(en_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr + 1)
+        synfig_star(st_val, mx_points, origin, radius1, radius2, angle, points, regular_polygon, fr)
+        synfig_star(en_val, mx_points, origin, radius1, radius2, angle, points, regular_polygon, fr + 1)
 
         fr += 1
     # Setting the final time
@@ -121,7 +114,7 @@ def get_max_points(points):
     return mx
 
 
-def synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon_anim, fr):
+def synfig_star(st_val, mx_points, origin_p, radius1_p, radius2_p, angle_p, points_p, regular_polygon_p, fr):
     """
     Calculates the points for the rectangle layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/star.cpp
@@ -129,23 +122,23 @@ def synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angl
     Args:
         st_val (dict) : Lottie format star will be stored here
         mx_points (int) : Maximum points ever in star animation
-        radius1_dict (dict) : Lottie format radius1 animation
-        radius2_dict (dict) : Lottie format radius2 animation
-        angle_dict   (dict) : Lottie format angle animation
-        points_dict  (dict) : Lottie format points animation
-        regular_polygon_anim (common.Param.Param) : Synfig format regularPolygon animation
+        radius1_p (common.Param.Param) : Lottie format radius1 animation
+        radius2_p (common.Param.Param) : Lottie format radius2 animation
+        angle_p   (common.Param.Param) : Lottie format angle animation
+        points_p  (common.Param.Param) : Lottie format points animation
+        regular_polygon_p (common.Param.Param) : Synfig format regularPolygon animation
         fr (int) : Frame number
 
     Returns:
         (None)
     """
 
-    angle = get_vector_at_frame(angle_dict, fr)
-    points = int(to_Synfig_axis(get_vector_at_frame(points_dict, fr), "real"))
-    radius1 = to_Synfig_axis(get_vector_at_frame(radius1_dict, fr), "real")
-    radius2 = to_Synfig_axis(get_vector_at_frame(radius2_dict, fr), "real")
-    regular_polygon = get_bool_at_frame(regular_polygon_anim[0], fr)
-    origin_cur = get_vector_at_frame(origin_dict, fr)
+    angle = angle_p.get_value(fr)
+    points = int(to_Synfig_axis(points_p.get_value(fr), "real"))
+    radius1 = to_Synfig_axis(radius1_p.get_value(fr), "real")
+    radius2 = to_Synfig_axis(radius2_p.get_value(fr), "real")
+    regular_polygon = regular_polygon_p.get_value(fr)
+    origin_cur = origin_p.get_value(fr)
 
     angle = math.radians(angle)
     dist_between_points = (math.pi * 2) / float(points)

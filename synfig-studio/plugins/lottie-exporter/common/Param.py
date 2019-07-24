@@ -8,7 +8,7 @@ import copy
 from lxml import etree
 import settings
 import common
-from synfig.animation import print_animation, gen_dummy_waypoint
+from synfig.animation import get_bool_at_frame, get_vector_at_frame, print_animation
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
@@ -27,6 +27,7 @@ class Param:
         self.subparams = {}
         self.IS_ANIMATED = 0
         self.PATH_GENERATED = 0
+        self.TRANSFORM_PATH_GENERATED = 0
 
     def get(self):
         """
@@ -132,7 +133,7 @@ class Param:
         """
         if self.PATH_GENERATED:
             return
-        self.PATH_GENERATED = 1
+        self.PATH_GENERATED, self.TRANSFORM_PATH_GENERATED = 1, 0
 
         self.path = {}
         if anim_type == "real":
@@ -151,12 +152,22 @@ class Param:
         Generates the path for this parameter over time with transform_axis
         being set true
         """
+        if self.TRANSFORM_PATH_GENERATED:
+            return
+        self.TRANSFORM_PATH_GENERATED, self.PATH_GENERATED = 1, 0
         self.path = {}
         # anim_type can not be real here
         self.param[0].attrib["transform_axis"] = "true"
         gen_properties_multi_dimensional_keyframed(self.path, self.param[0], idx)
         self.param[0].attrib["transform_axis"] = "false"
 
-        # If a parameter is used at differnt places, then the path will need to
-        # be generated again
-        self.PATH_GENERATED = 0
+    def get_value(self, frame):
+        """
+        Returns the value of the parameter at a given frame
+        """
+        if self.param[0].attrib["type"] == "bool":  # No need of lottie format path here
+            return get_bool_at_frame(self.param[0], frame)
+
+        if not self.PATH_GENERATED and not self.TRANSFORM_PATH_GENERATED:
+            raise KeyError("Please calculate the path of this parameter before getting value at a frame")
+        return get_vector_at_frame(self.path, frame)

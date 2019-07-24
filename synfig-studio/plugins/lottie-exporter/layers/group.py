@@ -13,7 +13,7 @@ from common.misc import get_frame, approximate_equal, get_time
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from synfig.animation import print_animation, insert_waypoint_at_frame, to_Synfig_axis, get_vector_at_frame
+from synfig.animation import print_animation, insert_waypoint_at_frame, to_Synfig_axis
 import synfig.group as group
 from properties.shapePropKeyframe.helper import append_path
 from properties.valueKeyframed import gen_value_Keyframed
@@ -145,18 +145,16 @@ def change_opacity_group(layer, lottie):
 
     z_range_pos.animate("real")
     z_range_pos.gen_path("real")
-    pos_dict = z_range_pos.get_path()
 
     z_range_depth.animate("real")
     z_range_depth.gen_path("real")
-    depth_dict = z_range_depth.get_path()
 
     z_st, z_en = float('-inf'), float('-inf')
     active_range = [] # Stores the time and change of layers in z-range
     fr = settings.lottie_format["ip"]
     while fr <= settings.lottie_format["op"]:
-        pos_val = to_Synfig_axis(get_vector_at_frame(pos_dict, fr), "real")
-        depth_val = to_Synfig_axis(get_vector_at_frame(depth_dict, fr), "real")
+        pos_val = to_Synfig_axis(z_range_pos.get_value(fr), "real")
+        depth_val = to_Synfig_axis(z_range_depth.get_value(fr), "real")
         st, en = math.ceil(pos_val), math.floor(pos_val + depth_val)
         if st > en or en < 0:
             if (fr == settings.lottie_format["ip"]) or (z_st != -1 and z_en != -1):
@@ -362,11 +360,9 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
     """
     time_offset.animate("time")
     time_offset.gen_path("real")
-    offset_dict = time_offset.get_path()
 
     time_dilation.animate("real")
     time_dilation.gen_path()
-    dilation_dict = time_dilation.get_path()
 
     fr, lst = settings.lottie_format["ip"], settings.lottie_format["op"]
     lottie["a"] = 1 # Animated
@@ -375,11 +371,11 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
 
     while fr <= lst:
         lottie["k"].append({})
-        gen_dict(lottie["k"][-1], offset_dict, dilation_dict, fr)
+        gen_dict(lottie["k"][-1], time_offset, time_dilation, fr)
         fr += 1
 
 
-def gen_dict(lottie, offset_dict, dilation_dict, fr):
+def gen_dict(lottie, time_offset, time_dilation, fr):
     """
     Generates the constant values for each frame
 
@@ -401,10 +397,10 @@ def gen_dict(lottie, offset_dict, dilation_dict, fr):
     lottie["o"]["y"].append(0.5)
     lottie["t"] = fr
 
-    speed_f = to_Synfig_axis(get_vector_at_frame(dilation_dict, fr), "real")
-    speed_s = to_Synfig_axis(get_vector_at_frame(dilation_dict, fr + 1), "real")
-    first = get_vector_at_frame(offset_dict, fr) + (fr/settings.lottie_format["fr"])*speed_f
-    second = get_vector_at_frame(offset_dict, fr + 1) + ((fr + 1)/settings.lottie_format["fr"])*speed_s
+    speed_f = to_Synfig_axis(time_dilation.get_value(fr), "real")
+    speed_s = to_Synfig_axis(time_dilation.get_value(fr+1), "real")
+    first = time_offset.get_value(fr) + (fr/settings.lottie_format["fr"])*speed_f
+    second = time_offset.get_value(fr + 1) + ((fr + 1)/settings.lottie_format["fr"])*speed_s
     first = min(max(get_time_bound("ip"), first), get_time_bound("op"))
     second = min(max(get_time_bound("ip"), second), get_time_bound("op"))
 

@@ -13,7 +13,7 @@ from common.misc import is_animated, get_frame
 from common.Layer import Layer
 from common.Param import Param
 from sources.image import add_image_asset
-from shapes.rectangle import get_vector_at_frame, to_Synfig_axis
+from shapes.rectangle import to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 import synfig.group as group
 sys.path.append("..")
@@ -91,12 +91,10 @@ def gen_image_scale(animated_1, animated_2, width, height):
 
     animated_1.gen_path("vector")
     animated_2.gen_path("vector")
-    anim1_path = animated_1.get_path()
-    anim2_path = animated_2.get_path()
 
     # Filling the first 2 frames with there original scale values
-    fill_image_scale_at_frame(image_scale[0], anim1_path, anim2_path, width, height, 0)
-    fill_image_scale_at_frame(image_scale[0], anim1_path, anim2_path, width, height, 1)
+    fill_image_scale_at_frame(image_scale[0], animated_1, animated_2, width, height, 0)
+    fill_image_scale_at_frame(image_scale[0], animated_1, animated_2, width, height, 1)
 
     mx_fr = max(get_frame(animated_1[0][-1]), get_frame(animated_2[0][-1]))
     fr = 2
@@ -106,20 +104,20 @@ def gen_image_scale(animated_1, animated_2, width, height):
         time = str(time) + "s"
         new_waypoint.attrib["time"] = time
         root[0].append(new_waypoint)
-        fill_image_scale_at_frame(image_scale[0], anim1_path, anim2_path, width, height, fr)
+        fill_image_scale_at_frame(image_scale[0], animated_1, animated_2, width, height, fr)
         fr += 1
     return image_scale
 
 
-def fill_image_scale_at_frame(scale_animated, anim1_path, anim2_path, width, height, frame):
+def fill_image_scale_at_frame(scale_animated, animated_1, animated_2, width, height, frame):
     """
     Generates the scale at a given frame according to point1 and point2 in
     comparison with original width and height of image
 
     Args:
         scale_animated (lxml.etree._Element) : Scale animation in Synfig format
-        animated_1     (lxml.etree._Element) : point1 animation in Synfig format
-        animated_2     (lxml.etree._Element) : point2 animation in Synfig format
+        animated_1     (common.Param.Param) : point1 animation in Synfig format
+        animated_2     (common.Param.Param) : point2 animation in Synfig format
         anim1_path     (dict)                : point1 animation in Lottie format
         anim2_path     (dict)                : point2 animation in Lottie format
         width          (int)                 : Width of original image
@@ -129,8 +127,8 @@ def fill_image_scale_at_frame(scale_animated, anim1_path, anim2_path, width, hei
     Returns:
         (None)
     """
-    pos1 = get_vector_at_frame(anim1_path, frame)
-    pos2 = get_vector_at_frame(anim2_path, frame)
+    pos1 = animated_1.get_value(frame)
+    pos2 = animated_2.get_value(frame)
     pos1, pos2 = to_Synfig_axis(pos1, "vector"), to_Synfig_axis(pos2, "vector")
     pos1 = [x * settings.PIX_PER_UNIT for x in pos1]
     pos2 = [x * settings.PIX_PER_UNIT for x in pos2]

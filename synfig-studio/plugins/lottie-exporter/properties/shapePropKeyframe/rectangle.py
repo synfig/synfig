@@ -10,7 +10,7 @@ from common.misc import approximate_equal
 from common.Vector import Vector
 from common.Layer import Layer
 from common.Param import Param
-from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame
+from synfig.animation import to_Synfig_axis
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window, quadratic_to_cubic
@@ -31,8 +31,6 @@ def gen_list_rectangle(lottie, layer):
     """
     ################### SECTION 1 #########################
     # Inserting waypoints if not animated and finding the first and last frame
-    # AFter that, there path will be calculated in lottie format which can
-    # latter be used in get_vector_at_frame() function
     window = {}
     window["first"] = sys.maxsize
     window["last"] = -1
@@ -96,8 +94,8 @@ def gen_list_rectangle(lottie, layer):
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)
 
-        synfig_rectangle(st_val, p1_dict, p2_dict, expand_dict, bevel_dict, bevCircle, fr)
-        synfig_rectangle(en_val, p1_dict, p2_dict, expand_dict, bevel_dict, bevCircle, fr + 1)
+        synfig_rectangle(st_val, point1, point2, expand, bevel, bevCircle, fr)
+        synfig_rectangle(en_val, point1, point2, expand, bevel, bevCircle, fr + 1)
 
         fr += 1
     # Setting the final time
@@ -105,7 +103,7 @@ def gen_list_rectangle(lottie, layer):
     lottie[-1]["t"] = fr
 
 
-def synfig_rectangle(st_val, p1_dict, p2_dict, expand_dict, bevel_dict, bevCircle, fr):
+def synfig_rectangle(st_val, point1_p, point2_p, expand_p, bevel_p, bevCircle, fr):
     """
     Calculates the points for the rectangle layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/rectangle.cpp
@@ -123,18 +121,18 @@ def synfig_rectangle(st_val, p1_dict, p2_dict, expand_dict, bevel_dict, bevCircl
         (None)
     """
 
-    expand = abs(to_Synfig_axis(get_vector_at_frame(expand_dict, fr), "real"))
-    bevel = abs(to_Synfig_axis(get_vector_at_frame(bevel_dict, fr), "real"))
-    p0 = to_Synfig_axis(get_vector_at_frame(p1_dict, fr), "vector")
+    expand = abs(to_Synfig_axis(expand_p.get_value(fr), "real"))
+    bevel = abs(to_Synfig_axis(bevel_p.get_value(fr), "real"))
+    p0 = to_Synfig_axis(point1_p.get_value(fr), "vector")
     p0 = Vector(p0[0], p0[1])
-    p1 = to_Synfig_axis(get_vector_at_frame(p2_dict, fr), "vector")
+    p1 = to_Synfig_axis(point2_p.get_value(fr), "vector")
     p1 = Vector(p1[0], p1[1])
     if p1[0] < p0[0]:
         p0[0], p1[0] = p1[0], p0[0]
     if p1[1] < p0[1]:
         p0[1], p1[1] = p1[1], p0[1]
 
-    bev_circle = get_bool_at_frame(bevCircle[0], fr)
+    bev_circle = bevCircle.get_value(fr)
 
     w = p1[0] - p0[0] + 2*expand
     h = p1[1] - p0[1] + 2*expand
