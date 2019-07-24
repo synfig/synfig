@@ -105,10 +105,8 @@ using namespace studio;
 bool LayerTree::onKeyPress(GdkEventKey* event)
 {
 
-	switch (event->hardware_keycode) {
-		case 119: { // 'Del' key pressed
-			std::cout << "LayerTree::onKeyPress: Got delete!" << std::endl;
-
+	switch (event->keyval) {
+		case GDK_KEY_Delete: {
 			LayerList layers = get_selected_layers();
 
 			if (layers.size() == 0) return true; // nothing to do
@@ -129,7 +127,7 @@ bool LayerTree::onKeyPress(GdkEventKey* event)
 			return true;
 
 		} 
-		case 68: { // 'F2' key pressed
+		case GDK_KEY_F2: {
 			Glib::RefPtr<Gtk::TreeSelection> selection = get_selection();
 			std::vector<Gtk::TreeModel::Path> pathList = selection->get_selected_rows();
 			if (pathList.size() != 1) return true;
@@ -145,8 +143,6 @@ bool LayerTree::onKeyPress(GdkEventKey* event)
 			return true;
 		}
 	}
-
-    std::cout << "LayerTree::onKeyPress: " << event->keyval << ' ' << event->hardware_keycode << ' ' << event->state << std::endl;
 
     return false;
 }
