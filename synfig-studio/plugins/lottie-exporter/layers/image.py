@@ -13,7 +13,7 @@ from common.misc import is_animated, get_frame
 from common.Layer import Layer
 from common.Param import Param
 from sources.image import add_image_asset
-from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame, to_Synfig_axis
+from shapes.rectangle import get_vector_at_frame, to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 import synfig.group as group
 sys.path.append("..")

@@ -11,7 +11,7 @@ from common.Bline import Bline
 from common.Param import Param
 from common.Vector import Vector
 from common.Hermite import Hermite
-from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
+from synfig.animation import to_Synfig_axis, get_vector_at_frame, get_bool_at_frame
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents, append_path, update_child_at_parent, update_frame_window
@@ -52,26 +52,17 @@ def gen_bline_outline(lottie, bline_point):
         split_a = entry["split_angle"]
 
         update_frame_window(pos[0], window)
-
         # Empty the pos and fill in the new animated pos
-        pos = gen_dummy_waypoint(pos.get(), "point", "vector")
-        update_child_at_parent(entry["composite"], pos, "point")
-        entry["point"] = Param(pos, entry["composite"])
+        pos.animate("vector")
 
         update_frame_window(width[0], window)
-        width = gen_dummy_waypoint(width.get(), "width", "real")
-        update_child_at_parent(entry["composite"], width, "width")
-        entry["width"] = Param(width, entry["composite"])
+        width.animate("real")
 
         update_frame_window(split_r[0], window)
-        split_r = gen_dummy_waypoint(split_r.get(), "split_radius", "bool")
-        update_child_at_parent(entry["composite"], split_r, "split_radius")
-        entry["split_radius"] = Param(split_r, entry["composite"])
+        split_r.animate("bool")
 
         update_frame_window(split_a[0], window)
-        split_a = gen_dummy_waypoint(split_a.get(), "split_angle", "bool")
-        update_child_at_parent(entry["composite"], split_a, "split_angle")
-        entry["split_angle"] = Param(split_a, entry["composite"])
+        split_a.animate("bool")
 
         append_path(pos[0], entry, "point_path", "vector")
         append_path(width[0], entry, "width_path")
@@ -90,48 +81,37 @@ def gen_bline_outline(lottie, bline_point):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin_parent = origin.getparent()
-    origin = gen_dummy_waypoint(origin.get(), "param", "vector", "origin")
-    update_child_at_parent(origin_parent.get_layer(), origin, "param", "origin")
-    # Generate path for the origin component
-    origin_dict = {}
-    origin[0].attrib["transform_axis"] = "true"
-    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+    origin.animate("vector")
+    origin.gen_path_with_transform()
+    origin_dict = origin.get_path()
 
+    # Animating the outer width
     update_frame_window(outer_width[0], window)
-    outer_width = gen_dummy_waypoint(outer_width.get(), "param", "real", "width")
-    # Update the layer with this animated outline width
-    update_child_at_parent(layer.get_layer(), outer_width, "param", "width")
-
-    # Generate outline width for Lottie format
-    # No need to store this dictionary in lxml element, as it will be used in this function and will not be rewritten
-    outer_width_dict = {}
-    gen_value_Keyframed(outer_width_dict, outer_width[0], 0)
+    outer_width.animate("real")
+    outer_width.gen_path()
+    outer_width_dict = outer_width.get_path()
 
     # Animating the sharp_cusps
     update_frame_window(sharp_cusps[0], window)
-    sharp_cusps = gen_dummy_waypoint(sharp_cusps.get(), "param", "bool", "sharp_cusps")
+    sharp_cusps.animate("bool")
 
-    # Update the layer with this animated outline sharp cusps
-    update_child_at_parent(layer.get_layer(), sharp_cusps, "param", "sharp_cusps")
-
+    # Animating the expand param
     update_frame_window(expand[0], window)
-    expand = gen_dummy_waypoint(expand.get(), "param", "real", "expand")
-    update_child_at_parent(layer.get_layer(), expand, "param", "expand")
-    expand_dict = {}
-    gen_value_Keyframed(expand_dict, expand[0], 0)
+    expand.animate("real")
+    expand.gen_path()
+    expand_dict = expand.get_path()
 
+    # Animating the round tip 0
     update_frame_window(r_tip0[0], window)
-    r_tip0 = gen_dummy_waypoint(r_tip0.get(), "param", "bool", "round_tip[0]")
-    update_child_at_parent(layer.get_layer(), r_tip0, "param", "round_tip[0]")
+    r_tip0.animate("bool")
 
+    # Animating the round tip 1
     update_frame_window(r_tip1[0], window)
-    r_tip1 = gen_dummy_waypoint(r_tip1.get(), "param", "bool", "round_tip[1]")
-    update_child_at_parent(layer.get_layer(), r_tip1, "param", "round_tip[1]")
+    r_tip1.animate("bool")
 
+    # Animaing the homogenous width
     update_frame_window(homo_width[0], window)
-    homo_width = gen_dummy_waypoint(homo_width.get(), "param", "bool", "homogeneous_width")
-    update_child_at_parent(layer.get_layer(), homo_width, "param", "homogeneous_width")
+    homo_width.animate("bool")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:

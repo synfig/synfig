@@ -6,7 +6,6 @@ import sys
 import copy
 import settings
 from helpers.transform import gen_helpers_transform
-from synfig.animation import gen_dummy_waypoint
 import synfig.group as group
 sys.path.append("..")
 
@@ -23,11 +22,12 @@ def gen_layer_scale(lottie, layer):
         (None)
     """
     center = layer.get_param("center")
-    anchor = gen_dummy_waypoint(center.get(), "param", "vector")
+    center.animate("vector")
+    anchor = center.get()
     pos = anchor
 
-    amount = layer.get_param("amount")  # This is scale amount
-    scale = gen_dummy_waypoint(amount.get(), "param", "scale_layer_zoom")
+    scale = layer.get_param("amount")  # This is scale amount
+    scale.animate("scale_layer_zoom")
 
     anchor = copy.deepcopy(anchor)
     group.update_pos(anchor)

@@ -10,7 +10,7 @@ from common.misc import approximate_equal
 from common.Vector import Vector
 from common.Layer import Layer
 from common.Param import Param
-from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
+from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window, quadratic_to_cubic
@@ -58,41 +58,31 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating point1
     update_frame_window(point1[0], window)
-    point1 = gen_dummy_waypoint(point1.get(), "param", "vector", "point1")
-    update_child_at_parent(layer.get_layer(), point1, "param", "point1")
-    # Generate path for the point1 component
-    p1_dict = {}
-    #point1[0].attrib["transform_axis"] = "true"
-    gen_properties_multi_dimensional_keyframed(p1_dict, point1[0], 0)
+    point1.animate("vector")
+    point1.gen_path("vector")
+    p1_dict = point1.get_path()
 
     # Animating point2
     update_frame_window(point2[0], window)
-    point2 = gen_dummy_waypoint(point2.get(), "param", "vector", "point2")
-    update_child_at_parent(layer.get_layer(), point2, "param", "point2")
-    # Generate path for the point2 component
-    p2_dict = {}
-    gen_properties_multi_dimensional_keyframed(p2_dict, point2[0], 0)
+    point2.animate("vector")
+    point2.gen_path("vector")
+    p2_dict = point2.get_path()
 
     # Animating expand
     update_frame_window(expand[0], window)
-    expand = gen_dummy_waypoint(expand.get(), "param", "real", "expand")
-    update_child_at_parent(layer.get_layer(), expand, "param", "expand")
-    # Generate expand param for Lottie format
-    expand_dict = {}
-    gen_value_Keyframed(expand_dict, expand[0], 0)
+    expand.animate("real")
+    expand.gen_path()
+    expand_dict = expand.get_path()
 
     # Animating bevel
     update_frame_window(bevel[0], window)
-    bevel = gen_dummy_waypoint(bevel.get(), "param", "real", "bevel")
-    update_child_at_parent(layer.get_layer(), bevel, "param", "bevel")
-    # Generate bevel param for Lottie format
-    bevel_dict = {}
-    gen_value_Keyframed(bevel_dict, bevel[0], 0)
+    bevel.animate("real")
+    bevel.gen_path()
+    bevel_dict = bevel.get_path()
 
     # Animating bevCircle
     update_frame_window(bevCircle[0], window)
-    bevCircle = gen_dummy_waypoint(bevCircle.get(), "param", "bool", "bevCircle")
-    update_child_at_parent(layer.get_layer(), bevCircle, "param", "bevCircle")
+    bevCircle.animate("bool")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:

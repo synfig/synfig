@@ -13,7 +13,7 @@ from common.misc import get_frame, approximate_equal, get_time
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from synfig.animation import insert_waypoint_at_frame, to_Synfig_axis, gen_dummy_waypoint, get_vector_at_frame
+from synfig.animation import print_animation, insert_waypoint_at_frame, to_Synfig_axis, get_vector_at_frame
 import synfig.group as group
 from properties.shapePropKeyframe.helper import append_path
 from properties.valueKeyframed import gen_value_Keyframed
@@ -64,7 +64,6 @@ def gen_layer_group(lottie, layer, idx):
     outline_grow.animate("real")
     outline_grow.gen_path("real")
 
-    #origin = gen_dummy_waypoint(origin.get(), "param", "vector")
     origin.animate("vector")
     anchor = origin
     group.update_pos(anchor.get())
@@ -365,7 +364,7 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
     time_offset.gen_path("real")
     offset_dict = time_offset.get_path()
 
-    time_dilation.animate("time")
+    time_dilation.animate("real")
     time_dilation.gen_path()
     dilation_dict = time_dilation.get_path()
 

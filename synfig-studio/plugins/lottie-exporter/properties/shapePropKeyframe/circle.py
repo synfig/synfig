@@ -9,7 +9,7 @@ import math
 from common.Matrix2 import Matrix2
 from common.Vector import Vector
 from common.Layer import Layer
-from synfig.animation import to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
+from synfig.animation import to_Synfig_axis, get_vector_at_frame
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window, quadratic_to_cubic
@@ -41,16 +41,12 @@ def gen_list_circle(lottie, layer):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin = gen_dummy_waypoint(origin.get(), "param", "vector", "origin")
-    update_child_at_parent(layer.get_layer(), origin, "param", "origin")
-    # Generate path for the origin component
-    origin_dict = {}
-    origin[0].attrib["transform_axis"] = "true"
-    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+    origin.animate("vector")
+    origin.gen_path_with_transform()
+    origin_dict = origin.get_path()
 
     update_frame_window(radius[0], window)
-    radius = gen_dummy_waypoint(radius.get(), "param", "real", "radius")
-    update_child_at_parent(layer.get_layer(), radius, "param", "width")
+    radius.animate("real")
 
     # Generate radius for Lottie format
     radius_dict = {}

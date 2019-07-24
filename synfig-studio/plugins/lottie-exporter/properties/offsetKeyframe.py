@@ -366,7 +366,7 @@ def gen_properties_offset_keyframe(curve_list, animated, i):
     lottie["t"] = get_frame(waypoint)
 
     is_transform_axis = False
-    if "transform_axis" in animated.keys():
+    if "transform_axis" in animated.keys() and animated.attrib["transform_axis"] == "true":
         is_transform_axis = True
     lottie["s"] = change_axis(cur_pos[0], cur_pos[1], is_transform_axis)
     lottie["e"] = change_axis(next_pos[0], next_pos[1], is_transform_axis)

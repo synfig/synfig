@@ -13,7 +13,7 @@ from common.Vector import Vector
 from common.Param import Param
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
+from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_frame
 sys.path.append("../../")
 
 
@@ -62,12 +62,8 @@ def animate_tangents(tangent, window):
     update_frame_window(radius[0], window)
     update_frame_window(theta[0], window)
 
-    radius = gen_dummy_waypoint(radius.get(), "radius", "real")
-    theta = gen_dummy_waypoint(theta.get(), "theta", "region_angle")
-
-    # Update the newly computed radius and theta
-    update_child_at_parent(tangent[0], radius, "radius")
-    update_child_at_parent(tangent[0], theta, "theta")
+    radius.animate("real")
+    theta.animate("region_angle")
 
     append_path(radius[0], tangent.get_subparam_dict(), "radius_path")
     append_path(theta[0], tangent.get_subparam_dict(), "theta_path")

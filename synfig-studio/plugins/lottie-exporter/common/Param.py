@@ -25,6 +25,8 @@ class Param:
         self.parent = parent
         self.param = param
         self.subparams = {}
+        self.IS_ANIMATED = 0
+        self.PATH_GENERATED = 0
 
     def get(self):
         """
@@ -95,6 +97,10 @@ class Param:
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
+        if self.IS_ANIMATED:
+            return
+        self.IS_ANIMATED = 1
+
         is_animate = common.misc.is_animated(self.param[0])
         if is_animate == 2:
             # If already animated, no need to add waypoints
@@ -124,6 +130,10 @@ class Param:
         Generates the path for this parameter over time depending on the
         animation type of this parameter
         """
+        if self.PATH_GENERATED:
+            return
+        self.PATH_GENERATED = 1
+
         self.path = {}
         if anim_type == "real":
             gen_value_Keyframed(self.path, self.param[0], idx)
@@ -135,3 +145,18 @@ class Param:
         Returns the dictionary which stores the path of this parameter
         """
         return self.path
+
+    def gen_path_with_transform(self, anim_type="vector", idx=0):
+        """
+        Generates the path for this parameter over time with transform_axis
+        being set true
+        """
+        self.path = {}
+        # anim_type can not be real here
+        self.param[0].attrib["transform_axis"] = "true"
+        gen_properties_multi_dimensional_keyframed(self.path, self.param[0], idx)
+        self.param[0].attrib["transform_axis"] = "false"
+
+        # If a parameter is used at differnt places, then the path will need to
+        # be generated again
+        self.PATH_GENERATED = 0

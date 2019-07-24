@@ -8,7 +8,7 @@ import sys
 from common.Vector import Vector
 from common.Bline import Bline
 from common.Param import Param
-from synfig.animation import print_animation, get_vector_at_frame, gen_dummy_waypoint
+from synfig.animation import print_animation, get_vector_at_frame
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import append_path, update_frame_window, update_child_at_parent, insert_dict_at
 sys.path.append("../../")
@@ -38,10 +38,10 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
         pos = entry["vector"]
         update_frame_window(pos[0], window)
 
-        new_pos = gen_dummy_waypoint(pos.getparent(), "entry", "vector")
-        dynamic_list.set_entry(count, new_pos)
+        z = Param(pos.getparent(), pos.getparent().getparent())
+        z.animate("vector")
 
-        append_path(new_pos[0], entry, "pos_path", "vector")
+        append_path(z[0], entry, "pos_path", "vector")
         count += 1
 
     layer = dynamic_list.get_layer()
@@ -49,14 +49,9 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin_parent = origin.getparent()
-    origin = gen_dummy_waypoint(origin.get(), "param", "vector", "origin")
-    update_child_at_parent(origin_parent.get_layer(), origin, "param", "origin")
-
-    # Generate path for the origin component
-    origin_dict = {}
-    origin[0].attrib["transform_axis"] = "true"
-    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+    origin.animate("vector")
+    origin.gen_path_with_transform()
+    origin_dict = origin.get_path()
 
     if window["first"] == sys.maxsize and window["last"] == -1:
         window["first"] = window["last"] = 0

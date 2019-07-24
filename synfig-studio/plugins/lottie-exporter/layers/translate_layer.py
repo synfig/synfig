@@ -6,7 +6,6 @@ import sys
 import copy
 import settings
 from helpers.transform import gen_helpers_transform
-from synfig.animation import gen_dummy_waypoint
 import synfig.group as group
 sys.path.append("..")
 
@@ -24,7 +23,8 @@ def gen_layer_translate(lottie, layer):
     """
 
     origin = layer.get_param("origin")
-    anchor = gen_dummy_waypoint(origin.get(), "param", "vector")
+    origin.animate("vector")
+    anchor = origin.get()
     pos = anchor
 
     anchor = copy.deepcopy(anchor)
