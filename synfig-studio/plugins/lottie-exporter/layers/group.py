@@ -61,30 +61,32 @@ def gen_layer_group(lottie, layer, idx):
         elif child.tag == "skew_angle":
             skew = Param(child, transform)
 
-    outline_grow = gen_dummy_waypoint(outline_grow.get(), "param", "real")
-    settings.OUTLINE_GROW.append({})    # Storing the outline grow in settings, will be used inside child outlines
-    append_path(outline_grow[0], settings.OUTLINE_GROW[-1], "outline_grow_path")
+    outline_grow.animate("real")
+    outline_grow.gen_path("real")
 
-    origin = gen_dummy_waypoint(origin.get(), "param", "vector")
+    #origin = gen_dummy_waypoint(origin.get(), "param", "vector")
+    origin.animate("vector")
     anchor = origin
-    group.update_pos(anchor)
+    group.update_pos(anchor.get())
 
-    angle = gen_dummy_waypoint(angle.get(), "angle", "rotate_layer_angle")
+    angle.animate("rotate_layer_angle")
 
-    pos = gen_dummy_waypoint(pos.get(), "offset", "vector")
+    pos.animate("vector")
     if settings.INSIDE_PRECOMP:
-        group.update_pos(pos)
+        group.update_pos(pos.get())
 
-    scale = gen_dummy_waypoint(scale.get(), "scale", "group_layer_scale")
+    scale.animate("group_layer_scale")
 
     # Generating animation for skew
-    skew = gen_dummy_waypoint(skew.get(), "skew_angle", "rotate_layer_angle")
+    skew.animate("rotate_layer_angle")
 
     # Generate the transform properties here
-    gen_helpers_transform(lottie["ks"], pos[0], anchor[0], scale[0], angle[0], opacity[0], skew[0])
+    gen_helpers_transform(lottie["ks"], pos.get()[0], anchor.get()[0], scale.get()[0], angle.get()[0], opacity.get()[0], skew.get()[0])
 
     # Store previous states, to be recovered at the end of group layer
     prev_state = settings.INSIDE_PRECOMP
+    settings.OUTLINE_GROW.append({})    # Storing the outline grow in settings, will be used inside child outlines
+    settings.OUTLINE_GROW[-1]["outline_grow_path"] = outline_grow.get_path()
 
     settings.INSIDE_PRECOMP = True
 
@@ -142,11 +144,13 @@ def change_opacity_group(layer, lottie):
     if z_range[0].attrib["value"] == "false":
         return
 
-    pos = gen_dummy_waypoint(z_range_pos.get(), "param", "real", "z_range_position")
-    depth = gen_dummy_waypoint(z_range_depth.get(), "param", "real", "z_range_depth")
-    pos_dict, depth_dict = {}, {}
-    gen_value_Keyframed(pos_dict, pos[0], 0)
-    gen_value_Keyframed(depth_dict, depth[0], 0)
+    z_range_pos.animate("real")
+    z_range_pos.gen_path("real")
+    pos_dict = z_range_pos.get_path()
+
+    z_range_depth.animate("real")
+    z_range_depth.gen_path("real")
+    depth_dict = z_range_depth.get_path()
 
     z_st, z_en = float('-inf'), float('-inf')
     active_range = [] # Stores the time and change of layers in z-range
@@ -210,7 +214,7 @@ def change_opacity_switch(layer, lottie):
     layer_name = layer.get_param("layer_name")
     canvas = Canvas(layer.get_param("canvas"))
 
-    layer_name = gen_dummy_waypoint(layer_name.get(), "param", "string", "layer_name")
+    layer_name.animate("string")
     for assets in settings.lottie_format["assets"]:
         if assets["id"] == lottie["refId"]:
             root = assets
@@ -288,9 +292,9 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
     """
     opacity = layer.get_param("amount")
 
-    opacity = gen_dummy_waypoint(opacity.get(), "param", anim_type, "amount")
-    opacity_dict = {}
-    gen_value_Keyframed(opacity_dict, opacity[0], 0)
+    opacity.animate(anim_type)
+    opacity.gen_path()
+    opacity_dict = opacity.get_path()
 
     for it in deactive_time:
         # First add waypoints at both points, make it constant interval
@@ -357,13 +361,13 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
     Returns:
         (None)
     """
-    offset_dict = {}
-    time_offset = gen_dummy_waypoint(time_offset.get(), "param", "time")
-    gen_value_Keyframed(offset_dict, time_offset[0], 0)
+    time_offset.animate("time")
+    time_offset.gen_path("real")
+    offset_dict = time_offset.get_path()
 
-    dilation_dict = {}
-    time_dilation = gen_dummy_waypoint(time_dilation.get(), "param", "real")
-    gen_value_Keyframed(dilation_dict, time_dilation[0], 0)
+    time_dilation.animate("time")
+    time_dilation.gen_path()
+    dilation_dict = time_dilation.get_path()
 
     fr, lst = settings.lottie_format["ip"], settings.lottie_format["op"]
     lottie["a"] = 1 # Animated

@@ -11,6 +11,7 @@ from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
 from common.misc import is_animated, get_frame
 from common.Layer import Layer
+from common.Param import Param
 from sources.image import add_image_asset
 from shapes.rectangle import gen_dummy_waypoint, get_vector_at_frame, to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
@@ -49,10 +50,10 @@ def gen_layer_image(lottie, layer, idx):
     # setting the reference id
     lottie["refId"] = asset["id"]
 
-    st["tl"] = gen_dummy_waypoint(st["tl"].get(), "param", "vector")
-    st["br"] = gen_dummy_waypoint(st["br"].get(), "param", "vector")
+    st["tl"].animate("vector")
+    st["br"].animate("vector")
 
-    st["scale"] = gen_image_scale(st["tl"][0], st["br"][0], asset["w"], asset["h"])
+    st["scale"] = gen_image_scale(st["tl"], st["br"], asset["w"], asset["h"])
 
     anchor = settings.DEFAULT_ANCHOR
     rotation = settings.DEFAULT_ROTATION
@@ -75,8 +76,8 @@ def gen_image_scale(animated_1, animated_2, width, height):
     created here for Lottie conversion
 
     Args:
-        animated_1 (lxml.etree._Element): point1 animation in Synfig format
-        animated_2 (lxml.etree._Element): point2 animation in Synfig format
+        animated_1 (common.Param.Param): point1 animation in Synfig format
+        animated_2 (common.Param.Param): point2 animation in Synfig format
         width      (int)                : Width of the original image
         height     (int)                : Height of the original image
 
@@ -85,17 +86,19 @@ def gen_image_scale(animated_1, animated_2, width, height):
     """
     st = '<param name="image_scale"><real value="0.0000000000"/></param>'
     root = etree.fromstring(st)
-    root = gen_dummy_waypoint(root, "param", "image_scale")
+    image_scale = Param(root, None)
+    image_scale.animate("image_scale")
 
-    anim1_path, anim2_path = {}, {}
-    gen_properties_multi_dimensional_keyframed(anim1_path, animated_1, 0)
-    gen_properties_multi_dimensional_keyframed(anim2_path, animated_2, 0)
+    animated_1.gen_path("vector")
+    animated_2.gen_path("vector")
+    anim1_path = animated_1.get_path()
+    anim2_path = animated_2.get_path()
 
     # Filling the first 2 frames with there original scale values
-    fill_image_scale_at_frame(root[0], anim1_path, anim2_path, width, height, 0)
-    fill_image_scale_at_frame(root[0], anim1_path, anim2_path, width, height, 1)
+    fill_image_scale_at_frame(image_scale[0], anim1_path, anim2_path, width, height, 0)
+    fill_image_scale_at_frame(image_scale[0], anim1_path, anim2_path, width, height, 1)
 
-    mx_fr = max(get_frame(animated_1[-1]), get_frame(animated_2[-1]))
+    mx_fr = max(get_frame(animated_1[0][-1]), get_frame(animated_2[0][-1]))
     fr = 2
     while fr <= mx_fr:
         new_waypoint = copy.deepcopy(root[0][0])
@@ -103,9 +106,9 @@ def gen_image_scale(animated_1, animated_2, width, height):
         time = str(time) + "s"
         new_waypoint.attrib["time"] = time
         root[0].append(new_waypoint)
-        fill_image_scale_at_frame(root[0], anim1_path, anim2_path, width, height, fr)
+        fill_image_scale_at_frame(image_scale[0], anim1_path, anim2_path, width, height, fr)
         fr += 1
-    return root
+    return image_scale
 
 
 def fill_image_scale_at_frame(scale_animated, anim1_path, anim2_path, width, height, frame):
