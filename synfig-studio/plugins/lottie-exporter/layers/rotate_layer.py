@@ -24,14 +24,14 @@ def gen_layer_rotate(lottie, layer):
     scale = settings.DEFAULT_SCALE
     origin = layer.get_param("origin")
     origin.animate("vector")
-    anchor = origin.get()
-    pos = anchor
+    anchor = origin
+    pos = origin
 
     amount = layer.get_param("amount")  # This is rotation amount
     amount.animate("rotate_layer_angle")
 
     anchor = copy.deepcopy(anchor)
-    group.update_pos(anchor)
+    anchor.add_offset()
     if settings.INSIDE_PRECOMP:
-        group.update_pos(pos)
+        pos.add_offset()
     gen_helpers_transform(lottie, pos[0], anchor[0], scale, amount[0])

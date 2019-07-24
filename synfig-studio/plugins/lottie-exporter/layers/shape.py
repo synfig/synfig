@@ -12,7 +12,6 @@ from shapes.fill import gen_shapes_fill
 from shapes.rectangle import gen_shapes_rectangle
 from helpers.blendMode import get_blend
 from helpers.transform import gen_helpers_transform
-import synfig.group as group
 sys.path.append("..")
 
 
@@ -28,7 +27,7 @@ def gen_layer_shape(lottie, layer, idx):
     Returns:
         (None)
     """
-    group.update_layer(layer)
+    layer.add_offset()
 
     index = Count()
     lottie["ddd"] = settings.DEFAULT_3D

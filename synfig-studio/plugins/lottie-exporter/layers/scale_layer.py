@@ -6,7 +6,6 @@ import sys
 import copy
 import settings
 from helpers.transform import gen_helpers_transform
-import synfig.group as group
 sys.path.append("..")
 
 
@@ -23,14 +22,14 @@ def gen_layer_scale(lottie, layer):
     """
     center = layer.get_param("center")
     center.animate("vector")
-    anchor = center.get()
-    pos = anchor
+    anchor = center
+    pos = center
 
     scale = layer.get_param("amount")  # This is scale amount
     scale.animate("scale_layer_zoom")
 
     anchor = copy.deepcopy(anchor)
-    group.update_pos(anchor)
+    anchor.add_offset()
     if settings.INSIDE_PRECOMP:
-        group.update_pos(pos)
+        pos.add_offset()
     gen_helpers_transform(lottie, pos[0], anchor[0], scale[0])

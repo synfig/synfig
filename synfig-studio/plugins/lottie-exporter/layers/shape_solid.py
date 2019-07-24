@@ -12,7 +12,7 @@ from common.misc import get_color_hex, is_animated
 from common.Count import Count
 from common.Layer import Layer
 from effects.fill import gen_effects_fill
-from synfig.group import update_layer, get_additional_width, get_additional_height
+from synfig.group import get_additional_width, get_additional_height
 sys.path.append("..")
 
 
@@ -28,7 +28,7 @@ def gen_layer_shape_solid(lottie, layer, idx):
     Returns:
         (None)
     """
-    update_layer(layer)
+    layer.add_offset()
 
     # Setting the solid layer which will be masked
     index = Count()

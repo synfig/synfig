@@ -14,7 +14,6 @@ from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
 from synfig.animation import print_animation, insert_waypoint_at_frame, to_Synfig_axis
-import synfig.group as group
 from properties.shapePropKeyframe.helper import append_path
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
@@ -66,13 +65,13 @@ def gen_layer_group(lottie, layer, idx):
 
     origin.animate("vector")
     anchor = origin
-    group.update_pos(anchor.get())
+    anchor.add_offset()
 
     angle.animate("rotate_layer_angle")
 
     pos.animate("vector")
     if settings.INSIDE_PRECOMP:
-        group.update_pos(pos.get())
+        pos.add_offset()
 
     scale.animate("group_layer_scale")
 

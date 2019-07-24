@@ -8,7 +8,8 @@ import copy
 from lxml import etree
 import settings
 import common
-from synfig.animation import get_bool_at_frame, get_vector_at_frame, print_animation
+import synfig.group
+from synfig.animation import is_animated, get_bool_at_frame, get_vector_at_frame, print_animation
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
@@ -171,3 +172,31 @@ class Param:
         if not self.PATH_GENERATED and not self.TRANSFORM_PATH_GENERATED:
             raise KeyError("Please calculate the path of this parameter before getting value at a frame")
         return get_vector_at_frame(self.path, frame)
+
+    def add_offset(self):
+        """
+        Updates the position parameter of Synfig format which has offset due to
+        increase in widht and height of pre-comp layer(group layer)
+        """
+        # Only for 2-D animations
+        offset = synfig.group.get_offset()
+        is_animate = is_animated(self.param[0])
+        if is_animate == 0:
+            self.add(self.param[0], offset)
+        else:
+            for waypoint in self.param[0]:
+                self.add(waypoint[0], offset)
+
+    def add(self, vector, offset):
+        """ 
+        Helper function to modify Synfig xml
+
+        Args:
+            vector (lxml.etree._Element) : Position in Synfig format
+            offset (common.Vector.Vector) : offset to be added to that position
+
+        Returns:
+            (None)
+        """
+        vector[0].text = str(float(vector[0].text) + offset[0])
+        vector[1].text = str(float(vector[1].text) + offset[1])

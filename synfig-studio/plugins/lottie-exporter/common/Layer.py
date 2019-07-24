@@ -118,3 +118,25 @@ class Layer:
         return type: common.Canvas.Canvas
         """
         return self.parent_canvas
+
+    def add_offset(self):
+        """
+        Inserts necassary offset in the positions of the layers if they lie inside
+        another composition of Lottie
+        """
+        # This if condition is not applicable for group, rotate, precomp... layers
+        if not settings.INSIDE_PRECOMP:
+            return
+
+        update_dict = []
+        compare = {"center", "origin", "point1", "point2", "tl", "br"}
+        for key in compare:
+            param = self.get_param(key)
+            if param.get() is not None:
+                update_dict.append(param)
+
+        for param in update_dict:
+            param.add_offset()
+
+
+

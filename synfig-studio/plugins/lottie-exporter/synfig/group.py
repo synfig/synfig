@@ -8,7 +8,7 @@ import sys
 import settings
 from common.misc import is_animated
 from common.Vector import Vector
-from common.Layer import Layer
+import common
 from synfig.animation import print_animation
 sys.path.append("..")
 
@@ -45,7 +45,7 @@ def update_layer(node):
         return
 
     update_dict = []
-    if isinstance(node, Layer):
+    if isinstance(node, common.Layer.Layer):
         compare = {"center", "origin", "point1", "point2", "tl", "br"}
         for param in compare:
             get = node.get_param(param).get()
