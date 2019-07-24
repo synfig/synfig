@@ -1988,6 +1988,12 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 		case GDK_KEY_End:
 			action_group->get_action("seek-end")->activate();
 			return  true;
+		case GDK_KEY_Delete:
+		case GDK_KEY_KP_Delete:
+			if (selection_manager_->get_selected_layer_count() == 0)
+				return false;
+			App::ui_manager()->get_action("/ui/toolbar-layer/action-LayerRemove")->activate();
+			break;
 		}
 	}
 	return false;
