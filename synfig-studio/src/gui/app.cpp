@@ -1439,8 +1439,6 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 	ACCEL("<Mod1>o",								"<Actions>/canvasview/toggle-onion-skin"				);
 	ACCEL("<Control><Shift>z",							"<Actions>/canvasview/canvas-zoom-fit"					);
 	ACCEL("<Control>p",								"<Actions>/canvasview/play"						);
-	ACCEL("Home",									"<Actions>/canvasview/seek-begin"					);
-	ACCEL("End",									"<Actions>/canvasview/seek-end"						);
 
 
 #undef ACCEL
@@ -4146,6 +4144,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 	{
 		selected_instance=canvas_view->get_instance();
 		signal_instance_selected()(selected_instance);
+		canvas_view->grab_focus();
 	}
 
 /*

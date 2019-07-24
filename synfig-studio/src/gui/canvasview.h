@@ -220,6 +220,8 @@ public:
 
 	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
 
+	void grab_focus();
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
