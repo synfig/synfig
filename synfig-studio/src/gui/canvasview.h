@@ -80,6 +80,7 @@
 #include "render.h"
 #include "duckmatic.h"
 #include "timemodel.h"
+#include "helpers.h"
 #include "cellrenderer/cellrenderer_timetrack.h"
 #include "docks/dockable.h"
 #include "dialogs/canvasoptions.h"
@@ -260,6 +261,7 @@ private:
 
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
+	std::map<synfig::String,AdjustmentGroup::Handle> adjustment_group_book_;
 
 	//! The time_window adjustment governs the position of the time window on the whole time line
 	etl::handle<TimeModel> time_model_;
@@ -504,13 +506,16 @@ public:
 	Gtk::Widget* get_ext_widget(const synfig::String& x);
 	void set_ext_widget(const synfig::String& x, Gtk::Widget* y);
 
+	AdjustmentGroup::Handle get_adjustment_group(const synfig::String& x);
+	void set_adjustment_group(const synfig::String& x, AdjustmentGroup::Handle y);
+
 	Gtk::UIManager::ui_merge_id get_popup_id();
 	void set_popup_id(Gtk::UIManager::ui_merge_id popup_id);
 	Gtk::UIManager::ui_merge_id get_toolbar_id();
 	void set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id);
 
 	//std::map<synfig::String,Gtk::Widget*>& tree_view_book() { return tree_view_book_; }
-	//std::map<synfig::String,Gtk::Widget*>& ext_widget_book() { return tree_view_book_; }
+	//std::map<synfig::String,Gtk::Widget*>& ext_widget_book() { return ext_widget_book_; }
 
 	//! Pop up menu for the main menu and the caret menu (not tools and not the bezier ones).
 	/*! Signal handler for work_area->signal_popup_menu */

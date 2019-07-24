@@ -92,6 +92,9 @@ public:
 	void reset_toolbar();
 	void clear();
 
+	Gtk::ScrolledWindow* get_container() const
+		{ return container; }
+
 	void attach_dnd_to(Gtk::Widget& widget);
 	virtual void present();
 	virtual Gtk::Widget* create_tab_label();
