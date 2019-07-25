@@ -26,7 +26,7 @@ class Param:
         self.parent = parent
         self.param = param
         self.subparams = {}
-        self.IS_ANIMATED = 0
+        self.SUBPARAMS_EXTRACTED = 0
         
     def reset(self):
         """
@@ -106,6 +106,9 @@ class Param:
         Extracts the subparameters of this parameter and stores with there tag
         as the key
         """
+        if self.SUBPARAMS_EXTRACTED:
+            return
+        self.SUBPARAMS_EXTRACTED = 1
         for child in self.param:
             key = child.tag 
             self.subparams[key] = Param(child, self.param)
@@ -231,14 +234,24 @@ class Param:
         Updates the position parameter of Synfig format which has offset due to
         increase in widht and height of pre-comp layer(group layer)
         """
-        # Only for 2-D animations
-        offset = synfig.group.get_offset()
-        is_animate = is_animated(self.param[0])
-        if is_animate == 0:
-            self.add(self.param[0], offset)
+        element = self.param[0]
+        # For convert methods:
+        if self.param[0].tag in settings.CONVERT_METHODS:
+            self.extract_subparams()
+            if self.param[0].tag == "add":
+                self.subparams["add"].extract_subparams()
+                element = self.subparams["add"].subparams["lhs"]
+                element.add_offset()
+
         else:
-            for waypoint in self.param[0]:
-                self.add(waypoint[0], offset)
+            # Only for 2-D animations
+            offset = synfig.group.get_offset()
+            is_animate = is_animated(element)
+            if is_animate == 0:
+                self.add(element, offset)
+            else:
+                for waypoint in element:
+                    self.add(waypoint[0], offset)
 
     def add(self, vector, offset):
         """ 
