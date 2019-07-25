@@ -40,28 +40,24 @@ def gen_list_star(lottie, layer):
 
     # Animating origin
     update_frame_window(origin[0], window)
-    origin.animate("vector")
-    origin.gen_path_with_transform()
+    # Keeping the transform true here
+    origin.animate("vector", True)
 
     # Animating radius1
     update_frame_window(radius1[0], window)
     radius1.animate("real")
-    radius1.gen_path()
 
     # Animating radius2
     update_frame_window(radius2[0], window)
     radius2.animate("real")
-    radius2.gen_path()
 
     # Animating angle
     update_frame_window(angle[0], window)
     angle.animate("star_angle_new")
-    angle.gen_path()
 
     # Animating points
     update_frame_window(points[0], window)
     points.animate("real")
-    points.gen_path()
 
     mx_points = get_max_points(points)
 

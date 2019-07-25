@@ -55,25 +55,21 @@ def gen_list_rectangle(lottie, layer):
     # Animating point1
     update_frame_window(point1[0], window)
     point1.animate("vector")
-    point1.gen_path("vector")
     p1_dict = point1.get_path()
 
     # Animating point2
     update_frame_window(point2[0], window)
     point2.animate("vector")
-    point2.gen_path("vector")
     p2_dict = point2.get_path()
 
     # Animating expand
     update_frame_window(expand[0], window)
     expand.animate("real")
-    expand.gen_path()
     expand_dict = expand.get_path()
 
     # Animating bevel
     update_frame_window(bevel[0], window)
     bevel.animate("real")
-    bevel.gen_path()
     bevel_dict = bevel.get_path()
 
     # Animating bevCircle

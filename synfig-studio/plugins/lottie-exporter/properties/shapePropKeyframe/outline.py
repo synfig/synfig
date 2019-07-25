@@ -50,11 +50,9 @@ def gen_bline_outline(lottie, bline_point):
         update_frame_window(pos[0], window)
         # Empty the pos and fill in the new animated pos
         pos.animate("vector")
-        pos.gen_path("vector")
 
         update_frame_window(width[0], window)
         width.animate("real")
-        width.gen_path()
 
         update_frame_window(split_r[0], window)
         split_r.animate("bool")
@@ -76,13 +74,11 @@ def gen_bline_outline(lottie, bline_point):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin.animate("vector")
-    origin.gen_path_with_transform()
+    origin.animate("vector", True)
 
     # Animating the outer width
     update_frame_window(outer_width[0], window)
     outer_width.animate("real")
-    outer_width.gen_path()
 
     # Animating the sharp_cusps
     update_frame_window(sharp_cusps[0], window)
@@ -91,7 +87,6 @@ def gen_bline_outline(lottie, bline_point):
     # Animating the expand param
     update_frame_window(expand[0], window)
     expand.animate("real")
-    expand.gen_path()
 
     # Animating the round tip 0
     update_frame_window(r_tip0[0], window)

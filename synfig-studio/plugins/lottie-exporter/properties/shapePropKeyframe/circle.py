@@ -37,12 +37,10 @@ def gen_list_circle(lottie, layer):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin.animate("vector")
-    origin.gen_path_with_transform()
+    origin.animate("vector", True)
 
     update_frame_window(radius[0], window)
     radius.animate("real")
-    radius.gen_path()
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:

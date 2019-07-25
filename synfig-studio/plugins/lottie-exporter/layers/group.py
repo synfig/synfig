@@ -60,7 +60,6 @@ def gen_layer_group(lottie, layer, idx):
             skew = Param(child, transform)
 
     outline_grow.animate("real")
-    outline_grow.gen_path("real")
 
     origin.animate("vector")
     anchor = origin
@@ -78,6 +77,9 @@ def gen_layer_group(lottie, layer, idx):
     # Animating opacity
     opacity.animate("opacity")
 
+    # Reset the animations after adding offset
+    anchor.animate("vector")
+    pos.animate("vector")
     # Generate the transform properties here
     gen_helpers_transform(lottie["ks"], pos, anchor, scale, angle, opacity, skew)
 
@@ -142,10 +144,8 @@ def change_opacity_group(layer, lottie):
         return
 
     z_range_pos.animate("real")
-    z_range_pos.gen_path("real")
 
     z_range_depth.animate("real")
-    z_range_depth.gen_path("real")
 
     z_st, z_en = float('-inf'), float('-inf')
     active_range = [] # Stores the time and change of layers in z-range
@@ -191,8 +191,7 @@ def change_opacity_group(layer, lottie):
             dic = root["layers"][z_value]["shapes"][1]["o"]
 
         animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
-        animation.reset()
-        animation.gen_path()
+        animation.animate(anim_type)
 
         if sw == 1:
             root["layers"][z_value]["ef"][0]["ef"][-1]["v"] = copy.deepcopy(animation.get_path())
@@ -253,8 +252,7 @@ def change_opacity_switch(layer, lottie):
             sw = 3
 
         animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
-        animation.reset()
-        animation.gen_path()
+        animation.animate(anim_type)
 
         if sw == 1:
             root["layers"][it]["ef"][0]["ef"][-1]["v"] = copy.deepcopy(animation.get_path())
@@ -307,7 +305,6 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
     opacity = layer.get_param("amount")
 
     opacity.animate(anim_type)
-    opacity.gen_path()
     opacity_dict = opacity.get_path()
 
     for it in deactive_time:
@@ -376,10 +373,8 @@ def gen_time_remap(lottie, time_offset, time_dilation, idx):
         (None)
     """
     time_offset.animate("time")
-    time_offset.gen_path("real")
 
     time_dilation.animate("real")
-    time_dilation.gen_path()
 
     fr, lst = settings.lottie_format["ip"], settings.lottie_format["op"]
     lottie["a"] = 1 # Animated

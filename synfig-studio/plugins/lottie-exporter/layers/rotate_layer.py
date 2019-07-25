@@ -33,4 +33,8 @@ def gen_layer_rotate(lottie, layer):
     anchor.add_offset()
     if settings.INSIDE_PRECOMP:
         pos.add_offset()
+    # This is a kind of reset after add_offset, will be called inside add_offset
+    # later
+    anchor.animate("vector")
+    pos.animate("vector")
     gen_helpers_transform(lottie, pos, anchor, scale, amount)

@@ -9,7 +9,7 @@ from lxml import etree
 import settings
 import common
 import synfig.group
-from synfig.animation import is_animated, get_bool_at_frame, get_vector_at_frame, print_animation
+from synfig.animation import to_Synfig_axis, is_animated, get_bool_at_frame, get_vector_at_frame, print_animation
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
@@ -27,8 +27,6 @@ class Param:
         self.param = param
         self.subparams = {}
         self.IS_ANIMATED = 0
-        self.PATH_GENERATED = 0
-        self.TRANSFORM_PATH_GENERATED = 0
         
     def reset(self):
         """
@@ -103,15 +101,59 @@ class Param:
         """
         return self.subparams[key]
 
-    def animate(self, anim_type):
+    def extract_subparams(self):
+        """
+        Extracts the subparameters of this parameter and stores with there tag
+        as the key
+        """
+        for child in self.param:
+            key = child.tag 
+            self.subparams[key] = Param(child, self.param)
+
+    def animate_without_path(self, anim_type, transform=False):
         """
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
-        if self.IS_ANIMATED:
-            return
-        self.IS_ANIMATED = 1
 
+        # Check if we are dealing with convert methods
+        if self.param[0].tag in settings.CONVERT_METHODS:
+            self.extract_subparams()
+            if self.param[0].tag == "add":
+                self.subparams["add"].extract_subparams()
+                self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
+                self.subparams["add"].subparams["rhs"].animate(anim_type, transform)
+                self.subparams["add"].subparams["scaler"].animate("real")
+        else:
+            self.single_animate(anim_type)
+
+
+    def animate(self, anim_type, transform=False):
+        """
+        If this parameter is not animated, it generates dummy waypoints and
+        animates this parameter
+        """
+
+        # Check if we are dealing with convert methods
+        if self.param[0].tag in settings.CONVERT_METHODS:
+            self.extract_subparams()
+            if self.param[0].tag == "add":
+                self.subparams["add"].extract_subparams()
+                self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
+                self.subparams["add"].subparams["rhs"].animate(anim_type, transform)
+                self.subparams["add"].subparams["scalar"].animate("real")
+        else:
+            self.single_animate(anim_type)
+            if anim_type == "vector":
+                self.gen_path("vector", transform)
+            elif anim_type not in {"bool", "string"}:   # These do not need path generation
+                self.gen_path("real", transform)   # "real" can be of various types as defined in common.misc.parse_position()
+
+    def single_animate(self, anim_type):
+        """
+        For animating a single animation, convert methods will use this internal
+        function
+        """
         is_animate = common.misc.is_animated(self.param[0])
         if is_animate == 2:
             # If already animated, no need to add waypoints
@@ -136,20 +178,19 @@ class Param:
         new_waypoint.attrib["time"] = time
         self.param[0].insert(1, new_waypoint)
 
-    def gen_path(self, anim_type="real", idx=0):
+    def gen_path(self, anim_type="real", transform=False, idx=0):
         """
         Generates the path for this parameter over time depending on the
         animation type of this parameter
         """
-        if self.PATH_GENERATED:
-            return
-        self.PATH_GENERATED, self.TRANSFORM_PATH_GENERATED = 1, 0
-
         self.path = {}
+        if transform:
+            self.param[0].attrib["transform_axis"] = "true"
         if anim_type == "real":
             gen_value_Keyframed(self.path, self.param[0], idx)
         else:
             gen_properties_multi_dimensional_keyframed(self.path, self.param[0], idx)
+        self.param[0].attrib["transform_axis"] = "false"
 
     def get_path(self):
         """
@@ -157,30 +198,33 @@ class Param:
         """
         return self.path
 
-    def gen_path_with_transform(self, anim_type="vector", idx=0):
-        """
-        Generates the path for this parameter over time with transform_axis
-        being set true
-        """
-        if self.TRANSFORM_PATH_GENERATED:
-            return
-        self.TRANSFORM_PATH_GENERATED, self.PATH_GENERATED = 1, 0
-        self.path = {}
-        # anim_type can not be real here
-        self.param[0].attrib["transform_axis"] = "true"
-        gen_properties_multi_dimensional_keyframed(self.path, self.param[0], idx)
-        self.param[0].attrib["transform_axis"] = "false"
-
     def get_value(self, frame):
         """
         Returns the value of the parameter at a given frame
         """
+        if self.param[0].tag in settings.CONVERT_METHODS:
+            if self.param[0].tag == "add":
+                ret = self.subparams["add"].subparams["lhs"].get_value(frame)
+                ret2 = self.subparams["add"].subparams["rhs"].get_value(frame)
+                mul = to_Synfig_axis(self.subparams["add"].subparams["scalar"].get_value(frame), "real")
+                ret[0] += ret2[0]
+                ret[1] += ret2[1]
+                ret = [it*mul for it in ret]
+        else:
+            ret = self.get_single_value(frame)
+        return ret
+
+    def get_single_value(self, frame):
+        """
+        Returns the value of some parameter which is not a convert method
+        """
         if self.param[0].attrib["type"] == "bool":  # No need of lottie format path here
             return get_bool_at_frame(self.param[0], frame)
 
-        if not self.PATH_GENERATED and not self.TRANSFORM_PATH_GENERATED:
+        if not self.path:   # Empty dictionary
             raise KeyError("Please calculate the path of this parameter before getting value at a frame")
         return get_vector_at_frame(self.path, frame)
+
 
     def add_offset(self):
         """

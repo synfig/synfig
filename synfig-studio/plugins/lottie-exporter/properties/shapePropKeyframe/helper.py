@@ -40,9 +40,7 @@ def animate_tangents(tangent, window):
     update_frame_window(theta[0], window)
 
     radius.animate("real")
-    radius.gen_path()
     theta.animate("region_angle")
-    theta.gen_path()
 
     tangent.add_subparam("radius", radius)
     tangent.add_subparam("theta", theta)
@@ -60,6 +58,12 @@ def update_frame_window(node, window):
     Returns:
         (None)
     """
+    # Time updation for converted nodes:
+    if node.tag in settings.CONVERT_METHODS:
+        if node.tag == "add":
+            update_frame_window(node[0][0], window) # lhs
+            update_frame_window(node[1][0], window) # rhs
+            update_frame_window(node[2][0], window) # scaler
     if is_animated(node) == 2:
         for waypoint in node:
             fr = get_frame(waypoint)

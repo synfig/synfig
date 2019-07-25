@@ -65,6 +65,7 @@ IMAGE_LAYER = {"import"}
 PRE_COMP_LAYER = {"rotate", "zoom", "translate"}
 GROUP_LAYER = {"group", "switch"}
 UNKNOWN_LAYER = "unknown_layer"
+CONVERT_METHODS = {"add"}
 
 
 def init():

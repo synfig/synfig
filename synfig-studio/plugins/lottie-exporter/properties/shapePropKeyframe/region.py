@@ -45,7 +45,6 @@ def gen_bline_region(lottie, bline_point):
         # waypoints might include there on time: 0 seconds
         update_frame_window(pos[0], window)
         pos.animate("vector")
-        pos.gen_path("vector")
 
         update_frame_window(split_r[0], window)
         split_r.animate("bool")
@@ -61,8 +60,7 @@ def gen_bline_region(lottie, bline_point):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin.animate("vector")
-    origin.gen_path_with_transform()
+    origin.animate("vector", True)
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:

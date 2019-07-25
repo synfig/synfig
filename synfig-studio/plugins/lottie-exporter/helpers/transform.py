@@ -49,7 +49,6 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        pos.gen_path("vector")
         lottie["p"] = copy.deepcopy(pos.get_path())
 
     # setting the opacity
@@ -60,7 +59,6 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        opacity.gen_path()
         lottie["o"] = copy.deepcopy(opacity.get_path())
 
     # setting the rotation
@@ -71,7 +69,6 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        rotation.gen_path()
         lottie["r"] = copy.deepcopy(rotation.get_path())
 
     # setting the anchor point
@@ -82,7 +79,6 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        anchor.gen_path("vector")
         lottie["a"] = copy.deepcopy(anchor.get_path())
 
     # setting the scale
@@ -94,7 +90,6 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.NO_INFO)
     # This means scale parameter is animated
     else:
-        scale.gen_path()
         lottie["s"] = copy.deepcopy(scale.get_path())
 
     # setting the skew angle
@@ -105,7 +100,6 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        skew.gen_path()
         lottie["sk"] = copy.deepcopy(skew.get_path())
 
     # setting the skew axis

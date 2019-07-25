@@ -53,6 +53,9 @@ def gen_layer_image(lottie, layer, idx):
     st["br"].animate("vector")
 
     st["scale"] = gen_image_scale(st["tl"], st["br"], asset["w"], asset["h"])
+    # Animation of this scale is needed again, as helpers/transform does not do
+    # path calculation again
+    st["scale"].animate("image_scale")
 
     anchor = settings.DEFAULT_ANCHOR
     rotation = settings.DEFAULT_ROTATION
@@ -87,10 +90,8 @@ def gen_image_scale(animated_1, animated_2, width, height):
     st = '<param name="image_scale"><real value="0.0000000000"/></param>'
     root = etree.fromstring(st)
     image_scale = Param(root, None)
-    image_scale.animate("image_scale")
-
-    animated_1.gen_path("vector")
-    animated_2.gen_path("vector")
+    #image_scale.animate("image_scale")
+    image_scale.animate_without_path("image_scale")
 
     # Filling the first 2 frames with there original scale values
     fill_image_scale_at_frame(image_scale[0], animated_1, animated_2, width, height, 0)
