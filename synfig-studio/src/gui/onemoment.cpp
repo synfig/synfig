@@ -123,7 +123,7 @@ OneMoment::OneMoment()//:
 	wnd->show_all();
 
 	wnd->present();
-	while(studio::App::events_pending())studio::App::iteration(false);
+	App::process_all_events();
 }
 
 OneMoment::~OneMoment()

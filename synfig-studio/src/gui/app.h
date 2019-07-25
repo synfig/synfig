@@ -450,7 +450,7 @@ public:
 	// This fixes bug 1890020
 	static void setup_changed();
 
-	static void process_all_events();
+	static void process_all_events(long unsigned int us = 1);
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);
