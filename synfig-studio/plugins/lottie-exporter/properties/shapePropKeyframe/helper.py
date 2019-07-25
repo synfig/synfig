@@ -17,29 +17,6 @@ from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_f
 sys.path.append("../../")
 
 
-def append_path(element, parent, key, typ="real"):
-    """
-    Generates dictionary corresponding to path followed by element and appends
-    it at the parent
-
-    Args:
-        element(lxml.etree._Element) : Synfig format element/parameter
-        parent (dict)                : path will be stored here
-        key (str)           : Key of the dictionary to be stored in parent
-        typ (:obj: str, optional)    : Specifies the type of dictionary to be created
-
-    Returns:
-        (None)
-    """
-    # Generating the path
-    element_dict = {}
-    if typ == "real":
-        gen_value_Keyframed(element_dict, element, 0)
-    else:
-        gen_properties_multi_dimensional_keyframed(element_dict, element, 0)
-    parent[key] = element_dict
-
-
 def animate_tangents(tangent, window):
     """
     Animates the radial composite and updates the window of frame if radial
@@ -47,8 +24,8 @@ def animate_tangents(tangent, window):
     Also generate the Lottie path and stores in radial_composite
 
     Args:
-        radial_composite (common.Param.Param)  : Synfig format radial composite's parent-> stores radius and angle
-        window           (dict)                : max and min frame of overall animations stored in this
+        tangent (common.Param.Param)  : Synfig format radial composite's parent-> stores radius and angle
+        window  (dict)                : max and min frame of overall animations stored in this
 
     Returns:
         (None)
@@ -63,10 +40,12 @@ def animate_tangents(tangent, window):
     update_frame_window(theta[0], window)
 
     radius.animate("real")
+    radius.gen_path()
     theta.animate("region_angle")
+    theta.gen_path()
 
-    append_path(radius[0], tangent.get_subparam_dict(), "radius_path")
-    append_path(theta[0], tangent.get_subparam_dict(), "theta_path")
+    tangent.add_subparam("radius", radius)
+    tangent.add_subparam("theta", theta)
 
 
 def update_frame_window(node, window):
@@ -130,19 +109,19 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     """
 
     # Get value of split_radius and split_angle at frame
-    sp_r = get_bool_at_frame(split_r[0], fr)
-    sp_a = get_bool_at_frame(split_a[0], fr)
+    sp_r = split_r.get_value(fr)
+    sp_a = split_a.get_value(fr)
 
     # Setting tangent 1
-    r1 = get_vector_at_frame(t1.get_subparam("radius_path"), fr)
-    a1 = get_vector_at_frame(t1.get_subparam("theta_path"), fr)
+    r1 = t1.get_subparam("radius").get_value(fr)
+    a1 = t1.get_subparam("theta").get_value(fr)
 
     x, y = radial_to_tangent(r1, a1)
     tangent1 = Vector(x, y)
 
     # Setting tangent 2
-    r2 = get_vector_at_frame(t2.get_subparam("radius_path"), fr)
-    a2 = get_vector_at_frame(t2.get_subparam("theta_path"), fr)
+    r2 = t2.get_subparam("radius").get_value(fr)
+    a2 = t2.get_subparam("theta").get_value(fr)
     if not sp_r:
         # Use t1's radius
         r2 = r1

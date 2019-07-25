@@ -8,9 +8,7 @@ import sys
 from common.Vector import Vector
 from common.Bline import Bline
 from common.Param import Param
-from synfig.animation import print_animation, get_vector_at_frame
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import append_path, update_frame_window, update_child_at_parent, insert_dict_at
+from properties.shapePropKeyframe.helper import update_frame_window, insert_dict_at
 sys.path.append("../../")
 
 
@@ -31,7 +29,6 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
     window = {}
     window["first"] = sys.maxsize
     window["last"] = -1
-    count = 0
     dynamic_list = Bline(dynamic_list[0], dynamic_list)
 
     for entry in dynamic_list.get_entry_list():
@@ -40,9 +37,8 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
 
         z = Param(pos.getparent(), pos.getparent().getparent())
         z.animate("vector")
-
-        append_path(z[0], entry, "pos_path", "vector")
-        count += 1
+        z.gen_path("vector")
+        entry["vector"] = z
 
     layer = dynamic_list.get_layer()
     origin = layer.get_param("origin")
@@ -51,7 +47,6 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
     update_frame_window(origin[0], window)
     origin.animate("vector")
     origin.gen_path_with_transform()
-    origin_dict = origin.get_path()
 
     if window["first"] == sys.maxsize and window["last"] == -1:
         window["first"] = window["last"] = 0
@@ -64,16 +59,15 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)
 
         for entry in dynamic_list.get_entry_list():
-            pos_path_dict = entry["pos_path"]
-            pos_cur = get_vector_at_frame(pos_path_dict, fr)
-            pos_next = get_vector_at_frame(pos_path_dict, fr + 1)
+            pos_cur = entry["vector"].get_value(fr)
+            pos_next = entry["vector"].get_value(fr + 1)
 
             tangent1_cur, tangent2_cur = Vector(0, 0), Vector(0, 0)
             tangent1_next, tangent2_next = Vector(0, 0), Vector(0, 0)
 
             # Adding origin to each vertex
-            origin_cur = get_vector_at_frame(origin_dict, fr)
-            origin_next = get_vector_at_frame(origin_dict, fr + 1)
+            origin_cur = origin.get_value(fr)
+            origin_next = origin.get_value(fr + 1)
             for i in range(len(pos_cur)):
                 pos_cur[i] += origin_cur[i]
             for i in range(len(pos_next)):

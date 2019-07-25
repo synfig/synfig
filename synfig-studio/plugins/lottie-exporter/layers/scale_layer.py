@@ -22,14 +22,13 @@ def gen_layer_scale(lottie, layer):
     """
     center = layer.get_param("center")
     center.animate("vector")
-    anchor = center
+    anchor = copy.deepcopy(center)
     pos = center
 
     scale = layer.get_param("amount")  # This is scale amount
     scale.animate("scale_layer_zoom")
 
-    anchor = copy.deepcopy(anchor)
     anchor.add_offset()
     if settings.INSIDE_PRECOMP:
         pos.add_offset()
-    gen_helpers_transform(lottie, pos[0], anchor[0], scale[0])
+    gen_helpers_transform(lottie, pos, anchor, scale)

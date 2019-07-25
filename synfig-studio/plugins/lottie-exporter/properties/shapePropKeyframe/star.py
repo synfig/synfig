@@ -9,8 +9,6 @@ import math
 from common.Vector import Vector
 from common.Layer import Layer
 from synfig.animation import to_Synfig_axis
-from properties.valueKeyframed import gen_value_Keyframed
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window
 sys.path.append("../../")
 

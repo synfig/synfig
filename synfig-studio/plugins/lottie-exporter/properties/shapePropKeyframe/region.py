@@ -5,12 +5,11 @@ in Lottie format
 """
 
 import sys
-import ast
+import copy
 from common.Bline import Bline
 from common.Param import Param
-from synfig.animation import get_vector_at_frame
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import insert_dict_at, update_frame_window, update_child_at_parent, append_path, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
+from properties.shapePropKeyframe.helper import insert_dict_at, update_frame_window, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
 sys.path.append("../../")
 
 
@@ -28,8 +27,6 @@ def gen_bline_region(lottie, bline_point):
     """
     ################### SECTION 1 #########################
     # Inserting waypoints if not animated and finding the first and last frame
-    # AFter that, there path will be calculated in lottie format which can
-    # latter be used in get_vector_at_frame() function
     window = {}
     window["first"] = sys.maxsize
     window["last"] = -1
@@ -48,14 +45,13 @@ def gen_bline_region(lottie, bline_point):
         # waypoints might include there on time: 0 seconds
         update_frame_window(pos[0], window)
         pos.animate("vector")
+        pos.gen_path("vector")
 
         update_frame_window(split_r[0], window)
         split_r.animate("bool")
 
         update_frame_window(split_a[0], window)
         split_a.animate("bool")
-
-        append_path(pos[0], entry, "point_path", "vector")
 
         animate_tangents(t1, window)
         animate_tangents(t2, window)
@@ -67,7 +63,6 @@ def gen_bline_region(lottie, bline_point):
     update_frame_window(origin[0], window)
     origin.animate("vector")
     origin.gen_path_with_transform()
-    origin_dict = origin.get_path()
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:
@@ -81,9 +76,8 @@ def gen_bline_region(lottie, bline_point):
         st_val, en_val = insert_dict_at(lottie, -1, fr, loop)
 
         for entry in bline.get_entry_list():
-            point_path_dict = entry["point_path"]
-            pos_cur = get_vector_at_frame(point_path_dict, fr)
-            pos_next = get_vector_at_frame(point_path_dict, fr + 1)
+            pos = entry["point"]
+            pos_cur, pos_next = pos.get_value(fr), pos.get_value(fr + 1)
             t1 = entry["t1"]
             t2 = entry["t2"]
             split_r = entry["split_radius"]
@@ -96,8 +90,7 @@ def gen_bline_region(lottie, bline_point):
             tangent1_next, tangent2_next = convert_tangent_to_lottie(tangent1_next, tangent2_next)
 
             # Adding origin to each vertex
-            origin_cur = get_vector_at_frame(origin_dict, fr)
-            origin_next = get_vector_at_frame(origin_dict, fr + 1)
+            origin_cur, origin_next = origin.get_value(fr), origin.get_value(fr + 1)
             for i in range(len(pos_cur)):
                 pos_cur[i] += origin_cur[i]
             for i in range(len(pos_next)):

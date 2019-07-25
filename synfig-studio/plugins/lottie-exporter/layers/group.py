@@ -5,6 +5,7 @@ Store all functions corresponding to group layer in Synfig
 
 import sys
 import math
+import copy
 import settings
 from common.Param import Param
 from common.Canvas import Canvas
@@ -14,8 +15,6 @@ from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
 from synfig.animation import print_animation, insert_waypoint_at_frame, to_Synfig_axis
-from properties.shapePropKeyframe.helper import append_path
-from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
 
 
@@ -74,17 +73,17 @@ def gen_layer_group(lottie, layer, idx):
         pos.add_offset()
 
     scale.animate("group_layer_scale")
-
     # Generating animation for skew
     skew.animate("rotate_layer_angle")
+    # Animating opacity
+    opacity.animate("opacity")
 
     # Generate the transform properties here
-    gen_helpers_transform(lottie["ks"], pos.get()[0], anchor.get()[0], scale.get()[0], angle.get()[0], opacity.get()[0], skew.get()[0])
+    gen_helpers_transform(lottie["ks"], pos, anchor, scale, angle, opacity, skew)
 
     # Store previous states, to be recovered at the end of group layer
     prev_state = settings.INSIDE_PRECOMP
-    settings.OUTLINE_GROW.append({})    # Storing the outline grow in settings, will be used inside child outlines
-    settings.OUTLINE_GROW[-1]["outline_grow_path"] = outline_grow.get_path()
+    settings.OUTLINE_GROW.append(outline_grow)    # Storing the outline grow in settings, will be used inside child outlines
 
     settings.INSIDE_PRECOMP = True
 
@@ -182,16 +181,26 @@ def change_opacity_group(layer, lottie):
 
         if c_layer.get_type() in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
             anim_type = "effects_opacity"
-            dic = root["layers"][z_value]["ef"][0]["ef"][-1]["v"]
+            sw = 1
         elif c_layer.get_type() in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER, settings.IMAGE_LAYER):
             anim_type = "opacity"
-            dic = root["layers"][z_value]["ks"]["o"]
+            sw = 2
         elif c_layer.get_type() in settings.SHAPE_LAYER:
             anim_type = "opacity"
+            sw = 3
             dic = root["layers"][z_value]["shapes"][1]["o"]
 
         animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
-        gen_value_Keyframed(dic, animation[0], 0)
+        animation.reset()
+        animation.gen_path()
+
+        if sw == 1:
+            root["layers"][z_value]["ef"][0]["ef"][-1]["v"] = copy.deepcopy(animation.get_path())
+        elif sw == 2:
+            root["layers"][z_value]["ks"]["o"] = copy.deepcopy(animation.get_path())
+        elif sw == 3:
+            root["layers"][z_value]["shapes"][1]["o"] = copy.deepcopy(animation.get_path())
+
         z_value += 1
 
 
@@ -232,18 +241,27 @@ def change_opacity_switch(layer, lottie):
         active_time = sorted(active_time)
         deactive_time = sorted(flip_time(active_time))
 
+        sw = 0  # To decide which if condition to go to
         if c_layer.get_type() in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
             anim_type = "effects_opacity"
-            dic = root["layers"][it]["ef"][0]["ef"][-1]["v"]
+            sw = 1
         elif c_layer.get_type() in set.union(settings.PRE_COMP_LAYER, settings.GROUP_LAYER, settings.IMAGE_LAYER):
             anim_type = "opacity"
-            dic = root["layers"][it]["ks"]["o"]
+            sw = 2
         elif c_layer.get_type() in settings.SHAPE_LAYER:
             anim_type = "opacity"
-            dic = root["layers"][it]["shapes"][1]["o"]
+            sw = 3
 
         animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
-        gen_value_Keyframed(dic, animation[0], 0)
+        animation.reset()
+        animation.gen_path()
+
+        if sw == 1:
+            root["layers"][it]["ef"][0]["ef"][-1]["v"] = copy.deepcopy(animation.get_path())
+        elif sw == 2:
+            root["layers"][it]["ks"]["o"] = copy.deepcopy(animation.get_path())
+        elif sw == 3:
+            root["layers"][it]["shapes"][1]["o"] = copy.deepcopy(animation.get_path())
 
         it += 1
 
@@ -284,7 +302,7 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
                           will effect a factor of 100)
 
     Returns:
-        (lxml.etree._Element) : Modified opacity animation is returned
+        (common.Param.Param) : Modified opacity animation is returned
     """
     opacity = layer.get_param("amount")
 

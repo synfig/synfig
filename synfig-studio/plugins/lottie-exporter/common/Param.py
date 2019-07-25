@@ -29,6 +29,15 @@ class Param:
         self.IS_ANIMATED = 0
         self.PATH_GENERATED = 0
         self.TRANSFORM_PATH_GENERATED = 0
+        
+    def reset(self):
+        """
+        This function will be called when any of the entities of the paramter
+        are changed. This should be internally called, but for now compromising
+        """
+        self.PATH_GENERATED = 0
+        self.TRANSFORM_PATH_GENERATED = 0
+        self.path = {}
 
     def get(self):
         """

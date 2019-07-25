@@ -24,10 +24,9 @@ def gen_layer_translate(lottie, layer):
 
     origin = layer.get_param("origin")
     origin.animate("vector")
-    anchor = origin
+    anchor = copy.deepcopy(origin)
     pos = origin
 
-    anchor = copy.deepcopy(anchor)
     for waypoint in anchor[0]:
         waypoint[0][0].text = str(0)
         waypoint[0][1].text = str(0)
@@ -36,4 +35,4 @@ def gen_layer_translate(lottie, layer):
     if settings.INSIDE_PRECOMP:
         pos.add_offset()
 
-    gen_helpers_transform(lottie, pos[0], anchor[0])
+    gen_helpers_transform(lottie, pos, anchor)

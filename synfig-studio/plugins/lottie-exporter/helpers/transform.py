@@ -6,12 +6,14 @@ corresponding to lottie
 
 import sys
 import math
+import copy
 import settings
 from common.Count import Count
 from common.misc import is_animated, change_axis
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
+from synfig.animation import print_animation
 sys.path.append("../")
 
 
@@ -47,24 +49,8 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        is_animate = is_animated(pos)
-        if is_animate == 2:
-            gen_properties_multi_dimensional_keyframed(lottie["p"],
-                                                       pos,
-                                                       index.inc())
-        else:
-            x_val, y_val = 0, 0
-            if is_animate == 0:
-                x_val = float(pos[0].text) * settings.PIX_PER_UNIT
-                y_val = float(pos[1].text) * settings.PIX_PER_UNIT
-            else:
-                x_val = float(pos[0][0][0].text) * settings.PIX_PER_UNIT
-                y_val = float(pos[0][0][1].text) * settings.PIX_PER_UNIT
-            gen_properties_value(lottie["p"],
-                                 change_axis(x_val, y_val, True),
-                                 index.inc(),
-                                 settings.DEFAULT_ANIMATED,
-                                 settings.NO_INFO)
+        pos.gen_path("vector")
+        lottie["p"] = copy.deepcopy(pos.get_path())
 
     # setting the opacity
     if isinstance(opacity, (float, int)):
@@ -74,20 +60,8 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        is_animate = is_animated(opacity)
-        if is_animate == 2:
-            opacity.attrib["type"] = "opacity"
-            gen_value_Keyframed(lottie["o"], opacity, index.inc())
-        else:
-            if is_animate == 0:
-                val = float(opacity.attrib["value"]) * settings.OPACITY_CONSTANT
-            else:
-                val = float(opacity[0][0].attrib["value"]) * settings.OPACITY_CONSTANT
-            gen_properties_value(lottie["o"],
-                                 val,
-                                 index.inc(),
-                                 settings.DEFAULT_ANIMATED,
-                                 settings.NO_INFO)
+        opacity.gen_path()
+        lottie["o"] = copy.deepcopy(opacity.get_path())
 
     # setting the rotation
     if isinstance(rotation, (float, int)):
@@ -97,20 +71,8 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        is_animate = is_animated(rotation)
-        if is_animate == 2:
-            gen_value_Keyframed(lottie["r"], rotation, index.inc())
-        else:
-            theta = 0   # default rotation
-            if is_animate == 0:
-                theta = (float(rotation.attrib["value"]))
-            else:
-                theta = (float(rotation[0][0].attrib["value"]))
-            gen_properties_value(lottie["r"],
-                                 theta,
-                                 index.inc(),
-                                 settings.DEFAULT_ANIMATED,
-                                 settings.NO_INFO)
+        rotation.gen_path()
+        lottie["r"] = copy.deepcopy(rotation.get_path())
 
     # setting the anchor point
     if isinstance(anchor, list):
@@ -120,24 +82,8 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        is_animate = is_animated(anchor)
-        if is_animate == 2:
-            gen_properties_multi_dimensional_keyframed(lottie["a"],
-                                                       anchor,
-                                                       index.inc())
-        else:
-            x_val, y_val = 0, 0
-            if is_animate == 0:
-                x_val = float(anchor[0].text) * settings.PIX_PER_UNIT
-                y_val = float(anchor[1].text) * settings.PIX_PER_UNIT
-            else:
-                x_val = float(anchor[0][0][0].text) * settings.PIX_PER_UNIT
-                y_val = float(anchor[0][0][1].text) * settings.PIX_PER_UNIT
-            gen_properties_value(lottie["a"],
-                                 change_axis(x_val, y_val, True),
-                                 index.inc(),
-                                 settings.DEFAULT_ANIMATED,
-                                 settings.NO_INFO)
+        anchor.gen_path("vector")
+        lottie["a"] = copy.deepcopy(anchor.get_path())
 
     # setting the scale
     if isinstance(scale, list):
@@ -148,21 +94,8 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.NO_INFO)
     # This means scale parameter is animated
     else:
-        is_animate = is_animated(scale)
-        if is_animate == 2:
-            gen_value_Keyframed(lottie["s"], scale, index.inc())
-        else:
-            zoom = 0
-            if is_animate == 0:
-                zoom = float(scale.attrib["value"])
-            else:
-                zoom = float(scale[0][0].attrib["value"])
-            zoom = (math.e ** zoom) * 100
-            gen_properties_value(lottie["s"],
-                                 [zoom, zoom],
-                                 index.inc(),
-                                 settings.DEFAULT_ANIMATED,
-                                 settings.NO_INFO)
+        scale.gen_path()
+        lottie["s"] = copy.deepcopy(scale.get_path())
 
     # setting the skew angle
     if isinstance(skew, (float, int)):
@@ -172,20 +105,8 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        is_animate = is_animated(skew)
-        if is_animate == 2:
-            gen_value_Keyframed(lottie["sk"], skew, index.inc())
-        else:
-            skew_val = 0
-            if is_animate == 0:
-                skew_val = float(skew.attrib["value"])
-            else:
-                skew_val = float(skew[0][0].attrib["value"])
-            gen_properties_value(lottie["sk"],
-                                 -skew_val,
-                                 index.inc(),
-                                 settings.DEFAULT_ANIMATED,
-                                 settings.NO_INFO)
+        skew.gen_path()
+        lottie["sk"] = copy.deepcopy(skew.get_path())
 
     # setting the skew axis
     gen_properties_value(lottie["sa"],

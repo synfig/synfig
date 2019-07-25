@@ -56,9 +56,10 @@ def gen_layer_image(lottie, layer, idx):
 
     anchor = settings.DEFAULT_ANCHOR
     rotation = settings.DEFAULT_ROTATION
-    opacity = layer.get_param("amount").get()
+    opacity = layer.get_param("amount")
+    opacity.animate("opacity")
 
-    gen_helpers_transform(lottie["ks"], st["tl"][0], anchor, st["scale"][0], rotation, opacity[0])
+    gen_helpers_transform(lottie["ks"], st["tl"], anchor, st["scale"], rotation, opacity)
 
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
