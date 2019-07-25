@@ -48,14 +48,14 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT();
-ACTION_SET_NAME();
-ACTION_SET_LOCAL_NAME();
-ACTION_SET_TASK();
-ACTION_SET_CATEGORY();
-ACTION_SET_PRIORITY();
-ACTION_SET_VERSION();
-ACTION_SET_CVS_ID();
+ACTION_INIT(Action::Vectorization);
+ACTION_SET_NAME(Action::Vectorization,"Vectorization");
+ACTION_SET_LOCAL_NAME(Action::Vectorization,N_("Vectorize the Image"));
+ACTION_SET_TASK(Action::Vectorization,"vectorize");
+ACTION_SET_CATEGORY(Action::Vectorization,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);
+ACTION_SET_PRIORITY(Action::Vectorization,0);
+ACTION_SET_VERSION(Action::Vectorization,"0.0");
+ACTION_SET_CVS_ID(Action::Vectorization,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
@@ -63,3 +63,14 @@ ACTION_SET_CVS_ID();
 
 /* === M E T H O D S ======================================================= */
 
+bool
+Action::Vectorization::set_param(const synfig::String& name, const Action::Param &param)
+{
+	if(name=="image" && param.get_type()==Param::TYPE_LAYER)
+	{
+        layer = param.get_layer();
+		return true;	
+    }
+    
+    return Action::CanvasSpecific::set_param(name,param);
+}

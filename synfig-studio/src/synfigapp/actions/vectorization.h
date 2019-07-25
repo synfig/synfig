@@ -46,13 +46,22 @@ class Vectorization :
 	public Super
 {
 private:
+	synfig::Layer::Handle layer;
 
 	
 public:
 
 	Vectorization();
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
 
-	
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
+
+	virtual void perform();
+	virtual void undo();
+
+	ACTION_MODULE_EXT	
 };
 
 }; // END of namespace action
