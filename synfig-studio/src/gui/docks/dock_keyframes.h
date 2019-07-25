@@ -51,31 +51,22 @@ class KeyframeActionManager;
 */
 class Dock_Keyframes : public Dock_CanvasSpecific
 {
-	//The actions stuff
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
-
-	/*
-	void add_keyframe_pressed();
-	void duplicate_keyframe_pressed();
-	void delete_keyframe_pressed();
-	*/
+private:
+	//The manager of keyframes actions
+	KeyframeActionManager* keyframe_action_manager;
 
 	void show_keyframe_properties();
 	void keyframe_toggle();
 	void keyframe_description_set();
+
 	//animation render description change signal handler
 	void refresh_rend_desc();
-
-	//The manager of keyframes actions
-	KeyframeActionManager* keyframe_action_manager;
 
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
 public:
-
-
 	Dock_Keyframes();
 	~Dock_Keyframes();
 }; // END of Dock_Keyframes

@@ -76,39 +76,34 @@ KeyframeActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
 	clear();
 
 #ifdef ONE_ACTION_GROUP
-	if(ui_manager_)	get_ui_manager()->remove_action_group(action_group_);
-	ui_manager_=x;
-	if(ui_manager_)	get_ui_manager()->insert_action_group(action_group_);
+	if (ui_manager_) get_ui_manager()->remove_action_group(action_group_);
+	ui_manager_ = x;
+	if (ui_manager_) get_ui_manager()->insert_action_group(action_group_);
 #else
-	ui_manager_=x;
+	ui_manager_ = x;
 #endif
 }
 
 void
 KeyframeActionManager::set_keyframe_tree(KeyframeTree* x)
 {
-	if(selection_changed_connection) selection_changed_connection.disconnect();
-	keyframe_tree_=x;
-	if(keyframe_tree_)
-	{
-		selection_changed_connection=keyframe_tree_->get_selection()->signal_changed().connect(
-			sigc::mem_fun(*this,&KeyframeActionManager::queue_refresh)
-		);
-	}
+	selection_changed_connection.disconnect();
+	keyframe_tree_ = x;
+	if (keyframe_tree_)
+		selection_changed_connection = keyframe_tree_->get_selection()->signal_changed().connect(
+			sigc::mem_fun(*this,&KeyframeActionManager::queue_refresh) );
 }
 
 void
 KeyframeActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x)
 {
-	if(time_changed_connection) time_changed_connection.disconnect();
-	canvas_interface_=x;
-	if(canvas_interface_)
-	{
-		// refresh keyframes list connected animation time position change
+	time_changed_connection.disconnect();
+	canvas_interface_ = x;
+
+	// refresh keyframes list connected animation time position change
+	if (canvas_interface_)
 		time_changed_connection=canvas_interface_->signal_time_changed().connect(
-			sigc::mem_fun(*this,&KeyframeActionManager::queue_refresh)
-		);
-	}
+			sigc::mem_fun(*this,&KeyframeActionManager::queue_refresh) );
 }
 
 void
@@ -134,18 +129,16 @@ KeyframeActionManager::clear()
 void
 KeyframeActionManager::queue_refresh()
 {
-	if(queued)
+	if (queued)
 		return;
 
-	//queue_refresh_connection.disconnect();
-	queue_refresh_connection=Glib::signal_idle().connect(
+	queue_refresh_connection.disconnect();
+	queue_refresh_connection = Glib::signal_idle().connect(
 		sigc::bind_return(
-			sigc::mem_fun(*this,&KeyframeActionManager::refresh),
-			false
-		)
-	);
+			sigc::mem_fun(*this, &KeyframeActionManager::refresh),
+			false ));
 
-	queued=true;
+	queued = true;
 }
 
 /*! \fn KeyframeActionManager::on_keyframe_properties()
@@ -201,11 +194,8 @@ KeyframeActionManager::refresh()
 {
 	KeyframeTreeStore::Model model;
 
-	if(queued)
-	{
-		queued=false;
-		//queue_refresh_connection.disconnect();
-	}
+	queued = false;
+	queue_refresh_connection.disconnect();
 
 
 	clear();

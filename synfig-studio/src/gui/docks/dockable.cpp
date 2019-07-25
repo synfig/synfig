@@ -223,6 +223,12 @@ Dockable::reset_container()
 	container->show();
 	set_use_scrolled(use_scrolled);
 	attach(*container, 0, 0, 1, 1);
+	
+	// to avoid GTK warning:
+	//   Allocating size to widget without calling gtk_widget_get_preferred_width/height().
+	//   How does the code know the size to allocate?
+	// related with combination of Grid, ScrolledWindow and TreeView
+	App::process_all_events();
 }
 
 void
