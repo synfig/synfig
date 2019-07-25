@@ -755,8 +755,8 @@ void CanvasView::deactivate()
 void CanvasView::present()
 {
 	App::set_selected_canvas_view(this);
-	Dockable::present();
 	update_title();
+	Dockable::present();
 }
 
 void CanvasView::jack_lock()
@@ -2232,25 +2232,11 @@ CanvasView::on_children_user_click(int button, Gtk::TreeRow row, ChildrenTree::C
 bool
 CanvasView::on_keyframe_tree_event(GdkEvent *event)
 {
-    switch(event->type)
-    {
-	case GDK_BUTTON_PRESS:
-		switch(event->button.button)
-		{
-			case 3:
-			{
-				//keyframemenu.popup(event->button.button,gtk_get_current_event_time());
-				return true;
-			}
-			break;
-		}
-		break;
-	case GDK_MOTION_NOTIFY:
-		break;
-	case GDK_BUTTON_RELEASE:
-		break;
-	default:
-		break;
+	if ( event->type == GDK_BUTTON_PRESS
+	  && event->button.button == 3 )
+	{
+		//keyframemenu.popup(event->button.button,gtk_get_current_event_time());
+		return true;
 	}
 	return false;
 }
