@@ -205,7 +205,7 @@ public:
 			Response dflt = RESPONSE_OK )
 	{
 		view->present();
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		Gtk::MessageDialog dialog(
 			*App::main_window,
 			message,
@@ -235,7 +235,7 @@ public:
 				Response dflt=RESPONSE_YES )
 	{
 		view->present();
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		Gtk::MessageDialog dialog(
 			*App::main_window,
 			message,
@@ -263,7 +263,7 @@ public:
 			view->statusbar->pop();
 			view->statusbar->push(task);
 		}
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		if(view->cancel){return false;}
 		return true;
 	}
@@ -290,7 +290,7 @@ public:
 		view->statusbar->pop();
 		view->statusbar->push(err);
 
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		if(view->cancel)return false;
 		return true;
 	}
@@ -311,7 +311,7 @@ public:
 			if(x<0)x=0;
 			else if(x>1)x=1;
 		}
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		if(view->cancel){/*view->cancel=false;*/return false;}
 		return true;
 	}

@@ -431,7 +431,7 @@ public:
 	task(const std::string &task)
 	{
 		std::cerr<<task.c_str()<<std::endl;
-		while(studio::App::events_pending())studio::App::iteration(false);
+		App::process_all_events();
 		return true;
 	}
 
@@ -449,14 +449,14 @@ public:
 	warning(const std::string &err)
 	{
 		std::cerr<<"warning: "<<err.c_str()<<std::endl;
-		while(studio::App::events_pending())studio::App::iteration(false);
+		App::process_all_events();
 		return true;
 	}
 
 	virtual bool
 	amount_complete(int /*current*/, int /*total*/)
 	{
-		while(studio::App::events_pending())studio::App::iteration(false);
+		App::process_all_events();
 		return true;
 	}
 };
@@ -2389,9 +2389,7 @@ App::quit()
 	while(!instance_list.empty())
 		if (!instance_list.front()->safe_close())
 			return;
-
-	while (studio::App::events_pending())
-		studio::App::iteration(true);
+	process_all_events();
 
 	Gtk::Main::quit();
 
@@ -4152,12 +4150,12 @@ studio::App::setup_changed()
 }
 
 void
-studio::App::process_all_events()
+studio::App::process_all_events(long unsigned int us)
 {
-	Glib::usleep(1);
+	Glib::usleep(us);
 	while(studio::App::events_pending()) {
 		while(studio::App::events_pending())
 			studio::App::iteration(false);
-		Glib::usleep(1);
+		Glib::usleep(us);
 	}
 }
