@@ -135,9 +135,6 @@ Duckmatic::~Duckmatic()
 {
 	clear_ducks();
 
-	if (Duck::duck_count)
-		synfig::error("%d ducks not yet deleted!", Duck::duck_count);
-
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		synfig::info("Duckmatic::~Duckmatic(): Deleted");
 }
