@@ -156,17 +156,9 @@ LayerTree::LayerTree():
 
 	layer_tree_view_->signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::onKeyPress));
 
-	//Gtk::HPaned* hpaned(manage(new Gtk::HPaned()));
-	//hpaned->show();
-	//attach(*hpaned, 0, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//attach(*create_layer_tree(), 0, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL, 0, 0);
-
 	create_layer_tree();
 	create_param_tree();
 
-	//hpaned->pack1(*create_layer_tree(),false,false);
-	//hpaned->pack2(*create_param_tree(),true,false);
-	//hpaned->set_position(200);
 	hbox=manage(new Gtk::HBox());
 
 	attach(*hbox, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -180,7 +172,6 @@ LayerTree::LayerTree():
 	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
 	Gtk::Image *icon;
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
