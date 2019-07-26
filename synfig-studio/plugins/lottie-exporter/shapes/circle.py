@@ -38,9 +38,9 @@ def gen_shapes_circle(lottie, layer, idx):
     # Radius
     radius = layer.get_param("radius")
     radius.animate("circle_radius")
-    lottie["s"] = copy.deepcopy(radius.get_path())
+    radius.fill_path(lottie, "s")
 
     # Origin
     origin = layer.get_param("origin", "center")
     origin.animate("vector")
-    lottie["p"] = copy.deepcopy(origin.get_path())
+    origin.fill_path(lottie, "p")

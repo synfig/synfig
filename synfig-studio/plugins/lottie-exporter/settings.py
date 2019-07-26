@@ -51,6 +51,9 @@ EFFECTS_INVERT = 7  # same as All mask, don't know why
 EFFECTS_HFEATHER = 0    # horizontal feather
 EFFECTS_VFEATHER = 0    # vertical feather
 EFFECTS_OPACITY = 0     # Opacity ty = 0
+EFFECTS_CONTROLLER = 5
+EFFECTS_SLIDER = 0
+EFFECTS_POINT = 3
 MASK_ADDITIVE = "a"
 INSIDE_PRECOMP = False  # specifies if we are inside a precomp or not
 ADDITIONAL_PRECOMP_WIDTH = 0
@@ -96,3 +99,5 @@ def init():
     layer_count = Count()
     global canvas_count # will only cound the canvas which do not have any names
     canvas_count = Count()
+    global controller_count # counts the slider and point effects controller
+    controller_count = Count()

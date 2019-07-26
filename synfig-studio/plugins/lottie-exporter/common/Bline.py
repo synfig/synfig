@@ -55,7 +55,7 @@ class Bline:
         """
         if isinstance(self.parent, common.Layer.Layer):
             return self.parent
-        return self.parent.get_layer()
+        return self.parent
 
     def get_type(self):
         """

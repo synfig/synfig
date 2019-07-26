@@ -22,6 +22,18 @@ class Layer:
         self.extract_params(self.params)
         self.set_description()
 
+    def set_lottie_layer(self, lottie):
+        """
+        Stores the path to lottie format of layer
+        """
+        self.lottie_layer = lottie
+
+    def get_lottie_layer(self):
+        """
+        Returns the path to lottie format of layer
+        """
+        return self.lottie_layer
+
     def get_layer(self):
         """
         Returns the original address of the layer

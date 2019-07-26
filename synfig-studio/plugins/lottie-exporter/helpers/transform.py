@@ -49,7 +49,7 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        lottie["p"] = copy.deepcopy(pos.get_path())
+        pos.fill_path(lottie, "p")
 
     # setting the opacity
     if isinstance(opacity, (float, int)):
@@ -59,7 +59,7 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        lottie["o"] = copy.deepcopy(opacity.get_path())
+        opacity.fill_path(lottie, "o")
 
     # setting the rotation
     if isinstance(rotation, (float, int)):
@@ -69,7 +69,7 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        lottie["r"] = copy.deepcopy(rotation.get_path())
+        rotation.fill_path(lottie, "r")
 
     # setting the anchor point
     if isinstance(anchor, list):
@@ -79,7 +79,7 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        lottie["a"] = copy.deepcopy(anchor.get_path())
+        anchor.fill_path(lottie, "a")
 
     # setting the scale
     if isinstance(scale, list):
@@ -90,7 +90,7 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.NO_INFO)
     # This means scale parameter is animated
     else:
-        lottie["s"] = copy.deepcopy(scale.get_path())
+        scale.fill_path(lottie, "s")
 
     # setting the skew angle
     if isinstance(skew, (float, int)):
@@ -100,7 +100,7 @@ def gen_helpers_transform(lottie, pos=settings.DEFAULT_POSITION, anchor=settings
                              settings.DEFAULT_ANIMATED,
                              settings.NO_INFO)
     else:
-        lottie["sk"] = copy.deepcopy(skew.get_path())
+        skew.fill_path(lottie, "sk")
 
     # setting the skew axis
     gen_properties_value(lottie["sa"],

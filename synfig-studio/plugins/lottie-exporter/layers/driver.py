@@ -52,6 +52,8 @@ def gen_layers(lottie, canvas, layer_itr):
             continue
 
         lottie.append({})
+        layer.set_lottie_layer(lottie[-1])
+
         if layer.get_type() in shape:           # Goto shape layer
             gen_layer_shape(lottie[-1],
                             layer,

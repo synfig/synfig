@@ -30,4 +30,4 @@ def gen_effects_color(lottie, layer, idx):
 
     color = layer.get_param("color")
     color.animate("color")
-    lottie["v"] = copy.deepcopy(color.get_path())
+    color.fill_path(lottie, "v")

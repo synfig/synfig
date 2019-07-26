@@ -29,4 +29,4 @@ def gen_effects_opacity(lottie, layer, idx):
 
     opacity = layer.get_param("amount")
     opacity.animate("effects_opacity")
-    lottie["v"] = copy.deepcopy(opacity.get_path())
+    opacity.fill_path(lottie, "v")

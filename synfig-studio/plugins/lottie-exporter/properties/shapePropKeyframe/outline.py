@@ -55,15 +55,15 @@ def gen_bline_outline(lottie, bline_point):
         width.animate("real")
 
         update_frame_window(split_r[0], window)
-        split_r.animate("bool")
+        split_r.animate_without_path("bool")
 
         update_frame_window(split_a[0], window)
-        split_a.animate("bool")
+        split_a.animate_without_path("bool")
 
         animate_tangents(t1, window)
         animate_tangents(t2, window)
 
-    layer = bline.get_layer()
+    layer = bline.get_layer().get_layer()
     outer_width = layer.get_param("width")
     sharp_cusps = layer.get_param("sharp_cusps")
     expand = layer.get_param("expand")
@@ -82,7 +82,7 @@ def gen_bline_outline(lottie, bline_point):
 
     # Animating the sharp_cusps
     update_frame_window(sharp_cusps[0], window)
-    sharp_cusps.animate("bool")
+    sharp_cusps.animate_without_path("bool")
 
     # Animating the expand param
     update_frame_window(expand[0], window)
@@ -90,15 +90,15 @@ def gen_bline_outline(lottie, bline_point):
 
     # Animating the round tip 0
     update_frame_window(r_tip0[0], window)
-    r_tip0.animate("bool")
+    r_tip0.animate_without_path("bool")
 
     # Animating the round tip 1
     update_frame_window(r_tip1[0], window)
-    r_tip1.animate("bool")
+    r_tip1.animate_without_path("bool")
 
     # Animaing the homogenous width
     update_frame_window(homo_width[0], window)
-    homo_width.animate("bool")
+    homo_width.animate_without_path("bool")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:

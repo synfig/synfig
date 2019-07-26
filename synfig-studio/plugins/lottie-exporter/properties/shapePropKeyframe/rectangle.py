@@ -70,7 +70,7 @@ def gen_list_rectangle(lottie, layer):
 
     # Animating bevCircle
     update_frame_window(bevCircle[0], window)
-    bevCircle.animate("bool")
+    bevCircle.animate_without_path("bool")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:

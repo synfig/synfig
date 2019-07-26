@@ -39,7 +39,7 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
         z.animate("vector")
         entry["vector"] = z
 
-    layer = dynamic_list.get_layer()
+    layer = dynamic_list.get_layer().get_layer()
     origin = layer.get_param("origin")
 
     # Animating the origin

@@ -63,7 +63,7 @@ def gen_list_star(lottie, layer):
 
     # Animating regular_polygon
     update_frame_window(regular_polygon[0], window)
-    regular_polygon.animate("bool")
+    regular_polygon.animate_without_path("bool")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:

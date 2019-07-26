@@ -49,15 +49,16 @@ def gen_layer_group(lottie, layer, idx):
     time_dilation = layer.get_param("time_dilation")
     transformation = layer.get_param("transformation")
     transform = transformation[0]
+    try_par = Param(transform, Param(transformation, layer))
     for child in transform:
         if child.tag == "scale":
-            scale = Param(child, transform)
+            scale = Param(child, try_par)
         elif child.tag == "offset":
-            pos = Param(child, transform)
+            pos = Param(child, try_par)
         elif child.tag == "angle":
-            angle = Param(child, transform)
+            angle = Param(child, try_par)
         elif child.tag == "skew_angle":
-            skew = Param(child, transform)
+            skew = Param(child, try_par)
 
     outline_grow.animate("real")
 
@@ -194,11 +195,11 @@ def change_opacity_group(layer, lottie):
         animation.animate(anim_type)
 
         if sw == 1:
-            root["layers"][z_value]["ef"][0]["ef"][-1]["v"] = copy.deepcopy(animation.get_path())
+            animation.fill_path(root["layers"][z_value]["ef"][0]["ef"][-1], "v")
         elif sw == 2:
-            root["layers"][z_value]["ks"]["o"] = copy.deepcopy(animation.get_path())
+            animation.fill_path(root["layers"][z_value]["ks"], "o")
         elif sw == 3:
-            root["layers"][z_value]["shapes"][1]["o"] = copy.deepcopy(animation.get_path())
+            animation.fill_path(root["layers"][z_value]["shapes"][1], "o")
 
         z_value += 1
 
@@ -218,7 +219,7 @@ def change_opacity_switch(layer, lottie):
     layer_name = layer.get_param("layer_name")
     canvas = Canvas(layer.get_param("canvas"))
 
-    layer_name.animate("string")
+    layer_name.animate_without_path("string")
     for assets in settings.lottie_format["assets"]:
         if assets["id"] == lottie["refId"]:
             root = assets
@@ -255,11 +256,11 @@ def change_opacity_switch(layer, lottie):
         animation.animate(anim_type)
 
         if sw == 1:
-            root["layers"][it]["ef"][0]["ef"][-1]["v"] = copy.deepcopy(animation.get_path())
+            animation.fill_path(root["layers"][it]["ef"][0]["ef"][-1], "v")
         elif sw == 2:
-            root["layers"][it]["ks"]["o"] = copy.deepcopy(animation.get_path())
+            animation.fill_path(root["layers"][it]["ks"], "o")
         elif sw == 3:
-            root["layers"][it]["shapes"][1]["o"] = copy.deepcopy(animation.get_path())
+            animation.fill_path(root["layers"][it]["shapes"][1], "o")
 
         it += 1
 
@@ -305,7 +306,10 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
     opacity = layer.get_param("amount")
 
     opacity.animate(anim_type)
-    opacity_dict = opacity.get_path()
+    opacity_dict = {}
+    opacity_dict["o"] = {}
+    opacity.fill_path(opacity_dict, "o")
+    opacity_dict = opacity_dict["o"]
 
     for it in deactive_time:
         # First add waypoints at both points, make it constant interval

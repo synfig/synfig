@@ -12,6 +12,8 @@ import synfig.group
 from synfig.animation import to_Synfig_axis, is_animated, get_bool_at_frame, get_vector_at_frame, print_animation
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
+from properties.value import gen_properties_value
+from effects.controller import gen_effects_controller
 sys.path.append("..")
 
 
@@ -27,6 +29,9 @@ class Param:
         self.param = param
         self.subparams = {}
         self.SUBPARAMS_EXTRACTED = 0
+        self.expression_controllers = [] # Effects will be stored in this
+        self.expression = ""
+        self.dimention = 1  # 1 represents real, 2 represents vector
         
     def reset(self):
         """
@@ -118,6 +123,8 @@ class Param:
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
+        if anim_type == "vector":
+            self.dimension = 2
 
         # Check if we are dealing with convert methods
         if self.param[0].tag in settings.CONVERT_METHODS:
@@ -136,21 +143,41 @@ class Param:
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
+        if anim_type == "vector":
+            self.dimension = 2
 
         # Check if we are dealing with convert methods
         if self.param[0].tag in settings.CONVERT_METHODS:
             self.extract_subparams()
             if self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
-                self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
-                self.subparams["add"].subparams["rhs"].animate(anim_type, transform)
-                self.subparams["add"].subparams["scalar"].animate("real")
+                lhs, effects_1 = self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
+                rhs, effects_2 = self.subparams["add"].subparams["rhs"].animate(anim_type, transform)
+                scalar, effects_3 = self.subparams["add"].subparams["scalar"].animate("real")
+                self.expression_controllers.extend(effects_1)
+                self.expression_controllers.extend(effects_2)
+                self.expression_controllers.extend(effects_3)
+                ret = "mul(sum({lhs}, {rhs}), {scalar})"
+                ret = ret.format(lhs=lhs, rhs=rhs, scalar=scalar)
+                self.expression = ret
+                return ret, self.expression_controllers
         else:
             self.single_animate(anim_type)
+            # Insert the animation into the effect
+            self.expression_controllers.append({})
+
             if anim_type == "vector":
                 self.gen_path("vector", transform)
             elif anim_type not in {"bool", "string"}:   # These do not need path generation
                 self.gen_path("real", transform)   # "real" can be of various types as defined in common.misc.parse_position()
+            
+            gen_effects_controller(self.expression_controllers[-1], self.get_path(), anim_type)
+
+            # Extract name from the effects
+            ret = "effect({effect_1})({effect_2})"
+            ret = ret.format(effect_1=self.expression_controllers[-1]["nm"], effect_2=self.expression_controllers[-1]["ef"][0]["nm"])
+            self.expression = ret
+            return ret, self.expression_controllers
 
     def single_animate(self, anim_type):
         """
@@ -201,6 +228,29 @@ class Param:
         Returns the dictionary which stores the path of this parameter
         """
         return self.path
+
+    def fill_path(self, lottie, key):
+        """
+        Fill's the lottie dictionary with the path of the parameter
+        """
+        if self.param[0].tag in settings.CONVERT_METHODS:
+            expression = "var $bm_rt; $bm_rt = {expr}"
+            expression = expression.format(expr=self.expression)
+            if self.dimension == 1:
+                val = 1
+            else:
+                val = [1, 1]
+            gen_properties_value(lottie[key],
+                                 val,
+                                 0,
+                                 0,
+                                 expression)
+            if "ef" not in self.get_layer().get_lottie_layer().keys():
+                self.get_layer().get_lottie_layer()["ef"] = []
+            self.get_layer().get_lottie_layer()["ef"].extend(self.expression_controllers)
+                
+        else:
+            lottie[key] = copy.deepcopy(self.path)
 
     def get_value(self, frame):
         """

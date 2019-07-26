@@ -30,7 +30,7 @@ def gen_layer_translate(lottie, layer):
 
     st = "<param name='anchor'><vector><x>0.00</x><y>0.00</y></vector></param>"
     anchor = etree.fromstring(st)
-    anchor = Param(anchor, layer.get_layer())
+    anchor = Param(anchor, layer)
     anchor.animate("vector")
     anchor.add_offset()
 

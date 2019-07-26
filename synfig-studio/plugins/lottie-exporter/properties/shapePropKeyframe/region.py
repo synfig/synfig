@@ -47,15 +47,15 @@ def gen_bline_region(lottie, bline_point):
         pos.animate("vector")
 
         update_frame_window(split_r[0], window)
-        split_r.animate("bool")
+        split_r.animate_without_path("bool")
 
         update_frame_window(split_a[0], window)
-        split_a.animate("bool")
+        split_a.animate_without_path("bool")
 
         animate_tangents(t1, window)
         animate_tangents(t2, window)
 
-    layer = bline.get_layer()
+    layer = bline.get_layer().get_layer()
     origin = layer.get_param("origin")
 
     # Animating the origin
