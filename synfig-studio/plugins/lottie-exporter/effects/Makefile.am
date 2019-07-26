@@ -5,11 +5,14 @@ PLUGIN_NAME = effects
 EXTRA_FILES = \
 			  allmask.py \
 			  color.py \
+			  controller.py \
 			  feather.py \
 			  fillmask.py \
 			  fill.py \
 			  invert.py \
-			  opacity.py
+			  opacity.py \
+			  point.py \
+			  slider.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \
