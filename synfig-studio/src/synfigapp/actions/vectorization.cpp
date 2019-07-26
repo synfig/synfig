@@ -35,7 +35,6 @@
 #include "vectorization.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
-
 #include <synfigapp/localization.h>
 
 #endif
@@ -62,6 +61,40 @@ ACTION_SET_CVS_ID(Action::Vectorization,"$Id$");
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( ) const 
+{
+  CenterlineConfiguration conf;
+
+  conf.m_outline      = false;
+  conf.m_threshold    = threshold;
+  conf.m_penalty      = penalty;  // adjustment_accuracy in [1,10]
+  conf.m_despeckling  = despeckling;
+  conf.m_maxThickness = maxthickness;
+  conf.m_thicknessRatio = 1.0;
+  conf.m_leaveUnpainted = pparea;
+  conf.m_makeFrame      = addborder;
+  conf.m_naaSource      = false;//currently not in use
+
+  return conf;
+}
+
+NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
+    double frame) const {
+  NewOutlineConfiguration conf;
+
+   conf.m_outline          = true;
+//   conf.m_despeckling      = m_oDespeckling;
+//   conf.m_adherenceTol     = m_oAdherence * 0.01;
+//   conf.m_angleTol         = m_oAngle / 180.0;
+//   conf.m_relativeTol      = m_oRelative * 0.01;
+//   conf.m_mergeTol         = 5.0 - m_oAccuracy * 0.5;
+//   conf.m_leaveUnpainted   = !m_oPaintFill;
+//   conf.m_maxColors        = m_oMaxColors;
+//   conf.m_transparentColor = m_oTransparentColor;
+//   conf.m_toneTol          = m_oToneThreshold;
+
+  return conf;
+}
 
 bool
 Action::Vectorization::set_param(const synfig::String& name, const Action::Param &param)
@@ -71,6 +104,47 @@ Action::Vectorization::set_param(const synfig::String& name, const Action::Param
         layer = param.get_layer();
 		return true;	
     }
-    
+    if(name=="mode" && param.get_type == Param::TYPE_STRING)
+    {
+        v_mode = param.get_string();
+        return true;
+    }
+    if(name=="threshold" && param.get_type == Param::TYPE_INTEGER)
+    {
+        threshold = param.get_integer();
+        return true;
+    }
+    if(name=="penalty" && param.get_type == Param::TYPE_INTEGER)
+    {
+        penalty = param.get_integer();
+        return true;
+    }
+    if(name=="despeckling" && param.get_type == Param::TYPE_INTEGER)
+    {
+        despeckling = param.get_integer();
+        return true;
+    }
+    if(name=="maxthickness" && param.get_type == Param::TYPE_INTEGER)
+    {
+        maxthickness = param.get_integer();
+        return true;
+    }
+    if(name=="pparea" && param.get_type == Param::TYPE_BOOL)
+    {
+        pparea = param.get_bool();
+        return true;
+    }
+    if(name=="addborder" && param.get_type == Param::TYPE_BOOL)
+    {
+        addborder = param.get_bool();
+        return true;
+    }
     return Action::CanvasSpecific::set_param(name,param);
+}
+
+void
+Action::Vectorization::perform()
+{
+    studio::VectorizerCore vCore;
+    vCore.vectorize(layer_bitmap_, conf);// change function definition to return a lkst of outlines
 }
