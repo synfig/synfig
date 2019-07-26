@@ -137,6 +137,3 @@ class Layer:
 
         for param in update_dict:
             param.add_offset()
-
-
-

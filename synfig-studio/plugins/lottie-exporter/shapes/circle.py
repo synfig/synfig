@@ -4,12 +4,14 @@ This will also support the simple_circle layer of Synfig
 """
 
 import sys
+import copy
 import settings
 from properties.value import gen_properties_value
 from common.misc import is_animated, change_axis
 from common.Count import Count
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
+from synfig.animation import print_animation
 sys.path.append("..")
 
 
@@ -33,45 +35,12 @@ def gen_shapes_circle(lottie, layer, idx):
     lottie["s"] = {}        # Size of circle
     lottie["ix"] = idx      # setting the index
 
-    # Origin
-    origin = layer.get_param("origin", "center").get()
-    is_animate = is_animated(origin[0])
-    if is_animate == 2:
-        gen_properties_multi_dimensional_keyframed(lottie["p"],
-                                                   origin[0],
-                                                   index.inc())
-    else:
-        x_val, y_val = 0, 0
-        if is_animate == 0:
-            x_val = float(origin[0][0].text) * settings.PIX_PER_UNIT
-            y_val = float(origin[0][1].text) * settings.PIX_PER_UNIT
-        else:
-            x_val = float(origin[0][0][0][0].text) * settings.PIX_PER_UNIT
-            y_val = float(origin[0][0][0][1].text) * settings.PIX_PER_UNIT
-        gen_properties_value(lottie["p"],
-                             change_axis(x_val, y_val),
-                             index.inc(),
-                             settings.DEFAULT_ANIMATED,
-                             settings.NO_INFO)
-    
     # Radius
-    radius = layer.get_param("radius").get()
-    # This will be exported as size of ellipse in lottie format
-    is_animate = is_animated(radius[0])
-    if is_animate == 2:
-        radius[0].attrib['type'] = "circle_radius"
-        gen_value_Keyframed(lottie["s"], radius[0], index.inc())
-    else:
-        rad = 0             # default value for radius
-        if is_animate == 0:
-            rad = float(radius[0].attrib["value"])
-        else:
-            rad = float(radius[0][0][0].attrib["value"])
+    radius = layer.get_param("radius")
+    radius.animate("circle_radius")
+    lottie["s"] = copy.deepcopy(radius.get_path())
 
-        radius_pix = int(settings.PIX_PER_UNIT) * rad
-        diam = radius_pix * 2
-        gen_properties_value(lottie["s"],
-                             [diam, diam],
-                             index.inc(),
-                             settings.DEFAULT_ANIMATED,
-                             settings.NO_INFO)
+    # Origin
+    origin = layer.get_param("origin", "center")
+    origin.animate("vector")
+    lottie["p"] = copy.deepcopy(origin.get_path())

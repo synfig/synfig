@@ -3,10 +3,12 @@ Will store all the functions needed to export the translate layer
 """
 
 import sys
+from lxml import etree
 import copy
 import settings
+from common.Param import Param
 from helpers.transform import gen_helpers_transform
-import synfig.group as group
+from synfig.animation import print_animation
 sys.path.append("..")
 
 
@@ -24,12 +26,12 @@ def gen_layer_translate(lottie, layer):
 
     origin = layer.get_param("origin")
     origin.animate("vector")
-    anchor = copy.deepcopy(origin)
     pos = origin
 
-    for waypoint in anchor[0]:
-        waypoint[0][0].text = str(0)
-        waypoint[0][1].text = str(0)
+    st = "<param name='anchor'><vector><x>0.00</x><y>0.00</y></vector></param>"
+    anchor = etree.fromstring(st)
+    anchor = Param(anchor, layer.get_layer())
+    anchor.animate("vector")
     anchor.add_offset()
 
     if settings.INSIDE_PRECOMP:

@@ -193,6 +193,7 @@ class Param:
             gen_value_Keyframed(self.path, self.param[0], idx)
         else:
             gen_properties_multi_dimensional_keyframed(self.path, self.param[0], idx)
+
         self.param[0].attrib["transform_axis"] = "false"
 
     def get_path(self):
@@ -231,38 +232,19 @@ class Param:
 
     def add_offset(self):
         """
-        Updates the position parameter of Synfig format which has offset due to
-        increase in widht and height of pre-comp layer(group layer)
+        Will modify the animation by inserting <add></add> xml elements
         """
-        element = self.param[0]
-        # For convert methods:
-        if self.param[0].tag in settings.CONVERT_METHODS:
-            self.extract_subparams()
-            if self.param[0].tag == "add":
-                self.subparams["add"].extract_subparams()
-                element = self.subparams["add"].subparams["lhs"]
-                element.add_offset()
+        st = "<add type='vector'><lhs></lhs><rhs></rhs><scalar><real value='1.00'/></scalar></add>"
+        root = etree.fromstring(st)
+        first = copy.deepcopy(self.param[0])
+        root[0].append(first)
+        
+        offset = synfig.group.get_offset()
+        st = "<vector><x>{x_val}</x><y>{y_val}</y></vector>"
+        st = st.format(x_val=offset[0], y_val=offset[1])
+        second = etree.fromstring(st)
+        root[1].append(second)
 
-        else:
-            # Only for 2-D animations
-            offset = synfig.group.get_offset()
-            is_animate = is_animated(element)
-            if is_animate == 0:
-                self.add(element, offset)
-            else:
-                for waypoint in element:
-                    self.add(waypoint[0], offset)
-
-    def add(self, vector, offset):
-        """ 
-        Helper function to modify Synfig xml
-
-        Args:
-            vector (lxml.etree._Element) : Position in Synfig format
-            offset (common.Vector.Vector) : offset to be added to that position
-
-        Returns:
-            (None)
-        """
-        vector[0].text = str(float(vector[0].text) + offset[0])
-        vector[1].text = str(float(vector[1].text) + offset[1])
+        self.param[0].getparent().remove(self.param[0])
+        self.param.append(root)
+        self.SUBPARAMS_EXTRACTED = 0

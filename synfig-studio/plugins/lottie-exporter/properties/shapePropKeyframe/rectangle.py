@@ -55,22 +55,18 @@ def gen_list_rectangle(lottie, layer):
     # Animating point1
     update_frame_window(point1[0], window)
     point1.animate("vector")
-    p1_dict = point1.get_path()
 
     # Animating point2
     update_frame_window(point2[0], window)
     point2.animate("vector")
-    p2_dict = point2.get_path()
 
     # Animating expand
     update_frame_window(expand[0], window)
     expand.animate("real")
-    expand_dict = expand.get_path()
 
     # Animating bevel
     update_frame_window(bevel[0], window)
     bevel.animate("real")
-    bevel_dict = bevel.get_path()
 
     # Animating bevCircle
     update_frame_window(bevCircle[0], window)
@@ -104,10 +100,10 @@ def synfig_rectangle(st_val, point1_p, point2_p, expand_p, bevel_p, bevCircle, f
 
     Args:
         st_val (dict) : Lottie format rectangle will be stored in this
-        p1_dict (dict) : Lottie format point1 animation
-        p2_dict (dict) : Lottie format point2 animation
-        expand_dict (dict) : Lottie format expand parameter animation
-        bevel_dict (dict) : Lottie format bevel parameter animation
+        point1_p (self.Param.Param) : Lottie format point1 animation
+        point2_p (self.Param.Param) : Lottie format point2 animation
+        expand_p (self.Param.Param) : Lottie format expand parameter animation
+        bevel_p (self.Param.Param) : Lottie format bevel parameter animation
         bevCircle (lxml.etree._Element) : Animation of bevCircle in Synfig format
         fr (int) : Frame Number
 
