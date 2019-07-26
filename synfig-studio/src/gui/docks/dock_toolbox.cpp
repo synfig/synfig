@@ -98,32 +98,18 @@ Dock_Toolbox::Dock_Toolbox():
 	scrolled_window->set_border_width(2);
 	scrolled_window->show();
 
-	separator = manage(new class Gtk::HSeparator());
-
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 
-	// pack tools and default widgets
-	//tool_box = manage(new class Gtk::VBox(false, 2));
-	//tool_box->pack_start(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
-	//tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 3);
-	//tool_box->pack_start(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
-	//tool_box->set_border_width(2);
-	//tool_box->show_all();
-
-	//add(*tool_box);
-	
-	Gtk::VPaned *tool_box_paned = manage(new class Gtk::VPaned());
+	Gtk::Paned *tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
 	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
 	tool_box_paned->set_position(200);
 	tool_box_paned->show_all();
 	add(*tool_box_paned);
 
-	App::signal_instance_selected().connect(
+	App::signal_canvas_view_focus().connect(
 		sigc::hide(
-			sigc::mem_fun(*this,&studio::Dock_Toolbox::update_tools)
-		)
-	);
+			sigc::mem_fun(*this,&studio::Dock_Toolbox::update_tools) ));
 
 	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
@@ -277,33 +263,20 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 void
 Dock_Toolbox::update_tools()
 {
-	etl::handle<Instance> instance=App::get_selected_instance();
-	etl::handle<CanvasView> canvas_view=App::get_selected_canvas_view();
+	etl::handle<Instance> instance = App::get_selected_instance();
+	etl::handle<CanvasView> canvas_view = App::get_selected_canvas_view();
 
 	// These next several lines just adjust the tool buttons
 	// so that they are only clickable when they should be.
-	if(instance && canvas_view)
-	{
-		std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
+	bool sensitive = instance && canvas_view;
+	std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
+	for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
+		iter->second->set_sensitive(sensitive);
 
-		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
-			iter->second->set_sensitive(true);
-	}
-	else
-	{
-		std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
-
-		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
-			iter->second->set_sensitive(false);
-	}
-
-	if(canvas_view && canvas_view->get_smach().get_state_name())
-	{
+	if (canvas_view && canvas_view->get_smach().get_state_name())
 		set_active_state(canvas_view->get_smach().get_state_name());
-	}
 	else
 		set_active_state("none");
-
 }
 
 void

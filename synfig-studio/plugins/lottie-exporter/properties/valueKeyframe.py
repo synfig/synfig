@@ -6,7 +6,7 @@ Implements function required for generating tangent between two value key frames
 import sys
 import random
 import settings
-from misc import parse_position
+from common.misc import get_frame, parse_position
 from properties.offsetKeyframe import calc_tangent
 sys.path.append("../")
 
@@ -25,10 +25,10 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
         (None)
     """
     # time_scale means converting time(on x-axis) to 0-1 range
-    time_scale = next_pos.val2 - cur_pos.val2
+    time_scale = next_pos[1] - cur_pos[1]
 
     # value_scale -> converting value(on y-axis to 0-1 range)
-    value_scale = next_pos.val1 - cur_pos.val1
+    value_scale = next_pos[0] - cur_pos[0]
 
     # If ever the value scale equals to absolute zero, randomly add or subtract
     # 1e-9 to it, in order to avoid division by zero
@@ -38,15 +38,15 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
         bias *= 1e-9
         value_scale += bias
 
-    time_diff = cur_pos.val2 / time_scale
-    value_diff = cur_pos.val1 / value_scale
+    time_diff = cur_pos[1] / time_scale
+    value_diff = cur_pos[0] / value_scale
 
-    t_out["x"][0] += cur_pos.val2     # The tangents were relative to cur_pos, now relative to 0
-    t_out["y"][0] += cur_pos.val1
+    t_out["x"][0] += cur_pos[1]     # The tangents were relative to cur_pos, now relative to 0
+    t_out["y"][0] += cur_pos[0]
 
     # -ve sign because lottie and synfig use opposite "in" tangents
-    t_in["x"][0] = next_pos.val2 - t_in["x"][0]
-    t_in["y"][0] = next_pos.val1 - t_in["y"][0]
+    t_in["x"][0] = next_pos[1] - t_in["x"][0]
+    t_in["y"][0] = next_pos[0] - t_in["y"][0]
 
     # abs is put in order to deal with decreasing value
     t_out["x"][0] = abs(t_out["x"][0] / time_scale - time_diff)
@@ -75,7 +75,8 @@ def gen_value_Keyframe(curve_list, animated, i):
     cur_get_after, next_get_before = waypoint.attrib["after"], next_waypoint.attrib["before"]
     cur_get_before, next_get_after = waypoint.attrib["before"], next_waypoint.attrib["after"]
     # Calculate positions of waypoints
-    if animated.attrib["type"] == "angle":
+    if animated.attrib["type"] in {"angle", "star_angle_new", "region_angle"}:
+    #if animated.attrib["type"] in {"angle"}:
         if cur_get_after == "auto":
             cur_get_after = "linear"
         if cur_get_before == "auto":
@@ -107,7 +108,7 @@ def gen_value_Keyframe(curve_list, animated, i):
     cur_pos = parse_position(animated, i)
     next_pos = parse_position(animated, i + 1)
 
-    lottie["t"] = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    lottie["t"] = get_frame(waypoint)
     lottie["s"] = cur_pos.get_val()
     lottie["e"] = next_pos.get_val()
 

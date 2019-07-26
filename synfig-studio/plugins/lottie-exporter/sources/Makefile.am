@@ -3,7 +3,8 @@
 PLUGIN_NAME = sources
 
 EXTRA_FILES = \
-			  image.py
+			  image.py \
+			  precomp.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \

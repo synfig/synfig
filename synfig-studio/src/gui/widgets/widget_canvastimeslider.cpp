@@ -74,7 +74,9 @@ Widget_CanvasTimeslider::Widget_CanvasTimeslider():
 }
 
 Widget_CanvasTimeslider::~Widget_CanvasTimeslider()
-	{ set_canvas_view( CanvasView::LooseHandle() ); }
+{
+	rendering_change.disconnect();
+}
 
 void
 Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)

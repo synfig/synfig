@@ -37,15 +37,12 @@
 #include "docks/dock_layers.h"
 #include "app.h"
 
-#include <gtkmm/scrolledwindow.h>
-#include <cassert>
 #include "instance.h"
 #include <sigc++/sigc++.h>
 #include "trees/layertreestore.h"
 #include "trees/layertree.h"
 #include "canvasview.h"
 #include "actionmanagers/layeractionmanager.h"
-//#include <ETL/ref_count>
 
 #include <gui/localization.h>
 
@@ -63,11 +60,6 @@ using namespace studio;
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
-
-/*static void do_nothing(reference_counter x)
-{
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,x.count());
-}*/
 
 /* === M E T H O D S ======================================================= */
 
@@ -177,45 +169,6 @@ Dock_Layers::Dock_Layers():
 	action_group_new_layers->set_sensitive(false);
 
 	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer")));
-
-
-
-
-
-	/*
-	reference_counter ref_count;
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-
-	{
-		sigc::signal<void> tmp_signal;
-
-		tmp_signal.connect(
-			sigc::bind(
-				sigc::ptr_fun(do_nothing),
-				ref_count
-			)
-		);
-
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-		tmp_signal();
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-
-		tmp_signal.clear();
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-
-		tmp_signal();
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-		tmp_signal.connect(
-			sigc::bind(
-				sigc::ptr_fun(do_nothing),
-				ref_count
-			)
-		);
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-	}
-	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-	assert(ref_count.count()==1);
-	*/
 }
 
 
@@ -250,6 +203,8 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	canvas_view->set_ext_widget(get_name()+"_cmp",layer_tree); // (a)
 	canvas_view->set_ext_widget(get_name(),&layer_tree->get_layer_tree_view());
 	canvas_view->set_ext_widget("params",&layer_tree->get_param_tree_view());
+	
+	canvas_view->set_adjustment_group("params", new AdjustmentGroup());
 
 	layer_tree->set_model(layer_tree_store); // (b)
 	canvas_view->set_tree_model("params",layer_tree->get_param_tree_view().get_model()); // (c)
@@ -293,8 +248,6 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 			layer_action_manager->set_canvas_interface(0);
 			layer_action_manager->set_layer_tree(0);
 		}
-
-		clear_previous();
 	}
 }
 

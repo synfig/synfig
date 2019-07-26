@@ -28,9 +28,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "docks/dockable.h"
 #include <gtkmm/treeview.h>
 #include <gtkmm/scrollbar.h>
+#include <gtkmm/grid.h>
+
 #include "instance.h"
 #include "docks/dock_canvasspecific.h"
 
@@ -41,8 +42,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-class Widget_CanvasTimeslider;
-class Widget_Keyframe_List;
 
 class Dock_Timetrack : public Dock_CanvasSpecific
 {
@@ -50,14 +49,11 @@ class Dock_Timetrack : public Dock_CanvasSpecific
 	Gtk::VScrollbar vscrollbar_;
 	Widget_CanvasTimeslider widget_timeslider_;
 	Widget_Keyframe_List widget_kf_list_;
-	Gtk::Table* table_;
-	Gtk::TreeView *mimic_tree_view;
+	Gtk::Grid *grid_;
 
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-
-	void refresh_selected_param();
 
 public:
 	Dock_Timetrack();
@@ -66,7 +62,7 @@ public:
 private:
 	//! Signal handler for studio::LayerTree::signal_param_tree_header_height_changed
 	/* \see studio::LayerTree::signal_param_tree_header_height_changed */
-	void on_update_header_height( int header_height);
+	void on_update_header_height(int height);
 }; // END of Dock_Timetrack
 
 }; // END of namespace studio

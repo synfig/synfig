@@ -944,3 +944,5 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 	// inform that something change around time to update the canvasview time widget color
 	canvas_interface()->signal_time_changed()();
 }
+
+

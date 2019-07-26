@@ -31,6 +31,7 @@
 
 #include <gtkmm/adjustment.h>
 
+#include <ETL/handle>
 #include <synfig/real.h>
 
 /* === M A C R O S ========================================================= */
@@ -40,6 +41,16 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
+
+
+class BoolLock {
+private:
+	bool &lock;
+public:
+	explicit BoolLock(bool &lock): lock(lock) { assert(!lock); lock = true; }
+	~BoolLock() { lock = false; }
+};
+
 
 //! Temoraly freezes all notifications from Glib object
 //! All notifications will raised immediately when FreezeNotify is destroyed
@@ -66,6 +77,37 @@ public:
 		if (obj) obj->thaw_notify();
 		if (obj_ref) obj_ref->thaw_notify();
 	}
+};
+
+
+class AdjustmentGroup: public etl::shared_object {
+public:
+	typedef etl::handle<AdjustmentGroup> Handle;
+
+	struct Item {
+		Glib::RefPtr<Gtk::Adjustment> adjustment;
+		double origSize;
+		sigc::connection connection_changed;
+		sigc::connection connection_value_changed;
+
+		Item(): origSize() { }
+	};
+	typedef std::list<Item> List;
+
+private:
+	List items;
+	bool lock;
+	sigc::connection connection_timeout;
+
+	void changed(Glib::RefPtr<Gtk::Adjustment> adjustment);
+	void set(double position, double size);
+
+public:
+	AdjustmentGroup();
+	~AdjustmentGroup();
+
+	void add(Glib::RefPtr<Gtk::Adjustment> adjustment);
+	void remove(Glib::RefPtr<Gtk::Adjustment> adjustment);
 };
 
 
@@ -153,9 +195,17 @@ public:
 	ConfigureAdjustment& set_page_size(double x)
 		{ page_size = x; return *this; }
 
+	ConfigureAdjustment& adj_value(double x)
+		{ value += x; return *this; }
+	ConfigureAdjustment& adj_value_step(double x)
+		{ value += x*step_increment; return *this; }
+	ConfigureAdjustment& adj_value_page(double x)
+		{ value += x*page_increment; return *this; }
+
 	void finish() {
 		assert(adjustment);
 		if (!adjustment) return;
+		double value = std::max(lower, std::min(upper - page_size, this->value));
 		if ( !is_equal(lower,          adjustment->get_lower())
 		  || !is_equal(upper,          adjustment->get_upper())
 		  || !is_equal(step_increment, adjustment->get_step_increment())

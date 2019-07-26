@@ -60,11 +60,13 @@ Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt
 	Glib::RefPtr<Gtk::IconSet> chain_icon = Gtk::IconSet::lookup_default(Gtk::StockID("synfig-utils_chain_link_off"));
 	Glib::RefPtr<Gdk::Pixbuf> chain_icon_pixbuff = chain_icon->render_icon_pixbuf(context, (Gtk::IconSize)-1);
 	Glib::RefPtr<Gdk::Pixbuf> chain_icon_pixbuff_scaled = chain_icon_pixbuff->scale_simple(16, 32, Gdk::INTERP_BILINEAR);
-	icon_off_ = manage(new Gtk::Image(chain_icon_pixbuff_scaled));
+	// not use manage() otherwise the not-shown icon at exit wouldn't be deleted...
+	icon_off_ = new Gtk::Image(chain_icon_pixbuff_scaled);
 
 	chain_icon = Gtk::IconSet::lookup_default(Gtk::StockID("synfig-utils_chain_link_on"));
 	chain_icon_pixbuff_scaled = chain_icon->render_icon_pixbuf(context, (Gtk::IconSize)-1)->scale_simple(16, 32, Gdk::INTERP_BILINEAR);
-	icon_on_ = manage(new Gtk::Image(chain_icon_pixbuff_scaled));
+	// not use manage() otherwise the not-shown icon at exit wouldn't be deleted...
+	icon_on_ = new Gtk::Image(chain_icon_pixbuff_scaled);
 
 	icon_off_->set_padding(0,0);
 	icon_on_->set_padding(0,0);
@@ -79,6 +81,8 @@ Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt
 }
 
 Widget_Link::~Widget_Link() {
+	delete icon_on_;
+	delete icon_off_;
 }
 
 }

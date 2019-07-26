@@ -541,7 +541,7 @@ Instance::close()
 		(*iter)->hide();
 
 	// Consume pending events before deleting the canvas views
-	while(studio::App::events_pending())studio::App::iteration(true);
+	App::process_all_events();
 
 	// Delete all of the canvas views
 	canvas_view_list().clear();

@@ -334,9 +334,9 @@ public:
 	void set_instance(etl::loose_handle<studio::Instance> x) { instance=x; }
 	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }
 	void set_canvas_view(etl::loose_handle<studio::CanvasView> x) { canvas_view=x; }
-	etl::handle<synfig::Canvas> get_canvas() const { return canvas; }
-	etl::handle<studio::Instance> get_instance() const { return instance; }
-	etl::loose_handle<studio::CanvasView> get_canvas_view() const { return canvas_view; }
+	const etl::handle<synfig::Canvas>& get_canvas() const { return canvas; }
+	const etl::loose_handle<studio::Instance>& get_instance() const { return instance; }
+	const etl::loose_handle<studio::CanvasView>& get_canvas_view() const { return canvas_view; }
 	const etl::handle<Renderer_Canvas>& get_renderer_canvas() const { return renderer_canvas; }
 
 	void refresh_dimension_info();
@@ -450,6 +450,8 @@ public:
 	void load_meta_data();
 	//! Test initial meta data values
 	bool have_meta_data();
+
+	void grab_focus();
 
 private:
 	/*

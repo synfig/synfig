@@ -4,7 +4,7 @@ This module will store all the functions required for invert property of lottie
 
 import sys
 import settings
-from misc import Count
+from common.Count import Count
 from properties.value import gen_properties_value
 sys.path.append("../")
 

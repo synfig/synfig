@@ -1,221 +1,33 @@
+# pylint: disable=line-too-long
 """
 misc.py
-Some miscellaneous functions will be provided here
+Some miscellaneous functions and classes will be provided here
 """
 
+import sys
+import math
 import settings
+from common.Vector import Vector
+from common.Color import Color
+sys.path.append("..")
 
 
-class Count:
+def approximate_equal(a, b):
     """
-    Class to keep count of variable
+    Need to define this function somewhere else, a and b are of type "float"
+
+    Args:
+        a (float) : First number to be compared
+        b (float) : Second number to be compared
+
+    Returns:
+        (bool) : True if the numbers are approximately equal under precision
+               : False otherwise
     """
-    def __init__(self):
-        """
-        Args:
-            (None)
-
-        Returns:
-            (None)
-        """
-        self.idx = -1
-
-    def inc(self):
-        """
-        This method increases the count by 1 and returns the new count
-
-        Args:
-            (None)
-
-        Returns:
-            (int) : The updated count is returned
-        """
-        self.idx += 1
-        return self.idx
-
-
-class Vector:
-    """
-    To store the position of layers
-    val1 represents the x-axis value
-    val2 represents the y-axis value
-
-    For other parameters
-    val1 represents the value of the parameter
-    val2 represents the time parameter
-
-    type represents what this vector is representing
-    """
-
-    def __init__(self, val1=0, val2=0, _type=None):
-        """
-        Args:
-            val1  (float) : First value of the vector
-            val2  (float) : Second value of the vector
-            _type (:obj: `str`, optional)  : Type of vector
-
-        Returns:
-            (None)
-        """
-        self.val1 = val1
-        self.val2 = val2
-        self.type = _type
-
-    def __str__(self):
-        return "({0},{1}, {2})".format(self.val1, self.val2, self.type)
-
-    def __add__(self, other):
-        val1 = self.val1 + other.val1
-        val2 = self.val2 + other.val2
-        return Vector(val1, val2, self.type)
-
-    def __sub__(self, other):
-        val1 = self.val1 - other.val1
-        val2 = self.val2 - other.val2
-        return Vector(val1, val2, self.type)
-
-    # other can only be of type real
-    def __mul__(self, other):
-        if not isinstance(other, self.__class__):
-            val1 = self.val1 * other
-            val2 = self.val2 * other
-            return Vector(val1, val2, self.type)
-        raise Exception('Multiplication with {} not defined'.format(type(other)))
-
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
-    def __truediv__(self, other):
-        if not isinstance(other, self.__class__):
-            val1 = self.val1 / other
-            val2 = self.val2 / other
-            return Vector(val1, val2, self.type)
-        raise Exception('Division with {} not defined'.format(type(other)))
-
-    def get_list(self):
-        """
-        Get val1 and val2 values in the format required by lottie
-
-        Args:
-            (None)
-
-        Returns:
-            (list) : Contains the Vector in list format
-        """
-        return [self.val1, self.val2]
-
-    def get_val(self):
-        """
-        Get value in the format required by lottie
-
-        Args:
-            (None)
-
-        Returns:
-            (list) : Depending upon _type a list is returned
-        """
-        if self.type == "origin":
-            return [self.val1, self.val2]
-        elif self.type == "circle_radius":
-            return [self.val1, self.val1]
-        elif self.type in {"rectangle_size", "image_scale"}:
-            return [self.val1, self.val3]
-        else:
-            return [self.val1]
-
-    def add_new_val(self, val3):
-        """
-        This function store an additional value in the vector.
-        This is currently required by the rectangle layer
-
-        Args:
-            val3 (float) : Some Vectors need additional value to be used later
-
-        Returns:
-            (None)
-        """
-        self.val3 = val3
-
-    def set_type(self, _type):
-        """
-        This set's the type of the Vector
-
-        Args:
-            _type (str) : Type of Vector to be set
-
-        Returns:
-            (None)
-        """
-        self.type = _type
-
-
-class Color:
-    """
-    To store the colors in Synfig and operations on them
-    """
-
-    def __init__(self, red=1, green=1, blue=1, alpha=1):
-        """
-        Args:
-            red (:obj: `float`, optional) : Red value of color
-            green (:obj: `float`, optional) : Green value of color
-            blue (:obj: `float`, optional) : Blue value of color
-            alpha (:obj: `float`, optional) : Alpha value of color
-
-        Returns:
-            (None)
-        """
-        self.red = red
-        self.green = green
-        self.blue = blue
-        self.alpha = alpha
-
-    def __str__(self):
-        return "({0}, {1}, {2}, {3})".format(self.red, self.green, self.blue,
-                                             self.alpha)
-
-    def __add__(self, other):
-        red = self.red + other.red
-        green = self.green + other.green
-        blue = self.blue + other.blue
-        return Color(red, green, blue, self.alpha)
-
-    def __sub__(self, other):
-        red = self.red - other.red
-        green = self.green - other.green
-        blue = self.blue - other.blue
-        return Color(red, green, blue, self.alpha)
-
-    def __mul__(self, other):
-        if not isinstance(other, self.__class__):
-            red = self.red * other
-            green = self.green * other
-            blue = self.blue * other
-            return Color(red, green, blue, self.alpha)
-        raise Exception('Multiplication with {} not defined'.format(type(other)))
-
-    def __rmul__(self, other):
-        return self.__mul__(other)
-
-    def __truediv__(self, other):
-        if not isinstance(other, self.__class__):
-            red = self.red / other
-            green = self.green / other
-            blue = self.blue / other
-            return Color(red, green, blue, self.alpha)
-        raise Exception('Division with {} not defined'.format(type(other)))
-
-    def get_val(self):
-        """
-        Get the color in the format required by lottie
-
-        Args:
-            (None)
-
-        Returns:
-            (list) : Stores color in list format
-        """
-        return [self.red, self.green, self.blue, self.alpha]
+    precision = 1e-8
+    if a < b:
+        return b - a < precision
+    return a - b < precision
 
 
 def calculate_pixels_per_unit():
@@ -234,20 +46,24 @@ def calculate_pixels_per_unit():
     return settings.PIX_PER_UNIT
 
 
-def change_axis(x_val, y_val):
+def change_axis(x_val, y_val, is_transform=False):
     """
     Convert synfig axis coordinates into lottie format
 
     Args:
         x_val (float | str) : x axis value in pixels
         y_val (float | str) : y axis value in pixels
+        is_transform (`obj`: bool, optional) : Is this value used in transform module?
 
     Returns:
         (list)  : x and y axis value in Lottie format
     """
     x_val, y_val = float(x_val), float(y_val)
-    x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
-    return [int(x_val), int(y_val)]
+    if is_transform:
+        x_val, y_val = x_val, -y_val
+    else:
+        x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
+    return [x_val, y_val]
 
 
 def parse_position(animated, i):
@@ -268,7 +84,6 @@ def parse_position(animated, i):
         pos = [float(animated[i][0][0].text),
                float(animated[i][0][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
-        #pos = change_axis(pos[0], pos[1])   # This is very important
 
     elif animated.attrib["type"] == "real":
         pos = parse_value(animated, i)
@@ -279,19 +94,28 @@ def parse_position(animated, i):
 
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
+
+    elif animated.attrib["type"] in {"region_angle", "star_angle_new"}:
+        pos = [float(animated[i][0].attrib["value"]),
+               get_frame(animated[i])]
+
+    elif animated.attrib["type"] == "rotate_layer_angle":
+        # Angle needs to made neg of what they are
+        pos = [-float(animated[i][0].attrib["value"]),
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "opacity":
         pos = [float(animated[i][0].attrib["value"]) * settings.OPACITY_CONSTANT,
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "effects_opacity":
         pos = [float(animated[i][0].attrib["value"]),
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "points":
         pos = [int(animated[i][0].attrib["value"]),
-               float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] == "rectangle_size":
         pos = parse_value(animated, i)
@@ -305,6 +129,25 @@ def parse_position(animated, i):
         vec = Vector(val, val2, animated.attrib["type"])
         vec.add_new_val(float(animated[i][0].attrib["value2"]))
         return vec
+
+    elif animated.attrib["type"] == "scale_layer_zoom":
+        val = (math.e ** float(animated[i][0].attrib["value"])) * 100
+        val2 = get_frame(animated[i])
+        vec = Vector(val, val2, animated.attrib["type"])
+        vec.add_new_val(val)
+        return vec
+
+    elif animated.attrib["type"] == "group_layer_scale":
+        val1 = float(animated[i][0][0].text) * 100
+        val3 = float(animated[i][0][1].text) * 100
+        vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
+        vec.add_new_val(val3)
+        return vec
+
+    elif animated.attrib["type"] == "time":
+        val = parse_time(animated[i][0].attrib["value"])    # Needed in seconds
+        val2 = get_frame(animated[i])   # Needed in frames
+        return Vector(val, val2, animated.attrib["type"])
 
     elif animated.attrib["type"] == "color":
         red = float(animated[i][0][0].text)
@@ -332,7 +175,7 @@ def parse_value(animated, i):
         (list)  : [value, time] is returned
     """
     pos = [float(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
-           float(animated[i].attrib["time"][:-1]) * settings.lottie_format["fr"]]
+           get_frame(animated[i])]
     return pos
 
 
@@ -424,6 +267,7 @@ def get_color_hex(node):
     ret = "#{0:02x}{1:02x}{2:02x}".format(red, green, blue)
     return ret
 
+
 def get_frame(waypoint):
     """
     Given a waypoint, it parses the time to frames
@@ -434,9 +278,11 @@ def get_frame(waypoint):
     Returns:
         (int) : the frame at which waypoint is present
     """
-    frame = float(waypoint.attrib["time"][:-1]) * settings.lottie_format["fr"]
+    time = get_time(waypoint)
+    frame = time * settings.lottie_format["fr"]
     frame = round(frame)
     return frame
+
 
 def get_time(waypoint):
     """
@@ -448,8 +294,32 @@ def get_time(waypoint):
     Returns:
         (float) : the time in seconds at which the waypoint is present
     """
-    time = float(waypoint.attrib["time"][:-1])
-    return time
+    return parse_time(waypoint.attrib["time"])
+
+
+def parse_time(time_in_str):
+    """
+    Given a string, it parses time to float time
+
+    Args:
+        time_in_str (str) : Time in string format
+
+    Returns:
+        (float) : the time in seconds at represented by the string
+    """
+    time = time_in_str.split(" ")
+    final = 0
+    for frame in time:
+        if frame[-1] == "h":
+            final += float(frame[:-1]) * 60 * 60
+        elif frame[-1] == "m":
+            final += float(frame[:-1]) * 60
+        elif frame[-1] == "s":
+            final += float(frame[:-1])
+        elif frame[-1] == "f":  # This should never happen according to my code
+            raise ValueError("In waypoint, time is never expected in frames.")
+    return final
+
 
 def get_vector(waypoint):
     """
@@ -462,9 +332,39 @@ def get_vector(waypoint):
     Returns:
         (misc.Vector) : x and y axis values stores in Vector format
     """
-    x = float(waypoint[0][0].text)
-    y = float(waypoint[0][1].text)
+    # converting radius and angle to a vector
+    if waypoint.tag == "radial_composite":
+        for child in waypoint:
+            if child.tag == "radius":
+                radius = float(child[0].attrib["value"])
+                radius *= settings.PIX_PER_UNIT
+            elif child.tag == "theta":
+                angle = float(child[0].attrib["value"])
+        x, y = radial_to_tangent(radius, angle)
+    else:
+        x = float(waypoint[0][0].text)
+        y = float(waypoint[0][1].text)
     return Vector(x, y)
+
+
+def radial_to_tangent(radius, angle):
+    """
+    Converts a tangent from radius and angle format to x, y axis co-ordinate
+    system
+
+    Args:
+        radius (float) : radius of a vector
+        angle  (float) : angle in degrees
+
+    Returns:
+        (float) : The x-coordinate of the vector
+        (float) : The y-coordinate of the vector
+    """
+    angle = math.radians(angle)
+    x = radius * math.cos(angle)
+    y = radius * math.sin(angle)
+    return x, y
+
 
 def set_vector(waypoint, pos):
     """
@@ -478,3 +378,40 @@ def set_vector(waypoint, pos):
     """
     waypoint[0][0].text = str(pos.val1)
     waypoint[0][1].text = str(pos.val2)
+
+
+def set_layer_desc(layer, default, lottie):
+    """
+    Sets layer description if provided, else defaults to the given value
+
+    Args:
+        layer (lxml.etree._Element) : Synfig format layer
+        default (str)               : default name of the layer
+        lottie  (dict)              : Lottie format layer
+
+    Returns:
+        (None)
+    """
+    lottie["nm"] = default
+    if "desc" in layer.keys():
+        lottie["nm"] = layer.attrib["desc"]
+
+
+def modify_final_dump(obj):
+    """
+    This function will remove unwanted keys from the final dictionary and also
+    modify the floats according to our precision
+
+    Args:
+        obj (float | dict | list | tuple) : The object to be modified
+
+    Returns:
+        (float | dict | list) : Depending upon arguments, obj type is decided
+    """
+    if isinstance(obj, float):
+        return round(obj, settings.FLOAT_PRECISION)
+    elif isinstance(obj, dict):
+        return dict((k, modify_final_dump(v)) for k, v in obj.items() if k not in ["synfig_i", "synfig_o"])
+    elif isinstance(obj, (list, tuple)):
+        return list(map(modify_final_dump, obj))
+    return obj

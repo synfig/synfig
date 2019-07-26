@@ -173,7 +173,6 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	// System _ Units section
 	attach_label_section(pi.grid, _("Units"), row);
 	// System - 0 Timestamp
-	timestamp_menu=manage(new class Gtk::Menu());
 	attach_label(pi.grid, _("Timestamp"), ++row);
 	pi.grid->attach(timestamp_comboboxtext, 1, row, 1, 1);
 	timestamp_comboboxtext.set_hexpand(true);
@@ -516,10 +515,11 @@ void
 Dialog_Setup::on_choose_editor_pressed()
 {
 	//set the image editor path = filepath from dialog
-	String filepath=image_editor_path_entry.get_text();
-	if(select_path_dialog("Select Editor", filepath ))
+	String filepath = image_editor_path_entry.get_text();
+	if (select_path_dialog("Select Editor", filepath)) {
 		image_editor_path_entry.set_text(filepath);
 		App::image_editor_path = filepath;
+	}
 }
 
 bool 

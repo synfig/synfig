@@ -205,12 +205,15 @@ AC_CONFIG_FILES([
     plugins/add-skeleton-simple/Makefile
     plugins/view-unhide-all-layers/Makefile
     plugins/lottie-exporter/Makefile
+    plugins/lottie-exporter/common/Makefile
     plugins/lottie-exporter/effects/Makefile
     plugins/lottie-exporter/helpers/Makefile
     plugins/lottie-exporter/layers/Makefile
     plugins/lottie-exporter/properties/Makefile
+    plugins/lottie-exporter/properties/shapePropKeyframe/Makefile
     plugins/lottie-exporter/shapes/Makefile
     plugins/lottie-exporter/sources/Makefile
+    plugins/lottie-exporter/synfig/Makefile
     sounds/Makefile
     ui/Makefile
 ])

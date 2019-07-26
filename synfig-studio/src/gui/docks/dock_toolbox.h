@@ -38,7 +38,6 @@
 #include <gtkmm/toolpalette.h>
 #include <gtkmm/toolitemgroup.h>
 #include <gtkmm/alignment.h>
-#include <gtkmm/separator.h>
 #include <gtkmm/table.h>
 #include <gtkmm/box.h>
 #include <synfig/string.h>
@@ -47,11 +46,6 @@
 #include "dialogsettings.h"
 
 /* === M A C R O S ========================================================= */
-
-// uncomment to enable the blend method selector in the tool options
-// panel for the circle and gradient tools
-//
-// #define BLEND_METHOD_IN_TOOL_OPTIONS
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -66,7 +60,6 @@ class Dock_Toolbox : public Dockable
 	friend class studio::StateManager;
 
 	Gtk::ToolItemGroup *tool_item_group;
-	Gtk::HSeparator *separator;
 	Gtk::VBox *tool_box;
 
 	std::map<synfig::String,Gtk::ToggleToolButton *> state_button_map;

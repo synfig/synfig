@@ -76,7 +76,7 @@ public:
 	void activate() { signal_activate_(); }
 
 	void set_canvas(synfig::Canvas::LooseHandle);
-	synfig::Canvas::LooseHandle get_canvas()const { return canvas_; }
+	const synfig::Canvas::LooseHandle& get_canvas()const { return canvas_; }
 
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
 

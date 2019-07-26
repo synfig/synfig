@@ -104,8 +104,7 @@ public:
 
 	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface() { return canvas_interface_; }
 	etl::loose_handle<const synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
-	synfig::Canvas::Handle get_canvas()const { return canvas_interface_->get_canvas(); }
-	synfig::Canvas::Handle get_canvas() { return canvas_interface_->get_canvas(); }
+	const synfig::Canvas::Handle& get_canvas() const { return canvas_interface_->get_canvas(); }
 
 	void rebuild();
 

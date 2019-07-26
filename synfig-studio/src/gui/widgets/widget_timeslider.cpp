@@ -174,7 +174,10 @@ Widget_Timeslider::Widget_Timeslider():
 }
 
 Widget_Timeslider::~Widget_Timeslider()
-	{ set_time_model( etl::handle<TimeModel>() ); }
+{
+	time_change.disconnect();
+	time_bounds_change.disconnect();
+}
 
 void
 Widget_Timeslider::set_time_model(const etl::handle<TimeModel> &x)

@@ -163,36 +163,26 @@ KeyframeTree::on_rend_desc_changed()
 void
 KeyframeTree::set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store)
 {
-	keyframe_tree_store_=keyframe_tree_store;
+	keyframe_tree_store_ = keyframe_tree_store;
 	KeyframeTreeStore::Model model;
 
-	if(true)
-	{
-		Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(keyframe_tree_store_));
-		sorted_store->set_default_sort_func(sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
-		sorted_store->set_sort_func(model.time,			sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
-		sorted_store->set_sort_func(model.description,	sigc::ptr_fun(&studio::KeyframeTreeStore::description_sorter));
-		Gtk::TreeView::set_model(sorted_store);
-	}
-	else
-		Gtk::TreeView::set_model(keyframe_tree_store);
+	Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(keyframe_tree_store_));
+	sorted_store->set_default_sort_func(sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
+	sorted_store->set_sort_func(model.time,			sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
+	sorted_store->set_sort_func(model.description,	sigc::ptr_fun(&studio::KeyframeTreeStore::description_sorter));
+	Gtk::TreeView::set_model(sorted_store);
+	Gtk::TreeView::set_model(keyframe_tree_store);
 
 	keyframe_tree_store_->canvas_interface()->signal_rend_desc_changed().connect(
-		sigc::mem_fun(
-			*this,
-			&studio::KeyframeTree::on_rend_desc_changed
-		)
-	);
-	cell_renderer_time->property_fps().set_value(keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate());
-	cell_renderer_time_delta->property_fps().set_value(keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate());
+		sigc::mem_fun( *this, &studio::KeyframeTree::on_rend_desc_changed ) );
+	cell_renderer_time->property_fps().set_value(
+		keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate() );
+	cell_renderer_time_delta->property_fps().set_value(
+		keyframe_tree_store_->canvas_interface()->get_canvas()->rend_desc().get_frame_rate() );
 
 	//Listen to kf selection change from canvas interface
 	keyframeselected = keyframe_tree_store_->canvas_interface()->signal_keyframe_selected().connect(
-		sigc::mem_fun(
-			*this,
-			&studio::KeyframeTree::on_keyframe_selected
-		)
-	);
+		sigc::mem_fun( *this, &studio::KeyframeTree::on_keyframe_selected ) );
 }
 
 void

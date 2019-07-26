@@ -61,53 +61,38 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Params::Dock_Params():
-	Dock_CanvasSpecific("params",_("Parameters"),Gtk::StockID("synfig-params")),
-	action_group(Gtk::ActionGroup::create("action_group_dock_params"))
+	Dock_CanvasSpecific( "params", _("Parameters"),Gtk::StockID("synfig-params") ),
+	action_group( Gtk::ActionGroup::create("action_group_dock_params") ),
+	vadjustment( Gtk::Adjustment::create(0, 0, 1, 1, 1) )
 {
 }
 
 Dock_Params::~Dock_Params()
 {
+	refresh_selected_param_connection.disconnect();
 }
 
 
 void
 Dock_Params::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-	Gtk::TreeView* tree_view(
-		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()))
-	);
-
-	if(tree_view)
-	{
-		tree_view->get_selection()->signal_changed().connect(
-			sigc::mem_fun(
-				*this,
-				&Dock_Params::refresh_selected_param
-			)
-		);
-	}
+	canvas_view->get_adjustment_group(get_name())->add(vadjustment);
 }
 
 void
 Dock_Params::refresh_selected_param()
 {
 	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
-	if(!canvas_view) return;
-	Gtk::TreeView* tree_view(
-		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()))
-	);
-	Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
+	if (!canvas_view) return;
 
-	if(iter)
-	{
+	Gtk::TreeView* tree_view = dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()));
+	assert(tree_view);
+
+	if (Gtk::TreeModel::iterator iter = tree_view->get_selection()->get_selected()) {
 		LayerParamTreeStore::Model model;
 		canvas_view->get_work_area()->set_selected_value_node(
-			(synfig::ValueNode::Handle)(*iter)[model.value_node]
-		);
-	}
-	else
-	{
+			(synfig::ValueNode::Handle)(*iter)[model.value_node] );
+	} else {
 		canvas_view->get_work_area()->set_selected_value_node(0);
 	}
 }
@@ -115,13 +100,21 @@ Dock_Params::refresh_selected_param()
 void
 Dock_Params::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
+	reset_container();
+	refresh_selected_param_connection.disconnect();
+	
 	if(canvas_view)
 	{
-		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
+		Gtk::TreeView* tree_view = dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()));
+		assert(tree_view);
+
+		refresh_selected_param_connection = tree_view->get_selection()->signal_changed().connect(
+			sigc::mem_fun(
+				*this,
+				&Dock_Params::refresh_selected_param ));
+		tree_view->show();
 
 		add(*tree_view);
-		tree_view->show();
-		show_all();
+		get_container()->set_vadjustment(vadjustment);
 	}
-	else clear_previous();
 }

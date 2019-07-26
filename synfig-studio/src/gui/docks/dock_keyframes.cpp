@@ -62,21 +62,16 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Keyframes::Dock_Keyframes():
-	Dock_CanvasSpecific("keyframes",_("Keyframes"),Gtk::StockID("synfig-keyframes")),
-	action_group(Gtk::ActionGroup::create("action_group_dock_keyframes")),
-	keyframe_action_manager(new KeyframeActionManager)
+	Dock_CanvasSpecific("keyframes", _("Keyframes"),Gtk::StockID("synfig-keyframes")),
+	keyframe_action_manager(new KeyframeActionManager())
 {
 	keyframe_action_manager->set_ui_manager(App::ui_manager());
 	keyframe_action_manager->signal_show_keyframe_properties().connect(
-		sigc::mem_fun(*this,&Dock_Keyframes::show_keyframe_properties)
-	);
+		sigc::mem_fun(*this,&Dock_Keyframes::show_keyframe_properties) );
 	keyframe_action_manager->signal_keyframe_toggle().connect(
-		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_toggle)
-	);
+		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_toggle) );
 	keyframe_action_manager->signal_keyframe_description_set().connect(
-		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_description_set)
-	);
-
+		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_description_set) );
 
     Glib::ustring ui_info =
 	"<ui>"
@@ -96,6 +91,7 @@ Dock_Keyframes::Dock_Keyframes():
 
 Dock_Keyframes::~Dock_Keyframes()
 {
+	delete keyframe_action_manager;
 }
 
 void
@@ -119,21 +115,20 @@ Dock_Keyframes::keyframe_description_set()
 		get_canvas_view()->on_keyframe_description_set();
 }
 
-
 /*! \fn Dock_Keyframes::refresh_rend_desc()
 **	\brief Signal handler for animation render description change
 */
 void
 Dock_Keyframes::refresh_rend_desc()
 {
-	keyframe_action_manager->refresh();
+	keyframe_action_manager->queue_refresh();
 }
 
 void
 Dock_Keyframes::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
 	Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store;
-	keyframe_tree_store=KeyframeTreeStore::create(canvas_view->canvas_interface());
+	keyframe_tree_store = KeyframeTreeStore::create(canvas_view->canvas_interface());
 
 	KeyframeTree* keyframe_tree(new KeyframeTree());
 	keyframe_tree->set_model(keyframe_tree_store);
@@ -144,33 +139,25 @@ Dock_Keyframes::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 	// keyframe actions status are connected to animation duration
 	canvas_view->canvas_interface()->signal_rend_desc_changed().connect(
-		sigc::mem_fun(*this,&studio::Dock_Keyframes::refresh_rend_desc)
-	);
+		sigc::mem_fun(*this,&studio::Dock_Keyframes::refresh_rend_desc) );
 }
 
 void
 Dock_Keyframes::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-	if(canvas_view)
-	{
-		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
+	if (canvas_view) {
+		Gtk::Widget* tree_view = canvas_view->get_ext_widget(get_name());
+		assert(tree_view);
 
-		add(*tree_view);
 		tree_view->show();
+		add(*tree_view);
 
-		keyframe_action_manager->set_keyframe_tree(dynamic_cast<KeyframeTree*>(canvas_view->get_ext_widget(get_name())));
+		keyframe_action_manager->set_keyframe_tree(dynamic_cast<KeyframeTree*>(tree_view));
 		keyframe_action_manager->set_canvas_interface(canvas_view->canvas_interface());
-		keyframe_action_manager->refresh();
-	}
-	else
-	{
-		if(keyframe_action_manager)
-		{
-			keyframe_action_manager->clear();
-			keyframe_action_manager->set_keyframe_tree(0);
-			keyframe_action_manager->set_canvas_interface(0);
-		}
-
-		clear_previous();
+		keyframe_action_manager->queue_refresh();
+	} else {
+		keyframe_action_manager->clear();
+		keyframe_action_manager->set_keyframe_tree(0);
+		keyframe_action_manager->set_canvas_interface(0);
 	}
 }
