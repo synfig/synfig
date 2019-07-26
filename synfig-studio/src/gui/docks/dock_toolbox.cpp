@@ -98,21 +98,9 @@ Dock_Toolbox::Dock_Toolbox():
 	scrolled_window->set_border_width(2);
 	scrolled_window->show();
 
-	separator = manage(new class Gtk::HSeparator());
-
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 
-	// pack tools and default widgets
-	//tool_box = manage(new class Gtk::VBox(false, 2));
-	//tool_box->pack_start(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
-	//tool_box->pack_start(*separator, Gtk::PACK_SHRINK, 3);
-	//tool_box->pack_start(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
-	//tool_box->set_border_width(2);
-	//tool_box->show_all();
-
-	//add(*tool_box);
-	
-	Gtk::VPaned *tool_box_paned = manage(new class Gtk::VPaned());
+	Gtk::Paned *tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
 	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
 	tool_box_paned->set_position(200);

@@ -173,7 +173,6 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	// System _ Units section
 	attach_label_section(pi.grid, _("Units"), row);
 	// System - 0 Timestamp
-	timestamp_menu=manage(new class Gtk::Menu());
 	attach_label(pi.grid, _("Timestamp"), ++row);
 	pi.grid->attach(timestamp_comboboxtext, 1, row, 1, 1);
 	timestamp_comboboxtext.set_hexpand(true);

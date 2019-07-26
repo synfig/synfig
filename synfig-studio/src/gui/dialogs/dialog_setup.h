@@ -180,7 +180,6 @@ class Dialog_Setup : public Dialog_Template
 
 	synfig::Time::Format time_format;
 
-	Gtk::Menu *timestamp_menu;
 	Widget_Enum *widget_enum;
 
 	Widget_Time auto_backup_interval;

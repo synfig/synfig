@@ -156,17 +156,9 @@ LayerTree::LayerTree():
 
 	layer_tree_view_->signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::onKeyPress));
 
-	//Gtk::HPaned* hpaned(manage(new Gtk::HPaned()));
-	//hpaned->show();
-	//attach(*hpaned, 0, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//attach(*create_layer_tree(), 0, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL, 0, 0);
-
 	create_layer_tree();
 	create_param_tree();
 
-	//hpaned->pack1(*create_layer_tree(),false,false);
-	//hpaned->pack2(*create_param_tree(),true,false);
-	//hpaned->set_position(200);
 	hbox=manage(new Gtk::HBox());
 
 	attach(*hbox, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -180,7 +172,6 @@ LayerTree::LayerTree():
 	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
 	Gtk::Image *icon;
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
@@ -238,7 +229,7 @@ LayerTree::~LayerTree()
 		synfig::info("LayerTree::~LayerTree(): Deleted");
 }
 
-Gtk::Widget*
+void
 LayerTree::create_layer_tree()
 {
 	const LayerTreeStore::Model model;
@@ -312,18 +303,9 @@ LayerTree::create_layer_tree()
 	get_layer_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_event));
 	get_layer_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_view_query_tooltip));
 	get_layer_tree_view().show();
-
-	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
-	scroll->set_can_focus(true);
-	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//scroll->add(get_layer_tree_view());
-	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
-	scroll->show();
-
-	return scroll;
 }
 
-Gtk::Widget*
+void
 LayerTree::create_param_tree()
 {
 	//Text attributes must be the same that TimeTrackView tree's to have aligned rows
@@ -486,20 +468,11 @@ LayerTree::create_param_tree()
 	columnzero_label->signal_draw().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_column_label_tree_draw));
 	get_param_tree_view().show();
 
-	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
-	scroll->set_can_focus(true);
-	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//scroll->add(get_param_tree_view());
-	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
-	scroll->show();
-
 	// To get the initial style
 	param_tree_style_changed = true;
 	param_tree_header_height = 0;
 
 	//column_time_track->set_visible(false);
-
-	return scroll;
 }
 
 void
