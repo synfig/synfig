@@ -59,6 +59,7 @@ OTHER_HH = \
 	preview.h \
 	renddesc.h \
 	render.h \
+	resourcehelper.h \
 	splash.h \
 	statemanager.h \
 	valuelink.h \
@@ -85,6 +86,7 @@ OTHER_CC = \
 	preview.cpp \
 	renddesc.cpp \
 	render.cpp \
+	resourcehelper.cpp \
 	splash.cpp \
 	statemanager.cpp \
 	valuelink.cpp \
@@ -125,4 +127,5 @@ synfigstudio_CXXFLAGS = \
 	-DIMAGE_EXT=\"$(imageext)\" \
 	-DPLUGIN_DIR=\"$(plugindir)\" \
 	-DSOUND_DIR=\"$(sounddir)\" \
+	-DUI_DIR=\"$(uidir)\" \
 	-DLOCALEDIR=\"${LOCALEDIR}\"

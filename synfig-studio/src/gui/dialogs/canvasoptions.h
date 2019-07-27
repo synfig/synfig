@@ -28,11 +28,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
-#include <gtkmm/entry.h>
-#include "widgets/widget_value.h"
-#include "widgets/widget_vector.h"
+#include <gtkmm/builder.h>
+
+#include "ETL/handle"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,24 +38,32 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace Gtk {
+	class CheckButton;
+};
+
 namespace studio
 {
 
 class CanvasView;
+class Widget_Vector;
 
 class CanvasOptions  :  public Gtk::Dialog
 {
 	etl::loose_handle<CanvasView> canvas_view_;
 
-	Gtk::CheckButton toggle_grid_snap;
-	Gtk::CheckButton toggle_grid_show;
+	Gtk::CheckButton * toggle_grid_snap;
+	Gtk::CheckButton * toggle_grid_show;
 
-	Widget_Vector vector_grid_size;
+	Widget_Vector * vector_grid_size;
 
-	Gtk::CheckButton toggle_time_snap;
+	Gtk::CheckButton * toggle_time_snap;
 
+	const Glib::RefPtr<Gtk::Builder>& builder;
+	void set_canvas_view(CanvasView* canvas_view);
 public:
-	CanvasOptions(Gtk::Window &window,etl::loose_handle<CanvasView> canvas_view);
+	CanvasOptions(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
+	static CanvasOptions * create(Gtk::Window& parent, CanvasView * canvas_view);
 	~CanvasOptions();
 
 	void refresh();

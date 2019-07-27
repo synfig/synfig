@@ -73,6 +73,8 @@ using namespace studio;
 
 MainWindow::MainWindow()
 {
+	Widget_Vector::register_type();
+
 	set_default_size(600, 400);
 	toggling_show_menubar = App::enable_mainwin_menubar;
 

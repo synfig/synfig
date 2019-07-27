@@ -30,6 +30,7 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/distance.h>
 
 #include <gtkmm/spinbutton.h>
 #include "widgets/widget_vector.h"
@@ -56,11 +57,29 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+static void init();
+
 Widget_Vector::Widget_Vector():
-	Gtk::HBox(false, 5),
-	x_adjustment(Gtk::Adjustment::create(0,-100000000,100000000,0.05,0.05,0)),
-	y_adjustment(Gtk::Adjustment::create(0,-100000000,100000000,0.05,0.05,0))
+	Glib::ObjectBase("widget_vector")
 {
+	init();
+}
+
+Widget_Vector::Widget_Vector(BaseObjectType* cobject) :
+	Glib::ObjectBase("widget_vector"),
+	Gtk::Box(cobject)
+{
+	init();
+}
+
+void Widget_Vector::init() {
+	set_orientation(Gtk::ORIENTATION_HORIZONTAL);
+	set_homogeneous(false);
+	set_spacing(5);
+
+	x_adjustment = Gtk::Adjustment::create(0,-100000000,100000000,0.05,0.05,0);
+	y_adjustment = Gtk::Adjustment::create(0,-100000000,100000000,0.05,0.05,0);
+
 	int width_chars = 5;
 
 	entry_x=manage(new class Gtk::Entry());
@@ -304,4 +323,28 @@ Widget_Vector::show_all_vfunc()
 	entry_x->show();
 	entry_y->show();
 	show();
+}
+
+GType Widget_Vector::gtype = 0;
+
+Glib::ObjectBase *
+Widget_Vector::wrap_new (GObject *o)
+{
+	if (gtk_widget_is_toplevel (GTK_WIDGET (o)))
+		return new Widget_Vector (GTK_BOX(o));
+	else
+		return Gtk::manage(new Widget_Vector(GTK_BOX(o)));
+}
+
+void
+Widget_Vector::register_type ()
+{
+	if (gtype)
+		return;
+
+	Widget_Vector dummy;
+
+	gtype = G_OBJECT_TYPE (dummy.gobj());
+
+	Glib::wrap_register (gtype, Widget_Vector::wrap_new);
 }

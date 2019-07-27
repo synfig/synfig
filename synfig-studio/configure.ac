@@ -28,6 +28,7 @@ imageext=png
 imagedir="${datadir}/pixmaps/synfigstudio"
 plugindir="${datadir}/synfig/plugins"
 sounddir="${datadir}/synfig/sounds"
+uidir="${datadir}/synfig/ui"
 
 GETTEXT_PACKAGE=synfigstudio
 LOCALEDIR=[${prefix}/${DATADIRNAME}/locale]
@@ -167,6 +168,7 @@ AC_SUBST(imageext)
 AC_SUBST(imagedir)
 AC_SUBST(plugindir)
 AC_SUBST(sounddir)
+AC_SUBST(uidir)
 
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
 AC_ARG_ENABLE(update-mimedb,
@@ -213,6 +215,7 @@ AC_CONFIG_FILES([
     plugins/lottie-exporter/sources/Makefile
     plugins/lottie-exporter/synfig/Makefile
     sounds/Makefile
+    ui/Makefile
 ])
 AC_OUTPUT
 

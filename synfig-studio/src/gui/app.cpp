@@ -154,6 +154,8 @@
 
 #include <gui/localization.h>
 
+#include "gui/resourcehelper.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -168,17 +170,6 @@ using namespace studio;
 #ifndef DPM2DPI
 #define DPM2DPI(x)	(float(x)/39.3700787402f)
 #define DPI2DPM(x)	(float(x)*39.3700787402f)
-#endif
-
-#ifdef _WIN32
-#	ifdef IMAGE_DIR
-#		undef IMAGE_DIR
-#		define IMAGE_DIR "share\\pixmaps"
-#	endif
-#endif
-
-#ifndef IMAGE_DIR
-#	define IMAGE_DIR "/usr/local/share/pixmaps"
 #endif
 
 #ifndef IMAGE_EXT
@@ -1468,23 +1459,18 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	// paths
 #ifdef _WIN32
-	String path_to_icons = get_base_path()
-		+ ETL_DIRECTORY_SEPARATOR + IMAGE_DIR;
 	String path_to_plugins = get_base_path()
 		+ ETL_DIRECTORY_SEPARATOR + PLUGIN_DIR;
 	String path_to_sounds = get_base_path()
 		+ ETL_DIRECTORY_SEPARATOR + SOUND_DIR;
 #else
-	String path_to_icons = IMAGE_DIR;
 	String path_to_plugins = PLUGIN_DIR;
 	String path_to_sounds = SOUND_DIR;
 #endif
 
+	String path_to_icons = ResourceHelper::get_image_path();
+
 	if (char* synfig_root = getenv("SYNFIG_ROOT")) {
-		path_to_icons = String(synfig_root)
-			+ ETL_DIRECTORY_SEPARATOR + "share"
-			+ ETL_DIRECTORY_SEPARATOR + "pixmaps"
-			+ ETL_DIRECTORY_SEPARATOR + "synfigstudio";
 		path_to_plugins = String(synfig_root)
 			+ ETL_DIRECTORY_SEPARATOR + "share"
 			+ ETL_DIRECTORY_SEPARATOR + "synfig"
