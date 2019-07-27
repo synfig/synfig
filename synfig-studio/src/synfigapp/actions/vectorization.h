@@ -44,7 +44,8 @@ class Instance;
 namespace Action {
 
 class Vectorization :
-	public Super
+	public Undoable,
+	public CanvasSpecific
 {
 private:
 	synfig::Layer::Handle layer;
