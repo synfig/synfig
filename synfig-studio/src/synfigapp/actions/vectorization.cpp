@@ -37,6 +37,7 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
 #include <synfigapp/localization.h>
+#include <synfig/layers/layer_bitmap.h>
 
 #endif
 
@@ -58,13 +59,17 @@ ACTION_SET_VERSION(Action::Vectorization,"0.0");
 ACTION_SET_CVS_ID(Action::Vectorization,"$Id$");
 
 /* === G L O B A L S ======================================================= */
-bool isOutline = false;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( ) const 
+Vectorization::Vectorization()
 {
-  CenterlineConfiguration conf;
+    isOutline = false;
+}
+
+studio::CenterlineConfiguration Vectorization::getCenterlineConfiguration( ) const 
+{
+  studio::CenterlineConfiguration conf;
 
   conf.m_outline      = false;
   conf.m_threshold    = threshold;
@@ -79,9 +84,9 @@ CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( ) const
   return conf;
 }
 
-NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
-    double frame) const {
-  NewOutlineConfiguration conf;
+studio::NewOutlineConfiguration Vectorization::getOutlineConfiguration() const 
+{
+  studio::NewOutlineConfiguration conf;
 
    conf.m_outline          = true;
 //   conf.m_despeckling      = m_oDespeckling;
@@ -95,6 +100,54 @@ NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
 //   conf.m_toneTol          = m_oToneThreshold;
 
   return conf;
+}
+
+Action::ParamVocab
+Action::Vectorization::get_param_vocab()
+{
+	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
+
+	ret.push_back(ParamDesc("image",Param::TYPE_LAYER)
+		.set_local_name(_("Image Layer"))
+	);
+
+	ret.push_back(ParamDesc("mode",Param::TYPE_STRING)
+		.set_local_name(_("Vectorization mode"))
+		.set_desc(_("Mode for Vectorization"))
+	);
+    ret.push_back(ParamDesc("threshold", Param::TYPE_INTEGER)
+		.set_local_name(_("Threshold Value"))
+		.set_desc(_("Mode for Vectorization"))
+	);
+    ret.push_back(ParamDesc("penalty", Param::TYPE_INTEGER)
+		.set_local_name(_("Penalty"))
+		.set_desc(_("Penalty based on accuracy"))
+	);
+    ret.push_back(ParamDesc("despeckling", Param::TYPE_INTEGER)
+		.set_local_name(_("Despeckling value"))
+		.set_desc(_("Despeckling Value for process"))
+	);
+    ret.push_back(ParamDesc("maxthickness", Param::TYPE_INTEGER)
+		.set_local_name(_("Max thickness"))
+		.set_desc(_("Max thickness of outline"))
+	);
+    ret.push_back(ParamDesc("pparea", Param::TYPE_BOOL)
+		.set_local_name(_("Preserve painted area"))
+		.set_desc(_("To preserve painted area"))
+	);
+    ret.push_back(ParamDesc("addborder" && param.get_type == Param::TYPE_BOOL)
+		.set_local_name(_("Add border"))
+		.set_desc(_("Add border in final outlines"))
+	);
+    
+    return ret;
+}
+
+bool
+Action::Vectorization::is_candidate(const ParamList &x)
+{
+	return (candidate_check(get_param_vocab(),x) &&
+			synfig::Layer_Bitmap::Handle::cast_dynamic(x.find("image")->second.get_value_node()));
 }
 
 bool
@@ -150,8 +203,8 @@ Action::Vectorization::perform()
 {
     studio::CenterlineConfiguration m_cConf;
   	studio::NewOutlineConfiguration m_oConf;
-	studio::VectorizerConfiguration &configuration = isOutline ? static_cast<VectorizerConfiguration &>(m_oConf)
-        									  : static_cast<VectorizerConfiguration &>(m_cConf);
+	studio::VectorizerConfiguration &configuration = isOutline ? static_cast<studio::VectorizerConfiguration &>(m_oConf)
+        									  : static_cast<studio::VectorizerConfiguration &>(m_cConf);
 
     if (v_mode=="outline"||v_mode == "Outline")
         m_oConf = getOutlineConfiguration(0.0);
@@ -160,5 +213,7 @@ Action::Vectorization::perform()
 
     studio::VectorizerCore vCore;
     std::vector< etl::handle<synfig::Layer> > Result = 
-    vCore.vectorize(layer, configuration);//Todo change function to return outlines
+    vCore.vectorize(layer, configuration);
+    //Todo change function to return outlines
+    // create group
 }
