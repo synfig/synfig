@@ -118,7 +118,7 @@ class Param:
             key = child.tag 
             self.subparams[key] = Param(child, self.param)
 
-    def animate_without_path(self, anim_type, transform=False):
+    def animate_without_path(self, anim_type):
         """
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
@@ -131,8 +131,8 @@ class Param:
             self.extract_subparams()
             if self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
-                self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
-                self.subparams["add"].subparams["rhs"].animate(anim_type, transform)
+                self.subparams["add"].subparams["lhs"].animate(anim_type)
+                self.subparams["add"].subparams["rhs"].animate(anim_type)
                 self.subparams["add"].subparams["scaler"].animate("scalar_multiply")
         else:
             self.single_animate(anim_type)

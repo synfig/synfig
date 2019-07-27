@@ -33,8 +33,8 @@ def gen_list_rectangle(lottie, layer):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    point1 = layer.get_param("point1", True)
-    point2 = layer.get_param("point2", True)
+    point1 = layer.get_param("point1")
+    point2 = layer.get_param("point2")
     expand = layer.get_param("expand")
     bevel = layer.get_param("bevel")
     bevCircle = layer.get_param("bevCircle")
@@ -185,4 +185,4 @@ def synfig_rectangle(st_val, point1_p, point2_p, expand_p, bevel_p, bevCircle, f
         chunk_list.append([cur, cur - cp1, Vector()])
         prev = cur
 
-    add(chunk_list, st_val, [0, 0])
+    add(chunk_list, st_val, [0, 0], True)

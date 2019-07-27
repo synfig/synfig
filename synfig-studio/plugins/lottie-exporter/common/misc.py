@@ -62,8 +62,6 @@ def change_axis(x_val, y_val, is_transform=True):
     if is_transform:
         x_val, y_val = x_val, -y_val
     else:
-        lol
-        print("NO")
         x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
     return [x_val, y_val]
 

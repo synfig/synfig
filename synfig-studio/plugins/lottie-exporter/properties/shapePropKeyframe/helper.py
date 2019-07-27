@@ -138,7 +138,7 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     return tangent1, tangent2
 
 
-def add(side, lottie, origin_cur):
+def add(side, lottie, origin_cur, is_rectangle=False):
     """
     Does not take care of tangent putting order because the tangents are all
     zero for now according to the code
@@ -153,7 +153,7 @@ def add(side, lottie, origin_cur):
     """
     i = 0
     while i < len(side):
-        cubic_to(side[i][0], side[i][1], side[i][2], lottie, origin_cur)
+        cubic_to(side[i][0], side[i][1], side[i][2], lottie, origin_cur, is_rectangle)
         i += 1
 
 
@@ -176,7 +176,7 @@ def add_reverse(side, lottie, origin_cur):
         i -= 1
 
 
-def cubic_to(vec, tan1, tan2, lottie, origin_cur):
+def cubic_to(vec, tan1, tan2, lottie, origin_cur, is_rectangle=False):
     """
     Will have to manipulate the tangents here, but they are not managed as tan1
     and tan2 both are zero always
@@ -195,7 +195,7 @@ def cubic_to(vec, tan1, tan2, lottie, origin_cur):
     tan1 *= settings.PIX_PER_UNIT
     tan2 *= settings.PIX_PER_UNIT
     tan1, tan2 = convert_tangent_to_lottie(3*tan1, 3*tan2)
-    pos = change_axis(vec[0], vec[1])
+    pos = change_axis(vec[0], vec[1], not is_rectangle)
     for i in range(len(pos)):
         pos[i] += origin_cur[i]
     lottie["i"].append(tan1.get_list())
