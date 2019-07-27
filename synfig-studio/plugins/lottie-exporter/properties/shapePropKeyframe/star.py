@@ -41,7 +41,8 @@ def gen_list_star(lottie, layer):
     # Animating origin
     update_frame_window(origin[0], window)
     # Keeping the transform true here
-    origin.animate("vector", True)
+    #origin.animate("vector", True)
+    origin.animate("vector")
 
     # Animating radius1
     update_frame_window(radius1[0], window)

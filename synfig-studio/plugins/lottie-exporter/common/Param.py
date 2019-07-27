@@ -143,6 +143,19 @@ class Param:
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
+        if not transform and anim_type in {"vector"}:
+            # Will add link to convert into lottie axis
+            value = common.Vector.Vector()
+            value[0] = (settings.lottie_format["w"]/2) / settings.PIX_PER_UNIT
+            value[1] = -(settings.lottie_format["h"]/2) / settings.PIX_PER_UNIT
+            self.add_convert_link(value)
+
+        self.recur_animate(anim_type)
+
+    def recur_animate(self, anim_type):
+        """
+        Internal private method for animating
+        """
         if anim_type == "vector":
             self.dimension = 2
 
@@ -151,9 +164,9 @@ class Param:
             self.extract_subparams()
             if self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
-                lhs, effects_1 = self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
-                rhs, effects_2 = self.subparams["add"].subparams["rhs"].animate(anim_type, True)   # Only one of the child should be converted to lottie axis
-                scalar, effects_3 = self.subparams["add"].subparams["scalar"].animate("scalar_multiply")
+                lhs, effects_1 = self.subparams["add"].subparams["lhs"].recur_animate(anim_type)
+                rhs, effects_2 = self.subparams["add"].subparams["rhs"].recur_animate(anim_type)   # Only one of the child should be converted to lottie axis
+                scalar, effects_3 = self.subparams["add"].subparams["scalar"].recur_animate("scalar_multiply")
                 self.expression_controllers.extend(effects_1)
                 self.expression_controllers.extend(effects_2)
                 self.expression_controllers.extend(effects_3)
@@ -167,9 +180,9 @@ class Param:
             self.expression_controllers.append({})
 
             if anim_type == "vector":
-                self.gen_path("vector", transform)
+                self.gen_path("vector")
             elif anim_type not in {"bool", "string"}:   # These do not need path generation
-                self.gen_path("real", transform)   # "real" can be of various types as defined in common.misc.parse_position()
+                self.gen_path("real")   # "real" can be of various types as defined in common.misc.parse_position()
             
             gen_effects_controller(self.expression_controllers[-1], self.get_path(), anim_type)
 
@@ -208,20 +221,16 @@ class Param:
         new_waypoint.attrib["time"] = time
         self.param[0].insert(1, new_waypoint)
 
-    def gen_path(self, anim_type="real", transform=False, idx=0):
+    def gen_path(self, anim_type="real", idx=0):
         """
         Generates the path for this parameter over time depending on the
         animation type of this parameter
         """
         self.path = {}
-        if transform:
-            self.param[0].attrib["transform_axis"] = "true"
         if anim_type == "real":
             gen_value_Keyframed(self.path, self.param[0], idx)
         else:
             gen_properties_multi_dimensional_keyframed(self.path, self.param[0], idx)
-
-        self.param[0].attrib["transform_axis"] = "false"
 
     def get_path(self):
         """
@@ -284,25 +293,22 @@ class Param:
     def add_offset(self):
         """
         Will modify the animation by inserting <add></add> xml elements
+        """
+        offset = synfig.group.get_offset()
+        self.add_convert_link(offset)
 
-        NOTE/IMPORTANT: MOdifing the offset here, because we need the
-        transform_axis's effect here. But the method written by me is not well
-        and proper; Need to be improved
+
+    def add_convert_link(self, val):
+        """
+        Private method for inserting <add></add>, given a offset
         """
         st = "<add type='vector'><lhs></lhs><rhs></rhs><scalar><real value='1.00'/></scalar></add>"
         root = etree.fromstring(st)
         first = copy.deepcopy(self.param[0])
         root[0].append(first)
         
-        offset = synfig.group.get_offset()
-
-        minus = common.Vector.Vector()
-        minus[0] = (settings.lottie_format["w"]/2) / settings.PIX_PER_UNIT
-        minus[1] = (settings.lottie_format["h"]/2) / settings.PIX_PER_UNIT
-        #offset += minus
-
         st = "<vector><x>{x_val}</x><y>{y_val}</y></vector>"
-        st = st.format(x_val=offset[0], y_val=offset[1])
+        st = st.format(x_val=val[0], y_val=val[1])
         second = etree.fromstring(st)
         root[1].append(second)
 

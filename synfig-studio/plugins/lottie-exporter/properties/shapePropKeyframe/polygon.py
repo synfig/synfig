@@ -36,7 +36,7 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
         update_frame_window(pos[0], window)
 
         z = Param(pos.getparent(), pos.getparent().getparent())
-        z.animate("vector")
+        z.animate("vector", True)
         entry["vector"] = z
 
     layer = dynamic_list.get_layer().get_layer()
@@ -44,7 +44,7 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin.animate("vector", True)
+    origin.animate("vector")
 
     if window["first"] == sys.maxsize and window["last"] == -1:
         window["first"] = window["last"] = 0

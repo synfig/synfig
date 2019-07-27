@@ -79,8 +79,8 @@ def gen_layer_group(lottie, layer, idx):
     opacity.animate("opacity")
 
     # Reset the animations after adding offset
-    anchor.animate("vector")
-    pos.animate("vector")
+    anchor.animate("vector", True)
+    pos.animate("vector", True)
     # Generate the transform properties here
     gen_helpers_transform(lottie["ks"], pos, anchor, scale, angle, opacity, skew)
 

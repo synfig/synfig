@@ -37,7 +37,7 @@ def gen_list_circle(lottie, layer):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin.animate("vector", True)
+    origin.animate("vector")
 
     update_frame_window(radius[0], window)
     radius.animate("real")

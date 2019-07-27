@@ -74,7 +74,7 @@ def gen_bline_outline(lottie, bline_point):
 
     # Animating the origin
     update_frame_window(origin[0], window)
-    origin.animate("vector", True)
+    origin.animate("vector")
 
     # Animating the outer width
     update_frame_window(outer_width[0], window)

@@ -46,7 +46,7 @@ def calculate_pixels_per_unit():
     return settings.PIX_PER_UNIT
 
 
-def change_axis(x_val, y_val, is_transform=False):
+def change_axis(x_val, y_val, is_transform=True):
     """
     Convert synfig axis coordinates into lottie format
 
@@ -62,6 +62,8 @@ def change_axis(x_val, y_val, is_transform=False):
     if is_transform:
         x_val, y_val = x_val, -y_val
     else:
+        lol
+        print("NO")
         x_val, y_val = x_val + settings.lottie_format["w"]/2, -y_val + settings.lottie_format["h"]/2
     return [x_val, y_val]
 

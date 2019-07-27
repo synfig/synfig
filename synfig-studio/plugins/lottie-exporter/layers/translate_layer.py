@@ -36,7 +36,7 @@ def gen_layer_translate(lottie, layer):
 
     if settings.INSIDE_PRECOMP:
         pos.add_offset()
-    anchor.animate("vector")
-    pos.animate("vector")
+    anchor.animate("vector", True)
+    pos.animate("vector", True)
 
     gen_helpers_transform(lottie, pos, anchor)
