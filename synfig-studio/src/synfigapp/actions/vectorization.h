@@ -51,14 +51,14 @@ private:
 	synfig::String v_mode; 
     int threshold, penalty, despeckling, maxthickness;
     bool pparea, addborder;
-	CenterlineConfiguration getCenterlineConfiguration() const;
-  	NewOutlineConfiguration getOutlineConfiguration(double weight) const;
+	studio::CenterlineConfiguration getCenterlineConfiguration() const;
+  	studio::NewOutlineConfiguration getOutlineConfiguration(double weight) const;
 
 	void doVectorize(const VectorizerConfiguration &conf); 
 
-  	VectorizerConfiguration *getCurrentConfiguration(double weight) const {
-    	return isOutline ? (VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration(weight))
-                       : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
+  	studio::VectorizerConfiguration *getCurrentConfiguration(double weight) const {
+    	return isOutline ? (studio::VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration(weight))
+                       : (studio::VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
   	}
 
        

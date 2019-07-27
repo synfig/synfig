@@ -31,7 +31,8 @@
 #endif
 
 #include <synfig/general.h>
-
+#include <synfig/layer.h>
+#include <ETL/handle>
 #include "vectorization.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
@@ -57,7 +58,7 @@ ACTION_SET_VERSION(Action::Vectorization,"0.0");
 ACTION_SET_CVS_ID(Action::Vectorization,"$Id$");
 
 /* === G L O B A L S ======================================================= */
-
+bool isOutline = false;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -107,6 +108,8 @@ Action::Vectorization::set_param(const synfig::String& name, const Action::Param
     if(name=="mode" && param.get_type == Param::TYPE_STRING)
     {
         v_mode = param.get_string();
+        if(v_mode=="outline"||v_mode=="Outline")
+        isOutline=true;
         return true;
     }
     if(name=="threshold" && param.get_type == Param::TYPE_INTEGER)
@@ -145,6 +148,17 @@ Action::Vectorization::set_param(const synfig::String& name, const Action::Param
 void
 Action::Vectorization::perform()
 {
+    studio::CenterlineConfiguration m_cConf;
+  	studio::NewOutlineConfiguration m_oConf;
+	studio::VectorizerConfiguration &configuration = isOutline ? static_cast<VectorizerConfiguration &>(m_oConf)
+        									  : static_cast<VectorizerConfiguration &>(m_cConf);
+
+    if (v_mode=="outline"||v_mode == "Outline")
+        m_oConf = getOutlineConfiguration(0.0);
+    else if(v_mode=="centerline"||v_mode=="Centerline")
+        m_cConf = getCenterlineConfiguration();
+
     studio::VectorizerCore vCore;
-    vCore.vectorize(layer_bitmap_, conf);// change function definition to return a lkst of outlines
+    std::vector< etl::handle<synfig::Layer> > Result = 
+    vCore.vectorize(layer, configuration);//Todo change function to return outlines
 }
