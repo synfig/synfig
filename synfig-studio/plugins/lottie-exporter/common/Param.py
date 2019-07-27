@@ -152,7 +152,7 @@ class Param:
             if self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
                 lhs, effects_1 = self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
-                rhs, effects_2 = self.subparams["add"].subparams["rhs"].animate(anim_type, transform)
+                rhs, effects_2 = self.subparams["add"].subparams["rhs"].animate(anim_type, True)   # Only one of the child should be converted to lottie axis
                 scalar, effects_3 = self.subparams["add"].subparams["scalar"].animate("scalar_multiply")
                 self.expression_controllers.extend(effects_1)
                 self.expression_controllers.extend(effects_2)
