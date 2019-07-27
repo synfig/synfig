@@ -23,6 +23,8 @@ def gen_layer_scale(lottie, layer):
     center = layer.get_param("center")
     center.animate("vector")
     anchor = copy.deepcopy(center)
+    # deep copy changes address of parent layer also
+    anchor.parent = center.parent
     pos = center
 
     scale = layer.get_param("amount")  # This is scale amount
