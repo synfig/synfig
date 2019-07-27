@@ -15,6 +15,6 @@ def gen_effects_slider(lottie, value, idx):
     """
     index = Count()
     lottie["ty"] = settings.EFFECTS_SLIDER      # Effect type
-    lottie["nm"] = "Slider " + str(idx)
+    lottie["nm"] = "Slider" + str(idx)
     lottie["ix"] = idx
     lottie["v"] = value

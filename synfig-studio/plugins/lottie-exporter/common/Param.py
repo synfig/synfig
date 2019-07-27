@@ -133,7 +133,7 @@ class Param:
                 self.subparams["add"].extract_subparams()
                 self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
                 self.subparams["add"].subparams["rhs"].animate(anim_type, transform)
-                self.subparams["add"].subparams["scaler"].animate("real")
+                self.subparams["add"].subparams["scaler"].animate("scalar_multiply")
         else:
             self.single_animate(anim_type)
 
@@ -153,7 +153,7 @@ class Param:
                 self.subparams["add"].extract_subparams()
                 lhs, effects_1 = self.subparams["add"].subparams["lhs"].animate(anim_type, transform)
                 rhs, effects_2 = self.subparams["add"].subparams["rhs"].animate(anim_type, transform)
-                scalar, effects_3 = self.subparams["add"].subparams["scalar"].animate("real")
+                scalar, effects_3 = self.subparams["add"].subparams["scalar"].animate("scalar_multiply")
                 self.expression_controllers.extend(effects_1)
                 self.expression_controllers.extend(effects_2)
                 self.expression_controllers.extend(effects_3)
@@ -174,7 +174,7 @@ class Param:
             gen_effects_controller(self.expression_controllers[-1], self.get_path(), anim_type)
 
             # Extract name from the effects
-            ret = "effect({effect_1})({effect_2})"
+            ret = "effect('{effect_1}')('{effect_2}')"
             ret = ret.format(effect_1=self.expression_controllers[-1]["nm"], effect_2=self.expression_controllers[-1]["ef"][0]["nm"])
             self.expression = ret
             return ret, self.expression_controllers
@@ -260,7 +260,8 @@ class Param:
             if self.param[0].tag == "add":
                 ret = self.subparams["add"].subparams["lhs"].get_value(frame)
                 ret2 = self.subparams["add"].subparams["rhs"].get_value(frame)
-                mul = to_Synfig_axis(self.subparams["add"].subparams["scalar"].get_value(frame), "real")
+                #mul = to_Synfig_axis(self.subparams["add"].subparams["scalar"].get_value(frame), "real")
+                mul = self.subparams["add"].subparams["scalar"].get_value(frame)
                 ret[0] += ret2[0]
                 ret[1] += ret2[1]
                 ret = [it*mul for it in ret]
@@ -283,6 +284,10 @@ class Param:
     def add_offset(self):
         """
         Will modify the animation by inserting <add></add> xml elements
+
+        NOTE/IMPORTANT: MOdifing the offset here, because we need the
+        transform_axis's effect here. But the method written by me is not well
+        and proper; Need to be improved
         """
         st = "<add type='vector'><lhs></lhs><rhs></rhs><scalar><real value='1.00'/></scalar></add>"
         root = etree.fromstring(st)
@@ -290,6 +295,12 @@ class Param:
         root[0].append(first)
         
         offset = synfig.group.get_offset()
+
+        minus = common.Vector.Vector()
+        minus[0] = (settings.lottie_format["w"]/2) / settings.PIX_PER_UNIT
+        minus[1] = (settings.lottie_format["h"]/2) / settings.PIX_PER_UNIT
+        #offset += minus
+
         st = "<vector><x>{x_val}</x><y>{y_val}</y></vector>"
         st = st.format(x_val=offset[0], y_val=offset[1])
         second = etree.fromstring(st)

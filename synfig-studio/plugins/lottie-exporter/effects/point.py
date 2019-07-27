@@ -15,6 +15,6 @@ def gen_effects_point(lottie, value, idx):
     """
     index = Count()
     lottie["ty"] = settings.EFFECTS_POINT      # Effect type
-    lottie["nm"] = "Point " + str(idx)
+    lottie["nm"] = "Point" + str(idx)
     lottie["ix"] = idx
     lottie["v"] = value
