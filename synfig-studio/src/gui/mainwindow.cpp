@@ -46,6 +46,8 @@
 #include <gtkmm/menubar.h>
 #include <gtkmm/box.h>
 
+#include <gtkmm/textview.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -225,6 +227,18 @@ MainWindow::toggle_show_menubar()
 		toggling_show_menubar = true;
 	}
 	App::enable_mainwin_menubar = toggling_show_menubar;
+}
+
+bool
+MainWindow::on_key_press_event(GdkEventKey* key_event)
+{
+	Gtk::Widget * widget = get_focus();
+	if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget))) {
+		bool handled = gtk_window_propagate_key_event(this->gobj(), key_event);
+		if (handled)
+			return true;
+	}
+	return Gtk::Window::on_key_press_event(key_event);
 }
 
 void
