@@ -217,7 +217,7 @@ class Param:
                 y, effect_2 = self.subparams["composite"].subparams["y"].recur_animate("real")
                 self.expression_controllers.extend(effect_1)
                 self.expression_controllers.extend(effect_2)
-                ret = "[{x}, {y}]"
+                ret = "[{x}, -{y}]"
                 ret = ret.format(x=x, y=y)
                 self.expression = ret
                 return ret, self.expression_controllers
