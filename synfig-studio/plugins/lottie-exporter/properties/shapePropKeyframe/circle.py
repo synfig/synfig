@@ -9,7 +9,7 @@ import math
 from common.Matrix2 import Matrix2
 from common.Vector import Vector
 from common.Layer import Layer
-from synfig.animation import to_Synfig_axis
+from synfig.animation import print_animation, to_Synfig_axis
 from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window, quadratic_to_cubic
 sys.path.append("../../")
 
