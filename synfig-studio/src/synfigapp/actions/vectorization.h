@@ -30,6 +30,7 @@
 #include <synfigapp/action.h>
 #include <synfig/layer.h>
 #include "vectorizer/vectorizerparameters.h"
+#include "vectorizer/centerlinevectorizer.h"
 
 /* === M A C R O S ========================================================= */
 

@@ -151,6 +151,12 @@ Action::Vectorization::is_candidate(const ParamList &x)
 }
 
 bool
+Action::Vectorization::is_ready() const
+{
+    return(get_param_vocab().size == 8);
+}
+
+bool
 Action::Vectorization::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if(name=="image" && param.get_type()==Param::TYPE_LAYER)
@@ -212,8 +218,13 @@ Action::Vectorization::perform()
         m_cConf = getCenterlineConfiguration();
 
     studio::VectorizerCore vCore;
-    std::vector< etl::handle<synfig::Layer> > Result = 
-    vCore.vectorize(layer, configuration);
+    std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(layer, configuration);
     //Todo change function to return outlines
     // create group
+}
+
+void
+Action::Vectorization::undo()
+{
+
 }
