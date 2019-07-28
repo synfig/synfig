@@ -125,6 +125,7 @@ class Param:
         if self.SUBPARAMS_EXTRACTED:
             return
         self.SUBPARAMS_EXTRACTED = 1
+        self.subparams.clear()
         for child in self.param:
             key = child.tag 
             if key in self.subparams.keys():
