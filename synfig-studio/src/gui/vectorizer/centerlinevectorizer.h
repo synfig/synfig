@@ -69,10 +69,10 @@ public:
 
   /*!Calls the appropriate technique to convert \b image to vectors depending on c.*/
  
-  void vectorize(const etl::handle<synfig::Layer_Bitmap> &image, const VectorizerConfiguration &c);
+  std::vector< etl::handle<synfig::Layer> > vectorize(const etl::handle<synfig::Layer_Bitmap> &image, const VectorizerConfiguration &c);
 
 private:
-  void centerlineVectorize(Handle &image, const CenterlineConfiguration &configuration);
+  std::vector< etl::handle<synfig::Layer> > centerlineVectorize(Handle &image, const CenterlineConfiguration &configuration);
 
 /*
   void outlineVectorize(const Handle &image, const OutlineConfiguration &configuration);

@@ -66,7 +66,7 @@ inline void deleteSkeletonList(SkeletonList *skeleton) {
 //************************
 
 // takes three arguments ( TimageP, config and palette )
-void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image, const CenterlineConfiguration &configuration)
+std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image, const CenterlineConfiguration &configuration)
  {
   std::cout<<"Inside CenterlineVectorize\n";
   VectorizerCoreGlobals globals;
@@ -126,17 +126,19 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 //   // Converts each forward or single Sequence of the image in its corresponding Stroke.
   studio::conversionToStrokes(sortibleResult, globals, image);
 
-	synfig::Canvas::Handle child_canvas;
-  child_canvas=synfig::Canvas::create_inline(image->get_canvas());
-	synfig::Layer::Handle new_layer(synfig::Layer::create("group"));
-  new_layer->set_description("description");
-	new_layer->set_param("canvas",child_canvas);
-  image->get_canvas()->parent()->push_front(new_layer);
-  for(int i=0;i < sortibleResult.size();i++)
-  {
-      sortibleResult[i]->set_canvas(child_canvas);
-      child_canvas->push_front(sortibleResult[i]);
-  }
+  return sortibleResult;
+
+	// synfig::Canvas::Handle child_canvas;
+  // child_canvas=synfig::Canvas::create_inline(image->get_canvas());
+	// synfig::Layer::Handle new_layer(synfig::Layer::create("group"));
+  // new_layer->set_description("description");
+	// new_layer->set_param("canvas",child_canvas);
+  // image->get_canvas()->parent()->push_front(new_layer);
+  // for(int i=0;i < sortibleResult.size();i++)
+  // {
+  //     sortibleResult[i]->set_canvas(child_canvas);
+  //     child_canvas->push_front(sortibleResult[i]);
+  // }
 //   // step 7
 
 //   // Take samples of image colors to associate each stroke to its corresponding
@@ -162,19 +164,21 @@ void VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &imag
 
 //   return result;
 }
-void VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c) 
+std::vector< etl::handle<synfig::Layer> > VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c) 
 {
+  std::vector< etl::handle<synfig::Layer> > result;
 
   if (c.m_outline)
   {
     std::cout<<"newOutlineVectorize called/n";
     // vi = newOutlineVectorize(img, static_cast<const NewOutlineConfiguration &>(c), plt);
+    return result;
   }
   else 
   {
     Handle img2(img);
-    centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c));
-
+    result = centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c));
+    return result;
     // if (vi) {
     //   for (int i = 0; i < (int)vi->getStrokeCount(); ++i) {
     //     TStroke *stroke = vi->getStroke(i);
