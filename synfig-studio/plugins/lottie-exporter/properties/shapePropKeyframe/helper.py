@@ -69,6 +69,10 @@ def update_frame_window(node, window):
             for it in node:
                 update_frame_window(it[0], window)
 
+        elif node.tag == "composite":
+            update_frame_window(node[0][0], window) # x
+            update_frame_window(node[1][0], window) # y
+
     if is_animated(node) == 2:
         for waypoint in node:
             fr = get_frame(waypoint)

@@ -96,7 +96,7 @@ def parse_position(animated, i):
         pos = [get_angle(float(animated[i][0].attrib["value"])),
                get_frame(animated[i])]
 
-    elif animated.attrib["type"] in {"region_angle", "star_angle_new", "scalar_multiply"}:
+    elif animated.attrib["type"] in {"composite_convert", "region_angle", "star_angle_new", "scalar_multiply"}:
         pos = [float(animated[i][0].attrib["value"]),
                get_frame(animated[i])]
 

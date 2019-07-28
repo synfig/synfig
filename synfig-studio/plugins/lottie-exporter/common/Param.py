@@ -165,6 +165,7 @@ class Param:
             value[1] = -(settings.lottie_format["h"]/2) / settings.PIX_PER_UNIT
             self.add_convert_link(value)
 
+        self.expression_controllers = []
         self.recur_animate(anim_type)
 
     def recur_animate(self, anim_type):
@@ -188,7 +189,7 @@ class Param:
                 ret = "mul(sum({lhs}, {rhs}), {scalar})"
                 ret = ret.format(lhs=lhs, rhs=rhs, scalar=scalar)
                 self.expression = ret
-                return ret, self.expression_controllers
+                return ret, self.expression_controllers # Might have to return copy.deepcopy because these expressions are destroyed on animating this parameter again, and this param might be child to 2 params
 
             elif self.param[0].tag == "average":
                 self.subparams["average"].extract_subparams()   # Entries will be extracted here
@@ -207,6 +208,17 @@ class Param:
 
                 # Dividing by the length
                 ret = "div(" + ret + "," + str(len(lst)) + ")"
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "composite":  # composite only on vectors
+                self.subparams["composite"].extract_subparams()
+                x, effect_1 = self.subparams["composite"].subparams["x"].recur_animate("real")
+                y, effect_2 = self.subparams["composite"].subparams["y"].recur_animate("real")
+                self.expression_controllers.extend(effect_1)
+                self.expression_controllers.extend(effect_2)
+                ret = "[{x}, {y}]"
+                ret = ret.format(x=x, y=y)
                 self.expression = ret
                 return ret, self.expression_controllers
         else:
@@ -331,6 +343,11 @@ class Param:
                     ret[0], ret[1] = ret[0] / len(lst), ret[1] / len(lst)
                 else:
                     ret /= len(lst)
+
+            elif self.param[0].tag == "composite":  # Only available for vectors
+                x = self.subparams["composite"].subparams["x"].get_value(frame)
+                y = self.subparams["composite"].subparams["y"].get_value(frame)
+                return [x, y]
 
         else:
             ret = self.get_single_value(frame)
