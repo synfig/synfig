@@ -347,7 +347,7 @@ class Param:
             elif self.param[0].tag == "composite":  # Only available for vectors
                 x = self.subparams["composite"].subparams["x"].get_value(frame)
                 y = self.subparams["composite"].subparams["y"].get_value(frame)
-                return [x, y]
+                ret = [x, -y]
 
         else:
             ret = self.get_single_value(frame)
