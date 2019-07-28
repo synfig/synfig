@@ -64,6 +64,11 @@ def update_frame_window(node, window):
             update_frame_window(node[0][0], window) # lhs
             update_frame_window(node[1][0], window) # rhs
             update_frame_window(node[2][0], window) # scaler
+
+        elif node.tag == "average":
+            for it in node:
+                update_frame_window(it[0], window)
+
     if is_animated(node) == 2:
         for waypoint in node:
             fr = get_frame(waypoint)

@@ -106,6 +106,17 @@ class Param:
         """
         return self.subparams[key]
 
+    def append_same_key(self, key, child):
+        """
+        Helps append in the dict if same key is already present
+        """
+        val = Param(child, self.param)
+        if isinstance(self.subparams[key], list):
+            self.subparams[key].append(val)
+        else:
+            prev = self.subparams[key]
+            self.subparams[key] = [prev, val]
+
     def extract_subparams(self):
         """
         Extracts the subparameters of this parameter and stores with there tag
@@ -116,14 +127,17 @@ class Param:
         self.SUBPARAMS_EXTRACTED = 1
         for child in self.param:
             key = child.tag 
-            self.subparams[key] = Param(child, self.param)
+            if key in self.subparams.keys():
+                self.append_same_key(key, child)
+            else:
+                self.subparams[key] = Param(child, self.param)
 
     def animate_without_path(self, anim_type):
         """
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
-        if anim_type == "vector":
+        if anim_type == "vector":   # This will never happen, can remove this latter
             self.dimension = 2
 
         # Check if we are dealing with convert methods
@@ -172,6 +186,26 @@ class Param:
                 self.expression_controllers.extend(effects_3)
                 ret = "mul(sum({lhs}, {rhs}), {scalar})"
                 ret = ret.format(lhs=lhs, rhs=rhs, scalar=scalar)
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "average":
+                self.subparams["average"].extract_subparams()   # Entries will be extracted here
+                lst = self.subparams["average"].subparams["entry"]
+                if not isinstance(lst, list):   # When only one entry is present
+                    lst = [lst]
+
+                ret = "sum("    # Returning string
+                for it in lst:
+                    ent, eff = it.recur_animate(anim_type) 
+                    self.expression_controllers.extend(eff)
+                    ret += ent
+                    ret += ","
+                ret = ret[:-1]
+                ret += ")"
+
+                # Dividing by the length
+                ret = "div(" + ret + "," + str(len(lst)) + ")"
                 self.expression = ret
                 return ret, self.expression_controllers
         else:
@@ -276,6 +310,27 @@ class Param:
                     ret = [it*mul for it in ret]
                 else:
                     ret += ret2
+                    ret *= mul
+
+            elif self.param[0].tag == "average":
+                lst = self.subparams["average"].subparams["entry"]
+                if not isinstance(lst, list):
+                    lst = [lst]
+
+                ret = [0, 0]
+                if not isinstance(lst[0].get_value(frame), list):
+                    ret = 0
+                for it in lst:
+                    val = it.get_value(frame)
+                    if isinstance(val, list):
+                        ret[0], ret[1] = ret[0] + val[0], ret[1] + val[1]
+                    else:
+                        ret += val
+                if isinstance(ret, list):
+                    ret[0], ret[1] = ret[0] / len(lst), ret[1] / len(lst)
+                else:
+                    ret /= len(lst)
+
         else:
             ret = self.get_single_value(frame)
         return ret
