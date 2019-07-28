@@ -218,7 +218,8 @@ Action::Vectorization::perform()
         m_cConf = getCenterlineConfiguration();
 
     studio::VectorizerCore vCore;
-    std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(layer, configuration);
+    synfig::Layer_Bitmap::Handle image_layer = synfig::Layer_Bitmap::Handle::cast_dynamic(layer);
+    std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(image_layer, configuration);
     
     synfig::Canvas::Handle child_canvas;
     child_canvas=synfig::Canvas::create_inline(layer->get_canvas());

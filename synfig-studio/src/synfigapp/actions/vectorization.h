@@ -30,7 +30,7 @@
 #include <synfigapp/action.h>
 #include <synfig/layer.h>
 #include "gui/vectorizer/centerlinevectorizer.h"
-#include "gui/vectorizer/vectorizerparameters.h"
+//#include "gui/vectorizer/vectorizerparameters.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -56,11 +56,9 @@ private:
 	studio::CenterlineConfiguration getCenterlineConfiguration() const;
   	studio::NewOutlineConfiguration getOutlineConfiguration() const;
 
-	void doVectorize(const VectorizerConfiguration &conf); 
-
   	studio::VectorizerConfiguration *getCurrentConfiguration() const {
-    	return isOutline ? (studio::VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration())
-                       : (studio::VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
+    	return isOutline ? (studio::VectorizerConfiguration *)new studio::NewOutlineConfiguration(getOutlineConfiguration())
+                       : (studio::VectorizerConfiguration *)new studio::CenterlineConfiguration(getCenterlineConfiguration());
   	}
 
        

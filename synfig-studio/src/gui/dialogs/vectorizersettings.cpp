@@ -301,7 +301,7 @@ VectorizerSettings::on_convert_pressed()
 		return;
 
 	// Add an if else to pass param according to outline /centerline
-	action->set_param("image",layer_bitmap_);
+	action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
 	action->set_param("mode","Centerline");
 	action->set_param("threshold",((int)adjustment_threshold->get_value()) * 25);
 	action->set_param("penalty",10 - ((int)adjustment_accuracy->get_value()));
