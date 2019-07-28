@@ -29,8 +29,8 @@
 
 #include <synfigapp/action.h>
 #include <synfig/layer.h>
-#include "vectorizer/vectorizerparameters.h"
-#include "vectorizer/centerlinevectorizer.h"
+#include "gui/vectorizer/centerlinevectorizer.h"
+#include "gui/vectorizer/vectorizerparameters.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -52,14 +52,14 @@ private:
 	synfig::Layer::Handle layer;
 	synfig::String v_mode; 
     int threshold, penalty, despeckling, maxthickness;
-    bool pparea, addborder;
+    bool pparea, addborder,isOutline;
 	studio::CenterlineConfiguration getCenterlineConfiguration() const;
   	studio::NewOutlineConfiguration getOutlineConfiguration() const;
 
 	void doVectorize(const VectorizerConfiguration &conf); 
 
   	studio::VectorizerConfiguration *getCurrentConfiguration() const {
-    	return isOutline ? (studio::VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration(weight))
+    	return isOutline ? (studio::VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration())
                        : (studio::VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
   	}
 

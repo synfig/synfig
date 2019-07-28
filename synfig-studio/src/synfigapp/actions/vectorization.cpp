@@ -53,7 +53,7 @@ ACTION_INIT(Action::Vectorization);
 ACTION_SET_NAME(Action::Vectorization,"Vectorization");
 ACTION_SET_LOCAL_NAME(Action::Vectorization,N_("Vectorize the Image"));
 ACTION_SET_TASK(Action::Vectorization,"vectorize");
-ACTION_SET_CATEGORY(Action::Vectorization,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);
+ACTION_SET_CATEGORY(Action::Vectorization,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::Vectorization,0);
 ACTION_SET_VERSION(Action::Vectorization,"0.0");
 ACTION_SET_CVS_ID(Action::Vectorization,"$Id$");
@@ -135,7 +135,7 @@ Action::Vectorization::get_param_vocab()
 		.set_local_name(_("Preserve painted area"))
 		.set_desc(_("To preserve painted area"))
 	);
-    ret.push_back(ParamDesc("addborder" && param.get_type == Param::TYPE_BOOL)
+    ret.push_back(ParamDesc("addborder", Param::TYPE_BOOL)
 		.set_local_name(_("Add border"))
 		.set_desc(_("Add border in final outlines"))
 	);
@@ -153,7 +153,7 @@ Action::Vectorization::is_candidate(const ParamList &x)
 bool
 Action::Vectorization::is_ready() const
 {
-    return(get_param_vocab().size == 8);
+    return(get_param_vocab().size() == 8);
 }
 
 bool
@@ -164,39 +164,39 @@ Action::Vectorization::set_param(const synfig::String& name, const Action::Param
         layer = param.get_layer();
 		return true;	
     }
-    if(name=="mode" && param.get_type == Param::TYPE_STRING)
+    if(name=="mode" && param.get_type() == Param::TYPE_STRING)
     {
         v_mode = param.get_string();
-        if(v_mode=="outline"||v_mode=="Outline")
+        if(v_mode=="Centerline"||v_mode=="centerline")
         isOutline=true;
         return true;
     }
-    if(name=="threshold" && param.get_type == Param::TYPE_INTEGER)
+    if(name=="threshold" && param.get_type() == Param::TYPE_INTEGER)
     {
         threshold = param.get_integer();
         return true;
     }
-    if(name=="penalty" && param.get_type == Param::TYPE_INTEGER)
+    if(name=="penalty" && param.get_type() == Param::TYPE_INTEGER)
     {
         penalty = param.get_integer();
         return true;
     }
-    if(name=="despeckling" && param.get_type == Param::TYPE_INTEGER)
+    if(name=="despeckling" && param.get_type() == Param::TYPE_INTEGER)
     {
         despeckling = param.get_integer();
         return true;
     }
-    if(name=="maxthickness" && param.get_type == Param::TYPE_INTEGER)
+    if(name=="maxthickness" && param.get_type() == Param::TYPE_INTEGER)
     {
         maxthickness = param.get_integer();
         return true;
     }
-    if(name=="pparea" && param.get_type == Param::TYPE_BOOL)
+    if(name=="pparea" && param.get_type() == Param::TYPE_BOOL)
     {
         pparea = param.get_bool();
         return true;
     }
-    if(name=="addborder" && param.get_type == Param::TYPE_BOOL)
+    if(name=="addborder" && param.get_type() == Param::TYPE_BOOL)
     {
         addborder = param.get_bool();
         return true;
@@ -213,14 +213,31 @@ Action::Vectorization::perform()
         									  : static_cast<studio::VectorizerConfiguration &>(m_cConf);
 
     if (v_mode=="outline"||v_mode == "Outline")
-        m_oConf = getOutlineConfiguration(0.0);
+        m_oConf = getOutlineConfiguration();
     else if(v_mode=="centerline"||v_mode=="Centerline")
         m_cConf = getCenterlineConfiguration();
 
     studio::VectorizerCore vCore;
     std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(layer, configuration);
-    //Todo change function to return outlines
-    // create group
+    
+    synfig::Canvas::Handle child_canvas;
+    child_canvas=synfig::Canvas::create_inline(layer->get_canvas());
+	synfig::Layer::Handle new_layer(synfig::Layer::create("group"));
+    
+    new_layer->set_description("Vectorized "+layer->get_description());
+	new_layer->set_param("canvas",child_canvas);
+    layer->get_canvas()->parent()->push_front(new_layer);
+
+    for(int i=0;i < Result.size();i++)
+    {
+      Result[i]->set_canvas(child_canvas);
+      child_canvas->push_front(Result[i]);
+    }
+
+    if(get_canvas_interface()) 
+    { 
+ 	    get_canvas_interface()->signal_layer_inserted()(new_layer,0); 
+    } 
 }
 
 void

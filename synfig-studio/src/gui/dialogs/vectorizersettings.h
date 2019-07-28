@@ -37,8 +37,9 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/comboboxtext.h>
-#include "vectorizer/centerlinevectorizer.h"
+// #include "vectorizer/centerlinevectorizer.h"
 #include <synfig/string.h>
+#include <synfigapp/canvasinterface.h>
 #include <synfig/layers/layer_bitmap.h>
 
 
@@ -91,15 +92,15 @@ public:
 	bool isOutline;
 	VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap);
 	~VectorizerSettings();
-	CenterlineConfiguration getCenterlineConfiguration() const;
-  	NewOutlineConfiguration getOutlineConfiguration(double weight) const;
+	// CenterlineConfiguration getCenterlineConfiguration() const;
+  	// NewOutlineConfiguration getOutlineConfiguration(double weight) const;
 
-	void doVectorize(const VectorizerConfiguration &conf); 
+	// void doVectorize(const VectorizerConfiguration &conf); 
 
-  	VectorizerConfiguration *getCurrentConfiguration(double weight) const {
-    	return isOutline ? (VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration(weight))
-                       : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
-  	}
+  	// VectorizerConfiguration *getCurrentConfiguration(double weight) const {
+    // 	return isOutline ? (VectorizerConfiguration *)new NewOutlineConfiguration(getOutlineConfiguration(weight))
+    //                    : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
+  	// }
 	
 private:
 	void on_comboboxtext_mode_changed();

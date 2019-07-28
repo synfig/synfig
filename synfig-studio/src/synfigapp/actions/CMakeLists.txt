@@ -64,6 +64,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/valuenoderemove.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenoderename.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodereplace.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/vectorization.cpp"
 
         "${CMAKE_CURRENT_LIST_DIR}/waypointadd.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/waypointremove.cpp"

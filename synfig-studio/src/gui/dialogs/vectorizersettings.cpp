@@ -32,9 +32,12 @@
 #include <math.h>
 #include <ETL/stringf>
 #include "vectorizersettings.h"
-#include "vectorizer/centerlinevectorizer.h"
+// #include "vectorizer/centerlinevectorizer.h"
 #include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>
+#include <synfigapp/action_param.h>
+#include "instance.h"
+
 
 /* === U S I N G =========================================================== */
 
@@ -247,65 +250,77 @@ VectorizerSettings::on_finished()
 // after conversion is finished
 }
 
-CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( ) const 
-{
-  CenterlineConfiguration conf;
+// CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( ) const 
+// {
+//   CenterlineConfiguration conf;
 
-  conf.m_outline      = false;
-  conf.m_threshold    = ((int)adjustment_threshold->get_value()) * 25;
-  conf.m_penalty      = 10 - ((int)adjustment_accuracy->get_value());  // adjustment_accuracy in [1,10]
-  conf.m_despeckling  = ((int)adjustment_despeckling->get_value()) * 2;
-  conf.m_maxThickness = ((int)adjustment_maxthickness->get_value()) / 2.0;
-  conf.m_thicknessRatio = 1.0;
-  conf.m_leaveUnpainted = toggle_pparea.get_state();
-  conf.m_makeFrame      = toggle_add_border.get_state();
-  conf.m_naaSource      = false;//currently not in use
+//   conf.m_outline      = false;
+//   conf.m_threshold    = ((int)adjustment_threshold->get_value()) * 25;
+//   conf.m_penalty      = 10 - ((int)adjustment_accuracy->get_value());  // adjustment_accuracy in [1,10]
+//   conf.m_despeckling  = ((int)adjustment_despeckling->get_value()) * 2;
+//   conf.m_maxThickness = ((int)adjustment_maxthickness->get_value()) / 2.0;
+//   conf.m_thicknessRatio = 1.0;
+//   conf.m_leaveUnpainted = toggle_pparea.get_state();
+//   conf.m_makeFrame      = toggle_add_border.get_state();
+//   conf.m_naaSource      = false;//currently not in use
 
-  return conf;
-}
+//   return conf;
+// }
 
-NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
-    double frame) const {
-  NewOutlineConfiguration conf;
+// NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
+//     double frame) const {
+//   NewOutlineConfiguration conf;
 
-   conf.m_outline          = true;
-//   conf.m_despeckling      = m_oDespeckling;
-//   conf.m_adherenceTol     = m_oAdherence * 0.01;
-//   conf.m_angleTol         = m_oAngle / 180.0;
-//   conf.m_relativeTol      = m_oRelative * 0.01;
-//   conf.m_mergeTol         = 5.0 - m_oAccuracy * 0.5;
-//   conf.m_leaveUnpainted   = !m_oPaintFill;
-//   conf.m_maxColors        = m_oMaxColors;
-//   conf.m_transparentColor = m_oTransparentColor;
-//   conf.m_toneTol          = m_oToneThreshold;
+//    conf.m_outline          = true;
+// //   conf.m_despeckling      = m_oDespeckling;
+// //   conf.m_adherenceTol     = m_oAdherence * 0.01;
+// //   conf.m_angleTol         = m_oAngle / 180.0;
+// //   conf.m_relativeTol      = m_oRelative * 0.01;
+// //   conf.m_mergeTol         = 5.0 - m_oAccuracy * 0.5;
+// //   conf.m_leaveUnpainted   = !m_oPaintFill;
+// //   conf.m_maxColors        = m_oMaxColors;
+// //   conf.m_transparentColor = m_oTransparentColor;
+// //   conf.m_toneTol          = m_oToneThreshold;
 
-  return conf;
-}
+//   return conf;
+// }
 
-void
-VectorizerSettings::doVectorize(const VectorizerConfiguration &conf) 
-{
-  studio::VectorizerCore vCore;
-  vCore.vectorize(layer_bitmap_, conf);
-}
+// void
+// VectorizerSettings::doVectorize(const VectorizerConfiguration &conf) 
+// {
+//   studio::VectorizerCore vCore;
+//   vCore.vectorize(layer_bitmap_, conf);
+// }
 
 void
 VectorizerSettings::on_convert_pressed()
 {
-	CenterlineConfiguration m_cConf;
-  	NewOutlineConfiguration m_oConf;
-	VectorizerConfiguration &configuration = isOutline ? static_cast<VectorizerConfiguration &>(m_oConf)
-        									  : static_cast<VectorizerConfiguration &>(m_cConf);
+	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
+	assert(action);
+	if(!action)
+		return;
 
-    if (isOutline)
-        m_oConf = getOutlineConfiguration(0.0);
-    else
-        m_cConf = getCenterlineConfiguration();
-    
-	doVectorize(configuration);
+	// Add an if else to pass param according to outline /centerline
+	action->set_param("image",layer_bitmap_);
+	action->set_param("mode","Centerline");
+	action->set_param("threshold",((int)adjustment_threshold->get_value()) * 25);
+	action->set_param("penalty",10 - ((int)adjustment_accuracy->get_value()));
+	action->set_param("despeckling",((int)adjustment_despeckling->get_value()) * 2);
+	action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2.0);
+	action->set_param("pparea",toggle_pparea.get_state());
+	action->set_param("addborder",toggle_add_border.get_state());
+
+	if(!action->is_ready())
+	{
+		return;
+	}
+	if(!get_instance()->perform_action(action))
+	{
+		return;
+	}
+
 	std::cout<<"Convert Pressed....";
 	hide();
-
 }
 
 void
