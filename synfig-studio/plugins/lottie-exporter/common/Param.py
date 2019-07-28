@@ -31,7 +31,7 @@ class Param:
         self.SUBPARAMS_EXTRACTED = 0
         self.expression_controllers = [] # Effects will be stored in this
         self.expression = ""
-        self.dimention = 1  # 1 represents real, 2 represents vector
+        self.dimension = 1  # 1 represents real, 2 represents vector
         
     def reset(self):
         """
@@ -269,11 +269,13 @@ class Param:
             if self.param[0].tag == "add":
                 ret = self.subparams["add"].subparams["lhs"].get_value(frame)
                 ret2 = self.subparams["add"].subparams["rhs"].get_value(frame)
-                #mul = to_Synfig_axis(self.subparams["add"].subparams["scalar"].get_value(frame), "real")
                 mul = self.subparams["add"].subparams["scalar"].get_value(frame)
-                ret[0] += ret2[0]
-                ret[1] += ret2[1]
-                ret = [it*mul for it in ret]
+                if isinstance(ret, list):
+                    ret[0] += ret2[0]
+                    ret[1] += ret2[1]
+                    ret = [it*mul for it in ret]
+                else:
+                    ret += ret2
         else:
             ret = self.get_single_value(frame)
         return ret

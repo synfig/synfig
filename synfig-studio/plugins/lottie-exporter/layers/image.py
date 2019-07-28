@@ -15,6 +15,8 @@ from common.Param import Param
 from sources.image import add_image_asset
 from shapes.rectangle import to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
+from properties.shapePropKeyframe.helper import update_frame_window
+from synfig.animation import print_animation
 sys.path.append("..")
 
 
@@ -93,13 +95,24 @@ def gen_image_scale(animated_1, animated_2, width, height):
     #image_scale.animate("image_scale")
     image_scale.animate_without_path("image_scale")
 
-    # Filling the first 2 frames with there original scale values
-    fill_image_scale_at_frame(image_scale[0], animated_1, animated_2, width, height, 0)
-    fill_image_scale_at_frame(image_scale[0], animated_1, animated_2, width, height, 1)
 
-    mx_fr = max(get_frame(animated_1[0][-1]), get_frame(animated_2[0][-1]))
-    fr = 2
-    while fr <= mx_fr:
+    window = {}
+    window["first"] = sys.maxsize
+    window["last"] = -1
+
+    update_frame_window(animated_1[0], window)
+    update_frame_window(animated_2[0], window)
+    # Minimizing the window size
+    if window["first"] == sys.maxsize and window["last"] == -1:
+        window["first"] = window["last"] = 0
+    fr = window["first"]
+
+    # Filling the first 2 frames with there original scale values
+    fill_image_scale_at_frame(image_scale[0], animated_1, animated_2, width, height, fr)
+    fill_image_scale_at_frame(image_scale[0], animated_1, animated_2, width, height, fr + 1)
+    fr += 2
+
+    while fr <= window["last"]:
         new_waypoint = copy.deepcopy(root[0][0])
         time = fr / settings.lottie_format["fr"]
         time = str(time) + "s"
