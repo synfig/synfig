@@ -166,9 +166,8 @@ MainWindow::init_menus()
 	);
 
 	// View menu
-	//Glib::RefPtr<Gtk::ToggleAction> action;
-	toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
-	toggle_menubar->set_active(toggling_show_menubar);
+	Glib::RefPtr<Gtk::ToggleAction> toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
+	toggle_menubar->set_active(App::enable_mainwin_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
 
 	// pre defined workspace (window ui layout)
