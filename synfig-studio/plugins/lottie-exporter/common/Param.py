@@ -260,6 +260,19 @@ class Param:
                 ret = ret.format(link=link, scalar=scalar)
                 self.expression = ret
                 return ret, self.expression_controllers
+
+            elif self.param[0].tag == "subtract":
+                self.subparams["subtract"].extract_subparams()
+                scalar, eff_1 = self.subparams["subtract"].subparams["scalar"].recur_animate("scalar_multiply")
+                lhs, eff_2 = self.subparams["subtract"].subparams["lhs"].recur_animate(anim_type)
+                rhs, eff_3 = self.subparams["subtract"].subparams["rhs"].recur_animate(anim_type)
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                self.expression_controllers.extend(eff_3)
+                ret = "mul(sub({lhs}, {rhs}), {scalar})"
+                ret = ret.format(lhs=lhs, rhs=rhs, scalar=scalar)
+                self.expression = ret
+                return ret, self.expression_controllers
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -424,6 +437,17 @@ class Param:
                 else:
                     link *= scalar
                 ret = link
+
+            elif self.param[0].tag == "subtract":
+                lhs = self.subparams["subtract"].subparams["lhs"].get_value(frame)
+                rhs = self.subparams["subtract"].subparams["rhs"].get_value(frame)
+                scalar = self.subparams["subtract"].subparams["scalar"].get_value(frame)
+                if isinstance(lhs, list):
+                    ret = [0, 0]
+                    ret[0] = (lhs[0] - rhs[0]) * scalar
+                    ret[1] = (lhs[1] - rhs[1]) * scalar
+                else:
+                    ret = (lhs - rhs) * scalar
 
         else:
             ret = self.get_single_value(frame)
