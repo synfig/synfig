@@ -1245,10 +1245,6 @@ CanvasView::create_display_bar()
 	}
 
 	{ // Setup draft rendering mode button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_supersample"), iconsize));
-		icon->set_padding(0, 0);
-		icon->show();
-
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
 		render_combobox->append("Draft");
 		render_combobox->append("Preview");
