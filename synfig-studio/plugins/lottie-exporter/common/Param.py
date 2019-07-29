@@ -249,6 +249,17 @@ class Param:
                 ret = ret.format(radius=rad, angle=ang)
                 self.expression = ret
                 return ret, self.expression_controllers
+
+            elif self.param[0].tag == "scale":
+                self.subparams["scale"].extract_subparams()
+                link, eff_1 = self.subparams["scale"].subparams["link"].recur_animate(anim_type)
+                scalar, eff_2 = self.subparams["scale"].subparams["scalar"].recur_animate("scalar_multiply")
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                ret = "mul({link}, {scalar})"
+                ret = ret.format(link=link, scalar=scalar)
+                self.expression = ret
+                return ret, self.expression_controllers
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -403,6 +414,16 @@ class Param:
                 x = rad * math.cos(angle)
                 y = rad * math.sin(angle)
                 ret = [x, -y]
+
+            elif self.param[0].tag == "scale":
+                link = self.subparams["scale"].subparams["link"].get_value(frame)
+                scalar = self.subparams["scale"].subparams["scalar"].get_value(frame)
+                if isinstance(link, list):
+                    link[0] *= scalar
+                    link[1] *= scalar
+                else:
+                    link *= scalar
+                ret = link
 
         else:
             ret = self.get_single_value(frame)

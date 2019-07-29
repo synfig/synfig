@@ -81,6 +81,10 @@ def update_frame_window(node, window):
             update_frame_window(node[0][0], window) # radius
             update_frame_window(node[1][0], window) # theta
 
+        elif node.tag == "scale":
+            update_frame_window(node[0][0], window) # link
+            update_frame_window(node[1][0], window) # scalar
+
     if is_animated(node) == 2:
         for waypoint in node:
             fr = get_frame(waypoint)
