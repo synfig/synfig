@@ -36,7 +36,6 @@
 #include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>
 #include <synfigapp/action_param.h>
-#include "instance.h"
 
 
 /* === U S I N G =========================================================== */
@@ -54,9 +53,10 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap):
+VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, etl::handle<studio::Instance> selected_instance):
 	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
 	layer_bitmap_(my_layer_bitmap),
+	instance(selected_instance),
 	adjustment_threshold(Gtk::Adjustment::create(8,1,10)),
 	entry_threshold(adjustment_threshold,1,0),
 	adjustment_accuracy(Gtk::Adjustment::create(9,1,10)),
@@ -314,7 +314,7 @@ VectorizerSettings::on_convert_pressed()
 	{
 		return;
 	}
-	if(!get_instance()->perform_action(action))
+	if(instance->perform_action(action))
 	{
 		return;
 	}

@@ -41,7 +41,7 @@
 #include <synfig/string.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfig/layers/layer_bitmap.h>
-
+#include "instance.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -86,11 +86,12 @@ class VectorizerSettings : public Gtk::Dialog
 
 	Gtk::ComboBoxText comboboxtext_mode;
 	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
-	
+	const etl::handle<Instance> instance;
 public:
 
 	bool isOutline;
-	VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap);
+	VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+			etl::handle<Instance> selected_instance);
 	~VectorizerSettings();
 	// CenterlineConfiguration getCenterlineConfiguration() const;
   	// NewOutlineConfiguration getOutlineConfiguration(double weight) const;
