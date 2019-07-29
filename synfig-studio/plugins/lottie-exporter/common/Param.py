@@ -5,6 +5,8 @@ Will store the Parameters class for Synfig parameters
 
 import sys
 import copy
+import math
+import inspect
 from lxml import etree
 import settings
 import common
@@ -232,6 +234,21 @@ class Param:
                 ret = ret.format(offset=offset, slope=slope)
                 self.expression = ret
                 return ret, self.expression_controllers
+
+            elif self.param[0].tag == "radial_composite":   # only for vectors
+                dic = {"gen_layer_group", "gen_layer_rotate", "gen_layer_translate", "gen_layer_scale"}
+                prop_name = "angle"
+                if self.called_by(dic): # Should find some easier way of finding the caller function
+                    prop_name = "rotate_layer_angle"
+                self.subparams["radial_composite"].extract_subparams()
+                rad, eff_1 = self.subparams["radial_composite"].subparams["radius"].recur_animate("real")
+                ang, eff_2 = self.subparams["radial_composite"].subparams["theta"].recur_animate(prop_name)
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                ret = "[mul({radius}, Math.cos(degreesToRadians({angle}))), mul({radius}, Math.sin(degreesToRadians({angle})))]"
+                ret = ret.format(radius=rad, angle=ang)
+                self.expression = ret
+                return ret, self.expression_controllers
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -249,6 +266,15 @@ class Param:
             ret = ret.format(effect_1=self.expression_controllers[-1]["nm"], effect_2=self.expression_controllers[-1]["ef"][0]["nm"])
             self.expression = ret
             return ret, self.expression_controllers
+
+    def called_by(self, dic):
+        """
+        Checks if this function's ancestor are in this dictionary
+        """
+        for it in inspect.stack():
+            if it[3] in dic:
+                return True
+        return False
 
     def single_animate(self, anim_type):
         """
@@ -358,7 +384,7 @@ class Param:
             elif self.param[0].tag == "composite":  # Only available for vectors
                 x = self.subparams["composite"].subparams["x"].get_value(frame)
                 y = self.subparams["composite"].subparams["y"].get_value(frame)
-                ret = [x, -y]
+                ret = [x, -y]   # -y as we are not using change_axis() function here
 
             elif self.param[0].tag == "linear":
                 slope = self.subparams["linear"].subparams["slope"].get_value(frame)
@@ -369,6 +395,14 @@ class Param:
                     ret[1] = offset[1] + slope[1]*(frame/settings.lottie_format["fr"])
                 else:
                     ret = offset + slope*(frame/settings.lottie_format["fr"])
+
+            elif self.param[0].tag == "radial_composite":   # Only for vectors
+                rad = self.subparams["radial_composite"].subparams["radius"].get_value(frame)
+                angle = to_Synfig_axis(self.subparams["radial_composite"].subparams["theta"].get_value(frame), "angle")
+                angle = math.radians(angle)
+                x = rad * math.cos(angle)
+                y = rad * math.sin(angle)
+                ret = [x, -y]
 
         else:
             ret = self.get_single_value(frame)

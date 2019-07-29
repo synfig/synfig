@@ -148,6 +148,12 @@ def to_Synfig_axis(pos, animated_name):
         ret = pos / settings.OPACITY_CONSTANT
     elif animated_name == "effects_opacity":
         ret = pos
+    elif animated_name == "angle":
+        s1 = int(pos / 360)
+        t1 = pos % 360
+        t1 = (90 - t1) % 360
+        t1 = t1 + s1 * 360
+        ret = t1
     return ret
 
 

@@ -77,6 +77,10 @@ def update_frame_window(node, window):
             window["first"] = settings.lottie_format["ip"]
             window["last"] = settings.lottie_format["op"]
 
+        elif node.tag == "radial_composite":
+            update_frame_window(node[0][0], window) # radius
+            update_frame_window(node[1][0], window) # theta
+
     if is_animated(node) == 2:
         for waypoint in node:
             fr = get_frame(waypoint)
