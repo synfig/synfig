@@ -221,6 +221,17 @@ class Param:
                 ret = ret.format(x=x, y=y)
                 self.expression = ret
                 return ret, self.expression_controllers
+
+            elif self.param[0].tag == "linear":
+                self.subparams["linear"].extract_subparams()
+                slope, effect_1 = self.subparams["linear"].subparams["slope"].recur_animate(anim_type)
+                offset, effect_2 = self.subparams["linear"].subparams["offset"].recur_animate(anim_type)
+                self.expression_controllers.extend(effect_1)
+                self.expression_controllers.extend(effect_2)
+                ret = "sum({offset}, mul({slope}, time))"
+                ret = ret.format(offset=offset, slope=slope)
+                self.expression = ret
+                return ret, self.expression_controllers
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -348,6 +359,16 @@ class Param:
                 x = self.subparams["composite"].subparams["x"].get_value(frame)
                 y = self.subparams["composite"].subparams["y"].get_value(frame)
                 ret = [x, -y]
+
+            elif self.param[0].tag == "linear":
+                slope = self.subparams["linear"].subparams["slope"].get_value(frame)
+                offset = self.subparams["linear"].subparams["offset"].get_value(frame)
+                if isinstance(slope, list):
+                    ret = [0, 0]
+                    ret[0] = offset[0] + slope[0]*(frame/settings.lottie_format["fr"])
+                    ret[1] = offset[1] + slope[1]*(frame/settings.lottie_format["fr"])
+                else:
+                    ret = offset + slope*(frame/settings.lottie_format["fr"])
 
         else:
             ret = self.get_single_value(frame)

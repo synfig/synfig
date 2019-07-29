@@ -73,6 +73,10 @@ def update_frame_window(node, window):
             update_frame_window(node[0][0], window) # x
             update_frame_window(node[1][0], window) # y
 
+        elif node.tag == "linear":
+            window["first"] = settings.lottie_format["ip"]
+            window["last"] = settings.lottie_format["op"]
+
     if is_animated(node) == 2:
         for waypoint in node:
             fr = get_frame(waypoint)
