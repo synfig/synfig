@@ -117,6 +117,14 @@ def parse_position(animated, i):
         pos = [int(animated[i][0].attrib["value"]),
                get_frame(animated[i])]
 
+    elif animated.attrib["type"] == "bool":
+        val = animated[i][0].attrib["value"]
+        if val == "false":
+            val = 0
+        else:
+            val = 1
+        pos = [val, get_frame(animated[i])]
+
     elif animated.attrib["type"] == "rectangle_size":
         pos = parse_value(animated, i)
         vec = Vector(pos[0], pos[1], animated.attrib["type"])

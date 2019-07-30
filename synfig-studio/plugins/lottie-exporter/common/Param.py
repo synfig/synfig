@@ -273,6 +273,19 @@ class Param:
                 ret = ret.format(lhs=lhs, rhs=rhs, scalar=scalar)
                 self.expression = ret
                 return ret, self.expression_controllers
+
+            elif self.param[0].tag == "switch":
+                self.subparams["switch"].extract_subparams()
+                link_off, eff_1 = self.subparams["switch"].subparams["link_off"].recur_animate(anim_type)
+                link_on, eff_2 = self.subparams["switch"].subparams["link_on"].recur_animate(anim_type)
+                switch, eff_3 = self.subparams["switch"].subparams["switch"].recur_animate("bool")
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                self.expression_controllers.extend(eff_3)
+                ret = "sum(mul({eff_2}, {eff_3}), mul({eff_1}, sub(1, {eff_3})))"
+                ret = ret.format(eff_1=eff_1, eff_2=eff_2, eff_3=eff_3)
+                self.expression = ret
+                return ret, self.expression_controllers
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -282,6 +295,8 @@ class Param:
                 self.gen_path("vector")
             elif anim_type not in {"bool", "string"}:   # These do not need path generation
                 self.gen_path("real")   # "real" can be of various types as defined in common.misc.parse_position()
+            elif anim_type in {"bool"}:     # This is the first time bool is needed
+                self.gen_path("bool")
             
             gen_effects_controller(self.expression_controllers[-1], self.get_path(), anim_type)
 
@@ -335,7 +350,7 @@ class Param:
         animation type of this parameter
         """
         self.path = {}
-        if anim_type == "real":
+        if anim_type in {"real", "bool"}:
             gen_value_Keyframed(self.path, self.param[0], idx)
         else:
             gen_properties_multi_dimensional_keyframed(self.path, self.param[0], idx)
@@ -448,6 +463,17 @@ class Param:
                     ret[1] = (lhs[1] - rhs[1]) * scalar
                 else:
                     ret = (lhs - rhs) * scalar
+
+            elif self.param[0].tag == "switch":
+                link_off = self.subparams["switch"].subparams["link_off"].get_value(frame)
+                link_on = self.subparams["switch"].subparams["link_on"].get_value(frame)
+                switch = self.subparams["switch"].subparams["switch"].get_value(frame)
+                if isinstance(link_on, list):
+                    ret = [0, 0]
+                    ret[0] = link_on[0] * switch + link_off[0] * (1 - switch)
+                    ret[1] = link_on[1] * switch + link_off[1] * (1 - switch)
+                else:
+                    ret = link_on * switch + link_off * (1 - switch)
 
         else:
             ret = self.get_single_value(frame)

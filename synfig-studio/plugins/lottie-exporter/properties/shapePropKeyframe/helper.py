@@ -60,7 +60,7 @@ def update_frame_window(node, window):
     """
     # Time updation for converted nodes:
     if node.tag in settings.CONVERT_METHODS:
-        if node.tag in {"add", "subtract"}:
+        if node.tag in {"add", "subtract", "switch"}:
             update_frame_window(node[0][0], window) # lhs
             update_frame_window(node[1][0], window) # rhs
             update_frame_window(node[2][0], window) # scaler
