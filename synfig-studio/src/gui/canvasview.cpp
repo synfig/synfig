@@ -3492,7 +3492,7 @@ CanvasView::on_preview_option()
 			Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>( get_ext_widget("prevoptions") );
 			if(!po)
 			{
-				po = new Dialog_PreviewOptions();
+				po = Dialog_PreviewOptions::create();
 				po->set_fps(r.get_frame_rate()/2);
 				set_ext_widget("prevoptions",po);
 			}
