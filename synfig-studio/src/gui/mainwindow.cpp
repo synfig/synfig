@@ -48,6 +48,8 @@
 
 #include <gtkmm/textview.h>
 
+#include "gui/widgets/widget_vector.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -75,7 +77,7 @@ using namespace studio;
 
 MainWindow::MainWindow()
 {
-	Widget_Vector::register_type();
+	register_custom_widget_types();
 
 	set_default_size(600, 400);
 	toggling_show_menubar = App::enable_mainwin_menubar;
@@ -210,6 +212,10 @@ MainWindow::init_menus()
 	App::ui_manager()->insert_action_group(action_group);
 }
 
+void MainWindow::register_custom_widget_types()
+{
+	Widget_Vector::register_type();
+}
 
 void
 MainWindow::toggle_show_menubar()
