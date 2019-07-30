@@ -308,6 +308,58 @@ def get_bool_at_frame(anim, frame):
     return val
 
 
+def waypoint_at_frame(anim, frame):
+    """
+    Returns true if a waypoint is present at 'frame'
+    """
+    for waypoint in anim:
+        fr = get_frame(waypoint)
+        if fr == frame:
+            return True
+    return False
+
+def modify_bool_animation(anim):
+    """
+    Inserts waypoints at such frames so that the animation is similar to that in
+    lottie
+    """
+    i = 0
+    while i < len(anim):
+        cur_fr = get_frame(anim[i])
+        val_now = get_bool_at_frame(anim, cur_fr)
+        # Check at one frame less and one frame more: only cases
+        if cur_fr - 1 >= settings.lottie_format["ip"] and not waypoint_at_frame(anim, cur_fr-1):
+            val_before = get_bool_at_frame(anim, cur_fr - 1)
+            if val_now != val_before:
+                new = copy.deepcopy(anim[i])
+                new.attrib["time"] = str((cur_fr - 1)/settings.lottie_format["fr"]) + "s"
+                if val_before:
+                    new[0].attrib["value"] = "true"
+                else:
+                    new[0].attrib["value"] = "false"
+                anim.insert(i, new)
+                i += 1
+        if cur_fr + 1 <= settings.lottie_format["op"] and not waypoint_at_frame(anim, cur_fr + 1):
+            val_after = get_bool_at_frame(anim, cur_fr + 1)
+            if val_after != val_now:
+                new = copy.deepcopy(anim[i])
+                new.attrib["time"] = str((cur_fr + 1)/settings.lottie_format["fr"]) + "s"
+                if val_after:
+                    new[0].attrib["value"] = "true"
+                else:
+                    new[0].attrib["value"] = "false"
+                anim.insert(i+1, new)
+                i += 1
+
+        i += 1
+
+    # Make the animation constant
+    for waypoint in anim:
+        waypoint.attrib["before"] = waypoint.attrib["after"] = "constant"
+
+
+
+
 def get_animated_time_list(child, time_list):
     """
     Appends all the frames corresponding to the waypoints in the

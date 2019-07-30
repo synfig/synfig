@@ -11,7 +11,7 @@ from lxml import etree
 import settings
 import common
 import synfig.group
-from synfig.animation import to_Synfig_axis, is_animated, get_bool_at_frame, get_vector_at_frame, print_animation
+from synfig.animation import modify_bool_animation, to_Synfig_axis, is_animated, get_bool_at_frame, get_vector_at_frame, print_animation
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.value import gen_properties_value
@@ -283,7 +283,7 @@ class Param:
                 self.expression_controllers.extend(eff_2)
                 self.expression_controllers.extend(eff_3)
                 ret = "sum(mul({eff_2}, {eff_3}), mul({eff_1}, sub(1, {eff_3})))"
-                ret = ret.format(eff_1=eff_1, eff_2=eff_2, eff_3=eff_3)
+                ret = ret.format(eff_1=link_off, eff_2=link_on, eff_3=switch)
                 self.expression = ret
                 return ret, self.expression_controllers
         else:
@@ -297,6 +297,7 @@ class Param:
                 self.gen_path("real")   # "real" can be of various types as defined in common.misc.parse_position()
             elif anim_type in {"bool"}:     # This is the first time bool is needed
                 self.gen_path("bool")
+
             
             gen_effects_controller(self.expression_controllers[-1], self.get_path(), anim_type)
 
@@ -325,6 +326,8 @@ class Param:
             # If already animated, no need to add waypoints
             # Forcibly set it's animation type to the anim_type
             self.param[0].attrib["type"] = anim_type
+            if anim_type == "bool":
+                modify_bool_animation(self.param[0])
             return
         elif is_animate == 0:
             st = '<animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated>'
@@ -343,6 +346,9 @@ class Param:
         time = str(time) + 's'
         new_waypoint.attrib["time"] = time
         self.param[0].insert(1, new_waypoint)
+
+        if anim_type == "bool":
+            modify_bool_animation(self.param[0])
 
     def gen_path(self, anim_type="real", idx=0):
         """
