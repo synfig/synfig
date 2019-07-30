@@ -99,7 +99,7 @@
 #include "actions/valuedescskeletonlink.h"
 #include "actions/valuedesccreatechildbone.h"
 #include "actions/valuedescresetpose.h"
-
+#include "actions/vectorization.h"
 #include "actions/waypointadd.h"
 #include "actions/waypointset.h"
 #include "actions/waypointsetsmart.h"
@@ -255,7 +255,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueDescSkeletonLink);
 	ADD_ACTION(Action::ValueDescCreateChildBone);
 	ADD_ACTION(Action::ValueDescResetPose);
-
+	ADD_ACTION(Action::Vectorization);
 	ADD_ACTION(Action::WaypointAdd);
 	ADD_ACTION(Action::WaypointSet);
 	ADD_ACTION(Action::WaypointSetSmart);
