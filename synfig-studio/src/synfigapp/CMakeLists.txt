@@ -24,7 +24,7 @@ target_sources(synfigapp
 target_link_libraries(synfigapp synfig)
 
 include(actions/CMakeLists.txt)
-
+include(vectorizer/CMakeLists.txt)
 install(
     TARGETS synfigapp
     DESTINATION lib

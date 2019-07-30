@@ -153,7 +153,7 @@ Action::Vectorization::is_candidate(const ParamList &x)
 bool
 Action::Vectorization::is_ready() const
 {
-    return(get_param_vocab().size() == 8);
+    return(get_param_vocab().size() >= 8);
 }
 
 bool

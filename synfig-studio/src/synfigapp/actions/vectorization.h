@@ -29,7 +29,7 @@
 
 #include <synfigapp/action.h>
 #include <synfig/layer.h>
-#include "gui/vectorizer/centerlinevectorizer.h"
+#include "vectorizer/centerlinevectorizer.h"
 //#include "gui/vectorizer/vectorizerparameters.h"
 
 /* === M A C R O S ========================================================= */

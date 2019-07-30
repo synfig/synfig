@@ -20,7 +20,6 @@ include states/Makefile_insert
 include trees/Makefile_insert
 include widgets/Makefile_insert
 include workarearenderer/Makefile_insert
-include vectorizer/Makefile_insert
 
 DUCKTRANSFORM_HH = \
 	ducktransform_rotate.h \

@@ -31,10 +31,8 @@
 
 #include "centerlinevectorizer.h"
 #include "polygonizerclasses.h"
-#include "modules/mod_geometry/outline.h"
+// #include "modules/mod_geometry/outline.h"
 #include <synfig/layer.h>
-#include "synfigapp/actions/layeradd.h"
-#include "synfigapp/canvasinterface.h"
 #endif
 
 /* === U S I N G =========================================================== */
