@@ -37,19 +37,18 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class Entry; class Button; };
-
 namespace studio {
 
 class Widget_Time : public Gtk::Entry
 {
-
 
 	sigc::signal<void> signal_value_changed_;
 
 	float fps_;
 
 	synfig::Time time_;
+
+	void init();
 
 protected:
 	bool on_focus_out_event(GdkEventFocus* event);
@@ -67,13 +66,19 @@ protected:
 public:
 	sigc::signal<void> &signal_value_changed() { return signal_value_changed_; }
 
-
-
 	void set_value(const synfig::Time &data);
 	synfig::Time get_value()const;
 	void set_fps(float x);
 	Widget_Time();
 	~Widget_Time();
+
+// Glade & GtkBuilder related
+public:
+	Widget_Time(BaseObjectType* cobject);
+	static Glib::ObjectBase* wrap_new(GObject* o);
+	static void register_type();
+private:
+	static GType gtype;
 }; // END of class Widget_Time
 
 }; // END of namespace studio

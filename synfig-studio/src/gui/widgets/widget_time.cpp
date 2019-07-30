@@ -31,10 +31,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <gtkmm/entry.h>
-#include <gtkmm/button.h>
 #include "widgets/widget_time.h"
 #include "app.h"
 
@@ -57,10 +53,25 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Time::Widget_Time():
-	fps_(0),
-	time_(0)
+Widget_Time::Widget_Time() :
+	Glib::ObjectBase("widget_time")
 {
+	init();
+}
+
+Widget_Time::Widget_Time(BaseObjectType* cobject) :
+	Glib::ObjectBase("widget_time"),
+	Gtk::Entry(cobject)
+{
+	init();
+}
+
+void
+Widget_Time::init()
+{
+	fps_ = 0;
+	time_ = 0;
+
 	signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Time::refresh_value));
 	signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Time::refresh_text));
 
@@ -168,4 +179,28 @@ Widget_Time::on_focus_in_event(GdkEventFocus* event)
 		set_text(time_.get_string(fps_,App::get_time_format()|Time::FORMAT_FULL));
 
 	return Gtk::Entry::on_focus_in_event(event);
+}
+
+GType Widget_Time::gtype = 0;
+
+Glib::ObjectBase *
+Widget_Time::wrap_new (GObject *o)
+{
+	if (gtk_widget_is_toplevel (GTK_WIDGET (o)))
+		return new Widget_Time (GTK_ENTRY(o));
+	else
+		return Gtk::manage(new Widget_Time(GTK_ENTRY(o)));
+}
+
+void
+Widget_Time::register_type ()
+{
+	if (gtype)
+		return;
+
+	Widget_Time dummy;
+
+	gtype = G_OBJECT_TYPE (dummy.gobj());
+
+	Glib::wrap_register (gtype, Widget_Time::wrap_new);
 }
