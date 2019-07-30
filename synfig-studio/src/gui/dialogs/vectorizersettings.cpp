@@ -32,7 +32,6 @@
 #include <math.h>
 #include <ETL/stringf>
 #include "vectorizersettings.h"
-// #include "vectorizer/centerlinevectorizer.h"
 #include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>
 #include <synfigapp/action_param.h>
@@ -158,43 +157,45 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 
 
 	//-----------------------------------Outline--------------------------------------//
+	Gtk::Label *lab = manage(new Gtk::Label(_("_Under Development"), true));
+	Outline_setting_grid->attach(*lab, 0, 0, 2, 1);
 	
-	Gtk::Label *accuracy_label2 = manage(new Gtk::Label(_("_Accuracy"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	accuracy_label2->set_mnemonic_widget(entry_accuracy2);
-	accuracy_label2->set_margin_right(10);
-	Outline_setting_grid->attach(*accuracy_label2, 0, 0, 1, 1);
-	Outline_setting_grid->attach(entry_accuracy2, 1, 0, 1, 1);
+	// Gtk::Label *accuracy_label2 = manage(new Gtk::Label(_("_Accuracy"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// accuracy_label2->set_mnemonic_widget(entry_accuracy2);
+	// accuracy_label2->set_margin_right(10);
+	// Outline_setting_grid->attach(*accuracy_label2, 0, 0, 1, 1);
+	// Outline_setting_grid->attach(entry_accuracy2, 1, 0, 1, 1);
 
-	Gtk::Label *despeckling_label2 = manage(new Gtk::Label(_("_Despeckling"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	despeckling_label2->set_mnemonic_widget(entry_despeckling2);
-	despeckling_label2->set_margin_right(10);
-	Outline_setting_grid->attach(*despeckling_label2, 0, 1, 1, 1);
-	Outline_setting_grid->attach(entry_despeckling2, 1, 1, 1, 1);
+	// Gtk::Label *despeckling_label2 = manage(new Gtk::Label(_("_Despeckling"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// despeckling_label2->set_mnemonic_widget(entry_despeckling2);
+	// despeckling_label2->set_margin_right(10);
+	// Outline_setting_grid->attach(*despeckling_label2, 0, 1, 1, 1);
+	// Outline_setting_grid->attach(entry_despeckling2, 1, 1, 1, 1);
 
-	Gtk::Label *ppa_label2 = manage(new Gtk::Label(_("_Preserve Painted Areas"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	ppa_label2->set_mnemonic_widget(toggle_pparea2);
-	ppa_label2->set_margin_right(10);
-	toggle_pparea2.set_halign(Gtk::ALIGN_START);
-	Outline_setting_grid->attach(*ppa_label2, 0, 2, 1, 1);
-	Outline_setting_grid->attach(toggle_pparea2, 1, 2, 1, 1);
+	// Gtk::Label *ppa_label2 = manage(new Gtk::Label(_("_Preserve Painted Areas"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// ppa_label2->set_mnemonic_widget(toggle_pparea2);
+	// ppa_label2->set_margin_right(10);
+	// toggle_pparea2.set_halign(Gtk::ALIGN_START);
+	// Outline_setting_grid->attach(*ppa_label2, 0, 2, 1, 1);
+	// Outline_setting_grid->attach(toggle_pparea2, 1, 2, 1, 1);
 	
-	Gtk::Label *adherence_label = manage(new Gtk::Label(_("_Corners Adherenece"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	adherence_label->set_mnemonic_widget(entry_adherence);
-	adherence_label->set_margin_right(10);
-	Outline_setting_grid->attach(*adherence_label, 0, 3, 1, 1);
-	Outline_setting_grid->attach(entry_adherence, 1, 3, 1, 1);
+	// Gtk::Label *adherence_label = manage(new Gtk::Label(_("_Corners Adherenece"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// adherence_label->set_mnemonic_widget(entry_adherence);
+	// adherence_label->set_margin_right(10);
+	// Outline_setting_grid->attach(*adherence_label, 0, 3, 1, 1);
+	// Outline_setting_grid->attach(entry_adherence, 1, 3, 1, 1);
 
-	Gtk::Label *angle_label = manage(new Gtk::Label(_("_Corners Angle"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	angle_label->set_mnemonic_widget(entry_angle);
-	angle_label->set_margin_right(10);
-	Outline_setting_grid->attach(*angle_label, 0, 4, 1, 1);
-	Outline_setting_grid->attach(entry_angle, 1, 4, 1, 1);
+	// Gtk::Label *angle_label = manage(new Gtk::Label(_("_Corners Angle"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// angle_label->set_mnemonic_widget(entry_angle);
+	// angle_label->set_margin_right(10);
+	// Outline_setting_grid->attach(*angle_label, 0, 4, 1, 1);
+	// Outline_setting_grid->attach(entry_angle, 1, 4, 1, 1);
 
-	Gtk::Label *radius_label = manage(new Gtk::Label(_("_Corners Curve Radius"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	radius_label->set_mnemonic_widget(entry_radius);
-	radius_label->set_margin_right(10);
-	Outline_setting_grid->attach(*radius_label, 0, 5, 1, 1);
-	Outline_setting_grid->attach(entry_radius, 1, 5, 1, 1);
+	// Gtk::Label *radius_label = manage(new Gtk::Label(_("_Corners Curve Radius"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// radius_label->set_mnemonic_widget(entry_radius);
+	// radius_label->set_margin_right(10);
+	// Outline_setting_grid->attach(*radius_label, 0, 5, 1, 1);
+	// Outline_setting_grid->attach(entry_radius, 1, 5, 1, 1);
 
 	Outline_setting_grid->set_column_homogeneous(true);
 	Outline_setting_grid->set_hexpand(true);
@@ -296,10 +297,12 @@ void
 VectorizerSettings::on_convert_pressed()
 {
 	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
+	std::cout<<"Action Created \n";
 	assert(action);
 	if(!action)
 		return;
 
+	std::cout<<"Action Asserted \n";
 	// Add an if else to pass param according to outline /centerline
 	action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
 	action->set_param("mode","Centerline");
@@ -309,15 +312,17 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2.0);
 	action->set_param("pparea",toggle_pparea.get_state());
 	action->set_param("addborder",toggle_add_border.get_state());
-
+	std::cout<<"Action param passed \n";
 	if(!action->is_ready())
 	{
 		return;
 	}
-	if(instance->perform_action(action))
+	std::cout<<"Action is ready \n";
+	if(!instance->perform_action(action))
 	{
 		return;
 	}
+	std::cout<<"Action is performed \n";
 
 	std::cout<<"Convert Pressed....";
 	hide();
