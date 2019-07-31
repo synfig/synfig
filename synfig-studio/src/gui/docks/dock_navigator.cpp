@@ -308,5 +308,4 @@ void
 Dock_Navigator::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
 	navview.set_canvas_view(canvas_view);
-	if (!canvas_view) clear_previous();
 }

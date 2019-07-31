@@ -282,6 +282,7 @@ Widget_Defaults::Widget_Defaults()
 
 	// widget bline width
 	widget_bline_width = manage(new Widget_Distance());
+	widget_bline_width->set_parent(*this);
 	bline_width_refresh();
 	widget_bline_width->set_digits(2);
 	widget_bline_width->set_range(0,10000000);
@@ -337,13 +338,6 @@ Widget_Defaults::Widget_Defaults()
 			widget_colors_gradient = manage(new Gtk::VBox(false, 0));
 			widget_colors_gradient->pack_start(*widget_colors);
 			widget_colors_gradient->pack_start(*widget_gradient);
-		}
-
-		// pack brush and bline width widgets
-		{
-			widget_brush_bline_width = manage(new Gtk::VBox(false, 0));
-			//widget_brush_bline_width->pack_start(*widget_brush, Gtk::PACK_SHRINK, 2);
-			widget_brush_bline_width->pack_start(*widget_bline_width, Gtk::PACK_EXPAND_WIDGET, 2);
 		}
 
 		//pack_start(*widget_colors_gradient, Gtk::PACK_EXPAND_PADDING, 4);

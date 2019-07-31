@@ -193,22 +193,19 @@ void
 DockManager::register_dockable(Dockable& x)
 {
 	dockable_list_.push_back(&x);
-	// synfig::info("DockManager::register_dockable(): Registered dockable \"%s\"",dockable_list_.back()->get_name().c_str());
 	signal_dockable_registered()(&x);
 }
 
 bool
 DockManager::unregister_dockable(Dockable& x)
 {
-	std::list<Dockable*>::iterator iter;
-	for(iter=dockable_list_.begin();iter!=dockable_list_.end();++iter)
+	for(std::list<Dockable*>::iterator iter = dockable_list_.begin(); iter != dockable_list_.end(); ++iter)
 	{
-		if(&x==*iter)
+		if (&x == *iter)
 		{
 			remove_widget_recursive(x);
 			dockable_list_.erase(iter);
 			signal_dockable_unregistered()(&x);
-			synfig::info("DockManager::unregister_dockable(): \"%s\" has been Unregistered",x.get_name().c_str());
 			update_window_titles();
 			return true;
 		}

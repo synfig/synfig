@@ -1,4 +1,4 @@
-/* === S Y N F I G ========================================================= */
+// /* === S Y N F I G ========================================================= */
 /*!	\file app.cpp
 **	\brief writeme
 **
@@ -154,6 +154,8 @@
 
 #include <gui/localization.h>
 
+#include "gui/resourcehelper.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -168,17 +170,6 @@ using namespace studio;
 #ifndef DPM2DPI
 #define DPM2DPI(x)	(float(x)/39.3700787402f)
 #define DPI2DPM(x)	(float(x)*39.3700787402f)
-#endif
-
-#ifdef _WIN32
-#	ifdef IMAGE_DIR
-#		undef IMAGE_DIR
-#		define IMAGE_DIR "share\\pixmaps"
-#	endif
-#endif
-
-#ifndef IMAGE_DIR
-#	define IMAGE_DIR "/usr/local/share/pixmaps"
 #endif
 
 #ifndef IMAGE_EXT
@@ -431,7 +422,7 @@ public:
 	task(const std::string &task)
 	{
 		std::cerr<<task.c_str()<<std::endl;
-		while(studio::App::events_pending())studio::App::iteration(false);
+		App::process_all_events();
 		return true;
 	}
 
@@ -449,14 +440,14 @@ public:
 	warning(const std::string &err)
 	{
 		std::cerr<<"warning: "<<err.c_str()<<std::endl;
-		while(studio::App::events_pending())studio::App::iteration(false);
+		App::process_all_events();
 		return true;
 	}
 
 	virtual bool
 	amount_complete(int /*current*/, int /*total*/)
 	{
-		while(studio::App::events_pending())studio::App::iteration(false);
+		App::process_all_events();
 		return true;
 	}
 };
@@ -1439,8 +1430,6 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 	ACCEL("<Mod1>o",								"<Actions>/canvasview/toggle-onion-skin"				);
 	ACCEL("<Control><Shift>z",							"<Actions>/canvasview/canvas-zoom-fit"					);
 	ACCEL("<Control>p",								"<Actions>/canvasview/play"						);
-	ACCEL("Home",									"<Actions>/canvasview/seek-begin"					);
-	ACCEL("End",									"<Actions>/canvasview/seek-end"						);
 
 
 #undef ACCEL
@@ -1470,23 +1459,18 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	// paths
 #ifdef _WIN32
-	String path_to_icons = get_base_path()
-		+ ETL_DIRECTORY_SEPARATOR + IMAGE_DIR;
 	String path_to_plugins = get_base_path()
 		+ ETL_DIRECTORY_SEPARATOR + PLUGIN_DIR;
 	String path_to_sounds = get_base_path()
 		+ ETL_DIRECTORY_SEPARATOR + SOUND_DIR;
 #else
-	String path_to_icons = IMAGE_DIR;
 	String path_to_plugins = PLUGIN_DIR;
 	String path_to_sounds = SOUND_DIR;
 #endif
 
+	String path_to_icons = ResourceHelper::get_image_path();
+
 	if (char* synfig_root = getenv("SYNFIG_ROOT")) {
-		path_to_icons = String(synfig_root)
-			+ ETL_DIRECTORY_SEPARATOR + "share"
-			+ ETL_DIRECTORY_SEPARATOR + "pixmaps"
-			+ ETL_DIRECTORY_SEPARATOR + "synfigstudio";
 		path_to_plugins = String(synfig_root)
 			+ ETL_DIRECTORY_SEPARATOR + "share"
 			+ ETL_DIRECTORY_SEPARATOR + "synfig"
@@ -2351,6 +2335,8 @@ App::apply_gtk_settings()
 	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
 	if ( String(theme_name) == "Adwaita" )
 		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }\n";
+	g_free(theme_name);
+
 	if (!data.empty()) {
 		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
 		try {
@@ -2374,9 +2360,10 @@ App::shutdown_request(GdkEventAny*)
 void
 App::quit()
 {
-	if(shutdown_in_progress)return;
+	if (shutdown_in_progress) return;
 
 	get_ui_interface()->task(_("Quit Request"));
+	
 	if(Busy::count)
 	{
 		dialog_message_1b(
@@ -2384,68 +2371,13 @@ App::quit()
 			_("Tasks are currently running. Please cancel the current tasks and try again"),
 			"details",
 			_("Close"));
-
 		return;
 	}
 
-	std::list<etl::handle<Instance> >::iterator iter;
-	for(iter=instance_list.begin();!instance_list.empty();iter=instance_list.begin())
-	{
-		if(!(*iter)->safe_close())
+	while(!instance_list.empty())
+		if (!instance_list.front()->safe_close())
 			return;
-
-/*
-		if((*iter)->synfigapp::Instance::get_action_count())
-		{
-			handle<synfigapp::UIInterface> uim;
-			uim=(*iter)->find_canvas_view((*iter)->get_canvas())->get_ui_interface();
-			assert(uim);
-			string str=strprintf(_("Would you like to save your changes to %s?"),(*iter)->get_file_name().c_str() );
-			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES))
-			{
-				case synfigapp::UIInterface::RESPONSE_NO:
-					break;
-				case synfigapp::UIInterface::RESPONSE_YES:
-					(*iter)->save();
-					break;
-				case synfigapp::UIInterface::RESPONSE_CANCEL:
-					return;
-				default:
-					assert(0);
-					return;
-			}
-		}
-
-
-		if((*iter)->synfigapp::Instance::is_modified())
-		{
-			handle<synfigapp::UIInterface> uim;
-			uim=(*iter)->find_canvas_view((*iter)->get_canvas())->get_ui_interface();
-			assert(uim);
-			string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),(*iter)->get_file_name().c_str() );
-			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES))
-			{
-				case synfigapp::UIInterface::RESPONSE_NO:
-					break;
-				case synfigapp::UIInterface::RESPONSE_YES:
-					(*iter)->dialog_cvs_commit();
-					break;
-				case synfigapp::UIInterface::RESPONSE_CANCEL:
-					return;
-				default:
-					assert(0);
-					return;
-			}
-		}
-*/
-
-		// This next line causes things to crash for some reason
-		//(*iter)->close();
-	}
-
-	instance_list.clear();
-
-	while(studio::App::events_pending())studio::App::iteration(false);
+	process_all_events();
 
 	Gtk::Main::quit();
 
@@ -4107,59 +4039,45 @@ App::dialog_open(string filename)
 void
 App::set_selected_instance(etl::loose_handle<Instance> instance)
 {
-/*	if(get_selected_instance()==instance)
-	{
-		selected_instance=instance;
-		signal_instance_selected()(instance);
+	if (selected_instance == instance)
 		return;
-	}
-	else
-	{
-*/
-		selected_instance=instance;
-		if(get_selected_canvas_view() && get_selected_canvas_view()->get_instance()!=instance)
-		{
-			if(instance)
-			{
-				instance->focus(instance->get_canvas());
-			}
-			else
-				set_selected_canvas_view(0);
+	
+	if (get_selected_canvas_view() && get_selected_canvas_view()->get_instance() != instance) {
+		if (instance) {
+			instance->focus( instance->get_canvas() );
+		} else {
+			set_selected_canvas_view(0);
 		}
-		signal_instance_selected()(instance);
+	} else {
+		selected_instance = instance;
+		signal_instance_selected()(selected_instance);
+	}
 }
 
 void
 App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 {
-	if(selected_canvas_view != canvas_view)
-	{
-		etl::loose_handle<CanvasView> prev = selected_canvas_view;
-		selected_canvas_view = NULL;
-		if (prev) prev->deactivate();
-		selected_canvas_view = canvas_view;
-		signal_canvas_view_focus()(selected_canvas_view);
-		if (selected_canvas_view) selected_canvas_view->activate();
-	}
-
-	if(canvas_view)
-	{
-		selected_instance=canvas_view->get_instance();
-		signal_instance_selected()(selected_instance);
-	}
-
-/*
-	if(get_selected_canvas_view()==canvas_view)
-	{
-		signal_canvas_view_focus()(selected_canvas_view);
-		signal_instance_selected()(canvas_view->get_instance());
+	if (selected_canvas_view == canvas_view)
 		return;
+	
+	etl::loose_handle<CanvasView> prev = selected_canvas_view;
+	etl::loose_handle<Instance> prev_instance = selected_instance;
+
+	selected_canvas_view.reset();
+	if (prev)
+		prev->deactivate();
+
+	selected_canvas_view = canvas_view;
+	if (selected_canvas_view) {
+		selected_instance = canvas_view->get_instance();
+		selected_canvas_view->activate();
+	} else {
+		selected_instance.reset();
 	}
-	selected_canvas_view=canvas_view;
-	if(canvas_view && canvas_view->get_instance() != get_selected_instance())
-		set_selected_instance(canvas_view->get_instance());
+
 	signal_canvas_view_focus()(selected_canvas_view);
-*/
+	if (selected_instance != prev_instance)
+		signal_instance_selected()(selected_instance);
 }
 
 etl::loose_handle<Instance>
@@ -4220,12 +4138,12 @@ studio::App::setup_changed()
 }
 
 void
-studio::App::process_all_events()
+studio::App::process_all_events(long unsigned int us)
 {
-	Glib::usleep(1);
+	Glib::usleep(us);
 	while(studio::App::events_pending()) {
 		while(studio::App::events_pending())
 			studio::App::iteration(false);
-		Glib::usleep(1);
+		Glib::usleep(us);
 	}
 }

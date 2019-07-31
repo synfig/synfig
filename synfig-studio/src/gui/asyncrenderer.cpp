@@ -885,7 +885,7 @@ void
 AsyncRenderer::rendering_progress()
 {
 	updating = true;
-	while(studio::App::events_pending()) studio::App::iteration(false);
+	App::process_all_events();
 	updating = false;
 }
 #endif

@@ -63,17 +63,6 @@ using namespace studio;
 #define PACKAGE	"synfigstudio"
 #endif
 
-#ifdef _WIN32
-#	ifdef IMAGE_DIR
-#		undef IMAGE_DIR
-#		define IMAGE_DIR "share\\pixmaps"
-#	endif
-#endif
-
-#ifndef IMAGE_DIR
-#	define IMAGE_DIR "/usr/local/share/pixmaps"
-#endif
-
 #ifndef IMAGE_EXT
 #	define IMAGE_EXT	"png"
 #endif
@@ -123,7 +112,7 @@ OneMoment::OneMoment()//:
 	wnd->show_all();
 
 	wnd->present();
-	while(studio::App::events_pending())studio::App::iteration(false);
+	App::process_all_events();
 }
 
 OneMoment::~OneMoment()

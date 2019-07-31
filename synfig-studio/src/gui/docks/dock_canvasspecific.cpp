@@ -34,11 +34,8 @@
 #include "app.h"
 #include "docks/dock_canvasspecific.h"
 
-#include <gtkmm/scrolledwindow.h>
-#include <cassert>
 #include "instance.h"
 #include "canvasview.h"
-#include <ETL/clock>
 
 #include <gui/localization.h>
 
@@ -101,10 +98,8 @@ Dock_CanvasSpecific::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> /*c
 void
 Dock_CanvasSpecific::init_instance(etl::handle<Instance> instance)
 {
-	etl::clock timer;timer.reset();
 	instance->signal_canvas_view_created().connect(sigc::mem_fun(*this,&Dock_CanvasSpecific::init_canvas_view));
 	init_instance_vfunc(instance);
-	// synfig::info("%s init_instance() took %f seconds",get_local_name().c_str(),float(timer()));
 }
 
 void
@@ -129,8 +124,6 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 		)
 	);
 	*/
-	// synfig::info("%s init_canvas_view() Starting init...",get_local_name().c_str());
-	etl::clock timer;timer.reset();
 	App::signal_canvas_view_focus().connect(
 		sigc::hide(
 			sigc::mem_fun(
@@ -140,7 +133,6 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 		)
 	);
 	init_canvas_view_vfunc(canvas_view);
-	// synfig::info("%s init_canvas_view() took %f seconds",get_local_name().c_str(),float(timer()));
 }
 
 void
@@ -162,11 +154,5 @@ Dock_CanvasSpecific::canvas_view_changed()
 	}
 */
 
-// #ifdef _DEBUG
-// 	synfig::info("%s canvas_view_changed: start",get_local_name().c_str());
-// #endif
 	changed_canvas_view_vfunc(canvas_view);
-// #ifdef _DEBUG
-// 	synfig::info("%s canvas_view_changed: end",get_local_name().c_str());
-// #endif
 }

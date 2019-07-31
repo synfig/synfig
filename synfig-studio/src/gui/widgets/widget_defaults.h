@@ -76,8 +76,6 @@ class Widget_Defaults : public Gtk::VBox
 
 	Widget_Distance *widget_bline_width;
 
-	Gtk::VBox 	*widget_brush_bline_width;
-
 	//Widget_Enum	*widget_blend_method;
 
 	//Gtk::HScale 	*widget_opacity;

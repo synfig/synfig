@@ -38,6 +38,7 @@
 #include "docks/dockmanager.h"
 #include "docks/dockdroparea.h"
 
+#include <gtkmm/window.h>
 #include <gtkmm/image.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/menu.h>
@@ -196,6 +197,8 @@ void
 DockBook::present()
 {
 	show();
+	if (Gtk::Window *window = dynamic_cast<Gtk::Window*>(get_toplevel()))
+		window->present();
 }
 
 synfig::String

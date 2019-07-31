@@ -145,24 +145,26 @@ private:
 
 protected:
 
-	virtual void set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
+	using Gtk::TreeModel::set_value_impl;
 	using Gtk::TreeModel::get_flags_vfunc;
-	virtual Gtk::TreeModelFlags  get_flags_vfunc ();
 	using Gtk::TreeModel::get_n_columns_vfunc;
-	virtual int  get_n_columns_vfunc ();
 	using Gtk::TreeModel::get_column_type_vfunc;
-	virtual GType  get_column_type_vfunc (int index);
-	virtual bool iter_next_vfunc (const iterator& iter, iterator& iter_next) const;
+	using Gtk::TreeModel::ref_node_vfunc;
+	using Gtk::TreeModel::unref_node_vfunc;
+
+	virtual void  set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
+	virtual Gtk::TreeModelFlags get_flags_vfunc ();
+	virtual int   get_n_columns_vfunc ();
+	virtual GType get_column_type_vfunc (int index);
+	virtual bool  iter_next_vfunc (const iterator& iter, iterator& iter_next) const;
 	virtual bool  get_iter_vfunc (const Gtk::TreeModel::Path& path, iterator& iter_next)const;
 	virtual bool  iter_nth_root_child_vfunc (int n, iterator& iter)const;
-	virtual Gtk::TreeModel::Path  get_path_vfunc (const iterator& iter)const;
-	using Gtk::TreeModel::ref_node_vfunc;
+	virtual Gtk::TreeModel::Path get_path_vfunc (const iterator& iter)const;
 	virtual void  ref_node_vfunc (iterator& iter)const;
-	using Gtk::TreeModel::unref_node_vfunc;
 	virtual void  unref_node_vfunc (iterator& iter)const;
 	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
-	virtual bool	iter_is_valid (const iterator& iter) const;
-	virtual int 	iter_n_root_children_vfunc () const;
+	virtual bool  iter_is_valid (const iterator& iter) const;
+	virtual int   iter_n_root_children_vfunc () const;
 
 	//virtual bool  iter_nth_child_vfunc (GtkTreeIter* iter, const GtkTreeIter* parent, int n);
 	//virtual bool  iter_children_vfunc (GtkTreeIter* iter, const GtkTreeIter* parent);
@@ -196,8 +198,7 @@ public:
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
 	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
-	synfig::Canvas::Handle get_canvas() { return canvas_interface()->get_canvas(); }
-	synfig::Canvas::Handle get_canvas()const { return canvas_interface()->get_canvas(); }
+	const synfig::Canvas::Handle& get_canvas()const { return canvas_interface()->get_canvas(); }
 
 	Gtk::TreeModel::Row find_row(const synfig::Keyframe &keyframe);
 

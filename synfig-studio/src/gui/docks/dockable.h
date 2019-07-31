@@ -27,16 +27,13 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/stockid.h>
-#include <gtkmm/button.h>
 #include "dialogsettings.h"
+
 #include <synfig/string.h>
-#include <gtkmm/table.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/label.h>
-#include <gtkmm/frame.h>
-#include <gtkmm/handlebox.h>
-#include <gtkmm/box.h>
+
+#include <gtkmm/stockid.h>
+#include <gtkmm/grid.h>
+#include <gtkmm/eventbox.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
@@ -52,82 +49,62 @@ namespace studio {
 class DockManager;
 class DockBook;
 
-class Dockable : public Gtk::Table
+class Dockable : public Gtk::Grid
 {
+private:
 	friend class DockManager;
 	friend class DockBook;
 
-
 	sigc::signal<void> signal_stock_id_changed_;
-	sigc::connection prev_widget_delete_connection;
-protected:
-
-//	DialogSettings dialog_settings;
-
-
-private:
-
-	Gtk::Toolbar *toolbar_;
 
 	synfig::String name_;
 	synfig::String local_name_;
-	Gtk::Frame frame_;
-	Gtk::Label title_label_;
-	//Gtk::HBox button_box_;
-	Gtk::HBox header_box_;
-
-	//Gtk::HandleBox handle_box_;
-	Gtk::ScrolledWindow *scrolled_;
-	Gtk::Widget *prev_widget_;
-
-	bool use_scrolled_;
 
 	Gtk::StockID stock_id_;
+	bool use_scrolled;
 
+	Gtk::ScrolledWindow *container;
+	Gtk::EventBox *toolbar_container;
 	bool dnd_success_;
 
 public:
-
-	void set_toolbar(Gtk::Toolbar& toolbar);
-
-	void set_use_scrolled(bool x) { use_scrolled_=x; }
-
-	Dockable(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
-	~Dockable();
-
 	sigc::signal<void>& signal_stock_id_changed() { return signal_stock_id_changed_; }
 
+public:
+	Dockable(const synfig::String& name,const synfig::String& local_name, Gtk::StockID stock_id = Gtk::StockID(" "));
+	~Dockable();
+
 	const synfig::String& get_name()const { return name_; }
+	
 	const synfig::String& get_local_name()const { return local_name_; }
+	void set_local_name(const synfig::String&);
+
+	bool get_use_scrolled() const;
+	void set_use_scrolled(bool x);
 
 	const Gtk::StockID& get_stock_id()const { return stock_id_; }
 	void set_stock_id(Gtk::StockID x) { stock_id_=x; signal_stock_id_changed()(); }
 
-	void set_local_name(const synfig::String&);
+	void add(Gtk::Widget& x);
+	void set_toolbar(Gtk::Toolbar& toolbar);
+	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip = synfig::String());
 
+	void reset_container();
+	void reset_toolbar();
 	void clear();
 
-	//DialogSettings& settings() { return dialog_settings; }
-	//const DialogSettings& settings()const { return dialog_settings; }
-
-	void add(Gtk::Widget& x);
-
-	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip=synfig::String());
-
-	virtual void present();
+	Gtk::ScrolledWindow* get_container() const
+		{ return container; }
 
 	void attach_dnd_to(Gtk::Widget& widget);
-
-	bool clear_previous();
+	virtual void present();
 	virtual Gtk::Widget* create_tab_label();
 
 private:
-
 	void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& selection_data, guint info, guint time);
 	void on_drag_end(const Glib::RefPtr<Gdk::DragContext>&context);
 	void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&context);
 	void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
-
 }; // END of studio::Dockable
 
 }; // END of namespace studio

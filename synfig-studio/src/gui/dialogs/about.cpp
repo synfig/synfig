@@ -47,6 +47,8 @@
 
 #include <gui/localization.h>
 
+#include "gui/resourcehelper.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -59,17 +61,6 @@ using namespace studio;
 
 #ifndef VERSION
 #define VERSION	"unknown"
-#endif
-
-#ifdef _WIN32
-// Do we really need this nested ifdef??
-#	ifdef IMAGE_DIR
-#		define IMAGE_DIR "share\\pixmaps"
-#	endif
-#endif
-
-#ifndef IMAGE_DIR
-#	define IMAGE_DIR "/usr/local/share/pixmaps"
 #endif
 
 #ifndef IMAGE_EXT
@@ -180,24 +171,12 @@ About::About()
 	// TRANSLATORS: change this to your name, separate multiple names with \n
 	set_translator_credits(_("translator-credits"));
 
-	std::string imagepath;
-#ifdef _WIN32
-	imagepath=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
-#else
-	imagepath=IMAGE_DIR;
-#endif
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		imagepath=synfig_root;
-		imagepath+=ETL_DIRECTORY_SEPARATOR;
-		imagepath+="share";
-		imagepath+=ETL_DIRECTORY_SEPARATOR;
-		imagepath+="pixmaps";
-	}
-	imagepath+=ETL_DIRECTORY_SEPARATOR;
+	std::string imagepath = ResourceHelper::get_image_path("synfig_icon." IMAGE_EXT);
 
 	Gtk::Image *Logo = manage(new class Gtk::Image());
-	Logo->set(imagepath+"synfig_icon." IMAGE_EXT);
+	
+	Logo->set(imagepath);
+	Logo->set_parent(*this);
 	set_logo(Logo->get_pixbuf());
 
 #ifdef SHOW_EXTRA_INFO

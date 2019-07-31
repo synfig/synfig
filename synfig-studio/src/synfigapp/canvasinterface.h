@@ -222,10 +222,10 @@ public:
 	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }
 
 	//! Returns the Canvas associated with this interface
-	etl::handle<synfig::Canvas> get_canvas()const { return canvas_; }
+	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_; }
 
 	//! Returns the Instance associated with this interface
-	etl::loose_handle<Instance> get_instance()const { return instance_; }
+	const etl::loose_handle<Instance>& get_instance()const { return instance_; }
 
 	//! Changes the name of the canvas. Undoable.
 	void set_name(const synfig::String &x);

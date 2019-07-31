@@ -50,7 +50,7 @@
 #include <gtkmm/eventbox.h>
 #include <gtkmm/label.h>
 #include <gtkmm/box.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/imagemenuitem.h>
@@ -205,7 +205,7 @@ public:
 			Response dflt = RESPONSE_OK )
 	{
 		view->present();
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		Gtk::MessageDialog dialog(
 			*App::main_window,
 			message,
@@ -235,7 +235,7 @@ public:
 				Response dflt=RESPONSE_YES )
 	{
 		view->present();
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		Gtk::MessageDialog dialog(
 			*App::main_window,
 			message,
@@ -263,7 +263,7 @@ public:
 			view->statusbar->pop();
 			view->statusbar->push(task);
 		}
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		if(view->cancel){return false;}
 		return true;
 	}
@@ -290,7 +290,7 @@ public:
 		view->statusbar->pop();
 		view->statusbar->push(err);
 
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		if(view->cancel)return false;
 		return true;
 	}
@@ -311,7 +311,7 @@ public:
 			if(x<0)x=0;
 			else if(x>1)x=1;
 		}
-		//while(App::events_pending())App::iteration(false);
+		//App::process_all_events();
 		if(view->cancel){/*view->cancel=false;*/return false;}
 		return true;
 	}
@@ -562,12 +562,13 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	cancel                   (false),
 
 	canvas_properties        (*App::main_window,canvas_interface_),
-	canvas_options           (*App::main_window,this),
 	render_settings          (*App::main_window,canvas_interface_),
 	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
 	keyframe_dialog          (*App::main_window,canvas_interface_),
 	preview_dialog           ()
 {
+	canvas_options = CanvasOptions::create(*App::main_window, this);
+
 	layer_tree=0;
 	children_tree=0;
 	toggling_ducks_=false;
@@ -577,6 +578,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	toggling_snap_grid=false;
 	toggling_onion_skin=false;
 	toggling_background_rendering=false;
+
+	set_use_scrolled(false);
 
 	//info("Canvasview: Entered constructor");
 	// Minor hack
@@ -589,28 +592,29 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	//info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
-	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-	space->set_size_request(4,4);
-        space->show();
+	Gtk::Alignment *widget_space = Gtk::manage(new Gtk::Alignment());
+	widget_space->set_size_request(4,4);
+	widget_space->show();
 
-	Gtk::Table *layout_table= manage(new class Gtk::Table(4, 1, false));
-	layout_table->attach(*create_work_area(),   0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	layout_table->attach(*space, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	Gtk::Widget *widget_work_area = create_work_area();
 	init_menus();
-	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	layout_table->attach(*create_time_bar(),    0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-
-	update_title();
-
-	layout_table->show();
+	Gtk::Widget *widget_display_bar = create_display_bar();
+	Gtk::Widget *widget_time_bar = create_time_bar();
+	
+	Gtk::Grid *layout_grid = manage(new Gtk::Grid());
+	layout_grid->attach(*widget_display_bar, 0, 0, 1, 1);
+	layout_grid->attach(*widget_space,       0, 1, 1, 1);
+	layout_grid->attach(*widget_work_area,   0, 2, 1, 1);
+	layout_grid->attach(*widget_time_bar,    0, 3, 1, 1);
+	layout_grid->show();
 
 	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
-	event_box->add(*layout_table);
+	event_box->add(*layout_grid);
 	event_box->show();
 	event_box->signal_button_press_event().connect(sigc::mem_fun(*this,&CanvasView::on_button_press_event));
-
-	set_use_scrolled(false);
 	add(*event_box);
+
+	update_title();
 
 	smach_.set_default_state(&state_normal);
 
@@ -719,6 +723,8 @@ CanvasView::~CanvasView()
 	// this was causing a crash before
 	canvas_interface()->signal_dirty_preview().clear();
 
+	delete canvas_options;
+
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		info("CanvasView::~CanvasView(): Deleted");
 }
@@ -738,6 +744,7 @@ void CanvasView::activate()
 	this->_action_group_removed = false;
 	update_title();
 	present();
+	grab_focus();
 }
 
 void CanvasView::deactivate()
@@ -751,11 +758,8 @@ void CanvasView::deactivate()
 void CanvasView::present()
 {
 	App::set_selected_canvas_view(this);
-
-	Dockable::present();
-	// If hidden by CanvasView::close_view, time to come back to the show
-	if(!get_visible())show();
 	update_title();
+	Dockable::present();
 }
 
 void CanvasView::jack_lock()
@@ -1047,6 +1051,7 @@ CanvasView::create_time_bar()
 	timebar = Gtk::manage(new Gtk::VBox());
 	timebar->pack_end(*timetrack, false, true);
 	timebar->pack_end(*controls, false, true);
+	timebar->set_hexpand();
 	timebar->show();
 
 	return timebar;
@@ -1061,6 +1066,8 @@ CanvasView::create_work_area()
 	work_area->set_canvas_view(this);
 	work_area->set_progress_callback(get_ui_interface().get());
 	work_area->signal_popup_menu().connect(sigc::mem_fun(*this, &CanvasView::popup_main_menu));
+	work_area->set_hexpand();
+	work_area->set_vexpand();
 	work_area->show();
 	return work_area;
 }
@@ -1238,10 +1245,6 @@ CanvasView::create_display_bar()
 	}
 
 	{ // Setup draft rendering mode button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-layer_other_supersample"), iconsize));
-		icon->set_padding(0, 0);
-		icon->show();
-
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
 		render_combobox->append("Draft");
 		render_combobox->append("Preview");
@@ -1361,9 +1364,15 @@ CanvasView::create_display_bar()
 	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 	hbox->pack_start(*displaybar, false, true);
 	hbox->pack_end(*stopbutton, false, false);
+	hbox->set_hexpand();
 	hbox->show();
 
 	return hbox;
+}
+
+void CanvasView::grab_focus()
+{
+	work_area->grab_focus();
 }
 
 void
@@ -1965,12 +1974,34 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 	if(focused_widget && focused_widget_has_priority(focused_widget))
 	{
 		if(focused_widget->event((GdkEvent*)event))
-		return true;
+			return true;
 	}
 	else if(Dockable::on_key_press_event(event))
 			return true;
 		else
-			if (focused_widget) return focused_widget->event((GdkEvent*)event);
+			if (focused_widget) {
+				if (focused_widget->event((GdkEvent*)event))
+					return true;
+			}
+
+	if (event->type == GDK_KEY_PRESS) {
+		switch (event->keyval) {
+		case GDK_KEY_Home:
+		case GDK_KEY_KP_Home:
+			action_group->get_action("seek-begin")->activate();
+			return  true;
+		case GDK_KEY_End:
+		case GDK_KEY_KP_End:
+			action_group->get_action("seek-end")->activate();
+			return  true;
+		case GDK_KEY_Delete:
+		case GDK_KEY_KP_Delete:
+			if (selection_manager_->get_selected_layer_count() == 0)
+				return false;
+			App::ui_manager()->get_action("/ui/toolbar-layer/action-LayerRemove")->activate();
+			break;
+		}
+	}
 	return false;
 }
 
@@ -2202,25 +2233,11 @@ CanvasView::on_children_user_click(int button, Gtk::TreeRow row, ChildrenTree::C
 bool
 CanvasView::on_keyframe_tree_event(GdkEvent *event)
 {
-    switch(event->type)
-    {
-	case GDK_BUTTON_PRESS:
-		switch(event->button.button)
-		{
-			case 3:
-			{
-				//keyframemenu.popup(event->button.button,gtk_get_current_event_time());
-				return true;
-			}
-			break;
-		}
-		break;
-	case GDK_MOTION_NOTIFY:
-		break;
-	case GDK_BUTTON_RELEASE:
-		break;
-	default:
-		break;
+	if ( event->type == GDK_BUTTON_PRESS
+	  && event->button.button == 3 )
+	{
+		//keyframemenu.popup(event->button.button,gtk_get_current_event_time());
+		return true;
 	}
 	return false;
 }
@@ -3585,6 +3602,22 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y)
 	}
 	if(x=="keyframes")
 		keyframe_tree=dynamic_cast<KeyframeTree*>(y);
+}
+
+AdjustmentGroup::Handle
+CanvasView::get_adjustment_group(const synfig::String& x)
+{
+	std::map<synfig::String,AdjustmentGroup::Handle>::const_iterator i = adjustment_group_book_.find(x);
+	return i == adjustment_group_book_.end() ? AdjustmentGroup::Handle() : i->second;
+}
+
+void
+CanvasView::set_adjustment_group(const synfig::String& x, AdjustmentGroup::Handle y)
+{
+	if (y)
+		adjustment_group_book_[x] = y;
+	else
+		adjustment_group_book_.erase(x);
 }
 
 Gtk::UIManager::ui_merge_id
