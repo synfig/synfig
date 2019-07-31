@@ -69,6 +69,11 @@ def update_frame_window(node, window):
             for it in node:
                 update_frame_window(it[0], window)
 
+        elif node.tag == "weighted_average":
+            for it in node:
+                update_frame_window(it[0][0][0], window) # weight
+                update_frame_window(it[0][1][0], window) # value
+
         elif node.tag == "composite":
             update_frame_window(node[0][0], window) # x
             update_frame_window(node[1][0], window) # y

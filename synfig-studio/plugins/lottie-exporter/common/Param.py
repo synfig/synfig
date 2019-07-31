@@ -286,6 +286,36 @@ class Param:
                 ret = ret.format(eff_1=link_off, eff_2=link_on, eff_3=switch)
                 self.expression = ret
                 return ret, self.expression_controllers
+
+            elif self.param[0].tag == "weighted_average":
+                self.subparams["weighted_average"].extract_subparams()
+                lst = self.subparams["weighted_average"].subparams["entry"]
+                if not isinstance(lst, list):   # When only one entry is present
+                    lst = [lst]
+
+                ret = "sum("    # Returning string
+                den = "sum("    # Denominator string
+                for it in lst:
+                    it.extract_subparams()  # weighted_vector
+                    it.subparams["weighted_vector"].extract_subparams()
+                    weight, eff_1 = it.subparams["weighted_vector"].subparams["weight"].recur_animate("scalar_multiply")
+                    value, eff_2 = it.subparams["weighted_vector"].subparams["value"].recur_animate(anim_type)
+                    self.expression_controllers.extend(eff_1)
+                    self.expression_controllers.extend(eff_2)
+                    hell = "mul({weight}, {value}),"
+                    hell = hell.format(weight=weight, value=value)
+                    ret += hell
+
+                    den += weight
+                    den += ","
+                ret = ret[:-1]
+                den = den[:-1]
+                den += ")"
+                ret += ")"
+                ret = "div(" + ret + "," + den + ")"
+                self.expression = ret
+                return ret, self.expression_controllers
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -425,6 +455,29 @@ class Param:
                     ret[0], ret[1] = ret[0] / len(lst), ret[1] / len(lst)
                 else:
                     ret /= len(lst)
+
+            elif self.param[0].tag == "weighted_average":
+                self.subparams["weighted_average"].extract_subparams()
+                lst = self.subparams["weighted_average"].subparams["entry"]
+                if not isinstance(lst, list):   # When only one entry is present
+                    lst = [lst]
+
+                ret = [0, 0]
+                den = 0
+                if not isinstance(lst[0].subparams["weighted_vector"].subparams["value"].get_value(frame), list):
+                    ret = 0
+                for it in lst:
+                    weight = it.subparams["weighted_vector"].subparams["weight"].get_value(frame)
+                    value = it.subparams["weighted_vector"].subparams["value"].get_value(frame)
+                    den += weight
+                    if isinstance(value, list):
+                        ret[0], ret[1] = ret[0] + value[0]*weight, ret[1] + value[1]*weight
+                    else:
+                        ret += value*weight
+                if isinstance(ret, list):
+                    ret[0], ret[1] = ret[0] / den, ret[1] / den
+                else:
+                    ret /= den
 
             elif self.param[0].tag == "composite":  # Only available for vectors
                 x = self.subparams["composite"].subparams["x"].get_value(frame)
