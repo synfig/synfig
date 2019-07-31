@@ -34,6 +34,21 @@ class Param:
         self.expression_controllers = [] # Effects will be stored in this
         self.expression = ""
         self.dimension = 1  # 1 represents real, 2 represents vector
+        self.get_exported_valuenode()
+
+    def get_exported_valuenode(self):
+        """
+        If the animation of this param is not directly linked with this param,
+        then it must be preset in the canvas :use, :def
+        """
+        if "use" not in self.param.keys():
+            return
+        layer = self.get_layer()
+        canvas = layer.getparent()
+        key = self.param.attrib["use"]
+        anim = canvas.get_def(key)
+        assert(anim is not None)
+        self.param.append(copy.deepcopy(anim))
         
     def reset(self):
         """
