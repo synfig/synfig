@@ -86,6 +86,7 @@ class VectorizerSettings : public Gtk::Dialog
 	Gtk::ComboBoxText comboboxtext_mode;
 	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
 	const etl::handle<Instance> instance;
+
 public:
 
 	bool isOutline;

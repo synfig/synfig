@@ -296,22 +296,32 @@ VectorizerSettings::on_finished()
 void
 VectorizerSettings::on_convert_pressed()
 {
-	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
-	std::cout<<"Action Created \n";
-	assert(action);
-	if(!action)
-		return;
+	// synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
+	// std::cout<<"Action Created \n";
+	// assert(action);
+	// if(!action)
+	// 	return;
 
-	std::cout<<"Action Asserted \n";
-	// Add an if else to pass param according to outline /centerline
-	action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
-	action->set_param("mode","Centerline");
-	action->set_param("threshold",((int)adjustment_threshold->get_value()) * 25);
-	action->set_param("penalty",10 - ((int)adjustment_accuracy->get_value()));
-	action->set_param("despeckling",((int)adjustment_despeckling->get_value()) * 2);
-	action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2.0);
-	action->set_param("pparea",toggle_pparea.get_state());
-	action->set_param("addborder",toggle_add_border.get_state());
+	// std::cout<<"Action Asserted \n";
+	// // Add an if else to pass param according to outline /centerline
+	// action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
+	// action->set_param("mode","Centerline");
+	// action->set_param("threshold",((int)adjustment_threshold->get_value()) * 25);
+	// action->set_param("penalty",10 - ((int)adjustment_accuracy->get_value()));
+	// action->set_param("despeckling",((int)adjustment_despeckling->get_value()) * 2);
+	// action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2.0);
+	// action->set_param("pparea",toggle_pparea.get_state());
+	// action->set_param("addborder",toggle_add_border.get_state());
+	synfigapp::Action::Handle action(synfigapp::Action::create("LayerAdd"));
+	if (!action)
+	{ 
+		assert(false); return;
+	}
+
+	action->set_param("canvas", layer_bitmap_->get_canvas());
+	action->set_param("canvas_interface", instance->find_canvas_interface(layer_bitmap_->get_canvas()) );
+	action->set_param("new", synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
+
 	std::cout<<"Action param passed \n";
 	if(!action->is_ready())
 	{
