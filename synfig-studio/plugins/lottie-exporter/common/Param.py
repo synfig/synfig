@@ -41,7 +41,7 @@ class Param:
         If the animation of this param is not directly linked with this param,
         then it must be preset in the canvas :use, :def
         """
-        if "use" not in self.param.keys():
+        if self.param is None or "use" not in self.param.attrib.keys():
             return
         layer = self.get_layer()
         canvas = layer.getparent()

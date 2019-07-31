@@ -49,7 +49,7 @@ def gen_layer_group(lottie, layer, idx):
     time_dilation = layer.get_param("time_dilation")
     transformation = layer.get_param("transformation")
     transform = transformation[0]
-    try_par = Param(transform, Param(transformation, layer))
+    try_par = Param(transform, Param(transformation.get(), layer))
     for child in transform:
         if child.tag == "scale":
             scale = Param(child, try_par)
