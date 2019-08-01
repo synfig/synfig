@@ -32,8 +32,6 @@
 #	include <config.h>
 #endif
 
-#include <cmath>
-
 #include <map>
 #include <vector>
 
@@ -41,17 +39,13 @@
 
 #include <ETL/misc>
 
-#include <synfig/general.h>
 #include <synfig/blinepoint.h>
 #include <synfig/widthpoint.h>
 #include <synfig/dashitem.h>
 
-#include <gui/app.h>
 #include <gui/helpers.h>
 
 #include "widget_curves.h"
-
-#include <gui/localization.h>
 
 #endif
 
