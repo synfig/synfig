@@ -406,8 +406,8 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Real range_min =  100000000.0;
 
 	// Draw curves for the valuenodes stored in the curve list
-	for(std::list<CurveStruct>::iterator i = curve_list.begin(); i != curve_list.end(); ++i) {
-		int channels = (int)i->channels.size();
+	for(std::list<CurveStruct>::iterator curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
+		int channels = (int)curve_it->channels.size();
 		if (channels > (int)points.size())
 			points.resize(channels);
 
@@ -419,10 +419,10 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		Time t = lower;
 		for(int j = 0; j < w; ++j, t += dt) {
 			for(int c = 0; c < channels; ++c) {
-				Real x = i->get_value(c, t, dt);
-				range_max = std::max(range_max, x);
-				range_min = std::min(range_min, x);
-				points[c].push_back( Gdk::Point(j, etl::round_to_int((x - range_lower)*range_k)) );
+				Real y = curve_it->get_value(c, t, dt);
+				range_max = std::max(range_max, y);
+				range_min = std::min(range_min, y);
+				points[c].push_back( Gdk::Point(j, etl::round_to_int((y - range_lower)*range_k)) );
 			}
 		}
 
@@ -437,11 +437,11 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				else
 					cr->line_to(j->get_x(), j->get_y());
 			}
-			Gdk::Cairo::set_source_color(cr, i->channels[c].color);
+			Gdk::Cairo::set_source_color(cr, curve_it->channels[c].color);
 			cr->stroke();
 
 			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-			layout->set_text(i->channels[c].name);
+			layout->set_text(curve_it->channels[c].name);
 
 			cr->move_to(1, points[c][0].get_y() + 1);
 			layout->show_in_cairo_context(cr);
