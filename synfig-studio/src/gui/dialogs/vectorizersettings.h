@@ -64,11 +64,7 @@ class VectorizerSettings : public Gtk::Dialog
 	Gtk::SpinButton entry_despeckling2;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_maxthickness;
 	Gtk::SpinButton entry_maxthickness;
-	// Glib::RefPtr<Gtk::Adjustment> adjustment_tcalibration_start;
-	// Gtk::SpinButton entry_tcalibration_start;
-	// Glib::RefPtr<Gtk::Adjustment> adjustment_tcalibration_end;
-	// Gtk::SpinButton entry_tcalibration_end;
-
+	
 	Glib::RefPtr<Gtk::Adjustment> adjustment_radius;
 	Gtk::SpinButton entry_radius;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_adherence;
