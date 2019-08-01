@@ -65,6 +65,8 @@ ACTION_SET_CVS_ID(Action::Vectorization,"$Id$");
 Vectorization::Vectorization()
 {
     isOutline = false;
+    new_layer = synfig::Layer::create("group");
+
 }
 
 studio::CenterlineConfiguration Vectorization::getCenterlineConfiguration( ) const 
@@ -229,8 +231,6 @@ Action::Vectorization::perform()
     synfig::Canvas::Handle child_canvas;
     child_canvas=synfig::Canvas::create_inline(layer->get_canvas());
 
-	synfig::Layer::Handle new_layer(synfig::Layer::create("group"));
-
     new_layer->set_description("Vectorized "+layer->get_description());
 	new_layer->set_param("canvas",child_canvas);
     new_layer->set_canvas(layer->get_canvas()->parent() );
@@ -252,6 +252,20 @@ Action::Vectorization::perform()
 void
 Action::Vectorization::undo()
 {
-    
+    // Find the iterator for the layer
+	Canvas::iterator iter=find(get_canvas()->begin(),get_canvas()->end(),new_layer);
+
+	if(*iter!=new_layer)
+		throw Error(_("This layer doesn't exist anymore."));
+
+	// Remove the layer from the canvas
+	get_canvas()->erase(iter);
+
+	// Signal that a layer has been inserted
+	if(get_canvas_interface())
+	{
+		get_canvas_interface()->signal_layer_removed()(new_layer);
+	}
+	else synfig::warning("CanvasInterface not set on action");
 
 }

@@ -30,7 +30,6 @@
 #include <synfigapp/action.h>
 #include <synfig/layer.h>
 #include "vectorizer/centerlinevectorizer.h"
-//#include "gui/vectorizer/vectorizerparameters.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -50,6 +49,7 @@ class Vectorization :
 {
 private:
 	synfig::Layer::Handle layer;
+	synfig::Layer::Handle new_layer;
 	synfig::String v_mode; 
     int threshold, penalty, despeckling, maxthickness;
     bool pparea, addborder,isOutline;
