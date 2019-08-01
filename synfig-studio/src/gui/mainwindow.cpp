@@ -78,7 +78,6 @@ MainWindow::MainWindow()
 	Widget_Vector::register_type();
 
 	set_default_size(600, 400);
-	toggling_show_menubar = App::enable_mainwin_menubar;
 
 	main_dock_book_ = manage(new DockBook());
 	main_dock_book_->allow_empty = true;
@@ -166,9 +165,8 @@ MainWindow::init_menus()
 	);
 
 	// View menu
-	//Glib::RefPtr<Gtk::ToggleAction> action;
-	toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
-	toggle_menubar->set_active(toggling_show_menubar);
+	Glib::RefPtr<Gtk::ToggleAction> toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
+	toggle_menubar->set_active(App::enable_mainwin_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
 
 	// pre defined workspace (window ui layout)
@@ -216,17 +214,12 @@ MainWindow::toggle_show_menubar()
 {
 	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
 
-	if(toggling_show_menubar)
-	{
-		menubar->hide();
-		toggling_show_menubar = false;
-	}
-	else
-	{
+	App::enable_mainwin_menubar = !App::enable_mainwin_menubar;
+
+	if(App::enable_mainwin_menubar)
 		menubar->show();
-		toggling_show_menubar = true;
-	}
-	App::enable_mainwin_menubar = toggling_show_menubar;
+	else
+		menubar->hide();
 }
 
 bool

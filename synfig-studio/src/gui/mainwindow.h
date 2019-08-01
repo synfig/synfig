@@ -60,9 +60,6 @@ namespace studio {
 		void on_dockable_unregistered(Dockable* dockable);
 		void toggle_show_menubar();
 
-		Glib::RefPtr<Gtk::ToggleAction> toggle_menubar;
-		bool toggling_show_menubar;
-
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);
 
