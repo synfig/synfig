@@ -312,8 +312,12 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2.0);
 	action->set_param("pparea",toggle_pparea.get_state());
 	action->set_param("addborder",toggle_add_border.get_state());
-	action->set_param("canvas",layer_bitmap_->get_canvas());
-	action->set_param("canvas_interface", instance->find_canvas_interface(layer_bitmap_->get_canvas()) );
+
+	etl::handle<synfig::Canvas> canvas = layer_bitmap_->get_canvas()->parent();
+	etl::handle<synfigapp::CanvasInterface> canvas_interface = instance->find_canvas_interface( canvas->get_non_inline_ancestor() );
+	action->set_param("canvas", canvas); 
+	action->set_param("canvas_interface", canvas_interface);
+
 	std::cout<<"Action param passed \n";
 	if(!action->is_ready())
 	{
