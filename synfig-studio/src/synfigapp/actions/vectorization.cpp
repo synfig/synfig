@@ -153,8 +153,10 @@ Action::Vectorization::is_candidate(const ParamList &x)
 bool
 Action::Vectorization::is_ready() const
 {
-    return(get_param_vocab().size() >= 8 && synfig::Layer_Bitmap::Handle::cast_dynamic(layer));
-}
+    return get_param_vocab().size() >= 8 && 
+        synfig::Layer_Bitmap::Handle::cast_dynamic(layer) && 
+        Action::CanvasSpecific::is_ready();
+ }
 
 bool
 Action::Vectorization::set_param(const synfig::String& name, const Action::Param &param)
@@ -226,33 +228,30 @@ Action::Vectorization::perform()
 
     synfig::Canvas::Handle child_canvas;
     child_canvas=synfig::Canvas::create_inline(layer->get_canvas());
-    std::cout<<"after inline canvas perform\n";
 
 	synfig::Layer::Handle new_layer(synfig::Layer::create("group"));
-    std::cout<<"after new_layer perform\n";
 
     new_layer->set_description("Vectorized "+layer->get_description());
 	new_layer->set_param("canvas",child_canvas);
-    layer->get_canvas()->parent()->push_front(new_layer);
-    std::cout<<"after get_canvas()->parent()->push_front(new_layer) perform\n";
-    std::cout<< "Result.size() : "<<Result.size()<<"\n";
+    new_layer->set_canvas(layer->get_canvas()->parent() );
+    get_canvas()->push_front(new_layer);
+
     for(int i=0;i < Result.size();i++)
     {
       Result[i]->set_canvas(child_canvas);
       child_canvas->push_front(Result[i]);
     }
-    std::cout<<"after layers created perform\n";
 
     if(get_canvas_interface()) 
     { 
  	    get_canvas_interface()->signal_layer_inserted()(new_layer,0); 
     } 
-    std::cout<<"after get_canvas_interface perform\n";
 
 }
 
 void
 Action::Vectorization::undo()
 {
+    
 
 }
