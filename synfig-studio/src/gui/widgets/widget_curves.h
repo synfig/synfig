@@ -45,6 +45,8 @@
 
 namespace studio {
 
+struct TimePlotData;
+
 class Widget_Curves: public Gtk::DrawingArea
 {
 private:
@@ -57,7 +59,15 @@ private:
 	std::list<CurveStruct> curve_list;
 
 	sigc::connection time_changed;
+	sigc::connection time_model_changed;
 	std::list<sigc::connection> value_desc_changed;
+
+	TimePlotData * time_plot_data;
+
+	void on_time_model_change();
+	bool on_resize(GdkEventConfigure * 	configure_event);
+
+	void update_time_plot_data();
 
 public:
 	Widget_Curves();

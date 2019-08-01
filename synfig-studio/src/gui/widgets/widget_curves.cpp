@@ -215,7 +215,53 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 	}
 };
 
+struct studio::TimePlotData {
+	bool invalid;
+
+	Time time;
+	Time lower;
+	Time upper;
+	double k;
+	Time dt;
+
+	Real range_lower;
+	Real range_upper;
+	double range_k;
+
+	TimePlotData() :
+		invalid(true)
+	{}
+};
+
 /* === M E T H O D S ======================================================= */
+
+void Widget_Curves::on_time_model_change()
+{
+	update_time_plot_data();
+	queue_draw();
+}
+
+bool Widget_Curves::on_resize(GdkEventConfigure *)
+{
+	update_time_plot_data();
+	queue_draw();
+	return false;
+}
+
+void Widget_Curves::update_time_plot_data()
+{
+	time_plot_data->time  = time_model->get_time();
+	time_plot_data->lower = time_model->get_visible_lower();
+	time_plot_data->upper = time_model->get_visible_upper();
+	time_plot_data->k = (double)get_width()/(double)(time_plot_data->upper - time_plot_data->lower);
+	time_plot_data->dt = 1.0/time_plot_data->k;
+
+	time_plot_data->range_lower = range_adjustment->get_value();
+	time_plot_data->range_upper = time_plot_data->range_lower + range_adjustment->get_page_size();
+	time_plot_data->range_k = (double)get_height()/(double)(time_plot_data->range_upper - time_plot_data->range_lower);
+
+	time_plot_data->invalid = false;
+}
 
 Widget_Curves::Widget_Curves():
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, 2))
@@ -223,16 +269,21 @@ Widget_Curves::Widget_Curves():
 	set_size_request(64, 64);
 
 	range_adjustment->signal_changed().connect(
-		sigc::mem_fun(*this, &Widget_Curves::queue_draw) );
+		sigc::mem_fun(*this, &Widget_Curves::on_time_model_change) );
 	range_adjustment->signal_value_changed().connect(
-		sigc::mem_fun(*this, &Widget_Curves::queue_draw) );
+		sigc::mem_fun(*this, &Widget_Curves::on_time_model_change) );
+	signal_configure_event().connect(
+		sigc::mem_fun(*this, &Widget_Curves::on_resize) );
 
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
+
+	time_plot_data = new TimePlotData();
 }
 
 Widget_Curves::~Widget_Curves() {
 	clear();
 	set_time_model(etl::handle<TimeModel>());
+	delete time_plot_data;
 }
 
 void
@@ -240,10 +291,15 @@ Widget_Curves::set_time_model(const etl::handle<TimeModel> &x)
 {
 	if (time_model == x) return;
 	time_changed.disconnect();
+	time_model_changed.disconnect();
+
 	time_model = x;
-	if (time_model)
+	if (time_model) {
 		time_changed = time_model->signal_time_changed().connect(
-			sigc::mem_fun(*this, &Widget_Curves::queue_draw) );
+			sigc::mem_fun(*this, &Widget_Curves::on_time_model_change) );
+		time_model_changed = time_model->signal_changed().connect(
+			sigc::mem_fun(*this, &Widget_Curves::on_time_model_change) );
+	}
 }
 
 void
@@ -253,6 +309,7 @@ Widget_Curves::clear() {
 		value_desc_changed.pop_back();
 	}
 	curve_list.clear();
+	time_plot_data->invalid = true;
 }
 
 void
@@ -352,21 +409,14 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	if (!time_model || !curve_list.size())
 		return true;
 
-	Time time  = time_model->get_time();
-	Time lower = time_model->get_visible_lower();
-	Time upper = time_model->get_visible_upper();
-	double k = (double)w/(double)(upper - lower);
-	Time dt(1.0/k);
-
-	Real range_lower = range_adjustment->get_value();
-	Real range_upper = range_lower + range_adjustment->get_page_size();
-	double range_k = (double)h/(double)(range_upper - range_lower);
+	if (time_plot_data->invalid)
+		update_time_plot_data();
 
 	cr->save();
 
 	// Draw zero mark
 	cr->set_source_rgb(0.31, 0.31, 0.31);
-	cr->rectangle(0, etl::round_to_int((0.0 - range_lower)*range_k), w, 0);
+	cr->rectangle(0, etl::round_to_int((0.0 - time_plot_data->range_lower)*time_plot_data->range_k), w, 0);
 	cr->stroke();
 
 	// This try to find a valid canvas to show the keyframes of those
@@ -382,8 +432,8 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		for(KeyframeList::const_iterator i = canvas->keyframe_list().begin(); i != canvas->keyframe_list().end(); ++i) {
 			if (!i->get_time().is_valid())
 				continue;
-			int x = (i->get_time() - lower)*k;
-			if (i->get_time() >= lower && i->get_time() <= upper) {
+			int x = (i->get_time() - time_plot_data->lower)*time_plot_data->k;
+			if (i->get_time() >= time_plot_data->lower && i->get_time() <= time_plot_data->upper) {
 				cr->set_source_rgb(0.63, 0.5, 0.5);
 				cr->rectangle(x, 0, 1, h);
 				cr->fill();
@@ -393,7 +443,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	// Draw current time
 	cr->set_source_rgb(0, 0, 1);
-	cr->rectangle(etl::round_to_int((double)(time - lower)*k), 0, 0, h);
+	cr->rectangle(etl::round_to_int((double)(time_plot_data->time - time_plot_data->lower)*time_plot_data->k), 0, 0, h);
 	cr->stroke();
 
 	// reserve arrays for maximum number of channels
@@ -416,13 +466,13 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			points[c].reserve(w);
 		}
 
-		Time t = lower;
-		for(int j = 0; j < w; ++j, t += dt) {
+		Time t = time_plot_data->lower;
+		for(int j = 0; j < w; ++j, t += time_plot_data->dt) {
 			for(int c = 0; c < channels; ++c) {
-				Real y = curve_it->get_value(c, t, dt);
+				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				range_max = std::max(range_max, y);
 				range_min = std::min(range_min, y);
-				points[c].push_back( Gdk::Point(j, etl::round_to_int((y - range_lower)*range_k)) );
+				points[c].push_back( Gdk::Point(j, etl::round_to_int((y - time_plot_data->range_lower)*time_plot_data->range_k)) );
 			}
 		}
 
