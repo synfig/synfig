@@ -129,6 +129,7 @@ TimePlotData::recompute_time_bounds()
 		return;
 	}
 
+	invalid = false;
 	recompute_geometry_data(); // lower and upper change other fields
 }
 
@@ -170,6 +171,12 @@ TimePlotData::recompute_vertical()
 }
 
 bool
+TimePlotData::is_invalid() const
+{
+	return invalid;
+}
+
+bool
 TimePlotData::is_time_visible(const synfig::Time& t) const
 {
 	return t >= lower && t <= upper;
@@ -193,10 +200,27 @@ TimePlotData::get_pixel_t_coord(const synfig::Time& t) const
 	return etl::round_to_int((t - lower) * k);
 }
 
+double
+TimePlotData::get_double_pixel_t_coord(const synfig::Time& t) const
+{
+	return round((t - lower) * k);
+}
+
 int
 TimePlotData::get_pixel_y_coord(synfig::Real y) const
 {
 	return etl::round_to_int((y - range_lower) * range_k);
+}
+
+synfig::Time
+TimePlotData::get_t_from_pixel_coord(double pixel) const
+{
+	return lower + synfig::Time(pixel/k);
+}
+
+double TimePlotData::get_y_from_pixel_coord(double pixel) const
+{
+	return range_lower + pixel / range_k;
 }
 
 }
