@@ -58,6 +58,7 @@ OTHER_HH = \
 	resourcehelper.h \
 	splash.h \
 	statemanager.h \
+	timeplotdata.h \
 	valuelink.h \
 	workarea.h \
 	workspacehandler.h \
@@ -86,6 +87,7 @@ OTHER_CC = \
 	resourcehelper.cpp \
 	splash.cpp \
 	statemanager.cpp \
+	timeplotdata.cpp \
 	valuelink.cpp \
 	workarea.cpp \
 	workspacehandler.cpp \
