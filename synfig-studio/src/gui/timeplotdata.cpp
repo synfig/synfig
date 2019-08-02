@@ -170,31 +170,31 @@ TimePlotData::recompute_vertical()
 }
 
 bool
-TimePlotData::is_time_visible(const synfig::Time& t)
+TimePlotData::is_time_visible(const synfig::Time& t) const
 {
 	return t >= lower && t <= upper;
 }
 
 bool
-TimePlotData::is_time_visible_extra(const synfig::Time& t)
+TimePlotData::is_time_visible_extra(const synfig::Time& t) const
 {
 	return t >= lower_ex && t <= upper_ex;
 }
 
 bool
-TimePlotData::is_y_visible(synfig::Real y)
+TimePlotData::is_y_visible(synfig::Real y) const
 {
 	return y >= range_lower && y <= range_upper;
 }
 
 int
-TimePlotData::get_pixel_t_coord(const synfig::Time& t)
+TimePlotData::get_pixel_t_coord(const synfig::Time& t) const
 {
 	return etl::round_to_int((t - lower) * k);
 }
 
 int
-TimePlotData::get_pixel_y_coord(synfig::Real y)
+TimePlotData::get_pixel_y_coord(synfig::Real y) const
 {
 	return etl::round_to_int((y - range_lower) * range_k);
 }

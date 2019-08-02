@@ -82,15 +82,15 @@ public:
 
 	void set_extra_time_margin(double margin);
 
-	bool is_time_visible(const synfig::Time & t);
+	bool is_time_visible(const synfig::Time & t) const;
 
-	bool is_time_visible_extra(const synfig::Time & t);
+	bool is_time_visible_extra(const synfig::Time & t) const;
 
-	bool is_y_visible(synfig::Real y);
+	bool is_y_visible(synfig::Real y) const;
 
-	int get_pixel_t_coord(const synfig::Time & t);
+	int get_pixel_t_coord(const synfig::Time & t) const;
 
-	int get_pixel_y_coord(synfig::Real y);
+	int get_pixel_y_coord(synfig::Real y) const;
 
 private:
 	bool on_widget_resize(GdkEventConfigure * /*configure*/);
