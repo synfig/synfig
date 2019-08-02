@@ -42,24 +42,45 @@
 
 namespace studio {
 
-/// Helper class that handles widget geometry to related time and vice versa
-struct TimePlotData {
+/// Helper class that connects widget geometry to visible timeline and vice versa
+/**
+ * Some widgets show data that must be in sync to the project timeline, eg.
+ * the waypoint 'editor'.
+ * This class helps to map pixel coordinate <-> time, being updated automatically
+ * when the timeline changes (by zooming or scrolling, for example) or widget size
+ * changes.
+ *
+ * For widgets that uses another axis that can be scrolled and/or zoomed (like
+ * Widget_Curves), \ref vertical_adjustment should be used.
+ *
+ * \sa TimeModel
+ */
+class TimePlotData {
 	bool invalid;
 
+public:
 	etl::handle<TimeModel> time_model;
 
+	/// Current Time \sa TimeModel::get_time
 	synfig::Time time;
+	/// Start visible Time \sa TimeModel::get_visible_lower()
 	synfig::Time lower;
+	/// Final visible Time \sa TimeModel::get_visible_upper()
 	synfig::Time upper;
+	/// How many pixels per second
 	double k;
+	/// How long a pixel last. Inverse of \ref k
 	synfig::Time dt;
 
-	double extra_margin; //! pixels
-private:
+	/// How many extra pixels beyond regular bounds \sa set_extra_time_margin()
+	double extra_margin;
+	/// How long last the extra pixels
 	synfig::Time extra_time;
 	synfig::Time lower_ex;
 	synfig::Time upper_ex;
 
+private:
+	/// If vertical adjustment is set
 	bool has_vertical;
 	synfig::Real range_lower;
 	synfig::Real range_upper;
@@ -74,33 +95,48 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> vertical_adjustment;
 
 public:
-	TimePlotData(Gtk::Widget & widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment);
-
-	~TimePlotData();
+	/**
+	 * \param widget The widget that must zoom and scroll in sync with the timeline
+	 * \param vertical_adjustment If widget displays info in another axis that can be scrolled/zoomed
+	 */
+	TimePlotData(Gtk::Widget & widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment = Glib::RefPtr<Gtk::Adjustment>());
+	virtual ~TimePlotData();
 
 	void set_time_model(const etl::handle<TimeModel> &time_model);
 
+	/// Sets an extra margin, creating a new and wider range. \sa is_time_visible_extra()
 	void set_extra_time_margin(double margin);
 
-	bool is_time_visible(const synfig::Time & t) const;
+	/// Checks whether this data is valid (it has valid size and valid time info)
+	bool is_invalid() const;
 
+	/// If \ref t is in \ref lower - \ref upper range
+	bool is_time_visible(const synfig::Time & t) const;
+	/// If \ref t is in expanded range (\ref lower_ex - \ref upper_ex)
 	bool is_time_visible_extra(const synfig::Time & t) const;
 
 	bool is_y_visible(synfig::Real y) const;
 
+	/// What pixel time t is mapped to. Uses ::etl::round_to_int()
 	int get_pixel_t_coord(const synfig::Time & t) const;
 
+	/// Similar to get_pixel_t_coord(), but rounded by regular round()
+	/** Maybe it was an error and should be replaced by get_pixel_t_coord() */
+	double get_double_pixel_t_coord(const synfig::Time & t) const;
+
 	int get_pixel_y_coord(synfig::Real y) const;
+
+	/// What time a pixel represents.
+	synfig::Time get_t_from_pixel_coord(double pixel) const;
+
+	double get_y_from_pixel_coord(double pixel) const;
 
 private:
 	bool on_widget_resize(GdkEventConfigure * /*configure*/);
 
 	void recompute_time_bounds();
-
 	void recompute_geometry_data();
-
 	void recompute_extra_time();
-
 	void recompute_vertical();
 }; // END of class TimePlotData
 

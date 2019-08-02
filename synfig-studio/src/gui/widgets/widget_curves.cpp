@@ -252,7 +252,6 @@ Widget_Curves::clear() {
 		value_desc_changed.pop_back();
 	}
 	curve_list.clear();
-	time_plot_data->invalid = true;
 }
 
 void
@@ -352,7 +351,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	if (!time_plot_data->time_model || !curve_list.size())
 		return true;
 
-	if (time_plot_data->invalid)
+	if (time_plot_data->is_invalid())
 		return true;
 
 	cr->save();
