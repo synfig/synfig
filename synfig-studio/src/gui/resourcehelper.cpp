@@ -77,7 +77,7 @@ synfig::String studio::ResourceHelper::get_ui_path()
 #ifdef _WIN32
 # ifdef UI_DIR
 #  undef UI_DIR
-#  define UI_DIR "share/ui"
+#  define UI_DIR "share/synfig/ui"
 # endif
 #endif
 
