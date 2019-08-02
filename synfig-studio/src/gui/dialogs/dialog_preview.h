@@ -27,14 +27,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/adjustment.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/menu.h>
-#include <gtkmm/spinbutton.h>
+#include <gtkmm/builder.h>
+
 #include <gui/dialogsettings.h>
 
 #include "preview.h"
-#include <gui/widgets/widget_time.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +41,14 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace Gtk {
+class Adjustment;
+class CheckButton;
+}
+
 namespace studio {
+
+class Widget_Time;
 
 struct PreviewInfo
 {
@@ -85,31 +90,35 @@ protected:
 class Dialog_PreviewOptions : public Gtk::Dialog
 {
 	//all the info needed to construct a render description...
-	Glib::RefPtr<Gtk::Adjustment>	adj_zoom;	// factor at which to resize the window...
-
-	Glib::RefPtr<Gtk::Adjustment>	adj_fps;	// how often to take samples of the animation
+	Glib::RefPtr<Gtk::Adjustment> adj_zoom;	// factor at which to resize the window...
+	Glib::RefPtr<Gtk::Adjustment> adj_fps;	// how often to take samples of the animation
 	
-	studio::Widget_Time time_begin;
-	studio::Widget_Time time_end;
+	studio::Widget_Time * time_begin;
+	studio::Widget_Time * time_end;
 
-	Gtk::CheckButton check_overbegin;
-	Gtk::CheckButton check_overend;
+	Gtk::CheckButton * check_overbegin;
+	Gtk::CheckButton * check_overend;
 
 	DialogSettings	settings;
 
-	float	globalfps;
+	float globalfps;
 
 	// for finishing
 	void on_ok_pressed();
 	void on_cancel_pressed();
 
-	//for ui stuff
+	// for ui stuff
 	void on_overbegin_toggle();
 	void on_overend_toggle();
 
 	sigc::signal<void,const PreviewInfo &>	signal_finish_;
-public:
+
+	// private to force the use of create()
 	Dialog_PreviewOptions();
+	const Glib::RefPtr<Gtk::Builder>& builder;
+public:
+	Dialog_PreviewOptions(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
+	static Dialog_PreviewOptions * create(/*Gtk::Window& parent*/);
 	~Dialog_PreviewOptions();
 
 	float get_zoom() const { return adj_zoom->get_value(); }
@@ -121,17 +130,17 @@ public:
 	float get_global_fps() const { return globalfps; }
 	void set_global_fps(float f);
 
-	synfig::Time get_begintime() const { return time_begin.get_value(); }
-	void set_begintime(const synfig::Time &t) { time_begin.set_value(t); }
+	synfig::Time get_begintime() const { return time_begin->get_value(); }
+	void set_begintime(const synfig::Time &t) { time_begin->set_value(t); }
 
-	synfig::Time get_endtime() const { return time_end.get_value(); }
-	void set_endtime(const synfig::Time &t) { time_end.set_value(t); }
+	synfig::Time get_endtime() const { return time_end->get_value(); }
+	void set_endtime(const synfig::Time &t) { time_end->set_value(t); }
 
-	bool get_begin_override() const { return check_overbegin.get_active(); }
-	void set_begin_override(bool o) { check_overbegin.set_active(o); }
+	bool get_begin_override() const { return check_overbegin->get_active(); }
+	void set_begin_override(bool o) { check_overbegin->set_active(o); }
 
-	bool get_end_override() const { return check_overend.get_active(); }
-	void set_end_override(bool o) { check_overend.set_active(o); }
+	bool get_end_override() const { return check_overend->get_active(); }
+	void set_end_override(bool o) { check_overend->set_active(o); }
 	
 	sigc::signal<void,const PreviewInfo &>	&signal_finish() {return signal_finish_;}
 };

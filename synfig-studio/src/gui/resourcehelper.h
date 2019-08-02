@@ -31,8 +31,6 @@ namespace studio {
 class ResourceHelper
 {
 public:
-	ResourceHelper();
-
 	static synfig::String get_image_path();
 	static synfig::String get_image_path(const synfig::String& image_filename);
 

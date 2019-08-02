@@ -32,12 +32,16 @@
 #include <synfig/general.h>
 
 #include "dialogs/dialog_preview.h"
-#include "preview.h"
+#include <gtkmm/adjustment.h>
+#include <gtkmm/checkbutton.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/alignment.h>
-#include <gtkmm/frame.h>
-#include <gtkmm/box.h>
+
+#include <gui/widgets/widget_time.h>
 #include <gui/localization.h>
+
+#include "gui/resourcehelper.h"
+#include <glibmm/fileutils.h>
+#include <glibmm/markup.h>
 
 #endif
 
@@ -127,101 +131,81 @@ void Dialog_Preview::close_window_handler()
 	hide();
 }
 
-//dialog_previewoptions stuff
-Dialog_PreviewOptions::Dialog_PreviewOptions()
-:Dialog(_("Preview Options")),
-adj_zoom(Gtk::Adjustment::create(0.5,0.1,5.0,0.1,0.2)),
-adj_fps(Gtk::Adjustment::create(12,1,120,1,5)),
-check_overbegin(_("_Begin time"),false),
-check_overend(_("_End time"),false),
-settings(this,"prevoptions")
+static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
+	auto refBuilder = Gtk::Builder::create();
+	try
+	{
+		refBuilder->add_from_file(ResourceHelper::get_ui_path(filename));
+	}
+	catch(const Glib::FileError& ex)
+	{
+		synfig::error("FileError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		synfig::error("MarkupError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		synfig::error("BuilderError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	return refBuilder;
+}
+
+Dialog_PreviewOptions::Dialog_PreviewOptions(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade) :
+	Gtk::Dialog(cobject),
+	settings(this, "prevoptions"),
+	builder(refGlade)
 {
-	//framerate = 15.0f;
-	//zoom = 0.2f;
+	refGlade->get_widget("check_overbegin", check_overbegin);
+	refGlade->get_widget("check_overend", check_overend);
+	refGlade->get_widget("time_begin", time_begin);
+	refGlade->get_widget("time_end", time_end);
 
-	//set the fps of the time widgets
-	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	dialogPadding->set_padding(12, 12, 12, 12);
-	get_vbox()->add(*dialogPadding);
+	if (check_overbegin)
+		check_overbegin->signal_toggled().connect(sigc::mem_fun(*this, &Dialog_PreviewOptions::on_overbegin_toggle));
+	if (check_overend)
+		check_overend->signal_toggled().connect(sigc::mem_fun(*this, &Dialog_PreviewOptions::on_overend_toggle));
 
-	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
-	dialogPadding->add(*dialogBox);
+	Gtk::SpinButton * zoomSpinner;
+	refGlade->get_widget("zoom_spinner", zoomSpinner);
+	if (zoomSpinner)
+		adj_zoom = zoomSpinner->get_adjustment();
 
-	Gtk::Frame *generalFrame = manage(new Gtk::Frame(_("General settings")));
-	generalFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	((Gtk::Label *) generalFrame->get_label_widget())->set_markup(_("<b>General settings</b>"));
-	dialogBox->pack_start(*generalFrame, false, false, 0);
+	Gtk::SpinButton * fpsSpinner;
+	refGlade->get_widget("fps_spinner", fpsSpinner);
+	if (fpsSpinner)
+		adj_fps = fpsSpinner->get_adjustment();
 
-	Gtk::Alignment *generalPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	generalPadding->set_padding(6, 0, 24, 0);
-	generalFrame->add(*generalPadding);
+	Gtk::Button *button = nullptr;
 
-	Gtk::Table *generalTable = manage(new Gtk::Table(2, 2, false));
-	generalTable->set_row_spacings(6);
-	generalTable->set_col_spacings(12);
-	generalPadding->add(*generalTable);
+	refGlade->get_widget("cancel_button", button);
+	if (button)
+		button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_PreviewOptions::on_cancel_pressed));
 
-	Gtk::Label *zoomLabel = manage(new Gtk::Label(_("_Quality")));
-	zoomLabel->set_alignment(0, 0.5);
-	zoomLabel->set_use_underline(TRUE);
-	Gtk::SpinButton *zoomSpinner = manage(new Gtk::SpinButton(adj_zoom, 0.1, 2));
-	zoomLabel->set_mnemonic_widget(*zoomSpinner);
-	zoomSpinner->set_alignment(1);
-	generalTable->attach(*zoomLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	generalTable->attach(*zoomSpinner, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	refGlade->get_widget("ok_button", button);
+	if (button)
+		button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_PreviewOptions::on_ok_pressed));
 
-	Gtk::Label *fpsLabel = manage(new Gtk::Label(_("_FPS")));
-	fpsLabel->set_alignment(0, 0.5);
-	fpsLabel->set_use_underline(TRUE);
-	Gtk::SpinButton *fpsSpinner = manage(new Gtk::SpinButton(adj_fps, 1, 1));
-	fpsLabel->set_mnemonic_widget(*fpsSpinner);
-	fpsSpinner->set_alignment(1);
-	generalTable->attach(*fpsLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	generalTable->attach(*fpsSpinner, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-
-	Gtk::Frame *timeFrame = manage(new Gtk::Frame(_("Time settings")));
-	timeFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	((Gtk::Label *) timeFrame->get_label_widget())->set_markup(_("<b>Time settings</b>"));
-	dialogBox->pack_start(*timeFrame, false, false, 0);
-
-	Gtk::Alignment *timePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	timePadding->set_padding(6, 0, 24, 0);
-	timeFrame->add(*timePadding);
-
-	Gtk::Table *timeTable = manage(new Gtk::Table(2, 2, false));
-	timeTable->set_row_spacings(6);
-	timeTable->set_col_spacings(12);
-	timePadding->add(*timeTable);
-
-	check_overbegin.set_alignment(0, 0.5);
-	check_overbegin.set_use_underline(TRUE);
-	check_overend.set_alignment(0, 0.5);
-	check_overend.set_use_underline(TRUE);
-	time_begin.set_alignment(1);
-	time_end.set_alignment(1);
-	timeTable->attach(check_overbegin, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeTable->attach(time_begin, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeTable->attach(check_overend, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	timeTable->attach(time_end, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-
-	check_overbegin.signal_toggled().connect(sigc::mem_fun(*this,&Dialog_PreviewOptions::on_overbegin_toggle));
-	check_overend.signal_toggled().connect(sigc::mem_fun(*this,&Dialog_PreviewOptions::on_overend_toggle));
-
-	Gtk::Button *cancelButton = manage(new Gtk::Button(Gtk::StockID("gtk-cancel")));
-	cancelButton->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_PreviewOptions::on_cancel_pressed));
-	add_action_widget(*cancelButton, 1);
-	cancelButton->show();
-
-	Gtk::Button *okbutton = manage(new Gtk::Button(Gtk::StockID("gtk-go-forward")));
-	okbutton->set_label(_("Preview"));
-	okbutton->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_PreviewOptions::on_ok_pressed));
-	add_action_widget(*okbutton, 0);
-	okbutton->show();
-
-	time_begin.set_sensitive(false);
-	time_end.set_sensitive(false);
 	show_all();
 }
+
+Dialog_PreviewOptions* Dialog_PreviewOptions::create(/*Gtk::Window& parent*/)
+{
+	auto refBuilder = load_interface("preview_options.ui");
+	if (!refBuilder)
+		return nullptr;
+	Dialog_PreviewOptions * dialog = nullptr;
+	refBuilder->get_widget_derived("preview_options", dialog);
+//	if (dialog) {
+//		dialog->set_transient_for(parent);
+//	}
+	return dialog;
+}
+
 
 Dialog_PreviewOptions::~Dialog_PreviewOptions()
 {
@@ -250,17 +234,17 @@ Dialog_PreviewOptions::on_cancel_pressed()
 
 void Dialog_PreviewOptions::on_overbegin_toggle()
 {
-	time_begin.set_sensitive(get_begin_override());
+	time_begin->set_sensitive(get_begin_override());
 }
 
 void Dialog_PreviewOptions::on_overend_toggle()
 {
-	time_end.set_sensitive(get_end_override());
+	time_end->set_sensitive(get_end_override());
 }
 
 void studio::Dialog_PreviewOptions::set_global_fps(float f)
 {
 	globalfps = f;
-	time_begin.set_fps(f);
-	time_end.set_fps(f);
+	time_begin->set_fps(f);
+	time_end->set_fps(f);
 }

@@ -54,6 +54,9 @@ namespace studio {
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
 
+		//! Mandatory for constructing custom widgets from GTKBuilder files
+		void register_custom_widget_types();
+
 		static void show_dialog_input();
 		void on_recent_files_changed();
 		void on_dockable_registered(Dockable* dockable);
