@@ -42,6 +42,8 @@
 
 namespace studio {
 
+class TimePlotData;
+
 //! Design for the timeslider...
 //! Concept: Scalable ruler
 //!     Ticks are done every so often (30 s, 10 frames, 5 frames, etc.)
@@ -51,8 +53,6 @@ class Widget_Timeslider: public Gtk::DrawingArea
 {
 protected: // implementation that other interfaces can see
 	Glib::RefPtr<Pango::Layout> layout; // implementation awesomeness for text drawing
-
-	etl::handle<TimeModel> time_model;
 
 	Cairo::RefPtr<Cairo::SurfacePattern> play_bounds_pattern;
 
@@ -65,6 +65,8 @@ protected: // implementation that other interfaces can see
 	sigc::connection time_change;
 	sigc::connection time_bounds_change;
 
+	TimePlotData * time_plot_data;
+
 	virtual bool on_button_press_event(GdkEventButton *event); //for clicking
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
 	virtual bool on_motion_notify_event(GdkEventMotion* event); //for dragging
@@ -73,11 +75,13 @@ protected: // implementation that other interfaces can see
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
+	virtual bool on_configure_event(GdkEventConfigure * configure);
+
 public:
 	Widget_Timeslider();
 	~Widget_Timeslider();
 
-	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	const etl::handle<TimeModel>& get_time_model() const;
 	void set_time_model(const etl::handle<TimeModel> &x);
 };
 
