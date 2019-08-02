@@ -215,8 +215,11 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 	}
 };
 
+/// Helper class that handles widget geometry to related time and vice versa
 struct studio::TimePlotData {
 	bool invalid;
+
+	etl::handle<TimeModel> time_model;
 
 	Time time;
 	Time lower;
@@ -224,16 +227,140 @@ struct studio::TimePlotData {
 	double k;
 	Time dt;
 
+	double extra_margin; //! pixels
+private:
+	Time extra_time;
+	Time lower_ex;
+	Time upper_ex;
+
+	bool has_vertical;
 	Real range_lower;
 	Real range_upper;
 	double range_k;
 
-	TimePlotData() :
-		invalid(true)
-	{}
+	sigc::connection widget_resized;
+	sigc::connection time_model_changed;
+	sigc::connection vertical_changed;
+	sigc::connection vertical_value_changed;
+
+	Gtk::Widget &widget;
+	Glib::RefPtr<Gtk::Adjustment> vertical_adjustment;
+
+public:
+	TimePlotData(Gtk::Widget & widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment) :
+		invalid(true),
+		extra_margin(0),
+		has_vertical(false),
+		widget(widget),
+		vertical_adjustment(vertical_adjustment)
+	{
+		widget_resized = widget.signal_configure_event().connect(
+			sigc::mem_fun(*this, &TimePlotData::on_widget_resize) );
+
+		if (vertical_adjustment) {
+			vertical_changed = vertical_adjustment->signal_changed().connect(
+				sigc::mem_fun(*this, &TimePlotData::recompute_vertical) );
+			vertical_value_changed = vertical_adjustment->signal_value_changed().connect(
+				sigc::mem_fun(*this, &TimePlotData::recompute_vertical) );
+			recompute_vertical();
+		}
+	}
+
+	~TimePlotData()
+	{
+		widget_resized.disconnect();
+		time_model_changed.disconnect();
+		vertical_changed.disconnect();
+		vertical_value_changed.disconnect();
+	}
+
+	void set_time_model(const etl::handle<TimeModel> &time_model) {
+		if (this->time_model == time_model)
+			return;
+
+		time_model_changed.disconnect();
+
+		this->time_model = time_model;
+
+		if (time_model) {
+			time_model_changed = this->time_model->signal_changed().connect(
+				sigc::mem_fun(*this, &TimePlotData::recompute_time_bounds) );
+			invalid = false;
+		} else {
+			invalid = true;
+		}
+
+		recompute_time_bounds();
+	}
+
+	void set_extra_time_margin(double margin) {
+		extra_margin = margin;
+
+		recompute_extra_time();
+	}
+
+	bool on_widget_resize(GdkEventConfigure * /*configure*/) {
+		recompute_geometry_data();
+		return false;
+	}
+
+	void recompute_time_bounds() {
+		if (!time_model) {
+			time = lower = upper = 0;
+			invalid = true;
+			widget.queue_draw();
+			return;
+		}
+		time  = time_model->get_time();
+		lower = time_model->get_visible_lower();
+		upper = time_model->get_visible_upper();
+
+		if (lower >= upper) {
+			invalid = true;
+			widget.queue_draw();
+			return;
+		}
+
+		recompute_geometry_data(); // lower and upper change other fields
+	}
+
+	void recompute_geometry_data() {
+		k = widget.get_width()/(upper - lower);
+		dt = 1.0/k;
+
+		if (has_vertical) {
+			range_k = widget.get_height()/(range_upper - range_lower);
+		}
+
+		recompute_extra_time(); // k (and lower and upper) changes extra_time
+	}
+
+	void recompute_extra_time() {
+		extra_time = extra_margin/k;
+		lower_ex = lower - extra_time;
+		upper_ex = upper + extra_time;
+
+		widget.queue_draw();
+	}
+
+	void recompute_vertical() {
+		if (!vertical_adjustment) {
+			has_vertical = false;
+			return;
+		}
+		range_lower = vertical_adjustment->get_value();
+		range_upper = range_lower + vertical_adjustment->get_page_size();
+		range_k = widget.get_height()/(range_upper - range_lower);
+		has_vertical = true;
+		widget.queue_draw();
+	}
 
 	bool is_time_visible(const Time & t) {
 		return t >= lower && t <= upper;
+	}
+
+	bool is_time_visible_extra(const Time & t) {
+		return t >= lower_ex && t <= upper_ex;
 	}
 
 	bool is_y_visible(Real y) {
@@ -251,49 +378,14 @@ struct studio::TimePlotData {
 
 /* === M E T H O D S ======================================================= */
 
-void Widget_Curves::on_time_model_change()
-{
-	update_time_plot_data();
-	queue_draw();
-}
-
-bool Widget_Curves::on_resize(GdkEventConfigure *)
-{
-	update_time_plot_data();
-	queue_draw();
-	return false;
-}
-
-void Widget_Curves::update_time_plot_data()
-{
-	time_plot_data->time  = time_model->get_time();
-	time_plot_data->lower = time_model->get_visible_lower();
-	time_plot_data->upper = time_model->get_visible_upper();
-	time_plot_data->k = (double)get_width()/(double)(time_plot_data->upper - time_plot_data->lower);
-	time_plot_data->dt = 1.0/time_plot_data->k;
-
-	time_plot_data->range_lower = range_adjustment->get_value();
-	time_plot_data->range_upper = time_plot_data->range_lower + range_adjustment->get_page_size();
-	time_plot_data->range_k = (double)get_height()/(double)(time_plot_data->range_upper - time_plot_data->range_lower);
-
-	time_plot_data->invalid = false;
-}
-
 Widget_Curves::Widget_Curves():
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, 2))
 {
 	set_size_request(64, 64);
 
-	range_adjustment->signal_changed().connect(
-		sigc::mem_fun(*this, &Widget_Curves::on_time_model_change) );
-	range_adjustment->signal_value_changed().connect(
-		sigc::mem_fun(*this, &Widget_Curves::on_time_model_change) );
-	signal_configure_event().connect(
-		sigc::mem_fun(*this, &Widget_Curves::on_resize) );
-
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
 
-	time_plot_data = new TimePlotData();
+	time_plot_data = new TimePlotData(*this, range_adjustment);
 }
 
 Widget_Curves::~Widget_Curves() {
@@ -302,20 +394,15 @@ Widget_Curves::~Widget_Curves() {
 	delete time_plot_data;
 }
 
+const etl::handle<TimeModel>&Widget_Curves::get_time_model() const
+{
+	return time_plot_data->time_model;
+}
+
 void
 Widget_Curves::set_time_model(const etl::handle<TimeModel> &x)
 {
-	if (time_model == x) return;
-	time_changed.disconnect();
-	time_model_changed.disconnect();
-
-	time_model = x;
-	if (time_model) {
-		time_changed = time_model->signal_time_changed().connect(
-			sigc::mem_fun(*this, &Widget_Curves::on_time_model_change) );
-		time_model_changed = time_model->signal_changed().connect(
-			sigc::mem_fun(*this, &Widget_Curves::on_time_model_change) );
-	}
+	time_plot_data->set_time_model(x);
 }
 
 void
@@ -422,11 +509,11 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	get_style_context()->render_background(cr, 0, 0, w, h);
 
-	if (!time_model || !curve_list.size())
+	if (!time_plot_data->time_model || !curve_list.size())
 		return true;
 
 	if (time_plot_data->invalid)
-		update_time_plot_data();
+		return true;
 
 	cr->save();
 

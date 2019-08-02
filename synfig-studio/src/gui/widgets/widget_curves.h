@@ -55,19 +55,11 @@ private:
 
 	Glib::RefPtr<Gtk::Adjustment> range_adjustment;
 
-	etl::handle<TimeModel> time_model;
 	std::list<CurveStruct> curve_list;
 
-	sigc::connection time_changed;
-	sigc::connection time_model_changed;
 	std::list<sigc::connection> value_desc_changed;
 
 	TimePlotData * time_plot_data;
-
-	void on_time_model_change();
-	bool on_resize(GdkEventConfigure * 	configure_event);
-
-	void update_time_plot_data();
 
 public:
 	Widget_Curves();
@@ -75,7 +67,7 @@ public:
 
 	const Glib::RefPtr<Gtk::Adjustment>& get_range_adjustment() const { return range_adjustment; }
 
-	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	const etl::handle<TimeModel>& get_time_model() const;
 	void set_time_model(const etl::handle<TimeModel> &x);
 
 	void set_value_descs(const std::list<synfigapp::ValueDesc> &value_descs);
