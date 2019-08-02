@@ -52,9 +52,11 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, etl::handle<studio::Instance> selected_instance):
+VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+ etl::handle<studio::Instance> selected_instance, bool insideSwitch):
 	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
 	layer_bitmap_(my_layer_bitmap),
+	inside_Switch(insideSwitch),
 	instance(selected_instance),
 	adjustment_threshold(Gtk::Adjustment::create(8,1,10)),
 	entry_threshold(adjustment_threshold,1,0),
@@ -312,8 +314,16 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2.0);
 	action->set_param("pparea",toggle_pparea.get_state());
 	action->set_param("addborder",toggle_add_border.get_state());
+	etl::handle<synfig::Canvas> canvas;
+	if(inside_Switch)
+	{
+		canvas = layer_bitmap_->get_canvas()->parent();
+	}
+	else
+	{
+		canvas = layer_bitmap_->get_canvas();
+	}
 
-	etl::handle<synfig::Canvas> canvas = layer_bitmap_->get_canvas()->parent();
 	etl::handle<synfigapp::CanvasInterface> canvas_interface = instance->find_canvas_interface( canvas->get_non_inline_ancestor() );
 	action->set_param("canvas", canvas); 
 	action->set_param("canvas_interface", canvas_interface);
@@ -328,8 +338,6 @@ VectorizerSettings::on_convert_pressed()
 	{
 		return;
 	}
-	std::cout<<"Action is performed \n";
-
 	std::cout<<"Convert Pressed....";
 	hide();
 }

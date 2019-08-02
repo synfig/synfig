@@ -90,6 +90,7 @@ using namespace sigc;
 
 int studio::Instance::instance_count_=0;
 etl::handle<Layer_Bitmap> my_layer_bitmap;
+bool insideSwitch = false;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -1642,6 +1643,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 	int count =0; //will be used to count layers in the group
 
 	synfig::Layer::Handle layerfinal,child_layer;
+					insideSwitch = false;
 
 	//check if the layer is group layer
 	if (etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer)) 
@@ -1649,6 +1651,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 		synfig::Canvas::Handle canvas = paste->get_sub_canvas();
 			if(canvas)
 			{
+				insideSwitch = true;
 				for(IndependentContext i = canvas->get_independent_context(); *i; i++)
 				{
 					child_layer = (*i);
@@ -1662,7 +1665,14 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 	if (!file_system) return;
 
 	//if yes then the layer inside group should be processed not the group!
-	(count==1)? layerfinal = child_layer: layerfinal=layer;
+	if(count==1)
+	{
+		layerfinal = child_layer;
+	}
+	else
+	{
+		layerfinal = layer;
+	}
 
 	if (etl::handle<Layer_Bitmap> bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(child_layer)) 
 	{
@@ -1768,7 +1778,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 			Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
 			item2->set_label( (String(_("Convert to Vector"))).c_str() );
 			item2->signal_activate().connect(
-				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap) );
+				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap, insideSwitch) );
 			item2->show();
 			menu->append(*item2);
 		}
@@ -1812,7 +1822,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 			 		action_name2,
 			 		Gtk::Stock::CONVERT,
 			 		local_name2, local_name2 ),
-			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap) );
+			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,insideSwitch) );
 			 
 			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());

@@ -230,7 +230,7 @@ Action::Vectorization::perform()
 
     new_layer->set_description("Vectorized "+layer->get_description());
 	new_layer->set_param("canvas",child_canvas);
-    new_layer->set_canvas(layer->get_canvas()->parent() );
+    new_layer->set_canvas(get_canvas());
     get_canvas()->push_front(new_layer);
 
     for(int i=0;i < Result.size();i++)
