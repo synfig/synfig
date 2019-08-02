@@ -42,6 +42,7 @@
 
 #include "widget_canvastimeslider.h"
 
+#include "gui/timeplotdata.h"
 
 #endif
 
@@ -71,6 +72,8 @@ Widget_CanvasTimeslider::Widget_CanvasTimeslider():
 	tooltip.add(thumb);
 
 	add_events(Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
+
+	time_plot_data->set_extra_time_margin(2.0);
 }
 
 Widget_CanvasTimeslider::~Widget_CanvasTimeslider()
@@ -105,19 +108,17 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 	Cairo::RefPtr<Cairo::SurfacePattern> pattern;
 	Cairo::RefPtr<Cairo::ImageSurface> surface;
 	if ( get_width()
-	  && time_model
+	  && time_plot_data->time_model
 	  && canvas_view
 	  && canvas_view->get_canvas()
 	  && canvas_view->get_work_area()
 	  && canvas_view->get_work_area()->get_renderer_canvas() )
 	{
 		double x   = p[0];
-		double w   = (double)get_width();
-		Time lower = time_model->get_visible_lower();
-		Time upper = time_model->get_visible_upper();
-		if (lower < upper) {
-			synfig::Time time(x/w*(upper - lower) + lower);
-			time = time_model->round_time(time);
+
+		if (!time_plot_data->is_invalid()) {
+			synfig::Time time = time_plot_data->get_t_from_pixel_coord(x);
+			time = time_plot_data->time_model->round_time(time);
 			surface = canvas_view->get_work_area()->get_renderer_canvas()->get_thumb(time);
 			pattern = canvas_view->get_work_area()->get_background_pattern();
 		}
@@ -230,32 +231,23 @@ Widget_CanvasTimeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr
 {
 	Widget_Timeslider::draw_background(cr);
 
-	if (!time_model || !canvas_view || !canvas_view->get_work_area()) return;
+	if (!time_plot_data->time_model || !canvas_view || !canvas_view->get_work_area()) return;
 	Renderer_Canvas::Handle renderer_canvas = canvas_view->get_work_area()->get_renderer_canvas();
 	if (!renderer_canvas) return;
 
-	int w = get_width(), h = get_height();
-	if (w <= 0 || h <= 0) return;
+	int w = get_width(), height = get_height();
+	if (w <= 0 || height <= 0) return;
 
-	Time lower = time_model->get_visible_lower();
-	Time upper = time_model->get_visible_upper();
-	Time frame_duration = time_model->get_frame_duration();
-	if (lower >= upper) return;
-
-	double k = (double)w/(double)(upper - lower);
-	double extra_pixels = 1.0;
-	Time extra_time = extra_pixels*k;
-	Time lower_ex = lower - frame_duration - 2.0*extra_time;
-	Time upper_ex = upper + 2.0*extra_time;
+	Time frame_duration = time_plot_data->time_model->get_frame_duration();
+	if (time_plot_data->is_invalid()) return;
 
 	double top = 0.0;
-	double width = frame_duration*k + 1.0;
-	double height = (double)h;
+	double width = frame_duration*time_plot_data->k + 1.0;
 
 	Renderer_Canvas::StatusMap status_map;
 	renderer_canvas->get_render_status(status_map);
 	for(Renderer_Canvas::StatusMap::const_iterator i = status_map.begin(); i != status_map.end(); ++i) {
-		if (i->first < lower_ex || i->first > upper_ex) continue;
+		if (i->first < time_plot_data->lower_ex - frame_duration|| i->first > time_plot_data->upper_ex) continue;
 		cr->save();
 		switch(i->second) {
 		case Renderer_Canvas::FS_PartiallyDone : cr->set_source_rgba(0.4, 0.4, 0.4, 1.0); break;
@@ -263,7 +255,7 @@ Widget_CanvasTimeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr
 		case Renderer_Canvas::FS_Done          : cr->set_source_rgba(0.0, 0.8, 0.0, 1.0); break;
 		default                                : cr->set_source_rgba(0.0, 0.0, 0.0, 0.0); break;
 		}
-		cr->rectangle(((double)i->first - lower)*k, top, width, height);
+		cr->rectangle(time_plot_data->get_pixel_t_coord(i->first), top, width, height);
 		cr->fill();
 		cr->restore();
 	}
