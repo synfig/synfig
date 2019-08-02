@@ -231,6 +231,22 @@ struct studio::TimePlotData {
 	TimePlotData() :
 		invalid(true)
 	{}
+
+	bool is_time_visible(const Time & t) {
+		return t >= lower && t <= upper;
+	}
+
+	bool is_y_visible(Real y) {
+		return y >= range_lower && y <= range_upper;
+	}
+
+	int get_pixel_t_coord(const Time & t) {
+		return etl::round_to_int((t - lower) * k);
+	}
+
+	int get_pixel_y_coord(Real y) {
+		return etl::round_to_int((y - range_lower) * range_k);
+	}
 };
 
 /* === M E T H O D S ======================================================= */
@@ -416,7 +432,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	// Draw zero mark
 	cr->set_source_rgb(0.31, 0.31, 0.31);
-	cr->rectangle(0, etl::round_to_int((0.0 - time_plot_data->range_lower)*time_plot_data->range_k), w, 0);
+	cr->rectangle(0, time_plot_data->get_pixel_y_coord(0.0), w, 0);
 	cr->stroke();
 
 	// This try to find a valid canvas to show the keyframes of those
@@ -432,8 +448,8 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		for(KeyframeList::const_iterator i = canvas->keyframe_list().begin(); i != canvas->keyframe_list().end(); ++i) {
 			if (!i->get_time().is_valid())
 				continue;
-			int x = (i->get_time() - time_plot_data->lower)*time_plot_data->k;
-			if (i->get_time() >= time_plot_data->lower && i->get_time() <= time_plot_data->upper) {
+			if (time_plot_data->is_time_visible(i->get_time())) {
+				int x = time_plot_data->get_pixel_t_coord(i->get_time());
 				cr->set_source_rgb(0.63, 0.5, 0.5);
 				cr->rectangle(x, 0, 1, h);
 				cr->fill();
@@ -443,7 +459,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	// Draw current time
 	cr->set_source_rgb(0, 0, 1);
-	cr->rectangle(etl::round_to_int((double)(time_plot_data->time - time_plot_data->lower)*time_plot_data->k), 0, 0, h);
+	cr->rectangle(time_plot_data->get_pixel_t_coord(time_plot_data->time), 0, 0, h);
 	cr->stroke();
 
 	// reserve arrays for maximum number of channels
@@ -472,7 +488,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				range_max = std::max(range_max, y);
 				range_min = std::min(range_min, y);
-				points[c].push_back( Gdk::Point(j, etl::round_to_int((y - time_plot_data->range_lower)*time_plot_data->range_k)) );
+				points[c].push_back( Gdk::Point(j, time_plot_data->get_pixel_y_coord(y)) );
 			}
 		}
 
