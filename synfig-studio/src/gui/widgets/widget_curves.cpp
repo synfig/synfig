@@ -234,7 +234,8 @@ Widget_Curves::~Widget_Curves() {
 	delete time_plot_data;
 }
 
-const etl::handle<TimeModel>&Widget_Curves::get_time_model() const
+const etl::handle<TimeModel>&
+Widget_Curves::get_time_model() const
 {
 	return time_plot_data->time_model;
 }
