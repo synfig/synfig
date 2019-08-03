@@ -25,6 +25,8 @@ class Canvas:
         self.extract_defs(self.defs)
         self.layers = []
         self.extract_layers(self.layers)
+        self.bones = {}
+        self.extract_bones(self.bones)
         self.set_name()
 
     def set_name(self):
@@ -75,6 +77,18 @@ class Canvas:
         for child in self.canvas:
             if child.tag == "layer":
                 layer_list.append(Layer(child, self))
+
+    def extract_bones(self, bones_dict):
+        """
+        Will store all the bones in a dictionary
+        """
+        for chld in self.canvas:
+            if chld.tag == "bones":
+                bones = chld
+
+                for child in bones:
+                    key = child.attrib["guid"]
+                    bones_dict[key] = child
 
     def __getitem__(self, itr):
         """
