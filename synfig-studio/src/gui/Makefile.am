@@ -64,6 +64,7 @@ OTHER_HH = \
 	statemanager.h \
 	timeplotdata.h \
 	valuelink.h \
+	waypointrenderer.h \
 	workarea.h \
 	workspacehandler.h \
 	main_win32.h \
@@ -93,6 +94,7 @@ OTHER_CC = \
 	statemanager.cpp \
 	timeplotdata.cpp \
 	valuelink.cpp \
+	waypointrenderer.cpp \
 	workarea.cpp \
 	workspacehandler.cpp \
 	main_win32.cpp \
