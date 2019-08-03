@@ -10,9 +10,6 @@ add_test(test_clock clock)
 add_executable(handle handle.cpp)
 add_test(test_handle handle)
 
-add_executable(random random.cpp)
-add_test(test_random random)
-
 add_executable(hermite hermite.cpp)
 add_test(test_hermite hermite)
 

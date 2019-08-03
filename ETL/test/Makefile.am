@@ -17,7 +17,6 @@ TESTS = \
 	clock \
 	handle \
 	angle \
-	random \
 	hermite \
 	stringf \
 	pen \
@@ -32,7 +31,6 @@ check_PROGRAMS = \
 	handle \
 	clock \
 	angle \
-	random \
 	hermite \
 	stringf \
 	pen \
@@ -49,7 +47,6 @@ surface_SOURCES=surface.cpp
 pen_SOURCES=pen.cpp
 handle_SOURCES=handle.cpp
 angle_SOURCES=angle.cpp
-random_SOURCES=random.cpp
 fixed_SOURCES=fixed.cpp
 smach_SOURCES=smach.cpp
 clock_SOURCES=clock.cpp
