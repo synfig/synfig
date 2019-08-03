@@ -50,6 +50,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/splash.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/statemanager.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuelink.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/waypointrenderer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/workarea.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/workspacehandler.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/main_win32.cpp"
