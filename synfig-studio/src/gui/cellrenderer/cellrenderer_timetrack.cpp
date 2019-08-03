@@ -386,7 +386,7 @@ CellRenderer_TimeTrack::render_vfunc(
 					cell_area.get_height() - 2 );
 				TimePoint tp_copy = *i;
 				tp_copy.set_time(t);
-				WaypointRenderer::render_time_point_to_window(cr, area, tp_copy, selected);
+				WaypointRenderer::render_time_point_to_window(cr, area, tp_copy, selected, false);
 			}
 		}
 
@@ -397,7 +397,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				cell_area.get_y() + 1,
 				cell_area.get_height() - 2,
 				cell_area.get_height() - 2 );
-			WaypointRenderer::render_time_point_to_window(cr, area, *i, true);
+			WaypointRenderer::render_time_point_to_window(cr, area, *i, true, false);
 		}
 	}
 

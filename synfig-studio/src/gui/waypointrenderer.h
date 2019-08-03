@@ -46,7 +46,8 @@ public:
 		const Cairo::RefPtr<Cairo::Context> &cr,
 		const Gdk::Rectangle& area,
 		const synfig::TimePoint &tp,
-		bool selected );
+		bool selected,
+		bool hover);
 }; // END of class WaypointRenderer
 
 }; // END of namespace studio

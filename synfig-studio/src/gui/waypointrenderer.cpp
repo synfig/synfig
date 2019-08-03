@@ -83,14 +83,32 @@ color_darken(Gdk::RGBA x, float amount)
 	return x;
 }
 
+static Gdk::RGBA
+color_shift(Gdk::RGBA x, double amount)
+{
+	x.set_red(x.get_red() + amount);
+	x.set_green(x.get_green() + amount);
+	x.set_blue(x.get_blue() + amount);
+	return x;
+}
+
+static Gdk::RGBA
+get_black(bool hover)
+{
+	if (!hover)
+		return Gdk::RGBA("#2e3436"); // it's black, trust me
+	return Gdk::RGBA("#4e5456");
+}
+
 void
 WaypointRenderer::render_time_point_to_window(
 	const Cairo::RefPtr<Cairo::Context> &cr,
 	const Gdk::Rectangle& area,
 	const TimePoint &tp,
-	bool selected )
+	bool selected,
+	bool hover)
 {
-	const Gdk::RGBA black("#2e3436"); // it's black, trust me
+	const Gdk::RGBA black = get_black(hover);
 
 	if(selected)
 		cr->set_line_width(2.0);
@@ -104,6 +122,7 @@ WaypointRenderer::render_time_point_to_window(
 	color=get_interp_color(tp.get_before());
 	color=color_darken(color,1.0f);
 	if(selected)color=color_darken(color,1.3f);
+	if(hover) color = color_shift(color, 0.2);
 	cr->set_source_rgb(color.get_red(),color.get_green(),color.get_blue());
 
 	switch(tp.get_before())
@@ -194,6 +213,7 @@ WaypointRenderer::render_time_point_to_window(
 	color=get_interp_color(tp.get_after());
 	color=color_darken(color,0.8f);
 	if(selected)color=color_darken(color,1.3f);
+	if(hover) color = color_shift(color, 0.2);
 	cr->set_source_rgb(color.get_red(),color.get_green(),color.get_blue());
 
 	switch(tp.get_after())
