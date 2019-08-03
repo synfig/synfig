@@ -44,6 +44,7 @@ const double Polyg_eps_max = 1;     // Sequence simplification max error
 const double Polyg_eps_mul = 0.75;  // Sequence simpl. thickness-multiplier error
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
 synfig::CanvasHandle canvas;
+synfig::Point topleft(0,0),bottomright(0,0);
 /* === P R O C E D U R E S ================================================= */
 etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
@@ -57,6 +58,13 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   {
     segment[i] = segment[i]/unit_size;
   }
+  //shift to fit to image
+  for (int x = 0; x < segment.size(); x++)
+  {
+    segment[x][0]+=topleft[0];//x from TL
+    segment[x][1]+=bottomright[1];// y from BR
+  }
+   
   switch(segment.size())// in any case size>=3
   {
     case 3:{//std::cout<<"This is case 3\n";
@@ -933,6 +941,8 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
   double penalty                          = g.currConfig->m_penalty;
 
   unsigned int i, j, k;
+  topleft = image->param_tl.get(synfig::Point());
+  bottomright = image->param_br.get(synfig::Point());
   canvas = image->get_canvas();
   // Convert single sequences
   for (i = 0; i < singleSequences.size(); ++i) 
