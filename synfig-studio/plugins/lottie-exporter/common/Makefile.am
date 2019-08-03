@@ -3,6 +3,7 @@
 PLUGIN_NAME = common
 
 EXTRA_FILES = \
+			  Bline.py \
 			  Canvas.py \
 			  Color.py \
 			  Count.py \
