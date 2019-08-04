@@ -48,6 +48,10 @@
 #include "widget_curves.h"
 #include "gui/timeplotdata.h"
 
+#include "gui/waypointrenderer.h"
+#include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -219,13 +223,15 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 /* === M E T H O D S ======================================================= */
 
 Widget_Curves::Widget_Curves():
-	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, 2))
+	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, 2)),
+	waypoint_edge_length(16)
 {
 	set_size_request(64, 64);
 
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
 
 	time_plot_data = new TimePlotData(*this, range_adjustment);
+	time_plot_data->set_extra_time_margin(16/2);
 }
 
 Widget_Curves::~Widget_Curves() {
@@ -439,6 +445,27 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			cr->move_to(1, points[c][0].get_y() + 1);
 			layout->show_in_cairo_context(cr);
 		}
+
+		// Draw waypoints
+		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *_data) -> bool
+		{
+			int px = time_plot_data->get_pixel_t_coord(t);
+			Gdk::Rectangle area(
+						0 - waypoint_edge_length/2 + 1 + px,
+						0, //0 - waypoint_edge_length/2 + 1 + py,
+						waypoint_edge_length - 2,
+						waypoint_edge_length - 2);
+			bool selected = false;
+			bool hover = false;
+			for (int c = 0; c < channels; ++c) {
+				Real y = curve_it->get_value(c, t, time_plot_data->dt);
+				int py = time_plot_data->get_pixel_y_coord(y);
+				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
+				WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+			}
+			return false;
+		});
 	}
 
 	if (!curve_list.empty() && range_min < range_max)
