@@ -30,6 +30,10 @@
 #include <cairomm/context.h>
 
 #include <synfig/node.h>
+
+#include "synfigapp/value_desc.h"
+#include "gui/timeplotdata.h"
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -48,6 +52,20 @@ public:
 		const synfig::TimePoint &tp,
 		bool selected,
 		bool hover);
+
+	//! Callback called at every iteration of \ref foreach_visible_waypoint
+	//! \param tp A visible TimePoint
+	//! \param t The current time (including effects of layers: offset and zoom)
+	//! \param data Custom data passed to \ref foreach_visible_waypoint
+	/// \return Callback should return true to stop for-each loop
+	typedef bool ForeachCallback(const synfig::TimePoint &tp, const synfig::Time &t, void *data);
+
+	static void foreach_visible_waypoint(
+		const synfigapp::ValueDesc &value_desc,
+		const studio::TimePlotData &time_plot_data,
+		std::function<ForeachCallback> foreach_callback,
+		void* data = nullptr);
+
 }; // END of class WaypointRenderer
 
 }; // END of namespace studio

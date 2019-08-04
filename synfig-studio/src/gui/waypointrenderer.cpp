@@ -35,11 +35,14 @@
 
 #include <synfig/interpolation.h>
 
+#include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
+using namespace synfigapp;
 
 /* === M A C R O S ========================================================= */
 
@@ -299,5 +302,92 @@ WaypointRenderer::render_time_point_to_window(
 	}
 }
 
+
+static Time
+get_time_offset_from_vdesc(const ValueDesc &v)
+{
+#ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+	if (v.get_value_type() != type_canvas || getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+		return Time::zero();
+
+	if (!v.get_value().get(Canvas::Handle()))
+		return Time::zero();
+
+	if (!v.parent_is_layer())
+		return Time::zero();
+
+	synfig::Layer::Handle layer = v.get_layer();
+
+	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		return Time::zero();
+
+	return layer->get_param("time_offset").get(Time());
+#else // ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+	return synfig::Time::zero();
+#endif
+}
+
+static Time
+get_time_dilation_from_vdesc(const ValueDesc &v)
+{
+#ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+	if (v.get_value_type() != type_canvas || getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+		return Time(1.0);
+
+	if (!v.get_value().get(Canvas::Handle()))
+		return Time(1.0);
+
+	if (!v.parent_is_layer())
+		return Time(1.0);
+
+	Layer::Handle layer = v.get_layer();
+
+	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		return Time(1.0);
+
+	return layer->get_param("time_dilation").get(Time());
+#else // ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+	return Time(1.0);
+#endif
+}
+
+static const Node::time_set*
+get_times_from_vdesc(const ValueDesc &v)
+{
+	if (v.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+		if(Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle()))
+			return &canvasparam->get_times();
+
+	//we want a dynamic list entry to override the normal...
+	if (v.parent_is_value_node())
+		if (ValueNode_DynamicList *parent_value_node = dynamic_cast<ValueNode_DynamicList *>(v.get_parent_value_node().get()))
+			return &parent_value_node->list[v.get_index()].get_times();
+
+	if (ValueNode *base_value = v.get_value_node().get()) //don't render stuff if it's just animated...
+		return &base_value->get_times();
+
+	return nullptr;
+}
+
+void
+WaypointRenderer::foreach_visible_waypoint(const synfigapp::ValueDesc &value_desc,
+		const studio::TimePlotData &time_plot_data,
+		std::function<ForeachCallback> foreach_callback,
+		void* data)
+{
+	if (const Node::time_set * const tset = get_times_from_vdesc(value_desc)) {
+		const Time time_offset = get_time_offset_from_vdesc(value_desc);
+		const Time time_dilation = get_time_dilation_from_vdesc(value_desc);
+		const double time_k = time_dilation == Time::zero() ? 1.0 : 1.0/(double)time_dilation;
+
+		for (const auto & waypoint : *tset) {
+			Time t = (waypoint.get_time() - time_offset)*time_k;
+			if (time_plot_data.is_time_visible_extra(t)) {
+				if (foreach_callback(waypoint, t, data))
+					break;
+			}
+		}
+	}
+}
 
 }

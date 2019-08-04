@@ -61,6 +61,8 @@ private:
 
 	TimePlotData * time_plot_data;
 
+	int waypoint_edge_length;
+
 public:
 	Widget_Curves();
 	~Widget_Curves();
