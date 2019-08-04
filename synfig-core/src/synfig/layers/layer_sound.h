@@ -52,6 +52,7 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 	virtual Vocab get_param_vocab()const;
 	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 }; // END of class Layer_SolidColor
 
 }; // END of namespace synfig

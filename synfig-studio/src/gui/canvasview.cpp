@@ -2276,7 +2276,7 @@ CanvasView::on_time_changed()
 		work_area->queue_draw();
 	}
 
-	if (time_model()->almost_equal_to_current(soundProcessor.get_position(), Time(0.5)))
+	if (!time_model()->almost_equal_to_current(soundProcessor.get_position(), Time(0.5)))
 		soundProcessor.set_position(time);
 
 	#ifdef WITH_JACK

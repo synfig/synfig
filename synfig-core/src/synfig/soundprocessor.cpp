@@ -162,11 +162,10 @@ void SoundProcessor::set_position(Time value)
 	if (dt >= Time(-0.01) && dt <= Time(0.01))
 		return;
 	if (internal->last_track != NULL) {
-		bool playing = internal->playing;
-		set_playing(false);
+		bool restart = internal->playing && internal->consumer;
+		if (restart) set_playing(false);
 		internal->last_track->seek( (int)round(value*internal->profile.fps()) );
-		internal->last_track->set_speed(1.0);
-		set_playing(playing);
+		if (restart) set_playing(true);
 	}
 }
 
@@ -179,6 +178,7 @@ void SoundProcessor::set_playing(bool value)
 	internal->playing = value;
 	if (internal->playing) {
 		if (internal->last_track != NULL) {
+			internal->last_track->set_speed(1.0);
 			internal->consumer = new Mlt::Consumer(internal->profile, "sdl_audio");
 			internal->consumer->connect(*internal->last_track);
 			internal->consumer->start();

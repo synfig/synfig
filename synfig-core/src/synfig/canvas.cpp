@@ -1753,5 +1753,6 @@ void
 Canvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 {
 	for(IndependentContext c = begin(); *c; ++c)
-		(*c)->fill_sound_processor(soundProcessor);
+		if ((*c)->active())
+			(*c)->fill_sound_processor(soundProcessor);
 }
