@@ -66,18 +66,10 @@ extern "C" {
 // Prefer prototypes from glibc headers, since defining them ourselves
 // works around glibc security mechanisms
 
-#ifdef HAVE_VASPRINTF	// This is the preferred method
- #ifndef __GLIBC__
-  extern int vasprintf(char **,const char *,va_list)ETL_NO_THROW;
- #endif
-#else
-
-# ifdef HAVE_VSNPRINTF	// This is the secondary method
+#ifdef HAVE_VSNPRINTF	// This is the preferred method
  #ifndef __GLIBC__
   extern int vsnprintf(char *,size_t,const char*,va_list)ETL_NO_THROW;
  #endif
-# endif
-
 #endif
 
 #ifdef HAVE_VSSCANF
@@ -106,15 +98,6 @@ _ETL_BEGIN_NAMESPACE
 inline std::string
 vstrprintf(const char *format, va_list args)
 {
-#ifdef HAVE_VASPRINTF	// This is the preferred method (and safest)
-	char *buffer;
-	int count = vasprintf(&buffer,format,args);
-	if (count < 0) return ""; // error occurred
-
-	std::string rv(buffer, count); // passing size (count) for faster copying
-	free(buffer);
-	return rv;
-#else
 #ifdef HAVE_VSNPRINTF	// This is the secondary method (Safe, but bulky)
 #warning etl::vstrprintf() has a maximum size of ETL_STRPRINTF_MAX_LENGTH in this configuration.
 #ifdef ETL_THREAD_SAFE
@@ -136,7 +119,6 @@ vstrprintf(const char *format, va_list args)
 #endif
 	vsprintf(buffer,format,args);
 	return buffer;
-#endif
 #endif
 }
 

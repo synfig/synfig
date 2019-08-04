@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 project(ETL)
 
@@ -7,8 +7,8 @@ if (CMAKE_USE_PTHREADS_INIT)
     set(HAVE_LIBPTHREAD ON)
 endif()
 
-# TODO: check for it
-set(HAVE_VASPRINTF ON)
+include(CheckCXXSymbolExists)
+check_cxx_symbol_exists(vsnprintf stdio.h HAVE_VSNPRINTF)
 
 ## for tests
 include_directories(${CMAKE_SOURCE_DIR})

@@ -1,2 +1,2 @@
 #cmakedefine HAVE_LIBPTHREAD
-#cmakedefine HAVE_VASPRINTF
+#cmakedefine HAVE_VSNPRINTF
