@@ -63,6 +63,9 @@ private:
 
 	int waypoint_edge_length;
 
+	const synfig::TimePoint * hovered_point;
+	int hovered_curve;
+
 public:
 	Widget_Curves();
 	~Widget_Curves();

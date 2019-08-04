@@ -224,11 +224,13 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 
 Widget_Curves::Widget_Curves():
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, 2)),
-	waypoint_edge_length(16)
+	waypoint_edge_length(16),
+	hovered_point(nullptr),
+	hovered_curve(-1)
 {
 	set_size_request(64, 64);
 
-	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
+	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK);
 
 	time_plot_data = new TimePlotData(*this, range_adjustment);
 	time_plot_data->set_extra_time_margin(16/2);
@@ -259,6 +261,8 @@ Widget_Curves::clear() {
 		value_desc_changed.pop_back();
 	}
 	curve_list.clear();
+	hovered_curve = -1;
+	hovered_point = nullptr;
 }
 
 void
@@ -266,6 +270,8 @@ Widget_Curves::refresh()
 {
 	for(std::list<CurveStruct>::iterator i = curve_list.begin(); i != curve_list.end(); ++i)
 		i->clear_all_values();
+	hovered_curve = -1;
+	hovered_point = nullptr;
 	queue_draw();
 }
 
@@ -337,6 +343,39 @@ Widget_Curves::on_event(GdkEvent *event)
 				break;
 		}
 		break;
+	}
+	case GDK_MOTION_NOTIFY: {
+		auto previous_hovered_point = hovered_point;
+		hovered_point = nullptr;
+		for(std::list<CurveStruct>::iterator curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
+			int channels = (int)curve_it->channels.size();
+			int pointer_x, pointer_y;
+			get_pointer(pointer_x, pointer_y);
+
+			WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
+				[&](const synfig::TimePoint &tp, const synfig::Time &t, void *_data) -> bool
+			{
+				int px = time_plot_data->get_pixel_t_coord(t);
+				for (int c = 0; c < channels; ++c) {
+					Real y = curve_it->get_value(c, t, time_plot_data->dt);
+					int py = time_plot_data->get_pixel_y_coord(y);
+
+					if (pointer_x > px - waypoint_edge_length/2 && pointer_x <= px + waypoint_edge_length/2) {
+						if (pointer_y > py - waypoint_edge_length/2 && pointer_y <= py + waypoint_edge_length/2) {
+							hovered_point = &tp;
+							hovered_curve = c;
+							return true;
+						}
+					}
+				}
+				return false;
+			});
+
+			if (hovered_point)
+				break;
+		}
+		if (previous_hovered_point != hovered_point)
+			queue_draw();
 	}
 	default:
 		break;
@@ -457,7 +496,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 						waypoint_edge_length - 2,
 						waypoint_edge_length - 2);
 			bool selected = false;
-			bool hover = false;
+			bool hover = &tp == hovered_point;
 			for (int c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				int py = time_plot_data->get_pixel_y_coord(y);
