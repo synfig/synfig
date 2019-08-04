@@ -9,3 +9,5 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_subdirectory(src)
 add_subdirectory(images)
+add_subdirectory(ui)
+add_subdirectory(sounds)
