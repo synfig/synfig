@@ -26,8 +26,6 @@ AC_DEFUN([ETL_DEPS],
 	AC_CHECK_FUNCS([QueryPerformanceCounter])
 	
 	AC_CHECK_FUNCS([gettimeofday])
-	AC_CHECK_FUNCS([sscanf])
-	AC_CHECK_FUNCS([vsscanf])
 ])
 
 AC_DEFUN([USING_ETL],

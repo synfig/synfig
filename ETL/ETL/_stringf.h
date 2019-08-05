@@ -41,10 +41,6 @@
 
 /* === M A C R O S ========================================================= */
 
-#ifndef ETL_STRPRINTF_MAX_LENGTH
-#define ETL_STRPRINTF_MAX_LENGTH	(800)
-#endif
-
 #ifdef _WIN32
 #define POPEN_BINARY_READ_TYPE "rb"
 #define POPEN_BINARY_WRITE_TYPE "wb"
@@ -56,33 +52,7 @@
 /* === T Y P E D E F S ===================================================== */
 
 extern "C" {
-
-#if defined(__APPLE__) || defined(__CYGWIN__) || defined(_WIN32)
-#define ETL_NO_THROW
-#else
-#define ETL_NO_THROW throw()
-#endif
-
-// Prefer prototypes from glibc headers, since defining them ourselves
-// works around glibc security mechanisms
-
-#ifdef HAVE_VSSCANF
- #ifndef __GLIBC__
-  #ifndef _WIN32
-   extern int vsscanf(const char *,const char *,va_list)ETL_NO_THROW;
-  #endif
- #endif
-#else
-#define ETL_NO_VSTRSCANF
-#ifdef HAVE_SSCANF
- #ifndef __GLIBC__
-  extern int sscanf(const char *buf, const char *format, ...)ETL_NO_THROW;
- #endif
-#endif
-#endif
-
 #include <unistd.h>
-
 }
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -116,7 +86,6 @@ strprintf(const char *format, ...)
 	return buf;
 }
 
-#ifndef ETL_NO_VSTRSCANF
 inline int
 vstrscanf(const std::string &data, const char*format, va_list args)
 {
@@ -132,16 +101,18 @@ strscanf(const std::string &data, const char*format, ...)
 	va_end(args);
 	return buf;
 }
-#else
-
-/* #if defined (HAVE_SSCANF) && defined (__GNUC__) */
-#define strscanf(data,format,...) sscanf(data.c_str(),format,__VA_ARGS__)
-/* #endif */
-#endif
 
 
-#define stratof(X) (atof((X).c_str()))
-#define stratoi(X) (atoi((X).c_str()))
+inline double stratof(const std::string &str)
+{
+	return atof(str.c_str());
+}
+
+inline double stratoi(const std::string &str)
+{
+	return atoi(str.c_str());
+}
+
 
 inline bool is_separator(char c)
 {
