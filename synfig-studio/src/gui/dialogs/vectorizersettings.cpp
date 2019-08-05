@@ -135,7 +135,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	Centerline_setting_grid->attach(*thickness_label, 0, 3, 1, 1);
 	Centerline_setting_grid->attach(entry_maxthickness, 1, 3, 1, 1);
 
-	Gtk::Label *ppa_label = manage(new Gtk::Label(_("_Preserve Painted Areas"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	Gtk::Label *ppa_label = manage(new Gtk::Label(_("_Preserve Painted Areas(Not yet working)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	ppa_label->set_mnemonic_widget(toggle_pparea);
 	ppa_label->set_margin_right(10);
 
@@ -143,7 +143,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	Centerline_setting_grid->attach(*ppa_label, 0, 6, 1, 1);
 	Centerline_setting_grid->attach(toggle_pparea, 1, 6, 1, 1);
 	
-	Gtk::Label *add_border_label = manage(new Gtk::Label(_("_Add Border"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	Gtk::Label *add_border_label = manage(new Gtk::Label(_("_Add Border(Not yet working)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	add_border_label->set_mnemonic_widget(toggle_add_border);
 	add_border_label->set_margin_right(10);
 
@@ -253,47 +253,6 @@ VectorizerSettings::on_finished()
 // after conversion is finished
 }
 
-// CenterlineConfiguration VectorizerSettings::getCenterlineConfiguration( ) const 
-// {
-//   CenterlineConfiguration conf;
-
-//   conf.m_outline      = false;
-//   conf.m_threshold    = ((int)adjustment_threshold->get_value()) * 25;
-//   conf.m_penalty      = 10 - ((int)adjustment_accuracy->get_value());  // adjustment_accuracy in [1,10]
-//   conf.m_despeckling  = ((int)adjustment_despeckling->get_value()) * 2;
-//   conf.m_maxThickness = ((int)adjustment_maxthickness->get_value()) / 2.0;
-//   conf.m_thicknessRatio = 1.0;
-//   conf.m_leaveUnpainted = toggle_pparea.get_state();
-//   conf.m_makeFrame      = toggle_add_border.get_state();
-//   conf.m_naaSource      = false;//currently not in use
-
-//   return conf;
-// }
-
-// NewOutlineConfiguration VectorizerSettings::getOutlineConfiguration(
-//     double frame) const {
-//   NewOutlineConfiguration conf;
-
-//    conf.m_outline          = true;
-// //   conf.m_despeckling      = m_oDespeckling;
-// //   conf.m_adherenceTol     = m_oAdherence * 0.01;
-// //   conf.m_angleTol         = m_oAngle / 180.0;
-// //   conf.m_relativeTol      = m_oRelative * 0.01;
-// //   conf.m_mergeTol         = 5.0 - m_oAccuracy * 0.5;
-// //   conf.m_leaveUnpainted   = !m_oPaintFill;
-// //   conf.m_maxColors        = m_oMaxColors;
-// //   conf.m_transparentColor = m_oTransparentColor;
-// //   conf.m_toneTol          = m_oToneThreshold;
-
-//   return conf;
-// }
-
-// void
-// VectorizerSettings::doVectorize(const VectorizerConfiguration &conf) 
-// {
-//   studio::VectorizerCore vCore;
-//   vCore.vectorize(layer_bitmap_, conf);
-// }
 
 void
 VectorizerSettings::on_convert_pressed()

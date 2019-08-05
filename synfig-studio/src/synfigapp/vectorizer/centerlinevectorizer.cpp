@@ -83,19 +83,19 @@ std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(et
   // partial progresses
   SkeletonList *skeletons = studio::skeletonize(polygons, this, globals);
 
-  // for (SkeletonList::iterator currGraphPtr = skeletons->begin(); currGraphPtr != skeletons->end(); ++currGraphPtr) 
-  // {
-  //   std::cout<<"Skeleton data\n";
-  //   SkeletonGraph &currGraph   = **currGraphPtr;
-  //   std::cout<<"Link Count :"<<currGraph.getLinksCount()<<"Node Count :"<<currGraph.getNodesCount()<<"\n";
-  //   for (int i = 0; i < currGraph.getNodesCount(); ++i)
-  //   {
+  for (SkeletonList::iterator currGraphPtr = skeletons->begin(); currGraphPtr != skeletons->end(); ++currGraphPtr) 
+  {
+    std::cout<<"Skeleton data\n";
+    SkeletonGraph &currGraph   = **currGraphPtr;
+    std::cout<<"Link Count :"<<currGraph.getLinksCount()<<"Node Count :"<<currGraph.getNodesCount()<<"\n";
+    for (int i = 0; i < currGraph.getNodesCount(); ++i)
+    {
 
-  //     std::cout<<"m_content :"<<currGraph.getNode(i)->operator[](0) <<", "<<currGraph.getNode(i)->operator[](1)<<", "
-  //     <<currGraph.getNode(i)->operator[](2)<<"\n";
+      std::cout<<"m_content :"<<currGraph.getNode(i)->operator[](0) <<", "<<currGraph.getNode(i)->operator[](1)<<", "
+      <<currGraph.getNode(i)->operator[](2)<<"\n";
 
-  //   }
-  // }
+    }
+  }
 
   if (isCanceled()) 
   {
@@ -176,6 +176,7 @@ std::vector< etl::handle<synfig::Layer> > VectorizerCore::vectorize(const etl::h
   {
     Handle img2(img);
     result = centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c));
+    std::cout<<"After centerlineVectorize result.size(): "<<result.size()<<"\n";
     return result;
     // if (vi) {
     //   for (int i = 0; i < (int)vi->getStrokeCount(); ++i) {
