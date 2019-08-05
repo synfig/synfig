@@ -296,7 +296,10 @@ DockBook::on_switch_page(Gtk::Widget* page, guint page_num)
 	Notebook::on_switch_page(page, page_num);
 }
 
-void DockBook::set_dock_area_visibility(bool visible)
+void DockBook::set_dock_area_visibility(bool visible, DockBook* source)
 {
+	if (visible && source == this && get_n_pages() == 1)
+		return;
+
 	dock_area->set_visible(visible);
 }

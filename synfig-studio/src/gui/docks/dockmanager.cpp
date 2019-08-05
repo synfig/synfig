@@ -716,7 +716,7 @@ std::string DockManager::layout_from_template(const std::string &tpl, float dx, 
 	return res;
 }
 
-void DockManager::set_dock_area_visibility(bool visible)
+void DockManager::set_dock_area_visibility(bool visible, DockBook* source)
 {
 	for(auto iter=dockable_list_.begin();iter!=dockable_list_.end();++iter) {
 		Dockable * dockable = *iter;
@@ -724,7 +724,7 @@ void DockManager::set_dock_area_visibility(bool visible)
 			continue;
 		DockBook * book = dynamic_cast<DockBook*>((*iter)->get_parent());
 		if (book)
-			book->set_dock_area_visibility(visible);
+			book->set_dock_area_visibility(visible, source);
 	}
 }
 

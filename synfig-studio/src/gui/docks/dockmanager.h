@@ -108,7 +108,7 @@ public:
 
 	static std::string layout_from_template(const std::string &tpl, float dx, float dy, float sx, float sy);
 
-	void set_dock_area_visibility(bool visible);
+	void set_dock_area_visibility(bool visible, DockBook* source);
 
 	static bool swap_widgets(Gtk::Widget &widget1, Gtk::Widget &widget2);
 	static void remove_widget_recursive(Gtk::Widget &widget);
