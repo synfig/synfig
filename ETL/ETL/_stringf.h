@@ -66,20 +66,6 @@ extern "C" {
 // Prefer prototypes from glibc headers, since defining them ourselves
 // works around glibc security mechanisms
 
-#ifdef HAVE_VASPRINTF	// This is the preferred method
- #ifndef __GLIBC__
-  extern int vasprintf(char **,const char *,va_list)ETL_NO_THROW;
- #endif
-#else
-
-# ifdef HAVE_VSNPRINTF	// This is the secondary method
- #ifndef __GLIBC__
-  extern int vsnprintf(char *,size_t,const char*,va_list)ETL_NO_THROW;
- #endif
-# endif
-
-#endif
-
 #ifdef HAVE_VSSCANF
  #ifndef __GLIBC__
   #ifndef _WIN32
@@ -106,38 +92,18 @@ _ETL_BEGIN_NAMESPACE
 inline std::string
 vstrprintf(const char *format, va_list args)
 {
-#ifdef HAVE_VASPRINTF	// This is the preferred method (and safest)
-	char *buffer;
-	int count = vasprintf(&buffer,format,args);
-	if (count < 0) return ""; // error occurred
-
-	std::string rv(buffer, count); // passing size (count) for faster copying
-	free(buffer);
-	return rv;
-#else
-#ifdef HAVE_VSNPRINTF	// This is the secondary method (Safe, but bulky)
-#warning etl::vstrprintf() has a maximum size of ETL_STRPRINTF_MAX_LENGTH in this configuration.
-#ifdef ETL_THREAD_SAFE
-	char buffer[ETL_STRPRINTF_MAX_LENGTH];
-#else
-	static char buffer[ETL_STRPRINTF_MAX_LENGTH];
-#endif
-	vsnprintf(buffer,sizeof(buffer),format,args);
+	// determine the length
+	va_list args_copy;
+	va_copy(args_copy, args);
+	int size = vsnprintf(NULL, 0, format, args_copy);
+	va_end(args_copy);
+	if (size < 0) size = 0;
+	++size;
+	
+	// allocate buffer in stack (c99/c++11 only) and call vsnprintf again
+	char buffer[size];
+	vsnprintf(buffer, size, format, args);
 	return buffer;
-#else					// This is the worst method (UNSAFE, but "works")
-#warning Potential for Buffer-overflow bug using vsprintf
-#define ETL_UNSAFE_STRPRINTF	(true)
-// Here, we are doubling the size of the buffer to make this case
-// slightly more safe.
-#ifdef ETL_THREAD_SAFE
-	char buffer[ETL_STRPRINTF_MAX_LENGTH*2];
-#else
-	static char buffer[ETL_STRPRINTF_MAX_LENGTH*2];
-#endif
-	vsprintf(buffer,format,args);
-	return buffer;
-#endif
-#endif
 }
 
 inline std::string
@@ -145,11 +111,9 @@ strprintf(const char *format, ...)
 {
 	va_list args;
 	va_start(args,format);
-	//TODO: use g_vasprintf (available on all platforms)
 	const std::string buf = vstrprintf(format, args);
 	va_end(args);
 	return buf;
-	
 }
 
 #ifndef ETL_NO_VSTRSCANF
