@@ -40,7 +40,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template <class T, class K=float, class C=affine_combo<T,K>, class D=distance_func<T> >
 class bspline : public std::unary_function<K,T>
@@ -229,7 +229,7 @@ public:
 	}
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 

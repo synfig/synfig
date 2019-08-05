@@ -32,20 +32,20 @@
 #ifdef HAVE_GETTIMEOFDAY
 #include "_clock_gettimeofday.h"
 #ifndef ETL_CLOCK_DEFAULT_DESC_CLASS
-#define ETL_CLOCK_DEFAULT_DESC_CLASS	_ETL::clock_desc_gettimeofday
+#define ETL_CLOCK_DEFAULT_DESC_CLASS	etl::clock_desc_gettimeofday
 #endif
 #ifndef ETL_CLOCK_REALTIME_DESC_CLASS
-#define ETL_CLOCK_REALTIME_DESC_CLASS	_ETL::clock_desc_gettimeofday
+#define ETL_CLOCK_REALTIME_DESC_CLASS	etl::clock_desc_gettimeofday
 #endif
 #endif
 
 #ifdef _WIN32
 #include "_clock_win32hpcount.h"
 #ifndef ETL_CLOCK_DEFAULT_DESC_CLASS
-#define ETL_CLOCK_DEFAULT_DESC_CLASS	_ETL::clock_desc_win32hpcount
+#define ETL_CLOCK_DEFAULT_DESC_CLASS	etl::clock_desc_win32hpcount
 #endif
 #ifndef ETL_CLOCK_REALTIME_DESC_CLASS
-#define ETL_CLOCK_REALTIME_DESC_CLASS	_ETL::clock_desc_win32hpcount
+#define ETL_CLOCK_REALTIME_DESC_CLASS	etl::clock_desc_win32hpcount
 #endif
 #endif
 
@@ -55,21 +55,21 @@
 // (Better than nothing...)
 #include "_clock_system.h"
 #ifndef ETL_CLOCK_DEFAULT_DESC_CLASS
-#define ETL_CLOCK_DEFAULT_DESC_CLASS	_ETL::clock_desc_sys_clock
+#define ETL_CLOCK_DEFAULT_DESC_CLASS	etl::clock_desc_sys_clock
 #endif
 #ifndef ETL_CLOCK_PROCTIME_DESC_CLASS
-#define ETL_CLOCK_PROCTIME_DESC_CLASS	_ETL::clock_desc_sys_clock
+#define ETL_CLOCK_PROCTIME_DESC_CLASS	etl::clock_desc_sys_clock
 #endif
 #ifndef ETL_CLOCK_REALTIME_DESC_CLASS
-#define ETL_CLOCK_REALTIME_DESC_CLASS	_ETL::clock_desc_sys_time
+#define ETL_CLOCK_REALTIME_DESC_CLASS	etl::clock_desc_sys_time
 #endif
 
 #include "_clock_base.h"
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 #if 0
-	typedef _ETL::clock_base<ETL_CLOCK_DEFAULT_DESC_CLASS> clock;
+	typedef etl::clock_base<ETL_CLOCK_DEFAULT_DESC_CLASS> clock;
 	#ifdef ETL_CLOCK_PROCTIME_DESC_CLASS
 		#define ETL_CLOCK_PROCTIME
 		typedef clock_base<ETL_CLOCK_PROCTIME_DESC_CLASS> clock_proctime;
@@ -82,20 +82,20 @@ _ETL_BEGIN_NAMESPACE
 	#endif
 
 #else
-	class clock : public _ETL::clock_base<ETL_CLOCK_DEFAULT_DESC_CLASS> { };
+	class clock : public etl::clock_base<ETL_CLOCK_DEFAULT_DESC_CLASS> { };
 	#ifdef ETL_CLOCK_PROCTIME_DESC_CLASS
 		#define ETL_CLOCK_PROCTIME
-		class clock_proctime : public _ETL::clock_base<ETL_CLOCK_PROCTIME_DESC_CLASS> { };
+		class clock_proctime : public etl::clock_base<ETL_CLOCK_PROCTIME_DESC_CLASS> { };
 	#endif
 	#ifdef ETL_CLOCK_REALTIME_DESC_CLASS
 		#define ETL_CLOCK_REALTIME
-		class clock_realtime : public _ETL::clock_base<ETL_CLOCK_REALTIME_DESC_CLASS> { };
+		class clock_realtime : public etl::clock_base<ETL_CLOCK_REALTIME_DESC_CLASS> { };
 	#else
 		#warning No realtime clock description found.
 	#endif
 #endif
 
-_ETL_END_NAMESPACE
+};
 
 //using etl::clock;
 

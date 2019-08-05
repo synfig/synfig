@@ -57,7 +57,7 @@ extern "C" {
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 inline std::string
 vstrprintf(const char *format, va_list args)
@@ -427,7 +427,7 @@ solve_relative_path(std::string curr_path,std::string dest_path)
 }
 
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

@@ -33,7 +33,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 class read_write_lock : private Mutex
 {
@@ -84,7 +84,7 @@ public:
 	{ unlock_mutex(); }
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 

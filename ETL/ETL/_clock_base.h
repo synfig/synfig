@@ -41,7 +41,7 @@ inline void sleep(int i) { Sleep(i*1000); }
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 inline void yield() { sleep(0); }
 
@@ -126,7 +126,7 @@ public:
 	}
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

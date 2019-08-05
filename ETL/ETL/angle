@@ -32,9 +32,9 @@
 
 #ifdef ETL_FASTANGLE
 #include "_fastangle.h"
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 typedef fastangle angle;
-_ETL_END_NAMESPACE
+};
 #else
 # include "_angle.h"
 #endif
