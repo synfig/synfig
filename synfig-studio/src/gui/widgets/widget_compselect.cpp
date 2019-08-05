@@ -111,12 +111,12 @@ Widget_CompSelect::set_selected_instance(etl::loose_handle<studio::Instance> x)
 		for(i=0,iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end() && ((*iter)!=x);iter++,i++)
 			;
 
-		if (*iter==x) 
+		if (iter != studio::App::instance_list.end())
 		{
 			set_active(i);
 		} else {
 			synfig::warning("Can't set selected instance! (already closed?)");
-			iter = studio::App::instance_list.begin();
+			x.reset();
 		}
 	}
 	else
