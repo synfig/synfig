@@ -2276,7 +2276,7 @@ CanvasView::on_time_changed()
 		work_area->queue_draw();
 	}
 
-	if (time_model()->almost_equal_to_current(soundProcessor.get_position(), Time(0.5)))
+	if (!time_model()->almost_equal_to_current(soundProcessor.get_position(), Time(0.5)))
 		soundProcessor.set_position(time);
 
 	#ifdef WITH_JACK
@@ -3488,7 +3488,7 @@ CanvasView::on_preview_option()
 			Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>( get_ext_widget("prevoptions") );
 			if(!po)
 			{
-				po = new Dialog_PreviewOptions();
+				po = Dialog_PreviewOptions::create();
 				po->set_fps(r.get_frame_rate()/2);
 				set_ext_widget("prevoptions",po);
 			}

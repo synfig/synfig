@@ -54,14 +54,14 @@ namespace studio {
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
 
+		//! Mandatory for constructing custom widgets from GTKBuilder files
+		void register_custom_widget_types();
+
 		static void show_dialog_input();
 		void on_recent_files_changed();
 		void on_dockable_registered(Dockable* dockable);
 		void on_dockable_unregistered(Dockable* dockable);
 		void toggle_show_menubar();
-
-		Glib::RefPtr<Gtk::ToggleAction> toggle_menubar;
-		bool toggling_show_menubar;
 
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);

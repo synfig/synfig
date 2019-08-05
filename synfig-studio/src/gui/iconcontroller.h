@@ -54,7 +54,7 @@ class IconController
 	void init_icon_clone(const synfig::String &name, const synfig::String& desc);
 
 public:
-	IconController(const synfig::String& basepath);
+	IconController();
 	~IconController();
 
 	void init_icons(const synfig::String& path_to_icons);

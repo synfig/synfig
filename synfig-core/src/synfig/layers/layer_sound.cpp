@@ -40,6 +40,7 @@
 #include <synfig/time.h>
 #include <synfig/value.h>
 #include <synfig/canvasfilenaming.h>
+#include <synfig/context.h>
 
 #include "layer_sound.h"
 
@@ -144,3 +145,8 @@ Layer_Sound::fill_sound_processor(SoundProcessor &soundProcessor) const
 	soundProcessor.addSound(SoundProcessor::PlayOptions(delay, volume), SoundProcessor::Sound(filename));
 }
 
+rendering::Task::Handle
+Layer_Sound::build_rendering_task_vfunc(Context context)const
+{
+	return context.build_rendering_task();
+}

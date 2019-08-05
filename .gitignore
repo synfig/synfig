@@ -220,7 +220,6 @@ ETL/test/fixed
 ETL/test/handle
 ETL/test/hermite
 ETL/test/pen
-ETL/test/random
 ETL/test/smach
 ETL/test/smart_ptr
 ETL/test/stringf

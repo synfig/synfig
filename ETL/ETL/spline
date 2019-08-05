@@ -30,7 +30,6 @@
 #include "etl_config.h"
 
 #include "_bspline.h"
-#include "_curve.h"
 
 /* === E N D =============================================================== */
 

@@ -66,7 +66,7 @@ static Glib::RefPtr<Gtk::Builder> load_interface() {
 	}
 	catch(const Glib::FileError& ex)
 	{
-		synfig::error("FileError: %s" + ex.what());
+		synfig::error("FileError: " + ex.what());
 		return Glib::RefPtr<Gtk::Builder>();
 	}
 	catch(const Glib::MarkupError& ex)

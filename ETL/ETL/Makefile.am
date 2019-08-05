@@ -24,7 +24,6 @@ etl_HEADERS = \
 	ipc \
 	thread \
 	fixed \
-	random \
 	clock \
 	hermite \
 	calculus \
@@ -40,15 +39,12 @@ etl_HEADERS = \
 	_clock_base.h \
 	_clock_system.h \
 	_clock_gettimeofday.h \
-	_random.h \
 	_angle.h \
 	_fastangle.h \
-	_curve.h \
 	_handle.h \
 	_thread.h \
 	_mutex_pthreads.h \
 	_mutex_win32.h \
-	_condition.h \
 	_rwlock.h \
 	smach \
 	_smach.h \
@@ -60,8 +56,6 @@ etl_HEADERS = \
 	bezier \
 	_bezier.h \
 	_bezier_angle.h \
-	_status.h \
-	status \
 	pen \
 	_pen.h \
 	boxblur \
@@ -80,7 +74,3 @@ etl_HEADERS = \
 $(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h
 	sed "s/PACKAGE/ETL/g;" < $(top_builddir)/ETL/etl_profile_.h > $(top_builddir)/ETL/etl_profile.h
 
-
-# FIXME: figure out why this is in SVN, but isn't installed
-EXTRA_DIST = \
-	_bit_rotate.h

@@ -1443,8 +1443,7 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 /* === M E T H O D S ======================================================= */
 
 App::App(const synfig::String& basepath, int *argc, char ***argv):
-	Gtk::Main(argc,argv),
-	IconController(basepath)
+	Gtk::Main(argc,argv)
 {
 
 	Glib::init(); // need to use Gio functions before app is started
