@@ -166,6 +166,8 @@ def change_opacity_group(layer, lottie):
 
     z_value = 0
     for c_layer in reversed(canvas.get_layer_list()):
+        if not c_layer.is_active() or not c_layer.to_render():
+            continue
         active_time = set()
         itr = 0
         while itr < len(active_range):
@@ -227,6 +229,8 @@ def change_opacity_switch(layer, lottie):
 
     it = 0
     for c_layer in reversed(canvas.get_layer_list()):
+        if not c_layer.is_active() or not c_layer.to_render():
+            continue
         active_time = set()
         description = root["layers"][it]["nm"]
 
