@@ -121,12 +121,14 @@ Dockable::on_drag_end(const Glib::RefPtr<Gdk::DragContext>&/*context*/)
 		DockManager::remove_widget_recursive(*this);
 		present();
 	}
+	App::dock_manager->set_dock_area_visibility(false);
 }
 
 void
 Dockable::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&/*context*/)
 {
 	dnd_success_ = false;
+	App::dock_manager->set_dock_area_visibility(true);
 }
 
 void
