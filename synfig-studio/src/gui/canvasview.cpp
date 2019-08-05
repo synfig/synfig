@@ -2496,8 +2496,8 @@ CanvasView::rebuild_ducks()
 	if (is_ducks_locked())
 		{ ducks_rebuild_requested = true; return; }
 
-	ducks_rebuild_queue_requested = true;
-	ducks_rebuild_requested = true;
+	ducks_rebuild_queue_requested = false;
+	ducks_rebuild_requested = false;
 	queue_rebuild_ducks_connection.disconnect();
 
 	bbox = Rect::zero();
