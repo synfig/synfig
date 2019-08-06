@@ -53,7 +53,7 @@ using namespace studio;
 
 
 // IndexTable methods
-
+//Done
 void IndexTable::build(ContourFamily &family) {
   unsigned int i;
 
@@ -69,6 +69,7 @@ void IndexTable::build(ContourFamily &family) {
     family[i][0].setAttribute(ContourNode::HEAD);
   }
 }
+
 
 //--------------------------------------------------------------------------
 
@@ -424,7 +425,7 @@ public:
 };
 
 //--------------------------------------------------------------------------
-
+// Done
 void Timeline::build(ContourFamily &polygons, VectorizationContext &context, VectorizerCore *thisVectorizer) 
 {
   unsigned int i, j, current;
@@ -1475,7 +1476,7 @@ static SkeletonGraph *sskeletonize(ContourFamily &regionContours,
   // connect them to output skeleton
   unsigned int i, l, n;
   IndexTable::IndexColumn::iterator j;
-  ContourNode *k;
+  ContourNode *k = nullptr;
 
   for (i = 0; i < regionContours.size(); ++i)
   {
@@ -1512,7 +1513,17 @@ static SkeletonGraph *sskeletonize(ContourFamily &regionContours,
   context.m_linearNodesHeap.clear();
   context.m_linearEdgesHeap.clear();
 
+  SkeletonGraph* currGraph   = output;
+    std::cout<<"Link Count from SKELETONIZER :"<<currGraph->getLinksCount()<<"Node Count :"<<currGraph->getNodesCount()<<"\n";
+    for (int i = 0; i < currGraph->getNodesCount(); ++i)
+    {
+
+      std::cout<<"m_content :"<<currGraph->getNode(i)->operator[](0) <<", "<<currGraph->getNode(i)->operator[](1)<<", "
+      <<currGraph->getNode(i)->operator[](2)<<"\n";
+
+    }
   return output;
+
 }
 
 //--------------------------------------------------------------------------
