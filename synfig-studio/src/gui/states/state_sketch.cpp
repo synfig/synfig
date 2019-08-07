@@ -291,18 +291,6 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	);
 
 	action_group->add(Gtk::Action::create(
-		"sketch-save-as",
-		Gtk::StockID("gtk-save-as"),
-		_("Save Sketch As..."),
-		_("Save Sketch As...")
-	),
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::save_sketch
-		)
-	);
-
-	action_group->add(Gtk::Action::create(
 		"sketch-open",
 		Gtk::StockID("gtk-open"),
 		_("Open a Sketch"),
