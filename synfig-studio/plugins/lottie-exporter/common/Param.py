@@ -331,6 +331,37 @@ class Param:
                 self.expression = ret
                 return ret, self.expression_controllers
 
+            elif self.param[0].tag == "bone_link":
+                self.subparams["bone_link"].extract_subparams()
+                guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
+                layer = self.get_layer()
+                canvas = layer.getparent()
+                bone = canvas.get_bone(guid)
+                bone_param = Param(bone, bone.getparent())
+                ######## THIS IS NOT CORRECT WAY OF FORMING BONE PARAM
+                ########################################################
+                origin, eff_1 = bone_param.recur_animate("vector")  # animating only the origin now
+                self.expression_controllers.extend(eff_1)
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param.tag == "bone":  # Carefull about param[0] and param here
+                origin, eff_1 = self.subparams["origin"].recur_animate("vector")
+                # Now adding the parent's effects in this bone
+                guid = self.subparams["parent"][0].attrib["guid"]
+                canvas = self.get_layer().getparent()
+                bone = canvas.get_bone(guid)
+                bone_param = Param(bone, bone.getparent())
+                b_origin, eff_2 = bone_param.recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                if eff_2 is not None:
+                    self.expression_controllers.extend(eff_2)
+                ret = "sum(" + origin + "," + b_origin + ")"
+                return ret, self.expression_controllers
+
+            elif self.param.tag == "bone_root": # No animation to be added as this being the root
+                return "0", None
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect

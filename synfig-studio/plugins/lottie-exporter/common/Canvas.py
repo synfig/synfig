@@ -90,6 +90,15 @@ class Canvas:
                     key = child.attrib["guid"]
                     bones_dict[key] = child
 
+    def get_bone(self, key):
+        """
+        Given a guid, returns the corresponding bone from the canvas
+        """
+        if key in self.bones.keys():
+            return self.bones[key]
+        return None
+        #raise KeyError("No bone guid: %s in Canvas %s", key, self.name)
+
     def __getitem__(self, itr):
         """
         Returns the layer at itr
