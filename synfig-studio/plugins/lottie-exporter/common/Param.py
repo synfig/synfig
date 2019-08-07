@@ -25,7 +25,7 @@ class Param:
     """
     def __init__(self, param, parent):
         """
-        This parent can be another parameter or a Layer
+        This parent can be another parameter or a Layer or Canvas
         """
         self.parent = parent
         self.param = param
@@ -99,6 +99,14 @@ class Param:
             return self.parent
         return self.parent.get_layer()
 
+    def get_canvas(self):
+        """
+        Recursively find the canvas
+        """
+        if isinstance(self.parent, common.Canvas.Canvas):
+            return self.parent
+        return self.parent.get_canvas()
+
     def getparent(self):
         """
         Returns the parent of this parameter
@@ -148,7 +156,7 @@ class Param:
             if key in self.subparams.keys():
                 self.append_same_key(key, child)
             else:
-                self.subparams[key] = Param(child, self.param)
+                self.subparams[key] = Param(child, self)
 
     def animate_without_path(self, anim_type):
         """
@@ -193,9 +201,28 @@ class Param:
             self.dimension = 2
 
         # Check if we are dealing with convert methods
-        if self.param[0].tag in settings.CONVERT_METHODS:
+        if self.param.tag in settings.BONES or self.param[0].tag in settings.CONVERT_METHODS:
             self.extract_subparams()
-            if self.param[0].tag == "add":
+
+            if self.param.tag == "bone":  # Carefull about param[0] and param here
+                origin, eff_1 = self.subparams["origin"].recur_animate("vector")
+                # Now adding the parent's effects in this bone
+                guid = self.subparams["parent"][0].attrib["guid"]
+                canvas = self.get_canvas()
+                bone = canvas.get_bone(guid)
+                b_origin, eff_2 = bone.recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                if eff_2 is not None:
+                    self.expression_controllers.extend(eff_2)
+                    ret = "sum(" + origin + "," + b_origin + ")"
+                else:
+                    ret = origin
+                return ret, self.expression_controllers
+
+            elif self.param.tag == "bone_root": # No animation to be added as this being the root
+                return "0", None
+
+            elif self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
                 lhs, effects_1 = self.subparams["add"].subparams["lhs"].recur_animate(anim_type)
                 rhs, effects_2 = self.subparams["add"].subparams["rhs"].recur_animate(anim_type)   # Only one of the child should be converted to lottie axis
@@ -337,30 +364,12 @@ class Param:
                 layer = self.get_layer()
                 canvas = layer.getparent()
                 bone = canvas.get_bone(guid)
-                bone_param = Param(bone, bone.getparent())
                 ######## THIS IS NOT CORRECT WAY OF FORMING BONE PARAM
                 ########################################################
-                origin, eff_1 = bone_param.recur_animate("vector")  # animating only the origin now
+                origin, eff_1 = bone.recur_animate("vector")  # animating only the origin now
                 self.expression_controllers.extend(eff_1)
-                self.expression = ret
-                return ret, self.expression_controllers
-
-            elif self.param.tag == "bone":  # Carefull about param[0] and param here
-                origin, eff_1 = self.subparams["origin"].recur_animate("vector")
-                # Now adding the parent's effects in this bone
-                guid = self.subparams["parent"][0].attrib["guid"]
-                canvas = self.get_layer().getparent()
-                bone = canvas.get_bone(guid)
-                bone_param = Param(bone, bone.getparent())
-                b_origin, eff_2 = bone_param.recur_animate("vector")
-                self.expression_controllers.extend(eff_1)
-                if eff_2 is not None:
-                    self.expression_controllers.extend(eff_2)
-                ret = "sum(" + origin + "," + b_origin + ")"
-                return ret, self.expression_controllers
-
-            elif self.param.tag == "bone_root": # No animation to be added as this being the root
-                return "0", None
+                self.expression = origin
+                return origin, self.expression_controllers
 
         else:
             self.single_animate(anim_type)
@@ -470,8 +479,25 @@ class Param:
         """
         Returns the value of the parameter at a given frame
         """
-        if self.param[0].tag in settings.CONVERT_METHODS:
-            if self.param[0].tag == "add":
+        if self.param.tag in settings.BONES or self.param[0].tag in settings.CONVERT_METHODS:
+            if self.param.tag == "bone":
+                ret = self.subparams["origin"].get_value(frame)
+                # Now adding the parent's effects in this bone
+                guid = self.subparams["parent"][0].attrib["guid"]
+                canvas = self.get_canvas()
+                bone = canvas.get_bone(guid)
+                ret2 = bone.get_value(frame)
+                if ret2 is not None:
+                    if isinstance(ret, list):
+                        ret[0] += ret2[0]
+                        ret[1] += ret2[1]
+                    else:
+                        ret += ret2
+
+            elif self.param.tag == "bone_root":
+                return None
+
+            elif self.param[0].tag == "add":
                 ret = self.subparams["add"].subparams["lhs"].get_value(frame)
                 ret2 = self.subparams["add"].subparams["rhs"].get_value(frame)
                 mul = self.subparams["add"].subparams["scalar"].get_value(frame)
@@ -579,6 +605,13 @@ class Param:
                     ret[1] = link_on[1] * switch + link_off[1] * (1 - switch)
                 else:
                     ret = link_on * switch + link_off * (1 - switch)
+
+            elif self.param[0].tag == "bone_link":
+                guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
+                layer = self.get_layer()
+                canvas = layer.getparent()
+                bone = canvas.get_bone(guid)
+                ret = bone.get_value(frame)
 
         else:
             ret = self.get_single_value(frame)

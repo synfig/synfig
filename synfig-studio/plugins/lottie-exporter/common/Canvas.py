@@ -88,7 +88,7 @@ class Canvas:
 
                 for child in bones:
                     key = child.attrib["guid"]
-                    bones_dict[key] = child
+                    bones_dict[key] = Param(child, Param(bones, self))
 
     def get_bone(self, key):
         """

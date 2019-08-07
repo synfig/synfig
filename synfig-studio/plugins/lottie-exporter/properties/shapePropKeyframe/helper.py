@@ -90,6 +90,9 @@ def update_frame_window(node, window):
             update_frame_window(node[0][0], window) # link
             update_frame_window(node[1][0], window) # scalar
 
+        elif node.tag == "bone_link":
+            guid = node[0][0].attrib["guid"]
+
     if is_animated(node) == 2:
         for waypoint in node:
             fr = get_frame(waypoint)
