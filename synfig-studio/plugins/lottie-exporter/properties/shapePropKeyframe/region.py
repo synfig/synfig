@@ -9,7 +9,7 @@ import copy
 from common.Bline import Bline
 from common.Param import Param
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import insert_dict_at, update_frame_window, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
+from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
 sys.path.append("../../")
 
 
@@ -43,13 +43,13 @@ def gen_bline_region(lottie, bline_point):
 
         # Necassary to update this before inserting new waypoints, as new
         # waypoints might include there on time: 0 seconds
-        update_frame_window(pos[0], window)
+        pos.update_frame_window(window)
         pos.animate("vector", True)
 
-        update_frame_window(split_r[0], window)
+        split_r.update_frame_window(window)
         split_r.animate_without_path("bool")
 
-        update_frame_window(split_a[0], window)
+        split_a.update_frame_window(window)
         split_a.animate_without_path("bool")
 
         animate_tangents(t1, window)
@@ -59,7 +59,7 @@ def gen_bline_region(lottie, bline_point):
     origin = layer.get_param("origin")
 
     # Animating the origin
-    update_frame_window(origin[0], window)
+    origin.update_frame_window(window)
     origin.animate("vector")
 
     # Minimizing the window size

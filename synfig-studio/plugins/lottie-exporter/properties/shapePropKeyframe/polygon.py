@@ -8,7 +8,7 @@ import sys
 from common.Vector import Vector
 from common.Bline import Bline
 from common.Param import Param
-from properties.shapePropKeyframe.helper import update_frame_window, insert_dict_at
+from properties.shapePropKeyframe.helper import insert_dict_at
 sys.path.append("../../")
 
 
@@ -33,7 +33,7 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
 
     for entry in dynamic_list.get_entry_list():
         pos = entry["vector"]
-        update_frame_window(pos[0], window)
+        pos.update_frame_window(window)
 
         z = Param(pos.getparent(), pos.getparent().getparent())
         z.animate("vector", True)
@@ -43,7 +43,7 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
     origin = layer.get_param("origin")
 
     # Animating the origin
-    update_frame_window(origin[0], window)
+    origin.update_frame_window(window)
     origin.animate("vector")
 
     if window["first"] == sys.maxsize and window["last"] == -1:

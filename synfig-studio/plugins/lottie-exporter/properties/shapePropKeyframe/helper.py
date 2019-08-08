@@ -36,70 +36,14 @@ def animate_tangents(tangent, window):
             radius = Param(child, tangent[0])
         elif child.tag == "theta":
             theta = Param(child, tangent[0])
-    update_frame_window(radius[0], window)
-    update_frame_window(theta[0], window)
+    radius.update_frame_window(window)
+    theta.update_frame_window(window)
 
     radius.animate("real")
     theta.animate("region_angle")
 
     tangent.add_subparam("radius", radius)
     tangent.add_subparam("theta", theta)
-
-
-def update_frame_window(node, window):
-    """
-    Given an animation, finds the minimum and maximum frame at which the
-    waypoints are located
-
-    Args:
-        node    (lxml.etree._Element) : Animation to be searched in
-        window  (dict)                : max and min frame will be stored in this
-
-    Returns:
-        (None)
-    """
-    # Time updation for converted nodes:
-    if node.tag in settings.CONVERT_METHODS:
-        if node.tag in {"add", "subtract", "switch"}:
-            update_frame_window(node[0][0], window) # lhs
-            update_frame_window(node[1][0], window) # rhs
-            update_frame_window(node[2][0], window) # scaler
-
-        elif node.tag == "average":
-            for it in node:
-                update_frame_window(it[0], window)
-
-        elif node.tag == "weighted_average":
-            for it in node:
-                update_frame_window(it[0][0][0], window) # weight
-                update_frame_window(it[0][1][0], window) # value
-
-        elif node.tag == "composite":
-            update_frame_window(node[0][0], window) # x
-            update_frame_window(node[1][0], window) # y
-
-        elif node.tag == "linear":
-            window["first"] = settings.lottie_format["ip"]
-            window["last"] = settings.lottie_format["op"]
-
-        elif node.tag == "radial_composite":
-            update_frame_window(node[0][0], window) # radius
-            update_frame_window(node[1][0], window) # theta
-
-        elif node.tag == "scale":
-            update_frame_window(node[0][0], window) # link
-            update_frame_window(node[1][0], window) # scalar
-
-        elif node.tag == "bone_link":
-            guid = node[0][0].attrib["guid"]
-
-    if is_animated(node) == 2:
-        for waypoint in node:
-            fr = get_frame(waypoint)
-            if fr > window["last"]:
-                window["last"] = fr
-            if fr < window["first"]:
-                window["first"] = fr
 
 
 def update_child_at_parent(parent, new_child, tag, param_name=None):

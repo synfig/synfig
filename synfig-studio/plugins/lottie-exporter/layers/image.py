@@ -15,7 +15,6 @@ from common.Param import Param
 from sources.image import add_image_asset
 from shapes.rectangle import to_Synfig_axis
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import update_frame_window
 from synfig.animation import print_animation
 sys.path.append("..")
 
@@ -100,8 +99,8 @@ def gen_image_scale(animated_1, animated_2, width, height):
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    update_frame_window(animated_1[0], window)
-    update_frame_window(animated_2[0], window)
+    animated_1.update_frame_window(window)
+    animated_2.update_frame_window(window)
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:
         window["first"] = window["last"] = 0

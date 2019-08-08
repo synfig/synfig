@@ -12,7 +12,7 @@ from common.Param import Param
 from common.Vector import Vector
 from common.Hermite import Hermite
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents, update_frame_window
+from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents
 sys.path.append("../../")
 
 
@@ -47,17 +47,17 @@ def gen_bline_outline(lottie, bline_point):
         split_r = entry["split_radius"]
         split_a = entry["split_angle"]
 
-        update_frame_window(pos[0], window)
+        pos.update_frame_window(window)
         # Empty the pos and fill in the new animated pos
         pos.animate("vector")
 
-        update_frame_window(width[0], window)
+        width.update_frame_window(window)
         width.animate("real")
 
-        update_frame_window(split_r[0], window)
+        split_r.update_frame_window(window)
         split_r.animate_without_path("bool")
 
-        update_frame_window(split_a[0], window)
+        split_a.update_frame_window(window)
         split_a.animate_without_path("bool")
 
         animate_tangents(t1, window)
@@ -73,31 +73,31 @@ def gen_bline_outline(lottie, bline_point):
     origin = layer.get_param("origin")
 
     # Animating the origin
-    update_frame_window(origin[0], window)
+    origin.update_frame_window(window)
     origin.animate("vector")
 
     # Animating the outer width
-    update_frame_window(outer_width[0], window)
+    outer_width.update_frame_window(window)
     outer_width.animate("real")
 
     # Animating the sharp_cusps
-    update_frame_window(sharp_cusps[0], window)
+    sharp_cusps.update_frame_window(window)
     sharp_cusps.animate_without_path("bool")
 
     # Animating the expand param
-    update_frame_window(expand[0], window)
+    expand.update_frame_window(window)
     expand.animate("real")
 
     # Animating the round tip 0
-    update_frame_window(r_tip0[0], window)
+    r_tip0.update_frame_window(window)
     r_tip0.animate_without_path("bool")
 
     # Animating the round tip 1
-    update_frame_window(r_tip1[0], window)
+    r_tip1.update_frame_window(window)
     r_tip1.animate_without_path("bool")
 
     # Animaing the homogenous width
-    update_frame_window(homo_width[0], window)
+    homo_width.update_frame_window(window)
     homo_width.animate_without_path("bool")
 
     # Minimizing the window size

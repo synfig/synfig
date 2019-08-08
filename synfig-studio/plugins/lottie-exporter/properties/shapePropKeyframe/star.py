@@ -9,7 +9,7 @@ import math
 from common.Vector import Vector
 from common.Layer import Layer
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window
+from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent
 sys.path.append("../../")
 
 
@@ -39,31 +39,31 @@ def gen_list_star(lottie, layer):
     regular_polygon = layer.get_param("regular_polygon")
 
     # Animating origin
-    update_frame_window(origin[0], window)
+    origin.update_frame_window(window)
     # Keeping the transform true here
     #origin.animate("vector", True)
     origin.animate("vector")
 
     # Animating radius1
-    update_frame_window(radius1[0], window)
+    radius1.update_frame_window(window)
     radius1.animate("real")
 
     # Animating radius2
-    update_frame_window(radius2[0], window)
+    radius2.update_frame_window(window)
     radius2.animate("real")
 
     # Animating angle
-    update_frame_window(angle[0], window)
+    angle.update_frame_window(window)
     angle.animate("star_angle_new")
 
     # Animating points
-    update_frame_window(points[0], window)
+    points.update_frame_window(window)
     points.animate("real")
 
     mx_points = get_max_points(points)
 
     # Animating regular_polygon
-    update_frame_window(regular_polygon[0], window)
+    regular_polygon.update_frame_window(window)
     regular_polygon.animate_without_path("bool")
 
     # Minimizing the window size

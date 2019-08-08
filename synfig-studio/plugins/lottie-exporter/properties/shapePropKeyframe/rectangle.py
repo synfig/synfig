@@ -11,7 +11,7 @@ from common.Vector import Vector
 from common.Layer import Layer
 from common.Param import Param
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window, quadratic_to_cubic
+from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, quadratic_to_cubic
 sys.path.append("../../")
 
 
@@ -53,23 +53,23 @@ def gen_list_rectangle(lottie, layer):
         bevCircle = layer.add_param("bevCircle", bevCircle)
 
     # Animating point1
-    update_frame_window(point1[0], window)
+    point1.update_frame_window(window)
     point1.animate("vector")
 
     # Animating point2
-    update_frame_window(point2[0], window)
+    point2.update_frame_window(window)
     point2.animate("vector")
 
     # Animating expand
-    update_frame_window(expand[0], window)
+    expand.update_frame_window(window)
     expand.animate("real")
 
     # Animating bevel
-    update_frame_window(bevel[0], window)
+    bevel.update_frame_window(window)
     bevel.animate("real")
 
     # Animating bevCircle
-    update_frame_window(bevCircle[0], window)
+    bevCircle.update_frame_window(window)
     bevCircle.animate_without_path("bool")
 
     # Minimizing the window size
