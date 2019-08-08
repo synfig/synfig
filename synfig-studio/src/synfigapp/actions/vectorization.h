@@ -48,8 +48,7 @@ class Vectorization :
 	public CanvasSpecific
 {
 private:
-	synfig::Layer::Handle layer;
-	synfig::Layer::Handle new_layer;
+	synfig::Layer::Handle layer,reference_layer, new_layer;
 	synfig::String v_mode; 
     int threshold, penalty, despeckling, maxthickness;
     bool pparea, addborder,isOutline;

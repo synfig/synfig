@@ -38,6 +38,8 @@
 #include <synfigapp/main.h>
 #include <synfigapp/localization.h>
 #include <synfig/layers/layer_bitmap.h>
+#include <synfig/layers/layer_pastecanvas.h>
+
 
 #endif
 
@@ -206,6 +208,11 @@ Action::Vectorization::set_param(const synfig::String& name, const Action::Param
         addborder = param.get_bool();
         return true;
     }
+    if(name=="reference_layer" && param.get_type() == Param::TYPE_LAYER)
+    {
+        reference_layer = param.get_layer();
+        return true;
+    }
     return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -239,7 +246,10 @@ Action::Vectorization::perform()
       Result[i]->set_canvas(child_canvas);
       child_canvas->push_front(Result[i]);
     }
-
+    if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(reference_layer))
+    {
+        new_layer->set_param("transformation",paste->get_param("transformation"));
+    }
     if(get_canvas_interface()) 
     { 
  	    get_canvas_interface()->signal_layer_inserted()(new_layer,0); 
