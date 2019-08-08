@@ -135,7 +135,7 @@ class Param:
         """
         Helps append in the dict if same key is already present
         """
-        val = Param(child, self.param)
+        val = Param(child, self)
         if isinstance(self.subparams[key], list):
             self.subparams[key].append(val)
         else:
@@ -654,3 +654,72 @@ class Param:
         self.param[0].getparent().remove(self.param[0])
         self.param.append(root)
         self.SUBPARAMS_EXTRACTED = 0
+
+    def update_frame_window(self, window):
+        """
+        Given an animation, find the minimum and maximum frame at which the
+        waypoints are located
+        """
+        self.extract_subparams()
+        node = self.param[0]
+        # Time updation for converted nodes:
+        if node.tag in settings.CONVERT_METHODS:
+            if node.tag in {"add", "subtract"}:
+                key = node.tag
+                self.subparams[key].extract_subparams()
+                self.subparams[key].subparams["lhs"].update_frame_window(window)
+                self.subparams[key].subparams["rhs"].update_frame_window(window)
+                self.subparams[key].subparams["scalar"].update_frame_window(window)
+
+            elif node.tag == "switch":
+                key = node.tag
+                self.subparams[key].extract_subparams()
+                self.subparams[key].subparams["link_off"].update_frame_window(window)
+                self.subparams[key].subparams["link_on"].update_frame_window(window)
+                self.subparams[key].subparams["switch"].update_frame_window(window)
+
+            elif node.tag == "average":
+                if not isinstance(self.subparams["average"], list):
+                    self.subparams["average"] = [self.subparams["average"]]
+                for it in self.subparams["average"]:
+                    it.update_frame_window(window)
+
+            elif node.tag == "weighted_average":
+                self.subparams["weighted_average"].extract_subparams()
+                for it in self.subparams["weighted_average"].subparams["entry"]:
+                    it.extract_subparams()
+                    it.subparams["weighted_vector"].extract_subparams()
+                    ti = it.subparams["weighted_vector"].subparams
+                    ti["weight"].update_frame_window(window)
+                    ti["value"].update_frame_window(window)
+
+            elif node.tag == "composite":
+                self.subparams["composite"].extract_subparams()
+                self.subparams["composite"].subparams["x"].update_frame_window(window)
+                self.subparams["composite"].subparams["y"].update_frame_window(window)
+
+            elif node.tag == "linear":
+                window["first"] = settings.lottie_format["ip"]
+                window["last"] = settings.lottie_format["op"]
+
+            elif node.tag == "radial_composite":
+                self.subparams["radial_composite"].extract_subparams()
+                self.subparams["radial_composite"].subparams["radius"].update_frame_window(window)
+                self.subparams["radial_composite"].subparams["theta"].update_frame_window(window)
+
+            elif node.tag == "scale":
+                self.subparams["scale"].extract_subparams()
+                self.subparams["scale"].subparams["link"].update_frame_window(window)
+                self.subparams["scale"].subparams["scalar"].update_frame_window(window)
+
+            elif node.tag == "bone_link":
+                guid = node[0][0].attrib["guid"]
+
+        if is_animated(node) == 2:
+            for waypoint in node:
+                fr = common.misc.get_frame(waypoint)
+                if fr > window["last"]:
+                    window["last"] = fr
+                if fr < window["first"]:
+                    window["first"] = fr
+

@@ -10,7 +10,7 @@ from common.Matrix2 import Matrix2
 from common.Vector import Vector
 from common.Layer import Layer
 from synfig.animation import print_animation, to_Synfig_axis
-from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window, quadratic_to_cubic
+from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, quadratic_to_cubic
 sys.path.append("../../")
 
 
@@ -36,10 +36,10 @@ def gen_list_circle(lottie, layer):
     radius = layer.get_param("radius")
 
     # Animating the origin
-    update_frame_window(origin[0], window)
+    origin.update_frame_window(window)
     origin.animate("vector")
 
-    update_frame_window(radius[0], window)
+    radius.update_frame_window(window)
     radius.animate("real")
 
     # Minimizing the window size
