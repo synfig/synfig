@@ -661,7 +661,19 @@ class Param:
         waypoints are located
         """
         self.extract_subparams()
-        node = self.param[0]
+        if self.param.tag in {"bone", "bone_root"}:
+            node = self.param
+        else:
+            node = self.param[0]
+
+        if node.tag in settings.BONES:
+            if node.tag == "bone":
+                self.subparams["origin"].update_frame_window(window)
+                parent_guid = self.subparams["parent"][0].attrib["guid"]
+                canvas = self.get_canvas()
+                bone = canvas.get_bone(parent_guid)
+                bone.update_frame_window(window)
+
         # Time updation for converted nodes:
         if node.tag in settings.CONVERT_METHODS:
             if node.tag in {"add", "subtract"}:
@@ -713,7 +725,12 @@ class Param:
                 self.subparams["scale"].subparams["scalar"].update_frame_window(window)
 
             elif node.tag == "bone_link":
-                guid = node[0][0].attrib["guid"]
+                self.subparams["bone_link"].extract_subparams()
+                guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
+                layer = self.get_layer()
+                canvas = layer.getparent()
+                bone = canvas.get_bone(guid)
+                bone.update_frame_window(window)
 
         if is_animated(node) == 2:
             for waypoint in node:
@@ -722,4 +739,3 @@ class Param:
                     window["last"] = fr
                 if fr < window["first"]:
                     window["first"] = fr
-
