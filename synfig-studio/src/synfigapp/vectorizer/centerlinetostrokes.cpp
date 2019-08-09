@@ -54,9 +54,12 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   synfig::Point q = (canvas->rend_desc().get_br() - canvas->rend_desc().get_tl());
   float p = canvas->rend_desc().get_w();
   float unit_size = p/q[0];
+  std::cout<<"\nsegment width :\n";
   for(int i=0;i<segment.size();i++)
   {
-    segment[i] = segment[i]/unit_size;
+    segment[i][0] = segment[i][0]/unit_size;
+    segment[i][1] = segment[i][1]/unit_size;
+    std::cout<<segment[i][2]<<", ";
   }
   //shift to fit to image
   for (int x = 0; x < segment.size(); x++)
