@@ -206,6 +206,10 @@ public:
 	bool is_inside(const Point &p, WindingStyle winding_style, bool invert) const;
 	bool is_inside(const Point &p) const
 		{ return is_inside(p, winding_style, invert); }
+
+	static void reverse(Chunk *begin, Chunk *end, Vector &first);
+	static void reverse(ChunkList &chunks, Vector &first)
+		{ if (!chunks.empty()) reverse(&chunks.front(), &chunks.back() + 1, first); }
 };
 
 } /* end namespace rendering */

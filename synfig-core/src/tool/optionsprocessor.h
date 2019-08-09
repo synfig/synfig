@@ -80,9 +80,9 @@ private:
 
 		std::string name, description;
 	};
-	/*! \warning These codecs are linked to the filename extensions for
-	 *  mod_ffmpeg. If you change this you must change the others accordingly.
-	 *//*
+	//! \warning These codecs are linked to the filename extensions for
+	//!  mod_ffmpeg. If you change this you must change the others accordingly.
+	//!
 	std::vector<VideoCodec> _allowed_video_codecs;
 };*/
 

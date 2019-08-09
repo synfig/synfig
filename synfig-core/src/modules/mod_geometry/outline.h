@@ -7,7 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2012-2013 Carlos López
-**	......... ... 2018 Ivan Mahonin
+**	......... ... 2018-2019 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -61,11 +61,6 @@ private:
 	synfig::ValueBase param_homogeneous_width;
 
 	bool old_version;
-
-	bool needs_sync;
-
-	std::vector<synfig::Segment> segment_list;
-	std::vector<synfig::Real> width_list;
 
 public:
 	Outline();

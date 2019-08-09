@@ -40,7 +40,6 @@ namespace synfig {
 */
 typedef double Real;
 
-
 template<typename T>
 inline T real_nan()
 	//{ return T(0.0)/T(0.0); }
@@ -66,6 +65,12 @@ inline bool approximate_equal_custom(const T &a, const T &b, const T &precision)
 template<typename T>
 inline bool approximate_not_equal_custom(const T &a, const T &b, const T &precision)
 	{ return !approximate_equal_custom(a, b, precision); }
+template<typename T>
+inline bool approximate_zero_custom(const T &a, const T &precision)
+	{ return approximate_equal_custom(a, T(), precision); }
+template<typename T>
+inline bool approximate_not_zero_custom(const T &a, const T &precision)
+	{ return !approximate_not_zero_custom(a, precision); }
 template<typename T>
 inline bool approximate_less_custom(const T &a, const T &b, const T &precision)
 	{ return a < b && b - a >= precision; }
@@ -93,6 +98,12 @@ template<typename T>
 inline bool approximate_not_equal(const T &a, const T &b)
 	{ return approximate_not_equal_custom(a, b, real_precision<T>()); }
 template<typename T>
+inline bool approximate_zero(const T &a)
+	{ return approximate_zero_custom(a, real_precision<T>()); }
+template<typename T>
+inline bool approximate_not_zero(const T &a)
+	{ return approximate_not_zero_custom(a, real_precision<T>()); }
+template<typename T>
 inline bool approximate_less(const T &a, const T &b)
 	{ return approximate_less_custom(a, b, real_precision<T>()); }
 template<typename T>
@@ -118,6 +129,12 @@ inline bool approximate_equal_lp(const T &a, const T &b)
 template<typename T>
 inline bool approximate_not_equal_lp(const T &a, const T &b)
 	{ return approximate_not_equal_custom(a, b, real_low_precision<T>()); }
+template<typename T>
+inline bool approximate_zero_lp(const T &a)
+	{ return approximate_zero_custom(a, real_low_precision<T>()); }
+template<typename T>
+inline bool approximate_not_zero_lp(const T &a)
+	{ return approximate_not_zero_custom(a, real_low_precision<T>()); }
 template<typename T>
 inline bool approximate_less_lp(const T &a, const T &b)
 	{ return approximate_less_custom(a, b, real_low_precision<T>()); }
@@ -145,6 +162,12 @@ template<typename T>
 inline bool approximate_not_equal_hp(const T &a, const T &b)
 	{ return approximate_not_equal_custom(a, b, real_high_precision<T>()); }
 template<typename T>
+inline bool approximate_zero_hp(const T &a)
+	{ return approximate_zero_custom(a, real_high_precision<T>()); }
+template<typename T>
+inline bool approximate_not_zero_hp(const T &a)
+	{ return approximate_not_zero_custom(a, real_high_precision<T>()); }
+template<typename T>
 inline bool approximate_less_hp(const T &a, const T &b)
 	{ return approximate_less_custom(a, b, real_high_precision<T>()); }
 template<typename T>
@@ -166,6 +189,11 @@ inline T approximate_ceil_hp(const T &a)
 template<typename T, bool func(const T&, const T&)>
 struct RealFunctionWrapper : public std::binary_function<T,T,bool>
 	{ bool operator() (const T &a, const T &b) const { return func(a, b); } };
+
+
+template<typename T>
+inline T clamp(const T &a, const T &min, const T &max)
+	{ return a > min ? (a < max ? a : max) : min; }
 
 }; // END of namespace synfig
 

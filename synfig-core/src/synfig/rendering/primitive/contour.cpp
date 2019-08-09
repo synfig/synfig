@@ -29,6 +29,8 @@
 #	include <config.h>
 #endif
 
+#include <algorithm>
+
 #include "contour.h"
 
 #include "intersector.h"
@@ -412,6 +414,27 @@ Contour::add_chunks_reverse(const Chunk *begin, const Chunk *end)
 		default: break;
 		}
 }
+
+void Contour::reverse(Chunk *begin, Chunk *end, Vector &first) {
+	// scroll p1 values
+	Vector f = first;
+	for(Chunk *c = begin; c < end; ++c)
+		std::swap(c->p1, f);
+	first = f;
+
+	// just flip
+	Chunk *b = begin, *e = end - 1;
+	while(b < e) {
+		std::swap(b->type, e->type);
+		std::swap(b->p1, e->p1);
+		std::swap(b->pp0, e->pp1);
+		std::swap(b->pp1, e->pp0);
+		++b; --e;
+	}
+	if (b == e)
+		std::swap(b->pp0, b->pp1);
+}
+
 
 void
 Contour::arc(const Vector &center, Real radius, Real angle0, Real angle1, bool connect)

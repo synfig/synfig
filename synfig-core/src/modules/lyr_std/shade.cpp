@@ -84,7 +84,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Shade,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 
-inline void clamp(Vector &v)
+static inline void clamp_size(Vector &v)
 {
 	if(v[0]<0.0)v[0]=0.0;
 	if(v[1]<0.0)v[1]=0.0;
@@ -108,7 +108,7 @@ Layer_Shade::set_param(const String &param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_size,
 		{
 			Vector size=param_size.get(Vector());
-			clamp(size);
+			clamp_size(size);
 			param_size.set(size);
 		}
 		);
