@@ -1,59 +1,172 @@
-/* === S Y N F I G ========================================================= */
-/*!	\file skeletonizer.cpp
-**	\brief skeletonizer File
-**
-**	$Id$
-**
-**	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
-**
-**	This package is distributed in the hope that it will be useful,
-**	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
-*/
-/* ========================================================================= */
 
-/* === H E A D E R S ======================================================= */
-
-#ifdef USING_PCH
-#	include "pch.h"
-#else
-#ifdef HAVE_CONFIG_H
-#	include <config.h>
-#endif
-
-#include "centerlineskeletonizer.h"
+#include "polygonizerclasses.h"
+#include <queue>
 #include <synfig/vector.h>
 
-
-#endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
 using namespace etl;
 using namespace studio;
+using namespace synfig;
 
-/* === M A C R O S ========================================================= */
+//<---------------------------Some Useful functions----------------------------->
+inline double cross(const synfig::Point &a, const synfig::Point &b) 
+{
+  return a[0] * b[1] - a[1] * b[0];
+}
+inline synfig::Point3 cross(const synfig::Point3 &a, const synfig::Point3 &b) {
+  return synfig::Point3(a[1] * b[2] - b[1] * a[2], a[2] * b[0] - b[2] * a[0],
+                      a[0] * b[1] - b[0] * a[1]);
+}
+inline bool angleLess(const synfig::Point &a, const synfig::Point &b) {
+  return a[1] >= 0 ? b[1] >= 0 ? a[0] > b[0] : 1 : b[1] < 0 ? a[0] < b[0] : 0;
+}
 
-/* === G L O B A L S ======================================================= */
+// a, b, ref assumed normalized
+inline bool angleLess(const synfig::Point &a, const synfig::Point &b, const synfig::Point &ref) {
+  return angleLess(a, ref) ? angleLess(b, ref) ? angleLess(a, b) : 0
+                           : angleLess(b, ref) ? 1 : angleLess(a, b);
+}
 
-/* === P R O C E D U R E S ================================================= */
 
-/* === M E T H O D S ======================================================= */
+//**************************************************************
+//      Classes
+//**************************************************************
+struct VectorizationContext;
 
-/* === E N T R Y P O I N T ================================================= */
+class studio::ContourEdge 
+{
+public:
+  enum { NOT_OPPOSITE = 0x1 };
 
+public:
+  synfig::Point m_direction;
+  unsigned short m_attributes;
+
+public:
+  ContourEdge() : m_attributes(0) {}
+  ContourEdge(synfig::Point dir) : m_direction(dir), m_attributes(0) {}
+
+  int hasAttribute(int attr) const { return m_attributes & attr; }
+  void setAttribute(int attr) { m_attributes |= attr; }
+  void clearAttribute(int attr) { m_attributes &= ~attr; }
+};
+
+//--------------------------------------------------------------------------
+
+class IndexTable {
+public:
+  typedef std::list<ContourNode *> IndexColumn;
+
+  std::vector<IndexColumn>
+      m_columns;  //!< Countours set by 'column identifier'.
+  std::vector<int>
+      m_identifiers;  //!< Column identifiers by original contour index.
+
+  // NOTE: Contours are stored in 'comb' structure (vector of lists) since
+  // contours may both
+  // be SPLIT (new entry in a list) and MERGED (two lists merge).
+
+public:
+  IndexTable() {}
+
+  IndexColumn *operator[](int i) { return &m_columns[i]; }
+  IndexColumn &columnOfId(int id) { return m_columns[m_identifiers[id]]; }
+
+  // Initialization
+  void build(ContourFamily &family);
+  void clear();
+
+  // Specific handlers
+  IndexColumn::iterator find(ContourNode *index);
+  void merge(IndexColumn::iterator index1, IndexColumn::iterator index2);
+  void remove(IndexColumn::iterator index);
+};
+
+//--------------------------------------------------------------------------
+
+class Event {
+public:
+  /*! \remark  Values are sorted by preference at simultaneous events.    */
+
+  enum Type            //! An event's possible types.
+  { special,           //!< A vertex event that is also an edge event (V case).
+    edge,              //!< An edge shrinks to 0 length.
+    vertex,            //!< Two contour nodes clash.
+    split_regenerate,  //!< Placeholder type for split events that must be
+                       //! regenerated.
+    split,             //!< An edge is split by a clashing contour node.
+    failure };
+
+public:
+  double m_height;
+  double m_displacement;
+  ContourNode *m_generator;
+  ContourNode *m_coGenerator;
+  Type m_type;
+  unsigned int m_algoritmicTime;
+
+  VectorizationContext *m_context;
+
+public:
+  // In-builder event constructor
+  Event(ContourNode *generator, VectorizationContext *context);
+
+  // Event calculators
+  inline void calculateEdgeEvent();
+  inline void calculateSplitEvent();
+
+  // Auxiliary event calculators
+  inline double splitDisplacementWith(ContourNode *plane);
+  inline bool tryRayEdgeCollisionWith(ContourNode *edge);
+
+  // Event handlers
+  inline bool process();
+  inline void processEdgeEvent();
+  inline void processMaxEvent();
+  inline void processSplitEvent();
+  inline void processVertexEvent();
+  inline void processSpecialEvent();
+
+private:
+  inline bool testRayEdgeCollision(studio::ContourNode *opposite, double &displacement,
+                                   double &height, double &side1,
+                                   double &side2);
+};
+
+//--------------------------------------------------------------------------
+
+struct EventGreater {
+  bool operator()(const Event &event1, const Event &event2) const {
+    return event1.m_height > event2.m_height ||
+           (event1.m_height == event2.m_height &&
+            event1.m_type > event2.m_type);
+  }
+};
+
+class Timeline final
+    : public std::priority_queue<Event, std::vector<Event>, EventGreater> {
+public:
+  Timeline() {}
+
+  // NOTE: Timeline construction contains the most complex part of
+  // vectorization;
+  // progress bar partial notification happens there, so thisVectorizer's signal
+  // emission methods must be passed and used.
+  void build(ContourFamily &polygons, VectorizationContext &context,
+             VectorizerCore *thisVectorizer);
+};
+
+//==========================================================================
+
+//--------------------------------------
+//    Preliminary methods/functions
+//--------------------------------------
 
 // IndexTable methods
-//Done
+
 void IndexTable::build(ContourFamily &family) {
   unsigned int i;
 
@@ -69,7 +182,6 @@ void IndexTable::build(ContourFamily &family) {
     family[i][0].setAttribute(ContourNode::HEAD);
   }
 }
-
 
 //--------------------------------------------------------------------------
 
@@ -130,6 +242,61 @@ inline void IndexTable::remove(IndexColumn::iterator index) {
 
 inline void IndexTable::clear() { m_columns.clear(), m_identifiers.clear(); }
 
+//==========================================================================
+//                    Straight Skeleton Algorithm
+//==========================================================================
+
+//------------------------------
+//      Global Variables
+//------------------------------
+
+struct VectorizationContext {
+  VectorizerCoreGlobals *m_globals;
+
+  // Globals
+  unsigned int m_totalNodes;      // Number of original contour nodes
+  unsigned int m_contoursCount;   // Number of contours in input region
+  IndexTable m_activeTable;       // Index table of active contours
+  SkeletonGraph *m_output;        // Output skeleton of input region
+  double m_currentHeight;         // Height of our 'roof-flooding' process
+  Timeline m_timeline;            // Ordered queue of all possible events
+  unsigned int m_algoritmicTime;  // Number of events precessed up to now
+
+  // Containers
+  std::vector<ContourEdge> m_edgesHeap;
+  std::vector<ContourNode> m_nodesHeap;  // of *non-original* nodes only
+  unsigned int m_nodesHeapCount;         // number of nodes used in nodesHeap
+
+  //'Linear Axis-added' *pseudo-original* nodes and edges
+  std::vector<ContourNode> m_linearNodesHeap;
+  std::vector<ContourEdge> m_linearEdgesHeap;
+  unsigned int m_linearNodesHeapCount;
+
+public:
+  VectorizationContext(VectorizerCoreGlobals *globals) : m_globals(globals) {}
+
+  ContourNode *getNode() { return &m_nodesHeap[m_nodesHeapCount++]; }
+  ContourNode *getLinearNode() {
+    return &m_linearNodesHeap[m_linearNodesHeapCount];
+  }
+  studio::ContourEdge *getLinearEdge() {
+    return &m_linearEdgesHeap[m_linearNodesHeapCount++];
+  }
+
+  inline void addLinearNodeBefore(ContourNode *node);
+  inline void repairDegenerations(
+      const std::vector<ContourNode *> &degenerates);
+
+  inline void prepareGlobals();
+  inline void prepareContours(ContourFamily &family);
+
+  inline void newSkeletonLink(unsigned int cur, ContourNode *node);
+};
+
+//--------------------------------------------------------------------------
+
+// WARNING: To be launched only *after* prepareContours - node countings happen
+// there
 inline void VectorizationContext::prepareGlobals() {
   // NOTE: Let n be the total number of nodes in the family, k the number of
   // split events
@@ -170,8 +337,7 @@ inline void VectorizationContext::prepareGlobals() {
 
 inline void VectorizationContext::newSkeletonLink(unsigned int cur, ContourNode *node) 
 {
-  if (node->hasAttribute(ContourNode::SK_NODE_DROPPED)) 
-  {
+  if (node->hasAttribute(ContourNode::SK_NODE_DROPPED)) {
     SkeletonArc arcCopy(node);
     m_output->newLink(node->m_outputNode, cur, arcCopy);
 
@@ -342,9 +508,7 @@ inline void ContourNode::buildNodeInfos(bool forceConvex) {
 
   // Calculate node convexity
   if (forceConvex)
-  {
     m_concave = 0;
-  }
   else if (cross(m_edge->m_direction, m_prev->m_edge->m_direction) < 0) 
   {
     m_concave = 1;
@@ -357,10 +521,9 @@ inline void ContourNode::buildNodeInfos(bool forceConvex) {
   parameter = direction.mag();
   if (parameter > 0.01) 
   {
-    direction = direction * (1 / parameter);
-    if (m_concave)
-     direction = -direction;
-  } 
+    direction                = direction * (1 / parameter);
+    if (m_concave) direction = -direction;
+  }
   else
     direction = (m_edge->m_direction).perp();
 
@@ -369,8 +532,7 @@ inline void ContourNode::buildNodeInfos(bool forceConvex) {
 
   // Calculate node speed
   m_direction[2] = cross(m_direction.to_2d(), m_edge->m_direction);
-  if (m_direction[2] < 0)
-   m_direction[2] = 0;
+  if (m_direction[2] < 0) m_direction[2] = 0;
 
   // Calculate angular momentum
   m_AngularMomentum = cross(m_position, m_direction);
@@ -381,9 +543,11 @@ inline void ContourNode::buildNodeInfos(bool forceConvex) {
   } 
   else 
   {
-    m_AuxiliaryMomentum1 = cross(m_position, synfig::Point3(m_edge->m_direction[1],
-                                   -(m_edge->m_direction[0]), 1));
-    m_AuxiliaryMomentum2 = cross(m_position, synfig::Point3(m_prev->m_edge->m_direction[1],
+    m_AuxiliaryMomentum1 =
+        cross(m_position,
+              synfig::Point3(m_edge->m_direction[1], -(m_edge->m_direction[0]), 1));
+    m_AuxiliaryMomentum2 =
+        cross(m_position, synfig::Point3(m_prev->m_edge->m_direction[1],
                                     -(m_prev->m_edge->m_direction[0]), 1));
   }
 }
@@ -425,37 +589,30 @@ public:
 };
 
 //--------------------------------------------------------------------------
-// Done
-void Timeline::build(ContourFamily &polygons, VectorizationContext &context, VectorizerCore *thisVectorizer) 
-{
+
+void Timeline::build(ContourFamily &polygons, VectorizationContext &context,
+                     VectorizerCore *thisVectorizer) {
   unsigned int i, j, current;
   std::vector<RandomizedNode> nodesToBeTreated(context.m_totalNodes);
-  //synfig::Point3 momentum, ray;
+  synfig::Point3 momentum, ray;
 
   // Build casual ordered node-array
-  std::cout<<"This is inside Build\n";
-  std::cout<<"polygons.size() :"<<polygons.size()<<"\n";
   for (i = 0, current = 0; i < polygons.size(); ++i)
-  {
-      std::cout<<"polygons.size() :"<<polygons[i].size()<<"\n";
-
-    for (j = 0; j < polygons[i].size(); ++j)
+    for (j                        = 0; j < polygons[i].size(); ++j)
       nodesToBeTreated[current++] = RandomizedNode(&polygons[i][j]);
-  }
-    
-    std::cout<<"context.m_linearNodesHeapCount :"<<context.m_linearNodesHeapCount<<"\n";
+
   // Same for linear-added nodes
-  for (i = 0; i < context.m_linearNodesHeapCount; ++i)
+  for (i                        = 0; i < context.m_linearNodesHeapCount; ++i)
     nodesToBeTreated[current++] = RandomizedNode(&context.m_linearNodesHeap[i]);
 
   double maxThickness = context.m_globals->currConfig->m_maxThickness;
+
   // Compute events generated by nodes
   // NOTE: are edge events to be computed BEFORE split ones?
   for (i = 0; i < nodesToBeTreated.size(); ++i) 
   {
     // Break calculation at user cancel press
-    if (thisVectorizer->isCanceled()) 
-    break;
+    if (thisVectorizer->isCanceled()) break;
 
     Event currentEvent(nodesToBeTreated[i].m_node, &context);
 
@@ -465,6 +622,51 @@ void Timeline::build(ContourFamily &polygons, VectorizationContext &context, Vec
 
     if (currentEvent.m_type != Event::failure &&
         currentEvent.m_height < maxThickness)
+
+// #ifdef _PREPROCESS
+
+//       if (currentEvent.m_type == Event::split) {
+//         if (currentEvent.m_coGenerator->m_concave) {
+//           ray =
+//               synfig::Point3(currentEvent.m_coGenerator->m_edge->m_direction[1],
+//                         -currentEvent.m_coGenerator->m_edge->m_direction[0], 1);
+//           momentum = cross(currentEvent.m_coGenerator->m_position, ray);
+
+//           if (currentEvent.m_generator->m_direction * momentum +
+//                   ray * currentEvent.m_generator->m_AngularMomentum <
+//               0) {
+//             timeline.push(currentEvent);
+//             continue;
+//           }
+//         }
+
+//         if (currentEvent.m_coGenerator->m_next->m_concave) {
+//           ray =
+//               synfig::Point3(currentEvent.m_coGenerator->m_edge->m_direction[1],
+//                         -currentEvent.m_coGenerator->m_edge->m_direction[0], 1);
+//           momentum = cross(currentEvent.m_coGenerator->m_next->m_position, ray);
+
+//           if (currentEvent.m_generator->m_direction * momentum +
+//                   ray * currentEvent.m_generator->m_AngularMomentum >
+//               0) {
+//             timeline.push(currentEvent);
+//             continue;
+//           }
+//         }
+
+//         if (cross(currentEvent.m_generator->m_edge->m_direction,
+//                   currentEvent.m_coGenerator->m_edge->m_direction) > 0.02 &&
+//             cross(currentEvent.m_coGenerator->m_edge->m_direction,
+//                   currentEvent.m_generator->m_prev->m_edge->m_direction) >
+//                 0.02)  // 0.02 in comparison with 'parameter' in buildNodeInfos
+//         {
+//           // Pre-processing succeeded
+//           currentEvent.process();
+//           continue;
+//         }
+//       }
+
+// #endif
 
     push(currentEvent);
   }
@@ -498,15 +700,15 @@ Event::Event(ContourNode *generator, VectorizationContext *context)
 
 inline void Event::calculateEdgeEvent() {
   struct locals {
-    static inline void buildDisplacements(ContourNode *edgeFirst, double &d1, double &d2) {
+    static inline void buildDisplacements(ContourNode *edgeFirst, double &d1,
+                                          double &d2) {
       ContourNode *edgeSecond = edgeFirst->m_next;
 
       // If bisectors are almost opposite, avoid: there must be another bisector
       // colliding with m_generator *before* coGenerator - allowing a positive
       // result here may interfere with it.
       if ((edgeFirst->m_concave && edgeSecond->m_concave) ||
-          edgeFirst->m_direction * edgeSecond->m_direction < -0.9) 
-      {
+          edgeFirst->m_direction * edgeSecond->m_direction < -0.9) {
         d1 = d2 = -1.0;
         return;
       }
@@ -577,7 +779,6 @@ inline void Event::calculateEdgeEvent() {
                minusTol);  // endpoint to have the same values on adjacent
     }                      // generators. It's important for SPECIAL events.
   }
-
   else if (prevDispPositive) 
   {
     m_coGenerator   = m_generator->m_prev;
@@ -585,7 +786,6 @@ inline void Event::calculateEdgeEvent() {
     minHeight = locals::height(m_coGenerator, firstDisplacement);  // Same here
     positiveEdgeDispl = (prevDispPositive && firstDisplacement > minusTol);
   }
-
   else 
   {
     m_type = failure;
@@ -603,10 +803,8 @@ inline void Event::calculateEdgeEvent() {
       double side = prevRay->m_direction * nextRay->m_AngularMomentum +
                     nextRay->m_direction * prevRay->m_AngularMomentum;
 
-      if (fabs(side) < 0.03 * cross(prevRay->m_direction, nextRay->m_direction).mag())
-      {
-          m_type = special, m_coGenerator = m_generator;
-      }
+      if (fabs(side) < 0.03 * (cross(prevRay->m_direction, nextRay->m_direction)).mag())
+        m_type = special, m_coGenerator = m_generator;
     } 
     else if (fabs(nextDisplacement - prevDisplacement) < 0.01) 
     {
@@ -713,10 +911,8 @@ inline bool Event::testRayEdgeCollision(ContourNode *opposite,
           -0.01  // Ray's vertex generator is below the roof slab
       //&& roofSlabOrthogonal * m_generator->m_direction > 0
       //// Ray must go 'against' the roof slab
-      &&
-      roofSlabOrthogonal.to_2d() *
-              (m_generator->m_direction).to_2d() >
-          0  // Ray must go against the opposing edge
+      && (roofSlabOrthogonal.to_2d()) * (m_generator->m_direction.to_2d()) > 0 
+       // Ray must go against the opposing edge
       &&
       (side1 = m_generator->m_direction *
                    opposite->m_AuxiliaryMomentum1 +  // Ray must pass inside the
@@ -749,7 +945,7 @@ inline bool Event::testRayEdgeCollision(ContourNode *opposite,
 
       double check2 =
           (m_generator->m_position - opposite->m_next->m_position) *
-          (cross(opposite->m_next->m_direction, slabLeftOrthogonal)).norm();
+          (cross(opposite->m_next->m_direction, slabLeftOrthogonal).norm());
 
       if (check1 > 0.02 || check2 < -0.02) return false;
     }
@@ -803,21 +999,18 @@ inline bool Event::tryRayEdgeCollisionWith(ContourNode *opposite)
       if (firstSide < 0.01) 
       {
         // Ray hits first extremity of edge
-        if (opposite->m_concave ||
-            testRayEdgeCollision(opposite->m_prev, displacement_, height_, side1, side2))
+        if (opposite->m_concave ||  testRayEdgeCollision(opposite->m_prev, displacement_, height_, side1, side2))
           type = vertex;
       } 
       else if (secondSide > -0.01) 
       {
         // Ray hits second extremity of edge
-        if (opposite->m_next->m_concave ||
-            testRayEdgeCollision(opposite->m_next, displacement_, height_, side1, side2)) 
+        if (opposite->m_next->m_concave || testRayEdgeCollision(opposite->m_next, displacement_, height_, side1, side2)) 
         {
           type           = vertex;
           newCoGenerator = opposite->m_next;
         }
-      } 
-      else
+      } else
         type = split;
     }
 
@@ -852,13 +1045,11 @@ inline bool Event::tryRayEdgeCollisionWith(ContourNode *opposite)
 
 //--------------------------------------------------------------------------
 
-inline double Event::splitDisplacementWith(ContourNode *slab) 
-{
+inline double Event::splitDisplacementWith(ContourNode *slab) {
   synfig::Point slabLeftOrthogonal(-(slab->m_edge->m_direction[1]),
                              slab->m_edge->m_direction[0]);
-  double denom = m_generator->m_direction[2] +
-                 slabLeftOrthogonal * synfig::Point(m_generator->m_direction[1],
-                                              m_generator->m_direction[0]);
+  synfig::Point temp(m_generator->m_direction[0], m_generator->m_direction[1]);
+  double denom = m_generator->m_direction[2] + slabLeftOrthogonal * temp;
 
   if (denom < 0.01)
     return -1;  // generator-emitted ray is almost parallel to slab
@@ -1019,27 +1210,27 @@ inline bool Event::process()
 // the active contour and a new node at position "x" is placed instead.
 // Observe also that nodes 1 or 2 may be concave (but not both)...
 
-inline void Event::processEdgeEvent() 
-{
+inline void Event::processEdgeEvent() {
   ContourNode *newNode;
-  synfig::Point3 position(m_generator->m_position + (m_generator->m_direction * m_displacement));
+  synfig::Point3 position(m_generator->m_position + m_generator->m_direction * m_displacement);
 
   // Eliminate and unlink extremities of m_coGenerator's edge
   m_coGenerator->setAttribute(ContourNode::ELIMINATED);
   m_coGenerator->m_next->setAttribute(ContourNode::ELIMINATED);
 
   // Then, take a node from heap and insert it at their place.
-  newNode = m_context->getNode();
+  newNode             = m_context->getNode();
   newNode->m_position = position;
 
-  newNode->m_next = m_coGenerator->m_next->m_next;
+  newNode->m_next                       = m_coGenerator->m_next->m_next;
   m_coGenerator->m_next->m_next->m_prev = newNode;
 
-  newNode->m_prev = m_coGenerator->m_prev;
+  newNode->m_prev               = m_coGenerator->m_prev;
   m_coGenerator->m_prev->m_next = newNode;
 
   // Then, initialize new node (however, 3rd component is m_height...)
-  newNode->m_position = m_generator->m_position + (m_generator->m_direction * m_displacement);
+  newNode->m_position =
+      m_generator->m_position + m_generator->m_direction * m_displacement;
   newNode->m_edge = m_coGenerator->m_next->m_edge;
 
   newNode->buildNodeInfos(1);  // 1 => Force convex node
@@ -1052,8 +1243,7 @@ inline void Event::processEdgeEvent()
   // NOTE: Update once graph_old is replaced
   if (newNode->m_direction[2] < 0.7 ||
       m_coGenerator->hasAttribute(ContourNode::SK_NODE_DROPPED) ||
-      m_coGenerator->m_next->hasAttribute(ContourNode::SK_NODE_DROPPED)) 
-  {
+      m_coGenerator->m_next->hasAttribute(ContourNode::SK_NODE_DROPPED)) {
     newNode->setAttribute(ContourNode::SK_NODE_DROPPED);
     newNode->m_outputNode = m_context->m_output->newNode(position);
     m_context->newSkeletonLink(newNode->m_outputNode, m_coGenerator);
@@ -1063,13 +1253,17 @@ inline void Event::processEdgeEvent()
   // If m_coGenerator or its m_next is HEAD of this contour, then
   // redefine newNode as the new head.
   if (m_coGenerator->hasAttribute(ContourNode::HEAD) ||
-      m_coGenerator->m_next->hasAttribute(ContourNode::HEAD)) 
-  {
+      m_coGenerator->m_next->hasAttribute(ContourNode::HEAD)) {
     std::list<ContourNode *>::iterator it;
     std::list<ContourNode *> &column =
         m_context->m_activeTable.columnOfId(m_generator->m_ancestorContour);
 
-    for (it = column.begin(); !(*it)->hasAttribute(ContourNode::ELIMINATED); ++it) ;
+    for (it = column.begin(); !(*it)->hasAttribute(ContourNode::ELIMINATED);
+         ++it)
+      ;
+
+    // assert(*it == m_coGenerator || *it == m_coGenerator->m_next);
+
     *it = newNode, newNode->setAttribute(ContourNode::HEAD);
   }
 
@@ -1083,7 +1277,8 @@ inline void Event::processEdgeEvent()
 // Typical triangle case
 
 inline void Event::processMaxEvent() {
-  synfig::Point3 position(m_generator->m_position + (m_generator->m_direction * m_displacement));
+  synfig::Point3 position(m_generator->m_position +
+                     m_generator->m_direction * m_displacement);
 
   unsigned int outputNode = m_context->m_output->newNode(position);
 
@@ -1114,13 +1309,12 @@ inline void Event::processMaxEvent() {
 
 // We eliminate b and split/merge the border/s represented in the scheme.
 
-inline void Event::processSplitEvent() 
-{
-  ContourNode *newLeftNode, *newRightNode;
-
-  synfig::Point3 position(m_generator->m_position + (m_generator->m_direction * m_displacement));
-  
-  IndexTable &activeTable = m_context->m_activeTable;
+inline void Event::processSplitEvent() {
+  ContourNode *newLeftNode,
+      *newRightNode;  // left-right in the sense of the picture
+  synfig::Point3 position(m_generator->m_position +
+                    m_generator->m_direction * m_displacement);
+  IndexTable &activeTable      = m_context->m_activeTable;
   unsigned int &algoritmicTime = m_context->m_algoritmicTime;
 
   // First, we find in the Index Table the contours involved
@@ -1137,8 +1331,8 @@ inline void Event::processSplitEvent()
   m_generator->setAttribute(ContourNode::ELIMINATED);
 
   // Allocate 2 new nodes and link the following way:
-  newLeftNode = m_context->getNode();
-  newRightNode = m_context->getNode();
+  newLeftNode             = m_context->getNode();
+  newRightNode            = m_context->getNode();
   newLeftNode->m_position = newRightNode->m_position = position;
 
   // On the right side
@@ -1193,11 +1387,12 @@ inline void Event::processSplitEvent()
     newLeftNode->setAttribute(ContourNode::HEAD);
     newRightNode->setAttribute(ContourNode::HEAD);
 
-    activeTable.columnOfId(m_generator->m_ancestorContour).push_back(newRightNode);
+    activeTable.columnOfId(m_generator->m_ancestorContour)
+        .push_back(newRightNode);
   }
 
   // (Vertex compatibility): Moving newRightNode a bit on
-  newRightNode->m_position += (newRightNode->m_direction * 0.02);
+  newRightNode->m_position += newRightNode->m_direction * 0.02;
 
   // Finally, calculate the new left and right Events
   Event newLeftEvent(newLeftNode, m_context);
@@ -1222,11 +1417,10 @@ inline void Event::processSplitEvent()
 // Reflex vertices b and b' collide. Observe that a new reflex vertex may rise
 // here.
 
-inline void Event::processVertexEvent() 
-{
-  ContourNode *newLeftNode, *newRightNode;  
-  synfig::Point3 position(m_generator->m_position + (m_generator->m_direction * m_displacement));
-
+inline void Event::processVertexEvent() {
+  ContourNode *newLeftNode, *newRightNode;  // left-right in the sense of the picture
+  synfig::Point3 position(m_generator->m_position +
+                    m_generator->m_direction * m_displacement);
   IndexTable &activeTable      = m_context->m_activeTable;
   unsigned int &algoritmicTime = m_context->m_algoritmicTime;
 
@@ -1235,8 +1429,7 @@ inline void Event::processVertexEvent()
   genContour = activeTable.find(m_generator);
 
   if (activeTable.m_identifiers[m_generator->m_ancestorContour] !=
-      activeTable.m_identifiers[m_coGenerator->m_ancestorContour]) 
-  {
+      activeTable.m_identifiers[m_coGenerator->m_ancestorContour]) {
     // We have two different contours, that merge in one
     coGenContour = activeTable.find(m_coGenerator);
   }
@@ -1287,22 +1480,18 @@ inline void Event::processVertexEvent()
 
   // Update the active Index Table
   if (activeTable.m_identifiers[m_generator->m_ancestorContour] !=
-      activeTable.m_identifiers[m_coGenerator->m_ancestorContour]) 
-  {
+      activeTable.m_identifiers[m_coGenerator->m_ancestorContour]) {
     // If we have two different contours, they merge in one
     (*coGenContour)->clearAttribute(ContourNode::HEAD);
     activeTable.merge(genContour, coGenContour);
 
     // Check if the generator is head, if so update.
-    if (m_generator->hasAttribute(ContourNode::HEAD)) 
-    {
+    if (m_generator->hasAttribute(ContourNode::HEAD)) {
       newLeftNode->setAttribute(ContourNode::HEAD);
       *genContour = newLeftNode;
     }
 
-  } 
-  else 
-  {
+  } else {
     // Else we have only one contour, which splits in two
     (*genContour)->clearAttribute(ContourNode::HEAD);
     *genContour = newLeftNode;
@@ -1310,13 +1499,13 @@ inline void Event::processVertexEvent()
     newLeftNode->setAttribute(ContourNode::HEAD);
     newRightNode->setAttribute(ContourNode::HEAD);
 
-    activeTable.columnOfId(m_generator->m_ancestorContour).push_back(newRightNode);
+    activeTable.columnOfId(m_generator->m_ancestorContour)
+        .push_back(newRightNode);
   }
 
   // Before calculating the new interactions, to each new node we assign
   // as impossible opposite edges the adjacent of the other node.
-  if (newLeftNode->m_concave) 
-  {
+  if (newLeftNode->m_concave) {
     newLeftNode->m_notOpposites = m_generator->m_notOpposites;
     append<std::vector<ContourEdge *>,
            std::vector<ContourEdge *>::reverse_iterator>(
@@ -1324,9 +1513,7 @@ inline void Event::processVertexEvent()
 
     newLeftNode->m_notOpposites.push_back(newRightNode->m_edge);
     newLeftNode->m_notOpposites.push_back(newRightNode->m_prev->m_edge);
-  } 
-  else if (newRightNode->m_concave) 
-  {
+  } else if (newRightNode->m_concave) {
     newRightNode->m_notOpposites = m_generator->m_notOpposites;
     append<std::vector<ContourEdge *>,
            std::vector<ContourEdge *>::reverse_iterator>(
@@ -1339,7 +1526,7 @@ inline void Event::processVertexEvent()
   // We also forbid newRightNode to be involved in events at the same location
   // of this one.
   // We just push its position in the m_direction by 0.02.
-  newRightNode->m_position += (newRightNode->m_direction * 0.02);
+  newRightNode->m_position += newRightNode->m_direction * 0.02;
 
   // Finally, calculate the new left and right Events
   Event newLeftEvent(newLeftNode, m_context);
@@ -1367,7 +1554,8 @@ inline void Event::processVertexEvent()
 inline void Event::processSpecialEvent() 
 {
   ContourNode *newNode;
-  synfig::Point3 position(m_generator->m_position + (m_generator->m_direction * m_displacement));
+  synfig::Point3 position(m_generator->m_position +
+                     m_generator->m_direction * m_displacement);
 
   m_coGenerator->setAttribute(ContourNode::ELIMINATED);
   m_coGenerator->m_prev->setAttribute(ContourNode::ELIMINATED);
@@ -1404,13 +1592,18 @@ inline void Event::processSpecialEvent()
   // redefine newNode as the new head.
   if (m_coGenerator->hasAttribute(ContourNode::HEAD) ||
       m_coGenerator->m_next->hasAttribute(ContourNode::HEAD) ||
-      m_coGenerator->m_prev->hasAttribute(ContourNode::HEAD)) 
-  {
+      m_coGenerator->m_prev->hasAttribute(ContourNode::HEAD)) {
     std::list<ContourNode *>::iterator it;
     std::list<ContourNode *> &column =
         m_context->m_activeTable.columnOfId(m_generator->m_ancestorContour);
 
-    for (it = column.begin(); !(*it)->hasAttribute(ContourNode::ELIMINATED); ++it) ;
+    for (it = column.begin(); !(*it)->hasAttribute(ContourNode::ELIMINATED);
+         ++it)
+      ;
+
+    // assert(*it == m_coGenerator || *it == m_coGenerator->m_next || *it ==
+    // m_coGenerator->m_prev);
+
     *it = newNode, newNode->setAttribute(ContourNode::HEAD);
   }
 
@@ -1425,9 +1618,9 @@ inline void Event::processSpecialEvent()
 //    Straight Skeleton mains
 //-------------------------------
 
-static SkeletonGraph *sskeletonize(ContourFamily &regionContours,
- VectorizationContext &context, VectorizerCore *thisVectorizer) 
-{
+static SkeletonGraph *skeletonize(ContourFamily &regionContours,
+                                  VectorizationContext &context,
+                                  VectorizerCore *thisVectorizer) {
   SkeletonGraph *output = context.m_output = new SkeletonGraph;
 
   context.prepareContours(regionContours);
@@ -1436,16 +1629,31 @@ static SkeletonGraph *sskeletonize(ContourFamily &regionContours,
   IndexTable &activeTable = context.m_activeTable;
   activeTable.build(regionContours);
 
-  double maxThickness = 0.0;//context.m_globals->currConfig->m_maxThickness;
-  // std::cout<<"maxThickness :"<<maxThickness<<"\n";
+  double maxThickness = context.m_globals->currConfig->m_maxThickness;
 
-  if (maxThickness > 0.0)
+  if (maxThickness > 0.0)  // if(!currConfig->m_outline)
   {
     Timeline &timeline = context.m_timeline;
     timeline.build(regionContours, context, thisVectorizer);
 
-    if (thisVectorizer->isCanceled()) 
-    {
+// #ifdef _SSDEBUG
+//     SSDebugger debugger(context);
+
+//     bool spawnDebugger = false;
+//     if (timeline.size() > 1000) {
+//       debugger.m_height = context.m_currentHeight;
+
+//       debugger.show();
+//       debugger.raise();
+
+//       debugger.repaint();
+//       debugger.loop();
+
+//       spawnDebugger = true;
+//     }
+// #endif
+
+    if (thisVectorizer->isCanceled()) {
       // Bailing out
       while (!timeline.empty()) timeline.pop();
 
@@ -1459,13 +1667,31 @@ static SkeletonGraph *sskeletonize(ContourFamily &regionContours,
     }
 
     // Process timeline
-    while (!timeline.empty()) 
-    {
+    while (!timeline.empty()) {
       Event currentEvent = timeline.top();
       timeline.pop();
 
       // If maxThickness hit, stop before processing
       if (currentEvent.m_height >= maxThickness) break;
+
+// Redraw debugger window
+// #ifdef _SSDEBUG
+
+//       if (spawnDebugger && debugger.isOnScreen(currentEvent.m_generator)) {
+//         debugger.m_height = currentEvent.m_height;
+
+//         debugger.repaint();
+//         debugger.loop();
+
+//         if (currentEvent.m_type == Event::split ||
+//             currentEvent.m_type == Event::vertex)
+//           currentEvent.tryRayEdgeCollisionWith(currentEvent.m_coGenerator);
+
+//         if (currentEvent.m_type == Event::edge)
+//           currentEvent.calculateEdgeEvent();
+//       }
+
+// #endif  // _SSDEBUG
 
       // Process event
       currentEvent.process();
@@ -1475,25 +1701,32 @@ static SkeletonGraph *sskeletonize(ContourFamily &regionContours,
     // The thinning process terminates: deleting non-original nodes and edges.
     while (!timeline.empty()) timeline.pop();
 
+// #ifdef _SSDEBUG
+//     if (spawnDebugger) {
+//       debugger.m_height = context.m_currentHeight;
+
+//       debugger.repaint();
+//       debugger.loop();
+//     }
+// #endif  // _SSDEBUG
   }
 
   // Finally, update remaining nodes not processed due to maxThickness and
   // connect them to output skeleton
   unsigned int i, l, n;
   IndexTable::IndexColumn::iterator j;
-  ContourNode *k = nullptr;
+  ContourNode *k;
 
   for (i = 0; i < regionContours.size(); ++i)
-  {
-    for (j = activeTable[i]->begin(); j != activeTable[i]->end(); ++j) 
-    {
+    for (j = activeTable[i]->begin(); j != activeTable[i]->end(); ++j) {
       unsigned int count = 0;
       unsigned int addedNode;
-      for (k = *j; !k->hasAttribute(ContourNode::HEAD) || !count; k = k->m_next) 
-      {
-        addedNode = output->newNode(k->m_position +
-        k->m_direction *((maxThickness - k->m_position[2]) / (k->m_direction[2] > 0.01 ? k->m_direction[2] : 1)));
+      for (k = *j; !k->hasAttribute(ContourNode::HEAD) || !count;
+           k = k->m_next) {
+        addedNode = output->newNode(k->m_position + k->m_direction *((maxThickness - k->m_position[2]) /
+                 (k->m_direction[2] > 0.01 ? k->m_direction[2] : 1)));
         context.newSkeletonLink(addedNode, k);
+        // output->node(addedNode).setAttribute(ContourNode::SS_OUTLINE);
         ++count;
       }
 
@@ -1511,48 +1744,39 @@ static SkeletonGraph *sskeletonize(ContourFamily &regionContours,
       output->newLink(n - l, n - 1, arcCopyRev);
       output->newLink(n - 1, n - l, arcCopy);
     }
-  }
+
   context.m_nodesHeap.clear();
   context.m_edgesHeap.clear();
 
   context.m_linearNodesHeap.clear();
   context.m_linearEdgesHeap.clear();
 
-  SkeletonGraph* currGraph   = output;
-    // std::cout<<"Link Count from SKELETONIZER :"<<currGraph->getLinksCount()<<"Node Count :"<<currGraph->getNodesCount()<<"\n";
-    // for (int i = 0; i < currGraph->getNodesCount(); ++i)
-    // {
-
-    //   std::cout<<"m_content :"<<currGraph->getNode(i)->operator[](0) <<", "<<currGraph->getNode(i)->operator[](1)<<", "
-    //   <<currGraph->getNode(i)->operator[](2)<<"\n";
-
-    // }
   return output;
-
 }
 
 //--------------------------------------------------------------------------
 
-SkeletonList* studio::skeletonize(Contours &contours, VectorizerCore *thisVectorizer, VectorizerCoreGlobals &g) 
-{
+SkeletonList* studio::skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
+                          VectorizerCoreGlobals &g) {
   VectorizationContext context(&g);
 
   SkeletonList *res = new SkeletonList;
   unsigned int i, j;
-  // TODO
+
   // Find overall number of nodes
-  // unsigned int overallNodes = 0;
-  // for (i = 0; i < contours.size(); ++i)
-  //   for (j = 0; j < contours[i].size(); ++j)
-  //     overallNodes += contours[i][j].size();
+  unsigned int overallNodes = 0;
+  for (i = 0; i < contours.size(); ++i)
+    for (j = 0; j < contours[i].size(); ++j)
+      overallNodes += contours[i][j].size();
 
-  // thisVectorizer->setOverallPartials(overallNodes);
+  //thisVectorizer->setOverallPartials(overallNodes);
 
-  for (i = 0; i < contours.size(); ++i) 
-  {
-    res->push_back(sskeletonize(contours[i], context, thisVectorizer));
+  for (i = 0; i < contours.size(); ++i) {
+    res->push_back(skeletonize(contours[i], context, thisVectorizer));
+
     if (thisVectorizer->isCanceled()) break;
   }
 
   return res;
 }
+
