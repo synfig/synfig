@@ -361,7 +361,7 @@ DockManager::add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool 
 	remove_widget_recursive(src_widget);
 
 	// create new paned and link all
-	Gtk::Paned *paned = manage(vertical ? (Gtk::Paned*)new Gtk::VPaned() : (Gtk::Paned*)new Gtk::HPaned());
+	Gtk::Paned *paned = manage(new Gtk::Paned(vertical ? Gtk::ORIENTATION_VERTICAL : Gtk::ORIENTATION_HORIZONTAL));
 	paned->show();
 	DockLinkPoint(paned, first).link(src_widget);
 	DockLinkPoint(paned, !first).link(dest_widget);
@@ -438,7 +438,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		if (!first && second) return second;
 
 		// create paned
-		Gtk::Paned *paned = manage(hor ? (Gtk::Paned*)new Gtk::HPaned() : (Gtk::Paned*)new Gtk::VPaned());
+		Gtk::Paned *paned = manage(new Gtk::Paned(vert ? Gtk::ORIENTATION_VERTICAL : Gtk::ORIENTATION_HORIZONTAL));
 		paned->pack1(*first,  true, false);
 		paned->pack2(*second, true, false);
 		paned->set_position(size);
@@ -575,7 +575,6 @@ void DockManager::write_bool(std::string &x, bool b)
 void DockManager::write_widget(std::string &x, Gtk::Widget* widget)
 {
 	Gtk::Paned *paned = dynamic_cast<Gtk::Paned*>(widget);
-	Gtk::HPaned *hpaned = dynamic_cast<Gtk::HPaned*>(widget);
 	DockBook *book = dynamic_cast<DockBook*>(widget);
 	DockDialog *dialog = dynamic_cast<DockDialog*>(widget);
 
@@ -629,7 +628,7 @@ void DockManager::write_widget(std::string &x, Gtk::Widget* widget)
 	else
 	if (paned)
 	{
-		write_string(x, hpaned ? "[hor|" : "[vert|");
+		write_string(x, paned->get_orientation() == Gtk::ORIENTATION_HORIZONTAL ? "[hor|" : "[vert|");
 		write_int(x, paned->get_position());
 		write_separator(x);
 		write_widget(x, paned->get_child1());
