@@ -22,6 +22,7 @@ class Layer:
         self.extract_params(self.params)
         self.set_description()
 
+
     def set_lottie_layer(self, lottie):
         """
         Stores the path to lottie format of layer
@@ -58,6 +59,17 @@ class Layer:
         self.params[key] = Param(param, self)
         return self.params[key]
 
+    def set_group_params(self):
+        """
+        If the current layer is group, it sets the immediate children parameters
+        as group_children=1. This is needed in convert methods like
+        radial_composite and bone_link
+        """
+        typ = self.get_type()
+        if typ in settings.GROUP_LAYER or typ in settings.PRE_COMP_LAYER:
+            for param in self.params.values():
+                param.is_group_child = True
+
     def extract_params(self, params):
         """
         Will extract the parameters from the layer and store in params
@@ -66,6 +78,7 @@ class Layer:
             if child.tag == "param":
                 key = child.attrib["name"]
                 params[key] = Param(child, self)
+        self.set_group_params()
 
     def get_param(self, *keys):
         """

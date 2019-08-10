@@ -36,6 +36,8 @@ class Param:
         self.dimension = 1  # 1 represents real, 2 represents vector
         self.get_exported_valuenode()
 
+        self.is_group_child = 0
+
     def get_exported_valuenode(self):
         """
         If the animation of this param is not directly linked with this param,
@@ -136,6 +138,10 @@ class Param:
         Helps append in the dict if same key is already present
         """
         val = Param(child, self)
+
+        if self.is_group_child:
+            val.is_group_child = True
+
         if isinstance(self.subparams[key], list):
             self.subparams[key].append(val)
         else:
@@ -157,6 +163,9 @@ class Param:
                 self.append_same_key(key, child)
             else:
                 self.subparams[key] = Param(child, self)
+
+                if self.is_group_child:
+                    self.subparams[key].is_group_child = True
 
     def animate_without_path(self, anim_type):
         """
@@ -210,7 +219,11 @@ class Param:
                 bone_origin, eff_1 = self.subparams["origin"].recur_animate("vector")
 
                 # Get the animation of angle
-                bone_angle, ang_eff = self.subparams["angle"].recur_animate("angle")
+                prop_name = "angle"
+                if self.is_group_child:
+                    prop_name = "rotate_layer_angle"
+
+                bone_angle, ang_eff = self.subparams["angle"].recur_animate(prop_name)
 
                 # Adding to expression controller
                 self.expression_controllers.extend(eff_1)
@@ -221,7 +234,15 @@ class Param:
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(guid)
 
+                # Store the previous state
+                prev_state = bone.is_group_child
+                if self.is_group_child:
+                    bone.is_group_child = True
+
                 par_origin, par_angle, par_eff = bone.recur_animate("vector")
+
+                # Restore the previous state
+                bone.is_group_child = prev_state
 
                 if par_eff is not None: # checking it is not the bone_root
                     # Adding expression to the expression controller
@@ -389,9 +410,18 @@ class Param:
                 self.subparams["bone_link"].extract_subparams()
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
-                ######## THIS IS NOT CORRECT WAY OF FORMING BONE PARAM
-                ########################################################
+
+                # Storing previous state
+                prev_state = bone.is_group_child
+                if self.is_group_child:
+                    bone.is_group_child = True
                 origin, angle, eff = bone.recur_animate("vector")  # animating only the origin now
+
+                origin = "[" + origin + "[0]" + ", -" + origin + "[1]]"
+
+                # Restore previous state
+                bone.is_group_child = prev_state
+
                 self.expression_controllers.extend(eff)
                 self.expression = origin
                 return origin, self.expression_controllers
@@ -527,7 +557,6 @@ class Param:
                     angle = to_Synfig_axis(self.subparams["angle"].get_value(frame), "angle")
                 else:
                     angle = 0
-                ret = [ret[0], -ret[1]]
 
                 return ret, shifted_angle+angle
 
@@ -649,7 +678,7 @@ class Param:
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
                 ret_origin, ret_angle = bone.get_value(frame)
-                ret = ret_origin
+                ret = [ret_origin[0], -ret_origin[1]]
 
         else:
             ret = self.get_single_value(frame)
