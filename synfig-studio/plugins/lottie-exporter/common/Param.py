@@ -388,9 +388,7 @@ class Param:
             elif self.param[0].tag == "bone_link":
                 self.subparams["bone_link"].extract_subparams()
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
-                layer = self.get_layer()
-                canvas = layer.getparent()
-                bone = canvas.get_bone(guid)
+                bone = self.get_bone_from_canvas(guid)
                 ######## THIS IS NOT CORRECT WAY OF FORMING BONE PARAM
                 ########################################################
                 origin, angle, eff = bone.recur_animate("vector")  # animating only the origin now
@@ -649,9 +647,7 @@ class Param:
 
             elif self.param[0].tag == "bone_link":
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
-                layer = self.get_layer()
-                canvas = layer.getparent()
-                bone = canvas.get_bone(guid)
+                bone = self.get_bone_from_canvas(guid)
                 ret_origin, ret_angle = bone.get_value(frame)
                 ret = ret_origin
 
@@ -769,9 +765,7 @@ class Param:
             elif node.tag == "bone_link":
                 self.subparams["bone_link"].extract_subparams()
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
-                layer = self.get_layer()
-                canvas = layer.getparent()
-                bone = canvas.get_bone(guid)
+                bone = self.get_bone_from_canvas(guid)
                 bone.update_frame_window(window)
 
         if is_animated(node) == 2:
@@ -781,3 +775,19 @@ class Param:
                     window["last"] = fr
                 if fr < window["first"]:
                     window["first"] = fr
+
+    def get_bone_from_canvas(self, guid):
+        """
+        Given a canvas, recursively travel to the ancestor canvas's and find the
+        bone associated with the guid
+        """
+        now = self
+        while True:
+            layer = now.get_layer()
+            canvas = layer.getparent()
+            bone = canvas.get_bone(guid)
+            if bone is not None:
+                break
+            else:
+                now = canvas.getparent_param()
+        return bone

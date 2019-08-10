@@ -19,6 +19,8 @@ class Canvas:
         """
         if isinstance(canvas, Param):
             self.canvas = canvas.get()[0]
+            # If canvas is derived from a parameter store that parameter also
+            self.parent_param = canvas
         else:
             self.canvas = canvas
         self.defs = {}
@@ -48,6 +50,13 @@ class Canvas:
         Returns the address of original canvas
         """
         return self.canvas
+
+    def getparent_param(self):
+        """
+        This will return the parent parameter of the canvas
+        Only when a canvas is present in a group or switch group layer
+        """
+        return self.parent_param
 
     def extract_defs(self, defs_dict):
         """
