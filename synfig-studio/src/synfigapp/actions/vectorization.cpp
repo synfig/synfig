@@ -238,17 +238,21 @@ Action::Vectorization::perform()
 
     new_layer->set_description("Vectorized "+layer->get_description());
 	new_layer->set_param("canvas",child_canvas);
+    if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(reference_layer))
+    {
+        new_layer->set_param("transformation",paste->get_param("transformation"));
+        get_canvas()->insert(std::find(get_canvas()->begin(), get_canvas()->end(), reference_layer),new_layer);
+    }
+    else
+    {
+        get_canvas()->push_front(new_layer);
+    }
+    
     new_layer->set_canvas(get_canvas());
-    get_canvas()->push_front(new_layer);
-
     for(int i=0;i < Result.size();i++)
     {
       Result[i]->set_canvas(child_canvas);
       child_canvas->push_front(Result[i]);
-    }
-    if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(reference_layer))
-    {
-        new_layer->set_param("transformation",paste->get_param("transformation"));
     }
     if(get_canvas_interface()) 
     { 
