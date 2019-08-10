@@ -467,22 +467,6 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 				if (book == NULL) { book = manage(new DockBook()); book->show(); }
 				book->add(dockable);
 			}			
-			/*std::string name = read_string(x);
-			if (!name.empty())
-			{
-				Dockable *dockable = &find_dockable(name);
-				if (dockable != NULL)
-				{
-					Gtk::Container *container = dockable->get_parent();
-					if (container)
-					{
-						container->remove(*dockable);
-						containers_to_remove_[container] = true;
-					}
-					if (book == NULL) { book = manage(new DockBook()); book->show(); }
-					book->add(*dockable);
-				}
-			}*/
 		} while (read_separator(x));
 
 		return book;
