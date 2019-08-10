@@ -205,22 +205,49 @@ class Param:
             self.extract_subparams()
 
             if self.param.tag == "bone":  # Carefull about param[0] and param here
-                origin, eff_1 = self.subparams["origin"].recur_animate("vector")
+
+                # Get the animation of this origin
+                bone_origin, eff_1 = self.subparams["origin"].recur_animate("vector")
+
+                # Get the animation of angle
+                bone_angle, ang_eff = self.subparams["angle"].recur_animate("angle")
+
+                # Adding to expression controller
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(ang_eff)
+
                 # Now adding the parent's effects in this bone
                 guid = self.subparams["parent"][0].attrib["guid"]
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(guid)
-                b_origin, eff_2 = bone.recur_animate("vector")
-                self.expression_controllers.extend(eff_1)
-                if eff_2 is not None:
-                    self.expression_controllers.extend(eff_2)
-                    ret = "sum(" + origin + "," + b_origin + ")"
+
+                par_origin, par_angle, par_eff = bone.recur_animate("vector")
+
+                if par_eff is not None: # checking it is not the bone_root
+                    # Adding expression to the expression controller
+                    self.expression_controllers.extend(par_eff)
+
+                    # Forming the expression for new origin
+                    a1 = "degreesToRadians({angle})"
+                    a2 = "degreesToRadians(sum({angle}, 90))"
+                    a1, a2 = a1.format(angle=par_angle), a2.format(angle=par_angle)
+
+                    ret_x = "sum({par_origin}[0], mul({bone_origin}[0], Math.cos({a1})), mul({bone_origin}[1], Math.cos({a2})))"
+                    ret_y = "sum({par_origin}[1], mul({bone_origin}[0], Math.sin({a1})), mul({bone_origin}[1], Math.sin({a2})))"
+                    ret_origin = "[" + ret_x + ", " + ret_y + "]"
+                    ret_origin = ret_origin.format(par_origin=par_origin, bone_origin=bone_origin, a1=a1, a2=a2)
+
+                    # Forming the expression for new angle
+                    ret_angle = "sum({par_angle}, {bone_angle})"
+                    ret_angle = ret_angle.format(par_angle=par_angle, bone_angle=bone_angle)
                 else:
-                    ret = origin
-                return ret, self.expression_controllers
+                    ret_origin = bone_origin
+                    ret_angle = bone_angle
+
+                return ret_origin, ret_angle, self.expression_controllers
 
             elif self.param.tag == "bone_root": # No animation to be added as this being the root
-                return "0", None
+                return "0", "0", None
 
             elif self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
@@ -366,8 +393,8 @@ class Param:
                 bone = canvas.get_bone(guid)
                 ######## THIS IS NOT CORRECT WAY OF FORMING BONE PARAM
                 ########################################################
-                origin, eff_1 = bone.recur_animate("vector")  # animating only the origin now
-                self.expression_controllers.extend(eff_1)
+                origin, angle, eff = bone.recur_animate("vector")  # animating only the origin now
+                self.expression_controllers.extend(eff)
                 self.expression = origin
                 return origin, self.expression_controllers
 
@@ -481,21 +508,35 @@ class Param:
         """
         if self.param.tag in settings.BONES or self.param[0].tag in settings.CONVERT_METHODS:
             if self.param.tag == "bone":
-                ret = self.subparams["origin"].get_value(frame)
+                cur_origin = self.subparams["origin"].get_value(frame)
+
                 # Now adding the parent's effects in this bone
                 guid = self.subparams["parent"][0].attrib["guid"]
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(guid)
-                ret2 = bone.get_value(frame)
-                if ret2 is not None:
-                    if isinstance(ret, list):
-                        ret[0] += ret2[0]
-                        ret[1] += ret2[1]
-                    else:
-                        ret += ret2
+                shifted_origin, shifted_angle = bone.get_value(frame)
+                a1, a2 = math.radians(shifted_angle), math.radians(shifted_angle+90)
+
+                ret = shifted_origin
+                # Adding effect of x component
+                ret[0], ret[1] = ret[0] + cur_origin[0] * math.cos(a1), ret[1] + cur_origin[0] * math.sin(a1)
+
+                # Adding effect of y component
+                ret[0] += cur_origin[1] * math.cos(a2)
+                ret[1] += cur_origin[1] * math.sin(a2)
+
+                if "angle" in self.subparams.keys():
+                    angle = to_Synfig_axis(self.subparams["angle"].get_value(frame), "angle")
+                else:
+                    angle = 0
+                ret = [ret[0], -ret[1]]
+
+                return ret, shifted_angle+angle
 
             elif self.param.tag == "bone_root":
-                return None
+                origin = [0, 0]
+                angle = 0
+                return origin, angle
 
             elif self.param[0].tag == "add":
                 ret = self.subparams["add"].subparams["lhs"].get_value(frame)
@@ -611,7 +652,8 @@ class Param:
                 layer = self.get_layer()
                 canvas = layer.getparent()
                 bone = canvas.get_bone(guid)
-                ret = bone.get_value(frame)
+                ret_origin, ret_angle = bone.get_value(frame)
+                ret = ret_origin
 
         else:
             ret = self.get_single_value(frame)
