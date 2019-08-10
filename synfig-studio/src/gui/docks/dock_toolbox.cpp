@@ -100,7 +100,7 @@ Dock_Toolbox::Dock_Toolbox():
 
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 
-	Gtk::Paned *tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
+	tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
 	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
 	tool_box_paned->set_position(200);
@@ -132,6 +132,23 @@ Dock_Toolbox::~Dock_Toolbox()
 
 	if(studio::App::dock_toolbox==this)
 		studio::App::dock_toolbox=NULL;
+}
+
+void Dock_Toolbox::write_layout_string(string& params) const
+{
+	char num_str[6];
+	snprintf(num_str, 5, "%d", tool_box_paned->get_position());
+	params += std::string(num_str);
+}
+
+void Dock_Toolbox::read_layout_string(const string& params) const
+{
+	try {
+		int pos = std::stoi(params.c_str());
+		tool_box_paned->set_position(pos);
+	} catch (...) {
+		// ignores invalid value and let it use the default one
+	}
 }
 
 void
