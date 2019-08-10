@@ -284,3 +284,11 @@ Dockable::create_tab_label()
 
 	return event_box;
 }
+
+void Dockable::write_layout_string(std::string& /*params*/) const
+{
+}
+
+void Dockable::read_layout_string(const std::string& /*params*/) const
+{
+}

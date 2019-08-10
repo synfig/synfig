@@ -51,6 +51,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace Gtk {
+class Paned;
+}
+
 namespace studio {
 
 class StateManager;
@@ -61,6 +65,7 @@ class Dock_Toolbox : public Dockable
 
 	Gtk::ToolItemGroup *tool_item_group;
 	Gtk::VBox *tool_box;
+	Gtk::Paned *tool_box_paned;
 
 	std::map<synfig::String,Gtk::ToggleToolButton *> state_button_map;
 
@@ -85,6 +90,8 @@ public:
 	Dock_Toolbox();
 	virtual ~Dock_Toolbox();
 
+	virtual void write_layout_string(std::string &params) const;
+	virtual void read_layout_string(const std::string &params) const;
 };
 
 }; // END of namespace studio

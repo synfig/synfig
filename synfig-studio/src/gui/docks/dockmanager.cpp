@@ -400,6 +400,17 @@ std::string DockManager::read_string(std::string &x)
 	return res;
 }
 
+std::string DockManager::extract_dockable_name(std::string &x) const
+{
+	size_t pos = x.find(",");
+	std::string res = x.substr(0, pos);
+	if (pos == std::string::npos)
+		x.clear();
+	else
+		x = x.substr(pos+1); // skip comma
+	return res;
+}
+
 int DockManager::read_int(std::string &x)
 {
 	return strtol(read_string(x).c_str(), NULL, 10);
@@ -455,10 +466,13 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		DockBook *book = NULL;
 		do
 		{
-			std::string name = read_string(x);
+			std::string dockable_name_params = read_string(x);
+			std::string name = extract_dockable_name(dockable_name_params);
 			if (!name.empty())
 			{
 				Dockable &dockable = find_dockable(name);
+				if (!dockable_name_params.empty())
+					dockable.read_layout_string(dockable_name_params);
 				Gtk::Container *container = dockable.get_parent();
 				if (container) {
 					container->remove(dockable);
@@ -631,7 +645,17 @@ void DockManager::write_widget(std::string &x, Gtk::Widget* widget)
 			if (dockable)
 			{
 				write_separator(x);
-				write_string(x, dockable->get_name());
+				std::string name_params = dockable->get_name();
+				std::string params;
+				dockable->write_layout_string(params);
+				if (!params.empty()) {
+					if (params.find_first_of("]|") != std::string::npos) {
+						synfig::warning("Ignoring %s's layout info: it must not have ] or | characters.", dockable->get_name().c_str());
+					} else {
+						name_params += "," + params;
+					}
+				}
+				write_string(x, name_params);
 			}
 		}
 		write_separator(x, false);

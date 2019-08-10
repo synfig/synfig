@@ -100,6 +100,11 @@ public:
 	virtual void present();
 	virtual Gtk::Widget* create_tab_label();
 
+	/// Appends serialized extra layout info of this dockable
+	/// \param params[out] serialized data. It must not have ']' or '|' characters.
+	virtual void write_layout_string(std::string &params) const;
+	virtual void read_layout_string(const std::string &params) const;
+
 private:
 	void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& selection_data, guint info, guint time);
 	void on_drag_end(const Glib::RefPtr<Gdk::DragContext>&context);
