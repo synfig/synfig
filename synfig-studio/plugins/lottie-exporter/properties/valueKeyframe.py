@@ -38,6 +38,12 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
         bias *= 1e-9
         value_scale += bias
 
+    # Trying the same for time_scale
+    if time_scale == 0.0:
+        bias = 1 if random.random() < 0.5 else -1
+        bias *= 1e-9
+        time_scale += bias
+
     time_diff = cur_pos[1] / time_scale
     value_diff = cur_pos[0] / value_scale
 
