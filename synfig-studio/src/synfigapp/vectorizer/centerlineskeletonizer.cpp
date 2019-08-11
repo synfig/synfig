@@ -1,3 +1,25 @@
+/* === S Y N F I G ========================================================= */
+/*!	\file centerlineskeletonizer.cpp
+**
+**	$Id$
+**
+**	\legal
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
+**
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === H E A D E R S ======================================================= */
 
 #include "polygonizerclasses.h"
 #include <queue>
@@ -623,51 +645,6 @@ void Timeline::build(ContourFamily &polygons, VectorizationContext &context,
     if (currentEvent.m_type != Event::failure &&
         currentEvent.m_height < maxThickness)
 
-// #ifdef _PREPROCESS
-
-//       if (currentEvent.m_type == Event::split) {
-//         if (currentEvent.m_coGenerator->m_concave) {
-//           ray =
-//               synfig::Point3(currentEvent.m_coGenerator->m_edge->m_direction[1],
-//                         -currentEvent.m_coGenerator->m_edge->m_direction[0], 1);
-//           momentum = cross(currentEvent.m_coGenerator->m_position, ray);
-
-//           if (currentEvent.m_generator->m_direction * momentum +
-//                   ray * currentEvent.m_generator->m_AngularMomentum <
-//               0) {
-//             timeline.push(currentEvent);
-//             continue;
-//           }
-//         }
-
-//         if (currentEvent.m_coGenerator->m_next->m_concave) {
-//           ray =
-//               synfig::Point3(currentEvent.m_coGenerator->m_edge->m_direction[1],
-//                         -currentEvent.m_coGenerator->m_edge->m_direction[0], 1);
-//           momentum = cross(currentEvent.m_coGenerator->m_next->m_position, ray);
-
-//           if (currentEvent.m_generator->m_direction * momentum +
-//                   ray * currentEvent.m_generator->m_AngularMomentum >
-//               0) {
-//             timeline.push(currentEvent);
-//             continue;
-//           }
-//         }
-
-//         if (cross(currentEvent.m_generator->m_edge->m_direction,
-//                   currentEvent.m_coGenerator->m_edge->m_direction) > 0.02 &&
-//             cross(currentEvent.m_coGenerator->m_edge->m_direction,
-//                   currentEvent.m_generator->m_prev->m_edge->m_direction) >
-//                 0.02)  // 0.02 in comparison with 'parameter' in buildNodeInfos
-//         {
-//           // Pre-processing succeeded
-//           currentEvent.process();
-//           continue;
-//         }
-//       }
-
-// #endif
-
     push(currentEvent);
   }
 }
@@ -1029,10 +1006,6 @@ inline bool Event::tryRayEdgeCollisionWith(ContourNode *opposite)
                   newCoGenerator->m_edge->m_direction,
                   m_generator->m_edge->m_direction))
       return false;
-
-    // Pero' nel caso di quasi contemporaneo con un convesso, puo' permettere di
-    // scegliere quello con Displacement > !! ...
-    // Da rivedere... (cmq succede raramente che crei grossi problemi)
 
     m_type = type, m_coGenerator = newCoGenerator;
     m_displacement = displacement, m_height = height;
@@ -1636,23 +1609,6 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours,
     Timeline &timeline = context.m_timeline;
     timeline.build(regionContours, context, thisVectorizer);
 
-// #ifdef _SSDEBUG
-//     SSDebugger debugger(context);
-
-//     bool spawnDebugger = false;
-//     if (timeline.size() > 1000) {
-//       debugger.m_height = context.m_currentHeight;
-
-//       debugger.show();
-//       debugger.raise();
-
-//       debugger.repaint();
-//       debugger.loop();
-
-//       spawnDebugger = true;
-//     }
-// #endif
-
     if (thisVectorizer->isCanceled()) {
       // Bailing out
       while (!timeline.empty()) timeline.pop();
@@ -1674,25 +1630,6 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours,
       // If maxThickness hit, stop before processing
       if (currentEvent.m_height >= maxThickness) break;
 
-// Redraw debugger window
-// #ifdef _SSDEBUG
-
-//       if (spawnDebugger && debugger.isOnScreen(currentEvent.m_generator)) {
-//         debugger.m_height = currentEvent.m_height;
-
-//         debugger.repaint();
-//         debugger.loop();
-
-//         if (currentEvent.m_type == Event::split ||
-//             currentEvent.m_type == Event::vertex)
-//           currentEvent.tryRayEdgeCollisionWith(currentEvent.m_coGenerator);
-
-//         if (currentEvent.m_type == Event::edge)
-//           currentEvent.calculateEdgeEvent();
-//       }
-
-// #endif  // _SSDEBUG
-
       // Process event
       currentEvent.process();
       context.m_currentHeight = currentEvent.m_height;
@@ -1701,14 +1638,6 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours,
     // The thinning process terminates: deleting non-original nodes and edges.
     while (!timeline.empty()) timeline.pop();
 
-// #ifdef _SSDEBUG
-//     if (spawnDebugger) {
-//       debugger.m_height = context.m_currentHeight;
-
-//       debugger.repaint();
-//       debugger.loop();
-//     }
-// #endif  // _SSDEBUG
   }
 
   // Finally, update remaining nodes not processed due to maxThickness and

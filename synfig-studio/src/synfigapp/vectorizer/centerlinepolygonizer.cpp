@@ -384,7 +384,7 @@ static BorderList *extractBorders(const Handle &ras, int threshold, int despeckl
   int xOuterPixel = 0;
   bool enteredRegionType;
   unsigned char signature;
-  //TODO replace pixel functions
+
   rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock( ras->rendering_surface );
 	const Surface &surface = lock->get_surface(); 
 	int width = surface.get_w(); 

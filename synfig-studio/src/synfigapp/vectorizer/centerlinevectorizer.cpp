@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
-**	\brief Template File
+/*!	\file centerlinevectorizer.cpp
+**	\brief This is the entry point of centerline vectorization
 **
 **	$Id$
 **
@@ -31,7 +31,6 @@
 
 #include "centerlinevectorizer.h"
 #include "polygonizerclasses.h"
-// #include "modules/mod_geometry/outline.h"
 #include <synfig/layer.h>
 #endif
 
@@ -63,7 +62,7 @@ inline void deleteSkeletonList(SkeletonList *skeleton) {
 //*    Vectorizer Main   *
 //************************
 
-// takes three arguments ( TimageP, config and palette )
+// takes two arguments ( image layer handle, config )
 std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image, const CenterlineConfiguration &configuration)
  {
   std::cout<<"Inside CenterlineVectorize\n";
@@ -143,41 +142,6 @@ std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(et
   studio::conversionToStrokes(sortibleResult, globals, image);
   deleteSkeletonList(skeletons);
   return sortibleResult;
-
-	// synfig::Canvas::Handle child_canvas;
-  // child_canvas=synfig::Canvas::create_inline(image->get_canvas());
-	// synfig::Layer::Handle new_layer(synfig::Layer::create("group"));
-  // new_layer->set_description("description");
-	// new_layer->set_param("canvas",child_canvas);
-  // image->get_canvas()->parent()->push_front(new_layer);
-  // for(int i=0;i < sortibleResult.size();i++)
-  // {
-  //     sortibleResult[i]->set_canvas(child_canvas);
-  //     child_canvas->push_front(sortibleResult[i]);
-  // }
-//   // step 7
-
-//   // Take samples of image colors to associate each stroke to its corresponding
-//   // palette color.
-//   applyStrokeColors(sortibleResult, ras, palette,
-//                     globals);  // Strokes get sorted here
-  
-//   // step 8
-//   // copy/apply the strokes to an empty vector image
-//   // and return the vector image after further adjustments
-//   result = copyStrokes(sortibleResult);
-
-//   // Further misc adjustments
-//   if (globals.currConfig->m_thicknessRatio < 100)
-//     reduceThickness(result, configuration.m_thicknessRatio);
-//   if (globals.currConfig->m_maxThickness == 0.0)
-//     for (unsigned int i = 0; i < result->getStrokeCount(); ++i)
-//       result->getStroke(i)->setSelfLoop(true);
-//   if (globals.currConfig->m_makeFrame) addFrameStrokes(result, ras, palette);
-//   // randomizeExtremities(result);   //Cuccio random - non serve...
-
-
-//   return result;
 }
 std::vector< etl::handle<synfig::Layer> > VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c) 
 {
@@ -195,20 +159,7 @@ std::vector< etl::handle<synfig::Layer> > VectorizerCore::vectorize(const etl::h
     result = centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c));
     std::cout<<"After centerlineVectorize result.size(): "<<result.size()<<"\n";
     return result;
-    // if (vi) {
-    //   for (int i = 0; i < (int)vi->getStrokeCount(); ++i) {
-    //     TStroke *stroke = vi->getStroke(i);
-
-    //     for (int j = 0; j < stroke->getControlPointCount(); ++j) {
-    //       TThickPoint p = stroke->getControlPoint(j);
-    //       p             = TThickPoint(c.m_affine * p, c.m_thickScale * p.thick);
-
-    //       stroke->setControlPoint(j, p);
-    //     }
-    //   }
-
-    //   applyFillColors(vi, img2, plt, c);
-    // }
+    
   }
 
 }
