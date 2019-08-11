@@ -736,6 +736,7 @@ class Param:
         if node.tag in settings.BONES:
             if node.tag == "bone":
                 self.subparams["origin"].update_frame_window(window)
+                self.subparams["angle"].update_frame_window(window)
                 parent_guid = self.subparams["parent"][0].attrib["guid"]
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(parent_guid)
