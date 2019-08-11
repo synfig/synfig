@@ -188,10 +188,6 @@ class studio::StateBLine_Context : public sigc::trackable
 	Gtk::CheckButton auto_export_checkbutton;
 	Gtk::HBox auto_export_box;
 
-	// toolbar buttons
-	Gtk::Button button_make;
-	Gtk::Button button_clear;
-
 public:
 
 	int layers_to_create()const
@@ -498,9 +494,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	depth(-1),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f),
-	button_make(_("Make")),
-	button_clear(_("Clear"))
+	opacity_hscl(0.0f, 1.0125f, 0.0125f)
 {
 	egress_on_selection_change=true;
 

@@ -85,8 +85,6 @@ StateSketch studio::state_sketch;
 
 class studio::StateSketch_Context : public sigc::trackable
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
-
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
@@ -118,10 +116,8 @@ public:
 	Smach::event_result event_stroke(const Smach::event& x);
 
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
-	Smach::event_result event_yield_tool_options(const Smach::event& x);
 
 	void refresh_tool_options();
-	void yield_tool_options();
 
 	StateSketch_Context(CanvasView* canvas_view);
 
@@ -147,7 +143,6 @@ StateSketch::StateSketch():
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateSketch_Context::event_mouse_down_handler));
 	insert(event_def(EVENT_WORKAREA_STROKE,&StateSketch_Context::event_stroke));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateSketch_Context::event_refresh_tool_options));
-	insert(event_def(EVENT_YIELD_TOOL_OPTIONS,&StateSketch_Context::event_yield_tool_options));
 }
 
 StateSketch::~StateSketch()
@@ -234,90 +229,11 @@ StateSketch_Context::toggle_show_sketch()
 }
 
 StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
-	action_group(Gtk::ActionGroup::create("action_group_state_sketch")),
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	push_state(*get_work_area()),
-	button_clear_sketch(_("Clear Sketch")),
-	button_undo_stroke(_("Undo Stroke")),
-	button_save_sketch(_("Save Sketch")),
-	button_load_sketch(_("Load Sketch")),
 	checkbutton_show_sketch(_("Show Sketch"))
 {
-    Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-sketch'>"
-	"	<toolitem action='sketch-undo' />"
-	"	<toolitem action='sketch-clear' />"
-	"	<toolitem action='sketch-save-as' />"
-	"	<toolitem action='sketch-open' />"
-	"	</toolbar>"
-	"</ui>";
-
-	action_group->add(Gtk::Action::create(
-		"sketch-undo",
-		Gtk::StockID("gtk-undo"),
-		_("Undo Last Stroke"),
-		_("Undo Last Stroke")
-	),
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::undo_stroke
-		)
-	);
-
-	action_group->add(Gtk::Action::create(
-		"sketch-clear",
-		Gtk::StockID("gtk-clear"),
-		_("Clear Sketch"),
-		_("Clear Sketch")
-	),
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::clear_sketch
-		)
-	);
-
-	action_group->add(Gtk::Action::create(
-		"sketch-save-as",
-		Gtk::StockID("gtk-save-as"),
-		_("Save Sketch As..."),
-		_("Save Sketch As...")
-	),
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::save_sketch
-		)
-	);
-
-	action_group->add(Gtk::Action::create(
-		"sketch-save-as",
-		Gtk::StockID("gtk-save-as"),
-		_("Save Sketch As..."),
-		_("Save Sketch As...")
-	),
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::save_sketch
-		)
-	);
-
-	action_group->add(Gtk::Action::create(
-		"sketch-open",
-		Gtk::StockID("gtk-open"),
-		_("Open a Sketch"),
-		_("Open a Sketch")
-	),
-		sigc::mem_fun(
-			*this,
-			&studio::StateSketch_Context::load_sketch
-		)
-	);
-
-	action_group->add( Gtk::Action::create("toolbar-sketch", "Sketch Toolbar") );
-
-	App::ui_manager()->add_ui_from_string(ui_info);
-
 	checkbutton_show_sketch.set_active(get_work_area()->get_show_persistent_strokes());
 
 	button_clear_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::clear_sketch));
@@ -383,13 +299,6 @@ StateSketch_Context::~StateSketch_Context()
 }
 
 void
-StateSketch_Context::yield_tool_options()
-{
-	App::dialog_tool_options->clear();
-	App::ui_manager()->remove_action_group(action_group);
-}
-
-void
 StateSketch_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
@@ -397,10 +306,6 @@ StateSketch_Context::refresh_tool_options()
 	App::dialog_tool_options->set_local_name(_("Sketch Tool"));
 	App::dialog_tool_options->set_name("sketch");
 
-	App::ui_manager()->insert_action_group(action_group);
-	App::dialog_tool_options->set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-sketch")));
-
-	/*
 	App::dialog_tool_options->add_button(
 		Gtk::StockID("gtk-undo"),
 		_("Undo Last Stroke")
@@ -420,8 +325,8 @@ StateSketch_Context::refresh_tool_options()
 		)
 	);
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-save"),
-		_("Save Sketch to a File")
+		Gtk::StockID("gtk-save-as"),
+		_("Save Sketch As...")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
 			*this,
@@ -438,25 +343,12 @@ StateSketch_Context::refresh_tool_options()
 			&studio::StateSketch_Context::load_sketch
 		)
 	);
-	*/
-	//button_clear_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::clear_sketch));
-	//button_undo_stroke.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::undo_stroke));
-	//button_save_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::save_sketch));
-	//button_load_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::load_sketch));
-	//checkbutton_show_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::toggle_show_sketch));
 }
 
 Smach::event_result
 StateSketch_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
-	return Smach::RESULT_ACCEPT;
-}
-
-Smach::event_result
-StateSketch_Context::event_yield_tool_options(const Smach::event& /*x*/)
-{
-	yield_tool_options();
 	return Smach::RESULT_ACCEPT;
 }
 
