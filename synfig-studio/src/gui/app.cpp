@@ -2145,19 +2145,6 @@ App::load_language_settings()
 void
 App::set_workspace_default()
 {
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-	float dx = (float)rect.get_x();
-	float dy = (float)rect.get_y();
-	float sx = (float)rect.get_width();
-	float sy = (float)rect.get_height();
-
 	std::string tpl =
 	"[mainwindow|%0X|%0Y|%100x|%90y|"
 		"[hor|%75x"
@@ -2181,27 +2168,12 @@ App::set_workspace_default()
 		"]"
 	"]";
 
-	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
-	dock_manager->load_layout_from_string(layout);
-	dock_manager->show_all_dock_dialogs();
+	set_workspace_from_template(tpl);
 }
 
 void
 App::set_workspace_compositing()
 {
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-	float dx = (float)rect.get_x();
-	float dy = (float)rect.get_y();
-	float sx = (float)rect.get_width();
-	float sy = (float)rect.get_height();
-
 	std::string tpl =
 	"[mainwindow|%0X|%0Y|%100x|%90y|"
 		"[hor|%1x"
@@ -2213,27 +2185,12 @@ App::set_workspace_compositing()
 		"]"
 	"]";
 
-	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
-	dock_manager->load_layout_from_string(layout);
-	dock_manager->show_all_dock_dialogs();
+	set_workspace_from_template(tpl);
 }
 
 void
 App::set_workspace_animating()
 {
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-	float dx = (float)rect.get_x();
-	float dy = (float)rect.get_y();
-	float sx = (float)rect.get_width();
-	float sy = (float)rect.get_height();
-
 	std::string tpl =
 	"[mainwindow|%0X|%0Y|%100x|%90y|"
 		"[hor|%70x"
@@ -2246,6 +2203,24 @@ App::set_workspace_animating()
 			"]"
 		"]"
 	"]";
+
+	set_workspace_from_template(tpl);
+}
+
+void App::set_workspace_from_template(const string& tpl)
+{
+	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
+	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
+	Gdk::Rectangle rect;
+	// A proper way to obtain the primary monitor is to use the
+	// Gdk::Screen::get_primary_monitor () const member. But as it
+	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
+	// primary one.
+	screen->get_monitor_geometry(0,rect);
+	float dx = (float)rect.get_x();
+	float dy = (float)rect.get_y();
+	float sx = (float)rect.get_width();
+	float sy = (float)rect.get_height();
 
 	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
 	dock_manager->load_layout_from_string(layout);

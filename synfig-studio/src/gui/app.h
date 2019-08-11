@@ -338,6 +338,7 @@ public:
 	static void set_workspace_default();
 	static void set_workspace_compositing();
 	static void set_workspace_animating();
+	static void set_workspace_from_template(const std::string &tpl);
 	static void restore_default_settings();
 	static void apply_gtk_settings();
 
