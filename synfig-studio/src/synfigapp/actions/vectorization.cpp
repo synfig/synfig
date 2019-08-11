@@ -257,6 +257,7 @@ Action::Vectorization::perform()
     if(get_canvas_interface()) 
     { 
  	    get_canvas_interface()->signal_layer_inserted()(new_layer,0); 
+        get_canvas_interface()->signal_layer_lowered()(new_layer);
     } 
 
 }
