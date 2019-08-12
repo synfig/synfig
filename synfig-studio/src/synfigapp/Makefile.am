@@ -294,7 +294,6 @@ ACTIONCC = \
 
 VECTORIZER_HH = \
 	vectorizer/polygonizerclasses.h \
-	vectorizer/centerlineskeletonizer.h \
 	vectorizer/centerlinevectorizer.h \
 	vectorizer/vectorizerparameters.h
 	
