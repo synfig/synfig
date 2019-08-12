@@ -268,7 +268,7 @@ class Param:
                 return ret_origin, ret_angle, self.expression_controllers
 
             elif self.param.tag == "bone_root": # No animation to be added as this being the root
-                return "0", "0", None
+                return "[0, 0]", "0", None
 
             elif self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
@@ -411,20 +411,33 @@ class Param:
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
 
+                base_value, bv_eff = self.subparams["bone_link"].subparams["base_value"].recur_animate("vector")
+
                 # Storing previous state
                 prev_state = bone.is_group_child
                 if self.is_group_child:
                     bone.is_group_child = True
-                origin, angle, eff = bone.recur_animate("vector")  # animating only the origin now
+                origin, angle, eff = bone.recur_animate("vector")
 
-                origin = "[" + origin + "[0]" + ", -" + origin + "[1]]"
+                # Adding effect of base_value here
+                a1 = "degreesToRadians({angle})"
+                a2 = "degreesToRadians(sum({angle}, 90))"
+                a1, a2 = a1.format(angle=angle), a2.format(angle=angle)
+
+                ret_x = "sub(sum({origin}[0], mul({base_value}[0], Math.cos({a1}))), mul({base_value}[1], Math.cos({a2})))"
+                ret_y = "sub(sum({origin}[1], mul({base_value}[0], Math.sin({a1}))), mul({base_value}[1], Math.sin({a2})))"
+                ret_origin = "[" + ret_x + ", -" + ret_y + "]"
+                ret_origin = ret_origin.format(origin=origin, base_value=base_value, a1=a1, a2=a2)
 
                 # Restore previous state
                 bone.is_group_child = prev_state
 
-                self.expression_controllers.extend(eff)
-                self.expression = origin
-                return origin, self.expression_controllers
+                if eff is not None:
+                    self.expression_controllers.extend(eff)
+                self.expression_controllers.extend(bv_eff)
+
+                self.expression = ret_origin
+                return ret_origin, self.expression_controllers
 
         else:
             self.single_animate(anim_type)
@@ -678,7 +691,20 @@ class Param:
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
                 ret_origin, ret_angle = bone.get_value(frame)
-                ret = [ret_origin[0], -ret_origin[1]]
+
+                # Adding the base value effect here
+                base_value = self.subparams["bone_link"].subparams["base_value"].get_value(frame)
+                a1, a2 = math.radians(ret_angle), math.radians(ret_angle+90)
+                ret = ret_origin
+
+                # Adding effect of x-component
+                ret[0], ret[1] = ret[0] + base_value[0]*math.cos(a1), ret[1] + base_value[0]*math.sin(a1)
+
+                # Adding effect of y-component
+                ret[0] -= base_value[1]*math.cos(a2)
+                ret[1] -= base_value[1]*math.sin(a2)
+
+                ret = [ret[0], -ret[1]]
 
         else:
             ret = self.get_single_value(frame)
