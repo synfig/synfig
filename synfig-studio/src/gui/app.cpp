@@ -156,6 +156,7 @@
 #include <gui/localization.h>
 
 #include "gui/resourcehelper.h"
+#include "gui/workspacehandler.h"
 
 #endif
 
@@ -211,6 +212,13 @@ static sigc::signal<void> signal_recent_files_changed_;
 sigc::signal<void>&
 App::signal_recent_files_changed() { return signal_recent_files_changed_; }
 
+static sigc::signal<void> signal_custom_workspaces_changed_;
+sigc::signal<void>&
+App::signal_custom_workspaces_changed()
+{
+	return signal_custom_workspaces_changed_;
+}
+
 static sigc::signal<void,etl::loose_handle<CanvasView> > signal_canvas_view_focus_;
 sigc::signal<void,etl::loose_handle<CanvasView> >&
 App::signal_canvas_view_focus() { return signal_canvas_view_focus_; }
@@ -231,6 +239,15 @@ App::signal_instance_deleted() { return signal_instance_deleted_; }
 
 static std::list<std::string>           recent_files;
 const  std::list<std::string>& App::get_recent_files() { return recent_files; }
+
+const std::vector<std::string>
+App::get_workspaces()
+{
+	std::vector<std::string> list;
+	if (workspaces)
+		workspaces->get_name_list(list);
+	return list;
+}
 
 int	 App::Busy::count;
 bool App::shutdown_in_progress;
@@ -329,6 +346,8 @@ int    studio::App::get_max_recent_files()      { return max_recent_files_; }
 void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; }
 
 static synfig::String app_base_path_;
+
+studio::WorkspaceHandler *studio::App::workspaces = nullptr;
 
 namespace studio {
 
@@ -1091,6 +1110,7 @@ DEFINE_ACTION("amount-dec", _("Decrease Layer Amount"))
 DEFINE_ACTION("workspace-compositing", _("Compositing"));
 DEFINE_ACTION("workspace-default",     _("Default"));
 DEFINE_ACTION("workspace-animating",   _("Animating"));
+DEFINE_ACTION("save-workspace",        _("Save workspace..."));
 DEFINE_ACTION("dialog-flipbook",       _("Preview Dialog"));
 DEFINE_ACTION("panel-toolbox",         _("Toolbox"));
 DEFINE_ACTION("panel-tool_options",    _("Tool Options"));
@@ -1261,6 +1281,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "			<menuitem action='workspace-default' />"
 "			<menuitem action='workspace-compositing' />"
 "			<menuitem action='workspace-animating' />"
+"		    <separator />"
+"			<menuitem action='save-workspace' />"
 "		</menu>"
 "		<separator />"
 "		<menuitem action='dialog-flipbook'/>"
@@ -1681,6 +1703,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_input=new studio::Dialog_Input(*App::main_window);
 		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 
+		studio_init_cb.task(_("Loading Custom Workspace List..."));
+		load_custom_workspaces();
+
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
 
@@ -1893,6 +1918,9 @@ App::~App()
 	delete dialog_input;
 
 	delete dock_manager;
+
+	workspaces->save();
+	delete workspaces;
 
 	instance_list.clear();
 
@@ -2227,6 +2255,78 @@ void App::set_workspace_from_template(const string& tpl)
 	dock_manager->show_all_dock_dialogs();
 }
 
+void App::set_workspace_from_name(const string& name)
+{
+	std::string tpl;
+	bool ok = workspaces->get_workspace(name, tpl);
+	if (!ok)
+		return;
+	set_workspace_from_template(tpl);
+}
+
+void App::load_custom_workspaces()
+{
+	std::string filename = get_config_file("workspaces");
+	workspaces = new WorkspaceHandler(filename.c_str());
+	if (!workspaces)
+		return;
+	signal_custom_workspaces_changed_();
+}
+
+static void trim_string(std::string &text)
+{
+	text.erase(text.begin(),
+			   std::find_if(text.begin(), text.end(),
+							[](int chr) { return !std::isspace(chr);})
+			   );
+	text.erase(std::find_if(text.rbegin(), text.rend(),
+							[](int chr) { return !std::isspace(chr);}).base(),
+			   text.end()
+			   );
+}
+
+void App::save_custom_workspace()
+{
+	Gtk::MessageDialog dialog(*App::main_window, _("Type a name for this custom workspace:"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	Gtk::Button * ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
+	ok_button->set_sensitive(false);
+
+	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
+	name_entry->set_margin_left(16);
+	name_entry->set_margin_right(16);
+	name_entry->signal_changed().connect([&](){
+		std::string name = name_entry->get_text();
+		trim_string(name);
+		bool has_equal_sign = name.find("=") != std::string::npos;
+		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
+		if (ok_button->is_sensitive())
+			ok_button->grab_default();
+	});
+	name_entry->signal_activate().connect(sigc::mem_fun(*ok_button, &Gtk::Button::clicked));
+
+	dialog.get_content_area()->set_spacing(12);
+	dialog.get_content_area()->add(*name_entry);
+
+	ok_button->set_can_default(true);
+
+	dialog.show_all();
+
+	int response = dialog.run();
+	if (response == Gtk::RESPONSE_CANCEL)
+		return;
+
+	std::string name = name_entry->get_text();
+	trim_string(name);
+
+	std::string tpl = dock_manager->save_layout_to_string();
+	if (workspaces->has_workspace(name))
+		workspaces->set_workspace(name, tpl);
+	else
+		workspaces->add_workspace(name, tpl);
+	signal_custom_workspaces_changed_();
+}
 
 void
 App::restore_default_settings()

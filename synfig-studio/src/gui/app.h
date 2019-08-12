@@ -124,6 +124,8 @@ class Module;
 class StateManager;
 class IconController;
 
+class WorkspaceHandler;
+
 class App : public Gtk::Main, private IconController
 {
 	friend class Preferences;
@@ -182,6 +184,8 @@ private:
 	static int jack_locks_;
 
 //	static std::list< etl::handle< Module > > module_list_;
+
+	static WorkspaceHandler *workspaces;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -281,6 +285,8 @@ public:
 
 	static sigc::signal<void> &signal_recent_files_changed();
 
+	static sigc::signal<void> &signal_custom_workspaces_changed();
+
 	static sigc::signal<
 		void,
 		etl::loose_handle<CanvasView>
@@ -339,10 +345,15 @@ public:
 	static void set_workspace_compositing();
 	static void set_workspace_animating();
 	static void set_workspace_from_template(const std::string &tpl);
+	static void set_workspace_from_name(const std::string &name);
+	static void load_custom_workspaces();
+	static void save_custom_workspace();
 	static void restore_default_settings();
 	static void apply_gtk_settings();
 
 	static const std::list<std::string>& get_recent_files();
+
+	static const std::vector<std::string> get_workspaces();
 
 	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
 

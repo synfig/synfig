@@ -122,6 +122,9 @@ MainWindow::MainWindow()
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
 
+	App::signal_custom_workspaces_changed().connect(
+		sigc::mem_fun(*this, &MainWindow::on_custom_workspaces_changed) );
+
 	signal_delete_event().connect(
 		sigc::ptr_fun(App::shutdown_request) );
 
@@ -181,6 +184,9 @@ MainWindow::init_menus()
 	);
 	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
 		sigc::ptr_fun(App::set_workspace_default)
+	);
+	action_group->add( Gtk::Action::create("save-workspace", _("Save workspace...")),
+		sigc::ptr_fun(App::save_custom_workspace)
 	);
 
 	// help
@@ -359,6 +365,55 @@ MainWindow::on_recent_files_changed()
 
 	std::string ui_info =
 		"<menu action='menu-file'><menu action='menu-open-recent'>"
+	  + menu_items
+	  + "</menu></menu>";
+	std::string ui_info_popup =
+		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
+	std::string ui_info_menubar =
+		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
+
+	// remove group if exists
+	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
+	ActionGroupList groups = App::ui_manager()->get_action_groups();
+	for(ActionGroupList::const_iterator i = groups.begin(); i != groups.end(); ++i)
+		if ((*i)->get_name() == action_group->get_name())
+			App::ui_manager()->remove_action_group(*i);
+	groups.clear();
+
+	App::ui_manager()->insert_action_group(action_group);
+	App::ui_manager()->add_ui_from_string(ui_info_popup);
+	App::ui_manager()->add_ui_from_string(ui_info_menubar);
+}
+
+void
+MainWindow::on_custom_workspaces_changed()
+{
+	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-customworkspaces");
+
+	vector<string> workspaces = App::get_workspaces();
+
+	std::string menu_items;
+	unsigned int i = 0;
+	for (auto it = workspaces.cbegin(); it != workspaces.cend(); ++it, ++i) {
+		std::string raw = *it;
+		std::string quoted;
+		size_t pos = 0, last_pos = 0;
+
+		// replace _ in names by __ or it won't show up in the menu
+		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
+			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
+		quoted += raw.substr(last_pos);
+
+		std::string action_name = strprintf("custom-workspace-%d", i);
+		menu_items += "<menuitem action='" + action_name +"' />";
+
+		action_group->add( Gtk::Action::create(action_name, quoted),
+			sigc::bind(sigc::ptr_fun(&App::set_workspace_from_name), workspaces[i])
+		);
+	}
+
+	std::string ui_info =
+		"<menu action='menu-window'><menu action='menu-workspace'>"
 	  + menu_items
 	  + "</menu></menu>";
 	std::string ui_info_popup =
