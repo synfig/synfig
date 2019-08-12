@@ -318,7 +318,7 @@ DockManager::remove_empty_container_recursive(Gtk::Container &container)
 	if (window)
 	{
 		if (!window->get_child())
-			window->hide();
+			window->close();
 	}
 	else
 	if (book)

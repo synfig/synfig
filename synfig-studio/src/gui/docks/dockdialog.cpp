@@ -149,7 +149,7 @@ DockDialog::on_delete_event(GdkEventAny * /* event */)
 				DockManager::remove_widget_recursive(**i);
 		}
 	}
-	return true;
+	return false;
 }
 
 bool
@@ -161,5 +161,5 @@ DockDialog::close()
 	empty_sig.disconnect();
 	//get_dock_book().clear();
 	delete this;
-	return true;
+	return false;
 }
