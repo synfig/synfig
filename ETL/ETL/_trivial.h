@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 /*! ========================================================================
 ** \class	Trivial
@@ -133,7 +133,7 @@ public:
 	{ return !get(); }
 }; // END of template class trivial
 
-_ETL_END_NAMESPACE
+};
 
 //#include <iostream>
 

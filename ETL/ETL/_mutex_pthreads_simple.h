@@ -36,7 +36,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 class mutex
 {
@@ -57,7 +57,7 @@ public:
 	};
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

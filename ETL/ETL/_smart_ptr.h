@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template <class T>
 struct generic_deleter
@@ -356,7 +356,7 @@ template <class T> bool
 operator<(const T *lhs,const loose_smart_ptr<T> &rhs)
 	{ return (lhs<rhs.get()); }
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

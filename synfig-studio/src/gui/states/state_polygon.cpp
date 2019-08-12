@@ -166,9 +166,6 @@ class studio::StatePolygon_Context : public sigc::trackable
 	Gtk::CheckButton layer_origins_at_center_checkbutton;
 	Gtk::HBox origins_at_center_box;
 
-	// toolbar buttons
-	Gtk::Button button_make;
-
 public:
 
 	// this counts the layers we create - they all have origins we can link
@@ -462,8 +459,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f),
-	button_make(_("Make"))
+	opacity_hscl(0.0f, 1.0125f, 0.0125f)
 {
 	egress_on_selection_change=true;
 
@@ -638,7 +634,6 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	
 	options_table.show_all();
 
-	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 

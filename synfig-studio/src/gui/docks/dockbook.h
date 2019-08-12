@@ -41,6 +41,7 @@ namespace studio {
 
 class DockManager;
 class Dockable;
+class DockDropArea;
 
 class DockBook : public Gtk::Notebook
 {
@@ -84,6 +85,11 @@ public:
 	//! to do some extra work in case of CanvasView Dockable type
 	/*! \see App::set_selected_canvas_view */
 	void on_switch_page(Gtk::Widget* page, guint page_num);
+
+	void set_dock_area_visibility(bool visible, DockBook * source);
+
+protected:
+	DockDropArea *dock_area;
 }; // END of studio::DockBook
 
 }; // END of namespace studio

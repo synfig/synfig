@@ -475,7 +475,7 @@ abs(const synfig::Vector &rhs)
 
 #include <ETL/bezier>
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template <>
 class bezier_base<synfig::Vector,float> : public std::unary_function<float,synfig::Vector>
@@ -554,7 +554,7 @@ public:
 	}
 };
 
-_ETL_END_NAMESPACE
+};
 
 
 /* === E N D =============================================================== */

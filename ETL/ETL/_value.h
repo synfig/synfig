@@ -55,7 +55,7 @@ public:
 	typedef	T						value_type;
 };
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 /*!	\class	value	_value.h	ETL/value
 	\brief	Abstraction of the concept of a generic value
@@ -231,7 +231,7 @@ ValueType value_cast(const value &v)
 	return *result;
 }
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

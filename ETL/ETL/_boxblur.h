@@ -37,7 +37,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template<typename T1,typename T2> void
 hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
@@ -247,7 +247,7 @@ box_blur(T1 begin,T1 end, int blursize,T2 outpen)
 	hbox_blur(begin,size.x,size.y,blursize,outpen); vbox_blur(begin,size.x,size.y,blursize,outpen);
 }
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 

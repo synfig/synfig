@@ -81,8 +81,8 @@ DockBook::DockBook():
 	set_scrollable(true);
 	deleting_=false;
 
-	DockDropArea *dock_area = manage(new DockDropArea(this));
-	dock_area->show();
+	dock_area = manage(new DockDropArea(this));
+	dock_area->hide();
 	set_action_widget(dock_area, Gtk::PACK_END);
 }
 
@@ -294,4 +294,12 @@ DockBook::on_switch_page(Gtk::Widget* page, guint page_num)
 			App::set_selected_canvas_view(canvas_view);
 	}
 	Notebook::on_switch_page(page, page_num);
+}
+
+void DockBook::set_dock_area_visibility(bool visible, DockBook* source)
+{
+	if (visible && source == this && get_n_pages() == 1)
+		return;
+
+	dock_area->set_visible(visible);
 }

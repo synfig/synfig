@@ -7,9 +7,6 @@ if (CMAKE_USE_PTHREADS_INIT)
     set(HAVE_LIBPTHREAD ON)
 endif()
 
-# TODO: check for it
-set(HAVE_VASPRINTF ON)
-
 ## for tests
 include_directories(${CMAKE_SOURCE_DIR})
 

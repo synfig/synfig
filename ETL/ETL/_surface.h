@@ -39,7 +39,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 class clamping
 {
@@ -539,7 +539,7 @@ public:
 	}
 
 	template<typename ReaderType, ReaderType reader(const void*, int, int)>
-	class sampler: public _ETL::sampler<accumulator_type, float, ReaderType, reader> { };
+	class sampler: public etl::sampler<accumulator_type, float, ReaderType, reader> { };
 
 	typedef sampler<accumulator_type, surface::reader_cook> sampler_cook;
 	typedef sampler<value_type, surface::reader> sampler_nocook;
@@ -577,7 +577,7 @@ public:
 		{ return (value_type)(sampler_nocook::cubic_sample(this, x, y)); }
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === T Y P E D E F S ===================================================== */
 

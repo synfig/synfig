@@ -41,7 +41,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 template <typename T>
 class derivative : public std::unary_function<typename T::argument_type,typename T::result_type>
@@ -95,7 +95,7 @@ public:
 	}
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

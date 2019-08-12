@@ -43,7 +43,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 class clock_desc_win32hpcount
 {
@@ -90,7 +90,7 @@ protected:
 	{ return (timestamp)(x/precision()); }
 };
 
-_ETL_END_NAMESPACE
+};
 
 /* === E N D =============================================================== */
 

@@ -49,7 +49,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-_ETL_BEGIN_NAMESPACE
+namespace etl {
 
 /*! ========================================================================
 ** \class	smach
@@ -276,17 +276,12 @@ public:
 private:
 
 	// Machine data
-	const state_base* curr_state;	//!< Current state of the machine
-	smach* child;				   //!< Child machine
-
-public: // this really should be private
-	void* state_context;		//!< State Context
-private:
-
-	context_type* machine_context;		//!< Machine Context
-
+	const state_base* curr_state;  //!< Current state of the machine
+	smach* child;                  //!< Child machine
+	void* state_context;           //!< State Context
+	context_type* machine_context; //!< Machine Context
 	const state_base* default_state;
-	void*	default_context;
+	void* default_context;
 
 #ifdef ETL_MUTEX_LOCK
 	_mutex mutex;
@@ -332,7 +327,7 @@ public:
 
 		// If we are already in a state, leave it and
 		// collapse the state stack
-		if(default_state)
+		if(default_state && default_context)
 			default_state->leave_state(default_context);
 
 		// Set this as our current state
@@ -353,8 +348,10 @@ public:
 		default_state=prev_state;
 
 		// If we had a previous state, enter it
-		if(default_state)
+		if(default_state) {
 			default_context=default_state->enter_state(machine_context);
+			if (!default_context) default_context=0;
+		}
 
 		// At this point we are not in the
 		// requested state, so return failure
@@ -378,9 +375,6 @@ public:
 		if(!curr_state)
 			return true;
 
-		// Grab the return value from the exit function
-		bool ret=true;
-
 		const state_base* old_state=curr_state;
 		void *old_context=state_context;
 
@@ -388,9 +382,10 @@ public:
 		curr_state=0;state_context=0;
 
 		// Leave the state
-		return old_state->leave_state(old_context);
+		if (old_state && old_context)
+			return old_state->leave_state(old_context);
 
-		return ret;
+		return true;
 	}
 
 	//! State entry function
@@ -426,8 +421,10 @@ public:
 		curr_state=prev_state;
 
 		// If we had a previous state, enter it
-		if(curr_state)
+		if(curr_state) {
 			state_context=curr_state->enter_state(machine_context);
+			if (!state_context) curr_state = 0;
+		}
 
 		// At this point we are not in the
 		// requested state, so return failure
@@ -498,7 +495,8 @@ public:
 			curr_state=state_stack[states_on_stack];
 			state_context=state_context_stack[states_on_stack];
 
-			old_state->leave_state(old_context);
+			if (old_state && old_context)
+				old_state->leave_state(old_context);
 		}
 		else // If there are no states on stack, just egress
 			egress();
@@ -521,7 +519,7 @@ public:
 	{
 		egress();
 
-		if(default_state)
+		if(default_state && default_context)
 			default_state->leave_state(default_context);
 	}
 
@@ -566,11 +564,11 @@ public:
 
 		try
 		{
-			if(curr_state)
+			if(curr_state && state_context)
 				ret=curr_state->process_event(state_context,id);
 
-			if(ret==RESULT_OK)
-				return default_state->process_event(default_context,id);
+			if(ret==RESULT_OK && default_state && default_context)
+				ret=default_state->process_event(default_context,id);
 
 			return ret;
 		}
@@ -588,7 +586,7 @@ public:
 
 }; // END of template class smach
 
-_ETL_END_NAMESPACE
+};
 
 /* === E X T E R N S ======================================================= */
 
