@@ -87,9 +87,9 @@ class VectorizerSettings : public Gtk::Dialog
 
 public:
 
-	bool isOutline;
+	bool isOutline,inside_Switch;
 	VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-			etl::handle<Instance> selected_instance,etl::handle<synfig::Layer> reference_layer);
+			etl::handle<Instance> selected_instance,etl::handle<synfig::Layer> reference_layer, bool insideSwitch);
 	~VectorizerSettings();
 	// CenterlineConfiguration getCenterlineConfiguration() const;
   	// NewOutlineConfiguration getOutlineConfiguration(double weight) const;

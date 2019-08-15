@@ -443,7 +443,7 @@ public:
 	static void open_uri(const std::string &uri);
 	static void open_img_in_external(const std::string &uri);
 	static void open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-	const etl::handle<synfig::Layer> reference_layer);
+	const etl::handle<synfig::Layer> reference_layer, bool insideSwitch);
 
 
 

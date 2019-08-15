@@ -3537,11 +3537,11 @@ void App::open_img_in_external(const std::string &uri)
 	}
 
 }
-void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
+void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer, bool insideSwitch)
 {
 	String abc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+abc);
-	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,reference_layer);
+	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,reference_layer,insideSwitch);
 	App::vectorizerpopup->show();
 
 }
