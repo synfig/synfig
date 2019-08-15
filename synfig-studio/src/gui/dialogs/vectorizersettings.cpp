@@ -79,29 +79,29 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	entry_angle(adjustment_angle,1,0)
 {
 	//Centerline and Outline option in the comboboxtext
-	comboboxtext_mode.append(_("Centerline"));
-	comboboxtext_mode.append("Outline");
-	//set Centerline Method active by default
-	comboboxtext_mode.set_active(0);
-	comboboxtext_mode.signal_changed().connect(
-		sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
+	// comboboxtext_mode.append(_("Centerline"));
+	// comboboxtext_mode.append("Outline");
+	// //set Centerline Method active by default
+	// comboboxtext_mode.set_active(0);
+	// comboboxtext_mode.signal_changed().connect(
+	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(1, 1, 1, 1));
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
 	dialogPadding->add(*dialogBox);
 
-	Gtk::Frame *target_frame=manage(new Gtk::Frame());
-	target_frame->set_shadow_type(Gtk::SHADOW_NONE);
-	dialogBox->pack_start(*target_frame);
-	Gtk::Grid *mode_grid = manage(new Gtk::Grid());
-	Gtk::Label *mode_label = manage(new Gtk::Label(_("_Mode"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	mode_label->set_mnemonic_widget(comboboxtext_mode);
-	mode_label->set_margin_right(10);
-	mode_grid->attach(*mode_label, 0, 0, 1, 1);
-	mode_grid->attach(comboboxtext_mode, 1, 0, 1, 1);
-	mode_grid->set_column_homogeneous(true);
-	target_frame->add(*mode_grid);
+	// Gtk::Frame *target_frame=manage(new Gtk::Frame());
+	// target_frame->set_shadow_type(Gtk::SHADOW_NONE);
+	// dialogBox->pack_start(*target_frame);
+	// Gtk::Grid *mode_grid = manage(new Gtk::Grid());
+	// Gtk::Label *mode_label = manage(new Gtk::Label(_("_Mode"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// mode_label->set_mnemonic_widget(comboboxtext_mode);
+	// mode_label->set_margin_right(10);
+	// mode_grid->attach(*mode_label, 0, 0, 1, 1);
+	// mode_grid->attach(comboboxtext_mode, 1, 0, 1, 1);
+	// mode_grid->set_column_homogeneous(true);
+	// target_frame->add(*mode_grid);
 
 
 	Gtk::Box *settings_box=manage(new Gtk::Box());
@@ -136,21 +136,21 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	Centerline_setting_grid->attach(*thickness_label, 0, 3, 1, 1);
 	Centerline_setting_grid->attach(entry_maxthickness, 1, 3, 1, 1);
 
-	Gtk::Label *ppa_label = manage(new Gtk::Label(_("_Preserve Painted Areas(Not yet working)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	ppa_label->set_mnemonic_widget(toggle_pparea);
-	ppa_label->set_margin_right(10);
+	// Gtk::Label *ppa_label = manage(new Gtk::Label(_("_Preserve Painted Areas(Not yet working)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// ppa_label->set_mnemonic_widget(toggle_pparea);
+	// ppa_label->set_margin_right(10);
 
-	toggle_pparea.set_halign(Gtk::ALIGN_START);
-	Centerline_setting_grid->attach(*ppa_label, 0, 6, 1, 1);
-	Centerline_setting_grid->attach(toggle_pparea, 1, 6, 1, 1);
+	// toggle_pparea.set_halign(Gtk::ALIGN_START);
+	// Centerline_setting_grid->attach(*ppa_label, 0, 6, 1, 1);
+	// Centerline_setting_grid->attach(toggle_pparea, 1, 6, 1, 1);
 	
-	Gtk::Label *add_border_label = manage(new Gtk::Label(_("_Add Border(Not yet working)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	add_border_label->set_mnemonic_widget(toggle_add_border);
-	add_border_label->set_margin_right(10);
+	// Gtk::Label *add_border_label = manage(new Gtk::Label(_("_Add Border(Not yet working)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
+	// add_border_label->set_mnemonic_widget(toggle_add_border);
+	// add_border_label->set_margin_right(10);
 
-	toggle_add_border.set_halign(Gtk::ALIGN_START);
-	Centerline_setting_grid->attach(*add_border_label, 0, 7, 1, 1);
-	Centerline_setting_grid->attach(toggle_add_border, 1, 7, 1, 1);
+	// toggle_add_border.set_halign(Gtk::ALIGN_START);
+	// Centerline_setting_grid->attach(*add_border_label, 0, 7, 1, 1);
+	// Centerline_setting_grid->attach(toggle_add_border, 1, 7, 1, 1);
 	
 	Centerline_setting_grid->set_column_homogeneous(true);	
 	Centerline_setting_grid->set_row_homogeneous(true);
@@ -229,11 +229,12 @@ VectorizerSettings::~VectorizerSettings()
 {
 }
 
-
+// only in use when comboboxtext_mode
 void
 VectorizerSettings::on_comboboxtext_mode_changed()
 {
-	isOutline = comboboxtext_mode.get_active_row_number();
+	isOutline = false;
+	//isOutline = comboboxtext_mode.get_active_row_number();
 	if(!isOutline)
 	{
 		//Centerline is active
