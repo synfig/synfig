@@ -71,6 +71,7 @@ Vectorization::Vectorization()
 
 }
 
+// this function return centerline configuration after setting the config using params
 studio::CenterlineConfiguration Vectorization::getCenterlineConfiguration( ) const 
 {
   studio::CenterlineConfiguration conf;
@@ -88,6 +89,7 @@ studio::CenterlineConfiguration Vectorization::getCenterlineConfiguration( ) con
   return conf;
 }
 
+// this function return outline configuration after setting the config using params
 studio::NewOutlineConfiguration Vectorization::getOutlineConfiguration() const 
 {
   studio::NewOutlineConfiguration conf;
@@ -221,9 +223,12 @@ Action::Vectorization::perform()
 {
     studio::CenterlineConfiguration m_cConf;
   	studio::NewOutlineConfiguration m_oConf;
+
+    // set the configuration to pass to vectorizer
 	studio::VectorizerConfiguration &configuration = isOutline ? static_cast<studio::VectorizerConfiguration &>(m_oConf)
         									  : static_cast<studio::VectorizerConfiguration &>(m_cConf);
 
+    // set config to centerline or outline as per v_mode
     if (v_mode=="outline"||v_mode == "Outline")
         m_oConf = getOutlineConfiguration();
     else if(v_mode=="centerline"||v_mode=="Centerline")
@@ -231,6 +236,8 @@ Action::Vectorization::perform()
 
     studio::VectorizerCore vCore;
     synfig::Layer_Bitmap::Handle image_layer = synfig::Layer_Bitmap::Handle::cast_dynamic(layer);
+
+    // result of vectorization (vector of outline layers)
     std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(image_layer, configuration);
 
     synfig::Canvas::Handle child_canvas;
@@ -238,14 +245,24 @@ Action::Vectorization::perform()
 
     new_layer->set_description("Vectorized "+layer->get_description());
 	new_layer->set_param("canvas",child_canvas);
+    int move_depth = 0;
+
+    // if the vectorizer option was selected for switch group
     if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(reference_layer))
     {
+        // apply the transformation from switch group to result group
         new_layer->set_param("transformation",paste->get_param("transformation"));
-        get_canvas()->insert(std::find(get_canvas()->begin(), get_canvas()->end(), reference_layer),new_layer);
+        auto iter = std::find(get_canvas()->begin(), get_canvas()->end(), reference_layer);
+        get_canvas()->insert(iter,new_layer);
+        // how much layer is moved if there are layer above it in the layer panel
+        move_depth = std::distance(get_canvas()->begin(), iter);
+        
     }
     else
     {
-        get_canvas()->push_front(new_layer);
+        auto iter = std::find(get_canvas()->begin(), get_canvas()->end(), layer);
+        get_canvas()->insert(iter,new_layer);
+        move_depth = std::distance(get_canvas()->begin(), iter);
     }
     
     new_layer->set_canvas(get_canvas());
@@ -257,7 +274,7 @@ Action::Vectorization::perform()
     if(get_canvas_interface()) 
     { 
  	    get_canvas_interface()->signal_layer_inserted()(new_layer,0); 
-        get_canvas_interface()->signal_layer_lowered()(new_layer);
+        get_canvas_interface()->signal_layer_moved()(new_layer,move_depth,get_canvas());
     } 
 
 }
