@@ -46,6 +46,7 @@ const double Quad_eps_max =  infinity;  // As above, for sequence conversion int
 synfig::CanvasHandle canvas;
 synfig::Point topleft(0,0),bottomright(0,0);
 /* === P R O C E D U R E S ================================================= */
+
 etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
   int segment_size = segment.size();
@@ -54,7 +55,6 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   synfig::Point q = (canvas->rend_desc().get_br() - canvas->rend_desc().get_tl());
   float p = canvas->rend_desc().get_w();
   float unit_size = p/q[0];
-  std::cout<<"\nsegment width :\n";
 
   // here fitting and shifting happen
   for(int i=0;i<segment_size;i++)
@@ -62,7 +62,6 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
     segment[i][0] = segment[i][0]/unit_size + topleft[0];//x from TL;
     segment[i][1] = segment[i][1]/unit_size + bottomright[1];// y from BR;
     segment[i][2] = segment[i][2]/2;
-    std::cout<<segment[i][2]<<", ";
   }
    
   switch(segment_size)// in any case size>=3
@@ -79,7 +78,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
             
     }break;
 
-    case 4:{  //std::vector<synfig::BLinePoint> bline_point_list; 
+    case 4:{   
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list.push_back(synfig::BLinePoint()); 
             bline_point_list[0].set_vertex(segment[0].to_2d());
@@ -93,7 +92,6 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 
     default:{/*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
                 Even : 1 2 3 4, 4 5 6, 6 7 8 */
-                //std::vector<synfig::BLinePoint> bline_point_list;
                 int num =0,point =0;
                 if(segment_size & 1)
                 {
@@ -128,6 +126,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
                   bline_point_list[point - 1].set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
                   bline_point_list[point].set_tangent1((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
                 }
+                // add last blinepoint and set it's param
                 bline_point_list.push_back(synfig::BLinePoint());
                 bline_point_list.back().set_vertex(segment[segment_size-1].to_2d());
                 bline_point_list.back().set_width(segment[segment_size-1][2]);
@@ -499,13 +498,7 @@ etl::handle<synfig::Layer> SequenceConverter::operator()(std::vector<unsigned in
       controlPoints[a] = K[b].CPs[i];
   }
   controlPoints[0] = middleAddedSequence[0];
-  // std::cout<<"\n several control point segment \n";
-  // for(i=0;i<controlPoints.size();i++)
-  // {
-  //   std::cout<<"("<<controlPoints[i][0]<<", "<<controlPoints[i][1]<<", "<<controlPoints[i][2]<<") ";
-  // }
-
-  //TODO 
+  
   etl::handle<synfig::Layer> res = BezierToOutline(controlPoints);
 
   return res;
@@ -903,12 +896,7 @@ inline etl::handle<synfig::Layer> convert(const Sequence &s, double penalty)
     segment[0] = *graph->getNode(s.m_head);
     segment[1] = (*graph->getNode(s.m_head) + *graph->getNode(s.m_tail)) * 0.5;
     segment[2] = *graph->getNode(s.m_tail);
-    //TODO
-    // std::cout<<"this is 3 segment region :";
-    // std::cout<<"("<<segment[0][0]<<", "<<segment[0][1]<<", "<<segment[0][2]<<") ";
-    // std::cout<<"("<<segment[1][0]<<", "<<segment[1][1]<<", "<<segment[1][2]<<") ";
-    // std::cout<<"("<<segment[2][0]<<", "<<segment[2][1]<<", "<<segment[2][2]<<") ";
-
+    
     return BezierToOutline(segment);
   }
   // when calculating sequence with 3 thick points where x,y are coordinates and z is thickness of stroke
@@ -917,16 +905,6 @@ inline etl::handle<synfig::Layer> convert(const Sequence &s, double penalty)
   // Then, we convert the sequence in a quadratic stroke
   SequenceConverter converter(&s, penalty);
   result = converter(&reducedIndices);
-
-  // Pass the SkeletonArc::SS_OUTLINE attribute to the output stroke
-  // if (graph->getNode(s.m_head)
-  //         .getLink(s.m_headLink)
-  //         ->hasAttribute(SkeletonArc::SS_OUTLINE))
-  //   result->setFlag(SkeletonArc::SS_OUTLINE, true);
-  // else if (graph->getNode(s.m_head)
-  //              .getLink(s.m_headLink)
-  //              ->hasAttribute(SkeletonArc::SS_OUTLINE_REVERSED))
-  //   result->setFlag(SkeletonArc::SS_OUTLINE_REVERSED, true);
 
   return result;
 }

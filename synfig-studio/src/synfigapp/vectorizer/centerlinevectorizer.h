@@ -74,27 +74,6 @@ public:
 private:
   std::vector< etl::handle<synfig::Layer> > centerlineVectorize(Handle &image, const CenterlineConfiguration &configuration);
 
-/*
-  void outlineVectorize(const Handle &image, const OutlineConfiguration &configuration);
-
-  void newOutlineVectorize(const Handle &image, const NewOutlineConfiguration &configuration);
-*/
-  //! Calculates and applies fill colors once regions of \b vi have been
-  //! computed.
-  // void applyFillColors(TVectorImageP vi, const TImageP &img, TPalette *palette,
-  //                      const VectorizerConfiguration &c);
-  // void applyFillColors(TRegion *r, const TRasterP &ras, TPalette *palette,
-  //                      const CenterlineConfiguration &c, int regionCount);
-  // void applyFillColors(TRegion *r, const TRasterP &ras, TPalette *palette,
-  //                      const OutlineConfiguration &c, int regionCount);
-
-  // //! Traduces the input VectorizerConfiguration into an edible form.
-  // VectorizerConfiguration traduceConfiguration(const VectorizerConfiguration &configuration);
-
-  // bool isInkRegionEdge(TStroke *stroke);
-  // bool isInkRegionEdgeReversed(TStroke *stroke);
-  // void clearInkRegionFlags(TVectorImageP vi);
-
 };
 
 }; // END of namespace studio

@@ -162,7 +162,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	//-----------------------------------Outline--------------------------------------//
 	Gtk::Label *lab = manage(new Gtk::Label(_("_Under Development"), true));
 	Outline_setting_grid->attach(*lab, 0, 0, 2, 1);
-	
+	// --> The below lines are for Outline params but outline vectorization is not yet implemented
 	// Gtk::Label *accuracy_label2 = manage(new Gtk::Label(_("_Accuracy"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
 	// accuracy_label2->set_mnemonic_widget(entry_accuracy2);
 	// accuracy_label2->set_margin_right(10);
@@ -275,18 +275,21 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("pparea",toggle_pparea.get_state());
 	action->set_param("addborder",toggle_add_border.get_state());
 	etl::handle<synfig::Canvas> canvas;
+
+	// in case the "convert to vector" was clicked for layer inside a switch
+	// and pass canvas accordingly
 	if(inside_Switch)
 	{
 		if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(reference_layer_))
 		{
-			std::cout<<"group layer clicked\n";
+			std::cout<<"image inside group layer clicked\n";
 			canvas = layer_bitmap_->get_canvas()->parent();
 			action->set_param("reference_layer",reference_layer_);
 		}
 	}
 	else
 	{
-		std::cout<<"image layer clicked\n";
+		std::cout<<"image switch layer clicked\n";
 		canvas = layer_bitmap_->get_canvas();
 	}
 

@@ -46,9 +46,6 @@ typedef etl::handle<synfig::Layer_Bitmap> Handle;
 
 /* === M E T H O D S ======================================================= */
 
-
-
-///////////////////////////////////////////
 class RawBorderPoint 
 {
   synfig::PointInt m_position;
