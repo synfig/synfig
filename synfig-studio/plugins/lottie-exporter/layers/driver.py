@@ -35,7 +35,8 @@ def gen_layers(lottie, canvas, layer_itr):
     image = settings.IMAGE_LAYER
     pre_comp = settings.PRE_COMP_LAYER
     group = settings.GROUP_LAYER
-    supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group)
+    skeleton = settings.SKELETON_LAYER
+    supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton)
     while itr >= 0:
         layer = canvas[itr]
         if layer.get_type() not in supported_layers:  # Only supported layers
@@ -80,4 +81,7 @@ def gen_layers(lottie, canvas, layer_itr):
                             layer,
                             itr)
             # No return statement here
+        elif layer.get_type() in skeleton:
+            pass
+            # skeletons are just for linking purposes which is served by bones
         itr -= 1

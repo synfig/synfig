@@ -67,6 +67,7 @@ SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "fil
 IMAGE_LAYER = {"import"}
 PRE_COMP_LAYER = {"rotate", "zoom", "translate"}
 GROUP_LAYER = {"group", "switch"}
+SKELETON_LAYER = {"skeleton"}
 UNKNOWN_LAYER = "unknown_layer"
 CONVERT_METHODS = {"add", "average", "composite", "linear", "radial_composite", "scale", "subtract", "switch", "weighted_average", "bone_link", "bone", "bone_root"}
 BONES = {"bone", "bone_root"}
