@@ -258,13 +258,14 @@ Action::Vectorization::perform()
         move_depth = std::distance(get_canvas()->begin(), iter);
         
     }
+    //synfig(17889) [11:06:00  IST] error: LayerTreeStore::on_layer_inserted():Unable to achieve desired depth, forced to rebuild...
+
     else
     {
         auto iter = std::find(get_canvas()->begin(), get_canvas()->end(), layer);
         get_canvas()->insert(iter,new_layer);
         move_depth = std::distance(get_canvas()->begin(), iter);
     }
-    
     new_layer->set_canvas(get_canvas());
     for(int i=0;i < Result.size();i++)
     {
@@ -274,7 +275,7 @@ Action::Vectorization::perform()
     if(get_canvas_interface()) 
     { 
  	    get_canvas_interface()->signal_layer_inserted()(new_layer,0); 
-        get_canvas_interface()->signal_layer_moved()(new_layer,move_depth,get_canvas());
+        get_canvas_interface()->signal_layer_moved()(new_layer,move_depth-1,get_canvas());
     } 
 
 }
