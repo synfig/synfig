@@ -268,6 +268,13 @@ VectorizerSettings::on_finished()
 // after conversion is finished
 }
 
+void
+VectorizerSettings::set_progress(float value)
+{
+	float r = value/100.0;
+	ProgressBar.set_text( strprintf( "%.1f%%", value ));
+	ProgressBar.set_fraction(r);
+}
 
 void
 VectorizerSettings::on_convert_pressed()
