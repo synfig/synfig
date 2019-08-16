@@ -27,16 +27,17 @@
 /* === H E A D E R S ======================================================= */
 #include <ETL/handle>
 #include <vector>
-#include <gtkmm/grid.h>
-#include <gtkmm/dialog.h>
-#include <gtkmm/switch.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/comboboxtext.h>
+#include <gtkmm.h>
+// #include <gtkmm/grid.h>
+// #include <gtkmm/dialog.h>
+// #include <gtkmm/switch.h>
+// #include <gtkmm/tooltip.h>
+// #include <gtkmm/table.h>
+// #include <gtkmm/entry.h>
+// #include <gtkmm/adjustment.h>
+// #include <gtkmm/spinbutton.h>
+// #include <gtkmm/checkbutton.h>
+// #include <gtkmm/comboboxtext.h>
 #include <synfig/string.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfig/layers/layer_bitmap.h>
@@ -79,6 +80,9 @@ class VectorizerSettings : public Gtk::Dialog
 
 	Gtk::Grid *Outline_setting_grid = manage(new Gtk::Grid());
 	Gtk::Grid *Centerline_setting_grid = manage(new Gtk::Grid());
+
+	Gtk::ProgressBar ProgressBar;
+  	Gtk::Separator Separator;
 
 	Gtk::ComboBoxText comboboxtext_mode;
 	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
