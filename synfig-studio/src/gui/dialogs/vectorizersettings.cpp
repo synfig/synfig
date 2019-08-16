@@ -35,6 +35,7 @@
 #include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>
 #include <synfigapp/action_param.h>
+#include "onemoment.h"
 
 
 /* === U S I N G =========================================================== */
@@ -271,6 +272,7 @@ VectorizerSettings::on_finished()
 void
 VectorizerSettings::on_convert_pressed()
 {
+	OneMoment one_moment;
 	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
 	std::cout<<"Action Created \n";
 	assert(action);
@@ -322,6 +324,7 @@ VectorizerSettings::on_convert_pressed()
 	}
 	std::cout<<"Convert Pressed....";
 	hide();
+	one_moment.hide();
 }
 
 void
