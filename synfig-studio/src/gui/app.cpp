@@ -2321,6 +2321,7 @@ App::apply_gtk_settings()
 	data += ".button > GtkLabel                 { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += "GtkComboBox > .button > GtkBox > * { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += ".entry                             { padding-top: 0px; padding-bottom: 0px; }\n";
+	data += "progress, trough 					{ min-height: 20px; }\n";
 #if GTKMM_MAJOR_VERSION < 3 || (GTKMM_MAJOR_VERSION == 3 && GTKMM_MINOR_VERSION < 22)
 	// following css works in old versions of gtk
 	data += "button { padding: 0px; }\n";
