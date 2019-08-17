@@ -1412,7 +1412,7 @@ DEFINE_ACTION("keyframe-properties", "Properties");
 	ACCEL("<Control>0",								"<Actions>/canvasview/quality-10"					);
 	ACCEL("<Control>z",								"<Actions>/action_group_dock_history/undo"				);
 	ACCEL("<Control>r",								"<Actions>/action_group_dock_history/redo"				);
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::CONTROL_MASK,				"<Actions>/action_group_layer_action_manager/action-LayerRemove"	));
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::ModifierType(),				"<Actions>/action_group_layer_action_manager/action-LayerRemove"	));
 	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,					"<Actions>/canvasview/decrease-low-res-pixel-size"			));
 	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,					"<Actions>/canvasview/increase-low-res-pixel-size"			));
 	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-dec"		));
