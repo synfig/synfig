@@ -267,15 +267,17 @@ int main(int argc, char* argv[])
 		parser.process_debug_options();
 #endif
 
-		// TODO: Optional load of main only if needed. i.e. not needed to display help
+		// Trivial info options -----------------------------------------------
+		parser.process_trivial_info_options();
+
 		// Synfig Main initialization needs to be after verbose and
 		// before any other where it's used
 		Progress p(binary_path.c_str());
 		//synfig::Main synfig_main(binary_path.parent_path().string(), &p);
 		synfig::Main synfig_main(get_absolute_path(binary_path + "/.."), &p);
 
-        // Info options -----------------------------------------------
-        parser.process_info_options();
+		// Info options -----------------------------------------------
+		parser.process_info_options();
 
 		std::list<Job> job_list;
 
