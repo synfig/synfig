@@ -365,8 +365,7 @@ void SynfigCommandLineParser::process_settings_options()
 				   << SynfigToolGeneralOptions::instance()->get_threads() << std::endl;
 }
 
-//void OptionsProcessor::process_info_options()
-void SynfigCommandLineParser::process_info_options()
+void SynfigCommandLineParser::process_trivial_info_options()
 {
 	if (show_help)
 	{
@@ -425,6 +424,11 @@ void SynfigCommandLineParser::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
+}
+
+//void OptionsProcessor::process_info_options()
+void SynfigCommandLineParser::process_info_options()
+{
 	if (show_layers_list)
 	{
 		synfig::Layer::Book::iterator iter =

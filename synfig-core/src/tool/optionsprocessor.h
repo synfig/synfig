@@ -96,6 +96,11 @@ public:
 	/// verbose, quiet, threads, benchmarks
 	void process_settings_options();
 
+	/// Trivial information options
+	/// Options that will only display information
+	/// and don't need to load modules
+	void process_trivial_info_options();
+
 	/// Information options
 	/// Options that will only display information
 	void process_info_options();
