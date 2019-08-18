@@ -265,7 +265,6 @@ VectorizerSettings::on_comboboxtext_mode_changed()
 void
 VectorizerSettings::on_finished()
 {
-// after conversion is finished
 }
 
 void
@@ -279,7 +278,9 @@ VectorizerSettings::set_progress(float value)
 void
 VectorizerSettings::on_convert_pressed()
 {
+	hide();
 	OneMoment one_moment;
+	one_moment.show();
 	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
 	std::cout<<"Action Created \n";
 	assert(action);
@@ -330,7 +331,6 @@ VectorizerSettings::on_convert_pressed()
 		return;
 	}
 	std::cout<<"Convert Pressed....";
-	hide();
 	one_moment.hide();
 }
 
