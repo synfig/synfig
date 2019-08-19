@@ -52,15 +52,19 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   int segment_size = segment.size();
   synfig::Layer::Handle layer(synfig::Layer::create("outline"));
   std::vector<synfig::BLinePoint> bline_point_list; 
-  synfig::Point q = (canvas->rend_desc().get_br() - canvas->rend_desc().get_tl());
+  synfig::Point a = canvas->rend_desc().get_br();
+  synfig::Point b = canvas->rend_desc().get_tl();
+  synfig::Point q = a - b;
   float p = canvas->rend_desc().get_w();
+  std::cout<<"This is canvas TL: ("<<b[0]<<", "<<b[1]<<"), ("<<a[0]<<", "<<a[1]<<")\n";
   float unit_size = p/q[0];
-
+  std::cout<<"This is getw(): "<<p<<", Unit size:"<<unit_size<<"\n";
+  float multiplier = unit_size/60.0;
   // here fitting and shifting happen
   for(int i=0;i<segment_size;i++)
   {
-    segment[i][0] = segment[i][0]/unit_size + topleft[0];//x from TL;
-    segment[i][1] = segment[i][1]/unit_size + bottomright[1];// y from BR;
+    segment[i][0] = multiplier * segment[i][0]/unit_size + topleft[0];//x from TL;
+    segment[i][1] = multiplier * segment[i][1]/unit_size + bottomright[1];// y from BR;
     segment[i][2] = segment[i][2]/2;
   }
    
