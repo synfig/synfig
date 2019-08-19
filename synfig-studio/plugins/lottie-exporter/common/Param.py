@@ -278,6 +278,8 @@ class Param:
                     ret_origin = bone_origin
                     ret_angle = bone_angle
 
+                ############# REMOVE AFTER DEBUGGING rls
+                rls = "1"
                 return ret_origin, ret_angle, lls, rls, self.expression_controllers
 
             elif self.param.tag == "bone_root": # No animation to be added as this being the root
@@ -595,6 +597,8 @@ class Param:
 
                 # Calculate returning recursive length
                 ret_rls = [this_rls[0]*rls[0], this_rls[1]*rls[1]]
+                ##### REMOVE AFTER DEBUGGING
+                ret_rls = [1, 1]
 
                 # Multiplying the current bone origin with the scale
                 cur_origin = [i*lls for i in cur_origin]
