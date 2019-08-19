@@ -227,10 +227,14 @@ class Param:
                 # Get the local length scale of the bone
                 lls, lls_eff = self.subparams["scalelx"].recur_animate("scalar_multiply")
 
+                # Get the recursive length scale of the bone
+                rls, rls_eff = self.subparams["scalex"].recur_animate("scalar_multiply")
+
                 # Adding to expression controller
                 self.expression_controllers.extend(eff_1)
                 self.expression_controllers.extend(ang_eff)
                 self.expression_controllers.extend(lls_eff)
+                self.expression_controllers.extend(rls_eff)
 
                 # Now adding the parent's effects in this bone
                 guid = self.subparams["parent"][0].attrib["guid"]
@@ -242,7 +246,7 @@ class Param:
                 if self.is_group_child:
                     bone.is_group_child = True
 
-                par_origin, par_angle, par_lls, par_eff = bone.recur_animate("vector")
+                par_origin, par_angle, par_lls, par_rls, par_eff = bone.recur_animate("vector")
 
                 # Restore the previous state
                 bone.is_group_child = prev_state
@@ -253,6 +257,9 @@ class Param:
 
                     # Modifying the bone_origin according to the parent's local scale
                     bone_origin = "mul(" + bone_origin + ", " + par_lls + ")"
+
+                    # Modifying the bone_origin according to the parent's recursive scale
+                    bone_origin = "mul(" + bone_origin + ", " + par_rls + ")"
 
                     # Forming the expression for new origin
                     a1 = "degreesToRadians({angle})"
@@ -271,10 +278,10 @@ class Param:
                     ret_origin = bone_origin
                     ret_angle = bone_angle
 
-                return ret_origin, ret_angle, lls, self.expression_controllers
+                return ret_origin, ret_angle, lls, rls, self.expression_controllers
 
             elif self.param.tag == "bone_root": # No animation to be added as this being the root
-                return "[0, 0]", "0", "1", None
+                return "[0, 0]", "0", "1", "1", None
 
             elif self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
@@ -423,10 +430,13 @@ class Param:
                 prev_state = bone.is_group_child
                 if self.is_group_child:
                     bone.is_group_child = True
-                origin, angle, lls, eff = bone.recur_animate("vector")
+                origin, angle, lls, rls, eff = bone.recur_animate("vector")
 
                 # Adding lls effect to the bone
                 base_value = "mul(" + base_value + ", " + lls + ")"
+
+                # Adding rls effect to the bone
+                base_value = "mul(" + base_value + ", " + rls + ")"
 
                 # Adding effect of base_value here
                 a1 = "degreesToRadians({angle})"
@@ -564,35 +574,44 @@ class Param:
                 guid = self.subparams["parent"][0].attrib["guid"]
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(guid)
-                shifted_origin, shifted_angle, lls = bone.get_value(frame)
+                shifted_origin, shifted_angle, lls, rls = bone.get_value(frame)
                 a1, a2 = math.radians(shifted_angle), math.radians(shifted_angle+90)
+
+                # Calculating this bones angle with respect to parent bone's
+                # angle
+                if "angle" in self.subparams.keys():
+                    angle = to_Synfig_axis(self.subparams["angle"].get_value(frame), "angle")
+                else:
+                    angle = 0
 
                 # Calculating the local length scale
                 local_length_scale = self.subparams["scalelx"].get_value(frame)
+
+                # Calculating the recursive length scale
+                this_rls = self.subparams["scalex"].get_value(frame)    # In current angle's direction
+                absolute_angle = shifted_angle+angle
+                aa1 = math.radians(absolute_angle)
+                this_rls = [this_rls * math.cos(aa1), this_rls * math.sin(aa1)]
+
+                # Calculate returning recursive length
+                ret_rls = [this_rls[0]*rls[0], this_rls[1]*rls[1]]
 
                 # Multiplying the current bone origin with the scale
                 cur_origin = [i*lls for i in cur_origin]
 
                 ret = shifted_origin
                 # Adding effect of x component
-                ret[0], ret[1] = ret[0] + cur_origin[0] * math.cos(a1), ret[1] + cur_origin[0] * math.sin(a1)
+                ret[0] = ret[0] + (cur_origin[0] * math.cos(a1) + cur_origin[1] * math.cos(a2)) * rls[0]
+                ret[1] = ret[1] + (cur_origin[0] * math.sin(a1) + cur_origin[1] * math.sin(a2)) * rls[1]
 
-                # Adding effect of y component
-                ret[0] += cur_origin[1] * math.cos(a2)
-                ret[1] += cur_origin[1] * math.sin(a2)
-
-                if "angle" in self.subparams.keys():
-                    angle = to_Synfig_axis(self.subparams["angle"].get_value(frame), "angle")
-                else:
-                    angle = 0
-
-                return ret, shifted_angle+angle, local_length_scale
+                return ret, absolute_angle, local_length_scale, ret_rls
 
             elif self.param.tag == "bone_root":
                 origin = [0, 0]
                 angle = 0
                 local_length_scale = 1
-                return origin, angle, local_length_scale
+                recursive_length_scale = [1, 1] # x and y axis
+                return origin, angle, local_length_scale, recursive_length_scale
 
             elif self.param[0].tag == "add":
                 ret = self.subparams["add"].subparams["lhs"].get_value(frame)
@@ -706,7 +725,7 @@ class Param:
             elif self.param[0].tag == "bone_link":
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
-                ret_origin, ret_angle, lls = bone.get_value(frame)
+                ret_origin, ret_angle, lls, rls = bone.get_value(frame)
 
                 # Adding the base value effect here
                 base_value = self.subparams["bone_link"].subparams["base_value"].get_value(frame)
@@ -716,12 +735,8 @@ class Param:
                 # base_value to be arranged according to the local scale
                 base_value = [lls*i for i in base_value]
 
-                # Adding effect of x-component
-                ret[0], ret[1] = ret[0] + base_value[0]*math.cos(a1), ret[1] + base_value[0]*math.sin(a1)
-
-                # Adding effect of y-component
-                ret[0] -= base_value[1]*math.cos(a2)
-                ret[1] -= base_value[1]*math.sin(a2)
+                ret[0] = ret[0] + (base_value[0] * math.cos(a1) - base_value[1] * math.cos(a2)) * rls[0]
+                ret[1] = ret[1] + (base_value[0] * math.sin(a1) - base_value[1] * math.sin(a2)) * rls[1]
 
                 ret = [ret[0], -ret[1]]
 
@@ -843,6 +858,7 @@ class Param:
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
                 bone.update_frame_window(window)
+                self.subparams["bone_link"].subparams["base_value"].update_frame_window(window)
 
         if is_animated(node) == 2:
             for waypoint in node:
