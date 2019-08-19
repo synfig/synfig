@@ -566,31 +566,41 @@ class Param:
 
     def get_value(self, frame):
         """
+        Public method to get the value of the paramter at a given frame
+        """
+        ret = self.__get_value(frame)
+        # Convert into Lottie format
+        if isinstance(ret, list):
+            ret = [ret[0], -ret[1]]
+        return ret
+    
+    def __get_value(self, frame):
+        """
         Returns the value of the parameter at a given frame
         """
         if self.param.tag in settings.BONES or self.param[0].tag in settings.CONVERT_METHODS:
             if self.param.tag == "bone":
-                cur_origin = self.subparams["origin"].get_value(frame)
+                cur_origin = self.subparams["origin"].__get_value(frame)
 
                 # Now adding the parent's effects in this bone
                 guid = self.subparams["parent"][0].attrib["guid"]
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(guid)
-                shifted_origin, shifted_angle, lls, rls = bone.get_value(frame)
+                shifted_origin, shifted_angle, lls, rls = bone.__get_value(frame)
                 a1, a2 = math.radians(shifted_angle), math.radians(shifted_angle+90)
 
                 # Calculating this bones angle with respect to parent bone's
                 # angle
                 if "angle" in self.subparams.keys():
-                    angle = to_Synfig_axis(self.subparams["angle"].get_value(frame), "angle")
+                    angle = to_Synfig_axis(self.subparams["angle"].__get_value(frame), "angle")
                 else:
                     angle = 0
 
                 # Calculating the local length scale
-                local_length_scale = self.subparams["scalelx"].get_value(frame)
+                local_length_scale = self.subparams["scalelx"].__get_value(frame)
 
                 # Calculating the recursive length scale
-                this_rls = self.subparams["scalex"].get_value(frame)    # In current angle's direction
+                this_rls = self.subparams["scalex"].__get_value(frame)    # In current angle's direction
                 absolute_angle = shifted_angle+angle
                 aa1 = math.radians(absolute_angle)
                 this_rls = [this_rls * math.cos(aa1), this_rls * math.sin(aa1)]
@@ -618,9 +628,9 @@ class Param:
                 return origin, angle, local_length_scale, recursive_length_scale
 
             elif self.param[0].tag == "add":
-                ret = self.subparams["add"].subparams["lhs"].get_value(frame)
-                ret2 = self.subparams["add"].subparams["rhs"].get_value(frame)
-                mul = self.subparams["add"].subparams["scalar"].get_value(frame)
+                ret = self.subparams["add"].subparams["lhs"].__get_value(frame)
+                ret2 = self.subparams["add"].subparams["rhs"].__get_value(frame)
+                mul = self.subparams["add"].subparams["scalar"].__get_value(frame)
                 if isinstance(ret, list):
                     ret[0] += ret2[0]
                     ret[1] += ret2[1]
@@ -635,10 +645,10 @@ class Param:
                     lst = [lst]
 
                 ret = [0, 0]
-                if not isinstance(lst[0].get_value(frame), list):
+                if not isinstance(lst[0].__get_value(frame), list):
                     ret = 0
                 for it in lst:
-                    val = it.get_value(frame)
+                    val = it.__get_value(frame)
                     if isinstance(val, list):
                         ret[0], ret[1] = ret[0] + val[0], ret[1] + val[1]
                     else:
@@ -656,11 +666,11 @@ class Param:
 
                 ret = [0, 0]
                 den = 0
-                if not isinstance(lst[0].subparams["weighted_vector"].subparams["value"].get_value(frame), list):
+                if not isinstance(lst[0].subparams["weighted_vector"].subparams["value"].__get_value(frame), list):
                     ret = 0
                 for it in lst:
-                    weight = it.subparams["weighted_vector"].subparams["weight"].get_value(frame)
-                    value = it.subparams["weighted_vector"].subparams["value"].get_value(frame)
+                    weight = it.subparams["weighted_vector"].subparams["weight"].__get_value(frame)
+                    value = it.subparams["weighted_vector"].subparams["value"].__get_value(frame)
                     den += weight
                     if isinstance(value, list):
                         ret[0], ret[1] = ret[0] + value[0]*weight, ret[1] + value[1]*weight
@@ -672,13 +682,13 @@ class Param:
                     ret /= den
 
             elif self.param[0].tag == "composite":  # Only available for vectors
-                x = self.subparams["composite"].subparams["x"].get_value(frame)
-                y = self.subparams["composite"].subparams["y"].get_value(frame)
-                ret = [x, -y]   # -y as we are not using change_axis() function here
+                x = self.subparams["composite"].subparams["x"].__get_value(frame)
+                y = self.subparams["composite"].subparams["y"].__get_value(frame)
+                ret = [x, y]
 
             elif self.param[0].tag == "linear":
-                slope = self.subparams["linear"].subparams["slope"].get_value(frame)
-                offset = self.subparams["linear"].subparams["offset"].get_value(frame)
+                slope = self.subparams["linear"].subparams["slope"].__get_value(frame)
+                offset = self.subparams["linear"].subparams["offset"].__get_value(frame)
                 if isinstance(slope, list):
                     ret = [0, 0]
                     ret[0] = offset[0] + slope[0]*(frame/settings.lottie_format["fr"])
@@ -687,16 +697,16 @@ class Param:
                     ret = offset + slope*(frame/settings.lottie_format["fr"])
 
             elif self.param[0].tag == "radial_composite":   # Only for vectors
-                rad = self.subparams["radial_composite"].subparams["radius"].get_value(frame)
-                angle = to_Synfig_axis(self.subparams["radial_composite"].subparams["theta"].get_value(frame), "angle")
+                rad = self.subparams["radial_composite"].subparams["radius"].__get_value(frame)
+                angle = to_Synfig_axis(self.subparams["radial_composite"].subparams["theta"].__get_value(frame), "angle")
                 angle = math.radians(angle)
                 x = rad * math.cos(angle)
                 y = rad * math.sin(angle)
-                ret = [x, -y]
+                ret = [x, y]
 
             elif self.param[0].tag == "scale":
-                link = self.subparams["scale"].subparams["link"].get_value(frame)
-                scalar = self.subparams["scale"].subparams["scalar"].get_value(frame)
+                link = self.subparams["scale"].subparams["link"].__get_value(frame)
+                scalar = self.subparams["scale"].subparams["scalar"].__get_value(frame)
                 if isinstance(link, list):
                     link[0] *= scalar
                     link[1] *= scalar
@@ -705,9 +715,9 @@ class Param:
                 ret = link
 
             elif self.param[0].tag == "subtract":
-                lhs = self.subparams["subtract"].subparams["lhs"].get_value(frame)
-                rhs = self.subparams["subtract"].subparams["rhs"].get_value(frame)
-                scalar = self.subparams["subtract"].subparams["scalar"].get_value(frame)
+                lhs = self.subparams["subtract"].subparams["lhs"].__get_value(frame)
+                rhs = self.subparams["subtract"].subparams["rhs"].__get_value(frame)
+                scalar = self.subparams["subtract"].subparams["scalar"].__get_value(frame)
                 if isinstance(lhs, list):
                     ret = [0, 0]
                     ret[0] = (lhs[0] - rhs[0]) * scalar
@@ -716,9 +726,9 @@ class Param:
                     ret = (lhs - rhs) * scalar
 
             elif self.param[0].tag == "switch":
-                link_off = self.subparams["switch"].subparams["link_off"].get_value(frame)
-                link_on = self.subparams["switch"].subparams["link_on"].get_value(frame)
-                switch = self.subparams["switch"].subparams["switch"].get_value(frame)
+                link_off = self.subparams["switch"].subparams["link_off"].__get_value(frame)
+                link_on = self.subparams["switch"].subparams["link_on"].__get_value(frame)
+                switch = self.subparams["switch"].subparams["switch"].__get_value(frame)
                 if isinstance(link_on, list):
                     ret = [0, 0]
                     ret[0] = link_on[0] * switch + link_off[0] * (1 - switch)
@@ -729,10 +739,10 @@ class Param:
             elif self.param[0].tag == "bone_link":
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
-                ret_origin, ret_angle, lls, rls = bone.get_value(frame)
+                ret_origin, ret_angle, lls, rls = bone.__get_value(frame)
 
                 # Adding the base value effect here
-                base_value = self.subparams["bone_link"].subparams["base_value"].get_value(frame)
+                base_value = self.subparams["bone_link"].subparams["base_value"].__get_value(frame)
                 a1, a2 = math.radians(ret_angle), math.radians(ret_angle+90)
                 ret = ret_origin
 
@@ -742,10 +752,14 @@ class Param:
                 ret[0] = ret[0] + (base_value[0] * math.cos(a1) - base_value[1] * math.cos(a2)) * rls[0]
                 ret[1] = ret[1] + (base_value[0] * math.sin(a1) - base_value[1] * math.sin(a2)) * rls[1]
 
-                ret = [ret[0], -ret[1]]
+                ret = [ret[0], ret[1]]
 
         else:
             ret = self.get_single_value(frame)
+            if isinstance(ret, list):
+                # Need to change the calculation inside get_single_value, this
+                # is just a hack
+                ret = [ret[0], -ret[1]]
         return ret
 
     def get_single_value(self, frame):
