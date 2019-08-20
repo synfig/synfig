@@ -14,7 +14,6 @@ target_sources(mod_svg
 )
 
 target_link_libraries(mod_svg synfig ${LIBXML_LIBRARIES} ${GLIBMM_LIBRARIES})
-#target_link_libraries(mod_svg synfig ${GLIBMM_LIBRARIES})
 
 install (
     TARGETS mod_svg

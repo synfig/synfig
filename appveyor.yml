@@ -4,7 +4,7 @@ environment:
   matrix:
     - MSYSTEM: MINGW64
     - MSYSTEM: MINGW32
-      
+
 # set clone depth
 clone_depth: 1 # clone entire repository history if not defined
 
