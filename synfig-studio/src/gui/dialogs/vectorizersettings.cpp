@@ -54,23 +54,23 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
- etl::handle<studio::Instance> selected_instance, etl::handle<synfig::Layer> reference_layer, bool insideSwitch):
+ etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer, bool insideSwitch):
 	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
 	layer_bitmap_(my_layer_bitmap),
 	reference_layer_(reference_layer),
 	inside_Switch(insideSwitch),
 	instance(selected_instance),
-	adjustment_threshold(Gtk::Adjustment::create(8,1,10)),
+	adjustment_threshold(Gtk::Adjustment::create(configmap["threshold"],1,10)),
 	entry_threshold(adjustment_threshold,1,0),
-	adjustment_accuracy(Gtk::Adjustment::create(9,1,10)),
+	adjustment_accuracy(Gtk::Adjustment::create(configmap["accuracy"],1,10)),
 	entry_accuracy(adjustment_accuracy,1,0),
-	adjustment_despeckling(Gtk::Adjustment::create(5,0,500)),
+	adjustment_despeckling(Gtk::Adjustment::create(configmap["despeckling"],0,500)),
 	entry_despeckling(adjustment_despeckling,1,0),
 	adjustment_accuracy2(Gtk::Adjustment::create(5,1,10)),
 	entry_accuracy2(adjustment_accuracy2,1,0),
 	adjustment_despeckling2(Gtk::Adjustment::create(3,0,500)),
 	entry_despeckling2(adjustment_despeckling2,1,0),
-	adjustment_maxthickness(Gtk::Adjustment::create(200,0,500)),
+	adjustment_maxthickness(Gtk::Adjustment::create(configmap["maxthickness"],0,500)),
 	entry_maxthickness(adjustment_maxthickness,1,0),
 	adjustment_radius(Gtk::Adjustment::create(100,1,100)),
 	entry_radius(adjustment_radius,1,0),
@@ -86,7 +86,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	// comboboxtext_mode.set_active(0);
 	// comboboxtext_mode.signal_changed().connect(
 	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
-
+	config_map = &configmap;
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(1, 1, 1, 1));
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
@@ -276,6 +276,16 @@ VectorizerSettings::set_progress(float value)
 }
 
 void
+VectorizerSettings::savecurrconfig()
+{
+	(*config_map)["threshold"] = (int)adjustment_threshold->get_value();
+	(*config_map)["accuracy"] = (int)adjustment_accuracy->get_value();
+	(*config_map)["despeckling"] = (int)adjustment_despeckling->get_value();
+	(*config_map)["maxthickness"] = (int)adjustment_maxthickness->get_value();
+		
+}
+
+void
 VectorizerSettings::on_convert_pressed()
 {
 	hide();
@@ -286,7 +296,7 @@ VectorizerSettings::on_convert_pressed()
 	assert(action);
 	if(!action)
 		return;
-
+	savecurrconfig();
 	std::cout<<"Action Asserted \n";
 	// Add an if else to pass param according to outline /centerline
 	action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));

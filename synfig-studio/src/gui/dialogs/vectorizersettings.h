@@ -27,6 +27,7 @@
 /* === H E A D E R S ======================================================= */
 #include <ETL/handle>
 #include <vector>
+#include <unordered_map> 
 #include <gtkmm.h>
 // #include <gtkmm/grid.h>
 // #include <gtkmm/dialog.h>
@@ -88,12 +89,13 @@ class VectorizerSettings : public Gtk::Dialog
 	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
 	etl::handle<synfig::Layer> reference_layer_;
 	const etl::handle<Instance> instance;
+	std::unordered_map <std::string,int>* config_map;
 
 public:
 
 	bool isOutline,inside_Switch;
 	VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-			etl::handle<Instance> selected_instance,etl::handle<synfig::Layer> reference_layer, bool insideSwitch);
+			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer, bool insideSwitch);
 	~VectorizerSettings();
 	void set_progress(float value);
 
@@ -121,6 +123,7 @@ private:
 	void on_add_border_toggle();
 	void on_convert_pressed();
 	void on_cancel_pressed();
+	void savecurrconfig();
 	void on_finished();
 }; // END of class VectorizerSettings
 
