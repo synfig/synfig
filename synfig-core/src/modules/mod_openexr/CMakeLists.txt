@@ -11,7 +11,6 @@ message(STATUS "OpenEXR include: ${OPENEXR_INCLUDE_DIRS}")
 
 target_include_directories(mod_openexr PRIVATE ${OPENEXR_INCLUDE_DIRS})
 
-#target_link_libraries(mod_noise synfig ${SIGCPP_LIBRARIES})
 target_link_libraries(mod_openexr synfig ${OPENEXR_LIBRARIES})
 
 install (

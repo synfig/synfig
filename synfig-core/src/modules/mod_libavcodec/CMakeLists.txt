@@ -7,7 +7,6 @@ target_sources(mod_libavcodec
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
 )
 
-#target_link_libraries(mod_jpeg synfig ${LIBJPEG_LIBRARIES})
 target_link_libraries(mod_libavcodec synfig)
 
 install (

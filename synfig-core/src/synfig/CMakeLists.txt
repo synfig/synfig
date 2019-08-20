@@ -17,9 +17,8 @@ PUBLIC
         ${CAIRO_INCLUDE_DIRS}
         ${PANGO_INCLUDE_DIRS}
         ${LIBXML_INCLUDE_DIRS}
-#        ${MLT_INCLUDE_DIRS}
+        ${MLT_INCLUDE_DIRS}
         ${FFTW_INCLUDE_DIRS}
-        PUBLIC ${MLT_INCLUDE_DIRS}
 )
 
 target_sources(synfig
