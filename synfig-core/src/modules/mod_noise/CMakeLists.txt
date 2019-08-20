@@ -9,6 +9,8 @@ target_sources(mod_noise
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_random.cpp"
 )
 
+target_link_libraries(mod_noise synfig ${SIGCPP_LIBRARIES})
+
 install (
     TARGETS mod_noise
     DESTINATION lib/synfig/modules

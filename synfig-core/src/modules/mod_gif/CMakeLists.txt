@@ -6,6 +6,8 @@ target_sources(mod_gif
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
 )
 
+target_link_libraries(mod_gif synfig ${SIGCPP_LIBRARIES})
+
 install (
     TARGETS mod_gif
     DESTINATION lib/synfig/modules

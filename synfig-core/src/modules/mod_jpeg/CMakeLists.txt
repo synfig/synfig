@@ -7,6 +7,8 @@ target_sources(mod_jpeg
         "${CMAKE_CURRENT_LIST_DIR}/trgt_jpeg.cpp"
 )
 
+target_link_libraries(mod_jpeg synfig ${LIBJPEG_LIBRARIES})
+
 install (
     TARGETS mod_jpeg
     DESTINATION lib/synfig/modules

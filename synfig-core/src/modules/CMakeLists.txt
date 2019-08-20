@@ -30,17 +30,17 @@ set(MODS_ENABLED
     mod_gradient
     mod_imagemagick
     mod_jpeg
-#     mod_libavcodec - build failure
-#     mod_magickpp - made optional
-#     mod_mng - missing include
+#    mod_libavcodec # - build failure
+#    mod_magickpp # - made optional
+    mod_mng
     mod_noise
-#     mod_openexr - missing include
+    mod_openexr
     mod_particle
     mod_png
     mod_ppm
     mod_svg
     mod_yuv420p
-#     mptr_mplayer - "This code has vulnerabilities"
+#    mptr_mplayer # - "This code has vulnerabilities"
 )
 
 ## Magick++ support

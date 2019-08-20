@@ -6,16 +6,20 @@
 ## TODO: optional static linking?
 add_library(synfig SHARED "")
 
+message(STATUS "MLT DIR: ${MLT_INCLUDE_DIRS}")
+
 target_include_directories(synfig
-    SYSTEM BEFORE PUBLIC
+#    SYSTEM BEFORE PUBLIC
+PUBLIC
         ${SIGCPP_INCLUDE_DIRS}
         ${GLIBMM_INCLUDE_DIRS}
         ${GIOMM_INCLUDE_DIRS}
         ${CAIRO_INCLUDE_DIRS}
         ${PANGO_INCLUDE_DIRS}
         ${LIBXML_INCLUDE_DIRS}
-        ${MLT_INCLUDE_DIRS}
+#        ${MLT_INCLUDE_DIRS}
         ${FFTW_INCLUDE_DIRS}
+        PUBLIC ${MLT_INCLUDE_DIRS}
 )
 
 target_sources(synfig
@@ -115,7 +119,7 @@ include(valuenodes/CMakeLists.txt)
 include(debug/CMakeLists.txt)
 
 target_link_libraries(synfig
-    PRIVATE
+    PUBLIC
         ${SIGCPP_LIBRARIES}
         ${GLIBMM_LIBARIES}
         ${GIOMM_LIBRARIES}

@@ -5,7 +5,9 @@ cmake_minimum_required(VERSION 3.1)
 ##
 
 ## TODO: check version
-find_package(synfig CONFIG REQUIRED)
+if ("${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
+    find_package(synfig CONFIG REQUIRED)
+endif()
 
 find_package(Gettext)
 

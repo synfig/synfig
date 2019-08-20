@@ -20,7 +20,7 @@ target_sources(mod_magickpp
         "${CMAKE_CURRENT_LIST_DIR}/trgt_magickpp.cpp"
 )
 
-target_link_libraries(mod_magickpp ${ImageMagick_LIBRARIES})
+target_link_libraries(mod_magickpp synfig ${MAGICKCORE_LIBRARIES} ${ImageMagick_LIBRARIES})
 
 install (
     TARGETS mod_magickpp

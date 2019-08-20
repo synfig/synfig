@@ -3,7 +3,7 @@ language: cpp
 git:
   depth: 1
   submodules: false
-  
+
 env:
   global:
     - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
@@ -11,7 +11,7 @@ env:
 
 matrix:
   include:
-  
+
   - os: linux
     name: "Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
     sudo: required
@@ -21,7 +21,17 @@ matrix:
     before_script: ccache -s
     script: ./travis.sh
     after_script: autobuild/synfigrenderer-regression-test.sh
-        
+
+  - os: linux
+    name: "Synfig Studio Ubuntu 16.04 Xenial (CMake/Ninja)"
+    env: CMAKE=true
+    sudo: required
+    dist: xenial
+    cache: ccache
+    before_install: ./1-setup-linux-native.sh
+    before_script: ccache -s
+    script: mkdir -p build && cd build && cmake .. && make -j$(nproc)
+
   - os: osx
     name: "Synfig Studio OS X 10.10 Yosemite (Clang/Autotools/Brew)"
     sudo: required
@@ -35,7 +45,7 @@ matrix:
     before_script: ccache -s
     script: ./travis.sh
     after_script: ccache -s # show ccache stats
-    
+
   - os: osx
     name: "Synfig Studio OS X 10.13 High Sierra (Clang/Autotools/Brew)"
     sudo: required
@@ -52,6 +62,7 @@ matrix:
       - ccache --set-config=compression=true
     script: ./travis.sh
     after_script: ccache -s # show ccache stats
-    
-  #allow_failures:
+
+  allow_failures:
+    - env: CMAKE=true
   #  - os: osx

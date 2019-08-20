@@ -10,6 +10,8 @@ target_sources(mod_gradient
         "${CMAKE_CURRENT_LIST_DIR}/spiralgradient.cpp"
 )
 
+target_link_libraries(mod_gradient synfig ${CAIRO_LIBRARIES})
+
 install (
     TARGETS mod_gradient
     DESTINATION lib/synfig/modules

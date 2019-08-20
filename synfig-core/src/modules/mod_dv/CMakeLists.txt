@@ -6,6 +6,8 @@ target_sources(mod_dv
         "${CMAKE_CURRENT_LIST_DIR}/trgt_dv.cpp"
 )
 
+target_link_libraries(mod_dv synfig ${SIGCPP_LIBRARIES})
+
 install (
     TARGETS mod_dv
     DESTINATION lib/synfig/modules

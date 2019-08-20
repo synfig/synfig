@@ -7,6 +7,8 @@ target_sources(mod_bmp
         "${CMAKE_CURRENT_LIST_DIR}/trgt_bmp.cpp"
 )
 
+target_link_libraries(mod_bmp synfig ${SIGCPP_LIBRARIES})
+
 install (
     TARGETS mod_bmp
     DESTINATION lib/synfig/modules

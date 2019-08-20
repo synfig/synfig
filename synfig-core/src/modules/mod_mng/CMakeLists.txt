@@ -6,6 +6,8 @@ target_sources(mod_mng
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
 )
 
+target_link_libraries(mod_mng synfig ${LIBMNG_LIBRARIES})
+
 install (
     TARGETS mod_mng
     DESTINATION lib/synfig/modules
