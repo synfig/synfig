@@ -45,6 +45,7 @@ const double Polyg_eps_mul = 0.75;  // Sequence simpl. thickness-multiplier erro
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
 synfig::CanvasHandle canvas;
 synfig::Point topleft(0,0),bottomright(0,0);
+bool max_thickness_zero = false;
 /* === P R O C E D U R E S ================================================= */
 
 etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
@@ -56,9 +57,9 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   synfig::Point b = canvas->rend_desc().get_tl();
   synfig::Point q = a - b;
   float p = canvas->rend_desc().get_w();
-  std::cout<<"This is canvas TL: ("<<b[0]<<", "<<b[1]<<"), ("<<a[0]<<", "<<a[1]<<")\n";
+  //std::cout<<"This is canvas TL: ("<<b[0]<<", "<<b[1]<<"), ("<<a[0]<<", "<<a[1]<<")\n";
   float unit_size = p/q[0];
-  std::cout<<"This is getw(): "<<p<<", Unit size:"<<unit_size<<"\n";
+  //std::cout<<"This is getw(): "<<p<<", Unit size:"<<unit_size<<"\n";
   float multiplier = unit_size/60.0;
   // here fitting and shifting happen
   for(int i=0;i<segment_size;i++)
@@ -67,7 +68,11 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
     segment[i][1] = multiplier * segment[i][1]/unit_size + bottomright[1];// y from BR;
     segment[i][2] = segment[i][2]/2;
   }
-   
+
+  if(max_thickness_zero)
+    for(int i=0;i<segment_size;i++)
+      segment[i][2] = 1.0;
+     
   switch(segment_size)// in any case size>=3
   {
     case 3:{//std::cout<<"This is case 3\n";
@@ -922,7 +927,7 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
   SequenceList &singleSequences           = g.singleSequences;
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;
   double penalty                          = g.currConfig->m_penalty;
-
+  max_thickness_zero                      = !g.currConfig->m_maxThickness; // if any value then false otherwise 0 then true
   unsigned int i, j, k;
   topleft = image->param_tl.get(synfig::Point());
   bottomright = image->param_br.get(synfig::Point());
