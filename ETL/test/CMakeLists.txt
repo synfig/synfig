@@ -1,3 +1,8 @@
+# for test to find generated etl_profile.h
+include_directories(${PROJECT_BINARY_DIR})
+
+include_directories(${PROJECT_SOURCE_DIR})
+
 add_executable(angle angle.cpp)
 add_test(test_angle angle)
 

@@ -12,6 +12,8 @@ target_sources(mod_geometry
         "${CMAKE_CURRENT_LIST_DIR}/star.cpp"
 )
 
+target_link_libraries(mod_geometry synfig ${CAIRO_LIBRARIES} ${GLIBMM_LIBRARIES})
+
 install (
     TARGETS mod_geometry
     DESTINATION lib/synfig/modules

@@ -6,6 +6,8 @@ target_sources(mod_yuv420p
         "${CMAKE_CURRENT_LIST_DIR}/trgt_yuv.cpp"
 )
 
+target_link_libraries(mod_yuv420p synfig)
+
 install (
     TARGETS mod_yuv420p
     DESTINATION lib/synfig/modules

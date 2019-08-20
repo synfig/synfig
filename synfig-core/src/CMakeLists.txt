@@ -27,9 +27,16 @@ pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
 pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
 pkg_check_modules(GIOMM REQUIRED giomm-2.4)
 pkg_check_modules(CAIRO REQUIRED cairo)
+pkg_check_modules(PANGOCAIRO REQUIRED pangocairo) # lyr_freetype
 pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
 pkg_check_modules(MLT REQUIRED mlt++)
 pkg_check_modules(FFTW REQUIRED fftw3)
+pkg_check_modules(FT REQUIRED freetype2) # for lyr_freetype
+pkg_check_modules(LIBPNG REQUIRED libpng) # for mod_png
+pkg_check_modules(LIBMNG REQUIRED libmng) # for mod_mng
+pkg_check_modules(LIBJPEG REQUIRED libjpeg) # for mod_mng
+pkg_check_modules(OPENEXR REQUIRED OpenEXR) # for mod_openexr
+pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
 
 ## TODO: move to module where it is actually required
 pkg_check_modules(PANGO REQUIRED pango)

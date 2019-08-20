@@ -7,6 +7,8 @@ target_sources(mod_particle
         "${CMAKE_CURRENT_LIST_DIR}/plant.cpp"
 )
 
+target_link_libraries(mod_particle synfig ${CAIRO_LIBRARIES})
+
 install (
     TARGETS mod_particle
     DESTINATION lib/synfig/modules

@@ -26,6 +26,8 @@ target_sources(lyr_std
         "${CMAKE_CURRENT_LIST_DIR}/zoom.cpp"
 )
 
+target_link_libraries(lyr_std synfig ${CAIRO_LIBRARIES} ${GLIBMM_LIBRARIES})
+
 install (
     TARGETS lyr_std
     DESTINATION lib/synfig/modules
