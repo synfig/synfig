@@ -16,6 +16,7 @@ from lxml import etree
 from canvas import gen_canvas
 from layers.driver import gen_layers
 from common.misc import modify_final_dump
+from common.Canvas import Canvas
 import settings
 
 
@@ -63,7 +64,8 @@ def parse(file_name):
     init_logs()
 
     settings.lottie_format["layers"] = []
-    gen_layers(settings.lottie_format["layers"], root, len(root) - 1)
+    canvas = Canvas(root)
+    gen_layers(settings.lottie_format["layers"], canvas, canvas.get_num_layers() - 1)
 
     lottie_string = json.dumps(modify_final_dump(settings.lottie_format))
     return write_to(file_name, "json", lottie_string)

@@ -46,7 +46,7 @@ def calculate_pixels_per_unit():
     return settings.PIX_PER_UNIT
 
 
-def change_axis(x_val, y_val, is_transform=False):
+def change_axis(x_val, y_val, is_transform=True):
     """
     Convert synfig axis coordinates into lottie format
 
@@ -77,8 +77,8 @@ def parse_position(animated, i):
         i        (int)                 : Iterator over animation
 
     Returns:
-        (misc.Vector) If the animated type is not color
-        (misc.Color)  Else if the animated type is color
+        (common.Vector.Vector) If the animated type is not color
+        (common.Color.Color)  Else if the animated type is color
     """
     if animated.attrib["type"] == "vector":
         pos = [float(animated[i][0][0].text),
@@ -96,7 +96,7 @@ def parse_position(animated, i):
         pos = [get_angle(float(animated[i][0].attrib["value"])),
                get_frame(animated[i])]
 
-    elif animated.attrib["type"] in {"region_angle", "star_angle_new"}:
+    elif animated.attrib["type"] in {"composite_convert", "region_angle", "star_angle_new", "scalar_multiply"}:
         pos = [float(animated[i][0].attrib["value"]),
                get_frame(animated[i])]
 
@@ -116,6 +116,14 @@ def parse_position(animated, i):
     elif animated.attrib["type"] == "points":
         pos = [int(animated[i][0].attrib["value"]),
                get_frame(animated[i])]
+
+    elif animated.attrib["type"] == "bool":
+        val = animated[i][0].attrib["value"]
+        if val == "false":
+            val = 0
+        else:
+            val = 1
+        pos = [val, get_frame(animated[i])]
 
     elif animated.attrib["type"] == "rectangle_size":
         pos = parse_value(animated, i)
@@ -330,7 +338,7 @@ def get_vector(waypoint):
         waypoint (lxml.etree._Element) : Synfig format waypoint
 
     Returns:
-        (misc.Vector) : x and y axis values stores in Vector format
+        (common.Vector.Vector) : x and y axis values stores in Vector format
     """
     # converting radius and angle to a vector
     if waypoint.tag == "radial_composite":
@@ -378,23 +386,6 @@ def set_vector(waypoint, pos):
     """
     waypoint[0][0].text = str(pos.val1)
     waypoint[0][1].text = str(pos.val2)
-
-
-def set_layer_desc(layer, default, lottie):
-    """
-    Sets layer description if provided, else defaults to the given value
-
-    Args:
-        layer (lxml.etree._Element) : Synfig format layer
-        default (str)               : default name of the layer
-        lottie  (dict)              : Lottie format layer
-
-    Returns:
-        (None)
-    """
-    lottie["nm"] = default
-    if "desc" in layer.keys():
-        lottie["nm"] = layer.attrib["desc"]
 
 
 def modify_final_dump(obj):

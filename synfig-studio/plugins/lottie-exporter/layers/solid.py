@@ -4,8 +4,9 @@ Will store all the functions corresponding to solids in lottie
 
 import sys
 import settings
-from common.misc import set_layer_desc, get_color_hex
+from common.misc import get_color_hex
 from common.Count import Count
+from common.Layer import Layer
 from helpers.blendMode import get_blend
 from helpers.transform import gen_helpers_transform
 from effects.fill import gen_effects_fill
@@ -18,9 +19,9 @@ def gen_layer_solid(lottie, layer, idx):
     Generates the dictionary corresponding to layers/solid.json
 
     Args:
-        lottie (dict)               : Lottie generated solid layer stored here
-        layer  (lxml.etree._Element): Synfig format solid layer
-        idx    (int)                : Stores the index(number of) of solid layer
+        lottie (dict)       : Lottie generated solid layer stored here
+        layer  (common.Layer.Layer) : Synfig format solid layer
+        idx    (int)        : Stores the index(number of) of solid layer
 
     Returns:
         (None)
@@ -29,7 +30,7 @@ def gen_layer_solid(lottie, layer, idx):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_SOLID_TYPE
-    set_layer_desc(layer, settings.LAYER_SOLID_NAME + str(idx), lottie)
+    lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
     lottie["ef"] = []   # Stores the effects
@@ -38,7 +39,7 @@ def gen_layer_solid(lottie, layer, idx):
            settings.lottie_format["h"]/2 + get_additional_height()/2]
 
     anchor = pos
-    gen_helpers_transform(lottie["ks"], layer, pos, anchor)
+    gen_helpers_transform(lottie["ks"], pos, anchor)
 
     lottie["ef"].append({})
     gen_effects_fill(lottie["ef"][-1], layer, index.inc())
@@ -47,10 +48,7 @@ def gen_layer_solid(lottie, layer, idx):
     lottie["sw"] = settings.lottie_format["w"] + get_additional_width() # Solid Width
     lottie["sh"] = settings.lottie_format["h"] + get_additional_height() # Solid Height
 
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "color":
-                lottie["sc"] = get_color_hex(chld[0])   # Solid Color
+    lottie["sc"] = get_color_hex(layer.get_param("color").get()[0])
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]

@@ -5,11 +5,10 @@ in Lottie format
 """
 
 import sys
-import ast
 from common.Vector import Vector
-from synfig.animation import get_vector_at_frame, gen_dummy_waypoint
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import append_path, update_frame_window, update_child_at_parent, insert_dict_at
+from common.Bline import Bline
+from common.Param import Param
+from properties.shapePropKeyframe.helper import insert_dict_at
 sys.path.append("../../")
 
 
@@ -19,7 +18,7 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
 
     Args:
         lottie (dict) : Lottie format polygon layer will be stored here
-        dynamic_list (lxml.etree._Element) : Synfig format points of polygon
+        dynamic_list (common.Param.Param) : Synfig format points of polygon
 
     Returns:
         (None)
@@ -30,36 +29,22 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
     window = {}
     window["first"] = sys.maxsize
     window["last"] = -1
-    count = 0
+    dynamic_list = Bline(dynamic_list[0], dynamic_list)
 
-    for entry in dynamic_list:
-        pos = entry
-        update_frame_window(pos[0], window)
+    for entry in dynamic_list.get_entry_list():
+        pos = entry["vector"]
+        pos.update_frame_window(window)
 
-        new_pos = gen_dummy_waypoint(pos, "entry", "vector")
-        pos.getparent().remove(pos)
-        dynamic_list.insert(count, new_pos)
+        z = Param(pos.getparent(), pos.getparent().getparent())
+        z.animate("vector", True)
+        entry["vector"] = z
 
-        append_path(new_pos[0], dynamic_list[count], "pos_path", "vector")
-
-        count += 1
-
-    layer = dynamic_list.getparent().getparent()
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "origin":
-                origin = chld
+    layer = dynamic_list.get_layer().get_layer()
+    origin = layer.get_param("origin")
 
     # Animating the origin
-    update_frame_window(origin[0], window)
-    origin_parent = origin.getparent()
-    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
-    update_child_at_parent(origin_parent, origin, "param", "origin")
-
-    # Generate path for the origin component
-    origin_dict = {}
-    origin[0].attrib["transform_axis"] = "true"
-    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+    origin.update_frame_window(window)
+    origin.animate("vector")
 
     if window["first"] == sys.maxsize and window["last"] == -1:
         window["first"] = window["last"] = 0
@@ -71,20 +56,16 @@ def gen_dynamic_list_polygon(lottie, dynamic_list):
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)
 
-        for entry in dynamic_list:
-            # Only two childs, one should be animated, other one is path
-            for child in entry:
-                if child.tag == "pos_path":
-                    dictionary = ast.literal_eval(child.text)
-                    pos_cur = get_vector_at_frame(dictionary, fr)
-                    pos_next = get_vector_at_frame(dictionary, fr + 1)
+        for entry in dynamic_list.get_entry_list():
+            pos_cur = entry["vector"].get_value(fr)
+            pos_next = entry["vector"].get_value(fr + 1)
 
             tangent1_cur, tangent2_cur = Vector(0, 0), Vector(0, 0)
             tangent1_next, tangent2_next = Vector(0, 0), Vector(0, 0)
 
             # Adding origin to each vertex
-            origin_cur = get_vector_at_frame(origin_dict, fr)
-            origin_next = get_vector_at_frame(origin_dict, fr + 1)
+            origin_cur = origin.get_value(fr)
+            origin_next = origin.get_value(fr + 1)
             for i in range(len(pos_cur)):
                 pos_cur[i] += origin_cur[i]
             for i in range(len(pos_next)):

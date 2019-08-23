@@ -5,10 +5,11 @@ in Lottie format
 """
 
 import sys
-import ast
-from synfig.animation import get_vector_at_frame, gen_dummy_waypoint
+import copy
+from common.Bline import Bline
+from common.Param import Param
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import insert_dict_at, update_frame_window, update_child_at_parent, append_path, animate_radial_composite, get_tangent_at_frame, convert_tangent_to_lottie
+from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
 sys.path.append("../../")
 
 
@@ -19,77 +20,47 @@ def gen_bline_region(lottie, bline_point):
 
     Args:
         lottie     (dict) : Lottie generated keyframes will be stored here for shape/path
-        bline_path (lxml.etree._Element) : shape/path store in Synfig format
+        bline_path (common.Param.Param) : shape/path store in Synfig format
 
     Returns:
         (None)
     """
     ################### SECTION 1 #########################
     # Inserting waypoints if not animated and finding the first and last frame
-    # AFter that, there path will be calculated in lottie format which can
-    # latter be used in get_vector_at_frame() function
     window = {}
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    loop = False
-    if "loop" in bline_point.keys():
-        val = bline_point.attrib["loop"]
-        if val == "false":
-            loop = False
-        else:
-            loop = True
+    bline = Bline(bline_point[0], bline_point)
+    loop = bline.get_loop()
 
-    for entry in bline_point:
-        composite = entry[0]
-        for child in composite:
-            if child.tag == "point":
-                pos = child
-            elif child.tag == "t1":
-                t1 = child
-            elif child.tag == "t2":
-                t2 = child
-            elif child.tag == "split_radius":
-                split_r = child
-            elif child.tag == "split_angle":
-                split_a = child
+    for entry in bline.get_entry_list():
+        pos = entry["point"]
+        t1 = entry["t1"]
+        t2 = entry["t2"]
+        split_r = entry["split_radius"]
+        split_a = entry["split_angle"]
 
         # Necassary to update this before inserting new waypoints, as new
         # waypoints might include there on time: 0 seconds
-        update_frame_window(pos[0], window)
+        pos.update_frame_window(window)
+        pos.animate("vector", True)
 
-        # Empty the pos and fill in the new animated pos
-        pos = gen_dummy_waypoint(pos, "point", "vector")
-        update_child_at_parent(composite, pos, "point")
+        split_r.update_frame_window(window)
+        split_r.animate_without_path("bool")
 
-        update_frame_window(split_r[0], window)
-        split_r = gen_dummy_waypoint(split_r, "split_radius", "bool")
-        update_child_at_parent(composite, split_r, "split_radius")
+        split_a.update_frame_window(window)
+        split_a.animate_without_path("bool")
 
-        update_frame_window(split_a[0], window)
-        split_a = gen_dummy_waypoint(split_a, "split_angle", "bool")
-        update_child_at_parent(composite, split_a, "split_angle")
+        animate_tangents(t1, window)
+        animate_tangents(t2, window)
 
-        append_path(pos[0], composite, "point_path", "vector")
-
-        animate_radial_composite(t1[0], window)
-        animate_radial_composite(t2[0], window)
-
-    layer = bline_point.getparent().getparent()
-    for chld in layer:
-        if chld.tag == "param" and chld.attrib["name"] == "origin":
-            origin = chld
+    layer = bline.get_layer().get_layer()
+    origin = layer.get_param("origin")
 
     # Animating the origin
-    update_frame_window(origin[0], window)
-    origin_parent = origin.getparent()
-    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
-    update_child_at_parent(origin_parent, origin, "param", "origin")
-
-    # Generate path for the origin component
-    origin_dict = {}
-    origin[0].attrib["transform_axis"] = "true"
-    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+    origin.update_frame_window(window)
+    origin.animate("vector")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:
@@ -102,31 +73,22 @@ def gen_bline_region(lottie, bline_point):
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, loop)
 
-        for entry in bline_point:
-            composite = entry[0]
-            for child in composite:
-                if child.tag == "point_path":
-                    dictionary = ast.literal_eval(child.text)
-                    pos_cur = get_vector_at_frame(dictionary, fr)
-                    pos_next = get_vector_at_frame(dictionary, fr + 1)
-                elif child.tag == "t1":
-                    t1 = child[0]
-                elif child.tag == "t2":
-                    t2 = child[0]
-                elif child.tag == "split_radius":
-                    split_r = child
-                elif child.tag == "split_angle":
-                    split_a = child
+        for entry in bline.get_entry_list():
+            pos = entry["point"]
+            pos_cur, pos_next = pos.get_value(fr), pos.get_value(fr + 1)
+            t1 = entry["t1"]
+            t2 = entry["t2"]
+            split_r = entry["split_radius"]
+            split_a = entry["split_angle"]
 
             tangent1_cur, tangent2_cur = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
-            tangent1_next, tangent2_next = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
+            tangent1_next, tangent2_next = get_tangent_at_frame(t1, t2, split_r, split_a, fr + 1)
 
             tangent1_cur, tangent2_cur = convert_tangent_to_lottie(tangent1_cur, tangent2_cur)
             tangent1_next, tangent2_next = convert_tangent_to_lottie(tangent1_next, tangent2_next)
 
             # Adding origin to each vertex
-            origin_cur = get_vector_at_frame(origin_dict, fr)
-            origin_next = get_vector_at_frame(origin_dict, fr + 1)
+            origin_cur, origin_next = origin.get_value(fr), origin.get_value(fr + 1)
             for i in range(len(pos_cur)):
                 pos_cur[i] += origin_cur[i]
             for i in range(len(pos_next)):

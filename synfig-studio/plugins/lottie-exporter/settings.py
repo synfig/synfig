@@ -23,6 +23,7 @@ LAYER_IMAGE_TYPE = 2
 LAYER_IMAGE_NAME = "Image Layer "
 LAYER_PRECOMP_TYPE = 0
 LAYER_PRECOMP_NAME = "Pre Comp Layer "
+CANVAS_NAME = "Canvas "
 LAYER_DEFAULT_STRETCH = 1
 LAYER_DEFAULT_AUTO_ORIENT = 0
 OPACITY_CONSTANT = 100
@@ -34,6 +35,7 @@ DEFAULT_DIRECTION = 1
 DEFAULT_POSITION = [0, 0]
 DEFAULT_ANCHOR = [0, 0, 0]
 DEFAULT_SCALE = [100, 100, 100]
+DEFAULT_SKEW = 0
 GAMMA = 2.2
 PIX_PER_UNIT = 0
 TANGENT_FACTOR = 3.0
@@ -49,6 +51,9 @@ EFFECTS_INVERT = 7  # same as All mask, don't know why
 EFFECTS_HFEATHER = 0    # horizontal feather
 EFFECTS_VFEATHER = 0    # vertical feather
 EFFECTS_OPACITY = 0     # Opacity ty = 0
+EFFECTS_CONTROLLER = 5
+EFFECTS_SLIDER = 0
+EFFECTS_POINT = 3
 MASK_ADDITIVE = "a"
 INSIDE_PRECOMP = False  # specifies if we are inside a precomp or not
 ADDITIONAL_PRECOMP_WIDTH = 0
@@ -62,6 +67,10 @@ SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "fil
 IMAGE_LAYER = {"import"}
 PRE_COMP_LAYER = {"rotate", "zoom", "translate"}
 GROUP_LAYER = {"group", "switch"}
+SKELETON_LAYER = {"skeleton"}
+UNKNOWN_LAYER = "unknown_layer"
+CONVERT_METHODS = {"add", "average", "composite", "linear", "radial_composite", "scale", "subtract", "switch", "weighted_average", "bone_link", "bone", "bone_root"}
+BONES = {"bone", "bone_root"}
 
 
 def init():
@@ -88,3 +97,9 @@ def init():
     num_precomp = Count()
     global OUTLINE_GROW     # outline grow param of group layer
     OUTLINE_GROW = [0]
+    global layer_count  # Will only count the layers which do not have there desc set
+    layer_count = Count()
+    global canvas_count # will only cound the canvas which do not have any names
+    canvas_count = Count()
+    global controller_count # counts the slider and point effects controller
+    controller_count = Count()

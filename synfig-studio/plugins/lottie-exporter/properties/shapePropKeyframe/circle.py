@@ -8,10 +8,9 @@ import sys
 import math
 from common.Matrix2 import Matrix2
 from common.Vector import Vector
-from synfig.animation import to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
-from properties.valueKeyframed import gen_value_Keyframed
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window, quadratic_to_cubic
+from common.Layer import Layer
+from synfig.animation import print_animation, to_Synfig_axis
+from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, quadratic_to_cubic
 sys.path.append("../../")
 
 
@@ -22,42 +21,26 @@ def gen_list_circle(lottie, layer):
 
     Args:
         lottie (dict) : Lottie format circle layer will be stored in this
-        layer (lxml.etree._Element) : Synfig format circle layer
+        layer  (common.Layer.Layer) : Synfig format circle layer
 
     Returns:
         (None)
     """
     ################### SECTION 1 #########################
     # Inserting waypoints if not animated and finding the first and last frame
-    # AFter that, there path will be calculated in lottie format which can
-    # latter be used in get_vector_at_frame() function
     window = {}
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "origin":
-                origin = chld
-            elif chld.attrib["name"] == "radius":
-                radius = chld
+    origin = layer.get_param("origin")
+    radius = layer.get_param("radius")
 
     # Animating the origin
-    update_frame_window(origin[0], window)
-    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
-    update_child_at_parent(layer, origin, "param", "origin")
-    # Generate path for the origin component
-    origin_dict = {}
-    origin[0].attrib["transform_axis"] = "true"
-    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+    origin.update_frame_window(window)
+    origin.animate("vector")
 
-    update_frame_window(radius[0], window)
-    radius = gen_dummy_waypoint(radius, "param", "real", "radius")
-    update_child_at_parent(layer, radius, "param", "width")
-
-    # Generate radius for Lottie format
-    radius_dict = {}
-    gen_value_Keyframed(radius_dict, radius[0], 0)
+    radius.update_frame_window(window)
+    radius.animate("real")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:
@@ -71,8 +54,8 @@ def gen_list_circle(lottie, layer):
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
 
-        synfig_circle(st_val, origin_dict, radius_dict, fr)
-        synfig_circle(en_val, origin_dict, radius_dict, fr + 1)
+        synfig_circle(st_val, origin, radius, fr)
+        synfig_circle(en_val, origin, radius, fr + 1)
 
         fr += 1
     # Setting the final time
@@ -80,15 +63,15 @@ def gen_list_circle(lottie, layer):
     lottie[-1]["t"] = fr
 
 
-def synfig_circle(st_val, origin_dict, radius_dict, fr):
+def synfig_circle(st_val, origin_param, radius_param, fr):
     """
     Calculates the points for the circle layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/circle.cpp
 
     Args:
         st_val (dict) : Lottie format circle is stored in this
-        origin_dict (dict) : Lottie format origin of circle
-        radius_dict (dict) : Lottie format radius of circle
+        origin (common.Param.Param) : Lottie format origin of circle
+        radius (common.Param.Param) : Lottie format radius of circle
         fr (int) : Frame number
 
     Returns:
@@ -100,8 +83,8 @@ def synfig_circle(st_val, origin_dict, radius_dict, fr):
     angle *= ((math.pi * 2) / 360)
     k = 1.0 / math.cos(angle)
 
-    radius = abs(to_Synfig_axis(get_vector_at_frame(radius_dict, fr), "real"))
-    origin = get_vector_at_frame(origin_dict, fr)
+    radius = abs(to_Synfig_axis(radius_param.get_value(fr), "real"))
+    origin = origin_param.get_value(fr)
 
     matrix = Matrix2()
     matrix.set_rotate(angle)

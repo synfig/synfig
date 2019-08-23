@@ -7,10 +7,9 @@ in Lottie format
 import sys
 import math
 from common.Vector import Vector
-from synfig.animation import get_bool_at_frame, to_Synfig_axis, get_vector_at_frame, gen_dummy_waypoint
-from properties.valueKeyframed import gen_value_Keyframed
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, update_frame_window
+from common.Layer import Layer
+from synfig.animation import to_Synfig_axis
+from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent
 sys.path.append("../../")
 
 
@@ -21,81 +20,51 @@ def gen_list_star(lottie, layer):
 
     Args:
         lottie (dict) : Lottie format rectangle layer will be stored in this
-        layer (lxml.etree._Element) : Synfig format rectangle layer
+        layer  (common.Layer.Layer) : Synfig format rectangle layer
 
     Returns:
         (None)
     """
     ################### SECTION 1 #########################
     # Inserting waypoints if not animated and finding the first and last frame
-    # AFter that, there path will be calculated in lottie format which can
-    # latter be used in get_vector_at_frame() function
     window = {}
     window["first"] = sys.maxsize
     window["last"] = -1
 
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "origin":
-                origin = chld
-            elif chld.attrib["name"] == "radius1":
-                radius1 = chld
-            elif chld.attrib["name"] == "radius2":
-                radius2 = chld
-            elif chld.attrib["name"] == "angle":
-                angle = chld
-            elif chld.attrib["name"] == "points":
-                points = chld
-            elif chld.attrib["name"] == "regular_polygon":
-                regular_polygon = chld
+    origin = layer.get_param("origin")
+    radius1 = layer.get_param("radius1")
+    radius2 = layer.get_param("radius2")
+    angle = layer.get_param("angle")
+    points = layer.get_param("points")
+    regular_polygon = layer.get_param("regular_polygon")
 
     # Animating origin
-    update_frame_window(origin[0], window)
-    origin = gen_dummy_waypoint(origin, "param", "vector", "origin")
-    update_child_at_parent(layer, origin, "param", "origin")
-    # Generate path for the origin component
-    origin_dict = {}
-    origin[0].attrib["transform_axis"] = "true"
-    gen_properties_multi_dimensional_keyframed(origin_dict, origin[0], 0)
+    origin.update_frame_window(window)
+    # Keeping the transform true here
+    #origin.animate("vector", True)
+    origin.animate("vector")
 
     # Animating radius1
-    update_frame_window(radius1[0], window)
-    radius1 = gen_dummy_waypoint(radius1, "param", "real", "radius1")
-    update_child_at_parent(layer, radius1, "param", "radius1")
-    # Generate expand param for Lottie format
-    radius1_dict = {}
-    gen_value_Keyframed(radius1_dict, radius1[0], 0)
+    radius1.update_frame_window(window)
+    radius1.animate("real")
 
     # Animating radius2
-    update_frame_window(radius2[0], window)
-    radius2 = gen_dummy_waypoint(radius2, "param", "real", "radius2")
-    update_child_at_parent(layer, radius2, "param", "radius2")
-    # Generate expand param for Lottie format
-    radius2_dict = {}
-    gen_value_Keyframed(radius2_dict, radius2[0], 0)
+    radius2.update_frame_window(window)
+    radius2.animate("real")
 
     # Animating angle
-    update_frame_window(angle[0], window)
-    angle = gen_dummy_waypoint(angle, "param", "star_angle_new", "angle")
-    update_child_at_parent(layer, angle, "param", "angle")
-    # Generate expand param for Lottie format
-    angle_dict = {}
-    gen_value_Keyframed(angle_dict, angle[0], 0)
+    angle.update_frame_window(window)
+    angle.animate("star_angle_new")
 
     # Animating points
-    update_frame_window(points[0], window)
-    points = gen_dummy_waypoint(points, "param", "real", "points")
-    update_child_at_parent(layer, points, "param", "points")
-    # Generate expand param for Lottie format
-    points_dict = {}
-    gen_value_Keyframed(points_dict, points[0], 0)
+    points.update_frame_window(window)
+    points.animate("real")
 
     mx_points = get_max_points(points)
 
     # Animating regular_polygon
-    update_frame_window(regular_polygon[0], window)
-    regular_polygon = gen_dummy_waypoint(regular_polygon, "param", "bool", "regular_polygon")
-    update_child_at_parent(layer, regular_polygon, "param", "regular_polygon")
+    regular_polygon.update_frame_window(window)
+    regular_polygon.animate_without_path("bool")
 
     # Minimizing the window size
     if window["first"] == sys.maxsize and window["last"] == -1:
@@ -108,8 +77,8 @@ def gen_list_star(lottie, layer):
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)
-        synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr)
-        synfig_star(en_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon, fr + 1)
+        synfig_star(st_val, mx_points, origin, radius1, radius2, angle, points, regular_polygon, fr)
+        synfig_star(en_val, mx_points, origin, radius1, radius2, angle, points, regular_polygon, fr + 1)
 
         fr += 1
     # Setting the final time
@@ -140,7 +109,7 @@ def get_max_points(points):
     return mx
 
 
-def synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angle_dict, points_dict, regular_polygon_anim, fr):
+def synfig_star(st_val, mx_points, origin_p, radius1_p, radius2_p, angle_p, points_p, regular_polygon_p, fr):
     """
     Calculates the points for the rectangle layer as in Synfig:
     https://github.com/synfig/synfig/blob/678cc3a7b1208fcca18c8b54a29a20576c499927/synfig-core/src/modules/mod_geometry/star.cpp
@@ -148,23 +117,23 @@ def synfig_star(st_val, mx_points, origin_dict, radius1_dict, radius2_dict, angl
     Args:
         st_val (dict) : Lottie format star will be stored here
         mx_points (int) : Maximum points ever in star animation
-        radius1_dict (dict) : Lottie format radius1 animation
-        radius2_dict (dict) : Lottie format radius2 animation
-        angle_dict   (dict) : Lottie format angle animation
-        points_dict  (dict) : Lottie format points animation
-        regular_polygon_anim (lxml.etree._Element) : Synfig format regularPolygon animation
+        radius1_p (common.Param.Param) : Lottie format radius1 animation
+        radius2_p (common.Param.Param) : Lottie format radius2 animation
+        angle_p   (common.Param.Param) : Lottie format angle animation
+        points_p  (common.Param.Param) : Lottie format points animation
+        regular_polygon_p (common.Param.Param) : Synfig format regularPolygon animation
         fr (int) : Frame number
 
     Returns:
         (None)
     """
 
-    angle = get_vector_at_frame(angle_dict, fr)
-    points = int(to_Synfig_axis(get_vector_at_frame(points_dict, fr), "real"))
-    radius1 = to_Synfig_axis(get_vector_at_frame(radius1_dict, fr), "real")
-    radius2 = to_Synfig_axis(get_vector_at_frame(radius2_dict, fr), "real")
-    regular_polygon = get_bool_at_frame(regular_polygon_anim[0], fr)
-    origin_cur = get_vector_at_frame(origin_dict, fr)
+    angle = angle_p.get_value(fr)
+    points = int(to_Synfig_axis(points_p.get_value(fr), "real"))
+    radius1 = to_Synfig_axis(radius1_p.get_value(fr), "real")
+    radius2 = to_Synfig_axis(radius2_p.get_value(fr), "real")
+    regular_polygon = regular_polygon_p.get_value(fr)
+    origin_cur = origin_p.get_value(fr)
 
     angle = math.radians(angle)
     dist_between_points = (math.pi * 2) / float(points)

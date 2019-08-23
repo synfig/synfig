@@ -148,6 +148,12 @@ def to_Synfig_axis(pos, animated_name):
         ret = pos / settings.OPACITY_CONSTANT
     elif animated_name == "effects_opacity":
         ret = pos
+    elif animated_name == "angle":
+        s1 = int(pos / 360)
+        t1 = pos % 360
+        t1 = (90 - t1) % 360
+        t1 = t1 + s1 * 360
+        ret = t1
     return ret
 
 
@@ -159,7 +165,7 @@ def get_first_control_point(interval):
         interval (dict) : Holds one interval of the bezier curve that is two waypoints
 
     Returns:
-        (misc.Vector) If the interval holds position bezier
+        (common.Vector.Vector) If the interval holds position bezier
         (float)       Else : the interval holds value bezier
     """
     if len(interval["s"]) >= 2:
@@ -177,7 +183,7 @@ def get_last_control_point(interval):
         interval (dict) : Holds one interval of the bezier curve that is two waypoints
 
     Returns:
-        (misc.Vector) If the interval holds position bezier
+        (common.Vector.Vector) If the interval holds position bezier
         (float)       Else : the interval holds value bezier
     """
     if len(interval["e"]) >= 2:
@@ -195,7 +201,7 @@ def get_control_points(interval):
         interval (dict) : Holds one interval of the bezier curve that is two waypoints
 
     Returns:
-        (misc.Vector, misc.Vector, misc.Vector, misc.Vector) If the interval holds position bezier
+        (common.Vector.Vector, common.Vector.Vector, common.Vector.Vector, common.Vector.Vector) If the interval holds position bezier
         (float, float, float, float)       Else : the interval holds value bezier
     """
     # If the interval is for position or vector
@@ -300,6 +306,58 @@ def get_bool_at_frame(anim, frame):
     else:
         val = True
     return val
+
+
+def waypoint_at_frame(anim, frame):
+    """
+    Returns true if a waypoint is present at 'frame'
+    """
+    for waypoint in anim:
+        fr = get_frame(waypoint)
+        if fr == frame:
+            return True
+    return False
+
+def modify_bool_animation(anim):
+    """
+    Inserts waypoints at such frames so that the animation is similar to that in
+    lottie
+    """
+    i = 0
+    while i < len(anim):
+        cur_fr = get_frame(anim[i])
+        val_now = get_bool_at_frame(anim, cur_fr)
+        # Check at one frame less and one frame more: only cases
+        if cur_fr - 1 >= settings.lottie_format["ip"] and not waypoint_at_frame(anim, cur_fr-1):
+            val_before = get_bool_at_frame(anim, cur_fr - 1)
+            if val_now != val_before:
+                new = copy.deepcopy(anim[i])
+                new.attrib["time"] = str((cur_fr - 1)/settings.lottie_format["fr"]) + "s"
+                if val_before:
+                    new[0].attrib["value"] = "true"
+                else:
+                    new[0].attrib["value"] = "false"
+                anim.insert(i, new)
+                i += 1
+        if cur_fr + 1 <= settings.lottie_format["op"] and not waypoint_at_frame(anim, cur_fr + 1):
+            val_after = get_bool_at_frame(anim, cur_fr + 1)
+            if val_after != val_now:
+                new = copy.deepcopy(anim[i])
+                new.attrib["time"] = str((cur_fr + 1)/settings.lottie_format["fr"]) + "s"
+                if val_after:
+                    new[0].attrib["value"] = "true"
+                else:
+                    new[0].attrib["value"] = "false"
+                anim.insert(i+1, new)
+                i += 1
+
+        i += 1
+
+    # Make the animation constant
+    for waypoint in anim:
+        waypoint.attrib["before"] = waypoint.attrib["after"] = "constant"
+
+
 
 
 def get_animated_time_list(child, time_list):

@@ -8,6 +8,7 @@ import sys
 import settings
 from common.misc import is_animated
 from common.Vector import Vector
+import common
 from synfig.animation import print_animation
 sys.path.append("..")
 
@@ -19,7 +20,7 @@ def get_offset():
     Args:
         (None)
     Returns:
-        (misc.Vector) : offset
+        (common.Vector.Vector) : offset
     """
     x = settings.ADDITIONAL_PRECOMP_WIDTH / 2
     y = settings.ADDITIONAL_PRECOMP_HEIGHT / 2
@@ -34,7 +35,7 @@ def update_layer(node):
     another composition of Lottie
 
     Args:
-        node (lxml.etree._Element) : Can be a layer or parameter of a layer
+        node (common.Layer.Layer | lxml.etree._Element) : Can be a layer or parameter of a layer
 
     Returns:
         (None)
@@ -44,11 +45,12 @@ def update_layer(node):
         return
 
     update_dict = []
-    if node.tag == "layer":
+    if isinstance(node, common.Layer.Layer):
         compare = {"center", "origin", "point1", "point2", "tl", "br"}
-        for child in node:
-            if child.tag == "param" and child.attrib["name"] in compare:
-                update_dict.append(child)
+        for param in compare:
+            get = node.get_param(param).get()
+            if get is not None:
+                update_dict.append(get)
     else:
         update_dict.append(node)
 
@@ -81,7 +83,7 @@ def add(vector, offset):
 
     Args:
         vector (lxml.etree._Element) : Position in Synfig format
-        offset (misc.Vector) : offset to be added to that position
+        offset (common.Vector.Vector) : offset to be added to that position
 
     Returns:
         (None)

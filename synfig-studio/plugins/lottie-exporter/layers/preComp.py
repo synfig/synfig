@@ -5,7 +5,7 @@ Store all functions corresponding to pre composition in lottie
 
 import sys
 import settings
-from common.misc import set_layer_desc
+from common.Layer import Layer
 from sources.precomp import add_precomp_asset
 from layers.rotate_layer import gen_layer_rotate
 from layers.scale_layer import gen_layer_scale
@@ -21,7 +21,7 @@ def gen_layer_precomp(lottie, layer, idx):
 
     Args:
         lottie (dict) : Will store the pre-comp layer
-        layer  (lxml.etree._Element) : Specifies which layer it is
+        layer  (common.Layer.Layer) : Specifies which layer it is
         idx    (int)  : Index of the layer
 
     Returns:
@@ -30,18 +30,18 @@ def gen_layer_precomp(lottie, layer, idx):
     lottie["ddd"] = settings.DEFAULT_3D
     lottie["ind"] = idx
     lottie["ty"] = settings.LAYER_PRECOMP_TYPE
-    set_layer_desc(layer, settings.LAYER_PRECOMP_NAME + str(idx), lottie)
+    lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 
-    if layer.attrib["type"] == "rotate":
+    if layer.get_type() == "rotate":
         # transform properties will be written inside this now
         gen_layer_rotate(lottie["ks"], layer)
         settings.INSIDE_PRECOMP = True
-    elif layer.attrib["type"] == "zoom":
+    elif layer.get_type() == "zoom":
         gen_layer_scale(lottie["ks"], layer)
         settings.INSIDE_PRECOMP = True
-    elif layer.attrib["type"] == "translate":
+    elif layer.get_type() == "translate":
         gen_layer_translate(lottie["ks"], layer)
         settings.INSIDE_PRECOMP = True
 

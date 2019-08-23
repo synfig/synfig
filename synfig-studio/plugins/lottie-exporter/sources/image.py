@@ -6,6 +6,7 @@ import os
 import sys
 import struct
 import imghdr
+import shutil
 import settings
 sys.path.append("..")
 
@@ -63,7 +64,7 @@ def add_image_asset(lottie, layer):
 
     Args:
         lottie (dict)                : Lottie layer
-        layer  (lxml.etree._Element) : Synfig layer
+        layer  (commong.Layer.Layer) : Synfig layer
 
     Returns:
         (dict) : Stores address of parameters: "tl", "br", "filename"
@@ -71,14 +72,9 @@ def add_image_asset(lottie, layer):
     lottie["id"] = "image_" + str(settings.num_images.inc())
     st = {}     # Store the address of children
 
-    for chld in layer:
-        if chld.tag == "param":
-            if chld.attrib["name"] == "tl":
-                st["tl"] = chld
-            elif chld.attrib["name"] == "br":
-                st["br"] = chld
-            elif chld.attrib["name"] == "filename":
-                st["filename"] = chld
+    st["tl"] = layer.get_param("tl")
+    st["br"] = layer.get_param("br")
+    st["filename"] = layer.get_param("filename")
 
     file_path = os.path.join(settings.file_name["fd"], st["filename"][0].text)
     file_path = os.path.abspath(file_path)
@@ -87,11 +83,25 @@ def add_image_asset(lottie, layer):
 
     lottie["h"] = height
 
-    # Later can copy the images into a new folder: images/ for the lottie format
-    path = st["filename"][0].text.split("/")
-    lottie["p"] = path[-1]
-    path = path[:-1]
-    path = "/".join(path)
-    path = path + "/"       # This `/` is very important
-    lottie["u"] = path
+    images_dir = os.path.join(settings.file_name["fd"], "images")
+    images_dir = os.path.abspath(images_dir)
+    if not os.path.isdir(images_dir):   # Create images directory if not present
+        try:
+            os.mkdir(images_dir)
+        except OSError:
+            print("Creation of the directory %s failed" % images_dir)
+
+    # copy original image to images directory
+    src = file_path
+    head, tail = os.path.split(file_path)
+    new_image_path = os.path.join(images_dir, tail)
+
+    # using shutil to make a copy of the image
+    shutil.copy(src, new_image_path)
+
+    # copy meta-data of the file
+    shutil.copystat(src, new_image_path)
+
+    lottie["u"] = "images/"
+    lottie["p"] = tail
     return st

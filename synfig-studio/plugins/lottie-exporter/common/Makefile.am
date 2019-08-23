@@ -3,11 +3,15 @@
 PLUGIN_NAME = common
 
 EXTRA_FILES = \
+			  Bline.py \
+			  Canvas.py \
 			  Color.py \
 			  Count.py \
 			  Hermite.py \
+			  Layer.py \
 			  Matrix2.py \
 			  misc.py \
+			  Param.py \
 			  Vector.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)

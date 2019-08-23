@@ -9,13 +9,12 @@ from properties.value import gen_properties_value
 sys.path.append("../")
 
 
-def gen_effects_hfeather(lottie, layer, idx):
+def gen_effects_hfeather(lottie, idx):
     """
     Generates the dictionary corresponding to effects/horizontal feather
 
     Args:
         lottie (dict)                : Lottie format effects stored in this
-        layer  (lxml.etree._Element) : Synfig format layer
         idx    (int)                 : Index/Count of effect
 
     Returns:
@@ -29,13 +28,12 @@ def gen_effects_hfeather(lottie, layer, idx):
     gen_properties_value(lottie["v"], 0, index.inc(), 0, settings.NO_INFO)
 
 
-def gen_effects_vfeather(lottie, layer, idx):
+def gen_effects_vfeather(lottie, idx):
     """
     Generates the dictionary corresponding to effects/vertical feather
 
     Args:
         lottie (dict)                : Lottie format effects stored in this
-        layer  (lxml.etree._Element) : Synfig format layer
         idx    (int)                 : Index/Count of effect
 
     Returns:

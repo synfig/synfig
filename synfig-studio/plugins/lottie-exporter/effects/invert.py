@@ -9,13 +9,12 @@ from properties.value import gen_properties_value
 sys.path.append("../")
 
 
-def gen_effects_invert(lottie, layer, idx):
+def gen_effects_invert(lottie, idx):
     """
     Generates the dictionary corresponding to effects/invert.json
 
     Args:
         lottie (dict)                : Lottie format effects stored in this
-        layer  (lxml.etree._Element) : Synfig format layer
         idx    (int)                 : Index/Count of effect
 
     Returns:

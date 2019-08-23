@@ -10,89 +10,40 @@ from lxml import etree
 import settings
 from common.misc import change_axis, get_frame, is_animated, radial_to_tangent
 from common.Vector import Vector
+from common.Param import Param
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import get_vector_at_frame, get_bool_at_frame, gen_dummy_waypoint
+from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_frame
 sys.path.append("../../")
 
 
-def append_path(element, parent, element_name, typ="real"):
-    """
-    Generates a dictionary corresponding to the path followed by that element
-    and appends it at the parent which will be needed later
-
-    Args:
-        element (lxml.etree._Element) : Synfig format element/parameter
-        parent  (lxml.etree._Element) : Parent of the element/parameter
-        element_name (str)            : Tag of the dictionary to be stored in parent
-        typ (:obj: str, optional)     : Specifies the type of dictionary to be created
-
-    Returns:
-        (None)
-    """
-    # Generating the path and store in the lxml element
-    element_dict = {}
-    if typ == "real":
-        gen_value_Keyframed(element_dict, element, 0)
-    else:
-        gen_properties_multi_dimensional_keyframed(element_dict, element, 0)
-    # Store in lxml element
-    element_lxml = etree.Element(element_name)
-    element_lxml.text = str(element_dict)
-    parent.append(element_lxml)
-
-
-def animate_radial_composite(radial_composite, window):
+def animate_tangents(tangent, window):
     """
     Animates the radial composite and updates the window of frame if radial
     composite's parameters are already animated
     Also generate the Lottie path and stores in radial_composite
 
     Args:
-        radial_composite (lxml.etree._Element) : Synfig format radial composite-> stores radius and angle
-        window           (dict)                : max and min frame of overall animations stored in this
+        tangent (common.Param.Param)  : Synfig format radial composite's parent-> stores radius and angle
+        window  (dict)                : max and min frame of overall animations stored in this
 
     Returns:
         (None)
     """
-    for child in radial_composite:
+    for child in tangent[0]:
+        # Assuming tangent[0] is always radial_composite
         if child.tag == "radius":
-            radius = child
+            radius = Param(child, tangent[0])
         elif child.tag == "theta":
-            theta = child
-    update_frame_window(radius[0], window)
-    update_frame_window(theta[0], window)
+            theta = Param(child, tangent[0])
+    radius.update_frame_window(window)
+    theta.update_frame_window(window)
 
-    radius = gen_dummy_waypoint(radius, "radius", "real")
-    theta = gen_dummy_waypoint(theta, "theta", "region_angle")
+    radius.animate("real")
+    theta.animate("region_angle")
 
-    # Update the newly computed radius and theta
-    update_child_at_parent(radial_composite, radius, "radius")
-    update_child_at_parent(radial_composite, theta, "theta")
-
-    append_path(radius[0], radial_composite, "radius_path")
-    append_path(theta[0], radial_composite, "theta_path")
-
-
-def update_frame_window(node, window):
-    """
-    Given an animation, finds the minimum and maximum frame at which the
-    waypoints are located
-
-    Args:
-        node    (lxml.etree._Element) : Animation to be searched in
-        window  (dict)                : max and min frame will be stored in this
-
-    Returns:
-        (None)
-    """
-    if is_animated(node) == 2:
-        for waypoint in node:
-            fr = get_frame(waypoint)
-            if fr > window["last"]:
-                window["last"] = fr
-            if fr < window["first"]:
-                window["first"] = fr
+    tangent.add_subparam("radius", radius)
+    tangent.add_subparam("theta", theta)
 
 
 def update_child_at_parent(parent, new_child, tag, param_name=None):
@@ -124,51 +75,52 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     depending on whether split_radius and split_angle is "true"/"false"
 
     Args:
-        t1      (lxml.etree._Element) : Holds Tangent 1/In Tangent
-        t2      (lxml.etree._Element) : Holds Tangent 2/Out Tangent
-        split_r (lxml.etree._Element) : Holds animation of split radius parameter
-        split_a (lxml.etree._Element) : Holds animation of split angle parameter
+        t1      (common.Param.Param)  : Holds Tangent 1/In Tangent
+        t2      (common.Param.Param)  : Holds Tangent 2/Out Tangent
+        split_r (common.Param.Param) : Holds animation of split radius parameter
+        split_a (common.Param.Param) : Holds animation of split angle parameter
         fr      (int)                 : Holds the frame value
 
     Returns:
-        (misc.Vector, misc.Vector) : In-tangent and out-tangent at the given frame
+        (common.Vector.Vector, common.Vector.Vector) : In-tangent and out-tangent at the given frame
     """
 
     # Get value of split_radius and split_angle at frame
-    sp_r = get_bool_at_frame(split_r[0], fr)
-    sp_a = get_bool_at_frame(split_a[0], fr)
+    sp_r = split_r.get_value(fr)
+    sp_a = split_a.get_value(fr)
 
     # Setting tangent 1
-    for chld in t1:
-        if chld.tag == "radius_path":
-            dictionary = ast.literal_eval(chld.text)
-            r1 = get_vector_at_frame(dictionary, fr)
-        elif chld.tag == "theta_path":
-            dictionary = ast.literal_eval(chld.text)
-            a1 = get_vector_at_frame(dictionary, fr)
+    r1 = t1.get_subparam("radius").get_value(fr)
+    a1 = t1.get_subparam("theta").get_value(fr)
+
     x, y = radial_to_tangent(r1, a1)
     tangent1 = Vector(x, y)
 
     # Setting tangent 2
-    for chld in t2:
-        if chld.tag == "radius_path":
-            dictionary = ast.literal_eval(chld.text)
-            r2 = get_vector_at_frame(dictionary, fr)
-            if not sp_r:
-                # Use t1's radius
-                r2 = r1
-        elif chld.tag == "theta_path":
-            dictionary = ast.literal_eval(chld.text)
-            a2 = get_vector_at_frame(dictionary, fr)
-            if not sp_a:
-                # Use t1's angle
-                a2 = a1
+    r2 = t2.get_subparam("radius").get_value(fr)
+    a2 = t2.get_subparam("theta").get_value(fr)
+
+    x, y = radial_to_tangent(r2, a2)
+    orig_tang2 = Vector(x, y)
+
+    if not sp_r:
+        # Use t1's radius
+        r2 = r1
+    if not sp_a:
+        # Use t1's angle
+        a2 = a1
+
     x, y = radial_to_tangent(r2, a2)
     tangent2 = Vector(x, y)
+
+    if sp_r and (not sp_a):
+        if tangent1.mag_squared() == 0:
+            tangent2 = orig_tang2
+
     return tangent1, tangent2
 
 
-def add(side, lottie, origin_cur):
+def add(side, lottie, origin_cur, is_rectangle=False):
     """
     Does not take care of tangent putting order because the tangents are all
     zero for now according to the code
@@ -183,7 +135,7 @@ def add(side, lottie, origin_cur):
     """
     i = 0
     while i < len(side):
-        cubic_to(side[i][0], side[i][1], side[i][2], lottie, origin_cur)
+        cubic_to(side[i][0], side[i][1], side[i][2], lottie, origin_cur, is_rectangle)
         i += 1
 
 
@@ -206,15 +158,15 @@ def add_reverse(side, lottie, origin_cur):
         i -= 1
 
 
-def cubic_to(vec, tan1, tan2, lottie, origin_cur):
+def cubic_to(vec, tan1, tan2, lottie, origin_cur, is_rectangle=False):
     """
     Will have to manipulate the tangents here, but they are not managed as tan1
     and tan2 both are zero always
 
     Args:
-        vec (misc.Vector) : position of the point
-        tan1 (misc.Vector) : tangent 1 of the point
-        tan2 (misc.Vector) : tangent 2 of the point
+        vec (common.Vector.Vector) : position of the point
+        tan1 (common.Vector.Vector) : tangent 1 of the point
+        tan2 (common.Vector.Vector) : tangent 2 of the point
         lottie (dict) : Final position and tangents will be stored here
         origin_cur (list) : value of the origin at specific frame
 
@@ -225,7 +177,7 @@ def cubic_to(vec, tan1, tan2, lottie, origin_cur):
     tan1 *= settings.PIX_PER_UNIT
     tan2 *= settings.PIX_PER_UNIT
     tan1, tan2 = convert_tangent_to_lottie(3*tan1, 3*tan2)
-    pos = change_axis(vec[0], vec[1])
+    pos = change_axis(vec[0], vec[1], not is_rectangle)
     for i in range(len(pos)):
         pos[i] += origin_cur[i]
     lottie["i"].append(tan1.get_list())
@@ -238,7 +190,7 @@ def move_to(vec, lottie, origin_cur):
     Don't have to manipulate the tangents because all of them are zero here
 
     Args:
-        vec (misc.Vector) : position of the point
+        vec (common.Vector.Vector) : position of the point
         lottie (dict) : Final position and tangents will be stored here
         origin_cur (list) : value of the origin at specific frame
 
@@ -259,12 +211,12 @@ def convert_tangent_to_lottie(t1, t2):
     Converts tangent from Synfig format to lottie format
 
     Args:
-        t1 (misc.Vector) : tangent 1 of a point
-        t2 (misc.Vector) : tangent 2 of a point
+        t1 (common.Vector.Vector) : tangent 1 of a point
+        t2 (common.Vector.Vector) : tangent 2 of a point
 
     Returns:
-        (misc.Vector) : Converted tangent 1
-        (misc.Vector) : Converted tangent 2
+        (common.Vector.Vector) : Converted tangent 1
+        (common.Vector.Vector) : Converted tangent 2
     """
     # Convert to Lottie format
     t1 /= 3
@@ -318,13 +270,13 @@ def quadratic_to_cubic(qp0, qp1, qp2):
     Converts quadratic bezier curve to cubic bezier curve
 
     Args:
-        qp0 (misc.Vector) First control point of quadratic bezier
-        qp1 (misc.Vector) Second control point of quadratic bezier
-        qp2 (misc.Vector) Third control point of quadratic bezier
+        qp0 (common.Vector.Vector) First control point of quadratic bezier
+        qp1 (common.Vector.Vector) Second control point of quadratic bezier
+        qp2 (common.Vector.Vector) Third control point of quadratic bezier
 
     Returns:
-        (misc.Vector) Second control point of Cubic bezier
-        (misc.Vector) Third control point of Cubic bezier
+        (common.Vector.Vector) Second control point of Cubic bezier
+        (common.Vector.Vector) Third control point of Cubic bezier
     """
     cp0 = qp0
     cp3 = qp2

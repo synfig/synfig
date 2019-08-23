@@ -3,11 +3,12 @@ Will store all the functions needed to export the translate layer
 """
 
 import sys
+from lxml import etree
 import copy
 import settings
+from common.Param import Param
 from helpers.transform import gen_helpers_transform
-from synfig.animation import gen_dummy_waypoint
-import synfig.group as group
+from synfig.animation import print_animation
 sys.path.append("..")
 
 
@@ -17,25 +18,25 @@ def gen_layer_translate(lottie, layer):
 
     Args:
         lottie (dict) : Transform properties in lottie format
-        layer  (lxml.etree._Element) : Transform properties in Synfig format
+        layer  (common.Layer.Layer) : Transform properties in Synfig format
 
     Returns:
         (None)
     """
 
-    for child in layer:
-        if child.tag == "param":
-            if child.attrib["name"] == "origin":
-                anchor = gen_dummy_waypoint(child, "param", "vector")
-                pos = anchor
+    origin = layer.get_param("origin")
+    origin.animate("vector")
+    pos = origin
 
-    anchor = copy.deepcopy(anchor)
-    for waypoint in anchor[0]:
-        waypoint[0][0].text = str(0)
-        waypoint[0][1].text = str(0)
-    group.update_pos(anchor)
+    st = "<param name='anchor'><vector><x>0.00</x><y>0.00</y></vector></param>"
+    anchor = etree.fromstring(st)
+    anchor = Param(anchor, layer)
+    anchor.animate("vector")
+    anchor.add_offset()
 
     if settings.INSIDE_PRECOMP:
-        group.update_pos(pos)
+        pos.add_offset()
+    anchor.animate("vector", True)
+    pos.animate("vector", True)
 
-    gen_helpers_transform(lottie, layer, pos[0], anchor[0])
+    gen_helpers_transform(lottie, pos, anchor)

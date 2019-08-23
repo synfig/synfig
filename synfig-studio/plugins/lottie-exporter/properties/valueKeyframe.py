@@ -16,8 +16,8 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
     Converts the tangents from arbitrary range to the range of 0-1
 
     Args:
-        cur_pos  (misc.Vector) : Current position in co-ordinate system
-        next_pos (misc.Vector) : Next position in co-ordinate system
+        cur_pos  (common.Vector.Vector) : Current position in co-ordinate system
+        next_pos (common.Vector.Vector) : Next position in co-ordinate system
         t_in     (dict)        : In tangent in Lottie format
         t_out    (dict)        : Out tangent in Lottie format
 
@@ -37,6 +37,12 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
         bias = 1 if random.random() < 0.5 else -1
         bias *= 1e-9
         value_scale += bias
+
+    # Trying the same for time_scale
+    if time_scale == 0.0:
+        bias = 1 if random.random() < 0.5 else -1
+        bias *= 1e-9
+        time_scale += bias
 
     time_diff = cur_pos[1] / time_scale
     value_diff = cur_pos[0] / value_scale
@@ -151,10 +157,10 @@ def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
     To set the tangents as required by the lottie format for value waypoints
 
     Args:
-        out_val   (misc.Vector)         : Tangent out value
-        in_val    (misc.Vector)         : Tangent in value
-        cur_pos   (misc.Vector)         : Current position in co-ordinate system
-        next_pos  (misc.Vector)         : Next position in co-ordinate system
+        out_val   (common.Vector.Vector)         : Tangent out value
+        in_val    (common.Vector.Vector)         : Tangent in value
+        cur_pos   (common.Vector.Vector)         : Current position in co-ordinate system
+        next_pos  (common.Vector.Vector)         : Next position in co-ordinate system
         lottie    (dict)                : bezier interval in lottie format
         animation (lxml.etree._Element) : Synfig format animation
 
