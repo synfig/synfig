@@ -116,6 +116,7 @@ WorkspaceHandler::get_workspace(const std::string& name, std::string& tpl) const
 void
 WorkspaceHandler::get_name_list(std::vector<std::string>& list)
 {
+	list.clear();
 	for(auto it = workspaces.cbegin(); it != workspaces.cend(); ++it)
 		list.push_back(it->first);
 }
