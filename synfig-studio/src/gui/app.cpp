@@ -1281,8 +1281,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "			<menuitem action='workspace-default' />"
 "			<menuitem action='workspace-compositing' />"
 "			<menuitem action='workspace-animating' />"
-"		    <separator />"
-"			<menuitem action='save-workspace' />"
 "		</menu>"
 "		<separator />"
 "		<menuitem action='dialog-flipbook'/>"
