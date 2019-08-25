@@ -2265,6 +2265,7 @@ void App::set_workspace_from_name(const string& name)
 void App::load_custom_workspaces()
 {
 	std::string filename = get_config_file("workspaces");
+	delete workspaces;
 	workspaces = new WorkspaceHandler(filename.c_str());
 	if (!workspaces)
 		return;
