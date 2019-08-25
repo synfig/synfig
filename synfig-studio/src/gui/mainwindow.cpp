@@ -393,8 +393,8 @@ MainWindow::on_custom_workspaces_changed()
 	vector<string> workspaces = App::get_workspaces();
 
 	std::string menu_items;
-	unsigned int i = 0;
-	for (auto it = workspaces.cbegin(); it != workspaces.cend(); ++it, ++i) {
+	unsigned int num_custom_workspaces = 0;
+	for (auto it = workspaces.cbegin(); it != workspaces.cend(); ++it, ++num_custom_workspaces) {
 		std::string raw = *it;
 		std::string quoted;
 		size_t pos = 0, last_pos = 0;
@@ -404,11 +404,11 @@ MainWindow::on_custom_workspaces_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		std::string action_name = strprintf("custom-workspace-%d", i);
+		std::string action_name = strprintf("custom-workspace-%d", num_custom_workspaces);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted),
-			sigc::bind(sigc::ptr_fun(&App::set_workspace_from_name), workspaces[i])
+			sigc::bind(sigc::ptr_fun(&App::set_workspace_from_name), workspaces[num_custom_workspaces])
 		);
 	}
 
@@ -424,9 +424,9 @@ MainWindow::on_custom_workspaces_changed()
 	// remove group if exists
 	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
 	ActionGroupList groups = App::ui_manager()->get_action_groups();
-	for(ActionGroupList::const_iterator i = groups.begin(); i != groups.end(); ++i)
-		if ((*i)->get_name() == action_group->get_name())
-			App::ui_manager()->remove_action_group(*i);
+	for(ActionGroupList::const_iterator it = groups.begin(); it != groups.end(); ++it)
+		if ((*it)->get_name() == action_group->get_name())
+			App::ui_manager()->remove_action_group(*it);
 	groups.clear();
 
 	App::ui_manager()->insert_action_group(action_group);
