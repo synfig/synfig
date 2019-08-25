@@ -125,12 +125,12 @@ class studio::DockSettings : public synfigapp::Settings
 public:
 	DockSettings(DockManager* dock_manager):dock_manager(dock_manager)
 	{
-		synfigapp::Main::settings().add_domain(this,"dock");
+		synfigapp::Main::settings().add_domain(this,"workspace");
 	}
 
 	virtual ~DockSettings()
 	{
-		synfigapp::Main::settings().remove_domain("dock");
+		synfigapp::Main::settings().remove_domain("workspace");
 	}
 
 	virtual bool get_value(const synfig::String& key_, synfig::String& value)const
