@@ -76,22 +76,6 @@ using namespace studio;
 	button->show()
 #endif
 
-#ifndef NORMAL_BUTTON
-#define NORMAL_BUTTON(button,stockid,tooltip)	\
-	button = manage(new class Gtk::Button());	\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
-	button->add(*icon);	\
-	button->set_tooltip_text(tooltip);	\
-	icon->set_padding(0,0);\
-	icon->show();	\
-	/*button->set_relief(Gtk::RELIEF_NONE);*/ \
-	button->show()
-#endif
-
-#define NEW_SMALL_BUTTON(x,y,z)	Gtk::Button *SMALL_BUTTON(x,y,z)
-
-#define NOT_IMPLEMENTED_SLOT sigc::mem_fun(*reinterpret_cast<studio::CanvasViewUIInterface*>(get_ui_interface().get()),&studio::CanvasViewUIInterface::not_implemented)
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -232,8 +216,6 @@ LayerTree::~LayerTree()
 void
 LayerTree::create_layer_tree()
 {
-	const LayerTreeStore::Model model;
-
 	{	// --- O N / O F F ----------------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_(" ")) );
 
@@ -342,9 +324,6 @@ LayerTree::create_param_tree()
 
 		text_cellrenderer->property_foreground()=Glib::ustring("#7f7f7f");
 		column->add_attribute(text_cellrenderer->property_foreground_set(),param_model.is_inconsistent);
-
-		// Pack the label into the column
-		//column->pack_start(param_model.label,true);
 
 		// Set up the value-node icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* valuenode_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
