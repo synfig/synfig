@@ -49,8 +49,10 @@ public:
 	/// \param[out] tpl workspace template string
 	bool get_workspace(const std::string &name, std::string &tpl) const;
 
+	/// \param[out] list List of workspace names
 	void get_name_list(std::vector<std::string>& list);
 
+	/// stores custom workspace layouts in a config file
 	void save();
 
 private:
