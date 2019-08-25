@@ -2319,10 +2319,14 @@ void App::save_custom_workspace()
 	trim_string(name);
 
 	std::string tpl = dock_manager->save_layout_to_string();
-	if (workspaces->has_workspace(name))
-		workspaces->set_workspace(name, tpl);
-	else
+	if (!workspaces->has_workspace(name))
 		workspaces->add_workspace(name, tpl);
+	else {
+		Gtk::MessageDialog confirm_dlg(dialog, _("Do you want to overwrite this workspace?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+		if (confirm_dlg.run() == Gtk::RESPONSE_CANCEL)
+			return;
+		workspaces->set_workspace(name, tpl);
+	}
 	signal_custom_workspaces_changed_();
 }
 
