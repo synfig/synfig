@@ -76,7 +76,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-MainWindow::MainWindow()
+MainWindow::MainWindow() :
+	save_workspace_merge_id(0)
 {
 	register_custom_widget_types();
 
@@ -215,6 +216,8 @@ MainWindow::init_menus()
 	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	App::ui_manager()->insert_action_group(action_group);
+
+	add_custom_workspace_menu_item_handlers();
 }
 
 void MainWindow::register_custom_widget_types()
@@ -234,6 +237,30 @@ MainWindow::toggle_show_menubar()
 		menubar->show();
 	else
 		menubar->hide();
+}
+
+void MainWindow::add_custom_workspace_menu_item_handlers()
+{
+	std::string ui_info_menu =
+			"<menu action='menu-window'>"
+			"	<menu action='menu-workspace'>"
+			"	    <separator name='sep-window2'/>"
+			"		<menuitem action='save-workspace' />"
+			"	</menu>"
+			"</menu>";
+
+	std::string ui_info =
+			"<ui>"
+			"  <popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
+			"  <menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
+			"</ui>";
+
+	save_workspace_merge_id = App::ui_manager()->add_ui_from_string(ui_info);
+}
+
+void MainWindow::remove_custom_workspace_menu_item_handlers()
+{
+	App::ui_manager()->remove_ui(save_workspace_merge_id);
 }
 
 bool
@@ -411,6 +438,10 @@ MainWindow::on_custom_workspaces_changed()
 			sigc::bind(sigc::ptr_fun(&App::set_workspace_from_name), workspaces[num_custom_workspaces])
 		);
 	}
+	if (num_custom_workspaces > 0)
+		menu_items = "<separator name='sep-window1' />" + menu_items;
+
+	remove_custom_workspace_menu_item_handlers();
 
 	std::string ui_info =
 		"<menu action='menu-window'><menu action='menu-workspace'>"
@@ -425,13 +456,17 @@ MainWindow::on_custom_workspaces_changed()
 	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
 	ActionGroupList groups = App::ui_manager()->get_action_groups();
 	for(ActionGroupList::const_iterator it = groups.begin(); it != groups.end(); ++it)
-		if ((*it)->get_name() == action_group->get_name())
+		if ((*it)->get_name() == action_group->get_name()) {
 			App::ui_manager()->remove_action_group(*it);
+			break;
+		}
 	groups.clear();
 
 	App::ui_manager()->insert_action_group(action_group);
 	App::ui_manager()->add_ui_from_string(ui_info_popup);
 	App::ui_manager()->add_ui_from_string(ui_info_menubar);
+
+	add_custom_workspace_menu_item_handlers();
 }
 
 void

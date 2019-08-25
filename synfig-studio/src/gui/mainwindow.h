@@ -64,6 +64,11 @@ namespace studio {
 		void on_dockable_unregistered(Dockable* dockable);
 		void toggle_show_menubar();
 
+		guint save_workspace_merge_id;
+
+		void add_custom_workspace_menu_item_handlers();
+		void remove_custom_workspace_menu_item_handlers();
+
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);
 
