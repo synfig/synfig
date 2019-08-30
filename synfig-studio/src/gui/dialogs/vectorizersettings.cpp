@@ -54,11 +54,10 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
- etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer, bool insideSwitch):
+ etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
 	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
 	layer_bitmap_(my_layer_bitmap),
 	reference_layer_(reference_layer),
-	inside_Switch(insideSwitch),
 	instance(selected_instance),
 	adjustment_threshold(Gtk::Adjustment::create(configmap["threshold"],1,10)),
 	entry_threshold(adjustment_threshold,1,0),
@@ -311,14 +310,12 @@ VectorizerSettings::on_convert_pressed()
 
 	// in case the "convert to vector" was clicked for layer inside a switch
 	// and pass canvas accordingly
-	if(inside_Switch)
+	
+	if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(reference_layer_))
 	{
-		if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(reference_layer_))
-		{
 			std::cout<<"image inside group layer clicked\n";
 			canvas = layer_bitmap_->get_canvas()->parent();
 			action->set_param("reference_layer",reference_layer_);
-		}
 	}
 	else
 	{

@@ -3539,11 +3539,11 @@ void App::open_img_in_external(const std::string &uri)
 
 }
 unordered_map<std::string, int> configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
-void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer, bool insideSwitch)
+void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
 {
 	String desc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+desc);
-	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,configmap,reference_layer,insideSwitch);
+	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,configmap,reference_layer);
 	App::vectorizerpopup->show();
 
 }

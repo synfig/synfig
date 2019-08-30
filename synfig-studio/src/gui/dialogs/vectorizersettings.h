@@ -93,9 +93,9 @@ class VectorizerSettings : public Gtk::Dialog
 
 public:
 
-	bool isOutline,inside_Switch;
+	bool isOutline;
 	VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer, bool insideSwitch);
+			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
 	~VectorizerSettings();
 	void set_progress(float value);
 
