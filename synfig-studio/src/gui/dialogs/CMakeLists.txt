@@ -15,4 +15,6 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/dialog_spritesheetparam.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dialog_waypoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dialog_template.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/vectorizersettings.cpp"
+
 )

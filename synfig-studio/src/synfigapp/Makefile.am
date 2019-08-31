@@ -33,7 +33,8 @@ LAYER_ACTION_HH = \
 	actions/layerresetpose.h \
 	actions/layersetdesc.h \
 	actions/layersetexcludefromrendering.h \
-	actions/layerzdepthrangeset.h
+	actions/layerzdepthrangeset.h\
+	actions/vectorization.h
 	
 
 LAYER_ACTION_CC = \
@@ -62,7 +63,8 @@ LAYER_ACTION_CC = \
 	actions/layerresetpose.cpp \
 	actions/layersetdesc.cpp \
 	actions/layersetexcludefromrendering.cpp \
-	actions/layerzdepthrangeset.cpp
+	actions/layerzdepthrangeset.cpp \
+	actions/vectorization.cpp
 
 
 VALUEDESC_ACTION_HH = \
@@ -290,11 +292,26 @@ ACTIONCC = \
 	$(VALUENODE_ACTION_CC) \
 	$(WAYPOINT_ACTION_CC)
 
+VECTORIZER_HH = \
+	vectorizer/polygonizerclasses.h \
+	vectorizer/centerlinevectorizer.h \
+	vectorizer/vectorizerparameters.h
+	
+VECTORIZER_CC = \
+	vectorizer/centerlinepolygonizer.cpp\
+	vectorizer/centerlineskeletonizer.cpp\
+	vectorizer/centerlinevectorizer.cpp\
+	vectorizer/outlinevectorizer.cpp\
+	vectorizer/centerlineadjustments.cpp\
+	vectorizer/centerlinecolors.cpp\
+	vectorizer/centerlinetostrokes.cpp
+
 
 SYNFIGAPPHH = \
 	editmode.h \
 	selectionmanager.h \
 	$(ACTIONHH) \
+	$(VECTORIZER_HH) \
 	action.h \
 	action_param.h \
 	action_system.h \
@@ -313,6 +330,7 @@ SYNFIGAPPHH = \
 
 SYNFIGAPPCC = \
 	$(ACTIONCC) \
+	$(VECTORIZER_CC) \
 	action.cpp \
 	action_param.cpp \
 	action_system.cpp \

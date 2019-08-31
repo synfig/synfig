@@ -56,7 +56,6 @@
 
 #include <synfig/savecanvas.h>
 #include <synfig/canvasfilenaming.h>
-#include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -123,6 +122,25 @@ bool Instance::is_img(synfig::String ext) const
 		bool is_in = img_ext.find(ext) != img_ext.end();
 		return is_in;
 }
+
+synfig::Layer::Handle
+Instance::layer_inside_switch(synfig::Layer_PasteCanvas::Handle &paste) const
+{
+	int count =0;
+	synfig::Layer::Handle child_layer;
+	synfig::Canvas::Handle canvas = paste->get_sub_canvas();
+	if(canvas)
+	{
+		for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+		{
+			child_layer = (*i);
+			count++;
+			if(count>1) break;
+		}
+	}
+	return child_layer;
+}
+
 
 int
 Instance::get_visible_canvases()const
@@ -1600,7 +1618,6 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const st
 		make_param_menu(menu,canvas,value_desc, 0.f, false);
 }
 
-// this one is useful for me
 void
 Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handle &value_node) const
 {	//check for null value
@@ -1642,27 +1659,38 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 	int count =0; //will be used to count layers in the group
 
 	synfig::Layer::Handle layerfinal,child_layer;
-
-	//check if the layer is group layer
+ 	//insideSwitch = false;
+	
+	//check if the layer is switch layer
 	if (etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer)) 
-	{
-		synfig::Canvas::Handle canvas = paste->get_sub_canvas();
-			if(canvas)
-			{
-				for(IndependentContext i = canvas->get_independent_context(); *i; i++)
-				{
-					child_layer = (*i);
-					count++;
-					if(count>1) break;
-				}
-			}
+	{	
+		child_layer = layer_inside_switch(paste);
+		// reference_layer = layer;
+		// synfig::Canvas::Handle canvas = paste->get_sub_canvas();
+		// 	if(canvas)
+		// 	{
+		// 		insideSwitch = true;
+		// 		for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+		// 		{
+		// 			child_layer = (*i);
+		// 			count++;
+		// 			if(count>1) break;
+		// 		}
+		// 	}
 	}
 	
 	FileSystem::Handle file_system = layer->get_canvas()->get_file_system();
 	if (!file_system) return;
 
 	//if yes then the layer inside group should be processed not the group!
-	(count==1)? layerfinal = child_layer: layerfinal=layer;
+	if(etl::handle<Layer_Bitmap> test = etl::handle<Layer_Bitmap>::cast_dynamic(child_layer))
+	{
+		layerfinal = child_layer;
+	}
+	else
+	{
+		layerfinal = layer;
+	}
 
 	ParamVocab vocab = layerfinal->get_param_vocab();
 	for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
@@ -1771,6 +1799,33 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 			menu->append(*item);	
 		}
 	}
+	if(layers.size()==1)
+	{
+		if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layers.front()))
+		{
+				std::cout<<"layer bitmap only\n";
+				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
+				item2->set_label( (String(_("Convert to Vector"))).c_str() );
+				item2->signal_activate().connect(
+					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
+				item2->show();
+				menu->append(*item2);
+		}
+		else if(etl::handle<Layer_PasteCanvas> reference_layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(layers.front()))
+		{
+			//the layer selected is a switch group
+			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
+			{
+				std::cout<<"layer bitmap + reference\n";
+				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
+				item2->set_label( (String(_("Convert to Vector menu"))).c_str() );
+				item2->signal_activate().connect(
+					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
+				item2->show();
+				menu->append(*item2);
+			} 
+		}
+	}
 }
 
 // called whenever we right click any layer under layers panel
@@ -1793,7 +1848,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 					action_name,
 					Gtk::Stock::OPEN,
 					local_name, local_name ),
-				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) );
+				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) ); 
 			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
 		}
 		else
@@ -1806,6 +1861,38 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 					local_name, local_name ),
 				sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
 			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+		}
+	}
+	if(layers.size()==1)
+	{
+		String local_name2 = String(_("Convert to Vector"));
+		String action_name2 = etl::strprintf("special-action-open-file-vectorizer-%d",index);
+		if(etl::handle<Layer_PasteCanvas> reference_layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(layers.front()))
+		{
+			//the layer selected is a switch group
+			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
+			{
+				action_group->add(
+			 	Gtk::Action::create(
+			 		action_name2,
+			 		Gtk::Stock::CONVERT,
+			 		local_name2, local_name2 ),
+			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
+				 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
+
+			} 
+		}
+		if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layers.front()))
+		{
+				action_group->add(
+			 	Gtk::Action::create(
+			 		action_name2,
+			 		Gtk::Stock::CONVERT,
+			 		local_name2, local_name2 ),
+			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
+				 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
+
+
 		}
 	}
 }

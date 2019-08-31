@@ -95,6 +95,7 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
 #include "dialogs/dialog_setup.h"
+#include "dialogs/vectorizersettings.h"
 #include "onemoment.h"
 #include "devicetracker.h"
 #include "widgets/widget_enum.h"
@@ -268,6 +269,7 @@ studio::Dialog_Gradient    *studio::App::dialog_gradient;
 studio::Dialog_Color       *studio::App::dialog_color;
 studio::Dialog_Input       *studio::App::dialog_input;
 studio::Dialog_ToolOptions *studio::App::dialog_tool_options;
+studio::VectorizerSettings *studio::App::vectorizerpopup;
 
 studio::Dock_History       *dock_history;
 studio::Dock_Canvases      *dock_canvases;
@@ -2319,6 +2321,7 @@ App::apply_gtk_settings()
 	data += ".button > GtkLabel                 { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += "GtkComboBox > .button > GtkBox > * { padding-top: 0px; padding-bottom: 0px; }\n";
 	data += ".entry                             { padding-top: 0px; padding-bottom: 0px; }\n";
+	data += "progress, trough 					{ min-height: 20px; }\n";
 #if GTKMM_MAJOR_VERSION < 3 || (GTKMM_MAJOR_VERSION == 3 && GTKMM_MINOR_VERSION < 22)
 	// following css works in old versions of gtk
 	data += "button { padding: 0px; }\n";
@@ -3533,6 +3536,15 @@ void App::open_img_in_external(const std::string &uri)
 		dialog.set_title(_("Error"));
 		dialog.run();
 	}
+
+}
+unordered_map<std::string, int> configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
+void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
+{
+	String desc = my_layer_bitmap->get_description();
+	synfig::info("Opening Vectorizerpopup for :"+desc);
+	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,configmap,reference_layer);
+	App::vectorizerpopup->show();
 
 }
 void App::open_uri(const std::string &uri)
