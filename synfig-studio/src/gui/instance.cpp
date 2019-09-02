@@ -56,7 +56,7 @@
 
 #include <synfig/savecanvas.h>
 #include <synfig/canvasfilenaming.h>
-#include <synfig/layers/layer_bitmap.h>
+#include <synfig/layers/layer_switch.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_duplicate.h>
@@ -126,16 +126,21 @@ bool Instance::is_img(synfig::String ext) const
 synfig::Layer::Handle
 Instance::layer_inside_switch(synfig::Layer_PasteCanvas::Handle &paste) const
 {
-	int count =0;
 	synfig::Layer::Handle child_layer;
 	synfig::Canvas::Handle canvas = paste->get_sub_canvas();
+	synfig::String active_layer = "";
+	if(etl::handle<Layer_Switch> l_switch = etl::handle<Layer_Switch>::cast_dynamic(paste))
+	{
+		active_layer = l_switch->get_param("layer_name").get(synfig::String());
+	}
 	if(canvas)
 	{
 		for(IndependentContext i = canvas->get_independent_context(); *i; i++)
 		{
-			child_layer = (*i);
-			count++;
-			if(count>1) break;
+			if((*i)->get_description()==active_layer)
+			{
+				child_layer = (*i);
+			}
 		}
 	}
 	return child_layer;
