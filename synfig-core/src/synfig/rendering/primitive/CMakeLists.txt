@@ -1,5 +1,6 @@
 target_sources(synfig
     PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/bend.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/contour.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/intersector.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/mesh.cpp"

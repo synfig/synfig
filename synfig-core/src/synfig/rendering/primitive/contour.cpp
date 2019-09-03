@@ -279,6 +279,9 @@ Contour::Contour():
 	winding_style(WINDING_NON_ZERO)
 	{ }
 
+Contour::~Contour()
+	{ }
+
 void
 Contour::touch_chunks()
 {
@@ -331,7 +334,8 @@ Contour::line_to(const Vector &v)
 void
 Contour::conic_to(const Vector &v, const Vector &pp0)
 {
-	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1)) {
+	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
+	if (!v.is_equal_to(prev) && !pp0.is_equal_to(prev)) {
 		chunks.push_back(Chunk(CONIC, v, pp0));
 		touch_chunks();
 	}
@@ -340,7 +344,8 @@ Contour::conic_to(const Vector &v, const Vector &pp0)
 void
 Contour::cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1)
 {
-	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1)) {
+	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
+	if (!v.is_equal_to(prev) && !pp0.is_equal_to(prev) && !pp1.is_equal_to(prev)) {
 		chunks.push_back(Chunk(CUBIC, v, pp0, pp1));
 		touch_chunks();
 	}

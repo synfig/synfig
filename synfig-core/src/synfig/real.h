@@ -70,7 +70,7 @@ inline bool approximate_zero_custom(const T &a, const T &precision)
 	{ return approximate_equal_custom(a, T(), precision); }
 template<typename T>
 inline bool approximate_not_zero_custom(const T &a, const T &precision)
-	{ return !approximate_not_zero_custom(a, precision); }
+	{ return !approximate_zero_custom(a, precision); }
 template<typename T>
 inline bool approximate_less_custom(const T &a, const T &b, const T &precision)
 	{ return a < b && b - a >= precision; }

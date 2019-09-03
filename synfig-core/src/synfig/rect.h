@@ -42,6 +42,11 @@
 
 namespace synfig {
 
+
+typedef etl::range<int> RangeInt;
+typedef etl::range<Real> Range;
+
+
 class RectInt : public etl::rect<int>
 {
 public:

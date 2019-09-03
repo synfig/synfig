@@ -119,9 +119,13 @@ public:
 	Color color;
 
 	Contour();
+	~Contour();
 
 	inline bool closed() const
 		{ return (int)chunks.size() <= first; }
+	
+	void reserve(size_t size)
+		{ chunks.reserve(size); }
 	
 	void clear();
 	void move_to(const Vector &v);

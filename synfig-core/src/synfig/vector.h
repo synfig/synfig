@@ -278,7 +278,7 @@ public:
 
 	//! Returns a normalized version of the vector
 	Vector norm()const
-		{ return (*this)*inv_mag(); }
+		{ return is_equal_to(Vector()) ? Vector() : (*this)*inv_mag(); }
 
 	//! Returns a perpendicular version of the vector
 	Vector perp()const

@@ -74,6 +74,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/canvasfilenaming.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/token.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/threadpool.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/curve.cpp"
 )
 
 ## these were added seprately in autotools build, preserving this for now

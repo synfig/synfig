@@ -1,4 +1,5 @@
 RENDERING_PRIMITIVE_HH = \
+	rendering/primitive/bend.h \
 	rendering/primitive/blur.h \
 	rendering/primitive/contour.h \
 	rendering/primitive/intersector.h \
@@ -8,6 +9,7 @@ RENDERING_PRIMITIVE_HH = \
 	rendering/primitive/transformationaffine.h
 
 RENDERING_PRIMITIVE_CC = \
+	rendering/primitive/bend.cpp \
 	rendering/primitive/contour.cpp \
 	rendering/primitive/mesh.cpp \
 	rendering/primitive/intersector.cpp \

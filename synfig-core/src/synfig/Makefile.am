@@ -95,6 +95,7 @@ SYNFIGHEADERS = \
 	canvas.h \
 	color.h \
 	context.h \
+	curve.h \
 	curve_helper.h \
 	curveset.h \
 	distance.h \
@@ -151,6 +152,7 @@ SYNFIGSOURCES = \
 	cairo_renddesc.cpp \
 	canvas.cpp \
 	context.cpp \
+	curve.cpp \
 	curve_helper.cpp \
 	curveset.cpp \
 	distance.cpp \
