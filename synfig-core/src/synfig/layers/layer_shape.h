@@ -83,7 +83,9 @@ public:
 	~Layer_Shape();
 
 protected:
-	//! Clears out any data. Also clears out the Intersector
+	rendering::Contour& shape_contour()
+		{ return *contour; }
+	
 	void clear();
 	void move_to(Real x, Real y);
 	void line_to(Real x, Real y);
