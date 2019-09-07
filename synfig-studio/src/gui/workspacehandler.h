@@ -28,6 +28,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <sigc++/signal.h>
 
 namespace studio {
 
@@ -59,9 +60,12 @@ public:
 	/// stores custom workspace layouts in a config file
 	bool save(const std::string& filename);
 
+	sigc::signal<void> & signal_list_changed();
+
 private:
 	std::map<std::string, std::string> workspaces;
 
+	sigc::signal<void> signal_list_changed_;
 };
 
 }

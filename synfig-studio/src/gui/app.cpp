@@ -1703,6 +1703,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		studio_init_cb.task(_("Loading Custom Workspace List..."));
 		workspaces = new WorkspaceHandler();
+		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
 		load_custom_workspaces();
 
 		studio_init_cb.task(_("Init auto recovery..."));
@@ -2271,7 +2272,6 @@ void App::load_custom_workspaces()
 	workspaces->clear();
 	std::string filename = get_config_file("workspaces");
 	workspaces->load(filename);
-	signal_custom_workspaces_changed_();
 }
 
 static void trim_string(std::string &text)
@@ -2330,7 +2330,6 @@ void App::save_custom_workspace()
 			return;
 		workspaces->set_workspace(name, tpl);
 	}
-	signal_custom_workspaces_changed_();
 }
 
 void
