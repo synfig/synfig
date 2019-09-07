@@ -65,6 +65,7 @@ namespace studio {
 		void toggle_show_menubar();
 
 		guint save_workspace_merge_id;
+		guint custom_workspaces_merge_id;
 
 		void add_custom_workspace_menu_item_handlers();
 		void remove_custom_workspace_menu_item_handlers();

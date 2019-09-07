@@ -95,6 +95,7 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
 #include "dialogs/dialog_setup.h"
+#include "dialogs/dialog_workspaces.h"
 #include "dialogs/vectorizersettings.h"
 #include "onemoment.h"
 #include "devicetracker.h"
@@ -2330,6 +2331,17 @@ void App::save_custom_workspace()
 			return;
 		workspaces->set_workspace(name, tpl);
 	}
+}
+
+void App::edit_custom_workspace_list()
+{
+	Dialog_Workspaces * dlg = Dialog_Workspaces::create(*App::main_window);
+	if (!dlg) {
+		synfig::warning("Can't load Dialog_Workspaces");
+		return;
+	}
+	dlg->run();
+	delete dlg;
 }
 
 void

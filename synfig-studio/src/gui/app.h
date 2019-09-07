@@ -256,6 +256,8 @@ public:
 
 	static Dock_Info* dock_info_; //For Render ProgressBar
 
+	static WorkspaceHandler * get_workspace_handler() {return workspaces;}
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -348,6 +350,7 @@ public:
 	static void set_workspace_from_name(const std::string &name);
 	static void load_custom_workspaces();
 	static void save_custom_workspace();
+	static void edit_custom_workspace_list();
 	static void restore_default_settings();
 	static void apply_gtk_settings();
 

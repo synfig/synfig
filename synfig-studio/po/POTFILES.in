@@ -7,6 +7,7 @@ plugins/lottie-exporter/plugin.xml.in
 plugins/view-unhide-all-layers/plugin.xml.in
 ui/canvas_options.ui
 ui/preview_options.ui
+ui/dialog_workspaces.ui
 src/brushlib/brushsettings.py
 src/gui/actionmanagers/groupactionmanager.cpp
 src/gui/actionmanagers/groupactionmanager.h
@@ -49,6 +50,8 @@ src/gui/dialogs/dialog_template.cpp
 src/gui/dialogs/dialog_template.h
 src/gui/dialogs/dialog_waypoint.cpp
 src/gui/dialogs/dialog_waypoint.h
+src/gui/dialogs/dialog_workspaces.cpp
+src/gui/dialogs/dialog_workspaces.h
 src/gui/dials/framedial.cpp
 src/gui/dials/framedial.h
 src/gui/dials/jackdial.cpp
