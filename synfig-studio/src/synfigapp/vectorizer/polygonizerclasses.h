@@ -26,7 +26,6 @@
 /* === H E A D E R S ======================================================= */
 #include <synfig/vector.h>
 #include "centerlinevectorizer.h"
-#include "modules/mod_geometry/outline.h"
 
 /* === M A C R O S ========================================================= */
 

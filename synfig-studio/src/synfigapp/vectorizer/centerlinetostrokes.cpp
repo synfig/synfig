@@ -23,7 +23,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include "polygonizerclasses.h"
-#include "modules/mod_geometry/outline.h"
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/blinepoint.h>
 #include <synfig/layer.h>
