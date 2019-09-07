@@ -37,11 +37,8 @@
 
 using namespace studio;
 
-WorkspaceHandler::WorkspaceHandler(const char *filename)
-	: filename(filename)
+WorkspaceHandler::WorkspaceHandler()
 {
-	if (!this->filename.empty())
-		load();
 }
 
 static void
@@ -88,6 +85,9 @@ void
 WorkspaceHandler::remove_workspace(const std::string& name)
 {
 	workspaces.erase(name);
+void WorkspaceHandler::clear()
+{
+	workspaces.clear();
 }
 
 bool
@@ -121,24 +121,23 @@ WorkspaceHandler::get_name_list(std::vector<std::string>& list)
 		list.push_back(it->first);
 }
 
-void
-WorkspaceHandler::save()
+bool
+WorkspaceHandler::save(const std::string& filename)
 {
 	std::ofstream ofs(filename);
 	if (!ofs) {
 		synfig::error(_("Can't save custom workspaces"));
-		return;
+		return false;
 	}
 	for (auto it = workspaces.begin(); it != workspaces.end(); ++it)
 		ofs << it->first << "=" << it->second << std::endl;
 	ofs.close();
+	return true;
 }
 
 void
-WorkspaceHandler::load()
+WorkspaceHandler::load(const std::string& filename)
 {
-	workspaces.clear();
-
 	std::ifstream ifs(filename);
 	std::string line;
 	while (ifs && !ifs.eof()) {

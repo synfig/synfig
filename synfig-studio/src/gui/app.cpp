@@ -1704,6 +1704,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 
 		studio_init_cb.task(_("Loading Custom Workspace List..."));
+		workspaces = new WorkspaceHandler();
 		load_custom_workspaces();
 
 		studio_init_cb.task(_("Init auto recovery..."));
@@ -1917,7 +1918,6 @@ App::~App()
 
 	delete dock_manager;
 
-	workspaces->save();
 	delete workspaces;
 
 	instance_list.clear();
@@ -2074,6 +2074,10 @@ App::save_settings()
 		std::string filename=get_config_file("settings-1.3");
 		synfigapp::Main::settings().save_to_file(filename);
 
+		{
+			std::string filename = get_config_file("workspaces");
+			workspaces->save(filename);
+		}
 	}
 	catch(...)
 	{
@@ -2264,11 +2268,9 @@ void App::set_workspace_from_name(const string& name)
 
 void App::load_custom_workspaces()
 {
+	workspaces->clear();
 	std::string filename = get_config_file("workspaces");
-	delete workspaces;
-	workspaces = new WorkspaceHandler(filename.c_str());
-	if (!workspaces)
-		return;
+	workspaces->load(filename);
 	signal_custom_workspaces_changed_();
 }
 

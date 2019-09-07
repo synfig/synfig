@@ -35,7 +35,7 @@ namespace studio {
 class WorkspaceHandler
 {
 public:
-	WorkspaceHandler(const char *filename);
+	WorkspaceHandler();
 
 	static bool is_valid_name(const std::string &name);
 
@@ -43,6 +43,8 @@ public:
 	/// \param[in] tpl workspace template string
 	bool add_workspace(const std::string &name, const std::string &tpl);
 	void remove_workspace(const std::string &name);
+	/// remove all workspaces layout
+	void clear();
 
 	/// \param[in] tpl workspace template string
 	bool set_workspace(const std::string &name, const std::string &tpl);
@@ -52,14 +54,14 @@ public:
 	/// \param[out] list List of workspace names
 	void get_name_list(std::vector<std::string>& list);
 
+	/// load custom workspace layouts from a config file
+	void load(const std::string& filename);
 	/// stores custom workspace layouts in a config file
-	void save();
+	bool save(const std::string& filename);
 
 private:
 	std::map<std::string, std::string> workspaces;
 
-	std::string filename;
-	void load();
 };
 
 }
