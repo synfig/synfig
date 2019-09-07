@@ -41,8 +41,8 @@ WorkspaceHandler::WorkspaceHandler()
 {
 }
 
-static void
-trim_string(std::string &text)
+void
+WorkspaceHandler::trim_string(std::string &text)
 {
 	text.erase(text.begin(),
 			   std::find_if(text.begin(), text.end(),
