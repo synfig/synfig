@@ -186,7 +186,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
 		sigc::ptr_fun(App::set_workspace_default)
 	);
-	action_group->add( Gtk::Action::create("save-workspace", _("Save workspace...")),
+	action_group->add( Gtk::Action::create("save-workspace", Gtk::StockID("synfig-save_as"), _("Save workspace...")),
 		sigc::ptr_fun(App::save_custom_workspace)
 	);
 
