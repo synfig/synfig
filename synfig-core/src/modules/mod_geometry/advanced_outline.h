@@ -28,11 +28,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <list>
-#include <vector>
-#include <synfig/layers/layer_polygon.h>
-#include <synfig/segment.h>
-#include <synfig/value.h>
+#include <synfig/layers/layer_shape.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -40,70 +36,57 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace synfig;
-using namespace std;
-using namespace etl;
-
-class Advanced_Outline : public synfig::Layer_Polygon
+class Advanced_Outline : public synfig::Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
 	//! Parameter: type list of BlinePoint
-	ValueBase param_bline;
+	synfig::ValueBase param_bline;
 	//! Parameter: type list of WidthPoint
-	ValueBase param_wplist;
+	synfig::ValueBase param_wplist;
 	//! Parameter: type list of DashItem
-	ValueBase param_dilist;
+	synfig::ValueBase param_dilist;
 	//! Parameter: (WidthPoint::SideType)
-	ValueBase param_start_tip;
+	synfig::ValueBase param_start_tip;
 	//! Parameter: (WidthPoint::SideType)
-	ValueBase param_end_tip;
+	synfig::ValueBase param_end_tip;
 	//! Parameter: (int)
-	ValueBase param_cusp_type;
+	synfig::ValueBase param_cusp_type;
 	//! Parameter: (Real)
-	ValueBase param_width;
+	synfig::ValueBase param_width;
 	//! Parameter: (Real)
-	ValueBase param_expand;
+	synfig::ValueBase param_expand;
 	//! Parameter: (Real)
-	ValueBase param_smoothness;
+	synfig::ValueBase param_smoothness;
 	//! Parameter: (bool)
-	ValueBase param_homogeneous;
+	synfig::ValueBase param_homogeneous;
 	//! Parameter: (Real)
-	ValueBase param_dash_offset;
+	synfig::ValueBase param_dash_offset;
 	//! Parameter: (bool)
-	ValueBase param_dash_enabled;
-	//! Parameter: (bool)
-	ValueBase param_fast;
-
-	bool old_version;
+	synfig::ValueBase param_dash_enabled;
 
 public:
 	enum CuspType
 	{
-		TYPE_SHARP     =0,
-		TYPE_ROUNDED   =1,
-		TYPE_BEVEL     =2
+		TYPE_SHARP     = 0,
+		TYPE_ROUNDED   = 1,
+		TYPE_BEVEL     = 2
 	};
 
 	Advanced_Outline();
+	~Advanced_Outline();
 
-	virtual bool set_shape_param(const String & param, const synfig::ValueBase &value);
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_shape_param(const synfig::String &param, const synfig::ValueBase &value);
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 	virtual Vocab get_param_vocab()const;
-	virtual bool set_version(const synfig::String &ver);
 
 	//! Connects the parameter to another Value Node. Implementation for this layer
-	virtual bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x );
+	virtual bool connect_dynamic_param(const synfig::String& param, etl::loose_handle<synfig::ValueNode> x );
 
 private:
-	bool connect_bline_to_wplist(etl::loose_handle<ValueNode> x);
-	bool connect_bline_to_dilist(etl::loose_handle<ValueNode> x);
-	Real bline_to_bezier(Real bline_pos, Real origin, Real bezier_size);
-	Real bezier_to_bline(Real bezier_pos, Real origin, Real bezier_size);
-	void add_tip(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector tangent, const WidthPoint wp, const Real gv);
-	void add_cusp(std::vector<Point> &side_a, std::vector<Point> &side_b, const Point vertex, const Vector curr, const Vector last, Real width);
-
+	bool connect_bline_to_wplist(etl::loose_handle<synfig::ValueNode> x);
+	bool connect_bline_to_dilist(etl::loose_handle<synfig::ValueNode> x);
+	
 protected:
 	virtual void sync_vfunc();
 };

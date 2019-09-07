@@ -118,7 +118,7 @@ synfig::widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& next, c
 	// p(0)= 0    p(1)= 1
 	// p'(0)= 0   p'(1)= 0
 	// p''(0)= 0  p''(1)= 0
-	// It is: p(q) = 6*q^5-15*q^4+10*q^3 = q*q*q*(10+q*(6*q-15)
+	// It is: p(q) = 6*q^5 - 15*q^4 + 10*q^3 = q*q*q*(10+q*(6*q-15)
 	WidthPoint::SideType side_int(WidthPoint::TYPE_INTERPOLATE);
 	int nsb, nsa, psb, psa;
 	Real pp, np;

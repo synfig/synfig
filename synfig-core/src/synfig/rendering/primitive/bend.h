@@ -55,17 +55,9 @@ public:
 	enum Mode
 	{
 		NONE   = 0,
-		ROUND  = 1,
-		CORNER = 2
-	};
-	enum {
-	    MODE_END = 3
-	};
-
-	enum Hint
-	{
-		HINT_NORM_TANGENTS  = 1 << 0,
-		HINT_SCALE_TANGENTS = 2 << 1,
+		FLAT   = 1,
+		ROUND  = 2,
+		CORNER = 3
 	};
 	
 	typedef unsigned int Hints;
@@ -74,7 +66,6 @@ public:
 	public:
 		Vector p;
 		Vector t0, t1;
-		Vector tn0, tn1;
 		Mode mode;
 		bool e0, e1;
 		Real l;
@@ -100,11 +91,12 @@ public:
 	Real length1() const
 		{ return points.empty() ? Real() : points.back().length; }
 	
-	PointList::const_iterator find(const Real &length) const;
-	const Point* find_exact(const Real &length) const;
-	Point interpolate(const Real &length) const;
+	PointList::const_iterator find_by_l(Real l) const;
+	PointList::const_iterator find(Real length) const;
+	Real length_by_l(Real length) const;
+	Point interpolate(Real length) const;
 	
-	void bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments, Hints hints = 0) const;
+	void bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments) const;
 };
 
 } /* end namespace rendering */

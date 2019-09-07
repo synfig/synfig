@@ -302,29 +302,26 @@ Contour::clear()
 void
 Contour::move_to(const Vector &v)
 {
-	if (chunks.empty()) {
-		first = (int)chunks.size();
+	if (closed()) {
 		chunks.push_back(Chunk(MOVE, v));
 		touch_chunks();
 	} else
 	if (!v.is_equal_to(chunks.back().p1)) {
 		if (chunks.back().type == MOVE) {
 			chunks.back().p1 = v;
-		} else
-		if (chunks.back().type == CLOSE) {
-			chunks.push_back(Chunk(MOVE, v));
+			touch_chunks();
 		} else {
-			chunks.push_back(Chunk(CLOSE, chunks[first].p1));
-			chunks.push_back(Chunk(MOVE, v));
+			close();
+			move_to(v);
 		}
-		first = (int)chunks.size();
-		touch_chunks();
 	}
 }
 
 void
 Contour::line_to(const Vector &v)
 {
+	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
+	if (closed()) move_to(prev);
 	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1)) {
 		chunks.push_back(Chunk(LINE, v));
 		touch_chunks();
@@ -335,7 +332,8 @@ void
 Contour::conic_to(const Vector &v, const Vector &pp0)
 {
 	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
-	if (!v.is_equal_to(prev) && !pp0.is_equal_to(prev)) {
+	if (closed()) move_to(prev);
+	if (!v.is_equal_to(prev)) {
 		chunks.push_back(Chunk(CONIC, v, pp0));
 		touch_chunks();
 	}
@@ -345,7 +343,10 @@ void
 Contour::cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1)
 {
 	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
-	if (!v.is_equal_to(prev) && !pp0.is_equal_to(prev) && !pp1.is_equal_to(prev)) {
+	if (closed()) move_to(prev);
+	if ( !v.is_equal_to(prev)
+	  || (!pp0.is_equal_to(pp1) && !pp0.is_equal_to(prev) && !pp1.is_equal_to(prev)) )
+	{
 		chunks.push_back(Chunk(CUBIC, v, pp0, pp1));
 		touch_chunks();
 	}
@@ -611,4 +612,21 @@ bool
 Contour::is_inside(const Point &p, WindingStyle winding_style, bool invert) const
 	{ return check_is_inside(get_intersector().intersect(p), winding_style, invert); }
 
+void
+Contour::close_mirrored(const Matrix &transform)
+{
+	if (int count = (int)chunks.size() - first)
+	{
+		chunks.reserve(count + 1);
+		for(ChunkList::const_reverse_iterator ri1 = chunks.rbegin(), rend = ri1 + count, ri0 = ri1++; ri1 != rend; ri0 = ri1++)
+			add_chunk( Chunk(
+				ri0->type,
+				transform.get_transformed(ri1->p1),
+				transform.get_transformed(ri0->pp1),
+				transform.get_transformed(ri0->pp0) ));
+		close();
+	}
+}
+	
 /* === E N T R Y P O I N T ================================================= */
+

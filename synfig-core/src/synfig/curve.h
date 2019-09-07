@@ -83,26 +83,14 @@ public:
 	Real t(int index, Real l) const
 		{ return t(l, p0[index], p1[index], t0[index], t1[index]); }
 	
-	Vector d(Real l, Real dl) const {
-		if (l < dl) return d0(dl);
-		if (l > 1 - dl) return d1(dl);
-		Real hdl = 0.5*dl;
-		return (p(l + hdl) - p(l - hdl)).norm();
+	Vector d(Real l) const {
+		const Real precision = real_precision<Real>();
+		Vector tangent = t(l);
+		Real magsqr = tangent.mag_squared();
+		if (precision*precision < magsqr) return tangent/sqrt(magsqr);
+		return (p(l + curve_diff_step()) - p(l - curve_diff_step())).norm();
 	}
-	Vector d0(Real dl) const
-		{ return (p(dl) - p0).norm(); }
-	Vector d1(Real dl) const
-		{ return (p1 - p(1 - dl)).norm(); }
 
-	static Real diff_step()
-		{ return curve_diff_step(); }
-	Vector d(Real l) const
-		{ return d(l, diff_step()); }
-	Vector d0() const
-		{ return d0(diff_step()); }
-	Vector d1() const
-		{ return d1(diff_step()); }
-	
 	Vector pp0() const { return p0 + t0/3; }
 	Vector pp1() const { return p1 - t1/3; }
 	
@@ -149,6 +137,9 @@ public:
 		return Rect(x.min, y.min, x.max, y.max);
 	}
 
+	int inflection(int index, Real *l) const
+		{ return inflection(l, p0[index], p1[index], t0[index], t1[index]); }
+
 	int intersections(int index, Real *l, Real x) const
 		{ return intersections(l, x, p0[index], p1[index], t0[index], t1[index]); }
 	
@@ -182,6 +173,7 @@ public:
 			t(l, p0[1], p1[1], t0[1], t1[1]) );
 	}
 	
+	static int inflection(Real *l, Real p0, Real p1, Real t0, Real t1);
 	static int bends(Real *l, Real p0, Real p1, Real t0, Real t1);
 	static int intersections(Real *l, Real p, Real p0, Real p1, Real t0, Real t1);
 	static Range bounds_accurate(Real p0, Real p1, Real t0, Real t1);
@@ -223,26 +215,14 @@ public:
 	Real t(int index, Real l) const
 		{ return t(l, p0[index], p1[index], pp0[index], pp1[index]); }
 	
-	Vector d(Real l, Real dl) const {
-		if (l < dl) return d0(dl);
-		if (l > 1 - dl) return d1(dl);
-		Real hdl = 0.5*dl;
-		return (p(l + hdl) - p(l - hdl)).norm();
+	Vector d(Real l) const {
+		const Real precision = real_precision<Real>();
+		Vector tangent = t(l);
+		Real magsqr = tangent.mag_squared();
+		if (precision*precision < magsqr) return tangent/sqrt(magsqr);
+		return (p(l + curve_diff_step()) - p(l - curve_diff_step())).norm();
 	}
-	Vector d0(Real dl) const
-		{ return (p(dl) - p0).norm(); }
-	Vector d1(Real dl) const
-		{ return (p1 - p(1 - dl)).norm(); }
 
-	static Real diff_step()
-		{ return curve_diff_step(); }
-	Vector d(Real l) const
-		{ return d(l, diff_step()); }
-	Vector d0() const
-		{ return d0(diff_step()); }
-	Vector d1() const
-		{ return d1(diff_step()); }
-	
 	Vector t0() const { return (pp0 - p0)*3; }
 	Vector t1() const { return (p1 - pp1)*3; }
 	
@@ -259,7 +239,7 @@ public:
 		Vector b1 =  a1*ll +  a2*l;
 		Vector c  =  b0*ll +  b1*l;
 		if (a) {
-			a->p0  = b->p0;
+			a->p0  = p0;
 			a->pp0 = a0;
 			a->pp1 = b0;
 			a->p1  = c;
@@ -268,7 +248,7 @@ public:
 			b->p0  = c;
 			b->pp0 = b1;
 			b->pp1 = a2;
-			b->p1  = b->p1;
+			b->p1  = p1;
 		}
 	}
 	
@@ -302,6 +282,9 @@ public:
 		Range y = bounds_accurate(1);
 		return Rect(x.min, y.min, x.max, y.max);
 	}
+
+	int inflection(int index, Real *l) const
+		{ return inflection(l, p0[index], p1[index], pp0[index], pp1[index]); }
 
 	int intersections(int index, Real *l, Real x) const
 		{ return intersections(l, x, p0[index], p1[index], pp0[index], pp1[index]); }
@@ -342,6 +325,7 @@ public:
 			t(l, p0[1], p1[1], pp0[1], pp1[1]) );
 	}
 	
+	static int inflection(Real *l, Real p0, Real p1, Real pp0, Real pp1);
 	static int bends(Real *l, Real p0, Real p1, Real pp0, Real pp1);
 	static int intersections(Real *l, Real p, Real p0, Real p1, Real pp0, Real pp1);
 	static Range bounds_accurate(Real p0, Real p1, Real pp0, Real pp1);

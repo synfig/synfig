@@ -40,6 +40,7 @@
 
 #ifndef USE_CF_BUNDLES
 #include <ltdl.h>
+#include <dlfcn.h>
 #endif
 
 #endif
@@ -140,7 +141,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(!module)
 	{
-		if(callback)callback->warning(strprintf(_("Unable to find module \"%s\" (%s)"),module_name.c_str(),lt_dlerror()));
+		if(callback)callback->warning(strprintf(_("Unable to find module \"%s\" (%s/%s)"), module_name.c_str(), lt_dlerror(), dlerror()));
 		return false;
 	}
 

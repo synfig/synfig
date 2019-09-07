@@ -124,7 +124,7 @@ synfig::solve_equation(Real* roots, Real k0, Real k1, Real k2, Real k3)
 		if (roots) {
 			Real ph = asinh( fabs(R)/sqrt(-Q3) )/3;
 			Real sign = approximate_zero(R) ? 0 : R < 0 ? -1 : 1;
-			roots[0] = -2*sign*sqrt(-Q)*cosh(ph) - a/3;
+			roots[0] = -2*sign*sqrt(-Q)*sinh(ph) - a/3;
 		}
 		return 1;
 	}
@@ -136,12 +136,27 @@ synfig::solve_equation(Real* roots, Real k0, Real k1, Real k2, Real k3)
 
 // Hermite
 
+int Hermite::inflection(Real *l, Real p0, Real p1, Real t0, Real t1) {
+	Real root;
+	if (solve_equation(
+		&root,
+		-3*p0 + 3*p1 - 2*t0 -   t1,
+		 6*p0 - 6*p1 + 3*t0 + 3*t1 ))
+	{
+		if (approximate_less(Real(0), root) && approximate_less(root, Real(1))) {
+			if (l) *l = root;
+			return 1;
+		}
+	}
+	return 0;
+}
+
 int Hermite::bends(Real *l, Real p0, Real p1, Real t0, Real t1) {
 	Real roots[2];
 	int count = solve_equation(
 		roots,
-		   p0 +          t0       ,
-		-6*p0 + 6*p1 - 4*t0 + 2*t1,
+		                 t0       ,
+		-6*p0 + 6*p1 - 4*t0 - 2*t1,
 		 6*p0 - 6*p1 + 3*t0 + 3*t1 );
 	int valid_count = 0;	
 	for(Real *i = roots, *end = i + count; i != end; ++i)
@@ -182,12 +197,27 @@ int Hermite::intersections(Real *l, Real p, Real p0, Real p1, Real t0, Real t1) 
 
 // Bezier
 
+int Bezier::inflection(Real *l, Real p0, Real p1, Real pp0, Real pp1) {
+	Real root;
+	if (solve_equation(
+		&root,
+		 p0 - 2*pp0 +   pp1     ,
+		-p0 + 3*pp0 - 3*pp1 + p1 ))
+	{
+		if (approximate_less(Real(0), root) && approximate_less(root, Real(1))) {
+			if (l) *l = root;
+			return 1;
+		}
+	}
+	return 0;
+}
+
 int Bezier::bends(Real *l, Real p0, Real p1, Real pp0, Real pp1) {
 	Real roots[2];
 	int count = solve_equation(
 		roots,
 		 -p0 +   pp0             ,
-		2*p0 - 6*pp0 + 2*pp1     ,
+		2*p0 - 4*pp0 + 2*pp1     ,
 		 -p0 + 3*pp0 - 3*pp1 + p1 );
 	int valid_count = 0;	
 	for(Real *i = roots, *end = i + count; i != end; ++i)

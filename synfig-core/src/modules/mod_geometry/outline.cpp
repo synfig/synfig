@@ -166,8 +166,8 @@ Outline::sync_vfunc()
 					contour.move_to( Vector(-w, 0) );
 					contour.line_to( Vector(-w, w) );
 				} else {
-					contour.move_to( Vector(-w, 0) );
 					if (round_tip[0]) {
+						contour.move_to( Vector(-w, 0) );
 						contour.conic_to(
 							Vector(-round_tip_k0*w, round_tip_k0*w),
 							Vector(-w, round_tip_k1*w) );
@@ -175,6 +175,7 @@ Outline::sync_vfunc()
 							Vector(0, w),
 							Vector(-round_tip_k1*w, w) );
 					} else {
+						contour.move_to( Vector(0, 0) );
 						contour.line_to( Vector(0, w) );
 					}
 				}
@@ -200,26 +201,12 @@ Outline::sync_vfunc()
 					Vector(length + w, 0),
 					Vector(length + w, round_tip_k1*w) );
 			} else {
-				contour.line_to( Vector(length + w, 0) );
+				contour.line_to( Vector(length, 0) );
 			}
 		}
 		
-		if (!contour.get_chunks().empty()) {
-			contour.reserve( contour.get_chunks().size()*2 );
-			for(rendering::Contour::ChunkList::const_reverse_iterator ri1 = contour.get_chunks().rbegin(), ri0 = ri1++;
-				ri1 != contour.get_chunks().rend(); ri0 = ri1++)
-			{
-				contour.add_chunk(
-					rendering::Contour::Chunk(
-						ri0->type,
-						Vector( ri1->p1[0] , -ri1->p1[1]  ),
-						Vector( ri0->pp1[0], -ri0->pp1[1] ),
-						Vector( ri0->pp0[0], -ri0->pp0[1] ) ));
-			}
-			contour.close();
-		}
-		
-		bend.bend(shape_contour(), contour, Matrix(), segments, rendering::Bend::HINT_NORM_TANGENTS);
+		contour.close_mirrored_vert();
+		bend.bend(shape_contour(), contour, Matrix(), segments);
 	} catch (...) { synfig::error("Outline::sync(): Exception thrown"); throw; }
 }
 

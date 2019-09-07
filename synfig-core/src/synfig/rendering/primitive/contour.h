@@ -123,9 +123,11 @@ public:
 
 	inline bool closed() const
 		{ return (int)chunks.size() <= first; }
+	inline int beginning_of_unclosed() const
+		{ return first; }
 	
 	void reserve(size_t size)
-		{ chunks.reserve(size); }
+		{ chunks.reserve(chunks.size() + size); }
 	
 	void clear();
 	void move_to(const Vector &v);
@@ -133,6 +135,12 @@ public:
 	void conic_to(const Vector &v, const Vector &pp0);
 	void cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1);
 	void close();
+
+	void close_mirrored(const Matrix &transform);
+	void close_mirrored_hor()
+		{ close_mirrored(Matrix().set_scale(-1, 1)); }
+	void close_mirrored_vert()
+		{ close_mirrored(Matrix().set_scale(1, -1)); }
 	
 	void assign(const Contour &other);
 	

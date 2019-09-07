@@ -73,8 +73,8 @@ namespace {
 		if (point.mode == Bend::NONE || approximate_zero(radius))
 			return;
 
-		const Vector &tn0 = flip ? point.tn1 : point.tn0;
-		const Vector &tn1 = flip ? point.tn0 : point.tn1;
+		Vector tn0 = (flip ? point.t1 : point.t0).norm();
+		Vector tn1 = (flip ? point.t0 : point.t1).norm();
 		Real d = tn0 * tn1.perp();
 		Real dd = tn0 * tn1;
 		bool codirected = approximate_zero(d);
@@ -87,7 +87,7 @@ namespace {
 		const Vector &center = point.p;
 		const Real rmod = fabs(radius);
 		
-		if (!codirected && (d*radius < 0) == flip) {
+		if (point.mode != Bend::FLAT && !codirected && (d*radius < 0) == flip) {
 			if (point.mode == Bend::ROUND) {
 				const Vector pp = (p0 + p1).norm()*rmod;
 				const Vector ppp = (p + pp).norm()*rmod;
@@ -164,22 +164,19 @@ Bend::add(const Vector &p, const Vector &t0, const Vector &t1, Mode mode, bool c
 		
 		const Real step = Real(1)/segments;
 		const Hermite h(last.p, p, last.t1, t0);
-		last.tn1 = h.d0();
 		point.p = last.p;
 		point.length = last.length;
 		Real l0 = last.l, l = step;
 		for(int i = 2; i < segments; ++i, l += step) {
 			Vector pp = h.p(l);
 			point.l = l0 + l;
-			point.length += calc_length ? (pp - point.p).mag() : point.l;
+			point.length = calc_length ? point.length + (pp - point.p).mag() : point.l;
 			point.p = pp;
 			point.t0 = point.t1 = h.t(l);
-			point.tn0 = point.tn1 = h.d(l);
 			points.push_back(point);
 		}
 		point.l = l0 + 1;
-		point.length += calc_length ? (p - point.p).mag() : point.l;
-		point.tn0 = h.d1();
+		point.length = calc_length ? point.length + (p - point.p).mag() : point.l;
 	}
 
 	point.p = p;
@@ -200,10 +197,8 @@ Bend::loop(bool calc_length, int segments)
 	Point &first = points.front();
 	Point &last = points.back();
 	
-	first.t0  = last.t0;
-	first.tn0 = last.tn0;
-	last.t1   = first.t1;
-	last.tn1  = first.tn1;
+	first.t0 = last.t0;
+	last.t1  = first.t1;
 	first.e0 = last.e1 = false;
 }
 
@@ -212,19 +207,41 @@ Bend::tails()
 {
 	if (points.size() < 2u) return;
 
-	Point &first = points.front();
-	Point &last = points.back();
+	{
+		PointList::iterator i1 = points.begin(), i0 = i1++;
+		Real dl = i1->l - i0->l;
+		Hermite h(i0->p, i1->p, i0->t1*dl, i1->t0*dl);
+		i0->t0 = h.d(0);
+		i0->mode = NONE;
+	}
 
-	first.t0  = first.t1;
-	first.tn0 = first.tn1;
-	last.t1   = last.t0;
-	last.tn1  = last.tn0;
-	first.mode = last.mode = NONE;
+	{
+		PointList::iterator i0 = points.end(), i1 = (--i0)--;
+		Real dl = i1->l - i0->l;
+		Hermite h(i0->p, i1->p, i0->t1*dl, i1->t0*dl);
+		i1->t1 = h.d(1);
+		i1->mode = NONE;
+	}
 }
 
 
 Bend::PointList::const_iterator
-Bend::find(const Real &length) const
+Bend::find_by_l(Real l) const
+{
+	if (points.empty())
+		return points.end();
+	PointList::const_iterator a = points.begin(), b = points.end() - 1, c;
+	if (!approximate_less(a->l, l)) return a;
+	if (!approximate_less(l, b->l)) return b;
+	while( (c = a + (b - a)/2) != a ) {
+		if (approximate_equal(l, c->l)) return c;
+		(l < c->l ? b : a) = c;
+	}
+	return c;
+}
+
+Bend::PointList::const_iterator
+Bend::find(Real length) const
 {
 	if (points.empty())
 		return points.end();
@@ -238,15 +255,25 @@ Bend::find(const Real &length) const
 	return c;
 }
 
-const Bend::Point*
-Bend::find_exact(const Real &length) const
-{
-	PointList::const_iterator i = find(length);
-	return i == points.end() || !approximate_equal(length, i->length) ? nullptr : &*i;
+Real Bend::length_by_l(Real l) const {
+	PointList::const_iterator i = find_by_l(l);
+	if (i == points.end())
+		return 0;
+	
+	if (approximate_equal(l, i->l)) return i->length;
+	if (l < i->l)
+		return i->length + (l - i->l);
+	
+	PointList::const_iterator j = i + 1;
+	if (j == points.end())
+		return i->length + (l - i->l);
+	
+	Real dl = j->l - i->l;
+	return approximate_zero(dl) ? i->length : i->length + (j->length - i->length)*(l - i->l)/l;
 }
 
 Bend::Point
-Bend::interpolate(const Real &length) const
+Bend::interpolate(Real length) const
 {
 	PointList::const_iterator i = find(length);
 	if (i == points.end()) return Point();
@@ -257,8 +284,8 @@ Bend::interpolate(const Real &length) const
 		// extarpolation before
 		Real dlen = length - i->length;
 		Point s;
-		s.p = i->p + i->tn0*dlen;
-		s.t0 = s.t1 = s.tn0 = s.tn1 = i->tn0;
+		s.p = i->p + i->t0*dlen;
+		s.t0 = s.t1 = i->t0;
 		s.l = i->l + dlen;
 		s.length = length;
 		s.e0 = s.e1 = i->e0;
@@ -270,8 +297,8 @@ Bend::interpolate(const Real &length) const
 		// extarpolation after
 		Real dlen = length - i->length;
 		Point s;
-		s.p = i->p + i->tn1*dlen;
-		s.t0 = s.t1 = s.tn0 = s.tn1 = i->tn1;
+		s.p = i->p + i->t1*dlen;
+		s.t0 = s.t1 = i->t1;
 		s.l = i->l + dlen;
 		s.length = length;
 		s.e0 = s.e1 = i->e1;
@@ -279,14 +306,14 @@ Bend::interpolate(const Real &length) const
 	}
 	
 	// interpolation
-	Real l = (length - i->length)/(j->length - i->length);
+	Real l = j->length - i->length;
+	l = approximate_zero(l) ? 0 : (length - i->length)/l;
 	Real dl = j->l - i->l;
 	Hermite h(i->p, j->p, i->t1*dl, j->t0*dl);
 	
 	Point s;
 	s.p = h.p(l);
 	s.t0 = s.t1 = h.t(l);
-	s.tn0 = s.tn1 = h.d(l);
 	s.l = i->l + l*(j->l - i->l);
 	s.length = length;
 	s.e0 = s.e1 = (i->e1 && j->e0);
@@ -295,14 +322,13 @@ Bend::interpolate(const Real &length) const
 }
 
 void
-Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments, Hints hints) const
+Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments) const
 {
 	if (points.empty() || src.get_chunks().empty())
 		return;
 
 	const int last_segment = segments - 1;
 	const Real step = Real(1)/segments;
-	const Real stepk = 1/step;
 	Contour::ChunkList::const_iterator i = src.get_chunks().begin();
 	Vector p0 = matrix.get_transformed(i->p1);
 	size_t dst_size = dst.get_chunks().size();
@@ -310,63 +336,54 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments,
 	
 	IntersectionList intersections;
 	while(++i != src.get_chunks().end()) {
-		Hermite h;
+		Bezier b;
 		switch(i->type) {
 			case Contour::CUBIC:
-				h = Bezier(
+				b = Bezier(
 					p0,
 					matrix.get_transformed(i->p1),
 					matrix.get_transformed(i->pp0),
-					matrix.get_transformed(i->pp1) ).get_hermite();
+					matrix.get_transformed(i->pp1) );
 				break;
 			case Contour::CONIC:
-				h = Bezier(
+				b = Bezier(
 					p0,
 					matrix.get_transformed(i->p1),
-					matrix.get_transformed(i->pp0) ).get_hermite();
+					matrix.get_transformed(i->pp0) );
 				break;
 			case Contour::MOVE:
 				p0 = matrix.get_transformed(i->p1);
+				dst_move_flag = true;
 				continue;
-			default:
-				h = Hermite(p0, matrix.get_transformed(i->p1));
+			default: // line
+				b = Bezier(p0, matrix.get_transformed(i->p1));
 				break;
 		}
-		p0 = h.p1;
+		p0 = b.p1;
 		
-		Real bends[2];
-		int bends_count = h.bends(0, bends);
-		Range r(h.p0[0]);
-		r.expand(h.p1[0]);
+		Real bends[3];
+		int bends_count = b.bends(0, bends);
+		Range r(b.p0[0]);
+		r.expand(b.p1[0]);
 		for(Real *i = bends, *end = i + bends_count; i != end; ++i)
-			r.expand( h.p(0, *i) );
-		bool b0 = bends_count > 0, b1 = bends_count > 1;
-		
-		bool bs[segments] = {};
+			r.expand( b.p(0, *i) );
+		bends_count += b.inflection(0, bends + bends_count);
 		
 		for(PointList::const_iterator bi = find(r.min); bi != points.end() && !approximate_less(r.max, bi->length); ++bi) {
 			Real roots[3];
-			int count = h.intersections(0, roots, bi->length);
-			for(Real *i = roots, *end = i + count; i != end; ++i) {
-				if (b0 && approximate_equal_lp(*i, bends[0])) b0 = false;
-				if (b1 && approximate_equal_lp(*i, bends[1])) b1 = false;
-				Real seg = *i * stepk;
-				if (approximate_equal_lp(seg, round(seg))) {
-					int segi = (int)round(seg);
-					if (segi > 0 && segi < last_segment) bs[segi] = true;
-				}
+			int count = b.intersections(0, roots, bi->length);
+			for(Real *i = roots, *end = i + count; i != end; ++i)
 				intersections.push_back( Intersection(*i, *bi) );
-			}
 		}
-		if (b0) intersections.push_back( Intersection(bends[0], interpolate( h.p(0, bends[0]) )) );
-		if (b1) intersections.push_back( Intersection(bends[1], interpolate( h.p(0, bends[1]) )) );
+		for(Real *i = bends, *end = i + bends_count; i != end; ++i)
+			intersections.push_back( Intersection(*i, interpolate( b.p(0, *i) )) );
 		Real bsl = step;
 		for(int i = 1; i < last_segment; ++i, bsl += step)
-			if (bs[i]) intersections.push_back( Intersection(bsl, interpolate( h.p(0, bsl) )) );
+			intersections.push_back( Intersection(bsl, interpolate( b.p(0, bsl) )) );
 		sort(intersections.begin(), intersections.end());
 		
-		Intersection prev(0, interpolate(h.p0[0]));
-		intersections.push_back( Intersection(1, interpolate(h.p1[0])) );
+		Intersection prev(0, interpolate(b.p0[0]));
+		intersections.push_back( Intersection(1, interpolate(b.p1[0])) );
 		
 		for(IntersectionList::const_iterator bi = intersections.begin(); bi != intersections.end(); ++bi) {
 			const Intersection &next = *bi;
@@ -376,39 +393,35 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments,
 			bool e0 = flip ? prev.point.e0 : prev.point.e1;
 			bool e1 = flip ? next.point.e1 : next.point.e0;
 			if (e0 && e1) {
-				Vector x0 = flip ? prev.point.tn0 : prev.point.tn1;
-				Vector x1 = flip ? next.point.tn1 : next.point.tn0;
-				Vector y0 = x0.perp();
-				Vector y1 = x1.perp();
+				Real dl = next.point.l - prev.point.l;
+				const Vector &t0 = flip ? prev.point.t0 : prev.point.t1;
+				const Vector &t1 = flip ? next.point.t1 : next.point.t0;
 				
-				Hermite src_h = h.sub(prev.l, next.l);
+				Hermite bend_h( prev.point.p, next.point.p, t0*dl, t1*dl );
+				Bezier src_b = b.sub(prev.l, next.l);
+				
+				Real k = next.point.length - prev.point.length;
+				k = approximate_zero(k) ? 0 : 1/k;
+				Real ll0 = (src_b.pp0[0] - prev.point.length)*k;
+				Real ll1 = (src_b.pp1[0] - next.point.length)*k + 1;
+				Real kk = flip ? -1 : 1;
+				Bezier dst_b(
+					bend_h.p0     + bend_h.d(  0).perp()*src_b.p0[1]*kk,
+					bend_h.p1     + bend_h.d(  1).perp()*src_b.p1[1]*kk,
+					bend_h.p(ll0) + bend_h.d(ll0).perp()*src_b.pp0[1]*kk,
+					bend_h.p(ll1) + bend_h.d(ll1).perp()*src_b.pp1[1]*kk );
 
-				Hermite dst_h(
-					prev.point.p + y0*src_h.p0[1],
-					next.point.p + y1*src_h.p1[1],
-					x0*src_h.t0[0] + y0*src_h.t0[1],
-					x1*src_h.t1[0] + y1*src_h.t1[1] );
-				
-				if (hints & HINT_NORM_TANGENTS) {
-					Real k = 0.75*(dst_h.p1 - dst_h.p0).mag();
-					dst_h.t0 = dst_h.t0.norm()*k;
-					dst_h.t1 = dst_h.t1.norm()*k;
-				} else
-				if (hints & HINT_SCALE_TANGENTS) {
-					Real k = (src_h.p1 - src_h.p0).mag_squared();
-					if (!approximate_zero(k)) {
-						k = sqrt((dst_h.p1 - dst_h.p0).mag_squared()/k);
-						dst_h.t0 *= k;
-						dst_h.t1 *= k;
-					}
+				if (next.point.l == prev.point.l) {
+					half_corner(dst, dst_move_flag, prev.point, src_b.p0[1], true, true);
+					touch(dst, dst_move_flag, dst_b.p0);
+					dst.cubic_to(dst_b.p1, dst_b.pp0, dst_b.pp1);
+					half_corner(dst, dst_move_flag, next.point, src_b.p1[1], false, false);
+				} else {
+					half_corner(dst, dst_move_flag, prev.point, src_b.p0[1], flip, true);
+					touch(dst, dst_move_flag, dst_b.p0);
+					dst.cubic_to(dst_b.p1, dst_b.pp0, dst_b.pp1);
+					half_corner(dst, dst_move_flag, next.point, src_b.p1[1], flip, false);
 				}
-				
-				Bezier dst_b = dst_h.get_bezier();
-				
-				half_corner(dst, dst_move_flag, prev.point, src_h.p0[1], flip, true);
-				touch(dst, dst_move_flag, dst_b.p0);
-				dst.cubic_to(dst_b.p1, dst_b.pp0, dst_b.pp1);
-				half_corner(dst, dst_move_flag, next.point, src_h.p1[1], flip, false);
 			}
 			
 			prev = next;
