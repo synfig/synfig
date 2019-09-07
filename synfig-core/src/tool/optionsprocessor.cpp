@@ -140,13 +140,12 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	show_targets(),
 	show_codecs(),
 	show_value_nodes(),
-	show_version(),
-
 	// Debug group
 #ifdef _DEBUG
 	debug_guid(),
-	debug_signal()
+	debug_signal(),
 #endif
+	show_version()
 {
 	Glib::init();
 
