@@ -78,16 +78,24 @@ WorkspaceHandler::add_workspace(const std::string& name, const std::string& tpl)
 	if (has_workspace(valid_name))
 		return false;
 	workspaces[valid_name] = tpl;
+	signal_list_changed_.emit();
 	return true;
 }
 
 void
 WorkspaceHandler::remove_workspace(const std::string& name)
 {
-	workspaces.erase(name);
+	size_t count = workspaces.erase(name);
+	if (count > 0)
+		signal_list_changed_.emit();
+}
+
 void WorkspaceHandler::clear()
 {
+	size_t previous_size = workspaces.size();
 	workspaces.clear();
+	if (previous_size > 0)
+		signal_list_changed_.emit();
 }
 
 bool
@@ -140,6 +148,7 @@ WorkspaceHandler::load(const std::string& filename)
 {
 	std::ifstream ifs(filename);
 	std::string line;
+	int count = 0;
 	while (ifs && !ifs.eof()) {
 		getline(ifs, line);
 		if (line.empty())
@@ -159,5 +168,13 @@ WorkspaceHandler::load(const std::string& filename)
 
 		std::string tpl = line.substr(pos+1);
 		workspaces[name] = tpl;
+		count++;
 	}
+	if (count > 0)
+		signal_list_changed_.emit();
+}
+
+sigc::signal<void>& WorkspaceHandler::signal_list_changed()
+{
+	return signal_list_changed_;
 }
