@@ -62,8 +62,6 @@ protected:
 private:
 
 	void add_layer(synfig::String id);
-	void increase_amount();
-	void decrease_amount();
 
 public:
 
