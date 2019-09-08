@@ -970,7 +970,7 @@ init_ui_manager()
 
 	menus_action_group->add( Gtk::Action::create("menu-help",            _("_Help")));
 
-	menus_action_group->add(Gtk::Action::create("menu-keyframe",          "Keyframe"));
+	menus_action_group->add(Gtk::Action::create("menu-keyframe",          _("Keyframe")));
 
 	// Add the synfigapp actions (layer panel toolbar items, etc...)
 	synfigapp::Action::Book::iterator iter;
@@ -1092,9 +1092,9 @@ DEFINE_ACTION("workspace-compositing", _("Compositing"));
 DEFINE_ACTION("workspace-default",     _("Default"));
 DEFINE_ACTION("workspace-animating",   _("Animating"));
 DEFINE_ACTION("dialog-flipbook",       _("Preview Dialog"));
-DEFINE_ACTION("panel-toolbox",           "Toolbox");
+DEFINE_ACTION("panel-toolbox",         _("Toolbox"));
 DEFINE_ACTION("panel-tool_options",    _("Tool Options"));
-DEFINE_ACTION("panel-history",           "History");
+DEFINE_ACTION("panel-history",         _("History"));
 DEFINE_ACTION("panel-canvases",        _("Canvas Browser"));
 DEFINE_ACTION("panel-keyframes",       _("Keyframes"));
 DEFINE_ACTION("panel-layers",          _("Layers"));
@@ -1117,7 +1117,7 @@ DEFINE_ACTION("help-support",   Gtk::Stock::HELP);
 DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"));
 
 // actions: Keyframe
-DEFINE_ACTION("keyframe-properties", "Properties");
+DEFINE_ACTION("keyframe-properties", _("Properties"));
 
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
