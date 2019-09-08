@@ -105,6 +105,8 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		Glib::Value<synfig::ValueBase> x;
 		g_value_init(x.gobj(),x.value_type());
 
+		ValueNode::Handle value_node = value_desc.get_value_node();
+		
 		if(!value_desc)
 		{
 			x.set(ValueBase());
@@ -113,13 +115,13 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		if(value_desc.is_const())
 			x.set(value_desc.get_value());
 		else
-		if(value_desc.is_value_node())
+		if(value_node)
 		{
 			Type &type(value_desc.get_value_type());
 			if (type == type_bone_object)
 			{
 				Time time(canvas_interface()->get_time());
-				Bone bone((*(value_desc.get_value_node()))(time).get(Bone()));
+				Bone bone((*value_node)(time).get(Bone()));
 				String display(String(bone.get_name()));
 				ValueNode_Bone::ConstHandle parent(bone.get_parent());
 				if (!parent->is_root())
@@ -130,19 +132,19 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			if (type == type_bone_weight_pair)
 			{
 				Time time(canvas_interface()->get_time());
-				BoneWeightPair bone_weight_pair((*(value_desc.get_value_node()))(time).get(BoneWeightPair()));
+				BoneWeightPair bone_weight_pair((*value_node)(time).get(BoneWeightPair()));
 				x.set(bone_weight_pair.get_string());
 			}
 			else
 			if (type == type_segment
-			 || type == type_list
-			 || type == type_bline_point)
+			|| type == type_list
+			|| type == type_bline_point)
 			{
 				x.set(value_desc.get_value_type().description.local_name);
 			}
 			else
 			{
-				x.set((*value_desc.get_value_node())(canvas_interface()->get_time()));
+				x.set((*value_node)(canvas_interface()->get_time()));
 			}
 		}
 		else
@@ -175,7 +177,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());
 
-		x.set(value_desc.is_value_node() && value_desc.get_value_node()->rcount()>1);
+		x.set(value_desc.is_value_node() && value_desc.get_value_node() && value_desc.get_value_node()->rcount()>1);
 
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());

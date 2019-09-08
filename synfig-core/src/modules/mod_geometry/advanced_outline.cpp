@@ -233,7 +233,7 @@ namespace {
 		void cut(Real p0, Real p1, WidthPoint::SideType side0, WidthPoint::SideType side1) {
 			if (!approximate_less(p0, p1)) return;
 			
-			iterator i0 = upper_bound(p0);
+			iterator i0 = lower_bound(p0);
 			iterator i1 = upper_bound(p1);
 			if (i0 == begin())
 				{ trunc_left(p1, side1); return; }
@@ -470,13 +470,18 @@ Advanced_Outline::sync_vfunc()
 	if (bline.empty())
 		return;
 	
+	
 	try
 	{
 		// retrieve the parent canvas grow value
-		Real gv = exp(get_outline_grow_mark());
+		const Real gv = exp(get_outline_grow_mark());
+		const Real wk = 0.5*gv*width;
+		const Real we = gv*expand;
+		const bool use_bline_width = wplist.empty();
 		
 		// build bend
 		rendering::Bend bend;
+		AdvancedLine aline;
 		for(ValueBase::List::const_iterator i = bline.begin(); i != bline.end(); ++i) {
 			const BLinePoint &point = i->get(bp_blank);
 			bend.add(
@@ -487,26 +492,37 @@ Advanced_Outline::sync_vfunc()
 				cusp_type == TYPE_ROUNDED ? rendering::Bend::ROUND  : rendering::Bend::FLAT,
 				true,
 				segments );
+			if (use_bline_width)
+				aline.add(
+					bend.length1(),
+					point.get_width()*wk + we,
+					WidthPoint::TYPE_INTERPOLATE,
+					WidthPoint::TYPE_INTERPOLATE );
 		}
-		if (loop) bend.loop(true, segments); else bend.tails();
+		if (loop) {
+			bend.loop(true, segments);
+			if (use_bline_width)
+				aline.add(
+					bend.length1(),
+					bline.front().get(bp_blank).get_width()*wk + we,
+					WidthPoint::TYPE_INTERPOLATE,
+					WidthPoint::TYPE_INTERPOLATE );
+		} else {
+			bend.tails();
+		}
 		const Real kl = bend.length1();
 		
-		// build shape of advanced outline width
-		AdvancedLine aline;
-		for(ValueBase::List::const_iterator i = wplist.begin(); i != wplist.end(); ++i) {
-			const WidthPoint &point = i->get(wp_blank);
-			aline.add(
-				calc_position( clamp(point.get_position(), Real(0), Real(1)), bend, homogeneous ),
-				gv*(point.get_width()*width*0.5 + expand),
-				(WidthPoint::SideType)point.get_side_type_before(),
-				(WidthPoint::SideType)point.get_side_type_after() );
+		// apply wplist
+		if (!use_bline_width) {
+			for(ValueBase::List::const_iterator i = wplist.begin(); i != wplist.end(); ++i) {
+				const WidthPoint &point = i->get(wp_blank);
+				aline.add(
+					calc_position( clamp(point.get_position(), Real(0), Real(1)), bend, homogeneous ),
+					point.get_width()*wk + we,
+					(WidthPoint::SideType)point.get_side_type_before(),
+					(WidthPoint::SideType)point.get_side_type_after() );
+			}
 		}
-		if (aline.empty())
-			aline.add(
-				calc_position( 0.5, bend, homogeneous ),
-				gv*(width*0.5 + expand),
-				WidthPoint::TYPE_INTERPOLATE,
-				WidthPoint::TYPE_INTERPOLATE );
 		
 		if (loop) {
 			AdvancedLine::iterator i0 = aline.begin();
@@ -517,6 +533,13 @@ Advanced_Outline::sync_vfunc()
 				aline.add(i0->first + kl, i0->second.w, i0->second.side1, WidthPoint::TYPE_FLAT);
 			aline.calc_tangents(smoothness);
 		} else {
+			// make tails longer for proper trunc
+			AdvancedLine::const_iterator i = aline.begin();
+			if (i->second.side0 == WidthPoint::TYPE_INTERPOLATE)
+				aline.add(-1, i->second.w, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE);
+			i = aline.end(); --i;
+			if (i->second.side1 == WidthPoint::TYPE_INTERPOLATE)
+				aline.add(kl + 1, i->second.w, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_FLAT);
 			aline.calc_tangents(smoothness);
 			aline.trunc_left(0, (WidthPoint::SideType)start_tip);
 			aline.trunc_right(kl, (WidthPoint::SideType)end_tip);
@@ -615,6 +638,7 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
 		.set_origin("origin")
+		.set_hint(param_wplist.get_list().empty() ? "width" : "")
 		.set_description(_("A list of spline points"))
 	);
 	ret.push_back(ParamDesc("width")

@@ -2197,7 +2197,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
         etl::handle<Duck> vertex_duck = duck;
 
-        // add tamgent1 duck
+        // add tangent1 duck
         duck=new Duck();
         duck->set_type(Duck::TYPE_TANGENT);
         set_duck_value_desc(*duck, value_desc, "t1", transform_stack);
@@ -2207,7 +2207,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
         connect_signals(duck, duck->get_value_desc(), *canvas_view);
         add_duck(duck);
 
-        // add tamgent2 duck
+        // add tangent2 duck
         duck=new Duck();
         duck->set_type(Duck::TYPE_TANGENT);
         set_duck_value_desc(*duck, value_desc, "t2", transform_stack);
