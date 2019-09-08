@@ -255,6 +255,7 @@ namespace {
 			for(const_iterator i = begin(); i != end(); ++i) {
 				if (i->second.side0 != WidthPoint::TYPE_INTERPOLATE && !dst.closed())
 					dst.close_mirrored_vert();
+				Real s = 1;
 				switch(i->second.side0) {
 					case WidthPoint::TYPE_INTERPOLATE:
 						if (i == begin()) {
@@ -271,29 +272,35 @@ namespace {
 							}
 						}
 						break;
-					case WidthPoint::TYPE_PEAK:
-						dst.move_to( Vector(i->first - i->second.w, 0) );
-						dst.line_to( Vector(i->first, i->second.w ) );
-						break;
 					case WidthPoint::TYPE_SQUARED:
 						dst.move_to( Vector(i->first - i->second.w, 0) );
 						dst.line_to( Vector(i->first - i->second.w, i->second.w) ),
 						dst.line_to( Vector(i->first, i->second.w) );
 						break;
+					case WidthPoint::TYPE_INNER_PEAK:
+						s = -1;
+					case WidthPoint::TYPE_PEAK:
+						dst.move_to( Vector(i->first - s*i->second.w, 0) );
+						dst.line_to( Vector(i->first, i->second.w ) );
+						break;
+					case WidthPoint::TYPE_INNER_ROUNDED:
+						s = -1;
 					case WidthPoint::TYPE_ROUNDED:
-						dst.move_to( Vector(i->first - i->second.w, 0) );
+						dst.move_to( Vector(i->first - s*i->second.w, 0) );
 						dst.conic_to(
-							Vector(i->first - i->second.w*round_k0, i->second.w*round_k0),
-							Vector(i->first - i->second.w, i->second.w*round_k1) );
+							Vector(i->first - s*i->second.w*round_k0, i->second.w*round_k0),
+							Vector(i->first - s*i->second.w, i->second.w*round_k1) );
 						dst.conic_to(
 							Vector(i->first, i->second.w),
-							Vector(i->first - i->second.w*round_k1, i->second.w) );
+							Vector(i->first - s*i->second.w*round_k1, i->second.w) );
 						break;
 					default: // flat
 						dst.move_to( Vector(i->first, 0) );
 						dst.line_to( Vector(i->first, i->second.w) );
 						break;
 				}
+				
+				s = 1;
 				switch(i->second.side1) {
 					case WidthPoint::TYPE_INTERPOLATE:
 						{
@@ -309,22 +316,26 @@ namespace {
 							}
 						}
 						break;
-					case WidthPoint::TYPE_PEAK:
-						dst.line_to( Vector(i->first + i->second.w, 0) );
-						dst.close_mirrored_vert();
-						break;
 					case WidthPoint::TYPE_SQUARED:
 						dst.line_to( Vector(i->first + i->second.w, i->second.w) ),
 						dst.line_to( Vector(i->first + i->second.w, 0) );
 						dst.close_mirrored_vert();
 						break;
+					case WidthPoint::TYPE_INNER_PEAK:
+						s = -1;
+					case WidthPoint::TYPE_PEAK:
+						dst.line_to( Vector(i->first + s*i->second.w, 0) );
+						dst.close_mirrored_vert();
+						break;
+					case WidthPoint::TYPE_INNER_ROUNDED:
+						s = -1;
 					case WidthPoint::TYPE_ROUNDED:
 						dst.conic_to(
-							Vector(i->first + i->second.w*round_k0, i->second.w*round_k0),
-							Vector(i->first + i->second.w*round_k1, i->second.w) );
+							Vector(i->first + s*i->second.w*round_k0, i->second.w*round_k0),
+							Vector(i->first + s*i->second.w*round_k1, i->second.w) );
 						dst.conic_to(
-							Vector(i->first + i->second.w, 0),
-							Vector(i->first + i->second.w, i->second.w*round_k1) );
+							Vector(i->first + s*i->second.w, 0),
+							Vector(i->first + s*i->second.w, i->second.w*round_k1) );
 						dst.close_mirrored_vert();
 						break;
 					default: // flat
@@ -585,6 +596,8 @@ Advanced_Outline::get_param_vocab()const
 		.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 		.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
 		.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		.add_enum_value(WidthPoint::TYPE_INNER_ROUNDED,"inner_rounded", _("Inner Rounded Stop"))
+		.add_enum_value(WidthPoint::TYPE_INNER_PEAK,"inner_peak", _("Off-Peak Stop"))
 		);
 	ret.push_back(ParamDesc(ValueBase(),"end_tip")
 		.set_local_name(_("Tip Type at End"))
@@ -594,6 +607,8 @@ Advanced_Outline::get_param_vocab()const
 		.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
 		.add_enum_value(WidthPoint::TYPE_PEAK,"peak", _("Peak Stop"))
 		.add_enum_value(WidthPoint::TYPE_FLAT,"flat", _("Flat Stop"))
+		.add_enum_value(WidthPoint::TYPE_INNER_ROUNDED,"inner_rounded", _("Inner Rounded Stop"))
+		.add_enum_value(WidthPoint::TYPE_INNER_PEAK,"inner_peak", _("Off-Peak Stop"))
 		);
 	ret.push_back(ParamDesc("cusp_type")
 		.set_local_name(_("Cusps Type"))

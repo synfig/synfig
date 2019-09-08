@@ -31,9 +31,12 @@
 
 #include <algorithm>
 
-#include "contour.h"
+#include <synfig/general.h>
 
 #include "intersector.h"
+
+#include "contour.h"
+
 
 #endif
 
@@ -275,7 +278,10 @@ public:
 
 
 Contour::Contour():
-	first(0), invert(false), antialias(false),
+	first(0),
+	bounds_calculated(false),
+	invert(false),
+	antialias(false),
 	winding_style(WINDING_NON_ZERO)
 	{ }
 
@@ -322,7 +328,7 @@ Contour::line_to(const Vector &v)
 {
 	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
 	if (closed()) move_to(prev);
-	if (!v.is_equal_to(chunks.empty() ? Vector::zero() : chunks.back().p1)) {
+	if (!v.is_equal_to(prev)) {
 		chunks.push_back(Chunk(LINE, v));
 		touch_chunks();
 	}
@@ -356,6 +362,7 @@ void
 Contour::close()
 {
 	if (!closed()) {
+		assert(chunks.back().type != CLOSE);
 		chunks.push_back(Chunk(CLOSE, chunks[first].p1));
 		first = (int)chunks.size();
 		touch_chunks();
@@ -615,9 +622,10 @@ Contour::is_inside(const Point &p, WindingStyle winding_style, bool invert) cons
 void
 Contour::close_mirrored(const Matrix &transform)
 {
-	if (int count = (int)chunks.size() - first)
+	int count = (int)chunks.size() - first;
+	if (first >= 0 && count > 0)
 	{
-		chunks.reserve(count + 1);
+		reserve(count);
 		for(ChunkList::const_reverse_iterator ri1 = chunks.rbegin(), rend = ri1 + count, ri0 = ri1++; ri1 != rend; ri0 = ri1++)
 			add_chunk( Chunk(
 				ri0->type,

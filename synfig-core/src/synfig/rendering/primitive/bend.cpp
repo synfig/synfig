@@ -167,7 +167,7 @@ Bend::add(const Vector &p, const Vector &t0, const Vector &t1, Mode mode, bool c
 		point.p = last.p;
 		point.length = last.length;
 		Real l0 = last.l, l = step;
-		for(int i = 2; i < segments; ++i, l += step) {
+		for(int i = 1; i < segments; ++i, l += step) {
 			Vector pp = h.p(l);
 			point.l = l0 + l;
 			point.length = calc_length ? point.length + (pp - point.p).mag() : point.l;
@@ -324,14 +324,14 @@ Bend::interpolate(Real length) const
 void
 Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments) const
 {
+	if (!dst.closed()) dst.close();
+
 	if (points.empty() || src.get_chunks().empty())
 		return;
 
-	const int last_segment = segments - 1;
 	const Real step = Real(1)/segments;
 	Contour::ChunkList::const_iterator i = src.get_chunks().begin();
 	Vector p0 = matrix.get_transformed(i->p1);
-	size_t dst_size = dst.get_chunks().size();
 	bool dst_move_flag = true;
 	
 	IntersectionList intersections;
@@ -355,13 +355,16 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 				p0 = matrix.get_transformed(i->p1);
 				dst_move_flag = true;
 				continue;
-			default: // line
+			default: // line, close
 				b = Bezier(p0, matrix.get_transformed(i->p1));
 				break;
 		}
+		if ( b.p0.is_equal_to(b.p1)
+		  && (b.pp0.is_equal_to(b.pp1) || b.p0.is_equal_to(b.pp0) || b.p1.is_equal_to(b.pp1)) )
+			continue;
 		p0 = b.p1;
 		
-		Real bends[3];
+		Real bends[3] = {0, 0, 0};
 		int bends_count = b.bends(0, bends);
 		Range r(b.p0[0]);
 		r.expand(b.p1[0]);
@@ -370,7 +373,7 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 		bends_count += b.inflection(0, bends + bends_count);
 		
 		for(PointList::const_iterator bi = find(r.min); bi != points.end() && !approximate_less(r.max, bi->length); ++bi) {
-			Real roots[3];
+			Real roots[3] = {0, 0, 0};
 			int count = b.intersections(0, roots, bi->length);
 			for(Real *i = roots, *end = i + count; i != end; ++i)
 				intersections.push_back( Intersection(*i, *bi) );
@@ -378,7 +381,7 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 		for(Real *i = bends, *end = i + bends_count; i != end; ++i)
 			intersections.push_back( Intersection(*i, interpolate( b.p(0, *i) )) );
 		Real bsl = step;
-		for(int i = 1; i < last_segment; ++i, bsl += step)
+		for(int i = 1; i < segments; ++i, bsl += step)
 			intersections.push_back( Intersection(bsl, interpolate( b.p(0, bsl) )) );
 		sort(intersections.begin(), intersections.end());
 		
@@ -411,7 +414,7 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 					bend_h.p(ll0) + bend_h.d(ll0).perp()*src_b.pp0[1]*kk,
 					bend_h.p(ll1) + bend_h.d(ll1).perp()*src_b.pp1[1]*kk );
 
-				if (next.point.l == prev.point.l) {
+				if (approximate_equal(next.point.l, prev.point.l)) {
 					half_corner(dst, dst_move_flag, prev.point, src_b.p0[1], true, true);
 					touch(dst, dst_move_flag, dst_b.p0);
 					dst.cubic_to(dst_b.p1, dst_b.pp0, dst_b.pp1);
@@ -430,7 +433,6 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 		intersections.clear();
 	}
 	
-	if (dst_size < dst.get_chunks().size())
-		dst.close();
+	if (!dst.closed()) dst.close();
 }
 

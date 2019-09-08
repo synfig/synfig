@@ -49,10 +49,12 @@ private:
 public:
 	enum SideType
 	{
-		TYPE_ROUNDED = WidthPoint::TYPE_ROUNDED,
-		TYPE_SQUARED = WidthPoint::TYPE_SQUARED,
-		TYPE_PEAK    = WidthPoint::TYPE_PEAK,
-		TYPE_FLAT    = WidthPoint::TYPE_FLAT
+		TYPE_ROUNDED       = WidthPoint::TYPE_ROUNDED,
+		TYPE_SQUARED       = WidthPoint::TYPE_SQUARED,
+		TYPE_PEAK          = WidthPoint::TYPE_PEAK,
+		TYPE_FLAT          = WidthPoint::TYPE_FLAT,
+		TYPE_INNER_ROUNDED = WidthPoint::TYPE_INNER_ROUNDED,
+		TYPE_INNER_PEAK    = WidthPoint::TYPE_INNER_PEAK,
 	};
 	DashItem();
 	DashItem(Real position, Real length, int sidebefore=TYPE_FLAT,

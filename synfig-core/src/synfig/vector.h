@@ -288,7 +288,7 @@ public:
 		{ return Angle::rad(atan2(_y, _x)); }
 
 	bool is_equal_to(const Vector& rhs)const
-		{ return approximate_equal((*this-rhs).mag_squared(), value_type(0.0)); }
+		{ return approximate_equal(_x, rhs._x) && approximate_equal(_y, rhs._y); }
 
 	static Vector zero() { return Vector(0,0); }
 	static Vector nan() { return Vector(real_nan<value_type>(), real_nan<value_type>()); }

@@ -58,7 +58,9 @@ public:
 		TYPE_ROUNDED         =1,
 		TYPE_SQUARED         =2,
 		TYPE_PEAK            =3,
-		TYPE_FLAT            =4
+		TYPE_FLAT            =4,
+		TYPE_INNER_ROUNDED   =5,
+		TYPE_INNER_PEAK      =6,
 	};
 
 	WidthPoint();
