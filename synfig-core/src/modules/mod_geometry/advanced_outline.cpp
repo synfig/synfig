@@ -95,6 +95,7 @@ namespace {
 	class AdvancedLine: public AdvancedMap {
 	public:
 		void add(Real p, Real w, WidthPoint::SideType side0, WidthPoint::SideType side1) {
+			w = fabs(w);
 			AdvancedPoint &ap = (*this)[p];
 			if (approximate_zero(w)) {
 				ap.w = 0;
@@ -108,16 +109,54 @@ namespace {
 		
 		void calc_tangents(Real smoothness) {
 			if (empty()) return;
+			
 			const Real kx = Real(1)/3;
-			const Real ky = (1 - clamp(smoothness, Real(0), Real(1)))/3;
-			for(iterator i1 = begin(), i0 = i1++; i1 != end(); i0 = i1++) {
-				Real dx = (i1->first - i0->first)*kx;
-				Real dy = (i1->second.y0() - i0->second.y1())*ky;
-				i0->second.pp1[0] = i0->first + dx;
-				i0->second.pp1[1] = i0->second.y1() + dy;
-				i1->second.pp0[0] = i1->first - dx;
-				i1->second.pp0[1] = i1->second.y0() - dy;
+			iterator i2 = begin(), i0 = i2++, i1;
+			if (i2 != end()) {
+				Real s0 = clamp(smoothness, Real(0), Real(1));
+				Real s1 = 1 - s0;
+				
+				for(i1 = i2++; i2 != end(); i0 = i1, i1 = i2++) {
+					Vector p0(i0->first, i0->second.y1());
+					Vector p1(i1->first, i1->second.y1());
+					Vector p2(i2->first, i2->second.y0());
+					
+					Vector d0 = p1 - p0;
+					Vector d1 = p2 - p1;
+					Vector dd0 = d0*kx;
+					Vector dd1 = d1*kx;
+					i1->second.pp0[0] = p1[0] - dd0[0];
+					i1->second.pp1[0] = p1[0] + dd1[0];
+					
+					if (p1[1] == i1->second.y1()) {
+						Real ky0 = d0[1]/d0[0];
+						Real ky1 = d1[1]/d1[0];
+						Real ky = (ky0 + ky1)*0.5;
+						ky = ky0 > 0 && ky1 > 0 ? std::min(ky, std::min(ky0, ky1)*3)
+								: ky0 < 0 && ky1 < 0 ? std::max(ky, std::max(ky0, ky1)*3)
+								: 0;
+						ky *= s0;
+						i1->second.pp0[1] = p1[1] - (dd0[0]*ky + s1*dd0[1]);
+						i1->second.pp1[1] = p1[1] + (dd1[0]*ky + s1*dd1[1]);
+					} else {
+						i1->second.pp0[1] = p1[1] - s1*dd0[1];
+						i1->second.pp1[1] = p1[1] + s1*dd1[1];
+					}
+				}
+				
+				Real ky = kx*s1;
+				i1 = begin(), i0 = i1++;
+				i0->second.pp1[0] = i0->first + (i1->first - i0->first)*kx;
+				i0->second.pp1[1] = i0->second.y1() + (i1->second.y0() - i0->second.y1())*ky;
+
+				i0 = end(), i1 = (--i0)--;
+				i1->second.pp0[0] = i1->first - (i1->first - i0->first)*kx;
+				i1->second.pp0[1] = i1->second.y1() - (i1->second.y0() - i0->second.y1())*ky;
 			}
+			
+			i0 = begin(), i1 = end(), --i1;
+			i0->second.pp0 = Vector(i0->first, i0->second.y0());
+			i1->second.pp1 = Vector(i1->first, i1->second.y1());
 		}
 		
 		void trunc_left(Real p, WidthPoint::SideType side) {
