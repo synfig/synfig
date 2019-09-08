@@ -447,7 +447,8 @@ Advanced_Outline::sync_vfunc()
 {
 	clear();
 	
-	const int segments = 32;
+	const int wire_segments = 32;
+	const int contour_segments = 1;
 	const BLinePoint bp_blank;
 	const WidthPoint wp_blank;
 	const DashItem di_blank;
@@ -491,7 +492,7 @@ Advanced_Outline::sync_vfunc()
 				cusp_type == TYPE_SHARP   ? rendering::Bend::CORNER :
 				cusp_type == TYPE_ROUNDED ? rendering::Bend::ROUND  : rendering::Bend::FLAT,
 				true,
-				segments );
+				wire_segments );
 			if (use_bline_width)
 				aline.add(
 					bend.length1(),
@@ -500,7 +501,7 @@ Advanced_Outline::sync_vfunc()
 					WidthPoint::TYPE_INTERPOLATE );
 		}
 		if (loop) {
-			bend.loop(true, segments);
+			bend.loop(true, wire_segments);
 			if (use_bline_width)
 				aline.add(
 					bend.length1(),
@@ -577,7 +578,7 @@ Advanced_Outline::sync_vfunc()
 		aline.build_contour(contour);
 		
 		// bend contour
-		bend.bend(shape_contour(), contour, Matrix(), segments);
+		bend.bend(shape_contour(), contour, Matrix(), contour_segments);
 	}
 	catch (...) { synfig::error("Advanced Outline::sync(): Exception thrown"); throw; }
 }

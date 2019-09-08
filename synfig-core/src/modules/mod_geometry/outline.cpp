@@ -116,7 +116,8 @@ Outline::sync_vfunc()
 	if (param_bline.get_list().empty()) return;
 
 	const BLinePoint blank;
-	const int segments = 32;
+	const int wire_segments = 32;
+	const int contour_segments = 4;
 	
 	const Real width  = param_width.get(Real());
 	const Real expand = param_expand.get(Real());
@@ -155,7 +156,7 @@ Outline::sync_vfunc()
 				point.get_tangent2(),
 				sharp_cusps ? rendering::Bend::CORNER : rendering::Bend::ROUND,
 				homogeneous_width,
-				segments );
+				wire_segments );
 			Real length = bend.length1();
 			
 			w = gv*(point.get_width()*width*0.5 + expand);
@@ -185,7 +186,7 @@ Outline::sync_vfunc()
 		}
 		
 		if (loop) {
-			bend.loop(homogeneous_width, segments);
+			bend.loop(homogeneous_width, wire_segments);
 			Real length = bend.length1();
 			contour.line_to( Vector(length, w0) );
 			contour.line_to( Vector(length + w0, w0) );
@@ -206,7 +207,7 @@ Outline::sync_vfunc()
 		}
 		
 		contour.close_mirrored_vert();
-		bend.bend(shape_contour(), contour, Matrix(), segments);
+		bend.bend(shape_contour(), contour, Matrix(), contour_segments);
 	} catch (...) { synfig::error("Outline::sync(): Exception thrown"); throw; }
 }
 
