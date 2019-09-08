@@ -903,7 +903,8 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 				column, //TreeViewColumn*&
 				cell_x,cell_y //int&cell_x,int&cell_y
 				)
-			) break;
+			   )
+				return signal_no_layer_user_click()(reinterpret_cast<GdkEventButton*>(event));
 			const Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
