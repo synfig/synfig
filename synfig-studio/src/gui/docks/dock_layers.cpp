@@ -131,6 +131,10 @@ Dock_Layers::Dock_Layers():
 			        + layer_ui_info
 			        + "</menu></menu></menubar></ui>";
 			App::ui_manager()->add_ui_from_string(ui_info);
+			ui_info = "<ui><popup action='popup-layer-new'>"
+					+ layer_ui_info
+			        + "</popup></ui>";
+			App::ui_manager()->add_ui_from_string(ui_info);
 		}
 		catch(Glib::MarkupError& x)
 		{
@@ -144,11 +148,24 @@ Dock_Layers::Dock_Layers():
 		action_group_layer_ops->add(layer_action_manager->get_action_select_all_child_layers());
 
 	action_group_layer_ops->add( Gtk::Action::create("toolbar-layer", _("Layer Ops")) );
+
+	Glib::RefPtr<Gtk::Action> action_new_layer = Gtk::Action::create("popup-layer-new", Gtk::StockID("gtk-add"), _("New Layer"));
+	action_new_layer->signal_activate().connect([=](){
+		Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new"));
+		if(menu)
+		{
+			menu->popup(0, gtk_get_current_event_time());
+		};
+	});
+
+	action_group_layer_ops->add( action_new_layer );
 	App::ui_manager()->insert_action_group(action_group_layer_ops);
 
     Glib::ustring ui_info =
 	"<ui>"
 	"	<toolbar action='toolbar-layer'>"
+	"	<toolitem action='popup-layer-new' />"
+	"	<separator />"
 	"	<toolitem action='action-LayerRaise' />"
 	"	<toolitem action='action-LayerLower' />"
 	"	<separator />"
