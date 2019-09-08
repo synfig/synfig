@@ -209,6 +209,13 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 			sigc::bind(sigc::mem_fun(*canvas_view->canvas_interface(), &synfigapp::CanvasInterface::change_value), false)
 		)
 	);
+	layer_tree->signal_no_layer_user_click().connect([=](GdkEventButton *ev){
+		if (ev->button == 3 && action_new_layer->is_sensitive()) {
+			popup_add_layer_menu();
+			return true;
+		}
+		return false;
+	});
 
 	// (a) should be before (b), (b) should be before (c)
 	canvas_view->set_ext_widget(get_name()+"_cmp",layer_tree); // (a)
@@ -276,6 +283,8 @@ Dock_Layers::add_layer(synfig::String id)
 
 void Dock_Layers::popup_add_layer_menu()
 {
+	if (!action_new_layer->is_sensitive())
+		return;
 	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new"));
 	if (menu)
 		menu->popup(0, gtk_get_current_event_time());
