@@ -62,6 +62,7 @@ namespace {
 	
 	void touch(Contour &dst, bool &dst_move_flag, const Vector &p) {
 		if (dst_move_flag) {
+			dst.close_smooth(true);
 			dst.move_to(p);
 			dst_move_flag = false;
 		} else {
@@ -336,57 +337,56 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 	
 	IntersectionList intersections;
 	while(++i != src.get_chunks().end()) {
-		Bezier b;
+		Hermite h;
 		switch(i->type) {
 			case Contour::CUBIC:
-				b = Bezier(
+				h = Bezier(
 					p0,
 					matrix.get_transformed(i->p1),
 					matrix.get_transformed(i->pp0),
-					matrix.get_transformed(i->pp1) );
+					matrix.get_transformed(i->pp1) ).get_hermite();
 				break;
 			case Contour::CONIC:
-				b = Bezier(
+				h = Bezier(
 					p0,
 					matrix.get_transformed(i->p1),
-					matrix.get_transformed(i->pp0) );
+					matrix.get_transformed(i->pp0) ).get_hermite();
 				break;
 			case Contour::MOVE:
 				p0 = matrix.get_transformed(i->p1);
 				dst_move_flag = true;
 				continue;
 			default: // line, close
-				b = Bezier(p0, matrix.get_transformed(i->p1));
+				h = Hermite(p0, matrix.get_transformed(i->p1));
 				break;
 		}
-		if ( b.p0.is_equal_to(b.p1)
-		  && (b.pp0.is_equal_to(b.pp1) || b.p0.is_equal_to(b.pp0) || b.p1.is_equal_to(b.pp1)) )
+		if ( h.p0.is_equal_to(h.p1) && approximate_zero(h.t0 * h.t1.perp()) )
 			continue;
-		p0 = b.p1;
+		p0 = h.p1;
 		
 		Real bends[3] = {0, 0, 0};
-		int bends_count = b.bends(0, bends);
-		Range r(b.p0[0]);
-		r.expand(b.p1[0]);
+		int bends_count = h.bends(0, bends);
+		Range r(h.p0[0]);
+		r.expand(h.p1[0]);
 		for(Real *i = bends, *end = i + bends_count; i != end; ++i)
-			r.expand( b.p(0, *i) );
-		bends_count += b.inflection(0, bends + bends_count);
+			r.expand( h.p(0, *i) );
+		bends_count += h.inflection(0, bends + bends_count);
 		
 		for(PointList::const_iterator bi = find(r.min); bi != points.end() && !approximate_less(r.max, bi->length); ++bi) {
 			Real roots[3] = {0, 0, 0};
-			int count = b.intersections(0, roots, bi->length);
+			int count = h.intersections(0, roots, bi->length);
 			for(Real *i = roots, *end = i + count; i != end; ++i)
 				intersections.push_back( Intersection(*i, *bi) );
 		}
 		for(Real *i = bends, *end = i + bends_count; i != end; ++i)
-			intersections.push_back( Intersection(*i, interpolate( b.p(0, *i) )) );
+			intersections.push_back( Intersection(*i, interpolate( h.p(0, *i) )) );
 		Real bsl = step;
 		for(int i = 1; i < segments; ++i, bsl += step)
-			intersections.push_back( Intersection(bsl, interpolate( b.p(0, bsl) )) );
+			intersections.push_back( Intersection(bsl, interpolate( h.p(0, bsl) )) );
 		sort(intersections.begin(), intersections.end());
 		
-		Intersection prev(0, interpolate(b.p0[0]));
-		intersections.push_back( Intersection(1, interpolate(b.p1[0])) );
+		Intersection prev(0, interpolate(h.p0[0]));
+		intersections.push_back( Intersection(1, interpolate(h.p1[0])) );
 		
 		for(IntersectionList::const_iterator bi = intersections.begin(); bi != intersections.end(); ++bi) {
 			const Intersection &next = *bi;
@@ -401,29 +401,28 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 				const Vector &t1 = flip ? next.point.t1 : next.point.t0;
 				
 				Hermite bend_h( prev.point.p, next.point.p, t0*dl, t1*dl );
-				Bezier src_b = b.sub(prev.l, next.l);
+				Hermite src_h = h.sub(prev.l, next.l);
 				
-				Real k = next.point.length - prev.point.length;
-				k = approximate_zero(k) ? 0 : 1/k;
-				Real ll0 = (src_b.pp0[0] - prev.point.length)*k;
-				Real ll1 = (src_b.pp1[0] - next.point.length)*k + 1;
-				Real kk = flip ? -1 : 1;
-				Bezier dst_b(
-					bend_h.p0     + bend_h.d(  0).perp()*src_b.p0[1]*kk,
-					bend_h.p1     + bend_h.d(  1).perp()*src_b.p1[1]*kk,
-					bend_h.p(ll0) + bend_h.d(ll0).perp()*src_b.pp0[1]*kk,
-					bend_h.p(ll1) + bend_h.d(ll1).perp()*src_b.pp1[1]*kk );
+				Vector tn0 = bend_h.t0.norm();
+				Vector tn1 = bend_h.t1.norm();
+				Real ky = flip ? -1 : 1;
+				Hermite dst_h(
+					bend_h.p0       + tn0.perp()*src_h.p0[1]*ky,
+					bend_h.p1       + tn1.perp()*src_h.p1[1]*ky,
+					tn0*src_h.t0[0] + tn0.perp()*src_h.t0[1]*ky,
+					tn1*src_h.t1[0] + tn1.perp()*src_h.t1[1]*ky );
+				Bezier dst_b = dst_h.get_bezier();
 
 				if (approximate_equal(next.point.l, prev.point.l)) {
-					half_corner(dst, dst_move_flag, prev.point, src_b.p0[1], true, true);
+					half_corner(dst, dst_move_flag, prev.point, src_h.p0[1], true, true);
 					touch(dst, dst_move_flag, dst_b.p0);
 					dst.cubic_to(dst_b.p1, dst_b.pp0, dst_b.pp1);
-					half_corner(dst, dst_move_flag, next.point, src_b.p1[1], false, false);
+					half_corner(dst, dst_move_flag, next.point, src_h.p1[1], false, false);
 				} else {
-					half_corner(dst, dst_move_flag, prev.point, src_b.p0[1], flip, true);
+					half_corner(dst, dst_move_flag, prev.point, src_h.p0[1], flip, true);
 					touch(dst, dst_move_flag, dst_b.p0);
 					dst.cubic_to(dst_b.p1, dst_b.pp0, dst_b.pp1);
-					half_corner(dst, dst_move_flag, next.point, src_b.p1[1], flip, false);
+					half_corner(dst, dst_move_flag, next.point, src_h.p1[1], flip, false);
 				}
 			}
 			
@@ -433,6 +432,6 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 		intersections.clear();
 	}
 	
-	if (!dst.closed()) dst.close();
+	if (!dst.closed()) dst.close_smooth(true);
 }
 

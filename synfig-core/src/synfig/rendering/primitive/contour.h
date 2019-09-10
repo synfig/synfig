@@ -100,6 +100,7 @@ private:
 
 	ChunkList chunks;
 	int first;
+	bool autocurve_begin, autocurve_end;
 	
 	mutable Mutex bounds_read_mutex;
 	mutable bool bounds_calculated;
@@ -134,8 +135,11 @@ public:
 	void line_to(const Vector &v);
 	void conic_to(const Vector &v, const Vector &pp0);
 	void cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1);
+	void autocurve_to(const Vector &v, bool corner = false);
 	void close();
 
+	void close_smooth(bool keep_corners = false);
+	
 	void close_mirrored(const Matrix &transform);
 	void close_mirrored_hor()
 		{ close_mirrored(Matrix().set_scale(-1, 1)); }
