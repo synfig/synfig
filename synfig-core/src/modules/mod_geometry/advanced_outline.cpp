@@ -232,7 +232,7 @@ namespace {
 
 		void cut(Real p0, Real p1, WidthPoint::SideType side0, WidthPoint::SideType side1) {
 			if (!approximate_less(p0, p1)) return;
-			
+
 			iterator i0 = lower_bound(p0);
 			iterator i1 = upper_bound(p1);
 			if (i0 == begin())
@@ -256,29 +256,51 @@ namespace {
 			
 			erase(i0, i1);
 			
-			if (b0.p0[1] || b0.p1[1]) {
-				Real k = (b0.p1[0] - b0.p0[0]);
-				k = approximate_zero_hp(k) ? 0 : 1/k;
-				b0.split( (p0 - b0.p0[0])*k, &b0, nullptr );
+			bool add0 = b0.p0[1] || b0.p1[1];
+			bool add1 = b1.p0[1] || b1.p1[1];
+			const Real kx = Real(1)/3;
+			
+			if (add0) {
+				Real l = b0.p1[0] - b0.p0[0];
+				l = approximate_zero_hp(l) ? 0 : 1/l;
+				l = (p0 - b0.p0[0])*l;
+				b0.split( l, &b0, nullptr );
+				
+				// fix x-coord of spline to avoid accumulaeted error
+				// x-coord should be linear
+				b0.p1[0] = p0;
+				Real dx = (b0.p1[0] - b0.p0[0])*kx;
+				b0.pp0[0] = b0.p0[0] + dx;
+				b0.pp1[0] = b0.p1[0] - dx;
+				Real pp = p0 + ((add1 ? p1 : i11->first) - p0)*kx;
 				
 				AdvancedPoint &ap = (*this)[p0];
 				ap.w = b0.p1[1];
 				ap.pp0 = b0.pp1;
-				ap.pp1 = Vector(p0, 0);
+				ap.pp1 = Vector(pp, 0);
 				ap.side0 = WidthPoint::TYPE_INTERPOLATE;
 				ap.side1 = side0;
 
 				i00->second.pp1 = b0.pp0;
 			}
 			
-			if (b1.p0[1] || b1.p1[1]) {
-				Real k = (b1.p1[0] - b1.p0[0]);
-				k = approximate_zero_hp(k) ? 0 : 1/k;
-				b1.split( (p1 - b1.p0[0])*k, nullptr, &b1 );
+			if (add1) {
+				Real l = b1.p1[0] - b1.p0[0];
+				l = approximate_zero_hp(l) ? 0 : 1/l;
+				l = (p1 - b1.p0[0])*l;
+				b1.split( l, nullptr, &b1 );
 				
+				// fix x-coord of spline to avoid accumulaeted error
+				// x-coord should be linear
+				b1.p0[0] = p1;
+				Real dx = (b1.p1[0] - b1.p0[0])*kx;
+				b1.pp0[0] = b1.p0[0] + dx;
+				b1.pp1[0] = b1.p1[0] - dx;
+				Real pp = p1 - (p1 - (add0 ? p0 : i00->first))*kx;
+
 				AdvancedPoint &ap = (*this)[p1];
 				ap.w = b1.p0[1];
-				ap.pp0 = Vector(p1, 0);
+				ap.pp0 = Vector(pp, 0);
 				ap.pp1 = b1.pp0;
 				ap.side0 = side1;
 				ap.side1 = WidthPoint::TYPE_INTERPOLATE;
@@ -345,6 +367,7 @@ namespace {
 						{
 							const_iterator i1 = i; ++i1;
 							if (i1 != end()) {
+								dst.line_to( Vector(i1->first, i1->second.y0()) );
 								dst.cubic_to(
 									Vector(i1->first, i1->second.y0()),
 									i->second.pp1,
@@ -557,7 +580,7 @@ Advanced_Outline::sync_vfunc()
 				Real p0 = dash_offset/dashes_length;
 				p0 = (p0 - ceil(p0))*dashes_length;
 				DashItem::SideType type0 = (DashItem::SideType)dilist.back().get(di_blank).get_side_type_after();
-				while(p0 < kl) {
+				while(p0 < 1) {
 					for(ValueBase::List::const_iterator i = dilist.begin(); i != dilist.end(); ++i) {
 						const DashItem &dash = i->get(di_blank);
 						Real p1 = p0 + dash.get_offset();
@@ -567,6 +590,7 @@ Advanced_Outline::sync_vfunc()
 							DashItem::to_wp_side_type( type0 ),
 							DashItem::to_wp_side_type( (DashItem::SideType)dash.get_side_type_before() ) );
 						p0 = p1 + dash.get_length();
+						if (p0 >= 1) break;
 						type0 = (DashItem::SideType)dash.get_side_type_after();
 					}
 				}
