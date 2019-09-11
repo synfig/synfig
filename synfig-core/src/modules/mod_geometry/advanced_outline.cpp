@@ -118,7 +118,7 @@ namespace {
 				
 				for(i1 = i2++; i2 != end(); i0 = i1, i1 = i2++) {
 					Vector p0(i0->first, i0->second.y1());
-					Vector p1(i1->first, i1->second.y1());
+					Vector p1(i1->first, i1->second.y0());
 					Vector p2(i2->first, i2->second.y0());
 					
 					Vector d0 = p1 - p0;
@@ -133,14 +133,15 @@ namespace {
 						Real ky1 = d1[1]/d1[0];
 						Real ky = (ky0 + ky1)*0.5;
 						ky = ky0 > 0 && ky1 > 0 ? std::min(ky, std::min(ky0, ky1)*3)
-								: ky0 < 0 && ky1 < 0 ? std::max(ky, std::max(ky0, ky1)*3)
-								: 0;
+						   : ky0 < 0 && ky1 < 0 ? std::max(ky, std::max(ky0, ky1)*3)
+						   : 0;
 						ky *= s0;
 						i1->second.pp0[1] = p1[1] - (dd0[0]*ky + s1*dd0[1]);
 						i1->second.pp1[1] = p1[1] + (dd1[0]*ky + s1*dd1[1]);
 					} else {
 						i1->second.pp0[1] = p1[1] - s1*dd0[1];
-						i1->second.pp1[1] = p1[1] + s1*dd1[1];
+						Real y = i1->second.y1();
+						i1->second.pp1[1] = y + s1*kx*(p2[1] - y);
 					}
 				}
 				
@@ -310,8 +311,8 @@ namespace {
 		}
 		
 		void build_contour(rendering::Contour &dst) const {
-			const Real round_k0 = 1/sqrt(2);
-			const Real round_k1 = sin(PI/8);
+			const Real round_k0 = 0.5*sqrt(2);
+			const Real round_k1 = sqrt(2) - 1;
 			dst.close();
 			for(const_iterator i = begin(); i != end(); ++i) {
 				if (i->second.side0 != WidthPoint::TYPE_INTERPOLATE && !dst.closed())
@@ -367,7 +368,7 @@ namespace {
 						{
 							const_iterator i1 = i; ++i1;
 							if (i1 != end()) {
-								dst.line_to( Vector(i1->first, i1->second.y0()) );
+								dst.line_to( Vector(i->first, i->second.y1()) );
 								dst.cubic_to(
 									Vector(i1->first, i1->second.y0()),
 									i->second.pp1,
@@ -471,7 +472,7 @@ Advanced_Outline::sync_vfunc()
 	clear();
 	
 	const int wire_segments = 32;
-	const int contour_segments = 1;
+	const int contour_segments = 16;
 	const BLinePoint bp_blank;
 	const WidthPoint wp_blank;
 	const DashItem di_blank;

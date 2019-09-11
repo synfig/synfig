@@ -117,7 +117,7 @@ Outline::sync_vfunc()
 
 	const BLinePoint blank;
 	const int wire_segments = 32;
-	const int contour_segments = 4;
+	const int contour_segments = 16;
 	
 	const Real width  = param_width.get(Real());
 	const Real expand = param_expand.get(Real());
@@ -126,8 +126,8 @@ Outline::sync_vfunc()
 	const bool round_tip[] = {
 		param_round_tip[0].get(bool()),
 		param_round_tip[1].get(bool()) };
-	const Real round_tip_k0 = 1/sqrt(2);
-	const Real round_tip_k1 = sin(PI/8);
+	const Real round_tip_k0 = 0.5*sqrt(2);
+	const Real round_tip_k1 = sqrt(2) - 1;
 
 	try {
 		const bool loop = param_bline.get_loop();
