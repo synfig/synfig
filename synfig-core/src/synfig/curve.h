@@ -84,11 +84,14 @@ public:
 		{ return t(l, p0[index], p1[index], t0[index], t1[index]); }
 	
 	Vector d(Real l) const {
-		const Real precision = real_precision<Real>();
+		const Real precision = real_low_precision<Real>();
+		l = clamp(l, Real(0), Real(1));
 		Vector tangent = t(l);
 		Real magsqr = tangent.mag_squared();
 		if (precision*precision < magsqr) return tangent/sqrt(magsqr);
-		return (p(l + curve_diff_step()) - p(l - curve_diff_step())).norm();
+		Real l0 = std::max(l - curve_diff_step(), Real(0));
+		Real l1 = std::min(l + curve_diff_step(), Real(1));
+		return (p(l1) - p(l0)).norm();
 	}
 
 	Vector pp0() const { return p0 + t0/3; }
@@ -216,11 +219,14 @@ public:
 		{ return t(l, p0[index], p1[index], pp0[index], pp1[index]); }
 	
 	Vector d(Real l) const {
-		const Real precision = real_precision<Real>();
+		const Real precision = real_low_precision<Real>();
+		l = clamp(l, Real(0), Real(1));
 		Vector tangent = t(l);
 		Real magsqr = tangent.mag_squared();
 		if (precision*precision < magsqr) return tangent/sqrt(magsqr);
-		return (p(l + curve_diff_step()) - p(l - curve_diff_step())).norm();
+		Real l0 = std::max(l - curve_diff_step(), Real(0));
+		Real l1 = std::min(l + curve_diff_step(), Real(1));
+		return (p(l1) - p(l0)).norm();
 	}
 
 	Vector t0() const { return (pp0 - p0)*3; }

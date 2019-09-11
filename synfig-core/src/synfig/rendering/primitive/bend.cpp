@@ -61,11 +61,11 @@ namespace {
 
 	
 	void touch(Contour &dst, bool &dst_move_flag, const Vector &p) {
-		if (dst_move_flag) {
-			dst.close_smooth(true);
+		if (dst.get_chunks().empty() || dst_move_flag) {
 			dst.move_to(p);
 			dst_move_flag = false;
-		} else {
+		} else
+		if (!p.is_equal_to( dst.get_chunks().back().p1 )) {
 			dst.line_to(p);
 		}
 	}
@@ -74,12 +74,12 @@ namespace {
 		if (point.mode == Bend::NONE || approximate_zero(radius))
 			return;
 
-		Vector tn0 = (flip ? point.t1 : point.t0).norm();
-		Vector tn1 = (flip ? point.t0 : point.t1).norm();
+		const Vector &tn0 = flip ? point.tn1 : point.tn0;
+		const Vector &tn1 = flip ? point.tn0 : point.tn1;
 		Real d = tn0 * tn1.perp();
 		Real dd = tn0 * tn1;
-		bool codirected = approximate_zero(d);
-		if (codirected && !approximate_less(dd, Real(0)))
+		bool codirected = approximate_zero_lp(d);
+		if (codirected && !approximate_less_lp(dd, Real(0)))
 			return;
 		
 		const Vector p0 = tn0.perp() * radius;
@@ -100,10 +100,12 @@ namespace {
 						center + ppp,
 						center + pp  +  pp.perp()*k,
 						center + ppp - ppp.perp()*k );
+					dst.remove_collapsed_tail();
 					dst.cubic_to(
 						center + p,
 						center + ppp + ppp.perp()*k,
 						center + p   -   p.perp()*k );
+					dst.remove_collapsed_tail();
 				} else {
 					k = -k;
 					touch(dst, dst_move_flag, center + p);
@@ -111,10 +113,12 @@ namespace {
 						center + ppp,
 						center + p   +   p.perp()*k,
 						center + ppp - ppp.perp()*k );
+					dst.remove_collapsed_tail();
 					dst.cubic_to(
 						center + pp,
 						center + ppp + ppp.perp()*k,
 						center + pp  -  pp.perp()*k);
+					dst.remove_collapsed_tail();
 				}
 			} else
 			if (point.mode == Bend::CORNER) {
@@ -123,9 +127,11 @@ namespace {
 				if (out) {
 					touch(dst, dst_move_flag, center + pp);
 					dst.line_to(center + p);
+					dst.remove_collapsed_tail();
 				} else {
 					touch(dst, dst_move_flag, center + p);
 					dst.line_to(center + pp);
+					dst.remove_collapsed_tail();
 				}
 			}
 		} else {
@@ -133,11 +139,15 @@ namespace {
 			if (out) {
 				touch(dst, dst_move_flag, center + pp);
 				dst.line_to(center + p);
+				dst.remove_collapsed_tail();
 			} else {
 				touch(dst, dst_move_flag, center + p);
 				dst.line_to(center + pp);
+				dst.remove_collapsed_tail();
 			}
 		}
+		
+		return;
 	}
 }
 
@@ -159,12 +169,15 @@ Bend::add(const Vector &p, const Vector &t0, const Vector &t1, Mode mode, bool c
 		{
 			// skip zero length segment
 			last.t1 = t1;
+			last.tn1 = t1.norm();
 			last.mode = mode;
 			return;
 		}
 		
 		const Real step = Real(1)/segments;
 		const Hermite h(last.p, p, last.t1, t0);
+		last.tn1 = h.d(0);
+		
 		point.p = last.p;
 		point.length = last.length;
 		Real l0 = last.l, l = step;
@@ -174,15 +187,20 @@ Bend::add(const Vector &p, const Vector &t0, const Vector &t1, Mode mode, bool c
 			point.length = calc_length ? point.length + (pp - point.p).mag() : point.l;
 			point.p = pp;
 			point.t0 = point.t1 = h.t(l);
+			point.tn0 = point.tn1 = h.d(l);
 			points.push_back(point);
 		}
 		point.l = l0 + 1;
 		point.length = calc_length ? point.length + (p - point.p).mag() : point.l;
+		point.tn0 = h.d(1);
+	} else {
+		point.tn0 = t0.norm();
 	}
 
 	point.p = p;
 	point.t0 = t0;
 	point.t1 = t1;
+	point.tn1 = t1.norm();
 	point.mode = mode;
 	points.push_back(point);
 }
@@ -198,8 +216,10 @@ Bend::loop(bool calc_length, int segments)
 	Point &first = points.front();
 	Point &last = points.back();
 	
-	first.t0 = last.t0;
-	last.t1  = first.t1;
+	first.t0  = last.t0;
+	first.tn0 = last.tn0;
+	last.t1   = first.t1;
+	last.tn1  = first.tn1;
 	first.e0 = last.e1 = false;
 }
 
@@ -212,7 +232,7 @@ Bend::tails()
 		PointList::iterator i1 = points.begin(), i0 = i1++;
 		Real dl = i1->l - i0->l;
 		Hermite h(i0->p, i1->p, i0->t1*dl, i1->t0*dl);
-		i0->t0 = h.d(0);
+		i0->t0 = i0->tn0 = h.d(0);
 		i0->mode = NONE;
 	}
 
@@ -220,7 +240,7 @@ Bend::tails()
 		PointList::iterator i0 = points.end(), i1 = (--i0)--;
 		Real dl = i1->l - i0->l;
 		Hermite h(i0->p, i1->p, i0->t1*dl, i1->t0*dl);
-		i1->t1 = h.d(1);
+		i1->t1 = i1->tn1 = h.d(1);
 		i1->mode = NONE;
 	}
 }
@@ -285,8 +305,8 @@ Bend::interpolate(Real length) const
 		// extarpolation before
 		Real dlen = length - i->length;
 		Point s;
-		s.p = i->p + i->t0*dlen;
-		s.t0 = s.t1 = i->t0;
+		s.p = i->p + i->tn0*dlen;
+		s.t0 = s.t1 = s.tn0 = s.tn1 = i->tn0;
 		s.l = i->l + dlen;
 		s.length = length;
 		s.e0 = s.e1 = i->e0;
@@ -298,8 +318,8 @@ Bend::interpolate(Real length) const
 		// extarpolation after
 		Real dlen = length - i->length;
 		Point s;
-		s.p = i->p + i->t1*dlen;
-		s.t0 = s.t1 = i->t1;
+		s.p = i->p + i->tn1*dlen;
+		s.t0 = s.t1 = s.tn0 = s.tn1 = i->t1;
 		s.l = i->l + dlen;
 		s.length = length;
 		s.e0 = s.e1 = i->e1;
@@ -315,6 +335,7 @@ Bend::interpolate(Real length) const
 	Point s;
 	s.p = h.p(l);
 	s.t0 = s.t1 = h.t(l);
+	s.tn0 = s.tn1 = h.d(l);
 	s.l = i->l + l*(j->l - i->l);
 	s.length = length;
 	s.e0 = s.e1 = (i->e1 && j->e0);
@@ -333,11 +354,13 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 	const Real step = Real(1)/segments;
 	Contour::ChunkList::const_iterator i = src.get_chunks().begin();
 	Vector p0 = matrix.get_transformed(i->p1);
+	Vector first_tangent;
 	bool dst_move_flag = true;
 	
 	IntersectionList intersections;
 	while(++i != src.get_chunks().end()) {
 		Hermite h;
+		Vector current_tangent;
 		switch(i->type) {
 			case Contour::CUBIC:
 				h = Bezier(
@@ -345,25 +368,61 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 					matrix.get_transformed(i->p1),
 					matrix.get_transformed(i->pp0),
 					matrix.get_transformed(i->pp1) ).get_hermite();
+				current_tangent = h.t1;
 				break;
 			case Contour::CONIC:
 				h = Bezier(
 					p0,
 					matrix.get_transformed(i->p1),
 					matrix.get_transformed(i->pp0) ).get_hermite();
+				current_tangent = h.t1;
 				break;
 			case Contour::MOVE:
 				p0 = matrix.get_transformed(i->p1);
 				dst_move_flag = true;
+				first_tangent = Vector();
 				continue;
 			default: // line, close
 				h = Hermite(p0, matrix.get_transformed(i->p1));
 				break;
 		}
-		if ( h.p0.is_equal_to(h.p1) && approximate_zero(h.t0 * h.t1.perp()) )
-			continue;
-		p0 = h.p1;
 		
+		if (dst_move_flag) first_tangent = h.t0;
+		
+		if ( h.p0.is_equal_to(h.p1) && approximate_zero(h.t0 * h.t1.perp()) ) {
+			if (i->type == Contour::CLOSE) dst.close();
+			continue;
+		}
+
+		p0 = h.p1;
+
+		Vector next_tangent;
+		Contour::ChunkList::const_iterator j = i; ++j;
+		if (j != src.get_chunks().end()) {
+			switch(j->type) {
+				case Contour::CONIC:
+				case Contour::CUBIC:
+					next_tangent = matrix.get_transformed(j->pp0 - i->p1, false);
+					break;
+				case Contour::CLOSE:
+					next_tangent = j->p1.is_equal_to( i->p1 )
+								 ? first_tangent
+								 : matrix.get_transformed(j->p1 - i->p1, false);
+					break;
+				case Contour::MOVE:
+					break;
+				default:
+					next_tangent = matrix.get_transformed(j->p1 - i->p1, false);
+					break;
+			}
+		}
+		
+		current_tangent = current_tangent.norm();
+		next_tangent = next_tangent.norm();
+		Real tangent_dot = current_tangent * next_tangent;
+		Real tangent_dot_perp = current_tangent * next_tangent.perp();
+		bool corner = fabs(tangent_dot_perp) > 0.01 || tangent_dot < 0.5;
+				   
 		Real bends[3] = {0, 0, 0};
 		int bends_count = h.bends(0, bends);
 		Range r(h.p0[0]);
@@ -396,42 +455,32 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 			bool e0 = flip ? prev.point.e0 : prev.point.e1;
 			bool e1 = flip ? next.point.e1 : next.point.e0;
 			if (e0 && e1) {
-				Real dl = next.point.l - prev.point.l;
-				const Vector &t0 = flip ? prev.point.t0 : prev.point.t1;
-				const Vector &t1 = flip ? next.point.t1 : next.point.t0;
+				const Vector &tn0 = flip ? prev.point.tn0 : prev.point.tn1;
+				const Vector &tn1 = flip ? next.point.tn1 : next.point.tn0;
 				
-				Hermite bend_h( prev.point.p, next.point.p, t0*dl, t1*dl );
-				Hermite src_h = h.sub(prev.l, next.l);
+				Real src_p0y = h.p(1, prev.l);
+				Real src_p1y = h.p(1, next.l);
 				
-				Vector tn0 = bend_h.t0.norm();
-				Vector tn1 = bend_h.t1.norm();
-				Real ky = flip ? -1 : 1;
-				Hermite dst_h(
-					bend_h.p0       + tn0.perp()*src_h.p0[1]*ky,
-					bend_h.p1       + tn1.perp()*src_h.p1[1]*ky,
-					tn0*src_h.t0[0] + tn0.perp()*src_h.t0[1]*ky,
-					tn1*src_h.t1[0] + tn1.perp()*src_h.t1[1]*ky );
-				Bezier dst_b = dst_h.get_bezier();
-
-				if (approximate_equal(next.point.l, prev.point.l)) {
-					half_corner(dst, dst_move_flag, prev.point, src_h.p0[1], true, true);
-					touch(dst, dst_move_flag, dst_b.p0);
-					dst.cubic_to(dst_b.p1, dst_b.pp0, dst_b.pp1);
-					half_corner(dst, dst_move_flag, next.point, src_h.p1[1], false, false);
-				} else {
-					half_corner(dst, dst_move_flag, prev.point, src_h.p0[1], flip, true);
-					touch(dst, dst_move_flag, dst_b.p0);
-					dst.cubic_to(dst_b.p1, dst_b.pp0, dst_b.pp1);
-					half_corner(dst, dst_move_flag, next.point, src_h.p1[1], flip, false);
-				}
+				Vector dst_p0 = prev.point.p + tn0.perp()*src_p0y;
+				Vector dst_p1 = next.point.p + tn1.perp()*src_p1y;
+				
+				bool vertical = approximate_equal(next.point.l, prev.point.l);
+				
+				half_corner(dst, dst_move_flag, prev.point, src_p0y, flip || vertical, true);
+				touch(dst, dst_move_flag, dst_p0);
+				dst.autocurve_to(dst_p1);
+				half_corner(dst, dst_move_flag, next.point, src_p1y, flip && !vertical, false);
+			} else {
+				dst.autocurve_corner();
 			}
 			
 			prev = next;
 		}
 		
 		intersections.clear();
+		if (corner) dst.autocurve_corner();
 	}
 	
-	if (!dst.closed()) dst.close_smooth(true);
+	if (!dst.closed()) dst.close();
 }
 

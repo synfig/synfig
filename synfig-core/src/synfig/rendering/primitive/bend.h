@@ -66,6 +66,7 @@ public:
 	public:
 		Vector p;
 		Vector t0, t1;
+		Vector tn0, tn1;
 		Mode mode;
 		bool e0, e1;
 		Real l;
