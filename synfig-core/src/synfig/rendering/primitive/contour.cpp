@@ -311,6 +311,7 @@ Contour::clear()
 void
 Contour::move_to(const Vector &v)
 {
+	autocurve_end = false;
 	if (closed()) {
 		chunks.push_back(Chunk(MOVE, v));
 		touch_chunks();
@@ -329,6 +330,7 @@ Contour::move_to(const Vector &v)
 void
 Contour::line_to(const Vector &v)
 {
+	autocurve_end = false;
 	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
 	if (closed()) move_to(prev);
 	if (!v.is_equal_to(prev)) {
@@ -340,6 +342,7 @@ Contour::line_to(const Vector &v)
 void
 Contour::conic_to(const Vector &v, const Vector &pp0)
 {
+	autocurve_end = false;
 	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
 	if (closed()) move_to(prev);
 	if (!v.is_equal_to(prev)) {
@@ -351,6 +354,7 @@ Contour::conic_to(const Vector &v, const Vector &pp0)
 void
 Contour::cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1)
 {
+	autocurve_end = false;
 	Vector prev = chunks.empty() ? Vector::zero() : chunks.back().p1;
 	if (closed()) move_to(prev);
 	if ( !v.is_equal_to(prev)
@@ -360,6 +364,10 @@ Contour::cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1)
 		touch_chunks();
 	}
 }
+
+void
+Contour::autocurve_corner()
+	{ autocurve_end = false; }
 
 void
 Contour::autocurve_to(const Vector &v, bool corner)
@@ -393,10 +401,8 @@ Contour::autocurve_to(const Vector &v, bool corner)
 		}
 		chunks.push_back(Chunk(CUBIC, v, pp0, pp1));
 		touch_chunks();
-		autocurve_end = corner;
-	} else {
-		autocurve_begin = false;
 	}
+	autocurve_end = !corner;
 }
 
 void
@@ -417,8 +423,21 @@ Contour::close()
 		} else chunks.push_back(Chunk(CLOSE, v));
 		first = (int)chunks.size();
 		touch_chunks();
+		autocurve_begin = false;
 	}
-	autocurve_begin = false;
+}
+
+void
+Contour::remove_collapsed_tail()
+{
+	if ((int)chunks.size() > 2) {
+		ChunkList::iterator i0 = chunks.end(), i2 = --i0, i1 = (--i0)--;
+		if ( i2->type == i1->type
+		  && i2->p1.is_equal_to( i0->p1 )
+		  && i2->pp0.is_equal_to( i1->pp1 )
+		  && i2->pp1.is_equal_to( i1->pp0 ) )
+			chunks.pop_back();
+	}
 }
 
 void
@@ -670,58 +689,6 @@ Contour::check_is_inside(int intersections, WindingStyle winding_style, bool inv
 bool
 Contour::is_inside(const Point &p, WindingStyle winding_style, bool invert) const
 	{ return check_is_inside(get_intersector().intersect(p), winding_style, invert); }
-
-void
-Contour::close_smooth(bool keep_corners)
-{
-	if (closed()) return;
-	int first = this->first;
-	line_to(chunks[first].p1);
-	close();
-	
-	if ((int)chunks.size() - first < 3) return;
-	
-	const Real kline = Real(1)/3;
-	const Real ksmooth = Real(0.5)/3;
-	
-	ChunkList::iterator i2 = chunks.begin() + first, i0 = i2++, i1 = i2++;
-	i1->pp0 = i0->p1 + (i1->p1 - i0->p1)*kline;
-	for(; i2 != chunks.end(); i0 = i1, i1 = i2++) {
-		Vector d0 = i1->p1 - i0->p1;
-		Vector d1 = i2->p1 - i1->p1;
-
-		bool smooth = !d0.is_equal_to( Vector() )
-				   && !d0.is_equal_to( Vector() )
-				   && (i1->type == LINE || i1->type == CONIC || i1->type == CUBIC)
-				   && (i2->type == LINE || i2->type == CONIC || i2->type == CUBIC);
-		if (smooth && keep_corners) {
-			Vector t0, t1;
-			switch(i1->type) {
-				case CUBIC: t0 = i1->p1 - i1->pp1; break;
-				case CONIC: t0 = i1->p1 - i1->pp0; break;
-				default:    t0 = d0;               break;
-			}
-			switch(i2->type) {
-				case CUBIC:
-				case CONIC: t1 = i2->pp0 - i1->p1; break;
-				default:    t1 = d1;               break;
-			}
-			smooth = approximate_zero(t0*t1.perp()) && approximate_less(Real(0), t0*t1);
-		}
-		
-		if (smooth) {
-			Real l0 = d0.mag();
-			Real l1 = d1.mag();
-			i1->type = i2->type = CUBIC;
-			i1->pp1 = i1->p1 - (d0 + d1*(l0/l1))*ksmooth;
-			i2->pp0 = i1->p1 + (d0*(l1/l0) + d1)*ksmooth;
-		} else {
-			i1->pp1 = i1->p1 - d0*kline;
-			i2->pp0 = i1->p1 + d1*kline;
-		}
-	}
-	i1->pp1 = i1->p1 - (i1->p1 - i0->p1)*kline;
-}
 
 void
 Contour::close_mirrored(const Matrix &transform)

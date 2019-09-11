@@ -136,9 +136,10 @@ public:
 	void conic_to(const Vector &v, const Vector &pp0);
 	void cubic_to(const Vector &v, const Vector &pp0, const Vector &pp1);
 	void autocurve_to(const Vector &v, bool corner = false);
+	void autocurve_corner();
 	void close();
 
-	void close_smooth(bool keep_corners = false);
+	void remove_collapsed_tail();
 	
 	void close_mirrored(const Matrix &transform);
 	void close_mirrored_hor()
