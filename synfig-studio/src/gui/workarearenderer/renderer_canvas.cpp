@@ -428,6 +428,7 @@ Renderer_Canvas::enqueue_render_frame(
 
 	rend_desc.clear_flags();
 	rend_desc.set_wh(w, h);
+	rend_desc.set_render_excluded_contexts(true);
 	ContextParams context_params(rend_desc.get_render_excluded_contexts());
 	TileList &frame_tiles = tiles[id];
 
