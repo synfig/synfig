@@ -61,7 +61,7 @@ studio::colorconv_apply_gamma(const synfig::Color &c_)
 		App::gamma.r_F32_to_F32(c.get_r()),
 		App::gamma.g_F32_to_F32(c.get_g()),
 		App::gamma.b_F32_to_F32(c.get_b()),
-		c.get_a() );
+		App::gamma.b_F32_to_F32(c.get_a()) );
 }
 
 void

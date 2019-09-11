@@ -254,12 +254,8 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 				float r=gamma().r_U8_to_F32((unsigned char)row_pointers[y][x*4+0]);
 				float g=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x*4+1]);
 				float b=gamma().b_U8_to_F32((unsigned char)row_pointers[y][x*4+2]);
-				surface[y][x]=Color(
-					r,
-					g,
-					b,
-					(float)(unsigned char)row_pointers[y][x*4+3]*(1.0/255.0)
-				);
+				float a=gamma().a_U8_to_F32((unsigned char)row_pointers[y][x*4+3]);
+				surface[y][x]=Color(r, g, b, a);
 				/*
 				surface[y][x]=Color(
 					(float)(unsigned char)row_pointers[y][x*4+0]*(1.0/255.0),
@@ -291,13 +287,10 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 			for(x=0;x<width;x++)
 			{
 				float gray=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x*2]);
+				float a=gamma().a_U8_to_F32((unsigned char)row_pointers[y][x*2+1]);
 //				float gray=(float)(unsigned char)row_pointers[y][x*2]*(1.0/255.0);
-				surface[y][x]=Color(
-					gray,
-					gray,
-					gray,
-					(float)(unsigned char)row_pointers[y][x*2+1]*(1.0/255.0)
-				);
+//				float a=(float)(unsigned char)row_pointers[y][x*2+1]*(1.0/255.0);
+				surface[y][x]=Color(gray, gray, gray, a);
 			}
 		break;
 
@@ -316,20 +309,13 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 				float r=gamma().r_U8_to_F32((unsigned char)palette[row_pointers[y][x]].red);
 				float g=gamma().g_U8_to_F32((unsigned char)palette[row_pointers[y][x]].green);
 				float b=gamma().b_U8_to_F32((unsigned char)palette[row_pointers[y][x]].blue);
-				float a=1.0;
 
-                if (has_alpha && num_trans > 0 && trans_alpha != NULL)
-                {
-                    a = row_pointers[y][x] < num_trans ?
-                            (trans_alpha[row_pointers[y][x]]*(1.0/255.0)) : 1.0;
-                }
-
-				surface[y][x]=Color(
-					r,
-					g,
-					b,
-					a
-				);
+				unsigned char ac = 255;
+                if (has_alpha && num_trans > 0 && trans_alpha != NULL && row_pointers[y][x] < num_trans)
+                    ac = trans_alpha[row_pointers[y][x]];
+				float a=gamma().a_U8_to_F32(ac);
+				
+				surface[y][x]=Color(r, g, b, a);
 			}
 		break;
 	}

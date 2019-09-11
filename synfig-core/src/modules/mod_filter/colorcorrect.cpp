@@ -93,40 +93,35 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 	Color ret(in);
 	Real brightness((_brightness-0.5)*contrast+0.5);
 
-	if(gamma.get_gamma_r()!=1.0)
-	{
+	if(gamma.get_gamma_r()!=1.0) {
 		if(ret.get_r() < 0)
-		{
 			ret.set_r(-gamma.r_F32_to_F32(-ret.get_r()));
-		}else
-		{
+		else
 			ret.set_r(gamma.r_F32_to_F32(ret.get_r()));
-		}
 	}
-	if(gamma.get_gamma_g()!=1.0)
-	{
+	if(gamma.get_gamma_g()!=1.0) {
 		if(ret.get_g() < 0)
-		{
 			ret.set_g(-gamma.g_F32_to_F32(-ret.get_g()));
-		}else
-		{
+		else
 			ret.set_g(gamma.g_F32_to_F32(ret.get_g()));
-		}
 	}
-	if(gamma.get_gamma_b()!=1.0)
-	{
+	if(gamma.get_gamma_b()!=1.0) {
 		if(ret.get_b() < 0)
-		{
 			ret.set_b(-gamma.b_F32_to_F32(-ret.get_b()));
-		}else
-		{
+		else
 			ret.set_b(gamma.b_F32_to_F32(ret.get_b()));
-		}
+	}
+	if(gamma.get_gamma_a()!=1.0) {
+		if(ret.get_a() < 0)
+			ret.set_a(-gamma.a_F32_to_F32(-ret.get_a()));
+		else
+			ret.set_a(gamma.a_F32_to_F32(ret.get_a()));
 	}
 
 	assert(!std::isnan(ret.get_r()));
 	assert(!std::isnan(ret.get_g()));
 	assert(!std::isnan(ret.get_b()));
+	assert(!std::isnan(ret.get_a()));
 
 	if(exposure!=0.0)
 	{
@@ -350,6 +345,7 @@ Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 		task_gamma->gamma_r = gamma;
 		task_gamma->gamma_g = gamma;
 		task_gamma->gamma_b = gamma;
+		task_gamma->gamma_a = gamma;
 		task_gamma->sub_task() = task;
 		task = task_gamma;
 	}

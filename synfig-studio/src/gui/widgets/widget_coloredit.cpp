@@ -638,14 +638,15 @@ Widget_ColorEdit::set_value(const synfig::Color &data)
 		R_adjustment->set_value(gamma_in(color.get_r())*100);
 		G_adjustment->set_value(gamma_in(color.get_g())*100);
 		B_adjustment->set_value(gamma_in(color.get_b())*100);
+		A_adjustment->set_value(gamma_in(color.get_a())*100);
 	}
 	else
 	{
 		R_adjustment->set_value(color.get_r()*100);
 		G_adjustment->set_value(color.get_g()*100);
 		B_adjustment->set_value(color.get_b()*100);
+		A_adjustment->set_value(color.get_a()*100);
 	}
-	A_adjustment->set_value(color.get_a()*100);
 
 	slider_R->set_color(color);
 	slider_G->set_color(color);
@@ -672,14 +673,15 @@ Widget_ColorEdit::get_value_raw()
 		color.set_r(gamma_out(R_adjustment->get_value()/100.0f));
 		color.set_g(gamma_out(G_adjustment->get_value()/100.0f));
 		color.set_b(gamma_out(B_adjustment->get_value()/100.0f));
+		color.set_a(gamma_out(A_adjustment->get_value()/100.0f));
 	}
 	else
 	{
 		color.set_r(R_adjustment->get_value()/100);
 		color.set_g(G_adjustment->get_value()/100);
 		color.set_b(B_adjustment->get_value()/100);
+		color.set_a(A_adjustment->get_value()/100);
 	}
-	color.set_a(A_adjustment->get_value()/100);
 	assert(color.is_valid());
 
 	return color;

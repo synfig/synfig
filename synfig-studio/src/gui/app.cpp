@@ -516,7 +516,8 @@ public:
 				value=strprintf("%f %f %f %f",
 					App::gamma.get_gamma_r(),
 					App::gamma.get_gamma_g(),
-					App::gamma.get_gamma_b()
+					App::gamma.get_gamma_b(),
+					App::gamma.get_gamma_a()
 				);
 				return true;
 			}
@@ -701,15 +702,12 @@ public:
 			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 			if(key=="gamma")
 			{
-				float r,g,b;
+				float r,g,b,a = -1;
 
-				strscanf(value,"%f %f %f",
-					&r,
-					&g,
-					&b
-				);
+				strscanf(value,"%f %f %f %f", &r, &g, &b, &a);
 
-				App::gamma.set_all(r,g,b);
+				if (a <= 0) a = r;
+				App::gamma.set_all(r,g,b,a);
 
 				return true;
 			}

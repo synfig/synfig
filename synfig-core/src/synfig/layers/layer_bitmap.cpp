@@ -222,6 +222,7 @@ synfig::Layer_Bitmap::filter(Color& x)const
 		x.set_r(powf((float)x.get_r(),gamma_adjust));
 		x.set_g(powf((float)x.get_g(),gamma_adjust));
 		x.set_b(powf((float)x.get_b(),gamma_adjust));
+		x.set_a(powf((float)x.get_a(),gamma_adjust));
 	}
 	return x;
 }
@@ -236,6 +237,7 @@ synfig::Layer_Bitmap::filter(CairoColor& x)const
 		x.set_r(powf((float)(x.get_r()/CairoColor::range),gamma_adjust)*CairoColor::range);
 		x.set_g(powf((float)(x.get_g()/CairoColor::range),gamma_adjust)*CairoColor::range);
 		x.set_b(powf((float)(x.get_b()/CairoColor::range),gamma_adjust)*CairoColor::range);
+		x.set_a(powf((float)(x.get_a()/CairoColor::range),gamma_adjust)*CairoColor::range);
 	}
 	return x;
 }
@@ -667,6 +669,7 @@ Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) con
 		task_gamma->gamma[0] = gamma;
 		task_gamma->gamma[1] = gamma;
 		task_gamma->gamma[2] = gamma;
+		task_gamma->gamma[3] = gamma;
 		task_gamma->sub_task() = task;
 		task = task_gamma;
 	}

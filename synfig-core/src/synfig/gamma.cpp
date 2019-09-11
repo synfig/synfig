@@ -65,16 +65,14 @@ build_table(float *table_U16_to_F32, unsigned short *table_U16_to_U16, float gam
 
 /* === M E T H O D S ======================================================= */
 
-Gamma::Gamma(float x) {
-	gamma[0] = gamma[1] = gamma[2] = -1.f;
+Gamma::Gamma(float x):
+	Gamma(x, x, x, x) { }
+
+Gamma::Gamma(float r, float g, float b, float a) {
+	gamma[0] = gamma[1] = gamma[2] = gamma[3] = -1.f;
 	memset(table_U16_to_F32, 0, sizeof(table_U16_to_F32));
 	memset(table_U16_to_U16, 0, sizeof(table_U16_to_U16));
-	set_gamma(x);
-}
-
-Gamma::Gamma(float r, float g, float b) {
-	gamma[0] = gamma[1] = gamma[2] = -1.f;
-	set_all(r, g, b);
+	set_all(r, g, b, a);
 }
 
 void
@@ -84,7 +82,7 @@ Gamma::set_gamma(int channel, float x)
 
 	assert(x > 0.f);
 	gamma[channel] = x;
-	for(int i = 0; i < 3; ++i)
+	for(int i = 0; i < 4; ++i)
 		if (i != channel && gamma[i] == gamma[channel]) {
 			memcpy(table_U16_to_F32[channel], table_U16_to_F32[i], sizeof(table_U16_to_F32[channel]));
 			memcpy(table_U16_to_U16[channel], table_U16_to_U16[i], sizeof(table_U16_to_U16[channel]));

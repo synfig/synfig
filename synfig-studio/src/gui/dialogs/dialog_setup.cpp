@@ -76,6 +76,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
+	adj_gamma_a(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
 	time_format(Time::FORMAT_NORMAL),
@@ -127,7 +128,7 @@ Dialog_Setup::create_gamma_page(PageInfo pi)
 	 *   red ---------x--------------
 	 * green ---------x--------------
 	 *  blue ---------x--------------
-	 * black ---------x--------------
+	 * alpha ---------x--------------
 	 *
 	 */
 
@@ -153,6 +154,12 @@ Dialog_Setup::create_gamma_page(PageInfo pi)
 	pi.grid->attach(*scale_gamma_b, 1, row, 1, 1);
 	scale_gamma_b->set_hexpand(true);
 	adj_gamma_b->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
+
+	Gtk::Scale* scale_gamma_a(manage(new Gtk::Scale(adj_gamma_a)));
+	attach_label(pi.grid, _("Alpha"), ++row);
+	pi.grid->attach(*scale_gamma_a, 1, row, 1, 1);
+	scale_gamma_a->set_hexpand(true);
+	adj_gamma_a->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_a_change));
 }
 
 void
@@ -721,7 +728,8 @@ Dialog_Setup::on_apply_pressed()
 	App::gamma.set_all(
 		1.0/adj_gamma_r->get_value(),
 		1.0/adj_gamma_g->get_value(),
-		1.0/adj_gamma_b->get_value() );
+		1.0/adj_gamma_b->get_value(),
+		1.0/adj_gamma_a->get_value() );
 
 	App::set_max_recent_files((int)adj_recent_files->get_value());
 
@@ -876,6 +884,14 @@ Dialog_Setup::on_gamma_b_change()
 }
 
 void
+Dialog_Setup::on_gamma_a_change()
+{
+	gamma_pattern.set_gamma_a(1.0/adj_gamma_a->get_value());
+	gamma_pattern.refresh();
+	gamma_pattern.queue_draw();
+}
+
+void
 Dialog_Setup::on_size_template_combo_change()
 {
 	String selection(size_template_combo->get_active_text());
@@ -998,10 +1014,12 @@ Dialog_Setup::refresh()
 	gamma_pattern.set_gamma_r(App::gamma.get_gamma_r());
 	gamma_pattern.set_gamma_g(App::gamma.get_gamma_g());
 	gamma_pattern.set_gamma_b(App::gamma.get_gamma_b());
+	gamma_pattern.set_gamma_a(App::gamma.get_gamma_a());
 
 	adj_gamma_r->set_value(1.0/App::gamma.get_gamma_r());
 	adj_gamma_g->set_value(1.0/App::gamma.get_gamma_g());
 	adj_gamma_b->set_value(1.0/App::gamma.get_gamma_b());
+	adj_gamma_a->set_value(1.0/App::gamma.get_gamma_a());
 
 	gamma_pattern.refresh();
 
@@ -1132,6 +1150,7 @@ GammaPattern::GammaPattern():
 	gamma_r(),
 	gamma_g(),
 	gamma_b(),
+	gamma_a(),
 	tile_w(80),
 	tile_h(80)
 {

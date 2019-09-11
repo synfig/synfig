@@ -367,7 +367,7 @@ png_trgt_spritesheet::read_png_file()
 			color_data[y][x].set_r(gamma_png.r_U8_to_F32(ptr[0]));
 			color_data[y][x].set_g(gamma_png.g_U8_to_F32(ptr[1]));
 			color_data[y][x].set_b(gamma_png.b_U8_to_F32(ptr[2]));
-			color_data[y][x].set_a((float)ptr[3] / 255.0f);
+			color_data[y][x].set_a(gamma_png.a_U8_to_F32(ptr[3]));
         }
     }
 

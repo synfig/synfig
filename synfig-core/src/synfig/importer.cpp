@@ -172,7 +172,6 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 	if(!get_frame(surface, RendDesc(), time, trimmed, width, height, top, left))
 		warning(strprintf("Unable to get frame from \"%s\"", identifier.filename.c_str()));
 
-
 	const char *s = getenv("SYNFIG_PACK_IMAGES");
 	if (s == NULL || atoi(s) != 0)
 		last_surface_ = new rendering::SurfaceSWPacked();

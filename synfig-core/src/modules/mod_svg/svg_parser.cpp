@@ -1251,6 +1251,12 @@ Svg_parser::adjustGamma(float r,float g,float b,float a){
 		else
 			ret.set_b(gamma.b_F32_to_F32(ret.get_b()));
 	}
+	if(gamma.get_gamma_a()!=1.0){
+		if(ret.get_a() < 0)
+			ret.set_a(-gamma.a_F32_to_F32(-ret.get_a()));
+		else
+			ret.set_a(gamma.a_F32_to_F32(ret.get_a()));
+	}
 	return ret;
 }
 

@@ -91,6 +91,7 @@ void studio::Dock_Info::on_mouse_move()
 		cr = gamma_in(cr);
 		cg = gamma_in(cg);
 		cb = gamma_in(cb);
+		ca = gamma_in(ca);
 	}
 
 	r.set_text(strprintf("%.1f%%",cr*100));

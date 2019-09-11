@@ -79,6 +79,7 @@ class GammaPattern : public Gtk::DrawingArea
 	float gamma_r;
 	float gamma_g;
 	float gamma_b;
+	float gamma_a;
 
 	int tile_w, tile_h;
 
@@ -87,6 +88,7 @@ class GammaPattern : public Gtk::DrawingArea
 	float r_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_r))); }
 	float g_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_g))); }
 	float b_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_b))); }
+	float a_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_a))); }
 
 public:
 	GammaPattern();
@@ -97,10 +99,12 @@ public:
 	void set_gamma_r(float x) { gamma_r=x; }
 	void set_gamma_g(float x) { gamma_g=x; };
 	void set_gamma_b(float x) { gamma_b=x; };
+	void set_gamma_a(float x) { gamma_a=x; };
 
 	float get_gamma_r()const { return gamma_r; }
 	float get_gamma_g()const { return gamma_g; }
 	float get_gamma_b()const { return gamma_b; }
+	float get_gamma_a()const { return gamma_a; }
 
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 }; // END of class GammaPattern
@@ -136,6 +140,7 @@ class Dialog_Setup : public Dialog_Template
 	void on_gamma_r_change();
 	void on_gamma_g_change();
 	void on_gamma_b_change();
+	void on_gamma_a_change();
 	void on_size_template_combo_change();
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
@@ -169,6 +174,7 @@ class Dialog_Setup : public Dialog_Template
 	Glib::RefPtr<Gtk::Adjustment> adj_gamma_r;
 	Glib::RefPtr<Gtk::Adjustment> adj_gamma_g;
 	Glib::RefPtr<Gtk::Adjustment> adj_gamma_b;
+	Glib::RefPtr<Gtk::Adjustment> adj_gamma_a;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_recent_files;
 	Glib::RefPtr<Gtk::Adjustment> adj_undo_depth;
