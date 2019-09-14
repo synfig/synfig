@@ -471,8 +471,8 @@ Advanced_Outline::sync_vfunc()
 {
 	clear();
 	
-	const int wire_segments = 32;
-	const int contour_segments = 16;
+	const int wire_segments = 16;
+	const int contour_segments = 8;
 	const BLinePoint bp_blank;
 	const WidthPoint wp_blank;
 	const DashItem di_blank;

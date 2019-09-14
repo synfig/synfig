@@ -116,8 +116,8 @@ Outline::sync_vfunc()
 	if (param_bline.get_list().empty()) return;
 
 	const BLinePoint blank;
-	const int wire_segments = 32;
-	const int contour_segments = 16;
+	const int wire_segments = 16;
+	const int contour_segments = 8;
 	
 	const Real width  = param_width.get(Real());
 	const Real expand = param_expand.get(Real());
