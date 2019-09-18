@@ -22,6 +22,9 @@
 
 /* === S T A R T =========================================================== */
 
+#ifndef __SYNFIG_DEBUGSURFACE_H
+#define __SYNFIG_DEBUGSURFACE_H
+
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
@@ -55,3 +58,5 @@ public:
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */
+
+#endif
