@@ -23,8 +23,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RANDOM_H
-#define __SYNFIG_RANDOM_H
+#ifndef __SYNFIG_RANDOM_NOISE_H
+#define __SYNFIG_RANDOM_NOISE_H
 
 /* === H E A D E R S ======================================================= */
 

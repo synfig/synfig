@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_MPTR_PPM_H
-#define __SYNFIG_MPTR_PPM_H
+#ifndef __SYNFIG_MPTR_BMP_H
+#define __SYNFIG_MPTR_BMP_H
 
 /* === H E A D E R S ======================================================= */
 

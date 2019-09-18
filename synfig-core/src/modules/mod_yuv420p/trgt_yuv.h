@@ -23,8 +23,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_TRGT_PPM_H
-#define __SYNFIG_TRGT_PPM_H
+#ifndef __SYNFIG_TRGT_YUV_H
+#define __SYNFIG_TRGT_YUV_H
 
 /* === H E A D E R S ======================================================= */
 
