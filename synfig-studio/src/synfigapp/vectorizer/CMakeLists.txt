@@ -1,4 +1,4 @@
-target_sources(synfigstudio
+target_sources(synfigapp
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/centerlinepolygonizer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/centerlineskeletonizer.cpp"
@@ -9,3 +9,5 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/centerlinetostrokes.cpp"
 
 )
+
+target_include_directories(synfigapp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
