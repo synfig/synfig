@@ -23,8 +23,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_SOLIDCOLOR_H
-#define __SYNFIG_LAYER_SOLIDCOLOR_H
+#ifndef __SYNFIG_LAYER_CLAMP_H
+#define __SYNFIG_LAYER_CLAMP_H
 
 /* === H E A D E R S ======================================================= */
 
