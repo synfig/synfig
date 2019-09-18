@@ -22,6 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
+#ifndef __SYNFIG_APP_POLYGONIZERCLASSES_H
+#define __SYNFIG_APP_POLYGONIZERCLASSES_H
 
 /* === H E A D E R S ======================================================= */
 #include <synfig/vector.h>
@@ -450,3 +452,5 @@ void conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &strokes, Vec
 }; // END of namespace studio
 
 /* === E N D =============================================================== */
+
+#endif

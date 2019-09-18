@@ -20,6 +20,9 @@
 */
 /* ========================================================================= */
 
+#ifndef __SYNFIG_TOOLEXCEPTION_H
+#define __SYNFIG_TOOLEXCEPTION_H
+
 #include <exception>
 
 class SynfigToolException : public std::exception
@@ -37,3 +40,5 @@ private:
 	exit_code _code;
 	std::string _msg;
 };
+
+#endif
