@@ -18,9 +18,13 @@ matrix:
     dist: xenial
     cache: ccache
     before_install: ./1-setup-linux-native.sh
-    before_script: ccache -s
+    before_script:
+      - ccache -s
+      - ccache --set-config=compression=true
     script: ./travis.sh
-    after_script: autobuild/synfigrenderer-regression-test.sh
+    after_script:
+      - autobuild/synfigrenderer-regression-test.sh
+      - ccache -s
 
   - os: linux
     name: "Synfig Studio Ubuntu 16.04 Xenial (CMake/Ninja)"
@@ -28,9 +32,12 @@ matrix:
     sudo: required
     dist: xenial
     cache: ccache
-    before_install: ./1-setup-linux-native.sh
-    before_script: ccache -s
-    script: mkdir -p build && cd build && cmake .. && make -j$(nproc)
+    before_install: sudo apt-get install ninja-build && ./1-setup-linux-native.sh
+    before_script:
+      - ccache -s
+      - ccache --set-config=compression=true
+    script: mkdir -p build && cd build && cmake .. -GNinja && ninja
+    after_script: ccache -s # show ccache stats
 
   - os: osx
     name: "Synfig Studio OS X 10.10 Yosemite (Clang/Autotools/Brew)"
@@ -42,7 +49,9 @@ matrix:
     cache: ccache
     before_install: brew reinstall libtool # fix no sed
     install: ./1-setup-osx-brew.sh
-    before_script: ccache -s
+    before_script:
+      - ccache -s
+      - ccache --set-config=compression=true
     script: ./travis.sh
     after_script: ccache -s # show ccache stats
 
@@ -63,6 +72,6 @@ matrix:
     script: ./travis.sh
     after_script: ccache -s # show ccache stats
 
-  allow_failures:
-    - env: CMAKE=true
+  #allow_failures:
+  #  - env: CMAKE=true
   #  - os: osx

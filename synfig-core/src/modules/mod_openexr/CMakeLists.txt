@@ -9,7 +9,7 @@ target_sources(mod_openexr
 
 message(STATUS "OpenEXR include: ${OPENEXR_INCLUDE_DIRS}")
 
-target_include_directories(mod_openexr PRIVATE ${OPENEXR_INCLUDE_DIRS})
+target_include_directories(mod_openexr SYSTEM PRIVATE ${OPENEXR_INCLUDE_DIRS})
 
 target_link_libraries(mod_openexr synfig ${OPENEXR_LIBRARIES})
 
