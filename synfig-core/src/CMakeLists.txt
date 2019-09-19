@@ -76,6 +76,21 @@ else()
     set(GIT_HASH    "unknown")
 endif()
 
+# Check headers
+include(CheckIncludeFile)
+CHECK_INCLUDE_FILE(sys/wait.h  HAVE_SYS_WAIT_H)
+CHECK_INCLUDE_FILE(signal.h    HAVE_SIGNAL_H)
+CHECK_INCLUDE_FILE(termios.h   HAVE_TERMIOS_H)
+CHECK_INCLUDE_FILE(process.h   HAVE_PROCESS_H)
+CHECK_INCLUDE_FILE(io.h        HAVE_IO_H)
+CHECK_INCLUDE_FILE(sys/fcntl.h HAVE_FCNTL_H)
+
+# Check functions
+include (CheckFunctionExists)
+CHECK_FUNCTION_EXISTS(fork HAVE_FORK)
+CHECK_FUNCTION_EXISTS(pipe HAVE_PIPE)
+CHECK_FUNCTION_EXISTS(waitpid HAVE_WAITPID)
+
 add_definitions(-DHAVE_CONFIG_H)
 configure_file(config.h.cmake.in config.h)
 configure_file(autorevision.h.cmake.in autorevision.h)
