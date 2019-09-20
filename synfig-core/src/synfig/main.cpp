@@ -135,33 +135,33 @@ synfig::get_build_date()
 }
 
 bool
-synfig::check_version_(int version,int vec_size, int color_size,int canvas_size,int layer_size)
+synfig::check_version_(size_t version, size_t vec_size, size_t color_size, size_t canvas_size, size_t layer_size)
 {
 	bool ret=true;
 
 	if(version!=SYNFIG_LIBRARY_VERSION)
 	{
-		synfig::error(_("API Version mismatch (LIB:%d, PROG:%d)"),SYNFIG_LIBRARY_VERSION,version);
+		synfig::error(_("API Version mismatch (LIB:%zu, PROG:%zu)"), SYNFIG_LIBRARY_VERSION, version);
 		ret=false;
 	}
 	if(vec_size!=sizeof(Vector))
 	{
-		synfig::error(_("Size of Vector mismatch (app:%d, lib:%d)"),vec_size,sizeof(Vector));
+		synfig::error(_("Size of Vector mismatch (app:%zu, lib:%zu)"),vec_size,sizeof(Vector));
 		ret=false;
 	}
 	if(color_size!=sizeof(Color))
 	{
-		synfig::error(_("Size of Color mismatch (app:%d, lib:%d)"),color_size,sizeof(Color));
+		synfig::error(_("Size of Color mismatch (app:%zu, lib:%zu)"),color_size,sizeof(Color));
 		ret=false;
 	}
 	if(canvas_size!=sizeof(Canvas))
 	{
-		synfig::error(_("Size of Canvas mismatch (app:%d, lib:%d)"),canvas_size,sizeof(Canvas));
+		synfig::error(_("Size of Canvas mismatch (app:%zu, lib:%zu)"),canvas_size,sizeof(Canvas));
 		ret=false;
 	}
 	if(layer_size!=sizeof(Layer))
 	{
-		synfig::error(_("Size of Layer mismatch (app:%d, lib:%d)"),layer_size,sizeof(Layer));
+		synfig::error(_("Size of Layer mismatch (app:%zu, lib:%zu)"),layer_size,sizeof(Layer));
 		ret=false;
 	}
 

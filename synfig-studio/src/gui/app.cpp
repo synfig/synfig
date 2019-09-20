@@ -679,7 +679,7 @@ public:
 			}
 			if(key=="ui_handle_tooltip_flag")
 			{
-				value=strprintf("%il", (long)App::ui_handle_tooltip_flag);
+				value=strprintf("%ld", (long)App::ui_handle_tooltip_flag);
 				return true;
 			}
 			if(key=="image_editor_path")
@@ -3657,7 +3657,7 @@ App::wrap_into_temporary_filesystem(
 	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory(), canvas_file_system);
 	temporary_file_system->set_meta("filename", filename);
 	temporary_file_system->set_meta("as", as);
-	temporary_file_system->set_meta("truncate", etl::strprintf("%d", truncate_storage_size));
+	temporary_file_system->set_meta("truncate", etl::strprintf("%lld", truncate_storage_size));
 	return temporary_file_system;
 }
 
