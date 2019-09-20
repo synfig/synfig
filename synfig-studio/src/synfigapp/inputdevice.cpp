@@ -131,7 +131,7 @@ public:
 	void get_axes_value(synfig::String & value) const
 	{
 		vector<InputDevice::AxisUse> axes = input_device->get_axes();
-		value = strprintf("%u", axes.size());
+		value = strprintf("%zu", axes.size());
 		vector<InputDevice::AxisUse>::const_iterator itr;
 		for (itr = axes.begin(); itr != axes.end(); itr++)
 			value += strprintf(" %u", (unsigned int) *itr);
@@ -140,7 +140,7 @@ public:
 	void get_keys_value(synfig::String & value) const
 	{
 		vector<InputDevice::DeviceKey> keys = input_device->get_keys();
-		value = strprintf("%u", keys.size());
+		value = strprintf("%zu", keys.size());
 		vector<InputDevice::DeviceKey>::const_iterator itr;
 		for (itr = keys.begin(); itr != keys.end(); itr++)
 			value += strprintf(" %u %u", itr->keyval, itr->modifiers);

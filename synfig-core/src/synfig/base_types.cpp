@@ -379,7 +379,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(DashItem, TypeDashItem)
 
 class TypeList: public Type
 {
-	static String to_string(const ValueBase::List &x) { return etl::strprintf("List (%d elements)", x.size()); }
+	static String to_string(const ValueBase::List &x) { return etl::strprintf("List (%zu elements)", x.size()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -493,7 +493,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(const char*, TypeString)
 
 class TypeGradient: public Type
 {
-	static String to_string(const Gradient &x) { return etl::strprintf("Gradient (%d cpoints)", x.size()); }
+	static String to_string(const Gradient &x) { return etl::strprintf("Gradient (%zu cpoints)", x.size()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);

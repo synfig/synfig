@@ -167,7 +167,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if(offset!=sizeof(synfig::BITMAP::FILEHEADER)+sizeof(synfig::BITMAP::INFOHEADER))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),identifier.filename.c_str(),offset,sizeof(synfig::BITMAP::FILEHEADER)+sizeof(synfig::BITMAP::INFOHEADER)));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %zu)"),identifier.filename.c_str(),offset,sizeof(synfig::BITMAP::FILEHEADER)+sizeof(synfig::BITMAP::INFOHEADER)));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
@@ -175,7 +175,7 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if(little_endian(infoheader.biSize)!=sizeof(synfig::BITMAP::INFOHEADER))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %d)"),identifier.filename.c_str(),little_endian(infoheader.biSize),sizeof(synfig::BITMAP::INFOHEADER)));
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %zu)"),identifier.filename.c_str(),little_endian(infoheader.biSize),sizeof(synfig::BITMAP::INFOHEADER)));
 		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;

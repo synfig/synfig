@@ -63,7 +63,7 @@ namespace synfig {
 **	was compiled against.
 **	\see SYNFIG_CHECK_VERSION()
 */
-extern bool check_version_(int v,int vec_size, int color_size,int canvas_size,int layer_size);
+extern bool check_version_(size_t v, size_t vec_size, size_t color_size, size_t canvas_size, size_t layer_size);
 
 extern const char *get_version();
 
