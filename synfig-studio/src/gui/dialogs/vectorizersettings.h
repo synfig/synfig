@@ -82,7 +82,6 @@ class VectorizerSettings : public Gtk::Dialog
 	Gtk::Grid *Outline_setting_grid = manage(new Gtk::Grid());
 	Gtk::Grid *Centerline_setting_grid = manage(new Gtk::Grid());
 
-	Gtk::ProgressBar ProgressBar;
   	Gtk::Separator Separator;
 
 	Gtk::ComboBoxText comboboxtext_mode;

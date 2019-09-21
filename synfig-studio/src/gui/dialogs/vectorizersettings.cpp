@@ -209,13 +209,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 
 	settings_box->add(*Outline_setting_grid);
 	//---------------------------------------------------------------------------------//
-	get_vbox()->pack_start(Separator, Gtk::PACK_SHRINK);
-	get_vbox()->pack_start(ProgressBar, Gtk::PACK_SHRINK, 5);
-	ProgressBar.set_margin_right(10);
-	ProgressBar.set_margin_left(10);
-	ProgressBar.set_text("Not started");
-	ProgressBar.set_show_text(true);
-
+	
 	Gtk::Button *convert_button(manage(new class Gtk::Button("_Convert",true)));
 	convert_button->set_tooltip_text("Perform vectorization");
 	convert_button->show();
