@@ -51,6 +51,8 @@ class Dock_Layers : public Dock_CanvasSpecific
 	Glib::RefPtr<Gtk::ActionGroup> action_group_new_layers;
 	Glib::RefPtr<Gtk::ActionGroup> action_group_layer_ops;
 
+	Glib::RefPtr<Gtk::Action> action_new_layer;
+
 	Gtk::HScale *layer_amount_hscale;
 
 	LayerActionManager* layer_action_manager;
@@ -62,8 +64,7 @@ protected:
 private:
 
 	void add_layer(synfig::String id);
-	void increase_amount();
-	void decrease_amount();
+	void popup_add_layer_menu();
 
 public:
 
