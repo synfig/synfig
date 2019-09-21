@@ -299,6 +299,8 @@ private:
 	Gtk::TreeRow children_valuenode_row;
 
 	Gtk::Statusbar *statusbar;
+	Gtk::ProgressBar *progressbar;
+
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
 	Gtk::ToggleToolButton *background_rendering_button;

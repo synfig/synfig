@@ -1034,7 +1034,7 @@ CanvasView::create_time_bar()
 	controls->pack_start(*separator,            false, true);
 	controls->pack_start(*jackdial,             false, true);
 	controls->pack_start(*statusbar,            true, true);
-    //controls->pack_start(*progressbar,          true,  true);
+    controls->pack_start(*progressbar,          true,  true);
 	controls->pack_start(*widget_interpolation, false, true);
 	controls->pack_start(*keyframedial,         false, true);
 	controls->pack_start(*space,                false, true);
