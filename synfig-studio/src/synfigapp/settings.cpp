@@ -242,6 +242,7 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& k
 	std::ifstream file(filename.c_str());
 	if(!file)
 		return false;
+	bool loaded_filter = false;
 	while(file)
 	{
 		std::string line;
@@ -263,6 +264,8 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& k
 				{
 					if(!set_value(key,value))
 						synfig::warning("Settings::load_from_file(): Key \"%s\" with a value of \"%s\" was rejected.",key.c_str(),value.c_str());
+					else
+						loaded_filter = true;
 				}
 			}
 			catch(...)
@@ -272,5 +275,7 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& k
 			}
 		}
 	}
+	if (!key_filter.empty() && !loaded_filter)
+		return false;
 	return true;
 }

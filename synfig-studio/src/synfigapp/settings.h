@@ -70,7 +70,7 @@ public:
 	bool save_to_string(synfig::String& data);
 
 	//! \brief Load optionally filtered settings from given synfig settings format filename
-	//! \return false if file open failed, else true.
+	//! \return false if file open failed, else true. If key_filter is set, return false if value could not be loaded.
 	//! \sa		set_value
 	//! \Param[in] filename, the synfig settings format filename. Should be aboslute path.
 	//! \Param[in] key_filter, optional, string use to filter the settings key. No wildcard only full equal string test.
