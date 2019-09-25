@@ -209,6 +209,11 @@ LayerTree::LayerTree():
 
 LayerTree::~LayerTree()
 {
+    delete layer_tree_view_;
+    delete param_tree_view_;
+
+    //TODO(ice0): do we need to unlink signals?
+
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		synfig::info("LayerTree::~LayerTree(): Deleted");
 }
@@ -455,13 +460,13 @@ LayerTree::create_param_tree()
 }
 
 void
-LayerTree::on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::Handle value_node)
+LayerTree::on_waypoint_changed(synfig::Waypoint& waypoint , synfig::ValueNode::Handle value_node)
 {
 	synfigapp::Action::ParamList param_list;
 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 	param_list.add("value_node",value_node);
-	param_list.add("waypoint",waypoint);
+	param_list.add("waypoint", waypoint);
 //	param_list.add("time",canvas_interface()->get_time());
 
 	etl::handle<studio::Instance>::cast_static(layer_tree_store_->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
