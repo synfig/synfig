@@ -261,7 +261,7 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 					value_node->find(keyframe.get_time());
 	//				synfig::info(__FILE__":%d: waypointtime=%s",__LINE__,value_node->find(keyframe.get_time())->get_time().get_string().c_str());
 				}
-				catch(synfig::Exception::NotFound)
+				catch (const synfig::Exception::NotFound&)
 				{
 					Action::Handle action(WaypointAdd::create());
 
@@ -324,7 +324,7 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 					//synfig::info(__FILE__":%d: waypointtime=%s",__LINE__,value_node->find(keyframe.get_time())->get_time().get_string().c_str());
 
 				}
-				catch(synfig::Exception::NotFound)
+				catch (const synfig::Exception::NotFound&)
 				{
 					Action::Handle action(WaypointAdd::create());
 
@@ -396,7 +396,9 @@ Action::WaypointSetSmart::prepare()
 
 		return;
 	}
-	catch(synfig::Exception::NotFound){ } catch(int){ }
+	//TODO(ice0): fix that
+	catch(const synfig::Exception::NotFound&){ }
+	catch(int) { }
 
 	try
 	{
@@ -423,7 +425,7 @@ Action::WaypointSetSmart::prepare()
 
 		return;
 	}
-	catch(synfig::Exception::NotFound){ } catch(int){ }
+	catch(const synfig::Exception::NotFound&){ } catch(int){ }
 
 	try
 	{
@@ -445,7 +447,8 @@ Action::WaypointSetSmart::prepare()
 
 		return;
 	}
-	catch(synfig::Exception::NotFound){ } catch(int){ }
+	catch (const synfig::Exception::NotFound&){ }
+	catch(int){ }
 
 	throw Error(_("Unable to determine how to proceed. This is a bug."));
 }

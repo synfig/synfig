@@ -114,12 +114,12 @@ Renderer_Timecode::render_vfunc(
 			get_work_area()->timecode_width = int(w*1.0/Pango::SCALE);
 			get_work_area()->timecode_height = int(h*1.0/Pango::SCALE);
 		}
-		catch(synfig::Exception::NotFound)
+		catch (const synfig::Exception::NotFound&)
 		{
 			get_work_area()->timecode_width = get_work_area()->timecode_height = 0;
 			return;
 		}
-		catch(...) {
+		catch (...) {
 			assert(0);
 		}
 

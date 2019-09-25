@@ -454,19 +454,19 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 		}
 
 	}
-	catch(String str)
+	catch (const String& str)
 	{
-		if(cb)cb->error(_("Caught string :")+str);
+		if (cb) cb->error(_("Caught string :")+str);
 		return false;
 	}
-	catch(std::bad_alloc&)
+	catch (std::bad_alloc&)
 	{
-		if(cb)cb->error(_("Ran out of memory (Probably a bug)"));
+		if (cb) cb->error(_("Ran out of memory (Probably a bug)"));
 		return false;
 	}
 	catch(...)
 	{
-		if(cb)cb->error(_("Caught unknown error, rethrowing..."));
+		if (cb) cb->error(_("Caught unknown error, rethrowing..."));
 		throw;
 	}
 	return true;

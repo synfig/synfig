@@ -178,10 +178,10 @@ void
 Action::ActivepointAdd::perform()
 {
 	try { value_node->list[index].find(activepoint.get_time()); throw Error(_("A Activepoint already exists at this point in time"));}
-	catch(synfig::Exception::NotFound) { }
+	catch (const synfig::Exception::NotFound&) { }
 
 	try { if(value_node->list[index].find(activepoint)!=value_node->list[index].timing_info.end()) throw Error(_("This activepoint is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }
+	catch (const synfig::Exception::NotFound&) { }
 
 	value_node->list[index].add(activepoint);
 	value_node->changed();

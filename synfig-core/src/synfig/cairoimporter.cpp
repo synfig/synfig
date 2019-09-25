@@ -127,7 +127,7 @@ CairoImporter::open(const FileSystem::Identifier &identifier)
 		(*__open_cairoimporters)[identifier]=importer;
 		return importer;
 	}
-	catch (String str)
+	catch (const String& str)
 	{
 		synfig::error(str);
 	}

@@ -128,7 +128,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 
 	// Perform the action
 	try { action->perform(); }
-	catch(Action::Error err) {
+	catch (const Action::Error& err) {
 		uim->task(action->get_local_name()+' '+_("Failed"));
 		if (err.get_type() != Action::Error::TYPE_UNABLE) {
 			if (err.get_desc().empty())
@@ -139,7 +139,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		// If action failed for whatever reason, just return false and do
 		// not add the action onto the list
 		return false;
-	} catch(std::exception& err) {
+	} catch (std::exception& err) {
 		uim->task(action->get_local_name() + ' ' + _("Failed"));
 		uim->error(action->get_local_name() + ": " + err.what());
 		// If action failed for whatever reason, just return false and do
@@ -259,7 +259,7 @@ Action::System::redo_(etl::handle<UIInterface> uim)
 	most_recent_action_name_ = action->get_name();
 
 	try { if(action->is_active()) action->perform(); }
-	catch(Action::Error err) {
+	catch (const Action::Error& err) {
 		if (err.get_type() != Action::Error::TYPE_UNABLE) {
 			if(err.get_desc().empty())
 				uim->error(action->get_local_name() + _(" (Redo): ") + etl::strprintf("%d", err.get_type()));
@@ -267,7 +267,7 @@ Action::System::redo_(etl::handle<UIInterface> uim)
 				uim->error(action->get_local_name() + _(" (Redo): ") + err.get_desc());
 		}
 		return false;
-	} catch(std::runtime_error &x) {
+	} catch (const std::runtime_error &x) {
 		uim->error(x.what());
 		return false;
 	} catch(...) {

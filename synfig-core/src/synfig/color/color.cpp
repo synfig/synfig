@@ -38,6 +38,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <synfig/general.h>
 
 #include "colorblendingfunctions.h"
 
@@ -110,9 +111,9 @@ Color::set_hex(String& str)
 			r_ = r; g_ = g; b_ = b;
 		}
 	}
-	catch (string s)
+	catch (const string& s)
 	{
-		printf("caught <%s>\n", s.c_str());
+		synfig::warning("caught <%s>\n", s.c_str());
 		return;
 	}
 }
@@ -122,7 +123,7 @@ Color::get_string(void)const
 {
 	std::ostringstream o;
 	o << std::fixed << std::setprecision(3) << "#" << get_hex().c_str() << " : " << std::setw(6) << a_;
-	return String(o.str().c_str());
+	return String(o.str());
 }
 
 Color

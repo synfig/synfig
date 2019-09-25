@@ -96,7 +96,7 @@ private:
 
 	//! Signal for when the user clicks on a waypoint
 	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, const synfig::Time&, int> signal_waypoint_clicked_cellrenderer_;
-	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> signal_waypoint_changed_;
+	sigc::signal<void, synfig::Waypoint&, synfig::ValueNode::Handle> signal_waypoint_changed_;
 
 	/*
  --	** -- P R O P E R T Y   I N T E R F A C E S -------------------------------
@@ -113,7 +113,7 @@ public:
 
 	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, const synfig::Time&, int>& signal_waypoint_clicked_cellrenderer()
 		{ return signal_waypoint_clicked_cellrenderer_; }
-	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle>& signal_waypoint_changed()
+	sigc::signal<void, synfig::Waypoint&, synfig::ValueNode::Handle>& signal_waypoint_changed()
 		{ return signal_waypoint_changed_; }
 
 	/*

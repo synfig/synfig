@@ -211,7 +211,7 @@ CanvasInterface::layer_create(
 			{
 				canvas->find_value_node(name, true);
 			}
-			catch (Exception::IDNotFound x)
+			catch (const Exception::IDNotFound& x)
 			{
 				add_value_node(layer->dynamic_param_list().find("index")->second, id);
 				break;
@@ -825,12 +825,12 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		signal_layer_new_description()(layer,etl::basename(filename));
 		return true;
 	}
-	catch(String x)
+	catch (const String& x)
 	{
 		get_ui_interface()->error(filename + ": " + x);
 		return false;
 	}
-	catch(...)
+	catch (...)
 	{
 		get_ui_interface()->error(_("Uncaught exception when attempting\nto open this composition -- ")+filename);
 		return false;
