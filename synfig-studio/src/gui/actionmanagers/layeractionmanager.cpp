@@ -483,7 +483,7 @@ LayerActionManager::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Handle
 			{
 				canvas->find_value_node(name, true);
 			}
-			catch (Exception::IDNotFound x)
+			catch (const Exception::IDNotFound& x)
 			{
 				get_canvas_interface()->add_value_node(layer->dynamic_param_list().find("index")->second, name);
 				break;

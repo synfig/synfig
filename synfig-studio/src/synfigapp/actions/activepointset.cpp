@@ -150,7 +150,7 @@ Action::ActivepointSet::perform()
 	for(; i != end; ++i)
 	{
 		try { iters.push_back(value_node->list[index].find(*i)); }
-		catch(synfig::Exception::NotFound)
+		catch (const synfig::Exception::NotFound&)
 		{
 			throw Error(_("Unable to find activepoint"));
 		}
@@ -254,7 +254,7 @@ Action::ActivepointSet::undo()
 	for(; i != end; ++i)
 	{
 		try { iter = value_node->list[index].find(*i); }
-		catch(synfig::Exception::NotFound)
+		catch (const synfig::Exception::NotFound&)
 		{
 			throw Error(_("Unable to find activepoint"));
 		}

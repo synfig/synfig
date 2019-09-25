@@ -974,9 +974,10 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
             if (!moving || (*iter)->get_edit_immediatelly())
                 signal_edited_duck(*iter);
         }
-        catch (String)
+        catch (const String&)
         {
             selected_ducks=old_set;
+            synfig::warning("signals must not throw exceptions");
             // signals must not throw exceptions!!!
             //throw;
         }

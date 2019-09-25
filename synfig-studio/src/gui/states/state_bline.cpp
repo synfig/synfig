@@ -772,7 +772,7 @@ StateBLine_Context::run()
 	{
 		success=run_();
 	}
-	catch(String s)
+	catch (const String& s)
 	{
 		err=s;
 	}

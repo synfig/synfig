@@ -207,7 +207,7 @@ Action::ActivepointSetSmart::enclose_activepoint(const synfig::Activepoint& acti
 				times.insert(keyframe.get_time());
 
 			try { value_node->list[index].find(keyframe.get_time()); }
-			catch(synfig::Exception::NotFound)
+			catch (const synfig::Exception::NotFound&)
 			{
 				Action::Handle action(ActivepointAdd::create());
 
@@ -293,7 +293,7 @@ Action::ActivepointSetSmart::enclose_activepoint(const synfig::Activepoint& acti
 				times.insert(keyframe.get_time());
 
 				try { value_node->list[index].find(keyframe.get_time()); }
-				catch(synfig::Exception::NotFound)
+				catch (const synfig::Exception::NotFound&)
 				{
 					Action::Handle action(ActivepointAdd::create());
 

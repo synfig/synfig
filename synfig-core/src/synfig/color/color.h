@@ -322,7 +322,7 @@ public:
 	};
 
 	/* Other */
-	static Color blend(Color a, Color b,float amount,BlendMethod type=BLEND_COMPOSITE);
+	static Color blend(Color a, Color b, float amount, BlendMethod type=BLEND_COMPOSITE);
 
 	static bool is_onto(BlendMethod x)
 		{ return BLEND_METHODS_ONTO & (1 << x); }

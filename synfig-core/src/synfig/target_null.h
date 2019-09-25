@@ -45,16 +45,23 @@ class Target_Null : public Target_Scanline
 {
 	Color *buffer;
 
-	Target_Null():buffer(0) { }
+	Target_Null():buffer(nullptr) { }
 
 public:
 
 	~Target_Null() { delete buffer; }
 
-	virtual bool start_frame(ProgressCallback */*cb*/=NULL)
-		{ delete buffer; buffer=new Color[desc.get_w()*sizeof(Color)]; return true; }
+	virtual bool start_frame(ProgressCallback */*cb*/=NULL) {
+	    if (buffer) delete[] buffer;
+	    buffer = new Color[desc.get_w()*sizeof(Color)];
+	    return true;
+	}
 
-	virtual void end_frame() { delete buffer; buffer=0; return; }
+	virtual void end_frame() {
+	    if (buffer) delete[] buffer;
+	    buffer = nullptr;
+	    return;
+	}
 
 	virtual Color * start_scanline(int /*scanline*/) { return buffer; }
 

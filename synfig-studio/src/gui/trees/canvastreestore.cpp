@@ -559,7 +559,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 			return;
 		}
 	}
-	catch(synfig::Exception::IDNotFound x)
+	catch (const synfig::Exception::IDNotFound& x)
 	{
 		synfig::error(__FILE__":%d: IDNotFound thrown",__LINE__);
 		erase(row);

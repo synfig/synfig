@@ -195,10 +195,10 @@ Action::WaypointRemove::undo()
 	if(value_node->waypoint_list().size()!=0)
 	{
 		try { value_node->find(waypoint.get_time()); throw Error(_("A Waypoint already exists at this point in time"));}
-		catch(synfig::Exception::NotFound) { }
+		catch (const synfig::Exception::NotFound&) { }
 
 		try { if(value_node->find(waypoint)!=value_node->waypoint_list().end()) throw Error(_("This waypoint is already in the ValueNode"));}
-		catch(synfig::Exception::NotFound) { }
+		catch (const synfig::Exception::NotFound&) { }
 	}
 
 	value_node->add(waypoint);
