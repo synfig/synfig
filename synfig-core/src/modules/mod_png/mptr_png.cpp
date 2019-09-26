@@ -69,6 +69,16 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(png_mptr, true);
 
 /* === M E T H O D S ======================================================= */
 
+namespace {
+	inline unsigned short get_channel(png_bytep *rows, int bit_depth, int row, int col) {
+		unsigned int x = bit_depth > 8
+		               ? ((unsigned short*)(rows[row]))[col]
+		               :                    rows[row]  [col];
+		unsigned int max = (1 << bit_depth) - 1;
+		return (x*65536u - 1u)/max;
+	}
+}
+
 void
 png_mptr::png_out_error(png_struct */*png_data*/,const char *msg)
 {
@@ -175,8 +185,11 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 				 &bit_depth, &color_type, &interlace_type,
 				 &compression_type, &filter_method);
 
-	if (bit_depth == 16)
-		png_set_strip_16(png_ptr);
+	if (bit_depth > 16) {
+		synfig::error("png_mptr: error: bit depth not supported: %d", bit_depth);
+		throw etl::strprintf("png_mptr: error: bit depth not supported: %d", bit_depth);
+		return false;
+	}
 
 	if (bit_depth < 8)
 		png_set_packing(png_ptr);
@@ -227,23 +240,10 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		for(y=0;y<height;y++)
 			for(x=0;x<width;x++)
 			{
-				float r=gamma().r_U8_to_F32((unsigned char)row_pointers[y][x*3+0]);
-				float g=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x*3+1]);
-				float b=gamma().b_U8_to_F32((unsigned char)row_pointers[y][x*3+2]);
-				surface[y][x]=Color(
-					r,
-					g,
-					b,
-					1.0
-				);
-/*
-				surface[y][x]=Color(
-					(float)(unsigned char)row_pointers[y][x*3+0]*(1.0/255.0),
-					(float)(unsigned char)row_pointers[y][x*3+1]*(1.0/255.0),
-					(float)(unsigned char)row_pointers[y][x*3+2]*(1.0/255.0),
-					1.0
-				);
-*/
+				float r=gamma().r_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*3+0) );
+				float g=gamma().g_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*3+1) );
+				float b=gamma().b_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*3+2) );
+				surface[y][x]=Color(r, g, b, 1.0);
 			}
 		break;
 
@@ -251,19 +251,11 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		for(y=0;y<height;y++)
 			for(x=0;x<width;x++)
 			{
-				float r=gamma().r_U8_to_F32((unsigned char)row_pointers[y][x*4+0]);
-				float g=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x*4+1]);
-				float b=gamma().b_U8_to_F32((unsigned char)row_pointers[y][x*4+2]);
-				float a=gamma().a_U8_to_F32((unsigned char)row_pointers[y][x*4+3]);
+				float r=gamma().r_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*4+0) );
+				float g=gamma().g_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*4+1) );
+				float b=gamma().b_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*4+2) );
+				float a=gamma().a_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*4+3) );
 				surface[y][x]=Color(r, g, b, a);
-				/*
-				surface[y][x]=Color(
-					(float)(unsigned char)row_pointers[y][x*4+0]*(1.0/255.0),
-					(float)(unsigned char)row_pointers[y][x*4+1]*(1.0/255.0),
-					(float)(unsigned char)row_pointers[y][x*4+2]*(1.0/255.0),
-					(float)(unsigned char)row_pointers[y][x*4+3]*(1.0/255.0)
-				);
-				*/
 			}
 		break;
 
@@ -271,14 +263,9 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		for(y=0;y<height;y++)
 			for(x=0;x<width;x++)
 			{
-				float gray=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x]);
-				//float gray=(float)(unsigned char)row_pointers[y][x]*(1.0/255.0);
-				surface[y][x]=Color(
-					gray,
-					gray,
-					gray,
-					1.0
-				);
+				float gray=gamma().g_U16_to_F32( get_channel(row_pointers, bit_depth, y, x) );
+				info("%f %d", gray, (unsigned char)row_pointers[y][x]);
+				surface[y][x]=Color(gray, gray, gray, 1.0);
 			}
 		break;
 
@@ -286,23 +273,26 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		for(y=0;y<height;y++)
 			for(x=0;x<width;x++)
 			{
-				float gray=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x*2]);
-				float a=gamma().a_U8_to_F32((unsigned char)row_pointers[y][x*2+1]);
-//				float gray=(float)(unsigned char)row_pointers[y][x*2]*(1.0/255.0);
-//				float a=(float)(unsigned char)row_pointers[y][x*2+1]*(1.0/255.0);
+				float gray=gamma().g_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*2+0) );
+				float a   =gamma().a_U16_to_F32( get_channel(row_pointers, bit_depth, y, x*2+1) );
 				surface[y][x]=Color(gray, gray, gray, a);
 			}
 		break;
 
 	case PNG_COLOR_TYPE_PALETTE:
 	{
-        png_colorp palette;
-        int num_palette;
-	    png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette);
-	    png_bytep trans_alpha = NULL;
-	    int num_trans = 0;
-	    bool has_alpha = (png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans,
-	                                   NULL) & PNG_INFO_tRNS);
+		if (bit_depth > 8) {
+			synfig::error("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
+			throw etl::strprintf("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
+			return false;
+		}
+		png_colorp palette;
+		int num_palette;
+		png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette);
+		png_bytep trans_alpha = NULL;
+		int num_trans = 0;
+		bool has_alpha = png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, NULL)
+		               & PNG_INFO_tRNS;
 		for(y=0;y<height;y++)
 			for(x=0;x<width;x++)
 			{
