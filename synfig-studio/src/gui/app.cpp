@@ -1525,7 +1525,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			"different version of libsynfig than what is currently "
 			"installed. Synfig Studio will now abort. Try downloading "
 			"the latest version from the Synfig website at "
-			"http://www.synfig.org/cms/en/download/"),
+			"https://www.synfig.org/download-development/"),
 			_("Close"));
 
 		throw 40;
@@ -1798,8 +1798,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		// If dock dialogs are shown before the settings are loaded,
 		// the windows manager can act over it.
 		// See discussions here:
-		// * http://synfig.org/forums/viewtopic.php?f=1&t=1131&st=0&sk=t&sd=a&start=30
-		// * http://synfig.org/forums/viewtopic.php?f=15&t=1062
+		// * https://synfig.org/forums/viewtopic.php?f=1&t=1131&st=0&sk=t&sd=a&start=30
+		// * https://synfig.org/forums/viewtopic.php?f=15&t=1062
 		dock_manager->show_all_dock_dialogs();
 
 		main_window->present();
@@ -3516,10 +3516,10 @@ try_open_uri(const std::string &uri)
 void
 App::dialog_help()
 {
-	if (!try_open_uri("http://synfig.org/wiki/Category:Manual"))
+	if (!try_open_uri("https://wiki.synfig.org/Category:Manual"))
 	{
 		Gtk::MessageDialog dialog(*App::main_window, _("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
-		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://synfig.org/wiki/Category:Manual"));
+		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttps://wiki.synfig.org/Category:Manual"));
 		dialog.set_title(_("Help"));
 		dialog.run();
 	}

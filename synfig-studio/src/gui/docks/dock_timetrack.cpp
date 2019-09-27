@@ -136,7 +136,7 @@ public:
 			column->set_resizable();
 			column->set_expand(true);
 // Commented during Align rows fixing
-// http://www.synfig.org/issues/thebuggenie/synfig/issues/161
+// https://www.synfig.org/issues/thebuggenie/synfig/issues/161
 // 			column->set_min_width(200);
 			
 			column2->set_resizable();

@@ -519,7 +519,7 @@ Action::ValueDescLink::prepare()
 		}
 	}
 
-	synfig::info("http://synfig.org/Linking#Tier_%d : %s", status_level, status_message.c_str());
+	synfig::info("https://synfig.org/Linking#Tier_%d : %s", status_level, status_message.c_str());
 }
 
 
