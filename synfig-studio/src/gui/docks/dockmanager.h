@@ -75,6 +75,7 @@ private:
 
 	bool         read_separator(std::string &x);
 	std::string  read_string(std::string &x);
+	std::string  extract_dockable_name(std::string &x) const;
 	int          read_int(std::string &x);
 	bool         read_bool(std::string &x);
 	Gtk::Widget* read_widget(std::string &x);

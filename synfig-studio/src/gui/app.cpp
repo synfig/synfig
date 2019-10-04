@@ -1692,6 +1692,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			gamma.set_gamma(1.0/2.2);
 			set_workspace_default();
 		}
+		if (!load_settings("workspace.layout"))
+			set_workspace_default();
 		load_file_window_size();
 
 		// Init Tools must be done after load_accel_map() : accelerators keys
