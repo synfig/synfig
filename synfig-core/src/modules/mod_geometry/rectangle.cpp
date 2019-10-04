@@ -31,7 +31,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/pen>
 #include <ETL/misc>
 
 #include <synfig/localization.h>

@@ -33,7 +33,6 @@
 
 #include <cstring>
 
-#include <ETL/pen>
 #include <ETL/misc>
 
 #include "shade.h"

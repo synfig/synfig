@@ -47,7 +47,6 @@
 #include <synfig/cairo_renddesc.h>
 
 #include <cstring>
-#include <ETL/pen>
 #include <ETL/misc>
 
 #endif

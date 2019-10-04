@@ -30,7 +30,6 @@
 
 #include "color.h"
 #include "renddesc.h"
-#include <ETL/pen>
 #include <ETL/surface>
 #include <ETL/handle>
 
