@@ -33,8 +33,6 @@
 
 #include <cstring>
 
-#include <ETL/pen>
-
 #include "blur.h"
 
 #include <synfig/localization.h>
