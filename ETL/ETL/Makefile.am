@@ -19,7 +19,6 @@ etl_HEADERS = \
 	ref_count \
 	_ref_count.h \
 	angle \
-	fastangle \
 	handle \
 	ipc \
 	thread \
@@ -40,7 +39,6 @@ etl_HEADERS = \
 	_clock_system.h \
 	_clock_gettimeofday.h \
 	_angle.h \
-	_fastangle.h \
 	_handle.h \
 	_thread.h \
 	_mutex_pthreads.h \
@@ -52,7 +50,6 @@ etl_HEADERS = \
 	_fixed.h \
 	etl_config.h \
 	$(top_builddir)/ETL/etl_profile.h \
-	_fastangle_tables.h \
 	bezier \
 	_bezier.h \
 	_bezier_angle.h \

@@ -24,7 +24,6 @@
 #include <ETL/clock>
 #include <ETL/hermite>
 #include <ETL/angle>
-#include <ETL/fastangle>
 #include <ETL/fixed>
 #include <ETL/surface>
 #include <ETL/gaussian>
@@ -34,7 +33,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace etl;
-//using namespace std;
 
 #define HERMITE_TEST_ITERATIONS		(100000)
 
@@ -123,67 +121,6 @@ void angle_atan2_speed_test(void)
 		}
 }
 
-int fastangle_speed_test(void)
-{
-	int ret=0;
-	float
-		angle_cos_time,
-		fastangle_cos_time,
-		angle_tan_time,
-		fastangle_tan_time,
-		angle_atan2_time,
-		fastangle_atan2_time,
-		angle_sin_time,
-		fastangle_sin_time ;
-
-	etl::clock MyTimer;
-
-	MyTimer.reset();
-	angle_cos_speed_test<angle>();
-	angle_cos_time=MyTimer();
-	printf("angle: Cosine test: %f seconds\n",angle_cos_time);
-
-	MyTimer.reset();
-	angle_cos_speed_test<fastangle>();
-	fastangle_cos_time=MyTimer();
-	printf("fastangle: Cosine test: %f seconds\n",fastangle_cos_time);
-	printf("fastangle is %.02f%% faster\n",(angle_cos_time/fastangle_cos_time)*100.0-100.0);
-
-	MyTimer.reset();
-	angle_sin_speed_test<angle>();
-	angle_sin_time=MyTimer();
-	printf("angle: Sine test: %f seconds\n",angle_sin_time);
-
-	MyTimer.reset();
-	angle_sin_speed_test<fastangle>();
-	fastangle_sin_time=MyTimer();
-	printf("fastangle: Sine test: %f seconds\n",fastangle_sin_time);
-	printf("fastangle is %.02f%% faster\n",(angle_sin_time/fastangle_sin_time)*100.0-100.0);
-
-	MyTimer.reset();
-	angle_tan_speed_test<angle>();
-	angle_tan_time=MyTimer();
-	printf("angle: Tangent test: %f seconds\n",angle_tan_time);
-
-	MyTimer.reset();
-	angle_tan_speed_test<fastangle>();
-	fastangle_tan_time=MyTimer();
-	printf("fastangle: Tangent test: %f seconds\n",fastangle_tan_time);
-	printf("fastangle is %.02f%% faster\n",(angle_tan_time/fastangle_tan_time)*100.0-100.0);
-
-	MyTimer.reset();
-	angle_atan2_speed_test<angle,angle::tan>();
-	angle_atan2_time=MyTimer();
-	printf("angle: arcTangent2 test: %f seconds\n",angle_atan2_time);
-
-	MyTimer.reset();
-	angle_atan2_speed_test<fastangle,fastangle::tan>();
-	fastangle_atan2_time=MyTimer();
-	printf("fastangle: arcTangent2 test: %f seconds\n",fastangle_atan2_time);
-	printf("fastangle is %.02f%% faster\n",(angle_atan2_time/fastangle_atan2_time)*100.0-100.0);
-
-	return ret;
-}
 
 int surface_and_gaussian_blur_test()
 {
@@ -419,45 +356,6 @@ int hermite_angle_test(void)
 	return ret;
 }
 
-int hermite_fastangle_test(void)
-{
-	int ret=0,i;
-	hermite<fastangle> Hermie;
-	hermite<fastangle>::time_type f;
-
-	etl::clock timer;
-	fastangle tmp;
-	double t;
-
-	Hermie.p1()=fastangle::degrees(0);
-	Hermie.t1()=fastangle::degrees(45);
-
-	Hermie.p2()=fastangle::degrees(-45);
-	Hermie.t2()=fastangle::degrees(180);
-
-	Hermie.sync();
-
-	for(f=0.0f,i=0,timer.reset();i<HERMITE_TEST_ITERATIONS;i++,f+=0.000005f)
-	{
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-	}
-	t=timer();
-
-	fprintf(stderr,"hermite<fastangle>:time=%f milliseconds\n",t*1000);
-
-	return ret;
-}
 
 /* === E N T R Y P O I N T ================================================= */
 
@@ -465,14 +363,12 @@ int main()
 {
 	int error=0;
 
-	error+=fastangle_speed_test();
 	error+=surface_and_gaussian_blur_test();
 	error+=hermite_float_test();
 	error+=hermite_double_test();
 	error+=hermite_int_test();
 	error+=hermite_fixed_test();
 	error+=hermite_angle_test();
-	error+=hermite_fastangle_test();
 
 	return error;
 }
