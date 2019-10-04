@@ -24,7 +24,6 @@
 ** ========================================================================= */
 
 /*!
-**  \todo Support 16 bit PNG files
 **	\todo Support GAMMA correction
 **	\todo Fix memory leaks
 */
