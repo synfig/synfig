@@ -21,7 +21,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/ref_count"
         "${CMAKE_CURRENT_LIST_DIR}/trivial"
         "${CMAKE_CURRENT_LIST_DIR}/smach"
-        "${CMAKE_CURRENT_LIST_DIR}/ipc"
         "${CMAKE_CURRENT_LIST_DIR}/value"
         "${CMAKE_CURRENT_LIST_DIR}/pen"
         "${CMAKE_CURRENT_LIST_DIR}/angle"
