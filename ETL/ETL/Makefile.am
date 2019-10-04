@@ -20,7 +20,6 @@ etl_HEADERS = \
 	_ref_count.h \
 	angle \
 	handle \
-	ipc \
 	thread \
 	fixed \
 	clock \
