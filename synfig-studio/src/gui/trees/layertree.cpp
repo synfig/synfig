@@ -209,10 +209,8 @@ LayerTree::LayerTree():
 
 LayerTree::~LayerTree()
 {
-    delete layer_tree_view_;
-    delete param_tree_view_;
-
-    //TODO(ice0): do we need to unlink signals?
+	// We can't delete layer_tree_view_ and param_tree_view_ here
+	// They are set in CanvasView::ext_widget_book_ and are deleted by it in CanvasView destructor
 
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		synfig::info("LayerTree::~LayerTree(): Deleted");
