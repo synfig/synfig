@@ -104,10 +104,8 @@ public:
 	*/
 
 private:
-
-	Gtk::TreeView* layer_tree_view_;
-
-	Gtk::TreeView* param_tree_view_;
+	Gtk::TreeView layer_tree_view_;
+	Gtk::TreeView param_tree_view_;
 
 	Gtk::HBox *hbox;
 
@@ -225,19 +223,16 @@ public:
 	*/
 
 public:
-
-	//Gtk::TreeView* get_param_tree_view() { return param_tree_view_; }
-	//Gtk::TreeView& param_tree_view() { return *param_tree_view_; }
 	Gtk::HBox& get_hbox() { return *hbox; }
 
-	Gtk::TreeView& get_layer_tree_view() { return *layer_tree_view_; }
-	Gtk::TreeView& get_param_tree_view() { return *param_tree_view_; }
+	Gtk::TreeView& layer_tree_view() { return layer_tree_view_; }
+	const Gtk::TreeView& layer_tree_view()const { return layer_tree_view_; }
 
-	const Gtk::TreeView& get_layer_tree_view()const { return *layer_tree_view_; }
-	const Gtk::TreeView& get_param_tree_view()const { return *param_tree_view_; }
+	Gtk::TreeView& param_tree_view() { return param_tree_view_; }
+	const Gtk::TreeView& param_tree_view()const { return param_tree_view_; }
 
-	Glib::RefPtr<Gtk::TreeSelection> get_selection() { return get_layer_tree_view().get_selection(); }
-	Glib::SignalProxy1< bool,GdkEvent* >  signal_event () { return get_layer_tree_view().signal_event(); }
+	Glib::RefPtr<Gtk::TreeSelection> get_selection() { return layer_tree_view().get_selection(); }
+	Glib::SignalProxy1< bool,GdkEvent* >  signal_event () { return layer_tree_view().signal_event(); }
 
 	LayerTree();
 	~LayerTree();

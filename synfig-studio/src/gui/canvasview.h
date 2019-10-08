@@ -178,6 +178,31 @@ public:
 	typedef LayerTreeStore::Model LayerTreeModel;
 	typedef ChildrenTreeStore::Model ChildrenTreeModel;
 
+	class WidgetBookEntry {
+	private:
+		bool own;
+		Gtk::Widget *widget;
+	public:
+		WidgetBookEntry():
+			own(), widget() { }
+		~WidgetBookEntry()
+			{ set(0, false); }
+		Gtk::Widget* get() const
+			{ return widget; }
+		bool is_own() const
+			{ return own; }
+		void set(Gtk::Widget *x, bool own) {
+			if (x != widget && widget && this->own)
+				delete widget;
+			widget = x;
+			this->own = own;
+		}
+	};
+	
+	typedef std::map<synfig::String, WidgetBookEntry> WidgetBook;
+	typedef std::map<synfig::String, Glib::RefPtr<Glib::ObjectBase> > RefObjBook;
+	typedef std::map<synfig::String, AdjustmentGroup::Handle> AdjustmentGroupBook;
+	
 	//! Create an instance of this class whenever doing a longer task.
 	/*! Make sure that you check the bool value of this class occasionally
 	**	to make sure the action has not been canceled. */
@@ -259,9 +284,9 @@ private:
 
 	// DEBUGPOINT_CLASS(5);
 
-	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
-	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
-	std::map<synfig::String,AdjustmentGroup::Handle> adjustment_group_book_;
+	RefObjBook ref_obj_book_;
+	WidgetBook ext_widget_book_;
+	AdjustmentGroupBook adjustment_group_book_;
 
 	//! The time_window adjustment governs the position of the time window on the whole time line
 	etl::handle<TimeModel> time_model_;
@@ -496,15 +521,13 @@ public:
 	synfig::Rect& get_bbox() { return bbox; }
 
 	Glib::RefPtr<Glib::ObjectBase> get_ref_obj(const synfig::String& x);
-	Glib::RefPtr<const Glib::ObjectBase> get_ref_obj(const synfig::String& x)const;
 	void set_ref_obj(const synfig::String& x, Glib::RefPtr<Glib::ObjectBase> y);
 
 	Glib::RefPtr<Gtk::TreeModel> get_tree_model(const synfig::String& x);
-	Glib::RefPtr<const Gtk::TreeModel> get_tree_model(const synfig::String& x)const;
 	void set_tree_model(const synfig::String& x, Glib::RefPtr<Gtk::TreeModel> y);
 
 	Gtk::Widget* get_ext_widget(const synfig::String& x);
-	void set_ext_widget(const synfig::String& x, Gtk::Widget* y);
+	void set_ext_widget(const synfig::String& x, Gtk::Widget* y, bool own = true);
 
 	AdjustmentGroup::Handle get_adjustment_group(const synfig::String& x);
 	void set_adjustment_group(const synfig::String& x, AdjustmentGroup::Handle y);
@@ -546,13 +569,8 @@ public:
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return selection_manager_; }
 
 	Glib::RefPtr<Gtk::TreeModel> layer_tree_store() { return get_tree_model("layers"); }
-	Glib::RefPtr<const Gtk::TreeModel> layer_tree_store()const { return get_tree_model("layers"); }
-
 	Glib::RefPtr<Gtk::TreeModel> children_tree_store() { return get_tree_model("children"); }
-	Glib::RefPtr<const Gtk::TreeModel> children_tree_store()const { return get_tree_model("children"); }
-
 	Glib::RefPtr<Gtk::TreeModel> keyframe_tree_store() { return get_tree_model("keyframes"); }
-	Glib::RefPtr<const Gtk::TreeModel> keyframe_tree_store()const { return get_tree_model("keyframes"); }
 
 	void set_time(synfig::Time t) { time_model()->set_time(t); }
 	synfig::Time get_time() { return time_model()->get_time(); }

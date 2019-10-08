@@ -712,13 +712,6 @@ CanvasView::~CanvasView()
 	ui_interface_.reset();
 	selection_manager_.reset();
 
-	// Delete any external widgets
-	for(;!ext_widget_book_.empty();ext_widget_book_.erase(ext_widget_book_.begin()))
-	{
-		if(ext_widget_book_.begin()->second)
-			delete ext_widget_book_.begin()->second;
-	}
-
 	// don't be calling on_dirty_preview once this object has been deleted;
 	// this was causing a crash before
 	canvas_interface()->signal_dirty_preview().clear();
@@ -3534,53 +3527,48 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 Glib::RefPtr<Glib::ObjectBase>
 CanvasView::get_ref_obj(const String& x)
 {
-	return ref_obj_book_[x];
-}
-
-Glib::RefPtr<const Glib::ObjectBase>
-CanvasView::get_ref_obj(const String& x)const
-{
-	return ref_obj_book_.find(x)->second;
+	RefObjBook::const_iterator i = ref_obj_book_.find(x);
+	return i == ref_obj_book_.end() ? Glib::RefPtr<Glib::ObjectBase>() : i->second;
 }
 
 void
 CanvasView::set_ref_obj(const String& x, Glib::RefPtr<Glib::ObjectBase> y)
 {
-	ref_obj_book_[x]=y;
+	if (y)
+		ref_obj_book_[x] = y;
+	else
+		ref_obj_book_.erase(x);
 }
 
 Glib::RefPtr<Gtk::TreeModel>
 CanvasView::get_tree_model(const String& x)
 {
-	return Glib::RefPtr<Gtk::TreeModel>::cast_dynamic(ref_obj_book_["_tree_model_"+x]);
-}
-
-Glib::RefPtr<const Gtk::TreeModel>
-CanvasView::get_tree_model(const String& x)const
-{
-	return Glib::RefPtr<Gtk::TreeModel>::cast_dynamic(ref_obj_book_.find("_tree_model_"+x)->second);
+	return Glib::RefPtr<Gtk::TreeModel>::cast_dynamic(get_ref_obj("_tree_model_"+x));
 }
 
 void
 CanvasView::set_tree_model(const String& x, Glib::RefPtr<Gtk::TreeModel> y)
 {
-	ref_obj_book_["_tree_model_"+x]=Glib::RefPtr<Glib::ObjectBase>::cast_static(y);
+	set_ref_obj("_tree_model_"+x, y);
 }
 
 Gtk::Widget*
 CanvasView::get_ext_widget(const String& x)
 {
-	return ext_widget_book_[x];
+	WidgetBook::const_iterator i = ext_widget_book_.find(x);
+	return i == ext_widget_book_.end() ? 0 : i->second.get();
 }
 
 void
-CanvasView::set_ext_widget(const String& x, Gtk::Widget* y)
+CanvasView::set_ext_widget(const String& x, Gtk::Widget* y, bool own)
 {
-	ext_widget_book_[x]=y;
+	assert(y);
+	assert(!get_ext_widget(x));
+	
+	ext_widget_book_[x].set(y, own);
 	if(x=="layers_cmp")
 	{
 		layer_tree=dynamic_cast<LayerTree*>(y);
-
 		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_LAYER_SELECTION_CHANGED));
 		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 		layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_layer_user_click));
@@ -3601,7 +3589,7 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y)
 AdjustmentGroup::Handle
 CanvasView::get_adjustment_group(const synfig::String& x)
 {
-	std::map<synfig::String,AdjustmentGroup::Handle>::const_iterator i = adjustment_group_book_.find(x);
+	AdjustmentGroupBook::const_iterator i = adjustment_group_book_.find(x);
 	return i == adjustment_group_book_.end() ? AdjustmentGroup::Handle() : i->second;
 }
 
