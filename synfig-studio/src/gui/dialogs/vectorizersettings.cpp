@@ -281,9 +281,7 @@ VectorizerSettings::savecurrconfig()
 void
 VectorizerSettings::on_convert_pressed()
 {
-	hide();
-	OneMoment one_moment;
-	one_moment.show();
+	
 	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
 	std::cout<<"Action Created \n";
 	assert(action);
