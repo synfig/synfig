@@ -190,7 +190,7 @@ MainWindow::init_menus()
 		sigc::ptr_fun(App::save_custom_workspace)
 	);
 
-	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspace list...")),
+	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
 		sigc::ptr_fun(App::edit_custom_workspace_list)
 	);
 
