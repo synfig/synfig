@@ -253,8 +253,6 @@ App::get_workspaces()
 int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
-synfig::Gamma App::gamma;
-
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 
 int        App::jack_locks_ = 0;
@@ -304,14 +302,6 @@ studio::Dock_Curves        *dock_curves;
 
 std::list< etl::handle< studio::Module > > module_list_;
 
-bool studio::App::use_colorspace_gamma=true;
-#ifdef SINGLE_THREADED
-	//#ifdef	WIN32
-	bool studio::App::single_threaded=true;
-	//#else
-	//bool studio::App::single_threaded=false;
-	//#endif // WIN32
-#endif  // SINGLE THREADED
 bool   studio::App::restrict_radius_ducks        = true;
 bool   studio::App::resize_imported_images       = false;
 bool   studio::App::enable_experimental_features = false;
@@ -531,16 +521,6 @@ public:
 		try
 		{
 			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-			if(key=="gamma")
-			{
-				value=strprintf("%f %f %f %f",
-					App::gamma.get_gamma_r(),
-					App::gamma.get_gamma_g(),
-					App::gamma.get_gamma_b(),
-					App::gamma.get_gamma_a()
-				);
-				return true;
-			}
 			if(key=="time_format")
 			{
 				value=strprintf("%i",App::get_time_format());
@@ -551,23 +531,11 @@ public:
 				value=strprintf("%i",App::get_max_recent_files());
 				return true;
 			}
-			if(key=="use_colorspace_gamma")
-			{
-				value=strprintf("%i",(int)App::use_colorspace_gamma);
-				return true;
-			}
 			if(key=="distance_system")
 			{
 				value=strprintf("%s",Distance::system_name(App::distance_system).c_str());
 				return true;
 			}
-#ifdef SINGLE_THREADED
-			if(key=="use_single_threaded")
-			{
-				value=strprintf("%i",(int)App::single_threaded);
-				return true;
-			}
-#endif
 			if(key=="autosave_backup")
 			{
 				value=strprintf("%i",App::auto_recover->get_enabled());
@@ -720,17 +688,6 @@ public:
 		try
 		{
 			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-			if(key=="gamma")
-			{
-				float r,g,b,a = -1;
-
-				strscanf(value,"%f %f %f %f", &r, &g, &b, &a);
-
-				if (a <= 0) a = r;
-				App::gamma.set_all(r,g,b,a);
-
-				return true;
-			}
 			if(key=="time_format")
 			{
 				int i(atoi(value.c_str()));
@@ -755,25 +712,11 @@ public:
 				App::set_max_recent_files(i);
 				return true;
 			}
-			if(key=="use_colorspace_gamma")
-			{
-				int i(atoi(value.c_str()));
-				App::use_colorspace_gamma=i;
-				return true;
-			}
 			if(key=="distance_system")
 			{
 				App::distance_system=Distance::ident_system(value);;
 				return true;
 			}
-#ifdef SINGLE_THREADED
-			if(key=="use_single_threaded")
-			{
-				int i(atoi(value.c_str()));
-				App::single_threaded=i;
-				return true;
-			}
-#endif
 			if(key=="restrict_radius_ducks")
 			{
 				int i(atoi(value.c_str()));
@@ -917,14 +860,9 @@ public:
 	virtual KeyList get_key_list()const
 	{
 		KeyList ret(synfigapp::Settings::get_key_list());
-		ret.push_back("gamma");
 		ret.push_back("time_format");
 		ret.push_back("distance_system");
 		ret.push_back("file_history.size");
-		ret.push_back("use_colorspace_gamma");
-#ifdef SINGLE_THREADED
-		ret.push_back("use_single_threaded");
-#endif
 		ret.push_back("autosave_backup");
 		ret.push_back("autosave_backup_interval");
 		ret.push_back("restrict_radius_ducks");
@@ -1714,10 +1652,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Loading Settings..."));
 		load_accel_map();
 		if (!load_settings())
-		{
-			gamma.set_gamma(1.0/2.2);
 			set_workspace_default();
-		}
 		if (!load_settings("workspace.layout"))
 			set_workspace_default();
 		load_file_window_size();
@@ -2348,10 +2283,6 @@ void
 App::restore_default_settings()
 {
 	synfigapp::Main::settings().set_value("pref.distance_system",               "pt");
-	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma",           "1");
-#ifdef SINGLE_THREADED
-	synfigapp::Main::settings().set_value("pref.use_single_threaded",            "1");
-#endif
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks",          "1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images",         "0");
 	synfigapp::Main::settings().set_value("pref.enable_experimental_features",   "0");
@@ -2378,7 +2309,6 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.autosave_backup",                "1");
 	synfigapp::Main::settings().set_value("pref.autosave_backup_interval",       "15000");
 	synfigapp::Main::settings().set_value("pref.image_editor_path",             "");
-
 }
 
 void
@@ -4195,6 +4125,14 @@ App::get_instance(etl::handle<synfig::Canvas> canvas)
 			return *iter;
 	}
 	return 0;
+}
+
+Gamma
+App::get_selected_canvas_gamma()
+{
+	if (etl::loose_handle<CanvasView> canvas_view = App::get_selected_canvas_view())
+		return canvas_view->get_canvas()->rend_desc().get_gamma();
+	return Gamma();
 }
 
 void

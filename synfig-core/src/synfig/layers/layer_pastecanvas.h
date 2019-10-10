@@ -185,7 +185,6 @@ public:
 	virtual Vocab get_param_vocab()const;
 	//! Checks to see if a part of the Paste Canvas Layer is directly under \a point
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-	virtual void set_render_method(Context context, RenderMethod x);
 
 	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
 

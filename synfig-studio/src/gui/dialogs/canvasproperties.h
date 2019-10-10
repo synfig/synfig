@@ -47,6 +47,7 @@ namespace synfigapp { class CanvasInterface; };
 
 namespace studio
 {
+
 class CanvasProperties  :  public Gtk::Dialog
 {
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;

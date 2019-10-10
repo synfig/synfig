@@ -352,22 +352,18 @@ png_trgt_spritesheet::read_png_file()
 
 	cout << "colors checked" << endl;
 
-	//Gamma correction for PNG. I took 2.2 value from 
-	//http://www.libpng.org/pub/png/spec/1.2/PNG-GammaAppendix.html
-	//Also see gamma.h and gamma.cpp
-	Gamma gamma_png(2.2);
-	
 	//From png bytes to synfig::Color conversion
+	const ColorReal k = 1/255.0;
     for (unsigned int y = 0; y < in_image.height; y++) 
 	{
         png_byte* row = row_pointers[y];
         for (unsigned int x = 0; x < in_image.width; x++) 
 		{
             png_byte* ptr = &(row[x*4]);
-			color_data[y][x].set_r(gamma_png.r_U8_to_F32(ptr[0]));
-			color_data[y][x].set_g(gamma_png.g_U8_to_F32(ptr[1]));
-			color_data[y][x].set_b(gamma_png.b_U8_to_F32(ptr[2]));
-			color_data[y][x].set_a(gamma_png.a_U8_to_F32(ptr[3]));
+			color_data[y][x].set_r(ptr[0]*k);
+			color_data[y][x].set_g(ptr[1]*k);
+			color_data[y][x].set_b(ptr[2]*k);
+			color_data[y][x].set_a(ptr[3]*k);
         }
     }
 
@@ -439,9 +435,6 @@ png_trgt_spritesheet::write_png_file()
 	             PNG_INTERLACE_NONE,
 	             PNG_COMPRESSION_TYPE_DEFAULT,
 	             PNG_FILTER_TYPE_DEFAULT);
-    // Write the gamma
-    //png_set_gAMA(png_ptr, info_ptr,1.0/gamma().get_gamma());
-    png_set_gAMA(png_ptr, info_ptr,gamma().get_gamma());
 
     // Write the physical size
     png_set_pHYs(png_ptr,info_ptr,round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()),PNG_RESOLUTION_METER);
@@ -483,7 +476,7 @@ png_trgt_spritesheet::write_png_file()
 			color_data[cur_out_image_row],
             //PF_RGB|(get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)?PF_A:PF_RGB, //Note: PF_RGB == 0
 			(get_alpha_mode() == TARGET_ALPHA_MODE_KEEP) ? PF_RGB | PF_A : PF_RGB, //Note: PF_RGB == 0
-			&gamma(),
+			0,
 			sheet_width );
 		setjmp(png_jmpbuf(png_ptr));
 		png_write_row(png_ptr,buffer);

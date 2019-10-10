@@ -299,7 +299,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 
 	//convert all the pixels to the pixbuf... buffer... thing...
 	//synfig::warning("Converting...");
-	color_to_pixelformat(buffer, surf[0], pf, &App::gamma, surf.get_w(), surf.get_h());
+	color_to_pixelformat(buffer, surf[0], pf, 0, surf.get_w(), surf.get_h());
 
 	//load time
 	fe.t = time;
@@ -1076,13 +1076,7 @@ void studio::Widget_Preview::stoprender()
 		// don't crash if the render has already been stopped
 		if (!preview->renderer)
 			return;
-
-#ifdef SINGLE_THREADED
-		if (preview->renderer->updating)
-			preview->renderer->pause();
-		else
-#endif
-			preview->renderer.detach();
+		preview->renderer.detach();
 	}
 }
 

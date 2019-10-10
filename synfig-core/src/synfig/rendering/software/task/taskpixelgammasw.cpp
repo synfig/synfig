@@ -70,9 +70,9 @@ private:
 		int height;
 
 		union {
-			ColorReal gamma[4];
+			ColorReal gamma[3];
 			struct {
-				ColorReal gamma_r, gamma_g, gamma_b, gamma_a;
+				ColorReal gamma_r, gamma_g, gamma_b;
 			};
 		};
 
@@ -80,7 +80,7 @@ private:
 			dst(), dst_stride(),
 			src(), src_stride(),
 			width(), height(),
-			gamma_r(1.0), gamma_g(1.0), gamma_b(1.0), gamma_a(1.0)
+			gamma_r(1.0), gamma_g(1.0), gamma_b(1.0)
 		{ }
 
 		Params(
@@ -92,13 +92,12 @@ private:
 			int height,
 			ColorReal gamma_r,
 			ColorReal gamma_g,
-			ColorReal gamma_b,
-			ColorReal gamma_a
+			ColorReal gamma_b
 		):
 			dst((ColorReal*)dst), dst_stride(dst_stride),
 			src((const ColorReal*)src), src_stride(src_stride),
 			width(width), height(height),
-			gamma_r(gamma_r), gamma_g(gamma_g), gamma_b(gamma_b), gamma_a(gamma_a)
+			gamma_r(gamma_r), gamma_g(gamma_g), gamma_b(gamma_b)
 		{ }
 	};
 
@@ -108,16 +107,10 @@ private:
 		return std::max(-max, std::min(max, x));
 	}
 
-	static inline ColorReal non_zero(const ColorReal &x)
+	static inline ColorReal clamp_positive(const ColorReal &x)
 	{
-		const ColorReal min = real_low_precision<ColorReal>();
-		return x > ColorReal(0.0) ? std::max(min, x) : std::min(-min, x);
-	}
-
-	static inline ColorReal positive(const ColorReal &x)
-	{
-		const ColorReal min = real_low_precision<ColorReal>();
-		return std::max(min, x);
+		const ColorReal max = ColorReal(1.0)/real_low_precision<ColorReal>();
+		return std::max(real_low_precision<ColorReal>(), std::min(max, x));
 	}
 
 	static inline void func_none(ColorReal&, const ColorReal&, const ColorReal&) { }
@@ -125,21 +118,12 @@ private:
 		{ dst = src; }
 	static inline void func_one(ColorReal &dst, const ColorReal &, const ColorReal &)
 		{ dst = ColorReal(1.0); }
-	static inline void func_div(ColorReal &dst, const ColorReal &src, const ColorReal&)
-		{ dst = clamp(ColorReal(1.0)/non_zero(src)); }
-	static inline void func_pow_positive(ColorReal &dst, const ColorReal &src, const ColorReal &gamma)
-		{ dst = clamp(pow(positive(src), gamma)); }
-	static inline void func_pow_negative(ColorReal &dst, const ColorReal &src, const ColorReal &gamma)
-		{ dst = clamp(pow(positive(src), gamma)); }
+	static inline void func_pow(ColorReal &dst, const ColorReal &src, const ColorReal &gamma)
+		{ dst = clamp(src < 0 ? -pow(-src, gamma) : pow(src, gamma)); }
 
-	template<Func fr, Func fg, Func fb, Func fa>
-	static void process_rgba(const Params &p) {
-		bool set_one = approximate_equal_lp(p.gamma_r, ColorReal(0.0))
-					&& approximate_equal_lp(p.gamma_g, ColorReal(0.0))
-					&& approximate_equal_lp(p.gamma_b, ColorReal(0.0))
-					&& approximate_equal_lp(p.gamma_a, ColorReal(0.0));
-
-		if (set_one || p.src == p.dst)
+	template<Func fr, Func fg, Func fb>
+	static void process_rgb(const Params &p) {
+		if (p.src == p.dst)
 		{
 			assert(p.src_stride == p.dst_stride);
 
@@ -153,7 +137,6 @@ private:
 					fr(dst[0], dst[0], p.gamma_r);
 					fg(dst[1], dst[1], p.gamma_g);
 					fb(dst[2], dst[2], p.gamma_b);
-					fa(dst[3], dst[3], p.gamma_a);
 				}
 			}
 		}
@@ -173,57 +156,33 @@ private:
 					fr(dst[0], src[0], p.gamma_r);
 					fg(dst[1], src[1], p.gamma_g);
 					fb(dst[2], src[2], p.gamma_b);
-					fa(dst[3], src[3], p.gamma_a);
+					dst[3] = src[3];
 				}
 			}
 		}
 	}
 
-	template<Func fr, Func fg, Func fb>
-	static void process_rgb(const Params &p) {
-		if (approximate_equal_lp(p.gamma_a, ColorReal( 0.0))) process_rgba<fr, fg, fb, func_one>(p); else
-		if (approximate_equal_lp(p.gamma_a, ColorReal(-1.0))) process_rgba<fr, fg, fb, func_div>(p); else
-		if (approximate_equal_lp(p.gamma_a, ColorReal( 1.0))) {
-			if (p.src == p.dst)                               process_rgba<fr, fg, fb, func_none>(p); else
-				                                              process_rgba<fr, fg, fb, func_copy>(p);
-		} else
-		if (p.gamma_a > ColorReal(0.0))                       process_rgba<fr, fg, fb, func_pow_positive>(p); else
-			                                                  process_rgba<fr, fg, fb, func_pow_negative>(p);
-	}
-
 	template<Func fr, Func fg>
 	static void process_rg(const Params &p) {
-		if (approximate_equal_lp(p.gamma_b, ColorReal( 0.0))) process_rgb<fr, fg, func_one>(p); else
-		if (approximate_equal_lp(p.gamma_b, ColorReal(-1.0))) process_rgb<fr, fg, func_div>(p); else
-		if (approximate_equal_lp(p.gamma_b, ColorReal( 1.0))) {
-			if (p.src == p.dst)                               process_rgb<fr, fg, func_none>(p); else
+		if ( approximate_equal_lp(p.gamma_b, ColorReal(0.0))) process_rgb<fr, fg, func_one >(p); else
+		if (!approximate_equal_lp(p.gamma_b, ColorReal(1.0))) process_rgb<fr, fg, func_pow >(p); else
+		if (p.src == p.dst)                                   process_rgb<fr, fg, func_none>(p); else
 				                                              process_rgb<fr, fg, func_copy>(p);
-		} else
-		if (p.gamma_b > ColorReal(0.0))                       process_rgb<fr, fg, func_pow_positive>(p); else
-			                                                  process_rgb<fr, fg, func_pow_negative>(p);
 	}
 
 	template<Func fr>
 	static void process_r(const Params &p) {
-		if (approximate_equal_lp(p.gamma_g, ColorReal( 0.0))) process_rg<fr, func_one>(p); else
-		if (approximate_equal_lp(p.gamma_g, ColorReal(-1.0))) process_rg<fr, func_div>(p); else
-		if (approximate_equal_lp(p.gamma_g, ColorReal( 1.0))) {
-			if (p.src == p.dst)                               process_rg<fr, func_none>(p); else
+		if ( approximate_equal_lp(p.gamma_g, ColorReal(0.0))) process_rg<fr, func_one >(p); else
+		if (!approximate_equal_lp(p.gamma_g, ColorReal(1.0))) process_rg<fr, func_pow >(p); else
+		if (p.src == p.dst)                                   process_rg<fr, func_none>(p); else
 				                                              process_rg<fr, func_copy>(p);
-		} else
-		if (p.gamma_g > ColorReal(0.0))                       process_rg<fr, func_pow_positive>(p); else
-			                                                  process_rg<fr, func_pow_negative>(p);
 	}
 
 	static void process(const Params &p) {
-		if (approximate_equal_lp(p.gamma_r, ColorReal( 0.0))) process_r<func_one>(p); else
-		if (approximate_equal_lp(p.gamma_r, ColorReal(-1.0))) process_r<func_div>(p); else
-		if (approximate_equal_lp(p.gamma_r, ColorReal( 1.0))) {
-			if (p.src == p.dst)                               process_r<func_none>(p); else
+		if ( approximate_equal_lp(p.gamma_r, ColorReal(0.0))) process_r<func_one >(p); else
+		if (!approximate_equal_lp(p.gamma_r, ColorReal(1.0))) process_r<func_pow >(p); else
+		if (p.src == p.dst)                                   process_r<func_none>(p); else
 				                                              process_r<func_copy>(p);
-		} else
-		if (p.gamma_r > ColorReal(0.0))                       process_r<func_pow_positive>(p); else
-			                                                  process_r<func_pow_negative>(p);
 	}
 
 public:
@@ -252,10 +211,9 @@ public:
 				src.get_pitch()/sizeof(Color),
 				rs.get_width(),
 				rs.get_height(),
-				clamp(1.0/non_zero(gamma_r)),
-				clamp(1.0/non_zero(gamma_g)),
-				clamp(1.0/non_zero(gamma_b)),
-				clamp(1.0/non_zero(gamma_a)) ));
+				clamp_positive(gamma.get_r()),
+				clamp_positive(gamma.get_g()),
+				clamp_positive(gamma.get_b()) ));
 		}
 
 		return true;

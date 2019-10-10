@@ -43,19 +43,16 @@
 namespace studio {
 
 
-synfig::Color colorconv_apply_gamma(const synfig::Color &c);
-
 void render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gdk::Rectangle &ca, const synfig::Color &color);
 
 class Widget_Color : public Gtk::DrawingArea
 {
+private:
 	synfig::Color color;
-
+	synfig::Gamma gamma;
 	sigc::signal<void> signal_activate_;
 	sigc::signal<void> signal_middle_click_;
 	sigc::signal<void> signal_right_click_;
-
-protected:
 
 public:
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
@@ -63,14 +60,15 @@ public:
 	sigc::signal<void>& signal_middle_click() { return signal_middle_click_; }
 	sigc::signal<void>& signal_right_click() { return signal_right_click_; }
 
-	void set_value(const synfig::Color &data);
-	const synfig::Color &get_value();
+	const synfig::Color& get_value() const;
+	void set_value(const synfig::Color &x);
+
 	Widget_Color();
 	~Widget_Color();
-private:
+	
+protected:
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
-
 }; // END of class Widget_Color
 
 }; // END of namespace studio

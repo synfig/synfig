@@ -256,16 +256,6 @@ Context::get_full_bounding_rect()const
 */
 
 
-void
-Context::set_render_method(RenderMethod x)
-{
-	Context context(*this);
-
-	if((context)->empty()) return;
-	
-	(*context)->set_render_method(context.get_next(), x);
-}
-
 etl::handle<Layer>
 Context::hit_check(const Point &pos)const
 {

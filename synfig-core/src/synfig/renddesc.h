@@ -115,6 +115,8 @@ private:
 	Matrix transformation_matrix;
 	//! Root outline grow value
 	Real outline_grow;
+	//! Gamma value
+	Gamma gamma;
 
 public:
 	//! Default Constructor
@@ -139,7 +141,8 @@ public:
 		frame_rate              (24),
 		time_begin              (0),
 		time_end                (0),
-		outline_grow            (0)
+		outline_grow            (0),
+		gamma                   ()
 	{ }
 
 	static RendDesc zero()
@@ -363,6 +366,8 @@ public:
 	Real get_outline_grow() const { return outline_grow; }
 	void set_outline_grow(Real x) { outline_grow = x; }
 
+	const Gamma& get_gamma() const { return gamma; }
+	void set_gamma(const Gamma &x) { gamma = x; }
 };	// END of class RendDesc
 
 }; /* end namespace synfig */

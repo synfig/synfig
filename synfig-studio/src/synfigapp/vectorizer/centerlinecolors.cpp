@@ -43,28 +43,30 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
-synfig::Color pixelToColor(const Surface &rsurface, int x, int y)
+synfig::Color pixelToColor(const Surface &rsurface, int x, int y, const Gamma &gamma)
 {
-  const int Y = rsurface.get_h() - y -1; 
-	const Color *row = rsurface[Y]; 
-  return row[x];
+	const int Y = rsurface.get_h() - y - 1;
+	return gamma.apply(rsurface[Y][x]);
 }
 
-bool checkPixelThreshold(const Surface &rsurface, int x, int y,int threshold)
+bool checkPixelThreshold(const Surface &rsurface, int x, int y, int threshold)
 {
-  const int Y = rsurface.get_h() - y -1; 
-	const Color *row = rsurface[Y]; 
-	int r = 255.0*pow(row[x].get_r(),1/2.2);
-	int g = 255.0*pow(row[x].get_g(),1/2.2);
-	int b = 255.0*pow(row[x].get_b(),1/2.2);
-  int a = 255.0*pow(row[x].get_a(),1/2.2);
-  return std::max(r,std::max(g,b)) < threshold * (a / 255.0);
-
+	const int Y = rsurface.get_h() - y -1; 
+	const Color color = rsurface[Y][x];
+	int r = 255.99*color.get_r();
+	int g = 255.99*color.get_g();
+	int b = 255.99*color.get_b();
+	int a = 255.99*color.get_a();
+	return std::max(r,std::max(g,b)) < threshold * (a / 255.0);
 }
 
 //------------------------------------------------------------------------
-static synfig::Point3 firstInkChangePosition(const Surface &ras,
-                                        const synfig::Point3 &start, const synfig::Point3 &end, int threshold) 
+static synfig::Point3 firstInkChangePosition(
+	const Surface &ras,
+	const synfig::Point3 &start,
+	const synfig::Point3 &end,
+	int threshold,
+	const Gamma &gamma )
 {
   double dist = (end - start).mag();
 
@@ -81,7 +83,7 @@ static synfig::Point3 firstInkChangePosition(const Surface &ras,
     // const TPixelCM32 &pix = pixel(*ras, p.x, p.y);
     if (checkPixelThreshold(ras,p[0],p[1], threshold)) 
     {
-      color = pixelToColor(ras,p[0],p[1]);
+      color = pixelToColor(ras, p[0], p[1], gamma);
       break;
     }
   }
@@ -92,7 +94,7 @@ static synfig::Point3 firstInkChangePosition(const Surface &ras,
     synfig::Point3 p = start *(1 - s/sampleMaxD) +  end * (s/sampleMaxD);
     // const TPixelCM32 &pix = pixel(*ras, p.x, p.y);
 
-    if (checkPixelThreshold(ras,p[0],p[1],threshold) && pixelToColor(ras,p[0],p[1]) != color)
+    if (checkPixelThreshold(ras,p[0],p[1],threshold) && pixelToColor(ras, p[0], p[1], gamma) != color)
      break;
   }
 
@@ -132,8 +134,13 @@ static synfig::Point3 firstInkChangePosition(const Surface &ras,
 // NOTE: The J-S 'upper' graph structure is not altered in here.
 // Eventualm. to do outside.
 
-static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int threshold, Sequence &seq,
-                        Sequence &seqOpposite, SequenceList &singleSequences) 
+static void sampleColor(
+	const etl::handle<synfig::Layer_Bitmap> &ras,
+	int threshold,
+	Sequence &seq,
+	Sequence &seqOpposite,
+	SequenceList &singleSequences,
+	const Gamma &gamma ) 
 {
   SkeletonGraph *currGraph = seq.m_graphHolder;
 
@@ -183,8 +190,11 @@ static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int thresh
   // Exclude 0-length sequences
   if (params.back() < 0.01) 
   {
-    seq.m_color = pixelToColor(rsurface, currGraph->getNode(seq.m_head)->operator[](0),
-                        currGraph->getNode(seq.m_head)->operator[](1));
+    seq.m_color = pixelToColor(
+		rsurface,
+		currGraph->getNode(seq.m_head)->operator[](0),
+		currGraph->getNode(seq.m_head)->operator[](1),
+		gamma );
     return;
   }
 
@@ -242,15 +252,15 @@ static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int thresh
   // Give s the first sampled ink color found
 
   // Initialize with a last-resort reasonable color - not just 0
-  seq.m_color = seqOpposite.m_color = pixelToColor(rsurface,samplePoints[0][0],samplePoints[0][1]);
+  seq.m_color = seqOpposite.m_color = pixelToColor(rsurface, samplePoints[0][0], samplePoints[0][1], gamma);
 
   int l;
 
   for (l = i - 1; l >= 0; --l) 
   {
-    if (checkPixelThreshold(rsurface,samplePoints[l][0],samplePoints[l][1], threshold))
+    if (checkPixelThreshold(rsurface, samplePoints[l][0], samplePoints[l][1], threshold))
     {
-      seq.m_color = seqOpposite.m_color = pixelToColor(rsurface,samplePoints[l][0],samplePoints[l][1]);
+      seq.m_color = seqOpposite.m_color = pixelToColor(rsurface, samplePoints[l][0], samplePoints[l][1], gamma);
       break;
     }
   }
@@ -260,8 +270,7 @@ static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int thresh
   {
     if (checkPixelThreshold(rsurface,samplePoints[l][0],samplePoints[l][1], threshold))
     {
-      seq.m_color = seqOpposite.m_color = pixelToColor(rsurface, samplePoints[l][0], samplePoints[l][1]);
-
+      seq.m_color = seqOpposite.m_color = pixelToColor(rsurface, samplePoints[l][0], samplePoints[l][1], gamma);
       break;
     }
   }
@@ -278,15 +287,15 @@ static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int thresh
     //     &nextSample = ras->pixels(x1)[y1],
     //     &nextSample2 = ras->pixels(x2)[y2];  // l < k < sampleMax - so +2 is ok
 
-    if (checkPixelThreshold(rsurface,x1,y1,threshold) &&
-        pixelToColor(rsurface,x1,y1) != seq.m_color &&
-        checkPixelThreshold(rsurface,x2,y2,threshold) &&
-        pixelToColor(rsurface,x2,y2) == pixelToColor(rsurface,x1,y1))  // Ignore single-sample color changes
+    if (checkPixelThreshold(rsurface, x1, y1, threshold) &&
+        pixelToColor(rsurface, x1, y1, gamma) != seq.m_color &&
+        checkPixelThreshold(rsurface, x2, y2, threshold) &&
+        pixelToColor(rsurface, x2, y2, gamma) == pixelToColor(rsurface, x1, y1, gamma))  // Ignore single-sample color changes
     {
       // Found a color change - apply splitting procedure
       // NOTE: The function RETURNS BEFORE THE FOR IS CONTINUED!
 
-      synfig::Color nextColor = pixelToColor(rsurface,x1,y1);
+      synfig::Color nextColor = pixelToColor(rsurface, x1, y1, gamma);
 
       // Identify split segment
       int u;
@@ -295,7 +304,7 @@ static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int thresh
       {
         const int x = currGraph->getNode(nodes[u + 1])->operator[](0),
                   y = currGraph->getNode(nodes[u + 1])->operator[](1);
-        if (checkPixelThreshold(rsurface,x,y,threshold) && pixelToColor(rsurface,x,y) != seq.m_color)
+        if (checkPixelThreshold(rsurface, x, y, threshold) && pixelToColor(rsurface, x, y, gamma) != seq.m_color)
          break;
       }
 
@@ -304,7 +313,7 @@ static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int thresh
       const synfig::Point3 &nodeStartPos = *currGraph->getNode(nodes[u]),
                            &nodeEndPos   = *currGraph->getNode(nodes[u + 1]);
 
-      synfig::Point3 splitPoint = firstInkChangePosition(rsurface, nodeStartPos, nodeEndPos, threshold);
+      synfig::Point3 splitPoint = firstInkChangePosition(rsurface, nodeStartPos, nodeEndPos, threshold, gamma);
 
       if (splitPoint == synfig::Point3::nan())
         splitPoint = (nodeStartPos + nodeEndPos) * 0.5; 
@@ -333,7 +342,7 @@ static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int thresh
         // Circular case: we update s to splitNode and relaunch this very
         // procedure on it.
         seq.m_head = seq.m_tail = splitNode;
-        sampleColor(ras, threshold, seq, seqOpposite, singleSequences);
+        sampleColor(ras, threshold, seq, seqOpposite, singleSequences, gamma);
       } 
       else 
       {
@@ -359,7 +368,7 @@ static void sampleColor(const etl::handle<synfig::Layer_Bitmap> &ras, int thresh
             currGraph->getNode(seq.m_head).hasAttribute(SAMPLECOLOR_SIGN))
           singleSequences.push_back(seq);
 
-        sampleColor(ras, threshold, newSeq, seqOpposite, singleSequences);
+        sampleColor(ras, threshold, newSeq, seqOpposite, singleSequences, gamma);
       }
 
       return;
@@ -384,7 +393,7 @@ _getOut:
 
 /* === E N T R Y P O I N T ================================================= */
 
-void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g) 
+void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g, const Gamma &gamma)
 {
   int threshold                           = g.currConfig->m_threshold;
   SequenceList &singleSequences           = g.singleSequences;
@@ -401,7 +410,7 @@ void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ra
     for (l = singleSequences.size() - 1; l >= 0; --l) 
     {
       Sequence rear;
-      sampleColor(ras, threshold, singleSequences[l], rear, singleSequences);
+      sampleColor(ras, threshold, singleSequences[l], rear, singleSequences, gamma);
       // If rear is built, a split occurred and the rear of this
       // single sequence has to be pushed back.
       if (rear.m_graphHolder) singleSequences.push_back(rear);
@@ -421,7 +430,7 @@ void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ra
                     unsigned int next = organizedGraphs[i].node(j).link(k).getNext();
                     unsigned int nextLink = organizedGraphs[i].tailLinkOf(j, k);
                     Sequence &sOpposite = *organizedGraphs[i].node(next).link(nextLink);
-                    sampleColor(ras, threshold, s, sOpposite, singleSequences);
+                    sampleColor(ras, threshold, s, sOpposite, singleSequences, gamma);
                   }
               }
           }  

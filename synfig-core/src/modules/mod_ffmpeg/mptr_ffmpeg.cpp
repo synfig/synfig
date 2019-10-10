@@ -217,30 +217,17 @@ ffmpeg_mptr::grab_frame(void)
 	if(feof(file))
 		return false;
 
-	int x;
-	int y;
-	frame.set_wh(w,h);
-	for(y=0;y<frame.get_h();y++)
-		for(x=0;x<frame.get_w();x++)
+	frame.set_wh(w, h);
+	const ColorReal k = 1/255.0;
+	for(int y = 0; y < frame.get_h(); ++y)
+		for(int x = 0; x < frame.get_w(); ++x)
 		{
 			if(feof(file))
 				return false;
-/*
-			frame[y][x]=Color(
-				(float)(unsigned char)fgetc(file)/divisor,
-				(float)(unsigned char)fgetc(file)/divisor,
-				(float)(unsigned char)fgetc(file)/divisor,
-				1.0
-*/
-			float r=gamma().r_U8_to_F32((unsigned char)fgetc(file));
-			float g=gamma().g_U8_to_F32((unsigned char)fgetc(file));
-			float b=gamma().b_U8_to_F32((unsigned char)fgetc(file));
-			frame[y][x]=Color(
-				r,
-				g,
-				b,
-				1.0
-			);
+			ColorReal r = k*(unsigned char)fgetc(file);
+			ColorReal g = k*(unsigned char)fgetc(file);
+			ColorReal b = k*(unsigned char)fgetc(file);
+			frame[y][x] = Color(r, g, b);
 		}
 	cur_frame++;
 	return true;

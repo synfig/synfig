@@ -295,7 +295,7 @@ bmp::end_scanline()
 	if(!file)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, pf, &gamma(), desc.get_w());
+	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
 
 	if(!fwrite(buffer,1,rowspan,file))
 		return false;

@@ -31,7 +31,6 @@
 #include "layer_composite.h"
 #include <synfig/surface.h>
 #include <synfig/guid.h>
-#include <synfig/target.h> // for RenderMethod
 
 #include <synfig/rendering/surface.h>
 #include <synfig/rendering/software/function/packedsurface.h>
@@ -51,7 +50,6 @@ class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 {
 	const Color& filter(Color& c)const;
 	const CairoColor& filter(CairoColor& c)const;
-	RenderMethod method;
 
 	GUID surface_modification_id;
 public:
@@ -96,10 +94,6 @@ public:
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	
-	virtual void set_render_method(Context context, RenderMethod x);
-	void set_method(RenderMethod x) { method=x;}
-	RenderMethod get_method()const { return method;}
-
 protected:
 	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
 }; // END of class Layer_Bitmap

@@ -51,7 +51,11 @@ class Target_Scanline : public Target
 
 	String engine_;
 
-	bool call_renderer(Context &context, const etl::handle<rendering::SurfaceResource> &surface, int quality, const RendDesc &renddesc, ProgressCallback *cb);
+	bool call_renderer(
+		const etl::handle<rendering::SurfaceResource> &surface,
+		Canvas &canvas,
+		const ContextParams &context_params,
+		const RendDesc &renddesc );
 
 public:
 	typedef etl::handle<Target_Scanline> Handle;

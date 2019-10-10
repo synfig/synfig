@@ -201,12 +201,11 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	else
 		png_set_IHDR(png_ptr,info_ptr,w,h,8,PNG_COLOR_TYPE_RGB,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
 
-	// Write the gamma
-	//png_set_gAMA(png_ptr, info_ptr,1.0/gamma().get_gamma());
-	png_set_gAMA(png_ptr, info_ptr,gamma().get_gamma());
-
 	// Write the physical size
 	png_set_pHYs(png_ptr,info_ptr,round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()),PNG_RESOLUTION_METER);
+	
+	// Explicit set gamma value to 2.2 (it's a default value)
+	png_set_gAMA(png_ptr,info_ptr,1/2.2);
 
 	char title      [] = "Title";
 	char description[] = "Description";
@@ -253,7 +252,7 @@ png_trgt::end_scanline()
 		return false;
 
 	PixelFormat pf = get_alpha_mode()==TARGET_ALPHA_MODE_KEEP ? PF_RGB|PF_A : PF_RGB;
-	color_to_pixelformat(buffer, color_buffer, pf, &gamma(), desc.get_w());
+	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
 
 	setjmp(png_jmpbuf(png_ptr));
 	png_write_row(png_ptr,buffer);

@@ -85,29 +85,14 @@ ppm_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	fscanf(file.get(),"%f",&divisor);
 	fgetc(file.get());
 
-	int x;
-	int y;
-	surface.set_wh(w,h);
-	for(y=0;y<surface.get_h();y++)
-		for(x=0;x<surface.get_w();x++)
-		{
-/*
-			surface[y][x]=Color(
-				(float)(unsigned char)fgetc(file)/divisor,
-				(float)(unsigned char)fgetc(file)/divisor,
-				(float)(unsigned char)fgetc(file)/divisor,
-				1.0
-			);
-*/
-			float r=gamma().r_U8_to_F32((unsigned char)fgetc(file.get()));
-			float g=gamma().g_U8_to_F32((unsigned char)fgetc(file.get()));
-			float b=gamma().b_U8_to_F32((unsigned char)fgetc(file.get()));
-			surface[y][x]=Color(
-				r,
-				g,
-				b,
-				1.0
-			);
+	surface.set_wh(w, h);
+	const ColorReal k = 1/255.0;
+	for(int y = 0; y < surface.get_h(); ++y)
+		for(int x = 0; x < surface.get_w(); ++x) {
+			ColorReal r = ((unsigned char)fgetc(file.get()))*k;
+			ColorReal g = ((unsigned char)fgetc(file.get()))*k;
+			ColorReal b = ((unsigned char)fgetc(file.get()))*k;
+			surface[y][x] = Color(r, g, b);
 		}
 	return true;
 }

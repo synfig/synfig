@@ -71,16 +71,16 @@ public:
 	/*! Generates a palette for the given
 	**	surface
 	*/
-	Palette(const Surface& surface, int size=256);
+	Palette(const Surface& surface, int size, const Gamma &gamma);
 
-	iterator find_closest(const Color& color, float* dist=0);
-	const_iterator find_closest(const Color& color, float* dist=0)const;
+	iterator find_closest(const Color& color, const Gamma &gamma, float* dist = 0);
+	const_iterator find_closest(const Color& color, const Gamma &gamma, float* dist = 0)const;
 
 	iterator find_heavy();
 
 	iterator find_light();
 
-	static Palette grayscale(int steps=16);
+	static Palette grayscale(int steps, ColorReal gamma);
 
 	void save_to_file(const synfig::String& filename)const;
 

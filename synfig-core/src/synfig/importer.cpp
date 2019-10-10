@@ -145,7 +145,6 @@ void Importer::forget(const FileSystem::Identifier &identifier)
 }
 
 Importer::Importer(const FileSystem::Identifier &identifier):
-	gamma_(2.2),
 	identifier(identifier)
 {
 }

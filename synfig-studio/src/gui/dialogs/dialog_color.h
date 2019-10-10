@@ -42,8 +42,6 @@
 
 namespace studio {
 
-class Widget_Color;
-
 class Dialog_Color : public Gtk::Dialog
 {
 	DialogSettings dialog_settings;

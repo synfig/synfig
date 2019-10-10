@@ -97,7 +97,8 @@ Svg_parser::load_svg_canvas(std::string _filepath,String &errors, String &warnin
 	return canvas;
 }
 
-Svg_parser::Svg_parser():
+Svg_parser::Svg_parser(const Gamma &gamma):
+	gamma(gamma),
 	nodeRoot(NULL),
 	uid(0),
 	kux(60),
@@ -105,8 +106,6 @@ Svg_parser::Svg_parser():
 	ox(0),
 	oy(0)
 {
-	// 0.5 in gamma parameter of color correct layer is 1/0.5 = 2 (thinking) it must be 2.2!!!!
-	gamma.set_gamma(2.2);
 }
 /*
 String
@@ -1230,34 +1229,10 @@ Svg_parser::newColorStop(String color,float opacity,float pos){
 	_stop->pos=pos;
 	return _stop;
 }
+
 Color
 Svg_parser::adjustGamma(float r,float g,float b,float a){
-	Color ret(r,g,b,a);
-	if(gamma.get_gamma_r()!=1.0){
-		if(ret.get_r() < 0)
-			ret.set_r(-gamma.r_F32_to_F32(-ret.get_r()));
-		else
-			ret.set_r(gamma.r_F32_to_F32(ret.get_r()));
-	}
-	if(gamma.get_gamma_g()!=1.0){
-		if(ret.get_g() < 0)
-			ret.set_g(-gamma.g_F32_to_F32(-ret.get_g()));
-		else
-			ret.set_g(gamma.g_F32_to_F32(ret.get_g()));
-	}
-	if(gamma.get_gamma_b()!=1.0){
-		if(ret.get_b() < 0)
-			ret.set_b(-gamma.b_F32_to_F32(-ret.get_b()));
-		else
-			ret.set_b(gamma.b_F32_to_F32(ret.get_b()));
-	}
-	if(gamma.get_gamma_a()!=1.0){
-		if(ret.get_a() < 0)
-			ret.set_a(-gamma.a_F32_to_F32(-ret.get_a()));
-		else
-			ret.set_a(gamma.a_F32_to_F32(ret.get_a()));
-	}
-	return ret;
+	return gamma.apply(Color(r,g,b,a));
 }
 
 LinearGradient*

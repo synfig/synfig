@@ -34,6 +34,7 @@
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
+#include <synfig/color.h>
 
 #include <ETL/stringf>
 #include "trgt_gif.h"
@@ -62,7 +63,6 @@ gif::gif(const char *filename_, const synfig::TargetParam & /* params */):
 	bs(),
 	filename(filename_),
 	file( (filename=="-")?stdout:fopen(filename_,POPEN_BINARY_WRITE_TYPE) ),
-	i(),
 	codesize(),
 	rootsize(),
 	nextcode(),
@@ -146,7 +146,7 @@ gif::init(synfig::ProgressCallback * /* cb */)
 
 	if(!local_palette)
 	{
-		curr_palette=Palette::grayscale(256/(1<<(8-rootsize))-1);
+		curr_palette = Palette::grayscale(256/(1<<(8-rootsize))-1, 1);
 		output_curr_palette();
 	}
 
@@ -170,20 +170,13 @@ void
 gif::output_curr_palette()
 {
 	// Output the color table
-	for(i=0;i<256/(1<<(8-rootsize));i++)
-	{
-		if(i<(signed)curr_palette.size())
-		{
-			Color color(curr_palette[i].color.clamped());
-			//fputc(i*(1<<(8-rootsize)),file.get());
-			//fputc(i*(1<<(8-rootsize)),file.get());
-			//fputc(i*(1<<(8-rootsize)),file.get());
-			fputc(gamma().r_F32_to_U8(color.get_r()),file.get());
-			fputc(gamma().g_F32_to_U8(color.get_g()),file.get());
-			fputc(gamma().b_F32_to_U8(color.get_b()),file.get());
-		}
-		else
-		{
+	for(int i = 0; i < 256/(1<<(8-rootsize)); ++i) {
+		if (i < (int)curr_palette.size()) {
+			Color color = curr_palette[i].color.clamped();
+			fputc((unsigned char)(color.get_r()*255.99), file.get());
+			fputc((unsigned char)(color.get_g()*255.99), file.get());
+			fputc((unsigned char)(color.get_b()*255.99), file.get());
+		} else {
 			fputc(255,file.get());
 			fputc(0,file.get());
 			fputc(255,file.get());
@@ -214,10 +207,9 @@ gif::start_frame(synfig::ProgressCallback *callback)
 void
 gif::end_frame()
 {
-	int w=desc.get_w(),h=desc.get_h(),i;
+	int w = desc.get_w(), h = desc.get_h();
 	unsigned int value;
-	int
-		delaytime=round_to_int(100.0/desc.get_frame_rate());
+	int delaytime = round_to_int(100.0/desc.get_frame_rate());
 
 	bool build_off_previous(multi_image);
 
@@ -244,12 +236,12 @@ gif::end_frame()
 
 	if(local_palette)
 	{
-		curr_palette=Palette(curr_surface,256/(1<<(8-rootsize))-build_off_previous-1);
+		curr_palette = Palette(curr_surface, 256/(1<<(8-rootsize)) - build_off_previous - 1, Gamma());
 		synfig::info("curr_palette.size()=%d",curr_palette.size());
 	}
 
-	int transparent_index(curr_palette.find_closest(Color(1,0,1,0))-curr_palette.begin());
-	bool has_transparency(curr_palette[transparent_index].color.get_a()<=0.00001);
+	int transparent_index = curr_palette.find_closest(Color(1,0,1,0), Gamma()) - curr_palette.begin();
+	bool has_transparency = curr_palette[transparent_index].color.get_a()<=0.00001;
 
 	if(has_transparency)
 		build_off_previous=false;
@@ -327,10 +319,10 @@ gif::end_frame()
 		//color_to_pixelformat(curr_frame[cur_scanline], curr_surface[cur_scanline], PF_GRAY, &gamma(), desc.get_w());
 
 		// Now we compress it!
-		for(i=0;i<w;i++)
+		for(int i=0; i < w; ++i)
 		{
 			Color color(curr_surface[cur_scanline][i].clamped());
-			Palette::iterator iter(curr_palette.find_closest(color));
+			Palette::iterator iter(curr_palette.find_closest(color, Gamma()));
 
 			if(dithering)
 			{

@@ -61,13 +61,15 @@ class Target_Tile : public Target
 	//! or not
 	bool clipping_;
 
-	bool allow_multithreading_;
-
 	String engine_;
 
 	struct TileGroup;
 
-	bool call_renderer(Context &context, const etl::handle<rendering::SurfaceResource> &surface, int quality, const RendDesc &renddesc, ProgressCallback *cb);
+	bool call_renderer(
+		const etl::handle<rendering::SurfaceResource> &surface,
+		Canvas &canvas,
+		const ContextParams &context_params,
+		const RendDesc &renddesc );
 
 public:
 	typedef etl::handle<Target_Tile> Handle;
@@ -79,7 +81,12 @@ public:
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback *cb=NULL);
 
-	virtual bool async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb=NULL);
+	virtual bool async_render_tile(
+		etl::handle<Canvas> canvas,
+		ContextParams context_params,
+		RectInt rect,
+		RendDesc tile_desc,
+		ProgressCallback *cb);
 	virtual bool wait_render_tiles(ProgressCallback *cb=NULL);
 
 	//! Determines which tile needs to be rendered next.
@@ -123,10 +130,6 @@ public:
 	bool get_clipping()const { return clipping_; }
 	//! Sets clipping
 	void set_clipping(bool x) { clipping_=x; }
-	//! Gets clipping
-	bool get_allow_multithreading()const { return allow_multithreading_; }
-	//! Sets clipping
-	void set_allow_multithreading(bool x) { allow_multithreading_=x; }
 	//! Gets engine
 	const String& get_engine()const { return engine_; }
 	//! Sets engine
@@ -134,7 +137,7 @@ public:
 
 private:
 	//! Renders the context to the surface
-	bool render_frame_(Context context,ProgressCallback *cb=0);
+	bool render_frame_(etl::handle<Canvas> canvas, ContextParams context_params, ProgressCallback *cb);
 
 }; // END of class Target_Tile
 

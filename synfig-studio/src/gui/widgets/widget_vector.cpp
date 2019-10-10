@@ -57,8 +57,6 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-static void init();
-
 Widget_Vector::Widget_Vector():
 	Glib::ObjectBase("widget_vector")
 {

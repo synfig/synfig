@@ -303,7 +303,7 @@ public:
 		return true;
 	}
 
-	bool encode_frame(const Surface &surface, const Gamma *gamma, bool last_frame) {
+	bool encode_frame(const Surface &surface, bool last_frame) {
 		assert(context);
 		if (!context) return false;
 
@@ -327,7 +327,7 @@ public:
 			(unsigned char *)frame_rgb->data[0],
 			surface[0],
 			PF_RGB,
-			gamma,
+			0,
 			w,
 			h,
 			frame_rgb->linesize[0],
@@ -462,7 +462,7 @@ Target_LibAVCodec::set_rend_desc(RendDesc *given_desc)
 
 void
 Target_LibAVCodec::end_frame()
-	{ internal->encode_frame(surface, &gamma(), curr_frame_ > desc.get_frame_end()); }
+	{ internal->encode_frame(surface, curr_frame_ > desc.get_frame_end()); }
 
 bool
 Target_LibAVCodec::start_frame(synfig::ProgressCallback */*callback*/)

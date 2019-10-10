@@ -38,6 +38,7 @@
 
 using namespace std;
 using namespace etl;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -63,7 +64,7 @@ inline void deleteSkeletonList(SkeletonList *skeleton) {
 //************************
 
 // takes two arguments ( image layer handle, config )
-std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image, const CenterlineConfiguration &configuration)
+std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image, const CenterlineConfiguration &configuration, const Gamma &gamma)
  {
   std::cout<<"Inside CenterlineVectorize\n";
   VectorizerCoreGlobals globals;
@@ -143,7 +144,8 @@ std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(et
   deleteSkeletonList(skeletons);
   return sortibleResult;
 }
-std::vector< etl::handle<synfig::Layer> > VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c) 
+
+std::vector< etl::handle<synfig::Layer> > VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c, const Gamma &gamma)
 {
   std::vector< etl::handle<synfig::Layer> > result;
 
@@ -156,7 +158,7 @@ std::vector< etl::handle<synfig::Layer> > VectorizerCore::vectorize(const etl::h
   else 
   {
     Handle img2(img);
-    result = centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c));
+    result = centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c), gamma);
     std::cout<<"After centerlineVectorize result.size(): "<<result.size()<<"\n";
     return result;
     

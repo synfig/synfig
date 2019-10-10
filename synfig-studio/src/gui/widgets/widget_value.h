@@ -65,7 +65,6 @@
 namespace studio {
 
 class Widget_BoneChooser;
-class Widget_Color;
 class Widget_ColorEdit;
 class Widget_CanvasChooser;
 class Widget_Enum;

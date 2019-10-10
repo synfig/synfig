@@ -154,7 +154,6 @@ private:
 	int				set_antialias;
 	int				set_quality;
 //			(",Q", quality_arg_desc->default_value(DEFAULT_QUALITY), )
-	double			set_gamma;
 	int				set_num_threads;
 	Glib::ustring	set_input_file;
 	Glib::ustring	set_output_file;

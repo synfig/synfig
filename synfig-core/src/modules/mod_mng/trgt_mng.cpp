@@ -206,7 +206,6 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 							  sizeof(synfig), synfig) != 0)
 			goto cleanup_on_error;
 	}
-	if (mng_putchunk_gama(mng, MNG_FALSE, (int)(gamma().get_gamma()*100000)) != 0) goto cleanup_on_error;
 	if (mng_putchunk_phys(mng, MNG_FALSE, round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()), MNG_UNIT_METER) != 0) goto cleanup_on_error;
 	if (mng_putchunk_time(mng, gmt->tm_year + 1900, gmt->tm_mon + 1, gmt->tm_mday, gmt->tm_hour, gmt->tm_min, gmt->tm_sec) != 0) goto cleanup_on_error;
 	buffer=new unsigned char[(4*w)+1];
@@ -330,7 +329,7 @@ mng_trgt::end_scanline()
 	}
 
 	*buffer = MNG_FILTER_NONE;
-	color_to_pixelformat(buffer+1, color_buffer, PF_RGB|PF_A, &gamma(), desc.get_w());
+	color_to_pixelformat(buffer+1, color_buffer, PF_RGB|PF_A, 0, desc.get_w());
 
 	zstream.next_in = buffer;
 	zstream.avail_in = (4*w)+1;

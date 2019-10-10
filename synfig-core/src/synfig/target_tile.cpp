@@ -83,8 +83,7 @@ Target_Tile::Target_Tile():
 	tile_w_(DEF_TILE_WIDTH),
 	tile_h_(DEF_TILE_HEIGHT),
 	curr_tile_(0),
-	clipping_(true),
-	allow_multithreading_(false)
+	clipping_(true)
 {
 	curr_frame_=0;
 	if (const char *s = getenv("SYNFIG_TARGET_DEFAULT_ENGINE"))
@@ -118,7 +117,11 @@ Target_Tile::next_tile(RectInt& rect)
 }
 
 bool
-synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering::SurfaceResource> &surface, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
+synfig::Target_Tile::call_renderer(
+	const etl::handle<rendering::SurfaceResource> &surface,
+	Canvas &canvas,
+	const ContextParams &context_params,
+	const RendDesc &renddesc )
 {
 	#ifdef DEBUG_MEASURE
 	debug::Measure t("Target_Tile::call_renderer");
@@ -130,17 +133,7 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 		#ifdef DEBUG_MEASURE
 		debug::Measure t("build rendering task");
 		#endif
-
-		// TODO: quick hack
-		// we need to pass already sorted context to renderer
-		// when old renderer will finally removed
-		CanvasBase sub_queue;
-		Context sub_context;
-		if (*context && (*context)->get_canvas())
-			sub_context = (*context)->get_canvas()->get_context_sorted(context.get_params(), sub_queue);
-		else
-			sub_context = context;
-		task = sub_context.build_rendering_task();
+		task = canvas.build_rendering_task(context_params);
 	}
 
 	if (task)
@@ -179,119 +172,47 @@ synfig::Target_Tile::call_renderer(Context &context, const etl::handle<rendering
 }
 
 bool
-synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
+synfig::Target_Tile::render_frame_(Canvas::Handle canvas, ContextParams context_params, ProgressCallback *cb)
 {
 	const RendDesc &rend_desc(desc);
 
-	// If the quality is set to zero, then we
-	// use the parametric scanline-renderer.
-	if(get_quality()==0)
-	{
-		Surface surface;
+	etl::clock tile_timer;
+	tile_timer.reset();
 
-		RendDesc tile_desc;
-		RectInt rect;
-		int i = 0;
-		etl::clock tile_timer;
-		tile_timer.reset();
-		while(next_tile(rect))
-		{
-			SuperCallback super(cb,i,i+1,10000);
-			if(!super.amount_complete(0,1000))
-				return false;
-			++i;
-
-			// Perform clipping on the tile
-			if(clipping_)
-				etl::set_intersect(rect, rect, RectInt(0, 0, rend_desc.get_w(), rend_desc.get_h()));
-
-			tile_desc=rend_desc;
-			tile_desc.set_subwindow(rect.minx, rect.miny, rect.maxx - rect.minx, rect.maxy - rect. miny);
-			if(!parametric_render(context, surface, tile_desc,&super))
-			{
-				// For some reason, the parametric renderer failed.
-				if(cb)cb->error(_("Parametric Renderer Failure"));
-				return false;
-			}
-			else
-			{
-				if(!surface)
-				{
-					if(cb)cb->error(_("Bad surface"));
-					return false;
-				}
-				switch(get_alpha_mode())
-				{
-					case TARGET_ALPHA_MODE_FILL:
-						for(int i=0;i<surface.get_w()*surface.get_h();i++)
-							surface[0][i]=Color::blend(surface[0][i],desc.get_bg_color(),1.0f);
-						break;
-					case TARGET_ALPHA_MODE_EXTRACT:
-						for(int i=0;i<surface.get_w()*surface.get_h();i++)
-						{
-							float a=surface[0][i].get_a();
-							surface[0][i] = Color(a,a,a,a);
-						}
-						break;
-					case TARGET_ALPHA_MODE_REDUCE:
-						for(int i=0;i<surface.get_w()*surface.get_h();i++)
-							surface[0][i].set_a(1.0f);
-						break;
-					default:
-						break;
-				}
-
-				// Add the tile to the target
-				if(!add_tile(surface, rect.minx, rect.miny))
-				{
-					if(cb)cb->error(_("add_tile():Unable to put surface on target"));
-					return false;
-				}
-			}
-			tile_timer.reset();
-		}
-		SuperCallback super(cb,i,10000,10000);
-	}
-	else // If quality is set otherwise, then we use the accelerated renderer
-	{
-		etl::clock tile_timer;
-		tile_timer.reset();
-
-		// Gather tiles
-		std::vector<RectInt> tiles;
-		RectInt rect;
-		while(next_tile(rect)) {
-			if (clipping_)
-				if (rect.minx >= rend_desc.get_w() || rect.miny >= rend_desc.get_h())
-					continue;
-			tiles.push_back(rect);
-		}
-
-		// Render tiles
-		for(std::vector<RectInt>::iterator i = tiles.begin(); i != tiles.end(); ++i)
-		{
-			// Progress callback
-			int index = i - tiles.begin();
-			int count = (int)tiles.size();
-			SuperCallback super(cb, (count-index)*1000, (count-index+1)*1000, count*1000);
-			if(!super.amount_complete(0,1000))
-				return false;
-
-			// Render tile
-			tile_timer.reset();
-
-			rect = *i;
-			if (clipping_)
-				etl::set_intersect(rect, rect, RectInt(0, 0, rend_desc.get_w(), rend_desc.get_h()));
-
-			if (!rect.valid())
+	// Gather tiles
+	std::vector<RectInt> tiles;
+	RectInt rect;
+	while(next_tile(rect)) {
+		if (clipping_)
+			if (rect.minx >= rend_desc.get_w() || rect.miny >= rend_desc.get_h())
 				continue;
+		tiles.push_back(rect);
+	}
 
-			RendDesc tile_desc=rend_desc;
-			tile_desc.set_subwindow(rect.minx, rect.miny, rect.maxx - rect.minx, rect.maxy - rect.miny);
+	// Render tiles
+	for(std::vector<RectInt>::iterator i = tiles.begin(); i != tiles.end(); ++i)
+	{
+		// Progress callback
+		int index = i - tiles.begin();
+		int count = (int)tiles.size();
+		SuperCallback super(cb, (count-index)*1000, (count-index+1)*1000, count*1000);
+		if(!super.amount_complete(0,1000))
+			return false;
 
-			async_render_tile(rect, context, tile_desc, &super);
-		}
+		// Render tile
+		tile_timer.reset();
+
+		rect = *i;
+		if (clipping_)
+			etl::set_intersect(rect, rect, RectInt(0, 0, rend_desc.get_w(), rend_desc.get_h()));
+
+		if (!rect.valid())
+			continue;
+
+		RendDesc tile_desc=rend_desc;
+		tile_desc.set_subwindow(rect.minx, rect.miny, rect.maxx - rect.minx, rect.maxy - rect.miny);
+
+		async_render_tile(canvas, context_params, rect, tile_desc, &super);
 	}
 
 	if (!wait_render_tiles(cb))
@@ -304,11 +225,16 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 }
 
 bool
-synfig::Target_Tile::async_render_tile(RectInt rect, Context context, RendDesc tile_desc, ProgressCallback *cb)
+synfig::Target_Tile::async_render_tile(
+	etl::handle<Canvas> canvas,
+	ContextParams context_params,
+	RectInt rect,
+	RendDesc tile_desc,
+	ProgressCallback *cb)
 {
 	SurfaceResource::Handle surface = new rendering::SurfaceResource();
 
-	if (!call_renderer(context, surface, get_quality(), tile_desc, cb))
+	if (!call_renderer(surface, *canvas, context_params, tile_desc))
 	{
 		// For some reason, the accelerated renderer failed.
 		if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -412,21 +338,12 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 				if(!start_frame(cb))
 					return false;
-				Context context;
-				// pass the Render Method to the context
-				context=canvas->get_context(context_params);
-				context.set_render_method(SOFTWARE);
 
 				// Set the time that we wish to render
-				//if(!get_avoid_time_sync() || canvas->get_time()!=t)
-				// Why the above line was commented here and not in TargetScaline?
-					canvas->set_time(t);
+				canvas->set_time(t);
 				canvas->load_resources(t);
 				canvas->set_outline_grow(desc.get_outline_grow());
-
-				context=canvas->get_context(context_params);
-
-				if(!render_frame_(context,0))
+				if(!render_frame_(canvas, context_params, 0))
 					return false;
 				end_frame();
 			}while(frames);
@@ -440,15 +357,12 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 				return false;
 
 			// Set the time that we wish to render
-			//if(!get_avoid_time_sync() || canvas->get_time()!=t)
-				canvas->set_time(t);
+			canvas->set_time(t);
 			canvas->load_resources(t);
 			canvas->set_outline_grow(desc.get_outline_grow());
 
 			//synfig::info("2time_set_to %s",t.get_string().c_str());
-
-			Context context = canvas->get_context(context_params);
-			if(!render_frame_(context, cb))
+			if(!render_frame_(canvas, context_params, cb))
 				return false;
 			end_frame();
 		}

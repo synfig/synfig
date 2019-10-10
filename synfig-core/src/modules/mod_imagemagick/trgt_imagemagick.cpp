@@ -259,7 +259,7 @@ imagemagick_trgt::end_scanline(void)
 	if(!file)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, pf, &gamma(), desc.get_w());
+	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
 
 	if(!fwrite(buffer,pixel_size(pf),desc.get_w(),file))
 		return false;

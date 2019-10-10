@@ -3210,6 +3210,28 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	if(element->get_attribute("yres"))
 		canvas->rend_desc().set_y_res(atof(element->get_attribute("yres")->get_value().c_str()));
 
+	Gamma gamma = canvas->rend_desc().get_gamma();
+	String version = canvas->get_version();
+	if ( version == "0.1"
+	  || version == "0.2"
+	  || version == "0.3"
+	  || version == "0.4"
+	  || version == "0.5"
+	  || version == "0.6"
+	  || version == "0.7"
+	  || version == "0.8"
+	  || version == "0.9"
+	  || version == "1.0" )
+	{
+		gamma.set(2.2);
+	}
+	if(element->get_attribute("gamma-r"))
+		gamma.set_r(atof(element->get_attribute("gamma-r")->get_value().c_str()));
+	if(element->get_attribute("gamma-g"))
+		gamma.set_g(atof(element->get_attribute("gamma-g")->get_value().c_str()));
+	if(element->get_attribute("gamma-b"))
+		gamma.set_b(atof(element->get_attribute("gamma-b")->get_value().c_str()));
+	canvas->rend_desc().set_gamma(gamma);
 
 	if(element->get_attribute("fps"))
 		canvas->rend_desc().set_frame_rate(atof(element->get_attribute("fps")->get_value().c_str()));

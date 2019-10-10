@@ -35,7 +35,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/checkbutton.h>
 
-#include <synfig/gamma.h>
+#include <synfig/color.h>
 #include <synfig/time.h>
 
 #include "widgets/widget_gradient.h"

@@ -41,8 +41,6 @@ using namespace std;
 synfig::Target::Book* synfig::Target::book_;
 synfig::Target::ExtBook* synfig::Target::ext_book_;
 
-static synfig::Gamma* default_gamma_;
-
 /* === P R O C E D U R E S ================================================= */
 
 bool
@@ -50,8 +48,6 @@ Target::subsys_init()
 {
 	book_=new synfig::Target::Book();
 	ext_book_=new synfig::Target::ExtBook();
-//! \todo Do not hard core gamma to 2.2
-	default_gamma_=new synfig::Gamma(1.0/2.2);
 
 	// At least one target must be available.
 	book()["null"].factory =
@@ -74,7 +70,6 @@ Target::subsys_stop()
 {
 	delete book_;
 	delete ext_book_;
-	delete default_gamma_;
 	return true;
 }
 
@@ -95,7 +90,6 @@ Target::ext_book()
 
 Target::Target():
 	quality_(4),
-	gamma_(*default_gamma_),
 	alpha_mode(TARGET_ALPHA_MODE_KEEP),
 	avoid_time_sync_(false),
 	curr_frame_(0)

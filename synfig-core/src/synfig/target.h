@@ -175,8 +175,6 @@ public:
 
 	//! Render quality used for the render process of the target.
 	int quality_;
-	//! Gamma value used for the render process of the target
-	Gamma gamma_;
 	
 	//! Tells how to handle alpha. Used by non alpha supported targets to decide if the background must be filled or not
 	TargetAlphaMode alpha_mode;
@@ -208,9 +206,6 @@ public:
 	TargetAlphaMode get_alpha_mode()const { return alpha_mode; }
 	//! Sets how to handle alpha
 	void set_alpha_mode(TargetAlphaMode x=TARGET_ALPHA_MODE_KEEP) { alpha_mode=x; }
-	Gamma &gamma() { return gamma_; }
-	//! Sets the target gamma
-	const Gamma &gamma()const { return gamma_; }
 	//! Sets the target canvas. Must be defined by derived targets
 	virtual void set_canvas(etl::handle<Canvas> c);
 	//! Gets the target canvas.

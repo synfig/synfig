@@ -31,11 +31,14 @@
 
 #include <gtkmm/table.h>
 #include <gtkmm/frame.h>
-#include <synfig/renddesc.h>
+#include <gtkmm/scale.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/notebook.h>
+
+#include <synfig/renddesc.h>
+
 #include "widgets/widget_vector.h"
 #include "widgets/widget_time.h"
 #include "widgets/widget_link.h"
@@ -61,6 +64,9 @@ class Widget_RendDesc : public Gtk::Notebook
 	Glib::RefPtr<Gtk::Adjustment> adjustment_phy_height;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_fps;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_span;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_gamma_r;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_gamma_g;
+	Glib::RefPtr<Gtk::Adjustment> adjustment_gamma_b;
 
 	Gtk::SpinButton *entry_width;
 	Gtk::SpinButton *entry_height;
@@ -70,6 +76,13 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::SpinButton *entry_phy_height;
 	Gtk::SpinButton *entry_fps;
 	Gtk::SpinButton *entry_span;
+	Gtk::SpinButton *entry_gamma_r;
+	Gtk::SpinButton *entry_gamma_g;
+	Gtk::SpinButton *entry_gamma_b;
+
+	Gtk::Scale* scale_gamma_r;
+	Gtk::Scale* scale_gamma_g;
+	Gtk::Scale* scale_gamma_b;
 
 	Widget_Link *toggle_wh_ratio;
 	Widget_Link *toggle_res_ratio;
@@ -86,6 +99,8 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::CheckButton *toggle_im_span;
 
 	Gtk::Frame *time_frame;
+	Gtk::Frame *gamma_frame;
+	Gtk::Widget *gamma_pattern;
 
 	Widget_Vector *entry_tl;
 	Widget_Vector *entry_br;
@@ -122,9 +137,11 @@ public:
 	const synfig::RendDesc &get_rend_desc();
 
 	void disable_time_section();
-
 	void enable_time_section();
 
+	void disable_gamma_section();
+	void enable_gamma_section();
+	
 	void refresh();
 	
 private:
@@ -144,6 +161,7 @@ private:
 	void on_lock_changed();
 	void on_focus_changed();
 	void on_span_changed();
+	void on_gamma_changed();
 
 	void on_ratio_wh_toggled();
 	void on_ratio_res_toggled();
@@ -152,6 +170,7 @@ private:
 	void connect_signals();
 	Gtk::Widget *create_image_tab();
 	Gtk::Widget *create_time_tab();
+	Gtk::Widget *create_gamma_tab();
 	Gtk::Widget *create_other_tab();
 };
 

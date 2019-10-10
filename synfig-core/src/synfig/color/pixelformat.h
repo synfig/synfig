@@ -28,6 +28,7 @@
 #define __SYNFIG_COLOR_PIXELFORMAT_H
 
 #include "color.h"
+#include "gamma.h"
 
 
 #define FLAGS(x,y) (((x)&(y))==(y))

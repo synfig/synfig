@@ -34,7 +34,6 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/colorselection.h>
 #include <synfig/color.h>
-#include <synfig/gamma.h>
 #include "widgets/widget_color.h"
 
 /* === M A C R O S ========================================================= */

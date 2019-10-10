@@ -34,7 +34,6 @@
 #include <ETL/handle>
 
 #include "filesystem.h"
-#include "gamma.h"
 #include "progresscallback.h"
 #include "renddesc.h"
 #include "string.h"
@@ -147,9 +146,6 @@ public:
 	typedef etl::handle<const Importer> ConstHandle;
 
 private:
-	//! Gamma of the importer.
-	//! \todo Do not hardcode the gamma to 2.2
-	Gamma gamma_;
 	rendering::Surface::Handle last_surface_;
 
 protected:
@@ -158,9 +154,6 @@ protected:
 
 public:
 	const FileSystem::Identifier identifier;
-
-	Gamma& gamma() { return gamma_; }
-	const Gamma& gamma()const { return gamma_; }
 
 	virtual ~Importer();
 

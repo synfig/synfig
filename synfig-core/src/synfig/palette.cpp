@@ -35,7 +35,6 @@
 #include "surface.h"
 #include "general.h"
 #include <synfig/localization.h>
-#include "gamma.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -93,7 +92,7 @@ PaletteItem::add(const Color& x,int xweight)
 	weight+=xweight;
 }
 
-Palette::Palette(const Surface& surface, int max_colors):
+Palette::Palette(const Surface& surface, int max_colors, const Gamma &gamma):
 	name_(_("Surface Palette"))
 {
 	max_colors-=2;
@@ -118,7 +117,7 @@ Palette::Palette(const Surface& surface, int max_colors):
 				continue;
 			}
 
-			iterator iter(find_closest(color,&dist));
+			iterator iter(find_closest(color, gamma, &dist));
 			if(sqrt(dist)<0.005)
 			{
 				iter->add(color);
@@ -130,7 +129,7 @@ Palette::Palette(const Surface& surface, int max_colors):
 				iterator iterlight(find_light());
 				PaletteItem light(*iterlight);
 				erase(iterlight);
-				find_closest(light.color)->add(light.color,light.weight);
+				find_closest(light.color, gamma)->add(light.color,light.weight);
 			}
 			*/
 
@@ -161,7 +160,7 @@ Palette::Palette(const Surface& surface, int max_colors):
 				continue;
 			}
 
-			iterator iter(find_closest(color,&dist));
+			iterator iter(find_closest(color, gamma, &dist));
 			if(sqrt(dist)<0.005)
 			{
 				iter->add(color);
@@ -181,7 +180,7 @@ Palette::Palette(const Surface& surface, int max_colors):
 	{
 		PaletteItem item(back());
 		pop_back();
-		find_closest(item.color)->add(item.color,item.weight);
+		find_closest(item.color, gamma)->add(item.color,item.weight);
 	}
 */
 	push_back(Color::black());
@@ -191,33 +190,35 @@ Palette::Palette(const Surface& surface, int max_colors):
 }
 
 Palette::const_iterator
-Palette::find_closest(const Color& color, float* dist)const
+Palette::find_closest(const Color& color, const Gamma &gamma, float* dist)const
 {
 	// For the sake of avoiding cut-and-paste
 	// bugs, we'll just use the non-const
 	// find_closest()... It doesn't change anything
 	// anyway.
-	return const_cast<Palette*>(this)->find_closest(color,dist);
+	return const_cast<Palette*>(this)->find_closest(color, gamma, dist);
 }
 
 Palette::iterator
-Palette::find_closest(const Color& color, float* dist)
+Palette::find_closest(const Color& color, const Gamma &gamma, float* dist)
 {
 	iterator iter;
 
 	iterator best_match(begin());
 	float best_dist(1000000);
 
-	const float prep_y(powf(color.get_y(),2.2f)*color.get_a());
-	const float prep_u(color.get_u());
-	const float prep_v(color.get_v());
+	const Color prep = gamma.apply(color);
+	const float prep_y(prep.get_y()*prep.get_a());
+	const float prep_u(prep.get_u());
+	const float prep_v(prep.get_v());
 
 	for(iter=begin();iter!=end();++iter)
 	{
-		const float diff_y(prep_y-powf(iter->color.get_y(),2.2f)*iter->color.get_a());
-		const float diff_u(prep_u-iter->color.get_u());
-		const float diff_v(prep_v-iter->color.get_v());
-		const float diff_a(color.get_a()-iter->color.get_a());
+		const Color ic = gamma.apply(iter->color);
+		const float diff_y(prep_y - ic.get_y()*ic.get_a());
+		const float diff_u(prep_u - ic.get_u());
+		const float diff_v(prep_v - ic.get_v());
+		const float diff_a(prep.get_a() - ic.get_a());
 
 
 		const float dist(
@@ -229,8 +230,8 @@ Palette::find_closest(const Color& color, float* dist)
 
 			// cross product
 			/*abs(
-				prep_u*iter->color.get_u()-
-				prep_v*iter->color.get_v()
+				prep_u*ic.get_u()-
+				prep_v*ic.get_v()
 			)*/
 		);
 		if(dist<best_dist)
@@ -279,19 +280,17 @@ Palette::find_light()
 }
 
 Palette
-Palette::grayscale(int steps)
+Palette::grayscale(int steps, ColorReal gamma)
 {
 	Palette ret;
 	for(int i=0;i<steps;i++)
 	{
-		float amount(i/(steps-1));
-		float y(powf(amount,2.2f));
+		ColorReal amount = i/ColorReal(steps-1);
+		ColorReal y = Gamma::calculate(amount, gamma);
 		ret.push_back(
 			PaletteItem(
-				Color(y,y,y),
-				strprintf(_("%0.2f%% Gray"),amount)
-			)
-		);
+				Color(y, y, y),
+				strprintf(_("%0.2f%% Gray"), amount) ));
 	}
 	return ret;
 }
@@ -405,10 +404,6 @@ Palette::load_from_file(const synfig::String& filename)
 			}
 		} while (!file.eof() && !has_color);
 
-		// Gamma color conversion.
-		// In the importing case, gamma factor is 1, as default
-		Gamma gamma;
-
 		while(!file.eof() && has_color)
 		{
 			PaletteItem item;
@@ -424,9 +419,9 @@ Palette::load_from_file(const synfig::String& filename)
 			 	ss >> r >> g >> b;
 				getline(ss, item.name);
 
-				item.color.set_r(gamma.r_F32_to_F32(r/255));
-				item.color.set_g(gamma.g_F32_to_F32(g/255));
-				item.color.set_b(gamma.b_F32_to_F32(b/255));
+				item.color.set_r(r/255);
+				item.color.set_g(g/255);
+				item.color.set_b(b/255);
 				// Alpha is 1 by default
 				item.color.set_a(1);
 

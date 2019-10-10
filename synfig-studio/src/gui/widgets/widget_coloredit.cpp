@@ -68,8 +68,6 @@ using namespace studio;
 #define ARROW_NEGATIVE_THRESHOLD 0.4
 
 /* === G L O B A L S ======================================================= */
-synfig::Gamma Widget_ColorEdit::hvs_gamma = synfig::Gamma(1.0/2.2);
-synfig::Gamma Widget_ColorEdit::hvs_gamma_in = synfig::Gamma(2.2);
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -177,7 +175,7 @@ ColorSlider::draw_arrow(
 bool
 ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
-	Color color(color_);
+	Color color = color_;
 
 	static const slider_color_func jump_table[int(TYPE_END)] =
 	{
@@ -192,8 +190,10 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		slider_color_TYPE_A,
 	};
 
-	slider_color_func color_func(jump_table[int(type)]);
+	slider_color_func color_func = jump_table[int(type)];
 
+	Gamma gamma = App::get_selected_canvas_gamma().get_inverted();
+	
 	float amount;
 	switch(type)
 	{
@@ -208,9 +208,7 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		case TYPE_A: amount=color.get_a(); break;
 		default: amount=0; break;
 	}
-	if(use_colorspace_gamma() && (type<TYPE_U))
-		amount=gamma_in(amount);
-
+	
 	const int height(get_height());
 	const int width(get_width());
 
@@ -218,19 +216,15 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	const Color bg1(0.75, 0.75, 0.75);
 	const Color bg2(0.5, 0.5, 0.5);
-	int i;
-	for(i=width-1;i>=0;i--)
+	for(int i = width-1; i >= 0; --i)
 	{
-		color_func(color,
-				   (use_colorspace_gamma() && type<TYPE_U)
-				   ? gamma_out(float(i)/float(width))
-				   :		  (float(i)/float(width)));
-		const Color c1(
-			colorconv_apply_gamma(
-				Color::blend(color,bg1,1.0).clamped() ));
-		const Color c2(
-			colorconv_apply_gamma(
-				Color::blend(color,bg2,1.0).clamped() ));
+		Color c = color;
+		color_func(c, i/float(width));
+		
+		const Color c1 = gamma.apply(
+				Color::blend(c,bg1,1.0).clamped() );
+		const Color c2 = gamma.apply(
+				Color::blend(c,bg2,1.0).clamped() );
 		assert(c1.is_valid());
 		assert(c2.is_valid());
 
@@ -291,8 +285,6 @@ ColorSlider::on_event(GdkEvent *event)
 			case TYPE_A: amount=color.get_a(); break;
 			default: amount=0; break;
 		}
-		if(use_colorspace_gamma() && (type<TYPE_U))
-			amount=gamma_in(amount);
 		x = amount*width;
 		switch(event->scroll.direction){
 			case GDK_SCROLL_UP:
@@ -311,13 +303,8 @@ ColorSlider::on_event(GdkEvent *event)
 	}
 
 	float pos(x/width);
-	if(pos<0 || x<=0)pos=0;
-	if(pos>1)pos=1;
-
-	if(use_colorspace_gamma() && (type<TYPE_U))
-		pos=gamma_out(pos);
-	if(pos<0 || event->button.x<=0)pos=0;
-	if(pos>1)pos=1;
+	if (pos > 1) pos = 1;
+	if (pos < 0 || x <= 0 || event->button.x <= 0) pos=0;
 
 	switch(event->type)
 	{
@@ -498,13 +485,9 @@ bool are_close_colors(Gdk::Color const& a, Gdk::Color const& b) {
 
 void Widget_ColorEdit::setHVSColor(synfig::Color color)
 {
+	Color c = App::get_selected_canvas_gamma().get_inverted().apply(color).clamped();
 	Gdk::Color gtkColor;
-	float r = hvs_gamma.r_F32_to_F32(CLIP_VALUE(color.get_r(),0.0,1.0));
-	float g = hvs_gamma.g_F32_to_F32(CLIP_VALUE(color.get_g(),0.0,1.0));
-	float b = hvs_gamma.b_F32_to_F32(CLIP_VALUE(color.get_b(),0.0,1.0));
-	gtkColor.set_red((unsigned short)(r * USHRT_MAX));
-	gtkColor.set_green((unsigned short)(g * USHRT_MAX));
-	gtkColor.set_blue((unsigned short)(b * USHRT_MAX));
+	gtkColor.set_rgb_p(c.get_r(), c.get_g(), c.get_b());
 	if (!are_close_colors(hvsColorWidget->get_current_color(), gtkColor)) {
 		colorHVSChanged = true;
 		hvsColorWidget->set_current_color(gtkColor);
@@ -521,10 +504,11 @@ Widget_ColorEdit::on_color_changed()
 	if (!colorHVSChanged)
 	{
 		Gdk::Color newColor = hvsColorWidget->get_current_color();
-		float r = hvs_gamma_in.r_F32_to_F32((float)newColor.get_red() / USHRT_MAX);
-		float g = hvs_gamma_in.g_F32_to_F32((float)newColor.get_green() / USHRT_MAX);
-		float b = hvs_gamma_in.b_F32_to_F32((float)newColor.get_blue() / USHRT_MAX);
-		const synfig::Color synfigColor(r, g, b);
+		Color synfigColor(
+			newColor.get_red_p(),
+			newColor.get_green_p(),
+			newColor.get_blue_p() );
+		synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
 		set_value(synfigColor);
 		colorHVSChanged = true; //I reset the flag in setHVSColor(..)
 		on_value_changed();
@@ -633,20 +617,10 @@ Widget_ColorEdit::set_value(const synfig::Color &data)
 
 	color=data;
 
-	if(use_colorspace_gamma())
-	{
-		R_adjustment->set_value(gamma_in(color.get_r())*100);
-		G_adjustment->set_value(gamma_in(color.get_g())*100);
-		B_adjustment->set_value(gamma_in(color.get_b())*100);
-		A_adjustment->set_value(gamma_in(color.get_a())*100);
-	}
-	else
-	{
-		R_adjustment->set_value(color.get_r()*100);
-		G_adjustment->set_value(color.get_g()*100);
-		B_adjustment->set_value(color.get_b()*100);
-		A_adjustment->set_value(color.get_a()*100);
-	}
+	R_adjustment->set_value(color.get_r()*100);
+	G_adjustment->set_value(color.get_g()*100);
+	B_adjustment->set_value(color.get_b()*100);
+	A_adjustment->set_value(color.get_a()*100);
 
 	slider_R->set_color(color);
 	slider_G->set_color(color);
@@ -668,20 +642,10 @@ synfig::Color
 Widget_ColorEdit::get_value_raw()
 {
 	Color color;
-	if(use_colorspace_gamma())
-	{
-		color.set_r(gamma_out(R_adjustment->get_value()/100.0f));
-		color.set_g(gamma_out(G_adjustment->get_value()/100.0f));
-		color.set_b(gamma_out(B_adjustment->get_value()/100.0f));
-		color.set_a(gamma_out(A_adjustment->get_value()/100.0f));
-	}
-	else
-	{
-		color.set_r(R_adjustment->get_value()/100);
-		color.set_g(G_adjustment->get_value()/100);
-		color.set_b(B_adjustment->get_value()/100);
-		color.set_a(A_adjustment->get_value()/100);
-	}
+	color.set_r(R_adjustment->get_value()/100);
+	color.set_g(G_adjustment->get_value()/100);
+	color.set_b(B_adjustment->get_value()/100);
+	color.set_a(A_adjustment->get_value()/100);
 	assert(color.is_valid());
 
 	return color;
@@ -690,20 +654,9 @@ Widget_ColorEdit::get_value_raw()
 const synfig::Color &
 Widget_ColorEdit::get_value()
 {
-	if(use_colorspace_gamma())
-	{
-		color.set_r(gamma_out(R_adjustment->get_value()/100.0f));
-		color.set_g(gamma_out(G_adjustment->get_value()/100.0f));
-		color.set_b(gamma_out(B_adjustment->get_value()/100.0f));
-		assert(color.is_valid());
-	}
-	else
-	{
-		color.set_r(R_adjustment->get_value()/100);
-		color.set_g(G_adjustment->get_value()/100);
-		color.set_b(B_adjustment->get_value()/100);
-		assert(color.is_valid());
-	}
+	color.set_r(R_adjustment->get_value()/100);
+	color.set_g(G_adjustment->get_value()/100);
+	color.set_b(B_adjustment->get_value()/100);
 	color.set_a(A_adjustment->get_value()/100);
 	assert(color.is_valid());
 

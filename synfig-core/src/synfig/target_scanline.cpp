@@ -82,23 +82,14 @@ Target_Scanline::next_frame(Time& time)
 }
 
 bool
-synfig::Target_Scanline::call_renderer(Context &context, const etl::handle<rendering::SurfaceResource> &surface, int /* quality */, const RendDesc &renddesc, ProgressCallback * /* cb */)
+synfig::Target_Scanline::call_renderer(
+	const etl::handle<rendering::SurfaceResource> &surface,
+	Canvas &canvas,
+	const ContextParams &context_params,
+	const RendDesc &renddesc )
 {
-	rendering::Task::Handle task;
 	surface->create(renddesc.get_w(), renddesc.get_h());
-	{
-		// TODO: quick hack
-		// we need to pass already sorted context to renderer
-		// when old renderer will finally removed
-		CanvasBase sub_queue;
-		Context sub_context;
-		if (*context && (*context)->get_canvas())
-			sub_context = (*context)->get_canvas()->get_context_sorted(context.get_params(), sub_queue);
-		else
-			sub_context = context;
-
-		task = sub_context.build_rendering_task();
-	}
+	rendering::Task::Handle task = canvas.build_rendering_task(context_params);
 
 	if (task)
 	{
@@ -136,7 +127,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 	int
 		frames=0,
 		total_frames,
-		quality=get_quality(),
 		frame_start,
 		frame_end;
 	Time
@@ -173,11 +163,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			// false, go ahead and bail. (it may be a user cancel)
 			if(cb && !cb->amount_complete(total_frames-frames,total_frames))
 				return false;
-
-			Context context;
-			// pass the Render Method to the context
-			context = canvas->get_context(context_params);
-			context.set_render_method(SOFTWARE);
 
 			// Set the time that we wish to render
 			if(!get_avoid_time_sync() || canvas->get_time()!=t) {
@@ -229,7 +214,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						//synfig::info( " -- block %d/%d left, top, width, height: %d, %d, %d, %d",
 						//	i+1, rows, 0, i*rowheight, blockrd.get_w(), blockrd.get_h() );
 
-						if(!call_renderer(context,surface,quality,blockrd,0))
+						if (!call_renderer(surface, *canvas, context_params, blockrd))
 						{
 							if(cb)cb->error(_("Accelerated Renderer Failure"));
 							return false;
@@ -296,7 +281,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				#endif
 					SurfaceResource::Handle surface = new SurfaceResource();
 
-					if(!call_renderer(context,surface,quality,desc,0))
+					if (!call_renderer(surface, *canvas, context_params, desc))
 					{
 						// For some reason, the accelerated renderer failed.
 						if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -331,7 +316,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			canvas->load_resources(t);
 		}
 		canvas->set_outline_grow(desc.get_outline_grow());
-		Context context = canvas->get_context(context_params);
 
 		// If quality is set otherwise, then we use the accelerated renderer
 		{
@@ -377,9 +361,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					//synfig::info( " -- block %d/%d left, top, width, height: %d, %d, %d, %d",
 					//	i+1, rows, 0, i*rowheight, blockrd.get_w(), blockrd.get_h() );
 
-					SuperCallback sc(cb, i*rowheight, (i+1)*rowheight, totalheight);
-
-					if(!call_renderer(context,surface,quality,blockrd,&sc))
+					if (!call_renderer(surface, *canvas, context_params, blockrd))
 					{
 						if(cb)cb->error(_("Accelerated Renderer Failure"));
 						return false;
@@ -440,7 +422,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					}
 
 					//I'm done with this part
-					sc.amount_complete(100,100);
+					if (cb) cb->amount_complete((i+1)*rowheight, totalheight);
 				}
 				surface->reset();
 
@@ -451,7 +433,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			#endif
 				SurfaceResource::Handle surface = new SurfaceResource();
 
-				if(!call_renderer(context,surface,quality,desc,cb))
+				if (!call_renderer(surface, *canvas, context_params, desc))
 				{
 					if(cb)cb->error(_("Accelerated Renderer Failure"));
 					return false;

@@ -82,22 +82,23 @@ void studio::Dock_Info::on_mouse_move()
 	x.set_text(xv.get_string(3));
 	y.set_text(yv.get_string(3));
 
-	float cr=0.f,cg=0.f,cb=0.f,ca=0.f;
 	Color c = canvas_view->get_canvas()->get_context( canvas_view->get_context_params() ).get_color(pos);
-	cr = c.get_r(); cg = c.get_g(); cb = c.get_b(); ca = c.get_a();
+	Gamma gamma = canvas_view->get_canvas()->rend_desc().get_gamma();
 
-	if(use_colorspace_gamma())
+	if ( approximate_equal_lp(gamma.get_r(), ColorRela(1))
+	  && approximate_equal_lp(gamma.get_g(), ColorRela(1))
+	  && approximate_equal_lp(gamma.get_b(), ColorRela(1)) )
 	{
-		cr = gamma_in(cr);
-		cg = gamma_in(cg);
-		cb = gamma_in(cb);
-		ca = gamma_in(ca);
+		r.set_text(strprintf("%.1f%%", c.get_r()*100));
+		g.set_text(strprintf("%.1f%%", c.get_g()*100));
+		b.set_text(strprintf("%.1f%%", c.get_b()*100));
+	} else {
+		Color cg = gamma.apply(c);
+		r.set_text(strprintf("%.1f%% (%.1f%%)", c.get_r()*100, cg.get_r()*100));
+		r.set_text(strprintf("%.1f%% (%.1f%%)", c.get_g()*100, cg.get_g()*100));
+		r.set_text(strprintf("%.1f%% (%.1f%%)", c.get_b()*100, cg.get_b()*100));
 	}
-
-	r.set_text(strprintf("%.1f%%",cr*100));
-	g.set_text(strprintf("%.1f%%",cg*100));
-	b.set_text(strprintf("%.1f%%",cb*100));
-	a.set_text(strprintf("%.1f%%",ca*100));
+	a.set_text(strprintf("%.1f%%", c.get_a()*100));
 }
 
 studio::Dock_Info::Dock_Info()

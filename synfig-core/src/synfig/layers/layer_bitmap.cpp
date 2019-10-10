@@ -70,7 +70,6 @@ using namespace etl;
 
 synfig::Layer_Bitmap::Layer_Bitmap():
 	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
-	method                  (SOFTWARE),
 	surface_modification_id (0),
 	param_tl                (Point(-0.5,0.5)),
 	param_br                (Point(0.5,-0.5)),
@@ -203,13 +202,6 @@ Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 	}
 
 	return context.hit_check(pos);
-}
-
-void
-synfig::Layer_Bitmap::set_render_method(Context context, RenderMethod x)
-{
-	set_method(x);
-	context.set_render_method(x);
 }
 
 inline
@@ -665,14 +657,10 @@ Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) con
 	task = task_transform;
 
 	rendering::TaskPixelGamma::Handle task_gamma = new rendering::TaskPixelGamma();
-	if (!approximate_equal_lp(gamma, 1.f)) {
-		task_gamma->gamma[0] = gamma;
-		task_gamma->gamma[1] = gamma;
-		task_gamma->gamma[2] = gamma;
-		task_gamma->gamma[3] = gamma;
-		task_gamma->sub_task() = task;
+	task_gamma->gamma = get_canvas()->get_root()->rend_desc().get_gamma() / gamma;
+	task_gamma->sub_task() = task;
+	if (!task_gamma->is_transparent())
 		task = task_gamma;
-	}
 
 	return task;
 }

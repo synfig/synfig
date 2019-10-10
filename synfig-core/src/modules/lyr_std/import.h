@@ -33,7 +33,6 @@
 #include <synfig/vector.h>
 #include <synfig/importer.h>
 #include <synfig/cairoimporter.h>
-#include <synfig/rendermethod.h>
 
 /* === M A C R O S ========================================================= */
 

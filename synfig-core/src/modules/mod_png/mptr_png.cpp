@@ -42,6 +42,7 @@
 #include <synfig/time.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/debug/debugsurface.h>
 
 
 #include <cstdio>
@@ -193,13 +194,10 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	if (bit_depth < 8)
 		png_set_packing(png_ptr);
 
-	double fgamma;
-	if (png_get_gAMA(png_ptr, info_ptr, &fgamma))
-	{
-		synfig::info("PNG: Image gamma is %f",fgamma);
-		png_set_gamma(png_ptr, gamma().get_gamma(), fgamma);
-	}
-
+	double png_gamma;
+	if (!png_get_gAMA(png_ptr, info_ptr, &png_gamma))
+		png_gamma = 1/2.2;
+	Gamma gamma(2.2*png_gamma);
 
 	/*
 	if (setjmp(png_jmpbuf(png_ptr)))
@@ -230,50 +228,41 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	png_read_image(png_ptr, row_pointers);
 
-	png_uint_32 x, y;
-	surface.set_wh(width,height);
-
+	surface.set_wh(width, height);
 	switch(color_type)
 	{
 	case PNG_COLOR_TYPE_RGB:
-		for(y=0;y<height;y++)
-			for(x=0;x<width;x++)
-			{
-				float r=gamma().r_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*3+0) );
-				float g=gamma().g_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*3+1) );
-				float b=gamma().b_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*3+2) );
-				surface[y][x]=Color(r, g, b, 1.0);
-			}
+		for(int y = 0; y < surface.get_h(); ++y)
+			for(int x = 0; x < surface.get_w(); ++x)
+				surface[y][x]=gamma.apply(Color(
+					get_channel(row_pointers, bit_depth, y, x*3+0),
+					get_channel(row_pointers, bit_depth, y, x*3+1),
+					get_channel(row_pointers, bit_depth, y, x*3+2) ));
 		break;
-
 	case PNG_COLOR_TYPE_RGB_ALPHA:
-		for(y=0;y<height;y++)
-			for(x=0;x<width;x++)
-			{
-				float r=gamma().r_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*4+0) );
-				float g=gamma().g_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*4+1) );
-				float b=gamma().b_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*4+2) );
-				float a=gamma().a_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*4+3) );
-				surface[y][x]=Color(r, g, b, a);
-			}
+		for(int y = 0; y < surface.get_h(); ++y)
+			for(int x = 0; x < surface.get_w(); ++x)
+				surface[y][x]=gamma.apply(Color(
+					get_channel(row_pointers, bit_depth, y, x*4+0),
+					get_channel(row_pointers, bit_depth, y, x*4+1),
+					get_channel(row_pointers, bit_depth, y, x*4+2),
+					get_channel(row_pointers, bit_depth, y, x*4+3) ));
 		break;
-
 	case PNG_COLOR_TYPE_GRAY:
-		for(y=0;y<height;y++)
-			for(x=0;x<width;x++)
+		for(int y = 0; y < surface.get_h(); ++y)
+			for(int x = 0; x < surface.get_w(); ++x)
 			{
-				float gray=gamma().g_F32_to_F32( get_channel(row_pointers, bit_depth, y, x) );
-				surface[y][x]=Color(gray, gray, gray, 1.0);
+				ColorReal gray = get_channel(row_pointers, bit_depth, y, x);
+				surface[y][x] = gamma.apply(Color(gray, gray, gray));
 			}
 		break;
-
 	case PNG_COLOR_TYPE_GRAY_ALPHA:
-		for(y=0;y<height;y++)
-			for(x=0;x<width;x++)
+		for(int y = 0; y < surface.get_h(); ++y)
+			for(int x = 0; x < surface.get_w(); ++x)
 			{
-				float gray=gamma().g_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*2+0) );
-				float a   =gamma().a_F32_to_F32( get_channel(row_pointers, bit_depth, y, x*2+1) );
-				surface[y][x]=Color(gray, gray, gray, a);
+				ColorReal gray = get_channel(row_pointers, bit_depth, y, x*2+0);
+				ColorReal a    = get_channel(row_pointers, bit_depth, y, x*2+1);
+				surface[y][x] = gamma.apply(Color(gray, gray, gray, a));
 			}
 		break;
 
@@ -291,19 +280,17 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		int num_trans = 0;
 		bool has_alpha = png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, NULL)
 		               & PNG_INFO_tRNS;
-		for(y=0;y<height;y++)
-			for(x=0;x<width;x++)
+		const ColorReal k = 1/255.0;
+		for(int y = 0; y < surface.get_h(); ++y)
+			for(int x = 0; x < surface.get_w(); ++x)
 			{
-				float r=gamma().r_U8_to_F32((unsigned char)palette[row_pointers[y][x]].red);
-				float g=gamma().g_U8_to_F32((unsigned char)palette[row_pointers[y][x]].green);
-				float b=gamma().b_U8_to_F32((unsigned char)palette[row_pointers[y][x]].blue);
-
-				unsigned char ac = 255;
+				ColorReal r = k*(unsigned char)palette[row_pointers[y][x]].red;
+				ColorReal g = k*(unsigned char)palette[row_pointers[y][x]].green;
+				ColorReal b = k*(unsigned char)palette[row_pointers[y][x]].blue;
+				ColorReal a = 1;
                 if (has_alpha && num_trans > 0 && trans_alpha != NULL && row_pointers[y][x] < num_trans)
-                    ac = trans_alpha[row_pointers[y][x]];
-				float a=gamma().a_U8_to_F32(ac);
-				
-				surface[y][x]=Color(r, g, b, a);
+                    a = k*(unsigned char)trans_alpha[row_pointers[y][x]];
+				surface[y][x] = gamma.apply(Color(r, g, b, a));
 			}
 		break;
 	}
@@ -319,5 +306,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	png_read_end(png_ptr, end_info);
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
 
+	//debug::DebugSurface::save_to_file(surface, "pngimport");
+	
 	return true;
 }

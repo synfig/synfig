@@ -90,33 +90,9 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 	Real contrast=param_contrast.get(Real());
 	Real exposure=param_exposure.get(Real());
 	
-	Color ret(in);
 	Real brightness((_brightness-0.5)*contrast+0.5);
 
-	if(gamma.get_gamma_r()!=1.0) {
-		if(ret.get_r() < 0)
-			ret.set_r(-gamma.r_F32_to_F32(-ret.get_r()));
-		else
-			ret.set_r(gamma.r_F32_to_F32(ret.get_r()));
-	}
-	if(gamma.get_gamma_g()!=1.0) {
-		if(ret.get_g() < 0)
-			ret.set_g(-gamma.g_F32_to_F32(-ret.get_g()));
-		else
-			ret.set_g(gamma.g_F32_to_F32(ret.get_g()));
-	}
-	if(gamma.get_gamma_b()!=1.0) {
-		if(ret.get_b() < 0)
-			ret.set_b(-gamma.b_F32_to_F32(-ret.get_b()));
-		else
-			ret.set_b(gamma.b_F32_to_F32(ret.get_b()));
-	}
-	if(gamma.get_gamma_a()!=1.0) {
-		if(ret.get_a() < 0)
-			ret.set_a(-gamma.a_F32_to_F32(-ret.get_a()));
-		else
-			ret.set_a(gamma.a_F32_to_F32(ret.get_a()));
-	}
+	Color ret = gamma.apply(in);
 
 	assert(!std::isnan(ret.get_r()));
 	assert(!std::isnan(ret.get_g()));
@@ -183,7 +159,7 @@ Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
 
 	IMPORT_VALUE_PLUS(param_gamma,
 		{
-			gamma.set_gamma(1.0/param_gamma.get(Real()));
+			gamma.set(1.0/param_gamma.get(Real()));
 			return true;
 		});
 	return false;
@@ -200,7 +176,7 @@ Layer_ColorCorrect::get_param(const String &param)const
 	if(param=="gamma")
 	{
 		ValueBase ret=param_gamma;
-		ret.set(1.0/gamma.get_gamma());
+		ret.set(1.0/gamma.get());
 		return ret;
 	}
 
@@ -342,10 +318,7 @@ Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 	if (!approximate_equal_lp(gamma, ColorReal(1.0)))
 	{
 		rendering::TaskPixelGamma::Handle task_gamma(new rendering::TaskPixelGamma());
-		task_gamma->gamma_r = gamma;
-		task_gamma->gamma_g = gamma;
-		task_gamma->gamma_b = gamma;
-		task_gamma->gamma_a = gamma;
+		task_gamma->gamma = Gamma(gamma).get_inverted();
 		task_gamma->sub_task() = task;
 		task = task_gamma;
 	}

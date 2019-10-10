@@ -95,10 +95,6 @@ public:
 	void stop();
 	void pause();
 	void resume();
-#ifdef SINGLE_THREADED
-	void rendering_progress();
-	bool updating;
-#endif
 
 	bool has_error()const { return error; }
 	bool has_success()const { return success; }

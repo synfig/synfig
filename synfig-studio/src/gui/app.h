@@ -58,11 +58,6 @@
 #define SKETCH_DIR_PREFERENCE     "sketch_dir"
 #define RENDER_DIR_PREFERENCE     "render_dir"
 
-// uncomment define SINGLE_THREADED to use a single thread, and hopefully get more stability (dooglus) - changed to be default if using windows (Nov 2009 pixelgeek)
-#ifdef _WIN32
-#define SINGLE_THREADED
-#endif
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -208,8 +203,6 @@ public:
 	static VectorizerSettings *vectorizerpopup;
 	static synfig::Distance::System distance_system;
 
-	static synfig::Gamma gamma;
-
 	static About *about;
 	static MainWindow *main_window;
 	static Dock_Toolbox *dock_toolbox;
@@ -217,12 +210,6 @@ public:
 	static std::list<etl::handle<Instance> > instance_list;
 
 	static bool shutdown_in_progress;
-
-	static bool use_colorspace_gamma;
-
-#ifdef SINGLE_THREADED
-	static bool single_threaded;
-#endif
 
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
@@ -368,6 +355,7 @@ public:
 
 	static etl::loose_handle<Instance> get_selected_instance() { return selected_instance; }
 	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
+	static synfig::Gamma get_selected_canvas_gamma();
 
 	static std::string get_temporary_directory();
 

@@ -44,7 +44,6 @@
 #include <synfig/canvas.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/color.h>
-#include <synfig/gamma.h>
 #include <synfig/guid.h>
 
 /* === M A C R O S ========================================================= */
@@ -122,7 +121,7 @@ private:
 		std::list<RadialGradient*> rg;
 
 public:
-		Svg_parser();
+		explicit Svg_parser(const Gamma &gamma = Gamma());
 		Canvas::Handle load_svg_canvas(std::string _filepath,String &errors, String &warnings);
 		//String get_id();
 		//void set_id(String source);

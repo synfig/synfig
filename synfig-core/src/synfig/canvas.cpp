@@ -53,6 +53,7 @@
 #include "layers/layer_pastecanvas.h"
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_scale.h"
+#include "rendering/common/task/taskpixelprocessor.h"
 
 #endif
 
@@ -299,6 +300,23 @@ Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue) c
 
 	return Context(out_queue.begin(), params);
 }
+
+rendering::Task::Handle
+Canvas::build_rendering_task(const ContextParams &context_params) const
+{
+	CanvasBase sub_queue;
+	Context context = get_context_sorted(context_params, sub_queue);
+	rendering::Task::Handle task = context.build_rendering_task();
+	
+	rendering::TaskPixelGamma::Handle task_gamma(new rendering::TaskPixelGamma());
+	task_gamma->gamma = get_root()->rend_desc().get_gamma().get_inverted();
+	task_gamma->sub_task() = task;
+	if (!task_gamma->is_transparent())
+		task = task_gamma;
+	
+	return task;
+}
+
 
 const ValueNodeList &
 Canvas::value_node_list()const

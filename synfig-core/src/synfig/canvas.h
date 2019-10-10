@@ -43,6 +43,7 @@
 #include "node.h"
 #include "guid.h"
 #include "filesystem.h"
+#include "rendering/task.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -110,15 +111,20 @@
  *
  * 0.9: git 6922776b8129fdae6cb42953b2715decc810786c
  *
- *		Added "split_radius" and "split_angle" to BLinePoint Composite
- *		Value Node
+ *      Added "split_radius" and "split_angle" to BLinePoint Composite
+ *      Value Node
  *
  * 1.0 git
  *
  *      Added a canvas component called
+ * 
+ * 1.1
+ *
+ *      Added gamma into a canvas rend_desc
+ * 
  */
 
-#define CURRENT_CANVAS_VERSION "1.0"
+#define CURRENT_CANVAS_VERSION "1.1"
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -592,6 +598,9 @@ public:
 	//! Retireves sorted double queue of Layers and Context of the first layer with rendering parameters
 	Context get_context_sorted(const ContextParams &params, CanvasBase &out_queue) const;
 
+	//! Creates sorted context and builds task for rendering based on it with applied gamma
+	rendering::Task::Handle build_rendering_task(const ContextParams &context_params) const;
+	
 	int indexof(const const_iterator &iter) const;
 	iterator byindex(int index);
 	const_iterator byindex(int index) const;

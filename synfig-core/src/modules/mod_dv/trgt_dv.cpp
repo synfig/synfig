@@ -282,7 +282,7 @@ dv_trgt::end_scanline()
 	if(!file)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, PF_RGB, &gamma(), desc.get_w());
+	color_to_pixelformat(buffer, color_buffer, PF_RGB, 0, desc.get_w());
 
 	if(!fwrite(buffer,1,desc.get_w()*3,file))
 		return false;

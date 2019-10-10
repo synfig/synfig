@@ -114,7 +114,6 @@ cairo_png_trgt::obtain_surface(cairo_surface_t *&surface)
 bool
 cairo_png_trgt::put_surface(cairo_surface_t *surface, synfig::ProgressCallback *cb)
 {
-	gamma_filter(surface, gamma());
 	if(cairo_surface_status(surface))
 	{
 		if(cb) cb->error(_("Cairo Surface bad status"));

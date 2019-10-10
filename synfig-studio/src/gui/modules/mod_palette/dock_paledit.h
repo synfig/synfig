@@ -35,7 +35,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/checkbutton.h>
 
-#include <synfig/gamma.h>
+#include <synfig/color.h>
 #include <synfig/time.h>
 
 #include "../../widgets/widget_coloredit.h"
@@ -61,7 +61,6 @@ class CanvasInterface;
 
 namespace studio {
 
-class Widget_Color;
 class PaletteSettings;
 
 class Dock_PalEdit : public Dockable
@@ -94,6 +93,7 @@ private:
 	void select_outline_color(int i);
 	synfig::Color get_color(int i)const;
 	void edit_color(int i);
+
 public:
 	void set_palette(const synfig::Palette& x);
 	const synfig::Palette& get_palette()const { return palette_; }

@@ -100,7 +100,6 @@ SYNFIGHEADERS = \
 	curveset.h \
 	distance.h \
 	exception.h \
-	gamma.h \
 	guid.h \
 	importer.h \
 	cairoimporter.h \
@@ -117,7 +116,6 @@ SYNFIGHEADERS = \
 	rect.h \
 	renddesc.h \
 	render.h \
-	rendermethod.h \
 	savecanvas.h \
 	surface.h \
 	target.h \
@@ -157,7 +155,6 @@ SYNFIGSOURCES = \
 	curveset.cpp \
 	distance.cpp \
 	exception.cpp \
-	gamma.cpp \
 	guid.cpp \
 	importer.cpp \
 	cairoimporter.cpp \

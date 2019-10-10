@@ -30,7 +30,6 @@
 #include <cassert>
 #include <stdint.h>
 
-#include <synfig/gamma.h>
 #include <synfig/string.h>
 #include <synfig/angle.h>
 

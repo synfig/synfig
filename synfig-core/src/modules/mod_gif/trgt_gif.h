@@ -167,7 +167,6 @@ private:
 	synfig::String filename;
 	synfig::SmartFILE file;
 	int
-		i,			// General-purpose index
 		codesize,	// Current code size
 		rootsize,	// Size of pixel bits (will be recalculated)
 		nextcode;	// Next code to use

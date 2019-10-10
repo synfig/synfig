@@ -646,12 +646,6 @@ Layer::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)cons
 	context.set_outline_grow(outline_grow);
 }
 
-void
-Layer::set_render_method(Context context, RenderMethod x)
-{
-	context.set_render_method(x);
-}
-
 Color
 Layer::get_color(Context context, const Point &pos)const
 {

@@ -6,7 +6,8 @@ COLOR_HH = \
 	color/cairocolor.h \
 	color/cairocoloraccumulator.h \
 	color/pixelformat.h \
-	color/common.h
+	color/common.h \
+	color/gamma.h
 
 COLOR_CC = \
 	color/color.cpp \

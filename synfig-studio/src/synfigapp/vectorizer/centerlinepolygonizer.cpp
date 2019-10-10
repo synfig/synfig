@@ -114,29 +114,27 @@ enum { inner = 0, outer = 1, none = 2, invalid = 3 };
 //--------------------------------------------------------------------------
 class PixelEvaluator 
 {
-  Handle m_ras;
+  const Surface &m_surface;
   int m_threshold;
 
 public:
-  PixelEvaluator(const Handle &ras, int threshold)
-      : m_ras(ras), m_threshold(threshold) {}
+  PixelEvaluator(const Surface &surface, int threshold)
+      : m_surface(surface), m_threshold(threshold) {}
 
   inline unsigned char getBlackOrWhite(int x, int y);
 };
 
 // //--------------------------------------------------------------------------
 
-inline unsigned char PixelEvaluator::getBlackOrWhite(int x, int y) 
+inline unsigned char PixelEvaluator::getBlackOrWhite(int x, int y)
 {
-  synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( m_ras->rendering_surface ); 
-	const Surface &surface = lock->get_surface(); 
-  const int Y = surface.get_h() - y -1; 
-	const Color *row = surface[Y]; 
-	int r = 255.0*pow(row[x].get_r(),1/2.2);
-	int g = 255.0*pow(row[x].get_g(),1/2.2);
-	int b = 255.0*pow(row[x].get_b(),1/2.2);
-	int a = 255.0*pow(row[x].get_a(),1/2.2);
-  return std::max(r,std::max(g,b)) < m_threshold * (a / 255.0);
+	const int Y = m_surface.get_h() - y -1; 
+	const Color &color = m_surface[Y][x];
+	int r = 255.99*color.get_r();
+	int g = 255.99*color.get_g();
+	int b = 255.99*color.get_b();
+	int a = 255.99*color.get_a();
+	return std::max(r,std::max(g,b)) < m_threshold * (a / 255.0);
 }
 
 //--------------------------------------------------------------------------
@@ -186,37 +184,34 @@ public:
 
 //--------------------------------------------------------------------------
 
-Signaturemap::Signaturemap(const Handle &ras, int threshold) 
+Signaturemap::Signaturemap(const Handle &ras, int threshold)
 {
-  // read the raster data
-  unsigned char *currByte;
-  int x, y;
+	// read the raster data
+	unsigned char *currByte;
+	int x, y;
 
-  PixelEvaluator evaluator(ras, threshold);//evaluator object with ras, threshold as constructor args
-  rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock( ras->rendering_surface );
+	rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock( ras->rendering_surface );
 	const Surface &surface = lock->get_surface(); 
+	PixelEvaluator evaluator(surface, threshold);//evaluator object with surface, threshold as constructor args
 	m_rowSize = surface.get_w() + 2;
-  m_colSize = surface.get_h() + 2;
-  m_array.reset(new unsigned char[m_rowSize * m_colSize]);
+	m_colSize = surface.get_h() + 2;
+	m_array.reset(new unsigned char[m_rowSize * m_colSize]);
 
-  memset(m_array.get(), none << 1, m_rowSize);
+	memset(m_array.get(), none << 1, m_rowSize);
 
-  currByte = m_array.get() + m_rowSize;
-  for (y = 0; y <m_colSize - 2 ; ++y) 
-  {
-    *currByte = none << 1;
-    currByte++;
+	currByte = m_array.get() + m_rowSize;
+	for (y = 0; y <m_colSize - 2 ; ++y) 
+	{
+		*currByte = none << 1;
+		currByte++;
 
-    for (x = 0; x < m_rowSize - 2; ++x, ++currByte){
-      *currByte = evaluator.getBlackOrWhite(x, y) | (none << 1);
-      
-    }
-    *currByte = none << 1;
-    currByte++;
-  }
+		for (x = 0; x < m_rowSize - 2; ++x, ++currByte)
+			*currByte = evaluator.getBlackOrWhite(x, y) | (none << 1);
+		*currByte = none << 1;
+		currByte++;
+	}
 
-  memset(currByte, none << 1, m_rowSize);
-
+	memset(currByte, none << 1, m_rowSize);
 }
 
 //--------------------------------------------------------------------------
@@ -367,7 +362,7 @@ static RawBorder *extractPath(Signaturemap &ras, int x0, int y0, int pathType,
 
 //--------------------------------------------------------------------------
 
-static BorderList *extractBorders(const Handle &ras, int threshold, int despeckling) 
+static BorderList *extractBorders(const Handle &ras, int threshold, int despeckling)
 {
   Signaturemap byteImage(ras, threshold);
 
@@ -873,15 +868,15 @@ inline void reduceBorders(BorderList &borders, Contours &result,bool ambiguities
 
 //Extracts a polygonal, minimal yet faithful representation of image contours
 
-void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons, VectorizerCoreGlobals &g) 
+void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons, VectorizerCoreGlobals &g)
 {
-  std::cout<<"Welcome to polygonize\n";
-  
-  BorderList *borders;
-
-  borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
-  
-  reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
+	std::cout<<"Welcome to polygonize\n";
+	
+	BorderList *borders;
+	
+	borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
+	
+	reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
 }
 
 

@@ -50,6 +50,7 @@
 
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
 #include <synfig/rendering/primitive/transformationaffine.h>
 
 #endif
@@ -705,17 +706,6 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 	Layer::get_times_vfunc(set);
 }
 
-
-void
-Layer_PasteCanvas::set_render_method(Context context, RenderMethod x)
-{
-	// if there is a sub_canvas pass down to it
-	if (sub_canvas)
-		sub_canvas->get_context(context.get_params()).set_render_method(x);
-	// in any case pass it down
-	context.set_render_method(x);
-}
-
 void
 Layer_PasteCanvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 {
@@ -735,6 +725,15 @@ Layer_PasteCanvas::build_rendering_task_vfunc(Context context)const
 		task_transformation->transformation->matrix = get_summary_transformation().get_matrix();
 		task_transformation->sub_task() = sub_context.build_rendering_task();
 		sub_task = task_transformation;
+		
+		if (sub_canvas->get_root() != get_canvas()->get_root()) {
+			rendering::TaskPixelGamma::Handle task_gamma(new rendering::TaskPixelGamma());
+			task_gamma->gamma = get_canvas()->get_root()->rend_desc().get_gamma()
+							  / sub_canvas->get_root()->rend_desc().get_gamma();
+			task_gamma->sub_task() = sub_task;
+			if (!task_gamma->is_transparent())
+				sub_task = task_gamma;
+		}
 	}
 
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());

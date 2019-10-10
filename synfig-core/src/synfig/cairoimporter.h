@@ -37,7 +37,7 @@
 
 #include "cairo.h"
 #include "filesystem.h"
-#include "gamma.h"
+#include "color.h"
 #include "progresscallback.h"
 #include "renddesc.h"
 #include "string.h"
@@ -147,19 +147,11 @@ public:
 	typedef etl::loose_handle<CairoImporter> LooseHandle;
 	typedef etl::handle<const CairoImporter> ConstHandle;
 
-private:
-	//! Gamma of the importer.
-	//! \todo Do not hardcode the gamma to 2.2
-	Gamma gamma_;
-
 protected:
 	CairoImporter(const FileSystem::Identifier &identifier);
 
 public:
 	const FileSystem::Identifier identifier;
-
-	Gamma& gamma() { return gamma_; }
-	const Gamma& gamma()const { return gamma_; }
 
 	virtual ~CairoImporter();
 

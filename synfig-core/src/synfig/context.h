@@ -170,9 +170,6 @@ public:
 	//! Returns the first context's layer's handle that intesects the given \point */
 	etl::handle<Layer> hit_check(const Point &point)const;
 
-	// Set Render Method. Passes the information of the render method to use to the layers
-	void set_render_method(RenderMethod x);
-
 	//! Returns \c true if layer is active with this context_params
 	static inline bool active(const ContextParams &context_params, const Layer &layer) {
 		return layer.active()

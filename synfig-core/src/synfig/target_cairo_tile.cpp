@@ -229,7 +229,6 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 			Context context;
 			// pass the Render Method to the context
 			context=canvas->get_context(context_params);
-			context.set_render_method(CAIRO);
 
 			// Set the time that we wish to render
 			if(!get_avoid_time_sync() || canvas->get_time()!=t) {
@@ -291,15 +290,10 @@ Target_Cairo_Tile::gamma_filter(cairo_surface_t *surface, const synfig::Gamma &g
 		{
 			CairoColor c=cairo_s[y][x];
 			if (c.get_alpha()) {
-				float a=c.get_alpha();
-				c.set_a(gamma.b_U8_to_U8(c.get_alpha()));
-				float aa=c.get_alpha();
-				unsigned char r=(unsigned char)(aa*gamma.r_F32_to_F32(c.get_r()/a));
-				unsigned char g=(unsigned char)(aa*gamma.g_F32_to_F32(c.get_g()/a));
-				unsigned char b=(unsigned char)(aa*gamma.b_F32_to_F32(c.get_b()/a));
-				c.set_r(r);
-				c.set_g(g);
-				c.set_b(b);
+				float a = c.get_alpha();
+				c.set_r( (unsigned char)(a*gamma.apply_r(c.get_r()/a)) );
+				c.set_r( (unsigned char)(a*gamma.apply_g(c.get_g()/a)) );
+				c.set_r( (unsigned char)(a*gamma.apply_b(c.get_b()/a)) );
 			}
 			cairo_s[y][x]=c;
 		}

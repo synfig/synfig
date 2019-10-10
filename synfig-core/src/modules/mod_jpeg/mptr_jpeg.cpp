@@ -186,58 +186,29 @@ jpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddes
 		throw String("Error on jpeg importer, alloc of \"buffer\" failed (bug?)");
 	}
 
-	int x;
-	int y;
-	surface.set_wh(cinfo.output_width,cinfo.output_height);
-
+	surface.set_wh(cinfo.output_width, cinfo.output_height);
+	const ColorReal k = 1/255.0;
 	switch(cinfo.output_components)
 	{
 	case 3:
-		for(y=0;y<surface.get_h();y++)
-		{
-			int x;
+		for(int y = 0; y < surface.get_h(); ++y) {
 			jpeg_read_scanlines(&cinfo, buffer, 1);
-			for(x=0;x<surface.get_w();x++)
-			{
-				float r=gamma().g_U8_to_F32((unsigned char)buffer[0][x*3+0]);
-				float g=gamma().g_U8_to_F32((unsigned char)buffer[0][x*3+1]);
-				float b=gamma().g_U8_to_F32((unsigned char)buffer[0][x*3+2]);
+			for(int x = 0; x < surface.get_w(); ++x)
 				surface[y][x]=Color(
-					r,
-					g,
-					b,
-					1.0
-				);
-/*
-				surface_buffer[y][x]=Color(
-					(float)(unsigned char)buffer[0][x*3+0]*(1.0/255.0),
-					(float)(unsigned char)buffer[0][x*3+1]*(1.0/255.0),
-					(float)(unsigned char)buffer[0][x*3+2]*(1.0/255.0),
-					1.0
-				);
-*/
-				}
+					((unsigned char)buffer[0][x*3+0])*k,
+					((unsigned char)buffer[0][x*3+1])*k,
+					((unsigned char)buffer[0][x*3+2])*k );
 		}
 		break;
-
 	case 1:
-		for(y=0;y<surface.get_h();y++)
-		{
+		for(int y = 0; y < surface.get_h(); ++y) {
 			jpeg_read_scanlines(&cinfo, buffer, 1);
-			for(x=0;x<surface.get_w();x++)
-			{
-				float gray=gamma().g_U8_to_F32((unsigned char)buffer[0][x]);
-//				float gray=(float)(unsigned char)buffer[0][x]*(1.0/255.0);
-				surface[y][x]=Color(
-					gray,
-					gray,
-					gray,
-					1.0
-				);
+			for(int x = 0; x < surface.get_w(); ++x) {
+				ColorReal gray = ((unsigned char)buffer[0][x])*k;
+				surface[y][x]=Color(gray, gray, gray);
 			}
 		}
 		break;
-
 	default:
 		synfig::error("Error on jpeg importer, Unsupported color type");
         //! \todo THROW SOMETHING

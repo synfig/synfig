@@ -182,7 +182,7 @@ Renderer_Canvas::convert(
 					cairo_surface->get_data(),
 					pixels,
 					pixel_format,
-					&App::gamma,
+					0,
 					cairo_surface->get_width(),
 					cairo_surface->get_height(),
 					cairo_surface->get_stride() );
@@ -458,10 +458,7 @@ Renderer_Canvas::enqueue_render_frame(
 	canvas->set_time(id.time);
 	canvas->load_resources(id.time);
 	canvas->set_outline_grow(rend_desc.get_outline_grow());
-	CanvasBase sub_queue;
-	Context context = canvas->get_context_sorted(context_params, sub_queue);
-	rendering::Task::Handle task = context.build_rendering_task();
-	sub_queue.clear();
+	rendering::Task::Handle task = canvas->build_rendering_task(context_params);
 
 	// add transformation task to flip result if needed
 	if (task && transform) {

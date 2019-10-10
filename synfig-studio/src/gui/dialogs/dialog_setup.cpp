@@ -73,10 +73,6 @@ using namespace studio;
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog_Template(parent,_("Synfig Studio Preferences")),
 	input_settings(synfigapp::Main::get_selected_input_device()->settings()),
-	adj_gamma_r(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
-	adj_gamma_g(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
-	adj_gamma_b(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
-	adj_gamma_a(Gtk::Adjustment::create(2.2,0.1,3.0,0.025,0.025,0.025)),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
 	time_format(Time::FORMAT_NORMAL),
@@ -87,12 +83,12 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	pref_modification_flag(false),
 	refreshing(false)
 {
-	synfig::String interface_str(_("Interface")),
-			document_str(_("Document")),
-			editing_str(_("Editing")),
-			render_str(_("Render")),
-			system_str(_("System")),
-			gamma_str(_("Gamma"));
+	synfig::String
+		interface_str(_("Interface")),
+		document_str(_("Document")),
+		editing_str(_("Editing")),
+		render_str(_("Render")),
+		system_str(_("System"));
 	// WARNING FIXED ORDER : the page added to notebook same has treeview
 	// Interface
 	create_interface_page(add_page(interface_str));
@@ -103,63 +99,13 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	// Render
 	create_render_page(add_page(render_str));
 	// System
-	PageInfo pi = add_page(system_str);
-	create_system_page(pi);
-	// Gamma
-	create_gamma_page(add_child_page(gamma_str, pi.row));
+	create_system_page(add_page(system_str));
 
 	show_all_children();
 }
 
 Dialog_Setup::~Dialog_Setup()
 {
-}
-
-void
-Dialog_Setup::create_gamma_page(PageInfo pi)
-{
-	/*---------Gamma------------------*\
-	 *
-	 *        *****°°°°°°°#####
-	 *        *****°°°°°°°#####
-	 *        *****°°°°°°°#####
-	 *        *****°°°°°°°#####
-	 *        *****°°°°°°°#####
-	 *   red ---------x--------------
-	 * green ---------x--------------
-	 *  blue ---------x--------------
-	 * alpha ---------x--------------
-	 *
-	 */
-
-	int row(1);
-#ifndef __APPLE__
-	pi.grid->attach(gamma_pattern, 0, row, 2, 1);
-	gamma_pattern.set_halign(Gtk::ALIGN_CENTER);
-#endif
-	Gtk::Scale* scale_gamma_r(manage(new Gtk::Scale(adj_gamma_r)));
-	attach_label(pi.grid, _("Red"), ++row);
-	pi.grid->attach(*scale_gamma_r, 1, row, 1, 1);
-	scale_gamma_r->set_hexpand_set(true);
-	adj_gamma_r->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
-
-	Gtk::Scale* scale_gamma_g(manage(new Gtk::Scale(adj_gamma_g)));
-	attach_label(pi.grid, _("Green"), ++row);
-	pi.grid->attach(*scale_gamma_g, 1, row, 1, 1);
-	scale_gamma_g->set_hexpand(true);
-	adj_gamma_g->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
-
-	Gtk::Scale* scale_gamma_b(manage(new Gtk::Scale(adj_gamma_b)));
-	attach_label(pi.grid, _("Blue"), ++row);
-	pi.grid->attach(*scale_gamma_b, 1, row, 1, 1);
-	scale_gamma_b->set_hexpand(true);
-	adj_gamma_b->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
-
-	Gtk::Scale* scale_gamma_a(manage(new Gtk::Scale(adj_gamma_a)));
-	attach_label(pi.grid, _("Alpha"), ++row);
-	pi.grid->attach(*scale_gamma_a, 1, row, 1, 1);
-	scale_gamma_a->set_hexpand(true);
-	adj_gamma_a->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_a_change));
 }
 
 void
@@ -274,14 +220,6 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	pi.grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
 	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
 	toggle_enable_experimental_features.set_hexpand(false);
-
-#ifdef SINGLE_THREADED
-	// System - 12 single_threaded
-	attach_label_section(pi.grid, _("Single thread only (CPUs)"), ++row);
-	pi.grid->attach(toggle_single_threaded, 1, row, 1, 1);
-	toggle_single_threaded.set_hexpand(false);
-	toggle_single_threaded.set_halign(Gtk::ALIGN_START);
-#endif
 
 	// signal for change resume
 	auto_backup_interval.signal_changed().connect(
@@ -478,16 +416,6 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 
 	// Editing Other section
 	attach_label_section(pi.grid, _("Other"), ++row);
-
-	// Editing - Visually Linear Color Selection
-	attach_label(pi.grid,_("Visually linear color selection"), ++row);
-	pi.grid->attach(toggle_use_colorspace_gamma, 1, row, 1, 1);
-	toggle_use_colorspace_gamma.set_halign(Gtk::ALIGN_START);
-	toggle_use_colorspace_gamma.set_hexpand(false);
-	toggle_use_colorspace_gamma.set_tooltip_text(_("Color output is non-linear, if 0 \
-is black and 100 is white, then 50 is only about 22 percent of the brightness \
-of white, rather than 50% as you might expect. \
-Option (ON by default) to make sure that if you ask for 50, you get 50% of the brightness of white."));
 
 	// Editing - Restrict Real-value Handles to Top Right Quadrant
 	attach_label(pi.grid,_("Restrict real value handles to top right quadrant"), ++row);
@@ -725,24 +653,10 @@ Dialog_Setup::on_restore_pressed()
 void
 Dialog_Setup::on_apply_pressed()
 {
-	App::gamma.set_all(
-		1.0/adj_gamma_r->get_value(),
-		1.0/adj_gamma_g->get_value(),
-		1.0/adj_gamma_b->get_value(),
-		1.0/adj_gamma_a->get_value() );
-
 	App::set_max_recent_files((int)adj_recent_files->get_value());
 
 	// Set the time format
 	App::set_time_format(get_time_format());
-
-	// Set the use_colorspace_gamma flag
-	App::use_colorspace_gamma = toggle_use_colorspace_gamma.get_active();
-
-#ifdef SINGLE_THREADED
-	// Set the single_threaded flag
-	App::single_threaded=toggle_single_threaded.get_active();
-#endif
 
 	//if(pref_modification_flag&CHANGE_AUTOBACKUP)
 	// TODO catch change event on auto_backup_interval before use CHANGE_AUTOBACKUP
@@ -857,38 +771,6 @@ Dialog_Setup::on_apply_pressed()
 		App::get_selected_canvas_view()->get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	}
 
-}
-
-void
-Dialog_Setup::on_gamma_r_change()
-{
-	gamma_pattern.set_gamma_r(1.0/adj_gamma_r->get_value());
-	gamma_pattern.refresh();
-	gamma_pattern.queue_draw();
-}
-
-void
-Dialog_Setup::on_gamma_g_change()
-{
-	gamma_pattern.set_gamma_g(1.0/adj_gamma_g->get_value());
-	gamma_pattern.refresh();
-	gamma_pattern.queue_draw();
-}
-
-void
-Dialog_Setup::on_gamma_b_change()
-{
-	gamma_pattern.set_gamma_b(1.0/adj_gamma_b->get_value());
-	gamma_pattern.refresh();
-	gamma_pattern.queue_draw();
-}
-
-void
-Dialog_Setup::on_gamma_a_change()
-{
-	gamma_pattern.set_gamma_a(1.0/adj_gamma_a->get_value());
-	gamma_pattern.refresh();
-	gamma_pattern.queue_draw();
 }
 
 void
@@ -1009,20 +891,7 @@ Dialog_Setup::refresh()
 {
 	refreshing = true;
 	pref_modification_flag = CHANGE_NONE;
-	// Refresh the temporary gamma; do this before adjusting the sliders,
-	// or variables will be used before their initialization.
-	gamma_pattern.set_gamma_r(App::gamma.get_gamma_r());
-	gamma_pattern.set_gamma_g(App::gamma.get_gamma_g());
-	gamma_pattern.set_gamma_b(App::gamma.get_gamma_b());
-	gamma_pattern.set_gamma_a(App::gamma.get_gamma_a());
-
-	adj_gamma_r->set_value(1.0/App::gamma.get_gamma_r());
-	adj_gamma_g->set_value(1.0/App::gamma.get_gamma_g());
-	adj_gamma_b->set_value(1.0/App::gamma.get_gamma_b());
-	adj_gamma_a->set_value(1.0/App::gamma.get_gamma_a());
-
-	gamma_pattern.refresh();
-
+	
 	adj_recent_files->set_value(App::get_max_recent_files());
 
 	// Refresh the time format
@@ -1030,13 +899,6 @@ Dialog_Setup::refresh()
 
 	widget_enum->set_value(App::distance_system);
 
-	// Refresh the status of the use_colorspace_gamma flag
-	toggle_use_colorspace_gamma.set_active(App::use_colorspace_gamma);
-
-#ifdef SINGLE_THREADED
-	// Refresh the status of the single_threaded flag
-	toggle_single_threaded.set_active(App::single_threaded);
-#endif
 	toggle_autobackup.set_active(App::auto_recover->get_enabled());
 	// Refresh the value of the auto backup interval
 	auto_backup_interval.set_value(App::auto_recover->get_timeout_ms() / 1000);
@@ -1144,124 +1006,6 @@ Dialog_Setup::refresh()
 	}
 
 	refreshing = false;
-}
-
-GammaPattern::GammaPattern():
-	gamma_r(),
-	gamma_g(),
-	gamma_b(),
-	gamma_a(),
-	tile_w(80),
-	tile_h(80)
-{
-	set_size_request(tile_w*4,tile_h*3);
-}
-
-GammaPattern::~GammaPattern()
-{
-}
-
-void
-GammaPattern::refresh()
-{
-	black[0].set_rgb_p(
-		r_F32_to_F32(0.0),
-		g_F32_to_F32(0.0),
-		b_F32_to_F32(0.0)
-	);
-	white[0].set_rgb_p(
-		r_F32_to_F32(1.0),
-		g_F32_to_F32(1.0),
-		b_F32_to_F32(1.0)
-	);
-	gray50[0].set_rgb_p(
-		r_F32_to_F32(0.5),
-		g_F32_to_F32(0.5),
-		b_F32_to_F32(0.5)
-	);
-	gray25[0].set_rgb_p(
-		r_F32_to_F32(0.25),
-		g_F32_to_F32(0.25),
-		b_F32_to_F32(0.25)
-	);
-
-	// Reds
-	black[1].set_rgb(black[0].get_red(),0,0);
-	gray25[1].set_rgb(gray25[0].get_red(),0,0);
-	gray50[1].set_rgb(gray50[0].get_red(),0,0);
-	white[1].set_rgb(white[0].get_red(),0,0);
-
-	// Greens
-	black[2].set_rgb(0,black[0].get_green(),0);
-	gray25[2].set_rgb(0,gray25[0].get_green(),0);
-	gray50[2].set_rgb(0,gray50[0].get_green(),0);
-	white[2].set_rgb(0,white[0].get_green(),0);
-
-	// blues
-	black[3].set_rgb(0,0,black[0].get_blue());
-	gray25[3].set_rgb(0,0,gray25[0].get_blue());
-	gray50[3].set_rgb(0,0,gray50[0].get_blue());
-	white[3].set_rgb(0,0,white[0].get_blue());
-}
-
-bool
-GammaPattern::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
-{
-	int i;
-	Gdk::Color trueblack("#000000");
-
-	int stride = Cairo::ImageSurface::format_stride_for_width(Cairo::FORMAT_A1, 2);
-	std::vector<unsigned char> hlines(2*stride, 0);
-	hlines[0] = 3;
-	Cairo::RefPtr<Cairo::ImageSurface> stipple_mask_img = Cairo::ImageSurface::create(&hlines.front(), Cairo::FORMAT_A1, 2, 2, stride);
-
-	// 50% Pattern
-	for(i=0;i<4;i++)
-	{
-        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
-        cr->rectangle(i*tile_w, 0, tile_w, tile_h);
-        cr->fill();
-
-        cr->set_source_rgb(white[i].get_red_p(), white[i].get_green_p(), white[i].get_blue_p());
-        cr->mask(stipple_mask_img, 0, 0);
-        cr->rectangle(i*tile_w, 0, tile_w, tile_h);
-        cr->fill();
-
-        cr->set_source_rgb(gray50[i].get_red_p(), gray50[i].get_green_p(), gray50[i].get_blue_p());
-        cr->rectangle(i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
-        cr->fill();
-	}
-
-	// 25% Pattern
-	for(i=0;i<4;i++)
-	{
-        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
-        cr->rectangle(i*tile_w, tile_h, tile_w, tile_h);
-        cr->fill();
-
-        cr->set_source_rgb(gray50[i].get_red_p(), gray50[i].get_green_p(), gray50[i].get_blue_p());
-        cr->mask(stipple_mask_img, 0, 0);
-        cr->rectangle(i*tile_w, tile_h, tile_w, tile_h);
-        cr->fill();
-
-        cr->set_source_rgb(gray25[i].get_red_p(), gray25[i].get_green_p(), gray25[i].get_blue_p());
-        cr->rectangle(i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
-        cr->fill();
-	}
-
-	// Black-level Pattern
-    cr->set_source_rgb(trueblack.get_red_p(), trueblack.get_green_p(), trueblack.get_blue_p());
-	cr->rectangle(0, tile_h*2, tile_w*4, tile_h);
-	cr->fill();
-
-	for(i=0;i<4;i++)
-	{
-        cr->set_source_rgb(black[i].get_red_p(), black[i].get_green_p(), black[i].get_blue_p());
-        cr->rectangle(i*tile_w+tile_w/4, tile_h*2+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
-        cr->fill();
-	}
-
-	return true;
 }
 
 void

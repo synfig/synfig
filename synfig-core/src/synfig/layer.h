@@ -43,7 +43,6 @@
 #include "paramdesc.h"
 #include "progresscallback.h"
 #include "real.h"
-#include "rendermethod.h"
 #include "rendering/task.h"
 #include "string.h"
 #include "time.h"
@@ -593,9 +592,6 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
-	//! Sets the render method to the layer. Not all layers uses this virtual member
-	virtual void set_render_method(Context context, RenderMethod x);
-	
 	// Temporary function to render transformed layer for leyers which yet not suppurt transformed rendering
 	static bool render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, const char *file, int line);
 

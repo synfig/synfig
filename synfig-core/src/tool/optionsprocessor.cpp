@@ -99,7 +99,6 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	set_span(),
 	set_antialias(),
 	set_quality(),
-	set_gamma(),
 	set_num_threads(),
 	set_input_file(),
 	set_output_file(),
@@ -140,12 +139,14 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	show_targets(),
 	show_codecs(),
 	show_value_nodes(),
-	// Debug group
-#ifdef _DEBUG
-	debug_guid(),
-	debug_signal(),
-#endif
 	show_version()
+
+#ifdef _DEBUG
+	,
+	// Debug group
+	debug_guid(),
+	debug_signal()
+#endif
 {
 	Glib::init();
 
@@ -156,7 +157,6 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_set, "span",        's', set_span,		_("Set the diagonal size of image window (Span)"), "NUM");
 	add_option(og_set, "antialias",   'a', set_antialias,	_("Set antialias amount for parametric renderer."), "1..30");
 	//og_set.add_option("quality",     'Q', quality_arg_desc, etl::strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str(), "NUM");
-	add_option(og_set, "gamma",       'g', set_gamma,		_("Gamma"), "2.2");
 	add_option(og_set, "threads",     'T', set_num_threads, _("Enable multithreaded renderer using the specified number of threads"), "NUM");
 	add_option(og_set, "input-file",  'i', set_input_file, 	_("Specify input filename"), "filename");
 	add_option(og_set, "output-file", 'o', set_output_file, _("Specify output filename"), "filename");
@@ -601,13 +601,6 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 		VERBOSE_OUT(1) << _("Rendering frame at ")
 					   << desc.get_time_start().get_string(desc.get_frame_rate())
 					   << endl;
-	}
-	if (set_gamma > 0)
-	{
-		synfig::warning(_("Gamma argument is currently ignored"));
-		//int gamma;
-		//gamma = _vm["gamma"].as<int>();
-		//desc.set_gamma(Gamma(gamma));
 	}
 
 	if (w || h)

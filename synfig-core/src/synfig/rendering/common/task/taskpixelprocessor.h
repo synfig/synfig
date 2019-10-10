@@ -92,18 +92,14 @@ public:
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
-	union {
-		ColorReal gamma[4];
-		struct { ColorReal gamma_r, gamma_g, gamma_b, gamma_a; };
-	};
-	TaskPixelGamma(): gamma_r(1.0), gamma_g(1.0), gamma_b(1.0), gamma_a(1.0) { }
+	Gamma gamma;
+	TaskPixelGamma() { }
 
 	virtual bool is_transparent() const
 	{
-		return approximate_equal_lp(gamma_r, ColorReal(1.0))
-			&& approximate_equal_lp(gamma_g, ColorReal(1.0))
-			&& approximate_equal_lp(gamma_b, ColorReal(1.0))
-			&& approximate_equal_lp(gamma_a, ColorReal(1.0));
+		return approximate_equal_lp(gamma.get_r(), ColorReal(1.0))
+			&& approximate_equal_lp(gamma.get_g(), ColorReal(1.0))
+			&& approximate_equal_lp(gamma.get_b(), ColorReal(1.0));
 	}
 };
 

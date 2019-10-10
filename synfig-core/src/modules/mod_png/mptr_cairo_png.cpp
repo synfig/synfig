@@ -86,30 +86,6 @@ cairo_png_mptr::cairo_png_mptr(const synfig::FileSystem::Identifier &identifier)
 		csurface_=NULL;
 		return;
 	}
-	CairoSurface cairo_s;
-	cairo_s.set_cairo_surface(csurface_);
-	if(!cairo_s.map_cairo_image())
-	   return;
-	int w=cairo_s.get_w();
-	int h=cairo_s.get_h();
-	for(int y=0; y<h; y++)
-		for(int x=0; x<w; x++)
-		{
-			CairoColor c=cairo_s[y][x];
-			if (c.get_alpha()) {
-				float a=c.get_alpha();
-				c.set_a( gamma().a_U8_to_U8(c.get_alpha()) );
-				float aa=c.get_alpha();
-				unsigned char r=(unsigned char)(aa*gamma().r_F32_to_F32(c.get_r()/a));
-				unsigned char g=(unsigned char)(aa*gamma().g_F32_to_F32(c.get_g()/a));
-				unsigned char b=(unsigned char)(aa*gamma().b_F32_to_F32(c.get_b()/a));
-				c.set_r(r);
-				c.set_g(g);
-				c.set_b(b);
-			}
-			cairo_s[y][x]=c;
-		}
-	cairo_s.unmap_cairo_image();
 }
 
 cairo_png_mptr::~cairo_png_mptr()

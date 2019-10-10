@@ -32,6 +32,7 @@
 #include <synfig/color/color.h>
 #include <synfig/color/cairocolor.h>
 #include <synfig/color/cairocoloraccumulator.h>
+#include <synfig/color/gamma.h>
 
 namespace synfig {
 

@@ -29,12 +29,16 @@
 #	include <config.h>
 #endif
 
+#include <cmath>
+
+#include <gtkmm/drawingarea.h>
+
 #include <synfig/general.h>
 
-#include "widgets/widget_color.h"
-#include <cmath>
-#include "app.h"
-#include <gtkmm/drawingarea.h>
+#include <gui/app.h>
+#include <gui/canvasview.h>
+
+#include "widget_color.h"
 
 #include <gui/localization.h>
 
@@ -53,17 +57,6 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-synfig::Color
-studio::colorconv_apply_gamma(const synfig::Color &c_)
-{
-	const synfig::Color c(c_.clamped());
-	return synfig::Color(
-		App::gamma.r_F32_to_F32(c.get_r()),
-		App::gamma.g_F32_to_F32(c.get_g()),
-		App::gamma.b_F32_to_F32(c.get_b()),
-		App::gamma.b_F32_to_F32(c.get_a()) );
-}
-
 void
 studio::render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gdk::Rectangle &ca, const synfig::Color &color)
 {
@@ -72,16 +65,16 @@ studio::render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gd
 
 	const int square_size(height/2);
 
+	Gamma gamma = App::get_selected_canvas_gamma().get_inverted();
+	
 	if(color.get_alpha()!=1.0)
 	{
 		// In this case we need to render the alpha squares
 
-		const Color bg1(
-			colorconv_apply_gamma(
-				Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped() ));
-		const Color bg2(
-			colorconv_apply_gamma(
-				Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped() ));
+		const Color bg1 = gamma.apply(
+			Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped() );
+		const Color bg2 = gamma.apply(
+			Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped() );
 
 		bool toggle(false);
 		for(int i=0;i<width;i+=square_size)
@@ -114,7 +107,7 @@ studio::render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gd
 	}
 	else
 	{
-		synfig::Color c = colorconv_apply_gamma(color);
+		synfig::Color c = gamma.apply(color.clamped());
         cr->set_source_rgb(c.get_r(), c.get_g(), c.get_b());
         cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
         cr->fill();
@@ -139,7 +132,8 @@ Widget_Color::Widget_Color()
 	color=Color(0,0,0,0);
 	set_size_request(-1,16);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-
+	App::signal_canvas_view_focus().connect(
+		sigc::hide(sigc::mem_fun(*this,&studio::Widget_Color::queue_draw)) );
 }
 
 Widget_Color::~Widget_Color()
@@ -147,15 +141,15 @@ Widget_Color::~Widget_Color()
 }
 
 void
-Widget_Color::set_value(const synfig::Color &data)
+Widget_Color::set_value(const synfig::Color &x)
 {
-	assert(data.is_valid());
-	color=data;
+	assert(x.is_valid());
+	color=x;
 	queue_draw();
 }
 
 const synfig::Color &
-Widget_Color::get_value()
+Widget_Color::get_value() const
 {
 	assert(color.is_valid());
 	return color;

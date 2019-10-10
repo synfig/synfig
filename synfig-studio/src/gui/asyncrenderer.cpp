@@ -101,7 +101,6 @@ public:
 		set_alpha_mode(warm_target->get_alpha_mode());
 		set_threads(warm_target->get_threads());
 		set_clipping(warm_target->get_clipping());
-		set_allow_multithreading(warm_target->get_allow_multithreading());
 		set_rend_desc(&warm_target->rend_desc());
 		set_engine(warm_target->get_engine());
 		alive_flag=true;
@@ -120,24 +119,21 @@ public:
 		alive_flag=false;
 	}
 
-	virtual bool async_render_tile(synfig::RectInt rect, synfig::Context context, synfig::RendDesc tile_desc, synfig::ProgressCallback *cb=NULL)
+	virtual bool async_render_tile(
+		etl::handle<Canvas> canvas,
+		ContextParams context_params,
+		RectInt rect,
+		RendDesc tile_desc,
+		ProgressCallback *cb )
 	{
 		if(!alive_flag)
 			return false;
-
-#ifdef SINGLE_THREADED
-		if (App::single_threaded)
-			return sync_render_tile(rect, context, tile_desc, cb);
-#endif
-
-		if (!get_allow_multithreading())
-			return sync_render_tile(rect, context, tile_desc, cb);
 
 		Glib::Thread *thread = Glib::Thread::create(
 			sigc::hide_return(
 				sigc::bind(
 					sigc::mem_fun(*this, &AsyncTarget_Tile::sync_render_tile),
-					rect, context, tile_desc, (synfig::ProgressCallback*)NULL )),
+					canvas, context_params, rect, tile_desc, (synfig::ProgressCallback*)NULL )),
 				true
 			);
 		assert(thread);
@@ -150,11 +146,16 @@ public:
 		return true;
 	}
 
-	bool sync_render_tile(synfig::RectInt rect, synfig::Context context, synfig::RendDesc tile_desc, synfig::ProgressCallback *cb)
+	bool sync_render_tile(
+		etl::handle<Canvas> canvas,
+		ContextParams context_params,
+		RectInt rect,
+		RendDesc tile_desc,
+		ProgressCallback *cb )
 	{
 		if(!alive_flag)
 			return false;
-		bool r = warm_target->async_render_tile(rect, context, tile_desc, cb);
+		bool r = warm_target->async_render_tile(canvas, context_params, rect, tile_desc, cb);
 		if (!r) { Glib::Mutex::Lock lock(mutex); err = true; }
 		return r;
 	}
@@ -258,29 +259,22 @@ public:
 
 	virtual void end_frame()
 	{
-#ifdef SINGLE_THREADED
-		if (!App::single_threaded)
+		while(alive_flag)
 		{
-#endif
-			while(alive_flag)
+			Glib::Mutex::Lock lock(mutex);
+			Glib::TimeVal end_time;
+
+			end_time.assign_current_time();
+			end_time.add_microseconds(BOREDOM_TIMEOUT);
+
+			if(!tile_queue.empty() && alive_flag)
 			{
-				Glib::Mutex::Lock lock(mutex);
-				Glib::TimeVal end_time;
-
-				end_time.assign_current_time();
-				end_time.add_microseconds(BOREDOM_TIMEOUT);
-
-				if(!tile_queue.empty() && alive_flag)
-				{
-					if(cond_tile_queue_empty.timed_wait(mutex,end_time))
-						break;
-				}
-				else
+				if(cond_tile_queue_empty.timed_wait(mutex,end_time))
 					break;
 			}
-#ifdef SINGLE_THREADED
+			else
+				break;
 		}
-#endif
 		Glib::Mutex::Lock lock(mutex);
 		if(!alive_flag)
 			return;
@@ -439,29 +433,22 @@ public:
 	
 	virtual void end_frame()
 	{
-#ifdef SINGLE_THREADED
-		if (!App::single_threaded)
+		while(alive_flag)
 		{
-#endif
-			while(alive_flag)
+			Glib::Mutex::Lock lock(mutex);
+			Glib::TimeVal end_time;
+			
+			end_time.assign_current_time();
+			end_time.add_microseconds(BOREDOM_TIMEOUT);
+			
+			if(!tile_queue.empty() && alive_flag)
 			{
-				Glib::Mutex::Lock lock(mutex);
-				Glib::TimeVal end_time;
-				
-				end_time.assign_current_time();
-				end_time.add_microseconds(BOREDOM_TIMEOUT);
-				
-				if(!tile_queue.empty() && alive_flag)
-				{
-					if(cond_tile_queue_empty.timed_wait(mutex,end_time))
-						break;
-				}
-				else
+				if(cond_tile_queue_empty.timed_wait(mutex,end_time))
 					break;
 			}
-#ifdef SINGLE_THREADED
+			else
+				break;
 		}
-#endif
 		Glib::Mutex::Lock lock(mutex);
 		if(!alive_flag)
 			return;
@@ -556,24 +543,16 @@ public:
 #endif
 		}
 
-#ifdef SINGLE_THREADED
-		if (App::single_threaded)
-			signal_progress()();
-		else
-#endif
+		Glib::TimeVal end_time;
+
+		end_time.assign_current_time();
+		end_time.add_microseconds(BOREDOM_TIMEOUT);
+
+		while(alive_flag && !ready_next)
 		{
-
-			Glib::TimeVal end_time;
-
-			end_time.assign_current_time();
-			end_time.add_microseconds(BOREDOM_TIMEOUT);
-
-			while(alive_flag && !ready_next)
-			{
-				Glib::Mutex::Lock lock(mutex);
-				if(cond_frame_queue_empty.timed_wait(mutex, end_time))
-					break;
-			}
+			Glib::Mutex::Lock lock(mutex);
+			if(cond_frame_queue_empty.timed_wait(mutex, end_time))
+				break;
 		}
 	}
 
@@ -595,10 +574,7 @@ public:
 		Glib::Mutex::Lock lock(mutex);
 		if(alive_flag)
 			alive_flag=warm_target->add_frame(&surface);
-#ifdef SINGLE_THREADED
-		if (!App::single_threaded)
-#endif
-			cond_frame_queue_empty.signal();
+		cond_frame_queue_empty.signal();
 		ready_next=true;
 		
 		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
@@ -690,24 +666,16 @@ public:
 #endif
 		}
 		
-#ifdef SINGLE_THREADED
-		if (App::single_threaded)
-			signal_progress()();
-		else
-#endif
+		Glib::TimeVal end_time;
+		
+		end_time.assign_current_time();
+		end_time.add_microseconds(BOREDOM_TIMEOUT);
+		
+		while(alive_flag && !ready_next)
 		{
-			
-			Glib::TimeVal end_time;
-			
-			end_time.assign_current_time();
-			end_time.add_microseconds(BOREDOM_TIMEOUT);
-			
-			while(alive_flag && !ready_next)
-			{
-				Glib::Mutex::Lock lock(mutex);
-				if(cond_frame_queue_empty.timed_wait(mutex, end_time))
-					break;
-			}
+			Glib::Mutex::Lock lock(mutex);
+			if(cond_frame_queue_empty.timed_wait(mutex, end_time))
+				break;
 		}
 		return true;
 	}
@@ -717,10 +685,7 @@ public:
 		Glib::Mutex::Lock lock(mutex);
 		if(alive_flag)
 			alive_flag=warm_target->put_surface(surface, callback);
-#ifdef SINGLE_THREADED
-		if (!App::single_threaded)
-#endif
-			cond_frame_queue_empty.signal();
+		cond_frame_queue_empty.signal();
 		ready_next=true;
 		
 		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
@@ -753,9 +718,6 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 	error(false),
 	success(false),
 	cb(cb),
-#ifdef SINGLE_THREADED
-	updating(false),
-#endif
 	start_clock(0),
 	finish_clock(0),
 	start_time(0, 0),
@@ -828,10 +790,7 @@ AsyncRenderer::stop()
 			signal_stop_();
 
 #if REJOIN_ON_STOP
-#ifdef SINGLE_THREADED
-			if (!App::single_threaded)
-#endif
-				render_thread->join();
+			render_thread->join();
 #endif
 			finish_time.assign_current_time();
 			finish_clock = ::clock();
@@ -880,16 +839,6 @@ AsyncRenderer::start()
 	);
 }
 
-#ifdef SINGLE_THREADED
-void
-AsyncRenderer::rendering_progress()
-{
-	updating = true;
-	App::process_all_events();
-	updating = false;
-}
-#endif
-
 void
 AsyncRenderer::start_()
 {
@@ -899,28 +848,15 @@ AsyncRenderer::start_()
 #ifndef GLIB_DISPATCHER_BROKEN
 		done_connection=signal_done_.connect(mem_fun(*this,&AsyncRenderer::stop));
 #endif
-
-#ifdef SINGLE_THREADED
-		if (App::single_threaded)
-		{
-			//synfig::info("%s:%d rendering in the same thread", __FILE__, __LINE__);
-			target->signal_progress().connect(sigc::mem_fun(this,&AsyncRenderer::rendering_progress));
-			render_thread = (Glib::Thread*)1;
-			render_target();
-		}
-		else
-#endif
-		{
-			render_thread=Glib::Thread::create(
-				sigc::mem_fun(*this,&AsyncRenderer::render_target),
+		render_thread=Glib::Thread::create(
+			sigc::mem_fun(*this,&AsyncRenderer::render_target),
 #if REJOIN_ON_STOP
-				true
+			true
 #else
-				false
+			false
 #endif
-				);
-			assert(render_thread);
-		}
+			);
+		assert(render_thread);
 	}
 	else
 	{

@@ -50,7 +50,7 @@
 
 #include <gui/widgets/widget_time.h>
 
-#include <synfig/gamma.h>
+#include <synfig/color.h>
 #include <synfig/time.h>
 #include <algorithm>
 
@@ -73,41 +73,6 @@
 namespace Gtk { class Menu; };
 
 namespace studio {
-
-class GammaPattern : public Gtk::DrawingArea
-{
-	float gamma_r;
-	float gamma_g;
-	float gamma_b;
-	float gamma_a;
-
-	int tile_w, tile_h;
-
-	Gdk::Color black[4],white[4],gray50[4],gray25[4];
-
-	float r_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_r))); }
-	float g_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_g))); }
-	float b_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_b))); }
-	float a_F32_to_F32(float x) const { return std::max(0.f, std::min(1.f, synfig::Gamma::calculate(x, gamma_a))); }
-
-public:
-	GammaPattern();
-	~GammaPattern();
-
-	void refresh();
-
-	void set_gamma_r(float x) { gamma_r=x; }
-	void set_gamma_g(float x) { gamma_g=x; };
-	void set_gamma_b(float x) { gamma_b=x; };
-	void set_gamma_a(float x) { gamma_a=x; };
-
-	float get_gamma_r()const { return gamma_r; }
-	float get_gamma_g()const { return gamma_g; }
-	float get_gamma_b()const { return gamma_b; }
-	float get_gamma_a()const { return gamma_a; }
-
-	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
-}; // END of class GammaPattern
 
 class Widget_Enum;
 
@@ -137,10 +102,6 @@ class Dialog_Setup : public Dialog_Template
 	// TODO on change class
 	void on_value_change(int valueflag);
 	//Signal handlers pages
-	void on_gamma_r_change();
-	void on_gamma_g_change();
-	void on_gamma_b_change();
-	void on_gamma_a_change();
 	void on_size_template_combo_change();
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
@@ -157,7 +118,6 @@ class Dialog_Setup : public Dialog_Template
 	void on_choose_editor_pressed();
 	bool select_path_dialog(const std::string &title, std::string &filename);
 
-	void create_gamma_page(PageInfo pi);
 	void create_system_page(PageInfo pi);
 	void create_document_page(PageInfo pi);
 	void create_render_page(PageInfo pi);
@@ -167,22 +127,11 @@ class Dialog_Setup : public Dialog_Template
 	synfigapp::Settings &input_settings;
 
 	// Widget for pages
-	GammaPattern gamma_pattern;
 	Gtk::ComboBoxText timestamp_comboboxtext;
 	std::map<std::string, synfig::Time::Format> time_formats;
 
-	Glib::RefPtr<Gtk::Adjustment> adj_gamma_r;
-	Glib::RefPtr<Gtk::Adjustment> adj_gamma_g;
-	Glib::RefPtr<Gtk::Adjustment> adj_gamma_b;
-	Glib::RefPtr<Gtk::Adjustment> adj_gamma_a;
-
 	Glib::RefPtr<Gtk::Adjustment> adj_recent_files;
 	Glib::RefPtr<Gtk::Adjustment> adj_undo_depth;
-
-	Gtk::Switch toggle_use_colorspace_gamma;
-#ifdef SINGLE_THREADED
-	Gtk::Switch toggle_single_threaded;
-#endif
 
 	synfig::Time::Format time_format;
 

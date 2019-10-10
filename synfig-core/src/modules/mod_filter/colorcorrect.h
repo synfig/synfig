@@ -30,7 +30,7 @@
 
 #include <synfig/layer.h>
 #include <synfig/angle.h>
-#include <synfig/gamma.h>
+#include <synfig/color.h>
 #include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */

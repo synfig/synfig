@@ -443,7 +443,7 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 
 void conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &strokes, VectorizerCoreGlobals &g, const etl::handle<synfig::Layer_Bitmap> &image) ;
 
- void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g);
+ void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g, const synfig::Gamma &gamma);
 
 // void applyStrokeColors(std::vector<TStroke *> &strokes, const TRasterP &ras,
 //                        TPalette *palette, VectorizerCoreGlobals &g);

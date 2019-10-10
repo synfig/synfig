@@ -205,29 +205,17 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		return false;
 	}
 
-	int x;
-	int y;
-	surface.set_wh(w,h);
-	for(y=0;y<surface.get_h();y++)
-		for(x=0;x<surface.get_w();x++)
-		{
-//			float b=(float)(unsigned char)stream->getc()*(1.0/255.0);
-//			float g=(float)(unsigned char)stream->getc()*(1.0/255.0);
-//			float r=(float)(unsigned char)stream->getc()*(1.0/255.0);
-			float b=gamma().b_U8_to_F32((unsigned char)stream->get());
-			float g=gamma().g_U8_to_F32((unsigned char)stream->get());
-			float r=gamma().r_U8_to_F32((unsigned char)stream->get());
-
-			surface[h-y-1][x]=Color(
-				r,
-				g,
-				b,
-				1.0
-			);
-			if(bit_count==32)
+	surface.set_wh(w, h);
+	const ColorReal k = 1/255.0;
+	for(int y = 0; y < surface.get_h(); ++y)
+		for(int x = 0; x < surface.get_w(); ++x) {
+			ColorReal b = ((unsigned char)stream->get())*k;
+			ColorReal g = ((unsigned char)stream->get())*k;
+			ColorReal r = ((unsigned char)stream->get())*k;
+			surface[h-y-1][x] = Color(r, g, b);
+			if (bit_count == 32)
 				stream->get();
 		}
-
 
 	return true;
 }

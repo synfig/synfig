@@ -35,7 +35,6 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/curveset.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/distance.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/exception.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/gamma.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/guid.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/importer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/cairoimporter.cpp"

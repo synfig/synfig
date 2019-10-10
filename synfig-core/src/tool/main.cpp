@@ -126,7 +126,6 @@ int main(int argc, char* argv[])
 		named_type<int>* span_arg_desc = new named_type<int>("NUM");
 		named_type<int>* antialias_arg_desc = new named_type<int>("1..30");
 		named_type<int>* quality_arg_desc = new named_type<int>("0..10");
-		named_type<float>* gamma_arg_desc = new named_type<float>("NUM (=2.2)");
 		named_type<int>* threads_arg_desc = new named_type<int>("NUM");
 		named_type<int>* verbosity_arg_desc = new named_type<int>("NUM");
 		named_type<std::string>* canvas_arg_desc = new named_type<std::string>("canvas-id");

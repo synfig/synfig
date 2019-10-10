@@ -276,7 +276,7 @@ bool
 magickpp_trgt::end_scanline()
 {
 	if (previous_buffer_pointer)
-		color_to_pixelformat(previous_buffer_pointer, color_buffer, PF_RGB|PF_A, &gamma(), width);
+		color_to_pixelformat(previous_buffer_pointer, color_buffer, PF_RGB|PF_A, 0, width);
 
 	if (!transparent)
 		for (int i = 0; i < width; i++)

@@ -124,21 +124,15 @@ namespace {
 		const Color &src,
 		const Gamma *gamma )
 	{
+		const Color src_gm = with_gamma ? gamma->apply(src) : src;
+
 		// get color values
 		int ri, gi, bi, ac;
-		if (with_gamma) {
-			ri = gamma->r_F32_to_U16(clamp(src.get_r()));
-			gi = gamma->g_F32_to_U16(clamp(src.get_g()));
-			bi = gamma->b_F32_to_U16(clamp(src.get_b()));
-			if (alpha)
-				ac = gamma->a_F32_to_U8(clamp(src.get_a()));
-		} else {
-			ri = (int)(clamp(src.get_r()*65535.9f));
-			gi = (int)(clamp(src.get_g()*65535.9f));
-			bi = (int)(clamp(src.get_b()*65535.9f));
-			if (alpha)
-				ac = (int)(clamp(src.get_a())*ColorReal(255.9));
-		}
+		ri = (int)(clamp(src_gm.get_r())*ColorReal(65535.99));
+		gi = (int)(clamp(src_gm.get_g())*ColorReal(65535.99));
+		bi = (int)(clamp(src_gm.get_b())*ColorReal(65535.99));
+		if (alpha)
+			ac = (int)(clamp(src_gm.get_a())*ColorReal(255.99));
 
 		// put alpha before color channels if need
 		if (alpha && alpha_start)

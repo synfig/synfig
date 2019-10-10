@@ -137,9 +137,6 @@ yuv::end_frame()
 		{
 			Color& c(surface[y][x]);
 			c=c.clamped();
-			c.set_r(gamma().r_F32_to_F32(c.get_r()));
-			c.set_g(gamma().g_F32_to_F32(c.get_g()));
-			c.set_b(gamma().b_F32_to_F32(c.get_b()));
 			float f(c.get_y());
 			int i(max(min(round_to_int(c.get_y()*Y_RANGE),Y_RANGE),0)+Y_FLOOR);
 

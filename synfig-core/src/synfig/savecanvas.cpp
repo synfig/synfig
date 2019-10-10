@@ -937,18 +937,24 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	if(!canvas->get_id().empty() && !canvas->is_root() && !canvas->is_inline())
 		root->set_attribute("id",canvas->get_id());
 
-	if(!canvas->parent() || canvas->parent()->rend_desc().get_w()!=canvas->rend_desc().get_w())
+	if(!canvas->parent() || canvas->parent()->rend_desc().get_w()!=rend_desc.get_w())
 		root->set_attribute("width",strprintf("%d",rend_desc.get_w()));
 
-	if(!canvas->parent() || canvas->parent()->rend_desc().get_h()!=canvas->rend_desc().get_h())
+	if(!canvas->parent() || canvas->parent()->rend_desc().get_h()!=rend_desc.get_h())
 		root->set_attribute("height",strprintf("%d",rend_desc.get_h()));
 
-	if(!canvas->parent() || canvas->parent()->rend_desc().get_x_res()!=canvas->rend_desc().get_x_res())
+	if(!canvas->parent() || canvas->parent()->rend_desc().get_x_res()!=rend_desc.get_x_res())
 		root->set_attribute("xres",strprintf("%f",rend_desc.get_x_res()));
 
-	if(!canvas->parent() || canvas->parent()->rend_desc().get_y_res()!=canvas->rend_desc().get_y_res())
+	if(!canvas->parent() || canvas->parent()->rend_desc().get_y_res()!=rend_desc.get_y_res())
 		root->set_attribute("yres",strprintf("%f",rend_desc.get_y_res()));
 
+	if(!canvas->parent() || canvas->parent()->rend_desc().get_gamma()!=rend_desc.get_gamma())
+	{
+		root->set_attribute("gamma-r",strprintf("%f",rend_desc.get_gamma().get_r()));
+		root->set_attribute("gamma-g",strprintf("%f",rend_desc.get_gamma().get_g()));
+		root->set_attribute("gamma-b",strprintf("%f",rend_desc.get_gamma().get_b()));
+	}
 
 	if(!canvas->parent() ||
 		canvas->parent()->rend_desc().get_tl()!=canvas->rend_desc().get_tl() ||
@@ -970,6 +976,9 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		root->set_attribute("begin-time",rend_desc.get_time_start().get_string(rend_desc.get_frame_rate()));
 
 	if(!canvas->parent() || canvas->parent()->rend_desc().get_time_end()!=canvas->rend_desc().get_time_end())
+		root->set_attribute("end-time",rend_desc.get_time_end().get_string(rend_desc.get_frame_rate()));
+
+	if(!canvas->parent() || canvas->parent()->rend_desc().get_gamma()!=canvas->rend_desc().get_gamma())
 		root->set_attribute("end-time",rend_desc.get_time_end().get_string(rend_desc.get_frame_rate()));
 
 	if(!canvas->is_inline())

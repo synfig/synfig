@@ -119,6 +119,7 @@ Renderer_Ducks::render_vfunc(
 	cr->set_line_join(Cairo::LINE_JOIN_MITER);
 
 	// Render the strokes
+	Gamma gamma = App::get_selected_canvas_gamma().get_inverted();
 	for(std::list<handle<Duckmatic::Stroke> >::const_iterator iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{
 		cr->save();
@@ -131,7 +132,7 @@ Renderer_Ducks::render_vfunc(
 					((*iter2)[1]-window_start[1])/ph );
 
 		cr->set_line_width(1.0);
-		synfig::Color c = colorconv_apply_gamma((*iter)->color);
+		synfig::Color c = gamma.apply((*iter)->color);
 		cr->set_source_rgb(c.get_r(), c.get_g(), c.get_b());
 		cr->stroke();
 
