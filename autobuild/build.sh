@@ -36,7 +36,7 @@
 set -e
 
 REPO_DIR=`dirname "$0"`
-pushd ${REPO_DIR}/.. > /dev/null
+pushd "${REPO_DIR}/.." > /dev/null
 REPO_DIR=`pwd`
 popd > /dev/null
 
@@ -72,20 +72,20 @@ fi
 #========================== VARIABLES ==================================
 
 if [[ `uname` == "Linux" ]]; then
-	export PKG_CONFIG_PATH=${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/`uname -i`-linux-gnu/pkgconfig/:${PKG_CONFIG_PATH}
+	export PKG_CONFIG_PATH="${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/`uname -i`-linux-gnu/pkgconfig/:${PKG_CONFIG_PATH}"
 fi
 if [[ `uname -o` == "Msys" ]]; then
 	PATH="${PREFIX}/lib/ccache/bin:${PATH}"
 	# copy MLT
 	MLT_REV=1   # Change this when something is changed inside of if block below
-	if [ ! -f ${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done ]; then
+	if [ ! -f "${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done" ]; then
 		VERSION_MLT="6.16.0"
-		cp -rf /opt/mlt-${VERSION_MLT}/*.dll ${PREFIX}/bin/
-		cp -rf /opt/mlt-${VERSION_MLT}/*.exe ${PREFIX}/bin/
-		cp -rf /opt/mlt-${VERSION_MLT}/share ${PREFIX}/bin/
-		mkdir -p ${PREFIX}/bin/lib/
-		cp -rf /opt/mlt-${VERSION_MLT}/lib/mlt ${PREFIX}/bin/lib/
-		touch ${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done
+		cp -rf /opt/mlt-${VERSION_MLT}/*.dll "${PREFIX}/bin/"
+		cp -rf /opt/mlt-${VERSION_MLT}/*.exe "${PREFIX}/bin/"
+		cp -rf /opt/mlt-${VERSION_MLT}/share "${PREFIX}/bin/"
+		mkdir -p "${PREFIX}/bin/lib/"
+		cp -rf /opt/mlt-${VERSION_MLT}/lib/mlt "${PREFIX}/bin/lib/"
+		touch "${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done"
 	fi
 	export PKG_CONFIG_PATH="/opt/mlt-${VERSION_MLT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
 fi
@@ -100,17 +100,17 @@ if [[ `uname` == "Darwin" ]]; then
 	export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 	# Force use system perl, see https://github.com/synfig/synfig/issues/794
-	cat > ${PREFIX}/bin/perl <<EOF
+	cat > "${PREFIX}/bin/perl" <<EOF
 #!/bin/sh
 
 /usr/bin/perl "\$@"
 EOF
-	chmod +x ${PREFIX}/bin/perl
+	chmod +x "${PREFIX}/bin/perl"
 
 fi
-export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}
-export PATH=${PREFIX}/bin:$PATH
-export LD_LIBRARY_PATH=${PREFIX}/lib:${PREFIX}/lib64:/usr/local/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+export PATH="${PREFIX}/bin:$PATH"
+export LD_LIBRARY_PATH="${PREFIX}/lib:${PREFIX}/lib64:/usr/local/lib:$LD_LIBRARY_PATH"
 export LDFLAGS="-Wl,-rpath -Wl,\\\$\$ORIGIN/lib ${LDFLAGS}"
 export CFLAGS="-fdiagnostics-color=always $CFLAGS"
 export CXXFLAGS="-fdiagnostics-color=always $CXXFLAGS"
@@ -151,10 +151,10 @@ etl_configure()
 {
 cd ETL
 echo "Going to configure..."
-pushd ${REPO_DIR}/ETL/ >/dev/null
-/bin/bash ${REPO_DIR}/ETL/bootstrap.sh
+pushd "${REPO_DIR}/ETL/" >/dev/null
+/bin/bash "${REPO_DIR}/ETL/bootstrap.sh"
 popd
-/bin/bash ${REPO_DIR}/ETL/configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG
+/bin/bash "${REPO_DIR}/ETL/configure" --prefix="${PREFIX}" --includedir="${PREFIX}/include" $DEBUG
 cd ..
 }
 
@@ -196,8 +196,8 @@ cd ..
 core_configure()
 {
 cd synfig-core
-pushd ${REPO_DIR}/synfig-core/ >/dev/null
-/bin/bash ${REPO_DIR}/synfig-core/bootstrap.sh
+pushd "${REPO_DIR}/synfig-core/" >/dev/null
+/bin/bash "${REPO_DIR}/synfig-core/bootstrap.sh"
 popd >/dev/null
 if [ -e /etc/debian_version ] && [ -z "$BOOST_CONFIGURE_OPTIONS" ]; then
 	# Debian/Ubuntu multiarch
@@ -206,8 +206,8 @@ if [ -e /etc/debian_version ] && [ -z "$BOOST_CONFIGURE_OPTIONS" ]; then
 		export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
 	fi
 fi
-/bin/bash ${REPO_DIR}/synfig-core/configure --prefix=${PREFIX} \
-	--includedir=${PREFIX}/include \
+/bin/bash "${REPO_DIR}/synfig-core/configure" --prefix="${PREFIX}" \
+	--includedir="${PREFIX}/include" \
 	--disable-static --enable-shared \
 	--with-magickpp \
 	--without-libavcodec \
@@ -255,8 +255,8 @@ cd ..
 studio_configure()
 {
 cd synfig-studio
-pushd ${REPO_DIR}/synfig-studio/ >/dev/null
-/bin/bash ${REPO_DIR}/synfig-studio/bootstrap.sh
+pushd "${REPO_DIR}/synfig-studio/" >/dev/null
+/bin/bash "${REPO_DIR}/synfig-studio/bootstrap.sh"
 popd >/dev/null
 if [[ `uname` == "Linux" ]]; then
 	export CONFIGURE_OPTIONS="--enable-jack"
@@ -268,8 +268,8 @@ else
 	export CONFIGURE_OPTIONS=""
 fi
 
-/bin/bash ${REPO_DIR}/synfig-studio/configure --prefix=${PREFIX} \
-	--includedir=${PREFIX}/include \
+/bin/bash "${REPO_DIR}/synfig-studio/configure" --prefix="${PREFIX}" \
+	--includedir="${PREFIX}/include" \
 	--disable-static \
 	--enable-shared \
 	${CONFIGURE_OPTIONS} \
@@ -288,7 +288,7 @@ ccache_show_stats
 
 for n in AUTHORS COPYING NEWS README
 do
-  	cp -f ${REPO_DIR}/synfig-studio/$n ${PREFIX}
+  	cp -f "${REPO_DIR}/synfig-studio/$n" "${PREFIX}"
 done
 
 if [ ! -z "$NIX_BUILD_CORES" ]; then

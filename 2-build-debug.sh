@@ -36,4 +36,4 @@ popd > /dev/null
 
 cd "${WORKDIR}/${TYPE}"
 
-bash ${WORKDIR}/autobuild/build.sh "$1" "$2"
+bash "${WORKDIR}/autobuild/build.sh" "$1" "$2"
