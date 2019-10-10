@@ -85,9 +85,9 @@ void studio::Dock_Info::on_mouse_move()
 	Color c = canvas_view->get_canvas()->get_context( canvas_view->get_context_params() ).get_color(pos);
 	Gamma gamma = canvas_view->get_canvas()->rend_desc().get_gamma();
 
-	if ( approximate_equal_lp(gamma.get_r(), ColorRela(1))
-	  && approximate_equal_lp(gamma.get_g(), ColorRela(1))
-	  && approximate_equal_lp(gamma.get_b(), ColorRela(1)) )
+	if ( approximate_equal_lp(gamma.get_r(), ColorReal(1))
+	  && approximate_equal_lp(gamma.get_g(), ColorReal(1))
+	  && approximate_equal_lp(gamma.get_b(), ColorReal(1)) )
 	{
 		r.set_text(strprintf("%.1f%%", c.get_r()*100));
 		g.set_text(strprintf("%.1f%%", c.get_g()*100));
@@ -95,8 +95,8 @@ void studio::Dock_Info::on_mouse_move()
 	} else {
 		Color cg = gamma.apply(c);
 		r.set_text(strprintf("%.1f%% (%.1f%%)", c.get_r()*100, cg.get_r()*100));
-		r.set_text(strprintf("%.1f%% (%.1f%%)", c.get_g()*100, cg.get_g()*100));
-		r.set_text(strprintf("%.1f%% (%.1f%%)", c.get_b()*100, cg.get_b()*100));
+		g.set_text(strprintf("%.1f%% (%.1f%%)", c.get_g()*100, cg.get_g()*100));
+		b.set_text(strprintf("%.1f%% (%.1f%%)", c.get_b()*100, cg.get_b()*100));
 	}
 	a.set_text(strprintf("%.1f%%", c.get_a()*100));
 }
