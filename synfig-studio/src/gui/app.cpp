@@ -95,6 +95,7 @@
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_input.h"
 #include "dialogs/dialog_setup.h"
+#include "dialogs/dialog_workspaces.h"
 #include "dialogs/vectorizersettings.h"
 #include "onemoment.h"
 #include "devicetracker.h"
@@ -156,6 +157,7 @@
 #include <gui/localization.h>
 
 #include "gui/resourcehelper.h"
+#include "gui/workspacehandler.h"
 
 #endif
 
@@ -211,6 +213,13 @@ static sigc::signal<void> signal_recent_files_changed_;
 sigc::signal<void>&
 App::signal_recent_files_changed() { return signal_recent_files_changed_; }
 
+static sigc::signal<void> signal_custom_workspaces_changed_;
+sigc::signal<void>&
+App::signal_custom_workspaces_changed()
+{
+	return signal_custom_workspaces_changed_;
+}
+
 static sigc::signal<void,etl::loose_handle<CanvasView> > signal_canvas_view_focus_;
 sigc::signal<void,etl::loose_handle<CanvasView> >&
 App::signal_canvas_view_focus() { return signal_canvas_view_focus_; }
@@ -231,6 +240,15 @@ App::signal_instance_deleted() { return signal_instance_deleted_; }
 
 static std::list<std::string>           recent_files;
 const  std::list<std::string>& App::get_recent_files() { return recent_files; }
+
+const std::vector<std::string>
+App::get_workspaces()
+{
+	std::vector<std::string> list;
+	if (workspaces)
+		workspaces->get_name_list(list);
+	return list;
+}
 
 int	 App::Busy::count;
 bool App::shutdown_in_progress;
@@ -329,6 +347,8 @@ int    studio::App::get_max_recent_files()      { return max_recent_files_; }
 void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; }
 
 static synfig::String app_base_path_;
+
+studio::WorkspaceHandler *studio::App::workspaces = nullptr;
 
 namespace studio {
 
@@ -1091,6 +1111,7 @@ DEFINE_ACTION("amount-dec", _("Decrease Layer Amount"))
 DEFINE_ACTION("workspace-compositing", _("Compositing"));
 DEFINE_ACTION("workspace-default",     _("Default"));
 DEFINE_ACTION("workspace-animating",   _("Animating"));
+DEFINE_ACTION("save-workspace",        _("Save workspace..."));
 DEFINE_ACTION("dialog-flipbook",       _("Preview Dialog"));
 DEFINE_ACTION("panel-toolbox",         _("Toolbox"));
 DEFINE_ACTION("panel-tool_options",    _("Tool Options"));
@@ -1681,6 +1702,11 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dialog_input=new studio::Dialog_Input(*App::main_window);
 		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 
+		studio_init_cb.task(_("Loading Custom Workspace List..."));
+		workspaces = new WorkspaceHandler();
+		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
+		load_custom_workspaces();
+
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
 
@@ -1894,6 +1920,8 @@ App::~App()
 
 	delete dock_manager;
 
+	delete workspaces;
+
 	instance_list.clear();
 
 	if (sound_render_done) delete sound_render_done;
@@ -2048,6 +2076,10 @@ App::save_settings()
 		std::string filename=get_config_file("settings-1.3");
 		synfigapp::Main::settings().save_to_file(filename);
 
+		{
+			std::string filename = get_config_file("workspaces");
+			workspaces->save(filename);
+		}
 	}
 	catch(...)
 	{
@@ -2145,19 +2177,6 @@ App::load_language_settings()
 void
 App::set_workspace_default()
 {
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-	float dx = (float)rect.get_x();
-	float dy = (float)rect.get_y();
-	float sx = (float)rect.get_width();
-	float sy = (float)rect.get_height();
-
 	std::string tpl =
 	"[mainwindow|%0X|%0Y|%100x|%90y|"
 		"[hor|%75x"
@@ -2181,27 +2200,12 @@ App::set_workspace_default()
 		"]"
 	"]";
 
-	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
-	dock_manager->load_layout_from_string(layout);
-	dock_manager->show_all_dock_dialogs();
+	set_workspace_from_template(tpl);
 }
 
 void
 App::set_workspace_compositing()
 {
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-	float dx = (float)rect.get_x();
-	float dy = (float)rect.get_y();
-	float sx = (float)rect.get_width();
-	float sy = (float)rect.get_height();
-
 	std::string tpl =
 	"[mainwindow|%0X|%0Y|%100x|%90y|"
 		"[hor|%1x"
@@ -2213,27 +2217,12 @@ App::set_workspace_compositing()
 		"]"
 	"]";
 
-	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
-	dock_manager->load_layout_from_string(layout);
-	dock_manager->show_all_dock_dialogs();
+	set_workspace_from_template(tpl);
 }
 
 void
 App::set_workspace_animating()
 {
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-	float dx = (float)rect.get_x();
-	float dy = (float)rect.get_y();
-	float sx = (float)rect.get_width();
-	float sy = (float)rect.get_height();
-
 	std::string tpl =
 	"[mainwindow|%0X|%0Y|%100x|%90y|"
 		"[hor|%70x"
@@ -2247,11 +2236,113 @@ App::set_workspace_animating()
 		"]"
 	"]";
 
+	set_workspace_from_template(tpl);
+}
+
+void App::set_workspace_from_template(const string& tpl)
+{
+	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
+	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
+	Gdk::Rectangle rect;
+	// A proper way to obtain the primary monitor is to use the
+	// Gdk::Screen::get_primary_monitor () const member. But as it
+	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
+	// primary one.
+	screen->get_monitor_geometry(0,rect);
+	float dx = (float)rect.get_x();
+	float dy = (float)rect.get_y();
+	float sx = (float)rect.get_width();
+	float sy = (float)rect.get_height();
+
 	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
 	dock_manager->load_layout_from_string(layout);
 	dock_manager->show_all_dock_dialogs();
 }
 
+void App::set_workspace_from_name(const string& name)
+{
+	std::string tpl;
+	bool ok = workspaces->get_workspace(name, tpl);
+	if (!ok)
+		return;
+	set_workspace_from_template(tpl);
+}
+
+void App::load_custom_workspaces()
+{
+	workspaces->clear();
+	std::string filename = get_config_file("workspaces");
+	workspaces->load(filename);
+}
+
+static void trim_string(std::string &text)
+{
+	text.erase(text.begin(),
+			   std::find_if(text.begin(), text.end(),
+							[](int chr) { return !std::isspace(chr);})
+			   );
+	text.erase(std::find_if(text.rbegin(), text.rend(),
+							[](int chr) { return !std::isspace(chr);}).base(),
+			   text.end()
+			   );
+}
+
+void App::save_custom_workspace()
+{
+	Gtk::MessageDialog dialog(*App::main_window, _("Type a name for this custom workspace:"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	Gtk::Button * ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
+	ok_button->set_sensitive(false);
+
+	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
+	name_entry->set_margin_left(16);
+	name_entry->set_margin_right(16);
+	name_entry->signal_changed().connect([&](){
+		std::string name = name_entry->get_text();
+		trim_string(name);
+		bool has_equal_sign = name.find("=") != std::string::npos;
+		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
+		if (ok_button->is_sensitive())
+			ok_button->grab_default();
+	});
+	name_entry->signal_activate().connect(sigc::mem_fun(*ok_button, &Gtk::Button::clicked));
+
+	dialog.get_content_area()->set_spacing(12);
+	dialog.get_content_area()->add(*name_entry);
+
+	ok_button->set_can_default(true);
+
+	dialog.show_all();
+
+	int response = dialog.run();
+	if (response == Gtk::RESPONSE_CANCEL)
+		return;
+
+	std::string name = name_entry->get_text();
+	trim_string(name);
+
+	std::string tpl = dock_manager->save_layout_to_string();
+	if (!workspaces->has_workspace(name))
+		workspaces->add_workspace(name, tpl);
+	else {
+		Gtk::MessageDialog confirm_dlg(dialog, _("Do you want to overwrite this workspace?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+		if (confirm_dlg.run() == Gtk::RESPONSE_CANCEL)
+			return;
+		workspaces->set_workspace(name, tpl);
+	}
+}
+
+void App::edit_custom_workspace_list()
+{
+	Dialog_Workspaces * dlg = Dialog_Workspaces::create(*App::main_window);
+	if (!dlg) {
+		synfig::warning("Can't load Dialog_Workspaces");
+		return;
+	}
+	dlg->run();
+	delete dlg;
+}
 
 void
 App::restore_default_settings()

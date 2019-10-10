@@ -64,6 +64,7 @@ OTHER_HH = \
 	statemanager.h \
 	valuelink.h \
 	workarea.h \
+	workspacehandler.h \
 	main_win32.h \
 	mainwindow.h \
 	helpers.h
@@ -91,6 +92,7 @@ OTHER_CC = \
 	statemanager.cpp \
 	valuelink.cpp \
 	workarea.cpp \
+	workspacehandler.cpp \
 	main_win32.cpp \
 	mainwindow.cpp \
 	helpers.cpp

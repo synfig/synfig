@@ -76,7 +76,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-MainWindow::MainWindow()
+MainWindow::MainWindow() :
+	save_workspace_merge_id(0), custom_workspaces_merge_id(0)
 {
 	register_custom_widget_types();
 
@@ -121,6 +122,9 @@ MainWindow::MainWindow()
 
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
+
+	App::signal_custom_workspaces_changed().connect(
+		sigc::mem_fun(*this, &MainWindow::on_custom_workspaces_changed) );
 
 	signal_delete_event().connect(
 		sigc::ptr_fun(App::shutdown_request) );
@@ -182,6 +186,13 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
 		sigc::ptr_fun(App::set_workspace_default)
 	);
+	action_group->add( Gtk::Action::create("save-workspace", Gtk::StockID("synfig-save_as"), _("Save workspace...")),
+		sigc::ptr_fun(App::save_custom_workspace)
+	);
+
+	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspace list...")),
+		sigc::ptr_fun(App::edit_custom_workspace_list)
+	);
 
 	// help
 	#define URL(action_name,title,url) \
@@ -209,6 +220,8 @@ MainWindow::init_menus()
 	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	App::ui_manager()->insert_action_group(action_group);
+
+	add_custom_workspace_menu_item_handlers();
 }
 
 void MainWindow::register_custom_widget_types()
@@ -228,6 +241,31 @@ MainWindow::toggle_show_menubar()
 		menubar->show();
 	else
 		menubar->hide();
+}
+
+void MainWindow::add_custom_workspace_menu_item_handlers()
+{
+	std::string ui_info_menu =
+			"<menu action='menu-window'>"
+			"	<menu action='menu-workspace'>"
+			"	    <separator name='sep-window2'/>"
+			"		<menuitem action='save-workspace' />"
+			"		<menuitem action='edit-workspacelist' />"
+			"	</menu>"
+			"</menu>";
+
+	std::string ui_info =
+			"<ui>"
+			"  <popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
+			"  <menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
+			"</ui>";
+
+	save_workspace_merge_id = App::ui_manager()->add_ui_from_string(ui_info);
+}
+
+void MainWindow::remove_custom_workspace_menu_item_handlers()
+{
+	App::ui_manager()->remove_ui(save_workspace_merge_id);
 }
 
 bool
@@ -377,6 +415,65 @@ MainWindow::on_recent_files_changed()
 	App::ui_manager()->insert_action_group(action_group);
 	App::ui_manager()->add_ui_from_string(ui_info_popup);
 	App::ui_manager()->add_ui_from_string(ui_info_menubar);
+}
+
+void
+MainWindow::on_custom_workspaces_changed()
+{
+	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-customworkspaces");
+
+	vector<string> workspaces = App::get_workspaces();
+
+	std::string menu_items;
+	unsigned int num_custom_workspaces = 0;
+	for (auto it = workspaces.cbegin(); it != workspaces.cend(); ++it, ++num_custom_workspaces) {
+		std::string raw = *it;
+		std::string quoted;
+		size_t pos = 0, last_pos = 0;
+
+		// replace _ in names by __ or it won't show up in the menu
+		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
+			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
+		quoted += raw.substr(last_pos);
+
+		std::string action_name = strprintf("custom-workspace-%d", num_custom_workspaces);
+		menu_items += "<menuitem action='" + action_name +"' />";
+
+		action_group->add( Gtk::Action::create(action_name, quoted),
+			sigc::bind(sigc::ptr_fun(&App::set_workspace_from_name), workspaces[num_custom_workspaces])
+		);
+	}
+	if (num_custom_workspaces > 0)
+		menu_items = "<separator name='sep-window1' />" + menu_items;
+
+	remove_custom_workspace_menu_item_handlers();
+	if (custom_workspaces_merge_id)
+		App::ui_manager()->remove_ui(custom_workspaces_merge_id);
+
+	std::string ui_info =
+		"<menu action='menu-window'><menu action='menu-workspace'>"
+	  + menu_items
+	  + "</menu></menu>";
+	std::string ui_info_popup =
+		"<popup action='menu-main'>" + ui_info + "</popup>";
+	std::string ui_info_menubar =
+		"<menubar action='menubar-main'>" + ui_info + "</menubar>";
+
+	// remove group if exists
+	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
+	ActionGroupList groups = App::ui_manager()->get_action_groups();
+	for(ActionGroupList::const_iterator it = groups.begin(); it != groups.end(); ++it)
+		if ((*it)->get_name() == action_group->get_name()) {
+			App::ui_manager()->remove_action_group(*it);
+			break;
+		}
+	groups.clear();
+	App::ui_manager()->ensure_update();
+
+	App::ui_manager()->insert_action_group(action_group);
+	custom_workspaces_merge_id = App::ui_manager()->add_ui_from_string("<ui>" + ui_info_popup + ui_info_menubar + "</ui>");
+
+	add_custom_workspace_menu_item_handlers();
 }
 
 void

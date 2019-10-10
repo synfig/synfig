@@ -59,9 +59,16 @@ namespace studio {
 
 		static void show_dialog_input();
 		void on_recent_files_changed();
+		void on_custom_workspaces_changed();
 		void on_dockable_registered(Dockable* dockable);
 		void on_dockable_unregistered(Dockable* dockable);
 		void toggle_show_menubar();
+
+		guint save_workspace_merge_id;
+		guint custom_workspaces_merge_id;
+
+		void add_custom_workspace_menu_item_handlers();
+		void remove_custom_workspace_menu_item_handlers();
 
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);

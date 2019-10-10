@@ -124,6 +124,8 @@ class Module;
 class StateManager;
 class IconController;
 
+class WorkspaceHandler;
+
 class App : public Gtk::Main, private IconController
 {
 	friend class Preferences;
@@ -182,6 +184,8 @@ private:
 	static int jack_locks_;
 
 //	static std::list< etl::handle< Module > > module_list_;
+
+	static WorkspaceHandler *workspaces;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -252,6 +256,8 @@ public:
 
 	static Dock_Info* dock_info_; //For Render ProgressBar
 
+	static WorkspaceHandler * get_workspace_handler() {return workspaces;}
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -280,6 +286,8 @@ public:
 	static sigc::signal<void> &signal_present_all();
 
 	static sigc::signal<void> &signal_recent_files_changed();
+
+	static sigc::signal<void> &signal_custom_workspaces_changed();
 
 	static sigc::signal<
 		void,
@@ -338,10 +346,17 @@ public:
 	static void set_workspace_default();
 	static void set_workspace_compositing();
 	static void set_workspace_animating();
+	static void set_workspace_from_template(const std::string &tpl);
+	static void set_workspace_from_name(const std::string &name);
+	static void load_custom_workspaces();
+	static void save_custom_workspace();
+	static void edit_custom_workspace_list();
 	static void restore_default_settings();
 	static void apply_gtk_settings();
 
 	static const std::list<std::string>& get_recent_files();
+
+	static const std::vector<std::string> get_workspaces();
 
 	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
 
