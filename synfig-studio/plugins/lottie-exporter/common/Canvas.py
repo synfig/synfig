@@ -72,7 +72,7 @@ class Canvas:
 
     def get_def(self, key):
         """
-        Given a key, returns the corresponding child definded in the canvas
+        Given a key, returns the corresponding child defined in the canvas
         """
         if key in self.defs.keys():
             return self.defs[key]

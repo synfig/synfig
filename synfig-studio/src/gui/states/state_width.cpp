@@ -473,7 +473,7 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 					if(wplist)
 					{
 						// ... has a bline valid and is the same as the bline
-						// we found for the bezier previously catched...
+						// we found for the bezier previously caught...
 						ValueNode::Handle bline(wplist->get_bline());
 						if(bline && (bline==bezier_bline))
 						{

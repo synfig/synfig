@@ -96,7 +96,7 @@ def gen_bline_outline(lottie, bline_point):
     r_tip1.update_frame_window(window)
     r_tip1.animate_without_path("bool")
 
-    # Animaing the homogenous width
+    # Animating the homogeneous width
     homo_width.update_frame_window(window)
     homo_width.animate_without_path("bool")
 
@@ -334,7 +334,7 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
         if length > EPSILON:
             div_length = 1.0 / length
 
-        # Might not need /3 for the tangents genereated finally - VERY IMPORTANT
+        # Might not need /3 for the tangents generated finally - VERY IMPORTANT
         # Make the outline
         pt = curve.derivative(CUSP_TANGENT_ADJUST) / 3
         n = 0.0

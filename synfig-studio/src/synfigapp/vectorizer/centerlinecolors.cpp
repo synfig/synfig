@@ -109,28 +109,21 @@ static synfig::Point3 firstInkChangePosition(
 // Currently in use only on colormaps
 
 // Summary: It is better to test the color to be assigned to the strokes
-// to check
-// sequences * before * convert them to TStroke (since you lose part
-// of the original grip
-// to the line). You specify a number of 'taste points' of the broken line
-// equidistant from each other,
-// on which the value of the corresponding pixel input is taken. If
-// identifies a change
-// of color, the sequence breaking procedure is launched: yes
-// identifies the point
-// of breaking, and the sequence s is blocked there; a new one is built
+// to check sequences *before* converting them to TStroke (since you lose part
+// of the original grip to the line). You specify a number of 'taste points'
+// of the broken line equidistant from each other, on which the value of
+// the corresponding pixel input is taken. If it identifies a change of
+// color, the sequence breaking procedure is launched: 'yes'
+// identifies the point of breaking, and the sequence 's' is blocked there;
+// a new one is built
 // sequence newSeq e
-// sampleColor is re-launched (ras, newSeq, sOpposite). Sequences between two points
-// of breaking up
-// are inserted into the vector 'globals-> singleSequences'.
+// sampleColor is re-launched (ras, newSeq, sOpposite). Sequences between two
+// points of breaking up are inserted into the vector 'globals-> singleSequences'.
 // In the case of circular sequences there is a small change: the first point of
-// splitting
-// * only redefines * the s-node, without introducing new sequences.
-// The sequence sOpposite, 'inverse' of s, remains and becomes 'forward-oriented'
-// after updating
-// of the tail.
-// Notice that the break nodes are entered with the signature
-// 'SAMPLECOLOR_SIGN'.
+// splitting *only redefines* the s-node, without introducing new sequences.
+// The sequence sOpposite, 'inverse' of 's', remains and becomes 'forward-oriented'
+// after updating of the tail.
+// Notice that the break nodes are entered with the signature 'SAMPLECOLOR_SIGN'.
 // NOTE: The J-S 'upper' graph structure is not altered in here.
 // Eventualm. to do outside.
 
@@ -149,9 +142,10 @@ static void sampleColor(
   std::vector<double> params;
 
   // Meanwhile, ensure each point belong to ras. Otherwise, typically an error
-  // occured in the thinning process and it's better avoid sampling procedure. Only
-  // exception, when
-  // a point has x==rsurface.get_w() || y==rsurface.get_h(); that is accepted.
+  // occurred in the thinning process and it's better avoid sampling procedure.
+  // Only exception, when a point has:
+  // x==rsurface.get_w() || y==rsurface.get_h();
+  // That is accepted.
   synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( ras->rendering_surface ); 
 	const Surface &rsurface = lock->get_surface(); 
   {
@@ -231,9 +225,8 @@ static void sampleColor(
   }
 
   // NOTE: Extremities of a sequence are considered unreliable: they typically
-  // happen
-  //       to be junction points shared between possibly different-colored
-  //       strokes.
+  // happen to be junction points shared between possibly different-colored
+  // strokes.
 
   // Find first and last extremity-free sampled points
   synfig::Point3 first(*currGraph->getNode(seq.m_head));

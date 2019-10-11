@@ -229,7 +229,7 @@ public:
   // Further node properties
   bool m_concave;             //!< Whether the node represents a concave angle.
   unsigned int m_attributes,  //!< Bitwise signatures of this node
-      m_updateTime,  //!< \a Algoritmic time in which the node was updated.
+      m_updateTime,  //!< \a Algorithmic time in which the node was updated.
       m_ancestor,  //!< Index of the original node from which this one evolved.
       m_ancestorContour;  //!< Contour index of the original node from which
                           //! this one evolved.
@@ -343,7 +343,7 @@ public:
   Sequence() : m_graphHolder(0) {}
   ~Sequence() {}
 
-  // Impose a property dependant only on the extremity we consider first
+  // Impose a property dependent only on the extremity we consider first
   // - so that the same sequence is not considered twice when head and tail
   // are exchanged
   bool isForward() const 

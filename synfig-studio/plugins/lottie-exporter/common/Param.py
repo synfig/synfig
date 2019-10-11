@@ -54,7 +54,7 @@ class Param:
         
     def reset(self):
         """
-        This function will be called when any of the entities of the paramter
+        This function will be called when any of the entities of the parameter
         are changed. This should be internally called, but for now compromising
         """
         self.PATH_GENERATED = 0
@@ -566,7 +566,7 @@ class Param:
 
     def get_value(self, frame):
         """
-        Public method to get the value of the paramter at a given frame
+        Public method to get the value of the parameter at a given frame
         """
         ret = self.__get_value(frame)
         # Convert into Lottie format

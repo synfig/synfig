@@ -289,7 +289,7 @@ def calc_tangent(animated, lottie, i):
         # See properties/multiDimenstionalKeyframed.py for more details
         # del lottie["e"]
 
-        # If the number of points is decresing, then hold interpolation should
+        # If the number of points is decreasing, then hold interpolation should
         # have reverse effect. The value should instantly decrease and remain
         # same for the rest of the interval
         if animated.attrib["type"] == "points":
