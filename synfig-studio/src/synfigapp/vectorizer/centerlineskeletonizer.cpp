@@ -128,7 +128,7 @@ public:
   ContourNode *m_generator;
   ContourNode *m_coGenerator;
   Type m_type;
-  unsigned int m_algoritmicTime;
+  unsigned int m_algorithmicTime;
 
   VectorizationContext *m_context;
 
@@ -282,7 +282,7 @@ struct VectorizationContext {
   SkeletonGraph *m_output;        // Output skeleton of input region
   double m_currentHeight;         // Height of our 'roof-flooding' process
   Timeline m_timeline;            // Ordered queue of all possible events
-  unsigned int m_algoritmicTime;  // Number of events precessed up to now
+  unsigned int m_algorithmicTime; // Number of events processed up to now
 
   // Containers
   std::vector<ContourEdge> m_edgesHeap;
@@ -349,7 +349,7 @@ inline void VectorizationContext::prepareGlobals() {
 
   // Reset time/height variables
   m_currentHeight  = 0;
-  m_algoritmicTime = 0;
+  m_algorithmicTime = 0;
 
   // Clean IndexTable
   m_activeTable.clear();
@@ -661,7 +661,7 @@ Event::Event(ContourNode *generator, VectorizationContext *context)
     , m_displacement(infinity)
     , m_generator(generator)
     , m_type(failure)
-    , m_algoritmicTime(context->m_algoritmicTime)
+    , m_algorithmicTime(context->m_algorithmicTime)
     , m_context(context) {
   if (generator->m_concave)
     calculateSplitEvent();
@@ -1045,7 +1045,7 @@ inline double Event::splitDisplacementWith(ContourNode *slab) {
 inline bool Event::process() 
 {
   Timeline &timeline           = m_context->m_timeline;
-  unsigned int &algoritmicTime = m_context->m_algoritmicTime;
+  unsigned int &algorithmicTime = m_context->m_algorithmicTime;
 
   if (!m_generator->hasAttribute(ContourNode::ELIMINATED)) 
   {
@@ -1060,8 +1060,8 @@ inline bool Event::process()
           m_coGenerator->m_next->hasAttribute(
               ContourNode::ELIMINATED) ||  // try to remove them once I'm in for
                                            // some testing...
-          m_algoritmicTime < m_coGenerator->m_prev->m_updateTime ||
-          m_algoritmicTime < m_coGenerator->m_next->m_updateTime) {
+          m_algorithmicTime < m_coGenerator->m_prev->m_updateTime ||
+          m_algorithmicTime < m_coGenerator->m_next->m_updateTime) {
         // recalculate event
         Event newEvent(m_generator, m_context);
         if (newEvent.m_type != failure) timeline.push(newEvent);
@@ -1069,14 +1069,14 @@ inline bool Event::process()
       }
 
       // else allow processing
-      algoritmicTime++;
+      algorithmicTime++;
       processSpecialEvent();
 
       break;
 
     case edge:
       if (m_coGenerator->hasAttribute(ContourNode::ELIMINATED) ||
-          m_algoritmicTime < m_coGenerator->m_next->m_updateTime) {
+          m_algorithmicTime < m_coGenerator->m_next->m_updateTime) {
         // recalculate event
         Event newEvent(m_generator, m_context);
         if (newEvent.m_type != failure) timeline.push(newEvent);
@@ -1092,7 +1092,7 @@ inline bool Event::process()
         return false;
 
       // else allow processing
-      algoritmicTime++;  // global
+      algorithmicTime++;  // global
       if (m_generator->m_next->m_next == m_generator->m_prev)
         processMaxEvent();
       else
@@ -1122,14 +1122,14 @@ inline bool Event::process()
         return false;
 
       // then, process it
-      algoritmicTime++;
+      algorithmicTime++;
       processVertexEvent();
 
       break;
 
     case split_regenerate:
       if (m_coGenerator->hasAttribute(ContourNode::ELIMINATED) ||
-          (m_algoritmicTime < m_coGenerator->m_next->m_updateTime)) {
+          (m_algorithmicTime < m_coGenerator->m_next->m_updateTime)) {
         // recalculate event
         Event newEvent(m_generator, m_context);
         if (newEvent.m_type != failure) timeline.push(newEvent);
@@ -1147,7 +1147,7 @@ inline bool Event::process()
 
     case split:  // No break is intended
       if (m_coGenerator->hasAttribute(ContourNode::ELIMINATED) ||
-          (m_algoritmicTime < m_coGenerator->m_next->m_updateTime)) {
+          (m_algorithmicTime < m_coGenerator->m_next->m_updateTime)) {
         // recalculate event
         Event newEvent(m_generator, m_context);
         if (newEvent.m_type != failure) timeline.push(newEvent);
@@ -1160,7 +1160,7 @@ inline bool Event::process()
               m_generator->m_prev
                   ->m_prev)  // Because another edge already occurs at his place
       {
-        algoritmicTime++;
+        algorithmicTime++;
         processSplitEvent();
       }
 
@@ -1210,7 +1210,7 @@ inline void Event::processEdgeEvent() {
 
   newNode->m_ancestor        = m_coGenerator->m_next->m_ancestor;
   newNode->m_ancestorContour = m_coGenerator->m_next->m_ancestorContour;
-  newNode->m_updateTime      = m_context->m_algoritmicTime;
+  newNode->m_updateTime      = m_context->m_algorithmicTime;
 
   // We allocate an output vertex on newNode's position under these conditions
   // NOTE: Update once graph_old is replaced
@@ -1288,7 +1288,7 @@ inline void Event::processSplitEvent() {
   synfig::Point3 position(m_generator->m_position +
                     m_generator->m_direction * m_displacement);
   IndexTable &activeTable      = m_context->m_activeTable;
-  unsigned int &algoritmicTime = m_context->m_algoritmicTime;
+  unsigned int &algorithmicTime = m_context->m_algorithmicTime;
 
   // First, we find in the Index Table the contours involved
   std::list<ContourNode *>::iterator genContour, coGenContour;
@@ -1320,7 +1320,7 @@ inline void Event::processSplitEvent() {
   m_generator->m_next->m_prev = newLeftNode;
   newLeftNode->m_next         = m_generator->m_next;
 
-  // Assign and calculate the new nodes' informations
+  // Assign and calculate the new nodes' information
   newLeftNode->m_edge  = m_generator->m_edge;
   newRightNode->m_edge = m_coGenerator->m_edge;
 
@@ -1333,7 +1333,7 @@ inline void Event::processSplitEvent() {
   newLeftNode->buildNodeInfos(1);
   newRightNode->buildNodeInfos(1);
 
-  newLeftNode->m_updateTime = newRightNode->m_updateTime = algoritmicTime;
+  newLeftNode->m_updateTime = newRightNode->m_updateTime = algorithmicTime;
 
   // Now, output the found interaction
   newLeftNode->setAttribute(ContourNode::SK_NODE_DROPPED);
@@ -1395,7 +1395,7 @@ inline void Event::processVertexEvent() {
   synfig::Point3 position(m_generator->m_position +
                     m_generator->m_direction * m_displacement);
   IndexTable &activeTable      = m_context->m_activeTable;
-  unsigned int &algoritmicTime = m_context->m_algoritmicTime;
+  unsigned int &algorithmicTime = m_context->m_algorithmicTime;
 
   // First, we find in the Index Table the contours involved
   std::list<ContourNode *>::iterator genContour, coGenContour;
@@ -1441,7 +1441,7 @@ inline void Event::processVertexEvent() {
   newLeftNode->buildNodeInfos();
   newRightNode->buildNodeInfos();
 
-  newLeftNode->m_updateTime = newRightNode->m_updateTime = algoritmicTime;
+  newLeftNode->m_updateTime = newRightNode->m_updateTime = algorithmicTime;
 
   // Now, output the found interaction
   newLeftNode->setAttribute(ContourNode::SK_NODE_DROPPED);
@@ -1552,7 +1552,7 @@ inline void Event::processSpecialEvent()
 
   // Neither this case can be forced convex
   newNode->buildNodeInfos();
-  newNode->m_updateTime = m_context->m_algoritmicTime;
+  newNode->m_updateTime = m_context->m_algorithmicTime;
 
   // Now build output
   newNode->setAttribute(ContourNode::SK_NODE_DROPPED);
