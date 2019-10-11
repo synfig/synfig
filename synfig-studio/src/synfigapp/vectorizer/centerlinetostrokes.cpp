@@ -542,7 +542,7 @@ void SequenceConverter::lengthOfTriplet(unsigned int i, Length &len)
   synfig::Point3 B = middleAddedSequence[i + 1];
   synfig::Point3 C = middleAddedSequence[i + 2];
 
-  // We assume that this convertion is faithful, avoiding length penalty
+  // We assume that this conversion is faithful, avoiding length penalty
   len.l = 0;
   double d = tdistance(B, C - A, A);
   
@@ -605,7 +605,7 @@ bool SequenceConverter::parametrize(unsigned int a, unsigned int b)
 //==========================================================================
 
 //------------------------
-//    CP construcion
+//    CP construction
 //------------------------
 
 // NOTE: Check my thesis for variable meanings (int_ stands for 'integral').

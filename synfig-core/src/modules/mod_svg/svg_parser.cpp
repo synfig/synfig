@@ -1020,7 +1020,7 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMa
 				mtx2=data->transform;
 			}
 			//matrix transforms the gradient as a whole
-			//it does not preserve angles, so we cant' simply transform both points
+			//it does not preserve angles, so we can't simply transform both points
 			float x3, y3, k;
 			//set point (x3,y3) on the same gradient line as (x2,y2)
 			//the gradient line is perpendicular to (x1,y1)(x2,y2)

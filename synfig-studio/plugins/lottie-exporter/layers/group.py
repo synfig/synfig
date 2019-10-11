@@ -296,7 +296,7 @@ def flip_time(time):
 def gen_hold_waypoints(deactive_time, layer, anim_type):
     """
     Will only be used to modify opacity waypoints, and set zero values where the
-    layer is deactive
+    layer is deactivated
 
     Args:
         deactive_time (set) : Range of time when the layer will be deactive

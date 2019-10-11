@@ -207,7 +207,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::SpinButton localthres_spin;
 	Gtk::HBox localthres_box;
 
-	// golbal threshold
+	// global threshold
 	Gtk::RadioButton globalthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> globalthres_adj;
 	Gtk::SpinButton globalthres_spin;
@@ -2112,7 +2112,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 
 		debug_show_vertex_list(0, vertex_list, "continuous vertices", -1);
 
-		// \todo reenable or delete this section
+		// \todo re-enable or delete this section
 		int i=100;
 		for(bool done=false;!done && i<30;i++)
 		{

@@ -17,7 +17,7 @@ def gen_layer_rotate(lottie, layer):
 
     Args:
         lottie (dict) : Will store the transform properties in lottie format
-        layer  (common.Layer.Layer) : Tranform properties in Synfig format
+        layer  (common.Layer.Layer) : Transform properties in Synfig format
 
     Returns:
         (None)

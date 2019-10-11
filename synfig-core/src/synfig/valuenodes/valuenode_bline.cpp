@@ -1055,7 +1055,7 @@ ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, 
 	vns=bpnext.get_vertex_setup();
 	beta01=t1.angle();
 	beta02=t2.angle();
-	// New aproaching: I calculate the needed relative change of the tangents
+	// New approach: I calculate the needed relative change of the tangents
 	// in relation to the segment that joins the next and previous vertices.
 	// Then add a compensation due to the modification relative to the mid point.
 	// If the blinepoint tangent is not split it is not needed the compensation

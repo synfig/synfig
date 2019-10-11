@@ -124,7 +124,7 @@ std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(et
 
   // step 4
   // The raw skeleton data obtained from StraightSkeletonizer
-  // class need to be grouped in joints and sequences before proceding further
+  // class need to be grouped in joints and sequences before proceeding further
   studio::organizeGraphs(skeletons, globals);
 
 //   // junctionRecovery(polygons);   //Da' problemi per maxThickness<inf...

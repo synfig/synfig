@@ -95,11 +95,11 @@ def init():
     file_name = {}
     global num_precomp
     num_precomp = Count()
-    global OUTLINE_GROW     # outline grow param of group layer
+    global OUTLINE_GROW    # outline grow param of group layer
     OUTLINE_GROW = [0]
-    global layer_count  # Will only count the layers which do not have there desc set
+    global layer_count  # will only count the layers which do not have there desc set
     layer_count = Count()
-    global canvas_count # will only cound the canvas which do not have any names
+    global canvas_count # will only count the canvas which do not have any names
     canvas_count = Count()
     global controller_count # counts the slider and point effects controller
     controller_count = Count()

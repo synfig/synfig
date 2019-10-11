@@ -3175,9 +3175,9 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
 
 		// add file extension according to file filter selected by user if he doesn't type file extension in
-		// file name entry. Right now it still detetes file extension from file name entry, if extension is one
+		// file name entry. Right now it still detects file extension from file name entry, if extension is one
 		// of .sif, sifz and sfg, it will be used otherwise, saved file format will depend on selected file filter.
-		// It should be improved by changing file extension according to selted file type filter, such as:
+		// It should be improved by changing file extension according to set file type filter, such as:
 		// dialog->property_filter().signal_changed().connect(sigc::mem_fun(*this, &App::on_save_dialog_filter_changed));
 		filename = dialog->get_filename();
 

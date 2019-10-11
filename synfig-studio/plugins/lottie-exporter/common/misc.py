@@ -332,7 +332,7 @@ def parse_time(time_in_str):
 def get_vector(waypoint):
     """
     Given a waypoint, it parses the string vector into Vector class defined in
-    this convertor
+    this converter
 
     Args:
         waypoint (lxml.etree._Element) : Synfig format waypoint
