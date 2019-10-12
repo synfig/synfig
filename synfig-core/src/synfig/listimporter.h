@@ -30,7 +30,6 @@
 
 #include "importer.h"
 #include "surface.h"
-#include <ETL/smart_ptr>
 #include <vector>
 #include <list>
 #include <utility>

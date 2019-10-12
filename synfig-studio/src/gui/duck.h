@@ -29,7 +29,11 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <map>
+#include <set>
 #include <list>
+
+#include <sigc++/sigc++.h>
 
 #include <ETL/smart_ptr>
 #include <ETL/handle>
@@ -37,16 +41,12 @@
 #include <synfig/vector.h>
 #include <synfig/string.h>
 #include <synfig/real.h>
-#include <sigc++/sigc++.h>
 #include <synfig/time.h>
-#include <ETL/smart_ptr>
-#include <synfigapp/value_desc.h>
 #include <synfig/transform.h>
 
-/* === M A C R O S ========================================================= */
+#include <synfigapp/value_desc.h>
 
-#include <map>
-#include <set>
+/* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 

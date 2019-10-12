@@ -33,24 +33,21 @@
 #include <map>
 #include <set>
 
+#include <sigc++/sigc++.h>
+
 #include <ETL/smart_ptr>
 #include <ETL/handle>
 
 #include <synfig/vector.h>
 #include <synfig/string.h>
 #include <synfig/real.h>
-#include <sigc++/sigc++.h>
 #include <synfig/time.h>
-#include <synfig/color.h>
-#include <ETL/smart_ptr>
-
-#include "duck.h"
 #include <synfig/color.h>
 #include <synfig/guidset.h>
 
-/* === M A C R O S ========================================================= */
+#include "duck.h"
 
-#include <map>
+/* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 

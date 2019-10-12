@@ -29,8 +29,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "_curve_func.h"
 #include <cassert>
+#include <atomic>
 
 /* === M A C R O S ========================================================= */
 
@@ -40,114 +40,59 @@
 
 namespace etl {
 
-class weak_reference_counter;
-
 // ========================================================================
 /*!	\class	reference_counter	_ref_count.h	ETL/ref_count
 **	\brief	Reference counter
-**	\see weak_reference_counter
 **	\writeme
 */
 class reference_counter
 {
-	friend class weak_reference_counter;
-private:
-	int* counter_;
 public:
+	typedef std::atomic<int> counter_type;
 
-	reference_counter(const bool &x=true):counter_(x?new int(1):0) { }
+private:
+	counter_type *counter;
 
-	reference_counter(const reference_counter &x):counter_(x.counter_)
-		{ if(counter_) (*counter_)++; }
-
-	reference_counter(const weak_reference_counter &x);
-
+public:
+	explicit reference_counter(const bool &x = true):
+		counter()
+		{ if (x) reset(); }
+	reference_counter(const reference_counter &x):
+		reference_counter(false)
+		{ *this = x; }
 	~reference_counter() { detach(); }
 
-	reference_counter& operator=(const reference_counter &rhs)
-	{
+	void reset() {
 		detach();
-		counter_=rhs.counter_;
-		if(counter_)
-		{
-			assert(*counter_>0);
-			(*counter_)++;
+		counter = new counter_type(1);
+	}
+
+	void detach() {
+		if (counter) {
+			int count = --(*counter);
+			assert(count >= 0);
+			if (count <= 0) delete counter;
+			counter = 0;
+		}
+	}
+
+	reference_counter& operator=(const reference_counter &other) {
+		if (other.counter != counter) {
+			detach();
+			if (other.counter) {
+				counter = other.counter;
+				(*counter)++;
+				assert(count() > 1);
+			}
 		}
 		return *this;
 	}
 
-	void detach()
-	{
-		if(counter_)
-		{
-			assert(*counter_>0);
-			if(!--(*counter_))
-				delete counter_;
-			counter_=0;
-		}
-	}
 
-	void reset()
-	{
-		detach();
-		counter_=new int(1);
-	}
-
-	int count()const { return counter_?*counter_:0; }
-
-	bool unique()const { return counter_?*counter_==1:0; }
-
-	operator int()const { return count(); }
+	int count() const { return counter ? (int)*counter: 0; }
+	bool unique() const { return count() == 1; }
+	operator int() const { return count(); }
 }; // END of class reference_counter
-
-// ========================================================================
-/*!	\class	weak_reference_counter	_ref_count.h	ETL/ref_count
-**	\brief	Weak Reference counter
-**	\see reference_counter
-**	\writeme
-*/
-class weak_reference_counter
-{
-	friend class reference_counter;
-private:
-	int* counter_;
-public:
-	weak_reference_counter():counter_(0) { }
-
-	weak_reference_counter(const weak_reference_counter &x):counter_(x.counter_) { }
-
-	weak_reference_counter(const reference_counter &x):counter_(x.counter_) { }
-
-	~weak_reference_counter() { }
-
-	weak_reference_counter& operator=(const reference_counter &rhs)
-	{
-		counter_=rhs.counter_;
-		assert(*counter_>0);
-		return *this;
-	}
-
-	weak_reference_counter& operator=(const weak_reference_counter &rhs)
-	{
-		counter_=rhs.counter_;
-		assert(*counter_>0);
-		return *this;
-	}
-
-	void detach() { counter_=0; }
-
-	int count()const { return counter_?*counter_:0; }
-
-	bool unique()const { return counter_?*counter_==1:0; }
-
-	operator int()const { return count(); }
-}; // END of class weak_reference_counter
-
-inline reference_counter::reference_counter(const weak_reference_counter &x):
-	counter_(x.counter_)
-{
-	if(counter_) (*counter_)++;
-}
 
 };
 

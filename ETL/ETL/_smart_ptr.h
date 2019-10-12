@@ -55,7 +55,6 @@ struct array_deleter
 // ========================================================================
 /*!	\class	smart_ptr	_smart_ptr.h	ETL/smart_ptr
 **	\brief	Object Smart Pointer
-**	\see loose_smart_ptr
 **	\writeme
 */
 template <class T, class D=generic_deleter<T> >
@@ -220,140 +219,37 @@ public:
 
 }; // END of template class smart_ptr
 
-// ========================================================================
-/*!	\class	loose_smart_ptr	_smart_ptr.h	ETL/smart_ptr
-**	\brief	Loose Object Smart Pointer
-**	\see smart_ptr
-**	\writeme
-*/
-template <class T>
-class loose_smart_ptr
-{
-public:
-
-	typedef T value_type;
-	typedef T& reference;
-	typedef const T& const_reference;
-	typedef T* pointer;
-	typedef const T* const_pointer;
-	typedef int count_type;
-	typedef int size_type;
-
-private:
-	value_type *obj;		//!< \internal Pointer to object
-	weak_reference_counter refcount;	//!< \internal Pointer to object's reference counter
-
-public:
-
-	//! Default constructor - empty smart_ptr
-	loose_smart_ptr():obj(0),refcount(0) {}
-
-	//! Default copy constructor
-	loose_smart_ptr(const loose_smart_ptr<value_type> &x):obj(x.get()),refcount(x.refcount) { }
-
-	loose_smart_ptr(const smart_ptr<value_type> &x):obj(x.get()),refcount(x.refcount) { }
-
-	void reset() { obj=0,refcount=0; }
-
-	operator smart_ptr<value_type>()
-	{
-		return smart_ptr<value_type>(static_cast<pointer>(obj),refcount);
-	}
-
-	operator smart_ptr<const value_type>()
-	{
-		return smart_ptr<const value_type>(static_cast<const_pointer>(obj),refcount);
-	}
-
-	//! Returns number of instances
-	const count_type& count()const { return refcount; }
-
-	bool unique()const { return refcount.unique(); }
-
-	reference operator*()const { assert(obj); return *obj; }
-
-	pointer	operator->()const { assert(obj); return obj; }
-
-	pointer get()const { return obj; }
-
-	bool operator!()const { return !obj; }
-};
 
 template <class T,class U> bool
 operator==(const smart_ptr<T> &lhs,const smart_ptr<U> &rhs)
-	{ return (lhs.get()==rhs.get()); }
-template <class T,class U> bool
-operator==(const loose_smart_ptr<T> &lhs,const loose_smart_ptr<U> &rhs)
-	{ return (lhs.get()==rhs.get()); }
-template <class T,class U> bool
-operator==(const smart_ptr<T> &lhs,const loose_smart_ptr<U> &rhs)
-	{ return (lhs.get()==rhs.get()); }
-template <class T,class U> bool
-operator==(const loose_smart_ptr<T> &lhs,const smart_ptr<U> &rhs)
 	{ return (lhs.get()==rhs.get()); }
 template <class T> bool
 operator==(const smart_ptr<T> &lhs,const T *rhs)
 	{ return (lhs.get()==rhs); }
 template <class T> bool
-operator==(const loose_smart_ptr<T> &lhs,const T *rhs)
-	{ return (lhs.get()==rhs); }
-template <class T> bool
 operator==(const T *lhs,const smart_ptr<T> &rhs)
-	{ return (lhs==rhs.get()); }
-template <class T> bool
-operator==(const T *lhs,const loose_smart_ptr<T> &rhs)
 	{ return (lhs==rhs.get()); }
 
 
 template <class T,class U> bool
 operator!=(const smart_ptr<T> &lhs,const smart_ptr<U> &rhs)
 	{ return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool
-operator!=(const loose_smart_ptr<T> &lhs,const loose_smart_ptr<U> &rhs)
-	{ return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool
-operator!=(const smart_ptr<T> &lhs,const loose_smart_ptr<U> &rhs)
-	{ return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool
-operator!=(const loose_smart_ptr<T> &lhs,const smart_ptr<U> &rhs)
-	{ return (lhs.get()!=rhs.get()); }
 template <class T> bool
 operator!=(const smart_ptr<T> &lhs,const T *rhs)
 	{ return (lhs.get()!=rhs); }
 template <class T> bool
-operator!=(const loose_smart_ptr<T> &lhs,const T *rhs)
-	{ return (lhs.get()!=rhs); }
-template <class T> bool
 operator!=(const T *lhs,const smart_ptr<T> &rhs)
-	{ return (lhs!=rhs.get()); }
-template <class T> bool
-operator!=(const T *lhs,const loose_smart_ptr<T> &rhs)
 	{ return (lhs!=rhs.get()); }
 
 
 template <class T,class U> bool
 operator<(const smart_ptr<T> &lhs,const smart_ptr<U> &rhs)
 	{ return (lhs.get()<rhs.get()); }
-template <class T,class U> bool
-operator<(const loose_smart_ptr<T> &lhs,const loose_smart_ptr<U> &rhs)
-	{ return (lhs.get()<rhs.get()); }
-template <class T,class U> bool
-operator<(const smart_ptr<T> &lhs,const loose_smart_ptr<U> &rhs)
-	{ return (lhs.get()<rhs.get()); }
-template <class T,class U> bool
-operator<(const loose_smart_ptr<T> &lhs,const smart_ptr<U> &rhs)
-	{ return (lhs.get()<rhs.get()); }
 template <class T> bool
 operator<(const smart_ptr<T> &lhs,const T *rhs)
 	{ return (lhs.get()<rhs); }
 template <class T> bool
-operator<(const loose_smart_ptr<T> &lhs,const T *rhs)
-	{ return (lhs.get()<rhs); }
-template <class T> bool
 operator<(const T *lhs,const smart_ptr<T> &rhs)
-	{ return (lhs<rhs.get()); }
-template <class T> bool
-operator<(const T *lhs,const loose_smart_ptr<T> &rhs)
 	{ return (lhs<rhs.get()); }
 
 };

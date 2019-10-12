@@ -34,7 +34,6 @@
 #include <map>
 #include <set>
 
-#include <ETL/smart_ptr>
 #include <ETL/handle>
 
 #include <gtkmm/drawingarea.h>

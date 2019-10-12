@@ -31,23 +31,27 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <cstdlib>
+#include <ctime>
 
-#include "trees/keyframetreestore.h"
-#include <synfig/valuenode.h>
-#include "iconcontroller.h"
-#include <synfig/valuenodes/valuenode_timedswap.h>
 #include <gtkmm/button.h>
 #include <gtkmm/treerowreference.h>
+
+#include <synfig/general.h>
+
 #include <synfig/canvas.h>
 #include <synfig/keyframe.h>
-#include <time.h>
-#include <cstdlib>
-#include <ETL/smart_ptr>
+#include <synfig/exception.h>
+#include <synfig/valuenode.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
-#include "onemoment.h"
-#include <synfig/exception.h>
+
+#include <gui/iconcontroller.h>
+#include <gui/onemoment.h>
+
+#include "keyframetreestore.h"
 
 #include <gui/localization.h>
 
