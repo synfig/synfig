@@ -141,7 +141,8 @@ public:
 private:
 
 	//! \ The GUID of the node
-	GUID guid_;
+	mutable Mutex guid_mutex_;
+	mutable GUID guid_;
 
 	//! cached time values for all the children
 	mutable time_set	times;

@@ -47,18 +47,6 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-// About BE_FRUGAL_WITH_GUIDS
-// If this macro is set, then a GUID will NOT
-// be calculated until the first call to get_guid()
-// This also means that the node doesn't get
-// added to the database until get_guid() is called
-// for the first time, or set_guid() is called.
-// If it is expensive to calculate GUIDs, then
-// this can improve performance a tad in
-// some cases. Otherwise, it doesn't change
-// much of anything.
-#define BE_FRUGAL_WITH_GUIDS 1
-
 #ifndef __sys_clock
 	#ifndef _WIN32
 		# include <time.h>
@@ -78,35 +66,72 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-typedef std::map<synfig::GUID,Node*> GlobalNodeMap;
+namespace {
+	class GlobalNodeMap {
+	public:
+		typedef std::map<GUID, Node*> Map;
+	
+	private:
+		Mutex mutex;
+		Map map;
+	
+	public:
+		Node* get(const GUID &guid) {
+			Mutex::Lock lock(mutex);
+			Map::iterator i = map.find(guid);
+			return i == map.end() ? 0 : i->second;
+		}
+
+		void add(const GUID &guid, Node *node) {
+			assert(guid);
+			assert(node);
+			
+			Mutex::Lock lock(mutex);
+			assert(!map.count(guid));
+			map[guid] = node;
+		}
+
+		void remove(const GUID &guid, Node *node) {
+			assert(guid);
+			assert(node);
+			
+			Mutex::Lock lock(mutex);
+			Map::iterator i = map.find(guid);
+			assert(i != map.end() && i->second == node);
+			map.erase(i);
+		}
+
+		void move(const GUID &guid, const GUID &oldguid, Node *node) {
+			assert(guid);
+			assert(node);
+			if (guid == oldguid) {
+				assert(get(guid) == node);
+				return;
+			}
+			assert(oldguid);
+			
+			Mutex::Lock lock(mutex);
+			Map::iterator i = map.find(guid);
+			assert(i != map.end() && i->second == node);
+			map.erase(i);
+			
+			assert(!map.count(guid));
+			map[guid] = node;
+		}
+	};
+}
 
 //! A map to store all the GUIDs with a pointer to the Node.
-static GlobalNodeMap* global_node_map_;
-
 static GlobalNodeMap& global_node_map()
 {
-	if(!global_node_map_)
-		global_node_map_=new GlobalNodeMap;
-	return *global_node_map_;
+	static GlobalNodeMap map;
+	return map;
 }
 
 /* === P R O C E D U R E S ================================================= */
 
-synfig::Node*
-synfig::find_node(const synfig::GUID& guid)
-{
-	if(global_node_map().count(guid)==0)
-		return 0;
-	return global_node_map()[guid];
-}
-
-static void
-refresh_node(synfig::Node* node, synfig::GUID old_guid)
-{
-	assert(global_node_map().count(old_guid));
-	global_node_map().erase(old_guid);
-	assert(!global_node_map().count(old_guid));
-	global_node_map()[node->get_guid()]=node;
+Node* synfig::find_node(const GUID &guid) {
+	return global_node_map().get(guid);
 }
 
 /* === M E T H O D S ======================================================= */
@@ -166,24 +191,13 @@ Node::Node():
 	time_last_changed_(__sys_clock()),
 	deleting_(false)
 {
-#ifndef BE_FRUGAL_WITH_GUIDS
-	guid_.make_unique();
-	assert(guid_);
-	assert(!global_node_map().count(guid_));
-	global_node_map()[guid_]=this;
-#endif
 }
 
 Node::~Node()
 {
 	begin_delete();
-
 	if(guid_)
-	{
-		assert(global_node_map().count(guid_));
-		global_node_map().erase(guid_);
-		assert(!global_node_map().count(guid_));
-	}
+		global_node_map().remove(guid_, this);
 }
 
 void
@@ -204,16 +218,12 @@ Node::child_changed(const Node *x)
 const synfig::GUID&
 Node::get_guid()const
 {
-#ifdef BE_FRUGAL_WITH_GUIDS
+	Mutex::Lock lock(guid_mutex_);
 	if(!guid_)
 	{
-		const_cast<synfig::GUID&>(guid_).make_unique();
-		assert(guid_);
-		assert(!global_node_map().count(guid_));
-		global_node_map()[guid_]=const_cast<Node*>(this);
+		guid_.make_unique();
+		global_node_map().add(guid_, const_cast<Node*>(this));
 	}
-#endif
-
 	return guid_;
 }
 
@@ -222,22 +232,18 @@ void
 Node::set_guid(const synfig::GUID& x)
 {
 	assert(x);
-
-#ifdef BE_FRUGAL_WITH_GUIDS
-	if(!guid_)
-	{
-		guid_=x;
-		assert(!global_node_map().count(guid_));
-		global_node_map()[guid_]=this;
-	}
-	else
-#endif
-	if(guid_!=x)
-	{
-		synfig::GUID oldguid(guid_);
-		guid_=x;
-		refresh_node(this, oldguid);
-		on_guid_changed(oldguid);
+	Mutex::Lock lock(guid_mutex_);
+	if (guid_ == x) return;
+	
+	if (!guid_) {
+		guid_ = x;
+		global_node_map().add(guid_, const_cast<Node*>(this));
+	} else
+	if (guid_ != x) {
+		GUID old(guid_);
+		guid_ = x;
+		global_node_map().move(guid_, old, this);
+		on_guid_changed(old);
 	}
 }
 
