@@ -294,7 +294,7 @@ Renderer_Canvas::insert_tile(TileList &list, const Tile::Handle &tile)
 	tiles_size += image_rect_size(tile->rect);
 }
 
-void
+Renderer_Canvas::TileList::iterator
 Renderer_Canvas::erase_tile(TileList &list, TileList::iterator i, rendering::Task::List &events)
 {
 	// this method may be called from other threads
@@ -304,7 +304,7 @@ Renderer_Canvas::erase_tile(TileList &list, TileList::iterator i, rendering::Tas
 	(*i)->event.reset();
 	(*i)->surface.reset();
 	(*i)->cairo_surface.clear();
-	list.erase(i);
+	return list.erase(i);
 }
 
 void
@@ -337,8 +337,8 @@ Renderer_Canvas::remove_extra_tiles(rendering::Task::List &events)
 
 	// remove some extra tiles to free the memory
 	for(WeightMap::reverse_iterator ri = sorted_frames.rbegin(); ri != sorted_frames.rend() && tiles_size > max_tiles_size_hard; ++ri)
-		for(TileList::iterator j = ri->second->second.begin(); j != ri->second->second.end() && tiles_size > max_tiles_size_hard; )
-			erase_tile(ri->second->second, j++, events);
+		while(!ri->second->second.empty() && tiles_size > max_tiles_size_hard)
+			erase_tile(ri->second->second, ri->second->second.begin(), events);
 
 	// remove empty entries from tiles map
 	for(TileMap::iterator i = tiles.begin(); i != tiles.end(); )
@@ -644,7 +644,7 @@ Renderer_Canvas::clear_render()
 		for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i)
 			while(!i->second.empty()) {
 				TileList::iterator j = i->second.end(); --j;
-				erase_tile(i->second, j++, events);
+				erase_tile(i->second, j, events);
 			}
 		tiles.clear();
 	}

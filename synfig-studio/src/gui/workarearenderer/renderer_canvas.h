@@ -197,7 +197,7 @@ private:
 	void insert_tile(TileList &list, const Tile::Handle &tile);
 
 	//! mutex must be locked before call
-	void erase_tile(TileList &list, TileList::iterator i, synfig::rendering::Task::List &events);
+	TileList::iterator erase_tile(TileList &list, TileList::iterator i, synfig::rendering::Task::List &events);
 
 	//! mutex must be locked before call
 	void remove_extra_tiles(synfig::rendering::Task::List &events);
