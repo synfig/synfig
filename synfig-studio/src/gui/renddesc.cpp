@@ -130,7 +130,7 @@ public:
 		// prepare colors
 		ColorReal values[3] = {0.25, 0.5, 1};
 		Color colors[3][4];
-		for(int i = 0; i < 4; ++i) {
+		for(int i = 0; i < 3; ++i) {
 			ColorReal v = values[i];
 			Color *c = colors[i];
 			c[0] = Color(v, v, v);
