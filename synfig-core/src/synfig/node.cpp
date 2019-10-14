@@ -111,7 +111,7 @@ namespace {
 			assert(oldguid);
 			
 			Mutex::Lock lock(mutex);
-			Map::iterator i = map.find(guid);
+			Map::iterator i = map.find(oldguid);
 			assert(i != map.end() && i->second == node);
 			map.erase(i);
 			
