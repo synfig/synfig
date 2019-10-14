@@ -283,9 +283,8 @@ void
 Layer_PasteCanvas::on_canvas_set()
 {
 	if(get_canvas() && sub_canvas && sub_canvas->is_inline() && sub_canvas->parent()!=get_canvas())
-	{
 		sub_canvas->set_inline(get_canvas());
-	}
+	Layer_Composite::on_canvas_set();
 }
 
 ValueBase

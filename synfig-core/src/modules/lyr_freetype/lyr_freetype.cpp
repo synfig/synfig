@@ -141,6 +141,7 @@ Layer_Freetype::~Layer_Freetype()
 void
 Layer_Freetype::on_canvas_set()
 {
+	Layer_Composite::on_canvas_set();
 	synfig::String family=param_family.get(synfig::String());
 	int style=param_style.get(int());
 	int weight=param_weight.get(int());

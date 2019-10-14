@@ -229,7 +229,13 @@ synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
 
 void
 synfig::Layer::on_canvas_set()
-	{ }
+{
+	// update canvas for all non-exported child ValueNodes
+	if (get_canvas())
+		for(DynamicParamList::const_iterator i = dynamic_param_list().begin(); i != dynamic_param_list().end(); ++i)
+			if (!i->second->is_exported())
+				i->second->set_parent_canvas(get_canvas());
+}
 
 void
 synfig::Layer::on_static_param_changed(const String & /* param */)

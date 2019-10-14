@@ -90,6 +90,7 @@ Import::~Import()
 void
 Import::on_canvas_set()
 {
+	Layer_Bitmap::on_canvas_set();
 	if(get_canvas())set_param("filename",param_filename);
 }
 
