@@ -735,12 +735,14 @@ CellRenderer_TimeTrack::activate_vfunc(
 	Gdk::Event(event).get_state(gdk_mode);
 	mode = gdk_mode;
 
-	Canvas::Handle canvas = get_canvas();
+	float fps = 0.f;
 	Time selected_time = actual_time;
-	float fps = canvas->rend_desc().get_frame_rate();
-	if (approximate_less_or_equal_lp(fps, 0.f)) fps = 0.f;
-	if (canvas && fps)
-		selected_time = selected_time.round(fps);
+	if (Canvas::Handle canvas = get_canvas()) {
+		fps = canvas->rend_desc().get_frame_rate();
+		if (approximate_less_or_equal_lp(fps, 0.f)) fps = 0.f;
+		if (fps)
+			selected_time = selected_time.round(fps);
+	}
 
 	ValueDesc value_desc = property_value_desc().get_value();
 	Time time_offset = get_time_offset_from_vdesc(value_desc);
