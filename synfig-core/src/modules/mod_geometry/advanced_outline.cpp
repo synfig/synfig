@@ -550,12 +550,18 @@ Advanced_Outline::sync_vfunc()
 		}
 		
 		if (loop) {
-			AdvancedLine::iterator i0 = aline.begin();
-			AdvancedLine::iterator i1 = aline.end(); --i1;
-			if (approximate_less(Real(0), i0->first))
-				aline.add(i1->first - kl, i1->second.w, WidthPoint::TYPE_FLAT, i1->second.side1);
-			if (approximate_less(i1->first, kl))
-				aline.add(i0->first + kl, i0->second.w, i0->second.side1, WidthPoint::TYPE_FLAT);
+			if (aline.size() > 1) {
+				AdvancedLine::iterator b1 = aline.begin(), b0 = b1++;
+				AdvancedLine::iterator e1 = aline.end(), e0 = (--e1)--;
+			
+				// add two points from end to begin (to simulate loopped width points)
+				aline.add(e0->first - kl, e0->second.w, e0->second.side0, e0->second.side1);
+				aline.add(e1->first - kl, e1->second.w, WidthPoint::TYPE_FLAT, e1->second.side1);
+			
+				// add two points from begin to end
+				aline.add(b0->first + kl, b0->second.w, b0->second.side0, b0->second.side1);
+				aline.add(b1->first + kl, b1->second.w, b1->second.side0, WidthPoint::TYPE_FLAT);
+			}
 			aline.calc_tangents(smoothness);
 		} else {
 			// make tails longer for proper trunc
