@@ -28,10 +28,14 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <set>
+#include <list>
+
+#include <sigc++/sigc++.h>
+
 //#include <synfig/canvas.h>
 #include <synfig/value.h>
-#include <sigc++/sigc++.h>
-#include <list>
+
 #include "selectionmanager.h"
 #include "uimanager.h"
 #include "value_desc.h"
@@ -298,7 +302,17 @@ public:
 
 	void set_rend_desc(const synfig::RendDesc &rend_desc);
 
-	bool import(const synfig::String &filename, synfig::String &errors, synfig::String &warnings, bool resize_image=false);
+	bool import(
+		const synfig::String &filename,
+		synfig::String &errors,
+		synfig::String &warnings,
+		bool resize_image = false );
+	
+	bool import_sequence(
+		const std::set<synfig::String> &filenames,
+		synfig::String &errors,
+		synfig::String &warnings,
+		bool resize_image = false );
 
 
 	void waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);

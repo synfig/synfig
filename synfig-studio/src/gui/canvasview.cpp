@@ -1437,6 +1437,9 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("import", _("Import...")),
 		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::image_import))
 	);
+	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
+		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::squence_import))
+	);
 	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
 		sigc::mem_fun0(render_settings,&RenderSettings::present)
 	);
@@ -3430,7 +3433,36 @@ CanvasView::image_import()
 	if(App::dialog_open_file(_("Please select a file"), filename, IMAGE_DIR_PREFERENCE))
 	{
 		canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
-		if (warnings != "")
+		if (!errors.empty())
+			App::dialog_message_1b(
+				"ERROR",
+				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+				"details",
+				_("Close"));
+		if (!warnings.empty())
+			App::dialog_message_1b(
+				"WARNING",
+				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+				"details",
+				_("Close"));
+	}
+}
+
+void
+CanvasView::squence_import()
+{
+	std::set<String> filenames;
+	String errors, warnings;
+	if(App::dialog_open_file_image_sequence(_("Please select a files"), filenames, IMAGE_DIR_PREFERENCE))
+	{
+		canvas_interface()->import_sequence(filenames, errors, warnings, App::resize_imported_images);
+		if (!errors.empty())
+			App::dialog_message_1b(
+				"ERROR",
+				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+				"details",
+				_("Close"));
+		if (!warnings.empty())
 			App::dialog_message_1b(
 				"WARNING",
 				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),

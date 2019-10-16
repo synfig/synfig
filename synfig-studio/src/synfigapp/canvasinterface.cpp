@@ -692,11 +692,15 @@ CanvasInterface::jump_to_prev_keyframe()
 }
 
 bool
-CanvasInterface::import(const synfig::String &filename, synfig::String &errors, synfig::String &warnings, bool resize_image)
+CanvasInterface::import(
+	const synfig::String &filename,
+	synfig::String &errors,
+	synfig::String &warnings,
+	bool resize_image )
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import"));
 
-	synfig::info("Attempting to import " + filename);
+	synfig::info("Attempting to import %s", filename.c_str());
 	
 	String ext(filename_extension(filename));
 	//if (filename_extension(filename) == "")
@@ -936,6 +940,197 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 		group.cancel();
 		return false;
 	}
+}
+
+
+bool
+CanvasInterface::import_sequence(
+	const std::set<synfig::String> &filenames,
+	synfig::String &errors,
+	synfig::String &/*warnings*/,
+	bool resize_image )
+{
+	Action::PassiveGrouper group(get_instance().get(),_("Import sequence"));
+
+	synfig::info("Attempting to import sequence");
+	Layer::Handle layer_switch;
+	try {
+		// add imported layers into switch
+		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
+		if(!action)
+			{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+
+		Layer::Handle layer;
+		int layers_count = 0;
+		for(std::set<String>::const_iterator i = filenames.begin(); i != filenames.end(); ++i) {
+			const String &filename = *i;
+			synfig::info("Attempting to import '%s' into sequence", filename.c_str());
+			
+			String ext(filename_extension(filename));
+			if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
+			std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+			
+			if (ext.empty())
+			{
+				errors += etl::strprintf(_("Cannot import file witout extension: %s\n"), filename.c_str());
+				continue;
+			}
+			
+			if(!Importer::book().count(ext))
+			{
+				errors += etl::strprintf(_("Cannot import file of type '%s': %s\n"), ext.c_str(), filename.c_str());
+				continue;
+			}
+			
+			String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename);
+			
+			try {
+				layer = add_layer_to("Import",get_canvas());
+				int w, h;
+				if (!layer)
+					throw int();
+				if (!layer->set_param("filename", ValueBase(short_filename)))
+					throw int();
+				w = layer->get_param("_width").get(int());
+				h = layer->get_param("_height").get(int());
+				layer->monitor(filename);
+				if (w && h) {
+					Vector x, size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
+					// vector from top left of canvas to bottom right
+					if (resize_image) {
+						if(abs(size[0])<abs(size[1])) {// if canvas is tall and thin
+							x[0]=size[0];	// use full width
+							x[1]=size[0]/w*h; // and scale for height
+							if ((size[0]<0) ^ (size[1]<0)) x[1] = -x[1];
+						} else { // else canvas is short and fat (or maybe square)
+							x[1]=size[1];	// use full height
+							x[0]=size[1]/h*w; // and scale for width
+							if ((size[0]<0) ^ (size[1]<0)) x[0] = -x[0];
+						}
+					} else {
+						x[0] = w/60.0;
+						x[1] = h/60.0;
+						if((size[0]<0)) x[0]=-x[0];
+						if((size[1]<0)) x[1]=-x[1];
+					}
+
+					if(!layer->set_param("tl",ValueBase(-x/2)))
+						throw int();
+					if(!layer->set_param("br",ValueBase(x/2)))
+						throw int();
+				} else {
+					if(!layer->set_param("tl",ValueBase(get_canvas()->rend_desc().get_tl())))
+						throw int();
+					if(!layer->set_param("br",ValueBase(get_canvas()->rend_desc().get_br())))
+						throw int();
+				}
+				
+				String desc = etl::basename(filename);
+				layer->set_description(desc);
+				signal_layer_new_description()(layer, desc);
+				
+				action->set_param("layer", layer);
+				if (!layers_count)
+					action->set_param("description", desc);
+				++layers_count;
+			} catch(...) {
+				errors += etl::strprintf(_("Unable to import file: %s"), filename.c_str());
+				group.cancel();
+				return false;
+			}
+		}
+		
+		if (!layers_count)
+			{ get_ui_interface()->error(_("Nothing imported")); throw int(); }
+		if(!action->is_ready())
+			{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
+		if(!get_instance()->perform_action(action))
+			{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
+
+		if (layer) {
+			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer(); // get parent layer, because image is incapsulated into action switch
+			
+			action = Action::create("ValueDescSet");
+			if(!action)
+				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
+			action->set_param("canvas", get_canvas());
+			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+			action->set_param("value_desc", ValueDesc(layer_switch, "layer_name"));
+			action->set_param("new_value", ValueBase(String()));
+			if(!action->is_ready())
+				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
+			if(!get_instance()->perform_action(action))
+				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
+			
+			action = Action::create("ValueDescSet");
+			if(!action)
+				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
+			action->set_param("canvas", get_canvas());
+			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+			action->set_param("value_desc", ValueDesc(layer_switch, "layer_depth"));
+			action->set_param("new_value", ValueBase(int(0)));
+			if(!action->is_ready())
+				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
+			if(!get_instance()->perform_action(action))
+				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
+				
+			action = Action::create("ValueDescConvert");
+			if(!action)
+				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
+			action->set_param("canvas", get_canvas());
+			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+			action->set_param("value_desc", ValueDesc(layer_switch, "layer_depth"));
+			action->set_param("type", "fromreal");
+			action->set_param("time", get_time());
+			if(!action->is_ready())
+				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
+			if(!get_instance()->perform_action(action))
+				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
+			
+			Layer::DynamicParamList::const_iterator i = layer_switch->dynamic_param_list().find("layer_depth");
+			if (i == layer_switch->dynamic_param_list().end())
+				{ get_ui_interface()->error(_("Dynamic param not found.")); throw int(); }
+			LinkableValueNode::Handle valuenode_real = LinkableValueNode::Handle::cast_dynamic(i->second);
+			
+			action = Action::create("ValueDescConvert");
+			if(!action)
+				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
+			action->set_param("canvas", get_canvas());
+			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+			action->set_param("value_desc", ValueDesc(valuenode_real, valuenode_real->get_link_index_from_name("link")));
+			action->set_param("type", "linear");
+			action->set_param("time", get_time());
+			if(!action->is_ready())
+				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
+			if(!get_instance()->perform_action(action))
+				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
+			
+			LinkableValueNode::Handle valuenode_linear = LinkableValueNode::Handle::cast_dynamic(valuenode_real->get_link("link"));
+			
+			action = Action::create("ValueDescSet");
+			if(!action)
+				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
+			action->set_param("canvas", get_canvas());
+			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+			action->set_param("value_desc", ValueDesc(valuenode_linear, valuenode_linear->get_link_index_from_name("slope")));
+			action->set_param("new_value", ValueBase(Real(1)));
+			if(!action->is_ready())
+				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
+			if(!get_instance()->perform_action(action))
+				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
+		}
+	} catch(...) {
+		get_ui_interface()->error("Unable to import sequence");
+		group.cancel();
+		return false;
+	}
+
+	get_selection_manager()->clear_selected_layers();
+	if (layer_switch)
+		get_selection_manager()->set_selected_layer(layer_switch);
+	return true;
 }
 
 

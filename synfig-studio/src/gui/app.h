@@ -33,6 +33,7 @@
 #include <gtkmm/main.h>
 #include <string>
 #include <list>
+#include <set>
 
 #include <ETL/smart_ptr>
 
@@ -412,6 +413,7 @@ public:
 	static bool dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_sketch(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_render(const std::string &title, std::string &filename, std::string preference);
+	static bool dialog_open_file_image_sequence(const std::string &title, std::set<synfig::String> &filenames, std::string preference);
 
 	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
 

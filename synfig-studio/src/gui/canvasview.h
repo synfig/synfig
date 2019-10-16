@@ -645,6 +645,7 @@ public:
 	void on_keyframe_description_set();
 
 	void image_import();
+	void squence_import();
 
 	void on_waypoint_clicked_canvasview(synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int button);
 

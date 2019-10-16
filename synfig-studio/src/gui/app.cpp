@@ -1,4 +1,4 @@
-// /* === S Y N F I G ========================================================= */
+/* === S Y N F I G ========================================================= */
 /*!	\file app.cpp
 **	\brief writeme
 **
@@ -954,6 +954,7 @@ DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"));
 DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"));
 DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED);
 DEFINE_ACTION("import",         _("Import..."));
+DEFINE_ACTION("import-sequence",_("Import Sequence..."));
 DEFINE_ACTION("render",         _("Render..."));
 DEFINE_ACTION("preview",        _("Preview..."));
 DEFINE_ACTION("close-document", _("Close Document"));
@@ -1092,6 +1093,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "		<menuitem action='revert' />"
 "		<separator name='sep-file2'/>"
 "		<menuitem action='import' />"
+"		<menuitem action='import-sequence' />"
 "		<separator name='sep-file4'/>"
 "		<menuitem action='preview' />"
 "		<menuitem action='render' />"
@@ -2608,7 +2610,6 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 #endif   // not USE_WIN32_FILE_DIALOGS
 }
 
-
 bool
 App::dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference)
 {
@@ -2808,6 +2809,66 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
+		delete dialog;
+		return true;
+	}
+
+	delete dialog;
+	return false;
+}
+
+bool
+App::dialog_open_file_image_sequence(const std::string &title, std::set<synfig::String> &filenames, std::string preference)
+{
+	synfig::String prev_path;
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = Glib::get_home_dir();
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->set_select_multiple(true);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	// show only images
+	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
+	filter_image->set_name(_("Images files (*.png, *.jpg, *.jpeg, *.bmp)"));
+	filter_image->add_mime_type("image/png");
+	filter_image->add_mime_type("image/jpeg");
+	filter_image->add_mime_type("image/jpg");
+	filter_image->add_mime_type("image/bmp");
+	filter_image->add_mime_type("image/svg+xml");
+	filter_image->add_pattern("*.png");
+	filter_image->add_pattern("*.jpeg");
+	filter_image->add_pattern("*.jpg");
+	filter_image->add_pattern("*.bmp");
+	dialog->add_filter(filter_image);
+
+	// Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+	filter_any->set_name(_("Any files"));
+	filter_any->add_pattern("*");
+	dialog->add_filter(filter_any);
+
+	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
+	if (filename.empty())
+		dialog->set_filename(prev_path);
+	else if (is_absolute_path(filename))
+		dialog->set_filename(filename);
+	else
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+
+	filenames.clear();
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		std::vector<std::string> files = dialog->get_filenames();
+		filenames.insert(files.begin(), files.end());
+		_preferences.set_value(preference, dirname(dialog->get_filename()));
 		delete dialog;
 		return true;
 	}

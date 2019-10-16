@@ -124,7 +124,7 @@ public:
 		ContextParams context_params,
 		RectInt rect,
 		RendDesc tile_desc,
-		ProgressCallback *cb )
+		ProgressCallback */*cb*/ )
 	{
 		if(!alive_flag)
 			return false;
