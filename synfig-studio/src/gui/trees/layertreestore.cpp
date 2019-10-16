@@ -868,8 +868,11 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 			std::set<String> impossible_existant_layers;
 			if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(handle))
 			{
-				layer_switch->get_possible_new_layers(possible_new_layers);
-				layer_switch->get_impossible_existant_layers(impossible_existant_layers);
+				if (!layer_switch->get_param("layer_name").get(String()).empty())
+				{
+					layer_switch->get_possible_new_layers(possible_new_layers);
+					layer_switch->get_impossible_existant_layers(impossible_existant_layers);
+				}
 			}
 
 			int index = canvas->size() + possible_new_layers.size();

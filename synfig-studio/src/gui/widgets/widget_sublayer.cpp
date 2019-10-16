@@ -85,6 +85,9 @@ Widget_Sublayer::set_value_desc(const synfigapp::ValueDesc &x)
 		if(canvas)
 		{
 			// Fill the combo with the layers' descriptions
+			Gtk::TreeModel::Row row = *(enum_TreeModel->append());
+			row[enum_model.value] = "";
+			row[enum_model.name] = _("<empty>");
 			for(IndependentContext i = canvas->get_independent_context(); *i; i++)
 			{
 				Gtk::TreeModel::Row row = *(enum_TreeModel->append());

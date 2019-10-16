@@ -46,6 +46,8 @@ class Layer_Switch : public Layer_PasteCanvas
 private:
 	//! Parameter: (String) Active Layer Name
 	ValueBase param_layer_name;
+	//! Parameter: (int) Active Layer Depth
+	ValueBase param_layer_depth;
 
 	mutable std::set<String> last_possible_layers;
 	mutable std::set<String> last_existant_layers;

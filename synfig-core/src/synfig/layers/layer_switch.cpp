@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "layer_switch.h"
+#include <cmath>
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
@@ -42,6 +42,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
+#include "layer_switch.h"
 
 #endif
 
@@ -69,6 +70,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Switch,"$Id$");
 Layer_Switch::Layer_Switch()
 {
 	param_layer_name=ValueBase(String());
+	param_layer_depth=ValueBase(int(-1));
 	set_param("children_lock",ValueBase(true));
 
 	SET_INTERPOLATION_DEFAULTS();
@@ -97,6 +99,11 @@ Layer_Switch::get_param_vocab()const
 		.set_hint("sublayer_name")
 	);
 
+	ret.push_back(ParamDesc("layer_depth")
+		.set_local_name(_("Active Layer Depth"))
+		.set_description(_("Uses when layer name is empty. Only layer with specified depth are visible"))
+	);
+
 	return ret;
 }
 
@@ -104,6 +111,7 @@ bool
 Layer_Switch::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE(param_layer_name);
+	IMPORT_VALUE(param_layer_depth);
 	return Layer_PasteCanvas::set_param(param,value);
 }
 
@@ -111,6 +119,7 @@ ValueBase
 Layer_Switch::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_layer_name);
+	EXPORT_VALUE(param_layer_depth);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -122,12 +131,20 @@ Layer::Handle
 Layer_Switch::get_current_layer()const
 {
 	Canvas::Handle canvas = get_sub_canvas();
-	String n = param_layer_name.get(String());
-	if (canvas)
-		for(IndependentContext i = canvas->get_independent_context(); *i; i++)
-			if ((*i)->get_description() == n)
-				return *i;
-	return NULL;
+	if (canvas) {
+		String name = param_layer_name.get(String());
+		if (name.empty()) {
+			int depth = param_layer_depth.get(int());
+			for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+				if ((*i)->get_depth() == depth)
+					return *i;
+		} else {
+			for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+				if ((*i)->get_description() == name)
+					return *i;
+		}
+	}
+	return Layer::Handle();
 }
 
 

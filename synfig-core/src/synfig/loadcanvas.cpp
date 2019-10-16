@@ -482,19 +482,8 @@ synfig::String
 CanvasParser::parse_string(xmlpp::Element *element)
 {
 	assert(element->get_name()=="string");
-
 	if(element->get_children().empty())
-	{
-		warning(element, "Undefined value in <string>");
 		return synfig::String();
-	}
-
-	if(element->get_child_text()->get_content().empty())
-	{
-		warning(element, "Content element of <string> appears to be empty");
-		return synfig::String();
-	}
-
 	return element->get_child_text()->get_content();
 }
 
