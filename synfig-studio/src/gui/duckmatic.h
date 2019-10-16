@@ -74,7 +74,7 @@ class DuckDrag_Translate : public DuckDrag_Base
 {
 	synfig::Vector last_translate_;
 	synfig::Vector drag_offset_;
-	synfig::Vector snap;
+	synfig::Vector snap_offset_;
 	std::vector<synfig::Vector> positions;
 	bool is_moving = false;
 

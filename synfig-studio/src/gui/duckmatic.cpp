@@ -1037,21 +1037,21 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
     else
     if (type == type_transformation)
     {
-        if (get_alternative_mode()
-         && duck.get_alternative_editable()
-         && duck.get_alternative_value_desc().is_valid()
-         && duck.get_alternative_value_desc().parent_is_layer()
-         && etl::handle<Layer_PasteCanvas>::cast_dynamic(duck.get_alternative_value_desc().get_layer())
-         && duck.get_alternative_value_desc().get_param_name() == "origin")
+        if ( duck.get_move_origin()
+		  && duck.get_origin_duck()
+		  && duck.get_value_desc().is_valid()
+		  && duck.get_value_desc().parent_is_layer()
+		  && etl::handle<Layer_PasteCanvas>::cast_dynamic(duck.get_value_desc().get_layer())
+		  && duck.get_value_desc().get_param_name() == "origin" )
         {
-            Point origin = duck.get_alternative_value_desc().get_value(get_time()).get(Point());
-            Transformation transformation = duck.get_value_desc().get_value(get_time()).get(Transformation());
-            Point delta_offset = value - transformation.offset;
+            Point origin = duck.get_value_desc().get_value(get_time()).get(Point());
+            Transformation transformation = duck.get_origin_duck()->get_value_desc().get_value(get_time()).get(Transformation());
+            Point delta_offset = duck.get_origin_duck()->get_point() - transformation.offset;
             Point delta_origin = transformation.back_transform(delta_offset, false);
             transformation.offset += delta_offset;
             origin += delta_origin;
-            return canvas_interface->change_value(duck.get_alternative_value_desc(), origin, lock_animation)
-                && canvas_interface->change_value(duck.get_value_desc(), transformation, lock_animation);
+            return canvas_interface->change_value(duck.get_value_desc(), origin, lock_animation)
+                && canvas_interface->change_value(duck.get_origin_duck()->get_value_desc(), transformation, lock_animation);
         }
         else
         {
@@ -1124,7 +1124,7 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 
         return canvas_interface->change_value(value_desc, point, lock_animation);
     }
-
+    
     return canvas_interface->change_value(value_desc,value,lock_animation);
 }
 
@@ -1968,14 +1968,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
             etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
             if (layer)
             {
-                synfigapp::ValueDesc alternative_value_desc(value_desc.get_layer(), "origin");
+                synfigapp::ValueDesc origin_value_desc(value_desc.get_layer(), "origin");
                 Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
 
                 bool editable = !value_desc.is_value_node()
                     || synfigapp::is_editable(value_desc.get_value_node());
-                bool alternative_editable = !alternative_value_desc.is_value_node()
-                    || synfigapp::is_editable(alternative_value_desc.get_value_node());
-                alternative_editable = alternative_editable && editable;
+                bool origin_editable = !origin_value_desc.is_value_node()
+                    || synfigapp::is_editable(origin_value_desc.get_value_node());
+                origin_editable = origin_editable && editable;
                 Point axis_x(1, transformation.angle);
                 Point axis_y(1, transformation.angle + Angle::deg(90.f) + transformation.skew_angle);
 
@@ -2000,9 +2000,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
                 set_duck_value_desc(*duck, value_desc, "offset", transform_stack);
                 duck->set_point(transformation.offset);
                 duck->set_editable(editable);
-                duck->set_alternative_editable(alternative_editable);
                 duck->set_type(Duck::TYPE_POSITION);
-                duck->set_alternative_value_desc(alternative_value_desc);
                 connect_signals(duck, duck->get_value_desc(), *canvas_view);
                 add_duck(duck);
 
@@ -2079,6 +2077,23 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
                 duck->set_track_axes(true);
                 connect_signals(duck, duck->get_value_desc(), *canvas_view);
                 add_duck(duck);
+
+                // add move-origin duck
+				if (origin_editable) {
+					duck=new Duck();
+					set_duck_value_desc(*duck, origin_value_desc, transform_stack);
+					duck->set_point(Point(0, -0.2));
+					duck->set_editable(origin_editable);
+					duck->set_type(Duck::TYPE_POSITION);
+					duck->set_origin(origin_duck);
+					duck->set_move_origin(true);
+					duck->set_axis_x_angle(scale_x_duck);
+					duck->set_axis_x_mag(scale_x_duck);
+					duck->set_axis_y_angle(scale_y_duck);
+					duck->set_axis_y_mag(scale_y_duck);
+					connect_signals(duck, duck->get_origin_duck()->get_value_desc(), *canvas_view);
+					add_duck(duck);
+				}
 
                 return true;
             }
@@ -3119,12 +3134,15 @@ DuckDrag_Translate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& 
 {
 	is_moving = false;
 
-	last_translate_=Vector(0,0);
-	{
-		drag_offset_=duckmatic->find_duck(offset)->get_trans_point();
-
-		snap=Vector(0,0);
-	}
+	Duck::Handle duck = duckmatic->find_duck(offset);
+	assert(duck);
+	Duck::Handle origin_duck = duck;
+	while(origin_duck->get_move_origin() && origin_duck->get_origin_duck())
+		origin_duck = origin_duck->get_origin_duck();
+	
+	last_translate_ = Vector(0, 0);
+	drag_offset_ = duck->get_trans_point();
+	snap_offset_ = origin_duck->get_trans_point() - drag_offset_;
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
@@ -3158,21 +3176,24 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 
-	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-drag_offset_);
+	synfig::Vector offset =
+		  duckmatic->snap_point_to_grid(vector + snap_offset_)
+		- snap_offset_
+		- drag_offset_;
 	int i;
 	Time time(duckmatic->get_time());
 
 	// drag the vertex and position ducks first
 	for (i=0,iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter,i++)
 		if((*iter)->get_type() == Duck::TYPE_VERTEX || (*iter)->get_type() == Duck::TYPE_POSITION)
-			(*iter)->set_trans_point(positions[i]+vect, time);
+			(*iter)->set_trans_point(positions[i] + offset, time);
 
 	// then drag the others
 	for (i=0,iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter,i++)
 		if ((*iter)->get_type() != Duck::TYPE_VERTEX && (*iter)->get_type() != Duck::TYPE_POSITION)
-			(*iter)->set_trans_point(positions[i]+vect, time);
+			(*iter)->set_trans_point(positions[i] + offset, time);
 
-	last_translate_=vect;
+	last_translate_ = offset;
 
 	if(last_translate_.mag()>0.0001)
 		is_moving = true;

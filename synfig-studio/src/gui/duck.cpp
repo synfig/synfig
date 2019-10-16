@@ -90,6 +90,7 @@ Duck::Duck():
 	exponential_(false),
 	track_axes_(false),
 	lock_aspect_(false),
+	move_origin_(false),
 	scalar_(1),
 	origin_(0,0),
 	axis_x_angle_(Angle::deg(0)),
@@ -98,57 +99,30 @@ Duck::Duck():
 	axis_y_mag_(1),
 	rotations_(synfig::Angle::deg(0)),
 	aspect_point_(1,1)
-{ duck_count++; _DuckCounter::counter++; }
+{
+	duck_count++;
+	_DuckCounter::counter++;
+}
 
 Duck::Duck(const synfig::Point &point):
-	guid_(0),
-	type_(TYPE_POSITION),
-	editable_(false),
-	alternative_editable_(false),
-	edit_immediatelly_(false),
-	radius_(false),
-	tangent_(false),
-	hover_(false),
-	ignore_(false),
-	exponential_(false),
-	track_axes_(false),
-	lock_aspect_(false),
-	scalar_(1),
-	origin_(0,0),
-	axis_x_angle_(Angle::deg(0)),
-	axis_x_mag_(1),
-	axis_y_angle_(Angle::deg(90)),
-	axis_y_mag_(1),
-	point_(point),
-	rotations_(synfig::Angle::deg(0)),
-	aspect_point_(1,1)
-{ duck_count++; _DuckCounter::counter++;}
+	Duck()
+{
+	type_ = TYPE_POSITION;
+	point_ = point;
+}
 
-Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
-	guid_(0),
-	type_(TYPE_NONE),
-	editable_(false),
-	alternative_editable_(false),
-	edit_immediatelly_(false),
-	radius_(true),
-	tangent_(false),
-	hover_(false),
-	ignore_(false),
-	exponential_(false),
-	track_axes_(false),
-	lock_aspect_(false),
-	scalar_(1),
-	origin_(origin),
-	axis_x_angle_(Angle::deg(0)),
-	axis_x_mag_(1),
-	axis_y_angle_(Angle::deg(90)),
-	axis_y_mag_(1),
-	point_(point),
-	rotations_(synfig::Angle::deg(0)),
-	aspect_point_(1,1)
-{ duck_count++; _DuckCounter::counter++;}
+Duck::Duck(const synfig::Point &point, const synfig::Point &origin):
+	Duck()
+{
+	origin_ = origin;
+	point_ = point;
+}
 
-Duck::~Duck() { duck_count--; _DuckCounter::counter--;}
+Duck::~Duck()
+{
+	duck_count--;
+	_DuckCounter::counter--;
+}
 
 synfig::GUID
 Duck::get_data_guid()const
@@ -189,6 +163,12 @@ Duck::operator==(const Duck &rhs)const
 void
 Duck::set_point(const synfig::Point &x)
 {
+	if (get_move_origin() && origin_duck_) {
+		Point offset = get_trans_point(x) - get_trans_point();
+		origin_duck_->set_trans_point(origin_duck_->get_trans_point() + offset);
+		return;
+	}
+	
 	if (is_aspect_locked())
 		point_ = aspect_point_ * (x * aspect_point_);
 	else
@@ -225,6 +205,12 @@ Duck::get_trans_point()const
 	return transform_stack_.perform(get_sub_trans_point());
 }
 
+synfig::Point
+Duck::get_trans_point(const synfig::Point &x)const
+{
+	return transform_stack_.perform(get_sub_trans_point(x));
+}
+
 void
 Duck::set_trans_point(const synfig::Point &x)
 {
@@ -254,9 +240,7 @@ Duck::get_sub_trans_point_without_offset(const synfig::Point &x)const {
 synfig::Point
 Duck::get_sub_trans_point(const synfig::Point &x)const
 {
-	Point p(x*get_scalar());
-	return get_axis_x()*p[0]
-	     + get_axis_y()*p[1]
+	return get_sub_trans_point_without_offset(x)
 	     + get_sub_trans_origin();
 }
 

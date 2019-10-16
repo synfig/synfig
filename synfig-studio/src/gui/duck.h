@@ -129,6 +129,7 @@ private:
 	bool exponential_;
 	bool track_axes_;
 	bool lock_aspect_;
+	bool move_origin_;
 
 	// positioning
 
@@ -284,6 +285,12 @@ public:
 	void set_lock_aspect(bool r)
 		{ if (!lock_aspect_ && r) aspect_point_=point_.norm(); lock_aspect_=r; }
 
+	void set_move_origin(bool x)
+		{ move_origin_=x; }
+	//! Retrieves the exponential value
+	bool get_move_origin()const
+		{ return move_origin_; }
+
 	// positioning
 
 	void set_transform_stack(const synfig::TransformStack& x)
@@ -418,6 +425,7 @@ public:
 	// calculation of position of duck at workarea
 
 	synfig::Point get_trans_point()const;
+	synfig::Point get_trans_point(const synfig::Point &x)const;
 
 	void set_trans_point(const synfig::Point &x);
 	void set_trans_point(const synfig::Point &x, const synfig::Time &time);
