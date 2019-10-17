@@ -2087,10 +2087,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					duck->set_type(Duck::TYPE_POSITION);
 					duck->set_origin(origin_duck);
 					duck->set_move_origin(true);
-					duck->set_axis_x_angle(scale_x_duck);
-					duck->set_axis_x_mag(scale_x_duck);
+					duck->set_scalar(scalar_y);
 					duck->set_axis_y_angle(scale_y_duck);
-					duck->set_axis_y_mag(scale_y_duck);
+					duck->set_track_axes(true);
 					connect_signals(duck, duck->get_origin_duck()->get_value_desc(), *canvas_view);
 					add_duck(duck);
 				}
