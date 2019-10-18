@@ -962,6 +962,7 @@ CanvasInterface::import_sequence(
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 
+		// create layers and assign them with LayerEncapsulateSwitch action
 		Layer::Handle layer;
 		int layers_count = 0;
 		for(std::set<String>::const_iterator i = filenames.begin(); i != filenames.end(); ++i) {
@@ -1050,8 +1051,10 @@ CanvasInterface::import_sequence(
 			{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
 
 		if (layer) {
-			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer(); // get parent layer, because image is incapsulated into action switch
+			// get parent layer, because image is incapsulated into action switch
+			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer();
 			
+			// reset layer_name param of switch
 			action = Action::create("ValueDescSet");
 			if(!action)
 				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
@@ -1064,6 +1067,7 @@ CanvasInterface::import_sequence(
 			if(!get_instance()->perform_action(action))
 				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
 			
+			// set layer_depth param to zero
 			action = Action::create("ValueDescSet");
 			if(!action)
 				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
@@ -1075,7 +1079,8 @@ CanvasInterface::import_sequence(
 				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
 			if(!get_instance()->perform_action(action))
 				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
-				
+			
+			// convert layer_depth to fromreal
 			action = Action::create("ValueDescConvert");
 			if(!action)
 				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
@@ -1094,6 +1099,7 @@ CanvasInterface::import_sequence(
 				{ get_ui_interface()->error(_("Dynamic param not found.")); throw int(); }
 			LinkableValueNode::Handle valuenode_real = LinkableValueNode::Handle::cast_dynamic(i->second);
 			
+			// convert fromreal to linear (make chain: layer_depth <- fromreal <- linear)
 			action = Action::create("ValueDescConvert");
 			if(!action)
 				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
@@ -1109,13 +1115,15 @@ CanvasInterface::import_sequence(
 			
 			LinkableValueNode::Handle valuenode_linear = LinkableValueNode::Handle::cast_dynamic(valuenode_real->get_link("link"));
 			
+			// set rate param of linear to canvas fps
+			Real fps = get_canvas()->rend_desc().get_frame_rate();
 			action = Action::create("ValueDescSet");
 			if(!action)
 				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
 			action->set_param("value_desc", ValueDesc(valuenode_linear, valuenode_linear->get_link_index_from_name("slope")));
-			action->set_param("new_value", ValueBase(Real(1)));
+			action->set_param("new_value", ValueBase(fps));
 			if(!action->is_ready())
 				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
 			if(!get_instance()->perform_action(action))
