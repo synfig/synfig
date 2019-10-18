@@ -40,6 +40,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/valuedescskeletonlink.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuedesccreatechildbone.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuedescresetpose.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuedescbake.cpp"
 
         "${CMAKE_CURRENT_LIST_DIR}/valuenodeadd.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodeconstset.cpp"
