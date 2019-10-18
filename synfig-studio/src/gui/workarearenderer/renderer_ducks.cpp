@@ -88,8 +88,15 @@ struct ScreenDuck
 	bool hover;
 	Real width;
 	bool has_alternative;
+	bool has_move_origin;
 
-	ScreenDuck(): selected(), hover(), width(0), has_alternative(false) { }
+	ScreenDuck():
+		selected(),
+		hover(),
+		width(0),
+		has_alternative(false),
+		has_move_origin(false)
+	{ }
 };
 
 // TODO immense function !! break into parts and clean
@@ -357,6 +364,7 @@ Renderer_Ducks::render_vfunc(
 		screen_duck.selected=selected;
 		screen_duck.hover=hover;
 		screen_duck.has_alternative=(*iter)->get_alternative_value_desc().is_valid();
+		screen_duck.has_move_origin=(*iter)->get_move_origin();
 
 		bool splited_angle=false;
 		bool splited_radius=false;
@@ -809,6 +817,7 @@ Renderer_Ducks::render_vfunc(
 		double radius = 4;
 		double outline = 1;
 		bool duck_alternative = alternative && screen_duck_list.front().has_alternative;
+		bool duck_move_origin = screen_duck_list.front().has_move_origin;
 
 		// Draw the hovered duck last (on top of everything)
 		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
@@ -844,7 +853,7 @@ Renderer_Ducks::render_vfunc(
 			color.get_red_p(),
 			color.get_green_p(),
 			color.get_blue_p(),
-			duck_alternative ? 0.5 : 1.0
+			duck_alternative || duck_move_origin ? 0.5 : 1.0
 			);
 		cr->fill_preserve();
 
