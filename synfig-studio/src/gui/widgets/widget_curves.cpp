@@ -350,6 +350,7 @@ Widget_Curves::on_event(GdkEvent *event)
 
 		if (previous_hovered_point != hovered_point.time_point)
 			queue_draw();
+		break;
 	}
 	default:
 		break;
