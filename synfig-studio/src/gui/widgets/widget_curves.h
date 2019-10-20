@@ -52,6 +52,18 @@ class Widget_Curves: public Gtk::DrawingArea
 private:
 	struct Channel;
 	struct CurveStruct;
+	struct ChannelPoint {
+		const synfig::TimePoint * time_point;
+		int channel_idx;
+
+		ChannelPoint();
+		ChannelPoint(const synfig::TimePoint * time_point, int channel_idx);
+		void invalidate();
+		bool is_invalid() const;
+
+		bool operator ==(const ChannelPoint &b) const;
+		bool operator !=(const ChannelPoint &b) const {return !operator==(b);}
+	};
 
 	Glib::RefPtr<Gtk::Adjustment> range_adjustment;
 
@@ -63,8 +75,9 @@ private:
 
 	int waypoint_edge_length;
 
-	const synfig::TimePoint * hovered_point;
-	int hovered_curve;
+	ChannelPoint hovered_point;
+
+	bool find_channelpoint_at_position(int pos_x, int pos_y, ChannelPoint & cp);
 
 public:
 	Widget_Curves();

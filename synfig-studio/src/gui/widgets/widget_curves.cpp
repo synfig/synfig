@@ -224,9 +224,7 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 
 Widget_Curves::Widget_Curves():
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, 2)),
-	waypoint_edge_length(16),
-	hovered_point(nullptr),
-	hovered_curve(-1)
+	waypoint_edge_length(16)
 {
 	set_size_request(64, 64);
 
@@ -261,8 +259,7 @@ Widget_Curves::clear() {
 		value_desc_changed.pop_back();
 	}
 	curve_list.clear();
-	hovered_curve = -1;
-	hovered_point = nullptr;
+	hovered_point.invalidate();
 }
 
 void
@@ -270,8 +267,7 @@ Widget_Curves::refresh()
 {
 	for(std::list<CurveStruct>::iterator i = curve_list.begin(); i != curve_list.end(); ++i)
 		i->clear_all_values();
-	hovered_curve = -1;
-	hovered_point = nullptr;
+	hovered_point.invalidate();
 	queue_draw();
 }
 
@@ -345,36 +341,14 @@ Widget_Curves::on_event(GdkEvent *event)
 		break;
 	}
 	case GDK_MOTION_NOTIFY: {
-		auto previous_hovered_point = hovered_point;
-		hovered_point = nullptr;
-		for(std::list<CurveStruct>::iterator curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
-			int channels = (int)curve_it->channels.size();
-			int pointer_x, pointer_y;
-			get_pointer(pointer_x, pointer_y);
+		auto previous_hovered_point = hovered_point.time_point;
+		hovered_point.invalidate();
 
-			WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
-				[&](const synfig::TimePoint &tp, const synfig::Time &t, void *_data) -> bool
-			{
-				int px = time_plot_data->get_pixel_t_coord(t);
-				for (int c = 0; c < channels; ++c) {
-					Real y = curve_it->get_value(c, t, time_plot_data->dt);
-					int py = time_plot_data->get_pixel_y_coord(y);
+		int pointer_x, pointer_y;
+		get_pointer(pointer_x, pointer_y);
+		find_channelpoint_at_position(pointer_x, pointer_y, hovered_point);
 
-					if (pointer_x > px - waypoint_edge_length/2 && pointer_x <= px + waypoint_edge_length/2) {
-						if (pointer_y > py - waypoint_edge_length/2 && pointer_y <= py + waypoint_edge_length/2) {
-							hovered_point = &tp;
-							hovered_curve = c;
-							return true;
-						}
-					}
-				}
-				return false;
-			});
-
-			if (hovered_point)
-				break;
-		}
-		if (previous_hovered_point != hovered_point)
+		if (previous_hovered_point != hovered_point.time_point)
 			queue_draw();
 	}
 	default:
@@ -382,6 +356,40 @@ Widget_Curves::on_event(GdkEvent *event)
 	}
 
 	return Gtk::DrawingArea::on_event(event);
+}
+
+bool Widget_Curves::find_channelpoint_at_position(int pos_x, int pos_y, ChannelPoint & cp)
+{
+	cp.invalidate();
+	bool found = false;
+	for(auto curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
+		int channels = (int)curve_it->channels.size();
+
+		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
+		{
+			int px = time_plot_data->get_pixel_t_coord(t);
+			for (int c = 0; c < channels; ++c) {
+				Real y = curve_it->get_value(c, t, time_plot_data->dt);
+				int py = time_plot_data->get_pixel_y_coord(y);
+
+				if (pos_x > px - waypoint_edge_length/2 && pos_x <= px + waypoint_edge_length/2) {
+					if (pos_y > py - waypoint_edge_length/2 && pos_y <= py + waypoint_edge_length/2) {
+						cp.time_point = &tp;
+						cp.channel_idx = c;
+						*static_cast<bool*>(data) = true;
+						return true;
+					}
+				}
+			}
+			*static_cast<bool*>(data) = false;
+			return false;
+		}, &found);
+
+		if (found)
+			break;
+	}
+	return found;
 }
 
 bool
@@ -496,7 +504,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 						waypoint_edge_length - 2,
 						waypoint_edge_length - 2);
 			bool selected = false;
-			bool hover = &tp == hovered_point;
+			bool hover = &tp == hovered_point.time_point;
 			for (int c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				int py = time_plot_data->get_pixel_y_coord(y);
@@ -516,4 +524,30 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->restore();
 
 	return true;
+}
+
+Widget_Curves::ChannelPoint::ChannelPoint()
+{
+	invalidate();
+}
+
+Widget_Curves::ChannelPoint::ChannelPoint(const TimePoint* time_point, int channel_idx) :
+	time_point(time_point), channel_idx(channel_idx)
+{
+}
+
+void Widget_Curves::ChannelPoint::invalidate()
+{
+	time_point = nullptr;
+	channel_idx = -1;
+}
+
+bool Widget_Curves::ChannelPoint::is_invalid() const
+{
+	return time_point == nullptr || channel_idx < 0;
+}
+
+bool Widget_Curves::ChannelPoint::operator ==(const Widget_Curves::ChannelPoint& b) const
+{
+	return time_point == b.time_point && channel_idx == b.channel_idx;
 }
