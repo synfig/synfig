@@ -90,7 +90,7 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define THUMB_SIZE 128;
+#define THUMB_SIZE 128
 
 #ifndef stratof
 #define stratof(X) (atof((X).c_str()))
