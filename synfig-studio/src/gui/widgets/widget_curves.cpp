@@ -63,6 +63,7 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 #define MAX_CHANNELS 15
+#define ZOOM_CHANGING_FACTOR 1.25
 
 /* === G L O B A L S ======================================================= */
 
@@ -309,8 +310,15 @@ Widget_Curves::on_event(GdkEvent *event)
 			case GDK_SCROLL_RIGHT: {
 				if (event->scroll.state & GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom in
+					int x, y;
+					get_pointer(x, y);
+					double perc_y = y/(get_height()+0.0);
+					double y_value = perc_y * range_adjustment->get_page_size() + range_adjustment->get_value();
+					double new_range_page_size = range_adjustment->get_page_size()/ZOOM_CHANGING_FACTOR;
+					double new_range_value = y_value - perc_y * new_range_page_size;
 					ConfigureAdjustment(range_adjustment)
-						.set_page_size(range_adjustment->get_page_size()/1.25)
+						.set_page_size(new_range_page_size)
+						.set_value(new_range_value)
 						.finish();
 				} else {
 					// Scroll up
@@ -324,8 +332,15 @@ Widget_Curves::on_event(GdkEvent *event)
 			case GDK_SCROLL_LEFT: {
 				if (event->scroll.state & GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom out
+					int x, y;
+					get_pointer(x, y);
+					double perc_y = y/(get_height()+0.0);
+					double y_value = perc_y * range_adjustment->get_page_size() + range_adjustment->get_value();
+					double new_range_page_size = range_adjustment->get_page_size()*ZOOM_CHANGING_FACTOR;
+					double new_range_value = y_value - perc_y * new_range_page_size;
 					ConfigureAdjustment(range_adjustment)
-						.set_page_size(range_adjustment->get_page_size()*1.25)
+						.set_page_size(new_range_page_size)
+						.set_value(new_range_value)
 						.finish();
 				} else {
 					// Scroll down
