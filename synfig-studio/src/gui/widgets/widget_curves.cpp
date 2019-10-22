@@ -225,7 +225,8 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 
 Widget_Curves::Widget_Curves():
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, 2)),
-	waypoint_edge_length(16)
+	waypoint_edge_length(16),
+	pointer_state(POINTER_NONE)
 {
 	set_size_request(64, 64);
 
@@ -365,6 +366,100 @@ Widget_Curves::on_event(GdkEvent *event)
 
 		if (previous_hovered_point != hovered_point.time_point)
 			queue_draw();
+
+		if (pointer_state != POINTER_NONE) {
+			queue_draw();
+		}
+		break;
+	}
+	case GDK_BUTTON_PRESS: {
+		if (event->button.button == 3) {
+			// cancel/undo current action
+			if (pointer_state != POINTER_NONE) {
+				pointer_state = POINTER_NONE;
+				queue_draw();
+			}
+		} else if (event->button.button == 1) {
+			if (pointer_state == POINTER_NONE) {
+				get_pointer(pointer_tracking_start_x, pointer_tracking_start_y);
+				ChannelPoint pointed_item;
+				find_channelpoint_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
+				if (!pointed_item.is_invalid() && std::find(selected_points.begin(), selected_points.end(), pointed_item) != selected_points.end()) {
+					if ((event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == 0)
+						pointer_state = POINTER_DRAGGING;
+					else
+						pointer_state = POINTER_SELECTING;
+				} else {
+					pointer_state = POINTER_SELECTING;
+				}
+			}
+		}
+		break;
+	}
+	case GDK_BUTTON_RELEASE: {
+		int pointer_x, pointer_y;
+		get_pointer(pointer_x, pointer_y);
+
+		if (event->button.button == 1) {
+			bool selection_changed = false;
+
+			if (pointer_state == POINTER_SELECTING) {
+				//ChannelPoint cp;
+				//bool found = find_channelpoint_at_position(pointer_x, pointer_y, cp);
+				std::vector<ChannelPoint> cps;
+				int x0 = std::min(pointer_tracking_start_x, pointer_x);
+				int width = std::abs(pointer_tracking_start_x - pointer_x);
+				int y0 = std::min(pointer_tracking_start_y, pointer_y);
+				int height = std::abs(pointer_tracking_start_y - pointer_y);
+				if (width < 1 && height < 1) {
+					width = 1;
+					height = 1;
+				}
+				Gdk::Rectangle rect(x0, y0, width, height);
+				bool found = find_channelpoints_in_rect(rect, cps);
+				if (!found) {
+					if (selected_points.size() > 0 && (event->button.state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)) == 0) {
+						selection_changed = true;
+						selected_points.clear();
+					}
+				} else {
+					if ((event->button.state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
+						for (ChannelPoint cp : cps) {
+							std::vector<ChannelPoint>::iterator already_selection_it = std::find(selected_points.begin(), selected_points.end(), cp);
+							bool already_selected = already_selection_it != selected_points.end();
+							if (already_selected) {
+								selected_points.erase(already_selection_it);
+								selection_changed = true;
+							}
+						}
+					} else if ((event->button.state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) {
+						for (ChannelPoint cp : cps) {
+							std::vector<ChannelPoint>::iterator already_selection_it = std::find(selected_points.begin(), selected_points.end(), cp);
+							bool already_selected = already_selection_it != selected_points.end();
+							if (!already_selected) {
+								selected_points.push_back(cp);
+								selection_changed = true;
+							}
+						}
+					} else {
+						selected_points.clear();
+						selected_points = cps;
+						selection_changed = true;
+					}
+				}
+			}
+
+			if (selection_changed)
+				queue_draw();
+		}
+
+		if (event->button.button == 1 || event->button.button == 3) {
+			if (pointer_state != POINTER_NONE) {
+				pointer_state = POINTER_NONE;
+				queue_draw();
+			}
+		}
+
 		break;
 	}
 	default:
@@ -399,6 +494,47 @@ bool Widget_Curves::find_channelpoint_at_position(int pos_x, int pos_y, ChannelP
 				}
 			}
 			*static_cast<bool*>(data) = false;
+			return false;
+		}, &found);
+
+		if (found)
+			break;
+	}
+	return found;
+}
+
+bool Widget_Curves::find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list)
+{
+	list.clear();
+	bool found = false;
+
+	int x0 = rect.get_x();
+	int x1 = rect.get_x() + rect.get_width();
+	if (x0 > x1)
+		std::swap(x0, x1);
+	int y0 = rect.get_y();
+	int y1 = rect.get_y() + rect.get_height();
+	if (y0 > y1)
+		std::swap(y0, y1);
+
+	for(auto curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
+		int channels = (int)curve_it->channels.size();
+
+		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
+		{
+			int px = time_plot_data->get_pixel_t_coord(t);
+			for (int c = 0; c < channels; ++c) {
+				Real y = curve_it->get_value(c, t, time_plot_data->dt);
+				int py = time_plot_data->get_pixel_y_coord(y);
+
+				if (x0 < px + waypoint_edge_length/2 && x1 >= px - waypoint_edge_length/2) {
+					if (y0 < py + waypoint_edge_length/2 && y1 >= py - waypoint_edge_length/2) {
+						list.push_back(ChannelPoint(&tp, c));
+					}
+				}
+			}
+			*static_cast<bool*>(data) = list.size() > 0;
 			return false;
 		}, &found);
 
@@ -519,16 +655,34 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 						0, //0 - waypoint_edge_length/2 + 1 + py,
 						waypoint_edge_length - 2,
 						waypoint_edge_length - 2);
-			bool selected = false;
+			std::vector<ChannelPoint>::iterator selection_it = std::find_if(selected_points.begin(), selected_points.end(),
+																			[&tp](ChannelPoint cp) {
+				return cp.time_point == &tp;
+			});
+			bool selected = selection_it != selected_points.end();
 			bool hover = &tp == hovered_point.time_point;
 			for (int c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				int py = time_plot_data->get_pixel_y_coord(y);
 				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
+
+				std::vector<ChannelPoint>::iterator selection_it = std::find(selected_points.begin(), selected_points.end(), ChannelPoint(&tp, c));
+				bool selected = selection_it != selected_points.end();
 				WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
 			}
 			return false;
 		});
+	}
+
+	// Draw selection rectangle
+	if (pointer_state == POINTER_SELECTING) {
+		static const std::vector<double>dashed3 = {5.0};
+		cr->set_dash(dashed3, 0);
+		int x1, y1;
+		get_pointer(x1, y1);
+		cr->rectangle(pointer_tracking_start_x, pointer_tracking_start_y, x1 - pointer_tracking_start_x, y1 - pointer_tracking_start_y);
+		 // set up a dashed solid-color stroke
+		cr->stroke();
 	}
 
 	if (!curve_list.empty() && range_min < range_max)
