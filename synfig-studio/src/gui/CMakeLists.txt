@@ -49,6 +49,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/resourcehelper.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/splash.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/statemanager.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/timeplotdata.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuelink.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/waypointrenderer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/workarea.cpp"
