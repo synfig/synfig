@@ -237,11 +237,12 @@ Action::Vectorization::perform()
     studio::VectorizerCore vCore;
     synfig::Layer_Bitmap::Handle image_layer = synfig::Layer_Bitmap::Handle::cast_dynamic(layer);
 
-	Gamma gamma = layer->get_canvas()->get_root()->rend_desc().get_gamma();
+    // result of vectorization (vector of outline layers)
+    Gamma gamma = layer->get_canvas()->get_root()->rend_desc().get_gamma();
 	gamma.invert();
 
-	// result of vectorization (vector of outline layers)
-    std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(image_layer, configuration, gamma);
+    const etl::handle<UIInterface> ui_interface = get_canvas_interface()->get_ui_interface();
+    std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(image_layer,ui_interface, configuration, gamma);
 
     synfig::Canvas::Handle child_canvas;
     child_canvas=synfig::Canvas::create_inline(layer->get_canvas());

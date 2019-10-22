@@ -26,7 +26,6 @@
 #define __SYNFIG_APP_ACTION_VECTORIZATION_H
 
 /* === H E A D E R S ======================================================= */
-
 #include <synfigapp/action.h>
 #include <synfig/layer.h>
 #include "vectorizer/centerlinevectorizer.h"

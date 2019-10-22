@@ -300,16 +300,20 @@ public:
 	amount_complete(int current, int total)
 	{
 		float cur_progress=(float)current/(float)total;
-		if(cur_progress>0.0 && cur_progress<100)
+		
+		if(cur_progress>0.0 && cur_progress<1.0)
 		{
 			view->statusbar->hide();
 			view->progressbar->show();
-			view->progressbar->set_fraction((float)current/(float)total);
+			view->progressbar->set_fraction((float)cur_progress);
 			return true;
 		}
-		view->statusbar->show();
-		view->progressbar->hide();
- 
+		if(cur_progress == 1.0)
+		{
+			view->statusbar->show();
+			view->progressbar->hide();
+		}
+		
 		if(!view->is_playing())
 		{
 			if(!view->working_depth)
