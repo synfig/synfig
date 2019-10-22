@@ -77,7 +77,13 @@ private:
 
 	ChannelPoint hovered_point;
 
+	std::vector<ChannelPoint> selected_points;
+
 	bool find_channelpoint_at_position(int pos_x, int pos_y, ChannelPoint & cp);
+	bool find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list);
+
+	enum {POINTER_NONE, POINTER_DRAGGING, POINTER_SELECTING} pointer_state;
+	int pointer_tracking_start_x, pointer_tracking_start_y;
 
 public:
 	Widget_Curves();
