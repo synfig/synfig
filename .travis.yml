@@ -72,6 +72,7 @@ matrix:
     script: ./travis.sh
     after_script: ccache -s # show ccache stats
 
-  #allow_failures:
+  allow_failures:
   #  - env: CMAKE=true
   #  - os: osx
+    - osx_image: xcode10
