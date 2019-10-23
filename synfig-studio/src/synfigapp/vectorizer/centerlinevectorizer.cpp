@@ -66,8 +66,12 @@ inline void deleteSkeletonList(SkeletonList *skeleton) {
 // takes two arguments ( image layer handle, config )
 
 std::vector< etl::handle<synfig::Layer> > 
+<<<<<<< HEAD
 VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image,const etl::handle<UIInterface> &ui_interface
  const CenterlineConfiguration &configuration,const Gamma &gamma)
+=======
+VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image,const etl::handle<synfigapp::UIInterface> &ui_interface,const CenterlineConfiguration &configuration)
+>>>>>>> update:progress bar working
  {
   std::cout<<"Inside CenterlineVectorize\n";
   VectorizerCoreGlobals globals;

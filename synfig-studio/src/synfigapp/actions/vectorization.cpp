@@ -280,7 +280,7 @@ Action::Vectorization::perform()
  	    get_canvas_interface()->signal_layer_inserted()(new_layer,0); 
         get_canvas_interface()->signal_layer_moved()(new_layer,move_depth-1,get_canvas());
     } 
-
+    //ui_interface->amount_complete(2,1);//just to hide the progress bar
 }
 
 void
