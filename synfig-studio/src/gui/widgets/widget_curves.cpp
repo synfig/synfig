@@ -404,8 +404,6 @@ Widget_Curves::on_event(GdkEvent *event)
 			bool selection_changed = false;
 
 			if (pointer_state == POINTER_SELECTING) {
-				//ChannelPoint cp;
-				//bool found = find_channelpoint_at_position(pointer_x, pointer_y, cp);
 				std::vector<ChannelPoint> cps;
 				int x0 = std::min(pointer_tracking_start_x, pointer_x);
 				int width = std::abs(pointer_tracking_start_x - pointer_x);
@@ -655,11 +653,6 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 						0, //0 - waypoint_edge_length/2 + 1 + py,
 						waypoint_edge_length - 2,
 						waypoint_edge_length - 2);
-			std::vector<ChannelPoint>::iterator selection_it = std::find_if(selected_points.begin(), selected_points.end(),
-																			[&tp](ChannelPoint cp) {
-				return cp.time_point == &tp;
-			});
-			bool selected = selection_it != selected_points.end();
 			bool hover = &tp == hovered_point.time_point;
 			for (int c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
