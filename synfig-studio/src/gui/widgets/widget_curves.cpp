@@ -276,7 +276,7 @@ Widget_Curves::refresh()
 void
 Widget_Curves::set_value_descs(const std::list<ValueDesc> &value_descs)
 {
-	curve_list.clear();
+	clear();
 	CurveStruct curve_struct;
 	for(std::list<ValueDesc>::const_iterator i = value_descs.begin(); i != value_descs.end(); ++i) {
 		curve_struct.init(*i);
