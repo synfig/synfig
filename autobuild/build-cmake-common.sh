@@ -11,6 +11,7 @@ print_build_settings_and_exit="false"
 write_portable_run_code="true"
 synfigstudio_data_prefix=""
 incremental_build="false"
+rerender_images="false"
 
 # Define build dirs
 cmake_debug_build_dir="_debug"
@@ -87,12 +88,12 @@ build_synfig_studio() {
     synfig_studio_make_cmd="make build_images"
     
     # Don't rerender the images if incremental is activated
-    if [ "$incremental_build" == "true" ]
+    if [ "$incremental_build" == "true" ] || [ ! "$rerender_images" == "true" ]
         then
             synfig_studio_make_cmd="make synfigstudio"
     fi
     
-    # Configure, make and install
+    # Configure, make, render images and install
     cmake "$cmake_build_type_option" "$cmake_prefix_option" "$cmake_install_prefix_option" "$cmake_cxxflags_option" "$cmake_dataprefix_option" ../../synfig-studio/ && $make_build_command && run_command_in_outenv "$synfig_studio_make_cmd" && make install
     
     if [ $? -ne 0 ]
@@ -118,18 +119,15 @@ clean_build_dir() {
 }
 
 gen_dir_structure() {
-    if [ "$incremental_build" == "false" ]
-        then
-            echo "Construct directory structure"
+    echo "Construct directory structure"
 
-            cd ${absolute_base_dir}
-            mkdir -p "./${cmake_build_dir}/${etl_build_dir}"
-            mkdir -p "./${cmake_build_dir}/${synfig_build_dir}"
-            mkdir -p "./${cmake_build_dir}/${synfigstudio_build_dir}"
-            mkdir -p "./${cmake_build_dir}/${out_dir}"
-            
-            echo "Constructed directory structure"
-    fi
+    cd ${absolute_base_dir}
+    mkdir -p "./${cmake_build_dir}/${etl_build_dir}"
+    mkdir -p "./${cmake_build_dir}/${synfig_build_dir}"
+    mkdir -p "./${cmake_build_dir}/${synfigstudio_build_dir}"
+    mkdir -p "./${cmake_build_dir}/${out_dir}"
+    
+    echo "Constructed directory structure"
 }
 
 get_run_cmd_prefix() {
@@ -147,6 +145,7 @@ parse_build_arguments() {
             [ $1 == "-p" ] && print_build_settings_and_exit="true"
             [ $1 == "-n" ] && write_portable_run_code="false"
             [ $1 == "-i" ] && incremental_build="true"
+            [ $1 == "--rerender" ] && rerender_images="true"
             [ $1 == "-j" ] && make_jobs_parameter=$2 && shift
             [ $1 == "--data-prefix" ] && synfigstudio_data_prefix=$2 && shift
             shift

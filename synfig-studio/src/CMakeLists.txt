@@ -38,10 +38,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 include_directories(
     SYSTEM
-#         ${synfig_INCLUDE_DIRS}
         ${SIGCPP_INCLUDE_DIRS}
         ${GTKMM_INCLUDE_DIRS}
 )
+
+##
+## Search path for libs (needed to link with libsynfig)
+##
+link_directories(${CMAKE_PREFIX_PATH}/lib)
 
 ##
 ## Sub-directories
