@@ -180,7 +180,7 @@ def change_opacity_group(layer, lottie):
                 active_time.add((now, later))
             itr += 1
         active_time = sorted(active_time)
-        deactive_time = sorted(flip_time(active_time))
+        inactive_time = sorted(flip_time(active_time))
 
         if c_layer.get_type() in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
             anim_type = "effects_opacity"
@@ -193,7 +193,7 @@ def change_opacity_group(layer, lottie):
             sw = 3
             dic = root["layers"][z_value]["shapes"][1]["o"]
 
-        animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
+        animation = gen_hold_waypoints(inactive_time, c_layer, anim_type)
         animation.animate(anim_type)
 
         if sw == 1:
@@ -243,7 +243,7 @@ def change_opacity_switch(layer, lottie):
             waypoint_itr += 1
 
         active_time = sorted(active_time)
-        deactive_time = sorted(flip_time(active_time))
+        inactive_time = sorted(flip_time(active_time))
 
         sw = 0  # To decide which if condition to go to
         if c_layer.get_type() in set.union(settings.SHAPE_SOLID_LAYER, settings.SOLID_LAYER):
@@ -256,7 +256,7 @@ def change_opacity_switch(layer, lottie):
             anim_type = "opacity"
             sw = 3
 
-        animation = gen_hold_waypoints(deactive_time, c_layer, anim_type)
+        animation = gen_hold_waypoints(inactive_time, c_layer, anim_type)
         animation.animate(anim_type)
 
         if sw == 1:
@@ -293,13 +293,13 @@ def flip_time(time):
     return ret
 
 
-def gen_hold_waypoints(deactive_time, layer, anim_type):
+def gen_hold_waypoints(inactive_time, layer, anim_type):
     """
     Will only be used to modify opacity waypoints, and set zero values where the
-    layer is deactivated
+    layer is inactive
 
     Args:
-        deactive_time (set) : Range of time when the layer will be deactive
+        inactive_time (set) : Range of time when the layer will be inactive
         layer (common.Layer.Layer) : Synfig format layer
         anim_type (str) : Specifies whether it is effects_opacity or opacity (it
                           will effect a factor of 100)
@@ -315,7 +315,7 @@ def gen_hold_waypoints(deactive_time, layer, anim_type):
     opacity.fill_path(opacity_dict, "o")
     opacity_dict = opacity_dict["o"]
 
-    for it in deactive_time:
+    for it in inactive_time:
         # First add waypoints at both points, make it constant interval
         # then remove any in-between waypoints
         first = round(it[0] * settings.lottie_format["fr"])
