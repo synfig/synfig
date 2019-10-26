@@ -484,6 +484,7 @@ bool Widget_Curves::find_channelpoint_at_position(int pos_x, int pos_y, ChannelP
 
 				if (pos_x > px - waypoint_edge_length/2 && pos_x <= px + waypoint_edge_length/2) {
 					if (pos_y > py - waypoint_edge_length/2 && pos_y <= py + waypoint_edge_length/2) {
+						cp.curve_it = curve_it;
 						cp.time_point = &tp;
 						cp.channel_idx = c;
 						*static_cast<bool*>(data) = true;
@@ -528,7 +529,7 @@ bool Widget_Curves::find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<
 
 				if (x0 < px + waypoint_edge_length/2 && x1 >= px - waypoint_edge_length/2) {
 					if (y0 < py + waypoint_edge_length/2 && y1 >= py - waypoint_edge_length/2) {
-						list.push_back(ChannelPoint(&tp, c));
+						list.push_back(ChannelPoint(curve_it, &tp, c));
 					}
 				}
 			}
@@ -659,7 +660,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				int py = time_plot_data->get_pixel_y_coord(y);
 				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
 
-				std::vector<ChannelPoint>::iterator selection_it = std::find(selected_points.begin(), selected_points.end(), ChannelPoint(&tp, c));
+				std::vector<ChannelPoint>::iterator selection_it = std::find(selected_points.begin(), selected_points.end(), ChannelPoint(curve_it, &tp, c));
 				bool selected = selection_it != selected_points.end();
 				WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
 			}
@@ -694,8 +695,8 @@ Widget_Curves::ChannelPoint::ChannelPoint()
 	invalidate();
 }
 
-Widget_Curves::ChannelPoint::ChannelPoint(const TimePoint* time_point, int channel_idx) :
-	time_point(time_point), channel_idx(channel_idx)
+Widget_Curves::ChannelPoint::ChannelPoint(std::list<CurveStruct>::iterator& curve_it, const TimePoint* time_point, int channel_idx) :
+	curve_it(curve_it), time_point(time_point), channel_idx(channel_idx)
 {
 }
 
@@ -712,5 +713,5 @@ bool Widget_Curves::ChannelPoint::is_invalid() const
 
 bool Widget_Curves::ChannelPoint::operator ==(const Widget_Curves::ChannelPoint& b) const
 {
-	return time_point == b.time_point && channel_idx == b.channel_idx;
+	return curve_it == b.curve_it && time_point == b.time_point && channel_idx == b.channel_idx;
 }
