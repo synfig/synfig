@@ -76,7 +76,7 @@ Dock_Curves::~Dock_Curves()
 static void
 _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 {
-	LayerParamTreeStore::Model model;
+	LayerParamTreeStore::Model param_model;
 	Gtk::TreeIter iter;
 	if(!param_tree_view->get_selection()->count_selected_rows())
 	{
@@ -87,8 +87,12 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 
 	std::list<synfigapp::ValueDesc> value_descs;
 
-	iter=param_tree_view->get_selection()->get_selected();
-	value_descs.push_back((*iter)[model.value_desc]);
+	auto path_list = param_tree_view->get_selection()->get_selected_rows();
+	auto model = param_tree_view->get_model();
+	for (auto path_it : path_list) {
+		auto iter = model->get_iter(path_it);
+		value_descs.push_back((*iter)[param_model.value_desc]);
+	}
 	curves->set_value_descs(value_descs);
 }
 
