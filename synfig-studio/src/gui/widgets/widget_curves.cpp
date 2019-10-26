@@ -505,7 +505,6 @@ bool Widget_Curves::find_channelpoint_at_position(int pos_x, int pos_y, ChannelP
 bool Widget_Curves::find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list)
 {
 	list.clear();
-	bool found = false;
 
 	int x0 = rect.get_x();
 	int x1 = rect.get_x() + rect.get_width();
@@ -533,14 +532,10 @@ bool Widget_Curves::find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<
 					}
 				}
 			}
-			*static_cast<bool*>(data) = list.size() > 0;
 			return false;
-		}, &found);
-
-		if (found)
-			break;
+		});
 	}
-	return found;
+	return list.size() > 0;
 }
 
 bool
