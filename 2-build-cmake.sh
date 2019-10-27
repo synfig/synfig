@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 #
 # = Usage: =
-#    ./build-cmake.sh [OPTIONS]
+#    ./2-build-cmake.sh [OPTIONS]
 #
 # OPTIONS
 # -d = Debug build (standard)
 # -r = Release build
 # -n = Don't write the run-portable.sh to the out dir
 # -j NUMBER = Set parallel make jobs (1 <= NUMBER <= 999) (standard is 1)
-# -i = Enable incremental build (disables the clean_build_dir, gen_dir_structure and the build_images steps). Before using this option, you will have to build Synfig Studio on time without this option on the selected build mode
+# -i = Enable incremental build (disables the clean_build_dir, gen_dir_structure and the build_images steps). Before using this option, you will have to build Synfig Studio on time without this option on the selected build mode (or use the --rerender option)
+# --rerender = Rerender the images (even if incremental build is activated)
 # -p = Only print out the current active build settings and exit
 # --data-prefix = The installed Synfig Studio looks for it's data (icons, sounds, etc) in [DATA_PREFIX]/share/. This option sets a custom DATA_PREFIX. (Standard is the out directory)
 #
