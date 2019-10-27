@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # = Usage: =
-#    ./build-cmake.sh [OPTIONS]
+#    ./2-build-cmake.sh [OPTIONS]
 #
 # OPTIONS
 # -d = Debug build (standard)

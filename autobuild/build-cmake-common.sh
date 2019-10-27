@@ -88,7 +88,7 @@ build_synfig_studio() {
     synfig_studio_make_cmd="make build_images"
     
     # Don't rerender the images if incremental is activated
-    if [ "$incremental_build" == "true" ] || [ ! "$rerender_images" == "true" ]
+    if [ "$incremental_build" == "true" ] && [ "$rerender_images" == "false" ]
         then
             synfig_studio_make_cmd="make synfigstudio"
     fi
