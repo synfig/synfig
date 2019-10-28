@@ -1,8 +1,5 @@
 # $Id$
 
-EXTRA_DIST = \
-	compview.cpp
-
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
@@ -38,7 +35,6 @@ EVENTS_HH = \
 	event_mouse.h
 
 OTHER_HH = \
-	compview.h \
 	eventkey.h \
 	smach.h \
 	timemodel.h \
