@@ -384,11 +384,16 @@ Widget_Curves::on_event(GdkEvent *event)
 				get_pointer(pointer_tracking_start_x, pointer_tracking_start_y);
 				ChannelPoint pointed_item;
 				find_channelpoint_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
-				if (pointed_item.is_valid() && std::find(selected_points.begin(), selected_points.end(), pointed_item) != selected_points.end()) {
-					if ((event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == 0)
+				if (pointed_item.is_valid()) {
+					bool is_already_selected = std::find(selected_points.begin(), selected_points.end(), pointed_item) != selected_points.end();
+					if (is_already_selected) {
+						if ((event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == 0) {
+							pointer_state = POINTER_DRAGGING;
+						} else
+							pointer_state = POINTER_SELECTING;
+					} else {
 						pointer_state = POINTER_DRAGGING;
-					else
-						pointer_state = POINTER_SELECTING;
+					}
 				} else {
 					pointer_state = POINTER_SELECTING;
 				}
