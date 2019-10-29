@@ -54,11 +54,11 @@ private:
 	struct CurveStruct;
 	struct ChannelPoint {
 		std::list<CurveStruct>::iterator curve_it;
-		const synfig::TimePoint * time_point;
+		synfig::TimePoint time_point;
 		int channel_idx;
 
 		ChannelPoint();
-		ChannelPoint(std::list<CurveStruct>::iterator &curve_it, const synfig::TimePoint * time_point, int channel_idx);
+		ChannelPoint(std::list<CurveStruct>::iterator &curve_it, const synfig::TimePoint time_point, int channel_idx);
 		void invalidate();
 		bool is_invalid() const;
 
