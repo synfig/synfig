@@ -209,7 +209,7 @@ TimePlotData::get_double_pixel_t_coord(const synfig::Time& t) const
 int
 TimePlotData::get_pixel_y_coord(synfig::Real y) const
 {
-	return etl::round_to_int((y - range_lower) * range_k);
+	return etl::round_to_int((-y - range_lower) * range_k);
 }
 
 synfig::Time
@@ -220,7 +220,7 @@ TimePlotData::get_t_from_pixel_coord(double pixel) const
 
 double TimePlotData::get_y_from_pixel_coord(double pixel) const
 {
-	return range_lower + pixel / range_k;
+	return -(range_lower + pixel / range_k);
 }
 
 }
