@@ -723,6 +723,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 	case GDK_MOTION_NOTIFY:
 		actual_time = ((double)event->motion.x - (double)cell_area.get_x())*k + (double)lower;
 		break;
+	case GDK_2BUTTON_PRESS:
 	case GDK_BUTTON_PRESS:
 	case GDK_BUTTON_RELEASE:
 		actual_time = ((double)event->button.x - (double)cell_area.get_x())*k + (double)lower;
@@ -751,6 +752,7 @@ CellRenderer_TimeTrack::activate_vfunc(
     switch(event->type) {
 	case GDK_MOTION_NOTIFY:
 		return true;
+	case GDK_2BUTTON_PRESS:
 	case GDK_BUTTON_PRESS: {
 		//Deal with time point selection, but only if they aren't involved in the insanity...
 		Time stime;
@@ -799,6 +801,15 @@ CellRenderer_TimeTrack::activate_vfunc(
 				//otherwise look at adding it
 				//for replace the list was cleared earlier, and for add it wasn't so it works
 				sel_times.insert(stime);
+				if (sel_times.size() == 1 && event->type == GDK_2BUTTON_PRESS) {
+					ValueBase v = value_desc.get_value(stime);
+					etl::handle<Node> node = v.get_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
+					               ? etl::handle<Node>(v.get(Canvas::Handle()))
+					               : etl::handle<Node>(value_desc.get_value_node());
+					if (node)
+						signal_waypoint_clicked_cellrenderer()(node, stime, time_offset, time_dilation, -1);
+				} 
+				
 			}
 
 			if (selected || !sel_times.empty()) {

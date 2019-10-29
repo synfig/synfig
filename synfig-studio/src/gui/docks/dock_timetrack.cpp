@@ -159,6 +159,7 @@ public:
 	{
 		switch(event->type)
 		{
+		case GDK_2BUTTON_PRESS:
 		case GDK_BUTTON_PRESS:
 			{
 				Gtk::TreeModel::Path path;
