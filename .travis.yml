@@ -22,9 +22,6 @@ matrix:
       - ccache -s
       - ccache --set-config=compression=true
     script: ./travis.sh
-    after_script:
-      - autobuild/synfigrenderer-regression-test.sh
-      - ccache -s
 
   - os: linux
     name: "Synfig Studio Ubuntu 16.04 Xenial (CMake/Ninja)"
@@ -38,6 +35,17 @@ matrix:
       - ccache --set-config=compression=true
     script: mkdir -p build && cd build && cmake .. -GNinja && ninja
     after_script: ccache -s # show ccache stats
+
+  - os: linux
+    name: "Test render engine for regressions"
+    sudo: required
+    dist: xenial
+    cache: ccache
+    before_install: ./1-setup-linux-native.sh
+    before_script:
+      - ccache -s
+      - ccache --set-config=compression=true
+    script: ./travis.sh core && autobuild/synfigrenderer-regression-test.sh
 
   - os: osx
     name: "Synfig Studio OS X 10.10 Yosemite (Clang/Autotools/Brew)"
@@ -76,3 +84,4 @@ matrix:
   #  - env: CMAKE=true
   #  - os: osx
     - osx_image: xcode10
+    - name: "Test render engine for regressions"
