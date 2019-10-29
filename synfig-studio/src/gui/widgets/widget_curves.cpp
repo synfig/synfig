@@ -649,7 +649,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 						0, //0 - waypoint_edge_length/2 + 1 + py,
 						waypoint_edge_length - 2,
 						waypoint_edge_length - 2);
-			bool hover = tp == hovered_point.time_point;
+			bool hover = !hovered_point.is_invalid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
 			for (int c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				int py = time_plot_data->get_pixel_y_coord(y);
