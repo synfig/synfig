@@ -161,7 +161,7 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 		// we are looking for
 		std::map<Real, Real>::iterator i = channels[channel].values.lower_bound(time);
 		if (i != channels[channel].values.end() && i->first - time <= tolerance)
-			return -i->second;
+			return i->second;
 
 		// Since that didn't work, we now need
 		// to go ahead and figure out what the
@@ -217,7 +217,7 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 			return Real(0.0);
 		}
 
-		return -channels[channel].values[time];
+		return channels[channel].values[time];
 	}
 };
 
