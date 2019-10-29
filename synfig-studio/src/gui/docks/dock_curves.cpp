@@ -74,7 +74,7 @@ Dock_Curves::~Dock_Curves()
 }
 
 static void
-_curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
+_curve_selection_changed(Gtk::TreeView* param_tree_view, Widget_Curves* curves, Dock_Curves* dock)
 {
 	LayerParamTreeStore::Model param_model;
 	Gtk::TreeIter iter;
@@ -93,7 +93,7 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 		auto iter = model->get_iter(path_it);
 		value_descs.push_back((*iter)[param_model.value_desc]);
 	}
-	curves->set_value_descs(value_descs);
+	curves->set_value_descs(dock->get_canvas_interface(), value_descs);
 }
 
 void
@@ -113,8 +113,10 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	param_tree_view->get_selection()->signal_changed().connect(
 		sigc::bind(
 			sigc::bind(
-				sigc::ptr_fun(
-					_curve_selection_changed
+				sigc::bind(
+					sigc::ptr_fun(
+						_curve_selection_changed
+					),this
 				),curves
 			),param_tree_view
 		)
