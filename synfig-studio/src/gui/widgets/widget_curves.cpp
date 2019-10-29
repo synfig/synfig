@@ -384,7 +384,7 @@ Widget_Curves::on_event(GdkEvent *event)
 				get_pointer(pointer_tracking_start_x, pointer_tracking_start_y);
 				ChannelPoint pointed_item;
 				find_channelpoint_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
-				if (!pointed_item.is_invalid() && std::find(selected_points.begin(), selected_points.end(), pointed_item) != selected_points.end()) {
+				if (pointed_item.is_valid() && std::find(selected_points.begin(), selected_points.end(), pointed_item) != selected_points.end()) {
 					if ((event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == 0)
 						pointer_state = POINTER_DRAGGING;
 					else
@@ -649,7 +649,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 						0, //0 - waypoint_edge_length/2 + 1 + py,
 						waypoint_edge_length - 2,
 						waypoint_edge_length - 2);
-			bool hover = !hovered_point.is_invalid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
+			bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
 			for (int c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				int py = time_plot_data->get_pixel_y_coord(y);
@@ -700,9 +700,9 @@ void Widget_Curves::ChannelPoint::invalidate()
 	channel_idx = -1;
 }
 
-bool Widget_Curves::ChannelPoint::is_invalid() const
+bool Widget_Curves::ChannelPoint::is_valid() const
 {
-	return channel_idx < 0;
+	return channel_idx >= 0;
 }
 
 bool Widget_Curves::ChannelPoint::operator ==(const Widget_Curves::ChannelPoint& b) const
