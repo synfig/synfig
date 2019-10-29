@@ -42,6 +42,7 @@
 #include <synfig/blinepoint.h>
 #include <synfig/widthpoint.h>
 #include <synfig/dashitem.h>
+#include <synfig/general.h>
 
 #include <gui/helpers.h>
 
@@ -274,8 +275,9 @@ Widget_Curves::refresh()
 }
 
 void
-Widget_Curves::set_value_descs(const std::list<ValueDesc> &value_descs)
+Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list<ValueDesc> &value_descs)
 {
+	canvas_interface = canvas_interface_;
 	clear();
 	CurveStruct curve_struct;
 	for(std::list<ValueDesc>::const_iterator i = value_descs.begin(); i != value_descs.end(); ++i) {
@@ -362,11 +364,39 @@ Widget_Curves::on_event(GdkEvent *event)
 
 		int pointer_x, pointer_y;
 		get_pointer(pointer_x, pointer_y);
-		find_channelpoint_at_position(pointer_x, pointer_y, hovered_point);
+		if (pointer_state != POINTER_DRAGGING)
+			find_channelpoint_at_position(pointer_x, pointer_y, hovered_point);
 
 		if (previous_hovered_point != hovered_point)
 			queue_draw();
 
+		if (pointer_state == POINTER_DRAGGING) {
+			int pointer_dy = pointer_y - pointer_tracking_start_y;
+			int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
+			int waypoint_dy = current_y - active_point_initial_y;
+			int dy = pointer_dy - waypoint_dy;
+			for (auto point : selected_points) {
+				if (!point.curve_it->value_desc.is_animated())
+					continue;
+				auto time = point.time_point.get_time();
+				auto v = point.get_value(time_plot_data->dt);
+
+				auto pix_y = time_plot_data->get_pixel_y_coord(v);
+				pix_y += dy;
+				v = time_plot_data->get_y_from_pixel_coord(pix_y);
+				auto value_base = point.curve_it->value_desc.get_value(time);
+
+				set_value_base_for_channel_point(value_base, point, v);
+
+				bool ok = canvas_interface->change_value_at_time(point.curve_it->value_desc, value_base, time);
+				if (!ok) {
+					// Cancel dragging
+					cancel_dragging();
+					pointer_state = POINTER_NONE;
+				}
+			}
+			queue_draw();
+		}
 		if (pointer_state != POINTER_NONE) {
 			queue_draw();
 		}
@@ -376,6 +406,7 @@ Widget_Curves::on_event(GdkEvent *event)
 		if (event->button.button == 3) {
 			// cancel/undo current action
 			if (pointer_state != POINTER_NONE) {
+				cancel_dragging();
 				pointer_state = POINTER_NONE;
 				queue_draw();
 			}
@@ -389,10 +420,16 @@ Widget_Curves::on_event(GdkEvent *event)
 					if (is_already_selected) {
 						if ((event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == 0) {
 							pointer_state = POINTER_DRAGGING;
+							active_point = pointed_item;
+							active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
 						} else
 							pointer_state = POINTER_SELECTING;
 					} else {
+						selected_points.clear();
+						selected_points.push_back(pointed_item);
 						pointer_state = POINTER_DRAGGING;
+						active_point = pointed_item;
+						active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
 					}
 				} else {
 					pointer_state = POINTER_SELECTING;
@@ -541,6 +578,169 @@ bool Widget_Curves::find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<
 		});
 	}
 	return list.size() > 0;
+}
+
+void Widget_Curves::cancel_dragging()
+{
+	if (pointer_state != POINTER_DRAGGING)
+		return;
+	int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
+	int waypoint_dy = current_y - active_point_initial_y;
+	int dy = - waypoint_dy;
+	for (auto point : selected_points) {
+		if (!point.curve_it->value_desc.is_animated())
+			continue;
+		auto time = point.time_point.get_time();
+		auto v = point.get_value(time_plot_data->dt);
+
+		auto pix_y = time_plot_data->get_pixel_y_coord(v);
+		pix_y += dy;
+		v = time_plot_data->get_y_from_pixel_coord(pix_y);
+		auto value_base = point.curve_it->value_desc.get_value(time);
+
+		set_value_base_for_channel_point(value_base, point, v);
+
+		if (canvas_interface->get_mode() & EditMode::MODE_ANIMATE)
+			canvas_interface->change_value_at_time(point.curve_it->value_desc, value_base, time);
+	}
+	queue_draw();
+}
+
+void Widget_Curves::set_value_base_for_channel_point(ValueBase& value_base, const Widget_Curves::ChannelPoint& channel_point, Real v)
+{
+	Type& type = channel_point.curve_it->value_desc.get_value_type();
+	if (type == type_real) {
+		value_base.set(v);
+	} else
+	if (type == type_time) {
+		value_base.set(Time(v));
+	} else
+	if (type == type_integer) {
+		value_base.set((int)v);
+	} else
+	if (type == type_bool) {
+		value_base.set(v > 0.5);
+	} else
+	if (type == type_angle) {
+		value_base.set(Angle::rad(v));
+	} else
+	if (type == type_color) {
+		v = clamp(v, 0.0, 1.0);
+		auto color = value_base.get(Color());
+		switch (channel_point.channel_idx) {
+		case 0:
+			color.set_r(v);
+			break;
+		case 1:
+			color.set_g(v);
+			break;
+		case 2:
+			color.set_b(v);
+			break;
+		case 3:
+			color.set_a(v);
+			break;
+		default:
+			synfig::error("Invalid index for Color curve channel: %d", channel_point.channel_idx);
+			break;
+		}
+
+		value_base.set(color);
+	} else
+	if (type == type_vector) {
+		if (channel_point.channel_idx > 1) {
+			synfig::error("Invalid index for Vector curve channel: %d", channel_point.channel_idx);
+		} else {
+			auto vector = value_base.get(Vector());
+			vector[channel_point.channel_idx] = v;
+			value_base.set(vector);
+		}
+	} else
+	if (type == type_bline_point) {
+		BLinePoint bline_point = value_base.get(BLinePoint());
+		switch (channel_point.channel_idx) {
+		case 0: {
+			Vector vertex = bline_point.get_vertex();
+			vertex[0] = v;
+			bline_point.set_vertex(vertex);
+			break;
+		}
+		case 1: {
+			Vector vertex = bline_point.get_vertex();
+			vertex[1] = v;
+			bline_point.set_vertex(vertex);
+			break;
+		}
+		case 2:
+			bline_point.set_width( v < 0 ? 0 : v);
+			break;
+		case 3:
+			bline_point.set_origin(v);
+			break;
+		case 4:
+			bline_point.set_split_tangent_both(v > 0.5);
+			break;
+		case 5: {
+			Vector tangent = bline_point.get_tangent1();
+			tangent[0] = v;
+			bline_point.set_tangent1(tangent);
+			break;
+		}
+		case 6: {
+			Vector tangent = bline_point.get_tangent1();
+			tangent[1] = v;
+			bline_point.set_tangent1(tangent);
+			break;
+		}
+		case 7: {
+			Vector tangent = bline_point.get_tangent2();
+			tangent[0] = v;
+			bline_point.set_tangent2(tangent);
+			break;
+		}
+		case 8: {
+			Vector tangent = bline_point.get_tangent2();
+			tangent[1] = v;
+			bline_point.set_tangent2(tangent);
+			break;
+		}
+		case 9:
+			bline_point.set_split_tangent_radius(v > 0.5);
+			break;
+		case 10:
+			bline_point.set_split_tangent_angle(v > 0.5);
+			break;
+		default:
+			synfig::error("Invalid index for BLinePoint curve channel: %d", channel_point.channel_idx);
+		}
+		value_base.set(bline_point);
+	} else
+	if (type == type_width_point) {
+		WidthPoint width_point = value_base.get(WidthPoint());
+		if (channel_point.channel_idx == 0) {
+			width_point.set_position(v);
+		} else if (channel_point.channel_idx == 1) {
+			if (v < 0)
+				v = 0;
+			width_point.set_width(v);
+		} else {
+			synfig::error("Invalid index for WidthPoint curve channel: %d", channel_point.channel_idx);
+		}
+		value_base.set(width_point);
+	} else
+	if (type == type_dash_item) {
+		DashItem dash_item = value_base.get(DashItem());
+		if (channel_point.channel_idx == 0) {
+			dash_item.set_offset(v);
+		} else if (channel_point.channel_idx == 1) {
+			if (v < 0)
+				v = 0;
+			dash_item.set_length(v);
+		} else {
+			synfig::error("Invalid index for DashItem curve channel: %d", channel_point.channel_idx);
+		}
+		value_base.set(dash_item);
+	}
 }
 
 bool
@@ -713,4 +913,9 @@ bool Widget_Curves::ChannelPoint::is_valid() const
 bool Widget_Curves::ChannelPoint::operator ==(const Widget_Curves::ChannelPoint& b) const
 {
 	return curve_it == b.curve_it && time_point == b.time_point && channel_idx == b.channel_idx;
+}
+
+Real Widget_Curves::ChannelPoint::get_value(Real time_tolerance) const
+{
+	return curve_it->get_value(channel_idx, time_point.get_time(), time_tolerance);
 }

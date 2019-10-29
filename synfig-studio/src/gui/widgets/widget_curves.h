@@ -34,6 +34,7 @@
 #include <gtkmm/adjustment.h>
 
 #include <synfigapp/value_desc.h>
+#include <synfigapp/canvasinterface.h>
 
 #include <gui/timemodel.h>
 
@@ -64,7 +65,11 @@ private:
 
 		bool operator ==(const ChannelPoint &b) const;
 		bool operator !=(const ChannelPoint &b) const {return !operator==(b);}
+
+		synfig::Real get_value(synfig::Real time_tolerance) const;
 	};
+
+	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
 	Glib::RefPtr<Gtk::Adjustment> range_adjustment;
 
@@ -85,6 +90,11 @@ private:
 
 	enum {POINTER_NONE, POINTER_DRAGGING, POINTER_SELECTING} pointer_state;
 	int pointer_tracking_start_x, pointer_tracking_start_y;
+	ChannelPoint active_point;
+	int active_point_initial_y;
+	void cancel_dragging();
+
+	static void set_value_base_for_channel_point(synfig::ValueBase &value_base, const ChannelPoint &channel_point, synfig::Real v);
 
 public:
 	Widget_Curves();
@@ -95,7 +105,7 @@ public:
 	const etl::handle<TimeModel>& get_time_model() const;
 	void set_time_model(const etl::handle<TimeModel> &x);
 
-	void set_value_descs(const std::list<synfigapp::ValueDesc> &value_descs);
+	void set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list<synfigapp::ValueDesc> &value_descs);
 	void clear();
 	void refresh();
 
