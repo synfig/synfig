@@ -92,6 +92,7 @@ private:
 	int pointer_tracking_start_x, pointer_tracking_start_y;
 	ChannelPoint active_point;
 	int active_point_initial_y;
+	void start_dragging(const ChannelPoint &pointed_item);
 	void cancel_dragging();
 
 	static void set_value_base_for_channel_point(synfig::ValueBase &value_base, const ChannelPoint &channel_point, synfig::Real v);

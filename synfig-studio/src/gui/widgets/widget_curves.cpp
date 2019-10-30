@@ -419,17 +419,15 @@ Widget_Curves::on_event(GdkEvent *event)
 					bool is_already_selected = std::find(selected_points.begin(), selected_points.end(), pointed_item) != selected_points.end();
 					if (is_already_selected) {
 						if ((event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == 0) {
+							start_dragging(pointed_item);
 							pointer_state = POINTER_DRAGGING;
-							active_point = pointed_item;
-							active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
 						} else
 							pointer_state = POINTER_SELECTING;
 					} else {
 						selected_points.clear();
 						selected_points.push_back(pointed_item);
+						start_dragging(pointed_item);
 						pointer_state = POINTER_DRAGGING;
-						active_point = pointed_item;
-						active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
 					}
 				} else {
 					pointer_state = POINTER_SELECTING;
@@ -578,6 +576,13 @@ bool Widget_Curves::find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<
 		});
 	}
 	return list.size() > 0;
+}
+
+void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
+{
+	active_point = pointed_item;
+	active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
+	pointer_state = POINTER_DRAGGING;
 }
 
 void Widget_Curves::cancel_dragging()
