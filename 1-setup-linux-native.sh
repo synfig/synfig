@@ -3,7 +3,7 @@
 set -e
 
 echo "Checking dependencies..."
-if which apt-get >/dev/null; then
+if command -v apt-get >/dev/null; then
         if [ ! -f /etc/altlinux-release ]; then
             #
             #  Ubuntu/Debian
@@ -89,8 +89,8 @@ if which apt-get >/dev/null; then
     echo
     sudo apt-get update -qq || true
     sudo apt-get install -y -q $PKG_LIST
-    
-elif which dnf >/dev/null; then
+
+elif command -v dnf >/dev/null; then
     #
     #  Fedora >= 22
     #
@@ -131,7 +131,8 @@ elif which dnf >/dev/null; then
         echo "Running dnf (you need root privelegies to do that)..."
         sudo dnf install $PKG_LIST || true
     fi
-elif which yum >/dev/null; then
+
+elif command -v yum >/dev/null; then
     #
     #  Fedora
     #
@@ -172,6 +173,7 @@ elif which yum >/dev/null; then
         echo "Running yum (you need root privelegies to do that)..."
         su -c "yum install $PKG_LIST" || true
     fi
+
 elif which zypper >/dev/null; then
     #
     #  OpenSUSE
@@ -188,51 +190,41 @@ elif which zypper >/dev/null; then
         su -c "zypper refresh"
         su -c "zypper install python-lxml"
     fi
-elif which pacman >/dev/null; then
+
+elif command -v pacman >/dev/null; then
     #
     # Arch Linux
     #
     PKG_LIST="git \
-            atk \
             automake autoconf \
             boost \
-            bzip2 \
             cairo \
             freetype2 \
             fftw \
-            fontconfig \
             gtk3 \
             gettext \
             gtkmm3 \
             glibmm \
             gcc \
             imagemagick \
-	    intltool \
+            pkg-config \
+            intltool \
             jack \
             libxml2 \
-            libxml++ \
             libxml++2.6 \
-	    libtiff \
-            libx11 libxext libxt libxi libxinerama libxfixes libxdamage libxcomposite libxcursor libxft libxrender libxrandr \
-            libtool \
-            libpng \
             libsigc++ \
             libjpeg \
             libmng \
-	    mlt \
+            mlt \
             openexr \
-            ocl-icd \
-            opencl-headers \
-            pango \
-            sdl \
-            sdl2 \
-            shared-mime-info"
+            shared-mime-info \
+            cmake make"
     echo "Running pacman (you need root previllages to do that)..."
     echo
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
 
 else
-    echo "WARNING: This build script does not works with package management systems other than yum, zypper or apt! You should install dependent packages manually."
+    echo "WARNING: This build script does not works with package management systems other than yum, zypper, apt or pacman! You should install dependent packages manually."
     echo "REQUIRED PACKAGES: "
     echo "libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
     echo ""
