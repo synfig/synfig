@@ -1,5 +1,27 @@
 #!/bin/bash
 
+# There are 3 type of dependencies:
+# 1. Build tools:
+# a) autoconf, automake, make, libtool (if you use autotools build system)
+# b) cmake, ninja/make (if you use CMake build system)
+# gcc/clang as primary compiler
+# intltool, gettext (for internationalization)
+# pkg-config (used for library search)
+# shared-mime-info (used to register .sif file extension in system)
+#
+# 2. Libraries:
+# glibmm (platform depended functions)
+# mlt++ imagemagick openexr libmng libpng libjpeg (various formats reading functions)
+# libxml++ libxml2 libxslt (.sif XML reading)
+# boost cairo fftw pango (image transformation and rendering functions)
+# gtkmm3 (Synfig Studio GUI)
+# libsig++ (GUI signals and events)
+# sdl2 sdl2_mixer jack (audio output and synchronization)
+#
+# 3. Runtime dependencies:
+# adwaita-icon-theme (used to render GUI icons and styles)
+# python3-lxml (lottie exporter plugin)
+
 set -e
 
 echo "Checking dependencies..."
@@ -212,13 +234,16 @@ elif command -v pacman >/dev/null; then
             jack \
             libxml2 \
             libxml++2.6 \
+            libtool \
+            libpng \
             libsigc++ \
             libjpeg \
             libmng \
             mlt \
             openexr \
             shared-mime-info \
-            cmake make"
+            cmake make \
+            python-lxml"
     echo "Running pacman (you need root previllages to do that)..."
     echo
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
