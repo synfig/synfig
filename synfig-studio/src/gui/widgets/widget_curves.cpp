@@ -486,6 +486,11 @@ Widget_Curves::on_event(GdkEvent *event)
 					}
 				}
 			}
+			else if (pointer_state == POINTER_DRAGGING) {
+				if (event->button.button == 1) {
+					finish_dragging();
+				}
+			}
 
 			if (selection_changed)
 				queue_draw();
@@ -582,7 +587,16 @@ void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
 {
 	active_point = pointed_item;
 	active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
+	is_dragging_initial_edit_mode_animate = canvas_interface->get_mode() & EditMode::MODE_ANIMATE;
+	canvas_interface->set_mode(canvas_interface->get_mode() | EditMode::MODE_ANIMATE);
 	pointer_state = POINTER_DRAGGING;
+}
+
+void Widget_Curves::finish_dragging()
+{
+	if (!is_dragging_initial_edit_mode_animate)
+		canvas_interface->set_mode(canvas_interface->get_mode() - EditMode::MODE_ANIMATE);
+	pointer_state = POINTER_NONE;
 }
 
 void Widget_Curves::cancel_dragging()
@@ -605,9 +619,10 @@ void Widget_Curves::cancel_dragging()
 
 		set_value_base_for_channel_point(value_base, point, v);
 
-		if (canvas_interface->get_mode() & EditMode::MODE_ANIMATE)
-			canvas_interface->change_value_at_time(point.curve_it->value_desc, value_base, time);
+		canvas_interface->change_value_at_time(point.curve_it->value_desc, value_base, time);
 	}
+	if (!is_dragging_initial_edit_mode_animate)
+		canvas_interface->set_mode(canvas_interface->get_mode() - EditMode::MODE_ANIMATE);
 	queue_draw();
 }
 
