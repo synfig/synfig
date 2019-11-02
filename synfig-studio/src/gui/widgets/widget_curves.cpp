@@ -65,6 +65,7 @@ using namespace studio;
 
 #define MAX_CHANNELS 15
 #define ZOOM_CHANGING_FACTOR 1.25
+#define DEFAULT_PAGE_SIZE 2.0
 
 /* === G L O B A L S ======================================================= */
 
@@ -225,7 +226,7 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 /* === M E T H O D S ======================================================= */
 
 Widget_Curves::Widget_Curves():
-	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, 2)),
+	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, DEFAULT_PAGE_SIZE)),
 	waypoint_edge_length(16),
 	pointer_state(POINTER_NONE)
 {
@@ -274,6 +275,54 @@ Widget_Curves::refresh()
 	queue_draw();
 }
 
+void Widget_Curves::zoom_in()
+{
+	set_zoom(get_zoom() * ZOOM_CHANGING_FACTOR);
+}
+
+void Widget_Curves::zoom_out()
+{
+	set_zoom(get_zoom() / ZOOM_CHANGING_FACTOR);
+}
+
+void Widget_Curves::zoom_100()
+{
+	set_zoom(1.0);
+}
+
+void Widget_Curves::set_zoom(double new_zoom_factor)
+{
+	int x, y;
+	get_pointer(x, y);
+	double perc_y = y/(get_height()+0.0);
+	double y_value = perc_y * range_adjustment->get_page_size() + range_adjustment->get_value();
+	double new_range_page_size = DEFAULT_PAGE_SIZE / new_zoom_factor;
+	double new_range_value = y_value - perc_y * new_range_page_size;
+	ConfigureAdjustment(range_adjustment)
+		.set_page_size(new_range_page_size)
+		.set_value(new_range_value)
+		.finish();
+}
+
+double Widget_Curves::get_zoom() const
+{
+	return DEFAULT_PAGE_SIZE / range_adjustment->get_page_size();
+}
+
+void Widget_Curves::scroll_up()
+{
+	ConfigureAdjustment(range_adjustment)
+		.set_value(range_adjustment->get_value() - range_adjustment->get_step_increment())
+			.finish();
+}
+
+void Widget_Curves::scroll_down()
+{
+	ConfigureAdjustment(range_adjustment)
+		.set_value(range_adjustment->get_value() + range_adjustment->get_step_increment())
+		.finish();
+}
+
 void
 Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list<ValueDesc> &value_descs)
 {
@@ -313,21 +362,10 @@ Widget_Curves::on_event(GdkEvent *event)
 			case GDK_SCROLL_RIGHT: {
 				if (event->scroll.state & GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom in
-					int x, y;
-					get_pointer(x, y);
-					double perc_y = y/(get_height()+0.0);
-					double y_value = perc_y * range_adjustment->get_page_size() + range_adjustment->get_value();
-					double new_range_page_size = range_adjustment->get_page_size()/ZOOM_CHANGING_FACTOR;
-					double new_range_value = y_value - perc_y * new_range_page_size;
-					ConfigureAdjustment(range_adjustment)
-						.set_page_size(new_range_page_size)
-						.set_value(new_range_value)
-						.finish();
+					zoom_in();
 				} else {
 					// Scroll up
-					ConfigureAdjustment(range_adjustment)
-						.set_value(range_adjustment->get_value() - range_adjustment->get_step_increment())
-						.finish();
+					scroll_up();
 				}
 				return true;
 			}
@@ -335,21 +373,10 @@ Widget_Curves::on_event(GdkEvent *event)
 			case GDK_SCROLL_LEFT: {
 				if (event->scroll.state & GDK_CONTROL_MASK) {
 					// Ctrl+scroll , perform zoom out
-					int x, y;
-					get_pointer(x, y);
-					double perc_y = y/(get_height()+0.0);
-					double y_value = perc_y * range_adjustment->get_page_size() + range_adjustment->get_value();
-					double new_range_page_size = range_adjustment->get_page_size()*ZOOM_CHANGING_FACTOR;
-					double new_range_value = y_value - perc_y * new_range_page_size;
-					ConfigureAdjustment(range_adjustment)
-						.set_page_size(new_range_page_size)
-						.set_value(new_range_value)
-						.finish();
+					zoom_out();
 				} else {
 					// Scroll down
-					ConfigureAdjustment(range_adjustment)
-						.set_value(range_adjustment->get_value() + range_adjustment->get_step_increment())
-						.finish();
+					scroll_down();
 				}
 				return true;
 			}
@@ -371,31 +398,7 @@ Widget_Curves::on_event(GdkEvent *event)
 			queue_draw();
 
 		if (pointer_state == POINTER_DRAGGING) {
-			int pointer_dy = pointer_y - pointer_tracking_start_y;
-			int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
-			int waypoint_dy = current_y - active_point_initial_y;
-			int dy = pointer_dy - waypoint_dy;
-			for (auto point : selected_points) {
-				if (!point.curve_it->value_desc.is_animated())
-					continue;
-				auto time = point.time_point.get_time();
-				auto v = point.get_value(time_plot_data->dt);
-
-				auto pix_y = time_plot_data->get_pixel_y_coord(v);
-				pix_y += dy;
-				v = time_plot_data->get_y_from_pixel_coord(pix_y);
-				auto value_base = point.curve_it->value_desc.get_value(time);
-
-				set_value_base_for_channel_point(value_base, point, v);
-
-				bool ok = canvas_interface->change_value_at_time(point.curve_it->value_desc, value_base, time);
-				if (!ok) {
-					// Cancel dragging
-					cancel_dragging();
-					pointer_state = POINTER_NONE;
-				}
-			}
-			queue_draw();
+			drag(pointer_x, pointer_y);
 		}
 		if (pointer_state != POINTER_NONE) {
 			queue_draw();
@@ -590,6 +593,34 @@ void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
 	is_dragging_initial_edit_mode_animate = canvas_interface->get_mode() & EditMode::MODE_ANIMATE;
 	canvas_interface->set_mode(canvas_interface->get_mode() | EditMode::MODE_ANIMATE);
 	pointer_state = POINTER_DRAGGING;
+}
+
+void Widget_Curves::drag(int pointer_x, int pointer_y)
+{
+	int pointer_dy = pointer_y - pointer_tracking_start_y;
+	int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
+	int waypoint_dy = current_y - active_point_initial_y;
+	int dy = pointer_dy - waypoint_dy;
+	for (auto point : selected_points) {
+		if (!point.curve_it->value_desc.is_animated())
+			continue;
+		Time time = point.time_point.get_time();
+		Real v = point.get_value(time_plot_data->dt);
+
+		int pix_y = time_plot_data->get_pixel_y_coord(v);
+		pix_y += dy;
+		v = time_plot_data->get_y_from_pixel_coord(pix_y);
+		ValueBase value_base = point.curve_it->value_desc.get_value(time);
+
+		set_value_base_for_channel_point(value_base, point, v);
+
+		bool ok = canvas_interface->change_value_at_time(point.curve_it->value_desc, value_base, time);
+		if (!ok) {
+			cancel_dragging();
+			pointer_state = POINTER_NONE;
+		}
+	}
+	queue_draw();
 }
 
 void Widget_Curves::finish_dragging()
