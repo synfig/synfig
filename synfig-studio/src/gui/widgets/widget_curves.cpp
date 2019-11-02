@@ -53,6 +53,11 @@
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 
+#include "instance.h"
+#include <synfigapp/action_system.h>
+
+#include <gui/localization.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -590,6 +595,9 @@ void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
 {
 	active_point = pointed_item;
 	active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
+
+	group = new synfigapp::Action::PassiveGrouper(canvas_interface->get_instance().get(), _("Change animation curve"));
+
 	is_dragging_initial_edit_mode_animate = canvas_interface->get_mode() & EditMode::MODE_ANIMATE;
 	canvas_interface->set_mode(canvas_interface->get_mode() | EditMode::MODE_ANIMATE);
 	pointer_state = POINTER_DRAGGING;
@@ -627,6 +635,10 @@ void Widget_Curves::finish_dragging()
 {
 	if (!is_dragging_initial_edit_mode_animate)
 		canvas_interface->set_mode(canvas_interface->get_mode() - EditMode::MODE_ANIMATE);
+
+	delete group;
+	group = nullptr;
+
 	pointer_state = POINTER_NONE;
 }
 
@@ -634,26 +646,20 @@ void Widget_Curves::cancel_dragging()
 {
 	if (pointer_state != POINTER_DRAGGING)
 		return;
-	int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
-	int waypoint_dy = current_y - active_point_initial_y;
-	int dy = - waypoint_dy;
-	for (auto point : selected_points) {
-		if (!point.curve_it->value_desc.is_animated())
-			continue;
-		auto time = point.time_point.get_time();
-		auto v = point.get_value(time_plot_data->dt);
 
-		auto pix_y = time_plot_data->get_pixel_y_coord(v);
-		pix_y += dy;
-		v = time_plot_data->get_y_from_pixel_coord(pix_y);
-		auto value_base = point.curve_it->value_desc.get_value(time);
-
-		set_value_base_for_channel_point(value_base, point, v);
-
-		canvas_interface->change_value_at_time(point.curve_it->value_desc, value_base, time);
-	}
 	if (!is_dragging_initial_edit_mode_animate)
 		canvas_interface->set_mode(canvas_interface->get_mode() - EditMode::MODE_ANIMATE);
+	// Sadly group->cancel() just remove PassiverGroup indicator, not its actions, from stack
+
+	bool has_any_content =  0 < group->get_depth();
+	delete group;
+	group = nullptr;
+	if (has_any_content) {
+		canvas_interface->get_instance()->undo();
+		canvas_interface->get_instance()->clear_redo_stack();
+	}
+
+	pointer_state = POINTER_NONE;
 	queue_draw();
 }
 
