@@ -44,6 +44,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfigapp {
+namespace Action {
+class PassiveGrouper;
+}
+}
+
 namespace studio {
 
 struct TimePlotData;
@@ -97,6 +103,7 @@ private:
 	void drag(int pointer_x, int pointer_y);
 	void finish_dragging();
 	void cancel_dragging();
+	synfigapp::Action::PassiveGrouper *group;
 
 	static void set_value_base_for_channel_point(synfig::ValueBase &value_base, const ChannelPoint &channel_point, synfig::Real v);
 
