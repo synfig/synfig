@@ -94,6 +94,7 @@ private:
 	int active_point_initial_y;
 	bool is_dragging_initial_edit_mode_animate;
 	void start_dragging(const ChannelPoint &pointed_item);
+	void drag(int pointer_x, int pointer_y);
 	void finish_dragging();
 	void cancel_dragging();
 
@@ -111,6 +112,15 @@ public:
 	void set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list<synfigapp::ValueDesc> &value_descs);
 	void clear();
 	void refresh();
+
+	void zoom_in();
+	void zoom_out();
+	void zoom_100();
+	void set_zoom(double new_zoom_factor);
+	double get_zoom() const;
+
+	void scroll_up();
+	void scroll_down();
 
 protected:
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
