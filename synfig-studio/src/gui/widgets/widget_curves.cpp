@@ -901,8 +901,8 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	if (!curve_list.empty() && range_min < range_max)
 		ConfigureAdjustment(range_adjustment)
-			.set_lower(range_min - 0.5*range_adjustment->get_page_size())
-			.set_upper(range_max + 0.5*range_adjustment->get_page_size())
+			.set_lower(-range_max - 0.5*range_adjustment->get_page_size())
+			.set_upper(-range_min + 0.5*range_adjustment->get_page_size())
 			.set_step_increment(range_adjustment->get_page_size()*20.0/(double)h) // 20 pixels
 			.finish();
 	cr->restore();
