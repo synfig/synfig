@@ -234,7 +234,8 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 Widget_Curves::Widget_Curves():
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, DEFAULT_PAGE_SIZE)),
 	waypoint_edge_length(16),
-	pointer_state(POINTER_NONE)
+	pointer_state(POINTER_NONE),
+	action_group_drag(nullptr)
 {
 	set_size_request(64, 64);
 
@@ -248,6 +249,7 @@ Widget_Curves::~Widget_Curves() {
 	clear();
 	set_time_model(etl::handle<TimeModel>());
 	delete time_plot_data;
+	delete action_group_drag;
 }
 
 const etl::handle<TimeModel>&
@@ -614,7 +616,7 @@ void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
 	active_point = pointed_item;
 	active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
 
-	group = new synfigapp::Action::PassiveGrouper(canvas_interface->get_instance().get(), _("Change animation curve"));
+	action_group_drag = new synfigapp::Action::PassiveGrouper(canvas_interface->get_instance().get(), _("Change animation curve"));
 
 	pointer_state = POINTER_DRAGGING;
 }
@@ -657,8 +659,8 @@ void Widget_Curves::drag(int pointer_x, int pointer_y)
 
 void Widget_Curves::finish_dragging()
 {
-	delete group;
-	group = nullptr;
+	delete action_group_drag;
+	action_group_drag = nullptr;
 
 	pointer_state = POINTER_NONE;
 }
@@ -670,9 +672,9 @@ void Widget_Curves::cancel_dragging()
 
 	// Sadly group->cancel() just remove PassiverGroup indicator, not its actions, from stack
 
-	bool has_any_content =  0 < group->get_depth();
-	delete group;
-	group = nullptr;
+	bool has_any_content =  0 < action_group_drag->get_depth();
+	delete action_group_drag;
+	action_group_drag = nullptr;
 	if (has_any_content) {
 		canvas_interface->get_instance()->undo();
 		canvas_interface->get_instance()->clear_redo_stack();
