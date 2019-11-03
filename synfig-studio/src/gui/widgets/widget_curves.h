@@ -100,10 +100,12 @@ private:
 	ChannelPoint active_point;
 	int active_point_initial_y;
 	void start_dragging(const ChannelPoint &pointed_item);
-	void drag(int pointer_x, int pointer_y);
+	void drag_to(int pointer_x, int pointer_y);
+	void delta_drag(int dx, int dy);
 	void finish_dragging();
 	void cancel_dragging();
 	bool made_dragging_move;
+	bool dragging_started_by_key;
 	synfigapp::Action::PassiveGrouper *action_group_drag;
 
 	static void set_value_base_for_channel_point(synfig::ValueBase &value_base, const ChannelPoint &channel_point, synfig::Real v);
