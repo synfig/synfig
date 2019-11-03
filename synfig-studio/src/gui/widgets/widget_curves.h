@@ -68,6 +68,7 @@ private:
 		ChannelPoint(std::list<CurveStruct>::iterator &curve_it, const synfig::TimePoint time_point, int channel_idx);
 		void invalidate();
 		bool is_valid() const;
+		bool is_draggable() const;
 
 		bool operator ==(const ChannelPoint &b) const;
 		bool operator !=(const ChannelPoint &b) const {return !operator==(b);}
@@ -98,7 +99,6 @@ private:
 	int pointer_tracking_start_x, pointer_tracking_start_y;
 	ChannelPoint active_point;
 	int active_point_initial_y;
-	bool is_dragging_initial_edit_mode_animate;
 	void start_dragging(const ChannelPoint &pointed_item);
 	void drag(int pointer_x, int pointer_y);
 	void finish_dragging();

@@ -1136,6 +1136,23 @@ CanvasInterface::import_sequence(
 	return true;
 }
 
+void CanvasInterface::waypoint_set_value_node(ValueNode::Handle value_node, const Waypoint& waypoint)
+{
+	Action::Handle 	action(Action::create("WaypointSetSmart"));
+
+	assert(action);
+	if(!action)
+		return;
+
+	action->set_param("canvas", get_canvas());
+	action->set_param("canvas_interface", this);
+	action->set_param("value_node", value_node);
+	action->set_param("waypoint", waypoint);
+//	action->set_param("time",canvas_interface()->get_time());
+
+	if(!get_instance()->perform_action(action))
+		get_ui_interface()->error(_("Action Failed."));
+}
 
 void
 CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)

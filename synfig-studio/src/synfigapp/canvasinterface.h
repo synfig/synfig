@@ -314,6 +314,7 @@ public:
 		synfig::String &warnings,
 		bool resize_image = false );
 
+	void waypoint_set_value_node(synfig::ValueNode::Handle value_node, const synfig::Waypoint& waypoint);
 
 	void waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
 	void waypoint_duplicate(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint);

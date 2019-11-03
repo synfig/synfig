@@ -43,6 +43,7 @@
 #include <synfig/widthpoint.h>
 #include <synfig/dashitem.h>
 #include <synfig/general.h>
+#include <synfig/timepointcollect.h>
 
 #include <gui/helpers.h>
 
@@ -602,8 +603,6 @@ void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
 
 	group = new synfigapp::Action::PassiveGrouper(canvas_interface->get_instance().get(), _("Change animation curve"));
 
-	is_dragging_initial_edit_mode_animate = canvas_interface->get_mode() & EditMode::MODE_ANIMATE;
-	canvas_interface->set_mode(canvas_interface->get_mode() | EditMode::MODE_ANIMATE);
 	pointer_state = POINTER_DRAGGING;
 }
 
@@ -614,7 +613,7 @@ void Widget_Curves::drag(int pointer_x, int pointer_y)
 	int waypoint_dy = current_y - active_point_initial_y;
 	int dy = pointer_dy - waypoint_dy;
 	for (auto point : selected_points) {
-		if (!point.curve_it->value_desc.is_animated())
+		if (!point.is_draggable())
 			continue;
 		Time time = point.time_point.get_time();
 		Real v = point.get_value(time_plot_data->dt);
@@ -626,20 +625,23 @@ void Widget_Curves::drag(int pointer_x, int pointer_y)
 
 		set_value_base_for_channel_point(value_base, point, v);
 
-		bool ok = canvas_interface->change_value_at_time(point.curve_it->value_desc, value_base, time);
-		if (!ok) {
-			cancel_dragging();
-			pointer_state = POINTER_NONE;
-		}
+		const ValueDesc &value_desc = point.curve_it->value_desc;
+		ValueNode::Handle value_node = value_desc.get_value_node();
+		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+		synfig::waypoint_collect(waypoint_set, time, value_node);
+		if (waypoint_set.size() < 1)
+			break;
+
+		Waypoint waypoint(*(waypoint_set.begin()));
+		waypoint.set_value(value_base);
+
+		canvas_interface->waypoint_set_value_node(value_node, waypoint);
 	}
 	queue_draw();
 }
 
 void Widget_Curves::finish_dragging()
 {
-	if (!is_dragging_initial_edit_mode_animate)
-		canvas_interface->set_mode(canvas_interface->get_mode() - EditMode::MODE_ANIMATE);
-
 	delete group;
 	group = nullptr;
 
@@ -651,8 +653,6 @@ void Widget_Curves::cancel_dragging()
 	if (pointer_state != POINTER_DRAGGING)
 		return;
 
-	if (!is_dragging_initial_edit_mode_animate)
-		canvas_interface->set_mode(canvas_interface->get_mode() - EditMode::MODE_ANIMATE);
 	// Sadly group->cancel() just remove PassiverGroup indicator, not its actions, from stack
 
 	bool has_any_content =  0 < group->get_depth();
@@ -969,6 +969,12 @@ void Widget_Curves::ChannelPoint::invalidate()
 bool Widget_Curves::ChannelPoint::is_valid() const
 {
 	return channel_idx >= 0;
+}
+
+bool Widget_Curves::ChannelPoint::is_draggable() const
+{
+	const ValueDesc &value_desc(curve_it->value_desc);
+	return value_desc.is_animated() || value_desc.parent_is_linkable_value_node();
 }
 
 bool Widget_Curves::ChannelPoint::operator ==(const Widget_Curves::ChannelPoint& b) const
