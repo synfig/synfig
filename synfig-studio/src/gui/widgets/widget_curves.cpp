@@ -239,7 +239,9 @@ Widget_Curves::Widget_Curves():
 {
 	set_size_request(64, 64);
 
-	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK);
+	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK | Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
+
+	set_can_focus(true);
 
 	time_plot_data = new TimePlotData(*this, range_adjustment);
 	time_plot_data->set_extra_time_margin(16/2);
@@ -405,10 +407,10 @@ Widget_Curves::on_event(GdkEvent *event)
 		if (previous_hovered_point != hovered_point)
 			queue_draw();
 
-		if (pointer_state == POINTER_DRAGGING) {
+		if (pointer_state == POINTER_DRAGGING && !dragging_started_by_key) {
 			guint any_pointer_button = Gdk::BUTTON1_MASK |Gdk::BUTTON2_MASK | Gdk::BUTTON3_MASK;
 			if ((event->motion.state & any_pointer_button) != 0)
-				drag(pointer_x, pointer_y);
+				drag_to(pointer_x, pointer_y);
 			else // If some modal window is called, we lose the button-release event...
 				cancel_dragging();
 		}
@@ -418,6 +420,7 @@ Widget_Curves::on_event(GdkEvent *event)
 		break;
 	}
 	case GDK_BUTTON_PRESS: {
+		grab_focus();
 		if (event->button.button == 3) {
 			// cancel/undo current action
 			if (pointer_state != POINTER_NONE) {
@@ -442,6 +445,7 @@ Widget_Curves::on_event(GdkEvent *event)
 							selected_points.push_back(pointed_item);
 						}
 						start_dragging(pointed_item);
+						dragging_started_by_key = false;
 						pointer_state = POINTER_DRAGGING;
 					}
 				} else {
@@ -532,6 +536,50 @@ Widget_Curves::on_event(GdkEvent *event)
 
 		break;
 	}
+	case GDK_KEY_RELEASE: {
+		switch (event->key.keyval) {
+		case GDK_KEY_Escape: {
+			// cancel/undo current action
+			if (pointer_state != POINTER_NONE) {
+				cancel_dragging();
+				pointer_state = POINTER_NONE;
+				queue_draw();
+			}
+			return true;
+		}
+		case GDK_KEY_Up:
+		case GDK_KEY_Down: {
+			if (pointer_state == POINTER_DRAGGING) {
+				if (dragging_started_by_key)
+					finish_dragging();
+				dragging_started_by_key = false;
+				return true;
+			}
+		}
+		}
+		break;
+	}
+	case GDK_KEY_PRESS: {
+		switch (event->key.keyval) {
+		case GDK_KEY_Up:
+		case GDK_KEY_Down: {
+			if (selected_points.size() == 0)
+				break;
+			if (pointer_state != POINTER_DRAGGING) {
+				start_dragging(selected_points.front());
+				dragging_started_by_key = true;
+			}
+			int delta = 1;
+			if (event->key.state & GDK_SHIFT_MASK)
+				delta = 10;
+			if (event->key.keyval == GDK_KEY_Up)
+				delta = -delta;
+			delta_drag(0, delta);
+			return true;
+		}
+			break;
+		}
+	}
 	default:
 		break;
 	}
@@ -621,7 +669,7 @@ void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
 	pointer_state = POINTER_DRAGGING;
 }
 
-void Widget_Curves::drag(int pointer_x, int pointer_y)
+void Widget_Curves::drag_to(int pointer_x, int pointer_y)
 {
 	made_dragging_move = true;
 
@@ -629,6 +677,11 @@ void Widget_Curves::drag(int pointer_x, int pointer_y)
 	int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
 	int waypoint_dy = current_y - active_point_initial_y;
 	int dy = pointer_dy - waypoint_dy;
+	delta_drag(0, dy);
+}
+
+void Widget_Curves::delta_drag(int dx, int dy)
+{
 	for (auto point : selected_points) {
 		if (!point.is_draggable())
 			continue;
