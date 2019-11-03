@@ -403,7 +403,11 @@ Widget_Curves::on_event(GdkEvent *event)
 			queue_draw();
 
 		if (pointer_state == POINTER_DRAGGING) {
-			drag(pointer_x, pointer_y);
+			guint any_pointer_button = Gdk::BUTTON1_MASK |Gdk::BUTTON2_MASK | Gdk::BUTTON3_MASK;
+			if ((event->motion.state & any_pointer_button) != 0)
+				drag(pointer_x, pointer_y);
+			else // If some modal window is called, we lose the button-release event...
+				cancel_dragging();
 		}
 		if (pointer_state != POINTER_NONE) {
 			queue_draw();
