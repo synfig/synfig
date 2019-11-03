@@ -506,7 +506,14 @@ Widget_Curves::on_event(GdkEvent *event)
 			}
 			else if (pointer_state == POINTER_DRAGGING) {
 				if (event->button.button == 1) {
-					finish_dragging();
+					if (made_dragging_move)
+						finish_dragging();
+					else {
+						selected_points.clear();
+						selected_points.push_back(active_point);
+						selection_changed = true;
+						cancel_dragging();
+					}
 				}
 			}
 
@@ -603,6 +610,7 @@ bool Widget_Curves::find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<
 
 void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
 {
+	made_dragging_move = false;
 	active_point = pointed_item;
 	active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
 
@@ -613,6 +621,8 @@ void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
 
 void Widget_Curves::drag(int pointer_x, int pointer_y)
 {
+	made_dragging_move = true;
+
 	int pointer_dy = pointer_y - pointer_tracking_start_y;
 	int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
 	int waypoint_dy = current_y - active_point_initial_y;
