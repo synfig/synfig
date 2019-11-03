@@ -429,16 +429,16 @@ Widget_Curves::on_event(GdkEvent *event)
 				ChannelPoint pointed_item;
 				find_channelpoint_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
 				if (pointed_item.is_valid()) {
-					bool is_already_selected = std::find(selected_points.begin(), selected_points.end(), pointed_item) != selected_points.end();
-					if (is_already_selected) {
-						if ((event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) == 0) {
-							start_dragging(pointed_item);
-							pointer_state = POINTER_DRAGGING;
-						} else
-							pointer_state = POINTER_SELECTING;
+					auto already_selection_it = std::find(selected_points.begin(), selected_points.end(), pointed_item);
+					bool is_already_selected = already_selection_it != selected_points.end();
+					bool using_key_modifiers = (event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) != 0;
+					if (using_key_modifiers) {
+						pointer_state = POINTER_SELECTING;
 					} else {
-						selected_points.clear();
-						selected_points.push_back(pointed_item);
+						if (!is_already_selected) {
+							selected_points.clear();
+							selected_points.push_back(pointed_item);
+						}
 						start_dragging(pointed_item);
 						pointer_state = POINTER_DRAGGING;
 					}
@@ -475,15 +475,20 @@ Widget_Curves::on_event(GdkEvent *event)
 					}
 				} else {
 					if ((event->button.state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
+						// toggle selection status of each point in rectangle
 						for (ChannelPoint cp : cps) {
 							std::vector<ChannelPoint>::iterator already_selection_it = std::find(selected_points.begin(), selected_points.end(), cp);
 							bool already_selected = already_selection_it != selected_points.end();
 							if (already_selected) {
 								selected_points.erase(already_selection_it);
 								selection_changed = true;
+							} else {
+								selected_points.push_back(cp);
+								selection_changed = true;
 							}
 						}
 					} else if ((event->button.state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) {
+						// add to selection, if it aren't yet
 						for (ChannelPoint cp : cps) {
 							std::vector<ChannelPoint>::iterator already_selection_it = std::find(selected_points.begin(), selected_points.end(), cp);
 							bool already_selected = already_selection_it != selected_points.end();
