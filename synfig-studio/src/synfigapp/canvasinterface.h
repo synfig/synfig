@@ -315,6 +315,7 @@ public:
 		bool resize_image = false );
 
 	void waypoint_set_value_node(synfig::ValueNode::Handle value_node, const synfig::Waypoint& waypoint);
+	void waypoint_move(const ValueDesc& value_desc, const synfig::Time& time, const synfig::Time& deltatime);
 
 	void waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
 	void waypoint_duplicate(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint);

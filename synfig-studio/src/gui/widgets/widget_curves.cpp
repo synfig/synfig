@@ -409,10 +409,21 @@ Widget_Curves::on_event(GdkEvent *event)
 
 		if (pointer_state == POINTER_DRAGGING && !dragging_started_by_key) {
 			guint any_pointer_button = Gdk::BUTTON1_MASK |Gdk::BUTTON2_MASK | Gdk::BUTTON3_MASK;
-			if ((event->motion.state & any_pointer_button) != 0)
-				drag_to(pointer_x, pointer_y);
-			else // If some modal window is called, we lose the button-release event...
+			if ((event->motion.state & any_pointer_button) == 0) {
+				// If some modal window is called, we lose the button-release event...
 				cancel_dragging();
+			} else {
+				bool axis_lock = event->motion.state & Gdk::SHIFT_MASK;
+				if (axis_lock) {
+					int dx = pointer_x - pointer_tracking_start_x;
+					int dy = pointer_y - pointer_tracking_start_y;
+					if (std::abs(dy) > std::abs(dx))
+						pointer_x = pointer_tracking_start_x;
+					else
+						pointer_y = pointer_tracking_start_y;
+				}
+				drag_to(pointer_x, pointer_y);
+			}
 		}
 		if (pointer_state != POINTER_NONE) {
 			queue_draw();
@@ -548,7 +559,9 @@ Widget_Curves::on_event(GdkEvent *event)
 			return true;
 		}
 		case GDK_KEY_Up:
-		case GDK_KEY_Down: {
+		case GDK_KEY_Down:
+		case GDK_KEY_Left:
+		case GDK_KEY_Right: {
 			if (pointer_state == POINTER_DRAGGING) {
 				if (dragging_started_by_key)
 					finish_dragging();
@@ -577,8 +590,24 @@ Widget_Curves::on_event(GdkEvent *event)
 			delta_drag(0, delta);
 			return true;
 		}
-			break;
+		case GDK_KEY_Left:
+		case GDK_KEY_Right: {
+			if (selected_points.size() == 0)
+				break;
+			if (pointer_state != POINTER_DRAGGING) {
+				start_dragging(selected_points.front());
+				dragging_started_by_key = true;
+			}
+			int delta = time_plot_data->k/canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+			if (event->key.state & GDK_SHIFT_MASK)
+				delta *= 10;
+			if (event->key.keyval == GDK_KEY_Left)
+				delta = -delta;
+			delta_drag(delta, 0);
+			return true;
 		}
+		break;
+	}
 	}
 	default:
 		break;
@@ -677,14 +706,21 @@ void Widget_Curves::drag_to(int pointer_x, int pointer_y)
 	int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
 	int waypoint_dy = current_y - active_point_initial_y;
 	int dy = pointer_dy - waypoint_dy;
-	delta_drag(0, dy);
+
+	float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	Time pointer_t = time_plot_data->get_t_from_pixel_coord(pointer_x).round(fps);
+	Time current_t = active_point.time_point.get_time();
+	int dx = (pointer_t - current_t) * time_plot_data->k;
+	delta_drag(dx, dy);
 }
 
 void Widget_Curves::delta_drag(int dx, int dy)
 {
-	for (auto point : selected_points) {
+	// Move value
+	for (const auto &point : selected_points) {
 		if (!point.is_draggable())
 			continue;
+
 		Time time = point.time_point.get_time();
 		Real v = point.get_value(time_plot_data->dt);
 
@@ -707,6 +743,31 @@ void Widget_Curves::delta_drag(int dx, int dy)
 
 		canvas_interface->waypoint_set_value_node(value_node, waypoint);
 	}
+
+	// Move along time
+	if (dx == 0)
+		return;
+	std::set<std::pair<const ValueDesc&, const Time&>> times_to_move;
+
+	const float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	const Time base_time = active_point.time_point.get_time();
+	const Time next_time = time_plot_data->get_t_from_pixel_coord(time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
+	const Time deltatime = next_time - base_time;
+
+	if (deltatime != 0) {
+		for (auto &point : selected_points) {
+			const ValueDesc &value_desc = point.curve_it->value_desc;
+			const Time &time = point.time_point.get_time();
+			std::pair<const ValueDesc&, const Time&> meta_data(value_desc, time);
+			if (times_to_move.find(meta_data) == times_to_move.end()) {
+				times_to_move.insert(meta_data);
+				canvas_interface->waypoint_move(value_desc, time, deltatime);
+			}
+			point.time_point = TimePoint(Time(time+deltatime).round(fps));
+		}
+		active_point.time_point = next_time;
+	}
+
 	queue_draw();
 }
 
