@@ -1154,6 +1154,30 @@ void CanvasInterface::waypoint_set_value_node(ValueNode::Handle value_node, cons
 		get_ui_interface()->error(_("Action Failed."));
 }
 
+void CanvasInterface::waypoint_move(const ValueDesc& value_desc, const Time& time, const Time& deltatime)
+{
+	Action::Handle 	action(Action::create("TimepointsMove"));
+
+	assert(action);
+	if(!action)
+		return;
+
+	action->set_param("canvas", get_canvas());
+	action->set_param("canvas_interface", this);
+	if (value_desc.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+		action->set_param("addcanvas", value_desc.get_value().get(Canvas::Handle()));
+	} else {
+		action->set_param("addvaluedesc", value_desc);
+	}
+
+	action->set_param("addtime", time);
+
+	action->set_param("deltatime", deltatime);
+
+	if(!get_instance()->perform_action(action))
+		get_ui_interface()->error(_("Action Failed."));
+}
+
 void
 CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
 {
