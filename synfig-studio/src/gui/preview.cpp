@@ -541,7 +541,7 @@ Widget_Preview::Widget_Preview():
 	zoom_preview.set_entry_text_column(factors.factor_value);
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
-	entry->set_text("100%"); //default zoom level
+	entry->set_text(_("Fit")); //default zoom level
 	entry->set_icon_from_stock(Gtk::StockID("synfig-zoom"));
 	entry->signal_activate().connect(sigc::mem_fun(*this, &Widget_Preview::on_zoom_entry_activated));
 
