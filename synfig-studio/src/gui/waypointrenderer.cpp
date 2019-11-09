@@ -351,22 +351,24 @@ get_time_dilation_from_vdesc(const ValueDesc &v)
 #endif
 }
 
-static const Node::time_set*
-get_times_from_vdesc(const ValueDesc &v)
+static const Node::time_set empty_time_set;
+
+const Node::time_set&
+WaypointRenderer::get_times_from_valuedesc(const ValueDesc &v)
 {
 	if (v.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
 		if(Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle()))
-			return &canvasparam->get_times();
+			return canvasparam->get_times();
 
 	//we want a dynamic list entry to override the normal...
 	if (v.parent_is_value_node())
 		if (ValueNode_DynamicList *parent_value_node = dynamic_cast<ValueNode_DynamicList *>(v.get_parent_value_node().get()))
-			return &parent_value_node->list[v.get_index()].get_times();
+			return parent_value_node->list[v.get_index()].get_times();
 
 	if (ValueNode *base_value = v.get_value_node().get()) //don't render stuff if it's just animated...
-		return &base_value->get_times();
+		return base_value->get_times();
 
-	return nullptr;
+	return empty_time_set;
 }
 
 void
@@ -375,15 +377,16 @@ WaypointRenderer::foreach_visible_waypoint(const synfigapp::ValueDesc &value_des
 		std::function<ForeachCallback> foreach_callback,
 		void* data)
 {
-	if (const Node::time_set * const tset = get_times_from_vdesc(value_desc)) {
+	const Node::time_set & tset = get_times_from_valuedesc(value_desc);
+	if (!tset.empty()) {
 		const Time time_offset = get_time_offset_from_vdesc(value_desc);
 		const Time time_dilation = get_time_dilation_from_vdesc(value_desc);
 		const double time_k = time_dilation == Time::zero() ? 1.0 : 1.0/(double)time_dilation;
 
-		for (const auto & waypoint : *tset) {
-			Time t = (waypoint.get_time() - time_offset)*time_k;
+		for (const auto & timepoint : tset) {
+			Time t = (timepoint.get_time() - time_offset)*time_k;
 			if (time_plot_data.is_time_visible_extra(t)) {
-				if (foreach_callback(waypoint, t, data))
+				if (foreach_callback(timepoint, t, data))
 					break;
 			}
 		}

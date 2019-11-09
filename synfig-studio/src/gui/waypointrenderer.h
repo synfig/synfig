@@ -66,6 +66,8 @@ public:
 		std::function<ForeachCallback> foreach_callback,
 		void* data = nullptr);
 
+	static const synfig::Node::time_set & get_times_from_valuedesc(const synfigapp::ValueDesc &v);
+
 }; // END of class WaypointRenderer
 
 }; // END of namespace studio
