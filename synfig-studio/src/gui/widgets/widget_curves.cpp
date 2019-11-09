@@ -1015,19 +1015,44 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			}
 		}
 
+		// Get last time point for this graph curve
+		Time last_timepoint;
+		const Node::time_set & tset = WaypointRenderer::get_times_from_valuedesc(curve_it->value_desc);
+		for (const auto & timepoint : tset) {
+			if (timepoint.get_time() > last_timepoint)
+				last_timepoint = timepoint.get_time();
+		}
+		int last_timepoint_pixel = time_plot_data->get_pixel_t_coord(last_timepoint);
+
 		// Draw the graph curves with 0.5 width
 		cr->set_line_width(0.5);
+		const std::vector<double> dashes4 = {4};
+		const std::vector<double> no_dashes;
 		for(int c = 0; c < channels; ++c) {
 			// Draw the curve
 			std::vector<Gdk::Point> &p = points[c];
-			for(std::vector<Gdk::Point>::iterator j = p.begin(); j != p.end(); ++j) {
-				if (j == p.begin())
-					cr->move_to(j->get_x(), j->get_y());
+			std::vector<Gdk::Point>::iterator p_it;
+			for(p_it = p.begin(); p_it != p.end(); ++p_it) {
+				if (p_it == p.begin())
+					cr->move_to(p_it->get_x(), p_it->get_y());
 				else
-					cr->line_to(j->get_x(), j->get_y());
+					cr->line_to(p_it->get_x(), p_it->get_y());
+				if (p_it->get_x() >= last_timepoint_pixel)
+					break;
 			}
 			Gdk::Cairo::set_source_color(cr, curve_it->channels[c].color);
 			cr->stroke();
+
+			// Draw the remaining curve
+			if (p_it != p.end()) {
+				for(; p_it != p.end(); ++p_it) {
+					cr->line_to(p_it->get_x(), p_it->get_y());
+				}
+				cr->set_dash(dashes4, 0);
+				cr->stroke();
+
+				cr->set_dash(no_dashes, 0);
+			}
 
 			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 			layout->set_text(curve_it->channels[c].name);
