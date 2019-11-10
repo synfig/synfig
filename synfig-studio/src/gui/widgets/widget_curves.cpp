@@ -755,6 +755,9 @@ void Widget_Curves::delta_drag(int dx, int dy)
 	const Time deltatime = next_time - base_time;
 
 	if (deltatime != 0) {
+		auto waypoints_to_restore = saved_waypoints;
+		saved_waypoints.clear();
+
 		for (auto &point : selected_points) {
 			const ValueDesc &value_desc = point.curve_it->value_desc;
 			const Time &time = point.time_point.get_time();
@@ -762,12 +765,42 @@ void Widget_Curves::delta_drag(int dx, int dy)
 
 			std::pair<const ValueDesc&, Time> meta_data(value_desc, time);
 			if (times_to_move.find(meta_data) == times_to_move.end()) {
+				auto time_set = WaypointRenderer::get_times_from_valuedesc(value_desc);
+
+				// are we overlapping existing waypoints while moving in time?
+				auto new_timepoint = time_set.find(new_time);
+				if (new_timepoint != time_set.end()) {
+					std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+					synfig::waypoint_collect(waypoint_set, new_time, value_desc.get_value_node());
+					for (const Waypoint &waypoint : waypoint_set) {
+						saved_waypoints.push_back(std::pair<Waypoint, std::list<CurveStruct>::iterator>(waypoint, point.curve_it));
+						canvas_interface->waypoint_remove(value_desc, waypoint);
+					}
+				}
+
 				times_to_move.insert(meta_data);
 				canvas_interface->waypoint_move(value_desc, time, deltatime);
 			}
 			point.time_point = TimePoint(new_time);
 		}
 		active_point.time_point = next_time;
+
+		for (auto it : waypoints_to_restore) {
+			Action::Handle 	action(Action::create("WaypointAdd"));
+
+			assert(action);
+			if(!action)
+				return;
+
+			action->set_param("canvas", canvas_interface->get_canvas());
+			action->set_param("canvas_interface", canvas_interface);
+			action->set_param("value_node", it.second->value_desc.get_value_node());
+//			action->set_param("time", i.first.get_time());
+			action->set_param("waypoint", it.first);
+
+			if(!canvas_interface->get_instance()->perform_action(action))
+				canvas_interface->get_ui_interface()->error(_("Action Failed."));
+		}
 	}
 
 	queue_draw();
@@ -777,6 +810,8 @@ void Widget_Curves::finish_dragging()
 {
 	delete action_group_drag;
 	action_group_drag = nullptr;
+
+	saved_waypoints.clear();
 
 	pointer_state = POINTER_NONE;
 }
@@ -795,6 +830,8 @@ void Widget_Curves::cancel_dragging()
 		canvas_interface->get_instance()->undo();
 		canvas_interface->get_instance()->clear_redo_stack();
 	}
+
+	saved_waypoints.clear();
 
 	pointer_state = POINTER_NONE;
 	queue_draw();

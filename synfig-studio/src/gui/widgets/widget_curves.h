@@ -108,6 +108,8 @@ private:
 	bool dragging_started_by_key;
 	synfigapp::Action::PassiveGrouper *action_group_drag;
 
+	std::vector<std::pair<synfig::Waypoint, std::list<CurveStruct>::iterator> > saved_waypoints;
+
 	static void set_value_base_for_channel_point(synfig::ValueBase &value_base, const ChannelPoint &channel_point, synfig::Real v);
 
 public:
