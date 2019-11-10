@@ -175,58 +175,245 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 		// to go ahead and figure out what the
 		// actual value is at that time.
 		ValueBase value(value_desc.get_value(time));
-		Type &type(value.get_type());
-		if (type == type_real) {
-			channels[0].values[time] = value.get(Real());
-		} else
-		if (type == type_time) {
-			channels[0].values[time] = value.get(Time());
-		} else
-		if (type == type_integer) {
-			channels[0].values[time] = value.get(int());
-		} else
-		if (type == type_bool) {
-			channels[0].values[time] = value.get(bool());
-		} else
-		if (type == type_angle) {
-			channels[0].values[time] = Angle::rad(value.get(Angle())).get();
-		} else
-		if (type == type_color) {
-			channels[0].values[time] = value.get(Color()).get_r();
-			channels[1].values[time] = value.get(Color()).get_g();
-			channels[2].values[time] = value.get(Color()).get_b();
-			channels[3].values[time] = value.get(Color()).get_a();
-		} else
-		if (type == type_vector) {
-			channels[0].values[time] = value.get(Vector())[0];
-			channels[1].values[time] = value.get(Vector())[1];
-		} else
-		if (type == type_bline_point) {
-			channels[0].values[time] = value.get(BLinePoint()).get_vertex()[0];
-			channels[1].values[time] = value.get(BLinePoint()).get_vertex()[1];
-			channels[2].values[time] = value.get(BLinePoint()).get_width();
-			channels[3].values[time] = value.get(BLinePoint()).get_origin();
-			channels[4].values[time] = value.get(BLinePoint()).get_split_tangent_both();
-			channels[5].values[time] = value.get(BLinePoint()).get_tangent1()[0];
-			channels[6].values[time] = value.get(BLinePoint()).get_tangent1()[1];
-			channels[7].values[time] = value.get(BLinePoint()).get_tangent2()[0];
-			channels[8].values[time] = value.get(BLinePoint()).get_tangent2()[1];
-			channels[9].values[time] = value.get(BLinePoint()).get_split_tangent_radius();
-			channels[10].values[time]= value.get(BLinePoint()).get_split_tangent_angle();
-		} else
-		if (type == type_width_point) {
-			channels[0].values[time] = value.get(WidthPoint()).get_position();
-			channels[1].values[time] = value.get(WidthPoint()).get_width();
-		} else
-		if (type == type_dash_item) {
-			channels[0].values[time] = value.get(DashItem()).get_offset();
-			channels[1].values[time] = value.get(DashItem()).get_length();
-		} else {
+		std::vector<Real> channel_values;
+		bool ok = get_value_base_channel_values(value, channel_values);
+		if (!ok)
 			return Real(0.0);
+
+		for (size_t c = 0; c < channel_values.size(); c++) {
+			channels[c].values[time] = channel_values[c];
 		}
 
 		return channels[channel].values[time];
 	}
+
+	static bool get_value_base_channel_values(const ValueBase &value_base, std::vector<Real>& channels) {
+		channels.clear();
+		Type &type(value_base.get_type());
+		if (type == type_real) {
+			channels.push_back(value_base.get(Real()));
+		} else
+		if (type == type_time) {
+			channels.push_back(value_base.get(Time()));
+		} else
+		if (type == type_integer) {
+			channels.push_back(value_base.get(int()));
+		} else
+		if (type == type_bool) {
+			channels.push_back(value_base.get(bool()));
+		} else
+		if (type == type_angle) {
+			channels.push_back(Angle::rad(value_base.get(Angle())).get());
+		} else
+		if (type == type_color) {
+			const Color & color = value_base.get(Color());
+			channels.push_back(color.get_r());
+			channels.push_back(color.get_g());
+			channels.push_back(color.get_b());
+			channels.push_back(color.get_a());
+		} else
+		if (type == type_vector) {
+			const Vector& vector = value_base.get(Vector());
+			channels.push_back(vector[0]);
+			channels.push_back(vector[1]);
+		} else
+		if (type == type_bline_point) {
+			const BLinePoint &bline_point = value_base.get(BLinePoint());
+			channels.push_back(bline_point.get_vertex()[0]);
+			channels.push_back(bline_point.get_vertex()[1]);
+			channels.push_back(bline_point.get_width());
+			channels.push_back(bline_point.get_origin());
+			channels.push_back(bline_point.get_split_tangent_both());
+			channels.push_back(bline_point.get_tangent1()[0]);
+			channels.push_back(bline_point.get_tangent1()[1]);
+			channels.push_back(bline_point.get_tangent2()[0]);
+			channels.push_back(bline_point.get_tangent2()[1]);
+			channels.push_back(bline_point.get_split_tangent_radius());
+			channels.push_back(bline_point.get_split_tangent_angle());
+		} else
+		if (type == type_width_point) {
+			const WidthPoint &width_point = value_base.get(WidthPoint());
+			channels.push_back(width_point.get_position());
+			channels.push_back(width_point.get_width());
+		} else
+		if (type == type_dash_item) {
+			const DashItem &dash_item = value_base.get(DashItem());
+			channels.push_back(dash_item.get_offset());
+			channels.push_back(dash_item.get_length());
+		} else {
+			return false;
+		}
+
+		return true;
+	}
+
+	static bool set_value_base_channel_value(ValueBase& value_base, size_t channel_idx, Real v)
+	{
+		Type& type = value_base.get_type();
+		if (type == type_real) {
+			if (channel_idx > 0) {
+				synfig::error("Invalid index for Real curve channel: %d", channel_idx);
+				return false;
+			} else {
+				value_base.set(v);
+			}
+		} else
+		if (type == type_time) {
+			if (channel_idx > 0) {
+				synfig::error("Invalid index for Time curve channel: %d", channel_idx);
+				return false;
+			} else {
+				value_base.set(Time(v));
+			}
+		} else
+		if (type == type_integer) {
+			if (channel_idx > 0) {
+				synfig::error("Invalid index for Integer curve channel: %d", channel_idx);
+				return false;
+			} else {
+				value_base.set((int)v);
+			}
+		} else
+		if (type == type_bool) {
+			if (channel_idx > 0) {
+				synfig::error("Invalid index for Bool curve channel: %d", channel_idx);
+				return false;
+			} else {
+				value_base.set(v > 0.5);
+			}
+		} else
+		if (type == type_angle) {
+			if (channel_idx > 0) {
+				synfig::error("Invalid index for Real curve channel: %d", channel_idx);
+				return false;
+			} else {
+				value_base.set(Angle::rad(v));
+			}
+		} else
+		if (type == type_color) {
+			v = clamp(v, 0.0, 1.0);
+			auto color = value_base.get(Color());
+			switch (channel_idx) {
+			case 0:
+				color.set_r(v);
+				break;
+			case 1:
+				color.set_g(v);
+				break;
+			case 2:
+				color.set_b(v);
+				break;
+			case 3:
+				color.set_a(v);
+				break;
+			default:
+				synfig::error("Invalid index for Color curve channel: %d", channel_idx);
+				return false;
+			}
+
+			value_base.set(color);
+		} else
+		if (type == type_vector) {
+			if (channel_idx > 1) {
+				synfig::error("Invalid index for Vector curve channel: %d", channel_idx);
+				return false;
+			} else {
+				auto vector = value_base.get(Vector());
+				vector[channel_idx] = v;
+				value_base.set(vector);
+			}
+		} else
+		if (type == type_bline_point) {
+			BLinePoint bline_point = value_base.get(BLinePoint());
+			switch (channel_idx) {
+			case 0: {
+				Vector vertex = bline_point.get_vertex();
+				vertex[0] = v;
+				bline_point.set_vertex(vertex);
+				break;
+			}
+			case 1: {
+				Vector vertex = bline_point.get_vertex();
+				vertex[1] = v;
+				bline_point.set_vertex(vertex);
+				break;
+			}
+			case 2:
+				bline_point.set_width( v < 0 ? 0 : v);
+				break;
+			case 3:
+				bline_point.set_origin(v);
+				break;
+			case 4:
+				bline_point.set_split_tangent_both(v > 0.5);
+				break;
+			case 5: {
+				Vector tangent = bline_point.get_tangent1();
+				tangent[0] = v;
+				bline_point.set_tangent1(tangent);
+				break;
+			}
+			case 6: {
+				Vector tangent = bline_point.get_tangent1();
+				tangent[1] = v;
+				bline_point.set_tangent1(tangent);
+				break;
+			}
+			case 7: {
+				Vector tangent = bline_point.get_tangent2();
+				tangent[0] = v;
+				bline_point.set_tangent2(tangent);
+				break;
+			}
+			case 8: {
+				Vector tangent = bline_point.get_tangent2();
+				tangent[1] = v;
+				bline_point.set_tangent2(tangent);
+				break;
+			}
+			case 9:
+				bline_point.set_split_tangent_radius(v > 0.5);
+				break;
+			case 10:
+				bline_point.set_split_tangent_angle(v > 0.5);
+				break;
+			default:
+				synfig::error("Invalid index for BLinePoint curve channel: %d", channel_idx);
+				return false;
+			}
+			value_base.set(bline_point);
+		} else
+		if (type == type_width_point) {
+			WidthPoint width_point = value_base.get(WidthPoint());
+			if (channel_idx == 0) {
+				width_point.set_position(v);
+			} else if (channel_idx == 1) {
+				if (v < 0)
+					v = 0;
+				width_point.set_width(v);
+			} else {
+				synfig::error("Invalid index for WidthPoint curve channel: %d", channel_idx);
+				return false;
+			}
+			value_base.set(width_point);
+		} else
+		if (type == type_dash_item) {
+			DashItem dash_item = value_base.get(DashItem());
+			if (channel_idx == 0) {
+				dash_item.set_offset(v);
+			} else if (channel_idx == 1) {
+				if (v < 0)
+					v = 0;
+				dash_item.set_length(v);
+			} else {
+				synfig::error("Invalid index for DashItem curve channel: %d", channel_idx);
+				return false;
+			}
+			value_base.set(dash_item);
+		}
+		return true;
+	}
+
 };
 
 /* === M E T H O D S ======================================================= */
@@ -729,7 +916,7 @@ void Widget_Curves::delta_drag(int dx, int dy)
 		v = time_plot_data->get_y_from_pixel_coord(pix_y);
 		ValueBase value_base = point.curve_it->value_desc.get_value(time);
 
-		set_value_base_for_channel_point(value_base, point, v);
+		CurveStruct::set_value_base_channel_value(value_base, point.channel_idx, v);
 
 		const ValueDesc &value_desc = point.curve_it->value_desc;
 		ValueNode::Handle value_node = value_desc.get_value_node();
@@ -837,143 +1024,6 @@ void Widget_Curves::cancel_dragging()
 	queue_draw();
 }
 
-void Widget_Curves::set_value_base_for_channel_point(ValueBase& value_base, const Widget_Curves::ChannelPoint& channel_point, Real v)
-{
-	Type& type = channel_point.curve_it->value_desc.get_value_type();
-	if (type == type_real) {
-		value_base.set(v);
-	} else
-	if (type == type_time) {
-		value_base.set(Time(v));
-	} else
-	if (type == type_integer) {
-		value_base.set((int)v);
-	} else
-	if (type == type_bool) {
-		value_base.set(v > 0.5);
-	} else
-	if (type == type_angle) {
-		value_base.set(Angle::rad(v));
-	} else
-	if (type == type_color) {
-		v = clamp(v, 0.0, 1.0);
-		auto color = value_base.get(Color());
-		switch (channel_point.channel_idx) {
-		case 0:
-			color.set_r(v);
-			break;
-		case 1:
-			color.set_g(v);
-			break;
-		case 2:
-			color.set_b(v);
-			break;
-		case 3:
-			color.set_a(v);
-			break;
-		default:
-			synfig::error("Invalid index for Color curve channel: %d", channel_point.channel_idx);
-			break;
-		}
-
-		value_base.set(color);
-	} else
-	if (type == type_vector) {
-		if (channel_point.channel_idx > 1) {
-			synfig::error("Invalid index for Vector curve channel: %d", channel_point.channel_idx);
-		} else {
-			auto vector = value_base.get(Vector());
-			vector[channel_point.channel_idx] = v;
-			value_base.set(vector);
-		}
-	} else
-	if (type == type_bline_point) {
-		BLinePoint bline_point = value_base.get(BLinePoint());
-		switch (channel_point.channel_idx) {
-		case 0: {
-			Vector vertex = bline_point.get_vertex();
-			vertex[0] = v;
-			bline_point.set_vertex(vertex);
-			break;
-		}
-		case 1: {
-			Vector vertex = bline_point.get_vertex();
-			vertex[1] = v;
-			bline_point.set_vertex(vertex);
-			break;
-		}
-		case 2:
-			bline_point.set_width( v < 0 ? 0 : v);
-			break;
-		case 3:
-			bline_point.set_origin(v);
-			break;
-		case 4:
-			bline_point.set_split_tangent_both(v > 0.5);
-			break;
-		case 5: {
-			Vector tangent = bline_point.get_tangent1();
-			tangent[0] = v;
-			bline_point.set_tangent1(tangent);
-			break;
-		}
-		case 6: {
-			Vector tangent = bline_point.get_tangent1();
-			tangent[1] = v;
-			bline_point.set_tangent1(tangent);
-			break;
-		}
-		case 7: {
-			Vector tangent = bline_point.get_tangent2();
-			tangent[0] = v;
-			bline_point.set_tangent2(tangent);
-			break;
-		}
-		case 8: {
-			Vector tangent = bline_point.get_tangent2();
-			tangent[1] = v;
-			bline_point.set_tangent2(tangent);
-			break;
-		}
-		case 9:
-			bline_point.set_split_tangent_radius(v > 0.5);
-			break;
-		case 10:
-			bline_point.set_split_tangent_angle(v > 0.5);
-			break;
-		default:
-			synfig::error("Invalid index for BLinePoint curve channel: %d", channel_point.channel_idx);
-		}
-		value_base.set(bline_point);
-	} else
-	if (type == type_width_point) {
-		WidthPoint width_point = value_base.get(WidthPoint());
-		if (channel_point.channel_idx == 0) {
-			width_point.set_position(v);
-		} else if (channel_point.channel_idx == 1) {
-			if (v < 0)
-				v = 0;
-			width_point.set_width(v);
-		} else {
-			synfig::error("Invalid index for WidthPoint curve channel: %d", channel_point.channel_idx);
-		}
-		value_base.set(width_point);
-	} else
-	if (type == type_dash_item) {
-		DashItem dash_item = value_base.get(DashItem());
-		if (channel_point.channel_idx == 0) {
-			dash_item.set_offset(v);
-		} else if (channel_point.channel_idx == 1) {
-			if (v < 0)
-				v = 0;
-			dash_item.set_length(v);
-		} else {
-			synfig::error("Invalid index for DashItem curve channel: %d", channel_point.channel_idx);
-		}
-		value_base.set(dash_item);
-	}
-}
-
 bool
 Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
@@ -1032,6 +1082,37 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	Real range_max = -100000000.0;
 	Real range_min =  100000000.0;
+
+	cr->set_line_width(.4);
+	for (auto it : saved_waypoints) {
+		const Waypoint &waypoint = it.first;
+		const auto &curve_it = it.second;
+		const size_t num_channels = curve_it->channels.size();
+
+		const int x = time_plot_data->get_pixel_t_coord(waypoint.get_time());
+
+		std::vector<Real> channel_values;
+		CurveStruct::get_value_base_channel_values(waypoint.get_value(), channel_values);
+		for (size_t c = 0; c < num_channels; c++) {
+			Real value = curve_it->get_value(c, waypoint.get_time(), time_plot_data->dt);
+			int y = time_plot_data->get_pixel_y_coord(value);
+
+			Real old_value = channel_values[c];
+			int old_y = time_plot_data->get_pixel_y_coord(old_value);
+
+			range_max = std::max(range_max, old_value);
+			range_min = std::min(range_min, old_value);
+
+			Gdk::Cairo::set_source_color(cr, curve_it->channels[c].color);
+			cr->move_to(x, y);
+			cr->line_to(x, old_y);
+			cr->stroke();
+			cr->arc(x, old_y, waypoint_edge_length / 5, 0, 6.28);
+			cr->fill_preserve();
+			cr->stroke();
+		}
+
+	}
 
 	// Draw curves for the valuenodes stored in the curve list
 	for(std::list<CurveStruct>::iterator curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
