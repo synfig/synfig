@@ -747,7 +747,7 @@ void Widget_Curves::delta_drag(int dx, int dy)
 	// Move along time
 	if (dx == 0)
 		return;
-	std::set<std::pair<const ValueDesc&, const Time&>> times_to_move;
+	std::set<std::pair<const ValueDesc&, Time>> times_to_move;
 
 	const float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	const Time base_time = active_point.time_point.get_time();
@@ -758,12 +758,14 @@ void Widget_Curves::delta_drag(int dx, int dy)
 		for (auto &point : selected_points) {
 			const ValueDesc &value_desc = point.curve_it->value_desc;
 			const Time &time = point.time_point.get_time();
-			std::pair<const ValueDesc&, const Time&> meta_data(value_desc, time);
+			const Time new_time = Time(time+deltatime).round(fps);
+
+			std::pair<const ValueDesc&, Time> meta_data(value_desc, time);
 			if (times_to_move.find(meta_data) == times_to_move.end()) {
 				times_to_move.insert(meta_data);
 				canvas_interface->waypoint_move(value_desc, time, deltatime);
 			}
-			point.time_point = TimePoint(Time(time+deltatime).round(fps));
+			point.time_point = TimePoint(new_time);
 		}
 		active_point.time_point = next_time;
 	}
