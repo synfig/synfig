@@ -520,6 +520,20 @@ void Widget_Curves::scroll_down()
 		.finish();
 }
 
+void Widget_Curves::select_all_points()
+{
+	selected_points.clear();
+	for (std::list<CurveStruct>::iterator curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
+		const auto &time_set = WaypointRenderer::get_times_from_valuedesc(curve_it->value_desc);
+		for (size_t channel_idx = 0; channel_idx < curve_it->channels.size(); channel_idx++) {
+			for (const TimePoint &time : time_set) {
+				selected_points.push_back(ChannelPoint(curve_it, time, channel_idx));
+			}
+		}
+	}
+	queue_draw();
+}
+
 void
 Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list<ValueDesc> &value_descs)
 {
@@ -793,8 +807,28 @@ Widget_Curves::on_event(GdkEvent *event)
 			delta_drag(delta, 0);
 			return true;
 		}
+		case GDK_KEY_a: {
+			if ((event->key.state & Gdk::CONTROL_MASK) == Gdk::CONTROL_MASK) {
+				// ctrl a
+				cancel_dragging();
+				select_all_points();
+				return true;
+			}
+			break;
+		}
+		case GDK_KEY_d: {
+			if ((event->key.state & Gdk::CONTROL_MASK) == Gdk::CONTROL_MASK) {
+				// ctrl d
+				cancel_dragging();
+				selected_points.clear();
+				queue_draw();
+				return true;
+			}
+			break;
+		}
+		}
+
 		break;
-	}
 	}
 	default:
 		break;

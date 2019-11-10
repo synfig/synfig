@@ -133,6 +133,8 @@ public:
 	void scroll_up();
 	void scroll_down();
 
+	void select_all_points();
+
 protected:
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
