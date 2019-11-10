@@ -351,7 +351,7 @@ get_time_dilation_from_vdesc(const ValueDesc &v)
 #endif
 }
 
-static const Node::time_set empty_time_set;
+static const Node::time_set empty_time_set {};
 
 const Node::time_set&
 WaypointRenderer::get_times_from_valuedesc(const ValueDesc &v)
