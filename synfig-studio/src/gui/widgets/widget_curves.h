@@ -108,7 +108,7 @@ private:
 	bool dragging_started_by_key;
 	synfigapp::Action::PassiveGrouper *action_group_drag;
 
-	std::vector<std::pair<synfig::Waypoint, std::list<CurveStruct>::iterator> > saved_waypoints;
+	std::vector<std::pair<synfig::Waypoint, std::list<CurveStruct>::iterator> > overlapped_waypoints;
 
 
 public:
