@@ -1107,6 +1107,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Real range_max = -100000000.0;
 	Real range_min =  100000000.0;
 
+	// draw overlapped waypoints
 	cr->set_line_width(.4);
 	for (auto it : overlapped_waypoints) {
 		const Waypoint &waypoint = it.first;
@@ -1135,7 +1136,6 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			cr->fill_preserve();
 			cr->stroke();
 		}
-
 	}
 
 	// Draw curves for the valuenodes stored in the curve list
@@ -1206,6 +1206,10 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		}
 
 		// Draw waypoints
+		bool is_draggable = curve_it->value_desc.is_animated() || curve_it->value_desc.parent_is_linkable_value_node();
+		if (!is_draggable) {
+			cr->push_group();
+		}
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *_data) -> bool
 		{
@@ -1227,6 +1231,10 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			}
 			return false;
 		});
+		if (!is_draggable) {
+			cr->pop_group_to_source();
+			cr->paint_with_alpha(0.5);
+		}
 	}
 
 	// Draw selection rectangle
