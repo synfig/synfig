@@ -43,6 +43,7 @@
 #include <sigc++/sigc++.h>
 
 #include <giomm.h>
+#include <fstream>
 
 #include <gtkmm/stock.h>
 #include <gtkmm/image.h>
@@ -225,6 +226,12 @@ void
 studio::Instance::run_plugin(std::string plugin_path)
 {
 	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
+	
+	if (!is_absolute_path(this->get_canvas()->get_file_name()))
+	{
+		uim->error(_("Please save file before running a plugin!"));
+		return;
+	}
 
 	string message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
 				this->get_canvas()->get_name().c_str());
@@ -285,10 +292,48 @@ studio::Instance::run_plugin(std::string plugin_path)
 
 		canvas=0;
 
-		App::open_as(launcher.get_result_path(),launcher.get_original_path());
-
-
+		//
+		// QUICKHACK:
+		// Now dances with files :( (see https://github.com/synfig/synfig/issues/949)
+		//
+		// TODO: Replace copy operations with giomm???
+		//
+		// create a backup of original saved file
+		String backup_filename;
+		struct stat buf;
+		do {
+			synfig::GUID guid;
+			backup_filename = launcher.get_original_path()+"-backup."+guid.get_string().substr(0,8);
+		} while (stat(backup_filename.c_str(), &buf) != -1);
+		std::ifstream  src0(launcher.get_original_path(), std::ios::binary);
+		std::ofstream  dst0(backup_filename, std::ios::binary);
+		dst0 << src0.rdbuf();
+		src0.close();
+		dst0.close();
+		// copy processed to original
+		remove( launcher.get_original_path().c_str() );
+		std::ifstream  src1(launcher.get_result_path(), std::ios::binary);
+		std::ofstream  dst1(launcher.get_original_path(), std::ios::binary);
+		dst1 << src1.rdbuf();
+		src1.close();
+		dst1.close();
+		// open
+		App::open(launcher.get_result_path());
 		etl::handle<Instance> new_instance = App::instance_list.back();
+		new_instance->save_as(launcher.get_original_path());
+		// copy backup to original
+		remove( launcher.get_original_path().c_str() );
+		std::ifstream  src2(backup_filename, std::ios::binary);
+		std::ofstream  dst2(launcher.get_original_path(), std::ios::binary);
+		dst2 << src2.rdbuf();
+		src2.close();
+		dst2.close();
+		// remove backup file
+		remove( backup_filename.c_str() );
+		//
+		// END QUICKHACK
+		//
+
 		new_instance->inc_action_count(); // This file isn't saved! mark it as such
 
 		// Restore time cursor position

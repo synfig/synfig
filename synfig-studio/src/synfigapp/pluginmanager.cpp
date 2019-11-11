@@ -32,6 +32,7 @@
 #include "pluginmanager.h"
 
 #include <iostream>
+#include <fstream>
 
 #include <libxml++/libxml++.h>
 
@@ -83,18 +84,22 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 		filename_processed = filename_base+"."+guid.get_string().substr(0,8)+".sif"; // without .sif suffix it won't be read back
 	} while (stat(filename_processed.c_str(), &buf) != -1);
 
-	/* The plugin could die with nonzero exit code
+	/* 
+	 * The plugin could die with nonzero exit code
 	 * synfig could crash loading the modified file (should not happen)
 	 * having a backup file should protect against both cases
 	 */
 	do {
 		synfig::GUID guid;
-		filename_backup = filename_base+"."+guid.get_string().substr(0,8)+".sif";
+		filename_backup = filename_base+"-current."+guid.get_string().substr(0,8)+".sif";
 	} while (stat(filename_backup.c_str(), &buf) != -1);
-
+	
 	save_canvas(FileSystemNative::instance()->get_identifier(filename_processed),canvas);
-	// copy file would be faster ..
-	save_canvas(FileSystemNative::instance()->get_identifier(filename_backup),canvas);
+	
+	// copy file "filename_processed" -> "filename_backup"
+	std::ifstream  src(filename_processed, std::ios::binary);
+	std::ofstream  dst(filename_backup,   std::ios::binary);
+	dst << src.rdbuf();
 
 	//canvas=0;
 	exitcode=-1;
