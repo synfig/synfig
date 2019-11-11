@@ -576,9 +576,9 @@ Widget_RendDesc::create_widgets()
 	entry_gamma_r=manage(new Gtk::SpinButton(adjustment_gamma_r,0.01,2));
 	entry_gamma_g=manage(new Gtk::SpinButton(adjustment_gamma_g,0.01,2));
 	entry_gamma_b=manage(new Gtk::SpinButton(adjustment_gamma_b,0.01,2));
-	scale_gamma_r=manage(new Gtk::Scale(adjustment_gamma_r));
-	scale_gamma_g=manage(new Gtk::Scale(adjustment_gamma_g));
-	scale_gamma_b=manage(new Gtk::Scale(adjustment_gamma_b));
+	//scale_gamma_r=manage(new Gtk::Scale(adjustment_gamma_r));
+	//scale_gamma_g=manage(new Gtk::Scale(adjustment_gamma_g));
+	//scale_gamma_b=manage(new Gtk::Scale(adjustment_gamma_b));
 	toggle_px_aspect=manage(new Gtk::CheckButton(_("_Pixel Aspect"), true));
 	toggle_px_aspect->set_alignment(0, 0.5);
 	toggle_px_width=manage(new Gtk::CheckButton(_("Pi_xel Width"), true));
@@ -841,8 +841,8 @@ Widget_RendDesc::create_gamma_tab()
 			frameGrid->attach(*label, 0, row, 1, 2);
 			entry_gamma_r->set_hexpand(true);
 			frameGrid->attach(*entry_gamma_r, 1, row++, 1, 1);
-			scale_gamma_r->set_hexpand(true);
-			frameGrid->attach(*scale_gamma_r, 1, row++, 1, 1);
+			//scale_gamma_r->set_hexpand(true);
+			//frameGrid->attach(*scale_gamma_r, 1, row++, 1, 1);
 		}
 		
 		{
@@ -851,8 +851,8 @@ Widget_RendDesc::create_gamma_tab()
 			frameGrid->attach(*label, 0, row, 1, 2);
 			entry_gamma_g->set_hexpand(true);
 			frameGrid->attach(*entry_gamma_g, 1, row++, 1, 1);
-			scale_gamma_g->set_hexpand(true);
-			frameGrid->attach(*scale_gamma_g, 1, row++, 1, 1);
+			//scale_gamma_g->set_hexpand(true);
+			//frameGrid->attach(*scale_gamma_g, 1, row++, 1, 1);
 		}
 		
 		{
@@ -861,8 +861,8 @@ Widget_RendDesc::create_gamma_tab()
 			frameGrid->attach(*label, 0, row, 1, 2);
 			entry_gamma_b->set_hexpand(true);
 			frameGrid->attach(*entry_gamma_b, 1, row++, 1, 1);
-			scale_gamma_b->set_hexpand(true);
-			frameGrid->attach(*scale_gamma_b, 1, row++, 1, 1);
+			//scale_gamma_b->set_hexpand(true);
+			//frameGrid->attach(*scale_gamma_b, 1, row++, 1, 1);
 		}
 	}
 	
