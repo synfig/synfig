@@ -3746,13 +3746,7 @@ App::wrap_into_temporary_filesystem(
 }
 
 bool
-App::open(std::string filename)
-{
-	return open_as(filename,filename);
-}
-
-bool
-App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_size_t truncate_storage_size)
+App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
 #ifdef _WIN32
     size_t buf_size = PATH_MAX - 1;
@@ -3780,12 +3774,12 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
 
 		// wrap into temporary file system
-		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename, as, truncate_storage_size);
+		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename, filename, truncate_storage_size);
 
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename);
 
-		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), as, errors, warnings);
+		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3805,8 +3799,8 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 					_("Close"),
 					warnings);
 
-			if (as.find(custom_filename_prefix.c_str()) != 0)
-				add_recent_file(as);
+			if (filename.find(custom_filename_prefix.c_str()) != 0)
+				add_recent_file(filename);
 
 			handle<Instance> instance(Instance::create(canvas, container));
 
@@ -4122,7 +4116,7 @@ App::dialog_open(string filename)
 					truncate_storage_size = i->storage_size;
 		}
 
-		if(open_as(filename,filename,truncate_storage_size))
+		if(open(filename,truncate_storage_size))
 			break;
 
 		get_ui_interface()->error(_("Unable to open file"));

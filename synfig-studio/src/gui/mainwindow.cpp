@@ -391,7 +391,7 @@ MainWindow::on_recent_files_changed()
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
-			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),fullnames[i]))
+			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),fullnames[i],0))
 		);
 	}
 
