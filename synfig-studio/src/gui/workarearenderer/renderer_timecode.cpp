@@ -99,29 +99,18 @@ Renderer_Timecode::render_vfunc(
 	{
 		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
-		try
-		{
-			int w, h;
-			KeyframeList::iterator iter;
-			//layout->set_text(canvas->keyframe_list().find(cur_time)->get_description());
-			if (canvas->keyframe_list().find(cur_time, iter)) {
-				layout->set_text(iter->get_description());
-			} else {
-				get_work_area()->timecode_width = get_work_area()->timecode_height = 0;
-				return;
-			}
-			layout->get_size(w, h);
-			get_work_area()->timecode_width = int(w*1.0/Pango::SCALE);
-			get_work_area()->timecode_height = int(h*1.0/Pango::SCALE);
-		}
-		catch (const synfig::Exception::NotFound&)
-		{
+		int w, h;
+		KeyframeList::iterator iter;
+		//layout->set_text(canvas->keyframe_list().find(cur_time)->get_description());
+		if (canvas->keyframe_list().find(cur_time, iter)) {
+			layout->set_text(iter->get_description());
+		} else {
 			get_work_area()->timecode_width = get_work_area()->timecode_height = 0;
 			return;
 		}
-		catch (...) {
-			assert(0);
-		}
+		layout->get_size(w, h);
+		get_work_area()->timecode_width = int(w*1.0/Pango::SCALE);
+		get_work_area()->timecode_height = int(h*1.0/Pango::SCALE);
 
 		cr->save();
 

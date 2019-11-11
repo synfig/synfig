@@ -657,20 +657,15 @@ void
 CanvasInterface::jump_to_next_keyframe()
 {
 	synfig::info("Current time: %s",get_time().get_string().c_str());
-	try
-	{
-		KeyframeList::iterator iter;
-		if (get_canvas()->keyframe_list().find_next(get_time(), iter)) {
-			synfig::Keyframe keyframe(*iter);
-			synfig::info("Jumping to keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
-			set_time(keyframe.get_time());
-		}
-		else {
-			synfig::warning("Unable to find next keyframe");
-		}
-		//synfig::Keyframe keyframe(*get_canvas()->keyframe_list().find_next(get_time()));
+	KeyframeList::iterator iter;
+	if (get_canvas()->keyframe_list().find_next(get_time(), iter)) {
+		synfig::Keyframe keyframe(*iter);
+		synfig::info("Jumping to keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
+		set_time(keyframe.get_time());
 	}
-	catch(...) { synfig::warning("Unable to find next keyframe"); }
+	else {
+		synfig::warning("Unable to find next keyframe");
+	}
 }
 
 void
