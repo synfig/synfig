@@ -600,8 +600,8 @@ Widget_Curves::on_event(GdkEvent *event)
 		auto previous_hovered_point = hovered_point;
 		hovered_point.invalidate();
 
-		int pointer_x, pointer_y;
-		get_pointer(pointer_x, pointer_y);
+		int pointer_x = std::trunc(event->motion.x);
+		int pointer_y = std::trunc(event->motion.y);
 		if (pointer_state != POINTER_DRAGGING)
 			find_channelpoint_at_position(pointer_x, pointer_y, hovered_point);
 
@@ -642,7 +642,8 @@ Widget_Curves::on_event(GdkEvent *event)
 			}
 		} else if (event->button.button == 1) {
 			if (pointer_state == POINTER_NONE) {
-				get_pointer(pointer_tracking_start_x, pointer_tracking_start_y);
+				pointer_tracking_start_x = std::trunc(event->motion.x);
+				pointer_tracking_start_y = std::trunc(event->motion.y);
 				ChannelPoint pointed_item;
 				find_channelpoint_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
 				if (pointed_item.is_valid()) {
@@ -668,8 +669,8 @@ Widget_Curves::on_event(GdkEvent *event)
 		break;
 	}
 	case GDK_BUTTON_RELEASE: {
-		int pointer_x, pointer_y;
-		get_pointer(pointer_x, pointer_y);
+		int pointer_x = std::trunc(event->motion.x);
+		int pointer_y = std::trunc(event->motion.y);
 
 		if (event->button.button == 1) {
 			bool selection_changed = false;
