@@ -89,6 +89,8 @@ private:
 	sigc::signal<void> signal_drag_canceled_;
 	sigc::signal<void> signal_drag_finished_;
 
+	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_clicked_;
+
 public:
 	SelectDragHelper(const char *drag_action_name);
 	virtual ~SelectDragHelper() {delete action_group_drag;}
@@ -133,6 +135,8 @@ public:
 	sigc::signal<void>& signal_drag_started() { return signal_drag_started_; }
 	sigc::signal<void>& signal_drag_canceled() { return signal_drag_canceled_; }
 	sigc::signal<void>& signal_drag_finished() { return signal_drag_finished_; }
+
+	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_clicked() { return signal_item_clicked_; }
 };
 
 
@@ -313,6 +317,8 @@ bool SelectDragHelper<T>::process_key_release_event(GdkEventKey* event)
 template<class T>
 bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 {
+	bool some_action_done = false;
+
 	signal_focus_requested().emit();
 	if (event->button == 3) {
 		// cancel/undo current action
@@ -320,7 +326,7 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 			cancel_dragging();
 			pointer_state = POINTER_NONE;
 			signal_redraw_needed().emit();
-			return  true;
+			some_action_done = true;
 		}
 	} else if (event->button == 1) {
 		if (pointer_state == POINTER_NONE) {
@@ -351,11 +357,20 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 			} else {
 				pointer_state = POINTER_SELECTING;
 			}
-			return true;
+			some_action_done = true;
 		}
 	}
 
-	return false;
+	{
+		T pointed_item;
+		find_item_at_position(event->x, event->y, pointed_item);
+		if (pointed_item.is_valid()) {
+			int pointer_x = std::trunc(event->x);
+			int pointer_y = std::trunc(event->y);
+			signal_item_clicked().emit(pointed_item, event->button, Gdk::Point(pointer_x, pointer_y));
+		}
+	}
+	return some_action_done;
 }
 
 template<class T>
