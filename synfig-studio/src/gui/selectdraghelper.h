@@ -203,9 +203,8 @@ bool
 SelectDragHelper<T>::process_event(GdkEvent *event)
 {
 	switch(event->type) {
-	case GDK_SCROLL: {
-		break;
-	}
+	case GDK_SCROLL:
+		return process_scroll_event(&event->scroll);
 	case GDK_MOTION_NOTIFY:
 		return process_motion_event(&event->motion);
 	case GDK_BUTTON_PRESS:

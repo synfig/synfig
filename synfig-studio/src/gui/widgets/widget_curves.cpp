@@ -443,21 +443,13 @@ Widget_Curves::Widget_Curves():
 	channel_point_sd.signal_drag_finished().connect([&]() {
 //		overlapped_waypoints.clear();
 	});
-	channel_point_sd.signal_redraw_needed().connect([&]() {
-		queue_draw();
-	});
-	channel_point_sd.signal_focus_requested().connect([&]() {
-		grab_focus();
-	});
-	channel_point_sd.signal_selection_changed().connect([&]() {
-		queue_draw();
-	});
-	channel_point_sd.signal_zoom_in_requested().connect([&]() {
-		zoom_in();
-	});
-	channel_point_sd.signal_zoom_out_requested().connect([&]() {
-		zoom_out();
-	});
+	channel_point_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
+	channel_point_sd.signal_focus_requested().connect(sigc::mem_fun(*this, &Gtk::Widget::grab_focus));
+	channel_point_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
+	channel_point_sd.signal_zoom_in_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_in));
+	channel_point_sd.signal_zoom_out_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_out));
+	channel_point_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_up));
+	channel_point_sd.signal_scroll_down_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_down));
 }
 
 Widget_Curves::~Widget_Curves() {
