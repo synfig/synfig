@@ -80,9 +80,9 @@ class Widget_RendDesc : public Gtk::Notebook
 	Gtk::SpinButton *entry_gamma_g;
 	Gtk::SpinButton *entry_gamma_b;
 
-	//Gtk::Scale* scale_gamma_r;
-	//Gtk::Scale* scale_gamma_g;
-	//Gtk::Scale* scale_gamma_b;
+	Gtk::Scale* scale_gamma_r;
+	Gtk::Scale* scale_gamma_g;
+	Gtk::Scale* scale_gamma_b;
 
 	Widget_Link *toggle_wh_ratio;
 	Widget_Link *toggle_res_ratio;
