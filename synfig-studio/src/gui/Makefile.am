@@ -60,6 +60,7 @@ OTHER_HH = \
 	renddesc.h \
 	render.h \
 	resourcehelper.h \
+	selectdraghelper.h \
 	splash.h \
 	statemanager.h \
 	timeplotdata.h \

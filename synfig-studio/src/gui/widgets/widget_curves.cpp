@@ -420,9 +420,8 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 
 Widget_Curves::Widget_Curves():
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, DEFAULT_PAGE_SIZE)),
-	waypoint_edge_length(16),
-	pointer_state(POINTER_NONE),
-	action_group_drag(nullptr)
+	channel_point_sd(*this),
+	waypoint_edge_length(16)
 {
 	set_size_request(64, 64);
 
@@ -432,13 +431,39 @@ Widget_Curves::Widget_Curves():
 
 	time_plot_data = new TimePlotData(*this, range_adjustment);
 	time_plot_data->set_extra_time_margin(16/2);
+
+	channel_point_sd.set_canvas_interface(canvas_interface);
+	channel_point_sd.signal_drag_started().connect([&](){
+		const ChannelPoint &pointed_item = channel_point_sd.get_active_item();
+		active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
+	});
+	channel_point_sd.signal_drag_canceled().connect([&]() {
+		overlapped_waypoints.clear();
+	});
+	channel_point_sd.signal_drag_finished().connect([&]() {
+//		overlapped_waypoints.clear();
+	});
+	channel_point_sd.signal_redraw_needed().connect([&]() {
+		queue_draw();
+	});
+	channel_point_sd.signal_focus_requested().connect([&]() {
+		grab_focus();
+	});
+	channel_point_sd.signal_selection_changed().connect([&]() {
+		queue_draw();
+	});
+	channel_point_sd.signal_zoom_in_requested().connect([&]() {
+		zoom_in();
+	});
+	channel_point_sd.signal_zoom_out_requested().connect([&]() {
+		zoom_out();
+	});
 }
 
 Widget_Curves::~Widget_Curves() {
 	clear();
 	set_time_model(etl::handle<TimeModel>());
 	delete time_plot_data;
-	delete action_group_drag;
 }
 
 const etl::handle<TimeModel>&
@@ -460,7 +485,7 @@ Widget_Curves::clear() {
 		value_desc_changed.pop_back();
 	}
 	curve_list.clear();
-	hovered_point.invalidate();
+	channel_point_sd.clear();
 }
 
 void
@@ -468,7 +493,7 @@ Widget_Curves::refresh()
 {
 	for(std::list<CurveStruct>::iterator i = curve_list.begin(); i != curve_list.end(); ++i)
 		i->clear_all_values();
-	hovered_point.invalidate();
+	channel_point_sd.refresh();
 	queue_draw();
 }
 
@@ -510,7 +535,7 @@ void Widget_Curves::scroll_up()
 {
 	ConfigureAdjustment(range_adjustment)
 		.set_value(range_adjustment->get_value() - range_adjustment->get_step_increment())
-			.finish();
+		.finish();
 }
 
 void Widget_Curves::scroll_down()
@@ -522,22 +547,16 @@ void Widget_Curves::scroll_down()
 
 void Widget_Curves::select_all_points()
 {
-	selected_points.clear();
-	for (std::list<CurveStruct>::iterator curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
-		const auto &time_set = WaypointRenderer::get_times_from_valuedesc(curve_it->value_desc);
-		for (size_t channel_idx = 0; channel_idx < curve_it->channels.size(); channel_idx++) {
-			for (const TimePoint &time : time_set) {
-				selected_points.push_back(ChannelPoint(curve_it, time, channel_idx));
-			}
-		}
-	}
-	queue_draw();
+	channel_point_sd.select_all_items();
 }
 
 void
 Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list<ValueDesc> &value_descs)
 {
-	canvas_interface = canvas_interface_;
+	if (canvas_interface_ != canvas_interface) {
+		canvas_interface = canvas_interface_;
+		channel_point_sd.set_canvas_interface(canvas_interface_);
+	}
 	clear();
 	CurveStruct curve_struct;
 	for(std::list<ValueDesc>::const_iterator i = value_descs.begin(); i != value_descs.end(); ++i) {
@@ -566,521 +585,11 @@ Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_in
 bool
 Widget_Curves::on_event(GdkEvent *event)
 {
-	switch(event->type) {
-	case GDK_SCROLL: {
-		switch(event->scroll.direction) {
-			case GDK_SCROLL_UP:
-			case GDK_SCROLL_RIGHT: {
-				if (event->scroll.state & GDK_CONTROL_MASK) {
-					// Ctrl+scroll , perform zoom in
-					zoom_in();
-				} else {
-					// Scroll up
-					scroll_up();
-				}
-				return true;
-			}
-			case GDK_SCROLL_DOWN:
-			case GDK_SCROLL_LEFT: {
-				if (event->scroll.state & GDK_CONTROL_MASK) {
-					// Ctrl+scroll , perform zoom out
-					zoom_out();
-				} else {
-					// Scroll down
-					scroll_down();
-				}
-				return true;
-			}
-			default:
-				break;
-		}
-		break;
-	}
-	case GDK_MOTION_NOTIFY: {
-		auto previous_hovered_point = hovered_point;
-		hovered_point.invalidate();
+	if (channel_point_sd.process_event(event))
+		return true;
 
-		int pointer_x = std::trunc(event->motion.x);
-		int pointer_y = std::trunc(event->motion.y);
-		if (pointer_state != POINTER_DRAGGING)
-			find_channelpoint_at_position(pointer_x, pointer_y, hovered_point);
-
-		if (previous_hovered_point != hovered_point)
-			queue_draw();
-
-		if (pointer_state == POINTER_DRAGGING && !dragging_started_by_key) {
-			guint any_pointer_button = Gdk::BUTTON1_MASK |Gdk::BUTTON2_MASK | Gdk::BUTTON3_MASK;
-			if ((event->motion.state & any_pointer_button) == 0) {
-				// If some modal window is called, we lose the button-release event...
-				cancel_dragging();
-			} else {
-				bool axis_lock = event->motion.state & Gdk::SHIFT_MASK;
-				if (axis_lock) {
-					int dx = pointer_x - pointer_tracking_start_x;
-					int dy = pointer_y - pointer_tracking_start_y;
-					if (std::abs(dy) > std::abs(dx))
-						pointer_x = pointer_tracking_start_x;
-					else
-						pointer_y = pointer_tracking_start_y;
-				}
-				drag_to(pointer_x, pointer_y);
-			}
-		}
-		if (pointer_state != POINTER_NONE) {
-			queue_draw();
-		}
-		break;
-	}
-	case GDK_BUTTON_PRESS: {
-		grab_focus();
-		if (event->button.button == 3) {
-			// cancel/undo current action
-			if (pointer_state != POINTER_NONE) {
-				cancel_dragging();
-				pointer_state = POINTER_NONE;
-				queue_draw();
-			}
-		} else if (event->button.button == 1) {
-			if (pointer_state == POINTER_NONE) {
-				pointer_tracking_start_x = std::trunc(event->motion.x);
-				pointer_tracking_start_y = std::trunc(event->motion.y);
-				ChannelPoint pointed_item;
-				find_channelpoint_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
-				if (pointed_item.is_valid()) {
-					auto already_selection_it = std::find(selected_points.begin(), selected_points.end(), pointed_item);
-					bool is_already_selected = already_selection_it != selected_points.end();
-					bool using_key_modifiers = (event->button.state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) != 0;
-					if (using_key_modifiers) {
-						pointer_state = POINTER_SELECTING;
-					} else {
-						if (!is_already_selected) {
-							selected_points.clear();
-							selected_points.push_back(pointed_item);
-						}
-						start_dragging(pointed_item);
-						dragging_started_by_key = false;
-						pointer_state = POINTER_DRAGGING;
-					}
-				} else {
-					pointer_state = POINTER_SELECTING;
-				}
-			}
-		}
-		break;
-	}
-	case GDK_BUTTON_RELEASE: {
-		int pointer_x = std::trunc(event->motion.x);
-		int pointer_y = std::trunc(event->motion.y);
-
-		if (event->button.button == 1) {
-			bool selection_changed = false;
-
-			if (pointer_state == POINTER_SELECTING) {
-				std::vector<ChannelPoint> cps;
-				int x0 = std::min(pointer_tracking_start_x, pointer_x);
-				int width = std::abs(pointer_tracking_start_x - pointer_x);
-				int y0 = std::min(pointer_tracking_start_y, pointer_y);
-				int height = std::abs(pointer_tracking_start_y - pointer_y);
-				if (width < 1 && height < 1) {
-					width = 1;
-					height = 1;
-				}
-				Gdk::Rectangle rect(x0, y0, width, height);
-				bool found = find_channelpoints_in_rect(rect, cps);
-				if (!found) {
-					if (selected_points.size() > 0 && (event->button.state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)) == 0) {
-						selection_changed = true;
-						selected_points.clear();
-					}
-				} else {
-					if ((event->button.state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
-						// toggle selection status of each point in rectangle
-						for (ChannelPoint cp : cps) {
-							std::vector<ChannelPoint>::iterator already_selection_it = std::find(selected_points.begin(), selected_points.end(), cp);
-							bool already_selected = already_selection_it != selected_points.end();
-							if (already_selected) {
-								selected_points.erase(already_selection_it);
-								selection_changed = true;
-							} else {
-								selected_points.push_back(cp);
-								selection_changed = true;
-							}
-						}
-					} else if ((event->button.state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK) {
-						// add to selection, if it aren't yet
-						for (ChannelPoint cp : cps) {
-							std::vector<ChannelPoint>::iterator already_selection_it = std::find(selected_points.begin(), selected_points.end(), cp);
-							bool already_selected = already_selection_it != selected_points.end();
-							if (!already_selected) {
-								selected_points.push_back(cp);
-								selection_changed = true;
-							}
-						}
-					} else {
-						selected_points.clear();
-						selected_points = cps;
-						selection_changed = true;
-					}
-				}
-			}
-			else if (pointer_state == POINTER_DRAGGING) {
-				if (event->button.button == 1) {
-					if (made_dragging_move)
-						finish_dragging();
-					else {
-						selected_points.clear();
-						selected_points.push_back(active_point);
-						selection_changed = true;
-						cancel_dragging();
-					}
-				}
-			}
-
-			if (selection_changed)
-				queue_draw();
-		}
-
-		if (event->button.button == 1 || event->button.button == 3) {
-			if (pointer_state != POINTER_NONE) {
-				pointer_state = POINTER_NONE;
-				queue_draw();
-			}
-		}
-
-		break;
-	}
-	case GDK_KEY_RELEASE: {
-		switch (event->key.keyval) {
-		case GDK_KEY_Escape: {
-			// cancel/undo current action
-			if (pointer_state != POINTER_NONE) {
-				cancel_dragging();
-				pointer_state = POINTER_NONE;
-				queue_draw();
-			}
-			return true;
-		}
-		case GDK_KEY_Up:
-		case GDK_KEY_Down:
-		case GDK_KEY_Left:
-		case GDK_KEY_Right: {
-			if (pointer_state == POINTER_DRAGGING) {
-				if (dragging_started_by_key)
-					finish_dragging();
-				dragging_started_by_key = false;
-				return true;
-			}
-		}
-		}
-		break;
-	}
-	case GDK_KEY_PRESS: {
-		switch (event->key.keyval) {
-		case GDK_KEY_Up:
-		case GDK_KEY_Down: {
-			if (selected_points.size() == 0)
-				break;
-			if (pointer_state != POINTER_DRAGGING) {
-				start_dragging(selected_points.front());
-				dragging_started_by_key = true;
-			}
-			int delta = 1;
-			if (event->key.state & GDK_SHIFT_MASK)
-				delta = 10;
-			if (event->key.keyval == GDK_KEY_Up)
-				delta = -delta;
-			delta_drag(0, delta);
-			return true;
-		}
-		case GDK_KEY_Left:
-		case GDK_KEY_Right: {
-			if (selected_points.size() == 0)
-				break;
-			if (pointer_state != POINTER_DRAGGING) {
-				start_dragging(selected_points.front());
-				dragging_started_by_key = true;
-			}
-			int delta = time_plot_data->k/canvas_interface->get_canvas()->rend_desc().get_frame_rate();
-			if (event->key.state & GDK_SHIFT_MASK)
-				delta *= 10;
-			if (event->key.keyval == GDK_KEY_Left)
-				delta = -delta;
-			delta_drag(delta, 0);
-			return true;
-		}
-		case GDK_KEY_a: {
-			if ((event->key.state & Gdk::CONTROL_MASK) == Gdk::CONTROL_MASK) {
-				// ctrl a
-				cancel_dragging();
-				select_all_points();
-				return true;
-			}
-			break;
-		}
-		case GDK_KEY_d: {
-			if ((event->key.state & Gdk::CONTROL_MASK) == Gdk::CONTROL_MASK) {
-				// ctrl d
-				cancel_dragging();
-				selected_points.clear();
-				queue_draw();
-				return true;
-			}
-			break;
-		}
-		}
-
-		break;
-	}
-	default:
-		break;
-	}
 
 	return Gtk::DrawingArea::on_event(event);
-}
-
-bool Widget_Curves::find_channelpoint_at_position(int pos_x, int pos_y, ChannelPoint & cp)
-{
-	cp.invalidate();
-	bool found = false;
-	for(auto curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
-		int channels = (int)curve_it->channels.size();
-
-		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
-		{
-			int px = time_plot_data->get_pixel_t_coord(t);
-			for (int c = 0; c < channels; ++c) {
-				Real y = curve_it->get_value(c, t, time_plot_data->dt);
-				int py = time_plot_data->get_pixel_y_coord(y);
-
-				if (pos_x > px - waypoint_edge_length/2 && pos_x <= px + waypoint_edge_length/2) {
-					if (pos_y > py - waypoint_edge_length/2 && pos_y <= py + waypoint_edge_length/2) {
-						cp.curve_it = curve_it;
-						cp.time_point = tp;
-						cp.channel_idx = c;
-						*static_cast<bool*>(data) = true;
-						return true;
-					}
-				}
-			}
-			*static_cast<bool*>(data) = false;
-			return false;
-		}, &found);
-
-		if (found)
-			break;
-	}
-	return found;
-}
-
-bool Widget_Curves::find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list)
-{
-	list.clear();
-
-	int x0 = rect.get_x();
-	int x1 = rect.get_x() + rect.get_width();
-	if (x0 > x1)
-		std::swap(x0, x1);
-	int y0 = rect.get_y();
-	int y1 = rect.get_y() + rect.get_height();
-	if (y0 > y1)
-		std::swap(y0, y1);
-
-	for(auto curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
-		int channels = (int)curve_it->channels.size();
-
-		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
-		{
-			int px = time_plot_data->get_pixel_t_coord(t);
-			for (int c = 0; c < channels; ++c) {
-				Real y = curve_it->get_value(c, t, time_plot_data->dt);
-				int py = time_plot_data->get_pixel_y_coord(y);
-
-				if (x0 < px + waypoint_edge_length/2 && x1 >= px - waypoint_edge_length/2) {
-					if (y0 < py + waypoint_edge_length/2 && y1 >= py - waypoint_edge_length/2) {
-						list.push_back(ChannelPoint(curve_it, tp, c));
-					}
-				}
-			}
-			return false;
-		});
-	}
-	return list.size() > 0;
-}
-
-void Widget_Curves::start_dragging(const ChannelPoint& pointed_item)
-{
-	made_dragging_move = false;
-	active_point = pointed_item;
-	active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
-
-	action_group_drag = new synfigapp::Action::PassiveGrouper(canvas_interface->get_instance().get(), _("Change animation curve"));
-
-	pointer_state = POINTER_DRAGGING;
-}
-
-void Widget_Curves::drag_to(int pointer_x, int pointer_y)
-{
-	made_dragging_move = true;
-
-	int pointer_dy = pointer_y - pointer_tracking_start_y;
-	int current_y = time_plot_data->get_pixel_y_coord(active_point.get_value(time_plot_data->dt));
-	int waypoint_dy = current_y - active_point_initial_y;
-	int dy = pointer_dy - waypoint_dy;
-
-	float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
-	Time pointer_t = time_plot_data->get_t_from_pixel_coord(pointer_x).round(fps);
-	Time current_t = active_point.time_point.get_time();
-	int dx = (pointer_t - current_t) * time_plot_data->k;
-	delta_drag(dx, dy);
-}
-
-void Widget_Curves::delta_drag(int dx, int dy)
-{
-	// Move Y value
-	for (const auto &point : selected_points) {
-		// If the active point (ie. the point clicked and dragged by cursor) is a converted parameter,
-		// no channel point should be moved vertically (it is strange)
-		if (!active_point.is_draggable())
-			break;
-		// If it is a converted parameter (and not its inner parameter), its Y value can't be changed
-		if (!point.is_draggable())
-			continue;
-
-		Time time = point.time_point.get_time();
-		Real v = point.get_value(time_plot_data->dt);
-
-		int pix_y = time_plot_data->get_pixel_y_coord(v);
-		pix_y += dy;
-		v = time_plot_data->get_y_from_pixel_coord(pix_y);
-		ValueBase value_base = point.curve_it->value_desc.get_value(time);
-
-		CurveStruct::set_value_base_channel_value(value_base, point.channel_idx, v);
-
-		const ValueDesc &value_desc = point.curve_it->value_desc;
-		ValueNode::Handle value_node = value_desc.get_value_node();
-		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-		synfig::waypoint_collect(waypoint_set, time, value_node);
-		if (waypoint_set.size() < 1)
-			break;
-
-		Waypoint waypoint(*(waypoint_set.begin()));
-		waypoint.set_value(value_base);
-		canvas_interface->waypoint_set_value_node(value_node, waypoint);
-	}
-
-	// Move along time
-	if (dx == 0)
-		return;
-	std::set<std::pair<const ValueDesc&, Time>> times_to_move;
-
-	const float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
-	const Time base_time = active_point.time_point.get_time();
-	const Time next_time = time_plot_data->get_t_from_pixel_coord(time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
-	const Time deltatime = next_time - base_time;
-
-	if (deltatime != 0) {
-		// new dragging position allow us to restore previouly overlapped waypoints
-		auto waypoints_to_restore = overlapped_waypoints;
-		// let it store new overlapped waypoints until next drag motion
-		overlapped_waypoints.clear();
-
-		bool ignore_move = false;
-		std::vector<std::pair<ChannelPoint&, Time> > timepoints_to_update;
-
-		for (auto &point : selected_points) {
-			const ValueDesc &value_desc = point.curve_it->value_desc;
-			const Time &time = point.time_point.get_time();
-			const Time new_time = Time(time+deltatime).round(fps);
-
-			std::pair<const ValueDesc&, Time> meta_data(value_desc, time);
-			if (times_to_move.find(meta_data) == times_to_move.end()) {
-				auto time_set = WaypointRenderer::get_times_from_valuedesc(value_desc);
-
-				// are we overlapping existing waypoints while moving in time?
-				auto new_timepoint = time_set.find(new_time);
-				if (new_timepoint != time_set.end()) {
-					// Converted layer parameter can't overlap waypoints... So, nobody moves this time
-					if (!point.is_draggable()) {
-						ignore_move = true;
-						times_to_move.clear();
-						break;
-					}
-					std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-					synfig::waypoint_collect(waypoint_set, new_time, value_desc.get_value_node());
-					for (const Waypoint &waypoint : waypoint_set) {
-						overlapped_waypoints.push_back(std::pair<Waypoint, std::list<CurveStruct>::iterator>(waypoint, point.curve_it));
-						canvas_interface->waypoint_remove(value_desc, waypoint);
-					}
-				}
-
-				times_to_move.insert(meta_data);
-			}
-
-			timepoints_to_update.push_back(std::pair<ChannelPoint&, Time>(point, new_time));
-		}
-		if (!ignore_move) {
-			for (const auto &info : times_to_move) {
-				canvas_interface->waypoint_move(info.first, info.second, deltatime);
-			}
-			for (auto pair : timepoints_to_update) {
-				pair.first.time_point = TimePoint(pair.second);
-			}
-			active_point.time_point = next_time;
-		}
-
-		// Now we can restore previously overlapped waypoints
-		for (auto it : waypoints_to_restore) {
-			Action::Handle 	action(Action::create("WaypointAdd"));
-
-			assert(action);
-			if(!action)
-				return;
-
-			action->set_param("canvas", canvas_interface->get_canvas());
-			action->set_param("canvas_interface", canvas_interface);
-			action->set_param("value_node", it.second->value_desc.get_value_node());
-//			action->set_param("time", i.first.get_time());
-			action->set_param("waypoint", it.first);
-
-			if(!canvas_interface->get_instance()->perform_action(action))
-				canvas_interface->get_ui_interface()->error(_("Action Failed."));
-		}
-	}
-
-	queue_draw();
-}
-
-void Widget_Curves::finish_dragging()
-{
-	delete action_group_drag;
-	action_group_drag = nullptr;
-
-	overlapped_waypoints.clear();
-
-	pointer_state = POINTER_NONE;
-}
-
-void Widget_Curves::cancel_dragging()
-{
-	if (pointer_state != POINTER_DRAGGING)
-		return;
-
-	// Sadly group->cancel() just remove PassiverGroup indicator, not its actions, from stack
-
-	bool has_any_content =  0 < action_group_drag->get_depth();
-	delete action_group_drag;
-	action_group_drag = nullptr;
-	if (has_any_content) {
-		canvas_interface->get_instance()->undo();
-		canvas_interface->get_instance()->clear_redo_stack();
-	}
-
-	overlapped_waypoints.clear();
-
-	pointer_state = POINTER_NONE;
-	queue_draw();
 }
 
 bool
@@ -1254,14 +763,14 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 						0, //0 - waypoint_edge_length/2 + 1 + py,
 						waypoint_edge_length - 2,
 						waypoint_edge_length - 2);
+			const auto & hovered_point = channel_point_sd.get_hovered_item();
 			bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
 			for (int c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				int py = time_plot_data->get_pixel_y_coord(y);
 				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
 
-				std::vector<ChannelPoint>::iterator selection_it = std::find(selected_points.begin(), selected_points.end(), ChannelPoint(curve_it, tp, c));
-				bool selected = selection_it != selected_points.end();
+				bool selected = channel_point_sd.is_selected(ChannelPoint(curve_it, tp, c));
 				WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
 			}
 			return false;
@@ -1273,12 +782,14 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	}
 
 	// Draw selection rectangle
-	if (pointer_state == POINTER_SELECTING) {
+	if (channel_point_sd.get_state() == ChannelPointSD::State::POINTER_SELECTING) {
 		static const std::vector<double>dashed3 = {5.0};
 		cr->set_dash(dashed3, 0);
 		int x1, y1;
 		get_pointer(x1, y1);
-		cr->rectangle(pointer_tracking_start_x, pointer_tracking_start_y, x1 - pointer_tracking_start_x, y1 - pointer_tracking_start_y);
+		int x0, y0;
+		channel_point_sd.get_initial_tracking_point(x0, y0);
+		cr->rectangle(x0, y0, x1 - x0, y1 - y0);
 		 // set up a dashed solid-color stroke
 		cr->stroke();
 	}
@@ -1329,3 +840,221 @@ Real Widget_Curves::ChannelPoint::get_value(Real time_tolerance) const
 {
 	return curve_it->get_value(channel_idx, time_point.get_time(), time_tolerance);
 }
+
+Widget_Curves::ChannelPointSD::ChannelPointSD(Widget_Curves& widget)
+	: SelectDragHelper<ChannelPoint>(_("Change animation curve")),
+	  widget(widget)
+{
+}
+
+bool Widget_Curves::ChannelPointSD::find_item_at_position(int pos_x, int pos_y, Widget_Curves::ChannelPoint& cp)
+{
+	cp.invalidate();
+	for(auto curve_it = widget.curve_list.begin(); curve_it != widget.curve_list.end(); ++curve_it) {
+		int channels = (int)curve_it->channels.size();
+
+		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *widget.time_plot_data,
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
+		{
+			int px = widget.time_plot_data->get_pixel_t_coord(t);
+			for (int c = 0; c < channels; ++c) {
+				Real y = curve_it->get_value(c, t, widget.time_plot_data->dt);
+				int py = widget.time_plot_data->get_pixel_y_coord(y);
+
+				if (pos_x > px - widget.waypoint_edge_length/2 && pos_x <= px + widget.waypoint_edge_length/2) {
+					if (pos_y > py - widget.waypoint_edge_length/2 && pos_y <= py + widget.waypoint_edge_length/2) {
+						cp.curve_it = curve_it;
+						cp.time_point = tp;
+						cp.channel_idx = c;
+						return true;
+					}
+				}
+			}
+			return false;
+		});
+
+		if (cp.is_valid())
+			return true;
+	}
+	return false;
+}
+
+bool Widget_Curves::ChannelPointSD::find_items_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint>& list)
+{
+	list.clear();
+
+	int x0 = rect.get_x();
+	int x1 = rect.get_x() + rect.get_width();
+	if (x0 > x1)
+		std::swap(x0, x1);
+	int y0 = rect.get_y();
+	int y1 = rect.get_y() + rect.get_height();
+	if (y0 > y1)
+		std::swap(y0, y1);
+
+	for(auto curve_it = widget.curve_list.begin(); curve_it != widget.curve_list.end(); ++curve_it) {
+		int channels = (int)curve_it->channels.size();
+
+		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *widget.time_plot_data,
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
+		{
+			int px = widget.time_plot_data->get_pixel_t_coord(t);
+			for (int c = 0; c < channels; ++c) {
+				Real y = curve_it->get_value(c, t, widget.time_plot_data->dt);
+				int py = widget.time_plot_data->get_pixel_y_coord(y);
+
+				if (x0 < px + widget.waypoint_edge_length/2 && x1 >= px - widget.waypoint_edge_length/2) {
+					if (y0 < py + widget.waypoint_edge_length/2 && y1 >= py - widget.waypoint_edge_length/2) {
+						list.push_back(ChannelPoint(curve_it, tp, c));
+					}
+				}
+			}
+			return false;
+		});
+	}
+	return list.size() > 0;
+}
+
+void Widget_Curves::ChannelPointSD::get_all_items(std::vector<Widget_Curves::ChannelPoint>& items)
+{
+	for (std::list<CurveStruct>::iterator curve_it = widget.curve_list.begin(); curve_it != widget.curve_list.end(); ++curve_it) {
+		const auto &time_set = WaypointRenderer::get_times_from_valuedesc(curve_it->value_desc);
+		for (size_t channel_idx = 0; channel_idx < curve_it->channels.size(); channel_idx++) {
+			for (const TimePoint &time : time_set) {
+				items.push_back(ChannelPoint(curve_it, time, channel_idx));
+			}
+		}
+	}
+}
+
+void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
+{
+	if (by_keys) {
+		// snap to frames
+		dx *= widget.time_plot_data->k/widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	} else {
+		int current_y = widget.time_plot_data->get_pixel_y_coord(get_active_item().get_value(widget.time_plot_data->dt));
+		int waypoint_dy = current_y - widget.active_point_initial_y;
+		dy = dy - waypoint_dy;
+
+		int pointer_x, pointer_y;
+		widget.get_pointer(pointer_x, pointer_y);
+		float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+		Time pointer_t = widget.time_plot_data->get_t_from_pixel_coord(pointer_x).round(fps);
+		Time current_t = get_active_item().time_point.get_time();
+		dx = (pointer_t - current_t) * widget.time_plot_data->k;
+	}
+	// Move Y value
+	for (const auto point : get_selected_items()) {
+		// If the active point (ie. the point clicked and dragged by cursor) is a converted parameter,
+		// no channel point should be moved vertically (it is strange)
+		if (!get_active_item().is_draggable())
+			break;
+		// If it is a converted parameter (and not its inner parameter), its Y value can't be changed
+		if (!point->is_draggable())
+			continue;
+
+		Time time = point->time_point.get_time();
+		Real v = point->get_value(widget.time_plot_data->dt);
+
+		int pix_y = widget.time_plot_data->get_pixel_y_coord(v);
+		pix_y += dy;
+		v = widget.time_plot_data->get_y_from_pixel_coord(pix_y);
+		ValueBase value_base = point->curve_it->value_desc.get_value(time);
+
+		CurveStruct::set_value_base_channel_value(value_base, point->channel_idx, v);
+
+		const ValueDesc &value_desc = point->curve_it->value_desc;
+		ValueNode::Handle value_node = value_desc.get_value_node();
+		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+		synfig::waypoint_collect(waypoint_set, time, value_node);
+		if (waypoint_set.size() < 1)
+			break;
+
+		Waypoint waypoint(*(waypoint_set.begin()));
+		waypoint.set_value(value_base);
+		widget.canvas_interface->waypoint_set_value_node(value_node, waypoint);
+	}
+
+	// Move along time
+	if (dx == 0)
+		return;
+	std::set<std::pair<const ValueDesc&, Time>> times_to_move;
+
+	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	const Time base_time = get_active_item().time_point.get_time();
+	const Time next_time = widget.time_plot_data->get_t_from_pixel_coord(widget.time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
+	const Time deltatime = next_time - base_time;
+
+	if (deltatime != 0) {
+		// new dragging position allow us to restore previouly overlapped waypoints
+		auto waypoints_to_restore = widget.overlapped_waypoints;
+		// let it store new overlapped waypoints until next drag motion
+		widget.overlapped_waypoints.clear();
+
+		bool ignore_move = false;
+		std::vector<std::pair<ChannelPoint*, Time> > timepoints_to_update;
+
+		for (auto point : get_selected_items()) {
+			const ValueDesc &value_desc = point->curve_it->value_desc;
+			const Time &time = point->time_point.get_time();
+			const Time new_time = Time(time+deltatime).round(fps);
+
+			std::pair<const ValueDesc&, Time> meta_data(value_desc, time);
+			if (times_to_move.find(meta_data) == times_to_move.end()) {
+				auto time_set = WaypointRenderer::get_times_from_valuedesc(value_desc);
+
+				// are we overlapping existing waypoints while moving in time?
+				auto new_timepoint = time_set.find(new_time);
+				if (new_timepoint != time_set.end()) {
+					// Converted layer parameter can't overlap waypoints... So, nobody moves this time
+					if (!point->is_draggable()) {
+						ignore_move = true;
+						times_to_move.clear();
+						break;
+					}
+					std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+					synfig::waypoint_collect(waypoint_set, new_time, value_desc.get_value_node());
+					for (const Waypoint &waypoint : waypoint_set) {
+						widget.overlapped_waypoints.push_back(std::pair<Waypoint, std::list<CurveStruct>::iterator>(waypoint, point->curve_it));
+						widget.canvas_interface->waypoint_remove(value_desc, waypoint);
+					}
+				}
+
+				times_to_move.insert(meta_data);
+			}
+
+			timepoints_to_update.push_back(std::pair<ChannelPoint*, Time>(point, new_time));
+		}
+
+		if (!ignore_move) {
+			// first we move waypoints
+			for (const auto &info : times_to_move)
+				widget.canvas_interface->waypoint_move(info.first, info.second, deltatime);
+			// now we update cached values in select-drag handler
+			for (auto pair : timepoints_to_update)
+				pair.first->time_point = TimePoint(pair.second);
+		}
+
+		// Now we can restore previously overlapped waypoints
+		for (auto it : waypoints_to_restore) {
+			Action::Handle 	action(Action::create("WaypointAdd"));
+
+			assert(action);
+			if(!action)
+				return;
+
+			action->set_param("canvas", widget.canvas_interface->get_canvas());
+			action->set_param("widget.canvas_interface", widget.canvas_interface);
+			action->set_param("value_node", it.second->value_desc.get_value_node());
+//			action->set_param("time", i.first.get_time());
+			action->set_param("waypoint", it.first);
+
+			if(!widget.canvas_interface->get_instance()->perform_action(action))
+				widget.canvas_interface->get_ui_interface()->error(_("Action Failed."));
+		}
+	}
+
+	widget.queue_draw();
+}
+
