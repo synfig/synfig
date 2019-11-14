@@ -38,6 +38,8 @@
 
 #include <gui/timemodel.h>
 
+#include "selectdraghelper.h"
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -56,6 +58,7 @@ struct TimePlotData;
 
 class Widget_Curves: public Gtk::DrawingArea
 {
+	friend class ChannelPointSD;
 private:
 	struct Channel;
 	struct CurveStruct;
@@ -66,6 +69,7 @@ private:
 
 		ChannelPoint();
 		ChannelPoint(std::list<CurveStruct>::iterator &curve_it, const synfig::TimePoint time_point, int channel_idx);
+
 		void invalidate();
 		bool is_valid() const;
 		bool is_draggable() const;
@@ -75,6 +79,17 @@ private:
 
 		synfig::Real get_value(synfig::Real time_tolerance) const;
 	};
+
+	class ChannelPointSD : public SelectDragHelper<ChannelPoint> {
+		Widget_Curves & widget;
+	public:
+		ChannelPointSD(Widget_Curves &widget);
+		virtual ~ChannelPointSD() override {}
+		bool find_item_at_position(int pos_x, int pos_y, ChannelPoint & cp) override;
+		bool find_items_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list) override;
+		void get_all_items(std::vector<ChannelPoint> & items) override;
+		void delta_drag(int dx, int dy, bool by_keys) override;
+	} channel_point_sd;
 
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
@@ -88,25 +103,7 @@ private:
 
 	int waypoint_edge_length;
 
-	ChannelPoint hovered_point;
-
-	std::vector<ChannelPoint> selected_points;
-
-	bool find_channelpoint_at_position(int pos_x, int pos_y, ChannelPoint & cp);
-	bool find_channelpoints_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list);
-
-	enum {POINTER_NONE, POINTER_DRAGGING, POINTER_SELECTING} pointer_state;
-	int pointer_tracking_start_x, pointer_tracking_start_y;
-	ChannelPoint active_point;
 	int active_point_initial_y;
-	void start_dragging(const ChannelPoint &pointed_item);
-	void drag_to(int pointer_x, int pointer_y);
-	void delta_drag(int dx, int dy);
-	void finish_dragging();
-	void cancel_dragging();
-	bool made_dragging_move;
-	bool dragging_started_by_key;
-	synfigapp::Action::PassiveGrouper *action_group_drag;
 
 	std::vector<std::pair<synfig::Waypoint, std::list<CurveStruct>::iterator> > overlapped_waypoints;
 
