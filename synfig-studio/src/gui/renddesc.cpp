@@ -842,6 +842,7 @@ Widget_RendDesc::create_gamma_tab()
 			frameGrid->attach(*label, col, row, 1, 1);
 			scale_gamma_r->set_hexpand(true);
 			scale_gamma_r->set_draw_value(false);
+			scale_gamma_r->set_round_digits(1);
 			frameGrid->attach(*scale_gamma_r, col+1, row, 1, 1);
 			entry_gamma_r->set_hexpand(true);
 			frameGrid->attach(*entry_gamma_r, col+2, row++, 1, 1);
@@ -853,6 +854,7 @@ Widget_RendDesc::create_gamma_tab()
 			frameGrid->attach(*label, col, row, 1, 1);
 			scale_gamma_g->set_hexpand(true);
 			scale_gamma_g->set_draw_value(false);
+			scale_gamma_g->set_round_digits(1);
 			frameGrid->attach(*scale_gamma_g, col+1, row, 1, 1);
 			entry_gamma_g->set_hexpand(true);
 			frameGrid->attach(*entry_gamma_g, col+2, row++, 1, 1);
@@ -864,6 +866,7 @@ Widget_RendDesc::create_gamma_tab()
 			frameGrid->attach(*label, col, row, 1, 1);
 			scale_gamma_b->set_hexpand(true);
 			scale_gamma_b->set_draw_value(false);
+			scale_gamma_b->set_round_digits(1);
 			frameGrid->attach(*scale_gamma_b, col+1, row, 1, 1);
 			entry_gamma_b->set_hexpand(true);
 			frameGrid->attach(*entry_gamma_b, col+2, row++, 1, 1);
