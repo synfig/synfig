@@ -101,7 +101,7 @@ public:
 	const T& get_hovered_item() const;
 	std::vector<T*> get_selected_items();
 	bool is_selected(const T& item) const;
-	const T& get_active_item() const;
+	const T* get_active_item() const;
 
 	State get_state() const;
 	void get_initial_tracking_point(int &px, int &py) const;
@@ -184,8 +184,8 @@ bool SelectDragHelper<T>::is_selected(const T& item) const {
 }
 
 template<class T>
-const T& SelectDragHelper<T>::get_active_item() const {
-	return *active_item;
+const T* SelectDragHelper<T>::get_active_item() const {
+	return active_item;
 }
 
 template<class T>
