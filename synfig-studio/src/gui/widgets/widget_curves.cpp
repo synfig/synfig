@@ -434,8 +434,8 @@ Widget_Curves::Widget_Curves():
 
 	channel_point_sd.set_canvas_interface(canvas_interface);
 	channel_point_sd.signal_drag_started().connect([&](){
-		const ChannelPoint &pointed_item = channel_point_sd.get_active_item();
-		active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item.get_value(time_plot_data->dt));
+		const ChannelPoint *pointed_item = channel_point_sd.get_active_item();
+		active_point_initial_y = time_plot_data->get_pixel_y_coord(pointed_item->get_value(time_plot_data->dt));
 	});
 	channel_point_sd.signal_drag_canceled().connect([&]() {
 		overlapped_waypoints.clear();
@@ -786,7 +786,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->stroke();
 	}
 
-	if (!curve_list.empty() && range_min < range_max)
+	if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING && !curve_list.empty() && range_min < range_max)
 		ConfigureAdjustment(range_adjustment)
 			.set_lower(-range_max - 0.5*range_adjustment->get_page_size())
 			.set_upper(-range_min + 0.5*range_adjustment->get_page_size())
@@ -925,7 +925,7 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 		// snap to frames
 		dx *= widget.time_plot_data->k/widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	} else {
-		int current_y = widget.time_plot_data->get_pixel_y_coord(get_active_item().get_value(widget.time_plot_data->dt));
+		int current_y = widget.time_plot_data->get_pixel_y_coord(get_active_item()->get_value(widget.time_plot_data->dt));
 		int waypoint_dy = current_y - widget.active_point_initial_y;
 		dy = dy - waypoint_dy;
 
@@ -933,39 +933,46 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 		widget.get_pointer(pointer_x, pointer_y);
 		float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 		Time pointer_t = widget.time_plot_data->get_t_from_pixel_coord(pointer_x).round(fps);
-		Time current_t = get_active_item().time_point.get_time();
+		Time current_t = get_active_item()->time_point.get_time();
 		dx = (pointer_t - current_t) * widget.time_plot_data->k;
 	}
+
+	std::vector<ChannelPoint*> raw_selection = get_selected_items();
 	// Move Y value
-	for (const auto point : get_selected_items()) {
-		// If the active point (ie. the point clicked and dragged by cursor) is a converted parameter,
-		// no channel point should be moved vertically (it is strange)
-		if (!get_active_item().is_draggable())
-			break;
-		// If it is a converted parameter (and not its inner parameter), its Y value can't be changed
-		if (!point->is_draggable())
-			continue;
+	if (dy != 0) {
+		for (const auto point : raw_selection) {
+			// If the active point (ie. the point clicked and dragged by cursor) is a converted parameter,
+			// no channel point should be moved vertically (it is strange)
+			if (!get_active_item()->is_draggable())
+				break;
+			// If it is a converted parameter (and not its inner parameter), its Y value can't be changed
+			if (!point->is_draggable())
+				continue;
 
-		Time time = point->time_point.get_time();
-		Real v = point->get_value(widget.time_plot_data->dt);
+			// Clear cached values due to precision error while dragging multiple points
+			point->curve_it->channels[point->channel_idx].values.clear();
 
-		int pix_y = widget.time_plot_data->get_pixel_y_coord(v);
-		pix_y += dy;
-		v = widget.time_plot_data->get_y_from_pixel_coord(pix_y);
-		ValueBase value_base = point->curve_it->value_desc.get_value(time);
+			Time time = point->time_point.get_time();
+			Real v = point->get_value(widget.time_plot_data->dt);
 
-		CurveStruct::set_value_base_channel_value(value_base, point->channel_idx, v);
+			int pix_y = widget.time_plot_data->get_pixel_y_coord(v);
+			pix_y += dy;
+			v = widget.time_plot_data->get_y_from_pixel_coord(pix_y);
+			ValueBase value_base = point->curve_it->value_desc.get_value(time);
 
-		const ValueDesc &value_desc = point->curve_it->value_desc;
-		ValueNode::Handle value_node = value_desc.get_value_node();
-		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-		synfig::waypoint_collect(waypoint_set, time, value_node);
-		if (waypoint_set.size() < 1)
-			break;
+			CurveStruct::set_value_base_channel_value(value_base, point->channel_idx, v);
 
-		Waypoint waypoint(*(waypoint_set.begin()));
-		waypoint.set_value(value_base);
-		widget.canvas_interface->waypoint_set_value_node(value_node, waypoint);
+			const ValueDesc &value_desc = point->curve_it->value_desc;
+			ValueNode::Handle value_node = value_desc.get_value_node();
+			std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+			synfig::waypoint_collect(waypoint_set, time, value_node);
+			if (waypoint_set.size() < 1)
+				break;
+
+			Waypoint waypoint(*(waypoint_set.begin()));
+			waypoint.set_value(value_base);
+			widget.canvas_interface->waypoint_set_value_node(value_node, waypoint);
+		}
 	}
 
 	// Move along time
@@ -974,7 +981,7 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 	std::set<std::pair<const ValueDesc&, Time>> times_to_move;
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
-	const Time base_time = get_active_item().time_point.get_time();
+	const Time base_time = get_active_item()->time_point.get_time();
 	const Time next_time = widget.time_plot_data->get_t_from_pixel_coord(widget.time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
 	const Time deltatime = next_time - base_time;
 
@@ -985,9 +992,10 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 		widget.overlapped_waypoints.clear();
 
 		bool ignore_move = false;
+		bool active_item_should_change = false;
 		std::vector<std::pair<ChannelPoint*, Time> > timepoints_to_update;
 
-		for (auto point : get_selected_items()) {
+		for (auto point : raw_selection) {
 			const ValueDesc &value_desc = point->curve_it->value_desc;
 			const Time &time = point->time_point.get_time();
 			const Time new_time = Time(time+deltatime).round(fps);
@@ -1004,6 +1012,9 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 						ignore_move = true;
 						times_to_move.clear();
 						break;
+					}
+					if (get_active_item() == point) {
+						active_item_should_change = true;
 					}
 					std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 					synfig::waypoint_collect(waypoint_set, new_time, value_desc.get_value_node());
@@ -1026,6 +1037,8 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 			// now we update cached values in select-drag handler
 			for (auto pair : timepoints_to_update)
 				pair.first->time_point = TimePoint(pair.second);
+			if (active_item_should_change)
+				get_active_item()->curve_it->channels[get_active_item()->channel_idx].values.clear();
 		}
 
 		// Now we can restore previously overlapped waypoints
