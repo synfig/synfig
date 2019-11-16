@@ -821,48 +821,66 @@ Widget_RendDesc::create_gamma_tab()
 		panelBox->pack_start(*frame, Gtk::PACK_SHRINK);
 
 		Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-		framePadding->set_padding(6, 0, 24, 0);
+		framePadding->set_padding(6, 0, 6, 0);
 		frame->add(*framePadding);
 		gamma_frame = frame;
 		
 		Gtk::Grid *frameGrid = manage(new Gtk::Grid());
 		framePadding->add(*frameGrid);
-		frameGrid->set_row_spacing(6);
-		frameGrid->set_column_spacing(250);
+		frameGrid->set_row_spacing(10);
+		frameGrid->set_column_spacing(10);
 		int row = 0;
+		int col = 0;
 		
 		gamma_pattern = manage(new GammaPattern());
-		gamma_pattern->set_halign(Gtk::ALIGN_CENTER);
-		frameGrid->attach(*gamma_pattern, 0, row++, 2, 1);
+		gamma_pattern->set_halign(Gtk::ALIGN_START);
+		frameGrid->attach(*gamma_pattern, col, row, 1, 1);
+		
+		// place this grid within frameGrid on column 2
+		// for labels, scales and spin buttons
+		Gtk::Grid *controlsGrid = manage(new Gtk::Grid());
+		controlsGrid->set_row_spacing(10);
+		controlsGrid->set_column_spacing(5);
+		controlsGrid->set_column_homogeneous(false);
+		frameGrid->attach(*controlsGrid, col+1, row, 1, 1);
 		
 		{
 			Gtk::Label *label = manage(new Gtk::Label(_("_Red"), 0, 0.5, true));
 			label->set_mnemonic_widget(*entry_gamma_r);
-			frameGrid->attach(*label, 0, row, 1, 2);
-			entry_gamma_r->set_hexpand(true);
-			frameGrid->attach(*entry_gamma_r, 1, row++, 1, 1);
+			controlsGrid->attach(*label, col, row, 1, 1);
 			scale_gamma_r->set_hexpand(true);
-			frameGrid->attach(*scale_gamma_r, 1, row++, 1, 1);
+			scale_gamma_r->set_draw_value(false);
+			scale_gamma_r->set_round_digits(1);
+			controlsGrid->attach(*scale_gamma_r, col+1, row, 1, 1);
+			//entry_gamma_r->set_hexpand(true);
+			entry_gamma_r->set_halign(Gtk::ALIGN_END);
+			controlsGrid->attach(*entry_gamma_r, col+2, row++, 1, 1);
 		}
 		
 		{
 			Gtk::Label *label = manage(new Gtk::Label(_("_Green"), 0, 0.5, true));
 			label->set_mnemonic_widget(*entry_gamma_g);
-			frameGrid->attach(*label, 0, row, 1, 2);
-			entry_gamma_g->set_hexpand(true);
-			frameGrid->attach(*entry_gamma_g, 1, row++, 1, 1);
+			controlsGrid->attach(*label, col, row, 1, 1);
 			scale_gamma_g->set_hexpand(true);
-			frameGrid->attach(*scale_gamma_g, 1, row++, 1, 1);
+			scale_gamma_g->set_draw_value(false);
+			scale_gamma_g->set_round_digits(1);
+			controlsGrid->attach(*scale_gamma_g, col+1, row, 1, 1);
+			//entry_gamma_g->set_hexpand(true);
+			entry_gamma_g->set_halign(Gtk::ALIGN_END);
+			controlsGrid->attach(*entry_gamma_g, col+2, row++, 1, 1);
 		}
 		
 		{
 			Gtk::Label *label = manage(new Gtk::Label(_("_Blue"), 0, 0.5, true));
 			label->set_mnemonic_widget(*entry_gamma_b);
-			frameGrid->attach(*label, 0, row, 1, 2);
-			entry_gamma_b->set_hexpand(true);
-			frameGrid->attach(*entry_gamma_b, 1, row++, 1, 1);
+			controlsGrid->attach(*label, col, row, 1, 1);
 			scale_gamma_b->set_hexpand(true);
-			frameGrid->attach(*scale_gamma_b, 1, row++, 1, 1);
+			scale_gamma_b->set_draw_value(false);
+			scale_gamma_b->set_round_digits(1);
+			controlsGrid->attach(*scale_gamma_b, col+1, row, 1, 1);
+			//entry_gamma_b->set_hexpand(true);
+			entry_gamma_b->set_halign(Gtk::ALIGN_END);
+			controlsGrid->attach(*entry_gamma_b, col+2, row, 1, 1);
 		}
 	}
 	
