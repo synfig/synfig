@@ -163,7 +163,7 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 			i->values.clear();
 	}
 
-	Real get_value(int channel, Real time, Real tolerance) {
+	Real get_value(size_t channel, Real time, Real tolerance) {
 		// First check to see if we have a value
 		// that is "close enough" to the time
 		// we are looking for
@@ -419,8 +419,8 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 /* === M E T H O D S ======================================================= */
 
 Widget_Curves::Widget_Curves():
-	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, DEFAULT_PAGE_SIZE)),
 	channel_point_sd(*this),
+	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, DEFAULT_PAGE_SIZE)),
 	waypoint_edge_length(16)
 {
 	set_size_request(64, 64);
@@ -635,9 +635,9 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->stroke();
 
 	// reserve arrays for maximum number of channels
-	int max_channels = 0;
+	size_t max_channels = 0;
 	for(std::list<CurveStruct>::iterator i = curve_list.begin(); i != curve_list.end(); ++i)
-		max_channels = std::max(max_channels, (int)i->channels.size());
+		max_channels = std::max(max_channels, i->channels.size());
 	std::vector< std::vector<Gdk::Point> > points(max_channels);
 
 	Real range_max = -100000000.0;
@@ -676,18 +676,18 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	// Draw curves for the valuenodes stored in the curve list
 	for(std::list<CurveStruct>::iterator curve_it = curve_list.begin(); curve_it != curve_list.end(); ++curve_it) {
-		int channels = (int)curve_it->channels.size();
-		if (channels > (int)points.size())
+		size_t channels = curve_it->channels.size();
+		if (channels > points.size())
 			points.resize(channels);
 
-		for(int c = 0; c < channels; ++c) {
+		for(size_t c = 0; c < channels; ++c) {
 			points[c].clear();
 			points[c].reserve(w);
 		}
 
 		Time t = time_plot_data->lower;
 		for(int j = 0; j < w; ++j, t += time_plot_data->dt) {
-			for(int c = 0; c < channels; ++c) {
+			for(size_t c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				range_max = std::max(range_max, y);
 				range_min = std::min(range_min, y);
@@ -708,7 +708,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->set_line_width(0.5);
 		const std::vector<double> dashes4 = {4};
 		const std::vector<double> no_dashes;
-		for(int c = 0; c < channels; ++c) {
+		for(size_t c = 0; c < channels; ++c) {
 			// Draw the curve
 			std::vector<Gdk::Point> &p = points[c];
 			std::vector<Gdk::Point>::iterator p_it;
@@ -757,7 +757,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 						waypoint_edge_length - 2);
 			const auto & hovered_point = channel_point_sd.get_hovered_item();
 			bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
-			for (int c = 0; c < channels; ++c) {
+			for (size_t c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
 				int py = time_plot_data->get_pixel_y_coord(y);
 				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
@@ -802,19 +802,19 @@ Widget_Curves::ChannelPoint::ChannelPoint()
 	invalidate();
 }
 
-Widget_Curves::ChannelPoint::ChannelPoint(std::list<CurveStruct>::iterator& curve_it, const TimePoint time_point, int channel_idx) :
+Widget_Curves::ChannelPoint::ChannelPoint(std::list<CurveStruct>::iterator& curve_it, const TimePoint time_point, size_t channel_idx) :
 	curve_it(curve_it), time_point(time_point), channel_idx(channel_idx)
 {
 }
 
 void Widget_Curves::ChannelPoint::invalidate()
 {
-	channel_idx = -1;
+	channel_idx = MAX_CHANNELS;
 }
 
 bool Widget_Curves::ChannelPoint::is_valid() const
 {
-	return channel_idx >= 0;
+	return channel_idx < MAX_CHANNELS;
 }
 
 bool Widget_Curves::ChannelPoint::is_draggable() const
@@ -843,13 +843,13 @@ bool Widget_Curves::ChannelPointSD::find_item_at_position(int pos_x, int pos_y, 
 {
 	cp.invalidate();
 	for(auto curve_it = widget.curve_list.begin(); curve_it != widget.curve_list.end(); ++curve_it) {
-		int channels = (int)curve_it->channels.size();
+		size_t channels = curve_it->channels.size();
 
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *widget.time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
 		{
 			int px = widget.time_plot_data->get_pixel_t_coord(t);
-			for (int c = 0; c < channels; ++c) {
+			for (size_t c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, widget.time_plot_data->dt);
 				int py = widget.time_plot_data->get_pixel_y_coord(y);
 
@@ -885,13 +885,13 @@ bool Widget_Curves::ChannelPointSD::find_items_in_rect(Gdk::Rectangle rect, std:
 		std::swap(y0, y1);
 
 	for(auto curve_it = widget.curve_list.begin(); curve_it != widget.curve_list.end(); ++curve_it) {
-		int channels = (int)curve_it->channels.size();
+		size_t channels = curve_it->channels.size();
 
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *widget.time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
 		{
 			int px = widget.time_plot_data->get_pixel_t_coord(t);
-			for (int c = 0; c < channels; ++c) {
+			for (size_t c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, widget.time_plot_data->dt);
 				int py = widget.time_plot_data->get_pixel_y_coord(y);
 
