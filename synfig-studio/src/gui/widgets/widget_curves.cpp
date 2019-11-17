@@ -937,10 +937,10 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 		dx = (pointer_t - current_t) * widget.time_plot_data->k;
 	}
 
-	std::vector<ChannelPoint*> raw_selection = get_selected_items();
+	std::vector<ChannelPoint*> selection = get_selected_items();
 	// Move Y value
 	if (dy != 0) {
-		for (const auto point : raw_selection) {
+		for (const auto point : selection) {
 			// If the active point (ie. the point clicked and dragged by cursor) is a converted parameter,
 			// no channel point should be moved vertically (it is strange)
 			if (!get_active_item()->is_draggable())
@@ -978,7 +978,7 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 	// Move along time
 	if (dx == 0)
 		return;
-	std::set<std::pair<const ValueDesc&, Time>> times_to_move;
+	std::vector<std::pair<const ValueDesc&, Time>> times_to_move;
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	const Time base_time = get_active_item()->time_point.get_time();
@@ -992,16 +992,23 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 		widget.overlapped_waypoints.clear();
 
 		bool ignore_move = false;
-		bool active_item_should_change = false;
 		std::vector<std::pair<ChannelPoint*, Time> > timepoints_to_update;
 
-		for (auto point : raw_selection) {
+		// sort in order to avoid overlapping issues
+		std::sort(selection.begin(), selection.end(), [=](const ChannelPoint * const a, const ChannelPoint * const b)->bool {
+			if (dx < 0)
+				return a->time_point < b->time_point;
+			else
+				return b->time_point < a->time_point;
+		});
+
+		for (ChannelPoint * point : selection) {
 			const ValueDesc &value_desc = point->curve_it->value_desc;
 			const Time &time = point->time_point.get_time();
 			const Time new_time = Time(time+deltatime).round(fps);
 
 			std::pair<const ValueDesc&, Time> meta_data(value_desc, time);
-			if (times_to_move.find(meta_data) == times_to_move.end()) {
+			if (std::find(times_to_move.begin(), times_to_move.end(), meta_data) == times_to_move.end()) {
 				auto time_set = WaypointRenderer::get_times_from_valuedesc(value_desc);
 
 				// are we overlapping existing waypoints while moving in time?
@@ -1013,18 +1020,20 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 						times_to_move.clear();
 						break;
 					}
-					if (get_active_item() == point) {
-						active_item_should_change = true;
-					}
-					std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-					synfig::waypoint_collect(waypoint_set, new_time, value_desc.get_value_node());
-					for (const Waypoint &waypoint : waypoint_set) {
-						widget.overlapped_waypoints.push_back(std::pair<Waypoint, std::list<CurveStruct>::iterator>(waypoint, point->curve_it));
-						widget.canvas_interface->waypoint_remove(value_desc, waypoint);
+					// Check if the point is selected to move. If so, it won't overlap
+					ChannelPoint test_point(*point);
+					test_point.time_point = *new_timepoint;
+					if (!is_waypoint_selected(test_point)) {
+						std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+						synfig::waypoint_collect(waypoint_set, new_time, value_desc.get_value_node());
+						for (const Waypoint &waypoint : waypoint_set) {
+							widget.overlapped_waypoints.push_back(std::pair<Waypoint, std::list<CurveStruct>::iterator>(waypoint, point->curve_it));
+							widget.canvas_interface->waypoint_remove(value_desc, waypoint);
+						}
 					}
 				}
 
-				times_to_move.insert(meta_data);
+				times_to_move.push_back(meta_data);
 			}
 
 			timepoints_to_update.push_back(std::pair<ChannelPoint*, Time>(point, new_time));
@@ -1037,8 +1046,6 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 			// now we update cached values in select-drag handler
 			for (auto pair : timepoints_to_update)
 				pair.first->time_point = TimePoint(pair.second);
-			if (active_item_should_change)
-				get_active_item()->curve_it->channels[get_active_item()->channel_idx].values.clear();
 		}
 
 		// Now we can restore previously overlapped waypoints
@@ -1061,5 +1068,17 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 	}
 
 	widget.queue_draw();
+}
+
+bool Widget_Curves::ChannelPointSD::is_waypoint_selected(const Widget_Curves::ChannelPoint& point) const
+{
+	ChannelPoint test_point(point);
+	const size_t n_channels = point.curve_it->channels.size();
+	for (size_t cidx = 0; cidx < n_channels; cidx++) {
+		test_point.channel_idx = cidx;
+		if (is_selected(test_point))
+			return true;
+	}
+	return false;
 }
 
