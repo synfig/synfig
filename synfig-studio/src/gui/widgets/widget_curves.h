@@ -89,6 +89,9 @@ private:
 		bool find_items_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list) override;
 		void get_all_items(std::vector<ChannelPoint> & items) override;
 		void delta_drag(int dx, int dy, bool by_keys) override;
+
+		// Check if waypoint (of curve_it at time_point no matter channel) is selected
+		bool is_waypoint_selected(const ChannelPoint& point) const;
 	} channel_point_sd;
 
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
