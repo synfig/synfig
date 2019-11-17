@@ -1392,6 +1392,14 @@ StateBLine_Context::refresh_ducks(bool button_down)
 #else
 		duck->set_type(Duck::TYPE_VERTEX);
 #endif
+		// Loop it and finish if user clicked on the first vertex
+		if (iter == bline_point_list.begin()) {
+			duck->signal_user_click(0).connect([&](){
+				loop_=true;
+				run();
+			});
+		}
+
 		duck->set_name(strprintf("%x-vertex",value_node.get()));
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_vertex_change),value_node)
