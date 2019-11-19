@@ -70,10 +70,10 @@ public:
 
   /*!Calls the appropriate technique to convert \b image to vectors depending on c.*/
  
-  std::vector< etl::handle<synfig::Layer> > vectorize(const etl::handle<synfig::Layer_Bitmap> &image, const etl::handle<UIInterface> &ui_interface,const VectorizerConfiguration &c,const synfig::Gamma &gamma);
+  std::vector< etl::handle<synfig::Layer> > vectorize(const etl::handle<synfig::Layer_Bitmap> &image, const etl::handle<synfigapp::UIInterface> &ui_interface,const VectorizerConfiguration &c,const synfig::Gamma &gamma);
 
 private:
-  std::vector< etl::handle<synfig::Layer> > centerlineVectorize(Handle &image, const CenterlineConfiguration &configuration, const synfig::Gamma &gamma);
+  std::vector< etl::handle<synfig::Layer> > centerlineVectorize(Handle &image,const etl::handle<synfigapp::UIInterface> &ui_interface, const CenterlineConfiguration &configuration, const synfig::Gamma &gamma);
 
 };
 
