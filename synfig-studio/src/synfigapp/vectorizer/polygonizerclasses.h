@@ -435,7 +435,7 @@ const int infinity = 1000000;  // just a great enough number
 
 void polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons,VectorizerCoreGlobals &g);
 
-SkeletonList *skeletonize(Contours &contours, VectorizerCore *thisVectorizer, VectorizerCoreGlobals &g);
+SkeletonList *skeletonize(Contours &contours,const etl::handle<synfigapp::UIInterface> &ui_interface, VectorizerCoreGlobals &g);
 
 void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 
