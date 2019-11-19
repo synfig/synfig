@@ -82,21 +82,13 @@ VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image,con
   Contours polygons;
   studio::polygonize(image, polygons, globals);
   ui_interface->amount_complete(3,10);
+  
   // step 3
   // The process of skeletonization reduces all objects in an image to lines, 
   //  without changing the essential structure of the image.
-
-  // Most time-consuming part of vectorization, 'this' is passed to inform of
-  // partial progresses
-  SkeletonList *skeletons = studio::skeletonize(polygons, this, globals);
+  SkeletonList *skeletons = studio::skeletonize(polygons,ui_interface, globals);
   ui_interface->amount_complete(6,10);
 
-  if (isCanceled()) 
-  {
-    // Clean and return 0 at cancel command
-    deleteSkeletonList(skeletons);
-    std::cout<<"CenterlineVectorize cancelled\n";
-  }
 
   // step 4
   // The raw skeleton data obtained from StraightSkeletonizer
@@ -104,19 +96,16 @@ VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image,con
   studio::organizeGraphs(skeletons, globals);
   ui_interface->amount_complete(8,10);
 
-//   // junctionRecovery(polygons);   //Da' problemi per maxThickness<inf...
-//   // sarebbe da rendere compatibile
 
   std::vector< etl::handle<synfig::Layer> > sortibleResult;
-//   TVectorImageP result;
   
   // step 5
   // Take samples of image colors to associate each sequence to its corresponding
   // palette color
   //studio::calculateSequenceColors(image, globals);  // Extract stroke colors here
 
-//   // step 6
-//   // Converts each forward or single Sequence of the image in its corresponding Stroke.
+  // step 6
+  // Converts each forward or single Sequence of the image in its corresponding Stroke.
   studio::conversionToStrokes(sortibleResult, globals, image);
   ui_interface->amount_complete(9,10);
 
@@ -131,16 +120,12 @@ VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img,const etl
 
   if (c.m_outline)
   {
-    std::cout<<"newOutlineVectorize called/n";
-    // vi = newOutlineVectorize(img, static_cast<const NewOutlineConfiguration &>(c), plt);
     return result;
   }
   else 
   {
     Handle img2(img);
-
     result = centerlineVectorize(img2, ui_interface,static_cast<const CenterlineConfiguration &>(c), gamma);
-    std::cout<<"After centerlineVectorize result.size(): "<<result.size()<<"\n";
     ui_interface->amount_complete(10,10);
 
     return result;

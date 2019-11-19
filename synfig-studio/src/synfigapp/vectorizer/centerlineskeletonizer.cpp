@@ -175,10 +175,7 @@ public:
 
   // NOTE: Timeline construction contains the most complex part of
   // vectorization;
-  // progress bar partial notification happens there, so thisVectorizer's signal
-  // emission methods must be passed and used.
-  void build(ContourFamily &polygons, VectorizationContext &context,
-             VectorizerCore *thisVectorizer);
+  void build(ContourFamily &polygons, VectorizationContext &context);
 };
 
 //==========================================================================
@@ -612,8 +609,7 @@ public:
 
 //--------------------------------------------------------------------------
 
-void Timeline::build(ContourFamily &polygons, VectorizationContext &context,
-                     VectorizerCore *thisVectorizer) {
+void Timeline::build(ContourFamily &polygons, VectorizationContext &context) {
   unsigned int i, j, current;
   std::vector<RandomizedNode> nodesToBeTreated(context.m_totalNodes);
   synfig::Point3 momentum, ray;
@@ -633,14 +629,10 @@ void Timeline::build(ContourFamily &polygons, VectorizationContext &context,
   // NOTE: are edge events to be computed BEFORE split ones?
   for (i = 0; i < nodesToBeTreated.size(); ++i) 
   {
-    // Break calculation at user cancel press
-    if (thisVectorizer->isCanceled()) break;
 
     Event currentEvent(nodesToBeTreated[i].m_node, &context);
 
     // Notify event calculation
-    // if (!nodesToBeTreated[i].m_node->hasAttribute(ContourNode::LINEAR_ADDED))
-    //   thisVectorizer->emitPartialDone();
 
     if (currentEvent.m_type != Event::failure &&
         currentEvent.m_height < maxThickness)
@@ -1592,8 +1584,7 @@ inline void Event::processSpecialEvent()
 //-------------------------------
 
 static SkeletonGraph *skeletonize(ContourFamily &regionContours,
-                                  VectorizationContext &context,
-                                  VectorizerCore *thisVectorizer) {
+                                  VectorizationContext &context) {
   SkeletonGraph *output = context.m_output = new SkeletonGraph;
 
   context.prepareContours(regionContours);
@@ -1607,20 +1598,7 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours,
   if (maxThickness > 0.0)  // if(!currConfig->m_outline)
   {
     Timeline &timeline = context.m_timeline;
-    timeline.build(regionContours, context, thisVectorizer);
-
-    if (thisVectorizer->isCanceled()) {
-      // Bailing out
-      while (!timeline.empty()) timeline.pop();
-
-      context.m_nodesHeap.clear();
-      context.m_edgesHeap.clear();
-
-      context.m_linearNodesHeap.clear();
-      context.m_linearEdgesHeap.clear();
-
-      return output;
-    }
+    timeline.build(regionContours, context);
 
     // Process timeline
     while (!timeline.empty()) {
@@ -1685,12 +1663,11 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours,
 
 //--------------------------------------------------------------------------
 
-SkeletonList* studio::skeletonize(Contours &contours, VectorizerCore *thisVectorizer,
-                          VectorizerCoreGlobals &g) {
+SkeletonList* studio::skeletonize(Contours &contours, const etl::handle<synfigapp::UIInterface> &ui_interface, VectorizerCoreGlobals &g) {
   VectorizationContext context(&g);
 
   SkeletonList *res = new SkeletonList;
-  unsigned int i, j;
+  unsigned int i, j,contours_size = contours.size();
 
   // Find overall number of nodes
   unsigned int overallNodes = 0;
@@ -1698,12 +1675,11 @@ SkeletonList* studio::skeletonize(Contours &contours, VectorizerCore *thisVector
     for (j = 0; j < contours[i].size(); ++j)
       overallNodes += contours[i][j].size();
 
-  //thisVectorizer->setOverallPartials(overallNodes);
 
-  for (i = 0; i < contours.size(); ++i) {
-    res->push_back(skeletonize(contours[i], context, thisVectorizer));
-
-    if (thisVectorizer->isCanceled()) break;
+  for (i = 0; i <contours_size ; ++i) {
+    res->push_back(skeletonize(contours[i], context));
+    float partial = 30.0 + ((i/(float)contours_size)*30.0);
+    ui_interface->amount_complete(partial,100);
   }
 
   return res;
