@@ -44,6 +44,7 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/box.h>
 #include <gtkmm/statusbar.h>
+#include <gtkmm/progressbar.h>
 #include <gtkmm/button.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/treeview.h>

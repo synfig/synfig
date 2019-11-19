@@ -245,7 +245,6 @@ Action::Vectorization::perform()
 
     synfig::Canvas::Handle child_canvas;
     child_canvas=synfig::Canvas::create_inline(layer->get_canvas());
-	
     new_layer->set_description("Vectorized "+layer->get_description());
 	new_layer->set_param("canvas",child_canvas);
     int move_depth = 0;

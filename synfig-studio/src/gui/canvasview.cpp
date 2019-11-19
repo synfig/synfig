@@ -194,7 +194,8 @@ public:
 
 	CanvasViewUIInterface(CanvasView *view):
 		view(view)
-		{ view->statusbar->push(_("Idle")); }
+		{ view->statusbar->push(_("Idle")); 
+		view->progressbar->hide();}
 	~CanvasViewUIInterface() { }
 
 	virtual Response confirmation(
@@ -298,6 +299,17 @@ public:
 	virtual bool
 	amount_complete(int current, int total)
 	{
+		float cur_progress=(float)current/(float)total;
+		if(cur_progress>0.0 && cur_progress<100)
+		{
+			view->statusbar->hide();
+			view->progressbar->show();
+			view->progressbar->set_fraction((float)current/(float)total);
+			return true;
+		}
+		view->statusbar->show();
+		view->progressbar->hide();
+ 
 		if(!view->is_playing())
 		{
 			if(!view->working_depth)
@@ -528,6 +540,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	context_params_          (true),
 	time_model_              (new TimeModel()),
 	statusbar                (manage(new class Gtk::Statusbar())),
+	progressbar              (manage(new class Gtk::ProgressBar())),
 	jackbutton               (NULL),
 	offset_widget            (NULL),
 	toggleducksdial          (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
