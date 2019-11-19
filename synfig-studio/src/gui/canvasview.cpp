@@ -301,11 +301,12 @@ public:
 	{
 		float cur_progress=(float)current/(float)total;
 		
-		if(cur_progress>0.0 && cur_progress<=1.0)
+		if(cur_progress>0.0 && cur_progress<1.0)
 		{
 			view->statusbar->hide();
 			view->progressbar->show();
 			view->progressbar->set_fraction((float)cur_progress);
+			studio::App::process_all_events(); 
 			return true;
 		}
 		
