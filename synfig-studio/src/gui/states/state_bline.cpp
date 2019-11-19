@@ -266,6 +266,7 @@ public:
 	Smach::event_result event_key_press_handler(const Smach::event& x);
 	Smach::event_result event_key_release_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
+	Smach::event_result event_mouse_doubleclick_handler(const Smach::event& x);
 	Smach::event_result event_mouse_release_handler(const Smach::event& x);
 	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
@@ -317,6 +318,7 @@ StateBLine::StateBLine():
 	insert(event_def(EVENT_WORKAREA_KEY_DOWN,			&StateBLine_Context::event_key_press_handler));
 	insert(event_def(EVENT_WORKAREA_KEY_UP,				&StateBLine_Context::event_key_release_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,	&StateBLine_Context::event_mouse_click_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,	&StateBLine_Context::event_mouse_doubleclick_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,	&StateBLine_Context::event_mouse_release_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,		&StateBLine_Context::event_mouse_motion_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateBLine_Context::event_mouse_motion_handler));
@@ -1360,6 +1362,21 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 	default:
 		return Smach::RESULT_OK;
 	}
+}
+
+Smach::event_result
+StateBLine_Context::event_mouse_doubleclick_handler(const Smach::event& x)
+{
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	switch(event.button)
+	{
+	case BUTTON_LEFT:
+		run();
+		return Smach::RESULT_ACCEPT;
+	default:
+		break;
+	}
+	return Smach::RESULT_OK;
 }
 
 void

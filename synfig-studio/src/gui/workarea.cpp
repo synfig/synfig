@@ -1173,6 +1173,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 	// Event hasn't been handled, pass it down
 	switch(event->type) {
+	case GDK_2BUTTON_PRESS: {
+		if (event->button.button == 1) {
+			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT) {
+				return true;
+			}
+		}
+		break;
+	}
 	case GDK_BUTTON_PRESS: {
 		switch(button_pressed) {
 		case 1:	{ // Attempt to click on a duck

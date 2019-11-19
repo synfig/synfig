@@ -241,6 +241,7 @@ public:
 	Smach::event_result event_refresh_handler(const Smach::event& x);
 
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
+	Smach::event_result event_mouse_doubleclick_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	void refresh_tool_options();
 
@@ -281,6 +282,7 @@ StatePolygon::StatePolygon():
 	insert(event_def(EVENT_REFRESH,&StatePolygon_Context::event_refresh_handler));
 	insert(event_def(EVENT_REFRESH_DUCKS,&StatePolygon_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StatePolygon_Context::event_mouse_click_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,&StatePolygon_Context::event_mouse_doubleclick_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StatePolygon_Context::event_refresh_tool_options));
 }
 
@@ -1280,6 +1282,21 @@ StatePolygon_Context::event_mouse_click_handler(const Smach::event& x)
 	}
 }
 
+
+Smach::event_result
+StatePolygon_Context::event_mouse_doubleclick_handler(const Smach::event& x)
+{
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	switch(event.button)
+	{
+	case BUTTON_LEFT:
+		run();
+		return Smach::RESULT_ACCEPT;
+
+	default:
+		return Smach::RESULT_OK;
+	}
+}
 
 void
 StatePolygon_Context::refresh_ducks()
