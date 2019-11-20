@@ -921,6 +921,9 @@ void Widget_Curves::ChannelPointSD::get_all_items(std::vector<Widget_Curves::Cha
 
 void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 {
+	if (dx == 0 && dy == 0)
+		return;
+
 	if (by_keys) {
 		// snap to frames
 		dx *= widget.time_plot_data->k/widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
@@ -940,38 +943,47 @@ void Widget_Curves::ChannelPointSD::delta_drag(int dx, int dy, bool by_keys)
 	std::vector<ChannelPoint*> selection = get_selected_items();
 	// Move Y value
 	if (dy != 0) {
-		for (const auto point : selection) {
-			// If the active point (ie. the point clicked and dragged by cursor) is a converted parameter,
-			// no channel point should be moved vertically (it is strange)
-			if (!get_active_item()->is_draggable())
-				break;
-			// If it is a converted parameter (and not its inner parameter), its Y value can't be changed
-			if (!point->is_draggable())
-				continue;
+		// If the active point (ie. the point clicked and dragged by cursor) is a converted parameter,
+		// it can't be moved vertically.
+		// So, any selected channel point shouldn't be moved vertically: it is strange in UX point of view
+		if (get_active_item()->is_draggable()) {
+			std::map< long, std::map< Time, std::vector<ChannelPoint*> > > selection_tree;
+			for (auto point : selection) {
+				// If it is a converted parameter (and not its inner parameter), its Y value can't be changed
+				if (point->is_draggable())
+					selection_tree[std::distance(widget.curve_list.begin(), point->curve_it)][point->time_point.get_time()].push_back(point);
+			}
 
-			// Clear cached values due to precision error while dragging multiple points
-			point->curve_it->channels[point->channel_idx].values.clear();
+			for (const auto &curve : selection_tree) {
+				for (auto tt : curve.second) {
+					auto time = tt.first;
+					auto channels = tt.second;
+					auto refpoint = channels.front();
+					ValueBase value_base = refpoint->curve_it->value_desc.get_value(time);
 
-			Time time = point->time_point.get_time();
-			Real v = point->get_value(widget.time_plot_data->dt);
+					for (auto point : channels) {
+						// Clear cached values due to precision error while dragging multiple points
+						point->curve_it->channels[point->channel_idx].values.clear();
 
-			int pix_y = widget.time_plot_data->get_pixel_y_coord(v);
-			pix_y += dy;
-			v = widget.time_plot_data->get_y_from_pixel_coord(pix_y);
-			ValueBase value_base = point->curve_it->value_desc.get_value(time);
+						Real v = point->get_value(widget.time_plot_data->dt);
+						int pix_y = widget.time_plot_data->get_pixel_y_coord(v);
+						pix_y += dy;
+						v = widget.time_plot_data->get_y_from_pixel_coord(pix_y);
+						CurveStruct::set_value_base_channel_value(value_base, point->channel_idx, v);
+					}
 
-			CurveStruct::set_value_base_channel_value(value_base, point->channel_idx, v);
+					const ValueDesc &value_desc = refpoint->curve_it->value_desc;
+					ValueNode::Handle value_node = value_desc.get_value_node();
+					std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+					synfig::waypoint_collect(waypoint_set, time, value_node);
+					if (waypoint_set.size() < 1)
+						break;
 
-			const ValueDesc &value_desc = point->curve_it->value_desc;
-			ValueNode::Handle value_node = value_desc.get_value_node();
-			std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-			synfig::waypoint_collect(waypoint_set, time, value_node);
-			if (waypoint_set.size() < 1)
-				break;
-
-			Waypoint waypoint(*(waypoint_set.begin()));
-			waypoint.set_value(value_base);
-			widget.canvas_interface->waypoint_set_value_node(value_node, waypoint);
+					Waypoint waypoint(*(waypoint_set.begin()));
+					waypoint.set_value(value_base);
+					widget.canvas_interface->waypoint_set_value_node(value_node, waypoint);
+				}
+			}
 		}
 	}
 
