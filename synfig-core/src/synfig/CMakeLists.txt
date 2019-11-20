@@ -132,6 +132,8 @@ target_link_libraries(synfig
 
         # TODO: properly detect ltdl
         ltdl
+    PRIVATE
+        dl # TODO: Remove dlerror from module.cpp and this library too
 )
 
 ## Install headers

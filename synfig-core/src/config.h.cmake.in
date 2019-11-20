@@ -3,14 +3,14 @@
 #cmakedefine HAVE_LIBPTHREAD
 
 // header files
-#cmakedefine01 HAVE_SYS_WAIT_H
-#cmakedefine01 HAVE_SIGNAL_H
-#cmakedefine01 HAVE_TERMIOS_H
-#cmakedefine01 HAVE_PROCESS_H
-#cmakedefine01 HAVE_IO_H
-#cmakedefine01 HAVE_FCNTL_H
+#cmakedefine HAVE_SYS_WAIT_H 1
+#cmakedefine HAVE_SIGNAL_H 1
+#cmakedefine HAVE_TERMIOS_H 1
+#cmakedefine HAVE_PROCESS_H 1
+#cmakedefine HAVE_IO_H 1
+#cmakedefine HAVE_FCNTL_H 1
 
 // defines needed for piped processes
-#cmakedefine HAVE_FORK
-#cmakedefine HAVE_PIPE
-#cmakedefine HAVE_WAITPID
+#cmakedefine HAVE_FORK 1
+#cmakedefine HAVE_PIPE 1
+#cmakedefine HAVE_WAITPID 1
