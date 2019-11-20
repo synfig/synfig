@@ -380,7 +380,7 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	} else
 	if (mod & Gdk::BUTTON2_MASK) {
 		// scrolling
-		Time dt(-dx*time_plot_data->k);
+		Time dt(-dx*time_plot_data->dt);
 		time_plot_data->time_model->move_by(dt);
 		return true;
 	}
