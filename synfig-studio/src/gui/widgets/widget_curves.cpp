@@ -450,6 +450,7 @@ Widget_Curves::Widget_Curves():
 	channel_point_sd.signal_zoom_out_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_out));
 	channel_point_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_up));
 	channel_point_sd.signal_scroll_down_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_down));
+	channel_point_sd.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_Curves::pan));
 }
 
 Widget_Curves::~Widget_Curves() {
@@ -534,6 +535,18 @@ void Widget_Curves::scroll_down()
 {
 	ConfigureAdjustment(range_adjustment)
 		.set_value(range_adjustment->get_value() + range_adjustment->get_step_increment())
+		.finish();
+}
+
+void Widget_Curves::pan(int dx, int dy, int /*total_dx*/, int /*total_dy*/)
+{
+	Time dt(-dx*time_plot_data->dt);
+	time_plot_data->time_model->move_by(dt);
+
+	double real_dy = (range_adjustment->get_page_size()*dy)/get_height();
+
+	ConfigureAdjustment(range_adjustment)
+		.set_value(range_adjustment->get_value() - real_dy)
 		.finish();
 }
 
@@ -786,7 +799,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		cr->stroke();
 	}
 
-	if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING && !curve_list.empty() && range_min < range_max)
+	if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING && channel_point_sd.get_state() != channel_point_sd.POINTER_PANNING && !curve_list.empty() && range_min < range_max)
 		ConfigureAdjustment(range_adjustment)
 			.set_lower(-range_max - 0.5*range_adjustment->get_page_size())
 			.set_upper(-range_min + 0.5*range_adjustment->get_page_size())

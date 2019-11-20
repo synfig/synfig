@@ -45,7 +45,7 @@ template <class T>
 class SelectDragHelper
 {
 public:
-	enum State {POINTER_NONE, POINTER_DRAGGING, POINTER_SELECTING};
+	enum State {POINTER_NONE, POINTER_DRAGGING, POINTER_SELECTING, POINTER_PANNING};
 
 private:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
@@ -61,6 +61,10 @@ private:
 
 	State pointer_state;
 	int pointer_tracking_start_x, pointer_tracking_start_y;
+	int last_pointer_x, last_pointer_y;
+
+	void start_tracking_pointer(int x, int y);
+	void start_tracking_pointer(double x, double y);
 
 	void start_dragging(const T *pointed_item);
 	void finish_dragging();
@@ -80,6 +84,8 @@ private:
 
 	sigc::signal<void> signal_scroll_up_requested_;
 	sigc::signal<void> signal_scroll_down_requested_;
+
+	sigc::signal<void, int, int, int, int> signal_panning_requested_;
 
 	sigc::signal<void> signal_redraw_needed_;
 
@@ -127,6 +133,8 @@ public:
 
 	sigc::signal<void>& signal_scroll_up_requested() { return signal_scroll_up_requested_; }
 	sigc::signal<void>& signal_scroll_down_requested() { return signal_scroll_down_requested_; }
+
+	sigc::signal<void, int, int, int, int>& signal_panning_requested() { return signal_panning_requested_; }
 
 	sigc::signal<void>& signal_redraw_needed() { return signal_redraw_needed_; }
 
@@ -330,8 +338,7 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 		}
 	} else if (event->button == 1) {
 		if (pointer_state == POINTER_NONE) {
-			pointer_tracking_start_x = std::trunc(event->x);
-			pointer_tracking_start_y = std::trunc(event->y);
+			start_tracking_pointer(event->x, event->y);
 			T pointed_item;
 			find_item_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
 			if (pointed_item.is_valid()) {
@@ -359,6 +366,11 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 			}
 			some_action_done = true;
 		}
+	} else if (event->button == 2) {
+		if (pointer_state == POINTER_DRAGGING)
+			finish_dragging();
+		start_tracking_pointer(event->x, event->y);
+		pointer_state = POINTER_PANNING;
 	}
 
 	{
@@ -449,6 +461,10 @@ bool SelectDragHelper<T>::process_button_release_event(GdkEventButton* event)
 			signal_redraw_needed().emit();
 		}
 	}
+	else if (event->button == 2) {
+		if (pointer_state == POINTER_PANNING)
+			pointer_state = POINTER_NONE;
+	}
 
 	if (event->button == 1 || event->button == 3) {
 		if (pointer_state != POINTER_NONE) {
@@ -492,9 +508,21 @@ bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 			drag_to(pointer_x, pointer_y);
 		}
 	}
+	else if (pointer_state == POINTER_PANNING) {
+		const int dx = pointer_x - last_pointer_x;
+		const int dy = pointer_y - last_pointer_y;
+		const int total_dx = pointer_x - pointer_tracking_start_x;
+		const int total_dy = pointer_y - pointer_tracking_start_y;
+
+		signal_panning_requested().emit(dx, dy, total_dx, total_dy);
+	}
+
 	if (pointer_state != POINTER_NONE) {
 		signal_redraw_needed().emit();
 	}
+
+	last_pointer_x = pointer_x;
+	last_pointer_y = pointer_y;
 	return true;
 }
 
@@ -545,6 +573,15 @@ void SelectDragHelper<T>::clear() {
 		selected_items.clear();
 		signal_selection_changed().emit();
 	}
+}
+
+template <class T>
+void SelectDragHelper<T>::start_tracking_pointer(double x, double y)
+{
+	pointer_tracking_start_x = std::trunc(x);
+	pointer_tracking_start_y = std::trunc(y);
+	last_pointer_x = pointer_tracking_start_x;
+	last_pointer_y = pointer_tracking_start_y;
 }
 
 template <class T>
