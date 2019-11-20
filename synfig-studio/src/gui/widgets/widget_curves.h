@@ -133,6 +133,8 @@ public:
 	void scroll_up();
 	void scroll_down();
 
+	void pan(int dx, int dy, int total_dx, int total_dy);
+
 	void select_all_points();
 
 protected:
