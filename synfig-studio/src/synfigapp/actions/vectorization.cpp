@@ -197,7 +197,6 @@ Action::Vectorization::set_param(const synfig::String& name, const Action::Param
     if(name=="maxthickness" && param.get_type() == Param::TYPE_INTEGER)
     {
         maxthickness = param.get_integer();
-        std::cout<<"vectorization action maxthickness :"<<maxthickness<<"\n";
         return true;
     }
     if(name=="pparea" && param.get_type() == Param::TYPE_BOOL)

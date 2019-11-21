@@ -35,7 +35,7 @@
 #include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>
 #include <synfigapp/action_param.h>
-#include "onemoment.h"
+#include <synfig/debug/log.h>
 
 
 /* === U S I N G =========================================================== */
@@ -283,12 +283,12 @@ VectorizerSettings::on_convert_pressed()
 {
 	hide();
 	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
-	std::cout<<"Action Created \n";
+	synfig::debug::Log::info("","Action Created ");
 	assert(action);
 	if(!action)
 		return;
 	savecurrconfig();
-	std::cout<<"Action Asserted \n";
+	synfig::debug::Log::info("","Action Asserted ");
 	// Add an if else to pass param according to outline /centerline
 	action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
 	action->set_param("mode","centerline");
@@ -305,13 +305,11 @@ VectorizerSettings::on_convert_pressed()
 	
 	if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(reference_layer_))
 	{
-			std::cout<<"image inside group layer clicked\n";
 			canvas = layer_bitmap_->get_canvas()->parent();
 			action->set_param("reference_layer",reference_layer_);
 	}
 	else
 	{
-		std::cout<<"image switch layer clicked\n";
 		canvas = layer_bitmap_->get_canvas();
 	}
 
@@ -319,17 +317,17 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("canvas", canvas); 
 	action->set_param("canvas_interface", canvas_interface);
 
-	std::cout<<"Action param passed \n";
+	synfig::debug::Log::info("","Action param passed ");
 	if(!action->is_ready())
 	{
 		return;
 	}
-	std::cout<<"Action is ready \n";
+	synfig::debug::Log::info("","Action is ready ");
 	if(!instance->perform_action(action))
 	{
 		return;
 	}
-	std::cout<<"Convert Pressed....";
+	synfig::debug::Log::info("","Convert Pressed....");
 }
 
 void

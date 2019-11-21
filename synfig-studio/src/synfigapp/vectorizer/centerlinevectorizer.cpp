@@ -32,6 +32,7 @@
 #include "centerlinevectorizer.h"
 #include "polygonizerclasses.h"
 #include <synfig/layer.h>
+#include <synfig/debug/log.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -69,7 +70,7 @@ std::vector< etl::handle<synfig::Layer> >
 VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image,const etl::handle<synfigapp::UIInterface> &ui_interface, 
 const CenterlineConfiguration &configuration,const Gamma &gamma)
  {
-  std::cout<<"Inside CenterlineVectorize\n";
+  synfig::debug::Log::info("","Inside CenterlineVectorize");
   VectorizerCoreGlobals globals;
   globals.currConfig = &configuration;
 

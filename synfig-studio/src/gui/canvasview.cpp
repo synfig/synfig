@@ -189,13 +189,16 @@ using namespace studio;
 class studio::CanvasViewUIInterface : public UIInterface
 {
 	CanvasView *view;
-
+private:
+	float cur_progress;
 public:
 
 	CanvasViewUIInterface(CanvasView *view):
 		view(view)
-		{ view->statusbar->push(_("Idle")); 
-		view->progressbar->hide();}
+		{ 
+			view->statusbar->push(_("Idle")); 
+			view->progressbar->hide();
+		}
 	~CanvasViewUIInterface() { }
 
 	virtual Response confirmation(
@@ -299,7 +302,7 @@ public:
 	virtual bool
 	amount_complete(int current, int total)
 	{
-		float cur_progress=(float)current/(float)total;
+		cur_progress = (float)current/(float)total;
 		
 		if(cur_progress>0.0 && cur_progress<1.0)
 		{
@@ -1051,7 +1054,7 @@ CanvasView::create_time_bar()
 	controls->pack_start(*separator,            false, true);
 	controls->pack_start(*jackdial,             false, true);
 	controls->pack_start(*statusbar,            true, true);
-    controls->pack_start(*progressbar,          true,  true);
+	controls->pack_start(*progressbar,          true,  true);
 	controls->pack_start(*widget_interpolation, false, true);
 	controls->pack_start(*keyframedial,         false, true);
 	controls->pack_start(*space,                false, true);
