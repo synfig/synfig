@@ -36,7 +36,7 @@
 #include <sigc++/sigc++.h>
 #include <synfigapp/value_desc.h>
 #include "trees/historytreestore.h"
-#include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_switch.h>
 #include <synfig/canvas.h>
 
 /* === M A C R O S ========================================================= */
@@ -150,7 +150,7 @@ public:
 
 	bool is_img(synfig::String ext) const;
 
-	synfig::Layer::Handle layer_inside_switch(synfig::Layer_PasteCanvas::Handle &paste) const;
+	synfig::Layer::Handle layer_inside_switch(synfig::Layer_Switch::Handle paste) const;
 
 	bool get_undo_status()const { return undo_status_; }
 
