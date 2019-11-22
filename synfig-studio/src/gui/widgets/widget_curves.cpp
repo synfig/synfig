@@ -788,14 +788,18 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	// Draw selection rectangle
 	if (channel_point_sd.get_state() == ChannelPointSD::State::POINTER_SELECTING) {
+		// set up a dashed solid-color stroke
 		static const std::vector<double>dashed3 = {5.0};
 		cr->set_dash(dashed3, 0);
-		int x1, y1;
-		get_pointer(x1, y1);
+
 		int x0, y0;
+		int x1, y1;
 		channel_point_sd.get_initial_tracking_point(x0, y0);
+		get_pointer(x1, y1);
+
 		cr->rectangle(x0, y0, x1 - x0, y1 - y0);
-		 // set up a dashed solid-color stroke
+		Gdk::RGBA color = get_style_context()->get_color();
+		cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
 		cr->stroke();
 	}
 
