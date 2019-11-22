@@ -88,7 +88,7 @@ private:
 		bool find_item_at_position(int pos_x, int pos_y, ChannelPoint & cp) override;
 		bool find_items_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list) override;
 		void get_all_items(std::vector<ChannelPoint> & items) override;
-		void delta_drag(int dx, int dy, bool by_keys) override;
+		void delta_drag(int total_dx, int total_dy, bool by_keys) override;
 
 		// Check if waypoint (of curve_it at time_point no matter channel) is selected
 		bool is_waypoint_selected(const ChannelPoint& point) const;
@@ -106,7 +106,7 @@ private:
 
 	int waypoint_edge_length;
 
-	int active_point_initial_y;
+	synfig::Real active_point_initial_value;
 
 	std::vector<std::pair<synfig::Waypoint, std::list<CurveStruct>::iterator> > overlapped_waypoints;
 
