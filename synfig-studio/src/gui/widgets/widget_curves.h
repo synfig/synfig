@@ -120,7 +120,7 @@ public:
 	const etl::handle<TimeModel>& get_time_model() const;
 	void set_time_model(const etl::handle<TimeModel> &x);
 
-	void set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list<synfigapp::ValueDesc> &value_descs);
+	void set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list< std::pair<std::string, synfigapp::ValueDesc> > &data);
 	void clear();
 	void refresh();
 
