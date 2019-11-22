@@ -131,6 +131,14 @@ public:
 
 	double get_y_from_pixel_coord(double pixel) const;
 
+	synfig::Time get_delta_t_from_delta_pixel_coord(int delta_pixel) const;
+
+	double get_delta_y_from_delta_pixel_coord(int delta_pixel) const;
+
+	int get_delta_pixel_from_delta_t_coord(double delta_t) const;
+
+	int get_delta_pixel_from_delta_y_coord(double delta_y) const;
+
 private:
 	bool on_widget_resize(GdkEventConfigure * /*configure*/);
 

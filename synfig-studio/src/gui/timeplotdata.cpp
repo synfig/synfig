@@ -223,4 +223,24 @@ double TimePlotData::get_y_from_pixel_coord(double pixel) const
 	return -(range_lower + pixel / range_k);
 }
 
+synfig::Time studio::TimePlotData::get_delta_t_from_delta_pixel_coord(int delta_pixel) const
+{
+	return synfig::Time(delta_pixel/k);
+}
+
+double TimePlotData::get_delta_y_from_delta_pixel_coord(int delta_pixel) const
+{
+	return -(delta_pixel / range_k);
+}
+
+int TimePlotData::get_delta_pixel_from_delta_t_coord(double delta_t) const
+{
+	return int(delta_t * k);
+}
+
+int TimePlotData::get_delta_pixel_from_delta_y_coord(double delta_y) const
+{
+	return int(-delta_y * range_k);
+}
+
 }
