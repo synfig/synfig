@@ -90,6 +90,7 @@ struct Widget_Curves::Channel
 
 struct Widget_Curves::CurveStruct: sigc::trackable
 {
+	std::string name;
 	ValueDesc value_desc;
 	std::vector<Channel> channels;
 
@@ -100,7 +101,8 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 
 	CurveStruct() { }
 
-	explicit CurveStruct(const ValueDesc& x)
+	explicit CurveStruct(const ValueDesc& x, std::string name)
+		: name(name)
 		{ init(x); }
 
 	bool init(const ValueDesc& x) {
@@ -416,6 +418,62 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 
 };
 
+struct Tooltip
+{
+	const int outline_width = 2;
+	const Color bg_color{0.9f, 0.9f, 0, 0.8f};
+	const Color fg_color{0.5f, 0.5f, 0.5f, 1};
+	const Color text_color{0.0f, 0.0f, 0.0f};
+
+	int popup_margin = 0;
+	int padding = 5;
+
+	Gtk::Widget *widget;
+
+	std::string text;
+
+	Tooltip(Gtk::Widget *widget_)
+		: widget(widget_)
+	{}
+
+	void draw(const Cairo::RefPtr<Cairo::Context>& cr, int pos_x, int pos_y) {
+
+		guint cursor_w, cursor_h;
+		cursor_w = cursor_h = widget->get_display()->get_default_cursor_size();
+		int info_pos_x = pos_x;
+		info_pos_x += cursor_w + popup_margin + padding;
+		int info_pos_y = pos_y + padding;
+//		info_pos_y += cursor_h;
+
+		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(widget->get_pango_context()));
+		layout->set_markup(text);
+		Pango::Rectangle text_rect = layout->get_pixel_ink_extents();
+		if (info_pos_y + popup_margin + text_rect.get_height() > widget->get_height())
+			info_pos_y = widget->get_height() - text_rect.get_height() - popup_margin - padding;
+		else if (info_pos_y < popup_margin + padding)
+			info_pos_y = popup_margin + padding;
+
+		if (info_pos_x + padding + popup_margin + text_rect.get_width() > widget->get_width()) {
+			info_pos_x = std::min(pos_x, widget->get_width());
+			info_pos_x -= text_rect.get_width() + popup_margin + padding;
+		} else if (info_pos_x < popup_margin) {
+			info_pos_x = std::max(0, pos_x);
+			info_pos_x += popup_margin + padding;
+		}
+
+		cr->set_source_rgba(bg_color.get_r(), bg_color.get_g(), bg_color.get_b(), bg_color.get_alpha());
+		cr->rectangle(info_pos_x - outline_width - padding, info_pos_y - outline_width - padding, text_rect.get_width() + 2*outline_width + 2*padding, text_rect.get_height() + 2*outline_width + 2*padding);
+		cr->fill_preserve();
+		cr->set_source_rgba(fg_color.get_r(), fg_color.get_g(), fg_color.get_b(), fg_color.get_alpha());
+		cr->set_line_width(1);
+		cr->stroke();
+
+		cr->move_to(info_pos_x, info_pos_y);
+		cr->set_source_rgb(text_color.get_r(), text_color.get_g(), text_color.get_b());
+		layout->show_in_cairo_context(cr);
+	}
+};
+
 /* === M E T H O D S ======================================================= */
 
 Widget_Curves::Widget_Curves():
@@ -556,7 +614,7 @@ void Widget_Curves::select_all_points()
 }
 
 void
-Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list<ValueDesc> &value_descs)
+Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list< std::pair<std::string, ValueDesc> > &data)
 {
 	if (canvas_interface_ != canvas_interface) {
 		canvas_interface = canvas_interface_;
@@ -564,7 +622,10 @@ Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_in
 	}
 	clear();
 	CurveStruct curve_struct;
-	for(std::list<ValueDesc>::const_iterator i = value_descs.begin(); i != value_descs.end(); ++i) {
+	for(auto it = data.begin(); it != data.end(); ++it) {
+		const ValueDesc *i = &it->second;
+
+		curve_struct.name = it->first;
 		curve_struct.init(*i);
 		if (curve_struct.channels.empty())
 			continue;
@@ -801,6 +862,49 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		Gdk::RGBA color = get_style_context()->get_color();
 		cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
 		cr->stroke();
+	}
+
+	// Draw info about hovered item
+	if (channel_point_sd.get_hovered_item().is_valid() || channel_point_sd.get_state() == channel_point_sd.POINTER_DRAGGING) {
+		const ChannelPoint* inspected_item = &channel_point_sd.get_hovered_item();
+		if (!inspected_item->is_valid())
+			inspected_item = channel_point_sd.get_active_item();
+
+		float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+
+		char buf[512];
+		if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING) {
+			snprintf(buf, 511, "%s:<b>%s</b>\n<b>Time:</b> %lfs (%if)\n<b>Value:</b> %lf",
+					inspected_item->curve_it->name.c_str(),
+					inspected_item->curve_it->channels[inspected_item->channel_idx].name.c_str(),
+					Real(inspected_item->time_point.get_time()),
+					int(std::trunc(inspected_item->time_point.get_time()*fps)),
+					inspected_item->get_value(time_plot_data->dt)
+					);
+		} else {
+			int x0, y0;
+			channel_point_sd.get_initial_tracking_point(x0, y0);
+			Time t0 = time_plot_data->get_t_from_pixel_coord(x0).round(fps);
+			Real value0 = time_plot_data->get_y_from_pixel_coord(y0);
+			snprintf(buf, 511, _("%s:<b>%s</b>\n<b>Time:</b> %lfs (%if) <small>( \u0394 %if )</small>\n<b>Value:</b> %lf <small>( \u0394 %lf )</small>"),
+					inspected_item->curve_it->name.c_str(),
+					inspected_item->curve_it->channels[inspected_item->channel_idx].name.c_str(),
+					Real(inspected_item->time_point.get_time()),
+					int(std::trunc(inspected_item->time_point.get_time()*fps)),
+					int(std::trunc((inspected_item->time_point.get_time() - t0)*fps)),
+					inspected_item->get_value(time_plot_data->dt),
+					inspected_item->get_value(time_plot_data->dt) - value0
+					);
+		}
+		std::string text(buf);
+
+		int item_pos_x = time_plot_data->get_pixel_t_coord(inspected_item->time_point.get_time());
+		int item_pos_y = time_plot_data->get_pixel_y_coord(inspected_item->get_value(time_plot_data->dt));
+
+		Tooltip tooltip(this);
+		tooltip.text = text;
+		tooltip.popup_margin = waypoint_edge_length;
+		tooltip.draw(cr, item_pos_x, item_pos_y);
 	}
 
 	if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING && channel_point_sd.get_state() != channel_point_sd.POINTER_PANNING && !curve_list.empty() && range_min < range_max)

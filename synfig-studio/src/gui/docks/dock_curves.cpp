@@ -85,13 +85,25 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view, Widget_Curves* curves, 
 		return;
 	}
 
-	std::list<synfigapp::ValueDesc> value_descs;
+	std::list< std::pair<std::string, synfigapp::ValueDesc> > value_descs;
 
 	auto path_list = param_tree_view->get_selection()->get_selected_rows();
 	auto model = param_tree_view->get_model();
 	for (auto path_it : path_list) {
 		auto iter = model->get_iter(path_it);
-		value_descs.push_back((*iter)[param_model.value_desc]);
+		std::string name;
+
+		{
+			auto iter2 = iter;
+			while (iter2) {
+				std::string current_label = (*iter2)[param_model.label].operator Glib::ustring();
+				name = current_label + ":" + name;
+				iter2 = iter2->parent();
+			}
+			name.pop_back();
+		}
+
+		value_descs.push_back( std::pair<std::string, synfigapp::ValueDesc> (name, (*iter)[param_model.value_desc]));
 	}
 	curves->set_value_descs(dock->get_canvas_interface(), value_descs);
 }
