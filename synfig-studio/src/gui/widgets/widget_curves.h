@@ -110,6 +110,11 @@ private:
 
 	std::vector<std::pair<synfig::Waypoint, std::list<CurveStruct>::iterator> > overlapped_waypoints;
 
+	void on_waypoint_clicked(const ChannelPoint &cp, unsigned int button, Gdk::Point /*point*/);
+	void on_waypoint_double_clicked(const ChannelPoint &cp, unsigned int button, Gdk::Point /*point*/);
+
+	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
+	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
 
 public:
 	Widget_Curves();
@@ -136,6 +141,9 @@ public:
 	void pan(int dx, int dy, int total_dx, int total_dy);
 
 	void select_all_points();
+
+	sigc::signal<void, synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
+	sigc::signal<void, synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
 
 protected:
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);

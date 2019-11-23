@@ -72,6 +72,7 @@ private:
 
 	bool process_key_press_event(GdkEventKey *event);
 	bool process_key_release_event(GdkEventKey *event);
+	bool process_button_double_press_event(GdkEventButton *event);
 	bool process_button_press_event(GdkEventButton *event);
 	bool process_button_release_event(GdkEventButton *event);
 	bool process_motion_event(GdkEventMotion *event);
@@ -96,6 +97,7 @@ private:
 	sigc::signal<void> signal_drag_finished_;
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_clicked_;
+	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_double_clicked_;
 
 public:
 	SelectDragHelper(const char *drag_action_name);
@@ -145,6 +147,7 @@ public:
 	sigc::signal<void>& signal_drag_finished() { return signal_drag_finished_; }
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_clicked() { return signal_item_clicked_; }
+	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_double_clicked() { return signal_item_double_clicked_; }
 };
 
 
@@ -219,6 +222,8 @@ SelectDragHelper<T>::process_event(GdkEvent *event)
 		return process_scroll_event(&event->scroll);
 	case GDK_MOTION_NOTIFY:
 		return process_motion_event(&event->motion);
+	case GDK_2BUTTON_PRESS:
+		return process_button_double_press_event(&event->button);
 	case GDK_BUTTON_PRESS:
 		return process_button_press_event(&event->button);
 	case GDK_BUTTON_RELEASE:
@@ -318,6 +323,20 @@ bool SelectDragHelper<T>::process_key_release_event(GdkEventKey* event)
 			return true;
 		}
 	}
+	}
+	return false;
+}
+
+template<class T>
+bool SelectDragHelper<T>::process_button_double_press_event(GdkEventButton* event)
+{
+	T pointed_item;
+	find_item_at_position(event->x, event->y, pointed_item);
+	if (pointed_item.is_valid()) {
+		int pointer_x = std::trunc(event->x);
+		int pointer_y = std::trunc(event->y);
+		signal_item_double_clicked().emit(pointed_item, event->button, Gdk::Point(pointer_x, pointer_y));
+		return true;
 	}
 	return false;
 }
