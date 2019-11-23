@@ -255,18 +255,6 @@ VectorizerSettings::on_comboboxtext_mode_changed()
 	}
 }
 
-void
-VectorizerSettings::on_finished()
-{
-}
-
-void
-VectorizerSettings::set_progress(float value)
-{
-	float r = value/100.0;
-	// ProgressBar.set_text( strprintf( "%.1f%%", value ));
-	// ProgressBar.set_fraction(r);
-}
 
 void
 VectorizerSettings::savecurrconfig()
