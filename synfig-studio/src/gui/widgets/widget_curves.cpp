@@ -476,6 +476,20 @@ struct Tooltip
 
 /* === M E T H O D S ======================================================= */
 
+void Widget_Curves::on_waypoint_clicked(const Widget_Curves::ChannelPoint& cp, unsigned int button, Gdk::Point)
+{
+	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+	synfig::waypoint_collect(waypoint_set, cp.time_point.get_time(), cp.curve_it->value_desc.get_value_node());
+	signal_waypoint_clicked().emit(cp.curve_it->value_desc, waypoint_set, button);
+}
+
+void Widget_Curves::on_waypoint_double_clicked(const Widget_Curves::ChannelPoint& cp, unsigned int button, Gdk::Point)
+{
+	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+	synfig::waypoint_collect(waypoint_set, cp.time_point.get_time(), cp.curve_it->value_desc.get_value_node());
+	signal_waypoint_double_clicked().emit(cp.curve_it->value_desc, waypoint_set, button);
+}
+
 Widget_Curves::Widget_Curves():
 	channel_point_sd(*this),
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, DEFAULT_PAGE_SIZE)),
@@ -509,6 +523,8 @@ Widget_Curves::Widget_Curves():
 	channel_point_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_up));
 	channel_point_sd.signal_scroll_down_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_down));
 	channel_point_sd.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_Curves::pan));
+	channel_point_sd.signal_item_clicked().connect(sigc::mem_fun(*this, &Widget_Curves::on_waypoint_clicked));
+	channel_point_sd.signal_item_double_clicked().connect(sigc::mem_fun(*this, &Widget_Curves::on_waypoint_double_clicked));
 }
 
 Widget_Curves::~Widget_Curves() {
