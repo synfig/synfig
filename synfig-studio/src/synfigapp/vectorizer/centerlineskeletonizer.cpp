@@ -629,7 +629,10 @@ void Timeline::build(ContourFamily &polygons, VectorizationContext &context) {
   // NOTE: are edge events to be computed BEFORE split ones?
   for (i = 0; i < nodesToBeTreated.size(); ++i) 
   {
-
+    // Break calculation at user cancel press
+    /* To be uncommented if isCanceled is needed in future
+    if (thisVectorizer->isCanceled()) break;
+    */
     Event currentEvent(nodesToBeTreated[i].m_node, &context);
 
     // Notify event calculation
@@ -1598,6 +1601,22 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours,
   if (maxThickness > 0.0)  // if(!currConfig->m_outline)
   {
     Timeline &timeline = context.m_timeline;
+    
+    /* To be uncommented in case isCanceled is needed in future
+
+    timeline.build(regionContours, context, thisVectorizer);
+    if (thisVectorizer->isCanceled()) {
+      // Bailing out
+      while (!timeline.empty()) timeline.pop();
+
+      context.m_nodesHeap.clear();
+      context.m_edgesHeap.clear();
+
+      context.m_linearNodesHeap.clear();
+      context.m_linearEdgesHeap.clear();
+
+      return output;
+    }*/
     timeline.build(regionContours, context);
 
     // Process timeline
@@ -1677,6 +1696,9 @@ SkeletonList* studio::skeletonize(Contours &contours, const etl::handle<synfigap
 
 
   for (i = 0; i <contours_size ; ++i) {
+    /* To be enabled in case on isCancenled is implemnted
+        if (thisVectorizer->isCanceled()) break;
+    */
     res->push_back(skeletonize(contours[i], context));
     float partial = 30.0 + ((i/(float)contours_size)*30.0);
     ui_interface->amount_complete(partial,100);

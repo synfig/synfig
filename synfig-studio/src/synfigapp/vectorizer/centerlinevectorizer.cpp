@@ -85,8 +85,14 @@ const CenterlineConfiguration &configuration,const Gamma &gamma)
   //  without changing the essential structure of the image.
   SkeletonList *skeletons = studio::skeletonize(polygons,ui_interface, globals);
   ui_interface->amount_complete(6,10);
-
-
+  /* To be uncommented if isCanceled is needed in future
+  if (isCanceled()) 
+  {
+    // Clean and return 0 at cancel command
+    deleteSkeletonList(skeletons);
+    std::cout<<"CenterlineVectorize cancelled\n";
+  }
+  */
   // step 4
   // The raw skeleton data obtained from StraightSkeletonizer
   // class need to be grouped in joints and sequences before proceeding further

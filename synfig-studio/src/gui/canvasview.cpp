@@ -190,7 +190,7 @@ class studio::CanvasViewUIInterface : public UIInterface
 {
 	CanvasView *view;
 private:
-	float cur_progress;
+	float cur_progress = 0.0;
 public:
 
 	CanvasViewUIInterface(CanvasView *view):
@@ -302,13 +302,13 @@ public:
 	virtual bool
 	amount_complete(int current, int total)
 	{
-		cur_progress = (float)current/(float)total;
-		
-		if(cur_progress>0.0 && cur_progress<1.0)
+		float temp = (float)current/(float)total;
+		if(temp != cur_progress && temp<1.0)
 		{
+			cur_progress = temp;
 			view->statusbar->hide();
 			view->progressbar->show();
-			view->progressbar->set_fraction((float)cur_progress);
+			view->progressbar->set_fraction(cur_progress);
 			studio::App::process_all_events(); 
 			return true;
 		}
