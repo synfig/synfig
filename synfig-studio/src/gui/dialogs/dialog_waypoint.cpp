@@ -43,6 +43,8 @@
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypoint.h"
 
+#include <synfig/timepointcollect.h>
+
 #include <gui/localization.h>
 
 #endif
@@ -113,7 +115,7 @@ void
 Dialog_Waypoint::on_delete_pressed()
 {
 	hide();
-    signal_delete_();
+	signal_delete_();
 }
 
 void
@@ -134,9 +136,32 @@ Dialog_Waypoint::set_value_desc(synfigapp::ValueDesc value_desc)
 	value_desc_=value_desc;
 	if(value_desc.get_value_node() && value_desc.get_value_node()->get_parent_canvas())
 		waypointwidget->set_canvas(value_desc.get_value_node()->get_parent_canvas());
+
+	if (value_desc.is_value_node())
+		value_desc_changed = value_desc.get_value_node()->signal_changed().connect(
+					sigc::mem_fun(*this, &Dialog_Waypoint::refresh ));
+	if (value_desc.parent_is_value_node())
+		value_desc_changed = value_desc.get_parent_value_node()->signal_changed().connect(
+				sigc::mem_fun(*this, &Dialog_Waypoint::refresh ));
+	if (value_desc.parent_is_layer())
+		value_desc_changed = value_desc.get_layer()->signal_changed().connect(
+				sigc::mem_fun(*this, &Dialog_Waypoint::refresh ));
+
 }
 
 void
 Dialog_Waypoint::reset()
 {
 }
+
+void
+Dialog_Waypoint::refresh()
+{
+	Waypoint refreshed_waypoint;
+	bool ok = synfig::waypoint_search(refreshed_waypoint, waypointwidget->get_waypoint(), value_desc_.get_value_node());
+	if (!ok)
+		hide();
+	else
+		set_waypoint(refreshed_waypoint);
+}
+
