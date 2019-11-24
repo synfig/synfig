@@ -30,7 +30,6 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
-#include "_mutex_null.h"
 #include "_misc.h"
 
 /* === M A C R O S ========================================================= */
@@ -41,9 +40,6 @@
 #pragma warning (disable:4786)
 #pragma warning (disable:4290) // MSVC6 doesn't like function declarations with exception specs
 #endif
-
-//#define ETL_MUTEX_LOCK() 		_mutex::lock lock(mutex)
-#define ETL_MUTEX_LOCK()
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -57,13 +53,12 @@ namespace etl {
 **
 ** A more detailed description needs to be written.
 */
-template <typename CON, typename K=int, typename M=mutex_null>
+template <typename CON, typename K=int>
 class smach
 {
 public:
 
 	typedef K event_key;
-	typedef M _mutex;
 	typedef CON context_type;
 
 
@@ -283,10 +278,6 @@ private:
 	const state_base* default_state;
 	void* default_context;
 
-#ifdef ETL_MUTEX_LOCK
-	_mutex mutex;
-#endif
-
 	//! State stack data
 	const state_base* 	state_stack[SMACH_STATE_STACK_SIZE];
 	void* 				state_context_stack[SMACH_STATE_STACK_SIZE];
@@ -298,9 +289,6 @@ public:
 	const char *
 	get_state_name()const
 	{
-#ifdef ETL_MUTEX_LOCK
-		ETL_MUTEX_LOCK();
-#endif
 		if(curr_state)
 			return curr_state->get_name();
 		if(default_state)
@@ -318,9 +306,6 @@ public:
 	bool
 	set_default_state(const state_base *nextstate)
 	{
-#ifdef ETL_MUTEX_LOCK
-		ETL_MUTEX_LOCK();
-#endif
 		// Keep track of the current state unless
 		// the state switch fails
 		const state_base *prev_state=default_state;
@@ -363,10 +348,6 @@ public:
 	bool
 	egress()
 	{
-#ifdef ETL_MUTEX_LOCK
-		ETL_MUTEX_LOCK();
-#endif
-
 		// Pop all states off the state stack
 		while(states_on_stack) pop_state();
 
@@ -395,10 +376,6 @@ public:
 	bool
 	enter(const state_base *nextstate)
 	{
-#ifdef ETL_MUTEX_LOCK
-		ETL_MUTEX_LOCK();
-#endif
-
 		// Keep track of the current state unless
 		// the state switch fails
 		const state_base *prev_state=curr_state;
@@ -440,10 +417,6 @@ public:
 	bool
 	push_state(const state_base *nextstate)
 	{
-#ifdef ETL_MUTEX_LOCK
-		ETL_MUTEX_LOCK();
-#endif
-
 		// If there are not enough slots, then throw something.
 		if(states_on_stack==SMACH_STATE_STACK_SIZE)
 			throw(std::overflow_error("smach<>::push_state(): state stack overflow!"));
@@ -476,10 +449,6 @@ public:
 	void
 	pop_state()
 	{
-#ifdef ETL_MUTEX_LOCK
-		ETL_MUTEX_LOCK();
-#endif
-
 		// If we aren't in a state, then there is nothing
 		// to do.
 		if(!curr_state)
@@ -530,9 +499,6 @@ public:
 		object has its own state machine. */
 	void set_child(smach *x)
 	{
-#ifdef ETL_MUTEX_LOCK
-		ETL_MUTEX_LOCK();
-#endif
 		child=x;
 	}
 
@@ -548,10 +514,6 @@ public:
 	event_result
 	process_event(const event& id)
 	{
-#ifdef ETL_MUTEX_LOCK
-		ETL_MUTEX_LOCK();
-#endif
-
 		event_result ret(RESULT_OK);
 
 		// Check for child machine
