@@ -54,7 +54,7 @@ void
 Resource::Storage::ref() const
 {
 	#ifdef ETL_LOCK_REFCOUNTS
-	etl::mutex::lock lock(mtx);
+	std::lock_guard<std::mutex> lock(mtx);
 	#endif
 	++refcount;
 }
@@ -63,7 +63,7 @@ bool
 Resource::Storage::unref_inactive() const
 {
 	#ifdef ETL_LOCK_REFCOUNTS
-	etl::mutex::lock lock(mtx);
+	std::lock_guard<std::mutex> lock(mtx);
 	#endif
 	return refcount == 0 || --refcount != (int)resources.size();
 }
@@ -72,7 +72,7 @@ bool
 Resource::Storage::unref() const
 {
 	#ifdef ETL_LOCK_REFCOUNTS
-	etl::mutex::lock lock(mtx);
+	std::lock_guard<std::mutex> lock(mtx);
 	#endif
 
 	if (refcount == 0) return true;
@@ -92,7 +92,7 @@ int
 Resource::Storage::count() const
 {
 	#ifdef ETL_LOCK_REFCOUNTS
-	etl::mutex::lock lock(mtx);
+	std::lock_guard<std::mutex> lock(mtx);
 	#endif
 	return refcount;
 }

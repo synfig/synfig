@@ -20,7 +20,6 @@ etl_HEADERS = \
 	_ref_count.h \
 	angle \
 	handle \
-	thread \
 	fixed \
 	clock \
 	hermite \
@@ -31,7 +30,6 @@ etl_HEADERS = \
 	_stringf.h \
 	_bspline.h \
 	_calculus.h \
-	_mutex_null.h \
 	_hermite.h \
 	_curve_func.h \
 	_clock_base.h \
@@ -39,10 +37,6 @@ etl_HEADERS = \
 	_clock_gettimeofday.h \
 	_angle.h \
 	_handle.h \
-	_thread.h \
-	_mutex_pthreads.h \
-	_mutex_win32.h \
-	_rwlock.h \
 	smach \
 	_smach.h \
 	_trivial.h \
@@ -62,9 +56,7 @@ etl_HEADERS = \
 	_surface.h \
 	smart_ptr \
 	_smart_ptr.h \
-	_clock_win32hpcount.h \
-	mutex \
-	_mutex_pthreads_simple.h
+	_clock_win32hpcount.h
 
 
 $(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h
