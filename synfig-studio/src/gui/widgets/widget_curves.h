@@ -146,8 +146,10 @@ public:
 	sigc::signal<void, synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
 
 protected:
-	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
+	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
+
+	void delete_selected();
 }; // END of class Widget_Curves
 
 }; // END of namespace studio
