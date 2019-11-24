@@ -79,6 +79,7 @@ private:
 	bool process_scroll_event(GdkEventScroll *event);
 
 	sigc::signal<void> signal_selection_changed_;
+	sigc::signal<void> signal_hovered_item_changed_;
 
 	sigc::signal<void> signal_zoom_in_requested_;
 	sigc::signal<void> signal_zoom_out_requested_;
@@ -129,6 +130,7 @@ public:
 	void select_all_items();
 
 	sigc::signal<void>& signal_selection_changed() { return signal_selection_changed_; }
+	sigc::signal<void>& signal_hovered_item_changed() { return signal_hovered_item_changed_; }
 
 	sigc::signal<void>& signal_zoom_in_requested() { return signal_zoom_in_requested_; }
 	sigc::signal<void>& signal_zoom_out_requested() { return signal_zoom_out_requested_; }
@@ -506,8 +508,10 @@ bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 	if (pointer_state != POINTER_DRAGGING)
 		find_item_at_position(pointer_x, pointer_y, hovered_item);
 
-	if (previous_hovered_point != hovered_item)
+	if (previous_hovered_point != hovered_item) {
+		signal_hovered_item_changed().emit();
 		signal_redraw_needed().emit();
+	}
 
 	if (pointer_state == POINTER_DRAGGING && !dragging_started_by_key) {
 		guint any_pointer_button = Gdk::BUTTON1_MASK |Gdk::BUTTON2_MASK | Gdk::BUTTON3_MASK;
