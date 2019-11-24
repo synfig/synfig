@@ -150,6 +150,7 @@ protected:
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	void delete_selected();
+	bool add_waypoint_to(int point_x, int point_y);
 }; // END of class Widget_Curves
 
 }; // END of namespace studio
