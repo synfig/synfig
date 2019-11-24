@@ -682,6 +682,11 @@ Widget_Curves::on_event(GdkEvent *event)
 		default:
 			break;
 		}
+	case GDK_2BUTTON_PRESS:
+		if (event->button.button == 1) {
+			add_waypoint_to(event->button.x, event->button.y);
+		}
+		break;
 	default:
 		break;
 	}
@@ -959,6 +964,49 @@ Widget_Curves::delete_selected()
 			canvas_interface->waypoint_remove(cp->curve_it->value_desc, waypoint);
 		}
 	}
+}
+
+bool
+Widget_Curves::add_waypoint_to(int point_x, int point_y)
+{
+	// Search for nearest curve within a certain limited margin of tolerance
+	int tolerance = 5;
+	Time time = time_plot_data->get_t_from_pixel_coord(point_x);
+	CurveStruct * clicked_curve = nullptr;
+
+	for (auto &curve : curve_list) {
+		for (size_t cidx = 0; cidx < curve.channels.size(); cidx++) {
+			auto pixel = time_plot_data->get_pixel_y_coord(curve.get_value(cidx, time, time_plot_data->dt));
+			int diff = std::abs(point_y - pixel);
+			if ( diff < tolerance) {
+				clicked_curve = &curve;
+				tolerance = diff;
+			}
+		}
+	}
+
+	if (!clicked_curve)
+		return false;
+
+	// Add waypoint
+
+	Action::Handle 	action(Action::create("WaypointAdd"));
+
+	assert(action);
+	if(!action)
+		return false;
+
+	Waypoint waypoint(clicked_curve->value_desc.get_value(time), time);
+
+	action->set_param("canvas", canvas_interface->get_canvas());
+	action->set_param("widget.canvas_interface", canvas_interface);
+	action->set_param("value_node", clicked_curve->value_desc.get_value_node());
+	action->set_param("time", time);
+	action->set_param("waypoint", waypoint);
+
+	if(!canvas_interface->get_instance()->perform_action(action))
+		canvas_interface->get_ui_interface()->error(_("Action Failed."));
+	return true;
 }
 
 Widget_Curves::ChannelPoint::ChannelPoint()
