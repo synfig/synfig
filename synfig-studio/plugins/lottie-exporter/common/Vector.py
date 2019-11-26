@@ -181,7 +181,7 @@ class Vector:
             ret = [self.val1, self.val2]
         elif self.type == "circle_radius":
             ret = [self.val1, self.val1]
-        elif self.type in {"rectangle_size", "image_scale", "scale_layer_zoom", "group_layer_scale"}:
+        elif self.type in {"rectangle_size", "image_scale", "scale_layer_zoom", "group_layer_scale", "stretch_layer_scale"}:
             ret = [self.val1, self.val3]
         else:
             ret = [self.val1]

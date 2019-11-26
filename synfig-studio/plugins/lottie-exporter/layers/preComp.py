@@ -39,10 +39,13 @@ def gen_layer_precomp(lottie, layer, idx):
         gen_layer_rotate(lottie["ks"], layer)
         settings.INSIDE_PRECOMP = True
     elif layer.get_type() == "zoom":
-        gen_layer_scale(lottie["ks"], layer)
+        gen_layer_scale(lottie["ks"], layer, "scale_layer")
         settings.INSIDE_PRECOMP = True
     elif layer.get_type() == "translate":
         gen_layer_translate(lottie["ks"], layer)
+        settings.INSIDE_PRECOMP = True
+    elif layer.get_type() == "stretch":
+        gen_layer_scale(lottie["ks"], layer, "stretch_layer")
         settings.INSIDE_PRECOMP = True
 
     settings.lottie_format["assets"].append({})
