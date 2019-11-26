@@ -122,8 +122,11 @@ namespace {
 				}
 			} else
 			if (point.mode == Bend::CORNER) {
-				Real dd = (p1 - p0) * tn1.perp();
-				Vector pp = p0 + tn0*(dd/d);
+				Vector pp = (tn0 + tn1).perp();
+				Real a = (tn0 - tn1).mag_squared();
+				Real b = pp.mag_squared();
+				Real c = 1/sqrt(b);
+				pp *= std::min(Real(2), (a + b)*c*0.5)*c*radius;
 				if (out) {
 					touch(dst, dst_move_flag, center + pp);
 					dst.line_to(center + p);
