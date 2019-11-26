@@ -174,7 +174,7 @@ Duck::set_point(const synfig::Point &x)
 	else
 		point_ = x;
 	if (shared_point_) *shared_point_ = point_;
-	if (shared_angle_) *shared_angle_ = point_.angle();
+	if (shared_angle_ && approximate_not_zero(point_.mag())) *shared_angle_ = point_.angle();
 	if (shared_mag_)   *shared_mag_ = point_.mag();
 }
 

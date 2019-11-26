@@ -82,10 +82,10 @@ synfig::BLinePoint::reverse()
 void
 synfig::BLinePoint::update_tangent2()
 {
-	if(tangent_[0].mag_squared() != 0)
-		tangent2_radius_split_=Vector(tangent_[1].mag(), tangent_[0].angle());
-	else
+	if(approximate_zero(tangent_[0].mag_squared()))
 		tangent2_radius_split_=tangent_[1];
+	else
+		tangent2_radius_split_=Vector(tangent_[1].mag(), tangent_[0].angle());
 	tangent2_angle_split_=Vector(tangent_[0].mag(), tangent_[1].angle());
 	return;
 }

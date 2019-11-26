@@ -2410,7 +2410,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
                     else
                     if (!bline_point.get_split_tangent_angle())
                     {
-                        etl::smart_ptr<synfig::Angle> angle(new Angle(tangent1_duck->get_point().angle()));
+                        etl::smart_ptr<synfig::Angle> angle(new Angle(
+                            approximate_zero( tangent1_duck->get_point().mag() )
+                          ? tangent2_duck->get_point().angle()
+                          : tangent1_duck->get_point().angle() ));
                         tangent1_duck->set_shared_angle(angle);
                         tangent2_duck->set_shared_angle(angle);
                     }
@@ -2505,7 +2508,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
                     else
                     if (!bline_point.get_split_tangent_angle())
                     {
-                        etl::smart_ptr<synfig::Angle> angle(new Angle(tangent1_duck->get_point().angle()));
+                        etl::smart_ptr<synfig::Angle> angle(new Angle(
+                            approximate_zero( tangent1_duck->get_point().mag() )
+                          ? tangent2_duck->get_point().angle()
+                          : tangent1_duck->get_point().angle() ));
                         tangent1_duck->set_shared_angle(angle);
                         tangent2_duck->set_shared_angle(angle);
                     }

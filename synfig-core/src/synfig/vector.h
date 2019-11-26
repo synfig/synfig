@@ -285,7 +285,7 @@ public:
 		{ return Vector(_y,-_x); }
 
 	Angle angle()const
-		{ return Angle::rad(atan2(_y, _x)); }
+		{ return Angle::rad(is_equal_to(zero()) ? 0.0 : atan2(_y, _x)); }
 
 	bool is_equal_to(const Vector& rhs)const
 		{ return approximate_equal(_x, rhs._x) && approximate_equal(_y, rhs._y); }
