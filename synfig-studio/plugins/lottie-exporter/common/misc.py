@@ -145,6 +145,13 @@ def parse_position(animated, i):
         vec.add_new_val(val)
         return vec
 
+    elif animated.attrib["type"] == "stretch_layer_scale":
+        val1 = float(animated[i][0][0].text) * 100
+        val3 = float(animated[i][0][1].text) * 100
+        vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
+        vec.add_new_val(val3)
+        return vec
+
     elif animated.attrib["type"] == "group_layer_scale":
         val1 = float(animated[i][0][0].text) * 100
         val3 = float(animated[i][0][1].text) * 100

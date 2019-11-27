@@ -23,7 +23,7 @@ def gen_effects_controller(lottie, value, anim_type):
 
     lottie["ef"] = []
     lottie["ef"].append({})
-    if anim_type == "vector":
+    if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale"}:
         gen_effects_point(lottie["ef"][-1], value, idx)
     else:
         gen_effects_slider(lottie["ef"][-1], value, idx)

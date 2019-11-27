@@ -9,7 +9,7 @@ from helpers.transform import gen_helpers_transform
 sys.path.append("..")
 
 
-def gen_layer_scale(lottie, layer):
+def gen_layer_scale(lottie, layer, layer_name="scale_layer"):
     """
     Help generate transform properties of a scale layer
 
@@ -20,6 +20,10 @@ def gen_layer_scale(lottie, layer):
     Returns:
         (None)
     """
+    animation_type = "scale_layer_zoom"
+    if layer_name == "stretch_layer":
+        animation_type = "stretch_layer_scale"
+
     center = layer.get_param("center")
     center.animate("vector")
     anchor = copy.deepcopy(center)
@@ -28,7 +32,7 @@ def gen_layer_scale(lottie, layer):
     pos = center
 
     scale = layer.get_param("amount")  # This is scale amount
-    scale.animate("scale_layer_zoom")
+    scale.animate(animation_type)
 
     anchor.add_offset()
     if settings.INSIDE_PRECOMP:

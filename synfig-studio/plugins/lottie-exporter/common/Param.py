@@ -172,7 +172,7 @@ class Param:
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
-        if anim_type == "vector":   # This will never happen, can remove this latter
+        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale"}:   # This will never happen, can remove this latter
             self.dimension = 2
 
         # Check if we are dealing with convert methods
@@ -206,7 +206,7 @@ class Param:
         """
         Internal private method for animating
         """
-        if anim_type == "vector":
+        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale"}:
             self.dimension = 2
 
         # Check if we are dealing with convert methods
@@ -297,6 +297,17 @@ class Param:
                 ret = ret.format(lhs=lhs, rhs=rhs, scalar=scalar)
                 self.expression = ret
                 return ret, self.expression_controllers # Might have to return copy.deepcopy because these expressions are destroyed on animating this parameter again, and this param might be child to 2 params
+
+            elif self.param[0].tag == "exp":
+                self.subparams["exp"].extract_subparams()
+                exp, effects_1 = self.subparams["exp"].subparams["exp"].recur_animate("scalar_multiply")
+                scale, effects_2 = self.subparams["exp"].subparams["scale"].recur_animate(anim_type)
+                self.expression_controllers.extend(effects_1)
+                self.expression_controllers.extend(effects_2)
+                ret = "mul(Math.exp({exp}), {scale})"
+                ret = ret.format(exp=exp, scale=scale)
+                self.expression = ret
+                return ret, self.expression_controllers
 
             elif self.param[0].tag == "average":
                 self.subparams["average"].extract_subparams()   # Entries will be extracted here
@@ -639,6 +650,11 @@ class Param:
                     ret += ret2
                     ret *= mul
 
+            elif self.param[0].tag == "exp":
+                exp = self.subparams["exp"].subparams["exp"].__get_value(frame)
+                scale = self.subparams["exp"].subparams["scale"].__get_value(frame)
+                ret = scale * math.exp(exp)
+
             elif self.param[0].tag == "average":
                 lst = self.subparams["average"].subparams["entry"]
                 if not isinstance(lst, list):
@@ -842,6 +858,11 @@ class Param:
                     self.subparams["average"] = [self.subparams["average"]]
                 for it in self.subparams["average"]:
                     it.update_frame_window(window)
+
+            elif node.tag == "exp":
+                self.subparams["exp"].extract_subparams()
+                self.subparams["exp"].subparams["exp"].update_frame_window(window)
+                self.subparams["exp"].subparams["scale"].update_frame_window(window)
 
             elif node.tag == "weighted_average":
                 self.subparams["weighted_average"].extract_subparams()
