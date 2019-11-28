@@ -204,7 +204,7 @@ public:
 	void dialog_cvs_revert();
 
 	//! Closes the instance of this composition
-	void close();
+	void close(bool remove_temporary_files = true);
 
 	void revert();
 

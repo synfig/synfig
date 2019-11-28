@@ -563,7 +563,7 @@ Instance::update_all_titles()
 }
 
 void
-Instance::close()
+Instance::close(bool remove_temporary_files)
 {
 	// This will increase the reference count so we don't get DELETED
 	// until we are ready
@@ -621,6 +621,11 @@ Instance::close()
 	else if(studio::App::instance_list.size() == 1)
 	{
 		studio::App::instance_list.front()->canvas_view_list().front()->present();
+	}
+
+	if (remove_temporary_files) {
+		FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
+		temporary_filesystem->discard_changes();
 	}
 }
 

@@ -67,7 +67,7 @@ FileSystemTemporary::FileSystemTemporary(const String &tag, const String &tempor
 
 FileSystemTemporary::~FileSystemTemporary()
 {
-	discard_changes();
+
 }
 
 String
