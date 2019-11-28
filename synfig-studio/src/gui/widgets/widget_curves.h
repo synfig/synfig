@@ -85,6 +85,9 @@ private:
 	public:
 		ChannelPointSD(Widget_Curves &widget);
 		virtual ~ChannelPointSD() override {}
+
+		void get_item_position(const ChannelPoint &item, Gdk::Point &position) override;
+
 		bool find_item_at_position(int pos_x, int pos_y, ChannelPoint & cp) override;
 		bool find_items_in_rect(Gdk::Rectangle rect, std::vector<ChannelPoint> & list) override;
 		void get_all_items(std::vector<ChannelPoint> & items) override;
@@ -105,8 +108,6 @@ private:
 	TimePlotData * time_plot_data;
 
 	int waypoint_edge_length;
-
-	synfig::Real active_point_initial_value;
 
 	std::vector<std::pair<synfig::Waypoint, std::list<CurveStruct>::iterator> > overlapped_waypoints;
 
