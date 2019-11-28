@@ -504,6 +504,9 @@ Widget_Curves::Widget_Curves():
 	time_plot_data = new TimePlotData(*this, range_adjustment);
 	time_plot_data->set_extra_time_margin(16/2);
 
+	channel_point_sd.set_pan_enabled(true);
+	channel_point_sd.set_zoom_enabled(true);
+	channel_point_sd.set_scroll_enabled(true);
 	channel_point_sd.set_canvas_interface(canvas_interface);
 	channel_point_sd.signal_drag_started().connect([&](){
 		const ChannelPoint *pointed_item = channel_point_sd.get_active_item();

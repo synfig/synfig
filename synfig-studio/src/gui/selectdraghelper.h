@@ -100,6 +100,13 @@ private:
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_clicked_;
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_double_clicked_;
 
+	bool box_selection_enabled = true;
+	bool multiple_selection_enabled = true;
+	bool scroll_enabled = false;
+	bool zoom_enabled = false;
+	bool pan_enabled = false;
+	bool drag_enabled = true;
+
 public:
 	SelectDragHelper(const char *drag_action_name);
 	virtual ~SelectDragHelper() {delete action_group_drag;}
@@ -152,6 +159,24 @@ public:
 	void clear();
 
 	void select_all_items();
+
+	bool get_box_selection_enabled() const;
+	void set_box_selection_enabled(bool value);
+
+	bool get_multiple_selection_enabled() const;
+	void set_multiple_selection_enabled(bool value);
+
+	bool get_scroll_enabled() const;
+	void set_scroll_enabled(bool value);
+
+	bool get_zoom_enabled() const;
+	void set_zoom_enabled(bool value);
+
+	bool get_pan_enabled() const;
+	void set_pan_enabled(bool value);
+
+	bool get_drag_enabled() const;
+	void set_drag_enabled(bool value);
 
 	sigc::signal<void>& signal_selection_changed() { return signal_selection_changed_; }
 	sigc::signal<void>& signal_hovered_item_changed() { return signal_hovered_item_changed_; }
@@ -271,6 +296,8 @@ bool SelectDragHelper<T>::process_key_press_event(GdkEventKey* event)
 	switch (event->keyval) {
 	case GDK_KEY_Up:
 	case GDK_KEY_Down: {
+		if (!drag_enabled)
+			return false;
 		if (selected_items.size() == 0)
 			break;
 		if (pointer_state != POINTER_DRAGGING) {
@@ -287,6 +314,8 @@ bool SelectDragHelper<T>::process_key_press_event(GdkEventKey* event)
 	}
 	case GDK_KEY_Left:
 	case GDK_KEY_Right: {
+		if (!drag_enabled)
+			return false;
 		if (selected_items.size() == 0)
 			break;
 		if (pointer_state != POINTER_DRAGGING) {
@@ -390,7 +419,7 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 				auto already_selection_it = std::find(selected_items.begin(), selected_items.end(), pointed_item);
 				bool is_already_selected = already_selection_it != selected_items.end();
 				bool using_key_modifiers = (event->state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) != 0;
-				if (using_key_modifiers) {
+				if (using_key_modifiers && box_selection_enabled && multiple_selection_enabled) {
 					pointer_state = POINTER_SELECTING;
 				} else {
 					T* pointed_item_ptr = nullptr;
@@ -402,20 +431,26 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 						pointed_item_ptr = &selected_items.front();
 						signal_selection_changed().emit();
 					}
-					start_dragging(pointed_item_ptr);
-					dragging_started_by_key = false;
-					pointer_state = POINTER_DRAGGING;
+					if (drag_enabled) {
+						start_dragging(pointed_item_ptr);
+						dragging_started_by_key = false;
+						pointer_state = POINTER_DRAGGING;
+					}
 				}
+				some_action_done = true;
 			} else {
-				pointer_state = POINTER_SELECTING;
+				if (box_selection_enabled && multiple_selection_enabled) {
+					pointer_state = POINTER_SELECTING;
+					some_action_done = true;
+				}
 			}
-			some_action_done = true;
 		}
 	} else if (event->button == 2) {
 		if (pointer_state == POINTER_DRAGGING)
 			finish_dragging();
 		start_tracking_pointer(event->x, event->y);
 		pointer_state = POINTER_PANNING;
+		some_action_done = true;
 	}
 
 	{
@@ -524,6 +559,7 @@ bool SelectDragHelper<T>::process_button_release_event(GdkEventButton* event)
 template<class T>
 bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 {
+	bool processed = false;
 	auto previous_hovered_point = hovered_item;
 	hovered_item.invalidate();
 
@@ -554,6 +590,7 @@ bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 			}
 			drag_to(pointer_x, pointer_y);
 		}
+		processed = true;
 	}
 	else if (pointer_state == POINTER_PANNING) {
 		const int dx = pointer_x - last_pointer_x;
@@ -562,6 +599,7 @@ bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 		const int total_dy = pointer_y - pointer_tracking_start_y;
 
 		signal_panning_requested().emit(dx, dy, total_dx, total_dy);
+		processed = true;
 	}
 
 	if (pointer_state != POINTER_NONE) {
@@ -570,7 +608,7 @@ bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 
 	last_pointer_x = pointer_x;
 	last_pointer_y = pointer_y;
-	return true;
+	return processed;
 }
 
 template<class T>
@@ -579,10 +617,12 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 	switch(event->direction) {
 		case GDK_SCROLL_UP:
 		case GDK_SCROLL_RIGHT: {
-			if (event->state & GDK_CONTROL_MASK) {
+			if ((event->state & GDK_CONTROL_MASK) && zoom_enabled) {
 				// Ctrl+scroll , perform zoom in
 				signal_zoom_in_requested().emit();
 			} else {
+				if (!scroll_enabled)
+					return false;
 				// Scroll up
 				signal_scroll_up_requested().emit();
 			}
@@ -590,10 +630,12 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 		}
 		case GDK_SCROLL_DOWN:
 		case GDK_SCROLL_LEFT: {
-			if (event->state & GDK_CONTROL_MASK) {
+			if ((event->state & GDK_CONTROL_MASK) && zoom_enabled) {
 				// Ctrl+scroll , perform zoom out
 				signal_zoom_out_requested().emit();
 			} else {
+				if (!scroll_enabled)
+					return false;
 				// Scroll down
 				signal_scroll_down_requested().emit();
 			}
@@ -675,12 +717,14 @@ void SelectDragHelper<T>::cancel_dragging()
 
 	// Sadly group->cancel() just remove PassiverGroup indicator, not its actions, from stack
 
-	bool has_any_content =  0 < action_group_drag->get_depth();
-	delete action_group_drag;
-	action_group_drag = nullptr;
-	if (has_any_content && canvas_interface) {
-		canvas_interface->get_instance()->undo();
-		canvas_interface->get_instance()->clear_redo_stack();
+	if (action_group_drag) {
+		bool has_any_content =  0 < action_group_drag->get_depth();
+		delete action_group_drag;
+		action_group_drag = nullptr;
+		if (has_any_content && canvas_interface) {
+			canvas_interface->get_instance()->undo();
+			canvas_interface->get_instance()->clear_redo_stack();
+		}
 	}
 
 	pointer_state = POINTER_NONE;
@@ -699,6 +743,86 @@ void SelectDragHelper<T>::select_all_items()
 	signal_selection_changed().emit();
 }
 
+template <class T>
+bool SelectDragHelper<T>::get_box_selection_enabled() const
+{
+	return box_selection_enabled;
+}
+
+template <class T>
+void SelectDragHelper<T>::set_box_selection_enabled(bool value)
+{
+	box_selection_enabled = value;
+}
+
+template <class T>
+bool SelectDragHelper<T>::get_multiple_selection_enabled() const
+{
+	return multiple_selection_enabled;
+}
+
+template <class T>
+void SelectDragHelper<T>::set_multiple_selection_enabled(bool value)
+{
+	multiple_selection_enabled = value;
+	if (!multiple_selection_enabled && selected_items.size() > 1) {
+		selected_items.resize(1);
+		if (active_item && active_item != &selected_items.front()) {
+			cancel_dragging();
+		}
+	}
+}
+
+template <class T>
+bool SelectDragHelper<T>::get_scroll_enabled() const
+{
+	return scroll_enabled;
+}
+
+template <class T>
+void SelectDragHelper<T>::set_scroll_enabled(bool value)
+{
+	scroll_enabled = value;
+}
+
+template <class T>
+bool SelectDragHelper<T>::get_zoom_enabled() const
+{
+	return zoom_enabled;
+}
+
+template <class T>
+void SelectDragHelper<T>::set_zoom_enabled(bool value)
+{
+	zoom_enabled = value;
+}
+
+template <class T>
+bool SelectDragHelper<T>::get_pan_enabled() const
+{
+	return pan_enabled;
+}
+
+template <class T>
+void SelectDragHelper<T>::set_pan_enabled(bool value)
+{
+	pan_enabled = value;
+}
+
+template <class T>
+bool SelectDragHelper<T>::get_drag_enabled() const
+{
+	return drag_enabled;
+}
+
+template <class T>
+void SelectDragHelper<T>::set_drag_enabled(bool value)
+{
+	drag_enabled = value;
+	if (!drag_enabled) {
+		cancel_dragging();
+	}
+}
 
 };
 
