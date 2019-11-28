@@ -107,21 +107,45 @@ public:
 	void set_canvas_interface(etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	etl::handle<synfigapp::CanvasInterface>& get_canvas_interface();
 
+	/// The item whose pointer/mouse is hovering over
 	const T& get_hovered_item() const;
+	/// Provides a list of selected items
 	std::vector<T*> get_selected_items();
+	/// Check if an item is selected
 	bool is_selected(const T& item) const;
+	/// The selected item user started to drag
 	const T* get_active_item() const;
 
 	State get_state() const;
+	/// The point where user clicked
 	void get_initial_tracking_point(int &px, int &py) const;
 
-	virtual bool find_item_at_position(int pos_x, int pos_y, T & cp) = 0;
+	//! Retrieve the item placed at a point
+	//! @param[out] item the item in the given position
+	//! @return true if an item was found, false otherwise
+	virtual bool find_item_at_position(int pos_x, int pos_y, T & item) = 0;
+
+	//! Retrieve all items inside a rectangular area
+	//! @param rect the rectangle area
+	//! @param[out] the list of items contained inside rect
+	//! @return true if any item was found, false otherwise
 	virtual bool find_items_in_rect(Gdk::Rectangle rect, std::vector<T> & list) = 0;
+
+	//! Retrieve all items in collection
+	//! @param[out] items the complete item list
 	virtual void get_all_items(std::vector<T> & items) = 0;
 
 	void drag_to(int pointer_x, int pointer_y);
-	virtual void delta_drag(int dx, int dy, bool by_keys) = 0;
+	//! Do drag selected items
+	/*!
+	 * @param total_dx total pointer/mouse displacement along x-axis since drag start
+	 * @param total_dy total pointer/mouse displacement along y-axis since drag start
+	 * @param by_keys if the dragging action is being done by key pressing
+	*/
+	virtual void delta_drag(int total_dx, int total_dy, bool by_keys) = 0;
 
+	//! Call this method to process mouse/pointer/keyboard events to map them
+	//! to select/drag/panning/zoom/scrolling behaviours
 	bool process_event(GdkEvent *event);
 
 	void refresh();
