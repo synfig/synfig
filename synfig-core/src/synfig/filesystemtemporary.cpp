@@ -375,7 +375,7 @@ FileSystemTemporary::save_changes(
 		 && !i->second.tmp_filename.empty()
 		 && copy(file_system, i->second.tmp_filename, target_file_system, i->second.name))
 		{
-			if (!remove_files)
+			if (remove_files)
 				file_system->file_remove(i->second.tmp_filename);
 				
 			files.erase(i++);
