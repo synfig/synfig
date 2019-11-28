@@ -62,6 +62,7 @@ private:
 	State pointer_state;
 	int pointer_tracking_start_x, pointer_tracking_start_y;
 	int last_pointer_x, last_pointer_y;
+	Gdk::Point active_item_start_position;
 
 	void start_tracking_pointer(int x, int y);
 	void start_tracking_pointer(double x, double y);
@@ -126,6 +127,12 @@ public:
 	State get_state() const;
 	/// The point where user clicked
 	void get_initial_tracking_point(int &px, int &py) const;
+	/// The point where active item was initially placed
+	void get_active_item_initial_point(int &px, int &py) const;
+
+	//! Retrieve the position of a given item
+	//! @param[out] position the location the provided item
+	virtual void get_item_position(const T &item, Gdk::Point &position) = 0;
 
 	//! Retrieve the item placed at a point
 	//! @param[out] item the item in the given position
@@ -261,6 +268,13 @@ void SelectDragHelper<T>::get_initial_tracking_point(int& px, int& py) const
 {
 	px = pointer_tracking_start_x;
 	py = pointer_tracking_start_y;
+}
+
+template<class T>
+void SelectDragHelper<T>::get_active_item_initial_point(int& px, int& py) const
+{
+	px = active_item_start_position.get_x();
+	py = active_item_start_position.get_y();
 }
 
 
@@ -678,6 +692,7 @@ void SelectDragHelper<T>::start_dragging(const T* pointed_item)
 {
 	made_dragging_move = false;
 	active_item = pointed_item;
+	get_item_position(*active_item, active_item_start_position);
 
 	if (canvas_interface) {
 		action_group_drag = new synfigapp::Action::PassiveGrouper(canvas_interface->get_instance().get(), drag_action_name);

@@ -508,10 +508,6 @@ Widget_Curves::Widget_Curves():
 	channel_point_sd.set_zoom_enabled(true);
 	channel_point_sd.set_scroll_enabled(true);
 	channel_point_sd.set_canvas_interface(canvas_interface);
-	channel_point_sd.signal_drag_started().connect([&](){
-		const ChannelPoint *pointed_item = channel_point_sd.get_active_item();
-		active_point_initial_value = pointed_item->get_value(time_plot_data->dt);
-	});
 	channel_point_sd.signal_drag_canceled().connect([&]() {
 		overlapped_waypoints.clear();
 	});
@@ -1054,6 +1050,14 @@ Widget_Curves::ChannelPointSD::ChannelPointSD(Widget_Curves& widget)
 {
 }
 
+void Widget_Curves::ChannelPointSD::get_item_position(const Widget_Curves::ChannelPoint& item, Gdk::Point& position)
+{
+	const Time &time = item.time_point.get_time();
+	Real value = item.get_value(widget.time_plot_data->dt);
+	position.set_x(widget.time_plot_data->get_pixel_t_coord(time));
+	position.set_y(widget.time_plot_data->get_pixel_y_coord(value));
+}
+
 bool Widget_Curves::ChannelPointSD::find_item_at_position(int pos_x, int pos_y, Widget_Curves::ChannelPoint& cp)
 {
 	cp.invalidate();
@@ -1145,19 +1149,20 @@ void Widget_Curves::ChannelPointSD::delta_drag(int total_dx, int total_dy, bool 
 		dx = total_dx * widget.time_plot_data->k/widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 		dy = total_dy;
 	} else {
-		Real delta_value = get_active_item()->get_value(widget.time_plot_data->dt) - widget.active_point_initial_value;
-		int ddy = widget.time_plot_data->get_delta_pixel_from_delta_y_coord(delta_value);
-		dy = total_dy - ddy;
-
+		Gdk::Point current_pos;
+		get_item_position(*get_active_item(), current_pos);
 		int x0, y0;
-		get_initial_tracking_point(x0, y0);
+		get_active_item_initial_point(x0, y0);
+
+		int y1 = y0 + total_dy;
+		dy = y1 - current_pos.get_y();
+
 		int x1 = x0 + total_dx;
 		// snap to frames
 		float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 		Time next_t = widget.time_plot_data->get_t_from_pixel_coord(x1).round(fps);
-
-		Time delta_time = next_t - get_active_item()->time_point.get_time();
-		dx = widget.time_plot_data->get_delta_pixel_from_delta_t_coord(Real(delta_time));
+		x1 = widget.time_plot_data->get_pixel_t_coord(next_t);
+		dx = x1 - current_pos.get_x();
 	}
 
 	std::vector<ChannelPoint*> selection = get_selected_items();
