@@ -107,7 +107,7 @@ synfig::Target::set_canvas(etl::handle<Canvas> c)
 
 Target::Handle
 Target::create(const String &name, const String &filename,
-			   synfig::TargetParam params)
+			   const synfig::TargetParam& params)
 {
 	if(!book().count(name))
 		return handle<Target>();
