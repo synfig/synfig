@@ -575,9 +575,9 @@ Instance::save_all_layers()
 }
 
 bool
-Instance::backup()
+Instance::backup(bool save_even_if_unchanged)
 {
-	if (!get_action_count())
+	if (!get_action_count() && !save_even_if_unchanged)
 		return true;
 	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
 
