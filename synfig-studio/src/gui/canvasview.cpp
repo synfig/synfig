@@ -303,7 +303,14 @@ public:
 	amount_complete(int current, int total)
 	{
 		float temp = (float)current/(float)total;
-		if(temp != cur_progress && temp<1.0)
+		
+		if(temp >= 1.0)
+		{
+			view->statusbar->show();
+			view->progressbar->hide();
+		}
+
+		if(temp != cur_progress)
 		{
 			cur_progress = temp;
 			view->statusbar->hide();
@@ -313,8 +320,6 @@ public:
 			return true;
 		}
 		
-			view->statusbar->show();
-			view->progressbar->hide();
 		
 		
 		if(!view->is_playing())
