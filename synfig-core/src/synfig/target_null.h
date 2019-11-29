@@ -49,7 +49,7 @@ class Target_Null : public Target_Scanline
 
 public:
 
-	~Target_Null() { delete buffer; }
+	~Target_Null() { delete[] buffer; }
 
 	virtual bool start_frame(ProgressCallback */*cb*/=NULL) {
 	    if (buffer) delete[] buffer;

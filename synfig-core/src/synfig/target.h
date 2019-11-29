@@ -49,7 +49,7 @@
 //! To be used in the private part of the target class definition.
 #define SYNFIG_TARGET_MODULE_EXT \
 		public: static const char name__[], version__[], ext__[], cvs_id__[];\
-		static Target* create (const char *filename, synfig::TargetParam p);
+		static Target* create (const char *filename, const synfig::TargetParam& p);
 
 //! Sets the name of the target
 #define SYNFIG_TARGET_SET_NAME(class,x) const char class::name__[]=x
@@ -68,7 +68,7 @@
 //! \param p The parameters passed to the target (bit rate and vcodec)
 #define SYNFIG_TARGET_INIT(class)										\
 	synfig::Target* class::create (const char *filename,				\
-								   synfig::TargetParam p)				\
+								   const synfig::TargetParam& p)		\
 	{ return new class(filename, p); }
 
 /* === T Y P E D E F S ===================================================== */
@@ -134,7 +134,7 @@ public:
 	/*! As a pointer to the constructor, it represents a "factory" of targets.
 	**  Receives the output filename (including path) and the parameters of the target.
 	*/
-	typedef Target* (*Factory)(const char *filename, TargetParam p);
+	typedef Target* (*Factory)(const char *filename, const TargetParam& p);
 
 	struct BookEntry
 	{
@@ -232,7 +232,7 @@ public:
 
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
 	static Handle create(const String &type, const String &filename,
-						 synfig::TargetParam params);
+						 const synfig::TargetParam& params);
 	
 	//!	Sets the time for the next frame at \a time
 	/*! It modifies the curr_frame_ member which has to be set to zero when next_frame is called for the first time
