@@ -310,7 +310,7 @@ public:
 			view->progressbar->hide();
 		}
 
-		if(temp != cur_progress)
+		else if(fabs(temp-cur_progress) >= 0.01)
 		{
 			cur_progress = temp;
 			view->statusbar->hide();
