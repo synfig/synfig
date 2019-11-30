@@ -108,7 +108,6 @@ SYNFIGHEADERS = \
 	loadcanvas.h \
 	main.h \
 	module.h \
-	mutex.h \
 	node.h \
 	palette.h \
 	paramdesc.h \
@@ -163,7 +162,6 @@ SYNFIGSOURCES = \
 	loadcanvas.cpp \
 	main.cpp \
 	module.cpp \
-	mutex.cpp \
 	node.cpp \
 	palette.cpp \
 	paramdesc.cpp \

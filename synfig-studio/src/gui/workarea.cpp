@@ -49,7 +49,6 @@
 #include <synfig/context.h>
 #include <synfig/distance.h>
 #include <synfig/debug/debugsurface.h>
-#include <synfig/mutex.h>
 #include <synfig/rendering/renderer.h>
 #include <synfig/surface.h>
 #include <synfig/target_scanline.h>

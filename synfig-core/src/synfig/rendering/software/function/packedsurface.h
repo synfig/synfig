@@ -31,7 +31,6 @@
 
 #include <synfig/real.h>
 #include <synfig/color.h>
-#include <synfig/mutex.h>
 #include <synfig/surface.h>
 
 #include "../../primitive/contour.h"

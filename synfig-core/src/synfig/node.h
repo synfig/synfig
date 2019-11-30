@@ -38,7 +38,7 @@
 #include <ETL/handle>
 #include "interpolation.h"
 #include <mutex>
-#include "mutex.h"
+#include <glibmm/threads.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -156,8 +156,7 @@ private:
 	mutable int time_last_changed_;
 
 	//! \writeme
-	//! \see mutex.h
-	mutable RWLock rw_lock_;
+	mutable Glib::Threads::RWLock rw_lock_;
 
 	//! Variable used to remember that a signal_deleted has been thrown
 	bool deleting_;
@@ -249,7 +248,7 @@ public:
 	const time_set &get_times() const;
 
 	//! Writeme!
-	RWLock& get_rw_lock()const { return rw_lock_; }
+	Glib::Threads::RWLock& get_rw_lock()const { return rw_lock_; }
 
 	virtual String get_string()const = 0;
 protected:

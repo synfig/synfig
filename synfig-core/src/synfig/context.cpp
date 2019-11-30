@@ -107,7 +107,7 @@ IndependentContext::set_time(Time time, bool force)const
 
 	Layer::Handle layer(*context);
 	++context;
-	RWLock::WriterLock lock(layer->get_rw_lock());
+	Glib::Threads::RWLock::WriterLock lock(layer->get_rw_lock());
 	layer->set_time(context, time);
 }
 
@@ -125,7 +125,7 @@ IndependentContext::load_resources(Time time, bool /*force*/)const
 
 	Layer::Handle layer(*context);
 	++context;
-	//RWLock::WriterLock lock(layer->get_rw_lock());
+	//Glib::Threads::RWLock::WriterLock lock(layer->get_rw_lock());
 	layer->load_resources(context, time);
 }
 
@@ -146,7 +146,7 @@ IndependentContext::set_outline_grow(Real outline_grow)const
 	
 	Layer::Handle layer(*context);
 	++context;
-	RWLock::WriterLock lock(layer->get_rw_lock());
+	Glib::Threads::RWLock::WriterLock lock(layer->get_rw_lock());
 	layer->set_outline_grow(context, outline_grow);
 }
 
@@ -171,7 +171,7 @@ Context::get_color(const Point &pos)const
 	// If this layer isn't defined, return alpha
 	if((context)->empty()) return Color::alpha();
 
-	RWLock::ReaderLock lock((*context)->get_rw_lock());
+	Glib::Threads::RWLock::ReaderLock lock((*context)->get_rw_lock());
 
 	return (*context)->get_color(context.get_next(), pos);
 }
@@ -197,7 +197,7 @@ Context::get_cairocolor(const Point &pos)const
 	// If this layer isn't defined, return alpha
 	if((context)->empty()) return CairoColor::alpha();
 	
-	RWLock::ReaderLock lock((*context)->get_rw_lock());
+	Glib::Threads::RWLock::ReaderLock lock((*context)->get_rw_lock());
 	
 	return (*context)->get_cairocolor(context.get_next(), pos);
 }
@@ -364,7 +364,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	
 	try {
 		// lock the context for reading
-		RWLock::ReaderLock lock((*context)->get_rw_lock());
+		Glib::Threads::RWLock::ReaderLock lock((*context)->get_rw_lock());
 #ifdef SYNFIG_PROFILE_LAYERS
 		//go down one layer :P
 		depth++;
@@ -466,7 +466,7 @@ Context::accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &rendde
 	
 	try {
 		// lock the context for reading
-		RWLock::ReaderLock lock((*context)->get_rw_lock());
+		Glib::Threads::RWLock::ReaderLock lock((*context)->get_rw_lock());
 #ifdef SYNFIG_PROFILE_LAYERS
 		//go down one layer :P
 		depth++;

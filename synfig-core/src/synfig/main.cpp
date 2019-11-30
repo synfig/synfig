@@ -74,8 +74,6 @@
 
 #include "guid.h"
 
-#include "mutex.h"
-
 #include <giomm.h>
 
 #ifdef HAVE_SIGNAL_H
