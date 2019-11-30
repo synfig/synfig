@@ -35,7 +35,7 @@
 #include <synfig/rect.h>
 #include <synfig/matrix.h>
 #include <synfig/color.h>
-#include <synfig/mutex.h>
+#include <mutex>
 
 /* === M A C R O S ========================================================= */
 
@@ -102,11 +102,11 @@ private:
 	int first;
 	bool autocurve_begin, autocurve_end;
 	
-	mutable Mutex bounds_read_mutex;
+	mutable std::mutex bounds_read_mutex;
 	mutable bool bounds_calculated;
 	mutable Rect bounds;
 	
-	mutable Mutex intersector_read_mutex;
+	mutable std::mutex intersector_read_mutex;
 	mutable etl::handle<Intersector> intersector;
 
 	//! call this when 'chunks' or 'first' was changed

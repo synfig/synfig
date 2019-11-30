@@ -35,7 +35,7 @@
 
 #include <synfig/rect.h>
 #include <synfig/matrix.h>
-#include <synfig/mutex.h>
+#include <mutex>
 
 /* === M A C R O S ========================================================= */
 
@@ -78,7 +78,7 @@ public:
 	TriangleList triangles;
 
 private:
-	mutable Mutex resolution_transfrom_read_mutex;
+	mutable std::mutex resolution_transfrom_read_mutex;
 	mutable bool resolution_transfrom_calculated;
 	mutable Rect target_rectangle;
 	mutable Rect source_rectangle;

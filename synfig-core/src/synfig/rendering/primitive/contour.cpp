@@ -453,12 +453,12 @@ Contour::assign(const Contour &other)
 	// other contour is constant, so we need to lock mutexes for read the bounds and intersector
 	// see comments for get_bounds() and get_intersector() declarations
 	{
-		Mutex::Lock lock(other.bounds_read_mutex);
+		std::lock_guard<std::mutex> lock(other.bounds_read_mutex);
 		bounds_calculated = other.bounds_calculated;
 		bounds = other.bounds;
 	}
 	{
-		Mutex::Lock lock(other.intersector_read_mutex);
+		std::lock_guard<std::mutex> lock(other.intersector_read_mutex);
 		intersector = other.intersector;
 	}
 }
@@ -585,7 +585,7 @@ Contour::calc_bounds(const Matrix &transform_matrix) const
 Rect
 Contour::get_bounds() const
 {
-	Mutex::Lock lock(bounds_read_mutex);
+	std::lock_guard<std::mutex> lock(bounds_read_mutex);
 	if (!bounds_calculated) {
 		bounds = calc_bounds();
 		bounds_calculated = true;
@@ -621,10 +621,10 @@ Contour::crerate_intersector() const
 const Intersector&
 Contour::get_intersector() const
 {
-	Mutex::Lock lock(intersector_read_mutex);
+	std::lock_guard<std::mutex> lock(intersector_read_mutex);
 	if (!intersector) {
 		intersector = crerate_intersector();
-		Mutex::Lock lock(bounds_read_mutex);
+		std::lock_guard<std::mutex> lock(bounds_read_mutex);
 		if (!bounds_calculated) {
 			bounds = intersector->get_bounds();
 			bounds_calculated = true;

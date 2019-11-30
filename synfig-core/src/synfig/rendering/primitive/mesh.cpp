@@ -55,7 +55,7 @@ Mesh::assign(const Mesh &other) {
 	// other mesh is constant, so we need to lock mutexes for read the relolution data
 	// see comment for calculate_resolution_transfrom() declaration
 	{
-		Mutex::Lock lock(other.resolution_transfrom_read_mutex);
+		std::lock_guard<std::mutex> lock(other.resolution_transfrom_read_mutex);
 		resolution_transfrom_calculated = other.resolution_transfrom_calculated;
 		target_rectangle = other.target_rectangle;
 		source_rectangle = other.source_rectangle;
@@ -130,14 +130,14 @@ Mesh::calculate_resolution_transfrom_no_lock(bool force) const
 void
 Mesh::calculate_resolution_transfrom(bool force) const
 {
-	Mutex::Lock lock(resolution_transfrom_read_mutex);
+	std::lock_guard<std::mutex> lock(resolution_transfrom_read_mutex);
 	calculate_resolution_transfrom_no_lock(force);
 }
 
 Matrix2
 Mesh::get_resolution_transfrom() const
 {
-	Mutex::Lock lock(resolution_transfrom_read_mutex);
+	std::lock_guard<std::mutex> lock(resolution_transfrom_read_mutex);
 	calculate_resolution_transfrom_no_lock();
 	return resolution_transfrom;
 }
@@ -145,7 +145,7 @@ Mesh::get_resolution_transfrom() const
 Rect
 Mesh::get_target_rectangle() const
 {
-	Mutex::Lock lock(resolution_transfrom_read_mutex);
+	std::lock_guard<std::mutex> lock(resolution_transfrom_read_mutex);
 	calculate_resolution_transfrom_no_lock();
 	return target_rectangle;
 }
@@ -153,7 +153,7 @@ Mesh::get_target_rectangle() const
 Rect
 Mesh::get_source_rectangle() const
 {
-	Mutex::Lock lock(resolution_transfrom_read_mutex);
+	std::lock_guard<std::mutex> lock(resolution_transfrom_read_mutex);
 	calculate_resolution_transfrom_no_lock();
 	return source_rectangle;
 }

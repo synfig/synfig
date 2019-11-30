@@ -28,8 +28,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
-#include <synfig/mutex.h>
 #include <synfig/string.h>
+#include <mutex>
 
 /* === M A C R O S ========================================================= */
 
@@ -44,7 +44,7 @@ namespace debug {
 class Log
 {
 private:
-	static Mutex mutex;
+	static std::mutex mutex_;
 
 public:
 

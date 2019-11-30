@@ -65,96 +65,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-
-
-
-
-
-bool
-Mutex::is_locked()
-{
-	if(try_lock())
-	{
-		unlock();
-		return false;
-	}
-	return true;
-}
-
-void
-RecMutex::unlock_all()
-{
-	while(is_locked()) unlock();
-}
-
 #ifdef USING_PTHREADS
-Mutex::Mutex()
-{
-	pthread_mutex_t*const mtx_ptr(new pthread_mutex_t);
-
-	pthread_mutexattr_t attr;
-	pthread_mutexattr_init(&attr);
-
-	//#ifdef PTHREAD_PRIO_INHERIT
-	//pthread_mutexattr_setprioceiling(&attr,PTHREAD_PRIO_INHERIT);
-	//#endif
-
-	//#ifdef PTHREAD_MUTEX_RECURSIVE
-	//pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
-	//#endif
-
-	pthread_mutex_init(mtx_ptr,&attr);
-	pthread_mutexattr_destroy(&attr);
-
-	blackbox=mtx_ptr;
-}
-
-Mutex::~Mutex()
-{
-	pthread_mutex_t*const mtx_ptr(static_cast<pthread_mutex_t*>(blackbox));
-	pthread_mutex_destroy(mtx_ptr);
-	delete mtx_ptr;
-}
-
-void
-Mutex::lock()
-{
-	pthread_mutex_t*const mtx_ptr(static_cast<pthread_mutex_t*>(blackbox));
-	pthread_mutex_lock(mtx_ptr);
-}
-
-void
-Mutex::unlock()
-{
-	pthread_mutex_t*const mtx_ptr(static_cast<pthread_mutex_t*>(blackbox));
-	pthread_mutex_unlock(mtx_ptr);
-}
-
-bool
-Mutex::try_lock()
-{
-	pthread_mutex_t*const mtx_ptr(static_cast<pthread_mutex_t*>(blackbox));
-	return !(bool) pthread_mutex_trylock(mtx_ptr);
-}
-
-
-RecMutex::RecMutex()
-{
-	pthread_mutex_t*const mtx_ptr(static_cast<pthread_mutex_t*>(blackbox));
-	pthread_mutexattr_t attr;
-
-	// Backtrack and get rid of the non-recursive mutex
-	pthread_mutex_destroy(mtx_ptr);
-
-	pthread_mutexattr_init(&attr);
-
-	pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
-
-	pthread_mutex_init(mtx_ptr,&attr);
-	pthread_mutexattr_destroy(&attr);
-}
-
-
 
 RWLock::RWLock()
 {
@@ -225,45 +136,6 @@ RWLock::writer_trylock()
 #endif
 
 #ifdef USING_WIN32_THREADS
-Mutex::Mutex()
-{
-	HANDLE& mtx(*reinterpret_cast<HANDLE*>(&blackbox));
-	mtx=CreateMutex(NULL, FALSE, NULL);
-}
-
-Mutex::~Mutex()
-{
-	HANDLE mtx(reinterpret_cast<HANDLE>(blackbox));
-	CloseHandle(mtx);
-}
-
-void
-Mutex::lock()
-{
-	HANDLE mtx(reinterpret_cast<HANDLE>(blackbox));
-	WaitForSingleObject(mtx, INFINITE);
-}
-
-void
-Mutex::unlock()
-{
-	HANDLE mtx(reinterpret_cast<HANDLE>(blackbox));
-	ReleaseMutex(mtx);
-}
-
-bool
-Mutex::try_lock()
-{
-	HANDLE mtx(reinterpret_cast<HANDLE>(blackbox));
-	return WaitForSingleObject(mtx, 0)==WAIT_FAILED;
-}
-
-
-RecMutex::RecMutex()
-{
-	// Win32 mutexes are recursive by default.
-}
-
 
 RWLock::RWLock()
 {

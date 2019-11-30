@@ -257,7 +257,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 		surface_pos[1]/=br[1]-tl[1];
 		if(surface_pos[1]<=1.0 && surface_pos[1]>=0.0)
 		{
-			Mutex::Lock lock(mutex);
+			std::lock_guard<std::mutex> lock(mutex_);
 
 			if (trimmed)
 			{
@@ -364,7 +364,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *surface,int quality, c
 {
 	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
-	Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex_);
 
 	Point tl(param_tl.get(Point()));
 	Point br(param_br.get(Point()));
