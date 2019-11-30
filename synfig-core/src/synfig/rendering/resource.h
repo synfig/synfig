@@ -63,9 +63,6 @@ public:
 
 	private:
 		mutable int refcount;
-		#ifdef ETL_LOCK_REFCOUNTS
-		mutable std::mutex mtx;
-		#endif
 
 		friend class Resource;
 
