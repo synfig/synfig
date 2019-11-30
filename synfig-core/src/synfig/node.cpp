@@ -72,21 +72,21 @@ namespace {
 		typedef std::map<GUID, Node*> Map;
 	
 	private:
-		Mutex mutex;
+		std::mutex mutex_;
 		Map map;
 	
 	public:
 		Node* get(const GUID &guid) {
-			Mutex::Lock lock(mutex);
+			std::lock_guard<std::mutex> lock(mutex_);
 			Map::iterator i = map.find(guid);
-			return i == map.end() ? 0 : i->second;
+			return i == map.end() ? nullptr : i->second;
 		}
 
 		void add(const GUID &guid, Node *node) {
 			assert(guid);
 			assert(node);
 			
-			Mutex::Lock lock(mutex);
+			std::lock_guard<std::mutex> lock(mutex_);
 			assert(!map.count(guid));
 			map[guid] = node;
 		}
@@ -95,7 +95,7 @@ namespace {
 			assert(guid);
 			assert(node);
 			
-			Mutex::Lock lock(mutex);
+			std::lock_guard<std::mutex> lock(mutex_);
 			Map::iterator i = map.find(guid);
 			assert(i != map.end() && i->second == node);
 			map.erase(i);
@@ -110,7 +110,7 @@ namespace {
 			}
 			assert(oldguid);
 			
-			Mutex::Lock lock(mutex);
+			std::lock_guard<std::mutex> lock(mutex_);
 			Map::iterator i = map.find(oldguid);
 			assert(i != map.end() && i->second == node);
 			map.erase(i);
@@ -218,7 +218,7 @@ Node::child_changed(const Node *x)
 const synfig::GUID&
 Node::get_guid()const
 {
-	Mutex::Lock lock(guid_mutex_);
+	std::lock_guard<std::mutex> lock(guid_mutex_);
 	if(!guid_)
 	{
 		guid_.make_unique();
@@ -232,7 +232,7 @@ void
 Node::set_guid(const synfig::GUID& x)
 {
 	assert(x);
-	Mutex::Lock lock(guid_mutex_);
+	std::lock_guard<std::mutex> lock(guid_mutex_);
 	if (guid_ == x) return;
 	
 	if (!guid_) {

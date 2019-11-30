@@ -35,49 +35,6 @@
 
 namespace synfig {
 
-class RecMutex;
-
-class Mutex
-{
-	friend class RecMutex;
-
-protected:
-	void* blackbox;
-
-public:
-
-	class Lock
-	{
-		Mutex& mutex;
-	public:
-		Lock(Mutex& x):mutex(x) { mutex.lock(); }
-		~Lock() { mutex.unlock(); }
-	};
-
-	Mutex();
-	~Mutex();
-
-	void lock();
-	void unlock();
-	bool try_lock();
-	bool is_locked();
-
-private:
-	//! Non-copyable
-	Mutex(const Mutex&);
-
-	//! Non-assignable
-	void operator=(const Mutex&);
-};
-
-class RecMutex : public Mutex
-{
-public:
-	RecMutex();
-
-	void unlock_all();
-};
-
 class RWLock
 {
 	void* blackbox;

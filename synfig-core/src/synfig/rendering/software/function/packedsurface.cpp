@@ -89,7 +89,7 @@ PackedSurface::Reader::open(const PackedSurface &surface)
 
 	{
 		this->surface = &surface;
-		synfig::Mutex::Lock lock(surface.mutex);
+		std::lock_guard<std::mutex> lock(surface.mutex_);
 		surface.readers.insert(this);
 	}
 
@@ -120,7 +120,7 @@ PackedSurface::Reader::close()
 	if (is_opened())
 	{
 		{
-			synfig::Mutex::Lock lock(surface->mutex);
+			std::lock_guard<std::mutex> lock(surface->mutex_);
 			surface->readers.erase(this);
 		}
 		if (cache) delete[] cache;

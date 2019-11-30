@@ -129,7 +129,7 @@ public:
 	typedef etl::sampler<ColorAccumulator, float, ColorAccumulator, Reader::reader_cook> Sampler;
 
 private:
-	mutable synfig::Mutex mutex;
+	mutable std::mutex mutex_;
 	mutable std::set<Reader*> readers;
 
 	int width;

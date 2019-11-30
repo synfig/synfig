@@ -37,6 +37,7 @@
 #include "guid.h"
 #include <ETL/handle>
 #include "interpolation.h"
+#include <mutex>
 #include "mutex.h"
 
 /* === M A C R O S ========================================================= */
@@ -141,7 +142,7 @@ public:
 private:
 
 	//! \ The GUID of the node
-	mutable Mutex guid_mutex_;
+	mutable std::mutex guid_mutex_;
 	mutable GUID guid_;
 
 	//! cached time values for all the children

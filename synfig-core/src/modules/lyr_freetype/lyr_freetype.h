@@ -150,7 +150,7 @@ private:
 
 	synfig::Color color_func(const synfig::Point &x, int quality=10, synfig::ColorReal supersample=0)const;
 
-	mutable synfig::Mutex mutex;
+	mutable std::mutex mutex_;
 
 public:
 	Layer_Freetype();
