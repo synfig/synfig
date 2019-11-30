@@ -870,7 +870,6 @@ inline void reduceBorders(BorderList &borders, Contours &result,bool ambiguities
 
 void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons, VectorizerCoreGlobals &g)
 {
-	std::cout<<"Welcome to polygonize\n";
 	
 	BorderList *borders;
 	

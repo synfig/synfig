@@ -35,7 +35,7 @@
 #include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>
 #include <synfigapp/action_param.h>
-#include "onemoment.h"
+#include <synfig/debug/log.h>
 
 
 /* === U S I N G =========================================================== */
@@ -209,13 +209,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 
 	settings_box->add(*Outline_setting_grid);
 	//---------------------------------------------------------------------------------//
-	get_vbox()->pack_start(Separator, Gtk::PACK_SHRINK);
-	get_vbox()->pack_start(ProgressBar, Gtk::PACK_SHRINK, 5);
-	ProgressBar.set_margin_right(10);
-	ProgressBar.set_margin_left(10);
-	ProgressBar.set_text("Not started");
-	ProgressBar.set_show_text(true);
-
+	
 	Gtk::Button *convert_button(manage(new class Gtk::Button("_Convert",true)));
 	convert_button->set_tooltip_text("Perform vectorization");
 	convert_button->show();
@@ -261,18 +255,6 @@ VectorizerSettings::on_comboboxtext_mode_changed()
 	}
 }
 
-void
-VectorizerSettings::on_finished()
-{
-}
-
-void
-VectorizerSettings::set_progress(float value)
-{
-	float r = value/100.0;
-	ProgressBar.set_text( strprintf( "%.1f%%", value ));
-	ProgressBar.set_fraction(r);
-}
 
 void
 VectorizerSettings::savecurrconfig()
@@ -288,15 +270,13 @@ void
 VectorizerSettings::on_convert_pressed()
 {
 	hide();
-	OneMoment one_moment;
-	one_moment.show();
 	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
-	std::cout<<"Action Created \n";
+	synfig::debug::Log::info("","Action Created ");
 	assert(action);
 	if(!action)
 		return;
 	savecurrconfig();
-	std::cout<<"Action Asserted \n";
+	synfig::debug::Log::info("","Action Asserted ");
 	// Add an if else to pass param according to outline /centerline
 	action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
 	action->set_param("mode","centerline");
@@ -313,13 +293,11 @@ VectorizerSettings::on_convert_pressed()
 	
 	if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(reference_layer_))
 	{
-			std::cout<<"image inside group layer clicked\n";
 			canvas = layer_bitmap_->get_canvas()->parent();
 			action->set_param("reference_layer",reference_layer_);
 	}
 	else
 	{
-		std::cout<<"image switch layer clicked\n";
 		canvas = layer_bitmap_->get_canvas();
 	}
 
@@ -327,18 +305,17 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("canvas", canvas); 
 	action->set_param("canvas_interface", canvas_interface);
 
-	std::cout<<"Action param passed \n";
+	synfig::debug::Log::info("","Action param passed ");
 	if(!action->is_ready())
 	{
 		return;
 	}
-	std::cout<<"Action is ready \n";
+	synfig::debug::Log::info("","Action is ready ");
 	if(!instance->perform_action(action))
 	{
 		return;
 	}
-	std::cout<<"Convert Pressed....";
-	one_moment.hide();
+	synfig::debug::Log::info("","Convert Pressed....");
 }
 
 void

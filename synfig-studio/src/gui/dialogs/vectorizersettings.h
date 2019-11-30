@@ -82,7 +82,6 @@ class VectorizerSettings : public Gtk::Dialog
 	Gtk::Grid *Outline_setting_grid = manage(new Gtk::Grid());
 	Gtk::Grid *Centerline_setting_grid = manage(new Gtk::Grid());
 
-	Gtk::ProgressBar ProgressBar;
   	Gtk::Separator Separator;
 
 	Gtk::ComboBoxText comboboxtext_mode;
@@ -97,7 +96,6 @@ public:
 	VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
 			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
 	~VectorizerSettings();
-	void set_progress(float value);
 
 	// CenterlineConfiguration getCenterlineConfiguration() const;
   	// NewOutlineConfiguration getOutlineConfiguration(double weight) const;
@@ -124,7 +122,6 @@ private:
 	void on_convert_pressed();
 	void on_cancel_pressed();
 	void savecurrconfig();
-	void on_finished();
 }; // END of class VectorizerSettings
 
 }; // END of namespace studio

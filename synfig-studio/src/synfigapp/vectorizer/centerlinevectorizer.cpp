@@ -32,6 +32,7 @@
 #include "centerlinevectorizer.h"
 #include "polygonizerclasses.h"
 #include <synfig/layer.h>
+#include <synfig/debug/log.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -64,9 +65,12 @@ inline void deleteSkeletonList(SkeletonList *skeleton) {
 //************************
 
 // takes two arguments ( image layer handle, config )
-std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image, const CenterlineConfiguration &configuration, const Gamma &gamma)
+
+std::vector< etl::handle<synfig::Layer> > 
+VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image,const etl::handle<synfigapp::UIInterface> &ui_interface, 
+const CenterlineConfiguration &configuration,const Gamma &gamma)
  {
-  std::cout<<"Inside CenterlineVectorize\n";
+  synfig::debug::Log::info("","Inside CenterlineVectorize");
   VectorizerCoreGlobals globals;
   globals.currConfig = &configuration;
 
@@ -74,92 +78,59 @@ std::vector< etl::handle<synfig::Layer> > VectorizerCore::centerlineVectorize(et
   // Extracts a polygonal, minimal yet faithful representation of image contours
   Contours polygons;
   studio::polygonize(image, polygons, globals);
-//   for (int i = 0; i < polygons.size(); ++i) 
-//   {
-//     for (int j = 0; j < polygons[i].size(); ++j) 
-//     {
-//       for (int k = 0; k < polygons[i][j].size(); ++k)
-//       {
-//       std::cout<<"i= "<<i<<" j= "<<j<<" k="<<k<<" Data: ";
-//       std::cout<< "[(" << polygons[i][j][k].m_position[0]<<", "<<polygons[i][j][k].m_position[1]<<", "<<polygons[i][j][k].m_position[2] <<")("
-//       << polygons[i][j][k].m_direction[0]<<", "<<polygons[i][j][k].m_direction[1]<<", "<<polygons[i][j][k].m_direction[2] <<")("
-//       << polygons[i][j][k].m_AngularMomentum[0]<<", "<<polygons[i][j][k].m_AngularMomentum[1]<<", "<<polygons[i][j][k].m_AngularMomentum[2] <<")("
-//       << polygons[i][j][k].m_AuxiliaryMomentum1[0]<<", "<<polygons[i][j][k].m_AuxiliaryMomentum1[1]<<", "<<polygons[i][j][k].m_AuxiliaryMomentum1[2] <<")("
-//       << polygons[i][j][k].m_AuxiliaryMomentum2[0]<<", "<<polygons[i][j][k].m_AuxiliaryMomentum2[1]<<", "<<polygons[i][j][k].m_AuxiliaryMomentum2[2] <<")"
-//       <<" Concave: "<< polygons[i][j][k].m_concave << " Attr: "
-//       << polygons[i][j][k].m_attributes <<" Time: "<< polygons[i][j][k].m_updateTime
-//       <<" Ancestor"<< polygons[i][j][k].m_ancestor 
-//       <<" AncC: "<< polygons[i][j][k].m_ancestorContour << "]\n";
-//       }
-//     }
-// }
+  ui_interface->amount_complete(3,10);
+  
   // step 3
   // The process of skeletonization reduces all objects in an image to lines, 
   //  without changing the essential structure of the image.
-
-  // Most time-consuming part of vectorization, 'this' is passed to inform of
-  // partial progresses
-  SkeletonList *skeletons = studio::skeletonize(polygons, this, globals);
-
-  // for (SkeletonList::iterator currGraphPtr = skeletons->begin(); currGraphPtr != skeletons->end(); ++currGraphPtr) 
-  // {
-  //   std::cout<<"Skeleton data\n";
-  //   SkeletonGraph &currGraph   = **currGraphPtr;
-  //   std::cout<<"Link Count :"<<currGraph.getLinksCount()<<"Node Count :"<<currGraph.getNodesCount()<<"\n";
-  //   for (int i = 0; i < currGraph.getNodesCount(); ++i)
-  //   {
-
-  //     std::cout<<"m_content :"<<currGraph.getNode(i)->operator[](0) <<", "<<currGraph.getNode(i)->operator[](1)<<", "
-  //     <<currGraph.getNode(i)->operator[](2)<<"\n";
-
-  //   }
-  // }
-
+  SkeletonList *skeletons = studio::skeletonize(polygons,ui_interface, globals);
+  ui_interface->amount_complete(6,10);
+  /* To be uncommented if isCanceled is needed in future
   if (isCanceled()) 
   {
     // Clean and return 0 at cancel command
     deleteSkeletonList(skeletons);
     std::cout<<"CenterlineVectorize cancelled\n";
   }
-
+  */
   // step 4
   // The raw skeleton data obtained from StraightSkeletonizer
   // class need to be grouped in joints and sequences before proceeding further
   studio::organizeGraphs(skeletons, globals);
+  ui_interface->amount_complete(8,10);
 
-//   // junctionRecovery(polygons);   //Da' problemi per maxThickness<inf...
-//   // sarebbe da rendere compatibile
 
   std::vector< etl::handle<synfig::Layer> > sortibleResult;
-//   TVectorImageP result;
   
   // step 5
   // Take samples of image colors to associate each sequence to its corresponding
   // palette color
   //studio::calculateSequenceColors(image, globals);  // Extract stroke colors here
 
-//   // step 6
-//   // Converts each forward or single Sequence of the image in its corresponding Stroke.
+  // step 6
+  // Converts each forward or single Sequence of the image in its corresponding Stroke.
   studio::conversionToStrokes(sortibleResult, globals, image);
+  ui_interface->amount_complete(9,10);
+
   deleteSkeletonList(skeletons);
   return sortibleResult;
 }
 
-std::vector< etl::handle<synfig::Layer> > VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img, const VectorizerConfiguration &c, const Gamma &gamma)
+std::vector< etl::handle<synfig::Layer> > 
+VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img,const etl::handle<synfigapp::UIInterface> &ui_interface, const VectorizerConfiguration &c, const Gamma &gamma) 
 {
   std::vector< etl::handle<synfig::Layer> > result;
 
   if (c.m_outline)
   {
-    std::cout<<"newOutlineVectorize called/n";
-    // vi = newOutlineVectorize(img, static_cast<const NewOutlineConfiguration &>(c), plt);
     return result;
   }
   else 
   {
     Handle img2(img);
-    result = centerlineVectorize(img2, static_cast<const CenterlineConfiguration &>(c), gamma);
-    std::cout<<"After centerlineVectorize result.size(): "<<result.size()<<"\n";
+    result = centerlineVectorize(img2, ui_interface,static_cast<const CenterlineConfiguration &>(c), gamma);
+    ui_interface->amount_complete(10,10);
+
     return result;
     
   }

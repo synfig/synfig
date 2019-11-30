@@ -44,6 +44,7 @@
 #include <gtkmm/tooltip.h>
 #include <gtkmm/box.h>
 #include <gtkmm/statusbar.h>
+#include <gtkmm/progressbar.h>
 #include <gtkmm/button.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/treeview.h>
@@ -299,6 +300,8 @@ private:
 	Gtk::TreeRow children_valuenode_row;
 
 	Gtk::Statusbar *statusbar;
+	Gtk::ProgressBar *progressbar;
+
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
 	Gtk::ToggleToolButton *background_rendering_button;
