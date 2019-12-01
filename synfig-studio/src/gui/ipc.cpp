@@ -170,11 +170,8 @@ IPC::IPC()
 	cmd_dispatcher=new Glib::Dispatcher;
 	cmd_dispatcher->connect(sigc::ptr_fun(empty_cmd_queue));
 
-	new std::thread(
-		sigc::ptr_fun(pipe_listen_thread),
-		false
-	);
-
+	std::thread *t = new std::thread(pipe_listen_thread);
+	t->detach();
 #else
 
 	remove(fifo_path().c_str());
