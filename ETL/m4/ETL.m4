@@ -8,21 +8,10 @@
 AC_DEFUN([ETL_DEPS],
 [
 	AC_CHECK_LIB(user32, main)
-	AC_CHECK_LIB([kernel32], [CreateMutex])
-	AC_CHECK_LIB([pthread], [pthread_mutex_init])
 	
-	# This macro is obsolescent, as current systems have conforming header files. New programs need not use this macro. 
-	#AC_HEADER_STDC
-	
-	AC_CHECK_HEADERS(pthread.h)
-	AC_CHECK_HEADERS(sched.h)
 	AC_CHECK_HEADERS(sys/time.h)
 	AC_CHECK_HEADERS(unistd.h)
 	AC_CHECK_HEADERS(windows.h)
-	AC_CHECK_FUNCS([pthread_create])
-	AC_CHECK_FUNCS([pthread_rwlock_init])
-	AC_CHECK_FUNCS([sched_yield])
-	AC_CHECK_FUNCS([CreateThread])
 	AC_CHECK_FUNCS([QueryPerformanceCounter])
 	
 	AC_CHECK_FUNCS([gettimeofday])
