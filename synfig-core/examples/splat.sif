@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="400" height="300" xres="2952.755900" yres="2952.755900" view-box="-2.000000 1.500000 2.000000 -1.500000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+  <name>Splat!</name>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.750000</r>
+        <g>0.750000</g>
+        <b>0.750000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="checker_board" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.500000</r>
+        <g>0.500000</g>
+        <b>0.500000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.1250000000</x>
+        <y>0.1250000000</y>
+      </vector>
+    </param>
+    <param name="size">
+      <vector>
+        <x>0.2500000000</x>
+        <y>0.2500000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="mandelbrot" active="true" version="0.2">
+    <param name="iterations">
+      <integer value="6"/>
+    </param>
+    <param name="bailout">
+      <real value="2.0000000000"/>
+    </param>
+    <param name="broken">
+      <bool value="true"/>
+    </param>
+    <param name="distort_inside">
+      <bool value="true"/>
+    </param>
+    <param name="shade_inside">
+      <bool value="true"/>
+    </param>
+    <param name="solid_inside">
+      <bool value="false"/>
+    </param>
+    <param name="invert_inside">
+      <bool value="false"/>
+    </param>
+    <param name="gradient_inside">
+      <gradient>
+        <color pos="0.000000">
+          <r>0.000000</r>
+          <g>0.000000</g>
+          <b>0.000000</b>
+          <a>0.000000</a>
+        </color>
+        <color pos="1.000000">
+          <r>0.000000</r>
+          <g>0.000000</g>
+          <b>0.000000</b>
+          <a>1.000000</a>
+        </color>
+      </gradient>
+    </param>
+    <param name="gradient_offset_inside">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="gradient_loop_inside">
+      <bool value="false"/>
+    </param>
+    <param name="distort_outside">
+      <bool value="true"/>
+    </param>
+    <param name="shade_outside">
+      <bool value="true"/>
+    </param>
+    <param name="solid_outside">
+      <bool value="true"/>
+    </param>
+    <param name="invert_outside">
+      <bool value="false"/>
+    </param>
+    <param name="gradient_outside">
+      <gradient>
+        <color pos="0.000000">
+          <r>0.000000</r>
+          <g>0.000000</g>
+          <b>0.000000</b>
+          <a>0.000000</a>
+        </color>
+        <color pos="1.000000">
+          <r>0.000000</r>
+          <g>0.000000</g>
+          <b>0.000000</b>
+          <a>1.000000</a>
+        </color>
+      </gradient>
+    </param>
+    <param name="smooth_outside">
+      <bool value="true"/>
+    </param>
+    <param name="gradient_offset_outside">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="gradient_scale_outside">
+      <real value="1.0000000000"/>
+    </param>
+  </layer>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="12"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="clamp" active="true" version="0.2">
+    <param name="invert_negative">
+      <bool value="false"/>
+    </param>
+    <param name="clamp_ceiling">
+      <bool value="false"/>
+    </param>
+    <param name="ceiling">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="floor">
+      <real value="0.0000000000"/>
+    </param>
+  </layer>
+  <layer type="translate" active="true" version="0.1">
+    <param name="origin">
+      <vector>
+        <x>0.5699999928</x>
+        <y>-0.3700000048</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="zoom" active="true" version="0.1">
+    <param name="amount">
+      <real value="0.2000000030"/>
+    </param>
+    <param name="center">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="6"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.347316</r>
+        <g>0.706518</g>
+        <b>0.942210</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="colorcorrect" active="true" version="0.1">
+    <param name="hue_adjust">
+      <angle value="1.000000"/>
+    </param>
+    <param name="brightness">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="contrast">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="exposure">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="gamma">
+      <real value="1.0000000000"/>
+    </param>
+  </layer>
+</canvas>

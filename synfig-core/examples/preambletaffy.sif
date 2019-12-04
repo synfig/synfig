@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="480" height="270" xres="2834.645752" yres="2834.645752" view-box="-4.000000 2.250000 4.000000 -2.250000" antialias="1" fps="30.000" begin-time="0f" end-time="5s 0f">
+  <name>Untitled4</name>
+  <keyframe time="0f"/>
+  <keyframe time="1s 0f"/>
+  <keyframe time="2s 0f"/>
+  <keyframe time="3s 0f"/>
+  <keyframe time="4s 0f"/>
+  <keyframe time="5s 0f"/>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>1.000000</g>
+        <b>1.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="text" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="text">
+      <string>We, the people of the United States,
+in order to form a more perfect union,
+establish justice, ensure domestic
+tranquility, provide for the common defence,
+promote the general welfare, and ensure
+the blessings of liberty for ourselves and our
+posterity, do ordain and establish this
+constitution for the United States of America.</string>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="family">
+      <string>Comic</string>
+    </param>
+    <param name="style">
+      <integer value="0"/>
+    </param>
+    <param name="weight">
+      <integer value="400"/>
+    </param>
+    <param name="compress">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="vcompress">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="size">
+      <vector>
+        <x>0.3000000000</x>
+        <y>0.3000000000</y>
+      </vector>
+    </param>
+    <param name="orient">
+      <vector>
+        <x>0.5000000000</x>
+        <y>0.5000000000</y>
+      </vector>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="use_kerning">
+      <bool value="true"/>
+    </param>
+    <param name="grid_fit">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="twirl" active="true" version="0.1">
+    <param name="center">
+      <animated type="vector">
+        <waypoint time="0f">
+          <vector>
+            <x>-3.9000000000</x>
+            <y>0.0833333333</y>
+          </vector>
+        </waypoint>
+        <waypoint time="1s 0f">
+          <vector>
+            <x>-1.8500000000</x>
+            <y>0.0833333333</y>
+          </vector>
+        </waypoint>
+        <waypoint time="2s 0f">
+          <vector>
+            <x>-0.0666666667</x>
+            <y>-1.0666666667</y>
+          </vector>
+        </waypoint>
+        <waypoint time="3s 0f">
+          <vector>
+            <x>1.1000000000</x>
+            <y>0.7166666667</y>
+          </vector>
+        </waypoint>
+        <waypoint time="4s 0f">
+          <vector>
+            <x>3.4333333333</x>
+            <y>-0.2666666667</y>
+          </vector>
+        </waypoint>
+        <waypoint time="5s 0f">
+          <vector>
+            <x>0.2666666667</x>
+            <y>-0.0333333333</y>
+          </vector>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="radius">
+      <animated type="real">
+        <waypoint time="1s 0f">
+          <real value="2.3587308263"/>
+        </waypoint>
+        <waypoint time="2s 0f">
+          <real value="2.6256090926"/>
+        </waypoint>
+        <waypoint time="3s 0f">
+          <real value="1.6796657234"/>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="rotations">
+      <animated type="angle">
+        <waypoint time="0f">
+          <angle value="-0.231630"/>
+        </waypoint>
+        <waypoint time="1s 0f">
+          <angle value="-21.126316"/>
+        </waypoint>
+        <waypoint time="2s 0f">
+          <angle value="-29.686604"/>
+        </waypoint>
+        <waypoint time="3s 0f">
+          <angle value="-16.998665"/>
+        </waypoint>
+        <waypoint time="4s 0f">
+          <angle value="-7.921950"/>
+        </waypoint>
+        <waypoint time="5s 0f">
+          <angle value="-0.255475"/>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="distort_inside">
+      <bool value="true"/>
+    </param>
+    <param name="distort_outside">
+      <bool value="true"/>
+    </param>
+  </layer>
+</canvas>

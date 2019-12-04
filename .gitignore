@@ -203,8 +203,8 @@ Makefile
 
 # except for the ones we know about - core examples, core examples/walk and studio images:
 
-!synfig-core/examples/*.sifz
-!synfig-core/examples/walk/*.sifz
+!synfig-core/examples/*.sif
+!synfig-core/examples/walk/*.sif
 
 !synfig-studio/images/*.sif
 

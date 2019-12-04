@@ -65,7 +65,7 @@
  *
  *      the 'straight' blend method didn't used to work properly.  it
  *      didn't work at all on transparent pixels in layers other than
- *      the PasteCanvas layer.  for example, the examples/japan.sifz
+ *      the PasteCanvas layer.  for example, the examples/japan.sif
  *      file has a red circle (straight, amount=1.0) on top of a
  *      striped conical gradient.  if 'straight' was working, the
  *      conical gradient would be entirely obscured by the circle
@@ -78,7 +78,7 @@
  *      non-pastecanvas layers with 'composite', unless they're
  *      completely transparent, in which case it will replace them
  *      with an  'alpha over' blend instead.  Images like
- *      examples/logo.sifz use transparent straight blends to do
+ *      examples/logo.sif use transparent straight blends to do
  *      masking, which no longer works now that 'straight' blending is
  *      fixed.
  *

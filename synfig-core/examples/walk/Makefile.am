@@ -7,4 +7,4 @@ EXTRA_DIST = \
 	frame_02.jpg \
 	frame_03.jpg \
 	frame_04.jpg \
-	walk.sifz
+	walk.sif
