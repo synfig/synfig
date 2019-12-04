@@ -1363,7 +1363,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				optimize_layers(time, paste_sub_canvas->get_context(params),sub_canvas,motion_blurred);
 			}
 
-// \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
+// \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sif quite severely
 // #define SYNFIG_OPTIMIZE_PASTE_CANVAS
 #ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
 			Canvas::iterator sub_iter;

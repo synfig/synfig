@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="400" height="300" xres="2952.755900" yres="2952.755900" view-box="-2.000000 1.500000 2.000000 -1.500000" antialias="1" fps="30.000" begin-time="0f" end-time="0f">
+  <name>Untitled2</name>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>1.000000</g>
+        <b>1.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="conical_gradient" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="gradient">
+      <stripes type="gradient">
+        <color1>
+          <color>
+            <r>1.000000</r>
+            <g>0.000000</g>
+            <b>0.000000</b>
+            <a>1.000000</a>
+          </color>
+        </color1>
+        <color2>
+          <color>
+            <r>1.000000</r>
+            <g>1.000000</g>
+            <b>1.000000</b>
+            <a>1.000000</a>
+          </color>
+        </color2>
+        <stripes>
+          <integer value="16"/>
+        </stripes>
+      </stripes>
+    </param>
+    <param name="center">
+      <vector>
+        <x>-0.4000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="angle">
+      <angle value="0.000000"/>
+    </param>
+    <param name="symmetric">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.7500000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-0.4000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1"/>
+    </param>
+  </layer>
+</canvas>
