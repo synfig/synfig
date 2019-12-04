@@ -3015,6 +3015,25 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					// the layer linked it
 					if(!layer->set_param(param_name,data))
 					{
+						// TODO(ice0): Add normal version comparision function (check glib)
+						// TODO(ice0): Remove stubs after updating image files (.sif)
+						if (param_name == "loopyness" && layer->get_name() == "outline" && (layer->get_version() == "0.3")) {
+							continue;
+						}
+
+						if (param_name == "falloff" && layer->get_name() == "circle" && (layer->get_version() == "0.2")) {
+							continue;
+						}
+
+						if (param_name == "fast" && layer->get_name() == "advanced_outline" && (layer->get_version() == "0.3")) {
+							continue;
+						}
+
+						if (param_name == "enable_transformation" && layer->get_name() == "group" && (layer->get_version() == "0.3")) {
+							continue;
+						}
+
+
 						warning((*iter),strprintf(_("Layer '%s' rejected value for parameter '%s'"),
 												  element->get_attribute("type")->get_value().c_str(),
 												  param_name.c_str()));

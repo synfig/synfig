@@ -64,7 +64,7 @@ SYNFIG_LAYER_INIT(Layer_Group);
 SYNFIG_LAYER_SET_NAME(Layer_Group,"group");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Group,N_("Group"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Group,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Layer_Group,"0.2");
+SYNFIG_LAYER_SET_VERSION(Layer_Group,"0.3");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Group,"$Id$");
 
 /* === M E T H O D S ======================================================= */
