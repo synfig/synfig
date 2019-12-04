@@ -92,6 +92,8 @@ using namespace studio;
 static std::mutex cmd_mutex;
 static std::list<synfig::String> cmd_queue;
 static Glib::Dispatcher* cmd_dispatcher;
+static bool thread_should_quit = false;
+std::thread *cmd_thread = nullptr;
 static void
 pipe_listen_thread()
 {
@@ -170,8 +172,9 @@ IPC::IPC()
 	cmd_dispatcher=new Glib::Dispatcher;
 	cmd_dispatcher->connect(sigc::ptr_fun(empty_cmd_queue));
 
-	std::thread *t = new std::thread(pipe_listen_thread);
-	t->detach();
+	thread_should_quit = false;
+
+	cmd_thread = new std::thread(pipe_listen_thread);
 #else
 
 	remove(fifo_path().c_str());
@@ -211,7 +214,13 @@ IPC::~IPC()
 	//	fclose(file.get());
 
 	remove(fifo_path().c_str());
-
+#ifdef _WIN32
+	thread_should_quit = true;
+	if (cmd_thread->joinable())
+		cmd_thread->join();
+	delete cmd_thread;
+	delete cmd_dispatcher;
+#endif
 	//if(fd>=0)
 	//	close(fd);
 }
