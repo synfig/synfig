@@ -223,7 +223,7 @@ Plant::sync()const
 	int splits=param_splits.get(int());
 	bool use_width=param_use_width.get(bool());
 	
-	std::lock_guard<std::mutex> lock(mutex_);
+	std::lock_guard<std::mutex> lock(mutex);
 	if (!needs_sync_) return;
 	time_t start_time; time(&start_time);
 	particle_list.clear();

@@ -481,7 +481,7 @@ Layer_Freetype::new_face(const String &newfont)
 bool
 Layer_Freetype::set_param(const String & param, const ValueBase &value)
 {
-	std::lock_guard<std::mutex> lock(mutex_);
+	std::lock_guard<std::mutex> lock(mutex);
 /*
 	if(param=="font" && value.same_type_as(font))
 	{

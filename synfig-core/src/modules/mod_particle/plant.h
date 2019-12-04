@@ -46,7 +46,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 class Plant : public Layer_Composite, public Layer_NoDeform
@@ -104,7 +103,7 @@ private:
 	Real mass;
 
 	mutable bool needs_sync_;
-	mutable mutex mutex_;
+	mutable std::mutex mutex;
 
 	void branch(int n, int depth,float t, float stunt_growth, Point position,Vector velocity)const;
 	void sync()const;
