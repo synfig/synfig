@@ -72,12 +72,12 @@ namespace {
 		typedef std::map<GUID, Node*> Map;
 	
 	private:
-		std::mutex mutex_;
+		std::mutex mutex;
 		Map map;
 	
 	public:
 		Node* get(const GUID &guid) {
-			std::lock_guard<std::mutex> lock(mutex_);
+			std::lock_guard<std::mutex> lock(mutex);
 			Map::iterator i = map.find(guid);
 			return i == map.end() ? nullptr : i->second;
 		}
@@ -86,7 +86,7 @@ namespace {
 			assert(guid);
 			assert(node);
 			
-			std::lock_guard<std::mutex> lock(mutex_);
+			std::lock_guard<std::mutex> lock(mutex);
 			assert(!map.count(guid));
 			map[guid] = node;
 		}
@@ -95,7 +95,7 @@ namespace {
 			assert(guid);
 			assert(node);
 			
-			std::lock_guard<std::mutex> lock(mutex_);
+			std::lock_guard<std::mutex> lock(mutex);
 			Map::iterator i = map.find(guid);
 			assert(i != map.end() && i->second == node);
 			map.erase(i);
@@ -110,7 +110,7 @@ namespace {
 			}
 			assert(oldguid);
 			
-			std::lock_guard<std::mutex> lock(mutex_);
+			std::lock_guard<std::mutex> lock(mutex);
 			Map::iterator i = map.find(oldguid);
 			assert(i != map.end() && i->second == node);
 			map.erase(i);

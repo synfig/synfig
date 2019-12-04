@@ -86,7 +86,6 @@
 #define PATH_MAX 4096
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -101,13 +100,13 @@ Main *Main::instance = NULL;
 
 class GeneralIOMutexHolder {
 private:
-	mutex mutex_;
+	std::mutex mutex;
 	bool initialized;
 public:
 	GeneralIOMutexHolder(): initialized(true) { }
 	~GeneralIOMutexHolder() { initialized = false; }
-	void lock() { if (initialized) mutex_.lock(); }
-	void unlock() { if (initialized) mutex_.unlock(); }
+	void lock() { if (initialized) mutex.lock(); }
+	void unlock() { if (initialized) mutex.unlock(); }
 };
 
 GeneralIOMutexHolder general_io_mutex;
@@ -447,7 +446,7 @@ void
 synfig::error(const String &str)
 {
 	general_io_mutex.lock();
-	cerr<<"\033[31m"<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("error")<<": "<<str.c_str()<<"\033[0m"<<endl;
+	std::cerr<<"\033[31m"<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("error")<<": "<<str.c_str()<<"\033[0m"<<std::endl;
 	general_io_mutex.unlock();
 }
 
@@ -464,7 +463,7 @@ void
 synfig::warning(const String &str)
 {
 	general_io_mutex.lock();
-	cerr<<"\033[33m"<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("warning")<<": "<<str.c_str()<<"\033[0m"<<endl;
+	std::cerr<<"\033[33m"<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("warning")<<": "<<str.c_str()<<"\033[0m"<<std::endl;
 	general_io_mutex.unlock();
 }
 
@@ -484,7 +483,7 @@ synfig::info(const String &str)
 	if (synfig::synfig_quiet_mode) return;
 
 	general_io_mutex.lock();
-	cout<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<endl;
+	std::cout<<"synfig("<<getpid()<<")"<<current_time().c_str()<<_("info")<<": "<<str.c_str()<<std::endl;
 	general_io_mutex.unlock();
 }
 

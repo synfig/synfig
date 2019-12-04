@@ -44,7 +44,7 @@ namespace debug {
 class Log
 {
 private:
-	static std::mutex mutex_;
+	static std::mutex mutex;
 
 public:
 

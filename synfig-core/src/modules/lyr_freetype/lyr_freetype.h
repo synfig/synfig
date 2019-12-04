@@ -70,9 +70,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
-
 
 struct Glyph
 {
@@ -150,7 +147,7 @@ private:
 
 	synfig::Color color_func(const synfig::Point &x, int quality=10, synfig::ColorReal supersample=0)const;
 
-	mutable std::mutex mutex_;
+	mutable std::mutex mutex;
 
 public:
 	Layer_Freetype();
