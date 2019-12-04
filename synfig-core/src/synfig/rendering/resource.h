@@ -62,7 +62,7 @@ public:
 		typedef etl::handle<Storage> Handle;
 
 	private:
-		mutable int refcount;
+		mutable std::atomic<int> refcount;
 
 		friend class Resource;
 
