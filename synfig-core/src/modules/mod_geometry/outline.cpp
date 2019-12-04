@@ -66,7 +66,7 @@ SYNFIG_LAYER_INIT(Outline);
 SYNFIG_LAYER_SET_NAME(Outline,"outline");
 SYNFIG_LAYER_SET_LOCAL_NAME(Outline,N_("Outline"));
 SYNFIG_LAYER_SET_CATEGORY(Outline,N_("Geometry"));
-SYNFIG_LAYER_SET_VERSION(Outline,"0.2");
+SYNFIG_LAYER_SET_VERSION(Outline,"0.3");
 SYNFIG_LAYER_SET_CVS_ID(Outline,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
