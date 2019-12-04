@@ -74,8 +74,6 @@
 
 #include "guid.h"
 
-#include "mutex.h"
-
 #include <giomm.h>
 
 #ifdef HAVE_SIGNAL_H
@@ -103,13 +101,13 @@ Main *Main::instance = NULL;
 
 class GeneralIOMutexHolder {
 private:
-	Mutex mutex;
+	mutex mutex_;
 	bool initialized;
 public:
 	GeneralIOMutexHolder(): initialized(true) { }
 	~GeneralIOMutexHolder() { initialized = false; }
-	void lock() { if (initialized) mutex.lock(); }
-	void unlock() { if (initialized) mutex.unlock(); }
+	void lock() { if (initialized) mutex_.lock(); }
+	void unlock() { if (initialized) mutex_.unlock(); }
 };
 
 GeneralIOMutexHolder general_io_mutex;

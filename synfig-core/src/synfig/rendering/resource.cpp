@@ -46,35 +46,25 @@ using namespace rendering;
 
 Resource::Id Resource::last_id = 0;
 
-Resource::Storage::Storage(): refcount() { }
+Resource::Storage::Storage(): refcount(0) { }
 
 Resource::Storage::~Storage() { }
 
 void
 Resource::Storage::ref() const
 {
-	#ifdef ETL_LOCK_REFCOUNTS
-	etl::mutex::lock lock(mtx);
-	#endif
 	++refcount;
 }
 
 bool
 Resource::Storage::unref_inactive() const
 {
-	#ifdef ETL_LOCK_REFCOUNTS
-	etl::mutex::lock lock(mtx);
-	#endif
 	return refcount == 0 || --refcount != (int)resources.size();
 }
 
 bool
 Resource::Storage::unref() const
 {
-	#ifdef ETL_LOCK_REFCOUNTS
-	etl::mutex::lock lock(mtx);
-	#endif
-
 	if (refcount == 0) return true;
 	if (--refcount == (int)resources.size())
 	{
@@ -91,9 +81,6 @@ Resource::Storage::unref() const
 int
 Resource::Storage::count() const
 {
-	#ifdef ETL_LOCK_REFCOUNTS
-	etl::mutex::lock lock(mtx);
-	#endif
 	return refcount;
 }
 

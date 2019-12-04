@@ -60,7 +60,7 @@ public:
 	ValueBase param_c;
 	ValueBase param_gamma_adjust;
 
-	mutable synfig::Mutex mutex;
+	mutable std::mutex mutex_;
 	mutable rendering::software::PackedSurface::Reader reader;
 	mutable rendering::SurfaceResource::Handle rendering_surface;
 	mutable bool trimmed;

@@ -42,7 +42,7 @@ class Layer_Duplicate : public synfig::Layer_CompositeFork
 
 private:
 	mutable ValueBase param_index;
-	mutable synfig::Mutex mutex;
+	mutable std::mutex mutex_;
 
 public:
 

@@ -154,7 +154,7 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 	int w = wrapper.surface->get_w();
 	int h = wrapper.surface->get_h();
 	{
-		Mutex::Lock lock(layer->mutex);
+		std::lock_guard<std::mutex> lock(layer->mutex_);
 		brush_.stroke_to(&wrapper, point.x, point.y, point.pressure, 0.f, 0.f, point.dtime);
 
 		// fix state in case of surface resized
@@ -219,7 +219,7 @@ Action::LayerPaint::PaintStroke::undo()
 	assert(prepared);
 	if (!applied) return;
 	{
-		Mutex::Lock lock(layer->mutex);
+		std::lock_guard<std::mutex> lock(layer->mutex_);
 		Surface *surface = new Surface();
 		paint_prev(*surface);
 		layer->rendering_surface = new rendering::SurfaceResource(
@@ -237,7 +237,7 @@ Action::LayerPaint::PaintStroke::apply()
 	assert(prepared);
 	if (applied) return;
 	{
-		Mutex::Lock lock(layer->mutex);
+		std::lock_guard<std::mutex> lock(layer->mutex_);
 		Surface *surface = new Surface();
 		paint_self(*surface);
 		layer->rendering_surface = new rendering::SurfaceResource(

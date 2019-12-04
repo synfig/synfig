@@ -31,7 +31,6 @@
 
 #include <synfig/real.h>
 #include <synfig/color.h>
-#include <synfig/mutex.h>
 #include <synfig/surface.h>
 
 #include "../../primitive/contour.h"
@@ -129,7 +128,7 @@ public:
 	typedef etl::sampler<ColorAccumulator, float, ColorAccumulator, Reader::reader_cook> Sampler;
 
 private:
-	mutable synfig::Mutex mutex;
+	mutable std::mutex mutex_;
 	mutable std::set<Reader*> readers;
 
 	int width;

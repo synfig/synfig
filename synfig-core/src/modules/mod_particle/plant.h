@@ -104,7 +104,7 @@ private:
 	Real mass;
 
 	mutable bool needs_sync_;
-	mutable Mutex mutex;
+	mutable mutex mutex_;
 
 	void branch(int n, int depth,float t, float stunt_growth, Point position,Vector velocity)const;
 	void sync()const;

@@ -481,7 +481,7 @@ Layer_Freetype::new_face(const String &newfont)
 bool
 Layer_Freetype::set_param(const String & param, const ValueBase &value)
 {
-	Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex_);
 /*
 	if(param=="font" && value.same_type_as(font))
 	{
@@ -715,7 +715,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	synfig::Point origin=param_origin.get(Point());
 	synfig::Vector orient=param_orient.get(Vector());
 
-	static synfig::RecMutex freetype_mutex;
+	static std::recursive_mutex freetype_mutex;
 
 	if(needs_sync_)
 		const_cast<Layer_Freetype*>(this)->sync();
@@ -762,7 +762,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		return true;
 	}
 
-	synfig::RecMutex::Lock lock(freetype_mutex);
+	std::lock_guard<std::recursive_mutex> lock(freetype_mutex);
 
 #define CHAR_RESOLUTION		(64)
 	error = FT_Set_Char_Size(

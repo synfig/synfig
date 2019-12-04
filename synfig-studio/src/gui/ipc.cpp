@@ -61,12 +61,11 @@
 
 #include "docks/dock_toolbox.h"
 #include <glibmm/dispatcher.h>
-#include <synfig/mutex.h>
+#include <mutex>
+#include <thread>
 #include <synfig/string.h>
 #include <synfigapp/main.h>
-#include <glibmm/thread.h>
 #include <glibmm/miscutils.h>
-
 #ifdef _WIN32
 #include <windows.h>
 #define BUFSIZE   128
@@ -90,9 +89,11 @@ using namespace studio;
 
 #ifdef _WIN32
 #define WIN32_PIPE_PATH "\\\\.\\pipe\\SynfigStudio.Cmd"
-static synfig::Mutex cmd_mutex;
+static std::mutex cmd_mutex;
 static std::list<synfig::String> cmd_queue;
 static Glib::Dispatcher* cmd_dispatcher;
+static bool thread_should_quit = false;
+std::thread *cmd_thread = nullptr;
 static void
 pipe_listen_thread()
 {
@@ -120,7 +121,7 @@ pipe_listen_thread()
 		DWORD read_bytes;
 		bool success;
 
-		Glib::Thread::yield();
+		std::this_thread::yield();
 
 		if(connected)
 		do {
@@ -138,7 +139,7 @@ pipe_listen_thread()
 				if(success && read_bytes==1 && c!='\n')
 					data+=c;
 			}while(c!='\n');
-			synfig::Mutex::Lock lock(cmd_mutex);
+			std::lock_guard<std::mutex> lock(cmd_mutex);
 			cmd_queue.push_back(data);
 			cmd_dispatcher->emit();
 		} while(success && read_bytes);
@@ -150,7 +151,7 @@ pipe_listen_thread()
 static void
 empty_cmd_queue()
 {
-	synfig::Mutex::Lock lock(cmd_mutex);
+	std::lock_guard<std::mutex> lock(cmd_mutex);
 	while(!cmd_queue.empty())
 	{
 		IPC::process_command(cmd_queue.front());
@@ -171,11 +172,9 @@ IPC::IPC()
 	cmd_dispatcher=new Glib::Dispatcher;
 	cmd_dispatcher->connect(sigc::ptr_fun(empty_cmd_queue));
 
-	Glib::Thread::create(
-		sigc::ptr_fun(pipe_listen_thread),
-		false
-	);
+	thread_should_quit = false;
 
+	cmd_thread = new std::thread(pipe_listen_thread);
 #else
 
 	remove(fifo_path().c_str());
@@ -215,7 +214,13 @@ IPC::~IPC()
 	//	fclose(file.get());
 
 	remove(fifo_path().c_str());
-
+#ifdef _WIN32
+	thread_should_quit = true;
+	if (cmd_thread->joinable())
+		cmd_thread->join();
+	delete cmd_thread;
+	delete cmd_dispatcher;
+#endif
 	//if(fd>=0)
 	//	close(fd);
 }

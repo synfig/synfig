@@ -30,7 +30,7 @@
 #include <vector>
 
 #include <ETL/handle>
-#include <ETL/mutex>
+#include <mutex>
 
 /* === M A C R O S ========================================================= */
 
@@ -62,10 +62,7 @@ public:
 		typedef etl::handle<Storage> Handle;
 
 	private:
-		mutable int refcount;
-		#ifdef ETL_LOCK_REFCOUNTS
-		mutable etl::mutex mtx;
-		#endif
+		mutable std::atomic<int> refcount;
 
 		friend class Resource;
 
@@ -86,7 +83,7 @@ public:
 private:
 	const Id id;
 	mutable Storage::Handle alternatives;
-	mutable etl::mutex get_alternative_mtx;
+	mutable std::mutex get_alternative_mtx;
 
 public:
 	Resource(): id(++last_id) { }
@@ -112,7 +109,7 @@ public:
 	template<typename T>
 	etl::handle<T> get_alternative() const
 	{
-		etl::mutex::lock lock(get_alternative_mtx);
+		std::lock_guard<std::mutex> lock(get_alternative_mtx);
 		etl::handle<T> alternative = find_alternative<T>();
 		if (!alternative)
 		{

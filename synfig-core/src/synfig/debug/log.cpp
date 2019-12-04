@@ -53,11 +53,11 @@ using namespace debug;
 
 /* === M E T H O D S ======================================================= */
 
-Mutex Log::mutex;
+std::mutex Log::mutex_;
 
 void Log::append_line_to_file(const String &logfile, const String &str)
 {
-	Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex_);
 	std::ofstream f(logfile.c_str(), std::ios_base::app);
 	f << str << std::endl;
 }
