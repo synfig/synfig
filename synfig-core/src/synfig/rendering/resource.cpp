@@ -46,7 +46,7 @@ using namespace rendering;
 
 Resource::Id Resource::last_id = 0;
 
-Resource::Storage::Storage(): refcount() { }
+Resource::Storage::Storage(): refcount(0) { }
 
 Resource::Storage::~Storage() { }
 
