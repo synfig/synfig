@@ -238,7 +238,7 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 	if (success && tile->surface)
 		cairo_surface = convert(tile->surface, tile->rect.get_width(), tile->rect.get_height());
 
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 
 	--enqueued_tasks;
 
@@ -267,7 +267,7 @@ Renderer_Canvas::on_post_tile_finished(const Tile::Handle &tile)
 	int local_enqueued_tasks;
 	Time time;
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		time = tile->frame_id.time;
 		if (visible_frames.count(tile->frame_id))
 			tile_visible = true;
@@ -519,7 +519,7 @@ Renderer_Canvas::enqueue_render()
 	rendering::Task::List events;
 
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 
 		String         renderer_name  = get_work_area()->get_renderer();
 		RectInt        window_rect    = get_work_area()->get_window_rect();
@@ -620,7 +620,7 @@ Renderer_Canvas::wait_render()
 {
 	rendering::TaskEvent::List events;
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i) {
 			TileMap::const_iterator ii = tiles.find(i->id);
 			if (ii != tiles.end())
@@ -639,7 +639,7 @@ Renderer_Canvas::clear_render()
 	rendering::Task::List events;
 	bool cleared = false;
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		cleared = !tiles.empty();
 		for(TileMap::iterator i = tiles.begin(); i != tiles.end(); ++i)
 			while(!i->second.empty()) {
@@ -700,7 +700,7 @@ Renderer_Canvas::calc_frame_status(const FrameId &id, const RectInt &window_rect
 void
 Renderer_Canvas::get_render_status(StatusMap &out_map)
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 
 	RectInt window_rect = get_work_area()->get_window_rect();
 
@@ -777,7 +777,7 @@ Renderer_Canvas::render_vfunc(
 	empty_rects.push_back(previous_rect);
 
 	{ // merge all tiles into single surface
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 
 		if (onion_frames.empty()) return;
 
@@ -902,7 +902,7 @@ Renderer_Canvas::render_vfunc(
 Cairo::RefPtr<Cairo::ImageSurface>
 Renderer_Canvas::get_thumb(const Time &time)
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	TileMap::const_iterator i = tiles.find( current_thumb.with_time(time) );
 	return i == tiles.end() || i->second.empty() || !*(i->second.begin())
 		 ? Cairo::RefPtr<Cairo::ImageSurface>()
