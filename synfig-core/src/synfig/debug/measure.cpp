@@ -52,12 +52,12 @@ using namespace debug;
 
 /* === M E T H O D S ======================================================= */
 
-Glib::Threads::Mutex Measure::mutex;
+std::mutex Measure::mutex;
 std::vector<Measure*> Measure::stack;
 String Measure::text;
 
 void Measure::init() {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	hide = !stack.empty() && stack.back()->hide_subs;
 	hide_subs = hide_subs || hide;
 	if (!hide)
@@ -71,7 +71,7 @@ void Measure::init() {
 }
 
 Measure::~Measure() {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	long long dt = g_get_monotonic_time() - t;
 	long long cpu_dt = clock() - cpu_t;
 

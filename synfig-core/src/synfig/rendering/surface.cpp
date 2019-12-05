@@ -225,7 +225,7 @@ SurfaceResource::get_surface(
 	if (!full && !rect.is_valid())
 		return Surface::Handle();
 
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 
 	if (width <= 0 || height <= 0)
 		return Surface::Handle();
@@ -281,7 +281,7 @@ void
 SurfaceResource::create(int width, int height)
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
-	Glib::Threads::Mutex::Lock short_lock(mutex);
+	std::lock_guard<std::mutex> short_lock(mutex);
 	if (width > 0 && height > 0) {
 		this->width  = width;
 		this->height = height;
@@ -297,7 +297,7 @@ void
 SurfaceResource::assign(Surface::Handle surface)
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
-	Glib::Threads::Mutex::Lock short_lock(mutex);
+	std::lock_guard<std::mutex> short_lock(mutex);
 
 	for(Map::const_iterator i = surfaces.begin(); i != surfaces.end(); ++i)
 		if (i->second == surface)
@@ -320,7 +320,7 @@ void
 SurfaceResource::clear()
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
-	Glib::Threads::Mutex::Lock short_lock(mutex);
+	std::lock_guard<std::mutex> short_lock(mutex);
 	blank = true;
 	surfaces.clear();
 }
@@ -329,7 +329,7 @@ void
 SurfaceResource::reset()
 {
 	Glib::Threads::RWLock::WriterLock lock(rwlock);
-	Glib::Threads::Mutex::Lock short_lock(mutex);
+	std::lock_guard<std::mutex> short_lock(mutex);
 	width = 0;
 	height = 0;
 	blank = true;

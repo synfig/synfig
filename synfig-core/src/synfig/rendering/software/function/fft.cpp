@@ -33,7 +33,7 @@
 #include <climits>
 //#include <ccomplex>
 
-#include <glibmm/thread.h>
+#include <mutex>
 
 #include <vector>
 #include <set>
@@ -59,11 +59,11 @@ class software::FFT::Internal
 {
 public:
 	static std::set<int> counts;
-	static Glib::Mutex mutex;
+	static std::mutex mutex;
 };
 
 std::set<int> software::FFT::Internal::counts;
-Glib::Mutex software::FFT::Internal::mutex;
+std::mutex software::FFT::Internal::mutex;
 
 void
 software::FFT::initialize()
@@ -118,7 +118,7 @@ software::FFT::fft(const Array<Complex, 1> &x, bool invert)
 	iodim.os = x.stride;
 
 	{
-		Glib::Mutex::Lock lock(Internal::mutex);
+		std::lock_guard<std::mutex> lock(Internal::mutex);
 		fftw_plan plan = fftw_plan_guru_dft(
 			1, &iodim, 0, NULL,
 			(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
@@ -153,7 +153,7 @@ software::FFT::fft2d(const Array<Complex, 2> &x, bool invert, bool do_rows, bool
 	iodim[1].os = x.stride;
 
 	{
-		Glib::Mutex::Lock lock(Internal::mutex);
+		std::lock_guard<std::mutex> lock(Internal::mutex);
 
 		fftw_plan plan;
 		if (do_rows && do_cols)

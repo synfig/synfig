@@ -30,6 +30,7 @@
 #include <map>
 #include <vector>
 
+#include <mutex>
 #include <glibmm/threads.h>
 
 #include <ETL/handle>
@@ -330,7 +331,7 @@ private:
 	bool blank;
 	Map surfaces;
 
-	mutable Glib::Threads::Mutex mutex;
+	mutable std::mutex mutex;
 	mutable Glib::Threads::RWLock rwlock;
 
 	Surface::Handle get_surface(
@@ -357,22 +358,22 @@ public:
 	int get_id() const //!< helps to debug of renderer optimizers
 		{ return id; }
 	int get_width() const
-		{ Glib::Threads::Mutex::Lock lock(mutex); return width; }
+		{ std::lock_guard<std::mutex> lock(mutex); return width; }
 	int get_height() const
-		{ Glib::Threads::Mutex::Lock lock(mutex); return height; }
+		{ std::lock_guard<std::mutex> lock(mutex); return height; }
 	VectorInt get_size() const
-		{ Glib::Threads::Mutex::Lock lock(mutex); return VectorInt(width, height); }
+		{ std::lock_guard<std::mutex> lock(mutex); return VectorInt(width, height); }
 	bool is_exists() const
-		{ Glib::Threads::Mutex::Lock lock(mutex); return width > 0 && height > 0; }
+		{ std::lock_guard<std::mutex> lock(mutex); return width > 0 && height > 0; }
 	bool is_blank() const
-		{ Glib::Threads::Mutex::Lock lock(mutex); return blank; }
+		{ std::lock_guard<std::mutex> lock(mutex); return blank; }
 	bool has_surface(const Surface::Token::Handle &token) const
-		{ Glib::Threads::Mutex::Lock lock(mutex); return surfaces.count(token); }
+		{ std::lock_guard<std::mutex> lock(mutex); return surfaces.count(token); }
 	template<typename T>
 	bool has_surface() const
 		{ return has_surface(T::token.handle()); }
 	bool get_tokens(std::vector<Surface::Token::Handle> &outTokens) const {
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		for(Map::const_iterator i = surfaces.begin(); i != surfaces.end(); ++i)
 			outTokens.push_back(i->first);
 		return !surfaces.empty();
