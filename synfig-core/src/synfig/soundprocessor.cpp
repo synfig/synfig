@@ -35,6 +35,7 @@
 
 #include <Mlt.h>
 
+#include "general.h"
 #include "soundprocessor.h"
 
 #endif
@@ -108,13 +109,24 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 	if (options.volume <= 0.0) return;
 
 	// Create track
-	String filename;
-	filename = String("avformat:")+sound.filename;
-	
-	Mlt::Producer *track = new Mlt::Producer(internal->profile, filename.c_str());
-	if (track->get_producer() == NULL) { delete track; return; }
+	Mlt::Producer *track = new Mlt::Producer(internal->profile, (String("avformat:") + sound.filename).c_str());
+	if (track->get_producer() == NULL || track->get_length() <= 0) {
+		delete track;
+		track = new Mlt::Producer(internal->profile, (String("vorbis:") + sound.filename).c_str());
+		if (track->get_producer() == NULL || track->get_length() <= 0) { delete track; return; }
+	}
+
 	int delay = (int)round(options.delay*internal->profile.fps());
 	if (-delay >= track->get_length()) { delete track; return; }
+
+	// set volume
+	if (!approximate_equal(options.volume, Real(1))) {
+		Mlt::Filter *filter = new Mlt::Filter(internal->profile, "volume");
+		filter->set("gain", options.volume);
+		track->attach(*filter);
+	}
+
+	// set delay
 	if (delay < 0) {
 		// cut
 		track->set_in_and_out(-delay, -1);
@@ -127,8 +139,31 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 		track = playlist;
 	}
 
-	if (internal->last_track == NULL)
-		{ internal->last_track = track; return; }
+	if (internal->last_track == NULL) {
+		// create background infinite track,
+		// show (and track position) must go on even after all sounds finished
+		bool success = true;
+		Mlt::Producer *infinite_track = new Mlt::Producer(internal->profile, "tone");
+		if (success && !infinite_track->get_producer()) {
+			success = false;
+			error("SoundProcessor: cannot create the 'tone' MLT producer for fake infinite track");
+		}
+		if (success && infinite_track->set("frequency", 1.0)) {
+			success = false;
+			error("SoundProcessor: cannot set frequency of the 'tone' MLT producer for fake infinite track");
+		}
+		if (success && infinite_track->set("level", -1000000.0)) {
+			success = false;
+			error("SoundProcessor: cannot mute the 'tone' MLT producer for fake infinite track");
+		}
+		
+		if (infinite_track->get_producer() == NULL) {
+			delete infinite_track;
+			internal->last_track = track;
+			return;
+		}
+		internal->last_track = infinite_track;
+	}
 
 	set_position(0.0);
 
