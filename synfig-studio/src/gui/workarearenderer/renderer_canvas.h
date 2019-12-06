@@ -33,8 +33,6 @@
 #include <vector>
 #include <map>
 
-#include <glibmm/threads.h>
-
 #include <synfig/time.h>
 #include <synfig/rendering/task.h>
 #include <synfig/rendering/renderer.h>
@@ -149,7 +147,7 @@ private:
 	const int max_enqueued_tasks;
 
 	//! controls access to fields: enqueued_tasks, tiles, onion_frames, visible_frames, current_frame, frame_duration, tiles_size
-	Glib::Threads::Mutex mutex;
+	std::mutex mutex;
 
 	int enqueued_tasks;
 

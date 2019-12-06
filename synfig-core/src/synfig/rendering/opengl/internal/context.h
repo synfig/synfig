@@ -32,7 +32,7 @@
 #include <vector>
 #include <utility>
 
-#include <glibmm/threads.h>
+#include <mutex>
 
 #include <GL/gl.h>
 #include <GL/glx.h>
@@ -97,7 +97,7 @@ public:
 	};
 
 private:
-	Glib::Threads::RecMutex rec_mutex;
+	std::recursive_mutex rec_mutex;
 
 	Display *display;
 	GLXFBConfig config;

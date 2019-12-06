@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include <glibmm/threads.h>
+#include <mutex>
 
 #include <synfig/string.h>
 
@@ -46,7 +46,7 @@ namespace debug {
 
 class Measure {
 private:
-	static Glib::Threads::Mutex mutex;
+	static std::mutex mutex;
 	static std::vector<Measure*> stack;
 	static String text;
 

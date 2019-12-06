@@ -121,7 +121,7 @@ Layer_Duplicate::get_color(Context context, const Point &pos)const
 	float amount(get_amount());
 	Color color;
 
-	std::lock_guard<std::mutex> lock(mutex_);
+	std::lock_guard<std::mutex> lock(mutex);
 	Time time_cur = get_time_mark();
 	duplicate_param->reset_index(time_cur);
 	do
@@ -187,7 +187,7 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 	Time time_cur = get_time_mark();
 	int steps = duplicate_param->count_steps(time_cur);
 
-	std::lock_guard<std::mutex> lock(mutex_);
+	std::lock_guard<std::mutex> lock(mutex);
 	duplicate_param->reset_index(time_cur);
 	do
 	{
@@ -233,7 +233,7 @@ Layer_Duplicate::accelerated_cairorender(Context context, cairo_t *cr, int quali
 	Time time_cur = get_time_mark();
 	int steps = duplicate_param->count_steps(time_cur);
 	
-	std::lock_guard<std::mutex> lock(mutex_);
+	std::lock_guard<std::mutex> lock(mutex);
 	duplicate_param->reset_index(time_cur);
 	cairo_save(cr);
 	do
@@ -269,7 +269,7 @@ Layer_Duplicate::build_rendering_task_vfunc(Context context) const
 
 	rendering::Task::Handle task;
 
-	std::lock_guard<std::mutex> lock(mutex_);
+	std::lock_guard<std::mutex> lock(mutex);
 	duplicate_param->reset_index(time_cur);
 	do
 	{
