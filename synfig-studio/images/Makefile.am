@@ -435,207 +435,207 @@ clean-local:
 
 #.sif.$(EXT) .sifz.$(EXT) .sif.bmp .sifz.bmp:
 #%.bmp: %.sif %.sifz
-#	$(SYNFIG) -q $< -o $@ --time 0
+#	$(SYNFIG) -q $< -o $@ --time 0f
 #	echo "  File \"images\\$@\"" >>./images.nsh
 #	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 #
 .sifz.bmp:
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 .sif.bmp:
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 .sifz.$(EXT):
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 .sif.$(EXT):
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_past_on_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_past_off_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
+	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_future_on_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 2
+	$(SYNFIG) --quiet $< -o $@ --time 2f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_future_off_icon.$(EXT): $(srcdir)/keyframe_lock_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 3
+	$(SYNFIG) --quiet $< -o $@ --time 3f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_seek_next_keyframe_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_seek_prev_keyframe_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
+	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_seek_next_frame_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 2
+	$(SYNFIG) --quiet $< -o $@ --time 2f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_seek_prev_frame_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 3
+	$(SYNFIG) --quiet $< -o $@ --time 3f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_seek_begin_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 4
+	$(SYNFIG) --quiet $< -o $@ --time 4f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_seek_end_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 5
+	$(SYNFIG) --quiet $< -o $@ --time 5f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_play_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 6
+	$(SYNFIG) --quiet $< -o $@ --time 6f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_stop_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 7
+	$(SYNFIG) --quiet $< -o $@ --time 7f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_pause_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 8
+	$(SYNFIG) --quiet $< -o $@ --time 8f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_loop_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 9
+	$(SYNFIG) --quiet $< -o $@ --time 9f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_bounds_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 10
+	$(SYNFIG) --quiet $< -o $@ --time 10f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_bound_lower_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 11
+	$(SYNFIG) --quiet $< -o $@ --time 11f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_bound_upper_icon.$(EXT): $(srcdir)/framedial_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 12
+	$(SYNFIG) --quiet $< -o $@ --time 12f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_mode_off_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 animate_mode_on_icon.$(EXT): $(srcdir)/animate_mode_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
+	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 interpolation_type_tcb_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
+	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 interpolation_type_linear_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 2
+	$(SYNFIG) --quiet $< -o $@ --time 2f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 interpolation_type_ease_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 3
+	$(SYNFIG) --quiet $< -o $@ --time 3f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 interpolation_type_const_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 4
+	$(SYNFIG) --quiet $< -o $@ --time 4f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 interpolation_type_clamped_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 5
+	$(SYNFIG) --quiet $< -o $@ --time 5f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 valuenode_forbidanimation_icon.$(EXT): $(srcdir)/interpolation_type_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 7 
+	$(SYNFIG) --quiet $< -o $@ --time 7f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 canvas_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 2
+	$(SYNFIG) --quiet $< -o $@ --time 2f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 layer_other_importimage_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
+	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 utils_chain_link_on_icon.$(EXT): $(srcdir)/utils_chain_link_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 utils_chain_link_off_icon.$(EXT): $(srcdir)/utils_chain_link_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
+	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 action_doc_new_icon.$(EXT): $(srcdir)/action_doc_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 1
+	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 action_doc_open_icon.$(EXT): $(srcdir)/action_doc_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 2
+	$(SYNFIG) --quiet $< -o $@ --time 2f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 action_doc_save_icon.$(EXT): $(srcdir)/action_doc_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 3
+	$(SYNFIG) --quiet $< -o $@ --time 3f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 action_doc_saveas_icon.$(EXT): $(srcdir)/action_doc_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 4
+	$(SYNFIG) --quiet $< -o $@ --time 4f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 action_doc_saveall_icon.$(EXT): $(srcdir)/action_doc_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 5
+	$(SYNFIG) --quiet $< -o $@ --time 5f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 action_doc_undo_icon.$(EXT): $(srcdir)/action_doc_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 6
+	$(SYNFIG) --quiet $< -o $@ --time 6f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 action_doc_redo_icon.$(EXT): $(srcdir)/action_doc_icons.sif
-	$(SYNFIG) -q $< -o $@ --time 7
+	$(SYNFIG) --quiet $< -o $@ --time 7f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
@@ -643,12 +643,12 @@ if DEVELOPMENT_SNAPSHOT
 splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in $(top_builddir)/autorevision.h
 	$(srcdir)/splash_screen_development.sh $@ "$(srcdir)"
 splash_screen.$(EXT): splash_screen_development.sif
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 else
 splash_screen.$(EXT): $(srcdir)/splash_screen.sif
-	$(SYNFIG) -q $< -o $@ --time 0
+	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 endif
@@ -658,56 +658,56 @@ if !MACOSX_PKG
 
 16x16/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 16x16
-	$(SYNFIG) -q $< -o $@ --time 0 -w 16 -h 16
+	$(SYNFIG) --quiet $< -o $@ --time 0f -w 16 -h 16
 
 icons16dir = $(datadir)/icons/hicolor/16x16/apps
 icons16_DATA = 16x16/synfig_icon.$(EXT)
 
 22x22/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 22x22
-	$(SYNFIG) -q $< -o $@ --time 0 -w 22 -h 22
+	$(SYNFIG) --quiet $< -o $@ --time 0f -w 22 -h 22
 
 icons22dir = $(datadir)/icons/hicolor/22x22/apps
 icons22_DATA = 22x22/synfig_icon.$(EXT)
 
 24x24/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 24x24
-	$(SYNFIG) -q $< -o $@ --time 0 -w 24 -h 24
+	$(SYNFIG) --quiet $< -o $@ --time 0f -w 24 -h 24
 
 icons24dir = $(datadir)/icons/hicolor/24x24/apps
 icons24_DATA = 24x24/synfig_icon.$(EXT)
 
 32x32/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 32x32
-	$(SYNFIG) -q $< -o $@ --time 0 -w 32 -h 32
+	$(SYNFIG) --quiet $< -o $@ --time 0f -w 32 -h 32
 
 icons32dir = $(datadir)/icons/hicolor/32x32/apps
 icons32_DATA = 32x32/synfig_icon.$(EXT)
 
 48x48/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 48x48
-	$(SYNFIG) -q $< -o $@ --time 0 -w 48 -h 48
+	$(SYNFIG) --quiet $< -o $@ --time 0f -w 48 -h 48
 
 icons48dir = $(datadir)/icons/hicolor/48x48/apps
 icons48_DATA = 48x48/synfig_icon.$(EXT)
 
 64x64/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 64x64
-	$(SYNFIG) -q $< -o $@ --time 0 -w 64 -h 64
+	$(SYNFIG) --quiet $< -o $@ --time 0f -w 64 -h 64
 
 icons64dir = $(datadir)/icons/hicolor/64x64/apps
 icons64_DATA = 64x64/synfig_icon.$(EXT)
 
 128x128/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 128x128
-	$(SYNFIG) -q $< -o $@ --time 0 -w 128 -h 128
+	$(SYNFIG) --quiet $< -o $@ --time 0f -w 128 -h 128
 
 icons128dir = $(datadir)/icons/hicolor/128x128/apps
 icons128_DATA = 128x128/synfig_icon.$(EXT)
 
 256x256/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 256x256
-	$(SYNFIG) -q $< -o $@ --time 0 -w 256 -h 256
+	$(SYNFIG) --quiet $< -o $@ --time 0f -w 256 -h 256
 
 +icons256dir = $(datadir)/icons/hicolor/256x256/apps
 +icons256_DATA = 256x256/synfig_icon.$(EXT)
