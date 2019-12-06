@@ -566,11 +566,15 @@ Advanced_Outline::sync_vfunc()
 		} else {
 			// make tails longer for proper trunc
 			AdvancedLine::const_iterator i = aline.begin();
-			if (i->second.side0 == WidthPoint::TYPE_INTERPOLATE)
+			AdvancedLine::const_iterator j = aline.end(); --j;
+			if (i->second.side0 == WidthPoint::TYPE_INTERPOLATE) {
+				aline.add(-2, i->second.w, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE);
 				aline.add(-1, i->second.w, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE);
-			i = aline.end(); --i;
-			if (i->second.side1 == WidthPoint::TYPE_INTERPOLATE)
-				aline.add(kl + 1, i->second.w, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_FLAT);
+			}
+			if (i->second.side1 == WidthPoint::TYPE_INTERPOLATE) {
+				aline.add(kl + 1, j->second.w, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_FLAT);
+				aline.add(kl + 2, j->second.w, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_FLAT);
+			}
 			aline.calc_tangents(smoothness);
 			aline.trunc_left(0, (WidthPoint::SideType)start_tip);
 			aline.trunc_right(kl, (WidthPoint::SideType)end_tip);

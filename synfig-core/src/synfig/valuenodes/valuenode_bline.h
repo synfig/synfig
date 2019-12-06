@@ -52,7 +52,7 @@ ValueBase convert_bline_to_segment_list(const ValueBase &bline);
 ValueBase convert_bline_to_width_list(const ValueBase &bline);
 
 //! Finds the closest point to pos in bline
-Real find_closest_point(const ValueBase &bline, const Point &pos, Real &radius, bool loop, Point *out_point = 0);
+Real find_closest_point(const ValueBase &bline, const Point &pos, Real radius, bool loop, Point *out_point = 0);
 
 //! Converts from standard to homogeneous index (considers the length)
 Real std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop);

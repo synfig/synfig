@@ -176,265 +176,165 @@ synfig::convert_bline_to_width_list(const ValueBase& bline)
 }
 
 Real
-synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radius, bool loop, Point *out_point)
+synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real radius, bool loop, Point *out_point)
 {
-	Real d,step;
-	float time = 0;
-	float best_time = 0;
+	const Real minstep = 0.01;
+	const Real maxstep = 0.1;
+	if (radius==0) radius = 10000000;
+
+	Real closest = 10000000;
+	Real best_time = 0;
 	int best_index = -1;
 	synfig::Point best_point;
 
-	if(radius==0)radius=10000000;
-	Real closest(10000000);
-
-	int i=0;
-	std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
-	typedef std::vector<BLinePoint>::const_iterator iterT;
-	iterT iter, prev, first;
-	for(iter=list.begin(); iter!=list.end(); ++i, ++iter)
-	{
-		if( first == iterT() )
-			first = iter;
-
-		if( prev != iterT() )
-		{
-			bezier<Point>	curve;
-
-			curve[0] = (*prev).get_vertex();
-			curve[1] = curve[0] + (*prev).get_tangent2()/3;
-			curve[3] = (*iter).get_vertex();
-			curve[2] = curve[3] - (*iter).get_tangent1()/3;
-			curve.sync();
-
-			#if 0
-			// I don't know why this doesn't work
-			time=curve.find_closest(pos,6);
-			d=((curve(time)-pos).mag_squared());
-
-			#else
-			//set the step size based on the size of the picture
-			d = (curve[1] - curve[0]).mag() + (curve[2]-curve[1]).mag()	+ (curve[3]-curve[2]).mag();
-
-			step = d/(2*radius); //want to make the distance between lines happy
-
-			step = max(step,0.01); //100 samples should be plenty
-			step = min(step,0.1); //10 is minimum
-
-			d = find_closest(curve,pos,step,&closest,&time);
-			#endif
-
-			if(d < closest)
-			{
-				closest = d;
-				best_time = time;
-				best_index = i;
-				best_point = curve(best_time);
-			}
-
-		}
-
-		prev = iter;
-	}
-
-	// Loop if necessary
-	if( loop && ( first != iterT() ) && ( prev != iterT() ) )
-	{
-		bezier<Point>	curve;
-
-		curve[0] = (*prev).get_vertex();
-		curve[1] = curve[0] + (*prev).get_tangent2()/3;
-		curve[3] = (*first).get_vertex();
-		curve[2] = curve[3] - (*first).get_tangent1()/3;
+	const ValueBase::List &list = bline.get_list();
+	int size = (int)list.size();
+	int count = loop ? size : size - 1;
+	if (!loop) --count;
+	
+	for(int i0 = 0; i0 < count; ++i0) {
+		int i1 = (i0 + 1) % size;
+		const BLinePoint &p0 = list[i0].get(BLinePoint());
+		const BLinePoint &p1 = list[i1].get(BLinePoint());
+		
+		bezier<Point> curve;
+		curve[0] = p0.get_vertex();
+		curve[1] = curve[0] + p0.get_tangent2()/3;
+		curve[3] = p1.get_vertex();
+		curve[2] = curve[3] - p1.get_tangent1()/3;
 		curve.sync();
 
-		#if 0
-		// I don't know why this doesn't work
-		time=curve.find_closest(pos,6);
-		d=((curve(time)-pos).mag_squared());
-
-		#else
 		//set the step size based on the size of the picture
-		d = (curve[1] - curve[0]).mag() + (curve[2]-curve[1]).mag()	+ (curve[3]-curve[2]).mag();
-
-		step = d/(2*radius); //want to make the distance between lines happy
-
-		step = max(step,0.01); //100 samples should be plenty
-		step = min(step,0.1); //10 is minimum
-
-			d = find_closest(curve,pos,step,&closest,&time);
-		#endif
-
-		if(d < closest)
-		{
-			closest = d;
+		Real len = (curve[1] - curve[0]).mag()
+				 + (curve[2] - curve[1]).mag()
+				 + (curve[3] - curve[2]).mag();
+		
+		// want to make the distance between lines happy
+		Real step = std::max(minstep, std::min(maxstep, len/(2*radius))); 
+		float time = 0;
+		Real c = find_closest(curve, pos, step, &closest, &time);
+		if(c < closest) {
+			closest = c;
 			best_time = time;
-			best_index = 0;
+			best_index = i0;
 			best_point = curve(best_time);
 		}
 	}
 
-	if(best_index != -1)
-	{
-		if(out_point)
-			*out_point = best_point;
+	if (best_index < 0) return 0;
 
-		int loop_adjust(loop ? 0 : -1);
-		int size = list.size();
-		Real amount = (best_index + best_time + loop_adjust) / (size + loop_adjust);
-		return amount;
-	}
-
-	return 0.0;
-
+	if (out_point) *out_point = best_point;
+	return (best_index + best_time)/count;
 }
 
 Real
 synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
 {
-	BLinePoint blinepoint0, blinepoint1;
-	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
-	int size = list.size(), from_vertex;
-	// trivial cases
-	if(pos == 0.0 || pos == 1.0)
-		return pos;
-	if(!bline_loop) size--;
-	if(size < 1) return Real();
-	Real int_pos((int)pos);
-	Real one(0.0);
-	if (index_loop)
-	{
-		pos = pos - int_pos;
-		if (pos < 0)
-		{
-			pos++;
-			one=1.0;
+	const int segments = 16;
+	const Real segment_size = 1.0/segments;
+
+	Real loops = index_loop ? floor(pos) : 0.0;
+	pos -= loops;
+	if (approximate_less_or_equal(pos, Real(0)))
+		return loops;
+	if (approximate_greater_or_equal(pos, Real(1)))
+		return loops + 1;
+
+	const ValueBase::List &list = bline.get_list();
+	int size = (int)list.size();
+	int count = bline_loop ? size : size - 1;
+	if (count <= 0) return loops + pos;
+
+	bool found = false;
+	Real p = pos*count;
+	Real length = 0;
+
+	// calculate length
+	Real last_length = 0;
+	Point last_point = list.front().get(BLinePoint()).get_vertex();
+	for(int i0 = 0; i0 < count; ++i0) {
+		int i1 = (i0 + 1)%count;
+		const BLinePoint &blinepoint0 = list[i0].get(BLinePoint());
+		const BLinePoint &blinepoint1 = list[i1].get(BLinePoint());
+		etl::hermite<Vector> curve(
+			blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+			blinepoint0.get_tangent2(), blinepoint1.get_tangent1() );
+		for(int j = 1; j <= segments; ++j) {
+			Real t = j*segment_size;
+			Point point = curve(t);
+			Real dl = (point - last_point).mag();
+			last_length += dl;
+			last_point = point;
+			
+			if (!found && t >= p - i0) {
+				length = last_length - dl*(t - p + i0)*segments;
+				found = true;
+			}
 		}
 	}
-	else
-	{
-		if (pos < 0) pos = 0;
-		if (pos > 1) pos = 1;
-	}
-	// Calculate the lengths and the total length
-	Real tl=0, pl=0;
-	std::vector<Real> lengths;
-	vector<BLinePoint>::const_iterator iter, next;
-	tl=bline_length(bline, bline_loop, &lengths);
-	// If the total length of the bline is zero return pos
-	if(tl==0.0) return pos;
-	from_vertex = int(pos*size);
-	// Calculate the partial length until the bezier that holds the current
-	std::vector<Real>::const_iterator liter(lengths.begin());
-	for(int i=0;i<from_vertex; i++, liter++)
-		pl+=*liter;
-	// Calculate the remaining length of the position over current bezier
-	// Setup the curve of the current bezier.
-	next=list.begin();
-	iter = bline_loop ? --list.end() : next++;
-	if (from_vertex > size-1) from_vertex = size-1; // if we are at the end of the last bezier
-	blinepoint0 = from_vertex ? *(next+from_vertex-1) : *iter;
-	blinepoint1 = *(next+from_vertex);
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
-							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-	// add the distance on the bezier we are on.
-	pl+=curve.find_distance(0.0, pos*size - from_vertex);
-	// and return the homogeneous position
-	return int_pos+pl/tl-one;
+
+	if (approximate_zero(last_length))
+		return loops + pos;
+	if (!found)
+		return loops + 1.0;
+
+	return loops + length/last_length;
 }
 
 Real
 synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
 {
-	BLinePoint blinepoint0, blinepoint1;
-	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
-	int size = list.size(), from_vertex(0);
-	// trivial cases
-	if(pos == 0.0 || pos == 1.0)
-		return pos;
-	if(!bline_loop) size--;
-	if(size < 1) return Real();
-	Real int_pos=int(pos);
-	Real one(0.0);
-	if (index_loop)
-	{
-		pos = pos - int_pos;
-		if (pos < 0)
-		{
-			pos++;
-			one=1.0;
+	const int segments = 16;
+	const Real segment_size = 1.0/segments;
+
+	Real loops = index_loop ? floor(pos) : 0.0;
+	pos -= loops;
+	if (approximate_less_or_equal(pos, Real(0)))
+		return loops;
+	if (approximate_greater_or_equal(pos, Real(1)))
+		return loops + 1;
+
+	const ValueBase::List &list = bline.get_list();
+	int size = (int)list.size();
+	int count = bline_loop ? size : size - 1;
+	if (count <= 0) return loops + pos;
+
+	// calculate and save inceremental length for each segment
+	std::vector<Real> lengths;
+	lengths.reserve(segments*count + 1);
+	lengths.push_back(0);
+	Point last_point = list.front().get(BLinePoint()).get_vertex();
+	for(int i0 = 0; i0 < count; ++i0) {
+		int i1 = (i0 + 1)%count;
+		const BLinePoint &blinepoint0 = list[i0].get(BLinePoint());
+		const BLinePoint &blinepoint1 = list[i1].get(BLinePoint());
+		etl::hermite<Vector> curve(
+			blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+			blinepoint0.get_tangent2(), blinepoint1.get_tangent1() );
+		for(int j = 1; j <= segments; ++j) {
+			Point point = curve(j*segment_size);
+			lengths.push_back( lengths.back() + (point - last_point).mag() );
+			last_point = point;
 		}
 	}
-	else
-	{
-		if (pos < 0) pos = 0;
-		if (pos > 1) pos = 1;
+
+	Real full_length = lengths.back();
+	if (approximate_zero(full_length))
+		return loops + pos;
+
+	// find segment
+	Real length = pos*full_length;
+	int a = 0, b = (int)lengths.size() - 1;
+	while(true) {
+		int c = (a + b)/2;
+		if (c == a) break;
+		(lengths[c] <= length ? a : b) = c;
 	}
-	// Calculate the lengths and the total length
-	Real tl(0), pl(0), mpl, bl(0);
-	std::vector<Real> lengths;
-	vector<BLinePoint>::const_iterator iter, next;
-	tl=bline_length(bline, bline_loop,&lengths);
-	// Calculate the my partial length (the length where pos is)
-	mpl=pos*tl;
-	next=list.begin();
-	iter = bline_loop ? --list.end() : next++;
-	std::vector<Real>::const_iterator liter(lengths.begin());
-	// Find the previous bezier where we pos is placed and the sum
-	// of lengths to it (pl)
-	// also remember the bezier's length where we stop
-	while(mpl > pl && next!=list.end())
-	{
-		pl+=*liter;
-		bl=*liter;
-		iter=next;
-		next++;
-		liter++;
-		from_vertex++;
-	}
-	// correct the iters and partial length in case we passed over
-	if(pl > mpl)
-	{
-		liter--;
-		next--;
-		if(next==list.begin())
-			iter=--list.end();
-		else
-			iter--;
-		pl-=*liter;
-		from_vertex--;
-	}
-	// set up the cureve
-	blinepoint0 = *iter;
-	blinepoint1 = *next;
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
-							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-	// Find the solution to which is the standard position which matches the current
-	// homogeneous position
-	// Secant method: http://en.wikipedia.org/wiki/Secant_method
-	Real sn(0.0); // the standard position on current bezier
-	Real sn1(0.0), sn2(1.0);
-	Real t0((mpl-pl)/bl); // the homogeneous position on the current bezier
-	int iterations=0;
-	int max_iterations=100;
-	Real max_error(0.00001);
-	Real error;
-	Real fsn1(t0-curve.find_distance(0.0,sn1)/bl);
-	Real fsn2(t0-curve.find_distance(0.0,sn2)/bl);
-	Real fsn;
-	do
-	{
-		sn=sn1-fsn1*((sn1-sn2)/(fsn1-fsn2));
-		fsn=t0-curve.find_distance(0.0, sn)/bl;
-		sn2=sn1;
-		sn1=sn;
-		fsn2=fsn1;
-		fsn1=fsn;
-		error=fabs(fsn2-fsn1);
-		iterations++;
-	}while (error>max_error && max_iterations > iterations);
-	// convert the current standard index (s) to the bline's standard index
-	// and return it
-	return int_pos+Real(from_vertex + sn)/size-one;
+
+	// calculate value
+	return loops
+	     + Real(a)/lengths.size()
+		 + (length - lengths[a])/full_length;
 }
 
 Real

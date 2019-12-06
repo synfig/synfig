@@ -99,47 +99,32 @@ ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	const std::vector<ValueBase> bline((*bline_)(t).get_list());
+	const ValueBase::List bline = (*bline_)(t).get_list();
 	handle<ValueNode_BLine> bline_value_node( handle<ValueNode_BLine>::cast_dynamic(bline_) );
 	assert(bline_value_node);
 
-	const bool looped(bline_value_node->get_loop());
-	int size = bline.size(), from_vertex;
-	bool loop((*loop_)(t).get(bool()));
-	bool homogeneous((*homogeneous_)(t).get(bool()));
-	Real scale((*scale_)(t).get(Real()));
-	if(homogeneous)
-	{
-		amount=hom_to_std(bline, amount, loop, looped);
-	}
-	BLinePoint blinepoint0, blinepoint1;
+	const bool looped = bline_value_node->get_loop();
+	int size = (int)bline.size();
+	int count = looped ? size : size - 1;
+	if (count < 1) return Vector();
 
-	if (!looped) size--;
-	if (size < 1) return Real();
-	if (loop)
-	{
-		amount = amount - int(amount);
-		if (amount < 0) amount++;
-	}
-	else
-	{
-		if (amount < 0) amount = 0;
-		if (amount > 1) amount = 1;
-	}
+	bool loop         = (*loop_)(t).get(bool());
+	bool homogeneous  = (*homogeneous_)(t).get(bool());
+	Real scale        = (*scale_)(t).get(Real());
 
-	vector<ValueBase>::const_iterator iter, next(bline.begin());
+	if (loop) amount -= floor(amount);
+	if (homogeneous) amount = hom_to_std(bline, amount, loop, looped);
+	if (amount < 0) amount = 0;
+	if (amount > 1) amount = 1;
+	amount *= count;
 
-	iter = looped ? --bline.end() : next++;
-	amount = amount * size;
-	from_vertex = int(amount);
-	if (from_vertex > size-1) from_vertex = size-1;
-	blinepoint0 = from_vertex ? (next+from_vertex-1)->get(BLinePoint()) : iter->get(BLinePoint());
-	blinepoint1 = (next+from_vertex)->get(BLinePoint());
+	int i0 = std::max(0, std::min(size-1, (int)floor(amount)));
+	int i1 = (i0 + 1) % size;
+	Real part = amount - i0;
 
-	float width0 = blinepoint0.get_width();
-	float width1 = blinepoint1.get_width();
-
-	return Real((width0 + (amount-from_vertex) * (width1-width0)) * scale);
+	Real width0 = bline[i0].get(BLinePoint()).get_width();
+	Real width1 = bline[i1].get(BLinePoint()).get_width();
+	return (width0 + part*(width1 - width0))*scale;
 }
 
 ValueBase

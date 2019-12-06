@@ -101,72 +101,52 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	const std::vector<ValueBase> bline((*bline_)(t).get_list());
+	const ValueBase::List bline = (*bline_)(t).get_list();
 	handle<ValueNode_BLine> bline_value_node( handle<ValueNode_BLine>::cast_dynamic(bline_) );
 	assert(bline_value_node);
 
-	const bool looped(bline_value_node->get_loop());
-	int size = bline.size(), from_vertex;
-	bool loop((*loop_)(t).get(bool()));
-	bool homogeneous((*homogeneous_)(t).get(bool()));
-	Angle offset((*offset_)(t).get(Angle()));
-	Real scale((*scale_)(t).get(Real()));
-	bool fixed_length((*fixed_length_)(t).get(bool()));
-	if(homogeneous)
-	{
-		amount=hom_to_std(bline, amount, loop, looped);
-	}
-	BLinePoint blinepoint0, blinepoint1;
+	const bool looped = bline_value_node->get_loop();
+	int size = (int)bline.size();
+	int count = looped ? size : size - 1;
+	if (count < 1) return Vector();
 
-	if (!looped) size--;
-	if (size < 1)
-	{
-		Type &type(get_type());
-		if (type == type_angle)  return Angle();
-		if (type == type_real)   return Real();
-		if (type == type_vector) return Vector();
-		assert(0);
-		return ValueBase();
-	}
-	if (loop)
-	{
-		amount = amount - int(amount);
-		if (amount < 0) amount++;
-	}
-	else
-	{
-		if (amount < 0) amount = 0;
-		if (amount > 1) amount = 1;
-	}
+	bool loop         = (*loop_)(t).get(bool());
+	bool homogeneous  = (*homogeneous_)(t).get(bool());
+	Angle offset      = (*offset_)(t).get(Angle());
+	Real scale        = (*scale_)(t).get(Real());
+	bool fixed_length = (*fixed_length_)(t).get(bool());
 
-	vector<ValueBase>::const_iterator iter, next(bline.begin());
+	if (loop) amount -= floor(amount);
+	if (homogeneous) amount = hom_to_std(bline, amount, loop, looped);
+	if (amount < 0) amount = 0;
+	if (amount > 1) amount = 1;
+	amount *= count;
 
-	iter = looped ? --bline.end() : next++;
-	amount = amount * size;
-	from_vertex = int(amount);
-	if (from_vertex > size-1) from_vertex = size-1;
-	blinepoint0 = from_vertex ? (next+from_vertex-1)->get(BLinePoint()) : iter->get(BLinePoint());
-	blinepoint1 = (next+from_vertex)->get(BLinePoint());
+	int i0 = std::max(0, std::min(size-1, (int)floor(amount)));
+	int i1 = (i0 + 1) % size;
+	Real part = amount - i0;
+
+	const BLinePoint &blinepoint0 = bline[i0].get(BLinePoint());
+	const BLinePoint &blinepoint1 = bline[i1].get(BLinePoint());
 
 	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
+	Vector tangent = deriv(part);
+
 	Type &type(get_type());
 	if (type == type_angle)
-		return deriv(amount-from_vertex).angle() + offset;
-	if (type == type_real)
-	{
+		return tangent.angle() + offset;
+	if (type == type_real) {
 		if (fixed_length) return scale;
-		return deriv(amount-from_vertex).mag() * scale;
+		return tangent.mag() * scale;
 	}
-	if (type == type_vector)
-	{
-		Vector tangent(deriv(amount-from_vertex));
+	if (type == type_vector) {
 		Angle angle(tangent.angle() + offset);
 		Real mag = fixed_length ? scale : (tangent.mag() * scale);
-		return Vector(Angle::cos(angle).get()*mag,
-					  Angle::sin(angle).get()*mag);
+		return Vector( Angle::cos(angle).get()*mag,
+					   Angle::sin(angle).get()*mag );
 	}
 
 	assert(0);

@@ -112,7 +112,11 @@ void set_duck_value_desc(Duck& duck, const synfigapp::ValueDesc& value_desc, con
 
 Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
 	canvas_interface(canvas_interface),
-	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_BONE_RECURSIVE-Duck::TYPE_WIDTHPOINT_POSITION),
+	type_mask(Type(
+		Duck::TYPE_ALL
+	  & ~( Duck::TYPE_WIDTH
+		 | Duck::TYPE_BONE_RECURSIVE
+		 | Duck::TYPE_WIDTHPOINT_POSITION ))),
 	type_mask_state(Duck::TYPE_NONE),
 	alternative_mode_(false),
 	lock_animation_mode_(false),
@@ -2708,12 +2712,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
                     // The position by amount and the amount by position
                     // has to be written considering the bline length too
                     // optionally
-                    ValueNode_BLineCalcVertex::LooseHandle bline_calc_vertex(ValueNode_BLineCalcVertex::create(Vector(0,0)));
+                    ValueNode_BLineCalcVertex::Handle bline_calc_vertex(ValueNode_BLineCalcVertex::create(Vector(0,0)));
                     bline_calc_vertex->set_link("bline", bline);
                     bline_calc_vertex->set_link("loop", ValueNode_Const::create(false));
                     bline_calc_vertex->set_link("amount", ValueNode_Const::create(width_point.get_norm_position(value_node->get_loop())));
                     bline_calc_vertex->set_link("homogeneous", ValueNode_Const::create(homogeneous));
-                    pduck->set_point((*bline_calc_vertex)(get_time()).get(Vector()));
+                    pduck->set_point((*bline_calc_vertex)(Time()).get(Vector()));
                     // hack end
                     pduck->set_editable(synfigapp::is_editable(wpoint_value_desc.get_value_node()));
                     pduck->signal_edited().clear();
