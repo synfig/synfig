@@ -409,10 +409,9 @@ public:
 
 			curve_list.clear();
 
-			WaypointList::iterator prev,iter,next=animated.waypoint_list_.begin();
-			int i=0;
+			WaypointList::iterator iter,next=animated.waypoint_list_.begin();
 			// The curve list must be calculated because we sorted the waypoints.
-			for(iter=next++;iter!=animated.waypoint_list_.end() && next!=animated.waypoint_list_.end();prev=iter,iter=next++,i++)
+			for(iter=next++;iter!=animated.waypoint_list_.end() && next!=animated.waypoint_list_.end(); iter=next++)
 			{
 				typename curve_list_type::value_type curve;
 				WaypointList::iterator after_next(next);
