@@ -1,4 +1,4 @@
-/* === S Y N F I G ========================================================= */
+﻿/* === S Y N F I G ========================================================= */
 /*!	\file waypoint.h
 **	\brief Waypoint class header.
 **
@@ -169,13 +169,6 @@ public:
 			);
 		}
 	}; // END of class Model
-
-	enum Side
-	{
-		SIDE_UNSPECIFIED, SIDE_LEFT, SIDE_RIGHT,
-
-	    SIDE_END=2				//!< \internal
-	};
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
