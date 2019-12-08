@@ -244,7 +244,7 @@ elif command -v pacman >/dev/null; then
             shared-mime-info \
             cmake make \
             python-lxml"
-    echo "Running pacman (you need root previleges to do that)..."
+    echo "Running pacman (you need root privileges to do that)..."
     echo
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
 
