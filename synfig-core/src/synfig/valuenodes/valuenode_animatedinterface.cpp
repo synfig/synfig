@@ -309,8 +309,8 @@ public:
 			is_angle_type<value_type> is_angle;
 			subtractor<value_type> subtract_func;
 
-			mutable hermite<Time, Time> first;
-			mutable hermite<value_type, Time> second;
+			mutable etl::hermite<Time, Time> first;
+			mutable etl::hermite<value_type, Time> second;
 			WaypointList::iterator start;
 			WaypointList::iterator end;
 
