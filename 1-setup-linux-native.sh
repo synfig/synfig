@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# There are 3 type of dependencies:
+# There are 3 types of dependencies:
 # 1. Build tools:
 # a) autoconf, automake, make, libtool (if you use autotools build system)
 # b) cmake, ninja/make (if you use CMake build system)
@@ -107,7 +107,7 @@ if command -v apt-get >/dev/null; then
                 libxslt-devel python-devel python3-lxml\
             "
         fi
-    echo "Running apt-get (you need root privelegies to do that)..."
+    echo "Running apt-get (you need root privileges to do that)..."
     echo
     sudo apt-get update -qq || true
     sudo apt-get install -y -q $PKG_LIST
@@ -150,7 +150,7 @@ elif command -v dnf >/dev/null; then
             SDL2_mixer-devel \
             libxslt-devel python-devel python3-lxml"
     if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running dnf (you need root privelegies to do that)..."
+        echo "Running dnf (you need root privileges to do that)..."
         sudo dnf install $PKG_LIST || true
     fi
 
@@ -192,7 +192,7 @@ elif command -v yum >/dev/null; then
             SDL2_mixer-devel \
             libxslt-devel python-devel python3-lxml"
     if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running yum (you need root privelegies to do that)..."
+        echo "Running yum (you need root privileges to do that)..."
         su -c "yum install $PKG_LIST" || true
     fi
 
@@ -204,7 +204,7 @@ elif which zypper >/dev/null; then
     PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
 
     if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running zypper (you need root privelegies to do that)..."
+        echo "Running zypper (you need root privileges to do that)..."
         su -c "zypper install $PKG_LIST" || true
 
         # Add python lxml repository -> 3rd party
@@ -244,12 +244,12 @@ elif command -v pacman >/dev/null; then
             shared-mime-info \
             cmake make \
             python-lxml"
-    echo "Running pacman (you need root previllages to do that)..."
+    echo "Running pacman (you need root previleges to do that)..."
     echo
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
 
 else
-    echo "WARNING: This build script does not works with package management systems other than yum, zypper, apt or pacman! You should install dependent packages manually."
+    echo "WARNING: This build script does not work with package management systems other than yum, zypper, apt or pacman! You should install dependent packages manually."
     echo "REQUIRED PACKAGES: "
     echo "libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
     echo ""
