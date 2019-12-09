@@ -284,12 +284,15 @@ studio::Instance::run_plugin(std::string plugin_path)
 			
 			
 			// Save file copy
-			FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_extension(filename_original));
+			String filename_ext = filename_extension(filename_original);
+			if (filename_ext=="")
+				filename_ext = ".sifz";
+			FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_ext);
 			if (!stream_in)
 			{
 				synfig::error("run_plugin(): Unable to open file for reading");
 			}
-			if (filename_extension(filename_original) == ".sifz")
+			if (filename_ext == ".sifz")
 				stream_in = new ZReadStream(stream_in);
 			std::ofstream  outfile(filename_processed, std::ios::binary);
 			outfile << stream_in->rdbuf();
@@ -389,12 +392,12 @@ studio::Instance::run_plugin(std::string plugin_path)
 
 			} else {
 				// Restore file copy
-				FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream("#project"+filename_extension(filename_original));
+				FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream("#project"+filename_ext);
 				if (!stream)
 				{
 					synfig::error("run_plugin(): Unable to open file for write");
 				}
-				if (filename_extension(filename_original) == ".sifz")
+				if (filename_ext == ".sifz")
 					stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
 				std::ifstream  infile(filename_processed, std::ios::binary);
 				*stream << infile.rdbuf();
