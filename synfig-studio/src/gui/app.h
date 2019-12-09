@@ -47,7 +47,7 @@
 #include <gtkmm/uimanager.h>
 #include <synfigapp/instance.h>
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/pluginmanager.h>
+#include "pluginmanager.h"
 #include "iconcontroller.h"
 #include "mainwindow.h"
 
@@ -218,7 +218,7 @@ public:
 	static bool use_dark_theme;
 	static bool show_file_toolbar;
 
-	static synfigapp::PluginManager plugin_manager;
+	static PluginManager plugin_manager;
 	static synfig::String image_editor_path;
 	static std::set< synfig::String > brushes_path;
 	static synfig::String custom_filename_prefix;

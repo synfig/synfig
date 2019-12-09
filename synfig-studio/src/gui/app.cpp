@@ -313,7 +313,7 @@ int    studio::App::preferred_y_size             = 270;
 String studio::App::predefined_size              (DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps               (DEFAULT_PREDEFINED_FPS);
 float  studio::App::preferred_fps                = 24.0;
-synfigapp::PluginManager studio::App::plugin_manager;
+PluginManager studio::App::plugin_manager;
 std::set< String >       studio::App::brushes_path;
 String studio::App::image_editor_path;
 
@@ -1203,12 +1203,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	<menu action='menu-plugins'>"
 ;
 
-	list<synfigapp::PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
-	for(list<synfigapp::PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
+	list<PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
+	for(list<PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
 		// TODO: (Plugins) Arrange menu items into groups
 
-		synfigapp::PluginManager::plugin plugin = *p;
+		PluginManager::plugin plugin = *p;
 
 		DEFINE_ACTION(plugin.id, plugin.name);
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());

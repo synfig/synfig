@@ -43,6 +43,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/ipc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/keymapsettings.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/onemoment.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/pluginmanager.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/preview.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renddesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/render.cpp"

@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_PLUGINMANAGER_H
-#define __SYNFIG_APP_PLUGINMANAGER_H
+#ifndef __SYNFIG_GTKMM_PLUGINMANAGER_H
+#define __SYNFIG_GTKMM_PLUGINMANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
+namespace studio {
 
 class PluginManager
 {
