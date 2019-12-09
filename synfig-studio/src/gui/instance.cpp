@@ -255,11 +255,12 @@ studio::Instance::run_plugin(std::string plugin_path)
 		cur_time = canvas->get_time();
 
 		// Create random filename
+		String filename_original = get_canvas()->get_file_name();
 		String filename_processed;
 		struct stat buf;
 		do {
 			synfig::GUID guid;
-			filename_processed = get_canvas()->get_file_name()+"."+guid.get_string().substr(0,8)+".sif";
+			filename_processed = filename_original+"."+guid.get_string().substr(0,8)+".sif";
 		} while (stat(filename_processed.c_str(), &buf) != -1);
 
 		close(false);
@@ -283,12 +284,13 @@ studio::Instance::run_plugin(std::string plugin_path)
 			
 			
 			// Save file copy
-			FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project.sifz");
+			FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_extension(filename_original));
 			if (!stream_in)
 			{
 				synfig::error("run_plugin(): Unable to open file for reading");
 			}
-			stream_in = new ZReadStream(stream_in);
+			if (filename_extension(filename_original) == ".sifz")
+				stream_in = new ZReadStream(stream_in);
 			std::ofstream  outfile(filename_processed, std::ios::binary);
 			outfile << stream_in->rdbuf();
 			outfile.close();
@@ -387,12 +389,13 @@ studio::Instance::run_plugin(std::string plugin_path)
 
 			} else {
 				// Restore file copy
-				FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream("#project.sifz");
+				FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream("#project"+filename_extension(filename_original));
 				if (!stream)
 				{
 					synfig::error("run_plugin(): Unable to open file for write");
 				}
-				stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
+				if (filename_extension(filename_original) == ".sifz")
+					stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
 				std::ifstream  infile(filename_processed, std::ios::binary);
 				*stream << infile.rdbuf();
 				infile.close();
@@ -405,7 +408,6 @@ studio::Instance::run_plugin(std::string plugin_path)
 
 		App::open_from_temporary_filesystem(tmp_filename);
 		etl::handle<Instance> new_instance = App::instance_list.back();
-		//new_instance->inc_action_count(); // This file isn't saved! mark it as such
 
 		// Restore time cursor position
 		canvas = new_instance->get_canvas();
