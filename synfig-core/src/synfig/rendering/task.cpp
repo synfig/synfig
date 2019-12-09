@@ -390,21 +390,21 @@ TaskEvent::operator=(const TaskEvent &other)
 bool
 TaskEvent::is_done() const
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	return done;
 }
 
 bool
 TaskEvent::is_cancelled() const
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	return cancelled;
 }
 
 bool
 TaskEvent::is_finished() const
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	return done || cancelled;
 }
 
@@ -412,20 +412,20 @@ void
 TaskEvent::finish(bool success)
 {
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		if (done || cancelled) return;
 		(success ? done : cancelled) = true;
 	}
 	signal_finished(success);
-	cond.signal();
+	cond.notify_one();
 }
 
 void
 TaskEvent::wait()
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 	if (done || cancelled) return;
-	cond.wait(mutex);
+	cond.wait(lock);
 }
 
 bool

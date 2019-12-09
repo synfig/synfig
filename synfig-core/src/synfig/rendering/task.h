@@ -31,6 +31,7 @@
 #include <set>
 #include <map>
 #include <atomic>
+#include <condition_variable>
 
 #include <synfig/rect.h>
 #include <synfig/vector.h>
@@ -565,8 +566,8 @@ public:
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 private:
-	mutable Glib::Threads::Mutex mutex;
-	Glib::Threads::Cond cond;
+	mutable std::mutex mutex;
+	std::condition_variable cond;
 	bool done, cancelled;
 
 public:
