@@ -30,6 +30,8 @@
 #	include <config.h>
 #endif
 
+#include <atomic>
+
 #include "ipc.h"
 
 #ifdef HAVE_SYS_TYPES_H
@@ -92,12 +94,12 @@ using namespace studio;
 static std::mutex cmd_mutex;
 static std::list<synfig::String> cmd_queue;
 static Glib::Dispatcher* cmd_dispatcher;
-static bool thread_should_quit = false;
+static std::atimic<bool> thread_should_quit(false);
 std::thread *cmd_thread = nullptr;
 static void
 pipe_listen_thread()
 {
-	for(;;)
+	while(!thread_should_quit)
 	{
 		HANDLE pipe_handle;
 		pipe_handle=CreateNamedPipe(
