@@ -31,7 +31,9 @@
 #include <queue>
 
 #include <sigc++/signal.h>
-#include <glibmm/threads.h>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
 
 #include "real.h"
 
@@ -55,8 +57,8 @@ public:
 	private:
 		bool multithreading;
 		std::atomic<int> running_threads;
-		Glib::Threads::Mutex mutex;
-		Glib::Threads::Cond cond;
+		std::mutex mutex;
+		std::condition_variable cond;
 
 		List tasks;
 		Real sum_weight;
@@ -71,15 +73,15 @@ public:
 	};
 
 private:
-	Glib::Threads::Mutex mutex;
-	Glib::Threads::Cond cond;
+	std::mutex mutex;
+	std::condition_variable cond;
 	int max_running_threads;
 	int last_thread_id;
 	std::atomic<int> running_threads;
 	std::atomic<int> ready_threads;
 	std::atomic<int> queue_size;
 	std::queue<Slot> queue;
-	std::vector<Glib::Threads::Thread*> threads;
+	std::vector<std::thread*> threads;
 	bool stopped;
 
 	static ThreadPool *instance_;
@@ -94,7 +96,7 @@ public:
 	~ThreadPool();
 
 	void enqueue(const Slot &slot);
-	void wait(Glib::Threads::Cond &cond, Glib::Threads::Mutex &mutex);
+	void wait(std::condition_variable &cond, std::unique_lock<std::mutex>& lock);
 
 	int get_max_threads() const
 		{ return max_running_threads; }
