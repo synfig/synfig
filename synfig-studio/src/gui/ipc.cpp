@@ -142,7 +142,7 @@ pipe_listen_thread()
 			std::lock_guard<std::mutex> lock(cmd_mutex);
 			cmd_queue.push_back(data);
 			cmd_dispatcher->emit();
-		} while(success && read_bytes);
+		} while(success && read_bytes && !thread_should_quit);
 
 		CloseHandle(pipe_handle);
 	}
