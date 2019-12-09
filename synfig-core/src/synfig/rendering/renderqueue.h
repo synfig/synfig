@@ -31,7 +31,8 @@
 
 #include <map>
 
-#include <glibmm/threads.h>
+#include <mutex>
+#include <condition_variable>
 
 #include "task.h"
 
@@ -57,10 +58,10 @@ public:
 private:
 	static int last_batch_index;
 
-	Glib::Threads::Mutex mutex;
-	Glib::Threads::Mutex threads_mutex;
-	Glib::Threads::Cond cond;
-	Glib::Threads::Cond single_cond;
+	std::mutex mutex;
+	std::mutex threads_mutex;
+	std::condition_variable cond;
+	std::condition_variable single_cond;
 
 	TaskQueue ready_tasks;
 	TaskQueue single_ready_tasks;

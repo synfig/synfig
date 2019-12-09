@@ -91,7 +91,7 @@ RenderQueue::~RenderQueue() { stop(); }
 void
 RenderQueue::start()
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	if (started) return;
 
 	// one thread reserved for non-multithreading tasks (OpenGL)
@@ -121,10 +121,10 @@ void
 RenderQueue::stop()
 {
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		started = false;
-		cond.broadcast();
-		single_cond.broadcast();
+		cond.notify_all();
+		single_cond.notify_all();
 	}
 	while(!threads.empty())
 		{ threads.front()->join(); threads.pop_front(); }
@@ -197,7 +197,7 @@ RenderQueue::done(int thread_index, const Task::Handle &task)
 	assert(task);
 	int single_signals = 0;
 	int signals = 0;
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	for(Task::Set::iterator i = task->renderer_data.back_deps.begin(); i != task->renderer_data.back_deps.end(); ++i)
 	{
 		assert(*i);
@@ -226,14 +226,14 @@ RenderQueue::done(int thread_index, const Task::Handle &task)
 	--(thread_index ? signals : single_signals);
 
 	// wake up
-	while(signals-- > 0) cond.signal();
-	while(single_signals-- > 0) single_cond.signal();
+	while(signals-- > 0) cond.notify_one();
+	while(single_signals-- > 0) single_cond.notify_one();
 }
 
 Task::Handle
 RenderQueue::get(int thread_index)
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 
 	TaskQueue &queue  = thread_index == 0 ? single_ready_tasks     : ready_tasks;
 	TaskQueue &queue2 = thread_index != 0 ? single_ready_tasks     : ready_tasks;
@@ -258,7 +258,7 @@ RenderQueue::get(int thread_index)
 
 		assert( wait.empty() || !tasks_in_process.empty() || !queue2.empty() );
 
-		(thread_index ? cond : single_cond).wait(mutex);
+		(thread_index ? cond : single_cond).wait(lock);
 	}
 	return Task::Handle();
 }
@@ -339,14 +339,14 @@ RenderQueue::enqueue(const Task::Handle &task, const Task::RunParams &params)
 {
 	if (!task) return;
 	fix_task(*task, params);
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 
 	bool mt = task->get_allow_multithreading();
 	TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
 	TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
 	if (task->renderer_data.deps.empty()) {
 		queue.push_back(task);
-		(mt ? cond : single_cond).signal();
+		(mt ? cond : single_cond).notify_one();
 	}
 	else
 	{
@@ -366,7 +366,7 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 		if (*i) { fix_task(**i, p); ++count; }
 	if (!count) return;
 
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	int single_signals = 0;
 	int signals = 0;
 	for(Task::List::const_iterator i = tasks.begin(); i != tasks.end(); ++i)
@@ -391,8 +391,8 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 	if (single_signals > 1) single_signals = 1;
 
 	// wake up
-	while(signals-- > 0) cond.signal();
-	while(single_signals-- > 0) single_cond.signal();
+	while(signals-- > 0) cond.notify_one();
+	while(single_signals-- > 0) single_cond.notify_one();
 
 	remove_orphans();
 }
@@ -419,7 +419,7 @@ RenderQueue::cancel(const Task::Handle &task)
 	if (!task) return;
 
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		if (remove_task(task))
 			remove_orphans();
 	}
@@ -436,7 +436,7 @@ RenderQueue::cancel(const Task::List &list)
 	TaskEvent::List events;
 
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		bool found = false;
 		for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i) {
 			if (remove_task(*i))
@@ -454,7 +454,7 @@ RenderQueue::cancel(const Task::List &list)
 void
 RenderQueue::clear()
 {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	ready_tasks.clear();
 	single_ready_tasks.clear();
 	not_ready_tasks.clear();
