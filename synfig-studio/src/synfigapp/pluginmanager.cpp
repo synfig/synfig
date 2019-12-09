@@ -66,7 +66,7 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 {
 	// Save the original filename
 	filename_original = canvas->get_file_name();
-
+	if (0) { 
 	String filename_base;
 	if (is_absolute_path(filename_original))
 	{
@@ -83,7 +83,7 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 		synfig::GUID guid;
 		filename_processed = filename_base+"."+guid.get_string().substr(0,8)+".sif"; // without .sif suffix it won't be read back
 	} while (stat(filename_processed.c_str(), &buf) != -1);
-
+	
 	/* 
 	 * The plugin could die with nonzero exit code
 	 * synfig could crash loading the modified file (should not happen)
@@ -100,7 +100,9 @@ PluginLauncher::PluginLauncher(synfig::Canvas::Handle canvas)
 	std::ifstream  src(filename_processed, std::ios::binary);
 	std::ofstream  dst(filename_backup,   std::ios::binary);
 	dst << src.rdbuf();
-
+	
+	}
+	
 	//canvas=0;
 	exitcode=-1;
 	output="";

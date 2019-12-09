@@ -62,6 +62,7 @@
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_duplicate.h>
 #include <synfig/widthpoint.h>
+#include <synfig/zstreambuf.h>
 
 #include "instance.h"
 #include "canvasview.h"
@@ -248,10 +249,18 @@ studio::Instance::run_plugin(std::string plugin_path)
 		backup(true);
 		FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
 		String tmp_filename = temporary_filesystem->get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + temporary_filesystem->get_temporary_filename_base();
-		synfigapp::PluginLauncher launcher(canvas);
+		//synfigapp::PluginLauncher launcher(canvas);
 
 		Time cur_time;
 		cur_time = canvas->get_time();
+
+		// Create random filename
+		String filename_processed;
+		struct stat buf;
+		do {
+			synfig::GUID guid;
+			filename_processed = get_canvas()->get_file_name()+"."+guid.get_string().substr(0,8)+".sif";
+		} while (stat(filename_processed.c_str(), &buf) != -1);
 
 		close(false);
 
@@ -271,21 +280,46 @@ studio::Instance::run_plugin(std::string plugin_path)
 			one_moment.show();
 
 		} else {
-			bool result;
-			result = launcher.execute( plugin_path, App::get_base_path() );
+			
+			
+			// Save file copy
+			FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project.sifz");
+			if (!stream_in)
+			{
+				synfig::error("run_plugin(): Unable to open file for reading");
+			}
+			stream_in = new ZReadStream(stream_in);
+			std::ofstream  outfile(filename_processed, std::ios::binary);
+			outfile << stream_in->rdbuf();
+			outfile.close();
+			
+			bool result=true;
+			//result = launcher.execute( plugin_path, App::get_base_path() );
 			if (!result){
 				one_moment.hide();
 				App::dialog_message_1b(
 						"Error",
-						launcher.get_output(),
+						"", //launcher.get_output(),
 						"details",
 						_("Close"));
 
 				one_moment.show();
 
+			} else {
+			
+				// Restore file copy
+				FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream(tmp_filename);
+				if (!stream)
+				{
+					synfig::error("run_plugin(): Unable to open file for write");
+				}
+				stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
+				std::ifstream  infile(filename_processed, std::ios::binary);
+				*stream << infile.rdbuf();
+				infile.close();
+				
 			}
 		}
-
 
 		canvas=0;
 
@@ -294,7 +328,6 @@ studio::Instance::run_plugin(std::string plugin_path)
 		//new_instance->inc_action_count(); // This file isn't saved! mark it as such
 
 		// Restore time cursor position
-
 		canvas = new_instance->get_canvas();
 		etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
 		new_canvas_interface->set_time(cur_time);
