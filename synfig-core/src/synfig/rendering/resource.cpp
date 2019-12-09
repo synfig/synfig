@@ -59,21 +59,20 @@ Resource::Storage::ref() const
 bool
 Resource::Storage::unref_inactive() const
 {
-	return refcount == 0 || --refcount != (int)resources.size();
+	return --refcount > (int)resources.size();
 }
 
 bool
 Resource::Storage::unref() const
 {
-	if (refcount == 0) return true;
-	if (--refcount == (int)resources.size())
+	if (--refcount > (int)resources.size())
 	{
 		refcount = 0;
 		const_cast<Storage*>(this)->resources.clear();
 		#ifdef ETL_SELF_DELETING_SHARED_OBJECT
 		delete this;
 		#endif
-		return true;
+		return false;
 	}
 	return true;
 }
