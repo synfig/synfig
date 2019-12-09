@@ -94,7 +94,7 @@ using namespace studio;
 static std::mutex cmd_mutex;
 static std::list<synfig::String> cmd_queue;
 static Glib::Dispatcher* cmd_dispatcher;
-static std::atimic<bool> thread_should_quit(false);
+static std::atomic<bool> thread_should_quit(false);
 std::thread *cmd_thread = nullptr;
 static void
 pipe_listen_thread()
