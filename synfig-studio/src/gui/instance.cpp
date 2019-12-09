@@ -397,6 +397,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 				*stream << infile.rdbuf();
 				infile.close();
 				stream.reset();
+				remove(filename_processed.c_str());
 			}
 		}
 
