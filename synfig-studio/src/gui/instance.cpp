@@ -292,6 +292,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 			std::ofstream  outfile(filename_processed, std::ios::binary);
 			outfile << stream_in->rdbuf();
 			outfile.close();
+			stream_in.reset();
 			
 			bool result=true;
 			//result = launcher.execute( plugin_path, App::get_base_path() );
@@ -317,7 +318,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 				std::ifstream  infile(filename_processed, std::ios::binary);
 				*stream << infile.rdbuf();
 				infile.close();
-				
+				stream.reset();
 			}
 		}
 
