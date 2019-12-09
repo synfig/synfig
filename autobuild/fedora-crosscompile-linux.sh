@@ -1956,43 +1956,6 @@ chmod +x ${PREFIX}/synfigstudio
 
 }
 
-mkpreloader()
-{
-
-mkdir -p ${SRCPREFIX}/preloader
-pushd ${SRCPREFIX}/preloader >/dev/null
-cat > synfig-pkg-preloader.c  <<EOF
-#define _GNU_SOURCE
-#include <stdio.h>
-#include <string.h>
-#include <dlfcn.h>
-
-static int (*fopen_orig)(const char * pathname, int flags) = NULL;
-
-int open(const char * pathname, int flags) {
-	//printf("Blocking");
-	printf("Testing %s read\n", pathname);
-    if (fopen_orig == NULL)
-        fopen_orig = dlsym(RTLD_NEXT, "open");
-    if (strstr(pathname, "/home/zelgadis/synfig-buildroot/linux64/sys") != NULL) {
-        printf("Blocking %s read\n", pathname);
-        return -1;
-    }
-    return fopen_orig(pathname, flags);
-}
-
-FILE *fopen(const char *path, const char *mode) {
-    //printf("In our own fopen, opening %s\n", path);
-
-    FILE *(*original_fopen)(const char*, const char*);
-    original_fopen = dlsym(RTLD_NEXT, "fopen");
-    return (*original_fopen)(path, mode);
-}
-EOF
-gcc -shared -fPIC -ldl -O2 -o synfig-pkg-preloader.so synfig-pkg-preloader.c
-cp synfig-pkg-preloader.so ${PREFIX}/lib
-}
-
 mkpackage()
 {
 	[ ! -e ${DISTPREFIX} ] || rm -rf ${DISTPREFIX}

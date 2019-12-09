@@ -951,7 +951,6 @@ fedora-mingw-install mingw${ARCH}-pango
 fedora-mingw-install mingw${ARCH}-boost
 fedora-mingw-install mingw${ARCH}-libjpeg-turbo
 fedora-mingw-install mingw${ARCH}-gtkmm30
-fedora-mingw-install mingw${ARCH}-dlfcn
 fedora-mingw-install mingw${ARCH}-SDL
 fedora-mingw-install mingw${ARCH}-fftw
 cp ${MINGWPREFIX}/include/SDL/* ${MINGWPREFIX}/include/

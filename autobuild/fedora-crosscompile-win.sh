@@ -100,7 +100,6 @@ if [ ! -z $DEPS ]; then
 		${TOOLCHAIN}-gtkmm30 \
 		${TOOLCHAIN}-glibmm24 \
 		${TOOLCHAIN}-libltdl \
-		${TOOLCHAIN}-dlfcn \
 		${TOOLCHAIN}-SDL \
 		${TOOLCHAIN}-fftw \
 		mingw32-nsis \

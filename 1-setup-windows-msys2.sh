@@ -20,6 +20,7 @@ echo "Selected ARCH: ${ARCH}"
 #echo "Sync pacman package databases"
 #pacman -Sy
 
+# dlfcn is still required to MLT build, so don't remove it
 echo "Installing development tools"
 # install basic development system, compiler toolchain and build tools
 pacman -S --needed --noconfirm --color=auto \
