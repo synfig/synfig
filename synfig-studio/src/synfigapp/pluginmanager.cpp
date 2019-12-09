@@ -31,9 +31,6 @@
 
 #include "pluginmanager.h"
 
-#include <iostream>
-#include <fstream>
-
 #include <libxml++/libxml++.h>
 
 #include <dirent.h>
