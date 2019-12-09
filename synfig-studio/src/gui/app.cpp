@@ -4242,3 +4242,26 @@ studio::App::process_all_events(long unsigned int us)
 		Glib::usleep(us);
 	}
 }
+
+bool
+studio::App::check_python_version(String path)
+{
+	String command;
+	String result;
+	command = path + " --version 2>&1";
+	FILE* pipe = popen(command.c_str(), "r");
+	if (!pipe) {
+		return false;
+	}
+	char buffer[128];
+	while(!feof(pipe)) {
+		if(fgets(buffer, 128, pipe) != NULL)
+				result += buffer;
+	}
+	pclose(pipe);
+	// Output is like: "Python 3.3.0"
+	if (result.substr(7,1) != "3"){
+		return false;
+	}
+	return true;
+}

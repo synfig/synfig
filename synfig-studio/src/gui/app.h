@@ -457,6 +457,7 @@ public:
 	static void setup_changed();
 
 	static void process_all_events(long unsigned int us = 1);
+	static bool check_python_version( std::string path);
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);

@@ -39,40 +39,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfigapp {
-	
-class PluginLauncher
-{
 
-	/*
- -- ** -- P R I V A T E   D A T A ---------------------------------------------
-	*/
-
-private:
-
-	std::string filename_original;		// location of original file
-	std::string filename_processed; 	// processed file
-	std::string filename_backup;		// backup copy
-	std::string output;
-	int exitcode;
-
-protected:
-	
-	/*
- -- ** -- P U B L I C   M E T H O D S -----------------------------------------
-	*/
-
-public:
-	PluginLauncher( synfig::Canvas::Handle );
-	~PluginLauncher();
-
-	bool execute( std::string script_path, const std::string& synfig_root );
-	bool check_python_version( std::string path);
-	std::string get_result_path();
-	std::string get_original_path() { return filename_original; };
-	std::string get_output() { return output; };
-
-}; // END class Plugin
-	
 class PluginManager
 {
 	/*

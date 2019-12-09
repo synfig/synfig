@@ -294,13 +294,92 @@ studio::Instance::run_plugin(std::string plugin_path)
 			outfile.close();
 			stream_in.reset();
 			
-			bool result=true;
+			
+			// ============= EXECUTE START ====================================
+			bool result;
+			int exitcode;
+			String output;
+			String command = "";
+	
+			// Path to python binary can be overridden
+			// with SYNFIG_PYTHON_BINARY env variable:
+			char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
+			if(custom_python_binary) {
+				command=custom_python_binary;
+				if (!App::check_python_version(command)) {
+					output="Error: You need to have Python 3 installed.";
+					command="";
+				}
+			} else {
+			// Set path to python binary depending on the os type.
+			// For Windows case Python binary is expected
+			// at INSTALL_PREFIX/python/python.exe
+				std::list< String > binary_choices;
+				binary_choices.push_back("python");
+				binary_choices.push_back("python3");
+				std::list< String >::iterator iter;
+				for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
+				{
+					String python_path;
+		#ifdef _WIN32
+					python_path = "\"" + synfig_root+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
+		#else
+					python_path = *iter;
+		#endif
+					if (App::check_python_version(python_path))
+					{
+						command = python_path;
+						break;
+					}
+
+				}
+				
+			}
+			if (command == "")
+			{
+				output=_("Error: No Python 3 binary found.\n\nHint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation.");
+			} else {
+				synfig::info("Python 3 binary found: "+command);
+
+
+				// Construct the full command:
+				command = command+" \""+plugin_path+"\" \""+filename_processed+"\" 2>&1";
+	#ifdef _WIN32
+				// This covers the dumb cmd.exe behavior.
+				// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
+				command = "\"" + command + "\"";
+	#endif
+
+				FILE* pipe = popen(command.c_str(), "r");
+				if (!pipe) {
+					output = "ERROR: pipe failed!";
+				} else {
+					char buffer[128];
+					while(!feof(pipe)) {
+						if(fgets(buffer, 128, pipe) != NULL)
+								output += buffer;
+					}
+
+					if (output != "" ){
+						synfig::info(output);
+					}
+
+					exitcode=pclose(pipe);
+
+					if (0==exitcode){
+						result=true;
+					}
+				}
+			}
+			// =============== EXECUTE END =====================================
+			
+			
 			//result = launcher.execute( plugin_path, App::get_base_path() );
 			if (!result){
 				one_moment.hide();
 				App::dialog_message_1b(
 						"Error",
-						"", //launcher.get_output(),
+						output,
 						"details",
 						_("Close"));
 
