@@ -386,9 +386,8 @@ studio::Instance::run_plugin(std::string plugin_path)
 				one_moment.show();
 
 			} else {
-			
 				// Restore file copy
-				FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream(tmp_filename);
+				FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream("#project.sifz");
 				if (!stream)
 				{
 					synfig::error("run_plugin(): Unable to open file for write");
