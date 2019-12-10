@@ -323,7 +323,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 			{
 				String python_path;
 #ifdef _WIN32
-				python_path = "\"" + synfig_root+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
+				python_path = "\"" + App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
 #else
 				python_path = *iter;
 #endif
