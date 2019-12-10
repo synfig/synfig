@@ -22,8 +22,6 @@ LTDL_INIT([convenience])
 
 AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked statically])
 
-AC_CONFIG_MACRO_DIRS([m4])
-
 # -- V A R I A B L E S ----------------------------------------
 
 API_VERSION=1.0
