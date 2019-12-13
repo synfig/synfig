@@ -254,7 +254,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 	Time cur_time;
 	cur_time = canvas->get_time();
 
-	// Create random filename
+	// Generate temporary file name
 	String filename_original = get_canvas()->get_file_name();
 	String filename_processed;
 	struct stat buf;
@@ -282,12 +282,12 @@ studio::Instance::run_plugin(std::string plugin_path)
 
 		// Save file copy
 		String filename_ext = filename_extension(filename_original);
-		if (filename_ext=="")
+		if (filename_ext.empty())
 			filename_ext = ".sifz";
 		FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_ext);
 		if (!stream_in)
 		{
-			synfig::error("run_plugin(): Unable to open file for reading");
+			synfig::error("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext));
 		}
 		if (filename_ext == ".sifz")
 			stream_in = new ZReadStream(stream_in);
@@ -304,11 +304,11 @@ studio::Instance::run_plugin(std::string plugin_path)
 
 		// Path to python binary can be overridden
 		// with SYNFIG_PYTHON_BINARY env variable:
-		char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
+		const char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
 		if(custom_python_binary) {
 			command=custom_python_binary;
 			if (!App::check_python_version(command)) {
-				output="Error: You need to have Python 3 installed.";
+				output=_("Error: You need to have Python 3 installed.");
 				command="";
 			}
 		} else {
@@ -336,7 +336,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 			}
 
 		}
-		if (command == "")
+		if (command.empty())
 		{
 			output=_("Error: No Python 3 binary found.\n\nHint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation.");
 		} else {
