@@ -456,7 +456,7 @@ public:
 		return ValueDesc(*this, sub_name);
 	}
 
-	//! @return copy of it self when sum_name is empty string
+	//! @return copy of it self when sub_name is empty string
 	ValueDesc get_sub_value(const synfig::String &sub_name)const
 	{
 		return sub_name.empty() ? *this : ValueDesc(*this, sub_name);

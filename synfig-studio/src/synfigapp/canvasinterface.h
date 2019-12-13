@@ -314,6 +314,8 @@ public:
 		synfig::String &warnings,
 		bool resize_image = false );
 
+	void waypoint_set_value_node(synfig::ValueNode::Handle value_node, const synfig::Waypoint& waypoint);
+	void waypoint_move(const ValueDesc& value_desc, const synfig::Time& time, const synfig::Time& deltatime);
 
 	void waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
 	void waypoint_duplicate(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint);
@@ -322,6 +324,7 @@ public:
 	void waypoint_remove(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint);
 
 	bool change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value,bool lock_animation = false);
+	bool change_value_at_time(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value,const synfig::Time &time,bool lock_animation = false);
 
 
 	int find_important_value_descs(std::vector<synfigapp::ValueDesc>& out);

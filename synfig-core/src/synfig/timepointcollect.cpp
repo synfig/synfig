@@ -139,6 +139,76 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 	return 0;
 }
 
+bool
+synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const etl::handle<Node> &node)
+{
+	// Check if we are a linkable value node
+	LinkableValueNode::Handle linkable_value_node;
+	linkable_value_node=linkable_value_node.cast_dynamic(node);
+	if(linkable_value_node)
+	{
+		const int link_count(linkable_value_node->link_count());
+		for(int i=0; i < link_count; i++) {
+			bool ret = waypoint_search(waypoint, uid, linkable_value_node->get_link(i).get());
+			if (ret)
+				return true;
+		}
+		return false;
+	}
+
+	// Check if we are a layer
+	Layer::Handle layer;
+	layer=layer.cast_dynamic(node);
+	if(layer)
+	{
+		const Layer::DynamicParamList& dyn_param_list(layer->dynamic_param_list());
+
+		for(Layer::DynamicParamList::const_iterator iter=dyn_param_list.begin(); iter!=dyn_param_list.end(); ++iter) {
+			bool ret = waypoint_search(waypoint, uid, iter->second);
+			if (ret)
+				return true;
+		}
+
+		ValueBase canvas_value(layer->get_param("canvas"));
+		if(canvas_value.get_type()==type_canvas)
+		{
+			bool ret = waypoint_search(waypoint, uid,
+									  Canvas::Handle(canvas_value.get(Canvas::Handle())));
+			if (ret)
+				return true;
+		}
+		return false;
+	}
+
+	// Check if we are a canvas
+	Canvas::Handle canvas;
+	canvas=canvas.cast_dynamic(node);
+	if(canvas)
+	{
+		for(Canvas::const_iterator iter = canvas->begin(); iter!=canvas->end(); ++iter) {
+			bool ret = waypoint_search(waypoint, uid, *iter);
+			if (ret)
+				return true;
+		}
+		return false;
+	}
+
+	// Check if we are an animated value node
+	ValueNode_Animated::Handle value_node_animated;
+	value_node_animated=value_node_animated.cast_dynamic(node);
+	if(value_node_animated)
+	{
+		ValueNode_AnimatedInterfaceConst::const_findresult result = value_node_animated->find_uid(uid);
+		if (!result.second)
+			return false;
+
+		waypoint = *result.first;
+		return true;
+	}
+
+	return false;
+}
+
 //! \writeme
 int
 synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Time& time, const etl::handle<Node>& node)

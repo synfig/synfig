@@ -1111,8 +1111,6 @@ ValueNode_AnimatedInterfaceConst::waypoint_is_only_use_of_valuenode(Waypoint &wa
 void
 ValueNode_AnimatedInterfaceConst::erase(const UniqueID &x)
 {
-	// \todo printf?
-	printf("%s:%d erasing waypoint from %lx\n", __FILE__, __LINE__, uintptr_t(this));
 	WaypointList::iterator iter(find(x));
 	Waypoint waypoint(*iter);
 	assert(waypoint.get_value_node());

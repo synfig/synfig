@@ -74,9 +74,9 @@ Dock_Curves::~Dock_Curves()
 }
 
 static void
-_curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
+_curve_selection_changed(Gtk::TreeView* param_tree_view, Widget_Curves* curves, Dock_Curves* dock)
 {
-	LayerParamTreeStore::Model model;
+	LayerParamTreeStore::Model param_model;
 	Gtk::TreeIter iter;
 	if(!param_tree_view->get_selection()->count_selected_rows())
 	{
@@ -85,11 +85,27 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 		return;
 	}
 
-	std::list<synfigapp::ValueDesc> value_descs;
+	std::list< std::pair<std::string, synfigapp::ValueDesc> > value_descs;
 
-	iter=param_tree_view->get_selection()->get_selected();
-	value_descs.push_back((*iter)[model.value_desc]);
-	curves->set_value_descs(value_descs);
+	auto path_list = param_tree_view->get_selection()->get_selected_rows();
+	auto model = param_tree_view->get_model();
+	for (auto path_it : path_list) {
+		auto iter = model->get_iter(path_it);
+		std::string name;
+
+		{
+			auto iter2 = iter;
+			while (iter2) {
+				std::string current_label = (*iter2)[param_model.label].operator Glib::ustring();
+				name = current_label + ":" + name;
+				iter2 = iter2->parent();
+			}
+			name.pop_back();
+		}
+
+		value_descs.push_back( std::pair<std::string, synfigapp::ValueDesc> (name, (*iter)[param_model.value_desc]));
+	}
+	curves->set_value_descs(dock->get_canvas_interface(), value_descs);
 }
 
 void
@@ -109,8 +125,10 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	param_tree_view->get_selection()->signal_changed().connect(
 		sigc::bind(
 			sigc::bind(
-				sigc::ptr_fun(
-					_curve_selection_changed
+				sigc::bind(
+					sigc::ptr_fun(
+						_curve_selection_changed
+					),this
 				),curves
 			),param_tree_view
 		)
@@ -119,6 +137,20 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
 	tree_layer->signal_param_tree_header_height_changed().connect(
 		sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height) );
+
+	curves->signal_waypoint_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
+		if (button != 3)
+			return;
+		button = 2;
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+	});
+
+	curves->signal_waypoint_double_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
+		if (button != 1)
+			return;
+		button = -1;
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+	});
 
 	canvas_view->set_ext_widget(get_name(),curves);
 }

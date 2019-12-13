@@ -1136,6 +1136,47 @@ CanvasInterface::import_sequence(
 	return true;
 }
 
+void CanvasInterface::waypoint_set_value_node(ValueNode::Handle value_node, const Waypoint& waypoint)
+{
+	Action::Handle 	action(Action::create("WaypointSetSmart"));
+
+	assert(action);
+	if(!action)
+		return;
+
+	action->set_param("canvas", get_canvas());
+	action->set_param("canvas_interface", this);
+	action->set_param("value_node", value_node);
+	action->set_param("waypoint", waypoint);
+//	action->set_param("time",canvas_interface()->get_time());
+
+	if(!get_instance()->perform_action(action))
+		get_ui_interface()->error(_("Action Failed."));
+}
+
+void CanvasInterface::waypoint_move(const ValueDesc& value_desc, const Time& time, const Time& deltatime)
+{
+	Action::Handle 	action(Action::create("TimepointsMove"));
+
+	assert(action);
+	if(!action)
+		return;
+
+	action->set_param("canvas", get_canvas());
+	action->set_param("canvas_interface", this);
+	if (value_desc.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+		action->set_param("addcanvas", value_desc.get_value().get(Canvas::Handle()));
+	} else {
+		action->set_param("addvaluedesc", value_desc);
+	}
+
+	action->set_param("addtime", time);
+
+	action->set_param("deltatime", deltatime);
+
+	if(!get_instance()->perform_action(action))
+		get_ui_interface()->error(_("Action Failed."));
+}
 
 void
 CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
@@ -1248,8 +1289,13 @@ CanvasInterface::auto_export(const ValueDesc& /*value_desc*/)
 bool
 CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value,bool lock_animation)
 {
+	return change_value_at_time(value_desc, new_value, get_time(), lock_animation);
+}
+
+bool CanvasInterface::change_value_at_time(ValueDesc value_desc, ValueBase new_value, const Time& time, bool lock_animation)
+{
 	ValueBase old_value;
-	old_value = value_desc.get_value(get_time());
+	old_value = value_desc.get_value(time);
 
 	// If this isn't really a change, then don't bother
 	if(new_value==old_value)
@@ -1267,7 +1313,7 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 			instance=find_instance(value_desc.get_canvas()->get_root());
 
 			if(instance)
-				return instance->find_canvas_interface(value_desc.get_canvas())->change_value(value_desc,new_value);
+				return instance->find_canvas_interface(value_desc.get_canvas())->change_value_at_time(value_desc,new_value, time);
 			else
 			{
 				get_ui_interface()->error(_("The value you are trying to edit is in a composition\nwhich doesn't seem to be open. Open that composition and you\nshould be able to edit this value as normal."));
@@ -1288,7 +1334,7 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
-	action->set_param("time",get_time());
+	action->set_param("time",time);
 	action->set_param("value_desc",value_desc);
 	action->set_param("new_value",new_value);
 	if (lock_animation) action->set_param("lock_animation", lock_animation);
