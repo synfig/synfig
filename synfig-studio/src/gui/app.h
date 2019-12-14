@@ -47,7 +47,7 @@
 #include <gtkmm/uimanager.h>
 #include <synfigapp/instance.h>
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/pluginmanager.h>
+#include "pluginmanager.h"
 #include "iconcontroller.h"
 #include "mainwindow.h"
 
@@ -218,7 +218,7 @@ public:
 	static bool use_dark_theme;
 	static bool show_file_toolbar;
 
-	static synfigapp::PluginManager plugin_manager;
+	static PluginManager plugin_manager;
 	static synfig::String image_editor_path;
 	static std::set< synfig::String > brushes_path;
 	static synfig::String custom_filename_prefix;
@@ -366,11 +366,9 @@ public:
 		std::string as,
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
-	static bool open(std::string filename);
-
-	static bool open_as(
+	static bool open(
 		std::string filename,
-		std::string as,
+		/* std::string as, */
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
 	static bool open_from_temporary_filesystem(std::string temporary_filename);
@@ -459,6 +457,7 @@ public:
 	static void setup_changed();
 
 	static void process_all_events(long unsigned int us = 1);
+	static bool check_python_version( std::string path);
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);

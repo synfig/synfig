@@ -174,7 +174,7 @@ public:
 	bool save_as(const synfig::String &filename);
 
 	//! Saves the instance to current temporary container
-	bool backup();
+	bool backup(bool save_even_if_unchanged = false);
 
 	//! generate layer name (also known in code as 'description')
 	synfig::String generate_new_description(const synfig::Layer::Handle &layer);

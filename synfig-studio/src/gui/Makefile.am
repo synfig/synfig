@@ -52,6 +52,7 @@ OTHER_HH = \
 	ipc.h \
 	keymapsettings.h \
 	onemoment.h \
+	pluginmanager.h \
 	preview.h \
 	renddesc.h \
 	render.h \
@@ -83,6 +84,7 @@ OTHER_CC = \
 	ipc.cpp \
 	keymapsettings.cpp \
 	onemoment.cpp \
+	pluginmanager.cpp \
 	preview.cpp \
 	renddesc.cpp \
 	render.cpp \

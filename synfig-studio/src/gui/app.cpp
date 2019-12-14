@@ -313,7 +313,7 @@ int    studio::App::preferred_y_size             = 270;
 String studio::App::predefined_size              (DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps               (DEFAULT_PREDEFINED_FPS);
 float  studio::App::preferred_fps                = 24.0;
-synfigapp::PluginManager studio::App::plugin_manager;
+PluginManager studio::App::plugin_manager;
 std::set< String >       studio::App::brushes_path;
 String studio::App::image_editor_path;
 
@@ -1203,12 +1203,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	<menu action='menu-plugins'>"
 ;
 
-	list<synfigapp::PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
-	for(list<synfigapp::PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
+	list<PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
+	for(list<PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
 		// TODO: (Plugins) Arrange menu items into groups
 
-		synfigapp::PluginManager::plugin plugin = *p;
+		PluginManager::plugin plugin = *p;
 
 		DEFINE_ACTION(plugin.id, plugin.name);
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
@@ -3746,23 +3746,17 @@ App::wrap_into_temporary_filesystem(
 }
 
 bool
-App::open(std::string filename)
-{
-	return open_as(filename,filename);
-}
-
-bool
-App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_size_t truncate_storage_size)
+App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
 #ifdef _WIN32
     size_t buf_size = PATH_MAX - 1;
     char* long_name = (char*)malloc(buf_size);
     long_name[0] = '\0';
-    if(GetLongPathName(as.c_str(),long_name,sizeof(long_name)));
+    if(GetLongPathName(filename.c_str(),long_name,sizeof(long_name)));
     // when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
     // don't use it if that's the case
     if (long_name[0] != '\0')
-        as=String(long_name);
+        filename=String(long_name);
     free(long_name);
 #endif
 
@@ -3780,12 +3774,12 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
 
 		// wrap into temporary file system
-		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename, as, truncate_storage_size);
+		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename, filename, truncate_storage_size);
 
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename);
 
-		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), as, errors, warnings);
+		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3805,8 +3799,8 @@ App::open_as(std::string filename,std::string as,synfig::FileContainerZip::file_
 					_("Close"),
 					warnings);
 
-			if (as.find(custom_filename_prefix.c_str()) != 0)
-				add_recent_file(as);
+			if (filename.find(custom_filename_prefix.c_str()) != 0)
+				add_recent_file(filename);
 
 			handle<Instance> instance(Instance::create(canvas, container));
 
@@ -4122,7 +4116,7 @@ App::dialog_open(string filename)
 					truncate_storage_size = i->storage_size;
 		}
 
-		if(open_as(filename,filename,truncate_storage_size))
+		if(open(filename,truncate_storage_size))
 			break;
 
 		get_ui_interface()->error(_("Unable to open file"));
@@ -4247,4 +4241,27 @@ studio::App::process_all_events(long unsigned int us)
 			studio::App::iteration(false);
 		Glib::usleep(us);
 	}
+}
+
+bool
+studio::App::check_python_version(String path)
+{
+	String command;
+	String result;
+	command = path + " --version 2>&1";
+	FILE* pipe = popen(command.c_str(), "r");
+	if (!pipe) {
+		return false;
+	}
+	char buffer[128];
+	while(!feof(pipe)) {
+		if(fgets(buffer, 128, pipe) != NULL)
+				result += buffer;
+	}
+	pclose(pipe);
+	// Output is like: "Python 3.3.0"
+	if (result.substr(7,1) != "3"){
+		return false;
+	}
+	return true;
 }

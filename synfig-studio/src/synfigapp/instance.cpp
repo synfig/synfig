@@ -575,9 +575,9 @@ Instance::save_all_layers()
 }
 
 bool
-Instance::backup()
+Instance::backup(bool save_even_if_unchanged)
 {
-	if (!get_action_count())
+	if (!get_action_count() && !save_even_if_unchanged)
 		return true;
 	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
 
@@ -638,6 +638,7 @@ Instance::save_as(const synfig::String &file_name)
 			new_temporary_filesystem->set_meta("as", new_canvas_filename);
 			new_temporary_filesystem->set_meta("truncate", "0");
 			new_canvas_filesystem = new_temporary_filesystem;
+			previous_temporary_filesystem->discard_changes();
 		}
 
 		new_canvas_identifier = new_canvas_filesystem->get_identifier(CanvasFileNaming::project_file(new_canvas_filename));
