@@ -81,8 +81,7 @@ public:
 	};
 
 	enum {
-		MAX_SUBDIVISION_SIZE = 64,
-		MIN_SUBDIVISION_DRAW_LEVELS = 4
+		MAX_SUBDIVISION_SIZE = 64
 	};
 
 private:
@@ -117,6 +116,9 @@ private:
 
 	//move to the next cell (cover values 0 initially), keeping the current if necessary
 	void move_pen(int x, int y);
+
+	static Real clamp_coord(Real x);
+	static Real clamp_detail(Real x);
 
 	static bool clip_conic(const Point *const p, const RectInt &r);
 	static Real max_edges_conic(const Point *const p);

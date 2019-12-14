@@ -87,6 +87,23 @@ Polyspan::addcurrent()
 	}
 }
 
+Real
+Polyspan::clamp_coord(Real x) {
+	const Real limit = 1e9;
+	return x >= -limit && x <= limit ?  x
+		 : x <  -limit               ? -limit
+		 : x >   limit               ?  limit
+		 : 0;
+}
+
+Real
+Polyspan::clamp_detail(Real x) {
+	const Real limit = 1e9;
+	return x >= 0 && x <= limit ? x
+		 : x > limit            ? limit
+		 : 0;
+}
+
 //move to the next cell (cover values 0 initially), keeping the current if necessary
 void
 Polyspan::move_pen(int x, int y)
@@ -154,8 +171,9 @@ void
 Polyspan::move_to(Real x, Real y)
 {
 	close();
-	if(std::isnan(x))x=0;
-	if(std::isnan(y))y=0;
+	x = clamp_coord(x);
+	y = clamp_coord(y);
+	
 	move_pen((int)floor(x),(int)floor(y));
 	close_y = cur_y = y;
 	close_x = cur_x = x;
@@ -172,11 +190,15 @@ Polyspan::finish_line()
 void
 Polyspan::line_to(Real x, Real y, Real detail)
 {
+	x = clamp_coord(x);
+	y = clamp_coord(y);
+	detail = clamp_detail(detail);
+
 	Real dx = x - cur_x;
 	Real dy = y - cur_y;
 
 	if (detail) {
-		if (fabs(dx) < detail && fabs(dy) < detail) {
+		if (std::max(fabs(dx), fabs(dy)) <= detail*0.5) {
 			cur_line_x = x;
 			cur_line_y = y;
 			flags |= NotFinishedLine;
@@ -376,16 +398,13 @@ Polyspan::clip_conic(const Point *const p, const RectInt &r)
 Real
 Polyspan::max_edges_conic(const Point *const p)
 {
-	const Real x1 = p[1][0] - p[0][0];
-	const Real y1 = p[1][1] - p[0][1];
+	const Real x0 = std::min(p[0][0], std::min(p[1][0], p[2][0]));
+	const Real x1 = std::max(p[0][0], std::max(p[1][0], p[2][0]));
 
-	const Real x2 = p[2][0] - p[1][0];
-	const Real y2 = p[2][1] - p[1][1];
+	const Real y0 = std::min(p[0][1], std::min(p[1][1], p[2][1]));
+	const Real y1 = std::max(p[0][1], std::max(p[1][1], p[2][1]));
 
-	const Real d1 = x1*x1 + y1*y1;
-	const Real d2 = x2*x2 + y2*y2;
-
-	return std::max(d1,d2);
+	return std::max(x1 - x0, y1 - y0);
 }
 
 void
@@ -439,27 +458,22 @@ Polyspan::subd_conic_stack(Point *arc)
 void
 Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 {
-	if ( fabs(cur_x - x) < detail
-	  && fabs(cur_y - y) < detail
-	  && fabs(cur_x - x1) < detail
-	  && fabs(cur_y - y1) < detail )
-	{
+	x = clamp_coord(x);
+	y = clamp_coord(y);
+	x1 = clamp_coord(x1);
+	y1 = clamp_coord(y1);
+	detail = clamp_detail(detail);
+
+	arc[0] = Point(x,y);
+	arc[1] = Point(x1,y1);
+	arc[2] = Point(cur_x,cur_y);
+	if (max_edges_conic(arc) <= detail*0.5) {
 		cur_line_x = x;
 		cur_line_y = y;
 		flags |= NotFinishedLine;
 		return;
 	}
 	finish_line();
-	detail *= 0.5; // more accurate coefficient for spline subdivisions
-
-	Point *current = arc;
-	int		level = 0;
-	int 	num = 0;
-	bool	onsecond = false;
-
-	arc[0] = Point(x,y);
-	arc[1] = Point(x1,y1);
-	arc[2] = Point(cur_x,cur_y);
 
 	//just draw the line if it's outside
 	if(clip_conic(arc,window))
@@ -468,15 +482,20 @@ Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 		return;
 	}
 
+	Point *current = arc;
+	Point *last = arc + sizeof(arc)/sizeof(*arc) - 2;
+
+	// more accurate coefficient for spline subdivisions
+	detail = std::max(0.1, detail*0.5);
+
 	//Ok so it's not super degenerate, subdivide and draw (run through minimum subdivision levels first)
 	while(current >= arc)
 	{
-		if(num >= MAX_SUBDIVISION_SIZE)
+		if(current >= last)
 		{
-			warning("Curve subdivision somehow ran out of space while tessellating!");
-
-			//do something...
+			error("Curve subdivision somehow ran out of space while tessellating!");
 			assert(0);
+			line_to(x, y, 0.0);
 			return;
 		}else
 		//if the curve is clipping then draw degenerate
@@ -484,40 +503,19 @@ Polyspan::conic_to(Real x, Real y, Real x1, Real y1, Real detail)
 		{
 			line_to(current[0][0], current[0][1], 0.0); //backwards so front is destination
 			current -= 2;
-			if(onsecond) level--;
-			onsecond = true;
-			num--;
-			continue;
-		}else
-		//if we are not at the level minimum
-		if(level < MIN_SUBDIVISION_DRAW_LEVELS)
-		{
-			subd_conic_stack(current);
-			current += 2; 		//cursor on second curve
-			level ++;
-			num ++;
-			onsecond = false;
-			continue;
 		}else
 		//split it again, if it's too big
 		if(max_edges_conic(current) > detail) //distance of .5 (cover no more than half the pixel)
 		{
 			subd_conic_stack(current);
-			current += 2; 		//cursor on second curve
-			level ++;
-			num ++;
-			onsecond = false;
-		}
-		else	//NOT TOO BIG? RENDER!!!
+			current += 2; //cursor on second curve
+		}else
+		//not too big? Render!!!
 		{
 			//cur_x,cur_y = current[2], so we need to go 1,0
 			line_to(current[1][0], current[1][1], 0.0);
 			line_to(current[0][0], current[0][1], 0.0);
-
 			current -= 2;
-			if(onsecond) level--;
-			num--;
-			onsecond = true;
 		}
 	}
 }
@@ -534,20 +532,13 @@ Polyspan::clip_cubic(const Point *const p, const RectInt &r)
 Real
 Polyspan::max_edges_cubic(const Point *const p)
 {
-	const Real x1 = p[1][0] - p[0][0];
-	const Real y1 = p[1][1] - p[0][1];
+	const Real x0 = std::min(std::min(p[0][0], p[1][0]), std::min(p[2][0], p[3][0]));
+	const Real x1 = std::max(std::max(p[0][0], p[1][0]), std::max(p[2][0], p[3][0]));
 
-	const Real x2 = p[2][0] - p[1][0];
-	const Real y2 = p[2][1] - p[1][1];
+	const Real y0 = std::min(std::min(p[0][1], p[1][1]), std::min(p[2][1], p[3][1]));
+	const Real y1 = std::max(std::max(p[0][1], p[1][1]), std::max(p[2][1], p[3][1]));
 
-	const Real x3 = p[3][0] - p[2][0];
-	const Real y3 = p[3][1] - p[2][1];
-
-	const Real d1 = x1*x1 + y1*y1;
-	const Real d2 = x2*x2 + y2*y2;
-	const Real d3 = x3*x3 + y3*y3;
-
-	return std::max(std::max(d1,d2),d3);
+	return std::max(x1 - x0, y1 - y0);
 }
 
 void
@@ -604,30 +595,25 @@ Polyspan::subd_cubic_stack(Point *arc)
 void
 Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real detail)
 {
-	if ( fabs(cur_x - x) < detail
-	  && fabs(cur_y - y) < detail
-	  && fabs(cur_x - x1) < detail
-	  && fabs(cur_y - y1) < detail
-	  && fabs(cur_x - x2) < detail
-	  && fabs(cur_y - y2) < detail )
-	{
+	x = clamp_coord(x);
+	y = clamp_coord(y);
+	x1 = clamp_coord(x1);
+	y1 = clamp_coord(y1);
+	x2 = clamp_coord(x2);
+	y2 = clamp_coord(y2);
+	detail = clamp_detail(detail);
+
+	arc[0] = Point(x,y);
+	arc[1] = Point(x2,y2);
+	arc[2] = Point(x1,y1);
+	arc[3] = Point(cur_x,cur_y);
+	if (max_edges_cubic(arc) <= detail*0.5) {
 		cur_line_x = x;
 		cur_line_y = y;
 		flags |= NotFinishedLine;
 		return;
 	}
 	finish_line();
-	detail *= 0.5; // more accurate coefficient for spline subdivisions
-
-	Point *current = arc;
-	int		num = 0;
-	int		level = 0;
-	bool	onsecond = false;
-
-	arc[0] = Point(x,y);
-	arc[1] = Point(x2,y2);
-	arc[2] = Point(x1,y1);
-	arc[3] = Point(cur_x,cur_y);
 
 	//just draw the line if it's outside
 	if(clip_cubic(arc,window))
@@ -636,59 +622,41 @@ Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real deta
 		return;
 	}
 
+	Point *current = arc;
+	Point *last = arc + sizeof(arc)/sizeof(*arc) - 3;
+
+	// more accurate coefficient for spline subdivisions
+	detail = std::max(0.1, detail*0.5);
+
 	//Ok so it's not super degenerate, subdivide and draw (run through minimum subdivision levels first)
 	while(current >= arc) //once current goes below arc, there are no more curves left
 	{
-		if(num >= MAX_SUBDIVISION_SIZE)
+		if(current >= last)
 		{
-			warning("Curve subdivision somehow ran out of space while tessellating!");
-
-			//do something...
+			error("Curve subdivision somehow ran out of space while tessellating!");
 			assert(0);
+			line_to(x, y, 0.0);
 			return;
-		}else
-
-		//if we are not at the level minimum
-		if(level < MIN_SUBDIVISION_DRAW_LEVELS)
-		{
-			subd_cubic_stack(current);
-			current += 3; 		//cursor on second curve
-			level ++;
-			num ++;
-			onsecond = false;
-			continue;
 		}else
 		//if the curve is clipping then draw degenerate
 		if(clip_cubic(current,window))
 		{
 			line_to(current[0][0], current[0][1], 0.0); //backwards so front is destination
 			current -= 3;
-			if(onsecond) level--;
-			onsecond = true;
-			num --;
-			continue;
-		}
-		else
+		}else
 		//split it again, if it's too big
 		if(max_edges_cubic(current) > detail) //could use max_edges<3>
 		{
 			subd_cubic_stack(current);
-			current += 3; 		//cursor on second curve
-			level ++;
-			num ++;
-			onsecond = false;
-		}
-		else //NOT TOO BIG? RENDER!!!
+			current += 3; //cursor on second curve
+		}else
+		//not too big? Render!!!
 		{
 			//cur_x,cur_y = current[3], so we need to go 2,1,0
 			line_to(current[2][0], current[2][1], 0.0);
 			line_to(current[1][0], current[1][1], 0.0);
 			line_to(current[0][0], current[0][1], 0.0);
-
 			current -= 3;
-			if(onsecond) level--;
-			num --;
-			onsecond = true;
 		}
 	}
 }
@@ -697,6 +665,11 @@ Polyspan::cubic_to(Real x, Real y, Real x1, Real y1, Real x2, Real y2, Real deta
 void
 Polyspan::draw_scanline(int y, Real x1, Real y1, Real x2, Real y2)
 {
+	x1 = clamp_coord(x1);
+	y1 = clamp_coord(y1);
+	x2 = clamp_coord(x2);
+	y2 = clamp_coord(y2);
+
 	int	ix1 = (int)floor(x1);
 	int	ix2 = (int)floor(x2);
 	Real fx1 = x1 - ix1;
@@ -797,12 +770,15 @@ Polyspan::draw_scanline(int y, Real x1, Real y1, Real x2, Real y2)
 void
 Polyspan::draw_line(Real x1, Real y1, Real x2, Real y2)
 {
+	x1 = clamp_coord(x1);
+	y1 = clamp_coord(y1);
+	x2 = clamp_coord(x2);
+	y2 = clamp_coord(y2);
+
 	int iy1 = (int)floor(y1);
 	int iy2 = (int)floor(y2);
 	Real fy1 = y1 - iy1;
 	Real fy2 = y2 - iy2;
-
-	if (std::isnan(fy1) || std::isnan(fy2)) return;
 
 	Real dx,dy,dxdy,mult,x_from,x_to;
 
