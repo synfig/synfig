@@ -287,7 +287,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 		FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_ext);
 		if (!stream_in)
 		{
-			synfig::error("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext));
+			synfig::error(strprintf("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext).c_str()));
 		}
 		if (filename_ext == ".sifz")
 			stream_in = new ZReadStream(stream_in);
