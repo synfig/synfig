@@ -71,7 +71,7 @@ public:
 		bool e0, e1;
 		Real l;
 		Real length;
-		Point(): mode(NONE), e0(), e1(), l() { }
+		Point(): mode(NONE), e0(), e1(), l(), length() { }
 	};
 
 	typedef std::vector<Point> PointList;
