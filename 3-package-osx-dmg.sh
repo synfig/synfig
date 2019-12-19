@@ -50,7 +50,8 @@ mkapp()
 	[ ! -d ${APPDIR_FINAL} ] || rm -rf ${APPDIR_FINAL}
 
 	cp -Rf "${SCRIPTPATH}/autobuild/osx/app-template" "$APPDIR"
-	mv ${APPDIR}/Contents/MacOS/synfigstudio $APPDIR/Contents/MacOS/SynfigStudio || true
+	mv "${APPDIR}/Contents/MacOS/synfigstudio.sh" "$APPDIR/Contents/MacOS/SynfigStudio.sh" || true
+	g++ "${SCRIPTPATH}/autobuild/osx/synfig_osx_launcher.cpp" -o "$APPDIR/Contents/MacOS/SynfigStudio"
 
 	#mkdir -p "$APPCONTENTS/bin"
 	#cp -R "$MACPORTS/bin/ffmpeg" "$APPCONTENTS/bin"
