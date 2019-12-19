@@ -404,6 +404,11 @@ public:
 Intersector::Intersector()
 	{ clear(); }
 
+// destroying of MonoSegmentList and CurveArrayList
+// can be done only in this .cpp file
+Intersector::~Intersector()
+	{ }
+
 void
 Intersector::clear()
 {

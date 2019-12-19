@@ -82,6 +82,7 @@ private:
 
 public:
 	Intersector();
+	~Intersector();
 	void clear();
 
 	inline bool closed() const
