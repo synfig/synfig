@@ -57,7 +57,7 @@ if ! ( which pip >/dev/null ); then
 fi
 
 # Installing lxml using pip
-STATIC_DEPS=true sudo pip install lxml
+STATIC_DEPS=true sudo pip3 install lxml
 
 
 #HOMEBREW_NO_AUTO_UPDATE=1 brew bundle -no-upgrade --file=-<<-EOF
