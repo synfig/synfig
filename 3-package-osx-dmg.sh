@@ -202,7 +202,7 @@ mkapp()
 	mkdir -p ../../../../../../lib/python3.6/site-packages
 	ln -sf ../../../../../../lib/python3.6/site-packages site-packages
 	popd > /dev/null
-	rsync -av --exclude "__pycache__" "/usr/local/lib/python${PYTHON_VERSION}/site-packages/lxml*" "${APPCONTENTS}/lib/python${PYTHON_VERSION}/site-packages/"
+	rsync -av --exclude "__pycache__" /usr/local/lib/python${PYTHON_VERSION}/site-packages/lxml* "${APPCONTENTS}/lib/python${PYTHON_VERSION}/site-packages/"
 	#cp -R "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python3.3" "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/"
 	#find ${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib -name "__pycache__" -exec rm -rf {} \;
 
