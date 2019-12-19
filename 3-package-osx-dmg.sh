@@ -263,7 +263,7 @@ mkapp()
 
 	# app bundle files
 	echo "*** Please do _NOT_ delete this file. The file script depends on it. ***" > "$APPCONTENTS/v$VERSION"
-	sed -i "" -e "s/_VERSION_/$VERSION/g" "$APPDIR/Contents/MacOS/SynfigStudio"
+	sed -i "" -e "s/_VERSION_/$VERSION/g" "$APPDIR/Contents/MacOS/SynfigStudio.sh"
 	sed -i "" -e "s/_VERSION_/$VERSION/g" "$APPDIR/Contents/Info.plist"
 
 	# save information about the ports which make up this build
@@ -311,6 +311,7 @@ mkdmg()
 	cp -R ${SCRIPTPATH}/synfig-studio/COPYING /Volumes/"$VOLNAME"/LICENSE.txt
 	cp -R ${SCRIPTPATH}/autobuild/osx/README_FIRST.pdf /Volumes/"$VOLNAME"/README_FIRST.pdf
 	mv /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/synfigstudio /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/SynfigStudio || true
+	mv /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/synfigstudio.sh /Volumes/"$VOLNAME"/SynfigStudio.app/Contents/MacOS/SynfigStudio.sh || true
 
 	# open the window so that the icon database is generated
 	open /Volumes/"$VOLNAME" || true
