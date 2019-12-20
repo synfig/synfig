@@ -42,4 +42,4 @@ git add \
 	synfig-studio/org.synfig.SynfigStudio.appdata.xml.in \
 	# end
 
-git commit -m "Release version ${VERSION_NEW}"
+git commit -m "Bump version to ${VERSION_NEW}"
