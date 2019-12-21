@@ -16,3 +16,7 @@ git add \
 	# end
 
 git commit -m "Release version ${VERSION_CURRENT}"
+git push upstream testing
+
+git tag v${VERSION_CURRENT}
+git push --tags upstream
