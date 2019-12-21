@@ -3111,6 +3111,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
 				.add_enum_value(synfig::RELEASE_VERSION_CURRENT, "Current", _("Current"))
+				.add_enum_value(synfig::RELEASE_VERSION_1_4_0, "1.4.0", "1.4.0")
 				.add_enum_value(synfig::RELEASE_VERSION_1_2_0, "1.2.0", "1.2.0")
 				.add_enum_value(synfig::RELEASE_VERSION_1_0_2, "1.0.2", "1.0.2")
 				.add_enum_value(synfig::RELEASE_VERSION_1_0, "1.0", "1.0")
