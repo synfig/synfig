@@ -1439,6 +1439,10 @@ bool Widget_Curves::TcbHandle::operator ==(const Widget_Curves::TcbHandle& b) co
 
 void Widget_Curves::TcbHandle::draw(const Cairo::RefPtr<Cairo::Context>& cr, bool hovered, const TimePlotData &time_plot_data, unsigned int waypoint_edge_length) const
 {
+	const Color useless_bias_handle(0.5, 0.5, 0.5);
+	const Color hovered_bias_handle(1.0, 1.0, 0.0);
+	const Color regular_bias_handle(0.0, 1.0, 0.0);
+
 	if (!is_valid())
 		return;
 
@@ -1458,13 +1462,19 @@ void Widget_Curves::TcbHandle::draw(const Cairo::RefPtr<Cairo::Context>& cr, boo
 	cr->save();
 	cr->move_to(waypoint_p.get_x(), waypoint_p.get_y());
 	cr->line_to(handle_p.get_x(), handle_p.get_y());
-	if (hovered)
-		cr->set_source_rgb(1,1,0);
-	else
-		cr->set_source_rgb(0,1,0);
+
+	const Color * handle_color = &regular_bias_handle;
+	bool is_useless = !previous_waypoint || !next_waypoint;
+	if (is_useless)
+		handle_color = &useless_bias_handle;
+	else if (hovered)
+		handle_color = &hovered_bias_handle;
+	cr->set_source_rgb(handle_color->get_r(), handle_color->get_g(), handle_color->get_b());
 	cr->stroke();
 //	cr->move_to(handle_p.get_x(), handle_p.get_y());
 	cr->arc(handle_p.get_x(), handle_p.get_y(), 3, 0, 2*PI);
+	if (!is_useless)
+		cr->fill_preserve();
 	cr->stroke();
 
 	cr->restore();
