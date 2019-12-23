@@ -98,13 +98,22 @@ private:
 		bool is_waypoint_selected(const ChannelPoint& point) const;
 	} channel_point_sd;
 
-	struct TcbHandle {
+	class TcbHandle {
+	private:
+		synfig::Waypoint waypoint;
+		std::shared_ptr<const synfig::Waypoint> previous_waypoint;
+		std::shared_ptr<const synfig::Waypoint> next_waypoint;
+	public:
 		enum Param {Tension, Continuity, Bias, TemporalTension, Invalid} param;
 		size_t channel_index;
-		synfig::Waypoint waypoint;
 
 		TcbHandle();
 		TcbHandle(Param param_);
+
+		void set_waypoint(const synfig::Waypoint& waypoint);
+		synfig::Waypoint& get_waypoint();
+		const synfig::Waypoint* get_previous() const;
+		const synfig::Waypoint* get_next() const;
 
 		void invalidate();
 		bool is_valid() const;
@@ -116,6 +125,8 @@ private:
 		void draw(const Cairo::RefPtr<Cairo::Context> &cr, bool hovered, const TimePlotData &time_plot_data, unsigned int waypoint_edge_length) const;
 		bool get_waypoint_position(Gdk::Point &p, const TimePlotData& time_plot_data) const;
 		bool get_position(Gdk::Point &p, const TimePlotData& time_plot_data) const;
+
+		synfig::Real get_tangent() const;
 	};
 
 	class TcbHandleSD : public SelectDragHelper<TcbHandle> {
