@@ -50,6 +50,7 @@
 #include <synfig/layers/layer_pastecanvas.h>
 
 #include <synfig/valuenodes/valuenode_animatedfile.h>
+#include <synfig/valuenodes/valuenode_animatedfile.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_linear.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -947,8 +948,11 @@ CanvasInterface::import_sequence(
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import sequence"));
 
+	float fps = get_canvas()->rend_desc().get_frame_rate();
+	
 	synfig::info("Attempting to import sequence");
 	Layer::Handle layer_switch;
+	ValueNode_Animated::Handle layer_name_animated = ValueNode_Animated::create(type_string);
 	try {
 		// add imported layers into switch
 		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
@@ -1030,6 +1034,11 @@ CanvasInterface::import_sequence(
 				action->set_param("layer", layer);
 				if (!layers_count)
 					action->set_param("description", desc);
+				
+				Waypoint &wp = *layer_name_animated->new_waypoint(Time(layers_count/fps), ValueBase(desc));
+				wp.set_before(INTERPOLATION_CONSTANT);
+				wp.set_after(INTERPOLATION_CONSTANT);
+				
 				++layers_count;
 			} catch(...) {
 				errors += etl::strprintf(_("Unable to import file: %s"), filename.c_str());
@@ -1048,77 +1057,16 @@ CanvasInterface::import_sequence(
 		if (layer) {
 			// get parent layer, because image is incapsulated into action switch
 			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer();
-			
-			// reset layer_name param of switch
-			action = Action::create("ValueDescSet");
+
+			// connect animated layer_name param
+			action = Action::create("LayerParamConnect");
 			if(!action)
 				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
 			action->set_param("canvas", get_canvas());
 			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
-			action->set_param("value_desc", ValueDesc(layer_switch, "layer_name"));
-			action->set_param("new_value", ValueBase(String()));
-			if(!action->is_ready())
-				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
-			if(!get_instance()->perform_action(action))
-				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
-			
-			// set layer_depth param to zero
-			action = Action::create("ValueDescSet");
-			if(!action)
-				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
-			action->set_param("canvas", get_canvas());
-			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
-			action->set_param("value_desc", ValueDesc(layer_switch, "layer_depth"));
-			action->set_param("new_value", ValueBase(int(0)));
-			if(!action->is_ready())
-				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
-			if(!get_instance()->perform_action(action))
-				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
-			
-			// convert layer_depth to fromreal
-			action = Action::create("ValueDescConvert");
-			if(!action)
-				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
-			action->set_param("canvas", get_canvas());
-			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
-			action->set_param("value_desc", ValueDesc(layer_switch, "layer_depth"));
-			action->set_param("type", "fromreal");
-			action->set_param("time", get_time());
-			if(!action->is_ready())
-				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
-			if(!get_instance()->perform_action(action))
-				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
-			
-			Layer::DynamicParamList::const_iterator i = layer_switch->dynamic_param_list().find("layer_depth");
-			if (i == layer_switch->dynamic_param_list().end())
-				{ get_ui_interface()->error(_("Dynamic param not found.")); throw int(); }
-			LinkableValueNode::Handle valuenode_real = LinkableValueNode::Handle::cast_dynamic(i->second);
-			
-			// convert fromreal to linear (make chain: layer_depth <- fromreal <- linear)
-			action = Action::create("ValueDescConvert");
-			if(!action)
-				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
-			action->set_param("canvas", get_canvas());
-			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
-			action->set_param("value_desc", ValueDesc(valuenode_real, valuenode_real->get_link_index_from_name("link")));
-			action->set_param("type", "linear");
-			action->set_param("time", get_time());
-			if(!action->is_ready())
-				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
-			if(!get_instance()->perform_action(action))
-				{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
-			
-			LinkableValueNode::Handle valuenode_linear = LinkableValueNode::Handle::cast_dynamic(valuenode_real->get_link("link"));
-			
-			// set rate param of linear to canvas fps
-			Real fps = get_canvas()->rend_desc().get_frame_rate();
-			action = Action::create("ValueDescSet");
-			if(!action)
-				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
-			action->set_param("canvas", get_canvas());
-			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
-			action->set_param("value_desc", ValueDesc(valuenode_linear, valuenode_linear->get_link_index_from_name("slope")));
-			action->set_param("new_value", ValueBase(fps));
+			action->set_param("layer", layer_switch);
+			action->set_param("param", "layer_name");
+			action->set_param("value_node", ValueNode::Handle(layer_name_animated));
 			if(!action->is_ready())
 				{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
 			if(!get_instance()->perform_action(action))
@@ -1145,7 +1093,7 @@ void CanvasInterface::waypoint_set_value_node(ValueNode::Handle value_node, cons
 		return;
 
 	action->set_param("canvas", get_canvas());
-	action->set_param("canvas_interface", this);
+	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
 	action->set_param("value_node", value_node);
 	action->set_param("waypoint", waypoint);
 //	action->set_param("time",canvas_interface()->get_time());
@@ -1163,7 +1111,7 @@ void CanvasInterface::waypoint_move(const ValueDesc& value_desc, const Time& tim
 		return;
 
 	action->set_param("canvas", get_canvas());
-	action->set_param("canvas_interface", this);
+	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
 	if (value_desc.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 		action->set_param("addcanvas", value_desc.get_value().get(Canvas::Handle()));
 	} else {
