@@ -178,7 +178,7 @@ Layer_Composite::get_param_vocab()const
 	Layer::Vocab ret(Layer::get_param_vocab());
 	//! Now inserts the two parameters that this layer knows.
 	ret.push_back(ParamDesc(param_amount,"amount")
-		.set_local_name(_("Amount"))
+		.set_local_name(_("Opacity"))
 		.set_description(_("Alpha channel of the layer"))
 	);
 	ret.push_back(ParamDesc(param_blend_method,"blend_method")
