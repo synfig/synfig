@@ -130,7 +130,7 @@ LayerActionManager::LayerActionManager():
 	action_amount_=Gtk::Action::create(
 		"amount",
 		Gtk::StockID("gtk-index"),
-		_("Amount"),_("Amount")
+		_("Opacity"),_("Opacity")
 	);
 
 	action_select_all_child_layers_=Gtk::Action::create(
