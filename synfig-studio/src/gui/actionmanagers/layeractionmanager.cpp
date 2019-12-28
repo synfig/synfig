@@ -128,12 +128,6 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
-	action_amount_=Gtk::Action::create(
-		"amount",
-		Gtk::StockID("gtk-index"),
-		_("Opacity"),_("Opacity")
-	);
-
 	action_select_all_child_layers_=Gtk::Action::create(
 		"select-all-child-layers",
 		Gtk::StockID("synfig-select_all_child_layers"),
@@ -277,10 +271,8 @@ LayerActionManager::refresh()
 					action_amount_inc_->set_label(_("Increase Amount"));
 					action_amount_dec_->set_label(_("Decrease Amount"));
 				}
-				action_amount_->set_sensitive(!layer_list.empty());
 				action_group_->add(action_amount_inc_);
 				action_group_->add(action_amount_dec_);
-				action_group_->add(action_amount_);
 
 				for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 				{
