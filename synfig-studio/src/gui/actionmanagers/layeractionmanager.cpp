@@ -37,6 +37,7 @@
 #include "trees/layertree.h"
 #include <synfig/context.h>
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_skeleton.h>
 #include <synfigapp/action_param.h>
 #include "instance.h"
 #include <synfigapp/selectionmanager.h>
@@ -269,6 +270,13 @@ LayerActionManager::refresh()
 
 				action_amount_inc_->set_sensitive(!layer_list.empty());
 				action_amount_dec_->set_sensitive(!layer_list.empty());
+				if (etl::handle<Layer_Skeleton>::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
+					action_amount_inc_->set_label(_("Increase Opacity"));
+					action_amount_dec_->set_label(_("Decrease Opacity"));
+				} else {
+					action_amount_inc_->set_label(_("Increase Amount"));
+					action_amount_dec_->set_label(_("Decrease Amount"));
+				}
 				action_amount_->set_sensitive(!layer_list.empty());
 				action_group_->add(action_amount_inc_);
 				action_group_->add(action_amount_dec_);
