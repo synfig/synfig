@@ -56,6 +56,7 @@ private:
 	bool dragging_started_by_key;
 
 	T hovered_item;
+	bool has_hovered_item;
 	std::vector<T> selected_items;
 	const T* active_item;
 
@@ -211,7 +212,7 @@ public:
 
 template <class T>
 SelectDragHelper<T>::SelectDragHelper(const char* drag_action_name)
-	: drag_action_name(drag_action_name), action_group_drag(nullptr), active_item(nullptr), pointer_state(POINTER_NONE)
+	: drag_action_name(drag_action_name), action_group_drag(nullptr), hovered_item(), has_hovered_item(false), active_item(nullptr), pointer_state(POINTER_NONE)
 {
 }
 
@@ -400,8 +401,8 @@ template<class T>
 bool SelectDragHelper<T>::process_button_double_press_event(GdkEventButton* event)
 {
 	T pointed_item;
-	find_item_at_position(event->x, event->y, pointed_item);
-	if (pointed_item.is_valid()) {
+	bool found = find_item_at_position(event->x, event->y, pointed_item);
+	if (found) {
 		int pointer_x = std::trunc(event->x);
 		int pointer_y = std::trunc(event->y);
 		signal_item_double_clicked().emit(pointed_item, event->button, Gdk::Point(pointer_x, pointer_y));
@@ -428,8 +429,8 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 		if (pointer_state == POINTER_NONE) {
 			start_tracking_pointer(event->x, event->y);
 			T pointed_item;
-			find_item_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
-			if (pointed_item.is_valid()) {
+			bool found = find_item_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
+			if (found) {
 				auto already_selection_it = std::find(selected_items.begin(), selected_items.end(), pointed_item);
 				bool is_already_selected = already_selection_it != selected_items.end();
 				bool using_key_modifiers = (event->state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) != 0;
@@ -469,8 +470,8 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 
 	{
 		T pointed_item;
-		find_item_at_position(event->x, event->y, pointed_item);
-		if (pointed_item.is_valid()) {
+		bool found = find_item_at_position(event->x, event->y, pointed_item);
+		if (found) {
 			int pointer_x = std::trunc(event->x);
 			int pointer_y = std::trunc(event->y);
 			signal_item_clicked().emit(pointed_item, event->button, Gdk::Point(pointer_x, pointer_y));
@@ -575,12 +576,12 @@ bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 {
 	bool processed = false;
 	auto previous_hovered_point = hovered_item;
-	hovered_item.invalidate();
+	has_hovered_item = false;
 
 	int pointer_x = std::trunc(event->x);
 	int pointer_y = std::trunc(event->y);
 	if (pointer_state != POINTER_DRAGGING)
-		find_item_at_position(pointer_x, pointer_y, hovered_item);
+		has_hovered_item = find_item_at_position(pointer_x, pointer_y, hovered_item);
 
 	if (previous_hovered_point != hovered_item) {
 		signal_hovered_item_changed().emit();
@@ -663,7 +664,7 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 
 template <class T>
 void SelectDragHelper<T>::refresh() {
-	hovered_item.invalidate();
+	has_hovered_item = false;
 }
 
 template <class T>
@@ -671,7 +672,7 @@ void SelectDragHelper<T>::clear() {
 	if (pointer_state == POINTER_DRAGGING) {
 		cancel_dragging();
 	}
-	hovered_item.invalidate();
+	has_hovered_item = false;
 	if (!selected_items.empty()) {
 		selected_items.clear();
 		signal_selection_changed().emit();
