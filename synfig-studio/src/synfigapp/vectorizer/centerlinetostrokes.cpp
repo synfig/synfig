@@ -75,9 +75,9 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   std::cout<<"After unit size factor: H - "<<height/unit_size<<", W - "<<width/unit_size<<"\n";
   for(int i=0;i<segment_size;i++)
   {
-    segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size + topleft[0]) +  new_center[0];//x from TL;
-    segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size + bottomright[1]) + new_center[1];// y from BR;
-    segment[i][2] = segment[i][2]/2;
+    segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size + topleft[0]+new_center[0])  ;//x from TL;
+    segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size + bottomright[1] + new_center[1]);// y from BR;
+    segment[i][2] = segment[i][2]/2.5;
   }
 
   if(max_thickness_zero)
