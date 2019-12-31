@@ -13,6 +13,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/dock_metadata.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_navigator.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_params.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_soundwave.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_timetrack.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_toolbox.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dockable.cpp"
