@@ -490,10 +490,10 @@ void Widget_Curves::on_waypoint_double_clicked(const Widget_Curves::ChannelPoint
 	signal_waypoint_double_clicked().emit(cp.curve_it->value_desc, waypoint_set, button);
 }
 
-Widget_Curves::Widget_Curves():
-	channel_point_sd(*this),
-	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, DEFAULT_PAGE_SIZE)),
-	waypoint_edge_length(16)
+Widget_Curves::Widget_Curves()
+	: Widget_TimeGraphBase(),
+	  channel_point_sd(*this),
+	  waypoint_edge_length(16)
 {
 	set_size_request(64, 64);
 
@@ -501,7 +501,6 @@ Widget_Curves::Widget_Curves():
 
 	set_can_focus(true);
 
-	time_plot_data = new TimePlotData(*this, range_adjustment);
 	time_plot_data->set_extra_time_margin(16/2);
 
 	channel_point_sd.set_pan_enabled(true);
@@ -531,20 +530,6 @@ Widget_Curves::Widget_Curves():
 
 Widget_Curves::~Widget_Curves() {
 	clear();
-	set_time_model(etl::handle<TimeModel>());
-	delete time_plot_data;
-}
-
-const etl::handle<TimeModel>&
-Widget_Curves::get_time_model() const
-{
-	return time_plot_data->time_model;
-}
-
-void
-Widget_Curves::set_time_model(const etl::handle<TimeModel> &x)
-{
-	time_plot_data->set_time_model(x);
 }
 
 void
@@ -564,66 +549,6 @@ Widget_Curves::refresh()
 		i->clear_all_values();
 	channel_point_sd.refresh();
 	queue_draw();
-}
-
-void Widget_Curves::zoom_in()
-{
-	set_zoom(get_zoom() * ZOOM_CHANGING_FACTOR);
-}
-
-void Widget_Curves::zoom_out()
-{
-	set_zoom(get_zoom() / ZOOM_CHANGING_FACTOR);
-}
-
-void Widget_Curves::zoom_100()
-{
-	set_zoom(1.0);
-}
-
-void Widget_Curves::set_zoom(double new_zoom_factor)
-{
-	int x, y;
-	get_pointer(x, y);
-	double perc_y = y/(get_height()+0.0);
-	double y_value = perc_y * range_adjustment->get_page_size() + range_adjustment->get_value();
-	double new_range_page_size = DEFAULT_PAGE_SIZE / new_zoom_factor;
-	double new_range_value = y_value - perc_y * new_range_page_size;
-	ConfigureAdjustment(range_adjustment)
-		.set_page_size(new_range_page_size)
-		.set_value(new_range_value)
-		.finish();
-}
-
-double Widget_Curves::get_zoom() const
-{
-	return DEFAULT_PAGE_SIZE / range_adjustment->get_page_size();
-}
-
-void Widget_Curves::scroll_up()
-{
-	ConfigureAdjustment(range_adjustment)
-		.set_value(range_adjustment->get_value() - range_adjustment->get_step_increment())
-		.finish();
-}
-
-void Widget_Curves::scroll_down()
-{
-	ConfigureAdjustment(range_adjustment)
-		.set_value(range_adjustment->get_value() + range_adjustment->get_step_increment())
-		.finish();
-}
-
-void Widget_Curves::pan(int dx, int dy, int /*total_dx*/, int /*total_dy*/)
-{
-	Time dt(-dx*time_plot_data->dt);
-	time_plot_data->time_model->move_by(dt);
-
-	double real_dy = (range_adjustment->get_page_size()*dy)/get_height();
-
-	ConfigureAdjustment(range_adjustment)
-		.set_value(range_adjustment->get_value() - real_dy)
-		.finish();
 }
 
 void Widget_Curves::select_all_points()
@@ -690,24 +615,20 @@ Widget_Curves::on_event(GdkEvent *event)
 		break;
 	}
 
-	return Gtk::DrawingArea::on_event(event);
+	return Widget_TimeGraphBase::on_event(event);
 }
 
 bool
 Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
+	if (Widget_TimeGraphBase::on_draw(cr))
+		return true;
+
+	if (curve_list.size() == 0)
+		return true;
+
 	int w = get_width();
 	int h = get_height();
-	if (w <= 0 || h <= 0)
-		return Gtk::DrawingArea::on_draw(cr);
-
-	get_style_context()->render_background(cr, 0, 0, w, h);
-
-	if (!time_plot_data->time_model || !curve_list.size())
-		return true;
-
-	if (time_plot_data->is_invalid())
-		return true;
 
 	cr->save();
 
@@ -739,9 +660,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	}
 
 	// Draw current time
-	cr->set_source_rgb(0, 0, 1);
-	cr->rectangle(time_plot_data->get_pixel_t_coord(time_plot_data->time), 0, 0, h);
-	cr->stroke();
+	draw_current_time(cr);
 
 	// reserve arrays for maximum number of channels
 	size_t max_channels = 0;

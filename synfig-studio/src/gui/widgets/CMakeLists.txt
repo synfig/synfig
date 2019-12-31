@@ -22,4 +22,5 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/widget_keyframe_list.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_bonechooser.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_ruler.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/widget_timegraphbase.cpp"
 )
