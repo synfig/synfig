@@ -32,6 +32,7 @@ class Widget_SoundWave : public Widget_TimeGraphBase
 {
 public:
 	Widget_SoundWave();
+	virtual ~Widget_SoundWave();
 
 	bool load(const std::string &filename);
 	void clear();
@@ -64,9 +65,9 @@ private:
 	unsigned long buffer_length;
 
 	// sound format
-	unsigned int frequency = 48000;
-	unsigned int n_channels = 2;
-	unsigned int n_samples = 0;
+	int frequency = 48000;
+	int n_channels = 2;
+	int n_samples = 0;
 
 	// user settings
 	synfig::Time sound_delay;
