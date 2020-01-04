@@ -56,7 +56,9 @@ Widget_TimeGraphBase::Widget_TimeGraphBase()
 
 Widget_TimeGraphBase::~Widget_TimeGraphBase()
 {
-	set_time_model(etl::handle<TimeModel>());
+	if (time_model_changed_connection.connected())
+		time_model_changed_connection.disconnect();
+
 	delete time_plot_data;
 }
 
@@ -67,7 +69,16 @@ const etl::handle<TimeModel>& Widget_TimeGraphBase::get_time_model() const
 
 void Widget_TimeGraphBase::set_time_model(const etl::handle<TimeModel>& x)
 {
+	if (x == time_plot_data->time_model)
+		return;
+
+	if (time_model_changed_connection.connected())
+		time_model_changed_connection.disconnect();
+
 	time_plot_data->set_time_model(x);
+
+	if (x)
+		time_model_changed_connection = x->signal_changed().connect(sigc::mem_fun(*this, &Widget_TimeGraphBase::on_time_model_changed));
 }
 
 void Widget_TimeGraphBase::zoom_in()
@@ -158,6 +169,11 @@ bool Widget_TimeGraphBase::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		return true;
 
 	return false;
+}
+
+void Widget_TimeGraphBase::on_time_model_changed()
+{
+
 }
 
 void Widget_TimeGraphBase::draw_current_time(const Cairo::RefPtr<Cairo::Context>& cr)
