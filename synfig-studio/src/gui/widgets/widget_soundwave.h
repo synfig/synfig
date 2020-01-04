@@ -68,9 +68,9 @@ private:
 	unsigned long buffer_length;
 
 	// sound format
-	int frequency = 48000;
-	int n_channels = 2;
-	int n_samples = 0;
+	int frequency;
+	int n_channels;
+	int n_samples;
 
 	// user settings
 	synfig::Time sound_delay;

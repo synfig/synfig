@@ -89,6 +89,8 @@ src/gui/docks/dock_navigator.cpp
 src/gui/docks/dock_navigator.h
 src/gui/docks/dock_params.cpp
 src/gui/docks/dock_params.h
+src/gui/docks/dock_soundwave.h
+src/gui/docks/dock_soundwave.cpp
 src/gui/docks/dock_timetrack.cpp
 src/gui/docks/dock_timetrack.h
 src/gui/docks/dock_toolbox.cpp
@@ -202,6 +204,8 @@ src/gui/widgets/widget_gradient.h
 src/gui/widgets/widget_keyframe_list.cpp
 src/gui/widgets/widget_keyframe_list.h
 src/gui/widgets/widget_link.h
+src/gui/widgets/widget_soundwave.h
+src/gui/widgets/widget_soundwave.cpp
 src/gui/widgets/widget_sublayer.cpp
 src/gui/widgets/widget_sublayer.h
 src/gui/widgets/widget_time.cpp

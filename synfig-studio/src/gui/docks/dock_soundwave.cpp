@@ -260,5 +260,6 @@ void Dock_SoundWave::setup_file_setting_data()
 	}
 	channel_combo.set_active_id(std::to_string(current_widget_sound->get_channel_idx()));
 
+	delay_widget.set_fps(current_widget_sound->get_time_model()->get_frame_rate());
 	delay_widget.set_value(current_widget_sound->get_delay());
 }

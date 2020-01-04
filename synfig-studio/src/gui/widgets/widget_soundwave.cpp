@@ -45,12 +45,18 @@
 
 using namespace studio;
 
+const int default_frequency = 48000;
+const int default_n_channels = 2;
+
 Widget_SoundWave::MouseHandler::~MouseHandler() {}
 
 Widget_SoundWave::Widget_SoundWave()
 	: Widget_TimeGraphBase(),
 	  buffer(nullptr),
 	  buffer_length(0),
+	  frequency(default_frequency),
+	  n_channels(default_n_channels),
+	  n_samples(0),
 	  channel_idx(0),
 	  loading_error(false)
 {
@@ -103,13 +109,16 @@ void Widget_SoundWave::clear()
 	loading_error = false;
 	sound_delay = 0.0;
 	channel_idx = 0;
+	n_samples = 0;
 	queue_draw();
 }
 
 void Widget_SoundWave::set_channel_idx(int new_channel_idx)
 {
-	if (new_channel_idx >= 0 && new_channel_idx < n_channels)
+	if (channel_idx != new_channel_idx && new_channel_idx >= 0 && new_channel_idx < n_channels) {
 		channel_idx = new_channel_idx;
+		queue_draw();
+	}
 }
 
 int Widget_SoundWave::get_channel_idx() const
@@ -132,6 +141,7 @@ void Widget_SoundWave::set_delay(synfig::Time delay)
 	delete[] buffer;
 	buffer = nullptr;
 	buffer_length = 0;
+	n_samples = 0;
 	do_load(filename);
 	queue_draw();
 }
@@ -235,6 +245,7 @@ void Widget_SoundWave::on_time_model_changed()
 	delete [] buffer;
 	buffer = nullptr;
 	buffer_length = 0;
+	n_samples = 0;
 	do_load(filename);
 	queue_draw();
 }
@@ -288,10 +299,14 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 			break;
 		mlt_audio_format format = mlt_audio_u8;
 		int bytes_per_sample = 1;
-		int _frequency = frequency? frequency : 48000;
-		int _channels = 2;
+		int _frequency = frequency? frequency : default_frequency;
+		int _channels = n_channels ? n_channels : default_n_channels;
 		int _n_samples = 0;
 		void * _buffer = frame->get_audio(format, _frequency, _channels, _n_samples);
+		if (_buffer == nullptr) {
+			delete frame;
+			break;
+		}
 		if (!buffer) {
 			buffer_length = (end_frame - start_frame + 1) * _channels * bytes_per_sample * std::round(_frequency/fps);
 			buffer = new unsigned char[buffer_length];
