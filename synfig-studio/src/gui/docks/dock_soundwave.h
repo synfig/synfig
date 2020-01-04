@@ -32,6 +32,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/filechooserbutton.h>
+#include <gtkmm/comboboxtext.h>
 
 namespace studio {
 
@@ -51,6 +52,7 @@ protected:
 			const Gtk::SelectionData& selection_data, guint, guint time);
 	void on_file_button_clicked();
 	void on_clear_button_clicked();
+	void on_channel_combo_changed();
 
 private:
 	std::mutex mutex;
@@ -64,6 +66,7 @@ private:
 	Gtk::Box file_settings_box;
 	Gtk::FileChooserButton file_button;
 	Gtk::Button clear_button;
+	Gtk::ComboBoxText channel_combo;
 	Gtk::VScrollbar vscrollbar;
 	Gtk::HScrollbar hscrollbar;
 
