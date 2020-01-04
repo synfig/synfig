@@ -67,11 +67,13 @@ protected:
 	double get_default_page_size() const;
 
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
+	virtual void on_time_model_changed();
 
 	void draw_current_time(const Cairo::RefPtr<Cairo::Context> &cr);
 
 private:
 	double default_page_size;
+	sigc::connection time_model_changed_connection;
 };
 
 }

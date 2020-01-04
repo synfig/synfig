@@ -74,8 +74,6 @@ Widget_SoundWave::Widget_SoundWave()
 Widget_SoundWave::~Widget_SoundWave()
 {
 	clear();
-	if (time_model_changed_connection.connected())
-		time_model_changed_connection.disconnect();
 }
 
 bool Widget_SoundWave::load(const std::string& filename)
@@ -191,13 +189,11 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 void Widget_SoundWave::set_time_model(const etl::handle<TimeModel>& x)
 {
-	if (time_model_changed_connection.connected())
-		time_model_changed_connection.disconnect();
+	if (x) {
+		previous_lower_time = x->get_lower();
+		previous_upper_time = x->get_upper();
+	}
 	Widget_TimeGraphBase::set_time_model(x);
-	previous_lower_time = x->get_lower();
-	previous_upper_time = x->get_upper();
-	if (x.get())
-		time_model_changed_connection = x->signal_changed().connect(sigc::mem_fun(*this, &Widget_SoundWave::on_time_model_changed));
 }
 
 void Widget_SoundWave::on_time_model_changed()

@@ -32,7 +32,7 @@ class Widget_SoundWave : public Widget_TimeGraphBase
 {
 public:
 	Widget_SoundWave();
-	virtual ~Widget_SoundWave();
+	virtual ~Widget_SoundWave() override;
 
 	bool load(const std::string &filename);
 	void clear();
@@ -51,10 +51,10 @@ public:
 	sigc::signal<void, const std::string&> & signal_file_loaded() { return signal_file_loaded_; }
 
 protected:
-	bool on_event(GdkEvent *event);
-	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
+	bool on_event(GdkEvent *event) override;
+	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
 
-	void on_time_model_changed();
+	void on_time_model_changed() override;
 
 private:
 	std::mutex mutex;
@@ -75,7 +75,6 @@ private:
 
 	// status
 	bool loading_error;
-	sigc::connection time_model_changed_connection;
 	synfig::Time previous_lower_time;
 	synfig::Time previous_upper_time;
 
