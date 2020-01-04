@@ -61,6 +61,7 @@ private:
 	Widget_CanvasTimeslider widget_timeslider;
 	Widget_SoundWave *current_widget_sound;
 	Gtk::Box file_box;
+	Gtk::Box file_settings_box;
 	Gtk::FileChooserButton file_button;
 	Gtk::Button clear_button;
 	Gtk::VScrollbar vscrollbar;

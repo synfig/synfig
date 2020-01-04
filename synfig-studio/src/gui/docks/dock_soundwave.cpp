@@ -56,7 +56,7 @@ Dock_SoundWave::Dock_SoundWave()
 
 	clear_button.set_label(_("Clear"));
 //	clear_button.get_style_context()->add_class("button");
-	clear_button.hide();
+	clear_button.show();
 	clear_button.signal_clicked().connect(sigc::mem_fun(*this, &Dock_SoundWave::on_clear_button_clicked));
 
 	vscrollbar.set_vexpand();
@@ -69,11 +69,17 @@ Dock_SoundWave::Dock_SoundWave()
 	grid.set_row_homogeneous(false);
 	add(grid);
 
+	file_settings_box.set_orientation(Gtk::ORIENTATION_HORIZONTAL);
+	file_settings_box.set_homogeneous(false);
+	file_settings_box.set_spacing(2);
+	file_settings_box.pack_start(clear_button, false, false);
+	file_settings_box.hide();
+
 	file_box.set_orientation(Gtk::ORIENTATION_HORIZONTAL);
 	file_box.set_homogeneous(false);
 	file_box.set_spacing(2);
 	file_box.pack_start(file_button, false, false);
-	file_box.pack_start(clear_button, false, false);
+	file_box.pack_start(file_settings_box, false, false);
 
 	drag_dest_set(Gtk::DEST_DEFAULT_ALL, Gdk::ACTION_COPY);
 	signal_drag_data_received().connect(sigc::mem_fun(*this,
@@ -93,7 +99,7 @@ void Dock_SoundWave::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas
 		} else {
 			file_button.unselect_all();
 		}
-		clear_button.set_visible(!filename.empty());
+		file_settings_box.set_visible(!filename.empty());
 	});
 	canvas_view->set_ext_widget(get_name(), widget_sound);
 }
@@ -139,7 +145,7 @@ void Dock_SoundWave::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> can
 			file_button.unselect_all();
 		else
 			file_button.set_uri(filename);
-		clear_button.set_visible(!filename.empty());
+		file_settings_box.set_visible(!filename.empty());
 		file_box.show();
 
 		vscrollbar.set_adjustment(current_widget_sound->get_range_adjustment());
@@ -193,7 +199,7 @@ void Dock_SoundWave::on_clear_button_clicked()
 	std::lock_guard<std::mutex> lock(mutex);
 	file_button.unselect_all();
 	current_widget_sound->clear();
-	clear_button.hide();
+	file_settings_box.hide();
 }
 
 bool Dock_SoundWave::load_sound_file(const std::string& filename)
@@ -202,7 +208,7 @@ bool Dock_SoundWave::load_sound_file(const std::string& filename)
 	std::lock_guard<std::mutex> lock(mutex);
 	bool ok = current_widget_sound->load(filename);
 	if (ok) {
-		clear_button.show();
+		file_settings_box.show();
 	} else {
 		synfig::warning("Audio file not supported");
 	}
