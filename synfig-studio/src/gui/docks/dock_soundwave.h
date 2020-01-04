@@ -27,6 +27,7 @@
 
 #include <widgets/widget_canvastimeslider.h>
 #include <widgets/widget_keyframe_list.h>
+#include <widgets/widget_time.h>
 
 #include <gtkmm/grid.h>
 #include <gtkmm/box.h>
@@ -53,6 +54,7 @@ protected:
 	void on_file_button_clicked();
 	void on_clear_button_clicked();
 	void on_channel_combo_changed();
+	void on_delay_changed();
 
 private:
 	std::mutex mutex;
@@ -67,10 +69,13 @@ private:
 	Gtk::FileChooserButton file_button;
 	Gtk::Button clear_button;
 	Gtk::ComboBoxText channel_combo;
+	Gtk::Label label_delay;
+	Widget_Time delay_widget;
 	Gtk::VScrollbar vscrollbar;
 	Gtk::HScrollbar hscrollbar;
 
 	bool load_sound_file(const std::string & filename);
+	void setup_file_setting_data();
 };
 
 }

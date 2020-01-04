@@ -63,6 +63,12 @@ Dock_SoundWave::Dock_SoundWave()
 	channel_combo.set_tooltip_text(_("What sound channel to display"));
 	channel_combo.signal_changed().connect(sigc::mem_fun(*this, &Dock_SoundWave::on_channel_combo_changed));
 
+	label_delay.set_text(_("Delay:"));
+	label_delay.show();
+
+	delay_widget.show();
+	delay_widget.signal_value_changed().connect(sigc::mem_fun(*this, &Dock_SoundWave::on_delay_changed));
+
 	vscrollbar.set_vexpand();
 	vscrollbar.set_hexpand(false);
 	vscrollbar.show();
@@ -78,6 +84,8 @@ Dock_SoundWave::Dock_SoundWave()
 	file_settings_box.set_spacing(2);
 	file_settings_box.pack_start(clear_button, false, false);
 	file_settings_box.pack_start(channel_combo, false, false);
+	file_settings_box.pack_start(label_delay, false, false);
+	file_settings_box.pack_start(delay_widget, false, false);
 	file_settings_box.hide();
 
 	file_box.set_orientation(Gtk::ORIENTATION_HORIZONTAL);
@@ -151,13 +159,7 @@ void Dock_SoundWave::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> can
 		else
 			file_button.set_uri(filename);
 
-		channel_combo.remove_all();
-		for (int n = 0; n < current_widget_sound->get_channel_number(); n++) {
-			// let us be a bit user-friendly by starting index from 1 instead of 0
-			std::string text = etl::strprintf(_("Channel #%i"), n+1);
-			channel_combo.append(std::to_string(n), text);
-		}
-		channel_combo.set_active_id(std::to_string(current_widget_sound->get_channel_idx()));
+		setup_file_setting_data();
 
 		file_settings_box.set_visible(!filename.empty());
 		file_box.show();
@@ -227,16 +229,36 @@ void Dock_SoundWave::on_channel_combo_changed()
 	current_widget_sound->set_channel_idx(channel_idx);
 }
 
+void Dock_SoundWave::on_delay_changed()
+{
+	if (current_widget_sound)
+		current_widget_sound->set_delay(delay_widget.get_value());
+}
+
 bool Dock_SoundWave::load_sound_file(const std::string& filename)
 {
 	file_button.set_sensitive(false);
 	std::lock_guard<std::mutex> lock(mutex);
 	bool ok = current_widget_sound->load(filename);
 	if (ok) {
+		setup_file_setting_data();
 		file_settings_box.show();
 	} else {
 		synfig::warning("Audio file not supported");
 	}
 	file_button.set_sensitive(true);
 	return ok;
+}
+
+void Dock_SoundWave::setup_file_setting_data()
+{
+	channel_combo.remove_all();
+	for (int n = 0; n < current_widget_sound->get_channel_number(); n++) {
+		// let us be a bit user-friendly by starting index from 1 instead of 0
+		std::string text = etl::strprintf(_("Channel #%i"), n+1);
+		channel_combo.append(std::to_string(n), text);
+	}
+	channel_combo.set_active_id(std::to_string(current_widget_sound->get_channel_idx()));
+
+	delay_widget.set_value(current_widget_sound->get_delay());
 }

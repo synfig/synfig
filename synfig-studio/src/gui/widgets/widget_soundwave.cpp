@@ -29,7 +29,8 @@
 
 #include "widget_soundwave.h"
 
-#include <canvasview.h>
+#include <synfig/general.h>
+#include <gui/canvasview.h>
 #include <gui/timeplotdata.h>
 
 #include <gui/localization.h>
@@ -100,6 +101,8 @@ void Widget_SoundWave::clear()
 	buffer_length = 0;
 	this->filename.clear();
 	loading_error = false;
+	sound_delay = 0.0;
+	channel_idx = 0;
 	queue_draw();
 }
 
@@ -117,6 +120,25 @@ int Widget_SoundWave::get_channel_idx() const
 int Widget_SoundWave::get_channel_number() const
 {
 	return n_channels;
+}
+
+void Widget_SoundWave::set_delay(synfig::Time delay)
+{
+	if (delay == sound_delay)
+		return;
+
+	std::lock_guard<std::mutex> lock(mutex);
+	sound_delay = delay;
+	delete[] buffer;
+	buffer = nullptr;
+	buffer_length = 0;
+	do_load(filename);
+	queue_draw();
+}
+
+const synfig::Time& Widget_SoundWave::get_delay() const
+{
+	return sound_delay;
 }
 
 bool Widget_SoundWave::on_event(GdkEvent* event)
@@ -157,16 +179,18 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	Gdk::RGBA color = get_style_context()->get_color();
 	cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
 
-	cr->move_to(0, 0);
+	const int middle_y = 127;
+	cr->move_to(0, middle_y);
 
 	const int stride = frequency * bytes_per_sample * n_channels;
 
 	for (double x = 0; x < get_width(); x+=0.1) {
 		synfig::Time t = time_plot_data->get_t_from_pixel_coord(x);
-		t = t - sound_delay;
+		if (synfig::approximate_greater(synfig::Real(sound_delay), 0.0))
+			t = t - sound_delay;
 		synfig::Time dt = t - time_plot_data->time_model->get_lower();
 		int index = int(dt * stride) + channel_idx;
-		int value = 0;
+		int value = middle_y;
 		if (index >= 0 && index < buffer_length)
 			std::memcpy(&value, &buffer[index], bytes_per_sample);
 		int y = time_plot_data->get_pixel_y_coord(value);
@@ -250,11 +274,16 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 	int end_frame = (time_plot_data->time_model->get_upper() - sound_delay) * fps;
 	start_frame = synfig::clamp(start_frame, 0, length);
 	end_frame = synfig::clamp(end_frame, 0, length);
-
+	track->seek(start_frame);
+	// check if audio is seekable
+	if (track->position() != start_frame) {
+		// Not seekable!
+		synfig::error("Audio file not seekable, but a delay (%s) was set: %s", sound_delay.get_string(time_plot_data->time_model->get_frame_rate()).c_str(), filename.c_str());
+	}
 	unsigned char *outbuffer = nullptr;
 
 	for (int i = start_frame; i < end_frame; ++i) {
-		Mlt::Frame *frame = track->get_frame(i);
+		Mlt::Frame *frame = track->get_frame(0);
 		if (!frame)
 			break;
 		mlt_audio_format format = mlt_audio_u8;
