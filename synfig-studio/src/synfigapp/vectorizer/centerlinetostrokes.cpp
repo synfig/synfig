@@ -45,43 +45,43 @@ using namespace studio;
 const double Polyg_eps_max = 1;     // Sequence simplification max error
 const double Polyg_eps_mul = 0.75;  // Sequence simple thickness-multiplier error
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
-synfig::CanvasHandle canvas;
 synfig::Point topleft(0,0),bottomright(0,0),new_center(0,0);
 bool max_thickness_zero = false;
+float unit_size;
 float width=0,height=0;
 float h_factor = 1;
 float w_factor = 1;
 float new_h,new_w;
 /* === P R O C E D U R E S ================================================= */
 
+// this function will be responsible for unit conversion to pixel and width tranformation
+void PreProcessSegment(studio::PointList &segment)
+{
+  int size = segment.size();
+  // unit_size is for pixel to synfig unit conversion 
+  // w_factor and h_factor is scaling factors due to image layer TL and BR movement 
+  // multiplier is for handling custom canvas settings
+  float multiplier = unit_size/60.0;
+  for (int i = 0; i < size; ++i)
+  {
+    segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size );
+    segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size );
+    segment[i][2] = segment[i][2]/2.5;
+  }
+  
+}
+
+
 etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
   int segment_size = segment.size();
   synfig::Layer::Handle layer(synfig::Layer::create("outline"));
   std::vector<synfig::BLinePoint> bline_point_list; 
-  synfig::Point a = canvas->rend_desc().get_br();
-  synfig::Point b = canvas->rend_desc().get_tl();
-  synfig::Point q = a - b;
-  float p = canvas->rend_desc().get_w();
-  //std::cout<<"This is canvas TL: ("<<b[0]<<", "<<b[1]<<"), ("<<a[0]<<", "<<a[1]<<")\n";
-  // 1 unit = p/q[0] pixels
-  float unit_size = p/q[0];
-  float multiplier = unit_size/60.0;
-  // here fitting and shifting happen
-  h_factor = new_h/(height/unit_size);
-  w_factor = new_w/(width/unit_size);
-
-  std::cout<<"H factor :"<<h_factor<<", W factor: "<<w_factor<<"\n";
-  std::cout<<"After unit size factor: H - "<<height/unit_size<<", W - "<<width/unit_size<<"\n";
-  for(int i=0;i<segment_size;i++)
-  {
-    segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size + topleft[0]+new_center[0])  ;//x from TL;
-    segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size + bottomright[1] + new_center[1]);// y from BR;
-    segment[i][2] = segment[i][2]/2.5;
-  }
+  
+  PreProcessSegment(segment);
 
   if(max_thickness_zero)
-    for(int i=0;i<segment_size;i++)
+    for(int i = 0; i < segment_size; ++i)
       segment[i][2] = 1.0;
      
   switch(segment_size)// in any case size>=3
@@ -940,29 +940,33 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
   double penalty                          = g.currConfig->m_penalty;
   max_thickness_zero                      = !g.currConfig->m_maxThickness; // if any value then false otherwise 0 then true
   unsigned int i, j, k;
+
+  ///////////////////////TODO////////////////////////////
   topleft = image->param_tl.get(synfig::Point());
   bottomright = image->param_br.get(synfig::Point());
-  canvas = image->get_canvas();
-
-
-
+  ///////////////////////////////////////////////////
+  synfig::CanvasHandle canvas = image->get_canvas();
   synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( image->rendering_surface );
 	const synfig::Surface &surface = lock->get_surface(); 
-  // surface gives out w and h in pixels
-	width = surface.get_w(); 
-	height = surface.get_h(); 
+  
+  synfig::Point q = canvas->rend_desc().get_br() - canvas->rend_desc().get_tl();
+  float p = canvas->rend_desc().get_w();
+  // 1 unit = p/q[0] pixels
+  unit_size = p/q[0];
+  new_h = topleft[1] - bottomright[1];
+  new_w = bottomright[0] - topleft[0];
+  new_center = (topleft + bottomright)/2;
 
-  std::cout<<"H :"<<height<<", W : "<<width<<"\n";
+
+  // here fitting and shifting happen
+  h_factor = (new_h * unit_size)/(surface.get_h());
+  w_factor = (new_w * unit_size)/(surface.get_w());
 
   // Convert single sequences
   //TL and BR is in synfig Units
   std::cout<<"topleft : ("<<topleft[0]<<", "<<topleft[1]<<") \n";
   std::cout<<"bottomright : ("<<bottomright[0]<<", "<<bottomright[1]<<") \n";
-  new_h = topleft[1] - bottomright[1];
-  new_w = bottomright[0] - topleft[0];
-  new_center = (topleft + bottomright)/2;
-
-  std::cout<<"new origin : ("<<new_center[0]<<", "<<new_center[1]<<") \n";
+  
 
 
   for (i = 0; i < singleSequences.size(); ++i) 
