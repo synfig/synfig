@@ -44,13 +44,6 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-#ifdef NDEBUG
-#define assert_cast		static_cast
-#else
-#define assert_cast		dynamic_cast
-#endif
-
-
 namespace etl {
 
 // Forward Declarations
