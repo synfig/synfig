@@ -574,7 +574,7 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 	if (set_dpi_y)
 	{
 		float dpi, dots_per_meter;
-		dpi = (float)set_dpi_x;
+		dpi = (float)set_dpi_y;
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_y_res(dots_per_meter);
 		synfig::info(_("Physical Y resolution set to %f "
