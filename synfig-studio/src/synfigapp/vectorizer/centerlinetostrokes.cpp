@@ -45,27 +45,27 @@ using namespace studio;
 const double Polyg_eps_max = 1;     // Sequence simplification max error
 const double Polyg_eps_mul = 0.75;  // Sequence simple thickness-multiplier error
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
-synfig::Point topleft(0,0),bottomright(0,0),new_center(0,0);
+synfig::Point bottomleft(0,0);
 bool max_thickness_zero = false;
+synfig::CanvasHandle canvas;
 float unit_size;
-float width=0,height=0;
 float h_factor = 1;
 float w_factor = 1;
-float new_h,new_w;
 /* === P R O C E D U R E S ================================================= */
 
-// this function will be responsible for unit conversion to pixel and width tranformation
+// this function will be responsible for unit conversion and height, width tranformation
 void PreProcessSegment(studio::PointList &segment)
 {
   int size = segment.size();
   // unit_size is for pixel to synfig unit conversion 
   // w_factor and h_factor is scaling factors due to image layer TL and BR movement 
   // multiplier is for handling custom canvas settings
+  // bottomleft[0] and bottomleft[1] is used to shift the image from only positive to negative - positive
   float multiplier = unit_size/60.0;
   for (int i = 0; i < size; ++i)
   {
-    segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size );
-    segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size );
+    segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size ) + bottomleft[0];
+    segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size ) + bottomleft[1];
     segment[i][2] = segment[i][2]/2.5;
   }
   
@@ -941,11 +941,12 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
   max_thickness_zero                      = !g.currConfig->m_maxThickness; // if any value then false otherwise 0 then true
   unsigned int i, j, k;
 
-  ///////////////////////TODO////////////////////////////
-  topleft = image->param_tl.get(synfig::Point());
-  bottomright = image->param_br.get(synfig::Point());
-  ///////////////////////////////////////////////////
-  synfig::CanvasHandle canvas = image->get_canvas();
+  synfig::Point topleft = image->param_tl.get(synfig::Point());
+  synfig::Point bottomright = image->param_br.get(synfig::Point());
+  bottomleft[0] = topleft[0];
+  bottomleft[1] = bottomright[1];
+
+  canvas = image->get_canvas();
   synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( image->rendering_surface );
 	const synfig::Surface &surface = lock->get_surface(); 
   
@@ -953,20 +954,10 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
   float p = canvas->rend_desc().get_w();
   // 1 unit = p/q[0] pixels
   unit_size = p/q[0];
-  new_h = topleft[1] - bottomright[1];
-  new_w = bottomright[0] - topleft[0];
-  new_center = (topleft + bottomright)/2;
 
-
-  // here fitting and shifting happen
-  h_factor = (new_h * unit_size)/(surface.get_h());
-  w_factor = (new_w * unit_size)/(surface.get_w());
-
-  // Convert single sequences
-  //TL and BR is in synfig Units
-  std::cout<<"topleft : ("<<topleft[0]<<", "<<topleft[1]<<") \n";
-  std::cout<<"bottomright : ("<<bottomright[0]<<", "<<bottomright[1]<<") \n";
-  
+  // here scaling factors are calculated
+  h_factor = ((topleft[1] - bottomright[1]) * unit_size)/(surface.get_h());
+  w_factor = ((bottomright[0] - topleft[0]) * unit_size)/(surface.get_w());
 
 
   for (i = 0; i < singleSequences.size(); ++i) 
@@ -974,8 +965,7 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
     if (singleSequences[i].m_head == singleSequences[i].m_tail) 
     {
       // If the sequence is circular, move your endpoints to an edge middle, in
-      // order
-      // to allow a soft junction
+      // order to allow a soft junction
       SkeletonGraph *currGraph = singleSequences[i].m_graphHolder;
 
       unsigned int head     = singleSequences[i].m_head;
