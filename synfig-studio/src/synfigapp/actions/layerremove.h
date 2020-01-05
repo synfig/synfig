@@ -29,7 +29,7 @@
 
 #include <synfig/layer.h>
 #include <synfigapp/action.h>
-#include <list>
+#include <tuple>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,7 +49,7 @@ class LayerRemove :
 {
 private:
 
-	std::list<std::pair<synfig::Layer::Handle,int> > layer_list;
+	std::list<std::tuple<synfig::Layer::Handle,int, synfig::Canvas::Handle> > layer_list;
 
 	bool is_child_of_another_layer_in_list(synfig::Layer::LooseHandle layer) const;
 	void filter_layer_list();
