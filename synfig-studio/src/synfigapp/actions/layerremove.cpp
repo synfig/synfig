@@ -122,7 +122,6 @@ Action::LayerRemove::perform()
 	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 	{
 		Layer::Handle layer(iter->first);
-//		int& depth(iter->second);
 		Canvas::Handle subcanvas(layer->get_canvas());
 
 		// Find the iterator for the layer
