@@ -20,7 +20,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/ref_count"
         "${CMAKE_CURRENT_LIST_DIR}/trivial"
         "${CMAKE_CURRENT_LIST_DIR}/smach"
-        "${CMAKE_CURRENT_LIST_DIR}/value"
         "${CMAKE_CURRENT_LIST_DIR}/pen"
         "${CMAKE_CURRENT_LIST_DIR}/angle"
         "${CMAKE_CURRENT_LIST_DIR}/bezier"
@@ -50,7 +49,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_fixed.h"
         "${CMAKE_CURRENT_LIST_DIR}/_bezier.h"
         "${CMAKE_CURRENT_LIST_DIR}/_curve_func.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_value.h"
         "${CMAKE_CURRENT_LIST_DIR}/_handle.h"
         "${CMAKE_CURRENT_LIST_DIR}/_gaussian.h"
 

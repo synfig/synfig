@@ -10,8 +10,6 @@ CLEANFILES = \
 etldir = $(etlincludedir)/ETL
 
 etl_HEADERS = \
-	value \
-	_value.h \
 	rect \
 	_rect.h \
 	misc \

@@ -36,5 +36,3 @@ add_test(test_benchmark benchmark)
 add_executable(spline spline.cpp)
 add_test(test_spline spline)
 
-add_executable(value value.cpp)
-add_test(test_value value)
