@@ -192,7 +192,8 @@ Action::LayerRemove::perform()
 		std::get<2>(*iter) = layer->get_canvas();
 
 		// Mark ourselves as dirty if necessary
-		set_dirty(layer->active());
+		if (layer->active())
+			set_dirty(true);
 
 		// Remove the layer from the canvas
 		subcanvas->erase(iter2);
