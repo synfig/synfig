@@ -62,7 +62,37 @@ ACTION_SET_CVS_ID(Action::LayerRemove,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
+bool LayerRemove::is_child_of_another_layer_in_list(Layer::LooseHandle layer) const
+{
+	std::vector<Layer::LooseHandle> parent_list;
+	Layer::LooseHandle parent = layer->get_parent_paste_canvas_layer();
+	while (parent) {
+		parent_list.push_back(parent);
+		parent = parent->get_parent_paste_canvas_layer();
+	}
+
+	for (const auto &some_parent : parent_list) {
+		for (const auto &layer_pair : layer_list) {
+			if (some_parent == layer_pair.first) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void LayerRemove::filter_layer_list()
+{
+	std::list<std::pair<synfig::Layer::Handle,int> > filtered_layer_list;
+	for (auto layer_pair : layer_list) {
+		if (!is_child_of_another_layer_in_list(layer_pair.first))
+			filtered_layer_list.push_back(layer_pair);
+	}
+	layer_list = filtered_layer_list;
+}
+
 Action::LayerRemove::LayerRemove()
+	: is_filtered(false)
 {
 }
 
@@ -100,7 +130,7 @@ Action::LayerRemove::set_param(const synfig::String& name, const Action::Param &
 		std::pair<synfig::Layer::Handle,int> layer_pair;
 		layer_pair.first=param.get_layer();
 		layer_list.push_back(layer_pair);
-
+		is_filtered = false;
 		return true;
 	}
 
@@ -118,6 +148,10 @@ Action::LayerRemove::is_ready()const
 void
 Action::LayerRemove::perform()
 {
+	if (!is_filtered) {
+		filter_layer_list();
+		is_filtered = true;
+	}
 	std::list<std::pair<synfig::Layer::Handle,int> >::iterator iter;
 	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 	{

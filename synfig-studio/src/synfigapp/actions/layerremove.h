@@ -51,6 +51,10 @@ private:
 
 	std::list<std::pair<synfig::Layer::Handle,int> > layer_list;
 
+	bool is_child_of_another_layer_in_list(synfig::Layer::LooseHandle layer) const;
+	void filter_layer_list();
+	bool is_filtered;
+
 public:
 
 	LayerRemove();
