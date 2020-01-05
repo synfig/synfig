@@ -51,9 +51,7 @@ const int default_n_channels = 2;
 Widget_SoundWave::MouseHandler::~MouseHandler() {}
 
 Widget_SoundWave::Widget_SoundWave()
-	: Widget_TimeGraphBase(),
-	  buffer(nullptr),
-	  buffer_length(0),
+    : Widget_TimeGraphBase(),
 	  frequency(default_frequency),
 	  n_channels(default_n_channels),
 	  n_samples(0),
@@ -102,9 +100,7 @@ bool Widget_SoundWave::load(const std::string& filename)
 void Widget_SoundWave::clear()
 {
 	std::lock_guard<std::mutex> lock(mutex);
-	delete[] buffer;
-	buffer = nullptr;
-	buffer_length = 0;
+	buffer.clear();
 	this->filename.clear();
 	loading_error = false;
 	sound_delay = 0.0;
@@ -138,9 +134,7 @@ void Widget_SoundWave::set_delay(synfig::Time delay)
 
 	std::lock_guard<std::mutex> lock(mutex);
 	sound_delay = delay;
-	delete[] buffer;
-	buffer = nullptr;
-	buffer_length = 0;
+	buffer.clear();
 	n_samples = 0;
 	do_load(filename);
 	queue_draw();
@@ -177,7 +171,7 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	if (filename.empty())
 		return true;
 
-	if (!buffer || buffer_length == 0)
+	if (buffer.empty())
 		return true;
 
 	cr->save();
@@ -201,8 +195,8 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		synfig::Time dt = t - time_plot_data->time_model->get_lower();
 		int index = int(dt * stride) + channel_idx;
 		int value = middle_y;
-		if (index >= 0 && index < buffer_length)
-			std::memcpy(&value, &buffer[index], bytes_per_sample);
+		if (index >= 0 && index < buffer.size())
+			std::copy(buffer.begin() + index, buffer.begin() + index + bytes_per_sample, &value);
 		int y = time_plot_data->get_pixel_y_coord(value);
 		cr->line_to(x, y);
 	}
@@ -242,9 +236,7 @@ void Widget_SoundWave::on_time_model_changed()
 	previous_upper_time = time_plot_data->time_model->get_upper();
 
 	std::lock_guard<std::mutex> lock(mutex);
-	delete [] buffer;
-	buffer = nullptr;
-	buffer_length = 0;
+	buffer.clear();
 	n_samples = 0;
 	do_load(filename);
 	queue_draw();
@@ -292,6 +284,7 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 		synfig::error("Audio file not seekable, but a delay (%s) was set: %s", sound_delay.get_string(time_plot_data->time_model->get_frame_rate()).c_str(), filename.c_str());
 	}
 	unsigned char *outbuffer = nullptr;
+	int bytes_written = 0;
 
 	for (int i = start_frame; i < end_frame; ++i) {
 		Mlt::Frame *frame = track->get_frame(0);
@@ -307,20 +300,19 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 			delete frame;
 			break;
 		}
-		if (!buffer) {
-			buffer_length = (end_frame - start_frame + 1) * _channels * bytes_per_sample * std::round(_frequency/fps);
-			buffer = new unsigned char[buffer_length];
-			outbuffer = buffer;
+		if (buffer.empty()) {
+			int buffer_length = (end_frame - start_frame + 1) * _channels * bytes_per_sample * std::round(_frequency/fps);
+			buffer.resize(buffer_length);
 		}
 		int _n_bytes = _n_samples * _channels * bytes_per_sample;
-		std::memcpy(outbuffer, _buffer, _n_bytes);
+		std::copy(static_cast<unsigned char*>(_buffer), static_cast<unsigned char*>(_buffer) + _n_bytes, buffer.begin()+bytes_written);
+		bytes_written += _n_bytes;
 		outbuffer += _n_bytes;
 		frequency = _frequency;
 		n_channels = _channels;
 		n_samples += _n_samples;
 		delete frame;
 	}
-	buffer_length = outbuffer - buffer;
 	if (channel_idx > n_channels)
 		channel_idx = 0;
 	queue_draw();
