@@ -64,8 +64,7 @@ private:
 	std::string filename;
 
 	// sound data
-	unsigned char * buffer;
-	unsigned long buffer_length;
+	std::vector<unsigned char> buffer;
 
 	// sound format
 	int frequency;
