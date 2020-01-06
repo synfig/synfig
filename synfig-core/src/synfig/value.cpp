@@ -83,9 +83,46 @@ ValueBase::ValueBase(Type &x):
 	create(x);
 }
 
+ValueBase::ValueBase(const ValueBase& x)
+	: ValueBase(*x.type)
+{
+	if(data != x.data)
+	{
+		Operation::CopyFunc copy_func =
+			Type::get_operation<Operation::CopyFunc>(
+				Operation::Description::get_copy(type->identifier, type->identifier) );
+		if (copy_func)
+		{
+			copy_func(data, x.data);
+		}
+		else
+		{
+			data = x.data;
+			ref_count = x.ref_count;
+		}
+	}
+
+	loop_ = x.loop_;
+	static_ = x.static_;
+	interpolation_ = x.interpolation_;
+}
+
+ValueBase::ValueBase(ValueBase&& x)
+	: ValueBase()
+{
+	swap(*this, x);
+}
+
 ValueBase::~ValueBase()
 {
 	clear();
+}
+
+ValueBase&
+ValueBase::operator=(ValueBase x)
+{
+	swap(*this, x);
+	return *this;
 }
 
 #ifdef _DEBUG
@@ -169,35 +206,6 @@ ValueBase::get_contained_type()const
 	return get_list().front().get_type();
 }
 
-ValueBase&
-ValueBase::operator=(const ValueBase& x)
-{
-	if(data!=x.data)
-	{
-		Type &current_type = *type;
-		Type &new_type = *x.type;
-		Operation::CopyFunc func =
-			Type::get_operation<Operation::CopyFunc>(
-				Operation::Description::get_copy(current_type.identifier, new_type.identifier) );
-		if (func)
-		{
-			create(current_type);
-			func(data, x.data);
-		}
-		else
-		{
-			clear();
-			type=x.type;
-			data=x.data;
-			ref_count=x.ref_count;
-		}
-	}
-	loop_=x.loop_;
-	static_=x.static_;
-	interpolation_=x.interpolation_;
-	return *this;
-}
-
 void
 ValueBase::clear()
 {
@@ -213,7 +221,6 @@ ValueBase::clear()
 	data=nullptr;
 	type=&type_nil;
 }
-
 
 Type&
 ValueBase::ident_type(const String &str)

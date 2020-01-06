@@ -123,11 +123,17 @@ public:
 		set_list_of(x);
 	}
 
-	//! Copy constructor. The data is not copied, just the type.
+	//! Constructor with the type set.
 	ValueBase(Type &x);
 
+	//! Copy constructor
+	ValueBase(const ValueBase &x);
+
+	//! Move constructor
+	ValueBase(ValueBase&& x);
+
 	//! Default destructor
-	~ValueBase();
+	virtual ~ValueBase();
 
 	/*
  --	** -- O P E R A T O R S ---------------------------------------------------
@@ -140,8 +146,8 @@ public:
 	template <class T> ValueBase& operator=(const T& x)
 		{ set(x); return *this; }
 
-	//!Operator asignation for ValueBase classes. Does a exact copy of \x
-	ValueBase& operator=(const ValueBase& x);
+	//!Copy/Move assignment operator for ValueBase classes
+	ValueBase& operator=(ValueBase x);
 
 	//! Equal than operator. Segment, Gradient and Bline Points cannot be compared.
 	bool operator==(const ValueBase& rhs)const;
@@ -171,6 +177,16 @@ public:
 
 	//! Deletes the data only if the ref count is zero
 	void clear();
+
+	//! Swap object contents
+	friend void swap(ValueBase& first, ValueBase& second) {
+		std::swap(first.type, second.type);
+		std::swap(first.data, second.data);
+		std::swap(first.ref_count, second.ref_count);
+		std::swap(first.loop_, second.loop_);
+		std::swap(first.static_, second.static_);
+		std::swap(first.interpolation_, second.interpolation_);
+	}
 
 	//! Gets the loop option.
 	bool get_loop()const { return loop_; }
