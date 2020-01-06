@@ -103,7 +103,7 @@ public:
 	//! Template constructor for any type
 	template <typename T>
 	ValueBase(const T &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
@@ -114,7 +114,7 @@ public:
 
 	template <typename T>
 	ValueBase(const std::vector<T> &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
@@ -227,7 +227,7 @@ public:
 	template<typename T>
 	inline static bool can_put(const Type& type, const T &x) { return can_put(type.identifier, x); }
 	inline static bool can_copy(const TypeId dest, const TypeId src)
-		{ return NULL != Type::get_operation<Operation::CopyFunc>(Operation::Description::get_copy(dest, src)); }
+		{ return Type::get_operation<Operation::CopyFunc>(Operation::Description::get_copy(dest, src)); }
 	inline static bool can_copy(const Type& dest, const Type& src) { return can_copy(dest.identifier, src.identifier); }
 
 	template<typename T> inline bool can_get(const T &x) const { return is_valid() && can_get(*type, x); }

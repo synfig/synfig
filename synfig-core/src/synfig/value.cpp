@@ -67,7 +67,7 @@ using namespace etl;
 /* === M E T H O D S ======================================================= */
 
 ValueBase::ValueBase():
-	type(&type_nil),data(0),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
+	type(&type_nil),data(nullptr),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
 {
 #ifdef INITIALIZE_TYPE_BEFORE_USE
 	type->initialize();
@@ -75,7 +75,7 @@ ValueBase::ValueBase():
 }
 
 ValueBase::ValueBase(Type &x):
-	type(&type_nil),data(0),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
+	type(&type_nil),data(nullptr),ref_count(0),loop_(0),static_(0),interpolation_(INTERPOLATION_UNDEFINED)
 {
 #ifdef INITIALIZE_TYPE_BEFORE_USE
 	type->initialize();
@@ -128,7 +128,7 @@ ValueBase::copy(const ValueBase& x)
 	Operation::CopyFunc func =
 		Type::get_operation<Operation::CopyFunc>(
 			Operation::Description::get_copy(type->identifier, x.type->identifier));
-	if (func != NULL)
+	if (func)
 	{
 		if (!ref_count.unique()) create();
 		func(data, x.data);
@@ -138,7 +138,7 @@ ValueBase::copy(const ValueBase& x)
 		Operation::CopyFunc func =
 			Type::get_operation<Operation::CopyFunc>(
 				Operation::Description::get_copy(x.type->identifier, x.type->identifier));
-		if (func != NULL)
+		if (func)
 		{
 			if (!ref_count.unique()) create(*x.type);
 			func(data, x.data);
@@ -179,7 +179,7 @@ ValueBase::operator=(const ValueBase& x)
 		Operation::CopyFunc func =
 			Type::get_operation<Operation::CopyFunc>(
 				Operation::Description::get_copy(current_type.identifier, new_type.identifier) );
-		if (func != NULL)
+		if (func)
 		{
 			create(current_type);
 			func(data, x.data);
@@ -210,7 +210,7 @@ ValueBase::clear()
 		func(data);
 	}
 	ref_count.detach();
-	data=0;
+	data=nullptr;
 	type=&type_nil;
 }
 
@@ -219,7 +219,7 @@ Type&
 ValueBase::ident_type(const String &str)
 {
 	Type *type = Type::try_get_type_by_name(str);
-	return type == NULL ? type_nil : *type;
+	return type ? *type : type_nil;
 }
 
 bool
@@ -228,7 +228,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	Operation::EqualFunc func =
 		Type::get_operation<Operation::EqualFunc>(
 			Operation::Description::get_equal(type->identifier, rhs.type->identifier) );
-	return func == NULL ? false : func(data, rhs.data);
+	return !func ? false : func(data, rhs.data);
 }
 
 bool
@@ -237,5 +237,5 @@ ValueBase::operator<(const ValueBase& rhs)const
 	Operation::LessFunc func =
 		Type::get_operation<Operation::LessFunc>(
 			Operation::Description::get_less(type->identifier, rhs.type->identifier) );
-	return func == NULL ? false : func(data, rhs.data);
+	return !func ? false : func(data, rhs.data);
 }
