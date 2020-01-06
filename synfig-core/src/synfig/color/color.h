@@ -92,9 +92,6 @@ public:
 	**	\param A Opacity(alpha) */
 	inline Color(const Color& c, const value_type& A);
 
-	//!	Copy constructor
-	inline Color(const Color& c);
-
 	//! Convert from CairoColor to Color
 	inline Color(const CairoColor& c);
 	

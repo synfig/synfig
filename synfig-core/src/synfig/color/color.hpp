@@ -156,12 +156,6 @@ Color::Color(const Color& c, const value_type& A):
 	b_(c.b_),
 	a_(A) { }
 
-Color::Color(const Color& c):
-	r_(c.r_),
-	g_(c.g_),
-	b_(c.b_),
-	a_(c.a_) { }
-
 const String Color::get_hex()const
 {
     return String(real2hex(r_) + real2hex(g_) + real2hex(b_));
