@@ -53,7 +53,7 @@ using namespace Action;
 
 ACTION_INIT(Action::Vectorization);
 ACTION_SET_NAME(Action::Vectorization,"Vectorization");
-ACTION_SET_LOCAL_NAME(Action::Vectorization,N_("Vectorize the Image"));
+ACTION_SET_LOCAL_NAME(Action::Vectorization,N_("Vectorization"));
 ACTION_SET_TASK(Action::Vectorization,"vectorize");
 ACTION_SET_CATEGORY(Action::Vectorization,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::Vectorization,0);

@@ -24,6 +24,9 @@
 
 #include "polygonizerclasses.h"
 #include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/surface.h>
+#include <synfig/rendering/software/surfacesw.h>
+
 #include <synfig/blinepoint.h>
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
@@ -40,36 +43,45 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 const double Polyg_eps_max = 1;     // Sequence simplification max error
-const double Polyg_eps_mul = 0.75;  // Sequence simpl. thickness-multiplier error
+const double Polyg_eps_mul = 0.75;  // Sequence simple thickness-multiplier error
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
-synfig::CanvasHandle canvas;
-synfig::Point topleft(0,0),bottomright(0,0);
+synfig::Point bottomleft(0,0);
 bool max_thickness_zero = false;
+synfig::CanvasHandle canvas;
+float unit_size;
+float h_factor = 1;
+float w_factor = 1;
 /* === P R O C E D U R E S ================================================= */
+
+// this function will be responsible for unit conversion and height, width tranformation
+void PreProcessSegment(studio::PointList &segment)
+{
+  int size = segment.size();
+  // unit_size is for pixel to synfig unit conversion 
+  // w_factor and h_factor is scaling factors due to image layer TL and BR movement 
+  // multiplier is for handling custom canvas settings
+  // bottomleft[0] and bottomleft[1] is used to shift the image from only positive to negative - positive
+  float multiplier = unit_size/60.0;
+  for (int i = 0; i < size; ++i)
+  {
+    segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size ) + bottomleft[0];
+    segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size ) + bottomleft[1];
+    segment[i][2] = segment[i][2]/2.5;
+  }
+  
+}
+
 
 etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 {
   int segment_size = segment.size();
   synfig::Layer::Handle layer(synfig::Layer::create("outline"));
   std::vector<synfig::BLinePoint> bline_point_list; 
-  synfig::Point a = canvas->rend_desc().get_br();
-  synfig::Point b = canvas->rend_desc().get_tl();
-  synfig::Point q = a - b;
-  float p = canvas->rend_desc().get_w();
-  //std::cout<<"This is canvas TL: ("<<b[0]<<", "<<b[1]<<"), ("<<a[0]<<", "<<a[1]<<")\n";
-  float unit_size = p/q[0];
-  //std::cout<<"This is getw(): "<<p<<", Unit size:"<<unit_size<<"\n";
-  float multiplier = unit_size/60.0;
-  // here fitting and shifting happen
-  for(int i=0;i<segment_size;i++)
-  {
-    segment[i][0] = multiplier * segment[i][0]/unit_size + topleft[0];//x from TL;
-    segment[i][1] = multiplier * segment[i][1]/unit_size + bottomright[1];// y from BR;
-    segment[i][2] = segment[i][2]/2;
-  }
+  
+  PreProcessSegment(segment);
 
   if(max_thickness_zero)
-    for(int i=0;i<segment_size;i++)
+    for(int i = 0; i < segment_size; ++i)
       segment[i][2] = 1.0;
      
   switch(segment_size)// in any case size>=3
@@ -928,17 +940,32 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
   double penalty                          = g.currConfig->m_penalty;
   max_thickness_zero                      = !g.currConfig->m_maxThickness; // if any value then false otherwise 0 then true
   unsigned int i, j, k;
-  topleft = image->param_tl.get(synfig::Point());
-  bottomright = image->param_br.get(synfig::Point());
+
+  synfig::Point topleft = image->param_tl.get(synfig::Point());
+  synfig::Point bottomright = image->param_br.get(synfig::Point());
+  bottomleft[0] = topleft[0];
+  bottomleft[1] = bottomright[1];
+
   canvas = image->get_canvas();
-  // Convert single sequences
+  synfig::rendering::SurfaceResource::LockRead<synfig::rendering::SurfaceSW> lock( image->rendering_surface );
+	const synfig::Surface &surface = lock->get_surface(); 
+  
+  synfig::Point q = canvas->rend_desc().get_br() - canvas->rend_desc().get_tl();
+  float p = canvas->rend_desc().get_w();
+  // 1 unit = p/q[0] pixels
+  unit_size = p/q[0];
+
+  // here scaling factors are calculated
+  h_factor = ((topleft[1] - bottomright[1]) * unit_size)/(surface.get_h());
+  w_factor = ((bottomright[0] - topleft[0]) * unit_size)/(surface.get_w());
+
+
   for (i = 0; i < singleSequences.size(); ++i) 
   {
     if (singleSequences[i].m_head == singleSequences[i].m_tail) 
     {
       // If the sequence is circular, move your endpoints to an edge middle, in
-      // order
-      // to allow a soft junction
+      // order to allow a soft junction
       SkeletonGraph *currGraph = singleSequences[i].m_graphHolder;
 
       unsigned int head     = singleSequences[i].m_head;
