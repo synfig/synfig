@@ -732,7 +732,11 @@ StateBLine_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 
 StateBLine_Context::~StateBLine_Context()
 {
-	run();
+	try {
+		run();
+	} catch (...) {
+		synfig::error("Internal error destroying StateBLineContext");
+	}
 
 	save_settings();
 	App::dialog_tool_options->clear();
