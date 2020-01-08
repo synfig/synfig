@@ -524,7 +524,6 @@ AC_CHECK_HEADERS([signal.h termios.h process.h io.h fcntl.h])
 AC_CHECK_FUNCS([fork])
 AC_CHECK_FUNCS([pipe])
 AC_CHECK_FUNCS([waitpid])
-AC_CHECK_LIB([pthread],[pthread_create]) # TODO: used for deprecated synfig::Mutex only
 
 # -- O U T P U T ----------------------------------------------
 
