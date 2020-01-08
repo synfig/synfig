@@ -1852,15 +1852,16 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 void
 StateBLine_Context::bline_delete_vertex(synfig::ValueNode_Const::Handle value_node)
 {
-	list<ValueNode_Const::Handle>::iterator iter;
+	bool vertex_deleted = false;
 
-	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
+	for(list<ValueNode_Const::Handle>::iterator iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
 		{
 			bline_point_list.erase(iter);
+			vertex_deleted = true;
 			break;
 		}
-	if(iter==bline_point_list.end())
+	if(!vertex_deleted)
 	{
 		get_canvas_view()->get_ui_interface()->error(_("Unable to remove vertex, internal error, please report this bug"));
 	}
