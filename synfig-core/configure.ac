@@ -553,8 +553,6 @@ CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_LIBS="`echo $SYNFIG_LIBS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 
-AC_SUBST(LIBADD_DL)
-
 AC_SUBST(SYNFIG_LIBS)
 AC_SUBST(SYNFIG_CFLAGS)
 
@@ -652,5 +650,4 @@ OpenEXR --------------------------> $with_openexr
 "'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
 "'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
 "'$'"BOOST_SYSTEM_LIB ----------------> '$BOOST_SYSTEM_LIB'
-"'$'"LIBADD_DL -----------------------> '$LIBADD_DL'
 "
