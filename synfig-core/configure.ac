@@ -521,7 +521,7 @@ AC_CHECK_HEADERS([signal.h termios.h process.h io.h fcntl.h])
 
 # -- F U N C T I O N S ----------------------------------------
 
-AC_CHECK_FUNCS([fork])
+AC_CHECK_FUNCS([fork]) # used by mod_dv, mod_ffmpeg, mod_imagemagick and synfig-osx launcher
 AC_CHECK_FUNCS([pipe])
 AC_CHECK_FUNCS([waitpid])
 
