@@ -890,12 +890,13 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	std::vector<BLinePoint> new_list;
 	for (int i = 0; i < points; i++)
 	{
-		new_list.push_back(*(new BLinePoint));
-		new_list[i].set_width(1);
-		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i + offset).get() + x,
+		BLinePoint p;
+		p.set_width(1);
+		p.set_vertex(Point(radius*Angle::cos(angle*i + offset).get() + x,
 									 radius*Angle::sin(angle*i + offset).get() + y));
-		new_list[i].set_tangent(Point(-radius*tangent*Angle::sin(angle*i + offset).get(),
+		p.set_tangent(Point(-radius*tangent*Angle::sin(angle*i + offset).get(),
 									   radius*tangent*Angle::cos(angle*i + offset).get()));
+		new_list.push_back(p);
 	}
 
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
