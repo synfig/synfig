@@ -1286,10 +1286,12 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 				// export and rename value dialog
 				if (entry.name == "ValueNodeRename") button2 = _("Rename");
 				// set layer description dialog
-				if (entry.name == "LayerSetDesc")
+				else if (entry.name == "LayerSetDesc")
 				{
-					button2 = _("Set");
+					button2 = _("OK");
 					label = _("Description: ");
+				} else if (entry.name == "GroupAddLayers") {
+					button2 = _("Add");
 				}
 
 				if(!studio::App::dialog_entry(entry.local_name,
