@@ -128,13 +128,6 @@ public:
 	g_(G),
 	b_(B) { }
 	
-	//!	Copy constructor
-	CairoColorAccumulator(const CairoColorAccumulator& c):
-	a_(c.a_),
-	r_(c.r_),
-	g_(c.g_),
-	b_(c.b_) { }
-	
 	//!	Converter
 	CairoColorAccumulator(const CairoColor& c):
 	a_(c.get_a()/CairoColor::range),
