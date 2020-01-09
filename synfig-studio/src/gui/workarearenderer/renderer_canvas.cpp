@@ -655,7 +655,7 @@ Renderer_Canvas::clear_render()
 
 Renderer_Canvas::FrameStatus
 Renderer_Canvas::merge_status(FrameStatus a, FrameStatus b) {
-	static FrameStatus map[FS_Count][FS_Count] = {
+	static const FrameStatus map[FS_Count][FS_Count] = {
 	// FS_None          | FS_PartiallyDone | FS_InProcess     | FS_Done              //
 	// -----------------|------------------|------------------|-----------------     //
 	 { FS_None          , FS_PartiallyDone , FS_InProcess     , FS_PartiallyDone },  // FS_None
@@ -663,8 +663,8 @@ Renderer_Canvas::merge_status(FrameStatus a, FrameStatus b) {
 	 { FS_InProcess     , FS_InProcess     , FS_InProcess     , FS_InProcess     },  // FS_InProcess
 	 { FS_PartiallyDone , FS_PartiallyDone , FS_InProcess     , FS_Done          }}; // FS_Done
 
-	if ((int)a < 0 || (int)a > (int)FS_Count) a = FS_None;
-	if ((int)b < 0 || (int)b > (int)FS_Count) b = FS_None;
+	if ((int)a < 0 || (int)a >= (int)FS_Count) a = FS_None;
+	if ((int)b < 0 || (int)b >= (int)FS_Count) b = FS_None;
 	return map[a][b];
 }
 
