@@ -234,7 +234,10 @@ bool SoundProcessor::subsys_init() {
 }
 
 bool SoundProcessor::subsys_stop()
-	{ return true; }
+{
+	Mlt::Factory::close();
+	return true;
+}
 
 
 /* === E N T R Y P O I N T ================================================= */
