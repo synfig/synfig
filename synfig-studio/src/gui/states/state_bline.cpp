@@ -732,7 +732,11 @@ StateBLine_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 
 StateBLine_Context::~StateBLine_Context()
 {
-	run();
+	try {
+		run();
+	} catch (...) {
+		synfig::error("Internal error destroying StateBLineContext");
+	}
 
 	save_settings();
 	App::dialog_tool_options->clear();
@@ -1417,7 +1421,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 			});
 		}
 
-		duck->set_name(strprintf("%x-vertex",value_node.get()));
+		duck->set_name(strprintf("%p-vertex",value_node.get()));
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_vertex_change),value_node)
 		);
@@ -1436,7 +1440,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		// Add the tangent1 duck
 		tduck1->set_editable(true);
 		tduck1->set_edit_immediatelly(true);
-		tduck1->set_name(strprintf("%x-tangent1",value_node.get()));
+		tduck1->set_name(strprintf("%p-tangent1",value_node.get()));
 		tduck1->set_origin(duck);
 		tduck1->set_scalar(-0.33333333333333333);
 		tduck1->set_tangent(true);
@@ -1482,7 +1486,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		tduck2->set_scalar(0.33333333333333333);
 		tduck2->set_tangent(true);
 
-		tduck2->set_name(strprintf("%x-tangent2",value_node.get()));
+		tduck2->set_name(strprintf("%p-tangent2",value_node.get()));
 		tduck2->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent2_change),tduck1,value_node)
 		);
@@ -1511,7 +1515,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 #ifndef DISTINGUISH_FIRST_DUCK
 		duck->set_type(Duck::TYPE_VERTEX);
 #endif
-		duck->set_name(strprintf("%x-vertex",bline_point_list.front().get()));
+		duck->set_name(strprintf("%p-vertex",bline_point_list.front().get()));
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_vertex_change),bline_point_list.front())
 		);
@@ -1525,7 +1529,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 		// Add the tangent1 duck
 		tduck1->set_editable(true);
-		tduck1->set_name(strprintf("%x-tangent1",bline_point_list.front().get()));
+		tduck1->set_name(strprintf("%p-tangent1",bline_point_list.front().get()));
 		tduck1->set_origin(duck);
 		tduck1->set_scalar(-0.33333333333333333);
 		tduck1->set_tangent(true);
@@ -1852,15 +1856,16 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 void
 StateBLine_Context::bline_delete_vertex(synfig::ValueNode_Const::Handle value_node)
 {
-	list<ValueNode_Const::Handle>::iterator iter;
+	bool vertex_deleted = false;
 
-	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
+	for(list<ValueNode_Const::Handle>::iterator iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
 		{
 			bline_point_list.erase(iter);
+			vertex_deleted = true;
 			break;
 		}
-	if(iter==bline_point_list.end())
+	if(!vertex_deleted)
 	{
 		get_canvas_view()->get_ui_interface()->error(_("Unable to remove vertex, internal error, please report this bug"));
 	}
