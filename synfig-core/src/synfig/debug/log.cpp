@@ -86,6 +86,7 @@ Log::error(const String &logfile, const char *format,...)
 	va_list args;
 	va_start(args,format);
 	error(logfile, vstrprintf(format,args));
+	va_end(args);
 }
 
 void
@@ -94,6 +95,7 @@ Log::warning(const String &logfile, const char *format,...)
 	va_list args;
 	va_start(args,format);
 	warning(logfile, vstrprintf(format,args));
+	va_end(args);
 }
 
 void
@@ -102,4 +104,5 @@ Log::info(const String &logfile, const char *format,...)
 	va_list args;
 	va_start(args,format);
 	info(logfile, vstrprintf(format,args));
+	va_end(args);
 }
