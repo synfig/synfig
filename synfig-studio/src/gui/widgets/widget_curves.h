@@ -59,6 +59,7 @@ struct TimePlotData;
 class Widget_Curves: public Gtk::DrawingArea
 {
 	friend class ChannelPointSD;
+	friend class TcbHandleSD;
 private:
 	struct Channel;
 	struct CurveStruct;
@@ -97,6 +98,48 @@ private:
 		bool is_waypoint_selected(const ChannelPoint& point) const;
 	} channel_point_sd;
 
+	class TcbHandle {
+	private:
+		synfig::Waypoint waypoint;
+		std::shared_ptr<const synfig::Waypoint> previous_waypoint;
+		std::shared_ptr<const synfig::Waypoint> next_waypoint;
+	public:
+		enum Param {Tension, Continuity, Bias, TemporalTension, Invalid} param;
+		size_t channel_index;
+
+		TcbHandle();
+		TcbHandle(Param param_);
+
+		void set_waypoint(const synfig::Waypoint& waypoint);
+		synfig::Waypoint& get_waypoint();
+		const synfig::Waypoint* get_previous() const;
+		const synfig::Waypoint* get_next() const;
+
+		void invalidate();
+		bool is_valid() const;
+//		bool is_draggable() const;
+
+		bool operator ==(const TcbHandle &b) const;
+		bool operator !=(const TcbHandle &b) const {return !operator==(b);}
+
+		void draw(const Cairo::RefPtr<Cairo::Context> &cr, bool hovered, const TimePlotData &time_plot_data, unsigned int waypoint_edge_length) const;
+		bool get_waypoint_position(Gdk::Point &p, const TimePlotData& time_plot_data) const;
+		bool get_position(Gdk::Point &p, const TimePlotData& time_plot_data) const;
+
+		synfig::Real get_tangent() const;
+	};
+
+	class TcbHandleSD : public SelectDragHelper<TcbHandle> {
+		Widget_Curves & widget;
+	public:
+		TcbHandleSD(Widget_Curves &widget);
+		virtual void get_item_position(const TcbHandle &item, Gdk::Point &position) override;
+		virtual bool find_item_at_position(int pos_x, int pos_y, TcbHandle& tcb_handle) override;
+		virtual bool find_items_in_rect(Gdk::Rectangle /*rect*/, std::vector<TcbHandle>& /*list*/) override {return false;}
+		virtual void get_all_items(std::vector<TcbHandle>& /*items*/) override {}
+		virtual void delta_drag(int total_dx, int total_dy, bool by_keys) override;
+	} tcb_handle_sd;
+
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
 	Glib::RefPtr<Gtk::Adjustment> range_adjustment;
@@ -111,11 +154,15 @@ private:
 
 	std::vector<std::pair<synfig::Waypoint, std::list<CurveStruct>::iterator> > overlapped_waypoints;
 
+	void on_waypoint_selection_changed();
 	void on_waypoint_clicked(const ChannelPoint &cp, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_double_clicked(const ChannelPoint &cp, unsigned int button, Gdk::Point /*point*/);
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
+
+	std::vector<TcbHandle> tcb_handles;
+	void refresh_tcb_handles();
 
 public:
 	Widget_Curves();

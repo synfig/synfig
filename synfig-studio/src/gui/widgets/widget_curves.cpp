@@ -476,6 +476,13 @@ struct Tooltip
 
 /* === M E T H O D S ======================================================= */
 
+void Widget_Curves::on_waypoint_selection_changed()
+{
+	overlapped_waypoints.clear();
+	refresh_tcb_handles();
+	queue_draw();
+}
+
 void Widget_Curves::on_waypoint_clicked(const Widget_Curves::ChannelPoint& cp, unsigned int button, Gdk::Point)
 {
 	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
@@ -490,8 +497,33 @@ void Widget_Curves::on_waypoint_double_clicked(const Widget_Curves::ChannelPoint
 	signal_waypoint_double_clicked().emit(cp.curve_it->value_desc, waypoint_set, button);
 }
 
+void Widget_Curves::refresh_tcb_handles()
+{
+	tcb_handles.clear();
+	std::vector<ChannelPoint*> selection = channel_point_sd.get_selected_items();
+	for (const ChannelPoint* cp : selection) {
+		auto value_node = cp->curve_it->value_desc.get_value_node();
+		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+		int num = synfig::waypoint_collect(waypoint_set, cp->time_point.get_time(), value_node);
+
+		if (num > 0) {
+			const Waypoint &waypoint = *waypoint_set.begin();
+			if (waypoint.get_before() == Waypoint::Interpolation::INTERPOLATION_TCB
+				|| waypoint.get_after() == Waypoint::Interpolation::INTERPOLATION_TCB) {
+				TcbHandle handle(TcbHandle::Bias);
+				handle.set_waypoint(*waypoint_set.begin());
+				handle.channel_index = cp->channel_idx;
+				tcb_handles.push_back(handle);
+			}
+		}
+	}
+
+	queue_draw();
+}
+
 Widget_Curves::Widget_Curves():
 	channel_point_sd(*this),
+	tcb_handle_sd(*this),
 	range_adjustment(Gtk::Adjustment::create(-1.0, -2.0, 2.0, 0.1, 0.1, DEFAULT_PAGE_SIZE)),
 	waypoint_edge_length(16)
 {
@@ -516,10 +548,7 @@ Widget_Curves::Widget_Curves():
 	});
 	channel_point_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
 	channel_point_sd.signal_focus_requested().connect(sigc::mem_fun(*this, &Gtk::Widget::grab_focus));
-	channel_point_sd.signal_selection_changed().connect([=](){
-		overlapped_waypoints.clear();
-		queue_draw();
-	});
+	channel_point_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Widget_Curves::on_waypoint_selection_changed));
 	channel_point_sd.signal_zoom_in_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_in));
 	channel_point_sd.signal_zoom_out_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_out));
 	channel_point_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_up));
@@ -527,6 +556,13 @@ Widget_Curves::Widget_Curves():
 	channel_point_sd.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_Curves::pan));
 	channel_point_sd.signal_item_clicked().connect(sigc::mem_fun(*this, &Widget_Curves::on_waypoint_clicked));
 	channel_point_sd.signal_item_double_clicked().connect(sigc::mem_fun(*this, &Widget_Curves::on_waypoint_double_clicked));
+
+	tcb_handle_sd.set_box_selection_enabled(false);
+	tcb_handle_sd.set_multiple_selection_enabled(false);
+	tcb_handle_sd.set_canvas_interface(canvas_interface);
+	tcb_handle_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
+	tcb_handle_sd.signal_focus_requested().connect(sigc::mem_fun(*this, &Gtk::Widget::grab_focus));
+	tcb_handle_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
 }
 
 Widget_Curves::~Widget_Curves() {
@@ -549,12 +585,17 @@ Widget_Curves::set_time_model(const etl::handle<TimeModel> &x)
 
 void
 Widget_Curves::clear() {
+	tcb_handle_sd.clear();
+	tcb_handles.clear();
+
+	channel_point_sd.clear();
+
+	curve_list.clear();
+
 	while(!value_desc_changed.empty()) {
 		value_desc_changed.back().disconnect();
 		value_desc_changed.pop_back();
 	}
-	curve_list.clear();
-	channel_point_sd.clear();
 }
 
 void
@@ -563,6 +604,8 @@ Widget_Curves::refresh()
 	for(std::list<CurveStruct>::iterator i = curve_list.begin(); i != curve_list.end(); ++i)
 		i->clear_all_values();
 	channel_point_sd.refresh();
+	tcb_handle_sd.refresh();
+	refresh_tcb_handles();
 	queue_draw();
 }
 
@@ -669,6 +712,9 @@ Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_in
 bool
 Widget_Curves::on_event(GdkEvent *event)
 {
+	if (tcb_handle_sd.process_event(event))
+		return true;
+
 	if (channel_point_sd.process_event(event))
 		return true;
 
@@ -867,7 +913,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			const auto & hovered_point = channel_point_sd.get_hovered_item();
 			bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
 			for (size_t c = 0; c < channels; ++c) {
-				Real y = curve_it->get_value(c, t, time_plot_data->dt);
+				Real y = curve_it->get_value(c, t, time_plot_data->dt/2);
 				int py = time_plot_data->get_pixel_y_coord(y);
 				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
 
@@ -876,6 +922,10 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			}
 			return false;
 		});
+		for (const auto &handle : tcb_handles) {
+			bool hovered = tcb_handle_sd.get_hovered_item() == handle;
+			handle.draw(cr, hovered, *time_plot_data, waypoint_edge_length);
+		}
 		if (!is_draggable) {
 			cr->pop_group_to_source();
 			cr->paint_with_alpha(0.5);
@@ -942,12 +992,15 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		tooltip.draw(cr, item_pos_x, item_pos_y);
 	}
 
-	if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING && channel_point_sd.get_state() != channel_point_sd.POINTER_PANNING && !curve_list.empty() && range_min < range_max)
+	if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING && channel_point_sd.get_state() != channel_point_sd.POINTER_PANNING
+		&& tcb_handle_sd.get_state() != tcb_handle_sd.POINTER_DRAGGING
+		&& !curve_list.empty() && range_min < range_max) {
 		ConfigureAdjustment(range_adjustment)
 			.set_lower(-range_max - 0.5*range_adjustment->get_page_size())
 			.set_upper(-range_min + 0.5*range_adjustment->get_page_size())
 			.set_step_increment(range_adjustment->get_page_size()*20.0/(double)h) // 20 pixels
 			.finish();
+	}
 	cr->restore();
 
 	return true;
@@ -1319,3 +1372,279 @@ bool Widget_Curves::ChannelPointSD::is_waypoint_selected(const Widget_Curves::Ch
 	return false;
 }
 
+Widget_Curves::TcbHandle::TcbHandle()
+	: param(Invalid), previous_waypoint(nullptr), next_waypoint(nullptr)
+{
+}
+
+Widget_Curves::TcbHandle::TcbHandle(Widget_Curves::TcbHandle::Param param_)
+	: param(param_), previous_waypoint(nullptr), next_waypoint(nullptr)
+{}
+
+void Widget_Curves::TcbHandle::set_waypoint(const Waypoint& waypoint)
+{
+	this->waypoint = waypoint;
+
+	ValueNode_Animated::Handle value_node_animated;
+	value_node_animated=value_node_animated.cast_dynamic(waypoint.get_parent_value_node());
+
+
+	const Time waypoint_time = waypoint.get_time();
+
+	try {
+		WaypointList::iterator next = value_node_animated->find_next(waypoint_time);
+		next_waypoint.reset(new Waypoint(*next));
+	} catch (Exception::NotFound &) {
+		next_waypoint.reset();
+	}
+
+	try {
+		WaypointList::iterator previous = value_node_animated->find_prev(waypoint_time);
+		previous_waypoint.reset(new Waypoint(*previous));
+	} catch (Exception::NotFound &) {
+		previous_waypoint.reset();
+	}
+}
+
+Waypoint& Widget_Curves::TcbHandle::get_waypoint()
+{
+	return waypoint;
+}
+
+const Waypoint* Widget_Curves::TcbHandle::get_previous() const
+{
+	return previous_waypoint.get();
+}
+
+const Waypoint* Widget_Curves::TcbHandle::get_next() const
+{
+	return next_waypoint.get();
+}
+
+void Widget_Curves::TcbHandle::invalidate()
+{
+	param = Invalid;
+	channel_index = MAX_CHANNELS;
+}
+
+bool Widget_Curves::TcbHandle::is_valid() const
+{
+	return param >= Tension && param < Invalid && channel_index < MAX_CHANNELS;
+}
+
+bool Widget_Curves::TcbHandle::operator ==(const Widget_Curves::TcbHandle& b) const
+{
+	return param == b.param && waypoint == b.waypoint && channel_index == b.channel_index;
+}
+
+void Widget_Curves::TcbHandle::draw(const Cairo::RefPtr<Cairo::Context>& cr, bool hovered, const TimePlotData &time_plot_data, unsigned int waypoint_edge_length) const
+{
+	const Color useless_bias_handle(0.5, 0.5, 0.5);
+	const Color hovered_bias_handle(1.0, 1.0, 0.0);
+	const Color regular_bias_handle(0.0, 1.0, 0.0);
+
+	if (!is_valid())
+		return;
+
+	Gdk::Point waypoint_p;
+	bool found = get_waypoint_position(waypoint_p, time_plot_data);
+	if (!found) {
+		synfig::warning("invalid waypoint position");
+		return;
+	}
+	Gdk::Point handle_p;
+	found = get_position(handle_p, time_plot_data);
+	if (!found) {
+		synfig::warning("invalid TCB handle position");
+		return;
+	}
+
+	cr->save();
+	cr->move_to(waypoint_p.get_x(), waypoint_p.get_y());
+	cr->line_to(handle_p.get_x(), handle_p.get_y());
+
+	const Color * handle_color = &regular_bias_handle;
+	bool is_useless = !previous_waypoint || !next_waypoint;
+	if (is_useless)
+		handle_color = &useless_bias_handle;
+	else if (hovered)
+		handle_color = &hovered_bias_handle;
+	cr->set_source_rgb(handle_color->get_r(), handle_color->get_g(), handle_color->get_b());
+	cr->stroke();
+//	cr->move_to(handle_p.get_x(), handle_p.get_y());
+	cr->arc(handle_p.get_x(), handle_p.get_y(), 3, 0, 2*PI);
+	if (!is_useless)
+		cr->fill_preserve();
+	cr->stroke();
+
+	cr->restore();
+}
+
+bool Widget_Curves::TcbHandle::get_waypoint_position(Gdk::Point& p, const TimePlotData& time_plot_data) const
+{
+	std::vector<Real> channel_value_list;
+	bool ok = CurveStruct::get_value_base_channel_values(waypoint.get_value(waypoint.get_time()), channel_value_list);
+	if (!ok)
+		return false;
+	int px = time_plot_data.get_pixel_t_coord(waypoint.get_time());
+	int py = time_plot_data.get_pixel_y_coord(channel_value_list[channel_index]);
+	p.set_x(px);
+	p.set_y(py);
+	return true;
+}
+
+bool Widget_Curves::TcbHandle::get_position(Gdk::Point& p, const TimePlotData& time_plot_data) const
+{
+	Gdk::Point waypoint_pos;
+	if (! get_waypoint_position(waypoint_pos, time_plot_data) )
+		return false;
+	switch (param) {
+	case Bias:
+		const int bias_handle_length = 30;
+		Real new_tangent = get_tangent();
+		new_tangent /= -time_plot_data.get_delta_y_from_delta_pixel_coord(1) / time_plot_data.dt;
+		double angle = atan(new_tangent);
+		p.set_x(waypoint_pos.get_x() + bias_handle_length*cos(angle));
+		p.set_y(waypoint_pos.get_y() - bias_handle_length*sin(angle));
+		return true;
+	}
+	return false;
+}
+
+Real Widget_Curves::TcbHandle::get_tangent() const
+{
+	// This method is based on (copied from) ValueNode_AnimatedInterfaceConst::on_changed()
+
+	std::vector<Real> channel_value_list;
+	bool ok = CurveStruct::get_value_base_channel_values(waypoint.get_value(waypoint.get_time()), channel_value_list);
+	if (!ok) {
+		synfig::error("Ops! Internal error getting waypoint tangent");
+		return 0;
+	}
+	Real current_value = channel_value_list[channel_index];
+	Real previous_value;
+	Real next_value;
+	if (previous_waypoint) {
+		CurveStruct::get_value_base_channel_values(previous_waypoint->get_value(previous_waypoint->get_time()), channel_value_list);
+		previous_value = channel_value_list[channel_index];
+	}
+	if (next_waypoint) {
+		CurveStruct::get_value_base_channel_values(next_waypoint->get_value(next_waypoint->get_time()), channel_value_list);
+		next_value = channel_value_list[channel_index];
+	}
+
+	if (waypoint.get_after() == INTERPOLATION_CONSTANT || (next_waypoint && next_waypoint->get_before() == INTERPOLATION_CONSTANT))
+		return 0;
+
+	if (waypoint.get_after() == INTERPOLATION_TCB && previous_waypoint) {
+		if (waypoint.get_before() != INTERPOLATION_TCB) {
+			//TODO compute
+			// Any/Any - Any(!TCB)/TCB - Any/Any
+			// TCB parameters have no effect anyway
+			return 0;
+		} else if (next_waypoint) {
+			// middle waypoint (Any/Any - TCB/TCB - Any/Any)
+			return (current_value - previous_value) * (((1.0 - waypoint.get_tension()) * (1.0 + waypoint.get_continuity()) * (1.0 + waypoint.get_bias())) / 2.0) +
+				 (next_value - current_value) * (((1.0 - waypoint.get_tension()) * (1.0 - waypoint.get_continuity()) * (1.0 - waypoint.get_bias())) / 2.0);
+		} else {
+			// last waypoint (Any/Any - TCB/TCB - End)
+			return current_value - previous_value;
+		}
+	} else if (waypoint.get_after() == INTERPOLATION_TCB && !previous_waypoint && next_waypoint) {
+		// First waypoint
+		return next_value - current_value;
+	}
+	if (waypoint.get_before() == INTERPOLATION_TCB && previous_waypoint) {
+		if (next_waypoint)
+			return (current_value - previous_value) * (((1.0 - waypoint.get_tension()) * (1.0 + waypoint.get_continuity()) * (1.0 + waypoint.get_bias())) / 2.0) +
+			       (next_value - current_value) * (((1.0 - waypoint.get_tension()) * (1.0 - waypoint.get_continuity()) * (1.0 - waypoint.get_bias())) / 2.0);
+		else {
+			// last waypoint
+			return current_value - previous_value;
+		}
+	}
+	return 0;
+}
+
+Widget_Curves::TcbHandleSD::TcbHandleSD(Widget_Curves& widget)
+	: SelectDragHelper<TcbHandle>(_("Change TCB waypoint")),
+	  widget(widget)
+{
+}
+
+void Widget_Curves::TcbHandleSD::get_item_position(const Widget_Curves::TcbHandle& item, Gdk::Point& position)
+{
+	item.get_position(position, *widget.time_plot_data);
+}
+
+bool Widget_Curves::TcbHandleSD::find_item_at_position(int pos_x, int pos_y, Widget_Curves::TcbHandle& tcb_handle)
+{
+	Gdk::Point p;
+	for (TcbHandle & handle : widget.tcb_handles) {
+		if (handle.get_position(p, *widget.time_plot_data)) {
+			if (p.get_x() >= pos_x-3 && p.get_x() <= pos_x+3 && p.get_y() >= pos_y-3 && p.get_y() <= pos_y+3) {
+				tcb_handle = handle;
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void Widget_Curves::TcbHandleSD::delta_drag(int total_dx, int total_dy, bool by_keys)
+{
+	int x0, y0, x1, y1;
+	get_active_item_initial_point(x0, y0);
+
+	y1 = y0 + total_dy;
+	x1 = x0 + total_dx;
+
+	std::vector<TcbHandle*> items;
+	items = get_selected_items();
+	TcbHandle* handle = items.front();
+
+	// TCB waypoints only exercise any influence on interpolation when they're middle points (not end ones)
+	if (!handle->get_next() || !handle->get_previous())
+		return;
+
+	Gdk::Point waypoint_pos;
+	handle->get_waypoint_position(waypoint_pos, *widget.time_plot_data);
+	Waypoint & waypoint = handle->get_waypoint();
+	switch (handle->param) {
+	case TcbHandle::Bias:
+		Real previous_bias = waypoint.get_bias();
+		if (handle->get_previous() && handle->get_next()) {
+			std::vector<Real> channel_values;
+			CurveStruct::get_value_base_channel_values(handle->get_next()->get_value(handle->get_next()->get_time()), channel_values);
+			Real delta_value = channel_values[handle->channel_index];
+			CurveStruct::get_value_base_channel_values(handle->get_previous()->get_value(handle->get_previous()->get_time()), channel_values);
+			delta_value -= channel_values[handle->channel_index];
+
+			Real tangent_dx = x1- waypoint_pos.get_x();
+			if (tangent_dx <= 1)
+				tangent_dx = 1;
+			Real new_tangent = -(y1 - waypoint_pos.get_y()) / tangent_dx;
+			new_tangent *= -widget.time_plot_data->get_delta_y_from_delta_pixel_coord(1) / widget.time_plot_data->dt;
+
+			Real bias = new_tangent * 2.0 / ((1.0 - waypoint.get_tension()) * (1.0 - waypoint.get_continuity()) * (delta_value)) -1;
+			handle->get_waypoint().set_bias(bias);
+		}
+		// No changes? Quit in order to avoid undo history and useless re-rendering
+		if (approximate_equal(previous_bias, waypoint.get_bias()))
+			return;
+		break;
+	}
+
+	Action::Handle action(Action::create("WaypointSet"));
+
+	assert(action);
+
+	action->set_param("canvas", widget.canvas_interface->get_canvas());
+	action->set_param("canvas_interface", widget.canvas_interface);
+
+	action->set_param("waypoint", handle->get_waypoint());
+	action->set_param("value_node", handle->get_waypoint().get_parent_value_node());
+
+	if(!widget.canvas_interface->get_instance()->perform_action(action))
+		synfig::warning("Couldn't set new waypoint parameters");
+}
