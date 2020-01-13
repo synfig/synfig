@@ -187,14 +187,14 @@ ThreadPool::thread_loop(int
 		Slot slot;
 		{
 			Glib::Threads::Mutex::Lock lock(mutex);
-			while(queue.empty() || running_threads > max_running_threads) {
-				if (stopped) return;
+			while(!stopped && (queue.empty() || running_threads > max_running_threads)) {
 				++ready_threads;
 				--running_threads;
 				cond.wait(mutex);
 				++running_threads;
 				--ready_threads;
 			}
+			if (stopped) break;
 			slot = queue.front();
 			queue.pop();
 			--queue_size;
