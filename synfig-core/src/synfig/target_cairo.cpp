@@ -179,7 +179,7 @@ synfig::Target_Cairo::render(ProgressCallback *cb)
 			}
 		}while(frames);
 	}
-	catch(String str)
+	catch(const String& str)
 	{
 		if(cb)cb->error(_("Caught string :")+str);
 		return false;

@@ -132,7 +132,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 		(*__open_importers)[identifier]=importer;
 		return importer;
 	}
-	catch (String str)
+	catch (const String& str)
 	{
 		synfig::error(str);
 	}
