@@ -140,7 +140,7 @@ pipe_listen_thread()
 				);
 				if(success && read_bytes==1 && c!='\n')
 					data+=c;
-			}while(c!='\n');
+			} while (c != '\n' && !thread_should_quit);
 			std::lock_guard<std::mutex> lock(cmd_mutex);
 			cmd_queue.push_back(data);
 			cmd_dispatcher->emit();
@@ -218,8 +218,8 @@ IPC::~IPC()
 	remove(fifo_path().c_str());
 #ifdef _WIN32
 	thread_should_quit = true;
-	if (cmd_thread->joinable())
-		cmd_thread->join();
+	//if (cmd_thread->joinable())
+	//	cmd_thread->join();
 	delete cmd_thread;
 	delete cmd_dispatcher;
 #endif
