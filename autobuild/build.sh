@@ -63,11 +63,10 @@ else
 	DEBUG=''
 fi
 
-[ -d ETL ] || mkdir ETL
-[ -d synfig-core ] || mkdir synfig-core
-[ -d synfig-studio ] || mkdir synfig-studio
-[ -d "${PREFIX}" ] || mkdir "${PREFIX}"
-[ -d "${PREFIX}/bin" ] || mkdir "${PREFIX}/bin"
+mkdir -p ETL
+mkdir -p synfig-core
+mkdir -p synfig-studio
+mkdir -p "${PREFIX}/bin"
 
 #========================== VARIABLES ==================================
 
