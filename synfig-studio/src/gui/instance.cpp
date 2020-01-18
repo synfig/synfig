@@ -385,30 +385,43 @@ studio::Instance::run_plugin(std::string plugin_path)
 		} else {
 			// Restore file copy
 			FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream("#project"+filename_ext);
+			if (stream && filename_ext == ".sifz")
+				stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
+
 			if (!stream)
 			{
 				synfig::error("run_plugin(): Unable to open file for write");
+			} else {
+				std::ifstream  infile(filename_processed, std::ios::binary);
+				*stream << infile.rdbuf();
+				infile.close();
+				stream.reset();
+				remove(filename_processed.c_str());
 			}
-			if (filename_ext == ".sifz")
-				stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
-			std::ifstream  infile(filename_processed, std::ios::binary);
-			*stream << infile.rdbuf();
-			infile.close();
-			stream.reset();
-			remove(filename_processed.c_str());
 		}
 	}
 
 	canvas=0;
 
-	App::open_from_temporary_filesystem(tmp_filename);
+	bool ok = App::open_from_temporary_filesystem(tmp_filename);
+	if (!ok) {
+		synfig::error("run_plugin(): Cannot reopen file");
+		return;
+	}
+
 	etl::handle<Instance> new_instance = App::instance_list.back();
-
-	// Restore time cursor position
-	canvas = new_instance->get_canvas();
-	etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
-	new_canvas_interface->set_time(cur_time);
-
+	if (!new_instance) {
+		synfig::error("run_plugin(): Cannot retrieve new instance");
+	} else {
+		// Restore time cursor position
+		canvas = new_instance->get_canvas();
+		etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
+		if (!new_canvas_interface) {
+			synfig::error("run_plugin(): Cannot retrieve canvas interface");
+		} else {
+			new_canvas_interface->set_time(cur_time);
+		}
+	}
 }
 
 bool
