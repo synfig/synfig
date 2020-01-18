@@ -297,8 +297,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 		stream_in.reset();
 
 
-		bool result;
-		int exitcode;
+		bool result = false;
 		String output;
 		String command = "";
 
@@ -365,7 +364,7 @@ studio::Instance::run_plugin(std::string plugin_path)
 					synfig::info(output);
 				}
 
-				exitcode=pclose(pipe);
+				int exitcode=pclose(pipe);
 
 				if (0==exitcode){
 					result=true;
