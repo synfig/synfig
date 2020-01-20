@@ -503,7 +503,7 @@ Renderer_Canvas::enqueue_render_frame(
 		++enqueued_tasks;
 
 		// Renderer::enqueue contains the expensive 'optimization' stage, so call it async
-		ThreadPool::instance.enqueue( sigc::bind(
+		ThreadPool::instance().enqueue( sigc::bind(
 			sigc::ptr_fun(&rendering::Renderer::enqueue_task_func),
 			renderer, tile_task, tile->event, false ));
 	}

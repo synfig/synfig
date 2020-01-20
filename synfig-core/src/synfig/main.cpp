@@ -67,6 +67,7 @@
 #include "layer.h"
 #include "valuenode.h"
 #include "soundprocessor.h"
+#include "threadpool.h"
 #include "rendering/renderer.h"
 
 #include "main.h"
@@ -314,6 +315,10 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
 	}
 
+	if(cb)cb->task(_("Starting Subsystem \"Thread Pool\""));
+	if(!ThreadPool::subsys_init())
+		throw std::runtime_error(_("Unable to initialize subsystem \"Thread Pool\""));
+
 	// Rebuild tokens data
 	Token::rebuild();
 
@@ -394,6 +399,8 @@ synfig::Main::~Main()
 		}
 	}
 
+	// synfig::info("ThreadPool::subsys_stop()");
+	ThreadPool::subsys_stop();
 	// synfig::info("Importer::subsys_stop()");
 	Importer::subsys_stop();
 	CairoImporter::subsys_stop();

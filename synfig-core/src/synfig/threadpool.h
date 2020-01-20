@@ -74,6 +74,7 @@ private:
 	Glib::Threads::Mutex mutex;
 	Glib::Threads::Cond cond;
 	int max_running_threads;
+	int last_thread_id;
 	std::atomic<int> running_threads;
 	std::atomic<int> ready_threads;
 	std::atomic<int> queue_size;
@@ -81,15 +82,15 @@ private:
 	std::vector<Glib::Threads::Thread*> threads;
 	bool stopped;
 
-	void thread_loop(int index);
+	static ThreadPool *instance_;
+
+	void thread_loop(int id);
 	void wakeup();
 
 	ThreadPool();
 	ThreadPool(const ThreadPool&);
 
 public:
-	static ThreadPool instance;
-
 	~ThreadPool();
 
 	void enqueue(const Slot &slot);
@@ -101,6 +102,10 @@ public:
 		{ return running_threads; }
 	int get_queue_size() const
 		{ return queue_size + running_threads; }
+
+	static ThreadPool& instance();
+	static bool subsys_init();
+	static bool subsys_stop();
 };
 
 }; // END of namespace synfig

@@ -37,6 +37,8 @@
 #include <time.h>
 #endif
 
+#include <cassert>
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
@@ -55,7 +57,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ThreadPool ThreadPool::instance;
+ThreadPool* ThreadPool::instance_ = 0;
 
 
 // ThreadPool::Group
@@ -95,7 +97,7 @@ ThreadPool::Group::run(bool force_thread) {
 		if (sum >= 0.75) {
 			multithreading = true;
 			++running_threads;
-			instance.enqueue( sigc::bind( sigc::mem_fun(this, &Group::process), begin, end ));
+			instance().enqueue( sigc::bind( sigc::mem_fun(this, &Group::process), begin, end ));
 			sum_weight -= sum;
 			sum = 0.0;
 			begin = end;
@@ -108,17 +110,17 @@ ThreadPool::Group::run(bool force_thread) {
 		if (force_thread) {
 			multithreading = true;
 			++running_threads;
-			instance.enqueue( sigc::bind( sigc::mem_fun(this, &Group::process), begin, end ));
+			instance().enqueue( sigc::bind( sigc::mem_fun(this, &Group::process), begin, end ));
 		} else {
 			for(int i = begin; i < end; ++i)
-				try { tasks[i].second(); } catch(...) { }
+				tasks[i].second();
 		}
 	}
 
 	// wait
 	if (multithreading) {
 		Glib::Threads::Mutex::Lock lock(mutex);
-		while(running_threads > 0) instance.wait(cond, mutex);
+		while(running_threads > 0) instance().wait(cond, mutex);
 	}
 
 	// reset
@@ -132,24 +134,38 @@ ThreadPool::Group::run(bool force_thread) {
 
 ThreadPool::ThreadPool():
 	max_running_threads(0),
+	last_thread_id(0),
 	running_threads(0),
 	ready_threads(0),
 	stopped(false)
 {
 	max_running_threads = g_get_num_processors();
-	if (max_running_threads < 1) max_running_threads = 1;
+
+	if (const char *s = getenv("SYNFIG_GENERIC_THREADS"))
+		max_running_threads = atoi(s) + 1;
+
+	if (max_running_threads < 2) max_running_threads = 2;
 	if (max_running_threads > 2) --max_running_threads;
 	++running_threads;
+
+	#ifdef DEBUG_PTHREAD_MEASURE
+	info("ThreadPool created with max running threads: %d", max_running_threads - 1);
+	#endif
 }
 
 ThreadPool::ThreadPool(const ThreadPool&):
 	max_running_threads(0),
+	last_thread_id(0),
 	running_threads(0),
 	ready_threads(0),
 	queue_size(0),
 	stopped(false) { }
 
 ThreadPool::~ThreadPool() {
+	#ifdef DEBUG_PTHREAD_MEASURE
+	info("ThreadPool destroying with tasks in queue: %d, and tasks in process: %d", (int)queue_size, (int)running_threads);
+	#endif
+
 	{
 		Glib::Threads::Mutex::Lock lock(mutex);
 		stopped = true;
@@ -161,23 +177,32 @@ ThreadPool::~ThreadPool() {
 		{
 			Glib::Threads::Mutex::Lock lock(mutex);
 			if (threads.empty()) break;
+			stopped = true;
+			cond.broadcast();
 			thread = threads.back();
 			threads.pop_back();
 		}
 		thread->join();
+	}
+
+	{
+		#ifdef DEBUG_PTHREAD_MEASURE
+		Glib::Threads::Mutex::Lock lock(mutex);
+		info("ThreadPool destroyed with unprocessed tasks in queue: %d", queue.size());
+		#endif
 	}
 }
 
 void
 ThreadPool::thread_loop(int
 	#ifdef DEBUG_PTHREAD_MEASURE
-	index
+	id
 	#endif
 ) {
 	++running_threads;
 
 	#ifdef DEBUG_PTHREAD_MEASURE
-	info("started new thread in ThreadPool, %d", index);
+	info("started new thread #%d in ThreadPool", id);
 
 	clockid_t clock_id;
 	pthread_getcpuclockid(pthread_self(), &clock_id);
@@ -206,11 +231,11 @@ ThreadPool::thread_loop(int
 		long long time0 = spec.tv_sec*1000000000ll + spec.tv_nsec;
 		long long rtime0 = g_get_monotonic_time();
 
-		info( "ThreadPool thread %d: begin, running threads: %d, ready threads: %d, queue size: %d",
-			  index,
-			  (int)running_threads,
-			  (int)ready_threads,
-			  (int)queue_size );
+		info( "ThreadPool thread #%d: begin, running threads: %d, ready threads: %d, queue size: %d",
+				id,
+				(int)running_threads,
+				(int)ready_threads,
+				(int)queue_size );
 		#endif
 
 		slot();
@@ -220,15 +245,15 @@ ThreadPool::thread_loop(int
 		long long time1 = spec.tv_sec*1000000000ll + spec.tv_nsec;
 		long long rtime1 = g_get_monotonic_time();
 
-		info( "ThreadPool thread %d: processed task for %.6f (real %.6f)",
-			  index,
-			  (double)(time1 - time0)*1e-9,
-			  (double)(rtime1 - rtime0)*1e-6 );
+		info( "ThreadPool thread #%d: processed task for %.6f (real %.6f)",
+				id,
+				(double)(time1 - time0)*1e-9,
+				(double)(rtime1 - rtime0)*1e-6 );
 		#endif
 	}
 
 	#ifdef DEBUG_PTHREAD_MEASURE
-	info("thread in ThreadPool stopped, %d", index);
+	info("thread #%d in ThreadPool stopped", id);
 	#endif
 
 	--running_threads;
@@ -242,7 +267,7 @@ ThreadPool::wakeup() {
 	while(to_create-- > 0)
 		threads.push_back(
 			Glib::Threads::Thread::create(
-				sigc::bind( sigc::mem_fun(this, &ThreadPool::thread_loop), (int)threads.size() )));
+				sigc::bind( sigc::mem_fun(this, &ThreadPool::thread_loop), ++last_thread_id )));
 	while(to_wakeup-- > 0)
 		cond.signal();
 }
@@ -262,4 +287,25 @@ ThreadPool::wait(Glib::Threads::Cond &cond, Glib::Threads::Mutex &mutex) {
 			{ Glib::Threads::Mutex::Lock lock(this->mutex); wakeup(); }
 	cond.wait(mutex);
 	++running_threads;
+}
+
+ThreadPool&
+ThreadPool::instance() {
+	assert(instance_);
+	return *instance_;
+}
+
+bool
+ThreadPool::subsys_init() {
+	assert(!instance_);
+	if (!instance_) instance_ = new ThreadPool();
+	return true;
+}
+
+bool
+ThreadPool::subsys_stop() {
+	assert(instance_);
+	if (instance_) delete instance_;
+	instance_ = 0;
+	return true;
 }
