@@ -974,7 +974,6 @@ DEFINE_ACTION("select-all-layers",        _("Select All Layers"));
 DEFINE_ACTION("unselect-all-layers",      _("Unselect All Layers"));
 DEFINE_ACTION("input-devices",            _("Input Devices..."));
 DEFINE_ACTION("setup",                    _("Preferences..."));
-DEFINE_ACTION("restore-default-settings", _("Restore Defaults"));
 
 // actions in View menu
 DEFINE_ACTION("toggle-mainwin-menubar",   _("Menubar"));
