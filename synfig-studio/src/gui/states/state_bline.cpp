@@ -1283,6 +1283,7 @@ StateBLine_Context::event_key_press_handler(const Smach::event& x)
 	switch(event.keyval)
 	{
 	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		if (bline_point_list.size() > 1)
 			run();
 		return Smach::RESULT_ACCEPT;
