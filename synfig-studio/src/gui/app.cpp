@@ -714,7 +714,7 @@ public:
 			}
 			if(key=="distance_system")
 			{
-				App::distance_system=Distance::ident_system(value);;
+				App::distance_system=Distance::ident_system(value);
 				return true;
 			}
 			if(key=="restrict_radius_ducks")

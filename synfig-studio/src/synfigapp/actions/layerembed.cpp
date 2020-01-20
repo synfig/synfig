@@ -92,7 +92,7 @@ Action::LayerEmbed::is_candidate(const ParamList &x)
 		= etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(layer);
 	if (layer_pastecanvas)
 	{
-		Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();;
+		Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();
 		if (canvas && canvas->is_root())
 			return true;
 	}
