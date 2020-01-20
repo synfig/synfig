@@ -253,7 +253,7 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
 	{
 		printf("%s:%d transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
-		printf("%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);;
+		printf("%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);
 	}
 
 	if (abs(total_weight) > epsilon)

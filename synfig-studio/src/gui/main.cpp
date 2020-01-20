@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 		{
 			cout << endl;
 			cout << "   " << _("synfig studio is already running") << endl << endl;
-			cout << "   " << _("the existing process will be used") << endl << endl;;
+			cout << "   " << _("the existing process will be used") << endl << endl;
 
 			// Hey, another copy of us is open!
 			// don't bother opening us, just go ahead and
