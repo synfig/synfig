@@ -558,7 +558,6 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 
 	static const char* languages[][2] = {
 		#include <languages.inc.c>
-		#include <gdkmm-3.0/gdkmm/rgba.h>
 		{ NULL, NULL } // final entry without comma to avoid misunderstanding
 	};
 
