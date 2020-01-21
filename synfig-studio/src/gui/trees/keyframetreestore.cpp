@@ -111,55 +111,6 @@ int get_index_from_model_iter(Gtk::TreeModel::iterator iter)
 }
 
 
-/*
-#ifndef TreeRowReferenceHack
-class TreeRowReferenceHack
-{
-	GtkTreeRowReference *gobject_;
-public:
-	TreeRowReferenceHack():
-		gobject_(0)
-	{
-	}
-
-	TreeRowReferenceHack(const Glib::RefPtr<Gtk::TreeModel>& model, const Gtk::TreeModel::Path& path):
-		gobject_ ( gtk_tree_row_reference_new(model->gobj(), const_cast<GtkTreePath*>(path.gobj())) )
-	{
-	}
-
-	TreeRowReferenceHack(const TreeRowReferenceHack &x):
-		gobject_ ( x.gobject_?gtk_tree_row_reference_copy(x.gobject_):0 )
-	{
-
-	}
-
-	void swap(TreeRowReferenceHack & other)
-	{
-		GtkTreeRowReference *const temp = gobject_;
-		gobject_ = other.gobject_;
-		other.gobject_ = temp;
-	}
-
-	const TreeRowReferenceHack &
-	operator=(const TreeRowReferenceHack &rhs)
-	{
-		TreeRowReferenceHack temp (rhs);
-  		swap(temp);
-		return *this;
-	}
-
-	~TreeRowReferenceHack()
-	{
-		if(gobject_)
-			gtk_tree_row_reference_free(gobject_);
-	}
-
-	Gtk::TreeModel::Path get_path() { return Gtk::TreeModel::Path(gtk_tree_row_reference_get_path(gobject_),false); }
-	GtkTreeRowReference *gobj() { return gobject_; }
-};
-#endif
-*/
-
 /* === P R O C E D U R E S ================================================= */
 
 void clear_iterator(GtkTreeIter* iter)
@@ -178,7 +129,6 @@ KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 	canvas_interface_	(canvas_interface_)
 {
 	reset_stamp();
-	//reset_path_table();
 
 	//connect some events
 	canvas_interface()->signal_keyframe_added().connect(sigc::mem_fun(*this,&studio::KeyframeTreeStore::add_keyframe));
@@ -207,22 +157,6 @@ KeyframeTreeStore::reset_stamp()
 {
 	stamp_=time(0)+reinterpret_cast<intptr_t>(this);
 }
-
-/*
-void
-KeyframeTreeStore::reset_path_table()
-{
-	Gtk::TreeModel::Children::iterator iter;
-	const Gtk::TreeModel::Children children(children());
-	path_table_.clear();
-	for(iter = children.begin(); iter != children.end(); ++iter)
-	{
-		Gtk::TreeModel::Row row(*iter);
-		path_table_[(Keyframe)row[model.keyframe]]=TreeRowReferenceHack(Glib::RefPtr<KeyframeTreeStore>(this),Gtk::TreePath(row));
-	}
-}
-*/
-
 
 inline bool
 KeyframeTreeStore::iterator_sane(const GtkTreeIter* iter)const
