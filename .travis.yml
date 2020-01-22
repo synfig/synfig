@@ -13,6 +13,16 @@ matrix:
   include:
 
   - os: linux
+    name: "Synfig Studio Ubuntu 18.04 Bionic (Check appdata.xml)"
+    sudo: required
+    dist: bionic
+    before_install:
+      - sudo apt update && sudo apt install flatpak
+      - sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+      - sudo flatpak install flathub org.freedesktop.appstream-glib -y
+    script: sudo flatpak run org.freedesktop.appstream-glib validate synfig-studio/org.synfig.SynfigStudio.appdata.xml.in
+
+  - os: linux
     name: "Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
     sudo: required
     dist: xenial
