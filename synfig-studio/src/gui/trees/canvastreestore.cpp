@@ -305,12 +305,15 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			ValueNode::Handle value_node=value_desc.get_value_node();
 
 			// Setup the row's label
-			if(value_node->get_id().empty())
-				x.set(Glib::ustring((*iter)[model.name]));
-			else if(Glib::ustring((*iter)[model.name]).empty())
-				x.set(value_node->get_id());
-			else
-				x.set(Glib::ustring((*iter)[model.name])+" ("+value_node->get_id()+')');
+			if (value_node) {
+				if(value_node->get_id().empty())
+					x.set(Glib::ustring((*iter)[model.name]));
+				else if(Glib::ustring((*iter)[model.name]).empty())
+					x.set(value_node->get_id());
+				else
+					x.set(Glib::ustring((*iter)[model.name])+" ("+value_node->get_id()+')');
+			} else
+				x.set(_("[Without value node]"));
 		}
 
 		g_value_init(value.gobj(),x.value_type());
