@@ -66,7 +66,7 @@ void PreProcessSegment(studio::PointList &segment)
   {
     segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size ) + bottomleft[0];
     segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size ) + bottomleft[1];
-    segment[i][2] = segment[i][2]/2.5;
+    segment[i][2] = (segment[i][2]/2.5)*max(w_factor,h_factor);
   }
   
 }
