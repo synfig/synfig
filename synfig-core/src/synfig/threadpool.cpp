@@ -137,6 +137,7 @@ ThreadPool::ThreadPool():
 	last_thread_id(0),
 	running_threads(0),
 	ready_threads(0),
+	queue_size(0),
 	stopped(false)
 {
 	max_running_threads = g_get_num_processors();
@@ -152,14 +153,6 @@ ThreadPool::ThreadPool():
 	info("ThreadPool created with max running threads: %d", max_running_threads - 1);
 	#endif
 }
-
-ThreadPool::ThreadPool(const ThreadPool&):
-	max_running_threads(0),
-	last_thread_id(0),
-	running_threads(0),
-	ready_threads(0),
-	queue_size(0),
-	stopped(false) { }
 
 ThreadPool::~ThreadPool() {
 	#ifdef DEBUG_PTHREAD_MEASURE

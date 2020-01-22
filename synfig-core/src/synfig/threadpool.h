@@ -88,7 +88,7 @@ private:
 	void wakeup();
 
 	ThreadPool();
-	ThreadPool(const ThreadPool&);
+	ThreadPool(const ThreadPool&) = delete;
 
 public:
 	~ThreadPool();
