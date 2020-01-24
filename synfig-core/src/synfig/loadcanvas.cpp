@@ -159,6 +159,7 @@ static void _canvas_file_name_changed(Canvas *x)
 Canvas::Handle
 synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as,String &errors,String &warnings)
 {
+	String filename = FileSystem::fix_slashes(as);
 	if (CanvasParser::loading_.count(identifier))
 	{
 		String warning(strprintf(_("cannot load '%s' recursively"), identifier.filename.c_str()));
@@ -166,7 +167,7 @@ synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as
 		warnings = "  * " + warning + "\n";
 		Canvas::Handle canvas(Canvas::create());
 		canvas->set_identifier(identifier);
-		canvas->set_file_name(as);
+		canvas->set_file_name(filename);
 		Layer::Handle paste(Layer_Group::create());
 		canvas->push_back(paste);
 		paste->set_description(warning);
@@ -180,7 +181,7 @@ synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as
 	try
 	{
 		CanvasParser::loading_.insert(identifier);
-		canvas=parser.parse_from_file_as(identifier,as,errors);
+		canvas=parser.parse_from_file_as(identifier,filename,errors);
 	}
 	catch (...)
 	{
