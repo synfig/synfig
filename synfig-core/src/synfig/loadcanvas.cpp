@@ -130,7 +130,16 @@ std::map<synfig::String, etl::loose_handle<Canvas> >& synfig::get_open_canvas_ma
 	return *open_canvas_map_;
 }
 
-static void _remove_from_open_canvas_map(Canvas *x) { get_open_canvas_map().erase(etl::absolute_path(x->get_file_name())); }
+static void _remove_from_open_canvas_map(Canvas *x) {
+    auto& map = get_open_canvas_map();
+    const std::string filename = etl::absolute_path(x->get_file_name());
+    const auto& found = map.find(filename);
+    if (found == map.end()) {
+        synfig::error(_("Cannot find canvas for delete '%s'"), filename.c_str());
+        return;
+    }
+    map.erase(found);
+}
 
 static void _canvas_file_name_changed(Canvas *x)
 {
