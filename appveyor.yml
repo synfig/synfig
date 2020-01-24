@@ -14,4 +14,9 @@ cache:
 build_script:
   - '%APPVEYOR_BUILD_FOLDER%\autobuild\msys2\appveyor.bat'
 
-deploy: off
+deploy:
+- provider: Webhook
+  url: https://app.signpath.io/API/v1/a4819c4b-1841-4c61-9841-5577b5173960/Integrations/AppVeyor?ProjectKey=synfig&SigningPolicyKey=test-signing
+  authorization:
+     secure: sgY2fDAEAVTUaEKkDYyX9Yp1ETRX29Z1+mAWysuth6teQB3KPAGeEmXe6HgJQSTzgLMbHdXCndkGyx+Mjo8xbg==
+
