@@ -354,6 +354,11 @@ cleanup_path(std::string path)
     if (path.size() > 1u && is_separator(path[path.size() - 1]))
     	path.erase(path.size() - 1, 1);
 
+    // fix slashes
+    for(size_t i = 0; i < path.size(); ++i) {
+        if (path[i] == '\\') path[i] = '/';
+    }
+
     return path;
 }
 
