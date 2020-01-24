@@ -52,6 +52,7 @@ src/gui/dialogs/dialog_waypoint.cpp
 src/gui/dialogs/dialog_waypoint.h
 src/gui/dialogs/dialog_workspaces.cpp
 src/gui/dialogs/dialog_workspaces.h
+src/gui/dialogs/vectorizersettings.cpp
 src/gui/dials/framedial.cpp
 src/gui/dials/framedial.h
 src/gui/dials/jackdial.cpp
@@ -235,6 +236,7 @@ src/gui/workarearenderer/renderer_timecode.cpp
 src/gui/workarearenderer/renderer_timecode.h
 src/gui/workarearenderer/workarearenderer.cpp
 src/gui/workarearenderer/workarearenderer.h
+src/gui/workspacehandler.cpp
 src/gui/app.cpp
 src/gui/app.h
 src/gui/asyncrenderer.cpp
@@ -245,8 +247,6 @@ src/gui/autorecover.cpp
 src/gui/autorecover.h
 src/gui/canvasview.cpp
 src/gui/canvasview.h
-src/gui/compview.cpp
-src/gui/compview.h
 src/gui/devicetracker.cpp
 src/gui/devicetracker.h
 src/gui/dialogsettings.cpp
@@ -412,6 +412,7 @@ src/synfigapp/actions/timepointsdelete.cpp
 src/synfigapp/actions/timepointsdelete.h
 src/synfigapp/actions/timepointsmove.cpp
 src/synfigapp/actions/timepointsmove.h
+src/synfigapp/actions/valuedescbake.cpp
 src/synfigapp/actions/valuedescblinelink.cpp
 src/synfigapp/actions/valuedescblinelink.h
 src/synfigapp/actions/valuedescbonelink.cpp
@@ -473,6 +474,7 @@ src/synfigapp/actions/valuenodestaticlistremove.cpp
 src/synfigapp/actions/valuenodestaticlistremovesmart.cpp
 src/synfigapp/actions/valuenodestaticlistrotateorder.cpp
 src/synfigapp/actions/valuenodestaticlistunloop.cpp
+src/synfigapp/actions/vectorization.cpp
 src/synfigapp/actions/waypointadd.cpp
 src/synfigapp/actions/waypointadd.h
 src/synfigapp/actions/waypointconnect.cpp
@@ -500,7 +502,6 @@ src/synfigapp/instance.cpp
 src/synfigapp/instance.h
 src/synfigapp/main.cpp
 src/synfigapp/main.h
-src/synfigapp/pluginmanager.cpp
 src/synfigapp/selectionmanager.h
 src/synfigapp/settings.cpp
 src/synfigapp/settings.h
