@@ -1888,7 +1888,7 @@ App::add_recent_file(const etl::handle<Instance> instance)
 void
 App::add_recent_file(const std::string &file_name)
 {
-	std::string filename(file_name);
+	std::string filename(FileSystem::fix_slashes(file_name));
 
 	assert(!filename.empty());
 
