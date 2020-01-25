@@ -40,7 +40,7 @@
 using namespace studio;
 
 Dock_SoundWave::Dock_SoundWave()
-	: Dock_CanvasSpecific("soundwave", _("Sound Wave"), Gtk::StockID("synfig-layer_other_sound")),
+	: Dock_CanvasSpecific("soundwave", _("Sound"), Gtk::StockID("synfig-layer_other_sound")),
 	  current_widget_sound(nullptr)
 {
 	widget_kf_list.set_hexpand();

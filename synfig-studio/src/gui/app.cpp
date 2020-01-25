@@ -1069,7 +1069,7 @@ DEFINE_ACTION("panel-timetrack",       _("Timetrack"));
 DEFINE_ACTION("panel-curves",          _("Graphs"));
 DEFINE_ACTION("panel-groups",          _("Sets"));
 DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"));
-DEFINE_ACTION("panel-soundwave",       _("Sound Wave"));
+DEFINE_ACTION("panel-soundwave",       _("Sound"));
 
 // actions in Help menu
 DEFINE_ACTION("help",           Gtk::Stock::HELP);
