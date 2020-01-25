@@ -30,13 +30,9 @@
 
 #include <list>
 
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/adjustment.h>
-
 #include <synfigapp/value_desc.h>
-#include <synfigapp/canvasinterface.h>
 
-#include <gui/timemodel.h>
+#include <gui/widgets/widget_timegraphbase.h>
 
 #include "selectdraghelper.h"
 
@@ -54,9 +50,7 @@ class PassiveGrouper;
 
 namespace studio {
 
-struct TimePlotData;
-
-class Widget_Curves: public Gtk::DrawingArea
+class Widget_Curves: public Widget_TimeGraphBase
 {
 	friend class ChannelPointSD;
 private:
@@ -97,15 +91,9 @@ private:
 		bool is_waypoint_selected(const ChannelPoint& point) const;
 	} channel_point_sd;
 
-	etl::handle<synfigapp::CanvasInterface> canvas_interface;
-
-	Glib::RefPtr<Gtk::Adjustment> range_adjustment;
-
 	std::list<CurveStruct> curve_list;
 
 	std::list<sigc::connection> value_desc_changed;
-
-	TimePlotData * time_plot_data;
 
 	int waypoint_edge_length;
 
@@ -123,23 +111,9 @@ public:
 
 	const Glib::RefPtr<Gtk::Adjustment>& get_range_adjustment() const { return range_adjustment; }
 
-	const etl::handle<TimeModel>& get_time_model() const;
-	void set_time_model(const etl::handle<TimeModel> &x);
-
 	void set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list< std::pair<std::string, synfigapp::ValueDesc> > &data);
 	void clear();
 	void refresh();
-
-	void zoom_in();
-	void zoom_out();
-	void zoom_100();
-	void set_zoom(double new_zoom_factor);
-	double get_zoom() const;
-
-	void scroll_up();
-	void scroll_down();
-
-	void pan(int dx, int dy, int total_dx, int total_dy);
 
 	void select_all_points();
 

@@ -146,6 +146,7 @@
 #include "docks/dock_params.h"
 #include "docks/dock_metadata.h"
 #include "docks/dock_navigator.h"
+#include "docks/dock_soundwave.h"
 #include "docks/dock_timetrack.h"
 #include "docks/dock_toolbox.h"
 
@@ -297,6 +298,7 @@ studio::Dock_Children      *dock_children;
 studio::Dock_Info          *dock_info;
 studio::Dock_LayerGroups   *dock_layer_groups;
 studio::Dock_Navigator     *dock_navigator;
+studio::Dock_SoundWave     *dock_soundwave;
 studio::Dock_Timetrack     *dock_timetrack;
 studio::Dock_Curves        *dock_curves;
 
@@ -1067,6 +1069,7 @@ DEFINE_ACTION("panel-timetrack",       _("Timetrack"));
 DEFINE_ACTION("panel-curves",          _("Graphs"));
 DEFINE_ACTION("panel-groups",          _("Sets"));
 DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"));
+DEFINE_ACTION("panel-soundwave",       _("Sound"));
 
 // actions in Help menu
 DEFINE_ACTION("help",           Gtk::Stock::HELP);
@@ -1240,6 +1243,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "		<menuitem action='panel-curves' />"
 "		<menuitem action='panel-groups' />"
 "		<menuitem action='panel-pal_edit' />"
+"		<menuitem action='panel-soundwave' />"
 "		<separator />"
 // opened documents will be listed here below the above separator.
 "	</menu>"
@@ -1607,6 +1611,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Init Navigator..."));
 		dock_navigator = new studio::Dock_Navigator();
 		dock_manager->register_dockable(*dock_navigator);
+
+		studio_init_cb.task(_("Init SoundWave..."));
+		dock_soundwave = new studio::Dock_SoundWave();
+		dock_manager->register_dockable(*dock_soundwave);
 
 		studio_init_cb.task(_("Init Timetrack..."));
 		dock_timetrack = new studio::Dock_Timetrack();
@@ -2124,7 +2132,7 @@ App::set_workspace_default()
 				"]"
 				"|[hor|%25x"
 					"|[book|params|keyframes]"
-					"|[book|timetrack|curves|children|meta_data]"
+					"|[book|timetrack|curves|children|meta_data|soundwave]"
 				"]"
 			"]"
 			"|[vert|%20y"
@@ -2165,7 +2173,7 @@ App::set_workspace_animating()
 		"[hor|%70x"
 			"|[vert|%1y"
 				"|[hor|%1x|[book|toolbox]|[mainnotebook]]"
-				"|[hor|%25x|[book|params|children]|[book|timetrack|curves]]"
+				"|[hor|%25x|[book|params|children]|[book|timetrack|curves|soundwave|]]"
 			"]"
 			"|[vert|%30y"
 				"|[book|keyframes|history|groups]|[book|layers|canvases]]"
