@@ -55,6 +55,9 @@ public:
 
 	virtual void pan(int dx, int dy, int /*total_dx*/, int /*total_dy*/);
 
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() const;
+	void set_canvas_interface(const etl::handle<synfigapp::CanvasInterface>& value);
+
 protected:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
@@ -69,7 +72,8 @@ protected:
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	virtual void on_time_model_changed();
 
-	void draw_current_time(const Cairo::RefPtr<Cairo::Context> &cr);
+	void draw_current_time(const Cairo::RefPtr<Cairo::Context> &cr) const;
+	void draw_keyframe_line(const Cairo::RefPtr<Cairo::Context> &cr, const synfig::Keyframe& keyframe) const;
 
 private:
 	double default_page_size;

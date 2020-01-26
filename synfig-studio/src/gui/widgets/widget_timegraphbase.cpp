@@ -140,6 +140,16 @@ void Widget_TimeGraphBase::pan(int dx, int dy, int /*total_dx*/, int /*total_dy*
 			.finish();
 }
 
+etl::handle<synfigapp::CanvasInterface> Widget_TimeGraphBase::get_canvas_interface() const
+{
+	return canvas_interface;
+}
+
+void Widget_TimeGraphBase::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface>& value)
+{
+	canvas_interface = value;
+}
+
 void Widget_TimeGraphBase::set_default_page_size(double new_value)
 {
 	if (new_value < 0 || synfig::approximate_zero(new_value))
@@ -176,12 +186,22 @@ void Widget_TimeGraphBase::on_time_model_changed()
 
 }
 
-void Widget_TimeGraphBase::draw_current_time(const Cairo::RefPtr<Cairo::Context>& cr)
+void Widget_TimeGraphBase::draw_current_time(const Cairo::RefPtr<Cairo::Context>& cr) const
 {
 	cr->save();
 	cr->set_line_width(1.0);
 	cr->set_source_rgb(0, 0, 1);
 	cr->rectangle(time_plot_data->get_pixel_t_coord(time_plot_data->time), 0, 0, get_height());
 	cr->stroke();
+	cr->restore();
+}
+
+void Widget_TimeGraphBase::draw_keyframe_line(const Cairo::RefPtr<Cairo::Context>& cr, const synfig::Keyframe& keyframe) const
+{
+	const Gdk::Color keyframe_color("#a07f7f");
+	cr->save();
+	Gdk::Cairo::set_source_color(cr, keyframe_color);
+	cr->rectangle(time_plot_data->get_pixel_t_coord(keyframe.get_time()), 0, 1.0, get_height());
+	cr->fill();
 	cr->restore();
 }
