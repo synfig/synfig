@@ -22,7 +22,8 @@ WIDGETS_HH = \
 	widgets/widget_bonechooser.h \
 	widgets/widget_ruler.h \
 	widgets/widget_soundwave.h \
-	widgets/widget_timegraphbase.h
+	widgets/widget_timegraphbase.h \
+	widgets/widget_timetrack.h
 
 WIDGETS_CC = \
 	widgets/widget_canvaschooser.cpp \
@@ -48,7 +49,8 @@ WIDGETS_CC = \
 	widgets/widget_bonechooser.cpp \
 	widgets/widget_ruler.cpp \
 	widgets/widget_soundwave.cpp \
-	widgets/widget_timegraphbase.cpp
+	widgets/widget_timegraphbase.cpp \
+	widgets/widget_timetrack.cpp
 
 synfigstudio_src += \
 	$(WIDGETS_HH) \
