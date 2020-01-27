@@ -53,6 +53,8 @@ private:
 	Widget_Timetrack *current_widget_timetrack;
 	Gtk::VScrollbar vscrollbar;
 	Gtk::HScrollbar hscrollbar;
+
+	void on_update_header_height(int height);
 };
 
 }

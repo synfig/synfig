@@ -71,6 +71,18 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 	widget_timetrack->set_vexpand(true);
 
 	canvas_view->set_ext_widget(get_name(), widget_timetrack);
+
+	// sync with Parameters Dock
+	//  scrolling
+	vscrollbar.set_adjustment(widget_timetrack->get_range_adjustment());
+	canvas_view->get_adjustment_group("params")->add(vscrollbar.get_adjustment());
+	//  TreeView header
+	studio::LayerTree *tree_layer = dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp") );
+	assert(tree_layer);
+	tree_layer->signal_param_tree_header_height_changed().connect(
+		sigc::mem_fun(*this, &studio::Dock_Timetrack2::on_update_header_height)
+	);
+
 }
 
 void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
@@ -90,7 +102,6 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 		current_widget_timetrack = nullptr; // deleted by its studio::CanvasView::~CanvasView()
 
 		hscrollbar.unset_adjustment();
-		vscrollbar.unset_adjustment();
 	} else {
 		widget_kf_list.set_time_model(canvas_view->time_model());
 		widget_kf_list.set_canvas_interface(canvas_view->canvas_interface());
@@ -102,7 +113,6 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 		current_widget_timetrack->set_hexpand(true);
 		current_widget_timetrack->set_vexpand(true);
 
-		vscrollbar.set_adjustment(current_widget_timetrack->get_range_adjustment());
 		hscrollbar.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
 		grid.attach(widget_kf_list,            0, 0, 1, 1);
@@ -113,4 +123,15 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 		grid.show();
 	}
 
+}
+
+void Dock_Timetrack2::on_update_header_height(int height)
+{
+	int w = 0, h = 0;
+	widget_kf_list.get_size_request(w, h);
+	int ts_height = std::max(1, height - h);
+
+	widget_timeslider.get_size_request(w, h);
+	if (h != ts_height)
+		widget_timeslider.set_size_request(-1, ts_height);
 }
