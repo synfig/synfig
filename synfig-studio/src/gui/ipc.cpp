@@ -299,7 +299,7 @@ IPC::process_command(const synfig::String& command_line)
 			break;
 		case 'O': // Open <arg>
 			App::signal_present_all()();
-			App::open(args);
+			App::open(Glib::locale_to_utf8(args));
 			break;
 		case 'X': // Quit
 		case 'Q': // Quit
