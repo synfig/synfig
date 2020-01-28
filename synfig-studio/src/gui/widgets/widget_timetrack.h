@@ -27,13 +27,46 @@
 #include <gui/widgets/widget_timegraphbase.h>
 #include <gui/selectdraghelper.h>
 
+#include <gtkmm/treeview.h>
+
 namespace studio {
 
+class LayerParamTreeStore;
+
+/**
+ * \brief The Widget_Timetrack class to displaying layer parameter waypoints along time
+ *
+ * This widget is vertically synchronized with a Gtk::TreeView that uses
+ * LayerParamTreeStore as its model: it mimics its height and vertical scrolling.
+ *
+ * The minimum setup requires three info:
+ *
+ * \code{.cpp}
+ * Widget_Timetrack widget_timetrack;
+ * widget_timetrack.set_time_model(canvas_view->time_model());
+ * widget_timetrack.set_canvas_interface(canvas_view->canvas_interface());
+ * // layer_param_treeview is a Gtk::TreeView with LayerParamTreeStore as model
+ * widget_timetrack.set_params_view(layer_param_treeview);
+ * \endcode
+ *
+ * Alternatively, if everything follows the Synfig Studio convention (ie. docks
+ * and models names), a helper method can be used instead:
+ * \code{.cpp}
+ * Widget_Timetrack widget_timetrack;
+ * widget_timetrack.use_canvas_view(canvas_view);
+ * \endcode
+ */
 class Widget_Timetrack : public Widget_TimeGraphBase
 {
 public:
 	Widget_Timetrack();
 	virtual ~Widget_Timetrack() override;
+
+	bool set_params_view(Gtk::TreeView *treeview);
+	Gtk::TreeView * get_params_view() const;
+	Glib::RefPtr<LayerParamTreeStore> get_params_model() const;
+
+	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
 protected:
 	virtual bool on_event(GdkEvent* event) override;
@@ -56,6 +89,33 @@ private:
 		virtual void delta_drag(int, int, bool) override {}
 	} waypoint_sd;
 	void setup_mouse_handler();
+
+	Gtk::TreeView *params_treeview;
+	Glib::RefPtr<LayerParamTreeStore> params_store;
+
+	std::vector<sigc::connection> treeview_connections;
+	std::vector<sigc::connection> treestore_connections;
+
+	void setup_params_store();
+	void teardown_params_store();
+	void setup_params_view();
+	void teardown_params_view();
+	void setup_adjustment();
+
+	struct Geometry {
+		int y;
+		int h;
+	};
+
+	std::vector< std::pair<synfigapp::ValueDesc, Geometry> > params_info_list;
+
+	std::mutex param_list_mutex;
+	bool update_param_tree_queued;
+	void queue_update_param_tree();
+	void update_param_tree();
+	bool update_param_height_queued;
+	void queue_update_param_heights();
+	void update_param_heights();
 };
 
 }
