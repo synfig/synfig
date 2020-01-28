@@ -42,12 +42,22 @@ using namespace studio;
 
 Widget_Timetrack::Widget_Timetrack()
 {
-
+	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK | Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
+	set_can_focus(true);
+	time_plot_data->set_extra_time_margin(16/2);
+	setup_mouse_handler();
 }
 
 Widget_Timetrack::~Widget_Timetrack()
 {
 
+}
+
+bool Widget_Timetrack::on_event(GdkEvent* event)
+{
+	if (waypoint_sd.process_event(event))
+		return true;
+	return Widget_TimeGraphBase::on_event(event);
 }
 
 bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
@@ -64,4 +74,30 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	}
 	draw_current_time(cr);
 	return true;
+}
+
+void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
+{
+	Widget_TimeGraphBase::on_size_allocate(allocation);
+	set_default_page_size(allocation.get_height());
+	range_adjustment->set_page_size(allocation.get_height());
+	range_adjustment->set_step_increment(allocation.get_height()/10);
+	ConfigureAdjustment(range_adjustment)
+			.set_page_size(allocation.get_height())
+			.set_step_increment(allocation.get_height()/10)
+			.set_lower(0)
+			.finish();
+}
+
+void Widget_Timetrack::setup_mouse_handler()
+{
+	waypoint_sd.set_pan_enabled(true);
+	waypoint_sd.set_scroll_enabled(true);
+	waypoint_sd.set_zoom_enabled(false);
+	waypoint_sd.set_canvas_interface(canvas_interface);
+	waypoint_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
+	waypoint_sd.signal_focus_requested().connect(sigc::mem_fun(*this, &Gtk::Widget::grab_focus));
+	waypoint_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_up));
+	waypoint_sd.signal_scroll_down_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_down));
+	waypoint_sd.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::pan));
 }

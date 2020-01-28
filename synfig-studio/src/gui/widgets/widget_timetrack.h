@@ -36,7 +36,9 @@ public:
 	virtual ~Widget_Timetrack() override;
 
 protected:
-	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
+	virtual bool on_event(GdkEvent* event) override;
+	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
+	virtual void on_size_allocate(Gtk::Allocation &allocation) override;
 
 private:
 
@@ -53,7 +55,7 @@ private:
 		virtual void get_all_items(std::vector<int>&) override {}
 		virtual void delta_drag(int, int, bool) override {}
 	} waypoint_sd;
-
+	void setup_mouse_handler();
 };
 
 }
