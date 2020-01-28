@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widgets/widget_timegraphbase.h
+/*!	\file widgets/widget_timegraphbase.cpp
 **	\brief Base class for widgets that are graph-like representations with time axis
 **
 **	$Id$
@@ -29,11 +29,8 @@
 
 #include "widget_timegraphbase.h"
 
-#include <canvasview.h>
+#include <gui/canvasview.h>
 #include <gui/timeplotdata.h>
-
-#include <Mlt.h>
-#include <gui/selectdraghelper.h>
 
 #include <cairomm/cairomm.h>
 #include <gdkmm.h>
