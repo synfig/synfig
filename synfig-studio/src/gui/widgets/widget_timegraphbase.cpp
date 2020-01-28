@@ -151,8 +151,9 @@ void Widget_TimeGraphBase::set_default_page_size(double new_value)
 {
 	if (new_value < 0 || synfig::approximate_zero(new_value))
 		return;
+	double current_zoom = get_zoom();
 	default_page_size = new_value;
-	set_zoom(get_zoom());
+	set_zoom(current_zoom);
 }
 
 double Widget_TimeGraphBase::get_default_page_size() const
