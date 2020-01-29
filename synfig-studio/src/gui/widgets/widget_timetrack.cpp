@@ -44,8 +44,8 @@ using namespace studio;
 
 Widget_Timetrack::Widget_Timetrack()
 	: params_treeview(nullptr),
-	  update_param_tree_queued(false),
-	  update_param_height_queued(false)
+	  is_rebuild_param_info_list_queued(false),
+	  is_update_param_list_geometries_queued(false)
 {
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK | Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	set_can_focus(true);
@@ -82,7 +82,7 @@ bool Widget_Timetrack::set_params_view(Gtk::TreeView* treeview)
 	setup_params_store();
 	setup_params_view();
 
-	update_param_tree();
+	rebuild_param_info_list();
 
 	return true;
 }
@@ -176,17 +176,17 @@ void Widget_Timetrack::setup_params_store()
 	sigc::connection conn;
 
 	conn = params_store->signal_row_inserted().connect([&](const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&){
-		queue_update_param_tree();
+		queue_rebuild_param_info_list();
 	});
 	treestore_connections.push_back(conn);
 
 	conn = params_store->signal_row_deleted().connect([&](const Gtk::TreeModel::Path&){
-		queue_update_param_tree();
+		queue_rebuild_param_info_list();
 	});
 	treestore_connections.push_back(conn);
 
 	conn = params_store->signal_rows_reordered().connect([&](const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&, int*){
-		queue_update_param_tree();
+		queue_rebuild_param_info_list();
 	});
 	treestore_connections.push_back(conn);
 }
@@ -202,16 +202,16 @@ void Widget_Timetrack::setup_params_view()
 {
 	sigc::connection conn;
 	conn = params_treeview->signal_row_expanded().connect([&](const Gtk::TreeModel::iterator&,const Gtk::TreeModel::Path&) {
-		queue_update_param_heights();
+		queue_update_param_list_geometries();
 	});
 	treeview_connections.push_back(conn);
 
 	conn = params_treeview->signal_row_collapsed().connect([&](const Gtk::TreeModel::iterator&,const Gtk::TreeModel::Path&) {
-		queue_update_param_heights();
+		queue_update_param_list_geometries();
 	});
 	treeview_connections.push_back(conn);
 
-	conn = params_treeview->signal_style_updated().connect(sigc::mem_fun(*this, &Widget_Timetrack::queue_update_param_heights));
+	conn = params_treeview->signal_style_updated().connect(sigc::mem_fun(*this, &Widget_Timetrack::queue_update_param_list_geometries));
 	treeview_connections.push_back(conn);
 }
 
@@ -226,27 +226,27 @@ void Widget_Timetrack::setup_adjustment()
 {
 	range_adjustment->signal_value_changed().connect([&](){
 		// wait for all members of Adjustment group to synchronize
-		queue_update_param_heights();
+		queue_update_param_list_geometries();
 	});
 	range_adjustment->signal_changed().connect([&](){
 		set_default_page_size(range_adjustment->get_page_size());
-		queue_update_param_heights();
+		queue_update_param_list_geometries();
 	});
 }
 
-void Widget_Timetrack::queue_update_param_tree()
+void Widget_Timetrack::queue_rebuild_param_info_list()
 {
-	if (update_param_tree_queued)
+	if (is_rebuild_param_info_list_queued)
 		return;
-	update_param_tree_queued = true;
-	Glib::signal_idle().connect_once(sigc::mem_fun(*this, &Widget_Timetrack::update_param_tree));
+	is_rebuild_param_info_list_queued = true;
+	Glib::signal_idle().connect_once(sigc::mem_fun(*this, &Widget_Timetrack::rebuild_param_info_list));
 }
 
-void Widget_Timetrack::update_param_tree()
+void Widget_Timetrack::rebuild_param_info_list()
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
-	update_param_tree_queued = false;
+	is_rebuild_param_info_list_queued = false;
 
 	params_info_list.clear();
 
@@ -271,18 +271,18 @@ void Widget_Timetrack::update_param_tree()
 	queue_draw();
 }
 
-void Widget_Timetrack::queue_update_param_heights()
+void Widget_Timetrack::queue_update_param_list_geometries()
 {
-	if (update_param_height_queued)
+	if (is_update_param_list_geometries_queued)
 		return;
-	update_param_height_queued = true;
-	Glib::signal_idle().connect_once(sigc::mem_fun(*this, &Widget_Timetrack::update_param_heights));
+	is_update_param_list_geometries_queued = true;
+	Glib::signal_idle().connect_once(sigc::mem_fun(*this, &Widget_Timetrack::update_param_list_geometries));
 }
 
-void Widget_Timetrack::update_param_heights()
+void Widget_Timetrack::update_param_list_geometries()
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
-	update_param_height_queued = false;
+	is_update_param_list_geometries_queued = false;
 
 	if (params_info_list.size() == 0 ||
 		!params_treeview ||

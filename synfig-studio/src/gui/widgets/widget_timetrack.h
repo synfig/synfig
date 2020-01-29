@@ -110,12 +110,12 @@ private:
 	std::vector< std::pair<synfigapp::ValueDesc, Geometry> > params_info_list;
 
 	std::mutex param_list_mutex;
-	bool update_param_tree_queued;
-	void queue_update_param_tree();
-	void update_param_tree();
-	bool update_param_height_queued;
-	void queue_update_param_heights();
-	void update_param_heights();
+	bool is_rebuild_param_info_list_queued;
+	void queue_rebuild_param_info_list();
+	void rebuild_param_info_list();
+	bool is_update_param_list_geometries_queued;
+	void queue_update_param_list_geometries();
+	void update_param_list_geometries();
 };
 
 }
