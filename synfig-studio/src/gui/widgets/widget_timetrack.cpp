@@ -146,30 +146,28 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			queue_rebuild_param_info_list();
 			return true;
 		}
-		int waypoint_edge_length = row_info->get_geometry().h;
+
+		if (row_info->get_geometry().h == 0)
+			return false;
+
 		bool is_draggable = row_info->get_value_desc().is_animated() || row_info->get_value_desc().parent_is_linkable_value_node();
 		if (!is_draggable) {
 			cr->push_group();
 		}
+
+		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
 		WaypointRenderer::foreach_visible_waypoint(row_info->get_value_desc(), *time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *_data) -> bool
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
-			const int margin = 1;
-			int px = time_plot_data->get_pixel_t_coord(t);
-			int py = row_info->get_geometry().y;
-			Gdk::Rectangle area(
-						0 - waypoint_edge_length/2 + margin + px,
-						0 + margin + py,
-						waypoint_edge_length - 2*margin,
-						waypoint_edge_length - 2*margin);
-			const auto & hovered_point = waypoint_sd.get_hovered_item();
-			bool hover = false;
-//			bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
-			bool selected = false;
-//			bool selected = waypoint_sd.is_selected(ChannelPoint(curve_it, tp, c));
-			WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+			visible_waypoints.push_back(std::pair<synfig::TimePoint, synfig::Time>(tp, t));
 			return false;
 		});
+
+		// Draw static intervals
+		draw_static_intervals_for_row(cr, row_info, visible_waypoints);
+
+		draw_waypoints(cr, row_info, visible_waypoints);
+
 		if (!is_draggable) {
 			cr->pop_group_to_source();
 			cr->paint_with_alpha(0.5);
@@ -326,7 +324,10 @@ void Widget_Timetrack::rebuild_param_info_list()
 		geometry.y = rect.get_y();
 		geometry.h = rect.get_height();
 		synfigapp::ValueDesc value_desc = iter->get_value(params_store->model.value_desc);
-		param_info_map[path.to_string()] = new RowInfo(value_desc, geometry);
+		RowInfo *row_info = new RowInfo(value_desc, geometry);
+		param_info_map[path.to_string()] = row_info;
+		// It could be optimized to make only this row dirty - and only redraw its rectangle
+		row_info->signal_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::queue_draw));
 		return false;
 	});
 
@@ -370,6 +371,57 @@ void Widget_Timetrack::update_param_list_geometries()
 	queue_draw();
 }
 
+void Widget_Timetrack::draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context>& cr, const Widget_Timetrack::RowInfo* row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints)
+{
+	const int waypoint_edge_length = row_info->get_geometry().h;
+	const int py = row_info->get_geometry().y;
+	const double static_line_thickness = 4;
+
+	synfig::ValueBase previous_value;
+	synfig::Time previous_time;
+
+	Gdk::RGBA color = get_style_context()->get_color();
+	cr->set_source_rgba(color.get_red(), color.get_green(), color.get_blue(), 0.7);
+
+	for (const auto& pair : waypoints) {
+		const synfig::Time &t = pair.second;
+		int px = time_plot_data->get_pixel_t_coord(t);
+
+		synfig::ValueBase value(row_info->get_value_desc().get_value(t));
+		if (value == previous_value) {
+			int previous_px = time_plot_data->get_pixel_t_coord(previous_time);
+			cr->rectangle(previous_px, py + waypoint_edge_length/2 - static_line_thickness/2, px - previous_px, static_line_thickness);
+			cr->fill();
+		}
+		previous_value = value;
+		previous_time = t;
+
+	}
+}
+
+void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, const Widget_Timetrack::RowInfo* row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints)
+{
+	const int margin = 1;
+	const int waypoint_edge_length = row_info->get_geometry().h;
+	const int py = row_info->get_geometry().y;
+
+	for (const auto& pair : waypoints) {
+		const synfig::Time &t = pair.second;
+		int px = time_plot_data->get_pixel_t_coord(t);
+		Gdk::Rectangle area(
+					0 - waypoint_edge_length/2 + margin + px,
+					0 + margin + py,
+					waypoint_edge_length - 2*margin,
+					waypoint_edge_length - 2*margin);
+
+		const auto & hovered_point = waypoint_sd.get_hovered_item();
+		bool hover = false;
+	//	bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
+		bool selected = false;
+	//	bool selected = waypoint_sd.is_selected(ChannelPoint(curve_it, tp, c));
+		WaypointRenderer::render_time_point_to_window(cr, area, pair.first, selected, hover);
+	}
+}
 
 Widget_Timetrack::RowInfo::RowInfo()
 {

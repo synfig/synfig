@@ -138,6 +138,9 @@ private:
 	bool is_update_param_list_geometries_queued;
 	void queue_update_param_list_geometries();
 	void update_param_list_geometries();
+
+	void draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo *row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints);
+	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo *row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints);
 };
 
 }
