@@ -146,13 +146,6 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 {
 	double upper = range_adjustment->get_upper();
-	{
-		std::lock_guard<std::mutex> lock(param_list_mutex);
-		if (param_info_map.size() > 0) {
-			Geometry geometry = param_info_map.end()->second->get_geometry();
-			upper = geometry.y + geometry.h;
-		}
-	}
 	Widget_TimeGraphBase::on_size_allocate(allocation);
 	set_default_page_size(allocation.get_height());
 	ConfigureAdjustment(range_adjustment)
