@@ -322,10 +322,6 @@ Widget_Timetrack::RowInfo::RowInfo(synfigapp::ValueDesc value_desc_, Widget_Time
 			value_desc_connections.push_back(
 						value_desc.get_parent_value_node()->signal_changed().connect(
 							sigc::mem_fun(*this, &RowInfo::refresh )));
-		if (value_desc.parent_is_layer())
-			value_desc_connections.push_back(
-						value_desc.get_layer()->signal_changed().connect(
-							sigc::mem_fun(*this, &RowInfo::refresh )));
 		refresh();
 	}
 }
