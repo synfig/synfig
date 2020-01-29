@@ -57,6 +57,10 @@ Widget_Timetrack::Widget_Timetrack()
 
 Widget_Timetrack::~Widget_Timetrack()
 {
+	for (auto item : param_info_map) {
+		delete item.second;
+		item.second = nullptr;
+	}
 	teardown_params_view();
 	teardown_params_store();
 }
@@ -144,8 +148,9 @@ void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 	double upper = range_adjustment->get_upper();
 	{
 		std::lock_guard<std::mutex> lock(param_list_mutex);
-		if (params_info_list.size() > 0) {
-			upper = params_info_list.back().second.y + params_info_list.back().second.h;
+		if (param_info_map.size() > 0) {
+			Geometry geometry = param_info_map.end()->second->get_geometry();
+			upper = geometry.y + geometry.h;
 		}
 	}
 	Widget_TimeGraphBase::on_size_allocate(allocation);
@@ -248,7 +253,7 @@ void Widget_Timetrack::rebuild_param_info_list()
 
 	is_rebuild_param_info_list_queued = false;
 
-	params_info_list.clear();
+	param_info_map.clear();
 
 	if (!params_treeview || !params_treeview->get_realized() || !params_store) {
 		queue_draw();
@@ -263,8 +268,7 @@ void Widget_Timetrack::rebuild_param_info_list()
 		geometry.y = rect.get_y();
 		geometry.h = rect.get_height();
 		synfigapp::ValueDesc value_desc = iter->get_value(params_store->model.value_desc);
-		params_info_list.push_back(std::pair<synfigapp::ValueDesc, Geometry>(value_desc, geometry));
-
+		param_info_map[path.to_string()] = new RowInfo(value_desc, geometry);
 		return false;
 	});
 
@@ -284,7 +288,7 @@ void Widget_Timetrack::update_param_list_geometries()
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 	is_update_param_list_geometries_queued = false;
 
-	if (params_info_list.size() == 0 ||
+	if (param_info_map.size() == 0 ||
 		!params_treeview ||
 		!params_treeview->get_realized() ||
 		!params_store)
@@ -293,7 +297,6 @@ void Widget_Timetrack::update_param_list_geometries()
 		return;
 	}
 
-	size_t idx = 0;
 	Gtk::TreeViewColumn *col = params_treeview->get_column(0);
 	params_store.get()->foreach([&](const Gtk::TreeModel::Path &path, const Gtk::TreeModel::iterator &/*iter*/) -> bool {
 		Gdk::Rectangle rect;
@@ -301,7 +304,7 @@ void Widget_Timetrack::update_param_list_geometries()
 		Geometry geometry;
 		geometry.y = rect.get_y();
 		geometry.h = rect.get_height();
-		params_info_list[idx++].second = geometry;
+		param_info_map[path.to_string()]->set_geometry(geometry);
 
 		return false;
 	});
@@ -309,3 +312,59 @@ void Widget_Timetrack::update_param_list_geometries()
 	queue_draw();
 }
 
+
+Widget_Timetrack::RowInfo::RowInfo()
+{
+}
+
+Widget_Timetrack::RowInfo::RowInfo(synfigapp::ValueDesc value_desc_, Widget_Timetrack::Geometry geometry)
+	: value_desc(value_desc_), geometry(geometry)
+{
+	if (value_desc) {
+		if (value_desc.is_value_node())
+			value_desc_connections.push_back(
+						value_desc.get_value_node()->signal_changed().connect(
+							sigc::mem_fun(*this, &RowInfo::refresh )));
+		if (value_desc.parent_is_value_node())
+			value_desc_connections.push_back(
+						value_desc.get_parent_value_node()->signal_changed().connect(
+							sigc::mem_fun(*this, &RowInfo::refresh )));
+		if (value_desc.parent_is_layer())
+			value_desc_connections.push_back(
+						value_desc.get_layer()->signal_changed().connect(
+							sigc::mem_fun(*this, &RowInfo::refresh )));
+		refresh();
+	}
+}
+
+Widget_Timetrack::RowInfo::~RowInfo()
+{
+	for (sigc::connection &conn : value_desc_connections)
+		conn.disconnect();
+	value_desc_connections.clear();
+}
+
+synfigapp::ValueDesc Widget_Timetrack::RowInfo::get_value_desc() const
+{
+	return value_desc;
+}
+
+Widget_Timetrack::Geometry Widget_Timetrack::RowInfo::get_geometry() const
+{
+	return geometry;
+}
+
+void Widget_Timetrack::RowInfo::set_geometry(const Widget_Timetrack::Geometry& value)
+{
+	geometry = value;
+}
+
+void Widget_Timetrack::RowInfo::refresh()
+{
+	if (!value_desc) {
+		synfig::error("ValueDesc invalid! Internal error");
+		return;
+	}
+
+	signal_changed().emit();
+}

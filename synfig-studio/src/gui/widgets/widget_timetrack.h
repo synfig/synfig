@@ -107,7 +107,29 @@ private:
 		int h;
 	};
 
-	std::vector< std::pair<synfigapp::ValueDesc, Geometry> > params_info_list;
+	struct RowInfo {
+		RowInfo();
+		RowInfo(synfigapp::ValueDesc value_desc, Geometry geometry);
+		~RowInfo();
+
+		sigc::signal<void> signal_changed() {return signal_changed_;}
+
+		synfigapp::ValueDesc get_value_desc() const;
+
+		Geometry get_geometry() const;
+		void set_geometry(const Geometry& value);
+
+	protected:
+		synfigapp::ValueDesc value_desc;
+		Geometry geometry;
+		sigc::signal<void> signal_changed_;
+
+		void refresh();
+	private:
+		std::vector<sigc::connection> value_desc_connections;
+	};
+
+	std::map<std::string, RowInfo*> param_info_map;
 
 	std::mutex param_list_mutex;
 	bool is_rebuild_param_info_list_queued;
