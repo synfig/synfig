@@ -31,6 +31,7 @@
 
 #include <gui/canvasview.h>
 #include <gui/timeplotdata.h>
+#include <gui/waypointrenderer.h>
 
 #include <gui/localization.h>
 
@@ -131,6 +132,70 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	if (Widget_TimeGraphBase::on_draw(cr))
 		return true;
+
+	// Draw waypoints
+
+	// Maybe it's possible to be more efficient by redrawing only for the visible paths,
+	// instead of iterate over entire param list
+	//	Gtk::TreePath start_path, end_path;
+	//	params_treeview->get_visible_range(start_path, end_path);
+
+	params_store->foreach_path([=](const Gtk::TreeModel::Path &path) -> bool {
+		RowInfo * row_info = param_info_map[path.to_string()];
+		if (!row_info) {
+			queue_rebuild_param_info_list();
+			return true;
+		}
+		int waypoint_edge_length = row_info->get_geometry().h;
+		bool is_draggable = row_info->get_value_desc().is_animated() || row_info->get_value_desc().parent_is_linkable_value_node();
+		if (!is_draggable) {
+			cr->push_group();
+		}
+		WaypointRenderer::foreach_visible_waypoint(row_info->get_value_desc(), *time_plot_data,
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *_data) -> bool
+		{
+			const int margin = 1;
+			int px = time_plot_data->get_pixel_t_coord(t);
+			int py = row_info->get_geometry().y;
+			Gdk::Rectangle area(
+						0 - waypoint_edge_length/2 + margin + px,
+						0 + margin + py,
+						waypoint_edge_length - 2*margin,
+						waypoint_edge_length - 2*margin);
+			const auto & hovered_point = waypoint_sd.get_hovered_item();
+			bool hover = false;
+//			bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
+			bool selected = false;
+//			bool selected = waypoint_sd.is_selected(ChannelPoint(curve_it, tp, c));
+			WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+			return false;
+		});
+		if (!is_draggable) {
+			cr->pop_group_to_source();
+			cr->paint_with_alpha(0.5);
+		}
+
+		return false;
+	});
+
+
+	// Draw selection rectangle
+	if (waypoint_sd.get_state() == WaypointSD::State::POINTER_SELECTING) {
+		// set up a dashed solid-color stroke
+		static const std::vector<double>dashed3 = {5.0};
+		cr->set_dash(dashed3, 0);
+
+		int x0, y0;
+		int x1, y1;
+		waypoint_sd.get_initial_tracking_point(x0, y0);
+		get_pointer(x1, y1);
+
+		cr->rectangle(x0, y0, x1 - x0, y1 - y0);
+		Gdk::RGBA color = get_style_context()->get_color();
+		cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
+		cr->stroke();
+	}
+
 
 	if (canvas_interface) {
 		synfig::Canvas::Handle canvas = canvas_interface->get_canvas();
