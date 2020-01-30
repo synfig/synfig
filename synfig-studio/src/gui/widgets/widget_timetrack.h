@@ -75,17 +75,31 @@ protected:
 
 private:
 
+	struct WaypointItem {
+		synfig::TimePoint time_point;
+		Gtk::TreePath path;
+
+		WaypointItem() {}
+		WaypointItem(const synfig::TimePoint time_point, const Gtk::TreePath &path);
+
+		bool is_draggable() const;
+
+		bool operator ==(const WaypointItem &b) const;
+		bool operator !=(const WaypointItem &b) const {return !operator==(b);}
+	};
+
 	// Handle mouse actions for panning/zooming/scrolling and waypoint selection
-	struct WaypointSD : SelectDragHelper<int>
+	struct WaypointSD : SelectDragHelper<WaypointItem>
 	{
+		Widget_Timetrack &widget;
 		// SelectDragHelper interface
 	public:
-		WaypointSD() : SelectDragHelper<int>("Move waypoints") {}
-		virtual ~WaypointSD() override {}
-		virtual void get_item_position(const int& , Gdk::Point& ) override {}
-		virtual bool find_item_at_position(int, int, int&) override { return false; }
-		virtual bool find_items_in_rect(Gdk::Rectangle, std::vector<int>&) override { return false; }
-		virtual void get_all_items(std::vector<int>&) override {}
+		WaypointSD(Widget_Timetrack &widget);
+		virtual ~WaypointSD() override;
+		virtual void get_item_position(const WaypointItem& item, Gdk::Point& p) override;
+		virtual bool find_item_at_position(int pos_x, int pos_y, WaypointItem& item) override;
+		virtual bool find_items_in_rect(Gdk::Rectangle, std::vector<WaypointItem>&) override { return false; }
+		virtual void get_all_items(std::vector<WaypointItem>&) override {}
 		virtual void delta_drag(int, int, bool) override {}
 	} waypoint_sd;
 	void setup_mouse_handler();
@@ -114,7 +128,7 @@ private:
 
 		sigc::signal<void> signal_changed() {return signal_changed_;}
 
-		synfigapp::ValueDesc get_value_desc() const;
+		const synfigapp::ValueDesc& get_value_desc() const;
 
 		Geometry get_geometry() const;
 		void set_geometry(const Geometry& value);
@@ -140,7 +154,7 @@ private:
 	void update_param_list_geometries();
 
 	void draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo *row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints);
-	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo *row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints);
+	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath& path, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints);
 };
 
 }

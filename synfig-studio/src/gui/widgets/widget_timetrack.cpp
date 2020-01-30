@@ -44,7 +44,8 @@
 using namespace studio;
 
 Widget_Timetrack::Widget_Timetrack()
-	: params_treeview(nullptr),
+	: waypoint_sd(*this),
+	  params_treeview(nullptr),
 	  is_rebuild_param_info_list_queued(false),
 	  is_update_param_list_geometries_queued(false)
 {
@@ -166,7 +167,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		// Draw static intervals
 		draw_static_intervals_for_row(cr, row_info, visible_waypoints);
 
-		draw_waypoints(cr, row_info, visible_waypoints);
+		draw_waypoints(cr, path, visible_waypoints);
 
 		if (!is_draggable) {
 			cr->pop_group_to_source();
@@ -224,7 +225,9 @@ void Widget_Timetrack::setup_mouse_handler()
 	waypoint_sd.set_pan_enabled(true);
 	waypoint_sd.set_scroll_enabled(true);
 	waypoint_sd.set_zoom_enabled(false);
+	waypoint_sd.set_multiple_selection_enabled(false);
 	waypoint_sd.set_canvas_interface(canvas_interface);
+
 	waypoint_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
 	waypoint_sd.signal_focus_requested().connect(sigc::mem_fun(*this, &Gtk::Widget::grab_focus));
 	waypoint_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_up));
@@ -399,13 +402,16 @@ void Widget_Timetrack::draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::
 	}
 }
 
-void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, const Widget_Timetrack::RowInfo* row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints)
+void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, const Gtk::TreePath &path, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints)
 {
 	const int margin = 1;
-	const int waypoint_edge_length = row_info->get_geometry().h;
-	const int py = row_info->get_geometry().y;
+	const Geometry &geometry = param_info_map[path.to_string()]->get_geometry();
+	const int waypoint_edge_length = geometry.h;
+	const int py = geometry.y;
+	const auto & hovered_point = waypoint_sd.get_hovered_item();
 
 	for (const auto& pair : waypoints) {
+		const synfig::TimePoint &tp = pair.first;
 		const synfig::Time &t = pair.second;
 		int px = time_plot_data->get_pixel_t_coord(t);
 		Gdk::Rectangle area(
@@ -414,12 +420,9 @@ void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, c
 					waypoint_edge_length - 2*margin,
 					waypoint_edge_length - 2*margin);
 
-		const auto & hovered_point = waypoint_sd.get_hovered_item();
-		bool hover = false;
-	//	bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
-		bool selected = false;
-	//	bool selected = waypoint_sd.is_selected(ChannelPoint(curve_it, tp, c));
-		WaypointRenderer::render_time_point_to_window(cr, area, pair.first, selected, hover);
+		bool hover = waypoint_sd.has_hovered_item() && tp == hovered_point.time_point && hovered_point.path == path;
+		bool selected = waypoint_sd.is_selected(WaypointItem(tp, path));
+		WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
 	}
 }
 
@@ -450,7 +453,7 @@ Widget_Timetrack::RowInfo::~RowInfo()
 	value_desc_connections.clear();
 }
 
-synfigapp::ValueDesc Widget_Timetrack::RowInfo::get_value_desc() const
+const synfigapp::ValueDesc& Widget_Timetrack::RowInfo::get_value_desc() const
 {
 	return value_desc;
 }
@@ -473,4 +476,69 @@ void Widget_Timetrack::RowInfo::refresh()
 	}
 
 	signal_changed().emit();
+}
+
+Widget_Timetrack::WaypointItem::WaypointItem(const synfig::TimePoint time_point, const Gtk::TreePath& path)
+	: time_point(time_point), path(path)
+{
+}
+
+bool Widget_Timetrack::WaypointItem::operator ==(const Widget_Timetrack::WaypointItem& b) const
+{
+	return time_point == b.time_point && path == b.path;
+}
+
+Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
+	: SelectDragHelper<WaypointItem>("Move waypoints"),
+	  widget(widget)
+{
+}
+
+Widget_Timetrack::WaypointSD::~WaypointSD()
+{
+}
+
+void Widget_Timetrack::WaypointSD::get_item_position(const Widget_Timetrack::WaypointItem &item, Gdk::Point &p)
+{
+	p.set_x(widget.time_plot_data->get_pixel_t_coord(item.time_point.get_time()));
+	RowInfo * row_info = widget.param_info_map[item.path.to_string()];
+	if (!row_info) {
+		synfig::warning("invalid item");
+		return;
+	}
+	Geometry geometry = row_info->get_geometry();
+	p.set_y(geometry.y + geometry.h/2);
+}
+
+bool Widget_Timetrack::WaypointSD::find_item_at_position(int pos_x, int pos_y, Widget_Timetrack::WaypointItem &item)
+{
+	Gtk::TreePath path;
+	bool ok = widget.params_treeview->get_path_at_pos(1, pos_y, path);
+	if (!ok)
+		return false;
+
+	RowInfo *row_info = widget.param_info_map[path.to_string()];
+	if (!row_info) {
+		synfig::warning("couldn't find row info for path: internal error");
+		return false;
+	}
+	const synfigapp::ValueDesc &value_desc = row_info->get_value_desc();
+
+	const int waypoint_edge_length = row_info->get_geometry().h;
+	bool found = false;
+
+	WaypointRenderer::foreach_visible_waypoint(value_desc, *widget.time_plot_data,
+											   [&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
+	{
+		const int px = widget.time_plot_data->get_pixel_t_coord(t);
+		if (pos_x > px - waypoint_edge_length/2 && pos_x <= px + waypoint_edge_length/2) {
+			item.path = path;
+			item.time_point = tp;
+			found = true;
+			return true;
+		}
+		return false;
+	});
+
+	return found;
 }
