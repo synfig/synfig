@@ -247,63 +247,6 @@ int smart_ptr_inheritance_test(void)
 	return 0;
 }
 
-void test_func(etl::smart_ptr<my_test_obj> smart_ptr __attribute__ ((unused)))
-{
-}
-
-int loose_smart_ptr_test(void)
-{
-	printf("smart_ptr: loose_smart_ptr test: ");
-	my_test_obj::instance_count=0;
-
-	etl::loose_smart_ptr<my_test_obj> obj_smart_ptr_loose;
-	etl::smart_ptr<my_test_obj> obj_smart_ptr2;
-
-	{
-		etl::smart_ptr<my_test_obj> obj_smart_ptr(new my_test_obj(rand()));
-		if(my_test_obj::instance_count!=1)
-		{
-			printf("FAILED!\n");
-			printf(__FILE__":%d: on smart_ptr assignment from new object, instance count=%d, should be 1.\n",__LINE__,my_test_obj::instance_count);
-			return 1;
-		}
-
-		obj_smart_ptr_loose=obj_smart_ptr;
-		if(obj_smart_ptr!=obj_smart_ptr_loose)
-		{
-			printf("FAILED!\n");
-			printf(__FILE__":%d: on loose_smart_ptr assignment\n",__LINE__);
-			return 1;
-		}
-
-		obj_smart_ptr2=obj_smart_ptr_loose;
-		if(my_test_obj::instance_count!=1)
-		{
-			printf("FAILED!\n");
-			printf(__FILE__":%d: on smart_ptr assignment from loose_smart_ptr, instance count=%d, should be 1.\n",__LINE__,my_test_obj::instance_count);
-			return 1;
-		}
-
-		test_func(obj_smart_ptr_loose);
-		if(my_test_obj::instance_count!=1)
-		{
-			printf("FAILED!\n");
-			printf(__FILE__":%d: on smart_ptr assignment from loose_smart_ptr, instance count=%d, should be 1.\n",__LINE__,my_test_obj::instance_count);
-			return 1;
-		}
-	}
-
-	if(my_test_obj::instance_count!=1)
-	{
-		printf("FAILED!\n");
-		printf(__FILE__":%d: on create/destroy, instance count=%d, should be 1.\n",__LINE__,my_test_obj::instance_count);
-		return 1;
-	}
-
-	printf("PASSED\n");
-	return 0;
-}
-
 /* === E N T R Y P O I N T ================================================= */
 
 int main()
@@ -313,7 +256,6 @@ int main()
 	error+=smart_ptr_basic_test();
 	error+=smart_ptr_general_use_test();
 	error+=smart_ptr_inheritance_test();
-	error+=loose_smart_ptr_test();
 
 	return error;
 }
