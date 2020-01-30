@@ -464,8 +464,14 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 				}
 				some_action_done = true;
 			} else {
-				if (box_selection_enabled && multiple_selection_enabled) {
-					pointer_state = POINTER_SELECTING;
+				if (multiple_selection_enabled) {
+					if (box_selection_enabled) {
+						pointer_state = POINTER_SELECTING;
+						some_action_done = true;
+					}
+				} else {
+					selected_items.clear();
+					signal_selection_changed().emit();
 					some_action_done = true;
 				}
 			}
