@@ -59,6 +59,10 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#ifndef PACKAGE_NAME
+#define  PACKAGE_NAME "Synfig Studio"
+#endif
+
 #ifndef VERSION
 #define VERSION	"unknown"
 #endif
