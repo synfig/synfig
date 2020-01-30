@@ -399,7 +399,7 @@ void Widget_Timetrack::rebuild_param_info_list()
 	}
 
 	Gtk::TreeViewColumn *col = params_treeview->get_column(0);
-	params_store.get()->foreach([&](const Gtk::TreeModel::Path &path, const Gtk::TreeModel::iterator &iter) -> bool {
+	params_store->foreach([&](const Gtk::TreeModel::Path &path, const Gtk::TreeModel::iterator &iter) -> bool {
 		Gdk::Rectangle rect;
 		params_treeview->get_cell_area(path, *col, rect);
 		Geometry geometry;
@@ -439,7 +439,7 @@ void Widget_Timetrack::update_param_list_geometries()
 	}
 
 	Gtk::TreeViewColumn *col = params_treeview->get_column(0);
-	params_store.get()->foreach([&](const Gtk::TreeModel::Path &path, const Gtk::TreeModel::iterator &/*iter*/) -> bool {
+	params_store->foreach_path([&](const Gtk::TreeModel::Path &path) -> bool {
 		Gdk::Rectangle rect;
 		params_treeview->get_cell_area(path, *col, rect);
 		Geometry geometry;
