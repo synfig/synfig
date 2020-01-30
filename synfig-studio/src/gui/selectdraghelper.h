@@ -56,7 +56,7 @@ private:
 	bool dragging_started_by_key;
 
 	T hovered_item;
-	bool has_hovered_item;
+	bool is_hovered_item_valid;
 	std::vector<T> selected_items;
 	const T* active_item;
 
@@ -116,6 +116,7 @@ public:
 	void set_canvas_interface(etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	etl::handle<synfigapp::CanvasInterface>& get_canvas_interface();
 
+	bool has_hovered_item() const;
 	/// The item whose pointer/mouse is hovering over
 	const T& get_hovered_item() const;
 	/// Provides a list of selected items
@@ -212,7 +213,7 @@ public:
 
 template <class T>
 SelectDragHelper<T>::SelectDragHelper(const char* drag_action_name)
-	: drag_action_name(drag_action_name), action_group_drag(nullptr), hovered_item(), has_hovered_item(false), active_item(nullptr), pointer_state(POINTER_NONE)
+	: drag_action_name(drag_action_name), action_group_drag(nullptr), hovered_item(), is_hovered_item_valid(false), active_item(nullptr), pointer_state(POINTER_NONE)
 {
 }
 
@@ -229,6 +230,12 @@ template<class T>
 etl::handle<synfigapp::CanvasInterface>& SelectDragHelper<T>::get_canvas_interface()
 {
 	return canvas_interface;
+}
+
+template <class T>
+bool SelectDragHelper<T>::has_hovered_item() const
+{
+	return is_hovered_item_valid;
 }
 
 template <class T>
@@ -576,14 +583,15 @@ bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 {
 	bool processed = false;
 	auto previous_hovered_point = hovered_item;
-	has_hovered_item = false;
+	bool was_hovered_item_valid = is_hovered_item_valid;
+	is_hovered_item_valid = false;
 
 	int pointer_x = std::trunc(event->x);
 	int pointer_y = std::trunc(event->y);
 	if (pointer_state != POINTER_DRAGGING)
-		has_hovered_item = find_item_at_position(pointer_x, pointer_y, hovered_item);
+		is_hovered_item_valid = find_item_at_position(pointer_x, pointer_y, hovered_item);
 
-	if (previous_hovered_point != hovered_item) {
+	if (was_hovered_item_valid != is_hovered_item_valid || (is_hovered_item_valid && previous_hovered_point != hovered_item)) {
 		signal_hovered_item_changed().emit();
 		signal_redraw_needed().emit();
 	}
@@ -664,7 +672,7 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 
 template <class T>
 void SelectDragHelper<T>::refresh() {
-	has_hovered_item = false;
+	is_hovered_item_valid = false;
 }
 
 template <class T>
@@ -672,7 +680,7 @@ void SelectDragHelper<T>::clear() {
 	if (pointer_state == POINTER_DRAGGING) {
 		cancel_dragging();
 	}
-	has_hovered_item = false;
+	is_hovered_item_valid = false;
 	if (!selected_items.empty()) {
 		selected_items.clear();
 		signal_selection_changed().emit();
