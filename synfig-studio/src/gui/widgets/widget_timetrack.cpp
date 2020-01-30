@@ -125,14 +125,27 @@ void Widget_Timetrack::delete_selected()
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
+	// From CellRenderer_TimeTrack
+	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsDelete"));
+	if(!action)
+		return;
+
+	synfigapp::Action::ParamList param_list;
 	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
+		param_list.add("canvas", canvas_interface->get_canvas());
+		param_list.add("canvas_interface", canvas_interface);
+
 		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()]->get_value_desc();
-		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
-		synfig::waypoint_collect(waypoint_set, wi->time_point.get_time(), value_desc.get_value_node());
-		for (const synfig::Waypoint &waypoint : waypoint_set) {
-			canvas_interface->waypoint_remove(value_desc, waypoint);
+		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
+		} else {
+			param_list.add("addvaluedesc", value_desc);
 		}
+
+		param_list.add("addtime", wi->time_point.get_time());
 	}
+	action->set_param_list(param_list);
+	canvas_interface->get_instance()->perform_action(action);
 }
 
 bool Widget_Timetrack::on_event(GdkEvent* event)
