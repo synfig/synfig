@@ -68,6 +68,9 @@ public:
 
 	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
+	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
+	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
+
 protected:
 	virtual bool on_event(GdkEvent* event) override;
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
@@ -155,6 +158,12 @@ private:
 
 	void draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo *row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints);
 	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath& path, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints);
+
+	void on_waypoint_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
+	void on_waypoint_double_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
+
+	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
+	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
 };
 
 }

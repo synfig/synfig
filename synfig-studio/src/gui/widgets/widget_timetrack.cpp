@@ -39,6 +39,7 @@
 #include <gdkmm.h>
 
 #include <synfig/general.h>
+#include <synfig/timepointcollect.h>
 #endif
 
 using namespace studio;
@@ -233,6 +234,9 @@ void Widget_Timetrack::setup_mouse_handler()
 	waypoint_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_up));
 	waypoint_sd.signal_scroll_down_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_down));
 	waypoint_sd.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::pan));
+
+	waypoint_sd.signal_item_clicked().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_clicked));
+	waypoint_sd.signal_item_double_clicked().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_double_clicked));
 }
 
 void Widget_Timetrack::setup_params_store()
@@ -424,6 +428,22 @@ void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, c
 		bool selected = waypoint_sd.is_selected(WaypointItem(tp, path));
 		WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
 	}
+}
+
+void Widget_Timetrack::on_waypoint_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)
+{
+	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
+	const synfigapp::ValueDesc &value_desc = param_info_map[wi.path.to_string()]->get_value_desc();
+	synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
+	signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
+}
+
+void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)
+{
+	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
+	const synfigapp::ValueDesc &value_desc = param_info_map[wi.path.to_string()]->get_value_desc();
+	synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
+	signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
 }
 
 Widget_Timetrack::RowInfo::RowInfo()

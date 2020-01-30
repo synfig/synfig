@@ -86,6 +86,19 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 		sigc::mem_fun(*this, &studio::Dock_Timetrack2::on_update_header_height)
 	);
 
+	widget_timetrack->signal_waypoint_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
+		if (button != 3)
+			return;
+		button = 2;
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+	});
+
+	widget_timetrack->signal_waypoint_double_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
+		if (button != 1)
+			return;
+		button = -1;
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+	});
 }
 
 void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
