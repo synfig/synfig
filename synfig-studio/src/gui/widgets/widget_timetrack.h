@@ -68,6 +68,8 @@ public:
 
 	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
+	void delete_selected();
+
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
 

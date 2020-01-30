@@ -121,10 +121,38 @@ bool Widget_Timetrack::use_canvas_view(etl::loose_handle<CanvasView> canvas_view
 	return set_params_view(params_treeview);
 }
 
+void Widget_Timetrack::delete_selected()
+{
+	std::lock_guard<std::mutex> lock(param_list_mutex);
+
+	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
+		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()]->get_value_desc();
+		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
+		synfig::waypoint_collect(waypoint_set, wi->time_point.get_time(), value_desc.get_value_node());
+		for (const synfig::Waypoint &waypoint : waypoint_set) {
+			canvas_interface->waypoint_remove(value_desc, waypoint);
+		}
+	}
+}
+
 bool Widget_Timetrack::on_event(GdkEvent* event)
 {
 	if (waypoint_sd.process_event(event))
 		return true;
+
+	switch (event->type) {
+	case GDK_KEY_PRESS:
+		switch (event->key.keyval) {
+		case GDK_KEY_Delete:
+			delete_selected();
+			return true;
+		default:
+			break;
+		}
+	default:
+		break;
+	}
+
 	return Widget_TimeGraphBase::on_event(event);
 }
 
