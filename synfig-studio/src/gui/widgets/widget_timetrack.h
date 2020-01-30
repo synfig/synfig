@@ -104,7 +104,7 @@ private:
 		virtual ~WaypointSD() override;
 		virtual void get_item_position(const WaypointItem& item, Gdk::Point& p) override;
 		virtual bool find_item_at_position(int pos_x, int pos_y, WaypointItem& item) override;
-		virtual bool find_items_in_rect(Gdk::Rectangle, std::vector<WaypointItem>&) override { return false; }
+		virtual bool find_items_in_rect(Gdk::Rectangle rect, std::vector<WaypointItem>&list) override;
 		virtual void get_all_items(std::vector<WaypointItem>&) override {}
 		virtual void delta_drag(int total_dx, int total_dy, bool by_keys) override;
 	} waypoint_sd;

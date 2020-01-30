@@ -300,7 +300,7 @@ void Widget_Timetrack::setup_mouse_handler()
 	waypoint_sd.set_pan_enabled(true);
 	waypoint_sd.set_scroll_enabled(true);
 	waypoint_sd.set_zoom_enabled(false);
-	waypoint_sd.set_multiple_selection_enabled(false);
+	waypoint_sd.set_multiple_selection_enabled(true);
 	waypoint_sd.set_canvas_interface(canvas_interface);
 
 	waypoint_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
@@ -638,6 +638,56 @@ bool Widget_Timetrack::WaypointSD::find_item_at_position(int pos_x, int pos_y, W
 	});
 
 	return found;
+}
+
+bool Widget_Timetrack::WaypointSD::find_items_in_rect(Gdk::Rectangle rect, std::vector<Widget_Timetrack::WaypointItem>& list)
+{
+	std::lock_guard<std::mutex> lock(widget.param_list_mutex);
+
+	list.clear();
+
+	int x0 = rect.get_x();
+	int x1 = rect.get_x() + rect.get_width();
+	if (x0 > x1)
+		std::swap(x0, x1);
+	int y0 = rect.get_y();
+	int y1 = rect.get_y() + rect.get_height();
+	if (y0 > y1)
+		std::swap(y0, y1);
+
+
+	std::vector<Gtk::TreePath> path_list;
+	for (int y = y0; y < y1; ) {
+		Gtk::TreePath path;
+		bool ok = widget.params_treeview->get_path_at_pos(1, y, path);
+		if (!ok)
+			break;
+
+		const RowInfo *row_info = widget.param_info_map[path.to_string()];
+		if (!row_info) {
+			synfig::warning("%s :\n\tcouldn't find row info for path: internal error", __PRETTY_FUNCTION__);
+			continue;
+		}
+		path_list.push_back(path);
+		y += row_info->get_geometry().h;
+	}
+
+	for(const Gtk::TreePath & path : path_list) {
+		const RowInfo *row_info = widget.param_info_map[path.to_string()];
+		const int waypoint_edge_length = row_info->get_geometry().h;
+		const synfigapp::ValueDesc &value_desc = row_info->get_value_desc();
+
+		WaypointRenderer::foreach_visible_waypoint(value_desc, *widget.time_plot_data,
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
+		{
+			int px = widget.time_plot_data->get_pixel_t_coord(t);
+			if (x0 < px + waypoint_edge_length/2 && x1 >= px - waypoint_edge_length/2) {
+				list.push_back(WaypointItem(tp, path));
+			}
+			return false;
+		});
+	}
+	return list.size() > 0;
 }
 
 void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bool by_keys)
