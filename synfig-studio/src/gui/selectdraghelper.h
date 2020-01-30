@@ -132,7 +132,8 @@ public:
 	/// The point where active item was initially placed
 	void get_active_item_initial_point(int &px, int &py) const;
 
-	//! Retrieve the position of a given item
+	//! @brief Retrieve the position of a given item
+	//! Implementation only needed if item dragging is enabled.
 	//! @param[out] position the location the provided item
 	virtual void get_item_position(const T &item, Gdk::Point &position) = 0;
 
@@ -141,7 +142,8 @@ public:
 	//! @return true if an item was found, false otherwise
 	virtual bool find_item_at_position(int pos_x, int pos_y, T & item) = 0;
 
-	//! Retrieve all items inside a rectangular area
+	//! @brief Retrieve all items inside a rectangular area.
+	//! Implementation only needed if multiple selection is enabled.
 	//! @param rect the rectangle area
 	//! @param[out] the list of items contained inside rect
 	//! @return true if any item was found, false otherwise
@@ -152,7 +154,8 @@ public:
 	virtual void get_all_items(std::vector<T> & items) = 0;
 
 	void drag_to(int pointer_x, int pointer_y);
-	//! Do drag selected items
+	//! @brief Do drag selected items
+	//! Implementation only needed if dragging is enabled.
 	/*!
 	 * @param total_dx total pointer/mouse displacement along x-axis since drag start
 	 * @param total_dy total pointer/mouse displacement along y-axis since drag start
