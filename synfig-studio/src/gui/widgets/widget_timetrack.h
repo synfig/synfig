@@ -69,6 +69,7 @@ public:
 	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
 	void delete_selected();
+	void move_selected(synfig::Time delta_time);
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
@@ -78,6 +79,7 @@ protected:
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
 	virtual void on_size_allocate(Gtk::Allocation &allocation) override;
 
+	virtual void on_canvas_interface_changed() override;
 private:
 
 	struct WaypointItem {
@@ -93,11 +95,10 @@ private:
 		bool operator !=(const WaypointItem &b) const {return !operator==(b);}
 	};
 
-	// Handle mouse actions for panning/zooming/scrolling and waypoint selection
+	//! Handle mouse actions for panning/zooming/scrolling and waypoint selection
 	struct WaypointSD : SelectDragHelper<WaypointItem>
 	{
 		Widget_Timetrack &widget;
-		// SelectDragHelper interface
 	public:
 		WaypointSD(Widget_Timetrack &widget);
 		virtual ~WaypointSD() override;
@@ -105,10 +106,11 @@ private:
 		virtual bool find_item_at_position(int pos_x, int pos_y, WaypointItem& item) override;
 		virtual bool find_items_in_rect(Gdk::Rectangle, std::vector<WaypointItem>&) override { return false; }
 		virtual void get_all_items(std::vector<WaypointItem>&) override {}
-		virtual void delta_drag(int, int, bool) override {}
+		virtual void delta_drag(int total_dx, int total_dy, bool by_keys) override;
 	} waypoint_sd;
 	void setup_mouse_handler();
 
+	//! the treeview to synch with
 	Gtk::TreeView *params_treeview;
 	Glib::RefPtr<LayerParamTreeStore> params_store;
 

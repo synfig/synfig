@@ -144,7 +144,15 @@ etl::handle<synfigapp::CanvasInterface> Widget_TimeGraphBase::get_canvas_interfa
 
 void Widget_TimeGraphBase::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface>& value)
 {
+	if (canvas_interface.get() == value.get())
+		return;
 	canvas_interface = value;
+	on_canvas_interface_changed();
+}
+
+void Widget_TimeGraphBase::on_canvas_interface_changed()
+{
+
 }
 
 void Widget_TimeGraphBase::set_default_page_size(double new_value)

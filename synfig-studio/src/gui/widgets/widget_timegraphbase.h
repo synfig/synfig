@@ -84,6 +84,7 @@ public:
 
 protected:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
+	virtual void on_canvas_interface_changed();
 
 	Glib::RefPtr<Gtk::Adjustment> range_adjustment;
 	TimePlotData * time_plot_data;

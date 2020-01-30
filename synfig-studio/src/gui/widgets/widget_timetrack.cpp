@@ -148,6 +148,34 @@ void Widget_Timetrack::delete_selected()
 	canvas_interface->get_instance()->perform_action(action);
 }
 
+void Widget_Timetrack::move_selected(synfig::Time delta_time)
+{
+	std::lock_guard<std::mutex> lock(param_list_mutex);
+
+	// From CellRenderer_TimeTrack
+	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsMove"));
+	if(!action)
+		return;
+
+	synfigapp::Action::ParamList param_list;
+	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
+		param_list.add("canvas", canvas_interface->get_canvas());
+		param_list.add("canvas_interface", canvas_interface);
+
+		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()]->get_value_desc();
+		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
+		} else {
+			param_list.add("addvaluedesc", value_desc);
+		}
+
+		param_list.add("addtime", wi->time_point.get_time());
+		param_list.add("deltatime", delta_time);
+	}
+	action->set_param_list(param_list);
+	canvas_interface->get_instance()->perform_action(action);
+}
+
 bool Widget_Timetrack::on_event(GdkEvent* event)
 {
 	if (waypoint_sd.process_event(event))
@@ -260,6 +288,11 @@ void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 			.set_lower(0)
 			.set_upper(upper)
 			.finish();
+}
+
+void Widget_Timetrack::on_canvas_interface_changed()
+{
+	waypoint_sd.set_canvas_interface(canvas_interface);
 }
 
 void Widget_Timetrack::setup_mouse_handler()
@@ -573,6 +606,8 @@ void Widget_Timetrack::WaypointSD::get_item_position(const Widget_Timetrack::Way
 
 bool Widget_Timetrack::WaypointSD::find_item_at_position(int pos_x, int pos_y, Widget_Timetrack::WaypointItem &item)
 {
+	std::lock_guard<std::mutex> lock(widget.param_list_mutex);
+
 	Gtk::TreePath path;
 	bool ok = widget.params_treeview->get_path_at_pos(1, pos_y, path);
 	if (!ok)
@@ -602,4 +637,56 @@ bool Widget_Timetrack::WaypointSD::find_item_at_position(int pos_x, int pos_y, W
 	});
 
 	return found;
+}
+
+void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bool by_keys)
+{
+	int dx = 0;
+	if (total_dx == 0)
+		return;
+
+	if (by_keys) {
+		// snap to frames
+		dx = total_dx * widget.time_plot_data->k/widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	} else {
+		Gdk::Point current_pos;
+		get_item_position(*get_active_item(), current_pos);
+		int x0, y0;
+		get_active_item_initial_point(x0, y0);
+
+		int x1 = x0 + total_dx;
+		// snap to frames
+		float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+		synfig::Time next_t = widget.time_plot_data->get_t_from_pixel_coord(x1).round(fps);
+		x1 = widget.time_plot_data->get_pixel_t_coord(next_t);
+		dx = x1 - current_pos.get_x();
+	}
+
+	// Move along time
+	if (dx == 0)
+		return;
+
+	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	const synfig::Time base_time = get_active_item()->time_point.get_time();
+	const synfig::Time next_time = widget.time_plot_data->get_t_from_pixel_coord(widget.time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
+	const synfig::Time deltatime = next_time - base_time;
+
+	if (deltatime == 0)
+		return;
+
+	std::vector<std::pair<WaypointItem*, synfig::Time> > timepoints_to_update;
+	std::vector<WaypointItem*> selection = get_selected_items();
+	for (WaypointItem * point : selection) {
+		const synfig::Time &time = point->time_point.get_time();
+		const synfig::Time new_time = synfig::Time(time+deltatime).round(fps);
+
+		timepoints_to_update.push_back(std::pair<WaypointItem*, synfig::Time>(point, new_time));
+	}
+
+	// first we move waypoints
+	widget.move_selected(deltatime);
+
+	// now we update cached values in select-drag handler
+	for (auto pair : timepoints_to_update)
+		pair.first->time_point = synfig::TimePoint(pair.second);
 }
