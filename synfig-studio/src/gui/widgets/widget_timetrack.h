@@ -70,6 +70,10 @@ public:
 
 	void delete_selected();
 	void move_selected(synfig::Time delta_time);
+	//! \param n : how many waypoints to skip
+	void goto_next_waypoint(long n);
+	//! \param n : how many waypoints to skip back
+	void goto_previous_waypoint(long n);
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }

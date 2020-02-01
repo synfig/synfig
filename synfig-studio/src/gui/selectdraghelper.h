@@ -123,6 +123,10 @@ public:
 	std::vector<T*> get_selected_items();
 	/// Check if an item is selected
 	bool is_selected(const T& item) const;
+	/// Add the provided item to selection
+	void select(const T& item);
+	/// Remove the provided item from selection: only if user isn't dragging
+	void deselect(const T& item);
 	/// The selected item user started to drag
 	const T* get_active_item() const;
 
@@ -261,6 +265,29 @@ std::vector<T*> SelectDragHelper<T>::get_selected_items()
 template<class T>
 bool SelectDragHelper<T>::is_selected(const T& item) const {
 	return std::find(selected_items.begin(), selected_items.end(), item) != selected_items.end();
+}
+
+template<class T>
+void SelectDragHelper<T>::select(const T& item)
+{
+	if (is_selected(item))
+		return;
+	selected_items.push_back(item);
+	signal_selection_changed().emit();
+}
+
+template<class T>
+void SelectDragHelper<T>::deselect(const T& item)
+{
+	if (pointer_state == POINTER_DRAGGING)
+		return;
+
+	auto iter = std::find(selected_items.begin(), selected_items.end(), item);
+	if (iter == selected_items.end())
+		return;
+
+	selected_items.erase(iter);
+	signal_selection_changed().emit();
 }
 
 template<class T>

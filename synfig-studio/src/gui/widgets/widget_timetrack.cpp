@@ -176,6 +176,46 @@ void Widget_Timetrack::move_selected(synfig::Time delta_time)
 	canvas_interface->get_instance()->perform_action(action);
 }
 
+void Widget_Timetrack::goto_next_waypoint(long n)
+{
+	std::vector<WaypointItem *> selection = waypoint_sd.get_selected_items();
+	if (selection.size() != 1 || n == 0)
+		return;
+	const WaypointItem wi = *selection.front();
+
+	const synfig::Node::time_set& time_set = WaypointRenderer::get_times_from_valuedesc(param_info_map[wi.path.to_string()]->get_value_desc());
+	if (time_set.size() == 1)
+		return;
+
+	std::vector<synfig::TimePoint> time_vector;
+	time_vector.insert(time_vector.end(), time_set.begin(), time_set.end());
+	std::sort(time_vector.begin(), time_vector.end());
+
+	auto item = std::find(time_vector.begin(), time_vector.end(), wi.time_point);
+
+	if (n > 0) {
+		n = std::min(n, std::distance(item, time_vector.end()-1));
+		if (n <= 0)
+			return;
+	} else {
+		n = std::max(n, std::distance(item, time_vector.begin()));
+		if (n == 0)
+			return;
+	}
+
+	item += n;
+	if (item == time_vector.end())
+		return;
+
+	waypoint_sd.deselect(wi);
+	waypoint_sd.select(WaypointItem(*item, wi.path));
+}
+
+void Widget_Timetrack::goto_previous_waypoint(long n)
+{
+	goto_next_waypoint(-n);
+}
+
 bool Widget_Timetrack::on_event(GdkEvent* event)
 {
 	if (waypoint_sd.process_event(event))
@@ -186,6 +226,18 @@ bool Widget_Timetrack::on_event(GdkEvent* event)
 		switch (event->key.keyval) {
 		case GDK_KEY_Delete:
 			delete_selected();
+			return true;
+		case GDK_KEY_n:
+			goto_next_waypoint(1);
+			return true;
+		case GDK_KEY_N:
+			goto_next_waypoint(5);
+			return true;
+		case GDK_KEY_b:
+			goto_previous_waypoint(1);
+			return true;
+		case GDK_KEY_B:
+			goto_previous_waypoint(5);
 			return true;
 		default:
 			break;
