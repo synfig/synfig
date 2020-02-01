@@ -31,6 +31,7 @@ EXTRA_DIST = \
 	splash_screen-0.61.08.sif \
 	splash_screen-0.61.07.sif \
 	splash_screen_development.sif.in \
+	splash_screen_development.sh \
 	about_icon.sif \
 	animate_mode_icons.sif \
 	clear_redo_icon.sif \
