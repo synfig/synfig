@@ -194,11 +194,15 @@ void Widget_Timetrack::goto_next_waypoint(long n)
 	auto item = std::find(time_vector.begin(), time_vector.end(), wi.time_point);
 
 	if (n > 0) {
-		n = std::min(n, std::distance(item, time_vector.end()-1));
+		long max = std::distance(item, time_vector.end()-1);
+		if (n > max)
+			n = max;
 		if (n <= 0)
 			return;
 	} else {
-		n = std::max(n, std::distance(item, time_vector.begin()));
+		long min = std::distance(item, time_vector.begin());
+		if (n < min)
+			n = min;
 		if (n == 0)
 			return;
 	}
