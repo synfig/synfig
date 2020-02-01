@@ -273,6 +273,9 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		if (row_info->get_geometry().h == 0)
 			return false;
 
+		// is param selected?
+		draw_selected_background(cr, path, row_info);
+
 		bool is_draggable = row_info->get_value_desc().is_animated() || row_info->get_value_desc().parent_is_linkable_value_node();
 		if (!is_draggable) {
 			cr->push_group();
@@ -289,7 +292,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		// Draw static intervals
 		draw_static_intervals_for_row(cr, row_info, visible_waypoints);
 
-		draw_waypoints(cr, path, visible_waypoints);
+		draw_waypoints(cr, path, row_info, visible_waypoints);
 
 		if (!is_draggable) {
 			cr->pop_group_to_source();
@@ -408,6 +411,9 @@ void Widget_Timetrack::setup_params_view()
 
 	conn = params_treeview->signal_style_updated().connect(sigc::mem_fun(*this, &Widget_Timetrack::queue_update_param_list_geometries));
 	treeview_connections.push_back(conn);
+
+	conn = params_treeview->get_selection()->signal_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::queue_draw));
+	treeview_connections.push_back(conn);
 }
 
 void Widget_Timetrack::teardown_params_view()
@@ -505,7 +511,7 @@ void Widget_Timetrack::update_param_list_geometries()
 	queue_draw();
 }
 
-void Widget_Timetrack::draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context>& cr, const Widget_Timetrack::RowInfo* row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints)
+void Widget_Timetrack::draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context>& cr, const Widget_Timetrack::RowInfo* row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints) const
 {
 	const int waypoint_edge_length = row_info->get_geometry().h;
 	const int py = row_info->get_geometry().y;
@@ -533,10 +539,10 @@ void Widget_Timetrack::draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::
 	}
 }
 
-void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, const Gtk::TreePath &path, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints)
+void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, const Gtk::TreePath &path, const RowInfo *row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints) const
 {
 	const int margin = 1;
-	const Geometry &geometry = param_info_map[path.to_string()]->get_geometry();
+	const Geometry &geometry = row_info->get_geometry();
 	const int waypoint_edge_length = geometry.h;
 	const int py = geometry.y;
 	const auto & hovered_point = waypoint_sd.get_hovered_item();
@@ -554,6 +560,26 @@ void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, c
 		bool hover = waypoint_sd.has_hovered_item() && tp == hovered_point.time_point && hovered_point.path == path;
 		bool selected = waypoint_sd.is_selected(WaypointItem(tp, path));
 		WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+	}
+}
+
+void Widget_Timetrack::draw_selected_background(const Cairo::RefPtr<Cairo::Context>& cr, const Gtk::TreePath& path, const RowInfo *row_info) const
+{
+	if (!params_treeview)
+		return;
+	std::vector<Gtk::TreePath> path_list = params_treeview->get_selection()->get_selected_rows();
+	size_t n_drawn_selected_rows = 0;
+
+	if (n_drawn_selected_rows < path_list.size() // avoid searching if all selected rows have been drawn yet
+		&& std::find(path_list.begin(), path_list.end(), path) != path_list.end())
+	{
+		Geometry geometry = row_info->get_geometry();
+		auto foreign_context = params_treeview->get_style_context();
+		Gtk::StateFlags old_state = foreign_context->get_state();
+		foreign_context->set_state(Gtk::STATE_FLAG_SELECTED);
+		foreign_context->render_background(cr, 0, geometry.y, get_width(), geometry.h);
+		foreign_context->set_state(old_state);
+		n_drawn_selected_rows++;
 	}
 }
 
