@@ -95,7 +95,6 @@ EXTRA_DIST = \
 	layer_distortion_stretch_icon.sif \
 	layer_distortion_twirl_icon.sif \
 	layer_distortion_warp_icon.sif \
-	layer_example_filledrectangle_icon.sif \
 	layer_example_metaballs_icon.sif \
 	layer_example_simplecircle_icon.sif \
 	layer_filter_clamp_icon.sif \
@@ -281,7 +280,6 @@ IMAGES = \
 	layer_distortion_stretch_icon.$(EXT) \
 	layer_distortion_twirl_icon.$(EXT) \
 	layer_distortion_warp_icon.$(EXT) \
-	layer_example_filledrectangle_icon.$(EXT) \
 	layer_example_metaballs_icon.$(EXT) \
 	layer_example_simplecircle_icon.$(EXT) \
 	layer_filter_clamp_icon.$(EXT) \

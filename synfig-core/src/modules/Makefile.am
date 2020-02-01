@@ -34,10 +34,8 @@ EXTRA_DIST = \
 	template.nsh \
 	mod_example/simplecircle.h \
 	mod_example/simplecircle.cpp \
-	mod_example/filledrect.h \
 	mod_example/main.cpp \
 	mod_example/Makefile.am \
-	mod_example/filledrect.cpp \
 	mod_example/metaballs.cpp \
 	mod_example/metaballs.h \
 	mod_mng/trgt_mng.h \

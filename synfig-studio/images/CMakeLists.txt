@@ -121,7 +121,6 @@ set(ICONS
     layer_distortion_stretch_icon
     layer_distortion_twirl_icon
     layer_distortion_warp_icon
-    layer_example_filledrectangle_icon
     layer_example_metaballs_icon
     layer_example_simplecircle_icon
     layer_filter_clamp_icon
