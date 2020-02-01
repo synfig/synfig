@@ -69,7 +69,6 @@ EXTRA_DIST = \
 	config/depcomp \
 	m4/synfig.m4 \
 	m4/cxx_macros.m4 \
-	synfig.kdevprj \
 	synfig-config.in \
 	m4/ETL.m4 \
 	doxygen.cfg.in \
