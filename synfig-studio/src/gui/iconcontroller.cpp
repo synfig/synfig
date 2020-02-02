@@ -196,7 +196,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_distortion_twirl, "layer_distortion_twirl_icon." IMAGE_EXT, _("Twirl Layer"));
 	INIT_STOCK_ICON(layer_distortion_warp, "layer_distortion_warp_icon." IMAGE_EXT, _("Warp Layer"));
 	// Example Layers
-	INIT_STOCK_ICON(layer_example_filledrectangle, "layer_example_filledrectangle_icon." IMAGE_EXT, _("Filled Rectangle Layer"));
 	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metallballs Layer"));
 	INIT_STOCK_ICON(layer_example_simplecircle, "layer_example_simplecircle_icon." IMAGE_EXT, _("Simple Circle Layer"));
 	// Filter Layers
@@ -532,8 +531,6 @@ studio::layer_icon(const synfig::String &layer)
 	else if(layer=="warp")
 		return Gtk::StockID("synfig-layer_distortion_warp");
 	// Example Layers
-	else if(layer=="filled_rectangle")
-		return Gtk::StockID("synfig-layer_example_filledrectangle");
 	else if(layer=="metaballs")
 		return Gtk::StockID("synfig-layer_example_metaballs");
 	else if(layer=="simple_circle")

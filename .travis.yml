@@ -34,6 +34,17 @@ matrix:
     script: ./travis.sh
 
   - os: linux
+    name: "Distcheck - Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
+    sudo: required
+    dist: xenial
+    cache: ccache
+    before_install: ./1-setup-linux-native.sh
+    before_script:
+      - ccache -s
+      - ccache --set-config=compression=true
+    script: ./travis.sh distcheck
+
+  - os: linux
     name: "Synfig Studio Ubuntu 16.04 Xenial (CMake/Ninja)"
     env: CMAKE=true
     sudo: required
