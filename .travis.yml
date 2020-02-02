@@ -34,6 +34,7 @@ matrix:
     script: ./travis.sh
 
   - os: linux
+    if: false
     name: "Distcheck - Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
     sudo: required
     dist: xenial
