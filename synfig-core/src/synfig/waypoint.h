@@ -193,8 +193,7 @@ private:
 	Real continuity;
 	Real bias;
 
-	//! Shouldn't be Real?
-	float time_tension;
+	Real time_tension;
 
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
@@ -272,9 +271,9 @@ public:
 	bool is_static()const;
 
 	//!! Gets temporal tension
-	float get_temporal_tension()const { return time_tension; }
+	Real get_temporal_tension()const { return time_tension; }
 	//!! Sets temporal tension
-	void set_temporal_tension(const float& x) { time_tension=x; }
+	void set_temporal_tension(const Real& x) { time_tension=x; }
 
 	//! True if the current waypoint's time is earlier than the compared waypoint's time
 	bool operator<(const Waypoint &rhs)const
