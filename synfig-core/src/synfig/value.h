@@ -103,7 +103,7 @@ public:
 	//! Template constructor for any type
 	template <typename T>
 	ValueBase(const T &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
@@ -114,7 +114,7 @@ public:
 
 	template <typename T>
 	ValueBase(const std::vector<T> &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(0),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
@@ -123,11 +123,17 @@ public:
 		set_list_of(x);
 	}
 
-	//! Copy constructor. The data is not copied, just the type.
+	//! Constructor with the type set.
 	ValueBase(Type &x);
 
+	//! Copy constructor
+	ValueBase(const ValueBase &x);
+
+	//! Move constructor
+	ValueBase(ValueBase&& x);
+
 	//! Default destructor
-	~ValueBase();
+	virtual ~ValueBase();
 
 	/*
  --	** -- O P E R A T O R S ---------------------------------------------------
@@ -140,8 +146,8 @@ public:
 	template <class T> ValueBase& operator=(const T& x)
 		{ set(x); return *this; }
 
-	//!Operator asignation for ValueBase classes. Does a exact copy of \x
-	ValueBase& operator=(const ValueBase& x);
+	//!Copy/Move assignment operator for ValueBase classes
+	ValueBase& operator=(ValueBase x);
 
 	//! Equal than operator. Segment, Gradient and Bline Points cannot be compared.
 	bool operator==(const ValueBase& rhs)const;
@@ -171,6 +177,16 @@ public:
 
 	//! Deletes the data only if the ref count is zero
 	void clear();
+
+	//! Swap object contents
+	friend void swap(ValueBase& first, ValueBase& second) {
+		std::swap(first.type, second.type);
+		std::swap(first.data, second.data);
+		std::swap(first.ref_count, second.ref_count);
+		std::swap(first.loop_, second.loop_);
+		std::swap(first.static_, second.static_);
+		std::swap(first.interpolation_, second.interpolation_);
+	}
 
 	//! Gets the loop option.
 	bool get_loop()const { return loop_; }
@@ -227,7 +243,7 @@ public:
 	template<typename T>
 	inline static bool can_put(const Type& type, const T &x) { return can_put(type.identifier, x); }
 	inline static bool can_copy(const TypeId dest, const TypeId src)
-		{ return NULL != Type::get_operation<Operation::CopyFunc>(Operation::Description::get_copy(dest, src)); }
+		{ return Type::get_operation<Operation::CopyFunc>(Operation::Description::get_copy(dest, src)); }
 	inline static bool can_copy(const Type& dest, const Type& src) { return can_copy(dest.identifier, src.identifier); }
 
 	template<typename T> inline bool can_get(const T &x) const { return is_valid() && can_get(*type, x); }
