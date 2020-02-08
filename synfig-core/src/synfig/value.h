@@ -161,9 +161,9 @@ public:
 	bool operator>(const ValueBase& rhs)const
 		{ return rhs < *this; }
 	bool operator<=(const ValueBase& rhs)const
-		{ return !(*this < rhs); }
-	bool operator>=(const ValueBase& rhs)const
 		{ return !(rhs < *this); }
+	bool operator>=(const ValueBase& rhs)const
+		{ return !(*this < rhs); }
 
 	//!	Constant index operator for when value is of type TYPE_LIST
 	const ValueBase &operator[](int index)const
