@@ -141,21 +141,21 @@ public:
 
 public:
 
-	//! Template for the operator assignation operator for non ValueBase classes
+	//! Template for the operator assigment operator for non ValueBase classes
 	//! \see set()
 	template <class T> ValueBase& operator=(const T& x)
 		{ set(x); return *this; }
 
-	//!Copy/Move assignment operator for ValueBase classes
+	//! Copy/Move assignment operator for ValueBase classes
 	ValueBase& operator=(ValueBase x);
 
-	//! Equal than operator. Segment, Gradient and Bline Points cannot be compared.
+	//! Comparison operator (equal-to). Segment, Gradient and Bline Points cannot be compared.
 	bool operator==(const ValueBase& rhs)const;
 
-	//! Not equal than operator.
+	//! Not-equal-to operator.
 	bool operator!=(const ValueBase& rhs)const { return !operator==(rhs); }
 
-	//! todo writeme
+	//! Less-than relational operator
 	bool operator<(const ValueBase& rhs)const;
 
 	bool operator>(const ValueBase& rhs)const
