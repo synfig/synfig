@@ -274,7 +274,11 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			return true;
 		}
 
-		if (row_info->get_geometry().h == 0)
+		const Geometry& geometry = row_info->get_geometry();
+		if (geometry.h == 0)
+			return false;
+
+		if (geometry.y + geometry.h < 0 || geometry.y > get_height())
 			return false;
 
 		// is param selected?
