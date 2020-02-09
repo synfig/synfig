@@ -3476,7 +3476,7 @@ CanvasView::squence_import()
 {
 	std::set<String> filenames;
 	String errors, warnings;
-	if(App::dialog_open_file_image_sequence(_("Please select a files"), filenames, IMAGE_DIR_PREFERENCE))
+	if(App::dialog_open_file_image_sequence(_("Please select a file"), filenames, IMAGE_DIR_PREFERENCE))
 	{
 		canvas_interface()->import_sequence(filenames, errors, warnings, App::resize_imported_images);
 		if (!errors.empty())
