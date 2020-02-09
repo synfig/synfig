@@ -280,8 +280,9 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		// is param selected?
 		draw_selected_background(cr, path, row_info);
 
-		bool is_draggable = row_info->get_value_desc().is_animated() || row_info->get_value_desc().parent_is_linkable_value_node();
-		if (!is_draggable) {
+		const synfigapp::ValueDesc &value_desc = row_info->get_value_desc();
+		bool is_static_value_node = (value_desc.is_value_node() && !synfig::ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()));
+		if (is_static_value_node) {
 			cr->push_group();
 		}
 
@@ -298,7 +299,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 		draw_waypoints(cr, path, row_info, visible_waypoints);
 
-		if (!is_draggable) {
+		if (is_static_value_node) {
 			cr->pop_group_to_source();
 			cr->paint_with_alpha(0.5);
 		}
