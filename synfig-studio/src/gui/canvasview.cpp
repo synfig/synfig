@@ -2406,7 +2406,7 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_off"),iconsize));
 		pastkeyframebutton->remove();
 		pastkeyframebutton->add(*icon);
-		pastkeyframebutton->set_tooltip_text(_("Lock past  keyframes"));
+		pastkeyframebutton->set_tooltip_text(_("Lock past keyframes"));
 		icon->set_padding(0,0);
 		icon->show();
 		pastkeyframebutton->set_active(false);
