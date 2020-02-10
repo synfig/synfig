@@ -3453,7 +3453,7 @@ CanvasView::image_import()
 	// String filename(dirname(get_canvas()->get_file_name()));
 	String filename("*.*");
 	String errors, warnings;
-	if(App::dialog_open_file(_("Please select a file"), filename, IMAGE_DIR_PREFERENCE))
+	if(App::dialog_open_file(_("Please select files"), filename, IMAGE_DIR_PREFERENCE))
 	{
 		canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
 		if (!errors.empty())
