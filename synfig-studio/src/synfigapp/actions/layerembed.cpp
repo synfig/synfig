@@ -74,7 +74,7 @@ Action::LayerEmbed::get_param_vocab()
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to be embed"))
+		.set_desc(_("Layer to be embedded"))
 	);
 
 	return ret;
