@@ -432,7 +432,7 @@ dragging the handle to the left bottom part of your 2D space.");
 	attach_label(pi.grid,_("Preferred image editor"), ++row);
 
 	//create a button that will open the filechooserdialog to select image editor
-	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose..")))));
+	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
 	choose_button->show();
 	choose_button->set_tooltip_text("Choose the preferred Image editor for Edit in external tool option");
 	
