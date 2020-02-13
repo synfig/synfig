@@ -276,7 +276,7 @@ synfig::Target_Tile::async_render_tile(
 	// Add the tile to the target
 	if (!add_tile(s, rect.minx, rect.miny))
 	{
-		if(cb)cb->error(_("add_tile():Unable to put surface on target"));
+		if(cb)cb->error(_("add_tile(): Unable to put surface on target"));
 		return false;
 	}
 
