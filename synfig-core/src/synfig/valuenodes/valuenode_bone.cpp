@@ -600,7 +600,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 
 	ret.push_back(ParamDesc(ValueBase(),"scalelx")
 		.set_local_name(_("Local Length Scale"))
-		.set_description(_("The scale of the bone aligned its length"))
+		.set_description(_("The scale of the bone aligned to its length"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"width")

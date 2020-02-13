@@ -263,7 +263,7 @@ Widget_RendDesc::refresh()
 	int w_ratio, h_ratio;
 	rend_desc_.get_pixel_ratio_reduced(w_ratio, h_ratio);
 	std::ostringstream px_ratio_str;
-	px_ratio_str << _("Image Size Ratio : ") << w_ratio << '/' << h_ratio;
+	px_ratio_str << _("Image Size Ratio: ") << w_ratio << '/' << h_ratio;
 	pixel_ratio_label->set_label(px_ratio_str.str());
 
 	entry_tl->set_value(rend_desc_.get_tl());
