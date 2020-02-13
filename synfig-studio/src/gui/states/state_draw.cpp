@@ -642,10 +642,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		("synfig-layer_geometry_region"), _("Create a region layer"));
 
 	LAYER_CREATION(layer_outline_togglebutton,
-		("synfig-layer_geometry_outline"), _("Create a outline layer"));
+		("synfig-layer_geometry_outline"), _("Create an outline layer"));
 
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
-		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
+		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
 
 	SPACING(layer_types_indent, INDENTATION);
 
