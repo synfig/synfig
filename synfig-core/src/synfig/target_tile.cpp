@@ -370,7 +370,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 	}
 	catch (const String& str)
 	{
-		if (cb) cb->error(_("Caught string :")+str);
+		if (cb) cb->error(_("Caught string: ")+str);
 		return false;
 	}
 	catch (std::bad_alloc&)
