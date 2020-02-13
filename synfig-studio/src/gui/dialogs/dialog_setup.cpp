@@ -422,10 +422,10 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	pi.grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
 	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_START);
 	toggle_restrict_radius_ducks.set_hexpand(false);
-	toggle_restrict_radius_ducks.set_tooltip_text("Restrict the position of the handle \
+	toggle_restrict_radius_ducks.set_tooltip_text(_("Restrict the position of the handle \
 (especially for radius) to be in the top right quadrant of the 2D space. Allow to set \
 the real value to any number and also easily reach the value of 0.0 just \
-dragging the handle to the left bottom part of your 2D space.");
+dragging the handle to the left bottom part of your 2D space."));
 
 	attach_label_section(pi.grid, _("Edit in external"), ++row);
 
@@ -434,7 +434,7 @@ dragging the handle to the left bottom part of your 2D space.");
 	//create a button that will open the filechooserdialog to select image editor
 	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
 	choose_button->show();
-	choose_button->set_tooltip_text("Choose the preferred Image editor for Edit in external tool option");
+	choose_button->set_tooltip_text(_("Choose the preferred Image editor for Edit in external tool option"));
 	
 	//create a function to launch the dialog
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_Setup::on_choose_editor_pressed));
@@ -451,7 +451,7 @@ Dialog_Setup::on_choose_editor_pressed()
 {
 	//set the image editor path = filepath from dialog
 	String filepath = image_editor_path_entry.get_text();
-	if (select_path_dialog("Select Editor", filepath)) {
+	if (select_path_dialog(_("Select Editor"), filepath)) {
 		image_editor_path_entry.set_text(filepath);
 		App::image_editor_path = filepath;
 	}
@@ -473,8 +473,8 @@ Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath
 	#endif
 
 	//Add response buttons the the dialog:
-	dialog->add_button("_Cancel", Gtk::RESPONSE_CANCEL);
-	dialog->add_button("Select", Gtk::RESPONSE_OK);
+	dialog->add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog->add_button(_("Select"), Gtk::RESPONSE_OK);
   	if(dialog->run() == Gtk::RESPONSE_OK) {
 		filepath = dialog->get_filename();
 		filepath = absolute_path(filepath);	//get the absolute path
