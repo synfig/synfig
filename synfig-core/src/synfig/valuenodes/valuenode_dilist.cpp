@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_DIList, RELEASE_VERSION_0_63_01, "dilist", "DIList")
+REGISTER_VALUENODE(ValueNode_DIList, RELEASE_VERSION_0_63_01, "dilist", _("DIList"))
 
 /* === P R O C E D U R E S ================================================= */
 
