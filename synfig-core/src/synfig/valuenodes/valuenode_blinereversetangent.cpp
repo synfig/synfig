@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLineRevTangent, RELEASE_VERSION_0_61_08, "blinerevtangent", "Reverse Tangent")
+REGISTER_VALUENODE(ValueNode_BLineRevTangent, RELEASE_VERSION_0_61_08, "blinerevtangent", _("Reverse Tangent"))
 
 /* === P R O C E D U R E S ================================================= */
 
