@@ -49,7 +49,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Atan2, RELEASE_VERSION_0_61_08, "atan2", "aTan2")
+REGISTER_VALUENODE(ValueNode_Atan2, RELEASE_VERSION_0_61_08, "atan2", _("aTan2"))
 
 /* === P R O C E D U R E S ================================================= */
 
