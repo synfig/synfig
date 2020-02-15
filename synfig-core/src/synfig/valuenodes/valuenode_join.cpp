@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Join, RELEASE_VERSION_0_61_09, "join", "Joined List")
+REGISTER_VALUENODE(ValueNode_Join, RELEASE_VERSION_0_61_09, "join", _("Joined List"))
 
 /* === P R O C E D U R E S ================================================= */
 
