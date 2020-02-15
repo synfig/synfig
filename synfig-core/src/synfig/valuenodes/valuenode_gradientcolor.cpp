@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_GradientColor, RELEASE_VERSION_0_61_09, "gradientcolor", "Gradient Color")
+REGISTER_VALUENODE(ValueNode_GradientColor, RELEASE_VERSION_0_61_09, "gradientcolor", _("Gradient Color"))
 
 /* === P R O C E D U R E S ================================================= */
 
