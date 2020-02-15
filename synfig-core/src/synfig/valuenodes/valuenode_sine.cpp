@@ -49,7 +49,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Sine, RELEASE_VERSION_0_61_06, "sine", "Sine")
+REGISTER_VALUENODE(ValueNode_Sine, RELEASE_VERSION_0_61_06, "sine", _("Sine"))
 
 /* === P R O C E D U R E S ================================================= */
 
