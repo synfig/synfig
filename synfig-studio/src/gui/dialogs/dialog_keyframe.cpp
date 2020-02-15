@@ -92,12 +92,12 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, etl::handle<synfigapp::Can
 
 	// Allow setting descriptions for keyframes
 	entry_description.set_text("");
-	grid->attach(*manage(new Gtk::Label(_("Description :"))),   0, 0, 1, 1);
+	grid->attach(*manage(new Gtk::Label(_("Description: "))),   0, 0, 1, 1);
 	grid->attach(entry_description,                             1, 0, 3, 1);
 	entry_description.set_hexpand(true);
 
 	// Allow toggling active status for keyframes
-	grid->attach(*manage(new Gtk::Label(_("Active :"))),        4, 0, 1, 1);
+	grid->attach(*manage(new Gtk::Label(_("Active: "))),        4, 0, 1, 1);
 	grid->attach(entry_toogle,                                  5, 0, 1, 1);
 
 	widget_waypoint_model=Gtk::manage(new Widget_WaypointModel());
