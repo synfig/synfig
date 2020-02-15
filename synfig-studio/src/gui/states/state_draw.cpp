@@ -707,13 +707,13 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	SPACING(localthres_indent, INDENTATION);
 	localthres_box.pack_start(*localthres_indent, Gtk::PACK_SHRINK);
 	localthres_box.pack_start(localthres_radiobutton, Gtk::PACK_SHRINK);
-	localthres_radiobutton.set_label("Local:");
+	localthres_radiobutton.set_label(_("Local:"));
 
 	// 10, global threshold
 	SPACING(globalthres_indent, INDENTATION);
 	globalthres_box.pack_start(*globalthres_indent, Gtk::PACK_SHRINK);
 	globalthres_box.pack_start(globalthres_radiobutton, Gtk::PACK_SHRINK);
-	globalthres_radiobutton.set_label("Global:");
+	globalthres_radiobutton.set_label(_("Global:"));
 
 	smoothness_group = localthres_radiobutton.get_group();
 	globalthres_radiobutton.set_group(smoothness_group);
