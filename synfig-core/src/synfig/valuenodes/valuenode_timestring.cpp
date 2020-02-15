@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_TimeString, RELEASE_VERSION_0_61_09, "timestring", "Time String")
+REGISTER_VALUENODE(ValueNode_TimeString, RELEASE_VERSION_0_61_09, "timestring", _("Time String"))
 
 /* === P R O C E D U R E S ================================================= */
 
