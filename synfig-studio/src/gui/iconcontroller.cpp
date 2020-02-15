@@ -196,7 +196,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_distortion_twirl, "layer_distortion_twirl_icon." IMAGE_EXT, _("Twirl Layer"));
 	INIT_STOCK_ICON(layer_distortion_warp, "layer_distortion_warp_icon." IMAGE_EXT, _("Warp Layer"));
 	// Example Layers
-	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metallballs Layer"));
+	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metaballs Layer"));
 	INIT_STOCK_ICON(layer_example_simplecircle, "layer_example_simplecircle_icon." IMAGE_EXT, _("Simple Circle Layer"));
 	// Filter Layers
 	INIT_STOCK_ICON(layer_filter_clamp, "layer_filter_clamp_icon." IMAGE_EXT, _("Clamp Layer"));
