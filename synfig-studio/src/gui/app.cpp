@@ -3929,7 +3929,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 
 			if(instance->is_updated() && App::dialog_message_2b(
 				_("Newer version of this file available on the CVS repository!"),
-				_("Would you like to update now (It would probably be a good idea)"),
+				_("Would you like to update now? (It would probably be a good idea)"),
 				Gtk::MESSAGE_QUESTION,
 				_("Cancel"),
 				_("Update Anyway"))
