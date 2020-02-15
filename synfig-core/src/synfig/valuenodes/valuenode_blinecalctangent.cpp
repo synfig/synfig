@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLineCalcTangent, RELEASE_VERSION_0_61_07, "blinecalctangent", "Spline Tangent")
+REGISTER_VALUENODE(ValueNode_BLineCalcTangent, RELEASE_VERSION_0_61_07, "blinecalctangent", _("Spline Tangent"))
 
 /* === P R O C E D U R E S ================================================= */
 
