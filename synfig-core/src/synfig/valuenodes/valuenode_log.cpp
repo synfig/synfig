@@ -49,7 +49,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Logarithm, RELEASE_VERSION_0_61_09, "logarithm", "Logarithm")
+REGISTER_VALUENODE(ValueNode_Logarithm, RELEASE_VERSION_0_61_09, "logarithm", _("Logarithm"))
 
 /* === P R O C E D U R E S ================================================= */
 
