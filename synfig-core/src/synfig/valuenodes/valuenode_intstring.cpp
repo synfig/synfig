@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_IntString, RELEASE_VERSION_0_61_09, "intstring", "Int String")
+REGISTER_VALUENODE(ValueNode_IntString, RELEASE_VERSION_0_61_09, "intstring", _("Int String"))
 
 /* === P R O C E D U R E S ================================================= */
 
