@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Linear, RELEASE_VERSION_0_61_06, "linear", "Linear")
+REGISTER_VALUENODE(ValueNode_Linear, RELEASE_VERSION_0_61_06, "linear", _("Linear"))
 
 /* === P R O C E D U R E S ================================================= */
 
