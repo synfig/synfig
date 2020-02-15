@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_SegCalcVertex, RELEASE_VERSION_0_61_06, "segcalcvertex", "Segment Vertex")
+REGISTER_VALUENODE(ValueNode_SegCalcVertex, RELEASE_VERSION_0_61_06, "segcalcvertex", _("Segment Vertex"))
 
 /* === P R O C E D U R E S ================================================= */
 
