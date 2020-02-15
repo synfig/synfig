@@ -266,7 +266,7 @@ Layer_Clamp::get_param_vocab()const
 
 	ret.push_back(ParamDesc("clamp_ceiling")
 		.set_local_name(_("Clamp Ceiling"))
-		.set_description(_("When checked the Ceiling value is used"))
+		.set_description(_("When checked, the Ceiling value is used"))
 	);
 
 	ret.push_back(ParamDesc("ceiling")
