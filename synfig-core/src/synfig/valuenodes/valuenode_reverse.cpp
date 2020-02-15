@@ -64,7 +64,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Reverse, RELEASE_VERSION_1_0_2, "reverse", "Reverse")
+REGISTER_VALUENODE(ValueNode_Reverse, RELEASE_VERSION_1_0_2, "reverse", _("Reverse"))
 
 /* === P R O C E D U R E S ================================================= */
 
