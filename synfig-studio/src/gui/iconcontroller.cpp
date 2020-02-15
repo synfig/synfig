@@ -208,7 +208,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_fractal_julia, "layer_fractal_julia_icon." IMAGE_EXT, _("Julia Set Layer"));
 	INIT_STOCK_ICON(layer_fractal_mandelbrot, "layer_fractal_mandelbrot_icon." IMAGE_EXT, _("Mandelbrot Set Layer"));
 	// Geometry Layers
-	INIT_STOCK_ICON(layer_geometry_checkerboard, "layer_geometry_checkerboard_icon." IMAGE_EXT, _("Checker Board Layer"));
+	INIT_STOCK_ICON(layer_geometry_checkerboard, "layer_geometry_checkerboard_icon." IMAGE_EXT, _("Checkerboard Layer"));
 	INIT_STOCK_ICON(layer_geometry_circle, "layer_geometry_circle_icon." IMAGE_EXT, _("Circle Layer"));
 	INIT_STOCK_ICON(layer_geometry_outline, "layer_geometry_outline_icon." IMAGE_EXT, _("Outline Layer"));
 	INIT_STOCK_ICON(layer_geometry_advanced_outline, "layer_geometry_advanced_outline_icon." IMAGE_EXT, _("Advanced Outline Layer"));
