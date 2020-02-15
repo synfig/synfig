@@ -273,11 +273,11 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 	);
 	ret.push_back(ParamDesc(ValueBase(),"torsion_rigid")
 		.set_local_name(_("Torsion rigid"))
-		.set_description(_("When checked torsion spring is rigid"))
+		.set_description(_("When checked, torsion spring is rigid"))
 	);
 	ret.push_back(ParamDesc(ValueBase(),"origin_drags_tip")
 		.set_local_name(_("Origin drags tip"))
-		.set_description(_("When checked result is origin + tip otherwise result is just tip"))
+		.set_description(_("When checked, result is origin + tip otherwise result is just tip"))
 	);
 	return ret;
 }
