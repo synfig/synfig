@@ -55,7 +55,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Scale, RELEASE_VERSION_0_61_06, "scale", "Scale")
+REGISTER_VALUENODE(ValueNode_Scale, RELEASE_VERSION_0_61_06, "scale", _("Scale"))
 
 /* === P R O C E D U R E S ================================================= */
 
