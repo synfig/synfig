@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_RealString, RELEASE_VERSION_0_61_09, "realstring", "Real String")
+REGISTER_VALUENODE(ValueNode_RealString, RELEASE_VERSION_0_61_09, "realstring", _("Real String"))
 
 /* === P R O C E D U R E S ================================================= */
 
