@@ -1905,7 +1905,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 	if(!value_node)
 	{
-		error(element, strprintf(_("Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"),
+		error(element, strprintf(_("Error creating ValueNode <%s> with type '%s'. Refer to '%s'"),
 								 element->get_name().c_str(),
 								 type.description.local_name.c_str(),
 								 VALUENODE_COMPATIBILITY_URL));
