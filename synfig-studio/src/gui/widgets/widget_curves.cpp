@@ -828,7 +828,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 		char buf[512];
 		if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING) {
-			snprintf(buf, 511, "%s:<b>%s</b>\n<b>Time:</b> %lfs (%if)\n<b>Value:</b> %lf",
+			snprintf(buf, 511, _("%s:<b>%s</b>\n<b>Time:</b> %lfs (%if)\n<b>Value:</b> %lf"),
 					inspected_item->curve_it->name.c_str(),
 					inspected_item->curve_it->channels[inspected_item->channel_idx].name.c_str(),
 					Real(inspected_item->time_point.get_time()),
