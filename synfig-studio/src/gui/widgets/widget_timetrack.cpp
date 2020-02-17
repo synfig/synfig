@@ -826,5 +826,5 @@ void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bo
 
 	// now we update cached values in select-drag handler
 	for (auto pair : timepoints_to_update)
-		pair.first->time_point = synfig::TimePoint(pair.second);
+		pair.first->time_point.set_time(pair.second);
 }
