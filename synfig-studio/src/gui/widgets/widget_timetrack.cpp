@@ -858,22 +858,16 @@ void Widget_Timetrack::WaypointSD::on_drag_finish()
 	if (deltatime == 0)
 		return;
 
+	widget.move_selected(deltatime);
+
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
-	std::vector<std::pair<WaypointItem*, synfig::Time> > timepoints_to_update;
 	std::vector<WaypointItem*> selection = get_selected_items();
 	for (WaypointItem * point : selection) {
 		const synfig::Time &time = point->time_point.get_time();
 		const synfig::Time new_time = synfig::Time(time+deltatime).round(fps);
 
-		timepoints_to_update.push_back(std::pair<WaypointItem*, synfig::Time>(point, new_time));
+		point->time_point.set_time(new_time);
 	}
-
-	// first we move waypoints
-	widget.move_selected(deltatime);
-
-	// now we update cached values in select-drag handler
-	for (auto pair : timepoints_to_update)
-		pair.first->time_point.set_time(pair.second);
 
 	deltatime = 0;
 }
