@@ -111,6 +111,12 @@ private:
 		virtual bool find_items_in_rect(Gdk::Rectangle rect, std::vector<WaypointItem>&list) override;
 		virtual void get_all_items(std::vector<WaypointItem>&) override {}
 		virtual void delta_drag(int total_dx, int total_dy, bool by_keys) override;
+
+		const synfig::Time& get_deltatime();
+	protected:
+		synfig::Time deltatime;
+
+		void on_drag_finish();
 	} waypoint_sd;
 	void setup_mouse_handler();
 

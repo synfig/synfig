@@ -290,10 +290,14 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			cr->push_group();
 		}
 
+		bool is_user_moving_waypoints = waypoint_sd.get_state() == WaypointSD::State::POINTER_DRAGGING /*&& MOVING*/;
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
 		WaypointRenderer::foreach_visible_waypoint(row_info->get_value_desc(), *time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
+			// Don't draw it if it's being moved by user
+			if (is_user_moving_waypoints && waypoint_sd.is_selected(WaypointItem(tp, path)))
+				return false;
 			visible_waypoints.push_back(std::pair<synfig::TimePoint, synfig::Time>(tp, t));
 			return false;
 		});
@@ -311,6 +315,32 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		return false;
 	});
 
+
+	// draw dragging waypoints
+	if (waypoint_sd.get_state() == WaypointSD::State::POINTER_DRAGGING) {
+		for (const WaypointItem *item : waypoint_sd.get_selected_items()) {
+			const int margin = 1;
+			RowInfo * row_info = param_info_map[item->path.to_string()];
+			if (!row_info)
+				continue;
+			const Geometry &geometry = row_info->get_geometry();
+			const int waypoint_edge_length = geometry.h;
+			const int py = geometry.y;
+
+			const synfig::TimePoint &tp = item->time_point;
+			const synfig::Time &t = item->time_point.get_time() + waypoint_sd.get_deltatime();
+			int px = time_plot_data->get_pixel_t_coord(t);
+			Gdk::Rectangle area(
+						0 - waypoint_edge_length/2 + margin + px,
+						0 + margin + py,
+						waypoint_edge_length - 2*margin,
+						waypoint_edge_length - 2*margin);
+
+			bool hover = false;
+			bool selected = false;
+			WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+		}
+	}
 
 	// Draw selection rectangle
 	if (waypoint_sd.get_state() == WaypointSD::State::POINTER_SELECTING) {
@@ -674,6 +704,9 @@ Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
 	: SelectDragHelper<WaypointItem>("Move waypoints"),
 	  widget(widget)
 {
+	signal_drag_started().connect([&]() {deltatime = 0;});
+	signal_drag_canceled().connect([&]() {deltatime = 0;});
+	signal_drag_finished().connect([&]() {on_drag_finish();});
 }
 
 Widget_Timetrack::WaypointSD::~WaypointSD()
@@ -805,13 +838,27 @@ void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bo
 		return;
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
-	const synfig::Time base_time = get_active_item()->time_point.get_time();
+	int x0, y0;
+	get_active_item_initial_point(x0, y0);
+	const synfig::Time base_time = widget.time_plot_data->get_t_from_pixel_coord(x0);
 	const synfig::Time next_time = widget.time_plot_data->get_t_from_pixel_coord(widget.time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
-	const synfig::Time deltatime = next_time - base_time;
 
+	deltatime = next_time - base_time;
+
+	// actual move is done only on finishing drag
+}
+
+const synfig::Time& Widget_Timetrack::WaypointSD::get_deltatime()
+{
+	return deltatime;
+}
+
+void Widget_Timetrack::WaypointSD::on_drag_finish()
+{
 	if (deltatime == 0)
 		return;
 
+	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	std::vector<std::pair<WaypointItem*, synfig::Time> > timepoints_to_update;
 	std::vector<WaypointItem*> selection = get_selected_items();
 	for (WaypointItem * point : selection) {
@@ -827,4 +874,6 @@ void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bo
 	// now we update cached values in select-drag handler
 	for (auto pair : timepoints_to_update)
 		pair.first->time_point.set_time(pair.second);
+
+	deltatime = 0;
 }
