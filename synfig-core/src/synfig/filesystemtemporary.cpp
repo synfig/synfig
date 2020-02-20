@@ -60,6 +60,7 @@ FileSystemTemporary::FileSystemTemporary(const String &tag, const String &tempor
 	tag(tag),
 	temporary_directory(temporary_directory.empty() ? get_system_temporary_directory() : temporary_directory),
 	temporary_filename_base(generate_temporary_filename_base(tag)),
+	keep_files_when_destroyed(false),
 	autosave(true)
 {
 	set_sub_file_system(sub_file_system);
@@ -67,7 +68,9 @@ FileSystemTemporary::FileSystemTemporary(const String &tag, const String &tempor
 
 FileSystemTemporary::~FileSystemTemporary()
 {
-
+	if (!keep_files_when_destroyed) {
+		discard_changes();
+	}
 }
 
 String

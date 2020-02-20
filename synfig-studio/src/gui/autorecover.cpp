@@ -164,11 +164,9 @@ AutoRecover::clear_backups()
 			// FileSystemTemporary will clear opened temporary files in destructor
 			String filename = App::get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + *i;
 			bool s = false;
-			try {
-				FileSystemTemporary temporary_filesystem = FileSystemTemporary("");
-				s = temporary_filesystem.open_temporary(filename);
-				temporary_filesystem.discard_changes();
-			} catch (...) {
+			try { s = FileSystemTemporary("").open_temporary(filename); }
+			catch (...)
+			{
 				synfig::warning("Autobackup file is not recoverable. Forcing to remove.");
 			}
 			if (!s)

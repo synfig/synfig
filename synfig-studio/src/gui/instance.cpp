@@ -701,9 +701,9 @@ Instance::close(bool remove_temporary_files)
 		studio::App::instance_list.front()->canvas_view_list().front()->present();
 	}
 
-	if (remove_temporary_files) {
+	if (!remove_temporary_files) {
 		FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
-		temporary_filesystem->discard_changes();
+		temporary_filesystem->set_keep_files_when_destroyed(true);
 	}
 }
 
