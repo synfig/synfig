@@ -736,6 +736,10 @@ Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
 	signal_drag_started().connect([&]() {deltatime = 0;});
 	signal_drag_canceled().connect([&]() {deltatime = 0;});
 	signal_drag_finished().connect([&]() {on_drag_finish();});
+	signal_modifier_keys_changed().connect([&]() {
+		if (get_state() == POINTER_DRAGGING)
+			widget.queue_draw();
+	});
 }
 
 Widget_Timetrack::WaypointSD::~WaypointSD()
