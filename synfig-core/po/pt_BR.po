@@ -14,16 +14,16 @@
 # hbarone <henrique.blender@gmail.com>, 2011
 # hbarone <henrique.blender@gmail.com>, 2011
 # Ricardo Graça <ricolandia@gmail.com>, 2011,2015
-# rodolforg <rodolforg@gmail.com>, 2013,2019
+# rodolforg <rodolforg@gmail.com>, 2013,2019-2020
 # rodolforg <rodolforg@gmail.com>, 2013
 # Rui <xymarior@yandex.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2020-02-08 22:26+0700\n"
-"PO-Revision-Date: 2020-02-08 15:26+0000\n"
-"Last-Translator: Adriano Araújo Duarte <dhryko@hotmail.com>\n"
+"POT-Creation-Date: 2020-02-14 22:06+0700\n"
+"PO-Revision-Date: 2020-02-16 15:28+0000\n"
+"Last-Translator: rodolforg <rodolforg@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/morevnaproject/synfig/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -437,7 +437,7 @@ msgstr "Quando marcada, processa rapidamente mas com artefatos"
 
 #: ../src/modules/lyr_std/freetime.cpp:59
 msgid "Free Time"
-msgstr ""
+msgstr "Tempo Livre"
 
 #: ../src/modules/lyr_std/freetime.cpp:60
 #: ../src/modules/lyr_std/freetime.cpp:101
@@ -729,7 +729,7 @@ msgstr "Clipe"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
 msgid "When checked, the area outside the Radius are not distorted"
-msgstr ""
+msgstr "Quando marcado, a área fora do raio não será distorcida"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:170
 msgid "Distort Type"
@@ -1017,12 +1017,12 @@ msgstr "Falha ao ler BITMAP::INFOHEADER de %s"
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:170
 #, c-format
 msgid "Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %zu)"
-msgstr ""
+msgstr "BITMAP::FILEHEADER ruim em %s. (bfOffsetBits=%d, deveria ser %zu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:178
 #, c-format
 msgid "Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %zu)"
-msgstr ""
+msgstr "BITMAP::INFOHEADER ruim em %s. (biSize=%d, deveria ser %zu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:196
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:197
@@ -2110,7 +2110,7 @@ msgstr "Estado inválido da Superfície Cairo"
 msgid ""
 "The image is too large. It's size must be not more than 5000*2000=10000000 "
 "px. Currently it's %d*%d=%d px."
-msgstr ""
+msgstr "A imagem é muito grande. Seu tamanho não pode ultrapassar 5000 x 2000=10000000 px. Atualmente, ela contém %d x %d = %d pixeis."
 
 #: ../src/modules/mod_ppm/mptr_ppm.cpp:79
 #, c-format
@@ -2322,7 +2322,7 @@ msgstr "Índice da Cópia"
 #: ../src/synfig/layers/layer_filtergroup.cpp:62
 #: ../src/synfig/layers/layer_filtergroup.cpp:80
 msgid "Filter Group"
-msgstr ""
+msgstr "Grupo Filtro"
 
 #: ../src/synfig/layers/layer_group.cpp:65
 #: ../src/synfig/layers/layer_group.cpp:91
@@ -2613,17 +2613,17 @@ msgstr "Apenas a camada com nome especificado é visível"
 
 #: ../src/synfig/layers/layer_switch.cpp:103
 msgid "Active Layer Depth"
-msgstr ""
+msgstr "Profundidade da Camada Ativa"
 
 #: ../src/synfig/layers/layer_switch.cpp:104
 msgid ""
-"Uses when layer name is empty. Only layer with specified depth are visible"
-msgstr ""
+"Used when layer name is empty. Only layer with specified depth is visible"
+msgstr "Usado quando o nome de camada está vazio. Somente a camada com a profundidade especificada é visível"
 
 #: ../src/synfig/loadcanvas.cpp:138
 #, c-format
 msgid "Cannot find canvas for delete '%s'"
-msgstr ""
+msgstr "Não é possível achar tela para excluir: \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:165
 #, c-format
@@ -2936,27 +2936,27 @@ msgstr "Não é possível abrir o arquivo"
 #: ../src/synfig/main.cpp:142
 #, c-format
 msgid "API Version mismatch (LIB:%zu, PROG:%zu)"
-msgstr ""
+msgstr "Incompatibilidade da versão do API (LIB:%zu, PROG:%zu)"
 
 #: ../src/synfig/main.cpp:147
 #, c-format
 msgid "Size of Vector mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Incompatibilidade do tamanho do vetor (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:152
 #, c-format
 msgid "Size of Color mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Incompatibilidade do tamanho da cor (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:157
 #, c-format
 msgid "Size of Canvas mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Incompatibilidade do tamanho da tela (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:162
 #, c-format
 msgid "Size of Layer mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Incompatibilidade do tamanho da camada (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:244
 msgid "Starting Subsystem \"Sound\""
@@ -2976,11 +2976,11 @@ msgstr "Não foi possível inicializar o subsistema \"Tipos\""
 
 #: ../src/synfig/main.cpp:255
 msgid "Starting Subsystem \"Rendering\""
-msgstr ""
+msgstr "Inicializando Subsistema \"Renderização\""
 
 #: ../src/synfig/main.cpp:260
 msgid "Unable to initialize subsystem \"Rendering\""
-msgstr ""
+msgstr "Não é possível inicializar o subsistema \"Renderização\""
 
 #: ../src/synfig/main.cpp:263
 msgid "Starting Subsystem \"Modules\""
@@ -3024,11 +3024,11 @@ msgstr "Não é possível inicializar subsistema \"Importadores Cairo\""
 
 #: ../src/synfig/main.cpp:318
 msgid "Starting Subsystem \"Thread Pool\""
-msgstr ""
+msgstr "Iniciando Subsistema \"Tanque de Subprocessos\""
 
 #: ../src/synfig/main.cpp:320
 msgid "Unable to initialize subsystem \"Thread Pool\""
-msgstr ""
+msgstr "Não é possível inicializar subsistema \"Tanque de Subprocessos\""
 
 #: ../src/synfig/main.cpp:356 ../src/synfig/main.cpp:357
 #, c-format
@@ -3218,27 +3218,27 @@ msgstr "Pânico de destino"
 
 #: ../src/synfig/rendering/opengl/renderergl.cpp:65
 msgid "Cobra (hardware)"
-msgstr ""
+msgstr "Cobra (hardware)"
 
 #: ../src/synfig/rendering/software/rendererdraftsw.cpp:106
 msgid "Cobra Draft (software)"
-msgstr ""
+msgstr "Cobra Rascunho (software)"
 
 #: ../src/synfig/rendering/software/rendererlowressw.cpp:81
 msgid "Cobra LowRes (software)"
-msgstr ""
+msgstr "Cobra BaixaResolução (software)"
 
 #: ../src/synfig/rendering/software/renderersafe.cpp:58
 msgid "Cobra (safe) - very slow"
-msgstr ""
+msgstr "Cobra (seguro) - muito lento"
 
 #: ../src/synfig/rendering/software/renderersw.cpp:79
 msgid "Cobra (software)"
-msgstr ""
+msgstr "Cobra (software)"
 
 #: ../src/synfig/rendering/software/rendererpreviewsw.cpp:80
 msgid "Cobra Preview (software)"
-msgstr ""
+msgstr "Cobra Prévia (software)"
 
 #: ../src/synfig/savecanvas.cpp:438
 #, c-format
@@ -3270,8 +3270,8 @@ msgstr "Método de renderização não suportado"
 
 #: ../src/synfig/target_cairo.cpp:184 ../src/synfig/target_cairo_tile.cpp:264
 #: ../src/synfig/target_scanline.cpp:466 ../src/synfig/target_tile.cpp:373
-msgid "Caught string :"
-msgstr "Sequência capturada :"
+msgid "Caught string: "
+msgstr "Texto da exceção capturada:"
 
 #: ../src/synfig/target_cairo.cpp:189 ../src/synfig/target_cairo_tile.cpp:269
 #: ../src/synfig/target_scanline.cpp:471 ../src/synfig/target_tile.cpp:378
@@ -3301,8 +3301,8 @@ msgid "Bad surface: %s"
 msgstr "Superfície inválida: %s"
 
 #: ../src/synfig/target_cairo_tile.cpp:168 ../src/synfig/target_tile.cpp:279
-msgid "add_tile():Unable to put surface on target"
-msgstr "add_tile():Não é possível colocar superfície no destino"
+msgid "add_tile(): Unable to put surface on target"
+msgstr "add_tile(): Não é possível colocar superfície no alvo"
 
 #: ../src/synfig/target_cairo_tile.cpp:226
 msgid "Can't start frame"
@@ -3310,7 +3310,7 @@ msgstr "Não é possível iniciar o quadro"
 
 #: ../src/synfig/target_scanline.cpp:224
 msgid "Accelerated Renderer Failure: cannot read surface"
-msgstr ""
+msgstr "Falha do Renderizador Acelerado: não é possível ler superfície"
 
 #: ../src/synfig/target_scanline.cpp:294 ../src/synfig/target_scanline.cpp:374
 #: ../src/synfig/target_scanline.cpp:446 ../src/synfig/target_tile.cpp:248
@@ -3330,15 +3330,15 @@ msgstr "Time(): Nenhuma unidade fornecida no código de tempo e a taxa de quadro
 
 #: ../src/synfig/time.cpp:198
 msgid "Translating Time to unknown format (not implemented)"
-msgstr ""
+msgstr "Formato desconhecido para representação do tempo (não implementado)"
 
 #: ../src/synfig/token.cpp:110
 msgid "Loop in hierarchy of tokens detected"
-msgstr ""
+msgstr "Detectou-se ciclo na hierarquia de tokens"
 
 #: ../src/synfig/token.cpp:132
 msgid "Loop detected while tokens preparing"
-msgstr ""
+msgstr "Ciclo detectado ao preparar tokens"
 
 #: ../src/synfig/valuenode.cpp:509
 msgid "Placeholder"
@@ -3384,7 +3384,7 @@ msgstr "Lado Esquerdo da adição"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:238
 msgid "Addition"
-msgstr ""
+msgstr "Adição"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:239
 msgid "Right Hand Side of the add"
@@ -3624,8 +3624,8 @@ msgid "Local Length Scale"
 msgstr "Escala de Comprimento Local"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:603
-msgid "The scale of the bone aligned its length"
-msgstr "A escala do osso alinhada a seu comprimento"
+msgid "The scale of the bone aligned to its length"
+msgstr "A escala do osso alinhado a seu comprimento"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:607
 msgid "Bone Width"
@@ -4948,7 +4948,7 @@ msgstr "Define o codec para o vídeo. Veja --target-video-codecs"
 
 #: ../src/tool/optionsprocessor.cpp:187
 msgid "codec"
-msgstr ""
+msgstr "codec"
 
 #: ../src/tool/optionsprocessor.cpp:188
 msgid "Set the bitrate for the output video"
@@ -4956,7 +4956,7 @@ msgstr "Define a taxa de bits para a saída de vídeo"
 
 #: ../src/tool/optionsprocessor.cpp:188
 msgid "bitrate"
-msgstr ""
+msgstr "taxa de bits"
 
 #: ../src/tool/optionsprocessor.cpp:191
 msgid "Produce this help message"
@@ -4980,7 +4980,7 @@ msgstr "Imprimir descrição da camada, informação de parâmetro, etc."
 
 #: ../src/tool/optionsprocessor.cpp:195
 msgid "layer-name"
-msgstr ""
+msgstr "nome-da-camada"
 
 #: ../src/tool/optionsprocessor.cpp:196
 msgid "Print out license information"

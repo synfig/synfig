@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2020-02-08 22:26+0700\n"
-"PO-Revision-Date: 2020-02-08 15:53+0000\n"
-"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>\n"
+"POT-Creation-Date: 2020-02-14 22:06+0700\n"
+"PO-Revision-Date: 2020-02-14 15:06+0000\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Basque (http://www.transifex.com/morevnaproject/synfig/language/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -692,7 +692,7 @@ msgid "Decrease Amount"
 msgstr "Txikitu kopurua"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:134
-#: ../src/gui/iconcontroller.cpp:269
+#: ../src/gui/iconcontroller.cpp:268
 msgid "Select All Child Layers"
 msgstr "Hautatu geruza ume guztiak"
 
@@ -860,11 +860,11 @@ msgstr "Editatu oihalaren propietateak"
 msgid "Colors"
 msgstr "Koloreak"
 
-#: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:294
+#: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:293
 msgid "Set as Outline"
 msgstr "Ezarri eskema gisa"
 
-#: ../src/gui/dialogs/dialog_color.cpp:70 ../src/gui/iconcontroller.cpp:295
+#: ../src/gui/dialogs/dialog_color.cpp:70 ../src/gui/iconcontroller.cpp:294
 msgid "Set as Fill"
 msgstr "Ezarri betegarri gisa"
 
@@ -1209,6 +1209,7 @@ msgid "Image"
 msgstr "Irudia"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:365
+#: ../src/gui/dialogs/dialog_setup.cpp:477
 msgid "Select"
 msgstr ""
 
@@ -1234,6 +1235,14 @@ msgstr "Beste bat"
 msgid "Restrict real value handles to top right quadrant"
 msgstr ""
 
+#: ../src/gui/dialogs/dialog_setup.cpp:425
+msgid ""
+"Restrict the position of the handle (especially for radius) to be in the top"
+" right quadrant of the 2D space. Allow to set the real value to any number "
+"and also easily reach the value of 0.0 just dragging the handle to the left "
+"bottom part of your 2D space."
+msgstr ""
+
 #: ../src/gui/dialogs/dialog_setup.cpp:430
 msgid "Edit in external"
 msgstr ""
@@ -1242,8 +1251,20 @@ msgstr ""
 msgid "Preferred image editor"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:435
-msgid "Choose.."
+#: ../src/gui/dialogs/dialog_setup.cpp:435 ../src/gui/render.cpp:112
+msgid "Choose..."
+msgstr "Aukeratu..."
+
+#: ../src/gui/dialogs/dialog_setup.cpp:437
+msgid "Choose the preferred Image editor for Edit in external tool option"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:454
+msgid "Select Editor"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:476
+msgid "_Cancel"
 msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:501
@@ -1459,12 +1480,12 @@ msgid "Seek to previous frame"
 msgstr "Joan aurreko fotogramara"
 
 #: ../src/gui/dials/framedial.cpp:63 ../src/gui/app.cpp:1028
-#: ../src/gui/iconcontroller.cpp:300 ../src/gui/preview.cpp:419
+#: ../src/gui/iconcontroller.cpp:299 ../src/gui/preview.cpp:419
 msgid "Play"
 msgstr "Erreproduzitu"
 
 #: ../src/gui/dials/framedial.cpp:64 ../src/gui/app.cpp:1031
-#: ../src/gui/iconcontroller.cpp:302 ../src/gui/preview.cpp:432
+#: ../src/gui/iconcontroller.cpp:301 ../src/gui/preview.cpp:432
 msgid "Pause"
 msgstr "pausarazi"
 
@@ -1545,7 +1566,7 @@ msgstr "Erabili bereizmen txikia ahal denean"
 msgid "Position handles"
 msgstr "Kokapen-heldulekuak"
 
-#: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:322
+#: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:321
 msgid "Toggle position handles"
 msgstr "Txandakatu kokapen-heldulekuak"
 
@@ -1553,7 +1574,7 @@ msgstr "Txandakatu kokapen-heldulekuak"
 msgid "Vertex handles"
 msgstr "Erpin-heldulekuak"
 
-#: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:323
+#: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:322
 msgid "Toggle vertex handles"
 msgstr "Txandakatu erpin-heldulekuak"
 
@@ -1561,7 +1582,7 @@ msgstr "Txandakatu erpin-heldulekuak"
 msgid "Tangent handles"
 msgstr "Tangentzia-heldulekuak"
 
-#: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:324
+#: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:323
 msgid "Toggle tangent handles"
 msgstr "Tcandakatu tangentzia-heldulekuak"
 
@@ -1569,7 +1590,7 @@ msgstr "Tcandakatu tangentzia-heldulekuak"
 msgid "Radius handles"
 msgstr "Erradio-heldulekuak"
 
-#: ../src/gui/dials/toggleducksdial.cpp:61 ../src/gui/iconcontroller.cpp:325
+#: ../src/gui/dials/toggleducksdial.cpp:61 ../src/gui/iconcontroller.cpp:324
 msgid "Toggle radius handles"
 msgstr "Txandakatu erradio-heldulekuak"
 
@@ -1577,7 +1598,7 @@ msgstr "Txandakatu erradio-heldulekuak"
 msgid "Width handles"
 msgstr "Zabalera-heldulekuak"
 
-#: ../src/gui/dials/toggleducksdial.cpp:62 ../src/gui/iconcontroller.cpp:326
+#: ../src/gui/dials/toggleducksdial.cpp:62 ../src/gui/iconcontroller.cpp:325
 msgid "Toggle width handles"
 msgstr "Txandakatu zabalera-heldulekuak"
 
@@ -1585,7 +1606,7 @@ msgstr "Txandakatu zabalera-heldulekuak"
 msgid "Angle handles"
 msgstr "Angelu-heldulekuak"
 
-#: ../src/gui/dials/toggleducksdial.cpp:63 ../src/gui/iconcontroller.cpp:327
+#: ../src/gui/dials/toggleducksdial.cpp:63 ../src/gui/iconcontroller.cpp:326
 msgid "Toggle angle handles"
 msgstr "Txandakatu angelu-heldulekuak"
 
@@ -1624,21 +1645,21 @@ msgid "ID"
 msgstr "ID"
 
 #: ../src/gui/docks/dock_children.cpp:65 ../src/gui/app.cpp:1065
-#: ../src/gui/iconcontroller.cpp:274
+#: ../src/gui/iconcontroller.cpp:273
 msgid "Library"
 msgstr "Libreria"
 
 #: ../src/gui/docks/dock_curves.cpp:66 ../src/gui/app.cpp:1069
-#: ../src/gui/iconcontroller.cpp:275
+#: ../src/gui/iconcontroller.cpp:274
 msgid "Graphs"
 msgstr "Grafikoak"
 
 #: ../src/gui/docks/dock_history.cpp:66 ../src/gui/docks/dock_history.cpp:122
-#: ../src/gui/app.cpp:1059 ../src/gui/iconcontroller.cpp:280
+#: ../src/gui/app.cpp:1059 ../src/gui/iconcontroller.cpp:279
 msgid "History"
 msgstr "Historia"
 
-#: ../src/gui/docks/dock_history.cpp:75 ../src/gui/iconcontroller.cpp:271
+#: ../src/gui/docks/dock_history.cpp:75 ../src/gui/iconcontroller.cpp:270
 msgid "Clear Undo Stack"
 msgstr "Garbitu desegiteko ekintzak"
 
@@ -1646,7 +1667,7 @@ msgstr "Garbitu desegiteko ekintzak"
 msgid "Clear the undo stack"
 msgstr "Garbitu desegitek ekintzak"
 
-#: ../src/gui/docks/dock_history.cpp:86 ../src/gui/iconcontroller.cpp:272
+#: ../src/gui/docks/dock_history.cpp:86 ../src/gui/iconcontroller.cpp:271
 msgid "Clear Redo Stack"
 msgstr "Garbitu berregiteko ekintzak"
 
@@ -1753,7 +1774,7 @@ msgid "Render Progress: "
 msgstr ""
 
 #: ../src/gui/docks/dock_keyframes.cpp:65 ../src/gui/app.cpp:1061
-#: ../src/gui/iconcontroller.cpp:276
+#: ../src/gui/iconcontroller.cpp:275
 msgid "Keyframes"
 msgstr "Gako-fotogramak"
 
@@ -1808,12 +1829,12 @@ msgid "Key Name: "
 msgstr "Gakoaren izena:"
 
 #: ../src/gui/docks/dock_navigator.cpp:299 ../src/gui/app.cpp:1067
-#: ../src/gui/iconcontroller.cpp:278
+#: ../src/gui/iconcontroller.cpp:277
 msgid "Navigator"
 msgstr "Nabigatzailea"
 
 #: ../src/gui/docks/dock_params.cpp:64 ../src/gui/app.cpp:1063
-#: ../src/gui/iconcontroller.cpp:282
+#: ../src/gui/iconcontroller.cpp:281
 msgid "Parameters"
 msgstr "Parametroak"
 
@@ -1836,7 +1857,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_timetrack.cpp:103
 #: ../src/gui/trees/childrentree.cpp:142 ../src/gui/trees/layertree.cpp:408
-#: ../src/gui/iconcontroller.cpp:279
+#: ../src/gui/iconcontroller.cpp:278
 msgid "Time Track"
 msgstr "Denbora-pista"
 
@@ -2009,16 +2030,16 @@ msgstr "Sortu area geruza"
 #: ../src/gui/states/state_polygon.cpp:499
 #: ../src/gui/states/state_rectangle.cpp:513
 #: ../src/gui/states/state_star.cpp:635
-msgid "Create a outline layer"
-msgstr "Sortu ertza geruza"
+msgid "Create an outline layer"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:538
 #: ../src/gui/states/state_circle.cpp:570 ../src/gui/states/state_draw.cpp:648
 #: ../src/gui/states/state_polygon.cpp:502
 #: ../src/gui/states/state_rectangle.cpp:516
 #: ../src/gui/states/state_star.cpp:638
-msgid "Create a advanced outline layer"
-msgstr "Sortu ertza geruza aurreratua"
+msgid "Create an advanced outline layer"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:541
 #: ../src/gui/states/state_circle.cpp:573
@@ -3604,7 +3625,7 @@ msgstr ""
 msgid "Toggle Onion Skin"
 msgstr "Aldatu  tipula-azala"
 
-#: ../src/gui/app.cpp:1033 ../src/gui/iconcontroller.cpp:304
+#: ../src/gui/app.cpp:1033 ../src/gui/iconcontroller.cpp:303
 msgid "Seek to Next Keyframe"
 msgstr "Joan hurrengo gako-fotogramara"
 
@@ -3616,7 +3637,7 @@ msgstr "Joan aurreko gako-fotogramara"
 msgid "Seek to Next Frame"
 msgstr "Joan hurrengo fotogramara"
 
-#: ../src/gui/app.cpp:1036 ../src/gui/iconcontroller.cpp:299
+#: ../src/gui/app.cpp:1036 ../src/gui/iconcontroller.cpp:298
 msgid "Seek to Previous Frame"
 msgstr "Joan aurreko fotogramara"
 
@@ -3628,11 +3649,11 @@ msgstr "Joan aurrera"
 msgid "Seek Backward"
 msgstr "Joan atzera"
 
-#: ../src/gui/app.cpp:1039 ../src/gui/iconcontroller.cpp:297
+#: ../src/gui/app.cpp:1039 ../src/gui/iconcontroller.cpp:296
 msgid "Seek to Begin"
 msgstr "Joan hasierara"
 
-#: ../src/gui/app.cpp:1040 ../src/gui/iconcontroller.cpp:305
+#: ../src/gui/app.cpp:1040 ../src/gui/iconcontroller.cpp:304
 msgid "Seek to End"
 msgstr "Joan bukaerara"
 
@@ -4110,7 +4131,7 @@ msgid "Would you like to update now (It would probably be a good idea)"
 msgstr "Nahi duzu eguneratu orain (ideia ona ematen du)"
 
 #: ../src/gui/app.cpp:4095 ../src/gui/app.cpp:4119
-#: ../src/gui/canvasview.cpp:3456
+#: ../src/gui/canvasview.cpp:3479
 msgid "Please select a file"
 msgstr "Hautatu fitxategi bat"
 
@@ -4255,8 +4276,8 @@ msgstr "Gorde irekitako dokumentu guztiak"
 msgid "Quit"
 msgstr "Irten"
 
-#: ../src/gui/canvasview.cpp:1558 ../src/gui/iconcontroller.cpp:254
-#: ../src/gui/iconcontroller.cpp:259
+#: ../src/gui/canvasview.cpp:1558 ../src/gui/iconcontroller.cpp:253
+#: ../src/gui/iconcontroller.cpp:258
 msgid "Show Grid"
 msgstr "Erakutsi sareta"
 
@@ -4321,8 +4342,8 @@ msgid "Unlock past keyframes"
 msgstr "Desblokeatu iragan gako-fotogramak"
 
 #: ../src/gui/canvasview.cpp:2409
-msgid "Lock past  keyframes"
-msgstr "Blokeatu iragan gako-fotogramak"
+msgid "Lock past keyframes"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2839
 msgid "Change Waypoint Group"
@@ -4401,14 +4422,14 @@ msgstr "Deskripzioa"
 msgid "Description: "
 msgstr "Deskripzioa:"
 
-#: ../src/gui/canvasview.cpp:3319 ../src/gui/iconcontroller.cpp:257
+#: ../src/gui/canvasview.cpp:3319 ../src/gui/iconcontroller.cpp:256
 #: ../src/synfigapp/actions/groupaddlayers.cpp:80
 #: ../src/synfigapp/actions/groupremove.cpp:74
 msgid "Set"
 msgstr "Multzoa"
 
-#: ../src/gui/canvasview.cpp:3479
-msgid "Please select a files"
+#: ../src/gui/canvasview.cpp:3456
+msgid "Please select files"
 msgstr ""
 
 #: ../src/gui/canvasview.cpp:3730
@@ -4571,405 +4592,401 @@ msgid "Warp Layer"
 msgstr "Okertu geruza"
 
 #: ../src/gui/iconcontroller.cpp:199
-msgid "Filled Rectangle Layer"
-msgstr "Laukizuzen betea geruza"
-
-#: ../src/gui/iconcontroller.cpp:200
 msgid "Metallballs Layer"
 msgstr "Metallballs geruza"
 
-#: ../src/gui/iconcontroller.cpp:201
+#: ../src/gui/iconcontroller.cpp:200
 msgid "Simple Circle Layer"
 msgstr "Zirkulu sinplea geruza"
 
-#: ../src/gui/iconcontroller.cpp:203
+#: ../src/gui/iconcontroller.cpp:202
 msgid "Clamp Layer"
 msgstr "Brida geruza"
 
-#: ../src/gui/iconcontroller.cpp:204
+#: ../src/gui/iconcontroller.cpp:203
 msgid "Color Correct Layer"
 msgstr "Kolore zuzenketa geruza"
 
-#: ../src/gui/iconcontroller.cpp:205
+#: ../src/gui/iconcontroller.cpp:204
 msgid "Halftone 2 Layer"
 msgstr "Tarteko tonua 2 geruza"
 
-#: ../src/gui/iconcontroller.cpp:206
+#: ../src/gui/iconcontroller.cpp:205
 msgid "Halftone 3 Layer"
 msgstr "Tarteko tonua 3 geruza"
 
-#: ../src/gui/iconcontroller.cpp:207
+#: ../src/gui/iconcontroller.cpp:206
 msgid "Luma Key Layer"
 msgstr "Luma Key geruza"
 
-#: ../src/gui/iconcontroller.cpp:209
+#: ../src/gui/iconcontroller.cpp:208
 msgid "Julia Set Layer"
 msgstr "Julia Set geruza"
 
-#: ../src/gui/iconcontroller.cpp:210
+#: ../src/gui/iconcontroller.cpp:209
 msgid "Mandelbrot Set Layer"
 msgstr "Mandelbrot Set geruza"
 
-#: ../src/gui/iconcontroller.cpp:212
+#: ../src/gui/iconcontroller.cpp:211
 msgid "Checker Board Layer"
 msgstr "Checker Board geruza"
 
-#: ../src/gui/iconcontroller.cpp:213
+#: ../src/gui/iconcontroller.cpp:212
 msgid "Circle Layer"
 msgstr "Zirkulua geruza"
 
-#: ../src/gui/iconcontroller.cpp:214
+#: ../src/gui/iconcontroller.cpp:213
 msgid "Outline Layer"
 msgstr "Ertza geruza"
 
-#: ../src/gui/iconcontroller.cpp:215
+#: ../src/gui/iconcontroller.cpp:214
 msgid "Advanced Outline Layer"
 msgstr "Ertza geruza aurreratua"
 
-#: ../src/gui/iconcontroller.cpp:216
+#: ../src/gui/iconcontroller.cpp:215
 msgid "Polygon Layer"
 msgstr "Poligonoa geruza"
 
-#: ../src/gui/iconcontroller.cpp:217
+#: ../src/gui/iconcontroller.cpp:216
 msgid "Rectangle Layer"
 msgstr "Laukizuzena geruza"
 
-#: ../src/gui/iconcontroller.cpp:218
+#: ../src/gui/iconcontroller.cpp:217
 msgid "Region Layer"
 msgstr "Area geruza"
 
-#: ../src/gui/iconcontroller.cpp:219
+#: ../src/gui/iconcontroller.cpp:218
 msgid "Solid Color Layer"
 msgstr "Kolore solidoa geruza"
 
-#: ../src/gui/iconcontroller.cpp:220
+#: ../src/gui/iconcontroller.cpp:219
 msgid "Star Layer"
 msgstr "Izarra geruza"
 
-#: ../src/gui/iconcontroller.cpp:222
+#: ../src/gui/iconcontroller.cpp:221
 msgid "Conical Gradient Layer"
 msgstr "Gradiente konikoa geruza"
 
-#: ../src/gui/iconcontroller.cpp:223
+#: ../src/gui/iconcontroller.cpp:222
 msgid "Curve Gradient Layer"
 msgstr "Gradiente kurboa geruza"
 
-#: ../src/gui/iconcontroller.cpp:224
+#: ../src/gui/iconcontroller.cpp:223
 msgid "Noise Gradient Layer"
 msgstr "Zarata gradientea geruza"
 
-#: ../src/gui/iconcontroller.cpp:225
+#: ../src/gui/iconcontroller.cpp:224
 msgid "Linear Gradient Layer"
 msgstr "Gradiente lineala geruza"
 
-#: ../src/gui/iconcontroller.cpp:226
+#: ../src/gui/iconcontroller.cpp:225
 msgid "Radial Gradient Layer"
 msgstr "Gradiente radiala geruza"
 
-#: ../src/gui/iconcontroller.cpp:227
+#: ../src/gui/iconcontroller.cpp:226
 msgid "Spiral Gradient Layer"
 msgstr "Espiral-gradientea geruza"
 
-#: ../src/gui/iconcontroller.cpp:229
+#: ../src/gui/iconcontroller.cpp:228
 #: ../src/synfigapp/actions/layerduplicate.cpp:54
 #: ../src/synfigapp/actions/layerduplicate.cpp:74
 msgid "Duplicate Layer"
 msgstr "Bikoiztu-geruza"
 
-#: ../src/gui/iconcontroller.cpp:230
+#: ../src/gui/iconcontroller.cpp:229
 msgid "Import Image Layer"
 msgstr "Inportatu irudia geruza"
 
-#: ../src/gui/iconcontroller.cpp:231
+#: ../src/gui/iconcontroller.cpp:230
 #: ../src/synfigapp/actions/layerencapsulate.cpp:54
 #: ../src/synfigapp/actions/layerencapsulate.cpp:75
 msgid "Group Layer"
 msgstr "Talde-geruza"
 
-#: ../src/gui/iconcontroller.cpp:232
+#: ../src/gui/iconcontroller.cpp:231
 msgid "Plant Layer"
 msgstr "Plant geruza"
 
-#: ../src/gui/iconcontroller.cpp:233
+#: ../src/gui/iconcontroller.cpp:232
 msgid "Stroboscope Layer"
 msgstr "Stroboscope geruza"
 
-#: ../src/gui/iconcontroller.cpp:234
+#: ../src/gui/iconcontroller.cpp:233
 msgid "Super Sample Layer"
 msgstr "Super Sample geruza"
 
-#: ../src/gui/iconcontroller.cpp:235
+#: ../src/gui/iconcontroller.cpp:234
 msgid "Sound Layer"
 msgstr "Soinua geruza"
 
-#: ../src/gui/iconcontroller.cpp:236
+#: ../src/gui/iconcontroller.cpp:235
 msgid "Switch Layer"
 msgstr "Aldatu geruza"
 
-#: ../src/gui/iconcontroller.cpp:237
+#: ../src/gui/iconcontroller.cpp:236
 msgid "Skeleton Layer"
 msgstr "Hezurdura geruza"
 
-#: ../src/gui/iconcontroller.cpp:238
+#: ../src/gui/iconcontroller.cpp:237
 msgid "Text Layer"
 msgstr "Testua geruza"
 
-#: ../src/gui/iconcontroller.cpp:239
+#: ../src/gui/iconcontroller.cpp:238
 msgid "Time Loop Layer"
 msgstr "Denbora-begizta geruza"
 
-#: ../src/gui/iconcontroller.cpp:240
+#: ../src/gui/iconcontroller.cpp:239
 msgid "XOR Pattern Layer"
 msgstr "XOR txantiloia geruza"
 
-#: ../src/gui/iconcontroller.cpp:242
+#: ../src/gui/iconcontroller.cpp:241
 msgid "Bevel Layer"
 msgstr "Bevel geruza"
 
-#: ../src/gui/iconcontroller.cpp:243
+#: ../src/gui/iconcontroller.cpp:242
 msgid "Shade Layer"
 msgstr "Itzala geruza"
 
-#: ../src/gui/iconcontroller.cpp:245
+#: ../src/gui/iconcontroller.cpp:244
 msgid "Rotate Layer"
 msgstr "Biratu geruza"
 
-#: ../src/gui/iconcontroller.cpp:246
+#: ../src/gui/iconcontroller.cpp:245
 msgid "Translate Layer"
 msgstr "Translazioa geruza"
 
-#: ../src/gui/iconcontroller.cpp:247
+#: ../src/gui/iconcontroller.cpp:246
 msgid "Scale Layer"
 msgstr "Eskala geruza"
 
-#: ../src/gui/iconcontroller.cpp:251
+#: ../src/gui/iconcontroller.cpp:250
 msgid "Group Ghost"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:256
+#: ../src/gui/iconcontroller.cpp:255
 msgid "Info Tool"
 msgstr "Info-tresna"
 
-#: ../src/gui/iconcontroller.cpp:260
+#: ../src/gui/iconcontroller.cpp:259
 msgid "Hide Grid"
 msgstr "Ezkutatu sareta"
 
-#: ../src/gui/iconcontroller.cpp:261
+#: ../src/gui/iconcontroller.cpp:260
 msgid "Enable Grid Snap"
 msgstr "Gaitu sareta-atxikitzea"
 
-#: ../src/gui/iconcontroller.cpp:262
+#: ../src/gui/iconcontroller.cpp:261
 msgid "Disable Grid Snap"
 msgstr "Desgaitu sareta-atxikitzea"
 
-#: ../src/gui/iconcontroller.cpp:263
+#: ../src/gui/iconcontroller.cpp:262
 msgid "Duplicate"
 msgstr "Bikoiztu"
 
-#: ../src/gui/iconcontroller.cpp:264
+#: ../src/gui/iconcontroller.cpp:263
 msgid "Group"
 msgstr "Taldea"
 
-#: ../src/gui/iconcontroller.cpp:266
+#: ../src/gui/iconcontroller.cpp:265
 msgid "Group into Switch"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:268
+#: ../src/gui/iconcontroller.cpp:267
 msgid "Group into Filter"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:277
+#: ../src/gui/iconcontroller.cpp:276
 msgid "MetaData"
 msgstr "Meta-datua"
 
-#: ../src/gui/iconcontroller.cpp:281
+#: ../src/gui/iconcontroller.cpp:280
 msgid "Palette"
 msgstr "Paleta"
 
-#: ../src/gui/iconcontroller.cpp:284
+#: ../src/gui/iconcontroller.cpp:283
 msgid "Past keyframes unlocked"
 msgstr "Pasatako gako-fotogramak desblokeatuta"
 
-#: ../src/gui/iconcontroller.cpp:285
+#: ../src/gui/iconcontroller.cpp:284
 msgid "Past keyframes locked"
 msgstr "Pasatako gako-fotogramak blokeatuta"
 
-#: ../src/gui/iconcontroller.cpp:286
+#: ../src/gui/iconcontroller.cpp:285
 msgid "Future keyframes unlocked"
 msgstr "Datozen gako-fotogramak desblokeatuta"
 
-#: ../src/gui/iconcontroller.cpp:287
+#: ../src/gui/iconcontroller.cpp:286
 msgid "Future keyframes locked"
 msgstr "Datozen gako-fotogramak blokeatuta"
 
-#: ../src/gui/iconcontroller.cpp:289
+#: ../src/gui/iconcontroller.cpp:288
 msgid "Animate Mode Off"
 msgstr "Animazio modua itzalita"
 
-#: ../src/gui/iconcontroller.cpp:290
+#: ../src/gui/iconcontroller.cpp:289
 msgid "Animate Mode On"
 msgstr "Animazio modua piztuta"
 
-#: ../src/gui/iconcontroller.cpp:292
+#: ../src/gui/iconcontroller.cpp:291
 msgid "JACK"
 msgstr "JACK"
 
-#: ../src/gui/iconcontroller.cpp:298
+#: ../src/gui/iconcontroller.cpp:297
 msgid "Seek to Previous Keyframe"
 msgstr "Joan aurreko gako-fotogramara"
 
-#: ../src/gui/iconcontroller.cpp:301
+#: ../src/gui/iconcontroller.cpp:300
 msgid "Stop"
 msgstr "Gelditu"
 
-#: ../src/gui/iconcontroller.cpp:303
+#: ../src/gui/iconcontroller.cpp:302
 msgid "Seek to Next frame"
 msgstr "Joan hurrengo fotogramara"
 
-#: ../src/gui/iconcontroller.cpp:306
+#: ../src/gui/iconcontroller.cpp:305
 msgid "Animate Loop"
 msgstr "Animatu begista"
 
-#: ../src/gui/iconcontroller.cpp:307
+#: ../src/gui/iconcontroller.cpp:306
 msgid "Play Bounds"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:308
+#: ../src/gui/iconcontroller.cpp:307
 msgid "Lower Bound"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:309
+#: ../src/gui/iconcontroller.cpp:308
 msgid "Upper Bound"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:311
+#: ../src/gui/iconcontroller.cpp:310
 msgid "Add Layer to Set"
 msgstr "Gehitu geruza taldera"
 
-#: ../src/gui/iconcontroller.cpp:312
+#: ../src/gui/iconcontroller.cpp:311
 msgid "Remove Layer from Set"
 msgstr "Ezabatu geruza taldetik"
 
-#: ../src/gui/iconcontroller.cpp:313
+#: ../src/gui/iconcontroller.cpp:312
 #: ../src/synfigapp/actions/layersetdesc.cpp:52
 #: ../src/synfigapp/actions/layersetdesc.cpp:75
 msgid "Set Layer Description"
 msgstr "Ezarri geruzaren deskripzioa"
 
-#: ../src/gui/iconcontroller.cpp:314
+#: ../src/gui/iconcontroller.cpp:313
 msgid "Export Value Node"
 msgstr "Esportatu balio-nodoa"
 
-#: ../src/gui/iconcontroller.cpp:315
+#: ../src/gui/iconcontroller.cpp:314
 msgid "Unexport Value Node"
 msgstr "Ez esportatu balio-nodoa"
 
-#: ../src/gui/iconcontroller.cpp:316
+#: ../src/gui/iconcontroller.cpp:315
 msgid "Set Interpolation to Flat"
 msgstr "Ezarri interpolazioa leuntzean"
 
-#: ../src/gui/iconcontroller.cpp:317
+#: ../src/gui/iconcontroller.cpp:316
 msgid "Set Interpolation to Interpolate"
 msgstr "Ezarri interpolazioa interpolazioan"
 
-#: ../src/gui/iconcontroller.cpp:318
+#: ../src/gui/iconcontroller.cpp:317
 msgid "Set Interpolation to Peak"
 msgstr "Ezarri interpolazioa gailurrean"
 
-#: ../src/gui/iconcontroller.cpp:319
+#: ../src/gui/iconcontroller.cpp:318
 msgid "Set Interpolation to Rounded"
 msgstr "Ezarri interpolazioa biribilduan"
 
-#: ../src/gui/iconcontroller.cpp:320
+#: ../src/gui/iconcontroller.cpp:319
 msgid "Set Interpolation to Squared"
 msgstr "Ezarri interpolazioa karratuan"
 
-#: ../src/gui/iconcontroller.cpp:329
+#: ../src/gui/iconcontroller.cpp:328
 msgid "Toggle show grid"
 msgstr "Aldatu sareta erakustea"
 
-#: ../src/gui/iconcontroller.cpp:330
+#: ../src/gui/iconcontroller.cpp:329
 msgid "Toggle snap grid"
 msgstr "Aldatu sareta-atxikitzea"
 
-#: ../src/gui/iconcontroller.cpp:331
+#: ../src/gui/iconcontroller.cpp:330
 msgid "Toggle show guide"
 msgstr "Aldatu gida erakustea"
 
-#: ../src/gui/iconcontroller.cpp:332
+#: ../src/gui/iconcontroller.cpp:331
 msgid "Toggle snap guide"
 msgstr "Txandakatu atxikitze gida"
 
-#: ../src/gui/iconcontroller.cpp:334
+#: ../src/gui/iconcontroller.cpp:333
 msgid "Toggle onion skin"
 msgstr "Aldatu tipula-azala"
 
-#: ../src/gui/iconcontroller.cpp:336
+#: ../src/gui/iconcontroller.cpp:335
 msgid "Toggle background rendering"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:338
+#: ../src/gui/iconcontroller.cpp:337
 msgid "Increase resolution"
 msgstr "Handiagotu bereizmena "
 
-#: ../src/gui/iconcontroller.cpp:339
+#: ../src/gui/iconcontroller.cpp:338
 msgid "Decrease resolution"
 msgstr "Txikitu erresoluzioa"
 
-#: ../src/gui/iconcontroller.cpp:341
+#: ../src/gui/iconcontroller.cpp:340
 msgid "Preview Options Dialog"
 msgstr "Aurreikusi aukeren elkarrizketa"
 
-#: ../src/gui/iconcontroller.cpp:342
+#: ../src/gui/iconcontroller.cpp:341
 msgid "Render Options Dialog"
 msgstr "Errendatzearen aukeren elkarrizketa"
 
-#: ../src/gui/iconcontroller.cpp:344
+#: ../src/gui/iconcontroller.cpp:343
 msgid "TCB interpolation"
 msgstr "TCB interpolazioa"
 
-#: ../src/gui/iconcontroller.cpp:345
+#: ../src/gui/iconcontroller.cpp:344
 msgid "Ease In/Out interpolation"
 msgstr "Hurbildu/urrundu interpolazioa"
 
-#: ../src/gui/iconcontroller.cpp:346
+#: ../src/gui/iconcontroller.cpp:345
 msgid "Const interpolation"
 msgstr "Interpolazio konstantea"
 
-#: ../src/gui/iconcontroller.cpp:347
+#: ../src/gui/iconcontroller.cpp:346
 msgid "Linear interpolation"
 msgstr "Interpolazio lineala"
 
-#: ../src/gui/iconcontroller.cpp:348
+#: ../src/gui/iconcontroller.cpp:347
 msgid "Clamped interpolation"
 msgstr "Finkatutako interpolazioa"
 
-#: ../src/gui/iconcontroller.cpp:350
+#: ../src/gui/iconcontroller.cpp:349
 msgid "Linked"
 msgstr "Estekatua"
 
-#: ../src/gui/iconcontroller.cpp:351
+#: ../src/gui/iconcontroller.cpp:350
 msgid "Unlinked"
 msgstr "Estekarik gabe"
 
-#: ../src/gui/iconcontroller.cpp:352
+#: ../src/gui/iconcontroller.cpp:351
 msgid "Utils Timetrack align"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:354
+#: ../src/gui/iconcontroller.cpp:353
 msgid "CVS Add"
 msgstr "Gehitu CVS"
 
-#: ../src/gui/iconcontroller.cpp:355 ../src/gui/instance.cpp:880
+#: ../src/gui/iconcontroller.cpp:354 ../src/gui/instance.cpp:880
 msgid "CVS Update"
 msgstr "CVS eguneraketa"
 
-#: ../src/gui/iconcontroller.cpp:356 ../src/gui/instance.cpp:772
+#: ../src/gui/iconcontroller.cpp:355 ../src/gui/instance.cpp:772
 #: ../src/gui/instance.cpp:794
 msgid "CVS Commit"
 msgstr "Egikaritu CVS"
 
-#: ../src/gui/iconcontroller.cpp:357 ../src/gui/instance.cpp:929
+#: ../src/gui/iconcontroller.cpp:356 ../src/gui/instance.cpp:929
 msgid "CVS Revert"
 msgstr "Leheneratu CVS"
 
@@ -5363,8 +5380,8 @@ msgid "Gamma correction"
 msgstr ""
 
 #: ../src/gui/renddesc.cpp:266
-msgid "Image Size Ratio : "
-msgstr "Irudiaren tamaina-erlazioa"
+msgid "Image Size Ratio: "
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:582
 msgid "_Pixel Aspect"
@@ -5541,10 +5558,6 @@ msgstr "Erauzi alfa"
 #: ../src/gui/render.cpp:93
 msgid "Auto"
 msgstr "Auto"
-
-#: ../src/gui/render.cpp:112
-msgid "Choose..."
-msgstr "Aukeratu..."
 
 #: ../src/gui/render.cpp:116
 msgid "Parameters..."
@@ -5930,8 +5943,8 @@ msgid "You cannot remove the root canvas!"
 msgstr "Ezin duzu ezabatu oihal-sustraia"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:112
-msgid "You cannot remove an canvas from a Group!"
-msgstr "Ezin duzu ezabatu talde baten oihala"
+msgid "You cannot remove a canvas from a Group!"
+msgstr ""
 
 #: ../src/synfigapp/actions/canvasrenddescset.cpp:51
 msgid "Set Canvas RendDesc"
@@ -6230,8 +6243,8 @@ msgid "Embed Layer"
 msgstr "Kapsulatu geruza"
 
 #: ../src/synfigapp/actions/layerembed.cpp:77
-msgid "Layer to be embed"
-msgstr "Kapsulatu behar den geruza"
+msgid "Layer to be embedded"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerembed.cpp:191
 msgid "Cannot generate valid name for new canvas"
@@ -6292,11 +6305,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:53
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
-msgid "Group Layer into Switch"
+msgid "Group Layers into Switch"
 msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
-msgid "Group Layers into Switch"
+msgid "Group Layer into Switch"
 msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:88
@@ -7531,7 +7544,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:977
 #, c-format
-msgid "Cannot import file witout extension: %s\n"
+msgid "Cannot import file without extension: %s\n"
 msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:983
