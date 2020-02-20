@@ -65,6 +65,8 @@ private:
 	int last_pointer_x, last_pointer_y;
 	Gdk::Point active_item_start_position;
 
+	Gdk::ModifierType modifiers;
+
 	void start_tracking_pointer(int x, int y);
 	void start_tracking_pointer(double x, double y);
 
@@ -102,6 +104,8 @@ private:
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_clicked_;
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_double_clicked_;
 
+	sigc::signal<void> signal_modifier_keys_changed_;
+
 	bool box_selection_enabled = true;
 	bool multiple_selection_enabled = true;
 	bool scroll_enabled = false;
@@ -135,6 +139,11 @@ public:
 	void get_initial_tracking_point(int &px, int &py) const;
 	/// The point where active item was initially placed
 	void get_active_item_initial_point(int &px, int &py) const;
+
+	/// Retrieve pressed & held modifier keys (Shift, Control, Alt/Mod1)
+	Gdk::ModifierType get_modifiers() const;
+	/// Check if a given modifier key (or whole set) m is held (Shift, Control, Alt/Mod1)
+	bool has_modifier(Gdk::ModifierType m) const;
 
 	//! @brief Retrieve the position of a given item
 	//! Implementation only needed if item dragging is enabled.
@@ -215,6 +224,8 @@ public:
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_clicked() { return signal_item_clicked_; }
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_double_clicked() { return signal_item_double_clicked_; }
+
+	sigc::signal<void>& signal_modifier_keys_changed() { return signal_modifier_keys_changed_; }
 };
 
 
@@ -315,6 +326,17 @@ void SelectDragHelper<T>::get_active_item_initial_point(int& px, int& py) const
 	py = active_item_start_position.get_y();
 }
 
+template<class T>
+Gdk::ModifierType SelectDragHelper<T>::get_modifiers() const
+{
+	return modifiers;
+}
+
+template<class T>
+bool SelectDragHelper<T>::has_modifier(Gdk::ModifierType m) const
+{
+	return modifiers & m;
+}
 
 template <class T>
 bool
@@ -402,6 +424,21 @@ bool SelectDragHelper<T>::process_key_press_event(GdkEventKey* event)
 		}
 		break;
 	}
+	case GDK_KEY_Shift_L:   case GDK_KEY_Shift_R: {
+		modifiers |= Gdk::ModifierType::SHIFT_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
+	case GDK_KEY_Control_L:	case GDK_KEY_Control_R: {
+		modifiers |= Gdk::ModifierType::CONTROL_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
+	case GDK_KEY_Alt_L:     case GDK_KEY_Alt_R: {
+		modifiers |= Gdk::ModifierType::MOD1_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
 	}
 	return false;
 }
@@ -429,6 +466,24 @@ bool SelectDragHelper<T>::process_key_release_event(GdkEventKey* event)
 			dragging_started_by_key = false;
 			return true;
 		}
+	}
+	case GDK_KEY_Shift_L:
+	case GDK_KEY_Shift_R: {
+		modifiers &= ~Gdk::ModifierType::SHIFT_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
+	case GDK_KEY_Control_L:
+	case GDK_KEY_Control_R: {
+		modifiers &= ~Gdk::ModifierType::CONTROL_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
+	case GDK_KEY_Alt_L:
+	case GDK_KEY_Alt_R: {
+		modifiers &= ~Gdk::ModifierType::MOD1_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
 	}
 	}
 	return false;

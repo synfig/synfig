@@ -176,6 +176,34 @@ void Widget_Timetrack::move_selected(synfig::Time delta_time)
 	canvas_interface->get_instance()->perform_action(action);
 }
 
+void Widget_Timetrack::copy_selected(synfig::Time delta_time)
+{
+	std::lock_guard<std::mutex> lock(param_list_mutex);
+
+	// From CellRenderer_TimeTrack
+	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsCopy"));
+	if(!action)
+		return;
+
+	synfigapp::Action::ParamList param_list;
+	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
+		param_list.add("canvas", canvas_interface->get_canvas());
+		param_list.add("canvas_interface", canvas_interface);
+
+		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()]->get_value_desc();
+		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
+		} else {
+			param_list.add("addvaluedesc", value_desc);
+		}
+
+		param_list.add("addtime", wi->time_point.get_time());
+		param_list.add("deltatime", delta_time);
+	}
+	action->set_param_list(param_list);
+	canvas_interface->get_instance()->perform_action(action);
+}
+
 void Widget_Timetrack::goto_next_waypoint(long n)
 {
 	std::vector<WaypointItem *> selection = waypoint_sd.get_selected_items();
@@ -290,7 +318,8 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			cr->push_group();
 		}
 
-		bool is_user_moving_waypoints = waypoint_sd.get_state() == WaypointSD::State::POINTER_DRAGGING /*&& MOVING*/;
+		bool is_user_moving_waypoints = waypoint_sd.get_state() == WaypointSD::State::POINTER_DRAGGING && !waypoint_sd.get_modifiers();
+
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
 		WaypointRenderer::foreach_visible_waypoint(row_info->get_value_desc(), *time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
@@ -858,7 +887,11 @@ void Widget_Timetrack::WaypointSD::on_drag_finish()
 	if (deltatime == 0)
 		return;
 
-	widget.move_selected(deltatime);
+	if (!get_modifiers())
+		widget.move_selected(deltatime);
+	else if (has_modifier(Gdk::SHIFT_MASK)) {
+		widget.copy_selected(deltatime);
+	}
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	std::vector<WaypointItem*> selection = get_selected_items();

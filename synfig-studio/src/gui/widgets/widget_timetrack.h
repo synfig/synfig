@@ -70,6 +70,8 @@ public:
 
 	void delete_selected();
 	void move_selected(synfig::Time delta_time);
+	//! Duplicate selected waypoints and move them delta_time
+	void copy_selected(synfig::Time delta_time);
 	//! \param n : how many waypoints to skip
 	void goto_next_waypoint(long n);
 	//! \param n : how many waypoints to skip back
