@@ -72,6 +72,7 @@ namespace synfig
 
 		std::map<String, String> meta;
 
+		bool keep_files_when_destroyed;
 		bool autosave;
 
 		static bool save_changes(
@@ -125,6 +126,8 @@ namespace synfig
 		const std::map<String, String>& get_metadata() const;
 		void set_metadata(const std::map<String, String> &data);
 
+		void set_keep_files_when_destroyed(bool value)
+			{ keep_files_when_destroyed = value; }
 		bool get_autosave() const
 			{ return autosave; }
 		void set_autosave(bool value)
