@@ -18,9 +18,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2020-02-08 22:26+0700\n"
-"PO-Revision-Date: 2020-02-08 15:26+0000\n"
-"Last-Translator: Bernd Kampe <bernd.kampe@gmx.net>\n"
+"POT-Creation-Date: 2020-02-14 22:06+0700\n"
+"PO-Revision-Date: 2020-02-14 15:06+0000\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/morevnaproject/synfig/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2614,7 +2614,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_switch.cpp:104
 msgid ""
-"Uses when layer name is empty. Only layer with specified depth are visible"
+"Used when layer name is empty. Only layer with specified depth is visible"
 msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:138
@@ -3267,8 +3267,8 @@ msgstr "Nicht unterstützte Rendermethode"
 
 #: ../src/synfig/target_cairo.cpp:184 ../src/synfig/target_cairo_tile.cpp:264
 #: ../src/synfig/target_scanline.cpp:466 ../src/synfig/target_tile.cpp:373
-msgid "Caught string :"
-msgstr "Zeichenkette abgefangen :"
+msgid "Caught string: "
+msgstr ""
 
 #: ../src/synfig/target_cairo.cpp:189 ../src/synfig/target_cairo_tile.cpp:269
 #: ../src/synfig/target_scanline.cpp:471 ../src/synfig/target_tile.cpp:378
@@ -3298,8 +3298,8 @@ msgid "Bad surface: %s"
 msgstr "Ungültige Oberfläche: %s"
 
 #: ../src/synfig/target_cairo_tile.cpp:168 ../src/synfig/target_tile.cpp:279
-msgid "add_tile():Unable to put surface on target"
-msgstr "add_tile(): Oberfläche auf Ziel legen nicht möglich"
+msgid "add_tile(): Unable to put surface on target"
+msgstr ""
 
 #: ../src/synfig/target_cairo_tile.cpp:226
 msgid "Can't start frame"
@@ -3621,8 +3621,8 @@ msgid "Local Length Scale"
 msgstr "Lokale Längenskalierung"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:603
-msgid "The scale of the bone aligned its length"
-msgstr "Die Skalierung des Knochens bestimmt seine Länge"
+msgid "The scale of the bone aligned to its length"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:607
 msgid "Bone Width"

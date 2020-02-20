@@ -27,8 +27,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2020-02-08 22:26+0700\n"
-"PO-Revision-Date: 2020-02-08 15:26+0000\n"
+"POT-Creation-Date: 2020-02-14 22:06+0700\n"
+"PO-Revision-Date: 2020-02-14 15:06+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/morevnaproject/synfig/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -708,7 +708,7 @@ msgid "Decrease Amount"
 msgstr "Disminuir la Cantidad"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:134
-#: ../src/gui/iconcontroller.cpp:269
+#: ../src/gui/iconcontroller.cpp:268
 msgid "Select All Child Layers"
 msgstr "Seleccionar Todas las Capas Descendientes"
 
@@ -876,11 +876,11 @@ msgstr "Editar Propiedades del Lienzo"
 msgid "Colors"
 msgstr "Colores"
 
-#: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:294
+#: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:293
 msgid "Set as Outline"
 msgstr "Establece como Contorno"
 
-#: ../src/gui/dialogs/dialog_color.cpp:70 ../src/gui/iconcontroller.cpp:295
+#: ../src/gui/dialogs/dialog_color.cpp:70 ../src/gui/iconcontroller.cpp:294
 msgid "Set as Fill"
 msgstr "Establece como Relleno"
 
@@ -1225,6 +1225,7 @@ msgid "Image"
 msgstr "Imagen"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:365
+#: ../src/gui/dialogs/dialog_setup.cpp:477
 msgid "Select"
 msgstr ""
 
@@ -1250,6 +1251,14 @@ msgstr "Otro"
 msgid "Restrict real value handles to top right quadrant"
 msgstr ""
 
+#: ../src/gui/dialogs/dialog_setup.cpp:425
+msgid ""
+"Restrict the position of the handle (especially for radius) to be in the top"
+" right quadrant of the 2D space. Allow to set the real value to any number "
+"and also easily reach the value of 0.0 just dragging the handle to the left "
+"bottom part of your 2D space."
+msgstr ""
+
 #: ../src/gui/dialogs/dialog_setup.cpp:430
 msgid "Edit in external"
 msgstr ""
@@ -1258,8 +1267,20 @@ msgstr ""
 msgid "Preferred image editor"
 msgstr ""
 
-#: ../src/gui/dialogs/dialog_setup.cpp:435
-msgid "Choose.."
+#: ../src/gui/dialogs/dialog_setup.cpp:435 ../src/gui/render.cpp:112
+msgid "Choose..."
+msgstr "Elegir..."
+
+#: ../src/gui/dialogs/dialog_setup.cpp:437
+msgid "Choose the preferred Image editor for Edit in external tool option"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:454
+msgid "Select Editor"
+msgstr ""
+
+#: ../src/gui/dialogs/dialog_setup.cpp:476
+msgid "_Cancel"
 msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:501
@@ -1475,12 +1496,12 @@ msgid "Seek to previous frame"
 msgstr "Ir a fotograma previo"
 
 #: ../src/gui/dials/framedial.cpp:63 ../src/gui/app.cpp:1028
-#: ../src/gui/iconcontroller.cpp:300 ../src/gui/preview.cpp:419
+#: ../src/gui/iconcontroller.cpp:299 ../src/gui/preview.cpp:419
 msgid "Play"
 msgstr "Reproducir"
 
 #: ../src/gui/dials/framedial.cpp:64 ../src/gui/app.cpp:1031
-#: ../src/gui/iconcontroller.cpp:302 ../src/gui/preview.cpp:432
+#: ../src/gui/iconcontroller.cpp:301 ../src/gui/preview.cpp:432
 msgid "Pause"
 msgstr "Pausa"
 
@@ -1561,7 +1582,7 @@ msgstr "Muestra Baja Resolución si se habilita"
 msgid "Position handles"
 msgstr "Posición de tiradores"
 
-#: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:322
+#: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:321
 msgid "Toggle position handles"
 msgstr "Alternar los Tiradores de Posición"
 
@@ -1569,7 +1590,7 @@ msgstr "Alternar los Tiradores de Posición"
 msgid "Vertex handles"
 msgstr "Vértices de tiradores"
 
-#: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:323
+#: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:322
 msgid "Toggle vertex handles"
 msgstr "Alternar los Tiradores de Vértice"
 
@@ -1577,7 +1598,7 @@ msgstr "Alternar los Tiradores de Vértice"
 msgid "Tangent handles"
 msgstr "Tiradores de tangente"
 
-#: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:324
+#: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:323
 msgid "Toggle tangent handles"
 msgstr "Alternar los Tiradores de Tangente"
 
@@ -1585,7 +1606,7 @@ msgstr "Alternar los Tiradores de Tangente"
 msgid "Radius handles"
 msgstr "Tiradores de radio"
 
-#: ../src/gui/dials/toggleducksdial.cpp:61 ../src/gui/iconcontroller.cpp:325
+#: ../src/gui/dials/toggleducksdial.cpp:61 ../src/gui/iconcontroller.cpp:324
 msgid "Toggle radius handles"
 msgstr "Alternar los Tiradores de Radio"
 
@@ -1593,7 +1614,7 @@ msgstr "Alternar los Tiradores de Radio"
 msgid "Width handles"
 msgstr "Tiradores de ancho"
 
-#: ../src/gui/dials/toggleducksdial.cpp:62 ../src/gui/iconcontroller.cpp:326
+#: ../src/gui/dials/toggleducksdial.cpp:62 ../src/gui/iconcontroller.cpp:325
 msgid "Toggle width handles"
 msgstr "Alternar los Tiradores de Espesor"
 
@@ -1601,7 +1622,7 @@ msgstr "Alternar los Tiradores de Espesor"
 msgid "Angle handles"
 msgstr "Tiradores de angulos"
 
-#: ../src/gui/dials/toggleducksdial.cpp:63 ../src/gui/iconcontroller.cpp:327
+#: ../src/gui/dials/toggleducksdial.cpp:63 ../src/gui/iconcontroller.cpp:326
 msgid "Toggle angle handles"
 msgstr "Alterar los Tiradores de Ángulo"
 
@@ -1640,21 +1661,21 @@ msgid "ID"
 msgstr "ID"
 
 #: ../src/gui/docks/dock_children.cpp:65 ../src/gui/app.cpp:1065
-#: ../src/gui/iconcontroller.cpp:274
+#: ../src/gui/iconcontroller.cpp:273
 msgid "Library"
 msgstr "Librería"
 
 #: ../src/gui/docks/dock_curves.cpp:66 ../src/gui/app.cpp:1069
-#: ../src/gui/iconcontroller.cpp:275
+#: ../src/gui/iconcontroller.cpp:274
 msgid "Graphs"
 msgstr "Gráficos"
 
 #: ../src/gui/docks/dock_history.cpp:66 ../src/gui/docks/dock_history.cpp:122
-#: ../src/gui/app.cpp:1059 ../src/gui/iconcontroller.cpp:280
+#: ../src/gui/app.cpp:1059 ../src/gui/iconcontroller.cpp:279
 msgid "History"
 msgstr "Historial"
 
-#: ../src/gui/docks/dock_history.cpp:75 ../src/gui/iconcontroller.cpp:271
+#: ../src/gui/docks/dock_history.cpp:75 ../src/gui/iconcontroller.cpp:270
 msgid "Clear Undo Stack"
 msgstr "Vaciar Pila de Deshacer"
 
@@ -1662,7 +1683,7 @@ msgstr "Vaciar Pila de Deshacer"
 msgid "Clear the undo stack"
 msgstr "Vaciar la pila de deshacer"
 
-#: ../src/gui/docks/dock_history.cpp:86 ../src/gui/iconcontroller.cpp:272
+#: ../src/gui/docks/dock_history.cpp:86 ../src/gui/iconcontroller.cpp:271
 msgid "Clear Redo Stack"
 msgstr "Vaciar Pila de Rehacer"
 
@@ -1769,7 +1790,7 @@ msgid "Render Progress: "
 msgstr ""
 
 #: ../src/gui/docks/dock_keyframes.cpp:65 ../src/gui/app.cpp:1061
-#: ../src/gui/iconcontroller.cpp:276
+#: ../src/gui/iconcontroller.cpp:275
 msgid "Keyframes"
 msgstr "Fotogramas Clave"
 
@@ -1824,12 +1845,12 @@ msgid "Key Name: "
 msgstr "Nombre Clave:"
 
 #: ../src/gui/docks/dock_navigator.cpp:299 ../src/gui/app.cpp:1067
-#: ../src/gui/iconcontroller.cpp:278
+#: ../src/gui/iconcontroller.cpp:277
 msgid "Navigator"
 msgstr "Navegador"
 
 #: ../src/gui/docks/dock_params.cpp:64 ../src/gui/app.cpp:1063
-#: ../src/gui/iconcontroller.cpp:282
+#: ../src/gui/iconcontroller.cpp:281
 msgid "Parameters"
 msgstr "Parámetros"
 
@@ -1852,7 +1873,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_timetrack.cpp:103
 #: ../src/gui/trees/childrentree.cpp:142 ../src/gui/trees/layertree.cpp:408
-#: ../src/gui/iconcontroller.cpp:279
+#: ../src/gui/iconcontroller.cpp:278
 msgid "Time Track"
 msgstr "Línea de Tiempo"
 
@@ -2025,16 +2046,16 @@ msgstr "Crear una capa de región"
 #: ../src/gui/states/state_polygon.cpp:499
 #: ../src/gui/states/state_rectangle.cpp:513
 #: ../src/gui/states/state_star.cpp:635
-msgid "Create a outline layer"
-msgstr "Crear una capa de borrador"
+msgid "Create an outline layer"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:538
 #: ../src/gui/states/state_circle.cpp:570 ../src/gui/states/state_draw.cpp:648
 #: ../src/gui/states/state_polygon.cpp:502
 #: ../src/gui/states/state_rectangle.cpp:516
 #: ../src/gui/states/state_star.cpp:638
-msgid "Create a advanced outline layer"
-msgstr "Crear capa contorno avanzado"
+msgid "Create an advanced outline layer"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:541
 #: ../src/gui/states/state_circle.cpp:573
@@ -3620,7 +3641,7 @@ msgstr ""
 msgid "Toggle Onion Skin"
 msgstr "Alternar Piel de Cebolla"
 
-#: ../src/gui/app.cpp:1033 ../src/gui/iconcontroller.cpp:304
+#: ../src/gui/app.cpp:1033 ../src/gui/iconcontroller.cpp:303
 msgid "Seek to Next Keyframe"
 msgstr "Fotograma Clave Próximo"
 
@@ -3632,7 +3653,7 @@ msgstr "Fotograma Clave Previo"
 msgid "Seek to Next Frame"
 msgstr "Fotograma Próximo"
 
-#: ../src/gui/app.cpp:1036 ../src/gui/iconcontroller.cpp:299
+#: ../src/gui/app.cpp:1036 ../src/gui/iconcontroller.cpp:298
 msgid "Seek to Previous Frame"
 msgstr "Fotograma Previo"
 
@@ -3644,11 +3665,11 @@ msgstr "Avanzar"
 msgid "Seek Backward"
 msgstr "Retroceder"
 
-#: ../src/gui/app.cpp:1039 ../src/gui/iconcontroller.cpp:297
+#: ../src/gui/app.cpp:1039 ../src/gui/iconcontroller.cpp:296
 msgid "Seek to Begin"
 msgstr "Retroceder al Principio"
 
-#: ../src/gui/app.cpp:1040 ../src/gui/iconcontroller.cpp:305
+#: ../src/gui/app.cpp:1040 ../src/gui/iconcontroller.cpp:304
 msgid "Seek to End"
 msgstr "Avanzar al Final"
 
@@ -4126,7 +4147,7 @@ msgid "Would you like to update now (It would probably be a good idea)"
 msgstr "Te gustaría actualizar ahora (probablemente sea una buena idea)"
 
 #: ../src/gui/app.cpp:4095 ../src/gui/app.cpp:4119
-#: ../src/gui/canvasview.cpp:3456
+#: ../src/gui/canvasview.cpp:3479
 msgid "Please select a file"
 msgstr "Elija un archivo"
 
@@ -4271,8 +4292,8 @@ msgstr "Guardar todos los documentos abiertos"
 msgid "Quit"
 msgstr "_Salir"
 
-#: ../src/gui/canvasview.cpp:1558 ../src/gui/iconcontroller.cpp:254
-#: ../src/gui/iconcontroller.cpp:259
+#: ../src/gui/canvasview.cpp:1558 ../src/gui/iconcontroller.cpp:253
+#: ../src/gui/iconcontroller.cpp:258
 msgid "Show Grid"
 msgstr "Mostar Rejilla"
 
@@ -4337,8 +4358,8 @@ msgid "Unlock past keyframes"
 msgstr "Desbloquear fotogramas clave pasados"
 
 #: ../src/gui/canvasview.cpp:2409
-msgid "Lock past  keyframes"
-msgstr "Bloquear fotogramas clave pasados"
+msgid "Lock past keyframes"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2839
 msgid "Change Waypoint Group"
@@ -4417,14 +4438,14 @@ msgstr "Descripción"
 msgid "Description: "
 msgstr "Descripción:"
 
-#: ../src/gui/canvasview.cpp:3319 ../src/gui/iconcontroller.cpp:257
+#: ../src/gui/canvasview.cpp:3319 ../src/gui/iconcontroller.cpp:256
 #: ../src/synfigapp/actions/groupaddlayers.cpp:80
 #: ../src/synfigapp/actions/groupremove.cpp:74
 msgid "Set"
 msgstr "Conjunto"
 
-#: ../src/gui/canvasview.cpp:3479
-msgid "Please select a files"
+#: ../src/gui/canvasview.cpp:3456
+msgid "Please select files"
 msgstr ""
 
 #: ../src/gui/canvasview.cpp:3730
@@ -4587,405 +4608,401 @@ msgid "Warp Layer"
 msgstr "Capa Combar"
 
 #: ../src/gui/iconcontroller.cpp:199
-msgid "Filled Rectangle Layer"
-msgstr "Capa Rectángulo Relleno"
-
-#: ../src/gui/iconcontroller.cpp:200
 msgid "Metallballs Layer"
 msgstr "Capa Meta Bolas"
 
-#: ../src/gui/iconcontroller.cpp:201
+#: ../src/gui/iconcontroller.cpp:200
 msgid "Simple Circle Layer"
 msgstr "Capa Círculo Simple"
 
-#: ../src/gui/iconcontroller.cpp:203
+#: ../src/gui/iconcontroller.cpp:202
 msgid "Clamp Layer"
 msgstr "Capa Recortar Color"
 
-#: ../src/gui/iconcontroller.cpp:204
+#: ../src/gui/iconcontroller.cpp:203
 msgid "Color Correct Layer"
 msgstr "Capa Corregir Color"
 
-#: ../src/gui/iconcontroller.cpp:205
+#: ../src/gui/iconcontroller.cpp:204
 msgid "Halftone 2 Layer"
 msgstr "Capa Medios Tonos 2"
 
-#: ../src/gui/iconcontroller.cpp:206
+#: ../src/gui/iconcontroller.cpp:205
 msgid "Halftone 3 Layer"
 msgstr "Capa Medios Tonos 3"
 
-#: ../src/gui/iconcontroller.cpp:207
+#: ../src/gui/iconcontroller.cpp:206
 msgid "Luma Key Layer"
 msgstr "Capa Clave Luma"
 
-#: ../src/gui/iconcontroller.cpp:209
+#: ../src/gui/iconcontroller.cpp:208
 msgid "Julia Set Layer"
 msgstr "Capa Conjunto de Julia"
 
-#: ../src/gui/iconcontroller.cpp:210
+#: ../src/gui/iconcontroller.cpp:209
 msgid "Mandelbrot Set Layer"
 msgstr "Capa Conjunto de Mandelbrot"
 
-#: ../src/gui/iconcontroller.cpp:212
+#: ../src/gui/iconcontroller.cpp:211
 msgid "Checker Board Layer"
 msgstr "Capa Cuadrícula"
 
-#: ../src/gui/iconcontroller.cpp:213
+#: ../src/gui/iconcontroller.cpp:212
 msgid "Circle Layer"
 msgstr "Capa Círculo"
 
-#: ../src/gui/iconcontroller.cpp:214
+#: ../src/gui/iconcontroller.cpp:213
 msgid "Outline Layer"
 msgstr "Capa Contorno"
 
-#: ../src/gui/iconcontroller.cpp:215
+#: ../src/gui/iconcontroller.cpp:214
 msgid "Advanced Outline Layer"
 msgstr "Capa Contorno Avanzado"
 
-#: ../src/gui/iconcontroller.cpp:216
+#: ../src/gui/iconcontroller.cpp:215
 msgid "Polygon Layer"
 msgstr "Capa Polígono"
 
-#: ../src/gui/iconcontroller.cpp:217
+#: ../src/gui/iconcontroller.cpp:216
 msgid "Rectangle Layer"
 msgstr "Capa Rectángulo"
 
-#: ../src/gui/iconcontroller.cpp:218
+#: ../src/gui/iconcontroller.cpp:217
 msgid "Region Layer"
 msgstr "Capa Región"
 
-#: ../src/gui/iconcontroller.cpp:219
+#: ../src/gui/iconcontroller.cpp:218
 msgid "Solid Color Layer"
 msgstr "Capa Color Sólido"
 
-#: ../src/gui/iconcontroller.cpp:220
+#: ../src/gui/iconcontroller.cpp:219
 msgid "Star Layer"
 msgstr "Capa Estrella"
 
-#: ../src/gui/iconcontroller.cpp:222
+#: ../src/gui/iconcontroller.cpp:221
 msgid "Conical Gradient Layer"
 msgstr "Capa Gradiente Cónico"
 
-#: ../src/gui/iconcontroller.cpp:223
+#: ../src/gui/iconcontroller.cpp:222
 msgid "Curve Gradient Layer"
 msgstr "Capa Gradiente Curvado"
 
-#: ../src/gui/iconcontroller.cpp:224
+#: ../src/gui/iconcontroller.cpp:223
 msgid "Noise Gradient Layer"
 msgstr "Capa Gradiente Ruidoso"
 
-#: ../src/gui/iconcontroller.cpp:225
+#: ../src/gui/iconcontroller.cpp:224
 msgid "Linear Gradient Layer"
 msgstr "Capa Gradiente Lineal"
 
-#: ../src/gui/iconcontroller.cpp:226
+#: ../src/gui/iconcontroller.cpp:225
 msgid "Radial Gradient Layer"
 msgstr "Capa Gradiente Radial"
 
-#: ../src/gui/iconcontroller.cpp:227
+#: ../src/gui/iconcontroller.cpp:226
 msgid "Spiral Gradient Layer"
 msgstr "Capa Gradiente Espiral"
 
-#: ../src/gui/iconcontroller.cpp:229
+#: ../src/gui/iconcontroller.cpp:228
 #: ../src/synfigapp/actions/layerduplicate.cpp:54
 #: ../src/synfigapp/actions/layerduplicate.cpp:74
 msgid "Duplicate Layer"
 msgstr "Duplicar Capa"
 
-#: ../src/gui/iconcontroller.cpp:230
+#: ../src/gui/iconcontroller.cpp:229
 msgid "Import Image Layer"
 msgstr "Capa Importar imagen"
 
-#: ../src/gui/iconcontroller.cpp:231
+#: ../src/gui/iconcontroller.cpp:230
 #: ../src/synfigapp/actions/layerencapsulate.cpp:54
 #: ../src/synfigapp/actions/layerencapsulate.cpp:75
 msgid "Group Layer"
 msgstr "Agrupar Capa(s)"
 
-#: ../src/gui/iconcontroller.cpp:232
+#: ../src/gui/iconcontroller.cpp:231
 msgid "Plant Layer"
 msgstr "Capa Planta"
 
-#: ../src/gui/iconcontroller.cpp:233
+#: ../src/gui/iconcontroller.cpp:232
 msgid "Stroboscope Layer"
 msgstr "Capa Estroboscopio"
 
-#: ../src/gui/iconcontroller.cpp:234
+#: ../src/gui/iconcontroller.cpp:233
 msgid "Super Sample Layer"
 msgstr "Capa Super Muestreo"
 
-#: ../src/gui/iconcontroller.cpp:235
+#: ../src/gui/iconcontroller.cpp:234
 msgid "Sound Layer"
 msgstr "Capa de Sonido"
 
-#: ../src/gui/iconcontroller.cpp:236
+#: ../src/gui/iconcontroller.cpp:235
 msgid "Switch Layer"
 msgstr "Cambiar de Capa"
 
-#: ../src/gui/iconcontroller.cpp:237
+#: ../src/gui/iconcontroller.cpp:236
 msgid "Skeleton Layer"
 msgstr "Capa Esqueleto"
 
-#: ../src/gui/iconcontroller.cpp:238
+#: ../src/gui/iconcontroller.cpp:237
 msgid "Text Layer"
 msgstr "Capa Texto"
 
-#: ../src/gui/iconcontroller.cpp:239
+#: ../src/gui/iconcontroller.cpp:238
 msgid "Time Loop Layer"
 msgstr "Capa Bucle de Tiempo"
 
-#: ../src/gui/iconcontroller.cpp:240
+#: ../src/gui/iconcontroller.cpp:239
 msgid "XOR Pattern Layer"
 msgstr "Capa Patrón XOR"
 
-#: ../src/gui/iconcontroller.cpp:242
+#: ../src/gui/iconcontroller.cpp:241
 msgid "Bevel Layer"
 msgstr "Capa Bisel"
 
-#: ../src/gui/iconcontroller.cpp:243
+#: ../src/gui/iconcontroller.cpp:242
 msgid "Shade Layer"
 msgstr "Capa Sombra"
 
-#: ../src/gui/iconcontroller.cpp:245
+#: ../src/gui/iconcontroller.cpp:244
 msgid "Rotate Layer"
 msgstr "Capa Rotar"
 
-#: ../src/gui/iconcontroller.cpp:246
+#: ../src/gui/iconcontroller.cpp:245
 msgid "Translate Layer"
 msgstr "Capa Trasladar"
 
-#: ../src/gui/iconcontroller.cpp:247
+#: ../src/gui/iconcontroller.cpp:246
 msgid "Scale Layer"
 msgstr "Capa Escala"
 
-#: ../src/gui/iconcontroller.cpp:251
+#: ../src/gui/iconcontroller.cpp:250
 msgid "Group Ghost"
 msgstr "Agrupar Espectro"
 
-#: ../src/gui/iconcontroller.cpp:256
+#: ../src/gui/iconcontroller.cpp:255
 msgid "Info Tool"
 msgstr "Herramienta de Información"
 
-#: ../src/gui/iconcontroller.cpp:260
+#: ../src/gui/iconcontroller.cpp:259
 msgid "Hide Grid"
 msgstr "Ocultar Rejilla"
 
-#: ../src/gui/iconcontroller.cpp:261
+#: ../src/gui/iconcontroller.cpp:260
 msgid "Enable Grid Snap"
 msgstr "Habilitar Adherir a Rejilla"
 
-#: ../src/gui/iconcontroller.cpp:262
+#: ../src/gui/iconcontroller.cpp:261
 msgid "Disable Grid Snap"
 msgstr "Deshabilitar Adherir a Rejilla"
 
-#: ../src/gui/iconcontroller.cpp:263
+#: ../src/gui/iconcontroller.cpp:262
 msgid "Duplicate"
 msgstr "Duplicar"
 
-#: ../src/gui/iconcontroller.cpp:264
+#: ../src/gui/iconcontroller.cpp:263
 msgid "Group"
 msgstr "Grupo"
 
-#: ../src/gui/iconcontroller.cpp:266
+#: ../src/gui/iconcontroller.cpp:265
 msgid "Group into Switch"
 msgstr "Agrupar en Interruptor"
 
-#: ../src/gui/iconcontroller.cpp:268
+#: ../src/gui/iconcontroller.cpp:267
 msgid "Group into Filter"
 msgstr "Agrupar en Filtro"
 
-#: ../src/gui/iconcontroller.cpp:277
+#: ../src/gui/iconcontroller.cpp:276
 msgid "MetaData"
 msgstr "Meta Dato"
 
-#: ../src/gui/iconcontroller.cpp:281
+#: ../src/gui/iconcontroller.cpp:280
 msgid "Palette"
 msgstr "Paleta"
 
-#: ../src/gui/iconcontroller.cpp:284
+#: ../src/gui/iconcontroller.cpp:283
 msgid "Past keyframes unlocked"
 msgstr "Fotogramas clave pasados desbloqueados"
 
-#: ../src/gui/iconcontroller.cpp:285
+#: ../src/gui/iconcontroller.cpp:284
 msgid "Past keyframes locked"
 msgstr "Fotogramas clave pasados bloqueados"
 
-#: ../src/gui/iconcontroller.cpp:286
+#: ../src/gui/iconcontroller.cpp:285
 msgid "Future keyframes unlocked"
 msgstr "Fotogramas claves futuros desbloqueados"
 
-#: ../src/gui/iconcontroller.cpp:287
+#: ../src/gui/iconcontroller.cpp:286
 msgid "Future keyframes locked"
 msgstr "Fotogramas claves futuros bloqueados"
 
-#: ../src/gui/iconcontroller.cpp:289
+#: ../src/gui/iconcontroller.cpp:288
 msgid "Animate Mode Off"
 msgstr "Modo No Animación"
 
-#: ../src/gui/iconcontroller.cpp:290
+#: ../src/gui/iconcontroller.cpp:289
 msgid "Animate Mode On"
 msgstr "Modo Animación"
 
-#: ../src/gui/iconcontroller.cpp:292
+#: ../src/gui/iconcontroller.cpp:291
 msgid "JACK"
 msgstr "JACK"
 
-#: ../src/gui/iconcontroller.cpp:298
+#: ../src/gui/iconcontroller.cpp:297
 msgid "Seek to Previous Keyframe"
 msgstr "Fotograma Clave Anterior"
 
-#: ../src/gui/iconcontroller.cpp:301
+#: ../src/gui/iconcontroller.cpp:300
 msgid "Stop"
 msgstr "Parar"
 
-#: ../src/gui/iconcontroller.cpp:303
+#: ../src/gui/iconcontroller.cpp:302
 msgid "Seek to Next frame"
 msgstr "Ir al Próximo cuadro"
 
-#: ../src/gui/iconcontroller.cpp:306
+#: ../src/gui/iconcontroller.cpp:305
 msgid "Animate Loop"
 msgstr "Bucle de Animación"
 
-#: ../src/gui/iconcontroller.cpp:307
+#: ../src/gui/iconcontroller.cpp:306
 msgid "Play Bounds"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:308
+#: ../src/gui/iconcontroller.cpp:307
 msgid "Lower Bound"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:309
+#: ../src/gui/iconcontroller.cpp:308
 msgid "Upper Bound"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:311
+#: ../src/gui/iconcontroller.cpp:310
 msgid "Add Layer to Set"
 msgstr "Añadir Capa a Conjunto"
 
-#: ../src/gui/iconcontroller.cpp:312
+#: ../src/gui/iconcontroller.cpp:311
 msgid "Remove Layer from Set"
 msgstr "Borra Capa de Conjunto"
 
-#: ../src/gui/iconcontroller.cpp:313
+#: ../src/gui/iconcontroller.cpp:312
 #: ../src/synfigapp/actions/layersetdesc.cpp:52
 #: ../src/synfigapp/actions/layersetdesc.cpp:75
 msgid "Set Layer Description"
 msgstr "Establecer Descripción de la Capa"
 
-#: ../src/gui/iconcontroller.cpp:314
+#: ../src/gui/iconcontroller.cpp:313
 msgid "Export Value Node"
 msgstr "Exportar Valor de Nodo"
 
-#: ../src/gui/iconcontroller.cpp:315
+#: ../src/gui/iconcontroller.cpp:314
 msgid "Unexport Value Node"
 msgstr "Des-Exportar Valor de Nodo"
 
-#: ../src/gui/iconcontroller.cpp:316
+#: ../src/gui/iconcontroller.cpp:315
 msgid "Set Interpolation to Flat"
 msgstr "Establece la interpolación a Plano"
 
-#: ../src/gui/iconcontroller.cpp:317
+#: ../src/gui/iconcontroller.cpp:316
 msgid "Set Interpolation to Interpolate"
 msgstr "Establece la interpolación a Interpolar"
 
-#: ../src/gui/iconcontroller.cpp:318
+#: ../src/gui/iconcontroller.cpp:317
 msgid "Set Interpolation to Peak"
 msgstr "Establece la interpolación a Punta"
 
-#: ../src/gui/iconcontroller.cpp:319
+#: ../src/gui/iconcontroller.cpp:318
 msgid "Set Interpolation to Rounded"
 msgstr "Establece la interpolación a Redondeado"
 
-#: ../src/gui/iconcontroller.cpp:320
+#: ../src/gui/iconcontroller.cpp:319
 msgid "Set Interpolation to Squared"
 msgstr "Establece la interpolación a Cuadrado"
 
-#: ../src/gui/iconcontroller.cpp:329
+#: ../src/gui/iconcontroller.cpp:328
 msgid "Toggle show grid"
 msgstr "Alternar Mostrar Rejilla"
 
-#: ../src/gui/iconcontroller.cpp:330
+#: ../src/gui/iconcontroller.cpp:329
 msgid "Toggle snap grid"
 msgstr "Alternar Adherir Rejilla"
 
-#: ../src/gui/iconcontroller.cpp:331
+#: ../src/gui/iconcontroller.cpp:330
 msgid "Toggle show guide"
 msgstr "Alternar mostrar guiá"
 
-#: ../src/gui/iconcontroller.cpp:332
+#: ../src/gui/iconcontroller.cpp:331
 msgid "Toggle snap guide"
 msgstr "Alternar ajuste a la guiá"
 
-#: ../src/gui/iconcontroller.cpp:334
+#: ../src/gui/iconcontroller.cpp:333
 msgid "Toggle onion skin"
 msgstr "Alternar Piel de Cebolla"
 
-#: ../src/gui/iconcontroller.cpp:336
+#: ../src/gui/iconcontroller.cpp:335
 msgid "Toggle background rendering"
 msgstr ""
 
-#: ../src/gui/iconcontroller.cpp:338
+#: ../src/gui/iconcontroller.cpp:337
 msgid "Increase resolution"
 msgstr "Incrementar la Resolución"
 
-#: ../src/gui/iconcontroller.cpp:339
+#: ../src/gui/iconcontroller.cpp:338
 msgid "Decrease resolution"
 msgstr "Disminuir la Resolución"
 
-#: ../src/gui/iconcontroller.cpp:341
+#: ../src/gui/iconcontroller.cpp:340
 msgid "Preview Options Dialog"
 msgstr "Diálogo de Opciones de Previsualización"
 
-#: ../src/gui/iconcontroller.cpp:342
+#: ../src/gui/iconcontroller.cpp:341
 msgid "Render Options Dialog"
 msgstr "Diálogo de Opciones de Renderizado"
 
-#: ../src/gui/iconcontroller.cpp:344
+#: ../src/gui/iconcontroller.cpp:343
 msgid "TCB interpolation"
 msgstr "TCB"
 
-#: ../src/gui/iconcontroller.cpp:345
+#: ../src/gui/iconcontroller.cpp:344
 msgid "Ease In/Out interpolation"
 msgstr "Suave"
 
-#: ../src/gui/iconcontroller.cpp:346
+#: ../src/gui/iconcontroller.cpp:345
 msgid "Const interpolation"
 msgstr "Constante"
 
-#: ../src/gui/iconcontroller.cpp:347
+#: ../src/gui/iconcontroller.cpp:346
 msgid "Linear interpolation"
 msgstr "Lineal"
 
-#: ../src/gui/iconcontroller.cpp:348
+#: ../src/gui/iconcontroller.cpp:347
 msgid "Clamped interpolation"
 msgstr "Cortado"
 
-#: ../src/gui/iconcontroller.cpp:350
+#: ../src/gui/iconcontroller.cpp:349
 msgid "Linked"
 msgstr "Enlazado"
 
-#: ../src/gui/iconcontroller.cpp:351
+#: ../src/gui/iconcontroller.cpp:350
 msgid "Unlinked"
 msgstr "Desvinculado"
 
-#: ../src/gui/iconcontroller.cpp:352
+#: ../src/gui/iconcontroller.cpp:351
 msgid "Utils Timetrack align"
 msgstr "Utilidades de alineamiento de la linea de tiempo"
 
-#: ../src/gui/iconcontroller.cpp:354
+#: ../src/gui/iconcontroller.cpp:353
 msgid "CVS Add"
 msgstr "Añadir CVS"
 
-#: ../src/gui/iconcontroller.cpp:355 ../src/gui/instance.cpp:880
+#: ../src/gui/iconcontroller.cpp:354 ../src/gui/instance.cpp:880
 msgid "CVS Update"
 msgstr "Actualización por CVS"
 
-#: ../src/gui/iconcontroller.cpp:356 ../src/gui/instance.cpp:772
+#: ../src/gui/iconcontroller.cpp:355 ../src/gui/instance.cpp:772
 #: ../src/gui/instance.cpp:794
 msgid "CVS Commit"
 msgstr "Entrega CVS"
 
-#: ../src/gui/iconcontroller.cpp:357 ../src/gui/instance.cpp:929
+#: ../src/gui/iconcontroller.cpp:356 ../src/gui/instance.cpp:929
 msgid "CVS Revert"
 msgstr "Revertir CVS"
 
@@ -5379,8 +5396,8 @@ msgid "Gamma correction"
 msgstr ""
 
 #: ../src/gui/renddesc.cpp:266
-msgid "Image Size Ratio : "
-msgstr "Proporción de la imagen : "
+msgid "Image Size Ratio: "
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:582
 msgid "_Pixel Aspect"
@@ -5557,10 +5574,6 @@ msgstr "Extracto del alfa"
 #: ../src/gui/render.cpp:93
 msgid "Auto"
 msgstr "Auto"
-
-#: ../src/gui/render.cpp:112
-msgid "Choose..."
-msgstr "Elegir..."
 
 #: ../src/gui/render.cpp:116
 msgid "Parameters..."
@@ -5946,8 +5959,8 @@ msgid "You cannot remove the root canvas!"
 msgstr "¡No puede borrar el lienzo raíz!"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:112
-msgid "You cannot remove an canvas from a Group!"
-msgstr "¡No puede borrar el contenido de un Grupo!"
+msgid "You cannot remove a canvas from a Group!"
+msgstr ""
 
 #: ../src/synfigapp/actions/canvasrenddescset.cpp:51
 msgid "Set Canvas RendDesc"
@@ -6246,8 +6259,8 @@ msgid "Embed Layer"
 msgstr "Capa embebida"
 
 #: ../src/synfigapp/actions/layerembed.cpp:77
-msgid "Layer to be embed"
-msgstr "Capa a embeber"
+msgid "Layer to be embedded"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerembed.cpp:191
 msgid "Cannot generate valid name for new canvas"
@@ -6308,12 +6321,12 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:53
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
-msgid "Group Layer into Switch"
-msgstr "Capa de grupo a Interruptor"
-
-#: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
 msgid "Group Layers into Switch"
 msgstr "Capas de grupo a Interruptor"
+
+#: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
+msgid "Group Layer into Switch"
+msgstr "Capa de grupo a Interruptor"
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:88
 msgid "Description of new switch"
@@ -7547,7 +7560,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:977
 #, c-format
-msgid "Cannot import file witout extension: %s\n"
+msgid "Cannot import file without extension: %s\n"
 msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:983

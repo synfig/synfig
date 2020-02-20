@@ -4,14 +4,14 @@
 # 
 # Translators:
 # Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2010
-# AlexL <loginov.alex.valer@gmail.com>, 2015-2016,2018-2019
+# AlexL <loginov.alex.valer@gmail.com>, 2015-2016,2018-2020
 # Artem Krosheninnikov <feeblehamster@gmail.com>, 2011
 # darumka, 2012
 # darumka, 2012
 # darumka, 2012
 # genete <genetita@gmail.com>, 2011
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011, 2012
-# morevnaproject <ksee.zelgadis@gmail.com>, 2013-2016
+# morevnaproject <ksee.zelgadis@gmail.com>, 2013-2016,2020
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011-2012
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011-2013
 # Oleg Gordeev <Retro47@Yandex.ru>, 2011
@@ -22,9 +22,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2020-02-08 22:26+0700\n"
-"PO-Revision-Date: 2020-02-08 15:26+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"POT-Creation-Date: 2020-02-14 22:06+0700\n"
+"PO-Revision-Date: 2020-02-14 23:37+0000\n"
+"Last-Translator: AlexL <loginov.alex.valer@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/morevnaproject/synfig/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -123,7 +123,7 @@ msgstr "Добавить скелет (Простой)"
 
 #: ../plugins/lottie-exporter/plugin.xml.in.h:1
 msgid "Export to Lottie format"
-msgstr ""
+msgstr "Экспорт в формат Lottie"
 
 #: ../plugins/view-unhide-all-layers/plugin.xml.in.h:1
 msgid "Unhide All Layers"
@@ -703,17 +703,17 @@ msgid "Decrease Amount"
 msgstr "Уменьшить значение"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:134
-#: ../src/gui/iconcontroller.cpp:269
+#: ../src/gui/iconcontroller.cpp:268
 msgid "Select All Child Layers"
 msgstr "Выбрать все вложенные слои"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:268
 msgid "Increase Opacity"
-msgstr ""
+msgstr "Увеличить непрозрачность"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:269
 msgid "Decrease Opacity"
-msgstr ""
+msgstr "Уменьшить непрозрачность"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:392
 msgid "Paste"
@@ -756,7 +756,7 @@ msgstr "Посетите сайт Synfig"
 msgid ""
 "Copyright (c) 2001-2019\n"
 "Synfig developers & contributors"
-msgstr ""
+msgstr "Copyright (c) 2001-2019\nРазработчики Synfig и участники"
 
 #: ../src/gui/dialogs/about.cpp:109
 msgid "Original developers:"
@@ -871,11 +871,11 @@ msgstr "Изменить свойства холста"
 msgid "Colors"
 msgstr "Цвета"
 
-#: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:294
+#: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:293
 msgid "Set as Outline"
 msgstr "Установить как цвет обводки"
 
-#: ../src/gui/dialogs/dialog_color.cpp:70 ../src/gui/iconcontroller.cpp:295
+#: ../src/gui/dialogs/dialog_color.cpp:70 ../src/gui/iconcontroller.cpp:294
 msgid "Set as Fill"
 msgstr "Установить как цвет заливки"
 
@@ -1220,6 +1220,7 @@ msgid "Image"
 msgstr "Изображение"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:365
+#: ../src/gui/dialogs/dialog_setup.cpp:477
 msgid "Select"
 msgstr "Выбор"
 
@@ -1245,6 +1246,14 @@ msgstr "Прочее"
 msgid "Restrict real value handles to top right quadrant"
 msgstr "Ограничить дескрипторы реальных значений в верхнем правом квадранте"
 
+#: ../src/gui/dialogs/dialog_setup.cpp:425
+msgid ""
+"Restrict the position of the handle (especially for radius) to be in the top"
+" right quadrant of the 2D space. Allow to set the real value to any number "
+"and also easily reach the value of 0.0 just dragging the handle to the left "
+"bottom part of your 2D space."
+msgstr "Ограничьте положение точки (особенно для радиуса) в верхнем правом квадранте 2D-пространства. Позволяет установить действительное значение на любое число, а также легко достичь значения 0.0, просто перетаскивая точку в левую нижнюю часть вашего 2D-пространства."
+
 #: ../src/gui/dialogs/dialog_setup.cpp:430
 msgid "Edit in external"
 msgstr "Редактировать во внешнем"
@@ -1253,9 +1262,21 @@ msgstr "Редактировать во внешнем"
 msgid "Preferred image editor"
 msgstr "Предпочитаемый редактор изображений"
 
-#: ../src/gui/dialogs/dialog_setup.cpp:435
-msgid "Choose.."
+#: ../src/gui/dialogs/dialog_setup.cpp:435 ../src/gui/render.cpp:112
+msgid "Choose..."
 msgstr "Выбрать..."
+
+#: ../src/gui/dialogs/dialog_setup.cpp:437
+msgid "Choose the preferred Image editor for Edit in external tool option"
+msgstr "Выберите предпочтительный редактор изображений для редактирования во внешнем инструменте"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:454
+msgid "Select Editor"
+msgstr "Выбрать редактор"
+
+#: ../src/gui/dialogs/dialog_setup.cpp:476
+msgid "_Cancel"
+msgstr "_Отмена"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:501
 msgid "Image Sequence Separator String"
@@ -1413,11 +1434,11 @@ msgstr "Редактор фиксатора"
 #: ../src/gui/dialogs/dialog_workspaces.cpp:129
 #, c-format
 msgid "Are you sure you want to delete %d workspaces?"
-msgstr ""
+msgstr "Вы уверены, что хотите удалить %d рабочие области?"
 
 #: ../src/gui/dialogs/dialog_workspaces.cpp:153 ../src/gui/app.cpp:2237
 msgid "Type a name for this custom workspace:"
-msgstr ""
+msgstr "Введите имя для этой пользовательской рабочей области:"
 
 #: ../src/gui/dialogs/dialog_workspaces.cpp:155
 #: ../src/gui/docks/dock_metadata.cpp:150 ../src/gui/states/state_text.cpp:635
@@ -1427,35 +1448,35 @@ msgstr "ОК"
 
 #: ../src/gui/dialogs/dialog_workspaces.cpp:190
 msgid "There is already a workspace with this name."
-msgstr ""
+msgstr "Уже есть рабочее пространство с этим именем."
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:58
 msgid "Convert-to-Vector Settings"
-msgstr ""
+msgstr "Настройки преобразования в вектор"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:111
 msgid "_Threshold"
-msgstr ""
+msgstr "_Порог"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:119
 msgid "_Accuracy"
-msgstr ""
+msgstr "_Точность"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:127
 msgid "_Despeckling"
-msgstr ""
+msgstr "_Удаления пятен"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:135
 msgid "_Max Thickness"
-msgstr ""
+msgstr "_Максимальная толщина"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:167
 msgid "_Under Development"
-msgstr ""
+msgstr "В _разработке"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:226
 msgid "Vectorizer Settings - "
-msgstr ""
+msgstr "Настройки векторизатора -"
 
 #: ../src/gui/dials/framedial.cpp:60
 msgid "Seek to begin"
@@ -1470,12 +1491,12 @@ msgid "Seek to previous frame"
 msgstr "Перейти к предыдущему кадру"
 
 #: ../src/gui/dials/framedial.cpp:63 ../src/gui/app.cpp:1028
-#: ../src/gui/iconcontroller.cpp:300 ../src/gui/preview.cpp:419
+#: ../src/gui/iconcontroller.cpp:299 ../src/gui/preview.cpp:419
 msgid "Play"
 msgstr "Воспроизведение"
 
 #: ../src/gui/dials/framedial.cpp:64 ../src/gui/app.cpp:1031
-#: ../src/gui/iconcontroller.cpp:302 ../src/gui/preview.cpp:432
+#: ../src/gui/iconcontroller.cpp:301 ../src/gui/preview.cpp:432
 msgid "Pause"
 msgstr "Пауза"
 
@@ -1556,7 +1577,7 @@ msgstr "Если включено, использовать низкое раз�
 msgid "Position handles"
 msgstr "Точки позиции"
 
-#: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:322
+#: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:321
 msgid "Toggle position handles"
 msgstr "Включить точки позиции"
 
@@ -1564,7 +1585,7 @@ msgstr "Включить точки позиции"
 msgid "Vertex handles"
 msgstr "Точки вершин"
 
-#: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:323
+#: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:322
 msgid "Toggle vertex handles"
 msgstr "Включить точки вершин"
 
@@ -1572,7 +1593,7 @@ msgstr "Включить точки вершин"
 msgid "Tangent handles"
 msgstr "Точки касательных"
 
-#: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:324
+#: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:323
 msgid "Toggle tangent handles"
 msgstr "Включить точки касательных"
 
@@ -1580,7 +1601,7 @@ msgstr "Включить точки касательных"
 msgid "Radius handles"
 msgstr "Точки радиуса"
 
-#: ../src/gui/dials/toggleducksdial.cpp:61 ../src/gui/iconcontroller.cpp:325
+#: ../src/gui/dials/toggleducksdial.cpp:61 ../src/gui/iconcontroller.cpp:324
 msgid "Toggle radius handles"
 msgstr "Включить точки радиуса"
 
@@ -1588,7 +1609,7 @@ msgstr "Включить точки радиуса"
 msgid "Width handles"
 msgstr "Точки ширины "
 
-#: ../src/gui/dials/toggleducksdial.cpp:62 ../src/gui/iconcontroller.cpp:326
+#: ../src/gui/dials/toggleducksdial.cpp:62 ../src/gui/iconcontroller.cpp:325
 msgid "Toggle width handles"
 msgstr "Включить точки ширины"
 
@@ -1596,7 +1617,7 @@ msgstr "Включить точки ширины"
 msgid "Angle handles"
 msgstr "Точки углов"
 
-#: ../src/gui/dials/toggleducksdial.cpp:63 ../src/gui/iconcontroller.cpp:327
+#: ../src/gui/dials/toggleducksdial.cpp:63 ../src/gui/iconcontroller.cpp:326
 msgid "Toggle angle handles"
 msgstr "Включить точки углов"
 
@@ -1635,21 +1656,21 @@ msgid "ID"
 msgstr "ID"
 
 #: ../src/gui/docks/dock_children.cpp:65 ../src/gui/app.cpp:1065
-#: ../src/gui/iconcontroller.cpp:274
+#: ../src/gui/iconcontroller.cpp:273
 msgid "Library"
 msgstr "Библиотека"
 
 #: ../src/gui/docks/dock_curves.cpp:66 ../src/gui/app.cpp:1069
-#: ../src/gui/iconcontroller.cpp:275
+#: ../src/gui/iconcontroller.cpp:274
 msgid "Graphs"
 msgstr "Графики"
 
 #: ../src/gui/docks/dock_history.cpp:66 ../src/gui/docks/dock_history.cpp:122
-#: ../src/gui/app.cpp:1059 ../src/gui/iconcontroller.cpp:280
+#: ../src/gui/app.cpp:1059 ../src/gui/iconcontroller.cpp:279
 msgid "History"
 msgstr "История действий"
 
-#: ../src/gui/docks/dock_history.cpp:75 ../src/gui/iconcontroller.cpp:271
+#: ../src/gui/docks/dock_history.cpp:75 ../src/gui/iconcontroller.cpp:270
 msgid "Clear Undo Stack"
 msgstr "Забыть историю откатов"
 
@@ -1657,7 +1678,7 @@ msgstr "Забыть историю откатов"
 msgid "Clear the undo stack"
 msgstr "Стереть информацию об отменяемых действиях"
 
-#: ../src/gui/docks/dock_history.cpp:86 ../src/gui/iconcontroller.cpp:272
+#: ../src/gui/docks/dock_history.cpp:86 ../src/gui/iconcontroller.cpp:271
 msgid "Clear Redo Stack"
 msgstr "Забыть историю повторов"
 
@@ -1764,7 +1785,7 @@ msgid "Render Progress: "
 msgstr "Прогресс отрисовки: "
 
 #: ../src/gui/docks/dock_keyframes.cpp:65 ../src/gui/app.cpp:1061
-#: ../src/gui/iconcontroller.cpp:276
+#: ../src/gui/iconcontroller.cpp:275
 msgid "Keyframes"
 msgstr "Ключевые кадры"
 
@@ -1819,12 +1840,12 @@ msgid "Key Name: "
 msgstr "Имя ключа:"
 
 #: ../src/gui/docks/dock_navigator.cpp:299 ../src/gui/app.cpp:1067
-#: ../src/gui/iconcontroller.cpp:278
+#: ../src/gui/iconcontroller.cpp:277
 msgid "Navigator"
 msgstr "Навигатор"
 
 #: ../src/gui/docks/dock_params.cpp:64 ../src/gui/app.cpp:1063
-#: ../src/gui/iconcontroller.cpp:282
+#: ../src/gui/iconcontroller.cpp:281
 msgid "Parameters"
 msgstr "Параметры"
 
@@ -1834,20 +1855,20 @@ msgstr "Звук"
 
 #: ../src/gui/docks/dock_soundwave.cpp:63
 msgid "What sound channel to display"
-msgstr ""
+msgstr "Какой звуковой канал отображать"
 
 #: ../src/gui/docks/dock_soundwave.cpp:66
 msgid "Delay:"
-msgstr ""
+msgstr "Задержка:"
 
 #: ../src/gui/docks/dock_soundwave.cpp:258
 #, c-format
 msgid "Channel #%i"
-msgstr ""
+msgstr "Канал #%i"
 
 #: ../src/gui/docks/dock_timetrack.cpp:103
 #: ../src/gui/trees/childrentree.cpp:142 ../src/gui/trees/layertree.cpp:408
-#: ../src/gui/iconcontroller.cpp:279
+#: ../src/gui/iconcontroller.cpp:278
 msgid "Time Track"
 msgstr "Дорожка времени"
 
@@ -2020,7 +2041,7 @@ msgstr "Создать слой области"
 #: ../src/gui/states/state_polygon.cpp:499
 #: ../src/gui/states/state_rectangle.cpp:513
 #: ../src/gui/states/state_star.cpp:635
-msgid "Create a outline layer"
+msgid "Create an outline layer"
 msgstr "Создать слой контура"
 
 #: ../src/gui/states/state_bline.cpp:538
@@ -2028,7 +2049,7 @@ msgstr "Создать слой контура"
 #: ../src/gui/states/state_polygon.cpp:502
 #: ../src/gui/states/state_rectangle.cpp:516
 #: ../src/gui/states/state_star.cpp:638
-msgid "Create a advanced outline layer"
+msgid "Create an advanced outline layer"
 msgstr "Создать слой расширенного контура"
 
 #: ../src/gui/states/state_bline.cpp:541
@@ -3108,7 +3129,7 @@ msgid ""
 "%s:<b>%s</b>\n"
 "<b>Time:</b> %lfs (%if) <small>( Δ %if )</small>\n"
 "<b>Value:</b> %lf <small>( Δ %lf )</small>"
-msgstr ""
+msgstr "%s:<b>%s</b>\n<b>Время:</b> %lfs (%if) <small>( Δ %if )</small>\n<b>Значение:</b> %lf <small>( Δ %lf )</small>"
 
 #: ../src/gui/widgets/widget_curves.cpp:926
 #: ../src/gui/widgets/widget_curves.cpp:1222
@@ -3133,7 +3154,7 @@ msgstr "Действие завершилось неудачей"
 
 #: ../src/gui/widgets/widget_curves.cpp:967
 msgid "Change animation curve"
-msgstr ""
+msgstr "Изменить кривую анимации"
 
 #: ../src/gui/widgets/widget_defaults.cpp:193
 msgid "Outline Color"
@@ -3221,11 +3242,11 @@ msgstr "Нет названия"
 
 #: ../src/gui/widgets/widget_soundwave.cpp:162
 msgid "Audio file not supported"
-msgstr ""
+msgstr "Аудио файл не поддерживается"
 
 #: ../src/gui/widgets/widget_sublayer.cpp:90
 msgid "<empty>"
-msgstr ""
+msgstr "<пусто>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:80
 msgid "(Non-static value)"
@@ -3354,17 +3375,17 @@ msgstr "Режим рекурсивного масштабирования ко�
 
 #: ../src/gui/workspacehandler.cpp:137
 msgid "Can't save custom workspaces"
-msgstr ""
+msgstr "Не удаётся сохранить пользовательские рабочие пространства"
 
 #: ../src/gui/workspacehandler.cpp:159
 #, c-format
 msgid "ignoring malformed workspace line: %s"
-msgstr ""
+msgstr "игнорирование искажённой строки рабочего пространства: %s"
 
 #: ../src/gui/workspacehandler.cpp:165
 #, c-format
 msgid "ignoring duplicated workspace name: %s"
-msgstr ""
+msgstr "игнорирование дублированного имени рабочей области: %s"
 
 #: ../src/gui/app.cpp:909
 msgid "_File"
@@ -3440,7 +3461,7 @@ msgstr "Импортировать..."
 
 #: ../src/gui/app.cpp:959 ../src/gui/canvasview.cpp:1465
 msgid "Import Sequence..."
-msgstr ""
+msgstr "Импортировать последовательность..."
 
 #: ../src/gui/app.cpp:960 ../src/gui/canvasview.cpp:1468
 msgid "Render..."
@@ -3615,7 +3636,7 @@ msgstr "Переключить фоновую отрисовку"
 msgid "Toggle Onion Skin"
 msgstr "Переключить кальку"
 
-#: ../src/gui/app.cpp:1033 ../src/gui/iconcontroller.cpp:304
+#: ../src/gui/app.cpp:1033 ../src/gui/iconcontroller.cpp:303
 msgid "Seek to Next Keyframe"
 msgstr "Перейти к следующему ключевому кадру"
 
@@ -3627,7 +3648,7 @@ msgstr "Перейти к предыдущему ключевому кадру"
 msgid "Seek to Next Frame"
 msgstr "Перейти к следующему кадру"
 
-#: ../src/gui/app.cpp:1036 ../src/gui/iconcontroller.cpp:299
+#: ../src/gui/app.cpp:1036 ../src/gui/iconcontroller.cpp:298
 msgid "Seek to Previous Frame"
 msgstr "Перейти к предыдущему кадру"
 
@@ -3639,11 +3660,11 @@ msgstr "Перемотать вперед"
 msgid "Seek Backward"
 msgstr "Перемотать назад"
 
-#: ../src/gui/app.cpp:1039 ../src/gui/iconcontroller.cpp:297
+#: ../src/gui/app.cpp:1039 ../src/gui/iconcontroller.cpp:296
 msgid "Seek to Begin"
 msgstr "Перемотать к началу"
 
-#: ../src/gui/app.cpp:1040 ../src/gui/iconcontroller.cpp:305
+#: ../src/gui/app.cpp:1040 ../src/gui/iconcontroller.cpp:304
 msgid "Seek to End"
 msgstr "Перемотать к концу"
 
@@ -3673,7 +3694,7 @@ msgstr "Анимирование"
 
 #: ../src/gui/app.cpp:1055 ../src/gui/mainwindow.cpp:189
 msgid "Save workspace..."
-msgstr ""
+msgstr "Сохранить рабочее пространство..."
 
 #: ../src/gui/app.cpp:1056
 msgid "Preview Dialog"
@@ -3689,7 +3710,7 @@ msgid ""
 "libsynfig than what is currently installed. Synfig Studio will now abort. "
 "Try downloading the latest version from the Synfig website at "
 "https://www.synfig.org/download-development/"
-msgstr ""
+msgstr "Эта копия Synfig Studio была скомпилирована с другой версией libsynfig, чем та, что установлена в настоящее время. Synfig Studio сейчас потерпит неудачу. Попробуйте загрузить последнюю версию с сайта Synfig на https://www.synfig.org/download-development/"
 
 #: ../src/gui/app.cpp:1511 ../src/gui/app.cpp:1516
 msgid "Failed to initialize synfig!"
@@ -3769,7 +3790,7 @@ msgstr "Панель навигатора..."
 
 #: ../src/gui/app.cpp:1615
 msgid "Init SoundWave..."
-msgstr ""
+msgstr "Инициализация Звуковой волны..."
 
 #: ../src/gui/app.cpp:1619
 msgid "Init Timetrack..."
@@ -3809,7 +3830,7 @@ msgstr "Диалог устройств ввода..."
 
 #: ../src/gui/app.cpp:1653
 msgid "Loading Custom Workspace List..."
-msgstr ""
+msgstr "Загрузка пользовательского списка рабочих областей..."
 
 #: ../src/gui/app.cpp:1658
 msgid "Init auto recovery..."
@@ -3900,7 +3921,7 @@ msgstr "Неизвестная ошибка произошла при загру
 
 #: ../src/gui/app.cpp:2274
 msgid "Do you want to overwrite this workspace?"
-msgstr ""
+msgstr "Хотите перезаписать это рабочее пространство?"
 
 #: ../src/gui/app.cpp:2398
 msgid "Quit Request"
@@ -3983,7 +4004,7 @@ msgstr "Изображения и файлы последовательных и
 
 #: ../src/gui/app.cpp:2849
 msgid "Images files (*.png, *.jpg, *.jpeg, *.bmp)"
-msgstr ""
+msgstr "Файлы изображений (*.png, *.jpg, *.jpeg, *.bmp)"
 
 #: ../src/gui/app.cpp:2958 ../src/gui/app.cpp:3021
 #: ../src/gui/iconcontroller.cpp:177 ../src/gui/mainwindow.cpp:159
@@ -4039,7 +4060,7 @@ msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "https://wiki.synfig.org/Category:Manual"
-msgstr ""
+msgstr "Документация по Synfig Studio доступна по адресу:\n\nhttps://wiki.synfig.org/Category:Manual"
 
 #: ../src/gui/app.cpp:3616
 msgid "Help"
@@ -4121,7 +4142,7 @@ msgid "Would you like to update now (It would probably be a good idea)"
 msgstr "Хотите обновить сейчас? (Это, вероятно, будет хорошей идеей)"
 
 #: ../src/gui/app.cpp:4095 ../src/gui/app.cpp:4119
-#: ../src/gui/canvasview.cpp:3456
+#: ../src/gui/canvasview.cpp:3479
 msgid "Please select a file"
 msgstr "Пожалуйста, выберите файл"
 
@@ -4266,8 +4287,8 @@ msgstr "Сохранить все открытые документы"
 msgid "Quit"
 msgstr "Выход"
 
-#: ../src/gui/canvasview.cpp:1558 ../src/gui/iconcontroller.cpp:254
-#: ../src/gui/iconcontroller.cpp:259
+#: ../src/gui/canvasview.cpp:1558 ../src/gui/iconcontroller.cpp:253
+#: ../src/gui/iconcontroller.cpp:258
 msgid "Show Grid"
 msgstr "Показывать сетку"
 
@@ -4332,8 +4353,8 @@ msgid "Unlock past keyframes"
 msgstr "Разблокировать предыдущие ключевые кадры"
 
 #: ../src/gui/canvasview.cpp:2409
-msgid "Lock past  keyframes"
-msgstr "Заблокировать предыдущие ключевые кадры"
+msgid "Lock past keyframes"
+msgstr "Заблокировать последние ключевые кадры"
 
 #: ../src/gui/canvasview.cpp:2839
 msgid "Change Waypoint Group"
@@ -4412,15 +4433,15 @@ msgstr "Описание"
 msgid "Description: "
 msgstr "Описание: "
 
-#: ../src/gui/canvasview.cpp:3319 ../src/gui/iconcontroller.cpp:257
+#: ../src/gui/canvasview.cpp:3319 ../src/gui/iconcontroller.cpp:256
 #: ../src/synfigapp/actions/groupaddlayers.cpp:80
 #: ../src/synfigapp/actions/groupremove.cpp:74
 msgid "Set"
 msgstr "Набор"
 
-#: ../src/gui/canvasview.cpp:3479
-msgid "Please select a files"
-msgstr ""
+#: ../src/gui/canvasview.cpp:3456
+msgid "Please select files"
+msgstr "Пожалуйста, выберите файлы"
 
 #: ../src/gui/canvasview.cpp:3730
 msgid "Are you sure you want to disable JACK synchronization?"
@@ -4582,405 +4603,401 @@ msgid "Warp Layer"
 msgstr "Слой деформации"
 
 #: ../src/gui/iconcontroller.cpp:199
-msgid "Filled Rectangle Layer"
-msgstr "Слой залитого прямоугольника"
-
-#: ../src/gui/iconcontroller.cpp:200
 msgid "Metallballs Layer"
 msgstr "Слой метаболлов"
 
-#: ../src/gui/iconcontroller.cpp:201
+#: ../src/gui/iconcontroller.cpp:200
 msgid "Simple Circle Layer"
 msgstr "Слой простой окружности"
 
-#: ../src/gui/iconcontroller.cpp:203
+#: ../src/gui/iconcontroller.cpp:202
 msgid "Clamp Layer"
 msgstr "Слой кучи"
 
-#: ../src/gui/iconcontroller.cpp:204
+#: ../src/gui/iconcontroller.cpp:203
 msgid "Color Correct Layer"
 msgstr "Слой цветокоррекции"
 
-#: ../src/gui/iconcontroller.cpp:205
+#: ../src/gui/iconcontroller.cpp:204
 msgid "Halftone 2 Layer"
 msgstr "Слой полутона 2"
 
-#: ../src/gui/iconcontroller.cpp:206
+#: ../src/gui/iconcontroller.cpp:205
 msgid "Halftone 3 Layer"
 msgstr "Слой полутона 3"
 
-#: ../src/gui/iconcontroller.cpp:207
+#: ../src/gui/iconcontroller.cpp:206
 msgid "Luma Key Layer"
 msgstr "Слой ключа светимости"
 
-#: ../src/gui/iconcontroller.cpp:209
+#: ../src/gui/iconcontroller.cpp:208
 msgid "Julia Set Layer"
 msgstr "Слой фрактала Жюлиа"
 
-#: ../src/gui/iconcontroller.cpp:210
+#: ../src/gui/iconcontroller.cpp:209
 msgid "Mandelbrot Set Layer"
 msgstr "Слой фрактала Мандельброта"
 
-#: ../src/gui/iconcontroller.cpp:212
+#: ../src/gui/iconcontroller.cpp:211
 msgid "Checker Board Layer"
 msgstr "Слой шахматной доски"
 
-#: ../src/gui/iconcontroller.cpp:213
+#: ../src/gui/iconcontroller.cpp:212
 msgid "Circle Layer"
 msgstr "Слой окружности"
 
-#: ../src/gui/iconcontroller.cpp:214
+#: ../src/gui/iconcontroller.cpp:213
 msgid "Outline Layer"
 msgstr "Слой контура"
 
-#: ../src/gui/iconcontroller.cpp:215
+#: ../src/gui/iconcontroller.cpp:214
 msgid "Advanced Outline Layer"
 msgstr "Слой Расширенного контура"
 
-#: ../src/gui/iconcontroller.cpp:216
+#: ../src/gui/iconcontroller.cpp:215
 msgid "Polygon Layer"
 msgstr "Слой полигона"
 
-#: ../src/gui/iconcontroller.cpp:217
+#: ../src/gui/iconcontroller.cpp:216
 msgid "Rectangle Layer"
 msgstr "Слой прямоугольника"
 
-#: ../src/gui/iconcontroller.cpp:218
+#: ../src/gui/iconcontroller.cpp:217
 msgid "Region Layer"
 msgstr "Слой области"
 
-#: ../src/gui/iconcontroller.cpp:219
+#: ../src/gui/iconcontroller.cpp:218
 msgid "Solid Color Layer"
 msgstr "Слой сплошной заливки"
 
-#: ../src/gui/iconcontroller.cpp:220
+#: ../src/gui/iconcontroller.cpp:219
 msgid "Star Layer"
 msgstr "Слой звезды"
 
-#: ../src/gui/iconcontroller.cpp:222
+#: ../src/gui/iconcontroller.cpp:221
 msgid "Conical Gradient Layer"
 msgstr "Слой конического градиента"
 
-#: ../src/gui/iconcontroller.cpp:223
+#: ../src/gui/iconcontroller.cpp:222
 msgid "Curve Gradient Layer"
 msgstr "Слой градиента по кривой"
 
-#: ../src/gui/iconcontroller.cpp:224
+#: ../src/gui/iconcontroller.cpp:223
 msgid "Noise Gradient Layer"
 msgstr "Слой градиентного шума"
 
-#: ../src/gui/iconcontroller.cpp:225
+#: ../src/gui/iconcontroller.cpp:224
 msgid "Linear Gradient Layer"
 msgstr "Слой линейного градиента"
 
-#: ../src/gui/iconcontroller.cpp:226
+#: ../src/gui/iconcontroller.cpp:225
 msgid "Radial Gradient Layer"
 msgstr "Слой радиального градиента"
 
-#: ../src/gui/iconcontroller.cpp:227
+#: ../src/gui/iconcontroller.cpp:226
 msgid "Spiral Gradient Layer"
 msgstr "Слой спирального градиента"
 
-#: ../src/gui/iconcontroller.cpp:229
+#: ../src/gui/iconcontroller.cpp:228
 #: ../src/synfigapp/actions/layerduplicate.cpp:54
 #: ../src/synfigapp/actions/layerduplicate.cpp:74
 msgid "Duplicate Layer"
 msgstr "Создать копию слоя"
 
-#: ../src/gui/iconcontroller.cpp:230
+#: ../src/gui/iconcontroller.cpp:229
 msgid "Import Image Layer"
 msgstr "Слой импортированного изображения"
 
-#: ../src/gui/iconcontroller.cpp:231
+#: ../src/gui/iconcontroller.cpp:230
 #: ../src/synfigapp/actions/layerencapsulate.cpp:54
 #: ../src/synfigapp/actions/layerencapsulate.cpp:75
 msgid "Group Layer"
 msgstr "Группировать слои"
 
-#: ../src/gui/iconcontroller.cpp:232
+#: ../src/gui/iconcontroller.cpp:231
 msgid "Plant Layer"
 msgstr "Слой растительности"
 
-#: ../src/gui/iconcontroller.cpp:233
+#: ../src/gui/iconcontroller.cpp:232
 msgid "Stroboscope Layer"
 msgstr "Слой стробоскопа"
 
-#: ../src/gui/iconcontroller.cpp:234
+#: ../src/gui/iconcontroller.cpp:233
 msgid "Super Sample Layer"
 msgstr "Слой сглаживания"
 
-#: ../src/gui/iconcontroller.cpp:235
+#: ../src/gui/iconcontroller.cpp:234
 msgid "Sound Layer"
 msgstr "Слой звука"
 
-#: ../src/gui/iconcontroller.cpp:236
+#: ../src/gui/iconcontroller.cpp:235
 msgid "Switch Layer"
 msgstr "Слой переключателя"
 
-#: ../src/gui/iconcontroller.cpp:237
+#: ../src/gui/iconcontroller.cpp:236
 msgid "Skeleton Layer"
 msgstr "Слой скелета"
 
-#: ../src/gui/iconcontroller.cpp:238
+#: ../src/gui/iconcontroller.cpp:237
 msgid "Text Layer"
 msgstr "Текстовый слой"
 
-#: ../src/gui/iconcontroller.cpp:239
+#: ../src/gui/iconcontroller.cpp:238
 msgid "Time Loop Layer"
 msgstr "Слой петли времени"
 
-#: ../src/gui/iconcontroller.cpp:240
+#: ../src/gui/iconcontroller.cpp:239
 msgid "XOR Pattern Layer"
 msgstr "Слой узора исключающего ИЛИ"
 
-#: ../src/gui/iconcontroller.cpp:242
+#: ../src/gui/iconcontroller.cpp:241
 msgid "Bevel Layer"
 msgstr "Слой фаски"
 
-#: ../src/gui/iconcontroller.cpp:243
+#: ../src/gui/iconcontroller.cpp:242
 msgid "Shade Layer"
 msgstr "Слой тени"
 
-#: ../src/gui/iconcontroller.cpp:245
+#: ../src/gui/iconcontroller.cpp:244
 msgid "Rotate Layer"
 msgstr "Слой вращения"
 
-#: ../src/gui/iconcontroller.cpp:246
+#: ../src/gui/iconcontroller.cpp:245
 msgid "Translate Layer"
 msgstr "Слой перемещения"
 
-#: ../src/gui/iconcontroller.cpp:247
+#: ../src/gui/iconcontroller.cpp:246
 msgid "Scale Layer"
 msgstr "Слой масштаба"
 
-#: ../src/gui/iconcontroller.cpp:251
+#: ../src/gui/iconcontroller.cpp:250
 msgid "Group Ghost"
 msgstr "Группа Ghost"
 
-#: ../src/gui/iconcontroller.cpp:256
+#: ../src/gui/iconcontroller.cpp:255
 msgid "Info Tool"
 msgstr "Инструмент Информация"
 
-#: ../src/gui/iconcontroller.cpp:260
+#: ../src/gui/iconcontroller.cpp:259
 msgid "Hide Grid"
 msgstr "Скрыть сетку"
 
-#: ../src/gui/iconcontroller.cpp:261
+#: ../src/gui/iconcontroller.cpp:260
 msgid "Enable Grid Snap"
 msgstr "Включить прилипание к сетке"
 
-#: ../src/gui/iconcontroller.cpp:262
+#: ../src/gui/iconcontroller.cpp:261
 msgid "Disable Grid Snap"
 msgstr "Отключить прилипание к сетке"
 
-#: ../src/gui/iconcontroller.cpp:263
+#: ../src/gui/iconcontroller.cpp:262
 msgid "Duplicate"
 msgstr "Продублировать"
 
-#: ../src/gui/iconcontroller.cpp:264
+#: ../src/gui/iconcontroller.cpp:263
 msgid "Group"
 msgstr "Группа"
 
-#: ../src/gui/iconcontroller.cpp:266
+#: ../src/gui/iconcontroller.cpp:265
 msgid "Group into Switch"
 msgstr "Сгруппировать в переключатель"
 
-#: ../src/gui/iconcontroller.cpp:268
+#: ../src/gui/iconcontroller.cpp:267
 msgid "Group into Filter"
 msgstr "Сгруппировать в фильтр"
 
-#: ../src/gui/iconcontroller.cpp:277
+#: ../src/gui/iconcontroller.cpp:276
 msgid "MetaData"
 msgstr "Метаданные"
 
-#: ../src/gui/iconcontroller.cpp:281
+#: ../src/gui/iconcontroller.cpp:280
 msgid "Palette"
 msgstr "Палитра"
 
-#: ../src/gui/iconcontroller.cpp:284
+#: ../src/gui/iconcontroller.cpp:283
 msgid "Past keyframes unlocked"
 msgstr "Предыдущие ключевые кадры разблокированы"
 
-#: ../src/gui/iconcontroller.cpp:285
+#: ../src/gui/iconcontroller.cpp:284
 msgid "Past keyframes locked"
 msgstr "Предыдущие ключевые кадры заблокированы"
 
-#: ../src/gui/iconcontroller.cpp:286
+#: ../src/gui/iconcontroller.cpp:285
 msgid "Future keyframes unlocked"
 msgstr "Следующие ключевые кадры разблокированы"
 
-#: ../src/gui/iconcontroller.cpp:287
+#: ../src/gui/iconcontroller.cpp:286
 msgid "Future keyframes locked"
 msgstr "Следующие ключевые кадры заблокированы"
 
-#: ../src/gui/iconcontroller.cpp:289
+#: ../src/gui/iconcontroller.cpp:288
 msgid "Animate Mode Off"
 msgstr "Режим анимации выключен"
 
-#: ../src/gui/iconcontroller.cpp:290
+#: ../src/gui/iconcontroller.cpp:289
 msgid "Animate Mode On"
 msgstr "Режим анимации включен"
 
-#: ../src/gui/iconcontroller.cpp:292
+#: ../src/gui/iconcontroller.cpp:291
 msgid "JACK"
 msgstr "JACK"
 
-#: ../src/gui/iconcontroller.cpp:298
+#: ../src/gui/iconcontroller.cpp:297
 msgid "Seek to Previous Keyframe"
 msgstr "Перейти к предыдущему ключевому кадру"
 
-#: ../src/gui/iconcontroller.cpp:301
+#: ../src/gui/iconcontroller.cpp:300
 msgid "Stop"
 msgstr "Остановить"
 
-#: ../src/gui/iconcontroller.cpp:303
+#: ../src/gui/iconcontroller.cpp:302
 msgid "Seek to Next frame"
 msgstr "Перейти к следующему кадру"
 
-#: ../src/gui/iconcontroller.cpp:306
+#: ../src/gui/iconcontroller.cpp:305
 msgid "Animate Loop"
 msgstr "Петля анимации"
 
-#: ../src/gui/iconcontroller.cpp:307
+#: ../src/gui/iconcontroller.cpp:306
 msgid "Play Bounds"
 msgstr "Границы воспроизведения"
 
-#: ../src/gui/iconcontroller.cpp:308
+#: ../src/gui/iconcontroller.cpp:307
 msgid "Lower Bound"
 msgstr "Нижняя граница"
 
-#: ../src/gui/iconcontroller.cpp:309
+#: ../src/gui/iconcontroller.cpp:308
 msgid "Upper Bound"
 msgstr "Верхняя граница"
 
-#: ../src/gui/iconcontroller.cpp:311
+#: ../src/gui/iconcontroller.cpp:310
 msgid "Add Layer to Set"
 msgstr "Добавить слой в набор"
 
-#: ../src/gui/iconcontroller.cpp:312
+#: ../src/gui/iconcontroller.cpp:311
 msgid "Remove Layer from Set"
 msgstr "Удалить слой из группы"
 
-#: ../src/gui/iconcontroller.cpp:313
+#: ../src/gui/iconcontroller.cpp:312
 #: ../src/synfigapp/actions/layersetdesc.cpp:52
 #: ../src/synfigapp/actions/layersetdesc.cpp:75
 msgid "Set Layer Description"
 msgstr "Ввести описание слоя"
 
-#: ../src/gui/iconcontroller.cpp:314
+#: ../src/gui/iconcontroller.cpp:313
 msgid "Export Value Node"
 msgstr "Экспорт значения узла"
 
-#: ../src/gui/iconcontroller.cpp:315
+#: ../src/gui/iconcontroller.cpp:314
 msgid "Unexport Value Node"
 msgstr "Отменить экспорт значения узла"
 
-#: ../src/gui/iconcontroller.cpp:316
+#: ../src/gui/iconcontroller.cpp:315
 msgid "Set Interpolation to Flat"
 msgstr "Сделать интерполяцию плоской"
 
-#: ../src/gui/iconcontroller.cpp:317
+#: ../src/gui/iconcontroller.cpp:316
 msgid "Set Interpolation to Interpolate"
 msgstr "Сделать интерполяцию плавной"
 
-#: ../src/gui/iconcontroller.cpp:318
+#: ../src/gui/iconcontroller.cpp:317
 msgid "Set Interpolation to Peak"
 msgstr "Сделать интерполяцию заостренной"
 
-#: ../src/gui/iconcontroller.cpp:319
+#: ../src/gui/iconcontroller.cpp:318
 msgid "Set Interpolation to Rounded"
 msgstr "Сделать интерполяцию закругленной"
 
-#: ../src/gui/iconcontroller.cpp:320
+#: ../src/gui/iconcontroller.cpp:319
 msgid "Set Interpolation to Squared"
 msgstr "Следать интерполяцию в квадрате"
 
-#: ../src/gui/iconcontroller.cpp:329
+#: ../src/gui/iconcontroller.cpp:328
 msgid "Toggle show grid"
 msgstr "Переключить отображение сетки"
 
-#: ../src/gui/iconcontroller.cpp:330
+#: ../src/gui/iconcontroller.cpp:329
 msgid "Toggle snap grid"
 msgstr "Переключить прилипание к сетке"
 
-#: ../src/gui/iconcontroller.cpp:331
+#: ../src/gui/iconcontroller.cpp:330
 msgid "Toggle show guide"
 msgstr "Переключить показ руководства"
 
-#: ../src/gui/iconcontroller.cpp:332
+#: ../src/gui/iconcontroller.cpp:331
 msgid "Toggle snap guide"
 msgstr "Переключить прилипание к руководству"
 
-#: ../src/gui/iconcontroller.cpp:334
+#: ../src/gui/iconcontroller.cpp:333
 msgid "Toggle onion skin"
 msgstr "Переключить кальку"
 
-#: ../src/gui/iconcontroller.cpp:336
+#: ../src/gui/iconcontroller.cpp:335
 msgid "Toggle background rendering"
 msgstr "Переключить фоновую отрисовку"
 
-#: ../src/gui/iconcontroller.cpp:338
+#: ../src/gui/iconcontroller.cpp:337
 msgid "Increase resolution"
 msgstr "Увеличить разрешение"
 
-#: ../src/gui/iconcontroller.cpp:339
+#: ../src/gui/iconcontroller.cpp:338
 msgid "Decrease resolution"
 msgstr "Уменьшить разрешение"
 
-#: ../src/gui/iconcontroller.cpp:341
+#: ../src/gui/iconcontroller.cpp:340
 msgid "Preview Options Dialog"
 msgstr "Параметры предпросмотра"
 
-#: ../src/gui/iconcontroller.cpp:342
+#: ../src/gui/iconcontroller.cpp:341
 msgid "Render Options Dialog"
 msgstr "Параметры визуализации"
 
-#: ../src/gui/iconcontroller.cpp:344
+#: ../src/gui/iconcontroller.cpp:343
 msgid "TCB interpolation"
 msgstr "TCB-интерполяция"
 
-#: ../src/gui/iconcontroller.cpp:345
+#: ../src/gui/iconcontroller.cpp:344
 msgid "Ease In/Out interpolation"
 msgstr "Интерполяция с замедлением/ускорением"
 
-#: ../src/gui/iconcontroller.cpp:346
+#: ../src/gui/iconcontroller.cpp:345
 msgid "Const interpolation"
 msgstr "Постоянная интерполяция"
 
-#: ../src/gui/iconcontroller.cpp:347
+#: ../src/gui/iconcontroller.cpp:346
 msgid "Linear interpolation"
 msgstr "Линейная интерполяция"
 
-#: ../src/gui/iconcontroller.cpp:348
+#: ../src/gui/iconcontroller.cpp:347
 msgid "Clamped interpolation"
 msgstr "Сглаженная интерполяции"
 
-#: ../src/gui/iconcontroller.cpp:350
+#: ../src/gui/iconcontroller.cpp:349
 msgid "Linked"
 msgstr "Соединено"
 
-#: ../src/gui/iconcontroller.cpp:351
+#: ../src/gui/iconcontroller.cpp:350
 msgid "Unlinked"
 msgstr "Отсоединено"
 
-#: ../src/gui/iconcontroller.cpp:352
+#: ../src/gui/iconcontroller.cpp:351
 msgid "Utils Timetrack align"
 msgstr "Выравнивание утилиты Timetsrack"
 
-#: ../src/gui/iconcontroller.cpp:354
+#: ../src/gui/iconcontroller.cpp:353
 msgid "CVS Add"
 msgstr "CVS Add"
 
-#: ../src/gui/iconcontroller.cpp:355 ../src/gui/instance.cpp:880
+#: ../src/gui/iconcontroller.cpp:354 ../src/gui/instance.cpp:880
 msgid "CVS Update"
 msgstr "CVS Update"
 
-#: ../src/gui/iconcontroller.cpp:356 ../src/gui/instance.cpp:772
+#: ../src/gui/iconcontroller.cpp:355 ../src/gui/instance.cpp:772
 #: ../src/gui/instance.cpp:794
 msgid "CVS Commit"
 msgstr "CVS Commit"
 
-#: ../src/gui/iconcontroller.cpp:357 ../src/gui/instance.cpp:929
+#: ../src/gui/iconcontroller.cpp:356 ../src/gui/instance.cpp:929
 msgid "CVS Revert"
 msgstr "CVS Revert"
 
@@ -5011,7 +5028,7 @@ msgstr "Это может быть из-за того, что на неё ссы
 
 #: ../src/gui/instance.cpp:310
 msgid "Error: You need to have Python 3 installed."
-msgstr ""
+msgstr "Ошибка: вам нужно установить Python 3."
 
 #: ../src/gui/instance.cpp:340
 msgid ""
@@ -5252,11 +5269,11 @@ msgstr "Открыть файл"
 
 #: ../src/gui/instance.cpp:1917 ../src/gui/instance.cpp:1976
 msgid "Convert to Vector"
-msgstr ""
+msgstr "Преобразовать в вектор"
 
 #: ../src/gui/instance.cpp:1929
 msgid "Convert to Vector menu"
-msgstr ""
+msgstr "Меню преобразования в вектор"
 
 #: ../src/gui/instance.h:43
 msgid "Synfig Animation "
@@ -5288,7 +5305,7 @@ msgstr "Показать меню"
 
 #: ../src/gui/mainwindow.cpp:193
 msgid "Edit workspaces..."
-msgstr ""
+msgstr "Изменить рабочие пространства..."
 
 #. TRANSLATORS:         | Help menu entry:              | A wiki page:
 #. |
@@ -5371,10 +5388,10 @@ msgstr "Уместить"
 
 #: ../src/gui/renddesc.cpp:233
 msgid "Gamma correction"
-msgstr ""
+msgstr "Гамма-коррекция"
 
 #: ../src/gui/renddesc.cpp:266
-msgid "Image Size Ratio : "
+msgid "Image Size Ratio: "
 msgstr "Соотношение размера изображения:"
 
 #: ../src/gui/renddesc.cpp:582
@@ -5499,23 +5516,23 @@ msgstr "_Длительность"
 
 #: ../src/gui/renddesc.cpp:818
 msgid "Gamma Correction Settings"
-msgstr ""
+msgstr "Настройки гамма-коррекции"
 
 #: ../src/gui/renddesc.cpp:820
 msgid "<b>Gamma Correction Settings</b>"
-msgstr ""
+msgstr "<b>Настройки гамма-коррекции</b>"
 
 #: ../src/gui/renddesc.cpp:848
 msgid "_Red"
-msgstr ""
+msgstr "_Красный"
 
 #: ../src/gui/renddesc.cpp:861
 msgid "_Green"
-msgstr ""
+msgstr "_Зелёный"
 
 #: ../src/gui/renddesc.cpp:874
 msgid "_Blue"
-msgstr ""
+msgstr "_Синий"
 
 #: ../src/gui/renddesc.cpp:901
 msgid "Locks and Links"
@@ -5552,10 +5569,6 @@ msgstr "Извлечь альфа-канал"
 #: ../src/gui/render.cpp:93
 msgid "Auto"
 msgstr "Автоматически"
-
-#: ../src/gui/render.cpp:112
-msgid "Choose..."
-msgstr "Выбрать..."
 
 #: ../src/gui/render.cpp:116
 msgid "Parameters..."
@@ -5941,7 +5954,7 @@ msgid "You cannot remove the root canvas!"
 msgstr "Вы не можете удалить основной холст!"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:112
-msgid "You cannot remove an canvas from a Group!"
+msgid "You cannot remove a canvas from a Group!"
 msgstr "Вы не можете удалить холст из группы!"
 
 #: ../src/synfigapp/actions/canvasrenddescset.cpp:51
@@ -6241,7 +6254,7 @@ msgid "Embed Layer"
 msgstr "Встроенный слой"
 
 #: ../src/synfigapp/actions/layerembed.cpp:77
-msgid "Layer to be embed"
+msgid "Layer to be embedded"
 msgstr "Слой для встраивания"
 
 #: ../src/synfigapp/actions/layerembed.cpp:191
@@ -6303,12 +6316,12 @@ msgstr "Описание нового фильтра"
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:53
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
-msgid "Group Layer into Switch"
-msgstr "Сгруппировать в переключатель"
-
-#: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
 msgid "Group Layers into Switch"
 msgstr "Сгруппировать слои в переключатель"
+
+#: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
+msgid "Group Layer into Switch"
+msgstr "Сгруппировать в переключатель"
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:88
 msgid "Description of new switch"
@@ -6682,11 +6695,11 @@ msgstr "Переместить временные точки"
 #: ../src/synfigapp/actions/valuedescbake.cpp:55
 #: ../src/synfigapp/actions/valuedescbake.cpp:73
 msgid "Bake"
-msgstr ""
+msgstr "Испечь"
 
 #: ../src/synfigapp/actions/valuedescbake.cpp:136
 msgid "Unable to bake"
-msgstr ""
+msgstr "Невозможно испечь"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:63
 msgid "Link to Spline"
@@ -7232,64 +7245,64 @@ msgstr "Вставить элемент (Умно)"
 
 #: ../src/synfigapp/actions/vectorization.cpp:56
 msgid "Vectorization"
-msgstr ""
+msgstr "Векторизация"
 
 #: ../src/synfigapp/actions/vectorization.cpp:117
 msgid "Image Layer"
-msgstr ""
+msgstr "Слой изображения"
 
 #: ../src/synfigapp/actions/vectorization.cpp:121
 msgid "Vectorization mode"
-msgstr ""
+msgstr "Режим векторизации"
 
 #: ../src/synfigapp/actions/vectorization.cpp:122
 #: ../src/synfigapp/actions/vectorization.cpp:126
 msgid "Mode for Vectorization"
-msgstr ""
+msgstr "Режим векторизации"
 
 #: ../src/synfigapp/actions/vectorization.cpp:125
 msgid "Threshold Value"
-msgstr ""
+msgstr "Пороговое значение"
 
 #: ../src/synfigapp/actions/vectorization.cpp:129
 msgid "Penalty"
-msgstr ""
+msgstr "Пенальти"
 
 #: ../src/synfigapp/actions/vectorization.cpp:130
 msgid "Penalty based on accuracy"
-msgstr ""
+msgstr "Пенальти основано на точности"
 
 #: ../src/synfigapp/actions/vectorization.cpp:133
 msgid "Despeckling value"
-msgstr ""
+msgstr "Значение удаления пятен"
 
 #: ../src/synfigapp/actions/vectorization.cpp:134
 msgid "Despeckling Value for process"
-msgstr ""
+msgstr "Значение удаления пятен для процесса"
 
 #: ../src/synfigapp/actions/vectorization.cpp:137
 msgid "Max thickness"
-msgstr ""
+msgstr "Максимальная толщина"
 
 #: ../src/synfigapp/actions/vectorization.cpp:138
 msgid "Max thickness of outline"
-msgstr ""
+msgstr "Максимальная толщина контура"
 
 #: ../src/synfigapp/actions/vectorization.cpp:141
 msgid "Preserve painted area"
-msgstr ""
+msgstr "Сохранить окрашенную область"
 
 #: ../src/synfigapp/actions/vectorization.cpp:142
 msgid "To preserve painted area"
-msgstr ""
+msgstr "Сохранить окрашенную область"
 
 #: ../src/synfigapp/actions/vectorization.cpp:145
 msgid "Add border"
-msgstr ""
+msgstr "Добавить границу"
 
 #: ../src/synfigapp/actions/vectorization.cpp:146
 msgid "Add border in final outlines"
-msgstr ""
+msgstr "Добавить границу в окончательные контуры"
 
 #: ../src/synfigapp/actions/waypointadd.cpp:53
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:61
@@ -7533,31 +7546,31 @@ msgstr "Программа не умеет открывать файлы фор�
 
 #: ../src/synfigapp/canvasinterface.cpp:949
 msgid "Import sequence"
-msgstr ""
+msgstr "Импортировать последовательность"
 
 #: ../src/synfigapp/canvasinterface.cpp:960
 #: ../src/synfigapp/canvasinterface.cpp:1064
 msgid "Cannot create action"
-msgstr ""
+msgstr "Невозможно создать действие"
 
 #: ../src/synfigapp/canvasinterface.cpp:977
 #, c-format
-msgid "Cannot import file witout extension: %s\n"
-msgstr ""
+msgid "Cannot import file without extension: %s\n"
+msgstr "Невозможно импортировать файл без расширения: %s\n"
 
 #: ../src/synfigapp/canvasinterface.cpp:983
 #, c-format
 msgid "Cannot import file of type '%s': %s\n"
-msgstr ""
+msgstr "Невозможно импортировать файл типа '%s': %s\n"
 
 #: ../src/synfigapp/canvasinterface.cpp:1044
 #, c-format
 msgid "Unable to import file: %s"
-msgstr ""
+msgstr "Невозможно импортировать файл: %s"
 
 #: ../src/synfigapp/canvasinterface.cpp:1051
 msgid "Nothing imported"
-msgstr ""
+msgstr "Ничего не импортировано"
 
 #: ../src/synfigapp/canvasinterface.cpp:1225
 #, c-format
