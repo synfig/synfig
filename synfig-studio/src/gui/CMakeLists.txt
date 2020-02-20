@@ -71,9 +71,13 @@ include(trees/CMakeLists.txt)
 include(widgets/CMakeLists.txt)
 include(workarearenderer/CMakeLists.txt)
 
+target_include_directories(synfigstudio PRIVATE ${MLT_INCLUDE_DIRS}) # required for widget_soundwave
+
 target_link_libraries(synfigstudio
     ${GTKMM_LIBRARIES}
     ${Gettext_LIBRARIES}
+    ${MLT_LIBRARIES} # required for widget_soundwave
+    ${LIBXML_LIBRARIES} # required for gui/pluginmanager
     synfig
     synfigapp
 )
