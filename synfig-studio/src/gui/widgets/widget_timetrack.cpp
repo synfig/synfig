@@ -867,8 +867,10 @@ void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bo
 	}
 
 	// Move along time
-	if (dx == 0)
+	if (dx == 0) {
+		deltatime = 0;
 		return;
+	}
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	int x0, y0;
