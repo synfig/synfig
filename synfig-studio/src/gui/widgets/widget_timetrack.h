@@ -119,6 +119,8 @@ private:
 		synfig::Time deltatime;
 
 		void on_drag_finish();
+
+		void on_modifier_keys_changed();
 	} waypoint_sd;
 	void setup_mouse_handler();
 

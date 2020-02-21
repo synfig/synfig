@@ -736,10 +736,7 @@ Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
 	signal_drag_started().connect([&]() {deltatime = 0;});
 	signal_drag_canceled().connect([&]() {deltatime = 0;});
 	signal_drag_finished().connect([&]() {on_drag_finish();});
-	signal_modifier_keys_changed().connect([&]() {
-		if (get_state() == POINTER_DRAGGING)
-			widget.queue_draw();
-	});
+	signal_modifier_keys_changed().connect([&]() {on_modifier_keys_changed();});
 }
 
 Widget_Timetrack::WaypointSD::~WaypointSD()
@@ -909,4 +906,21 @@ void Widget_Timetrack::WaypointSD::on_drag_finish()
 	}
 
 	deltatime = 0;
+}
+
+void Widget_Timetrack::WaypointSD::on_modifier_keys_changed()
+{
+	if (get_state() == POINTER_DRAGGING) {
+		synfigapp::Action::PassiveGrouper * action = get_action_group_drag();
+		if (action) {
+			std::string action_name;
+			if (!get_modifiers())
+				action_name = _("Move waypoints");
+			else if (has_modifier(Gdk::SHIFT_MASK))
+				action_name = _("Copy waypoints");
+			action->set_name(action_name);
+		}
+
+		widget.queue_draw();
+	}
 }

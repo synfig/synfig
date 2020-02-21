@@ -113,6 +113,9 @@ private:
 	bool pan_enabled = false;
 	bool drag_enabled = true;
 
+protected:
+	synfigapp::Action::PassiveGrouper *get_action_group_drag() const;
+
 public:
 	SelectDragHelper(const char *drag_action_name);
 	virtual ~SelectDragHelper() {delete action_group_drag;}
@@ -759,6 +762,12 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 			break;
 	}
 	return false;
+}
+
+template<class T>
+synfigapp::Action::PassiveGrouper* SelectDragHelper<T>::get_action_group_drag() const
+{
+	return action_group_drag;
 }
 
 template <class T>
