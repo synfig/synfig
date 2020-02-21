@@ -104,7 +104,16 @@ private:
 	//! Handle mouse actions for panning/zooming/scrolling and waypoint selection
 	struct WaypointSD : SelectDragHelper<WaypointItem>
 	{
+		enum Action {
+			NONE,
+			MOVE,
+			COPY,
+			SCALE
+		};
+	protected:
 		Widget_Timetrack &widget;
+		Action action;
+
 	public:
 		WaypointSD(Widget_Timetrack &widget);
 		virtual ~WaypointSD() override;
@@ -114,13 +123,18 @@ private:
 		virtual void get_all_items(std::vector<WaypointItem>&) override {}
 		virtual void delta_drag(int total_dx, int total_dy, bool by_keys) override;
 
-		const synfig::Time& get_deltatime();
+		const synfig::Time& get_deltatime() const;
+		Action get_action() const;
 	protected:
 		synfig::Time deltatime;
 
+		void on_drag_started();
+		void on_drag_canceled();
 		void on_drag_finish(bool started_by_keys);
 
 		void on_modifier_keys_changed();
+
+		void update_action();
 	} waypoint_sd;
 	void setup_mouse_handler();
 

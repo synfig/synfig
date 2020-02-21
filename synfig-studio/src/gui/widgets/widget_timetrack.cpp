@@ -318,7 +318,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			cr->push_group();
 		}
 
-		bool is_user_moving_waypoints = waypoint_sd.get_state() == WaypointSD::State::POINTER_DRAGGING && !waypoint_sd.get_modifiers();
+		bool is_user_moving_waypoints = waypoint_sd.get_action() == waypoint_sd.MOVE;
 
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
 		WaypointRenderer::foreach_visible_waypoint(row_info->get_value_desc(), *time_plot_data,
@@ -731,10 +731,11 @@ bool Widget_Timetrack::WaypointItem::operator ==(const Widget_Timetrack::Waypoin
 
 Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
 	: SelectDragHelper<WaypointItem>(_("Move waypoints")),
-	  widget(widget)
+	  widget(widget),
+	  action(Action::NONE)
 {
-	signal_drag_started().connect([&]() {deltatime = 0;});
-	signal_drag_canceled().connect([&]() {deltatime = 0;});
+	signal_drag_started().connect([&]() {on_drag_started();});
+	signal_drag_canceled().connect([&]() {on_drag_canceled();});
 	signal_drag_finished().connect([&](bool started_by_keys) {on_drag_finish(started_by_keys);});
 	signal_modifier_keys_changed().connect([&]() {on_modifier_keys_changed();});
 }
@@ -880,9 +881,26 @@ void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bo
 	// actual move is done only on finishing drag
 }
 
-const synfig::Time& Widget_Timetrack::WaypointSD::get_deltatime()
+const synfig::Time& Widget_Timetrack::WaypointSD::get_deltatime() const
 {
 	return deltatime;
+}
+
+Widget_Timetrack::WaypointSD::Action Widget_Timetrack::WaypointSD::get_action() const
+{
+	return action;
+}
+
+void Widget_Timetrack::WaypointSD::on_drag_started()
+{
+	deltatime = 0;
+	update_action();
+}
+
+void Widget_Timetrack::WaypointSD::on_drag_canceled()
+{
+	deltatime = 0;
+	update_action();
 }
 
 void Widget_Timetrack::WaypointSD::on_drag_finish(bool started_by_keys)
@@ -890,9 +908,9 @@ void Widget_Timetrack::WaypointSD::on_drag_finish(bool started_by_keys)
 	if (deltatime == 0)
 		return;
 
-	if (started_by_keys || !get_modifiers())
+	if (action == MOVE)
 		widget.move_selected(deltatime);
-	else if (has_modifier(Gdk::SHIFT_MASK))
+	else if (action == COPY)
 		widget.copy_selected(deltatime);
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
@@ -905,21 +923,44 @@ void Widget_Timetrack::WaypointSD::on_drag_finish(bool started_by_keys)
 	}
 
 	deltatime = 0;
+	update_action();
 }
 
 void Widget_Timetrack::WaypointSD::on_modifier_keys_changed()
 {
-	if (get_state() == POINTER_DRAGGING) {
-		synfigapp::Action::PassiveGrouper * action = get_action_group_drag();
-		if (action) {
-			std::string action_name;
-			if (!get_modifiers())
-				action_name = _("Move waypoints");
-			else if (has_modifier(Gdk::SHIFT_MASK))
-				action_name = _("Copy waypoints");
-			action->set_name(action_name);
+	update_action();
+
+	if (action != NONE) {
+		std::string action_name;
+		switch (action) {
+		case MOVE:
+			action_name = _("Move waypoints");
+			break;
+		case COPY:
+			action_name = _("Copy waypoints");
+			break;
 		}
 
+		get_action_group_drag()->set_name(action_name);
+
 		widget.queue_draw();
+	}
+}
+
+void Widget_Timetrack::WaypointSD::update_action()
+{
+	if (get_state() != POINTER_DRAGGING) {
+		action = NONE;
+	} else {
+		synfigapp::Action::PassiveGrouper * action_group = get_action_group_drag();
+		if (action_group) {
+			if (is_dragging_started_by_keys() || !get_modifiers())
+				action = MOVE;
+			else if (has_modifier(Gdk::SHIFT_MASK))
+				action = COPY;
+		} else {
+			synfig::warning(_("can't find action group: internal error"));
+			action = NONE;
+		}
 	}
 }

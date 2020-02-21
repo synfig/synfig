@@ -115,6 +115,7 @@ private:
 
 protected:
 	synfigapp::Action::PassiveGrouper *get_action_group_drag() const;
+	bool is_dragging_started_by_keys() const;
 
 public:
 	SelectDragHelper(const char *drag_action_name);
@@ -770,6 +771,12 @@ template<class T>
 synfigapp::Action::PassiveGrouper* SelectDragHelper<T>::get_action_group_drag() const
 {
 	return action_group_drag;
+}
+
+template<class T>
+bool SelectDragHelper<T>::is_dragging_started_by_keys() const
+{
+	return dragging_started_by_key;
 }
 
 template <class T>
