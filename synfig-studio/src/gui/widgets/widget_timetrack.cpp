@@ -204,6 +204,39 @@ void Widget_Timetrack::copy_selected(synfig::Time delta_time)
 	canvas_interface->get_instance()->perform_action(action);
 }
 
+void Widget_Timetrack::scale_selected()
+{
+	std::lock_guard<std::mutex> lock(param_list_mutex);
+
+	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(), _("Scale waypoints"));
+	WaypointScaleInfo scale_info = compute_scale_params();
+
+	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
+		synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsMove"));
+		if(!action)
+			return;
+		synfigapp::Action::ParamList param_list;
+		param_list.add("canvas", canvas_interface->get_canvas());
+		param_list.add("canvas_interface", canvas_interface);
+
+		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()]->get_value_desc();
+		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
+		} else {
+			param_list.add("addvaluedesc", value_desc);
+		}
+
+		const synfig::Time t0 = wi->time_point.get_time();
+		const synfig::Time t = compute_scaled_time(*wi, scale_info);
+		const synfig::Time delta_time = t - t0;
+
+		param_list.add("addtime", t0);
+		param_list.add("deltatime", delta_time);
+		action->set_param_list(param_list);
+		canvas_interface->get_instance()->perform_action(action);
+	}
+}
+
 void Widget_Timetrack::goto_next_waypoint(long n)
 {
 	std::vector<WaypointItem *> selection = waypoint_sd.get_selected_items();
@@ -319,13 +352,14 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		}
 
 		bool is_user_moving_waypoints = waypoint_sd.get_action() == waypoint_sd.MOVE;
+		bool is_user_scaling_waypoints = waypoint_sd.get_action() == waypoint_sd.SCALE;
 
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
 		WaypointRenderer::foreach_visible_waypoint(row_info->get_value_desc(), *time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			// Don't draw it if it's being moved by user
-			if (is_user_moving_waypoints && waypoint_sd.is_selected(WaypointItem(tp, path)))
+			if ((is_user_moving_waypoints || is_user_scaling_waypoints) && waypoint_sd.is_selected(WaypointItem(tp, path)))
 				return false;
 			visible_waypoints.push_back(std::pair<synfig::TimePoint, synfig::Time>(tp, t));
 			return false;
@@ -347,6 +381,9 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	// draw dragging waypoints
 	if (waypoint_sd.get_state() == WaypointSD::State::POINTER_DRAGGING) {
+		WaypointScaleInfo scale_info = compute_scale_params();
+		bool is_user_scaling = waypoint_sd.get_action() == waypoint_sd.SCALE;
+
 		for (const WaypointItem *item : waypoint_sd.get_selected_items()) {
 			const int margin = 1;
 			RowInfo * row_info = param_info_map[item->path.to_string()];
@@ -357,7 +394,13 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			const int py = geometry.y;
 
 			const synfig::TimePoint &tp = item->time_point;
-			const synfig::Time &t = item->time_point.get_time() + waypoint_sd.get_deltatime();
+			synfig::Time t;
+			if (is_user_scaling) {
+				t = compute_scaled_time(*item, scale_info);
+			} else {
+				t = item->time_point.get_time() + waypoint_sd.get_deltatime();
+			}
+
 			int px = time_plot_data->get_pixel_t_coord(t);
 			Gdk::Rectangle area(
 						0 - waypoint_edge_length/2 + margin + px,
@@ -667,6 +710,28 @@ void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::Waypoi
 	signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
 }
 
+Widget_Timetrack::WaypointScaleInfo Widget_Timetrack::compute_scale_params() const
+{
+	WaypointScaleInfo info;
+	info.scale = 1.0;
+	info.base_offset = 0.0;
+	info.ref_time = time_plot_data->time_model->get_time();
+
+	if (waypoint_sd.get_action() == waypoint_sd.SCALE) {
+		info.scale = 1.0 + waypoint_sd.get_deltatime() / (waypoint_sd.get_active_item()->time_point.get_time() - info.ref_time);
+		info.base_offset = (1 - info.scale) * info.ref_time;
+	}
+	return info;
+}
+
+synfig::Time Widget_Timetrack::compute_scaled_time(const Widget_Timetrack::WaypointItem& item, const Widget_Timetrack::WaypointScaleInfo& scale_info) const
+{
+//	synfig::Time t = scale_info.ref_time + (item.time_point.get_time() - scale_info.ref_time) * scale_info.scale;
+	synfig::Time t = item.time_point.get_time() * scale_info.scale + scale_info.base_offset;
+	t = t.round(time_plot_data->time_model->get_frame_rate());
+	return t;
+}
+
 Widget_Timetrack::RowInfo::RowInfo()
 {
 }
@@ -903,7 +968,7 @@ void Widget_Timetrack::WaypointSD::on_drag_canceled()
 	update_action();
 }
 
-void Widget_Timetrack::WaypointSD::on_drag_finish(bool started_by_keys)
+void Widget_Timetrack::WaypointSD::on_drag_finish(bool /*started_by_keys*/)
 {
 	if (deltatime == 0)
 		return;
@@ -912,6 +977,8 @@ void Widget_Timetrack::WaypointSD::on_drag_finish(bool started_by_keys)
 		widget.move_selected(deltatime);
 	else if (action == COPY)
 		widget.copy_selected(deltatime);
+	else if (action == SCALE)
+		widget.scale_selected();
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	std::vector<WaypointItem*> selection = get_selected_items();
@@ -939,6 +1006,9 @@ void Widget_Timetrack::WaypointSD::on_modifier_keys_changed()
 		case COPY:
 			action_name = _("Copy waypoints");
 			break;
+		case SCALE:
+			action_name = _("Scale waypoints");
+			break;
 		}
 
 		get_action_group_drag()->set_name(action_name);
@@ -958,6 +1028,8 @@ void Widget_Timetrack::WaypointSD::update_action()
 				action = MOVE;
 			else if (has_modifier(Gdk::SHIFT_MASK))
 				action = COPY;
+			else if (has_modifier(Gdk::MOD1_MASK))
+				action = SCALE;
 		} else {
 			synfig::warning(_("can't find action group: internal error"));
 			action = NONE;

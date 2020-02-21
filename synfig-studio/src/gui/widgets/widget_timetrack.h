@@ -72,6 +72,8 @@ public:
 	void move_selected(synfig::Time delta_time);
 	//! Duplicate selected waypoints and move them delta_time
 	void copy_selected(synfig::Time delta_time);
+	//! Scale selected waypoints based on current time
+	void scale_selected();
 	//! \param n : how many waypoints to skip
 	void goto_next_waypoint(long n);
 	//! \param n : how many waypoints to skip back
@@ -198,6 +200,15 @@ private:
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
+
+	struct WaypointScaleInfo {
+		double scale;
+		double ref_time;
+		double base_offset;
+	};
+
+	WaypointScaleInfo compute_scale_params() const;
+	synfig::Time compute_scaled_time(const WaypointItem &item, const WaypointScaleInfo &scale_info) const;
 };
 
 }
