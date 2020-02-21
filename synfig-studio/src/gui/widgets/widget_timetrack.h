@@ -142,6 +142,7 @@ private:
 		int h;
 	};
 
+	/// Tracks a parameter item : its value and its y-position and height in parameters list view
 	struct RowInfo {
 		RowInfo();
 		RowInfo(synfigapp::ValueDesc value_desc, Geometry geometry);
