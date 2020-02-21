@@ -99,7 +99,7 @@ private:
 
 	sigc::signal<void> signal_drag_started_;
 	sigc::signal<void> signal_drag_canceled_;
-	sigc::signal<void> signal_drag_finished_;
+	sigc::signal<void, bool> signal_drag_finished_;
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_clicked_;
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_double_clicked_;
@@ -223,7 +223,9 @@ public:
 
 	sigc::signal<void>& signal_drag_started() { return signal_drag_started_; }
 	sigc::signal<void>& signal_drag_canceled() { return signal_drag_canceled_; }
-	sigc::signal<void>& signal_drag_finished() { return signal_drag_finished_; }
+	/// emitted when user finishes drag
+	/// \param started_by_key
+	sigc::signal<void, bool>& signal_drag_finished() { return signal_drag_finished_; }
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_clicked() { return signal_item_clicked_; }
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_double_clicked() { return signal_item_double_clicked_; }
@@ -830,7 +832,7 @@ void SelectDragHelper<T>::finish_dragging()
 
 	pointer_state = POINTER_NONE;
 
-	signal_drag_finished().emit();
+	signal_drag_finished().emit(dragging_started_by_key);
 }
 
 template <class T>

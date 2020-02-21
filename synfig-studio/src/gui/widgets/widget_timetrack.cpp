@@ -735,7 +735,7 @@ Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
 {
 	signal_drag_started().connect([&]() {deltatime = 0;});
 	signal_drag_canceled().connect([&]() {deltatime = 0;});
-	signal_drag_finished().connect([&]() {on_drag_finish();});
+	signal_drag_finished().connect([&](bool started_by_keys) {on_drag_finish(started_by_keys);});
 	signal_modifier_keys_changed().connect([&]() {on_modifier_keys_changed();});
 }
 
@@ -885,16 +885,15 @@ const synfig::Time& Widget_Timetrack::WaypointSD::get_deltatime()
 	return deltatime;
 }
 
-void Widget_Timetrack::WaypointSD::on_drag_finish()
+void Widget_Timetrack::WaypointSD::on_drag_finish(bool started_by_keys)
 {
 	if (deltatime == 0)
 		return;
 
-	if (!get_modifiers())
+	if (started_by_keys || !get_modifiers())
 		widget.move_selected(deltatime);
-	else if (has_modifier(Gdk::SHIFT_MASK)) {
+	else if (has_modifier(Gdk::SHIFT_MASK))
 		widget.copy_selected(deltatime);
-	}
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	std::vector<WaypointItem*> selection = get_selected_items();

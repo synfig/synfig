@@ -510,7 +510,7 @@ Widget_Curves::Widget_Curves()
 	channel_point_sd.signal_drag_canceled().connect([&]() {
 		overlapped_waypoints.clear();
 	});
-	channel_point_sd.signal_drag_finished().connect([&]() {
+	channel_point_sd.signal_drag_finished().connect([&](bool /*started_by_keys*/) {
 //		overlapped_waypoints.clear();
 	});
 	channel_point_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));

@@ -118,7 +118,7 @@ private:
 	protected:
 		synfig::Time deltatime;
 
-		void on_drag_finish();
+		void on_drag_finish(bool started_by_keys);
 
 		void on_modifier_keys_changed();
 	} waypoint_sd;
