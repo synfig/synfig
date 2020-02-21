@@ -81,7 +81,7 @@ bool Widget_Timetrack::set_params_view(Gtk::TreeView* treeview)
 
 	Glib::RefPtr<LayerParamTreeStore> treestore = Glib::RefPtr<LayerParamTreeStore>::cast_dynamic( treeview->get_model() );
 	if (!treestore) {
-		synfig::error("TreeView must use model based on LayerParamTreeStore");
+		synfig::error(_("TreeView must use model based on LayerParamTreeStore"));
 		return false;
 	}
 	params_store = treestore;
@@ -107,12 +107,12 @@ Glib::RefPtr<LayerParamTreeStore> Widget_Timetrack::get_params_model() const
 bool Widget_Timetrack::use_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 {
 	if (!canvas_view) {
-		synfig::error("No canvas_view for timetrack");
+		synfig::error(_("No canvas_view for timetrack"));
 		return false;
 	}
 	Gtk::TreeView* params_treeview = dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"));
 	if (!params_treeview) {
-		synfig::error("Params treeview widget doesn't exist");
+		synfig::error(_("Params treeview widget doesn't exist"));
 		return false;
 	}
 
@@ -712,7 +712,7 @@ void Widget_Timetrack::RowInfo::set_geometry(const Widget_Timetrack::Geometry& v
 void Widget_Timetrack::RowInfo::refresh()
 {
 	if (!value_desc) {
-		synfig::error("ValueDesc invalid! Internal error");
+		synfig::error(_("ValueDesc invalid! Internal error"));
 		return;
 	}
 
@@ -730,7 +730,7 @@ bool Widget_Timetrack::WaypointItem::operator ==(const Widget_Timetrack::Waypoin
 }
 
 Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
-	: SelectDragHelper<WaypointItem>("Move waypoints"),
+	: SelectDragHelper<WaypointItem>(_("Move waypoints")),
 	  widget(widget)
 {
 	signal_drag_started().connect([&]() {deltatime = 0;});
@@ -751,7 +751,7 @@ void Widget_Timetrack::WaypointSD::get_item_position(const Widget_Timetrack::Way
 	p.set_x(widget.time_plot_data->get_pixel_t_coord(item.time_point.get_time()));
 	RowInfo * row_info = widget.param_info_map[item.path.to_string()];
 	if (!row_info) {
-		synfig::warning("invalid item");
+		synfig::warning(_("invalid item"));
 		return;
 	}
 	Geometry geometry = row_info->get_geometry();
@@ -769,7 +769,7 @@ bool Widget_Timetrack::WaypointSD::find_item_at_position(int pos_x, int pos_y, W
 
 	RowInfo *row_info = widget.param_info_map[path.to_string()];
 	if (!row_info) {
-		synfig::warning("couldn't find row info for path: internal error");
+		synfig::warning(_("couldn't find row info for path: internal error"));
 		return false;
 	}
 	const synfigapp::ValueDesc &value_desc = row_info->get_value_desc();
@@ -818,7 +818,7 @@ bool Widget_Timetrack::WaypointSD::find_items_in_rect(Gdk::Rectangle rect, std::
 
 		const RowInfo *row_info = widget.param_info_map[path.to_string()];
 		if (!row_info) {
-			synfig::warning("%s :\n\tcouldn't find row info for path: internal error", __PRETTY_FUNCTION__);
+			synfig::warning(_("%s :\n\tcouldn't find row info for path: internal error"), __PRETTY_FUNCTION__);
 			continue;
 		}
 		path_list.push_back(path);
