@@ -69,9 +69,9 @@ public:
 	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
 	void delete_selected();
-	void move_selected(synfig::Time delta_time);
+	bool move_selected(synfig::Time delta_time);
 	//! Duplicate selected waypoints and move them delta_time
-	void copy_selected(synfig::Time delta_time);
+	bool copy_selected(synfig::Time delta_time);
 	//! Scale selected waypoints based on current time
 	void scale_selected();
 	//! \param n : how many waypoints to skip
@@ -89,6 +89,7 @@ protected:
 
 	virtual void on_canvas_interface_changed() override;
 private:
+	void displace_selected_waypoint_items(const synfig::Time &offset);
 
 	struct WaypointItem {
 		synfig::TimePoint time_point;

@@ -148,14 +148,14 @@ void Widget_Timetrack::delete_selected()
 	canvas_interface->get_instance()->perform_action(action);
 }
 
-void Widget_Timetrack::move_selected(synfig::Time delta_time)
+bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
 	// From CellRenderer_TimeTrack
 	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsMove"));
-	if(!action)
-		return;
+	if (!action)
+		return false;
 
 	synfigapp::Action::ParamList param_list;
 	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
@@ -173,17 +173,20 @@ void Widget_Timetrack::move_selected(synfig::Time delta_time)
 		param_list.add("deltatime", delta_time);
 	}
 	action->set_param_list(param_list);
-	canvas_interface->get_instance()->perform_action(action);
+	bool ok = canvas_interface->get_instance()->perform_action(action);
+	if (ok)
+		displace_selected_waypoint_items(delta_time);
+	return ok;
 }
 
-void Widget_Timetrack::copy_selected(synfig::Time delta_time)
+bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
 	// From CellRenderer_TimeTrack
 	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsCopy"));
-	if(!action)
-		return;
+	if (!action)
+		return false;
 
 	synfigapp::Action::ParamList param_list;
 	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
@@ -201,7 +204,10 @@ void Widget_Timetrack::copy_selected(synfig::Time delta_time)
 		param_list.add("deltatime", delta_time);
 	}
 	action->set_param_list(param_list);
-	canvas_interface->get_instance()->perform_action(action);
+	bool ok = canvas_interface->get_instance()->perform_action(action);
+	if (ok)
+		displace_selected_waypoint_items(delta_time);
+	return ok;
 }
 
 void Widget_Timetrack::scale_selected()
@@ -213,7 +219,7 @@ void Widget_Timetrack::scale_selected()
 
 	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
 		synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsMove"));
-		if(!action)
+		if (!action)
 			return;
 		synfigapp::Action::ParamList param_list;
 		param_list.add("canvas", canvas_interface->get_canvas());
@@ -233,7 +239,10 @@ void Widget_Timetrack::scale_selected()
 		param_list.add("addtime", t0);
 		param_list.add("deltatime", delta_time);
 		action->set_param_list(param_list);
-		canvas_interface->get_instance()->perform_action(action);
+		bool ok = canvas_interface->get_instance()->perform_action(action);
+
+		if (ok)
+			wi->time_point.set_time(t);
 	}
 }
 
@@ -459,6 +468,18 @@ void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 void Widget_Timetrack::on_canvas_interface_changed()
 {
 	waypoint_sd.set_canvas_interface(canvas_interface);
+}
+
+void Widget_Timetrack::displace_selected_waypoint_items(const synfig::Time& offset)
+{
+	const float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
+	for (WaypointItem * point : selection) {
+		const synfig::Time &time = point->time_point.get_time();
+		const synfig::Time new_time = synfig::Time(time+offset).round(fps);
+
+		point->time_point.set_time(new_time);
+	}
 }
 
 void Widget_Timetrack::setup_mouse_handler()
@@ -979,15 +1000,6 @@ void Widget_Timetrack::WaypointSD::on_drag_finish(bool /*started_by_keys*/)
 		widget.copy_selected(deltatime);
 	else if (action == SCALE)
 		widget.scale_selected();
-
-	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
-	std::vector<WaypointItem*> selection = get_selected_items();
-	for (WaypointItem * point : selection) {
-		const synfig::Time &time = point->time_point.get_time();
-		const synfig::Time new_time = synfig::Time(time+deltatime).round(fps);
-
-		point->time_point.set_time(new_time);
-	}
 
 	deltatime = 0;
 	update_action();
