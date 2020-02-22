@@ -172,6 +172,8 @@ private:
 		Geometry get_geometry() const;
 		void set_geometry(const Geometry& value);
 
+		void recheck_for_value_nodes();
+
 	protected:
 		synfigapp::ValueDesc value_desc;
 		Geometry geometry;
@@ -179,7 +181,9 @@ private:
 
 		void refresh();
 	private:
-		std::vector<sigc::connection> value_desc_connections;
+		sigc::connection value_node_connection;
+		sigc::connection parent_value_node_connection;
+		void clear_connections();
 	};
 
 	std::map<std::string, RowInfo*> param_info_map;

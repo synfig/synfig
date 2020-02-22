@@ -519,6 +519,15 @@ void Widget_Timetrack::setup_params_store()
 		queue_rebuild_param_info_list();
 	});
 	treestore_connections.push_back(conn);
+
+	conn = params_store->signal_row_changed().connect([&](const Gtk::TreeModel::Path &p, const Gtk::TreeModel::iterator&){
+		// this is the way I found out how to redraw when a new value node is created by editor
+		// Instead of on every row change, it should be called only when a value node is created...
+		RowInfo * row_info = param_info_map[p.to_string()];
+		if (row_info)
+			row_info->recheck_for_value_nodes();
+	});
+	treestore_connections.push_back(conn);
 }
 
 void Widget_Timetrack::teardown_params_store()
@@ -761,23 +770,22 @@ Widget_Timetrack::RowInfo::RowInfo(synfigapp::ValueDesc value_desc_, Widget_Time
 	: value_desc(value_desc_), geometry(geometry)
 {
 	if (value_desc) {
-		if (value_desc.is_value_node())
-			value_desc_connections.push_back(
-						value_desc.get_value_node()->signal_changed().connect(
-							sigc::mem_fun(*this, &RowInfo::refresh )));
+		auto value_node = value_desc.get_value_node();
+		if (value_node)
+			value_node_connection =
+						value_node->signal_changed().connect(
+							sigc::mem_fun(*this, &RowInfo::refresh ));
 		if (value_desc.parent_is_value_node())
-			value_desc_connections.push_back(
+			parent_value_node_connection =
 						value_desc.get_parent_value_node()->signal_changed().connect(
-							sigc::mem_fun(*this, &RowInfo::refresh )));
+							sigc::mem_fun(*this, &RowInfo::refresh ));
 		refresh();
 	}
 }
 
 Widget_Timetrack::RowInfo::~RowInfo()
 {
-	for (sigc::connection &conn : value_desc_connections)
-		conn.disconnect();
-	value_desc_connections.clear();
+	clear_connections();
 }
 
 const synfigapp::ValueDesc& Widget_Timetrack::RowInfo::get_value_desc() const
@@ -795,6 +803,30 @@ void Widget_Timetrack::RowInfo::set_geometry(const Widget_Timetrack::Geometry& v
 	geometry = value;
 }
 
+void Widget_Timetrack::RowInfo::recheck_for_value_nodes()
+{
+	bool changed = false;
+	if (value_desc) {
+		auto value_node = value_desc.get_value_node();
+		if (value_node && !value_node_connection) {
+			value_node_connection =
+						value_node->signal_changed().connect(
+							sigc::mem_fun(*this, &RowInfo::refresh ));
+			changed = true;
+		}
+		if (value_desc.parent_is_value_node() && !parent_value_node_connection) {
+			parent_value_node_connection =
+						value_desc.get_parent_value_node()->signal_changed().connect(
+							sigc::mem_fun(*this, &RowInfo::refresh ));
+			changed = true;
+		}
+		if (changed) {
+			// this is the way I found out how to redraw when a new value node is created by editor
+			refresh();
+		}
+	}
+}
+
 void Widget_Timetrack::RowInfo::refresh()
 {
 	if (!value_desc) {
@@ -803,6 +835,12 @@ void Widget_Timetrack::RowInfo::refresh()
 	}
 
 	signal_changed().emit();
+}
+
+void Widget_Timetrack::RowInfo::clear_connections()
+{
+	value_node_connection.disconnect();
+	parent_value_node_connection.disconnect();
 }
 
 Widget_Timetrack::WaypointItem::WaypointItem(const synfig::TimePoint time_point, const Gtk::TreePath& path)
