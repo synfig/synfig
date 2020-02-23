@@ -451,8 +451,10 @@ public:
 		{ return Vector3(_x/rhs._x, _y/rhs._y, _z/rhs._z); }
 	Vector3 one_divide_coords() const
 		{ return Vector3(1.0/_x, 1.0/_y, 1.0/_z); }
-	Vector3 divide_z() const
-		{ value_type tmp = 1.0/_z; return Vector3(_x*tmp, _y*tmp, 1.0); }
+	Vector3 divide_z() const {
+		if (approximate_zero(_z)) return Vector3();
+		value_type tmp = 1.0/_z; return Vector3(_x*tmp, _y*tmp, 1.0);
+	}
 	Vector to_2d() const
 		{ return Vector(_x, _y); }
 };
