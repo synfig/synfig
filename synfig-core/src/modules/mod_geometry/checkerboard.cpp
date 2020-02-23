@@ -83,7 +83,7 @@ public:
 	rendering::Holder<rendering::TransformationAffine> transformation;
 
 	TaskCheckerBoard(): antialias(true) { }
-	virtual const rendering::Transformation::Handle get_transformation() const
+	virtual rendering::Transformation::Handle get_transformation() const
 		{ return transformation.handle(); }
 };
 
