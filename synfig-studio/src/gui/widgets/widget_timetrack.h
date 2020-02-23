@@ -187,6 +187,7 @@ private:
 	};
 
 	std::map<std::string, RowInfo*> param_info_map;
+	int param_list_height;
 
 	std::mutex param_list_mutex;
 	bool is_rebuild_param_info_list_queued;

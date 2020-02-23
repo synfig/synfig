@@ -47,6 +47,7 @@ using namespace studio;
 Widget_Timetrack::Widget_Timetrack()
 	: waypoint_sd(*this),
 	  params_treeview(nullptr),
+	  param_list_height(0),
 	  is_rebuild_param_info_list_queued(false),
 	  is_update_param_list_geometries_queued(false)
 {
@@ -456,12 +457,13 @@ void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 {
 	double upper = range_adjustment->get_upper();
 	Widget_TimeGraphBase::on_size_allocate(allocation);
-	set_default_page_size(allocation.get_height());
+	int height = allocation.get_height();
+	set_default_page_size(height);
 	ConfigureAdjustment(range_adjustment)
-			.set_page_size(allocation.get_height())
-			.set_step_increment(allocation.get_height()/10)
+			.set_page_size(height)
+			.set_step_increment(height/10)
 			.set_lower(0)
-			.set_upper(upper)
+			.set_upper(param_list_height)
 			.finish();
 }
 
@@ -637,6 +639,9 @@ void Widget_Timetrack::update_param_list_geometries()
 		return;
 	}
 
+	int previous_param_list_height = param_list_height;
+	int first_param_y = 0;
+	int last_param_y = 0;
 	Gtk::TreeViewColumn *col = params_treeview->get_column(0);
 	params_store->foreach_path([&](const Gtk::TreeModel::Path &path) -> bool {
 		Gdk::Rectangle rect;
@@ -646,9 +651,18 @@ void Widget_Timetrack::update_param_list_geometries()
 		geometry.h = rect.get_height();
 		param_info_map[path.to_string()]->set_geometry(geometry);
 
+		last_param_y = std::max(last_param_y, geometry.y + geometry.h);
+		first_param_y = std::min(first_param_y, geometry.y);
 		return false;
 	});
 
+	param_list_height = last_param_y - first_param_y;
+
+	if (previous_param_list_height != param_list_height) {
+		ConfigureAdjustment(range_adjustment)
+				.set_upper(param_list_height)
+				.finish();
+	}
 	queue_draw();
 }
 

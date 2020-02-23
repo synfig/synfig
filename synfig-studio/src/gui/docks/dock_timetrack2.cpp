@@ -72,6 +72,7 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 	widget_timetrack->show();
 	widget_timetrack->set_hexpand(true);
 	widget_timetrack->set_vexpand(true);
+	widget_timetrack->set_valign(Gtk::ALIGN_FILL);
 
 	canvas_view->set_ext_widget(get_name(), widget_timetrack);
 
