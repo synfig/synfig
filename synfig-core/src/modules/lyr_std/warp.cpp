@@ -33,7 +33,7 @@
 #	include <config.h>
 #endif
 
-#include "warp.h"
+#include <ETL/misc>
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
@@ -48,12 +48,16 @@
 #include <synfig/valuenode.h>
 #include <synfig/transform.h>
 #include <synfig/cairo_renddesc.h>
-#include <ETL/misc>
+
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/common/task/taskcontour.h>
+#include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/software/task/tasksw.h>
+
+#include "warp.h"
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
@@ -75,291 +79,798 @@ SYNFIG_LAYER_SET_CVS_ID(Warp,"$Id$");
 
 /* === E N T R Y P O I N T ================================================= */
 
-Warp::Warp():
-	param_src_tl  (ValueBase(Point(-2,2))),
-	param_src_br  (ValueBase(Point(2,-2))),
-	param_dest_tl (ValueBase(Point(-1.8,2.1))),
-	param_dest_tr (ValueBase(Point(1.8,2.1))),
-	param_dest_bl (ValueBase(Point(-2.2,-2))),
-	param_dest_br (ValueBase(Point(2.2,-2))),
-	param_clip	  (ValueBase(true))
+namespace {
+	bool truncate_line(
+		Point *out_points,
+		const Rect &bounds,
+		Real a,
+		Real b,
+		Real c )
+	{
+		// equatation of line is a*x + b*y + c = 0
+		
+		if (!bounds.valid()) return false;
+		
+		int count = 0;
+		
+		if (approximate_not_zero(a)) {
+			const Real x0 = -(c + bounds.miny*b)/a;
+			if ( approximate_greater_or_equal(x0, bounds.minx)
+			  && approximate_less_or_equal   (x0, bounds.maxx) )
+			{
+				if (out_points) out_points[count] = Point(x0, bounds.miny);
+				if (count++) return true;
+			}
+			
+			const Real x1 = -(c + bounds.maxy*b)/a;
+			if ( approximate_greater_or_equal(x1, bounds.minx)
+			  && approximate_less_or_equal   (x1, bounds.maxx) )
+			{
+				if (out_points) out_points[count] = Point(x1, bounds.maxy);
+				if (count++) return true;
+			}
+		}
+
+		if (approximate_not_zero(b)) {
+			const Real y0 = -(c + bounds.minx*a)/b;
+			if ( approximate_greater_or_equal(y0, bounds.miny)
+			  && approximate_less_or_equal   (y0, bounds.maxy) )
+			{
+				if (out_points) out_points[count] = Point(bounds.minx, y0);
+				if (count++) return true;
+			}
+			
+			const Real y1 = -(c + bounds.maxx*a)/b;
+			if ( approximate_greater_or_equal(y1, bounds.miny)
+			  && approximate_less_or_equal   (y1, bounds.maxy) )
+			{
+				if (out_points) out_points[count] = Point(bounds.maxx, y1);
+				if (count++) return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	Matrix3
+	make_matrix(
+		const Vector &p0,
+		const Vector &px,
+		const Vector &py,
+		const Vector &p1 )
+	{
+		// source rect corners are:          (0, 0), (1, 0), (1, 1), (0, 1)
+		// target quadrilateral corners are:     p0,     px,     p1,     py
+		// so
+		// vector will (1, 0) mapped to p0->px
+		// vector will (0, 1) mapped to p0->py
+		// vector will (1, 1) mapped to p0->p1
+		
+		const Vector A = px - p1;
+		const Vector B = py - p1;
+		const Vector C = p0 + p1 - px - py;
+		
+		Real cw = A[1]*B[0] - A[0]*B[1];
+		Real aw = B[0]*C[1] - B[1]*C[0];
+		Real bw = A[1]*C[0] - A[0]*C[1];
+		
+		// normalize and force cw to be positive
+		Real k = aw*aw + bw*bw + cw*cw;
+		k = k > real_precision<Real>() * real_precision<Real>() ? 1/sqrt(k) : 1;
+		if (cw < 0) k = -k;
+		aw *= k;
+		bw *= k;
+		cw *= k;
+		
+		const Vector c = p0*cw;
+		const Vector a = px*(cw + aw) - c;
+		const Vector b = py*(cw + bw) - c;
+
+		return Matrix3( a[0], a[1], aw,
+						b[0], b[1], bw,
+						c[0], c[1], cw );
+	}
+
+	Vector3 make_alpha_matrix_col(
+		Real w0,
+		Real w1,
+		const Vector3 &w_col )
+	{
+		Real k = w1 - w0;
+		if (approximate_zero(k))
+			return w_col;
+		k = w1/k;
+		return Vector3(
+			k*w_col[0],
+			k*w_col[1],
+			k*(w_col[2] - w0) );
+	}
+
+
+	Matrix make_alpha_matrix(
+		Real aw0, Real aw1,
+		Real bw0, Real bw1,
+		const Vector3 &w_col )
+	{
+		const Vector3 a_col = make_alpha_matrix_col(aw0, aw1, w_col);
+		const Vector3 b_col = make_alpha_matrix_col(bw0, bw1, w_col);
+		return Matrix3(
+			a_col[0], b_col[0], w_col[0],
+			a_col[1], b_col[1], w_col[1],
+			a_col[2], b_col[2], w_col[2] );
+	}
+	
+	
+	class TransformationPerspective: public rendering::Transformation
+	{
+	public:
+		typedef etl::handle<TransformationPerspective> Handle;
+		
+		class Layer {
+		public:
+			Rect orig_rect;
+			Bounds bounds;
+			Matrix alpha_matrix;
+
+			explicit Layer(
+				const Rect &orig_rect = Rect(),
+				const Bounds &bounds = Bounds(),
+				const Matrix &alpha_matrix = Matrix()
+			):
+				orig_rect(orig_rect),
+				bounds(bounds),
+				alpha_matrix(alpha_matrix)
+			{ }
+		};
+		
+		typedef std::vector<Layer> LayerList;
+		
+		Matrix matrix;
+		
+		TransformationPerspective() { }
+		explicit TransformationPerspective(const Matrix &matrix): matrix(matrix) { }
+		
+	protected:
+		virtual Transformation* clone_vfunc() const
+			{ return new TransformationPerspective(matrix); }
+		
+		virtual Transformation* create_inverted_vfunc() const
+			{ return new TransformationPerspective(matrix.get_inverted()); }
+		
+		virtual Point transform_vfunc(const Point &x) const
+			{ return (matrix*Vector3(x[0], x[1], 1)).divide_z().to_2d(); }
+		
+		virtual Matrix2 derivative_vfunc(const Point &x) const {
+			Real w = matrix.m02*x[0] + matrix.m12*x[1] + matrix.m22;
+			w = approximate_zero(w) ? Real(0) : 1/w;
+			return Matrix2(matrix.m00*w, matrix.m01*w, matrix.m10*w, matrix.m11*w);
+		}
+		
+		virtual Bounds transform_bounds_vfunc(const Bounds &bounds) const
+			{ return transform_bounds_perspective(matrix, bounds); }
+		
+		virtual bool can_merge_outer_vfunc(const Transformation &other) const {
+			return (bool)dynamic_cast<const TransformationPerspective*>(&other)
+				|| (bool)dynamic_cast<const rendering::TransformationAffine*>(&other);
+		}
+		
+		virtual bool can_merge_inner_vfunc(const Transformation &other) const
+			{ return can_merge_outer_vfunc(other); }
+			
+		virtual void merge_outer_vfunc(const Transformation &other) {
+			if (const TransformationPerspective *perspective = dynamic_cast<const TransformationPerspective*>(&other)) {
+				matrix = perspective->matrix * matrix;
+			} else
+			if (const rendering::TransformationAffine *affine = dynamic_cast<const rendering::TransformationAffine*>(&other)) {
+				matrix = affine->matrix * matrix;
+			} else {
+				assert(false);
+			}
+		}
+		
+		virtual void merge_inner_vfunc(const Transformation &other) {
+			if (const TransformationPerspective *perspective = dynamic_cast<const TransformationPerspective*>(&other)) {
+				matrix *= perspective->matrix;
+			} else
+			if (const rendering::TransformationAffine *affine = dynamic_cast<const rendering::TransformationAffine*>(&other)) {
+				matrix *= affine->matrix;
+			} else {
+				assert(false);
+			}
+		}
+		
+	public:
+		void transform_bounds_layered(
+			LayerList &out_layers,
+			const Bounds &bounds,
+			Real step ) const
+		{
+			transform_bounds_layered(out_layers, matrix, bounds, step);
+		}
+		
+		static Bounds transform_bounds_perspective(
+			const Matrix &matrix,
+			const Bounds &bounds )
+		{
+			if (!bounds.rect.valid())
+				return Bounds();
+			
+			const Matrix norm_matrix = matrix.get_normalized_by_z();
+			const Real A = norm_matrix.m02;
+			const Real B = norm_matrix.m12;
+			const Real C = norm_matrix.m22;
+			if (A*A + B*B <= real_precision<Real>() * real_precision<Real>())
+				return rendering::TransformationAffine::transform_bounds_affine(norm_matrix, bounds);
+			
+			const Real horizonw = real_precision<Real>();
+			
+			Bounds out_bounds;
+			
+			Real minw =  INFINITY;
+			Real maxw = -INFINITY;
+			bool found = false;
+			const Vector3 in_corners[4] = {
+				Vector3(bounds.rect.minx, bounds.rect.miny, 1),
+				Vector3(bounds.rect.minx, bounds.rect.maxy, 1),
+				Vector3(bounds.rect.maxx, bounds.rect.miny, 1),
+				Vector3(bounds.rect.maxx, bounds.rect.maxy, 1) };
+			for(int i = 0; i < 4; ++i) {
+				const Vector3 v = norm_matrix*in_corners[i];
+				const Real w = v[2];
+				if (w > horizonw) {
+					const Real k = 1/w;
+					const Vector p(v[0]*k, v[1]*k);
+					if (found) out_bounds.rect.expand(p);
+						  else out_bounds.rect.set_point(p);
+					found = true;
+					if (w < minw) minw = w;
+					if (w > maxw) maxw = w;
+				}
+			}
+			if (!found)
+				return Bounds();
+			
+			if (horizonw >= real_precision<Real>()) {
+				Vector line[2];
+				if (truncate_line(line, bounds.rect, A, B, C - horizonw)) {
+					const Real horizonw_div = 1/horizonw;
+					for(int i = 0; i < 2; ++i) {
+						Vector3 v = norm_matrix*Vector3(line[i][0], line[i][1], 1);
+						out_bounds.rect.expand( Vector(v[0]*horizonw_div, v[1]*horizonw_div) );
+					}
+					minw = horizonw;
+				}
+			}
+			
+			const Real midw = exp((log(minw) + log(maxw))*0.5);
+			const Real kwx = 1/(bounds.resolution[0] * midw);
+			const Real kwy = 1/(bounds.resolution[1] * midw);
+			out_bounds.resolution = rendering::TransformationAffine::calc_optimal_resolution(
+				Matrix2( norm_matrix.m00*kwx, norm_matrix.m01*kwx,
+						 norm_matrix.m10*kwy, norm_matrix.m11*kwy ));
+			
+			return out_bounds;
+		}
+		
+		static void transform_bounds_layered(
+			LayerList &out_layers,
+			const Matrix &matrix,
+			const Bounds &bounds,
+			Real step )
+		{
+			if (!bounds.is_valid())
+				return;
+			
+			Matrix norm_matrix = matrix.get_normalized_by_z();
+			step = std::max(Real(1.1), step);
+			
+			// calc coefficient for equatation of "horizontal" line: A*x + B*y + C = 1/w (aka A*x + B*y = 1/w - C)
+			//                     equatation of line of horizon is: A*x + B*y + C = 0   (aka A*x + B*y = -C)
+			const Real A = norm_matrix.m02;
+			const Real B = norm_matrix.m12;
+			const Real C = norm_matrix.m22;
+			
+			const Real krx = 1/bounds.resolution[0];
+			const Real kry = 1/bounds.resolution[1];
+			
+			const Real hd = sqrt(A*A*krx*krx + B*B*kry*kry);
+			if (hd <= real_precision<Real>()) {
+				if (fabs(C) < real_precision<Real>())
+					return; // matrix is not invertible
+				
+				// orthogonal projection, no perspective, no subdiviosions, just make single layer
+				out_layers.push_back(Layer(
+					bounds.rect,
+					rendering::TransformationAffine::transform_bounds_affine(norm_matrix, bounds),
+					Matrix3( 0, 0, 0, // alpha always one
+							 0, 0, 0,
+							 1, 1, 1 ) ));
+				return;
+			}
+
+			// calc base resolution
+			const Vector resolution = rendering::TransformationAffine::calc_optimal_resolution(Matrix2(
+				norm_matrix.m00*krx, norm_matrix.m01*krx,
+				norm_matrix.m10*kry, norm_matrix.m11*kry ));
+			if (resolution[0] <= real_precision<Real>() || resolution[1] <= real_precision<Real>())
+				return; // cannot calc resolution, seems if matrix is not invertible
+
+			// corners
+			Vector3 corners[4] = {
+				Vector3(bounds.rect.minx, bounds.rect.miny, 1),
+				Vector3(bounds.rect.minx, bounds.rect.maxy, 1),
+				Vector3(bounds.rect.maxx, bounds.rect.miny, 1),
+				Vector3(bounds.rect.maxx, bounds.rect.maxy, 1) };
+			
+			// find visible w range
+			const Real horizonw1_inv = hd;
+			const Real horizonw1 = 1/hd;
+			const Real horizonw2 = 1/(hd*std::min(Real(2), step));
+			const Real horizonw3 = 1/(hd*step);
+			Real maxw = -INFINITY, minw = INFINITY;
+			Vector3 transformed_corners[4];
+			for(int i = 0; i < 4; ++i) {
+				Vector3 p = norm_matrix * corners[i];
+				if (approximate_greater(p[2], horizonw1_inv)) {
+					Real w = 1/p[2];
+					transformed_corners[i] = Vector3(p[0]*w, p[1]*w, w);
+					if (minw > w) minw = w;
+					if (maxw < w) maxw = w;
+				} else {
+					maxw = horizonw1;
+				}
+			}
+			if (approximate_greater_or_equal(minw, maxw))
+				return; // all bounds too thin
+			const Real maxw3 = std::min(maxw, horizonw3);
+
+			// steps
+			const Real stepLog = log(step);
+			int minlog = (int)approximate_floor( log(minw)/stepLog );
+			int maxlog = (int)approximate_ceil( log(maxw3)/stepLog );
+			if (maxlog < minlog) maxlog = minlog;
+			
+			Real w = pow(step, Real(minlog));
+			for(int i = minlog; i <= maxlog; ++i, w *= step) {
+				// w range
+				const Real w0  = w/step;
+				const Real w1  = std::min(w*step, horizonw1);
+				
+				// alpha ranges
+				const Real aw0 = w0;
+				const Real aw1 = w;
+				const Real bw0 = i == maxlog ? horizonw1 : w1;
+				const Real bw1 = i == maxlog ? horizonw2 : w;
+				
+				// find corners of layer region
+				int corners_count = 0;
+				Vector layer_corners[8];
+				Vector layer_corners_orig[8];
+				for(int j = 0; j < 4; ++j) {
+					if ( transformed_corners[j][2]
+					  && approximate_greater_or_equal(transformed_corners[j][2], w0)
+					  && approximate_less_or_equal(transformed_corners[j][2], w1) )
+					{
+						layer_corners[corners_count] = transformed_corners[j].to_2d();
+						layer_corners_orig[corners_count] = corners[j].to_2d();
+						++corners_count;
+					}
+				}
+				if (truncate_line(layer_corners_orig + corners_count, bounds.rect, A, B, C - 1/w0)) {
+					for(int j = 0; j < 2; ++j, ++corners_count)
+						layer_corners[corners_count] =
+							( norm_matrix * Vector3(
+								layer_corners_orig[corners_count][0],
+								layer_corners_orig[corners_count][1], 1 )).to_2d() * w0;
+				}
+				if (truncate_line(layer_corners_orig + corners_count, bounds.rect, A, B, C - 1/w1)) {
+					for(int j = 0; j < 2; ++j, ++corners_count)
+						layer_corners[corners_count] =
+							( norm_matrix * Vector3(
+								layer_corners_orig[corners_count][0],
+								layer_corners_orig[corners_count][1], 1 )).to_2d() * w1;
+				}
+				if (!corners_count)
+					continue;
+				
+				// calc bounds
+				Rect layer_rect(layer_corners[0]);
+				Rect layer_rect_orig(layer_corners_orig[0]);
+				for(int j = 1; j < corners_count; ++j) {
+					layer_rect.expand(layer_corners[j]);
+					layer_rect_orig.expand(layer_corners_orig[j]);
+				}
+				if (!layer_rect.valid() || !layer_rect_orig.valid())
+					continue;
+				
+				// make layer
+				out_layers.push_back( Layer(
+					layer_rect_orig,
+					Bounds(layer_rect, resolution/w),
+					make_alpha_matrix(
+						1/aw0, 1/aw1, 1/bw0, 1/bw1,
+						Vector3(norm_matrix.m02, norm_matrix.m12, norm_matrix.m22) ) ));
+			}
+		}
+	};
+	
+	
+	class TaskTransformationPerspective: public rendering::TaskTransformation
+	{
+	public:
+		typedef etl::handle<TaskTransformationPerspective> Handle;
+		static Token token;
+		virtual Token::Handle get_token() const { return token.handle(); }
+
+	protected:
+		TransformationPerspective::LayerList layers;
+
+	public:
+		rendering::Holder<TransformationPerspective> transformation;
+
+		virtual rendering::Transformation::Handle get_transformation() const
+			{ return transformation.handle(); }
+
+		virtual int get_pass_subtask_index() const {
+			if (is_simple() && transformation->matrix.is_identity())
+				return 0;
+			return TaskTransformation::get_pass_subtask_index();
+		}
+		
+		virtual void set_coords_sub_tasks() {
+			const Real step = 2;
+
+			const Task::Handle task = sub_task();
+			const rendering::Transformation::Bounds bounds(
+				source_rect, get_pixels_per_unit().multiply_coords(supersample));
+			const Matrix back_matrix = transformation->matrix
+									  .get_normalized_by_z()
+									  .get_inverted()
+									  .get_normalized_by_z();
+
+			sub_tasks.clear();
+			layers.clear();
+			
+			TransformationPerspective::LayerList new_layers;
+			
+			if ( task
+			  && is_valid_coords()
+			  && approximate_greater(supersample[0], Real(0))
+			  && approximate_greater(supersample[1], Real(0)) )
+			{
+				TransformationPerspective::transform_bounds_layered(new_layers, back_matrix, bounds, step);
+			}
+			
+			Rect sum_rect;
+			for(TransformationPerspective::LayerList::const_iterator i = new_layers.begin(); i != new_layers.end(); ++i) {
+				rendering::Transformation::DiscreteBounds discrete_bounds =
+					rendering::Transformation::make_discrete_bounds( i->bounds );
+				if (discrete_bounds.is_valid()) {
+					Task::Handle t = task->clone_recursive();
+					sub_tasks.push_back(t);
+					layers.push_back(*i);
+					t->set_coords(discrete_bounds.rect, discrete_bounds.size);
+					
+					sum_rect |= i->orig_rect;
+				}
+			}
+			trunc_source_rect(sum_rect);
+			
+			if (sub_tasks.empty()) trunc_to_zero();
+		}
+	};
+	
+	
+	class TaskTransformationPerspectiveSW: public TaskTransformationPerspective, public rendering::TaskSW
+	{
+	public:
+		typedef etl::handle<TaskTransformationPerspectiveSW> Handle;
+		static Token token;
+		virtual Token::Handle get_token() const { return token.handle(); }
+
+	private:
+		template<synfig::Surface::sampler_cook::func func, bool interpolate = true>
+		static void process_layer(
+			synfig::Surface &dst_surface,
+			const synfig::Surface &src_surface,
+			const RectInt &rect,
+			const Matrix &matrix,
+			const Matrix &alpha_matrix )
+		{
+			const int width = rect.get_width();
+			
+			const Vector3 coord_dx = matrix.row_x();
+			const Vector3 coord_dy = matrix.row_y() - coord_dx*width;
+			Vector3 coord = matrix*Vector3(rect.minx, rect.miny, 1);
+			
+			// assume that alpha w coord is equal to coord w
+			const Vector alpha_dx = alpha_matrix.row_x().to_2d();
+			const Vector alpha_dy = alpha_matrix.row_y().to_2d() - alpha_dx*width;
+			Vector alpha = (alpha_matrix*Vector3(rect.minx, rect.miny, 1)).to_2d();
+			
+			const int dr = dst_surface.get_pitch()/sizeof(Color) - width;
+			Color *c = &dst_surface[rect.miny][rect.minx];
+			
+			for(int r = rect.miny; r < rect.maxy; ++r, c += dr, coord += coord_dy, alpha += alpha_dy) {
+				for(Color *end = c + width; c != end; ++c, coord += coord_dx, alpha += alpha_dx) {
+					if (coord[2] > real_precision<Real>()) {
+						const Real w = 1/coord[2];
+						const Real a = clamp(alpha[0]*w, Real(0), Real(1)) * clamp(alpha[1]*w, Real(0), Real(1));
+						if (interpolate) {
+							if (a > real_precision<Real>())
+								*c += func(&src_surface, coord[0]*w, coord[1]*w).premult_alpha() * a;
+						} else {
+							if (approximate_greater(a, Real(0.5)))
+								*c = func(&src_surface, coord[0]*w, coord[1]*w);
+						}
+					}
+				}
+			}
+		}
+
+	public:
+		virtual bool run(RunParams&) const
+		{
+			if (!is_valid())
+				return true;
+
+			LockWrite ldst(this);
+			if (!ldst)
+				return false;
+			synfig::Surface &dst_surface = ldst->get_surface();
+
+			// target rect
+			const RectInt base_rect = RectInt(0, 0, dst_surface.get_w(), dst_surface.get_h()) & target_rect;
+			if (!base_rect.is_valid())
+				return true;
+
+			// transformation matrix
+			const Matrix from_pixels_matrix =
+			    Matrix3().set_translate( source_rect.get_min() )
+			  * Matrix3().set_scale( get_units_per_pixel() )
+			  * Matrix3().set_translate( -target_rect.minx, -target_rect.miny );
+			const Matrix to_pixels_matrix = from_pixels_matrix.get_inverted();
+			const Matrix back_matrix =
+				transformation->matrix
+			   .get_normalized_by_z()
+			   .get_inverted()
+			   .get_normalized_by_z();
+			const Matrix base_matrix =
+				back_matrix
+			  * from_pixels_matrix;
+
+			// process layers
+			bool demult = false;
+			TransformationPerspective::LayerList::const_iterator li = layers.begin();
+			for(List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end() && li != layers.end(); ++i, ++li) {
+				if (!*i) continue;
+				
+				// rect
+				const Rect orig_rect = li->orig_rect & source_rect;
+				const Rect rect_float(
+					to_pixels_matrix.get_transformed(orig_rect.get_min()),
+					to_pixels_matrix.get_transformed(orig_rect.get_max()) );
+				const RectInt rect = RectInt(
+					(int)approximate_floor(rect_float.minx),
+					(int)approximate_floor(rect_float.miny),
+					(int)approximate_ceil (rect_float.maxx),
+					(int)approximate_ceil (rect_float.maxy) ) & base_rect;
+				if (!rect.is_valid())
+					continue;
+				
+				// get source
+				LockRead lsrc(*i);
+				if (!lsrc)
+					continue;
+				const synfig::Surface &src_surface = lsrc->get_surface();
+				
+				// matrix
+				const Matrix matrix =
+					Matrix3().set_translate( (*i)->target_rect.minx, (*i)->target_rect.miny )
+				  * Matrix3().set_scale( (*i)->get_pixels_per_unit() )
+				  * Matrix3().set_translate( -(*i)->source_rect.get_min() )
+				  * base_matrix;
+				const Matrix alpha_matrix =
+					li->alpha_matrix
+				  * from_pixels_matrix;
+				
+				// process
+				switch(interpolation) {
+					case Color::INTERPOLATION_LINEAR:
+						process_layer<synfig::Surface::sampler_cook::linear_sample>(
+							dst_surface, src_surface, rect, matrix, alpha_matrix );
+						demult = true;
+						break;
+					case Color::INTERPOLATION_COSINE:
+						process_layer<synfig::Surface::sampler_cook::cosine_sample>(
+							dst_surface, src_surface, rect, matrix, alpha_matrix );
+						demult = true;
+						break;
+					case Color::INTERPOLATION_CUBIC:
+						process_layer<synfig::Surface::sampler_cook::cubic_sample>(
+							dst_surface, src_surface, rect, matrix, alpha_matrix );
+						demult = true;
+						break;
+					default: // nearest
+						process_layer<synfig::Surface::sampler_cook::nearest_sample, false>(
+							dst_surface, src_surface, rect, matrix, alpha_matrix );
+						break;
+				};
+			}
+			
+			// demult alpha
+			if (demult) {
+				const int width = base_rect.get_width();
+				const int dr = dst_surface.get_pitch()/sizeof(Color) - width;
+				Color *c = &dst_surface[base_rect.miny][base_rect.minx];
+				for(int r = base_rect.miny; r < base_rect.maxy; ++r, c += dr)
+					for(Color *end = c + width; c != end; ++c)
+						*c = c->demult_alpha();
+			}
+			
+			return true;
+		}
+	};
+	
+	
+	rendering::Task::Token TaskTransformationPerspective::token(
+		DescAbstract<TaskTransformationPerspective>("TransformationPerspective") );
+	rendering::Task::Token TaskTransformationPerspectiveSW::token(
+		DescReal< TaskTransformationPerspectiveSW,
+				  TaskTransformationPerspective >
+					("TaskTransformationPerspectiveSW") );
+}
+
+
+class lyr_std::Warp_Trans: public Transform
 {
-	param_horizon=ValueBase(Real(4));
+private:
+	etl::handle<const Warp> layer;
+public:
+	Warp_Trans(const Warp* x):
+		Transform(x->get_guid()), layer(x) { }
+	Vector perform(const Vector& x) const
+		{ return layer->transform(x); }
+	Vector unperform(const Vector& x) const
+		{ return layer->back_transform(x); }
+	Rect perform(const Rect& x) const
+		{ return layer->transform(x); }
+	Rect unperform(const Rect& x) const
+		{ return layer->back_transform(x); }
+	String get_string() const
+		{ return "warp"; }
+};
+
+
+Warp::Warp():
+	param_src_tl  ( Point(-2  ,  2  ) ),
+	param_src_br  ( Point( 2  , -2  ) ),
+	param_dest_tl ( Point(-1.8,  2.1) ),
+	param_dest_tr ( Point( 1.8,  2.1) ),
+	param_dest_bl ( Point(-2.2, -2  ) ),
+	param_dest_br ( Point( 2.2, -2  ) ),
+	param_clip    ( true ),
+	valid         ( ),
+	affine        ( ),
+	clip          ( )
+{
 	sync();
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 }
 
 Warp::~Warp()
-{
-}
-
-inline Point
-Warp::transform_forward(const Point& p)const
-{
-	return Point(
-		(inv_matrix[0][0]*p[0] + inv_matrix[0][1]*p[1] + inv_matrix[0][2])/(inv_matrix[2][0]*p[0] + inv_matrix[2][1]*p[1] + inv_matrix[2][2]),
-		(inv_matrix[1][0]*p[0] + inv_matrix[1][1]*p[1] + inv_matrix[1][2])/(inv_matrix[2][0]*p[0] + inv_matrix[2][1]*p[1] + inv_matrix[2][2])
-	);
-}
-
-inline Point
-Warp::transform_backward(const Point& p)const
-{
-	return Point(
-		(matrix[0][0]*p[0] + matrix[0][1]*p[1] + matrix[0][2])/(matrix[2][0]*p[0] + matrix[2][1]*p[1] + matrix[2][2]),
-		(matrix[1][0]*p[0] + matrix[1][1]*p[1] + matrix[1][2])/(matrix[2][0]*p[0] + matrix[2][1]*p[1] + matrix[2][2])
-	);
-}
-
-inline Real
-Warp::transform_forward_z(const Point& p)const
-{
-	return inv_matrix[2][0]*p[0] + inv_matrix[2][1]*p[1] + inv_matrix[2][2];
-}
-
-inline Real
-Warp::transform_backward_z(const Point& p)const
-{
-	return matrix[2][0]*p[0] + matrix[2][1]*p[1] + matrix[2][2];
-}
-
-/*
-#define transform_forward(p) Point(	\
-		cache_a*p[0] + cache_b*p[1] + cache_c*p[0]*p[1] + cache_d,	\
-		cache_e*p[0] + cache_f*p[1] + cache_i*p[0]*p[1] + cache_j )
-
-#define transform_backward(p) Point(	\
-		cache_a*p[0] + cache_b*p[1] + cache_c*p[0]*p[1] + cache_d,	\
-		cache_e*p[0] + cache_f*p[1] + cache_i*p[0]*p[1] + cache_j )
-*/
-
-#define triangle_area(a,b,c)	(0.5*(-b[0]*a[1]+c[0]*a[1]+a[0]*b[1]-c[0]*b[1]-a[0]*c[1]+b[0]*c[1]))
-#define quad_area(a,b,c,d) (triangle_area(a,b,c)+triangle_area(a,c,d))
-
-Real mat3_determinant(Real matrix[3][3])
-{
-  Real ret;
-
-  ret  = (matrix[0][0] *
-                  (matrix[1][1] * matrix[2][2] -
-                   matrix[1][2] * matrix[2][1]));
-  ret -= (matrix[1][0] *
-                  (matrix[0][1] * matrix[2][2] -
-                   matrix[0][2] * matrix[2][1]));
-  ret += (matrix[2][0] *
-                  (matrix[0][1] * matrix[1][2] -
-                   matrix[0][2] * matrix[1][1]));
-
-return ret;
-}
-
-void mat3_invert(Real in[3][3], Real out[3][3])
-{
-  Real det(mat3_determinant(in));
-
-	if (det == 0.0)
-    return;
-
-  det = 1.0 / det;
-
-  out[0][0] =   (in[1][1] * in[2][2] -
-                       in[1][2] * in[2][1]) * det;
-
-  out[1][0] = - (in[1][0] * in[2][2] -
-                       in[1][2] * in[2][0]) * det;
-
-  out[2][0] =   (in[1][0] * in[2][1] -
-                       in[1][1] * in[2][0]) * det;
-
-  out[0][1] = - (in[0][1] * in[2][2] -
-                       in[0][2] * in[2][1]) * det;
-
-  out[1][1] =   (in[0][0] * in[2][2] -
-                       in[0][2] * in[2][0]) * det;
-
-  out[2][1] = - (in[0][0] * in[2][1] -
-                       in[0][1] * in[2][0]) * det;
-
-  out[0][2] =   (in[0][1] * in[1][2] -
-                       in[0][2] * in[1][1]) * det;
-
-  out[1][2] = - (in[0][0] * in[1][2] -
-                       in[0][2] * in[1][0]) * det;
-
-  out[2][2] =   (in[0][0] * in[1][1] -
-                       in[0][1] * in[1][0]) * det;
-
-}
+	{ }
 
 void
 Warp::sync()
 {
-/*	cache_a=(-dest_tl[0]+dest_tr[0])/(src_br[1]-src_tl[1]);
-	cache_b=(-dest_tl[0]+dest_bl[0])/(src_br[0]-src_tl[0]);
-	cache_c=(dest_tl[0]-dest_tr[0]+dest_br[0]-dest_bl[0])/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
-	cache_d=dest_tl[0];
+	valid = false;
+	
+	const Point src_tl  = param_src_tl.get(Point());
+	const Point src_br  = param_src_br.get(Point());
+	const Point dest_tl = param_dest_tl.get(Point());
+	const Point dest_tr = param_dest_tr.get(Point());
+	const Point dest_bl = param_dest_bl.get(Point());
+	const Point dest_br = param_dest_br.get(Point());
+	
+	clip = param_clip.get(bool());
+	clip_rect = Rect(src_tl, src_br);
+	
+	const Vector src_dist = src_br - src_tl;
+	if (approximate_not_zero(src_dist[0]) && approximate_not_zero(src_dist[1])) {
+		matrix = make_matrix( dest_tl, dest_tr, dest_bl, dest_br )
+			   * Matrix().set_scale( 1/src_dist[0], 1/src_dist[1] ) 
+			   * Matrix().set_translate( -src_tl );
+		if (matrix.is_invertible()) {
+			back_matrix = matrix.get_inverted().get_normalized_by_z();
+			affine = approximate_zero(matrix.m02) && approximate_zero(matrix.m12);
+			valid = true;
+		}
+	}
+	
+	if (clip && !clip_rect.is_valid() && !clip_rect.is_nan_or_inf())
+		valid = false;
+}
 
-	cache_e=(-dest_tl[1]+dest_tr[1])/(src_br[0]-src_tl[0]);
-	cache_f=(-dest_tl[1]+dest_bl[1])/(src_br[1]-src_tl[1]);
-	cache_i=(dest_tl[1]-dest_tr[1]+dest_br[1]-dest_bl[1])/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
-	cache_j=dest_tl[1];
-*/
+Point
+Warp::transform(const Point &x) const
+{
+	if (!valid) return Vector::nan();
+	Vector3 p = matrix*Vector3(x[0], x[1], 1);
+	return p[2] > real_precision<Real>() ? p.to_2d()/p[2] : Vector::nan();
+}
 
-/*	matrix[2][0]=(dest_tl[0]-dest_tr[0]+dest_br[0]-dest_bl[0])/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
-	matrix[2][1]=(dest_tl[1]-dest_tr[1]+dest_br[1]-dest_bl[1])/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
-	matrix[2][2]=quad_area(dest_tl,dest_tr,dest_br,dest_bl)/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
+Point
+Warp::back_transform(const Point &x) const
+{
+	if (!valid) return Vector::nan();
+	Vector3 p = back_matrix*Vector3(x[0], x[1], 1);
+	return p[2] > real_precision<Real>() ? p.to_2d()/p[2] : Vector::nan();
+}
 
-	matrix[0][0]=-(-dest_tl[1]+dest_tr[1])/(src_br[0]-src_tl[0]);
-	matrix[0][1]=-(-dest_tl[1]+dest_bl[1])/(src_br[1]-src_tl[1]);
+Rect
+Warp::transform(const Rect &x) const
+{
+	return valid
+		 ? TransformationPerspective::transform_bounds_perspective(
+			 matrix, rendering::Transformation::Bounds(x)).rect
+		 : Rect();
+}
 
-	matrix[1][0]=-(-dest_tl[0]+dest_tr[0])/(src_br[1]-src_tl[1]);
-	matrix[1][1]=-(-dest_tl[0]+dest_bl[0])/(src_br[0]-src_tl[0]);
+Rect
+Warp::back_transform(const Rect &x) const
+{
+	return valid
+		 ? TransformationPerspective::transform_bounds_perspective(
+			 back_matrix, rendering::Transformation::Bounds(x)).rect
+		 : Rect();
+}
 
-	matrix[0][2]=matrix[0][0]*dest_tl[0] + matrix[0][1]*dest_tl[1];
-	matrix[1][2]=matrix[1][0]*dest_tl[0] + matrix[1][1]*dest_tl[1];
-*/
-	Point src_tl=param_src_tl.get(Point());
-	Point src_br=param_src_br.get(Point());
-	Point dest_tl=param_dest_tl.get(Point());
-	Point dest_tr=param_dest_tr.get(Point());
-	Point dest_bl=param_dest_bl.get(Point());
-	Point dest_br=param_dest_br.get(Point());
-#define matrix tmp
-	Real tmp[3][3];
+Layer::Handle
+Warp::hit_check(Context context, const Point &p)const
+{
+	if (!valid) return Layer::Handle();
+	const Point pp = back_transform(p);
+	if (clip && !clip_rect.is_inside(pp)) return Layer::Handle();
+	return context.hit_check(pp);
+}
 
-	const Real& x1(min(src_br[0],src_tl[0]));
-	const Real& y1(min(src_br[1],src_tl[1]));
-	const Real& x2(max(src_br[0],src_tl[0]));
-	const Real& y2(max(src_br[1],src_tl[1]));
+Color
+Warp::get_color(Context context, const Point &p)const
+{
+	if (!valid) return Color::alpha();
+	const Point pp = back_transform(p);
+	if (clip && !clip_rect.is_inside(pp)) return Color::alpha();
+	return context.get_color(pp);
+}
 
-	Real tx1(dest_bl[0]);
-	Real ty1(dest_bl[1]);
-	Real tx2(dest_br[0]);
-	Real ty2(dest_br[1]);
-	Real tx3(dest_tl[0]);
-	Real ty3(dest_tl[1]);
-	Real tx4(dest_tr[0]);
-	Real ty4(dest_tr[1]);
+Rect
+Warp::get_bounding_rect() const
+	{ return Rect(); }
 
-	if(src_br[0]<src_tl[0])
-		swap(tx3,tx4),swap(ty3,ty4),swap(tx1,tx2),swap(ty1,ty2);
-
-	if(src_br[1]>src_tl[1])
-		swap(tx3,tx1),swap(ty3,ty1),swap(tx4,tx2),swap(ty4,ty2);
-
-	Real scalex;
-	Real scaley;
-
-  scalex = scaley = 1.0;
-
-  if ((x2 - x1) > 0)
-    scalex = 1.0 / (Real) (x2 - x1);
-
-  if ((y2 - y1) > 0)
-    scaley = 1.0 / (Real) (y2 - y1);
-
-  /* Determine the perspective transform that maps from
-   * the unit cube to the transformed coordinates
-   */
-  {
-    Real dx1, dx2, dx3, dy1, dy2, dy3;
-
-    dx1 = tx2 - tx4;
-    dx2 = tx3 - tx4;
-    dx3 = tx1 - tx2 + tx4 - tx3;
-
-    dy1 = ty2 - ty4;
-    dy2 = ty3 - ty4;
-    dy3 = ty1 - ty2 + ty4 - ty3;
-
-    /*  Is the mapping affine?  */
-    if ((dx3 == 0.0) && (dy3 == 0.0))
-      {
-        matrix[0][0] = tx2 - tx1;
-        matrix[0][1] = tx4 - tx2;
-        matrix[0][2] = tx1;
-        matrix[1][0] = ty2 - ty1;
-        matrix[1][1] = ty4 - ty2;
-        matrix[1][2] = ty1;
-        matrix[2][0] = 0.0;
-        matrix[2][1] = 0.0;
-      }
-    else
-      {
-        Real det1, det2;
-
-        det1 = dx3 * dy2 - dy3 * dx2;
-        det2 = dx1 * dy2 - dy1 * dx2;
-
-        if (det1 == 0.0 && det2 == 0.0)
-          matrix[2][0] = 1.0;
-        else
-          matrix[2][0] = det1 / det2;
-
-        det1 = dx1 * dy3 - dy1 * dx3;
-
-        if (det1 == 0.0 && det2 == 0.0)
-          matrix[2][1] = 1.0;
-        else
-          matrix[2][1] = det1 / det2;
-
-        matrix[0][0] = tx2 - tx1 + matrix[2][0] * tx2;
-        matrix[0][1] = tx3 - tx1 + matrix[2][1] * tx3;
-        matrix[0][2] = tx1;
-
-        matrix[1][0] = ty2 - ty1 + matrix[2][0] * ty2;
-        matrix[1][1] = ty3 - ty1 + matrix[2][1] * ty3;
-        matrix[1][2] = ty1;
-      }
-
-    matrix[2][2] = 1.0;
-  }
-#undef matrix
-
-	Real scaletrans[3][3]={
-			{ scalex, 0, -x1*scalex },
-			{ 0, scaley, -y1*scaley },
-			{ 0, 0, 1 }
-	};
-
-	Real t1,t2,t3;
-
-	for (int i = 0; i < 3; i++)
-    {
-      t1 = tmp[i][0];
-      t2 = tmp[i][1];
-      t3 = tmp[i][2];
-
-      for (int j = 0; j < 3; j++)
-        {
-          matrix[i][j]  = t1 * scaletrans[0][j];
-          matrix[i][j] += t2 * scaletrans[1][j];
-          matrix[i][j] += t3 * scaletrans[2][j];
-        }
-    }
-
-	mat3_invert(matrix, inv_matrix);
-/*
-	gimp_matrix3_identity  (result);
-  gimp_matrix3_translate (result, -x1, -y1);
-  gimp_matrix3_scale     (result, scalex, scaley);
-  gimp_matrix3_mult      (&matrix, result);
-*/
+Rect
+Warp::get_full_bounding_rect(Context context)const
+{
+	if (!valid)
+		return Rect();
+	Rect sub_rect = context.get_full_bounding_rect();
+	sub_rect |= get_bounding_rect();
+	if (clip)
+		sub_rect &= clip_rect;
+	return transform(sub_rect);
 }
 
 bool
 Warp::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE_PLUS(param_src_tl,sync());
-	IMPORT_VALUE_PLUS(param_src_br,sync());
+	IMPORT_VALUE_PLUS(param_src_tl ,sync());
+	IMPORT_VALUE_PLUS(param_src_br ,sync());
 	IMPORT_VALUE_PLUS(param_dest_tl,sync());
 	IMPORT_VALUE_PLUS(param_dest_tr,sync());
 	IMPORT_VALUE_PLUS(param_dest_bl,sync());
 	IMPORT_VALUE_PLUS(param_dest_br,sync());
-	IMPORT_VALUE(param_clip);
-	IMPORT_VALUE(param_horizon);
-
+	IMPORT_VALUE_PLUS(param_clip   ,sync());
 	return false;
 }
 
@@ -373,7 +884,6 @@ Warp::get_param(const String &param)const
 	EXPORT_VALUE(param_dest_bl);
 	EXPORT_VALUE(param_dest_br);
 	EXPORT_VALUE(param_clip);
-	EXPORT_VALUE(param_horizon);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -425,934 +935,53 @@ Warp::get_param_vocab()const
 		.set_local_name(_("Clip"))
 	);
 
-	ret.push_back(ParamDesc("horizon")
-		.set_local_name(_("Horizon"))
-		.set_description(_("Height that determines the horizon in perspectives"))
-	);
-
 	return ret;
 }
 
-
-class lyr_std::Warp_Trans : public Transform
-{
-	etl::handle<const Warp> layer;
-public:
-	Warp_Trans(const Warp* x):Transform(x->get_guid()),layer(x) { }
-
-	Vector perform(const Vector& x)const
-	{
-		return layer->transform_backward(x);
-		//Point pos(x-layer->origin);
-		//return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
-	}
-
-	Vector unperform(const Vector& x)const
-	{
-
-		return layer->transform_forward(x);
-		//Point pos(x-layer->origin);
-		//return Point(layer->cos_val*pos[0]+layer->sin_val*pos[1],-layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
-	}
-
-	String get_string()const
-	{
-		return "warp";
-	}
-};
 etl::handle<Transform>
 Warp::get_transform()const
+	{ return new Warp_Trans(this); }
+
+rendering::Task::Handle
+Warp::build_rendering_task_vfunc(Context context) const
 {
-	return new Warp_Trans(this);
-}
-
-Layer::Handle
-Warp::hit_check(Context context, const Point &p)const
-{
-	Point src_tl=param_src_tl.get(Point());
-	Point src_br=param_src_br.get(Point());
-	bool clip=param_clip.get(bool());
+	if (!valid)
+		return rendering::Task::Handle();
 	
-	Point newpos(transform_forward(p));
-
-	if(clip)
-	{
-		Rect rect(src_tl,src_br);
-		if(!rect.is_inside(newpos))
-			return 0;
-	}
-
-	return context.hit_check(newpos);
-}
-
-Color
-Warp::get_color(Context context, const Point &p)const
-{
-	Point src_tl=param_src_tl.get(Point());
-	Point src_br=param_src_br.get(Point());
-	Real horizon=param_horizon.get(Real());
-	bool clip=param_clip.get(bool());
-
-	Point newpos(transform_forward(p));
-
-	if(clip)
-	{
-		Rect rect(src_tl,src_br);
-		if(!rect.is_inside(newpos))
-			return Color::alpha();
-	}
-
-	const float z(transform_backward_z(newpos));
-	if(z>0 && z<horizon)
-		return context.get_color(newpos);
-	else
-		return Color::alpha();
-}
-
-//#define ACCEL_WARP_IS_BROKEN 1
-
-RendDesc
-Warp::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
-{
-	Point dest_tl=param_dest_tl.get(Point());
-	Point dest_tr=param_dest_tr.get(Point());
-	Point dest_bl=param_dest_bl.get(Point());
-	Point dest_br=param_dest_br.get(Point());
-	Real horizon=param_horizon.get(Real());
-	bool clip=param_clip.get(bool());
-
-	Point tl(renddesc.get_tl());
-	Point br(renddesc.get_br());
-
-	Rect bounding_rect;
-
-	Rect render_rect(tl,br);
-	Rect clip_rect(Rect::full_plane());
-	Rect dest_rect(dest_tl,dest_br); dest_rect.expand(dest_tr).expand(dest_bl);
-
-	Real zoom_factor(1.0);
-
-	{
-		Rect other(render_rect);
-		if(clip)
-			other&=dest_rect;
-
-		Point min(other.get_min());
-		Point max(other.get_max());
-
-		bool init_point_set=false;
-
-		// Point trans_point[4];
-		Point p;
-		// Real trans_z[4];
-		Real z,minz(10000000000000.0f),maxz(0);
-
-		//! \todo checking the 4 corners for 0<=z<horizon*2 and using
-		//! only 4 corners which satisfy this condition isn't the
-		//! right thing to do.  It's possible that none of the 4
-		//! corners fall within that range, and yet content of the
-		//! tile does.
-		p=transform_forward(min);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-
-		p=transform_forward(max);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-
-		swap(min[1],max[1]);
-
-		p=transform_forward(min);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-
-		p=transform_forward(max);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-
-		zoom_factor=(1+(maxz-minz));
-
-	}
-
-	Point min_point(bounding_rect.get_min());
-	Point max_point(bounding_rect.get_max());
-
-	// we're going to divide by the difference of these pairs soon;
-	// if they're the same, we'll be dividing by zero, and we don't
-	// want to do that!
-	// \todo what should we do in this case?
-	if (min_point[0] == max_point[0]) max_point[0] += 0.001;
-	if (min_point[1] == max_point[1]) max_point[1] += 0.001;
-
-	if(tl[0]>br[0])
-	{
-		tl[0]=max_point[0];
-		br[0]=min_point[0];
-	}
-	else
-	{
-		br[0]=max_point[0];
-		tl[0]=min_point[0];
-	}
-	if(tl[1]>br[1])
-	{
-		tl[1]=max_point[1];
-		br[1]=min_point[1];
-	}
-	else
-	{
-		br[1]=max_point[1];
-		tl[1]=min_point[1];
-	}
-
-	const int tmp_d(max(renddesc.get_w(),renddesc.get_h()));
-	Real src_pw=(tmp_d*zoom_factor)/(br[0]-tl[0]);
-	Real src_ph=(tmp_d*zoom_factor)/(br[1]-tl[1]);
-
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-	desc.set_tl(tl);
-	desc.set_br(br);
-	desc.set_wh(ceil_to_int(src_pw*(br[0]-tl[0])),ceil_to_int(src_ph*(br[1]-tl[1])));
-
-	return desc;
-}
-
-bool
-Warp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
-
-	Point src_tl=param_src_tl.get(Point());
-	Point src_br=param_src_br.get(Point());
-	Point dest_tl=param_dest_tl.get(Point());
-	Point dest_tr=param_dest_tr.get(Point());
-	Point dest_bl=param_dest_bl.get(Point());
-	Point dest_br=param_dest_br.get(Point());
-	Real horizon=param_horizon.get(Real());
-	bool clip=param_clip.get(bool());
-
-	SuperCallback stageone(cb,0,9000,10000);
-	SuperCallback stagetwo(cb,9000,10000,10000);
-
-	Real pw=(renddesc.get_w())/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
-	Real ph=(renddesc.get_h())/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
-
-	if(cb && !cb->amount_complete(0,10000))
-		return false;
-
-	Point tl(renddesc.get_tl());
-	Point br(renddesc.get_br());
-
-	Rect bounding_rect;
-
-	Rect render_rect(tl,br);
-	Rect clip_rect(Rect::full_plane());
-	Rect dest_rect(dest_tl,dest_br); dest_rect.expand(dest_tr).expand(dest_bl);
-
-	Real zoom_factor(1.0);
-
-	// Quick exclusion clip, if necessary
-	if(clip && !intersect(render_rect,dest_rect))
-	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-		surface->clear();
-		return true;
-	}
-
-	{
-		Rect other(render_rect);
-		if(clip)
-			other&=dest_rect;
-
-		Point min(other.get_min());
-		Point max(other.get_max());
-
-		bool init_point_set=false;
-
-		// Point trans_point[4];
-		Point p;
-		// Real trans_z[4];
-		Real z,minz(10000000000000.0f),maxz(0);
-
-		//! \todo checking the 4 corners for 0<=z<horizon*2 and using
-		//! only 4 corners which satisfy this condition isn't the
-		//! right thing to do.  It's possible that none of the 4
-		//! corners fall within that range, and yet content of the
-		//! tile does.
-		p=transform_forward(min);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-
-		p=transform_forward(max);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-
-		swap(min[1],max[1]);
-
-		p=transform_forward(min);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-
-		p=transform_forward(max);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-
-		if(!init_point_set)
-		{
-			surface->set_wh(renddesc.get_w(),renddesc.get_h());
-			surface->clear();
-			return true;
-		}
-		zoom_factor=(1+(maxz-minz));
-
-	}
-
-#ifdef ACCEL_WARP_IS_BROKEN
-	return Layer::accelerated_render(context,surface,quality,renddesc, cb);
-#else
-
-	/*swap(tl[1],br[1]);
-	bounding_rect
-		.expand(transform_forward(tl))
-		.expand(transform_forward(br))
-	;
-	swap(tl[1],br[1]);*/
-
-	//warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
-	//warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
-
-	// If we are clipping, then go ahead and clip to the
-	// source rectangle
-	if(clip)
-		clip_rect&=Rect(src_tl,src_br);
-
-	// Bound ourselves to the bounding rectangle of
-	// what is under us
-	clip_rect&=context.get_full_bounding_rect();//.expand_x(abs(zoom_factor/pw)).expand_y(abs(zoom_factor/ph));
-
-	bounding_rect&=clip_rect;
-
-	Point min_point(bounding_rect.get_min());
-	Point max_point(bounding_rect.get_max());
-
-	// we're going to divide by the difference of these pairs soon;
-	// if they're the same, we'll be dividing by zero, and we don't
-	// want to do that!
-	// \todo what should we do in this case?
-	if (min_point[0] == max_point[0]) max_point[0] += 0.001;
-	if (min_point[1] == max_point[1]) max_point[1] += 0.001;
-
-	if(tl[0]>br[0])
-	{
-		tl[0]=max_point[0];
-		br[0]=min_point[0];
-	}
-	else
-	{
-		br[0]=max_point[0];
-		tl[0]=min_point[0];
-	}
-	if(tl[1]>br[1])
-	{
-		tl[1]=max_point[1];
-		br[1]=min_point[1];
-	}
-	else
-	{
-		br[1]=max_point[1];
-		tl[1]=min_point[1];
-	}
-
-
-
-	const int tmp_d(max(renddesc.get_w(),renddesc.get_h()));
-	Real src_pw=(tmp_d*zoom_factor)/(br[0]-tl[0]);
-	Real src_ph=(tmp_d*zoom_factor)/(br[1]-tl[1]);
-
-
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-	//desc.set_flags(RendDesc::PX_ASPECT);
-	desc.set_tl(tl);
-	desc.set_br(br);
-	desc.set_wh(ceil_to_int(src_pw*(br[0]-tl[0])),ceil_to_int(src_ph*(br[1]-tl[1])));
-
-	//warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
-	if(desc.get_w()==0 && desc.get_h()==0)
-	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-		surface->clear();
-		return true;
-	}
-
-	// Recalculate the pixel widths for the src renddesc
-	src_pw=(desc.get_w())/(desc.get_br()[0]-desc.get_tl()[0]);
-	src_ph=(desc.get_h())/(desc.get_br()[1]-desc.get_tl()[1]);
-
-
-	Surface source;
-	source.set_wh(desc.get_w(),desc.get_h());
-
-	if(!context.accelerated_render(&source,quality,desc,&stageone))
-		return false;
-
-	surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	surface->clear();
-
-	Surface::pen pen(surface->begin());
-
-	if(quality<=4)
-	{
-		// CUBIC
-		int x,y;
-		float u,v;
-		Point point,tmp;
-		for(y=0,point[1]=renddesc.get_tl()[1];y<surface->get_h();y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-		{
-			for(x=0,point[0]=renddesc.get_tl()[0];x<surface->get_w();x++,pen.inc_x(),point[0]+=1.0/pw)
-			{
-				tmp=transform_forward(point);
-				const float z(transform_backward_z(tmp));
-				if(!clip_rect.is_inside(tmp) || !(z>0 && z<horizon))
-				{
-					(*surface)[y][x]=Color::alpha();
-					continue;
-				}
-
-				u=(tmp[0]-tl[0])*src_pw;
-				v=(tmp[1]-tl[1])*src_ph;
-
-				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || std::isnan(u) || std::isnan(v))
-					(*surface)[y][x]=context.get_color(tmp);
-				else
-					(*surface)[y][x]=source.cubic_sample(u,v);
-			}
-			if((y&31)==0 && cb)
-			{
-				if(!stagetwo.amount_complete(y,surface->get_h()))
-					return false;
-			}
-		}
-	}
-	else
-	if(quality<=6)
-	{
-		// INTERPOLATION_LINEAR
-		int x,y;
-		float u,v;
-		Point point,tmp;
-		for(y=0,point[1]=renddesc.get_tl()[1];y<surface->get_h();y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-		{
-			for(x=0,point[0]=renddesc.get_tl()[0];x<surface->get_w();x++,pen.inc_x(),point[0]+=1.0/pw)
-			{
-				tmp=transform_forward(point);
-				const float z(transform_backward_z(tmp));
-				if(!clip_rect.is_inside(tmp) || !(z>0 && z<horizon))
-				{
-					(*surface)[y][x]=Color::alpha();
-					continue;
-				}
-
-				u=(tmp[0]-tl[0])*src_pw;
-				v=(tmp[1]-tl[1])*src_ph;
-
-				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || std::isnan(u) || std::isnan(v))
-					(*surface)[y][x]=context.get_color(tmp);
-				else
-					(*surface)[y][x]=source.linear_sample(u,v);
-			}
-			if((y&31)==0 && cb)
-			{
-				if(!stagetwo.amount_complete(y,surface->get_h()))
-					return false;
-			}
-		}
-	}
-	else
-	{
-		// NEAREST_NEIGHBOR
-		int x,y;
-		float u,v;
-		Point point,tmp;
-		for(y=0,point[1]=renddesc.get_tl()[1];y<surface->get_h();y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-		{
-			for(x=0,point[0]=renddesc.get_tl()[0];x<surface->get_w();x++,pen.inc_x(),point[0]+=1.0/pw)
-			{
-				tmp=transform_forward(point);
-				const float z(transform_backward_z(tmp));
-				if(!clip_rect.is_inside(tmp) || !(z>0 && z<horizon))
-				{
-					(*surface)[y][x]=Color::alpha();
-					continue;
-				}
-
-				u=(tmp[0]-tl[0])*src_pw;
-				v=(tmp[1]-tl[1])*src_ph;
-
-				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || std::isnan(u) || std::isnan(v))
-					(*surface)[y][x]=context.get_color(tmp);
-				else
-					//pen.set_value(source[v][u]);
-					(*surface)[y][x]=source[floor_to_int(v)][floor_to_int(u)];
-			}
-			if((y&31)==0 && cb)
-			{
-				if(!stagetwo.amount_complete(y,surface->get_h()))
-					return false;
-			}
-		}
-	}
-
-#endif
-
-	if(cb && !cb->amount_complete(10000,10000)) return false;
-
-	return true;
-}
-
-
-//////////
-bool
-Warp::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
-{
-	Point src_tl=param_src_tl.get(Point());
-	Point src_br=param_src_br.get(Point());
-	Point dest_tl=param_dest_tl.get(Point());
-	Point dest_tr=param_dest_tr.get(Point());
-	Point dest_bl=param_dest_bl.get(Point());
-	Point dest_br=param_dest_br.get(Point());
-	Real horizon=param_horizon.get(Real());
-	bool clip=param_clip.get(bool());
-
-	SuperCallback stageone(cb,0,9000,10000);
-	SuperCallback stagetwo(cb,9000,10000,10000);
+	rendering::Task::Handle sub_task = context.build_rendering_task();
+	if (!sub_task)
+		return rendering::Task::Handle();
 	
-	
-	RendDesc renddesc(renddesc_);
-	// Untransform the render desc
-	if(!cairo_renddesc_untransform(cr, renddesc))
-		return false;
-	
-	Real pw=(renddesc.get_w())/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
-	Real ph=(renddesc.get_h())/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
-	
-	if(cb && !cb->amount_complete(0,10000))
-		return false;
-	
-	Point tl(renddesc.get_tl());
-	Point br(renddesc.get_br());
-	
-	Rect bounding_rect;
-	
-	Rect render_rect(tl,br);
-	Rect clip_rect(Rect::full_plane());
-	Rect dest_rect(dest_tl,dest_br); dest_rect.expand(dest_tr).expand(dest_bl);
-	
-	Real zoom_factor(1.0);
-	
-	// Quick exclusion clip, if necessary
-	if(clip && !intersect(render_rect,dest_rect))
-	{
-		cairo_save(cr);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_paint(cr);
-		cairo_restore(cr);
-		return true;
-	}
-	
-	{
-		Rect other(render_rect);
-		if(clip)
-			other&=dest_rect;
+	if (clip) {
+		rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
+		task_contour->contour = new rendering::Contour();
+		task_contour->contour->move_to( Vector(clip_rect.minx, clip_rect.miny) );
+		task_contour->contour->line_to( Vector(clip_rect.minx, clip_rect.maxy) );
+		task_contour->contour->line_to( Vector(clip_rect.maxx, clip_rect.maxy) );
+		task_contour->contour->line_to( Vector(clip_rect.maxx, clip_rect.miny) );
+		task_contour->contour->close();
+		task_contour->contour->color = Color(1, 1, 1, 1);
+		task_contour->contour->invert = true;
+		task_contour->contour->antialias = true;
+
+		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
+		task_blend->amount = 1;
+		task_blend->blend_method = Color::BLEND_ALPHA_OVER;
+		task_blend->sub_task_a() = sub_task;
+		task_blend->sub_task_b() = task_contour;
 		
-		Point min(other.get_min());
-		Point max(other.get_max());
-		
-		bool init_point_set=false;
-		
-		// Point trans_point[4];
-		Point p;
-		// Real trans_z[4];
-		Real z,minz(10000000000000.0f),maxz(0);
-		
-		//! \todo checking the 4 corners for 0<=z<horizon*2 and using
-		//! only 4 corners which satisfy this condition isn't the
-		//! right thing to do.  It's possible that none of the 4
-		//! corners fall within that range, and yet content of the
-		//! tile does.
-		p=transform_forward(min);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-		
-		p=transform_forward(max);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-		
-		swap(min[1],max[1]);
-		
-		p=transform_forward(min);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-		
-		p=transform_forward(max);
-		z=transform_backward_z(p);
-		if(z>0 && z<horizon*2)
-		{
-			if(init_point_set)
-				bounding_rect.expand(p);
-			else
-				bounding_rect=Rect(p);
-			init_point_set=true;
-			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);
-		}
-		
-		if(!init_point_set)
-		{
-			cairo_save(cr);
-			cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-			cairo_paint(cr);
-			cairo_restore(cr);
-			return true;
-		}
-		zoom_factor=(1+(maxz-minz));
-		
+		sub_task = task_blend;
 	}
 	
-#ifdef ACCEL_WARP_IS_BROKEN
-	return Layer::accelerated_cairorender(context,cr,quality,renddesc, cb);
-#else
-	
-	/*swap(tl[1],br[1]);
-	 bounding_rect
-	 .expand(transform_forward(tl))
-	 .expand(transform_forward(br))
-	 ;
-	 swap(tl[1],br[1]);*/
-	
-	//warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
-	//warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
-	
-	// If we are clipping, then go ahead and clip to the
-	// source rectangle
-	if(clip)
-		clip_rect&=Rect(src_tl,src_br);
-	
-	// Bound ourselves to the bounding rectangle of
-	// what is under us
-	clip_rect&=context.get_full_bounding_rect();//.expand_x(abs(zoom_factor/pw)).expand_y(abs(zoom_factor/ph));
-	
-	bounding_rect&=clip_rect;
-	
-	Point min_point(bounding_rect.get_min());
-	Point max_point(bounding_rect.get_max());
-	
-	// we're going to divide by the difference of these pairs soon;
-	// if they're the same, we'll be dividing by zero, and we don't
-	// want to do that!
-	// \todo what should we do in this case?
-	if (min_point[0] == max_point[0]) max_point[0] += 0.001;
-	if (min_point[1] == max_point[1]) max_point[1] += 0.001;
-	
-	if(tl[0]>br[0])
-	{
-		tl[0]=max_point[0];
-		br[0]=min_point[0];
-	}
-	else
-	{
-		br[0]=max_point[0];
-		tl[0]=min_point[0];
-	}
-	if(tl[1]>br[1])
-	{
-		tl[1]=max_point[1];
-		br[1]=min_point[1];
-	}
-	else
-	{
-		br[1]=max_point[1];
-		tl[1]=min_point[1];
+	if (affine) {
+		rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+		task_transformation->transformation->matrix = matrix;
+		task_transformation->sub_task() = sub_task;
+		return task_transformation;
 	}
 	
-	const int tmp_d(max(renddesc.get_w(),renddesc.get_h()));
-	Real src_pw=(tmp_d*zoom_factor)/(br[0]-tl[0]);
-	Real src_ph=(tmp_d*zoom_factor)/(br[1]-tl[1]);
-	
-	
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-	//desc.set_flags(RendDesc::PX_ASPECT);
-	desc.set_tl(tl);
-	desc.set_br(br);
-	desc.set_wh(ceil_to_int(src_pw*(br[0]-tl[0])),ceil_to_int(src_ph*(br[1]-tl[1])));
-	
-	//warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
-	if(desc.get_w()==0 && desc.get_h()==0)
-	{
-		cairo_save(cr);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_paint(cr);
-		cairo_restore(cr);
-		return true;
-	}
-	
-	// Recalculate the pixel widths for the src renddesc
-	src_pw=(desc.get_w())/(desc.get_br()[0]-desc.get_tl()[0]);
-	src_ph=(desc.get_h())/(desc.get_br()[1]-desc.get_tl()[1]);
-	
-	cairo_surface_t* source=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, desc.get_w(),desc.get_h());
-	cairo_surface_t* surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA,renddesc.get_w(), renddesc.get_h());
-	cairo_t* subcr=cairo_create(source);
-	cairo_scale(subcr, 1/desc.get_pw(), 1/desc.get_ph());
-	cairo_translate(subcr, -desc.get_tl()[0], -desc.get_tl()[1]);
-
-	if(!context.accelerated_cairorender(subcr,quality,desc,&stageone))
-		return false;
-	
-	cairo_destroy(subcr);
-		
-	int surfacew, surfaceh, sourcew, sourceh;
-	
-	CairoSurface csurface(surface);
-	CairoSurface csource(source);
-	
-	csurface.map_cairo_image();
-	csource.map_cairo_image();
-	
-	surfacew=csurface.get_w();
-	surfaceh=csurface.get_h();
-	sourcew=csource.get_w();
-	sourceh=csource.get_h();
-	
-	CairoSurface::pen pen(csurface.begin());
-	
-	// Do the warp
-	{
-		int x,y;
-		float u,v;
-		Point point,tmp;
-		for(y=0,point[1]=renddesc.get_tl()[1];y<surfaceh;y++,pen.inc_y(),pen.dec_x(x),point[1]+=1.0/ph)
-		{
-			for(x=0,point[0]=renddesc.get_tl()[0];x<surfacew;x++,pen.inc_x(),point[0]+=1.0/pw)
-			{
-				tmp=transform_forward(point);
-				const float z(transform_backward_z(tmp));
-				if(!clip_rect.is_inside(tmp) || !(z>0 && z<horizon))
-				{
-					csurface[y][x]=Color::alpha();
-					continue;
-				}
-				
-				u=(tmp[0]-tl[0])*src_pw;
-				v=(tmp[1]-tl[1])*src_ph;
-				
-				if(u<0 || v<0 || u>=sourcew || v>=sourceh || std::isnan(u) || std::isnan(v))
-					csurface[y][x]=context.get_cairocolor(tmp);
-				else
-				{
-					// CUBIC
-					if(quality<=4)
-						csurface[y][x]=csource.cubic_sample_cooked(u,v);
-					// INTEPOLATION_LINEAR
-					else if(quality<=6)
-						csurface[y][x]=csource.linear_sample_cooked(u,v);
-					else
-						// NEAREST_NEIGHBOR
-						csurface[y][x]=csource[floor_to_int(v)][floor_to_int(u)];
-				}
-			}
-			if((y&31)==0 && cb)
-			{
-				if(!stagetwo.amount_complete(y,surfaceh))
-					return false;
-			}
-		}
-	}
-	
-#endif
-	
-	if(cb && !cb->amount_complete(10000,10000)) return false;
-	
-	csurface.unmap_cairo_image();
-	csource.unmap_cairo_image();
-	cairo_surface_destroy(source);
-	
-	cairo_save(cr);
-	
-	cairo_translate(cr, renddesc.get_tl()[0], renddesc.get_tl()[1]);
-	cairo_scale(cr, renddesc.get_pw(), renddesc.get_ph());
-	cairo_set_source_surface(cr, surface, 0, 0);
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);
-	
-	cairo_restore(cr);
-	
-	cairo_surface_destroy(surface);
-	return true;
-}
-
-Rect
-Warp::get_bounding_rect()const
-{
-	return Rect::full_plane();
-}
-
-Rect
-Warp::get_full_bounding_rect(Context context)const
-{
-//	return Rect::full_plane();
-
-	Point src_tl=param_src_tl.get(Point());
-	Point src_br=param_src_br.get(Point());
-	bool clip=param_clip.get(bool());
-
-	Rect under(context.get_full_bounding_rect());
-
-	if(clip)
-	{
-		under&=Rect(src_tl,src_br);
-	}
-
-	return get_transform()->perform(under);
-
-	/*
-	Rect under(context.get_full_bounding_rect());
-	Rect ret(Rect::zero());
-
-	if(under.area()==HUGE_VAL)
-		return Rect::full_plane();
-
-	ret.expand(
-		transform_backward(
-			under.get_min()
-		)
-	);
-	ret.expand(
-		transform_backward(
-			under.get_max()
-		)
-	);
-	ret.expand(
-		transform_backward(
-			Vector(
-				under.get_min()[0],
-				under.get_max()[1]
-			)
-		)
-	);
-	ret.expand(
-		transform_backward(
-			Vector(
-				under.get_max()[0],
-				under.get_min()[1]
-			)
-		)
-	);
-
-	if(ret.area()==HUGE_VAL)
-		return Rect::full_plane();
-
-	return ret;
-	*/
+	TaskTransformationPerspective::Handle task_transformation(new TaskTransformationPerspective());
+	task_transformation->transformation->matrix = matrix;
+	task_transformation->sub_task() = sub_task;
+	return task_transformation;
 }
