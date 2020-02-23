@@ -43,6 +43,8 @@ Dock_SoundWave::Dock_SoundWave()
 	: Dock_CanvasSpecific("soundwave", _("Sound"), Gtk::StockID("synfig-layer_other_sound")),
 	  current_widget_sound(nullptr)
 {
+	set_use_scrolled(false);
+
 	widget_kf_list.set_hexpand();
 	widget_kf_list.show();
 	widget_timeslider.set_hexpand();
