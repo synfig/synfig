@@ -64,7 +64,7 @@ OptimizerTransformation::run(const RunParams& params) const
 
 	// transformation of none in none
 	Task::Handle sub_task = transformation->sub_task();
-	if (!sub_task)
+	if (!sub_task || !transformation->get_transformation())
 		{ apply(params, Task::Handle()); return; }
 
 	// transformation of solid is solid
@@ -78,8 +78,8 @@ OptimizerTransformation::run(const RunParams& params) const
 			return;
 		}
 	}
-
-	// merge with sub-task
+	
+	// merge into sub-task
 	if (TaskInterfaceTransformation *interface = sub_task.type_pointer<TaskInterfaceTransformation>())
 	{
 		if ( interface->get_transformation()
@@ -98,6 +98,24 @@ OptimizerTransformation::run(const RunParams& params) const
 		}
 	}
 
+	// merge sub-task into current task
+	if (TaskTransformation::Handle sub_transformation = TaskTransformation::Handle::cast_dynamic(sub_task))
+	{
+		if ( sub_transformation->is_simple()
+		  && sub_transformation->sub_task()
+		  && !sub_transformation->target_surface // exclude tasks with prerendered source
+		  && transformation->get_transformation()->can_merge_inner(sub_transformation->get_transformation()) )
+		{
+			transformation = TaskTransformation::Handle::cast_dynamic(transformation->clone());
+			// recheck ability to merge after clone
+			assert( transformation->get_transformation()->can_merge_inner( transformation->get_transformation()) );
+			transformation->get_transformation()->merge_inner( sub_transformation->get_transformation() );
+			transformation->sub_task() = sub_transformation->sub_task();
+			apply(params, transformation);
+			return;
+		}
+	}
+	
 	// fall deeper in tree to make a chance to merge with others (for affine only)
 	if ( transformation->get_transformation().type_is<TransformationAffine>() )
 	{
