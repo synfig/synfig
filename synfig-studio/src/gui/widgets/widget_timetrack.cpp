@@ -742,15 +742,19 @@ void Widget_Timetrack::on_waypoint_clicked(const Widget_Timetrack::WaypointItem&
 {
 	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
 	const synfigapp::ValueDesc &value_desc = param_info_map[wi.path.to_string()]->get_value_desc();
-	synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
-	signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
+	if (value_desc.is_value_node())
+		synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
+	if (waypoint_set.size() > 0)
+		signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
 }
 
 void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)
 {
 	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
 	const synfigapp::ValueDesc &value_desc = param_info_map[wi.path.to_string()]->get_value_desc();
-	synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
+	if (value_desc.is_value_node())
+		synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
+	if (waypoint_set.size() > 0)
 	signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
 }
 
