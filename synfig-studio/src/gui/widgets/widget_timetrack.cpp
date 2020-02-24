@@ -376,7 +376,8 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		});
 
 		// Draw static intervals
-		draw_static_intervals_for_row(cr, row_info, visible_waypoints);
+		if (value_desc.get_value_type() != synfig::type_canvas)
+			draw_static_intervals_for_row(cr, row_info, visible_waypoints);
 
 		draw_waypoints(cr, path, row_info, visible_waypoints);
 
