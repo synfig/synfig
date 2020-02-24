@@ -678,6 +678,22 @@ bool SelectDragHelper<T>::process_button_release_event(GdkEventButton* event)
 template<class T>
 bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 {
+	{
+		// update modifiers when mouse/pointer moves:
+		//   useful if widget looses focus due to a shortcut
+		//   like Ctrl+Shift+S
+		Gdk::ModifierType previous_modifiers = modifiers;
+		modifiers = Gdk::ModifierType();
+		if (event->state & Gdk::SHIFT_MASK)
+			modifiers |= Gdk::SHIFT_MASK;
+		if (event->state & Gdk::CONTROL_MASK)
+			modifiers |= Gdk::CONTROL_MASK;
+		if (event->state & Gdk::MOD1_MASK)
+			modifiers |= Gdk::MOD1_MASK;
+		if (modifiers != previous_modifiers)
+			signal_modifier_keys_changed().emit();
+	}
+
 	bool processed = false;
 	auto previous_hovered_point = hovered_item;
 	bool was_hovered_item_valid = is_hovered_item_valid;
