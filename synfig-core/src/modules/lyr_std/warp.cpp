@@ -201,6 +201,135 @@ namespace {
 	}
 	
 	
+	class OptimalResolutionSolver {
+	private:
+		Matrix matrix;
+		bool affine;
+		Vector affine_resolution;
+		Vector focus_a;
+		Vector focus_b;
+		Vector focus_m;
+		Vector fp_kw;
+		Vector dir;
+		Real len;
+		
+	public:
+		explicit OptimalResolutionSolver(const Matrix &matrix):
+			affine(), len()
+		{
+			this->matrix = matrix;
+			
+			// w-horizon line equatation is A[2]*x + B[2]*y + C[2] = w
+			const Vector3 &A = this->matrix.row_x();
+			const Vector3 &B = this->matrix.row_y();
+			const Vector3 &C = this->matrix.row_z();
+			
+			const Real wsqr = A[2]*A[2] + B[2]*B[2];
+			affine = (wsqr <= real_precision<Real>()*real_precision<Real>());
+			affine_resolution = approximate_zero(C[2])
+							  ? Vector()
+							  : rendering::TransformationAffine::calc_optimal_resolution(Matrix2(
+									this->matrix.row_x().to_2d()/C[2],
+									this->matrix.row_y().to_2d()/C[2] ));
+			const Real wsqr_div = !affine ? 1/wsqr : Real(0);
+			
+			// focus points
+			bool invertible = this->matrix.is_invertible();
+			const Matrix back_matrix = this->matrix.get_inverted();
+			const bool focus_a_exists = invertible && approximate_not_zero(back_matrix.m02);
+			const bool focus_b_exists = invertible && approximate_not_zero(back_matrix.m12);
+			const bool focus_m_exists = focus_a_exists && focus_b_exists;
+			assert(focus_a_exists || focus_b_exists);
+			focus_a = focus_a_exists ? back_matrix.row_x().to_2d()/back_matrix.m02 : Vector();
+			focus_b = focus_b_exists ? back_matrix.row_y().to_2d()/back_matrix.m12 : Vector();
+			focus_m = focus_m_exists ? (focus_a + focus_b)*0.5
+									 : focus_a_exists ? focus_a : focus_b;
+
+			const Vector dist = focus_m_exists ? focus_b - focus_a : Vector();
+			len = dist.mag()*0.5;
+			dir = approximate_zero(len) ? Vector() : dist/(2*len);
+			
+			// projection of focus points to w-horizon line
+			fp_kw = Vector(A[2], B[2])*wsqr_div;
+		}
+		
+	private:
+		Real ratio_for_point(const Vector &point, Real w) const {
+			const Vector v = matrix.get_transformed(point);
+			const Vector ox( matrix.m00 - matrix.m02*v[0]*w,
+							 matrix.m10 - matrix.m12*v[0]*w );
+			const Vector oy( matrix.m01 - matrix.m02*v[1]*w,
+							 matrix.m11 - matrix.m12*v[1]*w );
+			return -ox.mag()-oy.mag();
+		}
+
+		Vector resolution_for_point(const Vector &point, Real w) const {
+			const Vector v = matrix.get_transformed(point);
+			const Matrix2 m(
+				Vector( (matrix.m00 - matrix.m02*v[0]*w)*w,
+						(matrix.m01 - matrix.m02*v[1]*w)*w ),
+				Vector( (matrix.m10 - matrix.m12*v[0]*w)*w,
+						(matrix.m11 - matrix.m12*v[1]*w)*w ));
+			return rendering::TransformationAffine::calc_optimal_resolution(m);
+		}
+		
+		// returns Vector(l, ratio)
+		Vector find_max(const Vector &point, const Vector &dir, Real maxl, Real w) const {
+			if (maxl <= 1 || maxl >= 1e+10)
+				return Vector(0, ratio_for_point(point, w));
+			
+			Real l0  = 0;
+			Real l1  = maxl;
+			Real ll0 = (l0 + l1)*0.5;
+			Real vv0 = ratio_for_point(point + dir*ll0, w);
+			while(l1 - l0 > 1) {
+				Real ll1, vv1;
+				if (ll0 - l0 < l1 - ll0) {
+					ll1 = (ll0 + l1)*0.5;
+					vv1 = ratio_for_point(point + dir*ll1, w);
+				} else {
+					ll1 = ll0;
+					vv1 = vv0;
+					ll0 = (l0 + ll0)*0.5;
+					vv0 = ratio_for_point(point + dir*ll0, w);
+				}
+				
+				if (vv0 > vv1) {
+					l1 = ll1;
+				} else {
+					l0 = ll0;
+					ll0 = ll1;
+					vv0 = vv1;
+				}
+			}
+			
+			return Vector(ll0, vv0);
+		}
+	
+	public:
+		Vector solve(Real w) const {
+			if (affine)
+				return affine_resolution;
+			if (w < real_precision<Real>())
+				return Vector();
+			
+			Vector center;
+			const Vector offset_w = fp_kw/w;
+			if (len <= 1) {
+				center = focus_m + offset_w;
+			} else {
+				const Vector solution_a = find_max(focus_a + offset_w,  dir, len, w);
+				const Vector solution_b = find_max(focus_b + offset_w, -dir, len, w);
+				center = solution_a[1] > solution_b[1]
+					   ? focus_a + offset_w + dir*solution_a[0]
+					   : focus_b + offset_w - dir*solution_b[0];
+			}
+			
+			return resolution_for_point(center, w);
+		}
+	};
+	
+	
 	class TransformationPerspective: public rendering::Transformation
 	{
 	public:
@@ -295,12 +424,14 @@ namespace {
 			if (!bounds.rect.valid())
 				return Bounds();
 			
-			const Matrix norm_matrix = matrix.get_normalized_by_z();
+			const Matrix norm_matrix = matrix.get_normalized_by_det();
 			const Real A = norm_matrix.m02;
 			const Real B = norm_matrix.m12;
 			const Real C = norm_matrix.m22;
-			if (A*A + B*B <= real_precision<Real>() * real_precision<Real>())
-				return rendering::TransformationAffine::transform_bounds_affine(norm_matrix, bounds);
+			if (A*A + B*B <= real_precision<Real>() * real_precision<Real>()) {
+				const Real C_inv = approximate_zero(C) ? Real(0) : 1/C;
+				return rendering::TransformationAffine::transform_bounds_affine(norm_matrix*C_inv, bounds);
+			}
 			
 			const Real horizonw = real_precision<Real>();
 			
@@ -343,11 +474,10 @@ namespace {
 			}
 			
 			const Real midw = exp((log(minw) + log(maxw))*0.5);
-			const Real kwx = 1/(bounds.resolution[0] * midw);
-			const Real kwy = 1/(bounds.resolution[1] * midw);
-			out_bounds.resolution = rendering::TransformationAffine::calc_optimal_resolution(
-				Matrix2( norm_matrix.m00*kwx, norm_matrix.m01*kwx,
-						 norm_matrix.m10*kwy, norm_matrix.m11*kwy ));
+			const Real krx = 1/bounds.resolution[0];
+			const Real kry = 1/bounds.resolution[1];
+			const OptimalResolutionSolver resolution_solver( norm_matrix*Matrix().set_scale(krx, kry) );
+			out_bounds.resolution = resolution_solver.solve(midw);
 			
 			return out_bounds;
 		}
@@ -361,7 +491,7 @@ namespace {
 			if (!bounds.is_valid())
 				return;
 			
-			Matrix norm_matrix = matrix.get_normalized_by_z();
+			const Matrix norm_matrix = matrix.get_normalized_by_det();
 			step = std::max(Real(1.1), step);
 			
 			// calc coefficient for equatation of "horizontal" line: A*x + B*y + C = 1/w (aka A*x + B*y = 1/w - C)
@@ -381,19 +511,15 @@ namespace {
 				// orthogonal projection, no perspective, no subdiviosions, just make single layer
 				out_layers.push_back(Layer(
 					bounds.rect,
-					rendering::TransformationAffine::transform_bounds_affine(norm_matrix, bounds),
+					rendering::TransformationAffine::transform_bounds_affine(norm_matrix*(1/C), bounds),
 					Matrix3( 0, 0, 0, // alpha always one
 							 0, 0, 0,
 							 1, 1, 1 ) ));
 				return;
 			}
 
-			// calc base resolution
-			const Vector resolution = rendering::TransformationAffine::calc_optimal_resolution(Matrix2(
-				norm_matrix.m00*krx, norm_matrix.m01*krx,
-				norm_matrix.m10*kry, norm_matrix.m11*kry ));
-			if (resolution[0] <= real_precision<Real>() || resolution[1] <= real_precision<Real>())
-				return; // cannot calc resolution, seems if matrix is not invertible
+			// resolution solver
+			const OptimalResolutionSolver resolution_solver( norm_matrix*Matrix().set_scale(krx, kry) );
 
 			// corners
 			Vector3 corners[4] = {
@@ -483,10 +609,17 @@ namespace {
 				if (!layer_rect.valid() || !layer_rect_orig.valid())
 					continue;
 				
+				// calc resolution
+				Vector resolution = resolution_solver.solve(w);
+				if (resolution[0] <= real_precision<Real>() || resolution[1] <= real_precision<Real>())
+					continue;
+				
 				// make layer
 				out_layers.push_back( Layer(
 					layer_rect_orig,
-					Bounds(layer_rect, resolution/w),
+					Bounds(
+						layer_rect,
+						resolution ),
 					make_alpha_matrix(
 						1/aw0, 1/aw1, 1/bw0, 1/bw1,
 						Vector3(norm_matrix.m02, norm_matrix.m12, norm_matrix.m22) ) ));
@@ -524,9 +657,8 @@ namespace {
 			const rendering::Transformation::Bounds bounds(
 				source_rect, get_pixels_per_unit().multiply_coords(supersample));
 			const Matrix back_matrix = transformation->matrix
-									  .get_normalized_by_z()
-									  .get_inverted()
-									  .get_normalized_by_z();
+									  .get_normalized_by_det()
+									  .get_inverted();
 
 			sub_tasks.clear();
 			layers.clear();
@@ -632,9 +764,8 @@ namespace {
 			const Matrix to_pixels_matrix = from_pixels_matrix.get_inverted();
 			const Matrix back_matrix =
 				transformation->matrix
-			   .get_normalized_by_z()
-			   .get_inverted()
-			   .get_normalized_by_z();
+			   .get_normalized_by_det()
+			   .get_inverted();
 			const Matrix base_matrix =
 				back_matrix
 			  * from_pixels_matrix;
@@ -783,7 +914,7 @@ Warp::sync()
 			   * Matrix().set_scale( 1/src_dist[0], 1/src_dist[1] ) 
 			   * Matrix().set_translate( -src_tl );
 		if (matrix.is_invertible()) {
-			back_matrix = matrix.get_inverted().get_normalized_by_z();
+			back_matrix = matrix.get_normalized_by_det().get_inverted();
 			affine = approximate_zero(matrix.m02) && approximate_zero(matrix.m12);
 			valid = true;
 		}

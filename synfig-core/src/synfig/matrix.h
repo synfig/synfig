@@ -382,13 +382,10 @@ public:
 	Matrix3& invert()
 		{ return *this = get_inverted(); }
 	
-	Matrix3 get_normalized_by_z() const
-		{ return Matrix3(*this).normalize_by_z(); }
+	Matrix3 get_normalized_by_det() const
+		{ return Matrix3(*this).normalize_by_det(); }
 	
-	Matrix3& normalize_by_z();
-	
-	Matrix2 to_2d() const
-		{ return Matrix2(m00, m01, m10, m11); }
+	Matrix3& normalize_by_det();
 	
 	//!Get the string of the Matrix
 	//!@return String type. A string representation of the matrix

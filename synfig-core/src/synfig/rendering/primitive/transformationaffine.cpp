@@ -63,8 +63,8 @@ TransformationAffine::derivative_vfunc(const Point&) const
 Vector
 TransformationAffine::calc_optimal_resolution(const Matrix2 &matrix) {
 	const Real max_overscale_sqr = 1.0*4.0;
-	const Real max_overscale_sqrsqr = max_overscale_sqr*max_overscale_sqr;
 	const Real real_precision_sqr = real_precision<Real>() * real_precision<Real>();
+	const Real real_precision_sqrsqr = real_precision_sqr * real_precision_sqr;
 	
 	const Real a = matrix.m00 * matrix.m00;
 	const Real b = matrix.m01 * matrix.m01;
@@ -76,12 +76,19 @@ TransformationAffine::calc_optimal_resolution(const Matrix2 &matrix) {
 	e = 1.0/e;
 	
 	const Real sum = a*d + b*c;
+	const Real ab2 = 2*a*b + real_precision_sqrsqr;
+	const Real cd2 = 2*c*d + real_precision_sqrsqr;
+	bool abgt = (ab2 >= sum);
+	bool cdgt = (cd2 >= sum);
+	if (abgt && cdgt) // when both is greater than sum select only lower of them
+		(ab2 > cd2 ? abgt : cdgt) = false;
+	
 	Vector scale;
-	if (2*a*b + real_precision_sqr >= sum) {
+	if (abgt) {
 		scale[0] = sqrt(2*b)*e;
 		scale[1] = sqrt(2*a)*e;
 	} else
-	if (2*c*d + real_precision_sqr >= sum) {
+	if (cdgt) {
 		scale[0] = sqrt(2*d)*e;
 		scale[1] = sqrt(2*c)*e;
 	} else {
@@ -90,11 +97,9 @@ TransformationAffine::calc_optimal_resolution(const Matrix2 &matrix) {
 		scale[1] = sqrt(dif/(d - b))*e;
 	}
 	
-	const Real sx2 = scale[0]*scale[0];
-	const Real sy2 = scale[1]*scale[1];
-	const Real sqrsqr = (a*sx2 + b*sy2)*(c*sx2 + d*sy2);
-	if (sqrsqr > max_overscale_sqrsqr)
-		scale *= sqrt(sqrt(max_overscale_sqrsqr / sqrsqr));
+	const Real sqr = scale[0]*scale[1]*(matrix.m00 + matrix.m10)*(matrix.m01 + matrix.m11);
+	if (sqr > max_overscale_sqr)
+		scale *= sqrt(max_overscale_sqr/sqr);
 	
 	return scale[0] <= real_precision<Real>() || scale[1] <= real_precision<Real>()
 		 ? Vector() : scale;

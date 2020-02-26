@@ -321,16 +321,10 @@ Matrix3::get_inverted()const
 }
 
 Matrix3&
-Matrix3::normalize_by_z()
+Matrix3::normalize_by_det()
 {
-	Real k = m02*m02 + m12*m12 + m22*m22;
-	if (k > real_precision<Real>()*real_precision<Real>()) {
-		k = 1/sqrt(k);
-		if (m22 < 0) k = -k;
-		for(int i = 0; i < 3; ++i)
-			for(int j = 0; j < 3; ++j)
-				m[i][j] *= k;
-	}
+	Real d = det();
+	if (approximate_not_zero(d)) *this *= 1/cbrt(fabs(d));
 	return *this;
 }
 
