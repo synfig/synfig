@@ -15,8 +15,13 @@ class Bline:
     """
     def __init__(self, bline, parent):
         """
-        This parent should be parameter
-        """
+		Initialisation function called at the time of bline object creation.
+        
+        Args:
+	        bline  (str) : First bline waypoint
+	        parent (str) : Synfig format bline object
+	
+	    """
         self.parent = parent
         self.bline = bline
         self.type = bline.attrib["type"]
