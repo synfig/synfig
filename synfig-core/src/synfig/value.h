@@ -130,7 +130,7 @@ public:
 	ValueBase(const ValueBase &x);
 
 	//! Move constructor
-	ValueBase(ValueBase&& x);
+	ValueBase(ValueBase&& x) noexcept;
 
 	//! Default destructor
 	virtual ~ValueBase();
