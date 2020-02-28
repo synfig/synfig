@@ -290,9 +290,9 @@ Widget_Waypoint::get_waypoint()const
 }
 
 void
-Widget_Waypoint::show_tcb_params(bool ok)
+Widget_Waypoint::show_tcb_params(bool show_labels)
 {
-	if (ok) {
+	if (show_labels) {
 		// show labels
 		tcbFrame->get_label_widget()->show();
 		tensionLabel->show();
