@@ -296,6 +296,14 @@ Dock_Toolbox::update_tools()
 		set_active_state("none");
 }
 
+
+void
+Dock_Toolbox::refresh()
+{
+	update_tools();
+}
+
+
 void
 Dock_Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int /*x*/, int /*y*/, const Gtk::SelectionData& selection_data_, guint /*info*/, guint time)
 {
