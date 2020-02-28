@@ -34,6 +34,7 @@
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/alignment.h>
+#include <gtkmm/frame.h>
 
 #include <synfigapp/value_desc.h>
 #include <synfig/waypoint.h>
@@ -57,15 +58,18 @@ class Widget_Waypoint;
 
 class Widget_Waypoint : public Gtk::Alignment
 {
-    Widget_ValueBase *value_widget;
+	Widget_ValueBase *value_widget;
 	Gtk::Label *value_node_label;
 	Gtk::Label *label;
 	Widget_Time *time_widget;
 	mutable synfig::Waypoint waypoint;
 	synfig::Canvas::Handle canvas;
 
-	Widget_Enum *before_options,*after_options;
+	Widget_Enum *before_options, *after_options;
 
+	// TCB Parameter members
+	Gtk::Frame *tcbFrame;
+	Gtk::Label *tensionLabel, *continuityLabel, *biasLabel, *temporalTensionLabel;
 	Gtk::SpinButton *spin_tension, *spin_continuity, *spin_bias, *spin_temporal_tension;
 	Glib::RefPtr<Gtk::Adjustment> adj_tension, adj_continuity, adj_bias, adj_temporal_tension;
 
@@ -74,6 +78,11 @@ public:
 	void set_canvas(synfig::Canvas::Handle x);
 	void set_waypoint(synfig::Waypoint &x);
 	const synfig::Waypoint &get_waypoint()const;
+	
+	// TCB Parameter functions
+	void show_tcb_params(bool ok);
+	void on_before_options_changed();
+	void on_after_options_changed();
 }; // END of class Widget_Waypoint
 
 }; // END of namespace studio
