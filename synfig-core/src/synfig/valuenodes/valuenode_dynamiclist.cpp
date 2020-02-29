@@ -832,6 +832,11 @@ const synfig::Node::time_set	& ValueNode_DynamicList::ListEntry::get_times() con
 											end = timing_info.end();
 
 	//must remerge with all the other values because we don't know if we've changed...
+	if (!value_node) {
+		static const synfig::Node::time_set empty_set;
+		synfig::error("ValueNode Dynamic List invalid");
+		return empty_set;
+	}
 	times = value_node->get_times();
 
 	for(; j != end; ++j)
