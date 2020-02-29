@@ -64,9 +64,6 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
-
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Rect get_full_bounding_rect(Context context)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }

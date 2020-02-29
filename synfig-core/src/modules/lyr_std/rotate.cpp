@@ -192,54 +192,6 @@ Rotate::get_color(Context context, const Point &p)const
 	return context.get_color(newpos);
 }
 
-bool
-Rotate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector origin=param_origin.get(Vector());
-	Angle amount=param_amount.get(Angle());
-	
-	RendDesc transformed_renddesc(renddesc);
-	transformed_renddesc.clear_flags();
-	transformed_renddesc.set_transformation_matrix(
-	    renddesc.get_transformation_matrix()
-	  * Matrix().set_translate(origin)
-	  * Matrix().set_rotate(amount)
-	  * Matrix().set_translate(-origin) );
-	return context.accelerated_render(surface,quality,transformed_renddesc,cb);
-}
-
-///////////
-
-bool
-Rotate::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector origin=param_origin.get(Vector());
-	Angle amount=param_amount.get(Angle());
-
-	const double rtx(origin[0]);
-	const double rty(origin[1]);
-
-	float angle=Angle::rad(amount).get();
-	
-	cairo_save(cr);
-	cairo_translate(cr, rtx, rty);
-	cairo_rotate(cr, angle);
-	cairo_translate(cr, -rtx, -rty);
-
-	// is this really useful?
-	if(quality>8) cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_FAST);
-	else if(quality>=4) cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_GOOD);
-	else cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_BEST);
-	
-	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-	{
-		cairo_restore(cr);
-		return false;
-	}
-	cairo_restore(cr);
-	return true;	
-}
-
 Rect
 Rotate::get_full_bounding_rect(Context context)const
 {

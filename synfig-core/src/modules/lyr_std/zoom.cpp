@@ -162,55 +162,12 @@ public:
 		return "zoom";
 	}
 };
+
 etl::handle<Transform>
 Zoom::get_transform()const
 {
 	return new Zoom_Trans(this);
 }
-
-bool
-Zoom::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector center=param_center.get(Vector());
-	Real amount=param_amount.get(Real());
-
-	RendDesc transformed_renddesc(renddesc);
-	transformed_renddesc.clear_flags();
-	transformed_renddesc.set_transformation_matrix(
-	    renddesc.get_transformation_matrix()
-	  * Matrix().set_translate(center)
-	  *	Matrix().set_scale(exp(amount))
-	  *	Matrix().set_translate(-center) );
-
-	// Render the scene
-	return context.accelerated_render(surface,quality,transformed_renddesc,cb);
-}
-
-
-/////
-bool
-Zoom::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector center=param_center.get(Vector());
-	Real amount=param_amount.get(Real());
-
-	double zoomfactor=exp(amount);
-	
-	cairo_save(cr);
-	cairo_translate(cr, center[0], center[1]);
-	cairo_scale(cr, zoomfactor, zoomfactor);
-	cairo_translate(cr, -center[0], -center[1]);
-
-	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-	{
-		cairo_restore(cr);
-		return false;
-	}
-	cairo_restore(cr);
-	return true;
-}
-/////
-
 
 Rect
 Zoom::get_full_bounding_rect(Context context)const
