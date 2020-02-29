@@ -115,7 +115,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 				new_list->sub_tasks.insert(new_list->sub_tasks.begin(), blend->sub_task_a());
 				for(Task::List::iterator i = new_list->sub_tasks.begin(); i != new_list->sub_tasks.end();)
 				{
-					if (!*i) { i = list->sub_tasks.erase(i); continue; }
+					if (!*i) { i = new_list->sub_tasks.erase(i); continue; }
 					if (!i->type_is<TaskBlend>())
 						if (TaskInterfaceBlendToTarget *interface = i->type_pointer<TaskInterfaceBlendToTarget>())
 							if (!interface->blend) {
