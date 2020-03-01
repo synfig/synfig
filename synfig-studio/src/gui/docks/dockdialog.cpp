@@ -104,6 +104,8 @@ DockDialog::DockDialog():
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 	set_title(_("Dock Panel"));
 
+	set_deletable(true);
+
 	// Register with the dock manager
 	App::dock_manager->dock_dialog_list_.push_back(this);
 
@@ -149,7 +151,8 @@ DockDialog::on_delete_event(GdkEventAny * /* event */)
 				DockManager::remove_widget_recursive(**i);
 		}
 	}
-	return false;
+	delete this;
+	return true;
 }
 
 bool
