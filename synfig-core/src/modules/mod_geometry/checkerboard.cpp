@@ -64,7 +64,7 @@ SYNFIG_LAYER_INIT(CheckerBoard);
 SYNFIG_LAYER_SET_NAME(CheckerBoard,"checker_board");
 SYNFIG_LAYER_SET_LOCAL_NAME(CheckerBoard,N_("Checkerboard"));
 SYNFIG_LAYER_SET_CATEGORY(CheckerBoard,N_("Geometry"));
-SYNFIG_LAYER_SET_VERSION(CheckerBoard,"0.1");
+SYNFIG_LAYER_SET_VERSION(CheckerBoard,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
@@ -188,10 +188,11 @@ rendering::Task::Token TaskCheckerBoardSW::token(
 /* === M E T H O D S ======================================================= */
 
 CheckerBoard::CheckerBoard():
-	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
-	param_color (ValueBase(Color::black())),
-	param_origin (ValueBase(Point(0.125,0.125))),
-	param_size (ValueBase(Point(0.25,0.25)))
+	Layer_Composite (1.0,Color::BLEND_COMPOSITE),
+	param_color     (ValueBase(Color::black())),
+	param_origin    (ValueBase(Point(0.125, 0.125))),
+	param_size      (ValueBase(Point(0.25, 0.25))),
+	param_antialias (ValueBase(true))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -232,7 +233,8 @@ CheckerBoard::set_param(const String &param, const ValueBase &value)
 	  );
 	IMPORT_VALUE(param_origin);
 	IMPORT_VALUE(param_size);
-
+	IMPORT_VALUE(param_antialias);
+	
 	if(param=="pos")
 		return set_param("origin", value);
 
@@ -254,6 +256,7 @@ CheckerBoard::get_param(const String &param)const
 	EXPORT_VALUE(param_color);
 	EXPORT_VALUE(param_origin);
 	EXPORT_VALUE(param_size);
+	EXPORT_VALUE(param_antialias);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -277,6 +280,9 @@ CheckerBoard::get_param_vocab()const
 		.set_local_name(_("Size"))
 		.set_description(_("Size of checkers"))
 		.set_origin("origin")
+	);
+	ret.push_back(ParamDesc("antialias")
+		.set_local_name(_("Antialiasing"))
 	);
 
 	return ret;
@@ -320,12 +326,14 @@ CheckerBoard::build_composite_task_vfunc(ContextParams /*context_params*/)const
 	Color color = param_color.get(Color());
 	Point origin = param_origin.get(Point());
 	Point size = param_size.get(Point());
+	bool antialias = param_antialias.get(bool());
 
 	origin[0] += size[0]; // make first cell empty (by history)
     size *= 2.0;          // task expects repeat period instead of cell size
 
 	TaskCheckerBoard::Handle task(new TaskCheckerBoard());
 	task->color = color;
+	task->antialias = antialias;
 	task->transformation->matrix = Matrix().set_translate(origin)
 			                     * Matrix().set_scale(size);
 

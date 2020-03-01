@@ -51,6 +51,8 @@ private:
 	synfig::ValueBase param_origin;
 	//! Parameter: (Point)
 	synfig::ValueBase param_size;
+	//! Parameter: (bool)
+	synfig::ValueBase param_antialias;
 
 	bool point_test(const synfig::Point& x)const;
 
