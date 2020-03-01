@@ -64,6 +64,8 @@ private:
 	ValueBase param_dest_br;
 	//! Parameter: (bool)
 	ValueBase param_clip;
+	//! Parameter: (int)
+	ValueBase param_interpolation;
 
 	bool valid;
 	bool affine;

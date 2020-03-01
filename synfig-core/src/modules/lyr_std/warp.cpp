@@ -70,7 +70,7 @@ SYNFIG_LAYER_INIT(Warp);
 SYNFIG_LAYER_SET_NAME(Warp,"warp");
 SYNFIG_LAYER_SET_LOCAL_NAME(Warp,N_("Warp"));
 SYNFIG_LAYER_SET_CATEGORY(Warp,N_("Distortions"));
-SYNFIG_LAYER_SET_VERSION(Warp,"0.1");
+SYNFIG_LAYER_SET_VERSION(Warp,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Warp,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
@@ -881,6 +881,7 @@ Warp::Warp():
 	param_dest_bl ( Point(-2.2, -2  ) ),
 	param_dest_br ( Point( 2.2, -2  ) ),
 	param_clip    ( true ),
+	param_interpolation( int(1) ),
 	valid         ( ),
 	affine        ( ),
 	clip          ( )
@@ -1002,6 +1003,7 @@ Warp::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_dest_bl,sync());
 	IMPORT_VALUE_PLUS(param_dest_br,sync());
 	IMPORT_VALUE_PLUS(param_clip   ,sync());
+	IMPORT_VALUE(param_interpolation);
 	return false;
 }
 
@@ -1015,6 +1017,7 @@ Warp::get_param(const String &param)const
 	EXPORT_VALUE(param_dest_bl);
 	EXPORT_VALUE(param_dest_br);
 	EXPORT_VALUE(param_clip);
+	EXPORT_VALUE(param_interpolation);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -1065,6 +1068,17 @@ Warp::get_param_vocab()const
 	ret.push_back(ParamDesc("clip")
 		.set_local_name(_("Clip"))
 	);
+	
+	ret.push_back(ParamDesc("interpolation")
+		.set_local_name(_("Interpolation"))
+		.set_description(_("What type of interpolation to use"))
+		.set_hint("enum")
+		.add_enum_value(0,"nearest",_("Nearest Neighbor"))
+		.add_enum_value(1,"linear",_("Linear"))
+		.add_enum_value(2,"cosine",_("Cosine"))
+		.add_enum_value(3,"cubic",_("Cubic"))
+		.set_static(true)
+	);
 
 	return ret;
 }
@@ -1076,6 +1090,8 @@ Warp::get_transform()const
 rendering::Task::Handle
 Warp::build_rendering_task_vfunc(Context context) const
 {
+	const Color::Interpolation interpolation = (Color::Interpolation)param_interpolation.get(int());
+	
 	if (!valid)
 		return rendering::Task::Handle();
 	
@@ -1106,12 +1122,14 @@ Warp::build_rendering_task_vfunc(Context context) const
 	
 	if (affine) {
 		rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+		task_transformation->interpolation = interpolation;
 		task_transformation->transformation->matrix = matrix;
 		task_transformation->sub_task() = sub_task;
 		return task_transformation;
 	}
 	
 	TaskTransformationPerspective::Handle task_transformation(new TaskTransformationPerspective());
+	task_transformation->interpolation = interpolation;
 	task_transformation->transformation->matrix = matrix;
 	task_transformation->sub_task() = sub_task;
 	return task_transformation;
