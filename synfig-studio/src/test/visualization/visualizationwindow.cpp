@@ -172,7 +172,7 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 	if (!last_frame_time && !last_report_time) {
 		last_frame_time = last_report_time = g_get_monotonic_time();
 		std::cout << std::endl
-				<< "gathering statistics, please wait a reports every "
+				<< "gathering statistics, please wait reports every "
 				<< report_seconds << " seconds"
 				<< std::endl
 				<< std::endl;
@@ -252,5 +252,6 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 	
 	++rendered_frames;
 	frame = (frame + 1) % frames_count;
+	queue_draw();
 	return true;
 }
