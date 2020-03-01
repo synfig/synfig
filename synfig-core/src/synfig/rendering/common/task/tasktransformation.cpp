@@ -65,8 +65,11 @@ TaskTransformation::is_simple() const {
 int
 TaskTransformation::get_pass_subtask_index() const
 {
-	return sub_task() && get_transformation()
-		 ? PASSTO_THIS_TASK : PASSTO_NO_TASK;
+	if (!get_transformation())
+		return PASSTO_NO_TASK;
+	for(Task::List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end(); ++i)
+		if (*i) return PASSTO_THIS_TASK;
+	return PASSTO_NO_TASK;
 }
 
 

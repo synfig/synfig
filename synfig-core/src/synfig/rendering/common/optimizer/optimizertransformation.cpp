@@ -62,11 +62,22 @@ OptimizerTransformation::run(const RunParams& params) const
 	TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task);
 	if (!transformation || !transformation->is_simple()) return;
 
-	// transformation of none in none
-	Task::Handle sub_task = transformation->sub_task();
-	if (!sub_task || !transformation->get_transformation())
+	// no trasgormation
+	if (!transformation->get_transformation())
+		{ apply(params, Task::Handle()); return; }
+	
+	const Task::List &sub_tasks = transformation->sub_tasks;
+	int count = 0;
+	for(Task::List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end(); ++i)
+		if (*i) ++count;
+	if (!count)
 		{ apply(params, Task::Handle()); return; }
 
+	// transformation of none in none
+	Task::Handle sub_task = transformation->sub_task();
+	if (!sub_task || count > 1)
+		return;
+	
 	// transformation of solid is solid
 	if (TaskInterfaceConstant *constant = sub_task.type_pointer<TaskInterfaceConstant>())
 	{

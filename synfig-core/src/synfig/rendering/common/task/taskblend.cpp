@@ -73,18 +73,11 @@ TaskBlend::calc_bounds() const
 {
 	Rect ra = sub_task_a() ? sub_task_a()->get_bounds() : Rect::zero();
 	Rect rb = sub_task_b() ? sub_task_b()->get_bounds() : Rect::zero();
-	Rect bounds = Rect::zero();
+	Rect bounds = ra | rb;
 	if (Color::is_onto(blend_method))
-		bounds = ra;
-	else
-	if (ra.valid() && rb.valid())
-		set_union(bounds, ra, rb);
-	else
-	if (ra.valid())
-		bounds = ra;
-	else
-	if (rb.valid())
-		bounds = rb;
+		bounds &= ra;
+	if (approximate_equal(amount, Color::value_type(1)) && Color::is_straight(blend_method))
+		bounds &= rb;
 	return bounds;
 }
 
