@@ -881,7 +881,7 @@ Warp::Warp():
 	param_dest_bl ( Point(-2.2, -2  ) ),
 	param_dest_br ( Point( 2.2, -2  ) ),
 	param_clip    ( true ),
-	param_interpolation( int(1) ),
+	param_interpolation( int(3) ),
 	valid         ( ),
 	affine        ( ),
 	clip          ( )
