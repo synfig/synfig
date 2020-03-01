@@ -1,4 +1,10 @@
 
+#include <cassert>
+#include <iostream>
+#include <iomanip>
+
+#include <glib.h>
+
 #include <glibmm.h>
 
 #include <cairomm/cairomm.h>
@@ -16,6 +22,15 @@
 using namespace synfig;
 
 
+void
+VisualizationWindow::Measure::print(const String &name, long long sum, long long rendered_frames) {
+	Real time = Real(sum)/Real(rendered_frames)*1e-6;
+	std::cout << std::setw(30) << name << std::setw(0) << " : "
+			  << std::setw(15) << std::setprecision(6) << std::fixed << time << std::endl;
+}
+
+
+
 VisualizationWindow::VisualizationWindow(
 	const Canvas::Handle &canvas,
 	const rendering::Renderer::Handle &renderer
@@ -26,7 +41,13 @@ VisualizationWindow::VisualizationWindow(
 	frame(0),
 	frames_count(1),
 	frame_duration(0),
-	pixel_format(0)
+	pixel_format(0),
+	last_frame_time(0),
+	last_report_time(0),
+	last_report_id(0),
+	rendered_frames(0),
+	report_seconds(10),
+	closed(false)
 {
 	// prepare rend desc
 	rend_desc = canvas->rend_desc();
@@ -63,6 +84,16 @@ VisualizationWindow::VisualizationWindow(
 	surface_resource = new rendering::SurfaceResource();
 	surface_resource->create(rend_desc.get_w(), rend_desc.get_h());
 	
+	// prepare measures
+	measures.push_back(Measure("other gtk processing"));
+	measures.push_back(Measure("set time"));
+	measures.push_back(Measure("load resources"));
+	measures.push_back(Measure("outline grow"));
+	measures.push_back(Measure("create task"));
+	measures.push_back(Measure("optimize and render"));
+	measures.push_back(Measure("convert to cairo"));
+	measures.push_back(Measure("queue paint with cairo"));
+	
 	// create widgets
 	Gtk::DrawingArea *drawing_area = manage(new Gtk::DrawingArea());
 	drawing_area->signal_draw().connect(sigc::mem_fun(*this, &VisualizationWindow::on_content_draw));
@@ -76,8 +107,14 @@ VisualizationWindow::VisualizationWindow(
 	Glib::signal_idle().connect(sigc::mem_fun(*this, &VisualizationWindow::on_idle));
 }
 
+void
+VisualizationWindow::on_hide() {
+	closed = true;
+}
+
 bool
 VisualizationWindow::on_idle() {
+	if (closed) return false;
 	queue_draw();
 	return true;
 }
@@ -132,17 +169,31 @@ VisualizationWindow::convert(const rendering::SurfaceResource::Handle &surface)
 
 bool
 VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &context) {
-	context->move_to(0, 0);
-	context->line_to(frame, 100);
-	context->stroke();
+	if (!last_frame_time && !last_report_time) {
+		last_frame_time = last_report_time = g_get_monotonic_time();
+		std::cout << std::endl
+				<< "gathering statistics, please wait a reports every "
+				<< report_seconds << " seconds"
+				<< std::endl
+				<< std::endl;
+	}
+	Measure *measure = &measures.front();
 	
+	(measure++)->last = g_get_monotonic_time();
+
 	Time time = frame_duration*(frame + rend_desc.get_frame_start());
 	canvas->set_time(time);
 	
+	(measure++)->last = g_get_monotonic_time();
+
 	canvas->load_resources(time);
 
+	(measure++)->last = g_get_monotonic_time();
+	
 	canvas->set_outline_grow(rend_desc.get_outline_grow());
 
+	(measure++)->last = g_get_monotonic_time();
+	
 	bool surface_exists = false;
 	ContextParams context_params(rend_desc.get_render_excluded_contexts());
 	rendering::Task::Handle task = canvas->build_rendering_task(context_params);
@@ -159,17 +210,47 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 		task->source_rect = Rect(rend_desc.get_tl(), rend_desc.get_br());
 	}
 
+	(measure++)->last = g_get_monotonic_time();
+	
 	if (task)
 		renderer->run(task);
 	
+	(measure++)->last = g_get_monotonic_time();
+
 	if (task)
 		surface_exists = convert(task->target_surface);
 	
+	(measure++)->last = g_get_monotonic_time();
+
 	if (surface_exists) {
 		context->set_source(cairo_surface, 0, 0);
 		context->paint();
 	}
 		
+	(measure++)->last = g_get_monotonic_time();
+	
+	assert(measure - 1 == &measures.back());
+	for(Measure *m = &measures.front(); m < measure; ++m) {
+		m->sum += m->last - last_frame_time;
+		last_frame_time = m->last;
+	}
+	
+	if (rendered_frames > 1 && last_frame_time - last_report_time >= report_seconds*1000000ll) {
+		std::cout << "report #" << (++last_report_id) << std::endl;
+		Measure *mb = &measures.front();
+		for(Measure *m = mb+1; m < measure; ++m) {
+			m->print(rendered_frames);
+			m->sum = 0;
+		}
+		mb->print(rendered_frames); // print 'other gtk' at last row
+		mb->sum = 0;
+		Measure::print("whole frame", last_frame_time - last_report_time, rendered_frames);
+		std::cout << std::endl;
+		last_report_time = last_frame_time;
+		rendered_frames = 0;
+	}
+	
+	++rendered_frames;
 	frame = (frame + 1) % frames_count;
 	return true;
 }

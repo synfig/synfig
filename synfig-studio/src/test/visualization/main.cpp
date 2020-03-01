@@ -19,6 +19,7 @@
 
 
 using namespace synfig;
+typedef std::map<String, rendering::Renderer::Handle> RendererMap;
 
 
 const char commandname[] = "visualization";
@@ -33,6 +34,14 @@ public:
 	virtual bool warning(const String &task)
 		{ synfig::warning("%s", task.c_str()); return true; }
 };
+
+
+void print_renderers(const RendererMap& renderers) {
+	std::cout << "available renderers: " << std::endl;
+	for(RendererMap::const_iterator i = renderers.begin(); i != renderers.end(); ++i)
+		if (i->second)
+			std::cout << "  " << i->first << " - " << i->second->get_name() << std::endl;
+}
 
 
 int main(int argc, char **argv)
@@ -68,7 +77,6 @@ int main(int argc, char **argv)
 	//// parse command line
 
 
-	typedef std::map<String, rendering::Renderer::Handle> RendererMap;
 	const RendererMap& renderers = rendering::Renderer::get_renderers();
 	
 	if (argc < 3) {
@@ -76,10 +84,7 @@ int main(int argc, char **argv)
 		std::cout << "usage: " << std::endl;
 		std::cout << "  " << commandname << " <file.sif|file.sifz> <renderer>" << std::endl;
 		std::cout << std::endl;
-		std::cout << "available renderers: " << std::endl;
-		for(RendererMap::const_iterator i = renderers.begin(); i != renderers.end(); ++i)
-			if (i->second)
-				std::cout << "  " << i->first << " - " << i->second->get_name() << std::endl;
+		print_renderers(renderers);
 		return 0;
 	}
 
@@ -101,7 +106,7 @@ int main(int argc, char **argv)
 	RendererMap::const_iterator ri = renderers.find(renderer_name);
 	if (ri == renderers.end() || !ri->second) {
 		error("unknown renderer: %s", renderer_name.c_str());
-		info("call %s with no arguments to take list of available renderers", commandname);
+		print_renderers(renderers);
 		return 1;
 	}
 	rendering::Renderer::Handle renderer = ri->second;
