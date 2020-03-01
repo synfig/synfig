@@ -80,7 +80,7 @@ public:
 	const synfig::Waypoint &get_waypoint()const;
 	
 	// TCB Parameter functions
-	void show_tcb_params(bool ok);
+	void config_tcb_params(bool show_params);
 	void on_before_options_changed();
 	void on_after_options_changed();
 }; // END of class Widget_Waypoint

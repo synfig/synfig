@@ -266,9 +266,9 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	if (
 		(Waypoint::Interpolation)before_options->get_value() == Interpolation::INTERPOLATION_TCB ||
 		(Waypoint::Interpolation)after_options->get_value() == Interpolation::INTERPOLATION_TCB)
-		show_tcb_params(true);
+		config_tcb_params(true);
 	else
-		show_tcb_params(false);
+		config_tcb_params(false);
 }
 
 const synfig::Waypoint &
@@ -290,9 +290,9 @@ Widget_Waypoint::get_waypoint()const
 }
 
 void
-Widget_Waypoint::show_tcb_params(bool show_labels)
+Widget_Waypoint::config_tcb_params(bool show_params)
 {
-	if (show_labels) {
+	if (show_params) {
 		// show labels
 		tcbFrame->get_label_widget()->show();
 		tensionLabel->show();
@@ -332,9 +332,9 @@ Widget_Waypoint::on_before_options_changed()
 	if (
 		(Waypoint::Interpolation)before_options->get_value() == Interpolation::INTERPOLATION_TCB ||
 		(Waypoint::Interpolation)after_options->get_value() == Interpolation::INTERPOLATION_TCB)
-		show_tcb_params(true);
+		config_tcb_params(true);
 	else
-		show_tcb_params(false);
+		config_tcb_params(false);
 }
 
 void
@@ -343,8 +343,8 @@ Widget_Waypoint::on_after_options_changed()
 	if (
 		(Waypoint::Interpolation)before_options->get_value() == Interpolation::INTERPOLATION_TCB ||
 		(Waypoint::Interpolation)after_options->get_value() == Interpolation::INTERPOLATION_TCB)
-		show_tcb_params(true);
+		config_tcb_params(true);
 	else
-		show_tcb_params(false);
+		config_tcb_params(false);
 }
 
