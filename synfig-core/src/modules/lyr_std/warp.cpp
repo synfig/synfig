@@ -778,15 +778,10 @@ namespace {
 				
 				// rect
 				const Rect orig_rect = li->orig_rect & source_rect;
-				const Rect rect_float(
+				Rect rect_float(
 					to_pixels_matrix.get_transformed(orig_rect.get_min()),
 					to_pixels_matrix.get_transformed(orig_rect.get_max()) );
-				const RectInt rect = RectInt(
-					(int)approximate_floor(rect_float.minx),
-					(int)approximate_floor(rect_float.miny),
-					(int)approximate_ceil (rect_float.maxx),
-					(int)approximate_ceil (rect_float.maxy) ) & base_rect;
-				if (!rect.is_valid())
+				if (!rect_float.is_valid())
 					continue;
 				
 				// get source
@@ -805,6 +800,23 @@ namespace {
 					li->alpha_matrix
 				  * from_pixels_matrix;
 				
+				// trucate rect by sub_task rect
+				rect_float &= TransformationPerspective::transform_bounds_perspective(
+						matrix.get_inverted(),
+						rendering::Transformation::Bounds(
+							Rect( (*i)->target_rect.minx, (*i)->target_rect.miny,
+								  (*i)->target_rect.maxx, (*i)->target_rect.maxy ),
+							Vector(1, 1) )
+					).rect;
+				
+				const RectInt rect = RectInt(
+					(int)approximate_floor(rect_float.minx),
+					(int)approximate_floor(rect_float.miny),
+					(int)approximate_ceil (rect_float.maxx),
+					(int)approximate_ceil (rect_float.maxy) ) & base_rect;
+				if (!rect.is_valid())
+					continue;
+				  
 				// process
 				switch(interpolation) {
 					case Color::INTERPOLATION_LINEAR:
@@ -1108,12 +1120,11 @@ Warp::build_rendering_task_vfunc(Context context) const
 		task_contour->contour->line_to( Vector(clip_rect.maxx, clip_rect.miny) );
 		task_contour->contour->close();
 		task_contour->contour->color = Color(1, 1, 1, 1);
-		task_contour->contour->invert = true;
-		task_contour->contour->antialias = true;
+		task_contour->contour->antialias = interpolation != Color::INTERPOLATION_NEAREST;
 
 		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
 		task_blend->amount = 1;
-		task_blend->blend_method = Color::BLEND_ALPHA_OVER;
+		task_blend->blend_method = Color::BLEND_ALPHA;
 		task_blend->sub_task_a() = sub_task;
 		task_blend->sub_task_b() = task_contour;
 		
