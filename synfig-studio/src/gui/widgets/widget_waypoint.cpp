@@ -263,12 +263,7 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	before_options->set_value((Waypoint::Interpolation)waypoint.get_before());
 	after_options->set_value((Waypoint::Interpolation)waypoint.get_after());
 	
-	if (
-		(Waypoint::Interpolation)before_options->get_value() == Interpolation::INTERPOLATION_TCB ||
-		(Waypoint::Interpolation)after_options->get_value() == Interpolation::INTERPOLATION_TCB)
-		config_tcb_params(true);
-	else
-		config_tcb_params(false);
+	update_tcb_params_visibility();
 }
 
 const synfig::Waypoint &
