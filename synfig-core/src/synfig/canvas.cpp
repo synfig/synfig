@@ -1609,14 +1609,19 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 		return parent_->rename_group(old_name,new_name);
 
 	{
+		const char GROUP_NEST_CHAR = '.';
+		const string old_name_prefix = old_name + GROUP_NEST_CHAR;
+
 		std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
+
 		iter=group_db_.find(old_name);
-		if(iter!=group_db_.end())
-		for(++iter;iter!=group_db_.end() && iter->first.find(old_name)==0;iter=group_db_.find(old_name),++iter)
-		{
-			String name(iter->first,old_name.size(),String::npos);
-			name=new_name+name;
-			rename_group(iter->first,name);
+		if(iter!=group_db_.end()) {
+			for(++iter;iter!=group_db_.end() && iter->first.find(old_name_prefix)==0;iter=group_db_.find(old_name),++iter)
+			{
+				String name(iter->first,old_name_prefix.size(),String::npos);
+				name=new_name+GROUP_NEST_CHAR+name;
+				rename_group(iter->first,name);
+			}
 		}
 	}
 
