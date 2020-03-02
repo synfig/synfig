@@ -173,7 +173,7 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	interpolationTable->attach(*interpolationInLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	interpolationTable->attach(*before_options, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	Gtk::Label *interpolationOutLabel = manage(new Gtk::Label(_("_Out Interpolation"), true));
+	Gtk::Label *interpolationOutLabel = manage(new Gtk::Label(_("O_ut Interpolation"), true));
 	interpolationOutLabel->set_alignment(0, 0.5);
 	interpolationOutLabel->set_mnemonic_widget(*after_options);
 	interpolationTable->attach(*interpolationOutLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
@@ -200,7 +200,7 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	tcbTable->attach(*tensionLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	tcbTable->attach(*spin_tension, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	continuityLabel = manage(new Gtk::Label(_("_Continuity"), true));
+	continuityLabel = manage(new Gtk::Label(_("Continuit_y"), true));
 	continuityLabel->set_alignment(0, 0.5);
 	continuityLabel->set_mnemonic_widget(*spin_continuity);
 	spin_continuity->set_alignment(1);
