@@ -81,8 +81,7 @@ public:
 	
 	// TCB Parameter functions
 	void config_tcb_params(bool show_params);
-	void on_before_options_changed();
-	void on_after_options_changed();
+	void update_tcb_params_visibility();
 }; // END of class Widget_Waypoint
 
 }; // END of namespace studio
