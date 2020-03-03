@@ -69,7 +69,6 @@ class Widget_Waypoint : public Gtk::Alignment
 
 	// TCB Parameter members
 	Gtk::Frame *tcbFrame;
-	Gtk::Label *tensionLabel, *continuityLabel, *biasLabel, *temporalTensionLabel;
 	Gtk::SpinButton *spin_tension, *spin_continuity, *spin_bias, *spin_temporal_tension;
 	Glib::RefPtr<Gtk::Adjustment> adj_tension, adj_continuity, adj_bias, adj_temporal_tension;
 

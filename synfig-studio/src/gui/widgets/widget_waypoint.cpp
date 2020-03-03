@@ -193,28 +193,28 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	tcbTable->set_col_spacings(12);
 	tcbPadding->add(*tcbTable);
 
-	tensionLabel = manage(new Gtk::Label(_("T_ension"), true));
+	Gtk::Label *tensionLabel = manage(new Gtk::Label(_("T_ension"), true));
 	tensionLabel->set_alignment(0, 0.5);
 	tensionLabel->set_mnemonic_widget(*spin_tension);
 	spin_tension->set_alignment(1);
 	tcbTable->attach(*tensionLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	tcbTable->attach(*spin_tension, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	continuityLabel = manage(new Gtk::Label(_("Continuit_y"), true));
+	Gtk::Label *continuityLabel = manage(new Gtk::Label(_("Continuit_y"), true));
 	continuityLabel->set_alignment(0, 0.5);
 	continuityLabel->set_mnemonic_widget(*spin_continuity);
 	spin_continuity->set_alignment(1);
 	tcbTable->attach(*continuityLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	tcbTable->attach(*spin_continuity, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	biasLabel = manage(new Gtk::Label(_("_Bias"), true));
+	Gtk::Label *biasLabel = manage(new Gtk::Label(_("_Bias"), true));
 	biasLabel->set_alignment(0, 0.5);
 	biasLabel->set_mnemonic_widget(*spin_bias);
 	spin_bias->set_alignment(1);
 	tcbTable->attach(*biasLabel, 0, 1, 2, 3, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	tcbTable->attach(*spin_bias, 1, 2, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	temporalTensionLabel = manage(new Gtk::Label(_("Te_mporal Tension"), true));
+	Gtk::Label *temporalTensionLabel = manage(new Gtk::Label(_("Te_mporal Tension"), true));
 	temporalTensionLabel->set_alignment(0, 0.5);
 	temporalTensionLabel->set_mnemonic_widget(*spin_temporal_tension);
 	spin_temporal_tension->set_alignment(1);
