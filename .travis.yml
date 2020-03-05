@@ -102,8 +102,17 @@ matrix:
     script: ./travis.sh
     after_script: ccache -s # show ccache stats
 
+  - os: linux
+    name: "Lottie exporter Ubuntu 16.04 Xenial"
+    sudo: required
+    dist: xenial
+    before_install: ./1-setup-linux-native.sh
+    script: ./lottie_test.sh
+
+
   allow_failures:
   #  - env: CMAKE=true
   #  - os: osx
     - osx_image: xcode10
     - name: "Test render engine for regressions"
+    - name: "Lottie exporter Ubuntu 16.04 Xenial"
