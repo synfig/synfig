@@ -172,7 +172,7 @@ class Param:
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
-        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale"}:   # This will never happen, can remove this latter
+        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale", "circle_radius"}:   # This will never happen, can remove this latter
             self.dimension = 2
 
         # Check if we are dealing with convert methods
@@ -206,7 +206,7 @@ class Param:
         """
         Internal private method for animating
         """
-        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale"}:
+        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale", "circle_radius"}:
             self.dimension = 2
 
         # Check if we are dealing with convert methods
