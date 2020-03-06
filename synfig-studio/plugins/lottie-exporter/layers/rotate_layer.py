@@ -6,8 +6,6 @@ import sys
 import copy
 import settings
 from helpers.transform import gen_helpers_transform
-from common.Param import Param
-import synfig.group as group
 sys.path.append("..")
 
 

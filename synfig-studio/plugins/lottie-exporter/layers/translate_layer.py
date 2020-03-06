@@ -4,11 +4,9 @@ Will store all the functions needed to export the translate layer
 
 import sys
 from lxml import etree
-import copy
 import settings
 from common.Param import Param
 from helpers.transform import gen_helpers_transform
-from synfig.animation import print_animation
 sys.path.append("..")
 
 

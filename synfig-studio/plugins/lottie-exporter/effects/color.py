@@ -3,7 +3,6 @@ This module will store all the functions required for color property of lottie
 """
 
 import sys
-import copy
 import settings
 from common.Count import Count
 sys.path.append("../")

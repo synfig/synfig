@@ -3,7 +3,6 @@ This module will store the expression controllers of lottie/AE
 """
 
 import sys
-import copy
 import settings
 from common.Count import Count
 from effects.slider import gen_effects_slider
