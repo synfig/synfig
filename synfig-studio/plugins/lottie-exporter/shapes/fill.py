@@ -8,7 +8,6 @@ from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 from common.misc import is_animated
 from common.Count import Count
-from common.Layer import Layer
 sys.path.append("..")
 
 

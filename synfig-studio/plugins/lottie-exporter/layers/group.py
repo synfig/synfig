@@ -5,7 +5,6 @@ Store all functions corresponding to group layer in Synfig
 
 import sys
 import math
-import copy
 import settings
 from common.Param import Param
 from common.Canvas import Canvas
@@ -14,7 +13,7 @@ from common.misc import get_frame, approximate_equal, get_time
 from sources.precomp import add_precomp_asset
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from synfig.animation import print_animation, insert_waypoint_at_frame, to_Synfig_axis
+from synfig.animation import insert_waypoint_at_frame, to_Synfig_axis
 sys.path.append("..")
 
 

@@ -4,7 +4,6 @@ Will store the Parameters class for Bline
 """
 
 import sys
-import settings
 import common
 sys.path.append("..")
 

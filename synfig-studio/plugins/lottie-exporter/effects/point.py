@@ -3,7 +3,6 @@ Store all functions necessary for effect/point.json
 """
 
 import sys
-import copy
 import settings
 from common.Count import Count
 sys.path.append("../")

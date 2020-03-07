@@ -4,14 +4,8 @@ This will also support the simple_circle layer of Synfig
 """
 
 import sys
-import copy
 import settings
-from properties.value import gen_properties_value
-from common.misc import is_animated
 from common.Count import Count
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import print_animation
 sys.path.append("..")
 
 

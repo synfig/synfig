@@ -9,7 +9,6 @@ import settings
 from common.misc import is_animated
 from common.Vector import Vector
 import common
-from synfig.animation import print_animation
 sys.path.append("..")
 
 

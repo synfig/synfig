@@ -11,7 +11,7 @@ from lxml import etree
 import settings
 import common
 import synfig.group
-from synfig.animation import modify_bool_animation, to_Synfig_axis, is_animated, get_bool_at_frame, get_vector_at_frame, print_animation
+from synfig.animation import modify_bool_animation, to_Synfig_axis, is_animated, get_bool_at_frame, get_vector_at_frame
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.value import gen_properties_value

@@ -3,7 +3,6 @@ This module will store the expression controllers of lottie/AE
 """
 
 import sys
-import copy
 import settings
 from common.Count import Count
 sys.path.append("../")
