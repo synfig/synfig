@@ -442,13 +442,25 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		cr->stroke();
 	}
 
+	synfig::Canvas::Handle canvas;
+	if (params_treeview && param_info_map.size() > 0) {
+		const RowInfo * row_info = param_info_map.begin()->second;
+//		If Parameters Panel shows data of more than one layer, maybe we should do something like:
+//		Gtk::TreeIter selected_iter = params_treeview->get_selection()->get_selected();
+//		Gtk::TreePath path = params_treeview->get_model()->get_path(selected_iter);
+//		const RowInfo *row_info = param_info_map[path.to_string()];
+		if (row_info) {
+			// A different canvas? (eg. imported layer)
+			canvas = row_info->get_value_desc().get_canvas();
+		}
+	}
 
-	if (canvas_interface) {
-		synfig::Canvas::Handle canvas = canvas_interface->get_canvas();
+	if (!canvas && canvas_interface)
+		canvas = canvas_interface->get_canvas();
 
-		if (canvas)
-			for(synfig::KeyframeList::const_iterator i = canvas->keyframe_list().begin(); i != canvas->keyframe_list().end(); ++i)
-				draw_keyframe_line(cr, *i);
+	if (canvas) {
+		for(synfig::KeyframeList::const_iterator i = canvas->keyframe_list().begin(); i != canvas->keyframe_list().end(); ++i)
+	        draw_keyframe_line(cr, *i);
 	}
 	draw_current_time(cr);
 	return true;
