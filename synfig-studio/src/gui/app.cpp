@@ -300,8 +300,8 @@ studio::Dock_Info          *dock_info;
 studio::Dock_LayerGroups   *dock_layer_groups;
 studio::Dock_Navigator     *dock_navigator;
 studio::Dock_SoundWave     *dock_soundwave;
-studio::Dock_Timetrack     *dock_timetrack;
-studio::Dock_Timetrack2    *dock_timetrack2;
+studio::Dock_Timetrack     *dock_timetrack_old;
+studio::Dock_Timetrack2    *dock_timetrack;
 studio::Dock_Curves        *dock_curves;
 
 std::list< etl::handle< studio::Module > > module_list_;
@@ -1066,12 +1066,12 @@ DEFINE_ACTION("panel-meta_data",       _("Canvas MetaData"));
 DEFINE_ACTION("panel-children",        _("Library"));
 DEFINE_ACTION("panel-info",            _("Info"));
 DEFINE_ACTION("panel-navigator",       _("Navigator"));
-DEFINE_ACTION("panel-timetrack",       _("Timetrack"));
+DEFINE_ACTION("panel-timetrack-old",   _("Timetrack (old)"));
 DEFINE_ACTION("panel-curves",          _("Graphs"));
 DEFINE_ACTION("panel-groups",          _("Sets"));
 DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"));
 DEFINE_ACTION("panel-soundwave",       _("Sound"));
-DEFINE_ACTION("panel-timetrack2",      _("Timetrack 2"));
+DEFINE_ACTION("panel-timetrack",      _("Timetrack"));
 
 // actions in Help menu
 DEFINE_ACTION("help",           Gtk::Stock::HELP);
@@ -1241,8 +1241,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "		<menuitem action='panel-children' />"
 "		<menuitem action='panel-info' />"
 "		<menuitem action='panel-navigator' />"
+"		<menuitem action='panel-timetrack-old' />"
 "		<menuitem action='panel-timetrack' />"
-"		<menuitem action='panel-timetrack2' />"
 "		<menuitem action='panel-curves' />"
 "		<menuitem action='panel-groups' />"
 "		<menuitem action='panel-pal_edit' />"
@@ -1619,13 +1619,13 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dock_soundwave = new studio::Dock_SoundWave();
 		dock_manager->register_dockable(*dock_soundwave);
 
-		studio_init_cb.task(_("Init Timetrack..."));
-		dock_timetrack = new studio::Dock_Timetrack();
-		dock_manager->register_dockable(*dock_timetrack);
+		studio_init_cb.task(_("Init Timetrack (old)..."));
+		dock_timetrack_old = new studio::Dock_Timetrack();
+		dock_manager->register_dockable(*dock_timetrack_old);
 
-		studio_init_cb.task(_("Init Timetrack 2..."));
-		dock_timetrack2 = new studio::Dock_Timetrack2();
-		dock_manager->register_dockable(*dock_timetrack2);
+		studio_init_cb.task(_("Init Timetrack..."));
+		dock_timetrack = new studio::Dock_Timetrack2();
+		dock_manager->register_dockable(*dock_timetrack);
 
 		studio_init_cb.task(_("Init Curve Editor..."));
 		dock_curves = new studio::Dock_Curves();
