@@ -1,7 +1,7 @@
 set(UIFILES
-    canvas_options.ui
-    preview_options.ui
-    dialog_workspaces.ui
+    canvas_options.glade
+    preview_options.glade
+    dialog_workspaces.glade
 )
 
 foreach (UIFILE IN ITEMS ${UIFILES})
