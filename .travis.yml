@@ -115,4 +115,3 @@ matrix:
   #  - os: osx
     - osx_image: xcode10
     - name: "Test render engine for regressions"
-    - name: "Lottie exporter Ubuntu 16.04 Xenial"
