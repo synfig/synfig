@@ -204,10 +204,13 @@ void Widget_TimeGraphBase::draw_current_time(const Cairo::RefPtr<Cairo::Context>
 
 void Widget_TimeGraphBase::draw_keyframe_line(const Cairo::RefPtr<Cairo::Context>& cr, const synfig::Keyframe& keyframe) const
 {
+	const synfig::Time &keyframe_time = keyframe.get_time();
+	if (keyframe_time < time_plot_data->lower_ex || keyframe_time >= time_plot_data->upper_ex)
+		return;
 	const Gdk::Color keyframe_color("#a07f7f");
 	cr->save();
 	Gdk::Cairo::set_source_color(cr, keyframe_color);
-	cr->rectangle(time_plot_data->get_pixel_t_coord(keyframe.get_time()), 0, 1.0, get_height());
+	cr->rectangle(time_plot_data->get_pixel_t_coord(keyframe_time), 0, 1.0, get_height());
 	cr->fill();
 	cr->restore();
 }
