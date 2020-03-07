@@ -21,7 +21,7 @@ target_sources(lyr_std
         "${CMAKE_CURRENT_LIST_DIR}/timeloop.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/translate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/twirl.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/warp.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/perspective.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/xorpattern.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/zoom.cpp"
 )
