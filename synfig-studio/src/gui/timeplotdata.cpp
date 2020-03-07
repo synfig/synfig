@@ -39,6 +39,8 @@
 
 /* === M A C R O S ========================================================= */
 
+#define EXTRA_TIMETRACK_SPACE 16.0
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -136,7 +138,7 @@ TimePlotData::recompute_time_bounds()
 void
 TimePlotData::recompute_geometry_data()
 {
-	k = widget.get_width()/(upper - lower);
+	k = (widget.get_width()-EXTRA_TIMETRACK_SPACE*2) / (upper-lower);
 	dt = 1.0/k;
 
 	if (has_vertical) {

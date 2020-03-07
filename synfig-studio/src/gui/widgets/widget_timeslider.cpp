@@ -57,6 +57,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define EXTRA_TIMETRACK_SPACE 16.0
+
 /* === G L O B A L S ======================================================= */
 
 const double zoominfactor = 1.25;
@@ -206,7 +208,8 @@ Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
 	//draw grey rectangle
 	cr->save();
 	cr->set_source_rgb(0.5, 0.5, 0.5);
-	cr->rectangle(0.0, 0.0, (double)get_width(), (double)get_height());
+	double width = (double)get_width() - EXTRA_TIMETRACK_SPACE*2;
+	cr->rectangle(EXTRA_TIMETRACK_SPACE, 0.0, width, (double)get_height());
 	cr->fill();
 	cr->restore();
 }
@@ -230,7 +233,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	const etl::handle<TimeModel> & time_model = time_plot_data->time_model;
 
 	// Draw the time line...
-	double tpx = time_plot_data->get_pixel_t_coord(time_plot_data->time) + 0.5;
+	double tpx = time_plot_data->get_pixel_t_coord(time_plot_data->time) + EXTRA_TIMETRACK_SPACE;
 	cr->save();
 	cr->set_source_rgb(1.0, 175.0/255.0, 0.0);
 	cr->set_line_width(1.0);
@@ -263,7 +266,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->set_source_rgb(51.0/255.0,51.0/255.0,51.0/255.0);
 	cr->set_line_width(1.0);
 	for(int i = 0; current <= time_plot_data->upper_ex; ++i, current = time_model->round_time(current + step)) {
-		double x = time_plot_data->get_pixel_t_coord(current) + 0.5;
+		double x = time_plot_data->get_pixel_t_coord(current) + EXTRA_TIMETRACK_SPACE;
 		if (i % subdivisions == 0) {
 			// draw big
 			cr->move_to(x, 0.0);
@@ -299,7 +302,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	// Draw the time line
 	Gdk::Cairo::set_source_color(cr, Gdk::Color("#ffaf00"));
 	cr->set_line_width(3.0);
-	double x = time_plot_data->get_pixel_t_coord(time_plot_data->time);
+	double x = time_plot_data->get_pixel_t_coord(time_plot_data->time) + EXTRA_TIMETRACK_SPACE;
 	cr->move_to(x, 0.0);
 	cr->line_to(x, fullheight);
 	cr->stroke();
@@ -312,8 +315,8 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			{ time_model->get_play_bounds_upper(), time_plot_data->upper_ex } };
 		for(int i = 0; i < 2; ++i) {
 			if (bounds[i][0] < bounds[i][1]) {
-				double x0 = time_plot_data->get_double_pixel_t_coord(bounds[i][0]);
-				double x1 = time_plot_data->get_double_pixel_t_coord(bounds[i][1]);
+				double x0 = time_plot_data->get_double_pixel_t_coord(bounds[i][0]) + EXTRA_TIMETRACK_SPACE;
+				double x1 = time_plot_data->get_double_pixel_t_coord(bounds[i][1]) + EXTRA_TIMETRACK_SPACE;
 				double w = x1 - x0;
 
 				cr->save();
@@ -349,7 +352,7 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 		return false;
 
 	if (event->button == 1) {
-		Time time = time_plot_data->get_t_from_pixel_coord(event->x);
+		Time time = time_plot_data->get_t_from_pixel_coord(event->x - EXTRA_TIMETRACK_SPACE);
 		time_plot_data->time_model->set_time(time);
 	}
 
@@ -374,7 +377,7 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	Gdk::ModifierType mod = Gdk::ModifierType(event->state);
 	if (mod & Gdk::BUTTON1_MASK) {
 		// scrubbing
-		Time time = time_plot_data->get_t_from_pixel_coord(event->x);
+		Time time = time_plot_data->get_t_from_pixel_coord(event->x - EXTRA_TIMETRACK_SPACE);
 		time_plot_data->time_model->set_time(time);
 		return true;
 	} else

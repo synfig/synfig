@@ -53,6 +53,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define EXTRA_TIMETRACK_SPACE 16.0
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -255,7 +257,7 @@ Widget_CanvasTimeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr
 		case Renderer_Canvas::FS_Done          : cr->set_source_rgba(0.0, 0.8, 0.0, 1.0); break;
 		default                                : cr->set_source_rgba(0.0, 0.0, 0.0, 0.0); break;
 		}
-		cr->rectangle(time_plot_data->get_pixel_t_coord(i->first), top, width, height);
+		cr->rectangle(time_plot_data->get_pixel_t_coord(i->first)+EXTRA_TIMETRACK_SPACE, top, width, height);
 		cr->fill();
 		cr->restore();
 	}

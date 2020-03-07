@@ -57,6 +57,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define EXTRA_TIMETRACK_SPACE 16.0
+
 /* === G L O B A L S ======================================================= */
 
 //mode for modifier keys
@@ -289,8 +291,8 @@ CellRenderer_TimeTrack::render_vfunc(
 	if (lower >= upper)
 		return;
 
-	double k = (double)cell_area.get_width()/(double)(upper - lower);
-	Time extra_time = (double)cell_area.get_height()*0.5/k;
+	double k = ((double)cell_area.get_width()-EXTRA_TIMETRACK_SPACE*2) / (double)(upper-lower);
+	Time extra_time = (double)cell_area.get_height() / k;
 	Time lower_ex = lower - extra_time;
 	Time upper_ex = upper + extra_time;
 
@@ -307,6 +309,7 @@ CellRenderer_TimeTrack::render_vfunc(
 		for(KeyframeList::const_iterator i = canvas->keyframe_list().begin(); i != canvas->keyframe_list().end(); ++i)
 			if (i->get_time() >= lower_ex && i->get_time() < upper_ex) {
 				int x = (int)round((double)((i->get_time() - lower)*k));
+				x += EXTRA_TIMETRACK_SPACE;
 				Gdk::Cairo::set_source_color(cr, keyframe_color);
 				cr->rectangle(cell_area.get_x() + x, cell_area.get_y(), 1, cell_area.get_height());
 				cr->fill();
@@ -328,7 +331,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				const int h = (cell_area.get_height() - 2)/2;
 				const int x = cell_area.get_x() + (int)((t-lower)*k);
 				const int y = cell_area.get_y() + (cell_area.get_height() - h)/2;
-				cr->rectangle(x, y, w, h);
+				cr->rectangle(x+EXTRA_TIMETRACK_SPACE, y, w, h);
 				cr->set_source_rgb(
 					change_time_color.get_red_p(),
 					change_time_color.get_green_p(),
@@ -379,6 +382,7 @@ CellRenderer_TimeTrack::render_vfunc(
 
 				// should draw me a grey filled circle...
 				int x = (int)round((double)(t - lower)*k);
+				x += EXTRA_TIMETRACK_SPACE;
 				Gdk::Rectangle area(
 					cell_area.get_x() - cell_area.get_height()/2 + x + 1,
 					cell_area.get_y() + 1,
@@ -392,6 +396,7 @@ CellRenderer_TimeTrack::render_vfunc(
 
 		for(std::vector<TimePoint>::iterator i = drawredafter.begin(); i != drawredafter.end(); ++i) {
 			int x = (int)round((double)(i->get_time() - lower)*k);
+			x += EXTRA_TIMETRACK_SPACE;
 			Gdk::Rectangle area(
 				cell_area.get_x() - cell_area.get_height()/2 + x + 1,
 				cell_area.get_y() + 1,
@@ -414,6 +419,7 @@ CellRenderer_TimeTrack::render_vfunc(
 			ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator j = i; ++j;
 
 			int x = (int)round((double)(i->time - lower)*k);
+			x += EXTRA_TIMETRACK_SPACE;
 			x = std::max(0, std::min(cell_area.get_width(), x));
 
 			bool status_at_time = !list_entry.status_at_time(
@@ -464,6 +470,7 @@ CellRenderer_TimeTrack::render_vfunc(
 	// Render a line that defines the current tick in time
 	if (time >= lower_ex && time <= upper_ex) {
 		int x = (int)round((double)(time - lower)*k);
+		x += EXTRA_TIMETRACK_SPACE;
 		Gdk::Cairo::set_source_color(cr, curr_time_color);
 		cr->rectangle(cell_area.get_x() + x, cell_area.get_y(), 1, cell_area.get_height());
 		cr->fill();
@@ -491,17 +498,17 @@ CellRenderer_TimeTrack::activate_vfunc(
 	if (lower >= upper)
 		return false;
 
-	double k = (double)(upper - lower)/(double)cell_area.get_width();
-	Time extra_time = (double)cell_area.get_height()*0.5*k;
+	double k = (double)(upper-lower) / ((double)cell_area.get_width()-EXTRA_TIMETRACK_SPACE);
+	Time extra_time = (double)cell_area.get_height() * k;
 
 	switch(event->type) {
 	case GDK_MOTION_NOTIFY:
-		actual_time = ((double)event->motion.x - (double)cell_area.get_x())*k + (double)lower;
+		actual_time = (((double)event->motion.x-EXTRA_TIMETRACK_SPACE) - (double)cell_area.get_x())*k + (double)lower;
 		break;
 	case GDK_2BUTTON_PRESS:
 	case GDK_BUTTON_PRESS:
 	case GDK_BUTTON_RELEASE:
-		actual_time = ((double)event->button.x - (double)cell_area.get_x())*k + (double)lower;
+		actual_time = (((double)event->button.x-EXTRA_TIMETRACK_SPACE) - (double)cell_area.get_x())*k + (double)lower;
 		break;
 	default:
 		return false;

@@ -49,6 +49,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define EXTRA_TIMETRACK_SPACE 16.0
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -101,6 +103,7 @@ Widget_Keyframe_List::draw_arrow(
 	cr->save();
 	cr->set_source_rgba(color.get_r(), color.get_g(), color.get_b(), color.get_a());
 	cr->set_line_width(1.0);
+	x += EXTRA_TIMETRACK_SPACE;
 	cr->move_to(x, y);
 	cr->line_to(x - 0.5*width, y - height);
 	cr->line_to(x + 0.5*width, y - height);
@@ -144,10 +147,10 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	Time lower(time_model->get_visible_lower());
 	Time upper(time_model->get_visible_upper());
 
-	time_ratio = (upper - lower)*(0.5*(double)aw/(double)w);
+	time_ratio = (upper-lower) * ((double)aw/(double)w);
 	Time lower_ex = lower - time_ratio;
 	Time upper_ex = upper + time_ratio;
-	double k = (double)w/(double)(upper - lower);
+	double k = ((double)w-EXTRA_TIMETRACK_SPACE*2) / (double)(upper-lower);
 
 	// Draw a background
 	cr->save();
@@ -300,14 +303,14 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	if (!time_model || get_width() <= 0 || !kf_list || !editable)
 		return false;
 
-	const int x = (int)event->button.x;
+	const int x = (int)event->button.x - (int)EXTRA_TIMETRACK_SPACE;
 
 	// Boundaries of the drawing area in time units.
 	Time lower(time_model->get_visible_lower());
 	Time upper(time_model->get_visible_upper());
 
 	// The time where the event x is
-	Time t = lower + (upper - lower)*((double)x/(double)get_width());
+	Time t = lower + (upper-lower) * ((double)x/((double)get_width()-EXTRA_TIMETRACK_SPACE));
 	t = std::max(lower, std::min(upper, t));
 
 	// here the guts of the event
