@@ -29,7 +29,7 @@ static Glib::RefPtr<Gtk::Builder> load_interface() {
 	auto refBuilder = Gtk::Builder::create();
 	try
 	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path("dialog_workspaces.ui"));
+		refBuilder->add_from_file(ResourceHelper::get_ui_path("dialog_workspaces.glade"));
 	}
 	catch(const Glib::FileError& ex)
 	{
