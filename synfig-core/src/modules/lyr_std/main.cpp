@@ -28,10 +28,10 @@
 #define SYNFIG_MODULE
 
 #ifdef USING_PCH
-#	include "pch.h"
+#include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
-#	include <config.h>
+#include <config.h>
 #endif
 
 #include <synfig/localization.h>
@@ -66,7 +66,7 @@
 
 //#include "radialblur.h"
 
-#include "warp.h"
+#include "perspective.h"
 #include "timeloop.h"
 #include "curvewarp.h"
 #include "stroboscope.h"
@@ -83,34 +83,35 @@ using namespace lyr_std;
 /* === E N T R Y P O I N T ================================================= */
 
 MODULE_DESC_BEGIN(liblyr_std)
-	MODULE_NAME("Standard Layers")
-	MODULE_DESCRIPTION("Provides a basic set of standard layers")
-	MODULE_AUTHOR("Robert B. Quattlebaum")
-	MODULE_VERSION("1.0")
-	MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
+MODULE_NAME("Standard Layers")
+MODULE_DESCRIPTION("Provides a basic set of standard layers")
+MODULE_AUTHOR("Robert B. Quattlebaum")
+MODULE_VERSION("1.0")
+MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
 MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(liblyr_std)
-	BEGIN_LAYERS
-		LAYER(Zoom)				LAYER_ALIAS(Zoom,"Zoom")
-		LAYER(Import)			LAYER_ALIAS(Import,"Import")
-		LAYER(Translate)		LAYER_ALIAS(Translate,"Translate")
-		LAYER(SuperSample)		LAYER_ALIAS(SuperSample,"SuperSample")
-		LAYER(Rotate)			LAYER_ALIAS(Rotate,"Rotate")
-		LAYER(Warp)
-		LAYER(Julia)
-		LAYER(InsideOut)
-		LAYER(Mandelbrot)
-		LAYER(Layer_Clamp)
-		LAYER(Layer_Stretch)
-		LAYER(XORPattern)		LAYER_ALIAS(XORPattern,"XORPattern")
-		LAYER(Twirl)
-		LAYER(Layer_Shade)
-		LAYER(Layer_Bevel)
-		LAYER(Layer_TimeLoop)
-		LAYER(Layer_Stroboscope)
-		LAYER(Layer_SphereDistort)
-		LAYER(CurveWarp)
-		LAYER(Layer_FreeTime)
-	END_LAYERS
-MODULE_INVENTORY_END
+BEGIN_LAYERS
+LAYER(Zoom)
+LAYER_ALIAS(Zoom, "Zoom")
+	LAYER(Import) LAYER_ALIAS(Import, "Import")
+		LAYER(Translate) LAYER_ALIAS(Translate, "Translate")
+			LAYER(SuperSample) LAYER_ALIAS(SuperSample, "SuperSample")
+				LAYER(Rotate) LAYER_ALIAS(Rotate, "Rotate")
+					LAYER(Perspective)
+						LAYER(Julia)
+							LAYER(InsideOut)
+								LAYER(Mandelbrot)
+									LAYER(Layer_Clamp)
+										LAYER(Layer_Stretch)
+											LAYER(XORPattern) LAYER_ALIAS(XORPattern, "XORPattern")
+												LAYER(Twirl)
+													LAYER(Layer_Shade)
+														LAYER(Layer_Bevel)
+															LAYER(Layer_TimeLoop)
+																LAYER(Layer_Stroboscope)
+																	LAYER(Layer_SphereDistort)
+																		LAYER(CurveWarp)
+																			LAYER(Layer_FreeTime)
+																				END_LAYERS
+	MODULE_INVENTORY_END
