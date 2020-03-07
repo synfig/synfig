@@ -107,7 +107,7 @@ matrix:
     sudo: required
     dist: xenial
     before_install: ./1-setup-linux-native.sh
-    script: ./lottie_test.sh
+    script: ./autobuild/lottie_test.sh
 
 
   allow_failures:

@@ -3,7 +3,7 @@
 # set -e
 
 WORKDIR=`dirname "$0"`
-pushd "${WORKDIR}" > /dev/null
+pushd "${WORKDIR}/.." > /dev/null
 WORKDIR=`pwd`
 popd > /dev/null
 
