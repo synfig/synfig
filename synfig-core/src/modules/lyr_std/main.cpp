@@ -28,10 +28,10 @@
 #define SYNFIG_MODULE
 
 #ifdef USING_PCH
-#include "pch.h"
+#	include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#	include <config.h>
 #endif
 
 #include <synfig/localization.h>
@@ -83,11 +83,11 @@ using namespace lyr_std;
 /* === E N T R Y P O I N T ================================================= */
 
 MODULE_DESC_BEGIN(liblyr_std)
-MODULE_NAME("Standard Layers")
-MODULE_DESCRIPTION("Provides a basic set of standard layers")
-MODULE_AUTHOR("Robert B. Quattlebaum")
-MODULE_VERSION("1.0")
-MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
+	MODULE_NAME("Standard Layers")
+	MODULE_DESCRIPTION("Provides a basic set of standard layers")
+	MODULE_AUTHOR("Robert B. Quattlebaum")
+	MODULE_VERSION("1.0")
+	MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
 MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(liblyr_std)
