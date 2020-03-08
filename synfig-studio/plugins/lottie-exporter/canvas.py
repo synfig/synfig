@@ -68,6 +68,14 @@ def gen_canvas(lottie, root):
     settings.ADDITIONAL_PRECOMP_WIDTH = 4*lottie["w"]
     settings.ADDITIONAL_PRECOMP_HEIGHT = 4*lottie["h"]
 
+    # gamma correction values
+    if "gamma-r" in root.attrib.keys():
+        settings.GAMMA[0] = float(root.attrib["gamma-r"])
+    if "gamma-g" in root.attrib.keys():
+        settings.GAMMA[1] = float(root.attrib["gamma-g"])
+    if "gamma-b" in root.attrib.keys():
+        settings.GAMMA[2] = float(root.attrib["gamma-b"])
+
     name = settings.DEFAULT_NAME
     for child in root:
         if child.tag == "name":
