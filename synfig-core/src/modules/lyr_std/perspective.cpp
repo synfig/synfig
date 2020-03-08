@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file warp.cpp
-**	\brief Implementation of the "Warp" layer
+/*!	\file perspective.cpp
+**	\brief Implementation of the "Perspective" layer
 **
 **	$Id$
 **
@@ -54,7 +54,7 @@
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/software/task/tasksw.h>
 
-#include "warp.h"
+#include "perspective.h"
 
 #endif
 
@@ -66,12 +66,12 @@ using namespace lyr_std;
 
 /* === G L O B A L S ======================================================= */
 
-SYNFIG_LAYER_INIT(Warp);
-SYNFIG_LAYER_SET_NAME(Warp,"warp");
-SYNFIG_LAYER_SET_LOCAL_NAME(Warp,N_("Warp"));
-SYNFIG_LAYER_SET_CATEGORY(Warp,N_("Distortions"));
-SYNFIG_LAYER_SET_VERSION(Warp,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Warp,"$Id$");
+SYNFIG_LAYER_INIT(Perspective);
+SYNFIG_LAYER_SET_NAME(Perspective,"perspective");
+SYNFIG_LAYER_SET_LOCAL_NAME(Perspective,N_("Perspective"));
+SYNFIG_LAYER_SET_CATEGORY(Perspective,N_("Distortions"));
+SYNFIG_LAYER_SET_VERSION(Perspective,"0.2");
+SYNFIG_LAYER_SET_CVS_ID(Perspective,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -865,12 +865,12 @@ namespace {
 }
 
 
-class lyr_std::Warp_Trans: public Transform
+class lyr_std::Perspective_Trans: public Transform
 {
 private:
-	etl::handle<const Warp> layer;
+	etl::handle<const Perspective> layer;
 public:
-	Warp_Trans(const Warp* x):
+	Perspective_Trans(const Perspective* x):
 		Transform(x->get_guid()), layer(x) { }
 	Vector perform(const Vector& x) const
 		{ return layer->transform(x); }
@@ -881,11 +881,11 @@ public:
 	Rect unperform(const Rect& x) const
 		{ return layer->back_transform(x); }
 	String get_string() const
-		{ return "warp"; }
+		{ return "perspective"; }
 };
 
 
-Warp::Warp():
+Perspective::Perspective():
 	param_src_tl  ( Point(-2  ,  2  ) ),
 	param_src_br  ( Point( 2  , -2  ) ),
 	param_dest_tl ( Point(-1.8,  2.1) ),
@@ -903,11 +903,11 @@ Warp::Warp():
 	SET_STATIC_DEFAULTS();
 }
 
-Warp::~Warp()
+Perspective::~Perspective()
 	{ }
 
 void
-Warp::sync()
+Perspective::sync()
 {
 	valid = false;
 	
@@ -938,7 +938,7 @@ Warp::sync()
 }
 
 Point
-Warp::transform(const Point &x) const
+Perspective::transform(const Point &x) const
 {
 	if (!valid) return Vector::nan();
 	Vector3 p = matrix*Vector3(x[0], x[1], 1);
@@ -946,7 +946,7 @@ Warp::transform(const Point &x) const
 }
 
 Point
-Warp::back_transform(const Point &x) const
+Perspective::back_transform(const Point &x) const
 {
 	if (!valid) return Vector::nan();
 	Vector3 p = back_matrix*Vector3(x[0], x[1], 1);
@@ -954,7 +954,7 @@ Warp::back_transform(const Point &x) const
 }
 
 Rect
-Warp::transform(const Rect &x) const
+Perspective::transform(const Rect &x) const
 {
 	return valid
 		 ? TransformationPerspective::transform_bounds_perspective(
@@ -963,7 +963,7 @@ Warp::transform(const Rect &x) const
 }
 
 Rect
-Warp::back_transform(const Rect &x) const
+Perspective::back_transform(const Rect &x) const
 {
 	return valid
 		 ? TransformationPerspective::transform_bounds_perspective(
@@ -972,7 +972,7 @@ Warp::back_transform(const Rect &x) const
 }
 
 Layer::Handle
-Warp::hit_check(Context context, const Point &p)const
+Perspective::hit_check(Context context, const Point &p)const
 {
 	if (!valid) return Layer::Handle();
 	const Point pp = back_transform(p);
@@ -981,7 +981,7 @@ Warp::hit_check(Context context, const Point &p)const
 }
 
 Color
-Warp::get_color(Context context, const Point &p)const
+Perspective::get_color(Context context, const Point &p)const
 {
 	if (!valid) return Color::alpha();
 	const Point pp = back_transform(p);
@@ -990,11 +990,11 @@ Warp::get_color(Context context, const Point &p)const
 }
 
 Rect
-Warp::get_bounding_rect() const
+Perspective::get_bounding_rect() const
 	{ return Rect(); }
 
 Rect
-Warp::get_full_bounding_rect(Context context)const
+Perspective::get_full_bounding_rect(Context context)const
 {
 	if (!valid)
 		return Rect();
@@ -1006,7 +1006,7 @@ Warp::get_full_bounding_rect(Context context)const
 }
 
 bool
-Warp::set_param(const String & param, const ValueBase &value)
+Perspective::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_src_tl ,sync());
 	IMPORT_VALUE_PLUS(param_src_br ,sync());
@@ -1020,7 +1020,7 @@ Warp::set_param(const String & param, const ValueBase &value)
 }
 
 ValueBase
-Warp::get_param(const String &param)const
+Perspective::get_param(const String &param)const
 {
 	EXPORT_VALUE(param_src_tl);
 	EXPORT_VALUE(param_src_br);
@@ -1038,19 +1038,19 @@ Warp::get_param(const String &param)const
 }
 
 Layer::Vocab
-Warp::get_param_vocab()const
+Perspective::get_param_vocab()const
 {
 	Layer::Vocab ret;
 
 	ret.push_back(ParamDesc("src_tl")
 		.set_local_name(_("Source TL"))
 		.set_box("src_br")
-		.set_description(_("Top Left corner of the source to warp"))
+		.set_description(_("Top Left corner of the source to perspective"))
 	);
 
 	ret.push_back(ParamDesc("src_br")
 		.set_local_name(_("Source BR"))
-		.set_description(_("Bottom Right corner of the source to warp"))
+		.set_description(_("Bottom Right corner of the source to perspective"))
 	);
 
 	ret.push_back(ParamDesc("dest_tl")
@@ -1096,11 +1096,11 @@ Warp::get_param_vocab()const
 }
 
 etl::handle<Transform>
-Warp::get_transform()const
-	{ return new Warp_Trans(this); }
+Perspective::get_transform()const
+	{ return new Perspective_Trans(this); }
 
 rendering::Task::Handle
-Warp::build_rendering_task_vfunc(Context context) const
+Perspective::build_rendering_task_vfunc(Context context) const
 {
 	const Color::Interpolation interpolation = (Color::Interpolation)param_interpolation.get(int());
 	
