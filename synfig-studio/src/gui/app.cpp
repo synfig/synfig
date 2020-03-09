@@ -300,7 +300,7 @@ studio::Dock_Info          *dock_info;
 studio::Dock_LayerGroups   *dock_layer_groups;
 studio::Dock_Navigator     *dock_navigator;
 studio::Dock_SoundWave     *dock_soundwave;
-studio::Dock_Timetrack     *dock_timetrack_old;
+studio::Dock_Timetrack_Old     *dock_timetrack_old;
 studio::Dock_Timetrack2    *dock_timetrack;
 studio::Dock_Curves        *dock_curves;
 
@@ -1620,7 +1620,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dock_manager->register_dockable(*dock_soundwave);
 
 		studio_init_cb.task(_("Init Timetrack (old)..."));
-		dock_timetrack_old = new studio::Dock_Timetrack();
+		dock_timetrack_old = new studio::Dock_Timetrack_Old();
 		dock_manager->register_dockable(*dock_timetrack_old);
 
 		studio_init_cb.task(_("Init Timetrack..."));
