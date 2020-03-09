@@ -196,7 +196,7 @@ def change_opacity_group(layer, lottie):
         animation.animate(anim_type)
 
         if sw == 1:
-            animation.fill_path(root["layers"][z_value]["ef"][0]["ef"][-1], "v")
+            animation.fill_path(root["layers"][z_value]["ef"][0]["ef"][-1], "v") # See effects/fill.py: Opacity is the last property, and hence we are using [-1]. We should actually search for "opacity", but due to multiple elements with same "ty"(which should not happen), we are using [-1]
         elif sw == 2:
             animation.fill_path(root["layers"][z_value]["ks"], "o")
         elif sw == 3:
@@ -259,7 +259,7 @@ def change_opacity_switch(layer, lottie):
         animation.animate(anim_type)
 
         if sw == 1:
-            animation.fill_path(root["layers"][it]["ef"][0]["ef"][-1], "v")
+            animation.fill_path(root["layers"][it]["ef"][0]["ef"][-1], "v") # See effects/fill.py: Opacity is the last property, and hence we are using [-1]. We should actually search for "opacity", but due to multiple elements with same "ty"(which should not happen), we are using [-1]
         elif sw == 2:
             animation.fill_path(root["layers"][it]["ks"], "o")
         elif sw == 3:
