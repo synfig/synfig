@@ -13,20 +13,20 @@ VISUALIZATION_CC = \
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/src
 
-bin_PROGRAMS = vizualization
+bin_PROGRAMS = synfigplayer
 
-vizualization_SOURCES = \
+synfigplayer_SOURCES = \
 	$(VISUALIZATION_HH) \
 	$(VISUALIZATION_CC)
 
-vizualization_LDADD = \
+synfigplayer_LDADD = \
 	@SYNFIG_LIBS@ \
 	@GTKMM_LIBS@
 
-vizualization_LDFLAGS = \
+synfigplayer_LDFLAGS = \
 	-dlopen self
 
-vizualization_CXXFLAGS = \
+synfigplayer_CXXFLAGS = \
 	@SYNFIG_CFLAGS@ \
 	@GTKMM_CFLAGS@ \
 	-DPLUGIN_DIR=\"$(plugindir)\" \

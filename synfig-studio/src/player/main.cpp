@@ -22,7 +22,7 @@ using namespace synfig;
 typedef std::map<String, rendering::Renderer::Handle> RendererMap;
 
 
-const char commandname[] = "visualization";
+const char commandname[] = "synfigplayer";
 
 
 class TestCallback: public ProgressCallback {
