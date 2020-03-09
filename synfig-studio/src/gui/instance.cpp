@@ -558,6 +558,7 @@ studio::Instance::dialog_save_as()
 		if (filename_extension(filename) == "")
 			filename+=".sifz";
 
+		canvas->set_name(base_filename);
 		// forced to .sifz, the below code is not need anymore
 		try
 		{
