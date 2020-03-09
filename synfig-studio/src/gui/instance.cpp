@@ -1927,7 +1927,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
 			{
 				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
-				item2->set_label( (String(_("Convert to Vector menu"))).c_str() );
+				item2->set_label( (String(_("Convert to Vector"))).c_str() );
 				item2->signal_activate().connect(
 					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
 				item2->show();
