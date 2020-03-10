@@ -208,8 +208,7 @@ Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
 	//draw grey rectangle
 	cr->save();
 	cr->set_source_rgb(0.5, 0.5, 0.5);
-	double width = (double)get_width() - EXTRA_TIMETRACK_SPACE*2;
-	cr->rectangle(EXTRA_TIMETRACK_SPACE, 0.0, width, (double)get_height());
+	cr->rectangle(0.0, 0.0, (double)get_width(), (double)get_height());
 	cr->fill();
 	cr->restore();
 }
