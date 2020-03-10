@@ -91,6 +91,8 @@ protected:
 private:
 	void displace_selected_waypoint_items(const synfig::Time &offset);
 
+	void update_cursor();
+
 	struct WaypointItem {
 		synfig::TimePoint time_point;
 		Gtk::TreePath path;
@@ -128,6 +130,7 @@ private:
 
 		const synfig::Time& get_deltatime() const;
 		Action get_action() const;
+		sigc::signal<void>& signal_action_changed();
 	protected:
 		synfig::Time deltatime;
 
@@ -138,6 +141,7 @@ private:
 		void on_modifier_keys_changed();
 
 		void update_action();
+		sigc::signal<void> signal_action_changed_;
 	} waypoint_sd;
 	void setup_mouse_handler();
 

@@ -57,6 +57,8 @@ Widget_Timetrack::Widget_Timetrack()
 	setup_mouse_handler();
 
 	setup_adjustment();
+
+	waypoint_sd.signal_action_changed().connect([=](){update_cursor();});
 }
 
 Widget_Timetrack::~Widget_Timetrack()
@@ -495,6 +497,26 @@ void Widget_Timetrack::displace_selected_waypoint_items(const synfig::Time& offs
 
 		point->time_point.set_time(new_time);
 	}
+}
+
+void Widget_Timetrack::update_cursor()
+{
+	const char * cursor_name = "default";
+	switch (waypoint_sd.get_action()) {
+	case WaypointSD::NONE:
+		cursor_name = "default";
+		break;
+	case WaypointSD::MOVE:
+		cursor_name = "move";
+		break;
+	case WaypointSD::COPY:
+		cursor_name = "copy";
+		break;
+	case WaypointSD::SCALE:
+		cursor_name = "ew-resize";
+		break;
+	}
+	get_window()->set_cursor(Gdk::Cursor::create(get_display(), cursor_name));
 }
 
 void Widget_Timetrack::setup_mouse_handler()
@@ -1046,6 +1068,11 @@ Widget_Timetrack::WaypointSD::Action Widget_Timetrack::WaypointSD::get_action() 
 	return action;
 }
 
+sigc::signal<void>& Widget_Timetrack::WaypointSD::signal_action_changed()
+{
+	return signal_action_changed_;
+}
+
 void Widget_Timetrack::WaypointSD::on_drag_started()
 {
 	deltatime = 0;
@@ -1100,6 +1127,7 @@ void Widget_Timetrack::WaypointSD::on_modifier_keys_changed()
 
 void Widget_Timetrack::WaypointSD::update_action()
 {
+	Action previous_action = action;
 	if (get_state() != POINTER_DRAGGING) {
 		action = NONE;
 	} else {
@@ -1116,4 +1144,6 @@ void Widget_Timetrack::WaypointSD::update_action()
 			action = NONE;
 		}
 	}
+	if (action != previous_action)
+		signal_action_changed().emit();
 }
