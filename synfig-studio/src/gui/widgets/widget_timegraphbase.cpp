@@ -44,6 +44,7 @@ using namespace studio;
 
 #define DEFAULT_ZOOM_CHANGING_FACTOR 1.25
 #define DEFAULT_PAGE_SIZE 2.0
+#define EXTRA_TIMETRACK_SPACE 16.0
 
 Widget_TimeGraphBase::Widget_TimeGraphBase()
 	: Gtk::DrawingArea(),
@@ -181,7 +182,7 @@ void Widget_TimeGraphBase::draw_current_time(const Cairo::RefPtr<Cairo::Context>
 	cr->save();
 	cr->set_line_width(1.0);
 	cr->set_source_rgb(0, 0, 1);
-	cr->rectangle(time_plot_data->get_pixel_t_coord(time_plot_data->time), 0, 0, get_height());
+	cr->rectangle(time_plot_data->get_pixel_t_coord(time_plot_data->time)+EXTRA_TIMETRACK_SPACE, 0, 0, get_height());
 	cr->stroke();
 	cr->restore();
 }
