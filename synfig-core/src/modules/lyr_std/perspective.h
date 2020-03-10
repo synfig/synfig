@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file warp.h
-**	\brief Header file for implementation of the "Warp" layer
+/*!	\file perspective.h
+**	\brief Header file for implementation of the "Perspective" layer
 **
 **	$Id$
 **
@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_WARP_H
-#define __SYNFIG_WARP_H
+#ifndef __SYNFIG_PERSPECTIVE_H
+#define __SYNFIG_PERSPECTIVE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -48,12 +48,13 @@ namespace modules
 namespace lyr_std
 {
 
-class Warp_Trans;
+class Perspective_Trans;
 
-class Warp: public Layer
+class Perspective : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
-	friend class Warp_Trans;
+	friend class Perspective_Trans;
+
 private:
 	//! Parameters: (Point)
 	ValueBase param_src_tl;
@@ -79,18 +80,18 @@ private:
 
 	Rect transform(const Rect &x) const;
 	Rect back_transform(const Rect &x) const;
-	
+
 public:
 	void sync();
 
-	Warp();
-	~Warp();
+	Perspective();
+	~Perspective();
 
 	virtual Rect get_bounding_rect() const;
 	virtual Rect get_full_bounding_rect(Context context) const;
 
-	virtual bool set_param(const String & param, const ValueBase &value);
-	virtual ValueBase get_param(const String & param) const;
+	virtual bool set_param(const String &param, const ValueBase &value);
+	virtual ValueBase get_param(const String &param) const;
 	virtual Vocab get_param_vocab() const;
 
 	virtual Color get_color(Context context, const Point &pos) const;
@@ -98,7 +99,7 @@ public:
 	virtual etl::handle<Transform> get_transform() const;
 
 protected:
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 };
 
 }; // END of namespace lyr_std
