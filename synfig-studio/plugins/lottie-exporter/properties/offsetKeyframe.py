@@ -63,7 +63,7 @@ def clamped_tangent(p1, p2, p3, animated, i):
                 bias = 0.0
             tangent = (p2 - p1) * (1.0 + bias) / 2.0 + (p3 - p2) * (1.0 - bias) / 2.0
     elif p1 > p2:
-        if p2 >= p1 or p2 <= p3:
+        if p2 <= p3:
             tangent = tangent * 0.0
         else:
             if p2 > pm:
