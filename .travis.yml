@@ -90,6 +90,12 @@ matrix:
     script: ./travis.sh
     after_script: ccache -s # show ccache stats
 
+  - os: linux
+    name: "Transifex push template Ubuntu 16.04 Xenial"
+    sudo: required
+    dist: xenial
+    script: bash autobuild/transifex-push-translations.sh
+
   allow_failures:
   #  - env: CMAKE=true
   #  - os: osx
