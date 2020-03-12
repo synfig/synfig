@@ -73,6 +73,12 @@ endforeach(MOD)
 
 file(WRITE synfig_modules.cfg ${SYNFIG_MODULES_CONTENT})
 
+configure_file(
+    synfig_modules.cfg
+    ${SYNFIG_BUILD_ROOT}/etc/synfig_modules.cfg
+    COPYONLY
+)
+
 install(
     FILES synfig_modules.cfg
     DESTINATION etc
