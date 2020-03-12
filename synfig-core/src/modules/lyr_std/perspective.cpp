@@ -67,7 +67,7 @@ using namespace lyr_std;
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Perspective);
-SYNFIG_LAYER_SET_NAME(Perspective,"perspective");
+SYNFIG_LAYER_SET_NAME(Perspective,"warp");
 SYNFIG_LAYER_SET_LOCAL_NAME(Perspective,N_("Perspective"));
 SYNFIG_LAYER_SET_CATEGORY(Perspective,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Perspective,"0.2");
