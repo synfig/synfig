@@ -275,6 +275,6 @@ def quadratic_to_cubic(qp0, qp1, qp2):
     """
     cp0 = qp0
     cp3 = qp2
-    cp1 = qp0 + 2/float(3)*(qp1 - qp0)
-    cp2 = qp2 + 2/float(3)*(qp1 - qp2)
+    cp1 = qp0 + 2/3.0*(qp1 - qp0)
+    cp2 = qp2 + 2/3.0*(qp1 - qp2)
     return cp1, cp2
