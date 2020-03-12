@@ -43,6 +43,9 @@ set(MODS_ENABLED
 #    mptr_mplayer # - "This code has vulnerabilities"
 )
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
+
 ## Magick++ support
 option(WITH_MAGICPP "Enable Magic++ module (output format support)" OFF)
 option(WITHOUT_MAGICPP "Disable Magic++ module (output format support)" OFF)
