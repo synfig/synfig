@@ -5,7 +5,6 @@ This will also support the simple_circle layer of Synfig
 
 import sys
 import settings
-from common.Count import Count
 sys.path.append("..")
 
 

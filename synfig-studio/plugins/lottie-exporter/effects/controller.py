@@ -4,7 +4,6 @@ This module will store the expression controllers of lottie/AE
 
 import sys
 import settings
-from common.Count import Count
 from effects.slider import gen_effects_slider
 from effects.point import gen_effects_point
 sys.path.append("../")
