@@ -22,7 +22,6 @@ def gen_shapes_circle(lottie, layer, idx):
     Returns:
         (None)
     """
-    index = Count()
     lottie["ty"] = "el"     # Type: circle
     lottie["p"] = {}        # Position of circle
     lottie["d"] = settings.DEFAULT_DIRECTION

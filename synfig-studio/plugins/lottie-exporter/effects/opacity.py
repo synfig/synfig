@@ -20,7 +20,6 @@ def gen_effects_opacity(lottie, layer, idx):
     Returns:
         (None)
     """
-    index = Count()
     lottie["ty"] = settings.EFFECTS_OPACITY     # Effect type
     lottie["nm"] = "Opacity"                    # Name
     lottie["ix"] = idx                          # Index

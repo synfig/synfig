@@ -14,7 +14,6 @@ def gen_effects_controller(lottie, value, anim_type):
     """
     Generates the dictionary correspondingt to effects/controller.json
     """
-    index = Count()
     lottie["ty"] = settings.EFFECTS_CONTROLLER  # Effect type
     idx = settings.controller_count.inc()
     lottie["nm"] = "Controller" + str(idx)

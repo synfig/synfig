@@ -12,7 +12,6 @@ def gen_effects_slider(lottie, value, idx):
     """
     Generates the dictionary corresponding to effects/slider.json
     """
-    index = Count()
     lottie["ty"] = settings.EFFECTS_SLIDER      # Effect type
     lottie["nm"] = "Slider" + str(idx)
     lottie["ix"] = idx

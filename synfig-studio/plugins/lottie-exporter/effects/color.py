@@ -21,7 +21,6 @@ def gen_effects_color(lottie, layer, idx):
         (None)
 
     """
-    index = Count()
     lottie["ty"] = settings.EFFECTS_COLOR   # Effect type
     lottie["nm"] = "Color"                  # Name
     lottie["ix"] = idx                      # Index
