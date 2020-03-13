@@ -672,7 +672,7 @@ class Param:
                 if isinstance(ret, list):
                     ret[0], ret[1] = ret[0] / len(lst), ret[1] / len(lst)
                 else:
-                    ret /= len(lst)
+                    ret /= float(len(lst))
 
             elif self.param[0].tag == "weighted_average":
                 self.subparams["weighted_average"].extract_subparams()
@@ -695,7 +695,7 @@ class Param:
                 if isinstance(ret, list):
                     ret[0], ret[1] = ret[0] / den, ret[1] / den
                 else:
-                    ret /= den
+                    ret /= float(den)
 
             elif self.param[0].tag == "composite":  # Only available for vectors
                 x = self.subparams["composite"].subparams["x"].__get_value(frame)

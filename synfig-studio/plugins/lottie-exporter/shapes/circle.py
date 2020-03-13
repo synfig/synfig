@@ -5,7 +5,6 @@ This will also support the simple_circle layer of Synfig
 
 import sys
 import settings
-from common.Count import Count
 sys.path.append("..")
 
 
@@ -22,7 +21,6 @@ def gen_shapes_circle(lottie, layer, idx):
     Returns:
         (None)
     """
-    index = Count()
     lottie["ty"] = "el"     # Type: circle
     lottie["p"] = {}        # Position of circle
     lottie["d"] = settings.DEFAULT_DIRECTION
