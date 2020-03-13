@@ -227,3 +227,4 @@ About::About()
 void About::close(int){
 	hide();
 }
+
