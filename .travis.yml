@@ -34,6 +34,18 @@ matrix:
     script: ./travis.sh
 
   - os: linux
+    if: false
+    name: "Distcheck - Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
+    sudo: required
+    dist: xenial
+    cache: ccache
+    before_install: ./1-setup-linux-native.sh
+    before_script:
+      - ccache -s
+      - ccache --set-config=compression=true
+    script: ./travis.sh distcheck
+
+  - os: linux
     name: "Synfig Studio Ubuntu 16.04 Xenial (CMake/Ninja)"
     env: CMAKE=true
     sudo: required
@@ -91,7 +103,15 @@ matrix:
     after_script: ccache -s # show ccache stats
 
   - os: linux
+    name: "Lottie exporter Ubuntu 16.04 Xenial"
+    sudo: required
+    dist: xenial
+    before_install: ./1-setup-linux-native.sh
+    script: ./autobuild/lottie_test.sh
+
+  - os: linux
     name: "Transifex push template Ubuntu 16.04 Xenial"
+    if: branch = translations   # Job should run only on translations branch
     sudo: required
     dist: xenial
     script: bash autobuild/transifex-push-translations.sh
