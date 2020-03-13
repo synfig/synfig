@@ -84,7 +84,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
     for(int i = 0; i < segment_size; ++i)
       segment[i][2] = 1.0;
      
-  int size, flag;
+  int size, flag, num, point;
 
   switch (segment_size) // in any case size>=3
   {
@@ -105,7 +105,6 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
       {
         size = 2;
         flag = 1;
-        ;
         num = 2; // represent segment index used
       }
       else
