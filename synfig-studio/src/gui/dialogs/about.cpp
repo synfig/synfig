@@ -23,10 +23,10 @@
 /* === H E A D E R S ======================================================= */
 
 #ifdef USING_PCH
-#	include "pch.h"
+#include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
-#	include <config.h>
+#include <config.h>
 #endif
 
 #include <vector>
@@ -60,15 +60,15 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 #ifndef PACKAGE_NAME
-#define  PACKAGE_NAME "Synfig Studio"
+#define PACKAGE_NAME "Synfig Studio"
 #endif
 
 #ifndef VERSION
-#define VERSION	"unknown"
+#define VERSION "unknown"
 #endif
 
 #ifndef IMAGE_EXT
-#	define IMAGE_EXT	"png"
+#define IMAGE_EXT "png"
 #endif
 
 //#define stringify(x) #x
@@ -83,7 +83,7 @@ using namespace studio;
 
 About::About()
 {
-	set_transient_for((Gtk::Window&)(*App::main_window));
+	set_transient_for((Gtk::Window &)(*App::main_window));
 	set_program_name(PACKAGE_NAME);
 	set_version(VERSION);
 	set_comments(_("2D vector animation studio"));
@@ -91,7 +91,7 @@ About::About()
 	set_website("https://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright (c) 2001-2019\nSynfig developers & contributors"));
+	set_copyright(_("Copyright (c) 2001-2020\nSynfig developers & contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
@@ -178,7 +178,7 @@ About::About()
 	std::string imagepath = ResourceHelper::get_image_path("synfig_icon." IMAGE_EXT);
 
 	Gtk::Image *Logo = manage(new class Gtk::Image());
-	
+
 	Logo->set(imagepath);
 	Logo->set_parent(*this);
 	set_logo(Logo->get_pixbuf());
@@ -187,13 +187,13 @@ About::About()
 
 	string extra_info = get_comments() + "\n";
 
-	#ifdef DEVEL_VERSION
-		extra_info += strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
-	#endif
+#ifdef DEVEL_VERSION
+	extra_info += strprintf(_("\nDevelopment version:\n%s\n"), DEVEL_VERSION);
+#endif
 
 	extra_info += "\n";
 
-	extra_info += strprintf(_("Built on %s" /* at %s */ "\n"), __DATE__ /* , __TIME__ */ );
+	extra_info += strprintf(_("Built on %s" /* at %s */ "\n"), __DATE__ /* , __TIME__ */);
 
 	extra_info += "\n";
 
@@ -202,19 +202,19 @@ About::About()
 	extra_info += strprintf(_("Synfig API %s\n"), stringify(SYNFIG_VERSION));
 	extra_info += strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
 	extra_info += strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
-	#ifdef __GNUC__
-		extra_info += strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
-	#endif
+#ifdef __GNUC__
+	extra_info += strprintf(_("GNU G++ %d.%d.%d\n"), __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+#endif
 
 	extra_info += "\n";
 
 	extra_info += strprintf(_("Using:\n"), synfig::get_version());
 	extra_info += strprintf(_("Synfig %s\n"), synfig::get_version());
-	extra_info += strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
+	extra_info += strprintf(_("GTK+ %d.%d.%d"), gtk_major_version, gtk_minor_version, gtk_micro_version);
 
-	#ifdef _DEBUG
-		extra_info += "\n\nDEBUG BUILD";
-	#endif
+#ifdef _DEBUG
+	extra_info += "\n\nDEBUG BUILD";
+#endif
 
 	set_comments(extra_info);
 
@@ -224,6 +224,7 @@ About::About()
 	signal_response().connect(sigc::mem_fun(*this, &About::close));
 }
 
-void About::close(int){
+void About::close(int)
+{
 	hide();
 }
