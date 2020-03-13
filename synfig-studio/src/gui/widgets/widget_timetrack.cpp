@@ -1087,8 +1087,10 @@ void Widget_Timetrack::WaypointSD::on_drag_canceled()
 
 void Widget_Timetrack::WaypointSD::on_drag_finish(bool /*started_by_keys*/)
 {
-	if (deltatime == 0)
+	if (deltatime == 0) {
+		update_action();
 		return;
+	}
 
 	if (action == MOVE)
 		widget.move_selected(deltatime);
