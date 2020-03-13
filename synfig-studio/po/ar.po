@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
+# Fahad Al-Saidi <fahad.alsaidi@gmail.com>, 2020
 # Muslim Kamal Salim <qbmw8001@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-02-14 15:06+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2020-03-11 20:04+0000\n"
+"Last-Translator: Taha Zerrouki <taha_zerrouki@hotmail.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/morevnaproject/synfig/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +21,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:1 ../src/gui/dialogs/about.cpp:85
 msgid "2D vector animation studio"
-msgstr "استوديو الرسوم المتجهية المتحركة ثنائيى الابعاد 2d"
+msgstr "استوديو الرسوم المتجهة المتحركة ثنائية الأبعاد 2d"
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:2
 msgid "Create and edit 2D animations and compositions"
@@ -73,7 +74,7 @@ msgstr "ادوات مهيأة لاجهزة الكتابة اللوحية"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:10
 msgid "Sound support"
-msgstr ""
+msgstr "دعم الصوت"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:11
 msgid "Linking data on file- or parameter-level"
@@ -109,7 +110,7 @@ msgstr "اضافة هيكل عظمي(بسيط)"
 
 #: ../plugins/lottie-exporter/plugin.xml.in.h:1
 msgid "Export to Lottie format"
-msgstr ""
+msgstr "صدر إلى صيغة Lottie"
 
 #: ../plugins/view-unhide-all-layers/plugin.xml.in.h:1
 msgid "Unhide All Layers"
@@ -117,7 +118,7 @@ msgstr "الغاء اخفاء كل الطبقات"
 
 #: ../src/brushlib/brushsettings.py:26
 msgid "Pressure"
-msgstr ""
+msgstr "الضغط"
 
 #: ../src/brushlib/brushsettings.py:26
 msgid ""
@@ -216,7 +217,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:551
 #: ../src/gui/states/state_star.cpp:673 ../src/gui/states/state_text.cpp:435
 msgid "Opacity"
-msgstr ""
+msgstr "الشفافية"
 
 #: ../src/brushlib/brushsettings.py:44
 msgid ""
@@ -248,7 +249,7 @@ msgstr ""
 #: ../src/brushlib/brushsettings.py:47 ../src/gui/dialogs/dialog_setup.cpp:606
 #: ../src/gui/states/state_smoothmove.cpp:203
 msgid "Radius"
-msgstr ""
+msgstr "نصف القطر"
 
 #: ../src/brushlib/brushsettings.py:47
 msgid ""
@@ -428,7 +429,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:67
 msgid "Color value"
-msgstr ""
+msgstr "قيمة اللون"
 
 #: ../src/brushlib/brushsettings.py:67
 msgid "Color value (brightness, intensity)"
@@ -436,7 +437,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:68
 msgid "Save color"
-msgstr ""
+msgstr "حفظ اللون"
 
 #: ../src/brushlib/brushsettings.py:68
 msgid ""
@@ -695,11 +696,11 @@ msgstr "اختيار كل الطبقات الفرعية"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:268
 msgid "Increase Opacity"
-msgstr ""
+msgstr "زيادة الشفافية"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:269
 msgid "Decrease Opacity"
-msgstr ""
+msgstr "تقليل الشفافية"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:392
 msgid "Paste"
@@ -720,7 +721,7 @@ msgstr ""
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:247
 #: ../src/gui/states/state_text.cpp:633
 msgid "Enter text here:"
-msgstr ""
+msgstr "أكتب النص هنا:"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:437
 msgid "<Group>"
@@ -1050,7 +1051,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:157
 msgid "Points"
-msgstr ""
+msgstr "نقاط"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:158
 msgid "Inches"
@@ -1115,11 +1116,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:283
 msgid "Size"
-msgstr ""
+msgstr "الحجم"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:288
 msgid "Width"
-msgstr ""
+msgstr "العرض"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:293
 msgid "Width in pixels of the new created document"
@@ -1127,7 +1128,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:304
 msgid "Height"
-msgstr ""
+msgstr "الارتفاع"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:307
 msgid "Height in pixels of the new created document"
@@ -1226,7 +1227,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:418 ../src/gui/renddesc.cpp:234
 msgid "Other"
-msgstr ""
+msgstr "آخر"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:421
 msgid "Restrict real value handles to top right quadrant"
@@ -1983,7 +1984,7 @@ msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:305 ../src/gui/app.cpp:4131
 msgid "Unable to open file"
-msgstr ""
+msgstr "تعذر فتح ملف"
 
 #: ../src/gui/states/state_bline.cpp:343
 msgid "NewSpline"
@@ -2358,7 +2359,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:562
 #: ../src/gui/states/state_star.cpp:720
 msgid "Invert"
-msgstr ""
+msgstr "عكس"
 
 #: ../src/gui/states/state_circle.cpp:650
 msgid "Falloff:"
@@ -2753,7 +2754,7 @@ msgstr ""
 
 #: ../src/gui/states/state_star.cpp:697
 msgid "Regular Polygon"
-msgstr ""
+msgstr "مضلّع منتظم"
 
 #: ../src/gui/states/state_star.cpp:704
 msgid "Inner Width:"
@@ -2864,7 +2865,7 @@ msgstr ""
 #: ../src/gui/trees/childrentree.cpp:114 ../src/gui/trees/layertree.cpp:391
 #: ../src/synfigapp/actions/valuedescconvert.cpp:100
 msgid "Type"
-msgstr ""
+msgstr "نوع"
 
 #: ../src/gui/trees/childrentree.cpp:125
 #: ../src/synfigapp/actions/layerparamset.cpp:82
@@ -2924,7 +2925,7 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:86
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:102
 msgid "Time"
-msgstr ""
+msgstr "الوقت"
 
 #: ../src/gui/trees/keyframetree.cpp:91
 msgid "Length"
@@ -4465,7 +4466,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:132
 msgid "Angle"
-msgstr ""
+msgstr "الزاوية"
 
 #: ../src/gui/iconcontroller.cpp:134
 msgid "Real"
@@ -4477,7 +4478,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:136
 msgid "Color"
-msgstr ""
+msgstr "لون"
 
 #: ../src/gui/iconcontroller.cpp:137
 msgid "Segment"
@@ -4497,7 +4498,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:142
 msgid "Gradient"
-msgstr ""
+msgstr "تدرج"
 
 #: ../src/gui/iconcontroller.cpp:148
 msgid "Eyedrop Tool"
@@ -4542,7 +4543,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:175
 msgid "About"
-msgstr ""
+msgstr "حول"
 
 #: ../src/gui/iconcontroller.cpp:176 ../src/gui/mainwindow.cpp:156
 msgid "New"
@@ -4726,7 +4727,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:237
 msgid "Text Layer"
-msgstr ""
+msgstr "طبقة نص"
 
 #: ../src/gui/iconcontroller.cpp:238
 msgid "Time Loop Layer"
@@ -5099,7 +5100,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:884
 msgid "Update"
-msgstr ""
+msgstr "تحديث"
 
 #: ../src/gui/instance.cpp:904 ../src/gui/instance.cpp:960
 msgid "An error has occurred when trying to UPDATE"
@@ -5119,15 +5120,15 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:935 ../src/gui/instance.cpp:1009
 msgid "Revert"
-msgstr ""
+msgstr "تراجع"
 
 #: ../src/gui/instance.cpp:946
 msgid "Unable to remove previous version"
-msgstr ""
+msgstr "غير قادر على إزالة الإصدارة السابقة"
 
 #: ../src/gui/instance.cpp:983
 msgid "The revert operation has failed."
-msgstr ""
+msgstr "فشلت عملية التراجع"
 
 #: ../src/gui/instance.cpp:984
 msgid ""
@@ -5152,7 +5153,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1033
 msgid "Thanks!"
-msgstr ""
+msgstr "شكرا!"
 
 #: ../src/gui/instance.cpp:1040
 #, c-format
@@ -5167,7 +5168,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1049
 msgid "Close without Saving"
-msgstr ""
+msgstr "أغلق دون حفظ"
 
 #: ../src/gui/instance.cpp:1068
 #, c-format
@@ -5190,7 +5191,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1283
 msgid "Export"
-msgstr ""
+msgstr "تصدير"
 
 #: ../src/gui/instance.cpp:1284
 msgid "Name: "
@@ -5198,12 +5199,12 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1294
 msgid "Add"
-msgstr ""
+msgstr "إضافة"
 
 #: ../src/gui/instance.cpp:1393
 #: ../src/synfigapp/actions/valuedescconvert.cpp:63
 msgid "Convert"
-msgstr ""
+msgstr "تحويل"
 
 #: ../src/gui/instance.cpp:1444
 msgid "Ease"
@@ -5351,7 +5352,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistloop.cpp:54
 #: ../src/synfigapp/actions/valuenodestaticlistloop.cpp:52
 msgid "Loop"
-msgstr ""
+msgstr "تكرار"
 
 #: ../src/gui/preview.cpp:476
 msgid "Halt render"
@@ -6710,7 +6711,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:87
 #: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:94
 msgid "Origin"
-msgstr ""
+msgstr "المبدأ"
 
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:61
 msgid "Link to Bone"
