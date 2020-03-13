@@ -109,6 +109,12 @@ matrix:
     before_install: ./1-setup-linux-native.sh
     script: ./autobuild/lottie_test.sh
 
+  - os: linux
+    name: "Transifex push template Ubuntu 16.04 Xenial"
+    if: branch = translations   # Job should run only on translations branch
+    sudo: required
+    dist: xenial
+    script: bash autobuild/transifex-push-translations.sh
 
   allow_failures:
   #  - env: CMAKE=true
