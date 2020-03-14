@@ -161,6 +161,7 @@ bool Widget_TimeGraphBase::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	if (w <= 0 || h <= 0)
 		return true;
 
+	cr->translate(EXTRA_TIMETRACK_SPACE, 0.0);
 	get_style_context()->render_background(cr, 0, 0, w, h);
 
 	if (!time_plot_data->time_model)
@@ -182,7 +183,7 @@ void Widget_TimeGraphBase::draw_current_time(const Cairo::RefPtr<Cairo::Context>
 	cr->save();
 	cr->set_line_width(1.0);
 	cr->set_source_rgb(0, 0, 1);
-	cr->rectangle(time_plot_data->get_pixel_t_coord(time_plot_data->time)+EXTRA_TIMETRACK_SPACE, 0, 0, get_height());
+	cr->rectangle(time_plot_data->get_pixel_t_coord(time_plot_data->time), 0, 0, get_height());
 	cr->stroke();
 	cr->restore();
 }

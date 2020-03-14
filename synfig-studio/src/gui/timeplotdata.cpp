@@ -138,7 +138,12 @@ TimePlotData::recompute_time_bounds()
 void
 TimePlotData::recompute_geometry_data()
 {
-	k = (widget.get_width()-EXTRA_TIMETRACK_SPACE*2) / (upper-lower);
+	// Start position for time slider has been pushed 16px forward
+	// That also means 16px at end gets pushed behind the vertical scroll bar
+	// So we subtract 32px for end position to give a consistent
+	// start & end extra space ie., 16px each
+	k = widget.get_width() - EXTRA_TIMETRACK_SPACE*2;
+	k /= (upper - lower);
 	dt = 1.0/k;
 
 	if (has_vertical) {
