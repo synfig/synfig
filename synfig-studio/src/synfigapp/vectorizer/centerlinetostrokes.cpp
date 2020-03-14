@@ -100,7 +100,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 
     default:{ /*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
                   Even : 1 2 3 4, 4 5 6, 6 7 8 */
-      int num = 0, point = 0;
+      num = 0, point = 0;
       if (segment_size & 1)
       {
         size = 2;
@@ -115,7 +115,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
       }
     }break;
 
-    }
+  }
 
   bline_point_list.push_back(synfig::BLinePoint());
   bline_point_list.push_back(synfig::BLinePoint());
@@ -125,7 +125,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 
   if (flag == 0)
     bline_point_list[1].set_tangent((segment[size].to_2d() - segment[size - 1].to_2d()) * 2);
-  else
+  else if(flag == 1)
     bline_point_list[1].set_tangent1((segment[size].to_2d() - segment[size - 1].to_2d()) * 2);
 
   bline_point_list[0].set_width(segment[0][2]);
