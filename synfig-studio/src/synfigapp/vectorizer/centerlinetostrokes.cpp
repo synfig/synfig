@@ -131,20 +131,23 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   bline_point_list[0].set_width(segment[0][2]);
   bline_point_list[1].set_width(segment[size][2]);
 
-  for (num, point = 2; num < segment_size - 3; point++, num += 2)
+  if(flag == 1)
   {
-    bline_point_list.push_back(synfig::BLinePoint());
-    bline_point_list[point].set_vertex(segment[num + 2].to_2d()); // last point
-    bline_point_list[point].set_width(segment[num + 2][2]);       // last point
-    bline_point_list[point - 1].set_tangent2((segment[num + 1].to_2d() - segment[num].to_2d()) * 2);
-    bline_point_list[point].set_tangent1((segment[num + 2].to_2d() - segment[num + 1].to_2d()) * 2);
-  }
+    for (num, point = 2; num < segment_size - 3; point++, num += 2)
+    {
+      bline_point_list.push_back(synfig::BLinePoint());
+      bline_point_list[point].set_vertex(segment[num + 2].to_2d()); // last point
+      bline_point_list[point].set_width(segment[num + 2][2]);       // last point
+      bline_point_list[point - 1].set_tangent2((segment[num + 1].to_2d() - segment[num].to_2d()) * 2);
+      bline_point_list[point].set_tangent1((segment[num + 2].to_2d() - segment[num + 1].to_2d()) * 2);
+    }
 
-  // add last blinepoint and set it's param
-  bline_point_list.push_back(synfig::BLinePoint());
-  bline_point_list.back().set_vertex(segment[segment_size - 1].to_2d());
-  bline_point_list.back().set_width(segment[segment_size - 1][2]);
-  bline_point_list.back().set_tangent((segment[segment_size - 1].to_2d() - segment[segment_size - 2].to_2d()) * 2);
+    // add last blinepoint and set it's param
+    bline_point_list.push_back(synfig::BLinePoint());
+    bline_point_list.back().set_vertex(segment[segment_size - 1].to_2d());
+    bline_point_list.back().set_width(segment[segment_size - 1][2]);
+    bline_point_list.back().set_tangent((segment[segment_size - 1].to_2d() - segment[segment_size - 2].to_2d()) * 2);
+  }
   
   etl::handle<synfig::ValueNode_BLine> bline_value_node; 
   etl::handle<synfig::ValueNode_DynamicList> value_node;
