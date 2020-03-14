@@ -88,9 +88,6 @@ public:
 	//!Returns the rectangle that includes the context of the layer and
 	//! the intersection of the layer in case it is active and not onto
 	virtual Rect get_full_bounding_rect(Context context)const;
-	//! Renders the layer composited on the context and puts it on the target surface.
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 protected:
 	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;

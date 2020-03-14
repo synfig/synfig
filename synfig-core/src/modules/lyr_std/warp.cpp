@@ -70,7 +70,7 @@ SYNFIG_LAYER_INIT(Warp);
 SYNFIG_LAYER_SET_NAME(Warp,"warp");
 SYNFIG_LAYER_SET_LOCAL_NAME(Warp,N_("Warp"));
 SYNFIG_LAYER_SET_CATEGORY(Warp,N_("Distortions"));
-SYNFIG_LAYER_SET_VERSION(Warp,"0.1");
+SYNFIG_LAYER_SET_VERSION(Warp,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Warp,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
@@ -778,15 +778,10 @@ namespace {
 				
 				// rect
 				const Rect orig_rect = li->orig_rect & source_rect;
-				const Rect rect_float(
+				Rect rect_float(
 					to_pixels_matrix.get_transformed(orig_rect.get_min()),
 					to_pixels_matrix.get_transformed(orig_rect.get_max()) );
-				const RectInt rect = RectInt(
-					(int)approximate_floor(rect_float.minx),
-					(int)approximate_floor(rect_float.miny),
-					(int)approximate_ceil (rect_float.maxx),
-					(int)approximate_ceil (rect_float.maxy) ) & base_rect;
-				if (!rect.is_valid())
+				if (!rect_float.is_valid())
 					continue;
 				
 				// get source
@@ -805,6 +800,23 @@ namespace {
 					li->alpha_matrix
 				  * from_pixels_matrix;
 				
+				// trucate rect by sub_task rect
+				rect_float &= TransformationPerspective::transform_bounds_perspective(
+						matrix.get_inverted(),
+						rendering::Transformation::Bounds(
+							Rect( (*i)->target_rect.minx, (*i)->target_rect.miny,
+								  (*i)->target_rect.maxx, (*i)->target_rect.maxy ),
+							Vector(1, 1) )
+					).rect;
+				
+				const RectInt rect = RectInt(
+					(int)approximate_floor(rect_float.minx),
+					(int)approximate_floor(rect_float.miny),
+					(int)approximate_ceil (rect_float.maxx),
+					(int)approximate_ceil (rect_float.maxy) ) & base_rect;
+				if (!rect.is_valid())
+					continue;
+				  
 				// process
 				switch(interpolation) {
 					case Color::INTERPOLATION_LINEAR:
@@ -881,6 +893,7 @@ Warp::Warp():
 	param_dest_bl ( Point(-2.2, -2  ) ),
 	param_dest_br ( Point( 2.2, -2  ) ),
 	param_clip    ( true ),
+	param_interpolation( int(3) ),
 	valid         ( ),
 	affine        ( ),
 	clip          ( )
@@ -1002,6 +1015,7 @@ Warp::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_dest_bl,sync());
 	IMPORT_VALUE_PLUS(param_dest_br,sync());
 	IMPORT_VALUE_PLUS(param_clip   ,sync());
+	IMPORT_VALUE(param_interpolation);
 	return false;
 }
 
@@ -1015,6 +1029,7 @@ Warp::get_param(const String &param)const
 	EXPORT_VALUE(param_dest_bl);
 	EXPORT_VALUE(param_dest_br);
 	EXPORT_VALUE(param_clip);
+	EXPORT_VALUE(param_interpolation);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -1065,6 +1080,17 @@ Warp::get_param_vocab()const
 	ret.push_back(ParamDesc("clip")
 		.set_local_name(_("Clip"))
 	);
+	
+	ret.push_back(ParamDesc("interpolation")
+		.set_local_name(_("Interpolation"))
+		.set_description(_("What type of interpolation to use"))
+		.set_hint("enum")
+		.add_enum_value(0,"nearest",_("Nearest Neighbor"))
+		.add_enum_value(1,"linear",_("Linear"))
+		.add_enum_value(2,"cosine",_("Cosine"))
+		.add_enum_value(3,"cubic",_("Cubic"))
+		.set_static(true)
+	);
 
 	return ret;
 }
@@ -1076,6 +1102,8 @@ Warp::get_transform()const
 rendering::Task::Handle
 Warp::build_rendering_task_vfunc(Context context) const
 {
+	const Color::Interpolation interpolation = (Color::Interpolation)param_interpolation.get(int());
+	
 	if (!valid)
 		return rendering::Task::Handle();
 	
@@ -1092,12 +1120,11 @@ Warp::build_rendering_task_vfunc(Context context) const
 		task_contour->contour->line_to( Vector(clip_rect.maxx, clip_rect.miny) );
 		task_contour->contour->close();
 		task_contour->contour->color = Color(1, 1, 1, 1);
-		task_contour->contour->invert = true;
-		task_contour->contour->antialias = true;
+		task_contour->contour->antialias = interpolation != Color::INTERPOLATION_NEAREST;
 
 		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
 		task_blend->amount = 1;
-		task_blend->blend_method = Color::BLEND_ALPHA_OVER;
+		task_blend->blend_method = Color::BLEND_ALPHA;
 		task_blend->sub_task_a() = sub_task;
 		task_blend->sub_task_b() = task_contour;
 		
@@ -1106,12 +1133,14 @@ Warp::build_rendering_task_vfunc(Context context) const
 	
 	if (affine) {
 		rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+		task_transformation->interpolation = interpolation;
 		task_transformation->transformation->matrix = matrix;
 		task_transformation->sub_task() = sub_task;
 		return task_transformation;
 	}
 	
 	TaskTransformationPerspective::Handle task_transformation(new TaskTransformationPerspective());
+	task_transformation->interpolation = interpolation;
 	task_transformation->transformation->matrix = matrix;
 	task_transformation->sub_task() = sub_task;
 	return task_transformation;

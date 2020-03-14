@@ -373,6 +373,18 @@ C blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 }
 
 template <class C>
+C blendfunc_ALPHA(C &a,C &b,float amount)
+{
+	const float one(C::ceil);
+	C rm(b);
+
+	//multiply the alpha channel with the one below us
+	rm.set_a(a.get_a()*b.get_a());
+
+	return blendfunc_STRAIGHT(rm,b,amount);
+}
+
+template <class C>
 C blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 {
 	const float one(C::ceil);

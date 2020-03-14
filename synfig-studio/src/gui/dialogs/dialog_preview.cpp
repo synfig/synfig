@@ -195,7 +195,7 @@ Dialog_PreviewOptions::Dialog_PreviewOptions(BaseObjectType* cobject, const Glib
 
 Dialog_PreviewOptions* Dialog_PreviewOptions::create(/*Gtk::Window& parent*/)
 {
-	auto refBuilder = load_interface("preview_options.ui");
+	auto refBuilder = load_interface("preview_options.glade");
 	if (!refBuilder)
 		return nullptr;
 	Dialog_PreviewOptions * dialog = nullptr;

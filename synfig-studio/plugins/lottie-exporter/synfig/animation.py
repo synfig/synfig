@@ -412,7 +412,7 @@ def copy_tcb_average(new_waypoint, waypoint, next_waypoint):
         cont1 = float(next_waypoint.attrib["continuity"])
     if "bias" in next_waypoint.keys():
         bias1 = float(next_waypoint.attrib["bias"])
-    f_tens, f_bias, f_cont = (tens + tens1) / 2, (bias + bias1) / 2, (cont + cont1) / 2
+    f_tens, f_bias, f_cont = (tens + tens1) / 2.0, (bias + bias1) / 2.0, (cont + cont1) / 2.0
     new_waypoint.attrib["tension"] = str(f_tens)
     new_waypoint.attrib["continuity"] = str(f_cont)
     new_waypoint.attrib["bias"] = str(f_bias)

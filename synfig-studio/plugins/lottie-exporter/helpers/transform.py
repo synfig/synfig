@@ -5,15 +5,9 @@ corresponding to lottie
 """
 
 import sys
-import math
-import copy
 import settings
 from common.Count import Count
-from common.misc import is_animated, change_axis
 from properties.value import gen_properties_value
-from properties.valueKeyframed import gen_value_Keyframed
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from synfig.animation import print_animation
 sys.path.append("../")
 
 

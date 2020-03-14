@@ -119,6 +119,8 @@ CairoColor::blend(CairoColor a, CairoColor b, float amount, Color::BlendMethod t
 		blendfunc_ALPHA_OVER<CairoColor>,
 		blendfunc_OVERLAY<CairoColor>,		// 20
 		blendfunc_STRAIGHT_ONTO<CairoColor>,
+		blendfunc_STRAIGHT_ONTO<CairoColor>, // dummy instead of new blend method
+		blendfunc_STRAIGHT_ONTO<CairoColor>  // dummy instead of new blend method
 	};
 
 	return vtable[type](a,b,amount);

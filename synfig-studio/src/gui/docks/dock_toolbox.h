@@ -75,15 +75,15 @@ class Dock_Toolbox : public Dockable
 
 	void change_state_(const Smach::state_base *state);
 
+	void update_tools();
+
+	void set_active_state(const synfig::String& statename);
+
 public:
 
 	void change_state(const synfig::String& statename, bool force = false);
 
-	void update_tools();
-
-	void refresh() { update_tools(); }
-
-	void set_active_state(const synfig::String& statename);
+	void refresh();
 
 	void add_state(const Smach::state_base *state);
 

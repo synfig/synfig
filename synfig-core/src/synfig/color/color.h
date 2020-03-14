@@ -274,8 +274,9 @@ public:
 		BLEND_ALPHA_BRIGHTEN=14,	//!< \deprecated If A is less opaque than B, use A
 		BLEND_ALPHA_DARKEN=15,		//!< \deprecated If A is more opaque than B, use B
 		BLEND_ALPHA_OVER=19,		//!< \deprecated multiply alphas and then straight blends using the amount
+		BLEND_ALPHA=23,				//!< multiply alphas
 
-		BLEND_END=23,				//!< \internal
+		BLEND_END=24,				//!< \internal
 		BLEND_BY_LAYER=999			//! Used to let the layer decides what Blend Method use by
 									//! default when the layer is created
 	};
@@ -296,12 +297,14 @@ public:
 			| (1 << BLEND_STRAIGHT_ONTO)
 			| (1 << BLEND_SCREEN)
 			| (1 << BLEND_OVERLAY)
-			| (1 << BLEND_HARD_LIGHT),
+			| (1 << BLEND_HARD_LIGHT)
+			| (1 << BLEND_ALPHA),
 
 		BLEND_METHODS_STRAIGHT = 0
 			| (1 << BLEND_STRAIGHT)
 			| (1 << BLEND_STRAIGHT_ONTO)
-			| (1 << BLEND_ALPHA_BRIGHTEN),
+			| (1 << BLEND_ALPHA_BRIGHTEN)
+			| (1 << BLEND_ALPHA),
 
 		BLEND_METHODS_OVERWRITE_ON_ALPHA_ONE = 0
 			| (1 << BLEND_COMPOSITE),

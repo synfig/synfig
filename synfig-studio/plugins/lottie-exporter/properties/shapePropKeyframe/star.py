@@ -7,9 +7,8 @@ in Lottie format
 import sys
 import math
 from common.Vector import Vector
-from common.Layer import Layer
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent
+from properties.shapePropKeyframe.helper import add, insert_dict_at
 sys.path.append("../../")
 
 

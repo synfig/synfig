@@ -5,7 +5,6 @@ Will store all the functions corresponding to Image Assets in lottie
 import sys
 import settings
 import layers.driver
-from common.Canvas import Canvas
 sys.path.append("..")
 
 

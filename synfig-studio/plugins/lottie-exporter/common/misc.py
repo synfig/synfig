@@ -169,9 +169,9 @@ def parse_position(animated, i):
         green = float(animated[i][0][1].text)
         blue = float(animated[i][0][2].text)
         alpha = float(animated[i][0][3].text)
-        red = red ** (1/settings.GAMMA)
-        green = green ** (1/settings.GAMMA)
-        blue = blue ** (1/settings.GAMMA)
+        red = red ** (1/settings.GAMMA[0])
+        green = green ** (1/settings.GAMMA[1])
+        blue = blue ** (1/settings.GAMMA[2])
         return Color(red, green, blue, alpha)
 
     return Vector(pos[0], pos[1], animated.attrib["type"])
@@ -240,7 +240,7 @@ def is_animated(node):
     return case
 
 
-def clamp_col(color):
+def clamp_col(color, gamma):
     """
     This function converts the colors into int and takes them to the range of
     0-255
@@ -251,7 +251,7 @@ def clamp_col(color):
     Returns:
         (int) : Color value between 0-255
     """
-    color = color ** (1/settings.GAMMA)
+    color = color ** (1/gamma)
     color *= 255
     color = int(color)
     return max(0, min(color, 255))
@@ -276,7 +276,7 @@ def get_color_hex(node):
         elif col.tag == "b":
             blue = float(col.text)
     # Convert to 0-255 range
-    red, green, blue = clamp_col(red), clamp_col(green), clamp_col(blue)
+    red, green, blue = clamp_col(red, settings.GAMMA[0]), clamp_col(green, settings.GAMMA[1]), clamp_col(blue, settings.GAMMA[2])
 
     # https://stackoverflow.com/questions/3380726/converting-a-rgb-color-tuple-to-a-six-digit-code-in-python/3380739#3380739
     ret = "#{0:02x}{1:02x}{2:02x}".format(red, green, blue)

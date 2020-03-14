@@ -197,6 +197,7 @@ AC_CONFIG_FILES([
     src/Makefile
     src/gui/Makefile
     src/synfigapp/Makefile
+    src/player/Makefile
     images/Makefile
     pkg-info/macosx/synfig-studio.info
     plugins/Makefile
