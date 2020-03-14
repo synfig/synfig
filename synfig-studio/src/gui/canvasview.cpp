@@ -2951,11 +2951,11 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 			#define APPEND_ITEMS_TO_ALL_MENUS(Interpolation, StockId, Text) \
 				APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, Text, Text, Text)
 
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("_TCB"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("_Linear"))
-			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("_Constant"))
 			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("_Clamped"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("_TCB"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("_Constant"))
+			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("_Linear"))
 
 			#undef APPEND_ITEMS_TO_ALL_MENUS
 			#undef APPEND_ITEMS_TO_ALL_MENUS3
