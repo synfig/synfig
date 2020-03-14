@@ -340,11 +340,11 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(preview_options, "preview_options_icon." IMAGE_EXT, _("Preview Options Dialog"));
 	INIT_STOCK_ICON(render_options, "render_options_icon." IMAGE_EXT, _("Render Options Dialog"));
 
-	INIT_STOCK_ICON(interpolation_type_tcb, "interpolation_type_tcb_icon." IMAGE_EXT, _("TCB interpolation"));
-	INIT_STOCK_ICON(interpolation_type_ease, "interpolation_type_ease_icon." IMAGE_EXT, _("Ease In/Out interpolation"));
-	INIT_STOCK_ICON(interpolation_type_const, "interpolation_type_const_icon." IMAGE_EXT, _("Const interpolation"));
-	INIT_STOCK_ICON(interpolation_type_linear, "interpolation_type_linear_icon." IMAGE_EXT, _("Linear interpolation"));
 	INIT_STOCK_ICON(interpolation_type_clamped, "interpolation_type_clamped_icon." IMAGE_EXT, _("Clamped interpolation"));
+	INIT_STOCK_ICON(interpolation_type_tcb, "interpolation_type_tcb_icon." IMAGE_EXT, _("TCB interpolation"));
+	INIT_STOCK_ICON(interpolation_type_const, "interpolation_type_const_icon." IMAGE_EXT, _("Const interpolation"));
+	INIT_STOCK_ICON(interpolation_type_ease, "interpolation_type_ease_icon." IMAGE_EXT, _("Ease In/Out interpolation"));
+	INIT_STOCK_ICON(interpolation_type_linear, "interpolation_type_linear_icon." IMAGE_EXT, _("Linear interpolation"));
 
 	INIT_STOCK_ICON(utils_chain_link_on, "utils_chain_link_on_icon." IMAGE_EXT, _("Linked"));
 	INIT_STOCK_ICON(utils_chain_link_off, "utils_chain_link_off_icon." IMAGE_EXT, _("Unlinked"));
@@ -429,16 +429,16 @@ studio::interpolation_icon(synfig::Interpolation type)
 {
 	switch(type)
 	{
+		case INTERPOLATION_CLAMPED:
+			return Gtk::StockID("synfig-interpolation_type_clamped");
 		case INTERPOLATION_TCB:
 			return Gtk::StockID("synfig-interpolation_type_tcb");
 		case INTERPOLATION_CONSTANT:
 			return Gtk::StockID("synfig-interpolation_type_const");
-		case INTERPOLATION_LINEAR:
-			return Gtk::StockID("synfig-interpolation_type_linear");
 		case INTERPOLATION_HALT:
 			return Gtk::StockID("synfig-interpolation_type_ease");
-		case INTERPOLATION_CLAMPED:
-			return Gtk::StockID("synfig-interpolation_type_clamped");
+		case INTERPOLATION_LINEAR:
+			return Gtk::StockID("synfig-interpolation_type_linear");
 		case INTERPOLATION_MANUAL:
 		case INTERPOLATION_UNDEFINED:
 		case INTERPOLATION_NIL:
