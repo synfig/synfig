@@ -20,7 +20,8 @@ export PATH="$CWD/bin:$CWD/synfig-production/bin:$PATH"
 export SYNFIG_ROOT="$CWD/"
 export SYNFIG_MODULE_LIST="$CWD/etc/synfig_modules.cfg"
 
-export PYTHONHOME="$CWD/Frameworks/Python.framework/Versions/3.6/"
+export PYTHON_VERSION=`ls -1 $CWD/Frameworks/Python.framework/Versions/ | head -n 1`
+export PYTHONHOME="$CWD/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/"
 
 export MAGICK_DIR=`ls -1 -d ${CWD}/lib/ImageMagick* | head -n 1`
 export MAGICK_DIR=`basename $MAGICK_DIR`
