@@ -25,94 +25,7 @@
 set -e
 
 echo "Checking dependencies..."
-if command -v apt-get >/dev/null; then
-        if [ ! -f /etc/altlinux-release ]; then
-            #
-            #  Ubuntu/Debian
-            #
-            PKG_LIST=" \
-                build-essential \
-                autoconf automake autopoint \
-                shared-mime-info \
-                libltdl3-dev \
-                libtool \
-                intltool \
-                gettext \
-                libpng-dev \
-                libfftw3-dev \
-                fontconfig \
-                libfreetype6-dev \
-                libfontconfig1-dev \
-                libxml2-dev \
-                libtiff5-dev \
-                libmlt-dev libmlt++-dev libmlt-data \
-                x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
-                libatk1.0-dev \
-                libgl1-mesa-dev \
-                imagemagick \
-                libsdl2-dev \
-                libsdl2-mixer-dev \
-                bzip2
-                git-core \
-                libmng-dev \
-                libjack-jackd2-dev \
-                libgtkmm-3.0-dev \
-                libglibmm-2.4-dev \
-                libsigc++-2.0-dev \
-                libxml++2.6-dev \
-                libboost-system-dev \
-                libmagick++-dev \
-                libxslt-dev python-dev python3-lxml\
-            "
-        else
-            #
-            #  ALT Linux case
-            #
-            PKG_LIST=" \
-                rpm-build \
-                git-core \
-                shared-mime-info \
-                libltdl3-devel \
-                intltool \
-                gettext \
-                libpng12-devel \
-                libjpeg-devel \
-                fontconfig \
-                libfreetype-devel \
-                fontconfig-devel \
-                libxml2-devel \
-                libtiff-devel \
-                libjasper-devel \
-                libdirectfb-devel \
-                libfftw3-dev \
-                libXfixes-devel \
-                libXinerama-devel \
-                libXdamage-devel \
-                libXcomposite-devel \
-                libXcursor-devel \
-                libXft-devel \
-                libXrender-devel \
-                libXt-devel \
-                libXrandr-devel \
-                libXi-devel \
-                libXext-devel \
-                libX11-devel \
-                libatk-devel \
-                bzip2 \
-                libmng-devel \
-                libgtkmm3-devel \
-                libglibmm-devel \
-                libsigc++2-devel \
-                libxml++2-devel \
-                libxslt-devel python-devel python3-lxml\
-            "
-        fi
-    echo "Running apt-get (you need root privileges to do that)..."
-    echo
-    sudo apt-get update -qq || true
-    sudo apt-get install -y -q $PKG_LIST
-
-elif command -v dnf >/dev/null; then
+if command -v dnf >/dev/null; then
     #
     #  Fedora >= 22
     #
@@ -215,7 +128,7 @@ elif which zypper >/dev/null; then
 
 elif command -v pacman >/dev/null; then
     #
-    # Arch Linux
+    #  Arch Linux
     #
     PKG_LIST="git \
             automake autoconf \
@@ -247,6 +160,93 @@ elif command -v pacman >/dev/null; then
     echo "Running pacman (you need root privileges to do that)..."
     echo
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
+    
+elif command -v apt-get >/dev/null; then
+        if [ ! -f /etc/altlinux-release ]; then
+            #
+            #  Ubuntu/Debian
+            #
+            PKG_LIST=" \
+                build-essential \
+                autoconf automake autopoint \
+                shared-mime-info \
+                libltdl3-dev \
+                libtool \
+                intltool \
+                gettext \
+                libpng-dev \
+                libfftw3-dev \
+                fontconfig \
+                libfreetype6-dev \
+                libfontconfig1-dev \
+                libxml2-dev \
+                libtiff5-dev \
+                libmlt-dev libmlt++-dev libmlt-data \
+                x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
+                libatk1.0-dev \
+                libgl1-mesa-dev \
+                imagemagick \
+                libsdl2-dev \
+                libsdl2-mixer-dev \
+                bzip2
+                git-core \
+                libmng-dev \
+                libjack-jackd2-dev \
+                libgtkmm-3.0-dev \
+                libglibmm-2.4-dev \
+                libsigc++-2.0-dev \
+                libxml++2.6-dev \
+                libboost-system-dev \
+                libmagick++-dev \
+                libxslt-dev python-dev python3-lxml\
+            "
+        else
+            #
+            #  ALT Linux case
+            #
+            PKG_LIST=" \
+                rpm-build \
+                git-core \
+                shared-mime-info \
+                libltdl3-devel \
+                intltool \
+                gettext \
+                libpng12-devel \
+                libjpeg-devel \
+                fontconfig \
+                libfreetype-devel \
+                fontconfig-devel \
+                libxml2-devel \
+                libtiff-devel \
+                libjasper-devel \
+                libdirectfb-devel \
+                libfftw3-dev \
+                libXfixes-devel \
+                libXinerama-devel \
+                libXdamage-devel \
+                libXcomposite-devel \
+                libXcursor-devel \
+                libXft-devel \
+                libXrender-devel \
+                libXt-devel \
+                libXrandr-devel \
+                libXi-devel \
+                libXext-devel \
+                libX11-devel \
+                libatk-devel \
+                bzip2 \
+                libmng-devel \
+                libgtkmm3-devel \
+                libglibmm-devel \
+                libsigc++2-devel \
+                libxml++2-devel \
+                libxslt-devel python-devel python3-lxml\
+            "
+        fi
+    echo "Running apt-get (you need root privileges to do that)..."
+    echo
+    sudo apt-get update -qq || true
+    sudo apt-get install -y -q $PKG_LIST
 
 else
     echo "WARNING: This build script does not work with package management systems other than yum, zypper, apt or pacman! You should install dependent packages manually."
