@@ -237,7 +237,8 @@ public:
 
 template <class T>
 SelectDragHelper<T>::SelectDragHelper(const char* drag_action_name)
-	: drag_action_name(drag_action_name), action_group_drag(nullptr), hovered_item(), is_hovered_item_valid(false), active_item(nullptr), pointer_state(POINTER_NONE)
+	: drag_action_name(drag_action_name), action_group_drag(nullptr), hovered_item(), is_hovered_item_valid(false), active_item(nullptr), pointer_state(POINTER_NONE),
+	  modifiers(Gdk::ModifierType())
 {
 }
 

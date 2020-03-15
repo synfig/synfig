@@ -35,6 +35,8 @@
 
 #include <synfig/general.h>
 
+#include <cstring>
+
 #endif
 
 using namespace studio;
@@ -171,7 +173,7 @@ void Dock_Timetrack2::setup_tool_palette()
 	Gtk::ToolItemGroup *tool_item_group = Gtk::manage(new Gtk::ToolItemGroup());
 	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 	std::vector<std::tuple<const char*, const char*, const char*, Widget_Timetrack::ActionState>> tools_info = {
-		{"synfig-smooth_move", _("Move waypoints\n\nSelect waypoints and drag them along the timetrack."), nullptr, Widget_Timetrack::ActionState::MOVE},
+		{"synfig-smooth_move", _("Move waypoints\n\nSelect waypoints and drag them along the timetrack."), "", Widget_Timetrack::ActionState::MOVE},
 		{"synfig-duplicate", _("Duplicate waypoints\n\nAfter selecting waypoints, drag to duplicate them and place them in another time point."), _("Shift"), Widget_Timetrack::ActionState::COPY},
 		{"synfig-scale", _("Scale waypoints\n\nAfter selecting more than one waypoint, drag them to change their timepoint regarding current time."), _("Alt"), Widget_Timetrack::ActionState::SCALE}
 	};
@@ -192,8 +194,11 @@ void Dock_Timetrack2::setup_tool_palette()
 																	Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
 														stock_item.get_label() ));
 		tool_button->set_name(Widget_Timetrack::get_action_state_name(action_state));
-		std::string shortcut_text = etl::strprintf(_("Shortcut: %s"), shortcut);
-		tool_button->set_tooltip_text(tooltip + "\n\n" + shortcut_text );
+		if (strlen(shortcut) > 0) {
+			std::string shortcut_text = etl::strprintf(_("Shortcut: %s"), shortcut);
+			tooltip += "\n\n" + shortcut_text;
+		}
+		tool_button->set_tooltip_text(tooltip);
 		tool_button->set_group(button_group);
 		tool_button->signal_toggled().connect([this, tool_button, action_state](){
 			if (tool_button->get_active())
