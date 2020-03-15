@@ -31,6 +31,8 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/box.h>
 #include <gtkmm/scrollbar.h>
+#include <gtkmm/toolpalette.h>
+#include <gtkmm/radiotoolbutton.h>
 
 namespace studio {
 
@@ -53,8 +55,13 @@ private:
 	Widget_Timetrack *current_widget_timetrack;
 	Gtk::VScrollbar vscrollbar;
 	Gtk::HScrollbar hscrollbar;
+	Gtk::ToolPalette tool_palette;
 
 	void on_update_header_height(int height);
+
+	void setup_tool_palette();
+	void update_tool_palette_action();
+	std::map<std::string, Gtk::RadioToolButton*> action_button_map;
 };
 
 }

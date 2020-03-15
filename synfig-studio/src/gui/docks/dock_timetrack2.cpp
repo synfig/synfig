@@ -56,6 +56,9 @@ Dock_Timetrack2::Dock_Timetrack2()
 	hscrollbar.set_hexpand();
 	hscrollbar.show();
 
+	setup_tool_palette();
+	tool_palette.show_all();
+
 	grid.set_column_homogeneous(false);
 	grid.set_row_homogeneous(false);
 	// for letting user click/drag waypoint or keyframe mark of time zero
@@ -100,6 +103,10 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 		button = -1;
 		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
 	});
+
+	widget_timetrack->signal_action_state_changed().connect([=](){
+		update_tool_palette_action();
+	});
 }
 
 void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
@@ -119,6 +126,8 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 		current_widget_timetrack = nullptr; // deleted by its studio::CanvasView::~CanvasView()
 
 		hscrollbar.unset_adjustment();
+
+		tool_palette.hide();
 	} else {
 		widget_kf_list.set_time_model(canvas_view->time_model());
 		widget_kf_list.set_canvas_interface(canvas_view->canvas_interface());
@@ -132,11 +141,15 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 
 		hscrollbar.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
+		update_tool_palette_action();
+		tool_palette.show();
+
 		grid.attach(widget_kf_list,            0, 0, 1, 1);
 		grid.attach(widget_timeslider,         0, 1, 1, 1);
 		grid.attach(*current_widget_timetrack, 0, 2, 1, 1);
 		grid.attach(hscrollbar,                0, 4, 2, 1);
 		grid.attach(vscrollbar,                1, 0, 1, 4);
+		grid.attach(tool_palette,              2, 0, 1, 4);
 		grid.show();
 	}
 
@@ -151,4 +164,61 @@ void Dock_Timetrack2::on_update_header_height(int height)
 	widget_timeslider.get_size_request(w, h);
 	if (h != ts_height)
 		widget_timeslider.set_size_request(-1, ts_height);
+}
+
+void Dock_Timetrack2::setup_tool_palette()
+{
+	Gtk::ToolItemGroup *tool_item_group = Gtk::manage(new Gtk::ToolItemGroup());
+	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
+	std::vector<std::tuple<const char*, const char*, const char*, Widget_Timetrack::ActionState>> tools_info = {
+		{"synfig-smooth_move", _("Move waypoints\n\nSelect waypoints and drag them along the timetrack."), nullptr, Widget_Timetrack::ActionState::MOVE},
+		{"synfig-duplicate", _("Duplicate waypoints\n\nAfter selecting waypoints, drag to duplicate them and place them in another time point."), _("Shift"), Widget_Timetrack::ActionState::COPY},
+		{"synfig-scale", _("Scale waypoints\n\nAfter selecting more than one waypoint, drag them to change their timepoint regarding current time."), _("Alt"), Widget_Timetrack::ActionState::SCALE}
+	};
+
+	Gtk::RadioButtonGroup button_group;
+	for (const auto & tool_info : tools_info) {
+		std::string name = std::get<0>(tool_info);
+		std::string tooltip = std::get<1>(tool_info);
+		const char * shortcut = std::get<2>(tool_info);
+		Widget_Timetrack::ActionState action_state = std::get<3>(tool_info);
+
+		Gtk::StockItem stock_item;
+		Gtk::Stock::lookup(Gtk::StockID(name),stock_item);
+
+		Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton(
+														*manage(new Gtk::Image(
+																	stock_item.get_stock_id(),
+																	Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
+														stock_item.get_label() ));
+		tool_button->set_name(Widget_Timetrack::get_action_state_name(action_state));
+		std::string shortcut_text = etl::strprintf(_("Shortcut: %s"), shortcut);
+		tool_button->set_tooltip_text(tooltip + "\n\n" + shortcut_text );
+		tool_button->set_group(button_group);
+		tool_button->signal_toggled().connect([this, tool_button, action_state](){
+			if (tool_button->get_active())
+				current_widget_timetrack->set_action_state(action_state);
+		});
+		action_button_map[tool_button->get_name()] = tool_button;
+		tool_item_group->add(*tool_button);
+	}
+	tool_palette.add(*tool_item_group);
+	tool_palette.set_sensitive(true);
+}
+
+void Dock_Timetrack2::update_tool_palette_action()
+{
+	if (!current_widget_timetrack)
+		return;
+	Widget_Timetrack::ActionState action_state = current_widget_timetrack->get_action_state();
+	std::string action_state_name = Widget_Timetrack::get_action_state_name(action_state);
+
+	Gtk::RadioToolButton * button = action_button_map[action_state_name];
+	if (!button)
+		button = action_button_map[Widget_Timetrack::get_action_state_name(Widget_Timetrack::NONE)];
+	if (!button)
+		button = action_button_map[Widget_Timetrack::get_action_state_name(Widget_Timetrack::MOVE)];
+
+	if (button)
+		button->set_active(true);
 }

@@ -82,6 +82,17 @@ public:
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
 
+	enum ActionState {
+		NONE,
+		MOVE,
+		COPY,
+		SCALE
+	};
+	static std::string get_action_state_name(ActionState action_state);
+	ActionState get_action_state() const;
+	void set_action_state(ActionState action_state);
+	sigc::signal<void>& signal_action_state_changed() { return signal_action_state_changed_; }
+
 protected:
 	virtual bool on_event(GdkEvent* event) override;
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
@@ -109,15 +120,9 @@ private:
 	//! Handle mouse actions for panning/zooming/scrolling and waypoint selection
 	struct WaypointSD : SelectDragHelper<WaypointItem>
 	{
-		enum Action {
-			NONE,
-			MOVE,
-			COPY,
-			SCALE
-		};
 	protected:
 		Widget_Timetrack &widget;
-		Action action;
+		ActionState action;
 
 	public:
 		WaypointSD(Widget_Timetrack &widget);
@@ -129,10 +134,12 @@ private:
 		virtual void delta_drag(int total_dx, int total_dy, bool by_keys) override;
 
 		const synfig::Time& get_deltatime() const;
-		Action get_action() const;
+		ActionState get_action() const;
+		void set_action(ActionState action_state);
 		sigc::signal<void>& signal_action_changed();
 	protected:
 		synfig::Time deltatime;
+		bool is_action_set_before_drag;
 
 		void on_drag_started();
 		void on_drag_canceled();
@@ -210,6 +217,10 @@ private:
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
+
+	sigc::signal<void> signal_action_state_changed_;
+
+	ActionState action_state;
 
 	struct WaypointScaleInfo {
 		double scale;

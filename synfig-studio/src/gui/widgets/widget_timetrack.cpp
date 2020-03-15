@@ -49,7 +49,8 @@ Widget_Timetrack::Widget_Timetrack()
 	  params_treeview(nullptr),
 	  param_list_height(0),
 	  is_rebuild_param_info_list_queued(false),
-	  is_update_param_list_geometries_queued(false)
+	  is_update_param_list_geometries_queued(false),
+	  action_state(NONE)
 {
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK | Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	set_can_focus(true);
@@ -58,7 +59,11 @@ Widget_Timetrack::Widget_Timetrack()
 
 	setup_adjustment();
 
-	waypoint_sd.signal_action_changed().connect([=](){update_cursor();});
+	waypoint_sd.signal_action_changed().connect([=](){
+		update_cursor();
+		action_state = waypoint_sd.get_action();
+		signal_action_state_changed().emit();
+	});
 }
 
 Widget_Timetrack::~Widget_Timetrack()
@@ -293,6 +298,31 @@ void Widget_Timetrack::goto_previous_waypoint(long n)
 	goto_next_waypoint(-n);
 }
 
+std::string Widget_Timetrack::get_action_state_name(Widget_Timetrack::ActionState action_state)
+{
+	switch (action_state) {
+	case NONE:
+		return "none";
+	case MOVE:
+		return "move";
+	case COPY:
+		return "copy";
+	case SCALE:
+		return "scale";
+	}
+	return "";
+}
+
+Widget_Timetrack::ActionState Widget_Timetrack::get_action_state() const
+{
+	return action_state;
+}
+
+void Widget_Timetrack::set_action_state(Widget_Timetrack::ActionState action_state)
+{
+	waypoint_sd.set_action(action_state);
+}
+
 bool Widget_Timetrack::on_event(GdkEvent* event)
 {
 	if (waypoint_sd.process_event(event))
@@ -363,8 +393,9 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			cr->push_group();
 		}
 
-		bool is_user_moving_waypoints = waypoint_sd.get_action() == waypoint_sd.MOVE;
-		bool is_user_scaling_waypoints = waypoint_sd.get_action() == waypoint_sd.SCALE;
+		const bool is_dragging = waypoint_sd.get_state() == waypoint_sd.POINTER_DRAGGING;
+		const bool is_user_moving_waypoints = is_dragging && waypoint_sd.get_action() == MOVE;
+		const bool is_user_scaling_waypoints = is_dragging && waypoint_sd.get_action() == SCALE;
 
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
 		WaypointRenderer::foreach_visible_waypoint(row_info->get_value_desc(), *time_plot_data,
@@ -395,7 +426,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	// draw dragging waypoints
 	if (waypoint_sd.get_state() == WaypointSD::State::POINTER_DRAGGING) {
 		WaypointScaleInfo scale_info = compute_scale_params();
-		bool is_user_scaling = waypoint_sd.get_action() == waypoint_sd.SCALE;
+		bool is_user_scaling = waypoint_sd.get_action() == SCALE;
 
 		for (const WaypointItem *item : waypoint_sd.get_selected_items()) {
 			const int margin = 1;
@@ -503,16 +534,16 @@ void Widget_Timetrack::update_cursor()
 {
 	const char * cursor_name = "default";
 	switch (waypoint_sd.get_action()) {
-	case WaypointSD::NONE:
+	case NONE:
 		cursor_name = "default";
 		break;
-	case WaypointSD::MOVE:
+	case MOVE:
 		cursor_name = "move";
 		break;
-	case WaypointSD::COPY:
+	case COPY:
 		cursor_name = "copy";
 		break;
-	case WaypointSD::SCALE:
+	case SCALE:
 		cursor_name = "ew-resize";
 		break;
 	}
@@ -800,7 +831,7 @@ Widget_Timetrack::WaypointScaleInfo Widget_Timetrack::compute_scale_params() con
 	info.base_offset = 0.0;
 	info.ref_time = time_plot_data->time_model->get_time();
 
-	if (waypoint_sd.get_action() == waypoint_sd.SCALE) {
+	if (waypoint_sd.get_action() == SCALE) {
 		info.scale = 1.0 + waypoint_sd.get_deltatime() / (waypoint_sd.get_active_item()->time_point.get_time() - info.ref_time);
 		info.base_offset = (1 - info.scale) * info.ref_time;
 	}
@@ -909,7 +940,8 @@ bool Widget_Timetrack::WaypointItem::operator ==(const Widget_Timetrack::Waypoin
 Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
 	: SelectDragHelper<WaypointItem>(_("Move waypoints")),
 	  widget(widget),
-	  action(Action::NONE)
+	  action(ActionState::NONE),
+	  is_action_set_before_drag(false)
 {
 	signal_drag_started().connect([&]() {on_drag_started();});
 	signal_drag_canceled().connect([&]() {on_drag_canceled();});
@@ -1063,9 +1095,14 @@ const synfig::Time& Widget_Timetrack::WaypointSD::get_deltatime() const
 	return deltatime;
 }
 
-Widget_Timetrack::WaypointSD::Action Widget_Timetrack::WaypointSD::get_action() const
+Widget_Timetrack::ActionState Widget_Timetrack::WaypointSD::get_action() const
 {
 	return action;
+}
+
+void Widget_Timetrack::WaypointSD::set_action(Widget_Timetrack::ActionState action_state)
+{
+	action = action_state;
 }
 
 sigc::signal<void>& Widget_Timetrack::WaypointSD::signal_action_changed()
@@ -1076,13 +1113,17 @@ sigc::signal<void>& Widget_Timetrack::WaypointSD::signal_action_changed()
 void Widget_Timetrack::WaypointSD::on_drag_started()
 {
 	deltatime = 0;
-	update_action();
+	if (action == NONE)
+		update_action();
+	else
+		is_action_set_before_drag = true;
 }
 
 void Widget_Timetrack::WaypointSD::on_drag_canceled()
 {
 	deltatime = 0;
-	update_action();
+	if (!is_action_set_before_drag)
+		update_action();
 }
 
 void Widget_Timetrack::WaypointSD::on_drag_finish(bool /*started_by_keys*/)
@@ -1100,7 +1141,8 @@ void Widget_Timetrack::WaypointSD::on_drag_finish(bool /*started_by_keys*/)
 		widget.scale_selected();
 
 	deltatime = 0;
-	update_action();
+	if (!is_action_set_before_drag)
+		update_action();
 }
 
 void Widget_Timetrack::WaypointSD::on_modifier_keys_changed()
@@ -1121,7 +1163,12 @@ void Widget_Timetrack::WaypointSD::on_modifier_keys_changed()
 			break;
 		}
 
-		get_action_group_drag()->set_name(action_name);
+		synfigapp::Action::PassiveGrouper * group = get_action_group_drag();
+		if (group)
+			group->set_name(action_name);
+		else if (get_state() == POINTER_DRAGGING) {
+			synfig::warning(_("no undo-action set when on_modifier_keys_changed() is called while dragging waypoints: internal error"));
+		}
 
 		widget.queue_draw();
 	}
@@ -1129,7 +1176,7 @@ void Widget_Timetrack::WaypointSD::on_modifier_keys_changed()
 
 void Widget_Timetrack::WaypointSD::update_action()
 {
-	Action previous_action = action;
+	ActionState previous_action = action;
 	if (get_state() != POINTER_DRAGGING) {
 		action = NONE;
 	} else {
