@@ -346,7 +346,7 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	def_background_color.set_label(_("Solid Color"));
 	def_background_color.set_group(group_def_background);
 	pi.grid->attach(def_background_color, 0, ++row, 1, 1);
-    def_background_color.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
+	def_background_color.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
 
 	Gdk::RGBA m_color;
 	m_color.set_rgba( App::default_background_layer_color.get_r(),
@@ -926,8 +926,19 @@ Dialog_Setup::refresh()
 	if (App::default_background_layer_type == "solid_color") def_background_color.set_active();
 	if (App::default_background_layer_type == "image")       def_background_image.set_active();
 	
-	// Refresh the color of Gdk::RGBA 
-	// Not implemented
+	// Refresh the colors of background and preview background buttons
+	Gdk::RGBA m_color;
+	m_color.set_rgba( App::default_background_layer_color.get_r(),
+					  App::default_background_layer_color.get_g(),
+					  App::default_background_layer_color.get_b(),
+					  App::default_background_layer_color.get_a());
+	def_background_color_button.set_rgba(m_color);
+	
+	m_color.set_rgba( App::preview_background_color.get_r(),
+					  App::preview_background_color.get_g(),
+					  App::preview_background_color.get_b(),
+					  App::preview_background_color.get_a());
+	preview_background_color_button.set_rgba(m_color);
 
 	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
