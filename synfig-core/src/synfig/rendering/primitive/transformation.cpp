@@ -44,6 +44,59 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+
+Transformation::DiscreteBounds
+Transformation::make_discrete_bounds(const Bounds &bounds)
+{
+	const int border_width   = 4;
+	const int max_width      = 16384 - 2*border_width;
+	const int max_height     = 16384 - 2*border_width;
+
+	const int max_area_width = 4096 - 2*border_width;
+	const int max_area       = max_area_width * max_area_width;
+
+	if (!bounds.is_valid())
+		return DiscreteBounds();
+	
+	const Vector raster_size_orig = bounds.rect.get_size().multiply_coords( bounds.resolution );
+	
+	Vector raster_size_float = raster_size_orig;
+	if (raster_size_float[0] > max_width)
+		raster_size_float[0] = max_width;
+	if (raster_size_float[1] > max_height)
+		raster_size_float[1] = max_height;
+	
+	VectorInt raster_size(
+		std::max(1, (int)approximate_ceil(raster_size_float[0])),
+		std::max(1, (int)approximate_ceil(raster_size_float[1])) );
+	if (raster_size[0] * raster_size[1] > max_area) {
+		const Real k = sqrt(Real(max_area)/(raster_size[0] * raster_size[1]));
+		raster_size[0] = std::max(1, (int)approximate_floor(raster_size[0]*k));
+		raster_size[1] = std::max(1, (int)approximate_floor(raster_size[1]*k));
+	}
+	
+	const Vector border(
+		border_width*raster_size_orig[0]/(bounds.resolution[0]*raster_size[0]),
+		border_width*raster_size_orig[1]/(bounds.resolution[1]*raster_size[1]) );
+	
+	return DiscreteBounds(
+		Rect(
+			bounds.rect.get_min() - border,
+			bounds.rect.get_max() + border ),
+		raster_size + VectorInt(border_width, border_width) );
+}
+
+Matrix2
+Transformation::derivative_vfunc(const Point &x) const
+{
+	const Real step = real_low_precision<Real>();
+	const Real step_div = 1/step;
+	const Point p0 = transform(x);
+	const Point dx = transform(Point(x[0] + step, x[1])) - p0;
+	const Point dy = transform(Point(x[0], x[1] + step)) - p0;
+	return Matrix2(dx[0]*step_div, dx[1]*step_div, dy[0]*step_div, dy[1]*step_div);
+}
+
 bool
 Transformation::can_merge_outer_vfunc(const Transformation&) const
 	{ return false; }

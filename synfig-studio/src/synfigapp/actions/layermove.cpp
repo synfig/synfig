@@ -156,16 +156,16 @@ Action::LayerMove::perform()
 		dest_canvas=subcanvas;
 
 	// Find the iterator for the layer
-	Canvas::iterator iter = subcanvas->find_index(layer, old_index);
+	Canvas::iterator iter = src_canvas->find_index(layer, old_index);
 	if (*iter != layer)
 		throw Error(_("This layer doesn't exist anymore."));
 
 	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
 
-	// If the subcanvas isn't the same as the canvas,
+	// If the src_canvas isn't the same as the canvas,
 	// then it had better be an inline canvas. If not,
 	// bail
-	//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
+	//if(get_canvas()!=src_canvas && !src_canvas->is_inline())
 	if(get_canvas()->get_root()!=dest_canvas->get_root() || get_canvas()->get_root()!=src_canvas->get_root())
 		throw Error(_("You cannot directly move layers across compositions"));
 

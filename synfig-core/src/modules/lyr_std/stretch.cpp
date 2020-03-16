@@ -182,63 +182,6 @@ Layer_Stretch::get_transform()const
 	return new Stretch_Trans(this);
 }
 
-bool
-Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector amount=param_amount.get(Vector());
-	Point center=param_center.get(Point());
-
-	if (amount[0] == 0 || amount[1] == 0)
-	{
-		surface->set_wh(renddesc.get_w(), renddesc.get_h());
-		surface->clear();
-		return true;
-	}
-
-	RendDesc transformed_renddesc(renddesc);
-	transformed_renddesc.clear_flags();
-	transformed_renddesc.set_transformation_matrix(
-	    renddesc.get_transformation_matrix()
-	  * Matrix().set_translate(center)
-	  *	Matrix().set_scale(amount)
-	  *	Matrix().set_translate(-center) );
-
-	// Render the scene
-	return context.accelerated_render(surface,quality,transformed_renddesc,cb);
-}
-
-
-
-bool
-Layer_Stretch::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector amount=param_amount.get(Vector());
-	Point center=param_center.get(Point());
-
-	if (amount[0] == 0 || amount[1] == 0)
-	{
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_fill(cr);
-		return true;
-	}
-	const double stx(center[0]);
-	const double sty(center[1]);
-	
-	cairo_save(cr);
-	cairo_translate(cr, stx, sty);
-	cairo_scale(cr, amount[0], amount[1]);
-	cairo_translate(cr, -stx, -sty);
-
-	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-	{
-		cairo_restore(cr);
-		return false;
-	}
-	cairo_restore(cr);
-	return true;
-}
-
-
 Rect
 Layer_Stretch::get_full_bounding_rect(Context context)const
 {

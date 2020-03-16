@@ -219,7 +219,10 @@ Dockable::reset_container()
 	//   Allocating size to widget without calling gtk_widget_get_preferred_width/height().
 	//   How does the code know the size to allocate?
 	// related with combination of Grid, ScrolledWindow and TreeView
-	App::process_all_events();
+	//App::process_all_events();
+	// Update:
+	// Seems bug in other place, process_all_events() here produces
+	// a concurrent event processing and collissions
 }
 
 void

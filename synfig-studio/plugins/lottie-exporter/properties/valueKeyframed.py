@@ -3,7 +3,6 @@ Stores all the functions required for generating value key frames in lottie
 """
 
 import sys
-import settings
 from properties.timeAdjust import time_adjust
 from properties.valueKeyframe import gen_value_Keyframe
 from common.misc import get_frame

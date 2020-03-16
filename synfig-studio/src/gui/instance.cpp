@@ -211,7 +211,7 @@ void
 Instance::set_undo_status(bool x)
 {
 	undo_status_=x;
-	App::dock_toolbox->update_tools();
+	App::dock_toolbox->refresh();
 	signal_undo_redo_status_changed()();
 }
 
@@ -219,7 +219,7 @@ void
 Instance::set_redo_status(bool x)
 {
 	redo_status_=x;
-	App::dock_toolbox->update_tools();
+	App::dock_toolbox->refresh();
 	signal_undo_redo_status_changed()();
 }
 
@@ -558,6 +558,7 @@ studio::Instance::dialog_save_as()
 		if (filename_extension(filename) == "")
 			filename+=".sifz";
 
+		canvas->set_name(base_filename);
 		// forced to .sifz, the below code is not need anymore
 		try
 		{
@@ -701,9 +702,9 @@ Instance::close(bool remove_temporary_files)
 		studio::App::instance_list.front()->canvas_view_list().front()->present();
 	}
 
-	if (remove_temporary_files) {
+	if (!remove_temporary_files) {
 		FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
-		temporary_filesystem->discard_changes();
+		temporary_filesystem->set_keep_files_when_destroyed(true);
 	}
 }
 
@@ -1926,7 +1927,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
 			{
 				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
-				item2->set_label( (String(_("Convert to Vector menu"))).c_str() );
+				item2->set_label( (String(_("Convert to Vector"))).c_str() );
 				item2->signal_activate().connect(
 					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
 				item2->show();

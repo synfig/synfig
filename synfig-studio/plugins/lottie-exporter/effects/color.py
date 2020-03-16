@@ -3,9 +3,7 @@ This module will store all the functions required for color property of lottie
 """
 
 import sys
-import copy
 import settings
-from common.Count import Count
 sys.path.append("../")
 
 
@@ -22,7 +20,6 @@ def gen_effects_color(lottie, layer, idx):
         (None)
 
     """
-    index = Count()
     lottie["ty"] = settings.EFFECTS_COLOR   # Effect type
     lottie["nm"] = "Color"                  # Name
     lottie["ix"] = idx                      # Index

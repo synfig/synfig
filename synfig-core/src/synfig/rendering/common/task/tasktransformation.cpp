@@ -65,8 +65,11 @@ TaskTransformation::is_simple() const {
 int
 TaskTransformation::get_pass_subtask_index() const
 {
-	return sub_task() && get_transformation()
-		 ? PASSTO_THIS_TASK : PASSTO_NO_TASK;
+	if (!get_transformation())
+		return PASSTO_NO_TASK;
+	for(Task::List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end(); ++i)
+		if (*i) return PASSTO_THIS_TASK;
+	return PASSTO_NO_TASK;
 }
 
 
@@ -93,36 +96,25 @@ TaskTransformation::calc_bounds() const
 void
 TaskTransformation::set_coords_sub_tasks()
 {
-	const int border = 4;
-
 	if (!sub_task())
 		{ trunc_to_zero(); return; }
 
 	if ( is_valid_coords()
-	  && approximate_greater(supersample[0], 0.0)
-	  && approximate_greater(supersample[1], 0.0) )
+	  && approximate_greater(supersample[0], Real(0))
+	  && approximate_greater(supersample[1], Real(0)) )
 	{
 		if (Transformation::Handle transformation = get_transformation())
 		{
 			if (Transformation::Handle back_transformation = transformation->create_inverted())
 			{
-				Transformation::Bounds bounds =
-					back_transformation->transform_bounds(
-						source_rect, get_pixels_per_unit().multiply_coords(supersample) );
-				if (bounds.is_valid())
+				Transformation::DiscreteBounds discrete_bounds =
+					Transformation::make_discrete_bounds(
+						back_transformation->transform_bounds(
+							source_rect,
+							get_pixels_per_unit().multiply_coords(supersample) ));
+				if (discrete_bounds.is_valid())
 				{
-					// add some pixels to border for draw valid and antialiased transformed edges
-					Vector size_real = bounds.resolution.multiply_coords( bounds.rect.get_size() );
-					VectorInt size(	2*border + ceil(size_real[0]),
-							        2*border + ceil(size_real[1]) );
-					Vector extra( 0.5*(size[0] - size_real[0])/bounds.resolution[0],
-							      0.5*(size[1] - size_real[1])/bounds.resolution[1] );
-					Rect rect = bounds.rect;
-					rect.minx -= extra[0];
-					rect.miny -= extra[1];
-					rect.maxx += extra[0];
-					rect.maxy += extra[1];
-					sub_task()->set_coords(rect, size);
+					sub_task()->set_coords(discrete_bounds.rect, discrete_bounds.size);
 					return;
 				}
 			}
@@ -141,4 +133,5 @@ TaskTransformationAffine::get_pass_subtask_index() const
 		return 0;
 	return TaskTransformation::get_pass_subtask_index();
 }
+
 /* === E N T R Y P O I N T ================================================= */

@@ -122,9 +122,13 @@
  *
  *      Added gamma into a canvas rend_desc
  * 
+ * 1.2
+ *
+ *      Added 'alpha' blend method
+ * 
  */
 
-#define CURRENT_CANVAS_VERSION "1.1"
+#define CURRENT_CANVAS_VERSION "1.2"
 
 /* === T Y P E D E F S ===================================================== */
 

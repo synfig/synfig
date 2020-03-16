@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2020-02-08 22:26+0700\n"
-"PO-Revision-Date: 2020-02-08 15:26+0000\n"
+"POT-Creation-Date: 2020-02-14 22:06+0700\n"
+"PO-Revision-Date: 2020-02-14 15:06+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Basque (Spain) (http://www.transifex.com/morevnaproject/synfig/language/eu_ES/)\n"
 "MIME-Version: 1.0\n"
@@ -2605,7 +2605,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_switch.cpp:104
 msgid ""
-"Uses when layer name is empty. Only layer with specified depth are visible"
+"Used when layer name is empty. Only layer with specified depth is visible"
 msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:138
@@ -3258,7 +3258,7 @@ msgstr ""
 
 #: ../src/synfig/target_cairo.cpp:184 ../src/synfig/target_cairo_tile.cpp:264
 #: ../src/synfig/target_scanline.cpp:466 ../src/synfig/target_tile.cpp:373
-msgid "Caught string :"
+msgid "Caught string: "
 msgstr ""
 
 #: ../src/synfig/target_cairo.cpp:189 ../src/synfig/target_cairo_tile.cpp:269
@@ -3289,7 +3289,7 @@ msgid "Bad surface: %s"
 msgstr ""
 
 #: ../src/synfig/target_cairo_tile.cpp:168 ../src/synfig/target_tile.cpp:279
-msgid "add_tile():Unable to put surface on target"
+msgid "add_tile(): Unable to put surface on target"
 msgstr ""
 
 #: ../src/synfig/target_cairo_tile.cpp:226
@@ -3612,7 +3612,7 @@ msgid "Local Length Scale"
 msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:603
-msgid "The scale of the bone aligned its length"
+msgid "The scale of the bone aligned to its length"
 msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:607

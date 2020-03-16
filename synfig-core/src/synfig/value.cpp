@@ -107,7 +107,7 @@ ValueBase::ValueBase(const ValueBase& x)
 	interpolation_ = x.interpolation_;
 }
 
-ValueBase::ValueBase(ValueBase&& x)
+ValueBase::ValueBase(ValueBase&& x) noexcept
 	: ValueBase()
 {
 	swap(*this, x);

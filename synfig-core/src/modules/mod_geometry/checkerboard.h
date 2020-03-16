@@ -51,6 +51,8 @@ private:
 	synfig::ValueBase param_origin;
 	//! Parameter: (Point)
 	synfig::ValueBase param_size;
+	//! Parameter: (bool)
+	synfig::ValueBase param_antialias;
 
 	bool point_test(const synfig::Point& x)const;
 
@@ -66,9 +68,6 @@ public:
 	virtual Vocab get_param_vocab()const;
 
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(synfig::Context context, cairo_t *cr, int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 
 protected:
 	virtual synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams context_params)const;

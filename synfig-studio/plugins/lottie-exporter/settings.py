@@ -36,7 +36,7 @@ DEFAULT_POSITION = [0, 0]
 DEFAULT_ANCHOR = [0, 0, 0]
 DEFAULT_SCALE = [100, 100, 100]
 DEFAULT_SKEW = 0
-GAMMA = 2.2
+GAMMA = [2.2, 2.2, 2.2]     # Default RGB gamma correction values
 PIX_PER_UNIT = 0
 TANGENT_FACTOR = 3.0
 IN_TANGENT_X = 0.58
@@ -69,7 +69,7 @@ PRE_COMP_LAYER = {"rotate", "zoom", "translate", "stretch"}
 GROUP_LAYER = {"group", "switch"}
 SKELETON_LAYER = {"skeleton"}
 UNKNOWN_LAYER = "unknown_layer"
-CONVERT_METHODS = {"add", "average", "composite", "exp", "linear", "radial_composite", "scale", "subtract", "switch", "weighted_average", "bone_link", "bone", "bone_root"}
+CONVERT_METHODS = {"add", "average", "composite", "exp", "linear", "radial_composite", "scale", "subtract", "switch", "weighted_average", "bone_link", "bone", "bone_root","sine"}
 BONES = {"bone", "bone_root"}
 
 

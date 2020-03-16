@@ -34,7 +34,6 @@
 #include <synfig/general.h>
 
 #include <gtkmm/label.h>
-#include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
 #include "dialogs/dialog_waypoint.h"
 #include <gtk/gtk.h>
@@ -46,7 +45,6 @@
 #include <gtkmm/menu.h>
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypoint.h"
-#include "widgets/widget_enum.h"
 #include <gui/localization.h>
 //#include <synfig/interpolation.h>
 
@@ -99,6 +97,7 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	before_options->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
 	before_options->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
 	before_options->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	before_options->signal_changed().connect(sigc::mem_fun(*this, &Widget_Waypoint::update_tcb_params_visibility));
 
 	after_options=manage(new class Widget_Enum());
 	after_options->show();
@@ -116,16 +115,12 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	after_options->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
 	after_options->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
 	after_options->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
+	after_options->signal_changed().connect(sigc::mem_fun(*this, &Widget_Waypoint::update_tcb_params_visibility));
 
 	spin_tension=manage(new class Gtk::SpinButton(adj_tension,0.1,3));
-	spin_tension->show();
 	spin_continuity=manage(new class Gtk::SpinButton(adj_continuity,0.1,3));
-	spin_continuity->show();
 	spin_bias=manage(new class Gtk::SpinButton(adj_bias,0.1,3));
-	spin_bias->show();
 	spin_temporal_tension=manage(new class Gtk::SpinButton(adj_temporal_tension,0.1,3));
-	spin_temporal_tension->show();
-
 	set_padding(12, 12, 12, 12);
 
 	Gtk::VBox *widgetBox = manage(new Gtk::VBox(false, 12));
@@ -178,13 +173,13 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	interpolationTable->attach(*interpolationInLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	interpolationTable->attach(*before_options, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	Gtk::Label *interpolationOutLabel = manage(new Gtk::Label(_("_Out Interpolation"), true));
+	Gtk::Label *interpolationOutLabel = manage(new Gtk::Label(_("O_ut Interpolation"), true));
 	interpolationOutLabel->set_alignment(0, 0.5);
 	interpolationOutLabel->set_mnemonic_widget(*after_options);
 	interpolationTable->attach(*interpolationOutLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	interpolationTable->attach(*after_options, 1, 2, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	Gtk::Frame *tcbFrame = manage(new Gtk::Frame(_("TCB Parameters")));
+	tcbFrame = manage(new Gtk::Frame(_("TCB Parameters")));
 	tcbFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) tcbFrame->get_label_widget())->set_markup(_("<b>TCB Parameter</b>"));
 	widgetBox->pack_start(*tcbFrame, false, false, 0);
@@ -205,7 +200,7 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	tcbTable->attach(*tensionLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	tcbTable->attach(*spin_tension, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	Gtk::Label *continuityLabel = manage(new Gtk::Label(_("_Continuity"), true));
+	Gtk::Label *continuityLabel = manage(new Gtk::Label(_("Continuit_y"), true));
 	continuityLabel->set_alignment(0, 0.5);
 	continuityLabel->set_mnemonic_widget(*spin_continuity);
 	spin_continuity->set_alignment(1);
@@ -226,8 +221,6 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	tcbTable->attach(*temporalTensionLabel, 0, 1, 3, 4, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	tcbTable->attach(*spin_temporal_tension, 1, 2, 3, 4, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
-	show_all();
-	hide();
 	set_canvas(canvas);
 }
 
@@ -269,13 +262,10 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 
 	before_options->set_value((Waypoint::Interpolation)waypoint.get_before());
 	after_options->set_value((Waypoint::Interpolation)waypoint.get_after());
-
-	adj_tension->set_value(waypoint.get_tension());
-	adj_continuity->set_value(waypoint.get_continuity());
-	adj_bias->set_value(waypoint.get_bias());
-	adj_temporal_tension->set_value(waypoint.get_temporal_tension());
-
+	
+	update_tcb_params_visibility();
 }
+
 const synfig::Waypoint &
 Widget_Waypoint::get_waypoint()const
 {
@@ -294,5 +284,27 @@ Widget_Waypoint::get_waypoint()const
 	return waypoint;
 }
 
+void
+Widget_Waypoint::config_tcb_params(bool show_params)
+{
+	if (show_params) {
+		// set the adjustment value
+		adj_tension->set_value(waypoint.get_tension());
+		adj_continuity->set_value(waypoint.get_continuity());
+		adj_bias->set_value(waypoint.get_bias());
+		adj_temporal_tension->set_value(waypoint.get_temporal_tension());
+	}
 
+	tcbFrame->set_visible(show_params);
+}
+void
+Widget_Waypoint::update_tcb_params_visibility()
+{
+	if (
+		(Waypoint::Interpolation)before_options->get_value() == Interpolation::INTERPOLATION_TCB ||
+		(Waypoint::Interpolation)after_options->get_value() == Interpolation::INTERPOLATION_TCB)
+		config_tcb_params(true);
+	else
+		config_tcb_params(false);
+}
 

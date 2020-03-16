@@ -9,13 +9,9 @@ from lxml import etree
 import settings
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
-from common.misc import is_animated, get_frame
-from common.Layer import Layer
 from common.Param import Param
 from sources.image import add_image_asset
 from shapes.rectangle import to_Synfig_axis
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from synfig.animation import print_animation
 sys.path.append("..")
 
 

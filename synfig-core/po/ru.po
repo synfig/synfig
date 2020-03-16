@@ -4,11 +4,11 @@
 # 
 # Translators:
 # Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2010
-# AlexL <loginov.alex.valer@gmail.com>, 2015,2018-2019
+# AlexL <loginov.alex.valer@gmail.com>, 2015,2018-2020
 # Artem Krosheninnikov <feeblehamster@gmail.com>, 2011
 # genete <genetita@gmail.com>, 2011
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011, 2012
-# morevnaproject <ksee.zelgadis@gmail.com>, 2014-2016
+# morevnaproject <ksee.zelgadis@gmail.com>, 2014-2016,2020
 # morevnaproject <ksee.zelgadis@gmail.com>, 2012
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011-2012
 # Oleg Gordeev <Retro47@Yandex.ru>, 2011
@@ -19,9 +19,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2020-02-08 22:26+0700\n"
-"PO-Revision-Date: 2020-02-08 15:26+0000\n"
-"Last-Translator: AlexL <loginov.alex.valer@gmail.com>\n"
+"POT-Creation-Date: 2020-02-14 22:06+0700\n"
+"PO-Revision-Date: 2020-03-04 18:25+0000\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/morevnaproject/synfig/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1015,12 +1015,12 @@ msgstr "Ошибка при чтении  BITMAP::INFOHEADER из %s"
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:170
 #, c-format
 msgid "Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %zu)"
-msgstr ""
+msgstr "Плохой BITMAP::FILEHEADER в %s. (bfOffsetBits=%d, должно быть %zu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:178
 #, c-format
 msgid "Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %zu)"
-msgstr ""
+msgstr "Плохой BITMAP::INFOHEADER в %s. (biSize=%d, должно быть %zu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:196
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:197
@@ -1358,7 +1358,7 @@ msgstr "Плоская остановка"
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:781
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:792
 msgid "Inner Rounded Stop"
-msgstr ""
+msgstr "Внутренняя закруглённая остановка"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:700
 #: ../src/modules/mod_geometry/advanced_outline.cpp:711
@@ -1367,7 +1367,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:782
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:793
 msgid "Off-Peak Stop"
-msgstr ""
+msgstr "Незаострённая остановка"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:703
 msgid "Tip Type at End"
@@ -2611,17 +2611,17 @@ msgstr "Является видимым только слой со специа�
 
 #: ../src/synfig/layers/layer_switch.cpp:103
 msgid "Active Layer Depth"
-msgstr ""
+msgstr "Глубина активного слоя"
 
 #: ../src/synfig/layers/layer_switch.cpp:104
 msgid ""
-"Uses when layer name is empty. Only layer with specified depth are visible"
-msgstr ""
+"Used when layer name is empty. Only layer with specified depth is visible"
+msgstr "Используется, когда имя слоя пусто. Видны только слои с указанной глубиной"
 
 #: ../src/synfig/loadcanvas.cpp:138
 #, c-format
 msgid "Cannot find canvas for delete '%s'"
-msgstr ""
+msgstr "Не удаётся найти холст для удаления '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:165
 #, c-format
@@ -2934,27 +2934,27 @@ msgstr "Не удалось открыть файл"
 #: ../src/synfig/main.cpp:142
 #, c-format
 msgid "API Version mismatch (LIB:%zu, PROG:%zu)"
-msgstr ""
+msgstr "Несоответствие версии API (БИБ-КА:%zu, ПРОГРАММА:%zu)"
 
 #: ../src/synfig/main.cpp:147
 #, c-format
 msgid "Size of Vector mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Несоответствие размера вектора (приложение:%zu, биб-ка:%zu)"
 
 #: ../src/synfig/main.cpp:152
 #, c-format
 msgid "Size of Color mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Несоответствие размера цвета (приложение:%zu, биб-ка:%zu)"
 
 #: ../src/synfig/main.cpp:157
 #, c-format
 msgid "Size of Canvas mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Несоответствие размера холста (приложение:%zu, биб-ка:%zu)"
 
 #: ../src/synfig/main.cpp:162
 #, c-format
 msgid "Size of Layer mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Несоответствие размера слоя (приложение:%zu, биб-ка:%zu)"
 
 #: ../src/synfig/main.cpp:244
 msgid "Starting Subsystem \"Sound\""
@@ -3022,11 +3022,11 @@ msgstr "Невозможно инициализировать подсистем
 
 #: ../src/synfig/main.cpp:318
 msgid "Starting Subsystem \"Thread Pool\""
-msgstr ""
+msgstr "Запускается подсистема \"Пул потоков\""
 
 #: ../src/synfig/main.cpp:320
 msgid "Unable to initialize subsystem \"Thread Pool\""
-msgstr ""
+msgstr "Невозможно инициализировать подсистему \"Пул потоков\""
 
 #: ../src/synfig/main.cpp:356 ../src/synfig/main.cpp:357
 #, c-format
@@ -3220,11 +3220,11 @@ msgstr "Cobra (аппаратные средства)"
 
 #: ../src/synfig/rendering/software/rendererdraftsw.cpp:106
 msgid "Cobra Draft (software)"
-msgstr "Cobra Draft (програмное обеспечение)"
+msgstr "Cobra Черновик (программный)"
 
 #: ../src/synfig/rendering/software/rendererlowressw.cpp:81
 msgid "Cobra LowRes (software)"
-msgstr "Cobra LowRes (програмное обеспечение)"
+msgstr "Cobra LowRes (программный)"
 
 #: ../src/synfig/rendering/software/renderersafe.cpp:58
 msgid "Cobra (safe) - very slow"
@@ -3232,11 +3232,11 @@ msgstr "Cobra (безопасно) - очень медленно"
 
 #: ../src/synfig/rendering/software/renderersw.cpp:79
 msgid "Cobra (software)"
-msgstr "Cobra (програмное обеспечение)"
+msgstr "Cobra (программный)"
 
 #: ../src/synfig/rendering/software/rendererpreviewsw.cpp:80
 msgid "Cobra Preview (software)"
-msgstr ""
+msgstr "Cobra Предпросмотр (програмное обеспечение)"
 
 #: ../src/synfig/savecanvas.cpp:438
 #, c-format
@@ -3268,7 +3268,7 @@ msgstr "Не поддерживаемый метод визуализации"
 
 #: ../src/synfig/target_cairo.cpp:184 ../src/synfig/target_cairo_tile.cpp:264
 #: ../src/synfig/target_scanline.cpp:466 ../src/synfig/target_tile.cpp:373
-msgid "Caught string :"
+msgid "Caught string: "
 msgstr "Пойманная строка:"
 
 #: ../src/synfig/target_cairo.cpp:189 ../src/synfig/target_cairo_tile.cpp:269
@@ -3299,8 +3299,8 @@ msgid "Bad surface: %s"
 msgstr "Плохая поверхность: %s"
 
 #: ../src/synfig/target_cairo_tile.cpp:168 ../src/synfig/target_tile.cpp:279
-msgid "add_tile():Unable to put surface on target"
-msgstr "add_tile():Не удается положить поверхность на цель"
+msgid "add_tile(): Unable to put surface on target"
+msgstr "add_tile(): Не удается положить поверхность на цель"
 
 #: ../src/synfig/target_cairo_tile.cpp:226
 msgid "Can't start frame"
@@ -3622,7 +3622,7 @@ msgid "Local Length Scale"
 msgstr "Шкала локальной длины"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:603
-msgid "The scale of the bone aligned its length"
+msgid "The scale of the bone aligned to its length"
 msgstr "Масштаб кости соответствует её длине"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:607

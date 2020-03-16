@@ -875,6 +875,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 void
 Widget_Curves::delete_selected()
 {
+	Action::PassiveGrouper group(canvas_interface->get_instance().get(), _("Remove Waypoints"));
 	for (ChannelPoint *cp : channel_point_sd.get_selected_items()) {
 		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 		synfig::waypoint_collect(waypoint_set, cp->time_point.get_time(), cp->curve_it->value_desc.get_value_node());

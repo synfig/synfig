@@ -11,7 +11,7 @@ from lxml import etree
 import settings
 import common
 import synfig.group
-from synfig.animation import modify_bool_animation, to_Synfig_axis, is_animated, get_bool_at_frame, get_vector_at_frame, print_animation
+from synfig.animation import modify_bool_animation, to_Synfig_axis, is_animated, get_bool_at_frame, get_vector_at_frame
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.value import gen_properties_value
@@ -172,7 +172,7 @@ class Param:
         If this parameter is not animated, it generates dummy waypoints and
         animates this parameter
         """
-        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale"}:   # This will never happen, can remove this latter
+        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale", "circle_radius"}:   # This will never happen, can remove this latter
             self.dimension = 2
 
         # Check if we are dealing with convert methods
@@ -206,7 +206,7 @@ class Param:
         """
         Internal private method for animating
         """
-        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale"}:
+        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale", "circle_radius"}:
             self.dimension = 2
 
         # Check if we are dealing with convert methods
@@ -471,6 +471,22 @@ class Param:
                 self.expression = ret_origin
                 return ret_origin, self.expression_controllers
 
+            elif self.param[0].tag == "sine":
+                self.subparams["sine"].extract_subparams()
+                angle, eff_1 = self.subparams["sine"].subparams["angle"].recur_animate("region_angle")
+                amp, eff_2 = self.subparams["sine"].subparams["amp"].recur_animate("real")
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                
+                if self.dimension == 2:
+                    ret = "mul(Math.sin(degreesToRadians({angle})), [{amp}, {amp}])"
+                else:
+                    ret = "mul(Math.sin(degreesToRadians({angle})),{amp})"
+                ret = ret.format(angle=angle,amp=amp)
+
+                self.expression = ret
+                return ret, self.expression_controllers
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -672,7 +688,7 @@ class Param:
                 if isinstance(ret, list):
                     ret[0], ret[1] = ret[0] / len(lst), ret[1] / len(lst)
                 else:
-                    ret /= len(lst)
+                    ret /= float(len(lst))
 
             elif self.param[0].tag == "weighted_average":
                 self.subparams["weighted_average"].extract_subparams()
@@ -695,7 +711,7 @@ class Param:
                 if isinstance(ret, list):
                     ret[0], ret[1] = ret[0] / den, ret[1] / den
                 else:
-                    ret /= den
+                    ret /= float(den)
 
             elif self.param[0].tag == "composite":  # Only available for vectors
                 x = self.subparams["composite"].subparams["x"].__get_value(frame)
@@ -769,6 +785,20 @@ class Param:
                 ret[1] = ret[1] + (base_value[0] * math.sin(a1) - base_value[1] * math.sin(a2)) * rls[1]
 
                 ret = [ret[0], ret[1]]
+
+            elif self.param[0].tag == "sine":
+                angle = self.subparams["sine"].subparams["angle"].__get_value(frame)
+                amp = self.subparams["sine"].subparams["amp"].__get_value(frame)
+                angle = math.radians(angle)
+                
+                if isinstance(amp, list):
+                    ret = [0, 0]
+
+                    ret[0] = math.sin(angle) * amp[0]
+                    ret[1] = math.sin(angle) * amp[1]
+                else:
+                    ret = math.sin(angle)*amp
+
 
         else:
             ret = self.get_single_value(frame)
@@ -898,6 +928,11 @@ class Param:
                 bone = self.get_bone_from_canvas(guid)
                 bone.update_frame_window(window)
                 self.subparams["bone_link"].subparams["base_value"].update_frame_window(window)
+
+            elif node.tag == "sine":
+                self.subparams["sine"].extract_subparams()
+                self.subparams["sine"].subparams["angle"].update_frame_window(window)
+                self.subparams["sine"].subparams["amp"].update_frame_window(window)
 
         if is_animated(node) == 2:
             for waypoint in node:

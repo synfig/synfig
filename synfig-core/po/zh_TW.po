@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2020-02-08 22:26+0700\n"
-"PO-Revision-Date: 2020-02-08 15:26+0000\n"
-"Last-Translator: Loren Li <loren.tw@gmail.com>\n"
+"POT-Creation-Date: 2020-02-14 22:06+0700\n"
+"PO-Revision-Date: 2020-02-20 03:47+0000\n"
+"Last-Translator: c. s. chen <cschen33.tw@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/morevnaproject/synfig/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,7 +51,7 @@ msgstr "空字集"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Text to Render"
-msgstr ""
+msgstr "要繪製的文字"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:594
 #: ../src/modules/lyr_std/shade.cpp:633
@@ -127,7 +127,7 @@ msgstr "Vertical Spacing"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Describes how close lines of text are vertically"
-msgstr ""
+msgstr "描述垂直方向上文字間的行距"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:632
 #: ../src/modules/lyr_std/shade.cpp:639
@@ -185,15 +185,15 @@ msgstr "要使用的字型檔案名稱"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:659
 msgid "Kerning"
-msgstr ""
+msgstr "緊縮"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:660
 msgid "Enables/Disables font kerning (If the font supports it)"
-msgstr ""
+msgstr "啟用/停用 字體字距調整（如果有支援）"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:664
 msgid "Sharpen Edges"
-msgstr ""
+msgstr "銳化邊緣"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:665
 msgid "Turn this off if you are going to be animating the text"
@@ -207,7 +207,7 @@ msgstr "反轉"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:735
 msgid "No face loaded, no text will be rendered."
-msgstr ""
+msgstr "未載入字型,沒有文字將會被繪製."
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:761
 msgid "Text too small, no text will be rendered."
@@ -215,7 +215,7 @@ msgstr "文字太小,不會呈現任何文字"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:785
 msgid "Unable to set face size."
-msgstr ""
+msgstr "無法設定字型大小."
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:844
 msgid "Can't parse multibyte character.\n"
@@ -389,7 +389,7 @@ msgstr "起始點"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:418
 msgid "First point of the source line"
-msgstr ""
+msgstr "來源線的第一個點"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:421
 msgid "End Point"
@@ -397,7 +397,7 @@ msgstr "結束點"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:422
 msgid "Final point of the source line"
-msgstr ""
+msgstr "來源線的最後一點"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:425
 #: ../src/modules/mod_geometry/advanced_outline.cpp:676
@@ -424,7 +424,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/freetime.cpp:59
 msgid "Free Time"
-msgstr ""
+msgstr "空閒時間"
 
 #: ../src/modules/lyr_std/freetime.cpp:60
 #: ../src/modules/lyr_std/freetime.cpp:101
@@ -703,7 +703,7 @@ msgstr "半徑"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:155
 msgid "The size of the sphere distortion"
-msgstr ""
+msgstr "球體變形的大小"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:161
 msgid "The distortion intensity (negative values inverts effect)"
@@ -960,7 +960,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/xorpattern.cpp:143
 msgid "Size of the pattern"
-msgstr ""
+msgstr "圖案尺寸"
 
 #: ../src/modules/lyr_std/zoom.cpp:65
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:239
@@ -1024,7 +1024,7 @@ msgstr ""
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:223
 msgid " (animated)"
-msgstr ""
+msgstr "（動畫）"
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:233
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:234
@@ -1074,11 +1074,11 @@ msgstr "漸層"
 
 #: ../src/modules/mod_example/metaballs.cpp:135
 msgid "Balls"
-msgstr ""
+msgstr "球"
 
 #: ../src/modules/mod_example/metaballs.cpp:139
 msgid "Radii"
-msgstr ""
+msgstr "半徑"
 
 #: ../src/modules/mod_example/metaballs.cpp:143
 msgid "Weights"
@@ -1086,11 +1086,11 @@ msgstr ""
 
 #: ../src/modules/mod_example/metaballs.cpp:147
 msgid "Gradient Left"
-msgstr ""
+msgstr "左漸變"
 
 #: ../src/modules/mod_example/metaballs.cpp:151
 msgid "Gradient Right"
-msgstr ""
+msgstr "右漸變"
 
 #: ../src/modules/mod_example/metaballs.cpp:155
 msgid "Positive Only"
@@ -1147,24 +1147,24 @@ msgstr "顏色正確"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:195
 msgid "Hue Adjust"
-msgstr ""
+msgstr "色相調整"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:199
 msgid "Brightness"
-msgstr ""
+msgstr "亮度"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:203
 msgid "Contrast"
-msgstr ""
+msgstr "對比"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:207
 msgid "Exposure Adjust"
-msgstr ""
+msgstr "曝光調整"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:211
 #: ../src/synfig/layers/layer_bitmap.cpp:180
 msgid "Gamma Adjustment"
-msgstr ""
+msgstr "伽瑪調整"
 
 #: ../src/modules/mod_filter/halftone2.cpp:62
 msgid "Halftone 2"
@@ -1298,7 +1298,7 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:692
 msgid "Tip Type at Start"
-msgstr ""
+msgstr "啟動時的提示類型"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:693
 msgid "Defines the Tip type of the first spline point when spline is unlooped"
@@ -1377,7 +1377,7 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:717
 msgid "Sharp"
-msgstr ""
+msgstr "銳利"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:718
 msgid "Rounded"
@@ -1414,7 +1414,7 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:736
 msgid "Dashed Outline"
-msgstr ""
+msgstr "虛線輪廓"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:738
 msgid "When checked outline is dashed"
@@ -1692,7 +1692,7 @@ msgstr "徑向漸層"
 #: ../src/modules/mod_gradient/radialgradient.cpp:122
 #: ../src/modules/mod_gradient/spiralgradient.cpp:122
 msgid "Center of the gradient"
-msgstr ""
+msgstr "漸變中心"
 
 #: ../src/modules/mod_gradient/spiralgradient.cpp:60
 msgid "Spiral Gradient"
@@ -1958,7 +1958,7 @@ msgstr ""
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:275
 msgid "Loop Time"
-msgstr ""
+msgstr "循環時間"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:276
 msgid "Makes the random value repeat after the given time"
@@ -1982,7 +1982,7 @@ msgstr ""
 
 #: ../src/modules/mod_particle/plant.cpp:425
 msgid "Gravity"
-msgstr ""
+msgstr "重力"
 
 #: ../src/modules/mod_particle/plant.cpp:426
 msgid "Direction in which the shoots tend to face"
@@ -1990,7 +1990,7 @@ msgstr ""
 
 #: ../src/modules/mod_particle/plant.cpp:431
 msgid "Tangential Velocity"
-msgstr ""
+msgstr "切向速度"
 
 #: ../src/modules/mod_particle/plant.cpp:432
 msgid "Amount to which shoots tend to grow along the tangent to the spline"
@@ -1998,7 +1998,7 @@ msgstr ""
 
 #: ../src/modules/mod_particle/plant.cpp:436
 msgid "Perpendicular Velocity"
-msgstr ""
+msgstr "垂直速度"
 
 #: ../src/modules/mod_particle/plant.cpp:437
 msgid ""
@@ -2073,7 +2073,7 @@ msgstr ""
 
 #: ../src/modules/mod_particle/plant.cpp:482
 msgid "Drag"
-msgstr ""
+msgstr "拖曳 "
 
 #: ../src/modules/mod_particle/plant.cpp:483
 msgid "Drag slows the growth"
@@ -2358,7 +2358,7 @@ msgstr "動態模糊"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:127
 msgid "Aperture"
-msgstr ""
+msgstr "光圈"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:128
 msgid "Shutter Time"
@@ -2562,7 +2562,7 @@ msgstr "填滿顏色的圖層"
 
 #: ../src/synfig/layers/layer_sound.cpp:59
 msgid "Sound"
-msgstr ""
+msgstr "聲音"
 
 #: ../src/synfig/layers/layer_sound.cpp:110
 msgid "Path to sound file"
@@ -2604,7 +2604,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_switch.cpp:104
 msgid ""
-"Uses when layer name is empty. Only layer with specified depth are visible"
+"Used when layer name is empty. Only layer with specified depth is visible"
 msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:138
@@ -3257,7 +3257,7 @@ msgstr ""
 
 #: ../src/synfig/target_cairo.cpp:184 ../src/synfig/target_cairo_tile.cpp:264
 #: ../src/synfig/target_scanline.cpp:466 ../src/synfig/target_tile.cpp:373
-msgid "Caught string :"
+msgid "Caught string: "
 msgstr ""
 
 #: ../src/synfig/target_cairo.cpp:189 ../src/synfig/target_cairo_tile.cpp:269
@@ -3288,7 +3288,7 @@ msgid "Bad surface: %s"
 msgstr ""
 
 #: ../src/synfig/target_cairo_tile.cpp:168 ../src/synfig/target_tile.cpp:279
-msgid "add_tile():Unable to put surface on target"
+msgid "add_tile(): Unable to put surface on target"
 msgstr ""
 
 #: ../src/synfig/target_cairo_tile.cpp:226
@@ -3611,7 +3611,7 @@ msgid "Local Length Scale"
 msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:603
-msgid "The scale of the bone aligned its length"
+msgid "The scale of the bone aligned to its length"
 msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:607
@@ -4736,7 +4736,7 @@ msgstr ""
 
 #: ../src/tool/joblistprocessor.cpp:177
 msgid "Creating the target..."
-msgstr ""
+msgstr "建立目的..."
 
 #: ../src/tool/joblistprocessor.cpp:194
 #, c-format
@@ -4817,7 +4817,7 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:94
 msgid "Synfig debug flags"
-msgstr ""
+msgstr "Synfig 除錯旗標"
 
 #: ../src/tool/optionsprocessor.cpp:94
 msgid "Show Synfig debug flags help"
@@ -4849,11 +4849,11 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:161
 msgid "Specify input filename"
-msgstr ""
+msgstr "指定輸入的檔名"
 
 #: ../src/tool/optionsprocessor.cpp:162
 msgid "Specify output filename"
-msgstr ""
+msgstr "指定輸出的檔名"
 
 #: ../src/tool/optionsprocessor.cpp:163
 msgid ""
@@ -4867,19 +4867,19 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:165
 msgid "Set the frame rate"
-msgstr ""
+msgstr "設定幀速"
 
 #: ../src/tool/optionsprocessor.cpp:166
 msgid "Render a single frame at <seconds>"
-msgstr ""
+msgstr "繪製單幀在第1"
 
 #: ../src/tool/optionsprocessor.cpp:167 ../src/tool/optionsprocessor.cpp:168
 msgid "Set the starting time"
-msgstr ""
+msgstr "設定啟動時間"
 
 #: ../src/tool/optionsprocessor.cpp:169
 msgid "Set the ending time"
-msgstr ""
+msgstr "設定結束時間"
 
 #: ../src/tool/optionsprocessor.cpp:170
 msgid "Set the physical resolution (Dots-per-inch)"
@@ -4895,7 +4895,7 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:176
 msgid "Output verbosity level"
-msgstr ""
+msgstr "輸出詳細程度階層"
 
 #: ../src/tool/optionsprocessor.cpp:177
 msgid "Quiet mode (No progress/time-remaining display)"
@@ -4915,7 +4915,7 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:182
 msgid "filename"
-msgstr ""
+msgstr "檔名"
 
 #: ../src/tool/optionsprocessor.cpp:183
 msgid "Print out specified details of the root canvas"
@@ -4923,7 +4923,7 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:183
 msgid "fields"
-msgstr ""
+msgstr "欄位"
 
 #: ../src/tool/optionsprocessor.cpp:184
 msgid "Print out the list of exported canvases in the composition"
@@ -4935,7 +4935,7 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:187
 msgid "codec"
-msgstr ""
+msgstr "編碼器"
 
 #: ../src/tool/optionsprocessor.cpp:188
 msgid "Set the bitrate for the output video"

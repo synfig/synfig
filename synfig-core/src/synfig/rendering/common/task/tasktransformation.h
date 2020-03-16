@@ -54,7 +54,7 @@ class TaskInterfaceTransformation
 {
 public:
 	virtual ~TaskInterfaceTransformation() { }
-	virtual const Transformation::Handle get_transformation() const
+	virtual Transformation::Handle get_transformation() const
 		{ return Transformation::Handle(); }
 };
 
@@ -95,7 +95,7 @@ public:
 
 	Holder<TransformationAffine> transformation;
 
-	virtual const Transformation::Handle get_transformation() const
+	virtual Transformation::Handle get_transformation() const
 		{ return transformation.handle(); }
 
 	virtual int get_pass_subtask_index() const;

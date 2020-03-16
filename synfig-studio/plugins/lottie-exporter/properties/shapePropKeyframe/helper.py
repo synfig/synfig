@@ -5,15 +5,10 @@ in Lottie format
 """
 
 import sys
-import ast
-from lxml import etree
 import settings
-from common.misc import change_axis, get_frame, is_animated, radial_to_tangent
+from common.misc import change_axis, radial_to_tangent
 from common.Vector import Vector
 from common.Param import Param
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_frame
 sys.path.append("../../")
 
 
@@ -280,6 +275,6 @@ def quadratic_to_cubic(qp0, qp1, qp2):
     """
     cp0 = qp0
     cp3 = qp2
-    cp1 = qp0 + 2/3*(qp1 - qp0)
-    cp2 = qp2 + 2/3*(qp1 - qp2)
+    cp1 = qp0 + 2/3.0*(qp1 - qp0)
+    cp2 = qp2 + 2/3.0*(qp1 - qp2)
     return cp1, cp2

@@ -98,6 +98,9 @@ public:
 	bool is_identity() const
 		{ return *this == Matrix2(); }
 
+	Matrix2& set_zero()
+		{ return *this = Matrix2(Vector(), Vector()); }
+
 	//!set_scale member function. Sets a scale matrix
 	//! @param sx Scale by X axis
 	//! @param sy Scale by Y axis
@@ -170,6 +173,8 @@ public:
 	//! @return the resulting matrix
 	Matrix2 operator+(const Matrix2 &rhs)const
 		{ return Matrix2(*this) += rhs; }
+
+	value_type det() const;
 
 	bool is_invertible()const;
 
@@ -274,6 +279,9 @@ public:
 	bool is_identity() const
 		{ return *this == Matrix3(); }
 
+	Matrix3& set_zero()
+		{ return *this = Matrix3(Vector3(), Vector3(), Vector3()); }
+		
 	//!set_scale member function. Sets a scale matrix
 	//! @param sx Scale by X axis
 	//! @param sy Scale by Y axis
@@ -373,7 +381,12 @@ public:
 
 	Matrix3& invert()
 		{ return *this = get_inverted(); }
-
+	
+	Matrix3 get_normalized_by_det() const
+		{ return Matrix3(*this).normalize_by_det(); }
+	
+	Matrix3& normalize_by_det();
+	
 	//!Get the string of the Matrix
 	//!@return String type. A string representation of the matrix
 	//!components.

@@ -53,42 +53,80 @@ TransformationAffine::create_inverted_vfunc() const
 	{ return new TransformationAffine(Matrix(matrix).invert()); }
 
 Point
-TransformationAffine::transform_vfunc(const Point &x, bool translate) const
-	{ return matrix.get_transformed(x, translate); }
+TransformationAffine::transform_vfunc(const Point &x) const
+	{ return matrix.get_transformed(x); }
+
+Matrix2
+TransformationAffine::derivative_vfunc(const Point&) const
+	{ return Matrix2(matrix.m00, matrix.m01, matrix.m10, matrix.m11); }
+
+Vector
+TransformationAffine::calc_optimal_resolution(const Matrix2 &matrix) {
+	const Real max_overscale_sqr = 1.0*4.0;
+	const Real real_precision_sqr = real_precision<Real>() * real_precision<Real>();
+	const Real real_precision_sqrsqr = real_precision_sqr * real_precision_sqr;
+	
+	const Real a = matrix.m00 * matrix.m00;
+	const Real b = matrix.m01 * matrix.m01;
+	const Real c = matrix.m10 * matrix.m10;
+	const Real d = matrix.m11 * matrix.m11;
+	Real e = fabs(matrix.det());
+	if (e < real_precision_sqr)
+		return Vector();
+	e = 1.0/e;
+	
+	const Real sum = a*d + b*c;
+	const Real ab2 = 2*a*b + real_precision_sqrsqr;
+	const Real cd2 = 2*c*d + real_precision_sqrsqr;
+	bool abgt = (ab2 >= sum);
+	bool cdgt = (cd2 >= sum);
+	if (abgt && cdgt) // when both is greater than sum select only lower of them
+		(ab2 > cd2 ? abgt : cdgt) = false;
+	
+	Vector scale;
+	if (abgt) {
+		scale[0] = sqrt(2*b)*e;
+		scale[1] = sqrt(2*a)*e;
+	} else
+	if (cdgt) {
+		scale[0] = sqrt(2*d)*e;
+		scale[1] = sqrt(2*c)*e;
+	} else {
+		const Real dif = a*d - b*c;
+		scale[0] = sqrt(dif/(a - c))*e;
+		scale[1] = sqrt(dif/(d - b))*e;
+	}
+	
+	const Real sqr = scale[0]*scale[1]*(matrix.m00 + matrix.m10)*(matrix.m01 + matrix.m11);
+	if (sqr > max_overscale_sqr)
+		scale *= sqrt(max_overscale_sqr/sqr);
+	
+	return scale[0] <= real_precision<Real>() || scale[1] <= real_precision<Real>()
+		 ? Vector() : scale;
+}
 
 Transformation::Bounds
-TransformationAffine::transform_bounds_vfunc(const Bounds &bounds) const
+TransformationAffine::transform_bounds_affine(const Matrix &matrix, const Bounds &bounds)
 {
 	if (!bounds.is_valid())
 		return Bounds();
-
-	// calculate bounds rect
-	Vector corners[] = {
-		matrix.get_transformed( bounds.rect.get_min() ),
-		matrix.get_transformed( Vector(bounds.rect.maxx, bounds.rect.miny) ),
-		matrix.get_transformed( Vector(bounds.rect.minx, bounds.rect.maxy) ),
-		matrix.get_transformed( bounds.rect.get_max() ) };
-
-	Rect rect = Rect( corners[0] )
-			 .expand( corners[1] )
-			 .expand( corners[2] )
-			 .expand( corners[3] );
-
-	// calculate units per "pixel"
-	Real upp_x0 = fabs(corners[1][0] - corners[0][0]) / (bounds.resolution[0] * bounds.rect.get_width());
-	Real upp_x1 = fabs(corners[2][0] - corners[0][0]) / (bounds.resolution[1] * bounds.rect.get_height());
-	Real upp_y0 = fabs(corners[1][1] - corners[0][1]) / (bounds.resolution[0] * bounds.rect.get_width());
-	Real upp_y1 = fabs(corners[2][1] - corners[0][1]) / (bounds.resolution[1] * bounds.rect.get_height());
-	Vector upp(
-		std::max(upp_x0, upp_x1),
-		std::max(upp_y0, upp_y1) );
-
-	if ( approximate_less_or_equal(upp[0], Real(0.0))
-	  && approximate_less_or_equal(upp[1], Real(0.0)) )
-		return Bounds();
-
-	return Bounds(rect, Vector(1.0/upp[0], 1.0/upp[1]));
+	
+	const Real kx = 1/bounds.resolution[0];
+	const Real ky = 1/bounds.resolution[1];
+	
+	return Bounds(
+		   Rect( matrix.get_transformed( Vector(bounds.rect.minx, bounds.rect.miny) ) )
+		.expand( matrix.get_transformed( Vector(bounds.rect.minx, bounds.rect.maxy) ) )
+		.expand( matrix.get_transformed( Vector(bounds.rect.maxx, bounds.rect.miny) ) )
+		.expand( matrix.get_transformed( Vector(bounds.rect.maxx, bounds.rect.maxy) ) ),
+		calc_optimal_resolution(Matrix2(
+			matrix.m00*kx, matrix.m01*kx,
+			matrix.m10*ky, matrix.m11*ky )) );
 }
+
+Transformation::Bounds
+TransformationAffine::transform_bounds_vfunc(const Bounds &bounds) const
+	{ return transform_bounds_affine(matrix, bounds); }
 
 bool
 TransformationAffine::can_merge_outer_vfunc(const Transformation &other) const

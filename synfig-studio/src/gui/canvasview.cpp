@@ -3311,12 +3311,12 @@ CanvasView::on_keyframe_description_set()
 			return;
 
 		String str(keyframe.get_description ());
-		if(!App::dialog_entry((action->get_local_name() + _(" Description")),
+		if(!App::dialog_entry(_("Set Keyframe Description"),
 					_("Description: "),
 					//action->get_local_name(),
 					str,
 					_("Cancel"),
-					_("Set")))
+					_("Ok")))
 			return;
 
 		keyframe.set_description(str);

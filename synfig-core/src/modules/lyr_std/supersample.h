@@ -54,6 +54,7 @@ private:
 	ValueBase param_width, param_height;
 	//!Parameter (bool)
 	ValueBase param_scanline, param_alpha_aware;
+
 public:
 	SuperSample();
 
@@ -61,14 +62,11 @@ public:
 
 	virtual ValueBase get_param(const String & param)const;
 
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Rect get_bounding_rect(Context context)const;
 
 	virtual Vocab get_param_vocab()const;
 
 protected:
-	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
 };
 

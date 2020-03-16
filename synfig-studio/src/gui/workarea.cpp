@@ -167,7 +167,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	dirty_trap_count(0),
 	dirty_trap_queued(0),
 	onion_skin(false),
-	background_rendering(true),
+	background_rendering(false),
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
 	allow_layer_clicks(true),

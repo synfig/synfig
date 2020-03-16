@@ -53,15 +53,6 @@ using namespace synfig;
 
 Layer_Invisible::Layer_Invisible() { }
 
-bool
-Layer_Invisible::accelerated_render(Context context, Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-	{ return context.accelerated_render(surface,quality,renddesc,cb); }
-
-
-bool
-Layer_Invisible::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-	{ return context.accelerated_cairorender(cr,quality,renddesc,cb); }
-
 rendering::Task::Handle
 Layer_Invisible::build_rendering_task_vfunc(Context context)const
 	{ return context.build_rendering_task(); }

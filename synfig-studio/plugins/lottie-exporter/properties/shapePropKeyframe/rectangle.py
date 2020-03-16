@@ -8,10 +8,8 @@ import sys
 from lxml import etree
 from common.misc import approximate_equal
 from common.Vector import Vector
-from common.Layer import Layer
-from common.Param import Param
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add, insert_dict_at, update_child_at_parent, quadratic_to_cubic
+from properties.shapePropKeyframe.helper import add, insert_dict_at, quadratic_to_cubic
 sys.path.append("../../")
 
 

@@ -51,11 +51,15 @@ public:
 
 	TransformationAffine() { }
 	explicit TransformationAffine(const Matrix &matrix): matrix(matrix) { }
+	
+	static Vector calc_optimal_resolution(const Matrix2 &matrix);
+	static Bounds transform_bounds_affine(const Matrix &matrix, const Bounds &bounds);
 
 protected:
 	virtual Transformation* clone_vfunc() const;
 	virtual Transformation* create_inverted_vfunc() const;
-	virtual Point transform_vfunc(const Point &x, bool direction) const;
+	virtual Point transform_vfunc(const Point &x) const;
+	virtual Matrix2 derivative_vfunc(const Point &x) const;
 	virtual Bounds transform_bounds_vfunc(const Bounds &bounds) const;
 	virtual bool can_merge_outer_vfunc(const Transformation &other) const;
 	virtual bool can_merge_inner_vfunc(const Transformation &other) const;
