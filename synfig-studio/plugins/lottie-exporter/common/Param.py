@@ -471,6 +471,22 @@ class Param:
                 self.expression = ret_origin
                 return ret_origin, self.expression_controllers
 
+            elif self.param[0].tag == "sine":
+                self.subparams["sine"].extract_subparams()
+                angle, eff_1 = self.subparams["sine"].subparams["angle"].recur_animate("region_angle")
+                amp, eff_2 = self.subparams["sine"].subparams["amp"].recur_animate("real")
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                
+                if self.dimension == 2:
+                    ret = "mul(Math.sin(degreesToRadians({angle})), [{amp}, {amp}])"
+                else:
+                    ret = "mul(Math.sin(degreesToRadians({angle})),{amp})"
+                ret = ret.format(angle=angle,amp=amp)
+
+                self.expression = ret
+                return ret, self.expression_controllers
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -770,6 +786,20 @@ class Param:
 
                 ret = [ret[0], ret[1]]
 
+            elif self.param[0].tag == "sine":
+                angle = self.subparams["sine"].subparams["angle"].__get_value(frame)
+                amp = self.subparams["sine"].subparams["amp"].__get_value(frame)
+                angle = math.radians(angle)
+                
+                if isinstance(amp, list):
+                    ret = [0, 0]
+
+                    ret[0] = math.sin(angle) * amp[0]
+                    ret[1] = math.sin(angle) * amp[1]
+                else:
+                    ret = math.sin(angle)*amp
+
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -898,6 +928,11 @@ class Param:
                 bone = self.get_bone_from_canvas(guid)
                 bone.update_frame_window(window)
                 self.subparams["bone_link"].subparams["base_value"].update_frame_window(window)
+
+            elif node.tag == "sine":
+                self.subparams["sine"].extract_subparams()
+                self.subparams["sine"].subparams["angle"].update_frame_window(window)
+                self.subparams["sine"].subparams["amp"].update_frame_window(window)
 
         if is_animated(node) == 2:
             for waypoint in node:
