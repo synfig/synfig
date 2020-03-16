@@ -52,7 +52,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Average, RELEASE_VERSION_1_0, "average", _("Average"))
+REGISTER_VALUENODE(ValueNode_Average, RELEASE_VERSION_1_0, "average", "Average")
 
 /* === P R O C E D U R E S ================================================= */
 

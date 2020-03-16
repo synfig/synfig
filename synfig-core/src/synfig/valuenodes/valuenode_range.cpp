@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Range, RELEASE_VERSION_0_61_07, "range", _("Range"))
+REGISTER_VALUENODE(ValueNode_Range, RELEASE_VERSION_0_61_07, "range", "Range")
 
 /* === P R O C E D U R E S ================================================= */
 

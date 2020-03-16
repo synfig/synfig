@@ -49,7 +49,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Duplicate, RELEASE_VERSION_0_61_08, "duplicate", _("Duplicate"))
+REGISTER_VALUENODE(ValueNode_Duplicate, RELEASE_VERSION_0_61_08, "duplicate", "Duplicate")
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -56,7 +56,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BoneInfluence, RELEASE_VERSION_0_62_00, "boneinfluence", _("Bone Influence"))
+REGISTER_VALUENODE(ValueNode_BoneInfluence, RELEASE_VERSION_0_62_00, "boneinfluence", "Bone Influence")
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -52,7 +52,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Stripes, RELEASE_VERSION_0_61_06, "stripes", _("Stripes"))
+REGISTER_VALUENODE(ValueNode_Stripes, RELEASE_VERSION_0_61_06, "stripes", "Stripes")
 
 /* === P R O C E D U R E S ================================================= */
 

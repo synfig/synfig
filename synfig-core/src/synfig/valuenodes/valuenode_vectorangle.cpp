@@ -49,7 +49,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_VectorAngle, RELEASE_VERSION_0_61_09, "vectorangle", _("Vector Angle"))
+REGISTER_VALUENODE(ValueNode_VectorAngle, RELEASE_VERSION_0_61_09, "vectorangle", "Vector Angle")
 
 /* === P R O C E D U R E S ================================================= */
 

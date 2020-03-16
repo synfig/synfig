@@ -49,7 +49,7 @@ using namespace boost::numeric::odeint;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Dynamic, RELEASE_VERSION_0_61_06, "dynamic", _("Dynamic"))
+REGISTER_VALUENODE(ValueNode_Dynamic, RELEASE_VERSION_0_61_06, "dynamic", "Dynamic")
 
 
 /* === P R O C E D U R E S ================================================= */

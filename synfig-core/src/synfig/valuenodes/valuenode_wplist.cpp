@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_WPList, RELEASE_VERSION_0_63_00, "wplist", _("WPList"))
+REGISTER_VALUENODE(ValueNode_WPList, RELEASE_VERSION_0_63_00, "wplist", "WPList")
 
 /* === P R O C E D U R E S ================================================= */
 

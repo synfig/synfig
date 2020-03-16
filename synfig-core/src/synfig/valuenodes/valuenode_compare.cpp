@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Compare, RELEASE_VERSION_0_62_00, "compare", _("Compare"))
+REGISTER_VALUENODE(ValueNode_Compare, RELEASE_VERSION_0_62_00, "compare", "Compare")
 
 /* === P R O C E D U R E S ================================================= */
 

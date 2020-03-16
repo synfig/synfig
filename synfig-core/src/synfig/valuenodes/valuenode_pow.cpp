@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Pow, RELEASE_VERSION_0_62_00, "power", _("Power"))
+REGISTER_VALUENODE(ValueNode_Pow, RELEASE_VERSION_0_62_00, "power", "Power")
 
 /* === P R O C E D U R E S ================================================= */
 
