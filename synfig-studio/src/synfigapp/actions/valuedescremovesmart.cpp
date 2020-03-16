@@ -50,7 +50,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueDescRemoveSmart);
 ACTION_SET_NAME(Action::ValueDescRemoveSmart,"ValueDescRemoveSmart");
-ACTION_SET_LOCAL_NAME(Action::ValueDescRemoveSmart,N_("Remove Multiple Items(Smart)"));
+ACTION_SET_LOCAL_NAME(Action::ValueDescRemoveSmart,N_("Remove Multiple Items (Smart)"));
 ACTION_SET_TASK(Action::ValueDescRemoveSmart,"remove");
 ACTION_SET_CATEGORY(Action::ValueDescRemoveSmart,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescRemoveSmart,-19);

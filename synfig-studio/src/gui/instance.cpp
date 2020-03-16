@@ -1605,7 +1605,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
 
 	Gtk::Dialog dialog(
-		"Edit Multiple Waypoints",
+		_("Edit Multiple Waypoints"),
 		true
 	);
 

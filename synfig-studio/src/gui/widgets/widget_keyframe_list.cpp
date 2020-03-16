@@ -332,10 +332,10 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			get_window()->get_origin (x_origin, y_origin);
 
 			moving_tooltip_label.set_text(
-				String(_("Time : "))
+				String(_("Time: "))
 			  + dragging_kf_time.get_string(time_model->get_frame_rate(), App::get_time_format())
 			  + "\n"
-			  + _("Old Time : ")
+			  + _("Old Time: ")
 			  + selected_kf.get_time().get_string(time_model->get_frame_rate(), App::get_time_format()) );
 
 			// Show the tooltip and move to a nice position

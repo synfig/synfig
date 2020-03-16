@@ -196,7 +196,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_distortion_twirl, "layer_distortion_twirl_icon." IMAGE_EXT, _("Twirl Layer"));
 	INIT_STOCK_ICON(layer_distortion_warp, "layer_distortion_warp_icon." IMAGE_EXT, _("Warp Layer"));
 	// Example Layers
-	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metallballs Layer"));
+	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metaballs Layer"));
 	INIT_STOCK_ICON(layer_example_simplecircle, "layer_example_simplecircle_icon." IMAGE_EXT, _("Simple Circle Layer"));
 	// Filter Layers
 	INIT_STOCK_ICON(layer_filter_clamp, "layer_filter_clamp_icon." IMAGE_EXT, _("Clamp Layer"));
@@ -208,7 +208,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_fractal_julia, "layer_fractal_julia_icon." IMAGE_EXT, _("Julia Set Layer"));
 	INIT_STOCK_ICON(layer_fractal_mandelbrot, "layer_fractal_mandelbrot_icon." IMAGE_EXT, _("Mandelbrot Set Layer"));
 	// Geometry Layers
-	INIT_STOCK_ICON(layer_geometry_checkerboard, "layer_geometry_checkerboard_icon." IMAGE_EXT, _("Checker Board Layer"));
+	INIT_STOCK_ICON(layer_geometry_checkerboard, "layer_geometry_checkerboard_icon." IMAGE_EXT, _("Checkerboard Layer"));
 	INIT_STOCK_ICON(layer_geometry_circle, "layer_geometry_circle_icon." IMAGE_EXT, _("Circle Layer"));
 	INIT_STOCK_ICON(layer_geometry_outline, "layer_geometry_outline_icon." IMAGE_EXT, _("Outline Layer"));
 	INIT_STOCK_ICON(layer_geometry_advanced_outline, "layer_geometry_advanced_outline_icon." IMAGE_EXT, _("Advanced Outline Layer"));

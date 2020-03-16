@@ -1264,9 +1264,9 @@ CanvasView::create_display_bar()
 
 	{ // Setup draft rendering mode button
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
-		render_combobox->append("Draft");
-		render_combobox->append("Preview");
-		render_combobox->append("Final");
+		render_combobox->append(_("Draft"));
+		render_combobox->append(_("Preview"));
+		render_combobox->append(_("Final"));
 		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
 		render_combobox->set_tooltip_text( _("Select rendering mode"));
 		render_combobox->set_active(1);

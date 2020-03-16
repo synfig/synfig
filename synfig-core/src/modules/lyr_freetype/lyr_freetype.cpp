@@ -612,7 +612,7 @@ Layer_Freetype::get_param_vocab(void)const
 		.set_local_name(_("Weight"))
 		.set_hint("enum")
 		.add_enum_value(200, "ultralight" ,_("Ultralight"))
-		.add_enum_value(300, "light" ,_("light"))
+		.add_enum_value(300, "light" ,_("Light"))
 		.add_enum_value(400, "normal" ,_("Normal"))
 		.add_enum_value(700, "bold" ,_("Bold"))
 		.add_enum_value(800, "ultrabold" ,_("Ultrabold"))
