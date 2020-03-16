@@ -644,8 +644,8 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 void
 Dialog_Setup::on_restore_pressed()
 {
-    App::restore_default_settings();
-	hide();
+	App::restore_default_settings();
+	refresh();
 }
 
 
@@ -893,6 +893,9 @@ Dialog_Setup::refresh()
 	
 	adj_recent_files->set_value(App::get_max_recent_files());
 
+	// Refresh the ui language
+	ui_language_combo.set_active_id(App::ui_language);
+	
 	// Refresh the time format
 	set_time_format(App::get_time_format());
 
@@ -917,6 +920,14 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the render done sound flag
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
+	
+	// Refresh the default background
+	if (App::default_background_layer_type == "none")        def_background_none.set_active();
+	if (App::default_background_layer_type == "solid_color") def_background_color.set_active();
+	if (App::default_background_layer_type == "image")       def_background_image.set_active();
+	
+	// Refresh the color of Gdk::RGBA 
+	// Not implemented
 
 	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
@@ -971,21 +982,19 @@ Dialog_Setup::refresh()
 	// Refresh the preferred Predefined size
 	size_template_combo->set_active_text(App::predefined_size);
 
-	//Refresh the preferred FPS
+	// Refresh the preferred FPS
 	adj_pref_fps->set_value(App::preferred_fps);
 
-	//Refresh the predefined FPS
+	// Refresh the predefined FPS
 	fps_template_combo->set_active_text(App::predefined_fps);
 
-	//Refresh the sequence separator
+	// Refresh the sequence separator
 	image_sequence_separator.set_text(App::sequence_separator);
 
 	// Refresh the status of the workarea_renderer
 	workarea_renderer_combo.set_active_id(App::workarea_renderer);
 
-	// Refresh the ui language
-
-	// refresh ui tooltip handle info
+	// Refresh ui tooltip handle info
 	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
 	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
 	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||

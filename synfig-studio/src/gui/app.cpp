@@ -2291,10 +2291,20 @@ void App::edit_custom_workspace_list()
 void
 App::restore_default_settings()
 {
-	synfigapp::Main::settings().set_value("pref.distance_system",               "pt");
+	ostringstream temp_time_format;
+	temp_time_format << Time::FORMAT_FRAMES;
+	synfigapp::Main::settings().set_value("pref.time_format",                    temp_time_format.str());
+
+	synfigapp::Main::settings().set_value("pref.distance_system",                "pt");
+	synfigapp::Main::settings().set_value("pref.file_history.size",              "25");
+	synfigapp::Main::settings().set_value("pref.autosave_backup",                "1");
+	synfigapp::Main::settings().set_value("pref.autosave_backup_interval",       "15000");
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks",          "1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images",         "0");
 	synfigapp::Main::settings().set_value("pref.enable_experimental_features",   "0");
+	synfigapp::Main::settings().set_value("pref.use_dark_theme",                 "0");
+	synfigapp::Main::settings().set_value("pref.show_file_toolbar",              "1");
+	synfigapp::Main::settings().set_value("pref.brushes_path",                   "");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",         DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.ui_language",                    "os_LANG");
 	synfigapp::Main::settings().set_value("pref.preferred_x_size",               "480");
@@ -2305,19 +2315,18 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.sequence_separator",             ".");
 	synfigapp::Main::settings().set_value("pref.navigator_renderer",             "");
 	synfigapp::Main::settings().set_value("pref.workarea_renderer",              "");
-	synfigapp::Main::settings().set_value("pref.use_render_done_sound",          "1");
 	synfigapp::Main::settings().set_value("pref.default_background_layer_type",  "none");
 	synfigapp::Main::settings().set_value("pref.default_background_layer_color", "1.000000 1.000000 1.000000 1.000000"); //White
-	synfigapp::Main::settings().set_value("pref.preview_background_color",       "0.742187 0.742187 0.742187 1.000000"); //X11 Gray
-
 	synfigapp::Main::settings().set_value("pref.default_background_layer_image", "");
+	synfigapp::Main::settings().set_value("pref.preview_background_color",       "0.742187 0.742187 0.742187 1.000000"); //X11 Gray
+	synfigapp::Main::settings().set_value("pref.use_render_done_sound",          "1");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar",         "1");
-	ostringstream temp;
-	temp << Duck::STRUCT_DEFAULT;
-	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag",         temp.str());
-	synfigapp::Main::settings().set_value("pref.autosave_backup",                "1");
-	synfigapp::Main::settings().set_value("pref.autosave_backup_interval",       "15000");
-	synfigapp::Main::settings().set_value("pref.image_editor_path",             "");
+
+	ostringstream temp_ui_handle_tooltip_flag;
+	temp_ui_handle_tooltip_flag << Duck::STRUCT_DEFAULT;
+	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag",         temp_ui_handle_tooltip_flag.str());
+
+	synfigapp::Main::settings().set_value("pref.image_editor_path",              "");
 }
 
 void
