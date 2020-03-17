@@ -32,6 +32,8 @@
 #include <synfig/canvas.h>
 #include <synfig/valuenode.h>
 
+#include "global_variables.h"
+
 
 /* === U S I N G =========================================================== */
 
@@ -42,31 +44,27 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
-const double Polyg_eps_max = 1;     // Sequence simplification max error
-const double Polyg_eps_mul = 0.75;  // Sequence simple thickness-multiplier error
-const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
+
+//global variables are used using namespaces defined in global_variables.h amd global_variables.cpp
 synfig::Point bottomleft(0,0);
-bool max_thickness_zero = false;
 synfig::CanvasHandle canvas;
-float unit_size;
-float h_factor = 1;
-float w_factor = 1;
+
 /* === P R O C E D U R E S ================================================= */
 
 // this function will be responsible for unit conversion and height, width tranformation
 void PreProcessSegment(studio::PointList &segment)
 {
   int size = segment.size();
-  // unit_size is for pixel to synfig unit conversion 
-  // w_factor and h_factor is scaling factors due to image layer TL and BR movement 
+  // global_variables::unit_size is for pixel to synfig unit conversion 
+  // global_variables::w_factor and global_variables::h_factor is scaling factors due to image layer TL and BR movement 
   // multiplier is for handling custom canvas settings
   // bottomleft[0] and bottomleft[1] is used to shift the image from only positive to negative - positive
-  float multiplier = unit_size/60.0;
+  float multiplier = global_variables::unit_size/60.0;
   for (int i = 0; i < size; ++i)
   {
-    segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size ) + bottomleft[0];
-    segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size ) + bottomleft[1];
-    segment[i][2] = (segment[i][2]/2.5)*max(w_factor,h_factor);
+    segment[i][0] = global_variables::w_factor *( multiplier * segment[i][0]/global_variables::unit_size ) + bottomleft[0];
+    segment[i][1] = global_variables::h_factor *( multiplier * segment[i][1]/global_variables::unit_size ) + bottomleft[1];
+    segment[i][2] = (segment[i][2]/2.5)*max(global_variables::w_factor,global_variables::h_factor);
   }
   
 }
@@ -80,7 +78,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   
   PreProcessSegment(segment);
 
-  if(max_thickness_zero)
+  if(global_variables::max_thickness_zero)
     for(int i = 0; i < segment_size; ++i)
       segment[i][2] = 1.0;
      
@@ -161,7 +159,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 
 	vn=value_node=bline_value_node=synfig::ValueNode_BLine::create(bline_point_list, canvas);
   layer->connect_dynamic_param("bline",vn);
-  layer->set_param("width",5.0/unit_size);
+  layer->set_param("width",5.0/global_variables::unit_size);
   return layer;
 }
 
@@ -321,7 +319,7 @@ SequenceSimplifier::Length SequenceSimplifier::lengthOf(UINT a, UINT aLink, UINT
   for (; curr != b; m_s->advance(old, curr)) 
   {
     d = distance2(*m_graph->getNode(curr), v, *m_graph->getNode(a));
-    if (d > std::min(m_graph->getNode(curr)->operator[](2) * Polyg_eps_mul, Polyg_eps_max)) 
+    if (d > std::min(m_graph->getNode(curr)->operator[](2) * global_variables::Polyg_eps_mul, global_variables::Polyg_eps_max)) 
     {
       res.infty();
       return res;
@@ -352,7 +350,7 @@ class SequenceConverter
   double m_penalty;
 
 public:
-  // Length construction globals (see 'lengthOf' method)
+  // Length construction global_variables (see 'lengthOf' method)
   unsigned int middle;
   std::vector<double> pars;
 
@@ -790,7 +788,7 @@ bool SequenceConverter::penalty(unsigned int a, unsigned int b, Length &len)
 
   // Confronting 4th power of error with mean polygonal thickness
   // - can be changed
-  p_max = std::min(sqrt(p_max) * m_penalty, Quad_eps_max);
+  p_max = std::min(sqrt(p_max) * m_penalty, global_variables::Quad_eps_max);
 
   // CP only integral
   p = (ellProd(CPs[0], CPs[0]) + 2 * ellProd(CPs[2], CPs[2]) +
@@ -938,7 +936,7 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
   SequenceList &singleSequences           = g.singleSequences;
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;
   double penalty                          = g.currConfig->m_penalty;
-  max_thickness_zero                      = !g.currConfig->m_maxThickness; // if any value then false otherwise 0 then true
+  global_variables::max_thickness_zero    = !g.currConfig->m_maxThickness; // if any value then false otherwise 0 then true
   unsigned int i, j, k;
 
   synfig::Point topleft = image->param_tl.get(synfig::Point());
@@ -953,11 +951,11 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
   synfig::Point q = canvas->rend_desc().get_br() - canvas->rend_desc().get_tl();
   float p = canvas->rend_desc().get_w();
   // 1 unit = p/q[0] pixels
-  unit_size = p/q[0];
+  global_variables::unit_size = p/q[0];
 
   // here scaling factors are calculated
-  h_factor = ((topleft[1] - bottomright[1]) * unit_size)/(surface.get_h());
-  w_factor = ((bottomright[0] - topleft[0]) * unit_size)/(surface.get_w());
+  global_variables::h_factor = ((topleft[1] - bottomright[1]) * global_variables::unit_size)/(surface.get_h());
+  global_variables::w_factor = ((bottomright[0] - topleft[0]) * global_variables::unit_size)/(surface.get_w());
 
 
   for (i = 0; i < singleSequences.size(); ++i) 

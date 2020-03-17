@@ -297,7 +297,8 @@ ACTIONCC = \
 VECTORIZER_HH = \
 	vectorizer/polygonizerclasses.h \
 	vectorizer/centerlinevectorizer.h \
-	vectorizer/vectorizerparameters.h
+	vectorizer/vectorizerparameters.h \
+	vectorizer/global_variables.h
 	
 VECTORIZER_CC = \
 	vectorizer/centerlinepolygonizer.cpp\
@@ -306,7 +307,8 @@ VECTORIZER_CC = \
 	vectorizer/outlinevectorizer.cpp\
 	vectorizer/centerlineadjustments.cpp\
 	vectorizer/centerlinecolors.cpp\
-	vectorizer/centerlinetostrokes.cpp
+	vectorizer/centerlinetostrokes.cpp\
+	vectorizer/global_variables.cpp
 
 
 SYNFIGAPPHH = \
