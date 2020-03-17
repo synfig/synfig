@@ -7,6 +7,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/centerlineadjustments.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/centerlinecolors.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/centerlinetostrokes.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/global_variables.cpp"
 
 )
 

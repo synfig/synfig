@@ -7,3 +7,4 @@ float global_variables::unit_size;
 float global_variables::h_factor = 1;
 float global_variables::w_factor = 1;
 bool global_variables::max_thickness_zero = false;
+

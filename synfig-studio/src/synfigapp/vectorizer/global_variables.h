@@ -8,3 +8,4 @@ class global_variables {
     static float w_factor;
     static bool max_thickness_zero;
 };
+
