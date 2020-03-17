@@ -37,33 +37,30 @@
 
 synfig::String studio::ResourceHelper::get_image_path()
 {
-#ifdef _WIN32
-#	ifdef IMAGE_DIR
-#		undef IMAGE_DIR
-#		define IMAGE_DIR "share/pixmaps"
-#	endif
-#endif
-
 #ifndef IMAGE_DIR
 #	define IMAGE_DIR "/usr/local/share/pixmaps/synfigstudio"
 #endif
 
 	std::string imagepath;
-#ifdef _WIN32
-	imagepath=App::get_base_path()+'/'+IMAGE_DIR;
-#else
-	imagepath=IMAGE_DIR;
-#endif
 	char* synfig_root=getenv("SYNFIG_ROOT");
 	if(synfig_root) {
-		imagepath=synfig_root;
-		// Only class About didn't use the synfigstudio directory when using
+		//  Only class About didn't use the synfigstudio directory when using
 		//  SYNFIG_ROOT env variable. However, if it weren't set, it would use
 		//  IMAGE_DIR builtin variable that includes "synfigstudio". It means
 		//  that that About icon is in both folders. Therefore, it is safe to
 		//  choose this path.
-		imagepath+="/share/pixmaps/synfigstudio";
+		imagepath=std::string(synfig_root)+"/share/pixmaps/synfigstudio";
 	}
+	else {
+#if defined CMAKE_BUILD
+        imagepath=App::get_base_path()+"/share/pixmaps/synfigstudio";
+#elif defined _WIN32
+        imagepath=App::get_base_path()+"/share/pixmaps";
+#else
+        imagepath=IMAGE_DIR;
+#endif
+	}
+
 	return imagepath;
 }
 
@@ -74,27 +71,21 @@ synfig::String studio::ResourceHelper::get_image_path(const synfig::String& imag
 
 synfig::String studio::ResourceHelper::get_ui_path()
 {
-#ifdef _WIN32
-# ifdef UI_DIR
-#  undef UI_DIR
-#  define UI_DIR "share/synfig/ui"
-# endif
-#endif
-
 #ifndef UI_DIR
-# define UI_DIR "/usr/local/share/synfig/ui"
+#   define UI_DIR "/usr/local/share/synfig/ui"
 #endif
 
 	std::string uipath;
-#ifdef _WIN32
-	uipath=App::get_base_path()+'/'+UI_DIR;
-#else
-	uipath=UI_DIR;
-#endif
 	char* synfig_root=getenv("SYNFIG_ROOT");
 	if(synfig_root) {
-		uipath=synfig_root;
-		uipath+="/share/synfig/ui";
+		uipath=std::string(synfig_root)+"/share/synfig/ui";
+	}
+	else {
+#if defined CMAKE_BUILD || defined _WIN32
+	    uipath=App::get_base_path()+"/share/synfig/ui";
+#else
+        uipath=UI_DIR;
+#endif
 	}
 	return uipath;
 }
