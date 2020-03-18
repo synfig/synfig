@@ -350,7 +350,7 @@ class SequenceConverter
   double m_penalty;
 
 public:
-  // Length construction global_variables (see 'lengthOf' method)
+  // Length construction globals (see 'lengthOf' method)
   unsigned int middle;
   std::vector<double> pars;
 
