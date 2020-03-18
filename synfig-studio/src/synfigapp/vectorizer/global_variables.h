@@ -23,8 +23,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_GLOBAL_VARIABLE_H
-#define __SYNFIG_APP_GLOBAL_VARIABL_H
+#ifndef __SYNFIG_APP_GLOBAL_VARIABLES_H
+#define __SYNFIG_APP_GLOBAL_VARIABLES_H
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
