@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file action_param.cpp
+/*!	\file global_variables.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -21,7 +21,7 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#include"global_variables.h"
+#include "global_variables.h"
 
 
 
