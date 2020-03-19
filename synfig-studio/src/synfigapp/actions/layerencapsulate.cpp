@@ -150,7 +150,6 @@ Action::LayerEncapsulate::lowest_depth()const
 void
 Action::LayerEncapsulate::prepare()
 {
-
 	if(!first_time())
 		return;
 
@@ -163,10 +162,13 @@ Action::LayerEncapsulate::prepare()
 
 	Layer::Handle new_layer(Layer::create("group"));
 
-	if (!description.empty()) new_layer->set_description(description);
+	if (!description.empty())
+		new_layer->set_description(description);
+
 	new_layer->set_param("canvas",child_canvas);
-        
-        new_layer->set_param("children_lock", ValueBase(children_lock));
+	ValueBase p(children_lock);
+	p.set_static(true);
+	new_layer->set_param("children_lock", p);
 
 	int target_depth(lowest_depth());
 
