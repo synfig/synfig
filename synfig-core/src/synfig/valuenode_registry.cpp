@@ -71,8 +71,10 @@ LinkableValueNode::Handle
 ValueNodeRegistry::create(const String &name, const ValueBase& x)
 {
 	// forbid creating a node if class is not registered
-	if(!ValueNodeRegistry::book().count(name))
+	if(!ValueNodeRegistry::book().count(name)) {
+		error(_("Bad name: ValueNode type name '%s' isn't registered"), name.c_str());
 		return NULL;
+	}
 
 	if (!check_type(name, x.get_type()))
 	{
