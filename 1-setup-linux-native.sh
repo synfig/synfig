@@ -37,11 +37,11 @@ elif [ -z $ID_LIKE ]; then
     if command -v dnf >/dev/null; then
         # Fedora DNF package manager
         export ID_LIKE="fedora"
-        export VERSION_ID=22
+        export VERSION_ID=23
     elif command -v yum >/dev/null; then
         # Fedora YUM package manager
         export ID_LIKE="fedora"
-        export VERSION_ID=23
+        export VERSION_ID=22
     elif which zypper >/dev/null; then
         # openSUSE package manager
         export ID_LIKE="suse opensuse"
