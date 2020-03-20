@@ -72,8 +72,8 @@ ValueNode_DotProduct::ValueNode_DotProduct(const ValueBase &value):
 		set_link("lhs",ValueNode_Const::create(Vector(Angle::cos(value.get(Angle())).get(), Angle::sin(value.get(Angle())).get())));
 		set_link("rhs",ValueNode_Const::create(Vector(1,0)));
 	}
-
-	throw Exception::BadType(value.get_type().description.local_name);
+	else
+		throw Exception::BadType(value.get_type().description.local_name);
 }
 
 LinkableValueNode*
