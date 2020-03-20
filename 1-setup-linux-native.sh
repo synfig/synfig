@@ -24,11 +24,42 @@
 
 set -e
 
+# 1 - Detect which Linux OS is in use
+echo "Detecting Linux OS..."
+
+# Check if /etc/os-release file is available
+if [ -f /etc/os-release ]; then
+    source /etc/os-release
+    echo "ID_LIKE=$ID_LIKE"
+    echo "VERSION_ID=$VERSION_ID"
+fi
+
+# Fallback whether /etc/os-release is not available
+if [ -z $ID_LIKE ]; then
+    if command -v dnf >/dev/null; then
+        # Fedora DNF package manager
+        export ID_LIKE="fedora"
+        export VERSION_ID=22
+    elif command -v yum >/dev/null; then
+        # Fedora YUM package manager
+        export ID_LIKE="fedora"
+        export VERSION_ID=23
+    elif which zypper >/dev/null; then
+        # openSUSE package manager
+        export ID_LIKE="suse opensuse"
+    elif command -v pacman >/dev/null; then
+        # Arch Linux package manager
+        export ID_LIKE="arch"
+    elif command -v apt-get >/dev/null; then
+        # Debian / Ubuntu package manager
+        export ID_LIKE="debian"
+    fi
+fi
+
+# 2 - Install the required packages
 echo "Checking dependencies..."
-if command -v dnf >/dev/null; then
-    #
-    #  Fedora >= 22
-    #
+
+if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
     PKG_LIST="git \
             intltool \
             libpng-devel \
@@ -62,15 +93,13 @@ if command -v dnf >/dev/null; then
             SDL2-devel \
             SDL2_mixer-devel \
             libxslt-devel python-devel python3-lxml"
+
     if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running dnf (you need root privileges to do that)..."
+        echo "Running dnf (root privileges are needed)..."
         sudo dnf install $PKG_LIST || true
     fi
 
-elif command -v yum >/dev/null; then
-    #
-    #  Fedora
-    #
+elif ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID <= 22]); then
     PKG_LIST="git \
             intltool \
             libpng-devel \
@@ -104,15 +133,13 @@ elif command -v yum >/dev/null; then
             SDL2-devel \
             SDL2_mixer-devel \
             libxslt-devel python-devel python3-lxml"
+
     if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running yum (you need root privileges to do that)..."
+        echo "Running yum (root privileges are needed)..."
         su -c "yum install $PKG_LIST" || true
     fi
 
-elif which zypper >/dev/null; then
-    #
-    #  OpenSUSE
-    #
+elif [ "$ID_LIKE" == "suse opensuse" ]; then
     PKG_LIST="git libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel shared-mime-info"
     PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
 
@@ -126,10 +153,7 @@ elif which zypper >/dev/null; then
         su -c "zypper install python-lxml"
     fi
 
-elif command -v pacman >/dev/null; then
-    #
-    #  Arch Linux
-    #
+elif [ "$ID_LIKE" == "arch" ]; then
     PKG_LIST="git \
             automake autoconf \
             boost \
@@ -157,15 +181,13 @@ elif command -v pacman >/dev/null; then
             shared-mime-info \
             cmake make \
             python-lxml"
-    echo "Running pacman (you need root privileges to do that)..."
+    echo "Running pacman (root privileges are needed)..."
     echo
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
-    
-elif command -v apt-get >/dev/null; then
-        if [ ! -f /etc/altlinux-release ]; then
-            #
-            #  Ubuntu/Debian
-            #
+
+elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] ; then
+    if [ ! -f /etc/altlinux-release ]; then
+            #  Debian / Ubuntu
             PKG_LIST=" \
                 build-essential \
                 autoconf automake autopoint \
@@ -188,7 +210,7 @@ elif command -v apt-get >/dev/null; then
                 imagemagick \
                 libsdl2-dev \
                 libsdl2-mixer-dev \
-                bzip2
+                bzip2 \
                 git-core \
                 libmng-dev \
                 libjack-jackd2-dev \
@@ -198,12 +220,9 @@ elif command -v apt-get >/dev/null; then
                 libxml++2.6-dev \
                 libboost-system-dev \
                 libmagick++-dev \
-                libxslt-dev python-dev python3-lxml\
-            "
+                libxslt-dev python-dev python3-lxml"
         else
-            #
             #  ALT Linux case
-            #
             PKG_LIST=" \
                 rpm-build \
                 git-core \
@@ -240,18 +259,18 @@ elif command -v apt-get >/dev/null; then
                 libglibmm-devel \
                 libsigc++2-devel \
                 libxml++2-devel \
-                libxslt-devel python-devel python3-lxml\
-            "
+                libxslt-devel python-devel python3-lxml"
         fi
-    echo "Running apt-get (you need root privileges to do that)..."
+
+    echo "Running apt-get (root privileges are needed)..."
     echo
     sudo apt-get update -qq || true
     sudo apt-get install -y -q $PKG_LIST
-
 else
     echo "WARNING: This build script does not work with package management systems other than yum, zypper, apt or pacman! You should install dependent packages manually."
     echo "REQUIRED PACKAGES: "
     echo "libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
     echo ""
 fi
+
 echo "Done."
