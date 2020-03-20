@@ -2100,7 +2100,11 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 			{
 				//menu->set_accel_group(App::ui_manager()->get_accel_group());
 				//menu->accelerate(*this);
+			#if GTK_CHECK_VERSION(3, 22, 0)
+				menu->get_submenu()->popup_at_pointer(nullptr);
+			#else
 				menu->get_submenu()->popup(button,gtk_get_current_event_time());
+			#endif
 			}
 
 			#if 0
