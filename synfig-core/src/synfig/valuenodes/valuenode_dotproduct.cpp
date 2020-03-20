@@ -138,7 +138,7 @@ ValueNode_DotProduct::get_link_vfunc(int i)const
 	case 1: return rhs_;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 bool
