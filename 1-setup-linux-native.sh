@@ -32,10 +32,8 @@ if [ -f /etc/os-release ]; then
     source /etc/os-release
     echo "ID_LIKE=$ID_LIKE"
     echo "VERSION_ID=$VERSION_ID"
-fi
-
 # Fallback whether /etc/os-release is not available
-if [ -z $ID_LIKE ]; then
+elif [ -z $ID_LIKE ]; then
     if command -v dnf >/dev/null; then
         # Fedora DNF package manager
         export ID_LIKE="fedora"
@@ -144,10 +142,11 @@ elif [ "$ID_LIKE" == "suse opensuse" ]; then
     PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
 
     if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running zypper (you need root privileges to do that)..."
+        echo "Running zypper (root privileges are needed)..."
         su -c "zypper install $PKG_LIST" || true
 
-        # Add python lxml repository -> 3rd party
+        # Add python-lxml repository -> 3rd party
+        echo "Adding third party repository for python-lxml..."
         su -c "zypper addrepo https://download.opensuse.org/repositories/devel:languages:python/openSUSE_Tumbleweed/devel:languages:python.repo"
         su -c "zypper refresh"
         su -c "zypper install python-lxml"
