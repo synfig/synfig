@@ -91,6 +91,7 @@ src/gui/docks/dock_soundwave.h
 src/gui/docks/dock_soundwave.cpp
 src/gui/docks/dock_timetrack.cpp
 src/gui/docks/dock_timetrack.h
+src/gui/docks/dock_timetrack2.cpp
 src/gui/docks/dock_toolbox.cpp
 src/gui/docks/dock_toolbox.h
 src/gui/docks/dockable.cpp
@@ -210,6 +211,7 @@ src/gui/widgets/widget_time.cpp
 src/gui/widgets/widget_time.h
 src/gui/widgets/widget_timeslider.cpp
 src/gui/widgets/widget_timeslider.h
+src/gui/widgets/widget_timetrack.cpp
 src/gui/widgets/widget_value.cpp
 src/gui/widgets/widget_value.h
 src/gui/widgets/widget_vector.cpp

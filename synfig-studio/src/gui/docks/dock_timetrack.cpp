@@ -349,20 +349,20 @@ public:
 
 /* === M E T H O D S ======================================================= */
 
-Dock_Timetrack::Dock_Timetrack():
-	Dock_CanvasSpecific("timetrack",_("Timetrack"),Gtk::StockID("synfig-timetrack")),
+Dock_Timetrack_Old::Dock_Timetrack_Old():
+	Dock_CanvasSpecific("timetrack-old",_("Timetrack (old)"),Gtk::StockID("synfig-timetrack")),
 	grid_()
 {
 	set_use_scrolled(false);
 }
 
-Dock_Timetrack::~Dock_Timetrack()
+Dock_Timetrack_Old::~Dock_Timetrack_Old()
 {
 	if (grid_) delete grid_;
 }
 
 void
-Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Timetrack_Old::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
 	LayerParamTreeStore::Model model;
 
@@ -386,11 +386,11 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	studio::LayerTree *tree_layer = dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp") );
 	assert(tree_layer);
 	tree_layer->signal_param_tree_header_height_changed().connect(
-		sigc::mem_fun(*this, &studio::Dock_Timetrack::on_update_header_height) );
+		sigc::mem_fun(*this, &studio::Dock_Timetrack_Old::on_update_header_height) );
 }
 
 void
-Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Timetrack_Old::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
 	if (grid_)
 	{
@@ -488,7 +488,7 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 }
 
 void
-Dock_Timetrack::on_update_header_height(int height)
+Dock_Timetrack_Old::on_update_header_height(int height)
 {
 	int w = 0, h = 0;
 	widget_kf_list_.get_size_request(w, h);

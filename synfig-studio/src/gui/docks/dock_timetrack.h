@@ -43,7 +43,7 @@
 
 namespace studio {
 
-class Dock_Timetrack : public Dock_CanvasSpecific
+class Dock_Timetrack_Old : public Dock_CanvasSpecific
 {
 	Gtk::HScrollbar hscrollbar_;
 	Gtk::VScrollbar vscrollbar_;
@@ -56,8 +56,8 @@ protected:
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
 public:
-	Dock_Timetrack();
-	~Dock_Timetrack();
+	Dock_Timetrack_Old();
+	~Dock_Timetrack_Old();
 
 private:
 	//! Signal handler for studio::LayerTree::signal_param_tree_header_height_changed
