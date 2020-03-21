@@ -917,6 +917,7 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
+	App::apply_gtk_settings();
 
 	// Refresh the status of the render done sound flag
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
