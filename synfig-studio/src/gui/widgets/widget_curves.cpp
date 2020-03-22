@@ -776,7 +776,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			cr->push_group();
 		}
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *_data) -> bool
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			int px = time_plot_data->get_pixel_t_coord(t);
 			Gdk::Rectangle area(
@@ -986,7 +986,7 @@ bool Widget_Curves::ChannelPointSD::find_item_at_position(int pos_x, int pos_y, 
 		size_t channels = curve_it->channels.size();
 
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *widget.time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			int px = widget.time_plot_data->get_pixel_t_coord(t);
 			for (size_t c = 0; c < channels; ++c) {
@@ -1028,7 +1028,7 @@ bool Widget_Curves::ChannelPointSD::find_items_in_rect(Gdk::Rectangle rect, std:
 		size_t channels = curve_it->channels.size();
 
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *widget.time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			int px = widget.time_plot_data->get_pixel_t_coord(t);
 			for (size_t c = 0; c < channels; ++c) {
