@@ -346,7 +346,7 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	def_background_color.set_label(_("Solid Color"));
 	def_background_color.set_group(group_def_background);
 	pi.grid->attach(def_background_color, 0, ++row, 1, 1);
-    def_background_color.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
+	def_background_color.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
 
 	Gdk::RGBA m_color;
 	m_color.set_rgba( App::default_background_layer_color.get_r(),
@@ -644,8 +644,8 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 void
 Dialog_Setup::on_restore_pressed()
 {
-    App::restore_default_settings();
-	hide();
+	App::restore_default_settings();
+	refresh();
 }
 
 
@@ -893,6 +893,9 @@ Dialog_Setup::refresh()
 	
 	adj_recent_files->set_value(App::get_max_recent_files());
 
+	// Refresh the ui language
+	ui_language_combo.set_active_id(App::ui_language);
+	
 	// Refresh the time format
 	set_time_format(App::get_time_format());
 
@@ -914,9 +917,29 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
+	App::apply_gtk_settings();
 
 	// Refresh the status of the render done sound flag
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
+	
+	// Refresh the default background
+	if (App::default_background_layer_type == "none")        def_background_none.set_active();
+	if (App::default_background_layer_type == "solid_color") def_background_color.set_active();
+	if (App::default_background_layer_type == "image")       def_background_image.set_active();
+	
+	// Refresh the colors of background and preview background buttons
+	Gdk::RGBA m_color;
+	m_color.set_rgba( App::default_background_layer_color.get_r(),
+					  App::default_background_layer_color.get_g(),
+					  App::default_background_layer_color.get_b(),
+					  App::default_background_layer_color.get_a());
+	def_background_color_button.set_rgba(m_color);
+	
+	m_color.set_rgba( App::preview_background_color.get_r(),
+					  App::preview_background_color.get_g(),
+					  App::preview_background_color.get_b(),
+					  App::preview_background_color.get_a());
+	preview_background_color_button.set_rgba(m_color);
 
 	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
@@ -971,21 +994,19 @@ Dialog_Setup::refresh()
 	// Refresh the preferred Predefined size
 	size_template_combo->set_active_text(App::predefined_size);
 
-	//Refresh the preferred FPS
+	// Refresh the preferred FPS
 	adj_pref_fps->set_value(App::preferred_fps);
 
-	//Refresh the predefined FPS
+	// Refresh the predefined FPS
 	fps_template_combo->set_active_text(App::predefined_fps);
 
-	//Refresh the sequence separator
+	// Refresh the sequence separator
 	image_sequence_separator.set_text(App::sequence_separator);
 
 	// Refresh the status of the workarea_renderer
 	workarea_renderer_combo.set_active_id(App::workarea_renderer);
 
-	// Refresh the ui language
-
-	// refresh ui tooltip handle info
+	// Refresh ui tooltip handle info
 	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
 	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
 	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
