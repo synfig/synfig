@@ -606,6 +606,7 @@ Widget_Curves::on_event(GdkEvent *event)
 		default:
 			break;
 		}
+		break;
 	case GDK_2BUTTON_PRESS:
 		if (event->button.button == 1) {
 			add_waypoint_to(event->button.x, event->button.y);
