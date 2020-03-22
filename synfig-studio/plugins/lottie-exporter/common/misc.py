@@ -85,12 +85,8 @@ def parse_position(animated, i):
                float(animated[i][0][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
 
-    elif animated.attrib["type"] == "real":
+    elif animated.attrib["type"] in {"real", "circle_radius"}:
         pos = parse_value(animated, i)
-
-    elif animated.attrib["type"] == "circle_radius":
-        pos = parse_value(animated, i)
-        pos[0] *= 2 # Diameter
 
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
@@ -114,7 +110,7 @@ def parse_position(animated, i):
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "points":
-        pos = [int(animated[i][0].attrib["value"]),
+        pos = [int(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "bool":
