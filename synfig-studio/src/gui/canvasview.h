@@ -97,7 +97,6 @@
 #include "trees/layertreestore.h"
 #include "trees/childrentreestore.h"
 #include "trees/childrentree.h"
-#include "trees/keyframetreestore.h"
 #include "trees/keyframetree.h"
 #include "widgets/widget_keyframe_list.h"
 
