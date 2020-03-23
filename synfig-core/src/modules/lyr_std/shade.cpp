@@ -694,10 +694,14 @@ Layer_Shade::build_composite_fork_task_vfunc(ContextParams /* context_params */,
 	Vector origin = param_origin.get(Vector());
 	bool invert = param_invert.get(bool());
 
+	if (!sub_task)
+		return sub_task;
+
 	rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
 	task_blur->blur.size = size;
 	task_blur->blur.type = type;
-	task_blur->sub_task() = sub_task->clone_recursive();
+	if (sub_task)
+		task_blur->sub_task() = sub_task->clone_recursive();
 
 	ColorMatrix matrix;
 	matrix *= ColorMatrix().set_replace_color(color);
