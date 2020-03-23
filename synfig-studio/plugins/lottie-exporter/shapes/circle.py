@@ -29,6 +29,7 @@ def gen_shapes_circle(lottie, layer, idx):
 
     # Radius
     radius = layer.get_param("radius")
+    radius.scale_convert_link(2)        # Lottie format expects diameter of the circle as input
     radius.animate("circle_radius")
     radius.fill_path(lottie, "s")
 
