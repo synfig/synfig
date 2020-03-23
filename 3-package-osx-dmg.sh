@@ -199,8 +199,8 @@ mkapp()
 	mkdir -p "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/"
 	rsync -av --exclude "__pycache__" "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/" "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/"
 	pushd "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/" > /dev/null
-	mkdir -p ../../../../../../lib/python3.6/site-packages
-	ln -sf ../../../../../../lib/python3.6/site-packages site-packages
+	mkdir -p ../../../../../../lib/python${PYTHON_VERSION}/site-packages
+	ln -sf ../../../../../../lib/python${PYTHON_VERSION}/site-packages site-packages
 	popd > /dev/null
 	rsync -av --exclude "__pycache__" /usr/local/lib/python${PYTHON_VERSION}/site-packages/lxml* "${APPCONTENTS}/lib/python${PYTHON_VERSION}/site-packages/"
 	#cp -R "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python3.3" "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/"
