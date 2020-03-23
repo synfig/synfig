@@ -145,9 +145,9 @@ protected:
 	using Gtk::TreeModel::unref_node_vfunc;
 
 	virtual void  set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
-	virtual Gtk::TreeModelFlags get_flags_vfunc ();
-	virtual int   get_n_columns_vfunc ();
-	virtual GType get_column_type_vfunc (int index);
+	virtual Gtk::TreeModelFlags get_flags_vfunc () const;
+	virtual int   get_n_columns_vfunc () const;
+	virtual GType get_column_type_vfunc (int index) const;
 	virtual bool  iter_next_vfunc (const iterator& iter, iterator& iter_next) const;
 	virtual bool  get_iter_vfunc (const Gtk::TreeModel::Path& path, iterator& iter_next)const;
 	virtual bool  iter_nth_root_child_vfunc (int n, iterator& iter)const;

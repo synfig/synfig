@@ -384,19 +384,19 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 }
 
 Gtk::TreeModelFlags
-KeyframeTreeStore::get_flags_vfunc ()
+KeyframeTreeStore::get_flags_vfunc () const
 {
 	return Gtk::TREE_MODEL_LIST_ONLY;
 }
 
 int
-KeyframeTreeStore::get_n_columns_vfunc ()
+KeyframeTreeStore::get_n_columns_vfunc () const
 {
 	return model.size();
 }
 
 GType
-KeyframeTreeStore::get_column_type_vfunc (int index)
+KeyframeTreeStore::get_column_type_vfunc (int index) const
 {
 	return model.types()[index];
 }
