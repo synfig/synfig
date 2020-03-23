@@ -462,6 +462,7 @@ bool SelectDragHelper<T>::process_key_release_event(GdkEventKey* event)
 			signal_redraw_needed().emit();
 			return true;
 		}
+		break;
 	}
 	case GDK_KEY_Up:
 	case GDK_KEY_Down:
@@ -473,6 +474,7 @@ bool SelectDragHelper<T>::process_key_release_event(GdkEventKey* event)
 			dragging_started_by_key = false;
 			return true;
 		}
+		break;
 	}
 	case GDK_KEY_Shift_L:
 	case GDK_KEY_Shift_R: {
