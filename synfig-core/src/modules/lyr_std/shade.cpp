@@ -65,12 +65,7 @@ using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
 
-/*#define TYPE_BOX			0
-#define TYPE_FASTGUASSIAN	1
-#define TYPE_CROSS			2
-#define TYPE_GAUSSIAN		3
-#define TYPE_DISC			4
-*/
+#define DONT_BLUR_TYPE -1
 
 /* -- G L O B A L S --------------------------------------------------------- */
 
@@ -197,6 +192,7 @@ Layer_Shade::get_param_vocab(void)const
 		.set_local_name(_("Type"))
 		.set_description(_("Type of blur to use"))
 		.set_hint("enum")
+		.add_enum_value(DONT_BLUR_TYPE,"none",_("Don't blur"))
 		.add_enum_value(Blur::BOX,"box",_("Box Blur"))
 		.add_enum_value(Blur::FASTGAUSSIAN,"fastgaussian",_("Fast Gaussian Blur"))
 		.add_enum_value(Blur::CROSS,"cross",_("Cross-Hatch Blur"))
@@ -249,12 +245,6 @@ Layer_Shade::build_composite_fork_task_vfunc(ContextParams /* context_params */,
 	if (!sub_task)
 		return sub_task;
 
-	rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
-	task_blur->blur.size = size;
-	task_blur->blur.type = type;
-	if (sub_task)
-		task_blur->sub_task() = sub_task->clone_recursive();
-
 	ColorMatrix matrix;
 	matrix *= ColorMatrix().set_replace_color(color);
 	if (invert)
@@ -262,7 +252,19 @@ Layer_Shade::build_composite_fork_task_vfunc(ContextParams /* context_params */,
 
 	rendering::TaskPixelColorMatrix::Handle task_colormatrix(new rendering::TaskPixelColorMatrix());
 	task_colormatrix->matrix = matrix;
-	task_colormatrix->sub_task() = task_blur;
+
+	if (param_type == DONT_BLUR_TYPE) {
+		if (sub_task)
+			task_colormatrix->sub_task() = sub_task->clone_recursive();
+	} else {
+		rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
+		task_blur->blur.size = size;
+		task_blur->blur.type = type;
+		if (sub_task)
+			task_blur->sub_task() = sub_task->clone_recursive();
+
+		task_colormatrix->sub_task() = task_blur;
+	}
 
 	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
 	task_transformation->transformation->matrix.set_translate(origin);
