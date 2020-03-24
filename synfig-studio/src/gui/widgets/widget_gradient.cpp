@@ -228,7 +228,7 @@ Widget_Gradient::popup_menu(float x)
 		menu->append(*item);
 	}
 
-	menu->popup(0,0);
+	menu->popup(0, gtk_get_current_event_time());
 }
 
 void
