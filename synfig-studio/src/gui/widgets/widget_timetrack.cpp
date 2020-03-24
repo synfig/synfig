@@ -847,6 +847,7 @@ synfig::Time Widget_Timetrack::compute_scaled_time(const Widget_Timetrack::Waypo
 }
 
 Widget_Timetrack::RowInfo::RowInfo()
+	: geometry{0,0}
 {
 }
 
