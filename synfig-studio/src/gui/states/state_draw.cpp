@@ -131,6 +131,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	ValueNode_BLine::Handle last_stroke;
 	synfig::String last_stroke_id;
+	ValueNode::Handle last_value_node_origin;
 
 	Gtk::Menu menu;
 
@@ -141,13 +142,15 @@ class studio::StateDraw_Context : public sigc::trackable
 	void fill_last_stroke();
 	Smach::event_result fill_last_stroke_and_unselect_other_layers();
 
-	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline, std::list<synfig::WidthPoint> wplist, bool loop_bline_flag,float radius);
-	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
+	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline, std::list<synfig::WidthPoint> wplist, bool loop_bline_flag, float radius, ValueNode::Handle& value_node_origin);
+	Smach::event_result new_region(std::list<synfig::BLinePoint> bline, synfig::Real radius, ValueNode::Handle& value_node_origin);
 
 	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop);
 	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool complete_loop);
 	void reverse_bline(std::list<synfig::BLinePoint> &bline);
 	void reverse_wplist(std::list<synfig::WidthPoint> &wplist);
+
+	bool link_layer_origin(Layer::Handle& layer, ValueNode::Handle &value_node) const;
 
 	//Toolbox settings
 	synfigapp::Settings& settings;
@@ -244,6 +247,11 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
+	// link origins
+	Gtk::Label link_origins_label;
+	Gtk::CheckButton layer_link_origins_checkbutton;
+	Gtk::HBox link_origins_box;
+
 	// auto export
 	Gtk::Label auto_export_label;
 	Gtk::CheckButton auto_export_checkbutton;
@@ -299,6 +307,9 @@ public:
 
 	bool get_layer_advanced_outline_flag()const { return layer_advanced_outline_togglebutton.get_active(); }
 	void set_layer_advanced_outline_flag(bool x) { return layer_advanced_outline_togglebutton.set_active(x); }
+
+	bool get_layer_link_origins_flag()const { return layer_link_origins_checkbutton.get_active(); }
+	void set_layer_link_origins_flag(bool x) { return layer_link_origins_checkbutton.set_active(x); }
 
 	bool get_auto_export_flag()const { return auto_export_checkbutton.get_active(); }
 	void set_auto_export_flag(bool x) { return auto_export_checkbutton.set_active(x); }
@@ -455,6 +466,11 @@ StateDraw_Context::load_settings()
 		else
 			set_layer_advanced_outline_flag(true);
 
+		if(settings.get_value("draw.layer_link_origins",value) && value=="0")
+			set_layer_link_origins_flag(false);
+		else
+			set_layer_link_origins_flag(true);
+
 		if(settings.get_value("draw.auto_export",value) && value=="1")
 			set_auto_export_flag(true);
 		else
@@ -536,6 +552,7 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.region",get_layer_region_flag()?"1":"0");
 		settings.set_value("draw.outline",get_layer_outline_flag()?"1":"0");
 		settings.set_value("draw.advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
+		settings.set_value("draw.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
 		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
 		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
 		settings.set_value("draw.feather",feather_dist.get_value().get_string());
@@ -760,7 +777,15 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 
-	// 17, auto export
+	// 17, link origins
+	link_origins_label.set_label(_("Link Origins"));
+	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+	link_origins_box.pack_start(link_origins_label);
+	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
+	link_origins_box.set_sensitive(false);
+
+	// 18, auto export
 	auto_export_label.set_label(_("Auto Export"));
 	auto_export_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
@@ -873,9 +898,13 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	options_table.attach(feather_dist,
 		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
-	// 17, auto export
-	options_table.attach(auto_export_box,
+	// 17, link origins
+	options_table.attach(link_origins_box,
 		0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	// 18, auto export
+	options_table.attach(auto_export_box,
+		0, 2, 19, 20, Gtk::FILL, Gtk::FILL, 0, 0
 		);
 
 	// fine-tune options layout
@@ -1236,14 +1265,21 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		return Smach::RESULT_OK;
 	}
 
-	if(region_flag)
-		return new_region(bline,radius);
+	ValueNode::Handle value_node_origin = nullptr;
+	int layers_to_create = get_layer_region_flag() +
+			get_layer_outline_flag() +
+			get_layer_advanced_outline_flag();
+	if (get_layer_link_origins_flag() && layers_to_create > 1)
+		value_node_origin = ValueNode_Const::create(Vector());
 
-	return new_bline(bline,wplist,loop_bline_flag,radius);
+	if(region_flag)
+		return new_region(bline,radius,value_node_origin);
+
+	return new_bline(bline,wplist,loop_bline_flag,radius,value_node_origin);
 }
 
 Smach::event_result
-StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool loop_bline_flag,float radius)
+StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool loop_bline_flag,float radius,ValueNode::Handle &value_node_origin)
 {
 	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
@@ -1495,6 +1531,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 
 	last_stroke=value_node;
 	last_stroke_id=get_id();
+	last_value_node_origin = value_node_origin;
 
 	{
 		// Create the layer(s)
@@ -1665,6 +1702,18 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				return Smach::RESULT_ERROR;
 			}
 			layer_list.push_back(layer);
+
+			// only link the outline's origin parameter if the option is selected and we're creating more than one layer
+			if (value_node_origin)
+			{
+				bool linked = link_layer_origin(layer, value_node_origin);
+				if (!linked)
+				{
+					group.cancel();
+					get_canvas_view()->get_ui_interface()->error(_("Unable to create Outline layer"));
+					return Smach::RESULT_ERROR;
+				}
+			}
 		}
 		// Advanced Outline
 		if(layer2)
@@ -1705,6 +1754,18 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				return Smach::RESULT_ERROR;
 			}
 			layer_list.push_back(layer2);
+
+			// only link the advanced outline's origin parameter if the option is selected and we're creating more than one layer
+			if (value_node_origin)
+			{
+				bool linked = link_layer_origin(layer2, value_node_origin);
+				if (!linked)
+				{
+					group.cancel();
+					get_canvas_view()->get_ui_interface()->error(_("Unable to create Advanced Outline layer"));
+					return Smach::RESULT_ERROR;
+				}
+			}
 		}
 		get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
 	}
@@ -1878,7 +1939,7 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 #endif	// _DEBUG
 
 Smach::event_result
-StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real radius)
+StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real radius, ValueNode::Handle &value_node_origin)
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Define Region"));
@@ -2417,6 +2478,18 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			group.cancel();
 			return Smach::RESULT_ERROR;
 		}
+
+		// only link the region's origin parameter if the option is selected and we're creating more than one layer
+		if (value_node_origin)
+		{
+			bool linked = link_layer_origin(layer, value_node_origin);
+			if (!linked) {
+				group.cancel();
+				throw String(_("Unable to create Region layer"));
+				return Smach::RESULT_ERROR;
+			}
+		}
+
 		get_canvas_view()->get_selection_manager()->set_selected_layer(layer);
 	}
 
@@ -2851,6 +2924,24 @@ StateDraw_Context::reverse_wplist(std::list<synfig::WidthPoint> &wplist)
 		iter->reverse();
 }
 
+bool StateDraw_Context::link_layer_origin(Layer::Handle& layer, ValueNode::Handle& value_node) const
+{
+	synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
+	assert(action);
+
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",get_canvas_interface());
+	action->set_param("layer",layer);
+	if(!action->set_param("param",String("origin")))
+		synfig::error("LayerParamConnect didn't like \"param\"");
+	if(!action->set_param("value_node",value_node))
+		synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+	if(!get_canvas_interface()->get_instance()->perform_action(action))
+		return false;
+	return true;
+}
+
 
 Smach::event_result
 StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
@@ -2905,6 +2996,16 @@ StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 		group.cancel();
 		return Smach::RESULT_OK;
 	}
+
+	if (last_value_node_origin)
+	{
+		bool linked = link_layer_origin(layer, last_value_node_origin);
+		if (!linked) {
+			group.cancel();
+			get_canvas_view()->get_ui_interface()->error(_("Unable to link origin for Region layer"));
+			return Smach::RESULT_ERROR;
+		}
+	}
 	get_canvas_view()->get_selection_manager()->set_selected_layer(layer);
 	return Smach::RESULT_OK;
 }
@@ -2937,4 +3038,13 @@ StateDraw_Context::toggle_layer_creation()
 	layer_region_flag = get_layer_region_flag();
 	layer_outline_flag = get_layer_outline_flag();
 	layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+
+	// link origins
+	if (get_layer_region_flag() +
+		get_layer_outline_flag() +
+		get_layer_advanced_outline_flag() >= 2)
+		{
+			link_origins_box.set_sensitive(true);
+		}
+	else link_origins_box.set_sensitive(false);
 }
