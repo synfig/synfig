@@ -1764,7 +1764,7 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	item->show();
 	menu.append(*item);
 
-	menu.popup(0,0);
+	menu.popup(0, gtk_get_current_event_time());
 }
 
 void
@@ -1803,7 +1803,8 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 		item->show();
 		menu.append(*item);
 	}
-	menu.popup(0,0);
+
+	menu.popup(0, gtk_get_current_event_time());
 }
 
 void
@@ -1963,7 +1964,7 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 	item->show();
 	menu.append(*item);
 
-	menu.popup(0,0);
+	menu.popup(0, gtk_get_current_event_time());
 }
 
 void
