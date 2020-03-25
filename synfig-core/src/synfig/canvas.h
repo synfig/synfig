@@ -114,15 +114,18 @@
  *      Added "split_radius" and "split_angle" to BLinePoint Composite
  *      Value Node
  *
- * 1.0 git
+ * 1.0: git 06a75a5
  *
  *      Added a canvas component called
  * 
- * 1.1
+ * 1.1: git a4bbdd7
  *
- *      Added gamma into a canvas rend_desc
+ *      Added gamma into a canvas rend_desc.
  * 
- * 1.2
+ *      Looped outline now uses different order 
+ *      for calculating positions of widthpoints (see #1284).
+ * 
+ * 1.2: git e2adcad
  *
  *      Added 'alpha' blend method
  * 
