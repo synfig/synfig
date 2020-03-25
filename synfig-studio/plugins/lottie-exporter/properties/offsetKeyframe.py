@@ -187,7 +187,7 @@ def calc_tangent(animated, lottie, i):
 
     # After effects only supports linear,ease-in,ease-out and constant interpolations for color
     ##### No support for TCB and clamped interpolations in color is there yet #####
-    if animated.attrib["type"] == "color":
+    if animated.attrib["type"] in {"color", "gradient"}:
         if cur_get_after in {"auto", "clamped"}:
             cur_get_after = "linear"
         if cur_get_before in {"auto", "clamped"}:
@@ -225,7 +225,7 @@ def calc_tangent(animated, lottie, i):
 
 
     ### Special case for color interpolations ###
-    if animated.attrib["type"] == "color":
+    if animated.attrib["type"] in {"color", "gradient"}:
         if cur_get_after == "linear" and next_get_before == "linear":
             return handle_color()
 

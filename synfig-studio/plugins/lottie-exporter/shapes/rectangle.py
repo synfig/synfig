@@ -46,6 +46,46 @@ def get_child_value(is_animate, child, what_type):
         return val
 
 
+def gen_custom_rectangle(lottie, idx):
+    """
+    Generates a dictionary of a rectangle which will cover the whole canvas of Synfig. This
+    will be helpful to implement linear gradient of Synfig. (Gradient ramp from Adobe AE is
+    not yet supported by lottie format)
+
+    Args:
+        lottie (dict) : The lottie generated custom rectangle will be stored in this
+        idx    (int)  : Stores the index of the rectangle layer
+
+    Returns:
+        (None)
+    """
+    index = Count()
+    lottie["ty"] = "rc"     # Type: rectangle
+    lottie["p"] = {}        # Position of rectangle
+    lottie["d"] = settings.DEFAULT_DIRECTION
+    lottie["s"] = {}        # Size of rectangle
+    lottie["ix"] = idx      # setting the index
+    lottie["r"] = {}        # Rounded corners of rectangle
+
+    bevel = 0
+    gen_properties_value(lottie["r"], bevel, index.inc(), settings.DEFAULT_ANIMATED, settings.NO_INFO)
+
+    # Set the position of the rectangle to the center of the Synfig canvas
+    p1, p2 = settings.lottie_format["w"] / 2, settings.lottie_format["h"] / 2
+    gen_properties_value(lottie["p"],
+                         [p1, p2],
+                         index.inc(),
+                         settings.DEFAULT_ANIMATED,
+                         settings.NO_INFO)
+
+    # Set the size of the rectangle so as to fill the canvas
+    s1, s2 = settings.lottie_format["w"], settings.lottie_format["h"]
+    gen_properties_value(lottie["s"],
+                         [s1, s2],
+                         index.inc(),
+                         settings.DEFAULT_ANIMATED,
+                         settings.NO_INFO)
+
 def gen_shapes_rectangle(lottie, layer, idx):
     """
     Generates the dictionary corresponding to shapes/rect.json

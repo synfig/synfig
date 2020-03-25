@@ -9,6 +9,7 @@ import math
 import settings
 from common.Vector import Vector
 from common.Color import Color
+from common.Gradient import Gradient
 sys.path.append("..")
 
 
@@ -28,6 +29,20 @@ def approximate_equal(a, b):
     if a < b:
         return b - a < precision
     return a - b < precision
+
+
+def real_high_precision():
+    """
+    Synfig format real high precision
+    https://github.com/synfig/synfig/blob/ae11655a9bba068543be7a5df9090958579de78e/synfig-core/src/synfig/real.h#L55
+
+    Args:
+        (None)
+
+    Returns:
+        (float) : The value of real_high_precision as described in Synfig
+    """
+    return 1e-10
 
 
 def calculate_pixels_per_unit():
@@ -169,6 +184,9 @@ def parse_position(animated, i):
         green = green ** (1/settings.GAMMA[1])
         blue = blue ** (1/settings.GAMMA[2])
         return Color(red, green, blue, alpha)
+    
+    elif animated.attrib["type"] == "gradient":
+        return Gradient(animated[i][0])
 
     return Vector(pos[0], pos[1], animated.attrib["type"])
 

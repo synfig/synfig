@@ -101,7 +101,7 @@ def gen_value_Keyframe(curve_list, animated, i):
 
     # After effects only supports linear,ease-in,ease-out and constant interpolations for color
     ##### No support for TCB and clamped interpolations in color is there yet #####
-    if animated.attrib["type"] == "color":
+    if animated.attrib["type"] == {"color", "gradient"}:
         if cur_get_after in {"auto", "clamped"}:
             cur_get_after = "linear"
         if cur_get_before in {"auto", "clamped"}:
@@ -186,5 +186,5 @@ def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
     lottie["synfig_o"] = [lottie["o"]["y"][0]]
 
     # If type is color, the tangents are already normalized
-    if animated.attrib["type"] != "color":
+    if animated.attrib["type"] not in {"color", "gradient"}:
         normalize_tangents(cur_pos, next_pos, lottie["i"], lottie["o"])

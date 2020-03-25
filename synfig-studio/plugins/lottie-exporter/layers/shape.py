@@ -8,7 +8,8 @@ from common.Count import Count
 from shapes.star import gen_shapes_star
 from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill
-from shapes.rectangle import gen_shapes_rectangle
+from shapes.rectangle import gen_shapes_rectangle, gen_custom_rectangle
+from shapes.gFill import gen_linear_gradient
 from helpers.blendMode import get_blend
 from helpers.transform import gen_helpers_transform
 sys.path.append("..")
@@ -47,9 +48,14 @@ def gen_layer_shape(lottie, layer, idx):
         gen_shapes_circle(lottie["shapes"][0], layer, index.inc())
     elif layer.get_type() in {"filled_rectangle", "rectangle"}:
         gen_shapes_rectangle(lottie["shapes"][0], layer.get_layer(), index.inc())
+    elif layer.get_type() in {"linear_gradient"}:
+        gen_custom_rectangle(lottie["shapes"][0], index.inc())
 
     lottie["shapes"].append({})  # For the fill or color
-    gen_shapes_fill(lottie["shapes"][1], layer)
+    if layer.get_type() in {"linear_gradient"}:
+        gen_linear_gradient(lottie["shapes"][1], layer, index.inc())    # yet to be implemented
+    else:
+        gen_shapes_fill(lottie["shapes"][1], layer)
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
