@@ -268,8 +268,15 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		else
 		{
 			stype=value_desc.get_value_type().description.local_name;
-			if(!value_desc.is_const())
-				stype+=" (" + value_desc.get_value_node()->get_local_name() + ")";
+			if(!value_desc.is_const()) {
+				const ValueNode::LooseHandle value_node = value_desc.get_value_node();
+				if (value_node) {
+					stype+=" (" + value_node->get_local_name() + ")";
+				} else {
+					stype+=" (> " + string(_("Invalid ValueNode")) + " <)";
+					synfig::error(_("Invalid ValueNode"));
+				}
+			}
 		}
 		x.set(stype.c_str());
 		g_value_init(value.gobj(),x.value_type());
@@ -305,12 +312,17 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			ValueNode::Handle value_node=value_desc.get_value_node();
 
 			// Setup the row's label
-			if(value_node->get_id().empty())
-				x.set(Glib::ustring((*iter)[model.name]));
-			else if(Glib::ustring((*iter)[model.name]).empty())
-				x.set(value_node->get_id());
-			else
-				x.set(Glib::ustring((*iter)[model.name])+" ("+value_node->get_id()+')');
+			if (value_node) {
+				if(value_node->get_id().empty())
+					x.set(Glib::ustring((*iter)[model.name]));
+				else if(Glib::ustring((*iter)[model.name]).empty())
+					x.set(value_node->get_id());
+				else
+					x.set(Glib::ustring((*iter)[model.name])+" ("+value_node->get_id()+')');
+			} else {
+				x.set(" (> " + string(_("Invalid ValueNode")) + " <)");
+				synfig::error(_("Invalid ValueNode"));
+			}
 		}
 
 		g_value_init(value.gobj(),x.value_type());
