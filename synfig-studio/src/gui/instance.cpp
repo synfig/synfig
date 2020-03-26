@@ -223,25 +223,128 @@ Instance::set_redo_status(bool x)
 	signal_undo_redo_status_changed()();
 }
 
+bool
+studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::vector<std::string>& args)
+{
+	OneMoment one_moment;
+
+	bool result = false;
+	String output;
+	String command = "";
+
+	// Path to python binary can be overridden
+	// with SYNFIG_PYTHON_BINARY env variable:
+	const char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
+	if(custom_python_binary) {
+		command=custom_python_binary;
+		if (!App::check_python_version(command)) {
+			output=_("Error: You need to have Python 3 installed.");
+			command="";
+		}
+	} else {
+	// Set path to python binary depending on the os type.
+	// For Windows case Python binary is expected
+	// at INSTALL_PREFIX/python/python.exe
+		std::list< String > binary_choices;
+		binary_choices.push_back("python");
+		binary_choices.push_back("python3");
+		std::list< String >::iterator iter;
+		for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
+		{
+			String python_path;
+#ifdef _WIN32
+			python_path = "\"" + App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
+#else
+			python_path = *iter;
+#endif
+			if (App::check_python_version(python_path))
+			{
+				command = python_path;
+				break;
+			}
+
+		}
+	}
+
+	if (command.empty())
+	{
+		output=_("Error: No Python 3 binary found.\n\nHint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation.");
+	} else {
+		synfig::info("Python 3 binary found: "+command);
+
+
+		// Construct the full command:
+		command = command+" \""+plugin_path+"\"";
+        for ( const auto& arg : args )
+        {
+            command += " \"" + arg + "\"";
+        }
+        command += " 2>&1";
+#ifdef _WIN32
+		// This covers the dumb cmd.exe behavior.
+		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
+		command = "\"" + command + "\"";
+#endif
+
+		FILE* pipe = popen(command.c_str(), "r");
+		if (!pipe) {
+			output = "ERROR: pipe failed!";
+		} else {
+			char buffer[128];
+			while(!feof(pipe)) {
+				if(fgets(buffer, 128, pipe) != NULL)
+						output += buffer;
+			}
+
+			if (output != "" ){
+				synfig::info(output);
+			}
+
+			int exitcode=pclose(pipe);
+
+			if (0==exitcode){
+				result=true;
+			}
+		}
+	}
+
+
+    if (!result){
+        one_moment.hide();
+        App::dialog_message_1b(
+                "Error",
+                output,
+                "details",
+                _("Close"));
+
+        one_moment.show();
+    }
+
+    return result;
+}
+
 void
-studio::Instance::run_plugin(std::string plugin_path)
+studio::Instance::run_plugin(std::string plugin_path, bool modify_canvas, std::vector<std::string> extra_args)
 {
 	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
-	String message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
-				this->get_canvas()->get_name().c_str());
+    if ( modify_canvas )
+    {
+        String message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
+                    this->get_canvas()->get_name().c_str());
 
-	String details = strprintf(_("This operation cannot be undone and all undo history will be cleared."));
+        String details = strprintf(_("This operation cannot be undone and all undo history will be cleared."));
 
-	int answer = uim->confirmation(
-				message,
-				details,
-				_("Cancel"),
-				_("Proceed"),
-				synfigapp::UIInterface::RESPONSE_OK);
+        int answer = uim->confirmation(
+                    message,
+                    details,
+                    _("Cancel"),
+                    _("Proceed"),
+                    synfigapp::UIInterface::RESPONSE_OK);
 
-	if(answer != synfigapp::UIInterface::RESPONSE_OK)
-		return;
+        if(answer != synfigapp::UIInterface::RESPONSE_OK)
+            return;
+    }
 
 	OneMoment one_moment;
 
@@ -263,9 +366,10 @@ studio::Instance::run_plugin(std::string plugin_path)
 		filename_processed = filename_original+"."+guid.get_string().substr(0,8)+".sif";
 	} while (stat(filename_processed.c_str(), &buf) != -1);
 
-	close(false);
+    if ( modify_canvas )
+        close(false);
 
-	if(canvas->count()!=1)
+	if(canvas->count() != 1 && modify_canvas)
 	{
 		one_moment.hide();
 		App::dialog_message_1b(
@@ -296,93 +400,11 @@ studio::Instance::run_plugin(std::string plugin_path)
 		outfile.close();
 		stream_in.reset();
 
+        one_moment.hide();
+        extra_args.insert(extra_args.begin(), filename_processed);
+		bool result = run_plugin_with_arguments(plugin_path, extra_args);
 
-		bool result = false;
-		String output;
-		String command = "";
-
-		// Path to python binary can be overridden
-		// with SYNFIG_PYTHON_BINARY env variable:
-		const char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
-		if(custom_python_binary) {
-			command=custom_python_binary;
-			if (!App::check_python_version(command)) {
-				output=_("Error: You need to have Python 3 installed.");
-				command="";
-			}
-		} else {
-		// Set path to python binary depending on the os type.
-		// For Windows case Python binary is expected
-		// at INSTALL_PREFIX/python/python.exe
-			std::list< String > binary_choices;
-			binary_choices.push_back("python");
-			binary_choices.push_back("python3");
-			std::list< String >::iterator iter;
-			for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
-			{
-				String python_path;
-#ifdef _WIN32
-				python_path = "\"" + App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
-#else
-				python_path = *iter;
-#endif
-				if (App::check_python_version(python_path))
-				{
-					command = python_path;
-					break;
-				}
-
-			}
-
-		}
-		if (command.empty())
-		{
-			output=_("Error: No Python 3 binary found.\n\nHint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation.");
-		} else {
-			synfig::info("Python 3 binary found: "+command);
-
-
-			// Construct the full command:
-			command = command+" \""+plugin_path+"\" \""+filename_processed+"\" 2>&1";
-#ifdef _WIN32
-			// This covers the dumb cmd.exe behavior.
-			// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
-			command = "\"" + command + "\"";
-#endif
-
-			FILE* pipe = popen(command.c_str(), "r");
-			if (!pipe) {
-				output = "ERROR: pipe failed!";
-			} else {
-				char buffer[128];
-				while(!feof(pipe)) {
-					if(fgets(buffer, 128, pipe) != NULL)
-							output += buffer;
-				}
-
-				if (output != "" ){
-					synfig::info(output);
-				}
-
-				int exitcode=pclose(pipe);
-
-				if (0==exitcode){
-					result=true;
-				}
-			}
-		}
-
-		if (!result){
-			one_moment.hide();
-			App::dialog_message_1b(
-					"Error",
-					output,
-					"details",
-					_("Close"));
-
-			one_moment.show();
-
-		} else {
+		if (result && modify_canvas){
 			// Restore file copy
 			FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream("#project"+filename_ext);
 			if (stream && filename_ext == ".sifz")
@@ -396,32 +418,36 @@ studio::Instance::run_plugin(std::string plugin_path)
 				*stream << infile.rdbuf();
 				infile.close();
 				stream.reset();
-				remove(filename_processed.c_str());
 			}
 		}
+		remove(filename_processed.c_str());
 	}
 
 	canvas=0;
 
-	bool ok = App::open_from_temporary_filesystem(tmp_filename);
-	if (!ok) {
-		synfig::error("run_plugin(): Cannot reopen file");
-		return;
-	}
 
-	etl::handle<Instance> new_instance = App::instance_list.back();
-	if (!new_instance) {
-		synfig::error("run_plugin(): Cannot retrieve new instance");
-	} else {
-		// Restore time cursor position
-		canvas = new_instance->get_canvas();
-		etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
-		if (!new_canvas_interface) {
-			synfig::error("run_plugin(): Cannot retrieve canvas interface");
-		} else {
-			new_canvas_interface->set_time(cur_time);
-		}
-	}
+    if ( modify_canvas ) {
+        one_moment.show();
+        bool ok = App::open_from_temporary_filesystem(tmp_filename);
+        if (!ok) {
+            synfig::error("run_plugin(): Cannot reopen file");
+            return;
+        }
+
+        etl::handle<Instance> new_instance = App::instance_list.back();
+        if (!new_instance) {
+            synfig::error("run_plugin(): Cannot retrieve new instance");
+        } else {
+            // Restore time cursor position
+            canvas = new_instance->get_canvas();
+            etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
+            if (!new_canvas_interface) {
+                synfig::error("run_plugin(): Cannot retrieve canvas interface");
+            } else {
+                new_canvas_interface->set_time(cur_time);
+            }
+        }
+    }
 }
 
 bool
@@ -628,6 +654,33 @@ studio::Instance::dialog_save_as()
 				msg.c_str(),
 				"details",
 				_("Close"));
+	}
+
+	return false;
+}
+
+
+bool
+studio::Instance::dialog_export()
+{
+	string filename = get_file_name();
+	Canvas::Handle canvas(get_canvas());
+
+	if (has_real_filename())
+		filename = absolute_path(filename);
+
+	// show the canvas' name if it has one, else its ID
+    std::string plugin = App::dialog_export_file(
+        (_("Please choose a file name") +
+        String(" (") +
+        (canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
+        ")"),
+        filename, ANIMATION_DIR_PREFERENCE
+    );
+	if ( !plugin.empty() )
+	{
+        run_plugin(plugin, false, {filename});
+        return true;
 	}
 
 	return false;

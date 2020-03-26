@@ -51,6 +51,8 @@ public:
 		std::string id;
 		std::string name;
 		std::string path;
+		std::string extension;
+		std::string description;
 	};
 
 	/*
@@ -66,6 +68,7 @@ public:
 private:
 
 	std::list< plugin > list_;
+	std::list< plugin > exporters_;
 
 protected:
 	
@@ -81,6 +84,8 @@ public:
 	void load_plugin( const std::string &path );
 
 	std::list< plugin > get_list() { return list_; };
+
+	std::list< plugin > get_exporters() { return exporters_; };
 
 }; // END class PluginManager
 

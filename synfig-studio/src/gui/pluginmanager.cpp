@@ -126,6 +126,22 @@ PluginManager::load_dir( const std::string &pluginsprefix )
 	}
 } // END of synfigapp::PluginManager::load_dir()
 
+namespace {
+    std::string node_contents(const xmlpp::Node* node)
+    {
+		xmlpp::Node::NodeList l = node->get_children();
+		xmlpp::Node::NodeList::iterator i = l.begin();
+		xmlpp::Node* n = *i;
+
+		const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
+
+		if(nodeText)
+			return nodeText->get_content();
+
+        return {};
+    }
+}
+
 void
 PluginManager::load_plugin( const std::string &path )
 {
@@ -137,6 +153,8 @@ PluginManager::load_plugin( const std::string &path )
 	PluginManager::plugin p;
 	std::string plugindir = dirname(path);
 	p.id=plugindir;
+
+    std::list<plugin>* target_list = &list_;
 	
 	// parse xml file
 	try
@@ -192,16 +210,22 @@ PluginManager::load_plugin( const std::string &path )
 						
 					} else if ( std::string(node->get_name()) == std::string("exec") ) {
 						
-						xmlpp::Node::NodeList l = node->get_children();
-						xmlpp::Node::NodeList::iterator i = l.begin();
-						xmlpp::Node* n = *i;
+						std::string exec = node_contents(node);
 						
-						const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
-						
-						if(nodeText)
+						if(!exec.empty())
 						{
-							p.path=plugindir+ETL_DIRECTORY_SEPARATOR+nodeText->get_content();
+							p.path=plugindir+ETL_DIRECTORY_SEPARATOR+exec;
 						}
+					} else if ( std::string(node->get_name()) == "type" ) {
+                            std::string type = node_contents(node);
+							if ( type == "exporter" )
+                            {
+                                target_list = &exporters_;
+                            }
+					} else if ( std::string(node->get_name()) == "extension" ) {
+                            p.extension = node_contents(node);
+					} else if ( std::string(node->get_name()) == "description" ) {
+                            p.description = node_contents(node);
 					}
 				}
 			} else {
@@ -215,7 +239,7 @@ PluginManager::load_plugin( const std::string &path )
 	}
 	
 	if ( p.id != "" && p.name != "" && p.path != ""){
-		list_.push_back(p);
+		target_list->push_back(p);
 	} else {
 		synfig::warning("Invalid plugin.xml file!");
 	}

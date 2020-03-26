@@ -177,6 +177,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(open, "action_doc_open_icon." IMAGE_EXT, _("Open"));
 	INIT_STOCK_ICON(save, "action_doc_save_icon." IMAGE_EXT, _("Save"));
 	INIT_STOCK_ICON(save_as, "action_doc_saveas_icon." IMAGE_EXT, _("Save As"));
+	INIT_STOCK_ICON(export, "action_doc_saveas_icon." IMAGE_EXT, _("Export"));
 	INIT_STOCK_ICON(save_all, "action_doc_saveall_icon." IMAGE_EXT, _("Save All"));
 	INIT_STOCK_ICON(redo, "action_doc_redo_icon." IMAGE_EXT, _("Redo"));
 	INIT_STOCK_ICON(undo, "action_doc_undo_icon." IMAGE_EXT, _("Undo"));
