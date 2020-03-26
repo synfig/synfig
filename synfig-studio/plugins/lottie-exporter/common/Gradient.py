@@ -110,7 +110,7 @@ class Gradient:
         ret = []
         for col in self.colors:
             pos = col[0]
-            r, g, b = col[1].red, col[1].blue, col[1].green
+            r, g, b = col[1].red, col[1].green, col[1].blue
             ret.extend([pos, r, g, b])
 
         # Alpha values of the colors to be fit here
