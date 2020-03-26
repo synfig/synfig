@@ -99,18 +99,6 @@ using namespace std;
 using namespace synfig;
 using namespace etl;
 
-/*
-class test_class {
-static int bleh;
-public:
-	test_class() { assert(!bleh); bleh++; synfig::info("test_class: initi: %d",bleh); }
-	~test_class() { assert(bleh); synfig::info("test_class: uninit: %d",bleh); bleh--; }
-};
-int test_class::bleh(0);
-
-test_class test_class_instance;
-*/
-
 /* === M A C R O S ========================================================= */
 
 #define VALUENODE_COMPATIBILITY_URL "http://synfig.org/Convert#Compatibility"
