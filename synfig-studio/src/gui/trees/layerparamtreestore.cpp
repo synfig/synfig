@@ -569,8 +569,20 @@ LayerParamTreeStore::on_value_node_child_added(synfig::ValueNode::Handle /*value
 }
 
 void
-LayerParamTreeStore::on_value_node_child_removed(synfig::ValueNode::Handle /*value_node*/,synfig::ValueNode::Handle /*child*/)
+LayerParamTreeStore::on_value_node_child_removed(synfig::ValueNode::Handle value_node, synfig::ValueNode::Handle /*child*/)
 {
+	TreeModel::iterator iter_to_remove;
+	foreach_iter([&](const TreeModel::iterator &iter) -> bool {
+		Gtk::TreeRow row = *iter;
+		synfig::ValueNode::Handle row_value_node = row[model.value_node];
+		if (row_value_node == value_node) {
+			iter_to_remove = iter;
+			return true;
+		}
+		return false;
+	});
+
+	erase(iter_to_remove);
 	rebuild();
 }
 
