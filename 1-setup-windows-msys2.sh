@@ -41,6 +41,7 @@ $ARCH-boost \
 $ARCH-cairomm \
 $ARCH-fftw \
 $ARCH-glibmm \
+$ARCH-imagemagick \
 $ARCH-libxml++2.6 \
 $ARCH-pango \
 $ARCH-gtkmm3

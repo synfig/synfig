@@ -37,6 +37,7 @@
 
 synfig::String studio::ResourceHelper::get_image_path()
 {
+
 #ifndef IMAGE_DIR
 #	define IMAGE_DIR "/usr/local/share/pixmaps/synfigstudio"
 #endif
@@ -52,10 +53,8 @@ synfig::String studio::ResourceHelper::get_image_path()
 		imagepath=std::string(synfig_root)+"/share/pixmaps/synfigstudio";
 	}
 	else {
-#if defined CMAKE_BUILD
+#if defined CMAKE_BUILD || defined _WIN32
         imagepath=App::get_base_path()+"/share/pixmaps/synfigstudio";
-#elif defined _WIN32
-        imagepath=App::get_base_path()+"/share/pixmaps";
 #else
         imagepath=IMAGE_DIR;
 #endif
