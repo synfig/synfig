@@ -990,10 +990,10 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	}
 
 	std::vector<BLinePoint> new_list;
-	int point(0);
+	size_t point(0);
 	for (int i = 0; i < points; i++)
 	{
-		new_list.push_back(*(new BLinePoint));
+		new_list.push_back(BLinePoint());
 		new_list[point].set_width(outer_width);
 		new_list[point].set_vertex(Point(radius1*Angle::cos(angle*i + offset).get() + x,
 										 radius1*Angle::sin(angle*i + offset).get() + y));
@@ -1002,7 +1002,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 		if (!regular)
 		{
-			new_list.push_back(*(new BLinePoint));
+			new_list.push_back(BLinePoint());
 			new_list[point].set_width(inner_width);
 			new_list[point].set_vertex(Point(radius2*Angle::cos(angle*i + angle/2 + offset).get() + x,
 											 radius2*Angle::sin(angle*i + angle/2 + offset).get() + y));
