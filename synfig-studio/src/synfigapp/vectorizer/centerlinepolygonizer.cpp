@@ -881,6 +881,8 @@ void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &
 	borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
 	
 	reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
+
+	delete borders;
 }
 
 
