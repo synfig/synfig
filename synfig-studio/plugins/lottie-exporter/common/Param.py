@@ -433,7 +433,6 @@ class Param:
                 return ret, self.expression_controllers
 
             elif self.param[0].tag == "bone_link":
-                import pdb; pdb.set_trace(); pass
                 self.subparams["bone_link"].extract_subparams()
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
@@ -801,7 +800,6 @@ class Param:
                     ret = link_on * switch + link_off * (1 - switch)
 
             elif self.param[0].tag == "bone_link":
-                import pdb; pdb.set_trace(); pass
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
                 ret_origin, ret_angle, lls, rls = bone.__get_value(frame)
@@ -988,7 +986,6 @@ class Param:
                 self.subparams["scale"].subparams["scalar"].update_frame_window(window)
 
             elif node.tag == "bone_link":
-                import pdb; pdb.set_trace(); pass
                 self.subparams["bone_link"].extract_subparams()
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
