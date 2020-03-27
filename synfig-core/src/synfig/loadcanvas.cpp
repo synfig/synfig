@@ -2332,13 +2332,26 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	handle<ValueNode_DIList> dilist_value_node;
 	handle<ValueNode_WeightedAverage> weightedaverage_value_node;
 
+	bool must_rotate_point_list = false;
+
 	if(element->get_name()=="bline")
 	{
 		value_node=bline_value_node=ValueNode_BLine::create(type_list, canvas);
 		if(element->get_attribute("loop"))
 		{
-			String loop=element->get_attribute("loop")->get_value();
-			bline_value_node->set_loop(is_true(loop));
+			String loop_str=element->get_attribute("loop")->get_value();
+			bool loop = is_true(loop_str);
+			bline_value_node->set_loop(loop);
+
+			xmlpp::Element *parent = element->get_parent();
+			if (loop && parent->get_name() == "param") {
+				xmlpp::Element *gran_parent = parent->get_parent();
+				if (gran_parent && gran_parent->get_name() == "layer" && gran_parent->get_attribute_value("type") == "advanced_outline") {
+					string version = gran_parent->get_attribute_value("version");
+					if (version == "0.2" || version == "0.1")
+						must_rotate_point_list = true;
+				}
+			}
 		}
 	}
 	else if(element->get_name()=="wplist")
@@ -2382,6 +2395,20 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	value_node->set_root_canvas(canvas->get_root());
 
 	xmlpp::Element::NodeList list = element->get_children();
+
+	if (must_rotate_point_list) {
+		if (list.size() > 0) {
+			while (dynamic_cast<xmlpp::Element*>(list.back()) == nullptr) {
+				list.pop_back();
+			}
+			if (list.size() > 0) {
+				xmlpp::Node * node = list.back();
+				list.pop_back();
+				list.push_front(node);
+			}
+		}
+	}
+
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 	{
 		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
