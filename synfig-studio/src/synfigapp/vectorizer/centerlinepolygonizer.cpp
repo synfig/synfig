@@ -77,7 +77,12 @@ class studio::RawBorder final : public std::vector<RawBorderPoint>
   double *m_coordinateMixedSums;
 
 public:
-  RawBorder() {}
+  RawBorder()
+	  : m_xExternal(0),
+		m_coordinateSums(nullptr),
+		m_coordinateSquareSums(nullptr),
+		m_coordinateMixedSums(nullptr)
+  {}
   ~RawBorder() {}
 
   void setXExternalPixel(int a) { m_xExternal = a; }

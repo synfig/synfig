@@ -245,11 +245,27 @@ public:
   ContourNode *m_prev;  //!< Previous node on the contour.
 
 public:
-  ContourNode() : m_attributes(0) {}
-  ContourNode(double x, double y) : m_position(x, y, 0), m_attributes(0) {}
-  ContourNode(const synfig::Point &P) : m_position(P[0], P[1], 0), m_attributes(0) {}
-  ContourNode(double x, double y, unsigned short attrib)
-      : m_position(x, y, 0), m_attributes(attrib) {}
+  ContourNode()
+	  : m_concave(false),
+		m_attributes(0),
+		m_updateTime(0),
+		m_ancestor(0),
+		m_ancestorContour(0),
+		m_outputNode(-1),
+		m_edge(nullptr),
+		m_next(nullptr),
+		m_prev(nullptr)
+  {}
+  ContourNode(double x, double y) : ContourNode() {
+	  m_position = synfig::Point3(x, y, 0);
+  }
+  ContourNode(const synfig::Point &P) : ContourNode() {
+	  m_position = synfig::Point3(P[0], P[1], 0);
+  }
+  ContourNode(double x, double y, unsigned short attrib) : ContourNode() {
+	  m_position = synfig::Point3(x, y, 0);
+	  m_attributes = attrib;
+  }
 
   int hasAttribute(int attr) const { return m_attributes & attr; }
   void setAttribute(int attr) { m_attributes |= attr; }
@@ -283,7 +299,13 @@ class SkeletonArc {
   //        edges.
 
 public:
-  SkeletonArc() : m_attributes(0) {}
+  SkeletonArc()
+	  : m_slope(0.0)
+      , m_leftGeneratingNode(0)
+      , m_leftContour(0)
+      , m_rightGeneratingNode(0)
+      , m_rightContour(0)
+      , m_attributes(0) {}
   SkeletonArc(ContourNode *node)
       : m_slope(node->m_direction[2])
       , m_leftGeneratingNode(node->m_ancestor)
@@ -340,7 +362,13 @@ public:
   int m_strokeHeight;
 
 public:
-  Sequence() : m_graphHolder(0) {}
+  Sequence()
+	  : m_head(0), m_headLink(0),
+		m_tail(0), m_tailLink(0),
+		m_graphHolder(nullptr),
+		m_strokeIndex(0),
+		m_strokeHeight(0)
+  {}
   ~Sequence() {}
 
   // Impose a property dependent only on the extremity we consider first
@@ -413,7 +441,9 @@ public:
   SequenceList singleSequences;
   PointList singlePoints;
 
-  VectorizerCoreGlobals() {}
+  VectorizerCoreGlobals()
+	  : currConfig(nullptr)
+  {}
   ~VectorizerCoreGlobals() {}
 };
 
