@@ -3273,7 +3273,7 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 
         _preferences.set_value(preference, dirname(filename));
 
-        auto filter = dialog->get_filter().get();
+        auto filter = dialog->get_filter();
         for ( const auto& plugin : exporters )
         {
             if (  filter->get_name() == plugin.description )
