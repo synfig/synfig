@@ -230,7 +230,7 @@ studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::
 
 	bool result = false;
 	String output;
-	String command = "";
+	String command;
 
 	// Path to python binary can be overridden
 	// with SYNFIG_PYTHON_BINARY env variable:
@@ -238,7 +238,6 @@ studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::
 	if(custom_python_binary) {
 		command=custom_python_binary;
 		if (!App::check_python_version(command)) {
-			output=_("Error: You need to have Python 3 installed.");
 			command="";
 		}
 	} else {
@@ -275,10 +274,10 @@ studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::
 
 		// Construct the full command:
 		command = command+" \""+plugin_path+"\"";
-        for ( const auto& arg : args )
-        {
-            command += " \"" + arg + "\"";
-        }
+		for ( const auto& arg : args )
+		{
+			command += " \"" + arg + "\"";
+		}
         command += " 2>&1";
 #ifdef _WIN32
 		// This covers the dumb cmd.exe behavior.
@@ -288,7 +287,7 @@ studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::
 
 		FILE* pipe = popen(command.c_str(), "r");
 		if (!pipe) {
-			output = "ERROR: pipe failed!";
+			output = _("ERROR: pipe failed!");
 		} else {
 			char buffer[128];
 			while(!feof(pipe)) {
@@ -309,16 +308,16 @@ studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::
 	}
 
 
-    if (!result){
-        one_moment.hide();
-        App::dialog_message_1b(
-                "Error",
-                output,
-                "details",
-                _("Close"));
+	if (!result){
+		one_moment.hide();
+		App::dialog_message_1b(
+				"Error",
+				output,
+				"details",
+				_("Close"));
 
-        one_moment.show();
-    }
+		one_moment.show();
+	}
 
     return result;
 }
@@ -328,23 +327,23 @@ studio::Instance::run_plugin(std::string plugin_path, bool modify_canvas, std::v
 {
 	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
-    if ( modify_canvas )
-    {
-        String message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
-                    this->get_canvas()->get_name().c_str());
+	if ( modify_canvas )
+	{
+		String message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
+					this->get_canvas()->get_name().c_str());
 
-        String details = strprintf(_("This operation cannot be undone and all undo history will be cleared."));
+		String details = _("This operation cannot be undone and all undo history will be cleared.");
 
-        int answer = uim->confirmation(
-                    message,
-                    details,
-                    _("Cancel"),
-                    _("Proceed"),
-                    synfigapp::UIInterface::RESPONSE_OK);
+		int answer = uim->confirmation(
+					message,
+					details,
+					_("Cancel"),
+					_("Proceed"),
+					synfigapp::UIInterface::RESPONSE_OK);
 
-        if(answer != synfigapp::UIInterface::RESPONSE_OK)
-            return;
-    }
+		if(answer != synfigapp::UIInterface::RESPONSE_OK)
+			return;
+	}
 
 	OneMoment one_moment;
 
@@ -426,28 +425,28 @@ studio::Instance::run_plugin(std::string plugin_path, bool modify_canvas, std::v
 	canvas=0;
 
 
-    if ( modify_canvas ) {
-        one_moment.show();
-        bool ok = App::open_from_temporary_filesystem(tmp_filename);
-        if (!ok) {
-            synfig::error("run_plugin(): Cannot reopen file");
-            return;
-        }
+	if ( modify_canvas ) {
+		one_moment.show();
+		bool ok = App::open_from_temporary_filesystem(tmp_filename);
+		if (!ok) {
+			synfig::error("run_plugin(): Cannot reopen file");
+			return;
+		}
 
-        etl::handle<Instance> new_instance = App::instance_list.back();
-        if (!new_instance) {
-            synfig::error("run_plugin(): Cannot retrieve new instance");
-        } else {
-            // Restore time cursor position
-            canvas = new_instance->get_canvas();
-            etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
-            if (!new_canvas_interface) {
-                synfig::error("run_plugin(): Cannot retrieve canvas interface");
-            } else {
-                new_canvas_interface->set_time(cur_time);
-            }
-        }
-    }
+		etl::handle<Instance> new_instance = App::instance_list.back();
+		if (!new_instance) {
+			synfig::error("run_plugin(): Cannot retrieve new instance");
+		} else {
+			// Restore time cursor position
+			canvas = new_instance->get_canvas();
+			etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
+			if (!new_canvas_interface) {
+				synfig::error("run_plugin(): Cannot retrieve canvas interface");
+			} else {
+				new_canvas_interface->set_time(cur_time);
+			}
+		}
+	}
 }
 
 bool
