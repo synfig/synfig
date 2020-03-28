@@ -292,7 +292,7 @@ studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::
 			char buffer[128];
 			while(!feof(pipe)) {
 				if(fgets(buffer, 128, pipe) != NULL)
-						output += buffer;
+					output += buffer;
 			}
 
 			if (output != "" ){
