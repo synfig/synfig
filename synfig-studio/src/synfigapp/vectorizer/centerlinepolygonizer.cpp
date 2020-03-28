@@ -77,7 +77,12 @@ class studio::RawBorder final : public std::vector<RawBorderPoint>
   double *m_coordinateMixedSums;
 
 public:
-  RawBorder() {}
+  RawBorder()
+	  : m_xExternal(0),
+		m_coordinateSums(nullptr),
+		m_coordinateSquareSums(nullptr),
+		m_coordinateMixedSums(nullptr)
+  {}
   ~RawBorder() {}
 
   void setXExternalPixel(int a) { m_xExternal = a; }
@@ -876,6 +881,8 @@ void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &
 	borders = extractBorders(ras, g.currConfig->m_threshold, g.currConfig->m_despeckling);
 	
 	reduceBorders(*borders, polygons, g.currConfig->m_maxThickness > 0.0);
+
+	delete borders;
 }
 
 
