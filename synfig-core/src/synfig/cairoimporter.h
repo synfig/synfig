@@ -165,11 +165,11 @@ public:
 	*/
 	virtual bool get_frame(cairo_surface_t *&csurface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL)=0;
 	virtual bool get_frame(cairo_surface_t *&csurface, const RendDesc &renddesc,Time time,
-						   bool &trimmed __attribute__ ((unused)),
-						   unsigned int &width __attribute__ ((unused)),
-						   unsigned int &height __attribute__ ((unused)),
-						   unsigned int &top __attribute__ ((unused)),
-						   unsigned int &left __attribute__ ((unused)),
+						   bool &trimmed,
+						   unsigned int &width,
+						   unsigned int &height,
+						   unsigned int &top,
+						   unsigned int &left,
 						   ProgressCallback *callback=NULL)
 	{
 		return get_frame(csurface,renddesc,time,callback);

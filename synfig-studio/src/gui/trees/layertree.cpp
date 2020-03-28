@@ -858,11 +858,11 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 void
-LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
-										 const synfig::Time& time __attribute__ ((unused)),
-										 const synfig::Time& time_offset __attribute__ ((unused)),
-										 const synfig::Time& time_dilation __attribute__ ((unused)),
-										 int button __attribute__ ((unused)))
+LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node,
+										 const synfig::Time& time,
+										 const synfig::Time& time_offset,
+										 const synfig::Time& time_dilation,
+										 int button)
 {
 	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 	synfig::waypoint_collect(waypoint_set,time,node);
