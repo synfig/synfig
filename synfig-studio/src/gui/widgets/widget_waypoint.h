@@ -60,7 +60,6 @@ class Widget_Waypoint : public Gtk::Alignment
 {
 	Widget_ValueBase *value_widget;
 	Gtk::Label *value_node_label;
-	Gtk::Label *label;
 	Widget_Time *time_widget;
 	mutable synfig::Waypoint waypoint;
 	synfig::Canvas::Handle canvas;
