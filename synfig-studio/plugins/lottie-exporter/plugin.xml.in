@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin>
+<plugin type="exporter">
    <_name>Export to Lottie format</_name>
    <exec>lottie-exporter.py</exec>
-   <type>exporter</type>
    <extension>.json</extension>
    <description>Lottie Animation (*.json)</description>
 </plugin> 

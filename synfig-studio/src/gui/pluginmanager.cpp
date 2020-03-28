@@ -126,22 +126,6 @@ PluginManager::load_dir( const std::string &pluginsprefix )
 	}
 } // END of synfigapp::PluginManager::load_dir()
 
-namespace {
-    std::string node_contents(const xmlpp::Node* node)
-    {
-		xmlpp::Node::NodeList l = node->get_children();
-		xmlpp::Node::NodeList::iterator i = l.begin();
-		xmlpp::Node* n = *i;
-
-		const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
-
-		if(nodeText)
-			return nodeText->get_content();
-
-        return {};
-    }
-}
-
 void
 PluginManager::load_plugin( const std::string &path )
 {
@@ -172,7 +156,20 @@ PluginManager::load_plugin( const std::string &path )
 				xmlpp::Node::NodeList list = pNode->get_children();
 				
 				unsigned int name_relevance = 0;
-				
+
+				const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(pNode);
+				std::string type = element->get_attribute_value("type");
+				if ( type == "exporter" )
+				{
+					target_list = &exporters_;
+				}
+				p.extension = pNode->eval_to_string("./extension[1]/text()");
+				p.description = pNode->eval_to_string("./description[1]/text()");
+				std::string exec = pNode->eval_to_string("./exec[1]/text()");
+				if ( !exec.empty() )
+					p.path = plugindir + ETL_DIRECTORY_SEPARATOR + exec;
+
+
 				for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 				{
 					const xmlpp::Node* node = *iter;
@@ -207,25 +204,6 @@ PluginManager::load_plugin( const std::string &path )
 								}
 							}
 						}
-						
-					} else if ( std::string(node->get_name()) == std::string("exec") ) {
-						
-						std::string exec = node_contents(node);
-						
-						if(!exec.empty())
-						{
-							p.path=plugindir+ETL_DIRECTORY_SEPARATOR+exec;
-						}
-					} else if ( std::string(node->get_name()) == "type" ) {
-                            std::string type = node_contents(node);
-							if ( type == "exporter" )
-                            {
-                                target_list = &exporters_;
-                            }
-					} else if ( std::string(node->get_name()) == "extension" ) {
-                            p.extension = node_contents(node);
-					} else if ( std::string(node->get_name()) == "description" ) {
-                            p.description = node_contents(node);
 					}
 				}
 			} else {
