@@ -138,7 +138,7 @@ PluginManager::load_plugin( const std::string &path )
 	std::string plugindir = dirname(path);
 	p.id=plugindir;
 
-    std::list<plugin>* target_list = &list_;
+	std::list<plugin>* target_list = &list_;
 	
 	// parse xml file
 	try

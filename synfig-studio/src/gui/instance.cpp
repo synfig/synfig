@@ -278,7 +278,7 @@ studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::
 		{
 			command += " \"" + arg + "\"";
 		}
-        command += " 2>&1";
+		command += " 2>&1";
 #ifdef _WIN32
 		// This covers the dumb cmd.exe behavior.
 		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
@@ -319,7 +319,7 @@ studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::
 		one_moment.show();
 	}
 
-    return result;
+	return result;
 }
 
 void
@@ -365,8 +365,8 @@ studio::Instance::run_plugin(std::string plugin_path, bool modify_canvas, std::v
 		filename_processed = filename_original+"."+guid.get_string().substr(0,8)+".sif";
 	} while (stat(filename_processed.c_str(), &buf) != -1);
 
-    if ( modify_canvas )
-        close(false);
+	if ( modify_canvas )
+		close(false);
 
 	if(canvas->count() != 1 && modify_canvas)
 	{
@@ -399,8 +399,8 @@ studio::Instance::run_plugin(std::string plugin_path, bool modify_canvas, std::v
 		outfile.close();
 		stream_in.reset();
 
-        one_moment.hide();
-        extra_args.insert(extra_args.begin(), filename_processed);
+		one_moment.hide();
+		extra_args.insert(extra_args.begin(), filename_processed);
 		bool result = run_plugin_with_arguments(plugin_path, extra_args);
 
 		if (result && modify_canvas){
@@ -669,17 +669,17 @@ studio::Instance::dialog_export()
 		filename = absolute_path(filename);
 
 	// show the canvas' name if it has one, else its ID
-    std::string plugin = App::dialog_export_file(
-        (_("Please choose a file name") +
-        String(" (") +
-        (canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
-        ")"),
-        filename, ANIMATION_DIR_PREFERENCE
-    );
+	std::string plugin = App::dialog_export_file(
+		(_("Please choose a file name") +
+		String(" (") +
+		(canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
+		")"),
+		filename, ANIMATION_DIR_PREFERENCE
+	);
 	if ( !plugin.empty() )
 	{
-        run_plugin(plugin, false, {filename});
-        return true;
+		run_plugin(plugin, false, {filename});
+		return true;
 	}
 
 	return false;
