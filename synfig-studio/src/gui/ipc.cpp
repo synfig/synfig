@@ -48,7 +48,6 @@
 #include <sys/errno.h>
 #endif
 
-#include <synfig/main.h>
 #include "app.h"
 
 #ifdef HAVE_UNISTD_H
@@ -67,14 +66,14 @@
 #include <thread>
 #include <synfig/string.h>
 #include <synfigapp/main.h>
-#include <glibmm/miscutils.h>
 #ifdef _WIN32
 #include <windows.h>
 #define BUFSIZE   128
 #define read	_read
+#include <io.h>
+#include <fcntl.h>
 #endif
 
-#include <gui/localization.h>
 
 #endif
 
@@ -101,8 +100,7 @@ pipe_listen_thread()
 {
 	while(!thread_should_quit)
 	{
-		HANDLE pipe_handle;
-		pipe_handle=CreateNamedPipe(
+		HANDLE pipe_handle = CreateNamedPipe(
 			WIN32_PIPE_PATH, // pipe name
 			PIPE_ACCESS_INBOUND, // Access type
 			PIPE_READMODE_BYTE /*|PIPE_NOWAIT*/,
@@ -118,48 +116,60 @@ pipe_listen_thread()
 			return;
 		}
 
-		bool connected;
-		connected=ConnectNamedPipe(pipe_handle,NULL)?true:(GetLastError()==ERROR_PIPE_CONNECTED);
+		const bool connected = ConnectNamedPipe(pipe_handle,NULL) ? true : (GetLastError() == ERROR_PIPE_CONNECTED);
 		DWORD read_bytes;
 		bool success;
 
 		std::this_thread::yield();
 
 		if(connected)
-		do {
-			String data;
-			char c;
-			do
-			{
-				success= ReadFile(
-					pipe_handle,
-					&c,		// buffer pointer
-					1,		// buffer size
-					&read_bytes,
-					NULL
-				);
-				if(success && read_bytes==1 && c!='\n')
-					data+=c;
-			} while (c != '\n' && !thread_should_quit);
-			// if we exit here, then cmd_queue is already destroyed, so just return
-			if (thread_should_quit) return; 
-			std::lock_guard<std::mutex> lock(cmd_mutex);
-			cmd_queue.push_back(data);
-			cmd_dispatcher->emit();
-		} while(success && read_bytes && !thread_should_quit);
+		{
+			do {
+				String data;
+				char c;
+				do
+				{
+					success = ReadFile(
+						pipe_handle,
+						&c,		// buffer pointer
+						1,		// buffer size
+						&read_bytes,
+						NULL
+					);
+					if (success && read_bytes == 1 && c != '\n')
+						data += c;
+				} while (c != '\n' && !thread_should_quit);
+				// if we exit here, then cmd_queue is already destroyed, so just return
+				if (thread_should_quit) return;
+				if (!data.empty())
+				{
+					// cmd_dispatcher->emit() calls empty_cmd_queue which also
+					// locks cmd_mutex. so lock must be released here
+					std::lock_guard<std::mutex> lock(cmd_mutex);
+					cmd_queue.push_back(data);
+					data.clear();
+				}
+			} while (success && read_bytes && !thread_should_quit);
+		}
 
 		CloseHandle(pipe_handle);
+		cmd_dispatcher->emit();
 	}
 }
 
 static void
 empty_cmd_queue()
 {
-	std::lock_guard<std::mutex> lock(cmd_mutex);
 	while(!cmd_queue.empty())
 	{
-		IPC::process_command(cmd_queue.front());
-		cmd_queue.pop_front();
+		std::string cmd;
+		{
+			std::lock_guard<std::mutex> lock(cmd_mutex);
+			cmd = cmd_queue.front();
+			cmd_queue.pop_front();
+		}
+
+		IPC::process_command(cmd);
 	}
 }
 
@@ -169,11 +179,11 @@ empty_cmd_queue()
 
 /* === M E T H O D S ======================================================= */
 
-IPC::IPC()
+IPC::IPC(): fd(0)
 {
 #ifdef _WIN32
 
-	cmd_dispatcher=new Glib::Dispatcher;
+	cmd_dispatcher = new Glib::Dispatcher;
 	cmd_dispatcher->connect(sigc::ptr_fun(empty_cmd_queue));
 
 	thread_should_quit = false;
@@ -258,11 +268,11 @@ IPC::fifo_activity(Glib::IOCondition cond)
 	{
 		char tmp;
 		do {
-			if(read(fd,&tmp,sizeof(tmp))<=0)
+			if (read(fd, &tmp, sizeof(tmp)) <= 0)
 				break;
-			if(tmp!='\n')
-				command+=tmp;
-		} while(tmp!='\n');
+			if (tmp != '\n')
+				command += tmp;
+		} while (tmp != '\n');
 	}
 
 	synfig::info("%s:%d: fifo activity: '%s'", __FILE__, __LINE__, command.c_str());
@@ -331,14 +341,14 @@ IPC::make_connection()
 	int fd;
 	if(pipe_handle==INVALID_HANDLE_VALUE)
 	{
-		DWORD error = GetLastError();
+		const DWORD error = GetLastError();
 #ifndef _DEBUG
 		if( error != ERROR_FILE_NOT_FOUND )
 #endif
 			synfig::warning("IPC::make_connection(): Unable to connect to previous instance. GetLastError=%d",error);
 		fd=-1;
 	} else {
-		fd=_open_osfhandle(reinterpret_cast<intptr_t>(pipe_handle),_O_APPEND|O_WRONLY);
+		fd=_open_osfhandle(reinterpret_cast<intptr_t>(pipe_handle),_O_APPEND);
 	}
 #else
 	struct stat file_stat;
