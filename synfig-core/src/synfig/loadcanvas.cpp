@@ -99,23 +99,14 @@ using namespace std;
 using namespace synfig;
 using namespace etl;
 
-/*
-class test_class {
-static int bleh;
-public:
-	test_class() { assert(!bleh); bleh++; synfig::info("test_class: initi: %d",bleh); }
-	~test_class() { assert(bleh); synfig::info("test_class: uninit: %d",bleh); bleh--; }
-};
-int test_class::bleh(0);
-
-test_class test_class_instance;
-*/
-
 /* === M A C R O S ========================================================= */
 
 #define VALUENODE_COMPATIBILITY_URL "http://synfig.org/Convert#Compatibility"
 
 inline bool is_whitespace(char x) { return ((x)=='\n' || (x)=='\t' || (x)==' '); }
+
+inline bool is_true(string s) { return s=="1" || s=="true" || s=="TRUE" || s=="True"; }
+inline bool is_false(string s) { return s=="0" || s=="false" || s=="FALSE" || s=="False"; }
 
 std::set<FileSystem::Identifier> CanvasParser::loading_;
 
@@ -272,7 +263,7 @@ CanvasParser::parse_keyframe(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_attribute("active")) 
 	{
 		string val=element->get_attribute("active")->get_value();
-		if(val=="false" || val=="0")
+		if(is_false(val))
 			active=false;
 	}
 	ret.set_active(active);
@@ -513,9 +504,9 @@ CanvasParser::parse_bool(xmlpp::Element *element)
 
 	string val=element->get_attribute("value")->get_value();
 
-	if(val=="true" || val=="1")
+	if(is_true(val))
 		return true;
-	if(val=="false" || val=="0")
+	if(is_false(val))
 		return false;
 
 	error(element,strprintf(_("Bad value \"%s\" in <%s>"),val.c_str(),"bool"));
@@ -1484,9 +1475,9 @@ CanvasParser::parse_static(xmlpp::Element *element)
 
 	string val=element->get_attribute("static")->get_value();
 
-	if(val=="true" || val=="1")
+	if(is_true(val))
 		return true;
-	if(val=="false" || val=="0")
+	if(is_false(val))
 		return false;
 
 	error(element,strprintf(_("Bad value \"%s\" in <%s>"),val.c_str(),"bool"));
@@ -2341,16 +2332,26 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	handle<ValueNode_DIList> dilist_value_node;
 	handle<ValueNode_WeightedAverage> weightedaverage_value_node;
 
+	bool must_rotate_point_list = false;
+
 	if(element->get_name()=="bline")
 	{
 		value_node=bline_value_node=ValueNode_BLine::create(type_list, canvas);
 		if(element->get_attribute("loop"))
 		{
-			String loop=element->get_attribute("loop")->get_value();
-			if(loop=="true" || loop=="1" || loop=="TRUE" || loop=="True")
-				bline_value_node->set_loop(true);
-			else
-				bline_value_node->set_loop(false);
+			String loop_str=element->get_attribute("loop")->get_value();
+			bool loop = is_true(loop_str);
+			bline_value_node->set_loop(loop);
+
+			xmlpp::Element *parent = element->get_parent();
+			if (loop && parent->get_name() == "param") {
+				xmlpp::Element *gran_parent = parent->get_parent();
+				if (gran_parent && gran_parent->get_name() == "layer" && gran_parent->get_attribute_value("type") == "advanced_outline") {
+					string version = gran_parent->get_attribute_value("version");
+					if (version == "0.2" || version == "0.1")
+						must_rotate_point_list = true;
+				}
+			}
 		}
 	}
 	else if(element->get_name()=="wplist")
@@ -2359,10 +2360,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		if(element->get_attribute("loop"))
 		{
 			String loop=element->get_attribute("loop")->get_value();
-			if(loop=="true" || loop=="1" || loop=="TRUE" || loop=="True")
-				wplist_value_node->set_loop(true);
-			else
-				wplist_value_node->set_loop(false);
+			wplist_value_node->set_loop(is_true(loop));
 		}
 	}
 	else if(element->get_name()=="dilist")
@@ -2371,10 +2369,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		if(element->get_attribute("loop"))
 		{
 			String loop=element->get_attribute("loop")->get_value();
-			if(loop=="true" || loop=="1" || loop=="TRUE" || loop=="True")
-				dilist_value_node->set_loop(true);
-			else
-				dilist_value_node->set_loop(false);
+			dilist_value_node->set_loop(is_true(loop));
 		}
 	}
 	else if(element->get_name()=="weighted_average")
@@ -2385,10 +2380,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		if(element->get_attribute("loop"))
 		{
 			String loop=element->get_attribute("loop")->get_value();
-			if(loop=="true" || loop=="1" || loop=="TRUE" || loop=="True")
-				weightedaverage_value_node->set_loop(true);
-			else
-				weightedaverage_value_node->set_loop(false);
+			weightedaverage_value_node->set_loop(is_true(loop));
 		}
 	}
 	else
@@ -2403,6 +2395,20 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	value_node->set_root_canvas(canvas->get_root());
 
 	xmlpp::Element::NodeList list = element->get_children();
+
+	if (must_rotate_point_list) {
+		if (list.size() > 0) {
+			while (dynamic_cast<xmlpp::Element*>(list.back()) == nullptr) {
+				list.pop_back();
+			}
+			if (list.size() > 0) {
+				xmlpp::Node * node = list.back();
+				list.pop_back();
+				list.push_front(node);
+			}
+		}
+	}
+
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 	{
 		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
@@ -2805,10 +2811,10 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->set_description(element->get_attribute("desc")->get_value());
 
 	if(element->get_attribute("active"))
-		layer->set_active(element->get_attribute("active")->get_value()=="false"?false:true);
+		layer->set_active(!is_false(element->get_attribute("active")->get_value()));
 
 	if(element->get_attribute("exclude_from_rendering"))
-		layer->set_exclude_from_rendering(element->get_attribute("exclude_from_rendering")->get_value()=="false"?false:true);
+		layer->set_exclude_from_rendering(!is_false(element->get_attribute("exclude_from_rendering")->get_value()));
 
 	// Load old groups
 	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_Group>::cast_dynamic(layer);
