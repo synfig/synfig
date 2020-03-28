@@ -335,7 +335,7 @@ ChildrenTreeStore::on_value_node_changed(synfig::ValueNode::Handle value_node)
 }
 
 void
-ChildrenTreeStore::on_value_node_renamed(synfig::ValueNode::Handle value_node __attribute__ ((unused)))
+ChildrenTreeStore::on_value_node_renamed(synfig::ValueNode::Handle value_node)
 {
 	rebuild_value_nodes();
 }

@@ -3686,7 +3686,7 @@ CanvasView::set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id)
 }
 
 bool
-CanvasView::on_delete_event(GdkEventAny* event __attribute__ ((unused)))
+CanvasView::on_delete_event(GdkEventAny* event)
 {
 	close_view();
 

@@ -277,7 +277,7 @@ ValueNode_Reverse::operator()(Time t)const
 
 
 bool
-ValueNode_Reverse::check_type(Type &type __attribute__ ((unused)))
+ValueNode_Reverse::check_type(Type &type)
 {
 	return
 		type == type_list ||
