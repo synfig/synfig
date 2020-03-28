@@ -2346,7 +2346,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			xmlpp::Element *parent = element->get_parent();
 			if (loop && parent->get_name() == "param") {
 				xmlpp::Element *gran_parent = parent->get_parent();
-				if (gran_parent && gran_parent->get_name() == "layer" && gran_parent->get_attribute_value("type") == "advanced_outline") {
+				if (gran_parent) {
 					string version = gran_parent->get_attribute_value("version");
 					if (version == "0.2" || version == "0.1")
 						must_rotate_point_list = true;
