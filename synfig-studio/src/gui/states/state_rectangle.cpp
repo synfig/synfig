@@ -764,10 +764,10 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	x_min -= get_expand_size(); x_max += get_expand_size(); y_min -= get_expand_size(); y_max += get_expand_size();
 
 	std::vector<BLinePoint> new_list;
-	for (int i = 0; i < 4; i++)
+	for (size_t i = 0; i < 4; i++)
 	{
-		new_list.push_back(*(new BLinePoint));
-		new_list[i].set_width(1);
+		new_list.push_back(BLinePoint());
+		new_list[i].set_width(1.0);
 		new_list[i].set_vertex(Point((i==0||i==3)?x_min:x_max,
 									 (i==0||i==1)?y_min:y_max));
 		new_list[i].set_tangent(Point(0,0));
