@@ -2343,14 +2343,10 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			bool loop = is_true(loop_str);
 			bline_value_node->set_loop(loop);
 
-			xmlpp::Element *parent = element->get_parent();
-			if (loop && parent->get_name() == "param") {
-				xmlpp::Element *gran_parent = parent->get_parent();
-				if (gran_parent) {
-					string version = gran_parent->get_attribute_value("version");
-					if (version == "0.2" || version == "0.1")
-						must_rotate_point_list = true;
-				}
+			if (loop) {
+				string version = canvas->get_version();
+				if (version == "1.0" || (version[0] == '0' && version[1] == '.'))
+					must_rotate_point_list = true;
 			}
 		}
 	}
