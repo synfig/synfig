@@ -27,21 +27,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/adjustment.h>
-#include <gtkmm/table.h>
-#include <gtkmm/button.h>
-#include <gtkmm/box.h>
-#include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 
-#include <synfigapp/value_desc.h>
+#include <synfig/canvas.h>
 #include <synfig/waypoint.h>
-#include <synfig/string.h>
-#include <synfig/time.h>
-#include "widgets/widget_enum.h"
-
 
 /* === M A C R O S ========================================================= */
 
@@ -55,6 +46,7 @@ namespace studio {
 class Widget_ValueBase;
 class Widget_Time;
 class Widget_Waypoint;
+class Widget_Enum;
 
 class Widget_Waypoint : public Gtk::Alignment
 {
