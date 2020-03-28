@@ -36,6 +36,7 @@
 #include <synfig/localization.h>
 #include "canvas.h"
 #include "layer.h"
+#include <algorithm>
 
 #endif
 
@@ -323,7 +324,7 @@ ValueNode::calc_values(std::map<Time, ValueBase> &x, int begin, int end, Real fp
 	if (fabs(fps) > 1e-10)
 	{
 		Real k = 1.0/fps;
-		if (begin > end) swap(begin, end);
+		if (begin > end) std::swap(begin, end);
 		for(int i = begin; i <= end; ++i)
 			add_value_to_map(x, i*k, (*this)(i*k));
 	}
