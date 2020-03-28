@@ -29,6 +29,7 @@
 #define COLOR_EPSILON	(0.000001f)
 
 #include <synfig/color.h>
+#include <algorithm>
 
 namespace synfig {
 

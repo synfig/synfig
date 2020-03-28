@@ -47,6 +47,7 @@
 #include <ETL/calculus>
 #include <synfig/segment.h>
 #include <synfig/curve_helper.h>
+#include <algorithm> // for std::swap
 
 #endif
 
@@ -777,7 +778,7 @@ ValueNode_BLine::operator()(Time t)const
 					curr_coord_sys[1]=curr_coord_sys[0].perp();
 
 					// Invert (transpose) the last of these matrices, since we use it for transform back
-					swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
+					std::swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
 				}
 
 				/* The code that was here before used just end_iter as the origin, rather than the mid-point */
