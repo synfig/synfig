@@ -90,7 +90,21 @@ Action::LayerCopy::get_param_vocab()
 bool
 Action::LayerCopy::is_candidate(const ParamList &x)
 {
-	return candidate_check(get_param_vocab(),x);
+	if (!candidate_check(get_param_vocab(),x))
+		return false;
+
+	bool there_is_a_bitmap_layer = false;
+	for(ParamList::const_iterator i = x.begin(); i != x.end(); i++) {
+		if (i->first == "layer") {
+			if (i->second.get_type() != Param::TYPE_LAYER)
+				return false;
+			const Layer_Bitmap* bitmap_layer = dynamic_cast<Layer_Bitmap*>(i->second.get_layer().get());
+			if (!bitmap_layer)
+				return false;
+			there_is_a_bitmap_layer = true;
+		}
+	}
+	return there_is_a_bitmap_layer;
 }
 
 bool
@@ -98,6 +112,9 @@ Action::LayerCopy::set_param(const synfig::String& name, const Action::Param &pa
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER && param.get_layer())
 	{
+		const Layer_Bitmap* bitmap_layer = dynamic_cast<Layer_Bitmap*>(param.get_layer().get());
+		if (!bitmap_layer)
+			return false;
 		layers.push_back(param.get_layer());
 		return true;
 	}
