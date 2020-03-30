@@ -58,8 +58,8 @@
 #include <gui/helpers.h>
 
 #include <gui/localization.h>
-#include <cairomm-1.0/cairomm/context.h>
-#include <cairomm-1.0/cairomm/enums.h>
+#include <cairomm/context.h>
+#include <cairomm/enums.h>
 
 #endif
 

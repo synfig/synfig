@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
-#include <math.h>
+#include <cmath>
 //#include "Python.h"
 
 #include "brushsettings.hpp"
@@ -452,9 +452,9 @@ private:
       rgb_to_hsv_float (&color_h, &color_s, &color_v);
     }
 
-    if (settings_value[BRUSH_SMUDGE_LENGTH] < 1.0 and
+    if (settings_value[BRUSH_SMUDGE_LENGTH] < 1.0 &&
         // optimization, since normal brushes have smudge_length == 0.5 without actually smudging
-        (settings_value[BRUSH_SMUDGE] != 0.0 or not settings[BRUSH_SMUDGE]->is_constant())) {
+        (settings_value[BRUSH_SMUDGE] != 0.0 || !settings[BRUSH_SMUDGE]->is_constant())) {
 
       float fac = settings_value[BRUSH_SMUDGE_LENGTH];
       if (fac < 0.01) fac = 0.01;

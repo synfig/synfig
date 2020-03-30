@@ -29,6 +29,8 @@
 #  include <config.h>
 # endif
 
+#include <cmath>
+
 #include "waypointrenderer.h"
 
 #include <gdkmm/rgba.h>
@@ -156,15 +158,15 @@ WaypointRenderer::render_time_point_to_window(
 
 		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
 		cr->move_to(area.get_x(),area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->stroke();
 		break;
 
 	case INTERPOLATION_LINEAR:
 		cr->save();
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->move_to(area.get_x()+area.get_width()/2.f,area.get_y());
 		cr->line_to(area.get_x(),area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
 		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
 		cr->stroke();
@@ -173,12 +175,12 @@ WaypointRenderer::render_time_point_to_window(
 
 	case INTERPOLATION_CONSTANT:
 		cr->save();
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
-		cr->line_to(area.get_x()+area.get_width()/4,area.get_y());
-		cr->line_to(area.get_x()+area.get_width()/4,area.get_y()+area.get_height()/2);
+		cr->move_to(area.get_x()+area.get_width()/2.f,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/4.f,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/4.f,area.get_y()+area.get_height()/2);
 		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2);
 		cr->line_to(area.get_x(),area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
 		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
 		cr->stroke();
@@ -187,9 +189,9 @@ WaypointRenderer::render_time_point_to_window(
 
 	case INTERPOLATION_CLAMPED:
 		cr->save();
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->move_to(area.get_x()+area.get_width()/2.f,area.get_y());
 		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2);
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
 		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
 		cr->stroke();
@@ -198,12 +200,12 @@ WaypointRenderer::render_time_point_to_window(
 
 	default:
 		cr->save();
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
-		cr->line_to(area.get_x()+area.get_width()/3,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/3.f,area.get_y());
 		cr->line_to(area.get_x(),area.get_y()+area.get_height()/3);
 		cr->line_to(area.get_x(),area.get_y()+area.get_height()-area.get_height()/3);
-		cr->line_to(area.get_x()+area.get_width()/3,area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/3.f,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
 		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
 		cr->stroke();

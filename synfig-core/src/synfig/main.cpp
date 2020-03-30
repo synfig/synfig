@@ -36,10 +36,8 @@
 
 #include <iostream>
 #include "version.h"
-#include "general.h"
 #include "module.h"
 #include <cstdlib>
-#include <ltdl.h>
 #include <glibmm.h>
 #include <stdexcept>
 
@@ -65,15 +63,12 @@
 #include <fstream>
 #include <time.h>
 #include "layer.h"
-#include "valuenode.h"
 #include "soundprocessor.h"
 #include "threadpool.h"
 #include "rendering/renderer.h"
 
 #include "main.h"
 #include "loadcanvas.h"
-
-#include "guid.h"
 
 #include <giomm.h>
 
@@ -97,7 +92,7 @@ using namespace synfig;
 /* === S T A T I C S ======================================================= */
 
 static etl::reference_counter synfig_ref_count_(0);
-Main *Main::instance = NULL;
+Main *Main::instance = nullptr;
 
 class GeneralIOMutexHolder {
 private:
@@ -224,7 +219,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	unsigned int i;
 #ifdef _DEBUG
-#ifndef __APPLE__
+#if !defined( __APPLE__) && !defined(_WIN32)
 	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
 #endif
 #endif
@@ -370,7 +365,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	{
 		synfig::info("Loading %s..", iter->c_str());
 		Module::Register(*iter,cb);
-		if(cb)cb->amount_complete((i+1)*100,modules_to_load.size()*100);
+		if(cb)cb->amount_complete((i+1)*100, modules_to_load.size()*100u);
 	}
 
 	// Rebuild tokens data again to include new tokens from modules
@@ -389,7 +384,7 @@ synfig::Main::~Main()
 
 	// Add deinitialization after this point
 
-	if(get_open_canvas_map().size())
+	if(!get_open_canvas_map().empty())
 	{
 		synfig::warning("Canvases still open!");
 		std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
@@ -630,7 +625,7 @@ synfig::get_binary_path(const String &fallback_path)
 
 #endif
 	
-	if (result == "")
+	if (result.empty())
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])

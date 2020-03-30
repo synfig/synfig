@@ -480,7 +480,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 }
 
 bool
-Target_Scanline::add_frame(const Surface *surface)
+Target_Scanline::add_frame(const synfig::Surface *surface)
 {
 	assert(surface);
 
