@@ -53,8 +53,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -70,10 +68,6 @@ using namespace studio;
 #ifndef IMAGE_EXT
 #	define IMAGE_EXT	"png"
 #endif
-
-//#define stringify(x) #x
-#define stringify(x) (x)
-//#define stringify(x) (std::to_string(x).c_str())
 
 /* === G L O B A L S ======================================================= */
 
@@ -177,40 +171,42 @@ About::About()
 
 	std::string imagepath = ResourceHelper::get_image_path("synfig_icon." IMAGE_EXT);
 
-	Gtk::Image *Logo = manage(new class Gtk::Image());
+	Gtk::Image *logo = manage(new class Gtk::Image());
 	
-	Logo->set(imagepath);
-	Logo->set_parent(*this);
-	set_logo(Logo->get_pixbuf());
+	logo->set(imagepath);
+	logo->set_parent(*this);
+	set_logo(logo->get_pixbuf());
 
 #ifdef SHOW_EXTRA_INFO
 
-	string extra_info = get_comments() + "\n";
+	std::string extra_info = get_comments() + "\n";
 
 	#ifdef DEVEL_VERSION
-		extra_info += strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
+		extra_info += etl::strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
 	#endif
 
 	extra_info += "\n";
 
-	extra_info += strprintf(_("Built on %s" /* at %s */ "\n"), __DATE__ /* , __TIME__ */ );
+	extra_info += etl::strprintf(_("Built on %s" /* at %s */ "\n\n"), __DATE__ /* , __TIME__ */ );
 
-	extra_info += "\n";
-
-	extra_info += strprintf(_("Built with:\n"));
-	extra_info += strprintf(_("ETL %s\n"), ETL_VERSION);
-	extra_info += strprintf(_("Synfig API %s\n"), stringify(SYNFIG_VERSION));
-	extra_info += strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
-	extra_info += strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+	extra_info += etl::strprintf(_("Built with:\n"));
+	extra_info += etl::strprintf(_("ETL %s\n"), ETL_VERSION);
+	extra_info += etl::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
+	extra_info += etl::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
+	extra_info += etl::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
 	#ifdef __GNUC__
-		extra_info += strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
+		extra_info += etl::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
+	#endif
+
+	#ifdef _MSC_VER
+		extra_info += etl::strprintf("Microsoft Visual C/C++ (%d)\n", _MSC_VER);
 	#endif
 
 	extra_info += "\n";
 
-	extra_info += strprintf(_("Using:\n"), synfig::get_version());
-	extra_info += strprintf(_("Synfig %s\n"), synfig::get_version());
-	extra_info += strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
+	extra_info += etl::strprintf(_("Using:\n"));
+	extra_info += etl::strprintf(_("Synfig %s\n"), synfig::get_version());
+	extra_info += etl::strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
 
 	#ifdef _DEBUG
 		extra_info += "\n\nDEBUG BUILD";
