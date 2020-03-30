@@ -182,7 +182,7 @@ About::About()
 	std::string extra_info = get_comments() + "\n";
 
 	#ifdef DEVEL_VERSION
-		extra_info += strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
+		extra_info += etl::strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
 	#endif
 
 	extra_info += "\n";
@@ -195,7 +195,7 @@ About::About()
 	extra_info += etl::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
 	extra_info += etl::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
 	#ifdef __GNUC__
-		extra_info += strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
+		extra_info += etl::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
 	#endif
 
 	#ifdef _MSC_VER
