@@ -393,6 +393,7 @@ CLEANFILES = \
 	$(IMAGES) \
 	$(ICONS) \
 	$(SPLASH_DEV) \
+	logo_tmp.sif \
 	images.nsh \
 	unimages.nsh \
 	installer_logo.bmp \
