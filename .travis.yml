@@ -109,7 +109,6 @@ jobs:
 
   - os: linux
     name: "Translations validation Ubuntu 16.04 Xenial"
-    if: branch = translations   # Job should run only on translations branch
     dist: xenial
     script: bash autobuild/translations-validation.sh
 
