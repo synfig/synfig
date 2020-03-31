@@ -179,10 +179,10 @@ void studio::Dock_Info::set_n_passes_pending(int value)
 
 void studio::Dock_Info::set_render_progress(float value)
 {
-	float coeff        = (1.000 / (float)n_passes_requested);  //% of fraction for 1 pass if more than 1 pass
-	float already_done = coeff * (float)(n_passes_requested - n_passes_pending -1); 
-	float r            = ( coeff * value ) + already_done;
+	float coeff        = (1.000 / (float) n_passes_requested);  //% of fraction for 1 pass if more than 1 pass
+	float already_done = coeff * (float) (n_passes_requested - n_passes_pending - 1); 
+	float r            = (coeff * value) + already_done;
 
-	render_progress.set_text( strprintf( "%.1f%%", r*100 ));
+	render_progress.set_text(strprintf("%.1f%%", r*100));
 	render_progress.set_fraction(r);
 }

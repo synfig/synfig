@@ -46,7 +46,9 @@ class Dock_Info : public Dock_CanvasSpecific
 	Gtk::Label       x,y;
 	Gtk::ProgressBar render_progress;
 
-	//! Number of passes request - 1 or 2 (if alpha)
+	//! Number of passes requested:
+	//  1, if exporting once (target)
+	//  2, if exporting twice (target + alpha)
 	int              n_passes_requested;
 	//! Number of passes pending - 2,1,0
 	int              n_passes_pending;
