@@ -1439,6 +1439,9 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As..."), _("Save As")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
 	);
+	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
+	);
 	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(save_all)
 	);
@@ -1515,10 +1518,15 @@ CanvasView::init_menus()
 	);
 
 	std::list<PluginManager::plugin> plugin_list = App::plugin_manager.get_list();
+    auto instance = get_instance().get();
 	for(std::list<PluginManager::plugin>::const_iterator p = plugin_list.begin(); p != plugin_list.end(); ++p)
+    {
+        std::string path = p->path;
 		action_group->add(
 			Gtk::Action::create(p->id, p->name),
-			sigc::bind( sigc::mem_fun(*get_instance().get(), &Instance::run_plugin), p->path ) );
+			[instance, path](){instance->run_plugin(path, true);}
+        );
+    }
 
 	// Low-Res Quality Menu
 	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {

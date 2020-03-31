@@ -137,6 +137,8 @@ PluginManager::load_plugin( const std::string &path )
 	PluginManager::plugin p;
 	std::string plugindir = dirname(path);
 	p.id=plugindir;
+
+	std::list<plugin>* target_list = &list_;
 	
 	// parse xml file
 	try
@@ -154,7 +156,20 @@ PluginManager::load_plugin( const std::string &path )
 				xmlpp::Node::NodeList list = pNode->get_children();
 				
 				unsigned int name_relevance = 0;
-				
+
+				const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(pNode);
+				std::string type = element->get_attribute_value("type");
+				if ( type == "exporter" )
+				{
+					target_list = &exporters_;
+				}
+				p.extension = pNode->eval_to_string("./extension[1]/text()");
+				p.description = pNode->eval_to_string("./description[1]/text()");
+				std::string exec = pNode->eval_to_string("./exec[1]/text()");
+				if ( !exec.empty() )
+					p.path = plugindir + ETL_DIRECTORY_SEPARATOR + exec;
+
+
 				for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 				{
 					const xmlpp::Node* node = *iter;
@@ -189,19 +204,6 @@ PluginManager::load_plugin( const std::string &path )
 								}
 							}
 						}
-						
-					} else if ( std::string(node->get_name()) == std::string("exec") ) {
-						
-						xmlpp::Node::NodeList l = node->get_children();
-						xmlpp::Node::NodeList::iterator i = l.begin();
-						xmlpp::Node* n = *i;
-						
-						const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
-						
-						if(nodeText)
-						{
-							p.path=plugindir+ETL_DIRECTORY_SEPARATOR+nodeText->get_content();
-						}
 					}
 				}
 			} else {
@@ -215,7 +217,7 @@ PluginManager::load_plugin( const std::string &path )
 	}
 	
 	if ( p.id != "" && p.name != "" && p.path != ""){
-		list_.push_back(p);
+		target_list->push_back(p);
 	} else {
 		synfig::warning("Invalid plugin.xml file!");
 	}

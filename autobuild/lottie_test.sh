@@ -29,7 +29,7 @@ failing_files=(070-skeleton.sif 075-skeleton-group.sif 076-skeleton-group-animat
 for filename in $test_files;
 do 
     pass=1      # 0 -> File is failing to export unexpectedly, 1 -> File is exporting, 2 -> File is allowed to fail
-    python3 $LOTTIE $filename || { # This line catches errors in python script
+    python3 $LOTTIE $filename "${filename%.sif}.json" || { # This line catches errors in python script
 
         # Check if the program is allowed to fail
         for i in ${failing_files[@]}

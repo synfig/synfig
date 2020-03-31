@@ -18,29 +18,25 @@ from layers.driver import gen_layers
 from common.misc import modify_final_dump
 from common.Canvas import Canvas
 import settings
+import argparse
 
 
-def write_to(filename, extension, data):
+def write_to(filename, data):
     """
     Helps in writing data to a specified file name
 
     Args:
         filename  (str) : Original file name
-        extension (str) : original file name needs to be converted to this
         data      (str) : Data that needs to be written
 
     Returns:
         (str) : changed file name according to the extension specified
     """
-    new_name = filename.split(".")
-    new_name[-1] = extension
-    new_name = ".".join(new_name)
-    with open(new_name, "w") as fil:
+    with open(filename, "w") as fil:
         fil.write(data)
-    return new_name
 
 
-def parse(file_name):
+def parse(file_name, new_file_name):
     """
     Driver function for parsing .sif to lottie(.json) format
 
@@ -68,7 +64,7 @@ def parse(file_name):
     gen_layers(settings.lottie_format["layers"], canvas, canvas.get_num_layers() - 1)
 
     lottie_string = json.dumps(modify_final_dump(settings.lottie_format))
-    return write_to(file_name, "json", lottie_string)
+    write_to(new_file_name, lottie_string)
 
 
 def gen_html(file_name):
@@ -135,7 +131,7 @@ def gen_html(file_name):
 </html>
 """
 
-    write_to(file_name, "html", html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(modify_final_dump(settings.lottie_format))))
+    write_to(os.path.splitext(file_name)[0]+".html", html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(modify_final_dump(settings.lottie_format))))
 
 
 def init_logs():
@@ -155,10 +151,13 @@ def init_logs():
     logging.getLogger().setLevel(logging.DEBUG)
 
 
-if len(sys.argv) < 2:
-    sys.exit()
-else:
-    settings.init()
-    FILE_NAME = sys.argv[1]
-    new_file_name = parse(FILE_NAME)
-    gen_html(new_file_name)
+parser = argparse.ArgumentParser()
+parser.add_argument("infile")
+parser.add_argument("outfile")
+ns = parser.parse_args()
+
+settings.init()
+FILE_NAME = ns.infile
+new_file_name = ns.outfile
+parse(FILE_NAME, new_file_name)
+gen_html(new_file_name)
