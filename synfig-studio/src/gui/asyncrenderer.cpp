@@ -580,11 +580,11 @@ public:
 		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
 		                             - warm_target->desc.get_frame_start()      //0
 		                             + 1;                                       //->121
-		int current_rendered_frames_count = warm_target->curr_frame_
-		                                  - warm_target->desc.get_frame_start();
+		int current_rendered_frames_count = warm_target->curr_frame_;
 		float r = (float) current_rendered_frames_count 
 		        / (float) n_total_frames_to_render;
-		App::dock_info_->set_render_progress(r);		
+		
+		App::dock_info_->set_render_progress(r);
 	}
 };
 
@@ -691,10 +691,10 @@ public:
 		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
 		                             - warm_target->desc.get_frame_start()      //0
 		                             + 1;                                       //->121
-		int current_rendered_frames_count = warm_target->curr_frame_
-		                                  - warm_target->desc.get_frame_start();
+		int current_rendered_frames_count = warm_target->curr_frame_;
 		float r = (float) current_rendered_frames_count 
 		        / (float) n_total_frames_to_render;
+		
 		App::dock_info_->set_render_progress(r);
 	}
 
@@ -705,7 +705,6 @@ public:
 			return false;
 		return warm_target->obtain_surface(s);
 	}
-
 };
 
 /* === G L O B A L S ======================================================= */
