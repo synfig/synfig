@@ -7,12 +7,12 @@
 **	This file uses code from OpenToonz open-source animation software  (https://github.com/opentoonz/opentoonz/), which is developed from Toonz, a software originally created by Digital Video, S.p.A., Rome Italy Digital Video, S.p.A., Rome Italy.
 **
 **	Copyright (c) 2016 - 2019, DWANGO Co., Ltd.
-**  Copyright (c) 2016 Toshihiro Shimizu - https://github.com/meso
-**  Copyright (c) 2016 Shinya Kitaoka - https://github.com/skitaoka
-**  Copyright (c) 2016 shun-iwasawa - https://github.com/shun-iwasawa
-**  Copyright (c) 2016 Campbell Barton - https://github.com/ideasman42
-**  Copyright (c) 2019 luzpaz - https://github.com/luzpaz
-
+**	Copyright (c) 2016 Toshihiro Shimizu - https://github.com/meso
+**	Copyright (c) 2016 Shinya Kitaoka - https://github.com/skitaoka
+**	Copyright (c) 2016 shun-iwasawa - https://github.com/shun-iwasawa
+**	Copyright (c) 2016 Campbell Barton - https://github.com/ideasman42
+**	Copyright (c) 2019 luzpaz - https://github.com/luzpaz
+**
 **	Copyright (c) 2019 - 2020, Ankit Kumar Dwivedi - https://github.com/ankit-kumar-dwivedi
 **
 **	LICENSE
