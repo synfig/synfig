@@ -5006,7 +5006,7 @@ msgstr "Reverter CVS"
 #: ../src/gui/instance.cpp:231
 #, c-format
 msgid "Do you really want to run plugin for file \"%s\"?"
-msgstr "Você realmente deseja rodar o plugin para o arquivo \"%s%?"
+msgstr "Você realmente deseja rodar o plugin para o arquivo \"%s\"?"
 
 #: ../src/gui/instance.cpp:234
 msgid "This operation cannot be undone and all undo history will be cleared."
