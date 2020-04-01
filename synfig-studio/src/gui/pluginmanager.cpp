@@ -224,24 +224,8 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			}
 		}
 
-		auto nodelist = pNode->find("./exporter");
-		exporters_.reserve(exporters_.size() + nodelist.size());
-		int exporter_number = 0;
-		for ( xmlpp::Node* exporter_node : nodelist )
-		{
-			auto execlist = exporter_node->find("./exec");
-			if ( execlist.empty() )
-				continue;
-
-			ImportExport exporter = ImportExport::load(*exporter_node);
-			PluginScript script = PluginScript::load(*execlist[0], plugindir);
-			if ( exporter.is_valid() && script.is_valid() )
-			{
-				exporter.id  = id + "/exporter/" + std::to_string(exporter_number++);
-				scripts_.emplace(exporter.id, std::move(script));
-				exporters_.emplace_back(std::move(exporter));
-			}
-		}
+		load_import_export(id, plugindir, pNode, "exporter", exporters_);
+		load_import_export(id, plugindir, pNode, "importer", importers_);
 	}
 	catch(const std::exception& ex)
 	{
@@ -249,6 +233,33 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 		std::cout << "Exception caught: " << ex.what() << std::endl;
 	}
 }
+
+void studio::PluginManager::load_import_export(
+	const std::string& id, const std::string& plugindir, const xmlpp::Node* node,
+	const std::string& name, std::vector<ImportExport>& output
+)
+{
+	auto nodelist = node->find("./exporter");
+	output.reserve(output.size() + nodelist.size());
+	int number = 0;
+	for ( xmlpp::Node* exporter_node : nodelist )
+	{
+		auto execlist = exporter_node->find("./exec");
+		if ( execlist.empty() )
+			continue;
+
+		ImportExport ie = ImportExport::load(*exporter_node);
+		PluginScript script = PluginScript::load(*execlist[0], plugindir);
+		if ( ie.is_valid() && script.is_valid() )
+		{
+			ie.id  = id + "/" + name + std::to_string(number++);
+			scripts_.emplace(ie.id, std::move(script));
+			output.emplace_back(std::move(ie));
+		}
+	}
+
+}
+
 
 std::string studio::PluginManager::interpreter_executable(const std::string& interpreter) const
 {

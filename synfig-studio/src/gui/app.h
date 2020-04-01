@@ -411,6 +411,7 @@ public:
 	static bool dialog_open_folder(const std::string &title, std::string &filename, std::string preference, Gtk::Window& transientwind=*App::main_window);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
 	static std::string dialog_export_file(const std::string &title, std::string &filename, std::string preference);
+	static std::string dialog_import_file(std::string &filename, const std::string& preference);
 	static bool dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_sketch(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_render(const std::string &title, std::string &filename, std::string preference);

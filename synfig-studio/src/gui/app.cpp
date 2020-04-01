@@ -957,6 +957,7 @@ DEFINE_ACTION("export",         Gtk::StockID("synfig-export"));
 DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED);
 DEFINE_ACTION("import",         _("Import..."));
 DEFINE_ACTION("import-sequence",_("Import Sequence..."));
+DEFINE_ACTION("import-file",    _("Import File..."));
 DEFINE_ACTION("render",         _("Render..."));
 DEFINE_ACTION("preview",        _("Preview..."));
 DEFINE_ACTION("close-document", _("Close Document"));
@@ -1098,6 +1099,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "		<separator name='sep-file2'/>"
 "		<menuitem action='import' />"
 "		<menuitem action='import-sequence' />"
+"		<menuitem action='import-file' />"
 "		<separator name='sep-file4'/>"
 "		<menuitem action='preview' />"
 "		<menuitem action='render' />"
@@ -3272,13 +3274,69 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 		auto filter = dialog->get_filter();
 		for ( const auto& exporter : App::plugin_manager.exporters() )
 		{
-			if (  filter->get_name() == exporter.description.get() )
+			if ( filter->get_name() == exporter.description.get() )
 			{
 				if ( !exporter.has_extension(filename_extension(filename)) )
 					filename += exporter.extensions[0];
 
 				delete dialog;
 				return exporter.id;
+			}
+		}
+    }
+
+    delete dialog;
+    return {};
+}
+
+std::string
+App::dialog_import_file(std::string &filename, const std::string& preference)
+{
+	synfig::String prev_path;
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = Glib::get_home_dir();
+
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, _("Please select a file"), Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	for ( const ImportExport& exp : App::plugin_manager.importers() )
+	{
+		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
+		filter->set_name(exp.description.get());
+		for ( const std::string& extension : exp.extensions )
+			filter->add_pattern("*" + extension);
+		dialog->add_filter(filter);
+	}
+
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+
+	if (filename.empty()) {
+		dialog->set_filename(prev_path);
+
+	} else {
+        dialog->set_current_name(filename_sans_extension(basename(filename)));
+	}
+
+	// set focus to the file name entry(box) of dialog instead to avoid the name
+	// we are going to save changes while changing file filter each time.
+
+	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+
+		filename = dialog->get_filename();
+
+		_preferences.set_value(preference, dirname(filename));
+
+		auto filter = dialog->get_filter();
+		for ( const auto& importer : App::plugin_manager.importers() )
+		{
+			if ( filter->get_name() == importer.description.get() )
+			{
+				delete dialog;
+				return importer.id;
 			}
 		}
     }

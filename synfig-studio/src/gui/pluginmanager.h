@@ -105,10 +105,15 @@ class PluginManager
 private:
 	std::vector<Plugin> plugins_;
 	std::vector<ImportExport> exporters_;
+	std::vector<ImportExport> importers_;
 	std::unordered_map<std::string, PluginScript> scripts_;
 
 	std::string interpreter_executable(const std::string& interpreter) const;
 	void handle_stream(PluginStream behaviour, const std::string& output) const;
+	void load_import_export(
+		const std::string& id, const std::string& plugindir, const xmlpp::Node* node,
+		const std::string& name, std::vector<ImportExport>& output
+	);
 
 public:
 	void load_dir( const std::string &pluginsprefix );
@@ -120,6 +125,8 @@ public:
 	const std::vector<Plugin>& plugins() const { return plugins_; };
 
 	const std::vector<ImportExport>& exporters() { return exporters_; };
+
+	const std::vector<ImportExport>& importers() { return importers_; };
 
 }; // END class PluginManager
 

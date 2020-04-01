@@ -590,6 +590,40 @@ studio::Instance::dialog_export()
 }
 
 void
+studio::Instance::dialog_import_file()
+{
+	string filename = get_file_name();
+
+	if ( has_real_filename() )
+		filename = absolute_path(filename);
+
+	std::string plugin_id = App::dialog_import_file(filename, ANIMATION_DIR_PREFERENCE);
+
+	if ( plugin_id.empty() )
+		return;
+
+	String tmp_filename = App::get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + "synfig";
+
+	String filename_processed;
+	struct stat buf;
+	do {
+		synfig::GUID guid;
+		filename_processed = tmp_filename + "." + guid.get_string().substr(0,8) + ".sif";
+	} while (stat(filename_processed.c_str(), &buf) != -1);
+
+	bool result = App::plugin_manager.run(plugin_id, {filename, filename_processed});
+
+	if ( result ) {
+		OneMoment one_moment;
+		if ( !App::open(filename_processed) ) {
+			synfig::error("dialog_import_file(): Cannot open file");
+		}
+	}
+
+	remove(filename_processed.c_str());
+}
+
+void
 Instance::update_all_titles()
 {
 	list<handle<CanvasView> >::iterator iter;

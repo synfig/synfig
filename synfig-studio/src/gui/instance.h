@@ -193,6 +193,8 @@ public:
 
 	bool dialog_export();
 
+	void dialog_import_file();
+
 	void open();
 
 	Status save();
