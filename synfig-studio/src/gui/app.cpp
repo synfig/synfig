@@ -3301,13 +3301,26 @@ App::dialog_import_file(std::string &filename, const std::string& preference)
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, _("Please select a file"), Gtk::FILE_CHOOSER_ACTION_OPEN);
 
+	bool found = false;
 	for ( const ImportExport& exp : App::plugin_manager.importers() )
 	{
+		found = true;
 		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
 		filter->set_name(exp.description.get());
 		for ( const std::string& extension : exp.extensions )
 			filter->add_pattern("*" + extension);
 		dialog->add_filter(filter);
+	}
+
+	if ( !found )
+	{
+		dialog_message_1b(
+			"Error",
+			_("There are no file importers available"),
+			"details",
+			_("Close")
+		);
+		return {};
 	}
 
 	dialog->set_current_folder(prev_path);
