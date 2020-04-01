@@ -1207,15 +1207,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	<menu action='menu-plugins'>"
 ;
 
-	std::list<PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
-	for (std::list<PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
+	for ( const auto& p : studio::App::plugin_manager.plugins() ) {
 		// TODO: (Plugins) Arrange menu items into groups
 
-		PluginManager::plugin plugin = *p;
-
-		DEFINE_ACTION(plugin.id, plugin.name);
-		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
+		DEFINE_ACTION(p.id, p.name.get());
+		ui_info_menu += strprintf("	<menuitem action='%s'/>", p.id.c_str());
 	}
 
 	ui_info_menu +=
@@ -3243,14 +3240,14 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
-    auto exporters = App::plugin_manager.get_exporters();
-    for ( const auto& plugin : exporters )
-    {
-        Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
-        filter->set_name(plugin.description);
-        filter->add_pattern("*"+plugin.extension);
-        dialog->add_filter(filter);
-    }
+	for ( const ImportExport& exp : App::plugin_manager.exporters() )
+	{
+		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
+		filter->set_name(exp.description.get());
+		for ( const std::string& extension : exp.extensions )
+			filter->add_pattern("*" + extension);
+		dialog->add_filter(filter);
+	}
 
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
@@ -3270,20 +3267,20 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 
 		filename = dialog->get_filename();
 
-        _preferences.set_value(preference, dirname(filename));
+		_preferences.set_value(preference, dirname(filename));
 
-        auto filter = dialog->get_filter();
-        for ( const auto& plugin : exporters )
-        {
-            if (  filter->get_name() == plugin.description )
-            {
-                if ( filename_extension(filename) != plugin.extension )
-                    filename += plugin.extension;
+		auto filter = dialog->get_filter();
+		for ( const auto& exporter : App::plugin_manager.exporters() )
+		{
+			if (  filter->get_name() == exporter.description.get() )
+			{
+				if ( !exporter.has_extension(filename_extension(filename)) )
+					filename += exporter.extensions[0];
 
-                delete dialog;
-                return plugin.path;
-            }
-        }
+				delete dialog;
+				return exporter.id;
+			}
+		}
     }
 
     delete dialog;

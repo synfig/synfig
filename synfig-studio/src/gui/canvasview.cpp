@@ -1518,14 +1518,13 @@ CanvasView::init_menus()
 		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
 	);
 
-	std::list<PluginManager::plugin> plugin_list = App::plugin_manager.get_list();
     auto instance = get_instance().get();
-	for(std::list<PluginManager::plugin>::const_iterator p = plugin_list.begin(); p != plugin_list.end(); ++p)
+	for ( const auto& p : App::plugin_manager.plugins() )
     {
-        std::string path = p->path;
+		std::string id = p.id;
 		action_group->add(
-			Gtk::Action::create(p->id, p->name),
-			[instance, path](){instance->run_plugin(path, true);}
+			Gtk::Action::create(id, p.name.get()),
+			[instance, id](){instance->run_plugin(id, true);}
         );
     }
 

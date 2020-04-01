@@ -223,107 +223,8 @@ Instance::set_redo_status(bool x)
 	signal_undo_redo_status_changed()();
 }
 
-bool
-studio::Instance::run_plugin_with_arguments(std::string plugin_path, const std::vector<std::string>& args)
-{
-	OneMoment one_moment;
-
-	bool result = false;
-	String output;
-	String command;
-
-	// Path to python binary can be overridden
-	// with SYNFIG_PYTHON_BINARY env variable:
-	const char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
-	if(custom_python_binary) {
-		command=custom_python_binary;
-		if (!App::check_python_version(command)) {
-			command="";
-		}
-	} else {
-	// Set path to python binary depending on the os type.
-	// For Windows case Python binary is expected
-	// at INSTALL_PREFIX/python/python.exe
-		std::list< String > binary_choices;
-		binary_choices.push_back("python");
-		binary_choices.push_back("python3");
-		std::list< String >::iterator iter;
-		for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
-		{
-			String python_path;
-#ifdef _WIN32
-			python_path = "\"" + App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
-#else
-			python_path = *iter;
-#endif
-			if (App::check_python_version(python_path))
-			{
-				command = python_path;
-				break;
-			}
-
-		}
-	}
-
-	if (command.empty())
-	{
-		output=_("Error: No Python 3 binary found.\n\nHint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation.");
-	} else {
-		synfig::info("Python 3 binary found: "+command);
-
-
-		// Construct the full command:
-		command = command+" \""+plugin_path+"\"";
-		for ( const auto& arg : args )
-		{
-			command += " \"" + arg + "\"";
-		}
-		command += " 2>&1";
-#ifdef _WIN32
-		// This covers the dumb cmd.exe behavior.
-		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
-		command = "\"" + command + "\"";
-#endif
-
-		FILE* pipe = popen(command.c_str(), "r");
-		if (!pipe) {
-			output = _("ERROR: pipe failed!");
-		} else {
-			char buffer[128];
-			while(!feof(pipe)) {
-				if(fgets(buffer, 128, pipe) != NULL)
-					output += buffer;
-			}
-
-			if (output != "" ){
-				synfig::info(output);
-			}
-
-			int exitcode=pclose(pipe);
-
-			if (0==exitcode){
-				result=true;
-			}
-		}
-	}
-
-
-	if (!result){
-		one_moment.hide();
-		App::dialog_message_1b(
-				"Error",
-				output,
-				"details",
-				_("Close"));
-
-		one_moment.show();
-	}
-
-	return result;
-}
-
 void
-studio::Instance::run_plugin(std::string plugin_path, bool modify_canvas, std::vector<std::string> extra_args)
+studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vector<std::string> extra_args)
 {
 	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
@@ -359,10 +260,13 @@ studio::Instance::run_plugin(std::string plugin_path, bool modify_canvas, std::v
 	// Generate temporary file name
 	String filename_original = get_canvas()->get_file_name();
 	String filename_processed;
+	String filename_prefix;
+	if ( !is_absolute_path(filename_original) )
+		filename_prefix = temporary_filesystem->get_temporary_directory() + ETL_DIRECTORY_SEPARATOR;
 	struct stat buf;
 	do {
 		synfig::GUID guid;
-		filename_processed = filename_original+"."+guid.get_string().substr(0,8)+".sif";
+		filename_processed = filename_prefix + filename_original + "." + guid.get_string().substr(0,8) + ".sif";
 	} while (stat(filename_processed.c_str(), &buf) != -1);
 
 	if ( modify_canvas )
@@ -401,7 +305,7 @@ studio::Instance::run_plugin(std::string plugin_path, bool modify_canvas, std::v
 
 		one_moment.hide();
 		extra_args.insert(extra_args.begin(), filename_processed);
-		bool result = run_plugin_with_arguments(plugin_path, extra_args);
+		bool result = App::plugin_manager.run(plugin_id, extra_args);
 
 		if (result && modify_canvas){
 			// Restore file copy
@@ -669,16 +573,16 @@ studio::Instance::dialog_export()
 		filename = absolute_path(filename);
 
 	// show the canvas' name if it has one, else its ID
-	std::string plugin = App::dialog_export_file(
+	std::string plugin_id = App::dialog_export_file(
 		(_("Please choose a file name") +
 		String(" (") +
 		(canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
 		")"),
 		filename, ANIMATION_DIR_PREFERENCE
 	);
-	if ( !plugin.empty() )
+	if ( !plugin_id.empty() )
 	{
-		run_plugin(plugin, false, {filename});
+		run_plugin(plugin_id, false, {filename});
 		return true;
 	}
 

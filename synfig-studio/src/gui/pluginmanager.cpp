@@ -32,9 +32,10 @@
 #include "pluginmanager.h"
 
 #include <libxml++/libxml++.h>
+#include <glibmm/fileutils.h>
+#include <glibmm/spawn.h>
 
-#include <dirent.h>
-#include <sys/stat.h>
+#include <ETL/handle>
 
 #include <synfig/general.h>
 #include <synfig/savecanvas.h>
@@ -43,186 +44,338 @@
 
 #include <synfigapp/localization.h>
 
+#include "app.h"
+#include "onemoment.h"
+
 #endif
 
-/* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
-using namespace studio;
-
-/* === M A C R O S ========================================================= */
-
-
-/* === G L O B A L S ======================================================= */
-
-/* === M E T H O D S ======================================================= */
-
-PluginManager::PluginManager():
-	list_()
+studio::PluginString::PluginString(std::string fallback)
+	: fallback_(std::move(fallback))
 {
-} // END of synfigapp::PluginManager::PluginManager()
+}
+
+studio::PluginString studio::PluginString::load(const xmlpp::Node& parent, const std::string& tag_name)
+{
+	PluginString string;
+	for ( const xmlpp::Node* node : parent.find("./" + tag_name) )
+	{
+		const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+		std::string lang = element->get_attribute_value("lang");
+		if ( lang.empty() )
+			lang = element->get_attribute_value("lang", "xml");
+		if ( const xmlpp::TextNode* text = element->get_child_text() )
+			string.add_translation(lang, text->get_content());
+	}
+	return string;
+}
+
+void studio::PluginString::add_translation(const std::string& locale, const std::string& translated)
+{
+	if ( locale.empty() )
+		fallback_ = translated;
+	else
+		translations_.emplace(locale, translated);
+}
+
+std::string studio::PluginString::get() const
+{
+	std::string current_locale = setlocale(LC_ALL, NULL);
+	auto it = translations_.find(current_locale);
+	if ( it == translations_.end() )
+		return fallback_;
+	return it->second;
+}
+
+studio::PluginStream studio::PluginScript::stream_from_name(const std::string& name, PluginStream default_value)
+{
+	if ( name == "log" )
+		return PluginStream::Log;
+	if ( name == "message" )
+		return PluginStream::Message;
+	if ( name == "ignore" )
+		return PluginStream::Ignore;
+	return default_value;
+}
+
+studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const std::string& working_directory)
+{
+	const xmlpp::Element& element = dynamic_cast<const xmlpp::Element&>(node);
+	PluginScript script;
+	script.interpreter = element.get_attribute_value("type");
+	if ( script.interpreter.empty() )
+		script.interpreter = "python";
+
+	script.stdout = stream_from_name(element.get_attribute_value("stdout"), script.stdout);
+	script.stderr = stream_from_name(element.get_attribute_value("stdout"), script.stderr);
+
+	script.working_directory = working_directory;
+
+	if ( const xmlpp::TextNode* text = element.get_child_text() )
+		script.script = text->get_content();
+
+	return script;
+}
+
+bool studio::PluginScript::is_valid() const
+{
+	return !interpreter.empty() && !script.empty();
+}
+
+
+bool studio::Plugin::is_valid() const
+{
+	return !name.fallback().empty();
+}
+
+
+studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
+{
+	ImportExport ie;
+	for ( const xmlpp::Node* ext : node.find("./extension/text()") )
+	{
+		const xmlpp::TextNode* text = dynamic_cast<const xmlpp::TextNode*>(ext);
+		if (  text && !text->get_content().empty() )
+			ie.extensions.push_back(text->get_content());
+	}
+
+	ie.description = PluginString::load(node, "description");
+
+	return ie;
+}
+
+bool studio::ImportExport::is_valid() const
+{
+	return !description.fallback().empty() && !extensions.empty();
+}
+
+bool studio::ImportExport::has_extension(const std::string& ext) const
+{
+	for ( const auto& e : extensions )
+		if ( e == ext )
+			return true;
+	return false;
+}
+
 
 void
-PluginManager::load_dir( const std::string &pluginsprefix )
+studio::PluginManager::load_dir( const std::string &pluginsprefix )
 {
 	
 	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
-	
-	DIR *dir;
-	struct dirent *entry;
-	
-	dir = opendir(pluginsprefix.c_str());
-	if(dir) {
-		while ( (entry = readdir(dir)) != NULL) {
-			if ( std::string(entry->d_name) != std::string(".") && std::string(entry->d_name) != std::string("..") ) {
-				std::string pluginpath;
-				pluginpath = pluginsprefix+ETL_DIRECTORY_SEPARATOR+entry->d_name;
-				struct stat sb;
-				stat(pluginpath.c_str(), &sb);
-				// error handling if stat failed
-				if (S_ISDIR(sb.st_mode)) {
-					// checking if directory contains a plugin...
-					DIR *plugindir;
-					struct dirent *plugindirentry;
-					
-					plugindir = opendir(pluginpath.c_str());
-					if(plugindir) {
-						while ( (plugindirentry = readdir(plugindir)) != NULL) {
-							if ( std::string(plugindirentry->d_name) == std::string("plugin.xml") ){
-								std::string pluginfilepath;
-								pluginfilepath = pluginpath+ETL_DIRECTORY_SEPARATOR+plugindirentry->d_name;
-								
-								load_plugin(pluginfilepath);
-							}
-						}
-						closedir(plugindir);
-					} 
-					else 
-						synfig::warning("Can't read plugin directory!");
 
-					/*plugindir = opendir(pluginpath.c_str());
-					if(!plugindir) {
-						synfig::warning("Can't read plugin directory!");
-						return;
-					}
-					
-					while ( (plugindirentry = readdir(plugindir)) != NULL) {
-						if ( std::string(plugindirentry->d_name) == std::string("plugin.xml") ){
-							std::string pluginfilepath;
-							pluginfilepath = pluginpath+ETL_DIRECTORY_SEPARATOR+plugindirentry->d_name;
-							
-							load_plugin(pluginfilepath);
-						}
-					}*/
-					
-				}
+	try {
+		Glib::Dir dir(pluginsprefix);
+		for ( const std::string& entry : dir ) {
+			std::string pluginpath = pluginsprefix + "/" + entry;
+			std::string pluginfilepath = pluginpath + "/plugin.xml";
+			if ( Glib::file_test(pluginpath, Glib::FILE_TEST_IS_DIR) && Glib::file_test(pluginfilepath, Glib::FILE_TEST_IS_REGULAR) ) {
+				load_plugin(pluginfilepath, pluginpath);
 			}
-
-		};
-		
-		closedir(dir);
+		}
+	} catch ( const Glib::FileError& e ) {
+		synfig::warning("Can't read plugin directory: %s", e.what().c_str());
 	}
 } // END of synfigapp::PluginManager::load_dir()
 
 void
-PluginManager::load_plugin( const std::string &path )
+studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir )
 {
-	// Get locale
-	std::string current_locale = setlocale(LC_ALL, NULL);
-	
-	synfig::info("   Loading plugin: %s", basename(dirname(path)).c_str());
-							
-	PluginManager::plugin p;
-	std::string plugindir = dirname(path);
-	p.id=plugindir;
+	synfig::info("   Loading plugin: %s", etl::basename(plugindir).c_str());
 
-	std::list<plugin>* target_list = &list_;
-	
+	std::string id = plugindir;
+
 	// parse xml file
 	try
 	{
 		xmlpp::DomParser parser;
 		//parser.set_validate();
 		parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
-		parser.parse_file(path);
-		if(parser)
+		parser.parse_file(file);
+		if ( !parser )
 		{
-			//Walk the tree:
-			const xmlpp::Node* pNode = parser.get_document()->get_root_node(); //deleted by DomParser.
-			if ( std::string(pNode->get_name()) == std::string("plugin") ){
-				//Recurse through child nodes:
-				xmlpp::Node::NodeList list = pNode->get_children();
-				
-				unsigned int name_relevance = 0;
+			synfig::warning("Invalid plugin.xml file!");
+			return;
+		}
 
-				const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(pNode);
-				std::string type = element->get_attribute_value("type");
-				if ( type == "exporter" )
-				{
-					target_list = &exporters_;
-				}
-				p.extension = pNode->eval_to_string("./extension[1]/text()");
-				p.description = pNode->eval_to_string("./description[1]/text()");
-				std::string exec = pNode->eval_to_string("./exec[1]/text()");
-				if ( !exec.empty() )
-					p.path = plugindir + ETL_DIRECTORY_SEPARATOR + exec;
+		//Walk the tree:
+		const xmlpp::Node* pNode = parser.get_document()->get_root_node(); //deleted by DomParser.
+		if ( std::string(pNode->get_name()) != std::string("plugin") ) {
+			synfig::warning("Invalid plugin.xml file (missing root <plugin>)");
+			return;
+		}
 
+		auto execlist = pNode->find("./exec");
+		if ( !execlist.empty() )
+		{
+			Plugin plugin;
+			plugin.name = PluginString::load(*pNode, "name");
+			PluginScript script = PluginScript::load(*execlist[0], plugindir);
+			plugin.id = id;
 
-				for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
-				{
-					const xmlpp::Node* node = *iter;
-					if ( std::string(node->get_name()) == std::string("name") ) {
+			if ( !plugin.is_valid() || !script.is_valid() )
+			{
+				synfig::warning("Invalid plugin description");
+			}
+			else
+			{
+				scripts_.emplace(plugin.id, std::move(script));
+				plugins_.emplace_back(std::move(plugin));
+			}
+		}
 
-						const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node);
-						
-						xmlpp::Node::NodeList l = nodeElement->get_children();
-						xmlpp::Node::NodeList::iterator i = l.begin();
-						xmlpp::Node* n = *i;
-						
-						const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(n);
-						
-						if(nodeText)
-						{
-							// Get the language attribute
-							const xmlpp::Attribute* langAttribute = nodeElement->get_attribute("lang", "xml");
+		auto nodelist = pNode->find("./exporter");
+		exporters_.reserve(exporters_.size() + nodelist.size());
+		int exporter_number = 0;
+		for ( xmlpp::Node* exporter_node : nodelist )
+		{
+			auto execlist = exporter_node->find("./exec");
+			if ( execlist.empty() )
+				continue;
 
-							if (langAttribute) {
-								// Element have language attribute,
-								std::string lang = langAttribute->get_value();
-								// let's compare it with current locale
-								 if (!current_locale.compare(0, lang.size(), lang)) {
-									 if (lang.size() > name_relevance){
-										 p.name=nodeText->get_content();
-									 }
-								 }
-							} else {
-								// Element have no language attribute - use as fallback
-								if (name_relevance == 0){
-									p.name=nodeText->get_content();
-								}
-							}
-						}
-					}
-				}
-			} else {
-				synfig::info("Invalid plugin.xml file.");
+			ImportExport exporter = ImportExport::load(*exporter_node);
+			PluginScript script = PluginScript::load(*execlist[0], plugindir);
+			if ( exporter.is_valid() && script.is_valid() )
+			{
+				exporter.id  = id + "/exporter/" + std::to_string(exporter_number++);
+				scripts_.emplace(exporter.id, std::move(script));
+				exporters_.emplace_back(std::move(exporter));
 			}
 		}
 	}
 	catch(const std::exception& ex)
 	{
+		synfig::warning("Error while loading plugin.xml");
 		std::cout << "Exception caught: " << ex.what() << std::endl;
-	}
-	
-	if ( p.id != "" && p.name != "" && p.path != ""){
-		target_list->push_back(p);
-	} else {
-		synfig::warning("Invalid plugin.xml file!");
 	}
 }
 
-PluginManager::~PluginManager()
+std::string studio::PluginManager::interpreter_executable(const std::string& interpreter) const
 {
+	// Path to python binary can be overridden
+	// with SYNFIG_PYTHON_BINARY env variable:
+	std::string command;
+
+	if ( interpreter == "python" )
+	{
+		const char* custom_python_binary = getenv("SYNFIG_PYTHON_BINARY");
+		if(custom_python_binary) {
+			command = custom_python_binary;
+			if ( !studio::App::check_python_version(command) ) {
+				command = "";
+			}
+		} else {
+			// Set path to python binary depending on the os type.
+			// For Windows case Python binary is expected
+			// at INSTALL_PREFIX/python/python.exe
+			for ( std::string iter : {"python", "python3"} )
+			{
+				std::string python_path;
+#ifdef _WIN32
+				python_path = App::get_base_path() + "/python/" + iter + ".exe";
+#else
+				python_path = iter;
+#endif
+				if ( studio::App::check_python_version(python_path) )
+				{
+					command = python_path;
+					break;
+				}
+			}
+		}
+
+		if ( command.empty() ) {
+			studio::App::dialog_message_1b(
+				"Error",
+				_("Error: No Python 3 binary found.\n\nHint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation."),
+				"details",
+				_("Close")
+			);
+		} else {
+			synfig::info("Python 3 binary found: "+command);
+		}
+	}
+	else
+	{
+		studio::App::dialog_message_1b(
+			"Error",
+			_("Error: Unsupported interpreter"),
+			"details",
+			_("Close")
+		);
+
+	}
+
+	return command;
+}
+
+bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<std::string> args) const
+{
+	std::string exec = interpreter_executable(script.interpreter);
+	if ( exec.empty() )
+	{
+		return false;
+	}
+
+	args.insert(args.begin(), script.script);
+	args.insert(args.begin(), exec);
+
+	std::string stdout;
+	std::string stderr;
+	int exit_status;
+
+	studio::OneMoment one_moment;
+	try {
+		Glib::spawn_sync(
+			script.working_directory,
+			args,
+			Glib::SPAWN_SEARCH_PATH,
+			Glib::SlotSpawnChildSetup(),
+			&stdout,
+			&stderr,
+			&exit_status
+		);
+	} catch ( const Glib::SpawnError& err ) {
+		studio::App::dialog_message_1b("Error", etl::strprintf(_("Plugin execution failed: %s"), err.what().c_str()), "details", _("Close"));
+		return false;
+	}
+
+	one_moment.hide();
+	handle_stream(script.stdout, stdout);
+	handle_stream(script.stderr, stderr);
+
+	if ( exit_status && (stderr.empty() || script.stderr != PluginStream::Message) )
+	{
+		studio::App::dialog_message_1b("Error", _("Plugin execution failed"), "details", _("Close"));
+	}
+
+	return true;
+}
+
+void studio::PluginManager::handle_stream(studio::PluginStream behaviour, const std::string& output) const
+{
+	if ( output.empty() )
+		return;
+
+	switch ( behaviour )
+	{
+		case PluginStream::Ignore:
+			break;
+		case PluginStream::Log:
+			synfig::info(output);
+			break;
+		case PluginStream::Message:
+			studio::App::dialog_message_1b("Error", output, "details", _("Close"));
+			break;
+	}
+}
+
+bool studio::PluginManager::run(const std::string& script_id, const std::vector<std::string>& args) const
+{
+	auto it = scripts_.find(script_id);
+	if ( it != scripts_.end() )
+		return run(it->second, args);
+
+	studio::App::dialog_message_1b("Error", _("Plugin not found"), "details", _("Close"));
+	return false;
 }

@@ -28,69 +28,103 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/string.h>
-#include <synfig/canvas.h>
-#include <list>
-#include <ETL/handle>
+#include <unordered_map>
+#include <vector>
 
-/* === M A C R O S ========================================================= */
-
-/* === T Y P E D E F S ===================================================== */
-
-/* === C L A S S E S & S T R U C T S ======================================= */
+namespace xmlpp {
+	class Node;
+} // namespace xmlpp
 
 namespace studio {
 
+
+class PluginString
+{
+private:
+	std::unordered_map<std::string, std::string> translations_;
+	std::string fallback_;
+
+public:
+	PluginString(std::string fallback={});
+
+	static PluginString load(const xmlpp::Node& parent, const std::string& tag_name);
+
+	void add_translation(const std::string& locale, const std::string& translated);
+
+	std::string get() const;
+
+	const std::string& fallback() const { return fallback_; }
+};
+
+enum class PluginStream
+{
+	Ignore,
+	Log,
+	Message
+};
+
+struct PluginScript
+{
+	PluginStream stdout = PluginStream::Ignore;
+	PluginStream stderr = PluginStream::Message;
+	std::string interpreter;
+	std::string script;
+	std::string working_directory;
+
+	static PluginScript load(const xmlpp::Node& node, const std::string& working_directory);
+	static PluginStream stream_from_name(const std::string& name, PluginStream default_value);
+
+	bool is_valid() const;
+};
+
+class ImportExport
+{
+public:
+	std::string id;
+	std::vector<std::string> extensions;
+	PluginString description;
+
+	static ImportExport load(const xmlpp::Node& node);
+
+	bool is_valid() const;
+
+	bool has_extension(const std::string& ext) const;
+};
+
+class Plugin
+{
+public:
+	std::string id;
+	PluginString name;
+
+	bool is_valid() const;
+};
+
 class PluginManager
 {
-	/*
- -- ** -- P U B L I C   T Y P E S ---------------------------------------------
-	*/
-
-public:
-	struct plugin{
-		std::string id;
-		std::string name;
-		std::string path;
-		std::string extension;
-		std::string description;
-	};
-
-	/*
- -- ** -- P U B L I C  D A T A ------------------------------------------------
-	*/
-
-public:
-
-	/*
- -- ** -- P R I V A T E   D A T A ---------------------------------------------
-	*/
-
 private:
+	std::vector<Plugin> plugins_;
+	std::vector<ImportExport> exporters_;
+	std::unordered_map<std::string, PluginScript> scripts_;
 
-	std::list< plugin > list_;
-	std::list< plugin > exporters_;
-
-protected:
-	
-	/*
- -- ** -- P U B L I C   M E T H O D S -----------------------------------------
-	*/
+	std::string interpreter_executable(const std::string& interpreter) const;
+	void handle_stream(PluginStream behaviour, const std::string& output) const;
 
 public:
-	PluginManager();
-	~PluginManager();
-
 	void load_dir( const std::string &pluginsprefix );
-	void load_plugin( const std::string &path );
+	void load_plugin( const std::string &file, const std::string &plugindir );
 
-	std::list< plugin > get_list() { return list_; };
+	bool run(const PluginScript& script, std::vector<std::string> args) const;
+	bool run(const std::string& script_id, const std::vector<std::string>& args) const;
 
-	std::list< plugin > get_exporters() { return exporters_; };
+	const std::vector<Plugin>& plugins() const { return plugins_; };
+
+	const std::vector<ImportExport>& exporters() { return exporters_; };
 
 }; // END class PluginManager
 
 
-}; // END namespace synfigapp
+} // END namespace synfigapp
 
 /* === E N D =============================================================== */
 
