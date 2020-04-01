@@ -107,6 +107,11 @@ jobs:
     dist: xenial
     script: bash autobuild/transifex-push-translations.sh
 
+  - os: linux
+    name: "Translations validation Ubuntu 16.04 Xenial"
+    dist: xenial
+    script: bash autobuild/translations-validation.sh
+
   allow_failures:
   #  - env: CMAKE=true
   #  - os: osx
