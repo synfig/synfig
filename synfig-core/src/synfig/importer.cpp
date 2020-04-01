@@ -98,7 +98,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 	if(identifier.filename.empty())
 	{
 		synfig::error(_("Importer::open(): Cannot open empty filename"));
-		return 0;
+		return nullptr;
 	}
 
 	// If we already have an importer open under that filename,
@@ -112,7 +112,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 	if(filename_extension(identifier.filename) == "")
 	{
 		synfig::error(_("Importer::open(): Couldn't find extension"));
-		return 0;
+		return nullptr;
 	}
 
 	String ext(filename_extension(identifier.filename));
@@ -123,7 +123,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 	if(!Importer::book().count(ext))
 	{
 		synfig::error(_("Importer::open(): Unknown file type -- ")+ext);
-		return 0;
+		return nullptr;
 	}
 
 	try {
@@ -136,7 +136,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 	{
 		synfig::error(str);
 	}
-	return 0;
+	return nullptr;
 }
 
 void Importer::forget(const FileSystem::Identifier &identifier)
@@ -170,7 +170,7 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 		warning(strprintf("Unable to get frame from \"%s\"", identifier.filename.c_str()));
 
 	const char *s = getenv("SYNFIG_PACK_IMAGES");
-	if (s == NULL || atoi(s) != 0)
+	if (s == nullptr || atoi(s) != 0)
 		last_surface_ = new rendering::SurfaceSWPacked();
 	else
 		last_surface_ = new rendering::SurfaceSW();
