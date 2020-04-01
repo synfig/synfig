@@ -166,16 +166,6 @@ public:
 	**	\see ProgressCallback, Surface
 	*/
 	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL)=0;
-	virtual bool get_frame(Surface &surface, const RendDesc &renddesc,Time time,
-						   bool &trimmed,
-						   unsigned int &width,
-						   unsigned int &height,
-						   unsigned int &top,
-						   unsigned int &left,
-						   ProgressCallback *callback=NULL)
-	{
-		return get_frame(surface,renddesc,time,callback);
-	}
 
 	virtual rendering::Surface::Handle get_frame(const RendDesc &renddesc, const Time &time);
 
