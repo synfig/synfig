@@ -166,9 +166,7 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 		return last_surface_;
 
 	Surface surface;
-	bool trimmed = false;
-	unsigned int width = 0, height = 0, top = 0, left = 0;
-	if(!get_frame(surface, RendDesc(), time, trimmed, width, height, top, left))
+	if(!get_frame(surface, RendDesc(), time))
 		warning(strprintf("Unable to get frame from \"%s\"", identifier.filename.c_str()));
 
 	const char *s = getenv("SYNFIG_PACK_IMAGES");
