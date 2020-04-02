@@ -183,7 +183,7 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 {
 	synfig::info("   Loading plugin: %s", etl::basename(plugindir).c_str());
 
-	std::string id = plugindir;
+	std::string id = file;
 
 	// parse xml file
 	try
