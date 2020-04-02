@@ -1469,9 +1469,6 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
 		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::squence_import))
 	);
-	action_group->add( Gtk::Action::create("import-file", _("Import File...")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_import_file))
-	);
 	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
 		sigc::mem_fun0(render_settings,&RenderSettings::present)
 	);
