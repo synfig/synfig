@@ -37,9 +37,6 @@
 #include <valarray>
 
 #include <glib.h>
-#include <gdkmm/general.h>
-
-#include <ETL/misc>
 
 #include <synfig/general.h>
 #include <synfig/canvas.h>
@@ -53,8 +50,6 @@
 #include <gui/timemodel.h>
 
 #include "renderer_canvas.h"
-
-#include <gui/localization.h>
 
 #endif
 
@@ -303,7 +298,7 @@ Renderer_Canvas::erase_tile(TileList &list, TileList::iterator i, rendering::Tas
 	tiles_size -= image_rect_size((*i)->rect);
 	(*i)->event.reset();
 	(*i)->surface.reset();
-	(*i)->cairo_surface.clear();
+	(*i)->cairo_surface = Cairo::RefPtr<Cairo::ImageSurface>();
 	return list.erase(i);
 }
 
