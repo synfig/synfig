@@ -880,7 +880,7 @@ WorkArea::set_background_size(const synfig::Vector &s)
 {
 	if (background_size == s) return;
 	background_size = s;
-	background_pattern.clear();
+	background_pattern = Cairo::RefPtr<Cairo::SurfacePattern>();
 	save_meta_data();
 	queue_draw();
 }
@@ -890,7 +890,7 @@ WorkArea::set_background_first_color(const synfig::Color &c)
 {
 	if (background_first_color == c) return;
 	background_first_color = c;
-	background_pattern.clear();
+	background_pattern = Cairo::RefPtr<Cairo::SurfacePattern>();;
 	save_meta_data();
 	queue_draw();
 }
@@ -900,7 +900,7 @@ WorkArea::set_background_second_color(const synfig::Color &c)
 {
 	if (background_second_color == c) return;
 	background_second_color = c;
-	background_pattern.clear();
+	background_pattern = Cairo::RefPtr<Cairo::SurfacePattern>();
 	save_meta_data();
 	queue_draw();
 }

@@ -30,12 +30,7 @@
 #endif
 
 #include <cmath>
-
-#include <ETL/misc>
-
-#include <synfig/general.h>
-
-#include <gui/localization.h>
+#include <cairomm/surface.h>
 #include <gui/canvasview.h>
 #include <gui/workarea.h>
 #include <gui/workarearenderer/renderer_canvas.h>
@@ -102,8 +97,8 @@ Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)
 void
 Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Point &root)
 {
-	thumb_background.clear();
-	thumb_surface.clear();
+	thumb_background = Cairo::RefPtr<Cairo::SurfacePattern>();
+	thumb_surface = Cairo::RefPtr<Cairo::ImageSurface>();
 
 	Cairo::RefPtr<Cairo::SurfacePattern> pattern;
 	Cairo::RefPtr<Cairo::ImageSurface> surface;
@@ -145,8 +140,7 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 		if (top > 2*space + tooltip_h) {
 			y = top - space - tooltip_h;
 			visible = true;
-		} else
-		if (screen_h - top - h > 2*space + tooltip_h) {
+		} else if (screen_h - top - h > 2*space + tooltip_h) {
 			y = top + h + space;
 			visible = true;
 		}
