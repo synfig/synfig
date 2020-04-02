@@ -824,7 +824,13 @@ bool Blur::operator()(const Surface &surface,
 			}
 			while(bh)
 			{
-				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
+				if(!blurcall.amount_complete(max-(bw+bh),max)) {
+					delete [] SC0;
+					delete [] SC1;
+					delete [] SC2;
+					delete [] SC3;
+					return false;
+				}
 				if(bh>=2)
 				{
 					GaussianBlur_1x3(*gauss_surface);
@@ -1163,7 +1169,14 @@ bool Blur::operator()(cairo_surface_t *surface,
 						
 			while(bw&&bh)
 			{
-				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
+				if(!blurcall.amount_complete(max-(bw+bh),max)) {
+					delete [] SC0;
+					delete [] SC1;
+					delete [] SC2;
+					delete [] SC3;
+
+					return false;
+				}
 				
 				if(bw>=4 && bh>=4)
 				{
