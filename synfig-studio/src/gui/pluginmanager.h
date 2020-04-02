@@ -65,8 +65,8 @@ enum class PluginStream
 
 struct PluginScript
 {
-	PluginStream stdout = PluginStream::Ignore;
-	PluginStream stderr = PluginStream::Message;
+	PluginStream stdout_behaviour = PluginStream::Ignore;
+	PluginStream stderr_behaviour = PluginStream::Message;
 	std::string interpreter;
 	std::string script;
 	std::string working_directory;

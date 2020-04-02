@@ -106,8 +106,8 @@ studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const s
 	if ( script.interpreter.empty() )
 		script.interpreter = "python";
 
-	script.stdout = stream_from_name(element.get_attribute_value("stdout"), script.stdout);
-	script.stderr = stream_from_name(element.get_attribute_value("stdout"), script.stderr);
+	script.stdout_behaviour = stream_from_name(element.get_attribute_value("stdout"), script.stdout_behaviour);
+	script.stderr_behaviour = stream_from_name(element.get_attribute_value("stderr"), script.stderr_behaviour);
 
 	script.working_directory = working_directory;
 
@@ -331,8 +331,8 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	args.insert(args.begin(), script.script);
 	args.insert(args.begin(), exec);
 
-	std::string stdout;
-	std::string stderr;
+	std::string stdout_str;
+	std::string stderr_str;
 	int exit_status;
 
 	studio::OneMoment one_moment;
@@ -342,8 +342,8 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 			args,
 			Glib::SPAWN_SEARCH_PATH,
 			Glib::SlotSpawnChildSetup(),
-			&stdout,
-			&stderr,
+			&stdout_str,
+			&stderr_str,
 			&exit_status
 		);
 	} catch ( const Glib::SpawnError& err ) {
@@ -352,10 +352,10 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	}
 
 	one_moment.hide();
-	handle_stream(script.stdout, stdout);
-	handle_stream(script.stderr, stderr);
+	handle_stream(script.stdout_behaviour, stdout_str);
+	handle_stream(script.stderr_behaviour, stderr_str);
 
-	if ( exit_status && (stderr.empty() || script.stderr != PluginStream::Message) )
+	if ( exit_status && (stderr_str.empty() || script.stderr_behaviour != PluginStream::Message) )
 	{
 		studio::App::dialog_message_1b("Error", _("Plugin execution failed"), "details", _("Close"));
 	}
