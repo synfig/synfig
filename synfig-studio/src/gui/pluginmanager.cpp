@@ -80,8 +80,7 @@ void studio::PluginString::add_translation(const std::string& locale, const std:
 
 std::string studio::PluginString::get() const
 {
-	std::string current_locale = setlocale(LC_ALL, NULL);
-	auto it = translations_.find(current_locale);
+	auto it = translations_.find(studio::App::ui_language);
 	if ( it == translations_.end() )
 		return fallback_;
 	return it->second;
