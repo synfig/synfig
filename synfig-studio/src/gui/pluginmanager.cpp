@@ -136,7 +136,7 @@ studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
 	{
 		const xmlpp::TextNode* text = dynamic_cast<const xmlpp::TextNode*>(ext);
 		if (  text && !text->get_content().empty() )
-			ie.extensions.push_back(text->get_content());
+			ie.extensions.push_back("." + text->get_content());
 	}
 
 	ie.description = PluginString::load(node, "description");

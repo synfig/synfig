@@ -2950,7 +2950,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
 		filter->set_name(exp.description.get());
 		for ( const std::string& extension : exp.extensions )
-			filter->add_pattern("*." + extension);
+			filter->add_pattern("*" + extension);
 		dialog->add_filter(filter);
 	}
 
@@ -3220,7 +3220,7 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
 		filter->set_name(exp.description.get());
 		for ( const std::string& extension : exp.extensions )
-			filter->add_pattern("*." + extension);
+			filter->add_pattern("*" + extension);
 		dialog->add_filter(filter);
 	}
 
