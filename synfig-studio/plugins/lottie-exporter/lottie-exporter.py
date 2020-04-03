@@ -119,18 +119,10 @@ def gen_html(file_name):
 
 def init_logs():
     """
-    Initializes the logger, sets the file name in which the logs will be stored
-    and sets the level of the logging(DEBUG | INFO : depending on what is
+    Initializes the logger, sets the level of the logging(DEBUG | INFO : depending on what is
     specified)
     """
-    name = settings.file_name['fn']
-    name = name.split(".")
-    name[-1] = 'log'
-    name = '.'.join(name)
-    path = os.path.join(settings.file_name['fd'], name)
-    path = os.path.abspath(name)
-    logging.basicConfig(filename=path, filemode='w',
-                        format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(stream=sys.stdout, format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
 
