@@ -18,6 +18,7 @@ set(IMG_SOURCE_action_doc_undo_icon action_doc_icons 6)
 set(IMG_SOURCE_action_doc_redo_icon action_doc_icons 7)
 
 set(IMG_SOURCE_canvas_icon canvas_and_importimage_icons 2)
+set(IMG_SOURCE_layer_other_importimage_icon canvas_and_importimage_icons 1)
 
 set(IMG_SOURCE_animate_seek_next_keyframe_icon framedial_icons 0)
 set(IMG_SOURCE_animate_seek_prev_keyframe_icon framedial_icons 1)
@@ -148,6 +149,7 @@ set(ICONS
     layer_icon
     layer_other_duplicate_icon
     layer_other_group_icon
+    layer_other_importimage_icon
     layer_other_plant_icon
     layer_other_skeleton_icon
     layer_other_sound_icon
