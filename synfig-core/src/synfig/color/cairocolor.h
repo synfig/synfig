@@ -195,7 +195,7 @@ public:
 	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=ceil)
 		: pixel((A<<24)|(R<<16)|(G<<8)|(B)) { }
 	CairoColor(const CairoColor& c, const unsigned char A)
-		: pixel(c.get_pixel()) { set_a(A); }
+		: pixel(c.pixel) { set_a(A); }
 
 	// Converter constructor
 	CairoColor(const Color& c)
@@ -211,7 +211,6 @@ public:
 	inline CairoColor(const CairoColorAccumulator& c);
 	CairoColor(int r, int g, int b, int a);
 	
-	value_type get_pixel()const {return pixel; }
 	unsigned char get_a()const { return pixel>>24; }
 	unsigned char get_r()const { return pixel>>16; }
 	unsigned char get_g()const { return pixel>>8; }
