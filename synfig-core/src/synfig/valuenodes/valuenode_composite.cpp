@@ -564,7 +564,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 3;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != nullptr)
 	{
 		if(name=="weight")
 			return 0;
@@ -572,7 +572,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 1;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != nullptr)
 	{
 		if(name=="first")
 			return 0;
@@ -595,8 +595,8 @@ ValueNode_Composite::check_type(Type &type)
 		|| type==type_width_point
 		|| type==type_dash_item
 		|| type==type_transformation
-		|| dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL
-		|| dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL;
+		|| dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != nullptr
+		|| dynamic_cast<types_namespace::TypePairBase*>(&type) != nullptr;
 }
 
 LinkableValueNode::Vocab
@@ -804,7 +804,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		return ret;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != nullptr)
 	{
 		ret.push_back(ParamDesc(ValueBase(),"weight")
 			.set_local_name(_("Weight"))
@@ -817,7 +817,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		return ret;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != nullptr)
 	{
 		ret.push_back(ParamDesc(ValueBase(),"first")
 			.set_local_name(_("First"))
