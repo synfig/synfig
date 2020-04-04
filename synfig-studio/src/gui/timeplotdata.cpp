@@ -63,6 +63,10 @@ TimePlotData::TimePlotData(Gtk::Widget& widget, Glib::RefPtr<Gtk::Adjustment> ve
 		vertical_value_changed = vertical_adjustment->signal_value_changed().connect(
 					sigc::mem_fun(*this, &TimePlotData::recompute_vertical) );
 		recompute_vertical();
+	} else {
+		range_k = 0.0;
+		range_lower = 0.0;
+		range_upper = 0.0;
 	}
 }
 
