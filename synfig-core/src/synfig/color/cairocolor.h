@@ -192,13 +192,14 @@ public:
 	CairoColor() :pixel(0x0) { }
 	CairoColor(const unsigned char u): pixel((u<<24)|(u<<16)|(u<<8)|(u)) { }
 
-	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=ceil):
-	pixel((A<<24)|(R<<16)|(G<<8)|(B)) { }
-	CairoColor(const CairoColor& c, const unsigned char A):
-	pixel(c.get_pixel()) { set_a(A); }
+	CairoColor(const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A=ceil)
+		: pixel((A<<24)|(R<<16)|(G<<8)|(B)) { }
+	CairoColor(const CairoColor& c, const unsigned char A)
+		: pixel(c.get_pixel()) { set_a(A); }
 
 	// Conversor constructor
 	CairoColor(const Color& c)
+		: pixel(0)
 	{
 		set_r((ceil-floor)*c.get_r()/(Color::ceil-Color::floor));
 		set_g((ceil-floor)*c.get_g()/(Color::ceil-Color::floor));
