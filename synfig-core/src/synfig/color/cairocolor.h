@@ -197,7 +197,7 @@ public:
 	CairoColor(const CairoColor& c, const unsigned char A)
 		: pixel(c.get_pixel()) { set_a(A); }
 
-	// Conversor constructor
+	// Converter constructor
 	CairoColor(const Color& c)
 		: pixel(0)
 	{
