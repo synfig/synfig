@@ -11,6 +11,7 @@ from properties.shapePropKeyframe.polygon import gen_dynamic_list_polygon
 from properties.shapePropKeyframe.circle import gen_list_circle
 from properties.shapePropKeyframe.rectangle import gen_list_rectangle
 from properties.shapePropKeyframe.star import gen_list_star
+from properties.shapePropKeyframe.linear_gradient import gen_list_rectangle_for_linear_gradient
 from common.Param import Param
 from common.Layer import Layer
 sys.path.append("../")
@@ -38,6 +39,8 @@ def gen_properties_shapeKeyframed(lottie, node, idx):
         gen_list_rectangle(lottie["k"], node)
     elif isinstance(node, Layer) and node.get_type() == "star":
         gen_list_star(lottie["k"], node)
+    elif isinstance(node, Layer) and node.get_type() == "linear_gradient":
+        gen_list_rectangle(lottie["k"], node)
     elif isinstance(node, Param) and node.get_layer_type() == "region":
         gen_bline_region(lottie["k"], node)
     elif isinstance(node, Param) and node.get_layer_type() == "polygon":

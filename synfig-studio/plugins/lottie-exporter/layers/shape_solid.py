@@ -12,6 +12,7 @@ from common.misc import get_color_hex, is_animated
 from common.Count import Count
 from effects.fill import gen_effects_fill
 from synfig.group import get_additional_width, get_additional_height
+from synfig.animation import print_animation
 sys.path.append("..")
 
 
