@@ -78,17 +78,7 @@ public:
 	{
 		parent           = nullptr;
 		edit_done_called = false;
-/*
-		  Gtk::HBox *const hbox = new Gtk::HBox(false, 0);
-		  add(*Gtk::manage(hbox));
 
-		  Gtk::Entry *entry_ = new Gtk::Entry();
-			entry_->set_text("bleh");
-		  hbox->pack_start(*Gtk::manage(entry_), Gtk::PACK_EXPAND_WIDGET);
-		  entry_->set_has_frame(false);
-		  entry_->gobj()->is_cell_renderer = true; // XXX
-
-*/
 		valuewidget = manage(new class Widget_ValueBase());
 		valuewidget->inside_cellrenderer();
 		add(*valuewidget);
@@ -97,27 +87,8 @@ public:
 		//set_can_focus(true);
 		//set_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 
-		/*
-		set_events(//(Gdk::ALL_EVENTS_MASK)
-		~(	Gdk::EXPOSURE_MASK
-			| Gdk::ENTER_NOTIFY_MASK
-			| Gdk::LEAVE_NOTIFY_MASK
-			| Gdk::FOCUS_CHANGE_MASK
-			| Gdk::STRUCTURE_MASK
-			| Gdk::PROPERTY_CHANGE_MASK
-			| Gdk::VISIBILITY_NOTIFY_MASK
-			| Gdk::PROXIMITY_IN_MASK
-			| Gdk::PROXIMITY_OUT_MASK
-			| Gdk::SUBSTRUCTURE_MASK
-		)
-		);
-		*/
-		//signal_editing_done().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::hide));
-		//signal_remove_widget().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::hide));
-
 		show_all_children();
 
-		//signal_show().connect(sigc::mem_fun(*this, &ValueBase_Entry::grab_focus));
 	}
 	~ValueBase_Entry()
 	{
@@ -478,7 +449,6 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_nil)
 	{
-		//property_text()=(Glib::ustring)" ";
 		return;
 	}
 	else
