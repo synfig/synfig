@@ -608,7 +608,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	else
 	{
 		assert(get_canvas());
-		//delete value_entry;
+
 		saved_data = data;
 
 		value_entry = manage(new ValueBase_Entry());
@@ -639,15 +639,9 @@ CellRenderer_ValueBase::on_value_editing_done()
 
 	if (value_entry)
 	{
+		ValueBase value(value_entry->get_value());
 
-		//ValueBase old_value(property_value_.get_value());
-		ValueBase     value(value_entry->get_value());
-
-		//if (old_value != value)
 		if (saved_data != value)
 			signal_edited_(value_entry->get_path(), value);
-
-		//delete value_entry;
-		//value_entry=0;
 	}
 }
