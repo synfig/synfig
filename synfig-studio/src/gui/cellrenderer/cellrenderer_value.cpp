@@ -33,21 +33,13 @@
 
 #include <synfig/general.h>
 
-#include <gtkmm/label.h>
 #include <ETL/stringf>
 #include <gtkmm/celleditable.h>
 #include <gtkmm/editable.h>
-#include <gtkmm/entry.h>
 #include <gtkmm/eventbox.h>
 
 #include "app.h"
 #include "widgets/widget_value.h"
-#include "widgets/widget_vector.h"
-#include "widgets/widget_filename.h"
-#include "widgets/widget_enum.h"
-#include "widgets/widget_color.h"
-#include "widgets/widget_canvaschooser.h"
-#include "widgets/widget_time.h"
 
 #include "cellrenderer_gradient.h"
 #include "cellrenderer_value.h"
@@ -58,7 +50,6 @@
 #include "widgets/widget_gradient.h"
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
-#include <gtkmm/textview.h>
 
 #include <gdkmm/general.h>
 
