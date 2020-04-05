@@ -85,7 +85,7 @@ public:
 	ValueBase_Entry():
 		Glib::ObjectBase(typeid(ValueBase_Entry))
 	{
-		parent           = 0;
+		parent           = nullptr;
 		edit_done_called = false;
 /*
 		  Gtk::HBox *const hbox = new Gtk::HBox(false, 0);
@@ -586,7 +586,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	edit_value_done_called = false;
 	// If we aren't editable, then there is nothing to do
 	if (!property_editable())
-		return 0;
+		return nullptr;
 
 	ValueBase data = property_value_.get_value();
 
@@ -595,7 +595,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	if (type == type_bool)
 	{
 		signal_edited_( path, ValueBase(!data.get(bool())) );
-		return NULL;
+		return nullptr;
 	}
 	//else
 	//if (type == type_time)
@@ -616,7 +616,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		);
 		App::dialog_gradient->set_default_button_set_sensitive(true);
 		App::dialog_gradient->present();
-		return NULL;
+		return nullptr;
 	}
 	else
 	if (type == type_color)
@@ -630,7 +630,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			)
 		);
 		App::dialog_color->present();
-		return NULL;
+		return nullptr;
 	}
 	else
 	if (type == type_string
@@ -640,7 +640,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		string = data.get(string);
 		if (get_paragraph(string))
 			signal_edited_(path, ValueBase(string));
-		return NULL;
+		return nullptr;
 	}
 	// if (type == type_string) && (get_param_desc().get_hint()!="filename")
 		// return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
@@ -662,7 +662,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		return value_entry;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void
