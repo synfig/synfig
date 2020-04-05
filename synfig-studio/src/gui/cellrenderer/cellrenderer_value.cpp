@@ -70,8 +70,8 @@ class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
 {
 	Glib::ustring     path;
 	Widget_ValueBase *valuewidget;
-	bool              edit_done_called;
 	Gtk::Widget      *parent;
+	bool              edit_done_called;
 public:
 	ValueBase_Entry():
 		Glib::ObjectBase(typeid(ValueBase_Entry))
