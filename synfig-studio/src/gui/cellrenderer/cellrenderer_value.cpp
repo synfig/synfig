@@ -73,8 +73,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define DIGITS		15
-
 /* === G L O B A L S ======================================================= */
 
 class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
