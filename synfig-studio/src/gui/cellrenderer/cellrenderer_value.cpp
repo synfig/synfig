@@ -287,10 +287,10 @@ CellRenderer_ValueBase::string_edited_(const Glib::ustring& path, const Glib::us
 
 	if (old_value.get_type() == type_time)
 	{
-		value = ValueBase( Time( (String)str, get_canvas()->rend_desc().get_frame_rate() ) );
+		value = ValueBase( Time(str, get_canvas()->rend_desc().get_frame_rate() ) );
 	}
 	else
-		value = ValueBase( (String)str );
+		value = ValueBase( str );
 
 	if (old_value != value)
 		signal_edited_(path, value);
