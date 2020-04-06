@@ -62,14 +62,49 @@ ACTION_SET_CVS_ID(Action::LayerRemove,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
+bool LayerRemove::is_child_of_another_layer_in_list(Layer::LooseHandle layer) const
+{
+	std::vector<Layer::LooseHandle> parent_list;
+	Layer::LooseHandle parent = layer->get_parent_paste_canvas_layer();
+	while (parent) {
+		parent_list.push_back(parent);
+		parent = parent->get_parent_paste_canvas_layer();
+	}
+
+	for (const auto &some_parent : parent_list) {
+		for (const auto &layer_tuple : layer_list) {
+			if (some_parent == std::get<0>(layer_tuple)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void LayerRemove::filter_layer_list()
+{
+	std::list<std::tuple<synfig::Layer::Handle, int, synfig::Canvas::Handle> > filtered_layer_list;
+	for (auto layer_tuple : layer_list) {
+		if (!is_child_of_another_layer_in_list(std::get<0>(layer_tuple)))
+			filtered_layer_list.push_back(layer_tuple);
+	}
+	layer_list = filtered_layer_list;
+}
+
 Action::LayerRemove::LayerRemove()
+	: is_filtered(false)
 {
 }
 
 synfig::String
 Action::LayerRemove::get_local_name()const
 {
-	return get_layer_descriptions(layer_list, _("Delete Layer"), _("Delete Layers"));
+	std::list< std::pair<synfig::Layer::Handle,int> > layer_pair_list;
+	for (const auto& tuple : layer_list) {
+		std::pair<synfig::Layer::Handle,int> layer_pair = std::make_pair(std::get<0>(tuple), std::get<1>(tuple));
+		layer_pair_list.push_back(layer_pair);
+	}
+	return get_layer_descriptions(layer_pair_list, _("Delete Layer"), _("Delete Layers"));
 }
 
 Action::ParamVocab
@@ -97,10 +132,11 @@ Action::LayerRemove::set_param(const synfig::String& name, const Action::Param &
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
-		std::pair<synfig::Layer::Handle,int> layer_pair;
-		layer_pair.first=param.get_layer();
-		layer_list.push_back(layer_pair);
-
+		synfig::Layer::Handle layer = param.get_layer();
+		std::tuple<synfig::Layer::Handle,int,synfig::Canvas::Handle> layer_tuple;
+		layer_tuple = std::make_tuple(layer, -1, nullptr);
+		layer_list.push_back(layer_tuple);
+		is_filtered = false;
 		return true;
 	}
 
@@ -118,11 +154,14 @@ Action::LayerRemove::is_ready()const
 void
 Action::LayerRemove::perform()
 {
-	std::list<std::pair<synfig::Layer::Handle,int> >::iterator iter;
-	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+	if (!is_filtered) {
+		filter_layer_list();
+		is_filtered = true;
+	}
+
+	for(auto iter=layer_list.begin();iter!=layer_list.end();++iter)
 	{
-		Layer::Handle layer(iter->first);
-//		int& depth(iter->second);
+		Layer::Handle layer(std::get<0>(*iter));
 		Canvas::Handle subcanvas(layer->get_canvas());
 
 		// Find the iterator for the layer
@@ -149,10 +188,12 @@ Action::LayerRemove::perform()
 		set_canvas(subcanvas);
 
 		// Calculate the depth that the layer was at (For the undo)
-		iter->second=layer->get_depth();
+		std::get<1>(*iter) = layer->get_depth();
+		std::get<2>(*iter) = layer->get_canvas();
 
 		// Mark ourselves as dirty if necessary
-		set_dirty(layer->active());
+		if (layer->active())
+			set_dirty(true);
 
 		// Remove the layer from the canvas
 		subcanvas->erase(iter2);
@@ -166,24 +207,26 @@ Action::LayerRemove::perform()
 void
 Action::LayerRemove::undo()
 {
-	std::list<std::pair<synfig::Layer::Handle,int> >::reverse_iterator iter;
+	std::list<std::tuple<synfig::Layer::Handle,int, synfig::Canvas::Handle> >::reverse_iterator iter;
 	for(iter=layer_list.rbegin();iter!=layer_list.rend();++iter)
 	{
-		Layer::Handle layer(iter->first);
-		int& depth(iter->second);
+		Layer::Handle layer(std::get<0>(*iter));
+		int& depth(std::get<1>(*iter));
+
+		const synfig::Canvas::Handle canvas = std::get<2>(*iter);
 
 		// Set the layer's canvas
-		layer->set_canvas(get_canvas());
+		layer->set_canvas(canvas);
 
 		// Make sure that the depth is valid
-		if(get_canvas()->size()<depth)
-			depth=get_canvas()->size();
+		if(canvas->size()<depth)
+			depth=canvas->size();
 
 		// Mark ourselves as dirty if necessary
 		set_dirty(layer->active());
 
 		// Insert the layer into the canvas at the desired depth
-		get_canvas()->insert(get_canvas()->byindex(depth), layer);
+		canvas->insert(canvas->byindex(depth), layer);
 
 		// Signal that a layer has been inserted
 		if(get_canvas_interface())
