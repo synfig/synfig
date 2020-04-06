@@ -210,6 +210,19 @@ Widget_ValueBase::set_sensitive(bool x)
 	distance_widget->set_sensitive(x);
 }
 
+void Widget_ValueBase::popup_enum_combobox()
+{
+	Type &type(get_value().get_type());
+	if (type == type_integer)
+	{
+		string param_hint = get_param_desc().get_hint();
+		string child_param_hint = get_child_param_desc().get_hint();
+		if ( param_hint == "enum" || child_param_hint == "enum" ) {
+			enum_widget->popup();
+		}
+	}
+}
+
 void
 Widget_ValueBase::set_value(const synfig::ValueBase &data)
 {
