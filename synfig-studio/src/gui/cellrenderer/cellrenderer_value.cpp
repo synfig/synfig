@@ -550,12 +550,12 @@ CellRenderer_ValueBase::color_edited(synfig::Color color, Glib::ustring path)
 
 Gtk::CellEditable*
 CellRenderer_ValueBase::start_editing_vfunc(
-	GdkEvent*              event,
+	GdkEvent*              /*event*/,
 	Gtk::Widget&           widget,
 	const Glib::ustring&   path,
-	const Gdk::Rectangle&  background_area,
-	const Gdk::Rectangle&  cell_area,
-	Gtk::CellRendererState flags)
+	const Gdk::Rectangle&  /*background_area*/,
+	const Gdk::Rectangle&  /*cell_area*/,
+	Gtk::CellRendererState /*flags*/)
 {
 	edit_value_done_called = false;
 	// If we aren't editable, then there is nothing to do
