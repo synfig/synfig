@@ -128,7 +128,7 @@ Canvas::~Canvas()
 		Layer_PasteCanvas* paste_canvas = dynamic_cast<Layer_PasteCanvas*>(*iter);
 		iter++;
 		if(paste_canvas)
-			paste_canvas->set_sub_canvas(0);
+			paste_canvas->set_sub_canvas(nullptr);
 		else
 			warning("destroyed canvas has a parent that is not a pastecanvas - please report if repeatable");
 	}
@@ -1115,7 +1115,7 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 		throw Exception::IDNotFound(child_canvas->get_id());
 
 	children().remove(child_canvas);
-	child_canvas->set_parent(0);
+	child_canvas->set_parent(nullptr);
 }
 
 void
@@ -1331,7 +1331,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		// note: this used to include "&& paste_canvas->get_time_offset()==0", but then
 		//		 time-shifted layers weren't being sorted by z-depth (bug #1806852)
 		Layer_PasteCanvas* paste_canvas(dynamic_cast<Layer_PasteCanvas*>(layer.get()));
-		if(paste_canvas!=NULL)
+		if(paste_canvas)
 		{
 			// we need to blur the sub canvas if:
 			// our parent is blurred,

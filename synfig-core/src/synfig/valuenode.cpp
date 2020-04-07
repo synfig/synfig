@@ -208,7 +208,7 @@ ValueNode::is_descendant(ValueNode::Handle value_node_dest)
 
     //! loop through the parents of each node in current_nodes
     set<Node*> node_parents(value_node_dest->parent_set);
-    ValueNode::Handle value_node_parent = NULL;
+    ValueNode::Handle value_node_parent;
     for (set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
     {
         value_node_parent = ValueNode::Handle::cast_dynamic(*iter);
@@ -699,7 +699,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 	}
 
 	const synfig::Node* node = this;
-	LinkableValueNode::ConstHandle parent_linkable_vn = 0;
+	LinkableValueNode::ConstHandle parent_linkable_vn;
 
 	// walk up through the valuenodes trying to find the layer at the top
 	while (!node->parent_set.empty() && !dynamic_cast<const Layer*>(node))

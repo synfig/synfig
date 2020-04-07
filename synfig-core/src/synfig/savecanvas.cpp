@@ -89,8 +89,8 @@ using namespace synfig;
 
 ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
 int valuenode_too_new_count;
-save_canvas_external_file_callback_t save_canvas_external_file_callback = NULL;
-void *save_canvas_external_file_user_data = NULL;
+save_canvas_external_file_callback_t save_canvas_external_file_callback = nullptr;
+void *save_canvas_external_file_user_data = nullptr;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -267,9 +267,9 @@ xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 }
 
 
-xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas=0);
+xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas=nullptr);
 
-xmlpp::Element* encode_list(xmlpp::Element* root,std::vector<ValueBase> list, Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_list(xmlpp::Element* root,std::vector<ValueBase> list, Canvas::ConstHandle canvas=nullptr)
 {
 	root->set_name("list");
 
@@ -440,7 +440,7 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	return root;
 }
 
-xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	assert(value_node);
 	root->set_name("animated");
@@ -498,7 +498,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 }
 
 
-xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	assert(value_node);
 	root->set_name("subtract");
@@ -536,7 +536,7 @@ xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHa
 	return root;
 }
 
-xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_static_list %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	assert(value_node);
@@ -564,7 +564,7 @@ xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::Co
 	return root;
 }
 
-xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	assert(value_node);
 	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
@@ -660,7 +660,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 }
 
 // Generic linkable data node entry
-xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNode::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNode::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_linkable_value_node %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	assert(value_node);
@@ -896,7 +896,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			node->set_attribute("name",iter->get_name());
 
 			// remember filename param if need
-			if (save_canvas_external_file_callback != NULL
+			if (save_canvas_external_file_callback != nullptr
 			 && iter->get_name() == "filename"
 			 && value.get_type() == type_string)
 			{
