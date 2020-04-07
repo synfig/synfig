@@ -1431,7 +1431,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			 */
 
 			// \todo: this code probably needs modification to work properly with motionblur and duplicate
-			etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
+//			etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
 
 			/* some layers (such as circle) don't touch pixels that aren't
 			 * part of the circle, so they don't get blended correctly when
