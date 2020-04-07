@@ -1692,17 +1692,15 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 #endif
 	for (std::set<Node*>::iterator iter = canvas->parent_set.begin(); iter != canvas->parent_set.end(); iter++)
 	{
-		if (dynamic_cast<Layer*>(*iter))
+		if (Layer* layer = dynamic_cast<Layer*>(*iter))
 		{
-			Layer* layer(dynamic_cast<Layer*>(*iter));
 #ifdef DEBUG_INVOKE_SVNCR
 			printf("it's a layer %lx\n", uintptr_t(layer));
 			printf("%s:%d it's a layer with %zd parents\n", __FILE__, __LINE__, layer->parent_set.size());
 #endif
 			for (std::set<Node*>::iterator iter = layer->parent_set.begin(); iter != layer->parent_set.end(); iter++)
-				if (dynamic_cast<Canvas*>(*iter))
+				if (Canvas* canvas = dynamic_cast<Canvas*>(*iter))
 				{
-					Canvas* canvas(dynamic_cast<Canvas*>(*iter));
 #ifdef DEBUG_INVOKE_SVNCR
 					printf("it's a canvas %lx\n", uintptr_t(canvas));
 #endif

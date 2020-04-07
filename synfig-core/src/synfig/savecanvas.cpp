@@ -414,16 +414,16 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		root->set_name("bone_valuenode");
 		return root;
 	}
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (types_namespace::TypeWeightedValueBase* tw = dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type))
 	{
-		encode_weighted_value(root, *dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type), data, canvas);
+		encode_weighted_value(root, *tw, data, canvas);
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	}
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (types_namespace::TypePairBase* tp = dynamic_cast<types_namespace::TypePairBase*>(&type))
 	{
-		encode_pair(root, *dynamic_cast<types_namespace::TypePairBase*>(&type), data, canvas);
+		encode_pair(root, *tp, data, canvas);
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
