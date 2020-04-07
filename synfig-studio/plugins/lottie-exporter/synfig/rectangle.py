@@ -22,11 +22,11 @@ def gen_dummy_rectangle(layer):
     """
     # Generate point1 and point2 to fill the whole canvas
     st = "<param name='point1'><vector><x>{x}</x><y>{y}</y></vector></param>"
-    st = st.format(x=settings.view_box_canvas['val'][0], y=settings.view_box_canvas['val'][1])
+    st = st.format(x=10*settings.view_box_canvas['val'][0], y=10*settings.view_box_canvas['val'][1])
     point1 = etree.fromstring(st)
     point1 = layer.add_param("point1", point1)
 
     st = "<param name='point2'><vector><x>{x}</x><y>{y}</y></vector></param>"
-    st = st.format(x=settings.view_box_canvas['val'][2], y=settings.view_box_canvas['val'][3])
+    st = st.format(x=10*settings.view_box_canvas['val'][2], y=10*settings.view_box_canvas['val'][3])
     point2 = etree.fromstring(st)
     point2 = layer.add_param("point2", point2)
