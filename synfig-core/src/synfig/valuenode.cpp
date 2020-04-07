@@ -186,9 +186,6 @@ ValueNode::get_description(bool show_exported_name)const
 
 	String ret(_("ValueNode"));
 
-	if (dynamic_cast<const LinkableValueNode*>(this))
-		return (dynamic_cast<const LinkableValueNode*>(this))->get_description(-1, show_exported_name);
-
 	if (show_exported_name && !is_exported())
 		show_exported_name = false;
 
