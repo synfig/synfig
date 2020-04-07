@@ -238,7 +238,7 @@ void studio::PluginManager::load_import_export(
 	const std::string& name, std::vector<ImportExport>& output
 )
 {
-	auto nodelist = node->find("./exporter");
+	auto nodelist = node->find("./" + name);
 	output.reserve(output.size() + nodelist.size());
 	int number = 0;
 	for ( xmlpp::Node* exporter_node : nodelist )
