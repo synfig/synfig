@@ -89,8 +89,8 @@ using namespace synfig;
 
 ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
 int valuenode_too_new_count;
-save_canvas_external_file_callback_t save_canvas_external_file_callback = NULL;
-void *save_canvas_external_file_user_data = NULL;
+save_canvas_external_file_callback_t save_canvas_external_file_callback = nullptr;
+void *save_canvas_external_file_user_data = nullptr;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -267,9 +267,9 @@ xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 }
 
 
-xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas=0);
+xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas=nullptr);
 
-xmlpp::Element* encode_list(xmlpp::Element* root,std::vector<ValueBase> list, Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_list(xmlpp::Element* root,std::vector<ValueBase> list, Canvas::ConstHandle canvas=nullptr)
 {
 	root->set_name("list");
 
@@ -414,16 +414,16 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		root->set_name("bone_valuenode");
 		return root;
 	}
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (types_namespace::TypeWeightedValueBase* tw = dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type))
 	{
-		encode_weighted_value(root, *dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type), data, canvas);
+		encode_weighted_value(root, *tw, data, canvas);
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
 	}
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (types_namespace::TypePairBase* tp = dynamic_cast<types_namespace::TypePairBase*>(&type))
 	{
-		encode_pair(root, *dynamic_cast<types_namespace::TypePairBase*>(&type), data, canvas);
+		encode_pair(root, *tp, data, canvas);
 		encode_static(root, data.get_static());
 		encode_interpolation(root, data.get_interpolation(), "interpolation");
 		return root;
@@ -440,7 +440,7 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	return root;
 }
 
-xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	assert(value_node);
 	root->set_name("animated");
@@ -461,9 +461,9 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			waypoint_node->set_attribute("use",iter->get_value_node()->get_relative_id(canvas));
 		else {
 			ValueNode::ConstHandle value_node = iter->get_value_node();
-			if(ValueNode_Const::ConstHandle::cast_dynamic(value_node))
+			if(ValueNode_Const::ConstHandle value_node_const = ValueNode_Const::ConstHandle::cast_dynamic(value_node))
 			{
-				const ValueBase data = ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value();
+				const ValueBase data = value_node_const->get_value();
 				if (data.get_type() == type_canvas)
 					waypoint_node->set_attribute("use",data.get(Canvas::Handle()).get()->get_relative_id(canvas));
 				else
@@ -498,7 +498,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 }
 
 
-xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	assert(value_node);
 	root->set_name("subtract");
@@ -536,7 +536,7 @@ xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHa
 	return root;
 }
 
-xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_static_list %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	assert(value_node);
@@ -564,7 +564,7 @@ xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::Co
 	return root;
 }
 
-xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	assert(value_node);
 	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
@@ -660,7 +660,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 }
 
 // Generic linkable data node entry
-xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNode::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNode::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_linkable_value_node %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	assert(value_node);
@@ -717,35 +717,35 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	if(value_node->rcount()>1)
 		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
 
-	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
+	if(ValueNode_Bone::ConstHandle value_node_bone = ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
 	{
 		if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d shortcutting for valuenode_bone\n", __FILE__, __LINE__);
-		encode_value_node_bone_id(root,ValueNode_Bone::ConstHandle::cast_dynamic(value_node),canvas);
+		encode_value_node_bone_id(root, value_node_bone,canvas);
 	}
 	else
-	if(ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
-		encode_animated(root,ValueNode_Animated::ConstHandle::cast_dynamic(value_node),canvas);
+	if (ValueNode_Animated::ConstHandle animated_value_node = ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
+		encode_animated(root,animated_value_node,canvas);
 	else
-	if(ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
-		encode_subtract(root,ValueNode_Subtract::ConstHandle::cast_dynamic(value_node),canvas);
+	if (ValueNode_Subtract::ConstHandle subtract_value_node = ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
+		encode_subtract(root,subtract_value_node,canvas);
 	else
-	if(ValueNode_StaticList::ConstHandle::cast_dynamic(value_node))
-		encode_static_list(root,ValueNode_StaticList::ConstHandle::cast_dynamic(value_node),canvas);
+	if (ValueNode_StaticList::ConstHandle static_list_value_node = ValueNode_StaticList::ConstHandle::cast_dynamic(value_node))
+		encode_static_list(root,static_list_value_node,canvas);
 	else
-	if(ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node))
+	if (ValueNode_DynamicList::ConstHandle dynamic_list_value_node = ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node))
 	{
-		encode_dynamic_list(root,ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node),canvas);
+		encode_dynamic_list(root,dynamic_list_value_node,canvas);
 	}
 	// if it's a ValueNode_Const
-	else if(ValueNode_Const::ConstHandle::cast_dynamic(value_node))
+	else if (ValueNode_Const::ConstHandle const_value_node = ValueNode_Const::ConstHandle::cast_dynamic(value_node))
 	{
 		if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d got ValueNode_Const encoding value\n", __FILE__, __LINE__);
 		// encode its get_value()
-		encode_value(root,ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value(),canvas);
+		encode_value(root,const_value_node->get_value(),canvas);
 	}
 	else
-	if(LinkableValueNode::ConstHandle::cast_dynamic(value_node))
-		encode_linkable_value_node(root,LinkableValueNode::ConstHandle::cast_dynamic(value_node),canvas);
+	if (LinkableValueNode::ConstHandle linkable_value_node = LinkableValueNode::ConstHandle::cast_dynamic(value_node))
+		encode_linkable_value_node(root,linkable_value_node,canvas);
 	else
 	{
 		error(_("Unknown ValueNode Type (%s), cannot create an XML representation"),value_node->get_local_name().c_str());
@@ -769,8 +769,8 @@ xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHand
 	assert(value_node);
 	if (getenv("SYNFIG_DEBUG_SAVE_CANVAS")) printf("%s:%d encode_value_node_bone %s %s\n", __FILE__, __LINE__, value_node->get_string().c_str(), value_node->get_guid().get_string().c_str());
 
-	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
-		encode_linkable_value_node(root,LinkableValueNode::ConstHandle::cast_dynamic(value_node),canvas);
+	if (ValueNode_Bone::ConstHandle bone_value_node = ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
+		encode_linkable_value_node(root,bone_value_node,canvas);
 	else
 	{
 		error(_("Unknown ValueNode Type (%s), cannot create an XML representation"),value_node->get_local_name().c_str());
@@ -896,7 +896,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			node->set_attribute("name",iter->get_name());
 
 			// remember filename param if need
-			if (save_canvas_external_file_callback != NULL
+			if (save_canvas_external_file_callback != nullptr
 			 && iter->get_name() == "filename"
 			 && value.get_type() == type_string)
 			{
@@ -1043,9 +1043,8 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		for(ValueNodeList::const_iterator iter=value_node_list.begin();iter!=value_node_list.end();++iter)
 		{
 			// If the value_node is a constant, then use the shorthand
-			if(handle<ValueNode_Const>::cast_dynamic(*iter))
+			if (ValueNode_Const::Handle value_node = ValueNode_Const::Handle::cast_dynamic(*iter))
 			{
-				ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(*iter));
 				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
 				continue;
 			}
