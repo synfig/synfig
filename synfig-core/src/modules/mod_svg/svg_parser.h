@@ -32,19 +32,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <cstdio>
-#include <cstdlib>
-#include <cmath>
-#include <cstring>
 #include <glibmm/ustring.h>
 
 #include <libxml++/libxml++.h>
-#include <ETL/angle>
-#include <ETL/stringf>
 #include <synfig/canvas.h>
-#include <synfig/loadcanvas.h>
-#include <synfig/color.h>
-#include <synfig/guid.h>
 
 /* === M A C R O S ========================================================= */
 
