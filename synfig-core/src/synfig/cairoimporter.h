@@ -164,16 +164,6 @@ public:
 	**	\see ProgressCallback, Surface
 	*/
 	virtual bool get_frame(cairo_surface_t *&csurface, const RendDesc &renddesc, Time time, ProgressCallback *callback=nullptr)=0;
-	virtual bool get_frame(cairo_surface_t *&csurface, const RendDesc &renddesc,Time time,
-						   bool &trimmed,
-						   unsigned int &width,
-						   unsigned int &height,
-						   unsigned int &top,
-						   unsigned int &left,
-						   ProgressCallback *callback=nullptr)
-	{
-		return get_frame(csurface,renddesc,time,callback);
-	}
 
 	//! Returns \c true if the importer pays attention to the \a time parameter of get_frame()
 	virtual bool is_animated() { return false; }
