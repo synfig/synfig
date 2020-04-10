@@ -35,6 +35,7 @@
 #endif
 
 #include <cstring>
+#include <map>
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
@@ -1986,13 +1987,9 @@ Svg_parser::new_guid(){
 }
 
 
-#define COLOR_NAME(color, r, g, b) else if(name.compare(0,strlen(color),color)==0) \
-                   {switch(position) \
-		               {case 1: return r; case 2: return g; case 3: return b;}  }
+#define COLOR_NAME(color, r, g, b) { color, CairoColor(r, g, b)} ,
 
-int
-Svg_parser::getColor(String name, int position){
-	if (position<1 || position>3) return 0;
+static const std::map<std::string, CairoColor> color_name_map = {
 	COLOR_NAME("aliceblue",240, 248, 255)
 	COLOR_NAME("antiquewhite",250, 235, 215)
 	COLOR_NAME("aqua", 0, 255, 255)
@@ -2140,6 +2137,24 @@ Svg_parser::getColor(String name, int position){
 	COLOR_NAME("whitesmoke",245, 245, 245)
 	COLOR_NAME("yellow",255, 255, 0)
 	COLOR_NAME("yellowgreen",154, 205, 50)
-	return 0;
-}
+};
 #undef COLOR_NAME
+
+int
+Svg_parser::getColor(String name, int position) const {
+	if (position<1 || position>3)
+		return 0;
+	try {
+		const CairoColor &color = color_name_map.at(name);
+		switch (position) {
+		case 1:
+			return color.get_r();
+		case 2:
+			return color.get_g();
+		case 3:
+			return color.get_b();
+		}
+	} catch (...) {
+		return 0;
+	}
+}

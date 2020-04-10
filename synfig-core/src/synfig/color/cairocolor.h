@@ -27,6 +27,7 @@
 #define __SYNFIG_COLOR_CAIROCOLOR_H
 
 #include <synfig/color/common.h>
+#include <synfig/color/color.h>
 
 namespace synfig {
 

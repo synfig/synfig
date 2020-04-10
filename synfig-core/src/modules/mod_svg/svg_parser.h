@@ -204,7 +204,7 @@ private:
 		int getGreen(String hex);
 		int getBlue(String hex);
 		int hextodec(String hex);
-		int getColor(String name, int position);
+		int getColor(String name, int position) const;
 		float getDimension(const String ac);
 		//string functions
 		void removeS(String *input);
