@@ -27,8 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <cstdio>
-
 #include <istream>
 #include <ostream>
 #include <streambuf>

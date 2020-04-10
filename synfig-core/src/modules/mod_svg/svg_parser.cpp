@@ -27,16 +27,21 @@
 
 /* === H E A D E R S ======================================================= */
 
+#ifdef USING_PCH
+#	include "pch.h"
+#else
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include <cstring>
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
+#include <synfig/loadcanvas.h>
 
-#include <iostream>
-#include <cstring>
 #include "svg_parser.h"
+#endif
 
 /* === U S I N G =========================================================== */
 
