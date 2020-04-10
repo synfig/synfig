@@ -1209,13 +1209,12 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
-		std::list<ColorStop*> *stops=nullptr;
 		if(!link.empty()){
 			//inkscape always use link, i don't need parser stops here, but it's possible
-			stops=find_colorStop (link);
+			std::list<ColorStop*> *stops=find_colorStop (link);
+			if(stops)
+				rg.push_back(newRadialGradient(id,cx,cy,r,stops,mtx));
 		}
-		if(stops)
-			rg.push_back(newRadialGradient(id,cx,cy,r,stops,mtx));
 	}
 }
 
