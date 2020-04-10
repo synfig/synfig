@@ -210,7 +210,6 @@ private:
 		void removeS(String *input);
 		void removeIntoS(String *input);
 		std::vector<String> tokenize(const String& str,const String& delimiters);
-		void get_canvas_name(String _filepath);
 		String new_guid();
 };
 // END of Svg_parser class
