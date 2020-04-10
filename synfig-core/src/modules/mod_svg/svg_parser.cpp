@@ -104,7 +104,7 @@ Svg_parser::load_svg_canvas(std::string _filepath,String &errors, String &warnin
 
 Svg_parser::Svg_parser(const Gamma &gamma):
 	gamma(gamma),
-	nodeRoot(NULL),
+	nodeRoot(nullptr),
 	uid(0),
 	kux(60),
 	set_canvas(0), //we must run parser_canvas method
@@ -162,7 +162,7 @@ Svg_parser::parser_node(const xmlpp::Node* node){
 			parser_defs (node);
 		}else{
 			if(set_canvas==0) parser_canvas (node);
-			parser_graphics(node,nodeRoot,"",NULL);
+			parser_graphics(node,nodeRoot,"",nullptr);
 			if(nodename.compare("g")==0) return;
 		}
   	}
@@ -242,7 +242,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		Glib::ustring transform	=nodeElement->get_attribute_value("transform");
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix* mtx=nullptr;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 		if (SVG_SEP_TRANSFORMS)
@@ -304,7 +304,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			child_fill=child_layer;
 			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
 			if(typeFill==2){
-				build_fill (child_fill,fill,NULL);
+				build_fill (child_fill,fill,nullptr);
 			}
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 			free(mtx);
@@ -329,9 +329,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			}
 		} else {
 			if(nodename.compare("path")==0){
-				k=parser_path_d (nodeElement->get_attribute_value("d"),NULL);
+				k=parser_path_d (nodeElement->get_attribute_value("d"),nullptr);
 			} else if(nodename.compare("polygon")==0){
-				k=parser_path_polygon (nodeElement->get_attribute_value("points"),NULL);
+				k=parser_path_polygon (nodeElement->get_attribute_value("points"),nullptr);
 			}
 		}
 		
@@ -367,7 +367,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			if (SVG_RESOLVE_BLINE)
 				build_fill(child_fill,fill,mtx);
 			else
-				build_fill(child_fill,fill,NULL);
+				build_fill(child_fill,fill,nullptr);
 		}
 
 		if(typeStroke!=0){//outline layer
@@ -414,12 +414,12 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				if (SVG_RESOLVE_BLINE)
 					build_fill(child_stroke,stroke,mtx);
 				else
-					build_fill(child_stroke,stroke,NULL);
+					build_fill(child_stroke,stroke,nullptr);
 			}	
 		}
 
 		if (SVG_RESOLVE_BLINE)
-			parser_effects(nodeElement,child_layer,parent_style,NULL);
+			parser_effects(nodeElement,child_layer,parent_style,nullptr);
 		else
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 		free(mtx);
@@ -469,7 +469,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 				parser_graphics (*iter,child_canvas,layer_style,mtx);
     		}
   		}
-		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,NULL);
+		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,nullptr);
 		else parser_effects(nodeElement,child_canvas,parent_style,mtx);
 	}
 }
@@ -938,11 +938,11 @@ std::list<ColorStop*>*
 Svg_parser::find_colorStop(String name){
 	if(!name.empty()){
 		if(lg.empty()&& rg.empty())
-			return NULL;
+			return nullptr;
 
 		String find= name;
 		if(find.at(0)=='#') find.erase(0,1);
-		else return NULL;
+		else return nullptr;
 		std::list<LinearGradient*>::iterator aux=lg.begin();
 		while(aux!=lg.end()){//only find into linear gradients
 			if(find.compare((*aux)->name)==0){
@@ -951,7 +951,7 @@ Svg_parser::find_colorStop(String name){
 			aux++;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void
@@ -1016,7 +1016,7 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMa
 
 
 		if (mtx || data->transform){
-			SVGMatrix *mtx2=NULL;
+			SVGMatrix *mtx2=nullptr;
 			if (mtx && data->transform){
 				composeSVGMatrix(&mtx2,mtx,data->transform);
 			}else if (mtx){
@@ -1091,7 +1091,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMa
 			gradient=child_layer->add_child("layer");
 			gradient->set_attribute("desc",data->name);
 			build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
-			SVGMatrix *mtx2=NULL;
+			SVGMatrix *mtx2=nullptr;
 			if (mtx && data->transform){
 				composeSVGMatrix(&mtx2,mtx,data->transform);
 			}else if (mtx){
@@ -1148,7 +1148,7 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 			link = nodeElement->get_attribute_value("href","xlink");			
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix* mtx=nullptr;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
@@ -1204,11 +1204,11 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 			std::cout<<"SVG Parser: ignoring focus attributes for radial gradient";
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix* mtx=nullptr;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
-		std::list<ColorStop*> *stops=NULL;
+		std::list<ColorStop*> *stops=nullptr;
 		if(!link.empty()){
 			//inkscape always use link, i don't need parser stops here, but it's possible
 			stops=find_colorStop (link);
@@ -1556,7 +1556,7 @@ Svg_parser::setTg2(Vertex* p,float p1x,float p1y,float p2x,float p2y){
 
 void
 Svg_parser::setSplit(Vertex* p,bool val){
-	if(p!=NULL){
+	if(p!=nullptr){
 		p->split=val;
 	}
 }
@@ -1580,7 +1580,7 @@ Svg_parser::newVertex(float x,float y){
 //matrices
 SVGMatrix*
 Svg_parser::parser_transform(const String transform){
-	SVGMatrix* a=NULL;
+	SVGMatrix* a=nullptr;
 	String tf(transform);
 	removeIntoS(&tf);
 	std::vector<String> tokens=tokenize(tf," ");
@@ -1702,7 +1702,7 @@ Svg_parser::multiplySVGMatrix(SVGMatrix **mtx1,SVGMatrix *mtx2){
 }
 bool
 Svg_parser::matrixIsNull(SVGMatrix *mtx){
-	if(mtx == NULL) return true;
+	if(mtx == nullptr) return true;
 	return false;
 }
 
