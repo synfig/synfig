@@ -114,8 +114,6 @@ private:
 public:
 		explicit Svg_parser(const Gamma &gamma = Gamma());
 		Canvas::Handle load_svg_canvas(std::string _filepath,String &errors, String &warnings);
-		//String get_id();
-		//void set_id(String source);
 
 private:
 		/* === PARSERS ==================================== */

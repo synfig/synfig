@@ -113,34 +113,6 @@ Svg_parser::Svg_parser(const Gamma &gamma):
 	oy(0)
 {
 }
-/*
-String
-Svg_parser::get_id(){
-	if(!id_name.empty()) return id_name;
-	return "random_id";
-}
-void
-Svg_parser::set_id(String source){
-	const char bad_chars[]=" :#@$^&()*";
-	int start= 	source.find_last_of('/')+1;
-	int end=	source.find_last_of('.');
-	String x=source.substr(start,end-start);
-	if(!x.empty()){
-		for(unsigned int i=0;i<sizeof(bad_chars);i++){
-			unsigned int pos=x.find_first_of(bad_chars[i]);
-			if(pos!=String::npos)
-				x.erase(pos,1);
-		}
-	}
-	if(!x.empty()){
-		id_name=x;
-	}else{
-		id_name="id_arbitrario";
-	}
-}
-*/
-//UPDATE
-
 
 /* === PARSERS ============================================================= */
 
