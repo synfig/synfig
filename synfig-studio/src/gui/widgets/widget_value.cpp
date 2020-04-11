@@ -466,6 +466,7 @@ Widget_ValueBase::on_grab_focus()
 		else
 		{
 			enum_widget->grab_focus();
+			popup_enum_combobox();
 		}
 	}
 	else

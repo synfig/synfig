@@ -134,6 +134,8 @@ private:
 	synfig::Layer::Handle last_top_selected_layer;
 	Gtk::TreePath last_top_selected_path;
 
+	bool disable_single_click_for_param_editing;
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
