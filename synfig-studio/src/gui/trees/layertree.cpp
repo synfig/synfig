@@ -162,6 +162,8 @@ LayerTree::LayerTree():
 	blend_method_widget.set_size_request(150,-1);
 	blend_method_widget.set_sensitive(false);
 	blend_method_widget.signal_activate().connect(sigc::mem_fun(*this, &studio::LayerTree::on_blend_method_changed));
+
+	disable_single_click_for_param_editing = false;
 }
 
 LayerTree::~LayerTree()
@@ -980,9 +982,16 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				}
 				else
 				{
-					if(column->get_first_cell()==cellrenderer_value)
-						return signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
-					else
+					if(column->get_first_cell()==cellrenderer_value) {
+						bool ok = false;
+						if (!disable_single_click_for_param_editing) {
+							param_tree_view().set_cursor(path, *column, true);
+							grab_focus();
+							ok = true;
+						}
+						ok |= signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
+						return ok;
+					} else
 						return signal_param_user_click()(event->button.button,row,COLUMNID_NAME);
 				}
 			}
