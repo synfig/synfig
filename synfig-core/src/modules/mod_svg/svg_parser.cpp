@@ -221,9 +221,12 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		if (SVG_SEP_TRANSFORMS)
 		{
 			if(mtx_parent){
-				if(mtx)
-					composeSVGMatrix(&mtx,mtx_parent,mtx);
-				else
+				if(mtx) {
+					SVGMatrix* new_mtx;
+					composeSVGMatrix(&new_mtx,mtx_parent,mtx);
+					free(mtx);
+					mtx = new_mtx;
+				} else
 					mtx=newSVGMatrix(mtx_parent);
 			}
 		}
