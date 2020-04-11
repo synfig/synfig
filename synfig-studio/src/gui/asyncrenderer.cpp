@@ -726,46 +726,40 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 	finish_time(0, 0)
 {
 	render_thread=0;
-	if(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
+	if(auto cast_target = synfig::Target_Tile::Handle::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Tile> wrap_target(
-			new AsyncTarget_Tile(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
+			new AsyncTarget_Tile(cast_target)
 		);
 
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Tile::set_dead));
 
 		target=wrap_target;
 	}
-	else if(etl::handle<synfig::Target_Scanline>::cast_dynamic(target_))
+	else if(auto cast_target = etl::handle<synfig::Target_Scanline>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Scanline> wrap_target(
-			new AsyncTarget_Scanline(
-				etl::handle<synfig::Target_Scanline>::cast_dynamic(target_)
-			)
+			new AsyncTarget_Scanline(cast_target)
 		);
 
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Scanline::set_dead));
 
 		target=wrap_target;
 	}
-	else if(etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_))
+	else if(auto cast_target = etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Cairo_Tile> wrap_target(
-			new AsyncTarget_Cairo_Tile(
-					etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_)
-			)
+			new AsyncTarget_Cairo_Tile(cast_target)
 		);
 		
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Cairo_Tile::set_dead));
 		
 		target=wrap_target;
 	}
-	else if(etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
+	else if(auto cast_target = etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Cairo> wrap_target(
-			new AsyncTarget_Cairo(
-				etl::handle<synfig::Target_Cairo>::cast_dynamic(target_)
-			)
+			new AsyncTarget_Cairo(cast_target)
 		);
 		
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Cairo::set_dead));
