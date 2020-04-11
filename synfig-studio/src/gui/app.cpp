@@ -1891,11 +1891,11 @@ App::get_config_file(const synfig::String& file)
 void
 App::add_recent_file(const etl::handle<Instance> instance)
 {
-	add_recent_file(absolute_path(instance->get_file_name()));
+	add_recent_file(absolute_path(instance->get_file_name()), true);
 }
 
 void
-App::add_recent_file(const std::string &file_name)
+App::add_recent_file(const std::string &file_name, bool emit_signal = true)
 {
 	std::string filename(FileSystem::fix_slashes(file_name));
 
@@ -1932,9 +1932,10 @@ App::add_recent_file(const std::string &file_name)
 		recent_files.pop_back();
 	}
 
-	signal_recent_files_changed_();
+	if (emit_signal) {
+		signal_recent_files_changed_();
+	}
 
-	return;
 }
 
 static Time::Format _App_time_format(Time::FORMAT_FRAMES);
@@ -2091,8 +2092,9 @@ App::load_file_window_size()
 				std::string recent_file_window_size;
 				getline(file,recent_file);
 				if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
-					add_recent_file(recent_file);
+					add_recent_file(recent_file, false);
 			}
+			signal_recent_files_changed()();
 		}
 
 	}
@@ -3836,7 +3838,7 @@ bool
 App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
 #ifdef _WIN32
-    size_t buf_size = PATH_MAX - 1;
+    size_t buf_size = 256 - 1;
     char* long_name = (char*)malloc(buf_size);
     long_name[0] = '\0';
     if(GetLongPathName(filename.c_str(),long_name,sizeof(long_name)));
@@ -3878,7 +3880,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 			if(!canvas)
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
 
-			if (warnings != "")
+			if (!warnings.empty())
 				dialog_message_1b(
 					"WARNING",
 					_("Warning"),
@@ -3886,7 +3888,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 					_("Close"),
 					warnings);
 
-			if (filename.find(custom_filename_prefix.c_str()) != 0)
+			if (filename.find(custom_filename_prefix) != 0)
 				add_recent_file(filename);
 
 			handle<Instance> instance(Instance::create(canvas, container));

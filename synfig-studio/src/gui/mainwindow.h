@@ -33,6 +33,7 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/toggleaction.h>
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -304,7 +304,7 @@ public:
 	*/
 
 private:
-	static void add_recent_file(const std::string &filename);
+	static void add_recent_file(const std::string &filename, bool emit_signal);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
