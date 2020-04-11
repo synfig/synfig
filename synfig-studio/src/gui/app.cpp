@@ -2936,14 +2936,14 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	filter_supported->add_pattern("*.sif");
 	filter_supported->add_pattern("*.sifz");
 	filter_supported->add_pattern("*.sfg");
+	dialog->add_filter(filter_supported);
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
-
-	dialog->add_filter(filter_supported);
 	dialog->add_filter(filter_any);
+	dialog->set_filter(filter_any);
 
 	for ( const ImportExport& exp : plugin_manager.importers() )
 	{
@@ -2969,14 +2969,30 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 		filename = dialog->get_filename();
 		show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
 
-		plugin_importer = "";
 		auto filter = dialog->get_filter();
-		for ( const auto& importer : App::plugin_manager.importers() )
+
+		plugin_importer = "";
+		synfig::String ext = filename_extension(filename);
+		if ( filter == filter_any )
 		{
-			if ( filter->get_name() == importer.description.get() )
+			for ( const auto& importer : App::plugin_manager.importers() )
 			{
-				plugin_importer = importer.id;
-				break;
+				if ( importer.has_extension(ext) )
+				{
+					plugin_importer = importer.id;
+					break;
+				}
+			}
+		}
+		else
+		{
+			for ( const auto& importer : App::plugin_manager.importers() )
+			{
+				if ( filter->get_name() == importer.description.get() )
+				{
+					plugin_importer = importer.id;
+					break;
+				}
 			}
 		}
 
