@@ -93,7 +93,7 @@ CairoImporter::open(const FileSystem::Identifier &identifier)
 	if(identifier.filename.empty())
 	{
 		synfig::error(_("CairoImporter::open(): Cannot open empty filename"));
-		return 0;
+		return nullptr;
 	}
 
 	// If we already have an importer open under that filename,
@@ -107,7 +107,7 @@ CairoImporter::open(const FileSystem::Identifier &identifier)
 	if(filename_extension(identifier.filename) == "")
 	{
 		synfig::error(_("CairoImporter::open(): Couldn't find extension"));
-		return 0;
+		return nullptr;
 	}
 
 	String ext(filename_extension(identifier.filename));
@@ -118,7 +118,7 @@ CairoImporter::open(const FileSystem::Identifier &identifier)
 	if(!CairoImporter::book().count(ext))
 	{
 		synfig::error(_("CairoImporter::open(): Unknown file type -- ")+ext);
-		return 0;
+		return nullptr;
 	}
 
 	try {
@@ -131,7 +131,7 @@ CairoImporter::open(const FileSystem::Identifier &identifier)
 	{
 		synfig::error(str);
 	}
-	return 0;
+	return nullptr;
 }
 
 CairoImporter::CairoImporter(const FileSystem::Identifier &identifier):
