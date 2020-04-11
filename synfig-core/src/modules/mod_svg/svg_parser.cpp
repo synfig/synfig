@@ -990,8 +990,10 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMa
 
 		if (mtx || data->transform){
 			SVGMatrix *mtx2=nullptr;
+			bool must_free_mtx2 = false;
 			if (mtx && data->transform){
 				composeSVGMatrix(&mtx2,mtx,data->transform);
+				must_free_mtx2 = true;
 			}else if (mtx){
 				mtx2=mtx;
 			}else if (data->transform){
@@ -1025,6 +1027,8 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMa
 			} else {
 				std::cout<<"SVG Import warning: gradient points equal each other"<<std::endl;
 			}
+			if (must_free_mtx2)
+				free(mtx2);
 		}
 
 		coor2vect (&x1,&y1);
