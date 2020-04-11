@@ -2988,27 +2988,39 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 	// File filters
 	// Synfig Documents
-	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-	filter_supported->set_name(_("Synfig files (*.sif, *.sifz, *.sfg)"));
-	filter_supported->add_mime_type("application/x-sif");
-	filter_supported->add_pattern("*.sif");
-	filter_supported->add_pattern("*.sifz");
-	filter_supported->add_pattern("*.sfg");
-	dialog->add_filter(filter_supported);
+	Glib::RefPtr<Gtk::FileFilter> filter_builtin = Gtk::FileFilter::create();
+	filter_builtin->set_name(_("Synfig files (*.sif, *.sifz, *.sfg)"));
+	filter_builtin->add_mime_type("application/x-sif");
+	filter_builtin->add_pattern("*.sif");
+	filter_builtin->add_pattern("*.sifz");
+	filter_builtin->add_pattern("*.sfg");
+	dialog->add_filter(filter_builtin);
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
-	dialog->set_filter(filter_any);
+
+	// Supported files
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name(_("All supported files"));
+	filter_supported->add_pattern("*.sif");
+	filter_supported->add_pattern("*.sifz");
+	filter_supported->add_pattern("*.sfg");
+	dialog->add_filter(filter_supported);
+	dialog->set_filter(filter_supported);
+
 
 	for ( const ImportExport& exp : plugin_manager.importers() )
 	{
 		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
 		filter->set_name(exp.description.get());
 		for ( const std::string& extension : exp.extensions )
+		{
 			filter->add_pattern("*" + extension);
+			filter_supported->add_pattern("*" + extension);
+		}
 		dialog->add_filter(filter);
 	}
 
@@ -3030,7 +3042,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 		auto filter = dialog->get_filter();
 
 		plugin_importer = "";
-		if ( filter == filter_any )
+		if ( filter == filter_any || filter == filter_supported )
 		{
 			if ( !dialog_select_importer(filename, plugin_importer) )
 				return false;
