@@ -310,7 +310,7 @@ MainWindow::make_short_filenames(
 			j = (int)k + 1;
 		}
 
-		dirflags[i].resize(dirs.size(), false);
+		dirflags[i].resize(dirs[i].size(), false);
 	}
 
 	// find shortest paths which shows that files are different
@@ -352,7 +352,7 @@ MainWindow::make_short_filenames(
 	for(int i = 0; i < count; ++i) {
 		int prevk = 0;
 		for(int k = 0; k < (int)dirs[i].size(); ++k) {
-			if (k >= dirflags[i].size() || dirflags[i][k]) {
+			if (dirflags[i][k]) {
 				if (prevk < k) shortnames[i] = "/"+shortnames[i];
 				if (prevk < k-1) shortnames[i] = "/..."+shortnames[i];
 				shortnames[i] = dirs[i][k] + shortnames[i];
