@@ -3232,18 +3232,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 	Gamma gamma = canvas->rend_desc().get_gamma();
 	String version = canvas->get_version();
-	if ( version == "0.1"
-	  || version == "0.2"
-	  || version == "0.3"
-	  || version == "0.4"
-	  || version == "0.5"
-	  || version == "0.6"
-	  || version == "0.7"
-	  || version == "0.8"
-	  || version == "0.9"
-	  || version == "1.0" )
+	if ( version == "1.0" || (version[0] == '0' && version[1] == '.') )
 	{
 		gamma.set(2.2);
+		// Synfig 1.4.0 works differently with looped outlines.
+		// So we give user a warning when he opens old files.
+		// See https://github.com/synfig/synfig/issues/1307
+		warnings_text += _("ATTENTION!\nYou are opening a file which was created in old version of Synfig. \nIf you save this file in current version it might not open correctly \nin old version of Synfig anymore.");
 	}
 	if(element->get_attribute("gamma-r"))
 		gamma.set_r(atof(element->get_attribute("gamma-r")->get_value().c_str()));
