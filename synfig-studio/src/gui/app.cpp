@@ -2906,6 +2906,64 @@ on_open_dialog_with_history_selection_changed(Gtk::FileChooserDialog *dialog, Gt
 	history_button->set_sensitive(!dialog->get_filename().empty());
 }
 
+/*
+
+Finds which importer to use for the given filename
+
+Returns false if the user has canceled the import.
+
+plugin is set to the script identifier for the importer,
+or an empty string if the file should be opened as a normal sif file
+
+*/
+bool
+App::dialog_select_importer(const std::string& filename, std::string& plugin)
+{
+	synfig::String ext = filename_extension(filename);
+
+	Gtk::Dialog dialog(_("Select importer"), true);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_REJECT)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog.add_button(_("OK"), Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
+
+	Gtk::Label label(_("Please select the importer to use for this file"));
+	dialog.get_content_area()->pack_start(label);
+
+	Gtk::ComboBoxText combo_importers;
+	dialog.get_content_area()->pack_end(combo_importers);
+
+	int count = 0;
+	plugin = "";
+	for ( const auto& importer : App::plugin_manager.importers() )
+	{
+		if ( importer.has_extension(ext) )
+		{
+			plugin = importer.id;
+			combo_importers.append(importer.id, importer.description.get());
+			if ( count == 0 )
+				combo_importers.set_active_id(importer.id);
+			count++;
+		}
+	}
+
+	if ( count == 1 )
+		return true;
+
+	if ( count == 0 )
+		return true;
+
+	dialog.show_all();
+
+	if ( dialog.run() != Gtk::RESPONSE_ACCEPT )
+	{
+		plugin = "";
+		return false;
+	}
+
+	plugin = combo_importers.get_active_id();
+	return true;
+
+}
+
 bool
 App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference, std::string& plugin_importer)
 {
@@ -2972,17 +3030,10 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 		auto filter = dialog->get_filter();
 
 		plugin_importer = "";
-		synfig::String ext = filename_extension(filename);
 		if ( filter == filter_any )
 		{
-			for ( const auto& importer : App::plugin_manager.importers() )
-			{
-				if ( importer.has_extension(ext) )
-				{
-					plugin_importer = importer.id;
-					break;
-				}
-			}
+			if ( !dialog_select_importer(filename, plugin_importer) )
+				return false;
 		}
 		else
 		{
