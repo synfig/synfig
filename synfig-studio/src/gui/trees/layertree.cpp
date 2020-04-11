@@ -552,7 +552,7 @@ LayerTree::get_selected_layer()const
 	LayerList layers(get_selected_layers());
 
 	if(layers.empty())
-		return 0;
+		return nullptr;
 
 	return layers.front();
 }
@@ -727,7 +727,7 @@ LayerTree::on_selection_changed()
 	{
 		if(layer_list.empty())
 		{
-			last_top_selected_layer=0;
+			last_top_selected_layer=nullptr;
 			layer_tree_view().get_selection()->select(last_top_selected_path);
 			return;
 		}
@@ -741,7 +741,7 @@ LayerTree::on_selection_changed()
 		}
 		else
 		{
-			last_top_selected_layer=0;
+			last_top_selected_layer=nullptr;
 		}
 	}
 
@@ -768,7 +768,7 @@ LayerTree::on_selection_changed()
 		quick_layer=*layer_list.begin();
 	}
 	else
-		quick_layer=0;
+		quick_layer=nullptr;
 
 	if(quick_layer)
 	{
