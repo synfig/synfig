@@ -210,6 +210,19 @@ Widget_ValueBase::set_sensitive(bool x)
 	distance_widget->set_sensitive(x);
 }
 
+void Widget_ValueBase::popup_enum_combobox()
+{
+	Type &type(get_value().get_type());
+	if (type == type_integer)
+	{
+		string param_hint = get_param_desc().get_hint();
+		string child_param_hint = get_child_param_desc().get_hint();
+		if ( param_hint == "enum" || child_param_hint == "enum" ) {
+			enum_widget->popup();
+		}
+	}
+}
+
 void
 Widget_ValueBase::set_value(const synfig::ValueBase &data)
 {
@@ -335,15 +348,6 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		{
 			color_widget->set_value(value.get(synfig::Color()));
 			color_widget->show();
-	/*
-				Gdk::Color gdkcolor;
-				synfig::Color color=value.get(synfig::Color());
-				gdkcolor.set_rgb_p(color.get_r(),color.get_g(),color.get_b());
-				color_widget->set_current_color(gdkcolor);
-				color_widget->set_has_opacity_control(true);
-				color_widget->set_current_alpha((unsigned short)(color.get_a()*65535.0));
-				color_widget->show();
-	*/
 		}
 		else
 		{
@@ -420,17 +424,6 @@ Widget_ValueBase::get_value()
 	if (type == type_color)
 	{
 		value=color_widget->get_value();
-/*
-		Gdk::Color gdkcolor;
-		synfig::Color color;
-		gdkcolor=color_widget->get_current_color();
-		color.set_r(gdkcolor.get_red_p());
-		color.set_g(gdkcolor.get_green_p());
-		color.set_b(gdkcolor.get_blue_p());
-		color.set_a(color_widget->get_current_alpha()/65535.0);
-
-		value=color;
-*/
 	}
 
 	return value;
@@ -497,61 +490,3 @@ Widget_ValueBase::on_grab_focus()
 	if (type == type_color)
 		color_widget->grab_focus();
 }
-
-/*
-Glib::SignalProxy0<void>
-Widget_ValueBase::signal_activate()
-{
-	Type &type(value.get_type());
-	if (type == type_vector)
-		return vector_widget->signal_activate();
-	else
-	if (type == type_real)
-	{
-		if(param_desc.get_is_distance()&& canvas)
-			return distance_widget->signal_activate();
-		else
-			return real_widget->signal_activate();
-	}
-	else
-	if (type == type_time)
-		return time_widget->signal_activate();
-	else
-	if (type == type_angle)
-		return angle_widget->signal_activate();
-	else
-	if (type == type_bone_valuenode)
-		return bone_widget->signal_activate();
-	else
-	if (type == type_canvas)
-		return canvas_widget->signal_activate();
-	else
-	if (type == type_integer)
-	{
-		if(param_desc.get_hint()!="enum")
-			return integer_widget->signal_activate();
-		else
-			return enum_widget->signal_activate();
-	}
-	else
-	if (type == type_bool)
-		return string_widget->signal_activate();
-	else
-	if (type == type_string)
-	{
-		if(param_desc.get_hint()!="filename")
-		{
-			return string_widget->signal_activate();
-		}
-		else
-		{
-			return filename_widget->signal_activate();
-		}
-	}
-	else
-	if (type == type_color)
-		return color_widget->signal_activate();
-
-	return string_widget->signal_activate();
-}
-*/
