@@ -4243,6 +4243,8 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 				}
 				one_moment.hide();
 			}
+
+			add_recent_file(filename);
 		}
 
 		if ( !errors.empty() )
@@ -4250,6 +4252,19 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 	}
 
 	remove(filename_processed.c_str());
+}
+
+void
+App::open_recent(const std::string& filename)
+{
+	std::string importer;
+	if ( !dialog_select_importer(filename, importer) )
+		return;
+
+	if ( importer.empty() )
+		open(filename);
+	else
+		open_from_plugin(filename, importer);
 }
 
 void

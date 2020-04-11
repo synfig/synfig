@@ -387,8 +387,9 @@ MainWindow::on_recent_files_changed()
 		const std::string action_name = etl::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
+		std::string filename = fullnames[i];
 		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
-			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),fullnames[i],0))
+			[filename](){App::open_recent(filename);}
 		);
 	}
 

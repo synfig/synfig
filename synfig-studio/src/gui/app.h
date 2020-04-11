@@ -368,6 +368,8 @@ public:
 		std::string as,
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
+	static void 	open_recent(const std::string& filename);
+
 	static bool open(
 		std::string filename,
 		/* std::string as, */
