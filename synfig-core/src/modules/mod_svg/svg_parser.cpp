@@ -1358,10 +1358,9 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,int value){
 	if(!type.empty()){
 			if(!name.empty()) root->set_attribute("name",name);
 			xmlpp::Element *child=root->add_child(type);
-			char *enteroc=new char[10];
+			char enteroc[10];
 			sprintf(enteroc,"%d",value);
 			child->set_attribute("value",enteroc);
-			delete [] enteroc;
 	}else{
 		root->get_parent()->remove_child(root);
 	}
@@ -1371,7 +1370,7 @@ void
 Svg_parser::build_integer(xmlpp::Element* root,String name,int value){
 	if(name.compare("")!=0) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("integer");
-	char *enteroc=new char[10];
+	char enteroc[10];
 	sprintf(enteroc,"%d",value);
 	child->set_attribute("value",enteroc);
 }
@@ -1379,7 +1378,7 @@ void
 Svg_parser::build_real(xmlpp::Element* root,String name,float value){
 	if(name.compare("")!=0) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("real");
-	char *realc=new char[20];
+	char realc[20];
 	sprintf(realc,"%f",value);
 	child->set_attribute("value",realc);
 }
