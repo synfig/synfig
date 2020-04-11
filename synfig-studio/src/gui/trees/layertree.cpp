@@ -434,11 +434,10 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
 
 		Gtk::TreePath path(iter);
-		for(int i=(int)path.size();i;i--)
+		for(size_t i=path.size();i;i--)
 		{
-			int j;
 			path=Gtk::TreePath(iter);
-			for(j=i;j;j--)
+			for(size_t j=i;j;j--)
 				path.up();
 			layer_tree_view().expand_row(path,false);
 		}
