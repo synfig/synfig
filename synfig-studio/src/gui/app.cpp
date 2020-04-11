@@ -4243,20 +4243,24 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 			{
 				errors += strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str());
 			}
-			else if ( !get_instance(canvas) )
+			else
 			{
-				if (warnings != "")
-					dialog_message_1b("WARNING", _("Warning"), "details", _("Close"), warnings);
+				if ( !get_instance(canvas) )
+				{
+					if (warnings != "")
+						dialog_message_1b("WARNING", _("Warning"), "details", _("Close"), warnings);
 
-				handle<Instance> instance(Instance::create(canvas, container));
+					handle<Instance> instance(Instance::create(canvas, container));
 
-				if ( !instance ) {
-					errors += strprintf(_("Unable to create instance for \"%s\""), filename.c_str());
+					if ( !instance ) {
+						errors += strprintf(_("Unable to create instance for \"%s\""), filename.c_str());
+					}
+					one_moment.hide();
 				}
-				one_moment.hide();
-			}
 
-			add_recent_file(filename);
+				canvas->set_file_name(App::custom_filename_prefix);
+				add_recent_file(filename);
+			}
 		}
 
 		if ( !errors.empty() )
