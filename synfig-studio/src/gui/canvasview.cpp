@@ -3640,7 +3640,7 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y, bool own)
 		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_LAYER_SELECTION_CHANGED));
 		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 		layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_layer_user_click));
-		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_children_user_click));
+//		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_param_user_click));
 		layer_tree->signal_waypoint_clicked_layertree().connect(sigc::mem_fun(*this, &CanvasView::on_waypoint_clicked_canvasview));
 	}
 	if(x=="children")
