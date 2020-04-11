@@ -193,21 +193,21 @@ private:
 		/* === EXTRA METHODS ============================== */
 
 		//attributes
-		int extractSubAttribute(const String attribute, String name,String* value);
-		String loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal);
-		String loadAttribute(String name,const String path_style,const String master_style,const String defaultVal);
-		std::vector<String> get_tokens_path(String path);
-		int randomLetter();
-		int getRed(String hex);
-		int getGreen(String hex);
-		int getBlue(String hex);
-		int hextodec(String hex);
-		int getColor(String name, int position) const;
-		float getDimension(const String ac);
+		static int extractSubAttribute(const String attribute, String name,String* value);
+		static String loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal);
+		static String loadAttribute(String name,const String path_style,const String master_style,const String defaultVal);
+		static std::vector<String> get_tokens_path(String path);
+		static int randomLetter();
+		static int getRed(String hex);
+		static int getGreen(String hex);
+		static int getBlue(String hex);
+		static int hextodec(String hex);
+		static int getColor(String name, int position);
+		static float getDimension(const String ac);
 		//string functions
-		void removeS(String *input);
-		void removeIntoS(String *input);
-		std::vector<String> tokenize(const String& str,const String& delimiters);
+		static void removeS(String *input);
+		static void removeIntoS(String *input);
+		static std::vector<String> tokenize(const String& str,const String& delimiters);
 		String new_guid();
 };
 // END of Svg_parser class

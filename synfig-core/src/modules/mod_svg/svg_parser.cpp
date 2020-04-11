@@ -2116,7 +2116,7 @@ static const std::map<std::string, CairoColor> color_name_map = {
 #undef COLOR_NAME
 
 int
-Svg_parser::getColor(String name, int position) const {
+Svg_parser::getColor(std::string name, int position) {
 	if (position<1 || position>3)
 		return 0;
 	try {
