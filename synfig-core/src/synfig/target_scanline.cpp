@@ -303,7 +303,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 					// Put the surface we renderer
 					// onto the target.
-					if(!add_frame(&lock->get_surface()))
+					if(!add_frame(&lock->get_surface(), cb))
 					{
 						if(cb)cb->error(_("Unable to put surface on target"));
 						return false;
@@ -461,7 +461,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 				// Put the surface we renderer
 				// onto the target.
-				if(!add_frame(&lock->get_surface()))
+				if(!add_frame(&lock->get_surface(), cb))
 				{
 					if(cb)cb->error(_("Unable to put surface on target"));
 					return false;
@@ -492,7 +492,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 }
 
 bool
-Target_Scanline::add_frame(const synfig::Surface *surface)
+Target_Scanline::add_frame(const synfig::Surface *surface, ProgressCallback *cb)
 {
 	assert(surface);
 
@@ -501,9 +501,11 @@ Target_Scanline::add_frame(const synfig::Surface *surface)
 	int rowspan=sizeof(Color)*surface->get_w();
 	Surface::const_pen pen=surface->begin();
 
-	if(!start_frame())
+	if(!start_frame(cb))
 	{
-		throw(string("add_frame(): target panic on start_frame()"));
+//		throw(string("add_frame(): target panic on start_frame()"));
+		if (cb)
+			cb->error(_("add_frame(): target panic on start_frame()"));
 		return false;
 	}
 
@@ -512,7 +514,9 @@ Target_Scanline::add_frame(const synfig::Surface *surface)
 		Color *colordata= start_scanline(y);
 		if(!colordata)
 		{
-			throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+//			throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+			if (cb)
+				cb->error(_("add_frame(): call to start_scanline(y) returned NULL"));
 			return false;
 		}
 
@@ -540,7 +544,9 @@ Target_Scanline::add_frame(const synfig::Surface *surface)
 
 		if(!end_scanline())
 		{
-			throw(string("add_frame(): target panic on end_scanline()"));
+//			throw(string("add_frame(): target panic on end_scanline()"));
+			if (cb)
+				cb->error(_("add_frame(): target panic on end_scanline()"));
 			return false;
 		}
 	}

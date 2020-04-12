@@ -476,13 +476,15 @@ public:
 	bool ready_next;
 	sigc::connection ready_connection;
 
+	ProgressCallback *cb;
 
 public:
 	AsyncTarget_Scanline(etl::handle<synfig::Target_Scanline> warm_target):
 		warm_target(warm_target),
 		scanline_(),
 		alive_flag(),
-		ready_next()
+		ready_next(),
+		cb(nullptr)
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_canvas(warm_target->get_canvas());
@@ -516,8 +518,9 @@ public:
 		alive_flag=false;
 	}
 
-	virtual bool start_frame(synfig::ProgressCallback */*cb*/=0)
+	virtual bool start_frame(synfig::ProgressCallback *cb)
 	{
+		this->cb = cb;
 		return alive_flag;
 	}
 
@@ -573,7 +576,7 @@ public:
 	{
 		Glib::Mutex::Lock lock(mutex);
 		if(alive_flag)
-			alive_flag=warm_target->add_frame(&surface);
+			alive_flag=warm_target->add_frame(&surface, cb);
 		cond_frame_queue_empty.signal();
 		ready_next=true;
 		

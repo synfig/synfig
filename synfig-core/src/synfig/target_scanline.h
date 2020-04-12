@@ -108,7 +108,7 @@ public:
 	void set_engine(const String &x) { engine_=x; }
 
 	//! Puts the rendered surface onto the target.
-	bool add_frame(const synfig::Surface *surface);
+	bool add_frame(const synfig::Surface *surface, ProgressCallback* cb);
 private:
 }; // END of class Target_Scanline
 
