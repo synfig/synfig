@@ -717,8 +717,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
-	error(false),
-	success(false),
+	status(UNDEFINED),
 	cb(cb),
 	start_clock(0),
 	finish_clock(0),
@@ -795,7 +794,8 @@ AsyncRenderer::stop()
 			// Make sure all the dispatch crap is cleared out
 			//Glib::MainContext::get_default()->iteration(false);
 
-			if(success)
+			std::string error_message;
+			if(status == SUCCESS)
 				signal_success_();
 
 			target=0;
@@ -838,7 +838,7 @@ AsyncRenderer::start()
 void
 AsyncRenderer::start_()
 {
-	error=false;success=false;
+	status = UNDEFINED;
 	if(target)
 	{
 #ifndef GLIB_DISPATCHER_BROKEN
@@ -867,11 +867,11 @@ AsyncRenderer::render_target()
 
 	if(target && target->render())
 	{
-		success=true;
+		status = SUCCESS;
 	}
 	else
 	{
-		error=true;
+		status = ERROR;
 #ifndef REJOIN_ON_STOP
 		return;
 #endif

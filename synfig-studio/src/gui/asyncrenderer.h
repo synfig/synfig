@@ -53,6 +53,14 @@ namespace studio {
 
 class AsyncRenderer : public etl::shared_object, public sigc::trackable
 {
+public:
+	enum Status {
+		UNDEFINED,
+		ERROR,
+		SUCCESS
+	};
+
+private:
 	//! Signal emitted when target has been stopped or has finished
 	sigc::signal<void> signal_finished_;
 	//! Signal emitted when target has succeeded
@@ -64,10 +72,9 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 	//! The target that is going to be asynchronously rendered.
 	etl::handle<synfig::Target> target;
 
-	//! Set to true when target render fails.
-	bool error;
-	//! Set to true when target render succeeded
-	bool success;
+	//! Current rendering status
+	//! Undefined if not finished
+	Status status;
 
 	synfig::ProgressCallback *cb;
 	//! Signal to be emitted when the target is requested to stop
@@ -96,8 +103,7 @@ public:
 	void pause();
 	void resume();
 
-	bool has_error()const { return error; }
-	bool has_success()const { return success; }
+	Status get_status() const { return status; }
 	synfig::Real get_execution_time() const { return (finish_time - start_time).as_double(); }
 	synfig::Real get_execution_clock() const { return (synfig::Real)(finish_clock - start_clock)/(synfig::Real)CLOCKS_PER_SEC; }
 
