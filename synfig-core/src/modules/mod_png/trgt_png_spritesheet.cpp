@@ -196,8 +196,9 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	cout << "Color size: " << sizeof(Color) << endl;
 	
 	color_data = new Color*[sheet_height];
-	for (unsigned int i = 0; i < sheet_height; i++)
-		color_data[i] = new Color[sheet_width];
+	if (color_data)
+		for (unsigned int i = 0; i < sheet_height; i++)
+			color_data[i] = new Color[sheet_width];
 	
 	if (is_loaded)
 		ready = read_png_file();
@@ -257,7 +258,7 @@ png_trgt_spritesheet::start_scanline(int /*scanline*/)
 {
 	unsigned int y = cur_y + params.offset_y + cur_row * desc.get_h();
 	unsigned int x = cur_col * desc.get_w() + params.offset_x;
-	if ((x + desc.get_w() > sheet_width) || (y > sheet_height))
+	if ((x + desc.get_w() > sheet_width) || (y > sheet_height) || !color_data)
 	{
 		cout << "Buffer overflow. x: " << x << " y: " << y << endl; 
 		//TODO: Fix exception processing outside the module.
