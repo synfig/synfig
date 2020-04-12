@@ -42,6 +42,8 @@
 #include <gui/localization.h>
 #include <docks/dock_info.h>
 
+#include <gui/progresslogger.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -805,8 +807,13 @@ AsyncRenderer::stop()
 
 			target=0;
 			render_thread=0;
-			
+
 			lock.release();
+
+			if (status == ERROR) {
+				if (ProgressLogger *logger = dynamic_cast<ProgressLogger*>(cb))
+					error_message += "\n" + logger->get_error_message();
+			}
 
 			signal_finished_(error_message);
 		}

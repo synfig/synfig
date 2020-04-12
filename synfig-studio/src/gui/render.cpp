@@ -55,6 +55,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/progresslogger.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -83,6 +85,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	toggle_extract_alpha(_("Extract alpha"), true),
 	tparam("mpeg4",6000)
 {
+	progress_logger.reset(new ProgressLogger());
 	tparam.sequence_separator=App::sequence_separator;
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));
@@ -365,6 +368,7 @@ RenderSettings::on_render_pressed()
 	App::dock_info_->set_render_progress(0.0);
 	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
 	
+	progress_logger->clear();
 	submit_next_render_pass();
 
 	return;
@@ -427,7 +431,7 @@ RenderSettings::submit_next_render_pass()
 			async_renderer.detach();
 		}
 		*/
-		async_renderer=new AsyncRenderer(target);
+		async_renderer=new AsyncRenderer(target, progress_logger.get());
 		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
 		async_renderer->start();
 		/*

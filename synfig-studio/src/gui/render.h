@@ -59,6 +59,8 @@ namespace studio
 {
 class AsyncRenderer;
 
+class ProgressLogger;
+
 class RenderSettings : public Gtk::Dialog
 {
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
@@ -86,6 +88,7 @@ class RenderSettings : public Gtk::Dialog
 	void set_target(synfig::String name);
 
 	etl::handle<AsyncRenderer> async_renderer;
+	std::unique_ptr<ProgressLogger> progress_logger;
 
 	synfig::TargetParam tparam;
 

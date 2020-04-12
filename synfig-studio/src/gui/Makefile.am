@@ -54,6 +54,7 @@ OTHER_HH = \
 	onemoment.h \
 	pluginmanager.h \
 	preview.h \
+	progresslogger.h \
 	renddesc.h \
 	render.h \
 	resourcehelper.h \
@@ -86,6 +87,7 @@ OTHER_CC = \
 	onemoment.cpp \
 	pluginmanager.cpp \
 	preview.cpp \
+	progresslogger.cpp \
 	renddesc.cpp \
 	render.cpp \
 	resourcehelper.cpp \
