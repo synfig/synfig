@@ -53,7 +53,7 @@ SYNFIG_TARGET_SET_CVS_ID(jpeg_trgt,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 jpeg_trgt::jpeg_trgt(const char *Filename, const synfig::TargetParam &params):
-	file(NULL),
+	file(nullptr),
 	quality(95),
 	cinfo(),
 	jerr(),
@@ -61,8 +61,8 @@ jpeg_trgt::jpeg_trgt(const char *Filename, const synfig::TargetParam &params):
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL),
+	buffer(nullptr),
+	color_buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -78,7 +78,7 @@ jpeg_trgt::~jpeg_trgt()
 	}
 	if(file)
 		fclose(file);
-	file=NULL;
+	file=nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -173,7 +173,7 @@ jpeg_trgt::end_frame()
 
 	if(file && file!=stdout)
 		fclose(file);
-	file=NULL;
+	file=nullptr;
 	imagecount++;
 }
 
@@ -189,7 +189,7 @@ jpeg_trgt::end_scanline()
 	if(!file || !ready)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, PF_RGB, 0, desc.get_w());
+	color_to_pixelformat(buffer, color_buffer, PF_RGB, nullptr, desc.get_w());
 
 	JSAMPROW *row_pointer(&buffer);
 	jpeg_write_scanlines(&cinfo, row_pointer, 1);
