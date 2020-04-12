@@ -418,7 +418,7 @@ RenderSettings::submit_next_render_pass()
 		if(pass_alpha_mode!=TARGET_ALPHA_MODE_KEEP)
 			target->set_alpha_mode(pass_alpha_mode);
 
-		canvas_interface_->get_ui_interface()->task(_("Rendering ")+pass_filename);
+		canvas_interface_->get_ui_interface()->task(strprintf(_("Rendering %s"), pass_filename.c_str()));
 
 		/*
 		if(async_renderer)
