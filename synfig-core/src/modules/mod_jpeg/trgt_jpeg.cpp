@@ -33,11 +33,7 @@
 #endif
 
 #include "trgt_jpeg.h"
-#include <jpeglib.h>
 #include <ETL/stringf>
-#include <cstdio>
-#include <algorithm>
-#include <functional>
 #endif
 
 /* === M A C R O S ========================================================= */
