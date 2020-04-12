@@ -5,7 +5,6 @@ support the invert parameter
 """
 
 import sys
-import settings
 from common.Count import Count
 from properties.shapeKeyframed import gen_properties_shapeKeyframed
 sys.path.append("..")

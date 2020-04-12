@@ -133,9 +133,6 @@ def add_colors_to_gradient(waypoint, gd, positions):
     Returns:
         (None)
     """
-    st = "<gradient></gradient>"
-    new_gradient = etree.fromstring(st)
-
     # First remove all the colors, easy to remove all first and then add all+some additionals back
     for col in waypoint[0]:
         col.getparent().remove(col)
