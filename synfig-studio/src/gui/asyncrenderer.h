@@ -62,7 +62,9 @@ public:
 
 private:
 	//! Signal emitted when target has been stopped or has finished
-	sigc::signal<void> signal_finished_;
+	//! An error message is passed as argument in case of error;
+	//! it's empty otherwise
+	sigc::signal<void, std::string> signal_finished_;
 	//! Signal emitted when target has succeeded
 	sigc::signal<void> signal_success_;
 
@@ -107,7 +109,7 @@ public:
 	synfig::Real get_execution_time() const { return (finish_time - start_time).as_double(); }
 	synfig::Real get_execution_clock() const { return (synfig::Real)(finish_clock - start_clock)/(synfig::Real)CLOCKS_PER_SEC; }
 
-	sigc::signal<void>& signal_finished() { return signal_finished_; }
+	sigc::signal<void, std::string>& signal_finished() { return signal_finished_; }
 	sigc::signal<void>& signal_success() { return signal_success_; }
 
 private:

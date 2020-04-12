@@ -797,13 +797,15 @@ AsyncRenderer::stop()
 			std::string error_message;
 			if(status == SUCCESS)
 				signal_success_();
+			else
+				error_message = _("Animation couldn't be rendered");
 
 			target=0;
 			render_thread=0;
 			
 			lock.release();
-			
-			signal_finished_();
+
+			signal_finished_(error_message);
 		}
 	}
 }

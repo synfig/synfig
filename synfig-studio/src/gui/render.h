@@ -109,7 +109,7 @@ private:
 	void on_targetparam_pressed();
 	void submit_next_render_pass();
 	void on_comboboxtext_target_changed();
-	void on_finished();
+	void on_finished(std::string error_message);
 }; // END of class RenderSettings
 
 }; // END of namespace studio

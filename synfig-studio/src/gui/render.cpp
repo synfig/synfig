@@ -447,13 +447,16 @@ RenderSettings::submit_next_render_pass()
 }
 
 void
-RenderSettings::on_finished()
+RenderSettings::on_finished(std::string error_message)
 {
-	String text(_("File rendered successfully"));
+	String text(_("Animation rendered successfully"));
 	Real execution_time = async_renderer ? async_renderer->get_execution_time() : 0.0;
 	if (execution_time > 0) text += strprintf(" (%f %s)", execution_time, _("sec"));
 
-	canvas_interface_->get_ui_interface()->task(text);
+	bool success = error_message.empty();
+
+	if (success)
+		canvas_interface_->get_ui_interface()->task(text);
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 
 	bool really_finished = (render_passes.size() == 0); //Must be checked BEFORE submit_next_render_pass();
@@ -467,6 +470,10 @@ RenderSettings::on_finished()
 		}
 		App::dock_info_->set_render_progress(1.0);
 	}
+
+	// Play the sound before show error dialog!
+	if (!success)
+		canvas_interface_->get_ui_interface()->error(error_message);
 }
 
 void
