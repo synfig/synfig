@@ -722,7 +722,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
-	status(UNDEFINED),
+	status(RENDERING_UNDEFINED),
 	cb(cb),
 	start_clock(0),
 	finish_clock(0),
@@ -800,7 +800,7 @@ AsyncRenderer::stop()
 			//Glib::MainContext::get_default()->iteration(false);
 
 			std::string error_message;
-			if(status == SUCCESS)
+			if(status == RENDERING_SUCCESS)
 				signal_success_();
 			else
 				error_message = _("Animation couldn't be rendered");
@@ -810,7 +810,7 @@ AsyncRenderer::stop()
 
 			lock.release();
 
-			if (status == ERROR) {
+			if (status == RENDERING_ERROR) {
 				if (ProgressLogger *logger = dynamic_cast<ProgressLogger*>(cb))
 					error_message += "\n" + logger->get_error_message();
 			}
@@ -850,7 +850,7 @@ AsyncRenderer::start()
 void
 AsyncRenderer::start_()
 {
-	status = UNDEFINED;
+	status = RENDERING_UNDEFINED;
 	if(target)
 	{
 #ifndef GLIB_DISPATCHER_BROKEN
@@ -880,17 +880,17 @@ AsyncRenderer::render_target()
 	try {
 		if(target && target->render(cb))
 		{
-			status = SUCCESS;
+			status = RENDERING_SUCCESS;
 		}
 		else
 		{
-			status = ERROR;
+			status = RENDERING_ERROR;
 #ifndef REJOIN_ON_STOP
 			return;
 #endif
 		}
 	} catch (...) {
-		status = ERROR;
+		status = RENDERING_ERROR;
 		string error_str = _("Internal error: some exception has been thrown while rendering");
 		synfig::error(error_str);
 		if (cb)

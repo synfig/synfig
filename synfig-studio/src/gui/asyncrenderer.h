@@ -55,9 +55,9 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 {
 public:
 	enum Status {
-		UNDEFINED,
-		ERROR,
-		SUCCESS
+		RENDERING_UNDEFINED,
+		RENDERING_ERROR,
+		RENDERING_SUCCESS
 	};
 
 private:
