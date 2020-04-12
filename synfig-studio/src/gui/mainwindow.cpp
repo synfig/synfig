@@ -29,8 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include <gui/localization.h>
 
 #include "mainwindow.h"
@@ -38,7 +36,6 @@
 #include "docks/dockable.h"
 #include "docks/dockbook.h"
 #include "docks/dockmanager.h"
-#include "docks/dockdroparea.h"
 #include "dialogs/dialog_input.h"
 
 #include <synfigapp/main.h>
@@ -56,7 +53,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -89,11 +85,11 @@ MainWindow::MainWindow() :
 
 	class Bin : public Gtk::Bin {
 	public:
-		Bin() { }
+		Bin() = default;
 	protected:
-		void on_size_allocate(Gtk::Allocation &allocation) {
+		void on_size_allocate(Gtk::Allocation &allocation) override {
 			Gtk::Bin::on_size_allocate(allocation);
-			if (get_child() != NULL)
+			if (get_child() != nullptr)
 				get_child()->size_allocate(allocation);
 		}
 	};
@@ -138,7 +134,7 @@ MainWindow::MainWindow() :
 	GRAB_HINT_DATA("mainwindow");
 }
 
-MainWindow::~MainWindow(){ }
+MainWindow::~MainWindow() = default;
 
 void
 MainWindow::show_dialog_input()
@@ -314,10 +310,10 @@ MainWindow::make_short_filenames(
 			j = (int)k + 1;
 		}
 
-		dirflags[i].resize(dirs.size(), false);
+		dirflags[i].resize(dirs[i].size(), false);
 	}
 
-	// find shotest paths which shows that files are different
+	// find shortest paths which shows that files are different
 	for(int i = 0; i < count; ++i) {
 		for(int j = 0; j < count; ++j) {
 			if (i == j) continue;
@@ -369,6 +365,7 @@ MainWindow::make_short_filenames(
 void
 MainWindow::on_recent_files_changed()
 {
+	// TODO(ice0): switch to GtkRecentChooserMenu?
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 
 	vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
@@ -387,7 +384,7 @@ MainWindow::on_recent_files_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		std::string action_name = strprintf("file-recent-%d", i);
+		const std::string action_name = etl::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
@@ -436,7 +433,7 @@ MainWindow::on_custom_workspaces_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		std::string action_name = strprintf("custom-workspace-%d", num_custom_workspaces);
+		std::string action_name = etl::strprintf("custom-workspace-%d", num_custom_workspaces);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted),
@@ -493,13 +490,13 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 		sigc::mem_fun(*dockable, &Dockable::present)
 	);
 
-	std::string ui_info =
+	const std::string ui_info =
 		"<menu action='menu-window'>"
 	    "<menuitem action='panel-" + dockable->get_name() + "' />"
 	    "</menu>";
-	std::string ui_info_popup =
+	const std::string ui_info_popup =
 		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
-	std::string ui_info_menubar =
+	const std::string ui_info_menubar =
 		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
 
 	Gtk::UIManager::ui_merge_id merge_id_popup = App::ui_manager()->add_ui_from_string(ui_info_popup);

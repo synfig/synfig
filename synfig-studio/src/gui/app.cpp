@@ -54,7 +54,6 @@
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/stock.h>
-#include <gtkmm/stockitem.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/uimanager.h>
 
@@ -102,7 +101,6 @@
 #include "widgets/widget_enum.h"
 
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/actions/layersetdesc.h>
 
 #include "statemanager.h"
 
@@ -130,7 +128,6 @@
 #include "autorecover.h"
 
 #include <synfigapp/settings.h>
-#include <synfigapp/canvasinterface.h>
 #include <synfigapp/action.h>
 
 #include "docks/dockmanager.h"
@@ -160,12 +157,12 @@
 
 #include "gui/resourcehelper.h"
 #include "gui/workspacehandler.h"
+#include <algorithm>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -258,11 +255,11 @@ bool App::shutdown_in_progress;
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 
 int        App::jack_locks_ = 0;
-Dock_Info* App::dock_info_  = 0;
+Dock_Info* App::dock_info_  = nullptr;
 
 synfig::Distance::System  App::distance_system;
 
-studio::Dialog_Setup     *App::dialog_setup;
+studio::Dialog_Setup     *App::dialog_setup = nullptr;
 
 etl::handle< studio::ModPalette > mod_palette_;
 //studio::Dialog_Palette* App::dialog_palette;
@@ -365,7 +362,7 @@ delete_widget(Gtk::Widget *widget)
 }
 
 //Static members need to be initialized outside of class declaration
-SoundProcessor *App::sound_render_done = NULL;
+SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
 
 }; // END of namespace studio
@@ -1006,7 +1003,7 @@ DEFINE_ACTION("quality-08", _("Use Quality Level 8"));
 DEFINE_ACTION("quality-09", _("Use Quality Level 9"));
 DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
 
-for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
+for(std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
   DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
 
 DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"));
@@ -1161,7 +1158,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "			<separator name='pixel-size-separator'/>"
 ;
 
-	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
+	for (std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
 		ui_info_menu += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
 
 	ui_info_menu +=
@@ -1210,8 +1207,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	<menu action='menu-plugins'>"
 ;
 
-	list<PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
-	for(list<PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
+	std::list<PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
+	for (std::list<PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
 
 		// TODO: (Plugins) Arrange menu items into groups
 
@@ -1487,7 +1484,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	if(!SYNFIG_CHECK_VERSION())
 	{
-		cerr<<"FATAL: Synfig Version Mismatch"<<endl;
+		std::cerr << "FATAL: Synfig Version Mismatch" << std::endl;
 		dialog_message_1b(
 			"ERROR",
 			_("Synfig version mismatched!"),
@@ -1891,11 +1888,11 @@ App::get_config_file(const synfig::String& file)
 void
 App::add_recent_file(const etl::handle<Instance> instance)
 {
-	add_recent_file(absolute_path(instance->get_file_name()));
+	add_recent_file(absolute_path(instance->get_file_name()), true);
 }
 
 void
-App::add_recent_file(const std::string &file_name)
+App::add_recent_file(const std::string &file_name, bool emit_signal = true)
 {
 	std::string filename(FileSystem::fix_slashes(file_name));
 
@@ -1912,7 +1909,7 @@ App::add_recent_file(const std::string &file_name)
 	if(!is_absolute_path(filename))
 		filename=absolute_path(filename);
 
-	list<string>::iterator iter;
+	std::list<std::string>::iterator iter;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
 	for(iter=recent_files.begin();iter!=recent_files.end();iter++)
@@ -1932,9 +1929,10 @@ App::add_recent_file(const std::string &file_name)
 		recent_files.pop_back();
 	}
 
-	signal_recent_files_changed_();
+	if (emit_signal) {
+		signal_recent_files_changed_();
+	}
 
-	return;
 }
 
 static Time::Format _App_time_format(Time::FORMAT_FRAMES);
@@ -2008,7 +2006,7 @@ App::save_settings()
 			{
 				synfig::warning("Unable to save %s",filename.c_str());
 			} else {
-				file<<App::ui_language.c_str()<<endl;
+				file<<App::ui_language.c_str()<<std::endl;
 			}
 		}
 		do{
@@ -2022,11 +2020,11 @@ App::save_settings()
 				break;
 			}
 
-			list<string>::reverse_iterator iter;
+			std::list<std::string>::reverse_iterator iter;
 
-			for(iter=recent_files.rbegin();iter!=recent_files.rend();iter++)
-				file<<(*iter).c_str()<<endl;
-		}while(0);
+			for(iter=recent_files.rbegin();iter!=recent_files.rend();++iter)
+				file<<(*iter).c_str() << std::endl;
+		} while (false);
 		std::string filename=get_config_file("settings-1.4");
 		synfigapp::Main::settings().save_to_file(filename);
 
@@ -2091,8 +2089,9 @@ App::load_file_window_size()
 				std::string recent_file_window_size;
 				getline(file,recent_file);
 				if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
-					add_recent_file(recent_file);
+					add_recent_file(recent_file, false);
 			}
+			signal_recent_files_changed()();
 		}
 
 	}
@@ -2193,7 +2192,7 @@ App::set_workspace_animating()
 	set_workspace_from_template(tpl);
 }
 
-void App::set_workspace_from_template(const string& tpl)
+void App::set_workspace_from_template(const std::string& tpl)
 {
 	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
 	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
@@ -2213,7 +2212,7 @@ void App::set_workspace_from_template(const string& tpl)
 	dock_manager->show_all_dock_dialogs();
 }
 
-void App::set_workspace_from_name(const string& name)
+void App::set_workspace_from_name(const std::string& name)
 {
 	std::string tpl;
 	bool ok = workspaces->get_workspace(name, tpl);
@@ -2301,7 +2300,7 @@ void App::edit_custom_workspace_list()
 void
 App::restore_default_settings()
 {
-	ostringstream temp_time_format;
+	std::ostringstream temp_time_format;
 	temp_time_format << Time::FORMAT_FRAMES;
 	synfigapp::Main::settings().set_value("pref.time_format",                    temp_time_format.str());
 
@@ -2332,7 +2331,7 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.use_render_done_sound",          "1");
 	synfigapp::Main::settings().set_value("pref.enable_mainwin_menubar",         "1");
 
-	ostringstream temp_ui_handle_tooltip_flag;
+	std::ostringstream temp_ui_handle_tooltip_flag;
 	temp_ui_handle_tooltip_flag << Duck::STRUCT_DEFAULT;
 	synfigapp::Main::settings().set_value("pref.ui_handle_tooltip_flag",         temp_ui_handle_tooltip_flag.str());
 
@@ -3707,7 +3706,9 @@ void App::open_img_in_external(const std::string &uri)
 	}
 
 }
-unordered_map<std::string, int> configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
+
+std::unordered_map<std::string, int> configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
+
 void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
 {
 	String desc = my_layer_bitmap->get_description();
@@ -3836,7 +3837,7 @@ bool
 App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
 #ifdef _WIN32
-    size_t buf_size = PATH_MAX - 1;
+    size_t buf_size = MAX_PATH - 1;
     char* long_name = (char*)malloc(buf_size);
     long_name[0] = '\0';
     if(GetLongPathName(filename.c_str(),long_name,sizeof(long_name)));
@@ -3878,7 +3879,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 			if(!canvas)
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
 
-			if (warnings != "")
+			if (!warnings.empty())
 				dialog_message_1b(
 					"WARNING",
 					_("Warning"),
@@ -3886,7 +3887,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 					_("Close"),
 					warnings);
 
-			if (filename.find(custom_filename_prefix.c_str()) != 0)
+			if (filename.find(custom_filename_prefix) != 0)
 				add_recent_file(filename);
 
 			handle<Instance> instance(Instance::create(canvas, container));
@@ -3916,7 +3917,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 
 		return false;
 	}
-	catch(runtime_error &x)
+	catch(std::runtime_error &x)
 	{
 		dialog_message_1b(
 			"ERROR",
@@ -4029,7 +4030,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 
 		return false;
 	}
-	catch(runtime_error &x)
+	catch(std::runtime_error &x)
 	{
 		dialog_message_1b(
 				"ERROR",
@@ -4162,19 +4163,18 @@ App::new_instance()
 }
 
 void
-App::dialog_open(string filename)
+App::dialog_open(std::string filename)
 {
-	if (filename.empty() && selected_instance)
-		filename = selected_instance->get_file_name();
-	if (filename.empty())
-		filename="*.sif";
+	if (filename.empty()) {
+		filename = selected_instance ? selected_instance->get_file_name() : "*.sif";
+	}
 
 	bool show_history = false;
 	while(dialog_open_file_with_history_button(_("Please select a file"), filename, show_history, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		if(find(filename.begin(),filename.end(),'*')!=filename.end())
+		if(std::find(filename.begin(),filename.end(),'*')!=filename.end())
 			continue;
 
 		FileContainerZip::file_size_t truncate_storage_size = 0;
@@ -4189,7 +4189,7 @@ App::dialog_open(string filename)
 			// build list of history entries for dialog (descending)
 			std::list<std::string> list;
 			int index = 0;
-			for(std::list<FileContainerZip::HistoryRecord>::const_iterator i = history.begin(); i != history.end(); i++)
+			for(std::list<FileContainerZip::HistoryRecord>::const_iterator i = history.begin(); i != history.end(); ++i)
 				list.push_front(strprintf("%s%d", _("History entry #"), ++index));
 
 			// show dialog
