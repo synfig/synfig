@@ -266,6 +266,7 @@ public:
 		{
 			view->statusbar->pop();
 			view->statusbar->push(task);
+			view->statusbar->set_tooltip_text(task);
 		}
 		//App::process_all_events();
 		if(view->cancel){return false;}
