@@ -867,13 +867,24 @@ AsyncRenderer::render_target()
 {
 	etl::handle<Target> target(AsyncRenderer::target);
 
-	if(target && target->render())
-	{
-		status = SUCCESS;
-	}
-	else
-	{
+	try {
+		if(target && target->render(cb))
+		{
+			status = SUCCESS;
+		}
+		else
+		{
+			status = ERROR;
+#ifndef REJOIN_ON_STOP
+			return;
+#endif
+		}
+	} catch (...) {
 		status = ERROR;
+		string error_str = _("Internal error: some exception has been thrown while rendering");
+		synfig::error(error_str);
+		if (cb)
+			cb->error(error_str);
 #ifndef REJOIN_ON_STOP
 		return;
 #endif
