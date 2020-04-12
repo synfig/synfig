@@ -61,7 +61,7 @@ def gen_layer_shape(lottie, layer, idx):
 
     lottie["shapes"].append({})  # For the fill or color
     if layer.get_type() in {"linear_gradient"}:
-        gen_linear_gradient(lottie["shapes"][1], layer, index.inc())    # yet to be implemented
+        gen_linear_gradient(lottie["shapes"][1], layer, index.inc())
     else:
         gen_shapes_fill(lottie["shapes"][1], layer)
 

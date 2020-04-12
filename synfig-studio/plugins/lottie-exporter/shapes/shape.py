@@ -1,5 +1,7 @@
 """
 Will store all functions needed to generate the shape(path) layer in lottie
+# This is not currently used anywhere because we are using solid_shape.py instead of this module to
+support the invert parameter
 """
 
 import sys
