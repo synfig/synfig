@@ -117,7 +117,7 @@ class Gradient:
         for col in self.colors:
             pos = col[0]
             a = col[1].alpha
-            #ret.extend([pos, a])
+            ret.extend([pos, a])
 
         return ret
 

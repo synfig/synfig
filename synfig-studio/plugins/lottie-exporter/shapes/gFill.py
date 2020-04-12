@@ -65,6 +65,25 @@ def gen_linear_gradient(lottie, layer, idx):
         gradient.animate("gradient")  # To find the lottie path of the modified gradient
         lottie["g"]["p"] = len(gradient.get()[0][0][0])
         gradient.fill_path(lottie["g"], "k")
+        modify_gradient_according_to_latest_version(lottie["g"]["k"])
+
+
+def modify_gradient_according_to_latest_version(lottie):
+    """
+    Modifies the gradient's "g" property to put an "s" value at each keyframe instead of having "s" & "e"
+    both.
+    Reference: https://github.com/airbnb/lottie-web/issues/2055#issuecomment-605455945
+
+    Args:
+        lottie (dict) : Lottie format gradient colors
+
+    Returns:
+        (None)
+    """
+    for i in range(len(lottie["k"]) - 1, -1, -1):
+        if i != 0:
+            lottie["k"][i]["s"] = lottie["k"][i-1]["e"]
+        # temp = lottie["k"][i].pop("e", "No key found")
 
 
 def modify_gradient(gradient):
