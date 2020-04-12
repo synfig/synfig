@@ -1207,12 +1207,11 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	<menu action='menu-plugins'>"
 ;
 
-
-	for ( const auto& p : studio::App::plugin_manager.plugins() ) {
+	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
 		// TODO: (Plugins) Arrange menu items into groups
 
-		DEFINE_ACTION(p.id, p.name.get());
-		ui_info_menu += strprintf("	<menuitem action='%s'/>", p.id.c_str());
+		DEFINE_ACTION(plugin.id, plugin.name.get());
+		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}
 
 	ui_info_menu +=

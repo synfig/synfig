@@ -1519,11 +1519,11 @@ CanvasView::init_menus()
 	);
 
     auto instance = get_instance().get();
-	for ( const auto& p : App::plugin_manager.plugins() )
+	for ( const auto& plugin : App::plugin_manager.plugins() )
     {
-		std::string id = p.id;
+		std::string id = plugin.id;
 		action_group->add(
-			Gtk::Action::create(id, p.name.get()),
+			Gtk::Action::create(id, plugin.name.get()),
 			[instance, id](){instance->run_plugin(id, true);}
         );
     }
