@@ -388,10 +388,6 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		draw_selected_background(cr, path, row_info);
 
 		const synfigapp::ValueDesc &value_desc = row_info->get_value_desc();
-		bool is_static_value_node = (value_desc.is_value_node() && !synfig::ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()));
-		if (is_static_value_node) {
-			cr->push_group();
-		}
 
 		const bool is_dragging = waypoint_sd.get_state() == waypoint_sd.POINTER_DRAGGING;
 		const bool is_user_moving_waypoints = is_dragging && waypoint_sd.get_action() == MOVE;
@@ -414,11 +410,6 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 		draw_waypoints(cr, path, row_info, visible_waypoints);
 
-		if (is_static_value_node) {
-			cr->pop_group_to_source();
-			cr->paint_with_alpha(0.5);
-		}
-
 		return false;
 	});
 
@@ -433,6 +424,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			RowInfo * row_info = param_info_map[item->path.to_string()];
 			if (!row_info)
 				continue;
+
 			const Geometry &geometry = row_info->get_geometry();
 			const int waypoint_edge_length = geometry.h;
 			const int py = geometry.y;
@@ -454,7 +446,10 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 			bool hover = false;
 			bool selected = true;
-			WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+			const synfigapp::ValueDesc &value_desc = row_info->get_value_desc();
+			bool is_static_value_node = (value_desc.is_value_node() && !synfig::ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()));
+
+			WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover, is_static_value_node);
 		}
 	}
 
@@ -768,6 +763,10 @@ void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, c
 	const int py = geometry.y;
 	const auto & hovered_point = waypoint_sd.get_hovered_item();
 
+	const synfigapp::ValueDesc &value_desc = row_info->get_value_desc();
+	// a not-animated valuenode with waypoints? they should be from inner valubases/nodes (it's a converted parameter)
+	const bool is_static_value_node = (value_desc.is_value_node() && !synfig::ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()));
+
 	for (const auto& pair : waypoints) {
 		const synfig::TimePoint &tp = pair.first;
 		const synfig::Time &t = pair.second;
@@ -780,7 +779,7 @@ void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, c
 
 		bool hover = waypoint_sd.has_hovered_item() && tp == hovered_point.time_point && hovered_point.path == path;
 		bool selected = waypoint_sd.is_selected(WaypointItem(tp, path));
-		WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+		WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover, is_static_value_node);
 	}
 }
 

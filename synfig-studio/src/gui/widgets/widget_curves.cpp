@@ -792,7 +792,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
 
 				bool selected = channel_point_sd.is_selected(ChannelPoint(curve_it, tp, c));
-				WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+				WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover, !is_draggable);
 			}
 			return false;
 		});
