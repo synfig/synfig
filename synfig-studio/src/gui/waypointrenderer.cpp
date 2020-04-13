@@ -154,13 +154,8 @@ WaypointRenderer::render_time_point_to_window(
 		cr->restore();
 
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
-		cr->move_to(area.get_x(),area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
-		cr->stroke();
-
-		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
-		cr->move_to(area.get_x(),area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
+		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y());
 		cr->stroke();
 		break;
 
