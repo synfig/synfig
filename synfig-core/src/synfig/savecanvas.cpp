@@ -579,10 +579,16 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 	ValueNode_WPList::ConstHandle wplist_value_node(ValueNode_WPList::ConstHandle::cast_dynamic(value_node));
 	ValueNode_DIList::ConstHandle dilist_value_node(ValueNode_DIList::ConstHandle::cast_dynamic(value_node));
 
+	bool must_rotate_point_list = false;
+
 	if(bline_value_node)
 	{
 		if(bline_value_node->get_loop())
+		{
 			root->set_attribute("loop","true");
+			if (save_canvas_version < RELEASE_VERSION_1_4_0) // or get_file_version()?
+				must_rotate_point_list = true;
+		}
 		else
 			root->set_attribute("loop","false");
 	}
@@ -601,7 +607,19 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 			root->set_attribute("loop","false");
 	}
 
-	for(iter=value_node->list.begin();iter!=value_node->list.end();++iter)
+	std::vector<ValueNode_DynamicList::ListEntry> corrected_valuenode_list = value_node->list;
+
+	if (must_rotate_point_list) {
+		if (must_rotate_point_list) {
+			if (corrected_valuenode_list.size() > 0) {
+				auto node = corrected_valuenode_list.front();
+				corrected_valuenode_list.push_back(node);
+				corrected_valuenode_list.erase(corrected_valuenode_list.begin());
+			}
+		}
+	}
+
+	for(iter=corrected_valuenode_list.begin();iter!=corrected_valuenode_list.end();++iter)
 	{
 		xmlpp::Element	*entry_node=root->add_child("entry");
 		assert(iter->value_node);
