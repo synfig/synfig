@@ -165,18 +165,15 @@ WaypointRenderer::render_time_point_to_window(
 		break;
 
 	case INTERPOLATION_LINEAR:
-		cr->save();
 		cr->move_to(area.get_x()+area.get_width()/2.f,area.get_y());
 		cr->line_to(area.get_x(),area.get_y()+area.get_height());
 		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
 		break;
 
 	case INTERPOLATION_CONSTANT:
-		cr->save();
 		cr->move_to(area.get_x()+area.get_width()/2.f,area.get_y());
 		cr->line_to(area.get_x()+area.get_width()/4.f,area.get_y());
 		cr->line_to(area.get_x()+area.get_width()/4.f,area.get_y()+area.get_height()/2);
@@ -186,22 +183,18 @@ WaypointRenderer::render_time_point_to_window(
 		cr->fill_preserve();
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
 		break;
 
 	case INTERPOLATION_CLAMPED:
-		cr->save();
 		cr->move_to(area.get_x()+area.get_width()/2.f,area.get_y());
 		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2);
 		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
 		break;
 
 	default:
-		cr->save();
 		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y());
 		cr->line_to(area.get_x()+area.get_width()/3.f,area.get_y());
 		cr->line_to(area.get_x(),area.get_y()+area.get_height()/3);
@@ -211,7 +204,6 @@ WaypointRenderer::render_time_point_to_window(
 		cr->fill_preserve();
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
 		break;
 	}
 
@@ -252,18 +244,15 @@ WaypointRenderer::render_time_point_to_window(
 		break;
 
 	case INTERPOLATION_LINEAR:
-		cr->save();
 		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
 		cr->line_to(area.get_x()+area.get_width(),area.get_y());
 		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
 		cr->fill_preserve();
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
 		break;
 
 	case INTERPOLATION_CONSTANT:
-		cr->save();
 		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
 		cr->line_to(area.get_x()+area.get_width(),area.get_y());
 		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2);
@@ -273,22 +262,18 @@ WaypointRenderer::render_time_point_to_window(
 		cr->fill_preserve();
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
 		break;
 
 	case INTERPOLATION_CLAMPED:
-		cr->save();
 		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
 		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2);
 		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
 		cr->fill_preserve();
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
 		break;
 
 	default:
-		cr->save();
 		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
 		cr->line_to(area.get_x()+area.get_width()-area.get_width()/3,area.get_y());
 		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/3);
@@ -298,7 +283,6 @@ WaypointRenderer::render_time_point_to_window(
 		cr->fill_preserve();
 		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
 		break;
 	}
 }
