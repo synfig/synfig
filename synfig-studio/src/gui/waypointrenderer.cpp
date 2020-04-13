@@ -113,7 +113,7 @@ WaypointRenderer::render_time_point_to_window(
 	bool selected,
 	bool hover)
 {
-	const Gdk::RGBA black = get_black(hover);
+	const Gdk::RGBA outline_color = get_black(hover);
 
 	if(selected)
 		cr->set_line_width(2.0);
@@ -140,7 +140,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->arc(0.5, 0.5, 0.5, 90*M_PI/180.0, 270*M_PI/180.0);
 		cr->fill_preserve();
 		cr->restore();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		break;
 
@@ -153,10 +153,10 @@ WaypointRenderer::render_time_point_to_window(
 		cr->fill();
 		cr->arc(0.5, 0.5, 0.5, 180*M_PI/180.0, 270*M_PI/180.0);
 		cr->restore();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->move_to(area.get_x(),area.get_y()+area.get_height());
 		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->stroke();
@@ -168,7 +168,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->line_to(area.get_x(),area.get_y()+area.get_height());
 		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		cr->restore();
 		break;
@@ -182,7 +182,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->line_to(area.get_x(),area.get_y()+area.get_height());
 		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		cr->restore();
 		break;
@@ -193,7 +193,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2);
 		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		cr->restore();
 		break;
@@ -207,7 +207,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->line_to(area.get_x()+area.get_width()/3.f,area.get_y()+area.get_height());
 		cr->line_to(area.get_x()+area.get_width()/2.f,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		cr->restore();
 		break;
@@ -230,7 +230,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->arc(0.5, 0.5, 0.5, -90*M_PI/180.0, 90*M_PI/180.0);
 		cr->fill_preserve();
 		cr->restore();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		break;
 
@@ -243,10 +243,10 @@ WaypointRenderer::render_time_point_to_window(
 		cr->fill();
 		cr->arc(0.5, 0.0, 0.5, 0*M_PI / 180.0, 90*M_PI / 180.0);
 		cr->restore();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
 		cr->line_to(area.get_x()+area.get_width(),area.get_y());
 		cr->stroke();
@@ -258,7 +258,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->line_to(area.get_x()+area.get_width(),area.get_y());
 		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		cr->restore();
 		break;
@@ -272,7 +272,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->line_to(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height());
 		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		cr->restore();
 		break;
@@ -283,7 +283,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2);
 		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		cr->restore();
 		break;
@@ -297,7 +297,7 @@ WaypointRenderer::render_time_point_to_window(
 		cr->line_to(area.get_x()+area.get_width()-area.get_width()/3,area.get_y()+area.get_height());
 		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 		cr->restore();
 		break;
