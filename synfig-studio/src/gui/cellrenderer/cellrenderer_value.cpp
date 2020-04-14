@@ -140,6 +140,12 @@ public:
 				popup_combobox = true;
 			else if (type == type_bone_valuenode)
 				popup_combobox = true;
+			else if (type == type_string) {
+				string param_hint = valuewidget->get_param_desc().get_hint();
+				string child_param_hint = valuewidget->get_child_param_desc().get_hint();
+				if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
+					popup_combobox = true;
+			}
 			if (popup_combobox)
 				valuewidget->popup_combobox();
 		}

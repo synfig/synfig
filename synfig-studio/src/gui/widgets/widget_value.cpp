@@ -212,18 +212,26 @@ Widget_ValueBase::set_sensitive(bool x)
 
 void Widget_ValueBase::popup_combobox()
 {
+	Gtk::ComboBox * combobox = nullptr;
 	Type &type(get_value().get_type());
 	if (type == type_integer) {
 		string param_hint = get_param_desc().get_hint();
 		string child_param_hint = get_child_param_desc().get_hint();
-		if ( param_hint == "enum" || child_param_hint == "enum" ) {
-			enum_widget->popup();
-		}
+		if ( param_hint == "enum" || child_param_hint == "enum" )
+			combobox = enum_widget;
 	} else if (type == type_canvas) {
-		canvas_widget->popup();
+		combobox = canvas_widget;
 	} else if (type == type_bone_valuenode) {
-		bone_widget->popup();
+		combobox = bone_widget;
+	} else if (type == type_string) {
+		string param_hint = get_param_desc().get_hint();
+		string child_param_hint = get_child_param_desc().get_hint();
+		if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
+			combobox = sublayer_widget;
 	}
+
+	if (combobox)
+		combobox->popup();
 }
 
 void
@@ -490,6 +498,7 @@ Widget_ValueBase::on_grab_focus()
 		}
 		else if(param_desc.get_hint()=="sublayer_name") {
 			sublayer_widget->grab_focus();
+			popup_combobox();
 		}
 		else
 		{
