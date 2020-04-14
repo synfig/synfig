@@ -2119,8 +2119,6 @@ static const std::map<std::string, CairoColor> color_name_map = {
 
 int
 Svg_parser::getColor(std::string name, int position) {
-	if (position<1 || position>3)
-		return 0;
 	try {
 		const CairoColor &color = color_name_map.at(name);
 		switch (position) {
@@ -2130,6 +2128,8 @@ Svg_parser::getColor(std::string name, int position) {
 			return color.get_g();
 		case 3:
 			return color.get_b();
+		default:
+			return 0;
 		}
 	} catch (...) {
 		return 0;
