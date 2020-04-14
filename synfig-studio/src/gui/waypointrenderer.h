@@ -51,7 +51,7 @@ public:
 		const Gdk::Rectangle& area,
 		const synfig::TimePoint &tp,
 		bool selected,
-		bool hover);
+		bool hover, bool double_outline);
 
 	//! Callback called at every iteration of \ref foreach_visible_waypoint
 	//! \param tp A visible TimePoint

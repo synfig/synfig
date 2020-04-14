@@ -338,6 +338,9 @@ CellRenderer_TimeTrack::render_vfunc(
 		}
 	}
 
+	// if this valuedesc is not animated and has waypoints, those waypoints are probably from inner value nodes ( = converted)
+	const bool is_static_value_node = (value_desc.is_value_node() && !synfig::ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()));
+
 	// render all the time points that exist
 	if (const Node::time_set *tset = get_times_from_vdesc(value_desc)) {
 		bool valselected = sel_value.get_value_node() == base_value && !sel_times.empty();
@@ -386,7 +389,7 @@ CellRenderer_TimeTrack::render_vfunc(
 					cell_area.get_height() - 2 );
 				TimePoint tp_copy = *i;
 				tp_copy.set_time(t);
-				WaypointRenderer::render_time_point_to_window(cr, area, tp_copy, selected, false);
+				WaypointRenderer::render_time_point_to_window(cr, area, tp_copy, selected, false, is_static_value_node);
 			}
 		}
 
@@ -397,7 +400,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				cell_area.get_y() + 1,
 				cell_area.get_height() - 2,
 				cell_area.get_height() - 2 );
-			WaypointRenderer::render_time_point_to_window(cr, area, *i, true, false);
+			WaypointRenderer::render_time_point_to_window(cr, area, *i, true, false, is_static_value_node);
 		}
 	}
 
