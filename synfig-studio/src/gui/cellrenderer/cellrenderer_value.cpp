@@ -127,13 +127,18 @@ public:
 		// popup combobox menu if its is a enum editor
 		if (event && event->type == GDK_BUTTON_PRESS && valuewidget) {
 			Type &type(valuewidget->get_value().get_type());
-			if (type == type_integer)
-			{
+			bool popup_combobox = false;
+			if (type == type_integer) {
 				string param_hint = valuewidget->get_param_desc().get_hint();
 				string child_param_hint = valuewidget->get_child_param_desc().get_hint();
 				if ( param_hint == "enum" || child_param_hint == "enum" )
-					valuewidget->popup_enum_combobox();
-			}
+					popup_combobox = true;
+			} else if (type == type_canvas)
+				popup_combobox = true;
+			else if (type == type_bone_valuenode)
+				popup_combobox = true;
+			if (popup_combobox)
+				valuewidget->popup_combobox();
 		}
 
 		show();
