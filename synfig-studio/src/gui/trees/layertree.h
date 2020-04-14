@@ -91,13 +91,8 @@ public:
 
 public:
 
-	//LayerTreeStore::Model model;
-
 	LayerTreeStore::Model layer_model;
 	LayerParamTreeStore::Model param_model;
-
-	synfig::Layer::Handle last_top_selected_layer;
-	Gtk::TreePath last_top_selected_path;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -157,6 +152,11 @@ private:
 	bool param_tree_style_changed;
 
 	int param_tree_header_height;
+
+	synfig::Layer::Handle last_top_selected_layer;
+	Gtk::TreePath last_top_selected_path;
+
+	bool disable_single_click_for_param_editing;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
