@@ -15,6 +15,7 @@
 #include <synfig/context.h>
 #include <synfig/rendering/task.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
+#include <ETL/_misc.h>
 
 #include "visualizationwindow.h"
 
@@ -183,7 +184,9 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 
 	Time time = frame_duration*(frame + rend_desc.get_frame_start());
 	canvas->set_time(time);
-	
+
+	bef_render_time = g_get_monotonic_time();
+
 	(measure++)->last = g_get_monotonic_time();
 
 	canvas->load_resources(time);
@@ -251,7 +254,7 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 	}
 	
 	++rendered_frames;
-	frame = (frame + 1) % frames_count;
+	frame = (frame + etl::round_to_int((g_get_monotonic_time()-bef_render_time)/(frame_duration*1000000ll))) % frames_count;
 	queue_draw();
 	return true;
 }
