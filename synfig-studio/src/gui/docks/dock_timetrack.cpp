@@ -261,6 +261,7 @@ public:
 	void set_model(Glib::RefPtr<LayerParamTreeStore> store)
 	{
 		Gtk::TreeView::set_model(store);
+		store->signal_changed().connect(sigc::mem_fun(*this, &TimeTrackView::queue_draw));
 		cellrenderer_time_track->set_canvas_interface( store->canvas_interface() );
 	}
 
