@@ -210,17 +210,28 @@ Widget_ValueBase::set_sensitive(bool x)
 	distance_widget->set_sensitive(x);
 }
 
-void Widget_ValueBase::popup_enum_combobox()
+void Widget_ValueBase::popup_combobox()
 {
+	Gtk::ComboBox * combobox = nullptr;
 	Type &type(get_value().get_type());
-	if (type == type_integer)
-	{
+	if (type == type_integer) {
 		string param_hint = get_param_desc().get_hint();
 		string child_param_hint = get_child_param_desc().get_hint();
-		if ( param_hint == "enum" || child_param_hint == "enum" ) {
-			enum_widget->popup();
-		}
+		if ( param_hint == "enum" || child_param_hint == "enum" )
+			combobox = enum_widget;
+	} else if (type == type_canvas) {
+		combobox = canvas_widget;
+	} else if (type == type_bone_valuenode) {
+		combobox = bone_widget;
+	} else if (type == type_string) {
+		string param_hint = get_param_desc().get_hint();
+		string child_param_hint = get_child_param_desc().get_hint();
+		if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
+			combobox = sublayer_widget;
 	}
+
+	if (combobox)
+		combobox->popup();
 }
 
 void
@@ -452,10 +463,16 @@ Widget_ValueBase::on_grab_focus()
 		angle_widget->grab_focus();
 	else
 	if (type == type_bone_valuenode)
+	{
 		bone_widget->grab_focus();
+		popup_combobox();
+	}
 	else
 	if (type == type_canvas)
+	{
 		canvas_widget->grab_focus();
+		popup_combobox();
+	}
 	else
 	if (type == type_integer)
 	{
@@ -466,7 +483,7 @@ Widget_ValueBase::on_grab_focus()
 		else
 		{
 			enum_widget->grab_focus();
-			popup_enum_combobox();
+			popup_combobox();
 		}
 	}
 	else
@@ -481,6 +498,7 @@ Widget_ValueBase::on_grab_focus()
 		}
 		else if(param_desc.get_hint()=="sublayer_name") {
 			sublayer_widget->grab_focus();
+			popup_combobox();
 		}
 		else
 		{
