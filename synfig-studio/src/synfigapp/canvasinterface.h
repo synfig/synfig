@@ -312,7 +312,8 @@ public:
 		const std::set<synfig::String> &filenames,
 		synfig::String &errors,
 		synfig::String &warnings,
-		bool resize_image = false );
+		bool resize_image = false,
+		bool remove_dups=false);
 
 	void waypoint_set_value_node(synfig::ValueNode::Handle value_node, const synfig::Waypoint& waypoint);
 	void waypoint_move(const ValueDesc& value_desc, const synfig::Time& time, const synfig::Time& deltatime);
