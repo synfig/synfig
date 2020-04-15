@@ -147,6 +147,8 @@ public:
 	const Color* get_pixels_pointer() const;
 	bool get_pixels(Color *dest) const;
 
+	bool compare_with(synfig::rendering::Surface::Handle s) const;
+
 	int get_width() const
 		{ return width; }
 	int get_height() const

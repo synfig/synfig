@@ -46,8 +46,11 @@
 #include <synfig/pair.h>
 #include <synfig/waypoint.h>
 #include <synfig/valuenode_registry.h>
+#include <synfig/surface.h>
+#include <synfig/rendering/software/surfacesw.h>
 
 #include <synfig/layers/layer_pastecanvas.h>
+#include <modules/lyr_std/import.h>
 
 #include <synfig/valuenodes/valuenode_animatedfile.h>
 #include <synfig/valuenodes/valuenode_animatedfile.h>
@@ -944,7 +947,8 @@ CanvasInterface::import_sequence(
 	const std::set<synfig::String> &filenames,
 	synfig::String &errors,
 	synfig::String &/*warnings*/,
-	bool resize_image )
+	bool resize_image,
+	bool remove_dups)
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import sequence"));
 
@@ -956,16 +960,25 @@ CanvasInterface::import_sequence(
 	try {
 		// add imported layers into switch
 		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
+		Action::Handle d_action(synfigapp::Action::LayerRemove::create());
 		if(!action)
 			{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		d_action->set_param("canvas",get_canvas());
+		d_action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 
 		// create layers and assign them with LayerEncapsulateSwitch action
 		Layer::Handle layer;
+		modules::lyr_std::Import::Handle curr_layer;
+		rendering::Surface::Handle  cur_surface,prev_surface= rendering::Surface::Handle();
+		bool first_time=true;
 		int layers_count = 0;
-		for(std::set<String>::const_iterator i = filenames.begin(); i != filenames.end(); ++i) {
-			const String &filename = *i;
+		std::set<String>::const_iterator c1= filenames.begin();
+		std::set<String>::const_iterator c2= filenames.begin();
+
+		while(c2!=filenames.end()){
+			const String &filename = *c2;
 			synfig::info("Attempting to import '%s' into sequence", filename.c_str());
 			
 			String ext(filename_extension(filename));
@@ -993,6 +1006,29 @@ CanvasInterface::import_sequence(
 					throw int();
 				if (!layer->set_param("filename", ValueBase(short_filename)))
 					throw int();
+
+				if(remove_dups){
+					curr_layer= modules::lyr_std::Import::Handle::cast_dynamic(layer);
+					if(!curr_layer){
+						throw int();
+					}
+					rendering::SurfaceResource::LockRead<rendering::SurfaceSW> cur_lock(curr_layer->rendering_surface);
+					if(!cur_lock) {
+						throw int();
+					}
+					cur_surface=cur_lock.get_handle();
+
+					if(c2!=std::next(filenames.end(), -1) && !first_time && cur_surface->compare_with(prev_surface)){
+						d_action->set_param("layer",layer);
+						advance(c2,1);
+						++layers_count;
+						continue;
+					}
+					if(first_time) {
+						first_time = false;
+					}
+				}
+
 				w = layer->get_param("_width").get(int());
 				h = layer->get_param("_height").get(int());
 				layer->monitor(filename);
@@ -1015,7 +1051,6 @@ CanvasInterface::import_sequence(
 						if((size[0]<0)) x[0]=-x[0];
 						if((size[1]<0)) x[1]=-x[1];
 					}
-
 					if(!layer->set_param("tl",ValueBase(-x/2)))
 						throw int();
 					if(!layer->set_param("br",ValueBase(x/2)))
@@ -1026,33 +1061,39 @@ CanvasInterface::import_sequence(
 					if(!layer->set_param("br",ValueBase(get_canvas()->rend_desc().get_br())))
 						throw int();
 				}
-				
+
 				String desc = etl::basename(filename);
 				layer->set_description(desc);
 				signal_layer_new_description()(layer, desc);
-				
+
 				action->set_param("layer", layer);
 				if (!layers_count)
 					action->set_param("description", desc);
-				
+
 				Waypoint &wp = *layer_name_animated->new_waypoint(Time(layers_count/fps), ValueBase(desc));
 				wp.set_before(INTERPOLATION_CONSTANT);
 				wp.set_after(INTERPOLATION_CONSTANT);
-				
+
 				++layers_count;
+				c1=c2;
+				prev_surface=cur_surface;
+				advance(c2,1);
 			} catch(...) {
 				errors += etl::strprintf(_("Unable to import file: %s"), filename.c_str());
 				group.cancel();
 				return false;
 			}
 		}
-		
 		if (!layers_count)
 			{ get_ui_interface()->error(_("Nothing imported")); throw int(); }
 		if(!action->is_ready())
 			{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
 		if(!get_instance()->perform_action(action))
 			{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
+		if(remove_dups){
+			if(!get_instance()->perform_action(d_action))
+				{ get_ui_interface()->error(_("Delete Action Failed.")); throw int(); }
+		}
 
 		if (layer) {
 			// get parent layer, because image is incapsulated into action switch
@@ -1482,3 +1523,4 @@ CanvasInterface::seek_time(synfig::Time time)
 		newtime=get_canvas()->rend_desc().get_time_end();
 	set_time(newtime);
 }
+

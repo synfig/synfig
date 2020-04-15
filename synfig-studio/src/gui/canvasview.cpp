@@ -3496,19 +3496,28 @@ CanvasView::squence_import()
 	String errors, warnings;
 	if(App::dialog_open_file_image_sequence(_("Please select a file"), filenames, IMAGE_DIR_PREFERENCE))
 	{
-		canvas_interface()->import_sequence(filenames, errors, warnings, App::resize_imported_images);
-		if (!errors.empty())
-			App::dialog_message_1b(
-				"ERROR",
-				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
-				"details",
-				_("Close"));
-		if (!warnings.empty())
-			App::dialog_message_1b(
-				"WARNING",
-				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
-				"details",
-				_("Close"));
+		int answer = get_ui_interface()->yes_no_cancel(
+				("Remove Duplicates while importing?"),
+				_("Synfig will detect and remove consecutive duplicates (if any)."),
+				_("No"),
+				_("Cancel"),
+				_("Yes"),
+				UIInterface::RESPONSE_NO);
+		if(answer!=UIInterface::RESPONSE_CANCEL){
+			canvas_interface()->import_sequence(filenames, errors, warnings, App::resize_imported_images,answer);
+			if (!errors.empty())
+				App::dialog_message_1b(
+						"ERROR",
+						etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+						"details",
+						_("Close"));
+			if (!warnings.empty())
+				App::dialog_message_1b(
+						"WARNING",
+						etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+						"details",
+						_("Close"));
+		}
 	}
 }
 
