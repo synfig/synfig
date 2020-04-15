@@ -42,7 +42,6 @@ private:
 	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface;
 	synfig::rendering::SurfaceResource::Handle surface_resource;
 
-	long long bef_render_time;
 	long long last_frame_time;
 	long long last_report_time;
 	long long last_report_id;
