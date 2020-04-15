@@ -422,11 +422,13 @@ Duckmatic::get_duck_list()const
 {
 	DuckList ret;
 	DuckMap::const_iterator iter;
+	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_FIRST_VERTEX) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_POSITION) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_VERTEX  ) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_TANGENT ) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
 		if (!(iter->second->get_type()&Duck::TYPE_POSITION) &&
+			!(iter->second->get_type()&Duck::TYPE_FIRST_VERTEX) &&
 			!(iter->second->get_type()&Duck::TYPE_VERTEX) &&
 			!(iter->second->get_type()&Duck::TYPE_TANGENT))
 			ret.push_back(iter->second);
@@ -1376,6 +1378,14 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
                     break;
                 }
         if(!found)
+            for(i=0; i<ret_vector.size();i++)
+                if(ret_vector[i]->get_type() & Duck::TYPE_FIRST_VERTEX)
+                {
+                    ret=ret_vector[i];
+                    found=true;
+                    break;
+                }
+		if(!found)
             for(i=0; i<ret_vector.size();i++)
                 if(ret_vector[i]->get_type() & Duck::TYPE_VERTEX)
                 {
