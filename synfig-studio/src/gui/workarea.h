@@ -30,8 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <list>
-#include <map>
 #include <set>
 
 #include <ETL/handle>
@@ -39,21 +37,16 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/table.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/image.h>
-#include <gdkmm/pixbuf.h>
-#include <gdkmm/cursor.h>
 #include <gdkmm/device.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
-#include <synfig/renddesc.h>
 #include <synfig/canvas.h>
 
 #include "dials/zoomdial.h"
 #include "widgets/widget_ruler.h"
 #include "duckmatic.h"
 #include "instance.h"
-#include "app.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -68,11 +61,8 @@ namespace synfigapp { class CanvasInterface; };
 namespace studio
 {
 
-class Instance;
 class CanvasView;
-class WorkArea;
 class WorkAreaRenderer;
-class AsyncRenderer;
 class Renderer_Canvas;
 class LockDucks;
 

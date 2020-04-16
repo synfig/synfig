@@ -34,8 +34,6 @@
 #	include <config.h>
 #endif
 
-#include <cmath>
-
 #include <gtkmm/arrow.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/scrollbar.h>
@@ -46,15 +44,7 @@
 #include <synfig/general.h>
 
 #include <synfig/blinepoint.h>
-#include <synfig/context.h>
-#include <synfig/distance.h>
-#include <synfig/debug/debugsurface.h>
 #include <synfig/rendering/renderer.h>
-#include <synfig/surface.h>
-#include <synfig/target_scanline.h>
-#include <synfig/target_tile.h>
-#include <synfig/target_cairo.h>
-#include <synfig/target_cairo_tile.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
 #include <synfigapp/canvasinterface.h>
@@ -66,7 +56,6 @@
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "event_keyboard.h"
-#include "widgets/widget_color.h"
 #include "workarea.h"
 #include "workarearenderer/workarearenderer.h"
 #include "workarearenderer/renderer_background.h"
