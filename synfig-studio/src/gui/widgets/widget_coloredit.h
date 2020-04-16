@@ -71,7 +71,7 @@ private:
 	sigc::signal<void> signal_activated_;
 
 	Type type;
-	synfig::Color color_, orig_color;
+	synfig::Color color_;
 
 public:
 

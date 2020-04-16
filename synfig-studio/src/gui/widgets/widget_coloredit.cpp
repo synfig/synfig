@@ -76,7 +76,7 @@ void
 ColorSlider::set_type(Type x) { type=x; queue_draw(); }
 
 void
-ColorSlider::set_color(synfig::Color x) { orig_color=x; color_=x; queue_draw(); }
+ColorSlider::set_color(synfig::Color x) { color_=x; queue_draw(); }
 
 void
 ColorSlider::slider_color_TYPE_R(synfig::Color &color, float amount) { color.set_r(amount); }
@@ -300,7 +300,6 @@ ColorSlider::on_event(GdkEvent *event)
 
 	case GDK_BUTTON_PRESS:
 	case GDK_MOTION_NOTIFY:
-//		adjust_color(type,color_,pos);
 		signal_slider_moved_(type,pos);
 		queue_draw();
 		return true;
