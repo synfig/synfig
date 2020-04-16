@@ -27,7 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/box.h>
 #include <gtkmm/table.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>

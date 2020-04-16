@@ -33,23 +33,14 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "widgets/widget_coloredit.h"
-#include <cmath>
-#include "app.h"
-#include <gtkmm/drawingarea.h>
+#include <gui/app.h>
 #include <pangomm/attributes.h>
 #include <pangomm/attrlist.h>
 #include <algorithm>
 #include <gtkmm/notebook.h>
 #include <gtkmm/box.h>
-#include <gtkmm/widget.h>
 #include <gtkmm/colorselection.h>
-#include <gtk/gtk.h>
-#include <gdk/gdk.h>
-#include <gdkmm/color.h>
-#include <climits>
 
 #include <gui/localization.h>
 
