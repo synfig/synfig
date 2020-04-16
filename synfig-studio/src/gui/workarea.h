@@ -35,7 +35,7 @@
 #include <ETL/handle>
 
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/adjustment.h>
 #include <gdkmm/device.h>
 
@@ -67,7 +67,7 @@ class Renderer_Canvas;
 class LockDucks;
 
 
-class WorkArea : public Gtk::Table, public Duckmatic
+class WorkArea : public Gtk::Grid, public Duckmatic
 {
 public:
 	/*
