@@ -47,8 +47,6 @@ class Dialog_Color : public Gtk::Dialog
 
 	sigc::signal<void,synfig::Color> signal_edited_;
 
-	bool busy_;
-
 	void create_color_edit_widget();
 	void create_set_color_button(const char *stock_id,
 			const Glib::ustring& tip_text, int index,
@@ -69,9 +67,6 @@ public:
 	void set_color(const synfig::Color& x);
 	synfig::Color get_color() const;
 	void reset();
-
-	bool busy() const { return busy_; }
-
 }; // END of Dialog_Color
 
 }; // END of namespace studio

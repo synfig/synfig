@@ -57,8 +57,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_Color::Dialog_Color():
-	Dialog(_("Colors")),
-	busy_(false)
+	Dialog(_("Colors"))
 {
 	set_transient_for(*App::main_window);
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
@@ -130,31 +129,24 @@ Dialog_Color::create_close_button()
 void
 Dialog_Color::on_color_changed()
 {
-	busy_ = true;
 	signal_edited_(get_color());
-	busy_ = false;
 }
 
 void
 Dialog_Color::on_set_oc_pressed()
 {
-	busy_ = true;
 	synfigapp::Main::set_outline_color(get_color());
-	busy_ = false;
 }
 
 void
 Dialog_Color::on_set_fc_pressed()
 {
-	busy_ = true;
 	synfigapp::Main::set_fill_color(get_color());
-	busy_ = false;
 }
 
 bool
 Dialog_Color::on_close_pressed()
 {
-	busy_ = false;
 	grab_focus();
 	reset();
 	hide();
