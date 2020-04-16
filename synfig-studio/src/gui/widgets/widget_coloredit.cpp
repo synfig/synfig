@@ -67,7 +67,7 @@ using namespace studio;
 ColorSlider::ColorSlider(const ColorSlider::Type &x):
 	type(x)
 {
-	set_size_request(-1,12);
+	set_size_request(-1,16);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 }
