@@ -123,12 +123,11 @@ ColorSlider::draw_arrow(
 	int size,
 	bool fill)
 {
-	//TODO hardcoded colors
+	// hardcoded colors
 	Color dark(0, 0, 0);
 	Color light(1, 1, 1);
 
-	//!TODO FActorize ! (Duplicate code with "Widget_Keyframe_List::draw_arrow")
-	//! Upper black pointing down arrow
+	// Upper black pointing down arrow
 	cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
 	cr->set_line_width(1.0);
 	cr->move_to(x, y);
@@ -136,16 +135,11 @@ ColorSlider::draw_arrow(
 	cr->line_to(x + 0.5*width, y - height);
 	cr->close_path();
 	if (fill)
-	{
-/*		//! Draw on outline
-		cr->fill_preserve();
-		cr->set_source_rgb(light.get_r(), light.get_g(), light.get_b());
-		cr->stroke();
-*/
 		cr->fill();
-	}else cr->stroke();
+	else
+		cr->stroke();
 
-	//! Bottom light pointing up arrow
+	// Bottom light pointing up arrow
 	cr->set_source_rgb(light.get_r(), light.get_g(), light.get_b());
 	cr->set_line_width(1.0);
 	cr->move_to(x, size - height);
@@ -153,14 +147,9 @@ ColorSlider::draw_arrow(
 	cr->line_to(x + 0.5*width, size);
 	cr->close_path();
 	if (fill)
-	{
-/*		//! Draw on outline
-		cr->fill_preserve();
-		cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
-		cr->stroke();
-*/
 		cr->fill();
-	}else cr->stroke();
+	else
+		cr->stroke();
 }
 
 bool
@@ -249,8 +238,8 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
     cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
     cr->stroke();
 
-    //! Draw face to face contrasted arrows
-    draw_arrow(cr, (int(amount*width)), height/2, height/2, height/2, height, 1);
+    // Draw face to face contrasted arrows
+    draw_arrow(cr, int(amount*width), height/2, height/2, height/2, height, 1);
 
 	return true;
 }
