@@ -2625,11 +2625,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
             else
             if (contained_type == type_bone_object)
             {
-                printf("%s:%d adding ducks\n", __FILE__, __LINE__);
                 for(i=0;i<value_node->link_count();i++)
                     if(!add_to_ducks(synfigapp::ValueDesc(value_node,i,value_desc),canvas_view,transform_stack))
                         return false;
-                printf("%s:%d adding ducks done\n\n", __FILE__, __LINE__);
             }
             else
             if (contained_type == type_bone_weight_pair)
