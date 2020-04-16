@@ -31,11 +31,11 @@
 
 #include <synfig/general.h>
 
-#include "dialogs/dialog_color.h"
-#include "widgets/widget_color.h"
+#include <dialogs/dialog_color.h>
+#include <widgets/widget_coloredit.h>
 #include <synfigapp/main.h>
 #include <gtkmm/button.h>
-#include "app.h"
+#include <gui/app.h>
 
 #include <gui/localization.h>
 
@@ -58,10 +58,9 @@ using namespace studio;
 
 Dialog_Color::Dialog_Color():
 	Dialog(_("Colors")),
-	dialog_settings(this, "color"),
 	busy_(false)
 {
-	set_transient_for((Gtk::Window&)(*App::main_window));
+	set_transient_for(*App::main_window);
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 
 	create_color_edit_widget();
@@ -77,6 +76,18 @@ Dialog_Color::Dialog_Color():
 
 Dialog_Color::~Dialog_Color()
 {
+}
+
+void
+Dialog_Color::set_color(const Color& x)
+{
+	color_edit_widget->set_value(x);
+}
+
+Color
+Dialog_Color::get_color() const
+{
+	return color_edit_widget->get_value();
 }
 
 void
