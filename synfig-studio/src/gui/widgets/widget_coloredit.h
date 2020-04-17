@@ -161,9 +161,6 @@ class Widget_ColorEdit : public Gtk::Table
 
 	Gtk::Notebook* notebook;
 
-	static synfig::Gamma hvs_gamma;
-	static synfig::Gamma hvs_gamma_in;
-
 protected:
 
 	void on_value_changed();
