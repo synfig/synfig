@@ -87,9 +87,9 @@ Target_Multi::init()
 }
 
 bool
-Target_Multi::add_frame(const synfig::Surface *surface)
+Target_Multi::add_frame(const synfig::Surface *surface, ProgressCallback *cb)
 {
-	return a->add_frame(surface) && b->add_frame(surface);
+	return a->add_frame(surface, cb) && b->add_frame(surface, cb);
 }
 
 bool
