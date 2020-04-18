@@ -263,14 +263,14 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	hbox->set_hexpand(true);
 
 	// Layout
-	attach(*menubutton_box, 0, 0);
-	attach_next_to(*hruler, *menubutton_box, Gtk::POS_RIGHT);
+	attach(*menubutton_box, 0, 0, 1, 1);
+	attach_next_to(*hruler, *menubutton_box, Gtk::POS_RIGHT, 1, 1);
 
-	attach_next_to(*vruler, *menubutton_box, Gtk::POS_BOTTOM);
-	attach_next_to(*drawing_frame, *vruler, Gtk::POS_RIGHT);
-	attach_next_to(*vscrollbar1, *drawing_frame, Gtk::POS_RIGHT);
+	attach_next_to(*vruler, *menubutton_box, Gtk::POS_BOTTOM, 1, 1);
+	attach_next_to(*drawing_frame, *vruler, Gtk::POS_RIGHT, 1, 1);
+	attach_next_to(*vscrollbar1, *drawing_frame, Gtk::POS_RIGHT, 1, 1);
 
-	attach_next_to(*hbox, *vruler, Gtk::POS_BOTTOM, 2);
+	attach_next_to(*hbox, *vruler, Gtk::POS_BOTTOM, 2, 1);
 
 
 	// Attach signals
