@@ -2922,45 +2922,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 
 		Gtk::Menu* interp_menu_in(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));
-		Gtk::Menu* interp_menu_both(manage(new Gtk::Menu()));
 		Gtk::MenuItem *item = NULL;
-
-		{
-			Waypoint::Model model;
-
-			#define APPEND_MENU_ITEM(menu, StockId, Text) \
-				item = manage(new Gtk::ImageMenuItem( \
-					*manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
-					_(Text) )); \
-				item->set_use_underline(true); \
-				item->signal_activate().connect( \
-					sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())); \
-				item->show_all(); \
-				menu->append(*item);
-
-			#define APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, TextIn, TextOut, TextBoth) \
-				model.reset(); \
-				model.set_before(Interpolation); \
-				APPEND_MENU_ITEM(interp_menu_in, StockId, TextIn) \
-				model.reset(); \
-				model.set_after(Interpolation); \
-				APPEND_MENU_ITEM(interp_menu_out, StockId, TextOut) \
-				model.set_before(Interpolation); \
-				APPEND_MENU_ITEM(interp_menu_both, StockId, TextBoth)
-
-			#define APPEND_ITEMS_TO_ALL_MENUS(Interpolation, StockId, Text) \
-				APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, Text, Text, Text)
-
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("_TCB"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("_Linear"))
-			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("_Constant"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("_Clamped"))
-
-			#undef APPEND_ITEMS_TO_ALL_MENUS
-			#undef APPEND_ITEMS_TO_ALL_MENUS3
-			#undef APPEND_MENU_ITEM
-		}
 
 		// ------------------------------------------------------------------------
 		if (size == 1)
@@ -3007,16 +2969,12 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		}
 
 		// ------------------------------------------------------------------------
+
 		item = manage(new Gtk::SeparatorMenuItem());
 		item->show();
 		waypoint_menu->append(*item);
 
 		// ------------------------------------------------------------------------
-		item = manage(new Gtk::MenuItem(_("_Both")));
-		item->set_use_underline(true);
-		item->set_submenu(*interp_menu_both);
-		item->show();
-		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_In")));
 		item->set_use_underline(true);
@@ -3029,6 +2987,51 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		item->set_submenu(*interp_menu_out);
 		item->show();
 		waypoint_menu->append(*item);
+		
+		// ------------------------------------------------------------------------
+		
+		item = manage(new Gtk::SeparatorMenuItem());
+		item->show();
+		waypoint_menu->append(*item);
+		
+		// ------------------------------------------------------------------------
+		
+		{
+			Waypoint::Model model;
+
+			#define APPEND_MENU_ITEM(menu, StockId, Text) \
+				item = manage(new Gtk::ImageMenuItem( \
+					*manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
+					_(Text) )); \
+				item->set_use_underline(true); \
+				item->signal_activate().connect( \
+					sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())); \
+				item->show_all(); \
+				menu->append(*item);
+
+			#define APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, TextIn, TextOut, TextBoth) \
+				model.reset(); \
+				model.set_before(Interpolation); \
+				APPEND_MENU_ITEM(interp_menu_in, StockId, TextIn) \
+				model.reset(); \
+				model.set_after(Interpolation); \
+				APPEND_MENU_ITEM(interp_menu_out, StockId, TextOut) \
+				model.set_before(Interpolation); \
+				APPEND_MENU_ITEM(waypoint_menu, StockId, TextBoth)
+
+			#define APPEND_ITEMS_TO_ALL_MENUS(Interpolation, StockId, Text) \
+				APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, Text, Text, Text)
+
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("_Clamped"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("_TCB"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("_Constant"))
+			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("_Linear"))
+
+			#undef APPEND_ITEMS_TO_ALL_MENUS
+			#undef APPEND_ITEMS_TO_ALL_MENUS3
+			#undef APPEND_MENU_ITEM
+		}
 
 		// ------------------------------------------------------------------------
 		waypoint_menu->popup(button+1,gtk_get_current_event_time());
