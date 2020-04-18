@@ -289,7 +289,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 
 		// Save file copy
 		String filename_ext = filename_extension(filename_original);
-		if (filename_ext.empty())
+		if ( filename_ext.empty() || ( filename_ext != ".sif" && filename_ext != ".sifz") )
 			filename_ext = ".sifz";
 		FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_ext);
 		if (!stream_in)
