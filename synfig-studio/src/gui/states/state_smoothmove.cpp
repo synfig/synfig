@@ -116,6 +116,7 @@ class studio::StateSmoothMove_Context : public sigc::trackable
 
 	Glib::RefPtr<Gtk::Adjustment> adj_radius;
 	Gtk::SpinButton  spin_radius;
+	Gtk::Label spin_label;
 
 	float pressure;
 
@@ -209,13 +210,19 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	list.insert(attr);
 	title_label.set_attributes(list);
 	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+	spin_label.set_label(_("Radius:"));
+	spin_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	
 	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Radius"))),
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(spin_label,
+		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
 	options_table.attach(spin_radius,
-		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+		1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
 
 	spin_radius.signal_value_changed().connect(sigc::mem_fun(*this,&StateSmoothMove_Context::refresh_radius));
 
