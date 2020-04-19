@@ -113,6 +113,7 @@ void Widget_SoundWave::set_channel_idx(int new_channel_idx)
 {
 	if (channel_idx != new_channel_idx && new_channel_idx >= 0 && new_channel_idx < n_channels) {
 		channel_idx = new_channel_idx;
+		signal_specs_changed().emit();
 		queue_draw();
 	}
 }
@@ -137,6 +138,7 @@ void Widget_SoundWave::set_delay(synfig::Time delay)
 	buffer.clear();
 	n_samples = 0;
 	do_load(filename);
+	signal_delay_changed().emit();
 	queue_draw();
 }
 
@@ -259,7 +261,7 @@ void Widget_SoundWave::setup_mouse_handler()
 
 bool Widget_SoundWave::do_load(const std::string& filename)
 {
-	std::string real_filename = Glib::filename_from_uri(filename);
+	std::string real_filename = Glib::filename_from_utf8(filename);
 	Mlt::Profile profile;
 	Mlt::Producer *track = new Mlt::Producer(profile, (std::string("avformat:") + real_filename).c_str());
 	if (!track->get_producer() || track->get_length() <= 0) {

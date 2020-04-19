@@ -52,6 +52,8 @@ public:
 	virtual void set_time_model(const etl::handle<TimeModel> &x) override;
 
 	sigc::signal<void, const std::string&> & signal_file_loaded() { return signal_file_loaded_; }
+	sigc::signal<void> & signal_delay_changed() { return signal_delay_changed_; }
+	sigc::signal<void> & signal_specs_changed() { return signal_specs_changed_; }
 
 protected:
 	bool on_event(GdkEvent *event) override;
@@ -81,6 +83,8 @@ private:
 	synfig::Time previous_upper_time;
 
 	sigc::signal<void, const std::string&> signal_file_loaded_;
+	sigc::signal<void> signal_delay_changed_;
+	sigc::signal<void> signal_specs_changed_;
 
 	void setup_mouse_handler();
 

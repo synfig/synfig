@@ -92,8 +92,11 @@ Widget_Time::refresh_text()
 void
 Widget_Time::set_value(const synfig::Time &data)
 {
-	time_=data;
-	refresh_text();
+	if (abs(data - time_) >= 0.001) {
+		time_=data;
+		refresh_text();
+		signal_value_changed()();
+	}
 }
 
 synfig::Time
