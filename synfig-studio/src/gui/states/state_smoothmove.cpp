@@ -58,7 +58,6 @@
 #include <synfigapp/main.h>
 
 #include <gui/localization.h>
-#include <gtkmm-3.0/gtkmm/container.h>
 
 #endif
 
