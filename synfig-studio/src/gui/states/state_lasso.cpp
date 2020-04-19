@@ -615,7 +615,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	/* Set up the tool options dialog */
 
 	// 0, title
-	title_label.set_label(_("Lasso"));
+	title_label.set_label(_("Cutout Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
@@ -764,9 +764,9 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	// pack all options to the options_table
 
 	// 0, title
-	//options_table.attach(title_label,
-	//	0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
 	// 1, name
 	//options_table.attach(id_box,
 	////	0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0

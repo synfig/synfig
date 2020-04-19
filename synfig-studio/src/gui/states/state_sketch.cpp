@@ -77,6 +77,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define GAP (3)
+
 /* === G L O B A L S ======================================================= */
 
 StateSketch studio::state_sketch;
@@ -93,6 +95,7 @@ class studio::StateSketch_Context : public sigc::trackable
 	bool prev_table_status;
 
 	Gtk::Table options_table;
+	Gtk::Label title_label;
 	Gtk::Button button_clear_sketch;
 	Gtk::Button button_undo_stroke;
 	Gtk::Button button_save_sketch;
@@ -242,13 +245,24 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	button_load_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::load_sketch));
 	checkbutton_show_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::toggle_show_sketch));
 
-	options_table.attach(*manage(new Gtk::Label(_("Sketch Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_show_sketch,					0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	title_label.set_label(_("Sketch Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_show_sketch,
+		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_undo_stroke, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_clear_sketch, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_save_sketch, 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_load_sketch, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();

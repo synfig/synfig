@@ -66,6 +66,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define GAP (3)
+
 /* === G L O B A L S ======================================================= */
 
 StateScale studio::state_scale;
@@ -104,7 +106,7 @@ class studio::StateScale_Context : public sigc::trackable
 	etl::handle<DuckDrag_Scale> duck_dragger_;
 
 	Gtk::Table options_table;
-
+	Gtk::Label title_label;
 
 	Gtk::CheckButton checkbutton_aspect_lock;
 
@@ -187,11 +189,22 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	checkbutton_aspect_lock(_("Lock Aspect Ratio"))
 {
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Scale Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_aspect_lock,					0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	title_label.set_label(_("Scale Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_aspect_lock,
+		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	checkbutton_aspect_lock.signal_toggled().connect(sigc::mem_fun(*this,&StateScale_Context::refresh_aspect_lock_flag));
 
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
