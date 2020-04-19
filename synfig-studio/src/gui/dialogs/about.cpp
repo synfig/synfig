@@ -168,6 +168,53 @@ About::About()
 	artists.push_back("Yu Chen (jcome)");
 	set_artists(artists);
 
+	Glib::ustring section_name = "VECTORIZER FEATURE CREDITS";
+	std::vector<Glib::ustring> credits;
+	Glib::ustring credit_header =
+		"\n\nVectorizer feature is ported from OpenToonz open - source animation \n"
+		"software(https: //github.com/opentoonz/opentoonz/), which is developed \n"
+		"from Toonz, a software originally created by Digital Video, S.p.A., Rome \n"
+		"Italy Digital Video, S.p.A., Rome Italy.\n";
+	Glib::ustring credit_footer =
+		"\nVectorizer feature code is licensed under BSD 3-Clause \"New\" or \"Revised\"\n"
+		"License. Redistribution and use in source and binary forms, with or \n"
+		"without modification, are permitted provided that the following conditions\n"
+		"are met:\n"
+		"\t1. Redistributions of source code must retain the above copyright notice,\n"
+		"\t    this list of conditions and the following disclaimer.\n"
+		"\t2. Redistributions in binary form must reproduce the above copyright\n"
+		"\t    notice, this list of conditions and the following disclaimer in the\n"
+		"\t    documentation and/or other materials provided with the distribution.\n"
+		"\t3. Neither the name of the copyright holder nor the names of its\n"
+		"\t    contributors may be used to endorse or promote products derived \n"
+		"\t    from this software without specific prior written permission.\n"
+
+		"\n\nTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND\n"
+		"CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED\n"
+		"WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n"
+		"WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
+		"PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n"
+		"HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,\n"
+		"INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n"
+		"(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE\n"
+		"GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n"
+		"INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,\n"
+		"WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n"
+		"NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n"
+		"OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF \n"
+		"SUCH DAMAGE.";
+
+	credits.push_back(credit_header);
+	credits.push_back("Copyright (c) 2016 - 2019, DWANGO Co., Ltd.");
+	credits.push_back("Copyright (c) 2016 Toshihiro Shimizu https://github.com/meso");
+	credits.push_back("Copyright (c) 2016 Shinya Kitaoka https://github.com/skitaoka");
+	credits.push_back("Copyright (c) 2016 shun-iwasawa https://github.com/shun-iwasawa");
+	credits.push_back("Copyright (c) 2016 Campbell Barton https://github.com/ideasman42");
+	credits.push_back("Copyright (c) 2019 luzpaz https://github.com/luzpaz");
+	credits.push_back("Copyright (c) 2019 - 2020, Ankit Kumar Dwivedi https://github.com/ankit-kumar-dwivedi");
+
+	credits.push_back(credit_footer);
+	add_credit_section(section_name,credits);
 	// TRANSLATORS: change this to your name, separate multiple names with \n
 	set_translator_credits(_("translator-credits"));
 
