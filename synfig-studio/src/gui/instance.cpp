@@ -295,13 +295,28 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		if (!stream_in)
 		{
 			synfig::error(strprintf("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext).c_str()));
+			String previous_canvas_filename = canvas->get_file_name();
+			FileSystemTemporary::Identifier identifier(temporary_filesystem, filename_processed);
+			if ( !save_canvas(identifier, get_canvas(), true) )
+			{
+				App::dialog_message_1b(
+						"ERROR",
+						_("The plugin operation has failed."),
+						_("Could not read composition file."),
+						_("Close"));
+				return;
+			}
+			temporary_filesystem->save_changes();
 		}
-		if (filename_ext == ".sifz")
-			stream_in = new ZReadStream(stream_in);
-		std::ofstream  outfile(filename_processed, std::ios::binary);
-		outfile << stream_in->rdbuf();
-		outfile.close();
-		stream_in.reset();
+		else
+		{
+			if (filename_ext == ".sifz")
+				stream_in = new ZReadStream(stream_in);
+			std::ofstream  outfile(filename_processed, std::ios::binary);
+			outfile << stream_in->rdbuf();
+			outfile.close();
+			stream_in.reset();
+		}
 
 		one_moment.hide();
 		extra_args.insert(extra_args.begin(), filename_processed);
