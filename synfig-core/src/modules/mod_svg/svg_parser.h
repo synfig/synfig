@@ -51,14 +51,13 @@ typedef struct matrix_t{
 }SVGMatrix;
 
 typedef struct stop_t{
-	 float r,g,b;
-	 float a;
+	 Color color;
 	 float pos;
 }ColorStop;
 typedef struct linear_g{
 	char name[80];
 	float x1,x2,y1,y2;
-	std::list<ColorStop*> *stops;
+	std::list<ColorStop> *stops;
 	SVGMatrix *transform;
 }LinearGradient;
 typedef struct radial_g{
@@ -66,7 +65,7 @@ typedef struct radial_g{
 	float cx,cy;//center point
 	//float fx,fy; //not supported by Synfig
 	float r; //radius
-	std::list<ColorStop*> *stops;
+	std::list<ColorStop> *stops;
 	SVGMatrix *transform;
 }RadialGradient;
 
@@ -114,8 +113,6 @@ private:
 public:
 		explicit Svg_parser(const Gamma &gamma = Gamma());
 		Canvas::Handle load_svg_canvas(std::string _filepath,String &errors, String &warnings);
-		//String get_id();
-		//void set_id(String source);
 
 private:
 		/* === PARSERS ==================================== */
@@ -140,18 +137,17 @@ private:
 		void parser_linearGradient(const xmlpp::Node* node);
 		void parser_radialGradient(const xmlpp::Node* node);
 		ColorStop* newColorStop(String color,float opacity,float pos);
-		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, SVGMatrix* transform);
-		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, SVGMatrix* transform);
+		LinearGradient* newLinearGradient(String name, float x1, float y1, float x2, float y2, std::list<ColorStop>* stops, SVGMatrix* transform);
+		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop> *stops, SVGMatrix* transform);
 		BLine* newBLine(std::list<Vertex*> *points,bool loop);
 
 		/* === BUILDS ===================================== */
 		void build_transform(xmlpp::Element* root,SVGMatrix* mtx);
-		std::list<ColorStop*>* find_colorStop(String name);
+		std::list<ColorStop>* find_colorStop(String name);
 		void build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx);
 		void build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMatrix* mtx);
 		void build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMatrix* mtx);
-		void build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops);
-		void build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops,String name);
+		void build_stop_color(xmlpp::Element* root, std::list<ColorStop> *stops);
 		Color adjustGamma(float r,float g,float b,float a);
 
 		void build_gamma(xmlpp::Element* root,float gamma);
@@ -195,22 +191,21 @@ private:
 		/* === EXTRA METHODS ============================== */
 
 		//attributes
-		int extractSubAttribute(const String attribute, String name,String* value);
-		String loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal);
-		String loadAttribute(String name,const String path_style,const String master_style,const String defaultVal);
-		std::vector<String> get_tokens_path(String path);
-		int randomLetter();
-		int getRed(String hex);
-		int getGreen(String hex);
-		int getBlue(String hex);
-		int hextodec(String hex);
-		int getColor(String name, int position);
-		float getDimension(const String ac);
+		static int extractSubAttribute(const String attribute, String name,String* value);
+		static String loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal);
+		static String loadAttribute(String name,const String path_style,const String master_style,const String defaultVal);
+		static std::vector<String> get_tokens_path(String path);
+		static int randomLetter();
+		static int getRed(String hex);
+		static int getGreen(String hex);
+		static int getBlue(String hex);
+		static int hextodec(String hex);
+		static int getColor(String name, int position);
+		static float getDimension(const String ac);
 		//string functions
-		void removeS(String *input);
-		void removeIntoS(String *input);
-		std::vector<String> tokenize(const String& str,const String& delimiters);
-		void get_canvas_name(String _filepath);
+		static void removeS(String *input);
+		static void removeIntoS(String *input);
+		static std::vector<String> tokenize(const String& str,const String& delimiters);
 		String new_guid();
 };
 // END of Svg_parser class

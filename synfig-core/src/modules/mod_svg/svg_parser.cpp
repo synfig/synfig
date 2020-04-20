@@ -35,6 +35,7 @@
 #endif
 
 #include <cstring>
+#include <map>
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
@@ -104,7 +105,7 @@ Svg_parser::load_svg_canvas(std::string _filepath,String &errors, String &warnin
 
 Svg_parser::Svg_parser(const Gamma &gamma):
 	gamma(gamma),
-	nodeRoot(NULL),
+	nodeRoot(nullptr),
 	uid(0),
 	kux(60),
 	set_canvas(0), //we must run parser_canvas method
@@ -112,34 +113,6 @@ Svg_parser::Svg_parser(const Gamma &gamma):
 	oy(0)
 {
 }
-/*
-String
-Svg_parser::get_id(){
-	if(!id_name.empty()) return id_name;
-	return "random_id";
-}
-void
-Svg_parser::set_id(String source){
-	const char bad_chars[]=" :#@$^&()*";
-	int start= 	source.find_last_of('/')+1;
-	int end=	source.find_last_of('.');
-	String x=source.substr(start,end-start);
-	if(!x.empty()){
-		for(unsigned int i=0;i<sizeof(bad_chars);i++){
-			unsigned int pos=x.find_first_of(bad_chars[i]);
-			if(pos!=String::npos)
-				x.erase(pos,1);
-		}
-	}
-	if(!x.empty()){
-		id_name=x;
-	}else{
-		id_name="id_arbitrario";
-	}
-}
-*/
-//UPDATE
-
 
 /* === PARSERS ============================================================= */
 
@@ -162,7 +135,7 @@ Svg_parser::parser_node(const xmlpp::Node* node){
 			parser_defs (node);
 		}else{
 			if(set_canvas==0) parser_canvas (node);
-			parser_graphics(node,nodeRoot,"",NULL);
+			parser_graphics(node,nodeRoot,"",nullptr);
 			if(nodename.compare("g")==0) return;
 		}
   	}
@@ -242,15 +215,18 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		Glib::ustring transform	=nodeElement->get_attribute_value("transform");
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix* mtx=nullptr;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 		if (SVG_SEP_TRANSFORMS)
 		{
 			if(mtx_parent){
-				if(mtx)
-					composeSVGMatrix(&mtx,mtx_parent,mtx);
-				else
+				if(mtx) {
+					SVGMatrix* new_mtx;
+					composeSVGMatrix(&new_mtx,mtx_parent,mtx);
+					free(mtx);
+					mtx = new_mtx;
+				} else
 					mtx=newSVGMatrix(mtx_parent);
 			}
 		}
@@ -304,7 +280,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			child_fill=child_layer;
 			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
 			if(typeFill==2){
-				build_fill (child_fill,fill,NULL);
+				build_fill (child_fill,fill,nullptr);
 			}
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 			free(mtx);
@@ -329,9 +305,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			}
 		} else {
 			if(nodename.compare("path")==0){
-				k=parser_path_d (nodeElement->get_attribute_value("d"),NULL);
+				k=parser_path_d (nodeElement->get_attribute_value("d"),nullptr);
 			} else if(nodename.compare("polygon")==0){
-				k=parser_path_polygon (nodeElement->get_attribute_value("points"),NULL);
+				k=parser_path_polygon (nodeElement->get_attribute_value("points"),nullptr);
 			}
 		}
 		
@@ -367,7 +343,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			if (SVG_RESOLVE_BLINE)
 				build_fill(child_fill,fill,mtx);
 			else
-				build_fill(child_fill,fill,NULL);
+				build_fill(child_fill,fill,nullptr);
 		}
 
 		if(typeStroke!=0){//outline layer
@@ -414,12 +390,12 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				if (SVG_RESOLVE_BLINE)
 					build_fill(child_stroke,stroke,mtx);
 				else
-					build_fill(child_stroke,stroke,NULL);
+					build_fill(child_stroke,stroke,nullptr);
 			}	
 		}
 
 		if (SVG_RESOLVE_BLINE)
-			parser_effects(nodeElement,child_layer,parent_style,NULL);
+			parser_effects(nodeElement,child_layer,parent_style,nullptr);
 		else
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 		free(mtx);
@@ -469,7 +445,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 				parser_graphics (*iter,child_canvas,layer_style,mtx);
     		}
   		}
-		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,NULL);
+		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,nullptr);
 		else parser_effects(nodeElement,child_canvas,parent_style,mtx);
 	}
 }
@@ -934,15 +910,15 @@ Svg_parser::build_transform(xmlpp::Element* root,SVGMatrix* mtx){
 	}
 }
 
-std::list<ColorStop*>*
+std::list<ColorStop>*
 Svg_parser::find_colorStop(String name){
 	if(!name.empty()){
 		if(lg.empty()&& rg.empty())
-			return NULL;
+			return nullptr;
 
 		String find= name;
 		if(find.at(0)=='#') find.erase(0,1);
-		else return NULL;
+		else return nullptr;
 		std::list<LinearGradient*>::iterator aux=lg.begin();
 		while(aux!=lg.end()){//only find into linear gradients
 			if(find.compare((*aux)->name)==0){
@@ -951,7 +927,7 @@ Svg_parser::find_colorStop(String name){
 			aux++;
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void
@@ -984,15 +960,16 @@ Svg_parser::build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx){
 	}
 }
 void
-Svg_parser::build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops){
-	std::list<ColorStop*>::iterator aux_stop=stops->begin();
+Svg_parser::build_stop_color(xmlpp::Element* root, std::list<ColorStop> *stops){
+	std::list<ColorStop>::iterator aux_stop=stops->begin();
 	while(aux_stop!=stops->end()){
 		xmlpp::Element *child=root->add_child("color");
-		child->set_attribute("pos",etl::strprintf("%f",(*aux_stop)->pos));
-		child->add_child("r")->set_child_text(etl::strprintf("%f",(*aux_stop)->r));
-		child->add_child("g")->set_child_text(etl::strprintf("%f",(*aux_stop)->g));
-		child->add_child("b")->set_child_text(etl::strprintf("%f",(*aux_stop)->b));
-		child->add_child("a")->set_child_text(etl::strprintf("%f",(*aux_stop)->a));
+		child->set_attribute("pos",etl::strprintf("%f",aux_stop->pos));
+		const Color &color = aux_stop->color;
+		child->add_child("r")->set_child_text(etl::strprintf("%f",color.get_r()));
+		child->add_child("g")->set_child_text(etl::strprintf("%f",color.get_g()));
+		child->add_child("b")->set_child_text(etl::strprintf("%f",color.get_b()));
+		child->add_child("a")->set_child_text(etl::strprintf("%f",color.get_a()));
 		aux_stop++;
 	}
 }
@@ -1016,9 +993,11 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMa
 
 
 		if (mtx || data->transform){
-			SVGMatrix *mtx2=NULL;
+			SVGMatrix *mtx2=nullptr;
+			bool must_free_mtx2 = false;
 			if (mtx && data->transform){
 				composeSVGMatrix(&mtx2,mtx,data->transform);
+				must_free_mtx2 = true;
 			}else if (mtx){
 				mtx2=mtx;
 			}else if (data->transform){
@@ -1052,6 +1031,8 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMa
 			} else {
 				std::cout<<"SVG Import warning: gradient points equal each other"<<std::endl;
 			}
+			if (must_free_mtx2)
+				free(mtx2);
 		}
 
 		coor2vect (&x1,&y1);
@@ -1091,7 +1072,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMa
 			gradient=child_layer->add_child("layer");
 			gradient->set_attribute("desc",data->name);
 			build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
-			SVGMatrix *mtx2=NULL;
+			SVGMatrix *mtx2=nullptr;
 			if (mtx && data->transform){
 				composeSVGMatrix(&mtx2,mtx,data->transform);
 			}else if (mtx){
@@ -1148,16 +1129,16 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 			link = nodeElement->get_attribute_value("href","xlink");			
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix* mtx=nullptr;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
-		std::list<ColorStop*> *stops;
+		std::list<ColorStop> *stops;
 		if(!link.empty()){
 			stops=find_colorStop (link);
 		}else{
 			//color stops
-			stops=new std::list<ColorStop*>();
+			stops=new std::list<ColorStop>();
 			const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
 			if(!nodeContent){
     			xmlpp::Node::NodeList list = node->get_children();
@@ -1175,7 +1156,9 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 						}
 						if(opacity.empty()) opacity="1";
 						if(stop_color.empty()) stop_color="#000000";//black for default :S
-						stops->push_back(newColorStop(stop_color,atof(opacity.data()),offset));
+						ColorStop *color_stop = newColorStop(stop_color,atof(opacity.data()), offset);
+						stops->push_back(*color_stop);
+						free(color_stop);
 					}
     			}
 			}
@@ -1204,17 +1187,16 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 			std::cout<<"SVG Parser: ignoring focus attributes for radial gradient";
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix* mtx=nullptr;
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
-		std::list<ColorStop*> *stops=NULL;
 		if(!link.empty()){
 			//inkscape always use link, i don't need parser stops here, but it's possible
-			stops=find_colorStop (link);
+			std::list<ColorStop> *stops=find_colorStop (link);
+			if(stops)
+				rg.push_back(newRadialGradient(id,cx,cy,r,stops,mtx));
 		}
-		if(stops)
-			rg.push_back(newRadialGradient(id,cx,cy,r,stops,mtx));
 	}
 }
 
@@ -1227,10 +1209,7 @@ Svg_parser::newColorStop(String color,float opacity,float pos){
 	float b=getBlue(color);
 	float a=opacity;
 	Color ret=adjustGamma(r/255,g/255,b/255,a);
-	_stop->r=ret.get_r();
-	_stop->g=ret.get_g();
-	_stop->b=ret.get_b();
-	_stop->a=ret.get_a();
+	_stop->color = ret;
 	_stop->pos=pos;
 	return _stop;
 }
@@ -1241,7 +1220,7 @@ Svg_parser::adjustGamma(float r,float g,float b,float a){
 }
 
 LinearGradient*
-Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, SVGMatrix* transform){
+Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop> *stops, SVGMatrix* transform){
 	LinearGradient* data;
 	data=(LinearGradient*)malloc(sizeof(LinearGradient));
 	sprintf(data->name,"%s",name.data());
@@ -1255,7 +1234,7 @@ Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,s
 }
 
 RadialGradient*
-Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, SVGMatrix* transform){
+Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop> *stops, SVGMatrix* transform){
 	RadialGradient* data;
 	data=(RadialGradient*)malloc(sizeof(RadialGradient));
 	sprintf(data->name,"%s",name.data());
@@ -1382,10 +1361,9 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,int value){
 	if(!type.empty()){
 			if(!name.empty()) root->set_attribute("name",name);
 			xmlpp::Element *child=root->add_child(type);
-			char *enteroc=new char[10];
+			char enteroc[10];
 			sprintf(enteroc,"%d",value);
 			child->set_attribute("value",enteroc);
-			delete [] enteroc;
 	}else{
 		root->get_parent()->remove_child(root);
 	}
@@ -1395,7 +1373,7 @@ void
 Svg_parser::build_integer(xmlpp::Element* root,String name,int value){
 	if(name.compare("")!=0) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("integer");
-	char *enteroc=new char[10];
+	char enteroc[10];
 	sprintf(enteroc,"%d",value);
 	child->set_attribute("value",enteroc);
 }
@@ -1403,7 +1381,7 @@ void
 Svg_parser::build_real(xmlpp::Element* root,String name,float value){
 	if(name.compare("")!=0) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("real");
-	char *realc=new char[20];
+	char realc[20];
 	sprintf(realc,"%f",value);
 	child->set_attribute("value",realc);
 }
@@ -1556,7 +1534,7 @@ Svg_parser::setTg2(Vertex* p,float p1x,float p1y,float p2x,float p2y){
 
 void
 Svg_parser::setSplit(Vertex* p,bool val){
-	if(p!=NULL){
+	if(p!=nullptr){
 		p->split=val;
 	}
 }
@@ -1580,7 +1558,7 @@ Svg_parser::newVertex(float x,float y){
 //matrices
 SVGMatrix*
 Svg_parser::parser_transform(const String transform){
-	SVGMatrix* a=NULL;
+	SVGMatrix* a=nullptr;
 	String tf(transform);
 	removeIntoS(&tf);
 	std::vector<String> tokens=tokenize(tf," ");
@@ -1702,7 +1680,7 @@ Svg_parser::multiplySVGMatrix(SVGMatrix **mtx1,SVGMatrix *mtx2){
 }
 bool
 Svg_parser::matrixIsNull(SVGMatrix *mtx){
-	if(mtx == NULL) return true;
+	if(mtx == nullptr) return true;
 	return false;
 }
 
@@ -1901,57 +1879,10 @@ Svg_parser::getBlue(String hex){
 	}
 	return getColor(hex,3);
 }
+
 int
-Svg_parser::hextodec(String hex){
-	int result=0;
-	if(!hex.empty()){
-		int top=hex.size();
-		int ihex[top];
-		int i=0;
-		while(i<top){
-			if(hex.at(i)=='0')
-				ihex[i]=0;
-			else if(hex.at(i)=='1')
-				ihex[i]=1;
-			else if(hex.at(i)=='2')
-				ihex[i]=2;
-			else if(hex.at(i)=='3')
-				ihex[i]=3;
-			else if(hex.at(i)=='4')
-				ihex[i]=4;
-			else if(hex.at(i)=='5')
-				ihex[i]=5;
-			else if(hex.at(i)=='6')
-				ihex[i]=6;
-			else if(hex.at(i)=='7')
-				ihex[i]=7;
-			else if(hex.at(i)=='8')
-				ihex[i]=8;
-			else if(hex.at(i)=='9')
-				ihex[i]=9;
-			else if(hex.at(i)=='a')
-				ihex[i]=10;
-			else if(hex.at(i)=='b')
-				ihex[i]=11;
-			else if(hex.at(i)=='c')
-				ihex[i]=12;
-			else if(hex.at(i)=='d')
-				ihex[i]=13;
-			else if(hex.at(i)=='e')
-				ihex[i]=14;
-			else if(hex.at(i)=='f')
-				ihex[i]=15;
-			else
-				return 0;
-			i++;
-		}
-		i=0;
-		while(i<top){
-			result+=pow(16,i)*ihex[top-i-1];
-			i++;
-		}
-	}
-	return result;
+Svg_parser::hextodec(std::string hex){
+	return std::stoul(hex, nullptr, 16);
 }
 
 float
@@ -2033,13 +1964,9 @@ Svg_parser::new_guid(){
 }
 
 
-#define COLOR_NAME(color, r, g, b) else if(name.compare(0,strlen(color),color)==0) \
-                   {switch(position) \
-		               {case 1: return r; case 2: return g; case 3: return b;}  }
+#define COLOR_NAME(color, r, g, b) { color, CairoColor(r, g, b)} ,
 
-int
-Svg_parser::getColor(String name, int position){
-	if (position<1 || position>3) return 0;
+static const std::map<std::string, CairoColor> color_name_map = {
 	COLOR_NAME("aliceblue",240, 248, 255)
 	COLOR_NAME("antiquewhite",250, 235, 215)
 	COLOR_NAME("aqua", 0, 255, 255)
@@ -2187,6 +2114,24 @@ Svg_parser::getColor(String name, int position){
 	COLOR_NAME("whitesmoke",245, 245, 245)
 	COLOR_NAME("yellow",255, 255, 0)
 	COLOR_NAME("yellowgreen",154, 205, 50)
-	return 0;
-}
+};
 #undef COLOR_NAME
+
+int
+Svg_parser::getColor(std::string name, int position) {
+	try {
+		const CairoColor &color = color_name_map.at(name);
+		switch (position) {
+		case 1:
+			return color.get_r();
+		case 2:
+			return color.get_g();
+		case 3:
+			return color.get_b();
+		default:
+			return 0;
+		}
+	} catch (...) {
+		return 0;
+	}
+}
