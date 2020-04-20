@@ -81,8 +81,8 @@ using namespace studio;
 	name->set_size_request(px)
 #endif
 
-#define GAP	(3)
-#define INDENTATION (6)
+const int GAP = 3;
+const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 

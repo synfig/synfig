@@ -71,7 +71,7 @@ enum Axis {
 	AXIS_Y
 } ;
 
-#define GAP (3)
+const int GAP = 3;
 
 /* === G L O B A L S ======================================================= */
 

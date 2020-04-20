@@ -71,7 +71,7 @@ using namespace studio;
 #define EPSILON	0.0000001
 #endif
 
-#define GAP (3)
+const int GAP = 3;
 
 /* === G L O B A L S ======================================================= */
 
