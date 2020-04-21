@@ -599,6 +599,8 @@ Widget_Curves::on_event(GdkEvent *event)
 
 	switch (event->type) {
 	case GDK_KEY_PRESS:
+		if (channel_point_sd.get_state() == channel_point_sd.POINTER_DRAGGING)
+			return true;
 		switch (event->key.keyval) {
 		case GDK_KEY_Delete:
 			delete_selected();
