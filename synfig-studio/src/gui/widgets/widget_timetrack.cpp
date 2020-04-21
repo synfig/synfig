@@ -330,6 +330,8 @@ bool Widget_Timetrack::on_event(GdkEvent* event)
 
 	switch (event->type) {
 	case GDK_KEY_PRESS:
+		if (waypoint_sd.get_state() == waypoint_sd.POINTER_DRAGGING)
+			return true;
 		switch (event->key.keyval) {
 		case GDK_KEY_Delete:
 			delete_selected();
