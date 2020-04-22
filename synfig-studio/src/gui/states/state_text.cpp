@@ -387,7 +387,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	/* Set up the tool options dialog */
 
 	// 0, title
-	title_label.set_label(_("Text Creation"));
+	title_label.set_label(_("Text Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
