@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-03-11 20:04+0000\n"
+"PO-Revision-Date: 2020-03-22 10:44+0000\n"
 "Last-Translator: Taha Zerrouki <taha_zerrouki@hotmail.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/morevnaproject/synfig/language/ar/)\n"
 "MIME-Version: 1.0\n"
@@ -52,7 +52,7 @@ msgstr "قائمة الخطوط فارغة"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Text to Render"
-msgstr "نص للمعالجة"
+msgstr "نص للتصيير"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:594
 #: ../src/modules/lyr_std/shade.cpp:633
@@ -208,15 +208,15 @@ msgstr "عكس"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:735
 msgid "No face loaded, no text will be rendered."
-msgstr "لا وجه محمّل، لا نص سيعالج"
+msgstr "لا وجه محمّل، لا نص سيصيّر."
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:761
 msgid "Text too small, no text will be rendered."
-msgstr "النص صغير جدا، لا نص سيعالج"
+msgstr "النص صغير جدا، لا نص سيصيّر."
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:785
 msgid "Unable to set face size."
-msgstr "لا يمكن تعديل حجم الجه"
+msgstr "لا يمكن تعديل حجم الوجه."
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:844
 msgid "Can't parse multibyte character.\n"
@@ -275,11 +275,11 @@ msgstr "تمويه القرص"
 
 #: ../src/modules/lyr_std/bevel.cpp:676
 msgid "Hi-Color"
-msgstr ""
+msgstr "لون عال"
 
 #: ../src/modules/lyr_std/bevel.cpp:679
 msgid "Lo-Color"
-msgstr ""
+msgstr "لون منخفض"
 
 #: ../src/modules/lyr_std/bevel.cpp:682
 msgid "Light Angle"
@@ -364,7 +364,7 @@ msgstr "تشوهات"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:408
 msgid "Position of the destiny Spline line"
-msgstr ""
+msgstr "موضع نهاية خط spline"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:411
 #: ../src/modules/lyr_std/supersample.cpp:360
@@ -411,7 +411,7 @@ msgstr "القمم"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:428
 msgid "List of Spline Points where the source line is curved to"
-msgstr "نقاط الانحناء "
+msgstr "نقاط الانحناء"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:431
 #: ../src/modules/mod_gradient/curvegradient.cpp:557
@@ -421,7 +421,7 @@ msgstr "سريع"
 #: ../src/modules/lyr_std/curvewarp.cpp:432
 #: ../src/modules/mod_gradient/curvegradient.cpp:558
 msgid "When checked, renders quickly but with artifacts"
-msgstr "حين تُختار، يسرع المعالج لكن بواسطة العتاد"
+msgstr "حين تُختار، يسرع المصيّر لكن بواسطة العتاد"
 
 #: ../src/modules/lyr_std/freetime.cpp:59
 msgid "Free Time"
@@ -474,7 +474,7 @@ msgstr "حدّد مكان المركز"
 
 #: ../src/modules/lyr_std/julia.cpp:65
 msgid "Julia Set"
-msgstr ""
+msgstr "مجموعة جوليا"
 
 #: ../src/modules/lyr_std/julia.cpp:66
 #: ../src/modules/lyr_std/mandelbrot.cpp:66
@@ -513,7 +513,7 @@ msgstr "نقطة بذرة"
 #: ../src/modules/lyr_std/julia.cpp:371
 #: ../src/modules/lyr_std/mandelbrot.cpp:231
 msgid "Bailout ValueBase"
-msgstr ""
+msgstr "القيمة الأساسية للتوقف\nValeur de Base d'Arrêt"
 
 #: ../src/modules/lyr_std/julia.cpp:375
 #: ../src/modules/lyr_std/mandelbrot.cpp:241
@@ -582,7 +582,7 @@ msgstr "تنعيم تلوين خارج المجموعة"
 #: ../src/modules/lyr_std/julia.cpp:413
 #: ../src/modules/lyr_std/mandelbrot.cpp:235
 msgid "Break Set"
-msgstr ""
+msgstr "مجموعة الفصل"
 
 #: ../src/modules/lyr_std/julia.cpp:414
 #: ../src/modules/lyr_std/mandelbrot.cpp:236
@@ -591,7 +591,7 @@ msgstr "تعديل المعادلة لاستكمال نتائج مهمة"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:65
 msgid "Mandelbrot Set"
-msgstr ""
+msgstr "مجموعة ماندلبروت"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:242
 #: ../src/modules/lyr_std/mandelbrot.cpp:246
@@ -713,7 +713,7 @@ msgstr "كثافة التشوه (القيم السالبة تعكس التأثي
 #: ../src/modules/lyr_std/sphere_distort.cpp:165
 #: ../src/modules/lyr_std/warp.cpp:425
 msgid "Clip"
-msgstr ""
+msgstr "قصاصة"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
 msgid "When checked, the area outside the Radius are not distorted"
@@ -761,7 +761,7 @@ msgstr "أداة لقياس الدوران والتردد"
 
 #: ../src/modules/lyr_std/stroboscope.cpp:110
 msgid "Frequency"
-msgstr "التردد:"
+msgstr "التردد"
 
 #: ../src/modules/lyr_std/stroboscope.cpp:111
 msgid "Frequency of the Strobe in times per second"
@@ -773,7 +773,7 @@ msgstr "عينة فائقة"
 
 #: ../src/modules/lyr_std/supersample.cpp:169
 msgid "Unable to create SurfaceTarget"
-msgstr "لا يمكن إنشاء السطح المستهدف"
+msgstr "لا يمكن إنشاء مسار السطح"
 
 #: ../src/modules/lyr_std/supersample.cpp:361
 msgid "Width of sample area (In pixels)"
@@ -786,7 +786,7 @@ msgstr "الارتفاع"
 
 #: ../src/modules/lyr_std/supersample.cpp:365
 msgid "Height of sample area (In pixels)"
-msgstr "ارتفاع المنطقة بالبيكسل"
+msgstr "ارتفاع المنطقة (بالبيكسل)"
 
 #: ../src/modules/lyr_std/supersample.cpp:368
 msgid "Use Parametric"
@@ -794,15 +794,15 @@ msgstr "استعمال المعاملات"
 
 #: ../src/modules/lyr_std/supersample.cpp:369
 msgid "Use the Parametric Renderer"
-msgstr "استخدم المعالج القابل للإعداد"
+msgstr "استخدم المصيّر القابل للإعداد"
 
 #: ../src/modules/lyr_std/supersample.cpp:372
 msgid "Be Alpha Safe"
-msgstr ""
+msgstr "آمن من طبقة ألفا"
 
 #: ../src/modules/lyr_std/supersample.cpp:373
 msgid "Avoid alpha artifacts when checked"
-msgstr ""
+msgstr "عند الاختيار، تجنب آثار ألفا"
 
 #: ../src/modules/lyr_std/timeloop.cpp:64
 msgid "Time Loop"
@@ -897,7 +897,7 @@ msgstr "الاعوجاج"
 
 #: ../src/modules/lyr_std/warp.cpp:390
 msgid "Source TL"
-msgstr "Source TL"
+msgstr "الزاوية الأعلى اليسرى للمصدر"
 
 #: ../src/modules/lyr_std/warp.cpp:392
 msgid "Top Left corner of the source to warp"
@@ -990,7 +990,7 @@ msgstr "تعذر فتح: %s"
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:146
 #, c-format
 msgid "%s is not in BMP format"
-msgstr "%s ليست بصيغة BMP "
+msgstr "%s ليست بصيغة BMP"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:152
 #, c-format
@@ -1010,7 +1010,7 @@ msgstr "BITMAP::FILEHEADER  سيء في  %s. (bfOffsetBits=%d, ينبغي أن �
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:178
 #, c-format
 msgid "Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %zu)"
-msgstr " BITMAP::INFOHEADER سيء في %s. (biSize=%d, ينبغي أن يكون %zu)"
+msgstr "BITMAP::INFOHEADER سيء في %s. (biSize=%d, ينبغي أن يكون %zu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:196
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:197
@@ -1025,7 +1025,7 @@ msgstr "عمق بتات غير مدعوم (bit_count=%d, ينبغي أن تكو�
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:223
 msgid " (animated)"
-msgstr "(مُحرَّك)"
+msgstr " (مُحرَّك)"
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:233
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:234
@@ -1052,7 +1052,7 @@ msgstr "تعذر فتح أنبوب نحو encodedv"
 
 #: ../src/modules/mod_example/metaballs.cpp:59
 msgid "Metaballs"
-msgstr ""
+msgstr "كرات التعريف"
 
 #: ../src/modules/mod_example/metaballs.cpp:60
 #: ../src/modules/mod_example/simplecircle.cpp:61
@@ -1079,7 +1079,7 @@ msgstr "كرات"
 
 #: ../src/modules/mod_example/metaballs.cpp:139
 msgid "Radii"
-msgstr ""
+msgstr "نصف القطر"
 
 #: ../src/modules/mod_example/metaballs.cpp:143
 msgid "Weights"
@@ -1201,7 +1201,7 @@ msgstr "متناظر"
 #: ../src/modules/mod_filter/halftone2.cpp:180
 #: ../src/modules/mod_filter/halftone3.cpp:337
 msgid "Light On Dark"
-msgstr ""
+msgstr "فاتح على غامق"
 
 #: ../src/modules/mod_filter/halftone2.cpp:182
 #: ../src/modules/mod_filter/halftone3.cpp:339
@@ -1219,7 +1219,7 @@ msgstr "الألوان النصفية 3"
 
 #: ../src/modules/mod_filter/halftone3.cpp:334
 msgid " Type"
-msgstr "النوع"
+msgstr " النوع"
 
 #: ../src/modules/mod_filter/halftone3.cpp:343
 msgid "Subtractive Flag"
@@ -1227,15 +1227,15 @@ msgstr "علامة الطرح"
 
 #: ../src/modules/mod_filter/halftone3.cpp:351
 msgid " Color"
-msgstr "لون"
+msgstr " لون"
 
 #: ../src/modules/mod_filter/halftone3.cpp:355
 msgid " Mask Origin"
-msgstr "مبدأ القناع"
+msgstr " مبدأ القناع"
 
 #: ../src/modules/mod_filter/halftone3.cpp:359
 msgid " Mask Angle"
-msgstr "زاوية القناع"
+msgstr " زاوية القناع"
 
 #: ../src/modules/mod_filter/lumakey.cpp:62
 msgid "Luma Key"
@@ -1275,7 +1275,7 @@ msgstr "أبعاد"
 #: ../src/modules/mod_gradient/curvegradient.cpp:539
 #: ../src/modules/mod_particle/plant.cpp:404
 msgid "A list of spline points"
-msgstr "قائمة نقاط spline"
+msgstr "قائمة نقاط المنحنى"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:683
 #: ../src/modules/mod_geometry/outline.cpp:280
@@ -1303,7 +1303,7 @@ msgstr "نوع التلميح عند البدء"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:693
 msgid "Defines the Tip type of the first spline point when spline is unlooped"
-msgstr "تحدد نوع التلميح عند أول نقطة spline حين لا يتكرر spline"
+msgstr "تحدد نوع التلميح عند أول نقطة منحنى حين لا يتكرر المنحنى"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:695
 #: ../src/modules/mod_geometry/advanced_outline.cpp:706
@@ -1312,7 +1312,7 @@ msgstr "تحدد نوع التلميح عند أول نقطة spline حين لا
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:777
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:788
 msgid "Rounded Stop"
-msgstr ""
+msgstr "توقف مستدير"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:696
 #: ../src/modules/mod_geometry/advanced_outline.cpp:707
@@ -1321,7 +1321,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:778
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:789
 msgid "Squared Stop"
-msgstr ""
+msgstr "توقف مربع"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:697
 #: ../src/modules/mod_geometry/advanced_outline.cpp:708
@@ -1348,7 +1348,7 @@ msgstr "توقف"
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:781
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:792
 msgid "Inner Rounded Stop"
-msgstr ""
+msgstr "توقف مستدير الداخل"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:700
 #: ../src/modules/mod_geometry/advanced_outline.cpp:711
@@ -1357,7 +1357,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:782
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:793
 msgid "Off-Peak Stop"
-msgstr ""
+msgstr "توقف خارج الذروة"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:703
 msgid "Tip Type at End"
@@ -1365,7 +1365,7 @@ msgstr "نوع التلميح عند الانتهاء"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:704
 msgid "Defines the Tip type of the last spline point when spline is unlooped"
-msgstr "تحدد نوع التلميح عند آخر نقطة spline حين لا يتكرر spline"
+msgstr "تحدد نوع التلميح عند آخر نقطة المنحنى حين لا يتكرر المنحنى"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:714
 msgid "Cusps Type"
@@ -1382,16 +1382,16 @@ msgstr "حادّ"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:718
 msgid "Rounded"
-msgstr ""
+msgstr "مستدير"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:722
 msgid "Smoothness"
-msgstr ""
+msgstr "النعومة"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:723
 msgid ""
 "Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
-msgstr "يحدد الاستكمال بين نقاط العرض (0)خطي (1) صقل  "
+msgstr "يحدد الاستكمال بين نقاط العرض. (0) خطي (1) صقل"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:726
 #: ../src/modules/mod_geometry/outline.cpp:305
@@ -1399,15 +1399,15 @@ msgstr "يحدد الاستكمال بين نقاط العرض (0)خطي (1) ص�
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:193
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:207
 msgid "Homogeneous"
-msgstr ""
+msgstr "متناسق"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:727
 msgid "When true, widthpoints positions are spline length based"
-msgstr ""
+msgstr "إذا كان صحيحا، فإن مواضع نقاط العرض تعتمد على أطوال المنحنى"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:730
 msgid "Width Point List"
-msgstr ""
+msgstr "قائمة نقاط العرض"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:733
 msgid "List of width Points that defines the variable width"
@@ -1415,7 +1415,7 @@ msgstr "قائمة نقاط العرض التي تعرّف متغير العرض
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:736
 msgid "Dashed Outline"
-msgstr ""
+msgstr "خط متقطع"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:738
 msgid "When checked outline is dashed"
@@ -1463,7 +1463,7 @@ msgstr "نصف قطر الدائرة"
 
 #: ../src/modules/mod_geometry/outline.cpp:67
 msgid "Outline"
-msgstr ""
+msgstr "السطر"
 
 #: ../src/modules/mod_geometry/outline.cpp:291
 msgid "Sharp Cusps"
@@ -1476,51 +1476,51 @@ msgstr "بداية المستدير"
 #: ../src/modules/mod_geometry/outline.cpp:297
 #: ../src/modules/mod_geometry/outline.cpp:302
 msgid "Round off the tip"
-msgstr ""
+msgstr "إخفاء التلميح"
 
 #: ../src/modules/mod_geometry/outline.cpp:301
 msgid "Rounded End"
-msgstr ""
+msgstr "نهاية المستدير"
 
 #: ../src/modules/mod_geometry/outline.cpp:306
 msgid "When checked the width takes the length of the spline to interpolate"
-msgstr ""
+msgstr "حين تختارها، العرض يتعلق بطول المنحنى الذي سيستوفى"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:53
 msgid "Rectangle"
-msgstr ""
+msgstr "المستطيل"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:184
 #: ../src/modules/mod_gradient/lineargradient.cpp:162
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:111
 msgid "Point 1"
-msgstr ""
+msgstr "نقطة 1"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:186
 msgid "First corner of the rectangle"
-msgstr ""
+msgstr "أول زاوية من المستطيل"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:189
 #: ../src/modules/mod_gradient/lineargradient.cpp:167
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:117
 msgid "Point 2"
-msgstr ""
+msgstr "نقطة 2"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:190
 msgid "Second corner of the rectangle"
-msgstr ""
+msgstr "الزاوية الثانية للمستطيل"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:194
 msgid "Expand amount"
-msgstr ""
+msgstr "مقدار التوسيع"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:198
 msgid "Feather X"
-msgstr ""
+msgstr "تغبيش الأطراف X"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:202
 msgid "Feather Y"
-msgstr ""
+msgstr "تغبيش الأطراف Y"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:207
 msgid "Use Bevel for the corners"
@@ -1596,7 +1596,7 @@ msgstr "تعذر فتح \"%s\" للكتابة!"
 
 #: ../src/modules/mod_gif/trgt_gif.cpp:196
 msgid "Description not set!"
-msgstr "لا وصف"
+msgstr "لا وصف!"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:60
 msgid "Conical Gradient"
@@ -1721,7 +1721,7 @@ msgstr "لا ملف للتحميل"
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:123
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:124
 msgid "Cannot create temporary file of "
-msgstr "لا يمكن إنشاء ملف موقت لـ"
+msgstr "لا يمكن إنشاء ملف موقت لـ "
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:181
@@ -1729,19 +1729,19 @@ msgstr "لا يمكن إنشاء ملف موقت لـ"
 #: ../src/synfig/cairolistimporter.cpp:196 ../src/synfig/listimporter.cpp:184
 #: ../src/synfig/listimporter.cpp:185
 msgid "Unable to open "
-msgstr "تعذّر فتح"
+msgstr "تعذّر فتح "
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:187
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:188
 #: ../src/synfig/cairolistimporter.cpp:202
 #: ../src/synfig/cairolistimporter.cpp:203
 msgid "Unable to get frame from "
-msgstr "تعذر الحصول على الإطار من"
+msgstr "تعذر الحصول على الإطار من "
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:194
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:195
 msgid "Bad surface from "
-msgstr "سطح سيئ من"
+msgstr "سطح سيئ من "
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:250
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:251
@@ -1761,61 +1761,61 @@ msgstr "ليس التدفق بصيغة PPM"
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:283
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:284
 msgid "Premature end of file (after header)"
-msgstr "نهاية غير متوقعة للملف (بعد الترويسة)."
+msgstr "نهاية غير متوقعة للملف (بعد الترويسة)"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:296
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:297
 msgid "Premature end of file"
-msgstr "نهاية غير متوقعة للملف."
+msgstr "نهاية غير متوقعة للملف"
 
 #: ../src/modules/mod_imagemagick/trgt_imagemagick.cpp:160
 msgid "Unable to open pipe to imagemagick's convert utility"
-msgstr ""
+msgstr "تعذر فتح قناة مع أداة التحويل في إماجيك"
 
 #: ../src/modules/mod_noise/distort.cpp:61
 msgid "Noise Distort"
-msgstr ""
+msgstr "تشويه الضجيج"
 
 #: ../src/modules/mod_noise/distort.cpp:213
 msgid "Displacement"
-msgstr ""
+msgstr "إزاحة"
 
 #: ../src/modules/mod_noise/distort.cpp:214
 msgid "How big the distortion displaces the context"
-msgstr ""
+msgstr "ما مقدار تشويه السياق"
 
 #: ../src/modules/mod_noise/distort.cpp:219
 msgid "The distance between distortions"
-msgstr ""
+msgstr "المسافة بين التشويهات"
 
 #: ../src/modules/mod_noise/distort.cpp:222
 #: ../src/modules/mod_noise/noise.cpp:270
 msgid "RandomNoise Seed"
-msgstr ""
+msgstr "بذرة الضجيج العشوائية"
 
 #: ../src/modules/mod_noise/distort.cpp:223
 #: ../src/modules/mod_noise/noise.cpp:271
 msgid "Change to modify the random seed of the noise"
-msgstr ""
+msgstr "عدّلها لتعديل البذرة العشوائية للضجيج"
 
 #: ../src/modules/mod_noise/distort.cpp:226
 #: ../src/modules/mod_noise/noise.cpp:278
 #: ../src/modules/mod_noise/valuenode_random.cpp:263
 #: ../src/synfig/layers/layer_bitmap.cpp:169
 msgid "Interpolation"
-msgstr ""
+msgstr "الاستيفاء"
 
 #: ../src/modules/mod_noise/distort.cpp:227
 #: ../src/modules/mod_noise/noise.cpp:279
 #: ../src/synfig/layers/layer_bitmap.cpp:170
 msgid "What type of interpolation to use"
-msgstr ""
+msgstr "ما نوع الاستفياء المستعمل"
 
 #: ../src/modules/mod_noise/distort.cpp:229
 #: ../src/modules/mod_noise/noise.cpp:281
 #: ../src/synfig/layers/layer_bitmap.cpp:172
 msgid "Nearest Neighbor"
-msgstr ""
+msgstr "أقرب جار"
 
 #: ../src/modules/mod_noise/distort.cpp:230
 #: ../src/modules/mod_noise/noise.cpp:282
@@ -1823,14 +1823,14 @@ msgstr ""
 #: ../src/synfig/layers/layer_bitmap.cpp:173
 #: ../src/synfig/layers/layer_motionblur.cpp:141
 msgid "Linear"
-msgstr ""
+msgstr "خطي"
 
 #: ../src/modules/mod_noise/distort.cpp:231
 #: ../src/modules/mod_noise/noise.cpp:283
 #: ../src/modules/mod_noise/valuenode_random.cpp:268
 #: ../src/synfig/layers/layer_bitmap.cpp:174
 msgid "Cosine"
-msgstr ""
+msgstr "جيب التمام"
 
 #: ../src/modules/mod_noise/distort.cpp:232
 #: ../src/modules/mod_noise/noise.cpp:284
@@ -1839,68 +1839,68 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:178
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:187
 msgid "Spline"
-msgstr ""
+msgstr "منحنى"
 
 #: ../src/modules/mod_noise/distort.cpp:233
 #: ../src/modules/mod_noise/noise.cpp:285
 #: ../src/modules/mod_noise/valuenode_random.cpp:270
 #: ../src/synfig/layers/layer_bitmap.cpp:175
 msgid "Cubic"
-msgstr ""
+msgstr "تكعييبي"
 
 #: ../src/modules/mod_noise/distort.cpp:236
 #: ../src/modules/mod_noise/noise.cpp:288
 msgid "Detail"
-msgstr ""
+msgstr "تفاصيل"
 
 #: ../src/modules/mod_noise/distort.cpp:237
 #: ../src/modules/mod_noise/noise.cpp:289
 msgid "Increase to obtain fine details of the noise"
-msgstr ""
+msgstr "ارفع لتحصل على تفاصيل أكثر للضجيج"
 
 #: ../src/modules/mod_noise/distort.cpp:240
 #: ../src/modules/mod_noise/noise.cpp:292
 msgid "Animation Speed"
-msgstr ""
+msgstr "سرعة التحريك"
 
 #: ../src/modules/mod_noise/distort.cpp:241
 #: ../src/modules/mod_noise/noise.cpp:293
 msgid "In cycles per second"
-msgstr ""
+msgstr "في دورة/دورات في الثانية"
 
 #: ../src/modules/mod_noise/distort.cpp:244
 #: ../src/modules/mod_noise/noise.cpp:296
 msgid "Turbulent"
-msgstr ""
+msgstr "صاخب"
 
 #: ../src/modules/mod_noise/distort.cpp:245
 #: ../src/modules/mod_noise/noise.cpp:297
 msgid "When checked produces turbulent noise"
-msgstr ""
+msgstr "حين تختارها، تولّد ضجيجا صاخبا"
 
 #: ../src/modules/mod_noise/noise.cpp:61
 msgid "Noise Gradient"
-msgstr ""
+msgstr "تدرج الضجيج"
 
 #: ../src/modules/mod_noise/noise.cpp:275
 msgid "Size of the noise"
-msgstr ""
+msgstr "حجم الضجيج"
 
 #: ../src/modules/mod_noise/noise.cpp:300
 msgid "Do Alpha"
-msgstr ""
+msgstr "اعمل ألفا"
 
 #: ../src/modules/mod_noise/noise.cpp:301
 msgid "Uses transparency"
-msgstr ""
+msgstr "تستعمل الشفافية"
 
 #: ../src/modules/mod_noise/noise.cpp:304
 msgid "Super Sampling"
-msgstr ""
+msgstr "عينة فائقة"
 
 #: ../src/modules/mod_noise/noise.cpp:305
 msgid "When checked the gradient is supersampled"
-msgstr ""
+msgstr "حين تُختار، التدرج يستعمل عينات فائقة"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:243
 #: ../src/synfig/valuenodes/valuenode_add.cpp:233
@@ -1919,362 +1919,362 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_step.cpp:186
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:168
 msgid "Link"
-msgstr ""
+msgstr "رابط"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:244
 msgid "The value node source that provides the central value"
-msgstr ""
+msgstr "قيمة العقدة المصدرية التي تعطي القيمة الوسطى"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:249
 msgid "The value of the maximum random difference"
-msgstr ""
+msgstr "قيمة أقصى اختلاف عشوائي"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:253
 #: ../src/modules/mod_particle/plant.cpp:462
 msgid "Seed"
-msgstr ""
+msgstr "بذرة"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:254
 msgid "Seeds the random number generator"
-msgstr ""
+msgstr "رقم البداية لمولّد الأرقام شبه العشوائية"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:258
 #: ../src/synfig/layers/layer_pastecanvas.cpp:148
 msgid "Speed"
-msgstr ""
+msgstr "سرعة"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:259
 msgid ""
 "Defines how often a new random value is chosen (in choices per second) "
-msgstr ""
+msgstr "يحدد عدد المرات التي يتم فيها اختيار قيمة عشوائية جديدة (بعدد الاختيارات في الثانية) "
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:264
 msgid ""
 "Determines how the value is interpolated from one random choice to the next"
-msgstr ""
+msgstr "يحدد كيفية استيفاء القيمة من اختيار عشوائي إلى آخر"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:266
 msgid "No interpolation"
-msgstr ""
+msgstr "لا استيفاء"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:275
 msgid "Loop Time"
-msgstr ""
+msgstr "زمن الدوران"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:276
 msgid "Makes the random value repeat after the given time"
-msgstr ""
+msgstr "يجعل القيمة العشوائية تتكرر بعد الوقت المحدد"
 
 #: ../src/modules/mod_particle/plant.cpp:73
 msgid "Plant"
-msgstr ""
+msgstr "نبات"
 
 #: ../src/modules/mod_particle/plant.cpp:416
 msgid "Gradient to be used for coloring the plant"
-msgstr ""
+msgstr "التدرج لتلوين النبات"
 
 #: ../src/modules/mod_particle/plant.cpp:420
 msgid "Split Angle"
-msgstr ""
+msgstr "زاوية التقسيم"
 
 #: ../src/modules/mod_particle/plant.cpp:421
 msgid "Angle by which each split deviates from its parent"
-msgstr ""
+msgstr "الزاوية االتي ينحرف بها كل قسم عن أصوله"
 
 #: ../src/modules/mod_particle/plant.cpp:425
 msgid "Gravity"
-msgstr ""
+msgstr "جاذبية"
 
 #: ../src/modules/mod_particle/plant.cpp:426
 msgid "Direction in which the shoots tend to face"
-msgstr ""
+msgstr "الاتجاه الذي تميل إليه البراعم"
 
 #: ../src/modules/mod_particle/plant.cpp:431
 msgid "Tangential Velocity"
-msgstr ""
+msgstr "السرعة العرضية"
 
 #: ../src/modules/mod_particle/plant.cpp:432
 msgid "Amount to which shoots tend to grow along the tangent to the spline"
-msgstr ""
+msgstr "مقدار الميلان لنمو البراعم على طول المنحن"
 
 #: ../src/modules/mod_particle/plant.cpp:436
 msgid "Perpendicular Velocity"
-msgstr ""
+msgstr "السرعة العمودية"
 
 #: ../src/modules/mod_particle/plant.cpp:437
 msgid ""
 "Amount to which shoots tend to grow perpendicular to the tangent to the "
 "spline"
-msgstr ""
+msgstr "مقدار نمو البراعم عموديا على طول المنحن"
 
 #: ../src/modules/mod_particle/plant.cpp:441
 msgid "Stem Size"
-msgstr ""
+msgstr "حجم الخطوة"
 
 #: ../src/modules/mod_particle/plant.cpp:442
 msgid "Size of the stem"
-msgstr ""
+msgstr "حجم الجذع"
 
 #: ../src/modules/mod_particle/plant.cpp:447
 msgid "Size As Alpha"
-msgstr ""
+msgstr "حجم بطبقة ألفا"
 
 #: ../src/modules/mod_particle/plant.cpp:448
 msgid ""
 "If enabled, the alpha channel from the gradient is multiplied by the stem "
 "size, and an alpha of 1.0 is used when rendering"
-msgstr ""
+msgstr "حين تختارها، يتم ضرب قناة ألفا من التدرج في حجم الجذع ، ويتم استخدام ألفا 1.0 عند التصيير"
 
 #: ../src/modules/mod_particle/plant.cpp:452
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:163
 msgid "Reverse"
-msgstr ""
+msgstr "عكس"
 
 #: ../src/modules/mod_particle/plant.cpp:453
 msgid "If enabled, render the plant in the opposite direction"
-msgstr ""
+msgstr "حين تختارها، تصيّر النبتة في الاتجاه المعاكس"
 
 #: ../src/modules/mod_particle/plant.cpp:457
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:198
 msgid "Step"
-msgstr ""
+msgstr "خطوة"
 
 #: ../src/modules/mod_particle/plant.cpp:458
 msgid "Measure of the distance between points when rendering"
-msgstr ""
+msgstr "مقدار البعد بين النقاط عند التصيير"
 
 #: ../src/modules/mod_particle/plant.cpp:463
 msgid "Used to seed the pseudo-random number generator"
-msgstr ""
+msgstr "رقم البداية لمولّد الأرقام شبه العشوائية"
 
 #: ../src/modules/mod_particle/plant.cpp:467
 msgid "Splits"
-msgstr ""
+msgstr "أقسام"
 
 #: ../src/modules/mod_particle/plant.cpp:468
 msgid "Maximum number of times that each sprout can sprout recursively"
-msgstr ""
+msgstr "الحد الأقصى لعدد المرات التي يمكن أن تنبت فيها كل براعم بشكل متكرر"
 
 #: ../src/modules/mod_particle/plant.cpp:472
 msgid "Sprouts"
-msgstr ""
+msgstr "براعم"
 
 #: ../src/modules/mod_particle/plant.cpp:473
 msgid "Number of places that growth occurs on each spline section"
-msgstr ""
+msgstr "عدد الأماكن التي يحدث فيها نمو في كل منحنى"
 
 #: ../src/modules/mod_particle/plant.cpp:477
 msgid "Random Factor"
-msgstr ""
+msgstr "معامل العشوائية"
 
 #: ../src/modules/mod_particle/plant.cpp:478
 msgid ""
 "Used to scale down all random effects.  Set to zero to disable randomness"
-msgstr ""
+msgstr "تستخدم لتقليل جميع الآثار العشوائية. اضبط على صفر لتعطيل العشوائية"
 
 #: ../src/modules/mod_particle/plant.cpp:482
 msgid "Drag"
-msgstr ""
+msgstr "سحب"
 
 #: ../src/modules/mod_particle/plant.cpp:483
 msgid "Drag slows the growth"
-msgstr ""
+msgstr "السحب يبطئ النمو"
 
 #: ../src/modules/mod_particle/plant.cpp:487
 msgid "Use Width"
-msgstr ""
+msgstr "استعمل العرض"
 
 #: ../src/modules/mod_particle/plant.cpp:488
 msgid "Scale the velocity by the spline's width"
-msgstr ""
+msgstr "يقلل السرعة حسب عرض المنحنى"
 
 #: ../src/modules/mod_png/trgt_cairo_png.cpp:119
 #: ../src/synfig/target_cairo.cpp:205
 msgid "Cairo Surface bad status"
-msgstr ""
+msgstr "وضع سيئ لسطح كايرو"
 
 #: ../src/modules/mod_png/trgt_png_spritesheet.cpp:181
 #, c-format
 msgid ""
 "The image is too large. It's size must be not more than 5000*2000=10000000 "
 "px. Currently it's %d*%d=%d px."
-msgstr ""
+msgstr "الصورة كبيرة جدا. ينبغي أن لا تزيد عن 5000*2000=10000000 px. حجمها حاليا %d*%d=%d px."
 
 #: ../src/modules/mod_ppm/mptr_ppm.cpp:79
 #, c-format
 msgid "%s was not in PPM format"
-msgstr ""
+msgstr "%s ليست بصيغة PPM"
 
 #: ../src/modules/mod_svg/layer_svg.cpp:57
 msgid "Import Svg"
-msgstr ""
+msgstr "استورد صورة SVG"
 
 #: ../src/synfig/base_types.cpp:84 ../src/synfig/base_types.cpp:85
 msgid "bool"
-msgstr ""
+msgstr "بولياني"
 
 #: ../src/synfig/base_types.cpp:105 ../src/synfig/base_types.cpp:106
 msgid "integer"
-msgstr ""
+msgstr "عدد صحيح"
 
 #: ../src/synfig/base_types.cpp:128
 msgid "angle"
-msgstr ""
+msgstr "زاوية"
 
 #: ../src/synfig/base_types.cpp:174 ../src/synfig/base_types.cpp:175
 msgid "real"
-msgstr ""
+msgstr "عدد حقيقي"
 
 #: ../src/synfig/base_types.cpp:205 ../src/synfig/base_types.cpp:206
 msgid "time"
-msgstr ""
+msgstr "وقت"
 
 #: ../src/synfig/base_types.cpp:232
 msgid "vector"
-msgstr ""
+msgstr "شعاع"
 
 #: ../src/synfig/base_types.cpp:251
 msgid "color"
-msgstr ""
+msgstr "لون"
 
 #: ../src/synfig/base_types.cpp:270
 msgid "segment"
-msgstr ""
+msgstr "مقطع"
 
 #: ../src/synfig/base_types.cpp:290
 msgid "spline_point"
-msgstr ""
+msgstr "نقطة الانحناء"
 
 #: ../src/synfig/base_types.cpp:309
 msgid "matrix"
-msgstr ""
+msgstr "مصفوفة"
 
 #: ../src/synfig/base_types.cpp:328
 msgid "bone_weight_pair"
-msgstr ""
+msgstr "وزن العظم"
 
 #: ../src/synfig/base_types.cpp:348
 msgid "width_point"
-msgstr ""
+msgstr "نقطة العرض"
 
 #: ../src/synfig/base_types.cpp:368
 msgid "dash_item"
-msgstr ""
+msgstr "عنصر الواصلة"
 
 #: ../src/synfig/base_types.cpp:387
 msgid "list"
-msgstr ""
+msgstr "قائمة"
 
 #: ../src/synfig/base_types.cpp:449
 msgid "canvas"
-msgstr ""
+msgstr "الرقعة"
 
 #: ../src/synfig/base_types.cpp:480
 msgid "string"
-msgstr ""
+msgstr "سلسلة حروف"
 
 #: ../src/synfig/base_types.cpp:501
 msgid "gradient"
-msgstr ""
+msgstr "تدرج"
 
 #: ../src/synfig/base_types.cpp:520
 msgid "bone_object"
-msgstr ""
+msgstr "كائن عظم"
 
 #: ../src/synfig/base_types.cpp:559
 msgid "bone_valuenode"
-msgstr ""
+msgstr "قيمة عقدة العظم"
 
 #: ../src/synfig/base_types.cpp:582
 msgid "transformation"
-msgstr ""
+msgstr "تحويل"
 
 #: ../src/synfig/cairoimporter.cpp:95
 msgid "CairoImporter::open(): Cannot open empty filename"
-msgstr ""
+msgstr "CairoImporter::open(): تعذر فتح ملف فارغ"
 
 #: ../src/synfig/cairoimporter.cpp:109
 msgid "CairoImporter::open(): Couldn't find extension"
-msgstr ""
+msgstr "CairoImporter::open(): تعذر إيجاد اللاحقة"
 
 #: ../src/synfig/cairoimporter.cpp:120
 msgid "CairoImporter::open(): Unknown file type -- "
-msgstr ""
+msgstr "CairoImporter::open(): نوع ملف مجهول -- "
 
 #: ../src/synfig/cairolistimporter.cpp:167
 #: ../src/synfig/cairolistimporter.cpp:168 ../src/synfig/listimporter.cpp:172
 #: ../src/synfig/listimporter.cpp:173
 msgid "No images in list"
-msgstr ""
+msgstr "لا صور في القائمة"
 
 #: ../src/synfig/canvas.cpp:951 ../src/synfig/canvas.cpp:1018
 #: ../src/synfig/canvas.cpp:1037
 msgid "in line"
-msgstr ""
+msgstr "في السطر"
 
 #: ../src/synfig/distance.cpp:249
 msgid "Units"
-msgstr ""
+msgstr "الوحدات"
 
 #: ../src/synfig/distance.cpp:250
 msgid "Pixels"
-msgstr ""
+msgstr "بكسلات"
 
 #: ../src/synfig/distance.cpp:252
 msgid "Inches"
-msgstr ""
+msgstr "بوصات"
 
 #: ../src/synfig/distance.cpp:253
 msgid "Meters"
-msgstr ""
+msgstr "أمتار"
 
 #: ../src/synfig/distance.cpp:254
 msgid "Millimeters"
-msgstr ""
+msgstr "مليمترات"
 
 #: ../src/synfig/distance.cpp:255
 msgid "Centimeters"
-msgstr ""
+msgstr "سنتيمتر (سم)"
 
 #: ../src/synfig/importer.cpp:100
 msgid "Importer::open(): Cannot open empty filename"
-msgstr ""
+msgstr "Importer::open(): تعذر فتح ملف فارغ"
 
 #: ../src/synfig/importer.cpp:114
 msgid "Importer::open(): Couldn't find extension"
-msgstr ""
+msgstr "Importer::open(): تعذر إيجاد اللاحقة"
 
 #: ../src/synfig/importer.cpp:125
 msgid "Importer::open(): Unknown file type -- "
-msgstr ""
+msgstr "Importer::open(): نوع ملف مجهول -- "
 
 #: ../src/synfig/layer.cpp:850 ../src/synfig/layers/layer_composite.cpp:143
 msgid "Unable to create surface target"
-msgstr ""
+msgstr "تعذر إنشاء مسار السطح"
 
 #: ../src/synfig/layer.cpp:956
 msgid "Z Depth"
-msgstr ""
+msgstr "العمق Z"
 
 #: ../src/synfig/layer.cpp:958
 msgid "Modifies the position of the layer in the layer stack"
-msgstr ""
+msgstr "يعدّل موضع الطبقة في رصة الطبقات"
 
 #: ../src/synfig/layers/layer_bitmap.cpp:159
 msgid "Top-Left"
-msgstr ""
+msgstr "أعلى يسار"
 
 #: ../src/synfig/layers/layer_bitmap.cpp:160
 msgid "Upper left-hand Corner of image"
-msgstr ""
+msgstr "الزاوية العلوية اليسرى من الصورة"
 
 #: ../src/synfig/layers/layer_bitmap.cpp:164
 msgid "Bottom-Right"
-msgstr ""
+msgstr "أسفل اليمين"
 
 #: ../src/synfig/layers/layer_bitmap.cpp:165
 msgid "Lower right-hand Corner of image"
-msgstr ""
+msgstr "الزاوية العلوية اليمنى من الصورة"
 
 #: ../src/synfig/layers/layer_composite.cpp:181
 #: ../src/synfig/layers/layer_skeleton.cpp:139
@@ -2284,873 +2284,873 @@ msgstr "الشفافية"
 #: ../src/synfig/layers/layer_composite.cpp:182
 #: ../src/synfig/layers/layer_skeleton.cpp:140
 msgid "Alpha channel of the layer"
-msgstr ""
+msgstr "قناة ألفا للطبقة"
 
 #: ../src/synfig/layers/layer_composite.cpp:185 ../src/synfig/paramdesc.cpp:72
 msgid "Blend Method"
-msgstr ""
+msgstr "طريقة المزج"
 
 #: ../src/synfig/layers/layer_composite.cpp:186
 msgid "The blending method used to composite on the layers below"
-msgstr ""
+msgstr "طريقة المرج المستعملة للتراكب على الطبقات السفلى"
 
 #: ../src/synfig/layers/layer_duplicate.cpp:62
 msgid "Duplicate"
-msgstr ""
+msgstr "مضاعفة"
 
 #: ../src/synfig/layers/layer_duplicate.cpp:144
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:157
 msgid "Index"
-msgstr ""
+msgstr "فهرس"
 
 #: ../src/synfig/layers/layer_duplicate.cpp:145
 msgid "Copy Index"
-msgstr ""
+msgstr "فهرس النسخ"
 
 #: ../src/synfig/layers/layer_filtergroup.cpp:62
 #: ../src/synfig/layers/layer_filtergroup.cpp:80
 msgid "Filter Group"
-msgstr ""
+msgstr "مجموعة مرشحات"
 
 #: ../src/synfig/layers/layer_group.cpp:65
 #: ../src/synfig/layers/layer_group.cpp:91
 msgid "Group"
-msgstr ""
+msgstr "مجموعة"
 
 #: ../src/synfig/layers/layer_group.cpp:100
 msgid "Z Range"
-msgstr ""
+msgstr "نطاق Z"
 
 #: ../src/synfig/layers/layer_group.cpp:101
 msgid "When checked, only layers inside range are visible"
-msgstr ""
+msgstr "حين تختارها، لا تكون مرئية إلا الطبقات في النطاق"
 
 #: ../src/synfig/layers/layer_group.cpp:105
 msgid "Z Range Position"
-msgstr ""
+msgstr "موضع نطاق Z"
 
 #: ../src/synfig/layers/layer_group.cpp:106
 msgid "Starting position where layers are visible"
-msgstr ""
+msgstr "موضع بداية الطبقات المرئية"
 
 #: ../src/synfig/layers/layer_group.cpp:109
 msgid "Z Range Depth"
-msgstr ""
+msgstr "عمق نطاق Z"
 
 #: ../src/synfig/layers/layer_group.cpp:110
 msgid "Depth where layers are visible in range"
-msgstr ""
+msgstr "العمق حيث الطبقات مرئية في النطاق"
 
 #: ../src/synfig/layers/layer_group.cpp:113
 msgid "Z Range Blur"
-msgstr ""
+msgstr "غشاوة نطاق Z"
 
 #: ../src/synfig/layers/layer_group.cpp:114
 msgid "Area where layers inside are partially visible"
-msgstr ""
+msgstr "المنطقة التي فيها الطبقات التي ستكون مرئية جزئيا"
 
 #: ../src/synfig/layers/layer_mime.cpp:87
 msgid "[MIME]"
-msgstr ""
+msgstr "[MIME]"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:62
 msgid "Motion Blur"
-msgstr ""
+msgstr "غشاوة حركية"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:127
 msgid "Aperture"
-msgstr ""
+msgstr "بؤرة"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:128
 msgid "Shutter Time"
-msgstr ""
+msgstr "وقت القفل"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:132
 msgid "Subsamples Factor"
-msgstr ""
+msgstr "معامل العينات الفرعية"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:133
 msgid "Multiplies The Number Of Subsamples Rendered"
-msgstr ""
+msgstr "يضاعف عدد العينات الفرعية للتصيير"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:137
 msgid "Subsampling Type"
-msgstr ""
+msgstr "نوع العينات الفرعية"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:138
 msgid "Curve Type For Weighting Subsamples"
-msgstr ""
+msgstr "نوع المنحنى لوزن العينات الفرعية"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:140
 #: ../src/synfig/valuenodes/valuenode_const.cpp:170
 msgid "Constant"
-msgstr ""
+msgstr "ثابت"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:142
 msgid "Hyperbolic"
-msgstr ""
+msgstr "إهليليجي"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:146
 msgid "Subsample Start Amount"
-msgstr ""
+msgstr "مقدار بداية العينات الفرعية"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:147
 msgid "Relative Amount Of The First Subsample, For Linear Weighting"
-msgstr ""
+msgstr "مقدار نسبي لأول عينة فرعية للوزن الخطي"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:151
 msgid "Subsample End Amount"
-msgstr ""
+msgstr "مقدار النهاية للعينة الفرعية"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:152
 msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
-msgstr ""
+msgstr "مقدار نسبي لآخر عينة فرعية للوزن الخطي"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:134
 msgid "Position offset"
-msgstr ""
+msgstr "إزاحة الموضع"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:138
 msgid "Transformation"
-msgstr ""
+msgstr "تحويل"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:139
 msgid "Position, rotation, skew and scale"
-msgstr ""
+msgstr "الموقف والدوران، والانحراف والقياس"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:143
 msgid "Canvas"
-msgstr ""
+msgstr "الرقعة"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:144
 msgid "Group content"
-msgstr ""
+msgstr "محتوى المجموعة"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:149
 msgid "Multiplier to speed up, slow down, freeze, or reverse time"
-msgstr ""
+msgstr "معامل لتسريع الزمن، تبطيئه، توقيفه أو عكسه"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:154
 msgid "Time Offset to apply to the context"
-msgstr ""
+msgstr "إزاحة الزمن التي ستطبق على السياق"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:158
 msgid "Lock Selection"
-msgstr ""
+msgstr "اقفل التحديد"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:159
 msgid "When checked prevents to select the children using the mouse click"
-msgstr ""
+msgstr "حين تختارها، تمنع اختيار الأبناء بواسطة زر الفأرة"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:164
 msgid "Outline Grow"
-msgstr ""
+msgstr "نمو التخطيط"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:165
 msgid "Exponential value to grow children Outline layers width"
-msgstr ""
+msgstr "قيمة أسية لنمو عرض طبقات المخططات الفرعية"
 
 #: ../src/synfig/layers/layer_polygon.cpp:62
 msgid "Polygon"
-msgstr ""
+msgstr "مضلّع"
 
 #: ../src/synfig/layers/layer_polygon.cpp:159
 msgid "Vertices List"
-msgstr ""
+msgstr "قائمة القمم"
 
 #: ../src/synfig/layers/layer_polygon.cpp:160
 msgid "Define the corners of the polygon"
-msgstr ""
+msgstr "تحديد زوايا المضلّع"
 
 #: ../src/synfig/layers/layer_shape.cpp:73
 msgid "Shape"
-msgstr ""
+msgstr "شكل"
 
 #: ../src/synfig/layers/layer_shape.cpp:74
 msgid "Internal"
-msgstr ""
+msgstr "داخلي"
 
 #: ../src/synfig/layers/layer_shape.cpp:177
 msgid "Layer_Shape Color"
-msgstr ""
+msgstr "لون طبقة الشكل"
 
 #: ../src/synfig/layers/layer_shape.cpp:186
 msgid "Antialiasing"
-msgstr ""
+msgstr "تنعيم"
 
 #: ../src/synfig/layers/layer_shape.cpp:189
 msgid "Feather"
-msgstr ""
+msgstr "تغبيش الأطراف"
 
 #: ../src/synfig/layers/layer_shape.cpp:193
 msgid "Type of Feather"
-msgstr ""
+msgstr "نوع تغبيش الأطراف"
 
 #: ../src/synfig/layers/layer_shape.cpp:194
 msgid "Type of feathering to use"
-msgstr ""
+msgstr "نوع تغبيش الأطراف المستعمل"
 
 #: ../src/synfig/layers/layer_shape.cpp:203
 msgid "Winding Style"
-msgstr ""
+msgstr "نمط الالتواء"
 
 #: ../src/synfig/layers/layer_shape.cpp:204
 msgid "Winding style to use"
-msgstr ""
+msgstr "نمط الالتواء المستخدم"
 
 #: ../src/synfig/layers/layer_shape.cpp:206
 msgid "Non Zero"
-msgstr ""
+msgstr "غير معدوم"
 
 #: ../src/synfig/layers/layer_shape.cpp:207
 msgid "Even/Odd"
-msgstr ""
+msgstr "زوجي/فردي"
 
 #: ../src/synfig/layers/layer_skeleton.cpp:58
 msgid "Skeleton"
-msgstr ""
+msgstr "هيكل"
 
 #: ../src/synfig/layers/layer_skeleton.cpp:145
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:582
 msgid "Name"
-msgstr ""
+msgstr "اسم"
 
 #: ../src/synfig/layers/layer_skeleton.cpp:148
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:105
 msgid "Bones"
-msgstr ""
+msgstr "عظام"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:68
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:96
 msgid "Skeleton Deformation"
-msgstr ""
+msgstr "تشوّه الهيكل"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:106
 msgid "List of bones"
-msgstr ""
+msgstr "قائمة العظام"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:113
 msgid "First corner of the bounds rectangle"
-msgstr ""
+msgstr "أول زاوية من مستطيل الحدود"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:118
 msgid "Second corner of the bounds rectangle"
-msgstr ""
+msgstr "ثاني زاوية من مستطيل الحدود"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:122
 msgid "Horizontal subdivisions"
-msgstr ""
+msgstr "تفريعات أفقية"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:123
 msgid "Count of horizontal subdivisions of the transformation grid"
-msgstr ""
+msgstr "عدد التفريعات الأفقية من شبكة التحويل"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:127
 msgid "Vertical subdivisions"
-msgstr ""
+msgstr "التفريعات العمودية"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:128
 msgid "Count of vertical subdivisions of the transformation grid"
-msgstr ""
+msgstr "عدد التفريعات العمودية من شبكة التحويل"
 
 #: ../src/synfig/layers/layer_solidcolor.cpp:62
 msgid "Solid Color"
-msgstr ""
+msgstr "لون صلب"
 
 #: ../src/synfig/layers/layer_solidcolor.cpp:121
 msgid "Fill color of the layer"
-msgstr ""
+msgstr "لون تعبئة الطبقة"
 
 #: ../src/synfig/layers/layer_sound.cpp:59
 msgid "Sound"
-msgstr ""
+msgstr "صوت"
 
 #: ../src/synfig/layers/layer_sound.cpp:110
 msgid "Path to sound file"
-msgstr ""
+msgstr "المسار إلى ملف الصوت"
 
 #: ../src/synfig/layers/layer_sound.cpp:116
 msgid "Delay"
-msgstr ""
+msgstr "مهلة"
 
 #: ../src/synfig/layers/layer_sound.cpp:117
 msgid "Delay before play"
-msgstr ""
+msgstr "مهلة قبل التشغيل"
 
 #: ../src/synfig/layers/layer_sound.cpp:122
 msgid "Volume"
-msgstr ""
+msgstr "شدّة الصوت"
 
 #: ../src/synfig/layers/layer_sound.cpp:123
 msgid "Volume of sound"
-msgstr ""
+msgstr "شدّة الصوت"
 
 #: ../src/synfig/layers/layer_switch.cpp:63
 #: ../src/synfig/layers/layer_switch.cpp:88
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:157
 msgid "Switch"
-msgstr ""
+msgstr "تبديل"
 
 #: ../src/synfig/layers/layer_switch.cpp:97
 msgid "Active Layer Name"
-msgstr ""
+msgstr "اسم الطبقة النشطة"
 
 #: ../src/synfig/layers/layer_switch.cpp:98
 msgid "Only layer with specified name are visible"
-msgstr ""
+msgstr "الطبقة ذات الاسم المحدد هي المرئية فقط"
 
 #: ../src/synfig/layers/layer_switch.cpp:103
 msgid "Active Layer Depth"
-msgstr ""
+msgstr "عمق الطبقة النشطة"
 
 #: ../src/synfig/layers/layer_switch.cpp:104
 msgid ""
 "Used when layer name is empty. Only layer with specified depth is visible"
-msgstr ""
+msgstr "تستعمل حين لا يكون للطبقة اسم، فتظهر فقط الطبقة ذات العمق المعين"
 
 #: ../src/synfig/loadcanvas.cpp:138
 #, c-format
 msgid "Cannot find canvas for delete '%s'"
-msgstr ""
+msgstr "تعذر إيجاد الرقعة لحذف '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:165
 #, c-format
 msgid "cannot load '%s' recursively"
-msgstr ""
+msgstr "تعذّر تحميل '%s' تراجعيا"
 
 #: ../src/synfig/loadcanvas.cpp:209
 #, c-format
 msgid "Unexpected element <%s>, Expected <%s>"
-msgstr ""
+msgstr "عنصر غير متوقع  <%s>، ننتظر <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:215
 #, c-format
 msgid "Unexpected element <%s>"
-msgstr ""
+msgstr "عنصر غير متوقع <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:229
 msgid "Too many warnings"
-msgstr ""
+msgstr "تنبيهات كثيرة جدا"
 
 #: ../src/synfig/loadcanvas.cpp:260
 #, c-format
 msgid "<%s> is missing \"%s\" attribute"
-msgstr ""
+msgstr "<%s> يفتقد إلى خاصية\"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:290 ../src/synfig/loadcanvas.cpp:309
 #: ../src/synfig/loadcanvas.cpp:328 ../src/synfig/loadcanvas.cpp:347
 #: ../src/synfig/loadcanvas.cpp:506 ../src/synfig/loadcanvas.cpp:1285
 #, c-format
 msgid "<%s> should not contain anything"
-msgstr ""
+msgstr "<%s> ينبغي أن لا تحتوي على أي شيء"
 
 #: ../src/synfig/loadcanvas.cpp:294 ../src/synfig/loadcanvas.cpp:313
 #: ../src/synfig/loadcanvas.cpp:332 ../src/synfig/loadcanvas.cpp:351
 #: ../src/synfig/loadcanvas.cpp:510 ../src/synfig/loadcanvas.cpp:1289
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
-msgstr ""
+msgstr "<%s>  يفتقد إلى خاصية\"القيمة\""
 
 #: ../src/synfig/loadcanvas.cpp:521 ../src/synfig/loadcanvas.cpp:1474
 #: ../src/synfig/loadcanvas.cpp:1492
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
-msgstr ""
+msgstr "قيمة سيئة \"%s\" في <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:545
 #, c-format
 msgid "<%s> is missing \"pos\" attribute"
-msgstr ""
+msgstr "<%s>  يفتقد إلى خاصية\"موضع\""
 
 #: ../src/synfig/loadcanvas.cpp:1685
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
-msgstr ""
+msgstr "تعذر إنشاء <animated> بالنوع \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:1707
 msgid "<waypoint> is missing attribute \"time\""
-msgstr ""
+msgstr "<waypoint> يفتقد خاصية \"الزمن\""
 
 #: ../src/synfig/loadcanvas.cpp:1720
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr ""
+msgstr "وُجدت خاصية \"استعمال\" لـ <waypoint>، لكنها ليست فارغة. تجاهل المحتويات..."
 
 #: ../src/synfig/loadcanvas.cpp:1736
 #, c-format
 msgid "Unknown ID (%s) referenced in waypoint"
-msgstr ""
+msgstr "معرف مجهول (%s) مذكور في نقطة اتجاه"
 
 #: ../src/synfig/loadcanvas.cpp:1742 ../src/synfig/loadcanvas.cpp:1754
 #, c-format
 msgid "<%s> is missing its data"
-msgstr ""
+msgstr "<%s> يفتقد بياناته"
 
 #: ../src/synfig/loadcanvas.cpp:1771
 msgid "Bad data for <waypoint>"
-msgstr ""
+msgstr "بيانات سيئة لـ <waypoint>"
 
 #: ../src/synfig/loadcanvas.cpp:1787
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
-msgstr ""
+msgstr "عنصر غير متوقع <%s> بعد بيانات <waypoint>, تجاهل..."
 
 #: ../src/synfig/loadcanvas.cpp:1888
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
-msgstr ""
+msgstr "خاصية \"نوع\" مفقودة في <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:1896
 #, c-format
 msgid "Bad type in <%s>"
-msgstr ""
+msgstr "نوع سيئ في <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:1908
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
-msgstr ""
+msgstr "خطأ في |نشاء  ValueNode <%s> حسب النوع  '%s'.  انظر '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:1918
 #, c-format
 msgid "<%s> did not accept type '%s'"
-msgstr ""
+msgstr "<%s> لا تقبل النوع '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:1950 ../src/synfig/loadcanvas.cpp:2037
 #, c-format
 msgid "'%s' was already defined in <%s>"
-msgstr ""
+msgstr "'%s' معرّف مسبقا في <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:1963
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
-msgstr ""
+msgstr "الخاصية'%s' في <%s> تشير إلى معّرف مجهول '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:1981
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
-msgstr ""
+msgstr "تعذر ربط '\"%s\" إلى ValueNode \"%s\" (رابط #%d في \"%s\")"
 
 #: ../src/synfig/loadcanvas.cpp:2005
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
-msgstr ""
+msgstr "استثناء مجهول أثناء الإشارة إلى ValueNode \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:2052
 #, c-format
 msgid "element <%s> is missing its contents"
-msgstr ""
+msgstr "العنصر  <%s> يفتقد محتوياته"
 
 #: ../src/synfig/loadcanvas.cpp:2061
 #, c-format
 msgid "Parse of '%s' failed"
-msgstr ""
+msgstr "تعذرت قراءة '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:2077
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
-msgstr ""
+msgstr "تعذر وصل نقطة قيمة ('%s' من نوع '%s') بالرابط %d (%s)"
 
 #: ../src/synfig/loadcanvas.cpp:2095
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
-msgstr ""
+msgstr "استثناء مجهول أثناء العمل على العنصر \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:2196
 #, c-format
 msgid "<%s> is missing link %d (%s)"
-msgstr ""
+msgstr "<%s> تفتقد الرابط %d (%s)"
 
 #: ../src/synfig/loadcanvas.cpp:2246
 msgid "Unable to create <list>"
-msgstr ""
+msgstr "تعذر إنشاء <list>"
 
 #: ../src/synfig/loadcanvas.cpp:2288 ../src/synfig/loadcanvas.cpp:2551
 msgid "<entry> is missing its contents or missing \"use\" element"
-msgstr ""
+msgstr "<entry> يفقتد محتوياته أو عنصر \"use\""
 
 #: ../src/synfig/loadcanvas.cpp:2399
 msgid "Unable to create <dynamic_list>"
-msgstr ""
+msgstr "تعذر إنشاء <dynamic_list>"
 
 #: ../src/synfig/loadcanvas.cpp:2621
 #, c-format
 msgid "Bad data in <%s>"
-msgstr ""
+msgstr "بيانات سيئة في <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:2687
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
-msgstr ""
+msgstr "ValueNode متوقعة.  انظر '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:2708
 #, c-format
 msgid "Bad ID \"%s\""
-msgstr ""
+msgstr "معرّف سيئ \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:2714
 #, c-format
 msgid "Duplicate ID \"%s\""
-msgstr ""
+msgstr "معّرف مكرّر\"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:2720
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
-msgstr ""
+msgstr "استثناء مجهول أثناء إضافة إلى ValueNode \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:2777
 msgid "Missing \"type\" attribute to \"layer\" element"
-msgstr ""
+msgstr "خاصية \"نوع\" مفقودة من عنصر \"طبقة\""
 
 #: ../src/synfig/loadcanvas.cpp:2798
 msgid "Installed layer version is smaller than layer version in file"
-msgstr ""
+msgstr "إصدار الطبقة المثبتة أصغر من إصدار الطبقة في الملف"
 
 #: ../src/synfig/loadcanvas.cpp:2847
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
-msgstr ""
+msgstr "مدخل <name> للـ <layer> غير مدعومة. تجاهل..."
 
 #: ../src/synfig/loadcanvas.cpp:2850
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
-msgstr ""
+msgstr "مدخل <desc> لـ <layer> غير مدعوم. تجاهل..."
 
 #: ../src/synfig/loadcanvas.cpp:2858
 msgid "Missing \"name\" attribute for <param>."
-msgstr ""
+msgstr "فقدان خاصية \"الاسم\" لـ <param>."
 
 #: ../src/synfig/loadcanvas.cpp:2875
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr ""
+msgstr "وُجدت خاصية \"استعمال\" لـ <param>، لكنها ليست فارغة. تجاهل المحتويات..."
 
 #: ../src/synfig/loadcanvas.cpp:2880
 msgid "Empty use=\"\" value in <param>"
-msgstr ""
+msgstr "قيمة use=\"\" فارغة في <param>"
 
 #: ../src/synfig/loadcanvas.cpp:2886
 #, c-format
 msgid "Failed to load subcanvas '%s'"
-msgstr ""
+msgstr "تعذر تحميل الرقعة الفرعية '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:2888
 msgid "Layer rejected canvas link"
-msgstr ""
+msgstr "الطبقة ترفض ارتباط الرقعة"
 
 #: ../src/synfig/loadcanvas.cpp:2941
 #, c-format
 msgid "Unknown ID (%s) referenced in parameter \"%s\""
-msgstr ""
+msgstr "معرف مجهول (%s) مذكور في معامل \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:2957
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
-msgstr ""
+msgstr "<param> يفتقد محتوياته، أو خاصية \"use\"."
 
 #: ../src/synfig/loadcanvas.cpp:2972 ../src/synfig/loadcanvas.cpp:2982
 msgid "Bad data for <param>"
-msgstr ""
+msgstr "بيانات سيئة لـ<param>"
 
 #: ../src/synfig/loadcanvas.cpp:3047
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
-msgstr ""
+msgstr "الطبقة '%s' ترفض قيمة المعامل '%s'"
 
 #: ../src/synfig/loadcanvas.cpp:3058
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
-msgstr ""
+msgstr "عنصر غير متوقع <%s> بعد بيانات <param>، تجاهل..."
 
 #: ../src/synfig/loadcanvas.cpp:3213 ../src/synfig/loadcanvas.cpp:3221
 msgid "Canvas with width or height less than one is not allowed"
-msgstr ""
+msgstr "رقعة مع عرض أو ارتفاع أقل من واحد غير مسموح"
 
 #: ../src/synfig/loadcanvas.cpp:3330
 msgid "Group canvases cannot have a <defs> section"
-msgstr ""
+msgstr "مجموعة رقع لا يمكنه أن تملك قسم <defs>"
 
 #: ../src/synfig/loadcanvas.cpp:3337
 msgid "Inline canvas cannot have a <bones> section"
-msgstr ""
+msgstr "الرقعة الداخلية لا يمكنها أن تملك قسم <bones>"
 
 #: ../src/synfig/loadcanvas.cpp:3345
 msgid "Group canvases cannot have keyframes"
-msgstr ""
+msgstr "لا يمكن أن تحتوي لوحات المجموعة على إطارات مفتاحية"
 
 #: ../src/synfig/loadcanvas.cpp:3357
 msgid "Group canvases cannot have metadata"
-msgstr ""
+msgstr "لا يمكن أن تحتوي لوحات المجموعة على بيانات فوقية"
 
 #: ../src/synfig/loadcanvas.cpp:3363
 msgid "<meta> must have a name"
-msgstr ""
+msgstr "<meta> تتطلب اسما"
 
 #: ../src/synfig/loadcanvas.cpp:3369
 msgid "<meta> must have content"
-msgstr ""
+msgstr "<meta> تتطلب محتوى"
 
 #: ../src/synfig/loadcanvas.cpp:3409
 msgid "blank \"name\" entity"
-msgstr ""
+msgstr "كائن \"الاسم\" فارغ"
 
 #: ../src/synfig/loadcanvas.cpp:3424
 msgid "blank \"desc\" entity"
-msgstr ""
+msgstr "كائن \"الوصف\" فارغ"
 
 #: ../src/synfig/loadcanvas.cpp:3439
 msgid "blank \"author\" entity"
-msgstr ""
+msgstr "كائن \"المؤلف\" فارغ"
 
 #: ../src/synfig/loadcanvas.cpp:3474
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
-msgstr ""
+msgstr "الرقعة '%s' لديها %s مجهولة: %s"
 
 #: ../src/synfig/loadcanvas.cpp:3476 ../src/synfig/valuenode.cpp:186
 msgid "ValueNode"
-msgstr ""
+msgstr "ValueNode"
 
 #: ../src/synfig/loadcanvas.cpp:3476
 msgid "ValueNodes"
-msgstr ""
+msgstr "ValueNodes"
 
 #: ../src/synfig/loadcanvas.cpp:3556
 msgid "Can't find linked file"
-msgstr ""
+msgstr "تعذر إيجاد الملف الموصول"
 
 #: ../src/synfig/loadcanvas.cpp:3567 ../src/synfig/loadcanvas.cpp:3623
 msgid "Can't open file"
-msgstr ""
+msgstr "تعذر فتح الملف"
 
 #: ../src/synfig/main.cpp:142
 #, c-format
 msgid "API Version mismatch (LIB:%zu, PROG:%zu)"
-msgstr ""
+msgstr "اختلاف إصدار API (LIB:%zu، PROG:%zu)"
 
 #: ../src/synfig/main.cpp:147
 #, c-format
 msgid "Size of Vector mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "اختلاف حجم الشعاع (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:152
 #, c-format
 msgid "Size of Color mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "اختلاف حجم اللون (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:157
 #, c-format
 msgid "Size of Canvas mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "اختلاف حجم الرقعة (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:162
 #, c-format
 msgid "Size of Layer mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "اختلاف حجم الطبقة (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:244
 msgid "Starting Subsystem \"Sound\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"صوت\""
 
 #: ../src/synfig/main.cpp:246
 msgid "Unable to initialize subsystem \"Sound\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"صوت\""
 
 #: ../src/synfig/main.cpp:248
 msgid "Starting Subsystem \"Types\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"أنواع\""
 
 #: ../src/synfig/main.cpp:252
 msgid "Unable to initialize subsystem \"Types\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"أنواع\""
 
 #: ../src/synfig/main.cpp:255
 msgid "Starting Subsystem \"Rendering\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"تصيير\""
 
 #: ../src/synfig/main.cpp:260
 msgid "Unable to initialize subsystem \"Rendering\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"تصيير\""
 
 #: ../src/synfig/main.cpp:263
 msgid "Starting Subsystem \"Modules\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"وحدات\""
 
 #: ../src/synfig/main.cpp:269
 msgid "Unable to initialize subsystem \"Modules\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"وحدات\""
 
 #: ../src/synfig/main.cpp:272
 msgid "Starting Subsystem \"Layers\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"طبقات\""
 
 #: ../src/synfig/main.cpp:279
 msgid "Unable to initialize subsystem \"Layers\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"طبقات\""
 
 #: ../src/synfig/main.cpp:282
 msgid "Starting Subsystem \"Targets\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"مسارات\""
 
 #: ../src/synfig/main.cpp:290
 msgid "Unable to initialize subsystem \"Targets\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"مسارات\""
 
 #: ../src/synfig/main.cpp:293
 msgid "Starting Subsystem \"Importers\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"مستورِدات\""
 
 #: ../src/synfig/main.cpp:302
 msgid "Unable to initialize subsystem \"Importers\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"مستورِدات\""
 
 #: ../src/synfig/main.cpp:305
 msgid "Starting Subsystem \"Cairo Importers\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"مستورِدات كايرو\""
 
 #: ../src/synfig/main.cpp:315
 msgid "Unable to initialize subsystem \"Cairo Importers\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"مستورِدات كايرو\""
 
 #: ../src/synfig/main.cpp:318
 msgid "Starting Subsystem \"Thread Pool\""
-msgstr ""
+msgstr "إطلاق النظام الفرعي \"حوض الخيوط\""
 
 #: ../src/synfig/main.cpp:320
 msgid "Unable to initialize subsystem \"Thread Pool\""
-msgstr ""
+msgstr "تعذر إطلاق النظام الفرعي \"حوض الخيوط\""
 
 #: ../src/synfig/main.cpp:356 ../src/synfig/main.cpp:357
 #, c-format
 msgid "Loading modules from %s"
-msgstr ""
+msgstr "تحميل الوحدات المنمطة من %s"
 
 #: ../src/synfig/main.cpp:380 ../src/tool/renderprogress.cpp:94
 msgid "DONE"
-msgstr ""
+msgstr "تمام"
 
 #: ../src/synfig/main.cpp:456 ../src/tool/progress.h:48
 #: ../src/tool/renderprogress.cpp:41
 msgid "error"
-msgstr ""
+msgstr "خطأ"
 
 #: ../src/synfig/main.cpp:473 ../src/tool/progress.h:55
 #: ../src/tool/renderprogress.cpp:47
 msgid "warning"
-msgstr ""
+msgstr "تنبيه"
 
 #: ../src/synfig/main.cpp:493
 msgid "info"
-msgstr ""
+msgstr "معلومات"
 
 #: ../src/synfig/module.cpp:69
 msgid "Errors on lt_dlinit()"
-msgstr ""
+msgstr "أخطاء في lt_dlinit()"
 
 #: ../src/synfig/module.cpp:107
 #, c-format
 msgid "Unable to load module '%s'"
-msgstr ""
+msgstr "تعذر تحميل الوحدة النمطية '%s'"
 
 #: ../src/synfig/module.cpp:135
 #, c-format
 msgid "Attempting to register \"%s\""
-msgstr ""
+msgstr "محاولة تسجيل \"%s\""
 
 #: ../src/synfig/module.cpp:143
 #, c-format
 msgid "Unable to find module \"%s\" (%s)"
-msgstr ""
+msgstr "تعذر إيجاد الوحدة النمطية \"%s\" (%s)"
 
 #: ../src/synfig/module.cpp:147
 #, c-format
 msgid "Found module \"%s\""
-msgstr ""
+msgstr "وُجدت الوحدة النمطية \"%s\""
 
 #: ../src/synfig/module.cpp:181
 #, c-format
 msgid "Unable to find entrypoint in module \"%s\" (%s)"
-msgstr ""
+msgstr "تعذر إيجاد نقطة الدخول للوحدة النمطية \"%s\" (%s)"
 
 #: ../src/synfig/module.cpp:194
 msgid "Entrypoint did not return a module."
-msgstr ""
+msgstr "نقطة الدخول لا تعطي وحدة نمطية."
 
 #: ../src/synfig/module.cpp:198
 #, c-format
 msgid "Success for \"%s\""
-msgstr ""
+msgstr "نجاح \"%s\""
 
 #: ../src/synfig/palette.cpp:79
 msgid "Unnamed"
-msgstr ""
+msgstr "غير مسمى1"
 
 #: ../src/synfig/palette.cpp:96
 msgid "Surface Palette"
-msgstr ""
+msgstr "مجموعة الألوان"
 
 #: ../src/synfig/palette.cpp:293
 #, c-format
 msgid "%0.2f%% Gray"
-msgstr ""
+msgstr "%0.2f%% رمادي"
 
 #: ../src/synfig/palette.cpp:306
 #, c-format
 msgid "Unable to open %s for write"
-msgstr ""
+msgstr "تعذر فتح %s للكتابة"
 
 #: ../src/synfig/palette.cpp:328
 #, c-format
 msgid "Unable to open %s for read"
-msgstr ""
+msgstr "تعذر فتح %s للقراءة"
 
 #: ../src/synfig/palette.cpp:340 ../src/synfig/palette.cpp:382
 #, c-format
 msgid "%s does not appear to be a valid %s palette file"
-msgstr ""
+msgstr "%s لا تبدو %s ملف لوح تلوين صالح"
 
 #: ../src/synfig/palette.cpp:433
 #, c-format
 msgid "%s does not appear to be a supported palette file"
-msgstr ""
+msgstr "%s لا تبدو ملف لوح تلوين مدعوم"
 
 #: ../src/synfig/paramdesc.cpp:74
 msgid "Composite"
-msgstr ""
+msgstr "مركّب"
 
 #: ../src/synfig/paramdesc.cpp:75
 msgid "Straight"
-msgstr ""
+msgstr "مستقيم"
 
 #: ../src/synfig/paramdesc.cpp:76
 msgid "Onto"
-msgstr ""
+msgstr "إلى"
 
 #: ../src/synfig/paramdesc.cpp:77
 msgid "Straight Onto"
-msgstr ""
+msgstr "مباشرة إلى"
 
 #: ../src/synfig/paramdesc.cpp:78
 msgid "Behind"
-msgstr ""
+msgstr "خلف"
 
 #: ../src/synfig/paramdesc.cpp:79
 msgid "Screen"
-msgstr ""
+msgstr "شاشة"
 
 #: ../src/synfig/paramdesc.cpp:80
 msgid "Overlay"
-msgstr ""
+msgstr "تغطية"
 
 #: ../src/synfig/paramdesc.cpp:81
 msgid "Hard Light"
-msgstr ""
+msgstr "ضوء ساطع"
 
 #: ../src/synfig/paramdesc.cpp:82
 msgid "Multiply"
-msgstr ""
+msgstr "ضرب"
 
 #: ../src/synfig/paramdesc.cpp:83
 msgid "Divide"
-msgstr ""
+msgstr "قسمة"
 
 #: ../src/synfig/paramdesc.cpp:84
 msgid "Add"
@@ -3158,122 +3158,122 @@ msgstr "إضافة"
 
 #: ../src/synfig/paramdesc.cpp:85
 msgid "Subtract"
-msgstr ""
+msgstr "طرح"
 
 #: ../src/synfig/paramdesc.cpp:86
 msgid "Difference"
-msgstr ""
+msgstr "فرق"
 
 #: ../src/synfig/paramdesc.cpp:87
 msgid "Brighten"
-msgstr ""
+msgstr "السطوع"
 
 #: ../src/synfig/paramdesc.cpp:88
 msgid "Darken"
-msgstr ""
+msgstr "تعتيم"
 
 #: ../src/synfig/paramdesc.cpp:90
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:255
 msgid "Hue"
-msgstr ""
+msgstr "درجة الطيف"
 
 #: ../src/synfig/paramdesc.cpp:91
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:252
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:258
 msgid "Saturation"
-msgstr ""
+msgstr "تشبع"
 
 #: ../src/synfig/paramdesc.cpp:92
 msgid "Luminance"
-msgstr ""
+msgstr "الإضاءة"
 
 #: ../src/synfig/paramdesc.cpp:93
 msgid "Alpha Over"
-msgstr ""
+msgstr "ألفا"
 
 #: ../src/synfig/paramdesc.cpp:94
 msgid "Alpha Brighten"
-msgstr ""
+msgstr "سطوع ألفا"
 
 #: ../src/synfig/paramdesc.cpp:95
 msgid "Alpha Darken"
-msgstr ""
+msgstr "قتامة ألفا"
 
 #: ../src/synfig/render.cpp:248 ../src/synfig/render.cpp:249
 #: ../src/synfig/render.cpp:303 ../src/synfig/render.cpp:304
 msgid "Target panic"
-msgstr ""
+msgstr "مشكلة في المسار"
 
 #: ../src/synfig/rendering/opengl/renderergl.cpp:65
 msgid "Cobra (hardware)"
-msgstr ""
+msgstr "عتاد (كوبرا)"
 
 #: ../src/synfig/rendering/software/rendererdraftsw.cpp:106
 msgid "Cobra Draft (software)"
-msgstr ""
+msgstr "مسودة كوبرا (برنامج)"
 
 #: ../src/synfig/rendering/software/rendererlowressw.cpp:81
 msgid "Cobra LowRes (software)"
-msgstr ""
+msgstr "موارد ضعيفة لكوبرا (برنامج)"
 
 #: ../src/synfig/rendering/software/renderersafe.cpp:58
 msgid "Cobra (safe) - very slow"
-msgstr ""
+msgstr "كوبرا (آمنة) - بطيئ جدا"
 
 #: ../src/synfig/rendering/software/renderersw.cpp:79
 msgid "Cobra (software)"
-msgstr ""
+msgstr "كوبرا (برنامج)"
 
 #: ../src/synfig/rendering/software/rendererpreviewsw.cpp:80
 msgid "Cobra Preview (software)"
-msgstr ""
+msgstr "معاينة كوبرا (برنامج)"
 
 #: ../src/synfig/savecanvas.cpp:438
 #, c-format
 msgid "Unknown value(%s), cannot create XML representation!"
-msgstr ""
+msgstr "قيمة مجهولة(%s)، تعذر إنشاء تمثيل XML!"
 
 #: ../src/synfig/savecanvas.cpp:751 ../src/synfig/savecanvas.cpp:776
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
-msgstr ""
+msgstr "نوع نقطة قيمة مجهولة(%s)، تعذر إنشاء تمثيل XML"
 
 #: ../src/synfig/target_cairo.cpp:95 ../src/synfig/target_cairo_tile.cpp:198
 #: ../src/synfig/target_scanline.cpp:139 ../src/synfig/target_tile.cpp:310
 msgid "Target initialization failure"
-msgstr ""
+msgstr "فشل تهيئة المسار"
 
 #: ../src/synfig/target_cairo.cpp:159
 msgid "Frame Renderer Failure"
-msgstr ""
+msgstr "فشل مصيّر الإطار"
 
 #: ../src/synfig/target_cairo.cpp:169 ../src/synfig/target_scanline.cpp:302
 #: ../src/synfig/target_scanline.cpp:454
 msgid "Unable to put surface on target"
-msgstr ""
+msgstr "تعذر وضع السطح في المسار"
 
 #: ../src/synfig/target_cairo.cpp:177
 msgid "Not supported render method"
-msgstr ""
+msgstr "طريقة التصيير غير مدعومة"
 
 #: ../src/synfig/target_cairo.cpp:184 ../src/synfig/target_cairo_tile.cpp:264
 #: ../src/synfig/target_scanline.cpp:466 ../src/synfig/target_tile.cpp:373
 msgid "Caught string: "
-msgstr ""
+msgstr "النص المسترجع:"
 
 #: ../src/synfig/target_cairo.cpp:189 ../src/synfig/target_cairo_tile.cpp:269
 #: ../src/synfig/target_scanline.cpp:471 ../src/synfig/target_tile.cpp:378
 msgid "Ran out of memory (Probably a bug)"
-msgstr ""
+msgstr "ذاكرة غير كافية (احتمال علة)"
 
 #: ../src/synfig/target_cairo.cpp:194 ../src/synfig/target_cairo_tile.cpp:274
 #: ../src/synfig/target_scanline.cpp:476 ../src/synfig/target_tile.cpp:383
 msgid "Caught unknown error, rethrowing..."
-msgstr ""
+msgstr "خطأ مجهول، تصحيح..."
 
 #: ../src/synfig/target_cairo_tile.cpp:108
 msgid "Bad Tile Size"
-msgstr ""
+msgstr "حجم إطار سيئ"
 
 #: ../src/synfig/target_cairo_tile.cpp:152
 #: ../src/synfig/target_cairo_tile.cpp:256
@@ -3281,66 +3281,66 @@ msgstr ""
 #: ../src/synfig/target_scanline.cpp:366 ../src/synfig/target_scanline.cpp:438
 #: ../src/synfig/target_tile.cpp:240
 msgid "Accelerated Renderer Failure"
-msgstr ""
+msgstr "فشل المصيّر المسرّع"
 
 #: ../src/synfig/target_cairo_tile.cpp:161
 #, c-format
 msgid "Bad surface: %s"
-msgstr ""
+msgstr "سطح سيئ: %s"
 
 #: ../src/synfig/target_cairo_tile.cpp:168 ../src/synfig/target_tile.cpp:279
 msgid "add_tile(): Unable to put surface on target"
-msgstr ""
+msgstr "add_tile(): تعذر وضع السطح على المسار"
 
 #: ../src/synfig/target_cairo_tile.cpp:226
 msgid "Can't start frame"
-msgstr ""
+msgstr "تعذّر بدء الإطار"
 
 #: ../src/synfig/target_scanline.cpp:224
 msgid "Accelerated Renderer Failure: cannot read surface"
-msgstr ""
+msgstr "فشل المصيّر المسرّع: تعذرت قراءة السطح"
 
 #: ../src/synfig/target_scanline.cpp:294 ../src/synfig/target_scanline.cpp:374
 #: ../src/synfig/target_scanline.cpp:446 ../src/synfig/target_tile.cpp:248
 msgid "Bad surface"
-msgstr ""
+msgstr "سطح سيئ"
 
 #: ../src/synfig/time.cpp:104
 #, c-format
 msgid "Time(): No unit provided in time code, assuming FRAMES (\"%s\")"
-msgstr ""
+msgstr "Time(): لم تحدد وحدة الزمن، يفترض أنها إطارات (\"%s\")"
 
 #: ../src/synfig/time.cpp:109
 msgid ""
 "Time(): No unit provided in time code and frame rate is unknown! Assuming "
 "SECONDS"
-msgstr ""
+msgstr "Time(): لم تحدد وحدة الزمن ولا نسبة الإطارات! يفترض أنها ثوان"
 
 #: ../src/synfig/time.cpp:198
 msgid "Translating Time to unknown format (not implemented)"
-msgstr ""
+msgstr "ترجمة الوقت إلى صيغة مجهولة (غير مبرمج)"
 
 #: ../src/synfig/token.cpp:110
 msgid "Loop in hierarchy of tokens detected"
-msgstr ""
+msgstr "تكرار هرمي للكائنات المكتشفة"
 
 #: ../src/synfig/token.cpp:132
 msgid "Loop detected while tokens preparing"
-msgstr ""
+msgstr "تم اكتشاف تكرار في تحضير الكائنات"
 
 #: ../src/synfig/valuenode.cpp:509
 msgid "Placeholder"
-msgstr ""
+msgstr "نائب"
 
 #: ../src/synfig/valuenode.h:63
 #, c-format
 msgid "%s:%d wrong type for %s: need %s but got %s"
-msgstr ""
+msgstr "%s:%d نوع خاطئ لـ %s: يحتاج إلى %s لكن حصلت على %s"
 
 #: ../src/synfig/valuenode_registry.cpp:79
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
-msgstr ""
+msgstr "نوع سيئ: ValueNode '%s' لا تقبل '%s'"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:120
 #: ../src/synfig/valuenodes/valuenode_average.cpp:67
@@ -3358,95 +3358,95 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_weightedaverage.cpp:68
 #: ../src/synfig/valuenodes/valuenode_weightedaverage.cpp:78
 msgid ":Bad type "
-msgstr ""
+msgstr ":نوع سيئ "
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:148
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:124
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:149
 msgid "One or both of my parameters aren't set!"
-msgstr ""
+msgstr "بعض إعداداتي ليست مضبوطة!"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:234
 msgid "Left Hand Side of the add"
-msgstr ""
+msgstr "الجانب الأيسر للمضاف"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:238
 msgid "Addition"
-msgstr ""
+msgstr "إضافة"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:239
 msgid "Right Hand Side of the add"
-msgstr ""
+msgstr "الجانب الأيمن للمضاف"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:243
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:248
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:231
 msgid "Scalar"
-msgstr ""
+msgstr "عددي"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:244
 msgid "Value that multiplies the add"
-msgstr ""
+msgstr "القيمة التي تُضرب في المضاف"
 
 #: ../src/synfig/valuenodes/valuenode_and.cpp:141
 #: ../src/synfig/valuenodes/valuenode_or.cpp:141
 msgid "Link1"
-msgstr ""
+msgstr "رابط1"
 
 #: ../src/synfig/valuenodes/valuenode_and.cpp:142
 msgid "First operand of the AND operation"
-msgstr ""
+msgstr "العامل الأول في عملية AND"
 
 #: ../src/synfig/valuenodes/valuenode_and.cpp:146
 #: ../src/synfig/valuenodes/valuenode_or.cpp:146
 msgid "Link2"
-msgstr ""
+msgstr "رابط2"
 
 #: ../src/synfig/valuenodes/valuenode_and.cpp:147
 msgid "Second operand of the AND operation"
-msgstr ""
+msgstr "العامل الثاني في عملية AND"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:164
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:160
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:165
 msgid "Value to convert to string"
-msgstr ""
+msgstr "الرقم المراد تحويله لسلسلة نصية"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:169
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:165
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:170
 msgid "Width of the string"
-msgstr ""
+msgstr "طول سلسلة الأحرف"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:173
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:174
 msgid "Precision"
-msgstr ""
+msgstr "دقّة"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:174
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:175
 msgid "Number of decimal places"
-msgstr ""
+msgstr "عدد الأرقام العشرية"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:178
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:169
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:179
 msgid "Zero Padded"
-msgstr ""
+msgstr "الملء بالأصفار"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:179
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:170
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:180
 msgid "When checked, the string is left filled with zeros to match the width"
-msgstr ""
+msgstr "حين تختارها، تملء السلسلة من اليسار بالأصفار لتناسب العرض"
 
 #: ../src/synfig/valuenodes/valuenode_animated.cpp:94
 msgid "Animated"
-msgstr ""
+msgstr "متحرك"
 
 #: ../src/synfig/valuenodes/valuenode_animatedfile.cpp:295
 msgid "File with waypoints"
-msgstr ""
+msgstr "ملف بنقاط التوجيه"
 
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:357
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:378
@@ -3455,28 +3455,28 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:788
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:807
 msgid "A waypoint already exists at this point in time"
-msgstr ""
+msgstr "نقاط التوجيه موجودة مسبقا في هذه النقطة من الزمن"
 
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:1200
 #, c-format
 msgid "%s: You cannot use a %s in an animated ValueNode"
-msgstr ""
+msgstr "%s: لا يمكنك استخدام %s في ValueNode المتحركة"
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:142
 msgid "X"
-msgstr ""
+msgstr "س"
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:143
 msgid "Cosine of the angle"
-msgstr ""
+msgstr "جيب تمام الزاوية"
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:147
 msgid "Y"
-msgstr ""
+msgstr "ص"
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:148
 msgid "Sine of the angle"
-msgstr ""
+msgstr "جيب الزاوية"
 
 #: ../src/synfig/valuenodes/valuenode_bline.cpp:890
 #: ../src/synfig/valuenodes/valuenode_dilist.cpp:158
@@ -3484,7 +3484,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_staticlist.cpp:358
 #: ../src/synfig/valuenodes/valuenode_wplist.cpp:337
 msgid "No entries in list"
-msgstr ""
+msgstr "لا مداخل في القائمة"
 
 #: ../src/synfig/valuenodes/valuenode_bline.cpp:893
 #: ../src/synfig/valuenodes/valuenode_dilist.cpp:161
@@ -3492,27 +3492,27 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_staticlist.cpp:361
 #: ../src/synfig/valuenodes/valuenode_wplist.cpp:340
 msgid "No entries in ret_list"
-msgstr ""
+msgstr "لا مداخل في ret_list"
 
 #: ../src/synfig/valuenodes/valuenode_bline.cpp:902
 #: ../src/synfig/valuenodes/valuenode_bline.cpp:1009
 #, c-format
 msgid "Vertex %03d"
-msgstr ""
+msgstr "ذروة %03d"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:220
 msgid "The Spline where the tangent is linked to"
-msgstr ""
+msgstr "المنحنى الذي يشمل المماس"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:225
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:184
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:193
 msgid "When checked, the amount would loop"
-msgstr ""
+msgstr "حين تختارها، هذا المقدار سيتكرر"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:230
 msgid "The position of the linked tangent on the Spline (0,1]"
-msgstr ""
+msgstr "موضع مماس المنحنى (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:234
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:764
@@ -3520,697 +3520,697 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:163
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:214
 msgid "Offset"
-msgstr ""
+msgstr "إزاحة"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:235
 msgid "Angle offset of the tangent"
-msgstr ""
+msgstr "إزاحة الزاوية للمماس"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:240
 msgid "Scale of the tangent"
-msgstr ""
+msgstr "قياس المماس"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:244
 msgid "Fixed Length"
-msgstr ""
+msgstr "طول ثابت"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:245
 msgid "When checked, the tangent's length is fixed"
-msgstr ""
+msgstr "حين تختارها، يثبّت طول المماس"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:250
 msgid "When checked, the tangent is Spline length based"
-msgstr ""
+msgstr "حين تختارها، يعتمد المماس على طول المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:179
 msgid "The spline where the vertex is linked to"
-msgstr ""
+msgstr "المنحنى الذي يشمل الذروة"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:189
 msgid "The position of the linked vertex on the Spline (0,1]"
-msgstr ""
+msgstr "موضع الذروة على المنحنى (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:194
 msgid "When checked, the position is Spline length based"
-msgstr ""
+msgstr "حين تختارها، يتعلق الموضع بطول المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:188
 msgid "The spline where the width is linked to"
-msgstr ""
+msgstr "المنحنى الذي يتعلق به العرض"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:198
 msgid "The position of the linked width on the spline (0,1]"
-msgstr ""
+msgstr "موضع العرض على المنحنى (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:203
 msgid "Scale of the width"
-msgstr ""
+msgstr "تحجيم العرض"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:208
 msgid "When checked, the width is spline length based"
-msgstr ""
+msgstr "حين تختارها، يتعلق العرض بطول المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:158
 msgid "Reference"
-msgstr ""
+msgstr "مرجع"
 
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:159
 msgid "The referenced tangent to reverse"
-msgstr ""
+msgstr "المماس المعين المراد عكسه"
 
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:164
 msgid "When checked, the reference is reversed"
-msgstr ""
+msgstr "حين تُختار، المرجع يُعكس"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:254
 #, c-format
 msgid "Bone %d"
-msgstr ""
+msgstr "عظم %d"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:583
 msgid "The name of the bone"
-msgstr ""
+msgstr "اسم العظم"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:587
 msgid "Parent"
-msgstr ""
+msgstr "أصل"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:588
 msgid "The parent bone of the bone"
-msgstr ""
+msgstr "العظم الأصل للعظم"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:593
 msgid "The rotating origin of the bone relative to its parent"
-msgstr ""
+msgstr "مبدأ التدوير للعظم بالنسبة إلى أصوله"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:598
 msgid "The rotating angle of the bone relative to its parent"
-msgstr ""
+msgstr "زاوية التدوير للعظم بالنسبة إلى أصوله"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:602
 msgid "Local Length Scale"
-msgstr ""
+msgstr "قياس الطول المحلي"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:603
 msgid "The scale of the bone aligned to its length"
-msgstr ""
+msgstr "قياس العظم محاذيا إلى طوله"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:607
 msgid "Bone Width"
-msgstr ""
+msgstr "عرض العظم"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:608
 msgid "Bone width at its origin"
-msgstr ""
+msgstr "عرض العظم في مبدأه"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:612
 msgid "Recursive Length Scale"
-msgstr ""
+msgstr "قياس الطول التراجعي"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:613
 msgid "The scale of the bone and its children aligned to its length"
-msgstr ""
+msgstr "قياس العظم وما ينحدر منه محاذيا إلى طوله"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:617
 msgid "Tip Width"
-msgstr ""
+msgstr "عرض التلميح"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:618
 msgid "Bone width at its tip"
-msgstr ""
+msgstr "عرض العظم عند طرفه"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:622
 msgid "Z-Depth"
-msgstr ""
+msgstr "العمق Z"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:623
 msgid "The z-depth of the bone"
-msgstr ""
+msgstr "عمق العظم Z"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:627
 msgid "Length Setup"
-msgstr ""
+msgstr "إعداد الطول"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:628
 msgid "The length of the bone at setup"
-msgstr ""
+msgstr "طول العظم عند الإعداد"
 
 #: ../src/synfig/valuenodes/valuenode_boneinfluence.cpp:217
 msgid "Bone Weight List"
-msgstr ""
+msgstr "قائمة أوزان العظم"
 
 #: ../src/synfig/valuenodes/valuenode_boneinfluence.cpp:218
 msgid "List of bones used to calculate the influence"
-msgstr ""
+msgstr "قائمة العظام المستعملة لحساب التأثير"
 
 #: ../src/synfig/valuenodes/valuenode_boneinfluence.cpp:223
 msgid "The value node being bone influenced"
-msgstr ""
+msgstr "عقدة القيمة المتأثرة بالعظم"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:201
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:156
 msgid "Bone"
-msgstr ""
+msgstr "عظم"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:202
 msgid "The linked bone"
-msgstr ""
+msgstr "العظم الموصول"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:206
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:207
 msgid "Base value"
-msgstr ""
+msgstr "القيمة الأساسية"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:212
 msgid "Make translation"
-msgstr ""
+msgstr "عمل انسحاب"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:217
 msgid "Make rotation"
-msgstr ""
+msgstr "عمل دوران"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:221
 msgid "Skew"
-msgstr ""
+msgstr "انحراف"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:222
 msgid "Make skew"
-msgstr ""
+msgstr "عمل انحراف"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:226
 msgid "Scale X"
-msgstr ""
+msgstr "تحجيم X"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:227
 msgid "Make scaling by X-axis"
-msgstr ""
+msgstr "تحجيم على المحور س"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:231
 msgid "Scale Y"
-msgstr ""
+msgstr "تحجيم Y"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:232
 msgid "Make scaling by Y-axis"
-msgstr ""
+msgstr "تحجيم على المحور Y"
 
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:157
 msgid "Bone used to make influence"
-msgstr ""
+msgstr "العظم المستعمل للتأثير"
 
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:161
 msgid "weight"
-msgstr ""
+msgstr "حجم"
 
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:162
 msgid "The relative value of influence of the bone"
-msgstr ""
+msgstr "القيمة النسبية  لتأثير العظم"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:161
 #: ../src/synfig/valuenodes/valuenode_dotproduct.cpp:161
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:221
 msgid "LHS"
-msgstr ""
+msgstr "LHS"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:162
 msgid "The left side of the comparison"
-msgstr ""
+msgstr "الجانب الأيسر للمقارنة"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:166
 #: ../src/synfig/valuenodes/valuenode_dotproduct.cpp:166
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:226
 msgid "RHS"
-msgstr ""
+msgstr "RHS"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:167
 msgid "The right side of the comparison"
-msgstr ""
+msgstr "الجانب الأيمن للمقارنة"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:171
 msgid "Greater"
-msgstr ""
+msgstr "أكبر"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:172
 msgid "When checked, returns true if LHS > RHS"
-msgstr ""
+msgstr "حين تختارها، ترجع \"صح\" إذا كان LHS > RHS"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:176
 msgid "Equal"
-msgstr ""
+msgstr "يساوي"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:177
 msgid "When checked, returns true if LHS = RHS"
-msgstr ""
+msgstr "حين تختارها، ترجع \"صح\" إذا كان LHS = RHS"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:181
 msgid "Less"
-msgstr ""
+msgstr "أصغر"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:182
 msgid "When checked, returns true if LHS < RHS"
-msgstr ""
+msgstr "حين تختارها، ترجع \"صح\" إذا كان LHS < RHS"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:303
 msgid "Bad type for composite"
-msgstr ""
+msgstr "نوع التراكب سيئ"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:626
 msgid "Red"
-msgstr ""
+msgstr "أحمر"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:627
 msgid "The red component of the color"
-msgstr ""
+msgstr "المكون الأحمر للون"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:630
 msgid "Green"
-msgstr ""
+msgstr "أخضر"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:631
 msgid "The green component of the color"
-msgstr ""
+msgstr "المكون الأخضر للون"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:634
 msgid "Blue"
-msgstr ""
+msgstr "أزرق"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:635
 msgid "The blue component of the color"
-msgstr ""
+msgstr "المكون الأزرق للون"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:638
 msgid "Alpha"
-msgstr ""
+msgstr "ألفا"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:639
 msgid "The alpha of the color"
-msgstr ""
+msgstr "طبقة ألقا للون"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:647
 msgid "Vertex 1"
-msgstr ""
+msgstr "ذورة 1"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:648
 msgid "The first vertex of the segment"
-msgstr ""
+msgstr "الذورة الأولى في المقطع"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:651
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:698
 msgid "Tangent 1"
-msgstr ""
+msgstr "مماس 1"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:652
 msgid "The first tangent of the segment"
-msgstr ""
+msgstr "المماس الأول للمقطع"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:655
 msgid "Vertex 2"
-msgstr ""
+msgstr "ذورة 2"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:656
 msgid "The second vertex of the segment"
-msgstr ""
+msgstr "الذروة الثانية في المقطع"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:659
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:702
 msgid "Tangent 2"
-msgstr ""
+msgstr "مماس 2"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:660
 msgid "The second tangent of the segment"
-msgstr ""
+msgstr "المماس الثاني في المقطع"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:668
 msgid "X-Axis"
-msgstr ""
+msgstr "محور س"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:669
 msgid "The X-Axis component of the vector"
-msgstr ""
+msgstr "مركبة المحور س للشعاع"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:672
 msgid "Y-Axis"
-msgstr ""
+msgstr "محور ص"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:673
 msgid "The Y-Axis component of the vector"
-msgstr ""
+msgstr "مركبة على محور ص للشعاع"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:681
 msgid "Vertex"
-msgstr ""
+msgstr "ذروة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:682
 msgid "The vertex of the Spline Point"
-msgstr ""
+msgstr "ذورة نقط المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:686
 msgid "The width of the Spline Point"
-msgstr ""
+msgstr "عرض نقطة المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:690
 msgid "Defines the Off and On position relative to neighbours"
-msgstr ""
+msgstr "تعريف موضع التشغيل والإيقاف بالنسبة للجيران"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:693
 msgid "Split"
-msgstr ""
+msgstr "فصل"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:694
 msgid "When checked, tangents are independent"
-msgstr ""
+msgstr "حين تُختار، تكون المماسات منفصلة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:699
 msgid "The first tangent of the Spline Point"
-msgstr ""
+msgstr "المماس الأول لنقط المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:703
 msgid "The second tangent of the Spline Point"
-msgstr ""
+msgstr "المماس الثاني لنقط المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:706
 msgid "Radius Split"
-msgstr ""
+msgstr "فصل الأشعة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:707
 msgid "When checked, tangent's radii are independent"
-msgstr ""
+msgstr "حين تُختار، تكون أشعة المماس منفصلة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:710
 msgid "Angle Split"
-msgstr ""
+msgstr "فصل الزاويا"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:711
 msgid "When checked, tangent's angles are independent"
-msgstr ""
+msgstr "حين تُختار، تكون أشعة المماس منفصلة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:720
 msgid "The [0,1] position of the Width Point over the Spline"
-msgstr ""
+msgstr "موضع [0,1] position لنقطة العرض على المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:724
 msgid "The width of the Width Point"
-msgstr ""
+msgstr "عرض نقطة العرض"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:727
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:774
 msgid "Side Type Before"
-msgstr ""
+msgstr "نوع الجانب قبل"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:728
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:740
 msgid "Defines the interpolation type of the width point"
-msgstr ""
+msgstr "تحدد نوع استيفاء نقطة العرض"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:730
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:742
 msgid "Interpolate"
-msgstr ""
+msgstr "استيفاء"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:739
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:785
 msgid "Side Type After"
-msgstr ""
+msgstr "نوع الجانب بعد"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:751
 msgid "Lower Boundary"
-msgstr ""
+msgstr "الحد الأدنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:752
 msgid "Defines the position at start of the Spline"
-msgstr ""
+msgstr "تحدد موضع بداية المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:755
 msgid "Upper Boundary"
-msgstr ""
+msgstr "الحد الأعلى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:756
 msgid "Defines the position at end of the Spline"
-msgstr ""
+msgstr "تحدد موضع نهاية المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:765
 msgid "The offset length of the Dash Item over the Spline"
-msgstr ""
+msgstr "طول إزاحة عنصر الواصلة فوق المنحنى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:769
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:266
 msgid "Length"
-msgstr ""
+msgstr "طول"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:770
 msgid "The length of the Dash Item"
-msgstr ""
+msgstr "طول الواصلة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:775
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:786
 msgid "Defines the side type of the dash item"
-msgstr ""
+msgstr "تحدد نوع جانب الواصلة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:802
 msgid "The Offset component of the transformation"
-msgstr ""
+msgstr "مكوّن إزاحة التحويل"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:806
 msgid "The Angle component of the transformation"
-msgstr ""
+msgstr "مكون زاوية التحويل"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:809
 msgid "Skew Angle"
-msgstr ""
+msgstr "زاوية الانحراف"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:810
 msgid "The Skew Angle component of the transformation"
-msgstr ""
+msgstr "مكون زاوية الانحراف"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:814
 msgid "The Scale component of the transformation"
-msgstr ""
+msgstr "مكوّن قياس التحويل"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:823
 msgid "The Weight of the value"
-msgstr ""
+msgstr "وزن القيمة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:826
 msgid "Value"
-msgstr ""
+msgstr "القيمة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:827
 msgid "The Value"
-msgstr ""
+msgstr "القيمة"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:835
 msgid "First"
-msgstr ""
+msgstr "الأول"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:836
 msgid "The First Value"
-msgstr ""
+msgstr "القيمة الأولى"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:839
 msgid "Second"
-msgstr ""
+msgstr "الثّانية"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:840
 msgid "The Second Value"
-msgstr ""
+msgstr "القيمة الثانية"
 
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:150
 msgid "Value to calculate the cosine"
-msgstr ""
+msgstr "القيمة التي يحسب لها جيب التمام"
 
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:154
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:153
 msgid "Amplitude"
-msgstr ""
+msgstr "السعة"
 
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:155
 msgid "Multiplier of the resulting cosine"
-msgstr ""
+msgstr "مضاعف جيب التمام الناتج"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:362
 msgid "Value to calculate the derivative"
-msgstr ""
+msgstr "القيمة التي يحسب لها المشتقة"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:365
 msgid "Interval"
-msgstr ""
+msgstr "الفترة"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:366
 msgid "Interval of time to calculate the finite differences"
-msgstr ""
+msgstr "مجال الزمن الذي سيحسب له الفروق المنتهية"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:369
 msgid "Accuracy"
-msgstr ""
+msgstr "درجة الدقة"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:370
 msgid "Accuracy of the derivative"
-msgstr ""
+msgstr "دقة المشتقة"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:372
 msgid "Rough"
-msgstr ""
+msgstr "خشن"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:374
 msgid "Fine"
-msgstr ""
+msgstr "دقيق"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:375
 msgid "Extreme"
-msgstr ""
+msgstr "متطرف"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:378
 msgid "Order"
-msgstr ""
+msgstr "ترتيب"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:379
 msgid "Order of the derivative"
-msgstr ""
+msgstr "رتبة المشتقة"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:381
 msgid "First Derivative"
-msgstr ""
+msgstr "المشتقة الاولى"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:382
 msgid "Second Derivative"
-msgstr ""
+msgstr "المشتقة الثانية"
 
 #: ../src/synfig/valuenodes/valuenode_dilist.cpp:170
 #, c-format
 msgid "DashItem %03d"
-msgstr ""
+msgstr "DashItem %03d"
 
 #: ../src/synfig/valuenodes/valuenode_dotproduct.cpp:162
 msgid "The left side of the dot product"
-msgstr ""
+msgstr "الجانب الأيسر من إنتاج نقطة"
 
 #: ../src/synfig/valuenodes/valuenode_dotproduct.cpp:167
 msgid "The right side of the dot product"
-msgstr ""
+msgstr "الجانب الأيمن من إنتاج نقطة"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:188
 msgid "From"
-msgstr ""
+msgstr "من"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:189
 msgid "Initial value of the index "
-msgstr ""
+msgstr "القيمة الابتدائية للفهرس "
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:193
 msgid "To"
-msgstr ""
+msgstr "إلى"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:194
 msgid "Final value of the index"
-msgstr ""
+msgstr "القيمة النهائية للفهرس"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:199
 msgid "Amount increment of the index"
-msgstr ""
+msgstr "مقدار زيادة الفهرس"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:231
 msgid "Tip static"
-msgstr ""
+msgstr "طرف ثابت"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:232
 msgid "Equilibrium tip position without external forces"
-msgstr ""
+msgstr "موضع طرف التوازن بدون قوى خارجية"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:236
 msgid "Basement of the dynamic system"
-msgstr ""
+msgstr "أساسات النظام الديناميكي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:239
 msgid "Force"
-msgstr ""
+msgstr "قوة"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:240
 msgid "External force applied on the mass center of gravity"
-msgstr ""
+msgstr "القوة الخارجية المطبقة على مركز ثقل الكتلة"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:243
 msgid "Torque"
-msgstr ""
+msgstr "عزم الدوران"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:244
 msgid "External momentum applied at the center of inertia"
-msgstr ""
+msgstr "الزخم الخارجي المطبق في مركز القصور الذاتي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:247
 msgid "Damping coefficient"
-msgstr ""
+msgstr "معامل التخميد"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:248
 msgid "Radial damping coefficient of the dynamic system"
-msgstr ""
+msgstr "معامل التخميد الشعاعي للنظام الديناميكي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:251
 msgid "Friction coefficient"
-msgstr ""
+msgstr "معامل الاحتكاك"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:252
 msgid "Rotational friction coefficient of the dynamic system"
-msgstr ""
+msgstr "معامل الاحتكاك الدوراني للنظام الديناميكي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:255
 msgid "Spring coefficient"
-msgstr ""
+msgstr "معامل النابض"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:256
 msgid "Radial spring coefficient of the dynamic system"
-msgstr ""
+msgstr "معامل النابض الشعاعي للنظام الديناميكي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:259
 msgid "Torsion coefficient"
-msgstr ""
+msgstr "معامل التواء"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:260
 msgid "Torsion coefficient of the dynamic system"
-msgstr ""
+msgstr "معامل الالتواء للنظام الديناميكي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:263
 msgid "Mass"
-msgstr ""
+msgstr "الكتلة"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:264
 msgid "Mass of the dynamic system"
-msgstr ""
+msgstr "كتلة النظام الديناميكي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:267
 msgid "Moment of Inertia"
-msgstr ""
+msgstr "عزم القصور الذاتي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:268
 msgid "Moment of inertia of the dynamic system"
-msgstr ""
+msgstr "عزم القصور الذاتي للنظام الديناميكي"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:271
 msgid "Spring rigid"
-msgstr ""
+msgstr "نابض صلب"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:272
 msgid "When checked, linear spring is rigid"
-msgstr ""
+msgstr "حين تختارها، النابض الخطي صلب"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:275
 msgid "Torsion rigid"
-msgstr ""
+msgstr "التواء صلب"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:276
 msgid "When checked torsion spring is rigid"
-msgstr ""
+msgstr "حين تختارها، التواء النابض صلب"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:279
 msgid "Origin drags tip"
-msgstr ""
+msgstr "المبدأ يسحب الطرف"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:280
 msgid "When checked result is origin + tip otherwise result is just tip"
-msgstr ""
+msgstr "حين تختارها، النتيحة تكون المبدأ + الطرف، وإلا تكون الطرف فقط"
 
 #: ../src/synfig/valuenodes/valuenode_dynamiclist.cpp:672
 #: ../src/synfig/valuenodes/valuenode_staticlist.cpp:355
 msgid "List type/item type mismatch, throwing away mismatch"
-msgstr ""
+msgstr "عدم تطابق نوع القائمة/نوع العنصر، مما يلقي عدم التطابق"
 
 #: ../src/synfig/valuenodes/valuenode_dynamiclist.cpp:720
 #: ../src/synfig/valuenodes/valuenode_dynamiclist.cpp:967
@@ -4218,1048 +4218,1048 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_staticlist.cpp:455
 #, c-format
 msgid "Item %03d"
-msgstr ""
+msgstr "عنصر %03d"
 
 #: ../src/synfig/valuenodes/valuenode_exp.cpp:144
 msgid "Exponent"
-msgstr ""
+msgstr "أس"
 
 #: ../src/synfig/valuenodes/valuenode_exp.cpp:145
 msgid "The value to raise the constant 'e'"
-msgstr ""
+msgstr "القيمة التي ترفع على الثابت 'e'"
 
 #: ../src/synfig/valuenodes/valuenode_exp.cpp:150
 msgid "Multiplier of the resulting exponent"
-msgstr ""
+msgstr "مضاعف الأس الناتج"
 
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:153
 msgid "The gradient where the color is picked from"
-msgstr ""
+msgstr "التدرج الذي اُخذ منه اللون"
 
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:158
 msgid "The position of the color at the gradient (0,1]"
-msgstr ""
+msgstr "موضع اللون عند التدرج (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:163
 msgid "When checked, the index would loop"
-msgstr ""
+msgstr "حين تختارها، سيتكرر الفهرس"
 
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:82
 msgid "Gradient Rotate"
-msgstr ""
+msgstr "دوران التدرج"
 
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:159
 msgid "The source gradient to rotate"
-msgstr ""
+msgstr "مبدأ التدرج للتدوير"
 
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:164
 msgid "The amount to offset the gradient"
-msgstr ""
+msgstr "مقدار إزاحة التدرج"
 
 #: ../src/synfig/valuenodes/valuenode_greyed.cpp:94
 msgid "The greyed value"
-msgstr ""
+msgstr "قيمة التدرج الرمادي"
 
 #: ../src/synfig/valuenodes/valuenode_integer.cpp:186
 msgid "The integer value to be converted"
-msgstr ""
+msgstr "القيمة العددية الصحيحة المراد تحويلها"
 
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:159
 msgid "Int"
-msgstr ""
+msgstr "عدد صحيح"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:181
 msgid "Strings"
-msgstr ""
+msgstr "سلاسل حروف"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:182
 msgid "The List of strings to join"
-msgstr ""
+msgstr "قائمة السلاسل التي ستدمج"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:186
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:251
 msgid "Before"
-msgstr ""
+msgstr "قبل"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:187
 msgid "The string to place before the joined strings"
-msgstr ""
+msgstr "السلسلة التي ستوضع قبل السلاسل المدمجة"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:191
 msgid "Separator"
-msgstr ""
+msgstr "فاصل"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:192
 msgid "The string to place between each string joined"
-msgstr ""
+msgstr "السلسلة التي ستوضع بين السلاسل المدمجة"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:196
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:256
 msgid "After"
-msgstr ""
+msgstr "بعد"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:197
 msgid "The string to place after the joined strings"
-msgstr ""
+msgstr "السلسلة التي ستوضع بعد السلاسل المدمجة"
 
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:201
 msgid "Rate"
-msgstr ""
+msgstr "معدل"
 
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:202
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:209
 msgid "Value that is multiplied by the current time (in seconds)"
-msgstr ""
+msgstr "القيمة التي ستضرب في الزمن الحالي (بالثانية)"
 
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:208
 msgid "Slope"
-msgstr ""
+msgstr "الانحدار"
 
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:215
 msgid "Returned value when the current time is zero"
-msgstr ""
+msgstr "القيمة المرجعة حين يكون الوقت صفرا"
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:154
 msgid "Value node used to calculate the Neperian logarithm"
-msgstr ""
+msgstr "عقدة القيمة المستعملة لحساب اللوغاريتم النيبري"
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:158
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:184
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:164
 msgid "Epsilon"
-msgstr ""
+msgstr "إبسلون"
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:159
 msgid "Value used to compare 'link' with zero "
-msgstr ""
+msgstr "القيمة المستعملة لمقارنة 'الرابط' بالصفر "
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:163
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:189
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:169
 msgid "Infinite"
-msgstr ""
+msgstr "لا نهائي"
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:164
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:190
 msgid "Returned value when result tends to infinite"
-msgstr ""
+msgstr "القيمة المرجعة حين تؤول النتيجة إلى ما لا نهاية"
 
 #: ../src/synfig/valuenodes/valuenode_not.cpp:136
 msgid "Value node used to do the NOT operation"
-msgstr ""
+msgstr "عقدة القيمة المستعملة لعملية النفي NOT"
 
 #: ../src/synfig/valuenodes/valuenode_or.cpp:142
 #: ../src/synfig/valuenodes/valuenode_or.cpp:147
 msgid "Value node used for the OR boolean operation"
-msgstr ""
+msgstr "عقدة القيمة المستعملة لعملية الفصل OR"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:174
 msgid "Base"
-msgstr ""
+msgstr "أساس"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:175
 msgid "The base to be raised to the power"
-msgstr ""
+msgstr "الأساس الذي سيرفع إلى الأس"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:179
 msgid "Power"
-msgstr ""
+msgstr "الأس"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:180
 msgid "The power used to raise the base"
-msgstr ""
+msgstr "الأس الذي سيرفع على الأساس"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:185
 msgid "Value used to compare base or power with zero "
-msgstr ""
+msgstr "القيمة المستعملة لمقارنة الأس أو الأساس بالصفر "
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:132
 msgid "Bad type for radialcomposite"
-msgstr ""
+msgstr "نوع التراكب الشعاعي سيئ"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:249
 msgid "Luma"
-msgstr ""
+msgstr "Luma"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:267
 msgid "The length of the vector"
-msgstr ""
+msgstr "طول الشعاع"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:270
 msgid "Theta"
-msgstr ""
+msgstr "ثيتا"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:271
 msgid "The angle of the vector with the X axis"
-msgstr ""
+msgstr "زاوية الشعاع بالنسبة إلى المحور س"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:132
 msgid "Some of my parameters aren't set!"
-msgstr ""
+msgstr "بعض إعداداتي ليست مضبوطة!"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:273
 msgid "Min"
-msgstr ""
+msgstr "الأدنى"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:274
 msgid "Returned value when 'Link' is smaller"
-msgstr ""
+msgstr "القيمة المرجعة إن كان 'الرابط' أصغر"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:278
 msgid "Max"
-msgstr ""
+msgstr "الأقصى"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:279
 msgid "Returned value when 'Link' is greater"
-msgstr ""
+msgstr "القيمة المرجعة إن كان 'الرابط' أكبر"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:284
 msgid "The value node to limit its range"
-msgstr ""
+msgstr "عقدة القيمة المراد تحديد مجالها"
 
 #: ../src/synfig/valuenodes/valuenode_real.cpp:180
 msgid "The real value to be converted"
-msgstr ""
+msgstr "القيمة العددية الحقيقية المراد تحويلها"
 
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:164
 msgid "Real"
-msgstr ""
+msgstr "عدد حقيقي"
 
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:160
 msgid "The value node used to calculate its reciprocal"
-msgstr ""
+msgstr "عقدة القيمة المستعملة لحساب دالتها العكسية"
 
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:165
 msgid ""
 "The value used to decide whether 'Link' is too small to obtain its "
 "reciprocal"
-msgstr ""
+msgstr "القيمة المستخدمة لتحديد ما إذا كان 'الارتباط' صغيرًا جدًا للحصول على الدالة العكسية"
 
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:170
 msgid "The resulting value when 'Link' < 'Epsilon'"
-msgstr ""
+msgstr "القيمة الناتجة عندما 'الارتباط' < 'إبسيلون'"
 
 #: ../src/synfig/valuenodes/valuenode_reference.cpp:138
 msgid "The referenced value"
-msgstr ""
+msgstr "القيمة المرجعية"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:88
 msgid "Repeat Gradient"
-msgstr ""
+msgstr "كرّر التدرج"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:198
 msgid "The source gradient to repeat"
-msgstr ""
+msgstr "مبدأ التدرج للتكرير"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:202
 msgid "Count"
-msgstr ""
+msgstr "تعداد"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:203
 msgid "The number of repetition of the gradient"
-msgstr ""
+msgstr "عدد تكرارات التدرج"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:208
 msgid ""
 "Specifies how much biased is the source gradient in the repetition [0,1]"
-msgstr ""
+msgstr "تحدّد مقدار الزيادة للتدرج في التكرار [0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:212
 msgid "Specify Start"
-msgstr ""
+msgstr "حدّد البداية"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:213
 msgid ""
 "When checked, 'Start Color' is used as the start of the resulting gradient"
-msgstr ""
+msgstr "حين تختارها، يستخدم 'لون البداية' لونا ابتدائيا للتدرج الناتج"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:217
 msgid "Specify End"
-msgstr ""
+msgstr "حدّد النهاية"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:218
 msgid ""
 "When checked, 'End Color' is used as the start of the resulting gradient"
-msgstr ""
+msgstr "حين تختارها، يستخدم 'لون النهاية' لونا نهائيا للتدرج الناتج"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:222
 msgid "Start Color"
-msgstr ""
+msgstr "لون البدء"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:223
 msgid "Used as the start of the resulting gradient"
-msgstr ""
+msgstr "يستعمل لبدء التدرج الناتج"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:227
 msgid "End Color"
-msgstr ""
+msgstr "لون النهاية"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:228
 msgid "Used as the end of the resulting gradient"
-msgstr ""
+msgstr "يستعمل لإنهاء التدرج الناتج"
 
 #: ../src/synfig/valuenodes/valuenode_reverse.cpp:302
 msgid "The value to be reversed"
-msgstr ""
+msgstr "القيمة المراد عكسها"
 
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:154
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:171
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:182
 msgid "Attempting to get the inverse of a non invertible Valuenode"
-msgstr ""
+msgstr "محاولة عكس قيمة غير قابلة للعكس"
 
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:244
 msgid "The value node used to scale"
-msgstr ""
+msgstr "القيمة المستعملة للتحجيم"
 
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:249
 msgid "Value that multiplies the value node"
-msgstr ""
+msgstr "القيمة التي تُضاعف عقدة القيمة"
 
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:150
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:148
 msgid "Segment"
-msgstr ""
+msgstr "قطعة"
 
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:151
 msgid "The Segment where the tangent is linked to"
-msgstr ""
+msgstr "قطعة الذي يشمل المماس"
 
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:156
 msgid "The position of the linked tangent on the Segment (0,1]"
-msgstr ""
+msgstr "موضع المماس على القطعة (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:149
 msgid "The Segment where the vertex is linked to"
-msgstr ""
+msgstr "القطعة التي تشمل القمة"
 
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:154
 msgid "The position of the linked vertex on the Segment (0,1]"
-msgstr ""
+msgstr "موضع الذورة على القطعة (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:149
 msgid "The angle where the sine is calculated from"
-msgstr ""
+msgstr "الزاوية التي سيحسب لها الجيب"
 
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:154
 msgid "The value that multiplies the resulting sine"
-msgstr ""
+msgstr "القيمة التي تضاعف الجيب الناتج"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:187
 msgid "The value node used to make the step"
-msgstr ""
+msgstr "عقدة القيمة المستعملة لعمل الخطوة"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:192
 msgid "The duration of the step"
-msgstr ""
+msgstr "مدة الخطوة"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:196
 #: ../src/tool/printing_functions.cpp:75
 msgid "Start Time"
-msgstr ""
+msgstr "وقت البداية"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:197
 msgid "The time when the step conversion starts"
-msgstr ""
+msgstr "الوقت حين يبدأ تحويل الخطوات"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:201
 msgid "Intersection"
-msgstr ""
+msgstr "تقاطع"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:202
 msgid "Value that define whether the step is centered on the value [0,1]"
-msgstr ""
+msgstr "القيمة التي تحدد ما إذا كانت الخطوة مركزة على القيمة [0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:85
 msgid "Stripes"
-msgstr ""
+msgstr "شرائط"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:183
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:147
 msgid "Color 1"
-msgstr ""
+msgstr "لون 1"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:184
 msgid "One color of the gradient stripes"
-msgstr ""
+msgstr "لون واحد للشرائط المتدرجة"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:188
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:152
 msgid "Color 2"
-msgstr ""
+msgstr "لون 2"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:189
 msgid "Other color of the gradient stripes"
-msgstr ""
+msgstr "ألوان أخرى للشرائط المتدرجة"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:193
 msgid "Stripe Count"
-msgstr ""
+msgstr "عدد الشرائط"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:194
 msgid "Number of stripes in the gradient"
-msgstr ""
+msgstr "عدد الشرائط في التدرج"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:199
 msgid "Width of stripes in the gradient between [0,1]"
-msgstr ""
+msgstr "عرض الشرائط في التدرج بين [0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:222
 msgid "Left Hand Side of the subtraction"
-msgstr ""
+msgstr "الجانب الأيسر من الطرح"
 
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:227
 msgid "Right Hand Side of the subtraction"
-msgstr ""
+msgstr "الجانب الأيمن من الطرح"
 
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:232
 msgid "Value that multiplies the subtraction"
-msgstr ""
+msgstr "القيمة التي تُضرب في المطروح"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:147
 msgid "Link Off"
-msgstr ""
+msgstr "مقفل"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:148
 msgid "The value node returned when the switch is off"
-msgstr ""
+msgstr "عقدة القيمة المرجعة عند إيقاف تشغيل المفتاح"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:152
 msgid "Link On"
-msgstr ""
+msgstr "ربط مع"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:153
 msgid "The value node returned when the switch is on"
-msgstr ""
+msgstr "عقدة القيمة المرجعة عند تشغيل المفتاح"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:158
 msgid "When checked, returns 'Link On', otherwise returns 'Link Off'"
-msgstr ""
+msgstr "حين تختارها، ترجع  returns 'Link On'، وإلا 'Link Off'"
 
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:252
 msgid "The value node returned when current time is before 'time' - 'length'"
-msgstr ""
+msgstr "عقدة القيمة المرجعة حين يكون الزمن الحالي قبل 'time' - 'length'"
 
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:257
 msgid "The value node returned when current time is after 'time'"
-msgstr ""
+msgstr "عقدة القيمة المرجعة حين يكون الزمن الحالي قبل 'time'"
 
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:262
 msgid "The time when the linear interpolation ends"
-msgstr ""
+msgstr "الوقت الذي ينتهي فيه الاستيفاء الخطي"
 
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:267
 msgid ""
 "The length of time when the linear interpolation between 'Before' and "
 "'After' is made"
-msgstr ""
+msgstr "طول الوقت عند إجراء الاستيفاء الخطي بين 'قبل' و 'بعد'"
 
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:169
 msgid "The value node to time loop"
-msgstr ""
+msgstr "عقدة القيمة إلى تكرار الوقت"
 
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:174
 msgid "Start time of the loop for the value node Timeline"
-msgstr ""
+msgstr "وقت بدء الحلقة لمسار زمن عقدة القيمة"
 
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
-msgstr ""
+msgstr "الزمن المراد تحويله إلى سلسلة حروف"
 
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:148
 msgid "The start color of the gradient"
-msgstr ""
+msgstr "لون بدء التدرج"
 
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:153
 msgid "The end color of the gradient"
-msgstr ""
+msgstr "لون نهاية التدرج"
 
 #: ../src/synfig/valuenodes/valuenode_vectorangle.cpp:137
 #: ../src/synfig/valuenodes/valuenode_vectorlength.cpp:135
 #: ../src/synfig/valuenodes/valuenode_vectorx.cpp:135
 #: ../src/synfig/valuenodes/valuenode_vectory.cpp:135
 msgid "Vector"
-msgstr ""
+msgstr "شعاع"
 
 #: ../src/synfig/valuenodes/valuenode_vectorangle.cpp:138
 msgid "The vector where the angle is calculated from"
-msgstr ""
+msgstr "الشعاع الذي ستحسب زاويته"
 
 #: ../src/synfig/valuenodes/valuenode_vectorlength.cpp:136
 msgid "The vector where the length is calculated from"
-msgstr ""
+msgstr "الشعاع الذي سيحسب طوله"
 
 #: ../src/synfig/valuenodes/valuenode_vectorx.cpp:136
 msgid "The vector where the X coordinate is extracted from"
-msgstr ""
+msgstr "الشعاع الذي ستسخرج الإحداثية السينية X منه"
 
 #: ../src/synfig/valuenodes/valuenode_vectory.cpp:136
 msgid "The vector where the Y coordinate is extracted from"
-msgstr ""
+msgstr "الشعاع الذي ستسخرج الإحداثية الصادية Y منه"
 
 #: ../src/synfig/valuenodes/valuenode_wplist.cpp:349
 #, c-format
 msgid "WidthPoint %03d"
-msgstr ""
+msgstr "WidthPoint %03d"
 
 #: ../src/tool/definitions.cpp:45
 msgid "Uninitialized Synfig tool general options singleton."
-msgstr ""
+msgstr "عدم تهيئة أداة الخيارات العامة لـSynfig."
 
 #: ../src/tool/main.cpp:111
 msgid "FATAL: Synfig Version Mismatch"
-msgstr ""
+msgstr "FATAL:  إصدار Synfig غير مطابق"
 
 #: ../src/tool/joblistprocessor.cpp:72
 msgid "Nothing to do!"
-msgstr ""
+msgstr "لا شيء لعمله!"
 
 #: ../src/tool/joblistprocessor.cpp:104
 msgid "Attempting to determine target/outfile..."
-msgstr ""
+msgstr "محاولة تحديد مسار/ملف الإخراج..."
 
 #: ../src/tool/joblistprocessor.cpp:110
 msgid "Target name undefined, attempting to figure it out"
-msgstr ""
+msgstr "اسم المسار غير محدد، نحاول معرفة ذلك"
 
 #: ../src/tool/joblistprocessor.cpp:141
 msgid "Defaulting to PNG target..."
-msgstr ""
+msgstr "حفظ إلى PNG تلقائيا..."
 
 #: ../src/tool/joblistprocessor.cpp:172
 #, c-format
 msgid "Unable to create output for \"%s\": %s"
-msgstr ""
+msgstr "تعذر إنشاء المخرج لـ \"%s\": %s"
 
 #: ../src/tool/joblistprocessor.cpp:173 ../src/tool/joblistprocessor.cpp:195
 msgid "Throwing out job..."
-msgstr ""
+msgstr "التخلي عن المهمة..."
 
 #: ../src/tool/joblistprocessor.cpp:177
 msgid "Creating the target..."
-msgstr ""
+msgstr "إنشاء المسار..."
 
 #: ../src/tool/joblistprocessor.cpp:194
 #, c-format
 msgid "Unknown target for \"%s\": %s"
-msgstr ""
+msgstr "مسار مجهول لـ\"%s\": %s"
 
 #: ../src/tool/joblistprocessor.cpp:205
 msgid "Setting the canvas on the target..."
-msgstr ""
+msgstr "إعداد الرقعة للمسار..."
 
 #: ../src/tool/joblistprocessor.cpp:208
 msgid "Setting the quality of the target..."
-msgstr ""
+msgstr "إعداد الجودة للمسار..."
 
 #: ../src/tool/joblistprocessor.cpp:213
 msgid "Setting the alpha mode of the target..."
-msgstr ""
+msgstr "إعداد نمط ألفا للممسار..."
 
 #: ../src/tool/joblistprocessor.cpp:264 ../src/tool/joblistprocessor.cpp:274
 msgid "Render Failure."
-msgstr ""
+msgstr "فشل التصيير."
 
 #: ../src/tool/joblistprocessor.cpp:268
 msgid "Rendering..."
-msgstr ""
+msgstr "جاري التصيير..."
 
 #: ../src/tool/joblistprocessor.cpp:282
 msgid ": Rendered in "
-msgstr ""
+msgstr ": مصيّر في "
 
 #: ../src/tool/joblistprocessor.cpp:284
 msgid " seconds."
-msgstr ""
+msgstr " ثوانٍ."
 
 #: ../src/tool/joblistprocessor.cpp:288
 msgid "Done."
-msgstr ""
+msgstr "انتهى."
 
 #: ../src/tool/optionsprocessor.cpp:88
 msgid "Settings"
-msgstr ""
+msgstr "الإعدادات"
 
 #: ../src/tool/optionsprocessor.cpp:88
 msgid "Show settings help"
-msgstr ""
+msgstr "أظهر مساعدة حول الإعدادات"
 
 #: ../src/tool/optionsprocessor.cpp:89
 msgid "Switch options"
-msgstr ""
+msgstr "خيارات التشغيل"
 
 #: ../src/tool/optionsprocessor.cpp:89
 msgid "Show switch help"
-msgstr ""
+msgstr "أظهر مساعدة التشغيل"
 
 #: ../src/tool/optionsprocessor.cpp:90
 msgid "Misc options"
-msgstr ""
+msgstr "خيارات متنوعة"
 
 #: ../src/tool/optionsprocessor.cpp:90
 msgid "Show Misc options help"
-msgstr ""
+msgstr "أظهر أزرار المساعدة للخيارات المتنوعة"
 
 #: ../src/tool/optionsprocessor.cpp:91
 msgid "FFMPEG target options"
-msgstr ""
+msgstr "خيارات المسار FFMPEG"
 
 #: ../src/tool/optionsprocessor.cpp:91
 msgid "Show FFMPEG target options help"
-msgstr ""
+msgstr "اعرض مساعدة لخيارات المسار FFMPEG"
 
 #: ../src/tool/optionsprocessor.cpp:92
 msgid "Synfig info options"
-msgstr ""
+msgstr "خيارات معلومات Synfig"
 
 #: ../src/tool/optionsprocessor.cpp:92
 msgid "Show Synfig info options help"
-msgstr ""
+msgstr "أظهر مساعدة لخيارات معلومات Synfig"
 
 #: ../src/tool/optionsprocessor.cpp:94
 msgid "Synfig debug flags"
-msgstr ""
+msgstr "شارات التنقيح"
 
 #: ../src/tool/optionsprocessor.cpp:94
 msgid "Show Synfig debug flags help"
-msgstr ""
+msgstr "مساعدة لشارات التنقيح"
 
 #: ../src/tool/optionsprocessor.cpp:154
 msgid "Specify output target (Default: PNG)"
-msgstr ""
+msgstr "حدد مسار المخرج (افتراضي: PNG)"
 
 #: ../src/tool/optionsprocessor.cpp:155
 msgid "Set the image width in pixels (Use zero for file default)"
-msgstr ""
+msgstr "تعيين عرض الصورة بالبكسل (استخدم صفر لإعدادات الملف الافتراضية)"
 
 #: ../src/tool/optionsprocessor.cpp:156
 msgid "Set the image height in pixels (Use zero for file default)"
-msgstr ""
+msgstr "تعيين ارتفاع الصورة بالبكسل (استخدم صفر لإعدادات الملف الافتراضية)"
 
 #: ../src/tool/optionsprocessor.cpp:157
 msgid "Set the diagonal size of image window (Span)"
-msgstr ""
+msgstr "تعيين الحجم القطري لنافذة الصورة (تمديد)"
 
 #: ../src/tool/optionsprocessor.cpp:158
 msgid "Set antialias amount for parametric renderer."
-msgstr ""
+msgstr "تعيين مقدار التنعيم للمصيّر المخصص."
 
 #: ../src/tool/optionsprocessor.cpp:160
 msgid "Enable multithreaded renderer using the specified number of threads"
-msgstr ""
+msgstr "تمكين المصيّر متعدد المهام باستخدام العدد المحدد للمهام"
 
 #: ../src/tool/optionsprocessor.cpp:161
 msgid "Specify input filename"
-msgstr ""
+msgstr "تعيين اسم الملف المدخل"
 
 #: ../src/tool/optionsprocessor.cpp:162
 msgid "Specify output filename"
-msgstr ""
+msgstr "تعيين اسم الملف المخرج"
 
 #: ../src/tool/optionsprocessor.cpp:163
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
-msgstr ""
+msgstr "فاصل الملف المخرج (استخدم علامات اقتباس مزدوجة إذا كنت ترغب في استخدام مسافات)"
 
 #: ../src/tool/optionsprocessor.cpp:164
 msgid "Render the canvas with the given id instead of the root."
-msgstr ""
+msgstr "تصيير الرقعة حسب المعرف المعين بدلا من الأصل."
 
 #: ../src/tool/optionsprocessor.cpp:165
 msgid "Set the frame rate"
-msgstr ""
+msgstr "تعيين معدل الإطارات"
 
 #: ../src/tool/optionsprocessor.cpp:166
 msgid "Render a single frame at <seconds>"
-msgstr ""
+msgstr "تصيير إطار واحد في <seconds>"
 
 #: ../src/tool/optionsprocessor.cpp:167 ../src/tool/optionsprocessor.cpp:168
 msgid "Set the starting time"
-msgstr ""
+msgstr "تعيين وقت البدء"
 
 #: ../src/tool/optionsprocessor.cpp:169
 msgid "Set the ending time"
-msgstr ""
+msgstr "تعيين وقت النهاية"
 
 #: ../src/tool/optionsprocessor.cpp:170
 msgid "Set the physical resolution (Dots-per-inch)"
-msgstr ""
+msgstr "تعيين الاستبانة الطبيعية (نقاط لكل بوصة)"
 
 #: ../src/tool/optionsprocessor.cpp:171
 msgid "Set the physical X resolution (Dots-per-inch)"
-msgstr ""
+msgstr "تعيين الاستبانة X الطبيعية (نقاط لكل بوصة)"
 
 #: ../src/tool/optionsprocessor.cpp:172
 msgid "Set the physical Y resolution (Dots-per-inch)"
-msgstr ""
+msgstr "تعيين الاستبانة Y الطبيعية (نقاط لكل بوصة)"
 
 #: ../src/tool/optionsprocessor.cpp:176
 msgid "Output verbosity level"
-msgstr ""
+msgstr "مستوى الإسهاب الناتج"
 
 #: ../src/tool/optionsprocessor.cpp:177
 msgid "Quiet mode (No progress/time-remaining display)"
-msgstr ""
+msgstr "الوضع الهادئ (لا يوجد تقدم/عرض الوقت المتبقي)"
 
 #: ../src/tool/optionsprocessor.cpp:178
 msgid "Print benchmarks"
-msgstr ""
+msgstr "معايير الطباعة"
 
 #: ../src/tool/optionsprocessor.cpp:179
 msgid "Extract alpha"
-msgstr ""
+msgstr "استخراج ألفا"
 
 #: ../src/tool/optionsprocessor.cpp:182
 msgid "Append layers in <filename> to composition"
-msgstr ""
+msgstr "إضافة الطبقات في  <filename> للتركيب"
 
 #: ../src/tool/optionsprocessor.cpp:182
 msgid "filename"
-msgstr ""
+msgstr "اسم الملف"
 
 #: ../src/tool/optionsprocessor.cpp:183
 msgid "Print out specified details of the root canvas"
-msgstr ""
+msgstr "طباعة التفاصيل المحددة للرقعة الأصلية"
 
 #: ../src/tool/optionsprocessor.cpp:183
 msgid "fields"
-msgstr ""
+msgstr "حقول"
 
 #: ../src/tool/optionsprocessor.cpp:184
 msgid "Print out the list of exported canvases in the composition"
-msgstr ""
+msgstr "طباعة قائمة الرقع المصدرة في التركيب"
 
 #: ../src/tool/optionsprocessor.cpp:187
 msgid "Set the codec for the video. See --target-video-codecs"
-msgstr ""
+msgstr "تعيين الكوديك للفيديو. انظر --target-video-codecs"
 
 #: ../src/tool/optionsprocessor.cpp:187
 msgid "codec"
-msgstr ""
+msgstr "كودك"
 
 #: ../src/tool/optionsprocessor.cpp:188
 msgid "Set the bitrate for the output video"
-msgstr ""
+msgstr "تعيين معدل البت للفيديو المخرج"
 
 #: ../src/tool/optionsprocessor.cpp:188
 msgid "bitrate"
-msgstr ""
+msgstr "معدل البتات"
 
 #: ../src/tool/optionsprocessor.cpp:191
 msgid "Produce this help message"
-msgstr ""
+msgstr "أظهر رسالة المساعدة هذه"
 
 #: ../src/tool/optionsprocessor.cpp:192
 msgid "Print out the list of available importers"
-msgstr ""
+msgstr "طباعة قائمة المستوردات المتوفرة"
 
 #: ../src/tool/optionsprocessor.cpp:193
 msgid "Print out misc build information"
-msgstr ""
+msgstr "طباعة معلومات البناء المتنوعة"
 
 #: ../src/tool/optionsprocessor.cpp:194
 msgid "Print out the list of available layers"
-msgstr ""
+msgstr "طباعة قائمة الطبقات المتوفرة"
 
 #: ../src/tool/optionsprocessor.cpp:195
 msgid "Print out layer's description, parameter info, etc."
-msgstr ""
+msgstr "طباعة وصف الطبقة، معلومات معاملاتها، إلخ."
 
 #: ../src/tool/optionsprocessor.cpp:195
 msgid "layer-name"
-msgstr ""
+msgstr "اسم الطبقة"
 
 #: ../src/tool/optionsprocessor.cpp:196
 msgid "Print out license information"
-msgstr ""
+msgstr "اعرض معلومات الترخيص"
 
 #: ../src/tool/optionsprocessor.cpp:197
 msgid "Print out the list of loaded modules"
-msgstr ""
+msgstr "اعرض قائمة الوحدات النمطية المحمّلة"
 
 #: ../src/tool/optionsprocessor.cpp:198
 msgid "Print out the list of available targets"
-msgstr ""
+msgstr "طباعة قائمة المسارات المتوفرة"
 
 #: ../src/tool/optionsprocessor.cpp:199
 msgid ""
 "Print out the list of available video codecs when encoding through FFMPEG"
-msgstr ""
+msgstr "اعرض قائمة كودكات الفيديو المتوفرة عندنا ترمّز باستعمال FFMPEG"
 
 #: ../src/tool/optionsprocessor.cpp:200
 msgid "Print out the list of available ValueNodes"
-msgstr ""
+msgstr "طباعة قائمة ValueNodes المتوفرة"
 
 #: ../src/tool/optionsprocessor.cpp:201
 msgid "Print out version information"
-msgstr ""
+msgstr "اطبع معلومات الإصدارة"
 
 #: ../src/tool/optionsprocessor.cpp:205
 msgid "Test GUID generation"
-msgstr ""
+msgstr "فحص جيل GUID"
 
 #: ../src/tool/optionsprocessor.cpp:206
 msgid "Test signal implementation"
-msgstr ""
+msgstr "فحص تنفيذ الإشارة"
 
 #: ../src/tool/optionsprocessor.cpp:325
 msgid "Unrecognised canvas variable: "
-msgstr ""
+msgstr "متغير الرقعة غير معروف: "
 
 #: ../src/tool/optionsprocessor.cpp:326
 msgid "Recognized variables are:"
-msgstr ""
+msgstr "المتغيرات المعروفة هي:"
 
 #: ../src/tool/optionsprocessor.cpp:343
 msgid "verbosity set to "
-msgstr ""
+msgstr "تعيين الإسهاب إلى "
 
 #: ../src/tool/optionsprocessor.cpp:363
 msgid "Threads set to "
-msgstr ""
+msgstr "تعيين عدد الخيوط إلى "
 
 #: ../src/tool/optionsprocessor.cpp:446
 msgid "Layer Name: "
-msgstr ""
+msgstr "اسم الطبقة: "
 
 #: ../src/tool/optionsprocessor.cpp:447
 msgid "Localized Layer Name: "
-msgstr ""
+msgstr "اسم الطبقة باللغة المحلية: "
 
 #: ../src/tool/optionsprocessor.cpp:449
 msgid "Version: "
-msgstr ""
+msgstr "الاصدار: "
 
 #: ../src/tool/optionsprocessor.cpp:454
 msgid "param - "
-msgstr ""
+msgstr "معامل - "
 
 #: ../src/tool/optionsprocessor.cpp:456
 msgid " (not critical)"
-msgstr ""
+msgstr " (غير حرج)"
 
 #: ../src/tool/optionsprocessor.cpp:457
 msgid "\tLocalized Name: "
-msgstr ""
+msgstr "\tالاسم باللغة المحلّيّة: "
 
 #: ../src/tool/optionsprocessor.cpp:461
 msgid "\tDescription: "
-msgstr ""
+msgstr "\tوصف: "
 
 #: ../src/tool/optionsprocessor.cpp:465
 msgid "\tHint: "
-msgstr ""
+msgstr "\tتلميحة: "
 
 #: ../src/tool/optionsprocessor.cpp:529
 #, c-format
 msgid "Antialiasing set to %d, (%d samples per pixel)"
-msgstr ""
+msgstr "تعيين التنعيم إلى %d، (%d عينة في البكسل)"
 
 #: ../src/tool/optionsprocessor.cpp:538
 #, c-format
 msgid "Span set to %d units"
-msgstr ""
+msgstr "تعيين التوسيع إلى %d وحدة/وحدات"
 
 #: ../src/tool/optionsprocessor.cpp:546
 #, c-format
 msgid "Frame rate set to %d frames per second"
-msgstr ""
+msgstr "تعيين معدل الإطارات إلى %d إطار في الثانية"
 
 #: ../src/tool/optionsprocessor.cpp:558
 #, c-format
 msgid "Physical resolution set to %f dpi"
-msgstr ""
+msgstr "تعيين الاستبانة الطبيعية إلى  %f dpi"
 
 #: ../src/tool/optionsprocessor.cpp:569
 #, c-format
 msgid "Physical X resolution set to %f dpi"
-msgstr ""
+msgstr "تعيين الاستبانة الطبيعية X إلى  %f dpi"
 
 #: ../src/tool/optionsprocessor.cpp:580
 #, c-format
 msgid "Physical Y resolution set to %f dpi"
-msgstr ""
+msgstr "تعيين الاستبانة الطبيعية Y إلى  %f dpi"
 
 #: ../src/tool/optionsprocessor.cpp:601
 msgid "Rendering frame at "
-msgstr ""
+msgstr "تصيير الإطارات عند "
 
 #: ../src/tool/optionsprocessor.cpp:615
 #, c-format
 msgid "Resolution set to %dx%d."
-msgstr ""
+msgstr "تعيين الاستبانة  إلى %dx%d."
 
 #: ../src/tool/optionsprocessor.cpp:633
 msgid "Both video codec and bitrate parameters are necessary."
-msgstr ""
+msgstr "كل من كودك الفيديو ومعدل البتات ضروري."
 
 #: ../src/tool/optionsprocessor.cpp:659
 #, c-format
 msgid "Video codec \"%s\" is not supported."
-msgstr ""
+msgstr "كودك الفيديو \"%s\" غير مدعوم."
 
 #: ../src/tool/optionsprocessor.cpp:662
 msgid "Target video codec set to: "
-msgstr ""
+msgstr "تعيين مسار كودك الفيديو إلى: "
 
 #: ../src/tool/optionsprocessor.cpp:667
 msgid "Target bitrate set to: "
-msgstr ""
+msgstr "تعيين مسار معدل البتات إلى: "
 
 #: ../src/tool/optionsprocessor.cpp:673
 msgid "Output file sequence separator set to: '"
-msgstr ""
+msgstr "تعيين فاصل سلسلة ملفات الإخراج ب: '"
 
 #: ../src/tool/optionsprocessor.cpp:718
 #, c-format
 msgid "Unable to load file '%s'."
-msgstr ""
+msgstr "تعذر تحميل الملف '%s'."
 
 #: ../src/tool/optionsprocessor.cpp:726
 msgid "No input file provided."
-msgstr ""
+msgstr "لا ملف إدخال."
 
 #: ../src/tool/optionsprocessor.cpp:732
 msgid "Target set to "
-msgstr ""
+msgstr "ضبط المسار إلى "
 
 #: ../src/tool/optionsprocessor.cpp:751
 msgid "Quality set to "
-msgstr ""
+msgstr "ضبط الجودة إلى "
 
 #: ../src/tool/optionsprocessor.cpp:769
 #, c-format
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
-msgstr ""
+msgstr "تعذر إيجاد رقعة بالمعرف \"%s\" in %s.\nالتخلي عن المهمة..."
 
 #: ../src/tool/optionsprocessor.cpp:776
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
-msgstr ""
+msgstr "اسم رقعة سيئ \"%s\" in %s.\nالتخلي عن المهمة..."
 
 #: ../src/tool/optionsprocessor.cpp:805
 msgid "Unable to append '"
-msgstr ""
+msgstr "تعذرت إلحاق '"
 
 #: ../src/tool/optionsprocessor.cpp:819
 msgid "Appended contents of "
-msgstr ""
+msgstr "المحتويات الملحقة لـ "
 
 #: ../src/tool/printing_functions.cpp:82
 msgid "End Time"
-msgstr ""
+msgstr "وقت الإنتهاء"
 
 #: ../src/tool/printing_functions.cpp:89
 msgid "Frame Rate"
-msgstr ""
+msgstr "معدل الإطارات"
 
 #: ../src/tool/printing_functions.cpp:96
 msgid "Start Frame"
-msgstr ""
+msgstr "إطار البدء"
 
 #: ../src/tool/printing_functions.cpp:103
 msgid "End Frame"
-msgstr ""
+msgstr "إطار أخير"
 
 #: ../src/tool/printing_functions.cpp:125
 msgid "Image Aspect Ratio"
-msgstr ""
+msgstr "نسبة أبعاد الصورة"
 
 #: ../src/tool/printing_functions.cpp:135
 msgid "Pixel Width"
-msgstr ""
+msgstr "عرض البكسل"
 
 #: ../src/tool/printing_functions.cpp:142
 msgid "Pixel Height"
-msgstr ""
+msgstr "ارتفاع البكسل"
 
 #: ../src/tool/printing_functions.cpp:149
 msgid "Pixel Aspect Ratio"
-msgstr ""
+msgstr "نسبة أبعاد البيكسل"
 
 #: ../src/tool/printing_functions.cpp:159
 msgid "Top Left"
-msgstr ""
+msgstr "أعلى اليسار"
 
 #: ../src/tool/printing_functions.cpp:166
 msgid "Bottom Right"
-msgstr ""
+msgstr "أسفل اليمين"
 
 #: ../src/tool/printing_functions.cpp:173
 msgid "Physical Width"
-msgstr ""
+msgstr "عرض حقيقي"
 
 #: ../src/tool/printing_functions.cpp:180
 msgid "Physical Height"
-msgstr ""
+msgstr "ارتفاع حقيقي"
 
 #: ../src/tool/printing_functions.cpp:187
 msgid "X Resolution"
-msgstr ""
+msgstr "استبانة س"
 
 #: ../src/tool/printing_functions.cpp:193
 msgid "Y Resolution"
-msgstr ""
+msgstr "استبانة ص"
 
 #: ../src/tool/printing_functions.cpp:199
 msgid "Diagonal Image Span"
-msgstr ""
+msgstr "تمديد الصورة قطريا"
 
 #: ../src/tool/printing_functions.cpp:208
 msgid "Interlaced"
-msgstr ""
+msgstr "تداخل"
 
 #: ../src/tool/printing_functions.cpp:215
 msgid "Antialias"
-msgstr ""
+msgstr "نعّم"
 
 #: ../src/tool/printing_functions.cpp:229
 msgid "Flags"
-msgstr ""
+msgstr "شارات"
 
 #: ../src/tool/printing_functions.cpp:236
 msgid "Focus"
-msgstr ""
+msgstr "_بُؤرة"
 
 #: ../src/tool/printing_functions.cpp:243
 msgid "Background Color"
-msgstr ""
+msgstr "لون الخلفية"
 
 #: ../src/tool/printing_functions.cpp:254
 msgid "Metadata"
-msgstr ""
+msgstr "البيانات الإضافية"
 
 #: ../src/tool/renderprogress.cpp:78
 #, c-format
 msgid "%s: Frame %d of %d (%d%%). Remaining time: "
-msgstr ""
+msgstr "%s: إطار %d من %d (%d%%). الزمن المتبقي: "
 
 #. TRANSLATORS This "w" stands for weeks
 #: ../src/tool/renderprogress.cpp:141
 msgid "w "
-msgstr ""
+msgstr "ع "
 
 #. TRANSLATORS This "d" stands for days
 #: ../src/tool/renderprogress.cpp:146
 msgid "d "
-msgstr ""
+msgstr "d "
 
 #. TRANSLATORS This "h" stands for hours
 #: ../src/tool/renderprogress.cpp:151
 msgid "h "
-msgstr ""
+msgstr "h "
 
 #. TRANSLATORS This "m" stands for minutes
 #: ../src/tool/renderprogress.cpp:156
 msgid "m "
-msgstr ""
+msgstr "m "
 
 #. TRANSLATORS This "s" stands for seconds
 #: ../src/tool/renderprogress.cpp:159
 msgid "s "
-msgstr ""
+msgstr "s "
