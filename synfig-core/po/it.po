@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-02-18 14:18+0000\n"
+"PO-Revision-Date: 2020-03-13 16:49+0000\n"
 "Last-Translator: Firas Hanife <FirasHanife@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/morevnaproject/synfig/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -2497,11 +2497,11 @@ msgstr "Tipo di sfumatura da usare"
 
 #: ../src/synfig/layers/layer_shape.cpp:203
 msgid "Winding Style"
-msgstr "Stile Serpentina"
+msgstr "Stile Intersezione"
 
 #: ../src/synfig/layers/layer_shape.cpp:204
 msgid "Winding style to use"
-msgstr "Stile di serpentina da usare"
+msgstr "Stile di intersezione da usare"
 
 #: ../src/synfig/layers/layer_shape.cpp:206
 msgid "Non Zero"

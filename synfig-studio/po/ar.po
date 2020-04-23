@@ -5,13 +5,14 @@
 # Translators:
 # Fahad Al-Saidi <fahad.alsaidi@gmail.com>, 2020
 # Muslim Kamal Salim <qbmw8001@gmail.com>, 2014
+# zerrouki <taha.zerrouki@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-03-11 20:04+0000\n"
-"Last-Translator: Taha Zerrouki <taha_zerrouki@hotmail.com>\n"
+"PO-Revision-Date: 2020-03-26 13:10+0000\n"
+"Last-Translator: Fahad Al-Saidi <fahad.alsaidi@gmail.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/morevnaproject/synfig/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +35,7 @@ msgid ""
 "using a vector and bitmap artwork. It eliminates the need to create "
 "animation frame-by frame, allowing you to produce 2D animation of a higher "
 "quality with fewer people and resources."
-msgstr "أستوديو سنفغ هو برنامج رسوم متحركة ثنائية الابعاد 2d مجاني ومفتوح المصدر, مصمم كحل انتاجي قوي لانشاء رسوم متحركة بجودة مناسبة للافلام باستخدام فن  الرسومات المتجهية   والصور النقطية. انه يقضي على حاجة صنع الرسوم المتحركة اطارا اطارا(فريم), مما يسمح لك بانتاج رسوم متحركة بجودة اعلى مع ناس ومصادر اقل."
+msgstr "أستوديو سنفغ برنامج رسوم متحركة ثنائية الأبعاد مجاني مفتوح المصدر، مصمم كحل إنتاجي قوي لإنشاء رسوم متحركة بجودة مناسبة للأفلام باستخدام فن  الرسومات المتجهة والصور النقطية. إنه يُغ عنني صنع الرسوم المتحركة إطارا إطارا، مما يسمح لك بإنتاج رسوم متحركة بجودة أعلى بأقل المصادر والعاملين."
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:2
 msgid "Features:"
@@ -42,7 +43,7 @@ msgstr "المزايا:"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:3
 msgid "Can manipulate vector and bitmap artwork"
-msgstr ""
+msgstr "يمكن التعامل مع الأعمال الشعاعية أو النقطية"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:4
 msgid "Automatic tweening (independent from FPS)"
@@ -56,7 +57,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:6
 msgid "Full-featured bone system"
-msgstr ""
+msgstr "نظام عظام مكتمل المميزات"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:7
 msgid ""
@@ -86,7 +87,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:13
 msgid "Synfig Studio workspace"
-msgstr ""
+msgstr "مساحة عمل استديو Synfig"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:1
 msgid "enable"
@@ -128,59 +129,59 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:27
 msgid "Fine speed"
-msgstr ""
+msgstr "سرعة فائقة"
 
 #: ../src/brushlib/brushsettings.py:27
 msgid ""
 "How fast you currently move. This can change very quickly. Try 'print input "
 "values' from the 'help' menu to get a feeling for the range; negative values"
 " are rare but possible for very low speed."
-msgstr ""
+msgstr "مدى سرعة تحركك حاليًا. هذا يمكن أن يتغير أسرع. جرّب \"طباعة قيم الإدخال\" من قائمة \"التعليمات\" للحصول على شعور بالمدى؛ القيم السلبية نادرة ولكنها ممكنة لسرعة منخفضة جدا."
 
 #: ../src/brushlib/brushsettings.py:28
 msgid "Gross speed"
-msgstr ""
+msgstr "السرعة الإجمالية"
 
 #: ../src/brushlib/brushsettings.py:28
 msgid ""
 "Same as fine speed, but changes slower. Also look at the 'gross speed "
 "filter' setting."
-msgstr ""
+msgstr "نفس السرعة الفائقة، ولكن التغييرات أبطأ. انظر أيضًا إلى إعداد \"مرشح السرعة الإجمالية\"."
 
 #: ../src/brushlib/brushsettings.py:29
 msgid "Random"
-msgstr ""
+msgstr "عشوائي"
 
 #: ../src/brushlib/brushsettings.py:29
 msgid ""
 "Fast random noise, changing at each evaluation. Evenly distributed between 0"
 " and 1."
-msgstr ""
+msgstr "ضوضاء عشوائية سريعة ، وتغيير في كل تقييم. موزعة بالتساوي بين 0 و 1."
 
 #: ../src/brushlib/brushsettings.py:30
 msgid "Stroke"
-msgstr ""
+msgstr "سطر"
 
 #: ../src/brushlib/brushsettings.py:30
 msgid ""
 "This input slowly goes from zero to one while you draw a stroke. It can also"
 " be configured to jump back to zero periodically while you move. Look at the"
 " 'stroke duration' and 'stroke hold time' settings."
-msgstr ""
+msgstr "هذا الإدخال ينتقل ببطء من صفر إلى واحد أثناء رسم الحدود. كما يمكن  ضبطه للقفز مرة أخرى إلى الصفر بشكل دوري أثناء التحرك. انظر إلى إعدادات \"مدة السطر\" وإعدادات \"وقت الاحتفاظ بالسطر\"."
 
 #: ../src/brushlib/brushsettings.py:31
 msgid "Direction"
-msgstr ""
+msgstr "الاتجاه"
 
 #: ../src/brushlib/brushsettings.py:31
 msgid ""
 "The angle of the stroke, in degrees. The value will stay between 0.0 and "
 "180.0, effectively ignoring turns of 180 degrees."
-msgstr ""
+msgstr "زاوية السطر، بالدرجات. ستبقى القيمة بين 0.0 و 180.0، متجاهلة فعلياً المنعطفات من 180 درجة."
 
 #: ../src/brushlib/brushsettings.py:32
 msgid "Declination"
-msgstr ""
+msgstr "الميلان"
 
 #: ../src/brushlib/brushsettings.py:32
 msgid ""
@@ -190,7 +191,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:33
 msgid "Ascension"
-msgstr ""
+msgstr "الصعود"
 
 #: ../src/brushlib/brushsettings.py:33
 msgid ""
@@ -201,13 +202,13 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:35
 msgid "Custom"
-msgstr ""
+msgstr "مخصص"
 
 #: ../src/brushlib/brushsettings.py:35
 msgid ""
 "This is a user defined input. Look at the 'custom input' setting for "
 "details."
-msgstr ""
+msgstr "هذا طريقة إدخال محددة من قبل المستخدم. انظر إلى  إعدادات 'الإدخال المخصص'  لمزيد تفاصيل."
 
 #: ../src/brushlib/brushsettings.py:44 ../src/gui/states/state_bline.cpp:572
 #: ../src/gui/states/state_circle.cpp:605 ../src/gui/states/state_draw.cpp:674
@@ -223,11 +224,11 @@ msgstr "الشفافية"
 msgid ""
 "0 means brush is transparent, 1 fully visible\n"
 "(also known as alpha or opacity)"
-msgstr ""
+msgstr "0 تعني أن الفرشاة غير مرئية، 1 مرئية بالكامل\n(يعرف أيضا بألفا أو الشفافية)"
 
 #: ../src/brushlib/brushsettings.py:45
 msgid "Opacity multiply"
-msgstr ""
+msgstr "تكرار الشفافية"
 
 #: ../src/brushlib/brushsettings.py:45
 msgid ""
@@ -237,7 +238,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:46
 msgid "Opacity linearize"
-msgstr ""
+msgstr "الشفافية الخطية"
 
 #: ../src/brushlib/brushsettings.py:46
 msgid ""
@@ -260,7 +261,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:48
 msgid "Hardness"
-msgstr ""
+msgstr "الصلابة"
 
 #: ../src/brushlib/brushsettings.py:48
 msgid ""
@@ -270,7 +271,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:49
 msgid "Anti-aliasing"
-msgstr ""
+msgstr "تنعيم"
 
 #: ../src/brushlib/brushsettings.py:49
 msgid ""
@@ -282,35 +283,35 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:50
 msgid "Dabs per basic radius"
-msgstr ""
+msgstr "نقرات لكل شعاع بسيط"
 
 #: ../src/brushlib/brushsettings.py:50
 msgid ""
 "How many dabs to draw while the pointer moves a distance of one brush radius"
 " (more precise: the base value of the radius)"
-msgstr ""
+msgstr "كم عدد النقرات التي سترسم أثناء تحرك المؤشر مسافة شعاع فرشاة (للدقة: القيمة الأساسية للشعاع)"
 
 #: ../src/brushlib/brushsettings.py:51
 msgid "Dabs per actual radius"
-msgstr ""
+msgstr "نقرة لكل شعاع حقيقي"
 
 #: ../src/brushlib/brushsettings.py:51
 msgid ""
 "Same as above, but the radius actually drawn is used, which can change "
 "dynamically"
-msgstr ""
+msgstr "مثل الأعلى، لكن يستخدم الشعاع المرسوم فعليا الذي من دوره يمكن أن يغير بشكل دينامكي."
 
 #: ../src/brushlib/brushsettings.py:52
 msgid "Dabs per second"
-msgstr ""
+msgstr "نقرات في الثانية"
 
 #: ../src/brushlib/brushsettings.py:52
 msgid "Dabs to draw each second, no matter how far the pointer moves"
-msgstr ""
+msgstr "عدد النقرات التي ترسم في الثانية، بغض النظر مدى سرعة المؤشر"
 
 #: ../src/brushlib/brushsettings.py:53
 msgid "Radius by random"
-msgstr ""
+msgstr "نصف القطر عشوائي"
 
 #: ../src/brushlib/brushsettings.py:53
 msgid ""
@@ -321,7 +322,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:54
 msgid "Fine speed filter"
-msgstr ""
+msgstr "مرشح السرعة الفائقة"
 
 #: ../src/brushlib/brushsettings.py:54
 msgid ""
@@ -331,7 +332,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:55
 msgid "Gross speed filter"
-msgstr ""
+msgstr "مرشح السرعة الإجمالية"
 
 #: ../src/brushlib/brushsettings.py:55
 msgid "Same as 'fine speed filter', but note that the range is different"
@@ -339,7 +340,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:56
 msgid "Fine speed gamma"
-msgstr ""
+msgstr "غاما السرعة الفائقة"
 
 #: ../src/brushlib/brushsettings.py:56
 msgid ""
@@ -351,15 +352,15 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:57
 msgid "Gross speed gamma"
-msgstr ""
+msgstr "غاما السرعة الإجمالية"
 
 #: ../src/brushlib/brushsettings.py:57
 msgid "Same as 'fine speed gamma' for gross speed"
-msgstr ""
+msgstr "نفسها مثل \"غاما السرعة الفائقة\" للسرعة الإجمالية"
 
 #: ../src/brushlib/brushsettings.py:58
 msgid "Jitter"
-msgstr ""
+msgstr "النفّاض"
 
 #: ../src/brushlib/brushsettings.py:58
 msgid ""
@@ -371,7 +372,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:59
 msgid "Offset by speed"
-msgstr ""
+msgstr "الإزاحة على السرعة"
 
 #: ../src/brushlib/brushsettings.py:59
 msgid ""
@@ -383,7 +384,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:60
 msgid "Offset by speed filter"
-msgstr ""
+msgstr "الإزاحة حسب مرشح السرعة"
 
 #: ../src/brushlib/brushsettings.py:60
 msgid "How slow the offset goes back to zero when the cursor stops moving"
@@ -391,7 +392,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:61
 msgid "Slow position tracking"
-msgstr ""
+msgstr "متابعة المواضع بطيئة"
 
 #: ../src/brushlib/brushsettings.py:61
 msgid ""
@@ -401,7 +402,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:62
 msgid "Slow tracking per dab"
-msgstr ""
+msgstr "تتبع بطئ لكل نقرة"
 
 #: ../src/brushlib/brushsettings.py:62
 msgid ""
@@ -411,7 +412,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:63
 msgid "Tracking noise"
-msgstr ""
+msgstr "متابعة الضجيج"
 
 #: ../src/brushlib/brushsettings.py:63
 msgid ""
@@ -421,11 +422,11 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:65
 msgid "Color hue"
-msgstr ""
+msgstr "درجة اللون"
 
 #: ../src/brushlib/brushsettings.py:66
 msgid "Color saturation"
-msgstr ""
+msgstr "تشبع اللون"
 
 #: ../src/brushlib/brushsettings.py:67
 msgid "Color value"
@@ -433,7 +434,7 @@ msgstr "قيمة اللون"
 
 #: ../src/brushlib/brushsettings.py:67
 msgid "Color value (brightness, intensity)"
-msgstr ""
+msgstr "قيمة اللون (سطوع، كثافة)"
 
 #: ../src/brushlib/brushsettings.py:68
 msgid "Save color"
@@ -449,7 +450,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:69
 msgid "Change color hue"
-msgstr ""
+msgstr "تغيير درجة اللون"
 
 #: ../src/brushlib/brushsettings.py:69
 msgid ""
@@ -461,7 +462,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:70
 msgid "Change color lightness (HSL)"
-msgstr ""
+msgstr "تعديل إضاءة اللون (HSL)"
 
 #: ../src/brushlib/brushsettings.py:70
 msgid ""
@@ -473,7 +474,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:71
 msgid "Change color satur. (HSL)"
-msgstr ""
+msgstr "تعديل تشبع اللون (HSL)"
 
 #: ../src/brushlib/brushsettings.py:71
 msgid ""
@@ -485,7 +486,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:72
 msgid "Change color value (HSV)"
-msgstr ""
+msgstr "تعديل قيمة اللون (HSV)"
 
 #: ../src/brushlib/brushsettings.py:72
 msgid ""
@@ -497,7 +498,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:73
 msgid "Change color satur. (HSV)"
-msgstr ""
+msgstr "تعديل تشبع اللون (HSV)"
 
 #: ../src/brushlib/brushsettings.py:73
 msgid ""
@@ -509,7 +510,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:74
 msgid "Smudge"
-msgstr ""
+msgstr "تلطيخ"
 
 #: ../src/brushlib/brushsettings.py:74
 msgid ""
@@ -521,7 +522,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:75
 msgid "Smudge length"
-msgstr ""
+msgstr "طول التضبيب"
 
 #: ../src/brushlib/brushsettings.py:75
 msgid ""
@@ -533,7 +534,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:76
 msgid "Smudge radius"
-msgstr ""
+msgstr "شعاع التضبيب"
 
 #: ../src/brushlib/brushsettings.py:76
 msgid ""
@@ -546,7 +547,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:77 ../src/gui/states/state_brush.cpp:513
 msgid "Eraser"
-msgstr ""
+msgstr "الممحاة"
 
 #: ../src/brushlib/brushsettings.py:77
 msgid ""
@@ -558,7 +559,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:79
 msgid "Stroke threshold"
-msgstr ""
+msgstr "عتبة السطر"
 
 #: ../src/brushlib/brushsettings.py:79
 msgid ""
@@ -568,7 +569,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:80
 msgid "Stroke duration"
-msgstr ""
+msgstr "مدة السطر"
 
 #: ../src/brushlib/brushsettings.py:80
 msgid ""
@@ -578,7 +579,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:81
 msgid "Stroke hold time"
-msgstr ""
+msgstr "زمن معالجة السطر"
 
 #: ../src/brushlib/brushsettings.py:81
 msgid ""
@@ -589,7 +590,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:82
 msgid "Custom input"
-msgstr ""
+msgstr "مدخل مخصص"
 
 #: ../src/brushlib/brushsettings.py:82
 msgid ""
@@ -599,7 +600,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:83
 msgid "Custom input filter"
-msgstr ""
+msgstr "مرشح مداخل محصص"
 
 #: ../src/brushlib/brushsettings.py:83
 msgid ""
@@ -631,7 +632,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:87
 msgid "Direction filter"
-msgstr ""
+msgstr "مرشح الاتجاه"
 
 #: ../src/brushlib/brushsettings.py:87
 msgid ""
@@ -641,7 +642,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:89
 msgid "Lock alpha"
-msgstr ""
+msgstr "أوصِد قناة ألفا"
 
 #: ../src/brushlib/brushsettings.py:89
 msgid ""
@@ -659,7 +660,7 @@ msgstr "اضافة مجموعة جديدة"
 
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:271
 msgid "Unnamed Set"
-msgstr ""
+msgstr "مجموعة غير مسماة"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:240
 msgid "Add New Keyframe"
@@ -671,11 +672,11 @@ msgstr "خواص الاطر المفتاحية"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:249
 msgid "Toggle Keyframe"
-msgstr ""
+msgstr "بدّل الإطار المفتاحي"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:253
 msgid "Set Keyframe Description"
-msgstr ""
+msgstr "وصف الإطار المفتاحي"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:110
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:271
@@ -716,7 +717,7 @@ msgstr "الفهرس  %d"
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:247
 #: ../src/gui/states/state_text.cpp:633
 msgid "Text Paragraph"
-msgstr ""
+msgstr "نص الفقرة"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:247
 #: ../src/gui/states/state_text.cpp:633
@@ -743,7 +744,7 @@ msgstr "زيارة موقع سنفغ"
 msgid ""
 "Copyright (c) 2001-2019\n"
 "Synfig developers & contributors"
-msgstr ""
+msgstr "الحقوق محفوظة (c) 2001-2019\nمطورين سينفج و المساهمين "
 
 #: ../src/gui/dialogs/about.cpp:109
 msgid "Original developers:"
@@ -756,7 +757,7 @@ msgstr "المساهمون"
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:172
 msgid "translator-credits"
-msgstr "المترجم: محمد كنتاوي"
+msgstr "محمد كنتاوي\nطه زروقي"
 
 #: ../src/gui/dialogs/about.cpp:187
 #, c-format
@@ -778,12 +779,12 @@ msgstr "بني ب:\n"
 #: ../src/gui/dialogs/about.cpp:197
 #, c-format
 msgid "ETL %s\n"
-msgstr ""
+msgstr "ETL %s\n"
 
 #: ../src/gui/dialogs/about.cpp:198
 #, c-format
 msgid "Synfig API %s\n"
-msgstr ""
+msgstr "واجهة برمجية Synfig API %s\n"
 
 #: ../src/gui/dialogs/about.cpp:199
 #, c-format
@@ -793,12 +794,12 @@ msgstr "مكتبة سنفغ %d\n"
 #: ../src/gui/dialogs/about.cpp:200
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
-msgstr ""
+msgstr "GTK+ %d.%d.%d\n"
 
 #: ../src/gui/dialogs/about.cpp:202
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
-msgstr ""
+msgstr "GNU G++ %d.%d.%d\n"
 
 #: ../src/gui/dialogs/about.cpp:207
 msgid "Using:\n"
@@ -807,68 +808,68 @@ msgstr "جاري استخدام:\n"
 #: ../src/gui/dialogs/about.cpp:208
 #, c-format
 msgid "Synfig %s\n"
-msgstr ""
+msgstr "Synfig %s\n"
 
 #: ../src/gui/dialogs/about.cpp:209
 #, c-format
 msgid "GTK+ %d.%d.%d"
-msgstr ""
+msgstr "GTK+ %d.%d.%d"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:151
 msgid "Options"
-msgstr ""
+msgstr "خيارات"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:169
 msgid "Not yet implemented"
-msgstr ""
+msgstr "لم يتم التنفيذ بعد"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:66
 msgid "Canvas Properties"
-msgstr ""
+msgstr "خصائص الرقعة"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:79
 msgid "Canvas Info"
-msgstr ""
+msgstr "معلومات الرقعة"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:81
 msgid "<b>Canvas Info</b>"
-msgstr ""
+msgstr "<b>معلومات الرقعة</b>"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:97
 msgid "_ID"
-msgstr ""
+msgstr "_هوية"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:103
 msgid "_Name"
-msgstr ""
+msgstr "الا_سم "
 
 #: ../src/gui/dialogs/canvasproperties.cpp:106
 msgid "_Description"
-msgstr ""
+msgstr "ال_وصف"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:199 ../src/gui/app.cpp:1083
 msgid "Properties"
-msgstr ""
+msgstr "الخصائص"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:228
 msgid "Edit Canvas Properties"
-msgstr ""
+msgstr "حرّر خصائص الرقعة"
 
 #: ../src/gui/dialogs/dialog_color.cpp:60
 msgid "Colors"
-msgstr ""
+msgstr "الالوان"
 
 #: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:293
 msgid "Set as Outline"
-msgstr ""
+msgstr "تعيين كمخطط تفصيلي"
 
 #: ../src/gui/dialogs/dialog_color.cpp:70 ../src/gui/iconcontroller.cpp:294
 msgid "Set as Fill"
-msgstr ""
+msgstr "تعيين كتعبئة"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:49
 msgid "Custom Video Codec"
-msgstr ""
+msgstr "كودك فيديو مخصص"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:50
 msgid "write your video codec here"
@@ -876,92 +877,92 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:72
 msgid "Flash Video (FLV) / Sorenson Spark / Sorenson H.263"
-msgstr ""
+msgstr "Flash Video (FLV) / Sorenson Spark / Sorenson H.263"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:73
 msgid "H.263+ / H.263-1998 / H.263 version 2"
-msgstr ""
+msgstr "H.263+ / H.263-1998 / H.263 version 2"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:74
 msgid "Huffyuv / HuffYUV"
-msgstr ""
+msgstr "Huffyuv / HuffYUV"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:75
 msgid "libtheora Theora"
-msgstr ""
+msgstr "libtheora Theora"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:76
 msgid "H.264 / AVC / MPEG-4 AVC"
-msgstr ""
+msgstr "H.264 / AVC / MPEG-4 AVC"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:77
 msgid "H.264 / AVC / MPEG-4 AVC (LossLess)"
-msgstr ""
+msgstr "H.264 / AVC / MPEG-4 AVC (LossLess)"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:78
 msgid "MJPEG (Motion JPEG)"
-msgstr ""
+msgstr "MJPEG (Motion JPEG)"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:79
 msgid "raw MPEG-1 video"
-msgstr ""
+msgstr "فيديو خام MPEG-1"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:80
 msgid "raw MPEG-2 video"
-msgstr ""
+msgstr "فيديو خام MPEG-2"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:81
 msgid "MPEG-4 part 2. (XviD/DivX)"
-msgstr ""
+msgstr "MPEG-4 part 2. (XviD/DivX)"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:82
 msgid "MPEG-4 part 2 Microsoft variant version 3"
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 3"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:83
 msgid "MPEG-4 part 2 Microsoft variant version 1"
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 1"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:84
 msgid "MPEG-4 part 2 Microsoft variant version 2"
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 2"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:85
 msgid "Windows Media Video 7"
-msgstr ""
+msgstr "Windows Media Video 7"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:86
 msgid "Windows Media Video 8"
-msgstr ""
+msgstr "Windows Media Video 8"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:95
 msgid "FFmpeg parameters"
-msgstr ""
+msgstr "معلمات FFmpeg"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:102
 msgid "Available Video Codecs:"
-msgstr ""
+msgstr "كوديكات الفيديو المتوفرة:"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:120
 msgid "Video Bit Rate:"
-msgstr ""
+msgstr "معدل بتات الفيديو:"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:66
 msgid "Gradient Editor"
-msgstr ""
+msgstr "محرر التدرجات"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:76
 msgid "Set as Default"
-msgstr ""
+msgstr "حدّد كافتراضي:"
 
 #: ../src/gui/dialogs/dialog_input.cpp:106
 msgid "Input Dialog"
-msgstr ""
+msgstr "مربع حوار الإدخال"
 
 #: ../src/gui/dialogs/dialog_input.cpp:112 ../src/gui/app.cpp:3722
 #: ../src/gui/instance.cpp:1291
 msgid "OK"
-msgstr ""
+msgstr "أوافق"
 
 #: ../src/gui/dialogs/dialog_input.cpp:113
 #: ../src/gui/dialogs/dialog_workspaces.cpp:154
@@ -981,73 +982,73 @@ msgstr ""
 #: ../src/gui/instance.cpp:1301 ../src/gui/instance.cpp:1616
 #: ../src/synfigapp/action_system.cpp:119
 msgid "Cancel"
-msgstr ""
+msgstr "ألغِ"
 
 #: ../src/gui/dialogs/dialog_input.cpp:182
 msgid "Disabled"
-msgstr ""
+msgstr "تعطيل"
 
 #: ../src/gui/dialogs/dialog_input.cpp:183
 msgid "Screen"
-msgstr ""
+msgstr "شاشة"
 
 #: ../src/gui/dialogs/dialog_input.cpp:184
 msgid "Window"
-msgstr ""
+msgstr "نافذة"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:61
 msgid "Keyframe Dialog"
-msgstr ""
+msgstr "مربع حوار الأطر المفتاحية"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:95
 msgid "Description :"
-msgstr ""
+msgstr "الوصف :"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:100
 msgid "Active :"
-msgstr ""
+msgstr "نشط :"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:71 ../src/gui/canvasview.cpp:1549
 msgid "Preview Window"
-msgstr ""
+msgstr "نافذة المعاينة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:74
 msgid "Synfig Studio Preferences"
-msgstr ""
+msgstr "تفضيلات استوديو"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:87
 msgid "Interface"
-msgstr ""
+msgstr "الواجهة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:88
 msgid "Document"
-msgstr ""
+msgstr "مستند"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:89
 msgid "Editing"
-msgstr ""
+msgstr "التحرير"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:90 ../src/gui/canvasview.cpp:1167
 #: ../src/gui/render.cpp:187
 msgid "Render"
-msgstr ""
+msgstr "تصيير"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:91
 msgid "System"
-msgstr ""
+msgstr "النظام"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:127
 #: ../src/gui/dialogs/dialog_setup.cpp:155
 msgid "Units"
-msgstr ""
+msgstr "الوحدات"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:129
 msgid "Timestamp"
-msgstr ""
+msgstr "ختم زمني"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:156
 msgid "Pixels"
-msgstr ""
+msgstr "بكسلات"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:157
 msgid "Points"
@@ -1055,64 +1056,64 @@ msgstr "نقاط"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:158
 msgid "Inches"
-msgstr ""
+msgstr "بوصات"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:159
 msgid "Meters"
-msgstr ""
+msgstr "أمتار"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:160
 msgid "Centimeters"
-msgstr ""
+msgstr "سنتيمتر (سم)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:161
 msgid "Millimeters"
-msgstr ""
+msgstr "مليمترات"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:166
 msgid "Unit System"
-msgstr ""
+msgstr "وحدة النظام"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:172
 msgid "Recent Files"
-msgstr ""
+msgstr "ملفات حديثة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:177
 msgid "Autosave"
-msgstr ""
+msgstr "حفظ تلقائي"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:184
 msgid "Interval"
-msgstr ""
+msgstr "الفترة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:190
 msgid "Brush Presets Path"
-msgstr ""
+msgstr "مسار الفراشي المسبقة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:219
 msgid "Experimental features (requires restart)"
-msgstr ""
+msgstr "مزايا تجريبية (تتطلب إعادة التشغيل)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:249 ../src/gui/iconcontroller.cpp:172
 #: ../src/synfigapp/actions/canvasadd.cpp:76
 msgid "New Canvas"
-msgstr ""
+msgstr "رقعة جديد"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:251
 msgid "Name prefix"
-msgstr ""
+msgstr "سابقة الاسم"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:253
 msgid "File name prefix for the new created document"
-msgstr ""
+msgstr "سابقة اسم الملف للمستند المنشأ الجديد"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:258
 msgid "FPS"
-msgstr ""
+msgstr "إ.ف.ث"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:261
 msgid "Frames per second of the new created document"
-msgstr ""
+msgstr "الإطارات في كل ثانية للمستند المنشأ الجديد"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:283
 msgid "Size"
@@ -1136,88 +1137,88 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:316
 msgid "4096x3112 Full Aperture 4K"
-msgstr ""
+msgstr "4096x3112 Full Aperture 4K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:317
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr ""
+msgstr "2048x1556 Full Aperture Native 2K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:318
 msgid "1920x1080 HDTV 1080p/i"
-msgstr ""
+msgstr "1920x1080 HDTV 1080p/i"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:319
 msgid "1280x720  HDTV 720p"
-msgstr ""
+msgstr "1280x720  HDTV 720p"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:320
 msgid "720x576   DVD PAL"
-msgstr ""
+msgstr "720x576   DVD PAL"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:321
 msgid "720x480   DVD NTSC"
-msgstr ""
+msgstr "720x480   DVD NTSC"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:322
 msgid "720x540   Web 720x"
-msgstr ""
+msgstr "720x540   وب 720x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:323
 msgid "720x405   Web 720x HD"
-msgstr ""
+msgstr "720x405   Web 720x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:324
 msgid "640x480   Web 640x"
-msgstr ""
+msgstr "640x480   وب 640x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:325
 msgid "640x360   Web 640x HD"
-msgstr ""
+msgstr "640x360   وب 640x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:326
 msgid "480x360   Web 480x"
-msgstr ""
+msgstr "480x360   وب 480x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:327
 msgid "480x270   Web 480x HD"
-msgstr ""
+msgstr "480x270  وب 480x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:328
 msgid "360x270   Web 360x"
-msgstr ""
+msgstr "360x270   وب 360x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:329
 msgid "360x203   Web 360x HD"
-msgstr ""
+msgstr "360x203   وب 360x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:334
 msgid "Default Background"
-msgstr ""
+msgstr "&افتراضي"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:341
 msgid "None (Transparent)"
-msgstr ""
+msgstr "لا شيء (شفاف)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:346
 msgid "Solid Color"
-msgstr ""
+msgstr "لون صلب"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:360 ../src/gui/renddesc.cpp:231
 msgid "Image"
-msgstr ""
+msgstr "صورة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:365
 #: ../src/gui/dialogs/dialog_setup.cpp:477
 msgid "Select"
-msgstr ""
+msgstr "تحديد"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:408
 msgid "Imported Image"
-msgstr ""
+msgstr "صورة مستوردة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:411
 msgid "Scale to fit canvas"
-msgstr ""
+msgstr "لائم رقعة الرسم"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:413
 msgid ""
@@ -1243,15 +1244,15 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:430
 msgid "Edit in external"
-msgstr ""
+msgstr "تحرير خارجي"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:432
 msgid "Preferred image editor"
-msgstr ""
+msgstr "محرر الصور المفضل"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:435 ../src/gui/render.cpp:112
 msgid "Choose..."
-msgstr ""
+msgstr "اختر..."
 
 #: ../src/gui/dialogs/dialog_setup.cpp:437
 msgid "Choose the preferred Image editor for Edit in external tool option"
@@ -1259,11 +1260,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:454
 msgid "Select Editor"
-msgstr ""
+msgstr "اختر محررا"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:476
 msgid "_Cancel"
-msgstr ""
+msgstr "أ_لغِ"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:501
 msgid "Image Sequence Separator String"
@@ -1271,7 +1272,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:506
 msgid "WorkArea renderer"
-msgstr ""
+msgstr "WorkArea مصيّر"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:509
 msgid "Chime on render done"
@@ -1284,23 +1285,23 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_setup.cpp:518 ../src/gui/app.cpp:1053
 #: ../src/gui/instance.cpp:1415 ../src/gui/mainwindow.cpp:186
 msgid "Default"
-msgstr ""
+msgstr "افتراضي"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:527
 msgid "Preview Background Color"
-msgstr ""
+msgstr "معاينة لون الخلفية"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:565
 msgid "System Language"
-msgstr ""
+msgstr "لغة النظام"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:577
 msgid "Language"
-msgstr ""
+msgstr "اللغة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:583
 msgid "Color Theme"
-msgstr ""
+msgstr "ألوان السمة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:585
 msgid "Dark UI theme (if available)"
@@ -1308,23 +1309,23 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:591
 msgid "Toolbars"
-msgstr ""
+msgstr "أشرطة الأدوات"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:593
 msgid "Show file toolbar (requires restart)"
-msgstr ""
+msgstr "أَظْهِرْ شريط أدوات الملف (يتطلب إعادة التشغيل)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:599
 msgid "Handle Tooltips"
-msgstr ""
+msgstr "عالج التلميحات"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:601
 msgid "Width point"
-msgstr ""
+msgstr "نقطة العرض"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:611
 msgid "Transformation widget tooltips"
-msgstr ""
+msgstr "تلميحات أداة التحويل"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:618
 #: ../src/gui/docks/dock_timetrack.cpp:98
@@ -1335,88 +1336,88 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodeadd.cpp:79
 #: ../src/synfigapp/actions/valuenoderename.cpp:88
 msgid "Name"
-msgstr ""
+msgstr "اسم"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:622 ../src/gui/trees/layertree.cpp:343
 #: ../src/synfigapp/actions/canvasmetadataset.cpp:86
 msgid "Value"
-msgstr ""
+msgstr "القيمة"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:1036
 msgid "Select a new path for brush"
-msgstr ""
+msgstr "اختيار مسار جديد للفرشاة"
 
 #: ../src/gui/dialogs/dialog_setup.h:63
 msgid "Custom Size"
-msgstr ""
+msgstr "حجم مخصص"
 
 #: ../src/gui/dialogs/dialog_setup.h:66
 msgid "Custom fps"
-msgstr ""
+msgstr "fps مخصص"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:62
 msgid "Sound Select"
-msgstr ""
+msgstr "اختيار الصّوت"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:69
 msgid "Sound Parameters"
-msgstr ""
+msgstr "معلمات الصوت"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:70
 msgid "<b>Sound Parameters</b>"
-msgstr ""
+msgstr "<b>معلمات الصوت</b>"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:78
 msgid "_Sound File"
-msgstr ""
+msgstr "ملف الصوت"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:81
 msgid "Time _Offset"
-msgstr ""
+msgstr "إ_زاحة الزمن"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:36
 msgid "Sprite sheet parameters"
-msgstr ""
+msgstr "معلمات ورقة الخيال"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:40
 msgid "Add into an existing file."
-msgstr ""
+msgstr "إضافة إلى ملف موجود"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:43
 msgid "Offset X:"
-msgstr ""
+msgstr "إزاحة س:"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:48
 msgid "Offset Y:"
-msgstr ""
+msgstr "الإزاحة Y:"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:53
 msgid "Direction:"
-msgstr ""
+msgstr "الإتجاه:"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:62
 msgid "Rows:"
-msgstr ""
+msgstr "الأسطر:"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:68
 msgid "Columns:"
-msgstr ""
+msgstr "الأعمدة:"
 
 #: ../src/gui/dialogs/dialog_targetparam.cpp:44
 msgid "Target Parameters"
-msgstr ""
+msgstr "معاملات المسار"
 
 #: ../src/gui/dialogs/dialog_template.cpp:66 ../src/gui/app.cpp:977
 msgid "Restore Defaults"
-msgstr ""
+msgstr "استعادة الإفتراضيات"
 
 #: ../src/gui/dialogs/dialog_template.cpp:117
 msgid "Category"
-msgstr ""
+msgstr "فئة"
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:66
 msgid "Waypoint Editor"
-msgstr ""
+msgstr "محرر نقطة الاتجاه"
 
 #: ../src/gui/dialogs/dialog_workspaces.cpp:129
 #, c-format
@@ -1431,23 +1432,23 @@ msgstr ""
 #: ../src/gui/docks/dock_metadata.cpp:150 ../src/gui/states/state_text.cpp:635
 #: ../src/gui/app.cpp:2240
 msgid "Ok"
-msgstr ""
+msgstr "موافق"
 
 #: ../src/gui/dialogs/dialog_workspaces.cpp:190
 msgid "There is already a workspace with this name."
-msgstr ""
+msgstr "هناك مساحة عمل بالاسم نفسه مسبقا"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:58
 msgid "Convert-to-Vector Settings"
-msgstr ""
+msgstr "إعدادات التحويل إلى الشعاع"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:111
 msgid "_Threshold"
-msgstr ""
+msgstr "ال_عتبة"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:119
 msgid "_Accuracy"
-msgstr ""
+msgstr "ال_دقة"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:127
 msgid "_Despeckling"
@@ -1455,252 +1456,252 @@ msgstr ""
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:135
 msgid "_Max Thickness"
-msgstr ""
+msgstr "السمك الأ_قصى"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:167
 msgid "_Under Development"
-msgstr ""
+msgstr "قيد الت_طوير"
 
 #: ../src/gui/dialogs/vectorizersettings.cpp:226
 msgid "Vectorizer Settings - "
-msgstr ""
+msgstr "إعدادات التحويل إلى شعاع - "
 
 #: ../src/gui/dials/framedial.cpp:60
 msgid "Seek to begin"
-msgstr ""
+msgstr "الانتقال إلى البداية"
 
 #: ../src/gui/dials/framedial.cpp:61
 msgid "Seek to previous keyframe"
-msgstr ""
+msgstr "الانتقال إلى الإطار المفتاحي السابق"
 
 #: ../src/gui/dials/framedial.cpp:62
 msgid "Seek to previous frame"
-msgstr ""
+msgstr "الانتقال إلى الإطار السابق"
 
 #: ../src/gui/dials/framedial.cpp:63 ../src/gui/app.cpp:1028
 #: ../src/gui/iconcontroller.cpp:299 ../src/gui/preview.cpp:419
 msgid "Play"
-msgstr ""
+msgstr "تشغيل"
 
 #: ../src/gui/dials/framedial.cpp:64 ../src/gui/app.cpp:1031
 #: ../src/gui/iconcontroller.cpp:301 ../src/gui/preview.cpp:432
 msgid "Pause"
-msgstr ""
+msgstr "إلباث"
 
 #: ../src/gui/dials/framedial.cpp:65
 msgid "Seek to next frame"
-msgstr ""
+msgstr "الانتقال إلى الإطار التالي"
 
 #: ../src/gui/dials/framedial.cpp:66
 msgid "Seek to next keyframe"
-msgstr ""
+msgstr "الانتقال إلى الإطار المفتاحي التالي"
 
 #: ../src/gui/dials/framedial.cpp:67
 msgid "Seek to end"
-msgstr ""
+msgstr "الانتقال إلى النهاية"
 
 #: ../src/gui/dials/framedial.cpp:68
 msgid "End Time"
-msgstr ""
+msgstr "وقت الإنتهاء"
 
 #: ../src/gui/dials/framedial.cpp:69
 msgid "Repeat"
-msgstr ""
+msgstr "كرّر"
 
 #: ../src/gui/dials/framedial.cpp:70
 msgid "Left bound"
-msgstr ""
+msgstr "الحد الأيسر"
 
 #: ../src/gui/dials/framedial.cpp:71
 msgid "Enable playback bounds"
-msgstr ""
+msgstr "تمكين حدود التشغيل الخلفي"
 
 #: ../src/gui/dials/framedial.cpp:72
 msgid "Right bound"
-msgstr ""
+msgstr "الحد الأيمن"
 
 #: ../src/gui/dials/jackdial.cpp:61 ../src/gui/canvasview.cpp:851
 #: ../src/gui/preview.cpp:1336
 msgid "Disable JACK"
-msgstr ""
+msgstr "تعطيل JACK"
 
 #: ../src/gui/dials/jackdial.cpp:66
 msgid "JACK Offset"
-msgstr ""
+msgstr "إزاحة JACK "
 
 #: ../src/gui/dials/keyframedial.cpp:58
 msgid "Unlock past keyframe"
-msgstr ""
+msgstr "أزل قفل الإطار المفتاحي الماضي"
 
 #: ../src/gui/dials/keyframedial.cpp:59
 msgid "Unlock future keyframe"
-msgstr ""
+msgstr "أزل قفل الإطار المفتاحي القادم"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Increase Resolution"
-msgstr ""
+msgstr "رفع الاستبانة"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Increase Display Resolution"
-msgstr ""
+msgstr "رفع استبانة العرض"
 
 #: ../src/gui/dials/resolutiondial.cpp:59
 msgid "Decrease Resolution"
-msgstr ""
+msgstr "خفض الاستبانة"
 
 #: ../src/gui/dials/resolutiondial.cpp:59
 msgid "Decrease Display Resolution"
-msgstr ""
+msgstr "خفض استبانة العرض"
 
 #: ../src/gui/dials/resolutiondial.cpp:60
 msgid "Low Res"
-msgstr ""
+msgstr "موارد منخفضة"
 
 #: ../src/gui/dials/resolutiondial.cpp:60
 msgid "Use Low Resolution when enabled"
-msgstr ""
+msgstr "استخدم استبانة منخفضة عند التفعيل"
 
 #: ../src/gui/dials/toggleducksdial.cpp:58
 msgid "Position handles"
-msgstr ""
+msgstr "مقابض المواضع"
 
 #: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:321
 msgid "Toggle position handles"
-msgstr ""
+msgstr "مقابض مواضع التبديل"
 
 #: ../src/gui/dials/toggleducksdial.cpp:59
 msgid "Vertex handles"
-msgstr ""
+msgstr "مقابض الذروات"
 
 #: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:322
 msgid "Toggle vertex handles"
-msgstr ""
+msgstr "مقابض ذروات التبديل"
 
 #: ../src/gui/dials/toggleducksdial.cpp:60
 msgid "Tangent handles"
-msgstr ""
+msgstr "مقابض المماسات"
 
 #: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:323
 msgid "Toggle tangent handles"
-msgstr ""
+msgstr "مقابض مماسات التبديل"
 
 #: ../src/gui/dials/toggleducksdial.cpp:61
 msgid "Radius handles"
-msgstr ""
+msgstr "مقابض نصف القطر"
 
 #: ../src/gui/dials/toggleducksdial.cpp:61 ../src/gui/iconcontroller.cpp:324
 msgid "Toggle radius handles"
-msgstr ""
+msgstr "مقابض أنصاف أقطار التبديل"
 
 #: ../src/gui/dials/toggleducksdial.cpp:62
 msgid "Width handles"
-msgstr ""
+msgstr "مقابض العرض"
 
 #: ../src/gui/dials/toggleducksdial.cpp:62 ../src/gui/iconcontroller.cpp:325
 msgid "Toggle width handles"
-msgstr ""
+msgstr "مقابض عرض التبديل"
 
 #: ../src/gui/dials/toggleducksdial.cpp:63
 msgid "Angle handles"
-msgstr ""
+msgstr "مقابض الزوايا"
 
 #: ../src/gui/dials/toggleducksdial.cpp:63 ../src/gui/iconcontroller.cpp:326
 msgid "Toggle angle handles"
-msgstr ""
+msgstr "مقابض زاوية التبديل"
 
 #: ../src/gui/dials/zoomdial.cpp:62
 msgid "Zoom In"
-msgstr ""
+msgstr "كبّر"
 
 #: ../src/gui/dials/zoomdial.cpp:63
 msgid "Zoom Out"
-msgstr ""
+msgstr "صغّر"
 
 #: ../src/gui/dials/zoomdial.cpp:64
 msgid "Zoom to Fit"
-msgstr ""
+msgstr "كبِّر لتناسب"
 
 #: ../src/gui/dials/zoomdial.cpp:65
 msgid "Zoom to 100%"
-msgstr ""
+msgstr "كبّر إلى 100%"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:58
 #: ../src/gui/docks/dialog_tooloptions.cpp:78 ../src/gui/app.cpp:1058
 msgid "Tool Options"
-msgstr ""
+msgstr "خيارات الأدوات"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:59
 msgid "This tool has no options"
-msgstr ""
+msgstr "ليس لهذه الأداة خيارات"
 
 #: ../src/gui/docks/dock_canvases.cpp:57 ../src/gui/app.cpp:1060
 msgid "Canvas Browser"
-msgstr ""
+msgstr "متصفح الرقع"
 
 #: ../src/gui/docks/dock_canvases.cpp:110 ../src/gui/trees/childrentree.cpp:95
 #: ../src/synfigapp/actions/canvasadd.cpp:81
 msgid "ID"
-msgstr ""
+msgstr "مُعرِّف"
 
 #: ../src/gui/docks/dock_children.cpp:65 ../src/gui/app.cpp:1065
 #: ../src/gui/iconcontroller.cpp:273
 msgid "Library"
-msgstr ""
+msgstr "مكتبة"
 
 #: ../src/gui/docks/dock_curves.cpp:66 ../src/gui/app.cpp:1069
 #: ../src/gui/iconcontroller.cpp:274
 msgid "Graphs"
-msgstr ""
+msgstr "رسومات البيانية"
 
 #: ../src/gui/docks/dock_history.cpp:66 ../src/gui/docks/dock_history.cpp:122
 #: ../src/gui/app.cpp:1059 ../src/gui/iconcontroller.cpp:279
 msgid "History"
-msgstr ""
+msgstr "التأريخ"
 
 #: ../src/gui/docks/dock_history.cpp:75 ../src/gui/iconcontroller.cpp:270
 msgid "Clear Undo Stack"
-msgstr ""
+msgstr "امسح تأريخ التراجع"
 
 #: ../src/gui/docks/dock_history.cpp:76
 msgid "Clear the undo stack"
-msgstr ""
+msgstr "امسح تأريخ التراجع"
 
 #: ../src/gui/docks/dock_history.cpp:86 ../src/gui/iconcontroller.cpp:271
 msgid "Clear Redo Stack"
-msgstr ""
+msgstr "امسح تأريخ الإعادة"
 
 #: ../src/gui/docks/dock_history.cpp:87
 msgid "Clear the redo stack"
-msgstr ""
+msgstr "امسح تأريخ الإعادة"
 
 #: ../src/gui/docks/dock_history.cpp:97
 msgid "Clear Undo and Redo Stacks"
-msgstr ""
+msgstr "مسح تاريخ التراجع والإعادة"
 
 #: ../src/gui/docks/dock_history.cpp:98
 msgid "Clear the undo and redo stacks"
-msgstr ""
+msgstr "مسح تاريخ التراجع والإعادة"
 
 #: ../src/gui/docks/dock_history.cpp:108 ../src/gui/iconcontroller.cpp:182
 msgid "Undo"
-msgstr ""
+msgstr "تراجع"
 
 #: ../src/gui/docks/dock_history.cpp:109
 msgid "Undo the previous action"
-msgstr ""
+msgstr "تراجع عن آخر عملية"
 
 #: ../src/gui/docks/dock_history.cpp:116 ../src/gui/iconcontroller.cpp:181
 msgid "Redo"
-msgstr ""
+msgstr "تكرار"
 
 #: ../src/gui/docks/dock_history.cpp:117
 msgid "Redo the previously undone action"
-msgstr ""
+msgstr "أعد العملية الأخيرة التي تم التراجع عنها"
 
 #: ../src/gui/docks/dock_history.cpp:187 ../src/gui/trees/keyframetree.cpp:106
 #: ../src/gui/trees/keyframetree.cpp:293
 msgid "Jump"
-msgstr ""
+msgstr "اقفز"
 
 #: ../src/gui/docks/dock_history.cpp:192 ../src/gui/trees/keyframetree.cpp:110
 msgid "(JMP)"
@@ -1708,12 +1709,12 @@ msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:204
 msgid "Action"
-msgstr ""
+msgstr "إجراء"
 
 #: ../src/gui/docks/dock_history.cpp:252 ../src/gui/docks/dock_history.cpp:266
 #: ../src/gui/docks/dock_history.cpp:280
 msgid "Clear History"
-msgstr ""
+msgstr "امسح التاريخ"
 
 #: ../src/gui/docks/dock_history.cpp:253
 msgid ""
@@ -1725,7 +1726,7 @@ msgstr ""
 #: ../src/gui/docks/dock_history.cpp:285
 #: ../src/gui/docks/dock_soundwave.cpp:57
 msgid "Clear"
-msgstr ""
+msgstr "مسح"
 
 #: ../src/gui/docks/dock_history.cpp:267
 msgid ""
@@ -1741,27 +1742,27 @@ msgstr ""
 
 #: ../src/gui/docks/dock_info.cpp:105 ../src/gui/app.cpp:1066
 msgid "Info"
-msgstr ""
+msgstr "معلومات"
 
 #: ../src/gui/docks/dock_info.cpp:112
 msgid "X: "
-msgstr ""
+msgstr "س:"
 
 #: ../src/gui/docks/dock_info.cpp:113
 msgid "Y: "
-msgstr ""
+msgstr "ص:"
 
 #: ../src/gui/docks/dock_info.cpp:123
 msgid "R: "
-msgstr ""
+msgstr "R:"
 
 #: ../src/gui/docks/dock_info.cpp:124
 msgid "G: "
-msgstr ""
+msgstr "G:"
 
 #: ../src/gui/docks/dock_info.cpp:125
 msgid "B: "
-msgstr ""
+msgstr "b:"
 
 #: ../src/gui/docks/dock_info.cpp:126
 msgid "A: "
@@ -1769,42 +1770,42 @@ msgstr ""
 
 #: ../src/gui/docks/dock_info.cpp:137
 msgid "Render Progress: "
-msgstr ""
+msgstr "تقدم التصيير"
 
 #: ../src/gui/docks/dock_keyframes.cpp:65 ../src/gui/app.cpp:1061
 #: ../src/gui/iconcontroller.cpp:275
 msgid "Keyframes"
-msgstr ""
+msgstr "مفاتيح الإطارات"
 
 #: ../src/gui/docks/dock_layergroups.cpp:66 ../src/gui/app.cpp:1070
 msgid "Sets"
-msgstr ""
+msgstr "مجموعات"
 
 #: ../src/gui/docks/dock_layergroups.cpp:72
 msgid "Set Ops"
-msgstr ""
+msgstr "اِضبط الخيارات"
 
 #: ../src/gui/docks/dock_layers.cpp:67 ../src/gui/app.cpp:1062
 msgid "Layers"
-msgstr ""
+msgstr "طبقات"
 
 #: ../src/gui/docks/dock_layers.cpp:150
 msgid "Layer Ops"
-msgstr ""
+msgstr "خيارات الطبقات"
 
 #: ../src/gui/docks/dock_layers.cpp:152 ../src/gui/app.cpp:923
 #: ../src/gui/canvasview.cpp:2158 ../src/synfigapp/actions/layeradd.cpp:85
 msgid "New Layer"
-msgstr ""
+msgstr "طبقة جديدة"
 
 #: ../src/gui/docks/dock_metadata.cpp:65 ../src/gui/docks/dock_metadata.cpp:92
 #: ../src/gui/app.cpp:1064
 msgid "Canvas MetaData"
-msgstr ""
+msgstr "MetaData الرقعة "
 
 #: ../src/gui/docks/dock_metadata.cpp:71
 msgid "Add new MetaData entry"
-msgstr ""
+msgstr "أضف مدخل MetaData جدبدا"
 
 #: ../src/gui/docks/dock_metadata.cpp:72
 msgid "Add a new MetaData entry to the canvas"
@@ -1812,33 +1813,33 @@ msgstr ""
 
 #: ../src/gui/docks/dock_metadata.cpp:83
 msgid "Remove selected MetaData entry"
-msgstr ""
+msgstr "احذف مدخل MetaData المحدد"
 
 #: ../src/gui/docks/dock_metadata.cpp:84
 msgid "Remove the selected MetaData entry"
-msgstr ""
+msgstr "احذف مدخل MetaData المحدد"
 
 #: ../src/gui/docks/dock_metadata.cpp:150
 msgid "New Metadata entry"
-msgstr ""
+msgstr "مدخل MetaData جدبد"
 
 #: ../src/gui/docks/dock_metadata.cpp:150
 msgid "Key Name: "
-msgstr ""
+msgstr "اسم المفتاح:"
 
 #: ../src/gui/docks/dock_navigator.cpp:299 ../src/gui/app.cpp:1067
 #: ../src/gui/iconcontroller.cpp:277
 msgid "Navigator"
-msgstr ""
+msgstr "مستكشف"
 
 #: ../src/gui/docks/dock_params.cpp:64 ../src/gui/app.cpp:1063
 #: ../src/gui/iconcontroller.cpp:281
 msgid "Parameters"
-msgstr ""
+msgstr "متغيّرات"
 
 #: ../src/gui/docks/dock_soundwave.cpp:43 ../src/gui/app.cpp:1072
 msgid "Sound"
-msgstr ""
+msgstr "صوت"
 
 #: ../src/gui/docks/dock_soundwave.cpp:63
 msgid "What sound channel to display"
@@ -1846,18 +1847,18 @@ msgstr ""
 
 #: ../src/gui/docks/dock_soundwave.cpp:66
 msgid "Delay:"
-msgstr ""
+msgstr "مهلة:"
 
 #: ../src/gui/docks/dock_soundwave.cpp:258
 #, c-format
 msgid "Channel #%i"
-msgstr ""
+msgstr "قناة #%i"
 
 #: ../src/gui/docks/dock_timetrack.cpp:103
 #: ../src/gui/trees/childrentree.cpp:142 ../src/gui/trees/layertree.cpp:408
 #: ../src/gui/iconcontroller.cpp:278
 msgid "Time Track"
-msgstr ""
+msgstr "مسار الوقت"
 
 #: ../src/gui/docks/dock_timetrack.cpp:353 ../src/gui/app.cpp:1068
 msgid "Timetrack"
@@ -1866,63 +1867,63 @@ msgstr ""
 #: ../src/gui/docks/dock_toolbox.cpp:79 ../src/gui/app.cpp:924
 #: ../src/gui/app.cpp:1057
 msgid "Toolbox"
-msgstr ""
+msgstr "صندوق الأدوات"
 
 #: ../src/gui/docks/dockdialog.cpp:105 ../src/gui/docks/dockmanager.cpp:751
 msgid "Dock Panel"
-msgstr ""
+msgstr "لوحة الإرساء"
 
 #: ../src/gui/docks/dockmanager.cpp:751 ../src/gui/docks/dockmanager.cpp:761
 #: ../src/gui/app.cpp:1498
 msgid "Synfig Studio"
-msgstr ""
+msgstr "أستوديو سنفغ هو برنامج رسوم متحركة ثنائية الأبعاد مجاني ومفتوح المصدر، مصمم كحل إنتاجي قوي لإنشاء رسوم متحركة بجودة مناسبة للأفلام باستخدام فن  الرسومات المتجهة والصور النقطية. انه يقضي على حاجة صنع الرسوم المتحركة إطارا إطارا(فريم)، مما يسمح لك بإنتاج رسوم متحركة بجودة أعلى بأقل المصادر والعاملين."
 
 #: ../src/gui/modules/mod_palette/dock_palbrowse.cpp:58
 msgid "Palette Browser"
-msgstr ""
+msgstr "متصفح الألوان"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:125 ../src/gui/app.cpp:1071
 msgid "Palette Editor"
-msgstr ""
+msgstr "محرر لوحة الألوان"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:133
 msgid "Add Color"
-msgstr ""
+msgstr "أضف لونا"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:134
 msgid ""
 "Add current outline color\n"
 "to the palette"
-msgstr ""
+msgstr "أضِف لون الحد الخارجي إلى لوحة التلوين"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:144
 msgid "Save palette"
-msgstr ""
+msgstr "احفظ لوحة ألوان"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:145
 msgid "Save the current palette"
-msgstr ""
+msgstr "احفظ لوحة الألوان الحالية"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:155
 msgid "Open a palette"
-msgstr ""
+msgstr "افتح لوحة الأحرف"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:156
 msgid "Open a saved palette"
-msgstr ""
+msgstr "افتح لوحة الألوان محفوظة"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:166
 msgid "Load default"
-msgstr ""
+msgstr "تحميل الافتراضي"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:167
 msgid "Load default palette"
-msgstr ""
+msgstr "حمّل لوحة التلوين الافتراضية"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:238
 #: ../src/gui/instance.cpp:545
 msgid "Please choose a file name"
-msgstr ""
+msgstr "من فضلك اختر اسم ملف"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:255
 #: ../src/gui/instance.cpp:590
@@ -1953,7 +1954,7 @@ msgstr ""
 #: ../src/gui/instance.cpp:948 ../src/gui/instance.cpp:962
 #: ../src/gui/instance.cpp:989
 msgid "Close"
-msgstr ""
+msgstr "اغلاق"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:266
 #: ../src/gui/instance.cpp:601
@@ -1971,16 +1972,16 @@ msgstr ""
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:278
 #: ../src/gui/instance.cpp:613
 msgid "Use Another Name…"
-msgstr ""
+msgstr "استخدم اسما آخر…"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:279
 #: ../src/gui/instance.cpp:614
 msgid "Replace"
-msgstr ""
+msgstr "استبدال"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:292
 msgid "Please select a palette file"
-msgstr ""
+msgstr "رجاء، اختر ملف لوح ألوان"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:305 ../src/gui/app.cpp:4131
 msgid "Unable to open file"
@@ -1992,7 +1993,7 @@ msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:511
 msgid "Spline Creation"
-msgstr ""
+msgstr "إنشاء منحنى"
 
 #: ../src/gui/states/state_bline.cpp:519
 #: ../src/gui/states/state_circle.cpp:548 ../src/gui/states/state_draw.cpp:629
@@ -2002,7 +2003,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:494
 #: ../src/gui/states/state_star.cpp:616 ../src/gui/states/state_text.cpp:398
 msgid "Name:"
-msgstr ""
+msgstr "الاسم:"
 
 #: ../src/gui/states/state_bline.cpp:528
 #: ../src/gui/states/state_circle.cpp:557 ../src/gui/states/state_draw.cpp:638
@@ -2012,7 +2013,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:503
 #: ../src/gui/states/state_star.cpp:625 ../src/gui/states/state_text.cpp:407
 msgid "Layer Type:"
-msgstr ""
+msgstr "نوع الطّبقة:"
 
 #: ../src/gui/states/state_bline.cpp:532
 #: ../src/gui/states/state_circle.cpp:564 ../src/gui/states/state_draw.cpp:642
@@ -2021,7 +2022,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:510
 #: ../src/gui/states/state_star.cpp:632
 msgid "Create a region layer"
-msgstr ""
+msgstr "إنشاء طبقة منطقة"
 
 #: ../src/gui/states/state_bline.cpp:535
 #: ../src/gui/states/state_circle.cpp:567 ../src/gui/states/state_draw.cpp:645
@@ -2029,7 +2030,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:513
 #: ../src/gui/states/state_star.cpp:635
 msgid "Create an outline layer"
-msgstr ""
+msgstr "إنشاء طبقة مخطط خارجي"
 
 #: ../src/gui/states/state_bline.cpp:538
 #: ../src/gui/states/state_circle.cpp:570 ../src/gui/states/state_draw.cpp:648
@@ -2037,7 +2038,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:516
 #: ../src/gui/states/state_star.cpp:638
 msgid "Create an advanced outline layer"
-msgstr ""
+msgstr "إنشاء طبقة مخطط خارجي متقدم"
 
 #: ../src/gui/states/state_bline.cpp:541
 #: ../src/gui/states/state_circle.cpp:573
@@ -2045,7 +2046,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:519
 #: ../src/gui/states/state_star.cpp:641
 msgid "Create a plant layer"
-msgstr ""
+msgstr "إنشاء طبقة نبات"
 
 #: ../src/gui/states/state_bline.cpp:544
 #: ../src/gui/states/state_circle.cpp:576
@@ -2053,7 +2054,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:522
 #: ../src/gui/states/state_star.cpp:644
 msgid "Create a gradient layer"
-msgstr ""
+msgstr "إنشاﺀ طبقة تدّرج"
 
 #: ../src/gui/states/state_bline.cpp:556
 #: ../src/gui/states/state_circle.cpp:589 ../src/gui/states/state_draw.cpp:658
@@ -2062,7 +2063,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:535
 #: ../src/gui/states/state_star.cpp:657 ../src/gui/states/state_text.cpp:419
 msgid "Blend Method:"
-msgstr ""
+msgstr "طريقة المزج"
 
 #: ../src/gui/states/state_bline.cpp:563
 #: ../src/gui/states/state_circle.cpp:596 ../src/gui/states/state_draw.cpp:665
@@ -2071,7 +2072,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:542
 #: ../src/gui/states/state_star.cpp:664 ../src/gui/states/state_text.cpp:426
 msgid "Blend Method"
-msgstr ""
+msgstr "طريقة المزج"
 
 #: ../src/gui/states/state_bline.cpp:564
 msgid "Defines the blend method to be used for splines"
@@ -2085,7 +2086,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:546
 #: ../src/gui/states/state_star.cpp:668 ../src/gui/states/state_text.cpp:430
 msgid "Opacity:"
-msgstr ""
+msgstr "العتمة:"
 
 #: ../src/gui/states/state_bline.cpp:575
 #: ../src/gui/states/state_circle.cpp:608 ../src/gui/states/state_draw.cpp:677
@@ -2094,7 +2095,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:554
 #: ../src/gui/states/state_star.cpp:676
 msgid "Brush Size:"
-msgstr ""
+msgstr "حجم الفرشاة:"
 
 #: ../src/gui/states/state_bline.cpp:584
 #: ../src/gui/states/state_circle.cpp:641 ../src/gui/states/state_draw.cpp:757
@@ -2103,7 +2104,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:570
 #: ../src/gui/states/state_star.cpp:728
 msgid "Feather:"
-msgstr ""
+msgstr "تغبيش الأطراف"
 
 #: ../src/gui/states/state_bline.cpp:593
 #: ../src/gui/states/state_circle.cpp:669
@@ -2111,24 +2112,24 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:588
 #: ../src/gui/states/state_star.cpp:737
 msgid "Link Origins"
-msgstr ""
+msgstr "رابط المبادئ"
 
 #: ../src/gui/states/state_bline.cpp:601 ../src/gui/states/state_draw.cpp:764
 #: ../src/gui/states/state_lasso.cpp:749
 msgid "Auto Export"
-msgstr ""
+msgstr "تصدير آلي"
 
 #: ../src/gui/states/state_bline.cpp:702 ../src/gui/iconcontroller.cpp:147
 msgid "Spline Tool"
-msgstr ""
+msgstr "أداة المنحنى"
 
 #: ../src/gui/states/state_bline.cpp:707
 msgid "Make Spline"
-msgstr ""
+msgstr "اصنع منحنى"
 
 #: ../src/gui/states/state_bline.cpp:717
 msgid "Clear current Spline"
-msgstr ""
+msgstr "امسح المنحنى الحالي"
 
 #: ../src/gui/states/state_bline.cpp:810
 msgid "Information: You need at least two (2) points to create a spline"
@@ -2136,11 +2137,11 @@ msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:818
 msgid "New Spline"
-msgstr ""
+msgstr "منحنى جديد"
 
 #: ../src/gui/states/state_bline.cpp:860
 msgid "Unable to add value node"
-msgstr ""
+msgstr "تعذرت إضافة عقدة قيمة"
 
 #: ../src/gui/states/state_bline.cpp:905 ../src/gui/states/state_bline.cpp:975
 #: ../src/gui/states/state_bline.cpp:1045
@@ -2185,7 +2186,7 @@ msgstr ""
 #: ../src/gui/states/state_star.cpp:1358 ../src/gui/states/state_star.cpp:1442
 #: ../src/gui/states/state_text.cpp:642
 msgid "Unable to create layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة"
 
 #: ../src/gui/states/state_bline.cpp:908
 #: ../src/gui/states/state_circle.cpp:1005
@@ -2193,7 +2194,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:860
 #: ../src/gui/states/state_star.cpp:1126
 msgid " Gradient"
-msgstr ""
+msgstr " تدرج"
 
 #: ../src/gui/states/state_bline.cpp:932 ../src/gui/states/state_bline.cpp:955
 #: ../src/gui/states/state_circle.cpp:1032
@@ -2204,7 +2205,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:900
 #: ../src/gui/states/state_star.cpp:1154 ../src/gui/states/state_star.cpp:1176
 msgid "Unable to create Gradient layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة تدرّج"
 
 #: ../src/gui/states/state_bline.cpp:979
 #: ../src/gui/states/state_circle.cpp:1083
@@ -2224,7 +2225,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:971
 #: ../src/gui/states/state_star.cpp:1229 ../src/gui/states/state_star.cpp:1251
 msgid "Unable to create Plant layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة نبات"
 
 #: ../src/gui/states/state_bline.cpp:1049
 #: ../src/gui/states/state_circle.cpp:1158
@@ -2234,7 +2235,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:1002
 #: ../src/gui/states/state_star.cpp:1280
 msgid " Region"
-msgstr ""
+msgstr " منطقة"
 
 #: ../src/gui/states/state_bline.cpp:1081
 #: ../src/gui/states/state_bline.cpp:1103
@@ -2249,7 +2250,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:1052
 #: ../src/gui/states/state_star.cpp:1312 ../src/gui/states/state_star.cpp:1334
 msgid "Unable to create Region layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة منطقة"
 
 #: ../src/gui/states/state_bline.cpp:1127
 #: ../src/gui/states/state_circle.cpp:1241
@@ -2259,7 +2260,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:1076
 #: ../src/gui/states/state_star.cpp:1363
 msgid " Outline"
-msgstr ""
+msgstr " مخطط تفصيلي"
 
 #: ../src/gui/states/state_bline.cpp:1160
 #: ../src/gui/states/state_bline.cpp:1182
@@ -2271,7 +2272,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:1131
 #: ../src/gui/states/state_star.cpp:1396 ../src/gui/states/state_star.cpp:1418
 msgid "Unable to create Outline layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة مخطط"
 
 #: ../src/gui/states/state_bline.cpp:1206
 #: ../src/gui/states/state_circle.cpp:1324
@@ -2281,7 +2282,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:1155
 #: ../src/gui/states/state_star.cpp:1447
 msgid " Advanced Outline"
-msgstr ""
+msgstr " مخطط متقدم"
 
 #: ../src/gui/states/state_bline.cpp:1239
 #: ../src/gui/states/state_bline.cpp:1261
@@ -2299,22 +2300,22 @@ msgstr ""
 #: ../src/gui/states/state_bline.cpp:1794
 #: ../src/gui/states/state_bline.cpp:1942
 msgid "Unloop Spline"
-msgstr ""
+msgstr "منحنى غير متكرر"
 
 #: ../src/gui/states/state_bline.cpp:1748
 #: ../src/gui/states/state_bline.cpp:1800
 #: ../src/gui/states/state_bline.cpp:1948
 msgid "Loop Spline"
-msgstr ""
+msgstr "تكرار منحنى"
 
 #: ../src/gui/states/state_bline.cpp:1759
 #: ../src/gui/states/state_bline.cpp:1958
 msgid "Delete Vertex"
-msgstr ""
+msgstr "حذف الذروة"
 
 #: ../src/gui/states/state_bline.cpp:1778
 msgid "Insert Vertex"
-msgstr ""
+msgstr "إدراج ذروة"
 
 #: ../src/gui/states/state_bline.cpp:1851
 msgid ""
@@ -2328,19 +2329,19 @@ msgstr ""
 
 #: ../src/gui/states/state_brush.cpp:589 ../src/gui/iconcontroller.cpp:152
 msgid "Brush Tool"
-msgstr ""
+msgstr "أداة فرشاة"
 
 #: ../src/gui/states/state_brush.cpp:771
 msgid "brush image"
-msgstr ""
+msgstr "الفرشاة كصورة"
 
 #: ../src/gui/states/state_circle.cpp:540
 msgid "Circle Creation"
-msgstr ""
+msgstr "إنشاء دائرة"
 
 #: ../src/gui/states/state_circle.cpp:561
 msgid "Create a circle layer"
-msgstr ""
+msgstr "إنشاء طبقة دائرة"
 
 #: ../src/gui/states/state_circle.cpp:597
 msgid "Defines the blend method to be used for circles"
@@ -2348,11 +2349,11 @@ msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:617
 msgid "Spline Points:"
-msgstr ""
+msgstr "نقاط المنحنى:"
 
 #: ../src/gui/states/state_circle.cpp:623 ../src/gui/states/state_star.cpp:689
 msgid "Offset:"
-msgstr ""
+msgstr "المعادلة:"
 
 #: ../src/gui/states/state_circle.cpp:633
 #: ../src/gui/states/state_polygon.cpp:549
@@ -2380,15 +2381,15 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypointmodel.cpp:100
 #: ../src/gui/canvasview.cpp:914 ../src/gui/instance.cpp:1443
 msgid "Linear"
-msgstr ""
+msgstr "خطي"
 
 #: ../src/gui/states/state_circle.cpp:662
 msgid "Squared"
-msgstr ""
+msgstr "مربعة"
 
 #: ../src/gui/states/state_circle.cpp:663
 msgid "Square Root"
-msgstr ""
+msgstr "جذر تربيعي"
 
 #: ../src/gui/states/state_circle.cpp:664
 msgid "Sigmond"
@@ -2396,32 +2397,32 @@ msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:665
 msgid "Cosine"
-msgstr ""
+msgstr "جيب التمام"
 
 #: ../src/gui/states/state_circle.cpp:677 ../src/gui/states/state_star.cpp:745
 msgid "Spline Origins at Center"
-msgstr ""
+msgstr "مبادئ المنحنى عند المركز"
 
 #: ../src/gui/states/state_circle.cpp:799 ../src/gui/iconcontroller.cpp:154
 msgid "Circle Tool"
-msgstr ""
+msgstr "أداة الدائرة"
 
 #: ../src/gui/states/state_circle.cpp:845
 msgid "New Circle"
-msgstr ""
+msgstr "دائرة جديدة"
 
 #: ../src/gui/states/state_circle.cpp:976
 msgid "Unable to create Circle layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة دائرة"
 
 #: ../src/gui/states/state_draw.cpp:616 ../src/gui/states/state_draw.cpp:970
 #: ../src/gui/states/state_lasso.cpp:613
 msgid "Fill Last Stroke"
-msgstr ""
+msgstr "املأ السطر الأخير"
 
 #: ../src/gui/states/state_draw.cpp:621
 msgid "Drawing"
-msgstr ""
+msgstr "رسم"
 
 #: ../src/gui/states/state_draw.cpp:666
 msgid "Defines the blend method to be used for draws"
@@ -2429,55 +2430,55 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:684 ../src/gui/states/state_lasso.cpp:669
 msgid "Pressure Sensitive"
-msgstr ""
+msgstr "حساس للضغط"
 
 #: ../src/gui/states/state_draw.cpp:693 ../src/gui/states/state_lasso.cpp:678
 msgid "Min Width:"
-msgstr ""
+msgstr "أدنى عرض:"
 
 #: ../src/gui/states/state_draw.cpp:703 ../src/gui/states/state_lasso.cpp:688
 msgid "Smoothness"
-msgstr ""
+msgstr "النعومة"
 
 #: ../src/gui/states/state_draw.cpp:722 ../src/gui/states/state_lasso.cpp:707
 msgid "Width Max Error:"
-msgstr ""
+msgstr "خطأ في العرض الأقصى:"
 
 #: ../src/gui/states/state_draw.cpp:729 ../src/gui/states/state_lasso.cpp:714
 msgid "Round Ends"
-msgstr ""
+msgstr "نهايات مستديرة"
 
 #: ../src/gui/states/state_draw.cpp:736 ../src/gui/states/state_lasso.cpp:721
 msgid "Auto Loop"
-msgstr ""
+msgstr "تكرار آلي"
 
 #: ../src/gui/states/state_draw.cpp:743 ../src/gui/states/state_lasso.cpp:728
 msgid "Auto Extend"
-msgstr ""
+msgstr "توسيع آلي"
 
 #: ../src/gui/states/state_draw.cpp:750 ../src/gui/states/state_lasso.cpp:735
 msgid "Auto Link"
-msgstr ""
+msgstr "ربط آلي"
 
 #: ../src/gui/states/state_draw.cpp:965 ../src/gui/iconcontroller.cpp:150
 msgid "Draw Tool"
-msgstr ""
+msgstr "أداة الرسم"
 
 #: ../src/gui/states/state_draw.cpp:1251
 #: ../src/gui/states/state_lasso.cpp:1232
 msgid "Sketch Spline"
-msgstr ""
+msgstr "رسم تخطيطي"
 
 #: ../src/gui/states/state_draw.cpp:1884
 #: ../src/gui/states/state_lasso.cpp:1897
 msgid "Define Region"
-msgstr ""
+msgstr "تعريف منطقة"
 
 #: ../src/gui/states/state_draw.cpp:2477 ../src/gui/states/state_draw.cpp:2668
 #: ../src/gui/states/state_lasso.cpp:2490
 #: ../src/gui/states/state_lasso.cpp:2681
 msgid "Extend Spline"
-msgstr ""
+msgstr "توسيع منحنى"
 
 #: ../src/gui/states/state_draw.cpp:2540
 #: ../src/gui/states/state_lasso.cpp:2553
@@ -2491,13 +2492,13 @@ msgstr ""
 #: ../src/gui/states/state_lasso.cpp:2789
 #: ../src/gui/states/state_lasso.cpp:2832
 msgid "Unable to insert item"
-msgstr ""
+msgstr "لا يمكن إدراج عنصر"
 
 #: ../src/gui/states/state_draw.cpp:2604 ../src/gui/states/state_draw.cpp:2795
 #: ../src/gui/states/state_lasso.cpp:2617
 #: ../src/gui/states/state_lasso.cpp:2808
 msgid "Unable to set loop for spline"
-msgstr ""
+msgstr "لا يمكن تعيين تكرار للمنحنى"
 
 #: ../src/gui/states/state_draw.cpp:2731
 #: ../src/gui/states/state_lasso.cpp:2744
@@ -2507,35 +2508,35 @@ msgstr ""
 #: ../src/gui/states/state_draw.cpp:2861
 #: ../src/gui/states/state_lasso.cpp:2874
 msgid "Fill Stroke"
-msgstr ""
+msgstr "ملء السطر"
 
 #: ../src/gui/states/state_fill.cpp:162
 msgid "No layer here"
-msgstr ""
+msgstr "لا طبقة هنا"
 
 #: ../src/gui/states/state_fill.cpp:172
 msgid "Unable to set layer color"
-msgstr ""
+msgstr "لا يمكن تعيين لون الطبقة"
 
 #: ../src/gui/states/state_gradient.cpp:396
 msgid "Gradient Creation"
-msgstr ""
+msgstr "إنشاء التدرج"
 
 #: ../src/gui/states/state_gradient.cpp:415
 msgid "Create a linear gradient"
-msgstr ""
+msgstr "إنشاء تدرج خطّي"
 
 #: ../src/gui/states/state_gradient.cpp:417
 msgid "Create a radial gradient"
-msgstr ""
+msgstr "إنشاء تدرّج شعاعي"
 
 #: ../src/gui/states/state_gradient.cpp:419
 msgid "Create a conical gradient"
-msgstr ""
+msgstr "إنشاء تدرج مخروطي"
 
 #: ../src/gui/states/state_gradient.cpp:421
 msgid "Create a spiral gradient"
-msgstr ""
+msgstr "إنشاﺀ شكل حلزوني"
 
 #: ../src/gui/states/state_gradient.cpp:439
 msgid "Defines the blend method to be used for gradients"
@@ -2543,11 +2544,11 @@ msgstr ""
 
 #: ../src/gui/states/state_gradient.cpp:524 ../src/gui/iconcontroller.cpp:163
 msgid "Gradient Tool"
-msgstr ""
+msgstr "أداة التدرج"
 
 #: ../src/gui/states/state_gradient.cpp:582
 msgid "New Gradient"
-msgstr ""
+msgstr "تدرج لوني جديد"
 
 #: ../src/gui/states/state_lasso.cpp:618
 msgid "Lasso"
@@ -2555,24 +2556,24 @@ msgstr ""
 
 #: ../src/gui/states/state_lasso.cpp:946 ../src/gui/iconcontroller.cpp:151
 msgid "Cutout Tool"
-msgstr ""
+msgstr "أداة الانقطاع"
 
 #: ../src/gui/states/state_lasso.cpp:1592
 msgid "Mask"
-msgstr ""
+msgstr "قناع"
 
 #: ../src/gui/states/state_mirror.cpp:174
 msgid "Horizontal"
-msgstr ""
+msgstr "افقي"
 
 #: ../src/gui/states/state_mirror.cpp:175
 msgid "Vertical"
-msgstr ""
+msgstr "رأسي"
 
 #: ../src/gui/states/state_mirror.cpp:178
 #: ../src/gui/states/state_mirror.cpp:237 ../src/gui/iconcontroller.cpp:161
 msgid "Mirror Tool"
-msgstr ""
+msgstr "أداة المرآة"
 
 #: ../src/gui/states/state_mirror.cpp:181
 msgid "(Shift key toggles axis)"
@@ -2581,27 +2582,27 @@ msgstr ""
 #: ../src/gui/states/state_normal.cpp:286
 #: ../src/gui/states/state_normal.cpp:311 ../src/gui/iconcontroller.cpp:145
 msgid "Transform Tool"
-msgstr ""
+msgstr "أداة التحويل"
 
 #: ../src/gui/states/state_normal.cpp:287
 msgid "Ctrl to rotate"
-msgstr ""
+msgstr "Ctrl للتدوير"
 
 #: ../src/gui/states/state_normal.cpp:288
 msgid "Alt to scale"
-msgstr ""
+msgstr "Alt للتناسب"
 
 #: ../src/gui/states/state_normal.cpp:289
 msgid "Shift to constrain"
-msgstr ""
+msgstr "Shift للقيود"
 
 #: ../src/gui/states/state_polygon.cpp:472
 msgid "Polygon Creation"
-msgstr ""
+msgstr "إنشاء مضلّع"
 
 #: ../src/gui/states/state_polygon.cpp:493
 msgid "Create a polygon layer"
-msgstr ""
+msgstr "إنشاء طبقة مضلّع"
 
 #: ../src/gui/states/state_polygon.cpp:529
 msgid "Defines the blend method to be used for polygons"
@@ -2609,32 +2610,32 @@ msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:670 ../src/gui/iconcontroller.cpp:146
 msgid "Polygon Tool"
-msgstr ""
+msgstr "أداة المضلع"
 
 #: ../src/gui/states/state_polygon.cpp:675
 msgid "Make Polygon"
-msgstr ""
+msgstr "اصنع مضلّعا"
 
 #: ../src/gui/states/state_polygon.cpp:685
 msgid "Clear current Polygon"
-msgstr ""
+msgstr "مسح المضلع الحالي"
 
 #: ../src/gui/states/state_polygon.cpp:752
 msgid "New Polygon"
-msgstr ""
+msgstr "مضلّع جديد"
 
 #: ../src/gui/states/state_polygon.cpp:872
 #: ../src/gui/states/state_polygon.cpp:874
 msgid "Unable to create Polygon layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة مضلع"
 
 #: ../src/gui/states/state_rectangle.cpp:486
 msgid "Rectangle Creation"
-msgstr ""
+msgstr "إنشاء مستطيل"
 
 #: ../src/gui/states/state_rectangle.cpp:507
 msgid "Create a rectangle layer"
-msgstr ""
+msgstr "إنشاء طبقة مستطيل"
 
 #: ../src/gui/states/state_rectangle.cpp:543
 msgid "Defines the blend method to be used for rectangles"
@@ -2642,103 +2643,103 @@ msgstr ""
 
 #: ../src/gui/states/state_rectangle.cpp:558
 msgid "Brush size"
-msgstr ""
+msgstr "حجم الفرشاة"
 
 #: ../src/gui/states/state_rectangle.cpp:579
 msgid "Expansion:"
-msgstr ""
+msgstr "تمديد:"
 
 #: ../src/gui/states/state_rectangle.cpp:690 ../src/gui/iconcontroller.cpp:155
 msgid "Rectangle Tool"
-msgstr ""
+msgstr "أداة المستطيل"
 
 #: ../src/gui/states/state_rectangle.cpp:738
 msgid "New Rectangle"
-msgstr ""
+msgstr "مستطيل جديد"
 
 #: ../src/gui/states/state_rotate.cpp:198
 msgid "Allow Scale"
-msgstr ""
+msgstr "السماح بالتحجيم"
 
 #: ../src/gui/states/state_rotate.cpp:203
 #: ../src/gui/states/state_rotate.cpp:230 ../src/gui/iconcontroller.cpp:157
 msgid "Rotate Tool"
-msgstr ""
+msgstr "أداة التدوير"
 
 #: ../src/gui/states/state_rotate.cpp:404
 msgid "Move Handle"
-msgstr ""
+msgstr "تحريك المقبض "
 
 #: ../src/gui/states/state_rotate.cpp:409
 msgid "Rotate Handle"
-msgstr ""
+msgstr "مقبض الدوران"
 
 #: ../src/gui/states/state_scale.cpp:187
 msgid "Lock Aspect Ratio"
-msgstr ""
+msgstr "اقفل تناسب الأبعاد"
 
 #: ../src/gui/states/state_scale.cpp:190 ../src/gui/states/state_scale.cpp:216
 #: ../src/gui/iconcontroller.cpp:159
 msgid "Scale Tool"
-msgstr ""
+msgstr "أداة التحجيم"
 
 #: ../src/gui/states/state_sketch.cpp:157
 msgid "Save Sketch"
-msgstr ""
+msgstr "احفظ رسم تخطيطي"
 
 #: ../src/gui/states/state_sketch.cpp:167
 msgid "Unable to save sketch"
-msgstr ""
+msgstr "تعذر حفط الرسم التخطيطي"
 
 #: ../src/gui/states/state_sketch.cpp:176
 msgid "Load Sketch"
-msgstr ""
+msgstr "تحميل رسم تخطيطي"
 
 #: ../src/gui/states/state_sketch.cpp:186
 msgid "Unable to load sketch"
-msgstr ""
+msgstr "تعذر تحميل رسم تخطيطي"
 
 #: ../src/gui/states/state_sketch.cpp:235
 msgid "Show Sketch"
-msgstr ""
+msgstr "عرض رسم تخطيطي"
 
 #: ../src/gui/states/state_sketch.cpp:245
 #: ../src/gui/states/state_sketch.cpp:306 ../src/gui/iconcontroller.cpp:153
 msgid "Sketch Tool"
-msgstr ""
+msgstr "أداة الرسم التخطيطي"
 
 #: ../src/gui/states/state_sketch.cpp:311
 msgid "Undo Last Stroke"
-msgstr ""
+msgstr "تراجع عن آخر سطر"
 
 #: ../src/gui/states/state_sketch.cpp:320
 msgid "Clear Sketch"
-msgstr ""
+msgstr "حذف الرسم التخطيطي"
 
 #: ../src/gui/states/state_sketch.cpp:329
 msgid "Save Sketch As..."
-msgstr ""
+msgstr "حفظ الرسم التخطيطي ك..."
 
 #: ../src/gui/states/state_sketch.cpp:339
 msgid "Open a Sketch"
-msgstr ""
+msgstr "فتح الرسم التخطيطي"
 
 #: ../src/gui/states/state_smoothmove.cpp:202
 #: ../src/gui/iconcontroller.cpp:156
 msgid "SmoothMove Tool"
-msgstr ""
+msgstr "أ_داة SmoothMove"
 
 #: ../src/gui/states/state_smoothmove.cpp:229
 msgid "Smooth Move"
-msgstr ""
+msgstr "تنعيم الحركة"
 
 #: ../src/gui/states/state_star.cpp:608
 msgid "Star Creation"
-msgstr ""
+msgstr "إنشاء نجمة"
 
 #: ../src/gui/states/state_star.cpp:629
 msgid "Create a star layer"
-msgstr ""
+msgstr "إنشاء طبقة نجمة"
 
 #: ../src/gui/states/state_star.cpp:665
 msgid "Defines the blend method to be used for stars"
@@ -2746,11 +2747,11 @@ msgstr ""
 
 #: ../src/gui/states/state_star.cpp:685
 msgid "Star Points:"
-msgstr ""
+msgstr "نقاط النجمة:"
 
 #: ../src/gui/states/state_star.cpp:693
 msgid "Radius Ratio:"
-msgstr ""
+msgstr "نسبة نصف القطر:"
 
 #: ../src/gui/states/state_star.cpp:697
 msgid "Regular Polygon"
@@ -2758,39 +2759,39 @@ msgstr "مضلّع منتظم"
 
 #: ../src/gui/states/state_star.cpp:704
 msgid "Inner Width:"
-msgstr ""
+msgstr "عرض داخلي:"
 
 #: ../src/gui/states/state_star.cpp:708
 msgid "Inner Tangent:"
-msgstr ""
+msgstr "مماس داخلي:"
 
 #: ../src/gui/states/state_star.cpp:712
 msgid "Outer Width:"
-msgstr ""
+msgstr "عرض خارجي:"
 
 #: ../src/gui/states/state_star.cpp:716
 msgid "Outer Tangent:"
-msgstr ""
+msgstr "مماس خارجي:"
 
 #: ../src/gui/states/state_star.cpp:897 ../src/gui/iconcontroller.cpp:164
 msgid "Star Tool"
-msgstr ""
+msgstr "أداة نجمة"
 
 #: ../src/gui/states/state_star.cpp:943
 msgid "New Star"
-msgstr ""
+msgstr "نجمة جديدة"
 
 #: ../src/gui/states/state_star.cpp:1096
 msgid "Unable to create Star layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة نجمة"
 
 #: ../src/gui/states/state_text.cpp:390
 msgid "Text Creation"
-msgstr ""
+msgstr "إنشاء نص"
 
 #: ../src/gui/states/state_text.cpp:411
 msgid "Create a text layer"
-msgstr ""
+msgstr "إنشاء طبقة نص"
 
 #: ../src/gui/states/state_text.cpp:427
 msgid "Defines the blend method to be used for texts"
@@ -2798,44 +2799,44 @@ msgstr ""
 
 #: ../src/gui/states/state_text.cpp:438
 msgid "Multiline Text"
-msgstr ""
+msgstr "نص متعدد الأسطر"
 
 #: ../src/gui/states/state_text.cpp:444
 msgid "Size:"
-msgstr ""
+msgstr "الحجم:"
 
 #: ../src/gui/states/state_text.cpp:451
 msgid "Orientation:"
-msgstr ""
+msgstr "الاتجاه:"
 
 #: ../src/gui/states/state_text.cpp:457
 msgid "Family:"
-msgstr ""
+msgstr "العائلة:"
 
 #: ../src/gui/states/state_text.cpp:559 ../src/gui/iconcontroller.cpp:162
 msgid "Text Tool"
-msgstr ""
+msgstr "أداة النصوص"
 
 #: ../src/gui/states/state_text.cpp:608
 msgid "New Text"
-msgstr ""
+msgstr "نص جديد"
 
 #: ../src/gui/states/state_text.cpp:635
 msgid "Input text"
-msgstr ""
+msgstr "نص مُدخل"
 
 #: ../src/gui/states/state_text.cpp:635
 msgid "Text: "
-msgstr ""
+msgstr "نّص: "
 
 #: ../src/gui/states/state_width.cpp:239
 msgid "Relative Growth"
-msgstr ""
+msgstr "نمو نسبي"
 
 #: ../src/gui/states/state_width.cpp:250 ../src/gui/states/state_width.cpp:307
 #: ../src/gui/iconcontroller.cpp:158
 msgid "Width Tool"
-msgstr ""
+msgstr "أداة العرض"
 
 #: ../src/gui/states/state_width.cpp:253
 msgid "Growth:"
@@ -2843,11 +2844,11 @@ msgstr ""
 
 #: ../src/gui/states/state_width.cpp:255
 msgid "Radius:"
-msgstr ""
+msgstr "نصف القطر:"
 
 #: ../src/gui/states/state_width.cpp:584
 msgid "Sketch Width"
-msgstr ""
+msgstr "عرض الرسم التخطيطي"
 
 #: ../src/gui/trees/canvastreestore.cpp:266
 #: ../src/gui/trees/canvastreestore.cpp:299
@@ -2855,12 +2856,12 @@ msgstr ""
 #: ../src/gui/iconcontroller.cpp:141 ../src/gui/iconcontroller.cpp:171
 #: ../src/synfigapp/action.cpp:560
 msgid "Canvas"
-msgstr ""
+msgstr "الرقعة"
 
 #: ../src/gui/trees/canvastreestore.cpp:297
 #: ../src/gui/trees/childrentreestore.cpp:205 ../src/gui/instance.cpp:728
 msgid "[Unnamed]"
-msgstr ""
+msgstr "غير مسمى"
 
 #: ../src/gui/trees/childrentree.cpp:114 ../src/gui/trees/layertree.cpp:391
 #: ../src/synfigapp/actions/valuedescconvert.cpp:100
@@ -2880,7 +2881,7 @@ msgstr ""
 
 #: ../src/gui/trees/childrentreestore.cpp:87
 msgid "ValueBase Nodes"
-msgstr ""
+msgstr "عقد ValueBase"
 
 #: ../src/gui/trees/keyframetree.cpp:66 ../src/gui/trees/layergrouptree.cpp:64
 #: ../src/gui/trees/layergrouptree.cpp:75 ../src/gui/trees/layertree.cpp:217
@@ -2929,7 +2930,7 @@ msgstr "الوقت"
 
 #: ../src/gui/trees/keyframetree.cpp:91
 msgid "Length"
-msgstr ""
+msgstr "طول"
 
 #: ../src/gui/trees/keyframetree.cpp:120
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:84
@@ -2937,32 +2938,32 @@ msgstr ""
 #: ../src/synfigapp/actions/layerencapsulatefilter.cpp:87
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:87
 msgid "Description"
-msgstr ""
+msgstr "وصف"
 
 #: ../src/gui/trees/keyframetreestore.cpp:802
 #: ../src/gui/trees/keyframetreestore.cpp:817
 msgid "Unable to find Keyframe in table"
-msgstr ""
+msgstr "تعذر إيجاد إطار مفتاحي في جدول"
 
 #: ../src/gui/trees/keyframetreestore.cpp:808
 msgid "There are no keyframes in this canvas"
-msgstr ""
+msgstr "لا أطر مفتاحية في هذه رقعة الرسم"
 
 #: ../src/gui/trees/layergrouptree.cpp:91 ../src/gui/trees/layertree.cpp:257
 msgid "Z Depth"
-msgstr ""
+msgstr "العمق Z"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:452
 msgid "Activate "
-msgstr ""
+msgstr "تفعيل"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:452
 msgid "Deactivate "
-msgstr ""
+msgstr "تعطيل"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:575
 msgid "Reset"
-msgstr ""
+msgstr "إعادة تعيين"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:950
 #: ../src/gui/trees/layertreestore.cpp:1156 ../src/gui/iconcontroller.cpp:185
@@ -2991,62 +2992,62 @@ msgstr ""
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:99
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:89
 msgid "Layer"
-msgstr ""
+msgstr "طبقة"
 
 #: ../src/gui/trees/layerparamtreestore.cpp:249
 msgid "Set Layer Parameters"
-msgstr ""
+msgstr "تعيين معلمات الطبقة"
 
 #: ../src/gui/trees/layerparamtreestore.cpp:265
 msgid "Unable to set all layer parameters."
-msgstr ""
+msgstr "تعذر تعيين كل معلمات الطبقة"
 
 #: ../src/gui/trees/layertree.cpp:230
 msgid "Icon"
-msgstr ""
+msgstr "رمز"
 
 #: ../src/gui/trees/layertreestore.cpp:435
 msgid "Create Group from Ghost"
-msgstr ""
+msgstr "أنشئ مجموعة من Ghost"
 
 #: ../src/gui/trees/layertreestore.cpp:556
 msgid "Move Layers"
-msgstr ""
+msgstr "انقل الطبقات"
 
 #: ../src/gui/trees/metadatatree.cpp:60
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:82
 #: ../src/synfigapp/actions/canvasmetadataset.cpp:83
 msgid "Key"
-msgstr ""
+msgstr "دليل"
 
 #: ../src/gui/trees/metadatatree.cpp:73
 msgid "Data"
-msgstr ""
+msgstr "بيانات"
 
 #: ../src/gui/widgets/widget_bonechooser.cpp:117
 #: ../src/gui/widgets/widget_bonechooser.cpp:135
 msgid "<None>"
-msgstr ""
+msgstr "<None>"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:120
 msgid "Other..."
-msgstr ""
+msgstr "أخرى..."
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:137
 msgid "Choose canvas"
-msgstr ""
+msgstr "اختر رقعة الرسم"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:138
 msgid "Canvas Name: "
-msgstr ""
+msgstr "اسم الرقعة:"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:141
 msgid "Choose"
-msgstr ""
+msgstr "اختر"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:153
 msgid "No canvas name was specified"
-msgstr ""
+msgstr "لم تحدد اسم الرقعة"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:172
 msgid ""
@@ -3056,59 +3057,59 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:182
 msgid "Unknown Exception"
-msgstr ""
+msgstr "خطأ غير معروف"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:380
 msgid "RGB"
-msgstr ""
+msgstr "RGB"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:381
 msgid "YUV"
-msgstr ""
+msgstr "YUV"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:382
 msgid "HSV"
-msgstr ""
+msgstr "HSV"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:407
 msgid "Red"
-msgstr ""
+msgstr "أحمر"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:409
 msgid "Green"
-msgstr ""
+msgstr "أخضر"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:411
 msgid "Blue"
-msgstr ""
+msgstr "أزرق"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:414
 msgid "HTML code"
-msgstr ""
+msgstr "رمز HTML"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:428
 msgid "Luma"
-msgstr ""
+msgstr "Luma"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:429
 msgid "Hue"
-msgstr ""
+msgstr "درجة الطيف"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:430
 msgid "Saturation"
-msgstr ""
+msgstr "تشبع"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:431
 msgid "U"
-msgstr ""
+msgstr "U"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:432
 msgid "V"
-msgstr ""
+msgstr "V"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:444
 msgid "Alpha"
-msgstr ""
+msgstr "ألفا"
 
 #: ../src/gui/widgets/widget_curves.cpp:843
 #, c-format
@@ -3116,7 +3117,7 @@ msgid ""
 "%s:<b>%s</b>\n"
 "<b>Time:</b> %lfs (%if) <small>( Δ %if )</small>\n"
 "<b>Value:</b> %lf <small>( Δ %lf )</small>"
-msgstr ""
+msgstr "%s:<b>%s</b>\n<b>الوقت:</b> %lfs (%if) <small>( Δ %if )</small>\n<b>القيمة:</b> %lf <small>( Δ %lf )</small>"
 
 #: ../src/gui/widgets/widget_curves.cpp:926
 #: ../src/gui/widgets/widget_curves.cpp:1222
@@ -3137,70 +3138,70 @@ msgstr ""
 #: ../src/synfigapp/canvasinterface.cpp:1180
 #: ../src/synfigapp/canvasinterface.cpp:1233
 msgid "Action Failed."
-msgstr ""
+msgstr "فشل الإجراء"
 
 #: ../src/gui/widgets/widget_curves.cpp:967
 msgid "Change animation curve"
-msgstr ""
+msgstr "تعديل منحى الحركة"
 
 #: ../src/gui/widgets/widget_defaults.cpp:193
 msgid "Outline Color"
-msgstr ""
+msgstr "لون الخط الخارجي"
 
 #: ../src/gui/widgets/widget_defaults.cpp:204
 msgid "Fill Color"
-msgstr ""
+msgstr "لون التعبئة"
 
 #: ../src/gui/widgets/widget_defaults.cpp:221
 msgid ""
 "Swap Fill and\n"
 "Outline Colors"
-msgstr ""
+msgstr "بدّل التعبئة \nألوان الخطوط الخارجية"
 
 #: ../src/gui/widgets/widget_defaults.cpp:234
 msgid "Reset Colors to Black and White"
-msgstr ""
+msgstr "تعيين الألوان إلى الأبيض والأسود"
 
 #: ../src/gui/widgets/widget_defaults.cpp:253
 msgid "Brush Preview"
-msgstr ""
+msgstr "معاينة الفرشاة"
 
 #: ../src/gui/widgets/widget_defaults.cpp:256
 msgid "Increase brush size"
-msgstr ""
+msgstr "تكبير حجم الفرشاة"
 
 #: ../src/gui/widgets/widget_defaults.cpp:262
 msgid "Decrease brush size"
-msgstr ""
+msgstr "تقليل حجم الفرشاة"
 
 #: ../src/gui/widgets/widget_defaults.cpp:271
 #: ../src/gui/widgets/widget_defaults.cpp:294
 msgid "Brush Size"
-msgstr ""
+msgstr "حجم الفرشاة"
 
 #: ../src/gui/widgets/widget_defaults.cpp:329
 msgid "Default Gradient"
-msgstr ""
+msgstr "تدّرج افتراضي"
 
 #: ../src/gui/widgets/widget_filename.cpp:142 ../src/gui/canvasview.cpp:1701
 msgid "Please choose an audio file"
-msgstr ""
+msgstr "من فضلك اختر ملف صوت"
 
 #: ../src/gui/widgets/widget_filename.cpp:146 ../src/gui/canvasview.cpp:1702
 msgid "Please choose an image file"
-msgstr ""
+msgstr "من فضلك اختر ملف صورة"
 
 #: ../src/gui/widgets/widget_filename.cpp:148
 msgid "Please choose a file"
-msgstr ""
+msgstr "فضلاً اختر ملفًا"
 
 #: ../src/gui/widgets/widget_gradient.cpp:212
 msgid "Insert Color Stop"
-msgstr ""
+msgstr "أدرج لون النهاية"
 
 #: ../src/gui/widgets/widget_gradient.cpp:222
 msgid "Remove Color Stop"
-msgstr ""
+msgstr "احذف لون النهاية"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:249
 msgid "Not possible to ALT-drag the first keyframe"
@@ -3212,32 +3213,32 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:335
 msgid "Time : "
-msgstr ""
+msgstr "الوقت :"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:338
 msgid "Old Time : "
-msgstr ""
+msgstr "الوقت السابق :"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:353
 msgid "Click and drag keyframes"
-msgstr ""
+msgstr "انقر واسحب الإطار الدليل"
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:361
 #: ../src/gui/widgets/widget_keyframe_list.cpp:371
 msgid "No name"
-msgstr ""
+msgstr "لا اسم"
 
 #: ../src/gui/widgets/widget_soundwave.cpp:162
 msgid "Audio file not supported"
-msgstr ""
+msgstr "ملف صوت غير مدعوم"
 
 #: ../src/gui/widgets/widget_sublayer.cpp:90
 msgid "<empty>"
-msgstr ""
+msgstr "<empty>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:80
 msgid "(Non-static value)"
-msgstr ""
+msgstr "(قيمة غير ثابتة)"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:91
 #: ../src/gui/widgets/widget_waypoint.cpp:108
@@ -3261,7 +3262,7 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypointmodel.cpp:98
 #: ../src/gui/canvasview.cpp:912 ../src/gui/instance.cpp:1445
 msgid "Constant"
-msgstr ""
+msgstr "ثابت"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:94
 #: ../src/gui/widgets/widget_waypoint.cpp:111
@@ -3269,7 +3270,7 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypointmodel.cpp:99
 #: ../src/gui/canvasview.cpp:913
 msgid "Ease In/Out"
-msgstr ""
+msgstr "تسهيل داخل/خارج"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:134
 #: ../src/synfigapp/actions/waypointremove.cpp:80
@@ -3281,44 +3282,44 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:136
 msgid "<b>Waypoint</b>"
-msgstr ""
+msgstr "<b>نقطة الاتجاه</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:148
 msgid "_Value"
-msgstr ""
+msgstr "_قيمة"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:155
 msgid "_Time"
-msgstr ""
+msgstr "_وقت"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:161 ../src/gui/instance.cpp:1450
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:92
 msgid "Interpolation"
-msgstr ""
+msgstr "الاستيفاء"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:163
 msgid "<b>Interpolation</b>"
-msgstr ""
+msgstr "<b>استيفاء</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:175
 msgid "_In Interpolation"
-msgstr ""
+msgstr "الاستيفاء لل_داخل"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:181
 msgid "_Out Interpolation"
-msgstr ""
+msgstr "الاستيفاء لل_خارج"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:187
 msgid "TCB Parameters"
-msgstr ""
+msgstr "معلمات TCB"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:189
 msgid "<b>TCB Parameter</b>"
-msgstr ""
+msgstr "<b>TCB معلمات</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:201
 msgid "T_ension"
-msgstr ""
+msgstr "ت_وتر"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:208
 msgid "_Continuity"
@@ -3326,15 +3327,15 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:215
 msgid "_Bias"
-msgstr ""
+msgstr "الان_حياز"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:222
 msgid "Te_mporal Tension"
-msgstr ""
+msgstr "توتر مؤ_قت"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:66
 msgid "Out:"
-msgstr ""
+msgstr "مخرج:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:67
 msgid "In:"
@@ -3350,7 +3351,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:70
 msgid "Bias:"
-msgstr ""
+msgstr "الانحياز:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:71
 msgid "Temporal Tension:"
@@ -3358,7 +3359,7 @@ msgstr ""
 
 #: ../src/gui/workarearenderer/renderer_bonesetup.cpp:91
 msgid "Bone Recursive Scale Mode"
-msgstr ""
+msgstr "نمط تحجيم تراجعي للعظم"
 
 #: ../src/gui/workspacehandler.cpp:137
 msgid "Can't save custom workspaces"
@@ -3376,31 +3377,31 @@ msgstr ""
 
 #: ../src/gui/app.cpp:909
 msgid "_File"
-msgstr ""
+msgstr "_ملف"
 
 #: ../src/gui/app.cpp:910
 msgid "Open Recent"
-msgstr ""
+msgstr "افتح الحديث"
 
 #: ../src/gui/app.cpp:912 ../src/gui/canvasview.cpp:3001
 msgid "_Edit"
-msgstr ""
+msgstr "_تحرير"
 
 #: ../src/gui/app.cpp:914
 msgid "_View"
-msgstr ""
+msgstr "_عرض"
 
 #: ../src/gui/app.cpp:915
 msgid "_Navigation"
-msgstr ""
+msgstr "_تصفح"
 
 #: ../src/gui/app.cpp:916
 msgid "Show/Hide Handles"
-msgstr ""
+msgstr "إظهار/إخفاء المقابض"
 
 #: ../src/gui/app.cpp:917
 msgid "Preview Quality"
-msgstr ""
+msgstr "جودة المعاينة"
 
 #: ../src/gui/app.cpp:918
 msgid "Low-Res Pixel Size"
@@ -3408,31 +3409,31 @@ msgstr ""
 
 #: ../src/gui/app.cpp:920
 msgid "_Canvas"
-msgstr ""
+msgstr "_رقعة"
 
 #: ../src/gui/app.cpp:922
 msgid "_Layer"
-msgstr ""
+msgstr "ط_بقة"
 
 #: ../src/gui/app.cpp:925
 msgid "Plug-Ins"
-msgstr ""
+msgstr "ملحقات"
 
 #: ../src/gui/app.cpp:927
 msgid "_Window"
-msgstr ""
+msgstr "_نافذة"
 
 #: ../src/gui/app.cpp:928
 msgid "_Arrange"
-msgstr ""
+msgstr "_ترتيب"
 
 #: ../src/gui/app.cpp:929
 msgid "Work_space"
-msgstr ""
+msgstr "مساحة عمل"
 
 #: ../src/gui/app.cpp:931
 msgid "_Help"
-msgstr ""
+msgstr "_مساعدة"
 
 #: ../src/gui/app.cpp:933 ../src/synfigapp/actions/keyframeduplicate.cpp:81
 #: ../src/synfigapp/actions/keyframeremove.cpp:81
@@ -3440,156 +3441,156 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframetoggl.cpp:95
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:80
 msgid "Keyframe"
-msgstr ""
+msgstr "إطار دليل"
 
 #: ../src/gui/app.cpp:958 ../src/gui/canvasview.cpp:1462
 msgid "Import..."
-msgstr ""
+msgstr "استورد..."
 
 #: ../src/gui/app.cpp:959 ../src/gui/canvasview.cpp:1465
 msgid "Import Sequence..."
-msgstr ""
+msgstr "استيراد تسلسل..."
 
 #: ../src/gui/app.cpp:960 ../src/gui/canvasview.cpp:1468
 msgid "Render..."
-msgstr ""
+msgstr "تصيير..."
 
 #: ../src/gui/app.cpp:961 ../src/gui/canvasview.cpp:1471
 msgid "Preview..."
-msgstr ""
+msgstr "معاينة..."
 
 #: ../src/gui/app.cpp:962 ../src/gui/canvasview.cpp:1480
 msgid "Close Document"
-msgstr ""
+msgstr "إغلاق المستند"
 
 #: ../src/gui/app.cpp:971 ../src/gui/canvasview.cpp:1487
 msgid "Select All Handles"
-msgstr ""
+msgstr "تحديد كل المقابض"
 
 #: ../src/gui/app.cpp:972 ../src/gui/canvasview.cpp:1491
 msgid "Unselect All Handles"
-msgstr ""
+msgstr "ألغ اختيار كل المقابض"
 
 #: ../src/gui/app.cpp:973 ../src/gui/canvasview.cpp:1495
 msgid "Select All Layers"
-msgstr ""
+msgstr "اختيار كل الطبقات"
 
 #: ../src/gui/app.cpp:974 ../src/gui/canvasview.cpp:1499
 msgid "Unselect All Layers"
-msgstr ""
+msgstr "إلغاء اختيار كل الطبقات"
 
 #: ../src/gui/app.cpp:975 ../src/gui/mainwindow.cpp:167
 msgid "Input Devices..."
-msgstr ""
+msgstr "أجهزة الإدخال..."
 
 #: ../src/gui/app.cpp:976 ../src/gui/mainwindow.cpp:170
 msgid "Preferences..."
-msgstr ""
+msgstr "تفضيلات..."
 
 #: ../src/gui/app.cpp:980
 msgid "Menubar"
-msgstr ""
+msgstr "شريط القوائم"
 
 #: ../src/gui/app.cpp:981
 msgid "Toolbar"
-msgstr ""
+msgstr "شريط الأدوات"
 
 #: ../src/gui/app.cpp:983 ../src/gui/canvasview.cpp:1636
 msgid "Toggle None/Last visible Handles"
-msgstr ""
+msgstr "بدّل بين لا شيء/آخر مقابض مرئية"
 
 #: ../src/gui/app.cpp:984 ../src/gui/canvasview.cpp:1648
 msgid "Show Position Handles"
-msgstr ""
+msgstr "أظهر مقابض المواضع"
 
 #: ../src/gui/app.cpp:985 ../src/gui/canvasview.cpp:1650
 msgid "Show Vertex Handles"
-msgstr ""
+msgstr "إظهار مقابض الذروات"
 
 #: ../src/gui/app.cpp:986 ../src/gui/canvasview.cpp:1649
 msgid "Show Tangent Handles"
-msgstr ""
+msgstr "إظهار مقابض المماسات"
 
 #: ../src/gui/app.cpp:987 ../src/gui/canvasview.cpp:1651
 msgid "Show Radius Handles"
-msgstr ""
+msgstr "إظهار مقابض نصف القطر"
 
 #: ../src/gui/app.cpp:988 ../src/gui/canvasview.cpp:1652
 msgid "Show Width Handles"
-msgstr ""
+msgstr "إظهار مقابض العرض"
 
 #: ../src/gui/app.cpp:989 ../src/gui/canvasview.cpp:1653
 msgid "Show WidthPoints Position Handles"
-msgstr ""
+msgstr "أظهر مقابض مواضع WidthPoints"
 
 #: ../src/gui/app.cpp:990 ../src/gui/canvasview.cpp:1654
 msgid "Show Angle Handles"
-msgstr ""
+msgstr "إظهار مقابض الزاوية"
 
 #: ../src/gui/app.cpp:991
 msgid "Show Bone Setup Handles"
-msgstr ""
+msgstr "أظهر مقابض إعدادات العظم"
 
 #: ../src/gui/app.cpp:992 ../src/gui/canvasview.cpp:1656
 msgid "Show Recursive Scale Bone Handles"
-msgstr ""
+msgstr "أظهر مقابض التحجيم التراجعي للعظم"
 
 #: ../src/gui/app.cpp:993 ../src/gui/canvasview.cpp:1661
 msgid "Next Bone Handles"
-msgstr ""
+msgstr "مقابض العظم التالي"
 
 #: ../src/gui/app.cpp:995
 msgid "Use Parametric Renderer"
-msgstr ""
+msgstr "استخدم المعالج القابل للإعداد"
 
 #: ../src/gui/app.cpp:996
 msgid "Use Quality Level 1"
-msgstr ""
+msgstr "استعمل مستوى الجودة 1"
 
 #: ../src/gui/app.cpp:997
 msgid "Use Quality Level 2"
-msgstr ""
+msgstr "استعمل مستوى الجودة 2"
 
 #: ../src/gui/app.cpp:998
 msgid "Use Quality Level 3"
-msgstr ""
+msgstr "استعمل مستوى الجودة 3"
 
 #: ../src/gui/app.cpp:999
 msgid "Use Quality Level 4"
-msgstr ""
+msgstr "استعمل مستوى الجودة 4"
 
 #: ../src/gui/app.cpp:1000
 msgid "Use Quality Level 5"
-msgstr ""
+msgstr "استعمل مستوى الجودة 5"
 
 #: ../src/gui/app.cpp:1001
 msgid "Use Quality Level 6"
-msgstr ""
+msgstr "استعمل مستوى الجودة 6"
 
 #: ../src/gui/app.cpp:1002
 msgid "Use Quality Level 7"
-msgstr ""
+msgstr "استعمل مستوى الجودة 7"
 
 #: ../src/gui/app.cpp:1003
 msgid "Use Quality Level 8"
-msgstr ""
+msgstr "استعمل مستوى الجودة 8"
 
 #: ../src/gui/app.cpp:1004
 msgid "Use Quality Level 9"
-msgstr ""
+msgstr "استعمل مستوى الجودة 9"
 
 #: ../src/gui/app.cpp:1005
 msgid "Use Quality Level 10"
-msgstr ""
+msgstr "استعمل مستوى الجودة 10"
 
 #: ../src/gui/app.cpp:1008 ../src/gui/canvasview.cpp:1528
 #, c-format
 msgid "Set Low-Res pixel size to %d"
-msgstr ""
+msgstr "تعيين حجم البكسل للموارد المحدودة %d"
 
 #: ../src/gui/app.cpp:1010
 msgid "Toggle Grid Show"
-msgstr ""
+msgstr "بدّل عرض الشبكة"
 
 #: ../src/gui/app.cpp:1011
 msgid "Toggle Grid Snap"
@@ -3597,7 +3598,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1012
 msgid "Toggle Guide Show"
-msgstr ""
+msgstr "بدّل عرض الدليل"
 
 #: ../src/gui/app.cpp:1013
 msgid "Toggle Guide Snap"
@@ -3605,91 +3606,91 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1014
 msgid "Toggle Low-Res"
-msgstr ""
+msgstr "بدّل الموارد المنخفضة"
 
 #: ../src/gui/app.cpp:1016 ../src/gui/canvasview.cpp:1538
 msgid "Decrease Low-Res Pixel Size"
-msgstr ""
+msgstr "خفّض حجم البكسل للموارد المنخفضة"
 
 #: ../src/gui/app.cpp:1017 ../src/gui/canvasview.cpp:1541
 msgid "Increase Low-Res Pixel Size"
-msgstr ""
+msgstr "ارفع حجم البكسل للموارد المنخفضة"
 
 #: ../src/gui/app.cpp:1018
 msgid "Toggle Background Rendering"
-msgstr ""
+msgstr "بدّل تصيير الخلفية"
 
 #: ../src/gui/app.cpp:1019
 msgid "Toggle Onion Skin"
-msgstr ""
+msgstr "بدّل قشرة البصل"
 
 #: ../src/gui/app.cpp:1033 ../src/gui/iconcontroller.cpp:303
 msgid "Seek to Next Keyframe"
-msgstr ""
+msgstr "الانتقال إلى الإطار الدليل التالي"
 
 #: ../src/gui/app.cpp:1034
 msgid "Seek to previous Keyframe"
-msgstr ""
+msgstr "الانتقال إلى الإطار الدليل السابق"
 
 #: ../src/gui/app.cpp:1035
 msgid "Seek to Next Frame"
-msgstr ""
+msgstr "الانتقال إلى الإطار التالي"
 
 #: ../src/gui/app.cpp:1036 ../src/gui/iconcontroller.cpp:298
 msgid "Seek to Previous Frame"
-msgstr ""
+msgstr "الانتقال إلى الإطار السابق"
 
 #: ../src/gui/app.cpp:1037 ../src/gui/canvasview.cpp:1602
 msgid "Seek Forward"
-msgstr ""
+msgstr "الانتقال إلى الأمام"
 
 #: ../src/gui/app.cpp:1038 ../src/gui/canvasview.cpp:1604
 msgid "Seek Backward"
-msgstr ""
+msgstr "الانتقال للخلف"
 
 #: ../src/gui/app.cpp:1039 ../src/gui/iconcontroller.cpp:296
 msgid "Seek to Begin"
-msgstr ""
+msgstr "الانتقال إلى البداية"
 
 #: ../src/gui/app.cpp:1040 ../src/gui/iconcontroller.cpp:304
 msgid "Seek to End"
-msgstr ""
+msgstr "الانتقال إلى النهاية"
 
 #: ../src/gui/app.cpp:1044 ../src/gui/canvasview.cpp:1513
 msgid "Properties..."
-msgstr ""
+msgstr "الخصائص...."
 
 #: ../src/gui/app.cpp:1045 ../src/gui/canvasview.cpp:1477
 msgid "Options..."
-msgstr ""
+msgstr "خيارات..."
 
 #: ../src/gui/app.cpp:1048
 msgid "Increase Layer Amount"
-msgstr ""
+msgstr "زيادة مقدار الطبقة"
 
 #: ../src/gui/app.cpp:1049
 msgid "Decrease Layer Amount"
-msgstr ""
+msgstr "تقليل مقدار الطبقة"
 
 #: ../src/gui/app.cpp:1052 ../src/gui/mainwindow.cpp:180
 msgid "Compositing"
-msgstr ""
+msgstr "تَرْكِيب"
 
 #: ../src/gui/app.cpp:1054 ../src/gui/mainwindow.cpp:183
 msgid "Animating"
-msgstr ""
+msgstr "تحريك"
 
 #: ../src/gui/app.cpp:1055 ../src/gui/mainwindow.cpp:189
 msgid "Save workspace..."
-msgstr ""
+msgstr "حفظ مساحة العمل.."
 
 #: ../src/gui/app.cpp:1056
 msgid "Preview Dialog"
-msgstr ""
+msgstr "نافذة المعاينة"
 
 #: ../src/gui/app.cpp:1488
 msgid "Synfig version mismatched!"
-msgstr ""
+msgstr "إصدار البرنامج Synfig غير مطابق!"
 
 #: ../src/gui/app.cpp:1489
 msgid ""
@@ -3701,192 +3702,192 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1511 ../src/gui/app.cpp:1516
 msgid "Failed to initialize synfig!"
-msgstr ""
+msgstr "تعذرت تهيئة Synfig!"
 
 #: ../src/gui/app.cpp:1528
 msgid "Loading Basic Settings..."
-msgstr ""
+msgstr "تحميل الإعدادات الأساسية..."
 
 #: ../src/gui/app.cpp:1547
 msgid "Loading Plugins..."
-msgstr ""
+msgstr "تحميل الملحقات..."
 
 #: ../src/gui/app.cpp:1551
 msgid "Init UI Manager..."
-msgstr ""
+msgstr "تهيئة مدير واجهة المستخدم..."
 
 #: ../src/gui/app.cpp:1555
 msgid "Init Dock Manager..."
-msgstr ""
+msgstr "تهيئة مدير الإرساء..."
 
 #: ../src/gui/app.cpp:1558
 msgid "Init State Manager..."
-msgstr ""
+msgstr "تهيئة مدير الحالة..."
 
 #: ../src/gui/app.cpp:1561
 msgid "Init Main Window..."
-msgstr ""
+msgstr "تهيئة النافذة الرئيسية..."
 
 #: ../src/gui/app.cpp:1565
 msgid "Init Toolbox..."
-msgstr ""
+msgstr "تهيئة علبة الأدوات..."
 
 #: ../src/gui/app.cpp:1569
 msgid "Init About Dialog..."
-msgstr ""
+msgstr "تهيئة حوار \"عن\"..."
 
 #: ../src/gui/app.cpp:1572
 msgid "Init Tool Options..."
-msgstr ""
+msgstr "تهيئة خيارات الأداة..."
 
 #: ../src/gui/app.cpp:1576
 msgid "Init History..."
-msgstr ""
+msgstr "تهيئة التأريخ..."
 
 #: ../src/gui/app.cpp:1580
 msgid "Init Canvases..."
-msgstr ""
+msgstr "تهيئة الرقع..."
 
 #: ../src/gui/app.cpp:1584
 msgid "Init Keyframes..."
-msgstr ""
+msgstr "تهيئة الأطر الدليلة..."
 
 #: ../src/gui/app.cpp:1591
 msgid "Init Layers..."
-msgstr ""
+msgstr "تهيئة الطبقات..."
 
 #: ../src/gui/app.cpp:1595
 msgid "Init Parameters..."
-msgstr ""
+msgstr "تهيئة المعلمات..."
 
 #: ../src/gui/app.cpp:1599
 msgid "Init MetaData..."
-msgstr ""
+msgstr "تهيئة MetaData..."
 
 #: ../src/gui/app.cpp:1603
 msgid "Init Library..."
-msgstr ""
+msgstr "تهيئة المكتبة..."
 
 #: ../src/gui/app.cpp:1607
 msgid "Init Info..."
-msgstr ""
+msgstr "تهيئة المعلومات..."
 
 #: ../src/gui/app.cpp:1611
 msgid "Init Navigator..."
-msgstr ""
+msgstr "تهيئة المتصفح..."
 
 #: ../src/gui/app.cpp:1615
 msgid "Init SoundWave..."
-msgstr ""
+msgstr "تهيئة SoundWave..."
 
 #: ../src/gui/app.cpp:1619
 msgid "Init Timetrack..."
-msgstr ""
+msgstr "تهيئة Timetrack..."
 
 #: ../src/gui/app.cpp:1623
 msgid "Init Curve Editor..."
-msgstr ""
+msgstr "تهيئة محرر المنحى..."
 
 #: ../src/gui/app.cpp:1627
 msgid "Init Layer Sets..."
-msgstr ""
+msgstr "تهيئة مجموعات الطبقات..."
 
 #: ../src/gui/app.cpp:1632
 msgid "Init Color Dialog..."
-msgstr ""
+msgstr "تهيئة حوار الألوان..."
 
 #: ../src/gui/app.cpp:1635
 msgid "Init Gradient Dialog..."
-msgstr ""
+msgstr "تهيئة حوار التدريج..."
 
 #: ../src/gui/app.cpp:1638
 msgid "Init DeviceTracker..."
-msgstr ""
+msgstr "تهيئة DeviceTracker..."
 
 #: ../src/gui/app.cpp:1643
 msgid "Init ModPalette..."
-msgstr ""
+msgstr "تهيئة ModPalette..."
 
 #: ../src/gui/app.cpp:1646
 msgid "Init Setup Dialog..."
-msgstr ""
+msgstr "تهيئة حوار التثبيت..."
 
 #: ../src/gui/app.cpp:1649
 msgid "Init Input Dialog..."
-msgstr ""
+msgstr "تهيئة حوار الإدخال..."
 
 #: ../src/gui/app.cpp:1653
 msgid "Loading Custom Workspace List..."
-msgstr ""
+msgstr "تحميل قائمة مساحات العمل مخصصة..."
 
 #: ../src/gui/app.cpp:1658
 msgid "Init auto recovery..."
-msgstr ""
+msgstr "تهيئة الاسترجاع الآلي..."
 
 #: ../src/gui/app.cpp:1662
 msgid "Loading Settings..."
-msgstr ""
+msgstr "تحميل الإعدادات..."
 
 #: ../src/gui/app.cpp:1672
 msgid "Init Tools..."
-msgstr ""
+msgstr "تهيئة الأدوات..."
 
 #: ../src/gui/app.cpp:1711
 msgid "Checking auto-recover..."
-msgstr ""
+msgstr "فحص الاسترجاع التلقائي..."
 
 #: ../src/gui/app.cpp:1720
 msgid "Auto recovery file(s) found. Do you want to recover unsaved changes?"
-msgstr ""
+msgstr "تم العثور على ملف/ملفات الاسترداد التلقائي. هل تريد استرداد التغييرات غير المحفوظة؟"
 
 #: ../src/gui/app.cpp:1721
 msgid ""
 "Synfig Studio seems to have crashed before you could save all your files."
-msgstr ""
+msgstr "يبدو أن البرنامج تعطّل قبل أن تتمكن من حفظ جميع الملفات الخاصة بك."
 
 #: ../src/gui/app.cpp:1722
 msgid "Ignore"
-msgstr ""
+msgstr "تجاهل"
 
 #: ../src/gui/app.cpp:1723
 msgid "Recover"
-msgstr ""
+msgstr "استرجاع"
 
 #: ../src/gui/app.cpp:1729
 msgid "Unable to fully recover from previous crash"
-msgstr ""
+msgstr "تعذر الاسترجاع الكامل بعد التعطل السابق"
 
 #: ../src/gui/app.cpp:1731
 msgid "Unable to recover from previous crash"
-msgstr ""
+msgstr "تعذر الاسترجاع بعد التعطل السابق"
 
 #: ../src/gui/app.cpp:1735
 msgid "It would be a good idea to review and save recovered files now."
-msgstr ""
+msgstr "يُستحسن مراجعة وحفظ الملفات المستردة الآن."
 
 #: ../src/gui/app.cpp:1736
 msgid ""
 "Synfig Studio has attempted to recover from a previous crash. The files just"
 " recovered are NOT YET SAVED."
-msgstr ""
+msgstr "حاول البرنامج الاسترجاع بعد التعطل. الملفات المسترجعة لم تحفظ بعد NOT YET SAVED."
 
 #: ../src/gui/app.cpp:1738
 msgid "Thanks"
-msgstr ""
+msgstr "شكر"
 
 #: ../src/gui/app.cpp:1755
 msgid "Loading files..."
-msgstr ""
+msgstr "تحميل الملفات..."
 
 #: ../src/gui/app.cpp:1766
 msgid "Done."
-msgstr ""
+msgstr "انتهى."
 
 #: ../src/gui/app.cpp:1798
 msgid ""
 "There is a bug, which can cause computer to hang/freeze when resizing the "
 "canvas window."
-msgstr ""
+msgstr "هناك علة يمكن أن تتسبب في تعليق الحاسوب أو تجميده، عند تغيير حجم نافذة الرقعة."
 
 #: ../src/gui/app.cpp:1800
 msgid ""
@@ -3898,7 +3899,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1810
 msgid "Got it"
-msgstr ""
+msgstr "فهمت"
 
 #: ../src/gui/app.cpp:1814 ../src/gui/app.cpp:1818
 msgid ""
@@ -3908,11 +3909,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2274
 msgid "Do you want to overwrite this workspace?"
-msgstr ""
+msgstr "هل تريد استبدال مساحة العمل هذه؟"
 
 #: ../src/gui/app.cpp:2398
 msgid "Quit Request"
-msgstr ""
+msgstr "طلب إنهاء"
 
 #: ../src/gui/app.cpp:2404
 msgid ""
@@ -3921,19 +3922,19 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2417
 msgid "Quit Request sent"
-msgstr ""
+msgstr "تم إرسال طلب الإنهاء"
 
 #: ../src/gui/app.cpp:2448 ../src/gui/app.cpp:2903 ../src/gui/app.cpp:3040
 msgid "All Files (*.*)"
-msgstr ""
+msgstr "كل الملفات (*.*)"
 
 #: ../src/gui/app.cpp:2502 ../src/synfigapp/canvasinterface.cpp:697
 msgid "Import"
-msgstr ""
+msgstr "استيراد"
 
 #: ../src/gui/app.cpp:2507
 msgid "All supported files"
-msgstr ""
+msgstr "كل الملفّات المدعومة"
 
 #: ../src/gui/app.cpp:2540
 msgid "Synfig files (*.sif, *.sifz)"
@@ -3941,117 +3942,117 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2547
 msgid "Images (*.png, *.jpeg, *.bmp, *.svg)"
-msgstr ""
+msgstr "صور (*.png، *.jpeg، *.bmp، *.svg)"
 
 #: ../src/gui/app.cpp:2561
 msgid "Image sequence files (*.lst)"
-msgstr ""
+msgstr "ملفات سلاسل الصور (*.lst)"
 
 #: ../src/gui/app.cpp:2566 ../src/gui/app.cpp:2795
 msgid "Audio (*.ogg, *.mp3, *.wav)"
-msgstr ""
+msgstr "صوت (*.ogg، *.mp3، *.wav)"
 
 #: ../src/gui/app.cpp:2576
 msgid "Video (*.avi, *.mp4)"
-msgstr ""
+msgstr "فيديو (*.avi، *.mp4)"
 
 #: ../src/gui/app.cpp:2584
 msgid "Lipsync (*.pgo)"
-msgstr ""
+msgstr "Lipsync (*.pgo)"
 
 #: ../src/gui/app.cpp:2589 ../src/gui/app.cpp:2752 ../src/gui/app.cpp:2806
 #: ../src/gui/app.cpp:2863 ../src/gui/app.cpp:2973
 msgid "Any files"
-msgstr ""
+msgstr "كل الملفات"
 
 #: ../src/gui/app.cpp:2636 ../src/gui/app.cpp:2689 ../src/gui/app.cpp:2732
 #: ../src/gui/app.cpp:2791 ../src/gui/app.cpp:2845
 msgid "Load"
-msgstr ""
+msgstr "حمّل"
 
 #: ../src/gui/app.cpp:2639
 msgid "Palette files (*.spal, *.gpl)"
-msgstr ""
+msgstr "ملفات لوحات التلوين (*.spal، *.gpl)"
 
 #: ../src/gui/app.cpp:2646 ../src/gui/app.cpp:3229
 msgid "Synfig palette files (*.spal)"
-msgstr ""
+msgstr "ملفات لوحات تلوين Synfig (*.spal)"
 
 #: ../src/gui/app.cpp:2652
 msgid "GIMP palette files (*.gpl)"
-msgstr ""
+msgstr "ملفات لوحات تلوين جِمب (*.gpl)"
 
 #: ../src/gui/app.cpp:2693 ../src/gui/app.cpp:3291
 msgid "Synfig sketch files (*.sketch)"
-msgstr ""
+msgstr "ملفات الرسوم التخطيطية لـ Synfig (*.sketch)"
 
 #: ../src/gui/app.cpp:2736
 msgid "Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"
-msgstr ""
+msgstr "صور وملفات سلاسل (*.png، *.jpg، *.jpeg، *.bmp، *.svg، *.lst)"
 
 #: ../src/gui/app.cpp:2849
 msgid "Images files (*.png, *.jpg, *.jpeg, *.bmp)"
-msgstr ""
+msgstr "ملفات صور (*.png، *.jpg، *.jpeg، *.bmp)"
 
 #: ../src/gui/app.cpp:2958 ../src/gui/app.cpp:3021
 #: ../src/gui/iconcontroller.cpp:177 ../src/gui/mainwindow.cpp:159
 msgid "Open"
-msgstr ""
+msgstr "فتح"
 
 #: ../src/gui/app.cpp:2959
 msgid "Open history"
-msgstr ""
+msgstr "افتح التاريخ"
 
 #: ../src/gui/app.cpp:2966
 msgid "Synfig files (*.sif, *.sifz, *.sfg)"
-msgstr ""
+msgstr "ملفات synfig (*.sif، *.sifz، *.sfg)"
 
 #: ../src/gui/app.cpp:3093
 msgid "Uncompressed Synfig file (*.sif)"
-msgstr ""
+msgstr "ملف Synfig غير مضغوط (*.sif)"
 
 #: ../src/gui/app.cpp:3101
 msgid "Compressed Synfig file (*.sifz)"
-msgstr ""
+msgstr "ملف Synfig مضغوط (*.sifz)"
 
 #: ../src/gui/app.cpp:3105
 msgid "Container format file (*.sfg)"
-msgstr ""
+msgstr "ملف بصيغة المحتوي (*.sfg)"
 
 #: ../src/gui/app.cpp:3121
 msgid "Current"
-msgstr ""
+msgstr "الحالي"
 
 #: ../src/gui/app.cpp:3142
 msgid "and older"
-msgstr ""
+msgstr "والأقدم"
 
 #: ../src/gui/app.cpp:3146
 msgid "File Format Version: "
-msgstr ""
+msgstr "إصدار صيغة الملف: "
 
 #: ../src/gui/app.cpp:3451
 msgid "Feature not available"
-msgstr ""
+msgstr "ميزة غير متوفرة"
 
 #: ../src/gui/app.cpp:3452
 msgid "Sorry, this feature has not yet been implemented."
-msgstr ""
+msgstr "عذرا ، لم يتم تنفيذ هذه الميزة حتى الآن."
 
 #: ../src/gui/app.cpp:3614
 msgid "Documentation"
-msgstr ""
+msgstr "توثيق"
 
 #: ../src/gui/app.cpp:3615
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "https://wiki.synfig.org/Category:Manual"
-msgstr ""
+msgstr "توثيق Synfig Studio متوفرة على الموقع:\n\nhttps://wiki.synfig.org/Category:Manual"
 
 #: ../src/gui/app.cpp:3616
 msgid "Help"
-msgstr ""
+msgstr "مساعدة"
 
 #: ../src/gui/app.cpp:3625
 msgid ""
@@ -4062,7 +4063,7 @@ msgstr ""
 #: ../src/gui/app.cpp:3627 ../src/gui/app.cpp:3648 ../src/gui/app.cpp:4071
 #: ../src/gui/canvasview.cpp:3462 ../src/gui/canvasview.cpp:3485
 msgid "Error"
-msgstr ""
+msgstr "خطأ"
 
 #: ../src/gui/app.cpp:3646
 msgid "No compatible application was found. Please load open file manually:"
@@ -4080,18 +4081,18 @@ msgstr ""
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
-msgstr ""
+msgstr "تعذر تحميل \"%s\":\n\n"
 
 #: ../src/gui/app.cpp:3806 ../src/gui/app.cpp:3917 ../src/gui/app.cpp:4065
 #: ../src/gui/canvasview.cpp:1708 ../src/gui/canvasview.cpp:3170
 #: ../src/gui/canvasview.cpp:3468 ../src/gui/canvasview.cpp:3491
 msgid "Warning"
-msgstr ""
+msgstr "تحذير"
 
 #: ../src/gui/app.cpp:3817 ../src/gui/app.cpp:3927
 #, c-format
 msgid "Unable to create instance for \"%s\""
-msgstr ""
+msgstr "تعذر إنشاء كائن لـ \"%s\""
 
 #: ../src/gui/app.cpp:3822 ../src/gui/app.cpp:3932
 msgid "Newer version of this file available on the CVS repository!"
@@ -4104,7 +4105,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:3826 ../src/gui/app.cpp:3936
 msgid "Update Anyway"
-msgstr ""
+msgstr "تحديث على أي حال"
 
 #: ../src/gui/app.cpp:3855 ../src/gui/app.cpp:3968
 msgid "Uncaught error on file open (BUG)"
@@ -4115,7 +4116,7 @@ msgstr ""
 msgid ""
 "Unable to open temporary container \"%s\"\n"
 "\n"
-msgstr ""
+msgstr "تعذر فتح محتوٍ مؤقت \"%s\"\n\n"
 
 #: ../src/gui/app.cpp:3884
 #, c-format
@@ -4131,11 +4132,11 @@ msgstr ""
 #: ../src/gui/app.cpp:4095 ../src/gui/app.cpp:4119
 #: ../src/gui/canvasview.cpp:3479
 msgid "Please select a file"
-msgstr ""
+msgstr "رجاءً اختر ملفًا."
 
 #: ../src/gui/app.cpp:4115
 msgid "History entry #"
-msgstr ""
+msgstr "مدخل التأريخ #"
 
 #: ../src/gui/app.cpp:4119
 msgid "Select one of previous versions of file"
@@ -4147,7 +4148,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:278
 msgid "ERROR"
-msgstr ""
+msgstr "خطأ"
 
 #: ../src/gui/canvasview.cpp:345
 msgid "Feature not yet implemented"
@@ -4155,19 +4156,19 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:546
 msgid "Canvas View"
-msgstr ""
+msgstr "حجم رقعة الرسم"
 
 #: ../src/gui/canvasview.cpp:861 ../src/gui/preview.cpp:1347
 msgid "Enable JACK"
-msgstr ""
+msgstr "تمكين JACK"
 
 #: ../src/gui/canvasview.cpp:895
 msgid "Moves the time window"
-msgstr ""
+msgstr "يحرك نافذة الوقت"
 
 #: ../src/gui/canvasview.cpp:921
 msgid "Default Interpolation"
-msgstr ""
+msgstr "الاستيفاء الافتراضي"
 
 #: ../src/gui/canvasview.cpp:935 ../src/gui/canvasview.cpp:2364
 msgid "Turn on animate editing mode"
@@ -4187,282 +4188,282 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1183
 msgid "Preview"
-msgstr ""
+msgstr "معاينة"
 
 #: ../src/gui/canvasview.cpp:1184
 msgid "Shows the Preview Settings Dialog"
-msgstr ""
+msgstr "يعرض حوار إعدادات المعاينة"
 
 #: ../src/gui/canvasview.cpp:1223
 msgid "Show grid"
-msgstr ""
+msgstr "إظهار الشبكة"
 
 #: ../src/gui/canvasview.cpp:1224
 msgid "Show grid when enabled"
-msgstr ""
+msgstr "إظهار الشبكة عند تمكينها"
 
 #: ../src/gui/canvasview.cpp:1240
 msgid "Snap to grid"
-msgstr ""
+msgstr "اتبّع الشبكة"
 
 #: ../src/gui/canvasview.cpp:1241
 msgid "Snap to grid when enabled"
-msgstr ""
+msgstr "اتّبع الشبكة عند تمكينها"
 
 #: ../src/gui/canvasview.cpp:1258
 msgid "Refresh"
-msgstr ""
+msgstr "حدّث الفُرَش"
 
 #: ../src/gui/canvasview.cpp:1259
 msgid "Refresh workarea"
-msgstr ""
+msgstr "أنعش منطقة العمل"
 
 #: ../src/gui/canvasview.cpp:1271
 msgid "Select rendering mode"
-msgstr ""
+msgstr "اختر نمط التصيير"
 
 #: ../src/gui/canvasview.cpp:1295
 msgid "Background rendering"
-msgstr ""
+msgstr "تصيير الخلفية"
 
 #: ../src/gui/canvasview.cpp:1296
 msgid "Render future and past frames in background when enabled"
-msgstr ""
+msgstr "تصيير الأطر الماضية والمقبلة في الخلفية عند تمكينها"
 
 #: ../src/gui/canvasview.cpp:1328
 msgid "Onion skin"
-msgstr ""
+msgstr "قشرة البصل"
 
 #: ../src/gui/canvasview.cpp:1329
 msgid "Shows onion skin when enabled"
-msgstr ""
+msgstr "يظهر قشرة البصل عند تمكينها"
 
 #: ../src/gui/canvasview.cpp:1339
 msgid "Past onion skins"
-msgstr ""
+msgstr "قشور البصل الماضية"
 
 #: ../src/gui/canvasview.cpp:1354
 msgid "Future onion skins"
-msgstr ""
+msgstr "قشور البصل المقبلة"
 
 #: ../src/gui/canvasview.cpp:1377
 msgid "Stop current operation"
-msgstr ""
+msgstr "إيقاف العملية الحالية"
 
 #: ../src/gui/canvasview.cpp:1436 ../src/gui/iconcontroller.cpp:178
 #: ../src/gui/instance.cpp:1051
 msgid "Save"
-msgstr ""
+msgstr "حفظ"
 
 #: ../src/gui/canvasview.cpp:1439
 msgid "Save As..."
-msgstr ""
+msgstr "حفظ باسم..."
 
 #: ../src/gui/canvasview.cpp:1439 ../src/gui/iconcontroller.cpp:179
 msgid "Save As"
-msgstr ""
+msgstr "حفظ باسم"
 
 #: ../src/gui/canvasview.cpp:1442 ../src/gui/iconcontroller.cpp:180
 msgid "Save All"
-msgstr ""
+msgstr "احفظ الكل"
 
 #: ../src/gui/canvasview.cpp:1442
 msgid "Save all opened documents"
-msgstr ""
+msgstr "أغلق كل المستندات المفتوحة."
 
 #: ../src/gui/canvasview.cpp:1483 ../src/gui/mainwindow.cpp:162
 msgid "Quit"
-msgstr ""
+msgstr "إنهاء"
 
 #: ../src/gui/canvasview.cpp:1558 ../src/gui/iconcontroller.cpp:253
 #: ../src/gui/iconcontroller.cpp:258
 msgid "Show Grid"
-msgstr ""
+msgstr "إظهار الشبكة"
 
 #: ../src/gui/canvasview.cpp:1562
 msgid "Snap to Grid"
-msgstr ""
+msgstr "اتبع الشبكة"
 
 #: ../src/gui/canvasview.cpp:1566
 msgid "Show Guides"
-msgstr ""
+msgstr "أظهر الأدلة"
 
 #: ../src/gui/canvasview.cpp:1570
 msgid "Snap to Guides"
-msgstr ""
+msgstr "اتبع الأدلة"
 
 #: ../src/gui/canvasview.cpp:1574
 msgid "Use Low-Res"
-msgstr ""
+msgstr "استعمل موارد منخفضة"
 
 #: ../src/gui/canvasview.cpp:1578
 msgid "Enable rendering in background"
-msgstr ""
+msgstr "تمكين التصيير في الخلفية"
 
 #: ../src/gui/canvasview.cpp:1582
 msgid "Show Onion Skin"
-msgstr ""
+msgstr "عرض قشرة البصل"
 
 #: ../src/gui/canvasview.cpp:1625
 msgid "Zoom In on Timeline"
-msgstr ""
+msgstr "قرّب في خط الزمن"
 
 #: ../src/gui/canvasview.cpp:1628
 msgid "Zoom Out on Timeline"
-msgstr ""
+msgstr "كبّر على خط الزمن"
 
 #: ../src/gui/canvasview.cpp:1749 ../src/gui/canvasview.cpp:2161
 msgid "Select All Children"
-msgstr ""
+msgstr "اختيار كل الكائنات الفرعية"
 
 #: ../src/gui/canvasview.cpp:1927
 msgid "-MODIFIED"
-msgstr ""
+msgstr "-MODIFIED"
 
 #: ../src/gui/canvasview.cpp:1929
 msgid "-UPDATED"
-msgstr ""
+msgstr "-UPDATED"
 
 #: ../src/gui/canvasview.cpp:2353
 msgid "Turn off animate editing mode"
-msgstr ""
+msgstr "إيقاف تشغيل وضع تحرير الحركة"
 
 #: ../src/gui/canvasview.cpp:2376
 msgid "Unlock future keyframes"
-msgstr ""
+msgstr "أزل قفل الإطار المفتاحي القادم"
 
 #: ../src/gui/canvasview.cpp:2387
 msgid "Lock future keyframes"
-msgstr ""
+msgstr "اقفل الإطار المفتاحي القادم"
 
 #: ../src/gui/canvasview.cpp:2398
 msgid "Unlock past keyframes"
-msgstr ""
+msgstr "أزل قفل الإطار المفتاحي الماضي"
 
 #: ../src/gui/canvasview.cpp:2409
 msgid "Lock past keyframes"
-msgstr ""
+msgstr "اقفل الإطار المفتاحي الماضي"
 
 #: ../src/gui/canvasview.cpp:2839
 msgid "Change Waypoint Group"
-msgstr ""
+msgstr "تغيير مجموعة نقطة الاتجاه"
 
 #: ../src/gui/canvasview.cpp:2870
 msgid "Duplicate Waypoints"
-msgstr ""
+msgstr "إنشاﺀ نسخة من نقاط الاتجاه"
 
 #: ../src/gui/canvasview.cpp:2886
 msgid "Remove Waypoints"
-msgstr ""
+msgstr "أزل نقاط الاتجاه"
 
 #: ../src/gui/canvasview.cpp:2954
 msgid "_TCB"
-msgstr ""
+msgstr "_TCB"
 
 #: ../src/gui/canvasview.cpp:2955
 msgid "_Linear"
-msgstr ""
+msgstr "خ_طي"
 
 #: ../src/gui/canvasview.cpp:2956
 msgid "_Ease In"
-msgstr ""
+msgstr "إ_رخاء عند المدخل"
 
 #: ../src/gui/canvasview.cpp:2956
 msgid "_Ease Out"
-msgstr ""
+msgstr "تليين عند الخروج"
 
 #: ../src/gui/canvasview.cpp:2956
 msgid "_Ease In/Out"
-msgstr ""
+msgstr "تسهيل داخل/خارج"
 
 #: ../src/gui/canvasview.cpp:2957
 msgid "_Constant"
-msgstr ""
+msgstr "_ثابت"
 
 #: ../src/gui/canvasview.cpp:2958
 msgid "_Clamped"
-msgstr ""
+msgstr "م_شبك"
 
 #: ../src/gui/canvasview.cpp:2978
 msgid "_Jump To"
-msgstr ""
+msgstr "ا_قفز إلى"
 
 #: ../src/gui/canvasview.cpp:2985
 msgid "_Duplicate"
-msgstr ""
+msgstr "إن_شاﺀ نسخة"
 
 #: ../src/gui/canvasview.cpp:2992
 msgid "_Remove"
-msgstr ""
+msgstr "أ_زِل"
 
 #: ../src/gui/canvasview.cpp:2992
 #, c-format
 msgid "_Remove %d Waypoints"
-msgstr ""
+msgstr "أزل %d  من نقاط الاتجاه"
 
 #: ../src/gui/canvasview.cpp:3015
 msgid "_Both"
-msgstr ""
+msgstr "_كلاهما"
 
 #: ../src/gui/canvasview.cpp:3021
 msgid "_In"
-msgstr ""
+msgstr "_داخل"
 
 #: ../src/gui/canvasview.cpp:3027
 msgid "_Out"
-msgstr ""
+msgstr "خ_ارج"
 
 #: ../src/gui/canvasview.cpp:3314
 msgid " Description"
-msgstr ""
+msgstr "_وصف"
 
 #: ../src/gui/canvasview.cpp:3315 ../src/gui/instance.cpp:1292
 msgid "Description: "
-msgstr ""
+msgstr "الوصف: "
 
 #: ../src/gui/canvasview.cpp:3319 ../src/gui/iconcontroller.cpp:256
 #: ../src/synfigapp/actions/groupaddlayers.cpp:80
 #: ../src/synfigapp/actions/groupremove.cpp:74
 msgid "Set"
-msgstr ""
+msgstr "عيّن"
 
 #: ../src/gui/canvasview.cpp:3456
 msgid "Please select files"
-msgstr ""
+msgstr "رجاءً اختر ملفات"
 
 #: ../src/gui/canvasview.cpp:3730
 msgid "Are you sure you want to disable JACK synchronization?"
-msgstr ""
+msgstr "هل أنت متأكد من أنك تريد تعطيل مزامنة JACK؟"
 
 #: ../src/gui/canvasview.cpp:3731
 msgid "The JACK server will remain running."
-msgstr ""
+msgstr "سيبقى خادم JACK قيد التشغيل."
 
 #: ../src/gui/canvasview.cpp:3733
 msgid "Are you sure you want to enable JACK synchronization?"
-msgstr ""
+msgstr "هل أنت متأكد من أنك تريد تمكين مزامنة JACK؟"
 
 #: ../src/gui/canvasview.cpp:3734
 msgid "This operation will launch a JACK server, if it isn't started yet."
-msgstr ""
+msgstr "ستطلق هذه العملية خادم JACK، إذا لم يكن يشتغل بعد."
 
 #: ../src/gui/canvasview.cpp:3740
 #: ../src/synfigapp/actions/valuedescset.cpp:1127
 msgid "No"
-msgstr ""
+msgstr "لا"
 
 #: ../src/gui/canvasview.cpp:3741
 #: ../src/synfigapp/actions/valuedescset.cpp:1128
 msgid "Yes"
-msgstr ""
+msgstr "نعم"
 
 #: ../src/gui/iconcontroller.cpp:130
 msgid "Bool"
-msgstr ""
+msgstr "بولياني"
 
 #: ../src/gui/iconcontroller.cpp:131
 msgid "Integer"
-msgstr ""
+msgstr "عدد صحيح"
 
 #: ../src/gui/iconcontroller.cpp:132
 msgid "Angle"
@@ -4470,11 +4471,11 @@ msgstr "الزاوية"
 
 #: ../src/gui/iconcontroller.cpp:134
 msgid "Real"
-msgstr ""
+msgstr "عدد حقيقي"
 
 #: ../src/gui/iconcontroller.cpp:135
 msgid "Vector"
-msgstr ""
+msgstr "شعاع"
 
 #: ../src/gui/iconcontroller.cpp:136
 msgid "Color"
@@ -4482,19 +4483,19 @@ msgstr "لون"
 
 #: ../src/gui/iconcontroller.cpp:137
 msgid "Segment"
-msgstr ""
+msgstr "قطعة"
 
 #: ../src/gui/iconcontroller.cpp:138
 msgid "Spline Point"
-msgstr ""
+msgstr "نقاط المنحنى"
 
 #: ../src/gui/iconcontroller.cpp:139
 msgid "List"
-msgstr ""
+msgstr "قائمة"
 
 #: ../src/gui/iconcontroller.cpp:140
 msgid "String"
-msgstr ""
+msgstr "سلسلة"
 
 #: ../src/gui/iconcontroller.cpp:142
 msgid "Gradient"
@@ -4502,23 +4503,23 @@ msgstr "تدرج"
 
 #: ../src/gui/iconcontroller.cpp:148
 msgid "Eyedrop Tool"
-msgstr ""
+msgstr "أداة قطرة العين"
 
 #: ../src/gui/iconcontroller.cpp:149
 msgid "Fill Tool"
-msgstr ""
+msgstr "أداة التعبئة"
 
 #: ../src/gui/iconcontroller.cpp:160
 msgid "Zoom Tool"
-msgstr ""
+msgstr "أداة التحجيم"
 
 #: ../src/gui/iconcontroller.cpp:166
 msgid "Reset Colors"
-msgstr ""
+msgstr "صفّر الألوان"
 
 #: ../src/gui/iconcontroller.cpp:167
 msgid "Swap Colors"
-msgstr ""
+msgstr "إبدال الألوان"
 
 #: ../src/gui/iconcontroller.cpp:168
 #: ../src/synfigapp/actions/layerparamconnect.cpp:82
@@ -4531,15 +4532,15 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodestaticlistunloop.cpp:75
 #: ../src/synfigapp/value_desc.cpp:76
 msgid "ValueNode"
-msgstr ""
+msgstr "ValueNode"
 
 #: ../src/gui/iconcontroller.cpp:169
 msgid "ValueNode Forbid Animation"
-msgstr ""
+msgstr "ValueNode"
 
 #: ../src/gui/iconcontroller.cpp:170 ../src/gui/instance.cpp:1287
 msgid "Rename"
-msgstr ""
+msgstr "إعادة تسمية"
 
 #: ../src/gui/iconcontroller.cpp:175
 msgid "About"
@@ -4547,43 +4548,43 @@ msgstr "حول"
 
 #: ../src/gui/iconcontroller.cpp:176 ../src/gui/mainwindow.cpp:156
 msgid "New"
-msgstr ""
+msgstr "جديد"
 
 #: ../src/gui/iconcontroller.cpp:187
 msgid "Blur Layer"
-msgstr ""
+msgstr "طبقة تغبيش"
 
 #: ../src/gui/iconcontroller.cpp:188
 msgid "Motion Blur Layer"
-msgstr ""
+msgstr "طبقة غشاوة حركية"
 
 #: ../src/gui/iconcontroller.cpp:189
 msgid "Radial Blur Layer"
-msgstr ""
+msgstr "طبقة غشاوة شعاعية"
 
 #: ../src/gui/iconcontroller.cpp:191
 msgid "Curve Warp Layer"
-msgstr ""
+msgstr "طبقة منحنى الاعوجاج"
 
 #: ../src/gui/iconcontroller.cpp:192
 msgid "Inside Out Layer"
-msgstr ""
+msgstr "طبقة الانعكاس"
 
 #: ../src/gui/iconcontroller.cpp:193
 msgid "Noise Distort Layer"
-msgstr ""
+msgstr "طبقة التشوه ضوضائي"
 
 #: ../src/gui/iconcontroller.cpp:194
 msgid "Spherize Layer"
-msgstr ""
+msgstr "طبقة تشوه كروي"
 
 #: ../src/gui/iconcontroller.cpp:195
 msgid "Stretch Layer"
-msgstr ""
+msgstr "طبقة مطّّ"
 
 #: ../src/gui/iconcontroller.cpp:196
 msgid "Twirl Layer"
-msgstr ""
+msgstr "طبقة البرم"
 
 #: ../src/gui/iconcontroller.cpp:197
 msgid "Warp Layer"
@@ -4591,31 +4592,31 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:199
 msgid "Metallballs Layer"
-msgstr ""
+msgstr "طبقة كرات معدنية"
 
 #: ../src/gui/iconcontroller.cpp:200
 msgid "Simple Circle Layer"
-msgstr ""
+msgstr "طبقة دائرة بسيطة"
 
 #: ../src/gui/iconcontroller.cpp:202
 msgid "Clamp Layer"
-msgstr ""
+msgstr "طلبة مشبك"
 
 #: ../src/gui/iconcontroller.cpp:203
 msgid "Color Correct Layer"
-msgstr ""
+msgstr "طبقة اللون الصحيح"
 
 #: ../src/gui/iconcontroller.cpp:204
 msgid "Halftone 2 Layer"
-msgstr ""
+msgstr "طبقة نصفية 2"
 
 #: ../src/gui/iconcontroller.cpp:205
 msgid "Halftone 3 Layer"
-msgstr ""
+msgstr "طبقة نصفية 3"
 
 #: ../src/gui/iconcontroller.cpp:206
 msgid "Luma Key Layer"
-msgstr ""
+msgstr "طبقة مفتاح Luma"
 
 #: ../src/gui/iconcontroller.cpp:208
 msgid "Julia Set Layer"
@@ -4747,7 +4748,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:244
 msgid "Rotate Layer"
-msgstr ""
+msgstr "دوّر الطبقة"
 
 #: ../src/gui/iconcontroller.cpp:245
 msgid "Translate Layer"
@@ -4755,7 +4756,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:246
 msgid "Scale Layer"
-msgstr ""
+msgstr "حجّم الطبقة"
 
 #: ../src/gui/iconcontroller.cpp:250
 msgid "Group Ghost"
@@ -4779,11 +4780,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:262
 msgid "Duplicate"
-msgstr ""
+msgstr "مضاعفة"
 
 #: ../src/gui/iconcontroller.cpp:263
 msgid "Group"
-msgstr ""
+msgstr "مجموعة"
 
 #: ../src/gui/iconcontroller.cpp:265
 msgid "Group into Switch"
@@ -4799,7 +4800,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:280
 msgid "Palette"
-msgstr ""
+msgstr "لوح ألوان"
 
 #: ../src/gui/iconcontroller.cpp:283
 msgid "Past keyframes unlocked"
@@ -5224,7 +5225,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1617
 msgid "Apply"
-msgstr ""
+msgstr "تطبيق"
 
 #: ../src/gui/instance.cpp:1622
 msgid "Set Waypoints"
@@ -5280,11 +5281,11 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:156
 msgid "Create a new document"
-msgstr ""
+msgstr "أَنْشِئْ مستند جديد"
 
 #: ../src/gui/mainwindow.cpp:159
 msgid "Open an existing document"
-msgstr ""
+msgstr "افتح مستندًا موجودًا"
 
 #: ../src/gui/mainwindow.cpp:175
 msgid "Show Menubar"
@@ -5298,7 +5299,7 @@ msgstr ""
 #. |
 #: ../src/gui/mainwindow.cpp:209
 msgid "Tutorials"
-msgstr ""
+msgstr "تدريب"
 
 #: ../src/gui/mainwindow.cpp:209
 msgid "/Category:Tutorials"
@@ -5306,7 +5307,7 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:210
 msgid "Reference"
-msgstr ""
+msgstr "مرجع"
 
 #: ../src/gui/mainwindow.cpp:210
 msgid "/Category:Reference"
@@ -5334,19 +5335,19 @@ msgstr ""
 
 #: ../src/gui/onemoment.cpp:90
 msgid "One Moment, Please..."
-msgstr ""
+msgstr "لحظة واحدة، من فضلك..."
 
 #: ../src/gui/onemoment.cpp:92
 msgid "Working..."
-msgstr ""
+msgstr "العمل مستمر..."
 
 #: ../src/gui/preview.cpp:406
 msgid "Prev frame"
-msgstr ""
+msgstr "الإطار السابق"
 
 #: ../src/gui/preview.cpp:446
 msgid "Next frame"
-msgstr ""
+msgstr "الإطار التالي"
 
 #: ../src/gui/preview.cpp:464
 #: ../src/synfigapp/actions/valuenodedynamiclistloop.cpp:54
@@ -5356,15 +5357,15 @@ msgstr "تكرار"
 
 #: ../src/gui/preview.cpp:476
 msgid "Halt render"
-msgstr ""
+msgstr "أوقف التصيير"
 
 #: ../src/gui/preview.cpp:483
 msgid "Re-preview"
-msgstr ""
+msgstr "إعادة المعاينة"
 
 #: ../src/gui/preview.cpp:490
 msgid "Erase all rendered frame(s)"
-msgstr ""
+msgstr "امسح كل الإطار(ات) المصيرة"
 
 #: ../src/gui/preview.cpp:540 ../src/gui/preview.cpp:544
 #: ../src/gui/preview.cpp:717 ../src/gui/preview.cpp:754
@@ -5551,11 +5552,11 @@ msgstr ""
 
 #: ../src/gui/render.cpp:83
 msgid "Extract alpha"
-msgstr ""
+msgstr "استخراج ألفا"
 
 #: ../src/gui/render.cpp:93
 msgid "Auto"
-msgstr ""
+msgstr "آلي"
 
 #: ../src/gui/render.cpp:116
 msgid "Parameters..."
@@ -5579,7 +5580,7 @@ msgstr ""
 
 #: ../src/gui/render.cpp:150
 msgid "Settings"
-msgstr ""
+msgstr "الإعدادات"
 
 #: ../src/gui/render.cpp:152
 msgid "<b>Settings</b>"
@@ -5615,7 +5616,7 @@ msgstr ""
 
 #: ../src/gui/render.cpp:415
 msgid "Target initialization failure"
-msgstr ""
+msgstr "فشل تهيئة المسار"
 
 #: ../src/gui/render.cpp:421
 msgid "Rendering "
@@ -5659,7 +5660,7 @@ msgstr ""
 
 #: ../src/gui/workarea.cpp:1495 ../src/gui/workarea.cpp:1528
 msgid "Move"
-msgstr ""
+msgstr "انقل"
 
 #: ../src/synfigapp/action.cpp:561
 msgid "Selected Canvas"
@@ -6349,7 +6350,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layerlower.cpp:53
 #: ../src/synfigapp/actions/layerlower.cpp:73
 msgid "Lower Layer"
-msgstr ""
+msgstr "اخفض الطبقة"
 
 #: ../src/synfigapp/actions/layerlower.cpp:73
 msgid "Lower Layers"
@@ -6383,7 +6384,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layermove.cpp:76
 #: ../src/synfigapp/actions/layermove.cpp:78
 msgid "Move Layer"
-msgstr ""
+msgstr "انقل الطبقة"
 
 #: ../src/synfigapp/actions/layermove.cpp:88
 msgid "Layer to be moved"
@@ -6411,7 +6412,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerpaint.cpp:55
 msgid "Paint"
-msgstr ""
+msgstr "لوّن"
 
 #: ../src/synfigapp/actions/layerparamconnect.cpp:51
 msgid "Connect Layer Parameter"
@@ -6482,7 +6483,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layerraise.cpp:53
 #: ../src/synfigapp/actions/layerraise.cpp:73
 msgid "Raise Layer"
-msgstr ""
+msgstr "ارفع الطبقة"
 
 #: ../src/synfigapp/actions/layerraise.cpp:73
 msgid "Raise Layers"
@@ -6820,7 +6821,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:61
 msgid "Link"
-msgstr ""
+msgstr "رابط"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:70
 msgid "Link Opposite"
@@ -6848,7 +6849,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:175
 msgid "')."
-msgstr ""
+msgstr "')."
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:182
 msgid "Using the only available ValueNode."
@@ -6926,7 +6927,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:135
 msgid "Animate"
-msgstr ""
+msgstr "حرّك"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:139
 msgid "Lock animation"
@@ -7092,7 +7093,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistremove.cpp:52
 #: ../src/synfigapp/actions/valuenodestaticlistremove.cpp:52
 msgid "Remove Item"
-msgstr ""
+msgstr "أزل عنصرًا"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:55
 #: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:53
@@ -7123,7 +7124,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodelinkconnect.cpp:79
 #: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:81
 msgid "Index"
-msgstr ""
+msgstr "فهرس"
 
 #: ../src/synfigapp/actions/valuenodelinkconnect.cpp:83
 #: ../src/synfigapp/actions/waypointconnect.cpp:84
