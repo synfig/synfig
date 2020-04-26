@@ -255,7 +255,7 @@ ValueNode_RadialComposite::get_children_vocab_vfunc()const
 		.set_local_name(_("Hue"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"alpha")
-		.set_local_name(_("Saturation"))
+		.set_local_name(_("Alpha"))
 		);
 		return ret;
 	}
