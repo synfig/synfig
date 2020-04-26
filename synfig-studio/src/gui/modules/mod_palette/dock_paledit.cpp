@@ -256,7 +256,7 @@ Dock_PalEdit::on_save_pressed()
 				App::dialog_message_1b(
 						"ERROR",
 						msg.c_str(),
-						"detaisl",
+						"details",
 						_("Close"));
 
 				continue;
