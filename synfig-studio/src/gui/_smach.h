@@ -31,16 +31,11 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
-#include "_misc.h"
 
 /* === M A C R O S ========================================================= */
 
 #define SMACH_STATE_STACK_SIZE		(32)
 
-#ifdef _MSC_VER
-#pragma warning (disable:4786)
-#pragma warning (disable:4290) // MSVC6 doesn't like function declarations with exception specs
-#endif
 
 /* === T Y P E D E F S ===================================================== */
 
