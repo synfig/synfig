@@ -330,6 +330,7 @@ synfig::Color studio::App::preview_background_color =
 	synfig::Color(0.742187, 0.742187, 0.742187, 1.000000);  //X11 Gray
 
 bool   studio::App::enable_mainwin_menubar = true;
+bool   studio::App::enable_mainwin_toolbar = true;
 String studio::App::ui_language ("os_LANG");
 long   studio::App::ui_handle_tooltip_flag(Duck::STRUCT_DEFAULT);
 
