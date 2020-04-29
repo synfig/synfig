@@ -1207,14 +1207,10 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	<menu action='menu-plugins'>"
 ;
 
-	std::list<PluginManager::plugin> plugin_list = studio::App::plugin_manager.get_list();
-	for (std::list<PluginManager::plugin>::const_iterator p=plugin_list.begin();p!=plugin_list.end();++p) {
-
+	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
 		// TODO: (Plugins) Arrange menu items into groups
 
-		PluginManager::plugin plugin = *p;
-
-		DEFINE_ACTION(plugin.id, plugin.name);
+		DEFINE_ACTION(plugin.id, plugin.name.get());
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}
 
@@ -2909,56 +2905,68 @@ on_open_dialog_with_history_selection_changed(Gtk::FileChooserDialog *dialog, Gt
 	history_button->set_sensitive(!dialog->get_filename().empty());
 }
 
+/*
+
+Finds which importer to use for the given filename
+
+Returns false if the user has canceled the import.
+
+plugin is set to the script identifier for the importer,
+or an empty string if the file should be opened as a normal sif file
+
+*/
 bool
-App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference)
+App::dialog_select_importer(const std::string& filename, std::string& plugin)
 {
-	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
+	synfig::String ext = filename_extension(filename);
 
-// TODO: Win32 native dialog not ready yet
-//#ifdef USE_WIN32_FILE_DIALOGS
-#if 0
-	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
+	Gtk::Dialog dialog(_("Select importer"), true);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_REJECT)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog.add_button(_("OK"), Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
 
-	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
-	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
-	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
+	Gtk::Label label(_("Please select the importer to use for this file"));
+	dialog.get_content_area()->pack_start(label);
 
-	ofn.lStructSize=sizeof(OPENFILENAME);
-	ofn.hwndOwner = hWnd;
-	ofn.hInstance = hInstance;
-	ofn.lpstrFilter = szFilter;
-//	ofn.lpstrCustomFilter=NULL;
-//	ofn.nMaxCustFilter=0;
-//	ofn.nFilterIndex=0;
-//	ofn.lpstrFile=NULL;
-	ofn.nMaxFile=MAX_PATH;
-//	ofn.lpstrFileTitle=NULL;
-//	ofn.lpstrInitialDir=NULL;
-//	ofn.lpstrTitle=NULL;
-	ofn.Flags=OFN_HIDEREADONLY;
-//	ofn.nFileOffset=0;
-//	ofn.nFileExtension=0;
-	ofn.lpstrDefExt=TEXT("sif");
-//	ofn.lCustData = 0l;
-	ofn.lpfnHook=NULL;
-//	ofn.lpTemplateName=NULL;
+	Gtk::ComboBoxText combo_importers;
+	dialog.get_content_area()->pack_end(combo_importers);
 
-	CHAR szFilename[MAX_PATH];
-	CHAR szTitle[500];
-	strcpy(szFilename,filename.c_str());
-	strcpy(szTitle,title.c_str());
-
-	ofn.lpstrFile=szFilename;
-	ofn.lpstrFileTitle=szTitle;
-
-	if(GetOpenFileName(&ofn))
+	int count = 0;
+	plugin = "";
+	for ( const auto& importer : App::plugin_manager.importers() )
 	{
-		filename=szFilename;
-		return true;
+		if ( importer.has_extension(ext) )
+		{
+			plugin = importer.id;
+			combo_importers.append(importer.id, importer.description.get());
+			if ( count == 0 )
+				combo_importers.set_active_id(importer.id);
+			count++;
+		}
 	}
-	return false;
 
-#else   // not USE_WIN32_FILE_DIALOGS
+	if ( count == 1 )
+		return true;
+
+	if ( count == 0 )
+		return true;
+
+	dialog.show_all();
+
+	if ( dialog.run() != Gtk::RESPONSE_ACCEPT )
+	{
+		plugin = "";
+		return false;
+	}
+
+	plugin = combo_importers.get_active_id();
+	return true;
+
+}
+
+bool
+App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference, std::string& plugin_importer)
+{
+
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
@@ -2969,7 +2977,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
 				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
 
-		dialog->set_transient_for(*App::main_window);
+	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
@@ -2979,19 +2987,41 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 	// File filters
 	// Synfig Documents
-	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
-	filter_supported->set_name(_("Synfig files (*.sif, *.sifz, *.sfg)"));
-	filter_supported->add_mime_type("application/x-sif");
-	filter_supported->add_pattern("*.sif");
-	filter_supported->add_pattern("*.sifz");
-	filter_supported->add_pattern("*.sfg");
+	Glib::RefPtr<Gtk::FileFilter> filter_builtin = Gtk::FileFilter::create();
+	filter_builtin->set_name(_("Synfig files (*.sif, *.sifz, *.sfg)"));
+	filter_builtin->add_mime_type("application/x-sif");
+	filter_builtin->add_pattern("*.sif");
+	filter_builtin->add_pattern("*.sifz");
+	filter_builtin->add_pattern("*.sfg");
+	dialog->add_filter(filter_builtin);
+
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
-
-	dialog->add_filter(filter_supported);
 	dialog->add_filter(filter_any);
+
+	// Supported files
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name(_("All supported files"));
+	filter_supported->add_pattern("*.sif");
+	filter_supported->add_pattern("*.sifz");
+	filter_supported->add_pattern("*.sfg");
+	dialog->add_filter(filter_supported);
+	dialog->set_filter(filter_supported);
+
+
+	for ( const ImportExport& exp : plugin_manager.importers() )
+	{
+		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
+		filter->set_name(exp.description.get());
+		for ( const std::string& extension : exp.extensions )
+		{
+			filter->add_pattern("*" + extension);
+			filter_supported->add_pattern("*" + extension);
+		}
+		dialog->add_filter(filter);
+	}
 
 	if (filename.empty())
 		dialog->set_filename(prev_path);
@@ -3007,6 +3037,27 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
 		filename = dialog->get_filename();
 		show_history = response == RESPONSE_ACCEPT_WITH_HISTORY;
+
+		auto filter = dialog->get_filter();
+
+		plugin_importer = "";
+		if ( filter == filter_any || filter == filter_supported )
+		{
+			if ( !dialog_select_importer(filename, plugin_importer) )
+				return false;
+		}
+		else
+		{
+			for ( const auto& importer : App::plugin_manager.importers() )
+			{
+				if ( filter->get_name() == importer.description.get() )
+				{
+					plugin_importer = importer.id;
+					break;
+				}
+			}
+		}
+
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -3016,7 +3067,6 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	connection_sc.disconnect();
 	delete dialog;
 	return false;
-#endif   // not USE_WIN32_FILE_DIALOGS
 }
 
 bool
@@ -3243,14 +3293,14 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
-    auto exporters = App::plugin_manager.get_exporters();
-    for ( const auto& plugin : exporters )
-    {
-        Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
-        filter->set_name(plugin.description);
-        filter->add_pattern("*"+plugin.extension);
-        dialog->add_filter(filter);
-    }
+	for ( const ImportExport& exp : App::plugin_manager.exporters() )
+	{
+		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
+		filter->set_name(exp.description.get());
+		for ( const std::string& extension : exp.extensions )
+			filter->add_pattern("*" + extension);
+		dialog->add_filter(filter);
+	}
 
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
@@ -3270,26 +3320,25 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 
 		filename = dialog->get_filename();
 
-        _preferences.set_value(preference, dirname(filename));
+		_preferences.set_value(preference, dirname(filename));
 
-        auto filter = dialog->get_filter();
-        for ( const auto& plugin : exporters )
-        {
-            if (  filter->get_name() == plugin.description )
-            {
-                if ( filename_extension(filename) != plugin.extension )
-                    filename += plugin.extension;
+		auto filter = dialog->get_filter();
+		for ( const auto& exporter : App::plugin_manager.exporters() )
+		{
+			if ( filter->get_name() == exporter.description.get() )
+			{
+				if ( !exporter.has_extension(filename_extension(filename)) )
+					filename += exporter.extensions[0];
 
-                delete dialog;
-                return plugin.path;
-            }
-        }
+				delete dialog;
+				return exporter.id;
+			}
+		}
     }
 
     delete dialog;
     return {};
 }
-
 
 bool
 App::dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference)
@@ -4163,6 +4212,77 @@ App::new_instance()
 }
 
 void
+App::open_from_plugin(const std::string& filename, const std::string& importer_id)
+{
+	String tmp_filename = get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + "synfig";
+
+	String filename_processed;
+	struct stat buf;
+	do {
+		synfig::GUID guid;
+		filename_processed = tmp_filename + "." + guid.get_string().substr(0,8) + ".sif";
+	} while (stat(filename_processed.c_str(), &buf) != -1);
+
+	bool result = plugin_manager.run(importer_id, {filename, filename_processed});
+
+	if ( result ) {
+		OneMoment one_moment;
+		String errors, warnings;
+
+		// try open container
+		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename_processed, 0);
+		if ( !container ) {
+			errors += strprintf(_("Unable to open container \"%s\"\n\n"), filename_processed.c_str());
+		} else {
+			FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
+			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename_processed, filename, 0);
+			String canvas_filename = CanvasFileNaming::project_file(filename_processed);
+			etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
+			if ( !canvas )
+			{
+				errors += strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str());
+			}
+			else
+			{
+				if ( !get_instance(canvas) )
+				{
+					if (warnings != "")
+						dialog_message_1b("WARNING", _("Warning"), "details", _("Close"), warnings);
+
+					handle<Instance> instance(Instance::create(canvas, container));
+
+					if ( !instance ) {
+						errors += strprintf(_("Unable to create instance for \"%s\""), filename.c_str());
+					}
+					one_moment.hide();
+				}
+
+				canvas->set_file_name(App::custom_filename_prefix);
+				add_recent_file(filename);
+			}
+		}
+
+		if ( !errors.empty() )
+			dialog_message_1b("ERROR", errors, "details", _("Close"));
+	}
+
+	remove(filename_processed.c_str());
+}
+
+void
+App::open_recent(const std::string& filename)
+{
+	std::string importer;
+	if ( !dialog_select_importer(filename, importer) )
+		return;
+
+	if ( importer.empty() )
+		open(filename);
+	else
+		open_from_plugin(filename, importer);
+}
+
+void
 App::dialog_open(std::string filename)
 {
 	if (filename.empty()) {
@@ -4170,12 +4290,19 @@ App::dialog_open(std::string filename)
 	}
 
 	bool show_history = false;
-	while(dialog_open_file_with_history_button(_("Please select a file"), filename, show_history, ANIMATION_DIR_PREFERENCE))
+	std::string plugin_importer;
+	while(dialog_open_file_with_history_button(_("Please select a file"), filename, show_history, ANIMATION_DIR_PREFERENCE, plugin_importer))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
 		if(std::find(filename.begin(),filename.end(),'*')!=filename.end())
 			continue;
+
+		if ( !plugin_importer.empty() )
+		{
+			open_from_plugin(filename, plugin_importer);
+			return;
+		}
 
 		FileContainerZip::file_size_t truncate_storage_size = 0;
 

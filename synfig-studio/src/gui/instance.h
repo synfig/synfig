@@ -180,9 +180,7 @@ public:
 
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
 
-	void run_plugin(std::string plugin_path, bool modify_canvas, std::vector<std::string> extra_args = {});
-
-	bool run_plugin_with_arguments(std::string plugin_path, const std::vector<std::string>& args);
+	void run_plugin(std::string plugin_id, bool modify_canvas, std::vector<std::string> extra_args = {});
 
 	bool save_as(const synfig::String &filename);
 

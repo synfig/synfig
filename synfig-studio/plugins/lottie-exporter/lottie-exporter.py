@@ -21,22 +21,7 @@ import settings
 import argparse
 
 
-def write_to(filename, data):
-    """
-    Helps in writing data to a specified file name
-
-    Args:
-        filename  (str) : Original file name
-        data      (str) : Data that needs to be written
-
-    Returns:
-        (str) : changed file name according to the extension specified
-    """
-    with open(filename, "w") as fil:
-        fil.write(data)
-
-
-def parse(file_name, new_file_name):
+def parse(file_name):
     """
     Driver function for parsing .sif to lottie(.json) format
 
@@ -63,8 +48,7 @@ def parse(file_name, new_file_name):
     canvas = Canvas(root)
     gen_layers(settings.lottie_format["layers"], canvas, canvas.get_num_layers() - 1)
 
-    lottie_string = json.dumps(modify_final_dump(settings.lottie_format))
-    write_to(new_file_name, lottie_string)
+    return json.dumps(modify_final_dump(settings.lottie_format))
 
 
 def gen_html(file_name):
@@ -130,24 +114,15 @@ def gen_html(file_name):
 </body>
 </html>
 """
-
-    write_to(os.path.splitext(file_name)[0]+".html", html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(modify_final_dump(settings.lottie_format))))
+    return html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(modify_final_dump(settings.lottie_format)))
 
 
 def init_logs():
     """
-    Initializes the logger, sets the file name in which the logs will be stored
-    and sets the level of the logging(DEBUG | INFO : depending on what is
+    Initializes the logger, sets the level of the logging(DEBUG | INFO : depending on what is
     specified)
     """
-    name = settings.file_name['fn']
-    name = name.split(".")
-    name[-1] = 'log'
-    name = '.'.join(name)
-    path = os.path.join(settings.file_name['fd'], name)
-    path = os.path.abspath(name)
-    logging.basicConfig(filename=path, filemode='w',
-                        format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(stream=sys.stdout, format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
 
@@ -157,7 +132,10 @@ parser.add_argument("outfile")
 ns = parser.parse_args()
 
 settings.init()
-FILE_NAME = ns.infile
-new_file_name = ns.outfile
-parse(FILE_NAME, new_file_name)
-gen_html(new_file_name)
+
+out = parse(ns.infile)
+if ns.outfile.endswith(".html"):
+    out = gen_html(out)
+
+with open(ns.outfile, "w") as fil:
+    fil.write(out)

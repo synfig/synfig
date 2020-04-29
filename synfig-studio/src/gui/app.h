@@ -368,6 +368,8 @@ public:
 		std::string as,
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
+	static void 	open_recent(const std::string& filename);
+
 	static bool open(
 		std::string filename,
 		/* std::string as, */
@@ -378,6 +380,8 @@ public:
 	static void new_instance();
 
 	static void dialog_open(std::string filename = "");
+
+	static void open_from_plugin(const std::string& filename, const std::string& importer_id);
 
 	static void dialog_about();
 
@@ -402,12 +406,13 @@ public:
 
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
+	static bool dialog_select_importer(const std::string& filename, std::string& plugin);
 	static bool dialog_open_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_sketch(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_image(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference);
-	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference);
+	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference, std::string& plugin_importer);
 	static bool dialog_open_folder(const std::string &title, std::string &filename, std::string preference, Gtk::Window& transientwind=*App::main_window);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
 	static std::string dialog_export_file(const std::string &title, std::string &filename, std::string preference);
