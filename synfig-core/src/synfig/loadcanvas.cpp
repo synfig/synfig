@@ -3238,7 +3238,9 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 		// Synfig 1.4.0 works differently with looped outlines.
 		// So we give user a warning when he opens old files.
 		// See https://github.com/synfig/synfig/issues/1307
-		warnings_text += _("ATTENTION!\nYou are opening a file which was created in old version of Synfig. \nIf you save this file in current version it might not open correctly \nin old version of Synfig anymore.");
+		if ( canvas->is_root()) {
+			warnings_text += _("ATTENTION!\nYou are opening a file which was created in old version of Synfig. \nIf you save this file in current version it might not open correctly \nin old version of Synfig anymore.\n\n");
+		}
 	}
 	if(element->get_attribute("gamma-r"))
 		gamma.set_r(atof(element->get_attribute("gamma-r")->get_value().c_str()));
