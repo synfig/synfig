@@ -764,7 +764,7 @@ void CanvasView::activate()
 	update_title();
 	present();
 	grab_focus();
-	toogle_displaybar();
+	toggle_show_toolbar();
 }
 
 void CanvasView::deactivate()
@@ -3826,7 +3826,7 @@ CanvasView::on_interpolation_changed()
 	{ synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value())); }
 
 void 
-CanvasView::toogle_displaybar(){
+CanvasView::toggle_show_toolbar(){
 	if(App::enable_mainwin_toolbar)
 		displaybar->show();
 	else

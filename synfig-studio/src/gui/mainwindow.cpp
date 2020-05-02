@@ -248,7 +248,7 @@ MainWindow::toggle_show_toolbar()
 {
 	App::enable_mainwin_toolbar = !App::enable_mainwin_toolbar;
 	if (etl::loose_handle<CanvasView> canvas_view = App::get_selected_canvas_view())
-		canvas_view->toogle_displaybar();
+		canvas_view->toggle_show_toolbar();
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()
