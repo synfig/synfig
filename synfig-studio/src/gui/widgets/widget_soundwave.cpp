@@ -136,9 +136,6 @@ void Widget_SoundWave::set_delay(synfig::Time delay)
 
 	std::lock_guard<std::mutex> lock(mutex);
 	sound_delay = delay;
-	buffer.clear();
-	n_samples = 0;
-	do_load(filename);
 	signal_delay_changed().emit();
 	queue_draw();
 }
