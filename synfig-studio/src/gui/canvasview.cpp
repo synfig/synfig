@@ -765,6 +765,7 @@ void CanvasView::activate()
 	update_title();
 	present();
 	grab_focus();
+	toggle_show_toolbar();
 }
 
 void CanvasView::deactivate()
@@ -1364,7 +1365,10 @@ CanvasView::create_display_bar()
 		displaybar->append(*toolitem);
 	}
 
-	displaybar->show();
+	if(App::enable_mainwin_toolbar)
+		displaybar->show();
+	else
+		displaybar->hide();
 	cancel=false;
 
 	{
@@ -3798,3 +3802,11 @@ CanvasView::interpolation_refresh()
 void
 CanvasView::on_interpolation_changed()
 	{ synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value())); }
+
+void 
+CanvasView::toggle_show_toolbar(){
+	if(App::enable_mainwin_toolbar)
+		displaybar->show();
+	else
+		displaybar->hide();
+};

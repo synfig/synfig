@@ -233,6 +233,7 @@ public:
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
 	static bool enable_mainwin_menubar;
+	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;
 	static long ui_handle_tooltip_flag;
 	static synfig::String default_background_layer_type;
