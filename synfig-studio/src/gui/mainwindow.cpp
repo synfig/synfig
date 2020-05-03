@@ -178,6 +178,10 @@ MainWindow::init_menus()
 	toggle_menubar->set_active(App::enable_mainwin_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
 
+	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
+	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
+	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
+	
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
 		sigc::ptr_fun(App::set_workspace_compositing)
@@ -243,6 +247,14 @@ MainWindow::toggle_show_menubar()
 		menubar->show();
 	else
 		menubar->hide();
+}
+
+void
+MainWindow::toggle_show_toolbar()
+{
+	App::enable_mainwin_toolbar = !App::enable_mainwin_toolbar;
+	if (etl::loose_handle<CanvasView> canvas_view = App::get_selected_canvas_view())
+		canvas_view->toggle_show_toolbar();
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()
