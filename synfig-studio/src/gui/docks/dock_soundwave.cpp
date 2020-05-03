@@ -346,9 +346,12 @@ private:
 			} else {
 				synfig::warning(_("Audio file not supported: %s"), filename.c_str());
 			}
-		} catch (std::string a) {
+		} catch (const std::string & a) {
 			synfig::error(_("Error loading audio file: %s\n\t%s"), filename.c_str(), a.c_str());
+		} catch (...) {
+			synfig::error(_("Error loading audio file: %s\n\tReason unknown"), filename.c_str());
 		}
+
 		file_combo.set_sensitive(true);
 		return ok;
 	}
