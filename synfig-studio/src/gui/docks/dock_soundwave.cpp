@@ -37,6 +37,8 @@
 
 #include <synfig/general.h>
 
+#include <synfig/canvasfilenaming.h>
+
 #endif
 
 using namespace studio;
@@ -296,7 +298,16 @@ private:
 			}
 		} else {
 			const auto & layer_sound = layer_map[guid];
-			const std::string filename = layer_sound->get_param("filename").get(std::string());
+			std::string filename = layer_sound->get_param("filename").get(std::string());
+			if (canvas_interface) {
+				synfig::Canvas::LooseHandle canvas = canvas_interface->get_canvas();
+				if (canvas) {
+					filename = synfig::CanvasFileNaming::make_full_filename(canvas->get_file_name(), filename);
+					filename = canvas->get_file_system()->get_real_uri(filename);
+					filename = Glib::filename_from_uri(filename);
+				}
+			}
+
 			const synfig::Time delay = layer_sound->get_param("delay").get(synfig::Time::zero());
 			load_sound_file(filename, delay);
 		}
