@@ -247,8 +247,12 @@ void
 MainWindow::toggle_show_toolbar()
 {
 	App::enable_mainwin_toolbar = !App::enable_mainwin_toolbar;
-	if (etl::loose_handle<CanvasView> canvas_view = App::get_selected_canvas_view())
-		canvas_view->toggle_show_toolbar();
+	
+	for(std::list<etl::handle<Instance> >::iterator iter1 = App::instance_list.begin(); iter1 != App::instance_list.end(); iter1++){
+			const Instance::CanvasViewList &views = (*iter1)->canvas_view_list();
+			for(Instance::CanvasViewList::const_iterator iter2 = views.begin(); iter2 != views.end(); ++iter2)
+				(*iter2)->toggle_show_toolbar();
+	}
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()

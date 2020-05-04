@@ -764,7 +764,6 @@ void CanvasView::activate()
 	update_title();
 	present();
 	grab_focus();
-	toggle_show_toolbar();
 }
 
 void CanvasView::deactivate()
