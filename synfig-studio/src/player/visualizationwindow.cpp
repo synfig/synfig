@@ -34,13 +34,15 @@ VisualizationWindow::Measure::print(const String &name, long long sum, long long
 
 VisualizationWindow::VisualizationWindow(
 	const Canvas::Handle &canvas,
-	const rendering::Renderer::Handle &renderer
+	const rendering::Renderer::Handle &renderer,
+	bool r_time
 ):
 	canvas(canvas),
 	renderer(renderer),
 	transform(false),
 	frame(0),
 	frames_count(1),
+	real_time(r_time),
 	frame_duration(0),
 	pixel_format(0),
 	last_frame_time(0),
@@ -75,11 +77,11 @@ VisualizationWindow::VisualizationWindow(
 	cairo_surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, rend_desc.get_w(), rend_desc.get_h());
 
 	// check endianness and prepare pixel format
-    union { int i; char c[4]; } checker = {0x01020304};
-    bool big_endian = checker.c[0] == 1;
-    pixel_format = big_endian
-		         ? (PF_A_START | PF_RGB | PF_A_PREMULT)
-		         : (PF_BGR | PF_A | PF_A_PREMULT);
+	union { int i; char c[4]; } checker = {0x01020304};
+	bool big_endian = checker.c[0] == 1;
+	pixel_format = big_endian
+				 ? (PF_A_START | PF_RGB | PF_A_PREMULT)
+				 : (PF_BGR | PF_A | PF_A_PREMULT);
 	
 	// prepare surface resource
 	surface_resource = new rendering::SurfaceResource();
@@ -252,7 +254,16 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 	}
 	
 	++rendered_frames;
+<<<<<<< HEAD
 	frame = (frame + 1) % frames_count;
+=======
+	if(real_time) {
+		frame = (frame + etl::round_to_int((g_get_monotonic_time() - bef_render_time) / (frame_duration * 1000000ll))) %
+				frames_count;
+	}else{
+		frame = (frame + 1) % frames_count;
+	}
+>>>>>>> 698445521... Added commandline control to real-time rendering!
 	queue_draw();
 	return true;
 }

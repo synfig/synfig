@@ -37,7 +37,8 @@ private:
 	int frame;
 	int frames_count;
 	synfig::Time frame_duration;
-	
+
+	bool real_time;
 	synfig::PixelFormat pixel_format;
 	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface;
 	synfig::rendering::SurfaceResource::Handle surface_resource;
@@ -54,7 +55,8 @@ private:
 public:
 	VisualizationWindow(
 		const synfig::Canvas::Handle &canvas,
-		const synfig::rendering::Renderer::Handle &renderer );
+		const synfig::rendering::Renderer::Handle &renderer,
+		bool r_time =true);
 	
 	bool convert(const synfig::rendering::SurfaceResource::Handle &surface);
 	

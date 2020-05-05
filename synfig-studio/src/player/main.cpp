@@ -60,6 +60,7 @@ int main(int argc, char **argv)
 #endif
 
 	Glib::init();
+	bool r_time;
 
 	String binary_path = get_binary_path(argv[0]);
 	String base_dir = etl::dirname(binary_path);
@@ -83,6 +84,8 @@ int main(int argc, char **argv)
 		std::cout << std::endl;
 		std::cout << "usage: " << std::endl;
 		std::cout << "  " << commandname << " <file.sif|file.sifz> <renderer>" << std::endl;
+		std::cout << "  Renders real time by default."<<std::endl;
+		std::cout << "  Add nr for non-real time rendering."<<std::endl;
 		std::cout << std::endl;
 		print_renderers(renderers);
 		return 0;
@@ -98,7 +101,6 @@ int main(int argc, char **argv)
 	args.erase(args.begin() + 1);
 	args.erase(args.begin() + 1);
 	argc = (int)args.size();
-
 
 	//// get renderer
 
@@ -129,7 +131,13 @@ int main(int argc, char **argv)
 
 
 	info("create Gtk::Application");
-	
+
+	r_time = !(argc==2 && std::string(args[1])=="nr");
+
+	if(argc==2)
+		argc--;
+
+
 	Glib::RefPtr<Gtk::Application> application = Gtk::Application::create(argc, argv);
 	
 	info("create window");
