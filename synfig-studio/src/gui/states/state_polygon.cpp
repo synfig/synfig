@@ -65,6 +65,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define DISTINGUISH_FIRST_DUCK
+
 #ifndef LAYER_CREATION
 #define LAYER_CREATION(button, stockid, tooltip)	\
 	{ \
@@ -1311,6 +1313,11 @@ StatePolygon_Context::refresh_ducks()
 	etl::handle<WorkArea::Duck> duck;
 	duck=new WorkArea::Duck(*iter);
 	duck->set_editable(true);
+#ifdef DISTINGUISH_FIRST_DUCK
+	duck->set_type(Duck::TYPE_FIRST_VERTEX);
+#else
+	duck->set_type(Duck::TYPE_VERTEX);
+#endif
 	duck->signal_edited().connect(
 		sigc::bind(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_polygon_duck_change),iter)
 	);
@@ -1325,7 +1332,8 @@ StatePolygon_Context::refresh_ducks()
 
 		duck=new WorkArea::Duck(*iter);
 		duck->set_editable(true);
-		duck->set_name(strprintf("%x",&*iter));
+		duck->set_name(strprintf("%p",&*iter));
+		duck->set_type(Duck::TYPE_VERTEX);
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_polygon_duck_change),iter)
 		);

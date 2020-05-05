@@ -1409,7 +1409,9 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		duck=new WorkArea::Duck(bline_point.get_vertex());
 		duck->set_editable(true);
 #ifdef DISTINGUISH_FIRST_DUCK
-		if (iter!=bline_point_list.begin())
+		if (iter==bline_point_list.begin())
+			duck->set_type(Duck::TYPE_FIRST_VERTEX);
+		else
 			duck->set_type(Duck::TYPE_VERTEX);
 #else
 		duck->set_type(Duck::TYPE_VERTEX);
