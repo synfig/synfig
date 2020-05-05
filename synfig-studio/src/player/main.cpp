@@ -84,8 +84,8 @@ int main(int argc, char **argv)
 		std::cout << std::endl;
 		std::cout << "usage: " << std::endl;
 		std::cout << "  " << commandname << " <file.sif|file.sifz> <renderer>" << std::endl;
-		std::cout << "  Renders real time by default."<<std::endl;
-		std::cout << "  Add nr for non-real time rendering."<<std::endl;
+		std::cout << "Options:"<<std::endl;
+		std::cout << "  --benchmark - Ignore real-time synchronization and render every frame (used for benchmarks)."<<std::endl;
 		std::cout << std::endl;
 		print_renderers(renderers);
 		return 0;
@@ -131,17 +131,19 @@ int main(int argc, char **argv)
 
 
 	info("create Gtk::Application");
+	std::cout<<args[1]<<" "<<(std::string(args[1])=="--benchmark")<<" "<<argc<<std::endl;
 
-	r_time = !(argc==2 && std::string(args[1])=="nr");
+	r_time = !(argc==2 && std::string(args[1])=="--benchmark");
 
 	if(argc==2)
 		argc--;
+	std::cout<<r_time<<std::endl;
 
 
 	Glib::RefPtr<Gtk::Application> application = Gtk::Application::create(argc, argv);
 	
 	info("create window");
-	VisualizationWindow window(canvas, renderer);
+	VisualizationWindow window(canvas, renderer,r_time);
 	
 	info("run");
 	int result = application->run(window);
