@@ -1,0 +1,117 @@
+name: synfigstudio
+base: core18
+adopt-info: synfig-studio
+confinement: strict
+license: GPL-3.0
+
+apps:
+  synfigstudio: &app
+    command: usr/bin/synfigstudio
+    common-id: org.synfig.SynfigStudio
+    desktop: usr/share/applications/org.synfig.SynfigStudio.desktop
+    extensions: [gnome-3-34]
+    plugs: &plugs [opengl, home, removable-media, gsettings, network]
+    environment: &env
+      __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gnome-platform/usr/share/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
+  
+  synfig: 
+    command: usr/bin/synfig
+    extensions: [gnome-3-34]
+    plugs: *plugs
+    environment: *env
+
+layout:
+  /usr/share/synfig: 
+    symlink: $SNAP/usr/share/synfig
+  /usr/share/pixmaps/synfigstudio:
+    symlink: $SNAP/usr/share/pixmaps/synfigstudio
+
+parts:
+  synfig-deps:
+    plugin: nil
+    build-packages:
+      - g++
+      - intltool
+      - gettext
+      - libmagickcore-dev
+      - libmagick++-dev
+      - libopenexr-dev
+      - libsigc++-2.0-dev
+      - libxml++2.6-dev
+      - libfftw3-dev
+      - libmlt-dev
+      - libmlt++-dev
+      - libmlt-data
+      - libboost-system-dev
+      - libmng-dev
+      - git
+    stage-packages:
+      - libilmbase12
+      - libmagick++-6.q16-7
+      - libmagic1
+      - libmlt++3
+      - libmlt6
+      - libmng2
+      - libopenexr22
+      - libsigc++-2.0-0v5
+      - libxml++2.6-2v5
+      - libdv-bin # mod_dv
+      - ffmpeg # mod_ffmpeg
+      - imagemagick # mod_imagemagick
+      - libslang2
+      - libglu1-mesa
+      - freeglut3
+
+  etl:
+    after: [synfig-deps]
+    plugin: autotools
+    source: ETL
+    configflags: &cfgflags
+      - --prefix=/usr
+
+  synfig-core:
+    after: [etl]
+    plugin: autotools
+    source: synfig-core
+    configflags: *cfgflags
+    override-build: &build |
+      set -xe
+      autoreconf -i
+      intltoolize --force
+      snapcraftctl build
+
+  synfig-studio:
+    after: [synfig-core]
+    plugin: autotools
+    source: synfig-studio
+    configflags: *cfgflags
+    override-build: *build
+    parse-info: [usr/share/appdata/org.synfig.SynfigStudio.appdata.xml]
+    override-pull: |
+      snapcraftctl pull
+      # consider grade to be stable if commit is tagged
+      git describe --exact-match HEAD && grade="stable" || grade="devel"
+      snapcraftctl set-grade "$grade"
+    override-stage: |
+      set -xe
+      # fix the icon path and point it to a file inside the snap
+      snapcraftctl stage
+      sed -i -E "s|^Icon=(.*)|Icon=\${SNAP}/usr/share/icons/hicolor/scalable/apps/\1.svg|g" \
+        usr/share/applications/org.synfig.SynfigStudio.desktop
+
+  cleanup:
+    after: [synfig-studio]
+    plugin: nil
+    build-snaps: [core18, gnome-3-34-1804]
+    override-prime: |
+      set -eux
+      for lib in "libharfbuzz" "libglibmm" "libgiomm" "libQt" "libflite" "qt5"; do
+        rm -rf "usr/lib/$SNAPCRAFT_ARCH_TRIPLET/$lib"*
+      done
+      rm -rf usr/share/icons/Humanity
+      rm -rf usr/share/doc
+      # Remove all files from snap that are already included in the base snap or in
+      # any connected content snaps
+      for snap in "core18" "gnome-3-34-1804"; do  # List all content-snaps and base snaps you're using here
+        cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
+      done
