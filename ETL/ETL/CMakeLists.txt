@@ -27,7 +27,6 @@ set(ETL_HEADERS
 #     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/_ref_count.h"
         "${CMAKE_CURRENT_LIST_DIR}/_trivial.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_smach.h"
         "${CMAKE_CURRENT_LIST_DIR}/_surface.h"
         "${CMAKE_CURRENT_LIST_DIR}/_smart_ptr.h"
         "${CMAKE_CURRENT_LIST_DIR}/_pen.h"
