@@ -42,6 +42,26 @@ pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
 ## TODO: move to module where it is actually required
 pkg_check_modules(PANGO REQUIRED pango)
 
+foreach(pkg_config_lib 
+  SIGCPP 
+  GLIBMM 
+  GIOMM 
+  CAIRO 
+  PANGOCAIRO 
+  LIBXML 
+  MLT 
+  FFTW 
+  FT 
+  LIBPNG
+  LIBMNG
+  LIBJPEG
+  OPENEXR
+  MAGICKCORE
+  PANGO)
+    include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
+    link_directories(${${pkg_config_lib}_LIBRARY_DIRS})
+endforeach()
+
 ## TODO: should we keep it here?
 find_package(ImageMagick COMPONENTS Magick++)
 
