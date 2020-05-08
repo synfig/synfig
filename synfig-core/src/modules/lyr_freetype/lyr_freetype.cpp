@@ -49,6 +49,17 @@
 #include <synfig/canvasfilenaming.h>
 #include <synfig/cairo_renddesc.h>
 
+#include <synfig/context.h>
+
+//#ifdef __APPLE__
+//#define USE_MAC_FT_FUNCS	(1)
+//#endif
+
+#ifdef USE_MAC_FT_FUNCS
+	#include <CoreServices/CoreServices.h>
+	#include FT_MAC_H
+#endif
+
 #endif
 
 using namespace std;

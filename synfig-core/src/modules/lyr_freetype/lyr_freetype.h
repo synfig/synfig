@@ -31,37 +31,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#ifdef __APPLE__
-//#define USE_MAC_FT_FUNCS	(1)
-//#endif
-
 #include <synfig/layers/layer_composite.h>
-#include <synfig/vector.h>
-#include <synfig/color.h>
-#include <synfig/string.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include <vector>
-
-#include <synfig/string.h>
-#include <synfig/time.h>
-#include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
-#include <synfig/valuenode.h>
-#include <synfig/canvas.h>
-
-
-#include <ETL/misc>
-
-#ifdef USE_MAC_FT_FUNCS
-	#include <CoreServices/CoreServices.h>
-	#include FT_MAC_H
-#endif
 
 /* === M A C R O S ========================================================= */
 
