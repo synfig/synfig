@@ -392,10 +392,7 @@ Layer_Freetype::new_face(const String &newfont)
 	possible_font_directories.push_back("/Library/Fonts/");
 #endif
 
-	possible_font_directories.push_back("/usr/X11R6/lib/X11/fonts/type1/");
 	possible_font_directories.push_back("/usr/share/fonts/truetype/");
-	possible_font_directories.push_back("/usr/X11R6/lib/X11/fonts/TTF/");
-	possible_font_directories.push_back("/usr/X11R6/lib/X11/fonts/truetype/");
 
 #endif
 
