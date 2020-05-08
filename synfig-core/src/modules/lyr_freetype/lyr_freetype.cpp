@@ -719,7 +719,7 @@ Layer_Freetype::sync()
 }
 
 inline Color
-Layer_Freetype::color_func(const Point &point_, int quality, ColorReal supersample)const
+Layer_Freetype::color_func(const Point &/*point_*/, int /*quality*/, ColorReal /*supersample*/)const
 {
 	bool invert=param_invert.get(bool());
 	if (invert)
