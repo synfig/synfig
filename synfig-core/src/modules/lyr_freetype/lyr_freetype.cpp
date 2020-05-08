@@ -75,6 +75,42 @@ SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
 
+/* === C L A S S E S ======================================================= */
+
+struct Glyph
+{
+	FT_Glyph glyph;
+	FT_Vector pos;
+	//int width;
+};
+
+struct TextLine
+{
+	int width;
+	std::vector<Glyph> glyph_table;
+
+	TextLine():width(0) { }
+	void clear_and_free();
+
+	int actual_height()const
+	{
+		int height(0);
+
+		std::vector<Glyph>::const_iterator iter;
+		for(iter=glyph_table.begin();iter!=glyph_table.end();++iter)
+		{
+			FT_BBox   glyph_bbox;
+
+			//FT_Glyph_Get_CBox( glyphs[n], ft_glyph_bbox_pixels, &glyph_bbox );
+			FT_Glyph_Get_CBox( iter->glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
+
+			if(glyph_bbox.yMax>height)
+				height=glyph_bbox.yMax;
+		}
+		return height;
+	}
+};
+
 /* === P R O C E D U R E S ================================================= */
 
 /*Glyph::~Glyph()
