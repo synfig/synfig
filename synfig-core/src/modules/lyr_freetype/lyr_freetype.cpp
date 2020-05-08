@@ -409,7 +409,7 @@ bool
 Layer_Freetype::new_face(const String &newfont)
 {
 	synfig::String font=param_font.get(synfig::String());
-	int error;
+	int error = 0;
 	FT_Long face_index=0;
 
 	// If we are already loaded, don't bother reloading.
