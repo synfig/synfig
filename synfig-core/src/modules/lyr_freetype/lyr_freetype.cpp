@@ -375,7 +375,7 @@ Layer_Freetype::new_face(const String &newfont)
 		face=0;
 	}
 
-	std::vector<const char *> possible_font_extensions = {"", ".ttf"};
+	std::vector<const char *> possible_font_extensions = {"", ".ttf", ".otf"};
 #ifdef __APPLE__
 	possible_font_extensions.push_back(".dfont");
 #endif
@@ -393,6 +393,7 @@ Layer_Freetype::new_face(const String &newfont)
 #endif
 
 	possible_font_directories.push_back("/usr/share/fonts/truetype/");
+	possible_font_directories.push_back("/usr/share/fonts/opentype/");
 
 #endif
 
@@ -465,6 +466,7 @@ Layer_Freetype::new_face(const String &newfont)
 		return false;
 	}
 
+	// ???
 	font=newfont;
 
 	needs_sync_=true;
