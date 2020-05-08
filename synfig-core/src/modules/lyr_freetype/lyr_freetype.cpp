@@ -375,13 +375,36 @@ Layer_Freetype::new_face(const String &newfont)
 		face=0;
 	}
 
-	error=FT_New_Face(ft_library,newfont.c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,(newfont+".ttf").c_str(),face_index,&face);
+	std::vector<const char *> possible_font_extensions = {"", ".ttf"};
+#ifdef __APPLE__
+	possible_font_extensions.push_back(".dfont");
+#endif
+	std::vector<std::string> possible_font_directories = {""};
+	if (get_canvas())
+		possible_font_directories.push_back( get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR );
 
-	if(get_canvas())
-	{
-		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfont).c_str(),face_index,&face);
-		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfont+".ttf").c_str(),face_index,&face);
+#ifdef _WIN32
+	possible_font_directories.push_back("C:\\WINDOWS\\FONTS\\");
+#else
+
+#ifdef __APPLE__
+	possible_font_directories.push_back("~/Library/Fonts/");
+	possible_font_directories.push_back("/Library/Fonts/");
+#endif
+
+	possible_font_directories.push_back("/usr/X11R6/lib/X11/fonts/type1/");
+	possible_font_directories.push_back("/usr/share/fonts/truetype/");
+	possible_font_directories.push_back("/usr/X11R6/lib/X11/fonts/TTF/");
+	possible_font_directories.push_back("/usr/X11R6/lib/X11/fonts/truetype/");
+
+#endif
+
+	for (std::string directory : possible_font_directories) {
+		for (const char *extension : possible_font_extensions) {
+			error = FT_New_Face(ft_library, (directory + newfont + extension).c_str(), face_index, &face);
+			if (!error)
+				break;
+		}
 	}
 
 #ifdef USE_MAC_FT_FUNCS
@@ -438,34 +461,6 @@ Layer_Freetype::new_face(const String &newfont)
 	}
 #endif
 
-#ifdef _WIN32
-	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont+".ttf").c_str(),face_index,&face);
-#else
-
-#ifdef __APPLE__
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".dfont").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".dfont").c_str(),face_index,&face);
-#endif
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/share/fonts/truetype/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/share/fonts/truetype/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/TTF/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/TTF/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/truetype/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/truetype/"+newfont+".ttf").c_str(),face_index,&face);
-
-#endif
 	if(error)
 	{
 		//synfig::error(strprintf("Layer_Freetype:%s (err=%d)",_("Unable to open face."),error));
