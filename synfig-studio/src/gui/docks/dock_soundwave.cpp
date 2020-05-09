@@ -201,18 +201,9 @@ private:
 			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
 			if (!layer_sound)
 				return;
-			std::string guid = layer_sound->get_guid().get_string();
-			Gtk::TreeModel::iterator found_iter;
-			file_combo.get_model()->foreach_iter([guid, &found_iter](const Gtk::TreeModel::iterator& iter) -> bool {
-				Glib::ustring row_guid;
-				iter->get_value(1, row_guid);
-				if (row_guid == guid) {
-					found_iter = iter;
-					return true;
-				}
-				return false;
-			});
+			Gtk::TreeModel::iterator found_iter = find_layer_iter(layer_sound);
 			if (found_iter) {
+				std::string guid = layer_sound->get_guid().get_string();
 				if (param_name == "filename") {
 					std::string filename = layer_sound->get_param("filename").get(std::string());
 					found_iter->set_value(0, create_layer_item_label(layer_sound));
@@ -229,6 +220,16 @@ private:
 			}
 			else
 				synfig::warning(_("Couldn't set new layer sound parameter values to Sound Panel list"));
+		});
+
+		canvas_interface->signal_layer_new_description().connect([&](synfig::Layer::Handle layer, std::string new_description) {
+			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+			if (!layer_sound)
+				return;
+			Gtk::TreeModel::iterator found_iter = find_layer_iter(layer_sound);
+			if (found_iter) {
+				found_iter->set_value(0, create_layer_item_label(layer_sound));
+			}
 		});
 	}
 
@@ -247,7 +248,19 @@ private:
 	}
 
 	static std::string create_layer_item_label(etl::loose_handle<synfig::Layer_Sound> layer_sound) {
-		return layer_sound->get_param("filename").get(std::string());
+		const std::string sound_filename = layer_sound->get_param("filename").get(std::string());
+		const std::string short_filename = synfig::CanvasFileNaming::make_short_filename(layer_sound->get_canvas()->get_file_name(), sound_filename);
+
+		if (!layer_sound->get_description().empty()) {
+			std::string layer_name = layer_sound->get_description();
+			if (sound_filename != layer_name
+				&& etl::basename(sound_filename) != layer_name) {
+				return etl::strprintf("[%s] %s", layer_name.c_str(), short_filename.c_str());
+			} else {
+				return etl::strprintf("[%s]", layer_name.c_str());
+			}
+		}
+		return short_filename;
 	}
 
 	bool import_file(const std::string &filename) {
@@ -384,6 +397,27 @@ private:
 				fetch_sound_layers(inner_canvas, layers);
 			}
 		}
+	}
+
+	Gtk::TreeModel::iterator find_layer_iter(synfig::Layer::Handle layer)
+	{
+		Gtk::TreeModel::iterator found_iter;
+		etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+		if (!layer_sound)
+			return found_iter;
+
+		std::string guid = layer_sound->get_guid().get_string();
+		file_combo.get_model()->foreach_iter([guid, &found_iter](const Gtk::TreeModel::iterator& iter) -> bool {
+			Glib::ustring row_guid;
+			iter->get_value(1, row_guid);
+			if (row_guid == guid) {
+				found_iter = iter;
+				return true;
+			}
+			return false;
+		});
+
+		return found_iter;
 	}
 };
 
