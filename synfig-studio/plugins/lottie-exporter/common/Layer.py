@@ -154,7 +154,7 @@ class Layer:
             return
 
         update_dict = []
-        compare = {"center", "origin", "point1", "point2", "tl", "br"}
+        compare = {"center", "origin", "point1", "point2", "tl", "br", "p1", "p2"}
         for key in compare:
             param = self.get_param(key)
             if param.get() is not None:
