@@ -82,8 +82,17 @@ png_trgt_spritesheet::png_out_warning(png_struct *png_data,const char *msg)
     me->ready=false;
 }
 
+bool png_trgt_spritesheet::is_final_image_size_acceptable() const
+{
+	return !(sheet_width * sheet_height > 5000 * 2000);
+}
 
-//Target *png_trgt::New(const char *filename){	return new png_trgt(filename);}
+string png_trgt_spritesheet::get_image_size_error_message() const
+{
+	return strprintf(
+				_("The image is too large. It's size must be not more than 5000*2000=10000000 px. Currently it's %d*%d=%d px."),
+				sheet_width, sheet_height, sheet_width * sheet_height);
+}
 
 png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::TargetParam &params):
 	ready(false),
@@ -176,10 +185,9 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	sheet_width = in_image.width > target_width? in_image.width : target_width;
 	sheet_height = in_image.height > target_height? in_image.height : target_height;
 
-	if (sheet_width * sheet_height > 5000 * 2000)
+	if (!is_final_image_size_acceptable())
 	{
-		synfig::error(strprintf(_("The image is too large. It's size must be not more than 5000*2000=10000000 px. Currently it's %d*%d=%d px."), 
-		                          sheet_width, sheet_height, sheet_width * sheet_height));
+		synfig::error(get_image_size_error_message());
 		return false;
 	}
 	
@@ -188,8 +196,9 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	cout << "Color size: " << sizeof(Color) << endl;
 	
 	color_data = new Color*[sheet_height];
-	for (unsigned int i = 0; i < sheet_height; i++)
-		color_data[i] = new Color[sheet_width];
+	if (color_data)
+		for (unsigned int i = 0; i < sheet_height; i++)
+			color_data[i] = new Color[sheet_width];
 	
 	if (is_loaded)
 		ready = read_png_file();
@@ -231,11 +240,16 @@ png_trgt_spritesheet::end_frame()
 bool
 png_trgt_spritesheet::start_frame(synfig::ProgressCallback *callback)
 {
-	cout << "start_frame()" << endl;
+	synfig::info("start_frame()");
+	if(!color_data) {
+		if (callback && !is_final_image_size_acceptable())
+			callback->error(get_image_size_error_message());
+		return false;
+	}
+
     if(callback)
 		callback->task(strprintf("%s, (frame %d/%d)", filename.c_str(), 
 		                         imagecount - (lastimage - numimages), numimages).c_str());
-
     return true;
 }
 
@@ -244,7 +258,7 @@ png_trgt_spritesheet::start_scanline(int /*scanline*/)
 {
 	unsigned int y = cur_y + params.offset_y + cur_row * desc.get_h();
 	unsigned int x = cur_col * desc.get_w() + params.offset_x;
-	if ((x + desc.get_w() > sheet_width) || (y > sheet_height))
+	if ((x + desc.get_w() > sheet_width) || (y > sheet_height) || !color_data)
 	{
 		cout << "Buffer overflow. x: " << x << " y: " << y << endl; 
 		//TODO: Fix exception processing outside the module.

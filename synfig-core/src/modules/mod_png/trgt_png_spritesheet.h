@@ -85,6 +85,10 @@ private:
 	synfig::String filename;
 	synfig::String sequence_separator;
 	synfig::Color * overflow_buff;
+
+	bool is_final_image_size_acceptable() const;
+	std::string get_image_size_error_message() const;
+
 public:
 	png_trgt_spritesheet(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt_spritesheet();
