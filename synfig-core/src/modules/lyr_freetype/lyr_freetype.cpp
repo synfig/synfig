@@ -49,6 +49,17 @@
 #include <synfig/canvasfilenaming.h>
 #include <synfig/cairo_renddesc.h>
 
+#include <synfig/context.h>
+
+//#ifdef __APPLE__
+//#define USE_MAC_FT_FUNCS	(1)
+//#endif
+
+#ifdef USE_MAC_FT_FUNCS
+	#include <CoreServices/CoreServices.h>
+	#include FT_MAC_H
+#endif
+
 #endif
 
 using namespace std;
@@ -74,6 +85,42 @@ SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,N_("Text"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
+
+/* === C L A S S E S ======================================================= */
+
+struct Glyph
+{
+	FT_Glyph glyph;
+	FT_Vector pos;
+	//int width;
+};
+
+struct TextLine
+{
+	int width;
+	std::vector<Glyph> glyph_table;
+
+	TextLine():width(0) { }
+	void clear_and_free();
+
+	int actual_height()const
+	{
+		int height(0);
+
+		std::vector<Glyph>::const_iterator iter;
+		for(iter=glyph_table.begin();iter!=glyph_table.end();++iter)
+		{
+			FT_BBox   glyph_bbox;
+
+			//FT_Glyph_Get_CBox( glyphs[n], ft_glyph_bbox_pixels, &glyph_bbox );
+			FT_Glyph_Get_CBox( iter->glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
+
+			if(glyph_bbox.yMax>height)
+				height=glyph_bbox.yMax;
+		}
+		return height;
+	}
+};
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -362,7 +409,7 @@ bool
 Layer_Freetype::new_face(const String &newfont)
 {
 	synfig::String font=param_font.get(synfig::String());
-	int error;
+	int error = 0;
 	FT_Long face_index=0;
 
 	// If we are already loaded, don't bother reloading.
@@ -375,13 +422,34 @@ Layer_Freetype::new_face(const String &newfont)
 		face=0;
 	}
 
-	error=FT_New_Face(ft_library,newfont.c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,(newfont+".ttf").c_str(),face_index,&face);
+	std::vector<const char *> possible_font_extensions = {"", ".ttf", ".otf"};
+#ifdef __APPLE__
+	possible_font_extensions.push_back(".dfont");
+#endif
+	std::vector<std::string> possible_font_directories = {""};
+	if (get_canvas())
+		possible_font_directories.push_back( get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR );
 
-	if(get_canvas())
-	{
-		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfont).c_str(),face_index,&face);
-		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfont+".ttf").c_str(),face_index,&face);
+#ifdef _WIN32
+	possible_font_directories.push_back("C:\\WINDOWS\\FONTS\\");
+#else
+
+#ifdef __APPLE__
+	possible_font_directories.push_back("~/Library/Fonts/");
+	possible_font_directories.push_back("/Library/Fonts/");
+#endif
+
+	possible_font_directories.push_back("/usr/share/fonts/truetype/");
+	possible_font_directories.push_back("/usr/share/fonts/opentype/");
+
+#endif
+
+	for (std::string directory : possible_font_directories) {
+		for (const char *extension : possible_font_extensions) {
+			error = FT_New_Face(ft_library, (directory + newfont + extension).c_str(), face_index, &face);
+			if (!error)
+				break;
+		}
 	}
 
 #ifdef USE_MAC_FT_FUNCS
@@ -438,40 +506,14 @@ Layer_Freetype::new_face(const String &newfont)
 	}
 #endif
 
-#ifdef _WIN32
-	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont+".ttf").c_str(),face_index,&face);
-#else
-
-#ifdef __APPLE__
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".dfont").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".dfont").c_str(),face_index,&face);
-#endif
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/share/fonts/truetype/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/share/fonts/truetype/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/TTF/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/TTF/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/truetype/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/truetype/"+newfont+".ttf").c_str(),face_index,&face);
-
-#endif
 	if(error)
 	{
-		//synfig::error(strprintf("Layer_Freetype:%s (err=%d)",_("Unable to open face."),error));
+		if (!newfont.empty())
+			synfig::error(strprintf("Layer_Freetype: %s (err=%d)",_("Unable to open font face."),error));
 		return false;
 	}
 
+	// ???
 	font=newfont;
 
 	needs_sync_=true;
@@ -677,7 +719,7 @@ Layer_Freetype::sync()
 }
 
 inline Color
-Layer_Freetype::color_func(const Point &point_, int quality, ColorReal supersample)const
+Layer_Freetype::color_func(const Point &/*point_*/, int /*quality*/, ColorReal /*supersample*/)const
 {
 	bool invert=param_invert.get(bool());
 	if (invert)
