@@ -59,7 +59,7 @@ using namespace synfig;
 #define GET_NODE_GUID_CSTR(node) GET_GUID_CSTR(node->get_guid())
 #define GET_NODE_NAME_CSTR(node,t) GET_NODE_NAME(node,t).c_str()
 #define GET_NODE_BONE_CSTR(node,t) GET_NODE_BONE(node,t).c_str()
-#define GET_NODE_DESC_CSTR(node,t) (node ? strprintf("%s (%s)", GET_NODE_GUID_CSTR(node), GET_NODE_NAME_CSTR(node,t)) : strprintf("%s <root>", GET_GUID_CSTR(GUID(0)))).c_str()
+#define GET_NODE_DESC_CSTR(node,t) (node ? strprintf("%s (%s)", GET_NODE_GUID_CSTR(node), GET_NODE_NAME_CSTR(node,t)) : strprintf("%s <root>", GET_GUID_CSTR(GUID::zero()))).c_str()
 #define GET_NODE_PARENT_CSTR(node,t) GET_GUID_CSTR(GET_NODE_PARENT(node,t))
 
 /* === G L O B A L S ======================================================= */

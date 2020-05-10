@@ -186,7 +186,7 @@ TimePointSet::insert(const TimePoint& x)
 
 
 Node::Node():
-	guid_(0),
+	guid_(GUID::zero()),
 	bchanged(true),
 	time_last_changed_(__sys_clock()),
 	deleting_(false)

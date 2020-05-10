@@ -51,7 +51,7 @@ using namespace synfig;
 synfig::GUID
 TransformStack::get_guid()const
 {
-	GUID ret(0);
+	GUID ret(GUID::zero());
 
 	for(const_iterator iter(begin());iter!=end();++iter)
 		ret%=(*iter)->get_guid();
