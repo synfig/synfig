@@ -254,16 +254,13 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 	}
 	
 	++rendered_frames;
-<<<<<<< HEAD
 	frame = (frame + 1) % frames_count;
-=======
 	if(real_time) {
 		frame = (frame + etl::round_to_int((g_get_monotonic_time() - bef_render_time) / (frame_duration * 1000000ll))) %
 				frames_count;
 	}else{
 		frame = (frame + 1) % frames_count;
 	}
->>>>>>> 698445521... Added commandline control to real-time rendering!
 	queue_draw();
 	return true;
 }
