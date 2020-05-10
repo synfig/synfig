@@ -104,6 +104,7 @@ public:
 private:
 	void setup_accessor_widgets() {
 		file_combo.show();
+		file_combo.set_wrap_width(1); // based on https://github.com/synfig/synfig/issues/650#issuecomment-450001367
 		file_combo.set_tooltip_text(_("Select a sound layer or type an audio file"));
 		file_combo.append(item_no_audio_id, item_no_audio_str);
 		file_combo.append(item_audio_file_id, item_audio_file_str);
@@ -111,6 +112,7 @@ private:
 		file_combo.set_active_id(item_no_audio_id);
 
 		channel_combo.show();
+		channel_combo.set_wrap_width(1); // based on https://github.com/synfig/synfig/issues/650#issuecomment-450001367
 		channel_combo.set_tooltip_text(_("What sound channel to display"));
 		channel_combo.signal_changed().connect(sigc::mem_fun(*this, &Grid_SoundWave::on_channel_combo_changed));
 
