@@ -83,7 +83,7 @@ int main(int argc, char **argv)
 	if (argc < 3) {
 		std::cout << std::endl;
 		std::cout << "usage: " << std::endl;
-		std::cout << "  " << commandname << " <file.sif|file.sifz> <renderer>" << std::endl;
+		std::cout << "  " << commandname << " <file.sif|file.sifz> <renderer> [--benchmark]" << std::endl;
 		std::cout << "Options:"<<std::endl;
 		std::cout << "  --benchmark - Ignore real-time synchronization and render every frame (used for benchmarks)."<<std::endl;
 		std::cout << std::endl;
