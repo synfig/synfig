@@ -252,17 +252,10 @@ private:
 	static std::string create_layer_item_label(etl::loose_handle<synfig::Layer_Sound> layer_sound) {
 		const std::string sound_filename = layer_sound->get_param("filename").get(std::string());
 		const std::string short_filename = synfig::CanvasFileNaming::make_short_filename(layer_sound->get_canvas()->get_file_name(), sound_filename);
+		const std::string layer_name = layer_sound->get_description();
 
-		if (!layer_sound->get_description().empty()) {
-			std::string layer_name = layer_sound->get_description();
-			if (sound_filename != layer_name
-				&& etl::basename(sound_filename) != layer_name) {
-				return etl::strprintf("[%s] %s", layer_name.c_str(), short_filename.c_str());
-			} else {
-				return etl::strprintf("[%s]", layer_name.c_str());
-			}
-		}
-		return short_filename;
+		// I think it doesn't ellipsize long "short_filename"...
+		return etl::strprintf("[%s] %s", layer_name.c_str(), short_filename.c_str());
 	}
 
 	bool import_file(const std::string &filename) {
