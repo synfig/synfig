@@ -422,6 +422,9 @@ Layer_Freetype::new_face(const String &newfont)
 		face=0;
 	}
 
+	if (newfont.empty())
+		return false;
+
 	std::vector<const char *> possible_font_extensions = {"", ".ttf", ".otf"};
 #ifdef __APPLE__
 	possible_font_extensions.push_back(".dfont");
