@@ -422,6 +422,9 @@ Layer_Freetype::new_face(const String &newfont)
 		face=0;
 	}
 
+	if (newfont.empty())
+		return false;
+
 	std::vector<const char *> possible_font_extensions = {"", ".ttf", ".otf"};
 #ifdef __APPLE__
 	possible_font_extensions.push_back(".dfont");
@@ -446,10 +449,13 @@ Layer_Freetype::new_face(const String &newfont)
 
 	for (std::string directory : possible_font_directories) {
 		for (const char *extension : possible_font_extensions) {
-			error = FT_New_Face(ft_library, (directory + newfont + extension).c_str(), face_index, &face);
+			std::string path = (directory + newfont + extension);
+			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
 			if (!error)
 				break;
 		}
+		if (!error)
+			break;
 	}
 
 #ifdef USE_MAC_FT_FUNCS
