@@ -91,6 +91,7 @@ bool Widget_SoundWave::load(const std::string& filename)
 		queue_draw();
 		return false;
 	}
+	loading_error = false;
 	this->filename = filename;
 	signal_file_loaded().emit(filename);
 	queue_draw();
@@ -113,6 +114,7 @@ void Widget_SoundWave::set_channel_idx(int new_channel_idx)
 {
 	if (channel_idx != new_channel_idx && new_channel_idx >= 0 && new_channel_idx < n_channels) {
 		channel_idx = new_channel_idx;
+		signal_specs_changed().emit();
 		queue_draw();
 	}
 }
@@ -134,9 +136,7 @@ void Widget_SoundWave::set_delay(synfig::Time delay)
 
 	std::lock_guard<std::mutex> lock(mutex);
 	sound_delay = delay;
-	buffer.clear();
-	n_samples = 0;
-	do_load(filename);
+	signal_delay_changed().emit();
 	queue_draw();
 }
 
@@ -188,15 +188,15 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	const int stride = frequency * bytes_per_sample * n_channels;
 
-	for (double x = 0; x < get_width(); x+=0.1) {
+	for (double x = 0; x < get_width(); x+=.1) {
 		synfig::Time t = time_plot_data->get_t_from_pixel_coord(x);
-		if (synfig::approximate_greater(synfig::Real(sound_delay), 0.0))
-			t = t - sound_delay;
-		synfig::Time dt = t - time_plot_data->time_model->get_lower();
-		int index = int(dt * stride) + channel_idx;
 		int value = middle_y;
-		if (index >= 0 && index < buffer.size())
-			std::copy(buffer.begin() + index, buffer.begin() + index + bytes_per_sample, &value);
+		if (t >= sound_delay) {
+			synfig::Time dt = t - sound_delay;
+			int index = int(dt * stride) + channel_idx;
+			if (index >= 0 && index < buffer.size())
+				std::copy(buffer.begin() + index, buffer.begin() + index + bytes_per_sample, &value);
+		}
 		int y = time_plot_data->get_pixel_y_coord(value);
 		cr->line_to(x, y);
 	}
@@ -259,7 +259,7 @@ void Widget_SoundWave::setup_mouse_handler()
 
 bool Widget_SoundWave::do_load(const std::string& filename)
 {
-	std::string real_filename = Glib::filename_from_uri(filename);
+	std::string real_filename = Glib::filename_from_utf8(filename);
 	Mlt::Profile profile;
 	Mlt::Producer *track = new Mlt::Producer(profile, (std::string("avformat:") + real_filename).c_str());
 	if (!track->get_producer() || track->get_length() <= 0) {
@@ -273,8 +273,8 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 
 	const int length = track->get_length();
 	double fps = track->get_fps();
-	int start_frame = (time_plot_data->time_model->get_lower() - sound_delay) * fps;
-	int end_frame = (time_plot_data->time_model->get_upper() - sound_delay) * fps;
+	int start_frame = 0;
+	int end_frame = length;
 	start_frame = synfig::clamp(start_frame, 0, length);
 	end_frame = synfig::clamp(end_frame, 0, length);
 	track->seek(start_frame);
