@@ -914,7 +914,6 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
 	menus_action_group->add( Gtk::Action::create("menu-navigation",            _("_Navigation")));
 	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
-	menus_action_group->add( Gtk::Action::create("menu-preview-quality", _("Preview Quality")));
 	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
 
 	menus_action_group->add( Gtk::Action::create("menu-canvas",          _("_Canvas")));
@@ -992,20 +991,8 @@ DEFINE_ACTION("mask-bone-setup-ducks",          _("Show Bone Setup Handles"));
 DEFINE_ACTION("mask-bone-recursive-ducks",      _("Show Recursive Scale Bone Handles"));
 DEFINE_ACTION("mask-bone-ducks",                _("Next Bone Handles"));
 
-DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
-DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
-DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
-DEFINE_ACTION("quality-03", _("Use Quality Level 3"));
-DEFINE_ACTION("quality-04", _("Use Quality Level 4"));
-DEFINE_ACTION("quality-05", _("Use Quality Level 5"));
-DEFINE_ACTION("quality-06", _("Use Quality Level 6"));
-DEFINE_ACTION("quality-07", _("Use Quality Level 7"));
-DEFINE_ACTION("quality-08", _("Use Quality Level 8"));
-DEFINE_ACTION("quality-09", _("Use Quality Level 9"));
-DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
-
 for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
-  DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
+DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
 
 DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"));
 DEFINE_ACTION("toggle-grid-snap",  _("Toggle Grid Snap"));
@@ -1137,19 +1124,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "			<menuitem action='mask-bone-setup-ducks' />"
 "			<menuitem action='mask-bone-recursive-ducks' />"
 "			<menuitem action='mask-bone-ducks' />"
-"		</menu>"
-"		<menu action='menu-preview-quality'>"
-"			<menuitem action='quality-00' />"
-"			<menuitem action='quality-01' />"
-"			<menuitem action='quality-02' />"
-"			<menuitem action='quality-03' />"
-"			<menuitem action='quality-04' />"
-"			<menuitem action='quality-05' />"
-"			<menuitem action='quality-06' />"
-"			<menuitem action='quality-07' />"
-"			<menuitem action='quality-08' />"
-"			<menuitem action='quality-09' />"
-"			<menuitem action='quality-10' />"
 "		</menu>"
 "		<menu action='menu-lowres-pixel'>"
 "			<menuitem action='decrease-low-res-pixel-size'/>"
