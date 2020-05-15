@@ -209,7 +209,7 @@ CairoListImporter::get_frame(cairo_surface_t *&csurface, const RendDesc &renddes
 	
 	CacheElement ce;
 	ce.frame_name=filename_list[frame];
-	ce.surface=cairo_surface_reference(csurface);;
+	ce.surface=cairo_surface_reference(csurface);
 
 	frame_cache.push_back(ce);
 

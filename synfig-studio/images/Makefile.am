@@ -31,6 +31,7 @@ EXTRA_DIST = \
 	splash_screen-0.61.08.sif \
 	splash_screen-0.61.07.sif \
 	splash_screen_development.sif.in \
+	splash_screen_development.sh \
 	about_icon.sif \
 	animate_mode_icons.sif \
 	clear_redo_icon.sif \
@@ -95,7 +96,6 @@ EXTRA_DIST = \
 	layer_distortion_stretch_icon.sif \
 	layer_distortion_twirl_icon.sif \
 	layer_distortion_warp_icon.sif \
-	layer_example_filledrectangle_icon.sif \
 	layer_example_metaballs_icon.sif \
 	layer_example_simplecircle_icon.sif \
 	layer_filter_clamp_icon.sif \
@@ -281,7 +281,6 @@ IMAGES = \
 	layer_distortion_stretch_icon.$(EXT) \
 	layer_distortion_twirl_icon.$(EXT) \
 	layer_distortion_warp_icon.$(EXT) \
-	layer_example_filledrectangle_icon.$(EXT) \
 	layer_example_metaballs_icon.$(EXT) \
 	layer_example_simplecircle_icon.$(EXT) \
 	layer_filter_clamp_icon.$(EXT) \
@@ -394,6 +393,7 @@ CLEANFILES = \
 	$(IMAGES) \
 	$(ICONS) \
 	$(SPLASH_DEV) \
+	logo_tmp.sif \
 	images.nsh \
 	unimages.nsh \
 	installer_logo.bmp \
@@ -421,12 +421,12 @@ SUFFIXES = .sif .tif .png .sifz .bmp
 #.SUFFIXES: $(SUFFIXES)
 
 .sifz.ico:
-	bash ../build_tools/sif2ico.sh $<
+	bash $(srcdir)/../build_tools/sif2ico.sh $<
 	echo "  File \"images\\$@\"" >>./icons.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
 
 .sif.ico:
-	bash ../build_tools/sif2ico.sh $<
+	bash $(srcdir)/../build_tools/sif2ico.sh $<
 	echo "  File \"images\\$@\"" >>./icons.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
 

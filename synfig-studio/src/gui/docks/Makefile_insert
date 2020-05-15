@@ -12,7 +12,9 @@ DOCKS_HH = \
 	docks/dock_metadata.h \
 	docks/dock_navigator.h \
 	docks/dock_params.h \
+	docks/dock_soundwave.h \
 	docks/dock_timetrack.h \
+	docks/dock_timetrack2.h \
 	docks/dock_toolbox.h \
 	docks/dockable.h \
 	docks/dockbook.h \
@@ -34,7 +36,9 @@ DOCKS_CC = \
 	docks/dock_metadata.cpp \
 	docks/dock_navigator.cpp \
 	docks/dock_params.cpp \
+	docks/dock_soundwave.cpp \
 	docks/dock_timetrack.cpp \
+	docks/dock_timetrack2.cpp \
 	docks/dock_toolbox.cpp \
 	docks/dockable.cpp \
 	docks/dockbook.cpp \

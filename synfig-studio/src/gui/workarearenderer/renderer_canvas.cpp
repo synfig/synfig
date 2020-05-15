@@ -37,9 +37,6 @@
 #include <valarray>
 
 #include <glib.h>
-#include <gdkmm/general.h>
-
-#include <ETL/misc>
 
 #include <synfig/general.h>
 #include <synfig/canvas.h>
@@ -53,8 +50,6 @@
 #include <gui/timemodel.h>
 
 #include "renderer_canvas.h"
-
-#include <gui/localization.h>
 
 #endif
 
@@ -303,7 +298,7 @@ Renderer_Canvas::erase_tile(TileList &list, TileList::iterator i, rendering::Tas
 	tiles_size -= image_rect_size((*i)->rect);
 	(*i)->event.reset();
 	(*i)->surface.reset();
-	(*i)->cairo_surface.clear();
+	(*i)->cairo_surface = Cairo::RefPtr<Cairo::ImageSurface>();
 	return list.erase(i);
 }
 
@@ -503,7 +498,7 @@ Renderer_Canvas::enqueue_render_frame(
 		++enqueued_tasks;
 
 		// Renderer::enqueue contains the expensive 'optimization' stage, so call it async
-		ThreadPool::instance.enqueue( sigc::bind(
+		ThreadPool::instance().enqueue( sigc::bind(
 			sigc::ptr_fun(&rendering::Renderer::enqueue_task_func),
 			renderer, tile_task, tile->event, false ));
 	}

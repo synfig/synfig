@@ -241,3 +241,9 @@ synfig-studio/doc
 /ETL/nbproject/
 /synfig-core/nbproject/
 /synfig-studio/nbproject/
+
+# ------------------------------------------------------------------------
+# CLion projects
+# ------------------------------------------------------------------------
+/.idea
+cmake-build-*

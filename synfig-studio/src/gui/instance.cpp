@@ -211,7 +211,7 @@ void
 Instance::set_undo_status(bool x)
 {
 	undo_status_=x;
-	App::dock_toolbox->update_tools();
+	App::dock_toolbox->refresh();
 	signal_undo_redo_status_changed()();
 }
 
@@ -219,29 +219,32 @@ void
 Instance::set_redo_status(bool x)
 {
 	redo_status_=x;
-	App::dock_toolbox->update_tools();
+	App::dock_toolbox->refresh();
 	signal_undo_redo_status_changed()();
 }
 
 void
-studio::Instance::run_plugin(std::string plugin_path)
+studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vector<std::string> extra_args)
 {
 	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
-	String message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
-				this->get_canvas()->get_name().c_str());
+	if ( modify_canvas )
+	{
+		String message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
+					this->get_canvas()->get_name().c_str());
 
-	String details = strprintf(_("This operation cannot be undone and all undo history will be cleared."));
+		String details = _("This operation cannot be undone and all undo history will be cleared.");
 
-	int answer = uim->confirmation(
-				message,
-				details,
-				_("Cancel"),
-				_("Proceed"),
-				synfigapp::UIInterface::RESPONSE_OK);
+		int answer = uim->confirmation(
+					message,
+					details,
+					_("Cancel"),
+					_("Proceed"),
+					synfigapp::UIInterface::RESPONSE_OK);
 
-	if(answer != synfigapp::UIInterface::RESPONSE_OK)
-		return;
+		if(answer != synfigapp::UIInterface::RESPONSE_OK)
+			return;
+	}
 
 	OneMoment one_moment;
 
@@ -257,15 +260,19 @@ studio::Instance::run_plugin(std::string plugin_path)
 	// Generate temporary file name
 	String filename_original = get_canvas()->get_file_name();
 	String filename_processed;
+	String filename_prefix;
+	if ( !is_absolute_path(filename_original) )
+		filename_prefix = temporary_filesystem->get_temporary_directory() + ETL_DIRECTORY_SEPARATOR;
 	struct stat buf;
 	do {
 		synfig::GUID guid;
-		filename_processed = filename_original+"."+guid.get_string().substr(0,8)+".sif";
+		filename_processed = filename_prefix + filename_original + "." + guid.get_string().substr(0,8) + ".sif";
 	} while (stat(filename_processed.c_str(), &buf) != -1);
 
-	close(false);
+	if ( modify_canvas )
+		close(false);
 
-	if(canvas->count()!=1)
+	if(canvas->count() != 1 && modify_canvas)
 	{
 		one_moment.hide();
 		App::dialog_message_1b(
@@ -282,134 +289,83 @@ studio::Instance::run_plugin(std::string plugin_path)
 
 		// Save file copy
 		String filename_ext = filename_extension(filename_original);
-		if (filename_ext.empty())
+		if ( filename_ext.empty() || ( filename_ext != ".sif" && filename_ext != ".sifz") )
 			filename_ext = ".sifz";
 		FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_ext);
 		if (!stream_in)
 		{
 			synfig::error(strprintf("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext).c_str()));
-		}
-		if (filename_ext == ".sifz")
-			stream_in = new ZReadStream(stream_in);
-		std::ofstream  outfile(filename_processed, std::ios::binary);
-		outfile << stream_in->rdbuf();
-		outfile.close();
-		stream_in.reset();
-
-
-		bool result;
-		int exitcode;
-		String output;
-		String command = "";
-
-		// Path to python binary can be overridden
-		// with SYNFIG_PYTHON_BINARY env variable:
-		const char* custom_python_binary=getenv("SYNFIG_PYTHON_BINARY");
-		if(custom_python_binary) {
-			command=custom_python_binary;
-			if (!App::check_python_version(command)) {
-				output=_("Error: You need to have Python 3 installed.");
-				command="";
-			}
-		} else {
-		// Set path to python binary depending on the os type.
-		// For Windows case Python binary is expected
-		// at INSTALL_PREFIX/python/python.exe
-			std::list< String > binary_choices;
-			binary_choices.push_back("python");
-			binary_choices.push_back("python3");
-			std::list< String >::iterator iter;
-			for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
+			String previous_canvas_filename = canvas->get_file_name();
+			FileSystemTemporary::Identifier identifier(temporary_filesystem, filename_processed);
+			if ( !save_canvas(identifier, get_canvas(), true) )
 			{
-				String python_path;
-#ifdef _WIN32
-				python_path = "\"" + App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"python"+ETL_DIRECTORY_SEPARATOR+*iter+".exe" + "\"";
-#else
-				python_path = *iter;
-#endif
-				if (App::check_python_version(python_path))
-				{
-					command = python_path;
-					break;
-				}
-
+				App::dialog_message_1b(
+						"ERROR",
+						_("The plugin operation has failed."),
+						_("Could not read composition file."),
+						_("Close"));
+				return;
 			}
-
+			temporary_filesystem->save_changes();
 		}
-		if (command.empty())
+		else
 		{
-			output=_("Error: No Python 3 binary found.\n\nHint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation.");
-		} else {
-			synfig::info("Python 3 binary found: "+command);
-
-
-			// Construct the full command:
-			command = command+" \""+plugin_path+"\" \""+filename_processed+"\" 2>&1";
-#ifdef _WIN32
-			// This covers the dumb cmd.exe behavior.
-			// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
-			command = "\"" + command + "\"";
-#endif
-
-			FILE* pipe = popen(command.c_str(), "r");
-			if (!pipe) {
-				output = "ERROR: pipe failed!";
-			} else {
-				char buffer[128];
-				while(!feof(pipe)) {
-					if(fgets(buffer, 128, pipe) != NULL)
-							output += buffer;
-				}
-
-				if (output != "" ){
-					synfig::info(output);
-				}
-
-				exitcode=pclose(pipe);
-
-				if (0==exitcode){
-					result=true;
-				}
-			}
+			if (filename_ext == ".sifz")
+				stream_in = new ZReadStream(stream_in);
+			std::ofstream  outfile(filename_processed, std::ios::binary);
+			outfile << stream_in->rdbuf();
+			outfile.close();
+			stream_in.reset();
 		}
 
-		if (!result){
-			one_moment.hide();
-			App::dialog_message_1b(
-					"Error",
-					output,
-					"details",
-					_("Close"));
+		one_moment.hide();
+		extra_args.insert(extra_args.begin(), filename_processed);
+		bool result = App::plugin_manager.run(plugin_id, extra_args);
 
-			one_moment.show();
-
-		} else {
+		if (result && modify_canvas){
 			// Restore file copy
 			FileSystem::WriteStream::Handle stream = temporary_filesystem->get_write_stream("#project"+filename_ext);
+			if (stream && filename_ext == ".sifz")
+				stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
+
 			if (!stream)
 			{
 				synfig::error("run_plugin(): Unable to open file for write");
+			} else {
+				std::ifstream  infile(filename_processed, std::ios::binary);
+				*stream << infile.rdbuf();
+				infile.close();
+				stream.reset();
 			}
-			if (filename_ext == ".sifz")
-				stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
-			std::ifstream  infile(filename_processed, std::ios::binary);
-			*stream << infile.rdbuf();
-			infile.close();
-			stream.reset();
-			remove(filename_processed.c_str());
 		}
+		remove(filename_processed.c_str());
 	}
 
 	canvas=0;
 
-	App::open_from_temporary_filesystem(tmp_filename);
-	etl::handle<Instance> new_instance = App::instance_list.back();
 
-	// Restore time cursor position
-	canvas = new_instance->get_canvas();
-	etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
-	new_canvas_interface->set_time(cur_time);
+	if ( modify_canvas ) {
+		one_moment.show();
+		bool ok = App::open_from_temporary_filesystem(tmp_filename);
+		if (!ok) {
+			synfig::error("run_plugin(): Cannot reopen file");
+			return;
+		}
 
+		etl::handle<Instance> new_instance = App::instance_list.back();
+		if (!new_instance) {
+			synfig::error("run_plugin(): Cannot retrieve new instance");
+		} else {
+			// Restore time cursor position
+			canvas = new_instance->get_canvas();
+			etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
+			if (!new_canvas_interface) {
+				synfig::error("run_plugin(): Cannot retrieve canvas interface");
+			} else {
+				new_canvas_interface->set_time(cur_time);
+			}
+		}
+	}
 }
 
 bool
@@ -546,6 +502,7 @@ studio::Instance::dialog_save_as()
 		if (filename_extension(filename) == "")
 			filename+=".sifz";
 
+		canvas->set_name(base_filename);
 		// forced to .sifz, the below code is not need anymore
 		try
 		{
@@ -620,6 +577,33 @@ studio::Instance::dialog_save_as()
 	return false;
 }
 
+
+bool
+studio::Instance::dialog_export()
+{
+	string filename = get_file_name();
+	Canvas::Handle canvas(get_canvas());
+
+	if (has_real_filename())
+		filename = absolute_path(filename);
+
+	// show the canvas' name if it has one, else its ID
+	std::string plugin_id = App::dialog_export_file(
+		(_("Please choose a file name") +
+		String(" (") +
+		(canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
+		")"),
+		filename, ANIMATION_DIR_PREFERENCE
+	);
+	if ( !plugin_id.empty() )
+	{
+		run_plugin(plugin_id, false, {filename});
+		return true;
+	}
+
+	return false;
+}
+
 void
 Instance::update_all_titles()
 {
@@ -689,9 +673,9 @@ Instance::close(bool remove_temporary_files)
 		studio::App::instance_list.front()->canvas_view_list().front()->present();
 	}
 
-	if (remove_temporary_files) {
+	if (!remove_temporary_files) {
 		FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
-		temporary_filesystem->discard_changes();
+		temporary_filesystem->set_keep_files_when_destroyed(true);
 	}
 }
 
@@ -1274,10 +1258,12 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 				// export and rename value dialog
 				if (entry.name == "ValueNodeRename") button2 = _("Rename");
 				// set layer description dialog
-				if (entry.name == "LayerSetDesc")
+				else if (entry.name == "LayerSetDesc")
 				{
-					button2 = _("Set");
+					button2 = _("OK");
 					label = _("Description: ");
+				} else if (entry.name == "GroupAddLayers") {
+					button2 = _("Add");
 				}
 
 				if(!studio::App::dialog_entry(entry.local_name,
@@ -1425,11 +1411,11 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 
 
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("TCB"));
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("Linear"));
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("Ease"));
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("Constant"));
 		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("Clamped"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("TCB"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("Constant"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("Ease"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("Linear"));
 
 		#undef ADD_IMAGE_MENU_ITEM
 
@@ -1590,7 +1576,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
 
 	Gtk::Dialog dialog(
-		"Edit Multiple Waypoints",
+		_("Edit Multiple Waypoints"),
 		true
 	);
 
@@ -1912,7 +1898,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
 			{
 				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
-				item2->set_label( (String(_("Convert to Vector menu"))).c_str() );
+				item2->set_label( (String(_("Convert to Vector"))).c_str() );
 				item2->signal_activate().connect(
 					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
 				item2->show();

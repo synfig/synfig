@@ -158,7 +158,7 @@ synfig::ValueNode_Real::get_inverse(Time /*t*/, const synfig::Angle &target_valu
 
 
 bool
-ValueNode_Real::check_type(Type &type __attribute__ ((unused)))
+ValueNode_Real::check_type(Type &type)
 {
 	return
 		type==type_angle   ||

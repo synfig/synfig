@@ -532,10 +532,10 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 		("synfig-layer_geometry_region"), _("Create a region layer"));
 
 	LAYER_CREATION(layer_outline_togglebutton,
-		("synfig-layer_geometry_outline"), _("Create a outline layer"));
+		("synfig-layer_geometry_outline"), _("Create an outline layer"));
 
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
-		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
+		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
 
 	LAYER_CREATION(layer_plant_togglebutton,
 		("synfig-layer_other_plant"), _("Create a plant layer"));
@@ -1283,6 +1283,7 @@ StateBLine_Context::event_key_press_handler(const Smach::event& x)
 	switch(event.keyval)
 	{
 	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
 		if (bline_point_list.size() > 1)
 			run();
 		return Smach::RESULT_ACCEPT;
@@ -1408,7 +1409,9 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		duck=new WorkArea::Duck(bline_point.get_vertex());
 		duck->set_editable(true);
 #ifdef DISTINGUISH_FIRST_DUCK
-		if (iter!=bline_point_list.begin())
+		if (iter==bline_point_list.begin())
+			duck->set_type(Duck::TYPE_FIRST_VERTEX);
+		else
 			duck->set_type(Duck::TYPE_VERTEX);
 #else
 		duck->set_type(Duck::TYPE_VERTEX);
@@ -1763,7 +1766,7 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	item->show();
 	menu.append(*item);
 
-	menu.popup(0,0);
+	menu.popup(0, gtk_get_current_event_time());
 }
 
 void
@@ -1802,7 +1805,8 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 		item->show();
 		menu.append(*item);
 	}
-	menu.popup(0,0);
+
+	menu.popup(0, gtk_get_current_event_time());
 }
 
 void
@@ -1962,7 +1966,7 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 	item->show();
 	menu.append(*item);
 
-	menu.popup(0,0);
+	menu.popup(0, gtk_get_current_event_time());
 }
 
 void

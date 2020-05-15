@@ -40,6 +40,7 @@
 #include <synfig/vector.h>
 #include <synfig/angle.h>
 #include <synfig/real.h>
+#include <algorithm> // for std::mix/max
 
 #endif
 

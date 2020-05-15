@@ -202,6 +202,8 @@ LayerTree::LayerTree():
 	blend_method_widget.set_size_request(150,-1);
 	blend_method_widget.set_sensitive(false);
 	blend_method_widget.signal_activate().connect(sigc::mem_fun(*this, &studio::LayerTree::on_blend_method_changed));
+
+	disable_single_click_for_param_editing = false;
 }
 
 LayerTree::~LayerTree()
@@ -474,11 +476,10 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
 
 		Gtk::TreePath path(iter);
-		for(int i=(int)path.size();i;i--)
+		for(size_t i=path.size();i;i--)
 		{
-			int j;
 			path=Gtk::TreePath(iter);
-			for(j=i;j;j--)
+			for(size_t j=i;j;j--)
 				path.up();
 			layer_tree_view().expand_row(path,false);
 		}
@@ -552,7 +553,7 @@ LayerTree::get_selected_layer()const
 	LayerList layers(get_selected_layers());
 
 	if(layers.empty())
-		return 0;
+		return nullptr;
 
 	return layers.front();
 }
@@ -727,7 +728,7 @@ LayerTree::on_selection_changed()
 	{
 		if(layer_list.empty())
 		{
-			last_top_selected_layer=0;
+			last_top_selected_layer=nullptr;
 			layer_tree_view().get_selection()->select(last_top_selected_path);
 			return;
 		}
@@ -741,7 +742,7 @@ LayerTree::on_selection_changed()
 		}
 		else
 		{
-			last_top_selected_layer=0;
+			last_top_selected_layer=nullptr;
 		}
 	}
 
@@ -768,7 +769,7 @@ LayerTree::on_selection_changed()
 		quick_layer=*layer_list.begin();
 	}
 	else
-		quick_layer=0;
+		quick_layer=nullptr;
 
 	if(quick_layer)
 	{
@@ -858,11 +859,11 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 void
-LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
-										 const synfig::Time& time __attribute__ ((unused)),
-										 const synfig::Time& time_offset __attribute__ ((unused)),
-										 const synfig::Time& time_dilation __attribute__ ((unused)),
-										 int button __attribute__ ((unused)))
+LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node,
+										 const synfig::Time& time,
+										 const synfig::Time& time_offset,
+										 const synfig::Time& time_dilation,
+										 int button)
 {
 	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 	synfig::waypoint_collect(waypoint_set,time,node);
@@ -1020,9 +1021,16 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				}
 				else
 				{
-					if(column->get_first_cell()==cellrenderer_value)
-						return signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
-					else
+					if(column->get_first_cell()==cellrenderer_value) {
+						bool ok = false;
+						if (!disable_single_click_for_param_editing) {
+							param_tree_view().set_cursor(path, *column, true);
+							grab_focus();
+							ok = true;
+						}
+						ok |= signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
+						return ok;
+					} else
 						return signal_param_user_click()(event->button.button,row,COLUMNID_NAME);
 				}
 			}

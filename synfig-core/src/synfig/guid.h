@@ -58,7 +58,7 @@ class GUID
 public:
 	GUID()
 		{ make_unique(); }
-	GUID(const int i __attribute__ ((unused))){assert(!i); data.u_64.a=0;data.u_64.b=0;}
+	GUID(const int i){assert(!i); data.u_64.a=0;data.u_64.b=0;}
 
 	GUID(const String& str);
 

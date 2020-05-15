@@ -63,6 +63,10 @@ TimePlotData::TimePlotData(Gtk::Widget& widget, Glib::RefPtr<Gtk::Adjustment> ve
 		vertical_value_changed = vertical_adjustment->signal_value_changed().connect(
 					sigc::mem_fun(*this, &TimePlotData::recompute_vertical) );
 		recompute_vertical();
+	} else {
+		range_k = 0.0;
+		range_lower = 0.0;
+		range_upper = 0.0;
 	}
 }
 
@@ -161,6 +165,15 @@ TimePlotData::recompute_vertical()
 {
 	if (!vertical_adjustment) {
 		has_vertical = false;
+
+		if (vertical_changed.connected())
+			vertical_changed.disconnect();
+		if (vertical_value_changed.connected())
+			vertical_value_changed.disconnect();
+
+		range_k = 0.0;
+		range_lower = 0.0;
+		range_upper = 0.0;
 		return;
 	}
 	range_lower = vertical_adjustment->get_value();

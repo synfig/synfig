@@ -29,6 +29,7 @@
 #define COLOR_EPSILON	(0.000001f)
 
 #include <synfig/color.h>
+#include <algorithm>
 
 namespace synfig {
 
@@ -370,6 +371,18 @@ C blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 	else				a.set_b(b.get_b()*(a.get_b()*2*one));
 
 	return blendfunc_ONTO(a,b,amount);
+}
+
+template <class C>
+C blendfunc_ALPHA(C &a,C &b,float amount)
+{
+	const float one(C::ceil);
+	C rm(b);
+
+	//multiply the alpha channel with the one below us
+	rm.set_a(a.get_a()*b.get_a());
+
+	return blendfunc_STRAIGHT(rm,b,amount);
 }
 
 template <class C>

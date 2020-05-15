@@ -29,7 +29,7 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
-#include <math.h>
+#include <cmath>
 #include <ETL/stringf>
 #include "vectorizersettings.h"
 #include <synfig/rendering/software/surfacesw.h>

@@ -62,7 +62,7 @@ static Glib::RefPtr<Gtk::Builder> load_interface() {
 	auto refBuilder = Gtk::Builder::create();
 	try
 	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path("canvas_options.ui"));
+		refBuilder->add_from_file(ResourceHelper::get_ui_path("canvas_options.glade"));
 	}
 	catch(const Glib::FileError& ex)
 	{

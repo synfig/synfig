@@ -66,7 +66,7 @@
 
 //#include "radialblur.h"
 
-#include "warp.h"
+#include "perspective.h"
 #include "timeloop.h"
 #include "curvewarp.h"
 #include "stroboscope.h"
@@ -97,7 +97,7 @@ MODULE_INVENTORY_BEGIN(liblyr_std)
 		LAYER(Translate)		LAYER_ALIAS(Translate,"Translate")
 		LAYER(SuperSample)		LAYER_ALIAS(SuperSample,"SuperSample")
 		LAYER(Rotate)			LAYER_ALIAS(Rotate,"Rotate")
-		LAYER(Warp)
+		LAYER(Perspective)
 		LAYER(Julia)
 		LAYER(InsideOut)
 		LAYER(Mandelbrot)

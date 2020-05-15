@@ -266,7 +266,7 @@ Layer_Clamp::get_param_vocab()const
 
 	ret.push_back(ParamDesc("clamp_ceiling")
 		.set_local_name(_("Clamp Ceiling"))
-		.set_description(_("When checked the Ceiling value is used"))
+		.set_description(_("When checked, the Ceiling value is used"))
 	);
 
 	ret.push_back(ParamDesc("ceiling")
@@ -287,32 +287,6 @@ Layer_Clamp::get_color(Context context, const Point &pos)const
 {
 	return clamp_color(context.get_color(pos));
 }
-
-bool
-Layer_Clamp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
-
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-		return false;
-
-	int x,y;
-
-	Surface::pen pen(surface->begin());
-
-	for(y=0;y<renddesc.get_h();y++,pen.inc_y(),pen.dec_x(x))
-		for(x=0;x<renddesc.get_w();x++,pen.inc_x())
-			pen.put_value(clamp_color(pen.get_value()));
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
-}
-
 
 Rect
 Layer_Clamp::get_full_bounding_rect(Context context)const

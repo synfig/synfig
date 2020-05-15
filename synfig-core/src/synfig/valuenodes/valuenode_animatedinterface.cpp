@@ -309,8 +309,8 @@ public:
 			is_angle_type<value_type> is_angle;
 			subtractor<value_type> subtract_func;
 
-			mutable hermite<Time, Time> first;
-			mutable hermite<value_type, Time> second;
+			mutable etl::hermite<Time, Time> first;
+			mutable etl::hermite<value_type, Time> second;
 			WaypointList::iterator start;
 			WaypointList::iterator end;
 
@@ -409,10 +409,9 @@ public:
 
 			curve_list.clear();
 
-			WaypointList::iterator prev,iter,next=animated.waypoint_list_.begin();
-			int i=0;
+			WaypointList::iterator iter,next=animated.waypoint_list_.begin();
 			// The curve list must be calculated because we sorted the waypoints.
-			for(iter=next++;iter!=animated.waypoint_list_.end() && next!=animated.waypoint_list_.end();prev=iter,iter=next++,i++)
+			for(iter=next++;iter!=animated.waypoint_list_.end() && next!=animated.waypoint_list_.end(); iter=next++)
 			{
 				typename curve_list_type::value_type curve;
 				WaypointList::iterator after_next(next);
@@ -632,8 +631,8 @@ public:
 				curve.first.set_rs(iter->get_time(), next->get_time());
 				curve.first.p1()=iter->get_time();
 				curve.first.p2()=next->get_time();
-				curve.first.t1()=(curve.first.p2()-curve.first.p1())*(1.0f-iter->get_temporal_tension());
-				curve.first.t2()=(curve.first.p2()-curve.first.p1())*(1.0f-next->get_temporal_tension());
+				curve.first.t1()=(curve.first.p2()-curve.first.p1())*(1.0-iter->get_temporal_tension());
+				curve.first.t2()=(curve.first.p2()-curve.first.p1())*(1.0-next->get_temporal_tension());
 
 
 				curve.first.sync();

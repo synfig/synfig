@@ -123,7 +123,7 @@ public:
 		Factory factory;
 		bool supports_file_system_wrapper;
 
-		BookEntry(): factory(NULL), supports_file_system_wrapper(false) { }
+		BookEntry(): factory(nullptr), supports_file_system_wrapper(false) { }
 		BookEntry(Factory factory, bool supports_file_system_wrapper):
 		factory(factory), supports_file_system_wrapper(supports_file_system_wrapper)
 		{ }
@@ -165,17 +165,7 @@ public:
 	**	\return \c true on success, \c false on error
 	**	\see ProgressCallback, Surface
 	*/
-	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL)=0;
-	virtual bool get_frame(Surface &surface, const RendDesc &renddesc,Time time,
-						   bool &trimmed __attribute__ ((unused)),
-						   unsigned int &width __attribute__ ((unused)),
-						   unsigned int &height __attribute__ ((unused)),
-						   unsigned int &top __attribute__ ((unused)),
-						   unsigned int &left __attribute__ ((unused)),
-						   ProgressCallback *callback=NULL)
-	{
-		return get_frame(surface,renddesc,time,callback);
-	}
+	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *callback=nullptr) = 0;
 
 	virtual rendering::Surface::Handle get_frame(const RendDesc &renddesc, const Time &time);
 

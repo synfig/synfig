@@ -152,51 +152,12 @@ public:
 		return "translate";
 	}
 };
+
 etl::handle<Transform>
 Translate::get_transform()const
 {
 	return new Translate_Trans(this);
 }
-
-bool
-Translate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector origin=param_origin.get(Vector());
-
-	RendDesc transformed_renddesc(renddesc);
-	transformed_renddesc.clear_flags();
-	transformed_renddesc.set_transformation_matrix(
-	    renddesc.get_transformation_matrix()
-	  * Matrix().set_translate(origin) );
-
-	// Render the scene
-	if(!context.accelerated_render(surface,quality,transformed_renddesc,cb))
-	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
-		return false;
-	}
-
-	return true;
-}
-
-/////
-bool
-Translate::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Vector origin=param_origin.get(Vector());
-	cairo_save(cr);
-	cairo_translate(cr, origin[0], origin[1]);
-
-	if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-	{
-		cairo_restore(cr);
-		return false;
-	}
-	cairo_restore(cr);
-	return true;
-}
-
-/////
 
 Rect
 Translate::get_full_bounding_rect(Context context)const

@@ -42,6 +42,8 @@
 #include <gui/localization.h>
 #include <docks/dock_info.h>
 
+#include <gui/progresslogger.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -476,13 +478,15 @@ public:
 	bool ready_next;
 	sigc::connection ready_connection;
 
+	ProgressCallback *cb;
 
 public:
 	AsyncTarget_Scanline(etl::handle<synfig::Target_Scanline> warm_target):
 		warm_target(warm_target),
 		scanline_(),
 		alive_flag(),
-		ready_next()
+		ready_next(),
+		cb(nullptr)
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
 		set_canvas(warm_target->get_canvas());
@@ -516,8 +520,9 @@ public:
 		alive_flag=false;
 	}
 
-	virtual bool start_frame(synfig::ProgressCallback */*cb*/=0)
+	virtual bool start_frame(synfig::ProgressCallback *cb)
 	{
+		this->cb = cb;
 		return alive_flag;
 	}
 
@@ -573,17 +578,18 @@ public:
 	{
 		Glib::Mutex::Lock lock(mutex);
 		if(alive_flag)
-			alive_flag=warm_target->add_frame(&surface);
+			alive_flag=warm_target->add_frame(&surface, cb);
 		cond_frame_queue_empty.signal();
 		ready_next=true;
 		
 		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
 		                             - warm_target->desc.get_frame_start()      //0
 		                             + 1;                                       //->121
-		int current_rendered_frames_count = warm_target->curr_frame_
-		                                  - warm_target->desc.get_frame_start();
+		int current_rendered_frames_count = warm_target->curr_frame_;
+		
 		float r = (float) current_rendered_frames_count 
 		        / (float) n_total_frames_to_render;
+		
 		App::dock_info_->set_render_progress(r);		
 	}
 };
@@ -691,10 +697,11 @@ public:
 		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
 		                             - warm_target->desc.get_frame_start()      //0
 		                             + 1;                                       //->121
-		int current_rendered_frames_count = warm_target->curr_frame_
-		                                  - warm_target->desc.get_frame_start();
+		int current_rendered_frames_count = warm_target->curr_frame_;
+		
 		float r = (float) current_rendered_frames_count 
 		        / (float) n_total_frames_to_render;
+		
 		App::dock_info_->set_render_progress(r);
 	}
 
@@ -715,8 +722,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
-	error(false),
-	success(false),
+	status(RENDERING_UNDEFINED),
 	cb(cb),
 	start_clock(0),
 	finish_clock(0),
@@ -724,46 +730,40 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 	finish_time(0, 0)
 {
 	render_thread=0;
-	if(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
+	if(auto cast_target = synfig::Target_Tile::Handle::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Tile> wrap_target(
-			new AsyncTarget_Tile(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
+			new AsyncTarget_Tile(cast_target)
 		);
 
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Tile::set_dead));
 
 		target=wrap_target;
 	}
-	else if(etl::handle<synfig::Target_Scanline>::cast_dynamic(target_))
+	else if(auto cast_target = etl::handle<synfig::Target_Scanline>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Scanline> wrap_target(
-			new AsyncTarget_Scanline(
-				etl::handle<synfig::Target_Scanline>::cast_dynamic(target_)
-			)
+			new AsyncTarget_Scanline(cast_target)
 		);
 
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Scanline::set_dead));
 
 		target=wrap_target;
 	}
-	else if(etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_))
+	else if(auto cast_target = etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Cairo_Tile> wrap_target(
-			new AsyncTarget_Cairo_Tile(
-					etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_)
-			)
+			new AsyncTarget_Cairo_Tile(cast_target)
 		);
 		
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Cairo_Tile::set_dead));
 		
 		target=wrap_target;
 	}
-	else if(etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
+	else if(auto cast_target = etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Cairo> wrap_target(
-			new AsyncTarget_Cairo(
-				etl::handle<synfig::Target_Cairo>::cast_dynamic(target_)
-			)
+			new AsyncTarget_Cairo(cast_target)
 		);
 		
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Cairo::set_dead));
@@ -799,15 +799,23 @@ AsyncRenderer::stop()
 			// Make sure all the dispatch crap is cleared out
 			//Glib::MainContext::get_default()->iteration(false);
 
-			if(success)
+			std::string error_message;
+			if(status == RENDERING_SUCCESS)
 				signal_success_();
+			else
+				error_message = _("Animation couldn't be rendered");
 
 			target=0;
 			render_thread=0;
-			
+
 			lock.release();
-			
-			signal_finished_();
+
+			if (status == RENDERING_ERROR) {
+				if (ProgressLogger *logger = dynamic_cast<ProgressLogger*>(cb))
+					error_message += "\n" + logger->get_error_message();
+			}
+
+			signal_finished_(error_message);
 		}
 	}
 }
@@ -842,7 +850,7 @@ AsyncRenderer::start()
 void
 AsyncRenderer::start_()
 {
-	error=false;success=false;
+	status = RENDERING_UNDEFINED;
 	if(target)
 	{
 #ifndef GLIB_DISPATCHER_BROKEN
@@ -869,13 +877,24 @@ AsyncRenderer::render_target()
 {
 	etl::handle<Target> target(AsyncRenderer::target);
 
-	if(target && target->render())
-	{
-		success=true;
-	}
-	else
-	{
-		error=true;
+	try {
+		if(target && target->render(cb))
+		{
+			status = RENDERING_SUCCESS;
+		}
+		else
+		{
+			status = RENDERING_ERROR;
+#ifndef REJOIN_ON_STOP
+			return;
+#endif
+		}
+	} catch (...) {
+		status = RENDERING_ERROR;
+		string error_str = _("Internal error: some exception has been thrown while rendering");
+		synfig::error(error_str);
+		if (cb)
+			cb->error(error_str);
 #ifndef REJOIN_ON_STOP
 		return;
 #endif

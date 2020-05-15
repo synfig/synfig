@@ -2,7 +2,7 @@
 ## Configure
 ##
 
-set(STUDIO_VERSION "1.3.12")
+set(STUDIO_VERSION "1.5.0")
 set(SHOW_EXTRA_INFO OFF) # this needs some fixes to work
 set(DATA_PREFIX "${CMAKE_INSTALL_PREFIX}" CACHE PATH "Path, where the share directory with the pixmaps, sounds, plugins and translations is located. Default: Prefix, where Synfig Studio is going to be installed")
 set(IMG_EXT "png" CACHE STRING "File extension of the pixmaps (without the \".\"). Default: png")
@@ -17,6 +17,7 @@ add_definitions(-DSOUND_DIR="${DATA_PREFIX}/share/synfig/sounds")
 add_definitions(-DPLUGIN_DIR="${DATA_PREFIX}/share/synfig/plugins")
 add_definitions(-DUI_DIR="${DATA_PREFIX}/share/synfig/ui")
 add_definitions(-DLOCALEDIR="${DATA_PREFIX}/share/locale")
+add_definitions(-DCMAKE_BUILD)
 
 ##
 ## Targets
@@ -45,6 +46,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/onemoment.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/pluginmanager.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/preview.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/progresslogger.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renddesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/render.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/resourcehelper.cpp"
@@ -71,9 +73,13 @@ include(trees/CMakeLists.txt)
 include(widgets/CMakeLists.txt)
 include(workarearenderer/CMakeLists.txt)
 
+target_include_directories(synfigstudio PRIVATE ${MLT_INCLUDE_DIRS}) # required for widget_soundwave
+
 target_link_libraries(synfigstudio
     ${GTKMM_LIBRARIES}
     ${Gettext_LIBRARIES}
+    ${MLT_LIBRARIES} # required for widget_soundwave
+    ${LIBXML_LIBRARIES} # required for gui/pluginmanager
     synfig
     synfigapp
 )

@@ -111,29 +111,28 @@ Matrix2::operator+=(const Matrix2 &rhs)
 	return *this;
 }
 
+Matrix2::value_type
+Matrix2::det() const
+	{ return m00*m11 - m01*m10; }
+
 bool
-Matrix2::is_invertible()const
-	{ return approximate_not_equal(m00*m11, m01*m10); }
+Matrix2::is_invertible() const
+	{ return approximate_not_zero(det()); }
 
 Matrix2&
 Matrix2::invert()
 {
-	value_type det(m00*m11 - m01*m10);
-	if (approximate_not_equal(det, 0.0))
-	{
-		value_type k = 1.0/det;
+	value_type d = det();
+	if (approximate_not_zero(d)) {
+		value_type k = 1/d;
 		std::swap(m00, m11);
 		std::swap(m01, m10);
 		m00 *= k; m01 *= -k;
 		m11 *= k; m10 *= -k;
-	}
-	else
-	if (m00*m00 + m01*m01 > m10*m10 + m11*m11)
-	{
+	} else
+	if (m00*m00 + m01*m01 > m10*m10 + m11*m11) {
 		m10 = m01; m01 = 0; m11 = 0;
-	}
-	else
-	{
+	} else {
 		m01 = m10; m00 = 0; m10 = 0;
 	}
 	return *this;
@@ -320,6 +319,15 @@ Matrix3::get_inverted()const
 		m*(m00*m21 - m01*m20),
 		p*(m00*m11 - m01*m10) );
 }
+
+Matrix3&
+Matrix3::normalize_by_det()
+{
+	Real d = det();
+	if (approximate_not_zero(d)) *this *= 1/cbrt(fabs(d));
+	return *this;
+}
+
 
 String
 Matrix3::get_string(int spaces, String before, String after)const

@@ -24,12 +24,169 @@
 
 set -e
 
+# 1 - Detect which Linux OS is in use
+echo "Detecting Linux OS..."
+
+# Check if /etc/os-release file is available
+if [ -f /etc/os-release ]; then
+    source /etc/os-release
+    echo "ID_LIKE=$ID_LIKE"
+    echo "VERSION_ID=$VERSION_ID"
+# Fallback whether /etc/os-release is not available
+elif [ -z $ID_LIKE ]; then
+    if command -v dnf >/dev/null; then
+        # Fedora DNF package manager
+        export ID_LIKE="fedora"
+        export VERSION_ID=23
+    elif command -v yum >/dev/null; then
+        # Fedora YUM package manager
+        export ID_LIKE="fedora"
+        export VERSION_ID=22
+    elif which zypper >/dev/null; then
+        # openSUSE package manager
+        export ID_LIKE="suse opensuse"
+    elif command -v pacman >/dev/null; then
+        # Arch Linux package manager
+        export ID_LIKE="arch"
+    elif command -v apt-get >/dev/null; then
+        # Debian / Ubuntu package manager
+        export ID_LIKE="debian"
+    fi
+fi
+
+# 2 - Install the required packages
 echo "Checking dependencies..."
-if command -v apt-get >/dev/null; then
-        if [ ! -f /etc/altlinux-release ]; then
-            #
-            #  Ubuntu/Debian
-            #
+
+if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
+    PKG_LIST="git \
+            intltool \
+            libpng-devel \
+            libjpeg-devel \
+            fftw-devel \
+            freetype-devel \
+            fontconfig-devel \
+            atk-devel \
+            pango-devel \
+            cairo-devel \
+            gtk3-devel \
+            gettext-devel \
+            libxml2-devel \
+            libxml++-devel \
+            gcc-c++ \
+            autoconf \
+            automake \
+            libtool \
+            libtool-ltdl-devel \
+            boost-devel \
+            shared-mime-info \
+            OpenEXR-devel \
+            libmng-devel \
+            ImageMagick-c++-devel \
+            jack-audio-connection-kit-devel \
+            mlt-devel \
+            ocl-icd-devel \
+            opencl-headers \
+            gtkmm30-devel \
+            glibmm24-devel \
+            SDL2-devel \
+            SDL2_mixer-devel \
+            libxslt-devel python-devel python3-lxml"
+
+    if ! ( rpm -qv $PKG_LIST ); then
+        echo "Running dnf (root privileges are needed)..."
+        sudo dnf install $PKG_LIST || true
+    fi
+
+elif ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID <= 22]); then
+    PKG_LIST="git \
+            intltool \
+            libpng-devel \
+            libjpeg-devel \
+            fftw-devel \
+            freetype-devel \
+            fontconfig-devel \
+            atk-devel \
+            pango-devel \
+            cairo-devel \
+            gtk3-devel \
+            gettext-devel \
+            libxml2-devel \
+            libxml++-devel \
+            gcc-c++ \
+            autoconf \
+            automake \
+            libtool \
+            libtool-ltdl-devel \
+            boost-devel \
+            shared-mime-info \
+            OpenEXR-devel \
+            libmng-devel \
+            ImageMagick-c++-devel \
+            jack-audio-connection-kit-devel \
+            mlt-devel \
+            ocl-icd-devel \
+            opencl-headers \
+            gtkmm30-devel \
+            glibmm24-devel \
+            SDL2-devel \
+            SDL2_mixer-devel \
+            libxslt-devel python-devel python3-lxml"
+
+    if ! ( rpm -qv $PKG_LIST ); then
+        echo "Running yum (root privileges are needed)..."
+        su -c "yum install $PKG_LIST" || true
+    fi
+
+elif [ "$ID_LIKE" == "suse opensuse" ]; then
+    PKG_LIST="git libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel shared-mime-info"
+    PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
+
+    if ! ( rpm -qv $PKG_LIST ); then
+        echo "Running zypper (root privileges are needed)..."
+        su -c "zypper install $PKG_LIST" || true
+
+        # Add python-lxml repository -> 3rd party
+        echo "Adding third party repository for python-lxml..."
+        su -c "zypper addrepo https://download.opensuse.org/repositories/devel:languages:python/openSUSE_Tumbleweed/devel:languages:python.repo"
+        su -c "zypper refresh"
+        su -c "zypper install python-lxml"
+    fi
+
+elif [ "$ID_LIKE" == "arch" ]; then
+    PKG_LIST="git \
+            automake autoconf \
+            boost \
+            cairo \
+            freetype2 \
+            fftw \
+            gtk3 \
+            gettext \
+            gtkmm3 \
+            glibmm \
+            gcc \
+            imagemagick \
+            pkg-config \
+            intltool \
+            jack \
+            libxml2 \
+            libxml++2.6 \
+            libtool \
+            libpng \
+            libsigc++ \
+            libjpeg \
+            libmng \
+            mlt \
+            openexr \
+            shared-mime-info \
+            cmake make \
+            python-lxml"
+    echo "Running pacman (root privileges are needed)..."
+    echo
+    sudo pacman -S --needed --noconfirm $PKG_LIST || true
+
+elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] ; then
+    if [ ! -f /etc/altlinux-release ]; then
+            #  Debian / Ubuntu
             PKG_LIST=" \
                 build-essential \
                 autoconf automake autopoint \
@@ -52,7 +209,7 @@ if command -v apt-get >/dev/null; then
                 imagemagick \
                 libsdl2-dev \
                 libsdl2-mixer-dev \
-                bzip2
+                bzip2 \
                 git-core \
                 libmng-dev \
                 libjack-jackd2-dev \
@@ -62,12 +219,9 @@ if command -v apt-get >/dev/null; then
                 libxml++2.6-dev \
                 libboost-system-dev \
                 libmagick++-dev \
-                libxslt-dev python-dev python3-lxml\
-            "
+                libxslt-dev python-dev python3-lxml"
         else
-            #
             #  ALT Linux case
-            #
             PKG_LIST=" \
                 rpm-build \
                 git-core \
@@ -104,154 +258,18 @@ if command -v apt-get >/dev/null; then
                 libglibmm-devel \
                 libsigc++2-devel \
                 libxml++2-devel \
-                libxslt-devel python-devel python3-lxml\
-            "
+                libxslt-devel python-devel python3-lxml"
         fi
-    echo "Running apt-get (you need root privileges to do that)..."
+
+    echo "Running apt-get (root privileges are needed)..."
     echo
     sudo apt-get update -qq || true
     sudo apt-get install -y -q $PKG_LIST
-
-elif command -v dnf >/dev/null; then
-    #
-    #  Fedora >= 22
-    #
-    PKG_LIST="git \
-            intltool \
-            libpng-devel \
-            libjpeg-devel \
-            fftw-devel \
-            freetype-devel \
-            fontconfig-devel \
-            atk-devel \
-            pango-devel \
-            cairo-devel \
-            gtk3-devel \
-            gettext-devel \
-            libxml2-devel \
-            libxml++-devel \
-            gcc-c++ \
-            autoconf \
-            automake \
-            libtool \
-            libtool-ltdl-devel \
-            boost-devel \
-            shared-mime-info \
-            OpenEXR-devel \
-            libmng-devel \
-            ImageMagick-c++-devel \
-            jack-audio-connection-kit-devel \
-            mlt-devel \
-            ocl-icd-devel \
-            opencl-headers \
-            gtkmm30-devel \
-            glibmm24-devel \
-            SDL2-devel \
-            SDL2_mixer-devel \
-            libxslt-devel python-devel python3-lxml"
-    if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running dnf (you need root privileges to do that)..."
-        sudo dnf install $PKG_LIST || true
-    fi
-
-elif command -v yum >/dev/null; then
-    #
-    #  Fedora
-    #
-    PKG_LIST="git \
-            intltool \
-            libpng-devel \
-            libjpeg-devel \
-            fftw-devel \
-            freetype-devel \
-            fontconfig-devel \
-            atk-devel \
-            pango-devel \
-            cairo-devel \
-            gtk3-devel \
-            gettext-devel \
-            libxml2-devel \
-            libxml++-devel \
-            gcc-c++ \
-            autoconf \
-            automake \
-            libtool \
-            libtool-ltdl-devel \
-            boost-devel \
-            shared-mime-info \
-            OpenEXR-devel \
-            libmng-devel \
-            ImageMagick-c++-devel \
-            jack-audio-connection-kit-devel \
-            mlt-devel \
-            ocl-icd-devel \
-            opencl-headers \
-            gtkmm30-devel \
-            glibmm24-devel \
-            SDL2-devel \
-            SDL2_mixer-devel \
-            libxslt-devel python-devel python3-lxml"
-    if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running yum (you need root privileges to do that)..."
-        su -c "yum install $PKG_LIST" || true
-    fi
-
-elif which zypper >/dev/null; then
-    #
-    #  OpenSUSE
-    #
-    PKG_LIST="git libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel shared-mime-info"
-    PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
-
-    if ! ( rpm -qv $PKG_LIST ); then
-        echo "Running zypper (you need root privileges to do that)..."
-        su -c "zypper install $PKG_LIST" || true
-
-        # Add python lxml repository -> 3rd party
-        su -c "zypper addrepo https://download.opensuse.org/repositories/devel:languages:python/openSUSE_Tumbleweed/devel:languages:python.repo"
-        su -c "zypper refresh"
-        su -c "zypper install python-lxml"
-    fi
-
-elif command -v pacman >/dev/null; then
-    #
-    # Arch Linux
-    #
-    PKG_LIST="git \
-            automake autoconf \
-            boost \
-            cairo \
-            freetype2 \
-            fftw \
-            gtk3 \
-            gettext \
-            gtkmm3 \
-            glibmm \
-            gcc \
-            imagemagick \
-            pkg-config \
-            intltool \
-            jack \
-            libxml2 \
-            libxml++2.6 \
-            libtool \
-            libpng \
-            libsigc++ \
-            libjpeg \
-            libmng \
-            mlt \
-            openexr \
-            shared-mime-info \
-            cmake make \
-            python-lxml"
-    echo "Running pacman (you need root privileges to do that)..."
-    echo
-    sudo pacman -S --needed --noconfirm $PKG_LIST || true
-
 else
     echo "WARNING: This build script does not work with package management systems other than yum, zypper, apt or pacman! You should install dependent packages manually."
     echo "REQUIRED PACKAGES: "
     echo "libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm30-devel glibmm24-devel"
     echo ""
 fi
+
 echo "Done."

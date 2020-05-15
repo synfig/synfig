@@ -422,11 +422,13 @@ Duckmatic::get_duck_list()const
 {
 	DuckList ret;
 	DuckMap::const_iterator iter;
+	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_FIRST_VERTEX) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_POSITION) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_VERTEX  ) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_TANGENT ) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
 		if (!(iter->second->get_type()&Duck::TYPE_POSITION) &&
+			!(iter->second->get_type()&Duck::TYPE_FIRST_VERTEX) &&
 			!(iter->second->get_type()&Duck::TYPE_VERTEX) &&
 			!(iter->second->get_type()&Duck::TYPE_TANGENT))
 			ret.push_back(iter->second);
@@ -1376,6 +1378,14 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
                     break;
                 }
         if(!found)
+            for(i=0; i<ret_vector.size();i++)
+                if(ret_vector[i]->get_type() & Duck::TYPE_FIRST_VERTEX)
+                {
+                    ret=ret_vector[i];
+                    found=true;
+                    break;
+                }
+		if(!found)
             for(i=0; i<ret_vector.size();i++)
                 if(ret_vector[i]->get_type() & Duck::TYPE_VERTEX)
                 {
@@ -2625,11 +2635,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
             else
             if (contained_type == type_bone_object)
             {
-                printf("%s:%d adding ducks\n", __FILE__, __LINE__);
                 for(i=0;i<value_node->link_count();i++)
                     if(!add_to_ducks(synfigapp::ValueDesc(value_node,i,value_desc),canvas_view,transform_stack))
                         return false;
-                printf("%s:%d adding ducks done\n\n", __FILE__, __LINE__);
             }
             else
             if (contained_type == type_bone_weight_pair)

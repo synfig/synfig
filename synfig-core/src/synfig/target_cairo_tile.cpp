@@ -165,7 +165,7 @@ synfig::Target_Cairo_Tile::render_frame_(Context context,ProgressCallback *cb)
 			// Add the tile to the target
 			if(!add_tile(cairo_surface_reference(surface), x,y))
 			{
-				if(cb)cb->error(_("add_tile():Unable to put surface on target"));
+				if(cb)cb->error(_("add_tile(): Unable to put surface on target"));
 				return false;
 			}
 			cairo_destroy(cr);
@@ -261,7 +261,7 @@ synfig::Target_Cairo_Tile::render(ProgressCallback *cb)
 	}
 	catch (const String& str)
 	{
-		if (cb) cb->error(_("Caught string :")+str);
+		if (cb) cb->error(_("Caught string: ")+str);
 		return false;
 	}
 	catch (std::bad_alloc&)

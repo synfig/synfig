@@ -74,7 +74,7 @@ Action::LayerEmbed::get_param_vocab()
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to be embed"))
+		.set_desc(_("Layer to be embedded"))
 	);
 
 	return ret;
@@ -92,7 +92,7 @@ Action::LayerEmbed::is_candidate(const ParamList &x)
 		= etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(layer);
 	if (layer_pastecanvas)
 	{
-		Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();;
+		Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();
 		if (canvas && canvas->is_root())
 			return true;
 	}

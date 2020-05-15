@@ -98,14 +98,16 @@ OptimizerDraftTransformation::run(const RunParams &params) const
 {
 	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task))
 	{
+		const bool affine = transformation->get_transformation().type_is<TransformationAffine>();
+		const Real supersample_max = affine ? 1 : 0.5;
 		if ( transformation->interpolation != Color::INTERPOLATION_NEAREST
-		  || approximate_greater_lp(transformation->supersample[0], 1.0)
-		  || approximate_greater_lp(transformation->supersample[1], 1.0) )
+		  || approximate_greater_lp(transformation->supersample[0], supersample_max)
+		  || approximate_greater_lp(transformation->supersample[1], supersample_max) )
 		{
 			transformation = TaskTransformation::Handle::cast_dynamic( transformation->clone() );
 			transformation->interpolation = Color::INTERPOLATION_NEAREST;
-			transformation->supersample[0] = std::min(transformation->supersample[0], 1.0);
-			transformation->supersample[1] = std::min(transformation->supersample[1], 1.0);
+			transformation->supersample[0] = std::min(transformation->supersample[0], supersample_max);
+			transformation->supersample[1] = std::min(transformation->supersample[1], supersample_max);
 			apply(params, transformation);
 		}
 	}

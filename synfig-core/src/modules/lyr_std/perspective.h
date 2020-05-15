@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file warp.h
-**	\brief Header file for implementation of the "Warp" layer
+/*!	\file perspective.h
+**	\brief Header file for implementation of the "Perspective" layer
 **
 **	$Id$
 **
@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_WARP_H
-#define __SYNFIG_WARP_H
+#ifndef __SYNFIG_PERSPECTIVE_H
+#define __SYNFIG_PERSPECTIVE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -48,12 +48,13 @@ namespace modules
 namespace lyr_std
 {
 
-class Warp_Trans;
+class Perspective_Trans;
 
-class Warp : public Layer
+class Perspective : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
-	friend class Warp_Trans;
+	friend class Perspective_Trans;
+
 private:
 	//! Parameters: (Point)
 	ValueBase param_src_tl;
@@ -62,43 +63,43 @@ private:
 	ValueBase param_dest_tr;
 	ValueBase param_dest_bl;
 	ValueBase param_dest_br;
-	//! Parameter: (Real)
-	ValueBase param_horizon;
 	//! Parameter: (bool)
 	ValueBase param_clip;
+	//! Parameter: (int)
+	ValueBase param_interpolation;
 
-	//Real cache_a,cache_b,cache_c,cache_d,cache_e,cache_f,cache_i,cache_j;
+	bool valid;
+	bool affine;
+	Matrix matrix;
+	Matrix back_matrix;
+	bool clip;
+	Rect clip_rect;
 
-	Real matrix[3][3];
-	Real inv_matrix[3][3];
+	Point transform(const Point &x) const;
+	Point back_transform(const Point &x) const;
 
-	Point transform_forward(const Point& p)const;
-	Point transform_backward(const Point& p)const;
-
-	Real transform_forward_z(const Point& p)const;
-	Real transform_backward_z(const Point& p)const;
-
+	Rect transform(const Rect &x) const;
+	Rect back_transform(const Rect &x) const;
 
 public:
 	void sync();
 
-	Warp();
-	~Warp();
+	Perspective();
+	~Perspective();
 
-	virtual Rect get_full_bounding_rect(Context context)const;
-	virtual Rect get_bounding_rect()const;
+	virtual Rect get_bounding_rect() const;
+	virtual Rect get_full_bounding_rect(Context context) const;
 
-	virtual bool set_param(const String & param, const ValueBase &value);
-	virtual ValueBase get_param(const String & param)const;
-	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	Layer::Handle hit_check(Context context, const Point &point)const;
-	virtual Vocab get_param_vocab()const;
-	virtual etl::handle<Transform> get_transform()const;
+	virtual bool set_param(const String &param, const ValueBase &value);
+	virtual ValueBase get_param(const String &param) const;
+	virtual Vocab get_param_vocab() const;
+
+	virtual Color get_color(Context context, const Point &pos) const;
+	virtual Layer::Handle hit_check(Context context, const Point &point) const;
+	virtual etl::handle<Transform> get_transform() const;
 
 protected:
-	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 };
 
 }; // END of namespace lyr_std

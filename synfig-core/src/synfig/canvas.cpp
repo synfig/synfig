@@ -128,7 +128,7 @@ Canvas::~Canvas()
 		Layer_PasteCanvas* paste_canvas = dynamic_cast<Layer_PasteCanvas*>(*iter);
 		iter++;
 		if(paste_canvas)
-			paste_canvas->set_sub_canvas(0);
+			paste_canvas->set_sub_canvas(nullptr);
 		else
 			warning("destroyed canvas has a parent that is not a pastecanvas - please report if repeatable");
 	}
@@ -1115,7 +1115,7 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 		throw Exception::IDNotFound(child_canvas->get_id());
 
 	children().remove(child_canvas);
-	child_canvas->set_parent(0);
+	child_canvas->set_parent(nullptr);
 }
 
 void
@@ -1331,7 +1331,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		// note: this used to include "&& paste_canvas->get_time_offset()==0", but then
 		//		 time-shifted layers weren't being sorted by z-depth (bug #1806852)
 		Layer_PasteCanvas* paste_canvas(dynamic_cast<Layer_PasteCanvas*>(layer.get()));
-		if(paste_canvas!=NULL)
+		if(paste_canvas)
 		{
 			// we need to blur the sub canvas if:
 			// our parent is blurred,
@@ -1431,7 +1431,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			 */
 
 			// \todo: this code probably needs modification to work properly with motionblur and duplicate
-			etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
+//			etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
 
 			/* some layers (such as circle) don't touch pixels that aren't
 			 * part of the circle, so they don't get blended correctly when
@@ -1692,17 +1692,15 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 #endif
 	for (std::set<Node*>::iterator iter = canvas->parent_set.begin(); iter != canvas->parent_set.end(); iter++)
 	{
-		if (dynamic_cast<Layer*>(*iter))
+		if (Layer* layer = dynamic_cast<Layer*>(*iter))
 		{
-			Layer* layer(dynamic_cast<Layer*>(*iter));
 #ifdef DEBUG_INVOKE_SVNCR
 			printf("it's a layer %lx\n", uintptr_t(layer));
 			printf("%s:%d it's a layer with %zd parents\n", __FILE__, __LINE__, layer->parent_set.size());
 #endif
 			for (std::set<Node*>::iterator iter = layer->parent_set.begin(); iter != layer->parent_set.end(); iter++)
-				if (dynamic_cast<Canvas*>(*iter))
+				if (Canvas* canvas = dynamic_cast<Canvas*>(*iter))
 				{
-					Canvas* canvas(dynamic_cast<Canvas*>(*iter));
 #ifdef DEBUG_INVOKE_SVNCR
 					printf("it's a canvas %lx\n", uintptr_t(canvas));
 #endif

@@ -36,7 +36,7 @@ DEFAULT_POSITION = [0, 0]
 DEFAULT_ANCHOR = [0, 0, 0]
 DEFAULT_SCALE = [100, 100, 100]
 DEFAULT_SKEW = 0
-GAMMA = 2.2
+GAMMA = [2.2, 2.2, 2.2]     # Default RGB gamma correction values
 PIX_PER_UNIT = 0
 TANGENT_FACTOR = 3.0
 IN_TANGENT_X = 0.58
@@ -61,15 +61,15 @@ ADDITIONAL_PRECOMP_HEIGHT = 0
 NOT_SUPPORTED_TEXT = "Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page"
 NOT_ACTIVE_TEXT = "Layer '%s' is not active"
 EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
-SHAPE_LAYER = {"simple_circle"}
+SHAPE_LAYER = {"simple_circle", "linear_gradient"}
 SOLID_LAYER = {"SolidColor"}
-SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"}
+SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"} 
 IMAGE_LAYER = {"import"}
 PRE_COMP_LAYER = {"rotate", "zoom", "translate", "stretch"}
 GROUP_LAYER = {"group", "switch"}
 SKELETON_LAYER = {"skeleton"}
 UNKNOWN_LAYER = "unknown_layer"
-CONVERT_METHODS = {"add", "average", "composite", "exp", "linear", "radial_composite", "scale", "subtract", "switch", "weighted_average", "bone_link", "bone", "bone_root"}
+CONVERT_METHODS = {"add", "average", "bone", "bone_link", "bone_root", "composite", "cos", "exp", "fromint", "linear", "radial_composite", "scale", "sine", "subtract", "switch", "weighted_average"}
 BONES = {"bone", "bone_root"}
 
 

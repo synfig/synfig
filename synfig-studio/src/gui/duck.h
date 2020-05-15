@@ -77,6 +77,7 @@ public:
 		TYPE_SCALE_X				=	(1 <<  9),	//  512
 		TYPE_SCALE_Y				=	(1 << 10),	// 1024
 		TYPE_SKEW					=	(1 << 11),	// 2048
+		TYPE_FIRST_VERTEX			=	(1 << 12),	// 4096
 
 		TYPE_ALL					=	(~0),
 

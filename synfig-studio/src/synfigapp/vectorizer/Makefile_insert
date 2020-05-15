@@ -7,7 +7,6 @@ VECTORIZER_CC = \
 	vectorizer/centerlinepolygonizer.cpp\
 	vectorizer/centerlineskeletonizer.cpp\
 	vectorizer/centerlinevectorizer.cpp\
-	vectorizer/outlinevectorizer.cpp\
 	vectorizer/centerlineadjustments.cpp\
 	vectorizer/centerlinecolors.cpp\
 	vectorizer/centerlinetostrokes.cpp

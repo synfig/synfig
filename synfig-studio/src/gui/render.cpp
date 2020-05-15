@@ -55,6 +55,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/progresslogger.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -83,6 +85,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	toggle_extract_alpha(_("Extract alpha"), true),
 	tparam("mpeg4",6000)
 {
+	progress_logger.reset(new ProgressLogger());
 	tparam.sequence_separator=App::sequence_separator;
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));
@@ -365,6 +368,7 @@ RenderSettings::on_render_pressed()
 	App::dock_info_->set_render_progress(0.0);
 	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
 	
+	progress_logger->clear();
 	submit_next_render_pass();
 
 	return;
@@ -418,7 +422,7 @@ RenderSettings::submit_next_render_pass()
 		if(pass_alpha_mode!=TARGET_ALPHA_MODE_KEEP)
 			target->set_alpha_mode(pass_alpha_mode);
 
-		canvas_interface_->get_ui_interface()->task(_("Rendering ")+pass_filename);
+		canvas_interface_->get_ui_interface()->task(strprintf(_("Rendering %s"), pass_filename.c_str()));
 
 		/*
 		if(async_renderer)
@@ -427,7 +431,7 @@ RenderSettings::submit_next_render_pass()
 			async_renderer.detach();
 		}
 		*/
-		async_renderer=new AsyncRenderer(target);
+		async_renderer=new AsyncRenderer(target, progress_logger.get());
 		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
 		async_renderer->start();
 		/*
@@ -447,13 +451,16 @@ RenderSettings::submit_next_render_pass()
 }
 
 void
-RenderSettings::on_finished()
+RenderSettings::on_finished(std::string error_message)
 {
-	String text(_("File rendered successfully"));
+	String text(_("Animation rendered successfully"));
 	Real execution_time = async_renderer ? async_renderer->get_execution_time() : 0.0;
 	if (execution_time > 0) text += strprintf(" (%f %s)", execution_time, _("sec"));
 
-	canvas_interface_->get_ui_interface()->task(text);
+	bool success = error_message.empty();
+
+	if (success)
+		canvas_interface_->get_ui_interface()->task(text);
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 
 	bool really_finished = (render_passes.size() == 0); //Must be checked BEFORE submit_next_render_pass();
@@ -467,6 +474,10 @@ RenderSettings::on_finished()
 		}
 		App::dock_info_->set_render_progress(1.0);
 	}
+
+	// Play the sound before show error dialog!
+	if (!success)
+		canvas_interface_->get_ui_interface()->error(error_message);
 }
 
 void

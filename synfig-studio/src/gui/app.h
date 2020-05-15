@@ -113,6 +113,8 @@ class Dock_Children;
 class Dock_Info;
 class Dock_Navigator;
 class Dock_LayerGroups;
+class Dock_SoundWave;
+
 class IPC;
 
 class Module;
@@ -231,6 +233,7 @@ public:
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
 	static bool enable_mainwin_menubar;
+	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;
 	static long ui_handle_tooltip_flag;
 	static synfig::String default_background_layer_type;
@@ -302,7 +305,7 @@ public:
 	*/
 
 private:
-	static void add_recent_file(const std::string &filename);
+	static void add_recent_file(const std::string &filename, bool emit_signal);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -366,6 +369,8 @@ public:
 		std::string as,
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
+	static void 	open_recent(const std::string& filename);
+
 	static bool open(
 		std::string filename,
 		/* std::string as, */
@@ -376,6 +381,8 @@ public:
 	static void new_instance();
 
 	static void dialog_open(std::string filename = "");
+
+	static void open_from_plugin(const std::string& filename, const std::string& importer_id);
 
 	static void dialog_about();
 
@@ -400,14 +407,16 @@ public:
 
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
+	static bool dialog_select_importer(const std::string& filename, std::string& plugin);
 	static bool dialog_open_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_sketch(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_image(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference);
-	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference);
+	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference, std::string& plugin_importer);
 	static bool dialog_open_folder(const std::string &title, std::string &filename, std::string preference, Gtk::Window& transientwind=*App::main_window);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
+	static std::string dialog_export_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_sketch(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_render(const std::string &title, std::string &filename, std::string preference);

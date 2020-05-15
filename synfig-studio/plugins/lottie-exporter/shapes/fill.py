@@ -8,7 +8,6 @@ from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 from common.misc import is_animated
 from common.Count import Count
-from common.Layer import Layer
 sys.path.append("..")
 
 
@@ -43,7 +42,7 @@ def gen_shapes_fill(lottie, layer):
         red = float(val[0].text)
         green = float(val[1].text)
         blue = float(val[2].text)
-        red, green, blue = red ** (1/settings.GAMMA), green ** (1/settings.GAMMA), blue ** (1/ settings.GAMMA)
+        red, green, blue = red ** (1/settings.GAMMA[0]), green ** (1/settings.GAMMA[1]), blue ** (1/ settings.GAMMA[2])
         alpha = float(val[3].text)
         gen_properties_value(lottie["c"],
                              [red, green, blue, alpha],

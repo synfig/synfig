@@ -6,7 +6,6 @@ import sys
 import settings
 from common.misc import get_color_hex
 from common.Count import Count
-from common.Layer import Layer
 from helpers.blendMode import get_blend
 from helpers.transform import gen_helpers_transform
 from effects.fill import gen_effects_fill

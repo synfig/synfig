@@ -5,9 +5,6 @@ synfigstudio.keys.in
 plugins/add-skeleton-simple/plugin.xml.in
 plugins/lottie-exporter/plugin.xml.in
 plugins/view-unhide-all-layers/plugin.xml.in
-ui/canvas_options.ui
-ui/preview_options.ui
-ui/dialog_workspaces.ui
 src/brushlib/brushsettings.py
 src/gui/actionmanagers/groupactionmanager.cpp
 src/gui/actionmanagers/groupactionmanager.h
@@ -52,6 +49,7 @@ src/gui/dialogs/dialog_waypoint.cpp
 src/gui/dialogs/dialog_waypoint.h
 src/gui/dialogs/dialog_workspaces.cpp
 src/gui/dialogs/dialog_workspaces.h
+src/gui/dialogs/vectorizersettings.cpp
 src/gui/dials/framedial.cpp
 src/gui/dials/framedial.h
 src/gui/dials/jackdial.cpp
@@ -89,8 +87,11 @@ src/gui/docks/dock_navigator.cpp
 src/gui/docks/dock_navigator.h
 src/gui/docks/dock_params.cpp
 src/gui/docks/dock_params.h
+src/gui/docks/dock_soundwave.h
+src/gui/docks/dock_soundwave.cpp
 src/gui/docks/dock_timetrack.cpp
 src/gui/docks/dock_timetrack.h
+src/gui/docks/dock_timetrack2.cpp
 src/gui/docks/dock_toolbox.cpp
 src/gui/docks/dock_toolbox.h
 src/gui/docks/dockable.cpp
@@ -202,12 +203,15 @@ src/gui/widgets/widget_gradient.h
 src/gui/widgets/widget_keyframe_list.cpp
 src/gui/widgets/widget_keyframe_list.h
 src/gui/widgets/widget_link.h
+src/gui/widgets/widget_soundwave.h
+src/gui/widgets/widget_soundwave.cpp
 src/gui/widgets/widget_sublayer.cpp
 src/gui/widgets/widget_sublayer.h
 src/gui/widgets/widget_time.cpp
 src/gui/widgets/widget_time.h
 src/gui/widgets/widget_timeslider.cpp
 src/gui/widgets/widget_timeslider.h
+src/gui/widgets/widget_timetrack.cpp
 src/gui/widgets/widget_value.cpp
 src/gui/widgets/widget_value.h
 src/gui/widgets/widget_vector.cpp
@@ -235,6 +239,7 @@ src/gui/workarearenderer/renderer_timecode.cpp
 src/gui/workarearenderer/renderer_timecode.h
 src/gui/workarearenderer/workarearenderer.cpp
 src/gui/workarearenderer/workarearenderer.h
+src/gui/workspacehandler.cpp
 src/gui/app.cpp
 src/gui/app.h
 src/gui/asyncrenderer.cpp
@@ -245,8 +250,6 @@ src/gui/autorecover.cpp
 src/gui/autorecover.h
 src/gui/canvasview.cpp
 src/gui/canvasview.h
-src/gui/compview.cpp
-src/gui/compview.h
 src/gui/devicetracker.cpp
 src/gui/devicetracker.h
 src/gui/dialogsettings.cpp
@@ -412,6 +415,7 @@ src/synfigapp/actions/timepointsdelete.cpp
 src/synfigapp/actions/timepointsdelete.h
 src/synfigapp/actions/timepointsmove.cpp
 src/synfigapp/actions/timepointsmove.h
+src/synfigapp/actions/valuedescbake.cpp
 src/synfigapp/actions/valuedescblinelink.cpp
 src/synfigapp/actions/valuedescblinelink.h
 src/synfigapp/actions/valuedescbonelink.cpp
@@ -473,6 +477,7 @@ src/synfigapp/actions/valuenodestaticlistremove.cpp
 src/synfigapp/actions/valuenodestaticlistremovesmart.cpp
 src/synfigapp/actions/valuenodestaticlistrotateorder.cpp
 src/synfigapp/actions/valuenodestaticlistunloop.cpp
+src/synfigapp/actions/vectorization.cpp
 src/synfigapp/actions/waypointadd.cpp
 src/synfigapp/actions/waypointadd.h
 src/synfigapp/actions/waypointconnect.cpp
@@ -500,7 +505,6 @@ src/synfigapp/instance.cpp
 src/synfigapp/instance.h
 src/synfigapp/main.cpp
 src/synfigapp/main.h
-src/synfigapp/pluginmanager.cpp
 src/synfigapp/selectionmanager.h
 src/synfigapp/settings.cpp
 src/synfigapp/settings.h
@@ -513,3 +517,8 @@ src/synfigapp/value_desc.h
 # Disabled because they are not built
 # src/template.cpp
 # src/template.h
+
+# Now, UI xml files
+ui/canvas_options.glade
+ui/preview_options.glade
+ui/dialog_workspaces.glade

@@ -29,6 +29,8 @@
 #  include <config.h>
 # endif
 
+#include <cmath>
+
 #include "waypointrenderer.h"
 
 #include <gdkmm/rgba.h>
@@ -109,9 +111,10 @@ WaypointRenderer::render_time_point_to_window(
 	const Gdk::Rectangle& area,
 	const TimePoint &tp,
 	bool selected,
-	bool hover)
+	bool hover,
+	bool double_outline)
 {
-	const Gdk::RGBA black = get_black(hover);
+	const Gdk::RGBA outline_color = get_black(hover);
 
 	if(selected)
 		cr->set_line_width(2.0);
@@ -128,6 +131,11 @@ WaypointRenderer::render_time_point_to_window(
 	if(hover) color = color_shift(color, 0.2);
 	cr->set_source_rgb(color.get_red(),color.get_green(),color.get_blue());
 
+	const double double_outline_margin_pixels = 2.5;
+	double double_outline_margin = double_outline_margin_pixels;
+	if (double_outline)
+		double_outline_margin /= std::max(area.get_width(), area.get_height());
+
 	switch(tp.get_before())
 	{
 	case INTERPOLATION_TCB:
@@ -138,8 +146,17 @@ WaypointRenderer::render_time_point_to_window(
 		cr->arc(0.5, 0.5, 0.5, 90*M_PI/180.0, 270*M_PI/180.0);
 		cr->fill_preserve();
 		cr->restore();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
+
+		if (double_outline) {
+			cr->save();
+			cr->translate(area.get_x(), area.get_y());
+			cr->scale(area.get_width(), area.get_height());
+			cr->arc(0.5, 0.5, 0.5+double_outline_margin, 90*M_PI/180.0, 270*M_PI/180.0);
+			cr->restore();
+			cr->stroke();
+		}
 		break;
 
 	case INTERPOLATION_HALT:
@@ -148,66 +165,100 @@ WaypointRenderer::render_time_point_to_window(
 		cr->scale(area.get_width(), area.get_height()*2);
 		cr->move_to(0.5, 0.5);
 		cr->arc(0.5, 0.5, 0.5, 180*M_PI/180.0, 270*M_PI/180.0);
-		cr->fill();
-		cr->arc(0.5, 0.5, 0.5, 180*M_PI/180.0, 270*M_PI/180.0);
+		cr->fill_preserve();
 		cr->restore();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
-		cr->move_to(area.get_x(),area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
-		cr->stroke();
+		if (double_outline) {
+			cr->save();
+			cr->translate(area.get_x(), area.get_y());
+			cr->scale(area.get_width(), area.get_height()*2);
+			cr->move_to(0.5, 0.5+double_outline_margin/2);
+			cr->line_to(-double_outline_margin, 0.5+double_outline_margin/2);
+			cr->arc(0.5-double_outline_margin/2, 0.5, 0.5+double_outline_margin/2, 180*M_PI/180.0, 270*M_PI/180.0);
+			cr->line_to(0.5, -double_outline_margin/2);
+			cr->restore();
+			cr->stroke();
+		}
 		break;
 
 	case INTERPOLATION_LINEAR:
-		cr->save();
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->move_to(area.get_x()+area.get_width()/2.,area.get_y());
 		cr->line_to(area.get_x(),area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
+
+		if (double_outline) {
+			cr->move_to(area.get_x()+area.get_width()/2.,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/2.-double_outline_margin_pixels/2,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()-double_outline_margin_pixels*1.5,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->stroke();
+		}
 		break;
 
 	case INTERPOLATION_CONSTANT:
-		cr->save();
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
-		cr->line_to(area.get_x()+area.get_width()/4,area.get_y());
-		cr->line_to(area.get_x()+area.get_width()/4,area.get_y()+area.get_height()/2);
-		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2);
+		cr->move_to(area.get_x()+area.get_width()/2.,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/4.,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/4.,area.get_y()+area.get_height()/2.);
+		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2.);
 		cr->line_to(area.get_x(),area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
+
+		if (double_outline) {
+			cr->move_to(area.get_x()+area.get_width()/2.,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/4.-double_outline_margin_pixels,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/4.-double_outline_margin_pixels,area.get_y()+area.get_height()/2.-double_outline_margin_pixels);
+			cr->line_to(area.get_x()-double_outline_margin_pixels,area.get_y()+area.get_height()/2.-double_outline_margin_pixels);
+			cr->line_to(area.get_x()-double_outline_margin_pixels,area.get_y()+area.get_height() + double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height() + double_outline_margin_pixels);
+			cr->stroke();
+		}
 		break;
 
 	case INTERPOLATION_CLAMPED:
-		cr->save();
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
-		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2);
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->move_to(area.get_x()+area.get_width()/2.,area.get_y());
+		cr->line_to(area.get_x(),area.get_y()+area.get_height()/2.);
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
+
+		if (double_outline) {
+			cr->move_to(area.get_x()+area.get_width()/2.,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()-double_outline_margin_pixels,area.get_y()+area.get_height()/2.);
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->stroke();
+		}
 		break;
 
 	default:
-		cr->save();
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
-		cr->line_to(area.get_x()+area.get_width()/3,area.get_y());
-		cr->line_to(area.get_x(),area.get_y()+area.get_height()/3);
-		cr->line_to(area.get_x(),area.get_y()+area.get_height()-area.get_height()/3);
-		cr->line_to(area.get_x()+area.get_width()/3,area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()/3.,area.get_y());
+		cr->line_to(area.get_x(),area.get_y()+area.get_height()/3.);
+		cr->line_to(area.get_x(),area.get_y()+area.get_height()-area.get_height()/3.);
+		cr->line_to(area.get_x()+area.get_width()/3.,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
+
+		if (double_outline) {
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/3.-double_outline_margin_pixels/2,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()-double_outline_margin_pixels,area.get_y()+area.get_height()/3.-double_outline_margin_pixels/2);
+			cr->line_to(area.get_x()-double_outline_margin_pixels,area.get_y()+area.get_height()-area.get_height()/3.+double_outline_margin_pixels/2);
+			cr->line_to(area.get_x()+area.get_width()/3.-double_outline_margin_pixels/2,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->stroke();
+		}
 		break;
 	}
 
@@ -228,8 +279,17 @@ WaypointRenderer::render_time_point_to_window(
 		cr->arc(0.5, 0.5, 0.5, -90*M_PI/180.0, 90*M_PI/180.0);
 		cr->fill_preserve();
 		cr->restore();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
+
+		if (double_outline) {
+			cr->save();
+			cr->translate(area.get_x(), area.get_y());
+			cr->scale(area.get_width(), area.get_height());
+			cr->arc(0.5, 0.5, 0.5+double_outline_margin, -90*M_PI/180.0, 90*M_PI/180.0);
+			cr->restore();
+			cr->stroke();
+		}
 		break;
 
 	case INTERPOLATION_HALT:
@@ -238,66 +298,100 @@ WaypointRenderer::render_time_point_to_window(
 		cr->scale(area.get_width(), area.get_height()*2);
 		cr->move_to(0.5, 0.0);
 		cr->arc(0.5, 0.0, 0.5, 0*M_PI/180.0, 90*M_PI/180.0);
-		cr->fill();
-		cr->arc(0.5, 0.0, 0.5, 0*M_PI / 180.0, 90*M_PI / 180.0);
+		cr->fill_preserve();
 		cr->restore();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
 
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
-		cr->line_to(area.get_x()+area.get_width(),area.get_y());
-		cr->stroke();
+		if (double_outline) {
+			cr->save();
+			cr->translate(area.get_x(), area.get_y());
+			cr->scale(area.get_width(), area.get_height()*2);
+			cr->move_to(0.5, 0.0-double_outline_margin/2);
+			cr->line_to(1.0+double_outline_margin, 0.0-double_outline_margin/2);
+			cr->arc(0.5+double_outline_margin/2, 0.0, 0.5+double_outline_margin/2, 0*M_PI/180.0, 90*M_PI/180.0);
+			cr->line_to(0.5, 0.5+double_outline_margin/2);
+			cr->restore();
+			cr->stroke();
+		}
 		break;
 
 	case INTERPOLATION_LINEAR:
-		cr->save();
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->move_to(area.get_x()+area.get_width()/2.,area.get_y());
 		cr->line_to(area.get_x()+area.get_width(),area.get_y());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
+
+		if (double_outline) {
+			cr->move_to(area.get_x()+area.get_width()/2.,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()+1.5*double_outline_margin_pixels,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/2.+double_outline_margin_pixels/2,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->stroke();
+		}
 		break;
 
 	case INTERPOLATION_CONSTANT:
-		cr->save();
-		cr->move_to(area.get_x()+area.get_width()/2,area.get_y());
+		cr->move_to(area.get_x()+area.get_width()/2.,area.get_y());
 		cr->line_to(area.get_x()+area.get_width(),area.get_y());
-		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2);
-		cr->line_to(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height()/2);
-		cr->line_to(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2.);
+		cr->line_to(area.get_x()+area.get_width()-area.get_width()/4.,area.get_y()+area.get_height()/2.);
+		cr->line_to(area.get_x()+area.get_width()-area.get_width()/4.,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
+
+		if (double_outline) {
+			cr->move_to(area.get_x()+area.get_width()/2.,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()+double_outline_margin_pixels,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()+double_outline_margin_pixels,area.get_y()+area.get_height()/2.+double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()-area.get_width()/4.+double_outline_margin_pixels,area.get_y()+area.get_height()/2.+double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()-area.get_width()/4.+double_outline_margin_pixels,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->stroke();
+		}
 		break;
 
 	case INTERPOLATION_CLAMPED:
-		cr->save();
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
-		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2);
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2.);
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
+
+		if (double_outline) {
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()+double_outline_margin_pixels,area.get_y()+area.get_height()/2.);
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->stroke();
+		}
 		break;
 
 	default:
-		cr->save();
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y());
-		cr->line_to(area.get_x()+area.get_width()-area.get_width()/3,area.get_y());
-		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/3);
-		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()-area.get_height()/3);
-		cr->line_to(area.get_x()+area.get_width()-area.get_width()/3,area.get_y()+area.get_height());
-		cr->line_to(area.get_x()+area.get_width()/2,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y());
+		cr->line_to(area.get_x()+area.get_width()-area.get_width()/3.,area.get_y());
+		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()/3.);
+		cr->line_to(area.get_x()+area.get_width(),area.get_y()+area.get_height()-area.get_height()/3.);
+		cr->line_to(area.get_x()+area.get_width()-area.get_width()/3.,area.get_y()+area.get_height());
+		cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height());
 		cr->fill_preserve();
-		cr->set_source_rgb(black.get_red(),black.get_green(),black.get_blue());
+		cr->set_source_rgb(outline_color.get_red(),outline_color.get_green(),outline_color.get_blue());
 		cr->stroke();
-		cr->restore();
+
+		if (double_outline) {
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()-area.get_width()/3.+double_outline_margin_pixels/2,area.get_y()-double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()+double_outline_margin_pixels,area.get_y()+area.get_height()/3.-double_outline_margin_pixels/2);
+			cr->line_to(area.get_x()+area.get_width()+double_outline_margin_pixels,area.get_y()+area.get_height()-area.get_height()/3.+double_outline_margin_pixels/2);
+			cr->line_to(area.get_x()+area.get_width()-area.get_width()/3.+double_outline_margin_pixels/2,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->line_to(area.get_x()+area.get_width()/2.,area.get_y()+area.get_height()+double_outline_margin_pixels);
+			cr->stroke();
+		}
 		break;
 	}
 }
@@ -381,7 +475,7 @@ WaypointRenderer::foreach_visible_waypoint(const synfigapp::ValueDesc &value_des
 	if (!tset.empty()) {
 		const Time time_offset = get_time_offset_from_vdesc(value_desc);
 		const Time time_dilation = get_time_dilation_from_vdesc(value_desc);
-		const double time_k = time_dilation == Time::zero() ? 1.0 : 1.0/(double)time_dilation;
+		const double time_k = time_dilation == Time::zero() ? 1.0 : 1.0/time_dilation;
 
 		for (const auto & timepoint : tset) {
 			Time t = (timepoint.get_time() - time_offset)*time_k;

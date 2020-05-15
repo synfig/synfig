@@ -19,7 +19,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/smart_ptr"
         "${CMAKE_CURRENT_LIST_DIR}/ref_count"
         "${CMAKE_CURRENT_LIST_DIR}/trivial"
-        "${CMAKE_CURRENT_LIST_DIR}/smach"
         "${CMAKE_CURRENT_LIST_DIR}/pen"
         "${CMAKE_CURRENT_LIST_DIR}/angle"
         "${CMAKE_CURRENT_LIST_DIR}/bezier"
@@ -28,7 +27,6 @@ set(ETL_HEADERS
 #     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/_ref_count.h"
         "${CMAKE_CURRENT_LIST_DIR}/_trivial.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_smach.h"
         "${CMAKE_CURRENT_LIST_DIR}/_surface.h"
         "${CMAKE_CURRENT_LIST_DIR}/_smart_ptr.h"
         "${CMAKE_CURRENT_LIST_DIR}/_pen.h"

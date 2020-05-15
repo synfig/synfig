@@ -131,6 +131,9 @@ public:
 
 	void set_sensitive(bool x);
 
+	/// popup combobox menu if it is an enum entry
+	void popup_combobox();
+
 	//void set_hint(std::string x) { hint=x; }
 //	std::string get_hint() { return hint; }
 

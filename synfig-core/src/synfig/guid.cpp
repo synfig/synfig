@@ -32,16 +32,8 @@
 
 #include "guid.h"
 #include "quick_rng.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <ETL/stringf>
 #include <functional>
-
-#ifdef _DEBUG
-#include <synfig/localization.h>
-#endif
 
 #ifdef _WIN32
 #include <windows.h>
@@ -51,7 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 

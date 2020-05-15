@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # -------------------------------------------------------------------------------
-# This script builds mlt++ required by synfig-core
+# This script builds mlt++ on MSYS2 required by synfig-core
 # -------------------------------------------------------------------------------
 set -e # exit on error
 
@@ -11,24 +11,26 @@ source ${SCRIPT_DIR}/set_env.sh
 
 VERSION_MLT="6.16.0"
 PATH="${PREFIX}/lib/ccache/bin:${PATH}"
+MLT_PATH="/opt/mlt-${VERSION_MLT}"
 
-if [ ! -f /opt/mlt-${VERSION_MLT}/done ]; then
+if [ ! -f ${MLT_PATH}/done ]; then
 
 echo " ======================= Compiling MLT++ ======================= "
 
-mkdir -p /opt/mlt-${VERSION_MLT}/
+mkdir -p ${MLT_PATH}
 
-cd /tmp
+pushd /tmp
 wget "https://github.com/mltframework/mlt/releases/download/v${VERSION_MLT}/mlt-${VERSION_MLT}.tar.gz"
 tar xzf ./mlt-${VERSION_MLT}.tar.gz
 
 pushd mlt-${VERSION_MLT}/
-echo "Install path: ${PREFIX}"
-./configure --prefix=/opt/mlt-${VERSION_MLT} --target-arch=$MSYS2_ARCH --disable-gtk2
+echo "Install path: ${MLT_PATH}"
+./configure --prefix=${MLT_PATH} --target-arch=$MSYS2_ARCH --disable-gtk2
 make -j2 --silent
 make install
 popd
 
-touch /opt/mlt-${VERSION_MLT}/done
+touch ${MLT_PATH}/done
 
+popd
 fi

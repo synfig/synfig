@@ -600,7 +600,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 
 	ret.push_back(ParamDesc(ValueBase(),"scalelx")
 		.set_local_name(_("Local Length Scale"))
-		.set_description(_("The scale of the bone aligned its length"))
+		.set_description(_("The scale of the bone aligned to its length"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"width")
@@ -996,7 +996,7 @@ ValueNode_Bone_Root::~ValueNode_Bone_Root()
 }
 
 ValueBase
-ValueNode_Bone_Root::operator()(Time t __attribute__ ((unused)))const
+ValueNode_Bone_Root::operator()(Time t)const
 {
 	Bone ret;
 	ret.set_name			(get_local_name());
@@ -1021,7 +1021,7 @@ ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
 }
 
 ValueNode_Bone*
-ValueNode_Bone_Root::create(const ValueBase &x __attribute__ ((unused)))
+ValueNode_Bone_Root::create(const ValueBase &x)
 {
 	return get_root_bone().get();
 }
@@ -1029,7 +1029,7 @@ ValueNode_Bone_Root::create(const ValueBase &x __attribute__ ((unused)))
 
 
 String
-ValueNode_Bone_Root::get_bone_name(Time t __attribute__ ((unused)))const
+ValueNode_Bone_Root::get_bone_name(Time t)const
 {
 	return get_local_name();
 }
@@ -1048,13 +1048,13 @@ ValueNode_Bone_Root::create_new()const
 }
 
 Matrix
-ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)), Point child_origin)const
+ValueNode_Bone_Root::get_animated_matrix(Time t, Point child_origin)const
 {
 	return Matrix().set_translate(child_origin);
 }
 
 bool
-ValueNode_Bone_Root::check_type(Type &type __attribute__ ((unused)))
+ValueNode_Bone_Root::check_type(Type &type)
 {
 	return false;
 }

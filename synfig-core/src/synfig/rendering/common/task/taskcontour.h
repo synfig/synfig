@@ -59,7 +59,7 @@ public:
 
 	virtual Rect calc_bounds() const;
 
-	virtual const Transformation::Handle get_transformation() const
+	virtual Transformation::Handle get_transformation() const
 		{ return transformation.handle(); }
 };
 

@@ -265,7 +265,7 @@ public:
 	value_type get_width()const { return maxx - minx; }
 	value_type get_height()const { return maxy - miny; }
 
-	bool is_inside(const Point& x)
+	bool is_inside(const Point& x) const
 	{
 		return approximate_less_or_equal(minx, x[0])
 			&& approximate_less_or_equal(x[0], maxx)

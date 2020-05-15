@@ -50,7 +50,7 @@ using namespace Action;
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulateSwitch);
 ACTION_SET_NAME(Action::LayerEncapsulateSwitch,"LayerEncapsulateSwitch");
-ACTION_SET_LOCAL_NAME(Action::LayerEncapsulateSwitch,N_("Group Layer into Switch"));
+ACTION_SET_LOCAL_NAME(Action::LayerEncapsulateSwitch,N_("Group Layers into Switch"));
 ACTION_SET_TASK(Action::LayerEncapsulateSwitch,"encapsulate_switch");
 ACTION_SET_CATEGORY(Action::LayerEncapsulateSwitch,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEncapsulateSwitch,0);

@@ -27,7 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/box.h>
 #include <gtkmm/table.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
@@ -72,7 +71,7 @@ private:
 	sigc::signal<void> signal_activated_;
 
 	Type type;
-	synfig::Color color_, orig_color;
+	synfig::Color color_;
 
 public:
 
@@ -161,9 +160,6 @@ class Widget_ColorEdit : public Gtk::Table
 	synfig::Color color;
 
 	Gtk::Notebook* notebook;
-
-	static synfig::Gamma hvs_gamma;
-	static synfig::Gamma hvs_gamma_in;
 
 protected:
 

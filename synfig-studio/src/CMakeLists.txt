@@ -21,6 +21,12 @@ include(FindPkgConfig)
 pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
+pkg_check_modules(MLT REQUIRED mlt++) # required for widget_soundwave
+
+foreach(pkg_config_lib SIGCPP GTKMM LIBXML MLT)
+    include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
+    link_directories(${${pkg_config_lib}_LIBRARY_DIRS})
+endforeach()
 
 ##
 ## Config

@@ -3,7 +3,7 @@
 # -- I N I T --------------------------------------------------
 
 AC_PREREQ([2.60])
-AC_INIT([Synfig Core],[1.3.12],[https://github.com/synfig/synfig/issues],[synfig])
+AC_INIT([Synfig Core],[1.5.0],[https://github.com/synfig/synfig/issues],[synfig])
 AC_REVISION()
 
 AC_CONFIG_AUX_DIR(config)
@@ -108,6 +108,7 @@ AC_ARG_WITH(magickpp,
 ],[
 	with_magickpp="yes"
 ])
+AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
 if test $with_magickpp = "yes" ; then {
 	PKG_CHECK_MODULES(MAGICKPP, Magick++ >= 6.4.2,[
 		with_magickpp="yes"
@@ -115,8 +116,7 @@ if test $with_magickpp = "yes" ; then {
 		CONFIG_DEPS="$CONFIG_DEPS Magick++"
 	],[
 		with_magickpp="no"
-		AC_MSG_RESULT([ *** Magick++ Output target disabled])
-		AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
+		AC_MSG_ERROR([ *** Unable to find Magick++])
 	])
 } ; fi
 
@@ -166,7 +166,7 @@ AC_ARG_WITH(libavcodec,
 ])
 
 if test $with_libavcodec != "no" ; then {
-	PKG_CHECK_MODULES(LIBAVCODEC, [libavcodec >= 51.42 libavformat >= 54.0 libavutil >= 52.9 libswscale >= 2.1.2],
+	PKG_CHECK_MODULES(LIBAVCODEC, [libavcodec >= 57.0 libavformat >= 57.0 libavutil >= 55.0 libswscale >= 4.0],
 		[CONFIG_DEPS="$CONFIG_DEPS libavcodec libavformat libswscale"],
 		[echo no; with_libavcodec="no"])
 } ; fi
@@ -293,8 +293,8 @@ AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 
-PKG_CHECK_MODULES(ETL, [ETL >= 1.3.12],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 1.3.12 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 1.5.0],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 1.5.0 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
@@ -416,43 +416,30 @@ TARGET_MNG="yes"
 
 AC_CHECK_LIB(png16, png_write_row,[
 	PNG_LIBS="-lpng16"
-	AC_DEFINE(HAVE_LIBPNG16,[], [ Define if PNG 1.6 library is available ])
-	AC_DEFINE(HAVE_LIBPNG14,[], [ Define if PNG 1.4 library is available ])
 	AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ])
 	AC_SUBST(PNG_LIBS)
-	AM_CONDITIONAL(HAVE_LIBPNG16,true)
-	AM_CONDITIONAL(HAVE_LIBPNG14,true)
 	AM_CONDITIONAL(HAVE_LIBPNG,true)
 ],[
 	AC_CHECK_LIB(png14, png_write_row,[
 		PNG_LIBS="-lpng14"
-		AC_DEFINE(HAVE_LIBPNG14,[], [ Define if PNG 1.4 library is available ])
 		AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ])
 		AC_SUBST(PNG_LIBS)
-		AM_CONDITIONAL(HAVE_LIBPNG16,false)
-		AM_CONDITIONAL(HAVE_LIBPNG14,true)
 		AM_CONDITIONAL(HAVE_LIBPNG,true)
 	],[
 		AC_CHECK_LIB(png12, png_write_row,[
 		PNG_LIBS="-lpng12"
 		AC_DEFINE(HAVE_LIBPNG,[])
 		AC_SUBST(PNG_LIBS)
-		AM_CONDITIONAL(HAVE_LIBPNG16,false)
-		AM_CONDITIONAL(HAVE_LIBPNG14,false)
 		AM_CONDITIONAL(HAVE_LIBPNG,true)
 		],[
 			AC_CHECK_LIB(png, png_write_row,[
 			PNG_LIBS="-lpng"
 			AC_DEFINE(HAVE_LIBPNG,[])
 			AC_SUBST(PNG_LIBS)
-			AM_CONDITIONAL(HAVE_LIBPNG16,false)
-			AM_CONDITIONAL(HAVE_LIBPNG14,false)
 			AM_CONDITIONAL(HAVE_LIBPNG,true)
 			],[
 				AC_MSG_RESULT([ *** PNG Output target disabled])
 				TARGET_PNG="no"
-				AM_CONDITIONAL(HAVE_LIBPNG16,false)
-				AM_CONDITIONAL(HAVE_LIBPNG14,false)
 				AM_CONDITIONAL(HAVE_LIBPNG,false)
 			],[-lz -L${exec_prefix}/lib])
 		],[-lz -L${exec_prefix}/lib])
@@ -521,10 +508,9 @@ AC_CHECK_HEADERS([signal.h termios.h process.h io.h fcntl.h])
 
 # -- F U N C T I O N S ----------------------------------------
 
-AC_CHECK_FUNCS([fork])
+AC_CHECK_FUNCS([fork]) # used by mod_dv, mod_ffmpeg, mod_imagemagick and synfig-osx launcher
 AC_CHECK_FUNCS([pipe])
 AC_CHECK_FUNCS([waitpid])
-AC_CHECK_LIB([pthread],[pthread_create]) # TODO: used for deprecated synfig::Mutex only
 
 # -- O U T P U T ----------------------------------------------
 
@@ -552,8 +538,6 @@ SYNFIG_CFLAGS="$BOOST_CPPFLAGS $LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXML
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_LIBS="`echo $SYNFIG_LIBS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
-
-AC_SUBST(LIBADD_DL)
 
 AC_SUBST(SYNFIG_LIBS)
 AC_SUBST(SYNFIG_CFLAGS)
@@ -652,5 +636,4 @@ OpenEXR --------------------------> $with_openexr
 "'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
 "'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
 "'$'"BOOST_SYSTEM_LIB ----------------> '$BOOST_SYSTEM_LIB'
-"'$'"LIBADD_DL -----------------------> '$LIBADD_DL'
 "

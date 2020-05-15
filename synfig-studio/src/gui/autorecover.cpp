@@ -165,7 +165,10 @@ AutoRecover::clear_backups()
 			String filename = App::get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + *i;
 			bool s = false;
 			try { s = FileSystemTemporary("").open_temporary(filename); }
-			catch (...) { }
+			catch (...)
+			{
+				synfig::warning("Autobackup file is not recoverable. Forcing to remove.");
+			}
 			if (!s)
 			{
 				FileSystemNative::instance()->file_remove(filename);

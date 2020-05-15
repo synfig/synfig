@@ -72,8 +72,8 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(png_mptr, true);
 namespace {
 	inline ColorReal get_channel(png_bytep *rows, int bit_depth, int row, int col) {
 		int x = bit_depth > 8
-			  ? ((unsigned short*)(rows[row]))[col]
-			  :                    rows[row]  [col];
+			  ? GUINT16_FROM_BE((png_uint_16p(rows[row]))[col])
+			  : rows[row][col];
 		int max = (1 << bit_depth) - 1;
 		return x/ColorReal(max);
 	}

@@ -9,6 +9,7 @@ import math
 import settings
 from common.Vector import Vector
 from common.Color import Color
+from common.Gradient import Gradient
 sys.path.append("..")
 
 
@@ -28,6 +29,20 @@ def approximate_equal(a, b):
     if a < b:
         return b - a < precision
     return a - b < precision
+
+
+def real_high_precision():
+    """
+    Synfig format real high precision
+    https://github.com/synfig/synfig/blob/ae11655a9bba068543be7a5df9090958579de78e/synfig-core/src/synfig/real.h#L55
+
+    Args:
+        (None)
+
+    Returns:
+        (float) : The value of real_high_precision as described in Synfig
+    """
+    return 1e-10
 
 
 def calculate_pixels_per_unit():
@@ -85,12 +100,8 @@ def parse_position(animated, i):
                float(animated[i][0][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
 
-    elif animated.attrib["type"] == "real":
+    elif animated.attrib["type"] in {"real", "circle_radius"}:
         pos = parse_value(animated, i)
-
-    elif animated.attrib["type"] == "circle_radius":
-        pos = parse_value(animated, i)
-        pos[0] *= 2 # Diameter
 
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
@@ -114,7 +125,7 @@ def parse_position(animated, i):
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "points":
-        pos = [int(animated[i][0].attrib["value"]),
+        pos = [int(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "bool":
@@ -169,10 +180,13 @@ def parse_position(animated, i):
         green = float(animated[i][0][1].text)
         blue = float(animated[i][0][2].text)
         alpha = float(animated[i][0][3].text)
-        red = red ** (1/settings.GAMMA)
-        green = green ** (1/settings.GAMMA)
-        blue = blue ** (1/settings.GAMMA)
+        red = red ** (1/settings.GAMMA[0])
+        green = green ** (1/settings.GAMMA[1])
+        blue = blue ** (1/settings.GAMMA[2])
         return Color(red, green, blue, alpha)
+    
+    elif animated.attrib["type"] == "gradient":
+        return Gradient(animated[i][0])
 
     return Vector(pos[0], pos[1], animated.attrib["type"])
 
@@ -240,7 +254,7 @@ def is_animated(node):
     return case
 
 
-def clamp_col(color):
+def clamp_col(color, gamma):
     """
     This function converts the colors into int and takes them to the range of
     0-255
@@ -251,7 +265,7 @@ def clamp_col(color):
     Returns:
         (int) : Color value between 0-255
     """
-    color = color ** (1/settings.GAMMA)
+    color = color ** (1/gamma)
     color *= 255
     color = int(color)
     return max(0, min(color, 255))
@@ -276,7 +290,7 @@ def get_color_hex(node):
         elif col.tag == "b":
             blue = float(col.text)
     # Convert to 0-255 range
-    red, green, blue = clamp_col(red), clamp_col(green), clamp_col(blue)
+    red, green, blue = clamp_col(red, settings.GAMMA[0]), clamp_col(green, settings.GAMMA[1]), clamp_col(blue, settings.GAMMA[2])
 
     # https://stackoverflow.com/questions/3380726/converting-a-rgb-color-tuple-to-a-six-digit-code-in-python/3380739#3380739
     ret = "#{0:02x}{1:02x}{2:02x}".format(red, green, blue)

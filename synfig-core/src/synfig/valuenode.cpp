@@ -36,6 +36,7 @@
 #include <synfig/localization.h>
 #include "canvas.h"
 #include "layer.h"
+#include <algorithm>
 
 #endif
 
@@ -180,13 +181,10 @@ ValueNode::set_id(const String &x)
 String
 ValueNode::get_description(bool show_exported_name)const
 {
-	if (dynamic_cast<const LinkableValueNode*>(this))
-		return dynamic_cast<const LinkableValueNode*>(this)->get_description(-1, show_exported_name);
+	if (const LinkableValueNode* value_node = dynamic_cast<const LinkableValueNode*>(this))
+		return value_node->get_description(-1, show_exported_name);
 
 	String ret(_("ValueNode"));
-
-	if (dynamic_cast<const LinkableValueNode*>(this))
-		return (dynamic_cast<const LinkableValueNode*>(this))->get_description(-1, show_exported_name);
 
 	if (show_exported_name && !is_exported())
 		show_exported_name = false;
@@ -207,7 +205,7 @@ ValueNode::is_descendant(ValueNode::Handle value_node_dest)
 
     //! loop through the parents of each node in current_nodes
     set<Node*> node_parents(value_node_dest->parent_set);
-    ValueNode::Handle value_node_parent = NULL;
+    ValueNode::Handle value_node_parent;
     for (set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
     {
         value_node_parent = ValueNode::Handle::cast_dynamic(*iter);
@@ -323,7 +321,7 @@ ValueNode::calc_values(std::map<Time, ValueBase> &x, int begin, int end, Real fp
 	if (fabs(fps) > 1e-10)
 	{
 		Real k = 1.0/fps;
-		if (begin > end) swap(begin, end);
+		if (begin > end) std::swap(begin, end);
 		for(int i = begin; i <= end; ++i)
 			add_value_to_map(x, i*k, (*this)(i*k));
 	}
@@ -698,7 +696,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 	}
 
 	const synfig::Node* node = this;
-	LinkableValueNode::ConstHandle parent_linkable_vn = 0;
+	LinkableValueNode::ConstHandle parent_linkable_vn;
 
 	// walk up through the valuenodes trying to find the layer at the top
 	while (!node->parent_set.empty() && !dynamic_cast<const Layer*>(node))
@@ -751,7 +749,7 @@ LinkableValueNode::link_name(int i)const
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(;iter!=vocab.end() && j<i; iter++, j++) {};
+	for(;iter!=vocab.end() && j<i; iter++, j++) {}
 	return iter!=vocab.end()?iter->get_name():String();
 }
 
@@ -761,7 +759,7 @@ LinkableValueNode::link_local_name(int i)const
 	Vocab vocab(get_children_vocab());
 	Vocab::iterator iter(vocab.begin());
 	int j=0;
-	for(;iter!=vocab.end() && j<i; iter++, j++){};
+	for(;iter!=vocab.end() && j<i; iter++, j++) {}
 	return iter!=vocab.end()?iter->get_local_name():String();
 }
 

@@ -317,8 +317,6 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	if (!target)
 		return false;
 
-	bool success = true;
-
 	target->set_canvas(get_canvas());
 	RendDesc desc;
 	desc.set_w(surface.get_w());
@@ -330,9 +328,8 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	desc.set_frame_start(0);
 	desc.set_frame_end(0);
 	target->set_rend_desc(&desc);
-	if (success)
-		success = target->add_frame(&surface);
-	target = NULL;
+	bool success = target->add_frame(&surface, nullptr);
+	target = nullptr;
 
 	if (success)
 		success = get_canvas()->get_file_system()->directory_create(etl::dirname(filename));
@@ -638,7 +635,6 @@ Instance::save_as(const synfig::String &file_name)
 			new_temporary_filesystem->set_meta("as", new_canvas_filename);
 			new_temporary_filesystem->set_meta("truncate", "0");
 			new_canvas_filesystem = new_temporary_filesystem;
-			previous_temporary_filesystem->discard_changes();
 		}
 
 		new_canvas_identifier = new_canvas_filesystem->get_identifier(CanvasFileNaming::project_file(new_canvas_filename));

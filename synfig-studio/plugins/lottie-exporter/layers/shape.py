@@ -5,13 +5,15 @@ Will store all the functions corresponding to shapes in lottie
 import sys
 import settings
 from common.Count import Count
-from common.Layer import Layer
 from shapes.star import gen_shapes_star
 from shapes.circle import gen_shapes_circle
 from shapes.fill import gen_shapes_fill
 from shapes.rectangle import gen_shapes_rectangle
+from shapes.shape import gen_shapes_shape
+from shapes.gFill import gen_linear_gradient
 from helpers.blendMode import get_blend
 from helpers.transform import gen_helpers_transform
+from synfig.rectangle import gen_dummy_rectangle
 sys.path.append("..")
 
 
@@ -27,6 +29,12 @@ def gen_layer_shape(lottie, layer, idx):
     Returns:
         (None)
     """
+
+    if layer.get_type() in {"linear_gradient"}:
+        # Create dummy point1 and point2 for linear gradient to generate rectangle for it in lottie format
+        # Will have to use add_offset() function inside after this generation
+        gen_dummy_rectangle(layer)
+
     layer.add_offset()
 
     index = Count()
@@ -48,9 +56,14 @@ def gen_layer_shape(lottie, layer, idx):
         gen_shapes_circle(lottie["shapes"][0], layer, index.inc())
     elif layer.get_type() in {"filled_rectangle", "rectangle"}:
         gen_shapes_rectangle(lottie["shapes"][0], layer.get_layer(), index.inc())
+    elif layer.get_type() in {"linear_gradient"}:
+        gen_shapes_shape(lottie["shapes"][0], layer, index.inc())
 
     lottie["shapes"].append({})  # For the fill or color
-    gen_shapes_fill(lottie["shapes"][1], layer)
+    if layer.get_type() in {"linear_gradient"}:
+        gen_linear_gradient(lottie["shapes"][1], layer, index.inc())
+    else:
+        gen_shapes_fill(lottie["shapes"][1], layer)
 
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]

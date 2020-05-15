@@ -172,10 +172,6 @@ public:
 	//! Gets the blend color of the Layer in the context at \a pos
 	virtual Color get_color(Context context, const Point &pos)const;
 
-	//! Renders the Canvas to the given Surface in an accelerated manner
-	//! See Layer::accelerated_render
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	//! Bounding rect for this layer depends from context_params
 	Rect get_bounding_rect_context_dependent(const ContextParams &context_params)const;
 	//!Returns the rectangle that includes the context of the layer and

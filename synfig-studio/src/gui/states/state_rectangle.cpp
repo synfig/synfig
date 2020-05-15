@@ -510,10 +510,10 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 		("synfig-layer_geometry_region"), _("Create a region layer"));
 
 	LAYER_CREATION(layer_outline_togglebutton,
-		("synfig-layer_geometry_outline"), _("Create a outline layer"));
+		("synfig-layer_geometry_outline"), _("Create an outline layer"));
 
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
-		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
+		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
 
 	LAYER_CREATION(layer_plant_togglebutton,
 		("synfig-layer_other_plant"), _("Create a plant layer"));
@@ -764,10 +764,10 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	x_min -= get_expand_size(); x_max += get_expand_size(); y_min -= get_expand_size(); y_max += get_expand_size();
 
 	std::vector<BLinePoint> new_list;
-	for (int i = 0; i < 4; i++)
+	for (size_t i = 0; i < 4; i++)
 	{
-		new_list.push_back(*(new BLinePoint));
-		new_list[i].set_width(1);
+		new_list.push_back(BLinePoint());
+		new_list[i].set_width(1.0);
 		new_list[i].set_vertex(Point((i==0||i==3)?x_min:x_max,
 									 (i==0||i==1)?y_min:y_max));
 		new_list[i].set_tangent(Point(0,0));

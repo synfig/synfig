@@ -97,7 +97,6 @@
 #include "trees/layertreestore.h"
 #include "trees/childrentreestore.h"
 #include "trees/childrentree.h"
-#include "trees/keyframetreestore.h"
 #include "trees/keyframetree.h"
 #include "widgets/widget_keyframe_list.h"
 
@@ -663,6 +662,8 @@ public:
 	//! Toggle between none/last visible handles
 	//! \Sa             DuckMatic::set_type_mask_state(), DuckMatic::get_type_mask_state()
 	void toggle_duck_mask_all();
+	// Toogle displaybar according to App::enable_mainwin_toolbar
+	void toggle_show_toolbar();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

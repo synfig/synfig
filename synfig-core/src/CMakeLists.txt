@@ -33,13 +33,34 @@ pkg_check_modules(MLT REQUIRED mlt++)
 pkg_check_modules(FFTW REQUIRED fftw3)
 pkg_check_modules(FT REQUIRED freetype2) # for lyr_freetype
 pkg_check_modules(LIBPNG REQUIRED libpng) # for mod_png
-pkg_check_modules(LIBMNG REQUIRED libmng) # for mod_mng
+#TODO(ice0): find solution for libmng
+pkg_check_modules(LIBMNG libmng) # for mod_mng (set as optional as it is not correctly installed in Debian)
 pkg_check_modules(LIBJPEG REQUIRED libjpeg) # for mod_mng
 pkg_check_modules(OPENEXR REQUIRED OpenEXR) # for mod_openexr
 pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
 
 ## TODO: move to module where it is actually required
 pkg_check_modules(PANGO REQUIRED pango)
+
+foreach(pkg_config_lib 
+  SIGCPP 
+  GLIBMM 
+  GIOMM 
+  CAIRO 
+  PANGOCAIRO 
+  LIBXML 
+  MLT 
+  FFTW 
+  FT 
+  LIBPNG
+  LIBMNG
+  LIBJPEG
+  OPENEXR
+  MAGICKCORE
+  PANGO)
+    include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
+    link_directories(${${pkg_config_lib}_LIBRARY_DIRS})
+endforeach()
 
 ## TODO: should we keep it here?
 find_package(ImageMagick COMPONENTS Magick++)

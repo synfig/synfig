@@ -62,7 +62,7 @@ def clamped_tangent(p1, p2, p3, animated, i):
             else:
                 bias = 0.0
             tangent = (p2 - p1) * (1.0 + bias) / 2.0 + (p3 - p2) * (1.0 - bias) / 2.0
-    elif p1 > p2:
+    elif p1 > p3:
         if p2 >= p1 or p2 <= p3:
             tangent = tangent * 0.0
         else:
@@ -187,7 +187,7 @@ def calc_tangent(animated, lottie, i):
 
     # After effects only supports linear,ease-in,ease-out and constant interpolations for color
     ##### No support for TCB and clamped interpolations in color is there yet #####
-    if animated.attrib["type"] == "color":
+    if animated.attrib["type"] in {"color", "linear_gradient"}:
         if cur_get_after in {"auto", "clamped"}:
             cur_get_after = "linear"
         if cur_get_before in {"auto", "clamped"}:
@@ -225,7 +225,7 @@ def calc_tangent(animated, lottie, i):
 
 
     ### Special case for color interpolations ###
-    if animated.attrib["type"] == "color":
+    if animated.attrib["type"] in {"color", "linear_gradient"}:
         if cur_get_after == "linear" and next_get_before == "linear":
             return handle_color()
 

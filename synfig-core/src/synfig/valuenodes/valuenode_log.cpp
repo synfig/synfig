@@ -156,7 +156,7 @@ ValueNode_Logarithm::get_children_vocab_vfunc()const
 
 		ret.push_back(ParamDesc(ValueBase(),"epsilon")
 		.set_local_name(_("Epsilon"))
-		.set_description(_("Value used to compare 'link' with zero "))
+		.set_description(_("Value used to compare 'Link' with zero "))
 	);
 
 		ret.push_back(ParamDesc(ValueBase(),"infinite")

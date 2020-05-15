@@ -974,7 +974,7 @@ CanvasInterface::import_sequence(
 			
 			if (ext.empty())
 			{
-				errors += etl::strprintf(_("Cannot import file witout extension: %s\n"), filename.c_str());
+				errors += etl::strprintf(_("Cannot import file without extension: %s\n"), filename.c_str());
 				continue;
 			}
 			

@@ -79,7 +79,7 @@ Action::KeyframeToggl::get_local_name()const
 	if(keyframe.get_time()==(Time::begin()-1))
 		return _("Activate Keyframe");
 
-	return strprintf("%s at %s",
+	return strprintf(_("%s at %s"),
 					 new_status
 					 ? _("Activate Keyframe")
 					 : _("Deactivate Keyframe"),

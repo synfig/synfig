@@ -56,6 +56,7 @@ private:
 	bool dragging_started_by_key;
 
 	T hovered_item;
+	bool is_hovered_item_valid;
 	std::vector<T> selected_items;
 	const T* active_item;
 
@@ -63,6 +64,8 @@ private:
 	int pointer_tracking_start_x, pointer_tracking_start_y;
 	int last_pointer_x, last_pointer_y;
 	Gdk::Point active_item_start_position;
+
+	Gdk::ModifierType modifiers;
 
 	void start_tracking_pointer(int x, int y);
 	void start_tracking_pointer(double x, double y);
@@ -96,10 +99,12 @@ private:
 
 	sigc::signal<void> signal_drag_started_;
 	sigc::signal<void> signal_drag_canceled_;
-	sigc::signal<void> signal_drag_finished_;
+	sigc::signal<void, bool> signal_drag_finished_;
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_clicked_;
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_double_clicked_;
+
+	sigc::signal<void> signal_modifier_keys_changed_;
 
 	bool box_selection_enabled = true;
 	bool multiple_selection_enabled = true;
@@ -108,6 +113,10 @@ private:
 	bool pan_enabled = false;
 	bool drag_enabled = true;
 
+protected:
+	synfigapp::Action::PassiveGrouper *get_action_group_drag() const;
+	bool is_dragging_started_by_keys() const;
+
 public:
 	SelectDragHelper(const char *drag_action_name);
 	virtual ~SelectDragHelper() {delete action_group_drag;}
@@ -115,12 +124,17 @@ public:
 	void set_canvas_interface(etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	etl::handle<synfigapp::CanvasInterface>& get_canvas_interface();
 
+	bool has_hovered_item() const;
 	/// The item whose pointer/mouse is hovering over
 	const T& get_hovered_item() const;
 	/// Provides a list of selected items
 	std::vector<T*> get_selected_items();
 	/// Check if an item is selected
 	bool is_selected(const T& item) const;
+	/// Add the provided item to selection
+	void select(const T& item);
+	/// Remove the provided item from selection: only if user isn't dragging
+	void deselect(const T& item);
 	/// The selected item user started to drag
 	const T* get_active_item() const;
 
@@ -130,7 +144,13 @@ public:
 	/// The point where active item was initially placed
 	void get_active_item_initial_point(int &px, int &py) const;
 
-	//! Retrieve the position of a given item
+	/// Retrieve pressed & held modifier keys (Shift, Control, Alt/Mod1)
+	Gdk::ModifierType get_modifiers() const;
+	/// Check if a given modifier key (or whole set) m is held (Shift, Control, Alt/Mod1)
+	bool has_modifier(Gdk::ModifierType m) const;
+
+	//! @brief Retrieve the position of a given item
+	//! Implementation only needed if item dragging is enabled.
 	//! @param[out] position the location the provided item
 	virtual void get_item_position(const T &item, Gdk::Point &position) = 0;
 
@@ -139,7 +159,8 @@ public:
 	//! @return true if an item was found, false otherwise
 	virtual bool find_item_at_position(int pos_x, int pos_y, T & item) = 0;
 
-	//! Retrieve all items inside a rectangular area
+	//! @brief Retrieve all items inside a rectangular area.
+	//! Implementation only needed if multiple selection is enabled.
 	//! @param rect the rectangle area
 	//! @param[out] the list of items contained inside rect
 	//! @return true if any item was found, false otherwise
@@ -150,7 +171,8 @@ public:
 	virtual void get_all_items(std::vector<T> & items) = 0;
 
 	void drag_to(int pointer_x, int pointer_y);
-	//! Do drag selected items
+	//! @brief Do drag selected items
+	//! Implementation only needed if dragging is enabled.
 	/*!
 	 * @param total_dx total pointer/mouse displacement along x-axis since drag start
 	 * @param total_dy total pointer/mouse displacement along y-axis since drag start
@@ -202,16 +224,21 @@ public:
 
 	sigc::signal<void>& signal_drag_started() { return signal_drag_started_; }
 	sigc::signal<void>& signal_drag_canceled() { return signal_drag_canceled_; }
-	sigc::signal<void>& signal_drag_finished() { return signal_drag_finished_; }
+	/// emitted when user finishes drag
+	/// \param started_by_key
+	sigc::signal<void, bool>& signal_drag_finished() { return signal_drag_finished_; }
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_clicked() { return signal_item_clicked_; }
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_double_clicked() { return signal_item_double_clicked_; }
+
+	sigc::signal<void>& signal_modifier_keys_changed() { return signal_modifier_keys_changed_; }
 };
 
 
 template <class T>
 SelectDragHelper<T>::SelectDragHelper(const char* drag_action_name)
-	: drag_action_name(drag_action_name), action_group_drag(nullptr), active_item(nullptr), pointer_state(POINTER_NONE)
+	: drag_action_name(drag_action_name), action_group_drag(nullptr), hovered_item(), is_hovered_item_valid(false), active_item(nullptr), pointer_state(POINTER_NONE),
+	  modifiers(Gdk::ModifierType())
 {
 }
 
@@ -228,6 +255,12 @@ template<class T>
 etl::handle<synfigapp::CanvasInterface>& SelectDragHelper<T>::get_canvas_interface()
 {
 	return canvas_interface;
+}
+
+template <class T>
+bool SelectDragHelper<T>::has_hovered_item() const
+{
+	return is_hovered_item_valid;
 }
 
 template <class T>
@@ -250,6 +283,29 @@ std::vector<T*> SelectDragHelper<T>::get_selected_items()
 template<class T>
 bool SelectDragHelper<T>::is_selected(const T& item) const {
 	return std::find(selected_items.begin(), selected_items.end(), item) != selected_items.end();
+}
+
+template<class T>
+void SelectDragHelper<T>::select(const T& item)
+{
+	if (is_selected(item))
+		return;
+	selected_items.push_back(item);
+	signal_selection_changed().emit();
+}
+
+template<class T>
+void SelectDragHelper<T>::deselect(const T& item)
+{
+	if (pointer_state == POINTER_DRAGGING)
+		return;
+
+	auto iter = std::find(selected_items.begin(), selected_items.end(), item);
+	if (iter == selected_items.end())
+		return;
+
+	selected_items.erase(iter);
+	signal_selection_changed().emit();
 }
 
 template<class T>
@@ -277,6 +333,17 @@ void SelectDragHelper<T>::get_active_item_initial_point(int& px, int& py) const
 	py = active_item_start_position.get_y();
 }
 
+template<class T>
+Gdk::ModifierType SelectDragHelper<T>::get_modifiers() const
+{
+	return modifiers;
+}
+
+template<class T>
+bool SelectDragHelper<T>::has_modifier(Gdk::ModifierType m) const
+{
+	return modifiers & m;
+}
 
 template <class T>
 bool
@@ -364,6 +431,21 @@ bool SelectDragHelper<T>::process_key_press_event(GdkEventKey* event)
 		}
 		break;
 	}
+	case GDK_KEY_Shift_L:   case GDK_KEY_Shift_R: {
+		modifiers |= Gdk::ModifierType::SHIFT_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
+	case GDK_KEY_Control_L:	case GDK_KEY_Control_R: {
+		modifiers |= Gdk::ModifierType::CONTROL_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
+	case GDK_KEY_Alt_L:     case GDK_KEY_Alt_R: {
+		modifiers |= Gdk::ModifierType::MOD1_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
 	}
 	return false;
 }
@@ -380,6 +462,7 @@ bool SelectDragHelper<T>::process_key_release_event(GdkEventKey* event)
 			signal_redraw_needed().emit();
 			return true;
 		}
+		break;
 	}
 	case GDK_KEY_Up:
 	case GDK_KEY_Down:
@@ -391,6 +474,25 @@ bool SelectDragHelper<T>::process_key_release_event(GdkEventKey* event)
 			dragging_started_by_key = false;
 			return true;
 		}
+		break;
+	}
+	case GDK_KEY_Shift_L:
+	case GDK_KEY_Shift_R: {
+		modifiers &= ~Gdk::ModifierType::SHIFT_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
+	case GDK_KEY_Control_L:
+	case GDK_KEY_Control_R: {
+		modifiers &= ~Gdk::ModifierType::CONTROL_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
+	}
+	case GDK_KEY_Alt_L:
+	case GDK_KEY_Alt_R: {
+		modifiers &= ~Gdk::ModifierType::MOD1_MASK;
+		signal_modifier_keys_changed().emit();
+		break;
 	}
 	}
 	return false;
@@ -400,8 +502,8 @@ template<class T>
 bool SelectDragHelper<T>::process_button_double_press_event(GdkEventButton* event)
 {
 	T pointed_item;
-	find_item_at_position(event->x, event->y, pointed_item);
-	if (pointed_item.is_valid()) {
+	bool found = find_item_at_position(event->x, event->y, pointed_item);
+	if (found) {
 		int pointer_x = std::trunc(event->x);
 		int pointer_y = std::trunc(event->y);
 		signal_item_double_clicked().emit(pointed_item, event->button, Gdk::Point(pointer_x, pointer_y));
@@ -428,8 +530,8 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 		if (pointer_state == POINTER_NONE) {
 			start_tracking_pointer(event->x, event->y);
 			T pointed_item;
-			find_item_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
-			if (pointed_item.is_valid()) {
+			bool found = find_item_at_position(pointer_tracking_start_x, pointer_tracking_start_y, pointed_item);
+			if (found) {
 				auto already_selection_it = std::find(selected_items.begin(), selected_items.end(), pointed_item);
 				bool is_already_selected = already_selection_it != selected_items.end();
 				bool using_key_modifiers = (event->state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) != 0;
@@ -453,8 +555,14 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 				}
 				some_action_done = true;
 			} else {
-				if (box_selection_enabled && multiple_selection_enabled) {
-					pointer_state = POINTER_SELECTING;
+				if (multiple_selection_enabled) {
+					if (box_selection_enabled) {
+						pointer_state = POINTER_SELECTING;
+						some_action_done = true;
+					}
+				} else {
+					selected_items.clear();
+					signal_selection_changed().emit();
 					some_action_done = true;
 				}
 			}
@@ -469,8 +577,8 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 
 	{
 		T pointed_item;
-		find_item_at_position(event->x, event->y, pointed_item);
-		if (pointed_item.is_valid()) {
+		bool found = find_item_at_position(event->x, event->y, pointed_item);
+		if (found) {
 			int pointer_x = std::trunc(event->x);
 			int pointer_y = std::trunc(event->y);
 			signal_item_clicked().emit(pointed_item, event->button, Gdk::Point(pointer_x, pointer_y));
@@ -573,16 +681,33 @@ bool SelectDragHelper<T>::process_button_release_event(GdkEventButton* event)
 template<class T>
 bool SelectDragHelper<T>::process_motion_event(GdkEventMotion* event)
 {
+	{
+		// update modifiers when mouse/pointer moves:
+		//   useful if widget looses focus due to a shortcut
+		//   like Ctrl+Shift+S
+		Gdk::ModifierType previous_modifiers = modifiers;
+		modifiers = Gdk::ModifierType();
+		if (event->state & Gdk::SHIFT_MASK)
+			modifiers |= Gdk::SHIFT_MASK;
+		if (event->state & Gdk::CONTROL_MASK)
+			modifiers |= Gdk::CONTROL_MASK;
+		if (event->state & Gdk::MOD1_MASK)
+			modifiers |= Gdk::MOD1_MASK;
+		if (modifiers != previous_modifiers)
+			signal_modifier_keys_changed().emit();
+	}
+
 	bool processed = false;
 	auto previous_hovered_point = hovered_item;
-	hovered_item.invalidate();
+	bool was_hovered_item_valid = is_hovered_item_valid;
+	is_hovered_item_valid = false;
 
 	int pointer_x = std::trunc(event->x);
 	int pointer_y = std::trunc(event->y);
 	if (pointer_state != POINTER_DRAGGING)
-		find_item_at_position(pointer_x, pointer_y, hovered_item);
+		is_hovered_item_valid = find_item_at_position(pointer_x, pointer_y, hovered_item);
 
-	if (previous_hovered_point != hovered_item) {
+	if (was_hovered_item_valid != is_hovered_item_valid || (is_hovered_item_valid && previous_hovered_point != hovered_item)) {
 		signal_hovered_item_changed().emit();
 		signal_redraw_needed().emit();
 	}
@@ -661,9 +786,21 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 	return false;
 }
 
+template<class T>
+synfigapp::Action::PassiveGrouper* SelectDragHelper<T>::get_action_group_drag() const
+{
+	return action_group_drag;
+}
+
+template<class T>
+bool SelectDragHelper<T>::is_dragging_started_by_keys() const
+{
+	return dragging_started_by_key;
+}
+
 template <class T>
 void SelectDragHelper<T>::refresh() {
-	hovered_item.invalidate();
+	is_hovered_item_valid = false;
 }
 
 template <class T>
@@ -671,7 +808,7 @@ void SelectDragHelper<T>::clear() {
 	if (pointer_state == POINTER_DRAGGING) {
 		cancel_dragging();
 	}
-	hovered_item.invalidate();
+	is_hovered_item_valid = false;
 	if (!selected_items.empty()) {
 		selected_items.clear();
 		signal_selection_changed().emit();
@@ -721,7 +858,7 @@ void SelectDragHelper<T>::finish_dragging()
 
 	pointer_state = POINTER_NONE;
 
-	signal_drag_finished().emit();
+	signal_drag_finished().emit(dragging_started_by_key);
 }
 
 template <class T>

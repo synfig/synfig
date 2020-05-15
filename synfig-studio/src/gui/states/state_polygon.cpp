@@ -65,6 +65,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define DISTINGUISH_FIRST_DUCK
+
 #ifndef LAYER_CREATION
 #define LAYER_CREATION(button, stockid, tooltip)	\
 	{ \
@@ -496,10 +498,10 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 		("synfig-layer_geometry_region"), _("Create a region layer"));
 
 	LAYER_CREATION(layer_outline_togglebutton,
-		("synfig-layer_geometry_outline"), _("Create a outline layer"));
+		("synfig-layer_geometry_outline"), _("Create an outline layer"));
 
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
-		("synfig-layer_geometry_advanced_outline"), _("Create a advanced outline layer"));
+		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
 
 	LAYER_CREATION(layer_plant_togglebutton,
 		("synfig-layer_other_plant"), _("Create a plant layer"));
@@ -1311,6 +1313,11 @@ StatePolygon_Context::refresh_ducks()
 	etl::handle<WorkArea::Duck> duck;
 	duck=new WorkArea::Duck(*iter);
 	duck->set_editable(true);
+#ifdef DISTINGUISH_FIRST_DUCK
+	duck->set_type(Duck::TYPE_FIRST_VERTEX);
+#else
+	duck->set_type(Duck::TYPE_VERTEX);
+#endif
 	duck->signal_edited().connect(
 		sigc::bind(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_polygon_duck_change),iter)
 	);
@@ -1325,7 +1332,8 @@ StatePolygon_Context::refresh_ducks()
 
 		duck=new WorkArea::Duck(*iter);
 		duck->set_editable(true);
-		duck->set_name(strprintf("%x",&*iter));
+		duck->set_name(strprintf("%p",&*iter));
+		duck->set_type(Duck::TYPE_VERTEX);
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_polygon_duck_change),iter)
 		);
