@@ -210,9 +210,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	// Add initialization after this point
 
 #ifdef ENABLE_NLS
-	String locale_dir;
-	locale_dir = locale_path;
-
 	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 #endif
