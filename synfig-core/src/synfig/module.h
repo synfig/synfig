@@ -70,7 +70,6 @@
 //! Marks the end of a module description
 #define MODULE_DESC_END };
 
-//#if 0
 #ifdef __APPLE__
 //! Marks the start of a module's inventory
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\

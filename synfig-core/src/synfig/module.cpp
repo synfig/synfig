@@ -60,9 +60,6 @@ bool
 Module::subsys_init(const String &prefix)
 {
 #ifndef USE_CF_BUNDLES
-	#ifndef SYNFIG_LTDL_NO_STATIC
-	//LTDL_SET_PRELOADED_SYMBOLS();
-	#endif
 
 	if(lt_dlinit())
 	{
@@ -151,29 +148,24 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(!constructor)
 	{
-//		if(callback)callback->task(string("looking for -> ")+module_name+"_LTX_new_instance()");
 		constructor=(Module::constructor_type )lt_dlsym(module,(module_name+"_LTX_new_instance").c_str());
 	}
 
 	if(!constructor)
 	{
-//		if(callback)callback->task(string("looking for -> lib")+module_name+"_LTX_new_instance()");
 		constructor=(Module::constructor_type )lt_dlsym(module,(string("lib")+module_name+"_LTX_new_instance").c_str());
 	}
 	if(!constructor)
 	{
-//		if(callback)callback->task(string("looking for -> lib")+module_name+"_LTX_new_instance()");
 		constructor=(Module::constructor_type )lt_dlsym(module,(string("_lib")+module_name+"_LTX_new_instance").c_str());
 	}
 	if(!constructor)
 	{
-//		if(callback)callback->task(string("looking for -> lib")+module_name+"_LTX_new_instance()");
 		constructor=(Module::constructor_type )lt_dlsym(module,(string("_")+module_name+"_LTX_new_instance").c_str());
 	}
 
 	if(constructor)
 	{
-//		if(callback)callback->task(strprintf("Executing callback for \"%s\"",module_name.c_str()));
 		mod=handle<Module>((*constructor)(callback));
 	}
 	else
@@ -182,11 +174,8 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 		return false;
 	}
 
-//	if(callback)callback->task(strprintf("Done executing callback for \"%s\"",module_name.c_str()));
-
 	if(mod)
 	{
-//		if(callback)callback->task(strprintf("Registering \"%s\"",module_name.c_str()));
 		Register(mod);
 	}
 	else
