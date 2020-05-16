@@ -216,6 +216,7 @@ public:
 
 	static bool restrict_radius_ducks;
 	static bool resize_imported_images;
+	static bool animation_thumbnail_preview;
 	static bool enable_experimental_features;
 	static bool use_dark_theme;
 	static bool show_file_toolbar;
