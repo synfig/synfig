@@ -66,7 +66,7 @@ class TimePoint
 public:
 
 	TimePoint(const Time& x=Time::begin()):
-		guid(0),
+		guid(GUID::zero()),
 		time(x),
 		before(INTERPOLATION_NIL),
 		after(INTERPOLATION_NIL)

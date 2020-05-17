@@ -78,7 +78,7 @@ int _DuckCounter::counter(0);
 /* === M E T H O D S ======================================================= */
 
 Duck::Duck():
-	guid_(0),
+	guid_(GUID::zero()),
 	type_(TYPE_NONE),
 	editable_(false),
 	alternative_editable_(false),

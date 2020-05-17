@@ -340,7 +340,7 @@ CanvasParser::parse_guid(xmlpp::Element *element)
 	if(!element->get_attribute("value"))
 	{
 		error(element,strprintf(_("<%s> is missing \"value\" attribute"),"guid"));
-		return false;
+		return GUID::zero();
 	}
 
 	string val=element->get_attribute("value")->get_value();
