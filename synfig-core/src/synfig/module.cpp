@@ -68,18 +68,34 @@ Module::subsys_init(const String &prefix)
 		return false;
 	}
 
-	if(getenv("HOME"))
-		lt_dladdsearchdir(strprintf("%s/.local/share/synfig/modules", getenv("HOME")).c_str());
-	lt_dladdsearchdir((Glib::locale_from_utf8(prefix) + \
-		ETL_DIRECTORY_SEPARATOR + "lib" + \
-		ETL_DIRECTORY_SEPARATOR + "synfig" + \
-		ETL_DIRECTORY_SEPARATOR + "modules" ).c_str());
+	// user's synfig library path
+#ifdef _WIN32
+	if(const char *localappdata = getenv("%LOCALAPPDATA%")) {
+		std::string user_module_path = Glib::locale_from_utf8(localappdata) + "/synfig/modules";
+		lt_dladdsearchdir(user_module_path.c_str());
+	}
+#else
+#ifdef __APPLE__
+	if(const char *home = getenv("HOME"))
+		lt_dladdsearchdir(strprintf("%s/Library/Application Support/org.synfig.SynfigStudio/modules", home).c_str());
+#else
+	if(const char *home = getenv("HOME"))
+		lt_dladdsearchdir(strprintf("%s/.local/share/synfig/modules", home).c_str());
+#endif
+#endif
+
+	// (runtime) prefix path
+	lt_dladdsearchdir((Glib::locale_from_utf8(prefix) + "/lib/synfig/modules").c_str());
+
+	// path defined on build time
 #ifdef LIBDIR
 	lt_dladdsearchdir(LIBDIR"/synfig/modules");
 #endif
 #ifdef __APPLE__
 	lt_dladdsearchdir("/Library/Frameworks/synfig.framework/Resources/modules");
 #endif
+
+	// current working path...
 	lt_dladdsearchdir(".");
 #endif
 	book_=new Book;
