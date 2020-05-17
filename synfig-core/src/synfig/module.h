@@ -44,7 +44,7 @@
 /* === M A C R O S ========================================================= */
 
 //! Marks the start of a module description
-#define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { x##_modclass(synfig::ProgressCallback *callback=NULL);
+#define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { x##_modclass(synfig::ProgressCallback *callback=nullptr);
 
 //! Sets the localized name of the module
 #define MODULE_NAME(x) 			virtual const char * Name() { return x; }
@@ -75,14 +75,14 @@
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\
 	synfig::Module* _##x##_LTX_new_instance(synfig::ProgressCallback *cb) \
 	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
-	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return NULL; } \
+	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return nullptr; } \
 	}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
 #else
 //! Marks the start of a module's inventory
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\
 	synfig::Module* x##_LTX_new_instance(synfig::ProgressCallback *cb) \
 	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
-	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return NULL; } \
+	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return nullptr; } \
 	}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
 #endif
 
@@ -195,12 +195,12 @@ public:
 	static bool subsys_init(const String &prefix);
 	static bool subsys_stop();
 	//! Register not optional modules
-	static void register_default_modules(ProgressCallback *cb=NULL);
+	static void register_default_modules(ProgressCallback *cb=nullptr);
 
 	//! Register Module by handle
 	static void Register(Handle mod);
 	//! Register Module by name
-	static bool Register(const String &module_name, ProgressCallback *cb=NULL);
+	static bool Register(const String &module_name, ProgressCallback *cb=nullptr);
 	//!Register Module by instance pointer
 	static inline void Register(Module *mod) { Register(Handle(mod)); }
 

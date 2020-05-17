@@ -143,7 +143,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(callback)callback->task(strprintf(_("Found module \"%s\""),module_name.c_str()));
 
-	Module::constructor_type constructor=NULL;
+	Module::constructor_type constructor=nullptr;
 	Handle mod;
 
 	if(!constructor)
