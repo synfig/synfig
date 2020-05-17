@@ -146,22 +146,12 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 	Module::constructor_type constructor=nullptr;
 	Handle mod;
 
-	if(!constructor)
+	const std::vector<const char*> symbol_prefixes = {"", "lib", "_lib", "_"};
+	for (const char * symbol_prefix : symbol_prefixes)
 	{
-		constructor=(Module::constructor_type )lt_dlsym(module,(module_name+"_LTX_new_instance").c_str());
-	}
-
-	if(!constructor)
-	{
-		constructor=(Module::constructor_type )lt_dlsym(module,(string("lib")+module_name+"_LTX_new_instance").c_str());
-	}
-	if(!constructor)
-	{
-		constructor=(Module::constructor_type )lt_dlsym(module,(string("_lib")+module_name+"_LTX_new_instance").c_str());
-	}
-	if(!constructor)
-	{
-		constructor=(Module::constructor_type )lt_dlsym(module,(string("_")+module_name+"_LTX_new_instance").c_str());
+		constructor=(Module::constructor_type )lt_dlsym(module,(symbol_prefix+module_name+"_LTX_new_instance").c_str());
+		if (constructor)
+			break;
 	}
 
 	if(constructor)
