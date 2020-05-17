@@ -32,14 +32,8 @@
 #include <map>
 #include "string.h"
 #include "releases.h"
-#include <utility>
-#include "vector.h"
-#include "color.h"
 #include "layer.h"
-#include "canvas.h"
-#include "valuenode_registry.h"
 
-//#include "value.h"
 
 /* === M A C R O S ========================================================= */
 
