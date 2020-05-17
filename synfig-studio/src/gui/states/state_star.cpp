@@ -359,6 +359,11 @@ StateStar::~StateStar()
 {
 }
 
+void* StateStar::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateStar_Context(machine_context);
+}
+
 void
 StateStar_Context::load_settings()
 {

@@ -46,6 +46,7 @@ class StateText : public Smach::state<StateText_Context>
 public:
 	StateText();
 	~StateText();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateText
 
 extern StateText state_text;

@@ -392,6 +392,10 @@ StateLasso::~StateLasso()
 {
 }
 
+void* StateLasso::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateLasso_Context(machine_context);
+}
 
 void
 StateLasso_Context::load_settings()

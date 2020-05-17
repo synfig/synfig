@@ -45,6 +45,7 @@ class StateRotate : public Smach::state<StateRotate_Context>
 public:
 	StateRotate();
 	~StateRotate();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateRotate
 
 extern StateRotate state_rotate;

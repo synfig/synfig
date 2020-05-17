@@ -96,6 +96,11 @@ StateEyedrop::~StateEyedrop()
 {
 }
 
+void* StateEyedrop::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateEyedrop_Context(machine_context);
+}
+
 StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	canvas_view(canvasView),
 	is_working(*canvasView)

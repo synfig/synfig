@@ -44,6 +44,7 @@ class StateScale : public Smach::state<StateScale_Context>
 public:
 	StateScale();
 	~StateScale();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateScale
 
 extern StateScale state_scale;

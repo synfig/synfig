@@ -235,6 +235,11 @@ StateNormal::~StateNormal()
 {
 }
 
+void* StateNormal::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateNormal_Context(machine_context);
+}
+
 void StateNormal_Context::refresh_cursor()
 {
 	// Check the current state and return when applicable

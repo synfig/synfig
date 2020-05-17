@@ -157,6 +157,11 @@ StateRotate::~StateRotate()
 {
 }
 
+void* StateRotate::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateRotate_Context(machine_context);
+}
+
 void
 StateRotate_Context::load_settings()
 {

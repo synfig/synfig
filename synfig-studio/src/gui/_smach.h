@@ -217,10 +217,49 @@ public:
 
 	protected:
 
-		virtual void* enter_state(context_type* machine_context)const
+		/*
+		This part compiles differently in gcc/clang and MSVC compilers.
+		Since the behavior of the compiler is not specified for virtual methods
+		(C++11 standard says: § 14.7.1.10. "It is unspecified whether or not an
+		implementation implicitly instantiates a virtual member function of a
+		class template if the virtual member function would not otherwise be instantiated").
+
+		Unlike GCC/Clang, MSVC expects the template class to be fully defined
+		at the moment, so this code does not compile. Therefore, we move
+		the `enter_state` method to derived classes.
+
+		Minimal working example:
+		```
+		template <class T>
+		class A {
+		virtual void* Run() {
+			return new T();
+		}
+		};
+
+		class C;
+
+		class B : A<C> {
+		
+		};
+		```
+
+		MSVC fails with the error:
+		```
+		<source>(4): error C2027: use of undefined type 'C'
+		<source>(8): note: see declaration of 'C'
+		<source>(3): note: while compiling class template member function 'void *A<C>::Run(void)'
+		<source>(10): note: see reference to class template instantiation 'A<C>' being compiled
+		Compiler returned: 2
+		```
+
+		This code can be tested online at https://godbolt.org		
+		*/
+
+		/*virtual void* enter_state(context_type* machine_context)const
 		{
 			return new state_context_type(machine_context);
-		}
+		}*/
 
 		virtual bool leave_state(void* x)const
 		{

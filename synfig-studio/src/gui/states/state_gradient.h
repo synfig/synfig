@@ -45,6 +45,7 @@ class StateGradient : public Smach::state<StateGradient_Context>
 public:
 	StateGradient();
 	~StateGradient();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateGradient
 
 extern StateGradient state_gradient;

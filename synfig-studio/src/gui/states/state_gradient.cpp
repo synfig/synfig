@@ -253,6 +253,11 @@ StateGradient::~StateGradient()
 {
 }
 
+void* StateGradient::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateGradient_Context(machine_context);
+}
+
 void
 StateGradient_Context::load_settings()
 {

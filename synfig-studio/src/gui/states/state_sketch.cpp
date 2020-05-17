@@ -149,6 +149,11 @@ StateSketch::~StateSketch()
 {
 }
 
+void* StateSketch::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateSketch_Context(machine_context);
+}
+
 void
 StateSketch_Context::save_sketch()
 {

@@ -259,6 +259,11 @@ StateBrush::~StateBrush()
 {
 }
 
+void* StateBrush::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateBrush_Context(machine_context);
+}
+
 void
 StateBrush_Context::BrushConfig::clear()
 {

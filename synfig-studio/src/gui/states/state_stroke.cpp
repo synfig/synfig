@@ -122,6 +122,10 @@ StateStroke::~StateStroke()
 {
 }
 
+void* StateStroke::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateStroke_Context(machine_context);
+}
 
 StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),

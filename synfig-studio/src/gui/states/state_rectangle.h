@@ -45,6 +45,7 @@ class StateRectangle : public Smach::state<StateRectangle_Context>
 public:
 	StateRectangle();
 	~StateRectangle();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateRectangle
 
 extern StateRectangle state_rectangle;

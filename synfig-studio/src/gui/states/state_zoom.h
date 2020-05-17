@@ -44,6 +44,7 @@ class StateZoom : public Smach::state<StateZoom_Context>
 public:
 	StateZoom();
 	~StateZoom();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateZoom
 
 extern StateZoom state_zoom;

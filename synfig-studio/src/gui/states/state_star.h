@@ -46,6 +46,7 @@ class StateStar : public Smach::state<StateStar_Context>
 public:
 	StateStar();
 	~StateStar();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateStar
 
 extern StateStar state_star;

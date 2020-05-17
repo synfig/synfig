@@ -154,6 +154,11 @@ StateSmoothMove::~StateSmoothMove()
 {
 }
 
+void* StateSmoothMove::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateSmoothMove_Context(machine_context);
+}
+
 void
 StateSmoothMove_Context::load_settings()
 {

@@ -146,6 +146,11 @@ StateScale::~StateScale()
 {
 }
 
+void* StateScale::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateScale_Context(machine_context);
+}
+
 void
 StateScale_Context::load_settings()
 {

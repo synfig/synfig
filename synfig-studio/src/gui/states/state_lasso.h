@@ -45,6 +45,7 @@ class StateLasso : public Smach::state<StateLasso_Context>
 public:
 	StateLasso();
 	~StateLasso();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateDraw
 
 extern StateLasso state_lasso;

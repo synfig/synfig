@@ -402,6 +402,10 @@ StateDraw::~StateDraw()
 {
 }
 
+void* StateDraw::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateDraw_Context(machine_context);
+}
 
 void
 StateDraw_Context::load_settings()

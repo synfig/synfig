@@ -44,6 +44,7 @@ class StatePolygon : public Smach::state<StatePolygon_Context>
 public:
 	StatePolygon();
 	~StatePolygon();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StatePolygon
 
 extern StatePolygon state_polygon;

@@ -329,6 +329,11 @@ StateBLine::~StateBLine()
 {
 }
 
+void* StateBLine::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateBLine_Context(machine_context);
+}
+
 void
 StateBLine_Context::load_settings()
 {
