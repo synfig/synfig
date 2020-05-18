@@ -29,25 +29,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifndef _WIN32
-# include <time.h>
-# define __sys_clock	::clock
-# define __sys_time	::time
-#else
-# ifdef __GNUG__
-#  include <time.h>
-#  define __sys_clock	::clock
-#  define __sys_time	::time
-# else
-typedef int clock_t;
-typedef int time_t;
-extern clock_t _clock();
-extern time_t _time(time_t *);
-#  define CLOCKS_PER_SEC 1000
-#  define __sys_clock	_clock
-#  define __sys_time	_time
-# endif
-#endif
+#ifndef __sys_clock
+#include <ctime>
+#define __sys_clock	::clock
+#define __sys_time	::time
+#endif // __sys_clock
 
 /* === M A C R O S ========================================================= */
 
