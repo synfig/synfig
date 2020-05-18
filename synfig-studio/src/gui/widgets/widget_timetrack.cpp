@@ -133,13 +133,17 @@ void Widget_Timetrack::delete_selected()
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
+	if (selection.size() == 0)
+		return;
+
 	// From CellRenderer_TimeTrack
 	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsDelete"));
 	if(!action)
 		return;
 
 	synfigapp::Action::ParamList param_list;
-	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
+	for (WaypointItem *wi : selection) {
 		param_list.add("canvas", canvas_interface->get_canvas());
 		param_list.add("canvas_interface", canvas_interface);
 
@@ -160,13 +164,17 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
+	if (selection.size() == 0)
+		return true;
+
 	// From CellRenderer_TimeTrack
 	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsMove"));
 	if (!action)
 		return false;
 
 	synfigapp::Action::ParamList param_list;
-	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
+	for (WaypointItem *wi : selection) {
 		param_list.add("canvas", canvas_interface->get_canvas());
 		param_list.add("canvas_interface", canvas_interface);
 
@@ -191,13 +199,17 @@ bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
+	if (selection.size() == 0)
+		return true;
+
 	// From CellRenderer_TimeTrack
 	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsCopy"));
 	if (!action)
 		return false;
 
 	synfigapp::Action::ParamList param_list;
-	for (WaypointItem *wi : waypoint_sd.get_selected_items()) {
+	for (WaypointItem *wi : selection) {
 		param_list.add("canvas", canvas_interface->get_canvas());
 		param_list.add("canvas_interface", canvas_interface);
 
