@@ -1034,8 +1034,18 @@ bool Widget_Timetrack::WaypointSD::find_items_in_rect(Gdk::Rectangle rect, std::
 	for (int y = y0; y < y1; ) {
 		Gtk::TreePath path;
 		bool ok = widget.params_treeview->get_path_at_pos(1, y, path);
-		if (!ok)
-			break;
+		// Did we reach the bottom of treeview? End loop
+		// Otherwise the !ok is because user selected a rectangle area from bottom to top
+		// and went beyond widget top y coordinate (0).
+		if (!ok) {
+			if (y >= 0)
+				break;
+			else {
+				y++;
+				continue;
+			}
+		}
+
 
 		const RowInfo *row_info = widget.param_info_map[path.to_string()];
 		if (!row_info) {
