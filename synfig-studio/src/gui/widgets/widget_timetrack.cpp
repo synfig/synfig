@@ -1029,8 +1029,7 @@ bool Widget_Timetrack::WaypointSD::find_items_in_rect(Gdk::Rectangle rect, std::
 	if (y0 > y1)
 		std::swap(y0, y1);
 
-
-	std::vector<Gtk::TreePath> path_list;
+	std::set<Gtk::TreePath> path_list;
 	for (int y = y0; y < y1; ) {
 		Gtk::TreePath path;
 		bool ok = widget.params_treeview->get_path_at_pos(1, y, path);
@@ -1052,7 +1051,7 @@ bool Widget_Timetrack::WaypointSD::find_items_in_rect(Gdk::Rectangle rect, std::
 			synfig::warning(_("%s :\n\tcouldn't find row info for path: internal error"), __PRETTY_FUNCTION__);
 			continue;
 		}
-		path_list.push_back(path);
+		path_list.insert(path);
 		y += row_info->get_geometry().h;
 	}
 
