@@ -52,6 +52,7 @@ class StateStroke : public Smach::state<StateStroke_Context>
 public:
 	StateStroke();
 	~StateStroke();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateStroke
 
 extern StateStroke state_stroke;

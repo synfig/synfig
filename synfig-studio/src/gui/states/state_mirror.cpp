@@ -167,6 +167,11 @@ StateMirror::~StateMirror()
 {
 }
 
+void* StateMirror::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateMirror_Context(machine_context);
+}
+
 StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),

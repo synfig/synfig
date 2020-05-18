@@ -45,6 +45,7 @@ class StateBrush : public Smach::state<StateBrush_Context>
 public:
 	StateBrush();
 	~StateBrush();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateBrush
 
 extern StateBrush state_brush;

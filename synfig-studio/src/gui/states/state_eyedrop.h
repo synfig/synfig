@@ -45,6 +45,7 @@ class StateEyedrop : public Smach::state<StateEyedrop_Context>
 public:
 	StateEyedrop();
 	~StateEyedrop();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateEyedrop
 
 extern StateEyedrop state_eyedrop;

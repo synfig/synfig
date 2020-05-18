@@ -44,6 +44,7 @@ class StateBLine : public Smach::state<StateBLine_Context>
 public:
 	StateBLine();
 	~StateBLine();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateBLine
 
 extern StateBLine state_bline;

@@ -292,6 +292,11 @@ StatePolygon::~StatePolygon()
 {
 }
 
+void* StatePolygon::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StatePolygon_Context(machine_context);
+}
+
 void
 StatePolygon_Context::load_settings()
 {

@@ -112,6 +112,11 @@ StateZoom::~StateZoom()
 {
 }
 
+void* StateZoom::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateZoom_Context(machine_context);
+}
+
 StateZoom_Context::StateZoom_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),

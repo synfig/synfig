@@ -299,6 +299,11 @@ StateRectangle::~StateRectangle()
 {
 }
 
+void* StateRectangle::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateRectangle_Context(machine_context);
+}
+
 void
 StateRectangle_Context::load_settings()
 {

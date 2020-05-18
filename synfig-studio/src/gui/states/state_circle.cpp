@@ -329,6 +329,11 @@ StateCircle::~StateCircle()
 {
 }
 
+void* StateCircle::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateCircle_Context(machine_context);
+}
+
 void
 StateCircle_Context::load_settings()
 {

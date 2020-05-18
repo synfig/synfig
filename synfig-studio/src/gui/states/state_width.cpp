@@ -172,6 +172,11 @@ StateWidth::~StateWidth()
 {
 }
 
+void* StateWidth::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateWidth_Context(machine_context);
+}
+
 void
 StateWidth_Context::load_settings()
 {
