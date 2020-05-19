@@ -395,7 +395,6 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 
 	return new_face(font_fam_) || new_face(font_fam);
 
-	return false;
 }
 
 #ifdef USE_MAC_FT_FUNCS
