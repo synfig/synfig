@@ -525,7 +525,7 @@ class Param:
                 self.expression_controllers.extend(eff_1)
                 self.expression_controllers.extend(eff_2)
                 
-                ret = "radiansToDegrees(Math.atan2({y}, {x}))"
+                ret = "sub(180,radiansToDegrees(Math.atan2({y}, {x})))"
                 ret = ret.format(y=y,x=x)
                 self.expression = ret
                 return ret, self.expression_controllers
