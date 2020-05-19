@@ -146,6 +146,30 @@ struct TextLine
 	}
 };
 
+#ifdef WITH_FONTCONFIG
+// Allow proper finalization of FontConfig
+struct FontConfigWrap {
+	static FcConfig* init() {
+		static FontConfigWrap obj;
+		return obj.config;
+	}
+
+	FontConfigWrap(FontConfigWrap const&) = delete;
+	void operator=(FontConfigWrap const&) = delete;
+private:
+	FcConfig* config = nullptr;
+
+	FontConfigWrap()
+	{
+		config = FcInitLoadConfigAndFonts();
+	}
+	~FontConfigWrap() {
+		FcConfigDestroy(config);
+		config = nullptr;
+	}
+};
+#endif
+
 /* === P R O C E D U R E S ================================================= */
 
 /*Glyph::~Glyph()
@@ -393,8 +417,56 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 			return true;
 	}
 
-	return new_face(font_fam_) || new_face(font_fam);
+#ifdef WITH_FONTCONFIG
+	FcConfig* fc = FontConfigWrap::init();
+	if( !fc )
+	{
+		synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
+	} else {
+		FcPattern* pat = FcPatternCreate();
+		FcPatternAddString(pat, FC_FAMILY, (const FcChar8*)font_fam.c_str());
+		FcPatternAddInteger(pat, FC_SLANT, style == TEXT_STYLE_NORMAL ? FC_SLANT_ROMAN : (style == TEXT_STYLE_ITALIC ? FC_SLANT_ITALIC : FC_SLANT_OBLIQUE));
+		int fc_weight;
+#define SYNFIG_TO_FC(X) TEXT_WEIGHT_##X : fc_weight = FC_WEIGHT_##X ; break
+		switch (weight) {
+		case SYNFIG_TO_FC(NORMAL);
+		case SYNFIG_TO_FC(BOLD);
+		case SYNFIG_TO_FC(THIN);
+		case SYNFIG_TO_FC(ULTRALIGHT);
+		case SYNFIG_TO_FC(LIGHT);
+		case SYNFIG_TO_FC(SEMILIGHT);
+		case SYNFIG_TO_FC(BOOK);
+		case SYNFIG_TO_FC(MEDIUM);
+		case SYNFIG_TO_FC(SEMIBOLD);
+		case SYNFIG_TO_FC(ULTRABOLD);
+		case SYNFIG_TO_FC(HEAVY);
+		case TEXT_WEIGHT_ULTRAHEAVY : fc_weight = FC_WEIGHT_HEAVY ; break;
+		default:
+			fc_weight = FC_WEIGHT_NORMAL;
+		}
+#undef SYNFIG_TO_FC
+		FcPatternAddInteger(pat, FC_WEIGHT, fc_weight);
 
+		FcConfigSubstitute(fc, pat, FcMatchPattern);
+		FcDefaultSubstitute(pat);
+		FcFontSet *fs = FcFontSetCreate();
+		FcResult result;
+		FcPattern *match = FcFontMatch(fc, pat, &result);
+		if (match)
+			FcFontSetAdd(fs, match);
+		if (pat)
+			FcPatternDestroy(pat);
+		if(fs && fs->nfont){
+			FcChar8* file;
+			if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
+				font_fam = (const char*)file;
+			FcFontSetDestroy(fs);
+		} else
+			synfig::warning("Layer_Freetype: fontconfig: %s",_("empty font set"));
+	}
+#endif
+
+	return new_face(font_fam);
 }
 
 #ifdef USE_MAC_FT_FUNCS
@@ -509,37 +581,6 @@ Layer_Freetype::new_face(const String &newfont)
 		{
 			synfig::info(__FILE__":%d: \"%s\" -- ft_error=%d",__LINE__,newfont.c_str(),error);
 			// Unable to generate fs_spec
-		}
-	}
-#endif
-
-#ifdef WITH_FONTCONFIG
-	if(error)
-	{
-		FcFontSet *fs;
-		FcResult result;
-		if( !FcInit() )
-		{
-			synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
-			error = 1;
-		} else {
-			FcPattern* pat = FcNameParse((FcChar8 *) newfont.c_str());
-			FcConfigSubstitute(0, pat, FcMatchPattern);
-			FcDefaultSubstitute(pat);
-			FcPattern *match;
-			fs = FcFontSetCreate();
-			match = FcFontMatch(0, pat, &result);
-			if (match)
-				FcFontSetAdd(fs, match);
-			if (pat)
-				FcPatternDestroy(pat);
-			if(fs && fs->nfont){
-				FcChar8* file;
-				if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
-					error=FT_New_Face(ft_library,(const char*)file,face_index,&face);
-				FcFontSetDestroy(fs);
-			} else
-				synfig::warning("Layer_Freetype: fontconfig: %s",_("empty font set"));
 		}
 	}
 #endif
