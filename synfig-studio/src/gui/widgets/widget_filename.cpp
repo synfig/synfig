@@ -151,6 +151,7 @@ Widget_Filename::on_button_choose_pressed()
 	{
 		filename = synfig::CanvasFileNaming::make_short_filename(canvas->get_file_name(), filename);
 		entry_filename->set_text(filename);
+		entry_filename->activate();
 	}
 }
 
