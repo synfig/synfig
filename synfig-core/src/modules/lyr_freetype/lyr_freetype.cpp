@@ -60,6 +60,8 @@
 	#include FT_MAC_H
 #endif
 
+#include <algorithm>
+
 #endif
 
 using namespace std;
@@ -245,9 +247,9 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(new_face(font_fam_))
 		return true;
 
-	//start evil hack
-	for(unsigned int i=0;i<font_fam.size();i++)font_fam[i]=tolower(font_fam[i]);
-	//end evil hack
+	// string :: tolower
+	std::transform(font_fam.begin(), font_fam.end(), font_fam.begin(),
+		[](unsigned char c){ return std::tolower(c); });
 
 	if(font_fam=="arial black")
 	{
