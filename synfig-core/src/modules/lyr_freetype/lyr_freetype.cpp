@@ -453,6 +453,15 @@ Layer_Freetype::new_face(const String &newfont)
 #ifdef __APPLE__
 	possible_font_extensions.push_back(".dfont");
 #endif
+
+	// if newfont has a known extension, don't try to append extensions
+	std::string newfont_ext = etl::filename_extension(newfont);
+	if (!newfont_ext.empty()) {
+		auto iter = std::find(possible_font_extensions.cbegin(), possible_font_extensions.cend(), newfont_ext);
+		if (iter != possible_font_extensions.cend())
+			possible_font_extensions = {""};
+	}
+
 	std::vector<std::string> possible_font_directories = {""};
 	if (get_canvas())
 		possible_font_directories.push_back( get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR );
