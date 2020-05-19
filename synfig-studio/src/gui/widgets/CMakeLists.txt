@@ -11,6 +11,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/widget_enum.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_sublayer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_filename.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/widget_fontfamily.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_gradient.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_link.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_time.cpp"
