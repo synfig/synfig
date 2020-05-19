@@ -70,9 +70,15 @@ using namespace synfig;
 
 #define MAX_GLYPHS		2000
 
-#define PANGO_STYLE_NORMAL (0)
-#define PANGO_STYLE_OBLIQUE (1)
-#define PANGO_STYLE_ITALIC (2)
+// Copy of PangoStyle
+// It is necessary to keep original values if Pango ever change them
+//  - because it would change layer rendering as Synfig stores the parameter
+//     value as an integer (ie. not a weight name string)
+enum TextStyle{
+	TEXT_STYLE_NORMAL = 0,
+	TEXT_STYLE_OBLIQUE = 1,
+	TEXT_STYLE_ITALIC = 2
+};
 
 // Copy of PangoWeight
 // It is necessary to keep original values if Pango ever change them
@@ -171,7 +177,7 @@ Layer_Freetype::Layer_Freetype()
 	param_compress=ValueBase(Real(1.0));
 	param_vcompress=ValueBase(Real(1.0));
 	param_weight=ValueBase(TEXT_WEIGHT_NORMAL);
-	param_style=ValueBase(PANGO_STYLE_NORMAL);
+	param_style=ValueBase(TEXT_STYLE_NORMAL);
 	param_family=ValueBase((const char*)"Sans Serif");
 	param_use_kerning=ValueBase(true);
 	param_grid_fit=ValueBase(false);
@@ -217,13 +223,13 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 	if(
 		!new_font_(family,style,weight) &&
 		!new_font_(family,style,TEXT_WEIGHT_NORMAL) &&
-		!new_font_(family,PANGO_STYLE_NORMAL,weight) &&
-		!new_font_(family,PANGO_STYLE_NORMAL,TEXT_WEIGHT_NORMAL) &&
+		!new_font_(family,TEXT_STYLE_NORMAL,weight) &&
+		!new_font_(family,TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL) &&
 		!new_font_("sans serif",style,weight) &&
 		!new_font_("sans serif",style,TEXT_WEIGHT_NORMAL) &&
-		!new_font_("sans serif",PANGO_STYLE_NORMAL,weight)
+		!new_font_("sans serif",TEXT_STYLE_NORMAL,weight)
 	)
-		new_font_("sans serif",PANGO_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
+		new_font_("sans serif",TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
 }
 
 /*! The new_font() function try to render
@@ -258,7 +264,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		String arial("arial");
 		if(weight>TEXT_WEIGHT_NORMAL)
 			arial+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 			arial+='i';
 		else
 			if(weight>TEXT_WEIGHT_NORMAL) arial+='d';
@@ -276,7 +282,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		String filename("comic");
 		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 			filename+='i';
 		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
@@ -289,7 +295,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		String filename("cour");
 		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 			filename+='i';
 		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
@@ -302,7 +308,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		String filename("times");
 		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 			filename+='i';
 		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
@@ -315,7 +321,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		String filename("trebuc");
 		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 		{
 			filename+='i';
 			if(weight<=TEXT_WEIGHT_NORMAL) filename+='t';
@@ -334,7 +340,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 				luxi+='b';
 			else
 				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 				luxi+='i';
 
 			if(new_face(luxi))
@@ -353,7 +359,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 				luxi+='b';
 			else
 				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 				luxi+='i';
 
 			if(new_face(luxi))
@@ -372,7 +378,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 				luxi+='b';
 			else
 				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 				luxi+='i';
 
 			if(new_face(luxi))
@@ -667,9 +673,9 @@ Layer_Freetype::get_param_vocab(void)const
 	ret.push_back(ParamDesc("style")
 		.set_local_name(_("Style"))
 		.set_hint("enum")
-		.add_enum_value(PANGO_STYLE_NORMAL, "normal" ,_("Normal"))
-		.add_enum_value(PANGO_STYLE_OBLIQUE, "oblique" ,_("Oblique"))
-		.add_enum_value(PANGO_STYLE_ITALIC, "italic" ,_("Italic"))
+		.add_enum_value(TEXT_STYLE_NORMAL, "normal" ,_("Normal"))
+		.add_enum_value(TEXT_STYLE_OBLIQUE, "oblique" ,_("Oblique"))
+		.add_enum_value(TEXT_STYLE_ITALIC, "italic" ,_("Italic"))
 	);
 
 	ret.push_back(ParamDesc("weight")
