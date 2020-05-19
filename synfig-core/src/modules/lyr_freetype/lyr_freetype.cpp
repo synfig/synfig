@@ -74,8 +74,24 @@ using namespace synfig;
 #define PANGO_STYLE_OBLIQUE (1)
 #define PANGO_STYLE_ITALIC (2)
 
-#define WEIGHT_NORMAL (400)
-#define WEIGHT_BOLD (700)
+// Copy of PangoWeight
+// It is necessary to keep original values if Pango ever change them
+//  - because it would change layer rendering as Synfig stores the parameter
+//     value as an integer (ie. not a weight name string)
+enum TextWeight{
+	TEXT_WEIGHT_THIN = 100,
+	TEXT_WEIGHT_ULTRALIGHT = 200,
+	TEXT_WEIGHT_LIGHT = 300,
+	TEXT_WEIGHT_SEMILIGHT = 350,
+	TEXT_WEIGHT_BOOK = 380,
+	TEXT_WEIGHT_NORMAL = 400,
+	TEXT_WEIGHT_MEDIUM = 500,
+	TEXT_WEIGHT_SEMIBOLD = 600,
+	TEXT_WEIGHT_BOLD = 700,
+	TEXT_WEIGHT_ULTRABOLD = 800,
+	TEXT_WEIGHT_HEAVY = 900,
+	TEXT_WEIGHT_ULTRAHEAVY = 1000
+};
 
 /* === G L O B A L S ======================================================= */
 
@@ -154,7 +170,7 @@ Layer_Freetype::Layer_Freetype()
 	param_orient=ValueBase(Vector(0.5,0.5));
 	param_compress=ValueBase(Real(1.0));
 	param_vcompress=ValueBase(Real(1.0));
-	param_weight=ValueBase(WEIGHT_NORMAL);
+	param_weight=ValueBase(TEXT_WEIGHT_NORMAL);
 	param_style=ValueBase(PANGO_STYLE_NORMAL);
 	param_family=ValueBase((const char*)"Sans Serif");
 	param_use_kerning=ValueBase(true);
@@ -200,14 +216,14 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 {
 	if(
 		!new_font_(family,style,weight) &&
-		!new_font_(family,style,WEIGHT_NORMAL) &&
+		!new_font_(family,style,TEXT_WEIGHT_NORMAL) &&
 		!new_font_(family,PANGO_STYLE_NORMAL,weight) &&
-		!new_font_(family,PANGO_STYLE_NORMAL,WEIGHT_NORMAL) &&
+		!new_font_(family,PANGO_STYLE_NORMAL,TEXT_WEIGHT_NORMAL) &&
 		!new_font_("sans serif",style,weight) &&
-		!new_font_("sans serif",style,WEIGHT_NORMAL) &&
+		!new_font_("sans serif",style,TEXT_WEIGHT_NORMAL) &&
 		!new_font_("sans serif",PANGO_STYLE_NORMAL,weight)
 	)
-		new_font_("sans serif",PANGO_STYLE_NORMAL,WEIGHT_NORMAL);
+		new_font_("sans serif",PANGO_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
 }
 
 /*! The new_font() function try to render
@@ -240,12 +256,12 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="sans serif" || font_fam=="arial")
 	{
 		String arial("arial");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			arial+='b';
 		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 			arial+='i';
 		else
-			if(weight>WEIGHT_NORMAL) arial+='d';
+			if(weight>TEXT_WEIGHT_NORMAL) arial+='d';
 
 		if(new_face(arial))
 			return true;
@@ -258,11 +274,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="comic" || font_fam=="comic sans")
 	{
 		String filename("comic");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
 		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
+		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
 		if(new_face(filename))
 			return true;
@@ -271,11 +287,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="courier" || font_fam=="courier new")
 	{
 		String filename("cour");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
 		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
+		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
 		if(new_face(filename))
 			return true;
@@ -284,11 +300,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="serif" || font_fam=="times" || font_fam=="times new roman")
 	{
 		String filename("times");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
 		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
+		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
 		if(new_face(filename))
 			return true;
@@ -297,14 +313,14 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="trebuchet")
 	{
 		String filename("trebuc");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
 		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 		{
 			filename+='i';
-			if(weight<=WEIGHT_NORMAL) filename+='t';
+			if(weight<=TEXT_WEIGHT_NORMAL) filename+='t';
 		}
-		else if(weight>WEIGHT_NORMAL) filename+='d';
+		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
 		if(new_face(filename))
 			return true;
@@ -314,7 +330,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	{
 		{
 			String luxi("luxis");
-			if(weight>WEIGHT_NORMAL)
+			if(weight>TEXT_WEIGHT_NORMAL)
 				luxi+='b';
 			else
 				luxi+='r';
@@ -333,7 +349,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	{
 		{
 			String luxi("luxir");
-			if(weight>WEIGHT_NORMAL)
+			if(weight>TEXT_WEIGHT_NORMAL)
 				luxi+='b';
 			else
 				luxi+='r';
@@ -352,7 +368,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	{
 		{
 			String luxi("luxim");
-			if(weight>WEIGHT_NORMAL)
+			if(weight>TEXT_WEIGHT_NORMAL)
 				luxi+='b';
 			else
 				luxi+='r';
@@ -659,12 +675,12 @@ Layer_Freetype::get_param_vocab(void)const
 	ret.push_back(ParamDesc("weight")
 		.set_local_name(_("Weight"))
 		.set_hint("enum")
-		.add_enum_value(200, "ultralight" ,_("Ultralight"))
-		.add_enum_value(300, "light" ,_("Light"))
-		.add_enum_value(400, "normal" ,_("Normal"))
-		.add_enum_value(700, "bold" ,_("Bold"))
-		.add_enum_value(800, "ultrabold" ,_("Ultrabold"))
-		.add_enum_value(900, "heavy" ,_("Heavy"))
+		.add_enum_value(TEXT_WEIGHT_ULTRALIGHT, "ultralight" ,_("Ultralight"))
+		.add_enum_value(TEXT_WEIGHT_LIGHT, "light" ,_("Light"))
+		.add_enum_value(TEXT_WEIGHT_NORMAL, "normal" ,_("Normal"))
+		.add_enum_value(TEXT_WEIGHT_BOLD, "bold" ,_("Bold"))
+		.add_enum_value(TEXT_WEIGHT_ULTRABOLD, "ultrabold" ,_("Ultrabold"))
+		.add_enum_value(TEXT_WEIGHT_HEAVY, "heavy" ,_("Heavy"))
 	);
 	ret.push_back(ParamDesc("compress")
 		.set_local_name(_("Horizontal Spacing"))
