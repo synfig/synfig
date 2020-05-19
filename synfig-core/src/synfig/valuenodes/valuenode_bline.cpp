@@ -191,7 +191,6 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real radius
 	const ValueBase::List &list = bline.get_list();
 	int size = (int)list.size();
 	int count = loop ? size : size - 1;
-	if (!loop) --count;
 	
 	for(int i0 = 0; i0 < count; ++i0) {
 		int i1 = (i0 + 1) % size;
