@@ -110,7 +110,7 @@ public:
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
 	//!Constructor by origin, length and parent (default no parent)
-	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, ValueNode_Bone* p=0);
+	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, ValueNode_Bone* p=nullptr);
 	//!Wrappers for name_
 	const String& get_name()const {return name_;}
 	void set_name(const String &x) {name_=x;}

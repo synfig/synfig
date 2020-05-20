@@ -61,7 +61,7 @@ Bone::Bone():
 	width_(0.1),
 	tipwidth_(0.1),
 	depth_(0.0),
-	parent_(0)
+	parent_(nullptr)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
 		printf("%s:%d new bone\n", __FILE__, __LINE__);
@@ -77,7 +77,7 @@ Bone::Bone(const Point &o, const Point &t):
 	width_(0.3),
 	tipwidth_(0.3),
 	depth_(0.0),
-	parent_(0)
+	parent_(nullptr)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
 		printf("%s:%d new bone\n", __FILE__, __LINE__);

@@ -52,7 +52,7 @@ class ValueNode_Bone : public LinkableValueNode
 
 protected:
 	ValueNode_Bone();
-	ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas = nullptr);
 
 public:
 
@@ -93,7 +93,7 @@ public:
 
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);
-	static ValueNode_Bone* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = 0);
+	static ValueNode_Bone* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = nullptr);
 	virtual Vocab get_children_vocab_vfunc()const;
 	ValueNode_Bone::LooseHandle find(String name)const;
 	String unique_name(String name)const;

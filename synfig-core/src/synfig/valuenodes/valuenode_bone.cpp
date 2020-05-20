@@ -572,7 +572,7 @@ ValueNode_Bone::get_link_vfunc(int i)const
 #endif
 	}
 
-	return 0;
+	return nullptr;
 }
 
 LinkableValueNode::Vocab
@@ -650,7 +650,7 @@ ValueNode_Bone::find(String name)const
 		}
 
 	// printf("no\n");
-	return 0;
+	return nullptr;
 }
 
 String
@@ -743,7 +743,7 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 
 	if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
 		printf("%s:%d reached root - return false\n", __FILE__, __LINE__);
-	return 0;
+	return nullptr;
 }
 
 ValueNode_Bone::BoneSet
@@ -1003,7 +1003,7 @@ ValueNode_Bone_Root::operator()(Time t)const
 {
 	Bone ret;
 	ret.set_name			(get_local_name());
-	ret.set_parent			(0);
+	ret.set_parent			(nullptr);
 	return ret;
 }
 
