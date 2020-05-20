@@ -1029,20 +1029,29 @@ bool Widget_Timetrack::WaypointSD::find_items_in_rect(Gdk::Rectangle rect, std::
 	if (y0 > y1)
 		std::swap(y0, y1);
 
-
-	std::vector<Gtk::TreePath> path_list;
+	std::set<Gtk::TreePath> path_list;
 	for (int y = y0; y < y1; ) {
 		Gtk::TreePath path;
 		bool ok = widget.params_treeview->get_path_at_pos(1, y, path);
-		if (!ok)
-			break;
+		// Did we reach the bottom of treeview? End loop
+		// Otherwise the !ok is because user selected a rectangle area from bottom to top
+		// and went beyond widget top y coordinate (0).
+		if (!ok) {
+			if (y >= 0)
+				break;
+			else {
+				y++;
+				continue;
+			}
+		}
+
 
 		const RowInfo *row_info = widget.param_info_map[path.to_string()];
 		if (!row_info) {
 			synfig::warning(_("%s :\n\tcouldn't find row info for path: internal error"), __PRETTY_FUNCTION__);
 			continue;
 		}
-		path_list.push_back(path);
+		path_list.insert(path);
 		y += row_info->get_geometry().h;
 	}
 
