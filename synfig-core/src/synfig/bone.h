@@ -27,25 +27,12 @@
 #define __SYNFIG_BONE_H
 
 /* === H E A D E R S ======================================================= */
-#include <iostream>
 #include "matrix.h"
 #include "uniqueid.h"
 #include "string.h"
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
-
-#define COUT_BONE(bone)													  \
-	cout<<"[name]="<<bone.name_<<endl;									  \
-	cout<<"[origin]="<<bone.origin_<<endl;	                              \
-	cout<<"[angle]="<<bone.angle_<<endl;		                          \
-	cout<<"[scalelx]="<<bone.scalelx_<<endl; \
-	cout<<"[scalex]="<<bone.scalex_<<endl;	  \
-	cout<<"[length]="<<bone.length_<<endl;         \
-	cout<<"[width]="<<bone.width_<<endl; \
-	cout<<"[tipwidth]="<<bone.tipwidth_<<endl; \
-	cout<<"[depth]="<<bone.depth_<<endl; \
-	cout<<"[parent]="<<bone.parent_<<endl
 
 /* === T Y P E D E F S ===================================================== */
 
