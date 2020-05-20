@@ -34,7 +34,6 @@
 #include "guid.h"
 #include "valuenodes/valuenode_bone.h"
 #include <ETL/stringf>
-#include <algorithm>
 #include <cmath>
 #include <inttypes.h>
 

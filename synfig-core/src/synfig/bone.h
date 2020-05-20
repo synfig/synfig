@@ -31,14 +31,9 @@
 #include "matrix.h"
 #include "uniqueid.h"
 #include "string.h"
-#include "guid.h"
-#include <vector>
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
-
-// how many hex digits of the guid string to show in debug messages
-#define GUID_PREFIX_LEN 6
 
 #define COUT_BONE(bone)													  \
 	cout<<"[name]="<<bone.name_<<endl;									  \

@@ -30,7 +30,6 @@
 #include "layer_meshtransform.h"
 #include <synfig/pair.h>
 #include <synfig/bone.h>
-#include <synfig/polygon.h>
 
 /* === M A C R O S ========================================================= */
 

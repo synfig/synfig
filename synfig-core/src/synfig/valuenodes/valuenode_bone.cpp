@@ -55,6 +55,9 @@ using namespace synfig;
 #define GET_NODE_NAME(node,t) node->get_bone_name(t)
 #define GET_NODE_BONE(node,t) (*node)(t).get(Bone())
 
+// how many hex digits of the guid string to show in debug messages
+#define GUID_PREFIX_LEN 6
+
 #define GET_GUID_CSTR(guid) guid.get_string().substr(0,GUID_PREFIX_LEN).c_str()
 #define GET_NODE_GUID_CSTR(node) GET_GUID_CSTR(node->get_guid())
 #define GET_NODE_NAME_CSTR(node,t) GET_NODE_NAME(node,t).c_str()
