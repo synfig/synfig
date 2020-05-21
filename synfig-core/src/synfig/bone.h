@@ -27,30 +27,12 @@
 #define __SYNFIG_BONE_H
 
 /* === H E A D E R S ======================================================= */
-#include <iostream>
 #include "matrix.h"
 #include "uniqueid.h"
 #include "string.h"
-#include "guid.h"
-#include <vector>
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
-
-// how many hex digits of the guid string to show in debug messages
-#define GUID_PREFIX_LEN 6
-
-#define COUT_BONE(bone)													  \
-	cout<<"[name]="<<bone.name_<<endl;									  \
-	cout<<"[origin]="<<bone.origin_<<endl;	                              \
-	cout<<"[angle]="<<bone.angle_<<endl;		                          \
-	cout<<"[scalelx]="<<bone.scalelx_<<endl; \
-	cout<<"[scalex]="<<bone.scalex_<<endl;	  \
-	cout<<"[length]="<<bone.length_<<endl;         \
-	cout<<"[width]="<<bone.width_<<endl; \
-	cout<<"[tipwidth]="<<bone.tipwidth_<<endl; \
-	cout<<"[depth]="<<bone.depth_<<endl; \
-	cout<<"[parent]="<<bone.parent_<<endl
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -115,7 +97,7 @@ public:
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
 	//!Constructor by origin, length and parent (default no parent)
-	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, ValueNode_Bone* p=0);
+	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, ValueNode_Bone* p=nullptr);
 	//!Wrappers for name_
 	const String& get_name()const {return name_;}
 	void set_name(const String &x) {name_=x;}

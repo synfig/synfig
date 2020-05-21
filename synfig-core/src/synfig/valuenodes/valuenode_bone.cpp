@@ -55,6 +55,9 @@ using namespace synfig;
 #define GET_NODE_NAME(node,t) node->get_bone_name(t)
 #define GET_NODE_BONE(node,t) (*node)(t).get(Bone())
 
+// how many hex digits of the guid string to show in debug messages
+#define GUID_PREFIX_LEN 6
+
 #define GET_GUID_CSTR(guid) guid.get_string().substr(0,GUID_PREFIX_LEN).c_str()
 #define GET_NODE_GUID_CSTR(node) GET_GUID_CSTR(node->get_guid())
 #define GET_NODE_NAME_CSTR(node,t) GET_NODE_NAME(node,t).c_str()
@@ -569,7 +572,7 @@ ValueNode_Bone::get_link_vfunc(int i)const
 #endif
 	}
 
-	return 0;
+	return nullptr;
 }
 
 LinkableValueNode::Vocab
@@ -647,7 +650,7 @@ ValueNode_Bone::find(String name)const
 		}
 
 	// printf("no\n");
-	return 0;
+	return nullptr;
 }
 
 String
@@ -740,7 +743,7 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 
 	if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
 		printf("%s:%d reached root - return false\n", __FILE__, __LINE__);
-	return 0;
+	return nullptr;
 }
 
 ValueNode_Bone::BoneSet
@@ -1000,7 +1003,7 @@ ValueNode_Bone_Root::operator()(Time t)const
 {
 	Bone ret;
 	ret.set_name			(get_local_name());
-	ret.set_parent			(0);
+	ret.set_parent			(nullptr);
 	return ret;
 }
 
