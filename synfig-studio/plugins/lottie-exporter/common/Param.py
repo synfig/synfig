@@ -518,6 +518,18 @@ class Param:
                 self.expression = ret
                 return ret, self.expression_controllers
 
+            elif self.param[0].tag == "atan2":
+                self.subparams["atan2"].extract_subparams()
+                y, eff_1 = self.subparams["atan2"].subparams["y"].recur_animate(anim_type)
+                x, eff_2 = self.subparams["atan2"].subparams["x"].recur_animate(anim_type)
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                
+                ret = "sub(180,radiansToDegrees(Math.atan2({y}, {x})))"
+                ret = ret.format(y=y,x=x)
+                self.expression = ret
+                return ret, self.expression_controllers
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -850,6 +862,12 @@ class Param:
                 else:
                     ret = round(link)*settings.PIX_PER_UNIT
 
+            elif self.param[0].tag == "atan2":
+                y = self.subparams["atan2"].subparams["y"].__get_value(frame)
+                x = self.subparams["atan2"].subparams["x"].__get_value(frame)
+                rad = math.pi/180
+                ret = math.atan2(y,x)/rad
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1005,6 +1023,11 @@ class Param:
             elif node.tag == "fromint":
                 self.subparams["fromint"].extract_subparams()
                 self.subparams["fromint"].subparams["link"].update_frame_window(window)
+
+            elif node.tag == "atan2":
+                self.subparams["atan2"].extract_subparams()
+                self.subparams["atan2"].subparams["y"].update_frame_window(window)
+                self.subparams["atan2"].subparams["x"].update_frame_window(window)
 
         if is_animated(node) == 2:
             for waypoint in node:
