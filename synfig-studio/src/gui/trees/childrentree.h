@@ -99,11 +99,6 @@ private:
 
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int> signal_waypoint_clicked_childrentree_;
 
-	Gtk::Button *button_raise;
-	Gtk::Button *button_lower;
-	Gtk::Button *button_duplicate;
-	Gtk::Button *button_delete;
-
 	Widget_ValueBase blend_method_widget;
 
 	/*
@@ -129,15 +124,6 @@ private:
 	void on_selection_changed();
 
 	void on_dirty_preview();
-
-	//! \todo Implement raise/lower/duplicate/delete functions
-	void on_raise_pressed();
-
-	void on_lower_pressed();
-
-	void on_duplicate_pressed();
-
-	void on_delete_pressed();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------

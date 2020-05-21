@@ -67,15 +67,6 @@ class LayerTree : public Gtk::Table
 public:
 
 	typedef studio::ColumnID ColumnID;
-/*	enum ColumnID
-	{
-		COLUMNID_NAME,
-		COLUMNID_VALUE,
-		COLUMNID_TIME_TRACK,
-
-		COLUMNID_END			//!< \internal
-	};
-*/
 	typedef std::list<synfig::Layer::Handle> LayerList;
 
 	/*
@@ -139,12 +130,6 @@ private:
 
 	bool disable_amount_changed_signal;
 
-	Gtk::Button *button_raise;
-	Gtk::Button *button_lower;
-	Gtk::Button *button_duplicate;
-	Gtk::Button *button_encapsulate;
-	Gtk::Button *button_delete;
-
 	Widget_ValueBase blend_method_widget;
 
 	bool param_tree_style_changed;
@@ -198,18 +183,6 @@ private:
 
 	void on_param_column_label_tree_style_updated();
 	bool on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
-
-public:
-
-	// void on_raise_pressed();
-
-	// void on_lower_pressed();
-
-	// void on_duplicate_pressed();
-
-	// void on_encapsulate_pressed();
-
-	// void on_delete_pressed();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
