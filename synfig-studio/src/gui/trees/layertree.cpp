@@ -60,18 +60,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifndef SMALL_BUTTON
-#define SMALL_BUTTON(button,stockid,tooltip)	\
-	button = manage(new class Gtk::Button());	\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),iconsize));	\
-	button->add(*icon);	\
-	button->set_tooltip_text(tooltip);	\
-	icon->set_padding(0,0);\
-	icon->show();	\
-	button->set_relief(Gtk::RELIEF_NONE); \
-	button->show()
-#endif
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -149,32 +137,7 @@ LayerTree::LayerTree():
 	attach(*layer_amount_hscale, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 1, 1);
 	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
-	Gtk::Image *icon;
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
-
-	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
-	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
-	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
-	SMALL_BUTTON(button_encapsulate,"synfig-encapsulate","Group");
-	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
-
-	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_lower,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_encapsulate,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
-
-	// button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_raise_pressed));
-	// button_lower->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_lower_pressed));
-	// button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_duplicate_pressed));
-	// button_encapsulate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_encapsulate_pressed));
-	// button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_delete_pressed));
-
-	button_raise->set_sensitive(false);
-	button_lower->set_sensitive(false);
-	button_duplicate->set_sensitive(false);
-	button_encapsulate->set_sensitive(false);
-	button_delete->set_sensitive(false);
 
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_selection_changed));
 
@@ -664,8 +627,6 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 
 	layer_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::LayerTree::on_dirty_preview));
 
-	//layer_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::LayerTree::on_dirty_preview));
-
 	layer_tree_store_->canvas_interface()->signal_time_changed().connect(
 		sigc::mem_fun(
 			&param_tree_view(),
@@ -744,21 +705,10 @@ LayerTree::on_selection_changed()
 
 	if(layer_list.empty())
 	{
-		button_raise->set_sensitive(false);
-		button_lower->set_sensitive(false);
-		button_duplicate->set_sensitive(false);
-		button_encapsulate->set_sensitive(false);
-		button_delete->set_sensitive(false);
 		layer_amount_hscale->set_sensitive(false);
 		blend_method_widget.set_sensitive(false);
 		return;
 	}
-
-	button_raise->set_sensitive(true);
-	button_lower->set_sensitive(true);
-	button_duplicate->set_sensitive(true);
-	button_encapsulate->set_sensitive(true);
-	button_delete->set_sensitive(true);
 
 	if(layer_list.size()==1 && (*layer_list.begin())->get_param("amount").is_valid()&& (*layer_list.begin())->get_param("amount").same_type_as(Real()))
 	{

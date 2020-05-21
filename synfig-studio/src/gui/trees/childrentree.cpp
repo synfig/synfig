@@ -55,34 +55,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifndef SMALL_BUTTON
-#define SMALL_BUTTON(button,stockid,tooltip)	\
-	button = manage(new class Gtk::Button());	\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),iconsize));	\
-	button->add(*icon);	\
-	button->set_tooltip_text(,tooltip);	\
-	icon->set_padding(0,0);\
-	icon->show();	\
-	button->set_relief(Gtk::RELIEF_NONE); \
-	button->show()
-#endif
-
-#ifndef NORMAL_BUTTON
-#define NORMAL_BUTTON(button,stockid,tooltip)	\
-	button = manage(new class Gtk::Button());	\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
-	button->add(*icon);	\
-	button->set_tooltip_text(,tooltip);	\
-	icon->set_padding(0,0);\
-	icon->show();	\
-	/*button->set_relief(Gtk::RELIEF_NONE);*/ \
-	button->show()
-#endif
-
-#define NEW_SMALL_BUTTON(x,y,z)	Gtk::Button *SMALL_BUTTON(x,y,z)
-
-#define NOT_IMPLEMENTED_SLOT sigc::mem_fun(*reinterpret_cast<studio::CanvasViewUIInterface*>(get_ui_interface().get()),&studio::CanvasViewUIInterface::not_implemented)
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -187,35 +159,6 @@ ChildrenTree::ChildrenTree()
 	tree_view.set_enable_search(true);
 	tree_view.set_search_column(model.label);
 
-/*  // Buttons to raise/lower/duplicate/delete children valuenodes
-	//   Commented out because these functions are not implemented
-    //   and children sort themselves alphabetically
-
-	Gtk::Image *icon;
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
-	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
-
-	SMALL_BUTTON(button_raise,"gtk-go-up",_("Raise"));
-	SMALL_BUTTON(button_lower,"gtk-go-down",_("Lower"));
-	SMALL_BUTTON(button_duplicate,"synfig-duplicate",_("Duplicate"));
-	SMALL_BUTTON(button_delete,"gtk-delete",_("Delete"));
-
-	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_lower,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
-
-	button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_raise_pressed));
-	button_lower->signal_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_lower_pressed));
-	button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_duplicate_pressed));
-	button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_delete_pressed));
-
-	button_raise->set_sensitive(false);
-	button_lower->set_sensitive(false);
-	button_duplicate->set_sensitive(false);
-	button_delete->set_sensitive(false);
-*/
-
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_selection_changed));
 
 	tree_view.set_reorderable(true);
@@ -259,14 +202,6 @@ ChildrenTree::on_dirty_preview()
 void
 ChildrenTree::on_selection_changed()
 {
-	if(0)
-		{
-		button_raise->set_sensitive(false);
-		button_lower->set_sensitive(false);
-		button_duplicate->set_sensitive(false);
-		button_delete->set_sensitive(false);
-		return;
-	}
 }
 
 void
@@ -436,24 +371,4 @@ ChildrenTree::on_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip, co
 	tooltip->set_text(tooltip_string);
 	get_tree_view().set_tooltip_row(tooltip, path);
 	return true;
-}
-
-void
-ChildrenTree::on_raise_pressed()
-{
-}
-
-void
-ChildrenTree::on_lower_pressed()
-{
-}
-
-void
-ChildrenTree::on_duplicate_pressed()
-{
-}
-
-void
-ChildrenTree::on_delete_pressed()
-{
 }
