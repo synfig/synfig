@@ -33,6 +33,7 @@
 
 #include <sigc++/signal.h>
 #include <set>
+#include <ctime>
 #include "time.h"
 #include "guid.h"
 #include <ETL/handle>
@@ -153,7 +154,7 @@ private:
 
 	//! The last time the node was modified since the program started
 	//! \see __sys_clock
-	mutable int time_last_changed_;
+	mutable clock_t time_last_changed_;
 
 	//! \writeme
 	mutable Glib::Threads::RWLock rw_lock_;
