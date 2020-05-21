@@ -582,8 +582,10 @@ LayerParamTreeStore::on_value_node_child_removed(synfig::ValueNode::Handle value
 		return false;
 	});
 
-	erase(iter_to_remove);
-	rebuild();
+	if (iter_to_remove) {
+		erase(iter_to_remove);
+		rebuild();
+	}
 }
 
 void
