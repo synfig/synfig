@@ -136,15 +136,11 @@ public:
 
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalelx)
-	Point get_tip();
+	Point get_tip() const;
 
 	//!Wrapper for parent bone
-	// const Bone &get_parent() {return *parent_;}
 	const ValueNode_Bone* get_parent()const;
 	void set_parent(const ValueNode_Bone* parent);
-
-	void add_bone_to_map();
-	Bone* find_bone_in_map(int uid);
 
 	//!Animated Transformation matrix.
 	//!This matrix applied to a setup point in local

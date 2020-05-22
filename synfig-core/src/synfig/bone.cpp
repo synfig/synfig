@@ -35,7 +35,6 @@
 #include "valuenodes/valuenode_bone.h"
 #include <ETL/stringf>
 #include <cmath>
-#include <inttypes.h>
 
 #endif
 
@@ -116,13 +115,13 @@ Bone::set_parent(const ValueNode_Bone* parent)
 //!@return The tip Point of the bone (calculated) based on
 //! tip=origin+[length,0]*Scalex(scalex*scalelx,0)*Rotate(alpha)
 Point
-Bone::get_tip()
+Bone::get_tip() const
 {
 	Matrix s, r, sr;
 	s.set_scale(scalex_*scalelx_,0);
 	r.set_rotate(angle_);
 	sr=s*r;
-	return (Point)sr.get_transformed(Vector(length_,0));
+	return static_cast<Point>(sr.get_transformed(Vector(length_,0)));
 }
 
 //!Get the string of the Bone
@@ -131,11 +130,11 @@ Bone::get_tip()
 synfig::String
 Bone::get_string()const
 {
-	return strprintf("N=%s O=(%.4f %.4f) a=%.4f slx=%.4f sx=%.4f l=%.4f w=%.4f tw=%.4f or=%.4f P=%lx",
+	return strprintf("N=%s O=(%.4f %.4f) a=%.4f slx=%.4f sx=%.4f l=%.4f w=%.4f tw=%.4f or=%.4f P=%p",
 					 name_.c_str(),
 					 origin_[0], origin_[1],
 					 Angle::deg(angle_).get(),
-					 scalelx_, scalex_, length_, width_, tipwidth_, depth_, uintptr_t(parent_));
+					 scalelx_, scalex_, length_, width_, tipwidth_, depth_, parent_);
 }
 
 bool
