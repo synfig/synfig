@@ -37,6 +37,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include <synfig/general.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -141,7 +143,10 @@ Bone::get_string()const
 bool
 Bone::is_root()const
 {
-	return get_parent()->is_root();
+	if (parent_)
+		return get_parent()->is_root();
+	synfig::warning("should not reach this line in Bone::is_root()");
+	return true;
 }
 
 Bone::Shape
