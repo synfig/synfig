@@ -431,7 +431,7 @@ ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 			if ((*iter)->is_exported())
 				continue;
 			if ((*iter)->get_type() == type_bone_object)
-				ValueNode_Bone::fix_bones_referenced_by(*iter, *ret_iter, true, clone_map);
+				ValueNode_Bone::fix_bones_referenced_by(*iter, *ret_iter, false, clone_map);
 		}
 	}
 
