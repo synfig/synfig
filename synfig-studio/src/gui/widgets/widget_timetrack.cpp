@@ -724,7 +724,11 @@ void Widget_Timetrack::update_param_list_geometries()
 		Geometry geometry;
 		geometry.y = rect.get_y();
 		geometry.h = rect.get_height();
-		param_info_map[path.to_string()]->set_geometry(geometry);
+		RowInfo *row_info = param_info_map[path.to_string()];
+		if (row_info)
+			row_info->set_geometry(geometry);
+		else
+			synfig::error("internal error: it shouldn't be without parameter row info!");
 
 		last_param_y = std::max(last_param_y, geometry.y + geometry.h);
 		first_param_y = std::min(first_param_y, geometry.y);
