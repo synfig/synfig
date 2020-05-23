@@ -534,7 +534,7 @@ class Param:
                 self.subparams["vectorangle"].extract_subparams()
                 vector, eff_1 = self.subparams["vectorangle"].subparams["vector"].recur_animate("vector")
                 self.expression_controllers.extend(eff_1)
-                ret = "sub(180, radiansToDegrees(Math.atan2({y}, {x})))"
+                ret = "radiansToDegrees(Math.atan2({y}[1], {x}[0]))"
                 ret = ret.format(y=vector,x=vector)
 
                 self.expression = ret
