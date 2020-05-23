@@ -119,6 +119,9 @@ public:
 
 	static ValueNode_Bone::Handle get_root_bone();
 
+	// used when the bone tree is cloned
+	static void fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode::Handle cloned_value_node, bool recursive, const std::map<const ValueNode*, ValueNode::Handle>& clone_map);
+
 #ifdef _DEBUG
 	virtual void ref()const;
 	virtual bool unref()const;
