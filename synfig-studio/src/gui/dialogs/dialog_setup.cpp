@@ -647,8 +647,16 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 void
 Dialog_Setup::on_restore_pressed()
 {
+	if (App::dialog_message_2b(
+		_("Restore default settings"),
+		_("Settings will be restored to default. Are you sure?"),
+		Gtk::MESSAGE_QUESTION,
+		_("Cancel"),
+		_("Restore")))
+	{
 	App::restore_default_settings();
 	refresh();
+	}
 }
 
 

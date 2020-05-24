@@ -758,7 +758,7 @@ Instance::safe_revert()
 	{
 		if (!App::dialog_message_2b(
 			_("Revert to saved"),
-			_("You will lose any changes you have made since your last save."
+			_("You will lose any changes you have made since your last save. "
 				"Are you sure?"),
 			Gtk::MESSAGE_QUESTION,
 			_("Cancel"),
