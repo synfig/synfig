@@ -72,7 +72,6 @@ def gen_radial_gradient(lottie, layer, idx):
         x_expr = "sum(" + center.expression + "[0], " + radius.expression + ")"
         y_expr = center.expression + "[1]"
         expr = "[" + x_expr + ", " + y_expr + "]"
-        print(expr)
         expression = expression.format(expr=expr)
         gen_properties_value(lottie["e"],
                              [1, 1],
@@ -81,7 +80,8 @@ def gen_radial_gradient(lottie, layer, idx):
                              expression)
         if "ef" not in center.get_layer().get_lottie_layer().keys():
                 center.get_layer().get_lottie_layer()["ef"] = []
-        center.get_layer().get_lottie_layer()["ef"].extend(center.expression_controllers)
+        # If center has any expression controllers, then they would have been pushed earlier by fill_path, hence no need
+        # center.get_layer().get_lottie_layer()["ef"].extend(center.expression_controllers)
         center.get_layer().get_lottie_layer()["ef"].extend(radius.expression_controllers)
 
 
