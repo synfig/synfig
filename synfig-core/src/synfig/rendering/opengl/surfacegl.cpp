@@ -33,6 +33,8 @@
 
 #include "internal/environment.h"
 
+#define GL_GLEXT_PROTOTYPES
+#include <GL/glext.h>
 #endif
 
 using namespace synfig;
@@ -112,13 +114,14 @@ SurfaceGL::assign_vfunc(const rendering::Surface &surface)
 	return true;
 }
 
-void
+bool
 SurfaceGL::reset_vfunc()
 {
 	gl::Context::Lock lock(env().context);
 	glDeleteTextures(1, &id);
 	id = 0;
 	env().context.check("SurfaceGL::destroy_vfunc");
+	return true;
 }
 
 bool

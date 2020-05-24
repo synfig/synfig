@@ -56,12 +56,12 @@ class TaskTransformationAffineGL: public TaskTransformationAffine, public TaskGL
 public:
 	typedef etl::handle<TaskTransformationAffineGL> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	virtual bool run(RunParams &params) const {
 		// TODO: remove antialiasing
 
-		if (!is_valid || !sub_task() || !sub_task()->is_valid())
+		if (!is_valid() || !sub_task() || !sub_task()->is_valid())
 			return true;
 
 		gl::Context::Lock lock(env().context);
@@ -73,12 +73,12 @@ public:
 		bounds_transfromation.m20 = -1.0 - source_rect.minx * bounds_transfromation.m00;
 		bounds_transfromation.m21 = -1.0 - source_rect.miny * bounds_transfromation.m11;
 
-		Matrix matrix = bounds_transfromation * transformation;
+		Matrix matrix = bounds_transfromation * transformation->matrix;
 
 		// prepare arrays
 		Vector k(target_surface->get_width(), target_surface->get_height());
-		Vector d( matrix.get_axis_x().multiply_coords(k).norm().divide_coords(k).mag() / matrix.get_axis_x().mag(),
-				  matrix.get_axis_y().multiply_coords(k).norm().divide_coords(k).mag() / matrix.get_axis_y().mag() );
+		Vector d( matrix.axis_x().multiply_coords(k).norm().divide_coords(k).mag() / matrix.axis_x().mag(),
+				  matrix.axis_y().multiply_coords(k).norm().divide_coords(k).mag() / matrix.axis_y().mag() );
 		d *= 4.0;
 		Vector coords[4][3];
 		for(int i = 0; i < 4; ++i)
@@ -89,7 +89,7 @@ public:
 		}
 		Vector aascale = d.one_divide_coords();
 
-		LockWrite ldst(target_surface);
+		LockWrite ldst(this);
 		if (!ldst)
 			return false;
 
@@ -103,7 +103,7 @@ public:
 			target_rect.get_height() );
 		env().context.check();
 
-		LockRead lsrc(sub_task()->target_surface);
+		LockRead lsrc(sub_task());
 		if (!lsrc)
 			return false;
 
