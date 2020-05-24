@@ -239,6 +239,7 @@ NoiseDistort::get_param_vocab()const
 	ret.push_back(ParamDesc("speed")
 		.set_local_name(_("Animation Speed"))
 		.set_description(_("In cycles per second"))
+		.set_static(true)
 	);
 	ret.push_back(ParamDesc("turbulent")
 		.set_local_name(_("Turbulent"))
