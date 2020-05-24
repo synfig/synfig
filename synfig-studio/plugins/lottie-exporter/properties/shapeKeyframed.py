@@ -38,7 +38,7 @@ def gen_properties_shapeKeyframed(lottie, node, idx):
         gen_list_rectangle(lottie["k"], node)
     elif isinstance(node, Layer) and node.get_type() == "star":
         gen_list_star(lottie["k"], node)
-    elif isinstance(node, Layer) and node.get_type() == "linear_gradient":  # rectangle layer is needed for linear gradient
+    elif isinstance(node, Layer) and node.get_type() in {"linear_gradient", "radial_gradient"}:  # rectangle layer is needed for gradients
         gen_list_rectangle(lottie["k"], node)
     elif isinstance(node, Param) and node.get_layer_type() == "region":
         gen_bline_region(lottie["k"], node)
