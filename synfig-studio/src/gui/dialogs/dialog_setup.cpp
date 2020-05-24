@@ -647,16 +647,55 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 void
 Dialog_Setup::on_restore_pressed()
 {
-	if (App::dialog_message_2b(
-		_("Restore default settings"),
-		_("Settings will be restored to default. Are you sure?"),
-		Gtk::MESSAGE_QUESTION,
-		_("Cancel"),
-		_("Restore")))
-	{
-	App::restore_default_settings();
-	refresh();
-	}
+	adj_recent_files->set_value(25);
+	
+	//check
+	timestamp_comboboxtext.set_active(5);
+	
+	toggle_autobackup.set_active(true);
+	auto_backup_interval.set_value(15);
+	
+	widget_enum->set_value(Distance::SYSTEM_POINTS);
+	
+	toggle_restrict_radius_ducks.set_active(true);
+	toggle_resize_imported_images.set_active(false);
+	toggle_enable_experimental_features.set_active(false);
+	toggle_use_dark_theme.set_active(false);
+	toggle_show_file_toolbar.set_active(true);
+
+	listviewtext_brushes_path->clear_items();
+
+	textbox_custom_filename_prefix.set_text(DEFAULT_FILENAME_PREFIX);
+	
+	image_editor_path_entry.set_text("");
+	
+	adj_pref_x_size->set_value(480);
+	adj_pref_y_size->set_value(270);
+	size_template_combo->set_active_text(DEFAULT_PREDEFINED_SIZE);
+	fps_template_combo->set_active_text(DEFAULT_PREDEFINED_FPS);
+	adj_pref_fps->set_value(24.0);
+	image_sequence_separator.set_text(".");
+	workarea_renderer_combo.set_active_id("");
+	
+	def_background_none.set_active();
+	
+	Gdk::RGBA m_color;
+	m_color.set_rgba(1.000000, 1.000000, 1.000000, 1.000000);
+	def_background_color_button.set_rgba(m_color);
+	
+	m_color.set_rgba(0.742187, 0.742187, 0.742187, 1.000000);
+	preview_background_color_button.set_rgba(m_color);
+	
+	toggle_play_sound_on_render_done.set_active(true);
+	
+	ui_language_combo.set_active_id(App::ui_language);
+	
+	toggle_handle_tooltip_widthpoint.set_active(true);
+	toggle_handle_tooltip_radius.set_active(true);
+	
+	toggle_handle_tooltip_transformation.set_active(false);
+	toggle_handle_tooltip_transfo_name.set_active(false);
+	toggle_handle_tooltip_transfo_value.set_active(false);
 }
 
 
