@@ -385,9 +385,12 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	pi.grid->attach(fcbutton_image,            1,   row, 2, 1);
 	fcbutton_image.signal_file_set().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_image_set) );
 
-	if (App::default_background_layer_type == "none")        def_background_none.set_active();
-	if (App::default_background_layer_type == "solid_color") def_background_color.set_active();
-	if (App::default_background_layer_type == "image")       def_background_image.set_active();
+	if (App::default_background_layer_type == "none")
+		def_background_none.set_active();
+	if (App::default_background_layer_type == "solid_color")
+		def_background_color.set_active();
+	if (App::default_background_layer_type == "image")
+		def_background_image.set_active();
 
 }
 
@@ -456,7 +459,6 @@ Dialog_Setup::on_choose_editor_pressed()
 	String filepath = image_editor_path_entry.get_text();
 	if (select_path_dialog(_("Select Editor"), filepath)) {
 		image_editor_path_entry.set_text(filepath);
-		App::image_editor_path = filepath;
 	}
 }
 
@@ -755,7 +757,7 @@ Dialog_Setup::on_apply_pressed()
 	App::custom_filename_prefix = textbox_custom_filename_prefix.get_text();
 
 	// Set the preferred image editor
-	App::image_editor_path = image_editor_path_entry.get_text();
+	App::image_editor_path		= image_editor_path_entry.get_text();
 
 	// Set the preferred new Document X dimension
 	App::preferred_x_size       = int(adj_pref_x_size->get_value());
@@ -983,9 +985,14 @@ Dialog_Setup::refresh()
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
 	
 	// Refresh the default background
-	if (App::default_background_layer_type == "none")        def_background_none.set_active();
-	if (App::default_background_layer_type == "solid_color") def_background_color.set_active();
-	if (App::default_background_layer_type == "image")       def_background_image.set_active();
+	if (App::default_background_layer_type == "none")
+		def_background_none.set_active();
+	if (App::default_background_layer_type == "solid_color")
+		def_background_color.set_active();
+	if (App::default_background_layer_type == "image")
+		def_background_image.set_active();
+	
+	fcbutton_image.set_filename(App::default_background_layer_image);
 	
 	// Refresh the colors of background and preview background buttons
 	Gdk::RGBA m_color;
@@ -1069,6 +1076,8 @@ Dialog_Setup::refresh()
 	// Refresh ui tooltip handle info
 	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
 	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
+	
+	// Refresh widget tooltip
 	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
 			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE))
 	{
@@ -1081,7 +1090,9 @@ Dialog_Setup::refresh()
 	else
 	{
 		toggle_handle_tooltip_transformation.set_active(false);
+		toggle_handle_tooltip_transfo_name.set_active(false);
 		toggle_handle_tooltip_transfo_name.set_sensitive(false);
+		toggle_handle_tooltip_transfo_value.set_active(false);
 		toggle_handle_tooltip_transfo_value.set_sensitive(false);
 	}
 
