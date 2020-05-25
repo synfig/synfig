@@ -647,55 +647,51 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 void
 Dialog_Setup::on_restore_pressed()
 {
-	adj_recent_files->set_value(25);
-	
-	//check
-	timestamp_comboboxtext.set_active(5);
-	
-	toggle_autobackup.set_active(true);
-	auto_backup_interval.set_value(15);
-	
-	widget_enum->set_value(Distance::SYSTEM_POINTS);
-	
-	toggle_restrict_radius_ducks.set_active(true);
-	toggle_resize_imported_images.set_active(false);
-	toggle_enable_experimental_features.set_active(false);
-	toggle_use_dark_theme.set_active(false);
-	toggle_show_file_toolbar.set_active(true);
-
-	listviewtext_brushes_path->clear_items();
-
-	textbox_custom_filename_prefix.set_text(DEFAULT_FILENAME_PREFIX);
-	
-	image_editor_path_entry.set_text("");
-	
-	adj_pref_x_size->set_value(480);
-	adj_pref_y_size->set_value(270);
-	size_template_combo->set_active_text(DEFAULT_PREDEFINED_SIZE);
-	fps_template_combo->set_active_text(DEFAULT_PREDEFINED_FPS);
-	adj_pref_fps->set_value(24.0);
-	image_sequence_separator.set_text(".");
-	workarea_renderer_combo.set_active_id("");
-	
-	def_background_none.set_active();
-	
-	Gdk::RGBA m_color;
-	m_color.set_rgba(1.000000, 1.000000, 1.000000, 1.000000);
-	def_background_color_button.set_rgba(m_color);
-	
-	m_color.set_rgba(0.742187, 0.742187, 0.742187, 1.000000);
-	preview_background_color_button.set_rgba(m_color);
-	
-	toggle_play_sound_on_render_done.set_active(true);
-	
-	ui_language_combo.set_active_id(App::ui_language);
-	
-	toggle_handle_tooltip_widthpoint.set_active(true);
-	toggle_handle_tooltip_radius.set_active(true);
-	
-	toggle_handle_tooltip_transformation.set_active(false);
-	toggle_handle_tooltip_transfo_name.set_active(false);
-	toggle_handle_tooltip_transfo_value.set_active(false);
+	if (App::dialog_message_2b(
+		_("Restore default settings"),
+		_("Settings will be restored to default. Are you sure?"),
+		Gtk::MESSAGE_QUESTION,
+		_("Cancel"),
+		_("Restore")))
+	{
+		// Assign (without applying) default values
+		adj_recent_files->set_value(25);
+		timestamp_comboboxtext.set_active(5);
+		toggle_autobackup.set_active(true);
+		auto_backup_interval.set_value(15);
+		widget_enum->set_value(Distance::SYSTEM_POINTS);
+		toggle_restrict_radius_ducks.set_active(true);
+		toggle_resize_imported_images.set_active(false);
+		toggle_enable_experimental_features.set_active(false);
+		toggle_use_dark_theme.set_active(false);
+		toggle_show_file_toolbar.set_active(true);
+		listviewtext_brushes_path->clear_items();
+		textbox_custom_filename_prefix.set_text(DEFAULT_FILENAME_PREFIX);
+		image_editor_path_entry.set_text("");
+		adj_pref_x_size->set_value(480);
+		adj_pref_y_size->set_value(270);
+		size_template_combo->set_active_text(DEFAULT_PREDEFINED_SIZE);
+		fps_template_combo->set_active_text(DEFAULT_PREDEFINED_FPS);
+		adj_pref_fps->set_value(24.0);
+		image_sequence_separator.set_text(".");
+		workarea_renderer_combo.set_active_id("");
+		def_background_none.set_active();
+		
+		Gdk::RGBA m_color;
+		m_color.set_rgba(1.000000, 1.000000, 1.000000, 1.000000);
+		def_background_color_button.set_rgba(m_color);
+		m_color.set_rgba(0.742187, 0.742187, 0.742187, 1.000000);
+		preview_background_color_button.set_rgba(m_color);
+		fcbutton_image.unselect_all();
+		
+		toggle_play_sound_on_render_done.set_active(true);
+		ui_language_combo.set_active_id(App::ui_language);
+		toggle_handle_tooltip_widthpoint.set_active(true);
+		toggle_handle_tooltip_radius.set_active(true);
+		toggle_handle_tooltip_transformation.set_active(false);
+		toggle_handle_tooltip_transfo_name.set_active(false);
+		toggle_handle_tooltip_transfo_value.set_active(false);
+	}
 }
 
 
@@ -777,6 +773,17 @@ Dialog_Setup::on_apply_pressed()
 	// Set the preferred FPS
 	App::preferred_fps          = Real(adj_pref_fps->get_value());
 
+	// Set the background color
+	Gdk::RGBA m_color = def_background_color_button.get_rgba();
+
+	App::default_background_layer_color = synfig::Color(m_color.get_red(),
+														m_color.get_green(),
+														m_color.get_blue(),
+														m_color.get_alpha());
+	
+	// Set the background image
+	App::default_background_layer_image = fcbutton_image.get_filename();
+	
 	// Set the preferred image sequence separator
 	App::sequence_separator     = image_sequence_separator.get_text();
 
@@ -785,6 +792,14 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the use of a render done sound
 	App::use_render_done_sound  = toggle_play_sound_on_render_done.get_active();
+	
+	// Set the preview background color
+	m_color = preview_background_color_button.get_rgba();
+
+	App::preview_background_color = synfig::Color(m_color.get_red(),
+												  m_color.get_green(),
+												  m_color.get_blue(),
+												  m_color.get_alpha());
 
 	// Set ui language
 	if (pref_modification_flag & CHANGE_UI_LANGUAGE)
@@ -925,7 +940,6 @@ Dialog_Setup::on_preview_background_color_changed()
 		              m_color.get_green(),
 		              m_color.get_blue(),
 		              m_color.get_alpha());
-	//studio::Widget_Preview::
 }
 
 void
