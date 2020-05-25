@@ -105,6 +105,7 @@ class Dialog_Setup : public Dialog_Template
 	void on_size_template_combo_change();
 	void on_fps_template_combo_change();
 	void on_ui_language_combo_change();
+	void on_theme_changed();
 	void on_time_format_changed();
 	void on_autobackup_changed();
 	void on_tooltip_transformation_changed();
