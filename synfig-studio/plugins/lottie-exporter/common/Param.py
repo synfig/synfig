@@ -530,6 +530,16 @@ class Param:
                 self.expression = ret
                 return ret, self.expression_controllers
 
+            elif self.param[0].tag == "vectorangle":
+                self.subparams["vectorangle"].extract_subparams()
+                vector, eff_1 = self.subparams["vectorangle"].subparams["vector"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                ret = "radiansToDegrees(Math.atan2({y}[1], {x}[0]))"
+                ret = ret.format(y=vector,x=vector)
+
+                self.expression = ret
+                return ret, self.expression_controllers
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -868,6 +878,11 @@ class Param:
                 rad = math.pi/180
                 ret = math.atan2(y,x)/rad
 
+            elif self.param[0].tag == "vectorangle":
+                vector = self.subparams["vectorangle"].subparams["vector"].__get_value(frame)
+                rad = math.pi/180
+                ret = math.atan2(vector[1],vector[0])/rad
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1028,6 +1043,10 @@ class Param:
                 self.subparams["atan2"].extract_subparams()
                 self.subparams["atan2"].subparams["y"].update_frame_window(window)
                 self.subparams["atan2"].subparams["x"].update_frame_window(window)
+
+            elif node.tag == "vectorangle":
+                self.subparams["vectorangle"].extract_subparams()
+                self.subparams["vectorangle"].subparams["vector"].update_frame_window(window)
 
         if is_animated(node) == 2:
             for waypoint in node:

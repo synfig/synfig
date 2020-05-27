@@ -7,6 +7,7 @@ EXTRA_FILES = \
 			  Canvas.py \
 			  Color.py \
 			  Count.py \
+			  Gradient.py \
 			  Hermite.py \
 			  Layer.py \
 			  Matrix2.py \
