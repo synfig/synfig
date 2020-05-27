@@ -1,5 +1,6 @@
 STATES_HH = \
 	states/state_bline.h \
+	states/state_bone.h \
 	states/state_circle.h \
 	states/state_draw.h \
 	states/state_lasso.h \
@@ -23,6 +24,7 @@ STATES_HH = \
 
 STATES_CC = \
 	states/state_bline.cpp \
+	states/state_bone.cpp \
 	states/state_circle.cpp \
 	states/state_draw.cpp \
 	states/state_lasso.cpp \

@@ -1,6 +1,7 @@
 target_sources(synfigstudio
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/state_bline.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/state_bone.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_circle.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_draw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_lasso.cpp"
