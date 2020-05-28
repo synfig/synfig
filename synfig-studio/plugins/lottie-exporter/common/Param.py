@@ -6,7 +6,6 @@ Will store the Parameters class for Synfig parameters
 import sys
 import copy
 import math
-import inspect
 from lxml import etree
 import settings
 import common
@@ -352,10 +351,12 @@ class Param:
                 return ret, self.expression_controllers
 
             elif self.param[0].tag == "radial_composite":   # only for vectors
-                dic = {"gen_layer_group", "gen_layer_rotate", "gen_layer_translate", "gen_layer_scale"}
                 prop_name = "angle"
-                if self.called_by(dic): # Should find some easier way of finding the caller function
+                sett = settings.GROUP_LAYER.copy()
+                sett.update(settings.PRE_COMP_LAYER)
+                if self.get_layer().get_type() in sett: # depending upon the layer type, we use the angle is positive/negative value
                     prop_name = "rotate_layer_angle"
+
                 self.subparams["radial_composite"].extract_subparams()
                 rad, eff_1 = self.subparams["radial_composite"].subparams["radius"].recur_animate("real")
                 ang, eff_2 = self.subparams["radial_composite"].subparams["theta"].recur_animate(prop_name)
@@ -560,15 +561,6 @@ class Param:
             ret = ret.format(effect_1=self.expression_controllers[-1]["nm"], effect_2=self.expression_controllers[-1]["ef"][0]["nm"])
             self.expression = ret
             return ret, self.expression_controllers
-
-    def called_by(self, dic):
-        """
-        Checks if this function's ancestor are in this dictionary
-        """
-        for it in inspect.stack():
-            if it[3] in dic:
-                return True
-        return False
 
     def single_animate(self, anim_type):
         """
