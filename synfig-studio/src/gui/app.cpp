@@ -3587,16 +3587,16 @@ App::dialog_message_1b(
 		dialog.set_secondary_text(details);
 
 	Gtk::Label label;
-	Gtk::ScrolledWindow sw;
+	Gtk::Grid grid;
 	if (long_details != "long_details")
 	{
 		label.set_text(long_details);
 		label.show();
-		sw.add(label);
-		sw.set_size_request(400,300);
-		sw.show();
-		dialog.get_content_area()->pack_end(sw);
-		dialog.set_resizable(true);
+		grid.set_margin_start(10);
+		grid.set_margin_end(10);
+		grid.add(label);
+		grid.show();
+		dialog.get_content_area()->pack_end(grid);
 	}
 
 	dialog.add_button(button1, 0);
