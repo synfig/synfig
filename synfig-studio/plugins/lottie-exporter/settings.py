@@ -72,6 +72,11 @@ UNKNOWN_LAYER = "unknown_layer"
 CONVERT_METHODS = {"add", "atan2","average", "bone", "bone_link", "bone_root", "composite", "cos", "exp", "fromint", "linear", "radial_composite", "scale", "sine", "subtract", "switch", "vectorangle","weighted_average"}
 BONES = {"bone", "bone_root"}
 
+# Some waypoint animated definitions
+ANIMATED = 2
+SINGLE_WAYPOINT = 1
+NOT_ANIMATED = 0
+
 
 def init():
     """

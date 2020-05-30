@@ -568,20 +568,20 @@ class Param:
         function
         """
         is_animate = common.misc.is_animated(self.param[0])
-        if is_animate == 2:
+        if is_animate == settings.ANIMATED:
             # If already animated, no need to add waypoints
             # Forcibly set it's animation type to the anim_type
             self.param[0].attrib["type"] = anim_type
             if anim_type == "bool":
                 modify_bool_animation(self.param[0])
             return
-        elif is_animate == 0:
+        elif is_animate == settings.NOT_ANIMATED:
             st = '<animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated>'
             st = st.format(anim_type=anim_type)
             root = etree.fromstring(st)
             root[0].append(copy.deepcopy(self.param[0]))
             self.param[0] = root
-        elif is_animate == 1:
+        elif is_animate == settings.SINGLE_WAYPOINT:
             self.param[0].attrib["type"] = anim_type
             self.param[0][0].attrib["before"] = self.param[0][0].attrib["after"] = "constant"
 
@@ -1040,7 +1040,7 @@ class Param:
                 self.subparams["vectorangle"].extract_subparams()
                 self.subparams["vectorangle"].subparams["vector"].update_frame_window(window)
 
-        if is_animated(node) == 2:
+        if is_animated(node) == settings.ANIMATED:
             for waypoint in node:
                 fr = common.misc.get_frame(waypoint)
                 if fr > window["last"]:

@@ -243,14 +243,15 @@ def is_animated(node):
                 1: If only single waypoint is present
                 2: If more than one waypoint is present
     """
-    case = 0
+    case = settings.NOT_ANIMATED
     if node.tag == "animated":
         if len(node) == 1:
-            case = 1
+            case = settings.SINGLE_WAYPOINT
         else:
-            case = 2
+            case = settings.ANIMATED
     else:
-        case = 0
+        case = settings.NOT_ANIMATED
+
     return case
 
 

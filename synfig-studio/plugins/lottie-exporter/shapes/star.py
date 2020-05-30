@@ -38,10 +38,10 @@ def gen_shapes_star(lottie, layer, idx):
     # Regular polygon
     rp = layer.get_param("regular_polygon").get()
     is_animate = is_animated(rp[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         regular_polygon["prop"] = "changing"
         regular_polygon["animated"] = rp[0]
-    elif is_animate == 1:
+    elif is_animate == settings.SINGLE_WAYPOINT:
         regular_polygon["prop"] = rp[0][0][0].attrib["value"]
     else:
         regular_polygon["prop"] = rp[0].attrib["value"]
@@ -50,13 +50,13 @@ def gen_shapes_star(lottie, layer, idx):
     # Points
     points = layer.get_param("points").get()
     is_animate = is_animated(points[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         # To uniquely identify the points, attribute type is changed
         points[0].attrib['type'] = 'points'
         gen_value_Keyframed(lottie["pt"], points[0], index.inc())
     else:
         num_points = 3      # default number of points
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             num_points = int(points[0].attrib["value"])
         else:
             num_points = int(points[0][0][0].attrib["value"])
@@ -69,11 +69,11 @@ def gen_shapes_star(lottie, layer, idx):
     # Angle
     angle = layer.get_param("angle").get()
     is_animate = is_animated(angle[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         gen_value_Keyframed(lottie["r"], angle[0], index.inc())
     else:
         theta = 0           # default angle for the star
-        if is_animate == 0:
+        if is_animate == settings.SINGLE_WAYPOINT:
             theta = get_angle(float(angle[0].attrib["value"]))
         else:
             theta = get_angle(float(angle[0][0][0].attrib["value"]))
@@ -86,11 +86,11 @@ def gen_shapes_star(lottie, layer, idx):
     # Radius1
     radius1 = layer.get_param("radius1").get()
     is_animate = is_animated(radius1[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         gen_value_Keyframed(lottie["or"], radius1[0], index.inc())
     else:
         r_outer = 0             # default value for outer radius
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             r_outer = float(radius1[0].attrib["value"])
         else:
             r_outer = float(radius1[0][0][0].attrib["value"])
@@ -103,11 +103,11 @@ def gen_shapes_star(lottie, layer, idx):
     # Radius2
     radius2 = layer.get_param("radius2").get()
     is_animate = is_animated(radius2[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         gen_value_Keyframed(lottie["ir"], radius2[0], index.inc())
     else:
         r_inner = 0             # default value for inner radius
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             r_inner = float(radius2[0].attrib["value"])
         else:
             r_inner = float(radius2[0][0][0].attrib["value"])
@@ -120,13 +120,13 @@ def gen_shapes_star(lottie, layer, idx):
     # Origin
     origin = layer.get_param("origin").get()
     is_animate = is_animated(origin[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         gen_properties_multi_dimensional_keyframed(lottie["p"],
                                                    origin[0],
                                                    index.inc())
     else:
         x_val, y_val = 0, 0
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             x_val = float(origin[0][0].text) * settings.PIX_PER_UNIT
             y_val = float(origin[0][1].text) * settings.PIX_PER_UNIT
         else:
