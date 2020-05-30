@@ -249,8 +249,6 @@ def is_animated(node):
             case = settings.SINGLE_WAYPOINT
         else:
             case = settings.ANIMATED
-    else:
-        case = settings.NOT_ANIMATED
 
     return case
 
