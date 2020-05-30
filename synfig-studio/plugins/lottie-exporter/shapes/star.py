@@ -73,7 +73,7 @@ def gen_shapes_star(lottie, layer, idx):
         gen_value_Keyframed(lottie["r"], angle[0], index.inc())
     else:
         theta = 0           # default angle for the star
-        if is_animate == settings.SINGLE_WAYPOINT:
+        if is_animate == settings.NOT_ANIMATED:
             theta = get_angle(float(angle[0].attrib["value"]))
         else:
             theta = get_angle(float(angle[0][0][0].attrib["value"]))
