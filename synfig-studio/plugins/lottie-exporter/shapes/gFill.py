@@ -12,9 +12,83 @@ from common.Count import Count
 from common.Gradient import Gradient
 sys.path.append("..")
 
+
+def gen_radial_gradient(lottie, layer, idx):
+    """
+    Generates the dictionary correspnding to shapes/gFill.json but with radial gradient
+
+    Args:
+    """
+    index = Count()
+    lottie["ty"] = "gf"
+    lottie["r"] = 1    # Don't know it's meaning yet, but works without this also
+    lottie["o"] = {}   # Opacity of the gradient layer
+    lottie["nm"] = layer.get_description()
+    lottie["t"] = 2    # 2 means radial gradient layer
+    lottie["s"] = {}   # Starting point of gradient
+    lottie["e"] = {}   # Ending point of gradient
+    lottie["g"] = {}   # Gradient information is stored here
+
+    # Color Opacity
+    opacity = layer.get_param("amount").get()
+    is_animate = is_animated(opacity[0])
+    if is_animate == 2:
+        # Telling the function that this is for opacity
+        opacity[0].attrib['type'] = 'opacity'
+        gen_value_Keyframed(lottie["o"], opacity[0], index.inc())
+
+    else:
+        if is_animate == 0:
+            val = float(opacity[0].attrib["value"]) * settings.OPACITY_CONSTANT
+        else:
+            val = float(opacity[0][0][0].attrib["value"]) * settings.OPACITY_CONSTANT
+        gen_properties_value(lottie["o"],
+                             val,
+                             index.inc(),
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+
+        # Gradient colors
+        lottie["g"]["k"] = {}
+        lottie["g"]["ix"] = index.inc()
+        gradient = layer.get_param("gradient")
+        modify_gradient(gradient)
+        gradient.animate("gradient")  # To find the lottie path of the modified gradient
+        lottie["g"]["p"] = len(gradient.get()[0][0][0])
+        gradient.fill_path(lottie["g"], "k")
+        modify_gradient_according_to_latest_version(lottie["g"]["k"])
+
+        # Starting point and Ending points need to be retrieved from center and radius
+        center = layer.get_param("center")
+        center.animate("vector")
+        center.fill_path(lottie, "s")
+
+        radius = layer.get_param("radius")
+        radius.animate("real")
+
+        # Ending point will be (start[0] + radius, start[1])
+        # Below is just a modification of fill_path function
+        expression = "var $bm_rt; $bm_rt = {expr}"
+        x_expr = "sum(" + center.expression + "[0], " + radius.expression + ")"
+        y_expr = center.expression + "[1]"
+        expr = "[" + x_expr + ", " + y_expr + "]"
+        expression = expression.format(expr=expr)
+        gen_properties_value(lottie["e"],
+                             [1, 1],
+                             0,
+                             0,
+                             expression)
+        if "ef" not in center.get_layer().get_lottie_layer().keys():
+                center.get_layer().get_lottie_layer()["ef"] = []
+        # If center has any expression controllers, then they would have been pushed earlier by fill_path, hence no need
+        # center.get_layer().get_lottie_layer()["ef"].extend(center.expression_controllers)
+        center.get_layer().get_lottie_layer()["ef"].extend(radius.expression_controllers)
+
+
+
 def gen_linear_gradient(lottie, layer, idx):
     """
-    Generates the dictionary corresponding to shapes/gFill.json
+    Generates the dictionary corresponding to shapes/gFill.json but with linear gradient
 
     Args:
     """
