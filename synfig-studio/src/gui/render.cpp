@@ -308,6 +308,7 @@ void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
+	String full_name(filename); //include eventually sequence_separator + time for image sequences
 	calculated_target_name=target_name;
 
 	if(filename.empty())
@@ -348,11 +349,93 @@ RenderSettings::on_render_pressed()
 		canvas_interface_->get_ui_interface()->error(_("A filename is required for this target"));
 		return;
 	}
+	
+	struct stat s;
+	int stat_return = -1; //Default to error
+	
+	//Retrieve current render settings
+	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
+	
+	//Check format which could have an image sequence as output
+	//If format is selected in comboboxtext_target
+	std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},{"cairo_png",".png"},
+					{"imagemagick",".png"}, {"jpeg",".jpg"},{"mng",".mng"},
+					{"openexr",".exr"},{"png",".png"},{"ppm",".ppm"}};
+	
+	std::map<std::string,std::string>::iterator ext_multi_it;
+	ext_multi_it = ext_multi.find(calculated_target_name);
+	
+	//calculated_target_name is a candidate with known output target (not Auto)
+	if(ext_multi_it != ext_multi.end())
+	{
+		//Image sequence: filename + sequence_separator + time
+		if(!toggle_single_frame.get_active() &&
+				(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
+		{
+			full_name = filename_sans_extension(filename) +
+				App::sequence_separator + 
+				etl::strprintf("%04d",rend_desc.get_frame_start()) +
+				ext_multi_it->second;
+		}
+		//Check name of target or first image of the sequence 
+		stat_return = stat(full_name.c_str(), &s);
+	}
+	//Otherwise Auto is selected
+	else
+	{
+		std::list<std::string> ext_multi_auto = {{".bmp"}, {".png"},
+					{".jpg"},{".exr"},{".ppm"}};
+	
+		bool found_ext_auto = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
+				filename_extension(filename)) != ext_multi_auto.end());
+		
+		if(!toggle_single_frame.get_active() && found_ext_auto &&
+				((rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0))
+		{
+			full_name = filename_sans_extension(filename) +
+					App::sequence_separator + 
+					etl::strprintf("%04d",rend_desc.get_frame_start()) +
+					filename_extension(filename);
+		}
+		stat_return = stat(full_name.c_str(), &s);
+	}
+	
+	//Error on the selected path	
+	if(stat_return == -1 && errno != ENOENT)
+	{
+		perror(full_name.c_str());
+		String msg(strprintf(_("Unable to check whether '%s' exists."),
+				full_name.c_str()));
+		App::dialog_message_1b(
+				"ERROR",
+				msg.c_str(),
+				"details",
+				_("Close"));
+		return;
+	}
 
+	String message = strprintf(_("A file named \"%s\" already exists. "
+							"Do you want to replace it?"),
+							basename(full_name).c_str());
+	
+	String details = strprintf(_("The file already exists in \"%s\". "
+							"Replacing it will overwrite its contents."),
+							basename(dirname(full_name)).c_str());
+
+	//Ask user whether to overwrite file with same name
+	if((stat_return == 0) && !App::dialog_message_2b(
+		message,
+		details,
+		Gtk::MESSAGE_QUESTION,
+		_("Use Another Name..."),
+		_("Replace")))
+		return;
+	
 	hide();
-
+		
 	render_passes.clear();
-	if (toggle_extract_alpha.get_active())
+		
+	if(toggle_extract_alpha.get_active())
 	{
 		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
 
@@ -362,12 +445,12 @@ RenderSettings::on_render_pressed()
 	} else {
 		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
 	}
-	
+
 	App::dock_info_->set_n_passes_requested(render_passes.size());
 	App::dock_info_->set_n_passes_pending(render_passes.size());
 	App::dock_info_->set_render_progress(0.0);
 	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
-	
+
 	progress_logger->clear();
 	submit_next_render_pass();
 
