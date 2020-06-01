@@ -57,9 +57,9 @@ def gen_layer_shape_solid(lottie, layer, idx):
     Inv = layer.get_param("invert").get()
     if Inv is not None:
         is_animate = is_animated(Inv[0])
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             val = Inv[0].attrib["value"]
-        elif is_animate == 1:
+        elif is_animate == settings.SINGLE_WAYPOINT:
             val = Inv[0][0][0].attrib["value"]
         else:
             # If animated, always set invert to false

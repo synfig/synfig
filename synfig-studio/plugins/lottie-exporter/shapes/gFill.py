@@ -32,13 +32,13 @@ def gen_radial_gradient(lottie, layer, idx):
     # Color Opacity
     opacity = layer.get_param("amount").get()
     is_animate = is_animated(opacity[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         # Telling the function that this is for opacity
         opacity[0].attrib['type'] = 'opacity'
         gen_value_Keyframed(lottie["o"], opacity[0], index.inc())
 
     else:
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             val = float(opacity[0].attrib["value"]) * settings.OPACITY_CONSTANT
         else:
             val = float(opacity[0][0][0].attrib["value"]) * settings.OPACITY_CONSTANT
@@ -105,13 +105,13 @@ def gen_linear_gradient(lottie, layer, idx):
     # Color Opacity
     opacity = layer.get_param("amount").get()
     is_animate = is_animated(opacity[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         # Telling the function that this is for opacity
         opacity[0].attrib['type'] = 'opacity'
         gen_value_Keyframed(lottie["o"], opacity[0], index.inc())
 
     else:
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             val = float(opacity[0].attrib["value"]) * settings.OPACITY_CONSTANT
         else:
             val = float(opacity[0][0][0].attrib["value"]) * settings.OPACITY_CONSTANT
