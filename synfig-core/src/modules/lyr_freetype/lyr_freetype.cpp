@@ -110,6 +110,11 @@ SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.3");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
 
+#ifndef __APPLE__
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf"};
+#else
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".dfont"};
+#endif
 /* === C L A S S E S ======================================================= */
 
 struct Glyph
@@ -168,6 +173,8 @@ private:
 		config = nullptr;
 	}
 };
+
+static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight);
 #endif
 
 /* === P R O C E D U R E S ================================================= */
@@ -187,6 +194,11 @@ TextLine::clear_and_free()
 		iter->glyph=0;
 	}
 	glyph_table.clear();
+}
+
+bool
+has_valid_font_extension(const std::string &filename) {
+	return std::find(known_font_extensions.begin(), known_font_extensions.end(), filename) != known_font_extensions.end();
 }
 
 /* === M E T H O D S ======================================================= */
@@ -268,8 +280,14 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 {
 	synfig::String font_fam(font_fam_);
 
-	if(new_face(font_fam_))
+	if (has_valid_font_extension(font_fam_))
+		if(new_face(font_fam_))
+			return true;
+
+#ifdef WITH_FONTCONFIG
+	if (new_face(fontconfig_get_filename(font_fam_, style, weight)))
 		return true;
+#endif
 
 	// string :: tolower
 	std::transform(font_fam.begin(), font_fam.end(), font_fam.begin(),
@@ -417,7 +435,13 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 			return true;
 	}
 
+	return new_face(font_fam) || new_face(font_fam_);
+}
+
 #ifdef WITH_FONTCONFIG
+
+static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight) {
+	std::string filename;
 	FcConfig* fc = FontConfigWrap::init();
 	if( !fc )
 	{
@@ -459,15 +483,14 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		if(fs && fs->nfont){
 			FcChar8* file;
 			if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
-				font_fam = (const char*)file;
+				filename = (const char*)file;
 			FcFontSetDestroy(fs);
 		} else
 			synfig::warning("Layer_Freetype: fontconfig: %s",_("empty font set"));
 	}
-#endif
-
-	return new_face(font_fam);
+	return filename;
 }
+#endif
 
 #ifdef USE_MAC_FT_FUNCS
 void fss2path(char *path, FSSpec *fss)
@@ -520,17 +543,12 @@ Layer_Freetype::new_face(const String &newfont)
 	if (newfont.empty())
 		return false;
 
-	std::vector<const char *> possible_font_extensions = {"", ".ttf", ".otf"};
-#ifdef __APPLE__
-	possible_font_extensions.push_back(".dfont");
-#endif
+	std::vector<const char *> possible_font_extensions = {""};
 
-	// if newfont has a known extension, don't try to append extensions
-	std::string newfont_ext = etl::filename_extension(newfont);
-	if (!newfont_ext.empty()) {
-		auto iter = std::find(possible_font_extensions.cbegin(), possible_font_extensions.cend(), newfont_ext);
-		if (iter != possible_font_extensions.cend())
-			possible_font_extensions = {""};
+	// if newfont doesn't have a known extension, try to append those extensions
+	{
+		if (! has_valid_font_extension(newfont))
+			possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
 	}
 
 	std::vector<std::string> possible_font_directories = {""};
