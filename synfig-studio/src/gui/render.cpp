@@ -371,14 +371,10 @@ RenderSettings::on_render_pressed()
 		//Image sequence: filename + sequence_separator + time
 		if(!toggle_single_frame.get_active() &&
 				(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
-		{
 			full_name = filename_sans_extension(filename) +
 				App::sequence_separator + 
 				etl::strprintf("%04d",rend_desc.get_frame_start()) +
 				ext_multi_it->second;
-		}
-		//Check name of target or first image of the sequence 
-		stat_return = stat(full_name.c_str(), &s);
 	}
 	//Otherwise Auto is selected
 	else
@@ -391,14 +387,14 @@ RenderSettings::on_render_pressed()
 		
 		if(!toggle_single_frame.get_active() && found_ext_auto &&
 				((rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0))
-		{
 			full_name = filename_sans_extension(filename) +
 					App::sequence_separator + 
 					etl::strprintf("%04d",rend_desc.get_frame_start()) +
 					filename_extension(filename);
-		}
-		stat_return = stat(full_name.c_str(), &s);
 	}
+	
+	//Check name of target or first image of the sequence
+	stat_return = stat(full_name.c_str(), &s);
 	
 	//Error on the selected path	
 	if(stat_return == -1 && errno != ENOENT)
