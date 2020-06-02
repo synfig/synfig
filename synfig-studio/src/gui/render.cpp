@@ -340,10 +340,7 @@ bool
 RenderSettings::check_target_destination()
 {
 	String filename=entry_filename.get_text();
-	String full_name(filename); //include eventually sequence_separator + time for image sequences
 	calculated_target_name=target_name;
-	
-	int n_frames_overwrite = 0;
 
 	if(filename.empty())
 	{
@@ -384,6 +381,11 @@ RenderSettings::check_target_destination()
 		return false;
 	}
 	
+	String full_name(filename); //include possible sequence_separator + time for image sequences
+	String extension(filename_extension(filename));
+	bool ext_multi_file = false; //output target is an image sequence
+	int n_frames_overwrite = 0;
+	
 	//Retrieve current render settings
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
 	
@@ -399,55 +401,39 @@ RenderSettings::check_target_destination()
 	//calculated_target_name is a candidate with known output target (not Auto)
 	if(ext_multi_it != ext_multi.end())
 	{
-		//Image sequence: filename + sequence_separator + time
-		if(!toggle_single_frame.get_active() &&
-				(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
-		{
-			full_name = filename_sans_extension(filename) +
-					tparam.sequence_separator + 
-					etl::strprintf("%04d", rend_desc.get_frame_start()) +
-					ext_multi_it->second;
-			for(int n_frame = rend_desc.get_frame_start();
-					n_frame <= rend_desc.get_frame_end();
-					n_frame++)
-			{
-				if(Glib::file_test(filename_sans_extension(filename) +
-					tparam.sequence_separator + 
-					etl::strprintf("%04d", n_frame) +
-					ext_multi_it->second, Glib::FILE_TEST_EXISTS))
-					n_frames_overwrite++;
-			}
-		}
+		extension = ext_multi_it->second;
+		ext_multi_file = true;
 	}
-	//Otherwise Auto is selected
+	//otherwise Auto is selected
 	else
 	{
 		std::list<std::string> ext_multi_auto = {{".bmp"}, {".png"},
 					{".jpg"},{".exr"},{".ppm"}};
 	
-		bool found_ext_auto = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
+		ext_multi_file = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
 				filename_extension(filename)) != ext_multi_auto.end());
-		
-		if(!toggle_single_frame.get_active() && found_ext_auto &&
-				((rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0))
+	}
+
+	//Image sequence: filename + sequence_separator + time
+	if(!toggle_single_frame.get_active() && ext_multi_file &&
+			(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
+	{
+		full_name = filename_sans_extension(filename) +
+				tparam.sequence_separator + 
+				etl::strprintf("%04d", rend_desc.get_frame_start()) +
+				extension;
+		for(int n_frame = rend_desc.get_frame_start();
+				n_frame <= rend_desc.get_frame_end();
+				n_frame++)
 		{
-			full_name = filename_sans_extension(filename) +
-					tparam.sequence_separator + 
-					etl::strprintf("%04d", rend_desc.get_frame_start()) +
-					filename_extension(filename);
-			for(int n_frame = rend_desc.get_frame_start();
-					n_frame <= rend_desc.get_frame_end();
-					n_frame++)
-			{
-				if(Glib::file_test(filename_sans_extension(filename) +
-					tparam.sequence_separator + 
-					etl::strprintf("%04d", n_frame) +
-					filename_extension(filename), Glib::FILE_TEST_EXISTS))
-					n_frames_overwrite++;
-			}
+			if(Glib::file_test(filename_sans_extension(filename) +
+				tparam.sequence_separator + 
+				etl::strprintf("%04d", n_frame) +
+				extension, Glib::FILE_TEST_EXISTS))
+				n_frames_overwrite++;
 		}
 	}
-	
+
 	String message;
 	String details;
 	
@@ -472,7 +458,6 @@ RenderSettings::check_target_destination()
 							basename(dirname(full_name)).c_str());
 	}
 
-	//Check name of target or first image of the sequence
 	//Ask user whether to overwrite file with same name
 	if(((Glib::file_test(full_name, Glib::FILE_TEST_EXISTS)) || n_frames_overwrite > 0)
 			&& !App::dialog_message_2b(
