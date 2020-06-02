@@ -384,9 +384,6 @@ RenderSettings::check_target_destination()
 		return false;
 	}
 	
-	struct stat s;
-	int stat_return = -1; //Default to error
-	
 	//Retrieve current render settings
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
 	
@@ -428,7 +425,8 @@ RenderSettings::check_target_destination()
 	}
 	
 	//Check name of target or first image of the sequence
-	stat_return = stat(full_name.c_str(), &s);
+	struct stat s;
+	int stat_return = stat(full_name.c_str(), &s);
 	
 	//Error on the selected path	
 	if(stat_return == -1 && errno != ENOENT)
