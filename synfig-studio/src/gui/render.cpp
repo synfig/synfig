@@ -197,8 +197,6 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_cancel_pressed));
 
-	//set_default_response(1);
-
 	set_title(_("Render Settings")+String(" - ")+canvas_interface_->get_canvas()->get_name());
 
 	widget_rend_desc.enable_time_section();
@@ -450,24 +448,6 @@ RenderSettings::check_target_destination()
 		}
 	}
 	
-	//Check name of target or first image of the sequence
-	struct stat s;
-	int stat_return = stat(full_name.c_str(), &s);
-	
-	//Error on the selected path	
-	if(stat_return == -1 && errno != ENOENT)
-	{
-		perror(full_name.c_str());
-		String msg(strprintf(_("Unable to check whether '%s' exists."),
-				full_name.c_str()));
-		App::dialog_message_1b(
-				"ERROR",
-				msg.c_str(),
-				"details",
-				_("Close"));
-		return false;
-	}
-
 	String message;
 	String details;
 	
@@ -492,8 +472,10 @@ RenderSettings::check_target_destination()
 							basename(dirname(full_name)).c_str());
 	}
 
+	//Check name of target or first image of the sequence
 	//Ask user whether to overwrite file with same name
-	if((stat_return == 0) && !App::dialog_message_2b(
+	if(((Glib::file_test(full_name, Glib::FILE_TEST_EXISTS)) || n_frames_overwrite > 0)
+			&& !App::dialog_message_2b(
 		message,
 		details,
 		Gtk::MESSAGE_QUESTION,
