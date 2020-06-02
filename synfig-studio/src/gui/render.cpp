@@ -372,7 +372,7 @@ RenderSettings::on_render_pressed()
 		if(!toggle_single_frame.get_active() &&
 				(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
 			full_name = filename_sans_extension(filename) +
-				App::sequence_separator + 
+				tparam.sequence_separator + 
 				etl::strprintf("%04d",rend_desc.get_frame_start()) +
 				ext_multi_it->second;
 	}
@@ -388,7 +388,7 @@ RenderSettings::on_render_pressed()
 		if(!toggle_single_frame.get_active() && found_ext_auto &&
 				((rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0))
 			full_name = filename_sans_extension(filename) +
-					App::sequence_separator + 
+					tparam.sequence_separator + 
 					etl::strprintf("%04d",rend_desc.get_frame_start()) +
 					filename_extension(filename);
 	}
