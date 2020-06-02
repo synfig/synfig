@@ -344,6 +344,8 @@ RenderSettings::check_target_destination()
 	String filename=entry_filename.get_text();
 	String full_name(filename); //include eventually sequence_separator + time for image sequences
 	calculated_target_name=target_name;
+	
+	int n_frames_overwrite = 0;
 
 	if(filename.empty())
 	{
@@ -402,10 +404,22 @@ RenderSettings::check_target_destination()
 		//Image sequence: filename + sequence_separator + time
 		if(!toggle_single_frame.get_active() &&
 				(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
+		{
 			full_name = filename_sans_extension(filename) +
-				tparam.sequence_separator + 
-				etl::strprintf("%04d",rend_desc.get_frame_start()) +
-				ext_multi_it->second;
+					tparam.sequence_separator + 
+					etl::strprintf("%04d", rend_desc.get_frame_start()) +
+					ext_multi_it->second;
+			for(int n_frame = rend_desc.get_frame_start();
+					n_frame <= rend_desc.get_frame_end();
+					n_frame++)
+			{
+				if(Glib::file_test(filename_sans_extension(filename) +
+					tparam.sequence_separator + 
+					etl::strprintf("%04d", n_frame) +
+					ext_multi_it->second, Glib::FILE_TEST_EXISTS))
+					n_frames_overwrite++;
+			}
+		}
 	}
 	//Otherwise Auto is selected
 	else
@@ -418,10 +432,22 @@ RenderSettings::check_target_destination()
 		
 		if(!toggle_single_frame.get_active() && found_ext_auto &&
 				((rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0))
+		{
 			full_name = filename_sans_extension(filename) +
 					tparam.sequence_separator + 
-					etl::strprintf("%04d",rend_desc.get_frame_start()) +
+					etl::strprintf("%04d", rend_desc.get_frame_start()) +
 					filename_extension(filename);
+			for(int n_frame = rend_desc.get_frame_start();
+					n_frame <= rend_desc.get_frame_end();
+					n_frame++)
+			{
+				if(Glib::file_test(filename_sans_extension(filename) +
+					tparam.sequence_separator + 
+					etl::strprintf("%04d", n_frame) +
+					filename_extension(filename), Glib::FILE_TEST_EXISTS))
+					n_frames_overwrite++;
+			}
+		}
 	}
 	
 	//Check name of target or first image of the sequence
@@ -442,13 +468,29 @@ RenderSettings::check_target_destination()
 		return false;
 	}
 
-	String message = strprintf(_("A file named \"%s\" already exists. "
+	String message;
+	String details;
+	
+	if(n_frames_overwrite == 0)
+	{
+		message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
 							basename(full_name).c_str());
 	
-	String details = strprintf(_("The file already exists in \"%s\". "
+		details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
 							basename(dirname(full_name)).c_str());
+	}
+	else
+	{
+		message = strprintf(_("\"%d\" files with the same name already exist. "
+							"Do you want to replace them?"),
+							n_frames_overwrite);
+	
+		details = strprintf(_("The files already exist in \"%s\". "
+							"Replacing them will overwrite their contents."),
+							basename(dirname(full_name)).c_str());
+	}
 
 	//Ask user whether to overwrite file with same name
 	if((stat_return == 0) && !App::dialog_message_2b(
