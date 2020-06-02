@@ -308,13 +308,47 @@ void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
+	
+	if(!check_target_destination())
+		return;
+	
+	hide();
+		
+	render_passes.clear();
+		
+	if(toggle_extract_alpha.get_active())
+	{
+		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
+
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
+
+	} else {
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
+	}
+
+	App::dock_info_->set_n_passes_requested(render_passes.size());
+	App::dock_info_->set_n_passes_pending(render_passes.size());
+	App::dock_info_->set_render_progress(0.0);
+	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
+
+	progress_logger->clear();
+	submit_next_render_pass();
+
+	return;
+}
+
+bool
+RenderSettings::check_target_destination()
+{
+	String filename=entry_filename.get_text();
 	String full_name(filename); //include eventually sequence_separator + time for image sequences
 	calculated_target_name=target_name;
 
 	if(filename.empty())
 	{
 		canvas_interface_->get_ui_interface()->error(_("You must supply a filename!"));
-		return;
+		return false;
 	}
 
 	// If the target type is not yet defined,
@@ -340,14 +374,14 @@ RenderSettings::on_render_pressed()
 		catch(std::runtime_error& x)
 		{
 			canvas_interface_->get_ui_interface()->error(_("Unable to determine proper target from filename."));
-			return;
+			return false;
 		}
 	}
 
 	if(filename.empty() && calculated_target_name!="null")
 	{
 		canvas_interface_->get_ui_interface()->error(_("A filename is required for this target"));
-		return;
+		return false;
 	}
 	
 	struct stat s;
@@ -407,7 +441,7 @@ RenderSettings::on_render_pressed()
 				msg.c_str(),
 				"details",
 				_("Close"));
-		return;
+		return false;
 	}
 
 	String message = strprintf(_("A file named \"%s\" already exists. "
@@ -425,32 +459,9 @@ RenderSettings::on_render_pressed()
 		Gtk::MESSAGE_QUESTION,
 		_("Use Another Name..."),
 		_("Replace")))
-		return;
+		return false;
 	
-	hide();
-		
-	render_passes.clear();
-		
-	if(toggle_extract_alpha.get_active())
-	{
-		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
-
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
-
-	} else {
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
-	}
-
-	App::dock_info_->set_n_passes_requested(render_passes.size());
-	App::dock_info_->set_n_passes_pending(render_passes.size());
-	App::dock_info_->set_render_progress(0.0);
-	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
-
-	progress_logger->clear();
-	submit_next_render_pass();
-
-	return;
+	return true;
 }
 
 void
