@@ -449,7 +449,7 @@ RenderSettings::check_target_destination()
 	}
 	else
 	{
-		message = strprintf(_("\"%d\" files with the same name already exist. "
+		message = strprintf(_("%d files with the same name already exist. "
 							"Do you want to replace them?"),
 							n_frames_overwrite);
 	
