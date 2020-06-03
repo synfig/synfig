@@ -381,7 +381,6 @@ RenderSettings::check_target_destination()
 		return false;
 	}
 	
-	String full_name(filename); //include possible sequence_separator + time for image sequences
 	String extension(filename_extension(filename));
 	bool ext_multi_file = false; //output target is an image sequence
 	int n_frames_overwrite = 0;
@@ -389,49 +388,46 @@ RenderSettings::check_target_destination()
 	//Retrieve current render settings
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
 	
-	//Check format which could have an image sequence as output
-	//If format is selected in comboboxtext_target
-	std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},{"cairo_png",".png"},
+	if(!toggle_single_frame.get_active() && 
+			(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
+	{
+		//Check format which could have an image sequence as output
+		//If format is selected in comboboxtext_target
+		std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},{"cairo_png",".png"},
 					{"imagemagick",".png"}, {"jpeg",".jpg"},{"mng",".mng"},
 					{"openexr",".exr"},{"png",".png"},{"ppm",".ppm"}};
 	
-	std::map<std::string,std::string>::iterator ext_multi_it;
-	ext_multi_it = ext_multi.find(calculated_target_name);
+		std::map<std::string,std::string>::iterator ext_multi_it;
+		ext_multi_it = ext_multi.find(calculated_target_name);
 	
-	//calculated_target_name is a candidate with known output target (not Auto)
-	if(ext_multi_it != ext_multi.end())
-	{
-		extension = ext_multi_it->second;
-		ext_multi_file = true;
-	}
-	//otherwise Auto is selected
-	else
-	{
-		std::list<std::string> ext_multi_auto = {{".bmp"}, {".png"},
+		//calculated_target_name is a candidate with known output target (not Auto)
+		if(ext_multi_it != ext_multi.end())
+		{
+			extension = ext_multi_it->second;
+			ext_multi_file = true;
+		}
+		//otherwise Auto is selected
+		else if(calculated_target_name != "png-spritesheet")
+		{
+			std::list<std::string> ext_multi_auto = {{".bmp"}, {".png"},
 					{".jpg"},{".exr"},{".ppm"}};
 	
-		ext_multi_file = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
-				filename_extension(filename)) != ext_multi_auto.end());
-	}
-
-	//Image sequence: filename + sequence_separator + time
-	if(!toggle_single_frame.get_active() && ext_multi_file &&
-			(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
-	{
-		full_name = filename_sans_extension(filename) +
-				tparam.sequence_separator + 
-				etl::strprintf("%04d", rend_desc.get_frame_start()) +
-				extension;
-		for(int n_frame = rend_desc.get_frame_start();
-				n_frame <= rend_desc.get_frame_end();
-				n_frame++)
-		{
-			if(Glib::file_test(filename_sans_extension(filename) +
-				tparam.sequence_separator + 
-				etl::strprintf("%04d", n_frame) +
-				extension, Glib::FILE_TEST_EXISTS))
-				n_frames_overwrite++;
+			ext_multi_file = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
+					filename_extension(filename)) != ext_multi_auto.end());
 		}
+
+		//Image sequence: filename + sequence_separator + time
+		if(ext_multi_file)
+			for(int n_frame = rend_desc.get_frame_start();
+					n_frame <= rend_desc.get_frame_end();
+					n_frame++)
+			{
+				if(Glib::file_test(filename_sans_extension(filename) +
+					tparam.sequence_separator + 
+					etl::strprintf("%04d", n_frame) +
+					extension, Glib::FILE_TEST_EXISTS))
+					n_frames_overwrite++;
+			}
 	}
 
 	String message;
@@ -441,11 +437,11 @@ RenderSettings::check_target_destination()
 	{
 		message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							basename(full_name).c_str());
+							basename(filename).c_str());
 	
 		details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							basename(dirname(full_name)).c_str());
+							basename(dirname(filename)).c_str());
 	}
 	else
 	{
@@ -455,11 +451,11 @@ RenderSettings::check_target_destination()
 	
 		details = strprintf(_("The files already exist in \"%s\". "
 							"Replacing them will overwrite their contents."),
-							basename(dirname(full_name)).c_str());
+							basename(dirname(filename)).c_str());
 	}
 
 	//Ask user whether to overwrite file with same name
-	if(((Glib::file_test(full_name, Glib::FILE_TEST_EXISTS)) || n_frames_overwrite > 0)
+	if(((Glib::file_test(filename, Glib::FILE_TEST_EXISTS)) || n_frames_overwrite > 0)
 			&& !App::dialog_message_2b(
 		message,
 		details,
