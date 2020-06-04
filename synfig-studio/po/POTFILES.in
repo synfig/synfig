@@ -280,6 +280,7 @@ src/gui/mainwindow.cpp
 src/gui/mainwindow.h
 src/gui/onemoment.cpp
 src/gui/onemoment.h
+src/gui/pluginmanager.cpp
 src/gui/preview.cpp
 src/gui/preview.h
 src/gui/renddesc.cpp
