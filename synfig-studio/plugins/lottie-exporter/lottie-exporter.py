@@ -23,6 +23,51 @@ from common.Canvas import Canvas
 import settings
 import argparse
 
+def calc_font_data(lottie,layer):
+    """
+    Calculates the font data used in the outermost canvas
+
+    Args:
+        lottie (dict)       : Outermost dictionary used in Lottie file
+        layer  (common.Layer.Layer) : Synfig format text layer
+
+    Returns:
+        (None)
+    """
+    default_list = {
+        "origin": 0,
+        "fPath": "",
+        "fClass": "",
+        "fFamily": "",
+        "fWeight": "",
+        "fStyle": "",
+        "fName": "",
+        "ascent": 75.9994506835938
+      }
+
+    for child in layer:
+        if child.tag == 'layer' and child.attrib["type"] == 'text':
+            for children in child:
+                if children.attrib["name"] == 'family':
+                    name = ''.join(children[0].itertext())
+                    if "Sans Serif" in name:
+                        default_list["fFamily"] = "Sans Serif"
+                        default_list["fName"] = "SansSerif"
+                        default_list["fStyle"] = "Regular"
+                    if "Times New Roman" in name:
+                        default_list["fFamily"] = "Times New Roman"
+                        default_list["fName"] = "TimesNewRoman"
+                        default_list["fStyle"] = "Regular"
+                    if "Calibria" in name:
+                        default_list["fFamily"] = "Calibria"
+                        default_list["fName"] = "Calibria"
+                        default_list["fStyle"] = "Regular"
+                    if "Arial" in name:
+                        default_list["fFamily"] = "Arial"
+                        default_list["fName"] = "Arial"
+                        default_list["fStyle"] = "Regular"
+
+            lottie["fonts"]["list"].append(default_list)
 
 def parse(file_name):
     """
@@ -38,6 +83,7 @@ def parse(file_name):
     root = tree.getroot()  # canvas
     gen_canvas(settings.lottie_format, root)
 
+    calc_font_data(settings.lottie_format,root)
     # Storing the file name
     settings.file_name["fn"] = file_name
 

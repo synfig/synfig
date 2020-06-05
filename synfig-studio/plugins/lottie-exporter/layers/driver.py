@@ -13,7 +13,7 @@ from layers.shape_solid import gen_layer_shape_solid
 from layers.preComp import gen_layer_precomp
 from layers.group import gen_layer_group
 from layers.blur import gen_layer_blur
-
+from layers.text import gen_layer_text
 sys.path.append("..")
 
 def blur_test(lottie):
@@ -163,6 +163,12 @@ def gen_layers(lottie, canvas, layer_itr):
 							layer,
 							itr)
 			# No return statement here
+
+		elif layer.get_type() in text:
+            gen_layer_text(lottie[-1],
+                           layer,
+                           itr)
+
 		elif layer.get_type() in skeleton:
 			pass
 			# skeletons are just for linking purposes which is served by bones
