@@ -178,7 +178,7 @@ Action::ValueDescBLineLink::prepare()
 	int loop_adjust(loop ? 0 : -1);
 	const std::vector<ValueBase> bline((*bline_value_node)(time).get_list());
 	int size = bline.size();
-	Real amount = (index + origin + loop_adjust) / (size + loop_adjust);
+	Real amount = (index - 1 + origin) / (size + loop_adjust);
 	// This is the standard amount, let's calculate the homogeneous amount
 	// since by default, homogeneous is 'on' for new BLineLink
 	// Note: if bline is looped, then consider the loop option of
