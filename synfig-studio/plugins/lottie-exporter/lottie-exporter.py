@@ -23,6 +23,55 @@ from common.Canvas import Canvas
 import settings
 import argparse
 
+def calc_font_data(lottie,layer):
+    """
+    Calculates the font data used in the outermost canvas
+
+    Args:
+        lottie (dict)       : Outermost dictionary used in Lottie file
+        layer  (common.Layer.Layer) : Synfig format text layer
+
+    Returns:
+        (None)
+    """
+    default_list = {
+        "origin": 0,
+        "fPath": "",
+        "fClass": "",
+        "fFamily": "",
+        "fWeight": "",
+        "fName": "",
+        "ascent": 75.9994506835938
+      }
+    #Ascent is not documentated in the Lottie documentation and it's purpose is not known yet.
+
+    style_dict = {0:'Regular', 1:'Regular', 2:'Italic'}
+    #Lottie does not support oblique style of Synfig, so defaulting to Regular Style for it
+
+    for child in layer:
+        if child.tag == 'layer' and child.attrib["type"] == 'text':
+            for children in child:
+                if children.attrib["name"] == 'family':
+                    name = ''.join(children[0].itertext())
+                    if name in settings.FONT_STYLES:
+                    	if "Comic" in name:
+                    		default_list["fFamily"] = "Comic Sans MS"
+                    		default_list["fName"]   = "ComicSansMS"
+                    	else:
+                    		default_list["fFamily"] = name
+                    		default_list["fName"]   = "".join(name.split())
+
+
+                if children.attrib["name"] == 'style':
+                    value = style_dict[int(children.getchildren()[0].attrib["value"])]
+                    default_list.update({'fStyle': value})
+
+                if children.attrib["name"] == 'weight':
+                    value = int(children.getchildren()[0].attrib["value"])
+                    default_list.update({'fWeight': value})
+                
+
+            lottie["fonts"]["list"].append(default_list)
 
 def parse(file_name):
     """
@@ -38,6 +87,7 @@ def parse(file_name):
     root = tree.getroot()  # canvas
     gen_canvas(settings.lottie_format, root)
 
+    calc_font_data(settings.lottie_format,root)
     # Storing the file name
     settings.file_name["fn"] = file_name
 
