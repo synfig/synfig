@@ -280,6 +280,8 @@ RenderSettings::on_choose_pressed()
 	String filename=entry_filename.get_text();
 	if(App::dialog_save_file_render("Save Render As", filename, RENDER_DIR_PREFERENCE))
 		entry_filename.set_text(filename);
+
+	present();
 }
 
 void
@@ -308,7 +310,11 @@ RenderSettings::on_render_pressed()
 	String filename=entry_filename.get_text();
 	
 	if(!check_target_destination())
+	{
+		present();
+		entry_filename.grab_focus();
 		return;
+	}
 	
 	hide();
 		
