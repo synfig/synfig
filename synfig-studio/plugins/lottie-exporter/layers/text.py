@@ -111,13 +111,17 @@ def gen_layer_text(lottie, layer, idx):
     origin = layer.get_param("origin")
     origin.animate("vector")
     origin.fill_path(lottie["t"]["a"][0]["a"],"p")
-          
+    
+    size = layer.get_param("size")
+    size.animate("vector")
+    # print(settings.lottie_format["layers"][0]["ks"])
+    size.fill_path(settings.lottie_format["layers"][0]["ks"],"s")    
     lottie["t"]["d"] = {}
     lottie["t"]["p"] = {}
     lottie["t"]["d"]["k"] = []
     default = {
               "s": {
-                "s": 15,
+                "s": 11,
                 "f": "",
                 "t": "",
                 "j": 0,
