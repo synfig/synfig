@@ -388,8 +388,8 @@ RenderSettings::check_target_destination()
 	//Retrieve current render settings
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
 	
-	if(!toggle_single_frame.get_active() && 
-			(rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
+	if(!toggle_single_frame.get_active() && (calculated_target_name != "png-spritesheet")
+			&& (rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
 	{
 		//Check format which could have an image sequence as output
 		//If format is selected in comboboxtext_target
@@ -407,7 +407,7 @@ RenderSettings::check_target_destination()
 			ext_multi_file = true;
 		}
 		//otherwise Auto is selected
-		else if(calculated_target_name != "png-spritesheet")
+		else
 		{
 			std::list<std::string> ext_multi_auto = {{".bmp"}, {".png"},
 					{".jpg"},{".exr"},{".ppm"}};
