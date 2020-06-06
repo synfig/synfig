@@ -67,7 +67,7 @@ struct FamilyFontConfigWrap {
 	static const std::vector<std::string>& get() {
 		static FamilyFontConfigWrap obj;
 
-		return obj.families;
+		return obj.get_families();
 	}
 
 	FamilyFontConfigWrap(FamilyFontConfigWrap const&) = delete;
@@ -75,16 +75,22 @@ struct FamilyFontConfigWrap {
 
 private:
 	std::vector<std::string> families;
-	std::mutex fam_mutex;
+	mutable std::mutex fam_mutex;
 
 	FamilyFontConfigWrap()
 	{
 		refresh();
 	}
 
+	const std::vector<std::string>& get_families() const {
+		std::lock_guard<std::mutex> lock(fam_mutex);
+		return families;
+	}
+
 	void refresh()
 	{
 		std::lock_guard<std::mutex> lock(fam_mutex);
+		families.clear();
 		FcConfig* config = FcInitLoadConfigAndFonts();
 		if (!config)
 			return;
