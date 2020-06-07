@@ -228,7 +228,7 @@ RenderSettings::set_entry_filename()
 	try
 	{
 		if(!comboboxtext_target.get_active_row_number())
-			entry_filename.set_text((filename +".avi"));
+			entry_filename.set_text(Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename + ".avi");
 		// in case the file was saved and loaded again then .ext should be according to target
 		else on_comboboxtext_target_changed();
 	}
@@ -447,7 +447,7 @@ RenderSettings::check_target_destination()
 	
 		details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							basename(dirname(filename)).c_str());
+							dirname(filename).c_str());
 	}
 	else
 	{
@@ -457,7 +457,7 @@ RenderSettings::check_target_destination()
 	
 		details = strprintf(_("The files already exist in \"%s\". "
 							"Replacing them will overwrite their contents."),
-							basename(dirname(filename)).c_str());
+							dirname(filename).c_str());
 	}
 
 	//Ask user whether to overwrite file with same name
@@ -466,7 +466,7 @@ RenderSettings::check_target_destination()
 		message,
 		details,
 		Gtk::MESSAGE_QUESTION,
-		_("Use Another Name..."),
+		_("Use Another Name…"),
 		_("Replace")))
 		return false;
 	

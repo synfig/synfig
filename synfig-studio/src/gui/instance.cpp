@@ -545,11 +545,11 @@ studio::Instance::dialog_save_as()
 			// If the file exists and the user doesn't want to overwrite it, keep prompting for a filename
 			string message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-						basename(filename).c_str());
+							basename(filename).c_str());
 
 			string details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-						basename(dirname(filename)).c_str());
+							dirname(filename).c_str());
 
 			if ((stat_return == 0) && !App::dialog_message_2b(
 				message,
