@@ -132,7 +132,5 @@ synfigstudio_CXXFLAGS = \
 	@JACK_CFLAGS@ \
 	-DIMAGE_DIR=\"$(imagedir)\" \
 	-DIMAGE_EXT=\"$(imageext)\" \
-	-DPLUGIN_DIR=\"$(plugindir)\" \
-	-DSOUND_DIR=\"$(sounddir)\" \
-	-DUI_DIR=\"$(uidir)\" \
+	-DSYNFIG_DATADIR=\"$(synfig_datadir)\" \
 	-DLOCALEDIR=\"${LOCALEDIR}\"

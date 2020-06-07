@@ -23,10 +23,9 @@ AC_SUBST(LIBTOOL_DEPS)
 API_VERSION=1.0
 
 imageext=png
+synfig_datadir="${datadir}/synfig"
+
 imagedir="${datadir}/pixmaps/synfigstudio"
-plugindir="${datadir}/synfig/plugins"
-sounddir="${datadir}/synfig/sounds"
-uidir="${datadir}/synfig/ui"
 
 GETTEXT_PACKAGE=synfigstudio
 LOCALEDIR=[${datadir}/locale]
@@ -164,9 +163,7 @@ AC_SUBST(API_VERSION)
 
 AC_SUBST(imageext)
 AC_SUBST(imagedir)
-AC_SUBST(plugindir)
-AC_SUBST(sounddir)
-AC_SUBST(uidir)
+AC_SUBST(synfig_datadir)
 
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
 AC_ARG_ENABLE(update-mimedb,

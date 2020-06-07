@@ -178,28 +178,6 @@ using namespace studio;
 #	define IMAGE_EXT	"tif"
 #endif
 
-#ifdef _WIN32
-#	ifdef PLUGIN_DIR
-#		undef PLUGIN_DIR
-#		define PLUGIN_DIR "share\\synfig\\plugins"
-#	endif
-#endif
-
-#ifndef PLUGIN_DIR
-#	define PLUGIN_DIR "/usr/local/share/synfig/plugins"
-#endif
-
-#ifdef _WIN32
-#	ifdef SOUND_DIR
-#		undef SOUND_DIR
-#		define SOUND_DIR "share\\synfig\\sounds"
-#	endif
-#endif
-
-#ifndef SOUND_DIR
-#	define SOUND_DIR "/usr/local/share/synfig/sounds"
-#endif
-
 #include <synfigapp/main.h>
 
 /* === S I G N A L S ======================================================= */
@@ -1395,28 +1373,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	}
 
 	// paths
-#ifdef _WIN32
-	String path_to_plugins = get_base_path()
-		+ ETL_DIRECTORY_SEPARATOR + PLUGIN_DIR;
-	String path_to_sounds = get_base_path()
-		+ ETL_DIRECTORY_SEPARATOR + SOUND_DIR;
-#else
-	String path_to_plugins = PLUGIN_DIR;
-	String path_to_sounds = SOUND_DIR;
-#endif
-
 	String path_to_icons = ResourceHelper::get_image_path();
 
-	if (char* synfig_root = getenv("SYNFIG_ROOT")) {
-		path_to_plugins = String(synfig_root)
-			+ ETL_DIRECTORY_SEPARATOR + "share"
-			+ ETL_DIRECTORY_SEPARATOR + "synfig"
-			+ ETL_DIRECTORY_SEPARATOR + "plugins";
-		path_to_sounds = String(synfig_root)
-			+ ETL_DIRECTORY_SEPARATOR + "share"
-			+ ETL_DIRECTORY_SEPARATOR + "synfig"
-			+ ETL_DIRECTORY_SEPARATOR + "sounds";
-	}
+	String path_to_plugins = ResourceHelper::get_plugin_path();
 
 	String path_to_user_plugins = synfigapp::Main::get_user_app_directory()
 		+ ETL_DIRECTORY_SEPARATOR + "plugins";
@@ -1799,8 +1758,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	sound_render_done = new SoundProcessor();
 	sound_render_done->addSound(
 		SoundProcessor::PlayOptions(),
-		SoundProcessor::Sound(path_to_sounds + ETL_DIRECTORY_SEPARATOR + "renderdone.wav") );
-	
+		SoundProcessor::Sound(ResourceHelper::get_sound_path("renderdone.wav")));
+
 	App::dock_info_ = dock_info;
 }
 

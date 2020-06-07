@@ -6,7 +6,7 @@ EXTRA_FILES = bodymovin.js \
 			  canvas.py \
 			  settings.py
 
-plugindir = ${datadir}/synfig/plugins/$(PLUGIN_NAME)
+plugindir = $(synfig_datadir)/plugins/$(PLUGIN_NAME)
 plugin_DATA = \
 			  $(PLUGIN_NAME).py \
 			  plugin.xml \
