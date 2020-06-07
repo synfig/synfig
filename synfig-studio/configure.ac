@@ -29,7 +29,7 @@ sounddir="${datadir}/synfig/sounds"
 uidir="${datadir}/synfig/ui"
 
 GETTEXT_PACKAGE=synfigstudio
-LOCALEDIR=[${prefix}/${DATADIRNAME}/locale]
+LOCALEDIR=[${datadir}/locale]
 
 # -- P R O G R A M S ------------------------------------------
 
