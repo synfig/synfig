@@ -4,6 +4,13 @@
 #include <ETL/stringf>
 #include <synfig/general.h> // for synfig::error()
 
+#ifdef _WIN32
+# ifndef __PRETTY_FUNCTION__
+#  define SYNFIG_DEFINED_PRETTY_FUNCTION_
+#  define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+#endif
+
 #define SYNFIG_EXCEPTION_GUARD_BEGIN() \
 	{ \
 		int _exception_guard_error_code = 0; \
@@ -15,27 +22,27 @@
 		} \
 		catch(int ret) \
 		{ \
-			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:int: %i", __FUNCTION__, ret); \
+			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:int: %i", __PRETTY_FUNCTION__, ret); \
 			_exception_guard_error_code = ret; \
 		} \
 		catch(std::string& str) \
 		{ \
-			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:string: %s", __FUNCTION__, str.c_str()); \
+			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:string: %s", __PRETTY_FUNCTION__, str.c_str()); \
 			_exception_guard_error_code = 1001; \
 		} \
 		catch(std::exception& x) \
 		{ \
-			_exception_guard_error_str = etl::strprintf("%s Standard Exception: %s", __FUNCTION__, x.what()); \
+			_exception_guard_error_str = etl::strprintf("%s Standard Exception: %s", __PRETTY_FUNCTION__, x.what()); \
 			_exception_guard_error_code = 1002; \
 		} \
 		catch(Glib::Exception& x) \
 		{ \
-			_exception_guard_error_str = etl::strprintf("%s GLib Exception: %s", __FUNCTION__, x.what().c_str()); \
+			_exception_guard_error_str = etl::strprintf("%s GLib Exception: %s", __PRETTY_FUNCTION__, x.what().c_str()); \
 			_exception_guard_error_code = 1003; \
 		} \
 		catch(...) \
 		{ \
-			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:unknown type", __FUNCTION__); \
+			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:unknown type", __PRETTY_FUNCTION__); \
 			_exception_guard_error_code = 1100; \
 		}
 
@@ -82,5 +89,10 @@
 			return success_value; \
 		} \
 	}
+
+#ifdef SYNFIG_DEFINED_PRETTY_FUNCTION_
+#undef __PRETTY_FUNCTION__
+#undef SYNFIG_UNDEF_PRETTY_FUNCTION_
+#endif
 
 #endif // SYNFIG_EXCEPTION_GUARD_H
