@@ -52,6 +52,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -115,6 +117,7 @@ public:
 	bool
 	on_event(GdkEvent *event)
 	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		const int y(static_cast<int>(event->button.y));
 
 		const int h(get_height());
@@ -170,6 +173,8 @@ public:
 		}
 
 		return false;
+
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(false)
 	}
 
 };

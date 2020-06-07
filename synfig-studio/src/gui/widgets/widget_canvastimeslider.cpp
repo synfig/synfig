@@ -39,6 +39,8 @@
 
 #include "gui/timeplotdata.h"
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -160,6 +162,7 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 bool
 Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->button == 1 && canvas_view && canvas_view->get_work_area()) {
 		lock_ducks = new LockDucks(etl::handle<CanvasView>(canvas_view));
 		canvas_view->get_work_area()->clear_ducks();
@@ -172,32 +175,39 @@ Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 	if (event->button == 1 || event->button == 2)
 		tooltip.hide();
 	return Widget_Timeslider::on_button_press_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_CanvasTimeslider::on_button_release_event(GdkEventButton *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->button == 1 && canvas_view)
 		lock_ducks.reset();
 	//if ( (event->button == 1 && !(event->state & Gdk::BUTTON2_MASK))
 	//  || (event->button == 2 && !(event->state & Gdk::BUTTON1_MASK)) )
 	//	show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
 	return Widget_Timeslider::on_button_release_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if ((event->state & (Gdk::BUTTON1_MASK | Gdk::BUTTON2_MASK)) == 0)
 		show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
 	return Widget_Timeslider::on_motion_notify_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_CanvasTimeslider::on_leave_notify_event(GdkEventCrossing*)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	tooltip.hide();
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

@@ -40,6 +40,8 @@
 
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
+
+#include <gui/exception_guard.h>
 #endif
 
 using namespace studio;
@@ -337,6 +339,7 @@ void Widget_Timetrack::set_action_state(Widget_Timetrack::ActionState action_sta
 
 bool Widget_Timetrack::on_event(GdkEvent* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (waypoint_sd.process_event(event))
 		return true;
 
@@ -368,6 +371,7 @@ bool Widget_Timetrack::on_event(GdkEvent* event)
 	}
 
 	return Widget_TimeGraphBase::on_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)

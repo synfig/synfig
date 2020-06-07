@@ -136,6 +136,7 @@ public:
 	bool is_selected(const synfig::Waypoint &waypoint) const
 		{ return selected == waypoint; }
 
+protected:
 	virtual void render_vfunc(
 		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
 		Gtk::Widget& widget,

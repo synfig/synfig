@@ -53,11 +53,6 @@ class Renderer_Dragbox : public studio::WorkAreaRenderer
 public:
 	~Renderer_Dragbox();
 
-    //! Redraw the drag box
-	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
-	//! Catch some mouse events to select objects (handles) in the workarea
-	bool event_vfunc(GdkEvent* event);
-
 	const synfig::Point& get_drag_point()const;
 	const synfig::Point& get_curr_point()const;
 
@@ -72,6 +67,11 @@ private:
 
 protected:
 	bool get_enabled_vfunc()const;
+
+	//! Redraw the drag box
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
+	//! Catch some mouse events to select objects (handles) in the workarea
+	bool event_vfunc(GdkEvent* event);
 };
 
 }; // END of namespace studio

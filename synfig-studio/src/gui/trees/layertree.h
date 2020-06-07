@@ -253,7 +253,7 @@ public:
 private:
 	void get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const;
 
-	bool onKeyPress(GdkEventKey* event);
+	bool on_key_press_event(GdkEventKey* event);
 
 }; // END of LayerTree
 

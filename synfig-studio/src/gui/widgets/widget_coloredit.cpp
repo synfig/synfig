@@ -44,6 +44,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -247,6 +249,7 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 bool
 ColorSlider::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	const int width(get_width());
 	float x = 0;
 	if( GDK_SCROLL == event->type ){
@@ -308,6 +311,7 @@ ColorSlider::on_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 /* === M E T H O D S ======================================================= */
@@ -532,8 +536,10 @@ Widget_ColorEdit::on_hex_edited()
 bool
 Widget_ColorEdit::on_hex_focus_out(GdkEventFocus* /*event*/)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	on_hex_edited();
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

@@ -47,6 +47,8 @@
 
 #include "dock_navigator.h"
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -257,6 +259,7 @@ Widget_NavView::on_rendering_tile_finished(synfig::Time time)
 bool
 studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	int dw = drawto.get_width();
 	int dh = drawto.get_height();
 
@@ -290,6 +293,7 @@ studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 
