@@ -88,15 +88,9 @@ def gen_layer_text(lottie, layer, idx):
     lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
-    # lottie["ef"] = []   # Stores the effects
 
     pos = [settings.lottie_format["w"]/2 + get_additional_width()/2,
            settings.lottie_format["h"]/2 + get_additional_height()/2]
-
-    gen_helpers_transform(lottie["ks"])
-
-    # lottie["ef"].append({})
-    # gen_effects_fill(lottie["ef"][-1], layer, index.inc())
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["ip"] = settings.lottie_format["ip"]
@@ -105,23 +99,26 @@ def gen_layer_text(lottie, layer, idx):
     lottie["t"] = {}
     calc_anchor_alignment(lottie)
     lottie["t"]["a"] = []
-    lottie["t"]["a"].append(calc_default_text_properties(layer))
-    lottie["t"]["a"][0]["a"] = {"p":{}}
 
     origin = layer.get_param("origin")
     origin.animate("vector")
-    origin.fill_path(lottie["t"]["a"][0]["a"],"p")
     
-    size = layer.get_param("size")
-    size.animate("vector")
-    # print(settings.lottie_format["layers"][0]["ks"])
-    size.fill_path(settings.lottie_format["layers"][0]["ks"],"s")    
+    anchor = layer.get_param("orient")
+    anchor.animate("vector",True)
+
+    scale = layer.get_param("size")
+    scale.animate("stretch_layer_scale")
+    pos = origin
+    pos.animate("vector",True)
+
+    gen_helpers_transform(lottie["ks"], pos, anchor, scale)
+    
     lottie["t"]["d"] = {}
     lottie["t"]["p"] = {}
     lottie["t"]["d"]["k"] = []
     default = {
               "s": {
-                "s": 11,
+                "s": 60,
                 "f": "",
                 "t": "",
                 "j": 0,
