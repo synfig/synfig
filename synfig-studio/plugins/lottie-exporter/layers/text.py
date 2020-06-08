@@ -127,16 +127,20 @@ def gen_layer_text(lottie, layer, idx):
                 "s": 60,
                 "f": "",
                 "t": "",
-                "j": 0,
+                "j": 2,
                 "tr": 0,
-                "lh": 43.2,
-                "ls": 0,
+                "lh": 50,
+                "ls": 1,
                 "fc": [1,1,1,1]
               },
               "t": 0
             }
     
-    ax = ''.join(layer.get_param("text").get()[0].itertext())
-    default["s"]["t"] = ax
+    ax = layer.get_param("text").get()[0].text.split("\n")
+    #For now whether line separation is supported is unclear so adding separation for integer values
+    line_separation = layer.get_param("vcompress").get()[0].attrib["value"]
+    breaks = "\r"*round(float(line_separation))
+    text = breaks.join(ax)
+    default["s"]["t"] = text
     lottie["t"]["d"]["k"].append(default)
     get_blend(lottie, layer)
