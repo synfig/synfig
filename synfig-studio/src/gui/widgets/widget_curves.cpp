@@ -59,6 +59,7 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -594,6 +595,7 @@ Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_in
 bool
 Widget_Curves::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (channel_point_sd.process_event(event))
 		return true;
 
@@ -619,6 +621,7 @@ Widget_Curves::on_event(GdkEvent *event)
 	}
 
 	return Widget_TimeGraphBase::on_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

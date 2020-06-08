@@ -42,6 +42,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -242,6 +244,7 @@ ChildrenTree::on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& 
 bool
 ChildrenTree::on_tree_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
@@ -343,6 +346,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

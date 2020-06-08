@@ -40,6 +40,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -263,6 +265,7 @@ Widget_Gradient::update_cpoint(const synfig::Gradient::CPoint &x)
 bool
 Widget_Gradient::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	//if(editable_)
 	{
 		const int x(static_cast<int>(event->button.x));
@@ -350,4 +353,5 @@ Widget_Gradient::on_event(GdkEvent *event)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }

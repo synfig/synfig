@@ -46,6 +46,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -210,11 +212,13 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 		)
 	);
 	layer_tree->signal_no_layer_user_click().connect([=](GdkEventButton *ev){
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if (ev->button == 3 && action_new_layer->is_sensitive()) {
 			popup_add_layer_menu();
 			return true;
 		}
 		return false;
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	});
 
 	// (a) should be before (b), (b) should be before (c)

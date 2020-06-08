@@ -55,6 +55,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 using namespace synfig;
@@ -121,6 +123,7 @@ public:
 
 	void start_editing_vfunc(GdkEvent *event)
 	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		valuewidget->signal_activate().connect(sigc::mem_fun(*this,
 			&studio::ValueBase_Entry::editing_done));
 
@@ -150,10 +153,12 @@ public:
 		show();
 		//valuewidget->grab_focus();
 		//get_window()->set_focus(*valuewidget);
+		SYNFIG_EXCEPTION_GUARD_END()
 	}
 
 	bool on_event(GdkEvent *event)
 	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if (event->any.type == GDK_BUTTON_PRESS
 		 || event->any.type == GDK_2BUTTON_PRESS
 		 || event->any.type == GDK_KEY_PRESS
@@ -162,6 +167,7 @@ public:
 		 || event->any.type == GDK_3BUTTON_PRESS )
 			return true;
 		return Gtk::EventBox::on_event(event);
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	}
 
 	void on_grab_focus()
@@ -568,6 +574,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	const Gdk::Rectangle&  /*cell_area*/,
 	Gtk::CellRendererState /*flags*/)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	edit_value_done_called = false;
 	// If we aren't editable, then there is nothing to do
 	if (!property_editable())
@@ -649,6 +656,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	}
 
 	return nullptr;
+	SYNFIG_EXCEPTION_GUARD_END_NULL(nullptr)
 }
 
 void

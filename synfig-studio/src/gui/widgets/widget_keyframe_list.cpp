@@ -38,7 +38,7 @@
 #include <gui/app.h>
 #include "widget_keyframe_list.h"
 #include <gui/localization.h>
-
+#include <gui/exception_guard.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -297,6 +297,7 @@ Widget_Keyframe_List::perform_move_kf(bool delta)
 bool
 Widget_Keyframe_List::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (!time_model || get_width() <= 0 || !kf_list || !editable)
 		return false;
 
@@ -439,6 +440,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 

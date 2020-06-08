@@ -71,15 +71,15 @@ public:
 	void clear_redo();
 	void clear_undo_and_redo();
 
-	bool on_action_event(GdkEvent *event);
-	void on_action_toggle(const Glib::ustring& path);
-
 	void update_undo_redo();
 
 	Dock_History();
 	~Dock_History();
 protected:
 	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
+
+	bool on_action_event(GdkEvent *event);
+	void on_action_toggle(const Glib::ustring& path);
 
 }; // END of Dock_History
 

@@ -40,6 +40,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -108,6 +110,7 @@ CellRenderer_Time::start_editing_vfunc(
 	const Gdk::Rectangle& cell_area,
 	Gtk::CellRendererState flags)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	// If we aren't editable, then there is nothing to do
 	if(!property_editable())
 		return 0;
@@ -125,4 +128,5 @@ CellRenderer_Time::start_editing_vfunc(
 #else
 	return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
 #endif
+	SYNFIG_EXCEPTION_GUARD_END_NULL(nullptr)
 }

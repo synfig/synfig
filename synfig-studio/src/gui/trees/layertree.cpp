@@ -53,6 +53,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -74,9 +76,9 @@ using namespace studio;
 	Return true if we process event,
 	False to pass it
 */
-bool LayerTree::onKeyPress(GdkEventKey* event)
+bool LayerTree::on_key_press_event(GdkEventKey* event)
 {
-
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch (event->keyval) {
 		case GDK_KEY_Delete: {
 			LayerList layers = get_selected_layers();
@@ -117,13 +119,14 @@ bool LayerTree::onKeyPress(GdkEventKey* event)
 	}
 
     return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 
 LayerTree::LayerTree():
 	layer_amount_adjustment_(Gtk::Adjustment::create(1,0,1,0.01,0.01,0))
 {
-	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::onKeyPress));
+	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_key_press_event));
 
 	create_layer_tree();
 	create_param_tree();
@@ -838,6 +841,7 @@ LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node,
 bool
 LayerTree::on_layer_tree_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
@@ -911,11 +915,13 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 LayerTree::on_param_tree_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
@@ -1058,6 +1064,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 

@@ -91,6 +91,7 @@ public:
 
 	void on_value_editing_done();
 
+protected:
 	virtual void
 	render_vfunc(
 		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
