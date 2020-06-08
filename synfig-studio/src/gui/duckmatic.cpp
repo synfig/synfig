@@ -2913,6 +2913,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
         {
             error("expected a ValueNode_Bone");
             assert(0);
+			return false;
         }
 
         synfig::GUID guid(bone_value_node->get_guid());
