@@ -113,6 +113,12 @@ def gen_layer_text(lottie, layer, idx):
 
     gen_helpers_transform(lottie["ks"], pos, anchor, scale)
     
+    lottie["t"]["a"].append(calc_default_text_properties(layer))
+    lottie["t"]["a"][0]["a"] = {"fc":{}}
+    color = layer.get_param("color")
+    color.animate("color")
+    color.fill_path(lottie["t"]["a"][0]["a"],"fc")
+
     lottie["t"]["d"] = {}
     lottie["t"]["p"] = {}
     lottie["t"]["d"]["k"] = []
@@ -125,18 +131,12 @@ def gen_layer_text(lottie, layer, idx):
                 "tr": 0,
                 "lh": 43.2,
                 "ls": 0,
-                "fc": []
+                "fc": [1,1,1,1]
               },
               "t": 0
             }
     
     ax = ''.join(layer.get_param("text").get()[0].itertext())
     default["s"]["t"] = ax
-    color = layer.get_param("color").get()[0]
-    red = float(color[0].text)
-    green = float(color[1].text)
-    blue = float(color[2].text)
-    default["s"]["fc"] = [red,green,blue]
     lottie["t"]["d"]["k"].append(default)
     get_blend(lottie, layer)
-
