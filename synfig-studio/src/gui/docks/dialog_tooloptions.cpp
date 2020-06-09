@@ -60,7 +60,7 @@ Dialog_ToolOptions::Dialog_ToolOptions():
 {
 	add(sub_vbox_);
 
-	sub_vbox_.set_margin_end (10);
+	sub_vbox_.set_margin_end(10);
 	sub_vbox_.set_margin_bottom(10);
 	
 	set_widget(empty_label);
