@@ -4,12 +4,13 @@ Will store all the functions corresponding to text layer in lottie
 
 import sys
 import settings
-import copy
-from lxml import etree
 from common.Count import Count
 from synfig.group import get_additional_width,get_additional_height
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
+from common.misc import is_animated
+from properties.value import gen_properties_value
+from properties.valueKeyframed import gen_value_Keyframed
 sys.path.append("..")
 
 def calc_default_text_properties(layer):
@@ -89,9 +90,6 @@ def gen_layer_text(lottie, layer, idx):
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
 
-    pos = [settings.lottie_format["w"]/2 + get_additional_width()/2,
-           settings.lottie_format["h"]/2 + get_additional_height()/2]
-
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["ip"] = settings.lottie_format["ip"]
     lottie["op"] = settings.lottie_format["op"]
@@ -114,10 +112,29 @@ def gen_layer_text(lottie, layer, idx):
     gen_helpers_transform(lottie["ks"], pos, anchor, scale)
     
     lottie["t"]["a"].append(calc_default_text_properties(layer))
-    lottie["t"]["a"][0]["a"] = {"fc":{}}
+    lottie["t"]["a"][0]["a"] = {"fc":{},"o":{}}
+    
     color = layer.get_param("color")
     color.animate("color")
     color.fill_path(lottie["t"]["a"][0]["a"],"fc")
+
+    opacity = layer.get_param("amount").get()
+    is_animate = is_animated(opacity[0])
+    if is_animate == settings.ANIMATED:
+        # Telling the function that this is for opacity
+        opacity[0].attrib['type'] = 'opacity'
+        gen_value_Keyframed(lottie["t"]["a"][0]["a"]["o"], opacity[0], index.inc())
+
+    else:
+        if is_animate == settings.NOT_ANIMATED:
+            val = float(opacity[0].attrib["value"]) * settings.OPACITY_CONSTANT
+        else:
+            val = float(opacity[0][0][0].attrib["value"]) * settings.OPACITY_CONSTANT
+        gen_properties_value(lottie["t"]["a"][0]["a"]["o"],
+                             val,
+                             index.inc(),
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
 
     lottie["t"]["d"] = {}
     lottie["t"]["p"] = {}
@@ -137,7 +154,7 @@ def gen_layer_text(lottie, layer, idx):
             }
     
     ax = layer.get_param("text").get()[0].text.split("\n")
-    #For now whether line separation is supported is unclear so adding separation for integer values
+    #Line separation is not supported so adding separation only for integer values
     line_separation = layer.get_param("vcompress").get()[0].attrib["value"]
     breaks = "\r"*round(float(line_separation))
     text = breaks.join(ax)
