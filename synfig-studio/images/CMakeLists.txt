@@ -236,12 +236,6 @@ set(PIXMAPS_DIR ${SYNFIG_BUILD_ROOT}/share/pixmaps/synfigstudio)
 
 file(MAKE_DIRECTORY ${PIXMAPS_DIR})
 
-## TODO: don't run this if files are up to date
-add_custom_target(
-    build_images
-    DEPENDS synfig_bin
-    )
-
 ## TODO: configure icon size
 foreach (ICON IN ITEMS ${ICONS})
     set(IMG_SIZE_${ICON} 32 32)
@@ -263,13 +257,19 @@ foreach (IMAGE IN ITEMS ${IMAGES})
         set(H 0)
     endif()
     add_custom_command(
-        TARGET build_images POST_BUILD
+        OUTPUT ${PIXMAPS_DIR}/${IMAGE}.png
         COMMAND synfig_bin ${SRC}.sif -o ${PIXMAPS_DIR}/${IMAGE}.png --time ${TIME}f -w ${W} -h ${H} --quiet
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.sif synfig_bin
     )
+    list(APPEND PIXMAPS ${PIXMAPS_DIR}/${IMAGE}.png)
     install(
         FILES ${PIXMAPS_DIR}/${IMAGE}.png
         DESTINATION share/pixmaps/synfigstudio
     )
 endforeach()
+
+add_custom_target(
+        build_images
+        DEPENDS synfig_bin ${PIXMAPS}
+)
