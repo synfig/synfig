@@ -68,24 +68,51 @@ synfig::String studio::ResourceHelper::get_image_path(const synfig::String& imag
 	return get_image_path() + '/' + image_filename;
 }
 
-synfig::String studio::ResourceHelper::get_ui_path()
-{
-#ifndef UI_DIR
-#   define UI_DIR "/usr/local/share/synfig/ui"
+#ifndef SYNFIG_DATADIR
+#	define SYNFIG_DATADIR "/usr/local/share/synfig/"
 #endif
 
-	std::string uipath;
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		uipath=std::string(synfig_root)+"/share/synfig/ui";
-	}
-	else {
+synfig::String studio::ResourceHelper::get_synfig_data_path()
+{
 #if defined CMAKE_BUILD || defined _WIN32
-	    uipath=App::get_base_path()+"/share/synfig/ui";
+	std::string synfig_datadir = App::get_base_path();
 #else
-        uipath=UI_DIR;
+	std::string synfig_datadir = SYNFIG_DATADIR;
 #endif
+
+	if (char* synfig_root = getenv("SYNFIG_ROOT")) {
+		synfig_datadir = std::string(synfig_root)
+			+ ETL_DIRECTORY_SEPARATOR + "share/synfig";
 	}
+
+	return synfig_datadir;
+}
+
+synfig::String studio::ResourceHelper::get_plugin_path()
+{
+	std::string uipath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "plugins";
+	return uipath;
+}
+
+synfig::String studio::ResourceHelper::get_plugin_path(const synfig::String& plugin_filename)
+{
+	return get_plugin_path() + '/' + plugin_filename;
+}
+
+synfig::String studio::ResourceHelper::get_sound_path()
+{
+	std::string uipath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "sounds";
+	return uipath;
+}
+
+synfig::String studio::ResourceHelper::get_sound_path(const synfig::String& sound_filename)
+{
+	return get_sound_path() + '/' + sound_filename;
+}
+
+synfig::String studio::ResourceHelper::get_ui_path()
+{
+	std::string uipath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "ui";
 	return uipath;
 }
 
