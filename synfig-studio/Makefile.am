@@ -71,7 +71,7 @@ desktop_DATA = org.synfig.SynfigStudio.desktop
 
 @INTLTOOL_DESKTOP_RULE@
 
-mimeinfodir              = $(prefix)/share/mime-info
+mimeinfodir              = $(datadir)/mime-info
 mimeinfo_DATA            = synfigstudio.keys synfigstudio.mime
 
 # Appdata
@@ -85,7 +85,7 @@ icondir                 = $(datadir)/pixmaps
 icon_DATA               = images/synfig_icon.png images/sif_icon.png
 endif
 
-mimedir              = $(prefix)/share/mime/packages
+mimedir              = $(datadir)/mime/packages
 mime_DATA            = org.synfig.SynfigStudio.xml
 
 ACLOCAL_AMFLAGS=-I m4
