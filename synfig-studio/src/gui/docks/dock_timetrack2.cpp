@@ -62,8 +62,8 @@ Dock_Timetrack2::Dock_Timetrack2()
 	grid.set_column_homogeneous(false);
 	grid.set_row_homogeneous(false);
 	// for letting user click/drag waypoint or keyframe mark of time zero
-	grid.set_margin_left(2);
-	grid.set_margin_right(2);
+	grid.set_margin_start(2);
+	grid.set_margin_end(2);
 
 	add(grid);
 }

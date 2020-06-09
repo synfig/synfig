@@ -156,8 +156,8 @@ void Dialog_Workspaces::on_rename_clicked()
 	ok_button->set_sensitive(false);
 
 	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
-	name_entry->set_margin_left(16);
-	name_entry->set_margin_right(16);
+	name_entry->set_margin_start(16);
+	name_entry->set_margin_end(16);
 	name_entry->signal_changed().connect([&](){
 		std::string name = name_entry->get_text();
 		WorkspaceHandler::trim_string(name);
