@@ -191,6 +191,9 @@ EXTRA_DIST = \
 IMAGES = \
 	installer_logo.bmp \
 	installer_logo_osx.$(EXT) \
+	splash_screen.$(EXT)
+
+ICONS = \
 	clear_redo_icon.$(EXT) \
 	clear_undo_icon.$(EXT) \
 	reset_colors_icon.$(EXT) \
@@ -199,7 +202,6 @@ IMAGES = \
 	sif_icon.$(EXT) \
 	synfig_icon.$(EXT) \
 	about_icon.$(EXT) \
-	splash_screen.$(EXT) \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
 	group_icon.$(EXT) \
@@ -377,7 +379,7 @@ IMAGES = \
 	utils_timetrack_align_icon.$(EXT)
 
 if WIN32_PKG
-ICONS = \
+WIN32_ICONS = \
 	sif_icon.ico \
 	synfig_icon.ico
 endif
@@ -392,6 +394,7 @@ endif
 CLEANFILES = \
 	$(IMAGES) \
 	$(ICONS) \
+	$(WIN32_ICONS) \
 	$(SPLASH_DEV) \
 	logo_tmp.sif \
 	images.nsh \
@@ -412,11 +415,16 @@ CLEANDIRS = \
 
 appicondir="${datadir}/icons/hicolor"
 
-imagedir="${datadir}/pixmaps/synfigstudio"
-image_DATA = $(IMAGES) $(ICONS)
+imagedir="${synfig_datadir}/images"
+image_DATA = $(IMAGES)
 
+iconsdir="${synfig_datadir}/icons/classic"
+icons_DATA = $(ICONS)
 
-all: $(IMAGES)
+win32iconsdir="${datadir}/pixmaps"
+win32icons_DATA = $(WIN32_ICONS)
+
+all: $(IMAGES) $(ICONS)
 
 .sifz.ico:
 	bash $(srcdir)/../build_tools/sif2ico.sh $<

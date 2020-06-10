@@ -79,12 +79,6 @@ appdatadir = $(datadir)/appdata
 appdata_DATA = org.synfig.SynfigStudio.appdata.xml
 @INTLTOOL_XML_RULE@
 
-# Icon
-if WITH_IMAGES
-icondir                 = $(datadir)/pixmaps
-icon_DATA               = images/synfig_icon.png images/sif_icon.png
-endif
-
 mimedir              = $(datadir)/mime/packages
 mime_DATA            = org.synfig.SynfigStudio.xml
 

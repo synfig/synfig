@@ -130,7 +130,6 @@ synfigstudio_CXXFLAGS = \
 	@SYNFIG_CFLAGS@ \
 	@GTKMM_CFLAGS@ \
 	@JACK_CFLAGS@ \
-	-DIMAGE_DIR=\"$(imagedir)\" \
 	-DIMAGE_EXT=\"$(imageext)\" \
 	-DSYNFIG_DATADIR=\"$(synfig_datadir)\" \
 	-DLOCALEDIR=\"${LOCALEDIR}\"

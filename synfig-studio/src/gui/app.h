@@ -345,6 +345,8 @@ public:
 	static void restore_default_settings();
 	static void apply_gtk_settings();
 
+	static std::string get_synfig_icon_theme();
+
 	static const std::list<std::string>& get_recent_files();
 
 	static const std::vector<std::string> get_workspaces();
