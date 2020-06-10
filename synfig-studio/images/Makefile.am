@@ -397,8 +397,6 @@ CLEANFILES = \
 	images.nsh \
 	unimages.nsh \
 	installer_logo.bmp \
-	sif_icon.ico \
-	synfig_icon.ico \
 	icons.nsh \
 	unicons.nsh
 
@@ -420,9 +418,6 @@ image_DATA = $(IMAGES) $(ICONS)
 
 all: $(IMAGES)
 
-SUFFIXES = .sif .tif .png .sifz .bmp
-#.SUFFIXES: $(SUFFIXES)
-
 .sifz.ico:
 	bash $(srcdir)/../build_tools/sif2ico.sh $<
 	echo "  File \"images\\$@\"" >>./icons.nsh
@@ -436,12 +431,6 @@ SUFFIXES = .sif .tif .png .sifz .bmp
 clean-local:
 	$(RM) -r $(CLEANDIRS)
 
-#.sif.$(EXT) .sifz.$(EXT) .sif.bmp .sifz.bmp:
-#%.bmp: %.sif %.sifz
-#	$(SYNFIG) -q $< -o $@ --time 0f
-#	echo "  File \"images\\$@\"" >>./images.nsh
-#	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
-#
 .sifz.bmp:
 	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
