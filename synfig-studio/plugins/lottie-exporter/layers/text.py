@@ -112,7 +112,7 @@ def gen_layer_text(lottie, layer, idx):
     gen_helpers_transform(lottie["ks"], pos, anchor, scale)
     
     lottie["t"]["a"].append(calc_default_text_properties(layer))
-    lottie["t"]["a"][0]["a"] = {"fc":{},"o":{}}
+    lottie["t"]["a"][0]["a"] = {"fc":{},"o":{},"t":{}}
     
     color = layer.get_param("color")
     color.animate("color")
@@ -131,6 +131,30 @@ def gen_layer_text(lottie, layer, idx):
         else:
             val = float(opacity[0][0][0].attrib["value"]) * settings.OPACITY_CONSTANT
         gen_properties_value(lottie["t"]["a"][0]["a"]["o"],
+                             val,
+                             index.inc(),
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+
+    tracking = layer.get_param("compress").get()
+    is_animate = is_animated(tracking[0])
+    if is_animate == settings.ANIMATED:
+        # Telling the function that this is for separation
+        tracking[0].attrib['type'] = 'separation'
+        gen_value_Keyframed(lottie["t"]["a"][0]["a"]["t"], tracking[0], index.inc())
+
+    else:
+        if is_animate == settings.NOT_ANIMATED:
+            if float(tracking[0].attrib['value']) == 1.0:
+                val = 0
+            else:
+                val = float(tracking[0].attrib["value"]) * settings.SEPARATION_CONSTANT
+        else:
+            if float(tracking[0][0][0].attrib["value"]) == 1.0:
+                val = 0
+            else:
+                val = float(tracking[0][0][0].attrib["value"]) * settings.SEPARATION_CONSTANT
+        gen_properties_value(lottie["t"]["a"][0]["a"]["t"],
                              val,
                              index.inc(),
                              settings.DEFAULT_ANIMATED,
