@@ -34,16 +34,15 @@
 #include "state_bone.h"
 #include <synfig/general.h>
 
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include "state_normal.h"
+#include <synfigapp/value_desc.h>
 #include "canvasview.h"
+#include "duckmatic.h"
 #include "workarea.h"
 #include "app.h"
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <ETL/hermite>
-#include <ETL/calculus>
-#include <utility>
 #include "event_mouse.h"
 #include "event_keyboard.h"
 #include "event_layerclick.h"
@@ -53,11 +52,19 @@
 #include "widgets/widget_distance.h"
 #include <synfig/transform.h>
 #include <synfigapp/main.h>
+#include "synfig/layers/layer_skeleton.h"
+#include "synfig/valuenodes/valuenode_bone.h"
+#include "synfig/valuenodes/valuenode_staticlist.h"
+#include "synfigapp/value_desc.h"
 
 #include <gui/localization.h>
 
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/imagemenuitem.h>
+#include "synfigapp/action_system.h"
+#include "synfigapp/actions/layeradd.h"
+#include "synfigapp/actions/valuedesccreatechildbone.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -66,6 +73,7 @@ using namespace std;
 using namespace etl;
 using namespace studio;
 using namespace synfig;
+using namespace synfigapp;
 
 /* === M A C R O S ========================================================= */
 
@@ -99,6 +107,9 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::Menu menu;
 
 	Duckmatic::Push duckmatic_push;
+	int active_bone;
+
+	Point clickOrigin;
 
 	std::list<synfig::ValueNode_Const::Handle> bone_list;
 
@@ -119,6 +130,8 @@ class studio::StateBone_Context : public sigc::trackable
 	// Default bone width
 	Gtk::Label bone_width_label;
 	Widget_Distance bone_width_dist;
+
+	Action::Handle createChild;
 
 public:
 
@@ -158,6 +171,7 @@ public:
 	synfig::Canvas::Handle get_canvas() const {return canvas_view_->get_canvas();}
 	WorkArea * get_work_area() const {return canvas_view_->get_work_area();}
 	const synfig::TransformStack& get_transform_stack() const {return get_work_area()->get_curr_transform_stack();}
+	int find_bone(Point point,Layer_Skeleton::Handle layer)const;
 
 	void load_settings();
 	void save_settings();
@@ -302,7 +316,9 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	depth(-1),
 	duckmatic_push(get_work_area()),
-	settings(synfigapp::Main::get_selected_input_device()->settings())
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
+	createChild(Action::Handle(Action::create("ValueDescCreateChildBone"))),
+	active_bone(-1)
 {
 	egress_on_selection_change=true;
 
@@ -529,7 +545,7 @@ StateBone_Context::event_mouse_motion_handler(const Smach::event& x)
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
 	Point p(get_work_area()->snap_point_to_grid(event.pos));
-	synfig::info("Mouse motion at "+to_string(p.mag_squared()));
+	//synfig::info("Mouse motion at "+to_string(p.mag_squared()));
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -538,8 +554,59 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
-	Point p(get_work_area()->snap_point_to_grid(event.pos));
-	synfig::info("Mouse release at "+to_string(p.mag_squared()));
+	Point releaseOrigin(get_work_area()->snap_point_to_grid(event.pos));
+	synfig::info("Mouse release at "+to_string(releaseOrigin.mag_squared()));
+
+    Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+    Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
+
+    switch(event.button)
+    {
+        case BUTTON_LEFT:
+        {
+            if(skel_layer){
+                createChild->set_param("canvas",skel_layer->get_canvas());
+                if((clickOrigin-releaseOrigin).mag()<0.0000001){
+                    ValueDesc list_desc(layer,"bones");
+                    int b =find_bone(releaseOrigin,skel_layer);
+
+                    if(b!=-1){
+                        active_bone=b;
+                    }else{
+                        if(active_bone!=-1){
+                            ValueNode_StaticList::Handle list_node;
+                            list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+                            ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
+
+                            ValueNode_Bone::Handle bone_node;
+                            if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+                            {
+                                error("expected a ValueNode_Bone");
+                                assert(0);
+                            }
+                            ValueNode::Handle prev = bone_node->get_link("origin");
+                            bone_node->set_link("origin",ValueNode_Const::create(releaseOrigin));
+
+
+                            ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
+                            createChild->set_param("value_desc",Action::Param(v_d));
+                            if(createChild->is_ready()){
+                                try{
+                                    createChild->perform();
+                                } catch (...) {
+                                    info("Error performing action");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return Smach::RESULT_ACCEPT;
+        }
+
+        default:
+            return Smach::RESULT_OK;
+    }
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -547,17 +614,18 @@ Smach::event_result
 StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+    Point p(get_work_area()->snap_point_to_grid(event.pos));
+
+    Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+    Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
+
 	switch(event.button)
 	{
 		case BUTTON_LEFT:
 		{
-			synfig::info("Left Mouse Click!");
-			return Smach::RESULT_ACCEPT;
-		}
-
-		case BUTTON_RIGHT:
-		{
-			synfig::info("Right Mouse Click!");
+            if(skel_layer){
+                clickOrigin = p;
+            }
 			return Smach::RESULT_ACCEPT;
 		}
 
@@ -587,4 +655,38 @@ StateBone_Context::event_mouse_doubleclick_handler(const Smach::event& x)
 			break;
 	}
 	return Smach::RESULT_OK;
+}
+
+int
+StateBone_Context::find_bone(Point point,Layer_Skeleton::Handle layer)const
+{
+    vector<Bone> bList= layer->get_param("bones").get_list_of(Bone());
+    Real close_line(10000000),close_origin(10000000);
+    int ret;
+    vector<Bone>::iterator iter;
+
+    for(iter=bList.begin();iter!=bList.end();++iter){
+        Point orig = iter->get_origin();
+        Point tip = iter->get_tip();
+        Real orig_dist((point-orig).mag_squared());
+        Real dist=orig_dist*Angle::sin((point-orig).angle()).get();
+        dist = abs(dist);
+        if(dist<close_line){
+            close_line=dist;
+            close_origin=orig_dist;
+            ret = iter-bList.begin();
+        }else if(fabs(dist-close_line)<0.0000001){
+            if(orig_dist<close_origin){
+                close_origin=orig_dist;
+                ret = iter-bList.begin();
+            }
+        }
+        //info(to_string(dist));
+    }
+
+    if(abs(close_line)<=0.1){
+        return ret;
+    }else{
+        return -1;
+    }
 }
