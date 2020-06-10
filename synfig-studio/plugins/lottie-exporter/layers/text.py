@@ -146,12 +146,12 @@ def gen_layer_text(lottie, layer, idx):
     else:
         if is_animate == settings.NOT_ANIMATED:
             if float(tracking[0].attrib['value']) == 1.0:
-                val = 0
+                val = (float(tracking[0].attrib["value"]) - 0.45) * settings.SEPARATION_CONSTANT
             else:
                 val = float(tracking[0].attrib["value"]) * settings.SEPARATION_CONSTANT
         else:
             if float(tracking[0][0][0].attrib["value"]) == 1.0:
-                val = 0
+                val = (float(tracking[0].attrib["value"]) - 0.45) * settings.SEPARATION_CONSTANT
             else:
                 val = float(tracking[0][0][0].attrib["value"]) * settings.SEPARATION_CONSTANT
         gen_properties_value(lottie["t"]["a"][0]["a"]["t"],

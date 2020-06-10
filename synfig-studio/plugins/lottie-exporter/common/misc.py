@@ -126,11 +126,11 @@ def parse_position(animated, i):
 
     elif animated.attrib["type"] == "separation":
         if float(animated[i][0].attrib["value"]) == 1 :
-            pos = [0,get_frame(animated[i])]
+            pos = [(float(animated[i][0].attrib["value"]) - 0.45) * settings.SEPARATION_CONSTANT,get_frame(animated[i])]
         else:
             pos = [float(animated[i][0].attrib["value"]) * settings.SEPARATION_CONSTANT,
                get_frame(animated[i])]
-        print(pos)
+
     elif animated.attrib["type"] == "effects_opacity":
         pos = [float(animated[i][0].attrib["value"]),
                get_frame(animated[i])]
