@@ -12,4 +12,5 @@ echo %APPVEYOR_BUILD_FOLDER%
 pwd
 
 bash -c "./1-setup-windows-msys2.sh"
-bash -c "./2-build-production.sh"
+rem bash -c "./2-build-production.sh"
+bash -c "mkdir build && cd build && cmake -GNinja .. -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache && ninja"
