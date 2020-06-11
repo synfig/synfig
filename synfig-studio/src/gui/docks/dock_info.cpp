@@ -106,42 +106,82 @@ studio::Dock_Info::Dock_Info()
 {
 	set_use_scrolled(false);
 
-	Gtk::Table *table = manage(new Gtk::Table);
+	Gtk::Grid *table = manage(new Gtk::Grid);
+	table->set_column_spacing(3);
 
 	//pos labels
-	table->attach(*manage(new Gtk::Label(_("X: "))),0,1,0,2,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(*manage(new Gtk::Label(_("Y: "))),0,1,2,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	Gtk::Label *x_label = manage(new Gtk::Label());
+	x_label->set_markup(etl::strprintf("<b>%s</b>", _("X: ")));
+	x_label->set_hexpand(false);
+	Gtk::Label *y_label = manage(new Gtk::Label());
+	y_label->set_markup(etl::strprintf("<b>%s</b>", _("Y: ")));
+	y_label->set_hexpand(false);
+	table->attach(*x_label, 0,0,1,1);
+	table->attach(*y_label, 0,1,1,1);
 
 	//pos
-	table->attach(x,1,2,0,2,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(y,1,2,2,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	x.property_xalign() = 1.0;
+	y.property_xalign() = 1.0;
+	table->attach_next_to(x, *x_label, Gtk::POS_RIGHT, 1,1);
+	table->attach_next_to(y, *y_label, Gtk::POS_RIGHT, 1,1);
 
 	//separator
-	table->attach(*manage(new Gtk::VSeparator),2,3,0,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	Gtk::Label *separator1 = manage(new Gtk::Label("  "));
+	separator1->set_hexpand(true);
+	table->attach_next_to(*separator1, x, Gtk::POS_RIGHT, 1,4);
 
 	//color label
-	table->attach(*manage(new Gtk::Label(_("R: "))),3,4,0,1,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(*manage(new Gtk::Label(_("G: "))),3,4,1,2,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(*manage(new Gtk::Label(_("B: "))),3,4,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(*manage(new Gtk::Label(_("A: "))),3,4,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	Gtk::Label *r_label = manage(new Gtk::Label());
+	r_label->set_markup(etl::strprintf("<b>%s</b>", _("R: ")));
+	r_label->set_hexpand(false);
+	Gtk::Label *g_label = manage(new Gtk::Label());
+	g_label->set_markup(etl::strprintf("<b>%s</b>", _("G: ")));
+	g_label->set_hexpand(false);
+	Gtk::Label *b_label = manage(new Gtk::Label());
+	b_label->set_markup(etl::strprintf("<b>%s</b>", _("B: ")));
+	b_label->set_hexpand(false);
+	Gtk::Label *a_label = manage(new Gtk::Label());
+	a_label->set_markup(etl::strprintf("<b>%s</b>", _("A: ")));
+	a_label->set_hexpand(false);
+	table->attach(*r_label, 3,0,1,1);
+	table->attach(*g_label, 3,1,1,1);
+	table->attach(*b_label, 3,2,1,1);
+	table->attach(*a_label, 3,3,1,1);
 
 	//color
-	table->attach(r,4,5,0,1,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(g,4,5,1,2,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(b,4,5,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(a,4,5,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
+	r.property_xalign() = 1.0f;
+	g.property_xalign() = 1.0f;
+	b.property_xalign() = 1.0f;
+	a.property_xalign() = 0.0f;
+	r.set_tooltip_text(_("Red component value of color\nThe value after gamma correction, if different, is given in brackets"));
+	g.set_tooltip_text(_("Green component value of color\nThe value after gamma correction, if different, is given in brackets"));
+	b.set_tooltip_text(_("Blue component value of color\nThe value after gamma correction, if different, is given in brackets"));
+	a.set_tooltip_text(_("Alpha component value of color, ie. opacity"));
+	table->attach_next_to(r, *r_label, Gtk::POS_RIGHT, 1,1);
+	table->attach_next_to(g, *g_label, Gtk::POS_RIGHT, 1,1);
+	table->attach_next_to(b, *b_label, Gtk::POS_RIGHT, 1,1);
+	table->attach_next_to(a, *a_label, Gtk::POS_RIGHT, 1,1);
 
-	table->attach(*manage(new Gtk::Label),0,5,4,5);
+	Gtk::Label *separator2 = manage(new Gtk::Label(" "));
+	table->attach(*separator2, 0,4,8,1);
 
 	//Render Progress Bar
-	table->attach(*manage(new Gtk::Label(_("Render Progress: "))),0,1,5,6,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	table->attach(render_progress,                                0,5,6,7,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	
+	Gtk::Label *render_progress_label = manage(new Gtk::Label());
+	render_progress_label->set_markup(etl::strprintf("<b>%s</b>", _("Render Progress: ")));
+	table->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8,1);
+
+	table->attach_next_to(render_progress, *render_progress_label, Gtk::POS_BOTTOM, 7,1);
+	render_progress.set_hexpand(true);
+	render_progress.set_vexpand(false);
 	render_progress.set_show_text(true);
 	render_progress.set_text(strprintf("%.1f%%", 0.0));
 	render_progress.set_fraction(0.0);
-	//Another spacer
-	table->attach(*manage(new Gtk::Label),0,5,7,8);
+
+	table->set_margin_start(5);
+	table->set_margin_end(5);
+	table->set_margin_top(5);
+	table->set_margin_bottom(5);
+
 	
 	table->show_all();
 
