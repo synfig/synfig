@@ -191,6 +191,9 @@ EXTRA_DIST = \
 IMAGES = \
 	installer_logo.bmp \
 	installer_logo_osx.$(EXT) \
+	splash_screen.$(EXT)
+
+ICONS = \
 	clear_redo_icon.$(EXT) \
 	clear_undo_icon.$(EXT) \
 	reset_colors_icon.$(EXT) \
@@ -199,7 +202,6 @@ IMAGES = \
 	sif_icon.$(EXT) \
 	synfig_icon.$(EXT) \
 	about_icon.$(EXT) \
-	splash_screen.$(EXT) \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
 	group_icon.$(EXT) \
@@ -377,7 +379,7 @@ IMAGES = \
 	utils_timetrack_align_icon.$(EXT)
 
 if WIN32_PKG
-ICONS = \
+WIN32_ICONS = \
 	sif_icon.ico \
 	synfig_icon.ico
 endif
@@ -392,13 +394,12 @@ endif
 CLEANFILES = \
 	$(IMAGES) \
 	$(ICONS) \
+	$(WIN32_ICONS) \
 	$(SPLASH_DEV) \
 	logo_tmp.sif \
 	images.nsh \
 	unimages.nsh \
 	installer_logo.bmp \
-	sif_icon.ico \
-	synfig_icon.ico \
 	icons.nsh \
 	unicons.nsh
 
@@ -412,13 +413,18 @@ CLEANDIRS = \
 	128x128 \
 	256x256
 
-image_DATA = $(IMAGES) $(ICONS)
+appicondir="${datadir}/icons/hicolor"
 
+imagedir="${synfig_datadir}/images"
+image_DATA = $(IMAGES)
 
-all: $(IMAGES)
+iconsdir="${synfig_datadir}/icons/classic"
+icons_DATA = $(ICONS)
 
-SUFFIXES = .sif .tif .png .sifz .bmp
-#.SUFFIXES: $(SUFFIXES)
+win32iconsdir="${datadir}/pixmaps"
+win32icons_DATA = $(WIN32_ICONS)
+
+all: $(IMAGES) $(ICONS)
 
 .sifz.ico:
 	bash $(srcdir)/../build_tools/sif2ico.sh $<
@@ -433,12 +439,6 @@ SUFFIXES = .sif .tif .png .sifz .bmp
 clean-local:
 	$(RM) -r $(CLEANDIRS)
 
-#.sif.$(EXT) .sifz.$(EXT) .sif.bmp .sifz.bmp:
-#%.bmp: %.sif %.sifz
-#	$(SYNFIG) -q $< -o $@ --time 0f
-#	echo "  File \"images\\$@\"" >>./images.nsh
-#	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
-#
 .sifz.bmp:
 	$(SYNFIG) --quiet $< -o $@ --time 0f
 	echo "  File \"images\\$@\"" >>./images.nsh
@@ -660,59 +660,59 @@ if !MACOSX_PKG
 	-mkdir 16x16
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 16 -h 16
 
-icons16dir = $(datadir)/icons/hicolor/16x16/apps
+icons16dir = $(appicondir)/16x16/apps
 icons16_DATA = 16x16/synfig_icon.$(EXT)
 
 22x22/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 22x22
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 22 -h 22
 
-icons22dir = $(datadir)/icons/hicolor/22x22/apps
+icons22dir = $(appicondir)/22x22/apps
 icons22_DATA = 22x22/synfig_icon.$(EXT)
 
 24x24/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 24x24
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 24 -h 24
 
-icons24dir = $(datadir)/icons/hicolor/24x24/apps
+icons24dir = $(appicondir)/24x24/apps
 icons24_DATA = 24x24/synfig_icon.$(EXT)
 
 32x32/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 32x32
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 32 -h 32
 
-icons32dir = $(datadir)/icons/hicolor/32x32/apps
+icons32dir = $(appicondir)/32x32/apps
 icons32_DATA = 32x32/synfig_icon.$(EXT)
 
 48x48/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 48x48
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 48 -h 48
 
-icons48dir = $(datadir)/icons/hicolor/48x48/apps
+icons48dir = $(appicondir)/48x48/apps
 icons48_DATA = 48x48/synfig_icon.$(EXT)
 
 64x64/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 64x64
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 64 -h 64
 
-icons64dir = $(datadir)/icons/hicolor/64x64/apps
+icons64dir = $(appicondir)/64x64/apps
 icons64_DATA = 64x64/synfig_icon.$(EXT)
 
 128x128/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 128x128
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 128 -h 128
 
-icons128dir = $(datadir)/icons/hicolor/128x128/apps
+icons128dir = $(appicondir)/128x128/apps
 icons128_DATA = 128x128/synfig_icon.$(EXT)
 
 256x256/synfig_icon.$(EXT): synfig_icon.sif
 	-mkdir 256x256
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 256 -h 256
 
-+icons256dir = $(datadir)/icons/hicolor/256x256/apps
++icons256dir = $(appicondir)/256x256/apps
 +icons256_DATA = 256x256/synfig_icon.$(EXT)
 
-iconsscalabledir = $(datadir)/icons/hicolor/scalable/apps
+iconsscalabledir = $(appicondir)/scalable/apps
 iconsscalable_DATA = org.synfig.SynfigStudio.svg
 
 endif

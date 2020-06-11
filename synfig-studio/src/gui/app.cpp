@@ -1373,7 +1373,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	}
 
 	// paths
-	String path_to_icons = ResourceHelper::get_image_path();
+	String path_to_icons = ResourceHelper::get_icon_path();
 
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
@@ -2327,6 +2327,20 @@ App::apply_gtk_settings()
 		Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
 		Gtk::StyleContext::add_provider_for_screen(screen,css, GTK_STYLE_PROVIDER_PRIORITY_USER);
 	}
+}
+
+std::string
+App::get_synfig_icon_theme()
+{
+	if (const char *env_theme = getenv("SYNFIG_ICON_THEME")) {
+		std::string icon_theme(env_theme);
+		if (!icon_theme.empty()) {
+			// SYNFIG_ICON_THEME is not a path!
+			if (icon_theme.find("/") == icon_theme.npos && icon_theme.find("\\") == icon_theme.npos )
+				return icon_theme;
+		}
+	}
+	return "classic";
 }
 
 bool

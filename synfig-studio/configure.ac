@@ -25,8 +25,6 @@ API_VERSION=1.0
 imageext=png
 synfig_datadir="${datadir}/synfig"
 
-imagedir="${datadir}/pixmaps/synfigstudio"
-
 GETTEXT_PACKAGE=synfigstudio
 LOCALEDIR=[${datadir}/locale]
 
