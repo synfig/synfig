@@ -5,7 +5,6 @@ Will store all the functions corresponding to text layer in lottie
 import sys
 import settings
 from common.Count import Count
-from synfig.group import get_additional_width,get_additional_height
 from helpers.transform import gen_helpers_transform
 from helpers.blendMode import get_blend
 from common.misc import is_animated

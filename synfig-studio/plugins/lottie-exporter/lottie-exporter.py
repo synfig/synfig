@@ -40,10 +40,11 @@ def calc_font_data(lottie,layer):
         "fClass": "",
         "fFamily": "",
         "fWeight": "",
-        "fStyle": "",
         "fName": "",
         "ascent": 75.9994506835938
       }
+
+    style_dict = {0:'Regular',2:'Italic'}
 
     for child in layer:
         if child.tag == 'layer' and child.attrib["type"] == 'text':
@@ -53,19 +54,24 @@ def calc_font_data(lottie,layer):
                     if "Sans Serif" in name:
                         default_list["fFamily"] = "Sans Serif"
                         default_list["fName"] = "SansSerif"
-                        default_list["fStyle"] = "Regular"
                     if "Times New Roman" in name:
                         default_list["fFamily"] = "Times New Roman"
                         default_list["fName"] = "TimesNewRoman"
-                        default_list["fStyle"] = "Regular"
                     if "Calibria" in name:
                         default_list["fFamily"] = "Calibria"
                         default_list["fName"] = "Calibria"
-                        default_list["fStyle"] = "Regular"
                     if "Arial" in name:
                         default_list["fFamily"] = "Arial"
                         default_list["fName"] = "Arial"
-                        default_list["fStyle"] = "Regular"
+
+                if children.attrib["name"] == 'style':
+                    value = style_dict[int(children.getchildren()[0].attrib["value"])]
+                    default_list.update({'fStyle': value})
+
+                if children.attrib["name"] == 'weight':
+                    value = int(children.getchildren()[0].attrib["value"])
+                    default_list.update({'fWeight': value})
+                
 
             lottie["fonts"]["list"].append(default_list)
 
