@@ -36,7 +36,7 @@ pkg_check_modules(LIBPNG REQUIRED libpng) # for mod_png
 #TODO(ice0): find solution for libmng
 pkg_check_modules(LIBMNG libmng) # for mod_mng (set as optional as it is not correctly installed in Debian)
 pkg_check_modules(LIBJPEG REQUIRED libjpeg) # for mod_mng
-pkg_check_modules(OPENEXR REQUIRED OpenEXR) # for mod_openexr
+pkg_check_modules(OPENEXR OpenEXR) # for mod_openexr
 pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
 pkg_check_modules(FONT_CONFIG FontConfig) # for FontConfig
 
