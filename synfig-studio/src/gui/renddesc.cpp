@@ -681,7 +681,7 @@ Widget_RendDesc::create_image_tab()
 	entry_height->set_hexpand(true);
 	imageSizeGrid->attach(*entry_width, 			1, 0, 1, 1);
 	imageSizeGrid->attach(*entry_height, 			1, 1, 1, 1);
-	toggle_wh_ratio->set_margin_right(6);
+	toggle_wh_ratio->set_margin_end(6);
 	imageSizeGrid->attach(*toggle_wh_ratio, 		2, 0, 1, 2);
 
 	imageSizeGrid->attach(*size_xres_label, 		3, 0, 1, 1);
@@ -690,7 +690,7 @@ Widget_RendDesc::create_image_tab()
 	entry_yres->set_hexpand(true);
 	imageSizeGrid->attach(*entry_xres, 				4, 0, 1, 1);
 	imageSizeGrid->attach(*entry_yres, 				4, 1, 1, 1);
-	toggle_res_ratio->set_margin_right(6);
+	toggle_res_ratio->set_margin_end(6);
 	imageSizeGrid->attach(*toggle_res_ratio,		5, 0, 1, 2);
 
 	imageSizeGrid->attach(*size_physwidth_label,	6, 0, 1, 1);
