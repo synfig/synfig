@@ -385,8 +385,10 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
-	// clear out the ducks
-	get_work_area()->clear_ducks();
+	//ducks
+    get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+    get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
@@ -398,9 +400,12 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
+
 	get_work_area()->set_cursor(Gdk::DOT);
 
-	App::dock_toolbox->refresh();
+    App::dock_toolbox->refresh();
+
+    get_canvas_view()->queue_rebuild_ducks();
 }
 
 void
@@ -560,46 +565,72 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
     Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
     Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
 
+    Action::Handle addLayer(Action::LayerAdd::create());
+
     switch(event.button)
     {
         case BUTTON_LEFT:
         {
-            if(skel_layer){
+            if(skel_layer){ //!if selected layer is a Skeleton Layer
                 createChild->set_param("canvas",skel_layer->get_canvas());
-                if((clickOrigin-releaseOrigin).mag()<0.0000001){
-                    ValueDesc list_desc(layer,"bones");
-                    int b =find_bone(releaseOrigin,skel_layer);
+                ValueDesc list_desc(layer,"bones");
+                int b =find_bone(releaseOrigin,skel_layer);
 
-                    if(b!=-1){
-                        active_bone=b;
-                    }else{
-                        if(active_bone!=-1){
-                            ValueNode_StaticList::Handle list_node;
-                            list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-                            ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
+                if(b!=-1){ //! if bone found around the release point
+                    info("Active Bone: "+to_string(b));
+                    active_bone=b;
+                }else{
+                    if(active_bone!=-1){ //! if active bone is already set
+                        info("Add child to "+to_string(active_bone));
+                        ValueNode_StaticList::Handle list_node;
+                        list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+                        ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
+                        //info(value_desc.get_description());
+                        ValueNode_Bone::Handle bone_node;
+                        if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+                        {
+                            error("expected a ValueNode_Bone");
+                            assert(0);
+                        }
 
-                            ValueNode_Bone::Handle bone_node;
-                            if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
-                            {
-                                error("expected a ValueNode_Bone");
-                                assert(0);
-                            }
-                            ValueNode::Handle prev = bone_node->get_link("origin");
-                            bone_node->set_link("origin",ValueNode_Const::create(releaseOrigin));
-
-
-                            ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
-                            createChild->set_param("value_desc",Action::Param(v_d));
-                            if(createChild->is_ready()){
-                                try{
-                                    createChild->perform();
-                                } catch (...) {
-                                    info("Error performing action");
+                        Point parent_origin = layer->get_param("bones").get_list_of(Bone())[active_bone].get_origin();
+                        info(to_string(parent_origin.divide_coords(Vector(1,1))[0]));
+                        ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
+                        createChild->set_param("value_desc",Action::Param(v_d));
+                        if(createChild->is_ready()){
+                            try{
+                                createChild->perform();
+                                value_desc= ValueDesc(list_node,active_bone,list_desc);
+                                if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+                                {
+                                    error("expected a ValueNode_Bone");
+                                    assert(0);
                                 }
+
+                                bone_node->set_link("origin",ValueNode_Const::create(clickOrigin-parent_origin));
+
+                                if((clickOrigin - releaseOrigin).mag() >= 0.0000001){ //! if it is a click and drag
+                                    bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
+                                    bone_node->set_link("length",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
+                                }
+
+                            } catch (...) {
+                                info("Error performing action");
                             }
                         }
+                    }else{
+                        Layer::Handle new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
+
+                        get_canvas_interface()->get_selection_manager()->clear_selected_layers();
+                        get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
                     }
                 }
+            }else{
+                Layer::Handle new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
+
+                get_canvas_interface()->get_selection_manager()->clear_selected_layers();
+                get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
+
             }
             return Smach::RESULT_ACCEPT;
         }
@@ -607,7 +638,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
         default:
             return Smach::RESULT_OK;
     }
-	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
@@ -667,21 +697,22 @@ StateBone_Context::find_bone(Point point,Layer_Skeleton::Handle layer)const
 
     for(iter=bList.begin();iter!=bList.end();++iter){
         Point orig = iter->get_origin();
-        Point tip = iter->get_tip();
         Real orig_dist((point-orig).mag_squared());
         Real dist=orig_dist*Angle::sin((point-orig).angle()).get();
-        dist = abs(dist);
-        if(dist<close_line){
-            close_line=dist;
-            close_origin=orig_dist;
-            ret = iter-bList.begin();
-        }else if(fabs(dist-close_line)<0.0000001){
-            if(orig_dist<close_origin){
+        if(Angle::cos((point-orig).angle()).get()>0 && orig_dist<=iter->get_length()){
+            dist = abs(dist);
+            if(dist<close_line){
+                close_line=dist;
                 close_origin=orig_dist;
                 ret = iter-bList.begin();
+            }else if(fabs(dist-close_line)<0.0000001){
+                if(orig_dist<close_origin){
+                    close_origin=orig_dist;
+                    ret = iter-bList.begin();
+                }
             }
         }
-        //info(to_string(dist));
+
     }
 
     if(abs(close_line)<=0.1){
