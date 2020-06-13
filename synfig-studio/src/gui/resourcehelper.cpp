@@ -58,7 +58,8 @@ synfig::String studio::ResourceHelper::get_synfig_data_path()
 			+ ETL_DIRECTORY_SEPARATOR + "share/synfig";
 	} else {
 #if defined CMAKE_BUILD || defined _WIN32
-		synfig_datadir = App::get_base_path();
+		synfig_datadir = App::get_base_path()
+             + ETL_DIRECTORY_SEPARATOR + "share/synfig";
 #else
 		synfig_datadir = SYNFIG_DATADIR;
 #endif
