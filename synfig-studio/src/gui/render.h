@@ -108,6 +108,7 @@ private:
 	void on_single_frame_toggle();
 	void on_choose_pressed();
 	void on_render_pressed();
+	bool check_target_destination();
 	void on_cancel_pressed();
 	void on_targetparam_pressed();
 	void submit_next_render_pass();
