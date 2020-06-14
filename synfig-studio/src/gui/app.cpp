@@ -3570,7 +3570,6 @@ App::dialog_message_1b(
 		label.show();
 		sw.set_size_request(400,100);
 		sw.set_min_content_height(80);
-		sw.set_max_content_height(300);
 		sw.add(label);
 		sw.show();
 		dialog.get_content_area()->pack_end(sw);
