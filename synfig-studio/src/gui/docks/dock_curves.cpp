@@ -135,8 +135,7 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	);
 
 	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
-	tree_layer->signal_param_tree_header_height_changed().connect(
-		sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height) );
+	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height));
 
 	curves->signal_waypoint_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
 		if (button != 3)
@@ -215,19 +214,31 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		table_->attach(*last_widget_curves_, 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(hscrollbar_,          0, 1, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(vscrollbar_,          1, 2, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
-		table_->show_all();
 		add(*table_);
+
+		last_widget_curves_->show();
+		table_->show_all();
+		show_all();
 	}
 }
 
 void
-Dock_Curves::on_update_header_height(int height)
+Dock_Curves::on_update_header_height( int header_height)
 {
-	int w = 0, h = 0;
-	widget_kf_list_.get_size_request(w, h);
-	int ts_height = std::max(1, height - h);
+	// FIXME very bad hack (timetrack dock also contains this)
+	//! Adapt the border size "according" to different windows manager rendering
+#ifdef _WIN32
+	header_height-=2;
+#elif defined(__APPLE__)
+	header_height+=6;
+#else
+// *nux and others
+	header_height+=2;
+#endif
 
-	widget_timeslider_.get_size_request(w, h);
-	if (h != ts_height)
-		widget_timeslider_.set_size_request(-1, ts_height);
+	int kf_list_height=10;
+
+	//widget_timeslider_.set_size_request(-1, header_height+1);
+	widget_timeslider_.set_size_request(-1, header_height - kf_list_height + 5);
+	widget_kf_list_.set_size_request(-1, kf_list_height);
 }

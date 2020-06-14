@@ -221,8 +221,6 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	canvas_view->set_ext_widget(get_name()+"_cmp", layer_tree); // (a)
 	canvas_view->set_ext_widget(get_name(), &layer_tree->layer_tree_view(), false);
 	canvas_view->set_ext_widget("params", &layer_tree->param_tree_view(), false);
-	
-	canvas_view->set_adjustment_group("params", new AdjustmentGroup());
 
 	layer_tree->set_model(layer_tree_store); // (b)
 	canvas_view->set_tree_model("params", layer_tree->param_tree_view().get_model()); // (c)

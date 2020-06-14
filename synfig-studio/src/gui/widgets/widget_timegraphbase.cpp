@@ -31,6 +31,7 @@
 
 #include <canvasview.h>
 #include <gui/timeplotdata.h>
+#include <gui/helpers.h>
 
 #include <Mlt.h>
 #include <gui/selectdraghelper.h>
