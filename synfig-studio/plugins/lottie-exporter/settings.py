@@ -79,6 +79,7 @@ BONES = {"bone", "bone_root"}
 DOT_FLAG = 0 #Used for the two types of dot product -> angle and real
 BLUR_TYPE = 29
 RANGE_FLAG = 0 #Used for if-else expressions
+FONT_STYLES = ["Sans Serif","Times New Roman","Calibria","Arial","Courier","Comic Sans"]
 # Some waypoint animated definitions
 ANIMATED = 2
 SINGLE_WAYPOINT = 1

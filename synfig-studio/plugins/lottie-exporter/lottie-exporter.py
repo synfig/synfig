@@ -44,25 +44,21 @@ def calc_font_data(lottie,layer):
         "ascent": 75.9994506835938
       }
 
-    style_dict = {0:'Regular',2:'Italic'}
+    style_dict = {0:'Regular',1:'Regular',2:'Italic'}
 
     for child in layer:
         if child.tag == 'layer' and child.attrib["type"] == 'text':
             for children in child:
                 if children.attrib["name"] == 'family':
                     name = ''.join(children[0].itertext())
-                    if "Sans Serif" in name:
-                        default_list["fFamily"] = "Sans Serif"
-                        default_list["fName"] = "SansSerif"
-                    if "Times New Roman" in name:
-                        default_list["fFamily"] = "Times New Roman"
-                        default_list["fName"] = "TimesNewRoman"
-                    if "Calibria" in name:
-                        default_list["fFamily"] = "Calibria"
-                        default_list["fName"] = "Calibria"
-                    if "Arial" in name:
-                        default_list["fFamily"] = "Arial"
-                        default_list["fName"] = "Arial"
+                    if name in settings.FONT_STYLES:
+                    	if "Comic" in name:
+                    		default_list["fFamily"] = "Comic Sans MS"
+                    		default_list["fName"]   = "ComicSansMS"
+                    	else:
+                    		default_list["fFamily"] = name
+                    		default_list["fName"]   = "".join(name.split())
+
 
                 if children.attrib["name"] == 'style':
                     value = style_dict[int(children.getchildren()[0].attrib["value"])]
