@@ -159,6 +159,8 @@
 #include "gui/workspacehandler.h"
 #include <algorithm>
 
+#include <synfigapp/main.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -178,7 +180,7 @@ using namespace studio;
 #	define IMAGE_EXT	"tif"
 #endif
 
-#include <synfigapp/main.h>
+#define DEFAULT_ICON_THEME_NAME "classic"
 
 /* === S I G N A L S ======================================================= */
 
@@ -285,6 +287,7 @@ bool   studio::App::restrict_radius_ducks        = true;
 bool   studio::App::resize_imported_images       = false;
 bool   studio::App::enable_experimental_features = false;
 bool   studio::App::use_dark_theme               = false;
+String studio::App::icon_theme_name              = "";
 bool   studio::App::show_file_toolbar            = true;
 String studio::App::custom_filename_prefix       (DEFAULT_FILENAME_PREFIX);
 int    studio::App::preferred_x_size             = 480;
@@ -493,7 +496,7 @@ studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib
 	}
 }
 */
-class Preferences : public synfigapp::Settings
+class App::Preferences : public synfigapp::Settings
 {
 public:
 	virtual bool get_value(const synfig::String& key, synfig::String& value)const
@@ -544,6 +547,11 @@ public:
 			if(key=="use_dark_theme")
 			{
 				value=strprintf("%i",(int)App::use_dark_theme);
+				return true;
+			}
+			if(key=="icon_theme_name")
+			{
+				value=strprintf("%s", App::get_raw_icon_theme_name().c_str());
 				return true;
 			}
 			if(key=="show_file_toolbar")
@@ -721,6 +729,11 @@ public:
 				App::use_dark_theme=i;
 				return true;
 			}
+			if(key=="icon_theme_name")
+			{
+				App::icon_theme_name = value;
+				return true;
+			}
 			if(key=="show_file_toolbar")
 			{
 				int i(atoi(value.c_str()));
@@ -849,6 +862,7 @@ public:
 		ret.push_back("resize_imported_images");
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
+		ret.push_back("icon_theme_name");
 		ret.push_back("show_file_toolbar");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
@@ -875,7 +889,7 @@ public:
 	}
 };
 
-static ::Preferences _preferences;
+App::Preferences App::_preferences;
 
 void
 init_ui_manager()
@@ -1380,9 +1394,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	String path_to_user_plugins = synfigapp::Main::get_user_app_directory()
 		+ ETL_DIRECTORY_SEPARATOR + "plugins";
 	
-	// icons
-	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
-
 	ui_interface_=new GlobalUIInterface();
 
 	// don't call thread_init() if threads are already initialized
@@ -1453,6 +1464,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 
+	// icons
+	init_icon_theme_name();
+	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
+
 	try
 	{
 		// Try to load settings early to get access to some important
@@ -1460,6 +1475,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Loading Basic Settings..."));
 
 		load_settings("pref.use_dark_theme");
+
 		App::apply_gtk_settings();
 
 		load_settings("pref.show_file_toolbar");
@@ -2242,6 +2258,7 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.resize_imported_images",         "0");
 	synfigapp::Main::settings().set_value("pref.enable_experimental_features",   "0");
 	synfigapp::Main::settings().set_value("pref.use_dark_theme",                 "0");
+	synfigapp::Main::settings().set_value("pref.icon_theme_name",                DEFAULT_ICON_THEME_NAME);
 	synfigapp::Main::settings().set_value("pref.show_file_toolbar",              "1");
 	synfigapp::Main::settings().set_value("pref.brushes_path",                   "");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",         DEFAULT_FILENAME_PREFIX);
@@ -2329,18 +2346,42 @@ App::apply_gtk_settings()
 	}
 }
 
-std::string
-App::get_synfig_icon_theme()
+void
+App::init_icon_theme_name()
 {
-	if (const char *env_theme = getenv("SYNFIG_ICON_THEME")) {
-		std::string icon_theme(env_theme);
-		if (!icon_theme.empty()) {
-			// SYNFIG_ICON_THEME is not a path!
-			if (icon_theme.find("/") == icon_theme.npos && icon_theme.find("\\") == icon_theme.npos )
-				return icon_theme;
-		}
+	// Environment variable has priority.
+	if (char * env_icon_theme = getenv("SYNFIG_ICON_THEME")) {
+		// do nothing
+	} else {
+		load_settings("pref.icon_theme_name");
 	}
-	return "classic";
+	set_icon_theme_name(App::icon_theme_name);
+}
+
+std::string
+App::get_icon_theme_name()
+{
+	// If not explicitly set at runtime, environment variable has priority
+	if (!icon_theme_name.empty())
+		return icon_theme_name;
+
+	if (char * env_icon_theme = getenv("SYNFIG_ICON_THEME")) {
+		return env_icon_theme;
+	} else {
+		return DEFAULT_ICON_THEME_NAME;
+	}
+}
+
+std::string App::get_raw_icon_theme_name()
+{
+	return icon_theme_name;
+}
+
+void
+App::set_icon_theme_name(const std::string &theme_name)
+{
+	icon_theme_name = theme_name;
+	Gtk::Settings::get_default()->property_gtk_icon_theme_name() = get_icon_theme_name();
 }
 
 bool
