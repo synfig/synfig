@@ -63,7 +63,7 @@ public:
 	static Glib::RefPtr<Gdk::Cursor> get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window);
 };
 
-Gtk::StockID layer_icon(const synfig::String &layer);
+std::string layer_icon_name(const synfig::String &layer);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
 Gtk::StockID value_icon(synfig::Type &type);

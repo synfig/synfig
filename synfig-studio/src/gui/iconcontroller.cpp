@@ -483,135 +483,136 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 	return stock_id;
 }
 
-#ifdef _WIN32
-#define DELETE TEMPORARY_DELETE_MACRO
-#undef TEMPORARY_DELETE_MACRO
-#endif
-
-Gtk::StockID
-studio::layer_icon(const synfig::String &layer)
+std::string
+studio::layer_icon_name(const synfig::String &layer)
 {
 	// Blur Layers
 	if(layer=="blur")
-		return Gtk::StockID("synfig-layer_blur_blur");
+		return "layer_blur_blur_icon";
 	else if(layer=="MotionBlur") // in the future should be "motion_blur"
-		return Gtk::StockID("synfig-layer_blur_motion");
+		return "layer_blur_motion_icon";
 	else if(layer=="radial_blur")
-		return Gtk::StockID("synfig-layer_blur_radial");
+		return "layer_blur_radial_icon";
 	// Distortion Layers
 	else if(layer=="curve_warp")
-		return Gtk::StockID("synfig-layer_distortion_curvewarp");
+		return "layer_distortion_curvewarp_icon";
 	else if(layer=="inside_out")
-		return Gtk::StockID("synfig-layer_distortion_insideout");
+		return "layer_distortion_insideout_icon";
 	else if(layer=="noise_distort")
-		return Gtk::StockID("synfig-layer_distortion_noise");
+		return "layer_distortion_noise_icon";
 	else if(layer=="spherize")
-		return Gtk::StockID("synfig-layer_distortion_spherize");
+		return "layer_distortion_spherize_icon";
 	else if(layer=="stretch")
-		return Gtk::StockID("synfig-layer_distortion_stretch");
+		return "layer_distortion_stretch_icon";
 	else if(layer=="twirl")
-		return Gtk::StockID("synfig-layer_distortion_twirl");
+		return "layer_distortion_twirl_icon";
 	else if(layer=="warp")
-		return Gtk::StockID("synfig-layer_distortion_warp");
+		return "layer_distortion_warp_icon";
 	// Example Layers
 	else if(layer=="metaballs")
-		return Gtk::StockID("synfig-layer_example_metaballs");
+		return "layer_example_metaballs_icon";
 	else if(layer=="simple_circle")
-		return Gtk::StockID("synfig-layer_example_simplecircle");
+		return "layer_example_simplecircle_icon";
 	// Filter Layers
 	else if(layer=="clamp")
-		return Gtk::StockID("synfig-layer_filter_clamp");
+		return "layer_filter_clamp_icon";
 	else if(layer=="colorcorrect")
-		return Gtk::StockID("synfig-layer_filter_colorcorrect");
+		return "layer_filter_colorcorrect_icon";
 	else if(layer=="halftone2")
-		return Gtk::StockID("synfig-layer_filter_halftone2");
+		return "layer_filter_halftone2_icon";
 	else if(layer=="halftone3")
-		return Gtk::StockID("synfig-layer_filter_halftone3");
+		return "layer_filter_halftone3_icon";
 	else if(layer=="lumakey")
-		return Gtk::StockID("synfig-layer_filter_lumakey");
+		return "layer_filter_lumakey_icon";
 	// Fractal Layers
 	else if(layer=="mandelbrot")
-		return Gtk::StockID("synfig-layer_fractal_mandelbrot");
+		return "layer_fractal_mandelbrot_icon";
 	else if(layer=="julia")
-		return Gtk::StockID("synfig-layer_fractal_julia");
+		return "layer_fractal_julia_icon";
 	// Geometry Layers
 	else if(layer=="checker_board")
-		return Gtk::StockID("synfig-layer_geometry_checkerboard");
+		return "layer_geometry_checkerboard_icon";
 	else if(layer=="circle")
-		return Gtk::StockID("synfig-layer_geometry_circle");
+		return "layer_geometry_circle_icon";
 	else if(layer=="outline")
-		return Gtk::StockID("synfig-layer_geometry_outline");
+		return "layer_geometry_outline_icon";
 	else if(layer=="advanced_outline")
-		return Gtk::StockID("synfig-layer_geometry_advanced_outline");
+		return "layer_geometry_advanced_outline_icon";
 	else if(layer=="polygon")
-		return Gtk::StockID("synfig-layer_geometry_polygon");
+		return "layer_geometry_polygon_icon";
 	else if(layer=="rectangle")
-		return Gtk::StockID("synfig-layer_geometry_rectangle");
+		return "layer_geometry_rectangle_icon";
 	else if(layer=="region")
-		return Gtk::StockID("synfig-layer_geometry_region");
+		return "layer_geometry_region_icon";
 	else if(layer=="solid_color" || layer=="SolidColor")
-		return Gtk::StockID("synfig-layer_geometry_solidcolor");
+		return "layer_geometry_solidcolor_icon";
 	else if(layer=="star")
-		return Gtk::StockID("synfig-layer_geometry_star");
+		return "layer_geometry_star_icon";
 	// Gradient Layers
 	else if(layer=="conical_gradient")
-		return Gtk::StockID("synfig-layer_gradient_conical");
+		return "layer_gradient_conical_icon";
 	else if(layer=="curve_gradient")
-		return Gtk::StockID("synfig-layer_gradient_curve");
+		return "layer_gradient_curve_icon";
 	else if(layer=="noise")
-		return Gtk::StockID("synfig-layer_gradient_noise");
+		return "layer_gradient_noise_icon";
 	else if(layer=="linear_gradient")
-		return Gtk::StockID("synfig-layer_gradient_linear");
+		return "layer_gradient_linear_icon";
 	else if(layer=="radial_gradient")
-		return Gtk::StockID("synfig-layer_gradient_radial");
+		return "layer_gradient_radial_icon";
 	else if(layer=="spiral_gradient")
-		return Gtk::StockID("synfig-layer_gradient_spiral");
+		return "layer_gradient_spiral_icon";
 	// Other Layers
 	else if(layer=="duplicate")
-		return Gtk::StockID("synfig-layer_other_duplicate");
+		return "layer_other_duplicate_icon";
 	else if(layer=="importimage" || layer=="import")
-		return Gtk::StockID("synfig-layer_other_importimage");
+		return "layer_other_importimage_icon";
 	else if(layer=="group" || layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
-		return Gtk::StockID("synfig-layer_other_pastecanvas");
+		return "layer_other_group_icon";
 	else if(layer=="plant")
-		return Gtk::StockID("synfig-layer_other_plant");
+		return "layer_other_plant_icon";
 	else if(layer=="stroboscope")
-		return Gtk::StockID("synfig-layer_other_stroboscope");
+		return "layer_other_stroboscope_icon";
 	else if(layer=="skeleton")
-		return Gtk::StockID("synfig-layer_other_skeleton");
+		return "layer_other_skeleton_icon";
 	else if(layer=="super_sample")
-		return Gtk::StockID("synfig-layer_other_supersample");
+		return "layer_other_supersample_icon";
 	else if(layer=="switch")
-		return Gtk::StockID("synfig-layer_other_switch");
+		return "layer_other_switch_icon";
 	else if(layer=="text")
-		return Gtk::StockID("synfig-layer_other_text");
+		return "layer_other_text_icon";
 	else if(layer=="sound")
-		return Gtk::StockID("synfig-layer_other_sound");
+		return "layer_other_sound_icon";
 	else if(layer=="timeloop")
-		return Gtk::StockID("synfig-layer_other_timeloop");
+		return "layer_other_timeloop_icon";
 	else if(layer=="xor_pattern")
-		return Gtk::StockID("synfig-layer_other_xorpattern");
+		return "layer_other_xorpattern_icon";
 	// Stylize Layers
 	else if(layer=="bevel")
-		return Gtk::StockID("synfig-layer_stylize_bevel");
+		return "layer_stylize_bevel_icon";
 	else if(layer=="shade")
-		return Gtk::StockID("synfig-layer_stylize_shade");
+		return "layer_stylize_shade_icon";
 	// Transform Layers
 	else if(layer=="rotate")
-		return Gtk::StockID("synfig-layer_transform_rotate");
+		return "layer_transform_rotate_icon";
 	else if(layer=="translate")
-		return Gtk::StockID("synfig-layer_transform_translate");
+		return "layer_transform_translate_icon";
 	else if(layer=="zoom")
-		return Gtk::StockID("synfig-layer_transform_scale");
+		return "layer_transform_scale_icon";
 	else if(layer=="ghost_group")
-		return Gtk::StockID("synfig-layer_ghost_group");
+		return "layer_other_group_icon";
+//		return "layer_ghost_group_icon"; // missing icon!
 	else
-		return Gtk::StockID("synfig-layer");
+		return "layer_icon";
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
-	return Gtk::Button().render_icon_pixbuf(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	int width, height;
+	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width, height);
+	Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(layer_icon_name(layer), height, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	if (!icon)
+		icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	return icon;
 }
 
