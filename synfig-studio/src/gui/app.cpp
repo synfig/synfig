@@ -2268,9 +2268,7 @@ App::apply_gtk_settings()
 {
 	Glib::RefPtr<Gtk::Settings> gtk_settings = Gtk::Settings::get_default();
 
-	if (const char *theme_name = getenv("SYNFIG_GTK_THEME"))
-		gtk_settings->property_gtk_theme_name() = theme_name;
-
+	gtk_settings->property_gtk_icon_theme_name() = App::get_icon_theme_name();
 	// dark theme
 	gtk_settings->property_gtk_application_prefer_dark_theme() = App::use_dark_theme;
 
