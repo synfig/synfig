@@ -29,7 +29,6 @@
 
 #include <gtkmm/stock.h>
 #include <gtkmm/iconfactory.h>
-#include <gtkmm/iconset.h>
 #include <gdkmm/cursor.h>
 
 #include <synfig/value.h>
