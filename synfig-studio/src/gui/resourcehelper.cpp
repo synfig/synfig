@@ -74,13 +74,7 @@ synfig::String studio::ResourceHelper::get_synfig_data_path()
 synfig::String studio::ResourceHelper::get_icon_path()
 {
 	std::string iconpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "icons";
-	iconpath += ETL_DIRECTORY_SEPARATOR + App::get_icon_theme_name();
 	return iconpath;
-}
-
-synfig::String studio::ResourceHelper::get_icon_path(const synfig::String& icon_filename)
-{
-	return get_icon_path() + '/' + icon_filename;
 }
 
 synfig::String studio::ResourceHelper::get_plugin_path()

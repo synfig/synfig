@@ -201,11 +201,10 @@ Splash::Splash():
 	set_resizable(false);
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);
 	set_auto_startup_notification(false);
-	std::string icon_path = ResourceHelper::get_icon_path("synfig_icon." IMAGE_EXT);
 	try {
-		set_icon_from_file(icon_path);
+		set_icon_name("synfig_icon");
 	} catch(...) {
-		synfig::warning("Unable to open "+icon_path);
+		synfig::warning("Unable to open synfig icon for Splash");
 	}
 	add(*frame);
 
