@@ -2288,19 +2288,18 @@ App::restore_default_settings()
 void
 App::apply_gtk_settings()
 {
-	GtkSettings *gtk_settings;
-	gtk_settings = gtk_settings_get_default ();
+	Glib::RefPtr<Gtk::Settings> gtk_settings = Gtk::Settings::get_default();
 
-	gchar *theme_name=getenv("SYNFIG_GTK_THEME");
-	if(theme_name) {
-		g_object_set (G_OBJECT (gtk_settings), "gtk-theme-name", theme_name, NULL);
-	}
+	if(char *theme_name = getenv("SYNFIG_GTK_THEME"))
+		gtk_settings->property_gtk_theme_name() = theme_name;
+
+	gtk_settings->property_gtk_icon_theme_name() = App::get_icon_theme_name();
 
 	// dark theme
-	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", App::use_dark_theme, NULL);
+	gtk_settings->property_gtk_application_prefer_dark_theme() = App::use_dark_theme;
 
 	// enable menu icons
-	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
+	gtk_settings->property_gtk_menu_images() = true;
 
 	// fix CSS
 	Glib::ustring data;
@@ -2329,10 +2328,8 @@ App::apply_gtk_settings()
 	data += "button > image { padding: 5px; }\n";
 	data += "combobox > box > button > box { padding-top: 0px; padding-bottom: 0px; }\n";
 	// Fix #810: Insetsetive context menus on OSX
-	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
-	if ( String(theme_name) == "Adwaita" )
+	if ( gtk_settings->property_gtk_theme_name() == "Adwaita" )
 		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }\n";
-	g_free(theme_name);
 
 	if (!data.empty()) {
 		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
