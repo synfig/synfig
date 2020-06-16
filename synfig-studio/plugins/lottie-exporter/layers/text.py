@@ -10,6 +10,7 @@ from helpers.blendMode import get_blend
 from common.misc import is_animated
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
+from common.misc import get_frame, parse_position
 sys.path.append("..")
 
 def calc_default_text_properties(layer):
@@ -68,6 +69,39 @@ def calc_anchor_alignment(lottie):
                             "ix": 2
                          }
                        } #Has no corresponding synfig property, so using default values
+
+def calculate_text_animation(lottie,animated):
+    """
+    Generates the dictionary corresponding to text properties
+
+    Args:
+        lottie  (dict)                 : Lottie generated text properties dictionary
+        animated (lxml.etree._Element) : Synfig format animation
+    """
+    
+    waypoints = len(animated)
+    for i in range(waypoints):
+        temp  = {
+              "s": {
+                "s": 50,
+                "f": "",
+                "t": "",
+                "j": 2,
+                "tr": 0,
+                "lh": 50,
+                "ls": 1,
+                "fc": [1,1,1,1]
+              },
+              "t": 0
+            }
+        cur_pos = parse_position(animated, i)
+        text_val = cur_pos.get_val()
+        time = get_frame(animated[i])
+        ax = text_val[0].split("\n")
+        final_text = "\r".join(ax)
+        temp["s"]["t"] = final_text
+        temp["t"] = time
+        lottie.append(temp)
 
 def gen_layer_text(lottie, layer, idx):
     """
@@ -164,7 +198,7 @@ def gen_layer_text(lottie, layer, idx):
     lottie["t"]["d"]["k"] = []
     default = {
               "s": {
-                "s": 60,
+                "s": 50,
                 "f": "",
                 "t": "",
                 "j": 2,
@@ -176,11 +210,18 @@ def gen_layer_text(lottie, layer, idx):
               "t": 0
             }
     
-    ax = layer.get_param("text").get()[0].text.split("\n")
-    #Line separation is not supported so adding separation only for integer values
-    line_separation = layer.get_param("vcompress").get()[0].attrib["value"]
-    breaks = "\r"*round(float(line_separation))
-    text = breaks.join(ax)
-    default["s"]["t"] = text
-    lottie["t"]["d"]["k"].append(default)
+    texts = layer.get_param("text").get()
+    is_animate = is_animated(texts[0])
+    if is_animate == settings.ANIMATED:
+        texts[0].attrib['type'] = 'text'
+        calculate_text_animation(lottie["t"]["d"]["k"],texts[0])
+    else:
+        ax = layer.get_param("text").get()[0].text.split("\n")
+        #Line separation is not supported so adding separation only for integer values
+        line_separation = layer.get_param("vcompress").get()[0].attrib["value"]
+        breaks = "\r"*round(float(line_separation))
+        text = breaks.join(ax)
+        default["s"]["t"] = text
+        lottie["t"]["d"]["k"].append(default)
+
     get_blend(lottie, layer)
