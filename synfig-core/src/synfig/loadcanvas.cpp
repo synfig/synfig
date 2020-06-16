@@ -3239,7 +3239,9 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 		// So we give user a warning when he opens old files.
 		// See https://github.com/synfig/synfig/issues/1307
 		if ( canvas->is_root()) {
-			warnings_text += _("ATTENTION!\nYou are opening a file which was created in old version of Synfig. \nIf you save this file in current version it might not open correctly \nin old version of Synfig anymore.\n\n");
+			warnings_text += _("You're opening a file created in an older version of Synfig.\n"
+					"If you save this file with the current version, "
+					"it might not open correctly in an older version of Synfig anymore.");
 		}
 	}
 	if(element->get_attribute("gamma-r"))
