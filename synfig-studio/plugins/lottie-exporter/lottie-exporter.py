@@ -43,8 +43,9 @@ def calc_font_data(lottie,layer):
         "fName": "",
         "ascent": 75.9994506835938
       }
+    #Ascent is not documentated in the Lottie documentation and it's purpose is not known yet.
 
-    style_dict = {0:'Regular',1:'Regular',2:'Italic'}
+    style_dict = {0:'Regular', 1:'Regular', 2:'Italic'}
 
     for child in layer:
         if child.tag == 'layer' and child.attrib["type"] == 'text':
