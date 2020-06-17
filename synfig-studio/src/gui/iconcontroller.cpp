@@ -136,21 +136,6 @@ IconController::init_icons(const synfig::String& path_to_icons_)
 	stock_##name = Gtk::StockItem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stock_##name);
 
-	// Types
-	INIT_STOCK_ICON(type_bool, "type_bool_icon." IMAGE_EXT, _("Bool"));
-	INIT_STOCK_ICON(type_integer, "type_integer_icon." IMAGE_EXT, _("Integer"));
-	INIT_STOCK_ICON(type_angle, "type_angle_icon." IMAGE_EXT, _("Angle"));
-	INIT_STOCK_ICON(type_time, "type_time_icon." IMAGE_EXT, _("Time"));
-	INIT_STOCK_ICON(type_real, "type_real_icon." IMAGE_EXT, _("Real"));
-	INIT_STOCK_ICON(type_vector, "type_vector_icon." IMAGE_EXT, _("Vector"));
-	INIT_STOCK_ICON(type_color, "type_color_icon." IMAGE_EXT, _("Color"));
-	INIT_STOCK_ICON(type_segment, "type_segment_icon." IMAGE_EXT, _("Segment"));
-	INIT_STOCK_ICON(type_blinepoint, "type_splinepoint_icon." IMAGE_EXT, _("Spline Point"));
-	INIT_STOCK_ICON(type_list, "type_list_icon." IMAGE_EXT, _("List"));
-	INIT_STOCK_ICON(type_string, "type_string_icon." IMAGE_EXT, _("String"));
-	INIT_STOCK_ICON(type_canvas, "type_canvas_icon." IMAGE_EXT, _("Canvas"));
-	INIT_STOCK_ICON(type_gradient, "type_gradient_icon." IMAGE_EXT, _("Gradient"))
-
 	// ToolBox Tools
 	INIT_STOCK_ICON(normal, "tool_normal_icon." IMAGE_EXT, _("Transform Tool"));
 	INIT_STOCK_ICON(polygon, "tool_polyline_icon." IMAGE_EXT, _("Polygon Tool"));
@@ -191,70 +176,6 @@ IconController::init_icons(const synfig::String& path_to_icons_)
 	INIT_STOCK_ICON(save_all, "action_doc_saveall_icon." IMAGE_EXT, _("Save All"));
 	INIT_STOCK_ICON(redo, "action_doc_redo_icon." IMAGE_EXT, _("Redo"));
 	INIT_STOCK_ICON(undo, "action_doc_undo_icon." IMAGE_EXT, _("Undo"));
-
-	// Layers
-	INIT_STOCK_ICON(layer, "layer_icon." IMAGE_EXT, _("Layer"));
-	// Blur Layers
-	INIT_STOCK_ICON(layer_blur_blur, "layer_blur_blur_icon." IMAGE_EXT, _("Blur Layer"));
-	INIT_STOCK_ICON(layer_blur_motion, "layer_blur_motion_icon." IMAGE_EXT, _("Motion Blur Layer"));
-	INIT_STOCK_ICON(layer_blur_radial, "layer_blur_radial_icon." IMAGE_EXT, _("Radial Blur Layer"));
-	// Distortion Layers
-	INIT_STOCK_ICON(layer_distortion_curvewarp, "layer_distortion_curvewarp_icon." IMAGE_EXT, _("Curve Warp Layer"));
-	INIT_STOCK_ICON(layer_distortion_insideout, "layer_distortion_insideout_icon." IMAGE_EXT, _("Inside Out Layer"));
-	INIT_STOCK_ICON(layer_distortion_noise, "layer_distortion_noise_icon." IMAGE_EXT, _("Noise Distort Layer"));
-	INIT_STOCK_ICON(layer_distortion_spherize, "layer_distortion_spherize_icon." IMAGE_EXT, _("Spherize Layer"));
-	INIT_STOCK_ICON(layer_distortion_stretch, "layer_distortion_stretch_icon." IMAGE_EXT, _("Stretch Layer"));
-	INIT_STOCK_ICON(layer_distortion_twirl, "layer_distortion_twirl_icon." IMAGE_EXT, _("Twirl Layer"));
-	INIT_STOCK_ICON(layer_distortion_warp, "layer_distortion_warp_icon." IMAGE_EXT, _("Warp Layer"));
-	// Example Layers
-	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metaballs Layer"));
-	INIT_STOCK_ICON(layer_example_simplecircle, "layer_example_simplecircle_icon." IMAGE_EXT, _("Simple Circle Layer"));
-	// Filter Layers
-	INIT_STOCK_ICON(layer_filter_clamp, "layer_filter_clamp_icon." IMAGE_EXT, _("Clamp Layer"));
-	INIT_STOCK_ICON(layer_filter_colorcorrect, "layer_filter_colorcorrect_icon." IMAGE_EXT, _("Color Correct Layer"));
-	INIT_STOCK_ICON(layer_filter_halftone2, "layer_filter_halftone2_icon." IMAGE_EXT, _("Halftone 2 Layer"));
-	INIT_STOCK_ICON(layer_filter_halftone3, "layer_filter_halftone3_icon." IMAGE_EXT, _("Halftone 3 Layer"));
-	INIT_STOCK_ICON(layer_filter_lumakey, "layer_filter_lumakey_icon." IMAGE_EXT, _("Luma Key Layer"));
-	// Fractal Layers
-	INIT_STOCK_ICON(layer_fractal_julia, "layer_fractal_julia_icon." IMAGE_EXT, _("Julia Set Layer"));
-	INIT_STOCK_ICON(layer_fractal_mandelbrot, "layer_fractal_mandelbrot_icon." IMAGE_EXT, _("Mandelbrot Set Layer"));
-	// Geometry Layers
-	INIT_STOCK_ICON(layer_geometry_checkerboard, "layer_geometry_checkerboard_icon." IMAGE_EXT, _("Checkerboard Layer"));
-	INIT_STOCK_ICON(layer_geometry_circle, "layer_geometry_circle_icon." IMAGE_EXT, _("Circle Layer"));
-	INIT_STOCK_ICON(layer_geometry_outline, "layer_geometry_outline_icon." IMAGE_EXT, _("Outline Layer"));
-	INIT_STOCK_ICON(layer_geometry_advanced_outline, "layer_geometry_advanced_outline_icon." IMAGE_EXT, _("Advanced Outline Layer"));
-	INIT_STOCK_ICON(layer_geometry_polygon, "layer_geometry_polygon_icon." IMAGE_EXT, _("Polygon Layer"));
-	INIT_STOCK_ICON(layer_geometry_rectangle, "layer_geometry_rectangle_icon." IMAGE_EXT, _("Rectangle Layer"));
-	INIT_STOCK_ICON(layer_geometry_region, "layer_geometry_region_icon." IMAGE_EXT, _("Region Layer"));
-	INIT_STOCK_ICON(layer_geometry_solidcolor, "layer_geometry_solidcolor_icon." IMAGE_EXT, _("Solid Color Layer"));
-	INIT_STOCK_ICON(layer_geometry_star, "layer_geometry_star_icon." IMAGE_EXT, _("Star Layer"));
-	// Gradient Layers
-	INIT_STOCK_ICON(layer_gradient_conical, "layer_gradient_conical_icon." IMAGE_EXT, _("Conical Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_curve, "layer_gradient_curve_icon." IMAGE_EXT, _("Curve Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_noise, "layer_gradient_noise_icon." IMAGE_EXT, _("Noise Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_linear, "layer_gradient_linear_icon." IMAGE_EXT, _("Linear Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_radial, "layer_gradient_radial_icon." IMAGE_EXT, _("Radial Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_spiral, "layer_gradient_spiral_icon." IMAGE_EXT, _("Spiral Gradient Layer"));
-	// Other Layers
-	INIT_STOCK_ICON(layer_other_duplicate, "layer_other_duplicate_icon." IMAGE_EXT, _("Duplicate Layer"));
-	INIT_STOCK_ICON(layer_other_importimage, "layer_other_importimage_icon." IMAGE_EXT, _("Import Image Layer"));
-	INIT_STOCK_ICON(layer_other_pastecanvas, "layer_other_group_icon." IMAGE_EXT, _("Group Layer"));
-	INIT_STOCK_ICON(layer_other_plant, "layer_other_plant_icon." IMAGE_EXT, _("Plant Layer"));
-	INIT_STOCK_ICON(layer_other_stroboscope, "layer_other_stroboscope_icon." IMAGE_EXT, _("Stroboscope Layer"));
-	INIT_STOCK_ICON(layer_other_supersample, "layer_other_supersample_icon." IMAGE_EXT, _("Super Sample Layer"));
-	INIT_STOCK_ICON(layer_other_sound, "layer_other_sound_icon." IMAGE_EXT, _("Sound Layer"));
-	INIT_STOCK_ICON(layer_other_switch, "layer_other_switch_icon." IMAGE_EXT, _("Switch Layer"));
-	INIT_STOCK_ICON(layer_other_skeleton, "layer_other_skeleton_icon." IMAGE_EXT, _("Skeleton Layer"));
-	INIT_STOCK_ICON(layer_other_text, "layer_other_text_icon." IMAGE_EXT, _("Text Layer"));
-	INIT_STOCK_ICON(layer_other_timeloop, "layer_other_timeloop_icon." IMAGE_EXT, _("Time Loop Layer"));
-	INIT_STOCK_ICON(layer_other_xorpattern, "layer_other_xorpattern_icon." IMAGE_EXT, _("XOR Pattern Layer"));
-	// Stylize Layers
-	INIT_STOCK_ICON(layer_stylize_bevel, "layer_stylize_bevel_icon." IMAGE_EXT, _("Bevel Layer"));
-	INIT_STOCK_ICON(layer_stylize_shade, "layer_stylize_shade_icon." IMAGE_EXT, _("Shade Layer"));
-	// Transform Layers
-	INIT_STOCK_ICON(layer_transform_rotate, "layer_transform_rotate_icon." IMAGE_EXT, _("Rotate Layer"));
-	INIT_STOCK_ICON(layer_transform_translate, "layer_transform_translate_icon." IMAGE_EXT, _("Translate Layer"));
-	INIT_STOCK_ICON(layer_transform_scale, "layer_transform_scale_icon." IMAGE_EXT, _("Scale Layer"));
 
 	// Ghost Layers
 	// TODO: icon for ghost group
@@ -350,12 +271,6 @@ IconController::init_icons(const synfig::String& path_to_icons_)
 
 	INIT_STOCK_ICON(preview_options, "preview_options_icon." IMAGE_EXT, _("Preview Options Dialog"));
 	INIT_STOCK_ICON(render_options, "render_options_icon." IMAGE_EXT, _("Render Options Dialog"));
-
-	INIT_STOCK_ICON(interpolation_type_clamped, "interpolation_type_clamped_icon." IMAGE_EXT, _("Clamped interpolation"));
-	INIT_STOCK_ICON(interpolation_type_tcb, "interpolation_type_tcb_icon." IMAGE_EXT, _("TCB interpolation"));
-	INIT_STOCK_ICON(interpolation_type_const, "interpolation_type_const_icon." IMAGE_EXT, _("Const interpolation"));
-	INIT_STOCK_ICON(interpolation_type_ease, "interpolation_type_ease_icon." IMAGE_EXT, _("Ease In/Out interpolation"));
-	INIT_STOCK_ICON(interpolation_type_linear, "interpolation_type_linear_icon." IMAGE_EXT, _("Linear interpolation"));
 
 	INIT_STOCK_ICON(utils_chain_link_on, "utils_chain_link_on_icon." IMAGE_EXT, _("Linked"));
 	INIT_STOCK_ICON(utils_chain_link_off, "utils_chain_link_off_icon." IMAGE_EXT, _("Unlinked"));
