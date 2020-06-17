@@ -376,8 +376,15 @@ IconController::init_icons(const synfig::String& path_to_icons_)
 	Gtk::IconSize::register_new("synfig-small_icon",12,12);
 	Gtk::IconSize::register_new("synfig-small_icon_16x16",16,16);
 
-	for(Type *type = Type::get_first(); type != NULL; type = type->get_next())
-		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon_pixbuf(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	int width_small_toolbar, height_small_toolbar;
+	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width_small_toolbar, height_small_toolbar);
+
+	for(Type *type = Type::get_first(); type != nullptr; type = type->get_next()) {
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(value_icon_name(*type), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		if (!icon)
+			icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		_tree_pixbuf_table_value_type[type->identifier] = icon;
+	}
 
 	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
 		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
@@ -402,37 +409,38 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
   	return Gdk::Cursor::create(window->get_display(), pixbuf, 0, 0);
 }
 
-Gtk::StockID
-studio::value_icon(Type &type)
+std::string
+studio::value_icon_name(Type &type)
 {
 	if (type == type_bool)
-		return Gtk::StockID("synfig-type_bool");
+		return "type_bool_icon";
 	if (type == type_integer)
-		return Gtk::StockID("synfig-type_integer");
+		return "type_integer_icon";
 	if (type == type_angle)
-		return Gtk::StockID("synfig-type_angle");
+		return "type_angle_icon";
 	if (type == type_time)
-		return Gtk::StockID("synfig-type_time");
+		return "type_time_icon";
 	if (type == type_real)
-		return Gtk::StockID("synfig-type_real");
+		return "type_real_icon";
 	if (type == type_vector)
-		return Gtk::StockID("synfig-type_vector");
+		return "type_vector_icon";
 	if (type == type_color)
-		return Gtk::StockID("synfig-type_color");
+		return "type_color_icon";
 	if (type == type_segment)
-		return Gtk::StockID("synfig-type_segment");
+		return "type_segment_icon";
 	if (type == type_bline_point)
-		return Gtk::StockID("synfig-type_blinepoint");
+		return "type_splinepoint_icon";
 	if (type == type_list)
-		return Gtk::StockID("synfig-type_list");
+		return "type_list_icon";
 	if (type == type_canvas)
-		return Gtk::StockID("synfig-type_canvas");
+		return "type_canvas_icon";
 	if (type == type_string)
-		return Gtk::StockID("synfig-type_string");
+		return "type_string_icon";
 	if (type == type_gradient)
-		return Gtk::StockID("synfig-type_gradient");
-
-	return Gtk::StockID("synfig-unknown");
+		return "type_gradient_icon";
+	if (!type.description.name.empty())
+		synfig::warning(_("no icon for value type: \"%s\""), type.description.name.c_str());
+	return "image-missing";
 }
 
 Gtk::StockID
@@ -460,16 +468,16 @@ studio::interpolation_icon(synfig::Interpolation type)
 }
 
 
-Gtk::StockID
+std::string
 studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 {
 	if(handle<ValueNode_Const>::cast_dynamic(value_node))
 	{
-		return value_icon(value_node->get_type());
+		return value_icon_name(value_node->get_type());
 	}
 	else
 	{
-		return Gtk::StockID("synfig-value_node");
+		return "value_node_icon";
 	}
 }
 
