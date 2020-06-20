@@ -78,8 +78,7 @@ BLUR_TYPE = 29
 ANIMATED = 2
 SINGLE_WAYPOINT = 1
 NOT_ANIMATED = 0
-
-
+image_ordering = None
 def init():
     """
     Initialises the final dictionary corresponding to conversion and
@@ -112,4 +111,4 @@ def init():
     controller_count = Count()
     global blur_ordering #used to order the blur layers
     blur_ordering = {}
-    
+    global image_ordering
