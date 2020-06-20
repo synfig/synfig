@@ -12,8 +12,9 @@ from layers.image import gen_layer_image
 from layers.shape_solid import gen_layer_shape_solid
 from layers.preComp import gen_layer_precomp
 from layers.group import gen_layer_group
-sys.path.append("..")
+from layers.blur import gen_layer_blur
 
+sys.path.append("..")
 
 def gen_layers(lottie, canvas, layer_itr):
     """
@@ -36,7 +37,8 @@ def gen_layers(lottie, canvas, layer_itr):
     pre_comp = settings.PRE_COMP_LAYER
     group = settings.GROUP_LAYER
     skeleton = settings.SKELETON_LAYER
-    supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton)
+    blur = settings.BLUR_LAYER
+    supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton,blur)
     while itr >= 0:
         layer = canvas[itr]
         if layer.get_type() not in supported_layers:  # Only supported layers
@@ -71,6 +73,16 @@ def gen_layers(lottie, canvas, layer_itr):
             gen_layer_image(lottie[-1],
                             layer,
                             itr)
+            if len(settings.blur_ordering) != 0:
+                settings.lottie_format["layers"][1]["ef"].append(settings.blur_ordering[1][0])
+                settings.lottie_format["layers"][1]["ef"].append(settings.blur_ordering[1][1])
+
+        elif layer.get_type() in blur:   # Goto image layer
+            blur = []
+            gen_layer_blur(blur,
+                            layer,
+                            itr)
+            settings.blur_ordering[itr] = blur
         elif layer.get_type() in pre_comp:      # Goto precomp layer
             gen_layer_precomp(lottie[-1],
                               layer,

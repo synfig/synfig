@@ -62,7 +62,10 @@ def gen_html(file_name):
     Returns:
         (None)
     """
-    bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "bodymovin.js")
+    if len(settings.blur_ordering) != 0:
+        bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "test_bodymovin.js")
+    else:
+        bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "bodymovin.js")
 
     with open(bodymovin_path, "r") as f:
         bodymovin_script = f.read()
