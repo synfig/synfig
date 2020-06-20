@@ -2577,6 +2577,18 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	dialog->add_filter(filter_video);
 	dialog->add_filter(filter_lipsync);
 	dialog->add_filter(filter_any);
+	
+	Gtk::Box *box = manage(new Gtk::Box);
+	Gtk::Label *label_resize = manage(new Gtk::Label(_("Scale to fit canvas")));
+	Gtk::Switch *toggle_resize = manage(new Gtk::Switch);
+	
+	label_resize->set_margin_right(5);
+	toggle_resize->set_active(App::resize_imported_images);
+	
+	box->pack_start(*label_resize, false, false);
+	box->pack_end(*toggle_resize, false, false);
+	box->show_all();
+	dialog->set_extra_widget(*box);
 
 	if (filename.empty())
 		dialog->set_filename(prev_path);
