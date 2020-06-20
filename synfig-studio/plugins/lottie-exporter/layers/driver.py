@@ -56,7 +56,7 @@ def gen_layers(lottie, canvas, layer_itr):
 
         lottie.append({})
         layer.set_lottie_layer(lottie[-1])
-
+        # print(lottie,layer.get_type())
         if layer.get_type() in shape:           # Goto shape layer
             gen_layer_shape(lottie[-1],
                             layer,
@@ -74,15 +74,21 @@ def gen_layers(lottie, canvas, layer_itr):
                             layer,
                             itr)
             if len(settings.blur_ordering) != 0:
-                settings.lottie_format["layers"][1]["ef"].append(settings.blur_ordering[1][0])
-                settings.lottie_format["layers"][1]["ef"].append(settings.blur_ordering[1][1])
+                max_depth = -1
+                for depth in settings.blur_ordering.keys():
+                    if depth >= max_depth and depth >= itr:
+                        max_depth = depth
+                for index,val in enumerate(settings.lottie_format["layers"]):
+                    if len(val):
+                        settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][0])
+                        settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][1])
 
         elif layer.get_type() in blur:   # Goto image layer
-            blur = []
-            gen_layer_blur(blur,
+            blur_dict = []
+            gen_layer_blur(blur_dict,
                             layer,
                             itr)
-            settings.blur_ordering[itr] = blur
+            settings.blur_ordering.update({itr : blur_dict})
         elif layer.get_type() in pre_comp:      # Goto precomp layer
             gen_layer_precomp(lottie[-1],
                               layer,

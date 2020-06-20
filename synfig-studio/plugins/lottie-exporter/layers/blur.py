@@ -3,13 +3,7 @@
 Will store all the functions corresponding to Blur Layer in lottie
 """
 
-import sys
-import copy
-from lxml import etree
 import settings
-from helpers.transform import gen_helpers_transform
-from helpers.blendMode import get_blend
-from common.Param import Param
 from properties.valueKeyframed import gen_value_Keyframed
 from common.misc import is_animated
 from properties.value import gen_properties_value
@@ -34,14 +28,14 @@ def blurriness(lottie,parameter,idx,direction):
 	else:
 		if is_animate == settings.NOT_ANIMATED:
 			if direction == "horizontal":
-				val = float(parameter[0][0].text)
+				val = float(parameter[0][0].text) * 200
 			else:
-				val = float(parameter[0][1].text)
+				val = float(parameter[0][1].text) * 200
 		else:
 			if direction == "horizontal":
-				val = float(parameter[0][0][0].text)
+				val = float(parameter[0][0][0].text) * 200
 			else:
-				val = float(parameter[0][0][1].text)
+				val = float(parameter[0][0][1].text) * 200
 		gen_properties_value(lottie["v"],
 							 val,
 							 1,
