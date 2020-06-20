@@ -32,7 +32,7 @@
 #include <synfig/general.h>
 #include <gui/canvasview.h>
 #include <gui/timeplotdata.h>
-
+#include <gui/helpers.h>
 #include <gui/localization.h>
 
 #include <Mlt.h>

@@ -31,6 +31,7 @@
 
 #include <gui/canvasview.h>
 #include <gui/timeplotdata.h>
+#include <gui/helpers.h>
 
 #include <cairomm/cairomm.h>
 #include <gdkmm.h>

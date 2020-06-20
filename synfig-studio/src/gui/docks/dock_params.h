@@ -27,8 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/accelgroup.h>
-
+#include "docks/dockable.h"
+#include <gtkmm/treeview.h>
 #include "instance.h"
 #include "docks/dock_canvasspecific.h"
 
@@ -43,8 +43,6 @@ namespace studio {
 class Dock_Params : public Dock_CanvasSpecific
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
-	Glib::RefPtr<Gtk::Adjustment> vadjustment;
-	sigc::connection refresh_selected_param_connection;
 
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
@@ -53,6 +51,8 @@ protected:
 	void refresh_selected_param();
 
 public:
+
+
 	Dock_Params();
 	~Dock_Params();
 }; // END of Dock_Keyframes
