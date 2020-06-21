@@ -2859,6 +2859,22 @@ App::dialog_open_file_image_sequence(const std::string &title, std::set<synfig::
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
+	
+	Gtk::Box *box = manage(new Gtk::Box);
+	Gtk::Label *label_resize = manage(new Gtk::Label(_("Scale to fit Canvas")));
+	Gtk::Switch *toggle_resize = manage(new Gtk::Switch);
+	
+	label_resize->set_margin_end(5);
+	toggle_resize->set_active(App::resize_imported_images);
+	
+	toggle_resize->property_active().signal_changed().connect(
+		sigc::mem_fun(*App::dialog_setup, &studio::Dialog_Setup::on_resize_imported_changed));
+	
+	box->pack_start(*label_resize, false, false);
+	box->pack_end(*toggle_resize, false, false);
+	box->set_tooltip_text(_("Check this to scale imported images to Canvas size"));
+	box->show_all();
+	dialog->set_extra_widget(*box);
 
 	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
 	if (filename.empty())
