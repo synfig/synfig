@@ -152,6 +152,7 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;
 	Gtk::ComboBoxText ui_language_combo;
+	Gtk::ComboBoxText icon_theme_combo;
 	Gtk::Switch toggle_handle_tooltip_transfo_value;
 	Gtk::Switch toggle_handle_tooltip_transfo_name;
 

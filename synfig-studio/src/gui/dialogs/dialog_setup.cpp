@@ -53,6 +53,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/resourcehelper.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -546,6 +548,8 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	 *  [________________________________]
 	 * COLORTHEME
 	 *  DarkUI          [x]
+	 * ICON THEME
+	 *  [________________________________]
 	 * HANDLETOOLTIP
 	 *  Widthpoint      [x| ]
 	 *  Radius          [x| ]
@@ -585,6 +589,20 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	pi.grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 	toggle_use_dark_theme.set_halign(Gtk::ALIGN_START);
 	toggle_use_dark_theme.set_hexpand(false);
+
+	{
+	FileSystem::FileList files;
+	FileSystemNative::instance()->directory_scan(ResourceHelper::get_icon_path(), files);
+	for (auto dir : files)
+		icon_theme_combo.append(dir);
+	icon_theme_combo.set_active_text(App::get_raw_icon_theme_name());
+	}
+
+	// Interface - Icon theme
+	attach_label(pi.grid, _("Icon theme"), ++row);
+	pi.grid->attach(icon_theme_combo, 0, ++row, 1, 1);
+	icon_theme_combo.set_hexpand(true);
+	icon_theme_combo.set_margin_start(10);
 
 	// Interface - Toolbars section
 	attach_label_section(pi.grid, _("Toolbars"), ++row);
@@ -679,6 +697,8 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the dark theme flag
 	App::use_dark_theme               = toggle_use_dark_theme.get_active();
+	// Set the icon theme
+	App::set_icon_theme_name(icon_theme_combo.get_active_text());
 	App::apply_gtk_settings();
 
 	// Set file toolbar flag
@@ -917,6 +937,8 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
+	// Refresh the choice of the icon theme
+	icon_theme_combo.set_active_text(App::get_raw_icon_theme_name());
 	App::apply_gtk_settings();
 
 	// Refresh the status of the render done sound flag
