@@ -56,8 +56,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dock_CanvasSpecific::Dock_CanvasSpecific(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_):
-	Dockable(name,local_name,stock_id_)
+Dock_CanvasSpecific::Dock_CanvasSpecific(const synfig::String& name,const synfig::String& local_name,synfig::String icon):
+	Dockable(name,local_name,icon)
 {
 	App::signal_instance_created().connect(sigc::mem_fun(*this,&Dock_CanvasSpecific::init_instance));
 }

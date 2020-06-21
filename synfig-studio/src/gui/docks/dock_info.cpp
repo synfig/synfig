@@ -102,7 +102,7 @@ void studio::Dock_Info::on_mouse_move()
 }
 
 studio::Dock_Info::Dock_Info()
-:Dock_CanvasSpecific("info",_("Info"),Gtk::StockID("synfig-info"))
+:Dock_CanvasSpecific("info",_("Info"),"info_icon")
 {
 	set_use_scrolled(false);
 

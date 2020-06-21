@@ -527,7 +527,7 @@ StateGradient_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
-	App::dialog_tool_options->set_name("gradient");
+	App::dialog_tool_options->set_icon("tool_gradient_icon");
 }
 
 Smach::event_result

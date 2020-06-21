@@ -675,7 +675,7 @@ StatePolygon_Context::refresh_tool_options()
 	App::dialog_tool_options->set_widget(options_table);
 
 	App::dialog_tool_options->set_local_name(_("Polygon Tool"));
-	App::dialog_tool_options->set_name("polygon");
+	App::dialog_tool_options->set_icon("tool_polyline_icon");
 
 	App::dialog_tool_options->add_button(
 		Gtk::StockID("gtk-execute"),
