@@ -329,6 +329,8 @@ public:
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 
+	static Gtk::Box* scale_imported_box();
+
 	static synfig::String get_base_path();
 	static void save_settings();
 	static bool load_settings(const synfig::String& key_filter = "");
