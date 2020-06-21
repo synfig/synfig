@@ -2585,6 +2585,9 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	label_resize->set_margin_right(5);
 	toggle_resize->set_active(App::resize_imported_images);
 	
+	toggle_resize->property_active().signal_changed().connect(
+		sigc::mem_fun(*App::dialog_setup, &studio::Dialog_Setup::on_resize_imported_changed));
+	
 	box->pack_start(*label_resize, false, false);
 	box->pack_end(*toggle_resize, false, false);
 	box->show_all();

@@ -202,6 +202,7 @@ public:
 	*/
 
 	//Signal handlers dialog
+	void on_resize_imported_changed();
 	virtual void on_apply_pressed();
 	virtual void on_restore_pressed();
 

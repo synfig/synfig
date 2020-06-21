@@ -896,6 +896,12 @@ Dialog_Setup::on_preview_background_color_changed()
 }
 
 void
+Dialog_Setup::on_resize_imported_changed()
+{
+	App::resize_imported_images = !(App::resize_imported_images);
+}
+
+void
 Dialog_Setup::on_tooltip_transformation_changed()
 {
 	toggle_handle_tooltip_transfo_name.set_sensitive(toggle_handle_tooltip_transformation.get_active());
