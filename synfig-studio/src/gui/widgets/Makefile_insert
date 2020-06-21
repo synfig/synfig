@@ -11,6 +11,7 @@ WIDGETS_HH = \
 	widgets/widget_sublayer.h \
 	widgets/widget_filename.h \
 	widgets/widget_gradient.h \
+	widgets/widget_interpolationenum.h \
 	widgets/widget_link.h \
 	widgets/widget_time.h \
 	widgets/widget_timeslider.h \
@@ -38,6 +39,7 @@ WIDGETS_CC = \
 	widgets/widget_sublayer.cpp \
 	widgets/widget_filename.cpp \
 	widgets/widget_gradient.cpp \
+	widgets/widget_interpolationenum.cpp \
 	widgets/widget_link.cpp \
 	widgets/widget_time.cpp \
 	widgets/widget_timeslider.cpp \
