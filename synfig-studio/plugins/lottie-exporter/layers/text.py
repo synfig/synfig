@@ -26,28 +26,32 @@ def calc_default_text_properties(layer):
     default_dict = {
       "nm": "",
       "s": {
-        "t": 0,
-        "xe": {
-          "a": 0,
-          "k": 0,
-          "ix": 7
-        },
-        "ne": {
-          "a": 0,
-          "k": 0,
-          "ix": 8
-        },
-        "a": {
-          "a": 0,
-          "k": 100,
-          "ix": 4
-        },
-        "b": 1,
+        "t" : 0,
+        "xe": {},
+        "ne": {},
+        "a" : {},
+        "b" : 1,
         "rn": 0,
         "sh": 1,
-        "r": 1
+        "r" : 1
       }
     }
+    gen_properties_value(default_dict["s"]["xe"],
+                             0,
+                             7,
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+    gen_properties_value(default_dict["s"]["ne"],
+                             0,
+                             8,
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+    gen_properties_value(default_dict["s"]["a"],
+                             100,
+                             4,
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
+
     default_dict["nm"] = layer.get_description()
 
     return default_dict
@@ -60,15 +64,13 @@ def calc_anchor_alignment(lottie):
     """
     lottie["t"]["m"] = {  
                           "g": 1,
-                          "a": {
-                            "a": 0,
-                            "k": [
-                              0,
-                              0
-                            ],
-                            "ix": 2
-                         }
+                          "a": {}
                        } #Has no corresponding synfig property, so using default values
+    gen_properties_value(lottie["t"]["m"]["a"],
+                             [0,0],
+                             2,
+                             settings.DEFAULT_ANIMATED,
+                             settings.NO_INFO)
 
 def calculate_text_animation(lottie,animated):
     """
