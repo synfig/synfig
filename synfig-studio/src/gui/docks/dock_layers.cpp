@@ -63,7 +63,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Layers::Dock_Layers():
-	Dock_CanvasSpecific("layers",_("Layers"),Gtk::StockID("synfig-layer")),
+	Dock_CanvasSpecific("layers",_("Layers"),"layer_icon"),
 	layer_action_manager(new LayerActionManager)
 {
 	// Make Layers button small for space efficiency

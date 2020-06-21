@@ -140,7 +140,7 @@ DockBook::add(Dockable& dockable, int position)
 
 	refresh_tab(&dockable);
 
-	dockable.signal_stock_id_changed().connect(
+	dockable.signal_icon_changed().connect(
 		sigc::bind(
 			sigc::mem_fun(
 				*this,
