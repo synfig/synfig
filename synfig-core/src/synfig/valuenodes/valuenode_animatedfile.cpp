@@ -139,6 +139,13 @@ public:
 		// everything after the end of the papagayo file is rest
 		value[Time((last_frame+1)*fk)] = "rest";
 
+		// any frame that doesn't have a specified phoneme is rest
+		for (int i = 0; i < last_frame; ++i) {
+			if (value.find(Time(i*fk)) == value.end()) {
+				value[Time(i*fk)] = "rest";
+			}
+		}
+
 		if (unexpected_end)
 			warning("Unexpected end of .pgo file. Unsupported format?");
 
