@@ -77,6 +77,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+const int GAP = 3;
+
 /* === G L O B A L S ======================================================= */
 
 StateWidth studio::state_width;
@@ -109,13 +111,19 @@ class studio::StateWidth_Context : public sigc::trackable
 
 	//Toolbox display
 	Gtk::Table options_table;
+	Gtk::Label title_label;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_delta;
 	Gtk::SpinButton	spin_delta;
 
 	Widget_Distance *influence_radius;
 
-	Gtk::CheckButton check_relative;
+	Gtk::Label relative_label;
+	Gtk::CheckButton relative_checkbutton;
+	Gtk::HBox relative_box;
+
+	Gtk::Label growth_label;
+	Gtk::Label radius_label;
 
 	void AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult, bool invert);
 
@@ -127,8 +135,8 @@ public:
 	Real get_radius()const { return influence_radius->get_value().get(Distance::SYSTEM_UNITS,get_canvas_view()->get_canvas()->rend_desc());}
 	void set_radius(Distance f) { influence_radius->set_value(f); }
 
-	bool get_relative() const { return check_relative.get_active(); }
-	void set_relative(bool r) { check_relative.set_active(r); }
+	bool get_relative() const { return relative_checkbutton.get_active(); }
+	void set_relative(bool r) { relative_checkbutton.set_active(r); }
 
 	void refresh_tool_options(); //to refresh the toolbox
 
@@ -233,15 +241,10 @@ StateWidth_Context::reset()
 StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-
 	push_state(*get_work_area()),
-
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-
 	adj_delta(Gtk::Adjustment::create(6,0,20,0.01,0.1)),
-	spin_delta(adj_delta,0.01,3),
-
-	check_relative(_("Relative Growth"))
+	spin_delta(adj_delta,0.01,3)
 {
 	influence_radius=manage(new Widget_Distance());
 	influence_radius->show();
@@ -252,15 +255,46 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	load_settings();
 
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Width Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	title_label.set_label(_("Width Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	relative_label.set_label(_("Relative Growth"));
+	relative_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	relative_box.pack_start(relative_label);
+	relative_box.pack_end(relative_checkbutton, Gtk::PACK_SHRINK);
 
-	//expand stuff
-	options_table.attach(*manage(new Gtk::Label(_("Growth:"))),		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_delta,								1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Radius:"))),		0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*influence_radius,								1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(check_relative,							0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	growth_label.set_label(_("Growth:"));
+	growth_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
+	radius_label.set_label(_("Radius:"));
+	radius_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(growth_label,
+		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(spin_delta,
+		1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(radius_label,
+		0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(*influence_radius,
+		1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+	options_table.attach(relative_box,
+		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();

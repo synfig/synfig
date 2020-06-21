@@ -70,6 +70,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+const int GAP = 3;
+
 /* === G L O B A L S ======================================================= */
 
 StateSmoothMove studio::state_smooth_move;
@@ -110,9 +112,11 @@ class studio::StateSmoothMove_Context : public sigc::trackable
 	etl::handle<DuckDrag_SmoothMove> duck_dragger_;
 
 	Gtk::Table options_table;
+	Gtk::Label title_label;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_radius;
 	Gtk::SpinButton  spin_radius;
+	Gtk::Label spin_label;
 
 	float pressure;
 
@@ -204,12 +208,31 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	pressure=1.0f;
 
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("SmoothMove Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Radius"))),			0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_radius,									0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	
+	title_label.set_label(_("SmoothMove Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+	spin_label.set_label(_("Radius:"));
+	spin_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(spin_label,
+		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(spin_radius,
+		1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
 
 	spin_radius.signal_value_changed().connect(sigc::mem_fun(*this,&StateSmoothMove_Context::refresh_radius));
 
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
 	options_table.show_all();
 	refresh_tool_options();
 	//App::dialog_tool_options->set_widget(options_table);
