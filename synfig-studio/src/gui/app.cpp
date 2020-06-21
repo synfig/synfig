@@ -2582,7 +2582,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	Gtk::Label *label_resize = manage(new Gtk::Label(_("Scale to fit canvas")));
 	Gtk::Switch *toggle_resize = manage(new Gtk::Switch);
 	
-	label_resize->set_margin_right(5);
+	label_resize->set_margin_end(5);
 	toggle_resize->set_active(App::resize_imported_images);
 	
 	toggle_resize->property_active().signal_changed().connect(
