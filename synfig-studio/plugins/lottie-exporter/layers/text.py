@@ -82,7 +82,8 @@ def calculate_text_animation(lottie,animated):
     """
     
     waypoints = len(animated)
-    for i in range(waypoints):
+    #Adding text to each waypoint
+    for waypoint in range(waypoints):
         temp  = {
               "s": {
                 "s": 50,
@@ -96,9 +97,9 @@ def calculate_text_animation(lottie,animated):
               },
               "t": 0
             }
-        cur_pos = parse_position(animated, i)
+        cur_pos = parse_position(animated, waypoint)
         text_val = cur_pos.get_val()
-        time = get_frame(animated[i])
+        time = get_frame(animated[waypoint])
         ax = text_val[0].split("\n")
         final_text = "\r".join(ax)
         temp["s"]["t"] = final_text

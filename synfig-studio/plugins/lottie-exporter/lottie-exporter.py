@@ -46,6 +46,7 @@ def calc_font_data(lottie,layer):
     #Ascent is not documentated in the Lottie documentation and it's purpose is not known yet.
 
     style_dict = {0:'Regular', 1:'Regular', 2:'Italic'}
+    #Lottie does not support oblique style of Synfig, so defaulting to Regular Style for it
 
     for child in layer:
         if child.tag == 'layer' and child.attrib["type"] == 'text':
