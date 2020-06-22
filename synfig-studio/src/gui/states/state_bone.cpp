@@ -619,7 +619,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						}else{
 							egress_on_selection_change=false;
 							Layer::Handle  new_lay = get_canvas_interface()->add_layer_to("skeleton",get_canvas());
-							ValueDesc list_desc(new_skel,"bones");
+							ValueDesc list_desc(new_lay,"bones");
 							ValueNode_StaticList::Handle list_node;
 							list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 							ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
