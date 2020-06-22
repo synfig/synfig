@@ -390,7 +390,7 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
 
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf =
 		Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-  	return Gdk::Cursor::create(window->get_display(), pixbuf, 0, 0);
+	return Gdk::Cursor::create(window->get_display(), pixbuf, 0, 0);
 }
 
 Gtk::StockID
