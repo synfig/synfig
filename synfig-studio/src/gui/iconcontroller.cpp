@@ -441,7 +441,7 @@ studio::interpolation_icon(synfig::Interpolation type)
 
 
 std::string
-studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
+studio::valuenode_icon_name(etl::handle<synfig::ValueNode> value_node)
 {
 	if(handle<ValueNode_Const>::cast_dynamic(value_node))
 	{
