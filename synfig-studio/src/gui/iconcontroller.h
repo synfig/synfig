@@ -67,7 +67,7 @@ std::string layer_icon_name(const synfig::String &layer);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
 std::string value_icon_name(synfig::Type &type);
-Gtk::StockID interpolation_icon(synfig::Interpolation type);
+std::string interpolation_icon_name(synfig::Interpolation type);
 std::string valuenode_icon_name(etl::handle<synfig::ValueNode> value_node);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
 Glib::RefPtr<Gdk::Pixbuf> get_interpolation_pixbuf(synfig::Interpolation itype);
