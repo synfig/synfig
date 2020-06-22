@@ -386,8 +386,10 @@ IconController::init_icons(const synfig::String& path_to_icons_)
 		_tree_pixbuf_table_value_type[type->identifier] = icon;
 	}
 
-	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
-		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++) {
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(interpolation_icon_name(Interpolation(i)), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		_tree_pixbuf_table_interpolation[i] = icon;
+	}
 }
 
 Glib::RefPtr<Gdk::Cursor>
@@ -443,28 +445,28 @@ studio::value_icon_name(Type &type)
 	return "image-missing";
 }
 
-Gtk::StockID
-studio::interpolation_icon(synfig::Interpolation type)
+std::string
+studio::interpolation_icon_name(synfig::Interpolation type)
 {
 	switch(type)
 	{
 		case INTERPOLATION_CLAMPED:
-			return Gtk::StockID("synfig-interpolation_type_clamped");
+			return "interpolation_type_clamped_icon";
 		case INTERPOLATION_TCB:
-			return Gtk::StockID("synfig-interpolation_type_tcb");
+			return "interpolation_type_tcb_icon";
 		case INTERPOLATION_CONSTANT:
-			return Gtk::StockID("synfig-interpolation_type_const");
+			return "interpolation_type_const_icon";
 		case INTERPOLATION_HALT:
-			return Gtk::StockID("synfig-interpolation_type_ease");
+			return "interpolation_type_ease_icon";
 		case INTERPOLATION_LINEAR:
-			return Gtk::StockID("synfig-interpolation_type_linear");
+			return "interpolation_type_linear_icon";
 		case INTERPOLATION_MANUAL:
 		case INTERPOLATION_UNDEFINED:
 		case INTERPOLATION_NIL:
 		default:
 			break;
 	}
-	return Gtk::StockID();
+	return "image-missing";
 }
 
 
