@@ -63,6 +63,7 @@ def gen_html(file_name):
         (None)
     """
     if len(settings.blur_ordering) != 0:
+        settings.lottie_format["v"] = "5.6.5"
         bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "test_bodymovin.js")
     else:
         bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "bodymovin.js")

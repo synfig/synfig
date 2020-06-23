@@ -16,6 +16,27 @@ from layers.blur import gen_layer_blur
 
 sys.path.append("..")
 
+def append_blur_dict(layer,itr):
+    """
+    This function will generate and assign the gaussian blur dictionary required for different layers
+
+    Args:
+        layer (common.Layer.Layer) : Synfig format layer
+        itr   (int)                : Position of layer in canvas
+    """
+    if len(settings.blur_ordering) != 0:
+        max_depth = -1
+        for depth in settings.blur_ordering.keys():
+            if depth >= max_depth and depth >= itr:
+                max_depth = depth
+        if max_depth != -1:
+            for index,val in enumerate(settings.lottie_format["layers"]):
+                if len(val) and settings.lottie_format["layers"][index]["nm"] == layer.get_description():
+                    print(layer.get_description(), settings.lottie_format["layers"][index]["nm"] , layer.get_type())
+
+                    settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][0])
+                    settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][1])
+
 def gen_layers(lottie, canvas, layer_itr):
     """
     This function will be called for each canvas/composition. Main function to
@@ -67,28 +88,25 @@ def gen_layers(lottie, canvas, layer_itr):
             gen_layer_shape(lottie[-1],
                             layer,
                             itr)
+            append_blur_dict(layer,itr)
+
         elif layer.get_type() in solid:         # Goto solid layer
             gen_layer_solid(lottie[-1],
                             layer,
                             itr)
+            append_blur_dict(layer,itr)
+
         elif layer.get_type() in shape_solid:   # Goto shape_solid layer
             gen_layer_shape_solid(lottie[-1],
                                   layer,
                                   itr)
+            append_blur_dict(layer,itr)
+
         elif layer.get_type() in image:   # Goto image layer
             gen_layer_image(lottie[-1],
                             layer,
                             settings.image_ordering)
-            if len(settings.blur_ordering) != 0:
-                max_depth = -1
-                for depth in settings.blur_ordering.keys():
-                    if depth >= max_depth and depth >= settings.image_ordering:
-                        max_depth = depth
-                if max_depth != -1:
-                    for index,val in enumerate(settings.lottie_format["layers"]):
-                        if len(val) and settings.lottie_format["layers"][index]["nm"] == layer.get_description():
-                            settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][0])
-                            settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][1])
+            append_blur_dict(layer,settings.image_ordering)
 
         elif layer.get_type() in blur:   # Goto image layer
             blur_dict = []
@@ -105,6 +123,7 @@ def gen_layers(lottie, canvas, layer_itr):
             gen_layer_group(lottie[-1],
                             layer,
                             itr)
+
             # No return statement here
         elif layer.get_type() in skeleton:
             pass
