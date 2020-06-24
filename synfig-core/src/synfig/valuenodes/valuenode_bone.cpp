@@ -570,9 +570,9 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	case 1: return parent_;
 #ifndef HIDE_BONE_FIELDS
 	case 2: return origin_;
-	case 3: return origin_;
+	case 3: return g_origin_;
 	case 4: return angle_;
-	case 5: return angle_;
+	case 5: return g_angle_;
 	case 6: return scalelx_;
 	case 7: return width_;
 	case 8: return scalex_;
@@ -607,8 +607,8 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"global_origin")
-		.set_local_name(_("Global Origin"))
-		.set_description(_("The rotating global origin of the bone"))
+						  .set_local_name(_("Global Origin"))
+						  .set_description(_("The rotating global origin of the bone"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"angle")
@@ -617,8 +617,8 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"global_angle")
-		.set_local_name(_("Angle"))
-		.set_description(_("The rotating global angle of the bone"))
+						  .set_local_name(_("Angle"))
+						  .set_description(_("The rotating global angle of the bone"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"scalelx")
@@ -802,8 +802,8 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
 	{
 		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(type_bone_object);
-		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
-		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
+		const ValueNode_Animated::WaypointList& list(value_node_animated->waypoint_list());
+		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(); iter != list.cend(); ++iter)
 		{
 //			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
 			BoneSet ret2(get_bones_referenced_by(iter->get_value_node(), recursive));
@@ -958,6 +958,83 @@ ValueNode_Bone::get_root_bone()
 {
 	if (!rooot) rooot = new ValueNode_Bone_Root();
 	return rooot;
+}
+
+
+// inspired (a lot) by ValueNode_Bone::get_bones_referenced_by()
+void
+ValueNode_Bone::fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode::Handle cloned_value_node, bool recursive, const std::map<const ValueNode*, ValueNode::Handle>& clone_map)
+{
+	BoneSet ret;
+	if (!value_node)
+	{
+		synfig::warning("%s:%d failed?\n", __FILE__, __LINE__);
+		assert(0);
+		return;
+	}
+
+	// if it's a ValueNode_Const
+	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value_node))
+	{
+		ValueNode_Const::Handle cloned_value_node_const = ValueNode_Const::Handle::cast_dynamic(cloned_value_node);
+		ValueBase inner_value_node(value_node_const->get_value());
+		if (inner_value_node.get_type() == type_bone_valuenode)
+			if (ValueNode_Bone::Handle bone = inner_value_node.get(ValueNode_Bone::Handle()))
+			{
+				ValueBase inner_cloned_value_node(cloned_value_node_const->get_value());
+				ValueNode_Bone::Handle cloned_bone = inner_cloned_value_node.get(ValueNode_Bone::Handle());
+				// do we want to check for bone references in other bone fields or just 'parent'?
+				if (recursive)
+				{
+					fix_bones_referenced_by(bone, cloned_bone, recursive, clone_map);
+				}
+				if (!bone->is_root()) {
+					auto replace_iter = clone_map.find(bone.get());
+					if (replace_iter != clone_map.end()) {
+						ValueBase ret_vb(ValueNode_Bone::Handle::cast_dynamic(replace_iter->second));
+						ret_vb.copy_properties_of(bone);
+						cloned_value_node_const->set_value(ret_vb);
+					}
+				}
+			}
+		return;
+	}
+
+	// if it's a ValueNode_Animated
+	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
+	{
+		ValueNode_Animated::Handle cloned_value_node_animated = ValueNode_Animated::Handle::cast_dynamic(cloned_value_node);
+		const ValueNode_Animated::WaypointList& list(value_node_animated->waypoint_list());
+		const ValueNode_Animated::WaypointList& cloned_list(cloned_value_node_animated->waypoint_list());
+		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(), cloned_iter = cloned_list.cbegin(); iter != list.cend(); ++iter, ++cloned_iter)
+		{
+			fix_bones_referenced_by(iter->get_value_node(), cloned_iter->get_value_node(), recursive, clone_map);
+		}
+		return;
+	}
+
+	// if it's a LinkableValueNode
+	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node))
+	{
+		LinkableValueNode::Handle cloned_linkable_value_node = LinkableValueNode::Handle::cast_dynamic(cloned_value_node);
+		for (int i = 0; i < linkable_value_node->link_count(); i++)
+		{
+			fix_bones_referenced_by(linkable_value_node->get_link(i), cloned_linkable_value_node->get_link(i), recursive, clone_map);
+		}
+		return;
+	}
+
+	if (PlaceholderValueNode::Handle linkable_value_node = PlaceholderValueNode::Handle::cast_dynamic(value_node))
+	{
+		// todo: while loading we might be setting up an ancestry loop by ignoring the placeholder valuenode here
+		// can we check for loops in badly formatted .sifz files somehow?
+		if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
+			printf("%s:%d found a placeholder - skipping loop check\n", __FILE__, __LINE__);
+		return;
+	}
+
+	error("%s:%d BUG: bad type in valuenode '%s'", __FILE__, __LINE__, value_node->get_string().c_str());
+	assert(0);
 }
 
 #ifdef _DEBUG
