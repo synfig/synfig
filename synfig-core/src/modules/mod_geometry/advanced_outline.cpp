@@ -712,7 +712,7 @@ Advanced_Outline::get_param_vocab()const
 		);
 	ret.push_back(ParamDesc("cusp_type")
 		.set_local_name(_("Cusps Type"))
-		.set_description(_("Determines cusp type"))
+		.set_description(_("Determines cusps type"))
 		.set_hint("enum")
 		.add_enum_value(TYPE_SHARP,"sharp", _("Sharp"))
 		.add_enum_value(TYPE_ROUNDED,"rounded", _("Rounded"))
@@ -724,7 +724,7 @@ Advanced_Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("homogeneous")
 		.set_local_name(_("Homogeneous"))
-		.set_description(_("When true, widthpoints positions are spline length based"))
+		.set_description(_("When checked, widthpoints positions are spline length based"))
 	);
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))
@@ -735,7 +735,7 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("dash_enabled")
 		.set_local_name(_("Dashed Outline"))
 		.set_hint("dash")
-		.set_description(_("When checked outline is dashed"))
+		.set_description(_("When checked, outline is dashed"))
 	);
 	ret.push_back(ParamDesc("dilist")
 		.set_local_name(_("Dash Item List"))

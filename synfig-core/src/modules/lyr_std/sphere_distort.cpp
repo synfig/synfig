@@ -145,30 +145,30 @@ Layer_SphereDistort::get_param_vocab()const
 
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Position"))
-		.set_description(_("Where the sphere distortion is centered"))
+		.set_description(_("Center of the sphere distortion"))
 	);
 
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_origin("center")
 		.set_is_distance()
-		.set_description(_("The size of the sphere distortion"))
+		.set_description(_("Size of the sphere distortion"))
 	);
 
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_is_distance(false)
-		.set_description(_("The distortion intensity (negative values inverts effect)"))
+		.set_description(_("Distortion intensity (Negative values invert the effect)"))
 	);
 
 	ret.push_back(ParamDesc("clip")
 		.set_local_name(_("Clip"))
-		.set_description(_("When checked, the area outside the Radius are not distorted"))
+		.set_description(_("When checked, the area outside the Radius is not distorted"))
 	);
 
 	ret.push_back(ParamDesc("type")
 		.set_local_name(_("Distort Type"))
-		.set_description(_("The direction of the distortion"))
+		.set_description(_("Direction of the distortion"))
 		.set_hint("enum")
 		.add_enum_value(TYPE_NORMAL,"normal",_("Spherize"))
 		.add_enum_value(TYPE_DISTH,"honly",_("Vertical Bar"))

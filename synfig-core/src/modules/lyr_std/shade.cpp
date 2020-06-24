@@ -189,7 +189,7 @@ Layer_Shade::get_param_vocab(void)const
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
-		.set_description(_("Size of Shade"))
+		.set_description(_("Size of the shade"))
 		.set_is_distance()
 		.set_origin("origin")
 	);

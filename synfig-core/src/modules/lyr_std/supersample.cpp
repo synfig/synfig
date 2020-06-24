@@ -133,19 +133,19 @@ SuperSample::get_param_vocab(void)const
 
 	ret.push_back(ParamDesc("width")
 		.set_local_name(_("Width"))
-		.set_description(_("Width of sample area (In pixels)"))
+		.set_description(_("Width of the sample area (In pixels)"))
 	);
 	ret.push_back(ParamDesc("height")
 		.set_local_name(_("Height"))
-		.set_description(_("Height of sample area (In pixels)"))
+		.set_description(_("Height of the sample area (In pixels)"))
 	);
 	ret.push_back(ParamDesc("scanline")
 		.set_local_name(_("Use Parametric"))
-		.set_description(_("Use the Parametric Renderer"))
+		.set_description(_("When checked, uses the Parametric Renderer"))
 	);
 	ret.push_back(ParamDesc("alpha_aware")
 		.set_local_name(_("Be Alpha Safe"))
-		.set_description(_("Avoid alpha artifacts when checked"))
+		.set_description(_("When checked, avoids alpha artifacts"))
 	);
 
 	return ret;

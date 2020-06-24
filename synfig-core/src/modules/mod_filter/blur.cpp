@@ -147,7 +147,7 @@ Blur_Layer::get_param_vocab(void)const
 
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
-		.set_description(_("Size of Blur"))
+		.set_description(_("Size of the blur"))
 	);
 	ret.push_back(ParamDesc("type")
 		.set_local_name(_("Type"))

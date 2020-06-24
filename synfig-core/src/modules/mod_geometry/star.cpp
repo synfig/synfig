@@ -185,7 +185,7 @@ Star::get_param_vocab()const
 
 	ret.push_back(ParamDesc("regular_polygon")
 		.set_local_name(_("Regular Polygon"))
-		.set_description(_("Whether to draw a star or a regular polygon"))
+		.set_description(_("When checked, draws a regular polygon instead of a star"))
 	);
 
 	return ret;
