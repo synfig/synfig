@@ -261,9 +261,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		set_link("name",ValueNode_Const::create(name));
 #ifndef HIDE_BONE_FIELDS
 		set_link("origin",ValueNode_Const::create(bone.get_origin()));
-		set_link("global_origin",ValueNode_Const::create(bone.get_g_origin()));
 		set_link("angle",ValueNode_Const::create(bone.get_angle()));
-		set_link("global_angle",ValueNode_Const::create(bone.get_g_angle()));
 		set_link("scalelx",ValueNode_Const::create(bone.get_scalelx()));
 		set_link("scalex",ValueNode_Const::create(bone.get_scalex()));
 		set_link("length",ValueNode_Const::create(bone.get_length()));
@@ -440,9 +438,7 @@ ValueNode_Bone::operator()(Time t)const
 	ValueNode_Bone::ConstHandle   bone_parent			(get_parent(t));
 #ifndef HIDE_BONE_FIELDS
 	Point  bone_origin			((*origin_	)(t).get(Point()));
-	Point  bone_g_origin		((*g_origin_	)(t).get(Point()));
 	Angle  bone_angle			((*angle_	)(t).get(Angle()));
-	Angle  bone_g_angle			((*g_angle_	)(t).get(Angle()));
 	Real   bone_scalelx			((*scalelx_	)(t).get(Real()));
 	Real   bone_scalex			((*scalex_	)(t).get(Real()));
 	Real   bone_length			((*length_	)(t).get(Real()));
@@ -460,9 +456,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_parent			(bone_parent.get());
 #ifndef HIDE_BONE_FIELDS
 	ret.set_origin			(bone_origin);
-	ret.set_g_origin        (bone_g_origin);
 	ret.set_angle			(bone_angle);
-	ret.set_g_angle			(bone_g_angle);
 	ret.set_scalelx			(bone_scalelx);
 	ret.set_scalex			(bone_scalex);
 	ret.set_length			(bone_length);
@@ -545,15 +539,13 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	}
 #ifndef HIDE_BONE_FIELDS
 	case 2: CHECK_TYPE_AND_SET_VALUE(origin_,	type_vector);
-	case 3: CHECK_TYPE_AND_SET_VALUE(g_origin_,	type_vector);
-	case 4: CHECK_TYPE_AND_SET_VALUE(angle_,	type_angle);
-	case 5: CHECK_TYPE_AND_SET_VALUE(g_angle_,	type_angle);
-	case 6: CHECK_TYPE_AND_SET_VALUE(scalelx_,	type_real);
-	case 7: CHECK_TYPE_AND_SET_VALUE(width_,	type_real);
-	case 8: CHECK_TYPE_AND_SET_VALUE(scalex_,	type_real);
-	case 9: CHECK_TYPE_AND_SET_VALUE(tipwidth_,	type_real);
-	case 10: CHECK_TYPE_AND_SET_VALUE(depth_,	type_real);
-	case 11: CHECK_TYPE_AND_SET_VALUE(length_,	type_real);
+	case 3: CHECK_TYPE_AND_SET_VALUE(angle_,	type_angle);
+	case 4: CHECK_TYPE_AND_SET_VALUE(scalelx_,	type_real);
+	case 5: CHECK_TYPE_AND_SET_VALUE(width_,	type_real);
+	case 6: CHECK_TYPE_AND_SET_VALUE(scalex_,	type_real);
+	case 7: CHECK_TYPE_AND_SET_VALUE(tipwidth_,	type_real);
+	case 8: CHECK_TYPE_AND_SET_VALUE(depth_,	type_real);
+	case 9: CHECK_TYPE_AND_SET_VALUE(length_,	type_real);
 #endif
 	}
 	return false;
@@ -570,15 +562,13 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	case 1: return parent_;
 #ifndef HIDE_BONE_FIELDS
 	case 2: return origin_;
-	case 3: return g_origin_;
-	case 4: return angle_;
-	case 5: return g_angle_;
-	case 6: return scalelx_;
-	case 7: return width_;
-	case 8: return scalex_;
-	case 9: return tipwidth_;
-	case 10: return depth_;
-	case 11: return length_;
+	case 3: return angle_;
+	case 4: return scalelx_;
+	case 5: return width_;
+	case 6: return scalex_;
+	case 7: return tipwidth_;
+	case 8: return depth_;
+	case 9: return length_;
 #endif
 	}
 
@@ -606,19 +596,9 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 		.set_description(_("The rotating origin of the bone relative to its parent"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"global_origin")
-						  .set_local_name(_("Global Origin"))
-						  .set_description(_("The rotating global origin of the bone"))
-	);
-
 	ret.push_back(ParamDesc(ValueBase(),"angle")
 		.set_local_name(_("Angle"))
 		.set_description(_("The rotating angle of the bone relative to its parent"))
-	);
-
-	ret.push_back(ParamDesc(ValueBase(),"global_angle")
-						  .set_local_name(_("Angle"))
-						  .set_description(_("The rotating global angle of the bone"))
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"scalelx")

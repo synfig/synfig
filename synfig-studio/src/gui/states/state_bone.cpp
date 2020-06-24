@@ -607,8 +607,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
                                 assert(0);
                             }
 
-                            Point parent_origin = layer->get_param("bones").get_list_of(Bone())[active_bone].get_g_origin();
-                            Angle parent_angle = layer->get_param("bones").get_list_of(Bone())[active_bone].get_g_angle();
+                            Point parent_origin = layer->get_param("bones").get_list_of(Bone())[active_bone].get_origin();
+                            Angle parent_angle = layer->get_param("bones").get_list_of(Bone())[active_bone].get_angle();
                             ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
                             createChild->set_param("value_desc",Action::Param(v_d));
                             if(createChild->is_ready()){
@@ -624,10 +624,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
                                     
                                     bone_node->set_link("origin",ValueNode_Const::create(clickOrigin-parent_origin));
-                                    bone_node->set_link("global_origin",ValueNode_Const::create(clickOrigin));
+
                                     if((clickOrigin - releaseOrigin).mag() >= 0.0000001){ //! if it is a click and drag
                                         bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()-parent_angle));
-                                        bone_node->set_link("global_angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
                                         bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
                                     }
 
@@ -667,10 +666,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 
                     bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
-                    bone_node->set_link("global_origin",ValueNode_Const::create(clickOrigin));
                     if((clickOrigin - releaseOrigin).mag() >= 0.0000001){
                         bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
-                        bone_node->set_link("global_angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
                         bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
                     }
 

@@ -55,9 +55,7 @@ using namespace synfig;
 //! Default constructor
 Bone::Bone():
 	origin_(Point(0,0)),
-	g_origin_(Point(0,0)),
 	angle_(Angle::deg(0.0)),
-	g_angle_(Angle::deg(0.0)),
 	scalelx_(1.0),
 	scalex_(1.0),
 	length_(1.0),

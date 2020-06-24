@@ -72,12 +72,6 @@ private:
 	String name_;
 	//!This is the current origin of the bone relative to parent
 	Point origin_;
-	//!This is the current global origin of the bone
-	Point g_origin_;
-	//!This is the current angle of the bone relative to parent.
-	Angle angle_;
-	//!This is the current global angle of the bone.
-	Angle g_angle_;
 	//!This is the current angle if the bone relative to parent.
 	Angle angle_;
 	//!This is the current local x scale of the bone.
@@ -111,14 +105,6 @@ public:
 	//!Wrappers for origin_
 	const Point& get_origin()const {return origin_;}
 	void set_origin(const Point &x) {origin_=x;}
-
-	//!Wrappers for g_origin_
-	const Point& get_g_origin()const {return g_origin_;}
-	void set_g_origin(const Point &x) {g_origin_=x;}
-
-	//!Wrappers for g_angle_
-	const Angle& get_g_angle()const {return g_angle_;}
-	void set_g_angle(const Angle &x) {g_angle_=x;}
 
 	//!Wrappers for angle_
 	const Angle& get_angle()const {return angle_;}
@@ -204,9 +190,7 @@ public:
  * and only give it the responsibility of:
  * Set and get:
  * 		-origin,
- * 		-global origin,
  * 		-angle,
- * 		-global angle,
  * 		-scalelx,
  * 		-scalely,
  * 		-scalex,
