@@ -16,116 +16,139 @@ from layers.blur import gen_layer_blur
 
 sys.path.append("..")
 
-def append_blur_dict(layer,itr):
-    """
-    This function will generate and assign the gaussian blur dictionary required for different layers
+def append_blur_dict(layer,itr,group_flag):
+	"""
+	This function will generate and assign the gaussian blur dictionary required for different layers
 
-    Args:
-        layer (common.Layer.Layer) : Synfig format layer
-        itr   (int)                : Position of layer in canvas
-    """
-    if len(settings.blur_ordering) != 0:
-        max_depth = -1
-        for depth in settings.blur_ordering.keys():
-            if depth >= max_depth and depth >= itr:
-                max_depth = depth
-        if max_depth != -1:
-            for index,val in enumerate(settings.lottie_format["layers"]):
-                if len(val) and settings.lottie_format["layers"][index]["nm"] == layer.get_description():
-                    print(layer.get_description(), settings.lottie_format["layers"][index]["nm"] , layer.get_type())
+	Args:
+		layer (common.Layer.Layer) : Synfig format layer
+		itr   (int)                : Position of layer in canvas
+		group_flag (boolean)	   : True if layer belongs to a Group Layer
+	"""
+	if group_flag:
+		if len(settings.group_blur_ordering) != 0:
+			max_depth = -1
+			for depth in settings.group_blur_ordering.keys():
+				if depth >= max_depth and depth >= itr:
+					max_depth = depth
+			if max_depth != -1:
+				for asset_index,_ in enumerate(settings.lottie_format["assets"]):	
+					if "layers" in _.keys():
+						for index,val in enumerate(settings.lottie_format["assets"][asset_index]["layers"]):
+							if len(val):
+								settings.lottie_format["assets"][asset_index]["layers"][index]["ef"].append(settings.group_blur_ordering[max_depth][0])
+								settings.lottie_format["assets"][asset_index]["layers"][index]["ef"].append(settings.group_blur_ordering[max_depth][1])
 
-                    settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][0])
-                    settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][1])
+	else:
+		if len(settings.blur_ordering) != 0:
+			max_depth = -1
+			for depth in settings.blur_ordering.keys():
+				if depth >= max_depth and depth >= itr:
+					max_depth = depth
+			if max_depth != -1:
+				for index,val in enumerate(settings.lottie_format["layers"]):
+					if len(val) and settings.lottie_format["layers"][index]["nm"] == layer.get_description():
+						settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][0])
+						settings.lottie_format["layers"][index]["ef"].append(settings.blur_ordering[max_depth][1])
+	
+	
+
 
 def gen_layers(lottie, canvas, layer_itr):
-    """
-    This function will be called for each canvas/composition. Main function to
-    generate all the layers
+	"""
+	This function will be called for each canvas/composition. Main function to
+	generate all the layers
 
-    Args:
-        lottie (dict) : Layers in Lottie format
-        canvas (common.Canvas.Canvas) : Synfig format canvas
-        layer_itr (int) : position of layer in canvas
+	Args:
+		lottie (dict) : Layers in Lottie format
+		canvas (common.Canvas.Canvas) : Synfig format canvas
+		layer_itr (int) : position of layer in canvas
 
-    Returns:
-        (None)
-    """
-    itr = layer_itr
-    shape = settings.SHAPE_LAYER
-    solid = settings.SOLID_LAYER
-    shape_solid = settings.SHAPE_SOLID_LAYER
-    image = settings.IMAGE_LAYER
-    pre_comp = settings.PRE_COMP_LAYER
-    group = settings.GROUP_LAYER
-    skeleton = settings.SKELETON_LAYER
-    blur = settings.BLUR_LAYER
-    supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton,blur)
-    layer_type = canvas[itr].get_type()
-    if layer_type == 'switch':
-        settings.image_ordering = itr
+	Returns:
+		(None)
+	"""
+	itr = layer_itr
+	shape = settings.SHAPE_LAYER
+	solid = settings.SOLID_LAYER
+	shape_solid = settings.SHAPE_SOLID_LAYER
+	image = settings.IMAGE_LAYER
+	precompe_comp = settings.PRE_COMP_LAYER
+	group = settings.GROUP_LAYER
+	skeleton = settings.SKELETON_LAYER
+	blur = settings.BLUR_LAYER
+	supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton,blur)
+	layer_type = canvas[itr].get_type()
+	if layer_type == 'switch':
+		settings.image_ordering = itr
 
-    while itr >= 0:
-        layer = canvas[itr]
-        if layer.get_type() not in supported_layers:  # Only supported layers
-            logging.warning(settings.NOT_SUPPORTED_TEXT, layer.get_type())
-            itr -= 1
-            continue
-        elif not layer.is_active():   # Only render the active layers
-            logging.info(settings.NOT_ACTIVE_TEXT, layer.get_type())
-            itr -= 1
-            continue
-        elif not layer.to_render():   # If we don't have to render the layer
-            logging.info(settings.EXCLUDE_FROM_RENDERING, layer.get_type())
-            itr -= 1
-            continue
+	while itr >= 0:
+		layer = canvas[itr]
+		if layer.get_type() not in supported_layers:  # Only supported layers
+			logging.warning(settings.NOT_SUPPORTED_TEXT, layer.get_type())
+			itr -= 1
+			continue
+		elif not layer.is_active():   # Only render the active layers
+			logging.info(settings.NOT_ACTIVE_TEXT, layer.get_type())
+			itr -= 1
+			continue
+		elif not layer.to_render():   # If we don't have to render the layer
+			logging.info(settings.EXCLUDE_FROM_RENDERING, layer.get_type())
+			itr -= 1
+			continue
 
-        lottie.append({})
-        layer.set_lottie_layer(lottie[-1])
-        if layer.get_type() == "switch":
-            settings.image_ordering = itr
+		lottie.append({})
+		layer.set_lottie_layer(lottie[-1])
+		if layer.get_type() == "switch":
+			settings.image_ordering = itr
 
-        if layer.get_type() in shape:           # Goto shape layer
-            gen_layer_shape(lottie[-1],
-                            layer,
-                            itr)
-            append_blur_dict(layer,itr)
+		if layer.get_type() in shape:           # Goto shape layer
+			gen_layer_shape(lottie[-1],
+							layer,
+							itr)
+			append_blur_dict(layer,itr,settings.GROUP_FLAG)
 
-        elif layer.get_type() in solid:         # Goto solid layer
-            gen_layer_solid(lottie[-1],
-                            layer,
-                            itr)
-            append_blur_dict(layer,itr)
+		elif layer.get_type() in solid:         # Goto solid layer
+			gen_layer_solid(lottie[-1],
+							layer,
+							itr)
+			append_blur_dict(layer,itr,settings.GROUP_FLAG)
 
-        elif layer.get_type() in shape_solid:   # Goto shape_solid layer
-            gen_layer_shape_solid(lottie[-1],
-                                  layer,
-                                  itr)
-            append_blur_dict(layer,itr)
+		elif layer.get_type() in shape_solid:   # Goto shape_solid layer
+			gen_layer_shape_solid(lottie[-1],
+								  layer,
+								  itr)
+			append_blur_dict(layer,itr,settings.GROUP_FLAG)
 
-        elif layer.get_type() in image:   # Goto image layer
-            gen_layer_image(lottie[-1],
-                            layer,
-                            settings.image_ordering)
-            append_blur_dict(layer,settings.image_ordering)
+		elif layer.get_type() in image:   # Goto image layer
+			gen_layer_image(lottie[-1],
+							layer,
+							settings.image_ordering)
+			append_blur_dict(layer,settings.image_ordering,settings.GROUP_FLAG)
 
-        elif layer.get_type() in blur:   # Goto image layer
-            blur_dict = []
-            gen_layer_blur(blur_dict,
-                            layer,
-                            itr)
-            settings.blur_ordering.update({itr : blur_dict})
-        elif layer.get_type() in pre_comp:      # Goto precomp layer
-            gen_layer_precomp(lottie[-1],
-                              layer,
-                              itr)
-            return  # other layers will be generated inside the precomp
-        elif layer.get_type() in group:       # Goto group layer
-            gen_layer_group(lottie[-1],
-                            layer,
-                            itr)
+		elif layer.get_type() in blur:   # Goto image layer
+			blur_dict = []
+			gen_layer_blur(blur_dict,
+							layer,
+							itr)
+			if settings.GROUP_FLAG:
+				settings.group_blur_ordering.update({itr : blur_dict})
+			else:
+				settings.blur_ordering.update({itr : blur_dict})
 
-            # No return statement here
-        elif layer.get_type() in skeleton:
-            pass
-            # skeletons are just for linking purposes which is served by bones
-        itr -= 1
+		elif layer.get_type() in pre_comp:      # Goto precomp layer
+			gen_layer_precomp(lottie[-1],
+							  layer,
+							  itr)
+			return  # other layers will be generated inside the precomp
+		elif layer.get_type() in group:       # Goto group layer
+			if layer.get_type() == "group":
+				settings.GROUP_FLAG = True
+			gen_layer_group(lottie[-1],
+							layer,
+							itr)
+			settings.GROUP_FLAG = False
+			# No return statement here
+		elif layer.get_type() in skeleton:
+			pass
+			# skeletons are just for linking purposes which is served by bones
+		itr -= 1
