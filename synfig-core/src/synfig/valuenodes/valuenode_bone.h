@@ -41,9 +41,7 @@ class ValueNode_Bone : public LinkableValueNode
 {
 	ValueNode::RHandle name_;
 	ValueNode::RHandle origin_;
-	ValueNode::RHandle g_origin_;
 	ValueNode::RHandle angle_;
-	ValueNode::RHandle g_angle_;
 	ValueNode::RHandle scalelx_;
 	ValueNode::RHandle scalex_;
 	ValueNode::RHandle length_;
