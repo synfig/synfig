@@ -8,7 +8,9 @@ project(synfigstudio)
 set(CMAKE_CXX_STANDARD 11)
 
 add_subdirectory(src)
+
+add_subdirectory(brushes)
 add_subdirectory(images)
-add_subdirectory(ui)
+add_subdirectory(plugins)
 add_subdirectory(sounds)
-add_subdirectory(po)
+add_subdirectory(ui)
