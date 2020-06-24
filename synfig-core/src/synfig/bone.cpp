@@ -35,8 +35,7 @@
 #include "valuenodes/valuenode_bone.h"
 #include <ETL/stringf>
 #include <cmath>
-
-#include <synfig/general.h>
+#include <inttypes.h>
 
 #endif
 
@@ -55,7 +54,9 @@ using namespace synfig;
 //! Default constructor
 Bone::Bone():
 	origin_(Point(0,0)),
+	g_origin_(Point(0,0)),
 	angle_(Angle::deg(0.0)),
+    g_angle_(Angle::deg(0.0)),
 	scalelx_(1.0),
 	scalex_(1.0),
 	length_(1.0),
@@ -117,13 +118,13 @@ Bone::set_parent(const ValueNode_Bone* parent)
 //!@return The tip Point of the bone (calculated) based on
 //! tip=origin+[length,0]*Scalex(scalex*scalelx,0)*Rotate(alpha)
 Point
-Bone::get_tip() const
+Bone::get_tip()
 {
 	Matrix s, r, sr;
 	s.set_scale(scalex_*scalelx_,0);
 	r.set_rotate(angle_);
 	sr=s*r;
-	return static_cast<Point>(sr.get_transformed(Vector(length_,0)));
+	return (Point)sr.get_transformed(Vector(length_,0));
 }
 
 //!Get the string of the Bone
@@ -132,20 +133,17 @@ Bone::get_tip() const
 synfig::String
 Bone::get_string()const
 {
-	return strprintf("N=%s O=(%.4f %.4f) a=%.4f slx=%.4f sx=%.4f l=%.4f w=%.4f tw=%.4f or=%.4f P=%p",
+	return strprintf("N=%s O=(%.4f %.4f) a=%.4f slx=%.4f sx=%.4f l=%.4f w=%.4f tw=%.4f or=%.4f P=%lx",
 					 name_.c_str(),
 					 origin_[0], origin_[1],
 					 Angle::deg(angle_).get(),
-					 scalelx_, scalex_, length_, width_, tipwidth_, depth_, parent_);
+					 scalelx_, scalex_, length_, width_, tipwidth_, depth_, uintptr_t(parent_));
 }
 
 bool
 Bone::is_root()const
 {
-	if (parent_)
-		return get_parent()->is_root();
-	synfig::warning("should not reach this line in Bone::is_root()");
-	return true;
+	return get_parent()->is_root();
 }
 
 Bone::Shape
