@@ -50,7 +50,7 @@
 #include <synfig/rendering/software/surfacesw.h>
 
 #include <synfig/layers/layer_pastecanvas.h>
-#include <modules/lyr_std/import.h>
+#include <synfig/layers/layer_bitmap.h>
 
 #include <synfig/valuenodes/valuenode_animatedfile.h>
 #include <synfig/valuenodes/valuenode_animatedfile.h>
@@ -970,7 +970,7 @@ CanvasInterface::import_sequence(
 
 		// create layers and assign them with LayerEncapsulateSwitch action
 		Layer::Handle layer;
-		modules::lyr_std::Import::Handle curr_layer;
+		Layer_Bitmap::Handle curr_layer;
 		rendering::Surface::Handle  cur_surface,prev_surface= rendering::Surface::Handle();
 		bool first_time=true;
 		int layers_count = 0;
@@ -1008,7 +1008,7 @@ CanvasInterface::import_sequence(
 					throw int();
 
 				if(remove_dups){
-					curr_layer= modules::lyr_std::Import::Handle::cast_dynamic(layer);
+					curr_layer= Layer_Bitmap::Handle::cast_dynamic(layer);
 					if(!curr_layer){
 						throw int();
 					}
@@ -1337,7 +1337,7 @@ CanvasInterface::set_meta_data(const synfig::String& key,const synfig::String& d
 	if (get_canvas()->get_meta_data(key) == data)
 		return;
 
-    if (key=="guide_x" || key=="guide_y")
+	if (key=="guide_x" || key=="guide_y")
 	{
 		// Create an undoable action
 
