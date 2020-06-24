@@ -78,6 +78,8 @@ private:
 	Angle angle_;
 	//!This is the current global angle of the bone.
 	Angle g_angle_;
+	//!This is the current angle if the bone relative to parent.
+	Angle angle_;
 	//!This is the current local x scale of the bone.
 	Real scalelx_;
 	//!This is the current recursive x scale of the bone.
@@ -110,13 +112,13 @@ public:
 	const Point& get_origin()const {return origin_;}
 	void set_origin(const Point &x) {origin_=x;}
 
-    //!Wrappers for g_origin_
-    const Point& get_g_origin()const {return g_origin_;}
-    void set_g_origin(const Point &x) {g_origin_=x;}
+	//!Wrappers for g_origin_
+	const Point& get_g_origin()const {return g_origin_;}
+	void set_g_origin(const Point &x) {g_origin_=x;}
 
-    //!Wrappers for g_angle_
-    const Angle& get_g_angle()const {return g_angle_;}
-    void set_g_angle(const Angle &x) {g_angle_=x;}
+	//!Wrappers for g_angle_
+	const Angle& get_g_angle()const {return g_angle_;}
+	void set_g_angle(const Angle &x) {g_angle_=x;}
 
 	//!Wrappers for angle_
 	const Angle& get_angle()const {return angle_;}
@@ -148,15 +150,11 @@ public:
 
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalelx)
-	Point get_tip();
+	Point get_tip() const;
 
 	//!Wrapper for parent bone
-	// const Bone &get_parent() {return *parent_;}
 	const ValueNode_Bone* get_parent()const;
 	void set_parent(const ValueNode_Bone* parent);
-
-	void add_bone_to_map();
-	Bone* find_bone_in_map(int uid);
 
 	//!Animated Transformation matrix.
 	//!This matrix applied to a setup point in local
