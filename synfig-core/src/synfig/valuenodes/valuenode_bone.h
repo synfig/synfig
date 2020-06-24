@@ -41,11 +41,13 @@ class ValueNode_Bone : public LinkableValueNode
 {
 	ValueNode::RHandle name_;
 	ValueNode::RHandle origin_;
+	ValueNode::RHandle g_origin_;
 	ValueNode::RHandle angle_;
+	ValueNode::RHandle g_angle_;
 	ValueNode::RHandle scalelx_;
 	ValueNode::RHandle scalex_;
 	ValueNode::RHandle length_;
-	ValueNode::RHandle width_;
+        ValueNode::RHandle width_;
 	ValueNode::RHandle tipwidth_;
 	ValueNode::RHandle depth_;
 	ValueNode::RHandle parent_;
@@ -118,9 +120,6 @@ public:
 	static BoneSet get_possible_parent_bones(ValueNode::Handle value_node);
 
 	static ValueNode_Bone::Handle get_root_bone();
-
-	// used when the bone tree is cloned
-	static void fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode::Handle cloned_value_node, bool recursive, const std::map<const ValueNode*, ValueNode::Handle>& clone_map);
 
 #ifdef _DEBUG
 	virtual void ref()const;
