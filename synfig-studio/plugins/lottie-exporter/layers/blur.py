@@ -11,6 +11,17 @@ from common.Count import Count
 
 def blurriness(lottie,parameter,idx,direction):
 	"""
+	This function will be called for blur layer direction to create the blurriness
+	value dictionary
+
+	Args:
+		lottie    (dict)               : Lottie Dictionary for blurriness
+		parameter (common.Param.Param) : Synfig format param for blur size
+		idx       (int)                : Stores the index(number of) of blurriness
+		direction (string)             : Indicates the direction of blurring
+
+	Returns:
+		(None)
 	"""
 	lottie["ty"] =  0
 	lottie["nm"] = "Blurriness"
@@ -28,14 +39,14 @@ def blurriness(lottie,parameter,idx,direction):
 	else:
 		if is_animate == settings.NOT_ANIMATED:
 			if direction == "horizontal":
-				val = float(parameter[0][0].text) * 200
+				val = float(parameter[0][0].text) * 100
 			else:
-				val = float(parameter[0][1].text) * 200
+				val = float(parameter[0][1].text) * 100
 		else:
 			if direction == "horizontal":
-				val = float(parameter[0][0][0].text) * 200
+				val = float(parameter[0][0][0].text) * 100
 			else:
-				val = float(parameter[0][0][1].text) * 200
+				val = float(parameter[0][0][1].text) * 100
 		gen_properties_value(lottie["v"],
 							 val,
 							 1,
@@ -43,6 +54,17 @@ def blurriness(lottie,parameter,idx,direction):
 							 settings.NO_INFO)
 
 def generate_dimensions_dict(lottie,idx,direction):
+	"""
+	This function will be called for filling blur layer properties
+
+	Args:
+		lottie    (dict)               : Lottie Dictionary for blur layer properties
+		idx       (int)                : Stores the index(number of) of blur layer properties
+		direction (string)             : Indicates the direction of blurring
+
+	Returns:
+		(None)
+	"""
 	lottie["ty"] =  7
 	lottie["nm"] = "Blur Dimensions"
 	lottie["mn"] = "Gaussian Blur 2"
@@ -74,6 +96,16 @@ def generate_dimensions_dict(lottie,idx,direction):
 							 settings.NO_INFO)
 def fill_blur_dict(lottie, layer, idx,direction):
 	"""
+	This function will be called for each blur layer separately for the two directions
+
+	Args:
+		lottie    (dict)               : Lottie Dictionary for blur layers
+		layers    (common.Layer.Layer) : Synfig format layer
+		idx       (int)                : Stores the index(number of) of blur layer
+		direction (string)             : Indicates the direction of blurring
+
+	Returns:
+		(None)
 	"""
 	index = Count()
 	lottie["ty"] = settings.BLUR_TYPE
@@ -95,11 +127,23 @@ def fill_blur_dict(lottie, layer, idx,direction):
 	lottie["ef"].append(temp_directions)
 	lottie["ef"].append(temp_pixels)
 
-def gen_layer_blur(lottie, layer, idx):
+def gen_layer_blur(lottie, layers):
+	"""
+	This function will be called for each canvas/composition. Main function to
+	generate all the layers
+
+	Args:
+		lottie (dict) : Lottie Dictionary for blur layers
+		layers (List) : Dictionary of Synfig format layers
+
+	Returns:
+		(None)
+	"""
 	index = Count()
-	blur_dict_x = {}
-	fill_blur_dict(blur_dict_x,layer,index.inc(),"horizontal")
-	blur_dict_y = {}
-	fill_blur_dict(blur_dict_y,layer,index.inc(),"vertical")
-	lottie.append(blur_dict_x)
-	lottie.append(blur_dict_y)
+	for layer in layers:
+		blur_dict_x = {}
+		fill_blur_dict(blur_dict_x,layer,index.inc(),"horizontal")
+		blur_dict_y = {}
+		fill_blur_dict(blur_dict_y,layer,index.inc(),"vertical")
+		lottie.append(blur_dict_x)
+		lottie.append(blur_dict_y)

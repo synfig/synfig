@@ -78,8 +78,9 @@ BLUR_TYPE = 29
 ANIMATED = 2
 SINGLE_WAYPOINT = 1
 NOT_ANIMATED = 0
-image_ordering = None
-GROUP_FLAG = False
+GROUP_FLAG = False #indicates whether layer is in a group or not
+LEVEL = 0 #Indicates the depth of a layer
+
 def init():
     """
     Initialises the final dictionary corresponding to conversion and
@@ -110,8 +111,7 @@ def init():
     canvas_count = Count()
     global controller_count # counts the slider and point effects controller
     controller_count = Count()
-    global blur_ordering #used to order the blur layers
-    blur_ordering = {}
-    global group_blur_ordering #used to order the blur layers in a group
-    group_blur_ordering = {}
-    global image_ordering
+    global blur_dictionary #used to make a dictionary of blur layers
+    blur_dictionary = {}
+    global non_blur_dictionary #used to make a dictionary of all non blur layers
+    non_blur_dictionary = {}
