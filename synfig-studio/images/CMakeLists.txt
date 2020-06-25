@@ -227,7 +227,6 @@ set(ICONS
 set(IMAGES
     about_icon
     logo
-    splash_screen
     synfig_icon
     ${ICONS}
 )
@@ -262,6 +261,7 @@ foreach (IMAGE IN ITEMS ${IMAGES})
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.sif synfig_bin
     )
+
     list(APPEND PIXMAPS ${PIXMAPS_DIR}/${IMAGE}.png)
     install(
         FILES ${PIXMAPS_DIR}/${IMAGE}.png
@@ -269,7 +269,32 @@ foreach (IMAGE IN ITEMS ${IMAGES})
     )
 endforeach()
 
+# Synfig Splash Screen
+if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_BINARY_DIR}/splash_screen_development.sif)
+
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/splash_screen_development.sif.in
+        ${SYNFIG_SPLASH_SCREEN}
+        @ONLY
+    )
+elseif(${CMAKE_BUILD_TYPE} MATCHES Release)
+    set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_SOURCE_DIR}/splash_screen.sif)
+endif()
+
+add_custom_command(
+        OUTPUT ${PIXMAPS_DIR}/splash_screen.png
+        COMMAND synfig_bin ${SYNFIG_SPLASH_SCREEN} -o ${PIXMAPS_DIR}/splash_screen.png --time 0f --quiet
+        DEPENDS ${SYNFIG_SPLASH_SCREEN} synfig_bin
+)
+
+list(APPEND PIXMAPS ${PIXMAPS_DIR}/splash_screen.png)
+install(
+    FILES ${PIXMAPS_DIR}/splash_screen.png
+    DESTINATION share/pixmaps/synfigstudio
+)
+
 add_custom_target(
-        build_images
-        DEPENDS synfig_bin ${PIXMAPS}
+    build_images
+    DEPENDS synfig_bin ${PIXMAPS}
 )
