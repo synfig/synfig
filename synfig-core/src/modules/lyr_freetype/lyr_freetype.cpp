@@ -705,7 +705,7 @@ Layer_Freetype::get_param_vocab(void)const
 
 	ret.push_back(ParamDesc("use_kerning")
 		.set_local_name(_("Kerning"))
-		.set_description(_("When checked. enables font kerning (If the font supports it)"))
+		.set_description(_("When checked, enables font kerning (If the font supports it)"))
 	);
 
 	ret.push_back(ParamDesc("grid_fit")
