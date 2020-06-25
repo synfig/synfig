@@ -133,12 +133,12 @@ Twirl::get_param_vocab()const
 
 	ret.push_back(ParamDesc("distort_inside")
 		.set_local_name(_("Distort Inside"))
-		.set_description(_("When checked, distorts the inside the circle"))
+		.set_description(_("When checked, distorts inside the circle"))
 	);
 
 	ret.push_back(ParamDesc("distort_outside")
 		.set_local_name(_("Distort Outside"))
-		.set_description(_("When checked, distorts the outside the circle"))
+		.set_description(_("When checked, distorts outside the circle"))
 	);
 
 	return ret;
