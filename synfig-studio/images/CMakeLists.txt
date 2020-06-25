@@ -232,7 +232,7 @@ set(IMAGES
     ${ICONS}
 )
 
-set(PIXMAPS_DIR ${SYNFIG_BUILD_ROOT}/share/pixmaps/synfigstudio)
+set(PIXMAPS_DIR ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic)
 
 file(MAKE_DIRECTORY ${PIXMAPS_DIR})
 
@@ -265,7 +265,7 @@ foreach (IMAGE IN ITEMS ${IMAGES})
     list(APPEND PIXMAPS ${PIXMAPS_DIR}/${IMAGE}.png)
     install(
         FILES ${PIXMAPS_DIR}/${IMAGE}.png
-        DESTINATION share/pixmaps/synfigstudio
+        DESTINATION share/synfig/icons/classic
     )
 endforeach()
 
