@@ -572,7 +572,7 @@ Advanced_Outline::sync_vfunc()
 				aline.add(-2, i->second.w, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE);
 				aline.add(-1, i->second.w, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE);
 			}
-			if (i->second.side1 == WidthPoint::TYPE_INTERPOLATE) {
+			if (j->second.side1 == WidthPoint::TYPE_INTERPOLATE) {
 				aline.add(kl + 1, j->second.w, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_FLAT);
 				aline.add(kl + 2, j->second.w, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_FLAT);
 			}
