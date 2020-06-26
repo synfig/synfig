@@ -6,7 +6,6 @@ Will store the Parameters class for Synfig parameters
 import sys
 import copy
 import math
-import inspect
 from lxml import etree
 import settings
 import common
@@ -352,10 +351,12 @@ class Param:
                 return ret, self.expression_controllers
 
             elif self.param[0].tag == "radial_composite":   # only for vectors
-                dic = {"gen_layer_group", "gen_layer_rotate", "gen_layer_translate", "gen_layer_scale"}
                 prop_name = "angle"
-                if self.called_by(dic): # Should find some easier way of finding the caller function
+                sett = settings.GROUP_LAYER.copy()
+                sett.update(settings.PRE_COMP_LAYER)
+                if self.get_layer().get_type() in sett: # depending upon the layer type, we use the angle is positive/negative value
                     prop_name = "rotate_layer_angle"
+
                 self.subparams["radial_composite"].extract_subparams()
                 rad, eff_1 = self.subparams["radial_composite"].subparams["radius"].recur_animate("real")
                 ang, eff_2 = self.subparams["radial_composite"].subparams["theta"].recur_animate(prop_name)
@@ -471,6 +472,75 @@ class Param:
                 self.expression = ret_origin
                 return ret_origin, self.expression_controllers
 
+            elif self.param[0].tag == "sine":
+                self.subparams["sine"].extract_subparams()
+                angle, eff_1 = self.subparams["sine"].subparams["angle"].recur_animate("region_angle")
+                amp, eff_2 = self.subparams["sine"].subparams["amp"].recur_animate("real")
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                
+                if self.dimension == 2:
+                    ret = "mul(Math.sin(degreesToRadians({angle})), [{amp}, {amp}])"
+                else:
+                    ret = "mul(Math.sin(degreesToRadians({angle})),{amp})"
+                ret = ret.format(angle=angle,amp=amp)
+
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "cos":
+                self.subparams["cos"].extract_subparams()
+                angle, eff_1 = self.subparams["cos"].subparams["angle"].recur_animate("region_angle")
+                amp, eff_2 = self.subparams["cos"].subparams["amp"].recur_animate("real")
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                
+                if self.dimension == 2:
+                    ret = "mul(Math.cos(degreesToRadians({angle})), [{amp}, {amp}])"
+                else:
+                    ret = "mul(Math.cos(degreesToRadians({angle})),{amp})"
+                ret = ret.format(angle=angle,amp=amp)
+
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "fromint":
+                self.subparams["fromint"].extract_subparams()
+                if self.dimension == 2:
+                    link, eff_1 = self.subparams["fromint"].subparams["link"].recur_animate("scalar_multiply")
+                    self.expression_controllers.extend(eff_1)
+                    ret = "[mul(Math.round({link}), {PIX_PER_UNIT}), mul(Math.round({link}), {PIX_PER_UNIT})]"
+                    ret = ret.format(link=link, PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                else:
+                    link, eff_1 = self.subparams["fromint"].subparams["link"].recur_animate("scalar_multiply")
+                    self.expression_controllers.extend(eff_1)
+                    ret = "mul(Math.round({link}), {PIX_PER_UNIT})"
+                    ret = ret.format(link=link, PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "atan2":
+                self.subparams["atan2"].extract_subparams()
+                y, eff_1 = self.subparams["atan2"].subparams["y"].recur_animate(anim_type)
+                x, eff_2 = self.subparams["atan2"].subparams["x"].recur_animate(anim_type)
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                
+                ret = "sub(180,radiansToDegrees(Math.atan2({y}, {x})))"
+                ret = ret.format(y=y,x=x)
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "vectorangle":
+                self.subparams["vectorangle"].extract_subparams()
+                vector, eff_1 = self.subparams["vectorangle"].subparams["vector"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                ret = "radiansToDegrees(Math.atan2({y}[1], {x}[0]))"
+                ret = ret.format(y=vector,x=vector)
+
+                self.expression = ret
+                return ret, self.expression_controllers
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -492,35 +562,26 @@ class Param:
             self.expression = ret
             return ret, self.expression_controllers
 
-    def called_by(self, dic):
-        """
-        Checks if this function's ancestor are in this dictionary
-        """
-        for it in inspect.stack():
-            if it[3] in dic:
-                return True
-        return False
-
     def single_animate(self, anim_type):
         """
         For animating a single animation, convert methods will use this internal
         function
         """
         is_animate = common.misc.is_animated(self.param[0])
-        if is_animate == 2:
+        if is_animate == settings.ANIMATED:
             # If already animated, no need to add waypoints
             # Forcibly set it's animation type to the anim_type
             self.param[0].attrib["type"] = anim_type
             if anim_type == "bool":
                 modify_bool_animation(self.param[0])
             return
-        elif is_animate == 0:
+        elif is_animate == settings.NOT_ANIMATED:
             st = '<animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated>'
             st = st.format(anim_type=anim_type)
             root = etree.fromstring(st)
             root[0].append(copy.deepcopy(self.param[0]))
             self.param[0] = root
-        elif is_animate == 1:
+        elif is_animate == settings.SINGLE_WAYPOINT:
             self.param[0].attrib["type"] = anim_type
             self.param[0][0].attrib["before"] = self.param[0][0].attrib["after"] = "constant"
 
@@ -672,7 +733,7 @@ class Param:
                 if isinstance(ret, list):
                     ret[0], ret[1] = ret[0] / len(lst), ret[1] / len(lst)
                 else:
-                    ret /= len(lst)
+                    ret /= float(len(lst))
 
             elif self.param[0].tag == "weighted_average":
                 self.subparams["weighted_average"].extract_subparams()
@@ -695,7 +756,7 @@ class Param:
                 if isinstance(ret, list):
                     ret[0], ret[1] = ret[0] / den, ret[1] / den
                 else:
-                    ret /= den
+                    ret /= float(den)
 
             elif self.param[0].tag == "composite":  # Only available for vectors
                 x = self.subparams["composite"].subparams["x"].__get_value(frame)
@@ -770,6 +831,50 @@ class Param:
 
                 ret = [ret[0], ret[1]]
 
+            elif self.param[0].tag == "sine":
+                angle = self.subparams["sine"].subparams["angle"].__get_value(frame)
+                amp = self.subparams["sine"].subparams["amp"].__get_value(frame)
+                angle = math.radians(angle)
+                
+                if isinstance(amp, list):
+                    ret = [0, 0]
+
+                    ret[0] = math.sin(angle) * amp[0]
+                    ret[1] = math.sin(angle) * amp[1]
+                else:
+                    ret = math.sin(angle)*amp
+
+            elif self.param[0].tag == "cos":
+                angle = self.subparams["cos"].subparams["angle"].__get_value(frame)
+                amp = self.subparams["cos"].subparams["amp"].__get_value(frame)
+                angle = math.radians(angle)
+                if isinstance(amp, list):
+                    ret = [0, 0]
+                    ret[0] = math.cos(angle) * amp[0]
+                    ret[1] = math.cos(angle) * amp[1]
+                else:
+                    ret = math.cos(angle)*amp
+
+            elif self.param[0].tag == "fromint":
+                link = self.subparams["fromint"].subparams["link"].__get_value(frame)
+                if isinstance(link, list):
+                    ret = [0, 0]
+                    ret[0] = round(link[0])*settings.PIX_PER_UNIT
+                    ret[1] = round(link[1])*settings.PIX_PER_UNIT
+                else:
+                    ret = round(link)*settings.PIX_PER_UNIT
+
+            elif self.param[0].tag == "atan2":
+                y = self.subparams["atan2"].subparams["y"].__get_value(frame)
+                x = self.subparams["atan2"].subparams["x"].__get_value(frame)
+                rad = math.pi/180
+                ret = math.atan2(y,x)/rad
+
+            elif self.param[0].tag == "vectorangle":
+                vector = self.subparams["vectorangle"].subparams["vector"].__get_value(frame)
+                rad = math.pi/180
+                ret = math.atan2(vector[1],vector[0])/rad
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -812,6 +917,19 @@ class Param:
         second = etree.fromstring(st)
         root[1].append(second)
 
+        self.param[0].getparent().remove(self.param[0])
+        self.param.append(root)
+        self.SUBPARAMS_EXTRACTED = 0
+
+    def scale_convert_link(self, val):
+        """
+        Private method for inserting <scale></scale>, given the multiplication value
+        """
+        st = "<scale type='real'><link></link><scalar><real value='1.00'/></scalar></scale>"
+        root = etree.fromstring(st)
+        first = copy.deepcopy(self.param[0])
+        root[0].append(first)
+        root[1][0].attrib["value"] = str(val)
         self.param[0].getparent().remove(self.param[0])
         self.param.append(root)
         self.SUBPARAMS_EXTRACTED = 0
@@ -899,7 +1017,30 @@ class Param:
                 bone.update_frame_window(window)
                 self.subparams["bone_link"].subparams["base_value"].update_frame_window(window)
 
-        if is_animated(node) == 2:
+            elif node.tag == "sine":
+                self.subparams["sine"].extract_subparams()
+                self.subparams["sine"].subparams["angle"].update_frame_window(window)
+                self.subparams["sine"].subparams["amp"].update_frame_window(window)
+
+            elif node.tag == "cos":
+                self.subparams["cos"].extract_subparams()
+                self.subparams["cos"].subparams["angle"].update_frame_window(window)
+                self.subparams["cos"].subparams["amp"].update_frame_window(window)
+
+            elif node.tag == "fromint":
+                self.subparams["fromint"].extract_subparams()
+                self.subparams["fromint"].subparams["link"].update_frame_window(window)
+
+            elif node.tag == "atan2":
+                self.subparams["atan2"].extract_subparams()
+                self.subparams["atan2"].subparams["y"].update_frame_window(window)
+                self.subparams["atan2"].subparams["x"].update_frame_window(window)
+
+            elif node.tag == "vectorangle":
+                self.subparams["vectorangle"].extract_subparams()
+                self.subparams["vectorangle"].subparams["vector"].update_frame_window(window)
+
+        if is_animated(node) == settings.ANIMATED:
             for waypoint in node:
                 fr = common.misc.get_frame(waypoint)
                 if fr > window["last"]:

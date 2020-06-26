@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-02-19 12:46+0000\n"
+"PO-Revision-Date: 2020-03-13 16:42+0000\n"
 "Last-Translator: Firas Hanife <FirasHanife@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/morevnaproject/synfig/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -4707,7 +4707,7 @@ msgstr "Livello Importa Immagine"
 #: ../src/synfigapp/actions/layerencapsulate.cpp:54
 #: ../src/synfigapp/actions/layerencapsulate.cpp:75
 msgid "Group Layer"
-msgstr "Livello Gruppo"
+msgstr "Raggruppa Livello"
 
 #: ../src/gui/iconcontroller.cpp:231
 msgid "Plant Layer"

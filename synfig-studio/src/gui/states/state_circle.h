@@ -45,6 +45,7 @@ class StateCircle : public Smach::state<StateCircle_Context>
 public:
 	StateCircle();
 	~StateCircle();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateCircle
 
 extern StateCircle state_circle;

@@ -45,6 +45,7 @@ class StateFill : public Smach::state<StateFill_Context>
 public:
 	StateFill();
 	~StateFill();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateFill
 
 extern StateFill state_fill;

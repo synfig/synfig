@@ -4,7 +4,7 @@ PLUGIN_NAME = view-unhide-all-layers
 
 EXTRA_FILES = 
 
-plugindir = ${datadir}/synfig/plugins/$(PLUGIN_NAME)
+plugindir = $(synfig_datadir)/plugins/$(PLUGIN_NAME)
 plugin_DATA = \
 	$(PLUGIN_NAME).py \
 	plugin.xml \

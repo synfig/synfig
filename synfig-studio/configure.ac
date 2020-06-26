@@ -23,13 +23,10 @@ AC_SUBST(LIBTOOL_DEPS)
 API_VERSION=1.0
 
 imageext=png
-imagedir="${datadir}/pixmaps/synfigstudio"
-plugindir="${datadir}/synfig/plugins"
-sounddir="${datadir}/synfig/sounds"
-uidir="${datadir}/synfig/ui"
+synfig_datadir="${datadir}/synfig"
 
 GETTEXT_PACKAGE=synfigstudio
-LOCALEDIR=[${prefix}/${DATADIRNAME}/locale]
+LOCALEDIR=[${datadir}/locale]
 
 # -- P R O G R A M S ------------------------------------------
 
@@ -164,9 +161,7 @@ AC_SUBST(API_VERSION)
 
 AC_SUBST(imageext)
 AC_SUBST(imagedir)
-AC_SUBST(plugindir)
-AC_SUBST(sounddir)
-AC_SUBST(uidir)
+AC_SUBST(synfig_datadir)
 
 AC_PATH_PROG(UPDATE_MIME_DATABASE, update-mime-database, no)
 AC_ARG_ENABLE(update-mimedb,
@@ -197,8 +192,7 @@ AC_CONFIG_FILES([
     src/Makefile
     src/gui/Makefile
     src/synfigapp/Makefile
-    src/test/Makefile
-    src/test/visualization/Makefile
+    src/player/Makefile
     images/Makefile
     pkg-info/macosx/synfig-studio.info
     plugins/Makefile

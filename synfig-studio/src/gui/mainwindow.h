@@ -33,6 +33,7 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/toggleaction.h>
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -63,6 +64,7 @@ namespace studio {
 		void on_dockable_registered(Dockable* dockable);
 		void on_dockable_unregistered(Dockable* dockable);
 		void toggle_show_menubar();
+		void toggle_show_toolbar();
 
 		guint save_workspace_merge_id;
 		guint custom_workspaces_merge_id;

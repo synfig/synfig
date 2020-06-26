@@ -129,7 +129,7 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 		}
 	}
 
-	if (bone and !bone->is_root())
+	if (bone && !bone->is_root())
 	{
 		bones.push_back(ValueNode_Bone::get_root_bone());
 		append(_("<None>"));

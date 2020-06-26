@@ -407,7 +407,7 @@ Julia::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("smooth_outside")
 		.set_local_name(_("Smooth Outside"))
-		.set_description(_("Smooth the coloration outside the set"))
+		.set_description(_("When checked, smoothes the coloration outside the set"))
 	);
 	ret.push_back(ParamDesc("broken")
 		.set_local_name(_("Break Set"))

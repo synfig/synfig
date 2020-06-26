@@ -36,7 +36,6 @@ check_PROGRAMS = \
 	surface \
 	smart_ptr \
 	benchmark \
-	smach \
 	spline
 
 benchmark_SOURCES=benchmark.cpp
@@ -46,7 +45,6 @@ pen_SOURCES=pen.cpp
 handle_SOURCES=handle.cpp
 angle_SOURCES=angle.cpp
 fixed_SOURCES=fixed.cpp
-smach_SOURCES=smach.cpp
 clock_SOURCES=clock.cpp
 hermite_SOURCES=hermite.cpp
 spline_SOURCES=spline.cpp

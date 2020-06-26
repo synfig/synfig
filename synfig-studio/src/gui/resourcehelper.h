@@ -34,6 +34,17 @@ public:
 	static synfig::String get_image_path();
 	static synfig::String get_image_path(const synfig::String& image_filename);
 
+	static synfig::String get_synfig_data_path();
+
+	static synfig::String get_icon_path();
+	static synfig::String get_icon_path(const synfig::String& icon_filename);
+
+	static synfig::String get_plugin_path();
+	static synfig::String get_plugin_path(const synfig::String& plugin_filename);
+
+	static synfig::String get_sound_path();
+	static synfig::String get_sound_path(const synfig::String& sound_filename);
+
 	static synfig::String get_ui_path();
 	static synfig::String get_ui_path(const synfig::String& ui_filename);
 };

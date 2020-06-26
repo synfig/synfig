@@ -44,6 +44,7 @@ class StateMirror : public Smach::state<StateMirror_Context>
 public:
 	StateMirror();
 	~StateMirror();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateMirror
 
 extern StateMirror state_mirror;

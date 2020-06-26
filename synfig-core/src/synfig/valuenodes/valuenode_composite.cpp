@@ -149,18 +149,14 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		set_link("scale",ValueNode_Const::create(transformation.scale));
 	}
 	else
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (types_namespace::TypeWeightedValueBase *t =dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type))
 	{
-		types_namespace::TypeWeightedValueBase *t =
-			dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type);
 		set_link("weight",ValueNode_Const::create(t->extract_weight(value)));
 		set_link("value",ValueNode_Const::create(t->extract_value(value)));
 	}
 	else
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (types_namespace::TypePairBase *t =dynamic_cast<types_namespace::TypePairBase*>(&type))
 	{
-		types_namespace::TypePairBase *t =
-			dynamic_cast<types_namespace::TypePairBase*>(&type);
 		set_link("first",ValueNode_Const::create(t->extract_first(value)));
 		set_link("second",ValueNode_Const::create(t->extract_second(value)));
 	}
@@ -284,18 +280,14 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		return ret;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (types_namespace::TypeWeightedValueBase *tp = dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type))
 	{
-		types_namespace::TypeWeightedValueBase *tp =
-			dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type);
 		assert(components[0] && components[1]);
 		return tp->create_weighted_value((*components[0])(t).get(Real()), (*components[1])(t));
 	}
 	else
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (types_namespace::TypePairBase *tp =dynamic_cast<types_namespace::TypePairBase*>(&type))
 	{
-		types_namespace::TypePairBase *tp =
-			dynamic_cast<types_namespace::TypePairBase*>(&type);
 		assert(components[0] && components[1]);
 		return tp->create_value((*components[0])(t), (*components[1])(t));
 	}
@@ -420,10 +412,8 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 		}
 	}
 	else
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (types_namespace::TypeWeightedValueBase *tp = dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type))
 	{
-		types_namespace::TypeWeightedValueBase *tp =
-			dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type);
 		if( PlaceholderValueNode::Handle::cast_dynamic(x)
 		 || (i == 0 && x->get_type()==ValueBase(Real()).get_type())
 		 || (i == 1 && x->get_type()==tp->get_contained_type())
@@ -433,10 +423,8 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 		}
 	}
 	else
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (types_namespace::TypePairBase *tp = dynamic_cast<types_namespace::TypePairBase*>(&type))
 	{
-		types_namespace::TypePairBase *tp =
-			dynamic_cast<types_namespace::TypePairBase*>(&type);
 		if( PlaceholderValueNode::Handle::cast_dynamic(x)
 		 || (i == 0 && x->get_type()==tp->get_first_type())
 		 || (i == 1 && x->get_type()==tp->get_second_type())
@@ -576,7 +564,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 3;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != nullptr)
 	{
 		if(name=="weight")
 			return 0;
@@ -584,7 +572,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 1;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != nullptr)
 	{
 		if(name=="first")
 			return 0;
@@ -607,8 +595,8 @@ ValueNode_Composite::check_type(Type &type)
 		|| type==type_width_point
 		|| type==type_dash_item
 		|| type==type_transformation
-		|| dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL
-		|| dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL;
+		|| dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != nullptr
+		|| dynamic_cast<types_namespace::TypePairBase*>(&type) != nullptr;
 }
 
 LinkableValueNode::Vocab
@@ -763,12 +751,10 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"offset")
 			.set_local_name(_("Offset"))
 			.set_description(_("The offset length of the Dash Item over the Spline"))
-			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"length")
 			.set_local_name(_("Length"))
 			.set_description(_("The length of the Dash Item"))
-			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"side_before")
 			.set_local_name(_("Side Type Before"))
@@ -816,7 +802,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		return ret;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != NULL)
+	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != nullptr)
 	{
 		ret.push_back(ParamDesc(ValueBase(),"weight")
 			.set_local_name(_("Weight"))
@@ -829,7 +815,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		return ret;
 	}
 	else
-	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != NULL)
+	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != nullptr)
 	{
 		ret.push_back(ParamDesc(ValueBase(),"first")
 			.set_local_name(_("First"))

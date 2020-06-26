@@ -40,6 +40,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -228,7 +230,7 @@ Widget_Gradient::popup_menu(float x)
 		menu->append(*item);
 	}
 
-	menu->popup(0,0);
+	menu->popup(0, gtk_get_current_event_time());
 }
 
 void
@@ -263,6 +265,7 @@ Widget_Gradient::update_cpoint(const synfig::Gradient::CPoint &x)
 bool
 Widget_Gradient::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	//if(editable_)
 	{
 		const int x(static_cast<int>(event->button.x));
@@ -350,4 +353,5 @@ Widget_Gradient::on_event(GdkEvent *event)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }

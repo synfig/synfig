@@ -32,16 +32,10 @@
 
 #include "guid.h"
 #include "quick_rng.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <ETL/stringf>
 #include <functional>
 
-#ifdef _DEBUG
-#include <synfig/localization.h>
-#endif
+#include <cstring>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -51,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -190,6 +183,12 @@ String
 synfig::GUID::get_string()const
 {
 	return strprintf("%08X%08X%08X%08X",data.u_32.a,data.u_32.b,data.u_32.c,data.u_32.d);
+}
+
+synfig::GUID::GUID(int i)
+{
+	assert(!i);
+	memset(&data, 0, sizeof (data));
 }
 
 synfig::GUID::GUID(const String &str)

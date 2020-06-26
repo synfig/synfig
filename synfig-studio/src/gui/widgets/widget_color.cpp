@@ -42,6 +42,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -158,6 +160,7 @@ Widget_Color::get_value() const
 bool
 Widget_Color::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type)
 	{
 	case GDK_BUTTON_PRESS:
@@ -182,6 +185,7 @@ Widget_Color::on_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

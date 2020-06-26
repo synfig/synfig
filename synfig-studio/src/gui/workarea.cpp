@@ -34,8 +34,6 @@
 #	include <config.h>
 #endif
 
-#include <cmath>
-
 #include <gtkmm/arrow.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/scrollbar.h>
@@ -46,15 +44,7 @@
 #include <synfig/general.h>
 
 #include <synfig/blinepoint.h>
-#include <synfig/context.h>
-#include <synfig/distance.h>
-#include <synfig/debug/debugsurface.h>
 #include <synfig/rendering/renderer.h>
-#include <synfig/surface.h>
-#include <synfig/target_scanline.h>
-#include <synfig/target_tile.h>
-#include <synfig/target_cairo.h>
-#include <synfig/target_cairo_tile.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
 #include <synfigapp/canvasinterface.h>
@@ -66,7 +56,6 @@
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "event_keyboard.h"
-#include "widgets/widget_color.h"
 #include "workarea.h"
 #include "workarearenderer/workarearenderer.h"
 #include "workarearenderer/renderer_background.h"
@@ -79,6 +68,7 @@
 #include "workarearenderer/renderer_dragbox.h"
 #include "workarearenderer/renderer_bbox.h"
 
+#include <gui/exception_guard.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -131,7 +121,7 @@ WorkArea::DirtyTrap::~DirtyTrap()
 
 
 WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
-	Gtk::Table(3, 3, false), /* 3 columns by 3 rows*/
+	Gtk::Grid(), /* 3 columns by 3 rows*/
 	Duckmatic(canvas_interface),
 	canvas_interface(canvas_interface),
 	canvas(canvas_interface->get_canvas()),
@@ -167,7 +157,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	dirty_trap_count(0),
 	dirty_trap_queued(0),
 	onion_skin(false),
-	background_rendering(true),
+	background_rendering(false),
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
 	allow_layer_clicks(true),
@@ -209,11 +199,12 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 							| Gdk::BUTTON_PRESS_MASK   | Gdk::BUTTON_RELEASE_MASK
 		                    | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::BUTTON3_MOTION_MASK
 							| Gdk::POINTER_MOTION_MASK | Gdk::SCROLL_MASK         );
+	drawing_area->set_hexpand(true);
+	drawing_area->set_vexpand(true);
 	drawing_area->show();
 	drawing_frame=manage(new Gtk::Frame);
 	drawing_frame->add(*drawing_area);
 	drawing_frame->show();
-	attach(*drawing_frame, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	// Create the vertical and horizontal rulers
 
@@ -222,14 +213,14 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	hruler->add_events( Gdk::BUTTON_PRESS_MASK   | Gdk::BUTTON_RELEASE_MASK
 		              | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::POINTER_MOTION_MASK );
 	hruler->show();
-	attach(*hruler, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	hruler->set_hexpand(true);
 
 	vruler = manage(new Widget_Ruler(true));
 	vruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_vruler_event));
 	vruler->add_events( Gdk::BUTTON_PRESS_MASK   | Gdk::BUTTON_RELEASE_MASK
 		              | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::POINTER_MOTION_MASK );
 	vruler->show();
-	attach(*vruler, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	vruler->set_vexpand(true);
 
 	// Create the menu button
 
@@ -242,20 +233,22 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 		sigc::bind_return(
 			sigc::hide(
 				sigc::mem_fun(*this, &WorkArea::popup_menu) ), true));
+	menubutton_box->set_hexpand(false);
 	menubutton_box->show_all();
-	attach(*menubutton_box, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
 	// Create scrollbars
 
-	Gtk::VScrollbar *vscrollbar1 = manage(new class Gtk::VScrollbar(get_scrolly_adjustment()));
+	Gtk::Scrollbar *vscrollbar1 = manage(new Gtk::Scrollbar(get_scrolly_adjustment()));
+	vscrollbar1->set_orientation(Gtk::ORIENTATION_VERTICAL);
 	vscrollbar1->show();
-	attach(*vscrollbar1, 2, 3, 1, 2, Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	vscrollbar1->set_vexpand(true);
 
-	Gtk::HScrollbar *hscrollbar1 = manage(new class Gtk::HScrollbar(get_scrollx_adjustment()));
+	Gtk::Scrollbar *hscrollbar1 = manage(new Gtk::Scrollbar(get_scrollx_adjustment()));
+	hscrollbar1->set_hexpand(true);
 	hscrollbar1->show();
 
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
-	zoomdial = manage(new class ZoomDial(iconsize));
+	zoomdial = manage(new ZoomDial(iconsize));
 	zoomdial->signal_zoom_in().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_in));
 	zoomdial->signal_zoom_out().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_out));
 	zoomdial->signal_zoom_fit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_fit));
@@ -263,11 +256,23 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	zoomdial->signal_zoom_edit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_edit));
 	zoomdial->show();
 
-	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
+	Gtk::Box *hbox = manage(new Gtk::Box());
+	hbox->set_orientation(Gtk::ORIENTATION_HORIZONTAL);
 	hbox->pack_end(*hscrollbar1, Gtk::PACK_EXPAND_WIDGET,0);
 	hbox->pack_start(*zoomdial, Gtk::PACK_SHRINK,0);
 	hbox->show();
-	attach(*hbox, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	hbox->set_hexpand(true);
+
+	// Layout
+	attach(*menubutton_box, 0, 0, 1, 1);
+	attach_next_to(*hruler, *menubutton_box, Gtk::POS_RIGHT, 1, 1);
+
+	attach_next_to(*vruler, *menubutton_box, Gtk::POS_BOTTOM, 1, 1);
+	attach_next_to(*drawing_frame, *vruler, Gtk::POS_RIGHT, 1, 1);
+	attach_next_to(*vscrollbar1, *drawing_frame, Gtk::POS_RIGHT, 1, 1);
+
+	attach_next_to(*hbox, *vruler, Gtk::POS_BOTTOM, 2, 1);
+
 
 	// Attach signals
 
@@ -880,7 +885,7 @@ WorkArea::set_background_size(const synfig::Vector &s)
 {
 	if (background_size == s) return;
 	background_size = s;
-	background_pattern.clear();
+	background_pattern = Cairo::RefPtr<Cairo::SurfacePattern>();
 	save_meta_data();
 	queue_draw();
 }
@@ -890,7 +895,7 @@ WorkArea::set_background_first_color(const synfig::Color &c)
 {
 	if (background_first_color == c) return;
 	background_first_color = c;
-	background_pattern.clear();
+	background_pattern = Cairo::RefPtr<Cairo::SurfacePattern>();;
 	save_meta_data();
 	queue_draw();
 }
@@ -900,7 +905,7 @@ WorkArea::set_background_second_color(const synfig::Color &c)
 {
 	if (background_second_color == c) return;
 	background_second_color = c;
-	background_pattern.clear();
+	background_pattern = Cairo::RefPtr<Cairo::SurfacePattern>();
 	save_meta_data();
 	queue_draw();
 }
@@ -953,6 +958,7 @@ WorkArea::get_focus_point()const
 bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (Smach::RESULT_OK == canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state))))
 			return true;
@@ -1003,18 +1009,22 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	set_guide_snap(guide_snap_holder);
 
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	return Smach::RESULT_OK == canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 WorkArea::on_drawing_area_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	synfig::Point mouse_pos;
     float bezier_click_pos(0);
 	const float radius((abs(pw)+abs(ph))*4);
@@ -1552,7 +1562,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				if(canvas_view->get_smach().process_event(EventBox(drag_point,mouse_pos,MouseButton(event->button.button),modifier))==Smach::RESULT_ACCEPT)
 					return true;
-
                 /*
                  * Commented out because now the work is
                  * done in Renderer_Dragbox::event_vfunc
@@ -1713,11 +1722,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 WorkArea::on_hruler_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
@@ -1733,8 +1744,8 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			// coordinate system from the canvas.
 			event->motion.y -= hruler->get_height()+2;
 
-			// call the on drawing area event to refresh eveything.
-			on_drawing_area_event(event);
+			// call the on drawing area event to refresh everything.
+			return on_drawing_area_event(event);
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
@@ -1748,11 +1759,13 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 WorkArea::on_vruler_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
@@ -1768,8 +1781,8 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			// coordinate system from the canvas.
 			event->motion.x -= vruler->get_width()+2;
 
-			// call the on drawing area event to refresh eveything.
-			on_drawing_area_event(event);
+			// call the on drawing area event to refresh everything.
+			return on_drawing_area_event(event);
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
@@ -1783,6 +1796,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

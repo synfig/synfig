@@ -289,7 +289,7 @@ Outline::get_param_vocab()const
 
 	ret.push_back(ParamDesc("sharp_cusps")
 		.set_local_name(_("Sharp Cusps"))
-		.set_description(_("Determines cusp type"))
+		.set_description(_("Determines cusps type"))
 	);
 
 	ret.push_back(ParamDesc("round_tip[0]")
@@ -303,7 +303,7 @@ Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("homogeneous_width")
 		.set_local_name(_("Homogeneous"))
-		.set_description(_("When checked the width takes the length of the spline to interpolate"))
+		.set_description(_("When checked, the width takes the length of the spline to interpolate"))
 	);
 
 	return ret;

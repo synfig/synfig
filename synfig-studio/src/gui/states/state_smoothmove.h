@@ -45,6 +45,7 @@ class StateSmoothMove : public Smach::state<StateSmoothMove_Context>
 public:
 	StateSmoothMove();
 	~StateSmoothMove();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateSmoothMove
 
 extern StateSmoothMove state_smooth_move;

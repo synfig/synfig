@@ -81,8 +81,8 @@ using namespace studio;
 	name->set_size_request(px)
 #endif
 
-#define GAP	(3)
-#define INDENTATION (6)
+const int GAP = 3;
+const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -227,6 +227,11 @@ StateText::StateText():
 
 StateText::~StateText()
 {
+}
+
+void* StateText::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateText_Context(machine_context);
 }
 
 void
@@ -387,7 +392,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	/* Set up the tool options dialog */
 
 	// 0, title
-	title_label.set_label(_("Text Creation"));
+	title_label.set_label(_("Text Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);

@@ -174,7 +174,7 @@ Layer_Shape::get_param_vocab()const
 
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
-		.set_description(_("Layer_Shape Color"))
+		.set_description(_("Layer Color"))
 	);
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))

@@ -15,7 +15,7 @@
 
 get_git_id(){
 	export SCM=git
-	export REVISION_ID=`cd "$1"; git log --no-color -1 | head -n 1 | cut -f 2 -d ' ' | cut -c -6`
+	export REVISION_ID=`cd "$1"; git log --no-color -1 | head -n 1 | cut -f 2 -d ' ' | cut -c -7`
 	export BRANCH="`cd "$1"; git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`"
 	if ( echo $BRANCH | egrep origin/master > /dev/null ); then
 		#give a priority to master branch

@@ -58,8 +58,10 @@
 #include <gui/helpers.h>
 
 #include <gui/localization.h>
-#include <cairomm-1.0/cairomm/context.h>
-#include <cairomm-1.0/cairomm/enums.h>
+#include <cairomm/context.h>
+#include <cairomm/enums.h>
+
+#include <gui/exception_guard.h>
 
 #endif
 
@@ -1029,6 +1031,7 @@ void studio::Widget_Preview::seek_frame(int frames)
 
 bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type)
 	{
 		case GDK_BUTTON_PRESS:
@@ -1044,6 +1047,7 @@ bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 synfig::Time studio::Widget_Preview::get_position() const
@@ -1150,6 +1154,7 @@ void Widget_Preview::show_toolbar()
 //shortcut keys TODO: customizable shortcut keys would be awesome.
 bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	//hide and show toolbar
 	if (ev->keyval == gdk_keyval_from_name("h"))
 	{
@@ -1240,6 +1245,7 @@ bool studio::Widget_Preview::on_key_pressed(GdkEventKey *ev)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

@@ -50,7 +50,7 @@ public:
 
 	Target_Multi(Target_Scanline::Handle a,Target_Scanline::Handle b);
 	virtual ~Target_Multi();
-	virtual bool add_frame(const synfig::Surface *surface);
+	virtual bool add_frame(const synfig::Surface *surface, ProgressCallback *cb);
 	virtual bool start_frame(ProgressCallback *cb=NULL);
 	virtual void end_frame();
 	virtual Color * start_scanline(int scanline);

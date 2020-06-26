@@ -44,6 +44,7 @@ class StateSketch : public Smach::state<StateSketch_Context>
 public:
 	StateSketch();
 	~StateSketch();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateSketch
 
 extern StateSketch state_sketch;

@@ -105,6 +105,11 @@ StateFill::~StateFill()
 {
 }
 
+void* StateFill::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateFill_Context(machine_context);
+}
+
 StateFill_Context::StateFill_Context(CanvasView *canvasView):
 	canvas_view(canvasView),
 	is_working(*canvasView),

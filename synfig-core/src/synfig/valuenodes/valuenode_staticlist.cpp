@@ -410,11 +410,31 @@ ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 	ValueNode_StaticList* ret=dynamic_cast<ValueNode_StaticList*>(create_new());
 	ret->set_guid(get_guid()^deriv_guid);
 
+	puts(get_contained_type().description.name.c_str());
+
+	std::map<const ValueNode*, ValueNode::Handle> clone_map;
+	bool is_actually_tree = get_contained_type() == type_bone_object;
+
 	for(std::vector<ReplaceableListEntry>::const_iterator iter=list.begin();iter!=list.end();++iter)
 		if((*iter)->is_exported())
 			ret->add(*iter);
-		else
-			ret->add((*iter)->clone(canvas, deriv_guid));
+		else {
+			ValueNode::Handle item_clone = (*iter)->clone(canvas, deriv_guid);
+			ret->add(item_clone);
+			if (is_actually_tree)
+				clone_map[iter->get()] = item_clone;
+		}
+
+	if (is_actually_tree) {
+		// fix referencing to old items (eg. bone parenting)
+		for (std::vector<ReplaceableListEntry>::const_iterator iter=list.begin(), ret_iter=ret->list.begin(); iter!=list.end();++iter, ++ret_iter) {
+			if ((*iter)->is_exported())
+				continue;
+			if ((*iter)->get_type() == type_bone_object)
+				ValueNode_Bone::fix_bones_referenced_by(*iter, *ret_iter, false, clone_map);
+		}
+	}
+
 	ret->set_loop(get_loop());
 	ret->set_parent_canvas(canvas);
 

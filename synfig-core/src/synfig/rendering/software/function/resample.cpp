@@ -345,14 +345,18 @@ namespace {
 
 				int dest_pitch = dest.get_pitch()/sizeof(Color);
 
-				MapPixelFull full_cols[sw], *full_cols_begin = full_cols, *full_cols_end = full_cols_begin;
-				MapPixelPart part_cols[sw], *part_cols_begin = part_cols, *part_cols_end = part_cols_begin;
+				std::vector<MapPixelFull> full_cols(sw);
+				std::vector<MapPixelPart> part_cols(sw);
+				MapPixelFull *full_cols_begin = full_cols.data(), *full_cols_end = full_cols_begin;
+				MapPixelPart *part_cols_begin = part_cols.data(), *part_cols_end = part_cols_begin;
 				build_downscale_pattern( full_cols_end, part_cols_end,
 										src_bounds.minx, src_bounds.maxx, 1,
 										dest_bounds.minx, dest_bounds.maxx, 1 );
 
-				MapPixelFull full_rows[sh], *full_rows_begin = full_rows, *full_rows_end = full_rows_begin;
-				MapPixelPart part_rows[sh], *part_rows_begin = part_rows, *part_rows_end = part_rows_begin;
+				std::vector<MapPixelFull> full_rows(sh);
+				std::vector<MapPixelPart> part_rows(sh);
+				MapPixelFull *full_rows_begin = full_rows.data(), *full_rows_end = full_rows_begin;
+				MapPixelPart *part_rows_begin = part_rows.data(), *part_rows_end = part_rows_begin;
 				build_downscale_pattern( full_rows_end, part_rows_end,
 										src_bounds.miny, src_bounds.maxy, 1,
 										dest_bounds.miny, dest_bounds.maxy, dest_pitch );

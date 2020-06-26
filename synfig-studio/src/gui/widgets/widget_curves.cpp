@@ -59,6 +59,7 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -510,7 +511,7 @@ Widget_Curves::Widget_Curves()
 	channel_point_sd.signal_drag_canceled().connect([&]() {
 		overlapped_waypoints.clear();
 	});
-	channel_point_sd.signal_drag_finished().connect([&]() {
+	channel_point_sd.signal_drag_finished().connect([&](bool /*started_by_keys*/) {
 //		overlapped_waypoints.clear();
 	});
 	channel_point_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
@@ -594,11 +595,14 @@ Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_in
 bool
 Widget_Curves::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (channel_point_sd.process_event(event))
 		return true;
 
 	switch (event->type) {
 	case GDK_KEY_PRESS:
+		if (channel_point_sd.get_state() == channel_point_sd.POINTER_DRAGGING)
+			return true;
 		switch (event->key.keyval) {
 		case GDK_KEY_Delete:
 			delete_selected();
@@ -606,6 +610,7 @@ Widget_Curves::on_event(GdkEvent *event)
 		default:
 			break;
 		}
+		break;
 	case GDK_2BUTTON_PRESS:
 		if (event->button.button == 1) {
 			add_waypoint_to(event->button.x, event->button.y);
@@ -616,6 +621,7 @@ Widget_Curves::on_event(GdkEvent *event)
 	}
 
 	return Widget_TimeGraphBase::on_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
@@ -775,7 +781,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			cr->push_group();
 		}
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *_data) -> bool
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			int px = time_plot_data->get_pixel_t_coord(t);
 			Gdk::Rectangle area(
@@ -791,7 +797,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
 
 				bool selected = channel_point_sd.is_selected(ChannelPoint(curve_it, tp, c));
-				WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover);
+				WaypointRenderer::render_time_point_to_window(cr, area, tp, selected, hover, !is_draggable);
 			}
 			return false;
 		});
@@ -821,14 +827,14 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	// Draw info about hovered item
 	if (channel_point_sd.get_hovered_item().is_valid() || channel_point_sd.get_state() == channel_point_sd.POINTER_DRAGGING) {
 		const ChannelPoint* inspected_item = &channel_point_sd.get_hovered_item();
-		if (!inspected_item->is_valid())
+		if (!inspected_item->is_valid() || channel_point_sd.get_state() == channel_point_sd.POINTER_DRAGGING)
 			inspected_item = channel_point_sd.get_active_item();
 
 		float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 
 		char buf[512];
 		if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING) {
-			snprintf(buf, 511, "%s:<b>%s</b>\n<b>Time:</b> %lfs (%if)\n<b>Value:</b> %lf",
+			snprintf(buf, 511, _("%s:<b>%s</b>\n<b>Time:</b> %lfs (%if)\n<b>Value:</b> %lf"),
 					inspected_item->curve_it->name.c_str(),
 					inspected_item->curve_it->channels[inspected_item->channel_idx].name.c_str(),
 					Real(inspected_item->time_point.get_time()),
@@ -875,6 +881,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 void
 Widget_Curves::delete_selected()
 {
+	Action::PassiveGrouper group(canvas_interface->get_instance().get(), _("Remove Waypoints"));
 	for (ChannelPoint *cp : channel_point_sd.get_selected_items()) {
 		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 		synfig::waypoint_collect(waypoint_set, cp->time_point.get_time(), cp->curve_it->value_desc.get_value_node());
@@ -984,7 +991,7 @@ bool Widget_Curves::ChannelPointSD::find_item_at_position(int pos_x, int pos_y, 
 		size_t channels = curve_it->channels.size();
 
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *widget.time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			int px = widget.time_plot_data->get_pixel_t_coord(t);
 			for (size_t c = 0; c < channels; ++c) {
@@ -1026,7 +1033,7 @@ bool Widget_Curves::ChannelPointSD::find_items_in_rect(Gdk::Rectangle rect, std:
 		size_t channels = curve_it->channels.size();
 
 		WaypointRenderer::foreach_visible_waypoint(curve_it->value_desc, *widget.time_plot_data,
-			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *data) -> bool
+			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			int px = widget.time_plot_data->get_pixel_t_coord(t);
 			for (size_t c = 0; c < channels; ++c) {

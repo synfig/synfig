@@ -37,33 +37,7 @@
 
 synfig::String studio::ResourceHelper::get_image_path()
 {
-#ifdef _WIN32
-#	ifdef IMAGE_DIR
-#		undef IMAGE_DIR
-#		define IMAGE_DIR "share/pixmaps"
-#	endif
-#endif
-
-#ifndef IMAGE_DIR
-#	define IMAGE_DIR "/usr/local/share/pixmaps/synfigstudio"
-#endif
-
-	std::string imagepath;
-#ifdef _WIN32
-	imagepath=App::get_base_path()+'/'+IMAGE_DIR;
-#else
-	imagepath=IMAGE_DIR;
-#endif
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		imagepath=synfig_root;
-		// Only class About didn't use the synfigstudio directory when using
-		//  SYNFIG_ROOT env variable. However, if it weren't set, it would use
-		//  IMAGE_DIR builtin variable that includes "synfigstudio". It means
-		//  that that About icon is in both folders. Therefore, it is safe to
-		//  choose this path.
-		imagepath+="/share/pixmaps/synfigstudio";
-	}
+	std::string imagepath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "images";
 	return imagepath;
 }
 
@@ -72,30 +46,65 @@ synfig::String studio::ResourceHelper::get_image_path(const synfig::String& imag
 	return get_image_path() + '/' + image_filename;
 }
 
+#ifndef SYNFIG_DATADIR
+#	define SYNFIG_DATADIR "/usr/local/share/synfig/"
+#endif
+
+synfig::String studio::ResourceHelper::get_synfig_data_path()
+{
+	std::string synfig_datadir;
+	if (char* synfig_root = getenv("SYNFIG_ROOT")) {
+		synfig_datadir = std::string(synfig_root)
+			+ ETL_DIRECTORY_SEPARATOR + "share/synfig";
+	} else {
+#if defined CMAKE_BUILD || defined _WIN32
+		synfig_datadir = App::get_base_path()
+             + ETL_DIRECTORY_SEPARATOR + "share/synfig";
+#else
+		synfig_datadir = SYNFIG_DATADIR;
+#endif
+	}
+
+	return synfig_datadir;
+}
+
+synfig::String studio::ResourceHelper::get_icon_path()
+{
+	std::string iconpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "icons";
+	iconpath += ETL_DIRECTORY_SEPARATOR + App::get_synfig_icon_theme();
+	return iconpath;
+}
+
+synfig::String studio::ResourceHelper::get_icon_path(const synfig::String& icon_filename)
+{
+	return get_icon_path() + '/' + icon_filename;
+}
+
+synfig::String studio::ResourceHelper::get_plugin_path()
+{
+	std::string pluginpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "plugins";
+	return pluginpath;
+}
+
+synfig::String studio::ResourceHelper::get_plugin_path(const synfig::String& plugin_filename)
+{
+	return get_plugin_path() + '/' + plugin_filename;
+}
+
+synfig::String studio::ResourceHelper::get_sound_path()
+{
+	std::string soundpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "sounds";
+	return soundpath;
+}
+
+synfig::String studio::ResourceHelper::get_sound_path(const synfig::String& sound_filename)
+{
+	return get_sound_path() + '/' + sound_filename;
+}
+
 synfig::String studio::ResourceHelper::get_ui_path()
 {
-#ifdef _WIN32
-# ifdef UI_DIR
-#  undef UI_DIR
-#  define UI_DIR "share/synfig/ui"
-# endif
-#endif
-
-#ifndef UI_DIR
-# define UI_DIR "/usr/local/share/synfig/ui"
-#endif
-
-	std::string uipath;
-#ifdef _WIN32
-	uipath=App::get_base_path()+'/'+UI_DIR;
-#else
-	uipath=UI_DIR;
-#endif
-	char* synfig_root=getenv("SYNFIG_ROOT");
-	if(synfig_root) {
-		uipath=synfig_root;
-		uipath+="/share/synfig/ui";
-	}
+	std::string uipath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "ui";
 	return uipath;
 }
 

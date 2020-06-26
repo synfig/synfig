@@ -9,6 +9,7 @@ import math
 import settings
 from common.Vector import Vector
 from common.Color import Color
+from common.Gradient import Gradient
 sys.path.append("..")
 
 
@@ -28,6 +29,20 @@ def approximate_equal(a, b):
     if a < b:
         return b - a < precision
     return a - b < precision
+
+
+def real_high_precision():
+    """
+    Synfig format real high precision
+    https://github.com/synfig/synfig/blob/ae11655a9bba068543be7a5df9090958579de78e/synfig-core/src/synfig/real.h#L55
+
+    Args:
+        (None)
+
+    Returns:
+        (float) : The value of real_high_precision as described in Synfig
+    """
+    return 1e-10
 
 
 def calculate_pixels_per_unit():
@@ -85,12 +100,8 @@ def parse_position(animated, i):
                float(animated[i][0][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
 
-    elif animated.attrib["type"] == "real":
+    elif animated.attrib["type"] in {"real", "circle_radius"}:
         pos = parse_value(animated, i)
-
-    elif animated.attrib["type"] == "circle_radius":
-        pos = parse_value(animated, i)
-        pos[0] *= 2 # Diameter
 
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
@@ -114,7 +125,7 @@ def parse_position(animated, i):
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "points":
-        pos = [int(animated[i][0].attrib["value"]),
+        pos = [int(animated[i][0].attrib["value"]) * settings.PIX_PER_UNIT,
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "bool":
@@ -173,6 +184,9 @@ def parse_position(animated, i):
         green = green ** (1/settings.GAMMA[1])
         blue = blue ** (1/settings.GAMMA[2])
         return Color(red, green, blue, alpha)
+    
+    elif animated.attrib["type"] == "gradient":
+        return Gradient(animated[i][0])
 
     return Vector(pos[0], pos[1], animated.attrib["type"])
 
@@ -229,14 +243,13 @@ def is_animated(node):
                 1: If only single waypoint is present
                 2: If more than one waypoint is present
     """
-    case = 0
+    case = settings.NOT_ANIMATED
     if node.tag == "animated":
         if len(node) == 1:
-            case = 1
+            case = settings.SINGLE_WAYPOINT
         else:
-            case = 2
-    else:
-        case = 0
+            case = settings.ANIMATED
+
     return case
 
 

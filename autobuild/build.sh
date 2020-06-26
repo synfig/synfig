@@ -205,13 +205,19 @@ if [ -e /etc/debian_version ] && [ -z "$BOOST_CONFIGURE_OPTIONS" ]; then
 		export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
 	fi
 fi
+if [[ `uname -o` == "Msys" ]]; then
+	# Currently there is an error when building with Magick++ on MSYS2
+	export CONFIGURE_OPTIONS="--without-magickpp"
+else
+	export CONFIGURE_OPTIONS="--with-magickpp"
+fi
 /bin/bash "${REPO_DIR}/synfig-core/configure" --prefix="${PREFIX}" \
 	--includedir="${PREFIX}/include" \
 	--disable-static --enable-shared \
-	--with-magickpp \
 	--without-libavcodec \
 	--without-included-ltdl \
 	$BOOST_CONFIGURE_OPTIONS \
+	$CONFIGURE_OPTIONS \
 	$DEBUG
 cd ..
 }
@@ -259,10 +265,6 @@ pushd "${REPO_DIR}/synfig-studio/" >/dev/null
 popd >/dev/null
 if [[ `uname` == "Linux" ]]; then
 	export CONFIGURE_OPTIONS="--enable-jack"
-elif [[ `uname -o` == "Msys" ]]; then
-	# currently where is a bug in synfig-core (in MinGW build) which causes 
-	# synfig-core to halt before exit, so we skip image generation
-	export CONFIGURE_OPTIONS="--without-images"
 else
 	export CONFIGURE_OPTIONS=""
 fi

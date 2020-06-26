@@ -27,12 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtk/gtk.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltip.h>
 #include <sigc++/sigc++.h>
-#include "widgets/widget_coloredit.h"
-#include "dialogsettings.h"
+#include <synfig/color.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,15 +39,13 @@
 
 namespace studio {
 
+class Widget_ColorEdit;
+
 class Dialog_Color : public Gtk::Dialog
 {
-	DialogSettings dialog_settings;
-
 	Widget_ColorEdit* color_edit_widget;
 
 	sigc::signal<void,synfig::Color> signal_edited_;
-
-	bool busy_;
 
 	void create_color_edit_widget();
 	void create_set_color_button(const char *stock_id,
@@ -69,12 +64,9 @@ public:
 
 	sigc::signal<void,synfig::Color>& signal_edited() { return signal_edited_; }
 
-	void set_color(const synfig::Color& x) { color_edit_widget->set_value(x); }
-	synfig::Color get_color() const { return color_edit_widget->get_value(); }
+	void set_color(const synfig::Color& x);
+	synfig::Color get_color() const;
 	void reset();
-
-	bool busy() const { return busy_; }
-
 }; // END of Dialog_Color
 
 }; // END of namespace studio

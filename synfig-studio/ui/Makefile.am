@@ -7,5 +7,5 @@ UIFILES     = \
   preview_options.glade \
   dialog_workspaces.glade
 
-
+uidir = $(synfig_datadir)/ui
 dist_ui_DATA = $(UIFILES)

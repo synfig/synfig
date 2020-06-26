@@ -55,11 +55,14 @@ using namespace synfig;
 #define GET_NODE_NAME(node,t) node->get_bone_name(t)
 #define GET_NODE_BONE(node,t) (*node)(t).get(Bone())
 
+// how many hex digits of the guid string to show in debug messages
+#define GUID_PREFIX_LEN 6
+
 #define GET_GUID_CSTR(guid) guid.get_string().substr(0,GUID_PREFIX_LEN).c_str()
 #define GET_NODE_GUID_CSTR(node) GET_GUID_CSTR(node->get_guid())
 #define GET_NODE_NAME_CSTR(node,t) GET_NODE_NAME(node,t).c_str()
 #define GET_NODE_BONE_CSTR(node,t) GET_NODE_BONE(node,t).c_str()
-#define GET_NODE_DESC_CSTR(node,t) (node ? strprintf("%s (%s)", GET_NODE_GUID_CSTR(node), GET_NODE_NAME_CSTR(node,t)) : strprintf("%s <root>", GET_GUID_CSTR(GUID(0)))).c_str()
+#define GET_NODE_DESC_CSTR(node,t) (node ? strprintf("%s (%s)", GET_NODE_GUID_CSTR(node), GET_NODE_NAME_CSTR(node,t)) : strprintf("%s <root>", GET_GUID_CSTR(GUID::zero()))).c_str()
 #define GET_NODE_PARENT_CSTR(node,t) GET_GUID_CSTR(GET_NODE_PARENT(node,t))
 
 /* === G L O B A L S ======================================================= */
@@ -569,7 +572,7 @@ ValueNode_Bone::get_link_vfunc(int i)const
 #endif
 	}
 
-	return 0;
+	return nullptr;
 }
 
 LinkableValueNode::Vocab
@@ -647,7 +650,7 @@ ValueNode_Bone::find(String name)const
 		}
 
 	// printf("no\n");
-	return 0;
+	return nullptr;
 }
 
 String
@@ -740,7 +743,7 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 
 	if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
 		printf("%s:%d reached root - return false\n", __FILE__, __LINE__);
-	return 0;
+	return nullptr;
 }
 
 ValueNode_Bone::BoneSet
@@ -779,8 +782,8 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
 	{
 		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(type_bone_object);
-		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
-		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
+		const ValueNode_Animated::WaypointList& list(value_node_animated->waypoint_list());
+		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(); iter != list.cend(); ++iter)
 		{
 //			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
 			BoneSet ret2(get_bones_referenced_by(iter->get_value_node(), recursive));
@@ -937,6 +940,83 @@ ValueNode_Bone::get_root_bone()
 	return rooot;
 }
 
+
+// inspired (a lot) by ValueNode_Bone::get_bones_referenced_by()
+void
+ValueNode_Bone::fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode::Handle cloned_value_node, bool recursive, const std::map<const ValueNode*, ValueNode::Handle>& clone_map)
+{
+	BoneSet ret;
+	if (!value_node)
+	{
+		synfig::warning("%s:%d failed?\n", __FILE__, __LINE__);
+		assert(0);
+		return;
+	}
+
+	// if it's a ValueNode_Const
+	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value_node))
+	{
+		ValueNode_Const::Handle cloned_value_node_const = ValueNode_Const::Handle::cast_dynamic(cloned_value_node);
+		ValueBase inner_value_node(value_node_const->get_value());
+		if (inner_value_node.get_type() == type_bone_valuenode)
+			if (ValueNode_Bone::Handle bone = inner_value_node.get(ValueNode_Bone::Handle()))
+			{
+				ValueBase inner_cloned_value_node(cloned_value_node_const->get_value());
+				ValueNode_Bone::Handle cloned_bone = inner_cloned_value_node.get(ValueNode_Bone::Handle());
+				// do we want to check for bone references in other bone fields or just 'parent'?
+				if (recursive)
+				{
+					fix_bones_referenced_by(bone, cloned_bone, recursive, clone_map);
+				}
+				if (!bone->is_root()) {
+					auto replace_iter = clone_map.find(bone.get());
+					if (replace_iter != clone_map.end()) {
+						ValueBase ret_vb(ValueNode_Bone::Handle::cast_dynamic(replace_iter->second));
+						ret_vb.copy_properties_of(bone);
+						cloned_value_node_const->set_value(ret_vb);
+					}
+				}
+			}
+		return;
+	}
+
+	// if it's a ValueNode_Animated
+	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
+	{
+		ValueNode_Animated::Handle cloned_value_node_animated = ValueNode_Animated::Handle::cast_dynamic(cloned_value_node);
+		const ValueNode_Animated::WaypointList& list(value_node_animated->waypoint_list());
+		const ValueNode_Animated::WaypointList& cloned_list(cloned_value_node_animated->waypoint_list());
+		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(), cloned_iter = cloned_list.cbegin(); iter != list.cend(); ++iter, ++cloned_iter)
+		{
+			fix_bones_referenced_by(iter->get_value_node(), cloned_iter->get_value_node(), recursive, clone_map);
+		}
+		return;
+	}
+
+	// if it's a LinkableValueNode
+	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node))
+	{
+		LinkableValueNode::Handle cloned_linkable_value_node = LinkableValueNode::Handle::cast_dynamic(cloned_value_node);
+		for (int i = 0; i < linkable_value_node->link_count(); i++)
+		{
+			fix_bones_referenced_by(linkable_value_node->get_link(i), cloned_linkable_value_node->get_link(i), recursive, clone_map);
+		}
+		return;
+	}
+
+	if (PlaceholderValueNode::Handle linkable_value_node = PlaceholderValueNode::Handle::cast_dynamic(value_node))
+	{
+		// todo: while loading we might be setting up an ancestry loop by ignoring the placeholder valuenode here
+		// can we check for loops in badly formatted .sifz files somehow?
+		if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
+			printf("%s:%d found a placeholder - skipping loop check\n", __FILE__, __LINE__);
+		return;
+	}
+
+	error("%s:%d BUG: bad type in valuenode '%s'", __FILE__, __LINE__, value_node->get_string().c_str());
+	assert(0);
+}
+
 #ifdef _DEBUG
 void
 ValueNode_Bone::ref()const
@@ -996,11 +1076,11 @@ ValueNode_Bone_Root::~ValueNode_Bone_Root()
 }
 
 ValueBase
-ValueNode_Bone_Root::operator()(Time t __attribute__ ((unused)))const
+ValueNode_Bone_Root::operator()(Time t)const
 {
 	Bone ret;
 	ret.set_name			(get_local_name());
-	ret.set_parent			(0);
+	ret.set_parent			(nullptr);
 	return ret;
 }
 
@@ -1021,7 +1101,7 @@ ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
 }
 
 ValueNode_Bone*
-ValueNode_Bone_Root::create(const ValueBase &x __attribute__ ((unused)))
+ValueNode_Bone_Root::create(const ValueBase &x)
 {
 	return get_root_bone().get();
 }
@@ -1029,7 +1109,7 @@ ValueNode_Bone_Root::create(const ValueBase &x __attribute__ ((unused)))
 
 
 String
-ValueNode_Bone_Root::get_bone_name(Time t __attribute__ ((unused)))const
+ValueNode_Bone_Root::get_bone_name(Time t)const
 {
 	return get_local_name();
 }
@@ -1048,13 +1128,13 @@ ValueNode_Bone_Root::create_new()const
 }
 
 Matrix
-ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)), Point child_origin)const
+ValueNode_Bone_Root::get_animated_matrix(Time t, Point child_origin)const
 {
 	return Matrix().set_translate(child_origin);
 }
 
 bool
-ValueNode_Bone_Root::check_type(Type &type __attribute__ ((unused)))
+ValueNode_Bone_Root::check_type(Type &type)
 {
 	return false;
 }

@@ -97,7 +97,7 @@ Layer_Composite::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc(param_blend_method,"blend_method")
 		.set_local_name(_("Blend Method"))
-		.set_description(_("The blending method used to composite on the layers below"))
+		.set_description(_("Blending method used to composite on the layers below"))
 		.set_static(true)
 	);
 

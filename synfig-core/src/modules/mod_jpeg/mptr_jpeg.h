@@ -31,7 +31,6 @@
 
 #define NOMINMAX
 #include <synfig/importer.h>
-#include <synfig/string.h>
 #include <synfig/surface.h>
 
 extern "C" {

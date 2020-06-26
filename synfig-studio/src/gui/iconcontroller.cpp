@@ -177,6 +177,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(open, "action_doc_open_icon." IMAGE_EXT, _("Open"));
 	INIT_STOCK_ICON(save, "action_doc_save_icon." IMAGE_EXT, _("Save"));
 	INIT_STOCK_ICON(save_as, "action_doc_saveas_icon." IMAGE_EXT, _("Save As"));
+	INIT_STOCK_ICON(export, "action_doc_saveas_icon." IMAGE_EXT, _("Export"));
 	INIT_STOCK_ICON(save_all, "action_doc_saveall_icon." IMAGE_EXT, _("Save All"));
 	INIT_STOCK_ICON(redo, "action_doc_redo_icon." IMAGE_EXT, _("Redo"));
 	INIT_STOCK_ICON(undo, "action_doc_undo_icon." IMAGE_EXT, _("Undo"));
@@ -196,7 +197,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_distortion_twirl, "layer_distortion_twirl_icon." IMAGE_EXT, _("Twirl Layer"));
 	INIT_STOCK_ICON(layer_distortion_warp, "layer_distortion_warp_icon." IMAGE_EXT, _("Warp Layer"));
 	// Example Layers
-	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metallballs Layer"));
+	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metaballs Layer"));
 	INIT_STOCK_ICON(layer_example_simplecircle, "layer_example_simplecircle_icon." IMAGE_EXT, _("Simple Circle Layer"));
 	// Filter Layers
 	INIT_STOCK_ICON(layer_filter_clamp, "layer_filter_clamp_icon." IMAGE_EXT, _("Clamp Layer"));
@@ -208,7 +209,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_fractal_julia, "layer_fractal_julia_icon." IMAGE_EXT, _("Julia Set Layer"));
 	INIT_STOCK_ICON(layer_fractal_mandelbrot, "layer_fractal_mandelbrot_icon." IMAGE_EXT, _("Mandelbrot Set Layer"));
 	// Geometry Layers
-	INIT_STOCK_ICON(layer_geometry_checkerboard, "layer_geometry_checkerboard_icon." IMAGE_EXT, _("Checker Board Layer"));
+	INIT_STOCK_ICON(layer_geometry_checkerboard, "layer_geometry_checkerboard_icon." IMAGE_EXT, _("Checkerboard Layer"));
 	INIT_STOCK_ICON(layer_geometry_circle, "layer_geometry_circle_icon." IMAGE_EXT, _("Circle Layer"));
 	INIT_STOCK_ICON(layer_geometry_outline, "layer_geometry_outline_icon." IMAGE_EXT, _("Outline Layer"));
 	INIT_STOCK_ICON(layer_geometry_advanced_outline, "layer_geometry_advanced_outline_icon." IMAGE_EXT, _("Advanced Outline Layer"));
@@ -340,11 +341,11 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(preview_options, "preview_options_icon." IMAGE_EXT, _("Preview Options Dialog"));
 	INIT_STOCK_ICON(render_options, "render_options_icon." IMAGE_EXT, _("Render Options Dialog"));
 
-	INIT_STOCK_ICON(interpolation_type_tcb, "interpolation_type_tcb_icon." IMAGE_EXT, _("TCB interpolation"));
-	INIT_STOCK_ICON(interpolation_type_ease, "interpolation_type_ease_icon." IMAGE_EXT, _("Ease In/Out interpolation"));
-	INIT_STOCK_ICON(interpolation_type_const, "interpolation_type_const_icon." IMAGE_EXT, _("Const interpolation"));
-	INIT_STOCK_ICON(interpolation_type_linear, "interpolation_type_linear_icon." IMAGE_EXT, _("Linear interpolation"));
 	INIT_STOCK_ICON(interpolation_type_clamped, "interpolation_type_clamped_icon." IMAGE_EXT, _("Clamped interpolation"));
+	INIT_STOCK_ICON(interpolation_type_tcb, "interpolation_type_tcb_icon." IMAGE_EXT, _("TCB interpolation"));
+	INIT_STOCK_ICON(interpolation_type_const, "interpolation_type_const_icon." IMAGE_EXT, _("Const interpolation"));
+	INIT_STOCK_ICON(interpolation_type_ease, "interpolation_type_ease_icon." IMAGE_EXT, _("Ease In/Out interpolation"));
+	INIT_STOCK_ICON(interpolation_type_linear, "interpolation_type_linear_icon." IMAGE_EXT, _("Linear interpolation"));
 
 	INIT_STOCK_ICON(utils_chain_link_on, "utils_chain_link_on_icon." IMAGE_EXT, _("Linked"));
 	INIT_STOCK_ICON(utils_chain_link_off, "utils_chain_link_off_icon." IMAGE_EXT, _("Unlinked"));
@@ -429,16 +430,16 @@ studio::interpolation_icon(synfig::Interpolation type)
 {
 	switch(type)
 	{
+		case INTERPOLATION_CLAMPED:
+			return Gtk::StockID("synfig-interpolation_type_clamped");
 		case INTERPOLATION_TCB:
 			return Gtk::StockID("synfig-interpolation_type_tcb");
 		case INTERPOLATION_CONSTANT:
 			return Gtk::StockID("synfig-interpolation_type_const");
-		case INTERPOLATION_LINEAR:
-			return Gtk::StockID("synfig-interpolation_type_linear");
 		case INTERPOLATION_HALT:
 			return Gtk::StockID("synfig-interpolation_type_ease");
-		case INTERPOLATION_CLAMPED:
-			return Gtk::StockID("synfig-interpolation_type_clamped");
+		case INTERPOLATION_LINEAR:
+			return Gtk::StockID("synfig-interpolation_type_linear");
 		case INTERPOLATION_MANUAL:
 		case INTERPOLATION_UNDEFINED:
 		case INTERPOLATION_NIL:

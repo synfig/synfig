@@ -66,6 +66,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+const int GAP = 3;
+
 /* === G L O B A L S ======================================================= */
 
 StateScale studio::state_scale;
@@ -104,14 +106,16 @@ class studio::StateScale_Context : public sigc::trackable
 	etl::handle<DuckDrag_Scale> duck_dragger_;
 
 	Gtk::Table options_table;
+	Gtk::Label title_label;
 
-
-	Gtk::CheckButton checkbutton_aspect_lock;
+	Gtk::Label aspect_lock_label;
+	Gtk::CheckButton aspect_lock_checkbutton;
+	Gtk::HBox aspect_lock_box;
 
 public:
 
-	bool get_aspect_lock_flag()const { return checkbutton_aspect_lock.get_active(); }
-	void set_aspect_lock_flag(bool x) { checkbutton_aspect_lock.set_active(x); refresh_aspect_lock_flag(); }
+	bool get_aspect_lock_flag()const { return aspect_lock_checkbutton.get_active(); }
+	void set_aspect_lock_flag(bool x) { aspect_lock_checkbutton.set_active(x); refresh_aspect_lock_flag(); }
 
 	void refresh_aspect_lock_flag() { if(duck_dragger_)duck_dragger_->lock_aspect=get_aspect_lock_flag(); }
 
@@ -144,6 +148,11 @@ StateScale::StateScale():
 
 StateScale::~StateScale()
 {
+}
+
+void* StateScale::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateScale_Context(machine_context);
 }
 
 void
@@ -183,15 +192,33 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	duck_dragger_(new DuckDrag_Scale()),
-	checkbutton_aspect_lock(_("Lock Aspect Ratio"))
+	duck_dragger_(new DuckDrag_Scale())
 {
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Scale Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_aspect_lock,					0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	title_label.set_label(_("Scale Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
-	checkbutton_aspect_lock.signal_toggled().connect(sigc::mem_fun(*this,&StateScale_Context::refresh_aspect_lock_flag));
+	aspect_lock_label.set_label(_("Lock Aspect Ratio"));
+	aspect_lock_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
+	aspect_lock_box.pack_start(aspect_lock_label);
+	aspect_lock_box.pack_end(aspect_lock_checkbutton, Gtk::PACK_SHRINK);
+	
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(aspect_lock_box,
+		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
+
+	aspect_lock_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateScale_Context::refresh_aspect_lock_flag));
+
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();

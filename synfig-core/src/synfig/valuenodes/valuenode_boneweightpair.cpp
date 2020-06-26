@@ -158,7 +158,7 @@ ValueNode_BoneWeightPair::get_children_vocab_vfunc() const
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"weight")
-		.set_local_name(_("weight"))
+		.set_local_name(_("Weight"))
 		.set_description(_("The relative value of influence of the bone"))
 	);
 

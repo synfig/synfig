@@ -54,6 +54,7 @@ OTHER_HH = \
 	onemoment.h \
 	pluginmanager.h \
 	preview.h \
+	progresslogger.h \
 	renddesc.h \
 	render.h \
 	resourcehelper.h \
@@ -86,6 +87,7 @@ OTHER_CC = \
 	onemoment.cpp \
 	pluginmanager.cpp \
 	preview.cpp \
+	progresslogger.cpp \
 	renddesc.cpp \
 	render.cpp \
 	resourcehelper.cpp \
@@ -128,9 +130,6 @@ synfigstudio_CXXFLAGS = \
 	@SYNFIG_CFLAGS@ \
 	@GTKMM_CFLAGS@ \
 	@JACK_CFLAGS@ \
-	-DIMAGE_DIR=\"$(imagedir)\" \
 	-DIMAGE_EXT=\"$(imageext)\" \
-	-DPLUGIN_DIR=\"$(plugindir)\" \
-	-DSOUND_DIR=\"$(sounddir)\" \
-	-DUI_DIR=\"$(uidir)\" \
+	-DSYNFIG_DATADIR=\"$(synfig_datadir)\" \
 	-DLOCALEDIR=\"${LOCALEDIR}\"

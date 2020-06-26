@@ -27,7 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/box.h>
 #include <gtkmm/table.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
@@ -72,7 +71,7 @@ private:
 	sigc::signal<void> signal_activated_;
 
 	Type type;
-	synfig::Color color_, orig_color;
+	synfig::Color color_;
 
 public:
 
@@ -162,22 +161,19 @@ class Widget_ColorEdit : public Gtk::Table
 
 	Gtk::Notebook* notebook;
 
-	static synfig::Gamma hvs_gamma;
-	static synfig::Gamma hvs_gamma_in;
-
 protected:
 
 	void on_value_changed();
+
+	void on_slider_moved(ColorSlider::Type type, float amount);
+	void on_hex_edited();
+	bool on_hex_focus_out(GdkEventFocus* event);
 
 public:
 
 	sigc::signal<void>& signal_activated() { return signal_activated_; }
 
 	sigc::signal<void>& signal_activate() { return signal_activated_; }
-
-	void on_slider_moved(ColorSlider::Type type, float amount);
-	void on_hex_edited();
-	bool on_hex_focus_out(GdkEventFocus* event);
 
 	//Glib::SignalProxy0<void> signal_activate() { return spinbutton_A->signal_activate(); }
 

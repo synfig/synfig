@@ -30,12 +30,7 @@
 #endif
 
 #include <cmath>
-
-#include <ETL/misc>
-
-#include <synfig/general.h>
-
-#include <gui/localization.h>
+#include <cairomm/surface.h>
 #include <gui/canvasview.h>
 #include <gui/workarea.h>
 #include <gui/workarearenderer/renderer_canvas.h>
@@ -43,6 +38,8 @@
 #include "widget_canvastimeslider.h"
 
 #include "gui/timeplotdata.h"
+
+#include <gui/exception_guard.h>
 
 #endif
 
@@ -102,8 +99,8 @@ Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)
 void
 Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Point &root)
 {
-	thumb_background.clear();
-	thumb_surface.clear();
+	thumb_background = Cairo::RefPtr<Cairo::SurfacePattern>();
+	thumb_surface = Cairo::RefPtr<Cairo::ImageSurface>();
 
 	Cairo::RefPtr<Cairo::SurfacePattern> pattern;
 	Cairo::RefPtr<Cairo::ImageSurface> surface;
@@ -145,8 +142,7 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 		if (top > 2*space + tooltip_h) {
 			y = top - space - tooltip_h;
 			visible = true;
-		} else
-		if (screen_h - top - h > 2*space + tooltip_h) {
+		} else if (screen_h - top - h > 2*space + tooltip_h) {
 			y = top + h + space;
 			visible = true;
 		}
@@ -166,6 +162,7 @@ Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Poin
 bool
 Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->button == 1 && canvas_view && canvas_view->get_work_area()) {
 		lock_ducks = new LockDucks(etl::handle<CanvasView>(canvas_view));
 		canvas_view->get_work_area()->clear_ducks();
@@ -178,32 +175,39 @@ Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 	if (event->button == 1 || event->button == 2)
 		tooltip.hide();
 	return Widget_Timeslider::on_button_press_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_CanvasTimeslider::on_button_release_event(GdkEventButton *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->button == 1 && canvas_view)
 		lock_ducks.reset();
 	//if ( (event->button == 1 && !(event->state & Gdk::BUTTON2_MASK))
 	//  || (event->button == 2 && !(event->state & Gdk::BUTTON1_MASK)) )
 	//	show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
 	return Widget_Timeslider::on_button_release_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if ((event->state & (Gdk::BUTTON1_MASK | Gdk::BUTTON2_MASK)) == 0)
 		show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
 	return Widget_Timeslider::on_motion_notify_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_CanvasTimeslider::on_leave_notify_event(GdkEventCrossing*)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	tooltip.hide();
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

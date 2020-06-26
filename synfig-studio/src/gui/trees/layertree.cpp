@@ -53,6 +53,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -64,18 +66,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifndef SMALL_BUTTON
-#define SMALL_BUTTON(button,stockid,tooltip)	\
-	button = manage(new class Gtk::Button());	\
-	icon=manage(new Gtk::Image(Gtk::StockID(stockid),iconsize));	\
-	button->add(*icon);	\
-	button->set_tooltip_text(tooltip);	\
-	icon->set_padding(0,0);\
-	icon->show();	\
-	button->set_relief(Gtk::RELIEF_NONE); \
-	button->show()
-#endif
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -86,9 +76,9 @@ using namespace studio;
 	Return true if we process event,
 	False to pass it
 */
-bool LayerTree::onKeyPress(GdkEventKey* event)
+bool LayerTree::on_key_press_event(GdkEventKey* event)
 {
-
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch (event->keyval) {
 		case GDK_KEY_Delete: {
 			LayerList layers = get_selected_layers();
@@ -129,13 +119,14 @@ bool LayerTree::onKeyPress(GdkEventKey* event)
 	}
 
     return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 
 LayerTree::LayerTree():
 	layer_amount_adjustment_(Gtk::Adjustment::create(1,0,1,0.01,0.01,0))
 {
-	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::onKeyPress));
+	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_key_press_event));
 
 	create_layer_tree();
 	create_param_tree();
@@ -152,32 +143,7 @@ LayerTree::LayerTree():
 	attach(*layer_amount_hscale, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 1, 1);
 	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
-	Gtk::Image *icon;
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
-
-	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
-	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
-	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
-	SMALL_BUTTON(button_encapsulate,"synfig-encapsulate","Group");
-	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
-
-	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_lower,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_encapsulate,Gtk::PACK_SHRINK);
-	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
-
-	// button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_raise_pressed));
-	// button_lower->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_lower_pressed));
-	// button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_duplicate_pressed));
-	// button_encapsulate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_encapsulate_pressed));
-	// button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_delete_pressed));
-
-	button_raise->set_sensitive(false);
-	button_lower->set_sensitive(false);
-	button_duplicate->set_sensitive(false);
-	button_encapsulate->set_sensitive(false);
-	button_delete->set_sensitive(false);
 
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_selection_changed));
 
@@ -202,6 +168,8 @@ LayerTree::LayerTree():
 	blend_method_widget.set_size_request(150,-1);
 	blend_method_widget.set_sensitive(false);
 	blend_method_widget.signal_activate().connect(sigc::mem_fun(*this, &studio::LayerTree::on_blend_method_changed));
+
+	disable_single_click_for_param_editing = false;
 }
 
 LayerTree::~LayerTree()
@@ -474,11 +442,10 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
 
 		Gtk::TreePath path(iter);
-		for(int i=(int)path.size();i;i--)
+		for(size_t i=path.size();i;i--)
 		{
-			int j;
 			path=Gtk::TreePath(iter);
-			for(j=i;j;j--)
+			for(size_t j=i;j;j--)
 				path.up();
 			layer_tree_view().expand_row(path,false);
 		}
@@ -552,7 +519,7 @@ LayerTree::get_selected_layer()const
 	LayerList layers(get_selected_layers());
 
 	if(layers.empty())
-		return 0;
+		return nullptr;
 
 	return layers.front();
 }
@@ -667,8 +634,6 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 
 	layer_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::LayerTree::on_dirty_preview));
 
-	//layer_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::LayerTree::on_dirty_preview));
-
 	layer_tree_store_->canvas_interface()->signal_time_changed().connect(
 		sigc::mem_fun(
 			&param_tree_view(),
@@ -727,7 +692,7 @@ LayerTree::on_selection_changed()
 	{
 		if(layer_list.empty())
 		{
-			last_top_selected_layer=0;
+			last_top_selected_layer=nullptr;
 			layer_tree_view().get_selection()->select(last_top_selected_path);
 			return;
 		}
@@ -741,34 +706,23 @@ LayerTree::on_selection_changed()
 		}
 		else
 		{
-			last_top_selected_layer=0;
+			last_top_selected_layer=nullptr;
 		}
 	}
 
 	if(layer_list.empty())
 	{
-		button_raise->set_sensitive(false);
-		button_lower->set_sensitive(false);
-		button_duplicate->set_sensitive(false);
-		button_encapsulate->set_sensitive(false);
-		button_delete->set_sensitive(false);
 		layer_amount_hscale->set_sensitive(false);
 		blend_method_widget.set_sensitive(false);
 		return;
 	}
-
-	button_raise->set_sensitive(true);
-	button_lower->set_sensitive(true);
-	button_duplicate->set_sensitive(true);
-	button_encapsulate->set_sensitive(true);
-	button_delete->set_sensitive(true);
 
 	if(layer_list.size()==1 && (*layer_list.begin())->get_param("amount").is_valid()&& (*layer_list.begin())->get_param("amount").same_type_as(Real()))
 	{
 		quick_layer=*layer_list.begin();
 	}
 	else
-		quick_layer=0;
+		quick_layer=nullptr;
 
 	if(quick_layer)
 	{
@@ -858,11 +812,11 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 void
-LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
-										 const synfig::Time& time __attribute__ ((unused)),
-										 const synfig::Time& time_offset __attribute__ ((unused)),
-										 const synfig::Time& time_dilation __attribute__ ((unused)),
-										 int button __attribute__ ((unused)))
+LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node,
+										 const synfig::Time& time,
+										 const synfig::Time& time_offset,
+										 const synfig::Time& time_dilation,
+										 int button)
 {
 	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 	synfig::waypoint_collect(waypoint_set,time,node);
@@ -887,6 +841,7 @@ LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node _
 bool
 LayerTree::on_layer_tree_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
@@ -960,11 +915,13 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 LayerTree::on_param_tree_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
@@ -1020,9 +977,16 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				}
 				else
 				{
-					if(column->get_first_cell()==cellrenderer_value)
-						return signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
-					else
+					if(column->get_first_cell()==cellrenderer_value) {
+						bool ok = false;
+						if (!disable_single_click_for_param_editing) {
+							param_tree_view().set_cursor(path, *column, true);
+							grab_focus();
+							ok = true;
+						}
+						ok |= signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
+						return ok;
+					} else
 						return signal_param_user_click()(event->button.button,row,COLUMNID_NAME);
 				}
 			}
@@ -1100,6 +1064,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 

@@ -16,8 +16,8 @@ liblyr_std_la_SOURCES = \
 	main.cpp \
 	timeloop.cpp \
 	timeloop.h \
-	warp.cpp \
-	warp.h \
+	perspective.cpp \
+	perspective.h \
 	xorpattern.cpp \
 	booleancurve.h \
 	booleancurve.cpp \

@@ -30,6 +30,7 @@
 #endif
 
 #include <glibmm.h>
+#include <cstdio>
 
 #include <ETL/stringf>
 

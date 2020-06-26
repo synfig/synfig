@@ -24,4 +24,5 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/widget_ruler.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_soundwave.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_timegraphbase.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/widget_timetrack.cpp"
 )

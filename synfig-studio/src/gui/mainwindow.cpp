@@ -29,8 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include <gui/localization.h>
 
 #include "mainwindow.h"
@@ -38,7 +36,6 @@
 #include "docks/dockable.h"
 #include "docks/dockbook.h"
 #include "docks/dockmanager.h"
-#include "docks/dockdroparea.h"
 #include "dialogs/dialog_input.h"
 
 #include <synfigapp/main.h>
@@ -51,12 +48,13 @@
 #include "gui/widgets/widget_time.h"
 #include "gui/widgets/widget_vector.h"
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -89,11 +87,11 @@ MainWindow::MainWindow() :
 
 	class Bin : public Gtk::Bin {
 	public:
-		Bin() { }
+		Bin() = default;
 	protected:
-		void on_size_allocate(Gtk::Allocation &allocation) {
+		void on_size_allocate(Gtk::Allocation &allocation) override {
 			Gtk::Bin::on_size_allocate(allocation);
-			if (get_child() != NULL)
+			if (get_child() != nullptr)
 				get_child()->size_allocate(allocation);
 		}
 	};
@@ -138,7 +136,7 @@ MainWindow::MainWindow() :
 	GRAB_HINT_DATA("mainwindow");
 }
 
-MainWindow::~MainWindow(){ }
+MainWindow::~MainWindow() = default;
 
 void
 MainWindow::show_dialog_input()
@@ -176,6 +174,10 @@ MainWindow::init_menus()
 	toggle_menubar->set_active(App::enable_mainwin_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
 
+	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
+	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
+	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
+	
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
 		sigc::ptr_fun(App::set_workspace_compositing)
@@ -243,6 +245,18 @@ MainWindow::toggle_show_menubar()
 		menubar->hide();
 }
 
+void
+MainWindow::toggle_show_toolbar()
+{
+	App::enable_mainwin_toolbar = !App::enable_mainwin_toolbar;
+	
+	for(std::list<etl::handle<Instance> >::iterator iter1 = App::instance_list.begin(); iter1 != App::instance_list.end(); iter1++){
+			const Instance::CanvasViewList &views = (*iter1)->canvas_view_list();
+			for(Instance::CanvasViewList::const_iterator iter2 = views.begin(); iter2 != views.end(); ++iter2)
+				(*iter2)->toggle_show_toolbar();
+	}
+}
+
 void MainWindow::add_custom_workspace_menu_item_handlers()
 {
 	std::string ui_info_menu =
@@ -271,6 +285,7 @@ void MainWindow::remove_custom_workspace_menu_item_handlers()
 bool
 MainWindow::on_key_press_event(GdkEventKey* key_event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	Gtk::Widget * widget = get_focus();
 	if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
 		bool handled = gtk_window_propagate_key_event(this->gobj(), key_event);
@@ -278,6 +293,7 @@ MainWindow::on_key_press_event(GdkEventKey* key_event)
 			return true;
 	}
 	return Gtk::Window::on_key_press_event(key_event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void
@@ -314,10 +330,10 @@ MainWindow::make_short_filenames(
 			j = (int)k + 1;
 		}
 
-		dirflags[i].resize(dirs.size(), false);
+		dirflags[i].resize(dirs[i].size(), false);
 	}
 
-	// find shotest paths which shows that files are different
+	// find shortest paths which shows that files are different
 	for(int i = 0; i < count; ++i) {
 		for(int j = 0; j < count; ++j) {
 			if (i == j) continue;
@@ -369,6 +385,7 @@ MainWindow::make_short_filenames(
 void
 MainWindow::on_recent_files_changed()
 {
+	// TODO(ice0): switch to GtkRecentChooserMenu?
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 
 	vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
@@ -387,11 +404,12 @@ MainWindow::on_recent_files_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		std::string action_name = strprintf("file-recent-%d", i);
+		const std::string action_name = etl::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
+		std::string filename = fullnames[i];
 		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
-			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),fullnames[i],0))
+			[filename](){App::open_recent(filename);}
 		);
 	}
 
@@ -436,7 +454,7 @@ MainWindow::on_custom_workspaces_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		std::string action_name = strprintf("custom-workspace-%d", num_custom_workspaces);
+		std::string action_name = etl::strprintf("custom-workspace-%d", num_custom_workspaces);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted),
@@ -493,13 +511,13 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 		sigc::mem_fun(*dockable, &Dockable::present)
 	);
 
-	std::string ui_info =
+	const std::string ui_info =
 		"<menu action='menu-window'>"
 	    "<menuitem action='panel-" + dockable->get_name() + "' />"
 	    "</menu>";
-	std::string ui_info_popup =
+	const std::string ui_info_popup =
 		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
-	std::string ui_info_menubar =
+	const std::string ui_info_menubar =
 		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
 
 	Gtk::UIManager::ui_merge_id merge_id_popup = App::ui_manager()->add_ui_from_string(ui_info_popup);

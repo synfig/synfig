@@ -135,6 +135,7 @@ public:
 		bool fill,
 		const synfig::Color &color );
 
+protected:
 	// Events handlers
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);

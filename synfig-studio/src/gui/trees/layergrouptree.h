@@ -88,7 +88,7 @@ private:
 
 private:
 
-	bool on_event(GdkEvent *event);
+	virtual bool on_event(GdkEvent *event);
 	void on_toggle(const Glib::ustring& path_string);
 	void on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value);
 

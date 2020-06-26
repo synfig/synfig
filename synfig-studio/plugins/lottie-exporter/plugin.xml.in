@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin>
    <_name>Export to Lottie format</_name>
-   <exec>lottie-exporter.py</exec>
+   <exporter>
+       <extension>json</extension>
+       <_description>Lottie Animation (*.json)</_description>
+       <exec stdout="log">lottie-exporter.py</exec>
+   </exporter>
+   <exporter>
+       <extension>html</extension>
+       <_description>Lottie HTML Preview (*.html)</_description>
+       <exec stdout="log">lottie-exporter.py</exec>
+   </exporter>
 </plugin> 

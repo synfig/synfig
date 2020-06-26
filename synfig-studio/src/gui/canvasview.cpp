@@ -136,6 +136,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -266,6 +268,7 @@ public:
 		{
 			view->statusbar->pop();
 			view->statusbar->push(task);
+			view->statusbar->set_tooltip_text(task);
 		}
 		//App::process_all_events();
 		if(view->cancel){return false;}
@@ -1264,9 +1267,9 @@ CanvasView::create_display_bar()
 
 	{ // Setup draft rendering mode button
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
-		render_combobox->append("Draft");
-		render_combobox->append("Preview");
-		render_combobox->append("Final");
+		render_combobox->append(_("Draft"));
+		render_combobox->append(_("Preview"));
+		render_combobox->append(_("Final"));
 		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
 		render_combobox->set_tooltip_text( _("Select rendering mode"));
 		render_combobox->set_active(1);
@@ -1362,7 +1365,10 @@ CanvasView::create_display_bar()
 		displaybar->append(*toolitem);
 	}
 
-	displaybar->show();
+	if(App::enable_mainwin_toolbar)
+		displaybar->show();
+	else
+		displaybar->hide();
 	cancel=false;
 
 	{
@@ -1439,6 +1445,9 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As..."), _("Save As")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
 	);
+	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
+	);
 	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(save_all)
 	);
@@ -1514,11 +1523,15 @@ CanvasView::init_menus()
 		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
 	);
 
-	std::list<PluginManager::plugin> plugin_list = App::plugin_manager.get_list();
-	for(std::list<PluginManager::plugin>::const_iterator p = plugin_list.begin(); p != plugin_list.end(); ++p)
+    auto instance = get_instance().get();
+	for ( const auto& plugin : App::plugin_manager.plugins() )
+    {
+		std::string id = plugin.id;
 		action_group->add(
-			Gtk::Action::create(p->id, p->name),
-			sigc::bind( sigc::mem_fun(*get_instance().get(), &Instance::run_plugin), p->path ) );
+			Gtk::Action::create(id, plugin.name.get()),
+			[instance, id](){instance->run_plugin(id, true);}
+        );
+    }
 
 	// Low-Res Quality Menu
 	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {
@@ -1982,15 +1995,18 @@ CanvasView::create_tab_label()
 bool
 CanvasView::on_button_press_event(GdkEventButton * /* event */)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (this != App::get_selected_canvas_view())
 		App::set_selected_canvas_view(this);
 	return false;
 	//return Dockable::on_button_press_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 CanvasView::on_key_press_event(GdkEventKey* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	Gtk::Widget* focused_widget = App::main_window->get_focus();
 	if(focused_widget && focused_widget_has_priority(focused_widget))
 	{
@@ -2018,6 +2034,7 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 		}
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
@@ -2100,7 +2117,11 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 			{
 				//menu->set_accel_group(App::ui_manager()->get_accel_group());
 				//menu->accelerate(*this);
+			#if GTK_CHECK_VERSION(3, 22, 0)
+				menu->get_submenu()->popup_at_pointer(nullptr);
+			#else
 				menu->get_submenu()->popup(button,gtk_get_current_event_time());
+			#endif
 			}
 
 			#if 0
@@ -2922,45 +2943,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 
 		Gtk::Menu* interp_menu_in(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));
-		Gtk::Menu* interp_menu_both(manage(new Gtk::Menu()));
 		Gtk::MenuItem *item = NULL;
-
-		{
-			Waypoint::Model model;
-
-			#define APPEND_MENU_ITEM(menu, StockId, Text) \
-				item = manage(new Gtk::ImageMenuItem( \
-					*manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
-					_(Text) )); \
-				item->set_use_underline(true); \
-				item->signal_activate().connect( \
-					sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())); \
-				item->show_all(); \
-				menu->append(*item);
-
-			#define APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, TextIn, TextOut, TextBoth) \
-				model.reset(); \
-				model.set_before(Interpolation); \
-				APPEND_MENU_ITEM(interp_menu_in, StockId, TextIn) \
-				model.reset(); \
-				model.set_after(Interpolation); \
-				APPEND_MENU_ITEM(interp_menu_out, StockId, TextOut) \
-				model.set_before(Interpolation); \
-				APPEND_MENU_ITEM(interp_menu_both, StockId, TextBoth)
-
-			#define APPEND_ITEMS_TO_ALL_MENUS(Interpolation, StockId, Text) \
-				APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, Text, Text, Text)
-
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("_TCB"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("_Linear"))
-			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("_Constant"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("_Clamped"))
-
-			#undef APPEND_ITEMS_TO_ALL_MENUS
-			#undef APPEND_ITEMS_TO_ALL_MENUS3
-			#undef APPEND_MENU_ITEM
-		}
 
 		// ------------------------------------------------------------------------
 		if (size == 1)
@@ -3007,16 +2990,12 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		}
 
 		// ------------------------------------------------------------------------
+
 		item = manage(new Gtk::SeparatorMenuItem());
 		item->show();
 		waypoint_menu->append(*item);
 
 		// ------------------------------------------------------------------------
-		item = manage(new Gtk::MenuItem(_("_Both")));
-		item->set_use_underline(true);
-		item->set_submenu(*interp_menu_both);
-		item->show();
-		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_In")));
 		item->set_use_underline(true);
@@ -3029,6 +3008,51 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		item->set_submenu(*interp_menu_out);
 		item->show();
 		waypoint_menu->append(*item);
+		
+		// ------------------------------------------------------------------------
+		
+		item = manage(new Gtk::SeparatorMenuItem());
+		item->show();
+		waypoint_menu->append(*item);
+		
+		// ------------------------------------------------------------------------
+		
+		{
+			Waypoint::Model model;
+
+			#define APPEND_MENU_ITEM(menu, StockId, Text) \
+				item = manage(new Gtk::ImageMenuItem( \
+					*manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
+					_(Text) )); \
+				item->set_use_underline(true); \
+				item->signal_activate().connect( \
+					sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())); \
+				item->show_all(); \
+				menu->append(*item);
+
+			#define APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, TextIn, TextOut, TextBoth) \
+				model.reset(); \
+				model.set_before(Interpolation); \
+				APPEND_MENU_ITEM(interp_menu_in, StockId, TextIn) \
+				model.reset(); \
+				model.set_after(Interpolation); \
+				APPEND_MENU_ITEM(interp_menu_out, StockId, TextOut) \
+				model.set_before(Interpolation); \
+				APPEND_MENU_ITEM(waypoint_menu, StockId, TextBoth)
+
+			#define APPEND_ITEMS_TO_ALL_MENUS(Interpolation, StockId, Text) \
+				APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, Text, Text, Text)
+
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("_Clamped"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("_TCB"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("_Constant"))
+			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("_Linear"))
+
+			#undef APPEND_ITEMS_TO_ALL_MENUS
+			#undef APPEND_ITEMS_TO_ALL_MENUS3
+			#undef APPEND_MENU_ITEM
+		}
 
 		// ------------------------------------------------------------------------
 		waypoint_menu->popup(button+1,gtk_get_current_event_time());
@@ -3311,12 +3335,12 @@ CanvasView::on_keyframe_description_set()
 			return;
 
 		String str(keyframe.get_description ());
-		if(!App::dialog_entry((action->get_local_name() + _(" Description")),
+		if(!App::dialog_entry(_("Set Keyframe Description"),
 					_("Description: "),
 					//action->get_local_name(),
 					str,
 					_("Cancel"),
-					_("Set")))
+					_("Ok")))
 			return;
 
 		keyframe.set_description(str);
@@ -3478,19 +3502,28 @@ CanvasView::squence_import()
 	String errors, warnings;
 	if(App::dialog_open_file_image_sequence(_("Please select a file"), filenames, IMAGE_DIR_PREFERENCE))
 	{
-		canvas_interface()->import_sequence(filenames, errors, warnings, App::resize_imported_images);
-		if (!errors.empty())
-			App::dialog_message_1b(
-				"ERROR",
-				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
-				"details",
-				_("Close"));
-		if (!warnings.empty())
-			App::dialog_message_1b(
-				"WARNING",
-				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
-				"details",
-				_("Close"));
+		int answer = get_ui_interface()->yes_no_cancel(
+				("Remove Duplicates while importing?"),
+				_("Synfig will detect and remove consecutive duplicates (if any)."),
+				_("No"),
+				_("Cancel"),
+				_("Yes"),
+				UIInterface::RESPONSE_NO);
+		if(answer!=UIInterface::RESPONSE_CANCEL){
+			canvas_interface()->import_sequence(filenames, errors, warnings, App::resize_imported_images,answer);
+			if (!errors.empty())
+				App::dialog_message_1b(
+						"ERROR",
+						etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+						"details",
+						_("Close"));
+			if (!warnings.empty())
+				App::dialog_message_1b(
+						"WARNING",
+						etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+						"details",
+						_("Close"));
+		}
 	}
 }
 
@@ -3627,7 +3660,7 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y, bool own)
 		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_LAYER_SELECTION_CHANGED));
 		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 		layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_layer_user_click));
-		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_children_user_click));
+//		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_param_user_click));
 		layer_tree->signal_waypoint_clicked_layertree().connect(sigc::mem_fun(*this, &CanvasView::on_waypoint_clicked_canvasview));
 	}
 	if(x=="children")
@@ -3682,7 +3715,7 @@ CanvasView::set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id)
 }
 
 bool
-CanvasView::on_delete_event(GdkEventAny* event __attribute__ ((unused)))
+CanvasView::on_delete_event(GdkEventAny* event)
 {
 	close_view();
 
@@ -3805,3 +3838,11 @@ CanvasView::interpolation_refresh()
 void
 CanvasView::on_interpolation_changed()
 	{ synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value())); }
+
+void 
+CanvasView::toggle_show_toolbar(){
+	if(App::enable_mainwin_toolbar)
+		displaybar->show();
+	else
+		displaybar->hide();
+};

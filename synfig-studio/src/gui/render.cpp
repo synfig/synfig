@@ -55,6 +55,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/progresslogger.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -83,6 +85,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	toggle_extract_alpha(_("Extract alpha"), true),
 	tparam("mpeg4",6000)
 {
+	progress_logger.reset(new ProgressLogger());
 	tparam.sequence_separator=App::sequence_separator;
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));
@@ -194,8 +197,6 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_cancel_pressed));
 
-	//set_default_response(1);
-
 	set_title(_("Render Settings")+String(" - ")+canvas_interface_->get_canvas()->get_name());
 
 	widget_rend_desc.enable_time_section();
@@ -227,7 +228,7 @@ RenderSettings::set_entry_filename()
 	try
 	{
 		if(!comboboxtext_target.get_active_row_number())
-			entry_filename.set_text((filename +".avi"));
+			entry_filename.set_text(Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename + ".avi");
 		// in case the file was saved and loaded again then .ext should be according to target
 		else on_comboboxtext_target_changed();
 	}
@@ -279,6 +280,8 @@ RenderSettings::on_choose_pressed()
 	String filename=entry_filename.get_text();
 	if(App::dialog_save_file_render("Save Render As", filename, RENDER_DIR_PREFERENCE))
 		entry_filename.set_text(filename);
+
+	present();
 }
 
 void
@@ -305,12 +308,50 @@ void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
+	
+	if(!check_target_destination())
+	{
+		present();
+		entry_filename.grab_focus();
+		return;
+	}
+	
+	hide();
+		
+	render_passes.clear();
+		
+	if(toggle_extract_alpha.get_active())
+	{
+		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
+
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
+
+	} else {
+		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
+	}
+
+	App::dock_info_->set_n_passes_requested(render_passes.size());
+	App::dock_info_->set_n_passes_pending(render_passes.size());
+	App::dock_info_->set_render_progress(0.0);
+	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
+
+	progress_logger->clear();
+	submit_next_render_pass();
+
+	return;
+}
+
+bool
+RenderSettings::check_target_destination()
+{
+	String filename=entry_filename.get_text();
 	calculated_target_name=target_name;
 
 	if(filename.empty())
 	{
 		canvas_interface_->get_ui_interface()->error(_("You must supply a filename!"));
-		return;
+		return false;
 	}
 
 	// If the target type is not yet defined,
@@ -336,38 +377,100 @@ RenderSettings::on_render_pressed()
 		catch(std::runtime_error& x)
 		{
 			canvas_interface_->get_ui_interface()->error(_("Unable to determine proper target from filename."));
-			return;
+			return false;
 		}
 	}
 
 	if(filename.empty() && calculated_target_name!="null")
 	{
 		canvas_interface_->get_ui_interface()->error(_("A filename is required for this target"));
-		return;
+		return false;
 	}
-
-	hide();
-
-	render_passes.clear();
-	if (toggle_extract_alpha.get_active())
+	
+	String extension(filename_extension(filename));
+	bool ext_multi_file = false; //output target is an image sequence
+	int n_frames_overwrite = 0;
+	
+	//Retrieve current render settings
+	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
+	
+	if(!toggle_single_frame.get_active() && (calculated_target_name != "png-spritesheet")
+			&& (rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
 	{
-		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
+		//Check format which could have an image sequence as output
+		//If format is selected in comboboxtext_target
+		std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},{"cairo_png",".png"},
+					{"imagemagick",".png"}, {"jpeg",".jpg"},{"mng",".mng"},
+					{"openexr",".exr"},{"png",".png"},{"ppm",".ppm"}};
+	
+		std::map<std::string,std::string>::iterator ext_multi_it;
+		ext_multi_it = ext_multi.find(calculated_target_name);
+	
+		//calculated_target_name is a candidate with known output target (not Auto)
+		if(ext_multi_it != ext_multi.end())
+		{
+			extension = ext_multi_it->second;
+			ext_multi_file = true;
+		}
+		//otherwise Auto is selected
+		else
+		{
+			std::list<std::string> ext_multi_auto = {{".bmp"}, {".png"},
+					{".jpg"},{".exr"},{".ppm"}};
+	
+			ext_multi_file = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
+					filename_extension(filename)) != ext_multi_auto.end());
+		}
 
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
-
-	} else {
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
+		//Image sequence: filename + sequence_separator + time
+		if(ext_multi_file)
+			for(int n_frame = rend_desc.get_frame_start();
+					n_frame <= rend_desc.get_frame_end();
+					n_frame++)
+			{
+				if(Glib::file_test(filename_sans_extension(filename) +
+					tparam.sequence_separator + 
+					etl::strprintf("%04d", n_frame) +
+					extension, Glib::FILE_TEST_EXISTS))
+					n_frames_overwrite++;
+			}
 	}
-	
-	App::dock_info_->set_n_passes_requested(render_passes.size());
-	App::dock_info_->set_n_passes_pending(render_passes.size());
-	App::dock_info_->set_render_progress(0.0);
-	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
-	
-	submit_next_render_pass();
 
-	return;
+	String message;
+	String details;
+	
+	if(n_frames_overwrite == 0)
+	{
+		message = strprintf(_("A file named \"%s\" already exists. "
+							"Do you want to replace it?"),
+							basename(filename).c_str());
+	
+		details = strprintf(_("The file already exists in \"%s\". "
+							"Replacing it will overwrite its contents."),
+							dirname(filename).c_str());
+	}
+	else
+	{
+		message = strprintf(_("%d files with the same name already exist. "
+							"Do you want to replace them?"),
+							n_frames_overwrite);
+	
+		details = strprintf(_("The files already exist in \"%s\". "
+							"Replacing them will overwrite their contents."),
+							dirname(filename).c_str());
+	}
+
+	//Ask user whether to overwrite file with same name
+	if(((Glib::file_test(filename, Glib::FILE_TEST_EXISTS)) || n_frames_overwrite > 0)
+			&& !App::dialog_message_2b(
+		message,
+		details,
+		Gtk::MESSAGE_QUESTION,
+		_("Use Another Name…"),
+		_("Replace")))
+		return false;
+	
+	return true;
 }
 
 void
@@ -418,7 +521,7 @@ RenderSettings::submit_next_render_pass()
 		if(pass_alpha_mode!=TARGET_ALPHA_MODE_KEEP)
 			target->set_alpha_mode(pass_alpha_mode);
 
-		canvas_interface_->get_ui_interface()->task(_("Rendering ")+pass_filename);
+		canvas_interface_->get_ui_interface()->task(strprintf(_("Rendering %s"), pass_filename.c_str()));
 
 		/*
 		if(async_renderer)
@@ -427,7 +530,7 @@ RenderSettings::submit_next_render_pass()
 			async_renderer.detach();
 		}
 		*/
-		async_renderer=new AsyncRenderer(target);
+		async_renderer=new AsyncRenderer(target, progress_logger.get());
 		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
 		async_renderer->start();
 		/*
@@ -447,13 +550,16 @@ RenderSettings::submit_next_render_pass()
 }
 
 void
-RenderSettings::on_finished()
+RenderSettings::on_finished(std::string error_message)
 {
-	String text(_("File rendered successfully"));
+	String text(_("Animation rendered successfully"));
 	Real execution_time = async_renderer ? async_renderer->get_execution_time() : 0.0;
 	if (execution_time > 0) text += strprintf(" (%f %s)", execution_time, _("sec"));
 
-	canvas_interface_->get_ui_interface()->task(text);
+	bool success = error_message.empty();
+
+	if (success)
+		canvas_interface_->get_ui_interface()->task(text);
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 
 	bool really_finished = (render_passes.size() == 0); //Must be checked BEFORE submit_next_render_pass();
@@ -467,6 +573,10 @@ RenderSettings::on_finished()
 		}
 		App::dock_info_->set_render_progress(1.0);
 	}
+
+	// Play the sound before show error dialog!
+	if (!success)
+		canvas_interface_->get_ui_interface()->error(error_message);
 }
 
 void

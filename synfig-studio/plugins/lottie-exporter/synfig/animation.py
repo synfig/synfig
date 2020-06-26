@@ -28,19 +28,19 @@ def gen_dummy_waypoint(non_animated, animated_tag, anim_type, animated_name="any
         (lxml.etree._Element) : Updated non-animated parameter, which is now animated
     """
     is_animate = is_animated(non_animated[0])
-    if is_animate == 2:
+    if is_animate == settings.ANIMATED:
         # If already animated, no need to add waypoints
         # Forcibly set it's animation type to the given anim_type :needed in:->
         # properties/shapePropKeyframe.py #31
         non_animated[0].attrib["type"] = anim_type
         return non_animated
-    elif is_animate == 0:
+    elif is_animate == settings.NOT_ANIMATED:
         st = '<{animated_tag} name="{animated_name}"><animated type="{anim_type}"><waypoint time="0s" before="constant" after="constant"></waypoint></animated></{animated_tag}>'
         st = st.format(anim_type=anim_type, animated_name=animated_name, animated_tag=animated_tag)
         root = etree.fromstring(st)
         root[0][0].append(copy.deepcopy(non_animated[0]))
         non_animated = root
-    elif is_animate == 1:
+    elif is_animate == settings.SINGLE_WAYPOINT:
         # Forcibly set it's animation type to the given anim_type
         non_animated[0].attrib["type"] = anim_type
 
@@ -374,7 +374,7 @@ def get_animated_time_list(child, time_list):
     """
     animated = child[0]
     is_animate = is_animated(animated)
-    if is_animate in {0, 1}:
+    if is_animate in {settings.NOT_ANIMATED, settings.SINGLE_WAYPOINT}:
         return
     for waypoint in animated:
         frame = get_frame(waypoint)
@@ -412,7 +412,7 @@ def copy_tcb_average(new_waypoint, waypoint, next_waypoint):
         cont1 = float(next_waypoint.attrib["continuity"])
     if "bias" in next_waypoint.keys():
         bias1 = float(next_waypoint.attrib["bias"])
-    f_tens, f_bias, f_cont = (tens + tens1) / 2, (bias + bias1) / 2, (cont + cont1) / 2
+    f_tens, f_bias, f_cont = (tens + tens1) / 2.0, (bias + bias1) / 2.0, (cont + cont1) / 2.0
     new_waypoint.attrib["tension"] = str(f_tens)
     new_waypoint.attrib["continuity"] = str(f_cont)
     new_waypoint.attrib["bias"] = str(f_bias)

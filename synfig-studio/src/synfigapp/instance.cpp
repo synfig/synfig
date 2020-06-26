@@ -317,8 +317,6 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	if (!target)
 		return false;
 
-	bool success = true;
-
 	target->set_canvas(get_canvas());
 	RendDesc desc;
 	desc.set_w(surface.get_w());
@@ -330,9 +328,8 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	desc.set_frame_start(0);
 	desc.set_frame_end(0);
 	target->set_rend_desc(&desc);
-	if (success)
-		success = target->add_frame(&surface);
-	target = NULL;
+	bool success = target->add_frame(&surface, nullptr);
+	target = nullptr;
 
 	if (success)
 		success = get_canvas()->get_file_system()->directory_create(etl::dirname(filename));

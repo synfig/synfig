@@ -22,5 +22,5 @@ EXTRA_DIST = \
 SUBDIRS = \
 	synfigapp \
 	gui \
-	test
+	player
 

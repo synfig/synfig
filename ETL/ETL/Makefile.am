@@ -35,8 +35,6 @@ etl_HEADERS = \
 	_clock_gettimeofday.h \
 	_angle.h \
 	_handle.h \
-	smach \
-	_smach.h \
 	_trivial.h \
 	_fixed.h \
 	etl_config.h \

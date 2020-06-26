@@ -55,6 +55,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -70,6 +72,8 @@ enum Axis {
 	AXIS_X,
 	AXIS_Y
 } ;
+
+const int GAP = 3;
 
 /* === G L O B A L S ======================================================= */
 
@@ -100,7 +104,7 @@ class studio::StateMirror_Context : public sigc::trackable
 	etl::handle<DuckDrag_Mirror> duck_dragger_;
 
 	Gtk::Table options_table;
-
+	Gtk::Label title_label;
 
 	sigc::connection keypress_connect;
 	sigc::connection keyrelease_connect;
@@ -127,9 +131,6 @@ public:
 		duck_dragger_->axis=get_axis();
 		get_work_area()->set_cursor(get_axis() == AXIS_X?Gdk::SB_H_DOUBLE_ARROW:Gdk::SB_V_DOUBLE_ARROW);
 	}
-
-
-
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
@@ -167,6 +168,11 @@ StateMirror::~StateMirror()
 {
 }
 
+void* StateMirror::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateMirror_Context(machine_context);
+}
+
 StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
@@ -175,10 +181,21 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	radiobutton_axis_y(radiobutton_group,_("Vertical"))
 {
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Mirror Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(radiobutton_axis_x, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(radiobutton_axis_y, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("(Shift key toggles axis)"))), 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	title_label.set_label(_("Mirror Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
+	options_table.attach(radiobutton_axis_x,
+		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(radiobutton_axis_y,
+		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("(Shift key toggles axis)"))),
+		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	radiobutton_axis_x.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
 	radiobutton_axis_y.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
@@ -186,6 +203,8 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	keypress_connect=get_work_area()->signal_key_press_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_press_event),false);
 	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_release_event),false);
 
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -204,6 +223,7 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 bool
 StateMirror_Context::key_press_event(GdkEventKey *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->keyval==GDK_KEY_Shift_L || event->keyval==GDK_KEY_Shift_R)
 	{
 		if (shift_is_pressed) return false;
@@ -213,11 +233,13 @@ StateMirror_Context::key_press_event(GdkEventKey *event)
 	}
 
 	return false; //Pass on the event to other handlers, just in case
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 StateMirror_Context::key_release_event(GdkEventKey *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->keyval==GDK_KEY_Shift_L || event->keyval==GDK_KEY_Shift_R )
 	{
 		if (!shift_is_pressed) return false;
@@ -227,6 +249,7 @@ StateMirror_Context::key_release_event(GdkEventKey *event)
 	}
 
 	return false; //Pass on the event to other handlers, just in case
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

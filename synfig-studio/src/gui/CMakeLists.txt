@@ -11,12 +11,13 @@ configure_file(autorevision.h.cmake.in autorevision.h)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ## Defines
+set(SYNFIG_DATA_PREFIX "${DATA_PREFIX}/share/synfig")
+
 add_definitions(-DIMAGE_EXT="${IMG_EXT}")
 add_definitions(-DIMAGE_DIR="${DATA_PREFIX}/share/pixmaps")
-add_definitions(-DSOUND_DIR="${DATA_PREFIX}/share/synfig/sounds")
-add_definitions(-DPLUGIN_DIR="${DATA_PREFIX}/share/synfig/plugins")
-add_definitions(-DUI_DIR="${DATA_PREFIX}/share/synfig/ui")
+add_definitions(-DSYNFIG_DATADIR="${SYNFIG_DATA_PREFIX}")
 add_definitions(-DLOCALEDIR="${DATA_PREFIX}/share/locale")
+add_definitions(-DCMAKE_BUILD)
 
 ##
 ## Targets
@@ -45,6 +46,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/onemoment.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/pluginmanager.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/preview.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/progresslogger.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renddesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/render.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/resourcehelper.cpp"

@@ -74,15 +74,6 @@ class LayerTree : public Gtk::Table
 public:
 
 	typedef studio::ColumnID ColumnID;
-/*	enum ColumnID
-	{
-		COLUMNID_NAME,
-		COLUMNID_VALUE,
-		COLUMNID_TIME_TRACK,
-
-		COLUMNID_END			//!< \internal
-	};
-*/
 	typedef std::list<synfig::Layer::Handle> LayerList;
 
 	/*
@@ -91,13 +82,8 @@ public:
 
 public:
 
-	//LayerTreeStore::Model model;
-
 	LayerTreeStore::Model layer_model;
 	LayerParamTreeStore::Model param_model;
-
-	synfig::Layer::Handle last_top_selected_layer;
-	Gtk::TreePath last_top_selected_path;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -146,17 +132,16 @@ private:
 
 	bool disable_amount_changed_signal;
 
-	Gtk::Button *button_raise;
-	Gtk::Button *button_lower;
-	Gtk::Button *button_duplicate;
-	Gtk::Button *button_encapsulate;
-	Gtk::Button *button_delete;
-
 	Widget_ValueBase blend_method_widget;
 
 	bool param_tree_style_changed;
 
 	int param_tree_header_height;
+
+	synfig::Layer::Handle last_top_selected_layer;
+	Gtk::TreePath last_top_selected_path;
+
+	bool disable_single_click_for_param_editing;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -205,18 +190,6 @@ private:
 
 	void on_param_column_label_tree_style_updated();
 	bool on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
-
-public:
-
-	// void on_raise_pressed();
-
-	// void on_lower_pressed();
-
-	// void on_duplicate_pressed();
-
-	// void on_encapsulate_pressed();
-
-	// void on_delete_pressed();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -280,7 +253,7 @@ public:
 private:
 	void get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const;
 
-	bool onKeyPress(GdkEventKey* event);
+	bool on_key_press_event(GdkEventKey* event);
 
 }; // END of LayerTree
 

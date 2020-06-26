@@ -86,8 +86,8 @@ using namespace studio;
 	name->set_size_request(px)
 #endif
 
-#define GAP	(3)
-#define INDENTATION (6)
+const int GAP = 3;
+const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -359,6 +359,11 @@ StateStar::~StateStar()
 {
 }
 
+void* StateStar::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateStar_Context(machine_context);
+}
+
 void
 StateStar_Context::load_settings()
 {
@@ -605,7 +610,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	/* Set up the tool options dialog */
 
 	// 0, title
-	title_label.set_label(_("Star Creation"));
+	title_label.set_label(_("Star Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
@@ -990,10 +995,10 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	}
 
 	std::vector<BLinePoint> new_list;
-	int point(0);
+	size_t point(0);
 	for (int i = 0; i < points; i++)
 	{
-		new_list.push_back(*(new BLinePoint));
+		new_list.push_back(BLinePoint());
 		new_list[point].set_width(outer_width);
 		new_list[point].set_vertex(Point(radius1*Angle::cos(angle*i + offset).get() + x,
 										 radius1*Angle::sin(angle*i + offset).get() + y));
@@ -1002,7 +1007,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 		if (!regular)
 		{
-			new_list.push_back(*(new BLinePoint));
+			new_list.push_back(BLinePoint());
 			new_list[point].set_width(inner_width);
 			new_list[point].set_vertex(Point(radius2*Angle::cos(angle*i + angle/2 + offset).get() + x,
 											 radius2*Angle::sin(angle*i + angle/2 + offset).get() + y));

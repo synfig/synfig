@@ -33,21 +33,13 @@
 
 #include <synfig/general.h>
 
-#include <gtkmm/label.h>
 #include <ETL/stringf>
 #include <gtkmm/celleditable.h>
 #include <gtkmm/editable.h>
-#include <gtkmm/entry.h>
 #include <gtkmm/eventbox.h>
 
 #include "app.h"
 #include "widgets/widget_value.h"
-#include "widgets/widget_vector.h"
-#include "widgets/widget_filename.h"
-#include "widgets/widget_enum.h"
-#include "widgets/widget_color.h"
-#include "widgets/widget_canvaschooser.h"
-#include "widgets/widget_time.h"
 
 #include "cellrenderer_gradient.h"
 #include "cellrenderer_value.h"
@@ -58,11 +50,12 @@
 #include "widgets/widget_gradient.h"
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
-#include <gtkmm/textview.h>
 
 #include <gdkmm/general.h>
 
 #include <gui/localization.h>
+
+#include <gui/exception_guard.h>
 
 #endif
 
@@ -73,33 +66,21 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define DIGITS		15
-
 /* === G L O B A L S ======================================================= */
 
 class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
 {
 	Glib::ustring     path;
 	Widget_ValueBase *valuewidget;
-	bool              edit_done_called;
 	Gtk::Widget      *parent;
+	bool              edit_done_called;
 public:
 	ValueBase_Entry():
 		Glib::ObjectBase(typeid(ValueBase_Entry))
 	{
-		parent           = 0;
+		parent           = nullptr;
 		edit_done_called = false;
-/*
-		  Gtk::HBox *const hbox = new Gtk::HBox(false, 0);
-		  add(*Gtk::manage(hbox));
 
-		  Gtk::Entry *entry_ = new Gtk::Entry();
-			entry_->set_text("bleh");
-		  hbox->pack_start(*Gtk::manage(entry_), Gtk::PACK_EXPAND_WIDGET);
-		  entry_->set_has_frame(false);
-		  entry_->gobj()->is_cell_renderer = true; // XXX
-
-*/
 		valuewidget = manage(new class Widget_ValueBase());
 		valuewidget->inside_cellrenderer();
 		add(*valuewidget);
@@ -108,27 +89,8 @@ public:
 		//set_can_focus(true);
 		//set_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 
-		/*
-		set_events(//(Gdk::ALL_EVENTS_MASK)
-		~(	Gdk::EXPOSURE_MASK
-			| Gdk::ENTER_NOTIFY_MASK
-			| Gdk::LEAVE_NOTIFY_MASK
-			| Gdk::FOCUS_CHANGE_MASK
-			| Gdk::STRUCTURE_MASK
-			| Gdk::PROPERTY_CHANGE_MASK
-			| Gdk::VISIBILITY_NOTIFY_MASK
-			| Gdk::PROXIMITY_IN_MASK
-			| Gdk::PROXIMITY_OUT_MASK
-			| Gdk::SUBSTRUCTURE_MASK
-		)
-		);
-		*/
-		//signal_editing_done().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::hide));
-		//signal_remove_widget().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::hide));
-
 		show_all_children();
 
-		//signal_show().connect(sigc::mem_fun(*this, &ValueBase_Entry::grab_focus));
 	}
 	~ValueBase_Entry()
 	{
@@ -159,17 +121,44 @@ public:
 		Gtk::CellEditable::on_remove_widget();
 	}
 
-	void start_editing_vfunc(GdkEvent */*event*/)
+	void start_editing_vfunc(GdkEvent *event)
 	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		valuewidget->signal_activate().connect(sigc::mem_fun(*this,
 			&studio::ValueBase_Entry::editing_done));
+
+		// popup combobox menu if its is a enum editor
+		if (event && event->type == GDK_BUTTON_PRESS && valuewidget) {
+			Type &type(valuewidget->get_value().get_type());
+			bool popup_combobox = false;
+			if (type == type_integer) {
+				string param_hint = valuewidget->get_param_desc().get_hint();
+				string child_param_hint = valuewidget->get_child_param_desc().get_hint();
+				if ( param_hint == "enum" || child_param_hint == "enum" )
+					popup_combobox = true;
+			} else if (type == type_canvas)
+				popup_combobox = true;
+			else if (type == type_bone_valuenode)
+				popup_combobox = true;
+			else if (type == type_string) {
+				string param_hint = valuewidget->get_param_desc().get_hint();
+				string child_param_hint = valuewidget->get_child_param_desc().get_hint();
+				if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
+					popup_combobox = true;
+			}
+			if (popup_combobox)
+				valuewidget->popup_combobox();
+		}
+
 		show();
 		//valuewidget->grab_focus();
 		//get_window()->set_focus(*valuewidget);
+		SYNFIG_EXCEPTION_GUARD_END()
 	}
 
 	bool on_event(GdkEvent *event)
 	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if (event->any.type == GDK_BUTTON_PRESS
 		 || event->any.type == GDK_2BUTTON_PRESS
 		 || event->any.type == GDK_KEY_PRESS
@@ -178,6 +167,7 @@ public:
 		 || event->any.type == GDK_3BUTTON_PRESS )
 			return true;
 		return Gtk::EventBox::on_event(event);
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	}
 
 	void on_grab_focus()
@@ -289,10 +279,10 @@ CellRenderer_ValueBase::string_edited_(const Glib::ustring& path, const Glib::us
 
 	if (old_value.get_type() == type_time)
 	{
-		value = ValueBase( Time( (String)str, get_canvas()->rend_desc().get_frame_rate() ) );
+		value = ValueBase( Time(str, get_canvas()->rend_desc().get_frame_rate() ) );
 	}
 	else
-		value = ValueBase( (String)str );
+		value = ValueBase( str );
 
 	if (old_value != value)
 		signal_edited_(path, value);
@@ -489,7 +479,6 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_nil)
 	{
-		//property_text()=(Glib::ustring)" ";
 		return;
 	}
 	else
@@ -578,17 +567,18 @@ CellRenderer_ValueBase::color_edited(synfig::Color color, Glib::ustring path)
 
 Gtk::CellEditable*
 CellRenderer_ValueBase::start_editing_vfunc(
-	GdkEvent*              event           __attribute__ ((unused)),
+	GdkEvent*              /*event*/,
 	Gtk::Widget&           widget,
 	const Glib::ustring&   path,
-	const Gdk::Rectangle&  background_area __attribute__ ((unused)),
-	const Gdk::Rectangle&  cell_area       __attribute__ ((unused)),
-	Gtk::CellRendererState flags           __attribute__ ((unused)))
+	const Gdk::Rectangle&  /*background_area*/,
+	const Gdk::Rectangle&  /*cell_area*/,
+	Gtk::CellRendererState /*flags*/)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	edit_value_done_called = false;
 	// If we aren't editable, then there is nothing to do
 	if (!property_editable())
-		return 0;
+		return nullptr;
 
 	ValueBase data = property_value_.get_value();
 
@@ -597,7 +587,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	if (type == type_bool)
 	{
 		signal_edited_( path, ValueBase(!data.get(bool())) );
-		return NULL;
+		return nullptr;
 	}
 	//else
 	//if (type == type_time)
@@ -618,7 +608,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		);
 		App::dialog_gradient->set_default_button_set_sensitive(true);
 		App::dialog_gradient->present();
-		return NULL;
+		return nullptr;
 	}
 	else
 	if (type == type_color)
@@ -632,7 +622,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			)
 		);
 		App::dialog_color->present();
-		return NULL;
+		return nullptr;
 	}
 	else
 	if (type == type_string
@@ -642,14 +632,14 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		string = data.get(string);
 		if (get_paragraph(string))
 			signal_edited_(path, ValueBase(string));
-		return NULL;
+		return nullptr;
 	}
 	// if (type == type_string) && (get_param_desc().get_hint()!="filename")
 		// return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
 	else
 	{
 		assert(get_canvas());
-		//delete value_entry;
+
 		saved_data = data;
 
 		value_entry = manage(new ValueBase_Entry());
@@ -660,11 +650,13 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		value_entry->set_child_param_desc(get_child_param_desc());
 		value_entry->set_value(data);
 		value_entry->set_parent(&widget);
+		value_entry->show(); // in order to enable "instant"/"single-click" pop-up for enum comboboxes
 		value_entry->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
 		return value_entry;
 	}
 
-	return NULL;
+	return nullptr;
+	SYNFIG_EXCEPTION_GUARD_END_NULL(nullptr)
 }
 
 void
@@ -680,15 +672,9 @@ CellRenderer_ValueBase::on_value_editing_done()
 
 	if (value_entry)
 	{
+		ValueBase value(value_entry->get_value());
 
-		//ValueBase old_value(property_value_.get_value());
-		ValueBase     value(value_entry->get_value());
-
-		//if (old_value != value)
 		if (saved_data != value)
 			signal_edited_(value_entry->get_path(), value);
-
-		//delete value_entry;
-		//value_entry=0;
 	}
 }

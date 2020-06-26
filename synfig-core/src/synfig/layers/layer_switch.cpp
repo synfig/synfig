@@ -95,13 +95,13 @@ Layer_Switch::get_param_vocab()const
 
 	ret.push_back(ParamDesc("layer_name")
 		.set_local_name(_("Active Layer Name"))
-		.set_description(_("Only layer with specified name are visible"))
+		.set_description(_("Only the layer with the specified name is visible"))
 		.set_hint("sublayer_name")
 	);
 
 	ret.push_back(ParamDesc("layer_depth")
 		.set_local_name(_("Active Layer Depth"))
-		.set_description(_("Used when layer name is empty. Only layer with specified depth is visible"))
+		.set_description(_("Used when Active Layer Name is empty. Only the layer with the specified depth is visible"))
 	);
 
 	return ret;

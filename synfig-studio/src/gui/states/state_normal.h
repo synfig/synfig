@@ -46,6 +46,7 @@ class StateNormal : public Smach::state<StateNormal_Context>
 public:
 	StateNormal();
 	~StateNormal();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateNormal
 
 extern StateNormal state_normal;

@@ -45,6 +45,7 @@ class StateDraw : public Smach::state<StateDraw_Context>
 public:
 	StateDraw();
 	~StateDraw();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateDraw
 
 extern StateDraw state_draw;

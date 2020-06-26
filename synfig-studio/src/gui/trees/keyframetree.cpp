@@ -41,6 +41,7 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -262,6 +263,7 @@ KeyframeTree::on_edited_description(const Glib::ustring&path_string,const Glib::
 bool
 KeyframeTree::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
 	case GDK_KEY_PRESS:
@@ -332,6 +334,7 @@ KeyframeTree::on_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

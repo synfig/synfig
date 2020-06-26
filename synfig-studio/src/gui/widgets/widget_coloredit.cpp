@@ -33,25 +33,18 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "widgets/widget_coloredit.h"
-#include <cmath>
-#include "app.h"
-#include <gtkmm/drawingarea.h>
+#include <gui/app.h>
 #include <pangomm/attributes.h>
 #include <pangomm/attrlist.h>
 #include <algorithm>
 #include <gtkmm/notebook.h>
 #include <gtkmm/box.h>
-#include <gtkmm/widget.h>
 #include <gtkmm/colorselection.h>
-#include <gtk/gtk.h>
-#include <gdk/gdk.h>
-#include <gdkmm/color.h>
-#include <climits>
 
 #include <gui/localization.h>
+
+#include <gui/exception_guard.h>
 
 #endif
 
@@ -76,7 +69,7 @@ using namespace studio;
 ColorSlider::ColorSlider(const ColorSlider::Type &x):
 	type(x)
 {
-	set_size_request(-1,12);
+	set_size_request(-1,16);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 }
@@ -85,7 +78,7 @@ void
 ColorSlider::set_type(Type x) { type=x; queue_draw(); }
 
 void
-ColorSlider::set_color(synfig::Color x) { orig_color=x; color_=x; queue_draw(); }
+ColorSlider::set_color(synfig::Color x) { color_=x; queue_draw(); }
 
 void
 ColorSlider::slider_color_TYPE_R(synfig::Color &color, float amount) { color.set_r(amount); }
@@ -132,12 +125,11 @@ ColorSlider::draw_arrow(
 	int size,
 	bool fill)
 {
-	//TODO hardcoded colors
+	// hardcoded colors
 	Color dark(0, 0, 0);
 	Color light(1, 1, 1);
 
-	//!TODO FActorize ! (Duplicate code with "Widget_Keyframe_List::draw_arrow")
-	//! Upper black pointing down arrow
+	// Upper black pointing down arrow
 	cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
 	cr->set_line_width(1.0);
 	cr->move_to(x, y);
@@ -145,16 +137,11 @@ ColorSlider::draw_arrow(
 	cr->line_to(x + 0.5*width, y - height);
 	cr->close_path();
 	if (fill)
-	{
-/*		//! Draw on outline
-		cr->fill_preserve();
-		cr->set_source_rgb(light.get_r(), light.get_g(), light.get_b());
-		cr->stroke();
-*/
 		cr->fill();
-	}else cr->stroke();
+	else
+		cr->stroke();
 
-	//! Bottom light pointing up arrow
+	// Bottom light pointing up arrow
 	cr->set_source_rgb(light.get_r(), light.get_g(), light.get_b());
 	cr->set_line_width(1.0);
 	cr->move_to(x, size - height);
@@ -162,14 +149,9 @@ ColorSlider::draw_arrow(
 	cr->line_to(x + 0.5*width, size);
 	cr->close_path();
 	if (fill)
-	{
-/*		//! Draw on outline
-		cr->fill_preserve();
-		cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
-		cr->stroke();
-*/
 		cr->fill();
-	}else cr->stroke();
+	else
+		cr->stroke();
 }
 
 bool
@@ -258,8 +240,8 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
     cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
     cr->stroke();
 
-    //! Draw face to face contrasted arrows
-    draw_arrow(cr, (int(amount*width)), height/2, height/2, height/2, height, 1);
+    // Draw face to face contrasted arrows
+    draw_arrow(cr, int(amount*width), height/2, height/2, height/2, height, 1);
 
 	return true;
 }
@@ -267,6 +249,7 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 bool
 ColorSlider::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	const int width(get_width());
 	float x = 0;
 	if( GDK_SCROLL == event->type ){
@@ -320,7 +303,6 @@ ColorSlider::on_event(GdkEvent *event)
 
 	case GDK_BUTTON_PRESS:
 	case GDK_MOTION_NOTIFY:
-//		adjust_color(type,color_,pos);
 		signal_slider_moved_(type,pos);
 		queue_draw();
 		return true;
@@ -329,6 +311,7 @@ ColorSlider::on_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 /* === M E T H O D S ======================================================= */
@@ -553,8 +536,10 @@ Widget_ColorEdit::on_hex_edited()
 bool
 Widget_ColorEdit::on_hex_focus_out(GdkEventFocus* /*event*/)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	on_hex_edited();
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

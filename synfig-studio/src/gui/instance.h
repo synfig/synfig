@@ -180,7 +180,7 @@ public:
 
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
 
-	void run_plugin(std::string plugin_path);
+	void run_plugin(std::string plugin_id, bool modify_canvas, std::vector<std::string> extra_args = {});
 
 	bool save_as(const synfig::String &filename);
 
@@ -190,6 +190,8 @@ public:
 	//! Opens a "Save As" dialog, and then saves the composition to that file
 	//! returns true if the save was successful
 	bool dialog_save_as();
+
+	bool dialog_export();
 
 	void open();
 

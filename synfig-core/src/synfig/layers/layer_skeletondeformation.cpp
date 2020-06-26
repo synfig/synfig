@@ -46,7 +46,6 @@
 #include <synfig/rendering/common/task/tasklayer.h>
 
 #include <vector>
-#include <map>
 #include <algorithm>
 
 #endif

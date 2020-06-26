@@ -85,8 +85,8 @@ using namespace studio;
 	name->set_size_request(px)
 #endif
 
-#define GAP	(3)
-#define INDENTATION (6)
+const int GAP = 3;
+const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -253,6 +253,11 @@ StateGradient::~StateGradient()
 {
 }
 
+void* StateGradient::enter_state(studio::CanvasView* machine_context) const
+{
+	return new StateGradient_Context(machine_context);
+}
+
 void
 StateGradient_Context::load_settings()
 {
@@ -393,7 +398,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	// Set up the tool options dialog
 
 	// title
-	title_label.set_label(_("Gradient Creation"));
+	title_label.set_label(_("Gradient Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);

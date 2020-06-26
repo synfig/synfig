@@ -9,12 +9,11 @@ env:
     - BUILD_FILENAME="build-$TRAVIS_OS_NAME.$TRAVIS_BUILD_NUMBER-$(date '+%Y-%m-%d_%H_%M_%S').tgz"
     - MAKE_THREADS=4
 
-matrix:
+jobs:
   include:
 
   - os: linux
     name: "Synfig Studio Ubuntu 18.04 Bionic (Check appdata.xml)"
-    sudo: required
     dist: bionic
     before_install:
       - sudo apt update && sudo apt install flatpak
@@ -24,7 +23,6 @@ matrix:
 
   - os: linux
     name: "Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
-    sudo: required
     dist: xenial
     cache: ccache
     before_install: ./1-setup-linux-native.sh
@@ -36,7 +34,6 @@ matrix:
   - os: linux
     if: false
     name: "Distcheck - Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
-    sudo: required
     dist: xenial
     cache: ccache
     before_install: ./1-setup-linux-native.sh
@@ -48,7 +45,6 @@ matrix:
   - os: linux
     name: "Synfig Studio Ubuntu 16.04 Xenial (CMake/Ninja)"
     env: CMAKE=true
-    sudo: required
     dist: xenial
     cache: ccache
     before_install: sudo apt-get install ninja-build && ./1-setup-linux-native.sh
@@ -60,7 +56,6 @@ matrix:
 
   - os: linux
     name: "Test render engine for regressions"
-    sudo: required
     dist: xenial
     cache: ccache
     before_install: ./1-setup-linux-native.sh
@@ -71,7 +66,6 @@ matrix:
 
   - os: osx
     name: "Synfig Studio OS X 10.10 Yosemite (Clang/Autotools/Brew)"
-    sudo: required
     osx_image: xcode6.4
     env:
       - HOMEBREW_NO_AUTO_UPDATE=1
@@ -87,7 +81,6 @@ matrix:
 
   - os: osx
     name: "Synfig Studio OS X 10.13 High Sierra (Clang/Autotools/Brew)"
-    sudo: required
     osx_image: xcode10
     env:
       - HOMEBREW_NO_AUTO_UPDATE=1
@@ -104,11 +97,20 @@ matrix:
 
   - os: linux
     name: "Lottie exporter Ubuntu 16.04 Xenial"
-    sudo: required
     dist: xenial
     before_install: ./1-setup-linux-native.sh
     script: ./autobuild/lottie_test.sh
 
+  - os: linux
+    name: "Transifex push template Ubuntu 16.04 Xenial"
+    if: branch = translations   # Job should run only on translations branch
+    dist: xenial
+    script: bash autobuild/transifex-push-translations.sh
+
+  - os: linux
+    name: "Translations validation Ubuntu 16.04 Xenial"
+    dist: xenial
+    script: bash autobuild/translations-validation.sh
 
   allow_failures:
   #  - env: CMAKE=true

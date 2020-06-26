@@ -45,6 +45,7 @@ class StateWidth : public Smach::state<StateWidth_Context>
 public:
 	StateWidth();
 	~StateWidth();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateWidth
 
 extern StateWidth state_width;

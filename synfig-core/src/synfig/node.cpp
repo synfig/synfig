@@ -41,28 +41,10 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
-
-#ifndef __sys_clock
-	#ifndef _WIN32
-		# include <time.h>
-		# define __sys_clock	::clock
-	#else
-		# ifdef __GNUG__
-			#  include <time.h>
-			#  define __sys_clock	::clock
-		# else
-			typedef int clock_t;
-			extern clock_t _clock();
-			#  define CLOCKS_PER_SEC 1000
-			#  define __sys_clock	_clock
-		# endif // __GNUG__
-	#endif // _WIN_32
-#endif // __sys_clock
 
 /* === G L O B A L S ======================================================= */
 
@@ -186,9 +168,9 @@ TimePointSet::insert(const TimePoint& x)
 
 
 Node::Node():
-	guid_(0),
+	guid_(GUID::zero()),
 	bchanged(true),
-	time_last_changed_(__sys_clock()),
+	time_last_changed_(clock()),
 	deleting_(false)
 {
 }
@@ -203,7 +185,7 @@ Node::~Node()
 void
 Node::changed()
 {
-	time_last_changed_=__sys_clock();
+	time_last_changed_= clock();
 	on_changed();
 }
 
@@ -328,7 +310,7 @@ Node::on_changed()
 	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 	{
 		printf("%s:%d Node::on_changed() for %lx (%s); signalling these %zd parents:\n", __FILE__, __LINE__, uintptr_t(this), get_string().c_str(), parent_set.size());
-		for (set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); iter++) printf(" %lx (%s)\n", uintptr_t(*iter), (*iter)->get_string().c_str());
+		for (std::set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); ++iter) printf(" %lx (%s)\n", uintptr_t(*iter), (*iter)->get_string().c_str());
 		printf("\n");
 	}
 

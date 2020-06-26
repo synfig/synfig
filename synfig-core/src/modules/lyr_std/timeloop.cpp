@@ -154,7 +154,7 @@ Layer_TimeLoop::get_param_vocab()const
 
 	ret.push_back(ParamDesc("only_for_positive_duration")
 		.set_local_name(_("Only For Positive Duration"))
-		.set_description(_("When checked will loop only positive durations"))
+		.set_description(_("When checked, loops only positive durations"))
 		.set_static(true)
 	);
 
@@ -261,11 +261,12 @@ Layer_TimeLoop::set_time_vfunc(IndependentContext context, Time t)const
 		if (duration == 0)
 			t = link_time;
 		else {
+			float local_time_frames = round(local_time*document_fps);
 			float t_frames = round(t*document_fps);
 			float duration_frames = round(duration*document_fps);
 			if (duration > 0)
 			{
-				t -= local_time;
+				t_frames -= local_time_frames;
 				// Simple formula looks like this:
 				// t -= floor(t / duration) * duration;
 				// but we should make all calculations in frames to avoid round errors
@@ -276,7 +277,7 @@ Layer_TimeLoop::set_time_vfunc(IndependentContext context, Time t)const
 			}
 			else
 			{
-				t -= local_time;
+				t_frames -= local_time_frames;
 				// Simple formula looks like this:
 				// t -= floor(t / -duration) * -duration;
 				// but we should make all calculations in frames to avoid round errors

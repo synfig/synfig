@@ -37,7 +37,7 @@
 
 namespace studio {
 
-class Widget_SoundWave;
+class Grid_SoundWave;
 
 class Dock_SoundWave : public Dock_CanvasSpecific
 {
@@ -51,10 +51,6 @@ protected:
 	void on_drop_drag_data_received(
 			const Glib::RefPtr<Gdk::DragContext>& context, int, int,
 			const Gtk::SelectionData& selection_data, guint, guint time);
-	void on_file_button_clicked();
-	void on_clear_button_clicked();
-	void on_channel_combo_changed();
-	void on_delay_changed();
 
 private:
 	std::mutex mutex;
@@ -63,19 +59,9 @@ private:
 
 	Widget_Keyframe_List widget_kf_list;
 	Widget_CanvasTimeslider widget_timeslider;
-	Widget_SoundWave *current_widget_sound;
-	Gtk::Box file_box;
-	Gtk::Box file_settings_box;
-	Gtk::FileChooserButton file_button;
-	Gtk::Button clear_button;
-	Gtk::ComboBoxText channel_combo;
-	Gtk::Label label_delay;
-	Widget_Time delay_widget;
+	Grid_SoundWave *current_grid_sound;
 	Gtk::VScrollbar vscrollbar;
 	Gtk::HScrollbar hscrollbar;
-
-	bool load_sound_file(const std::string & filename);
-	void setup_file_setting_data();
 };
 
 }
