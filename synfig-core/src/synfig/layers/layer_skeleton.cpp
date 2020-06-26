@@ -166,6 +166,15 @@ Layer_Skeleton::sync_vfunc()
 		if (!i->same_type_as(Bone())) continue;
  		const Bone &bone = i->get(Bone());
  		Matrix matrix = bone.get_animated_matrix();
+ 		Vector v;
+ 		cout<<i-list.begin()<<endl;
+ 		for(int i=0;i<3;i++){
+ 		    v = matrix.axis(i);
+ 		    cout<<to_string(i)<<" :";
+ 		    for(int i=0;i<3;i++){
+ 		        cout<<v[i]<<" ";
+ 		    }cout<<endl;
+ 		}
  		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
  		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
  		Real length = bone.get_length() * bone.get_scalelx();
