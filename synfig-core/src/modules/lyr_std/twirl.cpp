@@ -120,14 +120,14 @@ Twirl::get_param_vocab()const
 
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
-		.set_description(_("This is the radius of the circle"))
+		.set_description(_("Radius of the circle"))
 		.set_is_distance()
 		.set_origin("center")
 	);
 
 	ret.push_back(ParamDesc("rotations")
 		.set_local_name(_("Rotations"))
-		.set_description(_("The number of rotations of the twirl effect"))
+		.set_description(_("Number of rotations of the twirl effect"))
 		.set_origin("center")
 	);
 

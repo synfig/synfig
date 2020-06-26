@@ -668,12 +668,12 @@ Layer_Freetype::get_param_vocab(void)const
 	);
 	ret.push_back(ParamDesc("compress")
 		.set_local_name(_("Horizontal Spacing"))
-		.set_description(_("Describes how close glyphs are horizontally"))
+		.set_description(_("Defines how close the glyphs are horizontally"))
 	);
 
 	ret.push_back(ParamDesc("vcompress")
 		.set_local_name(_("Vertical Spacing"))
-		.set_description(_("Describes how close lines of text are vertically"))
+		.set_description(_("Defines how close the text lines are vertically"))
 	);
 
 	ret.push_back(ParamDesc("size")
@@ -705,12 +705,12 @@ Layer_Freetype::get_param_vocab(void)const
 
 	ret.push_back(ParamDesc("use_kerning")
 		.set_local_name(_("Kerning"))
-		.set_description(_("Enables/Disables font kerning (If the font supports it)"))
+		.set_description(_("When checked, enables font kerning (If the font supports it)"))
 	);
 
 	ret.push_back(ParamDesc("grid_fit")
 		.set_local_name(_("Sharpen Edges"))
-		.set_description(_("Turn this off if you are going to be animating the text"))
+		.set_description(_("Turn this off if you are animating the text"))
 	);
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert"))

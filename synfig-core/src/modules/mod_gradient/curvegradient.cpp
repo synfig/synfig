@@ -544,11 +544,11 @@ CurveGradient::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("loop")
 				  .set_local_name(_("Loop"))
-				  .set_description(_("When checked the gradient is looped"))
+				  .set_description(_("When checked, the gradient is looped"))
 	);
 	ret.push_back(ParamDesc("zigzag")
 				  .set_local_name(_("ZigZag"))
-				  .set_description(_("When checked the gradient is symmetrical at the center"))
+				  .set_description(_("When checked, the gradient is symmetrical at the center"))
 	);
 	ret.push_back(ParamDesc("perpendicular")
 				  .set_local_name(_("Perpendicular"))

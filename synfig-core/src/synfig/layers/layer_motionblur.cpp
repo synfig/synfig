@@ -125,17 +125,17 @@ Layer_MotionBlur::get_param_vocab()const
 
 	ret.push_back(ParamDesc("aperture")
 		.set_local_name(_("Aperture"))
-		.set_description(_("Shutter Time"))
+		.set_description(_("Shutter time"))
 	);
 
 	ret.push_back(ParamDesc("subsamples_factor")
 		.set_local_name(_("Subsamples Factor"))
-		.set_description(_("Multiplies The Number Of Subsamples Rendered"))
+		.set_description(_("Multiplies the number of subsamples rendered"))
 	);
 
 	ret.push_back(ParamDesc("subsampling_type")
 		.set_local_name(_("Subsampling Type"))
-		.set_description(_("Curve Type For Weighting Subsamples"))
+		.set_description(_("Curve type for weighting subsamples"))
 		.set_hint("enum")
 		.add_enum_value(SUBSAMPLING_CONSTANT,"constant",_("Constant"))
 		.add_enum_value(SUBSAMPLING_LINEAR,"linear",_("Linear"))
@@ -144,12 +144,12 @@ Layer_MotionBlur::get_param_vocab()const
 
 	ret.push_back(ParamDesc("subsample_start")
 		.set_local_name(_("Subsample Start Amount"))
-		.set_description(_("Relative Amount Of The First Subsample, For Linear Weighting"))
+		.set_description(_("Relative amount of the first subsample (For Linear weighting)"))
 	);
 
 	ret.push_back(ParamDesc("subsample_end")
 		.set_local_name(_("Subsample End Amount"))
-		.set_description(_("Relative Amount Of The Last Subsample, For Linear Weighting"))
+		.set_description(_("Relative amount of the last subsample (For Linear weighting)"))
 	);
 
 	return ret;
