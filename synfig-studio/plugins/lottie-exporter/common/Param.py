@@ -541,6 +541,28 @@ class Param:
                 self.expression = ret
                 return ret, self.expression_controllers
 
+            elif self.param[0].tag == "vectorx":
+                self.subparams["vectorx"].extract_subparams()
+                vector, eff_1 = self.subparams["vectorx"].subparams["vector"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                if self.dimension == 2:
+                	ret = "[{x}[0],{x}[0]]"
+                else:
+                	ret = "{x}[0]"
+                ret = ret.format(x=vector)
+
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "vectory":
+                self.subparams["vectory"].extract_subparams()
+                vector, eff_1 = self.subparams["vectory"].subparams["vector"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                if self.dimension == 2:
+                	ret = "[{y}[1],{y}[1]]"
+                else:
+                	ret = "{y}[1]"
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -875,6 +897,14 @@ class Param:
                 rad = math.pi/180
                 ret = math.atan2(vector[1],vector[0])/rad
 
+            elif self.param[0].tag == "vectorx":
+                vector = self.subparams["vectorx"].subparams["vector"].__get_value(frame)
+                ret = vector[0]
+
+            elif self.param[0].tag == "vectory":
+                vector = self.subparams["vectory"].subparams["vector"].__get_value(frame)
+                ret = vector[1]
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1039,6 +1069,14 @@ class Param:
             elif node.tag == "vectorangle":
                 self.subparams["vectorangle"].extract_subparams()
                 self.subparams["vectorangle"].subparams["vector"].update_frame_window(window)
+
+            elif node.tag == "vectorx":
+                self.subparams["vectorx"].extract_subparams()
+                self.subparams["vectorx"].subparams["vector"].update_frame_window(window)
+
+            elif node.tag == "vectory":
+                self.subparams["vectory"].extract_subparams()
+                self.subparams["vectory"].subparams["vector"].update_frame_window(window)
 
         if is_animated(node) == settings.ANIMATED:
             for waypoint in node:
