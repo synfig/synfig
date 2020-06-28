@@ -543,7 +543,7 @@ class Param:
 
             elif self.param[0].tag == "power":
                 self.subparams["power"].extract_subparams()
-                base, eff_1     = self.subparams["power"].subparams["base"].recur_animate("base")
+                base, eff_1     = self.subparams["power"].subparams["base"].recur_animate("scalar_multiply")
                 power, eff_2    = self.subparams["power"].subparams["power"].recur_animate("scalar_multiply")
                 epsilon, eff_3  = self.subparams["power"].subparams["epsilon"].recur_animate("scalar_multiply")
                 infinite, eff_4 = self.subparams["power"].subparams["infinite"].recur_animate("scalar_multiply")
@@ -554,11 +554,11 @@ class Param:
                 self.expression_controllers.extend(eff_4)
 
                 if self.dimension == 2:
-                    ret = "[Math.pow({base}, {power}),Math.pow({base}, {power})]"
+                	ret = "[mul(Math.pow({base}, {power}),{PIX_PER_UNIT}),mul(Math.pow({base}, {power}),{PIX_PER_UNIT})]"
                 else:
-                    ret = "Math.pow({base}, {power})"
+                    ret = "mul(Math.pow({base}, {power}),{PIX_PER_UNIT})"
 
-                ret = ret.format(base=base,power=power)
+                ret = ret.format(base=base,power=power,PIX_PER_UNIT=settings.PIX_PER_UNIT)
                 self.expression = ret
                 return ret, self.expression_controllers
 
@@ -919,7 +919,7 @@ class Param:
                 if base <= epsilon and int(power) != power: #negative number to fractional power -> undefined
                     power = int(power)  #so round off power to nearest integer
 
-                ret = math.pow(base,power)
+                ret = math.pow(base,power)*settings.PIX_PER_UNIT
 
         else:
             ret = self.get_single_value(frame)
