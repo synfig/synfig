@@ -167,13 +167,13 @@ Layer_Skeleton::sync_vfunc()
 		const Bone &bone = i->get(Bone());
 		Matrix matrix = bone.get_animated_matrix();
 		Vector v;
-		cout<<bone.get_name()<<endl;
+		/*cout<<bone.get_name()<<endl;
 		cout<<"Angle : "<<atan(matrix.axis(0)[1]/matrix.axis(0)[0])*90/acos(0.0)<<endl;
 		v = matrix.axis(2);
 		cout<<"Offset :";
 		for(int i=0;i<3;i++){
 			cout<<v[i]<<" ";
-		}cout<<endl;
+		}cout<<endl;*/
 
 		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
 		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();

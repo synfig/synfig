@@ -106,12 +106,9 @@ class studio::StateBone_Context : public sigc::trackable
 
 	Gtk::Menu menu;
 
-	Duckmatic::Push duckmatic_push;
 	int active_bone;
 
 	Point clickOrigin;
-
-	std::list<synfig::ValueNode_Const::Handle> bone_list;
 
 	// Toolbox settings
 	synfigapp::Settings& settings;
@@ -147,15 +144,9 @@ public:
 	void set_bone_width(Distance x){return bone_width_dist.set_value(x);}
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
-
 	Smach::event_result event_refresh_handler(const Smach::event& x);
-
-	Smach::event_result event_key_press_handler(const Smach::event& x);
-	Smach::event_result event_key_release_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
-	Smach::event_result event_mouse_doubleclick_handler(const Smach::event& x);
 	Smach::event_result event_mouse_release_handler(const Smach::event& x);
-	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	Smach::event_result event_hijack(const Smach::event& /*x*/){return Smach::RESULT_ACCEPT; }
@@ -178,9 +169,6 @@ public:
 	void reset();
 	void increment_id();
 
-	bool run();
-	bool run_();
-
 	bool egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
@@ -200,19 +188,13 @@ StateBone::StateBone() :
 	insert(event_def(EVENT_STOP,						&StateBone_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,						&StateBone_Context::event_refresh_handler));
 	insert(event_def(EVENT_REFRESH_DUCKS,				&StateBone_Context::event_hijack));
-	insert(event_def(EVENT_WORKAREA_KEY_DOWN,			&StateBone_Context::event_key_press_handler));
-	insert(event_def(EVENT_WORKAREA_KEY_UP,				&StateBone_Context::event_key_release_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,	&StateBone_Context::event_mouse_click_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,	&StateBone_Context::event_mouse_doubleclick_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,	&StateBone_Context::event_mouse_release_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,		&StateBone_Context::event_mouse_motion_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateBone_Context::event_mouse_motion_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,		&StateBone_Context::event_refresh_tool_options));
 }
 
 StateBone::~StateBone()
-{
-}
+= default;
 
 void* StateBone::enter_state(studio::CanvasView *machine_context) const
 {
@@ -262,7 +244,7 @@ StateBone_Context::save_settings()
 void
 StateBone_Context::reset()
 {
-	bone_list.clear();
+	active_bone = -1;
 }
 
 void
@@ -315,7 +297,6 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	prev_table_status(false),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	depth(-1),
-	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	createChild(Action::Handle(Action::create("ValueDescCreateChildBone"))),
 	active_bone(-1)
@@ -417,16 +398,6 @@ StateBone_Context::refresh_tool_options()
 	App::dialog_tool_options->set_name("bone");
 
 	App::dialog_tool_options->add_button(
-			Gtk::StockID("gtk-execute"),
-			_("Make Skeleton")
-	)->signal_clicked().connect(
-			sigc::hide_return(sigc::mem_fun(
-					*this,
-					&StateBone_Context::run
-			))
-	);
-
-	App::dialog_tool_options->add_button(
 			Gtk::StockID("gtk-clear"),
 			_("Clear current Skeleton")
 	)->signal_clicked().connect(
@@ -446,12 +417,6 @@ StateBone_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 
 StateBone_Context::~StateBone_Context()
 {
-	try {
-		run();
-	} catch (...) {
-		synfig::error("Internal error destroying StateBoneContext");
-	}
-
 	save_settings();
 	App::dialog_tool_options->clear();
 
@@ -468,6 +433,7 @@ StateBone_Context::~StateBone_Context()
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
+	get_work_area()->set_selected_value_node(ValueNode::Handle());
 
 	App::dock_toolbox->refresh();
 }
@@ -486,73 +452,6 @@ StateBone_Context::event_refresh_handler(const Smach::event& x)
 	synfig::info("Skeleton Tool refresh handler called");
 	return Smach::RESULT_ACCEPT;
 }
-
-bool
-StateBone_Context::run_()
-{
-	reset();
-	increment_id();
-	return true;
-}
-
-bool
-StateBone_Context::run()
-{
-	String err;
-	bool success(false);
-	for(int i=5;i>0 && !success;i--)try
-		{
-			success=run_();
-		}
-		catch (const String& s)
-		{
-			err=s;
-		}
-	if(!success && !err.empty())
-	{
-		get_canvas_view()->get_ui_interface()->error(err);
-	}
-	return success;
-}
-
-Smach::event_result
-StateBone_Context::event_key_press_handler(const Smach::event& x)
-{
-	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
-	switch(event.keyval)
-	{
-		case GDK_KEY_Return:
-		case GDK_KEY_KP_Enter:
-			synfig::info("Enter pressed");
-			return Smach::RESULT_ACCEPT;
-	}
-	return Smach::RESULT_REJECT;
-}
-
-Smach::event_result
-StateBone_Context::event_key_release_handler(const Smach::event& x)
-{
-	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
-	switch(event.keyval)
-	{
-		case GDK_KEY_Escape:
-			synfig::info("Escape released");
-			reset();
-			return Smach::RESULT_ACCEPT;
-	}
-	return Smach::RESULT_REJECT;
-}
-
-Smach::event_result
-StateBone_Context::event_mouse_motion_handler(const Smach::event& x)
-{
-	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-
-	Point p(get_work_area()->snap_point_to_grid(event.pos));
-	//synfig::info("Mouse motion at "+to_string(p.mag_squared()));
-	return Smach::RESULT_ACCEPT;
-}
-
 
 
 
@@ -575,7 +474,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	{
 		case BUTTON_LEFT:
 		{
-			cout<<endl;
 			if(!duck){ //! if the user was not modifying a duck
 				if(skel_layer){ //!if selected layer is a Skeleton Layer
 					createChild->set_param("canvas",skel_layer->get_canvas());
@@ -586,16 +484,17 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 					if(b!=-1){ //! if bone found around the release point --> set active bone
 						active_bone=b;
-						info("Active Bone :"+ to_string(b));
+						//info("Active Bone :"+ to_string(b));
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
 						//cout<<"Active bone name : "<<value_desc.get_name()<<endl;
 						get_work_area()->set_selected_value_node(value_desc.get_value_node());
 					}else{
-						if(active_bone!=1){ //! if active bone is already set
-							ValueNode_StaticList::Handle list_node;
-							list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+						ValueNode_StaticList::Handle list_node;
+						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+						//cout<<"Active Bone: "<<active_bone<<endl;
+						if(active_bone!=-1){ //! if active bone is already set
 							ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
 							//cout<<"Active bone name : "<<value_desc.get_name()<<endl;
 							ValueNode_Bone::Handle bone_node;
@@ -607,8 +506,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							get_work_area()->set_selected_value_node(value_desc.get_value_node());
 							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
 							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
-							cout<<v_d.get_description()<<endl;
-							cout<<value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_name()<<endl;
+							//cout<<v_d.get_description()<<endl;
+							//cout<<value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_name()<<endl;
 							createChild->set_param("value_desc",Action::Param(v_d));
 							if(createChild->is_ready()){
 								try{
@@ -641,14 +540,29 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								}
 							}
 						}else{
-							vector<Bone> bones = layer->get_param("bones").get_list_of(Bone());
-							bones.push_back(Bone());
-							layer->set_param("bones",bones);
-							active_bone = bones.size()-1;
-							ValueNode_StaticList::Handle list_node;
-							list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-							ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
-							get_work_area()->set_selected_value_node(value_desc.get_value_node());
+							Action::Handle insertBone = Action::create("ValueNodeStaticListInsert");
+							ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
+							insertBone->set_param("value_desc",value_desc);
+							insertBone->set_param("canvas",skel_layer->get_canvas());
+							insertBone->set_param("time",skel_layer->get_canvas()->get_time());
+
+							if(insertBone->is_ready())
+								insertBone->perform();
+
+							value_desc= ValueDesc(list_node,0,list_desc);
+							ValueNode_Bone::Handle bone_node;
+							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+							{
+								error("expected a ValueNode_Bone");
+								assert(0);
+							}
+							bone_node->set_link("parent",ValueNode_Const::create(bone_node->get_root_bone()));
+							bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
+							if((clickOrigin - releaseOrigin).mag() >= 0.001){
+								bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
+								bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
+							}
+
 
 						}
 
@@ -672,7 +586,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 
 					bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
-					if((clickOrigin - releaseOrigin).mag() >= 0.0000001){
+					if((clickOrigin - releaseOrigin).mag() >= 0.001){
 						bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
 						bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
 					}
@@ -684,7 +598,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					get_canvas_view()->queue_rebuild_ducks();
 				}
 			}
-			cout<<endl;
 			return Smach::RESULT_ACCEPT;
 
 		}
@@ -716,33 +629,10 @@ StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 	}
 }
 
-Smach::event_result
-StateBone_Context::event_mouse_doubleclick_handler(const Smach::event& x)
-{
-	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-	switch(event.button)
-	{
-		case BUTTON_LEFT:
-		{
-			synfig::info("Double Click with left button!");
-			run();
-			return Smach::RESULT_ACCEPT;
-		}
-		case BUTTON_RIGHT:
-		{
-			synfig::info("Double Click with right button!");
-			return Smach::RESULT_ACCEPT;
-		}
-		default:
-			break;
-	}
-	return Smach::RESULT_OK;
-}
-
 int
 StateBone_Context::find_bone(Point point,Layer_Skeleton::Handle layer)const
 {
-	cout<<"Finding bone!"<<endl;
+	//cout<<"Finding bone!"<<endl;
 	ValueDesc list_desc(layer,"bones");
 	ValueNode_StaticList::Handle list_node;
 	vector<Bone> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(Bone());
@@ -757,7 +647,7 @@ StateBone_Context::find_bone(Point point,Layer_Skeleton::Handle layer)const
 		Point orig = m.get_transformed(Vector(0,0));
 		direction = m.get_transformed(Vector(1.0, 0.0), false).norm();
 		angle = Angle::rad(atan2(direction[1], direction[0]));
-		cout<<iter->get_name()<<" : "<<orig[0]<<" , "<<orig[1]<<endl;
+		//cout<<iter->get_name()<<" : "<<orig[0]<<" , "<<orig[1]<<endl;
 		Real orig_dist((point-orig).mag_squared());
 		Real dist=orig_dist*Angle::sin((point-orig).angle()-angle).get();
 		if(Angle::cos((point-orig).angle()).get()>0 && orig_dist<=iter->get_length()){
