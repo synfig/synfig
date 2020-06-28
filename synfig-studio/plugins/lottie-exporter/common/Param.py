@@ -545,12 +545,8 @@ class Param:
                 self.subparams["vectorx"].extract_subparams()
                 vector, eff_1 = self.subparams["vectorx"].subparams["vector"].recur_animate("vector")
                 self.expression_controllers.extend(eff_1)
-                if self.dimension == 2:
-                	ret = "[{x}[0],{x}[0]]"
-                else:
-                	ret = "{x}[0]"
+                ret = "[{x}[0], {x}[0]]" if self.dimension == 2 else "{x}[0]"
                 ret = ret.format(x=vector)
-
                 self.expression = ret
                 return ret, self.expression_controllers
 
@@ -558,11 +554,10 @@ class Param:
                 self.subparams["vectory"].extract_subparams()
                 vector, eff_1 = self.subparams["vectory"].subparams["vector"].recur_animate("vector")
                 self.expression_controllers.extend(eff_1)
-                if self.dimension == 2:
-                	ret = "[{y}[1],{y}[1]]"
-                else:
-                	ret = "{y}[1]"
-
+                ret = "[{y}[1], {y}[1]]" if self.dimension == 2 else "{y}[1]"
+                ret = ret.format(y=vector)
+                self.expression = ret
+                return ret, self.expression_controllers
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
