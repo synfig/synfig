@@ -146,16 +146,16 @@ namespace {
 				}
 				
 				Real ky = kx*s1;
-				i1 = begin(), i0 = i1++;
+				i1 = begin(); i0 = i1++;
 				i0->second.pp1[0] = i0->first + (i1->first - i0->first)*kx;
 				i0->second.pp1[1] = i0->second.y1() + (i1->second.y0() - i0->second.y1())*ky;
 
-				i0 = end(), i1 = (--i0)--;
+				i0 = end(); i1 = (--i0)--;
 				i1->second.pp0[0] = i1->first - (i1->first - i0->first)*kx;
 				i1->second.pp0[1] = i1->second.y1() - (i1->second.y0() - i0->second.y1())*ky;
 			}
 			
-			i0 = begin(), i1 = end(), --i1;
+			i0 = begin(); i1 = end(); --i1;
 			i0->second.pp0 = Vector(i0->first, i0->second.y0());
 			i1->second.pp1 = Vector(i1->first, i1->second.y1());
 		}
@@ -336,7 +336,7 @@ namespace {
 						break;
 					case WidthPoint::TYPE_SQUARED:
 						dst.move_to( Vector(i->first - i->second.w, 0) );
-						dst.line_to( Vector(i->first - i->second.w, i->second.w) ),
+						dst.line_to( Vector(i->first - i->second.w, i->second.w) );
 						dst.line_to( Vector(i->first, i->second.w) );
 						break;
 					case WidthPoint::TYPE_INNER_PEAK:
@@ -380,7 +380,7 @@ namespace {
 						}
 						break;
 					case WidthPoint::TYPE_SQUARED:
-						dst.line_to( Vector(i->first + i->second.w, i->second.w) ),
+						dst.line_to( Vector(i->first + i->second.w, i->second.w) );
 						dst.line_to( Vector(i->first + i->second.w, 0) );
 						dst.close_mirrored_vert();
 						break;
