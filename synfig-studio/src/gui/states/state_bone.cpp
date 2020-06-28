@@ -575,12 +575,13 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	{
 		case BUTTON_LEFT:
 		{
+			cout<<endl;
 			if(!duck){ //! if the user was not modifying a duck
 				if(skel_layer){ //!if selected layer is a Skeleton Layer
 					createChild->set_param("canvas",skel_layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
 					int b = -1;
-					if((clickOrigin-releaseOrigin).mag()<0.0000001)
+					if((clickOrigin-releaseOrigin).mag()<0.01)
 						b=find_bone(clickOrigin,skel_layer);
 
 					if(b!=-1){ //! if bone found around the release point --> set active bone
@@ -606,6 +607,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							get_work_area()->set_selected_value_node(value_desc.get_value_node());
 							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
 							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
+							cout<<v_d.get_description()<<endl;
+							cout<<value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_name()<<endl;
 							createChild->set_param("value_desc",Action::Param(v_d));
 							if(createChild->is_ready()){
 								try{
@@ -620,17 +623,17 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 									Real angle = atan2(matrix.axis(0)[1],matrix.axis(0)[0]);
 									Real a =0;
+									matrix = matrix.get_inverted();
+									Point aOrigin = matrix.get_transformed(clickOrigin);
 
+									bone_node->set_link("origin",ValueNode_Const::create(aOrigin));
 									bone_node->set_link("angle",ValueNode_Const::create(Angle::rad(a-angle)));
-									if((clickOrigin-releaseOrigin).mag()>=0.0000001){
+									if((clickOrigin-releaseOrigin).mag()>=0.01){
 										a = atan2((releaseOrigin-clickOrigin)[1],(releaseOrigin-clickOrigin)[0]);
 										bone_node->set_link("angle",ValueNode_Const::create(Angle::rad(a-angle)));
 										bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
 									}
-									matrix = matrix.invert();
-									Point aOrigin = matrix.get_transformed(clickOrigin);
 
-									bone_node->set_link("origin",ValueNode_Const::create(aOrigin));
 
 
 								} catch (...) {
@@ -681,8 +684,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					get_canvas_view()->queue_rebuild_ducks();
 				}
 			}
-
+			cout<<endl;
 			return Smach::RESULT_ACCEPT;
+
 		}
 
 		default:
@@ -743,14 +747,19 @@ StateBone_Context::find_bone(Point point,Layer_Skeleton::Handle layer)const
 	ValueNode_StaticList::Handle list_node;
 	vector<Bone> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(Bone());
 	Real close_line(10000000),close_origin(10000000);
+	Vector direction;
+	Angle angle;
 	int ret;
 	Matrix m;
 	for(auto iter=list.begin();iter!=list.end();++iter){
 
 		m=iter->get_animated_matrix();
 		Point orig = m.get_transformed(Vector(0,0));
+		direction = m.get_transformed(Vector(1.0, 0.0), false).norm();
+		angle = Angle::rad(atan2(direction[1], direction[0]));
+		cout<<iter->get_name()<<" : "<<orig[0]<<" , "<<orig[1]<<endl;
 		Real orig_dist((point-orig).mag_squared());
-		Real dist=orig_dist*Angle::sin((point-orig).angle()).get();
+		Real dist=orig_dist*Angle::sin((point-orig).angle()-angle).get();
 		if(Angle::cos((point-orig).angle()).get()>0 && orig_dist<=iter->get_length()){
 			dist = abs(dist);
 			if(dist<close_line){
@@ -767,7 +776,7 @@ StateBone_Context::find_bone(Point point,Layer_Skeleton::Handle layer)const
 
 	}
 
-	if(abs(close_line)<=0.1){
+	if(abs(close_line)<=0.2){
 		if(ret<list.size())return ret;
 		else return -1;
 	}else{
