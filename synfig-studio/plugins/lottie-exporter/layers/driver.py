@@ -119,9 +119,6 @@ def gen_layers(lottie, canvas, layer_itr):
 			lottie.append({})
 			layer.set_lottie_layer(lottie[-1])
 
-		if layer.get_type() == "switch":
-			settings.image_ordering = itr
-
 		if layer.get_type() in shape:           # Goto shape layer
 			gen_layer_shape(lottie[-1],
 							layer,
@@ -146,7 +143,7 @@ def gen_layers(lottie, canvas, layer_itr):
 		elif layer.get_type() in image:   # Goto image layer
 			gen_layer_image(lottie[-1],
 							layer,
-							settings.image_ordering)
+							itr)
 			calculate_blurs_needed(settings.LEVEL)
 			append_blur_dict(layer,settings.LEVEL,settings.GROUP_FLAG)
 
