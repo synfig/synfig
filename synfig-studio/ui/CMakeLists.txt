@@ -1,18 +1,14 @@
-set(UIFILES
+set(INSTALL_DESTINATION "share/synfig/ui")
+set(UI_FILES
     canvas_options.glade
     preview_options.glade
     dialog_workspaces.glade
 )
 
-foreach (UIFILE IN ITEMS ${UIFILES})
-    configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/${UIFILE}
-        ${SYNFIG_BUILD_ROOT}/share/synfig/ui/${UIFILE}
-        COPYONLY
-    )
+file(COPY ${UI_FILES}
+    DESTINATION ${SYNFIG_BUILD_ROOT}/${INSTALL_DESTINATION}
+)
 
-    install(
-        FILES ${CMAKE_CURRENT_SOURCE_DIR}/${UIFILE}
-        DESTINATION share/synfig/ui
-    )
-endforeach()
+install(FILES ${UI_FILES}
+    DESTINATION ${INSTALL_DESTINATION}
+)

@@ -1,0 +1,20 @@
+Include(SynfigIntltool)
+
+set(INSTALL_DESTINATION "share/synfig/plugins/view-unhide-all-layers")
+set(PLUGIN_VIEW_UNHIDE_ALL_LAYERS_FILES
+    view-unhide-all-layers.py
+)
+
+file(COPY ${PLUGIN_VIEW_UNHIDE_ALL_LAYERS_FILES}
+    DESTINATION ${SYNFIG_BUILD_ROOT}/${INSTALL_DESTINATION}
+)
+
+install(FILES ${PLUGIN_LOTTIE_EXPORTER_SYNFIG_FILES}
+    DESTINATION ${INSTALL_DESTINATION}
+)
+
+SYNFIG_INTLTOOL_MERGE(
+    TARGET_NAME plugin_view_unhide_all_layers_xml
+    INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/plugin.xml.in
+    INSTALL_DESTINATION ${INSTALL_DESTINATION}
+)

@@ -1,11 +1,13 @@
-set(SOUNDS
+set(INSTALL_DESTINATION "share/synfig/sounds")
+set(SOUND_FILES
     renderdone.wav
     readme.txt
 )
 
-foreach (SOUND IN ITEMS ${SOUNDS})
-    install(
-        FILES ${CMAKE_CURRENT_SOURCE_DIR}/${SOUND}
-        DESTINATION share/synfig/sounds
-    )
-endforeach()
+file(COPY ${SOUND_FILES}
+    DESTINATION ${SYNFIG_BUILD_ROOT}/${INSTALL_DESTINATION}
+)
+
+install(FILES ${SOUND_FILES}
+    DESTINATION ${INSTALL_DESTINATION}
+)
