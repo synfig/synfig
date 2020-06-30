@@ -389,12 +389,12 @@ studio::Instance::save_as(const synfig::String &file_name)
 			{
 				details.append((*i)->get_description());
 				if ( Layer_Bitmap::Handle::cast_dynamic(*i)
-			  	  && (*i)->get_param_list().count("filename") )
-			  	{
-			  		ValueBase value = (*i)->get_param("filename");
-			  		if (value.same_type_as(String()))
-			  			details.append(" (" + value.get(String()) + ")");
-			  	}
+				  && (*i)->get_param_list().count("filename") )
+				{
+					ValueBase value = (*i)->get_param("filename");
+					if (value.same_type_as(String()))
+						details.append(" (" + value.get(String()) + ")");
+				}
 				details.append("\n");
 			}
 			App::dialog_message_1b("WARNING", message, "details", _("Close"), details);
@@ -1299,7 +1299,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	Gtk::Menu& parammenu(*menu);
 	synfigapp::ValueDesc value_desc2(value_desc);
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
-
+	etl::handle<CanvasView> canvas_view(find_canvas_view(canvas));
 	if(!canvas_interface)
 		return;
 
@@ -1316,7 +1316,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			synfigapp::ValueDesc(
 				ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
 				,ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-                                                           ->get_link_index_from_name("point")
+														   ->get_link_index_from_name("point")
 			)
 		);
 		param_list2.add("origin",location);
@@ -1436,6 +1436,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		if(selected_value_desc.is_valid() && value_desc != selected_value_desc)
 			param_list.add("selected_value_desc",selected_value_desc);
 	}
+
+	param_list.add("active_bone",canvas_view->get_work_area()->get_active_bone_value_node());
 
 	if(param_list2.empty())
 		add_actions_to_menu(&parammenu, param_list,categories);
@@ -1953,24 +1955,24 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
 			{
 				action_group->add(
-			 	Gtk::Action::create(
-			 		action_name2,
-			 		Gtk::Stock::CONVERT,
-			 		local_name2, local_name2 ),
-			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
-				 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
+				Gtk::Action::create(
+					action_name2,
+					Gtk::Stock::CONVERT,
+					local_name2, local_name2 ),
+				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
+							ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
 
 			} 
 		}
 		if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layers.front()))
 		{
 				action_group->add(
-			 	Gtk::Action::create(
-			 		action_name2,
-			 		Gtk::Stock::CONVERT,
-			 		local_name2, local_name2 ),
-			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
-				 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
+				Gtk::Action::create(
+					action_name2,
+					Gtk::Stock::CONVERT,
+					local_name2, local_name2 ),
+				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
+							ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
 
 
 		}
