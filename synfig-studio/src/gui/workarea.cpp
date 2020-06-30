@@ -194,10 +194,10 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// Create drawing frame
 
-  	drawing_area=manage(new class Gtk::DrawingArea());
+	drawing_area=manage(new class Gtk::DrawingArea());
 	drawing_area->add_events( Gdk::KEY_PRESS_MASK      | Gdk::KEY_RELEASE_MASK
 							| Gdk::BUTTON_PRESS_MASK   | Gdk::BUTTON_RELEASE_MASK
-		                    | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::BUTTON3_MOTION_MASK
+							| Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::BUTTON3_MOTION_MASK
 							| Gdk::POINTER_MOTION_MASK | Gdk::SCROLL_MASK         );
 	drawing_area->set_hexpand(true);
 	drawing_area->set_vexpand(true);
@@ -211,14 +211,14 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	hruler = manage(new Widget_Ruler(false));
 	hruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_hruler_event));
 	hruler->add_events( Gdk::BUTTON_PRESS_MASK   | Gdk::BUTTON_RELEASE_MASK
-		              | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::POINTER_MOTION_MASK );
+					  | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::POINTER_MOTION_MASK );
 	hruler->show();
 	hruler->set_hexpand(true);
 
 	vruler = manage(new Widget_Ruler(true));
 	vruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_vruler_event));
 	vruler->add_events( Gdk::BUTTON_PRESS_MASK   | Gdk::BUTTON_RELEASE_MASK
-		              | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::POINTER_MOTION_MASK );
+					  | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK | Gdk::POINTER_MOTION_MASK );
 	vruler->show();
 	vruler->set_vexpand(true);
 
@@ -352,9 +352,9 @@ WorkArea::set_drag_mode(DragMode mode)
 void
 WorkArea::save_meta_data()
 {
-    ChangeLocale change_locale(LC_NUMERIC, "C");
+	ChangeLocale change_locale(LC_NUMERIC, "C");
 
-    if(meta_data_lock)
+	if(meta_data_lock)
 		return;
 	meta_data_lock=true;
 
@@ -444,9 +444,9 @@ WorkArea::load_meta_data()
 {
 	// we need to set locale careful, without calling functions and signals,
 	// otherwise it can affect strings in GUI
-    // ChangeLocale change_locale(LC_NUMERIC, "C");
+	// ChangeLocale change_locale(LC_NUMERIC, "C");
 
-    if(meta_data_lock)
+	if(meta_data_lock)
 		return;
 	meta_data_lock=true;
 
@@ -461,7 +461,7 @@ WorkArea::load_meta_data()
 		String tmp(data.begin(),iter);
 
 		{
-		    ChangeLocale change_locale(LC_NUMERIC, "C");
+			ChangeLocale change_locale(LC_NUMERIC, "C");
 			if(!tmp.empty())
 				gx=stratof(tmp);
 			else
@@ -503,7 +503,7 @@ WorkArea::load_meta_data()
 		}
 		else
 		{
-		    ChangeLocale change_locale(LC_NUMERIC, "C");
+			ChangeLocale change_locale(LC_NUMERIC, "C");
 			gr=atof(tokens.at(0).data());
 			gg=atof(tokens.at(1).data());
 			gb=atof(tokens.at(2).data());
@@ -534,7 +534,7 @@ WorkArea::load_meta_data()
 		}
 		else
 		{
-		    ChangeLocale change_locale(LC_NUMERIC, "C");
+			ChangeLocale change_locale(LC_NUMERIC, "C");
 			gr=atof(tokens.at(0).data());
 			gg=atof(tokens.at(1).data());
 			gb=atof(tokens.at(2).data());
@@ -621,7 +621,7 @@ WorkArea::load_meta_data()
 	{
 		String::iterator iter(find(data.begin(),data.end(),' '));
 		String guide(data.begin(),iter);
-	    ChangeLocale change_locale(LC_NUMERIC, "C");
+		ChangeLocale change_locale(LC_NUMERIC, "C");
 
 		if(!guide.empty())
 			get_guide_list_x().push_back(stratof(guide));
@@ -639,7 +639,7 @@ WorkArea::load_meta_data()
 	{
 		String::iterator iter(find(data.begin(),data.end(),' '));
 		String guide(data.begin(),iter);
-	    ChangeLocale change_locale(LC_NUMERIC, "C");
+		ChangeLocale change_locale(LC_NUMERIC, "C");
 
 		if(!guide.empty())
 			get_guide_list_y().push_back(stratof(guide));
@@ -664,7 +664,7 @@ WorkArea::load_meta_data()
 		String tmp(data.begin(),iter);
 
 		{
-		    ChangeLocale change_locale(LC_NUMERIC, "C");
+			ChangeLocale change_locale(LC_NUMERIC, "C");
 			if(!tmp.empty())
 				gx=stratof(tmp);
 			else
@@ -706,7 +706,7 @@ WorkArea::load_meta_data()
 		}
 		else
 		{
-		    ChangeLocale change_locale(LC_NUMERIC, "C");
+			ChangeLocale change_locale(LC_NUMERIC, "C");
 			gr=atof(tokens.at(0).data());
 			gg=atof(tokens.at(1).data());
 			gb=atof(tokens.at(2).data());
@@ -737,7 +737,7 @@ WorkArea::load_meta_data()
 		}
 		else
 		{
-		    ChangeLocale change_locale(LC_NUMERIC, "C");
+			ChangeLocale change_locale(LC_NUMERIC, "C");
 			gr=atof(tokens.at(0).data());
 			gg=atof(tokens.at(1).data());
 			gb=atof(tokens.at(2).data());
@@ -916,19 +916,19 @@ WorkArea::get_background_pattern() const
 	if (!background_pattern) {
 		int w = std::max(1, std::min(1000, (int)round(background_size[0])));
 		int h = std::max(1, std::min(1000, (int)round(background_size[1])));
-	    Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, w*2, h*2);
-	    Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
-	    context->set_source_rgb(background_first_color.get_r(), background_first_color.get_g(), background_first_color.get_b());
-	    context->paint();
-	    context->set_source_rgb(background_second_color.get_r(), background_second_color.get_g(), background_second_color.get_b());
-	    context->rectangle(w, 0, w, h);
-	    context->rectangle(0, h, w, h);
-	    context->fill();
-	    surface->flush();
+		Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, w*2, h*2);
+		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
+		context->set_source_rgb(background_first_color.get_r(), background_first_color.get_g(), background_first_color.get_b());
+		context->paint();
+		context->set_source_rgb(background_second_color.get_r(), background_second_color.get_g(), background_second_color.get_b());
+		context->rectangle(w, 0, w, h);
+		context->rectangle(0, h, w, h);
+		context->fill();
+		surface->flush();
 
-	    background_pattern = Cairo::SurfacePattern::create(surface);
-	    background_pattern->set_filter(Cairo::FILTER_NEAREST);
-	    background_pattern->set_extend(Cairo::EXTEND_REPEAT);
+		background_pattern = Cairo::SurfacePattern::create(surface);
+		background_pattern->set_filter(Cairo::FILTER_NEAREST);
+		background_pattern->set_extend(Cairo::EXTEND_REPEAT);
 	}
 	return background_pattern;
 }
@@ -1026,7 +1026,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	synfig::Point mouse_pos;
-    float bezier_click_pos(0);
+	float bezier_click_pos(0);
 	const float radius((abs(pw)+abs(ph))*4);
 	int button_pressed(0);
 	float pressure(0);
@@ -1395,21 +1395,21 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Guide/Duck highlights on hover
 		switch(get_drag_mode()) {
 		case DRAG_NONE: {
-            GuideList::iterator iter = find_guide_x(mouse_pos,radius);
-            if (iter == get_guide_list_x().end())
-                iter = find_guide_y(mouse_pos, radius);
+			GuideList::iterator iter = find_guide_x(mouse_pos,radius);
+			if (iter == get_guide_list_x().end())
+				iter = find_guide_y(mouse_pos, radius);
 
-            if (iter != curr_guide) {
-                curr_guide = iter;
-                drawing_area->queue_draw();
-            }
+			if (iter != curr_guide) {
+				curr_guide = iter;
+				drawing_area->queue_draw();
+			}
 
-            etl::handle<Duck> duck = find_duck(mouse_pos, radius);
-            if (duck != hover_duck) {
-                hover_duck = duck;
-                drawing_area->queue_draw();
-            }
-    		break;
+			etl::handle<Duck> duck = find_duck(mouse_pos, radius);
+			if (duck != hover_duck) {
+				hover_duck = duck;
+				drawing_area->queue_draw();
+			}
+			break;
 		}
 		case DRAG_DUCK: {
 			if (canvas_view->get_cancel_status()) {
@@ -1438,12 +1438,12 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			}
 			translate_selected_bezier(mouse_pos);
 			drawing_area->queue_draw();
-	        break;
+			break;
 		}
 		case DRAG_BOX: {
 			curr_point=mouse_pos;
 			drawing_area->queue_draw();
-	        break;
+			break;
 		}
 		case DRAG_GUIDE: {
 			if(curr_guide_is_x)
@@ -1451,7 +1451,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			else
 				*curr_guide = mouse_pos[1];
 			drawing_area->queue_draw();
-	        break;
+			break;
 		}
 		default: break;
 		} // end switch dragging
@@ -1465,15 +1465,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		if (get_drag_mode() == DRAG_WINDOW) {
 			set_focus_point(get_focus_point() + mouse_pos-drag_point);
-    	} else
+		} else
 		if (get_drag_mode() == DRAG_ZOOM_WINDOW) {
 			set_zoom(get_zoom() * (1.0 + (drag_point[1] - event->motion.y) / 100.0));
 			drag_point = synfig::Point(event->motion.x, event->motion.y);
 		} else {
 			MouseButton button = event->motion.state & GDK_BUTTON1_MASK ? BUTTON_LEFT
-					           : event->motion.state & GDK_BUTTON2_MASK ? BUTTON_MIDDLE
-					           : event->motion.state & GDK_BUTTON3_MASK ? BUTTON_RIGHT
-					           : BUTTON_NONE;
+							   : event->motion.state & GDK_BUTTON2_MASK ? BUTTON_MIDDLE
+							   : event->motion.state & GDK_BUTTON3_MASK ? BUTTON_RIGHT
+							   : BUTTON_NONE;
 			EventKey event = button == BUTTON_NONE ? EVENT_WORKAREA_MOUSE_MOTION : EVENT_WORKAREA_MOUSE_BUTTON_DRAG;
 			Smach::event_result er = canvas_view->get_smach().process_event(
 				EventMouse(event, button, mouse_pos, pressure, modifier) );
@@ -1562,10 +1562,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				if(canvas_view->get_smach().process_event(EventBox(drag_point,mouse_pos,MouseButton(event->button.button),modifier))==Smach::RESULT_ACCEPT)
 					return true;
-                /*
-                 * Commented out because now the work is
-                 * done in Renderer_Dragbox::event_vfunc
-                 *
+				/*
+				 * Commented out because now the work is
+				 * done in Renderer_Dragbox::event_vfunc
+				 *
 
 				// when dragging a box around some ducks:
 				// SHIFT selects; CTRL toggles; SHIFT+CTRL unselects; <none> clears all then selects
@@ -1624,7 +1624,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Handle a mouse scrolling event like Xara Xtreme and
 		// Inkscape:
 
-	    //!TODO Remove HARDCODED UI SPECIFICATION, make it config ready
+		//!TODO Remove HARDCODED UI SPECIFICATION, make it config ready
 
 		// Scroll up/down: scroll up/down
 		// Shift + scroll up/down: scroll left/right
@@ -2175,6 +2175,16 @@ WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
 	if(x!=selected_value_node_)
 	{
 		selected_value_node_=x;
+		queue_draw();
+	}
+}
+
+void
+WorkArea::set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x)
+{
+	if(x!=active_bone_)
+	{
+		active_bone_=x;
 		queue_draw();
 	}
 }

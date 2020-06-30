@@ -172,6 +172,9 @@ private:
 	//! ???
 	synfig::Point previous_focus;
 
+	//! Active Bone
+	etl::loose_handle<synfig::ValueNode> active_bone_;
+
 	//! This flag is set if the grid should be drawn
 	bool show_grid;
 
@@ -306,6 +309,10 @@ public:
 	bool get_background_rendering() const { return background_rendering; }
 
 	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
+
+	const etl::loose_handle<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
+	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
+
 
 	DragMode get_drag_mode() { return drag_mode; }
 	bool is_dragging() { return get_drag_mode() != DRAG_NONE; }
