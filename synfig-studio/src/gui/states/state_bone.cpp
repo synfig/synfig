@@ -433,7 +433,7 @@ StateBone_Context::~StateBone_Context()
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
-	get_work_area()->set_selected_value_node(ValueNode::Handle());
+	get_work_area()->set_active_bone_value_node(ValueNode::Handle());
 
 	App::dock_toolbox->refresh();
 }
@@ -489,7 +489,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
 						//cout<<"Active bone name : "<<value_desc.get_name()<<endl;
-						get_work_area()->set_selected_value_node(value_desc.get_value_node());
+						get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 					}else{
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
@@ -503,8 +503,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								error("expected a ValueNode_Bone");
 								assert(0);
 							}
-							get_work_area()->set_selected_value_node(value_desc.get_value_node());
+							get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
+							Real sx = bone_node->get_link("scalelx")->operator()(get_canvas()->get_time()).get(Real());
 							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
 							//cout<<v_d.get_description()<<endl;
 							//cout<<value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_name()<<endl;
@@ -513,7 +514,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								try{
 									createChild->perform();
 									value_desc= ValueDesc(list_node,active_bone,list_desc);
-									get_work_area()->set_selected_value_node(value_desc.get_value_node());
+									get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 									if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 									{
 										error("expected a ValueNode_Bone");
@@ -523,7 +524,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 									Real angle = atan2(matrix.axis(0)[1],matrix.axis(0)[0]);
 									Real a =0;
 									matrix = matrix.get_inverted();
+
 									Point aOrigin = matrix.get_transformed(clickOrigin);
+									aOrigin[0]/=sx;
 
 									bone_node->set_link("origin",ValueNode_Const::create(aOrigin));
 									bone_node->set_link("angle",ValueNode_Const::create(Angle::rad(a-angle)));
@@ -574,7 +577,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					ValueNode_StaticList::Handle list_node;
 					list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 					ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
-					get_work_area()->set_selected_value_node(value_desc.get_value_node());
+					get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 					active_bone = 0;
 					ValueNode_Bone::Handle bone_node;
 
