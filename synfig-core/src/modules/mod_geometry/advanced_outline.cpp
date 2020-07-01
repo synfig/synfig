@@ -94,13 +94,32 @@ namespace {
 	
 	class AdvancedLine: public AdvancedMap {
 	public:
-		void add(Real p, Real w, WidthPoint::SideType side0, WidthPoint::SideType side1) {
+		enum AddAction{
+			REPLACE_IF_EXISTS, APPEND, PREPEND
+		};
+		void add(Real p, Real w, WidthPoint::SideType side0, WidthPoint::SideType side1, AddAction action = REPLACE_IF_EXISTS) {
 			w = fabs(w);
-			AdvancedPoint &ap = (*this)[p];
 			if (approximate_zero(w)) {
+				AdvancedPoint &ap = (*this)[p];
 				ap.w = 0;
 				ap.side0 = ap.side1 = WidthPoint::TYPE_FLAT;
 			} else {
+				if (action != REPLACE_IF_EXISTS) {
+					auto it = find(p);
+					if (it != end()) {
+						AdvancedPoint &ap = it->second;
+						if (action == APPEND) {
+							ap.w = w;
+							ap.side1 = side1;
+							return;
+						} else if (action == PREPEND) {
+							ap.w = w;
+							ap.side0 = side0;
+							return;
+						}
+					}
+				}
+				AdvancedPoint &ap = (*this)[p];
 				ap.w = w;
 				ap.side0 = side0;
 				ap.side1 = side1;
@@ -328,9 +347,9 @@ namespace {
 							if (dst.closed()) {
 								dst.move_to( Vector(i0->first, i0->second.y1()) );
 								dst.cubic_to(
-									Vector(i->first, i->second.y0()),
-									i0->second.pp1,
-									i->second.pp0 );
+											Vector(i->first, i->second.y0()),
+											i0->second.pp1,
+											i->second.pp0 );
 							}
 						}
 						break;
@@ -370,9 +389,9 @@ namespace {
 							if (i1 != end()) {
 								dst.line_to( Vector(i->first, i->second.y1()) );
 								dst.cubic_to(
-									Vector(i1->first, i1->second.y0()),
-									i->second.pp1,
-									i1->second.pp0 );
+											Vector(i1->first, i1->second.y0()),
+											i->second.pp1,
+											i1->second.pp0 );
 							} else {
 								dst.line_to( Vector(i->first, 0) );
 								dst.close_mirrored_vert();
@@ -545,7 +564,8 @@ Advanced_Outline::sync_vfunc()
 					calc_position( clamp(point.get_position(), Real(0), Real(1)), bend, homogeneous ),
 					point.get_width()*wk + we,
 					(WidthPoint::SideType)point.get_side_type_before(),
-					(WidthPoint::SideType)point.get_side_type_after() );
+					(WidthPoint::SideType)point.get_side_type_after(),
+					aline.APPEND);
 			}
 		}
 		
@@ -556,13 +576,12 @@ Advanced_Outline::sync_vfunc()
 			if (aline.size() > 1) { ++b1; --e1; kl2 = kl; }
 			
 			// add two points from end to begin (to simulate loopped width points)
-			aline.add(e0->first - kl , e0->second.w, e0->second.side0, e0->second.side1);
-			aline.add(e1->first - kl2, e1->second.w, WidthPoint::TYPE_FLAT, e1->second.side1);
-			
+			aline.add(e0->first - kl , e0->second.w, e0->second.side0, e0->second.side1, aline.PREPEND);
+			aline.add(e1->first - kl2, e1->second.w, WidthPoint::TYPE_FLAT, e1->second.side1, aline.PREPEND);
 			// add two points from begin to end
-			aline.add(b0->first + kl , b0->second.w, b0->second.side0, b0->second.side1);
-			aline.add(b1->first + kl2, b1->second.w, b1->second.side0, WidthPoint::TYPE_FLAT);
-			
+			aline.add(b0->first + kl , b0->second.w, b0->second.side0, b0->second.side1, aline.APPEND);
+			aline.add(b1->first + kl2, b1->second.w, b1->second.side0, WidthPoint::TYPE_FLAT, aline.APPEND);
+
 			aline.calc_tangents(smoothness);
 		} else {
 			// make tails longer for proper trunc
