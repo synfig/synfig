@@ -33,6 +33,7 @@
 
 #include "valuedesccreatechildbone.h"
 #include "valuenodestaticlistinsertsmart.h"
+#include "valuenodestaticlistinsert.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_bone.h>
@@ -63,7 +64,11 @@ ACTION_SET_CVS_ID(Action::ValueDescCreateChildBone,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
-	time(0)
+	time(0),
+	origin(ValueBase(Point(1.1,0))),
+	scalelx(ValueBase(1.0)),
+	angle(ValueBase(Angle::deg(0.0))),
+	tool(false)
 {
 }
 
@@ -78,6 +83,22 @@ Action::ValueDescCreateChildBone::get_param_vocab()
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))
 		.set_optional()
+	);
+	ret.push_back(ParamDesc("origin",Param::TYPE_VALUE)
+		.set_local_name(_("Origin of the child bone"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("scalelx",Param::TYPE_VALUE)
+		.set_local_name(_("Scale of the child bone"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("angle",Param::TYPE_VALUE)
+		.set_local_name(_("Angle of the child bone"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("tool",Param::TYPE_BOOL)
+						  .set_local_name(_("If the action is being used by tool"))
+						  .set_optional()
 	);
 
 	return ret;
@@ -118,6 +139,20 @@ Action::ValueDescCreateChildBone::set_param(const synfig::String& name, const Ac
 		return true;
 	}
 
+	if(param.get_type()==Param::TYPE_VALUE)
+	{
+		if(name=="origin"){
+			origin=param.get_value();
+			return true;
+		}else if(name=="scalelx"){
+			scalelx=param.get_value();
+			return true;
+		}else if(name=="angle"){
+			angle=param.get_value();
+			return true;
+		}
+	}
+
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -139,17 +174,47 @@ Action::ValueDescCreateChildBone::prepare()
 	 || !value_desc.get_parent_desc().is_value_node() )
 			throw Error(Error::TYPE_NOTREADY);
 
-	Action::Handle action = ValueNodeStaticListInsertSmart::create();
-	action->set_param("canvas", get_canvas());
-	action->set_param("canvas_interface", get_canvas_interface());
-	action->set_param("time", time);
-	
+	Action::Handle action;
 	const ValueDesc &parent_desc = value_desc.get_parent_desc();
 	if (parent_desc.get_parent_desc().get_value_type() == type_list)
 	{
-		// Adding bone to Skeleton layer
-		action->set_param("value_desc", parent_desc);
+		action = ValueNodeStaticListInsert::create();
+		action->set_param("canvas", get_canvas());
+		action->set_param("canvas_interface", get_canvas_interface());
+		action->set_param("time", time);
+
+		if(!parent_desc.parent_is_value_node()){
+			cout<<"F'ed the parent desc's parent"<<endl;
+		}
+
+		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_value_node());
+
+
+		if(!value_node){
+			cout<<"Error"<<endl;
+			throw Error(Error::TYPE_NOTREADY);
+
+		}
+
+		int index=parent_desc.get_index();
+		action->set_param("value_desc",ValueDesc(value_node,index));
+
+		info(to_string(origin.get(Point())[0])+" , "+to_string(origin.get(Point())[1]));
+		info(to_string(scalelx.get(Real())));
+		info(to_string(Angle::cos(angle.get(Angle())).get()));
+		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(value_node->create_list_entry(index));
+		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
+		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
+		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
+		action->set_param("item",ValueNode::Handle::cast_dynamic(bone));
+
+
 	} else {
+		action = ValueNodeStaticListInsertSmart::create();
+		action->set_param("canvas", get_canvas());
+		action->set_param("canvas_interface", get_canvas_interface());
+		action->set_param("time", time);
+
 		// Adding bone to Skeleton Deform layer
 		action->set_param("value_desc", parent_desc.get_parent_desc());
 	}
