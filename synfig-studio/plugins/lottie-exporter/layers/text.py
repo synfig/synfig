@@ -13,6 +13,45 @@ from properties.valueKeyframed import gen_value_Keyframed
 from common.misc import get_frame, parse_position
 sys.path.append("..")
 
+def calc_font_data(lottie,layer):
+    """
+    Calculates the font data used in the outermost canvas
+
+    Args:
+        lottie (dict)       : Outermost dictionary used in Lottie file
+        layer  (common.Layer.Layer) : Synfig format text layer
+
+    Returns:
+        (None)
+    """
+    default_list = {
+        "origin": 0,
+        "fPath": "",
+        "fClass": "",
+        "fFamily": "",
+        "fWeight": "",
+        "fName": "",
+        "ascent": 75.9994506835938
+      }
+    #Ascent is not documentated in the Lottie documentation and it's purpose is not known yet.
+
+    style_dict = {0:'Regular', 1:'Regular', 2:'Italic'}
+    #Lottie does not support oblique style of Synfig, so defaulting to Regular Style for it
+
+
+    default_list.update({'fStyle'  : style_dict[int(layer.get_param("style").get()[0].attrib["value"])]})
+    default_list.update({'fWeight' : layer.get_param("weight").get()[0].attrib["value"]})
+    font = layer.get_param("family").get()[0].text
+    if font in settings.FONT_STYLES:
+	    if "Comic" in font:
+	    	default_list["fFamily"] = "Comic Sans MS"
+	    	default_list["fName"]   = "ComicSansMS"
+	    else:
+	    	default_list["fFamily"] = font
+	    	default_list["fName"]   = "".join(font.split())
+
+    lottie["fonts"]["list"].append(default_list)
+
 def calc_default_text_properties(layer):
     """
     Generated the lottie dictionary corresponding to properties which won't change in text-animation
@@ -125,6 +164,8 @@ def gen_layer_text(lottie, layer, idx):
     lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
+
+    calc_font_data(settings.lottie_format,layer)
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
     lottie["ip"] = settings.lottie_format["ip"]
