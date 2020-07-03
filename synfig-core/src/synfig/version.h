@@ -50,6 +50,12 @@
 */
 #define SYNFIG_LIBRARY_VERSION	50
 
+
+#include <synfig/vector.h>
+#include <synfig/color.h>
+#include <synfig/canvas.h>
+#include <synfig/layer.h>
+
 /*! \writeme */
 #define SYNFIG_CHECK_VERSION()	synfig::check_version_(SYNFIG_LIBRARY_VERSION,sizeof(synfig::Vector),sizeof(synfig::Color),sizeof(synfig::Canvas),sizeof(synfig::Layer))
 

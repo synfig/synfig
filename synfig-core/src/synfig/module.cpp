@@ -60,9 +60,6 @@ bool
 Module::subsys_init(const String &prefix)
 {
 #ifndef USE_CF_BUNDLES
-	#ifndef SYNFIG_LTDL_NO_STATIC
-	//LTDL_SET_PRELOADED_SYMBOLS();
-	#endif
 
 	if(lt_dlinit())
 	{
@@ -71,18 +68,34 @@ Module::subsys_init(const String &prefix)
 		return false;
 	}
 
-	if(getenv("HOME"))
-		lt_dladdsearchdir(strprintf("%s/.local/share/synfig/modules", getenv("HOME")).c_str());
-	lt_dladdsearchdir((Glib::locale_from_utf8(prefix) + \
-		ETL_DIRECTORY_SEPARATOR + "lib" + \
-		ETL_DIRECTORY_SEPARATOR + "synfig" + \
-		ETL_DIRECTORY_SEPARATOR + "modules" ).c_str());
+	// user's synfig library path
+#ifdef _WIN32
+	if(const char *localappdata = getenv("%LOCALAPPDATA%")) {
+		std::string user_module_path = Glib::locale_from_utf8(localappdata) + "/synfig/modules";
+		lt_dladdsearchdir(user_module_path.c_str());
+	}
+#else
+#ifdef __APPLE__
+	if(const char *home = getenv("HOME"))
+		lt_dladdsearchdir(strprintf("%s/Library/Application Support/org.synfig.SynfigStudio/modules", home).c_str());
+#else
+	if(const char *home = getenv("HOME"))
+		lt_dladdsearchdir(strprintf("%s/.local/share/synfig/modules", home).c_str());
+#endif
+#endif
+
+	// (runtime) prefix path
+	lt_dladdsearchdir((Glib::locale_from_utf8(prefix) + "/lib/synfig/modules").c_str());
+
+	// path defined on build time
 #ifdef LIBDIR
 	lt_dladdsearchdir(LIBDIR"/synfig/modules");
 #endif
 #ifdef __APPLE__
 	lt_dladdsearchdir("/Library/Frameworks/synfig.framework/Resources/modules");
 #endif
+
+	// current working path...
 	lt_dladdsearchdir(".");
 #endif
 	book_=new Book;
@@ -146,34 +159,19 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(callback)callback->task(strprintf(_("Found module \"%s\""),module_name.c_str()));
 
-	Module::constructor_type constructor=NULL;
+	Module::constructor_type constructor=nullptr;
 	Handle mod;
 
-	if(!constructor)
+	const std::vector<const char*> symbol_prefixes = {"", "lib", "_lib", "_"};
+	for (const char * symbol_prefix : symbol_prefixes)
 	{
-//		if(callback)callback->task(string("looking for -> ")+module_name+"_LTX_new_instance()");
-		constructor=(Module::constructor_type )lt_dlsym(module,(module_name+"_LTX_new_instance").c_str());
-	}
-
-	if(!constructor)
-	{
-//		if(callback)callback->task(string("looking for -> lib")+module_name+"_LTX_new_instance()");
-		constructor=(Module::constructor_type )lt_dlsym(module,(string("lib")+module_name+"_LTX_new_instance").c_str());
-	}
-	if(!constructor)
-	{
-//		if(callback)callback->task(string("looking for -> lib")+module_name+"_LTX_new_instance()");
-		constructor=(Module::constructor_type )lt_dlsym(module,(string("_lib")+module_name+"_LTX_new_instance").c_str());
-	}
-	if(!constructor)
-	{
-//		if(callback)callback->task(string("looking for -> lib")+module_name+"_LTX_new_instance()");
-		constructor=(Module::constructor_type )lt_dlsym(module,(string("_")+module_name+"_LTX_new_instance").c_str());
+		constructor=(Module::constructor_type )lt_dlsym(module,(symbol_prefix+module_name+"_LTX_new_instance").c_str());
+		if (constructor)
+			break;
 	}
 
 	if(constructor)
 	{
-//		if(callback)callback->task(strprintf("Executing callback for \"%s\"",module_name.c_str()));
 		mod=handle<Module>((*constructor)(callback));
 	}
 	else
@@ -182,11 +180,8 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 		return false;
 	}
 
-//	if(callback)callback->task(strprintf("Done executing callback for \"%s\"",module_name.c_str()));
-
 	if(mod)
 	{
-//		if(callback)callback->task(strprintf("Registering \"%s\"",module_name.c_str()));
 		Register(mod);
 	}
 	else

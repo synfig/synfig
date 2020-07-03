@@ -437,7 +437,7 @@ namespace {
 				if (interpolation != Color::INTERPOLATION_NEAREST) {
 					const Real threshold = 1.2;
 
-					Transformation::Bounds bounds =
+					synfig::rendering::Transformation::Bounds bounds =
 						TransformationAffine( transformation.get_inverted() )
 							.transform_bounds( Rect(0.0, 0.0, 1.0, 1.0), Vector(1.0, 1.0) );
 					bounds.resolution *= threshold;
