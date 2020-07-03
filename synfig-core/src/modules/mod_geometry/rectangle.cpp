@@ -209,7 +209,7 @@ Rectangle::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("bevCircle")
 		.set_local_name(_("Keep Bevel Circular"))
-		.set_description(_("When checked the bevel is circular"))
+		.set_description(_("When checked, the bevel is circular"))
 	);
 
 	return ret;

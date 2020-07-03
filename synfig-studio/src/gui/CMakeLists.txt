@@ -19,6 +19,11 @@ add_definitions(-DSYNFIG_DATADIR="${SYNFIG_DATA_PREFIX}")
 add_definitions(-DLOCALEDIR="${DATA_PREFIX}/share/locale")
 add_definitions(-DCMAKE_BUILD)
 
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    add_definitions("-DSHOW_EXTRA_INFO")
+    add_definitions(-DETL_VERSION="${ETL_VERSION}")
+endif()
+
 ##
 ## Targets
 ##

@@ -179,7 +179,7 @@ InsideOut::get_param_vocab()const
 
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
-		.set_description(_("Defines where the center will be"))
+		.set_description(_("Center of the distortion"))
 	);
 
 	return ret;

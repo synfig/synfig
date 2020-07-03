@@ -1,0 +1,21 @@
+include(SynfigIntltool)
+
+set(INSTALL_DESTINATION "share/synfig/plugins/add-skeleton-simple")
+set(PLUGIN_ADD_SKELETON_SIMPLE_FILES
+    add-skeleton-simple.py
+    stickman.sif
+)
+
+file(COPY ${PLUGIN_ADD_SKELETON_SIMPLE_FILES}
+    DESTINATION ${SYNFIG_BUILD_ROOT}/${INSTALL_DESTINATION}
+)
+
+install(FILES ${PLUGIN_ADD_SKELETON_SIMPLE_FILES}
+    DESTINATION ${INSTALL_DESTINATION}
+)
+
+SYNFIG_INTLTOOL_MERGE(
+    TARGET_NAME plugin_add_skeleton_simple_xml
+    INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/plugin.xml.in
+    INSTALL_DESTINATION ${INSTALL_DESTINATION}
+)

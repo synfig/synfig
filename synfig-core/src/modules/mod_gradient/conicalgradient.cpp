@@ -126,7 +126,7 @@ ConicalGradient::get_param_vocab()const
 
 	ret.push_back(ParamDesc("symmetric")
 		.set_local_name(_("Symmetric"))
-		.set_description(_("When checked the gradient is looped"))
+		.set_description(_("When checked, the gradient is looped"))
 	);
 
 	return ret;

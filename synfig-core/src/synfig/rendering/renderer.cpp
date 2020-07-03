@@ -390,7 +390,7 @@ Renderer::optimize_recursive(
 		// prepare params
 		bool task_clonned = false;
 		std::vector<Optimizer::RunParams> sub_params(count);
-		int jumps[count+1]; // initial jump stored after last element
+		std::vector<int> jumps(count+1); // initial jump stored after last element
 		jumps[count] = 0;
 		for(int i = 0; i < count; ++i) {
 			sub_params[i] = params->sub( params->ref_task->sub_task(i) );

@@ -94,8 +94,8 @@ enum CircleFalloff
 	name->set_size_request(px)
 #endif
 
-#define GAP	(3)
-#define INDENTATION (6)
+const int GAP = 3;
+const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -542,7 +542,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	/* Set up the tool options dialog */
 
 	// 0, title
-	title_label.set_label(_("Circle Creation"));
+	title_label.set_label(_("Circle Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);

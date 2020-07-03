@@ -4995,9 +4995,9 @@
       <integer value="0"/>
     </param>
     <param name="text">
-      <string>Branch: %branch%
-Date: %commit_date%
-Commit ID: %commit_id%</string>
+      <string>Branch: @GIT_BRANCH@
+Date: @GIT_DATE@
+Hash: @GIT_HASH@</string>
     </param>
     <param name="color">
       <color>

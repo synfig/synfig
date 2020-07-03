@@ -1083,7 +1083,7 @@ Perspective::get_param_vocab()const
 	
 	ret.push_back(ParamDesc("interpolation")
 		.set_local_name(_("Interpolation"))
-		.set_description(_("What type of interpolation to use"))
+		.set_description(_("Type of interpolation to use"))
 		.set_hint("enum")
 		.add_enum_value(0,"nearest",_("Nearest Neighbor"))
 		.add_enum_value(1,"linear",_("Linear"))

@@ -152,7 +152,7 @@ SimpleCircle::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
-		.set_description(_("This is the radius of the circle"))
+		.set_description(_("Radius of the circle"))
 		.set_origin("center")
 		.set_is_distance()
 	);

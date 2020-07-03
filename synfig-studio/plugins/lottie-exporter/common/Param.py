@@ -562,6 +562,23 @@ class Param:
                 self.expression = ret
                 return ret, self.expression_controllers
 
+            elif self.param[0].tag == "vectorx":
+                self.subparams["vectorx"].extract_subparams()
+                vector, eff_1 = self.subparams["vectorx"].subparams["vector"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                ret = "[{x}[0], {x}[0]]" if self.dimension == 2 else "{x}[0]"
+                ret = ret.format(x=vector)
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "vectory":
+                self.subparams["vectory"].extract_subparams()
+                vector, eff_1 = self.subparams["vectory"].subparams["vector"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                ret = "[{y}[1], {y}[1]]" if self.dimension == 2 else "{y}[1]"
+                ret = ret.format(y=vector)
+                self.expression = ret
+                return ret, self.expression_controllers
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -921,6 +938,14 @@ class Param:
 
                 ret = math.pow(base,power)*settings.PIX_PER_UNIT
 
+            elif self.param[0].tag == "vectorx":
+                vector = self.subparams["vectorx"].subparams["vector"].__get_value(frame)
+                ret = vector[0]
+
+            elif self.param[0].tag == "vectory":
+                vector = self.subparams["vectory"].subparams["vector"].__get_value(frame)
+                ret = vector[1]
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1092,6 +1117,14 @@ class Param:
                 self.subparams["power"].subparams["power"].update_frame_window(window)
                 self.subparams["power"].subparams["epsilon"].update_frame_window(window)
                 self.subparams["power"].subparams["infinite"].update_frame_window(window)
+
+            elif node.tag == "vectorx":
+                self.subparams["vectorx"].extract_subparams()
+                self.subparams["vectorx"].subparams["vector"].update_frame_window(window)
+
+            elif node.tag == "vectory":
+                self.subparams["vectory"].extract_subparams()
+                self.subparams["vectory"].subparams["vector"].update_frame_window(window)
 
         if is_animated(node) == settings.ANIMATED:
             for waypoint in node:

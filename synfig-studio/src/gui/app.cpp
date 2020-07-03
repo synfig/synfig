@@ -2179,8 +2179,8 @@ void App::save_custom_workspace()
 	ok_button->set_sensitive(false);
 
 	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
-	name_entry->set_margin_left(16);
-	name_entry->set_margin_right(16);
+	name_entry->set_margin_start(16);
+	name_entry->set_margin_end(16);
 	name_entry->signal_changed().connect([&](){
 		std::string name = name_entry->get_text();
 		trim_string(name);
@@ -3560,16 +3560,20 @@ App::dialog_message_1b(
 		dialog.set_secondary_text(details);
 
 	Gtk::Label label;
-	Gtk::Grid grid;
+	Gtk::ScrolledWindow sw;
 	if (long_details != "long_details")
 	{
 		label.set_text(long_details);
+		label.set_margin_start(5);
+		label.set_margin_end(5);
+		label.set_line_wrap();
 		label.show();
-		grid.set_margin_start(10);
-		grid.set_margin_end(10);
-		grid.add(label);
-		grid.show();
-		dialog.get_content_area()->pack_end(grid);
+		sw.set_size_request(400,100);
+		sw.set_min_content_height(80);
+		sw.add(label);
+		sw.show();
+		dialog.get_content_area()->pack_end(sw);
+		dialog.set_resizable();
 	}
 
 	dialog.add_button(button1, 0);

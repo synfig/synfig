@@ -75,6 +75,8 @@ using namespace studio;
 #define EPSILON	0.0000001
 #endif
 
+const int GAP = 3;
+
 /* === G L O B A L S ======================================================= */
 
 StateNormal studio::state_normal;
@@ -121,6 +123,7 @@ class studio::StateNormal_Context : public sigc::trackable
 	etl::handle<DuckDrag_Combo> duck_dragger_;
 
 	Gtk::Table options_table;
+	Gtk::Label title_label;
 
 	bool ctrl_pressed;
 	bool alt_pressed;
@@ -288,10 +291,24 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	duck_dragger_->canvas_view_=get_canvas_view();
 
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Transform Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_START)),	0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_START)),	0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_START)),	0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	title_label.set_label(_("Transform Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_START)),
+		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_START)),
+		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_START)),
+		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
 
 	options_table.show_all();
 	refresh_tool_options();

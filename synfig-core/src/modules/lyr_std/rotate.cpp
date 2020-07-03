@@ -129,7 +129,7 @@ Rotate::get_param_vocab()const
 
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
-		.set_description(_("Point where you want the origin to be"))
+		.set_description(_("Origin of the rotation"))
 	);
 
 	ret.push_back(ParamDesc("amount")

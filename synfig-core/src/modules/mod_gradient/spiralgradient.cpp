@@ -124,7 +124,7 @@ SpiralGradient::get_param_vocab()const
 
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
-		.set_description(_("This is the radius of the circle"))
+		.set_description(_("Radius of the circle"))
 		.set_is_distance()
 		.set_origin("center")
 	);
@@ -137,7 +137,7 @@ SpiralGradient::get_param_vocab()const
 
 	ret.push_back(ParamDesc("clockwise")
 		.set_local_name(_("Clockwise"))
-		.set_description(_("When checked the spiral turns clockwise"))
+		.set_description(_("When checked, the spiral turns clockwise"))
 	);
 
 	return ret;

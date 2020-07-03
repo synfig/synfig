@@ -136,7 +136,7 @@ Layer_PasteCanvas::get_param_vocab()const
 	
 	ret.push_back(ParamDesc("transformation")
 		.set_local_name(_("Transformation"))
-		.set_description(_("Position, rotation, skew and scale"))
+		.set_description(_("Offset, Angle, Skew Angle and Scale"))
 	);
 
 	ret.push_back(ParamDesc("canvas")
@@ -156,7 +156,7 @@ Layer_PasteCanvas::get_param_vocab()const
 
 	ret.push_back(ParamDesc("children_lock")
 		.set_local_name(_("Lock Selection"))
-		.set_description(_("When checked prevents to select the children using the mouse click"))
+		.set_description(_("When checked, prevents selecting the children using the mouse click"))
 		.set_static(true)
 	);
 

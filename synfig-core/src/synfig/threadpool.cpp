@@ -38,6 +38,8 @@
 #endif
 
 #include <cassert>
+#include <sigc++/bind.h>
+#include <glibmm/thread.h> // For g_get_num_processors()
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
@@ -48,7 +50,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -72,8 +73,8 @@ void
 ThreadPool::Group::process(int begin, int end) {
 	for(int i = begin; i < end; ++i)
 		try { tasks[i].second(); } catch(...) { }
-	Glib::Threads::Mutex::Lock lock(mutex);
-	if (!--running_threads) cond.signal();
+	std::lock_guard<std::mutex> lock(mutex);
+	if (!--running_threads) cond.notify_one();
 }
 
 void
@@ -119,8 +120,8 @@ ThreadPool::Group::run(bool force_thread) {
 
 	// wait
 	if (multithreading) {
-		Glib::Threads::Mutex::Lock lock(mutex);
-		while(running_threads > 0) instance().wait(cond, mutex);
+		std::unique_lock<std::mutex> lock(mutex);
+		while(running_threads > 0) instance().wait(cond, lock);
 	}
 
 	// reset
@@ -160,18 +161,18 @@ ThreadPool::~ThreadPool() {
 	#endif
 
 	{
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		stopped = true;
-		cond.broadcast();
+		cond.notify_all();
 	}
 
 	while(true) {
-		Glib::Threads::Thread *thread = 0;
+		std::thread *thread = nullptr;
 		{
-			Glib::Threads::Mutex::Lock lock(mutex);
+			std::lock_guard<std::mutex> lock(mutex);
 			if (threads.empty()) break;
 			stopped = true;
-			cond.broadcast();
+			cond.notify_all();
 			thread = threads.back();
 			threads.pop_back();
 		}
@@ -180,7 +181,7 @@ ThreadPool::~ThreadPool() {
 
 	{
 		#ifdef DEBUG_PTHREAD_MEASURE
-		Glib::Threads::Mutex::Lock lock(mutex);
+		std::lock_guard<std::mutex> lock(mutex);
 		info("ThreadPool destroyed with unprocessed tasks in queue: %d", queue.size());
 		#endif
 	}
@@ -204,11 +205,11 @@ ThreadPool::thread_loop(int
 	while(true) {
 		Slot slot;
 		{
-			Glib::Threads::Mutex::Lock lock(mutex);
+			std::unique_lock<std::mutex> lock(mutex);
 			while(!stopped && (queue.empty() || running_threads > max_running_threads)) {
 				++ready_threads;
 				--running_threads;
-				cond.wait(mutex);
+				cond.wait(lock);
 				++running_threads;
 				--ready_threads;
 			}
@@ -259,26 +260,26 @@ ThreadPool::wakeup() {
 	to_wakeup     = std::max(0, to_wakeup - to_create);
 	while(to_create-- > 0)
 		threads.push_back(
-			Glib::Threads::Thread::create(
+			new std::thread(
 				sigc::bind( sigc::mem_fun(this, &ThreadPool::thread_loop), ++last_thread_id )));
 	while(to_wakeup-- > 0)
-		cond.signal();
+		cond.notify_one();
 }
 
 void
 ThreadPool::enqueue(const Slot &slot) {
-	Glib::Threads::Mutex::Lock lock(mutex);
+	std::lock_guard<std::mutex> lock(mutex);
 	++queue_size;
 	queue.push(slot);
 	wakeup();
 }
 
 void
-ThreadPool::wait(Glib::Threads::Cond &cond, Glib::Threads::Mutex &mutex) {
+ThreadPool::wait(std::condition_variable &cond, std::unique_lock<std::mutex> &lock) {
 	if (--running_threads < max_running_threads)
 		if (queue_size) // wakeup or create ready thread if we have tasks in queue
-			{ Glib::Threads::Mutex::Lock lock(this->mutex); wakeup(); }
-	cond.wait(mutex);
+			{ std::lock_guard<std::mutex> lock(this->mutex); wakeup(); }
+	cond.wait(lock);
 	++running_threads;
 }
 

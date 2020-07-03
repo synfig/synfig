@@ -294,7 +294,7 @@ Noise::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("turbulent")
 		.set_local_name(_("Turbulent"))
-		.set_description(_("When checked produces turbulent noise"))
+		.set_description(_("When checked, produces turbulent noise"))
 	);
 	ret.push_back(ParamDesc("do_alpha")
 		.set_local_name(_("Do Alpha"))
@@ -302,7 +302,7 @@ Noise::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("super_sample")
 		.set_local_name(_("Super Sampling"))
-		.set_description(_("When checked the gradient is supersampled"))
+		.set_description(_("When checked, the gradient is supersampled"))
 	);
 
 	return ret;

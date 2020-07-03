@@ -71,6 +71,8 @@ using namespace studio;
 #define EPSILON	0.0000001
 #endif
 
+const int GAP = 3;
+
 /* === G L O B A L S ======================================================= */
 
 StateRotate studio::state_rotate;
@@ -116,13 +118,16 @@ class studio::StateRotate_Context : public sigc::trackable
 	etl::handle<DuckDrag_Rotate> duck_dragger_;
 
 	Gtk::Table options_table;
+	Gtk::Label title_label;
 
-	Gtk::CheckButton checkbutton_scale;
+	Gtk::Label scale_label;
+	Gtk::CheckButton scale_checkbutton;
+	Gtk::HBox scale_box;
 
 public:
 
-	bool get_scale_flag()const { return checkbutton_scale.get_active(); }
-	void set_scale_flag(bool x) { checkbutton_scale.set_active(x); refresh_scale_flag(); }
+	bool get_scale_flag()const { return scale_checkbutton.get_active(); }
+	void set_scale_flag(bool x) { scale_checkbutton.set_active(x); refresh_scale_flag(); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
@@ -199,17 +204,35 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	duck_dragger_(new DuckDrag_Rotate()),
-	checkbutton_scale(_("Allow Scale"))
+	duck_dragger_(new DuckDrag_Rotate())
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Rotate Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_scale,							0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	title_label.set_label(_("Rotate Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	scale_label.set_label(_("Allow Scale"));
+	scale_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	
+	scale_box.pack_start(scale_label);
+	scale_box.pack_end(scale_checkbutton, Gtk::PACK_SHRINK);
+	
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(scale_box,
+		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
+		);
 
-	checkbutton_scale.signal_toggled().connect(sigc::mem_fun(*this,&StateRotate_Context::refresh_scale_flag));
+	scale_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateRotate_Context::refresh_scale_flag));
 
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
 	options_table.show_all();
 	refresh_tool_options();
 	//App::dialog_tool_options->set_widget(options_table);

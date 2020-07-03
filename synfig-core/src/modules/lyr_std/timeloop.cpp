@@ -154,7 +154,7 @@ Layer_TimeLoop::get_param_vocab()const
 
 	ret.push_back(ParamDesc("only_for_positive_duration")
 		.set_local_name(_("Only For Positive Duration"))
-		.set_description(_("When checked will loop only positive durations"))
+		.set_description(_("When checked, loops only positive durations"))
 		.set_static(true)
 	);
 
