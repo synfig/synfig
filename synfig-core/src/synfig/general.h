@@ -43,10 +43,19 @@
 
 namespace synfig {
 
+//! Change the Locale while this object exists
+/// It's a guard class like std::lock_guard.
+///
+/// You should instantiate an object of this class to temporarily change the locale
+///   until the end of its life cycle.
+///
+/// It is useful for reading/writing float numbers no matter the locale, for example.
 class ChangeLocale {
 	const String previous;
 	const int category;
 public:
+	/// @param category - the locale category to be temporarily changed
+	/// @param[in] locale - the temporary locale name
 	ChangeLocale(int category, const char *locale)
 	: // This backups the old locale
 	  previous(setlocale(category,nullptr)), category(category)
@@ -60,6 +69,7 @@ public:
 	}
 };
 
+//! If true, do not report "info"-level log, only errors and warnings
 extern bool synfig_quiet_mode;
 
 //! Reports an error
