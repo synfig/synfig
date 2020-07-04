@@ -47,9 +47,9 @@ class ChangeLocale {
 	const String previous;
 	const int category;
 public:
-	ChangeLocale(int category, const char *locale):
-	// This backups the old locale
-	previous(setlocale(category,NULL)),category(category)
+	ChangeLocale(int category, const char *locale)
+	: // This backups the old locale
+	  previous(setlocale(category,nullptr)), category(category)
 	{
 		// This effectively changes the locale
 		setlocale(category, locale);
