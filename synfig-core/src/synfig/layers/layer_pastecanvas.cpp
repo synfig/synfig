@@ -107,8 +107,6 @@ Layer_PasteCanvas::~Layer_PasteCanvas()
 		sub_canvas->parent_set.erase(this);
 */
 
-	//if(sub_canvas)DEBUGINFO(strprintf("%d",sub_canvas->count()));
-
 	set_sub_canvas(0);
 
 	//if(sub_canvas && (sub_canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=sub_canvas->get_root()))

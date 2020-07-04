@@ -39,20 +39,6 @@
 
 #define SYNFIG_COPYRIGHT "Copyright (c) 2001-2005 Robert B. Quattlebaum Jr., Adrian Bentley"
 
-#ifdef _DEBUG
-#ifdef __FUNC__
-#define DEBUGPOINT()	synfig::warning(etl::strprintf(__FILE__":"__FUNC__":%d DEBUGPOINT",__LINE__))
-#define DEBUGINFO(x)	synfig::warning(etl::strprintf(__FILE__":"__FUNC__":%d:DEBUGINFO:",__LINE__)+x)
-#else
-#define DEBUGPOINT()	synfig::warning(etl::strprintf(__FILE__":%d DEBUGPOINT",__LINE__))
-#define DEBUGINFO(x)	synfig::warning(etl::strprintf(__FILE__":%d:DEBUGINFO:",__LINE__)+x)
-#endif
-
-#else
-#define DEBUGPOINT()
-#define DEBUGINFO(x)
-#endif
-
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {

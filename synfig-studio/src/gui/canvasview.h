@@ -110,14 +110,6 @@
 
 /* === M A C R O S ========================================================= */
 
-#ifndef DEBUGPOINT_CLASS
-#ifdef _DEBUG
-#define DEBUGPOINT_CLASS(x)		struct debugpointclass_ ## x { debugpointclass_ ## x () { DEBUGPOINT(); } ~debugpointclass_ ## x () { DEBUGPOINT(); } } badfthguae_ ## x ;
-#else
-#define DEBUGPOINT_CLASS(x)
-#endif
-#endif
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -263,26 +255,18 @@ private:
 
 	synfig::Rect bbox;
 
-	// DEBUGPOINT_CLASS(1);
-
 	//! State Machine
 	Smach smach_;
-
-	// DEBUGPOINT_CLASS(2);
 
 	etl::loose_handle<Instance> instance_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	synfig::ContextParams context_params_;
-
-	// DEBUGPOINT_CLASS(4);
 
 	//! TreeModel for the layers
 	LayerTreeModel layer_tree_model;
 
 	//! TreeModel for the the children
 	ChildrenTreeModel children_tree_model;
-
-	// DEBUGPOINT_CLASS(5);
 
 	RefObjBook ref_obj_book_;
 	WidgetBook ext_widget_book_;
