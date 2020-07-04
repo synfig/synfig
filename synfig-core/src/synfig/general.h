@@ -76,9 +76,6 @@ public:
 
 extern bool synfig_quiet_mode;
 
-//! Shutdown the synfig environment
-extern void shutdown();
-
 //! Reports an error
 /*! Call this when an error occurs, describing what happened */
 extern void error(const char *format,...);
