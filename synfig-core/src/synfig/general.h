@@ -74,11 +74,6 @@ public:
 	}
 };
 
-/*
-extern bool add_to_module_search_path(const std:string &path);
-extern bool add_to_config_search_path(const std:string &path);
-*/
-
 extern bool synfig_quiet_mode;
 
 //! Shutdown the synfig environment
