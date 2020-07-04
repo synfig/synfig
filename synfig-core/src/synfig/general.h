@@ -35,13 +35,6 @@
 #include "string.h"
 #include "version.h"
 
-#ifdef __GNUC__
-	#define INRETRNAL_FUNC \
-		__attribute__ ((visibility ("hidden")))
-#else
-	#define INRETRNAL_FUNC
-#endif
-
 /* === M A C R O S ========================================================= */
 
 #define SYNFIG_COPYRIGHT "Copyright (c) 2001-2005 Robert B. Quattlebaum Jr., Adrian Bentley"
