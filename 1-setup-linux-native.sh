@@ -30,10 +30,15 @@ echo "Detecting Linux OS..."
 # Check if /etc/os-release file is available
 if [ -f /etc/os-release ]; then
     source /etc/os-release
+    if [ -z $ID_LIKE ] && [ ! -z $ID ]; then
+        ID_LIKE=$ID
+    fi
     echo "ID_LIKE=$ID_LIKE"
     echo "VERSION_ID=$VERSION_ID"
-# Fallback whether /etc/os-release is not available
-elif [ -z $ID_LIKE ]; then
+fi
+
+# Fallback whether /etc/os-release is not available, or if ID_LIKE is not set
+if [ -z $ID_LIKE ]; then
     if command -v dnf >/dev/null; then
         # Fedora DNF package manager
         export ID_LIKE="fedora"
