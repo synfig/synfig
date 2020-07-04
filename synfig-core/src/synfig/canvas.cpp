@@ -1608,15 +1608,41 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	if(is_inline() && parent_)
 		return parent_->rename_group(old_name,new_name);
 
+	const char GROUP_NEST_CHAR = '.';
+
+	// create inexistent itermediate layer sets
+	// Example: new_name A.B.C
+	// creates
+	// A
+	// A.B
 	{
+		size_t pos = 0;
+		while ((pos = new_name.find(GROUP_NEST_CHAR, pos)) != string::npos) {
+			std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
+			String name(new_name, 0, pos);
+			iter=group_db_.find(name);
+			if (iter == group_db_.end()) {
+				group_db_[name] = std::set<etl::handle<Layer> >();
+				signal_group_added()(name);
+			}
+			pos++;
+		}
+	}
+
+	// rename itermediate layer sets
+	{
+		const string old_name_prefix = old_name + GROUP_NEST_CHAR;
+
 		std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
+
 		iter=group_db_.find(old_name);
-		if(iter!=group_db_.end())
-		for(++iter;iter!=group_db_.end() && iter->first.find(old_name)==0;iter=group_db_.find(old_name),++iter)
-		{
-			String name(iter->first,old_name.size(),String::npos);
-			name=new_name+name;
-			rename_group(iter->first,name);
+		if(iter!=group_db_.end()) {
+			for(++iter;iter!=group_db_.end() && iter->first.find(old_name_prefix)==0;iter=group_db_.find(old_name),++iter)
+			{
+				String name(iter->first,old_name_prefix.size(),String::npos);
+				name=new_name+GROUP_NEST_CHAR+name;
+				rename_group(iter->first,name);
+			}
 		}
 	}
 
@@ -1627,6 +1653,13 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	{
 		(*iter)->remove_from_group(old_name);
 		(*iter)->add_to_group(new_name);
+	}
+	// if empty group, rename it
+	if (layers.size() == 0) {
+		group_db_.erase(group_db_.find(old_name));
+		group_db_[new_name] = std::set<etl::handle<Layer> >();
+		signal_group_removed()(old_name);
+		signal_group_added()(new_name);
 	}
 }
 
