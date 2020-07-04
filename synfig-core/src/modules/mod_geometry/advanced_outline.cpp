@@ -180,7 +180,7 @@ namespace {
 		}
 		
 		void trunc_left(Real p, WidthPoint::SideType side) {
-			iterator i1 = upper_bound(p);
+			iterator i1 = lower_bound(p);
 			if (i1 == end())
 				{ clear(); return; }
 				
@@ -204,12 +204,15 @@ namespace {
 			k = approximate_zero_hp(k) ? 0 : 1/k;
 			b.split( (p - b.p0[0])*k, nullptr, &b );
 			
+			bool point_already_exists = find(p) != end();
+
 			AdvancedPoint &ap = (*this)[p];
 			ap.w = b.p0[1];
 			ap.pp0 = Vector(p, 0);
 			ap.pp1 = b.pp0;
 			ap.side0 = side;
-			ap.side1 = WidthPoint::TYPE_INTERPOLATE;
+			if (!point_already_exists)
+				ap.side1 = WidthPoint::TYPE_INTERPOLATE;
 			
 			i1->second.pp0 = b.pp1;
 		}
@@ -240,13 +243,16 @@ namespace {
 			k = approximate_zero_hp(k) ? 0 : 1/k;
 			b.split( (p - b.p0[0])*k, &b, nullptr );
 			
+			bool point_already_exists = find(p) != end();
+
 			AdvancedPoint &ap = (*this)[p];
 			ap.w = b.p1[1];
 			ap.pp0 = b.pp1;
 			ap.pp1 = Vector(p, 0);
-			ap.side0 = WidthPoint::TYPE_INTERPOLATE;
+			if (!point_already_exists)
+				ap.side0 = WidthPoint::TYPE_INTERPOLATE;
 			ap.side1 = side;
-			
+
 			i0->second.pp1 = b.pp0;
 		}
 
