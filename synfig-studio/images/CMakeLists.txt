@@ -282,6 +282,8 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES Release)
     set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_SOURCE_DIR}/splash_screen.sif)
 endif()
 
+set(LOGO_ICON ${CMAKE_CURRENT_SOURCE_DIR}/logo.sif)
+file(COPY ${LOGO_ICON} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 add_custom_command(
         OUTPUT ${PIXMAPS_DIR}/splash_screen.png
         COMMAND synfig_bin ${SYNFIG_SPLASH_SCREEN} -o ${PIXMAPS_DIR}/splash_screen.png --time 0f --quiet
