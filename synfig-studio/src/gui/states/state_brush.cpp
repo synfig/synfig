@@ -472,8 +472,6 @@ StateBrush_Context::load_settings()
 		{
 			if (App::brushes_path.empty())
 				App::brushes_path.insert(ResourceHelper::get_brush_path());
-			else
-				App::brushes_path.insert(*(App::brushes_path.begin()));
 		}
 		refresh_tool_options();
 
