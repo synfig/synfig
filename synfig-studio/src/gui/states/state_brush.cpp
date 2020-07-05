@@ -64,6 +64,8 @@
 
 #include "ducktransform_matrix.h"
 
+#include <gui/resourcehelper.h>
+
 #include <gui/localization.h>
 
 #endif
@@ -469,7 +471,7 @@ StateBrush_Context::load_settings()
 		else
 		{
 			if (App::brushes_path.empty())
-				App::brushes_path.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+				App::brushes_path.insert(ResourceHelper::get_brush_path());
 			else
 				App::brushes_path.insert(*(App::brushes_path.begin()));
 		}

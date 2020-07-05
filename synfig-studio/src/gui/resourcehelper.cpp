@@ -112,3 +112,14 @@ synfig::String studio::ResourceHelper::get_ui_path(const synfig::String& ui_file
 {
 	return get_ui_path() + '/' + ui_filename;
 }
+
+synfig::String studio::ResourceHelper::get_brush_path()
+{
+	std::string brushpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "brushes";
+	return brushpath;
+}
+
+synfig::String studio::ResourceHelper::get_brush_path(const synfig::String& brush_filename)
+{
+	return get_brush_path() + '/' + brush_filename;
+}
