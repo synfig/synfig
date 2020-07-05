@@ -198,12 +198,19 @@ public:
 	//!Register Module by instance pointer
 	static inline void Register(Module *mod) { Register(Handle(mod)); }
 
-	//! Virtual Modules properties wrappers. Must be defined in the modules classes
-	virtual const char * Name();
-	virtual const char * Desc();
-	virtual const char * Author();
-	virtual const char * Version();
-	virtual const char * Copyright();
+	// Virtual Modules properties wrappers.
+	// They MUST be defined in the module implementation classes.
+	// They SHOULD be defined via MODULE_* macros inside MODULE_DESC_BEGIN/END block.
+	//! Localized module name
+	virtual const char * Name() = 0;
+	//! Localized module description
+	virtual const char * Desc() = 0;
+	//! Module author(s)'s name
+	virtual const char * Author() = 0;
+	//! Module version string
+	virtual const char * Version() = 0;
+	//! Module copyright text
+	virtual const char * Copyright() = 0;
 
 	virtual ~Module() { destructor_(); }
 };

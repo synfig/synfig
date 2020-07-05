@@ -195,10 +195,3 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 #endif
 	return true;
 }
-
-//! Virtual Modules properties wrappers. Must be defined in the modules classes
-const char * Module::Name() { return " "; }
-const char * Module::Desc() { return " "; }
-const char * Module::Author() { return " "; }
-const char * Module::Version() { return " "; }
-const char * Module::Copyright() { return SYNFIG_COPYRIGHT; }
