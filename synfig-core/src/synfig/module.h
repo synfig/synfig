@@ -34,7 +34,6 @@
 #include "releases.h"
 #include "layer.h"
 
-
 /* === M A C R O S ========================================================= */
 
 //! Marks the start of a module description
@@ -83,12 +82,6 @@
 //! Marks the start of the layers in the module's inventory
 #define BEGIN_LAYERS {
 
-//! DEPRECATED - use #INCLUDE_LAYER(class)
-// Really? ^^ The INCLUDE_LAYER(class) macro is defined in a cpp file and
-// is undefined a few lines later. In fact the INCLUDE_LAYER is only
-// used in the layer.cpp file and the functionality is the same. Even
-// more, I think that we should use register_in_book call because maybe
-// the Layer class would like to do something else when register the class.
 //! Register a Layer class in the book of layers
 #define LAYER(class)																			\
 	synfig::Layer::register_in_book(															\
@@ -176,11 +169,10 @@ public:
 	typedef etl::loose_handle<Module> LooseHandle;
 	typedef etl::handle<const Module> ConstHandle;
 
-public:
 	//! Type that represents a pointer to a Module's constructor by name.
 	//! As a pointer to the member, it represents a constructor of the module.
 	typedef Module* (*constructor_type)(ProgressCallback *);
-	typedef std::map<String, Handle > Book;
+	typedef std::map<String, Handle> Book;
 private:
 	static Book* book_;
 public:
