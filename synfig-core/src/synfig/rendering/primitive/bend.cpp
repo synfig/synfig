@@ -293,7 +293,7 @@ Real Bend::length_by_l(Real l) const {
 		return i->length + (l - i->l);
 	
 	Real dl = j->l - i->l;
-	return approximate_zero(dl) ? i->length : i->length + (j->length - i->length)*(l - i->l)/l;
+	return approximate_zero(dl) ? i->length : i->length + (j->length - i->length)*(l - i->l)/dl;
 }
 
 Bend::Point
