@@ -35,42 +35,30 @@
 #include "string.h"
 #include "version.h"
 
-#ifdef __GNUC__
-	#define INRETRNAL_FUNC \
-		__attribute__ ((visibility ("hidden")))
-#else
-	#define INRETRNAL_FUNC
-#endif
-
 /* === M A C R O S ========================================================= */
 
 #define SYNFIG_COPYRIGHT "Copyright (c) 2001-2005 Robert B. Quattlebaum Jr., Adrian Bentley"
-
-#ifdef _DEBUG
-#ifdef __FUNC__
-#define DEBUGPOINT()	synfig::warning(etl::strprintf(__FILE__":"__FUNC__":%d DEBUGPOINT",__LINE__))
-#define DEBUGINFO(x)	synfig::warning(etl::strprintf(__FILE__":"__FUNC__":%d:DEBUGINFO:",__LINE__)+x)
-#else
-#define DEBUGPOINT()	synfig::warning(etl::strprintf(__FILE__":%d DEBUGPOINT",__LINE__))
-#define DEBUGINFO(x)	synfig::warning(etl::strprintf(__FILE__":%d:DEBUGINFO:",__LINE__)+x)
-#endif
-
-#else
-#define DEBUGPOINT()
-#define DEBUGINFO(x)
-#endif
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
 
+//! Change the Locale while this object exists
+/// It's a guard class like std::lock_guard.
+///
+/// You should instantiate an object of this class to temporarily change the locale
+///   until the end of its life cycle.
+///
+/// It is useful for reading/writing float numbers no matter the locale, for example.
 class ChangeLocale {
 	const String previous;
 	const int category;
 public:
-	ChangeLocale(int category, const char *locale):
-	// This backups the old locale
-	previous(setlocale(category,NULL)),category(category)
+	/// @param category - the locale category to be temporarily changed
+	/// @param[in] locale - the temporary locale name
+	ChangeLocale(int category, const char *locale)
+	: // This backups the old locale
+	  previous(setlocale(category,nullptr)), category(category)
 	{
 		// This effectively changes the locale
 		setlocale(category, locale);
@@ -81,15 +69,8 @@ public:
 	}
 };
 
-/*
-extern bool add_to_module_search_path(const std:string &path);
-extern bool add_to_config_search_path(const std:string &path);
-*/
-
+//! If true, do not report "info"-level log, only errors and warnings
 extern bool synfig_quiet_mode;
-
-//! Shutdown the synfig environment
-extern void shutdown();
 
 //! Reports an error
 /*! Call this when an error occurs, describing what happened */
