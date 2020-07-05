@@ -56,7 +56,7 @@
 #define MODULE_COPYRIGHT(x)		virtual const char * Copyright() { return x; }
 
 //! Describes the module's construction function
-#define MODULE_CONSTRUCTOR(x)	bool constructor_(synfig::ProgressCallback *cb) { return x(cb); }
+#define MODULE_CONSTRUCTOR(x)	virtual bool constructor_(synfig::ProgressCallback *cb) { return x(cb); }
 
 //! Describes the module's destruction function
 #define MODULE_DESTRUCTOR(x)	virtual void destructor_() { return x(); }
@@ -167,7 +167,9 @@ class ProgressCallback;
 class Module : public etl::shared_object
 {
 public:
-	bool constructor_(synfig::ProgressCallback */*cb*/) { return true; }
+	//! The initializer of the module. Default implementation does nothing
+	virtual bool constructor_(synfig::ProgressCallback */*cb*/) { return true; }
+	//! The module cleanup funtion
 	virtual void destructor_() { }
 
 	typedef etl::handle<Module> Handle;
