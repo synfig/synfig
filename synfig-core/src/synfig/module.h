@@ -212,7 +212,7 @@ public:
 	//! Module copyright text
 	virtual const char * Copyright() = 0;
 
-	virtual ~Module() { destructor_(); }
+	virtual ~Module();
 };
 
 }; // END of namespace synfig

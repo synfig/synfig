@@ -195,3 +195,8 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 #endif
 	return true;
 }
+
+synfig::Module::~Module()
+{
+	destructor_();
+}
