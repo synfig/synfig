@@ -36,6 +36,7 @@
 #include <synfig/general.h>
 #include <synfig/color.h>
 
+#include <glib/gstdio.h>
 #include <ETL/stringf>
 #include "trgt_gif.h"
 #include <cstdio>
@@ -62,7 +63,7 @@ SYNFIG_TARGET_SET_CVS_ID(gif,"$Id$");
 gif::gif(const char *filename_, const synfig::TargetParam & /* params */):
 	bs(),
 	filename(filename_),
-	file( (filename=="-")?stdout:fopen(filename_,POPEN_BINARY_WRITE_TYPE) ),
+	file( (filename=="-")?stdout:g_fopen(filename_,POPEN_BINARY_WRITE_TYPE) ),
 	codesize(),
 	rootsize(),
 	nextcode(),

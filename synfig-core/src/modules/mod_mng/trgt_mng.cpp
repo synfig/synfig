@@ -37,6 +37,7 @@
 #include <synfig/listimporter.h>
 #include <synfig/general.h>
 
+#include <glib/gstdio.h>
 #include "trgt_mng.h"
 #include <libmng.h>
 #include <ETL/stringf>
@@ -179,7 +180,7 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 	time_t t = time (NULL);
 	struct tm* gmt = gmtime(&t);
 	w=desc.get_w(); h=desc.get_h();
-	file = fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
+	file = g_fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
 	if (file == NULL) goto cleanup_on_error;
 	mng = mng_initialize((mng_ptr)file, mng_alloc_proc, mng_free_proc, MNG_NULL);
 	if (mng == MNG_NULL) goto cleanup_on_error;

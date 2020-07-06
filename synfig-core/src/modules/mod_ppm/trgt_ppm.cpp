@@ -32,6 +32,7 @@
 #	include <config.h>
 #endif
 
+#include <glib/gstdio.h>
 #include "trgt_ppm.h"
 #include <ETL/stringf>
 #include <cstdio>
@@ -108,12 +109,12 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 						   sequence_separator +
 						   etl::strprintf("%04d",imagecount) +
 						   filename_extension(filename));
-		file=SmartFILE(fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE));
+		file=SmartFILE(g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE));
 		if(callback)callback->task(newfilename);
 	}
 	else
 	{
-		file=SmartFILE(fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE));
+		file=SmartFILE(g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE));
 		if(callback)callback->task(filename);
 	}
 
