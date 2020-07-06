@@ -108,6 +108,7 @@
 //! Marks the start of the targets in the module's inventory
 #define BEGIN_TARGETS {
 
+//! Register a Target class in the book of targets and its default file extension
 #define TARGET(x)														\
 	synfig::Target::book()[synfig::String(x::name__)].factory =			\
 		reinterpret_cast<synfig::Target::Factory> (x::create);			\
@@ -117,6 +118,7 @@
 		synfig::TargetParam();													\
 	synfig::Target::ext_book()[synfig::String(x::ext__)]=x::name__;
 
+//! Register an additional file extension y for Target class x
 #define TARGET_EXT(x,y) synfig::Target::ext_book()[synfig::String(y)]=x::name__;
 
 //! Marks the end of the targets in the module's inventory
@@ -155,7 +157,58 @@ namespace synfig {
 class ProgressCallback;
 
 /*!	\class Module
-**	\todo writeme
+* Module is a dynamic library working as an add-on able to provide
+* new layer types (Layer), new animation renderers/exporters (Target) and
+* new image and video importers (Importer).
+*
+* Anyone creating a Module MUST declare its metadata. It SHOULD be done inside
+* a block of macros starting with MODULE_DESC_BEGIN(module_name) and ending
+* with MODULE_DESC_END. The module_name MUST match library file name.
+* The meta data SHOULD be filled with the macros MODULE_NAME(localized_name),
+* MODULE_DESCRIPTION(localized_description), MODULE_AUTHOR(author), MODULE_VERSION(version),
+* MODULE_COPYRIGHT(copyright).
+* If the module requires some sort of initialization or proper memory release on exit,
+* it COULD set them via macros MODULE_CONSTRUCTOR(function_name) and MODULE_DESTRUCTOR(function_name).
+*
+* Module creator can register provided layers with helper macros like in this example:
+*
+* MODULE_INVENTORY_BEGIN(libmod_geometry)
+*	BEGIN_LAYERS
+*		LAYER(CheckerBoard)
+*		LAYER(Circle)
+*	END_LAYERS
+* MODULE_INVENTORY_END
+*
+* In a similar way, module authors can register its Target and Importer classes:
+*
+* MODULE_INVENTORY_BEGIN(mod_ffmpeg)
+* 	BEGIN_TARGETS
+* 		TARGET(ffmpeg_trgt)
+* 		TARGET_EXT(ffmpeg_trgt,"avi")
+* 		TARGET_EXT(ffmpeg_trgt,"flv")
+* 	END_TARGETS
+* 	BEGIN_IMPORTERS
+* 		IMPORTER_EXT(ffmpeg_mptr,"avi")
+* 		IMPORTER_EXT(ffmpeg_mptr,"mp4")
+* 	END_IMPORTERS
+* MODULE_INVENTORY_END
+*
+* As can be noticed, a single module MAY provide multiple layers, multiple targets
+* and multiple importers, and they aren't restricted to provide a single type of
+* Synfig content.
+*
+* Modules can provide other Synfig content types (like Type and ValueNode), but
+* currently it doesn't provide helper macros to those registrations.
+*
+* One remainder: those mentioned macros SHOULD NOT be used in a C++ header file.
+* If this header is #include'd multiple times, there would be multiple variable/class
+* declarations.
+*
+* As Layer class does, Module class provide a static list of all registered Modules,
+* indexed by its module_name. Registered modules are already properly initialized.
+* Modules are not auto-registered. Instead, Synfig register those listed in a
+* plain-text file called "synfig_modules.cfg" or that defined by envvar SYNFIG_MODULE_LIST.
+* See synfig::Main for further details.
 */
 class Module : public etl::shared_object
 {
@@ -172,15 +225,18 @@ public:
 	//! Type that represents a pointer to a Module's constructor by name.
 	//! As a pointer to the member, it represents a constructor of the module.
 	typedef Module* (*constructor_type)(ProgressCallback *);
+	//! Type of registered modules: maps Module name to Module handle
 	typedef std::map<String, Handle> Book;
 private:
+	//! Registered modules
 	static Book* book_;
 public:
+	//! The registered modules
 	static Book& book();
 
-	//! Inits the book of importers and add the paths to search for the
-	//! ltdl library utilities.
+	//! Inits the book of modules and add the paths to search for them
 	static bool subsys_init(const String &prefix);
+	//! Cleans up this subsystem
 	static bool subsys_stop();
 	//! Register not optional modules
 	static void register_default_modules(ProgressCallback *cb=nullptr);
