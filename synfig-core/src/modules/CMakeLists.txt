@@ -32,7 +32,6 @@ set(MODS_ENABLED
     mod_jpeg
 #    mod_libavcodec # - build failure
 #    mod_magickpp # - made optional
-    mod_mng
     mod_noise
     mod_openexr
     mod_particle
@@ -42,6 +41,11 @@ set(MODS_ENABLED
     mod_yuv420p
 #    mptr_mplayer # - "This code has vulnerabilities"
 )
+if(LIBMNG_FOUND)
+  list(APPEND MODS_ENABLED mod_mng)
+else()
+  message(STATUS "mod_mng: Disabled")
+endif()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
