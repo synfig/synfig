@@ -90,6 +90,12 @@ int main(int argc, char* argv[])
 	setlocale(LC_ALL, "");
 	Glib::init(); // need to use Gio functions before app is started
 
+#ifdef _WIN32
+	argv = g_win32_get_command_line();
+#else
+	argv = g_strdupv(argv);
+#endif
+
 	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
 
 	std::string binary_path =
@@ -312,4 +318,6 @@ int main(int argc, char* argv[])
     catch(std::exception& e) {
         std::cout << e.what() << std::endl;
     }
+
+	g_strfreev(argv);
 }
