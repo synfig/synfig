@@ -31,6 +31,7 @@
 
 #include <giomm.h>
 #include <glibmm.h>
+#include <glib/gstdio.h>
 #include <sys/stat.h>
 
 #include "general.h"
@@ -154,11 +155,7 @@ bool FileSystemNative::file_rename(const String &from_filename, const String &to
 
 FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &filename)
 {
-#ifdef _WIN32
-	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "rb");
-#else
-	FILE *f = fopen(fix_slashes(filename).c_str(), "rb");
-#endif
+	FILE *f = g_fopen(fix_slashes(filename).c_str(), "rb");
 	return f == NULL
 	     ? FileSystem::ReadStream::Handle()
 	     : FileSystem::ReadStream::Handle(new ReadStream(this, f));
@@ -166,11 +163,7 @@ FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &f
 
 FileSystem::WriteStream::Handle FileSystemNative::get_write_stream(const String &filename)
 {
-#ifdef _WIN32
-	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "wb");
-#else
-	FILE *f = fopen(fix_slashes(filename).c_str(), "wb");
-#endif
+	FILE *f = g_fopen(fix_slashes(filename).c_str(), "wb");
 	return f == NULL
 	     ? FileSystem::WriteStream::Handle()
 	     : FileSystem::WriteStream::Handle(new WriteStream(this, f));

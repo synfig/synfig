@@ -1731,7 +1731,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			{
 				studio_init_cb.task(_("Loading files..."));
 				splash_screen.hide();
-				open(Glib::locale_to_utf8((*argv)[*argc]));
+				open((*argv)[*argc]);
 				opened_any = true;
 				splash_screen.show();
 			}
