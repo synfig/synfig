@@ -51,6 +51,8 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
 
+#include <gui/resourcehelper.h>
+
 #include <gui/localization.h>
 
 #endif
@@ -960,7 +962,7 @@ Dialog_Setup::refresh()
 	liststore->clear();
 	if(!bvalue || (bvalue && i<=0))
 	{
-		App::brushes_path.insert(App::get_base_path()+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"synfig"+ETL_DIRECTORY_SEPARATOR+"brushes");
+		App::brushes_path.insert(ResourceHelper::get_brush_path());
 	}
 	else
 	{

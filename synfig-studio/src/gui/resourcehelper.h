@@ -47,6 +47,9 @@ public:
 
 	static synfig::String get_ui_path();
 	static synfig::String get_ui_path(const synfig::String& ui_filename);
+
+	static synfig::String get_brush_path();
+	static synfig::String get_brush_path(const synfig::String& brush_filename);
 };
 
 };
