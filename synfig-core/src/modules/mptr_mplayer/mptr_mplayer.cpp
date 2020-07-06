@@ -31,6 +31,7 @@
 #	include <config.h>
 #endif
 
+#include <glib/gstdio.h>
 #include <synfig/synfig.h>
 #include <ETL/stringf>
 #include "mptr_mplayer.h"
@@ -78,8 +79,8 @@ mplayer_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &rendde
 		return false;
 	}
 */
-	FILE *sizefile=fopen("/tmp/tmp.synfig.size","rt");
-	FILE *rgbfile=fopen("/tmp/tmp.synfig.rgbdata","rb");
+	FILE *sizefile=g_fopen("/tmp/tmp.synfig.size","rt");
+	FILE *rgbfile=g_fopen("/tmp/tmp.synfig.rgbdata","rb");
 	if(!rgbfile)
 	{
 		cerr<<"unable to open /tmp/tmp.synfig.rgbdata"<<endl;

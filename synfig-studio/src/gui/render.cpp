@@ -388,11 +388,7 @@ RenderSettings::submit_next_render_pass()
 		App::dock_info_->set_render_progress(0.0); //For this pass
 		
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
-#ifdef _WIN32
-		String pass_filename = Glib::locale_from_utf8(pass_info.second);
-#else
 		String pass_filename = pass_info.second;
-#endif
 
 		Target::Handle target=Target::create(calculated_target_name,pass_filename, tparam);
 		if(!target)
