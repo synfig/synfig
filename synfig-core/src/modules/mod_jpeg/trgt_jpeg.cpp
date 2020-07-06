@@ -32,6 +32,7 @@
 #	include <config.h>
 #endif
 
+#include <glib/gstdio.h>
 #include "trgt_jpeg.h"
 #include <ETL/stringf>
 #endif
@@ -113,12 +114,12 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 						   sequence_separator +
 						   etl::strprintf("%04d",imagecount) +
 						   filename_extension(filename));
-		file=fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
+		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename);
 	}
 	else
 	{
-		file=fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
+		file=g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(filename);
 	}
 

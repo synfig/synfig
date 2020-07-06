@@ -35,6 +35,7 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
+#include <glib/gstdio.h>
 #include <ETL/stringf>
 #include "trgt_dv.h"
 #include <cstdio>
@@ -196,7 +197,7 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 		// Close the unneeded pipeout
 		close(p[0]);
 		// Open filename to stdout
-		FILE* outfile = fopen(filename.c_str(),"wb");
+		FILE* outfile = g_fopen(filename.c_str(),"wb");
 		if( outfile == NULL ){
 			synfig::error(_("Unable to open pipe to encodedv"));
 			return false;
