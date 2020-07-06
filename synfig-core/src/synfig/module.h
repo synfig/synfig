@@ -40,19 +40,19 @@
 #define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { x##_modclass(synfig::ProgressCallback *callback=nullptr);
 
 //! Sets the localized name of the module
-#define MODULE_NAME(x) 			virtual const char * Name() { return x; }
+#define MODULE_NAME(x) 			virtual const char * Name() const { return x; }
 
 //! Sets a localized description of the module
-#define MODULE_DESCRIPTION(x)	virtual const char * Desc() { return x; }
+#define MODULE_DESCRIPTION(x)	virtual const char * Desc() const { return x; }
 
 //! Sets the name of the module's author
-#define MODULE_AUTHOR(x)		virtual const char * Author() { return x; }
+#define MODULE_AUTHOR(x)		virtual const char * Author() const { return x; }
 
 //! Sets the version string for the module
-#define MODULE_VERSION(x)		virtual const char * Version() { return x; }
+#define MODULE_VERSION(x)		virtual const char * Version() const { return x; }
 
 //! Sets the copyright string for the module
-#define MODULE_COPYRIGHT(x)		virtual const char * Copyright() { return x; }
+#define MODULE_COPYRIGHT(x)		virtual const char * Copyright() const { return x; }
 
 //! Describes the module's construction function
 #define MODULE_CONSTRUCTOR(x)	virtual bool constructor_(synfig::ProgressCallback *cb) { return x(cb); }
@@ -252,15 +252,15 @@ public:
 	// They MUST be defined in the module implementation classes.
 	// They SHOULD be defined via MODULE_* macros inside MODULE_DESC_BEGIN/END block.
 	//! Localized module name
-	virtual const char * Name() = 0;
+	virtual const char * Name() const = 0;
 	//! Localized module description
-	virtual const char * Desc() = 0;
+	virtual const char * Desc() const = 0;
 	//! Module author(s)'s name
-	virtual const char * Author() = 0;
+	virtual const char * Author() const = 0;
 	//! Module version string
-	virtual const char * Version() = 0;
+	virtual const char * Version() const = 0;
 	//! Module copyright text
-	virtual const char * Copyright() = 0;
+	virtual const char * Copyright() const = 0;
 
 	virtual ~Module();
 };
