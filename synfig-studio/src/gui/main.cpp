@@ -41,6 +41,7 @@
 #include <glibmm/convert.h>
 
 #ifdef _WIN32
+#include <glib/gwin32.h>
 #include "main_win32.h"
 #endif
 
@@ -67,6 +68,16 @@ using namespace studio;
 
 int main(int argc, char **argv)
 {
+
+#ifdef _WIN32
+	// to be able to open files whose name is not latin (eg. arabic)
+	class ArgVGuard {
+		char **modified_argv;
+	public:
+		ArgVGuard(char **argv) { modified_argv = argv = g_win32_get_command_line(); }
+		~ArgVGuard() { g_strfreev(modified_argv); }
+	} argv_guard(argv);
+ #endif
 
 #ifdef _WIN32
 	if (consoleOptionEnabled(argc, argv))
