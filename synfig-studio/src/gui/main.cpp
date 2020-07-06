@@ -74,9 +74,9 @@ int main(int argc, char **argv)
 	class ArgVGuard {
 		char **modified_argv;
 	public:
-		ArgVGuard(char **argv) { modified_argv = argv = g_win32_get_command_line(); }
+		ArgVGuard(char ***argv) { modified_argv = *argv = g_win32_get_command_line(); }
 		~ArgVGuard() { g_strfreev(modified_argv); }
-	} argv_guard(argv);
+	} argv_guard(&argv);
  #endif
 
 #ifdef _WIN32
