@@ -67,6 +67,12 @@ int main(int argc, char **argv)
 {
 
 #ifdef _WIN32
+	argv = g_win32_get_command_line();
+#else
+	argv = g_strdupv(argv);
+#endif
+
+#ifdef _WIN32
 	if (consoleOptionEnabled(argc, argv))
 	{
 		redirectIOToConsole();
@@ -91,6 +97,7 @@ int main(int argc, char **argv)
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 	textdomain(GETTEXT_PACKAGE);
 #endif
+	
 	{
 		SmartFILE file(IPC::make_connection());
 		if(file)
@@ -151,6 +158,8 @@ int main(int argc, char **argv)
 	}
 
 	std::cerr<<"Application appears to have terminated successfully"<<std::endl;
+
+	g_strfreev(argv);
 
 	return 0;
 }
