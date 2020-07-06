@@ -109,7 +109,7 @@ private:
 							families.push_back((char*)family);
 //							FcStrFree(family); // it crashes synfig if we do free. No memory leaks detected via valgrind though
 						}
-						FcPatternDestroy(font);
+//						FcPatternDestroy(font); // it crashes synfig if we do free (MacOS 10.9 - MacOS 10.14 (Mojave)). No memory leaks detected via valgrind though
 					}
 					FcFontSetDestroy(font_set);
 
