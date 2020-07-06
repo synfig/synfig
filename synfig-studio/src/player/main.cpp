@@ -60,6 +60,13 @@ int main(int argc, char **argv)
 #endif
 
 	Glib::init();
+
+#ifdef _WIN32
+	argv = g_win32_get_command_line();
+#else
+	argv = g_strdupv(argv);
+#endif
+
 	bool r_time;
 
 	String binary_path = get_binary_path(argv[0]);
@@ -150,6 +157,9 @@ int main(int argc, char **argv)
 	
 	if (result) error("Gtk::Application finished with error code: %d", result);
 	info("end");
+
+	g_strfreev(argv);
+
 	return result;
 }
 
