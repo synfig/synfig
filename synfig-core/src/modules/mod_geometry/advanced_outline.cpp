@@ -196,10 +196,15 @@ namespace {
 				b.pp0 = i0->second.pp1;
 				b.pp1 = i1->second.pp0;
 			}
-			
+
 			erase(begin(), i1);
-			if (!b.p0[1] && !b.p1[1]) return;
-			
+			if (approximate_zero(b.p0[1]) && approximate_zero(b.p1[1])){
+				if (!empty() && approximate_equal(begin()->first, p)) {
+					begin()->second.side0 = side;
+				}
+				return;
+			}
+
 			Real k = (b.p1[0] - b.p0[0]);
 			k = approximate_zero_hp(k) ? 0 : 1/k;
 			b.split( (p - b.p0[0])*k, nullptr, &b );
@@ -237,8 +242,15 @@ namespace {
 			}
 			
 			erase(i1, end());
-			if (!b.p0[1] && !b.p1[1]) return;
-			
+			if (approximate_zero(b.p0[1]) && approximate_zero(b.p1[1])) {
+				if (!empty()) {
+					iterator last = end(); --last;
+					if (approximate_equal(last->first, p))
+						last->second.side1 = side;
+				}
+				return;
+			}
+
 			Real k = (b.p1[0] - b.p0[0]);
 			k = approximate_zero_hp(k) ? 0 : 1/k;
 			b.split( (p - b.p0[0])*k, &b, nullptr );
