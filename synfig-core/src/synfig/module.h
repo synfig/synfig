@@ -34,29 +34,28 @@
 #include "releases.h"
 #include "layer.h"
 
-
 /* === M A C R O S ========================================================= */
 
 //! Marks the start of a module description
 #define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { x##_modclass(synfig::ProgressCallback *callback=nullptr);
 
 //! Sets the localized name of the module
-#define MODULE_NAME(x) 			virtual const char * Name() { return x; }
+#define MODULE_NAME(x) 			virtual const char * Name() const { return x; }
 
 //! Sets a localized description of the module
-#define MODULE_DESCRIPTION(x)	virtual const char * Desc() { return x; }
+#define MODULE_DESCRIPTION(x)	virtual const char * Desc() const { return x; }
 
 //! Sets the name of the module's author
-#define MODULE_AUTHOR(x)		virtual const char * Author() { return x; }
+#define MODULE_AUTHOR(x)		virtual const char * Author() const { return x; }
 
 //! Sets the version string for the module
-#define MODULE_VERSION(x)		virtual const char * Version() { return x; }
+#define MODULE_VERSION(x)		virtual const char * Version() const { return x; }
 
 //! Sets the copyright string for the module
-#define MODULE_COPYRIGHT(x)		virtual const char * Copyright() { return x; }
+#define MODULE_COPYRIGHT(x)		virtual const char * Copyright() const { return x; }
 
 //! Describes the module's construction function
-#define MODULE_CONSTRUCTOR(x)	bool constructor_(synfig::ProgressCallback *cb) { return x(cb); }
+#define MODULE_CONSTRUCTOR(x)	virtual bool constructor_(synfig::ProgressCallback *cb) { return x(cb); }
 
 //! Describes the module's destruction function
 #define MODULE_DESTRUCTOR(x)	virtual void destructor_() { return x(); }
@@ -83,12 +82,6 @@
 //! Marks the start of the layers in the module's inventory
 #define BEGIN_LAYERS {
 
-//! DEPRECATED - use #INCLUDE_LAYER(class)
-// Really? ^^ The INCLUDE_LAYER(class) macro is defined in a cpp file and
-// is undefined a few lines later. In fact the INCLUDE_LAYER is only
-// used in the layer.cpp file and the functionality is the same. Even
-// more, I think that we should use register_in_book call because maybe
-// the Layer class would like to do something else when register the class.
 //! Register a Layer class in the book of layers
 #define LAYER(class)																			\
 	synfig::Layer::register_in_book(															\
@@ -115,6 +108,7 @@
 //! Marks the start of the targets in the module's inventory
 #define BEGIN_TARGETS {
 
+//! Register a Target class in the book of targets and its default file extension
 #define TARGET(x)														\
 	synfig::Target::book()[synfig::String(x::name__)].factory =			\
 		reinterpret_cast<synfig::Target::Factory> (x::create);			\
@@ -124,6 +118,7 @@
 		synfig::TargetParam();													\
 	synfig::Target::ext_book()[synfig::String(x::ext__)]=x::name__;
 
+//! Register an additional file extension y for Target class x
 #define TARGET_EXT(x,y) synfig::Target::ext_book()[synfig::String(y)]=x::name__;
 
 //! Marks the end of the targets in the module's inventory
@@ -162,31 +157,86 @@ namespace synfig {
 class ProgressCallback;
 
 /*!	\class Module
-**	\todo writeme
+* Module is a dynamic library working as an add-on able to provide
+* new layer types (Layer), new animation renderers/exporters (Target) and
+* new image and video importers (Importer).
+*
+* Anyone creating a Module MUST declare its metadata. It SHOULD be done inside
+* a block of macros starting with MODULE_DESC_BEGIN(module_name) and ending
+* with MODULE_DESC_END. The module_name MUST match library file name.
+* The meta data SHOULD be filled with the macros MODULE_NAME(localized_name),
+* MODULE_DESCRIPTION(localized_description), MODULE_AUTHOR(author), MODULE_VERSION(version),
+* MODULE_COPYRIGHT(copyright).
+* If the module requires some sort of initialization or proper memory release on exit,
+* it COULD set them via macros MODULE_CONSTRUCTOR(function_name) and MODULE_DESTRUCTOR(function_name).
+*
+* Module creator can register provided layers with helper macros like in this example:
+*
+* MODULE_INVENTORY_BEGIN(libmod_geometry)
+*	BEGIN_LAYERS
+*		LAYER(CheckerBoard)
+*		LAYER(Circle)
+*	END_LAYERS
+* MODULE_INVENTORY_END
+*
+* In a similar way, module authors can register its Target and Importer classes:
+*
+* MODULE_INVENTORY_BEGIN(mod_ffmpeg)
+* 	BEGIN_TARGETS
+* 		TARGET(ffmpeg_trgt)
+* 		TARGET_EXT(ffmpeg_trgt,"avi")
+* 		TARGET_EXT(ffmpeg_trgt,"flv")
+* 	END_TARGETS
+* 	BEGIN_IMPORTERS
+* 		IMPORTER_EXT(ffmpeg_mptr,"avi")
+* 		IMPORTER_EXT(ffmpeg_mptr,"mp4")
+* 	END_IMPORTERS
+* MODULE_INVENTORY_END
+*
+* As can be noticed, a single module MAY provide multiple layers, multiple targets
+* and multiple importers, and they aren't restricted to provide a single type of
+* Synfig content.
+*
+* Modules can provide other Synfig content types (like Type and ValueNode), but
+* currently it doesn't provide helper macros to those registrations.
+*
+* One remainder: those mentioned macros SHOULD NOT be used in a C++ header file.
+* If this header is #include'd multiple times, there would be multiple variable/class
+* declarations.
+*
+* As Layer class does, Module class provide a static list of all registered Modules,
+* indexed by its module_name. Registered modules are already properly initialized.
+* Modules are not auto-registered. Instead, Synfig register those listed in a
+* plain-text file called "synfig_modules.cfg" or that defined by envvar SYNFIG_MODULE_LIST.
+* See synfig::Main for further details.
 */
 class Module : public etl::shared_object
 {
 public:
-	bool constructor_(synfig::ProgressCallback */*cb*/) { return true; }
+	//! The initializer of the module. Default implementation does nothing
+	virtual bool constructor_(synfig::ProgressCallback */*cb*/) { return true; }
+	//! The module cleanup funtion
 	virtual void destructor_() { }
 
 	typedef etl::handle<Module> Handle;
 	typedef etl::loose_handle<Module> LooseHandle;
 	typedef etl::handle<const Module> ConstHandle;
 
-public:
 	//! Type that represents a pointer to a Module's constructor by name.
 	//! As a pointer to the member, it represents a constructor of the module.
 	typedef Module* (*constructor_type)(ProgressCallback *);
-	typedef std::map<String, Handle > Book;
+	//! Type of registered modules: maps Module name to Module handle
+	typedef std::map<String, Handle> Book;
 private:
+	//! Registered modules
 	static Book* book_;
 public:
+	//! The registered modules
 	static Book& book();
 
-	//! Inits the book of importers and add the paths to search for the
-	//! ltdl library utilities.
+	//! Inits the book of modules and add the paths to search for them
 	static bool subsys_init(const String &prefix);
+	//! Cleans up this subsystem
 	static bool subsys_stop();
 	//! Register not optional modules
 	static void register_default_modules(ProgressCallback *cb=nullptr);
@@ -198,14 +248,21 @@ public:
 	//!Register Module by instance pointer
 	static inline void Register(Module *mod) { Register(Handle(mod)); }
 
-	//! Virtual Modules properties wrappers. Must be defined in the modules classes
-	virtual const char * Name();
-	virtual const char * Desc();
-	virtual const char * Author();
-	virtual const char * Version();
-	virtual const char * Copyright();
+	// Virtual Modules properties wrappers.
+	// They MUST be defined in the module implementation classes.
+	// They SHOULD be defined via MODULE_* macros inside MODULE_DESC_BEGIN/END block.
+	//! Localized module name
+	virtual const char * Name() const = 0;
+	//! Localized module description
+	virtual const char * Desc() const = 0;
+	//! Module author(s)'s name
+	virtual const char * Author() const = 0;
+	//! Module version string
+	virtual const char * Version() const = 0;
+	//! Module copyright text
+	virtual const char * Copyright() const = 0;
 
-	virtual ~Module() { destructor_(); }
+	virtual ~Module();
 };
 
 }; // END of namespace synfig
