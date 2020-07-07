@@ -346,10 +346,14 @@ namespace {
 							const_iterator i0 = i; --i0;
 							if (dst.closed()) {
 								dst.move_to( Vector(i0->first, i0->second.y1()) );
-								dst.cubic_to(
-											Vector(i->first, i->second.y0()),
-											i0->second.pp1,
-											i->second.pp0 );
+								if (approximate_equal(i0->second.y1(), i->second.y0())) {
+									dst.line_to(Vector(i->first, i->second.y0()));
+								} else {
+									dst.cubic_to(
+										Vector(i->first, i->second.y0()),
+										i0->second.pp1,
+										i->second.pp0 );
+								}
 							}
 						}
 						break;
@@ -388,10 +392,14 @@ namespace {
 							const_iterator i1 = i; ++i1;
 							if (i1 != end()) {
 								dst.line_to( Vector(i->first, i->second.y1()) );
-								dst.cubic_to(
-											Vector(i1->first, i1->second.y0()),
-											i->second.pp1,
-											i1->second.pp0 );
+								if (approximate_equal(i->second.y1(), i1->second.y0())) {
+									dst.line_to(Vector(i1->first, i1->second.y0()));
+								} else {
+									dst.cubic_to(
+										Vector(i1->first, i1->second.y0()),
+										i->second.pp1,
+										i1->second.pp0 );
+								}
 							} else {
 								dst.line_to( Vector(i->first, 0) );
 								dst.close_mirrored_vert();
