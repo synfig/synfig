@@ -38,6 +38,7 @@ pkg_check_modules(LIBMNG libmng) # for mod_mng (set as optional as it is not cor
 pkg_check_modules(LIBJPEG REQUIRED libjpeg) # for mod_mng
 pkg_check_modules(OPENEXR REQUIRED OpenEXR) # for mod_openexr
 pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
+pkg_check_modules(FONT_CONFIG FontConfig) # for FontConfig
 
 ## TODO: move to module where it is actually required
 pkg_check_modules(PANGO REQUIRED pango)
@@ -57,7 +58,8 @@ foreach(pkg_config_lib
   LIBJPEG
   OPENEXR
   MAGICKCORE
-  PANGO)
+  PANGO
+  FONT_CONFIG)
     include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
     link_directories(${${pkg_config_lib}_LIBRARY_DIRS})
 endforeach()
@@ -83,6 +85,10 @@ include (CheckFunctionExists)
 CHECK_FUNCTION_EXISTS(fork HAVE_FORK)
 CHECK_FUNCTION_EXISTS(pipe HAVE_PIPE)
 CHECK_FUNCTION_EXISTS(waitpid HAVE_WAITPID)
+
+if(FONT_CONFIG_FOUND)
+  add_definitions(-DWITH_FONTCONFIG)
+endif()
 
 add_definitions(-DHAVE_CONFIG_H)
 configure_file(config.h.cmake.in config.h)
