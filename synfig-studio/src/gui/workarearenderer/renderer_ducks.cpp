@@ -298,7 +298,7 @@ Renderer_Ducks::render_vfunc(
 					);
 
 				cr->set_line_width(2.0);
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_SELECTED)); //DUCK_COLOR_SELECTED
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(ACTIVE_BONE)); //DUCK_COLOR_SELECTED
 				cr->stroke();
 
 				cr->restore();
