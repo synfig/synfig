@@ -123,28 +123,28 @@ def gen_layers(lottie, canvas, layer_itr):
 							layer,
 							itr)
 			calculate_blurs_needed(settings.LEVEL)
-			append_blur_dict(layer,settings.LEVEL,settings.GROUP_FLAG)
+			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
 
 		elif layer.get_type() in solid:         # Goto solid layer
 			gen_layer_solid(lottie[-1],
 							layer,
 							itr)
 			calculate_blurs_needed(settings.LEVEL)
-			append_blur_dict(layer,settings.LEVEL,settings.GROUP_FLAG)
+			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
 
 		elif layer.get_type() in shape_solid:   # Goto shape_solid layer
 			gen_layer_shape_solid(lottie[-1],
 								  layer,
 								  itr)
 			calculate_blurs_needed(settings.LEVEL)
-			append_blur_dict(layer,settings.LEVEL,settings.GROUP_FLAG)
+			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
 
 		elif layer.get_type() in image:   # Goto image layer
 			gen_layer_image(lottie[-1],
 							layer,
 							itr)
 			calculate_blurs_needed(settings.LEVEL)
-			append_blur_dict(layer,settings.LEVEL,settings.GROUP_FLAG)
+			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
 
 		elif layer.get_type() in blur:
 			settings.blur_dictionary[settings.LEVEL] = layer
@@ -155,12 +155,9 @@ def gen_layers(lottie, canvas, layer_itr):
 							  itr)
 			return  # other layers will be generated inside the precomp
 		elif layer.get_type() in group:       # Goto group layer
-			if layer.get_type() == "group":
-				settings.GROUP_FLAG = True
 			gen_layer_group(lottie[-1],
 							layer,
 							itr)
-			settings.GROUP_FLAG = False
 			# No return statement here
 		elif layer.get_type() in skeleton:
 			pass

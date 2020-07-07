@@ -78,7 +78,6 @@ BLUR_TYPE = 29
 ANIMATED = 2
 SINGLE_WAYPOINT = 1
 NOT_ANIMATED = 0
-GROUP_FLAG = False #indicates whether layer is in a group or not
 LEVEL = 0 #Indicates the depth of a layer
 
 def init():
