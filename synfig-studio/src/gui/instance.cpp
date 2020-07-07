@@ -1316,7 +1316,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			synfigapp::ValueDesc(
 				ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
 				,ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-                                                          ->get_link_index_from_name("point")
+                                                           ->get_link_index_from_name("point")
 			)
 		);
 		param_list2.add("origin",location);
