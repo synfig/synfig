@@ -238,10 +238,10 @@ Renderer_Ducks::render_vfunc(
 		point[1]=(point[1]-window_start[1])/ph;
 
 		bool has_connect = (*iter)->get_tangent()
-						|| ((*iter)->get_type()&( Duck::TYPE_ANGLE
-											   | Duck::TYPE_SKEW
-											   | Duck::TYPE_SCALE_X
-											   | Duck::TYPE_SCALE_Y ));
+		                || ((*iter)->get_type()&( Duck::TYPE_ANGLE
+		                					   | Duck::TYPE_SKEW
+		        		                       | Duck::TYPE_SCALE_X
+		        		                       | Duck::TYPE_SCALE_Y ));
 		if((*iter)->get_connect_duck())
 		{
 			has_connect=true;
@@ -398,19 +398,19 @@ Renderer_Ducks::render_vfunc(
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
 		else if((*iter)->get_tangent() && (*iter)->get_value_desc().get_value_type() != type_transformation)
 		{
-			is_bline_point=true;
-			// Check if we can reach the canvas and set the time to
-			// evaluate the split value accordingly
-			synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
-			synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
-			// Retrieve the split value of the bline point.
-			const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
+		    is_bline_point=true;
+		    // Check if we can reach the canvas and set the time to
+		    // evaluate the split value accordingly
+		    synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
+		    synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
+		    // Retrieve the split value of the bline point.
+		    const synfigapp::ValueDesc& v_d((*iter)->get_value_desc());
 
-			synfig::ValueNode_Composite::Handle value_node;
-			if(v_d.is_value_node() && v_d.get_value_node())
-			{
-				if (synfig::ValueNode_Composite::Handle value_node = synfig::ValueNode_Composite::Handle::cast_dynamic( v_d.get_value_node() ))
-				{
+		    synfig::ValueNode_Composite::Handle value_node;
+		    if(v_d.is_value_node() && v_d.get_value_node())
+            {
+                if (synfig::ValueNode_Composite::Handle value_node = synfig::ValueNode_Composite::Handle::cast_dynamic( v_d.get_value_node() ))
+                {
 					try
 					{
 						synfig::ValueNode::Handle child(value_node->get_link("split_angle"));
@@ -452,12 +452,12 @@ Renderer_Ducks::render_vfunc(
 					{
 
 					}
-				}
-			}
+                }
+            }
 
 			if(false){
 				// Tangents ducks have different color depending on the split state (disabled for now)
-				screen_duck.color=(splited_angle? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
+			    screen_duck.color=(splited_angle? DUCK_COLOR_TANGENT_2 : DUCK_COLOR_TANGENT_1);
 
 			} else {
 				// All tangents are the same color
@@ -504,10 +504,10 @@ Renderer_Ducks::render_vfunc(
 				// Both tangents are collinear and have same length, dash the line
 				if(is_bline_point && !splited_radius && !splited_angle)
 				{
-					std::valarray<double> dashes(2);
-					dashes[0]=5.0;
-					dashes[1]=5.0;
-					cr->set_dash(dashes, 0);
+				    std::valarray<double> dashes(2);
+				    dashes[0]=5.0;
+				    dashes[1]=5.0;
+				    cr->set_dash(dashes, 0);
 				}
 
 				// Inside
@@ -856,9 +856,9 @@ Renderer_Ducks::render_vfunc(
 
 		if(!screen_duck_list.front().selected)
 		{
-			color.set_rgb_p(color.get_red_p()*2/3,
-							color.get_green_p()*2/3,
-							color.get_blue_p()*2/3);
+		    color.set_rgb_p(color.get_red_p()*2/3,
+		                    color.get_green_p()*2/3,
+		                    color.get_blue_p()*2/3);
 		}
 
 		if(screen_duck_list.front().hover)

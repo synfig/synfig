@@ -154,7 +154,7 @@ Layer_Skeleton::get_param_vocab()const
 void
 Layer_Skeleton::sync_vfunc()
 {
-	const std::vector<ValueBase> &list = param_bones.get_list();
+ 	const std::vector<ValueBase> &list = param_bones.get_list();
 
 	static const Real precision = 0.000000001;
 	int segments_count = 64;
@@ -162,45 +162,36 @@ Layer_Skeleton::sync_vfunc()
 
 	clear();
 	for(std::vector<ValueBase>::const_iterator i = list.begin(); i != list.end(); ++i)
-	{
+ 	{
 		if (!i->same_type_as(Bone())) continue;
-		const Bone &bone = i->get(Bone());
-		Matrix matrix = bone.get_animated_matrix();
-		Vector v;
-		/*cout<<bone.get_name()<<endl;
-		cout<<"Angle : "<<atan(matrix.axis(0)[1]/matrix.axis(0)[0])*90/acos(0.0)<<endl;
-		v = matrix.axis(2);
-		cout<<"Offset :";
-		for(int i=0;i<3;i++){
-			cout<<v[i]<<" ";
-		}cout<<endl;*/
+ 		const Bone &bone = i->get(Bone());
+ 		Matrix matrix = bone.get_animated_matrix();
+ 		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
+ 		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
+ 		Real length = bone.get_length() * bone.get_scalelx();
 
-		Vector origin = matrix.get_transformed(Vector(0.0, 0.0));
-		Vector direction = matrix.get_transformed(Vector(1.0, 0.0), false).norm();
-		Real length = bone.get_length() * bone.get_scalelx();
+ 		if (length < 0) {
+ 			length *= -1;
+ 			direction *= -1;
+ 		}
 
-		if (length < 0) {
-			length *= -1;
-			direction *= -1;
-		}
+ 		const Vector &p0 = origin;
+ 		const Vector p1 = origin + direction * length;
 
-		const Vector &p0 = origin;
-		const Vector p1 = origin + direction * length;
+ 		Real r0 = fabs(bone.get_width());
+ 		Real r1 = fabs(bone.get_tipwidth());
+ 		Real direction_angle = atan2(direction[1], direction[0]);
 
-		Real r0 = fabs(bone.get_width());
-		Real r1 = fabs(bone.get_tipwidth());
-		Real direction_angle = atan2(direction[1], direction[0]);
+ 		Real angle0_base = length - precision > fabs(r1 - r0)
+ 				         ? acos((r0 - r1)/length)
+ 				         : (r0 > r1 ? 0.0 : PI);
+ 		Real angle1_base = PI - angle0_base;
 
-		Real angle0_base = length - precision > fabs(r1 - r0)
-						 ? acos((r0 - r1)/length)
-						 : (r0 > r1 ? 0.0 : PI);
-		Real angle1_base = PI - angle0_base;
+ 		int segments_count0 = (int)round(2*angle1_base / segment_angle);
+ 		Real segment_angle0 = 2*angle1_base / (Real)segments_count0;
 
-		int segments_count0 = (int)round(2*angle1_base / segment_angle);
-		Real segment_angle0 = 2*angle1_base / (Real)segments_count0;
-
-		int segments_count1 = (int)round(2*angle0_base / segment_angle);
-		Real segment_angle1 = 2*angle0_base / (Real)segments_count1;
+ 		int segments_count1 = (int)round(2*angle0_base / segment_angle);
+ 		Real segment_angle1 = 2*angle0_base / (Real)segments_count1;
 
 		std::vector<Point> list;
 		list.reserve(segments_count0 + segments_count1 + 2);
@@ -219,6 +210,6 @@ Layer_Skeleton::sync_vfunc()
 			if (j++ >= segments_count1) break; else angle += segment_angle1;
 		}
 
-		add_polygon(list);
-	}
+ 		add_polygon(list);
+ 	}
 }
