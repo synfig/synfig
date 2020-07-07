@@ -97,75 +97,69 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
     for(int i = 0; i < segment_size; ++i)
       segment[i][2] = 1.0;
      
-  switch(segment_size)// in any case size>=3
+  int size, flag, num, point;
+
+  switch (segment_size) // in any case size>=3
   {
-    case 3:{//std::cout<<"This is case 3\n";
-            bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list[0].set_vertex(segment[0].to_2d());
-            bline_point_list[1].set_vertex(segment[2].to_2d());
-            bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
-            bline_point_list[1].set_tangent((segment[2].to_2d() - segment[1].to_2d()) * 2);
-            bline_point_list[0].set_width(segment[0][2]);
-            bline_point_list[1].set_width(segment[2][2]); 
-            
+    case 3:{ //std::cout<<"This is case 3\n";
+      size = 2;
+      flag = 0;
     }break;
 
-    case 4:{   
-            bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list.push_back(synfig::BLinePoint()); 
-            bline_point_list[0].set_vertex(segment[0].to_2d());
-            bline_point_list[1].set_vertex(segment[3].to_2d());
-            bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
-            bline_point_list[1].set_tangent((segment[3].to_2d() - segment[2].to_2d()) * 2);
-            bline_point_list[0].set_width(segment[0][2]);
-            bline_point_list[1].set_width(segment[3][2]); 
-            
+    case 4:{
+      size = 3;
+      flag = 0;
     }break;
 
-    default:{/*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
-                Even : 1 2 3 4, 4 5 6, 6 7 8 */
-                int num =0,point =0;
-                if(segment_size & 1)
-                {
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
-                  bline_point_list[1].set_vertex(segment[2].to_2d());// second point
-                  bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
-                  bline_point_list[1].set_tangent1((segment[2].to_2d() - segment[1].to_2d()) * 2);
-                  bline_point_list[0].set_width(segment[0][2]);
-                  bline_point_list[1].set_width(segment[2][2]);
-                  num = 2;// represent segment index used
-                }
-                else
-                {
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list[0].set_vertex(segment[0].to_2d());// first point 
-                  bline_point_list[1].set_vertex(segment[3].to_2d());// second point
-                  bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
-                  bline_point_list[1].set_tangent1((segment[3].to_2d() - segment[2].to_2d()) * 2);
-                  bline_point_list[0].set_width(segment[0][2]);
-                  bline_point_list[1].set_width(segment[3][2]); 
-                  num = 3;// represent segment index used
-                }
-              
-                for (num,point = 2; num < segment_size - 3;point++, num += 2) 
-                { 
-                  bline_point_list.push_back(synfig::BLinePoint()); 
-                  bline_point_list[point].set_vertex(segment[num+2].to_2d());// last point
-                  bline_point_list[point].set_width(segment[num+2][2]);// last point
-                  bline_point_list[point - 1].set_tangent2((segment[num+1].to_2d() - segment[num].to_2d()) * 2);
-                  bline_point_list[point].set_tangent1((segment[num+2].to_2d() - segment[num+1].to_2d()) * 2);
-                }
-                // add last blinepoint and set it's param
-                bline_point_list.push_back(synfig::BLinePoint());
-                bline_point_list.back().set_vertex(segment[segment_size-1].to_2d());
-                bline_point_list.back().set_width(segment[segment_size-1][2]);
-                bline_point_list.back().set_tangent((segment[segment_size-1].to_2d()-segment[segment_size-2].to_2d())*2);
+    default:{ /*Odd : 1 2 3 , 3 4 5, 5 6 7, 7 8 9
+                  Even : 1 2 3 4, 4 5 6, 6 7 8 */
+      num = 0, point = 0;
+      if (segment_size & 1)
+      {
+        size = 2;
+        flag = 1;
+        num = 2; // represent segment index used
+      }
+      else
+      {
+        size = 3;
+        flag = 1;
+        num = 3; // represent segment index used
+      }
     }break;
 
+  }
+
+  bline_point_list.push_back(synfig::BLinePoint());
+  bline_point_list.push_back(synfig::BLinePoint());
+  bline_point_list[0].set_vertex(segment[0].to_2d());
+  bline_point_list[1].set_vertex(segment[size].to_2d());
+  bline_point_list[0].set_tangent((segment[1].to_2d() - segment[0].to_2d()) * 2);
+
+  if (flag == 0)
+    bline_point_list[1].set_tangent((segment[size].to_2d() - segment[size - 1].to_2d()) * 2);
+  else if(flag == 1)
+    bline_point_list[1].set_tangent1((segment[size].to_2d() - segment[size - 1].to_2d()) * 2);
+
+  bline_point_list[0].set_width(segment[0][2]);
+  bline_point_list[1].set_width(segment[size][2]);
+
+  if(flag == 1)
+  {
+    for (num, point = 2; num < segment_size - 3; point++, num += 2)
+    {
+      bline_point_list.push_back(synfig::BLinePoint());
+      bline_point_list[point].set_vertex(segment[num + 2].to_2d()); // last point
+      bline_point_list[point].set_width(segment[num + 2][2]);       // last point
+      bline_point_list[point - 1].set_tangent2((segment[num + 1].to_2d() - segment[num].to_2d()) * 2);
+      bline_point_list[point].set_tangent1((segment[num + 2].to_2d() - segment[num + 1].to_2d()) * 2);
+    }
+
+    // add last blinepoint and set it's param
+    bline_point_list.push_back(synfig::BLinePoint());
+    bline_point_list.back().set_vertex(segment[segment_size - 1].to_2d());
+    bline_point_list.back().set_width(segment[segment_size - 1][2]);
+    bline_point_list.back().set_tangent((segment[segment_size - 1].to_2d() - segment[segment_size - 2].to_2d()) * 2);
   }
   
   etl::handle<synfig::ValueNode_BLine> bline_value_node; 
@@ -1019,5 +1013,3 @@ void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &stro
                 convert(*organizedGraphs[i].getNode(j).getLink(k), penalty));
         }
 }
-
-  
