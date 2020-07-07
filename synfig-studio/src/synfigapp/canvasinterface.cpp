@@ -256,11 +256,11 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 		p.set(synfigapp::Main::get_fill_color());
 		layer->set_param("color",p);
 	}
-	// by default, new advanced outline layers are not homogeneous
+	// by default, new advanced outline layers are homogeneous
 	if(name=="advanced_outline")
 	{
 		p=layer->get_param("homogeneous");
-		p.set(false);
+		p.set(true);
 		layer->set_param("homogeneous",p);
 	}
 	p=layer->get_param("width");
