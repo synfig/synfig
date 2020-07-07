@@ -608,7 +608,7 @@ public:
 			}
 			if (key == "default_background_layer_type")
 			{
-				value = strprintf("%s", App::default_background_layer_type.c_str());
+                value = strprintf("%s", App::default_background_layer_type.c_str());
 				return true;
 			}
 			if (key == "default_background_layer_color")
@@ -1625,7 +1625,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		/* bline tools */
 		state_manager->add_state(&state_bline);
 		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
-				state_manager->add_state(&state_lasso); // Enabled for now.  Let's see whether they're good enough yet.
+                state_manager->add_state(&state_lasso); // Enabled for now.  Let's see whether they're good enough yet.
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
@@ -2082,7 +2082,7 @@ App::set_workspace_default()
 				"|[book|canvases|pal_edit|navigator|info]"
 				"|[vert|%25y"
 					"|[book|tool_options|history]"
-										"|[book|layers|groups]"
+                                        "|[book|layers|groups]"
 				"]"
 			"]"
 		"]"
@@ -3226,10 +3226,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	_preferences.set_value(preference, dirname(filename));
 	delete dialog;
 	return true;
-	}
+    }
 
-	delete dialog;
-	return false;
+    delete dialog;
+    return false;
 #endif
 }
 
@@ -3263,7 +3263,7 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 		dialog->set_filename(prev_path);
 
 	} else {
-		dialog->set_current_name(filename_sans_extension(basename(filename)));
+        dialog->set_current_name(filename_sans_extension(basename(filename)));
 	}
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
@@ -3287,10 +3287,10 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 				return exporter.id;
 			}
 		}
-	}
+    }
 
-	delete dialog;
-	return {};
+    delete dialog;
+    return {};
 }
 
 bool
@@ -3642,28 +3642,28 @@ try_open_img_external(const std::string &uri)
 	{
 		new_uri.erase(i, s.length());
 	}
-	size_t start_pos = 0;
+   	size_t start_pos = 0;
 	std::string to = " ";
 	std::string from = "%20";
-	while((start_pos = new_uri.find(from, start_pos)) != std::string::npos) 
+    while((start_pos = new_uri.find(from, start_pos)) != std::string::npos)
 	{
-		new_uri.replace(start_pos, from.length(), to);
-		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-	}
+        new_uri.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
 	new_uri = "\"" + new_uri + "\"";
 	if(App::image_editor_path!="")
 	{
 		#ifdef WIN32
 			char buffer[512];
-			::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
-			Glib::spawn_command_line_async(buffer);
+    		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
+    		Glib::spawn_command_line_async(buffer);
 		#elif defined(__APPLE__)
-			char buffer[512];
-			::snprintf(buffer, sizeof(buffer), "open -a %s %s", App::image_editor_path.c_str(), new_uri.c_str());
-			Glib::spawn_command_line_async(buffer);
+    		char buffer[512];
+    		::snprintf(buffer, sizeof(buffer), "open -a %s %s", App::image_editor_path.c_str(), new_uri.c_str());
+    		Glib::spawn_command_line_async(buffer);
 		#else
-			char buffer[512];
-			::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
+    		char buffer[512];
+    		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
 			Glib::spawn_command_line_async(buffer);
 		#endif
 		return true;
@@ -3843,15 +3843,15 @@ bool
 App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
 #ifdef _WIN32
-	size_t buf_size = MAX_PATH - 1;
-	char* long_name = (char*)malloc(buf_size);
-	long_name[0] = '\0';
-	if(GetLongPathName(filename.c_str(),long_name,sizeof(long_name)));
-	// when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
-	// don't use it if that's the case
-	if (long_name[0] != '\0')
-		filename=String(long_name);
-	free(long_name);
+    size_t buf_size = MAX_PATH - 1;
+    char* long_name = (char*)malloc(buf_size);
+    long_name[0] = '\0';
+    if(GetLongPathName(filename.c_str(),long_name,sizeof(long_name)));
+    // when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
+    // don't use it if that's the case
+    if (long_name[0] != '\0')
+        filename=String(long_name);
+    free(long_name);
 #endif
 
 	try
@@ -4095,12 +4095,12 @@ App::new_instance()
 
 	handle<Instance> instance = Instance::create(canvas, container);
 
-	if (App::default_background_layer_type == "solid_color")
-	{
+    if (App::default_background_layer_type == "solid_color")
+    {
 		//Create a SolidColor layer
 		synfig::Layer::Handle layer(instance->find_canvas_interface(canvas)->add_layer_to("SolidColor",
-									canvas,
-									0)); //target_depth
+			                        canvas,
+			                        0)); //target_depth
 
 		//Rename it as Background
 		synfigapp::Action::Handle action_LayerSetDesc(synfigapp::Action::create("LayerSetDesc"));
@@ -4128,9 +4128,9 @@ App::new_instance()
 	{
 		String errors, warnings;
 		instance->find_canvas_interface(canvas)->import(App::default_background_layer_image,
-														errors,
-														warnings,
-														App::resize_imported_images);
+		                                                errors,
+		                                                warnings,
+		                                                App::resize_imported_images);
 
 		synfig::Layer::Handle layer = instance->find_canvas_interface(canvas)->get_selection_manager()->get_selected_layer();
 
