@@ -725,6 +725,7 @@ Advanced_Outline::get_param_vocab()const
 	ret.push_back(ParamDesc("homogeneous")
 		.set_local_name(_("Homogeneous"))
 		.set_description(_("When true, widthpoints positions are spline length based"))
+		.set_static(true)
 	);
 	ret.push_back(ParamDesc("wplist")
 		.set_local_name(_("Width Point List"))
