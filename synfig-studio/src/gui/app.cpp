@@ -3659,7 +3659,7 @@ try_open_img_external(const std::string &uri)
    	size_t start_pos = 0;
 	std::string to = " ";
 	std::string from = "%20";
-    while((start_pos = new_uri.find(from, start_pos)) != std::string::npos)
+    while((start_pos = new_uri.find(from, start_pos)) != std::string::npos) 
 	{
         new_uri.replace(start_pos, from.length(), to);
         start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'

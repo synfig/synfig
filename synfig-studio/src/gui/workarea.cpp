@@ -2115,17 +2115,10 @@ studio::WorkArea::queue_render(bool refresh)
 	if (dirty_trap_count > 0)
 		{ dirty_trap_queued++; return; }
 	dirty_trap_queued = 0;
-	// avoiding dead-lock : github#1071
-	Glib::signal_idle().connect_once([=] () {
-		if (refresh) {
-			renderer_canvas->clear_render();
-			Glib::signal_idle().connect_once(
-						sigc::mem_fun(*renderer_canvas, &Renderer_Canvas::enqueue_render),
-						Glib::PRIORITY_DEFAULT );
-		} else {
-			renderer_canvas->enqueue_render();
-		}
-	});
+	if (refresh) renderer_canvas->clear_render();
+	Glib::signal_idle().connect_once(
+		sigc::mem_fun(*renderer_canvas, &Renderer_Canvas::enqueue_render),
+		Glib::PRIORITY_DEFAULT );
 }
 
 void
