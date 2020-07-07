@@ -614,6 +614,12 @@ Advanced_Outline::sync_vfunc()
 			AdvancedLine::const_iterator i = aline.begin();
 			AdvancedLine::const_iterator j = aline.end(); --j;
 			if (i->second.side0 == WidthPoint::TYPE_INTERPOLATE) {
+				if (approximate_greater(i->first, 0.0) && i == j) {
+					// Somehow with only one width point and with its left side as Interpolate,
+					// calc_tangents and trunc_left make it with wrong width at start.
+					// So here is a mini hack/workaround
+					aline.add(0, i->second.w, WidthPoint::TYPE_INTERPOLATE, WidthPoint::TYPE_INTERPOLATE);
+				}
 				aline.add(-2, i->second.w, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE);
 				aline.add(-1, i->second.w, WidthPoint::TYPE_FLAT, WidthPoint::TYPE_INTERPOLATE);
 			}
