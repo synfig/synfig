@@ -79,6 +79,8 @@
 #define DUCK_COLOR_WIDTH_TEXT_2	Gdk::Color("#ff00ff") // the color of the text when hovering over a width duck
 /** DUCK_COLOR_TRANSFO_TEXT_1 : black , the color of the text's shadow when hovering over any duck of a transformation widget*/
 #define DUCK_COLOR_TRANSFO_TEXT_1 Gdk::Color("#000000") // the color of the text's shadow when hovering over any duck of a transformation widget
+/** ACTIVE_BONE : Color of active bone rectangle */
+#define ACTIVE_BONE Gdk::Color("#fff700") // the color of the text's shadow when hovering over any duck of a transformation widget
 
 
 /* === T Y P E D E F S ===================================================== */

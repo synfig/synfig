@@ -67,8 +67,8 @@ Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
 	time(0),
 	origin(ValueBase(Point(1.1,0))),
 	scalelx(ValueBase(1.0)),
-	angle(ValueBase(Angle::deg(0.0))),
-	tool(false)
+	angle(Angle::rad(0)),
+	c_parent(false)
 {
 }
 
@@ -96,11 +96,10 @@ Action::ValueDescCreateChildBone::get_param_vocab()
 		.set_local_name(_("Angle of the child bone"))
 		.set_optional()
 	);
-	ret.push_back(ParamDesc("tool",Param::TYPE_BOOL)
-						  .set_local_name(_("If the action is being used by tool"))
-						  .set_optional()
+	ret.push_back(ParamDesc("c_parent",Param::TYPE_VALUENODE)
+			                    .set_local_name(_("Change the parent of the child bone?"))
+			                    .set_optional()
 	);
-
 	return ret;
 }
 
@@ -152,6 +151,10 @@ Action::ValueDescCreateChildBone::set_param(const synfig::String& name, const Ac
 			return true;
 		}
 	}
+	if(name=="parent" && param.get_type()==Param::TYPE_BOOL){
+		c_parent=param.get_bool();
+		return true;
+	}
 
 	return Action::CanvasSpecific::set_param(name,param);
 }
@@ -188,24 +191,24 @@ Action::ValueDescCreateChildBone::prepare()
 		}
 
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_value_node());
-
-
 		if(!value_node){
 			cout<<"Error"<<endl;
 			throw Error(Error::TYPE_NOTREADY);
 
 		}
-
 		int index=parent_desc.get_index();
 		action->set_param("value_desc",ValueDesc(value_node,index));
 
-		info(to_string(origin.get(Point())[0])+" , "+to_string(origin.get(Point())[1]));
-		info(to_string(scalelx.get(Real())));
-		info(to_string(Angle::cos(angle.get(Angle())).get()));
 		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(value_node->create_list_entry(index));
+		if(c_parent){
+			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+		}
 		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
 		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
+
+
+
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone));
 
 

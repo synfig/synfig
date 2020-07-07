@@ -51,7 +51,8 @@ private:
 	ValueDesc value_desc;
 	synfig::Time time;
 	synfig::ValueBase origin,angle,scalelx;
-	bool tool;
+	bool c_parent;
+
 
 public:
 
