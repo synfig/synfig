@@ -50,7 +50,7 @@ class ValueDescCreateChildBone :
 private:
 	ValueDesc value_desc;
 	synfig::Time time;
-	synfig::ValueBase origin,angle,scalelx;
+	synfig::ValueBase origin,angle,scalelx,width,tipwidth;
 	bool c_parent;
 
 
