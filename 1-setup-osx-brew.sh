@@ -15,7 +15,7 @@ set -e
 
 if ! ( which brew >/dev/null ); then
     echo "No brew found. Installing..."
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 WORKDIR=`dirname "$0"`
