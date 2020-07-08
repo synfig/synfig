@@ -2,12 +2,18 @@ cmake_minimum_required(VERSION 2.8)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 project(synfig-studio)
+set(STUDIO_VERSION_MAJOR 1)
+set(STUDIO_VERSION_MINOR 5)
+set(STUDIO_VERSION_PATCH 0)
 
 set(SYNFIG_BUILD_ROOT ${CMAKE_BINARY_DIR}/output)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/bin)
+
+#SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+#set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
@@ -35,3 +41,5 @@ add_subdirectory(synfig-core)
 
 include_directories(synfig-core/src)
 add_subdirectory(synfig-studio)
+
+include(CPackConfig)
