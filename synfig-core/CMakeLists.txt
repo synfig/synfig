@@ -11,3 +11,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_subdirectory(src)
 add_subdirectory(po)
+
+add_dependencies(synfig_bin
+    build_pofiles_synfig
+)
