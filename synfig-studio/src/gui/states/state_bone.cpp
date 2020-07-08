@@ -124,9 +124,13 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
 
-	// Default bone width
+	// Origin bone width
 	Gtk::Label bone_width_label;
 	Widget_Distance bone_width_dist;
+	
+	// Tip bone width
+	Gtk::Label tip_width_label;
+	Widget_Distance tip_width_dist;
 
 	Action::Handle createChild;
 
@@ -142,6 +146,14 @@ public:
 		);
 	}
 	void set_bone_width(Distance x){return bone_width_dist.set_value(x);}
+
+	Real get_tip_width() const {
+		return tip_width_dist.get_value().get(
+				Distance::SYSTEM_UNITS,
+				get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_tip_width(Distance x){return tip_width_dist.set_value(x);}
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_handler(const Smach::event& x);
@@ -217,7 +229,12 @@ StateBone_Context::load_settings()
 		if(settings.get_value("bone.bone_width",value) && value!="")
 			set_bone_width(Distance(atof(value.c_str()),App::distance_system));
 		else
-			set_bone_width(Distance(1,App::distance_system)); // default width
+			set_bone_width(Distance(6.6,App::distance_system)); // default width
+
+		if(settings.get_value("bone.tip_width",value) && value!="")
+			set_tip_width(Distance(atof(value.c_str()),App::distance_system));
+		else
+			set_tip_width(Distance(6.6,App::distance_system)); // default width
 	}
 	catch(...)
 	{
@@ -234,6 +251,7 @@ StateBone_Context::save_settings()
 
 		settings.set_value("bone.id",get_id().c_str());
 		settings.set_value("bone.bone_width",bone_width_dist.get_value().get_string());
+		settings.set_value("bone.tip_width",tip_width_dist.get_value().get_string());
 	}
 	catch (...)
 	{
@@ -245,6 +263,8 @@ void
 StateBone_Context::reset()
 {
 	active_bone = -1;
+	set_id(_("NewSkeleton"));
+	set_bone_width(Distance(6.6,App::distance_system)); // default width
 }
 
 void
@@ -323,14 +343,22 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	id_box.pack_start(id_entry);
 
 	// 2, Bone width
-	bone_width_label.set_label(_("Default Bone Width:"));
+	bone_width_label.set_label(_("Bone Origin Width:"));
 	bone_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	bone_width_label.set_sensitive(false);
+	bone_width_label.set_sensitive(true);
 
 	bone_width_dist.set_digits(2);
 	bone_width_dist.set_range(0,10000000);
-	bone_width_dist.set_sensitive(false);
+	bone_width_dist.set_sensitive(true);
 
+	// 3, Tip width
+	tip_width_label.set_label(_("Bone Tip Width:"));
+	tip_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	tip_width_label.set_sensitive(true);
+
+	tip_width_dist.set_digits(2);
+	tip_width_dist.set_range(0,10000000);
+	tip_width_dist.set_sensitive(true);
 	load_settings();
 
 	// pack all options to the options_table
@@ -345,12 +373,18 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	);
 	// 2, default bone width
 	options_table.attach(bone_width_label,
-						 0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+						 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 	);
 	options_table.attach(bone_width_dist,
-						 1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+						 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 	);
-
+	// 3, blend method
+	options_table.attach(tip_width_label,
+		0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(tip_width_dist,
+		1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
 	// fine-tune options layout
 	options_table.set_border_width(GAP*2); // border width
 	options_table.set_row_spacings(GAP); // row gap
@@ -514,6 +548,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("origin",Action::Param(ValueBase(aOrigin)));
+							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
+							createChild->set_param("tipwidth",Action::Param(ValueBase(get_tip_width())));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								a = atan2((releaseOrigin-clickOrigin)[1],(releaseOrigin-clickOrigin)[0]);
 								createChild->set_param("angle",Action::Param(ValueBase(Angle::rad(a-angle))));
@@ -546,6 +582,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("parent",true);
 							createChild->set_param("origin",Action::Param(ValueBase(clickOrigin)));
+							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
+							createChild->set_param("tipwidth",Action::Param(ValueBase(get_tip_width())));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								createChild->set_param("scalelx", Action::Param(ValueBase((releaseOrigin - clickOrigin).mag())));
 								createChild->set_param("angle", Action::Param(ValueBase((releaseOrigin - clickOrigin).angle())));
@@ -581,6 +619,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 
 					bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
+					bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
+					bone_node->set_link("tipwidth",ValueNode_Const::create(get_tip_width()));
 					if((clickOrigin - releaseOrigin).mag() >= 0.001){
 						bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
 						bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));

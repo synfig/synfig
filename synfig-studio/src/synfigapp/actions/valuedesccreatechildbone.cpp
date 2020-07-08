@@ -68,7 +68,9 @@ Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
 	origin(ValueBase(Point(1.1,0))),
 	scalelx(ValueBase(1.0)),
 	angle(Angle::rad(0)),
-	c_parent(false)
+	c_parent(false),
+	width(0.1),
+	tipwidth(0.1)
 {
 }
 
@@ -98,6 +100,14 @@ Action::ValueDescCreateChildBone::get_param_vocab()
 	);
 	ret.push_back(ParamDesc("c_parent",Param::TYPE_VALUENODE)
 			                    .set_local_name(_("Change the parent of the child bone?"))
+			                    .set_optional()
+	);
+	ret.push_back(ParamDesc("width",Param::TYPE_VALUE)
+			                    .set_local_name(_("Origin Width of the child bone"))
+			                    .set_optional()
+	);
+	ret.push_back(ParamDesc("tipwidth",Param::TYPE_VALUE)
+			                    .set_local_name(_("Tip Width of the child bone"))
 			                    .set_optional()
 	);
 	return ret;
@@ -149,6 +159,11 @@ Action::ValueDescCreateChildBone::set_param(const synfig::String& name, const Ac
 		}else if(name=="angle"){
 			angle=param.get_value();
 			return true;
+		}else if(name=="width"){
+			width = param.get_value();
+			return true;
+		}else if(name=="tipwidth"){
+			tipwidth = param.get_value();
 		}
 	}
 	if(name=="parent" && param.get_type()==Param::TYPE_BOOL){
@@ -205,6 +220,8 @@ Action::ValueDescCreateChildBone::prepare()
 		}
 		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
 		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
+		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
+		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
 
 
