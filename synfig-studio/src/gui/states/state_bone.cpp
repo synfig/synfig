@@ -53,11 +53,14 @@
 #include <synfig/transform.h>
 #include <synfigapp/main.h>
 #include "synfig/layers/layer_skeleton.h"
+#include "synfig/layers/layer_skeletondeformation.h"
 #include "synfig/valuenodes/valuenode_bone.h"
+#include "synfig/valuenodes/valuenode_composite.h"
 #include "synfig/valuenodes/valuenode_staticlist.h"
 #include "synfigapp/value_desc.h"
 
 #include <gui/localization.h>
+#include <gtkmm/radiobutton.h>
 
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/imagemenuitem.h>
@@ -107,6 +110,7 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::Menu menu;
 
 	int active_bone;
+	int c_layer;
 
 	Point clickOrigin;
 
@@ -132,6 +136,14 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::Label tip_width_label;
 	Widget_Distance tip_width_dist;
 
+	// Layer creation radio group
+	Gtk::Label layer_label;
+	Gtk::RadioButton::Group radiogroup;
+	Gtk::RadioButton radiobutton_skel;
+	Gtk::RadioButton radiobutton_skel_deform;
+	Gtk::Button create_layer;
+
+
 	Action::Handle createChild;
 
 public:
@@ -155,6 +167,16 @@ public:
 	}
 	void set_tip_width(Distance x){return tip_width_dist.set_value(x);}
 
+	void update_layer(){
+		cout<<"Before "<<c_layer<<endl;
+		if(c_layer==0) c_layer=1;
+		else c_layer=0;
+		cout<<"After "<<c_layer<<endl;
+	}
+
+	void make_layer();
+
+
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
@@ -174,7 +196,7 @@ public:
 	synfig::Canvas::Handle get_canvas() const {return canvas_view_->get_canvas();}
 	WorkArea * get_work_area() const {return canvas_view_->get_work_area();}
 	const synfig::TransformStack& get_transform_stack() const {return get_work_area()->get_curr_transform_stack();}
-	int find_bone(Point point,Layer_Skeleton::Handle layer)const;
+	int find_bone(Point point,Layer::Handle layer,int lay=0)const;
 
 	void load_settings();
 	void save_settings();
@@ -319,7 +341,10 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	depth(-1),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	createChild(Action::Handle(Action::create("ValueDescCreateChildBone"))),
-	active_bone(-1)
+	active_bone(-1),
+	radiobutton_skel(radiogroup,_("Skeleton Layer")),
+	radiobutton_skel_deform(radiogroup,_("Skeleton Deform Layer")),
+	c_layer(0)
 {
 	egress_on_selection_change=true;
 
@@ -361,6 +386,16 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	tip_width_dist.set_sensitive(true);
 	load_settings();
 
+	// 4, Layer choice
+	layer_label.set_label(_("Layer to Create:"));
+	layer_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	layer_label.set_sensitive(true);
+	
+	create_layer.set_label(_("Create Layer"));
+	create_layer.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER);
+	create_layer.set_sensitive(true);
+
+
 	// pack all options to the options_table
 
 	// 0, title
@@ -385,6 +420,23 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	options_table.attach(tip_width_dist,
 		1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
+	// 4, Layer choice
+	options_table.attach(layer_label,
+		0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(radiobutton_skel,
+		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(radiobutton_skel_deform,
+		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+	options_table.attach(create_layer,
+		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
+		);
+
+	create_layer.signal_clicked().connect(sigc::mem_fun(*this,&StateBone_Context::make_layer));
+	radiobutton_skel.signal_toggled().connect(sigc::mem_fun(*this,&StateBone_Context::update_layer));	
+
 	// fine-tune options layout
 	options_table.set_border_width(GAP*2); // border width
 	options_table.set_row_spacings(GAP); // row gap
@@ -499,6 +551,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
+	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
 
 	Action::Handle addLayer(Action::LayerAdd::create());
 
@@ -509,19 +562,17 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		case BUTTON_LEFT:
 		{
 			if(!duck){ //! if the user was not modifying a duck
-				if(skel_layer){ //!if selected layer is a Skeleton Layer
+				if(skel_layer && c_layer==0){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
 					createChild->set_param("canvas",skel_layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
 					int b = -1;
 					if((clickOrigin-releaseOrigin).mag()<0.01)
-						b=find_bone(clickOrigin,skel_layer);
+						b=find_bone(clickOrigin,layer);
 					if(b!=-1){ //! if bone found around the release point --> set active bone
 						active_bone=b;
-						//info("Active Bone :"+ to_string(b));
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
-						//cout<<"Active bone name : "<<value_desc.get_name()<<endl;
 						get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 					}else{
 						ValueNode_StaticList::Handle list_node;
@@ -600,24 +651,133 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						}
 
 					}
-				}else{ //! Creating empty layer as there's no active skeleton layer
+				}
+				else if(deform_layer && c_layer==1){ //!if selected layer is a Skeleton deform Layer and user wants to work on a skeleton deform layer
+					createChild->set_param("canvas",deform_layer->get_canvas());
+					ValueDesc list_desc(layer,"bones");
+					int b = -1;
+					if((clickOrigin-releaseOrigin).mag()<0.01)
+						b=find_bone(clickOrigin,layer,1);
+
+					if(b!=-1){ //! if bone found around the release point --> set active bone
+						active_bone=b;
+						ValueNode_StaticList::Handle list_node;
+						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
+						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+						get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+					}else{
+						ValueNode_StaticList::Handle list_node;
+						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+						if(active_bone!=-1){ //! if active bone is already set
+							ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
+							ValueNode_Bone::Handle bone_node;
+
+							ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+							value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
+							info(value_desc.get_description());
+							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+							{
+								error("expected a ValueNode_Bone");
+								assert(0);
+							}
+							get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
+							Real sx = bone_node->get_link("scalelx")->operator()(get_canvas()->get_time()).get(Real());
+							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
+							Real angle = atan2(matrix.axis(0)[1],matrix.axis(0)[0]);
+							Real a =0;
+							matrix = matrix.get_inverted();
+							Point aOrigin = matrix.get_transformed(clickOrigin);
+							aOrigin[0]/=sx;
+							
+							createChild->set_param("value_desc",Action::Param(v_d));
+							createChild->set_param("origin",Action::Param(ValueBase(aOrigin)));
+							if((clickOrigin-releaseOrigin).mag()>=0.01) {
+								a = atan2((releaseOrigin-clickOrigin)[1],(releaseOrigin-clickOrigin)[0]);
+								createChild->set_param("angle",Action::Param(ValueBase(Angle::rad(a-angle))));
+								createChild->set_param("scalelx", Action::Param(ValueBase((releaseOrigin - clickOrigin).mag())));
+							}else{
+								createChild->set_param("angle",Action::Param(ValueBase(Angle::rad(a-angle))));
+								createChild->set_param("scalelx", Action::Param(ValueBase(1.0)));
+							}
+							if(createChild->is_ready()){
+								try{
+									get_canvas_interface()->get_instance()->perform_action(createChild);
+									value_desc= ValueDesc(list_node,active_bone,list_desc);
+									ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+									get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+						
+								} catch (...) {
+									info("Error performing action");
+								}
+							}
+						}else{
+							Action::Handle insertBone = Action::create("ValueNodeStaticListInsert");
+							ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
+							ValueNode_Bone::Handle bone_node;
+
+							ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+							value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
+							info(value_desc.get_description());
+							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+							{
+								error("expected a ValueNode_Bone");
+								assert(0);
+							}
+							get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
+							createChild->set_param("value_desc",Action::Param(v_d));
+							createChild->set_param("parent",true);
+							createChild->set_param("origin",Action::Param(ValueBase(clickOrigin)));
+							if((clickOrigin-releaseOrigin).mag()>=0.01) {
+								createChild->set_param("scalelx", Action::Param(ValueBase((releaseOrigin - clickOrigin).mag())));
+								createChild->set_param("angle", Action::Param(ValueBase((releaseOrigin - clickOrigin).angle())));
+							}
+							if(createChild->is_ready()){
+								try{
+									get_canvas_interface()->get_instance()->perform_action(createChild);
+									value_desc= ValueDesc(list_node,0,list_desc);
+									ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+									get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+								} catch (...) {
+									info("Error performing action");
+								}
+							}
+						}
+
+					}
+				}
+				else
+				{ //! Creating empty layer as there's no active skeleton layer
 					egress_on_selection_change=false;
-					Layer::Handle new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
+					Layer::Handle new_skel;
+					if(c_layer==0)
+						new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
+					else if(c_layer==1)
+						new_skel= get_canvas_interface()->add_layer_to("skeleton_deformation",get_canvas());
 					ValueDesc list_desc(new_skel,"bones");
 					ValueNode_StaticList::Handle list_node;
 					list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 					ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
-					get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 					active_bone = 0;
 					ValueNode_Bone::Handle bone_node;
-
-					if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
-					{
-						error("expected a ValueNode_Bone");
-						assert(0);
+					if(c_layer==0){
+						get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
+						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+						{
+							error("expected a ValueNode_Bone");
+							assert(0);
+						}
+					}else if(c_layer==1){
+						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+						get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"))))
+						{
+							error("expected a ValueNode_Bone");
+							assert(0);
+						}
 					}
-
-
 					bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
 					bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 					bone_node->set_link("tipwidth",ValueNode_Const::create(get_tip_width()));
@@ -634,9 +794,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				}
 			}
 			return Smach::RESULT_ACCEPT;
-
 		}
-
 		default:
 			return Smach::RESULT_OK;
 	}
@@ -665,45 +823,100 @@ StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 }
 
 int
-StateBone_Context::find_bone(Point point,Layer_Skeleton::Handle layer)const
+StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 {
-	//cout<<"Finding bone!"<<endl;
-	ValueDesc list_desc(layer,"bones");
-	ValueNode_StaticList::Handle list_node;
-	vector<Bone> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(Bone());
-	Real close_line(10000000),close_origin(10000000);
-	Vector direction;
-	Angle angle;
-	int ret;
-	Matrix m;
-	for(auto iter=list.begin();iter!=list.end();++iter){
+	if(lay==0){
+		layer = Layer_Skeleton::Handle::cast_dynamic(layer);
+		ValueDesc list_desc(layer,"bones");
+		vector<Bone> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(Bone());
+		Real close_line(10000000),close_origin(10000000);
+		Vector direction;
+		Angle angle;
+		int ret;
+		Matrix m;
+		for(auto iter=list.begin();iter!=list.end();++iter){
 
-		m=iter->get_animated_matrix();
-		Point orig = m.get_transformed(Vector(0,0));
-		angle = Angle::rad(atan2(m.axis(0)[1],m.axis(0)[0]));
-		Real orig_dist((point-orig).mag());
-		Real dist=abs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
-		Real length = iter->get_length()*iter->get_scalelx();
-		if(Angle::cos((point-orig).angle()-angle).get()>0 && orig_dist<=length){
-			dist = abs(dist);
-			if(dist<close_line){
-				close_line=dist;
-				close_origin=orig_dist;
-				ret = iter-list.begin();
-				cout<<close_line<<" <cl cr>"<<close_origin<<endl;
-			}else if(fabs(dist-close_line)<0.0000001 && close_line!= 10000000){
-				if(orig_dist<close_origin){
+			m=iter->get_animated_matrix();
+			Point orig = m.get_transformed(Vector(0,0));
+			angle = Angle::rad(atan2(m.axis(0)[1],m.axis(0)[0]));
+			Real orig_dist((point-orig).mag());
+			Real dist=abs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
+			Real length = iter->get_length()*iter->get_scalelx();
+			if(Angle::cos((point-orig).angle()-angle).get()>0 && orig_dist<=length){
+				dist = abs(dist);
+				if(dist<close_line){
+					close_line=dist;
 					close_origin=orig_dist;
 					ret = iter-list.begin();
+				}else if(fabs(dist-close_line)<0.0000001 && close_line!= 10000000){
+					if(orig_dist<close_origin){
+						close_origin=orig_dist;
+						ret = iter-list.begin();
+					}
 				}
 			}
-		}
 
+		}
+		if(abs(close_line)<=0.2){
+			if(ret<list.size())return ret;
+			else return -1;
+		}else{
+			return -1;
+		}
 	}
-	if(abs(close_line)<=0.2){
-		if(ret<list.size())return ret;
-		else return -1;
-	}else{
-		return -1;
+	else if(lay==1){
+		layer = Layer_SkeletonDeformation::Handle::cast_dynamic(layer);
+		ValueDesc list_desc(layer,"bones");
+		vector<pair<Bone,Bone>> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(pair<Bone,Bone>());
+		Real close_line(10000000),close_origin(10000000);
+		Vector direction;
+		Angle angle;
+		int ret;
+		Matrix m;
+		for(auto iter=list.begin();iter!=list.end();++iter){
+
+			m=iter->second.get_animated_matrix();
+			Point orig = m.get_transformed(Vector(0,0));
+			angle = Angle::rad(atan2(m.axis(0)[1],m.axis(0)[0]));
+			Real orig_dist((point-orig).mag());
+			Real dist=abs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
+			Real length = iter->second.get_length()*iter->second.get_scalelx();
+			if(Angle::cos((point-orig).angle()-angle).get()>0 && orig_dist<=length){
+				dist = abs(dist);
+				if(dist<close_line){
+					close_line=dist;
+					close_origin=orig_dist;
+					ret = iter-list.begin();
+				}else if(fabs(dist-close_line)<0.0000001 && close_line!= 10000000){
+					if(orig_dist<close_origin){
+						close_origin=orig_dist;
+						ret = iter-list.begin();
+					}
+				}
+			}
+
+		}
+		if(abs(close_line)<=0.2){
+			if(ret<list.size())return ret;
+			else return -1;
+		}else{
+			return -1;
+		}
+		return -1;	
 	}
+	
+}
+
+void
+StateBone_Context::make_layer(){
+	egress_on_selection_change=false;
+	Layer::Handle new_skel;
+	if(c_layer==0)
+		new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
+	else if(c_layer==1)
+		new_skel= get_canvas_interface()->add_layer_to("skeleton_deformation",get_canvas());
+	
+	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
+	get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
+	egress_on_selection_change=true;	get_canvas_view()->queue_rebuild_ducks();
 }
