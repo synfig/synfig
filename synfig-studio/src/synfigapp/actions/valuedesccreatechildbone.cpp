@@ -68,7 +68,7 @@ Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
 	time(0),
 	origin(ValueBase(Point(1.1,0))),
 	scalelx(ValueBase(1.0)),
-	angle(Angle::rad(0)),
+	angle(Angle::rad(acos(0.0))),
 	c_parent(false),
 	width(0.1),
 	tipwidth(0.1)
