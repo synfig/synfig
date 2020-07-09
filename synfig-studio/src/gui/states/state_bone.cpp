@@ -592,7 +592,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							Real sx = bone_node->get_link("scalelx")->operator()(get_canvas()->get_time()).get(Real());
 							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
 							Real angle = atan2(matrix.axis(0)[1],matrix.axis(0)[0]);
-							Real a =0;
+							Real a =acos(0.0);
 							matrix = matrix.get_inverted();
 							Point aOrigin = matrix.get_transformed(clickOrigin);
 							aOrigin[0]/=sx;
@@ -686,7 +686,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							Real sx = bone_node->get_link("scalelx")->operator()(get_canvas()->get_time()).get(Real());
 							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
 							Real angle = atan2(matrix.axis(0)[1],matrix.axis(0)[0]);
-							Real a =0;
+							Real a =acos(0.0);
 							matrix = matrix.get_inverted();
 							Point aOrigin = matrix.get_transformed(clickOrigin);
 							aOrigin[0]/=sx;
@@ -781,6 +781,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
 					bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 					bone_node->set_link("tipwidth",ValueNode_Const::create(get_tip_width()));
+					bone_node->set_link("angle",ValueNode_Const::create(Angle::rad(acos(0.0))));
 					if((clickOrigin - releaseOrigin).mag() >= 0.001){
 						bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
 						bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
