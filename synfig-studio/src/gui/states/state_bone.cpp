@@ -562,7 +562,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		case BUTTON_LEFT:
 		{
 			if(!duck){ //! if the user was not modifying a duck
-				if(skel_layer && c_layer==0){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
+				if(skel_layer){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
 					createChild->set_param("canvas",skel_layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
 					int b = -1;
@@ -652,7 +652,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 					}
 				}
-				else if(deform_layer && c_layer==1){ //!if selected layer is a Skeleton deform Layer and user wants to work on a skeleton deform layer
+				else if(deform_layer){ //!if selected layer is a Skeleton deform Layer and user wants to work on a skeleton deform layer
 					createChild->set_param("canvas",deform_layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
 					int b = -1;
@@ -904,7 +904,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 		}
 		return -1;	
 	}
-	
+	return -1;
 }
 
 void
@@ -915,7 +915,18 @@ StateBone_Context::make_layer(){
 		new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
 	else if(c_layer==1)
 		new_skel= get_canvas_interface()->add_layer_to("skeleton_deformation",get_canvas());
-	
+	ValueDesc list_desc(new_skel,"bones");
+	ValueNode_StaticList::Handle list_node;
+	list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+	ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
+	active_bone = 0;
+	ValueNode_Bone::Handle bone_node;
+	if(c_layer==0){
+		get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
+	}else if(c_layer==1){
+		ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+		get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+	}
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
 	egress_on_selection_change=true;	get_canvas_view()->queue_rebuild_ducks();
