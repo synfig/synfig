@@ -69,10 +69,14 @@ int main(int argc, char **argv)
 {
 
 #ifdef _WIN32
-	argv = g_win32_get_command_line();
-#else
-	argv = g_strdupv(argv);
-#endif
+	// to be able to open files whose name is not latin (eg. arabic)
+	class ArgVGuard {
+		char **modified_argv;
+	public:
+		ArgVGuard(char ***argv) { modified_argv = *argv = g_win32_get_command_line(); }
+		~ArgVGuard() { g_strfreev(modified_argv); }
+	} argv_guard(&argv);
+ #endif
 
 #ifdef _WIN32
 	if (consoleOptionEnabled(argc, argv))
@@ -132,8 +136,6 @@ int main(int argc, char **argv)
 
 	app.run();
 	std::cerr<<"Application appears to have terminated successfully"<<std::endl;
-
-	g_strfreev(argv);
 
 	return 0;
 	SYNFIG_EXCEPTION_GUARD_END_INT(0)
