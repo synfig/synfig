@@ -91,10 +91,14 @@ int main(int argc, char* argv[])
 	Glib::init(); // need to use Gio functions before app is started
 
 #ifdef _WIN32
-	argv = g_win32_get_command_line();
-#else
-	argv = g_strdupv(argv);
-#endif
+	// to be able to open files whose name is not latin (eg. arabic)
+	class ArgVGuard {
+		char **modified_argv;
+	public:
+		ArgVGuard(char ***argv) { modified_argv = *argv = g_win32_get_command_line(); }
+		~ArgVGuard() { g_strfreev(modified_argv); }
+	} argv_guard(&argv);
+ #endif
 
 	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
 
@@ -319,5 +323,4 @@ int main(int argc, char* argv[])
         std::cout << e.what() << std::endl;
     }
 
-	g_strfreev(argv);
 }
