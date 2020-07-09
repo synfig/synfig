@@ -37,6 +37,7 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 #endif
 
@@ -193,18 +194,15 @@ Action::ValueDescCreateChildBone::prepare()
 			throw Error(Error::TYPE_NOTREADY);
 
 	Action::Handle action;
+
+	action = ValueNodeStaticListInsert::create();
+	action->set_param("canvas", get_canvas());
+	action->set_param("canvas_interface", get_canvas_interface());
+	action->set_param("time", time);
+	
 	const ValueDesc &parent_desc = value_desc.get_parent_desc();
 	if (parent_desc.get_parent_desc().get_value_type() == type_list)
 	{
-		action = ValueNodeStaticListInsert::create();
-		action->set_param("canvas", get_canvas());
-		action->set_param("canvas_interface", get_canvas_interface());
-		action->set_param("time", time);
-
-		if(!parent_desc.parent_is_value_node()){
-			cout<<"F'ed the parent desc's parent"<<endl;
-		}
-
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_value_node());
 		if(!value_node){
 			cout<<"Error"<<endl;
@@ -223,20 +221,25 @@ Action::ValueDescCreateChildBone::prepare()
 		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
 		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
-
-
-
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone));
-
-
 	} else {
-		action = ValueNodeStaticListInsertSmart::create();
-		action->set_param("canvas", get_canvas());
-		action->set_param("canvas_interface", get_canvas_interface());
-		action->set_param("time", time);
+		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_desc().get_parent_value_node());
+		if(!value_node){
+			cout<<"Error"<<endl;
+			throw Error(Error::TYPE_NOTREADY);
+		}
+		int index=parent_desc.get_parent_desc().get_index();
+		action->set_param("value_desc",ValueDesc(value_node,index));
 
-		// Adding bone to Skeleton Deform layer
-		action->set_param("value_desc", parent_desc.get_parent_desc());
+		ValueNode_Composite::Handle bone_pair = ValueNode_Composite::Handle::cast_dynamic(value_node->create_list_entry(index));
+		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(bone_pair->get_link("second"));
+		if(c_parent){
+			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+		}
+		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
+		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
+		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
+		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
 	}
 		
 
