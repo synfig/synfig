@@ -2,7 +2,6 @@
 Param.py
 Will store the Parameters class for Synfig parameters 
 """
-import json
 import sys
 import copy
 import math
@@ -466,7 +465,7 @@ class Param:
                 
                 ret_origin = "[" + ret_x + ",-" + ret_y + "]"
                 ret_origin = ret_origin.format(origin=origin, mod=vector_magnitude,angle=angle,theta=theta)
-                print(ret_origin)
+
                 # Restore previous state
                 bone.is_group_child = prev_state
 
