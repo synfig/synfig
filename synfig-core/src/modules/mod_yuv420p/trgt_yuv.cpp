@@ -30,6 +30,7 @@
 #	include <config.h>
 #endif
 
+#include <glib/gstdio.h>
 #include "trgt_yuv.h"
 #include <ETL/stringf>
 #include <cstdio>
@@ -63,7 +64,7 @@ SYNFIG_TARGET_SET_CVS_ID(yuv,"$Id$");
 
 yuv::yuv(const char *FILENAME, const synfig::TargetParam& /* params */):
 	filename(FILENAME),
-	file( (filename=="-")?stdout:fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE) ),
+	file( (filename=="-")?stdout:g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE) ),
 	dithering(true)
 {
 	// YUV420P doesn't have an alpha channel
