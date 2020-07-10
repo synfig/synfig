@@ -2,7 +2,7 @@
 Param.py
 Will store the Parameters class for Synfig parameters 
 """
-
+import json
 import sys
 import copy
 import math
@@ -260,19 +260,21 @@ class Param:
                     # Modifying the bone_origin according to the parent's recursive scale
                     bone_origin = "mul(" + bone_origin + ", " + par_rls + ")"
 
-                    # Forming the expression for new origin
-                    a1 = "degreesToRadians({angle})"
-                    a2 = "degreesToRadians(sum({angle}, 90))"
-                    a1, a2 = a1.format(angle=par_angle), a2.format(angle=par_angle)
-
-                    ret_x = "sum({par_origin}[0], mul({bone_origin}[0], Math.cos({a1})), mul({bone_origin}[1], Math.cos({a2})))"
-                    ret_y = "sum({par_origin}[1], mul({bone_origin}[0], Math.sin({a1})), mul({bone_origin}[1], Math.sin({a2})))"
-                    ret_origin = "[" + ret_x + ", " + ret_y + "]"
-                    ret_origin = ret_origin.format(par_origin=par_origin, bone_origin=bone_origin, a1=a1, a2=a2)
-
                     # Forming the expression for new angle
-                    ret_angle = "sum({par_angle}, {bone_angle})"
+                    ret_angle = "degreesToRadians(sum({par_angle}, {bone_angle}))"
                     ret_angle = ret_angle.format(par_angle=par_angle, bone_angle=bone_angle)
+
+                    vector_magnitude = 'Math.sqrt(sum(Math.pow({bone_origin}[0],2),Math.pow({bone_origin}[1],2)))'
+                    vector_magnitude = vector_magnitude.format(bone_origin=bone_origin)
+                    
+                    theta = 'degreesToRadians(Math.atan2({bone_origin}[1],{bone_origin}[0]))'
+                    theta = theta.format(bone_origin=bone_origin)
+
+                    ret_x = "sum({par_origin}[0], mul({mod}, Math.cos(sum({angle},{theta}))))"
+                    ret_y = "sum({par_origin}[1], mul({mod}, Math.sin(sum({angle},{theta}))))"
+                    ret_origin = "[" + ret_x + ",-" + ret_y + "]"
+                    ret_origin = ret_origin.format(par_origin=par_origin, mod=vector_magnitude, angle=ret_angle,theta=theta)
+                    
                 else:
                     ret_origin = bone_origin
                     ret_angle = bone_angle
@@ -453,15 +455,18 @@ class Param:
                 base_value = "mul(" + base_value + ", " + rls + ")"
 
                 # Adding effect of base_value here
-                a1 = "degreesToRadians({angle})"
-                a2 = "degreesToRadians(sum({angle}, 90))"
-                a1, a2 = a1.format(angle=angle), a2.format(angle=angle)
-
-                ret_x = "sub(sum({origin}[0], mul({base_value}[0], Math.cos({a1}))), mul({base_value}[1], Math.cos({a2})))"
-                ret_y = "sub(sum({origin}[1], mul({base_value}[0], Math.sin({a1}))), mul({base_value}[1], Math.sin({a2})))"
-                ret_origin = "[" + ret_x + ", -" + ret_y + "]"
-                ret_origin = ret_origin.format(origin=origin, base_value=base_value, a1=a1, a2=a2)
-
+                
+                vector_magnitude = 'Math.sqrt(sum(Math.pow({base_value}[0],2),Math.pow({base_value}[1],2)))'
+                vector_magnitude = vector_magnitude.format(base_value=base_value)
+                    
+                theta = 'degreesToRadians(Math.atan2({base_value}[1],{base_value}[0]))'
+                theta = theta.format(base_value=base_value)
+                ret_x = "sum(sum({origin}[0], mul({mod},Math.cos(sum({angle},{theta})))))"
+                ret_y = "sum(sum({origin}[1], mul({mod},Math.sin(sum({angle},{theta})))))"
+                
+                ret_origin = "[" + ret_x + ",-" + ret_y + "]"
+                ret_origin = ret_origin.format(origin=origin, mod=vector_magnitude,angle=angle,theta=theta)
+                print(ret_origin)
                 # Restore previous state
                 bone.is_group_child = prev_state
 
