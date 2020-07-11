@@ -53,6 +53,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/valuenodedynamiclistremove.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodedynamiclistremovesmart.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodedynamiclistrotateorder.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuenodesetactivebone.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodedynamiclistunloop.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodestaticlistinsert.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodestaticlistinsertsmart.cpp"

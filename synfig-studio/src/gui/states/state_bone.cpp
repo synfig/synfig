@@ -196,6 +196,7 @@ public:
 	WorkArea * get_work_area() const {return canvas_view_->get_work_area();}
 	const synfig::TransformStack& get_transform_stack() const {return get_work_area()->get_curr_transform_stack();}
 	int find_bone(Point point,Layer::Handle layer,int lay=0)const;
+	void change_active_bone(ValueNode::Handle node);
 
 	void load_settings();
 	void save_settings();
@@ -454,7 +455,8 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
 	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
-
+	//signals
+	get_canvas_interface()->signal_active_bone_changed().connect(sigc::mem_fun(*this,&studio::StateBone_Context::change_active_bone));
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
@@ -552,11 +554,15 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
 	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
-	Action::Handle addLayer(Action::LayerAdd::create());
+	
 	Action::Handle createChild(Action::Handle(Action::create("ValueDescCreateChildBone")));
-
 	createChild->set_param("canvas",get_canvas());
 	createChild->set_param("canvas_interface",get_canvas_interface());
+	createChild->set_param("highlight",true);
+
+	Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+	setActiveBone->set_param("canvas",get_canvas());
+	setActiveBone->set_param("canvas_interface",get_canvas_interface());
 
 	Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
 
@@ -576,7 +582,15 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
-						get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
+						setActiveBone->set_param("active_bone_node",value_desc.get_value_node());
+						setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
+						if(setActiveBone->is_ready()){
+							try{
+								get_canvas_interface()->get_instance()->perform_action(setActiveBone);
+							} catch (...) {
+								info("Error performing action");
+							}
+						}
 					}else{
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
@@ -603,6 +617,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							createChild->set_param("origin",Action::Param(ValueBase(aOrigin)));
 							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
 							createChild->set_param("tipwidth",Action::Param(ValueBase(get_tip_width())));
+							createChild->set_param("prev_active_bone_node",Action::Param(get_work_area()->get_active_bone_value_node()));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								a = atan2((releaseOrigin-clickOrigin)[1],(releaseOrigin-clickOrigin)[0]);
 								createChild->set_param("angle",Action::Param(ValueBase(Angle::rad(a-angle))));
@@ -635,6 +650,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							createChild->set_param("origin",Action::Param(ValueBase(clickOrigin)));
 							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
 							createChild->set_param("tipwidth",Action::Param(ValueBase(get_tip_width())));
+							createChild->set_param("prev_active_bone_node",Action::Param(get_work_area()->get_active_bone_value_node()));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								createChild->set_param("scalelx", Action::Param(ValueBase((releaseOrigin - clickOrigin).mag())));
 								createChild->set_param("angle", Action::Param(ValueBase((releaseOrigin - clickOrigin).angle())));
@@ -663,7 +679,15 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
 						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-						get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+						setActiveBone->set_param("active_bone_node",comp->get_link("second"));
+						setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
+						if(setActiveBone->is_ready()){
+							try{
+								get_canvas_interface()->get_instance()->perform_action(setActiveBone);
+							} catch (...) {
+								info("Error performing action");
+							}
+						}
 					}else{
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
@@ -690,6 +714,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("origin",Action::Param(ValueBase(aOrigin)));
+							createChild->set_param("prev_active_bone_node",Action::Param(get_work_area()->get_active_bone_value_node()));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								a = atan2((releaseOrigin-clickOrigin)[1],(releaseOrigin-clickOrigin)[0]);
 								createChild->set_param("angle",Action::Param(ValueBase(Angle::rad(a-angle))));
@@ -724,6 +749,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("parent",true);
 							createChild->set_param("origin",Action::Param(ValueBase(clickOrigin)));
+							createChild->set_param("prev_active_bone_node",Action::Param(get_work_area()->get_active_bone_value_node()));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								createChild->set_param("scalelx", Action::Param(ValueBase((releaseOrigin - clickOrigin).mag())));
 								createChild->set_param("angle", Action::Param(ValueBase((releaseOrigin - clickOrigin).angle())));
@@ -923,4 +949,31 @@ StateBone_Context::make_layer(){
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
 	egress_on_selection_change=true;	get_canvas_view()->queue_rebuild_ducks();
+}
+
+
+void
+StateBone_Context::change_active_bone(ValueNode::Handle node){
+	ValueNode_Bone::Handle bone;
+	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
+	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
+	
+
+	if(bone = ValueNode_Bone::Handle::cast_dynamic(node)){
+		if(skel_layer){
+			ValueDesc list_desc(layer,"bones");
+			ValueNode_StaticList::Handle list_node;
+			list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+			
+			for(int i=0;i<list_node->link_count();i++){
+				ValueDesc value_desc(list_node,0,list_desc);
+				if(value_desc.get_value_node()==node){
+					active_bone = i;
+					return;
+				}
+			}
+	
+		}
+	}
 }
