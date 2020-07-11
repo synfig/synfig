@@ -58,6 +58,7 @@
 #include "synfig/valuenodes/valuenode_composite.h"
 #include "synfig/valuenodes/valuenode_staticlist.h"
 #include "synfigapp/value_desc.h"
+#include "synfig/valuetransformation.h"
 
 #include <gui/localization.h>
 #include <gtkmm/radiobutton.h>
@@ -143,8 +144,6 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::RadioButton radiobutton_skel_deform;
 	Gtk::Button create_layer;
 
-
-	Action::Handle createChild;
 
 public:
 
@@ -340,7 +339,6 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	depth(-1),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	createChild(Action::Handle(Action::create("ValueDescCreateChildBone"))),
 	active_bone(-1),
 	radiobutton_skel(radiogroup,_("Skeleton Layer")),
 	radiobutton_skel_deform(radiogroup,_("Skeleton Deform Layer")),
@@ -457,6 +455,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
 
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -552,8 +551,12 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
 	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
-
+	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	Action::Handle addLayer(Action::LayerAdd::create());
+	Action::Handle createChild(Action::Handle(Action::create("ValueDescCreateChildBone")));
+
+	createChild->set_param("canvas",get_canvas());
+	createChild->set_param("canvas_interface",get_canvas_interface());
 
 	Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
 
@@ -587,7 +590,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								error("expected a ValueNode_Bone");
 								assert(0);
 							}
-							get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
 							Real sx = bone_node->get_link("scalelx")->operator()(get_canvas()->get_time()).get(Real());
 							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
@@ -614,8 +616,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							if(createChild->is_ready()){
 								try{
 									get_canvas_interface()->get_instance()->perform_action(createChild);
-									value_desc= ValueDesc(list_node,active_bone,list_desc);
-									get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 								} catch (...) {
 									info("Error performing action");
 								}
@@ -642,8 +642,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							if(createChild->is_ready()){
 								try{
 									get_canvas_interface()->get_instance()->perform_action(createChild);
-									value_desc= ValueDesc(list_node,0,list_desc);
-									get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 								} catch (...) {
 									info("Error performing action");
 								}
@@ -681,7 +679,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								error("expected a ValueNode_Bone");
 								assert(0);
 							}
-							get_work_area()->set_active_bone_value_node(comp->get_link("second"));
 							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
 							Real sx = bone_node->get_link("scalelx")->operator()(get_canvas()->get_time()).get(Real());
 							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
@@ -705,8 +702,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								try{
 									get_canvas_interface()->get_instance()->perform_action(createChild);
 									value_desc= ValueDesc(list_node,active_bone,list_desc);
-									ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-									get_work_area()->set_active_bone_value_node(comp->get_link("second"));
 						
 								} catch (...) {
 									info("Error performing action");
@@ -725,7 +720,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								error("expected a ValueNode_Bone");
 								assert(0);
 							}
-							get_work_area()->set_active_bone_value_node(comp->get_link("second"));
 							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("parent",true);
@@ -738,8 +732,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								try{
 									get_canvas_interface()->get_instance()->perform_action(createChild);
 									value_desc= ValueDesc(list_node,0,list_desc);
-									ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-									get_work_area()->set_active_bone_value_node(comp->get_link("second"));
 								} catch (...) {
 									info("Error performing action");
 								}

@@ -68,12 +68,22 @@ Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
 	time(0),
 	origin(ValueBase(Point(1.1,0))),
 	scalelx(ValueBase(1.0)),
-	angle(Angle::rad(acos(0.0))),
+	angle(Angle::rad(0)),
 	c_parent(false),
 	width(0.1),
 	tipwidth(0.1)
 {
 }
+
+
+void
+Action::ValueDescCreateChildBone::undo(){
+
+	get_canvas_interface()->signal_active_bone_changed()(value_desc.get_parent_value_node());
+
+	return Super::undo();
+}
+
 
 Action::ParamVocab
 Action::ValueDescCreateChildBone::get_param_vocab()
@@ -222,6 +232,8 @@ Action::ValueDescCreateChildBone::prepare()
 		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone));
+		cout<<"HI"<<endl;
+		get_canvas_interface()->signal_active_bone_changed()(ValueNode::Handle::cast_dynamic(bone));
 	} else {
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_desc().get_parent_value_node());
 		if(!value_node){
@@ -240,9 +252,11 @@ Action::ValueDescCreateChildBone::prepare()
 		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
+
+		get_canvas_interface()->signal_active_bone_changed()(ValueNode::Handle::cast_dynamic(bone));
 	}
 		
-
+	
 	if (!action->is_ready())
 		throw Error(Error::TYPE_NOTREADY);
 	add_action_front(action);

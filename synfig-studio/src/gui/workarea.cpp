@@ -189,6 +189,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	signal_grid_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
 	signal_grid_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::save_meta_data));
 	signal_sketch_saved().connect(sigc::mem_fun(*this,&studio::WorkArea::save_meta_data));
+	canvas_interface->signal_active_bone_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::set_active_bone_value_node));
 
 	add_events(Gdk::KEY_PRESS_MASK);
 

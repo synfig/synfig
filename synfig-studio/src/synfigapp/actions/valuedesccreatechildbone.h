@@ -64,6 +64,7 @@ public:
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
+	virtual void undo();
 	virtual void prepare();
 
 	ACTION_MODULE_EXT
