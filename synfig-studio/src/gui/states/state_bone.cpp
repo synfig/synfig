@@ -520,7 +520,6 @@ StateBone_Context::~StateBone_Context()
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
-	get_work_area()->set_active_bone_value_node(ValueNode::Handle());
 
 	App::dock_toolbox->refresh();
 }
