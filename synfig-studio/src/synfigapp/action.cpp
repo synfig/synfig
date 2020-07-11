@@ -76,6 +76,7 @@
 #include "actions/valuenodedynamiclistloop.h"
 #include "actions/valuenodedynamiclistunloop.h"
 #include "actions/valuenodedynamiclistrotateorder.h"
+#include "actions/valuenodesetactivebone.h"
 #include "actions/valuenodestaticlistinsert.h"
 #include "actions/valuenodestaticlistremove.h"
 #include "actions/valuenodestaticlistinsertsmart.h"
@@ -233,6 +234,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeDynamicListLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListUnLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListRotateOrder);
+	ADD_ACTION(Action::ValueNodeSetActiveBone);
 	ADD_ACTION(Action::ValueNodeStaticListInsert);
 	ADD_ACTION(Action::ValueNodeStaticListRemove);
 	ADD_ACTION(Action::ValueNodeStaticListInsertSmart);

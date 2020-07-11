@@ -71,19 +71,10 @@ Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
 	angle(Angle::rad(0)),
 	c_parent(false),
 	width(0.1),
-	tipwidth(0.1)
+	tipwidth(0.1),
+	c_active_bone(false)
 {
 }
-
-
-void
-Action::ValueDescCreateChildBone::undo(){
-
-	get_canvas_interface()->signal_active_bone_changed()(value_desc.get_parent_value_node());
-
-	return Super::undo();
-}
-
 
 Action::ParamVocab
 Action::ValueDescCreateChildBone::get_param_vocab()
@@ -109,7 +100,7 @@ Action::ValueDescCreateChildBone::get_param_vocab()
 		.set_local_name(_("Angle of the child bone"))
 		.set_optional()
 	);
-	ret.push_back(ParamDesc("c_parent",Param::TYPE_VALUENODE)
+	ret.push_back(ParamDesc("c_parent",Param::TYPE_BOOL)
 			                    .set_local_name(_("Change the parent of the child bone?"))
 			                    .set_optional()
 	);
@@ -120,6 +111,14 @@ Action::ValueDescCreateChildBone::get_param_vocab()
 	ret.push_back(ParamDesc("tipwidth",Param::TYPE_VALUE)
 			                    .set_local_name(_("Tip Width of the child bone"))
 			                    .set_optional()
+	);
+	ret.push_back(ParamDesc("c_active_bone",Param::TYPE_BOOL)
+			                    .set_local_name(_("Highlight active bone?"))
+			                    .set_optional()
+	);
+	ret.push_back(ParamDesc("prev_active_bone",Param::TYPE_VALUEDESC)
+		.set_local_name(_("ValueNode of previous active Bone"))
+		.set_optional()
 	);
 	return ret;
 }
@@ -177,10 +176,23 @@ Action::ValueDescCreateChildBone::set_param(const synfig::String& name, const Ac
 			tipwidth = param.get_value();
 		}
 	}
-	if(name=="parent" && param.get_type()==Param::TYPE_BOOL){
-		c_parent=param.get_bool();
+	if(param.get_type()==Param::TYPE_BOOL){
+		if(name=="parent"){
+			c_parent=param.get_bool();
+			return true;
+		}else if(name=="highlight"){
+			c_active_bone = param.get_bool();
+			return true;
+		}
+	}
+
+	if(name == "prev_active_bone_node" && param.get_type()==Param::TYPE_VALUENODE
+	&& (param.get_value_node()==ValueNode::Handle() || ValueNode_Bone::Handle::cast_dynamic(param.get_value_node()))){
+		prev_active_bone = param.get_value_node();
+		cout<<"set"<<endl;
 		return true;
 	}
+
 
 	return Action::CanvasSpecific::set_param(name,param);
 }
@@ -232,8 +244,20 @@ Action::ValueDescCreateChildBone::prepare()
 		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone));
-		cout<<"HI"<<endl;
-		get_canvas_interface()->signal_active_bone_changed()(ValueNode::Handle::cast_dynamic(bone));
+		
+		if(c_active_bone){
+			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+			setActiveBone->set_param("canvas",get_canvas());
+			setActiveBone->set_param("canvas_interface",get_canvas_interface());
+
+			setActiveBone->set_param("active_bone_node",ValueNode::Handle::cast_dynamic(bone));
+			setActiveBone->set_param("prev_active_bone_node",prev_active_bone);
+
+			if (!setActiveBone->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(setActiveBone);
+
+		}
 	} else {
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_desc().get_parent_value_node());
 		if(!value_node){
@@ -252,8 +276,19 @@ Action::ValueDescCreateChildBone::prepare()
 		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
+		if(c_active_bone){
+			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+			setActiveBone->set_param("canvas",get_canvas());
+			setActiveBone->set_param("canvas_interface",get_canvas_interface());
 
-		get_canvas_interface()->signal_active_bone_changed()(ValueNode::Handle::cast_dynamic(bone));
+			setActiveBone->set_param("active_bone_node",ValueNode::Handle::cast_dynamic(bone));
+			setActiveBone->set_param("prev_active_bone_node",prev_active_bone);
+
+			if (!setActiveBone->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(setActiveBone);
+
+		}
 	}
 		
 	

@@ -113,6 +113,7 @@ VALUENODE_ACTION_HH = \
 	actions/valuenodedynamiclistremovesmart.h \
 	actions/valuenodedynamiclistrotateorder.h \
 	actions/valuenodedynamiclistunloop.h \
+	actions/valuenodesetactivebone.h \
 	actions/valuenodestaticlistinsert.h	\
 	actions/valuenodestaticlistinsertsmart.h \
 	actions/valuenodestaticlistloop.h \
@@ -137,6 +138,7 @@ VALUENODE_ACTION_CC = \
 	actions/valuenodedynamiclistremove.cpp \
 	actions/valuenodedynamiclistremovesmart.cpp \
 	actions/valuenodedynamiclistrotateorder.cpp \
+	actions/valuenodesetactivebone.cpp \
 	actions/valuenodedynamiclistunloop.cpp \
 	actions/valuenodestaticlistinsert.cpp \
 	actions/valuenodestaticlistinsertsmart.cpp \
