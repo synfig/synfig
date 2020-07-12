@@ -41,10 +41,17 @@ add_custom_command(
         ${SYNFIG_BUILD_ROOT}/share/applications/org.synfig.SynfigStudio.desktop
 )
 
-add_dependencies(synfigstudio
-    build_images
-    build_pofiles_synfigstudio
-    plugins_xml
-    appdata_xml
-    desktop_file
-)
+if(LINUX)
+    add_dependencies(synfigstudio
+        build_images
+        build_pofiles_synfigstudio
+        plugins_xml
+        appdata_xml
+        desktop_file
+    )
+elseif(WIN32)
+    add_dependencies(synfigstudio
+        build_images
+        build_pofiles_synfigstudio
+    )
+endif()

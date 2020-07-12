@@ -44,7 +44,9 @@ $ARCH-glibmm \
 $ARCH-imagemagick \
 $ARCH-libxml++2.6 \
 $ARCH-pango \
-$ARCH-gtkmm3
+$ARCH-gtkmm3 \
+$ARCH-libmng \
+$ARCH-openexr
 
 # build mlt
 bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
