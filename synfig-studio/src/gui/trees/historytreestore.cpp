@@ -58,7 +58,7 @@ using namespace studio;
 
 static HistoryTreeStore::Model& ModelHack()
 {
-	static HistoryTreeStore::Model* model(0);
+	static HistoryTreeStore::Model* model(nullptr);
 	if(!model)model=new HistoryTreeStore::Model;
 	return *model;
 }
@@ -216,7 +216,7 @@ HistoryTreeStore::on_action_status_changed(etl::handle<synfigapp::Action::Undoab
 	for(iter=children_.begin(); iter != children_.end(); ++iter)
 	{
 		Gtk::TreeModel::Row row = *iter;
-		if(action == (etl::handle<synfigapp::Action::Undoable>)row[model.action])
+		if(action == row.get_value(model.action))
 		{
 			row[model.is_active]=action->is_active();
 			return;
