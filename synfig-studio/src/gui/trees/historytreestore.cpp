@@ -97,20 +97,20 @@ HistoryTreeStore::rebuild()
 	const synfigapp::Action::Stack& undo_stack = instance()->undo_action_stack();
 
 	for (iter = undo_stack.begin(); iter != undo_stack.end(); ++iter)
-		insert_action(*(prepend()), *iter, true, true, false);
+		insert_action(*(prepend()), *iter, true, false);
 
 	curr_row=*children().end();
 
 	const synfigapp::Action::Stack& redo_stack = instance()->redo_action_stack();
 
 	for(iter = redo_stack.begin(); iter != redo_stack.end(); ++iter)
-		insert_action(*(append()), *iter, true, false, true);
+		insert_action(*(append()), *iter, false, true);
 
 	signal_undo_tree_changed()();
 }
 
 void
-HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool /*is_active*/, bool is_undo, bool is_redo)
+HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_undo, bool is_redo)
 {
 	assert(action);
 
@@ -136,7 +136,7 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 		for(iter=group->action_list().begin();iter!=group->action_list().end();++iter)
 		{
 			Gtk::TreeRow child_row = *(append(row.children()));
-			insert_action(child_row,*iter,true,is_undo,is_redo);
+			insert_action(child_row,*iter,is_undo,is_redo);
 		}
 	}
 }
