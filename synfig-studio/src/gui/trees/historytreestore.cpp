@@ -162,28 +162,32 @@ HistoryTreeStore::on_redo()
 void
 HistoryTreeStore::on_undo_stack_cleared()
 {
-	Gtk::TreeModel::Children::iterator iter,next;
 	Gtk::TreeModel::Children children_(children());
+	Gtk::TreeModel::Children::iterator iter = children_.begin();
 
-	for(next=children_.begin(),iter=next++; iter != children_.end(); iter=(next!=children_.end())?next++:next)
+	while(iter != children_.end())
 	{
 		Gtk::TreeModel::Row row = *iter;
 		if(row[model.is_undo])
-			erase(iter);
+			iter = erase(iter);
+		else
+			++iter;
 	}
 }
 
 void
 HistoryTreeStore::on_redo_stack_cleared()
 {
-	Gtk::TreeModel::Children::iterator iter,next;
 	Gtk::TreeModel::Children children_(children());
+	Gtk::TreeModel::Children::iterator iter = children_.begin();
 
-	for(next=children_.begin(),iter=next++; iter != children_.end(); iter=(next!=children_.end())?next++:next)
+	while(iter != children_.end())
 	{
 		Gtk::TreeModel::Row row = *iter;
 		if(row[model.is_redo])
-			erase(iter);
+			iter = erase(iter);
+		else
+			++iter;
 	}
 }
 
