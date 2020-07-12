@@ -54,7 +54,6 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-	public:
 		Gtk::TreeModelColumn<etl::handle<synfigapp::Action::Undoable> > action;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
@@ -141,9 +140,6 @@ private:
 
 public:
 
-	HistoryTreeStore(etl::loose_handle<studio::Instance> instance_);
-	~HistoryTreeStore();
-
 	etl::loose_handle<studio::Instance> instance() { return instance_; }
 	etl::loose_handle<const studio::Instance> instance()const { return instance_; }
 
@@ -155,13 +151,16 @@ public:
 
 	static bool search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustring&,const TreeModel::iterator&);
 
+	static Glib::RefPtr<HistoryTreeStore> create(etl::loose_handle<studio::Instance> instance);
+
 	/*
  -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------
 	*/
 
-public:
+protected:
 
-	static Glib::RefPtr<HistoryTreeStore> create(etl::loose_handle<studio::Instance> instance);
+	HistoryTreeStore(etl::loose_handle<studio::Instance> instance_);
+	~HistoryTreeStore();
 
 }; // END of class HistoryTreeStore
 
