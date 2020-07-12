@@ -92,7 +92,8 @@ public:
 private:
 
 	etl::loose_handle<studio::Instance> instance_;
-	Gtk::TreeIter curr_row;
+	//! points to next action
+	Gtk::TreeIter next_action_iter;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -145,9 +146,9 @@ public:
 	etl::loose_handle<studio::Instance> instance() { return instance_; }
 	etl::loose_handle<const studio::Instance> instance()const { return instance_; }
 
+	//! Use this method carefully: if redo action stack refers to not-yet-(re)created objects
+	//! - like vertex movements -, the Action::get_local_name() can make App crash!
 	void rebuild();
-
-	void refresh() { rebuild(); }
 
 	static bool search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustring&,const TreeModel::iterator&);
 

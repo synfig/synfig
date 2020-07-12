@@ -65,7 +65,8 @@ static HistoryTreeStore::Model& ModelHack()
 
 HistoryTreeStore::HistoryTreeStore(etl::loose_handle<studio::Instance> instance_):
 	Gtk::TreeStore	(ModelHack()),
-	instance_		(instance_)
+	instance_		(instance_),
+	next_action_iter (children().end())
 {
 	instance_->signal_undo().connect(sigc::mem_fun(*this,&studio::HistoryTreeStore::on_undo));
 	instance_->signal_redo().connect(sigc::mem_fun(*this,&studio::HistoryTreeStore::on_redo));
@@ -99,7 +100,7 @@ HistoryTreeStore::rebuild()
 	for (iter = undo_stack.begin(); iter != undo_stack.end(); ++iter)
 		insert_action(*(prepend()), *iter, true, false);
 
-	curr_row=*children().end();
+	next_action_iter = children().end();
 
 	const synfigapp::Action::Stack& redo_stack = instance()->redo_action_stack();
 
@@ -145,13 +146,25 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 void
 HistoryTreeStore::on_undo()
 {
-	refresh();
+	assert(next_action_iter != children().begin());
+
+	--next_action_iter;
+	next_action_iter->set_value(model.is_redo, true);
+	next_action_iter->set_value(model.is_undo, false);
+
+	signal_undo_tree_changed()();
 }
 
 void
 HistoryTreeStore::on_redo()
 {
-	refresh();
+	assert(next_action_iter != children().end());
+
+	next_action_iter->set_value(model.is_redo, false);
+	next_action_iter->set_value(model.is_undo, true);
+	++next_action_iter;
+
+	signal_undo_tree_changed()();
 }
 
 void
@@ -166,43 +179,42 @@ HistoryTreeStore::on_undo_stack_cleared()
 		if(row[model.is_undo])
 			iter = erase(iter);
 		else
-			++iter;
+			break;
 	}
+	next_action_iter = iter;
 }
 
 void
 HistoryTreeStore::on_redo_stack_cleared()
 {
 	Gtk::TreeModel::Children children_(children());
-	Gtk::TreeModel::Children::iterator iter = children_.begin();
+	Gtk::TreeModel::Children::iterator iter = next_action_iter;
 
 	while(iter != children_.end())
 	{
 		Gtk::TreeModel::Row row = *iter;
 		if(row[model.is_redo])
 			iter = erase(iter);
-		else
-			++iter;
+		else {
+			error(_("Action history seems to be corrupted!"));
+			rebuild();
+			break;
+		}
 	}
+	next_action_iter = children_.end();
 }
 
 void
 HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
 	Gtk::TreeRow row;
-	Gtk::TreeModel::Children::iterator iter;
-	for(iter=children().begin(); iter != children().end(); ++iter)
-	{
-		Gtk::TreeModel::Row row = *iter;
-		if(row[model.is_redo])
-		{
-			break;
-		}
-	}
 
-	row=*insert(iter);
+	row=*insert(next_action_iter);
 
 	insert_action(row,action);
+
+	next_action_iter = row;
+	++next_action_iter;
 
 	signal_undo_tree_changed()();
 }
