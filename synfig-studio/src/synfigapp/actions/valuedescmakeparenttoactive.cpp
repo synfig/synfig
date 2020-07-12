@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2013 Ivan Mahonin
+**	......... ... 2020 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -120,9 +120,9 @@ Action::ValueDescMakeParentToActive::set_param(const synfig::String& name, const
 		return true;
 	}
 
-	if(name=="active_bone" && param.get_type()==Param::TYPE_VALUENODE
-	&& ValueNode_Bone::Handle::cast_dynamic(param.get_value_node())){
+	if(name=="active_bone" && param.get_type()==Param::TYPE_VALUENODE){
 		active_bone = param.get_value_node();
+		prev_parent = ValueNode_Bone::Handle::cast_dynamic(active_bone)->get_link("parent");
 		return true;
 	}
 
@@ -144,17 +144,76 @@ Action::ValueDescMakeParentToActive::is_ready()const
 }
 
 void
-Action::ValueDescMakeParentToActive::prepare()
+Action::ValueDescMakeParentToActive::perform()
 {
-	clear();
-
 	if (!value_desc.parent_is_value_node()
 	 || !value_desc.is_parent_desc_declared()
 	 || !value_desc.get_parent_desc().is_value_node()
-	 || !active_bone
-	 || !ValueNode_Bone::Handle::cast_dynamic(active_bone))
+	 || !active_bone)
 			throw Error(Error::TYPE_NOTREADY);
 
+	info("Received : "+ active_bone->get_description());
+	ValueNode_Bone::Handle bone;
+	if((bone = ValueNode_Bone::Handle::cast_dynamic(active_bone))){
+		if(ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())){
+			ValueDesc bone_desc = value_desc.get_parent_desc();
+			Matrix T = bone_desc.get_value(time).get(Bone()).get_animated_matrix();
+			Angle T_angle = Angle::rad(atan2(T.axis(0)[1],T.axis(0)[0]));
+			T = T.get_inverted();
+
+			ValueNode_Bone::Handle parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
+			info(parent_bone->operator()(time).get_type().description.name);
+			Matrix p_M = parent_bone->operator()(time).get(Bone()).get_animated_matrix();
+			Angle p_angle = Angle::rad(atan2(p_M.axis(0)[1],p_M.axis(0)[0]));
+
+			Point origin = bone->get_link("origin")->operator()(time).get(Point());
+			Angle angle = bone->get_link("angle")->operator()(time).get(Angle());
+			Real sx = bone->get_link("scalelx")->operator()(time).get(Real());
+
+			angle+=p_angle-T_angle;
+			origin = p_M.get_transformed(origin);
+			origin[0] *= sx;
+			origin = T.get_transformed(origin);
+			origin[0]/=bone_desc.get_value(time).get(Bone()).get_scalelx();
+			bone->set_link("origin",ValueNode_Const::create(origin));
+			bone->set_link("angle",ValueNode_Const::create(angle));
+			bone->set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_dynamic(bone_desc.get_value_node())));
+
+		}
+	}else{
+		get_canvas_interface()->get_ui_interface()->error("Please set an active bone");
+	}
+
+}
+
+void
+Action::ValueDescMakeParentToActive::undo() {
+	if(prev_parent){
+		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(active_bone);
+		ValueDesc bone_desc = value_desc.get_parent_desc();
+		Matrix T = bone_desc.get_value(time).get(Bone()).get_animated_matrix();
+		Angle T_angle = Angle::rad(atan2(T.axis(0)[1],T.axis(0)[0]));
 
 
+		ValueNode_Bone::Handle parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
+		info(parent_bone->operator()(time).get_type().description.name);
+		Matrix p_M = parent_bone->operator()(time).get(Bone()).get_animated_matrix();
+		Angle p_angle = Angle::rad(atan2(p_M.axis(0)[1],p_M.axis(0)[0]));
+		p_M = p_M.get_inverted();
+
+		Point origin = bone->get_link("origin")->operator()(time).get(Point());
+		Angle angle = bone->get_link("angle")->operator()(time).get(Angle());
+		Real sx = bone->get_link("scalelx")->operator()(time).get(Real());
+
+		angle+=T_angle-p_angle;
+		origin = p_M.get_transformed(T.get_transformed(origin));
+		origin[0]/=sx;
+		origin[0]*=bone_desc.get_value(time).get(Bone()).get_scalelx();
+
+		bone->set_link("origin",ValueNode_Const::create(origin));
+		bone->set_link("angle",ValueNode_Const::create(angle));
+		bone->set_link("parent",prev_parent);
+	}else{
+		get_canvas_interface()->get_ui_interface()->error("Could'nt find parent to active bone");
+	}
 }
