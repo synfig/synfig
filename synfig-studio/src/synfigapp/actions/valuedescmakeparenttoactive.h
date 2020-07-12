@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2013 Ivan Mahonin
+**	......... ... 2020 Ivan Mahonin
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -46,12 +46,14 @@ namespace synfigapp {
 namespace Action {
 
 class ValueDescMakeParentToActive :
-	public Super
+	public Undoable,
+	public CanvasSpecific
 {
 private:
 	ValueDesc value_desc;
 	synfig::ValueNode::Handle active_bone;
 	synfig::Time time;
+	synfig::ValueNode::Handle prev_parent;
 
 public:
 
@@ -63,7 +65,8 @@ public:
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
-	virtual void prepare();
+	virtual void perform();
+	virtual void undo();
 
 	ACTION_MODULE_EXT
 };
