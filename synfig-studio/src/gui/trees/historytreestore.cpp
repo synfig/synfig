@@ -34,9 +34,6 @@
 
 #include "trees/historytreestore.h"
 #include <synfig/valuenode.h>
-#include "iconcontroller.h"
-#include <synfig/valuenodes/valuenode_timedswap.h>
-#include <gtkmm/button.h>
 #include <synfigapp/action.h>
 #include "instance.h"
 
@@ -142,8 +139,6 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 			insert_action(child_row,*iter,true,is_undo,is_redo);
 		}
 	}
-
-	//row[model.icon] = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 
 
@@ -194,7 +189,6 @@ HistoryTreeStore::on_redo_stack_cleared()
 void
 HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
-//	Gtk::TreeRow row = *(append());
 	Gtk::TreeRow row;
 	Gtk::TreeModel::Children::iterator iter;
 	for(iter=children().begin(); iter != children().end(); ++iter)
