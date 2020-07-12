@@ -708,9 +708,14 @@ class Param:
 
                 ret = shifted_origin
                 # Adding effect of x component
-                ret[0] = ret[0] + (cur_origin[0] * math.cos(a1) + cur_origin[1] * math.cos(a2)) * rls[0]
-                ret[1] = ret[1] + (cur_origin[0] * math.sin(a1) + cur_origin[1] * math.sin(a2)) * rls[1]
-
+                vector_magnitude = math.sqrt(cur_origin[0]*cur_origin[0] + cur_origin[1]*cur_origin[1])
+                rad = math.pi/180
+                theta = math.atan2(cur_origin[1],cur_origin[0])
+                angle = angle*rad
+                shifted_angle = shifted_angle*rad
+                ret[0] = ret[0] + (vector_magnitude * math.cos(shifted_angle+theta))
+                ret[1] = ret[1] + (vector_magnitude * math.sin(shifted_angle+theta))
+                
                 return ret, absolute_angle, local_length_scale, ret_rls
 
             elif self.param.tag == "bone_root":
@@ -847,11 +852,15 @@ class Param:
                 # base_value to be arranged according to the local scale
                 base_value = [lls*i for i in base_value]
 
-                ret[0] = ret[0] + (base_value[0] * math.cos(a1) - base_value[1] * math.cos(a2)) * rls[0]
-                ret[1] = ret[1] + (base_value[0] * math.sin(a1) - base_value[1] * math.sin(a2)) * rls[1]
+                vector_magnitude = math.sqrt(base_value[0]*base_value[0]+base_value[1]*base_value[1])
+                rad = math.pi/180
+
+                theta = math.atan2(base_value[1],base_value[0])*rad
+                ret[0] = ret[0] + (vector_magnitude* math.cos(a1+theta)) * rls[0]
+                ret[1] = ret[1] + (vector_magnitude* math.sin(a1+theta)) * rls[1]
 
                 ret = [ret[0], ret[1]]
-
+                
             elif self.param[0].tag == "sine":
                 angle = self.subparams["sine"].subparams["angle"].__get_value(frame)
                 amp = self.subparams["sine"].subparams["amp"].__get_value(frame)
