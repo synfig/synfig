@@ -59,6 +59,10 @@ class ValueDesc
 
 	// Info for exported ValueNode
 	synfig::Canvas::Handle canvas;
+	//! if an exported valuenode, keep tracking name changes
+	sigc::connection id_changed_connection;
+	//! When value node id (name) changes, update internal reference
+	void on_id_changed();
 
 	// Info for visual editon
 	synfig::Real scalar;
@@ -68,6 +72,7 @@ class ValueDesc
 
 	ValueDesc *parent_desc;
 	int links_count;
+
 	static const ValueDesc blank;
 
 	static ValueDesc* init_parent(const ValueDesc& parent)
@@ -122,6 +127,12 @@ public:
 			delete parent_desc;
 		parent_desc = other.parent_desc;
 		if (parent_desc != NULL) parent_desc->links_count++;
+
+		if (id_changed_connection.connected())
+			id_changed_connection.disconnect();
+		if (other.id_changed_connection.connected())
+			id_changed_connection = get_value_node()->signal_id_changed().connect(sigc::mem_fun(*this, &ValueDesc::on_id_changed));
+
 		return *this;
 	}
 
@@ -182,7 +193,9 @@ public:
 		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
-	{ }
+	{
+		id_changed_connection = get_value_node()->signal_id_changed().connect(sigc::mem_fun(*this, &ValueDesc::on_id_changed));
+	}
 
 	ValueDesc(synfig::ValueNode_Const::Handle parent_value_node,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
@@ -222,6 +235,8 @@ public:
 		parent_desc(other.parent_desc),
 		links_count(0)
 	{
+		if (other.id_changed_connection.connected())
+			id_changed_connection = get_value_node()->signal_id_changed().connect(sigc::mem_fun(*this, &ValueDesc::on_id_changed));
 		if (parent_desc != NULL) parent_desc->links_count++;
 	}
 
@@ -231,6 +246,8 @@ public:
 	~ValueDesc()
 	{
 		assert(links_count == 0);
+		if (id_changed_connection.connected())
+			id_changed_connection.disconnect();
 		if (parent_desc != NULL && 0 >= --parent_desc->links_count)
 			delete parent_desc;
 	}
@@ -238,7 +255,7 @@ public:
 	// Instrocpection members
 	bool
 	is_valid()const
-		{ return layer || parent_value_node || canvas; }
+		{ return layer || parent_value_node || (canvas && !name.empty()); }
 
 	operator bool()const { return is_valid(); }
 
@@ -386,7 +403,8 @@ public:
 		if(parent_is_value_node_const())
 			return (*parent_value_node)(0);
 		if(is_value_node() && get_value_node())
-			return (*get_value_node())(time);
+			if (!parent_is_canvas() || !name.empty())
+				return (*get_value_node())(time);
 		if(parent_is_layer() && layer)
 			return layer->get_param(name);
 		return synfig::ValueBase();
