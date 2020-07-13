@@ -1912,6 +1912,8 @@ WorkArea::get_window_rect() const
 bool
 WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+
 	assert(get_canvas());
 
 	//!Check if the window we want draw is ready
@@ -1955,6 +1957,8 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 	}
 
 	return true;
+
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 String
