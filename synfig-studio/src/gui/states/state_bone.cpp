@@ -167,10 +167,15 @@ public:
 	void set_tip_width(Distance x){return tip_width_dist.set_value(x);}
 
 	void update_layer(){
-		cout<<"Before "<<c_layer<<endl;
-		if(c_layer==0) c_layer=1;
-		else c_layer=0;
-		cout<<"After "<<c_layer<<endl;
+		cout<<"Set layer"<<endl;
+		if(c_layer==0) {
+			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+			c_layer=1;
+		}
+		else{
+			c_layer=0;
+			get_work_area()->set_type_mask((get_work_area()->get_type_mask()-Duck::TYPE_TANGENT) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
+		}
 	}
 
 	void make_layer();
@@ -788,12 +793,22 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						}
 					}else if(c_layer==1){
 						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-						get_work_area()->set_active_bone_value_node(comp->get_link("second"));
-						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"))))
+
+						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"))))
 						{
 							error("expected a ValueNode_Bone");
 							assert(0);
 						}
+						bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
+						bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
+						bone_node->set_link("tipwidth",ValueNode_Const::create(get_tip_width()));
+						bone_node->set_link("angle",ValueNode_Const::create(Angle::rad(acos(0.0))));
+						if((clickOrigin - releaseOrigin).mag() >= 0.001){
+							bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
+							bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
+						}
+						bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
+						get_work_area()->set_active_bone_value_node(comp->get_link("second"));
 					}
 					bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
 					bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
@@ -810,6 +825,10 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 					get_canvas_view()->queue_rebuild_ducks();
 				}
+			}
+			else{
+				change_active_bone(duck->get_value_desc().get_parent_value_node());
+				get_work_area()->set_active_bone_value_node(duck->get_value_desc().get_parent_value_node());
 			}
 			return Smach::RESULT_ACCEPT;
 		}
