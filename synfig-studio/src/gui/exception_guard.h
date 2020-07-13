@@ -30,6 +30,11 @@
 			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:string: %s", __PRETTY_FUNCTION__, str.c_str()); \
 			_exception_guard_error_code = 1001; \
 		} \
+		catch(synfig::Exception::Exception& x) \
+		{ \
+			_exception_guard_error_str = etl::strprintf("%s Synfig Exception: %s", __PRETTY_FUNCTION__, x.what()); \
+			_exception_guard_error_code = 1002; \
+		} \
 		catch(std::exception& x) \
 		{ \
 			_exception_guard_error_str = etl::strprintf("%s Standard Exception: %s", __PRETTY_FUNCTION__, x.what()); \

@@ -40,25 +40,31 @@ namespace synfig {
 
 namespace Exception {
 
-class BadLinkName : public std::runtime_error
+class Exception : public std::runtime_error
+{
+public:
+	Exception(const String &what);
+};
+
+class BadLinkName : public Exception
 {
 public:
 	BadLinkName(const String &what);
 }; // END of class BadLinkName
 
-class BadType : public std::runtime_error
+class BadType : public Exception
 {
 public:
 	BadType(const String &what);
 }; // END of class BadType
 
-class IDAlreadyExists : public std::runtime_error
+class IDAlreadyExists : public Exception
 {
 public:
 	IDAlreadyExists(const String &what);
 };
 
-class NotFound : public std::runtime_error
+class NotFound : public Exception
 {
 public:
 	NotFound(const String &what);
@@ -76,13 +82,13 @@ public:
 	FileNotFound(const String &what);
 };
 
-class BadTime : public std::runtime_error
+class BadTime : public Exception
 {
 public:
 	BadTime(const String &what);
 };
 
-class BadFrameRate : public std::runtime_error
+class BadFrameRate : public Exception
 {
 public:
 	BadFrameRate(const String &what);
