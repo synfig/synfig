@@ -680,7 +680,7 @@ class Param:
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(guid)
                 shifted_origin, shifted_angle, lls, rls = bone.__get_value(frame)
-                a1, a2 = math.radians(shifted_angle), math.radians(shifted_angle+90)
+                a1 = math.radians(shifted_angle)
 
                 # Calculating this bones angle with respect to parent bone's
                 # angle
@@ -711,7 +711,7 @@ class Param:
                 vector_magnitude = math.sqrt(cur_origin[0]*cur_origin[0] + cur_origin[1]*cur_origin[1])
                 rad = math.pi/180
                 theta = math.atan2(cur_origin[1],cur_origin[0])
-                angle = angle*rad
+                
                 shifted_angle = shifted_angle*rad
                 ret[0] = ret[0] + (vector_magnitude * math.cos(shifted_angle+theta))
                 ret[1] = ret[1] + (vector_magnitude * math.sin(shifted_angle+theta))
@@ -846,21 +846,20 @@ class Param:
 
                 # Adding the base value effect here
                 base_value = self.subparams["bone_link"].subparams["base_value"].__get_value(frame)
-                a1, a2 = math.radians(ret_angle), math.radians(ret_angle+90)
+                a1 = math.radians(ret_angle)
                 ret = ret_origin
 
                 # base_value to be arranged according to the local scale
                 base_value = [lls*i for i in base_value]
 
                 vector_magnitude = math.sqrt(base_value[0]*base_value[0]+base_value[1]*base_value[1])
-                rad = math.pi/180
-
-                theta = math.atan2(base_value[1],base_value[0])*rad
+                
+                theta = math.atan2(base_value[1],base_value[0])
                 ret[0] = ret[0] + (vector_magnitude* math.cos(a1+theta)) * rls[0]
                 ret[1] = ret[1] + (vector_magnitude* math.sin(a1+theta)) * rls[1]
 
                 ret = [ret[0], ret[1]]
-                
+
             elif self.param[0].tag == "sine":
                 angle = self.subparams["sine"].subparams["angle"].__get_value(frame)
                 amp = self.subparams["sine"].subparams["amp"].__get_value(frame)
