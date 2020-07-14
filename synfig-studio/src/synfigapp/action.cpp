@@ -101,7 +101,7 @@
 #include "actions/valuedesccreatechildbone.h"
 #include "actions/valuedescresetpose.h"
 #include "actions/valuedescbake.h"
-#include "actions/valuedescmakeparenttoactive.h"
+#include "actions/valuedescbonesetparent.h"
 #include "actions/vectorization.h"
 #include "actions/waypointadd.h"
 #include "actions/waypointset.h"
@@ -258,7 +258,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueDescBoneLink);
 	ADD_ACTION(Action::ValueDescSkeletonLink);
 	ADD_ACTION(Action::ValueDescCreateChildBone);
-	ADD_ACTION(Action::ValueDescMakeParentToActive);
+	ADD_ACTION(Action::ValueDescBoneSetParent);
 	ADD_ACTION(Action::ValueDescResetPose);
 	ADD_ACTION(Action::ValueDescBake);
 	ADD_ACTION(Action::Vectorization);

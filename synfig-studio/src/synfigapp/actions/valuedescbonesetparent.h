@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuedescmakeparenttoactive.h
+/*!	\file ValueDescBoneSetParent.h
 **	\brief Template File
 **
 **	$Id$
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_VALUEDESCMAKEPARENTTOACTIVE_H
-#define __SYNFIG_APP_ACTION_VALUEDESCMAKEPARENTTOACTIVE_H
+#ifndef __SYNFIG_APP_ACTION_ValueDescBoneSetParent_H
+#define __SYNFIG_APP_ACTION_ValueDescBoneSetParent_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -45,19 +45,19 @@ namespace synfigapp {
 
 namespace Action {
 
-class ValueDescMakeParentToActive :
+class ValueDescBoneSetParent :
 	public Undoable,
 	public CanvasSpecific
 {
 private:
 	ValueDesc value_desc;
-	synfig::ValueNode::Handle active_bone;
+	synfig::ValueNode::Handle child;
 	synfig::Time time;
 	synfig::ValueNode::Handle prev_parent;
 
 public:
 
-	ValueDescMakeParentToActive();
+	ValueDescBoneSetParent();
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
