@@ -129,13 +129,10 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
 
-	// Origin bone width
+	//  bone width
 	Gtk::Label bone_width_label;
 	Widget_Distance bone_width_dist;
-	
-	// Tip bone width
-	Gtk::Label tip_width_label;
-	Widget_Distance tip_width_dist;
+
 
 	// Layer creation radio group
 	Gtk::Label layer_label;
@@ -158,23 +155,17 @@ public:
 	}
 	void set_bone_width(Distance x){return bone_width_dist.set_value(x);}
 
-	Real get_tip_width() const {
-		return tip_width_dist.get_value().get(
-				Distance::SYSTEM_UNITS,
-				get_canvas_view()->get_canvas()->rend_desc()
-		);
-	}
-	void set_tip_width(Distance x){return tip_width_dist.set_value(x);}
 
 	void update_layer(){
-		cout<<"Set layer"<<endl;
 		if(c_layer==0) {
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+			save_settings();
 			c_layer=1;
+			load_settings();
 		}
 		else{
+			save_settings();
 			c_layer=0;
-			get_work_area()->set_type_mask((get_work_area()->get_type_mask()-Duck::TYPE_TANGENT) | Duck::TYPE_WIDTH | Duck::TYPE_RADIUS);
+			load_settings();
 		}
 	}
 
@@ -253,15 +244,17 @@ StateBone_Context::load_settings()
 		else
 			set_id(_("NewSkeleton"));
 
-		if(settings.get_value("bone.bone_width",value) && value!="")
-			set_bone_width(Distance(atof(value.c_str()),App::distance_system));
-		else
-			set_bone_width(Distance(6.6,App::distance_system)); // default width
-
-		if(settings.get_value("bone.tip_width",value) && value!="")
-			set_tip_width(Distance(atof(value.c_str()),App::distance_system));
-		else
-			set_tip_width(Distance(6.6,App::distance_system)); // default width
+		if(c_layer==0){
+			if(settings.get_value("bone.skel_bone_width",value) && value!="")
+				set_bone_width(Distance(atof(value.c_str()),App::distance_system));
+			else
+				set_bone_width(Distance(6.6,App::distance_system)); // default width
+		}else{
+			if(settings.get_value("bone.skel_deform_bone_width",value) && value!="")
+				set_bone_width(Distance(atof(value.c_str()),App::distance_system));
+			else
+				set_bone_width(Distance(6.6,App::distance_system)); // default width
+		}
 	}
 	catch(...)
 	{
@@ -277,8 +270,11 @@ StateBone_Context::save_settings()
 		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
 
 		settings.set_value("bone.id",get_id().c_str());
-		settings.set_value("bone.bone_width",bone_width_dist.get_value().get_string());
-		settings.set_value("bone.tip_width",tip_width_dist.get_value().get_string());
+		if(c_layer==0){
+			settings.set_value("bone.skel_bone_width",bone_width_dist.get_value().get_string());
+		}else{
+			settings.set_value("bone.skel_deform_bone_width",bone_width_dist.get_value().get_string());
+		}
 	}
 	catch (...)
 	{
@@ -372,7 +368,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	id_box.pack_start(id_entry);
 
 	// 2, Bone width
-	bone_width_label.set_label(_("Bone Origin Width:"));
+	bone_width_label.set_label(_("Bone Width:"));
 	bone_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bone_width_label.set_sensitive(true);
 
@@ -380,14 +376,6 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	bone_width_dist.set_range(0,10000000);
 	bone_width_dist.set_sensitive(true);
 
-	// 3, Tip width
-	tip_width_label.set_label(_("Bone Tip Width:"));
-	tip_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	tip_width_label.set_sensitive(true);
-
-	tip_width_dist.set_digits(2);
-	tip_width_dist.set_range(0,10000000);
-	tip_width_dist.set_sensitive(true);
 	load_settings();
 
 	// 4, Layer choice
@@ -417,14 +405,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	options_table.attach(bone_width_dist,
 						 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 	);
-	// 3, blend method
-	options_table.attach(tip_width_label,
-		0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(tip_width_dist,
-		1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 4, Layer choice
+	// 3, Layer choice
 	options_table.attach(layer_label,
 		0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
 		);
@@ -552,7 +533,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
 	Point releaseOrigin(get_work_area()->snap_point_to_grid(event.pos));
-	info("Mouse release at: "+to_string(releaseOrigin[0])+" , "+to_string(releaseOrigin[1]));
 
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
@@ -620,7 +600,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("origin",Action::Param(ValueBase(aOrigin)));
 							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
-							createChild->set_param("tipwidth",Action::Param(ValueBase(get_tip_width())));
+							createChild->set_param("tipwidth",Action::Param(ValueBase(get_bone_width())));
 							createChild->set_param("prev_active_bone_node",Action::Param(get_work_area()->get_active_bone_value_node()));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								a = atan2((releaseOrigin-clickOrigin)[1],(releaseOrigin-clickOrigin)[0]);
@@ -653,7 +633,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							createChild->set_param("parent",true);
 							createChild->set_param("origin",Action::Param(ValueBase(clickOrigin)));
 							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
-							createChild->set_param("tipwidth",Action::Param(ValueBase(get_tip_width())));
+							createChild->set_param("tipwidth",Action::Param(ValueBase(get_bone_width())));
 							createChild->set_param("prev_active_bone_node",Action::Param(get_work_area()->get_active_bone_value_node()));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								createChild->set_param("scalelx", Action::Param(ValueBase((releaseOrigin - clickOrigin).mag())));
@@ -718,6 +698,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("origin",Action::Param(ValueBase(aOrigin)));
+							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
+							createChild->set_param("tipwidth",Action::Param(ValueBase(get_bone_width())));
 							createChild->set_param("prev_active_bone_node",Action::Param(get_work_area()->get_active_bone_value_node()));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								a = atan2((releaseOrigin-clickOrigin)[1],(releaseOrigin-clickOrigin)[0]);
@@ -753,6 +735,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("parent",true);
 							createChild->set_param("origin",Action::Param(ValueBase(clickOrigin)));
+							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
+							createChild->set_param("tipwidth",Action::Param(ValueBase(get_bone_width())));
 							createChild->set_param("prev_active_bone_node",Action::Param(get_work_area()->get_active_bone_value_node()));
 							if((clickOrigin-releaseOrigin).mag()>=0.01) {
 								createChild->set_param("scalelx", Action::Param(ValueBase((releaseOrigin - clickOrigin).mag())));
@@ -801,7 +785,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						}
 						bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
 						bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
-						bone_node->set_link("tipwidth",ValueNode_Const::create(get_tip_width()));
+						bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
 						bone_node->set_link("angle",ValueNode_Const::create(Angle::rad(acos(0.0))));
 						if((clickOrigin - releaseOrigin).mag() >= 0.001){
 							bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
@@ -812,7 +796,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					}
 					bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
 					bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
-					bone_node->set_link("tipwidth",ValueNode_Const::create(get_tip_width()));
+					bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
 					bone_node->set_link("angle",ValueNode_Const::create(Angle::rad(acos(0.0))));
 					if((clickOrigin - releaseOrigin).mag() >= 0.001){
 						bone_node->set_link("angle",ValueNode_Const::create((releaseOrigin-clickOrigin).angle()));
@@ -845,7 +829,6 @@ StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-	info("Mouse click at: "+to_string(p[0])+" , "+to_string(p[1]));
 	switch(event.button)
 	{
 		case BUTTON_LEFT:
@@ -983,9 +966,8 @@ StateBone_Context::change_active_bone(ValueNode::Handle node){
 			ValueDesc list_desc(layer,"bones");
 			ValueNode_StaticList::Handle list_node;
 			list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-			
 			for(int i=0;i<list_node->link_count();i++){
-				ValueDesc value_desc(list_node,0,list_desc);
+				ValueDesc value_desc(list_node,i,list_desc);
 				if(value_desc.get_value_node()==node){
 					active_bone = i;
 					return;
