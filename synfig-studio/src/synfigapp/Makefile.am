@@ -81,7 +81,8 @@ VALUEDESC_ACTION_HH = \
 	actions/valuedescskeletonlink.h \
 	actions/valuedesccreatechildbone.h \
 	actions/valuedescresetpose.h \
-	actions/valuedescbake.h
+	actions/valuedescbake.h \
+	actions/valuedescbonesetparent.h
 
 VALUEDESC_ACTION_CC = \
 	actions/valuedescconnect.cpp \
@@ -96,7 +97,7 @@ VALUEDESC_ACTION_CC = \
 	actions/valuedescbonelink.cpp \
 	actions/valuedescskeletonlink.cpp \
 	actions/valuedesccreatechildbone.cpp \
-	actions/valuedescmakeparenttoactive.cpp \
+	actions/valuedescbonesetparent.cpp \
 	actions/valuedescresetpose.cpp \
 	actions/valuedescbake.cpp
 

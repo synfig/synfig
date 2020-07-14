@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file ValueDescMakeParentToActive.cpp
+/*!	\file ValueDescBoneSetParent.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -31,7 +31,7 @@
 
 #include <synfig/general.h>
 
-#include "valuedescmakeparenttoactive.h"
+#include "valuedescbonesetparent.h"
 #include "valuenodestaticlistinsertsmart.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
@@ -47,14 +47,14 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ValueDescMakeParentToActive);
-ACTION_SET_NAME(Action::ValueDescMakeParentToActive,"ValueDescMakeParentToActive");
-ACTION_SET_LOCAL_NAME(Action::ValueDescMakeParentToActive,N_("Make Parent To Active Bone"));
-ACTION_SET_TASK(Action::ValueDescMakeParentToActive,"make_parent_to_active");
-ACTION_SET_CATEGORY(Action::ValueDescMakeParentToActive,Action::CATEGORY_VALUEDESC);
-ACTION_SET_PRIORITY(Action::ValueDescMakeParentToActive,0);
-ACTION_SET_VERSION(Action::ValueDescMakeParentToActive,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescMakeParentToActive,"$Id$");
+ACTION_INIT(Action::ValueDescBoneSetParent);
+ACTION_SET_NAME(Action::ValueDescBoneSetParent,"ValueDescBoneSetParent");
+ACTION_SET_LOCAL_NAME(Action::ValueDescBoneSetParent,N_("Make Parent To Active Bone"));
+ACTION_SET_TASK(Action::ValueDescBoneSetParent,"make_parent_to_active");
+ACTION_SET_CATEGORY(Action::ValueDescBoneSetParent,Action::CATEGORY_VALUEDESC);
+ACTION_SET_PRIORITY(Action::ValueDescBoneSetParent,0);
+ACTION_SET_VERSION(Action::ValueDescBoneSetParent,"0.0");
+ACTION_SET_CVS_ID(Action::ValueDescBoneSetParent,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
@@ -62,13 +62,13 @@ ACTION_SET_CVS_ID(Action::ValueDescMakeParentToActive,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueDescMakeParentToActive::ValueDescMakeParentToActive():
+Action::ValueDescBoneSetParent::ValueDescBoneSetParent():
 	time(0)
 {
 }
 
 Action::ParamVocab
-Action::ValueDescMakeParentToActive::get_param_vocab()
+Action::ValueDescBoneSetParent::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
@@ -79,7 +79,7 @@ Action::ValueDescMakeParentToActive::get_param_vocab()
 		.set_local_name(_("Time"))
 		.set_optional()
 	);
-	ret.push_back(ParamDesc("active_bone",Param::TYPE_VALUENODE)
+	ret.push_back(ParamDesc("child",Param::TYPE_VALUENODE)
 						  .set_local_name(_("ValueNode of Active Bone"))
 	);
 
@@ -87,7 +87,7 @@ Action::ValueDescMakeParentToActive::get_param_vocab()
 }
 
 bool
-Action::ValueDescMakeParentToActive::is_candidate(const ParamList &x)
+Action::ValueDescBoneSetParent::is_candidate(const ParamList &x)
 {
 	ParamList::const_iterator i;
 	
@@ -96,21 +96,21 @@ Action::ValueDescMakeParentToActive::is_candidate(const ParamList &x)
 
 	ValueDesc value_desc(i->second.get_value_desc());
 	//ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
-	i=x.find("active_bone");
+	i=x.find("child");
 	if(i==x.end()) return false;
 
-	ValueNode::Handle active_bone(i->second.get_value_node());
+	ValueNode::Handle child(i->second.get_value_node());
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
 
 	return value_desc.parent_is_value_node()
 		&& ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())
-		&& active_bone
-		&& ValueNode_Bone::Handle::cast_dynamic(active_bone);
+		&& child
+		&& ValueNode_Bone::Handle::cast_dynamic(child);
 }
 
 bool
-Action::ValueDescMakeParentToActive::set_param(const synfig::String& name, const Action::Param &param)
+Action::ValueDescBoneSetParent::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if (name == "value_desc" && param.get_type() == Param::TYPE_VALUEDESC
 	 && param.get_value_desc().parent_is_value_node()
@@ -120,9 +120,9 @@ Action::ValueDescMakeParentToActive::set_param(const synfig::String& name, const
 		return true;
 	}
 
-	if(name=="active_bone" && param.get_type()==Param::TYPE_VALUENODE){
-		active_bone = param.get_value_node();
-		prev_parent = ValueNode_Bone::Handle::cast_dynamic(active_bone)->get_link("parent");
+	if(name=="child" && param.get_type()==Param::TYPE_VALUENODE){
+		child = param.get_value_node();
+		prev_parent = ValueNode_Bone::Handle::cast_dynamic(child)->get_link("parent");
 		return true;
 	}
 
@@ -136,7 +136,7 @@ Action::ValueDescMakeParentToActive::set_param(const synfig::String& name, const
 }
 
 bool
-Action::ValueDescMakeParentToActive::is_ready()const
+Action::ValueDescBoneSetParent::is_ready()const
 {
 	if (!value_desc)
 		return false;
@@ -144,17 +144,17 @@ Action::ValueDescMakeParentToActive::is_ready()const
 }
 
 void
-Action::ValueDescMakeParentToActive::perform()
+Action::ValueDescBoneSetParent::perform()
 {
 	if (!value_desc.parent_is_value_node()
 	 || !value_desc.is_parent_desc_declared()
 	 || !value_desc.get_parent_desc().is_value_node()
-	 || !active_bone)
+	 || !child)
 			throw Error(Error::TYPE_NOTREADY);
 
-	info("Received : "+ active_bone->get_description());
+	info("Received : "+ child->get_description());
 	ValueNode_Bone::Handle bone;
-	if((bone = ValueNode_Bone::Handle::cast_dynamic(active_bone))){
+	if((bone = ValueNode_Bone::Handle::cast_dynamic(child))){
 		if(ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())){
 			ValueDesc bone_desc = value_desc.get_parent_desc();
 			Matrix T = bone_desc.get_value(time).get(Bone()).get_animated_matrix();
@@ -187,9 +187,9 @@ Action::ValueDescMakeParentToActive::perform()
 }
 
 void
-Action::ValueDescMakeParentToActive::undo() {
+Action::ValueDescBoneSetParent::undo() {
 	if(prev_parent){
-		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(active_bone);
+		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(child);
 		ValueDesc bone_desc = value_desc.get_parent_desc();
 		Matrix T = bone_desc.get_value(time).get(Bone()).get_animated_matrix();
 		Angle T_angle = Angle::rad(atan2(T.axis(0)[1],T.axis(0)[0]));
