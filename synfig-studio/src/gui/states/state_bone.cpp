@@ -238,11 +238,17 @@ StateBone_Context::load_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
 		string value;
-
-		if(settings.get_value("bone.id",value))
-			set_id(value);
-		else
-			set_id(_("NewSkeleton"));
+		if(c_layer==0){
+			if(settings.get_value("bone.skel_id",value))
+				set_id(value);
+			else
+				set_id(_("NewSkeleton"));
+		}else{
+			if(settings.get_value("bone.skel_deform_id",value))
+				set_id(value);
+			else
+				set_id(_("NewSkeletonDeformation"));
+		}
 
 		if(c_layer==0){
 			if(settings.get_value("bone.skel_bone_width",value) && value!="")
@@ -268,8 +274,10 @@ StateBone_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
-
-		settings.set_value("bone.id",get_id().c_str());
+		if(c_layer==0)
+			settings.set_value("bone.skel_id",get_id().c_str());
+		else
+			settings.set_value("bone.skel_deform_id",get_id().c_str());
 		if(c_layer==0){
 			settings.set_value("bone.skel_bone_width",bone_width_dist.get_value().get_string());
 		}else{
@@ -620,7 +628,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								}
 							}
 						}else{
-							Action::Handle insertBone = Action::create("ValueNodeStaticListInsert");
 							ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
 							ValueNode_Bone::Handle bone_node;
 							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
@@ -935,12 +942,15 @@ StateBone_Context::make_layer(){
 		new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
 	else if(c_layer==1)
 		new_skel= get_canvas_interface()->add_layer_to("skeleton_deformation",get_canvas());
+	new_skel->set_param("name",get_id().c_str());
+	new_skel->set_description(get_id());
 	ValueDesc list_desc(new_skel,"bones");
 	ValueNode_StaticList::Handle list_node;
 	list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 	ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
 	active_bone = 0;
 	ValueNode_Bone::Handle bone_node;
+
 	if(c_layer==0){
 		get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 	}else if(c_layer==1){
@@ -949,7 +959,9 @@ StateBone_Context::make_layer(){
 	}
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
-	egress_on_selection_change=true;	get_canvas_view()->queue_rebuild_ducks();
+	egress_on_selection_change=true;
+	increment_id();
+	get_canvas_view()->queue_rebuild_ducks();
 }
 
 
