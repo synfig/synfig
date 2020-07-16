@@ -542,6 +542,27 @@ class Param:
                 self.expression = ret
                 return ret, self.expression_controllers
 
+            elif self.param[0].tag == "power":
+                self.subparams["power"].extract_subparams()
+                base, eff_1     = self.subparams["power"].subparams["base"].recur_animate("scalar_multiply")
+                power, eff_2    = self.subparams["power"].subparams["power"].recur_animate("scalar_multiply")
+                epsilon, eff_3  = self.subparams["power"].subparams["epsilon"].recur_animate("scalar_multiply")
+                infinite, eff_4 = self.subparams["power"].subparams["infinite"].recur_animate("scalar_multiply")
+
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                self.expression_controllers.extend(eff_3)
+                self.expression_controllers.extend(eff_4)
+
+                if self.dimension == 2:
+                	ret = "[mul(Math.pow({base}, {power}),{PIX_PER_UNIT}),mul(Math.pow({base}, {power}),{PIX_PER_UNIT})]"
+                else:
+                    ret = "mul(Math.pow({base}, {power}),{PIX_PER_UNIT})"
+
+                ret = ret.format(base=base,power=power,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                self.expression = ret
+                return ret, self.expression_controllers
+
             elif self.param[0].tag == "vectorx":
                 self.subparams["vectorx"].extract_subparams()
                 vector, eff_1 = self.subparams["vectorx"].subparams["vector"].recur_animate("vector")
@@ -904,6 +925,31 @@ class Param:
                 rad = math.pi/180
                 ret = math.atan2(vector[1],vector[0])/rad
 
+            elif self.param[0].tag == "power":
+                base = self.subparams["power"].subparams["base"].__get_value(frame)
+                power = self.subparams["power"].subparams["power"].__get_value(frame)
+                epsilon = self.subparams["power"].subparams["epsilon"].__get_value(frame)
+                infinite = self.subparams["power"].subparams["infinite"].__get_value(frame)
+                if epsilon < 0.00000001:
+                    epsilon = 0.00000001
+
+                #Filters for special/undefined cases
+                if abs(power) < epsilon: #x^0 = 1
+                    return 1*settings.PIX_PER_UNIT
+                if abs(base) < epsilon:
+                    if power > 0: #0^x=0
+                        return 0
+                    else:
+                        if int(power) % 2 != 0 and base < 0: #(-0)^(-odd)=-inf
+                            return -infinite
+                        else:
+                            return infinite
+
+                if base <= epsilon and int(power) != power: #negative number to fractional power -> undefined
+                    power = int(power)  #so round off power to nearest integer
+
+                ret = math.pow(base,power)*settings.PIX_PER_UNIT
+
             elif self.param[0].tag == "vectorx":
                 vector = self.subparams["vectorx"].subparams["vector"].__get_value(frame)
                 ret = vector[0]
@@ -1076,6 +1122,13 @@ class Param:
             elif node.tag == "vectorangle":
                 self.subparams["vectorangle"].extract_subparams()
                 self.subparams["vectorangle"].subparams["vector"].update_frame_window(window)
+
+            elif node.tag == "power":
+                self.subparams["power"].extract_subparams()
+                self.subparams["power"].subparams["base"].update_frame_window(window)
+                self.subparams["power"].subparams["power"].update_frame_window(window)
+                self.subparams["power"].subparams["epsilon"].update_frame_window(window)
+                self.subparams["power"].subparams["infinite"].update_frame_window(window)
 
             elif node.tag == "vectorx":
                 self.subparams["vectorx"].extract_subparams()

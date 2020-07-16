@@ -111,6 +111,9 @@ def parse_position(animated, i):
         pos = [get_bone_angle(float(animated[i][0].attrib["value"])),
                get_frame(animated[i])]
 
+    elif animated.attrib["type"] == "base":
+        pos = [float(animated[i][0].attrib["value"])*settings.PIX_PER_UNIT,
+               get_frame(animated[i])]
 
     elif animated.attrib["type"] in {"composite_convert", "region_angle", "star_angle_new", "scalar_multiply"}:
         pos = [float(animated[i][0].attrib["value"]),

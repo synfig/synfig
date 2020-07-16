@@ -49,58 +49,63 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-Exception::BadLinkName::BadLinkName(const String &what):
+Exception::Exception::Exception(const String& what):
 	std::runtime_error(what)
-//	std::runtime_error(_("Bad Link Name")+what.empty()?"":(String(": ")+what))
+{
+}
+
+Exception::BadLinkName::BadLinkName(const String &what):
+	Exception(what)
+//	Exception(_("Bad Link Name")+what.empty()?"":(String(": ")+what))
 {
 	synfig::error("EXCEPTION: bad link name: "+what);
 }
 
 Exception::BadType::BadType(const String &what):
-	std::runtime_error(what)
-//	std::runtime_error(_("Bad Type")+what.empty()?"":(String(": ")+what))
+	Exception(what)
+//	Exception(_("Bad Type")+what.empty()?"":(String(": ")+what))
 {
 //	synfig::error("EXCEPTION: bad type: "+what);
 }
 
 Exception::BadFrameRate::BadFrameRate(const String &what):
-	std::runtime_error(what)
-//	std::runtime_error(_("Bad Link Name")+what.empty()?"":(String(": ")+what))
+	Exception(what)
+//	Exception(_("Bad Link Name")+what.empty()?"":(String(": ")+what))
 {
 	synfig::error("EXCEPTION: bad frame rate: "+what);
 }
 
 Exception::BadTime::BadTime(const String &what):
-	std::runtime_error(what)
-//	std::runtime_error(_("Bad Link Name")+what.empty()?"":(String(": ")+what))
+	Exception(what)
+//	Exception(_("Bad Link Name")+what.empty()?"":(String(": ")+what))
 {
 	synfig::error("EXCEPTION: bad time: "+what);
 }
 
 Exception::NotFound::NotFound(const String &what):
-	std::runtime_error(what)
-//	std::runtime_error(_("Not Found")+what.empty()?"":(String(": ")+what))
+	Exception(what)
+//	Exception(_("Not Found")+what.empty()?"":(String(": ")+what))
 {
 //	synfig::error("EXCEPTION: not found: "+what);
 }
 
 Exception::IDNotFound::IDNotFound(const String &what):
 	NotFound(what)
-//	std::runtime_error(_("Not Found")+what.empty()?"":(String(": ")+what))
+//	Exception(_("Not Found")+what.empty()?"":(String(": ")+what))
 {
 //	synfig::error("EXCEPTION: not found: "+what);
 }
 
 Exception::FileNotFound::FileNotFound(const String &what):
 	NotFound(what)
-//	std::runtime_error(_("Not Found")+what.empty()?"":(String(": ")+what))
+//	Exception(_("Not Found")+what.empty()?"":(String(": ")+what))
 {
 	synfig::error("EXCEPTION: file not found: "+what);
 }
 
 Exception::IDAlreadyExists::IDAlreadyExists(const String &what):
-	std::runtime_error(what)
-//	std::runtime_error(_("ID Already Exists")+what.empty()?"":(String(": ")+what))
+	Exception(what)
+//	Exception(_("ID Already Exists")+what.empty()?"":(String(": ")+what))
 {
 	synfig::error("EXCEPTION: id already exists: "+what);
 }

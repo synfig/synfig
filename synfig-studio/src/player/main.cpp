@@ -60,6 +60,17 @@ int main(int argc, char **argv)
 #endif
 
 	Glib::init();
+
+#ifdef _WIN32
+	// to be able to open files whose name is not latin (eg. arabic)
+	class ArgVGuard {
+		char **modified_argv;
+	public:
+		ArgVGuard(char ***argv) { modified_argv = *argv = g_win32_get_command_line(); }
+		~ArgVGuard() { g_strfreev(modified_argv); }
+	} argv_guard(&argv);
+ #endif
+
 	bool r_time;
 
 	String binary_path = get_binary_path(argv[0]);
@@ -150,6 +161,7 @@ int main(int argc, char **argv)
 	
 	if (result) error("Gtk::Application finished with error code: %d", result);
 	info("end");
+
 	return result;
 }
 
