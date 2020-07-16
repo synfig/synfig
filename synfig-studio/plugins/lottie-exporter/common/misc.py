@@ -107,6 +107,11 @@ def parse_position(animated, i):
         pos = [get_angle(float(animated[i][0].attrib["value"])),
                get_frame(animated[i])]
 
+    elif animated.attrib["type"] == "bone_angle":
+        pos = [get_bone_angle(float(animated[i][0].attrib["value"])),
+               get_frame(animated[i])]
+
+
     elif animated.attrib["type"] in {"composite_convert", "region_angle", "star_angle_new", "scalar_multiply"}:
         pos = [float(animated[i][0].attrib["value"]),
                get_frame(animated[i])]
@@ -225,6 +230,21 @@ def get_angle(theta):
     theta = theta % 360
     theta = (90 - theta) % 360
 
+    theta = theta + shift * 360
+    return theta
+
+def get_bone_angle(theta):
+    """
+    Calculates the bone_angle of the bone wrt to its parent bone
+
+    Args:
+        theta (float) : Stores Synfig format angle
+
+    Returns:
+        (int)   : Lottie format angle
+    """
+    theta = int(theta)
+    shift = int(theta / 360)
     theta = theta + shift * 360
     return theta
 

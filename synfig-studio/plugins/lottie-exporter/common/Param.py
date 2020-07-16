@@ -217,7 +217,7 @@ class Param:
                 bone_origin, eff_1 = self.subparams["origin"].recur_animate("vector")
 
                 # Get the animation of angle
-                prop_name = "angle"
+                prop_name = "bone_angle"
                 if self.is_group_child:
                     prop_name = "rotate_layer_angle"
                 bone_angle, ang_eff = self.subparams["angle"].recur_animate(prop_name)
@@ -260,24 +260,24 @@ class Param:
                     bone_origin = "mul(" + bone_origin + ", " + par_rls + ")"
 
                     # Forming the expression for new angle
-                    ret_angle = "degreesToRadians(sum({par_angle}, {bone_angle}))"
+                    ret_angle = "sum({par_angle}, {bone_angle})"
                     ret_angle = ret_angle.format(par_angle=par_angle, bone_angle=bone_angle)
 
                     vector_magnitude = 'Math.sqrt(sum(Math.pow({bone_origin}[0],2),Math.pow({bone_origin}[1],2)))'
                     vector_magnitude = vector_magnitude.format(bone_origin=bone_origin)
                     
-                    theta = 'degreesToRadians(Math.atan2({bone_origin}[1],{bone_origin}[0]))'
+                    theta = 'Math.atan2(-{bone_origin}[1],{bone_origin}[0])'
                     theta = theta.format(bone_origin=bone_origin)
-
-                    ret_x = "sum({par_origin}[0], mul({mod}, Math.cos(sum({angle},{theta}))))"
-                    ret_y = "sum({par_origin}[1], mul({mod}, Math.sin(sum({angle},{theta}))))"
-                    ret_origin = "[" + ret_x + ",-" + ret_y + "]"
-                    ret_origin = ret_origin.format(par_origin=par_origin, mod=vector_magnitude, angle=ret_angle,theta=theta)
+                    
+                    ret_x = "sum({par_origin}[0], mul({mod}, Math.cos(sum(degreesToRadians({angle}),{theta}))))"
+                    ret_y = "sum({par_origin}[1], mul({mod}, Math.sin(sum(degreesToRadians({angle}),{theta}))))"
+                    
+                    ret_origin = "[" + ret_x + "," + ret_y + "]"
+                    ret_origin = ret_origin.format(par_origin=par_origin, mod=vector_magnitude, angle=par_angle,theta=theta)
                     
                 else:
-                    ret_origin = bone_origin
-                    ret_angle = bone_angle
-
+                	ret_origin = bone_origin
+                	ret_angle = bone_angle
                 ############# REMOVE AFTER DEBUGGING rls
                 rls = "1"
                 return ret_origin, ret_angle, lls, rls, self.expression_controllers
@@ -438,7 +438,6 @@ class Param:
                 self.subparams["bone_link"].extract_subparams()
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
-
                 base_value, bv_eff = self.subparams["bone_link"].subparams["base_value"].recur_animate("vector")
 
                 # Storing previous state
@@ -457,15 +456,13 @@ class Param:
                 
                 vector_magnitude = 'Math.sqrt(sum(Math.pow({base_value}[0],2),Math.pow({base_value}[1],2)))'
                 vector_magnitude = vector_magnitude.format(base_value=base_value)
-                    
-                theta = 'degreesToRadians(Math.atan2({base_value}[1],{base_value}[0]))'
+                theta = 'Math.atan2(-{base_value}[1],{base_value}[0])'
                 theta = theta.format(base_value=base_value)
-                ret_x = "sum(sum({origin}[0], mul({mod},Math.cos(sum({angle},{theta})))))"
-                ret_y = "sum(sum({origin}[1], mul({mod},Math.sin(sum({angle},{theta})))))"
-                
+
+                ret_x = "sum({origin}[0], mul({mod},Math.cos(sum(degreesToRadians({angle}),{theta}))))"
+                ret_y = "sum({origin}[1], mul({mod},Math.sin(sum(degreesToRadians({angle}),{theta}))))"
                 ret_origin = "[" + ret_x + ",-" + ret_y + "]"
                 ret_origin = ret_origin.format(origin=origin, mod=vector_magnitude,angle=angle,theta=theta)
-
                 # Restore previous state
                 bone.is_group_child = prev_state
 
@@ -685,7 +682,7 @@ class Param:
                 # Calculating this bones angle with respect to parent bone's
                 # angle
                 if "angle" in self.subparams.keys():
-                    angle = to_Synfig_axis(self.subparams["angle"].__get_value(frame), "angle")
+                    angle = to_Synfig_axis(self.subparams["angle"].__get_value(frame), "bone_angle")
                 else:
                     angle = 0
 
@@ -696,13 +693,17 @@ class Param:
                 this_rls = self.subparams["scalex"].__get_value(frame)    # In current angle's direction
                 absolute_angle = shifted_angle+angle
                 aa1 = math.radians(absolute_angle)
-                this_rls = [this_rls * math.cos(aa1), this_rls * math.sin(aa1)]
+                
+                if this_rls != 1:
+                	this_rls = this_rls - 1
+                else:
+                	this_rls = 1
 
+                ret_rls = [this_rls, this_rls]
+                this_rls = [66 * this_rls * math.cos(aa1), 66 * this_rls * math.sin(aa1)]
                 # Calculate returning recursive length
-                ret_rls = [this_rls[0]*rls[0], this_rls[1]*rls[1]]
-                ##### REMOVE AFTER DEBUGGING
-                ret_rls = [1, 1]
-
+                ret_rls = [1,1]
+                this_rls = [1,1]
                 # Multiplying the current bone origin with the scale
                 cur_origin = [i*lls for i in cur_origin]
 
@@ -715,7 +716,6 @@ class Param:
                 shifted_angle = shifted_angle*rad
                 ret[0] = ret[0] + (vector_magnitude * math.cos(shifted_angle+theta))
                 ret[1] = ret[1] + (vector_magnitude * math.sin(shifted_angle+theta))
-                
                 return ret, absolute_angle, local_length_scale, ret_rls
 
             elif self.param.tag == "bone_root":

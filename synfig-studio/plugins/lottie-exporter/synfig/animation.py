@@ -154,6 +154,12 @@ def to_Synfig_axis(pos, animated_name):
         t1 = (90 - t1) % 360
         t1 = t1 + s1 * 360
         ret = t1
+    elif animated_name == "bone_angle":
+        s1 = int(pos / 360)
+        t1 = pos % 360
+        t1 = (t1) % 360
+        t1 = t1 + s1 * 360
+        ret = t1
     return ret
 
 
