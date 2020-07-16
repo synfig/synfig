@@ -769,6 +769,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
 					else if(c_layer==1)
 						new_skel= get_canvas_interface()->add_layer_to("skeleton_deformation",get_canvas());
+					new_skel->set_param("name",get_id().c_str());
+					new_skel->set_description(get_id());
 					ValueDesc list_desc(new_skel,"bones");
 					ValueNode_StaticList::Handle list_node;
 					list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
