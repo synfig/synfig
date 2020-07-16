@@ -117,7 +117,7 @@ private:
 
 	void on_edited_description(const Glib::ustring&path_string,const Glib::ustring &description);
 
-	bool on_event(GdkEvent *event);
+	virtual bool on_event(GdkEvent *event);
 
 	void on_rend_desc_changed();
 

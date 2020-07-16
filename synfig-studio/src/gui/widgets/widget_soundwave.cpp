@@ -41,6 +41,8 @@
 #include <gdkmm.h>
 #include <glibmm/convert.h>
 #include <cstring>
+
+#include <gui/exception_guard.h>
 #endif
 
 using namespace studio;
@@ -147,9 +149,11 @@ const synfig::Time& Widget_SoundWave::get_delay() const
 
 bool Widget_SoundWave::on_event(GdkEvent* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (mouse_handler.process_event(event))
 		return true;
 	return Widget_TimeGraphBase::on_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)

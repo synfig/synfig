@@ -38,6 +38,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -202,6 +204,7 @@ LayerGroupTree::on_edited_description(const Glib::ustring&path_string,const Glib
 bool
 LayerGroupTree::on_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
@@ -265,7 +268,7 @@ LayerGroupTree::on_event(GdkEvent *event)
 		break;
 	}
 	return Gtk::TreeView::on_event(event);
-	//return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 

@@ -41,6 +41,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -81,6 +83,7 @@ Renderer_Dragbox::get_enabled_vfunc()const
 bool
 Renderer_Dragbox::event_vfunc(GdkEvent* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
     case GDK_BUTTON_PRESS:
@@ -164,6 +167,7 @@ Renderer_Dragbox::event_vfunc(GdkEvent* event)
     }
 
     return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

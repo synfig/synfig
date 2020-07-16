@@ -46,6 +46,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #include "canvasview.h"
 
 #endif
@@ -264,6 +266,7 @@ DockBook::set_contents(const synfig::String& x)
 bool
 DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
 	if (canvas_view && canvas_view != App::get_selected_canvas_view())
 		App::set_selected_canvas_view(canvas_view);
@@ -283,6 +286,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	tabmenu->popup(event->button,gtk_get_current_event_time());
 
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

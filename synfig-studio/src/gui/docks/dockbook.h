@@ -79,6 +79,7 @@ public:
 
 	void refresh_tab(Dockable*);
 
+protected:
 	bool tab_button_pressed(GdkEventButton* event, Dockable* dockable);
 	void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 	//! Override the default handler of the signal Gtk::Notebook::signal_switch_page().

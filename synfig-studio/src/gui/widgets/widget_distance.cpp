@@ -38,6 +38,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -89,13 +91,17 @@ Widget_Distance::on_output()
 bool
 Widget_Distance::on_key_press_event(GdkEventKey* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	return SpinButton::on_key_press_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_Distance::on_key_release_event(GdkEventKey* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	return SpinButton::on_key_release_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 
