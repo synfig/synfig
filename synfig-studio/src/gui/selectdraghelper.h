@@ -33,6 +33,8 @@
 #include <synfigapp/canvasinterface.h>
 #include "app.h"
 
+#include <gui/exception_guard.h>
+
 namespace synfigapp {
 namespace Action {
 class PassiveGrouper;
@@ -283,6 +285,7 @@ template <class T>
 bool
 SelectDragHelper<T>::process_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_SCROLL:
 		return process_scroll_event(&event->scroll);
@@ -303,6 +306,7 @@ SelectDragHelper<T>::process_event(GdkEvent *event)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 template<class T>

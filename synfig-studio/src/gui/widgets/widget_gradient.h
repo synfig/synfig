@@ -88,8 +88,7 @@ public:
 
 	void update_cpoint(const synfig::Gradient::CPoint &x);
 
-
-
+protected:
 	bool on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
 
 	bool on_event(GdkEvent *event);

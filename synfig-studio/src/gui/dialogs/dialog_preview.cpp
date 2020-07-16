@@ -39,6 +39,8 @@
 #include <gui/widgets/widget_time.h>
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #include "gui/resourcehelper.h"
 #include <glibmm/fileutils.h>
 #include <glibmm/markup.h>
@@ -108,6 +110,7 @@ void Dialog_Preview::on_hide()
 //press escape key to close window
 bool Dialog_Preview::on_key_pressed(GdkEventKey *ev)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (ev->keyval == gdk_keyval_from_name("Escape") )
 	{
 		close_window_handler();
@@ -115,6 +118,7 @@ bool Dialog_Preview::on_key_pressed(GdkEventKey *ev)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void Dialog_Preview::close_window_handler()

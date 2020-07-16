@@ -79,6 +79,7 @@
 #include "workarearenderer/renderer_dragbox.h"
 #include "workarearenderer/renderer_bbox.h"
 
+#include <gui/exception_guard.h>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -953,6 +954,7 @@ WorkArea::get_focus_point()const
 bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (Smach::RESULT_OK == canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state))))
 			return true;
@@ -1003,18 +1005,22 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	set_guide_snap(guide_snap_holder);
 
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	return Smach::RESULT_OK == canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 WorkArea::on_drawing_area_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	synfig::Point mouse_pos;
     float bezier_click_pos(0);
 	const float radius((abs(pw)+abs(ph))*4);
@@ -1552,7 +1558,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				if(canvas_view->get_smach().process_event(EventBox(drag_point,mouse_pos,MouseButton(event->button.button),modifier))==Smach::RESULT_ACCEPT)
 					return true;
-
                 /*
                  * Commented out because now the work is
                  * done in Renderer_Dragbox::event_vfunc
@@ -1713,11 +1718,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 WorkArea::on_hruler_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
@@ -1733,8 +1740,8 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			// coordinate system from the canvas.
 			event->motion.y -= hruler->get_height()+2;
 
-			// call the on drawing area event to refresh eveything.
-			on_drawing_area_event(event);
+			// call the on drawing area event to refresh everything.
+			return on_drawing_area_event(event);
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
@@ -1748,11 +1755,13 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 WorkArea::on_vruler_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
@@ -1768,8 +1777,8 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			// coordinate system from the canvas.
 			event->motion.x -= vruler->get_width()+2;
 
-			// call the on drawing area event to refresh eveything.
-			on_drawing_area_event(event);
+			// call the on drawing area event to refresh everything.
+			return on_drawing_area_event(event);
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
@@ -1783,6 +1792,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

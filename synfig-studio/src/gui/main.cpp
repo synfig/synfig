@@ -44,6 +44,8 @@
 #include "main_win32.h"
 #endif
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -129,39 +131,12 @@ int main(int argc, char **argv)
 	cout << endl;
 	cout << "   " << _("synfig studio -- starting up application...") << endl << endl;
 
-	try
-	{
-		studio::App app(etl::dirname(binary_path), &argc, &argv);
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	studio::App app(etl::dirname(binary_path), &argc, &argv);
 
-		app.run();
-	}
-	catch(int ret)
-	{
-		std::cerr<<"Application shutdown with errors ("<<ret<<')'<<std::endl;
-		return ret;
-	}
-	catch(string& str)
-	{
-		std::cerr<<"Uncaught Exception:string: "<<str.c_str()<<std::endl;
-		throw;
-	}
-	catch(std::exception& x)
-	{
-		std::cerr<<"Standard Exception: "<<x.what()<<std::endl;
-		throw;
-	}
-	catch(Glib::Exception& x)
-	{
-		std::cerr<<"GLib Exception: "<<x.what()<<std::endl;
-		throw;
-	}
-	catch(...)
-	{
-		std::cerr<<"Uncaught Exception"<<std::endl;
-		throw;
-	}
-
+	app.run();
 	std::cerr<<"Application appears to have terminated successfully"<<std::endl;
 
 	return 0;
+	SYNFIG_EXCEPTION_GUARD_END_INT(0)
 }

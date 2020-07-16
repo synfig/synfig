@@ -36,6 +36,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -131,6 +133,7 @@ Widget_Time::refresh_value()
 bool
 Widget_Time::on_event(GdkEvent* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	const Time scroll_amount(0.25);
 
 	switch(event->type)
@@ -161,24 +164,29 @@ Widget_Time::on_event(GdkEvent* event)
 	}
 
 	return Gtk::Entry::on_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_Time::on_focus_out_event(GdkEventFocus* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	refresh_value();
 	refresh_text();
 	return Gtk::Entry::on_focus_out_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_Time::on_focus_in_event(GdkEventFocus* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	// if defined, show the full time format "0h 0m 5s 0f" when the time widget gets focus
 	if (getenv("SYNFIG_SHOW_FULL_TIME_ON_FOCUS"))
 		set_text(time_.get_string(fps_,App::get_time_format()|Time::FORMAT_FULL));
 
 	return Gtk::Entry::on_focus_in_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 GType Widget_Time::gtype = 0;

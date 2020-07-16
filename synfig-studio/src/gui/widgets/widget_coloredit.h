@@ -169,15 +169,15 @@ protected:
 
 	void on_value_changed();
 
+	void on_slider_moved(ColorSlider::Type type, float amount);
+	void on_hex_edited();
+	bool on_hex_focus_out(GdkEventFocus* event);
+
 public:
 
 	sigc::signal<void>& signal_activated() { return signal_activated_; }
 
 	sigc::signal<void>& signal_activate() { return signal_activated_; }
-
-	void on_slider_moved(ColorSlider::Type type, float amount);
-	void on_hex_edited();
-	bool on_hex_focus_out(GdkEventFocus* event);
 
 	//Glib::SignalProxy0<void> signal_activate() { return spinbutton_A->signal_activate(); }
 

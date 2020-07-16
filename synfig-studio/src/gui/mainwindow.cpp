@@ -51,6 +51,8 @@
 #include "gui/widgets/widget_time.h"
 #include "gui/widgets/widget_vector.h"
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -271,6 +273,7 @@ void MainWindow::remove_custom_workspace_menu_item_handlers()
 bool
 MainWindow::on_key_press_event(GdkEventKey* key_event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	Gtk::Widget * widget = get_focus();
 	if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
 		bool handled = gtk_window_propagate_key_event(this->gobj(), key_event);
@@ -278,6 +281,7 @@ MainWindow::on_key_press_event(GdkEventKey* key_event)
 			return true;
 	}
 	return Gtk::Window::on_key_press_event(key_event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

@@ -136,6 +136,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -1982,15 +1984,18 @@ CanvasView::create_tab_label()
 bool
 CanvasView::on_button_press_event(GdkEventButton * /* event */)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (this != App::get_selected_canvas_view())
 		App::set_selected_canvas_view(this);
 	return false;
 	//return Dockable::on_button_press_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 CanvasView::on_key_press_event(GdkEventKey* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	Gtk::Widget* focused_widget = App::main_window->get_focus();
 	if(focused_widget && focused_widget_has_priority(focused_widget))
 	{
@@ -2018,6 +2023,7 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 		}
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

@@ -47,6 +47,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #include "gui/waypointrenderer.h"
 
 #endif
@@ -479,6 +481,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 	const Gdk::Rectangle& cell_area,
 	Gtk::CellRendererState /*flags*/)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	// Catch a null event received us a result of a keypress (only?)
 	if (!event)
 		return true; // On tab key press, Focus go to next panel. If return false, focus goes to canvas
@@ -655,4 +658,5 @@ CellRenderer_TimeTrack::activate_vfunc(
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }

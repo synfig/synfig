@@ -47,6 +47,7 @@
 #include <synfigapp/main.h>
 
 #include <gui/localization.h>
+#include <gui/exception_guard.h>
 
 #endif
 
@@ -140,6 +141,7 @@ DockDialog::~DockDialog()
 bool
 DockDialog::on_delete_event(GdkEventAny * /* event */)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	for(std::list<Dockable*>::iterator i = App::dock_manager->dockable_list_.begin(); i != App::dock_manager->dockable_list_.end(); i++)
 	{
 		if ((*i)->get_parent_window() == get_window())
@@ -153,6 +155,7 @@ DockDialog::on_delete_event(GdkEventAny * /* event */)
 	}
 	delete this;
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

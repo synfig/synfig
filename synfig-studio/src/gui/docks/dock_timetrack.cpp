@@ -52,6 +52,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -156,6 +158,7 @@ public:
 	bool
 	on_event(GdkEvent *event)
 	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		switch(event->type)
 		{
 		case GDK_2BUTTON_PRESS:
@@ -290,6 +293,7 @@ public:
 		}
 		mimic_resync();
 		return Gtk::TreeView::on_event(event);
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	}
 
 	void

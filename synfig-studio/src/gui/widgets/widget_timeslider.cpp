@@ -48,6 +48,8 @@
 
 #include "gui/timeplotdata.h"
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -213,8 +215,10 @@ Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
 
 bool Widget_Timeslider::on_configure_event(GdkEventConfigure* configure)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	time_plot_data->set_extra_time_margin(configure->height);
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
@@ -343,6 +347,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 bool
 Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	lastx = (double)event->x;
 
 	if (!time_plot_data->time_model || get_width() <= 0 || get_height() <= 0)
@@ -354,17 +359,21 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 	}
 
 	return event->button == 1 || event->button == 2;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_Timeslider::on_button_release_event(GdkEventButton *event){
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	lastx = (double)event->x;
 	return event->button == 1 || event->button == 2;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	double dx = (double)event->x - lastx;
 	lastx = (double)event->x;
 
@@ -386,11 +395,13 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
 Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
 
 	if (!time_model || get_width() <= 0 || get_height() <= 0)
@@ -416,4 +427,5 @@ Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 	}
 
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }

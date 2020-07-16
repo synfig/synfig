@@ -40,6 +40,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -89,13 +91,16 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 void
 ZoomDial::after_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->type == GDK_BUTTON_RELEASE)
 		current_zoom->select_region(0, current_zoom->get_text_length()-1);
+	SYNFIG_EXCEPTION_GUARD_END()
 }
 
 bool
 ZoomDial::current_zoom_event(GdkEvent* event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->type == GDK_SCROLL)
 	{
 		if(event->scroll.direction==GDK_SCROLL_DOWN || event->scroll.direction==GDK_SCROLL_LEFT)
@@ -106,6 +111,7 @@ ZoomDial::current_zoom_event(GdkEvent* event)
 		return true;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 

@@ -43,6 +43,8 @@
 
 #include <gui/localization.h>
 
+#include <gui/exception_guard.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -396,6 +398,7 @@ Dock_History::delete_instance(etl::handle<studio::Instance> instance)
 bool
 Dock_History::on_action_event(GdkEvent *event)
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	studio::HistoryTreeStore::Model model;
     switch(event->type)
     {
@@ -446,6 +449,7 @@ Dock_History::on_action_event(GdkEvent *event)
 		break;
 	}
 	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void
