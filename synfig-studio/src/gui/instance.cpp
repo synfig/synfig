@@ -1437,7 +1437,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			param_list.add("selected_value_desc",selected_value_desc);
 	}
 
-	param_list.add("active_bone",canvas_view->get_work_area()->get_active_bone_value_node());
+	param_list.add("child",canvas_view->get_work_area()->get_active_bone_value_node());
 
 	if(param_list2.empty())
 		add_actions_to_menu(&parammenu, param_list,categories);
