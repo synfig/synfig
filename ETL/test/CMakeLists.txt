@@ -33,6 +33,3 @@ add_test(test_smart_ptr smart_ptr)
 add_executable(benchmark benchmark.cpp)
 add_test(test_benchmark benchmark)
 
-add_executable(spline spline.cpp)
-add_test(test_spline spline)
-
