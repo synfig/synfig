@@ -8,15 +8,15 @@
 # yakup yasin <yakupyasin@hotmail.com>, 2013
 # Mehmet, 2013
 # Mehmet, 2013-2014
-# Utku BERBEROĞLU <c2BhhPFieb9T62RX@helixc.com>, 2014
+# Utku BERBEROĞLU <c2BhhPFieb9T62RX@helixc.com>, 2014,2020
 # yakup yasin <yakupyasin@hotmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-02-14 15:06+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2020-04-28 07:57+0000\n"
+"Last-Translator: Utku BERBEROĞLU <c2BhhPFieb9T62RX@helixc.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/morevnaproject/synfig/language/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,7 +26,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:1 ../src/gui/dialogs/about.cpp:85
 msgid "2D vector animation studio"
-msgstr "2 boyutlu vektör animasyon studio"
+msgstr "2 boyutlu vektör canlandırma stüdyosu"
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:2
 msgid "Create and edit 2D animations and compositions"
@@ -47,7 +47,7 @@ msgstr "Özellikler:"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:3
 msgid "Can manipulate vector and bitmap artwork"
-msgstr ""
+msgstr "Vektör ve biteşlem çizimlerini hareketlendirebilir."
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:4
 msgid "Automatic tweening (independent from FPS)"
@@ -61,7 +61,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:6
 msgid "Full-featured bone system"
-msgstr ""
+msgstr "Tam özellikli kemik sistemi"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:7
 msgid ""
@@ -79,19 +79,19 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:10
 msgid "Sound support"
-msgstr ""
+msgstr "Ses desteği"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:11
 msgid "Linking data on file- or parameter-level"
-msgstr ""
+msgstr "Verileri dosya ya da değişken seviyesinde bağlama"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:12
 msgid "Automatic animation using mathematical functions"
-msgstr ""
+msgstr "Matematiksel işlevleri kullanarak otomatik canlandırma"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:13
 msgid "Synfig Studio workspace"
-msgstr ""
+msgstr "Synfig Studio Çalışma Alanı"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:1
 msgid "enable"
@@ -123,13 +123,13 @@ msgstr "Bütün Katmanları Göster"
 
 #: ../src/brushlib/brushsettings.py:26
 msgid "Pressure"
-msgstr ""
+msgstr "Basınç"
 
 #: ../src/brushlib/brushsettings.py:26
 msgid ""
 "The pressure reported by the tablet, between 0.0 and 1.0. If you use the "
 "mouse, it will be 0.5 when a button is pressed and 0.0 otherwise."
-msgstr ""
+msgstr "Tablet tarafından bildirilen baskı 0.0 ve 1.0 arasında. Fare kullanmak isterseniz, tuş basıldığında 0.5 ve bırakıldığında 0.0 olacak."
 
 #: ../src/brushlib/brushsettings.py:27
 msgid "Fine speed"
@@ -3146,7 +3146,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_curves.cpp:967
 msgid "Change animation curve"
-msgstr ""
+msgstr "Canlandırma eğrisini değiştir."
 
 #: ../src/gui/widgets/widget_defaults.cpp:193
 msgid "Outline Color"
@@ -6460,7 +6460,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layerparamsetstatic.cpp:52
 #: ../src/synfigapp/actions/valuenodeconstsetstatic.cpp:52
 msgid "Forbid Animation"
-msgstr ""
+msgstr "Canlandırmayı engelle"
 
 #: ../src/synfigapp/actions/layerparamsetstatic.cpp:75
 #: ../src/synfigapp/actions/layerparamunsetstatic.cpp:75
@@ -6482,7 +6482,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layerparamunsetstatic.cpp:52
 #: ../src/synfigapp/actions/valuenodeconstunsetstatic.cpp:52
 msgid "Allow Animation"
-msgstr ""
+msgstr "Canladırmaya izin ver"
 
 #: ../src/synfigapp/actions/layerraise.cpp:53
 #: ../src/synfigapp/actions/layerraise.cpp:73
@@ -6935,7 +6935,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:139
 msgid "Lock animation"
-msgstr ""
+msgstr "Canlandırmayı kilitle"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:236
 msgid ""
@@ -6997,7 +6997,7 @@ msgid ""
 "You are trying to edit animated parameter while Animation Mode is off.\n"
 "\n"
 "Do you want to apply offset to this animation?"
-msgstr ""
+msgstr "Canlandırma kipi kapalıyken, canlandırılmış bir değişkeni düzenlemeye çalışıyorsunuz.\n\nDüzenlemeyi bu canlandırmaya uygulamak istiyor musunuz?"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:1126
 msgid ""

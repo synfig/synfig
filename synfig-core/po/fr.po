@@ -17,6 +17,7 @@
 # d.j.a.y, 2012-2013
 # d.j.a.y, 2013-2015
 # d.j.a.y, 2012
+# Mattéo Delabre, 2020
 # morevnaproject <ksee.zelgadis@gmail.com>, 2011
 # Animtim <animtim@gmail.com>, 2011
 msgid ""
@@ -24,8 +25,8 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-02-14 15:06+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2020-05-05 15:37+0000\n"
+"Last-Translator: Mattéo Delabre\n"
 "Language-Team: French (http://www.transifex.com/morevnaproject/synfig/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -731,7 +732,7 @@ msgstr "Couper"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
 msgid "When checked, the area outside the Radius are not distorted"
-msgstr ""
+msgstr "Si coché, la zone en dehors du rayon n'est pas déformée"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:170
 msgid "Distort Type"
@@ -1019,12 +1020,12 @@ msgstr "Erreur à la lecture de BITMAP::INFOHEADER depuis %s"
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:170
 #, c-format
 msgid "Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %zu)"
-msgstr ""
+msgstr "BITMAP::FILEHEADER incorrect dans %s. (bfOffsetBits=%d, %zu attendu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:178
 #, c-format
 msgid "Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %zu)"
-msgstr ""
+msgstr "BITMAP::INFOHEADER incorrect dans %s. (biSize=%d, %zu attendu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:196
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:197
@@ -1326,7 +1327,7 @@ msgstr "Définit le type de Pointe du premier vertex lorsque la spline est ouver
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:777
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:788
 msgid "Rounded Stop"
-msgstr "Stop Arrondi"
+msgstr "Extrémité arrondie"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:696
 #: ../src/modules/mod_geometry/advanced_outline.cpp:707
@@ -1335,7 +1336,7 @@ msgstr "Stop Arrondi"
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:778
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:789
 msgid "Squared Stop"
-msgstr "Stop Carré"
+msgstr "Extrémité carrée"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:697
 #: ../src/modules/mod_geometry/advanced_outline.cpp:708
@@ -1344,7 +1345,7 @@ msgstr "Stop Carré"
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:779
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:790
 msgid "Peak Stop"
-msgstr "Stop en Piqué"
+msgstr "Extrémité pointue"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:698
 #: ../src/modules/mod_geometry/advanced_outline.cpp:709
@@ -1353,7 +1354,7 @@ msgstr "Stop en Piqué"
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:780
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:791
 msgid "Flat Stop"
-msgstr "Stop Plat"
+msgstr "Extrémité plate"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:699
 #: ../src/modules/mod_geometry/advanced_outline.cpp:710
@@ -1362,7 +1363,7 @@ msgstr "Stop Plat"
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:781
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:792
 msgid "Inner Rounded Stop"
-msgstr ""
+msgstr "Extrémité arrondie intérieure"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:700
 #: ../src/modules/mod_geometry/advanced_outline.cpp:711
@@ -1371,7 +1372,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:782
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:793
 msgid "Off-Peak Stop"
-msgstr ""
+msgstr "Extrémité creuse"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:703
 msgid "Tip Type at End"
@@ -2112,7 +2113,7 @@ msgstr "Mauvais état de la Surface Cairo"
 msgid ""
 "The image is too large. It's size must be not more than 5000*2000=10000000 "
 "px. Currently it's %d*%d=%d px."
-msgstr ""
+msgstr "L'image est trop grande. Sa taille ne doit pas être supérieure à 5000*2000=10000000 px. Actuellement elle est de %d*%d=%d px."
 
 #: ../src/modules/mod_ppm/mptr_ppm.cpp:79
 #, c-format
@@ -2324,7 +2325,7 @@ msgstr "Copier l'Index"
 #: ../src/synfig/layers/layer_filtergroup.cpp:62
 #: ../src/synfig/layers/layer_filtergroup.cpp:80
 msgid "Filter Group"
-msgstr ""
+msgstr "Groupe de filtres"
 
 #: ../src/synfig/layers/layer_group.cpp:65
 #: ../src/synfig/layers/layer_group.cpp:91
@@ -2615,17 +2616,17 @@ msgstr "Seuls les calques dont le nom est spécifié sont visibles"
 
 #: ../src/synfig/layers/layer_switch.cpp:103
 msgid "Active Layer Depth"
-msgstr ""
+msgstr "Profondeur d’activité des calques"
 
 #: ../src/synfig/layers/layer_switch.cpp:104
 msgid ""
 "Used when layer name is empty. Only layer with specified depth is visible"
-msgstr ""
+msgstr "Utilisé lorsque le nom du calque est vide. Seuls les calques à la profondeur spécifiée sont visibles"
 
 #: ../src/synfig/loadcanvas.cpp:138
 #, c-format
 msgid "Cannot find canvas for delete '%s'"
-msgstr ""
+msgstr "Impossible de trouver le canevas “%s” à supprimer"
 
 #: ../src/synfig/loadcanvas.cpp:165
 #, c-format
@@ -2938,27 +2939,27 @@ msgstr "Impossible d'ouvrir le fichier"
 #: ../src/synfig/main.cpp:142
 #, c-format
 msgid "API Version mismatch (LIB:%zu, PROG:%zu)"
-msgstr ""
+msgstr "Incompatibilité de version d’API (LIB : %zu, PROG : %zu)"
 
 #: ../src/synfig/main.cpp:147
 #, c-format
 msgid "Size of Vector mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Incompatibilité de la taille des Vector (app : %zu, lib : %zu)"
 
 #: ../src/synfig/main.cpp:152
 #, c-format
 msgid "Size of Color mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Incompatibilité de la taille des Color (app : %zu, lib : %zu)"
 
 #: ../src/synfig/main.cpp:157
 #, c-format
 msgid "Size of Canvas mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Incompatibilité de la taille des Canvas (app : %zu, lib : %zu)"
 
 #: ../src/synfig/main.cpp:162
 #, c-format
 msgid "Size of Layer mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "Incompatibilité de la taille des Layer (app : %zu, lib : %zu)"
 
 #: ../src/synfig/main.cpp:244
 msgid "Starting Subsystem \"Sound\""
@@ -3026,11 +3027,11 @@ msgstr "Impossible d'initialiser le sous système \"Cairo Importers\" "
 
 #: ../src/synfig/main.cpp:318
 msgid "Starting Subsystem \"Thread Pool\""
-msgstr ""
+msgstr "Démarrage du sous-système “Thread Pool”"
 
 #: ../src/synfig/main.cpp:320
 msgid "Unable to initialize subsystem \"Thread Pool\""
-msgstr ""
+msgstr "Impossible d’initialiser le sous-système “Thread Pool”"
 
 #: ../src/synfig/main.cpp:356 ../src/synfig/main.cpp:357
 #, c-format
@@ -3273,7 +3274,7 @@ msgstr "Méthode de rendu non supportée"
 #: ../src/synfig/target_cairo.cpp:184 ../src/synfig/target_cairo_tile.cpp:264
 #: ../src/synfig/target_scanline.cpp:466 ../src/synfig/target_tile.cpp:373
 msgid "Caught string: "
-msgstr ""
+msgstr "Chaîne récupérée :"
 
 #: ../src/synfig/target_cairo.cpp:189 ../src/synfig/target_cairo_tile.cpp:269
 #: ../src/synfig/target_scanline.cpp:471 ../src/synfig/target_tile.cpp:378
@@ -3304,7 +3305,7 @@ msgstr "Mauvaise surface : %s"
 
 #: ../src/synfig/target_cairo_tile.cpp:168 ../src/synfig/target_tile.cpp:279
 msgid "add_tile(): Unable to put surface on target"
-msgstr ""
+msgstr "add_tile() : Impossible d’appliquer la surface à la cible"
 
 #: ../src/synfig/target_cairo_tile.cpp:226
 msgid "Can't start frame"
@@ -3312,7 +3313,7 @@ msgstr "Ne peux pas commencer l'image"
 
 #: ../src/synfig/target_scanline.cpp:224
 msgid "Accelerated Renderer Failure: cannot read surface"
-msgstr ""
+msgstr "Échec du rendu accéléré : impossible de lire la surface"
 
 #: ../src/synfig/target_scanline.cpp:294 ../src/synfig/target_scanline.cpp:374
 #: ../src/synfig/target_scanline.cpp:446 ../src/synfig/target_tile.cpp:248
@@ -5251,7 +5252,7 @@ msgstr "Métadonnée"
 #: ../src/tool/renderprogress.cpp:78
 #, c-format
 msgid "%s: Frame %d of %d (%d%%). Remaining time: "
-msgstr ""
+msgstr "%s : Image %d sur %d (%d %%). Temps restant :"
 
 #. TRANSLATORS This "w" stands for weeks
 #: ../src/tool/renderprogress.cpp:141

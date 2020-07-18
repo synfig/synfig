@@ -3,8 +3,8 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Ralfs Muča <inactive+jelgava2015@transifex.com>, 2015
-# Ralfs Muča <inactive+jelgava2015@transifex.com>, 2015
+# c505631752d0fccecdef0e3db6d7a064_dc52e8c <dca150d34f6a670fa08c4aa941e524e8_310183>, 2015
+# c505631752d0fccecdef0e3db6d7a064_dc52e8c <dca150d34f6a670fa08c4aa941e524e8_310183>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
