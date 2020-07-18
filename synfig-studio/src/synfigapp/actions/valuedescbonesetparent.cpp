@@ -174,10 +174,10 @@ Action::ValueDescBoneSetParent::perform()
 			origin = p_M.get_transformed(origin);
 			origin[0] *= sx;
 			origin = T.get_transformed(origin);
-			origin[0]/=bone_desc.get_value(time).get(Bone()).get_scalelx();
-			bone->set_link("origin",ValueNode_Const::create(origin));
-			bone->set_link("angle",ValueNode_Const::create(angle));
-			bone->set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_dynamic(bone_desc.get_value_node())));
+			if(bone->set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_dynamic(bone_desc.get_value_node())))){
+				bone->set_link("origin",ValueNode_Const::create(origin));
+				bone->set_link("angle",ValueNode_Const::create(angle));
+			}
 
 		}
 	}else{
@@ -196,7 +196,6 @@ Action::ValueDescBoneSetParent::undo() {
 
 
 		ValueNode_Bone::Handle parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
-		info(parent_bone->operator()(time).get_type().description.name);
 		Matrix p_M = parent_bone->operator()(time).get(Bone()).get_animated_matrix();
 		Angle p_angle = Angle::rad(atan2(p_M.axis(0)[1],p_M.axis(0)[0]));
 		p_M = p_M.get_inverted();
@@ -209,10 +208,10 @@ Action::ValueDescBoneSetParent::undo() {
 		origin = p_M.get_transformed(T.get_transformed(origin));
 		origin[0]/=sx;
 		origin[0]*=bone_desc.get_value(time).get(Bone()).get_scalelx();
-
-		bone->set_link("origin",ValueNode_Const::create(origin));
-		bone->set_link("angle",ValueNode_Const::create(angle));
-		bone->set_link("parent",prev_parent);
+		if(bone->set_link("parent",prev_parent)){
+			bone->set_link("origin",ValueNode_Const::create(origin));
+			bone->set_link("angle",ValueNode_Const::create(angle));
+		}
 	}else{
 		get_canvas_interface()->get_ui_interface()->error("Could'nt find parent to active bone");
 	}
