@@ -107,7 +107,6 @@ Action::ValueNodeSetActiveBone::set_param(const synfig::String& name, const Acti
 	if(name == "prev_active_bone_node" && param.get_type()==Param::TYPE_VALUENODE
 	&& (param.get_value_node()==ValueNode::Handle() || ValueNode_Bone::Handle::cast_dynamic(param.get_value_node()))){
 		prev_active_bone = param.get_value_node();
-		cout<<"set"<<endl;
 		return true;
 	}
 
