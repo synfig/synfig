@@ -22,8 +22,7 @@ TESTS = \
 	pen \
 	surface \
 	smart_ptr \
-	benchmark \
-	spline
+	benchmark
 
 check_PROGRAMS = \
 	fixed \
@@ -35,8 +34,7 @@ check_PROGRAMS = \
 	pen \
 	surface \
 	smart_ptr \
-	benchmark \
-	spline
+	benchmark
 
 benchmark_SOURCES=benchmark.cpp
 smart_ptr_SOURCES=smart_ptr.cpp
@@ -47,9 +45,5 @@ angle_SOURCES=angle.cpp
 fixed_SOURCES=fixed.cpp
 clock_SOURCES=clock.cpp
 hermite_SOURCES=hermite.cpp
-spline_SOURCES=spline.cpp
 stringf_SOURCES=stringf.cpp
 
-# FIXME: fix compiler errors for the spline test.
-EXTRA_DIST = \
-	spline.cpp
