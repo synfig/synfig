@@ -81,7 +81,7 @@ class Bline:
             # Assuming it's child is always composite for now
             entry_list.append({})
             if entry[0].tag == "composite":
-                element = common.Param.Param(entry[0],self.bline)
+                element = common.Param.Param(entry[0],self)
             else:
                 element = common.Param.Param(entry,self)
             for param in element.get():
