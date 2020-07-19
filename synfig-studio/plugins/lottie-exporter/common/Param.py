@@ -218,8 +218,7 @@ class Param:
 
                 # Get the animation of angle
                 prop_name = "bone_angle"
-                if self.is_group_child:
-                    prop_name = "rotate_layer_angle"
+                
                 bone_angle, ang_eff = self.subparams["angle"].recur_animate(prop_name)
 
                 # Get the local length scale of the bone
@@ -677,7 +676,6 @@ class Param:
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(guid)
                 shifted_origin, shifted_angle, lls, rls = bone.__get_value(frame)
-                a1 = math.radians(shifted_angle)
 
                 # Calculating this bones angle with respect to parent bone's
                 # angle
@@ -693,14 +691,7 @@ class Param:
                 this_rls = self.subparams["scalex"].__get_value(frame)    # In current angle's direction
                 absolute_angle = shifted_angle+angle
                 aa1 = math.radians(absolute_angle)
-                
-                if this_rls != 1:
-                	this_rls = this_rls - 1
-                else:
-                	this_rls = 1
 
-                ret_rls = [this_rls, this_rls]
-                this_rls = [66 * this_rls * math.cos(aa1), 66 * this_rls * math.sin(aa1)]
                 # Calculate returning recursive length
                 ret_rls = [1,1]
                 this_rls = [1,1]
