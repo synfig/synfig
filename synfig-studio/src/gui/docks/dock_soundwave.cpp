@@ -191,6 +191,10 @@ private:
 				return false;
 			});
 			if (found) {
+				const int active_index = file_combo.get_active_row_number();
+				if (index == active_index)
+					file_combo.set_active_id(item_no_audio_id);
+
 				file_combo.remove_text(index);
 				layer_map.erase(layer->get_guid().get_string());
 			} else
