@@ -54,7 +54,7 @@ class Bline:
         """
         if isinstance(self.parent, common.Layer.Layer):
             return self.parent
-        return self.parent
+        return self.parent.get_layer()
 
     def get_type(self):
         """
@@ -81,10 +81,10 @@ class Bline:
             # Assuming it's child is always composite for now
             entry_list.append({})
             if entry[0].tag == "composite":
-                element = entry[0]
+                element = common.Param.Param(entry[0],self.bline)
             else:
-                element = entry
-            for param in element:
+                element = common.Param.Param(entry,self)
+            for param in element.get():
                 tag = param.tag
                 if tag == "animated":   # For dynamic list
                     tag = param.attrib["type"]
@@ -110,3 +110,6 @@ class Bline:
         """
         for param in entry:
             self.entry_list[itr][tag] = common.Param.Param(param, entry)
+
+    def getparent(self):
+        return self.parent
