@@ -269,25 +269,36 @@ foreach (IMAGE IN ITEMS ${IMAGES})
     )
 endforeach()
 
+# Scalable Icon
+file(
+    COPY ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.svg
+    DESTINATION ${SYNFIG_BUILD_ROOT}/share/icons/hicolor/scalable/apps
+)
+
+install(
+    FILES ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.svg
+    DESTINATION share/icons/hicolor/scalable/apps
+)
+
 # Synfig Splash Screen
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
     set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_BINARY_DIR}/splash_screen_development.sif)
-
     configure_file(
         ${CMAKE_CURRENT_SOURCE_DIR}/splash_screen_development.sif.in
         ${SYNFIG_SPLASH_SCREEN}
         @ONLY
     )
+
+    set(LOGO_ICON ${CMAKE_CURRENT_SOURCE_DIR}/logo.sif)
+    file(COPY ${LOGO_ICON} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 elseif(${CMAKE_BUILD_TYPE} MATCHES Release)
     set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_SOURCE_DIR}/splash_screen.sif)
 endif()
 
-set(LOGO_ICON ${CMAKE_CURRENT_SOURCE_DIR}/logo.sif)
-file(COPY ${LOGO_ICON} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 add_custom_command(
-        OUTPUT ${PIXMAPS_DIR}/splash_screen.png
-        COMMAND synfig_bin ${SYNFIG_SPLASH_SCREEN} -o ${PIXMAPS_DIR}/splash_screen.png --time 0f --quiet
-        DEPENDS ${SYNFIG_SPLASH_SCREEN} synfig_bin
+    OUTPUT ${PIXMAPS_DIR}/splash_screen.png
+    COMMAND synfig_bin ${SYNFIG_SPLASH_SCREEN} -o ${PIXMAPS_DIR}/splash_screen.png --time 0f --quiet
+    DEPENDS ${SYNFIG_SPLASH_SCREEN} synfig_bin
 )
 
 list(APPEND PIXMAPS ${PIXMAPS_DIR}/splash_screen.png)

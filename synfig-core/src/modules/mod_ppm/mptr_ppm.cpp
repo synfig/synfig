@@ -31,6 +31,7 @@
 #	include <config.h>
 #endif
 
+#include <glib/gstdio.h>
 #include "mptr_ppm.h"
 #include <synfig/importer.h>
 #include <synfig/time.h>
@@ -65,7 +66,7 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ppm_mptr, false);
 bool
 ppm_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback *cb)
 {
-	SmartFILE file(fopen(identifier.filename.c_str(),"rb"));
+	SmartFILE file(g_fopen(identifier.filename.c_str(),"rb"));
 	if(!file)
 	{
 		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),identifier.filename.c_str()));

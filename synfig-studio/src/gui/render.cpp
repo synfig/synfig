@@ -224,11 +224,14 @@ RenderSettings::set_entry_filename()
 		else
 			filename+=" ("+canvas->get_name()+')';
 	}
+
+	if (!is_absolute_path(filename))
+		filename = Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename;
 	
 	try
 	{
 		if(!comboboxtext_target.get_active_row_number())
-			entry_filename.set_text(Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename + ".avi");
+			entry_filename.set_text(filename + ".avi");
 		// in case the file was saved and loaded again then .ext should be according to target
 		else on_comboboxtext_target_changed();
 	}
@@ -484,11 +487,7 @@ RenderSettings::submit_next_render_pass()
 		App::dock_info_->set_render_progress(0.0); //For this pass
 		
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
-#ifdef _WIN32
-		String pass_filename = Glib::locale_from_utf8(pass_info.second);
-#else
 		String pass_filename = pass_info.second;
-#endif
 
 		Target::Handle target=Target::create(calculated_target_name,pass_filename, tparam);
 		if(!target)

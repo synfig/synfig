@@ -90,6 +90,16 @@ int main(int argc, char* argv[])
 	setlocale(LC_ALL, "");
 	Glib::init(); // need to use Gio functions before app is started
 
+#ifdef _WIN32
+	// to be able to open files whose name is not latin (eg. arabic)
+	class ArgVGuard {
+		char **modified_argv;
+	public:
+		ArgVGuard(char ***argv) { modified_argv = *argv = g_win32_get_command_line(); }
+		~ArgVGuard() { g_strfreev(modified_argv); }
+	} argv_guard(&argv);
+ #endif
+
 	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
 
 	std::string binary_path =
@@ -312,4 +322,5 @@ int main(int argc, char* argv[])
     catch(std::exception& e) {
         std::cout << e.what() << std::endl;
     }
+
 }

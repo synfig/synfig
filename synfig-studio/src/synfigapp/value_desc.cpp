@@ -52,6 +52,15 @@ using namespace synfigapp;
 
 const ValueDesc ValueDesc::blank;
 
+void ValueDesc::on_id_changed()
+{
+	try {
+		name = get_value_node()->get_id();
+	} catch (Exception::IDNotFound &) {
+		name.clear();
+	}
+}
+
 String
 ValueDesc::get_description(bool show_exported_name)const
 {

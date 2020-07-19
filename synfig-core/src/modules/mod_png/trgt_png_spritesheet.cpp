@@ -38,6 +38,7 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
+#include <glib/gstdio.h>
 #include "trgt_png_spritesheet.h"
 #include <png.h>
 #include <ETL/stringf>
@@ -168,7 +169,7 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 
 	if (params.append)
 	{
-		in_file_pointer = fopen(filename.c_str(), "rb");
+		in_file_pointer = g_fopen(filename.c_str(), "rb");
 		if (!in_file_pointer)
 			synfig::error(strprintf("[read_png_file] File %s could not be opened for reading", filename.c_str()));
 		else
@@ -403,7 +404,7 @@ png_trgt_spritesheet::write_png_file()
     if (filename == "-")
     	out_file_pointer=stdout;
     else
-    	out_file_pointer=fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
+    	out_file_pointer=g_fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
 
 	
     png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);

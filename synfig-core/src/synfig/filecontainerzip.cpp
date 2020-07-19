@@ -34,9 +34,7 @@
 #include <cstddef>
 
 #include <libxml++/libxml++.h>
-#ifdef _WIN32
-#include <glibmm.h>
-#endif
+#include <glib/gstdio.h>
 
 #include <ETL/stringf>
 
@@ -378,11 +376,7 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 {
 	std::list<HistoryRecord> list;
 	
-#ifdef _WIN32
-	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(container_filename)).c_str(), "rb");
-#else
-	FILE *f = fopen(container_filename.c_str(), "rb");
-#endif
+	FILE *f = g_fopen(fix_slashes(container_filename).c_str(), "rb");
 	if (f == NULL) return list;
 
 	fseek(f, 0, SEEK_END);
@@ -400,11 +394,7 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 bool FileContainerZip::create(const String &container_filename)
 {
 	if (is_opened()) return false;
-#ifdef _WIN32
-	storage_file_ = fopen(Glib::locale_from_utf8(fix_slashes(container_filename)).c_str(), "w+b");
-#else
-	storage_file_ = fopen(fix_slashes(container_filename).c_str(), "w+b");
-#endif	
+	storage_file_ = g_fopen(fix_slashes(container_filename).c_str(), "w+b");
 	
 	if (is_opened()) changed_ = true;
 	return is_opened();
@@ -412,11 +402,8 @@ bool FileContainerZip::create(const String &container_filename)
 
 bool FileContainerZip::open_from_history(const String &container_filename, file_size_t truncate_storage_size) {
 	if (is_opened()) return false;
-#ifdef _WIN32
-	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(container_filename)).c_str(), "r+b");
-#else
-	FILE *f = fopen(fix_slashes(container_filename).c_str(), "r+b");
-#endif		
+	FILE *f = g_fopen(fix_slashes(container_filename).c_str(), "r+b");
+
 	if (f == NULL) return false;
 
 	// check size of file

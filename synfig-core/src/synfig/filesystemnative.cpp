@@ -31,6 +31,7 @@
 
 #include <giomm.h>
 #include <glibmm.h>
+#include <glib/gstdio.h>
 #include <sys/stat.h>
 
 #include "general.h"
@@ -118,47 +119,18 @@ bool FileSystemNative::directory_scan(const String &dirname, FileList &out_files
 
 bool FileSystemNative::file_remove(const String &filename)
 {
-	return 0 == remove(fix_slashes(filename).c_str());
+	return 0 == g_remove(fix_slashes(filename).c_str());
 }
 
 bool FileSystemNative::file_rename(const String &from_filename, const String &to_filename)
 {
-#ifdef _WIN32
-	
-	// On Win32 platforms, rename() has bad behavior. Work around it.
-	
-	// Make random filename and ensure there's no file with such name exist
-	struct stat buf;
-	String old_file;
-	do {
-		synfig::GUID guid;
-		old_file = to_filename+"."+guid.get_string().substr(0,8);
-	} while (stat(Glib::locale_from_utf8(old_file).c_str(), &buf) != -1);
-	
-	rename(Glib::locale_from_utf8(to_filename).c_str(),Glib::locale_from_utf8(old_file).c_str());
-	
-	if(rename(Glib::locale_from_utf8(from_filename).c_str(),Glib::locale_from_utf8(to_filename).c_str())!=0)
-	{
-		rename(Glib::locale_from_utf8(old_file).c_str(),Glib::locale_from_utf8(to_filename).c_str());
-		synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
-		return false;
-	}
-	remove(Glib::locale_from_utf8(old_file).c_str());
-	
-	return true;
-#else
-	return 0 == rename(from_filename.c_str(), to_filename.c_str());
-#endif
+	return 0 == g_rename(from_filename.c_str(), to_filename.c_str());
 }
 
 
 FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &filename)
 {
-#ifdef _WIN32
-	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "rb");
-#else
-	FILE *f = fopen(fix_slashes(filename).c_str(), "rb");
-#endif
+	FILE *f = g_fopen(fix_slashes(filename).c_str(), "rb");
 	return f == NULL
 	     ? FileSystem::ReadStream::Handle()
 	     : FileSystem::ReadStream::Handle(new ReadStream(this, f));
@@ -166,11 +138,7 @@ FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &f
 
 FileSystem::WriteStream::Handle FileSystemNative::get_write_stream(const String &filename)
 {
-#ifdef _WIN32
-	FILE *f = fopen(Glib::locale_from_utf8(fix_slashes(filename)).c_str(), "wb");
-#else
-	FILE *f = fopen(fix_slashes(filename).c_str(), "wb");
-#endif
+	FILE *f = g_fopen(fix_slashes(filename).c_str(), "wb");
 	return f == NULL
 	     ? FileSystem::WriteStream::Handle()
 	     : FileSystem::WriteStream::Handle(new WriteStream(this, f));
