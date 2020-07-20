@@ -196,7 +196,8 @@ Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if ((event->state & (Gdk::BUTTON1_MASK | Gdk::BUTTON2_MASK)) == 0)
-		show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
+	        if (App::animation_thumbnail_preview)
+        		show_tooltip(Point(event->x, event->y), Point(event->x_root, event->y_root));
 	return Widget_Timeslider::on_motion_notify_event(event);
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }

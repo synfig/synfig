@@ -397,6 +397,8 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	/*---------Editing------------------*\
 	 * IMPORTED IMAGE
 	 *  [x] Scale to fit
+	 * ANIMATION
+	 *  [x] Thumbnail preview
 	 * OTHER
 	 *  [x] Linear color
 	 *  [x] Restrict radius
@@ -415,6 +417,16 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	toggle_resize_imported_images.set_tooltip_text(_("When you import images, check this option if you want they fit the Canvas size."));
 	toggle_resize_imported_images.set_halign(Gtk::ALIGN_START);
 	toggle_resize_imported_images.set_hexpand(false);
+		
+	// Editing Animation section
+	attach_label_section(pi.grid, _("Animation"), ++row);
+
+	// Editing - Show animation thumbnail preview
+	attach_label(pi.grid, _("Thumbnail preview"), ++row);
+	pi.grid->attach(toggle_animation_thumbnail_preview, 1, row, 1, 1);
+	toggle_animation_thumbnail_preview.set_tooltip_text(_("Turn on/off animation thumbnail preview when you hover your mouse over the timetrack panel."));
+	toggle_animation_thumbnail_preview.set_halign(Gtk::ALIGN_START);
+	toggle_animation_thumbnail_preview.set_hexpand(false);
 
 	// Editing Other section
 	attach_label_section(pi.grid, _("Other"), ++row);
@@ -676,6 +688,9 @@ Dialog_Setup::on_apply_pressed()
 	// Set the resize_imported_images flag
 	App::resize_imported_images       = toggle_resize_imported_images.get_active();
 
+        // Set the animation_thumbnail_preview flag
+	App::animation_thumbnail_preview  = toggle_animation_thumbnail_preview.get_active();
+
 	// Set the experimental features flag
 	App::enable_experimental_features = toggle_enable_experimental_features.get_active();
 
@@ -913,6 +928,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the resize_imported_images flag
 	toggle_resize_imported_images.set_active(App::resize_imported_images);
+	
+	// Refresh the status of animation_thumbnail_preview flag
+	toggle_animation_thumbnail_preview.set_active(App::animation_thumbnail_preview);
 
 	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
