@@ -171,9 +171,10 @@ Action::ValueDescBoneSetParent::perform()
 			Real sx = bone->get_link("scalelx")->operator()(time).get(Real());
 
 			angle+=p_angle-T_angle;
-			origin = p_M.get_transformed(origin);
 			origin[0] *= sx;
+			origin = p_M.get_transformed(origin);
 			origin = T.get_transformed(origin);
+			origin[0]/=bone_desc.get_value(time).get(Bone()).get_scalelx();
 			if(bone->set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_dynamic(bone_desc.get_value_node())))){
 				bone->set_link("origin",ValueNode_Const::create(origin));
 				bone->set_link("angle",ValueNode_Const::create(angle));
@@ -205,9 +206,9 @@ Action::ValueDescBoneSetParent::undo() {
 		Real sx = bone->get_link("scalelx")->operator()(time).get(Real());
 
 		angle+=T_angle-p_angle;
+		origin[0]*=bone_desc.get_value(time).get(Bone()).get_scalelx();
 		origin = p_M.get_transformed(T.get_transformed(origin));
 		origin[0]/=sx;
-		origin[0]*=bone_desc.get_value(time).get(Bone()).get_scalelx();
 		if(bone->set_link("parent",prev_parent)){
 			bone->set_link("origin",ValueNode_Const::create(origin));
 			bone->set_link("angle",ValueNode_Const::create(angle));
