@@ -272,8 +272,11 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	// This covers the dumb cmd.exe behavior.
 	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
 	command = "\"" + command + "\"";
-
-	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
+	
+	const wchar_t* wcommand = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(command.c_str(), -1, NULL, NULL, NULL));
+	const wchar_t* wmode = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(POPEN_BINARY_WRITE_TYPE, -1, NULL, NULL, NULL));
+	
+	file=_wpopen(wcommand, wmode);
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
