@@ -1121,6 +1121,8 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 void
 Canvas::set_parent(const Canvas::LooseHandle &parent)
 {
+	if (parent_ == parent)
+		return;
 	parent_ = parent;
 	on_parent_set();
 }
