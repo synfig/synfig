@@ -53,6 +53,7 @@
 #include <synfigapp/main.h>
 
 #include <gui/localization.h>
+#include <gui/exception_guard.h>
 
 #endif
 
@@ -707,7 +708,9 @@ StatePolygon_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 
 StatePolygon_Context::~StatePolygon_Context()
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	run();
+	SYNFIG_EXCEPTION_GUARD_END_NO_RETURN()
 
 	save_settings();
 	// Restore layer clicking

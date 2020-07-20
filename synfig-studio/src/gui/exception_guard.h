@@ -62,6 +62,15 @@
 		} \
 	}
 
+/// It should return (void), no matter what happens
+#define SYNFIG_EXCEPTION_GUARD_END_NO_RETURN() \
+	SYNFIG_EXCEPTION_GUARD_END_COMMON \
+		if (!_exception_guard_error_str.empty()) { \
+			synfig::error("%s", _exception_guard_error_str.c_str()); \
+		} \
+	}
+
+
 /// It should return a boolean. On success, return success_value; inverse value otherwise
 #define SYNFIG_EXCEPTION_GUARD_END_BOOL(success_value) \
 	SYNFIG_EXCEPTION_GUARD_END_COMMON \
