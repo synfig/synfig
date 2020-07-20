@@ -107,6 +107,9 @@ class studio::StateBone_Context : public sigc::trackable
 
 	int depth;
 	Canvas::Handle canvas;
+	
+	Point point_holder;
+	Duck::Handle  point2_duck;
 
 	Gtk::Menu menu;
 
@@ -175,6 +178,7 @@ public:
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
+	Smach::event_result event_mouse_drag_handler(const Smach::event& x);
 	Smach::event_result event_mouse_release_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
@@ -220,6 +224,7 @@ StateBone::StateBone() :
 	insert(event_def(EVENT_REFRESH,						&StateBone_Context::event_refresh_handler));
 	insert(event_def(EVENT_REFRESH_DUCKS,				&StateBone_Context::event_hijack));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,	&StateBone_Context::event_mouse_click_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateBone_Context::event_mouse_drag_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,	&StateBone_Context::event_mouse_release_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,		&StateBone_Context::event_refresh_tool_options));
 }
@@ -537,6 +542,56 @@ StateBone_Context::event_refresh_handler(const Smach::event& x)
 
 
 Smach::event_result
+StateBone_Context::event_mouse_click_handler(const Smach::event& x)
+{
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	Point p(get_work_area()->snap_point_to_grid(event.pos));
+
+	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
+	switch(event.button)
+	{
+		case BUTTON_LEFT:
+		{
+			clickOrigin = p;
+
+			point_holder=get_work_area()->snap_point_to_grid(event.pos);
+			etl::handle<Duck> duck=new Duck();
+			duck->set_point(point_holder);
+			duck->set_name("p1");
+			duck->set_type(Duck::TYPE_POSITION);
+			duck->set_editable(false);
+			get_work_area()->add_duck(duck);
+
+			point2_duck=new Duck();
+			point2_duck->set_point(Vector(0,0));
+			point2_duck->set_name("radius");
+			point2_duck->set_origin(duck);
+			point2_duck->set_scalar(-1);
+			point2_duck->set_type(Duck::TYPE_RADIUS);
+			point2_duck->set_hover(true);
+			get_work_area()->add_duck(point2_duck);
+			return Smach::RESULT_ACCEPT;
+		}
+
+		default:
+			return Smach::RESULT_OK;
+	}
+}
+
+Smach::event_result StateBone_Context::event_mouse_drag_handler(const Smach::event &x) {
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+
+	if(event.button==BUTTON_LEFT){
+		if (!point2_duck) return Smach::RESULT_OK;
+		point2_duck->set_point(point_holder-get_work_area()->snap_point_to_grid(event.pos));
+		get_work_area()->queue_draw();
+		return Smach::RESULT_ACCEPT;
+	}
+	return Smach::RESULT_OK;
+}
+
+Smach::event_result
 StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
@@ -547,7 +602,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
 	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
-	
+
 	Action::Handle createChild(Action::Handle(Action::create("ValueDescCreateChildBone")));
 	createChild->set_param("canvas",get_canvas());
 	createChild->set_param("canvas_interface",get_canvas_interface());
@@ -556,6 +611,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
 	setActiveBone->set_param("canvas",get_canvas());
 	setActiveBone->set_param("canvas_interface",get_canvas_interface());
+	
+	get_work_area()->erase_duck(point2_duck);
+	get_work_area()->queue_draw();
 
 	Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
 
@@ -703,7 +761,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							matrix = matrix.get_inverted();
 							Point aOrigin = matrix.get_transformed(clickOrigin);
 							aOrigin[0]/=sx;
-							
+
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("origin",Action::Param(ValueBase(aOrigin)));
 							createChild->set_param("width",Action::Param(ValueBase(get_bone_width())));
@@ -721,7 +779,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								try{
 									get_canvas_interface()->get_instance()->perform_action(createChild);
 									value_desc= ValueDesc(list_node,active_bone,list_desc);
-						
+
 								} catch (...) {
 									info("Error performing action");
 								}
@@ -826,27 +884,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 			}
 			return Smach::RESULT_ACCEPT;
 		}
-		default:
-			return Smach::RESULT_OK;
-	}
-}
-
-Smach::event_result
-StateBone_Context::event_mouse_click_handler(const Smach::event& x)
-{
-	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-	Point p(get_work_area()->snap_point_to_grid(event.pos));
-
-	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-	switch(event.button)
-	{
-		case BUTTON_LEFT:
-		{
-			clickOrigin = p;
-			return Smach::RESULT_ACCEPT;
-		}
-
 		default:
 			return Smach::RESULT_OK;
 	}
