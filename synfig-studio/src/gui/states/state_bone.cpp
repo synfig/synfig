@@ -109,7 +109,7 @@ class studio::StateBone_Context : public sigc::trackable
 	Canvas::Handle canvas;
 	
 	Point point_holder;
-	Duck::Handle  point2_duck;
+	Duck::Handle  point2_duck,point1_duck;
 
 	Gtk::Menu menu;
 
@@ -556,17 +556,17 @@ StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 			clickOrigin = p;
 
 			point_holder=get_work_area()->snap_point_to_grid(event.pos);
-			etl::handle<Duck> duck=new Duck();
-			duck->set_point(point_holder);
-			duck->set_name("p1");
-			duck->set_type(Duck::TYPE_POSITION);
-			duck->set_editable(false);
-			get_work_area()->add_duck(duck);
+			point1_duck=new Duck();
+			point1_duck->set_point(point_holder);
+			point1_duck->set_name("p1");
+			point1_duck->set_type(Duck::TYPE_POSITION);
+			point1_duck->set_editable(false);
+			get_work_area()->add_duck(point1_duck);
 
 			point2_duck=new Duck();
 			point2_duck->set_point(Vector(0,0));
-			point2_duck->set_name("radius");
-			point2_duck->set_origin(duck);
+			point2_duck->set_name("p2");
+			point2_duck->set_origin(point1_duck);
 			point2_duck->set_scalar(-1);
 			point2_duck->set_type(Duck::TYPE_RADIUS);
 			point2_duck->set_hover(true);
@@ -611,7 +611,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
 	setActiveBone->set_param("canvas",get_canvas());
 	setActiveBone->set_param("canvas_interface",get_canvas_interface());
-	
+
+	get_work_area()->erase_duck(point1_duck);
 	get_work_area()->erase_duck(point2_duck);
 	get_work_area()->queue_draw();
 
