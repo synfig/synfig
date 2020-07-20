@@ -1144,6 +1144,8 @@ Canvas::set_file_name(const String &file_name_orig)
 		parent()->set_file_name(file_name);
 	else
 	{
+		if (file_name_ == file_name)
+			return;
 		String old_name(file_name_);
 		file_name_=file_name;
 
@@ -1152,7 +1154,6 @@ Canvas::set_file_name(const String &file_name_orig)
 		// we don't want to register the canvas' filename in the canvas map until it gets a real filename
 		if (old_name != "")
 		{
-			file_name_=file_name;
 			std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
 			for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
 				if(iter->second==this)
