@@ -222,6 +222,8 @@ Layer_Freetype::Layer_Freetype()
 	param_invert=ValueBase(false);
 	param_font=ValueBase(synfig::String());
 
+	font_path_from_canvas = false;
+
 	old_version=false;
 
 	set_blend_method(Color::BLEND_COMPOSITE);
@@ -249,6 +251,10 @@ void
 Layer_Freetype::on_canvas_set()
 {
 	Layer_Composite::on_canvas_set();
+
+	if (!font_path_from_canvas)
+		return;
+
 	synfig::String family=param_family.get(synfig::String());
 	int style=param_style.get(int());
 	int weight=param_weight.get(int());
@@ -552,8 +558,11 @@ Layer_Freetype::new_face(const String &newfont)
 	}
 
 	std::vector<std::string> possible_font_directories = {""};
-	if (get_canvas())
-		possible_font_directories.push_back( get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR );
+	std::string canvas_path;
+	if (get_canvas()) {
+		canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
+		possible_font_directories.push_back( canvas_path );
+	}
 
 #ifdef _WIN32
 	possible_font_directories.push_back("C:\\WINDOWS\\FONTS\\");
@@ -573,8 +582,10 @@ Layer_Freetype::new_face(const String &newfont)
 		for (const char *extension : possible_font_extensions) {
 			std::string path = (directory + newfont + extension);
 			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
-			if (!error)
+			if (!error) {
+				font_path_from_canvas = !canvas_path.empty() && directory == canvas_path;
 				break;
+			}
 		}
 		if (!error)
 			break;
