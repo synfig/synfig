@@ -51,6 +51,7 @@
 #include <synfigapp/main.h>
 
 #include <gui/localization.h>
+#include <gui/exception_guard.h>
 
 #endif
 
@@ -145,9 +146,11 @@ StateStroke_Context::~StateStroke_Context()
 
 	App::dock_toolbox->refresh();
 
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	// Send the stroke data to whatever previously called this state.
 	if(stroke_data->size()>=2)
 		get_canvas_view()->get_smach().process_event(EventStroke(stroke_data,width_data,modifier));
+	SYNFIG_EXCEPTION_GUARD_END_NO_RETURN()
 }
 
 Smach::event_result
