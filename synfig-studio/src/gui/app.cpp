@@ -2579,7 +2579,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	dialog->add_filter(filter_any);
 	
 	Gtk::Box *box = manage(new Gtk::Box);
-	Gtk::Label *label_resize = manage(new Gtk::Label(_("Scale to fit canvas")));
+	Gtk::Label *label_resize = manage(new Gtk::Label(_("Scale to fit Canvas")));
 	Gtk::Switch *toggle_resize = manage(new Gtk::Switch);
 	
 	label_resize->set_margin_end(5);
@@ -2590,6 +2590,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	
 	box->pack_start(*label_resize, false, false);
 	box->pack_end(*toggle_resize, false, false);
+	box->set_tooltip_text(_("Check this to scale imported images to Canvas size"));
 	box->show_all();
 	dialog->set_extra_widget(*box);
 
