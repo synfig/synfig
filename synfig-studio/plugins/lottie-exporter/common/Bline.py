@@ -83,8 +83,8 @@ class Bline:
             if entry[0].tag == "composite":
                 element = common.Param.Param(entry[0],self)
             else:
-                element = common.Param.Param(entry,self)
-            for param in element.get():
+                element = entry
+            for param in element:
                 tag = param.tag
                 if tag == "animated":   # For dynamic list
                     tag = param.attrib["type"]
