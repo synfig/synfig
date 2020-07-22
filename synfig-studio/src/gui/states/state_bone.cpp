@@ -110,6 +110,7 @@ class studio::StateBone_Context : public sigc::trackable
 	
 	Point point_holder;
 	Duck::Handle  point2_duck,point1_duck;
+	handle<Duckmatic::Bezier> bone_bezier;
 
 	Gtk::Menu menu;
 
@@ -571,6 +572,12 @@ StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 			point2_duck->set_type(Duck::TYPE_RADIUS);
 			point2_duck->set_hover(true);
 			get_work_area()->add_duck(point2_duck);
+
+			bone_bezier =new Duckmatic::Bezier();
+			bone_bezier->p1=bone_bezier->c1=point1_duck;
+			bone_bezier->p2=bone_bezier->c2=point2_duck;
+			get_work_area()->add_bezier(bone_bezier);
+
 			return Smach::RESULT_ACCEPT;
 		}
 
@@ -614,6 +621,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 	get_work_area()->erase_duck(point1_duck);
 	get_work_area()->erase_duck(point2_duck);
+	get_work_area()->erase_bezier(bone_bezier);
 	get_work_area()->queue_draw();
 
 	Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
