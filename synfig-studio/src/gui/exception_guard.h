@@ -25,7 +25,7 @@
 ///     SYNFIG_EXCEPTION_GUARD_END()
 /// }
 ///
-/// bool my_method_that_could_not_throw() // maybe append noexcept keyword too
+/// bool my_other_method_that_could_not_throw() // maybe append noexcept keyword too
 /// {
 ///     SYNFIG_EXCEPTION_GUARD_BEGIN()
 ///     ... code
