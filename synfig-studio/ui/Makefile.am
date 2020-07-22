@@ -3,6 +3,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 UIFILES     = \
+  canvas_properties.glade \
   canvas_options.glade \
   preview_options.glade \
   dialog_workspaces.glade \

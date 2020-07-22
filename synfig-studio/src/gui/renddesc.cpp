@@ -80,134 +80,6 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-
-class GammaPattern : public Gtk::DrawingArea
-{
-private:
-	Gamma gamma;
-	int tile_w, tile_h, gradient_h;
-	Cairo::RefPtr<Cairo::SurfacePattern> pattern;
-
-public:
-	GammaPattern():
-		tile_w(80),
-		tile_h(80),
-		gradient_h(20)
-	{
-		set_size_request(tile_w*4, tile_h*2 + gradient_h*2);
-
-		// make pattern
-		Cairo::RefPtr<Cairo::ImageSurface> surface =
-			Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 2, 2);
-		Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
-		context->set_operator(Cairo::OPERATOR_SOURCE);
-		context->set_source_rgba(0, 0, 0, 0);
-		context->rectangle(0, 0, 1, 1);
-		context->fill();
-		context->set_source_rgba(0, 0, 0, 1);
-		context->rectangle(0, 0, 1, 1);
-		context->rectangle(1, 1, 1, 1);
-		context->fill();
-		surface->flush();
-
-		pattern = Cairo::SurfacePattern::create(surface);
-		pattern->set_filter(Cairo::FILTER_NEAREST);
-		pattern->set_extend(Cairo::EXTEND_REPEAT);
-	}
-
-	const Gamma& get_gamma() const { return gamma; }
-
-	void set_gamma(const Gamma &x) {
-		if (gamma == x) return;
-		gamma = x;
-		queue_draw();
-	}
-	
-	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
-	{
-		cr->save();
-		
-		// prepare colors
-		ColorReal values[3] = {0.25, 0.5, 1};
-		Color colors[3][4];
-		for(int i = 0; i < 3; ++i) {
-			ColorReal v = values[i];
-			Color *c = colors[i];
-			c[0] = Color(v, v, v);
-			c[1] = Color(v, 0, 0);
-			c[2] = Color(0, v, 0);
-			c[3] = Color(0, 0, v);
-			for(int j = 0; j < 4; ++j)
-				c[j] = gamma.apply(c[j]);
-		}
-		Color *gray25 = colors[0];
-		Color *gray50 = colors[1];
-		Color *white  = colors[2];
-		
-		// 50% pattern
-		for(int i = 0; i < 4; ++i)
-		{
-			cr->set_source_rgb(white[i].get_r(), white[i].get_g(), white[i].get_b());
-			cr->rectangle(i*tile_w, 0, tile_w, tile_h);
-			cr->fill();
-
-			cr->set_source(pattern);
-			cr->rectangle(i*tile_w, 0, tile_w, tile_h);
-			cr->fill();
-
-			cr->set_source_rgb(gray50[i].get_r(), gray50[i].get_g(), gray50[i].get_b());
-			cr->rectangle(i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
-			cr->fill();
-		}
-
-		// 25% pattern
-		for(int i = 0; i < 4; ++i)
-		{
-			cr->set_source_rgb(gray50[i].get_r(), gray50[i].get_g(), gray50[i].get_b());
-			cr->rectangle(i*tile_w, tile_h, tile_w, tile_h);
-			cr->fill();
-
-			cr->set_source(pattern);
-			cr->rectangle(i*tile_w, tile_h, tile_w, tile_h);
-			cr->fill();
-
-			cr->set_source_rgb(gray25[i].get_r(), gray25[i].get_g(), gray25[i].get_b());
-			cr->rectangle(i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
-			cr->fill();
-		}
-
-		// black and white level pattern
-		cr->set_source_rgb(0, 0, 0);
-		cr->rectangle(0, tile_h*2, tile_w*4, gradient_h);
-		cr->fill();
-		cr->set_source_rgb(1, 1, 1);
-		cr->rectangle(0, tile_h*2 + gradient_h, tile_w*4, gradient_h);
-		cr->fill();
-		ColorReal level = 1;
-		for(int i = 0; i < 8; ++i)
-		{
-			level *= 0.5;
-			Color black = gamma.apply(Color(level, level, level));
-			Color white = gamma.apply(Color(1-level, 1-level, 1-level));
-			double x = tile_w*4*(i/8.0 + 1/16.0);
-			double yb = tile_h*2 + gradient_h/2.0;
-			double yw = yb + gradient_h;
-			double r = gradient_h/4.0;
-			
-			cr->set_source_rgb(black.get_r(), black.get_g(), black.get_b());
-			cr->arc(x, yb, r, 0, 2*M_PI);
-			cr->fill();
-
-			cr->set_source_rgb(white.get_r(), white.get_g(), white.get_b());
-			cr->arc(x, yw, r, 0, 2*M_PI);
-			cr->fill();
-		}
-		cr->restore();
-		return true;
-	}
-}; // END of class GammaPattern
-
-
 /* === M E T H O D S ======================================================= */
 
 
@@ -283,7 +155,7 @@ Widget_RendDesc::refresh()
 	adjustment_gamma_r->set_value(rend_desc_.get_gamma().get_r());
 	adjustment_gamma_g->set_value(rend_desc_.get_gamma().get_g());
 	adjustment_gamma_b->set_value(rend_desc_.get_gamma().get_b());
-	dynamic_cast<GammaPattern*>(gamma_pattern)->set_gamma(rend_desc_.get_gamma().get_inverted());
+	dynamic_cast<Widget_GammaPattern*>(gamma_pattern)->set_gamma(rend_desc_.get_gamma().get_inverted());
 	
 	// other tab
 	toggle_px_aspect->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_ASPECT));
@@ -832,7 +704,7 @@ Widget_RendDesc::create_gamma_tab()
 		int row = 0;
 		int col = 0;
 		
-		gamma_pattern = manage(new GammaPattern());
+		gamma_pattern = manage(new Widget_GammaPattern());
 		gamma_pattern->set_halign(Gtk::ALIGN_START);
 		frameGrid->attach(*gamma_pattern, col, row, 1, 1);
 		

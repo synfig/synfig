@@ -42,6 +42,7 @@
 #include "widgets/widget_vector.h"
 #include "widgets/widget_time.h"
 #include "widgets/widget_link.h"
+#include "widgets/widget_gammapattern.h"
 
 /* === M A C R O S ========================================================= */
 

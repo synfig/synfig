@@ -38,6 +38,7 @@
 
 /* === U S I N G =========================================================== */
 
+using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -48,11 +49,75 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+const string Widget_Link::tooltip_wh_on   = "Link width and height";
+const string Widget_Link::tooltip_wh_off  = "Unlink width and height";
+const string Widget_Link::tooltip_res_on  = "Link x and y resolution";
+const string Widget_Link::tooltip_res_off = "Unlink x and y resolution";
 
+Widget_Link::Widget_Link():
+	Glib::ObjectBase          ("widget_link"),
+	is_custom_widget_called   (true),
+	property_tooltip_active_  (*this, "tooltip_active", ""),
+	property_tooltip_inactive_(*this, "tooltip_inactive", "")
+{
+	init();
+}
 
-namespace studio {
+Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt_active):
+	Glib::ObjectBase          ("widget_link"),
+	is_custom_widget_called   (false),
+	property_tooltip_active_  (*this, "tooltip_active", ""),
+	property_tooltip_inactive_(*this, "tooltip_inactive", "")
+{
+	init(tlt_inactive, tlt_active);
+}
 
-Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt_active)
+Widget_Link::Widget_Link(BaseObjectType *cobject):
+	Glib::ObjectBase          ("widget_link"),
+	Gtk::ToggleButton         (cobject),
+	is_custom_widget_called   (true),
+	property_tooltip_active_  (*this, "tooltip_active", ""),
+	property_tooltip_inactive_(*this, "tooltip_inactive", "")
+{
+	init();
+}
+
+// This constructor is meant to be called by builder->get_widget_derived()
+Widget_Link::Widget_Link(BaseObjectType *cobject, const std::string &tlt_inactive, const std::string &tlt_active):
+	Glib::ObjectBase          ("widget_link"),
+	Gtk::ToggleButton         (cobject),
+	is_custom_widget_called   (true),
+	property_tooltip_active_  (*this, "tooltip_active", ""),
+	property_tooltip_inactive_(*this, "tooltip_inactive", "")
+{
+	init(tlt_inactive, tlt_active);
+}
+
+Widget_Link::~Widget_Link() {
+	delete icon_on_;
+	delete icon_off_;
+}
+
+void
+Widget_Link::init()
+{
+	set_up_icons();
+	refresh_tooltip_texts();
+}
+
+void
+Widget_Link::init(const string &tlt_inactive, const string &tlt_active)
+{
+	set_up_icons();
+
+	tooltip_inactive_ = tlt_inactive;
+	tooltip_active_   = tlt_active;
+
+	set_tooltip_text(tooltip_inactive_);
+}
+
+void
+Widget_Link::set_up_icons()
 {
 	const Glib::RefPtr<Gtk::StyleContext> context = get_style_context();
 
@@ -73,37 +138,71 @@ Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt
 
 	icon_off_->show();
 	add(*icon_off_);
-	set_relief(Gtk::RELIEF_NONE);
-
-	tooltip_inactive_ = tlt_inactive;
-	tooltip_active_ = tlt_active;
-	set_tooltip_text(tooltip_inactive_);
 }
 
-Widget_Link::~Widget_Link() {
-	delete icon_on_;
-	delete icon_off_;
-}
-
-}
-
-
-void Widget_Link::on_toggled()
+void
+Widget_Link::on_toggled()
 {
 	Gtk::Image *icon;
 
-	if(get_active())
-	{
-		icon= icon_on_;
-		set_tooltip_text(tooltip_active_);
-	}
+	// refresh icon
+	get_active() ? icon = icon_on_ : icon = icon_off_;
+
+	// refresh tooltip text
+	if (!is_custom_widget_called)
+		get_active() ? set_tooltip_text(tooltip_active_) : set_tooltip_text(tooltip_inactive_);
 	else
-	{
-		icon=icon_off_;
-		set_tooltip_text(tooltip_inactive_);
-	}
+		refresh_tooltip_texts();
 
 	remove();
 	add(*icon);
 	icon->show();
+}
+
+void
+Widget_Link::refresh_tooltip_texts()
+{
+	string widget = get_tooltip_text();
+
+	if (get_active()) {
+
+		if (widget.find("width") != string::npos)
+			set_tooltip_text(tooltip_wh_off);
+
+		if (widget.find("resolution") != string::npos)
+			set_tooltip_text(tooltip_res_off);
+
+	} else {
+
+		if (widget.find("width") != string::npos)
+			set_tooltip_text(tooltip_wh_on);
+
+		if (widget.find("resolution") != string::npos)
+			set_tooltip_text(tooltip_res_on);
+
+	}
+}
+
+GType Widget_Link::gtype = 0;
+
+Glib::ObjectBase
+*Widget_Link::wrap_new(GObject *o)
+{
+	if (gtk_widget_is_toplevel(GTK_WIDGET(o)))
+		return new Widget_Link(GTK_TOGGLE_BUTTON(o));
+	else
+		return Gtk::manage(new Widget_Link(GTK_TOGGLE_BUTTON(o)));
+}
+
+void
+Widget_Link::register_type()
+{
+	if(gtype)
+		return;
+
+	Widget_Link dummy;
+
+	gtype = G_OBJECT_TYPE(dummy.gobj());
+
+	Glib::wrap_register(gtype, Widget_Link::wrap_new);
 }

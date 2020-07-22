@@ -45,6 +45,7 @@
 
 #include <gtkmm/textview.h>
 
+#include "gui/widgets/widget_gammapattern.h"
 #include "gui/widgets/widget_time.h"
 #include "gui/widgets/widget_vector.h"
 
@@ -241,8 +242,10 @@ MainWindow::init_menus()
 
 void MainWindow::register_custom_widget_types()
 {
-	Widget_Vector::register_type();
+	Widget_GammaPattern::register_type();
+	Widget_Link::register_type();
 	Widget_Time::register_type();
+	Widget_Vector::register_type();
 }
 
 void

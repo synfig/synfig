@@ -27,7 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <glibmm/property.h>
+
 #include <gtkmm/togglebutton.h>
+
 #include "synfig/string.h"
 
 /* === M A C R O S ========================================================= */
@@ -46,12 +49,43 @@ class Widget_Link: public Gtk::ToggleButton
 	Gtk::Image *icon_off_;
 	Gtk::Image *icon_on_;
 
+	void init();
+	void init(const std::string &tlt_inactive, const std::string &tlt_active);
+	void set_up_icons();
+
 protected:
 	void on_toggled();
 
 public:
+	Widget_Link();
 	Widget_Link(const std::string &tlt_inactive, const std::string &tlt_active);
 	~Widget_Link();
+
+// Glade & GtkBuilder related
+private:
+	bool is_custom_widget_called;
+
+	static const std::string tooltip_wh_on;
+	static const std::string tooltip_wh_off;
+	static const std::string tooltip_res_on;
+	static const std::string tooltip_res_off;
+
+	static GType gtype;
+
+	void refresh_tooltip_texts();
+
+public:
+	Widget_Link(BaseObjectType *cobject);
+	Widget_Link(BaseObjectType *cobject, const std::string &tlt_inactive, const std::string &tlt_active);
+
+	static Glib::ObjectBase *wrap_new(GObject *o);
+	static void register_type();
+
+	Glib::Property<std::string> property_tooltip_active_;
+	Glib::Property<std::string> property_tooltip_inactive_;
+
+	Glib::PropertyProxy<std::string> property_tooltip_active()   { return property_tooltip_active_.get_proxy();}
+	Glib::PropertyProxy<std::string> property_tooltip_inactive() { return property_tooltip_inactive_.get_proxy(); }
 }; // END of class Widget_Link
 
 } // END of namespace studio
