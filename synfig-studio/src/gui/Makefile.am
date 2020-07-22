@@ -46,6 +46,7 @@ OTHER_HH = \
 	devicetracker.h \
 	dialogsettings.h \
 	duckmatic.h \
+	exception_guard.h \
 	localization.h \
 	iconcontroller.h \
 	instance.h \
