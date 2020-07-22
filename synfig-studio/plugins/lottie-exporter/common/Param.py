@@ -414,9 +414,12 @@ class Param:
                 den = "sum("    # Denominator string
                 for it in lst:
                     it.extract_subparams()  # weighted_vector
-                    it.subparams["weighted_vector"].extract_subparams()
-                    weight, eff_1 = it.subparams["weighted_vector"].subparams["weight"].recur_animate("scalar_multiply")
-                    value, eff_2 = it.subparams["weighted_vector"].subparams["value"].recur_animate(anim_type)
+                    tag = "weighted_vector"
+                    if "composite" in it.subparams.keys():
+                        tag = "composite"
+                    it.subparams[tag].extract_subparams()
+                    weight, eff_1 = it.subparams[tag].subparams["weight"].recur_animate("scalar_multiply")
+                    value, eff_2 = it.subparams[tag].subparams["value"].recur_animate(anim_type)
                     self.expression_controllers.extend(eff_1)
                     self.expression_controllers.extend(eff_2)
                     hell = "mul({weight}, {value}),"
@@ -709,13 +712,13 @@ class Param:
                 local_length_scale = self.subparams["scalelx"].__get_value(frame)
 
                 # Calculating the recursive length scale
-                this_rls = self.subparams["scalex"].__get_value(frame)    # In current angle's direction
+                # this_rls = self.subparams["scalex"].__get_value(frame)    # In current angle's direction
                 absolute_angle = shifted_angle+angle
-                aa1 = math.radians(absolute_angle)
+                # aa1 = math.radians(absolute_angle) #Might be useful in making recursive_length
 
                 # Calculate returning recursive length
                 ret_rls = [1,1]
-                this_rls = [1,1]
+                # this_rls = [1,1]
                 # Multiplying the current bone origin with the scale
                 cur_origin = [i*lls for i in cur_origin]
 
@@ -781,11 +784,14 @@ class Param:
 
                 ret = [0, 0]
                 den = 0
-                if not isinstance(lst[0].subparams["weighted_vector"].subparams["value"].__get_value(frame), list):
+                tag = "weighted_vector"
+                if "composite" in lst[0].subparams:
+                    tag = "composite"
+                if not isinstance(lst[0].subparams[tag].subparams["value"].__get_value(frame), list):
                     ret = 0
                 for it in lst:
-                    weight = it.subparams["weighted_vector"].subparams["weight"].__get_value(frame)
-                    value = it.subparams["weighted_vector"].subparams["value"].__get_value(frame)
+                    weight = it.subparams[tag].subparams["weight"].__get_value(frame)
+                    value = it.subparams[tag].subparams["value"].__get_value(frame)
                     den += weight
                     if isinstance(value, list):
                         ret[0], ret[1] = ret[0] + value[0]*weight, ret[1] + value[1]*weight
@@ -1060,8 +1066,11 @@ class Param:
                 self.subparams["weighted_average"].extract_subparams()
                 for it in self.subparams["weighted_average"].subparams["entry"]:
                     it.extract_subparams()
-                    it.subparams["weighted_vector"].extract_subparams()
-                    ti = it.subparams["weighted_vector"].subparams
+                    tag = "weighted_vector"
+                    if "composite" in it.subparams.keys():
+                        tag = "composite"
+                    it.subparams[tag].extract_subparams()
+                    ti = it.subparams[tag].subparams
                     ti["weight"].update_frame_window(window)
                     ti["value"].update_frame_window(window)
 
