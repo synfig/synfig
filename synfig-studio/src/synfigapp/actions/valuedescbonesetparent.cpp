@@ -152,28 +152,26 @@ Action::ValueDescBoneSetParent::perform()
 	 || !child)
 			throw Error(Error::TYPE_NOTREADY);
 
-	info("Received : "+ child->get_description());
 	ValueNode_Bone::Handle bone;
 	if((bone = ValueNode_Bone::Handle::cast_dynamic(child))){
 		if(ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())){
 			ValueDesc bone_desc = value_desc.get_parent_desc();
-			Matrix T = bone_desc.get_value(time).get(Bone()).get_animated_matrix();
-			Angle T_angle = Angle::rad(atan2(T.axis(0)[1],T.axis(0)[0]));
-			T = T.get_inverted();
+			Matrix new_parent_matrix = bone_desc.get_value(time).get(Bone()).get_animated_matrix();
+			Angle new_parent_angle = Angle::rad(atan2(new_parent_matrix.axis(0)[1],new_parent_matrix.axis(0)[0]));
+			new_parent_matrix = new_parent_matrix.get_inverted();
 
-			ValueNode_Bone::Handle parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
-			info(parent_bone->operator()(time).get_type().description.name);
-			Matrix p_M = parent_bone->operator()(time).get(Bone()).get_animated_matrix();
-			Angle p_angle = Angle::rad(atan2(p_M.axis(0)[1],p_M.axis(0)[0]));
+			ValueNode_Bone::Handle old_parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
+			Matrix old_parent_matrix = old_parent_bone->operator()(time).get(Bone()).get_animated_matrix();
+			Angle old_parent_angle = Angle::rad(atan2(old_parent_matrix.axis(0)[1],old_parent_matrix.axis(0)[0]));
+			Real old_parent_scale = old_parent_bone->get_link("scalelx")->operator()(time).get(Real());
 
 			Point origin = bone->get_link("origin")->operator()(time).get(Point());
 			Angle angle = bone->get_link("angle")->operator()(time).get(Angle());
-			Real sx = bone->get_link("scalelx")->operator()(time).get(Real());
 
-			angle+=p_angle-T_angle;
-			origin[0] *= sx;
-			origin = p_M.get_transformed(origin);
-			origin = T.get_transformed(origin);
+			angle+=old_parent_angle-new_parent_angle;
+			origin[0] *= old_parent_scale;
+			origin = old_parent_matrix.get_transformed(origin);
+			origin = new_parent_matrix.get_transformed(origin);
 			origin[0]/=bone_desc.get_value(time).get(Bone()).get_scalelx();
 			if(bone->set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_dynamic(bone_desc.get_value_node())))){
 				bone->set_link("origin",ValueNode_Const::create(origin));
@@ -192,24 +190,26 @@ Action::ValueDescBoneSetParent::undo() {
 	if(prev_parent){
 		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(child);
 		ValueDesc bone_desc = value_desc.get_parent_desc();
-		Matrix T = bone_desc.get_value(time).get(Bone()).get_animated_matrix();
-		Angle T_angle = Angle::rad(atan2(T.axis(0)[1],T.axis(0)[0]));
+		Matrix new_parent_matrix = bone_desc.get_value(time).get(Bone()).get_animated_matrix();
+		Angle new_parent_angle = Angle::rad(atan2(new_parent_matrix.axis(0)[1],new_parent_matrix.axis(0)[0]));
 
 
-		ValueNode_Bone::Handle parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
-		Matrix p_M = parent_bone->operator()(time).get(Bone()).get_animated_matrix();
-		Angle p_angle = Angle::rad(atan2(p_M.axis(0)[1],p_M.axis(0)[0]));
-		p_M = p_M.get_inverted();
+		ValueNode_Bone::Handle old_parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
+		Matrix old_parent_matrix = old_parent_bone->operator()(time).get(Bone()).get_animated_matrix();
+		Angle old_parent_angle = Angle::rad(atan2(old_parent_matrix.axis(0)[1],old_parent_matrix.axis(0)[0]));
+		Real old_parent_scale = old_parent_bone->get_link("scalelx")->operator()(time).get(Real());
+		old_parent_matrix = old_parent_matrix.get_inverted();
 
 		Point origin = bone->get_link("origin")->operator()(time).get(Point());
 		Angle angle = bone->get_link("angle")->operator()(time).get(Angle());
-		Real sx = bone->get_link("scalelx")->operator()(time).get(Real());
 
-		angle+=T_angle-p_angle;
-		origin[0]*=bone_desc.get_value(time).get(Bone()).get_scalelx();
-		origin = p_M.get_transformed(T.get_transformed(origin));
-		origin[0]/=sx;
-		if(bone->set_link("parent",prev_parent)){
+
+		angle+=new_parent_angle-old_parent_angle;
+		origin[0] *= bone_desc.get_value(time).get(Bone()).get_scalelx();
+		origin = new_parent_matrix.get_transformed(origin);
+		origin = old_parent_matrix.get_transformed(origin);
+		origin[0]/=old_parent_scale;
+		if(bone->set_link("parent",ValueNode_Const::create(old_parent_bone))){
 			bone->set_link("origin",ValueNode_Const::create(origin));
 			bone->set_link("angle",ValueNode_Const::create(angle));
 		}

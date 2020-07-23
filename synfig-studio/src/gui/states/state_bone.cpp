@@ -548,8 +548,6 @@ StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	Point p(get_work_area()->snap_point_to_grid(event.pos));
 
-	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
 	switch(event.button)
 	{
 		case BUTTON_LEFT:
@@ -687,6 +685,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								createChild->set_param("scalelx", Action::Param(ValueBase(1.0)));
 
 							}
+
 
 							if(createChild->is_ready()){
 								try{
