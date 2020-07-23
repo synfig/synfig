@@ -11,6 +11,29 @@
 #endif
 #endif
 
+/// These macros are supposed to be used in pair, and avoid any exception thrown to be propagated and terminate synfig.
+/// This is specially important for Gtk user event callback methods, like Gtk::Widget::on_event(), Gtk::Widget::on_key_press_event(),
+/// Gtk::Widget::on_draw() implementations. However, it may be used in any case.
+///
+/// Example code:
+///
+/// void my_method_that_could_not_throw() // maybe append noexcept keyword too
+/// {
+///     SYNFIG_EXCEPTION_GUARD_BEGIN()
+///     ... code
+///     ... code
+///     SYNFIG_EXCEPTION_GUARD_END()
+/// }
+///
+/// bool my_other_method_that_could_not_throw() // maybe append noexcept keyword too
+/// {
+///     SYNFIG_EXCEPTION_GUARD_BEGIN()
+///     ... code
+///     ... code
+///     SYNFIG_EXCEPTION_GUARD_END_BOOL(true) // return true if successfull, false if it caught any exception
+/// }
+///
+
 #define SYNFIG_EXCEPTION_GUARD_BEGIN() \
 	{ \
 		int _exception_guard_error_code = 0; \
@@ -62,7 +85,7 @@
 		} \
 	}
 
-/// It should return (void), no matter what happens
+/// It just finishes the exception guard, don't do any return
 #define SYNFIG_EXCEPTION_GUARD_END_NO_RETURN() \
 	SYNFIG_EXCEPTION_GUARD_END_COMMON \
 		if (!_exception_guard_error_str.empty()) { \
