@@ -178,6 +178,32 @@ AC_ARG_WITH([images],
 
 AM_CONDITIONAL([WITH_IMAGES], [test "x$with_images" != "xno"])
 
+
+# FONTCONFIG CHECK--------------------
+
+AC_ARG_WITH(fontconfig,
+	AS_HELP_STRING(--without-fontconfig, [do not support fontconfig (default=auto)]),[
+],[
+	with_fontconfig="yes"
+])
+
+if test $with_fontconfig != "no" ; then {
+	PKG_CHECK_MODULES(FONTCONFIG, fontconfig,[
+		with_fontconfig="yes"
+		CONFIG_DEPS="$CONFIG_DEPS fontconfig"
+	],[
+		with_fontconfig="no"
+	])
+} ; fi
+
+if test $with_fontconfig = "yes" ; then {
+	AC_DEFINE(WITH_FONTCONFIG,[],[enable fontconfig support])
+	AM_CONDITIONAL(WITH_FONTCONFIG,true)
+} else {
+	AM_CONDITIONAL(WITH_FONTCONFIG,false)
+} ; fi
+
+
 AC_CONFIG_FILES([
     Makefile
     build_tools/Makefile

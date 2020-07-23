@@ -73,6 +73,7 @@ class Widget_Filename;
 class Widget_Vector;
 class Widget_Time;
 class Widget_Distance;
+class Widget_FontFamily;
 
 class Widget_ValueBase : public Gtk::HBox
 {
@@ -98,6 +99,7 @@ class Widget_ValueBase : public Gtk::HBox
 	Widget_Time *time_widget;
 	Gtk::Entry *string_widget;
 	Widget_Distance *distance_widget;
+	Widget_FontFamily *fontfamily_widget;
 
 //	std::string hint;
 

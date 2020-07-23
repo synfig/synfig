@@ -60,6 +60,8 @@
 	#include FT_MAC_H
 #endif
 
+#include <algorithm>
+
 #endif
 
 using namespace std;
@@ -70,12 +72,34 @@ using namespace synfig;
 
 #define MAX_GLYPHS		2000
 
-#define PANGO_STYLE_NORMAL (0)
-#define PANGO_STYLE_OBLIQUE (1)
-#define PANGO_STYLE_ITALIC (2)
+// Copy of PangoStyle
+// It is necessary to keep original values if Pango ever change them
+//  - because it would change layer rendering as Synfig stores the parameter
+//     value as an integer (ie. not a weight name string)
+enum TextStyle{
+	TEXT_STYLE_NORMAL = 0,
+	TEXT_STYLE_OBLIQUE = 1,
+	TEXT_STYLE_ITALIC = 2
+};
 
-#define WEIGHT_NORMAL (400)
-#define WEIGHT_BOLD (700)
+// Copy of PangoWeight
+// It is necessary to keep original values if Pango ever change them
+//  - because it would change layer rendering as Synfig stores the parameter
+//     value as an integer (ie. not a weight name string)
+enum TextWeight{
+	TEXT_WEIGHT_THIN = 100,
+	TEXT_WEIGHT_ULTRALIGHT = 200,
+	TEXT_WEIGHT_LIGHT = 300,
+	TEXT_WEIGHT_SEMILIGHT = 350,
+	TEXT_WEIGHT_BOOK = 380,
+	TEXT_WEIGHT_NORMAL = 400,
+	TEXT_WEIGHT_MEDIUM = 500,
+	TEXT_WEIGHT_SEMIBOLD = 600,
+	TEXT_WEIGHT_BOLD = 700,
+	TEXT_WEIGHT_ULTRABOLD = 800,
+	TEXT_WEIGHT_HEAVY = 900,
+	TEXT_WEIGHT_ULTRAHEAVY = 1000
+};
 
 /* === G L O B A L S ======================================================= */
 
@@ -83,9 +107,14 @@ SYNFIG_LAYER_INIT(Layer_Freetype);
 SYNFIG_LAYER_SET_NAME(Layer_Freetype,"text");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,N_("Text"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.2");
+SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.3");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
 
+#ifndef __APPLE__
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf"};
+#else
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".dfont"};
+#endif
 /* === C L A S S E S ======================================================= */
 
 struct Glyph
@@ -122,6 +151,32 @@ struct TextLine
 	}
 };
 
+#ifdef WITH_FONTCONFIG
+// Allow proper finalization of FontConfig
+struct FontConfigWrap {
+	static FcConfig* init() {
+		static FontConfigWrap obj;
+		return obj.config;
+	}
+
+	FontConfigWrap(FontConfigWrap const&) = delete;
+	void operator=(FontConfigWrap const&) = delete;
+private:
+	FcConfig* config = nullptr;
+
+	FontConfigWrap()
+	{
+		config = FcInitLoadConfigAndFonts();
+	}
+	~FontConfigWrap() {
+		FcConfigDestroy(config);
+		config = nullptr;
+	}
+};
+
+static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight);
+#endif
+
 /* === P R O C E D U R E S ================================================= */
 
 /*Glyph::~Glyph()
@@ -141,6 +196,11 @@ TextLine::clear_and_free()
 	glyph_table.clear();
 }
 
+bool
+has_valid_font_extension(const std::string &filename) {
+	return std::find(known_font_extensions.begin(), known_font_extensions.end(), filename) != known_font_extensions.end();
+}
+
 /* === M E T H O D S ======================================================= */
 
 Layer_Freetype::Layer_Freetype()
@@ -154,8 +214,8 @@ Layer_Freetype::Layer_Freetype()
 	param_orient=ValueBase(Vector(0.5,0.5));
 	param_compress=ValueBase(Real(1.0));
 	param_vcompress=ValueBase(Real(1.0));
-	param_weight=ValueBase(WEIGHT_NORMAL);
-	param_style=ValueBase(PANGO_STYLE_NORMAL);
+	param_weight=ValueBase(TEXT_WEIGHT_NORMAL);
+	param_style=ValueBase(TEXT_STYLE_NORMAL);
 	param_family=ValueBase((const char*)"Sans Serif");
 	param_use_kerning=ValueBase(true);
 	param_grid_fit=ValueBase(false);
@@ -200,14 +260,14 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 {
 	if(
 		!new_font_(family,style,weight) &&
-		!new_font_(family,style,WEIGHT_NORMAL) &&
-		!new_font_(family,PANGO_STYLE_NORMAL,weight) &&
-		!new_font_(family,PANGO_STYLE_NORMAL,WEIGHT_NORMAL) &&
+		!new_font_(family,style,TEXT_WEIGHT_NORMAL) &&
+		!new_font_(family,TEXT_STYLE_NORMAL,weight) &&
+		!new_font_(family,TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL) &&
 		!new_font_("sans serif",style,weight) &&
-		!new_font_("sans serif",style,WEIGHT_NORMAL) &&
-		!new_font_("sans serif",PANGO_STYLE_NORMAL,weight)
+		!new_font_("sans serif",style,TEXT_WEIGHT_NORMAL) &&
+		!new_font_("sans serif",TEXT_STYLE_NORMAL,weight)
 	)
-		new_font_("sans serif",PANGO_STYLE_NORMAL,WEIGHT_NORMAL);
+		new_font_("sans serif",TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
 }
 
 /*! The new_font() function try to render
@@ -220,12 +280,18 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 {
 	synfig::String font_fam(font_fam_);
 
-	if(new_face(font_fam_))
-		return true;
+	if (has_valid_font_extension(font_fam_))
+		if(new_face(font_fam_))
+			return true;
 
-	//start evil hack
-	for(unsigned int i=0;i<font_fam.size();i++)font_fam[i]=tolower(font_fam[i]);
-	//end evil hack
+#ifdef WITH_FONTCONFIG
+	if (new_face(fontconfig_get_filename(font_fam_, style, weight)))
+		return true;
+#endif
+
+	// string :: tolower
+	std::transform(font_fam.begin(), font_fam.end(), font_fam.begin(),
+		[](unsigned char c){ return std::tolower(c); });
 
 	if(font_fam=="arial black")
 	{
@@ -240,12 +306,12 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="sans serif" || font_fam=="arial")
 	{
 		String arial("arial");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			arial+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 			arial+='i';
 		else
-			if(weight>WEIGHT_NORMAL) arial+='d';
+			if(weight>TEXT_WEIGHT_NORMAL) arial+='d';
 
 		if(new_face(arial))
 			return true;
@@ -258,11 +324,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="comic" || font_fam=="comic sans")
 	{
 		String filename("comic");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
+		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
 		if(new_face(filename))
 			return true;
@@ -271,11 +337,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="courier" || font_fam=="courier new")
 	{
 		String filename("cour");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
+		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
 		if(new_face(filename))
 			return true;
@@ -284,11 +350,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="serif" || font_fam=="times" || font_fam=="times new roman")
 	{
 		String filename("times");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 			filename+='i';
-		else if(weight>WEIGHT_NORMAL) filename+='d';
+		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
 		if(new_face(filename))
 			return true;
@@ -297,14 +363,14 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if(font_fam=="trebuchet")
 	{
 		String filename("trebuc");
-		if(weight>WEIGHT_NORMAL)
+		if(weight>TEXT_WEIGHT_NORMAL)
 			filename+='b';
-		if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 		{
 			filename+='i';
-			if(weight<=WEIGHT_NORMAL) filename+='t';
+			if(weight<=TEXT_WEIGHT_NORMAL) filename+='t';
 		}
-		else if(weight>WEIGHT_NORMAL) filename+='d';
+		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
 
 		if(new_face(filename))
 			return true;
@@ -314,11 +380,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	{
 		{
 			String luxi("luxis");
-			if(weight>WEIGHT_NORMAL)
+			if(weight>TEXT_WEIGHT_NORMAL)
 				luxi+='b';
 			else
 				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 				luxi+='i';
 
 			if(new_face(luxi))
@@ -333,11 +399,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	{
 		{
 			String luxi("luxir");
-			if(weight>WEIGHT_NORMAL)
+			if(weight>TEXT_WEIGHT_NORMAL)
 				luxi+='b';
 			else
 				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 				luxi+='i';
 
 			if(new_face(luxi))
@@ -352,11 +418,11 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	{
 		{
 			String luxi("luxim");
-			if(weight>WEIGHT_NORMAL)
+			if(weight>TEXT_WEIGHT_NORMAL)
 				luxi+='b';
 			else
 				luxi+='r';
-			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
+			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
 				luxi+='i';
 
 			if(new_face(luxi))
@@ -369,10 +435,62 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 			return true;
 	}
 
-	return new_face(font_fam_) || new_face(font_fam);
-
-	return false;
+	return new_face(font_fam) || new_face(font_fam_);
 }
+
+#ifdef WITH_FONTCONFIG
+
+static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight) {
+	std::string filename;
+	FcConfig* fc = FontConfigWrap::init();
+	if( !fc )
+	{
+		synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
+	} else {
+		FcPattern* pat = FcPatternCreate();
+		FcPatternAddString(pat, FC_FAMILY, (const FcChar8*)font_fam.c_str());
+		FcPatternAddInteger(pat, FC_SLANT, style == TEXT_STYLE_NORMAL ? FC_SLANT_ROMAN : (style == TEXT_STYLE_ITALIC ? FC_SLANT_ITALIC : FC_SLANT_OBLIQUE));
+		int fc_weight;
+#define SYNFIG_TO_FC(X) TEXT_WEIGHT_##X : fc_weight = FC_WEIGHT_##X ; break
+		switch (weight) {
+		case SYNFIG_TO_FC(NORMAL);
+		case SYNFIG_TO_FC(BOLD);
+		case SYNFIG_TO_FC(THIN);
+		case SYNFIG_TO_FC(ULTRALIGHT);
+		case SYNFIG_TO_FC(LIGHT);
+		case SYNFIG_TO_FC(SEMILIGHT);
+		case SYNFIG_TO_FC(BOOK);
+		case SYNFIG_TO_FC(MEDIUM);
+		case SYNFIG_TO_FC(SEMIBOLD);
+		case SYNFIG_TO_FC(ULTRABOLD);
+		case SYNFIG_TO_FC(HEAVY);
+		case TEXT_WEIGHT_ULTRAHEAVY : fc_weight = FC_WEIGHT_HEAVY ; break;
+		default:
+			fc_weight = FC_WEIGHT_NORMAL;
+		}
+#undef SYNFIG_TO_FC
+		FcPatternAddInteger(pat, FC_WEIGHT, fc_weight);
+
+		FcConfigSubstitute(fc, pat, FcMatchPattern);
+		FcDefaultSubstitute(pat);
+		FcFontSet *fs = FcFontSetCreate();
+		FcResult result;
+		FcPattern *match = FcFontMatch(fc, pat, &result);
+		if (match)
+			FcFontSetAdd(fs, match);
+		if (pat)
+			FcPatternDestroy(pat);
+		if(fs && fs->nfont){
+			FcChar8* file;
+			if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
+				filename = (const char*)file;
+			FcFontSetDestroy(fs);
+		} else
+			synfig::warning("Layer_Freetype: fontconfig: %s",_("empty font set"));
+	}
+	return filename;
+}
+#endif
 
 #ifdef USE_MAC_FT_FUNCS
 void fss2path(char *path, FSSpec *fss)
@@ -425,10 +543,14 @@ Layer_Freetype::new_face(const String &newfont)
 	if (newfont.empty())
 		return false;
 
-	std::vector<const char *> possible_font_extensions = {"", ".ttf", ".otf"};
-#ifdef __APPLE__
-	possible_font_extensions.push_back(".dfont");
-#endif
+	std::vector<const char *> possible_font_extensions = {""};
+
+	// if newfont doesn't have a known extension, try to append those extensions
+	{
+		if (! has_valid_font_extension(newfont))
+			possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
+	}
+
 	std::vector<std::string> possible_font_directories = {""};
 	if (get_canvas())
 		possible_font_directories.push_back( get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR );
@@ -477,37 +599,6 @@ Layer_Freetype::new_face(const String &newfont)
 		{
 			synfig::info(__FILE__":%d: \"%s\" -- ft_error=%d",__LINE__,newfont.c_str(),error);
 			// Unable to generate fs_spec
-		}
-	}
-#endif
-
-#ifdef WITH_FONTCONFIG
-	if(error)
-	{
-		FcFontSet *fs;
-		FcResult result;
-		if( !FcInit() )
-		{
-			synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
-			error = 1;
-		} else {
-			FcPattern* pat = FcNameParse((FcChar8 *) newfont.c_str());
-			FcConfigSubstitute(0, pat, FcMatchPattern);
-			FcDefaultSubstitute(pat);
-			FcPattern *match;
-			fs = FcFontSetCreate();
-			match = FcFontMatch(0, pat, &result);
-			if (match)
-				FcFontSetAdd(fs, match);
-			if (pat)
-				FcPatternDestroy(pat);
-			if(fs && fs->nfont){
-				FcChar8* file;
-				if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
-					error=FT_New_Face(ft_library,(const char*)file,face_index,&face);
-				FcFontSetDestroy(fs);
-			} else
-				synfig::warning("Layer_Freetype: fontconfig: %s",_("empty font set"));
 		}
 	}
 #endif
@@ -651,20 +742,24 @@ Layer_Freetype::get_param_vocab(void)const
 	ret.push_back(ParamDesc("style")
 		.set_local_name(_("Style"))
 		.set_hint("enum")
-		.add_enum_value(PANGO_STYLE_NORMAL, "normal" ,_("Normal"))
-		.add_enum_value(PANGO_STYLE_OBLIQUE, "oblique" ,_("Oblique"))
-		.add_enum_value(PANGO_STYLE_ITALIC, "italic" ,_("Italic"))
+		.add_enum_value(TEXT_STYLE_NORMAL, "normal" ,_("Normal"))
+		.add_enum_value(TEXT_STYLE_OBLIQUE, "oblique" ,_("Oblique"))
+		.add_enum_value(TEXT_STYLE_ITALIC, "italic" ,_("Italic"))
 	);
 
 	ret.push_back(ParamDesc("weight")
 		.set_local_name(_("Weight"))
 		.set_hint("enum")
-		.add_enum_value(200, "ultralight" ,_("Ultralight"))
-		.add_enum_value(300, "light" ,_("Light"))
-		.add_enum_value(400, "normal" ,_("Normal"))
-		.add_enum_value(700, "bold" ,_("Bold"))
-		.add_enum_value(800, "ultrabold" ,_("Ultrabold"))
-		.add_enum_value(900, "heavy" ,_("Heavy"))
+		.add_enum_value(TEXT_WEIGHT_THIN, "thin" ,_("Thin"))
+		.add_enum_value(TEXT_WEIGHT_ULTRALIGHT, "ultralight" ,_("Ultralight"))
+		.add_enum_value(TEXT_WEIGHT_LIGHT, "light" ,_("Light"))
+		.add_enum_value(TEXT_WEIGHT_BOOK, "book" ,_("Book"))
+		.add_enum_value(TEXT_WEIGHT_NORMAL, "normal" ,_("Normal"))
+		.add_enum_value(TEXT_WEIGHT_MEDIUM, "medium" ,_("Medium"))
+		.add_enum_value(TEXT_WEIGHT_BOLD, "bold" ,_("Bold"))
+		.add_enum_value(TEXT_WEIGHT_ULTRABOLD, "ultrabold" ,_("Ultrabold"))
+		.add_enum_value(TEXT_WEIGHT_HEAVY, "heavy" ,_("Heavy"))
+		.add_enum_value(TEXT_WEIGHT_ULTRAHEAVY, "ultraheavy" ,_("Ultraheavy"))
 	);
 	ret.push_back(ParamDesc("compress")
 		.set_local_name(_("Horizontal Spacing"))
