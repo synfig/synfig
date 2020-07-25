@@ -29,6 +29,7 @@
 #include "docks/dock_canvasspecific.h"
 #include "sigc++/signal.h"
 
+#include "asyncrenderer.h"
 #include "widgets/widget_distance.h"
 #include <gtkmm/progressbar.h>
 
@@ -46,6 +47,8 @@ class Dock_Info : public Dock_CanvasSpecific
 	Gtk::Label       x,y;
 	Gtk::ProgressBar render_progress;
 
+	etl::handle<AsyncRenderer> async_renderer;
+
 	//! Number of passes request - 1 or 2 (if alpha)
 	int              n_passes_requested;
 	//! Number of passes pending - 2,1,0
@@ -54,6 +57,7 @@ class Dock_Info : public Dock_CanvasSpecific
 	sigc::connection mousecon;
 
 	void on_mouse_move();
+	void stop_renderer();
 
 public:
 	Dock_Info();
@@ -63,6 +67,7 @@ public:
 
 	//! Current render progress - 0.0 to 1.0
 	//  depends on n_passes_requested and current_pass
+	void set_async_render(etl::handle<AsyncRenderer> *ar);
 	void set_render_progress   (float value);
 	void set_n_passes_requested(int   value);
 	void set_n_passes_pending  (int   value);

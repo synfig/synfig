@@ -177,6 +177,12 @@ studio::Dock_Info::Dock_Info()
 	render_progress.set_text(strprintf("%.1f%%", 0.0));
 	render_progress.set_fraction(0.0);
 
+	Gtk::Button *stop_button = manage(new Gtk::Button());
+	stop_button->set_label("Stop");
+	stop_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::stop_renderer));
+
+	table->attach_next_to(*stop_button, render_progress, Gtk::POS_RIGHT, 1, 1);
+
 	table->set_margin_start(5);
 	table->set_margin_end(5);
 	table->set_margin_top(5);
@@ -197,6 +203,11 @@ studio::Dock_Info::~Dock_Info()
 {
 }
 
+void studio::Dock_Info::stop_renderer()
+{
+	async_renderer->stop();
+}
+
 void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
 	mousecon.disconnect();
@@ -205,6 +216,11 @@ void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> 
 	{
 		mousecon = get_canvas_view()->get_work_area()->signal_cursor_moved().connect(sigc::mem_fun(*this,&Dock_Info::on_mouse_move));
 	}
+}
+
+void studio::Dock_Info::set_async_render(etl::handle<studio::AsyncRenderer> *ar)
+{
+	async_renderer = *ar;
 }
 
 void studio::Dock_Info::set_n_passes_requested(int value)

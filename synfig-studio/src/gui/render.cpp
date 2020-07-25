@@ -522,28 +522,10 @@ RenderSettings::submit_next_render_pass()
 
 		canvas_interface_->get_ui_interface()->task(strprintf(_("Rendering %s"), pass_filename.c_str()));
 
-		/*
-		if(async_renderer)
-		{
-			async_renderer->stop();
-			async_renderer.detach();
-		}
-		*/
 		async_renderer=new AsyncRenderer(target, progress_logger.get());
 		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
 		async_renderer->start();
-		/*
-		if(!target->render(canvas_interface_->get_ui_interface().get()))
-		{
-			canvas_interface_->get_ui_interface()->error(_("Render Failure"));
-			canvas_interface_->get_ui_interface()->amount_complete(0,10000);
-			return;
-		}
-
-		// Success!
-		canvas_interface_->get_ui_interface()->task(pass_filename+_(" rendered successfully"));
-		canvas_interface_->get_ui_interface()->amount_complete(0,10000);
-		*/
+		App::dock_info_->set_async_render(&async_renderer);
 	}
 	return;
 }
