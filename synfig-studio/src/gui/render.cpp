@@ -525,7 +525,7 @@ RenderSettings::submit_next_render_pass()
 		async_renderer=new AsyncRenderer(target, progress_logger.get());
 		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
 		async_renderer->start();
-		App::dock_info_->set_async_render(&async_renderer);
+		App::dock_info_->set_async_render(async_renderer);
 	}
 	return;
 }

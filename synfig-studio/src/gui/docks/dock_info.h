@@ -57,7 +57,7 @@ class Dock_Info : public Dock_CanvasSpecific
 	sigc::connection mousecon;
 
 	void on_mouse_move();
-	void stop_renderer();
+	void on_stop_button_clicked();
 
 public:
 	Dock_Info();
@@ -67,7 +67,7 @@ public:
 
 	//! Current render progress - 0.0 to 1.0
 	//  depends on n_passes_requested and current_pass
-	void set_async_render(etl::handle<AsyncRenderer> *ar);
+	void set_async_render(etl::handle<AsyncRenderer> ar);
 	void set_render_progress   (float value);
 	void set_n_passes_requested(int   value);
 	void set_n_passes_pending  (int   value);
