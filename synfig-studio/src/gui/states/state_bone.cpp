@@ -89,7 +89,7 @@ using namespace synfigapp;
 #endif
 
 #define GAP	(3)
-#define INDENTATION (6)
+#define DEFAULT_WIDTH (0.1)
 
 /* === G L O B A L S ======================================================= */
 
@@ -107,8 +107,7 @@ class studio::StateBone_Context : public sigc::trackable
 
 	int depth;
 	Canvas::Handle canvas;
-	
-	Point point_holder;
+
 	Duck::Handle  point2_duck,point1_duck;
 	handle<Duckmatic::Bezier> bone_bezier;
 
@@ -208,6 +207,8 @@ public:
 	bool egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
+		save_settings();
+		load_settings();
 		if(egress_on_selection_change)
 			throw &state_normal;
 		return Smach::RESULT_OK;
@@ -258,12 +259,12 @@ StateBone_Context::load_settings()
 		}
 
 		if(c_layer==0){
-			if(settings.get_value("bone.skel_bone_width",value) && value!="")
+			if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
 				set_bone_width(Distance(atof(value.c_str()),App::distance_system));
 			else
 				set_bone_width(Distance(6.6,App::distance_system)); // default width
 		}else{
-			if(settings.get_value("bone.skel_deform_bone_width",value) && value!="")
+			if(settings.get_value("bone.skel_deform_bone_width",value) && !value.empty())
 				set_bone_width(Distance(atof(value.c_str()),App::distance_system));
 			else
 				set_bone_width(Distance(6.6,App::distance_system)); // default width
@@ -302,7 +303,7 @@ StateBone_Context::reset()
 {
 	active_bone = -1;
 	set_id(_("NewSkeleton"));
-	set_bone_width(Distance(6.6,App::distance_system)); // default width
+	set_bone_width(Distance(DEFAULT_WIDTH,App::distance_system)); // default width
 }
 
 void
@@ -545,6 +546,8 @@ StateBone_Context::event_refresh_handler(const Smach::event& x)
 Smach::event_result
 StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 {
+	save_settings();
+	load_settings();
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	Point p(get_work_area()->snap_point_to_grid(event.pos));
 
@@ -554,9 +557,8 @@ StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 		{
 			clickOrigin = p;
 
-			point_holder=get_work_area()->snap_point_to_grid(event.pos);
 			point1_duck=new Duck();
-			point1_duck->set_point(point_holder);
+			point1_duck->set_point(p);
 			point1_duck->set_name("p1");
 			point1_duck->set_type(Duck::TYPE_POSITION);
 			point1_duck->set_editable(false);
@@ -589,7 +591,7 @@ Smach::event_result StateBone_Context::event_mouse_drag_handler(const Smach::eve
 
 	if(event.button==BUTTON_LEFT){
 		if (!point2_duck) return Smach::RESULT_OK;
-		point2_duck->set_point(point_holder-get_work_area()->snap_point_to_grid(event.pos));
+		point2_duck->set_point(clickOrigin-get_work_area()->snap_point_to_grid(event.pos));
 		get_work_area()->queue_draw();
 		return Smach::RESULT_ACCEPT;
 	}
@@ -620,9 +622,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	get_work_area()->erase_duck(point1_duck);
 	get_work_area()->erase_duck(point2_duck);
 	get_work_area()->erase_bezier(bone_bezier);
-	get_work_area()->queue_draw();
+	get_canvas_view()->rebuild_ducks();
 
-	Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
+	Duck::Handle duck(get_work_area()->find_duck(clickOrigin,0.1));
 
 	switch(event.button)
 	{
@@ -641,7 +643,11 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
 						setActiveBone->set_param("active_bone_node",value_desc.get_value_node());
-						setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
+						if(get_work_area()->get_active_bone_value_node()){
+							setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
+						}else{
+							setActiveBone->set_param("prev_active_bone_node",ValueNode_Bone::create(Bone()));
+						}
 						if(setActiveBone->is_ready()){
 							try{
 								get_canvas_interface()->get_instance()->perform_action(setActiveBone);
@@ -685,7 +691,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								createChild->set_param("scalelx", Action::Param(ValueBase(1.0)));
 
 							}
-
 
 							if(createChild->is_ready()){
 								try{
@@ -829,7 +834,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					}
 				}
 				else
-				{ //! Creating empty layer as there's no active skeleton layer
+				{ //! Creating empty layer as there's no active skeleton layer of any type
 					egress_on_selection_change=false;
 					Layer::Handle new_skel;
 					if(c_layer==0)
@@ -984,6 +989,8 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 
 void
 StateBone_Context::make_layer(){
+	save_settings();
+	load_settings();
 	egress_on_selection_change=false;
 	Layer::Handle new_skel;
 	if(c_layer==0)
@@ -1000,10 +1007,38 @@ StateBone_Context::make_layer(){
 	ValueNode_Bone::Handle bone_node;
 
 	if(c_layer==0){
+		if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+		{
+			error("expected a ValueNode_Bone");
+			assert(0);
+		}
+		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
+		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
+
 		get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 	}else if(c_layer==1){
 		ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-		get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
+		info(value_desc.get_description());
+		if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+		{
+			error("expected a ValueNode_Bone");
+			assert(0);
+		}
+		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
+		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
+		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
+		info(value_desc.get_description());
+		if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+		{
+			error("expected a ValueNode_Bone");
+			assert(0);
+		}
+		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
+		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
+
+
+		get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 	}
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);

@@ -2187,7 +2187,7 @@ WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
 void
 WorkArea::set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x)
 {
-	if(x!=active_bone_)
+	if(x!=active_bone_ && etl::handle<synfig::ValueNode_Bone>::cast_dynamic(x))
 	{
 		active_bone_=x;
 		queue_draw();

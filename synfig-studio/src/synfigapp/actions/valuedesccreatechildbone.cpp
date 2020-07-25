@@ -269,20 +269,27 @@ Action::ValueDescCreateChildBone::prepare()
 
 		ValueNode_Composite::Handle bone_pair = ValueNode_Composite::Handle::cast_dynamic(value_node->create_list_entry(index));
 		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(bone_pair->get_link("first"));
-		if(c_parent){
-			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
-		}
+
 		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
 		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
+		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
+		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
+		if(c_parent){
+			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+		}
 
 		bone = ValueNode_Bone::Handle::cast_dynamic(bone_pair->get_link("second"));
-		if(c_parent){
-			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
-		}
+
 		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
 		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
 		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
+		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
+		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
+
+		if(c_parent){
+			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+		}
 
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
 		if(c_active_bone){
