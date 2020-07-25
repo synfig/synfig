@@ -201,7 +201,7 @@ Action::ValueNodeDynamicListInsert::perform()
 		if (composite && composite->get_type() == type_bline_point)
 			composite->set_link("split_radius", ValueNode_Const::create(false));
 	}
-	assert(list_entry.value_node.rcount()==1);
+	assert(list_entry.value_node.rcount()>=1);
 
 	value_node->add(list_entry,index);
 	assert(list_entry.value_node.rcount()>=2);
