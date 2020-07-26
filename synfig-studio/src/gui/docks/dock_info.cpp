@@ -105,6 +105,7 @@ studio::Dock_Info::Dock_Info()
 :Dock_CanvasSpecific("info",_("Info"),Gtk::StockID("synfig-info"))
 {
 	set_use_scrolled(false);
+	enable_stop_button(false);
 
 	Gtk::Grid *table = manage(new Gtk::Grid);
 	table->set_column_spacing(3);
@@ -177,11 +178,10 @@ studio::Dock_Info::Dock_Info()
 	render_progress.set_text(strprintf("%.1f%%", 0.0));
 	render_progress.set_fraction(0.0);
 
-	Gtk::Button *stop_button = manage(new Gtk::Button());
-	stop_button->set_label("Stop");
-	stop_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
+	stop_button.set_label("Stop rendering");
+	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
-	table->attach_next_to(*stop_button, render_progress, Gtk::POS_RIGHT, 1, 1);
+	table->attach_next_to(stop_button, render_progress, Gtk::POS_BOTTOM, 7, 1);
 
 	table->set_margin_start(5);
 	table->set_margin_end(5);
@@ -205,7 +205,13 @@ studio::Dock_Info::~Dock_Info()
 
 void studio::Dock_Info::on_stop_button_clicked()
 {
-	async_renderer->stop();
+	if(async_renderer)
+		async_renderer->stop();
+}
+
+void studio::Dock_Info::enable_stop_button(bool status)
+{
+	stop_button.set_sensitive(status);
 }
 
 void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
