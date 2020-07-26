@@ -403,18 +403,18 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// pack all options to the options_table
 
 	// 0, title
-	options_table.attach(title_label,0, 0);
+	options_table.attach(title_label,0, 0,1,1);
 	// 1, name
-	options_table.attach(id_label,0, 1);
-	options_table.attach(id_entry,2, 1,3);
+	options_table.attach(id_label,0, 1,1,1);
+	options_table.attach(id_entry,2, 1,3,1);
 	// 2, default bone width
-	options_table.attach(bone_width_label,0,2);
-	options_table.attach(bone_width_dist,2, 2,3);
+	options_table.attach(bone_width_label,0,2,1,1);
+	options_table.attach(bone_width_dist,2, 2,3,1);
 	// 3, Layer choice
-	options_table.attach(layer_label,0, 3);
-	options_table.attach(radiobutton_skel,0, 4,2);
-	options_table.attach(radiobutton_skel_deform,2, 4,2);
-	options_table.attach(create_layer,2,5,2);
+	options_table.attach(layer_label,0, 3,1,1);
+	options_table.attach(radiobutton_skel,0, 4,2,1);
+	options_table.attach(radiobutton_skel_deform,2, 4,2,1);
+	options_table.attach(create_layer,2,5,2,1);
 
 	create_layer.signal_clicked().connect(sigc::mem_fun(*this,&StateBone_Context::make_layer));
 	radiobutton_skel.signal_toggled().connect(sigc::mem_fun(*this,&StateBone_Context::update_layer));	
@@ -608,6 +608,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	{
 		case BUTTON_LEFT:
 		{
+			clickOrigin = transform.unperform(clickOrigin);
+			releaseOrigin = transform.unperform(releaseOrigin);
 			if(!duck){ //! if the user was not modifying a duck
 				if(skel_layer){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
 					createChild->set_param("canvas",skel_layer->get_canvas());
