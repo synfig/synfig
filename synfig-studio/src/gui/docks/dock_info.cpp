@@ -205,7 +205,12 @@ studio::Dock_Info::~Dock_Info()
 
 void studio::Dock_Info::on_stop_button_clicked()
 {
-	if(async_renderer)
+	if(async_renderer && App::dialog_message_2b(
+		_("Stop rendering"),
+		_("The rendering process will be stopped. Are you sure?"),
+		Gtk::MESSAGE_QUESTION,
+		_("Cancel"),
+		_("Stop")))
 		async_renderer->stop();
 }
 
