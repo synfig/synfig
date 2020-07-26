@@ -158,6 +158,7 @@ Action::ValueDescBoneSetParent::perform()
 			ValueDesc new_parent_bone_desc = value_desc.get_parent_desc();
 			Matrix new_parent_matrix = new_parent_bone_desc.get_value(time).get(Bone()).get_animated_matrix();
 			Angle new_parent_angle = Angle::rad(atan2(new_parent_matrix.axis(0)[1],new_parent_matrix.axis(0)[0]));
+			Real new_parent_scale = new_parent_bone_desc.get_value(time).get(Bone()).get_scalelx();
 			new_parent_matrix = new_parent_matrix.get_inverted();
 
 			ValueNode_Bone::Handle old_parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
@@ -168,11 +169,12 @@ Action::ValueDescBoneSetParent::perform()
 			Point origin = child_bone->get_link("origin")->operator()(time).get(Point());
 			Angle angle = child_bone->get_link("angle")->operator()(time).get(Angle());
 
-			angle+=old_parent_angle-new_parent_angle;
+			angle+=old_parent_angle;
 			origin[0] *= old_parent_scale;
 			origin = old_parent_matrix.get_transformed(origin);
 			origin = new_parent_matrix.get_transformed(origin);
-			origin[0]/=new_parent_bone_desc.get_value(time).get(Bone()).get_scalelx();
+			origin[0]/= new_parent_scale;
+			angle-=new_parent_angle;
 			if(child_bone->set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_dynamic(new_parent_bone_desc.get_value_node())))){
 				child_bone->set_link("origin",ValueNode_Const::create(origin));
 				child_bone->set_link("angle",ValueNode_Const::create(angle));
@@ -192,7 +194,7 @@ Action::ValueDescBoneSetParent::undo() {
 		ValueDesc new_parent_bone_desc = value_desc.get_parent_desc();
 		Matrix new_parent_matrix = new_parent_bone_desc.get_value(time).get(Bone()).get_animated_matrix();
 		Angle new_parent_angle = Angle::rad(atan2(new_parent_matrix.axis(0)[1],new_parent_matrix.axis(0)[0]));
-
+		Real new_parent_scale = new_parent_bone_desc.get_value(time).get(Bone()).get_scalelx();
 
 		ValueNode_Bone::Handle old_parent_bone = ValueNode_Const::Handle::cast_dynamic(prev_parent)->get_value().get(ValueNode_Bone::Handle());
 		Matrix old_parent_matrix = old_parent_bone->operator()(time).get(Bone()).get_animated_matrix();
@@ -204,11 +206,12 @@ Action::ValueDescBoneSetParent::undo() {
 		Angle angle = child_bone->get_link("angle")->operator()(time).get(Angle());
 
 
-		angle+=new_parent_angle-old_parent_angle;
-		origin[0] *= new_parent_bone_desc.get_value(time).get(Bone()).get_scalelx();
+		angle+=new_parent_angle;
+		origin[0] *= new_parent_scale;
 		origin = new_parent_matrix.get_transformed(origin);
 		origin = old_parent_matrix.get_transformed(origin);
 		origin[0]/=old_parent_scale;
+		angle-=old_parent_angle;
 		if(child_bone->set_link("parent",ValueNode_Const::create(old_parent_bone))){
 			child_bone->set_link("origin",ValueNode_Const::create(origin));
 			child_bone->set_link("angle",ValueNode_Const::create(angle));
