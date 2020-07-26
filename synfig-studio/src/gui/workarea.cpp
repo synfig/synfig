@@ -46,6 +46,7 @@
 #include <synfig/blinepoint.h>
 #include <synfig/rendering/renderer.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 
 #include <synfigapp/canvasinterface.h>
 
