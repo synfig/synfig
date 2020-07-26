@@ -250,7 +250,7 @@ void studio::Dock_Info::set_render_progress(float value)
 	render_progress.set_text( strprintf( "%.1f%%", r*100 ));
 	render_progress.set_fraction(r);
 
-	if(n_passes_pending > 0)
+	if(r > 0.0 && r < 1.0)
 		stop_button.set_sensitive(true);
 	else
 		stop_button.set_sensitive(false);
