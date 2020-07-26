@@ -69,7 +69,6 @@ public:
 	//! Current render progress - 0.0 to 1.0
 	//  depends on n_passes_requested and current_pass
 	void set_async_render(etl::handle<AsyncRenderer> ar);
-	void enable_stop_button(bool status);
 	void set_render_progress   (float value);
 	void set_n_passes_requested(int   value);
 	void set_n_passes_pending  (int   value);

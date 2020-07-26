@@ -485,7 +485,6 @@ RenderSettings::submit_next_render_pass()
 
 		App::dock_info_->set_n_passes_pending(render_passes.size()); //! Decrease until 0
 		App::dock_info_->set_render_progress(0.0); //For this pass
-		App::dock_info_->enable_stop_button(true);
 		
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
 		String pass_filename = pass_info.second;
@@ -554,7 +553,6 @@ RenderSettings::on_finished(std::string error_message)
 			App::sound_render_done->set_playing(true);
 		}
 		App::dock_info_->set_render_progress(1.0);
-		App::dock_info_->enable_stop_button(false);
 	}
 
 	// Play the sound before show error dialog!

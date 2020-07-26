@@ -105,7 +105,6 @@ studio::Dock_Info::Dock_Info()
 :Dock_CanvasSpecific("info",_("Info"),Gtk::StockID("synfig-info"))
 {
 	set_use_scrolled(false);
-	enable_stop_button(false);
 
 	Gtk::Grid *table = manage(new Gtk::Grid);
 	table->set_column_spacing(3);
@@ -205,18 +204,16 @@ studio::Dock_Info::~Dock_Info()
 
 void studio::Dock_Info::on_stop_button_clicked()
 {
-	if(async_renderer && App::dialog_message_2b(
+	if(!async_renderer)
+            return;
+
+	if(App::dialog_message_2b(
 		_("Stop rendering"),
 		_("The rendering process will be stopped. Are you sure?"),
 		Gtk::MESSAGE_QUESTION,
 		_("Cancel"),
 		_("Stop")))
 		async_renderer->stop();
-}
-
-void studio::Dock_Info::enable_stop_button(bool status)
-{
-	stop_button.set_sensitive(status);
 }
 
 void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
@@ -252,4 +249,9 @@ void studio::Dock_Info::set_render_progress(float value)
 
 	render_progress.set_text( strprintf( "%.1f%%", r*100 ));
 	render_progress.set_fraction(r);
+
+	if(n_passes_pending > 0)
+		stop_button.set_sensitive(true);
+	else
+		stop_button.set_sensitive(false);
 }
