@@ -122,7 +122,7 @@ class studio::StateBone_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 	// holder of optons
-	Gtk::Table options_table;
+	Gtk::Grid options_table;
 
 	// title
 	Gtk::Label title_label;
@@ -377,17 +377,12 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
 	id_label.set_alignment(Gtk::ALIGN_START,Gtk::ALIGN_CENTER);
-	SPACING(id_gap,GAP);
-	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
 
-	id_box.pack_start(id_entry);
 
 	// 2, Bone width
 	bone_width_label.set_label(_("Bone Width:"));
 	bone_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	bone_width_label.set_sensitive(true);
-
 	bone_width_dist.set_digits(2);
 	bone_width_dist.set_range(0,10000000);
 	bone_width_dist.set_sensitive(true);
@@ -397,6 +392,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// 4, Layer choice
 	layer_label.set_label(_("Layer to Create:"));
 	layer_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	layer_label.set_attributes(list);
 	layer_label.set_sensitive(true);
 	
 	create_layer.set_label(_("Create Layer"));
@@ -407,43 +403,25 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// pack all options to the options_table
 
 	// 0, title
-	options_table.attach(title_label,
-						 0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-	);
+	options_table.attach(title_label,0, 0);
 	// 1, name
-	options_table.attach(id_box,
-						 0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-	);
+	options_table.attach(id_label,0, 1);
+	options_table.attach(id_entry,2, 1,3);
 	// 2, default bone width
-	options_table.attach(bone_width_label,
-						 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	);
-	options_table.attach(bone_width_dist,
-						 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	);
+	options_table.attach(bone_width_label,0,2);
+	options_table.attach(bone_width_dist,2, 2,3);
 	// 3, Layer choice
-	options_table.attach(layer_label,
-		0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(radiobutton_skel,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(radiobutton_skel_deform,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(create_layer,
-		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	options_table.attach(layer_label,0, 3);
+	options_table.attach(radiobutton_skel,0, 4,2);
+	options_table.attach(radiobutton_skel_deform,2, 4,2);
+	options_table.attach(create_layer,2,5,2);
 
 	create_layer.signal_clicked().connect(sigc::mem_fun(*this,&StateBone_Context::make_layer));
 	radiobutton_skel.signal_toggled().connect(sigc::mem_fun(*this,&StateBone_Context::update_layer));	
 
 	// fine-tune options layout
 	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacings(GAP); // row gap
-	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	//options_table.set_row_spacing(10, 0); //// the final row using border width of table
+	options_table.set_row_spacing(GAP); // row gap
 	options_table.set_margin_bottom(0);
 	options_table.show_all();
 
