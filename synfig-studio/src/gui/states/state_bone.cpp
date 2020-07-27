@@ -115,6 +115,7 @@ class studio::StateBone_Context : public sigc::trackable
 
 	int active_bone;
 	int c_layer;
+	bool drawing;
 
 	Point clickOrigin;
 
@@ -207,8 +208,6 @@ public:
 	bool egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
-		save_settings();
-		load_settings();
 		if(egress_on_selection_change)
 			throw &state_normal;
 		return Smach::RESULT_OK;
@@ -260,14 +259,14 @@ StateBone_Context::load_settings()
 
 		if(c_layer==0){
 			if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
-				set_bone_width(Distance(atof(value.c_str()),App::distance_system));
+				set_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
 			else
-				set_bone_width(Distance(6.6,App::distance_system)); // default width
+				set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
 		}else{
 			if(settings.get_value("bone.skel_deform_bone_width",value) && !value.empty())
-				set_bone_width(Distance(atof(value.c_str()),App::distance_system));
+				set_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
 			else
-				set_bone_width(Distance(6.6,App::distance_system)); // default width
+				set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
 		}
 	}
 	catch(...)
@@ -303,7 +302,7 @@ StateBone_Context::reset()
 {
 	active_bone = -1;
 	set_id(_("NewSkeleton"));
-	set_bone_width(Distance(DEFAULT_WIDTH,App::distance_system)); // default width
+	set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
 }
 
 void
@@ -360,7 +359,8 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	active_bone(change_active_bone(get_work_area()->get_active_bone_value_node())),
 	radiobutton_skel(radiogroup,_("Skeleton Layer")),
 	radiobutton_skel_deform(radiogroup,_("Skeleton Deform Layer")),
-	c_layer(0)
+	c_layer(0),
+	drawing(false)
 {
 	egress_on_selection_change=true;
 
@@ -524,37 +524,45 @@ StateBone_Context::event_refresh_handler(const Smach::event& x)
 Smach::event_result
 StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	save_settings();
-	load_settings();
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	Point p(get_work_area()->snap_point_to_grid(event.pos));
+
+	Duck::Handle duck(get_work_area()->find_duck(p,0.2));
 
 	switch(event.button)
 	{
 		case BUTTON_LEFT:
 		{
-			clickOrigin = p;
+			if(!duck){
 
-			point1_duck=new Duck();
-			point1_duck->set_point(p);
-			point1_duck->set_name("p1");
-			point1_duck->set_type(Duck::TYPE_POSITION);
-			point1_duck->set_editable(false);
-			get_work_area()->add_duck(point1_duck);
+				clickOrigin = p;
 
-			point2_duck=new Duck();
-			point2_duck->set_point(Vector(0,0));
-			point2_duck->set_name("p2");
-			point2_duck->set_origin(point1_duck);
-			point2_duck->set_scalar(-1);
-			point2_duck->set_type(Duck::TYPE_RADIUS);
-			point2_duck->set_hover(true);
-			get_work_area()->add_duck(point2_duck);
+				point1_duck=new Duck();
+				point1_duck->set_point(p);
+				point1_duck->set_name("p1");
+				point1_duck->set_type(Duck::TYPE_POSITION);
+				point1_duck->set_editable(false);
+				get_work_area()->add_duck(point1_duck);
 
-			bone_bezier =new Duckmatic::Bezier();
-			bone_bezier->p1=bone_bezier->c1=point1_duck;
-			bone_bezier->p2=bone_bezier->c2=point2_duck;
-			get_work_area()->add_bezier(bone_bezier);
+				point2_duck=new Duck();
+				point2_duck->set_point(Vector(0,0));
+				point2_duck->set_name("p2");
+				point2_duck->set_origin(point1_duck);
+				point2_duck->set_scalar(-1);
+				point2_duck->set_type(Duck::TYPE_RADIUS);
+				point2_duck->set_hover(true);
+				get_work_area()->add_duck(point2_duck);
+
+				bone_bezier =new Duckmatic::Bezier();
+				bone_bezier->p1=bone_bezier->c1=point1_duck;
+				bone_bezier->p2=bone_bezier->c2=point2_duck;
+				get_work_area()->add_bezier(bone_bezier);
+
+				drawing = true;
+			}else{
+				cout<<"Duck"<<endl;
+				drawing = false;
+			}
 
 			return Smach::RESULT_ACCEPT;
 		}
@@ -596,13 +604,14 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
 	setActiveBone->set_param("canvas",get_canvas());
 	setActiveBone->set_param("canvas_interface",get_canvas_interface());
+	if(drawing){
+		get_work_area()->erase_duck(point1_duck);
+		get_work_area()->erase_duck(point2_duck);
+		get_work_area()->erase_bezier(bone_bezier);
+		get_canvas_view()->rebuild_ducks();
+	}
 
-	get_work_area()->erase_duck(point1_duck);
-	get_work_area()->erase_duck(point2_duck);
-	get_work_area()->erase_bezier(bone_bezier);
-	get_canvas_view()->rebuild_ducks();
-
-	Duck::Handle duck(get_work_area()->find_duck(clickOrigin,0.1));
+	Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
 
 	switch(event.button)
 	{
@@ -610,7 +619,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		{
 			clickOrigin = transform.unperform(clickOrigin);
 			releaseOrigin = transform.unperform(releaseOrigin);
-			if(!duck){ //! if the user was not modifying a duck
+			if(drawing && !duck){ //! if the user was not modifying a duck
 				if(skel_layer){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
 					createChild->set_param("canvas",skel_layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
@@ -636,6 +645,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							}
 						}
 					}else{
+						cout<<"Regular draw"<<endl;
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						//cout<<"Active Bone: "<<active_bone<<endl;
@@ -872,6 +882,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				}
 			}
 			else{
+				cout<<"Set"<<endl;
 				_on_signal_change_active_bone(duck->get_value_desc().get_parent_value_node());
 				get_work_area()->set_active_bone_value_node(duck->get_value_desc().get_parent_value_node());
 			}
@@ -969,8 +980,6 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 
 void
 StateBone_Context::make_layer(){
-	save_settings();
-	load_settings();
 	egress_on_selection_change=false;
 	Layer::Handle new_skel;
 	if(c_layer==0)
