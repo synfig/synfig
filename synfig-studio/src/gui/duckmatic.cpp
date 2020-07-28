@@ -2968,7 +2968,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
             }
         }
 
-        bone_transform_stack.push(new Transform_Rotate(guid, bone.get_angle()));
+        etl::handle<Bezier> bezier = new Bezier();
+	    ValueNode_Bone::Handle  parent_value_node = ValueNode_Const::Handle::cast_dynamic(bone_value_node->get_link("parent"))->get_value().get(ValueNode_Bone::Handle());
+
+	    bone_transform_stack.push(new Transform_Rotate(guid, bone.get_angle()));
 
         // origin
         {
@@ -2992,7 +2995,31 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
                                                                      0.0f),             // location
                                                           value_desc));                 // value_desc
             add_duck(duck);
+            bezier->p1 = bezier->c1 = duck;
         }
+
+        //parent tip fake
+	    {
+	    	Bone parent_bone = parent_value_node->operator()(get_time()).get(Bone());
+
+	    	if(parent_bone.get_parent()){
+	    		Point tip = parent_bone.get_tip();
+
+	    		cout<<"Tip:  "<<tip[0]<<", "<<tip[1]<<endl;
+
+	    		parent_bone = parent_bone.get_parent()->operator()(get_time()).get(Bone());
+	    		Matrix m = parent_bone.get_animated_matrix();
+	    		Real scale = parent_bone.get_scalelx();
+
+	    		etl::handle<Duck> duck=new Duck();
+			    duck->set_point(tip);
+			    bezier->p2 = bezier->c2 = duck;
+
+			    add_bezier(bezier);
+	    	}
+
+
+	    }
 
         // fake
         {
@@ -3128,6 +3155,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
             duck->set_origin(tip_duck);
             add_duck(duck);
         }
+
+
 
         return true;
     }
