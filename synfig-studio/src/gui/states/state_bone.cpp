@@ -824,11 +824,11 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				else
 				{ //! Creating empty layer as there's no active skeleton layer of any type
 					egress_on_selection_change=false;
-					Layer::Handle new_skel;
 					if(c_layer==0)
-						new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
+						get_canvas_view()->add_layer("skeleton");
 					else if(c_layer==1)
-						new_skel= get_canvas_interface()->add_layer_to("skeleton_deformation",get_canvas());
+						get_canvas_view()->add_layer("skeleton_deformation");
+					Layer::Handle new_skel= get_canvas_interface()->get_selection_manager()->get_selected_layer();
 					new_skel->set_param("name",get_id().c_str());
 					new_skel->set_description(get_id());
 					ValueDesc list_desc(new_skel,"bones");
@@ -979,11 +979,11 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 void
 StateBone_Context::make_layer(){
 	egress_on_selection_change=false;
-	Layer::Handle new_skel;
 	if(c_layer==0)
-		new_skel= get_canvas_interface()->add_layer_to("skeleton",get_canvas());
+		get_canvas_view()->add_layer("skeleton");
 	else if(c_layer==1)
-		new_skel= get_canvas_interface()->add_layer_to("skeleton_deformation",get_canvas());
+		get_canvas_view()->add_layer("skeleton_deformation");
+	Layer::Handle new_skel= get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	new_skel->set_param("name",get_id().c_str());
 	new_skel->set_description(get_id());
 	ValueDesc list_desc(new_skel,"bones");
