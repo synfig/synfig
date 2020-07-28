@@ -1290,7 +1290,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("<Mod1>g",								"<Actions>/action_group_state_manager/state-gradient"			);
 	ACCEL("<Mod1>p",								"<Actions>/action_group_state_manager/state-polygon"			);
 	ACCEL("<Mod1>b",								"<Actions>/action_group_state_manager/state-bline"			);
-	ACCEL("<Mod1>b",								"<Actions>/action_group_state_manager/state-bone"			);
+	ACCEL("<Mod1>o",								"<Actions>/action_group_state_manager/state-bone"			);
 	ACCEL("<Mod1>x",								"<Actions>/action_group_state_manager/state-text"			);
 	ACCEL("<Mod1>f",								"<Actions>/action_group_state_manager/state-fill"			);
 	ACCEL("<Mod1>e",								"<Actions>/action_group_state_manager/state-eyedrop"			);
