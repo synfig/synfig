@@ -448,14 +448,14 @@ class Param:
                     bone.is_group_child = True
                 origin, angle, lls, rls, eff = bone.recur_animate("vector")
 
-                # Adding lls effect to the bone
-                base_value = "mul(" + base_value + ", " + lls + ")"
-
-                # Adding rls effect to the bone
-                base_value = "mul(" + base_value + ", " + rls + ")"
+                if "flag" not in self.subparams["bone_link"].subparams.keys():
+                    # Adding lls effect to the bone
+                    base_value = "mul(" + base_value + ", " + lls + ")"
+                    # Adding rls effect to the bone
+                    base_value = "mul(" + base_value + ", " + rls + ")"
 
                 # Adding effect of base_value here
-                
+
                 vector_magnitude = 'Math.sqrt(sum(Math.pow({base_value}[0],2),Math.pow({base_value}[1],2)))'
                 vector_magnitude = vector_magnitude.format(base_value=base_value)
                 theta = 'Math.atan2(-{base_value}[1],{base_value}[0])'
@@ -474,6 +474,56 @@ class Param:
 
                 self.expression = ret_origin
                 return ret_origin, self.expression_controllers
+
+            elif self.param[0].tag == "bone_angle_link":
+                self.subparams["bone_angle_link"].extract_subparams()
+                guid = self.subparams["bone_angle_link"].subparams["bone"][0].attrib["guid"]
+                bone = self.get_bone_from_canvas(guid)
+                base_value, bv_eff = self.subparams["bone_angle_link"].subparams["base_value"].recur_animate("bone_angle")
+
+                # Storing previous state
+                prev_state = bone.is_group_child
+                if self.is_group_child:
+                    bone.is_group_child = True
+                origin, angle, lls, rls, eff = bone.recur_animate("vector")
+
+                ret_angle = "-sum({angle},{base_value})"
+                ret_angle = ret_angle.format(angle=angle,base_value=base_value)
+                bone.is_group_child = prev_state
+
+                if eff is not None:
+                    self.expression_controllers.extend(eff)
+                self.expression_controllers.extend(bv_eff)
+
+                self.expression = ret_angle
+                return ret_angle, self.expression_controllers
+
+            elif self.param[0].tag == "bone_scale_link":
+                self.subparams["bone_scale_link"].extract_subparams()
+                guid = self.subparams["bone_scale_link"].subparams["bone"][0].attrib["guid"]
+                bone = self.get_bone_from_canvas(guid)
+                base_value, bv_eff = self.subparams["bone_scale_link"].subparams["base_value"].recur_animate("vector")
+
+                # Storing previous state
+                prev_state = bone.is_group_child
+                if self.is_group_child:
+                    bone.is_group_child = True
+                origin, angle, lls, rls, eff = bone.recur_animate("vector")
+
+                # Adding lls effect to the bone
+                base_value_x = "mul({base_value}[0],{lls})"
+                base_value_y = "{base_value}[1]"
+                ret_scale = "["+base_value_x + "," + base_value_y +"]"
+                ret_scale = ret_scale.format(base_value=base_value, lls = lls)
+                # Restore previous state
+                bone.is_group_child = prev_state
+
+                if eff is not None:
+                    self.expression_controllers.extend(eff)
+                self.expression_controllers.extend(bv_eff)
+
+                self.expression = ret_scale
+                return ret_scale, self.expression_controllers
 
             elif self.param[0].tag == "sine":
                 self.subparams["sine"].extract_subparams()
