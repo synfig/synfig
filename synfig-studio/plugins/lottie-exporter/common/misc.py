@@ -96,8 +96,12 @@ def parse_position(animated, i):
         (common.Color.Color)  Else if the animated type is color
     """
     if animated.attrib["type"] == "vector":
-        pos = [float(animated[i][0][0].text),
-               float(animated[i][0][1].text)]
+        if animated[i][0].tag == 'vector':
+            pos = [float(animated[i][0][0].text),
+                   float(animated[i][0][1].text)]
+        else:
+            pos = [float(animated[i][0].text),
+                   float(animated[i][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
 
     elif animated.attrib["type"] in {"real", "circle_radius"}:

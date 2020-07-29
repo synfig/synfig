@@ -480,20 +480,31 @@ class Param:
                 guid = self.subparams["bone_angle_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
                 base_value, bv_eff = self.subparams["bone_angle_link"].subparams["base_value"].recur_animate("bone_angle")
-
+                scale_value, sv_eff = self.subparams["bone_angle_link"].subparams["scale"].recur_animate("vector")
                 # Storing previous state
                 prev_state = bone.is_group_child
                 if self.is_group_child:
                     bone.is_group_child = True
                 origin, angle, lls, rls, eff = bone.recur_animate("vector")
 
-                ret_angle = "-sum({angle},{base_value})"
-                ret_angle = ret_angle.format(angle=angle,base_value=base_value)
+                vector_magnitude = 'Math.sqrt(sum(Math.pow({scale_value}[0],2),Math.pow({scale_value}[1],2)))'
+                vector_magnitude = vector_magnitude.format(scale_value=scale_value)
+                numerator = 'mul({vector_magnitude},Math.sin(degreesToRadians({base_value})))'
+                denominator = 'mul(mul({vector_magnitude},Math.cos(degreesToRadians({base_value}))),{lls})'
+                
+                numerator = numerator.format(vector_magnitude=vector_magnitude,base_value=base_value)
+                denominator = denominator.format(vector_magnitude=vector_magnitude,base_value=base_value,lls=lls)
+
+                theta = 'Math.atan2({numerator},{denominator})'
+                theta = theta.format(numerator=numerator,denominator=denominator)
+                ret_angle = "-sum({angle},radiansToDegrees({theta}))"
+                ret_angle = ret_angle.format(angle=angle,theta=theta)
                 bone.is_group_child = prev_state
 
                 if eff is not None:
                     self.expression_controllers.extend(eff)
                 self.expression_controllers.extend(bv_eff)
+                self.expression_controllers.extend(sv_eff)
 
                 self.expression = ret_angle
                 return ret_angle, self.expression_controllers
@@ -502,7 +513,7 @@ class Param:
                 self.subparams["bone_scale_link"].extract_subparams()
                 guid = self.subparams["bone_scale_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
-                base_value, bv_eff = self.subparams["bone_scale_link"].subparams["base_value"].recur_animate("vector")
+                base_value, bv_eff = self.subparams["bone_scale_link"].subparams["base_value"].recur_animate("group_layer_scale")
 
                 # Storing previous state
                 prev_state = bone.is_group_child
@@ -517,7 +528,6 @@ class Param:
                 ret_scale = ret_scale.format(base_value=base_value, lls = lls)
                 # Restore previous state
                 bone.is_group_child = prev_state
-
                 if eff is not None:
                     self.expression_controllers.extend(eff)
                 self.expression_controllers.extend(bv_eff)
