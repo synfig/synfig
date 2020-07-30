@@ -827,6 +827,10 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					active_bone = 0;
 					ValueNode_Bone::Handle bone_node;
 					if(c_layer==0){
+						bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+						if(is_currently_on){
+							get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
+						}
 						get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 						{
@@ -834,6 +838,11 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							assert(0);
 						}
 					}else if(c_layer==1){
+						bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+						if(!is_currently_on){
+							get_work_area()->set_type_mask(get_work_area()->get_type_mask()|Duck::TYPE_WIDTH);
+						}
+
 						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 
 						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"))))
@@ -870,8 +879,10 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				drawing = false;
 			}
 			else{
-				_on_signal_change_active_bone(duck->get_value_desc().get_parent_value_node());
-				get_work_area()->set_active_bone_value_node(duck->get_value_desc().get_parent_value_node());
+				if(duck){
+					_on_signal_change_active_bone(duck->get_value_desc().get_parent_value_node());
+					get_work_area()->set_active_bone_value_node(duck->get_value_desc().get_parent_value_node());
+				}
 			}
 			return Smach::RESULT_ACCEPT;
 		}
@@ -968,10 +979,20 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 void
 StateBone_Context::make_layer(){
 	egress_on_selection_change=false;
-	if(c_layer==0)
+
+	bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+	if(c_layer==0){
+		if(is_currently_on){
+			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
+		}
 		get_canvas_view()->add_layer("skeleton");
-	else if(c_layer==1)
+	}
+	else if(c_layer==1){
+		if(!is_currently_on){
+			get_work_area()->set_type_mask(get_work_area()->get_type_mask()|Duck::TYPE_WIDTH);
+		}
 		get_canvas_view()->add_layer("skeleton_deformation");
+	}
 	Layer::Handle new_skel= get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	new_skel->set_param("name",get_id().c_str());
 	new_skel->set_description(get_id());
