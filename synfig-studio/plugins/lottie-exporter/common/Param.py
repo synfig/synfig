@@ -554,7 +554,7 @@ class Param:
                 self.expression_controllers.extend(eff_4)
 
                 if self.dimension == 2:
-                	ret = "[mul(Math.pow({base}, {power}),{PIX_PER_UNIT}),mul(Math.pow({base}, {power}),{PIX_PER_UNIT})]"
+                    ret = "[mul(Math.pow({base}, {power}),{PIX_PER_UNIT}),mul(Math.pow({base}, {power}),{PIX_PER_UNIT})]"
                 else:
                     ret = "mul(Math.pow({base}, {power}),{PIX_PER_UNIT})"
 
@@ -577,6 +577,51 @@ class Param:
                 self.expression_controllers.extend(eff_1)
                 ret = "[{y}[1], {y}[1]]" if self.dimension == 2 else "{y}[1]"
                 ret = ret.format(y=vector)
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "dotproduct":
+                self.subparams["dotproduct"].extract_subparams()
+                lhs, eff_1 = self.subparams["dotproduct"].subparams["lhs"].recur_animate("vector")
+                rhs, eff_2 = self.subparams["dotproduct"].subparams["rhs"].recur_animate("vector")
+
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+
+                if anim_type == 'real':
+                    settings.DOT_FLAG = 0
+                    x_comp = "mul(div({lhs}[0],{PIX_PER_UNIT}),div({rhs}[0],{PIX_PER_UNIT}))"
+                    y_comp = "mul(div({lhs}[1],{PIX_PER_UNIT}),div({rhs}[1],{PIX_PER_UNIT}))"
+
+                    x_comp = x_comp.format(lhs=lhs,rhs=rhs,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                    y_comp = y_comp.format(lhs=lhs,rhs=rhs,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+
+                    if self.dimension == 2:
+                        ret = "[mul(sum({x_comp},{y_comp}),{PIX_PER_UNIT}),mul(sum({x_comp},{y_comp}),{PIX_PER_UNIT})]"
+                    else:
+                        ret = "mul(sum({x_comp},{y_comp}),{PIX_PER_UNIT})"
+                    ret = ret.format(x_comp=x_comp,y_comp=y_comp,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+
+                else:
+                    settings.DOT_FLAG = 1
+                    x_comp = "mul(div({lhs}[0],{PIX_PER_UNIT}),div({rhs}[0],{PIX_PER_UNIT}))"
+                    y_comp = "mul(div({lhs}[1],{PIX_PER_UNIT}),div({rhs}[1],{PIX_PER_UNIT}))"
+
+                    x_comp = x_comp.format(lhs=lhs,rhs=rhs,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                    y_comp = y_comp.format(lhs=lhs,rhs=rhs,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+
+                    vector_magnitude_1 = 'Math.sqrt(sum(Math.pow(div({lhs}[0],{PIX_PER_UNIT}),2),Math.pow(div({lhs}[1],{PIX_PER_UNIT}),2)))'
+                    vector_magnitude_1 = vector_magnitude_1.format(lhs=lhs,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+
+                    vector_magnitude_2 = 'Math.sqrt(sum(Math.pow(div({rhs}[0],{PIX_PER_UNIT}),2),Math.pow(div({rhs}[1],{PIX_PER_UNIT}),2)))'
+                    vector_magnitude_2 = vector_magnitude_2.format(rhs=rhs,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+
+                    mult = "mul({vector_magnitude_1},{vector_magnitude_1})"
+                    mult = mult.format(vector_magnitude_1=vector_magnitude_1,vector_magnitude_2=vector_magnitude_2)
+
+                    ret = "Math.acos(div(sum({x_comp},{y_comp})),{mult}))"
+                    ret = ret.format(x_comp=x_comp,y_comp=y_comp,mult=mult)
+
                 self.expression = ret
                 return ret, self.expression_controllers
         else:
@@ -946,6 +991,19 @@ class Param:
                 vector = self.subparams["vectory"].subparams["vector"].__get_value(frame)
                 ret = vector[1]
 
+            elif self.param[0].tag == "dotproduct":
+                lhs = self.subparams["dotproduct"].subparams["lhs"].__get_value(frame)
+                rhs = self.subparams["dotproduct"].subparams["rhs"].__get_value(frame)
+                dot = (lhs[0]*rhs[0]+lhs[1]*rhs[1])/(settings.PIX_PER_UNIT*settings.PIX_PER_UNIT)
+                
+                if settings.DOT_FLAG != 1:
+                    ret = dot*settings.PIX_PER_UNIT
+                else:
+                    vector_magnitude_1 = math.sqrt(math.pow(lhs[0]/settings.PIX_PER_UNIT,2)+math.pow(lhs[1]/settings.PIX_PER_UNIT,2))
+                    vector_magnitude_2 = math.sqrt(math.pow(rhs[0]/settings.PIX_PER_UNIT,2)+math.pow(rhs[1]/settings.PIX_PER_UNIT,2))
+                    mult = vector_magnitude_1*vector_magnitude_2
+                    ret = math.degrees(math.acos(dot/mult))
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1125,6 +1183,11 @@ class Param:
             elif node.tag == "vectory":
                 self.subparams["vectory"].extract_subparams()
                 self.subparams["vectory"].subparams["vector"].update_frame_window(window)
+
+            elif node.tag == "dotproduct":
+                self.subparams["dotproduct"].extract_subparams()
+                self.subparams["dotproduct"].subparams["lhs"].update_frame_window(window)
+                self.subparams["dotproduct"].subparams["rhs"].update_frame_window(window)
 
         if is_animated(node) == settings.ANIMATED:
             for waypoint in node:
