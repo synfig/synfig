@@ -12,4 +12,4 @@ echo %APPVEYOR_BUILD_FOLDER%
 pwd
 
 bash -c "./1-setup-windows-msys2.sh"
-bash -c "./2-build-production.sh"
+bash -c "./2-build-msys-cmake.sh"

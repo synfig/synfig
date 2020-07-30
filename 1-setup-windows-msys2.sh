@@ -44,7 +44,15 @@ $ARCH-glibmm \
 $ARCH-imagemagick \
 $ARCH-libxml++2.6 \
 $ARCH-pango \
-$ARCH-gtkmm3
+$ARCH-gtkmm3 \
+$ARCH-openexr
+
+# Install libmng on 64 bit system.
+MACHINE_TYPE=$(uname -m)
+if [${MACHINE_TYPE} == 'x86_64']; then
+    echo "64 bit system"
+    pacman -S --needed --noconfirm --color=auto $ARCH-libmng
+fi
 
 # build mlt
 bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
@@ -54,5 +62,3 @@ bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
 # so we need it.
 
 patch $PREFIX/include/libintl.h < ${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch
-
-

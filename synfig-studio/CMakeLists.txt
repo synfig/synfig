@@ -44,7 +44,16 @@ add_custom_command(
 add_dependencies(synfigstudio
     build_images
     build_pofiles_synfigstudio
-    plugins_xml
-    appdata_xml
-    desktop_file
 )
+
+if(TARGET plugins_xml)
+    add_dependencies(synfigstudio plugins_xml)
+endif()
+
+if(TARGET appdata_xml)
+    add_dependencies(synfigstudio appdata_xml)
+endif()
+
+if(TARGET desktop_file)
+    add_dependencies(synfigstudio desktop_file)
+endif()
