@@ -1,5 +1,3 @@
-include(SynfigIntltool)
-
 set(INSTALL_DESTINATION "share/synfig/plugins/lottie-exporter")
 set(PLUGIN_LOTTIE_EXPORTER_FILES
     bodymovin.js

@@ -1,3 +1,6 @@
+init:
+  - cmd: "IF \"%PLATFORM%\" == \"x86\" (set MINGW_PREFIX=C:\\msys64\\mingw32) ELSE (set MINGW_PREFIX=C:\\msys64\\mingw64)"
+
 environment:
   CCACHE_DIR: "%APPVEYOR_BUILD_FOLDER%\\.ccache"
   APPVEYOR_SAVE_CACHE_ON_ERROR: true

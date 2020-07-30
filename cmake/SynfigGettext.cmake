@@ -21,6 +21,30 @@ https://gitlab.kitware.com/cmake/cmake/-/issues/20792
 
 find_program(MSGFMT_EXECUTABLE msgfmt)
 
+if(MSGFMT_EXECUTABLE)
+    execute_process(COMMAND ${MSGFMT_EXECUTABLE} --version
+        OUTPUT_VARIABLE GETTEXT_VERSION
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    get_filename_component(MSGMERGE_NAME ${MSGFMT_EXECUTABLE} NAME)
+    get_filename_component(MSGMERGE_NAMEWE ${MSGFMT_EXECUTABLE} NAME_WE)
+
+    if (GETTEXT_VERSION MATCHES "^(${MSGMERGE_NAME}|${MSGMERGE_NAMEWE}) \\([^\\)]*\\) ([0-9\\.]+[^ \n]*)")
+        set(GETTEXT_VERSION_STRING "${CMAKE_MATCH_2}")
+    endif()
+    
+    unset(GETTEXT_VERSION)
+    unset(MSGMERGE_NAME)
+    unset(MSGMERGE_NAMEWE)
+endif()
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Gettext
+    REQUIRED_VARS GETTEXT_MSGMERGE_EXECUTABLE GETTEXT_MSGFMT_EXECUTABLE
+    VERSION_VAR GETTEXT_VERSION_STRING
+)
+
 function(SYNFIG_PROCESS_PO_FILES)
     set(_options ALL)
     set(_targetName TARGET_NAME)

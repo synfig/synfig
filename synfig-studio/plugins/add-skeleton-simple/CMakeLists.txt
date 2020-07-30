@@ -1,5 +1,3 @@
-include(SynfigIntltool)
-
 set(INSTALL_DESTINATION "share/synfig/plugins/add-skeleton-simple")
 set(PLUGIN_ADD_SKELETON_SIMPLE_FILES
     add-skeleton-simple.py
