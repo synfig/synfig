@@ -525,42 +525,34 @@ StateBone_Context::event_mouse_click_handler(const Smach::event& x)
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	Point p(get_work_area()->snap_point_to_grid(event.pos));
 
-	Duck::Handle duck(get_work_area()->find_duck(p,0.2));
-
 	switch(event.button)
 	{
 		case BUTTON_LEFT:
 		{
-			if(!duck){
+			clickOrigin = p;
 
-				clickOrigin = p;
+			point1_duck=new Duck();
+			point1_duck->set_point(p);
+			point1_duck->set_name("p1");
+			point1_duck->set_type(Duck::TYPE_POSITION);
+			point1_duck->set_editable(false);
+			get_work_area()->add_duck(point1_duck);
 
-				point1_duck=new Duck();
-				point1_duck->set_point(p);
-				point1_duck->set_name("p1");
-				point1_duck->set_type(Duck::TYPE_POSITION);
-				point1_duck->set_editable(false);
-				get_work_area()->add_duck(point1_duck);
+			point2_duck=new Duck();
+			point2_duck->set_point(Vector(0,0));
+			point2_duck->set_name("p2");
+			point2_duck->set_origin(point1_duck);
+			point2_duck->set_scalar(-1);
+			point2_duck->set_type(Duck::TYPE_RADIUS);
+			point2_duck->set_hover(true);
+			get_work_area()->add_duck(point2_duck);
 
-				point2_duck=new Duck();
-				point2_duck->set_point(Vector(0,0));
-				point2_duck->set_name("p2");
-				point2_duck->set_origin(point1_duck);
-				point2_duck->set_scalar(-1);
-				point2_duck->set_type(Duck::TYPE_RADIUS);
-				point2_duck->set_hover(true);
-				get_work_area()->add_duck(point2_duck);
+			bone_bezier =new Duckmatic::Bezier();
+			bone_bezier->p1=bone_bezier->c1=point1_duck;
+			bone_bezier->p2=bone_bezier->c2=point2_duck;
+			get_work_area()->add_bezier(bone_bezier);
 
-				bone_bezier =new Duckmatic::Bezier();
-				bone_bezier->p1=bone_bezier->c1=point1_duck;
-				bone_bezier->p2=bone_bezier->c2=point2_duck;
-				get_work_area()->add_bezier(bone_bezier);
-
-				drawing = true;
-			}else{
-				cout<<"Duck"<<endl;
-				drawing = false;
-			}
+			drawing = true;
 
 			return Smach::RESULT_ACCEPT;
 		}
@@ -617,7 +609,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		{
 			clickOrigin = transform.unperform(clickOrigin);
 			releaseOrigin = transform.unperform(releaseOrigin);
-			if(drawing && !duck){ //! if the user was not modifying a duck
+			if(drawing){ //! if the user was not modifying a duck
 				if(skel_layer){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
 					createChild->set_param("canvas",skel_layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
@@ -643,7 +635,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							}
 						}
 					}else{
-						cout<<"Regular draw"<<endl;
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						//cout<<"Active Bone: "<<active_bone<<endl;
@@ -748,7 +739,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 							ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 							value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
-							info(value_desc.get_description());
 							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 							{
 								error("expected a ValueNode_Bone");
@@ -792,7 +782,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 							ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 							value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
-							info(value_desc.get_description());
 							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 							{
 								error("expected a ValueNode_Bone");
@@ -878,9 +867,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 					get_canvas_view()->queue_rebuild_ducks();
 				}
+				drawing = false;
 			}
 			else{
-				cout<<"Set"<<endl;
 				_on_signal_change_active_bone(duck->get_value_desc().get_parent_value_node());
 				get_work_area()->set_active_bone_value_node(duck->get_value_desc().get_parent_value_node());
 			}
@@ -971,7 +960,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 		}else{
 			return -1;
 		}
-		return -1;	
+		return -1;
 	}
 	return -1;
 }
@@ -1006,7 +995,6 @@ StateBone_Context::make_layer(){
 	}else if(c_layer==1){
 		ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
-		info(value_desc.get_description());
 		if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 		{
 			error("expected a ValueNode_Bone");
@@ -1015,7 +1003,6 @@ StateBone_Context::make_layer(){
 		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
 		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
-		info(value_desc.get_description());
 		if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 		{
 			error("expected a ValueNode_Bone");
