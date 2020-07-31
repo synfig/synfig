@@ -824,8 +824,6 @@ AsyncRenderer::stop()
 				target=0;
 				render_thread=0;
 				lock.release();
-
-				error_message = _("Rendering stopped by user");
 			}
 
 			signal_finished_(error_message);
