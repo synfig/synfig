@@ -213,7 +213,7 @@ void studio::Dock_Info::on_stop_button_clicked()
 		Gtk::MESSAGE_QUESTION,
 		_("Cancel"),
 		_("Stop")))
-		async_renderer->stop();
+		async_renderer->user_stop();
 }
 
 void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)

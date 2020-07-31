@@ -723,6 +723,7 @@ public:
 
 AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
 	status(RENDERING_UNDEFINED),
+	interaction(UNDEFINED),
 	cb(cb),
 	start_clock(0),
 	finish_clock(0),
@@ -800,23 +801,45 @@ AsyncRenderer::stop()
 			//Glib::MainContext::get_default()->iteration(false);
 
 			std::string error_message;
-			if(status == RENDERING_SUCCESS)
-				signal_success_();
+
+			if(interaction == UNDEFINED)
+			{
+				if(status == RENDERING_SUCCESS)
+					signal_success_();
+				else
+					error_message = _("Animation couldn't be rendered");
+
+				target=0;
+				render_thread=0;
+				lock.release();
+
+				if(status == RENDERING_ERROR)
+				{
+					if(ProgressLogger *logger = dynamic_cast<ProgressLogger*>(cb))
+						error_message += "\n" + logger->get_error_message();
+				}
+			}
 			else
-				error_message = _("Animation couldn't be rendered");
+			{
+				target=0;
+				render_thread=0;
+				lock.release();
 
-			target=0;
-			render_thread=0;
-
-			lock.release();
-
-			if (status == RENDERING_ERROR) {
-				if (ProgressLogger *logger = dynamic_cast<ProgressLogger*>(cb))
-					error_message += "\n" + logger->get_error_message();
+				error_message = _("Rendering stopped by user");
 			}
 
 			signal_finished_(error_message);
 		}
+	}
+}
+
+void
+AsyncRenderer::user_stop()
+{
+	if(target)
+	{
+		interaction = BY_USER;
+		stop();
 	}
 }
 

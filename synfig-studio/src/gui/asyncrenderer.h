@@ -60,6 +60,11 @@ public:
 		RENDERING_SUCCESS
 	};
 
+        enum Interaction {
+            UNDEFINED,
+            BY_USER
+        };
+
 private:
 	//! Signal emitted when target has been stopped or has finished
 	//! An error message is passed as argument in case of error;
@@ -77,6 +82,9 @@ private:
 	//! Current rendering status
 	//! Undefined if not finished
 	Status status;
+        
+	//! Handles user interaction on the rendering process
+	Interaction interaction;
 
 	synfig::ProgressCallback *cb;
 	//! Signal to be emitted when the target is requested to stop
@@ -102,6 +110,7 @@ public:
 
 	void start();
 	void stop();
+	void user_stop();
 	void pause();
 	void resume();
 
