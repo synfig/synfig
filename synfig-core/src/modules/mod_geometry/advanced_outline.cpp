@@ -648,8 +648,8 @@ Advanced_Outline::sync_vfunc()
 						const DashItem &dash = i->get(di_blank);
 						Real p1 = p0 + dash.get_offset();
 						aline.cut(
-							calc_position( p0, bend, homogeneous ),
-							calc_position( p1, bend, homogeneous ),
+							calc_position( p0, bend, true ),
+							calc_position( p1, bend, true ),
 							DashItem::to_wp_side_type( type0 ),
 							DashItem::to_wp_side_type( (DashItem::SideType)dash.get_side_type_before() ) );
 						p0 = p1 + dash.get_length();
