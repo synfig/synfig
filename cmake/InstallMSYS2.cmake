@@ -121,7 +121,7 @@ if(WIN32)
         ${MINGW_LIB}/gdkmm-3.[0-9]*
         ${MINGW_LIB}/glib-2.[0-9]*
         ${MINGW_LIB}/gtk-3.[0-9]*
-        ${MINGW_LIB}/ImageMagick-[0-9.]*
+        ${MINGW_LIB}/ImageMagick-*
         ${MINGW_LIB}/libxml++-2.[0-9]*
         ${MINGW_LIB}/pkgconfig
     )
