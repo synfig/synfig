@@ -29,7 +29,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define NOMINMAX
 #include <synfig/importer.h>
 #include <synfig/surface.h>
 

@@ -78,7 +78,7 @@
 #define SYNFIG_EXCEPTION_GUARD_END() \
 	SYNFIG_EXCEPTION_GUARD_END_COMMON \
 		if (!_exception_guard_error_str.empty()) { \
-			synfig::error("%s", _exception_guard_error_str.c_str()); \
+			synfig::error("%s (%d)", _exception_guard_error_str.c_str(), _exception_guard_error_code); \
 			return; \
 		} else { \
 			return; \
@@ -89,7 +89,7 @@
 #define SYNFIG_EXCEPTION_GUARD_END_NO_RETURN() \
 	SYNFIG_EXCEPTION_GUARD_END_COMMON \
 		if (!_exception_guard_error_str.empty()) { \
-			synfig::error("%s", _exception_guard_error_str.c_str()); \
+			synfig::error("%s (%d)", _exception_guard_error_str.c_str(), _exception_guard_error_code); \
 		} \
 	}
 
@@ -98,7 +98,7 @@
 #define SYNFIG_EXCEPTION_GUARD_END_BOOL(success_value) \
 	SYNFIG_EXCEPTION_GUARD_END_COMMON \
 		if (!_exception_guard_error_str.empty()) { \
-			synfig::error("%s", _exception_guard_error_str.c_str()); \
+			synfig::error("%s (%d)", _exception_guard_error_str.c_str(), _exception_guard_error_code); \
 			return !success_value; \
 		} else { \
 			return success_value; \
@@ -109,7 +109,7 @@
 #define SYNFIG_EXCEPTION_GUARD_END_INT(success_value) \
 	SYNFIG_EXCEPTION_GUARD_END_COMMON \
 		if (!_exception_guard_error_str.empty()) { \
-			synfig::error("%s", _exception_guard_error_str.c_str()); \
+			synfig::error("%s (%d)", _exception_guard_error_str.c_str(), _exception_guard_error_code); \
 			return _exception_guard_error_code; \
 		} else { \
 			return success_value; \
@@ -120,7 +120,7 @@
 #define SYNFIG_EXCEPTION_GUARD_END_NULL(success_value) \
 	SYNFIG_EXCEPTION_GUARD_END_COMMON \
 		if (!_exception_guard_error_str.empty()) { \
-			synfig::error("%s", _exception_guard_error_str.c_str()); \
+			synfig::error("%s (%d)", _exception_guard_error_str.c_str(), _exception_guard_error_code); \
 			return nullptr; \
 		} else { \
 			return success_value; \
