@@ -430,8 +430,16 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	get_work_area()->set_allow_layer_clicks(false);
 
 	//ducks
-	get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
-	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+
+	if(etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer)){
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
+		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	}else{
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	}
+
 
 	//signals
 	get_canvas_interface()->signal_active_bone_changed().connect(sigc::mem_fun(*this,&studio::StateBone_Context::_on_signal_change_active_bone));
@@ -611,6 +619,11 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 			releaseOrigin = transform.unperform(releaseOrigin);
 			if(drawing){ //! if the user was not modifying a duck
 				if(skel_layer){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
+					bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+					if(is_currently_on){
+						get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
+					}
+
 					createChild->set_param("canvas",skel_layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
 					int b = -1;
@@ -625,7 +638,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						if(get_work_area()->get_active_bone_value_node()){
 							setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
 						}else{
-							setActiveBone->set_param("prev_active_bone_node",ValueNode_Bone::create(Bone()));
+							setActiveBone->set_param("prev_active_bone_node",ValueNode::Handle::cast_dynamic(ValueNode_Bone::create(Bone())));
 						}
 						if(setActiveBone->is_ready()){
 							try{
@@ -634,7 +647,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								info("Error performing action");
 							}
 						}
-					}else{
+					}
+					else{
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						//cout<<"Active Bone: "<<active_bone<<endl;
@@ -678,7 +692,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 									info("Error performing action");
 								}
 							}
-						}else{
+						}
+						else{
 							ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
 							ValueNode_Bone::Handle bone_node;
 							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
@@ -709,6 +724,11 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					}
 				}
 				else if(deform_layer){ //!if selected layer is a Skeleton deform Layer and user wants to work on a skeleton deform layer
+					bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+					if(!is_currently_on){
+						get_work_area()->set_type_mask(get_work_area()->get_type_mask()|Duck::TYPE_WIDTH);
+					}
+
 					createChild->set_param("canvas",deform_layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
 					int b = -1;
@@ -722,7 +742,12 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
 						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 						setActiveBone->set_param("active_bone_node",comp->get_link("second"));
-						setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
+						if(get_work_area()->get_active_bone_value_node()){
+							setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
+						}else{
+							setActiveBone->set_param("prev_active_bone_node",ValueNode::Handle::cast_dynamic(ValueNode_Bone::create(Bone())));
+						}
+
 						if(setActiveBone->is_ready()){
 							try{
 								get_canvas_interface()->get_instance()->perform_action(setActiveBone);
