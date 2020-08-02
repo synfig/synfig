@@ -616,7 +616,7 @@ class Param:
                     vector_magnitude_2 = 'Math.sqrt(sum(Math.pow(div({rhs}[0],{PIX_PER_UNIT}),2),Math.pow(div({rhs}[1],{PIX_PER_UNIT}),2)))'
                     vector_magnitude_2 = vector_magnitude_2.format(rhs=rhs,PIX_PER_UNIT=settings.PIX_PER_UNIT)
 
-                    mult = "mul({vector_magnitude_1},{vector_magnitude_1})"
+                    mult = "mul({vector_magnitude_1},{vector_magnitude_2})"
                     mult = mult.format(vector_magnitude_1=vector_magnitude_1,vector_magnitude_2=vector_magnitude_2)
 
                     ret = "Math.acos(div(sum({x_comp},{y_comp})),{mult}))"
