@@ -204,7 +204,7 @@ class Param:
         """
         Internal private method for animating
         """
-        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale", "circle_radius"}:
+        if anim_type in {"vector", "group_scale", "stretch_layer_scale", "circle_radius"}:
             self.dimension = 2
 
         # Check if we are dealing with convert methods
@@ -275,8 +275,8 @@ class Param:
                     ret_origin = ret_origin.format(par_origin=par_origin, mod=vector_magnitude, angle=par_angle,theta=theta)
                     
                 else:
-                	ret_origin = bone_origin
-                	ret_angle = bone_angle
+                    ret_origin = bone_origin
+                    ret_angle = bone_angle
                 ############# REMOVE AFTER DEBUGGING rls
                 rls = "1"
                 return ret_origin, ret_angle, lls, rls, self.expression_controllers
@@ -513,7 +513,8 @@ class Param:
                 self.subparams["bone_scale_link"].extract_subparams()
                 guid = self.subparams["bone_scale_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
-                base_value, bv_eff = self.subparams["bone_scale_link"].subparams["base_value"].recur_animate("group_layer_scale")
+                base_value, bv_eff = self.subparams["bone_scale_link"].subparams["base_value"].recur_animate("vector")
+                angle_value, av_eff = self.subparams["bone_scale_link"].subparams["angle"].recur_animate("bone_angle")
 
                 # Storing previous state
                 prev_state = bone.is_group_child
@@ -521,16 +522,32 @@ class Param:
                     bone.is_group_child = True
                 origin, angle, lls, rls, eff = bone.recur_animate("vector")
 
-                # Adding lls effect to the bone
-                base_value_x = "mul({base_value}[0],{lls})"
-                base_value_y = "{base_value}[1]"
-                ret_scale = "["+base_value_x + "," + base_value_y +"]"
-                ret_scale = ret_scale.format(base_value=base_value, lls = lls)
-                # Restore previous state
+                matrix_el1 = "mul(mul(div({base_value}[0],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value}))),{lls})"
+                matrix_el2 = "mul(-mul(div({base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value}))),{lls})"
+                matrix_el3 = "mul(div({base_value}[0],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value})))"
+                matrix_el4 = "mul(div({base_value}[1],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value})))"
+
+                matrix_el1 = matrix_el1.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el2 = matrix_el2.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el3 = matrix_el3.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el4 = matrix_el4.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                base_value_x = "mul(div({base_value}[0],{PIX_PER_UNIT}),100)"
+                base_value_y = "mul(div({base_value}[0],{PIX_PER_UNIT}),100)"
+
+                base_value_x = base_value_x.format(base_value=base_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                base_value_y = base_value_y.format(base_value=base_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+
+                scale_x = "mul(Math.sqrt(sum(Math.pow({matrix_el1},2),Math.pow({matrix_el3},2))),{base_value_x})"
+                scale_y = "mul(Math.sqrt(sum(Math.pow({matrix_el2},2),Math.pow({matrix_el4},2))),{base_value_y})"
+                scale_x = scale_x.format(matrix_el1=matrix_el1,matrix_el3=matrix_el3,base_value_x=base_value_x)
+                scale_y = scale_y.format(matrix_el2=matrix_el2,matrix_el4=matrix_el4,base_value_y=base_value_y)
+                ret_scale = "["+scale_x + "," + scale_y +"]"
+                # ret_scale = ret_scale.format(matrix_el1=matrix_el1,matrix_el3=matrix_el3,base_value_x=base_value_x,matrix_el2=matrix_el2,matrix_el4=matrix_el4,base_value_y=base_value_y)
                 bone.is_group_child = prev_state
                 if eff is not None:
                     self.expression_controllers.extend(eff)
                 self.expression_controllers.extend(bv_eff)
+                self.expression_controllers.extend(av_eff)
 
                 self.expression = ret_scale
                 return ret_scale, self.expression_controllers
@@ -617,7 +634,7 @@ class Param:
                 self.expression_controllers.extend(eff_4)
 
                 if self.dimension == 2:
-                	ret = "[mul(Math.pow({base}, {power}),{PIX_PER_UNIT}),mul(Math.pow({base}, {power}),{PIX_PER_UNIT})]"
+                    ret = "[mul(Math.pow({base}, {power}),{PIX_PER_UNIT}),mul(Math.pow({base}, {power}),{PIX_PER_UNIT})]"
                 else:
                     ret = "mul(Math.pow({base}, {power}),{PIX_PER_UNIT})"
 

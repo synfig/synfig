@@ -57,16 +57,17 @@ class TransformationProperties:
             self.elements['angle']        = Param(root,Param(self.transform[1][0],self.parent))
             self.elements['skew_angle']   = Param(self.transform[1][0][2],Param(self.transform[1][0],self.transform[1]))
 
-            #calculating skew
-            # scale = "<param name='scale'><bone_scale_link type='vector'></bone_scale_link></param>"
-            # root = etree.fromstring(scale)
-            # bone = copy.deepcopy(self.transform[0])
-            # base_value = etree.fromstring("<base_value></base_value>")
-            # scale_param = copy.deepcopy(self.transform[1][0][3][0])
-            # base_value.append(scale_param)
-            # root[0].append(bone)
-            # root[0].append(base_value)
-            self.elements['scale']        = Param(self.transform[1][0][3],Param(self.transform[1][0],self.transform[1]))
+            #calculating scale
+            scale = "<param name='scale'><bone_scale_link type='vector'></bone_scale_link></param>"
+            root = etree.fromstring(scale)
+            bone = copy.deepcopy(self.transform[0])
+            base_value = etree.fromstring("<base_value></base_value>")
+            scale_param = copy.deepcopy(self.transform[1][0][3][0])
+            base_value.append(scale_param)
+            root[0].append(bone)
+            root[0].append(base_value)
+            root[0].append(self.transform[1][0][1])
+            self.elements['scale']        = Param(root,Param(self.transform[1][0],self.parent))
 
         else:
             for child in self.transform:
@@ -130,7 +131,7 @@ def gen_layer_group(lottie, layer, idx):
     if settings.INSIDE_PRECOMP:
         pos.add_offset()
 
-    scale.animate("group_layer_scale")
+    scale.animate("group_scale")
     # Generating animation for skew
     skew.animate("rotate_layer_angle")
     # Animating opacity
