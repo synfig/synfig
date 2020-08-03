@@ -69,9 +69,9 @@ PRE_COMP_LAYER = {"rotate", "zoom", "translate", "stretch"}
 GROUP_LAYER = {"group", "switch"}
 SKELETON_LAYER = {"skeleton"}
 UNKNOWN_LAYER = "unknown_layer"
-CONVERT_METHODS = {"add", "atan2","average", "bone", "bone_link", "bone_root", "composite", "cos", "exp", "fromint", "linear", "power", "radial_composite", "scale", "sine", "subtract", "switch", "vectorangle", "vectorx", "vectory", "weighted_average"}
+CONVERT_METHODS = {"add", "atan2","average", "bone", "bone_link", "bone_root", "composite", "cos", "dotproduct", "exp", "fromint", "linear", "power", "radial_composite", "scale", "sine", "subtract", "switch", "vectorangle", "vectorx", "vectory", "weighted_average"}
 BONES = {"bone", "bone_root"}
-
+DOT_FLAG = 0
 # Some waypoint animated definitions
 ANIMATED = 2
 SINGLE_WAYPOINT = 1
