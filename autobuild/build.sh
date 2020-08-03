@@ -211,6 +211,17 @@ if [[ `uname -o` == "Msys" ]]; then
 else
 	export CONFIGURE_OPTIONS="--with-magickpp"
 fi
+if [[ `uname` == "Darwin" ]]; then
+	base_version=10.13 # High Sierra
+	version=$(sw_vers -productVersion)
+	if [[ $(echo -e $base_version"\n"$version | sort -V | tail -1) == "$base_version" ]]; then
+		# this version supports imagemagick
+		echo ""
+	else
+		# Currently there is an error when building with imagemack on OSX >= High Sierra
+		export CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS --without-imagemagick --without-magickpp"
+	fi
+fi
 /bin/bash "${REPO_DIR}/synfig-core/configure" --prefix="${PREFIX}" \
 	--includedir="${PREFIX}/include" \
 	--disable-static --enable-shared \
