@@ -492,8 +492,12 @@ StateBone_Context::~StateBone_Context()
 {
 	save_settings();
 	App::dialog_tool_options->clear();
-
 	get_work_area()->reset_cursor();
+
+	bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+	if(is_currently_on){
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
+	}
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);

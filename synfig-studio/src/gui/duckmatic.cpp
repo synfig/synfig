@@ -3005,7 +3005,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	    	if(parent_bone.get_parent()){
 	    		Point tip = parent_bone.get_tip();
 
-	    		cout<<"Tip:  "<<tip[0]<<", "<<tip[1]<<endl;
+	    		//cout<<"Tip:  "<<tip[0]<<", "<<tip[1]<<endl;
 
 	    		parent_bone = parent_bone.get_parent()->operator()(get_time()).get(Bone());
 	    		Matrix m = parent_bone.get_animated_matrix();
@@ -3015,7 +3015,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			    duck->set_point(tip);
 			    bezier->p2 = bezier->c2 = duck;
 
-			    add_bezier(bezier);
+			    //add_bezier(bezier);
 	    	}
 
 
