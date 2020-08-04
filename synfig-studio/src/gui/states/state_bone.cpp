@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**  Copyright (c) 2020 Aditya Abhiram J
+**	Copyright (c) 2020 Aditya Abhiram J
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -173,9 +173,6 @@ public:
 
 	void make_layer();
 
-
-	Smach::event_result event_stop_handler(const Smach::event& x);
-	Smach::event_result event_refresh_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
 	Smach::event_result event_mouse_drag_handler(const Smach::event& x);
 	Smach::event_result event_mouse_release_handler(const Smach::event& x);
@@ -219,8 +216,6 @@ StateBone::StateBone() :
 	Smach::state<StateBone_Context>("bone")
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,		&StateBone_Context::event_layer_selection_changed_handler));
-	insert(event_def(EVENT_STOP,						&StateBone_Context::event_stop_handler));
-	insert(event_def(EVENT_REFRESH,						&StateBone_Context::event_refresh_handler));
 	insert(event_def(EVENT_REFRESH_DUCKS,				&StateBone_Context::event_hijack));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,	&StateBone_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateBone_Context::event_mouse_drag_handler));
@@ -509,23 +504,6 @@ StateBone_Context::~StateBone_Context()
 
 	App::dock_toolbox->refresh();
 }
-
-Smach::event_result
-StateBone_Context::event_stop_handler(const Smach::event &x)
-{
-	synfig::info("Skeleton Tool stop handler called");
-	reset();
-	return Smach::RESULT_ACCEPT;
-}
-
-Smach::event_result
-StateBone_Context::event_refresh_handler(const Smach::event& x)
-{
-	synfig::info("Skeleton Tool refresh handler called");
-	return Smach::RESULT_ACCEPT;
-}
-
-
 
 Smach::event_result
 StateBone_Context::event_mouse_click_handler(const Smach::event& x)
