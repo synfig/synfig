@@ -1,0 +1,28 @@
+APPLICATION_ICON    ICON    "${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic/synfig_icon.ico" 
+ 
+1 VERSIONINFO 
+    FILEVERSION     ${STUDIO_VERSION_MAJOR},${STUDIO_VERSION_MINOR},${STUDIO_VERSION_PATCH},0 
+    PRODUCTVERSION  ${STUDIO_VERSION_MAJOR},${STUDIO_VERSION_MINOR},${STUDIO_VERSION_PATCH},0 
+    FILEOS          0x40004 
+    FILETYPE        1 
+BEGIN 
+    BLOCK "StringFileInfo" 
+    BEGIN 
+        BLOCK "040904E4" 
+        BEGIN 
+            VALUE "Comments",         "Published under the GNU GPL" 
+            VALUE "CompanyName",      "Synfig Developers" 
+            VALUE "FileDescription",  "Vector animation program" 
+            VALUE "FileVersion",      "${STUDIO_VERSION}" 
+            VALUE "InternalName",     "synfigstudio" 
+            VALUE "LegalCopyright",   " (c) Synfig Developers 2001-2020" 
+            VALUE "OriginalFilename", "synfigstudio.exe" 
+            VALUE "ProductName",      "synfigstudio.exe" 
+            VALUE "ProductVersion",   "${STUDIO_VERSION}" 
+        END 
+    END 
+    BLOCK "VarFileInfo" 
+    BEGIN 
+        VALUE "Translation", 0x0409, 1252 
+    END 
+END 
