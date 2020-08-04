@@ -2122,8 +2122,8 @@ studio::WorkArea::queue_render(bool refresh)
 		if (refresh) {
 			renderer_canvas->clear_render();
 			Glib::signal_idle().connect_once(
-					sigc::mem_fun(*renderer_canvas, &Renderer_Canvas::enqueue_render),
-					Glib::PRIORITY_DEFAULT );
+						sigc::mem_fun(*renderer_canvas, &Renderer_Canvas::enqueue_render),
+						Glib::PRIORITY_DEFAULT );
 		} else {
 			renderer_canvas->enqueue_render();
 		}
