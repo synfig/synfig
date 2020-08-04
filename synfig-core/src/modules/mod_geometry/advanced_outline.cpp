@@ -643,17 +643,17 @@ Advanced_Outline::sync_vfunc()
 				Real p0 = dash_offset/dashes_length;
 				p0 = (p0 - ceil(p0))*dashes_length;
 				DashItem::SideType type0 = (DashItem::SideType)dilist.back().get(di_blank).get_side_type_after();
-				while(p0 < 1) {
+				while(p0 < kl) {
 					for(ValueBase::List::const_iterator i = dilist.begin(); i != dilist.end(); ++i) {
 						const DashItem &dash = i->get(di_blank);
 						Real p1 = p0 + dash.get_offset();
 						aline.cut(
-							calc_position( p0, bend, homogeneous ),
-							calc_position( p1, bend, homogeneous ),
+							p0,
+							p1,
 							DashItem::to_wp_side_type( type0 ),
 							DashItem::to_wp_side_type( (DashItem::SideType)dash.get_side_type_before() ) );
 						p0 = p1 + dash.get_length();
-						if (p0 >= 1) break;
+						if (p0 >= kl) break;
 						type0 = (DashItem::SideType)dash.get_side_type_after();
 					}
 				}
