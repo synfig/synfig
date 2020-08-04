@@ -663,6 +663,7 @@ Dialog_Setup::on_restore_pressed()
 		widget_enum->set_value(Distance::SYSTEM_POINTS);
 		toggle_restrict_radius_ducks.set_active(true);
 		toggle_resize_imported_images.set_active(false);
+		toggle_animation_thumbnail_preview.set_active(true);
 		toggle_enable_experimental_features.set_active(false);
 		toggle_use_dark_theme.set_active(false);
 		toggle_show_file_toolbar.set_active(true);
