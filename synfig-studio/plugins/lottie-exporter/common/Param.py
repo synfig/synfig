@@ -622,6 +622,9 @@ class Param:
                     ret = "Math.acos(div(sum({x_comp},{y_comp})),{mult}))"
                     ret = ret.format(x_comp=x_comp,y_comp=y_comp,mult=mult)
 
+				self.expression = ret
+				return ret, self.expression_controllers
+
             elif self.param[0].tag == "logarithm":
                 self.subparams["logarithm"].extract_subparams()
                 link, eff_1     = self.subparams["logarithm"].subparams["link"].recur_animate("real")
