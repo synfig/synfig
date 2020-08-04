@@ -26,48 +26,62 @@ class TransformationProperties:
         self.transform = transform
         self.elements = {}
         self.parent = parent
+        self.create_default_values()
         self.extract_params()
     
+    def create_default_values(self):
+        self.angle_base = copy.deepcopy(self.transform[1][0][1])
+        self.base_scale_value = etree.fromstring("<base_value></base_value>")
+        scale_param_1 = copy.deepcopy(self.transform[1][0][3][0])
+        self.base_scale_value.append(scale_param_1)
+
     def extract_params(self):
         if self.transform.tag != 'composite':
+            
             #calculating offset
             offset = "<param name='offset'><bone_link type='offset'></bone_link></param>"
-            root = etree.fromstring(offset)
+            root_offset = etree.fromstring(offset)
             bone = copy.deepcopy(self.transform[0])
             base_value = etree.fromstring("<base_value></base_value>")
             flag = etree.fromstring("<flag></flag>")
             offset_param = copy.deepcopy(self.transform[1][0][0][0])
             base_value.append(offset_param)
-            root[0].append(bone)
-            root[0].append(base_value)
-            root[0].append(flag)            
-            self.elements['offset']       = Param(root,Param(self.transform[1][0],self.parent))
+            root_offset[0].append(bone)
+            root_offset[0].append(base_value)
+            root_offset[0].append(flag)            
+            self.elements['offset']       = Param(root_offset,Param(self.transform[1][0],self.parent))
             
             #calculating angle
             angle = "<param name='angle'><bone_angle_link type='angle'></bone_angle_link></param>"
-            root = etree.fromstring(angle)
+            root_angle = etree.fromstring(angle)
             bone = copy.deepcopy(self.transform[0])
             base_value = etree.fromstring("<base_value></base_value>")
             angle_param = copy.deepcopy(self.transform[1][0][1][0])
             scale_param = copy.deepcopy(self.transform[1][0][3])
             base_value.append(angle_param)
-            root[0].append(bone)
-            root[0].append(base_value)
-            root[0].append(scale_param)
-            self.elements['angle']        = Param(root,Param(self.transform[1][0],self.parent))
-            self.elements['skew_angle']   = Param(self.transform[1][0][2],Param(self.transform[1][0],self.transform[1]))
+            root_angle[0].append(bone)
+            root_angle[0].append(base_value)
+            root_angle[0].append(scale_param)
+            self.elements['angle']        = Param(root_angle,Param(self.transform[1][0],self.parent))
 
+            #calculating skew
+            scale = "<param name='skew'><bone_skew_link type='vector'></bone_skew_link></param>"
+            root_skew = etree.fromstring(scale)
+            bone = copy.deepcopy(self.transform[0])
+            base_1 = etree.fromstring("<base_value></base_value>")
+            scale_1 = copy.deepcopy(self.transform[1][0][3][0])
+            base_1.append(scale_1)
+            root_skew[0].extend([bone,base_1,self.transform[1][0][1]])
+            self.elements['skew_angle']   = Param(root_skew,Param(self.transform[1][0],self.parent))
+            
             #calculating scale
             scale = "<param name='scale'><bone_scale_link type='vector'></bone_scale_link></param>"
-            root = etree.fromstring(scale)
+            root_scale = etree.fromstring(scale)
             bone = copy.deepcopy(self.transform[0])
-            base_value = etree.fromstring("<base_value></base_value>")
-            scale_param = copy.deepcopy(self.transform[1][0][3][0])
-            base_value.append(scale_param)
-            root[0].append(bone)
-            root[0].append(base_value)
-            root[0].append(self.transform[1][0][1])
-            self.elements['scale']        = Param(root,Param(self.transform[1][0],self.parent))
+            root_scale[0].append(bone)
+            root_scale[0].append(self.base_scale_value)
+            root_scale[0].append(self.angle_base)
+            self.elements['scale']        = Param(root_scale,Param(self.transform[1][0],self.parent))
 
         else:
             for child in self.transform:

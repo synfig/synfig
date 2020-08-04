@@ -552,6 +552,46 @@ class Param:
                 self.expression = ret_scale
                 return ret_scale, self.expression_controllers
 
+            elif self.param[0].tag == "bone_skew_link":
+                self.subparams["bone_skew_link"].extract_subparams()
+                guid = self.subparams["bone_skew_link"].subparams["bone"][0].attrib["guid"]
+                bone = self.get_bone_from_canvas(guid)
+                base_value, bv_eff = self.subparams["bone_skew_link"].subparams["base_value"].recur_animate("vector")
+                angle_value, av_eff = self.subparams["bone_skew_link"].subparams["angle"].recur_animate("bone_angle")
+
+                # Storing previous state
+                prev_state = bone.is_group_child
+                if self.is_group_child:
+                    bone.is_group_child = True
+                origin, angle, lls, rls, eff = bone.recur_animate("vector")
+
+                matrix_el1 = "mul(mul(div({base_value}[0],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value}))),{lls})"
+                matrix_el2 = "mul(-mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value}))),{lls})"
+                matrix_el3 = "mul(div({base_value}[0],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value})))"
+                matrix_el4 = "mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value})))"
+
+                matrix_el1 = matrix_el1.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el2 = matrix_el2.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el3 = matrix_el3.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el4 = matrix_el4.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+
+                x_axis_angle = "sub(degreesToRadians({PI}),Math.atan2({matrix_el1},{matrix_el3}))"
+                y_axis_angle = "sub(degreesToRadians({PI}),Math.atan2({matrix_el2},{matrix_el4}))"
+                x_axis_angle = x_axis_angle.format(PI=180,matrix_el1=matrix_el1,matrix_el3=matrix_el3)
+                y_axis_angle = y_axis_angle.format(PI=180,matrix_el2=matrix_el2,matrix_el4=matrix_el4)
+
+                ret_skew = "radiansToDegrees(sub({y_axis_angle},sub({x_axis_angle},degreesToRadians(90))))"
+                ret_skew = ret_skew.format(y_axis_angle=y_axis_angle,x_axis_angle=x_axis_angle)
+
+                bone.is_group_child = prev_state
+                if eff is not None:
+                    self.expression_controllers.extend(eff)
+                self.expression_controllers.extend(bv_eff)
+                self.expression_controllers.extend(av_eff)
+
+                self.expression = ret_skew
+                return ret_skew, self.expression_controllers
+
             elif self.param[0].tag == "sine":
                 self.subparams["sine"].extract_subparams()
                 angle, eff_1 = self.subparams["sine"].subparams["angle"].recur_animate("region_angle")
