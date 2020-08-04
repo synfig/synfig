@@ -112,7 +112,7 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::Menu menu;
 
 	int active_bone;
-	int c_layer;
+	int c_layer,p_layer;
 	bool drawing;
 
 	Point clickOrigin;
@@ -159,23 +159,13 @@ public:
 
 
 	void update_layer(){
-		if(c_layer==0) {
-			save_settings();
-			c_layer=1;
-			load_settings();
-		}
-		else{
-			save_settings();
-			c_layer=0;
-			load_settings();
-		}
+		save_settings();
+		c_layer = !c_layer;
+		load_settings();
 	}
 
 	void make_layer();
 
-
-	Smach::event_result event_stop_handler(const Smach::event& x);
-	Smach::event_result event_refresh_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
 	Smach::event_result event_mouse_drag_handler(const Smach::event& x);
 	Smach::event_result event_mouse_release_handler(const Smach::event& x);
@@ -198,6 +188,8 @@ public:
 	void _on_signal_change_active_bone(ValueNode::Handle node);
 	int change_active_bone(ValueNode::Handle node);
 
+	void update_name(int i);
+	void update_width(int i);
 	void load_settings();
 	void save_settings();
 	void reset();
@@ -219,8 +211,6 @@ StateBone::StateBone() :
 	Smach::state<StateBone_Context>("bone")
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,		&StateBone_Context::event_layer_selection_changed_handler));
-	insert(event_def(EVENT_STOP,						&StateBone_Context::event_stop_handler));
-	insert(event_def(EVENT_REFRESH,						&StateBone_Context::event_refresh_handler));
 	insert(event_def(EVENT_REFRESH_DUCKS,				&StateBone_Context::event_hijack));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,	&StateBone_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateBone_Context::event_mouse_drag_handler));
@@ -237,62 +227,93 @@ void* StateBone::enter_state(studio::CanvasView *machine_context) const
 }
 
 void
+StateBone_Context::update_name(int i) {
+	if(i==0){
+		try
+		{
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+			string value;
+			if (c_layer == 0) {
+				if (settings.get_value("bone.skel_id", value))
+					set_id(value);
+				else
+					set_id(_("NewSkeleton"));
+			} else {
+				if (settings.get_value("bone.skel_deform_id", value))
+					set_id(value);
+				else
+					set_id(_("NewSkeletonDeformation"));
+			}
+		}
+		catch(...)
+		{
+			synfig::warning("State Bone: Caught exception when attempting to load name settings.");
+		}
+	}else{
+		try
+		{
+			synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
+			if(c_layer==0)
+				settings.set_value("bone.skel_id",get_id().c_str());
+			else
+				settings.set_value("bone.skel_deform_id",get_id().c_str());
+		}
+		catch (...) {
+			synfig::warning("State Bone: Caught exception when attempting to save name settings.");
+		}
+	}
+}
+
+void
+StateBone_Context::update_width(int i) {
+	if(i==0){
+		try
+		{
+			synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+			string value;
+			if(p_layer==0){
+				if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
+					set_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
+				else
+					set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+			}else{
+				if(settings.get_value("bone.skel_deform_bone_width",value) && !value.empty())
+					set_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
+				else
+					set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+			}
+		}
+		catch(...)
+		{
+			synfig::warning("State Bone: Caught exception when attempting to load width settings.");
+		}
+	}else{
+		try{
+			if(p_layer==0){
+				settings.set_value("bone.skel_bone_width",bone_width_dist.get_value().get_string());
+			}else{
+				settings.set_value("bone.skel_deform_bone_width",bone_width_dist.get_value().get_string());
+			}
+		}
+		catch (...) {
+			synfig::warning("State Bone: Caught exception when attempting to save width settings.");
+		}
+	}
+
+}
+
+void
 StateBone_Context::load_settings()
 {
-	try
-	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
-		string value;
-		if(c_layer==0){
-			if(settings.get_value("bone.skel_id",value))
-				set_id(value);
-			else
-				set_id(_("NewSkeleton"));
-		}else{
-			if(settings.get_value("bone.skel_deform_id",value))
-				set_id(value);
-			else
-				set_id(_("NewSkeletonDeformation"));
-		}
-
-		if(c_layer==0){
-			if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
-				set_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
-			else
-				set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
-		}else{
-			if(settings.get_value("bone.skel_deform_bone_width",value) && !value.empty())
-				set_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
-			else
-				set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
-		}
-	}
-	catch(...)
-	{
-		synfig::warning("State Bone: Caught exception when attempting to load settings.");
-	}
+	update_name(0);
+	update_width(0);
 }
 
 void
 StateBone_Context::save_settings()
 {
-	try
-	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
-		if(c_layer==0)
-			settings.set_value("bone.skel_id",get_id().c_str());
-		else
-			settings.set_value("bone.skel_deform_id",get_id().c_str());
-		if(c_layer==0){
-			settings.set_value("bone.skel_bone_width",bone_width_dist.get_value().get_string());
-		}else{
-			settings.set_value("bone.skel_deform_bone_width",bone_width_dist.get_value().get_string());
-		}
-	}
-	catch (...)
-	{
-		synfig::warning("State Bone: Caught exception when attempting to save settings.");
-	}
+	update_name(1);
+	update_width(1);
 }
 
 void
@@ -514,22 +535,6 @@ StateBone_Context::~StateBone_Context()
 	App::dock_toolbox->refresh();
 }
 
-Smach::event_result
-StateBone_Context::event_stop_handler(const Smach::event &x)
-{
-	synfig::info("Skeleton Tool stop handler called");
-	reset();
-	return Smach::RESULT_ACCEPT;
-}
-
-Smach::event_result
-StateBone_Context::event_refresh_handler(const Smach::event& x)
-{
-	synfig::info("Skeleton Tool refresh handler called");
-	return Smach::RESULT_ACCEPT;
-}
-
-
 
 Smach::event_result
 StateBone_Context::event_mouse_click_handler(const Smach::event& x)
@@ -623,6 +628,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 			releaseOrigin = transform.unperform(releaseOrigin);
 			if(drawing){ //! if the user was not modifying a duck
 				if(skel_layer){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
+					update_width(1);
+					p_layer=0;
+					update_width(0);
 					bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 					if(is_currently_on){
 						get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
@@ -728,6 +736,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					}
 				}
 				else if(deform_layer){ //!if selected layer is a Skeleton deform Layer and user wants to work on a skeleton deform layer
+					update_width(1);
+					p_layer=1;
+					update_width(0);
 					bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 					if(!is_currently_on){
 						get_work_area()->set_type_mask(get_work_area()->get_type_mask()|Duck::TYPE_WIDTH);
@@ -842,6 +853,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				else
 				{ //! Creating empty layer as there's no active skeleton layer of any type
 					egress_on_selection_change=false;
+					update_width(1);
+					p_layer=c_layer;
+					update_width(0);
 					if(c_layer==0)
 						get_canvas_view()->add_layer("skeleton");
 					else if(c_layer==1)
@@ -1010,6 +1024,8 @@ StateBone_Context::make_layer(){
 	egress_on_selection_change=false;
 
 	bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+	update_width(1);
+	p_layer=c_layer;
 	if(c_layer==0){
 		if(is_currently_on){
 			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
@@ -1022,6 +1038,7 @@ StateBone_Context::make_layer(){
 		}
 		get_canvas_view()->add_layer("skeleton_deformation");
 	}
+	update_width(0);
 	Layer::Handle new_skel= get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	new_skel->set_param("name",get_id().c_str());
 	new_skel->set_description(get_id());
