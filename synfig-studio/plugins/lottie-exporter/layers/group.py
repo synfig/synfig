@@ -30,10 +30,11 @@ class TransformationProperties:
         self.extract_params()
     
     def create_default_values(self):
-        self.angle_base = copy.deepcopy(self.transform[1][0][1])
-        self.base_scale_value = etree.fromstring("<base_value></base_value>")
-        scale_param_1 = copy.deepcopy(self.transform[1][0][3][0])
-        self.base_scale_value.append(scale_param_1)
+    	if self.transform.tag != 'composite':
+	        self.angle_base = copy.deepcopy(self.transform[1][0][1])
+	        self.base_scale_value = etree.fromstring("<base_value></base_value>")
+	        scale_param_1 = copy.deepcopy(self.transform[1][0][3][0])
+	        self.base_scale_value.append(scale_param_1)
 
     def extract_params(self):
         if self.transform.tag != 'composite':
