@@ -641,6 +641,18 @@ class Param:
                 ret = "if({link} <= -{epsilon} || {epsilon} <= {link})\n $bm_rt = [mul(div({PIX_PER_UNIT},{link}),2),mul(div({PIX_PER_UNIT},{link}),2)] ;\n else if({link} >= 0 && {epsilon} > {link})\n $bm_rt = [{infinite},{infinite}];\n else\n $bm_rt = [-{infinite},-{infinite}];"
                 ret = ret.format(link=link,epsilon=epsilon,infinite=infinite,PIX_PER_UNIT=settings.PIX_PER_UNIT)
                 
+            elif self.param[0].tag == "range":
+                self.subparams["range"].extract_subparams()
+                min_val, eff_1 = self.subparams["range"].subparams["min"].recur_animate("real")
+                max_val, eff_2 = self.subparams["range"].subparams["max"].recur_animate("real")
+                link   , eff_3 = self.subparams["range"].subparams["link"].recur_animate("real")
+
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                self.expression_controllers.extend(eff_3)
+
+                ret = "if({link} < {min_val})\n $bm_rt = [mul({min_val},2),mul({min_val},2)] ;\n else if({link} > {max_val})\n $bm_rt = [mul({max_val},2),mul({max_val},2)];\n else\n $bm_rt = [mul({link},2),mul({link},2)];"
+                ret = ret.format(link=link,min_val=min_val,max_val=max_val)
                 settings.RANGE_FLAG = 1
                 self.expression = ret
                 return ret,self.expression_controllers
@@ -663,7 +675,7 @@ class Param:
                 ret = ret.format(link=link,PIX_PER_UNIT=settings.PIX_PER_UNIT)
                 self.expression = ret
                 return ret, self.expression_controllers
-        
+
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -1072,6 +1084,18 @@ class Param:
                 else:
                     ret = -settings.PIX_PER_UNIT*infinite
 
+            elif self.param[0].tag == "range":
+                min_val = self.subparams["range"].subparams["min"].__get_value(frame)
+                max_val = self.subparams["range"].subparams["max"].__get_value(frame)
+                link    = self.subparams["range"].subparams["link"].__get_value(frame)
+
+                if link < min_val:
+                    ret = min_val
+                elif link > max_val:
+                    ret = max_val
+                else:
+                    ret = link
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1268,6 +1292,12 @@ class Param:
                 self.subparams["logarithm"].subparams["link"].update_frame_window(window)
                 self.subparams["logarithm"].subparams["epsilon"].update_frame_window(window)
                 self.subparams["logarithm"].subparams["infinite"].update_frame_window(window)
+
+            elif node.tag == "range":
+                self.subparams["range"].extract_subparams()
+                self.subparams["range"].subparams["min"].update_frame_window(window)
+                self.subparams["range"].subparams["max"].update_frame_window(window)
+                self.subparams["range"].subparams["link"].update_frame_window(window)
 
         if is_animated(node) == settings.ANIMATED:
             for waypoint in node:
