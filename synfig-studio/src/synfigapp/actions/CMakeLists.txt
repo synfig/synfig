@@ -41,6 +41,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/valuedesccreatechildbone.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuedescresetpose.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuedescbake.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuedescbonesetparent.cpp"
 
         "${CMAKE_CURRENT_LIST_DIR}/valuenodeadd.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodeconstset.cpp"
@@ -52,6 +53,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/valuenodedynamiclistremove.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodedynamiclistremovesmart.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodedynamiclistrotateorder.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuenodesetactivebone.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodedynamiclistunloop.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodestaticlistinsert.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenodestaticlistinsertsmart.cpp"

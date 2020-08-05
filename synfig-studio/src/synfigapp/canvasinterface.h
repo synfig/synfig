@@ -99,6 +99,8 @@ private:
 	sigc::signal<void,synfig::Keyframe> signal_keyframe_selected_;
 	sigc::signal<void> signal_keyframe_properties_;
 
+	sigc::signal<void,synfig::ValueNode::Handle> signal_active_bone_changed_;
+
 	sigc::signal<void> signal_id_changed_;
 
 	sigc::signal<void> signal_time_changed_;
@@ -170,6 +172,9 @@ public:	// Signal Interface
 
 	//! Signal called when the mode has changed
 	sigc::signal<void,Mode> signal_mode_changed() { return signal_mode_changed_; }
+	
+	//! Signal called when the active bone is changed
+	sigc::signal<void,synfig::ValueNode::Handle> signal_active_bone_changed() { return signal_active_bone_changed_; }
 
 	//! Signal called when a the ID has been changed
 	sigc::signal<void>& signal_id_changed() { return signal_id_changed_; }

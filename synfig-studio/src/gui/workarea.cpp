@@ -46,6 +46,7 @@
 #include <synfig/blinepoint.h>
 #include <synfig/rendering/renderer.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 
 #include <synfigapp/canvasinterface.h>
 
@@ -189,6 +190,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	signal_grid_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
 	signal_grid_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::save_meta_data));
 	signal_sketch_saved().connect(sigc::mem_fun(*this,&studio::WorkArea::save_meta_data));
+	canvas_interface->signal_active_bone_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::set_active_bone_value_node));
 
 	add_events(Gdk::KEY_PRESS_MASK);
 
@@ -2186,6 +2188,16 @@ WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
 	if(x!=selected_value_node_)
 	{
 		selected_value_node_=x;
+		queue_draw();
+	}
+}
+
+void
+WorkArea::set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x)
+{
+	if(x!=active_bone_ && etl::handle<synfig::ValueNode_Bone>::cast_dynamic(x))
+	{
+		active_bone_=x;
 		queue_draw();
 	}
 }

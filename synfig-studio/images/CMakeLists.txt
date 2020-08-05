@@ -203,6 +203,7 @@ set(ICONS
     tool_sketch_icon
     tool_smooth_move_icon
     tool_spline_icon
+    tool_skeleton_icon
     tool_star_icon
     tool_text_icon
     tool_width_icon

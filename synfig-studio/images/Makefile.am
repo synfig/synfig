@@ -140,6 +140,7 @@ EXTRA_DIST = \
 	tool_brush_icon.sif \
 	tool_cutout_icon.sif \
 	tool_spline_icon.sif \
+	tool_skeleton_icon.sif\
 	tool_circle_icon.sif \
 	tool_draw_icon.sif \
 	tool_eyedrop_icon.sif \
@@ -328,6 +329,7 @@ ICONS = \
 	tool_brush_icon.$(EXT) \
 	tool_cutout_icon.$(EXT) \
 	tool_spline_icon.$(EXT) \
+	tool_skeleton_icon.$(EXT)\
 	tool_circle_icon.$(EXT) \
 	tool_draw_icon.$(EXT) \
 	tool_eyedrop_icon.$(EXT) \

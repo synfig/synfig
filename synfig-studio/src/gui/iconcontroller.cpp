@@ -145,6 +145,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(normal, "tool_normal_icon." IMAGE_EXT, _("Transform Tool"));
 	INIT_STOCK_ICON(polygon, "tool_polyline_icon." IMAGE_EXT, _("Polygon Tool"));
 	INIT_STOCK_ICON(bline, "tool_spline_icon." IMAGE_EXT, _("Spline Tool"));
+	INIT_STOCK_ICON(bone,"tool_skeleton_icon." IMAGE_EXT,_("Skeleton Tool"));
 	INIT_STOCK_ICON(eyedrop, "tool_eyedrop_icon." IMAGE_EXT, _("Eyedrop Tool"));
 	INIT_STOCK_ICON(fill, "tool_fill_icon." IMAGE_EXT, _("Fill Tool"));
 	INIT_STOCK_ICON(draw, "tool_draw_icon." IMAGE_EXT, _("Draw Tool"));

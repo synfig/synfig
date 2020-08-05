@@ -5,7 +5,8 @@
 **	$Id$
 **
 **	\legal
-**	......... ... 2013 Ivan Mahonin
+**  Copyright (c) 2013 Ivan Mahonin
+**  Copyright (c) 2020 Aditya Abhiram J
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -33,9 +34,11 @@
 
 #include "valuedesccreatechildbone.h"
 #include "valuenodestaticlistinsertsmart.h"
+#include "valuenodestaticlistinsert.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 #endif
 
@@ -63,7 +66,14 @@ ACTION_SET_CVS_ID(Action::ValueDescCreateChildBone,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
-	time(0)
+	time(0),
+	origin(ValueBase(Point(1.1,0))),
+	scalelx(ValueBase(1.0)),
+	angle(Angle::rad(0)),
+	c_parent(false),
+	width(0.1),
+	tipwidth(0.1),
+	c_active_bone(false)
 {
 }
 
@@ -79,7 +89,38 @@ Action::ValueDescCreateChildBone::get_param_vocab()
 		.set_local_name(_("Time"))
 		.set_optional()
 	);
-
+	ret.push_back(ParamDesc("origin",Param::TYPE_VALUE)
+		.set_local_name(_("Origin of the child bone"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("scalelx",Param::TYPE_VALUE)
+		.set_local_name(_("Scale of the child bone"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("angle",Param::TYPE_VALUE)
+		.set_local_name(_("Angle of the child bone"))
+		.set_optional()
+	);
+	ret.push_back(ParamDesc("c_parent",Param::TYPE_BOOL)
+			                    .set_local_name(_("Change the parent of the child bone?"))
+			                    .set_optional()
+	);
+	ret.push_back(ParamDesc("width",Param::TYPE_VALUE)
+			                    .set_local_name(_("Origin Width of the child bone"))
+			                    .set_optional()
+	);
+	ret.push_back(ParamDesc("tipwidth",Param::TYPE_VALUE)
+			                    .set_local_name(_("Tip Width of the child bone"))
+			                    .set_optional()
+	);
+	ret.push_back(ParamDesc("c_active_bone",Param::TYPE_BOOL)
+			                    .set_local_name(_("Highlight active bone?"))
+			                    .set_optional()
+	);
+	ret.push_back(ParamDesc("prev_active_bone",Param::TYPE_VALUEDESC)
+		.set_local_name(_("ValueNode of previous active Bone"))
+		.set_optional()
+	);
 	return ret;
 }
 
@@ -118,6 +159,41 @@ Action::ValueDescCreateChildBone::set_param(const synfig::String& name, const Ac
 		return true;
 	}
 
+	if(param.get_type()==Param::TYPE_VALUE)
+	{
+		if(name=="origin"){
+			origin=param.get_value();
+			return true;
+		}else if(name=="scalelx"){
+			scalelx=param.get_value();
+			return true;
+		}else if(name=="angle"){
+			angle=param.get_value();
+			return true;
+		}else if(name=="width"){
+			width = param.get_value();
+			return true;
+		}else if(name=="tipwidth"){
+			tipwidth = param.get_value();
+		}
+	}
+	if(param.get_type()==Param::TYPE_BOOL){
+		if(name=="parent"){
+			c_parent=param.get_bool();
+			return true;
+		}else if(name=="highlight"){
+			c_active_bone = param.get_bool();
+			return true;
+		}
+	}
+
+	if(name == "prev_active_bone_node" && param.get_type()==Param::TYPE_VALUENODE
+	&& (param.get_value_node()==ValueNode::Handle() || ValueNode_Bone::Handle::cast_dynamic(param.get_value_node()))){
+		prev_active_bone = param.get_value_node();
+		return true;
+	}
+
+
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -139,7 +215,9 @@ Action::ValueDescCreateChildBone::prepare()
 	 || !value_desc.get_parent_desc().is_value_node() )
 			throw Error(Error::TYPE_NOTREADY);
 
-	Action::Handle action = ValueNodeStaticListInsertSmart::create();
+	Action::Handle action;
+
+	action = ValueNodeStaticListInsert::create();
 	action->set_param("canvas", get_canvas());
 	action->set_param("canvas_interface", get_canvas_interface());
 	action->set_param("time", time);
@@ -147,14 +225,90 @@ Action::ValueDescCreateChildBone::prepare()
 	const ValueDesc &parent_desc = value_desc.get_parent_desc();
 	if (parent_desc.get_parent_desc().get_value_type() == type_list)
 	{
-		// Adding bone to Skeleton layer
-		action->set_param("value_desc", parent_desc);
+		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_value_node());
+		if(!value_node){
+			cout<<"Error"<<endl;
+			throw Error(Error::TYPE_NOTREADY);
+
+		}
+		int index=parent_desc.get_index();
+		action->set_param("value_desc",ValueDesc(value_node,index));
+
+		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(value_node->create_list_entry(index));
+		if(c_parent){
+			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+		}
+		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
+		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
+		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
+		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
+		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
+		action->set_param("item",ValueNode::Handle::cast_dynamic(bone));
+		
+		if(c_active_bone){
+			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+			setActiveBone->set_param("canvas",get_canvas());
+			setActiveBone->set_param("canvas_interface",get_canvas_interface());
+
+			setActiveBone->set_param("active_bone_node",ValueNode::Handle::cast_dynamic(bone));
+			setActiveBone->set_param("prev_active_bone_node",prev_active_bone);
+
+			if (!setActiveBone->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(setActiveBone);
+
+		}
 	} else {
-		// Adding bone to Skeleton Deform layer
-		action->set_param("value_desc", parent_desc.get_parent_desc());
+		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_desc().get_parent_value_node());
+		if(!value_node){
+			cout<<"Error"<<endl;
+			throw Error(Error::TYPE_NOTREADY);
+		}
+		int index=parent_desc.get_parent_desc().get_index();
+		action->set_param("value_desc",ValueDesc(value_node,index));
+
+		ValueNode_Composite::Handle bone_pair = ValueNode_Composite::Handle::cast_dynamic(value_node->create_list_entry(index));
+		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(bone_pair->get_link("first"));
+
+		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
+		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
+		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
+		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
+		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
+		if(c_parent){
+			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+		}
+
+		bone = ValueNode_Bone::Handle::cast_dynamic(bone_pair->get_link("second"));
+
+		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
+		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
+		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
+		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
+		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
+
+		if(c_parent){
+			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+		}
+
+		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
+		if(c_active_bone){
+			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+			setActiveBone->set_param("canvas",get_canvas());
+			setActiveBone->set_param("canvas_interface",get_canvas_interface());
+
+			setActiveBone->set_param("active_bone_node",ValueNode::Handle::cast_dynamic(bone));
+			setActiveBone->set_param("prev_active_bone_node",prev_active_bone);
+
+			if (!setActiveBone->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(setActiveBone);
+
+		}
+
 	}
 		
-
+	
 	if (!action->is_ready())
 		throw Error(Error::TYPE_NOTREADY);
 	add_action_front(action);

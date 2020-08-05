@@ -281,6 +281,30 @@ Renderer_Ducks::render_vfunc(
 			}
 
 		}
+		if(get_work_area()->get_active_bone_value_node())
+		{
+			synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
+			if (value_desc.is_valid() &&
+				((value_desc.is_value_node()		&& get_work_area()->get_active_bone_value_node() == value_desc.get_value_node()) ||
+				 (value_desc.parent_is_value_node()	&& get_work_area()->get_active_bone_value_node() == value_desc.get_parent_value_node())))
+			{
+				cr->save();
+
+				cr->rectangle(
+					round_to_int(point[0]-5),
+					round_to_int(point[1]-5),
+					10,
+					10
+					);
+
+				cr->set_line_width(2.0);
+				cr->set_source_rgb(GDK_COLOR_TO_RGB(ACTIVE_BONE)); //DUCK_COLOR_SELECTED
+				cr->stroke();
+
+				cr->restore();
+			}
+
+		}
 
 		if((*iter)->get_box_duck())
 		{

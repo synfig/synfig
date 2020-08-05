@@ -1299,7 +1299,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	Gtk::Menu& parammenu(*menu);
 	synfigapp::ValueDesc value_desc2(value_desc);
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
-
+	etl::handle<CanvasView> canvas_view(find_canvas_view(canvas));
 	if(!canvas_interface)
 		return;
 
@@ -1436,6 +1436,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		if(selected_value_desc.is_valid() && value_desc != selected_value_desc)
 			param_list.add("selected_value_desc",selected_value_desc);
 	}
+
+	param_list.add("child",canvas_view->get_work_area()->get_active_bone_value_node());
 
 	if(param_list2.empty())
 		add_actions_to_menu(&parammenu, param_list,categories);
