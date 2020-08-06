@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Fahad Al-Saidi <fahad.alsaidi@gmail.com>, 2020
+# m47mood <m.alshukri@gmail.com>, 2020
 # Mohamed Elkebsi <mohamedkebsi55@gmail.com>, 2020
 # Muslim Kamal Salim <qbmw8001@gmail.com>, 2014
 # zerrouki <taha.zerrouki@gmail.com>, 2020
@@ -12,8 +13,8 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-05-21 11:29+0000\n"
-"Last-Translator: Mohamed Elkebsi <mohamedkebsi55@gmail.com>\n"
+"PO-Revision-Date: 2020-08-03 03:16+0000\n"
+"Last-Translator: m47mood <m.alshukri@gmail.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/morevnaproject/synfig/language/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -84,7 +85,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:12
 msgid "Automatic animation using mathematical functions"
-msgstr ""
+msgstr "تحريك تلقائي باستخدام دوال رياضية."
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:13
 msgid "Synfig Studio workspace"
@@ -126,7 +127,7 @@ msgstr "الضغط"
 msgid ""
 "The pressure reported by the tablet, between 0.0 and 1.0. If you use the "
 "mouse, it will be 0.5 when a button is pressed and 0.0 otherwise."
-msgstr ""
+msgstr "الضغط الصادر من الجهاز اللوحي -التابلت- يكون ما بين 0.0 و 1.0 ، إذا استخدمت الفأرة سيكون بين 0.5 عند النقر على الفأرة و 0.0 عن رفع الاصبع من الفأرة."
 
 #: ../src/brushlib/brushsettings.py:27
 msgid "Fine speed"
@@ -1844,7 +1845,7 @@ msgstr "صوت"
 
 #: ../src/gui/docks/dock_soundwave.cpp:63
 msgid "What sound channel to display"
-msgstr ""
+msgstr "أي قناة صوت لعرضها؟"
 
 #: ../src/gui/docks/dock_soundwave.cpp:66
 msgid "Delay:"
@@ -1930,7 +1931,7 @@ msgstr "من فضلك اختر اسم ملف"
 #: ../src/gui/instance.cpp:590
 #, c-format
 msgid "Unable to check whether '%s' exists."
-msgstr ""
+msgstr "لا يمكن التأكد من وجود \"%s\" "
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:260
 #: ../src/gui/trees/layerparamtreestore.cpp:267
@@ -1961,14 +1962,14 @@ msgstr "إغلاق"
 #: ../src/gui/instance.cpp:601
 #, c-format
 msgid "A file named \"%s\" already exists. Do you want to replace it?"
-msgstr ""
+msgstr "ملف باسم \"%s\" موجود مسبقاً. هل تريد استبداله؟"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:270
 #: ../src/gui/instance.cpp:605
 #, c-format
 msgid ""
 "The file already exists in \"%s\". Replacing it will overwrite its contents."
-msgstr ""
+msgstr "الملف \"%s\" موجود مسبقاً. استبداله يعني مسح مكوناته والكتابه عليها."
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:278
 #: ../src/gui/instance.cpp:613
@@ -2578,7 +2579,7 @@ msgstr "أداة المرآة"
 
 #: ../src/gui/states/state_mirror.cpp:181
 msgid "(Shift key toggles axis)"
-msgstr ""
+msgstr "(زر shift للتغير بين المحاور)"
 
 #: ../src/gui/states/state_normal.cpp:286
 #: ../src/gui/states/state_normal.cpp:311 ../src/gui/iconcontroller.cpp:145
@@ -3348,7 +3349,7 @@ msgstr "توتر:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:69
 msgid "Continuity:"
-msgstr ""
+msgstr "استمرارية:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:70
 msgid "Bias:"
@@ -3919,7 +3920,7 @@ msgstr "طلب إنهاء"
 #: ../src/gui/app.cpp:2404
 msgid ""
 "Tasks are currently running. Please cancel the current tasks and try again"
-msgstr ""
+msgstr "توجد مهام قيد التشغيل. رجاءاً قم بإلغاء المهام الحالية وحاول مرة أخرى."
 
 #: ../src/gui/app.cpp:2417
 msgid "Quit Request sent"
@@ -4075,7 +4076,7 @@ msgstr ""
 msgid ""
 "Unable to open container \"%s\"\n"
 "\n"
-msgstr ""
+msgstr "لا يمكن فتح الحاوية \"%s\"\n\n"
 
 #: ../src/gui/app.cpp:3801 ../src/gui/app.cpp:3912
 #, c-format
@@ -4128,7 +4129,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:3933
 msgid "Would you like to update now (It would probably be a good idea)"
-msgstr ""
+msgstr "هل تريد التحديث الآن ( ستكون فكرة جيدة)"
 
 #: ../src/gui/app.cpp:4095 ../src/gui/app.cpp:4119
 #: ../src/gui/canvasview.cpp:3479
@@ -4141,11 +4142,11 @@ msgstr "مدخل التأريخ #"
 
 #: ../src/gui/app.cpp:4119
 msgid "Select one of previous versions of file"
-msgstr ""
+msgstr "اختر أحد نسخ الملف المحفوظة في السابق"
 
 #: ../src/gui/canvasview.cpp:199
 msgid "Idle"
-msgstr ""
+msgstr "خامل"
 
 #: ../src/gui/canvasview.cpp:278
 msgid "ERROR"
@@ -4181,7 +4182,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:966
 msgid "Current time"
-msgstr ""
+msgstr "الوقت الحالي"
 
 #: ../src/gui/canvasview.cpp:1168
 msgid "Shows the Render Settings Dialog"
@@ -4633,11 +4634,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:212
 msgid "Circle Layer"
-msgstr ""
+msgstr "طبقة دائرية"
 
 #: ../src/gui/iconcontroller.cpp:213
 msgid "Outline Layer"
-msgstr ""
+msgstr "طبقة الخطوط الخارجية"
 
 #: ../src/gui/iconcontroller.cpp:214
 msgid "Advanced Outline Layer"
@@ -4645,23 +4646,23 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:215
 msgid "Polygon Layer"
-msgstr ""
+msgstr "طبقة متعددة الاضلاع"
 
 #: ../src/gui/iconcontroller.cpp:216
 msgid "Rectangle Layer"
-msgstr ""
+msgstr "طبقة مستطيلة"
 
 #: ../src/gui/iconcontroller.cpp:217
 msgid "Region Layer"
-msgstr ""
+msgstr "طبقة منطقة"
 
 #: ../src/gui/iconcontroller.cpp:218
 msgid "Solid Color Layer"
-msgstr ""
+msgstr "طبقة بلون واحد"
 
 #: ../src/gui/iconcontroller.cpp:219
 msgid "Star Layer"
-msgstr ""
+msgstr "طبقة نجمية"
 
 #: ../src/gui/iconcontroller.cpp:221
 msgid "Conical Gradient Layer"
@@ -4691,7 +4692,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layerduplicate.cpp:54
 #: ../src/synfigapp/actions/layerduplicate.cpp:74
 msgid "Duplicate Layer"
-msgstr ""
+msgstr "طبقة مكررة"
 
 #: ../src/gui/iconcontroller.cpp:229
 msgid "Import Image Layer"
@@ -4701,7 +4702,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layerencapsulate.cpp:54
 #: ../src/synfigapp/actions/layerencapsulate.cpp:75
 msgid "Group Layer"
-msgstr ""
+msgstr "مجموعة طبقات"
 
 #: ../src/gui/iconcontroller.cpp:231
 msgid "Plant Layer"
@@ -4717,11 +4718,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:234
 msgid "Sound Layer"
-msgstr ""
+msgstr "طبقة الصوت"
 
 #: ../src/gui/iconcontroller.cpp:235
 msgid "Switch Layer"
-msgstr ""
+msgstr "طبقة \"مقتاح\""
 
 #: ../src/gui/iconcontroller.cpp:236
 msgid "Skeleton Layer"
@@ -5098,7 +5099,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:867
 msgid "This file is up-to-date"
-msgstr ""
+msgstr "الملف تم تحديثه"
 
 #: ../src/gui/instance.cpp:884
 msgid "Update"
@@ -5106,7 +5107,7 @@ msgstr "تحديث"
 
 #: ../src/gui/instance.cpp:904 ../src/gui/instance.cpp:960
 msgid "An error has occurred when trying to UPDATE"
-msgstr ""
+msgstr "حدث خطأ عند محاولة التحديث"
 
 #: ../src/gui/instance.cpp:919
 msgid ""
@@ -5254,7 +5255,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1905 ../src/gui/instance.cpp:1964
 msgid "Open file"
-msgstr ""
+msgstr "افتح ملف"
 
 #: ../src/gui/instance.cpp:1917 ../src/gui/instance.cpp:1976
 msgid "Convert to Vector"
@@ -5324,7 +5325,7 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:212
 msgid "Get Support"
-msgstr ""
+msgstr "احصل على الدعم"
 
 #: ../src/gui/mainwindow.cpp:212
 msgid "https://forums.synfig.org/"
@@ -7068,7 +7069,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:53
 #: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:52
 msgid "Insert Item"
-msgstr ""
+msgstr "إدخال مادة"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:92
 #: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:90
@@ -7099,7 +7100,7 @@ msgstr "أزل عنصرًا"
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:55
 #: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:53
 msgid "Remove Item (Smart)"
-msgstr ""
+msgstr "إزالة مادة (ذكي)"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:52
 #: ../src/synfigapp/actions/valuenodestaticlistrotateorder.cpp:52
@@ -7156,14 +7157,14 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuenoderemove.cpp:52
 msgid "Unexport"
-msgstr ""
+msgstr "إلغاء تصدير"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is
 #. unexported.
 #: ../src/synfigapp/actions/valuenoderemove.cpp:73
 #, c-format
 msgid "Unexport '%s'"
-msgstr ""
+msgstr "الغاء تصدير \"%s\""
 
 #: ../src/synfigapp/actions/valuenoderename.cpp:52
 msgid "Rename ValueNode"
@@ -7217,7 +7218,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodereplace.cpp:165
 #: ../src/synfigapp/actions/valuenodereplace.cpp:205
 msgid "Nothing to replace."
-msgstr ""
+msgstr "لاشي للاستبدال"
 
 #: ../src/synfigapp/actions/valuenodereplace.cpp:172
 #: ../src/synfigapp/actions/valuenodereplace.cpp:212
@@ -7230,7 +7231,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:53
 msgid "Insert Item (Smart)"
-msgstr ""
+msgstr "اضف مادة (ذكي)"
 
 #: ../src/synfigapp/actions/vectorization.cpp:56
 msgid "Vectorization"
@@ -7271,37 +7272,37 @@ msgstr ""
 
 #: ../src/synfigapp/actions/vectorization.cpp:137
 msgid "Max thickness"
-msgstr ""
+msgstr "السماكة القصوى"
 
 #: ../src/synfigapp/actions/vectorization.cpp:138
 msgid "Max thickness of outline"
-msgstr ""
+msgstr "سماكة الخطوط الخارجية القصوى"
 
 #: ../src/synfigapp/actions/vectorization.cpp:141
 msgid "Preserve painted area"
-msgstr ""
+msgstr "احمي المنطقة الملونة."
 
 #: ../src/synfigapp/actions/vectorization.cpp:142
 msgid "To preserve painted area"
-msgstr ""
+msgstr "للمحافظة على المنطقة الملونة"
 
 #: ../src/synfigapp/actions/vectorization.cpp:145
 msgid "Add border"
-msgstr ""
+msgstr "أضف حدود"
 
 #: ../src/synfigapp/actions/vectorization.cpp:146
 msgid "Add border in final outlines"
-msgstr ""
+msgstr "أضف حدود في الخطوط الخارجية النهائية"
 
 #: ../src/synfigapp/actions/waypointadd.cpp:53
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:61
 msgid "Add Waypoint"
-msgstr ""
+msgstr "اضف \"نقطة اتجاه\""
 
 #: ../src/synfigapp/actions/waypointadd.cpp:83
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:91
 msgid "New Waypoint"
-msgstr ""
+msgstr "\"نقطة اتجاه\" جديدة"
 
 #: ../src/synfigapp/actions/waypointadd.cpp:84
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:92
@@ -7331,15 +7332,15 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointconnect.cpp:80
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:82
 msgid "Waypoint Time"
-msgstr ""
+msgstr "وقت \"نقطة اتجاه\""
 
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:53
 msgid "Disconnect Waypoint"
-msgstr ""
+msgstr "قم بقطع اتصال \"نقطة اتجاه\""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:51
 msgid "Remove Waypoint"
-msgstr ""
+msgstr "ازل \"نقطة اتجاه\""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:76
 msgid "ValueNode (Animated)"
@@ -7347,7 +7348,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:81
 msgid "Waypoint to be Removed"
-msgstr ""
+msgstr "ازالة \"نقطة اتجاه\""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:126
 #, c-format
@@ -7357,7 +7358,7 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointremove.cpp:129
 #, c-format
 msgid "Time mismatch iter=%s, waypoint=%s"
-msgstr ""
+msgstr "خطأ في توافق الوقت iter= %s و \"نقطة اتجاه\"= %s"
 
 #: ../src/synfigapp/actions/waypointremove.cpp:143
 msgid "Unable to create ValueNode_Reference"
@@ -7377,39 +7378,39 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:197
 msgid "A Waypoint already exists at this point in time"
-msgstr ""
+msgstr "\"نقطة اتجاه\" موجودة مسبقاً في هذه اللحظة من الزمن."
 
 #: ../src/synfigapp/actions/waypointset.cpp:51
 msgid "Set Waypoint"
-msgstr ""
+msgstr "ضع \"نقطة اتجاه\""
 
 #: ../src/synfigapp/actions/waypointset.cpp:80
 msgid "Waypoint to be changed"
-msgstr ""
+msgstr "تغيير \"نقطة اتجاه\""
 
 #: ../src/synfigapp/actions/waypointset.cpp:135
 #: ../src/synfigapp/actions/waypointset.cpp:196
 #: ../src/synfigapp/actions/waypointset.cpp:240
 #: ../src/synfigapp/actions/waypointset.cpp:261
 msgid "Unable to find waypoint"
-msgstr ""
+msgstr "لا يمكن ايجاد \"نقطة اتجاه\""
 
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:150
 msgid "The waypoint to remove no longer exists"
-msgstr ""
+msgstr "لا يمكن ازالة \"نقطة اتجاه\""
 
 #: ../src/synfigapp/action_system.cpp:94
 msgid "Action is not ready."
-msgstr ""
+msgstr "الحركة غير جاهزة."
 
 #: ../src/synfigapp/action_system.cpp:114
 #, c-format
 msgid "Do you want to do action \"%s\"?"
-msgstr ""
+msgstr "هل تريد عمل حركة \"%s\" ؟"
 
 #: ../src/synfigapp/action_system.cpp:115
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "لا يمكن منع عمل الحركة."
 
 #: ../src/synfigapp/action_system.cpp:120
 msgid "Continue"
@@ -7449,11 +7450,11 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:172
 msgid "Action Not Ready, unable to change mode"
-msgstr ""
+msgstr "الحركة غير جاهزة، لا يمكن تغيير الوضع."
 
 #: ../src/synfigapp/canvasinterface.cpp:178
 msgid "Unable to change mode"
-msgstr ""
+msgstr "لا يمكن تغيير الوضع."
 
 #: ../src/synfigapp/canvasinterface.cpp:407
 #: ../src/synfigapp/canvasinterface.cpp:470
@@ -7467,11 +7468,11 @@ msgstr "حركة غير جاهزة"
 
 #: ../src/synfigapp/canvasinterface.cpp:430
 msgid "Move Action Not Ready"
-msgstr ""
+msgstr "غير جاهز لعمل حركة."
 
 #: ../src/synfigapp/canvasinterface.cpp:432
 msgid "Move Action Failed."
-msgstr ""
+msgstr "فشل في عمل حركة."
 
 #: ../src/synfigapp/canvasinterface.cpp:440
 msgid "Add Layer To"
@@ -7491,43 +7492,43 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:724
 msgid "Unable to create \"Switch\" layer"
-msgstr ""
+msgstr "لا يمكن انشاء طبقة \"مفتاح\""
 
 #: ../src/synfigapp/canvasinterface.cpp:734
 msgid "Unable to add \"Switch\" layer"
-msgstr ""
+msgstr "لا يمكن إضافة طبقة \"مفتاح\""
 
 #: ../src/synfigapp/canvasinterface.cpp:747
 #: ../src/synfigapp/canvasinterface.cpp:764
 msgid "Unable to create \"Sound\" layer"
-msgstr ""
+msgstr "لا يمكن إنشاء طبقة \"صوت\""
 
 #: ../src/synfigapp/canvasinterface.cpp:754
 #: ../src/synfigapp/canvasinterface.cpp:771
 msgid "Unable to add \"Sound\" layer"
-msgstr ""
+msgstr "لا يمكن اضافة طبقة \"صوت\""
 
 #: ../src/synfigapp/canvasinterface.cpp:809
 msgid "Unable to open container"
-msgstr ""
+msgstr "لا يمكن فتح الحاوية."
 
 #: ../src/synfigapp/canvasinterface.cpp:813
 msgid "Unable to open this composition"
-msgstr ""
+msgstr "لا يمكن فتح هذا التكوين."
 
 #: ../src/synfigapp/canvasinterface.cpp:817
 msgid "Unable to create \"Group\" layer"
-msgstr ""
+msgstr "لا يمكن انشاء ‍طبقة المجموعة."
 
 #: ../src/synfigapp/canvasinterface.cpp:821
 msgid "Could not set children lock of imported canvas"
-msgstr ""
+msgstr "لا يكن بالامكان وضع قفل الاطفال لهذه الـ رقعة."
 
 #: ../src/synfigapp/canvasinterface.cpp:835
 msgid ""
 "Uncaught exception when attempting\n"
 "to open this composition -- "
-msgstr ""
+msgstr "حدث خطأ غير معروف عند محاولة\nفتح هذا التكوين --"
 
 #: ../src/synfigapp/canvasinterface.cpp:841
 msgid "I don't know how to open images of this type -- "
@@ -7540,22 +7541,22 @@ msgstr "إستيراد مقطع"
 #: ../src/synfigapp/canvasinterface.cpp:960
 #: ../src/synfigapp/canvasinterface.cpp:1064
 msgid "Cannot create action"
-msgstr ""
+msgstr "لا يمكن إنشاء الحركة action"
 
 #: ../src/synfigapp/canvasinterface.cpp:977
 #, c-format
 msgid "Cannot import file without extension: %s\n"
-msgstr ""
+msgstr "لا يمكن استيراد ملف من غير الامتداد: %s\n"
 
 #: ../src/synfigapp/canvasinterface.cpp:983
 #, c-format
 msgid "Cannot import file of type '%s': %s\n"
-msgstr ""
+msgstr "غير قادر على استيراد الملف من نوع \"‍%s\": %s\n"
 
 #: ../src/synfigapp/canvasinterface.cpp:1044
 #, c-format
 msgid "Unable to import file: %s"
-msgstr ""
+msgstr "لا يمكن استيراد ملف: %s"
 
 #: ../src/synfigapp/canvasinterface.cpp:1051
 msgid "Nothing imported"
@@ -7571,11 +7572,11 @@ msgid ""
 "The value you are trying to edit is in a composition\n"
 "which doesn't seem to be open. Open that composition and you\n"
 "should be able to edit this value as normal."
-msgstr ""
+msgstr "القيمة التي تحاول تعديلها هي في التكوين\nوالتي لا يظهر أنها مفتوحة. افتح التكوين وينبغي\nأن تستطيع تعديل القيمة بشكل طبيعي."
 
 #: ../src/synfigapp/instance.cpp:289
 msgid "Import external canvases"
-msgstr ""
+msgstr "استيراد رقع من الخارج"
 
 #: ../src/synfigapp/uimanager.cpp:98
 msgid "(no/yes)"
