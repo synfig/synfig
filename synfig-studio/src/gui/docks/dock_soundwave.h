@@ -76,6 +76,8 @@ private:
 
 	bool load_sound_file(const std::string & filename);
 	void setup_file_setting_data();
+
+	void on_update_header_height(int header_height);
 };
 
 }

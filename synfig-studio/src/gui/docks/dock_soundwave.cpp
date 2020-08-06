@@ -115,6 +115,9 @@ void Dock_SoundWave::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas
 		file_settings_box.set_visible(!filename.empty());
 	});
 	canvas_view->set_ext_widget(get_name(), widget_sound);
+
+	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
+	tree_layer->signal_param_tree_header_height_changed().connect(sigc::mem_fun(*this, &Dock_SoundWave::on_update_header_height));
 }
 
 void Dock_SoundWave::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
@@ -262,4 +265,27 @@ void Dock_SoundWave::setup_file_setting_data()
 
 	delay_widget.set_fps(current_widget_sound->get_time_model()->get_frame_rate());
 	delay_widget.set_value(current_widget_sound->get_delay());
+}
+
+
+void
+Dock_SoundWave::on_update_header_height(int header_height)
+{
+	// COPIED FROM Dock_Curves
+	// FIXME very bad hack (timetrack dock also contains this)
+	//! Adapt the border size "according" to different windows manager rendering
+#ifdef _WIN32
+	header_height-=2;
+#elif defined(__APPLE__)
+	header_height+=6;
+#else
+// *nux and others
+	header_height+=2;
+#endif
+
+	int kf_list_height=10;
+
+	//widget_timeslider_.set_size_request(-1, header_height+1);
+	widget_timeslider.set_size_request(-1, header_height - kf_list_height + 5);
+	widget_kf_list.set_size_request(-1, kf_list_height);
 }
