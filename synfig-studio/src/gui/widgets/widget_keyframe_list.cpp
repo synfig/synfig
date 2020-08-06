@@ -64,7 +64,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	moving_tooltip(Gtk::WINDOW_POPUP),
 	moving_tooltip_y()
 {
-	set_size_request(-1, 64);
+	set_size_request(-1, 10);
 	add_events( Gdk::BUTTON_PRESS_MASK
 			  | Gdk::BUTTON_RELEASE_MASK
 			  | Gdk::BUTTON1_MOTION_MASK
