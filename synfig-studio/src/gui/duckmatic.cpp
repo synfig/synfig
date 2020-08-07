@@ -2969,9 +2969,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
         }
 
         etl::handle<Bezier> bezier = new Bezier();
-	    ValueNode_Bone::Handle  parent_value_node = ValueNode_Const::Handle::cast_dynamic(bone_value_node->get_link("parent"))->get_value().get(ValueNode_Bone::Handle());
 
-	    bone_transform_stack.push(new Transform_Rotate(guid, bone.get_angle()));
+    	bone_transform_stack.push(new Transform_Rotate(guid, bone.get_angle()));
 
         // origin
         {
@@ -3000,22 +2999,30 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
         //parent tip fake
 	    {
-	    	Bone parent_bone = parent_value_node->operator()(get_time()).get(Bone());
+	    	if(!bone.is_root()){
+			    synfigapp::ValueDesc parent_value_desc(bone_value_node, bone_value_node->get_link_index_from_name("parent"), orig_value_desc);;
+			    Bone parent_bone = (*(bone.get_parent()))(time).get(Bone());
 
-	    	if(parent_bone.get_parent()){
-	    		Point tip = parent_bone.get_tip();
+			    if(parent_bone.get_parent()){
+				    Point origin = parent_bone.get_origin();
+				    parent_bone = (*parent_bone.get_parent())(time).get(Bone());
+				    Matrix m = parent_bone.get_animated_matrix();
+				    Real scale = parent_bone.get_scalelx();
+				    origin[0]*=scale;
+					origin = m.get_transformed(origin);
+					m = bone.get_animated_matrix().get_inverted();
+					origin = m.get_transformed(origin);
 
-	    		cout<<"Tip:  "<<tip[0]<<", "<<tip[1]<<endl;
+				    synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalex" : "scalelx"), orig_value_desc);
 
-	    		parent_bone = parent_bone.get_parent()->operator()(get_time()).get(Bone());
-	    		Matrix m = parent_bone.get_animated_matrix();
-	    		Real scale = parent_bone.get_scalelx();
+				    etl::handle<Duck> duck=new Duck();
+				    duck->set_type(Duck::TYPE_VERTEX);
+				    set_duck_value_desc(*duck, value_desc, bone_transform_stack);
+				    duck->set_point(origin);
+				    bezier->p2 = bezier->c2 = duck;
 
-	    		etl::handle<Duck> duck=new Duck();
-			    duck->set_point(tip);
-			    bezier->p2 = bezier->c2 = duck;
-
-			    add_bezier(bezier);
+				    add_bezier(bezier);
+			    }
 	    	}
 
 
