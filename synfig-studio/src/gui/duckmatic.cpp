@@ -3005,13 +3005,23 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			    if(parent_bone.get_parent()){
 				    Point origin = parent_bone.get_origin();
+				    Matrix bm = parent_bone.get_animated_matrix();
+				    Real bscale = parent_bone.get_scalelx();
+
 				    parent_bone = (*parent_bone.get_parent())(time).get(Bone());
 				    Matrix m = parent_bone.get_animated_matrix();
 				    Real scale = parent_bone.get_scalelx();
 				    origin[0]*=scale;
-					origin = m.get_transformed(origin);
-					m = bone.get_animated_matrix().get_inverted();
-					origin = m.get_transformed(origin);
+
+				    //Changing parent's origin to global coordinates
+				    origin = m.get_transformed(origin);
+
+				    //Obtaining Tip's location in global coordinates
+					origin += Point(bscale*bm.axis(0)[0],bscale*bm.axis(0)[1]);
+
+					//Converting tip's coordinates into local bone coordinates 
+				    m = bone.get_animated_matrix().get_inverted();
+				    origin = m.get_transformed(origin);
 
 				    synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalex" : "scalelx"), orig_value_desc);
 
