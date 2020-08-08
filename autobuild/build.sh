@@ -73,7 +73,13 @@ mkdir -p "${PREFIX}/bin"
 if [[ `uname` == "Linux" ]]; then
 	export PKG_CONFIG_PATH="${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/`uname -i`-linux-gnu/pkgconfig/:${PKG_CONFIG_PATH}"
 fi
-if [[ `uname -o` == "Msys" ]]; then
+
+if [[ `uname` == "MSYS"* ]]; then
+	echo "You need to switch to MSYS2 MINGW shell, you are currently using pure MSYS"
+	exit 1
+fi
+
+if [[ `uname` == "MINGW"* ]]; then # MacOS doesn't support `uname -o` flag
 	PATH="${PREFIX}/lib/ccache/bin:${PATH}"
 	# copy MLT
 	MLT_REV=1   # Change this when something is changed inside of if block below
