@@ -281,7 +281,7 @@ Renderer_Ducks::render_vfunc(
 			}
 
 		}
-		if(get_work_area()->get_active_bone_value_node() && get_work_area()->get_active_bone_render_toggle())
+		if(get_work_area()->get_active_bone_value_node() && get_work_area()->get_active_bone_display())
 		{
 			synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
 			if (value_desc.is_valid() &&

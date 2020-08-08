@@ -313,8 +313,8 @@ public:
 
 	const etl::loose_handle<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
 	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
-	bool get_active_bone_render_toggle(){return highlight_active_bone;}
-	void set_active_bone_render_toggle(bool x){highlight_active_bone=x;}
+	bool get_active_bone_display(){return highlight_active_bone;}
+	void set_active_bone_display(bool x){highlight_active_bone=x;}
 
 
 	DragMode get_drag_mode() { return drag_mode; }
