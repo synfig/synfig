@@ -1001,9 +1001,6 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	if(!canvas->parent() || canvas->parent()->rend_desc().get_time_end()!=canvas->rend_desc().get_time_end())
 		root->set_attribute("end-time",rend_desc.get_time_end().get_string(rend_desc.get_frame_rate()));
 
-	if(!canvas->parent() || canvas->parent()->rend_desc().get_gamma()!=canvas->rend_desc().get_gamma())
-		root->set_attribute("end-time",rend_desc.get_time_end().get_string(rend_desc.get_frame_rate()));
-
 	if(!canvas->is_inline())
 	{
 		root->set_attribute("bgcolor",strprintf(VIEW_BOX_FORMAT,
