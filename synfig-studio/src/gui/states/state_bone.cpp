@@ -424,6 +424,9 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
+	// Turn on Active Bone rendering
+	get_work_area()->set_active_bone_display(true);
+
 	//ducks
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 
@@ -489,6 +492,9 @@ StateBone_Context::~StateBone_Context()
 	App::dialog_tool_options->clear();
 
 	get_work_area()->reset_cursor();
+
+	// Turn off Active Bone rendering
+	get_work_area()->set_active_bone_display(false);
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
