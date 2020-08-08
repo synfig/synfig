@@ -3170,7 +3170,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
             duck->set_origin(tip_duck);
             add_duck(duck);
         }
-        
+
         return true;
     }
     else
