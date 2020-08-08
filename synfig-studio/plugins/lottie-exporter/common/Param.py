@@ -515,6 +515,7 @@ class Param:
                 bone = self.get_bone_from_canvas(guid)
                 base_value, bv_eff = self.subparams["bone_scale_link"].subparams["base_value"].recur_animate("vector")
                 angle_value, av_eff = self.subparams["bone_scale_link"].subparams["angle"].recur_animate("bone_angle")
+                skew_value,sv_eff = self.subparams["bone_scale_link"].subparams["skew_value"].recur_animate("bone_angle")
 
                 # Storing previous state
                 prev_state = bone.is_group_child
@@ -523,24 +524,20 @@ class Param:
                 origin, angle, lls, rls, eff = bone.recur_animate("vector")
 
                 matrix_el1 = "mul(mul(div({base_value}[0],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value}))),{lls})"
-                matrix_el2 = "mul(-mul(div({base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value}))),{lls})"
+                matrix_el2 = "mul(-mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians(sum({angle_value},{skew_value})))),{lls})"
                 matrix_el3 = "mul(div({base_value}[0],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value})))"
-                matrix_el4 = "mul(div({base_value}[1],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value})))"
+                matrix_el4 = "mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.cos(degreesToRadians(sum({angle_value},{skew_value}))))"
 
                 matrix_el1 = matrix_el1.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
-                matrix_el2 = matrix_el2.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el2 = matrix_el2.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT,skew_value=skew_value)
                 matrix_el3 = matrix_el3.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
-                matrix_el4 = matrix_el4.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
-                base_value_x = "mul(div({base_value}[0],{PIX_PER_UNIT}),100)"
-                base_value_y = "mul(div({base_value}[0],{PIX_PER_UNIT}),100)"
-
-                base_value_x = base_value_x.format(base_value=base_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
-                base_value_y = base_value_y.format(base_value=base_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el4 = matrix_el4.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT,skew_value=skew_value)
 
                 scale_x = "mul(Math.sqrt(sum(Math.pow({matrix_el1},2),Math.pow({matrix_el3},2))),{base_value_x})"
                 scale_y = "mul(Math.sqrt(sum(Math.pow({matrix_el2},2),Math.pow({matrix_el4},2))),{base_value_y})"
-                scale_x = scale_x.format(matrix_el1=matrix_el1,matrix_el3=matrix_el3,base_value_x=base_value_x)
-                scale_y = scale_y.format(matrix_el2=matrix_el2,matrix_el4=matrix_el4,base_value_y=base_value_y)
+                scale_x = scale_x.format(matrix_el1=matrix_el1,matrix_el3=matrix_el3,base_value_x=100)
+                scale_y = scale_y.format(matrix_el2=matrix_el2,matrix_el4=matrix_el4,base_value_y=100)
+
                 ret_scale = "["+scale_x + "," + scale_y +"]"
                 # ret_scale = ret_scale.format(matrix_el1=matrix_el1,matrix_el3=matrix_el3,base_value_x=base_value_x,matrix_el2=matrix_el2,matrix_el4=matrix_el4,base_value_y=base_value_y)
                 bone.is_group_child = prev_state
@@ -548,6 +545,7 @@ class Param:
                     self.expression_controllers.extend(eff)
                 self.expression_controllers.extend(bv_eff)
                 self.expression_controllers.extend(av_eff)
+                self.expression_controllers.extend(sv_eff)
 
                 self.expression = ret_scale
                 return ret_scale, self.expression_controllers
@@ -558,6 +556,7 @@ class Param:
                 bone = self.get_bone_from_canvas(guid)
                 base_value, bv_eff = self.subparams["bone_skew_link"].subparams["base_value"].recur_animate("vector")
                 angle_value, av_eff = self.subparams["bone_skew_link"].subparams["angle"].recur_animate("bone_angle")
+                skew_value, sv_eff = self.subparams["bone_skew_link"].subparams["skew_angle"].recur_animate("bone_angle")
 
                 # Storing previous state
                 prev_state = bone.is_group_child
@@ -566,21 +565,21 @@ class Param:
                 origin, angle, lls, rls, eff = bone.recur_animate("vector")
 
                 matrix_el1 = "mul(mul(div({base_value}[0],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value}))),{lls})"
-                matrix_el2 = "mul(-mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value}))),{lls})"
+                matrix_el2 = "mul(-mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians(sum({angle_value},{skew_value})))),{lls})"
                 matrix_el3 = "mul(div({base_value}[0],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value})))"
-                matrix_el4 = "mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value})))"
+                matrix_el4 = "mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.cos(degreesToRadians(sum({angle_value},{skew_value}))))"
 
                 matrix_el1 = matrix_el1.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
-                matrix_el2 = matrix_el2.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el2 = matrix_el2.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT,skew_value=skew_value)
                 matrix_el3 = matrix_el3.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
-                matrix_el4 = matrix_el4.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el4 = matrix_el4.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT,skew_value=skew_value)
 
                 x_axis_angle = "sub(degreesToRadians({PI}),Math.atan2({matrix_el1},{matrix_el3}))"
                 y_axis_angle = "sub(degreesToRadians({PI}),Math.atan2({matrix_el2},{matrix_el4}))"
                 x_axis_angle = x_axis_angle.format(PI=180,matrix_el1=matrix_el1,matrix_el3=matrix_el3)
                 y_axis_angle = y_axis_angle.format(PI=180,matrix_el2=matrix_el2,matrix_el4=matrix_el4)
 
-                ret_skew = "radiansToDegrees(sub({y_axis_angle},sub({x_axis_angle},degreesToRadians(90))))"
+                ret_skew = "-radiansToDegrees(sub({y_axis_angle},sub({x_axis_angle},degreesToRadians(90))))"
                 ret_skew = ret_skew.format(y_axis_angle=y_axis_angle,x_axis_angle=x_axis_angle)
 
                 bone.is_group_child = prev_state
@@ -588,6 +587,7 @@ class Param:
                     self.expression_controllers.extend(eff)
                 self.expression_controllers.extend(bv_eff)
                 self.expression_controllers.extend(av_eff)
+                self.expression_controllers.extend(sv_eff)
 
                 self.expression = ret_skew
                 return ret_skew, self.expression_controllers

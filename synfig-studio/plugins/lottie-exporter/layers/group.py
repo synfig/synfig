@@ -30,15 +30,18 @@ class TransformationProperties:
         self.extract_params()
     
     def create_default_values(self):
-    	if self.transform.tag != 'composite':
-	        self.angle_base = copy.deepcopy(self.transform[1][0][1])
-	        self.base_scale_value = etree.fromstring("<base_value></base_value>")
-	        scale_param_1 = copy.deepcopy(self.transform[1][0][3][0])
-	        self.base_scale_value.append(scale_param_1)
+        if self.transform.tag != 'composite':
+            self.angle_base = copy.deepcopy(self.transform[1][0][1])
+            self.base_scale_value = etree.fromstring("<base_value></base_value>")
+            scale_param_1 = copy.deepcopy(self.transform[1][0][3][0])
+            self.base_scale_value.append(scale_param_1)
+            self.base_skew_value = etree.fromstring("<skew_value></skew_value>")
+            skew_value_1 = copy.deepcopy(self.transform[1][0][2][0])
+            self.base_skew_value.append(skew_value_1)
 
     def extract_params(self):
         if self.transform.tag != 'composite':
-            
+
             #calculating offset
             offset = "<param name='offset'><bone_link type='offset'></bone_link></param>"
             root_offset = etree.fromstring(offset)
@@ -72,7 +75,7 @@ class TransformationProperties:
             base_1 = etree.fromstring("<base_value></base_value>")
             scale_1 = copy.deepcopy(self.transform[1][0][3][0])
             base_1.append(scale_1)
-            root_skew[0].extend([bone,base_1,self.transform[1][0][1]])
+            root_skew[0].extend([bone,base_1,self.transform[1][0][1],self.transform[1][0][2]])
             self.elements['skew_angle']   = Param(root_skew,Param(self.transform[1][0],self.parent))
             
             #calculating scale
@@ -82,6 +85,7 @@ class TransformationProperties:
             root_scale[0].append(bone)
             root_scale[0].append(self.base_scale_value)
             root_scale[0].append(self.angle_base)
+            root_scale[0].append(self.base_skew_value)
             self.elements['scale']        = Param(root_scale,Param(self.transform[1][0],self.parent))
 
         else:
