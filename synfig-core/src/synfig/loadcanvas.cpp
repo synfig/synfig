@@ -348,15 +348,6 @@ CanvasParser::parse_guid(xmlpp::Element *element)
 	return GUID(val);
 }
 
-// see 'minor hack' at the end of parse_vector() below
-// making this 'static' to give it file local scope
-// stops it working (where working means working around
-// bug #1509627)
-Vector &canvas_parser_vector_id(Vector &vector)
-{
-	return vector;
-}
-
 Vector
 CanvasParser::parse_vector(xmlpp::Element *element)
 {
@@ -402,12 +393,7 @@ CanvasParser::parse_vector(xmlpp::Element *element)
 			error_unexpected_element(child,child->get_name());
 		}
 	}
-	// Minor hack - gcc 4.1.2 and earlier think that we're not using
-	// 'vect' and optimize it out at -O2 and higher.  This convinces
-	// them that we are really using it.
-	return canvas_parser_vector_id(vect);
-	// When the bug is fixed, we can just do this instead:
-	// return vect;
+	return vect;
 }
 
 Color
