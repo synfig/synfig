@@ -847,6 +847,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							assert(0);
 						}
 					}else if(c_layer==1){
+						new_skel->disable();
+
 						bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 						if(!is_currently_on){
 							get_work_area()->set_type_mask(get_work_area()->get_type_mask()|Duck::TYPE_WIDTH);
@@ -1023,6 +1025,8 @@ StateBone_Context::make_layer(){
 
 		get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 	}else if(c_layer==1){
+		new_skel->disable();
+
 		ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
 		if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
