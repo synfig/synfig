@@ -229,7 +229,8 @@ void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> 
 
 void studio::Dock_Info::set_async_render(etl::handle<studio::AsyncRenderer> ar)
 {
-	async_renderer = ar;
+	if(!ar)
+		async_renderer = ar;
 }
 
 void studio::Dock_Info::set_n_passes_requested(int value)
