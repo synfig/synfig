@@ -52,9 +52,9 @@ class TransformationProperties:
             base_value.append(offset_param)
             root_offset[0].append(bone)
             root_offset[0].append(base_value)
-            root_offset[0].append(flag)            
+            root_offset[0].append(flag)
             self.elements['offset']       = Param(root_offset,Param(self.transform[1][0],self.parent))
-            
+            			            
             #calculating angle
             angle = "<param name='angle'><bone_angle_link type='angle'></bone_angle_link></param>"
             root_angle = etree.fromstring(angle)

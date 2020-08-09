@@ -243,7 +243,7 @@ class Param:
                 if self.is_group_child:
                     bone.is_group_child = True
 
-                par_origin, par_angle, par_lls, par_rls, par_eff = bone.recur_animate("vector")
+                par_origin, par_angle, par_lls, par_rls, par_eff,flag = bone.recur_animate("vector")
 
                 # Restore the previous state
                 bone.is_group_child = prev_state
@@ -252,11 +252,11 @@ class Param:
                     # Adding expression to the expression controller
                     self.expression_controllers.extend(par_eff)
 
-                    # Modifying the bone_origin according to the parent's local scale
+                    # # Modifying the bone_origin according to the parent's local scale
                     bone_origin = "mul(" + bone_origin + ", " + par_lls + ")"
 
-                    # Modifying the bone_origin according to the parent's recursive scale
-                    bone_origin = "mul(" + bone_origin + ", " + par_rls + ")"
+                    # # Modifying the bone_origin according to the parent's recursive scale
+                    # bone_origin = "mul(" + bone_origin + ", " + par_rls + ")"
 
                     # Forming the expression for new angle
                     ret_angle = "sum({par_angle}, {bone_angle})"
@@ -269,20 +269,21 @@ class Param:
                     theta = theta.format(bone_origin=bone_origin)
                     
                     ret_x = "sum({par_origin}[0], mul({mod}, Math.cos(sum(degreesToRadians({angle}),{theta}))))"
-                    ret_y = "sum({par_origin}[1], mul({mod}, Math.sin(sum(degreesToRadians({angle}),{theta}))))"
+                    ret_y = "sum(-{par_origin}[1], mul({mod}, Math.sin(sum(degreesToRadians({angle}),{theta}))))"
                     
-                    ret_origin = "[" + ret_x + "," + ret_y + "]"
-                    ret_origin = ret_origin.format(par_origin=par_origin, mod=vector_magnitude, angle=par_angle,theta=theta)
-                    
+                    ret_origin = "[" + ret_x + ",-" + ret_y + "]"
+                    ret_origin = ret_origin.format(par_origin=par_origin, mod=vector_magnitude, angle=par_angle,theta=theta,lls=par_lls)
+                    flag = False
+
                 else:
                     ret_origin = bone_origin
                     ret_angle = bone_angle
                 ############# REMOVE AFTER DEBUGGING rls
                 rls = "1"
-                return ret_origin, ret_angle, lls, rls, self.expression_controllers
+                return ret_origin, ret_angle, lls, rls, self.expression_controllers,flag
 
             elif self.param.tag == "bone_root": # No animation to be added as this being the root
-                return "[0, 0]", "0", "1", "1", None
+                return "[0, 0]", "0", "1", "1", None,True
 
             elif self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
@@ -446,7 +447,7 @@ class Param:
                 prev_state = bone.is_group_child
                 if self.is_group_child:
                     bone.is_group_child = True
-                origin, angle, lls, rls, eff = bone.recur_animate("vector")
+                origin, angle, lls, rls, eff,flag = bone.recur_animate("vector")
 
                 if "flag" not in self.subparams["bone_link"].subparams.keys():
                     # Adding lls effect to the bone
@@ -460,11 +461,14 @@ class Param:
                 vector_magnitude = vector_magnitude.format(base_value=base_value)
                 theta = 'Math.atan2(-{base_value}[1],{base_value}[0])'
                 theta = theta.format(base_value=base_value)
+                if flag :
+                	ret_x = "sum({origin}[0], mul(mul({mod},Math.cos(sum(degreesToRadians({angle}),{theta}))),{lls}))"
+                else:
+                	ret_x = "sum({origin}[0], mul({mod},Math.cos(sum(degreesToRadians({angle}),{theta}))))"
 
-                ret_x = "sum({origin}[0], mul({mod},Math.cos(sum(degreesToRadians({angle}),{theta}))))"
-                ret_y = "sum({origin}[1], mul({mod},Math.sin(sum(degreesToRadians({angle}),{theta}))))"
+                ret_y = "sum(-{origin}[1], mul({mod},Math.sin(sum(degreesToRadians({angle}),{theta}))))"
                 ret_origin = "[" + ret_x + ",-" + ret_y + "]"
-                ret_origin = ret_origin.format(origin=origin, mod=vector_magnitude,angle=angle,theta=theta)
+                ret_origin = ret_origin.format(origin=origin, mod=vector_magnitude,angle=angle,theta=theta,lls=lls)
                 # Restore previous state
                 bone.is_group_child = prev_state
 
@@ -485,7 +489,7 @@ class Param:
                 prev_state = bone.is_group_child
                 if self.is_group_child:
                     bone.is_group_child = True
-                origin, angle, lls, rls, eff = bone.recur_animate("vector")
+                origin, angle, lls, rls, eff,flag = bone.recur_animate("vector")
 
                 vector_magnitude = 'Math.sqrt(sum(Math.pow({scale_value}[0],2),Math.pow({scale_value}[1],2)))'
                 vector_magnitude = vector_magnitude.format(scale_value=scale_value)
@@ -521,7 +525,7 @@ class Param:
                 prev_state = bone.is_group_child
                 if self.is_group_child:
                     bone.is_group_child = True
-                origin, angle, lls, rls, eff = bone.recur_animate("vector")
+                origin, angle, lls, rls, eff,_flag = bone.recur_animate("vector")
 
                 matrix_el1 = "mul(mul(div({base_value}[0],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value}))),{lls})"
                 matrix_el2 = "mul(-mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians(sum({angle_value},{skew_value})))),{lls})"
@@ -562,7 +566,7 @@ class Param:
                 prev_state = bone.is_group_child
                 if self.is_group_child:
                     bone.is_group_child = True
-                origin, angle, lls, rls, eff = bone.recur_animate("vector")
+                origin, angle, lls, rls, eff,flag = bone.recur_animate("vector")
 
                 matrix_el1 = "mul(mul(div({base_value}[0],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value}))),{lls})"
                 matrix_el2 = "mul(-mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians(sum({angle_value},{skew_value})))),{lls})"
