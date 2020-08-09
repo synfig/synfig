@@ -178,7 +178,7 @@ studio::Dock_Info::Dock_Info()
 	render_progress.set_text(strprintf("%.1f%%", 0.0));
 	render_progress.set_fraction(0.0);
 
-	stop_button.set_label("Stop rendering");
+	stop_button.set_label(_("Stop rendering"));
 	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
 	table->attach_next_to(stop_button, render_progress, Gtk::POS_BOTTOM, 7, 1);
@@ -214,12 +214,7 @@ void studio::Dock_Info::on_stop_button_clicked()
 		Gtk::MESSAGE_QUESTION,
 		_("Cancel"),
 		_("Stop")))
-	{
-		sigc::bind(
-			sigc::mem_fun(*async_renderer, &studio::AsyncRenderer::stop),
-			studio::AsyncRenderer::INTERACTION_BY_USER);
 		async_renderer->stop(studio::AsyncRenderer::INTERACTION_BY_USER);
-	}
 }
 
 void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
