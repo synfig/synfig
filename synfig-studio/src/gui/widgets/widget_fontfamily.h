@@ -1,12 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuedesccreatechildbone.h
-**	\brief Template File
+/*!	\file widgets/widget_fontfamily.h
+**	\brief Widget to select font family
 **
 **	$Id$
 **
 **	\legal
-**  Copyright (c) 2013 Ivan Mahonin
-**  Copyright (c) 2020 Aditya Abhiram J
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2020 Rodolfo Ribeiro Gomes
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,18 +23,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_VALUEDESCCREATECHILDBONE_H
-#define __SYNFIG_APP_ACTION_VALUEDESCCREATECHILDBONE_H
+#ifndef SYNFIG_STUDIO_WIDGET_FONTFAMILY_H
+#define SYNFIG_STUDIO_WIDGET_FONTFAMILY_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfigapp/action.h>
-#include <synfigapp/value_desc.h>
-#include <synfig/valuenode.h>
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-#include <synfig/layers/layer_skeleton.h>
-#include <synfig/canvas.h>
-#include <list>
+#include <string>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/liststore.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,38 +38,39 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-
-namespace Action {
-
-class ValueDescCreateChildBone :
-	public Super
+namespace studio {
+class Widget_FontFamily : public Gtk::ComboBoxText
 {
-private:
-	ValueDesc value_desc;
-	synfig::ValueNode::Handle prev_active_bone;
-	synfig::Time time;
-	synfig::ValueBase origin,angle,scalelx,width,tipwidth;
-	bool c_parent;
-	bool c_active_bone;
+	std::string value;
 
+protected:
+class Model : public Gtk::TreeModel::ColumnRecord
+	{
+		public:
+
+		Model();
+
+		Gtk::TreeModelColumn<std::string> value;
+	};
+	Model enum_model;
+	static Glib::RefPtr<Gtk::ListStore> enum_TreeModel;
+
+	void init_fontconfig();
 
 public:
 
-	ValueDescCreateChildBone();
+	Widget_FontFamily();
+	~Widget_FontFamily();
 
-	static ParamVocab get_param_vocab();
-	static bool is_candidate(const ParamList &x);
+	void set_value(std::string data);
+	std::string get_value() const;
 
-	virtual bool set_param(const synfig::String& name, const Param &);
-	virtual bool is_ready()const;
+	sigc::signal<void>& signal_activate() { return signal_activate_; }
+private:
+	virtual void on_changed();
 
-	virtual void prepare();
-
-	ACTION_MODULE_EXT
-};
-
-}; // END of namespace action
+	sigc::signal<void> signal_activate_;
+}; // END of class Widget_FontFamily
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

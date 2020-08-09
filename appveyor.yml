@@ -3,7 +3,10 @@ environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
   matrix:
     - MSYSTEM: MINGW64
+      MINGW_PREFIX: C:\\msys64\\mingw64
+    
     - MSYSTEM: MINGW32
+      MINGW_PREFIX: C:\\msys64\\mingw32
 
 # set clone depth
 clone_depth: 1 # clone entire repository history if not defined

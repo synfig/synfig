@@ -1,4 +1,35 @@
-find_program(INTLTOOL_MERGE intltool-merge)
+find_program(INTLTOOL_MERGE_EXECUTABLE intltool-merge)
+mark_as_advanced(INTLTOOL_MERGE_EXECUTABLE)
+
+if(INTLTOOL_MERGE_EXECUTABLE)
+    execute_process(
+        COMMAND ${INTLTOOL_MERGE_EXECUTABLE} --version
+        OUTPUT_VARIABLE INTLTOOL_VERSION
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    if(INTLTOOL_VERSION MATCHES "^intltool-extract \\(.*\\) [0-9]")
+        string(REGEX REPLACE "^intltool-extract \\([^\\)]*\\) ([0-9\\.]+[^ \n]*).*" "\\1" INTLTOOL_VERSION_STRING "${INTLTOOL_VERSION}")
+    endif()
+    unset(INTLTOOL_VERSION)
+endif()
+
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(Intltool
+    REQUIRED_VARS INTLTOOL_MERGE_EXECUTABLE
+    VERSION_VAR INTLTOOL_VERSION_STRING
+)   
+
+set(INTLTOOL_OPTIONS_DEFAULT "--quiet")
+
+# When MinGW is used without MSYS environment (for example, Ninja
+# generator uses the standard Windows `cmd` shell for building), `intltool-merge`
+# cannot be started, because it is just a Perl script, and `cmd` does not know how
+# to run it. In this case, we need to explicitly add the interpreter to the command.
+if(INTLTOOL_MERGE_EXECUTABLE AND MINGW AND NOT MSYS)
+    message(STATUS "Fixing intltool-merge command...")
+    set(INTLTOOL_MERGE_EXECUTABLE perl ${INTLTOOL_MERGE_EXECUTABLE})
+endif()
 
 function(STUDIO_INTLTOOL_MERGE)
     set(_desktop DESKTOP)
@@ -7,7 +38,7 @@ function(STUDIO_INTLTOOL_MERGE)
     set(_outputFile OUTPUT_FILE)
     set(_installDestination INSTALL_DESTINATION)
 
-    if(INTLTOOL_MERGE)
+    if(INTLTOOL_MERGE_EXECUTABLE)
         cmake_parse_arguments(
             _parsedArguments
             "${_desktop}"
@@ -30,7 +61,7 @@ function(STUDIO_INTLTOOL_MERGE)
 
         add_custom_command(
             OUTPUT ${_OUTPUT_FILE}
-            COMMAND ${INTLTOOL_MERGE} ${INTLTOOL_MERGE_OPTION} -u
+            COMMAND ${INTLTOOL_MERGE_EXECUTABLE} ${INTLTOOL_MERGE_OPTION} -u
             -c ${CMAKE_BINARY_DIR}/synfig-studio/po/.intltool-merge-cache
             ${CMAKE_SOURCE_DIR}/synfig-studio/po
             ${_parsedArguments_INPUT_FILE}

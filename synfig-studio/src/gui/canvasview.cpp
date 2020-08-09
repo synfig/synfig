@@ -533,6 +533,7 @@ LockDucks::LockDucks(CanvasView &canvas_view):
 
 LockDucks::~LockDucks() {
 	if (!canvas_view) return;
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (--(canvas_view->ducks_locks) == 0) {
 		if (canvas_view->ducks_rebuild_requested)
 			canvas_view->rebuild_ducks();
@@ -540,6 +541,7 @@ LockDucks::~LockDucks() {
 		if (canvas_view->ducks_rebuild_queue_requested)
 			canvas_view->queue_rebuild_ducks();
 	}
+	SYNFIG_EXCEPTION_GUARD_END()
 }
 
 
@@ -716,6 +718,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 CanvasView::~CanvasView()
 {
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+
 	#ifdef WITH_JACK
 	set_jack_enabled(false);
 	#endif
@@ -748,6 +752,8 @@ CanvasView::~CanvasView()
 
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		info("CanvasView::~CanvasView(): Deleted");
+
+	SYNFIG_EXCEPTION_GUARD_END()
 }
 
 void CanvasView::save_all()

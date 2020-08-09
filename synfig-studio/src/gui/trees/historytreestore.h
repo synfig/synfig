@@ -54,7 +54,6 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-	public:
 		Gtk::TreeModelColumn<etl::handle<synfigapp::Action::Undoable> > action;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
@@ -93,13 +92,16 @@ public:
 private:
 
 	etl::loose_handle<studio::Instance> instance_;
-	Gtk::TreeIter curr_row;
+	//! points to next action
+	Gtk::TreeIter next_action_iter;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
 
 private:
+
+	void insert_action(Gtk::TreeRow row, etl::handle<synfigapp::Action::Undoable> action, bool is_undo=true, bool is_redo=false);
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -141,27 +143,25 @@ private:
 
 public:
 
-	HistoryTreeStore(etl::loose_handle<studio::Instance> instance_);
-	~HistoryTreeStore();
-
 	etl::loose_handle<studio::Instance> instance() { return instance_; }
 	etl::loose_handle<const studio::Instance> instance()const { return instance_; }
 
+	//! Use this method carefully: if redo action stack refers to not-yet-(re)created objects
+	//! - like vertex movements -, the Action::get_local_name() can make App crash!
 	void rebuild();
 
-	void refresh() { rebuild(); }
-
-	void insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_active=true, bool is_undo=true, bool is_redo=false);
-
 	static bool search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustring&,const TreeModel::iterator&);
+
+	static Glib::RefPtr<HistoryTreeStore> create(etl::loose_handle<studio::Instance> instance);
 
 	/*
  -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------
 	*/
 
-public:
+protected:
 
-	static Glib::RefPtr<HistoryTreeStore> create(etl::loose_handle<studio::Instance> instance);
+	HistoryTreeStore(etl::loose_handle<studio::Instance> instance_);
+	~HistoryTreeStore();
 
 }; // END of class HistoryTreeStore
 

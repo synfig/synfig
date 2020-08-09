@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file mptr_jpeg.h
+/*!	\file state_bone.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2020 Aditya Abhiram J
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -17,26 +17,17 @@
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
 **	\endlegal
-**
-** === N O T E S ===========================================================
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_MPTR_JPEG_H
-#define __SYNFIG_MPTR_JPEG_H
+#ifndef SYNFIG_STUDIO_STATE_BONE_H
+#define SYNFIG_STUDIO_STATE_BONE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/importer.h>
-#include <synfig/surface.h>
-
-extern "C" {
-#include <jpeglib.h>
-}
-
-#include <setjmp.h>
+#include "smach.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -44,19 +35,22 @@ extern "C" {
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class jpeg_mptr : public synfig::Importer
+namespace studio{
+
+class StateBone_Context;
+
+class StateBone : public Smach::state<StateBone_Context>
 {
-	SYNFIG_IMPORTER_MODULE_EXT
-private:
-	static void my_error_exit (j_common_ptr cinfo);
-
 public:
-	jpeg_mptr(const synfig::FileSystem::Identifier &identifier);
-	~jpeg_mptr();
+	StateBone();
+	~StateBone();
+	virtual void* enter_state(studio::CanvasView* machine_context) const;
+}; // END of class StateBone
 
-	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
-};
+extern StateBone state_bone;
 
-/* === E N D =============================================================== */
+} // END of namespace studio
+
+/* === E N D ======================================= */
 
 #endif

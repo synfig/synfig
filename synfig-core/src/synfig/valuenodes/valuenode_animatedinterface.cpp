@@ -40,7 +40,6 @@
 
 #include <ETL/bezier>
 #include <ETL/hermite>
-#include <ETL/spline>
 #include <ETL/handle>
 #include <ETL/misc>
 

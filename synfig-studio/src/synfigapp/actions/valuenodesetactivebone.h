@@ -1,11 +1,10 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuedesccreatechildbone.h
+/*!	\file valuenodesetactivebone.h
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
-**  Copyright (c) 2013 Ivan Mahonin
 **  Copyright (c) 2020 Aditya Abhiram J
 **
 **	This package is free software; you can redistribute it and/or
@@ -23,16 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_VALUEDESCCREATECHILDBONE_H
-#define __SYNFIG_APP_ACTION_VALUEDESCCREATECHILDBONE_H
+#ifndef __SYNFIG_APP_ACTION_VALUENODESETACTIVEBONE_H
+#define __SYNFIG_APP_ACTION_VALUENODESETACTIVEBONE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <synfigapp/action.h>
 #include <synfigapp/value_desc.h>
 #include <synfig/valuenode.h>
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-#include <synfig/layers/layer_skeleton.h>
 #include <synfig/canvas.h>
 #include <list>
 
@@ -46,21 +43,17 @@ namespace synfigapp {
 
 namespace Action {
 
-class ValueDescCreateChildBone :
-	public Super
+class ValueNodeSetActiveBone :
+	public Undoable, public CanvasSpecific
 {
 private:
-	ValueDesc value_desc;
+	synfig::ValueNode::Handle active_bone_node;
 	synfig::ValueNode::Handle prev_active_bone;
-	synfig::Time time;
-	synfig::ValueBase origin,angle,scalelx,width,tipwidth;
-	bool c_parent;
-	bool c_active_bone;
 
 
 public:
 
-	ValueDescCreateChildBone();
+	ValueNodeSetActiveBone();
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
@@ -68,7 +61,8 @@ public:
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
-	virtual void prepare();
+	virtual void undo();
+	virtual void perform();
 
 	ACTION_MODULE_EXT
 };

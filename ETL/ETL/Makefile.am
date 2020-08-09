@@ -24,9 +24,7 @@ etl_HEADERS = \
 	calculus \
 	stringf \
 	trivial \
-	spline \
 	_stringf.h \
-	_bspline.h \
 	_calculus.h \
 	_hermite.h \
 	_curve_func.h \

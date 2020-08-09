@@ -51,6 +51,7 @@
 #include "widgets/widget_canvaschooser.h"
 #include "widgets/widget_time.h"
 #include "widgets/widget_distance.h"
+#include "widgets/widget_fontfamily.h"
 
 #include "app.h"
 
@@ -131,6 +132,8 @@ Widget_ValueBase::Widget_ValueBase():
 	distance_widget=manage(new class Widget_Distance());
 	pack_start(*distance_widget);
 
+	fontfamily_widget=manage(new class Widget_FontFamily());
+	pack_start(*fontfamily_widget);
 
 	vector_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	color_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
@@ -145,6 +148,7 @@ Widget_ValueBase::Widget_ValueBase():
 	filename_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	time_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	distance_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
+	fontfamily_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 
 	/*signal_focus_in_event().connect(
 		sigc::bind_return(
@@ -208,6 +212,7 @@ Widget_ValueBase::set_sensitive(bool x)
 	filename_widget->set_sensitive(x);
 	time_widget->set_sensitive(x);
 	distance_widget->set_sensitive(x);
+	fontfamily_widget->set_sensitive(x);
 }
 
 void Widget_ValueBase::popup_combobox()
@@ -228,6 +233,8 @@ void Widget_ValueBase::popup_combobox()
 		string child_param_hint = get_child_param_desc().get_hint();
 		if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
 			combobox = sublayer_widget;
+		else if( param_hint == "font_family" || child_param_hint == "font_family")
+			combobox = fontfamily_widget;
 	}
 
 	if (combobox)
@@ -252,6 +259,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 	filename_widget->hide();
 	time_widget->hide();
 	distance_widget->hide();
+	fontfamily_widget->hide();
 
 	value=data;
 	try{
@@ -348,6 +356,11 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 				sublayer_widget->set_value(value.get(string()));
 				sublayer_widget->show();
 			}
+			else if(child_param_desc.get_hint()=="font_family" || param_desc.get_hint()=="font_family")
+			{
+				fontfamily_widget->set_value(value.get(string()));
+				fontfamily_widget->show();
+			}
 			else
 			{
 				string_widget->set_text(value.get(string()));
@@ -426,6 +439,9 @@ Widget_ValueBase::get_value()
 		else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name") {
 			value=string(sublayer_widget->get_value());
 		}
+		else if(child_param_desc.get_hint()=="font_family" || param_desc.get_hint()=="font_family") {
+			value=string(fontfamily_widget->get_value());
+		}
 		else
 		{
 			value=string(string_widget->get_text());
@@ -499,6 +515,12 @@ Widget_ValueBase::on_grab_focus()
 		else if(param_desc.get_hint()=="sublayer_name") {
 			sublayer_widget->grab_focus();
 			popup_combobox();
+		}
+		else if(param_desc.get_hint()=="font_family") {
+			// don't pop it up, since it has an entry widget too
+
+			// fontfamily_widget->grab_focus();
+			// popup_combobox();
 		}
 		else
 		{

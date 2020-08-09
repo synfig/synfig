@@ -44,7 +44,9 @@ $ARCH-glibmm \
 $ARCH-imagemagick \
 $ARCH-libxml++2.6 \
 $ARCH-pango \
-$ARCH-gtkmm3
+$ARCH-gtkmm3 \
+$ARCH-openexr \
+$ARCH-libmng
 
 # build mlt
 bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
@@ -54,5 +56,3 @@ bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
 # so we need it.
 
 patch $PREFIX/include/libintl.h < ${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch
-
-

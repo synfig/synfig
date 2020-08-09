@@ -73,7 +73,13 @@ mkdir -p "${PREFIX}/bin"
 if [[ `uname` == "Linux" ]]; then
 	export PKG_CONFIG_PATH="${PREFIX}/lib64/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/`uname -i`-linux-gnu/pkgconfig/:${PKG_CONFIG_PATH}"
 fi
-if [[ `uname -o` == "Msys" ]]; then
+
+if [[ `uname` == "MSYS"* ]]; then
+	echo "You need to switch to MSYS2 MINGW shell, you are currently using pure MSYS"
+	exit 1
+fi
+
+if [[ `uname` == "MINGW"* ]]; then # MacOS doesn't support `uname -o` flag
 	PATH="${PREFIX}/lib/ccache/bin:${PATH}"
 	# copy MLT
 	MLT_REV=1   # Change this when something is changed inside of if block below
@@ -210,6 +216,17 @@ if [[ `uname -o` == "Msys" ]]; then
 	export CONFIGURE_OPTIONS="--without-magickpp"
 else
 	export CONFIGURE_OPTIONS="--with-magickpp"
+fi
+if [[ `uname` == "Darwin" ]]; then
+	base_version=10.13 # High Sierra
+	version=$(sw_vers -productVersion)
+	if [[ $(echo -e $base_version"\n"$version | sort -V | tail -1) == "$base_version" ]]; then
+		# this version supports imagemagick
+		echo ""
+	else
+		# Currently there is an error when building with imagemack on OSX >= High Sierra
+		export CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS --without-imagemagick --without-magickpp"
+	fi
 fi
 /bin/bash "${REPO_DIR}/synfig-core/configure" --prefix="${PREFIX}" \
 	--includedir="${PREFIX}/include" \

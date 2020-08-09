@@ -203,6 +203,7 @@ set(ICONS
     tool_sketch_icon
     tool_smooth_move_icon
     tool_spline_icon
+    tool_skeleton_icon
     tool_star_icon
     tool_text_icon
     tool_width_icon
@@ -306,6 +307,21 @@ install(
     FILES ${PIXMAPS_DIR}/splash_screen.png
     DESTINATION share/pixmaps/synfigstudio
 )
+
+# WIN32 Icon
+if(WIN32)
+    add_custom_command(
+        OUTPUT ${PIXMAPS_DIR}/synfig_icon.ico
+        COMMAND synfig_bin ${CMAKE_CURRENT_SOURCE_DIR}/synfig_icon.sif -o ${PIXMAPS_DIR}/synfig_icon.ico --time 0f --quiet
+        DEPENDS ${SYNFIG_SPLASH_SCREEN} synfig_bin
+    )
+
+    list(APPEND PIXMAPS ${PIXMAPS_DIR}/synfig_icon.ico)
+    install(
+        FILES ${PIXMAPS_DIR}/synfig_icon.ico
+        DESTINATION share/pixmaps/synfigstudio
+    )
+endif()
 
 add_custom_target(
     build_images

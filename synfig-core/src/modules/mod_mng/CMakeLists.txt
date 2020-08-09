@@ -6,6 +6,7 @@ target_sources(mod_mng
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
 )
 
+target_compile_options(mod_mng PRIVATE ${LIBMNG_CFLAGS})
 target_link_libraries(mod_mng synfig ${LIBMNG_LIBRARIES})
 
 install (

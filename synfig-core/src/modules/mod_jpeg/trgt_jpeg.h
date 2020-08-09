@@ -29,7 +29,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define NOMINMAX
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/targetparam.h>

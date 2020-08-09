@@ -105,6 +105,7 @@
 #include "statemanager.h"
 
 #include "states/state_bline.h"
+#include "states/state_bone.h"
 #include "states/state_brush.h"
 #include "states/state_circle.h"
 #include "states/state_draw.h"
@@ -283,6 +284,7 @@ std::list< etl::handle< studio::Module > > module_list_;
 
 bool   studio::App::restrict_radius_ducks        = true;
 bool   studio::App::resize_imported_images       = false;
+bool   studio::App::animation_thumbnail_preview  = true;
 bool   studio::App::enable_experimental_features = false;
 bool   studio::App::use_dark_theme               = false;
 bool   studio::App::show_file_toolbar            = true;
@@ -536,6 +538,11 @@ public:
 				value=strprintf("%i",(int)App::resize_imported_images);
 				return true;
 			}
+			if(key=="animation_thumbnail_preview")
+			{
+			        value=strprintf("%i",(int)App::animation_thumbnail_preview);
+			        return true;
+			}
 			if(key=="enable_experimental_features")
 			{
 				value=strprintf("%i",(int)App::enable_experimental_features);
@@ -709,6 +716,12 @@ public:
 				App::resize_imported_images=i;
 				return true;
 			}
+			if(key=="animation_thumbnail_preview")
+			{
+			        int i(atoi(value.c_str()));
+			        App::animation_thumbnail_preview=i;
+			        return true;
+			}
 			if(key=="enable_experimental_features")
 			{
 				int i(atoi(value.c_str()));
@@ -847,6 +860,7 @@ public:
 		ret.push_back("autosave_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("resize_imported_images");
+		ret.push_back("animation_thumbnail_preview");
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
 		ret.push_back("show_file_toolbar");
@@ -1276,6 +1290,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("<Mod1>g",								"<Actions>/action_group_state_manager/state-gradient"			);
 	ACCEL("<Mod1>p",								"<Actions>/action_group_state_manager/state-polygon"			);
 	ACCEL("<Mod1>b",								"<Actions>/action_group_state_manager/state-bline"			);
+	ACCEL("<Mod1>o",								"<Actions>/action_group_state_manager/state-bone"			);
 	ACCEL("<Mod1>x",								"<Actions>/action_group_state_manager/state-text"			);
 	ACCEL("<Mod1>f",								"<Actions>/action_group_state_manager/state-fill"			);
 	ACCEL("<Mod1>e",								"<Actions>/action_group_state_manager/state-eyedrop"			);
@@ -1627,6 +1642,9 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
+
+		/* skeleton tool*/
+		state_manager->add_state(&state_bone);
 
 		/* other */
 		state_manager->add_state(&state_text);
@@ -2240,6 +2258,7 @@ App::restore_default_settings()
 	synfigapp::Main::settings().set_value("pref.autosave_backup_interval",       "15000");
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks",          "1");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images",         "0");
+	synfigapp::Main::settings().set_value("pref.animation_thumbnail_preview",    "1");
 	synfigapp::Main::settings().set_value("pref.enable_experimental_features",   "0");
 	synfigapp::Main::settings().set_value("pref.use_dark_theme",                 "0");
 	synfigapp::Main::settings().set_value("pref.show_file_toolbar",              "1");

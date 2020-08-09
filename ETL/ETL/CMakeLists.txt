@@ -8,7 +8,6 @@ configure_file(
 set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/rect"
         "${CMAKE_CURRENT_LIST_DIR}/calculus"
-        "${CMAKE_CURRENT_LIST_DIR}/spline"
         "${CMAKE_CURRENT_LIST_DIR}/misc"
         "${CMAKE_CURRENT_LIST_DIR}/hermite"
         "${CMAKE_CURRENT_LIST_DIR}/fixed"
@@ -36,7 +35,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_angle.h"
         "${CMAKE_CURRENT_LIST_DIR}/_clock_base.h"
         "${CMAKE_CURRENT_LIST_DIR}/_clock_win32hpcount.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_bspline.h"
         "${CMAKE_CURRENT_LIST_DIR}/_clock_gettimeofday.h"
         "${CMAKE_CURRENT_LIST_DIR}/etl_config.h"
         "${CMAKE_CURRENT_LIST_DIR}/_stringf.h"

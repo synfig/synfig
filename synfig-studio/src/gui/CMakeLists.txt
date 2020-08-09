@@ -28,7 +28,12 @@ endif()
 ## Targets
 ##
 
-add_executable(synfigstudio main.cpp)
+if(WIN32)
+    configure_file(synfigstudio.rc ${CMAKE_CURRENT_BINARY_DIR}/synfigstudio.rc)
+    add_executable(synfigstudio main.cpp ${CMAKE_CURRENT_BINARY_DIR}/synfigstudio.rc)
+else()
+    add_executable(synfigstudio main.cpp)
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
