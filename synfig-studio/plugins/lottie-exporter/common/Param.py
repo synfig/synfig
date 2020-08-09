@@ -373,8 +373,12 @@ class Param:
                 scalar, eff_2 = self.subparams["scale"].subparams["scalar"].recur_animate("scalar_multiply")
                 self.expression_controllers.extend(eff_1)
                 self.expression_controllers.extend(eff_2)
-                ret = "mul({link}, {scalar})"
-                ret = ret.format(link=link, scalar=scalar)
+                if settings.RANGE_FLAG == 1:
+                    ret = "{link}"
+                    ret = ret.format(link=link)
+                else:
+                    ret = "mul({link}, {scalar})"
+                    ret = ret.format(link=link, scalar=scalar)
                 self.expression = ret
                 return ret, self.expression_controllers
 
@@ -624,6 +628,23 @@ class Param:
 
                 self.expression = ret
                 return ret, self.expression_controllers
+
+            elif self.param[0].tag == "reciprocal":
+                self.subparams["reciprocal"].extract_subparams()
+                link, eff_1 = self.subparams["reciprocal"].subparams["link"].recur_animate("scalar_multiply")
+                epsilon, eff_2 = self.subparams["reciprocal"].subparams["epsilon"].recur_animate("scalar_multiply")
+                infinite, eff_3 = self.subparams["reciprocal"].subparams["infinite"].recur_animate("scalar_multiply")
+
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                self.expression_controllers.extend(eff_3)
+
+                ret = "if({link} <= -{epsilon} || {epsilon} <= {link})\n $bm_rt = [mul(div({PIX_PER_UNIT},{link}),2),mul(div({PIX_PER_UNIT},{link}),2)] ;\n else if({link} >= 0 && {epsilon} > {link})\n $bm_rt = [{infinite},{infinite}];\n else\n $bm_rt = [-{infinite},-{infinite}];"
+                ret = ret.format(link=link,epsilon=epsilon,infinite=infinite,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                
+                settings.RANGE_FLAG = 1
+                self.expression = ret
+                return ret,self.expression_controllers
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -701,7 +722,11 @@ class Param:
         Fill's the lottie dictionary with the path of the parameter
         """
         if self.param[0].tag in settings.CONVERT_METHODS:
-            expression = "var $bm_rt; $bm_rt = {expr}"
+            if settings.RANGE_FLAG == 1:
+                expression = "var $bm_rt; {expr}"
+                settings.RANGE_FLAG = 0
+            else:
+                expression = "var $bm_rt; $bm_rt = {expr}"
             expression = expression.format(expr=self.expression)
             if self.dimension == 1:
                 val = 1
@@ -1004,6 +1029,20 @@ class Param:
                     mult = vector_magnitude_1*vector_magnitude_2
                     ret = math.degrees(math.acos(dot/mult))
 
+            elif self.param[0].tag == "reciprocal":
+                link = self.subparams["reciprocal"].subparams["link"].__get_value(frame)
+                epsilon = self.subparams["reciprocal"].subparams["epsilon"].__get_value(frame)
+                infinite = self.subparams["reciprocal"].subparams["infinite"].__get_value(frame)
+
+                if link <= -epsilon or epsilon <= link:
+                    ret = settings.PIX_PER_UNIT/link
+
+                elif epsilon > link and link >= 0:
+                    ret = infinite
+
+                else:
+                    ret = -infinite
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1188,6 +1227,12 @@ class Param:
                 self.subparams["dotproduct"].extract_subparams()
                 self.subparams["dotproduct"].subparams["lhs"].update_frame_window(window)
                 self.subparams["dotproduct"].subparams["rhs"].update_frame_window(window)
+
+            elif node.tag == "reciprocal":
+                self.subparams["reciprocal"].extract_subparams()
+                self.subparams["reciprocal"].subparams["link"].update_frame_window(window)
+                self.subparams["reciprocal"].subparams["epsilon"].update_frame_window(window)
+                self.subparams["reciprocal"].subparams["infinite"].update_frame_window(window)
 
         if is_animated(node) == settings.ANIMATED:
             for waypoint in node:
