@@ -60,10 +60,10 @@ public:
 		RENDERING_SUCCESS
 	};
 
-        enum Interaction {
-            UNDEFINED,
-            BY_USER
-        };
+	enum Interaction {
+		INTERACTION_UNDEFINED,
+		INTERACTION_BY_USER
+	};
 
 private:
 	//! Signal emitted when target has been stopped or has finished
@@ -82,9 +82,6 @@ private:
 	//! Current rendering status
 	//! Undefined if not finished
 	Status status;
-        
-	//! Handles user interaction on the rendering process
-	Interaction interaction;
 
 	synfig::ProgressCallback *cb;
 	//! Signal to be emitted when the target is requested to stop
@@ -109,8 +106,7 @@ public:
 	virtual ~AsyncRenderer();
 
 	void start();
-	void stop();
-	void user_stop();
+	void stop(Interaction interaction = INTERACTION_UNDEFINED);
 	void pause();
 	void resume();
 

@@ -723,7 +723,6 @@ public:
 
 AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
 	status(RENDERING_UNDEFINED),
-	interaction(UNDEFINED),
 	cb(cb),
 	start_clock(0),
 	finish_clock(0),
@@ -779,7 +778,7 @@ AsyncRenderer::~AsyncRenderer()
 }
 
 void
-AsyncRenderer::stop()
+AsyncRenderer::stop(AsyncRenderer::Interaction interaction)
 {
 	if(target)
 	{
@@ -802,7 +801,7 @@ AsyncRenderer::stop()
 
 			std::string error_message;
 
-			if(interaction == UNDEFINED)
+			if(interaction == INTERACTION_UNDEFINED)
 			{
 				if(status == RENDERING_SUCCESS)
 					signal_success_();
@@ -828,16 +827,6 @@ AsyncRenderer::stop()
 
 			signal_finished_(error_message);
 		}
-	}
-}
-
-void
-AsyncRenderer::user_stop()
-{
-	if(target)
-	{
-		interaction = BY_USER;
-		stop();
 	}
 }
 
@@ -926,7 +915,9 @@ AsyncRenderer::render_target()
 #ifdef GLIB_DISPATCHER_BROKEN
 		done_connection=Glib::signal_timeout().connect(
 			sigc::bind_return(
-				mem_fun(*this,&AsyncRenderer::stop),
+				sigc::bind(mem_fun(*this,&AsyncRenderer::stop),
+						 AsyncRenderer::INTERACTION_UNDEFINED
+				),
 				false
 			)
 			,0

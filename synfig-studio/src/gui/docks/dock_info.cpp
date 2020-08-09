@@ -46,6 +46,7 @@
 #include <gtkmm/progressbar.h>
 
 #include <gui/localization.h>
+#include <sigc++/sigc++.h>
 
 #endif
 
@@ -156,7 +157,7 @@ studio::Dock_Info::Dock_Info()
 	r.set_tooltip_text(_("Red component value of color\nThe value after gamma correction, if different, is given in brackets"));
 	g.set_tooltip_text(_("Green component value of color\nThe value after gamma correction, if different, is given in brackets"));
 	b.set_tooltip_text(_("Blue component value of color\nThe value after gamma correction, if different, is given in brackets"));
-	a.set_tooltip_text(_("Alpha component value of color, ie. opacity"));
+	a.set_tooltip_text(_("Alpha component value of color, i.e. opacity"));
 	table->attach_next_to(r, *r_label, Gtk::POS_RIGHT, 1,1);
 	table->attach_next_to(g, *g_label, Gtk::POS_RIGHT, 1,1);
 	table->attach_next_to(b, *b_label, Gtk::POS_RIGHT, 1,1);
@@ -213,7 +214,12 @@ void studio::Dock_Info::on_stop_button_clicked()
 		Gtk::MESSAGE_QUESTION,
 		_("Cancel"),
 		_("Stop")))
-		async_renderer->user_stop();
+	{
+		sigc::bind(
+			sigc::mem_fun(*async_renderer, &studio::AsyncRenderer::stop),
+			studio::AsyncRenderer::INTERACTION_BY_USER);
+		async_renderer->stop(studio::AsyncRenderer::INTERACTION_BY_USER);
+	}
 }
 
 void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
