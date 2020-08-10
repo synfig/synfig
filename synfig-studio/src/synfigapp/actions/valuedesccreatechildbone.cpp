@@ -210,11 +210,16 @@ Action::ValueDescCreateChildBone::prepare()
 {
 	clear();
 
+	if(!value_desc.parent_is_value_node()) cout<<"1"<<endl;
+	if(!value_desc.is_parent_desc_declared()) cout<<"2"<<endl;
+	if(!value_desc.get_parent_desc().is_value_node()) cout<<"3"<<endl;
+
 	if (!value_desc.parent_is_value_node()
 	 || !value_desc.is_parent_desc_declared()
 	 || !value_desc.get_parent_desc().is_value_node() )
 			throw Error(Error::TYPE_NOTREADY);
 
+	cout<<"Dead"<<endl;
 	Action::Handle action;
 
 	action = ValueNodeStaticListInsert::create();
@@ -231,26 +236,32 @@ Action::ValueDescCreateChildBone::prepare()
 			throw Error(Error::TYPE_NOTREADY);
 
 		}
+
 		int index=parent_desc.get_index();
+
+		Bone bone = Bone();
+		if(c_parent){
+			bone.set_parent(ValueNode_Bone_Root::create(Bone()));
+		}else{
+			bone.set_parent(ValueNode_Bone::Handle::cast_dynamic(ValueNode::Handle(value_node->list[index])).get());
+		}
+		bone.set_origin(origin.get(Point()));
+		bone.set_scalelx(scalelx.get(Real()));
+		bone.set_width(width.get(Real()));
+		bone.set_tipwidth(tipwidth.get(Real()));
+		bone.set_angle(angle.get(Angle()));
+
+		ValueNode_Bone::Handle bone_node = ValueNode_Bone::create(bone);
+		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_node));
+
 		action->set_param("value_desc",ValueDesc(value_node,index));
 
-		ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(value_node->create_list_entry(index));
-		if(c_parent){
-			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
-		}
-		bone->set_link("origin",ValueNode_Const::create(origin.get(Point())));
-		bone->set_link("scalelx",ValueNode_Const::create(scalelx.get(Real())));
-		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
-		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
-		bone->set_link("angle",ValueNode_Const::create(angle.get(Angle())));
-		action->set_param("item",ValueNode::Handle::cast_dynamic(bone));
-		
 		if(c_active_bone){
 			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
 			setActiveBone->set_param("canvas",get_canvas());
 			setActiveBone->set_param("canvas_interface",get_canvas_interface());
 
-			setActiveBone->set_param("active_bone_node",ValueNode::Handle::cast_dynamic(bone));
+			setActiveBone->set_param("active_bone_node",ValueNode::Handle::cast_dynamic(bone_node));
 			setActiveBone->set_param("prev_active_bone_node",prev_active_bone);
 
 			if (!setActiveBone->is_ready())

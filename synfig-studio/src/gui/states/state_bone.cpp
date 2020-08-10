@@ -195,6 +195,7 @@ public:
 	int find_bone(Point point,Layer::Handle layer,int lay=0)const;
 	void _on_signal_change_active_bone(ValueNode::Handle node);
 	int change_active_bone(ValueNode::Handle node);
+	void _on_signal_delete_value_node(ValueNode::Handle node);
 
 	void load_settings();
 	void save_settings();
@@ -687,12 +688,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						}
 						else{
 							ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
-							ValueNode_Bone::Handle bone_node;
-							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
-							{
-								error("expected a ValueNode_Bone");
-								assert(0);
-							}
+							ValueNode_Bone::Handle bone_node = ValueNode_Bone::create(Bone());
 							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
 							createChild->set_param("value_desc",Action::Param(v_d));
 							createChild->set_param("parent",true);
