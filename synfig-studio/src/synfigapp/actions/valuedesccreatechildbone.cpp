@@ -210,16 +210,11 @@ Action::ValueDescCreateChildBone::prepare()
 {
 	clear();
 
-	if(!value_desc.parent_is_value_node()) cout<<"1"<<endl;
-	if(!value_desc.is_parent_desc_declared()) cout<<"2"<<endl;
-	if(!value_desc.get_parent_desc().is_value_node()) cout<<"3"<<endl;
-
 	if (!value_desc.parent_is_value_node()
 	 || !value_desc.is_parent_desc_declared()
 	 || !value_desc.get_parent_desc().is_value_node() )
 			throw Error(Error::TYPE_NOTREADY);
 
-	cout<<"Dead"<<endl;
 	Action::Handle action;
 
 	action = ValueNodeStaticListInsert::create();
