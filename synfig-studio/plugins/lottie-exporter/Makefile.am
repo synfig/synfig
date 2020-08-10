@@ -4,7 +4,8 @@ PLUGIN_NAME = lottie-exporter
 
 EXTRA_FILES = bodymovin.js \
 			  canvas.py \
-			  settings.py
+			  settings.py \
+			  test_bodymovin.js
 
 plugindir = $(synfig_datadir)/plugins/$(PLUGIN_NAME)
 plugin_DATA = \

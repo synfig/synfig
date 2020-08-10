@@ -4,6 +4,7 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     canvas.py
     lottie-exporter.py
     settings.py
+    test_bodymovin.js
 
     # common
     common/Bline.py
@@ -37,6 +38,7 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     helpers/transform.py
 
     # layers
+    layers/blur.py
     layers/driver.py
     layers/group.py
     layers/image.py

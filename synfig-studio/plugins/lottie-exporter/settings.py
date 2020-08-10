@@ -62,6 +62,7 @@ NOT_SUPPORTED_TEXT = "Layer '%s' is not supported yet. For more information, con
 NOT_ACTIVE_TEXT = "Layer '%s' is not active"
 EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
 SHAPE_LAYER = {"simple_circle", "linear_gradient", "radial_gradient"}
+BLUR_LAYER = {"blur"}
 SOLID_LAYER = {"SolidColor"}
 SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"} 
 IMAGE_LAYER = {"import"}
@@ -72,11 +73,12 @@ UNKNOWN_LAYER = "unknown_layer"
 CONVERT_METHODS = {"add", "atan2","average", "bone", "bone_link", "bone_root", "composite", "cos", "dotproduct", "exp", "fromint", "linear", "power", "radial_composite", "scale", "sine", "subtract", "switch", "vectorangle", "vectorx", "vectory", "weighted_average"}
 BONES = {"bone", "bone_root"}
 DOT_FLAG = 0
+BLUR_TYPE = 29
 # Some waypoint animated definitions
 ANIMATED = 2
 SINGLE_WAYPOINT = 1
 NOT_ANIMATED = 0
-
+LEVEL = 0 #Indicates the depth of a layer
 
 def init():
     """
@@ -108,3 +110,7 @@ def init():
     canvas_count = Count()
     global controller_count # counts the slider and point effects controller
     controller_count = Count()
+    global blur_dictionary #used to make a dictionary of blur layers
+    blur_dictionary = {}
+    global non_blur_dictionary #used to make a dictionary of all non blur layers
+    non_blur_dictionary = {}

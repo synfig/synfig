@@ -3,6 +3,7 @@
 PLUGIN_NAME = layers
 
 EXTRA_FILES = \
+			  blur.py \
 			  driver.py \
 			  group.py \
 			  image.py \

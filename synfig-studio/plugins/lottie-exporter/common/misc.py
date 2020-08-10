@@ -167,11 +167,18 @@ def parse_position(animated, i):
         vec.add_new_val(val3)
         return vec
 
-    elif animated.attrib["type"] == "group_layer_scale":
-        val1 = float(animated[i][0][0].text) * 100
-        val3 = float(animated[i][0][1].text) * 100
-        vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
-        vec.add_new_val(val3)
+    elif animated.attrib["type"] in {"group_layer_scale","blur_anim_x","blur_anim_y"}:
+        if animated.attrib["type"] == "group_layer_scale":
+            val1 = float(animated[i][0][0].text) * 100
+            val3 = float(animated[i][0][1].text) * 100
+            vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
+            vec.add_new_val(val3)
+        elif animated.attrib["type"] == "blur_anim_x":
+            val1 = float(animated[i][0][0].text) * 100
+            vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
+        else:
+            val1 = float(animated[i][0][1].text) * 100
+            vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
         return vec
 
     elif animated.attrib["type"] == "time":
