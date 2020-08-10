@@ -80,6 +80,7 @@ SoundProcessor::SoundProcessor()
 {
 	assert(Internal::initialized);
 	internal = new Internal();
+	infinite = true;
 }
 
 SoundProcessor::~SoundProcessor() { delete internal; }
@@ -140,6 +141,12 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 	}
 
 	if (internal->last_track == NULL) {
+
+		if (!infinite) {
+			internal->last_track = track;
+			return;
+		}
+
 		// create background infinite track,
 		// show (and track position) must go on even after all sounds finished
 		bool success = true;
@@ -185,6 +192,11 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 	internal->last_track = tractor;
 }
 
+void SoundProcessor::set_infinite(bool value)
+{
+	infinite = value;
+}
+
 Time SoundProcessor::get_position() const
 {
 	return Time(internal->last_track == NULL ? 0.0 :
@@ -224,6 +236,17 @@ void SoundProcessor::set_playing(bool value)
 			delete internal->consumer;
 			internal->consumer = NULL;
 		}
+	}
+}
+
+void SoundProcessor::do_export(String path)
+{
+	if (internal->last_track != NULL) {
+		internal->last_track->set_speed(1.0);
+		internal->consumer = new Mlt::Consumer(internal->profile, "avformat");
+		internal->consumer->connect(*internal->last_track);
+		internal->consumer->set("target", path.c_str());
+		internal->consumer->run();
 	}
 }
 
