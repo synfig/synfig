@@ -1037,7 +1037,7 @@ class Param:
                 if link <= -epsilon or epsilon <= link:
                     ret = settings.PIX_PER_UNIT/link
 
-                elif epsilon > link and link >= 0:
+                elif link >= 0:
                     ret = infinite
 
                 else:
