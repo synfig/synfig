@@ -102,6 +102,7 @@ class studio::StateBone_Context : public sigc::trackable
 
 	bool prev_table_status;
 	bool prev_workarea_layer_status_;
+	Duck::Type prev_type_mask;
 
 	int depth;
 	Canvas::Handle canvas;
@@ -421,6 +422,9 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
+	// remembering previous type mask
+	prev_type_mask = get_work_area()->get_type_mask();
+
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
@@ -495,6 +499,9 @@ StateBone_Context::~StateBone_Context()
 
 	// Turn off Active Bone rendering
 	get_work_area()->set_active_bone_display(false);
+
+	// Restore duck type mask
+	get_work_area()->set_type_mask(prev_type_mask);
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
