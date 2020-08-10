@@ -53,6 +53,7 @@ private:
 	bool multi_image;
 	FILE *file;
 	synfig::String filename;
+	synfig::String sound_filename;
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
 	std::string video_codec;
