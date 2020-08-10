@@ -96,8 +96,12 @@ def parse_position(animated, i):
         (common.Color.Color)  Else if the animated type is color
     """
     if animated.attrib["type"] == "vector":
-        pos = [float(animated[i][0][0].text),
-               float(animated[i][0][1].text)]
+        if animated[i][0].tag == 'vector':
+            pos = [float(animated[i][0][0].text),
+                   float(animated[i][0][1].text)]
+        else:
+            pos = [float(animated[i][0].text),
+                   float(animated[i][1].text)]
         pos = [settings.PIX_PER_UNIT*x for x in pos]
 
     elif animated.attrib["type"] in {"real", "circle_radius"}:
@@ -105,6 +109,10 @@ def parse_position(animated, i):
 
     elif animated.attrib["type"] == "angle":
         pos = [get_angle(float(animated[i][0].attrib["value"])),
+               get_frame(animated[i])]
+
+    elif animated.attrib["type"] == "bone_angle":
+        pos = [get_bone_angle(float(animated[i][0].attrib["value"])),
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "base":
@@ -167,9 +175,15 @@ def parse_position(animated, i):
         vec.add_new_val(val3)
         return vec
 
-    elif animated.attrib["type"] == "group_layer_scale":
-        val1 = float(animated[i][0][0].text) * 100
-        val3 = float(animated[i][0][1].text) * 100
+    elif animated.attrib["type"] == "group_layer_scale" or animated.attrib["type"] == "group_scale" :
+        if animated.attrib["type"] == "group_scale":
+            val1 = float(animated[i][0][0].text) 
+            val3 = float(animated[i][0][1].text)
+            animated.attrib["type"] = "group_layer_scale"
+        else:
+            val1 = float(animated[i][0][0].text) * 100  
+            val3 = float(animated[i][0][1].text) * 100
+
         vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
         vec.add_new_val(val3)
         return vec
@@ -229,6 +243,21 @@ def get_angle(theta):
     theta = theta % 360
     theta = (90 - theta) % 360
 
+    theta = theta + shift * 360
+    return theta
+
+def get_bone_angle(theta):
+    """
+    Calculates the bone_angle of the bone wrt to its parent bone
+
+    Args:
+        theta (float) : Stores Synfig format angle
+
+    Returns:
+        (int)   : Lottie format angle
+    """
+    theta = int(theta)
+    shift = int(theta / 360)
     theta = theta + shift * 360
     return theta
 

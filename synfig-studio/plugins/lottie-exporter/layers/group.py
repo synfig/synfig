@@ -4,8 +4,10 @@ Store all functions corresponding to group layer in Synfig
 """
 
 import sys
+import copy
 import math
 import settings
+from lxml import etree
 from common.Param import Param
 from common.Canvas import Canvas
 from common.Count import Count
@@ -16,6 +18,86 @@ from helpers.blendMode import get_blend
 from synfig.animation import insert_waypoint_at_frame, to_Synfig_axis
 sys.path.append("..")
 
+class TransformationProperties:
+    """
+    Class to store transformation properties
+    """
+    def __init__(self,transform,parent):
+        self.transform = transform
+        self.elements = {}
+        self.parent = parent
+        self.create_default_values()
+        self.extract_params()
+    
+    def create_default_values(self):
+        if self.transform.tag != 'composite':
+            self.angle_base = copy.deepcopy(self.transform[1][0][1])
+            self.base_scale_value = etree.fromstring("<base_value></base_value>")
+            scale_param_1 = copy.deepcopy(self.transform[1][0][3][0])
+            self.base_scale_value.append(scale_param_1)
+            self.base_skew_value = etree.fromstring("<skew_value></skew_value>")
+            skew_value_1 = copy.deepcopy(self.transform[1][0][2][0])
+            self.base_skew_value.append(skew_value_1)
+
+    def extract_params(self):
+        if self.transform.tag != 'composite':
+
+            #calculating offset
+            offset = "<param name='offset'><bone_link type='offset'></bone_link></param>"
+            root_offset = etree.fromstring(offset)
+            bone = copy.deepcopy(self.transform[0])
+            base_value = etree.fromstring("<base_value></base_value>")
+            flag = etree.fromstring("<flag></flag>")
+            offset_param = copy.deepcopy(self.transform[1][0][0][0])
+            base_value.append(offset_param)
+            root_offset[0].append(bone)
+            root_offset[0].append(base_value)
+            root_offset[0].append(flag)
+            self.elements['offset']       = Param(root_offset,Param(self.transform[1][0],self.parent))
+            			            
+            #calculating angle
+            angle = "<param name='angle'><bone_angle_link type='angle'></bone_angle_link></param>"
+            root_angle = etree.fromstring(angle)
+            bone = copy.deepcopy(self.transform[0])
+            base_value = etree.fromstring("<base_value></base_value>")
+            angle_param = copy.deepcopy(self.transform[1][0][1][0])
+            scale_param = copy.deepcopy(self.transform[1][0][3])
+            base_value.append(angle_param)
+            root_angle[0].append(bone)
+            root_angle[0].append(base_value)
+            root_angle[0].append(scale_param)
+            self.elements['angle']        = Param(root_angle,Param(self.transform[1][0],self.parent))
+
+            #calculating skew
+            scale = "<param name='skew'><bone_skew_link type='vector'></bone_skew_link></param>"
+            root_skew = etree.fromstring(scale)
+            bone = copy.deepcopy(self.transform[0])
+            base_1 = etree.fromstring("<base_value></base_value>")
+            scale_1 = copy.deepcopy(self.transform[1][0][3][0])
+            base_1.append(scale_1)
+            root_skew[0].extend([bone,base_1,self.transform[1][0][1],self.transform[1][0][2]])
+            self.elements['skew_angle']   = Param(root_skew,Param(self.transform[1][0],self.parent))
+            
+            #calculating scale
+            scale = "<param name='scale'><bone_scale_link type='vector'></bone_scale_link></param>"
+            root_scale = etree.fromstring(scale)
+            bone = copy.deepcopy(self.transform[0])
+            root_scale[0].append(bone)
+            root_scale[0].append(self.base_scale_value)
+            root_scale[0].append(self.angle_base)
+            root_scale[0].append(self.base_skew_value)
+            self.elements['scale']        = Param(root_scale,Param(self.transform[1][0],self.parent))
+
+        else:
+            for child in self.transform:
+                if child.tag == "scale":
+                    self.elements['scale'] = Param(child, self.parent)
+                elif child.tag == "offset":
+                    self.elements["offset"] = Param(child, self.parent)
+                elif child.tag == "angle":
+                    self.elements["angle"] = Param(child, self.parent)
+                elif child.tag == "skew_angle":
+                    self.elements["skew_angle"] = Param(child, self.parent)
 
 def gen_layer_group(lottie, layer, idx):
     """
@@ -49,15 +131,12 @@ def gen_layer_group(lottie, layer, idx):
     transformation = layer.get_param("transformation")
     transform = transformation[0]
     try_par = Param(transform, Param(transformation.get(), layer))
-    for child in transform:
-        if child.tag == "scale":
-            scale = Param(child, try_par)
-        elif child.tag == "offset":
-            pos = Param(child, try_par)
-        elif child.tag == "angle":
-            angle = Param(child, try_par)
-        elif child.tag == "skew_angle":
-            skew = Param(child, try_par)
+
+    properties = TransformationProperties(transform,try_par)
+    scale = properties.elements['scale']
+    pos = properties.elements['offset']
+    angle = properties.elements['angle']
+    skew = properties.elements['skew_angle']
 
     outline_grow.animate("real")
 
@@ -71,7 +150,7 @@ def gen_layer_group(lottie, layer, idx):
     if settings.INSIDE_PRECOMP:
         pos.add_offset()
 
-    scale.animate("group_layer_scale")
+    scale.animate("group_scale")
     # Generating animation for skew
     skew.animate("rotate_layer_angle")
     # Animating opacity

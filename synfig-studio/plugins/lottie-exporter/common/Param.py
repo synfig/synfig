@@ -2,7 +2,6 @@
 Param.py
 Will store the Parameters class for Synfig parameters 
 """
-
 import sys
 import copy
 import math
@@ -205,7 +204,7 @@ class Param:
         """
         Internal private method for animating
         """
-        if anim_type in {"vector", "group_layer_scale", "stretch_layer_scale", "circle_radius"}:
+        if anim_type in {"vector", "group_scale", "stretch_layer_scale", "circle_radius"}:
             self.dimension = 2
 
         # Check if we are dealing with convert methods
@@ -218,9 +217,8 @@ class Param:
                 bone_origin, eff_1 = self.subparams["origin"].recur_animate("vector")
 
                 # Get the animation of angle
-                prop_name = "angle"
-                if self.is_group_child:
-                    prop_name = "rotate_layer_angle"
+                prop_name = "bone_angle"
+                
                 bone_angle, ang_eff = self.subparams["angle"].recur_animate(prop_name)
 
                 # Get the local length scale of the bone
@@ -245,7 +243,7 @@ class Param:
                 if self.is_group_child:
                     bone.is_group_child = True
 
-                par_origin, par_angle, par_lls, par_rls, par_eff = bone.recur_animate("vector")
+                par_origin, par_angle, par_lls, par_rls, par_eff,flag = bone.recur_animate("vector")
 
                 # Restore the previous state
                 bone.is_group_child = prev_state
@@ -254,35 +252,38 @@ class Param:
                     # Adding expression to the expression controller
                     self.expression_controllers.extend(par_eff)
 
-                    # Modifying the bone_origin according to the parent's local scale
+                    # # Modifying the bone_origin according to the parent's local scale
                     bone_origin = "mul(" + bone_origin + ", " + par_lls + ")"
 
-                    # Modifying the bone_origin according to the parent's recursive scale
-                    bone_origin = "mul(" + bone_origin + ", " + par_rls + ")"
-
-                    # Forming the expression for new origin
-                    a1 = "degreesToRadians({angle})"
-                    a2 = "degreesToRadians(sum({angle}, 90))"
-                    a1, a2 = a1.format(angle=par_angle), a2.format(angle=par_angle)
-
-                    ret_x = "sum({par_origin}[0], mul({bone_origin}[0], Math.cos({a1})), mul({bone_origin}[1], Math.cos({a2})))"
-                    ret_y = "sum({par_origin}[1], mul({bone_origin}[0], Math.sin({a1})), mul({bone_origin}[1], Math.sin({a2})))"
-                    ret_origin = "[" + ret_x + ", " + ret_y + "]"
-                    ret_origin = ret_origin.format(par_origin=par_origin, bone_origin=bone_origin, a1=a1, a2=a2)
+                    # # Modifying the bone_origin according to the parent's recursive scale
+                    # bone_origin = "mul(" + bone_origin + ", " + par_rls + ")"
 
                     # Forming the expression for new angle
                     ret_angle = "sum({par_angle}, {bone_angle})"
                     ret_angle = ret_angle.format(par_angle=par_angle, bone_angle=bone_angle)
+
+                    vector_magnitude = 'Math.sqrt(sum(Math.pow({bone_origin}[0],2),Math.pow({bone_origin}[1],2)))'
+                    vector_magnitude = vector_magnitude.format(bone_origin=bone_origin)
+                    
+                    theta = 'Math.atan2(-{bone_origin}[1],{bone_origin}[0])'
+                    theta = theta.format(bone_origin=bone_origin)
+                    
+                    ret_x = "sum({par_origin}[0], mul({mod}, Math.cos(sum(degreesToRadians({angle}),{theta}))))"
+                    ret_y = "sum(-{par_origin}[1], mul({mod}, Math.sin(sum(degreesToRadians({angle}),{theta}))))"
+                    
+                    ret_origin = "[" + ret_x + ",-" + ret_y + "]"
+                    ret_origin = ret_origin.format(par_origin=par_origin, mod=vector_magnitude, angle=par_angle,theta=theta,lls=par_lls)
+                    flag = False
+
                 else:
                     ret_origin = bone_origin
                     ret_angle = bone_angle
-
                 ############# REMOVE AFTER DEBUGGING rls
                 rls = "1"
-                return ret_origin, ret_angle, lls, rls, self.expression_controllers
+                return ret_origin, ret_angle, lls, rls, self.expression_controllers,flag
 
             elif self.param.tag == "bone_root": # No animation to be added as this being the root
-                return "[0, 0]", "0", "1", "1", None
+                return "[0, 0]", "0", "1", "1", None,True
 
             elif self.param[0].tag == "add":
                 self.subparams["add"].extract_subparams()
@@ -414,9 +415,12 @@ class Param:
                 den = "sum("    # Denominator string
                 for it in lst:
                     it.extract_subparams()  # weighted_vector
-                    it.subparams["weighted_vector"].extract_subparams()
-                    weight, eff_1 = it.subparams["weighted_vector"].subparams["weight"].recur_animate("scalar_multiply")
-                    value, eff_2 = it.subparams["weighted_vector"].subparams["value"].recur_animate(anim_type)
+                    tag = "weighted_vector"
+                    if "composite" in it.subparams.keys():
+                        tag = "composite"
+                    it.subparams[tag].extract_subparams()
+                    weight, eff_1 = it.subparams[tag].subparams["weight"].recur_animate("scalar_multiply")
+                    value, eff_2 = it.subparams[tag].subparams["value"].recur_animate(anim_type)
                     self.expression_controllers.extend(eff_1)
                     self.expression_controllers.extend(eff_2)
                     hell = "mul({weight}, {value}),"
@@ -437,31 +441,34 @@ class Param:
                 self.subparams["bone_link"].extract_subparams()
                 guid = self.subparams["bone_link"].subparams["bone"][0].attrib["guid"]
                 bone = self.get_bone_from_canvas(guid)
-
                 base_value, bv_eff = self.subparams["bone_link"].subparams["base_value"].recur_animate("vector")
 
                 # Storing previous state
                 prev_state = bone.is_group_child
                 if self.is_group_child:
                     bone.is_group_child = True
-                origin, angle, lls, rls, eff = bone.recur_animate("vector")
+                origin, angle, lls, rls, eff,flag = bone.recur_animate("vector")
 
-                # Adding lls effect to the bone
-                base_value = "mul(" + base_value + ", " + lls + ")"
-
-                # Adding rls effect to the bone
-                base_value = "mul(" + base_value + ", " + rls + ")"
+                if "flag" not in self.subparams["bone_link"].subparams.keys():
+                    # Adding lls effect to the bone
+                    base_value = "mul(" + base_value + ", " + lls + ")"
+                    # Adding rls effect to the bone
+                    base_value = "mul(" + base_value + ", " + rls + ")"
 
                 # Adding effect of base_value here
-                a1 = "degreesToRadians({angle})"
-                a2 = "degreesToRadians(sum({angle}, 90))"
-                a1, a2 = a1.format(angle=angle), a2.format(angle=angle)
 
-                ret_x = "sub(sum({origin}[0], mul({base_value}[0], Math.cos({a1}))), mul({base_value}[1], Math.cos({a2})))"
-                ret_y = "sub(sum({origin}[1], mul({base_value}[0], Math.sin({a1}))), mul({base_value}[1], Math.sin({a2})))"
-                ret_origin = "[" + ret_x + ", -" + ret_y + "]"
-                ret_origin = ret_origin.format(origin=origin, base_value=base_value, a1=a1, a2=a2)
+                vector_magnitude = 'Math.sqrt(sum(Math.pow({base_value}[0],2),Math.pow({base_value}[1],2)))'
+                vector_magnitude = vector_magnitude.format(base_value=base_value)
+                theta = 'Math.atan2(-{base_value}[1],{base_value}[0])'
+                theta = theta.format(base_value=base_value)
+                if flag :
+                	ret_x = "sum({origin}[0], mul(mul({mod},Math.cos(sum(degreesToRadians({angle}),{theta}))),{lls}))"
+                else:
+                	ret_x = "sum({origin}[0], mul({mod},Math.cos(sum(degreesToRadians({angle}),{theta}))))"
 
+                ret_y = "sum(-{origin}[1], mul({mod},Math.sin(sum(degreesToRadians({angle}),{theta}))))"
+                ret_origin = "[" + ret_x + ",-" + ret_y + "]"
+                ret_origin = ret_origin.format(origin=origin, mod=vector_magnitude,angle=angle,theta=theta,lls=lls)
                 # Restore previous state
                 bone.is_group_child = prev_state
 
@@ -471,6 +478,123 @@ class Param:
 
                 self.expression = ret_origin
                 return ret_origin, self.expression_controllers
+
+            elif self.param[0].tag == "bone_angle_link":
+                self.subparams["bone_angle_link"].extract_subparams()
+                guid = self.subparams["bone_angle_link"].subparams["bone"][0].attrib["guid"]
+                bone = self.get_bone_from_canvas(guid)
+                base_value, bv_eff = self.subparams["bone_angle_link"].subparams["base_value"].recur_animate("bone_angle")
+                scale_value, sv_eff = self.subparams["bone_angle_link"].subparams["scale"].recur_animate("vector")
+                # Storing previous state
+                prev_state = bone.is_group_child
+                if self.is_group_child:
+                    bone.is_group_child = True
+                origin, angle, lls, rls, eff,flag = bone.recur_animate("vector")
+
+                vector_magnitude = 'Math.sqrt(sum(Math.pow({scale_value}[0],2),Math.pow({scale_value}[1],2)))'
+                vector_magnitude = vector_magnitude.format(scale_value=scale_value)
+                numerator = 'mul({vector_magnitude},Math.sin(degreesToRadians({base_value})))'
+                denominator = 'mul(mul({vector_magnitude},Math.cos(degreesToRadians({base_value}))),{lls})'
+                
+                numerator = numerator.format(vector_magnitude=vector_magnitude,base_value=base_value)
+                denominator = denominator.format(vector_magnitude=vector_magnitude,base_value=base_value,lls=lls)
+
+                theta = 'Math.atan2({numerator},{denominator})'
+                theta = theta.format(numerator=numerator,denominator=denominator)
+                ret_angle = "-sum({angle},radiansToDegrees({theta}))"
+                ret_angle = ret_angle.format(angle=angle,theta=theta)
+                bone.is_group_child = prev_state
+
+                if eff is not None:
+                    self.expression_controllers.extend(eff)
+                self.expression_controllers.extend(bv_eff)
+                self.expression_controllers.extend(sv_eff)
+
+                self.expression = ret_angle
+                return ret_angle, self.expression_controllers
+
+            elif self.param[0].tag == "bone_scale_link":
+                self.subparams["bone_scale_link"].extract_subparams()
+                guid = self.subparams["bone_scale_link"].subparams["bone"][0].attrib["guid"]
+                bone = self.get_bone_from_canvas(guid)
+                base_value, bv_eff = self.subparams["bone_scale_link"].subparams["base_value"].recur_animate("vector")
+                angle_value, av_eff = self.subparams["bone_scale_link"].subparams["angle"].recur_animate("bone_angle")
+                skew_value,sv_eff = self.subparams["bone_scale_link"].subparams["skew_value"].recur_animate("bone_angle")
+
+                # Storing previous state
+                prev_state = bone.is_group_child
+                if self.is_group_child:
+                    bone.is_group_child = True
+                origin, angle, lls, rls, eff,_flag = bone.recur_animate("vector")
+
+                matrix_el1 = "mul(mul(div({base_value}[0],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value}))),{lls})"
+                matrix_el2 = "mul(-mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians(sum({angle_value},{skew_value})))),{lls})"
+                matrix_el3 = "mul(div({base_value}[0],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value})))"
+                matrix_el4 = "mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.cos(degreesToRadians(sum({angle_value},{skew_value}))))"
+
+                matrix_el1 = matrix_el1.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el2 = matrix_el2.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT,skew_value=skew_value)
+                matrix_el3 = matrix_el3.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el4 = matrix_el4.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT,skew_value=skew_value)
+
+                scale_x = "mul(Math.sqrt(sum(Math.pow({matrix_el1},2),Math.pow({matrix_el3},2))),{base_value_x})"
+                scale_y = "mul(Math.sqrt(sum(Math.pow({matrix_el2},2),Math.pow({matrix_el4},2))),{base_value_y})"
+                scale_x = scale_x.format(matrix_el1=matrix_el1,matrix_el3=matrix_el3,base_value_x=100)
+                scale_y = scale_y.format(matrix_el2=matrix_el2,matrix_el4=matrix_el4,base_value_y=100)
+
+                ret_scale = "["+scale_x + "," + scale_y +"]"
+                # ret_scale = ret_scale.format(matrix_el1=matrix_el1,matrix_el3=matrix_el3,base_value_x=base_value_x,matrix_el2=matrix_el2,matrix_el4=matrix_el4,base_value_y=base_value_y)
+                bone.is_group_child = prev_state
+                if eff is not None:
+                    self.expression_controllers.extend(eff)
+                self.expression_controllers.extend(bv_eff)
+                self.expression_controllers.extend(av_eff)
+                self.expression_controllers.extend(sv_eff)
+
+                self.expression = ret_scale
+                return ret_scale, self.expression_controllers
+
+            elif self.param[0].tag == "bone_skew_link":
+                self.subparams["bone_skew_link"].extract_subparams()
+                guid = self.subparams["bone_skew_link"].subparams["bone"][0].attrib["guid"]
+                bone = self.get_bone_from_canvas(guid)
+                base_value, bv_eff = self.subparams["bone_skew_link"].subparams["base_value"].recur_animate("vector")
+                angle_value, av_eff = self.subparams["bone_skew_link"].subparams["angle"].recur_animate("bone_angle")
+                skew_value, sv_eff = self.subparams["bone_skew_link"].subparams["skew_angle"].recur_animate("bone_angle")
+
+                # Storing previous state
+                prev_state = bone.is_group_child
+                if self.is_group_child:
+                    bone.is_group_child = True
+                origin, angle, lls, rls, eff,flag = bone.recur_animate("vector")
+
+                matrix_el1 = "mul(mul(div({base_value}[0],{PIX_PER_UNIT}),Math.cos(degreesToRadians({angle_value}))),{lls})"
+                matrix_el2 = "mul(-mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.sin(degreesToRadians(sum({angle_value},{skew_value})))),{lls})"
+                matrix_el3 = "mul(div({base_value}[0],{PIX_PER_UNIT}),Math.sin(degreesToRadians({angle_value})))"
+                matrix_el4 = "mul(div(-{base_value}[1],{PIX_PER_UNIT}),Math.cos(degreesToRadians(sum({angle_value},{skew_value}))))"
+
+                matrix_el1 = matrix_el1.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el2 = matrix_el2.format(base_value=base_value,angle_value=angle_value,lls=lls,PIX_PER_UNIT=settings.PIX_PER_UNIT,skew_value=skew_value)
+                matrix_el3 = matrix_el3.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                matrix_el4 = matrix_el4.format(base_value=base_value,angle_value=angle_value,PIX_PER_UNIT=settings.PIX_PER_UNIT,skew_value=skew_value)
+
+                x_axis_angle = "sub(degreesToRadians({PI}),Math.atan2({matrix_el1},{matrix_el3}))"
+                y_axis_angle = "sub(degreesToRadians({PI}),Math.atan2({matrix_el2},{matrix_el4}))"
+                x_axis_angle = x_axis_angle.format(PI=180,matrix_el1=matrix_el1,matrix_el3=matrix_el3)
+                y_axis_angle = y_axis_angle.format(PI=180,matrix_el2=matrix_el2,matrix_el4=matrix_el4)
+
+                ret_skew = "-radiansToDegrees(sub({y_axis_angle},sub({x_axis_angle},degreesToRadians(90))))"
+                ret_skew = ret_skew.format(y_axis_angle=y_axis_angle,x_axis_angle=x_axis_angle)
+
+                bone.is_group_child = prev_state
+                if eff is not None:
+                    self.expression_controllers.extend(eff)
+                self.expression_controllers.extend(bv_eff)
+                self.expression_controllers.extend(av_eff)
+                self.expression_controllers.extend(sv_eff)
+
+                self.expression = ret_skew
+                return ret_skew, self.expression_controllers
 
             elif self.param[0].tag == "sine":
                 self.subparams["sine"].extract_subparams()
@@ -742,12 +866,11 @@ class Param:
                 canvas = self.get_canvas()
                 bone = canvas.get_bone(guid)
                 shifted_origin, shifted_angle, lls, rls = bone.__get_value(frame)
-                a1, a2 = math.radians(shifted_angle), math.radians(shifted_angle+90)
 
                 # Calculating this bones angle with respect to parent bone's
                 # angle
                 if "angle" in self.subparams.keys():
-                    angle = to_Synfig_axis(self.subparams["angle"].__get_value(frame), "angle")
+                    angle = to_Synfig_axis(self.subparams["angle"].__get_value(frame), "bone_angle")
                 else:
                     angle = 0
 
@@ -755,24 +878,25 @@ class Param:
                 local_length_scale = self.subparams["scalelx"].__get_value(frame)
 
                 # Calculating the recursive length scale
-                this_rls = self.subparams["scalex"].__get_value(frame)    # In current angle's direction
+                # this_rls = self.subparams["scalex"].__get_value(frame)    # In current angle's direction
                 absolute_angle = shifted_angle+angle
-                aa1 = math.radians(absolute_angle)
-                this_rls = [this_rls * math.cos(aa1), this_rls * math.sin(aa1)]
+                # aa1 = math.radians(absolute_angle) #Might be useful in making recursive_length
 
                 # Calculate returning recursive length
-                ret_rls = [this_rls[0]*rls[0], this_rls[1]*rls[1]]
-                ##### REMOVE AFTER DEBUGGING
-                ret_rls = [1, 1]
-
+                ret_rls = [1,1]
+                # this_rls = [1,1]
                 # Multiplying the current bone origin with the scale
                 cur_origin = [i*lls for i in cur_origin]
 
                 ret = shifted_origin
                 # Adding effect of x component
-                ret[0] = ret[0] + (cur_origin[0] * math.cos(a1) + cur_origin[1] * math.cos(a2)) * rls[0]
-                ret[1] = ret[1] + (cur_origin[0] * math.sin(a1) + cur_origin[1] * math.sin(a2)) * rls[1]
-
+                vector_magnitude = math.sqrt(cur_origin[0]*cur_origin[0] + cur_origin[1]*cur_origin[1])
+                rad = math.pi/180
+                theta = math.atan2(cur_origin[1],cur_origin[0])
+                
+                shifted_angle = shifted_angle*rad
+                ret[0] = ret[0] + (vector_magnitude * math.cos(shifted_angle+theta))
+                ret[1] = ret[1] + (vector_magnitude * math.sin(shifted_angle+theta))
                 return ret, absolute_angle, local_length_scale, ret_rls
 
             elif self.param.tag == "bone_root":
@@ -826,11 +950,14 @@ class Param:
 
                 ret = [0, 0]
                 den = 0
-                if not isinstance(lst[0].subparams["weighted_vector"].subparams["value"].__get_value(frame), list):
+                tag = "weighted_vector"
+                if "composite" in lst[0].subparams:
+                    tag = "composite"
+                if not isinstance(lst[0].subparams[tag].subparams["value"].__get_value(frame), list):
                     ret = 0
                 for it in lst:
-                    weight = it.subparams["weighted_vector"].subparams["weight"].__get_value(frame)
-                    value = it.subparams["weighted_vector"].subparams["value"].__get_value(frame)
+                    weight = it.subparams[tag].subparams["weight"].__get_value(frame)
+                    value = it.subparams[tag].subparams["value"].__get_value(frame)
                     den += weight
                     if isinstance(value, list):
                         ret[0], ret[1] = ret[0] + value[0]*weight, ret[1] + value[1]*weight
@@ -903,14 +1030,17 @@ class Param:
 
                 # Adding the base value effect here
                 base_value = self.subparams["bone_link"].subparams["base_value"].__get_value(frame)
-                a1, a2 = math.radians(ret_angle), math.radians(ret_angle+90)
+                a1 = math.radians(ret_angle)
                 ret = ret_origin
 
                 # base_value to be arranged according to the local scale
                 base_value = [lls*i for i in base_value]
 
-                ret[0] = ret[0] + (base_value[0] * math.cos(a1) - base_value[1] * math.cos(a2)) * rls[0]
-                ret[1] = ret[1] + (base_value[0] * math.sin(a1) - base_value[1] * math.sin(a2)) * rls[1]
+                vector_magnitude = math.sqrt(base_value[0]*base_value[0]+base_value[1]*base_value[1])
+                
+                theta = math.atan2(base_value[1],base_value[0])
+                ret[0] = ret[0] + (vector_magnitude* math.cos(a1+theta)) * rls[0]
+                ret[1] = ret[1] + (vector_magnitude* math.sin(a1+theta)) * rls[1]
 
                 ret = [ret[0], ret[1]]
 
@@ -1115,8 +1245,11 @@ class Param:
                 self.subparams["weighted_average"].extract_subparams()
                 for it in self.subparams["weighted_average"].subparams["entry"]:
                     it.extract_subparams()
-                    it.subparams["weighted_vector"].extract_subparams()
-                    ti = it.subparams["weighted_vector"].subparams
+                    tag = "weighted_vector"
+                    if "composite" in it.subparams.keys():
+                        tag = "composite"
+                    it.subparams[tag].extract_subparams()
+                    ti = it.subparams[tag].subparams
                     ti["weight"].update_frame_window(window)
                     ti["value"].update_frame_window(window)
 
