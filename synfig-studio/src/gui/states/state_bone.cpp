@@ -728,7 +728,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 									info("Error performing action");
 								}
 							}
-							// Use Passive grouper
 						}
 
 					}
@@ -865,7 +864,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 									info("Error performing action");
 								}
 							}
-							// Use Passive grouper
 						}
 
 					}
