@@ -46,6 +46,7 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     layers/preComp.py
     layers/rotate_layer.py
     layers/scale_layer.py
+    layers/shade.py
     layers/shape.py
     layers/shape_solid.py
     layers/solid.py

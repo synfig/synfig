@@ -13,7 +13,8 @@ from layers.shape_solid import gen_layer_shape_solid
 from layers.preComp import gen_layer_precomp
 from layers.group import gen_layer_group
 from layers.blur import gen_layer_blur
-
+from layers.shade import gen_layer_shade
+import json
 sys.path.append("..")
 
 def blur_test(lottie):
@@ -76,6 +77,21 @@ def append_blur_dict(layer,itr,group_flag):
 					for blur in blur_dict:
 						settings.lottie_format["layers"][index]["ef"].append(blur)
 
+def append_shade_dict(layer,group_number,group_flag):
+	"""
+	"""
+	shade_dict = {}
+	if len(settings.shade_dictionary) != 0:
+		gen_layer_shade(shade_dict,settings.shade_dictionary[group_number])
+		ID = "precomp_"+str(group_number)
+		for asset_index,_ in enumerate(settings.lottie_format["assets"]):
+			if settings.lottie_format["assets"][asset_index]["id"] == ID:
+				for index,_ in enumerate(settings.lottie_format["assets"][asset_index]["layers"]):
+					if len(settings.lottie_format["assets"][asset_index]["layers"][index].keys()) == 1:
+						settings.lottie_format["assets"][asset_index]["layers"][index+1]["ef"].extend(settings.lottie_format["assets"][asset_index]["layers"][index]["ef"])
+						settings.lottie_format["assets"][asset_index]["layers"][index+1]["ef"].append(shade_dict)
+
+
 def gen_layers(lottie, canvas, layer_itr):
 	"""
 	This function will be called for each canvas/composition. Main function to
@@ -103,6 +119,9 @@ def gen_layers(lottie, canvas, layer_itr):
 		shape.add("outline")
 		settings.WITHOUT_VARIABLE_WIDTH = False
 		
+	shade = settings.SHADE_LAYER
+	supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton,blur,shade)
+
 	while itr >= 0:
 		layer = canvas[itr]
 		if layer.get_type() not in supported_layers:  # Only supported layers
@@ -118,7 +137,7 @@ def gen_layers(lottie, canvas, layer_itr):
 			itr -= 1
 			continue
 
-		if layer.get_type() != "blur":
+		if layer.get_type() != "blur" or layer.get_type() != "shade":
 			lottie.append({})
 			layer.set_lottie_layer(lottie[-1])
 
@@ -128,6 +147,7 @@ def gen_layers(lottie, canvas, layer_itr):
 							itr)
 			calculate_blurs_needed(settings.LEVEL)
 			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
+			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP)
 
 		elif layer.get_type() in solid:         # Goto solid layer
 			gen_layer_solid(lottie[-1],
@@ -135,6 +155,7 @@ def gen_layers(lottie, canvas, layer_itr):
 							itr)
 			calculate_blurs_needed(settings.LEVEL)
 			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
+			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP)
 
 		elif layer.get_type() in shape_solid:   # Goto shape_solid layer
 			gen_layer_shape_solid(lottie[-1],
@@ -142,6 +163,7 @@ def gen_layers(lottie, canvas, layer_itr):
 								  itr)
 			calculate_blurs_needed(settings.LEVEL)
 			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
+			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP)
 
 		elif layer.get_type() in image:   # Goto image layer
 			gen_layer_image(lottie[-1],
@@ -153,6 +175,9 @@ def gen_layers(lottie, canvas, layer_itr):
 		elif layer.get_type() in blur:
 			settings.blur_dictionary[settings.LEVEL] = layer
 
+		elif layer.get_type() in shade:
+			settings.shade_dictionary[settings.GROUP_NUMBER] = layer
+
 		elif layer.get_type() in pre_comp:      # Goto precomp layer
 			gen_layer_precomp(lottie[-1],
 							  layer,
@@ -162,6 +187,7 @@ def gen_layers(lottie, canvas, layer_itr):
 			gen_layer_group(lottie[-1],
 							layer,
 							itr)
+			settings.GROUP_NUMBER += 1
 			# No return statement here
 		elif layer.get_type() in skeleton:
 			pass
