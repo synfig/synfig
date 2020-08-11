@@ -682,6 +682,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							}
 						}
 						else{
+							Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),"Add Bone");
+
 							Action::Handle action = Action::create("ValueNodeStaticListInsert");
 							action->set_param("canvas", get_canvas());
 							action->set_param("canvas_interface", get_canvas_interface());
@@ -806,6 +808,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								}
 							}
 						}else{
+							Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),"Add Bone");
+
 							Action::Handle action = Action::create("ValueNodeStaticListInsert");
 							action->set_param("canvas", get_canvas());
 							action->set_param("canvas_interface", get_canvas_interface());
