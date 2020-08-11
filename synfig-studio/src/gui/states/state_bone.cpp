@@ -502,6 +502,7 @@ StateBone_Context::~StateBone_Context()
 
 	// Restore duck type mask
 	get_work_area()->set_type_mask(prev_type_mask);
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
