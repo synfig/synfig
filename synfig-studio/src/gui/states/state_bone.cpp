@@ -725,7 +725,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
 						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-						setActiveBone->set_param("active_bone_node",comp->get_link("second"));
+						setActiveBone->set_param("active_bone_node",comp->get_link("first"));
 						if(get_work_area()->get_active_bone_value_node()){
 							setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
 						}else{
@@ -870,7 +870,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
 						}
 						bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
-						get_work_area()->set_active_bone_value_node(comp->get_link("second"));
+						get_work_area()->set_active_bone_value_node(comp->get_link("first"));
 					}
 					bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
 					bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
@@ -1028,7 +1028,7 @@ StateBone_Context::make_layer(){
 		new_skel->disable();
 
 		ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
+		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
 		if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 		{
 			error("expected a ValueNode_Bone");
@@ -1036,7 +1036,7 @@ StateBone_Context::make_layer(){
 		}
 		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
-		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
+		value_desc =  ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
 		if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 		{
 			error("expected a ValueNode_Bone");
