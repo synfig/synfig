@@ -60,6 +60,11 @@ public:
 		RENDERING_SUCCESS
 	};
 
+	enum Interaction {
+		INTERACTION_UNDEFINED,
+		INTERACTION_BY_USER
+	};
+
 private:
 	//! Signal emitted when target has been stopped or has finished
 	//! An error message is passed as argument in case of error;
@@ -101,7 +106,7 @@ public:
 	virtual ~AsyncRenderer();
 
 	void start();
-	void stop();
+	void stop(Interaction interaction = INTERACTION_UNDEFINED);
 	void pause();
 	void resume();
 
