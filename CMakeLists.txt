@@ -24,7 +24,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline-functions -fno-i
 
 # This can be enabled once the address sanitization related errors are resolved.
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=undefined  -fsanitize=address -fno-omit-frame-pointer")
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}  -fsanitize=undefined  -fsanitize=address  -fno-omit-frame-pointer")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=undefined  -fsanitize=address  -fno-omit-frame-pointer")
 
 message("-- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
@@ -42,8 +42,8 @@ add_subdirectory(synfig-core)
 include_directories(synfig-core/src)
 add_subdirectory(synfig-studio)
 
-include(CPackConfig)
-
 if(WIN32)
     include(InstallMSYS2)
 endif()
+
+include(CPackConfig)
