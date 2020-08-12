@@ -127,8 +127,7 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	delete [] color_buffer;
 
 	// Remove temporary sound file
-	GStatBuf buf;
-	if (g_stat(sound_filename.c_str(), &buf) != -1) {
+	if (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
 		if( g_remove(sound_filename.c_str()) != 0 ) {
 			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.c_str());
 		}
@@ -185,15 +184,14 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		soundProcessor.set_infinite(false);
 		get_canvas()->fill_sound_processor(soundProcessor);
 		// Generate random filename here
-		GStatBuf buf;
 		do {
 			synfig::GUID guid;
 			sound_filename = String(filename)+"."+guid.get_string().substr(0,8)+".wav";
-		} while (g_stat(sound_filename.c_str(), &buf) != -1);
+		} while (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS));
 
 		soundProcessor.do_export(sound_filename);
 
-		if (g_stat(sound_filename.c_str(), &buf) == -1) {
+		if (!g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
 			with_sound = false;
 		}
 	}
