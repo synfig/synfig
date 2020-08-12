@@ -102,6 +102,7 @@ class studio::StateBone_Context : public sigc::trackable
 
 	bool prev_table_status;
 	bool prev_workarea_layer_status_;
+	Duck::Type prev_type_mask;
 
 	int depth;
 	Canvas::Handle canvas;
@@ -421,6 +422,9 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
+	// remembering previous type mask
+	prev_type_mask = get_work_area()->get_type_mask();
+
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
@@ -495,6 +499,10 @@ StateBone_Context::~StateBone_Context()
 
 	// Turn off Active Bone rendering
 	get_work_area()->set_active_bone_display(false);
+
+	// Restore duck type mask
+	get_work_area()->set_type_mask(prev_type_mask);
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
@@ -605,7 +613,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				if(skel_layer){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
 					bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 					if(is_currently_on){
-						get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
+						get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
 					}
 
 					createChild->set_param("canvas",skel_layer->get_canvas());
@@ -710,7 +718,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				else if(deform_layer){ //!if selected layer is a Skeleton deform Layer and user wants to work on a skeleton deform layer
 					bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 					if(!is_currently_on){
-						get_work_area()->set_type_mask(get_work_area()->get_type_mask()|Duck::TYPE_WIDTH);
+						get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
 					}
 
 					createChild->set_param("canvas",deform_layer->get_canvas());
@@ -838,7 +846,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					if(c_layer==0){
 						bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 						if(is_currently_on){
-							get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
+							get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
 						}
 						get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
@@ -851,7 +859,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 
 						bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 						if(!is_currently_on){
-							get_work_area()->set_type_mask(get_work_area()->get_type_mask()|Duck::TYPE_WIDTH);
+							get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
 						}
 
 						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
@@ -994,13 +1002,13 @@ StateBone_Context::make_layer(){
 	bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 	if(c_layer==0){
 		if(is_currently_on){
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH);
+			get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
 		}
 		get_canvas_view()->add_layer("skeleton");
 	}
 	else if(c_layer==1){
 		if(!is_currently_on){
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()|Duck::TYPE_WIDTH);
+			get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
 		}
 		get_canvas_view()->add_layer("skeleton_deformation");
 	}
