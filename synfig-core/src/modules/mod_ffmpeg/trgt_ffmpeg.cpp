@@ -176,23 +176,26 @@ bool
 ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 {
 
-	if(!SoundProcessor::subsys_init())
-		throw std::runtime_error(_("Unable to initialize subsystem \"Sound\""));
-	synfig::SoundProcessor soundProcessor;
-	soundProcessor.set_infinite(false);
-	get_canvas()->fill_sound_processor(soundProcessor);
-	// Generate random filename here
-	GStatBuf buf;
-	do {
-		synfig::GUID guid;
-		sound_filename = String(filename)+"."+guid.get_string().substr(0,8)+".wav";
-	} while (g_stat(sound_filename.c_str(), &buf) != -1);
-
-	soundProcessor.do_export(sound_filename);
-
 	bool with_sound = true;
-	if (g_stat(sound_filename.c_str(), &buf) == -1) {
+	if(!SoundProcessor::subsys_init()) {
+		cb->error(_("Unable to initialize Sound subsystem"));
 		with_sound = false;
+	} else {
+		synfig::SoundProcessor soundProcessor;
+		soundProcessor.set_infinite(false);
+		get_canvas()->fill_sound_processor(soundProcessor);
+		// Generate random filename here
+		GStatBuf buf;
+		do {
+			synfig::GUID guid;
+			sound_filename = String(filename)+"."+guid.get_string().substr(0,8)+".wav";
+		} while (g_stat(sound_filename.c_str(), &buf) != -1);
+
+		soundProcessor.do_export(sound_filename);
+
+		if (g_stat(sound_filename.c_str(), &buf) == -1) {
+			with_sound = false;
+		}
 	}
 
 	String ffmpeg_binary_path;
