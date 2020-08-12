@@ -178,7 +178,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 
 	bool with_sound = true;
 	if(!SoundProcessor::subsys_init()) {
-		cb->error(_("Unable to initialize Sound subsystem"));
+		if (cb) cb->error(_("Unable to initialize Sound subsystem"));
 		with_sound = false;
 	} else {
 		synfig::SoundProcessor soundProcessor;
