@@ -11,7 +11,6 @@ from common.misc import is_animated
 from properties.value import gen_properties_value
 from common.Count import Count
 from common.Param import Param
-import json
 
 def gen_layer_shade(lottie, layer):
     """

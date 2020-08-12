@@ -14,7 +14,6 @@ from layers.preComp import gen_layer_precomp
 from layers.group import gen_layer_group
 from layers.blur import gen_layer_blur
 from layers.shade import gen_layer_shade
-import json
 sys.path.append("..")
 
 def blur_test(lottie):
@@ -77,20 +76,46 @@ def append_blur_dict(layer,itr,group_flag):
 					for blur in blur_dict:
 						settings.lottie_format["layers"][index]["ef"].append(blur)
 
-def append_shade_dict(layer,group_number,group_flag):
+
+def calculate_max_index(non_group_shade_dictionary, level):
 	"""
 	"""
-	shade_dict = {}
-	if len(settings.shade_dictionary) != 0:
+	max_val = -1
+	for index,_ in enumerate(non_group_shade_dictionary):
+		if index >= max_val and index < level:
+			max_val = index
+
+	return non_group_shade_dictionary[max_val]
+
+def append_shade_dict(layer,group_number,group_flag,level):
+	"""
+	"""
+	if len(settings.shade_dictionary) != 0 and group_flag:
+		shade_dict = {}
 		gen_layer_shade(shade_dict,settings.shade_dictionary[group_number])
 		ID = "precomp_"+str(group_number)
 		for asset_index,_ in enumerate(settings.lottie_format["assets"]):
 			if settings.lottie_format["assets"][asset_index]["id"] == ID:
+				length = len(settings.lottie_format["assets"][asset_index]["layers"])
 				for index,_ in enumerate(settings.lottie_format["assets"][asset_index]["layers"]):
 					if len(settings.lottie_format["assets"][asset_index]["layers"][index].keys()) == 1:
-						settings.lottie_format["assets"][asset_index]["layers"][index+1]["ef"].extend(settings.lottie_format["assets"][asset_index]["layers"][index]["ef"])
-						settings.lottie_format["assets"][asset_index]["layers"][index+1]["ef"].append(shade_dict)
+						for shade_indexes in range(index+1,length):
+							settings.lottie_format["assets"][asset_index]["layers"][shade_indexes]["ef"].extend(settings.lottie_format["assets"][asset_index]["layers"][index]["ef"])
+							settings.lottie_format["assets"][asset_index]["layers"][shade_indexes]["ef"].append(shade_dict)
 
+	elif len(settings.non_group_shade_dictionary) != 0 and not group_flag:
+		shade_dict = {}
+		shade_layer = calculate_max_index(settings.non_group_shade_dictionary,level)
+		gen_layer_shade(shade_dict,shade_layer)
+		length = len(settings.lottie_format["layers"])
+		for index,val in enumerate(settings.lottie_format["layers"]):
+			if len(settings.lottie_format["layers"][index].keys()) == 1:
+				for shade_index in range(index+1,length):
+					if settings.lottie_format["layers"][shade_index]["nm"] == layer.get_description():
+						settings.lottie_format["layers"][shade_index]["ef"].extend(settings.lottie_format["layers"][index]["ef"])
+						settings.lottie_format["layers"][shade_index]["ef"].append(shade_dict)
+	else:
+		return
 
 def gen_layers(lottie, canvas, layer_itr):
 	"""
@@ -147,7 +172,8 @@ def gen_layers(lottie, canvas, layer_itr):
 							itr)
 			calculate_blurs_needed(settings.LEVEL)
 			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
-			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP)
+			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP,settings.LEVEL)
+			
 
 		elif layer.get_type() in solid:         # Goto solid layer
 			gen_layer_solid(lottie[-1],
@@ -155,7 +181,7 @@ def gen_layers(lottie, canvas, layer_itr):
 							itr)
 			calculate_blurs_needed(settings.LEVEL)
 			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
-			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP)
+			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP,settings.LEVEL)
 
 		elif layer.get_type() in shape_solid:   # Goto shape_solid layer
 			gen_layer_shape_solid(lottie[-1],
@@ -163,7 +189,7 @@ def gen_layers(lottie, canvas, layer_itr):
 								  itr)
 			calculate_blurs_needed(settings.LEVEL)
 			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
-			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP)
+			append_shade_dict(layer,settings.GROUP_NUMBER,settings.INSIDE_PRECOMP,settings.LEVEL)
 
 		elif layer.get_type() in image:   # Goto image layer
 			gen_layer_image(lottie[-1],
@@ -176,7 +202,10 @@ def gen_layers(lottie, canvas, layer_itr):
 			settings.blur_dictionary[settings.LEVEL] = layer
 
 		elif layer.get_type() in shade:
-			settings.shade_dictionary[settings.GROUP_NUMBER] = layer
+			if settings.INSIDE_PRECOMP:
+				settings.shade_dictionary[settings.GROUP_NUMBER] = layer
+			else:
+				settings.non_group_shade_dictionary[settings.LEVEL] = layer
 
 		elif layer.get_type() in pre_comp:      # Goto precomp layer
 			gen_layer_precomp(lottie[-1],

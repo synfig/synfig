@@ -122,3 +122,5 @@ def init():
     non_blur_dictionary = {}
     global shade_dictionary #used to make a dictionary of shade layers
     shade_dictionary = {}
+    global non_group_shade_dictionary #used for making a dictionary of non group shade layers
+    non_group_shade_dictionary = {}
