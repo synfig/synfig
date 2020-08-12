@@ -110,7 +110,6 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	if(file)
 	{
 		etl::yield();
-		sleep(1);
 #if defined(WIN32_PIPE_TO_PROCESSES)
 		pclose(file);
 #elif defined(UNIX_PIPE_TO_PROCESSES)
