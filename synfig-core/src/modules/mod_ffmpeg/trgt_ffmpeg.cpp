@@ -130,7 +130,7 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	GStatBuf buf;
 	if (g_stat(sound_filename.c_str(), &buf) != -1) {
 		if( g_remove(sound_filename.c_str()) != 0 ) {
-			synfig::warning("Error deleting temporary sound file.");
+			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.c_str());
 		}
 	}
 }
