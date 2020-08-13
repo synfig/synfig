@@ -260,7 +260,11 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	vargs.push_back(ffmpeg_binary_path);
 	if (with_sound) {
 		vargs.push_back("-i");
+#if defined(WIN32_PIPE_TO_PROCESSES)
+		vargs.push_back("\"" + sound_filename + "\"");
+#else
 		vargs.push_back(sound_filename);
+#endif
 	}
 	vargs.push_back("-f");
 	vargs.push_back("image2pipe");
