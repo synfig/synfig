@@ -39,6 +39,7 @@ $ARCH-dlfcn \
 $ARCH-SDL2  \
 $ARCH-boost \
 $ARCH-cairomm \
+$ARCH-ffmpeg \
 $ARCH-fftw \
 $ARCH-glibmm \
 $ARCH-libxml++2.6 \
