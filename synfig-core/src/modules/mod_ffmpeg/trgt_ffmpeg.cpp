@@ -35,11 +35,13 @@
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
+#include <synfig/soundprocessor.h>
 
 #include <ETL/stringf>
 #include "trgt_ffmpeg.h"
 #include <cstdio>
 #include <sys/types.h>
+#include <glib/gstdio.h>
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>
 #endif
@@ -87,6 +89,7 @@ ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params
 	multi_image(false),
 	file(NULL),
 	filename(Filename),
+	sound_filename(""),
 	buffer(NULL),
 	color_buffer(NULL),
 	bitrate()
@@ -122,6 +125,13 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	file=NULL;
 	delete [] buffer;
 	delete [] color_buffer;
+
+	// Remove temporary sound file
+	if (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
+		if( g_remove(sound_filename.c_str()) != 0 ) {
+			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.c_str());
+		}
+	}
 }
 
 bool
@@ -164,6 +174,28 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 bool
 ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 {
+
+	bool with_sound = true;
+	if(!SoundProcessor::subsys_init()) {
+		if (cb) cb->error(_("Unable to initialize Sound subsystem"));
+		with_sound = false;
+	} else {
+		synfig::SoundProcessor soundProcessor;
+		soundProcessor.set_infinite(false);
+		get_canvas()->fill_sound_processor(soundProcessor);
+		// Generate random filename here
+		do {
+			synfig::GUID guid;
+			sound_filename = String(filename)+"."+guid.get_string().substr(0,8)+".wav";
+		} while (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS));
+
+		soundProcessor.do_export(sound_filename);
+
+		if (!g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
+			with_sound = false;
+		}
+	}
+
 	String ffmpeg_binary_path;
 	std::list< String > binary_choices;
 	binary_choices.push_back("ffmpeg");
@@ -226,6 +258,14 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	
 	std::vector<String> vargs;
 	vargs.push_back(ffmpeg_binary_path);
+	if (with_sound) {
+		vargs.push_back("-i");
+#if defined(WIN32_PIPE_TO_PROCESSES)
+		vargs.push_back("\"" + sound_filename + "\"");
+#else
+		vargs.push_back(sound_filename);
+#endif
+	}
 	vargs.push_back("-f");
 	vargs.push_back("image2pipe");
 	vargs.push_back("-vcodec");
@@ -234,7 +274,6 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	vargs.push_back(strprintf("%f", desc.get_frame_rate()));
 	vargs.push_back("-i");
 	vargs.push_back("pipe:");
-	vargs.push_back("-an");
 	vargs.push_back("-metadata");
 	vargs.push_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
 	vargs.push_back("-vcodec");
@@ -249,7 +288,10 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		vargs.push_back("-qp");
 		vargs.push_back("0");
 	}
+	vargs.push_back("-acodec");
+	vargs.push_back("pcm_s16le");
 	vargs.push_back("-y");
+	vargs.push_back("-shortest");
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
 	if ( filename.substr(0,1) == "-" )
 		vargs.push_back("--"); 
