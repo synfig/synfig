@@ -1071,8 +1071,6 @@ StateBone_Context::make_layer(){
 		}
 		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
-
-		get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 	}else if(c_layer==1){
 		new_skel->disable();
 
@@ -1093,9 +1091,6 @@ StateBone_Context::make_layer(){
 		}
 		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
-
-
-		get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 	}
 	list_node->erase(list_node->list[0]);
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
