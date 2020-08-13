@@ -25,7 +25,14 @@ target_link_libraries(synfigapp synfig)
 include(actions/CMakeLists.txt)
 include(vectorizer/CMakeLists.txt)
 
-install(
-    TARGETS synfigapp
-    DESTINATION lib
-)
+if(WIN32)
+    install(
+        TARGETS synfigapp
+        DESTINATION bin
+    )
+else()
+    install(
+        TARGETS synfigapp
+        DESTINATION lib
+    )
+endif()

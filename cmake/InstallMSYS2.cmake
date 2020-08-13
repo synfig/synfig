@@ -72,16 +72,18 @@ if(WIN32)
         ${MINGW_BIN}/zlib[0-9]*.dll
     )
     file(COPY ${MINGW_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
+    install(FILES ${MINGW_LIBS} DESTINATION bin) 
 
     find_program(CYGPATH_EXECUTABLE cygpath)
     if(CYGPATH_EXECUTABLE)
         set(MLT_PATH "/opt/mlt-6.16.0")
         execute_process(
-            COMMAND ${CYGPATH_EXECUTABLE} -w ${MLT_PATH}
+            COMMAND ${CYGPATH_EXECUTABLE} -m ${MLT_PATH}
             OUTPUT_VARIABLE MLT_DIRECTORY
             ERROR_QUIET
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
+        message(${MLT_DIRECTORY})
     else()
         message(WARNING "-- cygpath tool not found, using relative path for MLT.")
         set(MLT_DIRECTORY "${MINGW_PATH}/../opt/mlt-6.16.0")
@@ -93,12 +95,14 @@ if(WIN32)
         ${MLT_DIRECTORY}/melt.exe
     )
     file(COPY ${MLT_FILES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
+    install(FILES ${MLT_FILES} DESTINATION bin)
 
     set(MLT_DIRECTORIES
         ${MLT_DIRECTORY}/lib
         ${MLT_DIRECTORY}/share
     )
     file(COPY ${MLT_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
+    install(DIRECTORY ${MLT_DIRECTORIES} DESTINATION bin)
 
     # /output/etc
     file(GLOB ETC_DIRECTORIES
@@ -106,24 +110,26 @@ if(WIN32)
         ${MINGW_PATH}/etc/gtk-3.[0-9]*
     )
     file(COPY ${ETC_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/etc)
+    INSTALL(DIRECTORY ${ETC_DIRECTORIES} DESTINATION etc)
 
     # /output/lib
     file(GLOB LIB_DIRECTORIES
-        ${MINGW_LIB}/atkmm-1.[0-9]*
+        ${MINGW_LIB}/atkmm-1.[0-9]
         ${MINGW_LIB}/cmake
-        ${MINGW_LIB}/gdk-pixbuf-2.[0-9]*
-        ${MINGW_LIB}/giomm-2.[0-9]*
-        ${MINGW_LIB}/glibmm-2.[0-9]*
-        ${MINGW_LIB}/gtkmm-3.[0-9]*
-        ${MINGW_LIB}/pangomm-1.[0-9]*
-        ${MINGW_LIB}/sigc++-2.[0-9]*
-        ${MINGW_LIB}/cairomm-1.[0-9]*
-        ${MINGW_LIB}/gdkmm-3.[0-9]*
-        ${MINGW_LIB}/glib-2.[0-9]*
-        ${MINGW_LIB}/gtk-3.[0-9]*
+        ${MINGW_LIB}/gdk-pixbuf-2.[0-9]
+        ${MINGW_LIB}/giomm-2.[0-9]
+        ${MINGW_LIB}/glibmm-2.[0-9]
+        ${MINGW_LIB}/gtkmm-3.[0-9]
+        ${MINGW_LIB}/pangomm-1.[0-9]
+        ${MINGW_LIB}/sigc++-2.[0-9]
+        ${MINGW_LIB}/cairomm-1.[0-9]
+        ${MINGW_LIB}/gdkmm-3.[0-9]
+        ${MINGW_LIB}/glib-2.[0-9]
+        ${MINGW_LIB}/gtk-3.[0-9]
         ${MINGW_LIB}/ImageMagick-*
-        ${MINGW_LIB}/libxml++-2.[0-9]*
+        ${MINGW_LIB}/libxml++-2.[0-9]
         ${MINGW_LIB}/pkgconfig
     )
     file(COPY ${LIB_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
+    install(DIRECTORY ${LIB_DIRECTORIES} DESTINATION lib)
 endif()

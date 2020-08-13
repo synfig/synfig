@@ -46,6 +46,7 @@
 #include <gtkmm/progressbar.h>
 
 #include <gui/localization.h>
+#include <sigc++/sigc++.h>
 
 #endif
 
@@ -156,7 +157,7 @@ studio::Dock_Info::Dock_Info()
 	r.set_tooltip_text(_("Red component value of color\nThe value after gamma correction, if different, is given in brackets"));
 	g.set_tooltip_text(_("Green component value of color\nThe value after gamma correction, if different, is given in brackets"));
 	b.set_tooltip_text(_("Blue component value of color\nThe value after gamma correction, if different, is given in brackets"));
-	a.set_tooltip_text(_("Alpha component value of color, ie. opacity"));
+	a.set_tooltip_text(_("Alpha component value of color, i.e. opacity"));
 	table->attach_next_to(r, *r_label, Gtk::POS_RIGHT, 1,1);
 	table->attach_next_to(g, *g_label, Gtk::POS_RIGHT, 1,1);
 	table->attach_next_to(b, *b_label, Gtk::POS_RIGHT, 1,1);
@@ -176,6 +177,11 @@ studio::Dock_Info::Dock_Info()
 	render_progress.set_show_text(true);
 	render_progress.set_text(strprintf("%.1f%%", 0.0));
 	render_progress.set_fraction(0.0);
+
+	stop_button.set_label(_("Stop rendering"));
+	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
+
+	table->attach_next_to(stop_button, render_progress, Gtk::POS_BOTTOM, 7, 1);
 
 	table->set_margin_start(5);
 	table->set_margin_end(5);
@@ -197,6 +203,20 @@ studio::Dock_Info::~Dock_Info()
 {
 }
 
+void studio::Dock_Info::on_stop_button_clicked()
+{
+	if(!async_renderer)
+            return;
+
+	if(App::dialog_message_2b(
+		_("Stop rendering"),
+		_("The rendering process will be stopped. Are you sure?"),
+		Gtk::MESSAGE_QUESTION,
+		_("Cancel"),
+		_("Stop")))
+		async_renderer->stop(studio::AsyncRenderer::INTERACTION_BY_USER);
+}
+
 void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
 	mousecon.disconnect();
@@ -205,6 +225,14 @@ void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> 
 	{
 		mousecon = get_canvas_view()->get_work_area()->signal_cursor_moved().connect(sigc::mem_fun(*this,&Dock_Info::on_mouse_move));
 	}
+}
+
+void studio::Dock_Info::set_async_render(etl::handle<studio::AsyncRenderer> ar)
+{
+	if(!ar)
+		stop_button.set_sensitive(false);
+
+	async_renderer = ar;
 }
 
 void studio::Dock_Info::set_n_passes_requested(int value)
@@ -225,4 +253,9 @@ void studio::Dock_Info::set_render_progress(float value)
 
 	render_progress.set_text( strprintf( "%.1f%%", r*100 ));
 	render_progress.set_fraction(r);
+
+	if(r > 0.0 && r < 1.0)
+		stop_button.set_sensitive(true);
+	else
+		stop_button.set_sensitive(false);
 }

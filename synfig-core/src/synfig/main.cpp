@@ -345,8 +345,11 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	for(i=0;i<locations.size();i++)
 		if(retrieve_modules_to_load(locations[i],modules_to_load))
 		{
-			synfig::info(_("Loading modules from %s"), Glib::locale_from_utf8(locations[i]).c_str());
-			if(cb)cb->task(strprintf(_("Loading modules from %s"),locations[i].c_str()));
+			if(cb) {
+				cb->task(strprintf(_("Loading modules from %s"),locations[i].c_str()));
+			} else {
+				synfig::info(_("Loading modules from %s"), locations[i].c_str());
+			}
 			break;
 		}
 

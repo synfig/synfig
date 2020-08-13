@@ -634,17 +634,36 @@ class Param:
                 link, eff_1 = self.subparams["reciprocal"].subparams["link"].recur_animate("scalar_multiply")
                 epsilon, eff_2 = self.subparams["reciprocal"].subparams["epsilon"].recur_animate("scalar_multiply")
                 infinite, eff_3 = self.subparams["reciprocal"].subparams["infinite"].recur_animate("scalar_multiply")
-
+                
                 self.expression_controllers.extend(eff_1)
                 self.expression_controllers.extend(eff_2)
                 self.expression_controllers.extend(eff_3)
-
                 ret = "if({link} <= -{epsilon} || {epsilon} <= {link})\n $bm_rt = [mul(div({PIX_PER_UNIT},{link}),2),mul(div({PIX_PER_UNIT},{link}),2)] ;\n else if({link} >= 0 && {epsilon} > {link})\n $bm_rt = [{infinite},{infinite}];\n else\n $bm_rt = [-{infinite},-{infinite}];"
                 ret = ret.format(link=link,epsilon=epsilon,infinite=infinite,PIX_PER_UNIT=settings.PIX_PER_UNIT)
                 
                 settings.RANGE_FLAG = 1
                 self.expression = ret
                 return ret,self.expression_controllers
+
+            elif self.param[0].tag == "logarithm":
+                self.subparams["logarithm"].extract_subparams()
+                link, eff_1     = self.subparams["logarithm"].subparams["link"].recur_animate("real")
+                epsilon, eff_2    = self.subparams["logarithm"].subparams["epsilon"].recur_animate("real")
+                infinite, eff_3  = self.subparams["logarithm"].subparams["infinite"].recur_animate("real")
+                
+                self.expression_controllers.extend(eff_1)
+                self.expression_controllers.extend(eff_2)
+                self.expression_controllers.extend(eff_3)
+                
+                if self.dimension == 2:
+                    ret = "[mul(Math.log(div({link},{PIX_PER_UNIT})),{PIX_PER_UNIT}),mul(Math.log(div({link},{PIX_PER_UNIT})),{PIX_PER_UNIT})]"
+                else:
+                    ret = "mul(Math.log(div({link},{PIX_PER_UNIT})),{PIX_PER_UNIT})"
+
+                ret = ret.format(link=link,PIX_PER_UNIT=settings.PIX_PER_UNIT)
+                self.expression = ret
+                return ret, self.expression_controllers
+        
         else:
             self.single_animate(anim_type)
             # Insert the animation into the effect
@@ -1043,6 +1062,16 @@ class Param:
                 else:
                     ret = -infinite
 
+            elif self.param[0].tag == "logarithm":
+                link     = self.subparams["logarithm"].subparams["link"].__get_value(frame)
+                epsilon  = self.subparams["logarithm"].subparams["epsilon"].__get_value(frame)
+                infinite = self.subparams["logarithm"].subparams["infinite"].__get_value(frame)
+
+                if link >= epsilon:
+                    ret = settings.PIX_PER_UNIT*math.log(link/settings.PIX_PER_UNIT)
+                else:
+                    ret = -settings.PIX_PER_UNIT*infinite
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1233,6 +1262,12 @@ class Param:
                 self.subparams["reciprocal"].subparams["link"].update_frame_window(window)
                 self.subparams["reciprocal"].subparams["epsilon"].update_frame_window(window)
                 self.subparams["reciprocal"].subparams["infinite"].update_frame_window(window)
+
+            elif node.tag == "logarithm":
+                self.subparams["logarithm"].extract_subparams()
+                self.subparams["logarithm"].subparams["link"].update_frame_window(window)
+                self.subparams["logarithm"].subparams["epsilon"].update_frame_window(window)
+                self.subparams["logarithm"].subparams["infinite"].update_frame_window(window)
 
         if is_animated(node) == settings.ANIMATED:
             for waypoint in node:

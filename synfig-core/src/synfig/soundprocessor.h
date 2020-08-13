@@ -66,6 +66,7 @@ public:
 private:
 	class Internal;
 	Internal *internal;
+	bool infinite;
 
 public:
 	SoundProcessor();
@@ -81,8 +82,12 @@ public:
 	Time get_position() const;
 	void set_position(Time value);
 
+	void set_infinite(bool value);
+
 	bool get_playing() const;
 	void set_playing(bool value);
+
+	void do_export(String path);
 
 	static bool subsys_init();
 	static bool subsys_stop();

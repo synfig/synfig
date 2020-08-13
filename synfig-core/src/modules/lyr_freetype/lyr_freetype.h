@@ -79,6 +79,8 @@ private:
 
 	FT_Face face;
 
+	bool font_path_from_canvas;
+
 	bool old_version;
 	bool needs_sync_;
 
