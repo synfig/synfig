@@ -13,7 +13,7 @@ VERSION_MLT="6.16.0"
 PATH="${PREFIX}/lib/ccache/bin:${PATH}"
 MLT_PATH="/opt/mlt-${VERSION_MLT}"
 
-if [ ! -f ${MLT_PATH}/done ]; then
+if [ ! -f ${MLT_PATH}/done ] || [ ! -f ${MLT_PATH}/lib/mlt/libmltavformat.dll ]; then
 
 echo " ======================= Compiling MLT++ ======================= "
 
@@ -24,8 +24,10 @@ wget "https://github.com/mltframework/mlt/releases/download/v${VERSION_MLT}/mlt-
 tar xzf ./mlt-${VERSION_MLT}.tar.gz
 
 pushd mlt-${VERSION_MLT}/
+FIXED_MLT_PATH=`cygpath -m ${MLT_PATH}`
 echo "Install path: ${MLT_PATH}"
-./configure --prefix=${MLT_PATH} --target-arch=$MSYS2_ARCH --disable-gtk2
+echo "Fixed MLT Path: ${FIXED_MLT_PATH}"
+./configure --prefix=${FIXED_MLT_PATH} --target-arch=$MSYS2_ARCH --disable-gtk2 --enable-avformat
 make -j2 --silent
 make install
 popd
