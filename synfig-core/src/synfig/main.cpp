@@ -499,15 +499,12 @@ synfig::get_binary_path(const String &fallback_path)
 	String result;
 
 #ifdef _WIN32
-	
-	size_t buf_size = PATH_MAX - 1;
-	char* path = (char*)malloc(buf_size);
-	
-	GetModuleFileName(NULL, path, PATH_MAX);
 
-	result = String(path);
-	
-	free(path);
+	wchar_t module_file_name[MAX_PATH];
+	if (GetModuleFileNameW(NULL, module_file_name, MAX_PATH)) {
+		result = String(g_utf16_to_utf8((gunichar2 *)module_file_name, -1, NULL, NULL, NULL));
+	}
+
 
 #elif defined(__APPLE__)
 	
@@ -623,6 +620,8 @@ synfig::get_binary_path(const String &fallback_path)
 	
 	free(path);
 
+	result = Glib::filename_to_utf8(result);
+
 #endif
 	
 	if (result.empty())
@@ -632,7 +631,6 @@ synfig::get_binary_path(const String &fallback_path)
 		result = etl::absolute_path(fallback_path);
 	}
 	
-	result = Glib::locale_to_utf8(result);
 	
 	return result;
 }
