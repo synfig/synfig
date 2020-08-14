@@ -437,6 +437,9 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	if(etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer)){
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+		cout<<"Hi"<<endl;
+		layer->disable();
+		get_canvas_interface()->signal_layer_status_changed()(layer,false);
 	}else{
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
@@ -503,6 +506,12 @@ StateBone_Context::~StateBone_Context()
 	// Restore duck type mask
 	get_work_area()->set_type_mask(prev_type_mask);
 	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+
+	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+	if(Layer_SkeletonDeformation::Handle::cast_dynamic(layer)){
+		layer->enable();
+		get_canvas_interface()->signal_layer_status_changed()(layer,true);
+	}
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
