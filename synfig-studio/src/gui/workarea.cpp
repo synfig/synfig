@@ -168,7 +168,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	timecode_width(0),
 	timecode_height(0),
 	bonesetup_width(0),
-	bonesetup_height(0)
+	bonesetup_height(0),
+	active_bone_(0)
 {
 	// default onion
 	onion_skins[0] = 1;
