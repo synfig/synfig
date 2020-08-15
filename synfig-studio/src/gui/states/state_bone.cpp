@@ -437,7 +437,6 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	if(etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer)){
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-		cout<<"Hi"<<endl;
 		layer->disable();
 		get_canvas_interface()->signal_layer_status_changed()(layer,false);
 	}else{
