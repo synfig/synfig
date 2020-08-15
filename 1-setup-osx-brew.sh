@@ -49,16 +49,15 @@ do
     brew info "$pkg" | grep --quiet 'Not installed' && brew install "$pkg"
 done
 
-PIPBINARY=pip3
-if ! ( which $PIPBINARY >/dev/null ); then
+if ! ( which pip3 >/dev/null ); then
     echo "No pip found. Installing..."
     echo "Running python in sudo (you need root privelegies to do that)..."
     # Dependency for lxml
-    curl https://bootstrap.pypa.io/get-pip.py | sudo python3
+    curl https://bootstrap.pypa.io/get-pip.py | sudo python
 fi
 
 # Installing lxml using pip
-STATIC_DEPS=true sudo $PIPBINARY install lxml
+STATIC_DEPS=true sudo pip3 install lxml
 
 
 #HOMEBREW_NO_AUTO_UPDATE=1 brew bundle -no-upgrade --file=-<<-EOF
