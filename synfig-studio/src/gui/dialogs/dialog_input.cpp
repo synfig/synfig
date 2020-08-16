@@ -109,8 +109,8 @@ Dialog_Input::Dialog_Input(Gtk::Window& parent):
 	scrolled_window(NULL)
 {
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
-	add_button(_("OK"), Gtk::RESPONSE_OK);
 	add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	add_button(_("OK"), Gtk::RESPONSE_OK);
 	reset();
 }
 
