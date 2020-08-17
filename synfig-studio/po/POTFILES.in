@@ -114,6 +114,8 @@ src/gui/modules/module.cpp
 src/gui/modules/module.h
 src/gui/states/state_bline.cpp
 src/gui/states/state_bline.h
+src/gui/states/state_bone.cpp
+src/gui/states/state_bone.h
 src/gui/states/state_brush.cpp
 src/gui/states/state_brush.h
 src/gui/states/state_circle.cpp
@@ -422,6 +424,7 @@ src/synfigapp/actions/valuedescbake.cpp
 src/synfigapp/actions/valuedescblinelink.cpp
 src/synfigapp/actions/valuedescblinelink.h
 src/synfigapp/actions/valuedescbonelink.cpp
+src/synfigapp/actions/valuedescbonesetparent.cpp
 src/synfigapp/actions/valuedescconnect.cpp
 src/synfigapp/actions/valuedescconnect.h
 src/synfigapp/actions/valuedescconvert.cpp
@@ -473,6 +476,7 @@ src/synfigapp/actions/valuenoderename.cpp
 src/synfigapp/actions/valuenoderename.h
 src/synfigapp/actions/valuenodereplace.cpp
 src/synfigapp/actions/valuenodereplace.h
+src/synfigapp/actions/valuenodesetactivebone.cpp
 src/synfigapp/actions/valuenodestaticlistinsert.cpp
 src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp
 src/synfigapp/actions/valuenodestaticlistloop.cpp
