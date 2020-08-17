@@ -759,7 +759,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
 						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 
-						setActiveBone->set_param("active_bone_node",comp->get_link("second"));
+						setActiveBone->set_param("active_bone_node",comp->get_link("first"));
 						setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
 
 						if(setActiveBone->is_ready()){
@@ -777,7 +777,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							ValueNode_Bone::Handle bone_node;
 
 							ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-							value_desc =  ValueDesc(comp,comp->get_link_index_from_name("second"),value_desc);
+							value_desc =  ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
 							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 							{
 								error("expected a ValueNode_Bone");
