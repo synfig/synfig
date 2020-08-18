@@ -187,15 +187,15 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	dialogBox->pack_start(widget_rend_desc);
 
 
-	Gtk::Button *render_button(manage(new class Gtk::Button(Gtk::StockID(_("Render")))));
-	render_button->show();
-	add_action_widget(*render_button,1);
-	render_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_render_pressed));
-
 	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-cancel"))));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_cancel_pressed));
+
+	Gtk::Button *render_button(manage(new class Gtk::Button(Gtk::StockID(_("Render")))));
+	render_button->show();
+	add_action_widget(*render_button,1);
+	render_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_render_pressed));
 
 	set_title(_("Render Settings")+String(" - ")+canvas_interface_->get_canvas()->get_name());
 
