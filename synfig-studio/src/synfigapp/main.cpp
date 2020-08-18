@@ -436,7 +436,7 @@ synfigapp::Main::get_user_app_directory()
 {
 	String dir;
 	if (char* synfig_user_settings_dir = getenv("SYNFIG_USER_SETTINGS")) {
-		dir =  Glib::locale_from_utf8(String(synfig_user_settings_dir));
+		dir =  Glib::locale_to_utf8(String(synfig_user_settings_dir));
 	} else {
 		dir = Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
 	}
