@@ -140,7 +140,6 @@ class Dialog_Setup : public Dialog_Template
 	Widget_Time auto_backup_interval;
 
 	Gtk::Switch toggle_restrict_radius_ducks;
-	Gtk::Switch toggle_resize_imported_images;
 	Gtk::Switch toggle_animation_thumbnail_preview;
 	Gtk::Switch toggle_enable_experimental_features;
 	Gtk::Switch toggle_use_dark_theme;
@@ -202,6 +201,7 @@ public:
 	*/
 
 	//Signal handlers dialog
+	void on_resize_imported_changed();
 	virtual void on_apply_pressed();
 	virtual void on_restore_pressed();
 

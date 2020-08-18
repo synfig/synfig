@@ -395,8 +395,6 @@ void
 Dialog_Setup::create_editing_page(PageInfo pi)
 {
 	/*---------Editing------------------*\
-	 * IMPORTED IMAGE
-	 *  [x] Scale to fit
 	 * ANIMATION
 	 *  [x] Thumbnail preview
 	 * OTHER
@@ -408,18 +406,9 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	 */
 
 	int row(1);
-	// Editing Imported image section
-	attach_label_section(pi.grid, _("Imported Image"), row);
-
-	// Editing - Scaling New Imported Images to Fit Canvas
-	attach_label(pi.grid,_("Scale to fit canvas"), ++row);
-	pi.grid->attach(toggle_resize_imported_images, 1, row, 1, 1);
-	toggle_resize_imported_images.set_tooltip_text(_("When you import images, check this option if you want they fit the Canvas size."));
-	toggle_resize_imported_images.set_halign(Gtk::ALIGN_START);
-	toggle_resize_imported_images.set_hexpand(false);
-		
+	
 	// Editing Animation section
-	attach_label_section(pi.grid, _("Animation"), ++row);
+	attach_label_section(pi.grid, _("Animation"), row);
 
 	// Editing - Show animation thumbnail preview
 	attach_label(pi.grid, _("Thumbnail preview"), ++row);
@@ -685,10 +674,7 @@ Dialog_Setup::on_apply_pressed()
 	// Set the restrict_radius_ducks flag
 	App::restrict_radius_ducks        = toggle_restrict_radius_ducks.get_active();
 
-	// Set the resize_imported_images flag
-	App::resize_imported_images       = toggle_resize_imported_images.get_active();
-
-        // Set the animation_thumbnail_preview flag
+	// Set the animation_thumbnail_preview flag
 	App::animation_thumbnail_preview  = toggle_animation_thumbnail_preview.get_active();
 
 	// Set the experimental features flag
@@ -896,6 +882,12 @@ Dialog_Setup::on_preview_background_color_changed()
 }
 
 void
+Dialog_Setup::on_resize_imported_changed()
+{
+	App::resize_imported_images = !(App::resize_imported_images);
+}
+
+void
 Dialog_Setup::on_tooltip_transformation_changed()
 {
 	toggle_handle_tooltip_transfo_name.set_sensitive(toggle_handle_tooltip_transformation.get_active());
@@ -926,9 +918,6 @@ Dialog_Setup::refresh()
 	// Refresh the status of the restrict_radius_ducks flag
 	toggle_restrict_radius_ducks.set_active(App::restrict_radius_ducks);
 
-	// Refresh the status of the resize_imported_images flag
-	toggle_resize_imported_images.set_active(App::resize_imported_images);
-	
 	// Refresh the status of animation_thumbnail_preview flag
 	toggle_animation_thumbnail_preview.set_active(App::animation_thumbnail_preview);
 
