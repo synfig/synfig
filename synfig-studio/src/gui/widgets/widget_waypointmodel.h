@@ -39,7 +39,6 @@
 #include <synfig/waypoint.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
-#include "widgets/widget_enum.h"
 
 
 /* === M A C R O S ========================================================= */
@@ -51,6 +50,7 @@
 
 namespace studio {
 
+class Widget_InterpolationEnum;
 class Widget_Time;
 class Widget_WaypointModel;
 
@@ -60,7 +60,7 @@ class Widget_WaypointModel : public Gtk::Grid
 
 	bool updating;
 
-	Widget_Enum *before_options,*after_options;
+	Widget_InterpolationEnum *before_options,*after_options;
 
 	Gtk::SpinButton *spin_tension, *spin_continuity, *spin_bias, *spin_temporal_tension;
 	Glib::RefPtr<Gtk::Adjustment> adj_tension, adj_continuity, adj_bias, adj_temporal_tension;

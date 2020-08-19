@@ -40,7 +40,7 @@
 using namespace studio;
 
 Dock_Timetrack2::Dock_Timetrack2()
-	: Dock_CanvasSpecific("timetrack", _("Timetrack"), Gtk::StockID("synfig-timetrack")),
+	: Dock_CanvasSpecific("timetrack", _("Timetrack"), "time_track_icon"),
 	  current_widget_timetrack(nullptr)
 {
 	set_use_scrolled(false);

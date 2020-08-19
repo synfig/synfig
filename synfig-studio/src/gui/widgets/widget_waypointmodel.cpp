@@ -38,6 +38,7 @@
 #include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>
+#include "widgets/widget_interpolationenum.h"
 #include "widgets/widget_time.h"
 #include "widgets/widget_waypointmodel.h"
 #include <gui/localization.h>
@@ -70,40 +71,12 @@ Widget_WaypointModel::Widget_WaypointModel():
 	checkbutton_bias(_("Bias:")),
 	checkbutton_temporal_tension(_("Temporal Tension:"))
 {
-	before_options=manage(new Widget_Enum());
+	before_options=manage(new Widget_InterpolationEnum(Widget_InterpolationEnum::SIDE_BEFORE));
 	before_options->show();
-	before_options->set_param_desc(
-		ParamDesc("interpolation")
-			.set_hint("enum")
-			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
-			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
-			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
-			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
-			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
-	);
-	before_options->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
-	before_options->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 	before_options->set_active(0);
 
-	after_options=manage(new Widget_Enum());
+	after_options=manage(new Widget_InterpolationEnum(Widget_InterpolationEnum::SIDE_AFTER));
 	after_options->show();
-	after_options->set_param_desc(
-		ParamDesc("interpolation")
-			.set_hint("enum")
-			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
-			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
-			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
-			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
-			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
-	);
-	after_options->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"),Gtk::ICON_SIZE_MENU));
-	after_options->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"),Gtk::ICON_SIZE_MENU));
 	after_options->set_active(0);
 
 	spin_tension=manage(new class Gtk::SpinButton(adj_tension,0.1,3));

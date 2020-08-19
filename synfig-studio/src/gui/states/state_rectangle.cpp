@@ -693,7 +693,7 @@ StateRectangle_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->set_local_name(_("Rectangle Tool"));
-	App::dialog_tool_options->set_name("rectangle");
+	App::dialog_tool_options->set_icon("tool_rectangle_icon");
 }
 
 Smach::event_result

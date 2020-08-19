@@ -1,0 +1,12 @@
+[Icon Theme]
+
+Name=Classic
+Comment=Synfig classic icon theme
+Directories=128x128
+
+[128x128]
+Size=128
+MinSize=12
+MaxSize=128
+Context=Actions
+Type=Scalable

@@ -31,7 +31,6 @@
 
 #include <synfig/string.h>
 
-#include <gtkmm/stockid.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/scrolledwindow.h>
@@ -55,12 +54,12 @@ private:
 	friend class DockManager;
 	friend class DockBook;
 
-	sigc::signal<void> signal_stock_id_changed_;
+	sigc::signal<void> signal_icon_changed_;
 
 	synfig::String name_;
 	synfig::String local_name_;
 
-	Gtk::StockID stock_id_;
+	std::string icon_name;
 	bool use_scrolled;
 
 	Gtk::ScrolledWindow *container;
@@ -68,10 +67,10 @@ private:
 	bool dnd_success_;
 
 public:
-	sigc::signal<void>& signal_stock_id_changed() { return signal_stock_id_changed_; }
+	sigc::signal<void>& signal_icon_changed() { return signal_icon_changed_; }
 
 public:
-	Dockable(const synfig::String& name,const synfig::String& local_name, Gtk::StockID stock_id = Gtk::StockID(" "));
+	Dockable(const synfig::String& name, const synfig::String& local_name, std::string icon_name_ = "");
 	~Dockable();
 
 	const synfig::String& get_name()const { return name_; }
@@ -82,8 +81,8 @@ public:
 	bool get_use_scrolled() const;
 	void set_use_scrolled(bool x);
 
-	const Gtk::StockID& get_stock_id()const { return stock_id_; }
-	void set_stock_id(Gtk::StockID x) { stock_id_=x; signal_stock_id_changed()(); }
+	const std::string& get_icon()const { return icon_name; }
+	void set_icon(std::string name) { icon_name = name; signal_icon_changed()(); }
 
 	void add(Gtk::Widget& x);
 	void set_toolbar(Gtk::Toolbar& toolbar);

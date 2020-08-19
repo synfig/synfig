@@ -354,7 +354,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Dock_Timetrack_Old::Dock_Timetrack_Old():
-	Dock_CanvasSpecific("timetrack-old",_("Timetrack (old)"),Gtk::StockID("synfig-timetrack")),
+	Dock_CanvasSpecific("timetrack-old",_("Timetrack (old)"),"time_track_icon"),
 	grid_()
 {
 	set_use_scrolled(false);

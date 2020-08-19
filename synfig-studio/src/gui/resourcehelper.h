@@ -37,7 +37,6 @@ public:
 	static synfig::String get_synfig_data_path();
 
 	static synfig::String get_icon_path();
-	static synfig::String get_icon_path(const synfig::String& icon_filename);
 
 	static synfig::String get_plugin_path();
 	static synfig::String get_plugin_path(const synfig::String& plugin_filename);

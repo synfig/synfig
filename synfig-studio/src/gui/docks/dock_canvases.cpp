@@ -54,7 +54,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Canvases::Dock_Canvases():
-	Dockable("canvases",_("Canvas Browser"),Gtk::StockID("synfig-canvas"))
+	Dockable("canvases",_("Canvas Browser"),"canvas_icon")
 {
 
 	App::signal_instance_created().connect(sigc::mem_fun(*this,&studio::Dock_Canvases::new_instance));

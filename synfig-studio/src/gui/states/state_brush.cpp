@@ -592,7 +592,7 @@ StateBrush_Context::refresh_tool_options()
 	brush_buttons.clear();
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_local_name(_("Brush Tool"));
-	App::dialog_tool_options->set_name("brush");
+	App::dialog_tool_options->set_icon("tool_brush_icon");
 
 	// create the brush options container
 	Gtk::Grid *brush_option_grid= Gtk::manage(new Gtk::Grid());

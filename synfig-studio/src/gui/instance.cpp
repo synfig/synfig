@@ -1395,10 +1395,22 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_interpolation_menu->append(*item);
 		param_list.erase("new_value");
 
-		#define ADD_IMAGE_MENU_ITEM(Interpolation, StockId, Text) \
+		Gtk::Image *image;
+
+#if GTK_CHECK_VERSION(3,24,0)
+	#define CREATE_IMAGE(ImageVar, IconName, IconSize) \
+		ImageVar = manage(new Gtk::Image(IconName, IconSize));
+#else
+	#define CREATE_IMAGE(ImageVar, IconName, IconSize) \
+		ImageVar = manage(new Gtk::Image()); \
+		ImageVar->set_from_icon_name(IconName, IconSize);
+#endif
+
+		#define ADD_IMAGE_MENU_ITEM(Interpolation, IconName, Text) \
 		param_list.add("new_value", Interpolation); \
+		CREATE_IMAGE(image, IconName, Gtk::IconSize::from_name("synfig-small_icon")); \
 		item = Gtk::manage(new Gtk::ImageMenuItem( \
-			*Gtk::manage(new Gtk::Image(Gtk::StockID(StockId), Gtk::IconSize::from_name("synfig-small_icon"))), \
+			*image, \
 			_(Text) )); \
 		item->signal_activate().connect( \
 			sigc::bind( \
@@ -1411,12 +1423,13 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("new_value");
 
 
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("Clamped"));
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("TCB"));
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("Constant"));
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("Ease"));
-		ADD_IMAGE_MENU_ITEM(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("Linear"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CLAMPED, "interpolation_type_clamped_icon", _("Clamped"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_TCB, "interpolation_type_tcb_icon", _("TCB"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_CONSTANT, "interpolation_type_const_icon", _("Constant"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_HALT, "interpolation_type_ease_icon", _("Ease"));
+		ADD_IMAGE_MENU_ITEM(INTERPOLATION_LINEAR, "interpolation_type_linear_icon", _("Linear"));
 
+		#undef CREATE_IMAGE
 		#undef ADD_IMAGE_MENU_ITEM
 
 		item = Gtk::manage(new Gtk::MenuItem(_("Interpolation")));
