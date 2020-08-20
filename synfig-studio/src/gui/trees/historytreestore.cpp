@@ -146,7 +146,8 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 void
 HistoryTreeStore::on_undo()
 {
-	assert(next_action_iter != children().begin());
+	if (next_action_iter == children().begin())
+		return;
 
 	--next_action_iter;
 	next_action_iter->set_value(model.is_redo, true);
@@ -158,7 +159,8 @@ HistoryTreeStore::on_undo()
 void
 HistoryTreeStore::on_redo()
 {
-	assert(next_action_iter != children().end());
+	if (next_action_iter == children().end())
+		return;
 
 	next_action_iter->set_value(model.is_redo, false);
 	next_action_iter->set_value(model.is_undo, true);
