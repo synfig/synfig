@@ -487,9 +487,17 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		layer->disable();
 		get_canvas_interface()->signal_layer_status_changed()(layer,false);
+		if(!skel_deform_bone_width_dist.is_sensitive()){
+				skel_deform_bone_width_dist.set_sensitive(true);
+				skel_bone_width_dist.set_sensitive(false);
+		}
 	}else{
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+		if(!skel_bone_width_dist.is_sensitive()){
+				skel_bone_width_dist.set_sensitive(true);
+				skel_deform_bone_width_dist.set_sensitive(false);
+		}
 	}
 
 
@@ -946,7 +954,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					ValueNode_StaticList::Handle list_node;
 					list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 					ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
-					active_bone = 0;
 					ValueNode_Bone::Handle bone_node;
 					if(c_layer==0){
 						if(!skel_bone_width_dist.is_sensitive()){
@@ -1005,6 +1012,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 					get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
 					egress_on_selection_change=true;
+
+					active_bone = 0;
 
 					get_canvas_view()->queue_rebuild_ducks();
 				}
