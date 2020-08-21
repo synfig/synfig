@@ -116,11 +116,6 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	canvas_interface_->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
 	canvas_interface_->signal_id_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
 
-	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
-	ok_button->show();
-	add_action_widget(*ok_button,2);
-	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_ok_pressed));
-
 	Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
 	apply_button->show();
 	add_action_widget(*apply_button,1);
@@ -131,7 +126,10 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_cancel_pressed));
 
-	//set_default_response(1);
+	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
+	ok_button->show();
+	add_action_widget(*ok_button,2);
+	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_ok_pressed));
 
 	get_vbox()->show_all();
 	refresh();
