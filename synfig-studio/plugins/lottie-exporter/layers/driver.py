@@ -60,20 +60,21 @@ def append_blur_dict(layer,itr,group_flag):
 	blur_dict = []
 	layers = [settings.blur_dictionary[layer_var] for layer_var in settings.non_blur_dictionary[itr]]
 	gen_layer_blur(blur_dict,layers)
-	if group_flag:
-		for asset_index,_ in enumerate(settings.lottie_format["assets"]):
-			if "layers" in _.keys():
-				for index,val in enumerate(settings.lottie_format["assets"][asset_index]["layers"]):
-					blur_flag = blur_test(settings.lottie_format["assets"][asset_index]["layers"][index]["ef"])
-					if not blur_flag:
-						for blur in blur_dict:
-							settings.lottie_format["assets"][asset_index]["layers"][index]["ef"].append(blur)
+	if len(layers)!=0:
+		if group_flag:
+			for asset_index,_ in enumerate(settings.lottie_format["assets"]):
+				if "layers" in _.keys():
+					for index,val in enumerate(settings.lottie_format["assets"][asset_index]["layers"]):
+						blur_flag = blur_test(settings.lottie_format["assets"][asset_index]["layers"][index]["ef"])
+						if not blur_flag:
+							for blur in blur_dict:
+								settings.lottie_format["assets"][asset_index]["layers"][index]["ef"].append(blur)
 
-	else:
-		for index,val in enumerate(settings.lottie_format["layers"]):
-			if settings.lottie_format["layers"][index]["nm"] == layer.get_description():
-				for blur in blur_dict:
-					settings.lottie_format["layers"][index]["ef"].append(blur)
+		else:
+			for index,val in enumerate(settings.lottie_format["layers"]):
+				if settings.lottie_format["layers"][index]["nm"] == layer.get_description():
+					for blur in blur_dict:
+						settings.lottie_format["layers"][index]["ef"].append(blur)
 
 def gen_layers(lottie, canvas, layer_itr):
 	"""

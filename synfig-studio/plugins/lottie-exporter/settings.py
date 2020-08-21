@@ -61,7 +61,7 @@ ADDITIONAL_PRECOMP_HEIGHT = 0
 NOT_SUPPORTED_TEXT = "Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page"
 NOT_ACTIVE_TEXT = "Layer '%s' is not active"
 EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
-SHAPE_LAYER = {"simple_circle", "linear_gradient", "radial_gradient"}
+SHAPE_LAYER = {"simple_circle", "linear_gradient", "radial_gradient","outline"}
 BLUR_LAYER = {"blur"}
 SOLID_LAYER = {"SolidColor"}
 SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"} 
@@ -79,6 +79,8 @@ ANIMATED = 2
 SINGLE_WAYPOINT = 1
 NOT_ANIMATED = 0
 LEVEL = 0 #Indicates the depth of a layer
+OUTLINE_FLAG = False #Flag to check for outline as outline needs the newer version of bodymovin.js
+WAYPOINTS_LIST = []
 
 def init():
     """
