@@ -1365,5 +1365,5 @@ Layer_Freetype::get_bounding_rect()const
 	if(needs_sync_)
 		const_cast<Layer_Freetype*>(this)->sync();
 //	if(!is_disabled())
-		return synfig::Rect::full_plane();
+	return synfig::Rect::full_plane();
 }
