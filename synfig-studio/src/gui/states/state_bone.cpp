@@ -208,13 +208,10 @@ public:
 		Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
 		Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
 
-		if(!(skel_layer || deform_layer)){
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
-			get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-			get_work_area()->queue_draw();
-			get_canvas_view()->queue_rebuild_ducks();
-		}
-
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+		get_work_area()->queue_draw();
+		get_canvas_view()->queue_rebuild_ducks();
 		return Smach::RESULT_OK;
 	}
 
