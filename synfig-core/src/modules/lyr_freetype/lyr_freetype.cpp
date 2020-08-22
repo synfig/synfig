@@ -264,6 +264,11 @@ Layer_Freetype::on_canvas_set()
 	new_font(family,style,weight);
 }
 
+/*! The new_font() function try to render
+**	text until it work by simplyfing font style(s).
+** In last chance, render text as "sans serif" Normal
+** font style.
+*/
 void
 Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 {
@@ -279,11 +284,6 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 		new_font_("sans serif",TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
 }
 
-/*! The new_font() function try to render
-**	text until it work by simplyfing font style(s).
-** In last chance, render text as "sans serif" Normal
-** font style.
-*/
 bool
 Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 {
