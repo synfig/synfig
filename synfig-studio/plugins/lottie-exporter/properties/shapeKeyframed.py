@@ -13,7 +13,6 @@ from properties.shapePropKeyframe.rectangle import gen_list_rectangle
 from properties.shapePropKeyframe.star import gen_list_star
 from common.Param import Param
 from common.Layer import Layer
-import settings
 sys.path.append("../")
 
 

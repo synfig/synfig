@@ -5,16 +5,13 @@ in Lottie format without variable widths
 """
 
 import sys
-import math
 import settings
 from common.Bline import Bline
-from common.Vector import Vector
 from common.misc import is_animated
 from common.Count import Count
-from synfig.animation import to_Synfig_axis
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
-from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents, cubic_to
+from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, cubic_to
 from properties.shapePropKeyframe.outline import get_outline_param_at_frame,synfig_outline
 
 def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
@@ -33,6 +30,8 @@ def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 	lottie["it"].append({})
 	lottie["it"].append({})
 	lottie["it"].append({})
+
+	bline = Bline(bline_point[0], bline_point)
 
 	#Creating transformation dictionary
 	lottie["it"][2]["ty"] = "tr"
@@ -74,27 +73,18 @@ def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 							settings.NO_INFO)
 
 	#Opacity
-	opacity = layer.get_param("amount").get()
-	is_animate = is_animated(opacity[0])
-	if is_animate == settings.ANIMATED:
-		# Telling the function that this is for opacity
-		opacity[0].attrib['type'] = 'opacity'
-		gen_value_Keyframed(lottie["it"][1]["o"], opacity[0], index.inc())
-
-	else:
-		if is_animate == settings.NOT_ANIMATED:
-			val = float(opacity[0].attrib["value"]) * settings.OPACITY_CONSTANT
-		else:
-			val = float(opacity[0][0][0].attrib["value"]) * settings.OPACITY_CONSTANT
-		gen_properties_value(lottie["it"][1]["o"],
-							 val,
-							 index.inc(),
-							 settings.DEFAULT_ANIMATED,
-							 settings.NO_INFO)
+	opacity = layer.get_param("amount")
+	opacity.animate("opacity")
+	opacity.fill_path(lottie["it"][1],"o")
 
 	#Constant width
+	loop = bline.get_loop()
 	width = layer.get_param("width")
-	width.scale_convert_link(5)
+	if loop:
+		width.scale_convert_link(1)
+	else:
+		width.scale_convert_link(4)
+
 	width.animate("real")
 	width.fill_path(lottie["it"][1],"w")
 
@@ -109,8 +99,6 @@ def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 	lottie["it"][0]["ks"]["a"] = 1 
 	lottie["it"][0]["ks"]["ix"] = lottie["it"][0]["ix"] + 1 
 	lottie["it"][0]["ks"]["k"] = []
-
-	bline = Bline(bline_point[0], bline_point)
 
 	window = {}
 	window["first"] = sys.maxsize
@@ -179,19 +167,16 @@ def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 	# Minimizing the window size
 	if window["first"] == sys.maxsize and window["last"] == -1:
 		window["first"] = window["last"] = 0
-	temp = []
-	fr = window["first"]
-	while fr <= window["last"]:
-		st_val, en_val = insert_dict_at(temp, -1, fr, False)  # This loop needs to be considered somewhere down
-
-		synfig_outline(bline, st_val, origin, outer_width, sharp_cusps, expand, r_tip0, r_tip1, homo_width, fr)
-		synfig_outline(bline, en_val, origin, outer_width, sharp_cusps, expand, r_tip0, r_tip1, homo_width, fr + 1)
-		fr+=1
+	
 	frames = list(set(settings.WAYPOINTS_LIST))
 	length = bline.get_len()
 
+	flag = False
+	if loop:
+		flag = True
+
 	for fr in frames:
-		st_val = insert_dict_at(lottie["it"][0]["ks"]["k"], -1, fr, False,True)
+		st_val = insert_dict_at(lottie["it"][0]["ks"]["k"], -1, fr, flag,True)
 		cur_origin = origin.get_value(fr)
 		for point in range(0,length):
 			pos_ret, width, t1, t2, split_r_val, split_a_val = get_outline_param_at_frame(bline[point],fr)
