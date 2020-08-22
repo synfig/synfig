@@ -907,11 +907,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	int w=abs(round_to_int(size[0]*pw));
 	int h=abs(round_to_int(size[1]*ph));
 
-    //int bx=(int)((origin[0]-renddesc.get_tl()[0])*pw*64+0.5);
-    //int by=(int)((origin[1]-renddesc.get_tl()[1])*ph*64+0.5);
-    int bx=0;
-    int by=0;
-
     // If the font is the size of a pixel, don't bother rendering any text
 	if(w<=1 || h<=1)
 	{
@@ -958,6 +953,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	lines.push_front(TextLine());
 	string::const_iterator iter;
+	int bx=0;
+	int by=0;
+
 	for (iter=text.begin(); iter!=text.end(); ++iter)
 	{
 		int multiplier(1);
