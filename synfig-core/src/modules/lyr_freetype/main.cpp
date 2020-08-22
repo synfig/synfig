@@ -70,6 +70,7 @@ bool freetype_constructor(synfig::ProgressCallback *cb)
 
 void freetype_destructor()
 {
+	FT_Done_FreeType(ft_library);
 	std::cerr<<"freetype_destructor()"<<std::endl;
 }
 

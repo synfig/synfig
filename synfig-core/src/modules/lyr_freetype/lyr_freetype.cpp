@@ -115,6 +115,9 @@ static const std::vector<const char *> known_font_extensions = {".ttf", ".otf"};
 #else
 static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".dfont"};
 #endif
+
+extern FT_Library ft_library;
+
 /* === C L A S S E S ======================================================= */
 
 struct Glyph

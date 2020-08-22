@@ -114,8 +114,6 @@ private:
 	bool new_face(const synfig::String &newfont);
 };
 
-extern FT_Library ft_library;
-
 /* === E N D =============================================================== */
 
 #endif
