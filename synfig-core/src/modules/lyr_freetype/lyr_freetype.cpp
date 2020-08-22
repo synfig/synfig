@@ -199,7 +199,7 @@ TextLine::clear_and_free()
 	glyph_table.clear();
 }
 
-bool
+static bool
 has_valid_font_extension(const std::string &filename) {
 	return std::find(known_font_extensions.begin(), known_font_extensions.end(), filename) != known_font_extensions.end();
 }
