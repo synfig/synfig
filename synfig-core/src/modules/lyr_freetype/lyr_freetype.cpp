@@ -111,9 +111,9 @@ SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.3");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
 
 #ifndef __APPLE__
-static const std::vector<const char *> known_font_extensions = {".ttf", ".otf"};
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".ttc"};
 #else
-static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".dfont"};
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".dfont", ".ttc"};
 #endif
 
 extern FT_Library ft_library;
