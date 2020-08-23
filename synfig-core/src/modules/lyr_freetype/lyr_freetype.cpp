@@ -553,10 +553,8 @@ Layer_Freetype::new_face(const String &newfont)
 	std::vector<const char *> possible_font_extensions = {""};
 
 	// if newfont doesn't have a known extension, try to append those extensions
-	{
-		if (! has_valid_font_extension(newfont))
-			possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
-	}
+	if (! has_valid_font_extension(newfont))
+		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
 
 	std::vector<std::string> possible_font_directories = {""};
 	std::string canvas_path;
