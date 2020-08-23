@@ -177,6 +177,7 @@ ThreadPool::~ThreadPool() {
 			threads.pop_back();
 		}
 		thread->join();
+		delete thread;
 	}
 
 	{
