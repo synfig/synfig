@@ -103,20 +103,18 @@ def gen_layer_shade(lottie, layer):
     distance_param.animate("real")
     distance_param.fill_path(origin_dict,"v")
 
-    softness_dict["ty"] = 0,
-    softness_dict["nm"] = "Softness",
-    softness_dict["mn"] = "ADBE Drop Shadow-0005",
+    size = layer.get_param("size")
+    size.animate("shade")
+    softness_dict["ty"] = 0
+    softness_dict["nm"] = "Softness"
+    softness_dict["mn"] = "ADBE Drop Shadow-0005"
     softness_dict["ix"] = index.inc()
     softness_dict["v"]  = {}
-    gen_properties_value(softness_dict["v"],
-                         0,
-                         sub_index.inc(),
-                         settings.DEFAULT_ANIMATED,
-                         settings.NO_INFO)
+    size.fill_path(softness_dict,"v")
 
-    shadow_dict["ty"] =  7,
-    shadow_dict["nm"] =  "Shadow Only",
-    shadow_dict["mn"] =  "ADBE Drop Shadow-0006",
+    shadow_dict["ty"] =  7
+    shadow_dict["nm"] =  "Shadow Only"
+    shadow_dict["mn"] =  "ADBE Drop Shadow-0006"
     shadow_dict["ix"] =  index.inc()
     shadow_dict["v"]  = {}
     gen_properties_value(shadow_dict["v"],
