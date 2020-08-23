@@ -180,6 +180,88 @@ private:
 static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight);
 #endif
 
+/// Metadata about a font. Used for font face cache indexing
+struct FontMeta {
+	synfig::String family;
+	int style;
+	int weight;
+	//! Canvas file path if loaded font face file depends on it.
+	//!  Empty string otherwise
+	std::string canvas_path;
+
+	FontMeta(synfig::String family, int style=0, int weight=400)
+		: family(family), style(style), weight(weight)
+	{}
+
+	bool operator==(const FontMeta& other) const
+	{
+		return family == other.family && style == other.style && weight == other.weight && canvas_path == other.canvas_path;
+	}
+
+	bool operator<(const FontMeta& other) const
+	{
+		if (family < other.family)
+			return true;
+		if (family != other.family)
+			return false;
+
+		if (style < other.style)
+			return true;
+		if (style > other.style)
+			return false;
+
+		if (weight < other.weight)
+			return true;
+		if (weight > other.weight)
+			return false;
+
+		if (canvas_path < other.canvas_path)
+			return true;
+
+		return false;
+	}
+};
+
+/// Cache font faces for speeding up the text layer rendering
+class FaceCache {
+	std::map<FontMeta, FT_Face> cache;
+public:
+	FT_Face get(const FontMeta &meta) const {
+		auto iter = cache.find(meta);
+		if (iter != cache.end())
+			return iter->second;
+		return nullptr;
+	}
+
+	void put(const FontMeta &meta, FT_Face face) {
+		cache[meta] = face;
+	}
+
+	bool has(const FontMeta &meta) const {
+		auto iter = cache.find(meta);
+		return iter != cache.end();
+	}
+
+	void clear() {
+		for (auto item : cache)
+			FT_Done_Face(item.second);
+		cache.clear();
+	}
+
+	static FaceCache& instance() {
+		static FaceCache obj;
+		return obj;
+	}
+
+private:
+	FaceCache() {}
+	FaceCache(const FaceCache&) = delete;
+
+	~FaceCache() {
+		clear();
+	}
+};
+
 /* === P R O C E D U R E S ================================================= */
 
 /*Glyph::~Glyph()
@@ -384,8 +466,6 @@ Layer_Freetype::Layer_Freetype()
 
 Layer_Freetype::~Layer_Freetype()
 {
-	if(face)
-		FT_Done_Face(face);
 }
 
 void
@@ -425,24 +505,56 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 bool
 Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 {
+	FontMeta meta(font_fam_, style, weight);
+	if (get_canvas())
+		meta.canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
+
+	FaceCache &face_cache = FaceCache::instance();
+
+	FT_Face tmp_face = face_cache.get(meta);
+	if (tmp_face) {
+		face = tmp_face;
+		return true;
+	}
+
 	synfig::String font_fam(font_fam_);
 
 	if (has_valid_font_extension(font_fam_))
-		if(new_face(font_fam_))
+		if (new_face(font_fam_)) {
+			if (!font_path_from_canvas)
+				meta.canvas_path.clear();
+			face_cache.put(meta, face);
 			return true;
+		}
 
 #ifdef WITH_FONTCONFIG
-	if (new_face(fontconfig_get_filename(font_fam_, style, weight)))
+	if (new_face(fontconfig_get_filename(font_fam_, style, weight))) {
+		if (!font_path_from_canvas)
+			meta.canvas_path.clear();
+		face_cache.put(meta, face);
 		return true;
+	}
 #endif
 
 	std::vector<std::string> filename_list;
 	get_possible_font_filenames(font_fam_, style, weight, filename_list);
 
-	for (std::string& filename : filename_list)
-		if (new_face(filename))
+	for (std::string& filename : filename_list) {
+		if (new_face(filename)) {
+			if (!font_path_from_canvas)
+				meta.canvas_path.clear();
+			face_cache.put(meta, face);
 			return true;
-	return new_face(font_fam_);
+		}
+	}
+	if (new_face(font_fam_)) {
+		if (!font_path_from_canvas)
+			meta.canvas_path.clear();
+		face_cache.put(meta, face);
+		return true;
+	}
+
+	return false;
 }
 
 #ifdef WITH_FONTCONFIG
@@ -542,10 +654,7 @@ Layer_Freetype::new_face(const String &newfont)
 		return true;
 
 	if(face)
-	{
-		FT_Done_Face(face);
-		face=0;
-	}
+		face = nullptr;
 
 	if (newfont.empty())
 		return false;
