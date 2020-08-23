@@ -675,6 +675,15 @@ class Param:
                 ret = ret.format(link=link,PIX_PER_UNIT=settings.PIX_PER_UNIT)
                 self.expression = ret
                 return ret, self.expression_controllers
+            
+            elif self.param[0].tag == "vectorlength":
+                self.subparams["vectorlength"].extract_subparams()
+                vector, eff_1 = self.subparams["vectorlength"].subparams["vector"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                ret = "[Math.sqrt(sum(Math.pow({vector}[1],2), Math.pow({vector}[0],2))),Math.sqrt(sum(Math.pow({vector}[1],2), Math.pow({vector}[0],2)))]" if self.dimension == 2 else "Math.sqrt(sum(Math.pow({vector}[1],2), Math.pow({vector}[0],2)))"
+                ret = ret.format(vector=vector)
+                self.expression = ret
+                return ret, self.expression_controllers
 
         else:
             self.single_animate(anim_type)
@@ -1096,6 +1105,10 @@ class Param:
                 else:
                     ret = link
 
+            elif self.param[0].tag == "vectorlength":
+                vector = self.subparams["vectorlength"].subparams["vector"].__get_value(frame)
+                ret = math.sqrt(math.pow(vector[1],2)+math.pow(vector[0],2))
+
         else:
             ret = self.get_single_value(frame)
             if isinstance(ret, list):
@@ -1298,6 +1311,10 @@ class Param:
                 self.subparams["range"].subparams["min"].update_frame_window(window)
                 self.subparams["range"].subparams["max"].update_frame_window(window)
                 self.subparams["range"].subparams["link"].update_frame_window(window)
+
+            elif node.tag == "vectorlength":
+                self.subparams["vectorlength"].extract_subparams()
+                self.subparams["vectorlength"].subparams["vector"].update_frame_window(window)
 
         if is_animated(node) == settings.ANIMATED:
             for waypoint in node:
