@@ -134,7 +134,8 @@ class studio::StateBone_Context : public sigc::trackable
 
 	//  bone width
 	Gtk::Label bone_width_label;
-	Widget_Distance bone_width_dist;
+	Widget_Distance skel_bone_width_dist;
+	Widget_Distance skel_deform_bone_width_dist;
 
 
 	// Layer creation radio group
@@ -150,14 +151,31 @@ public:
 	synfig::String get_id() const { return id_entry.get_text();}
 	void set_id(const synfig::String& x){ return id_entry.set_text(x);}
 
-	Real get_bone_width() const {
-		return bone_width_dist.get_value().get(
+	Real get_skel_bone_width() const {
+		return skel_bone_width_dist.get_value().get(
 				Distance::SYSTEM_UNITS,
 				get_canvas_view()->get_canvas()->rend_desc()
 		);
 	}
-	void set_bone_width(Distance x){return bone_width_dist.set_value(x);}
+	void set_skel_bone_width(Distance x){return skel_bone_width_dist.set_value(x);}
 
+	Real get_skel_deform_bone_width() const {
+		return skel_deform_bone_width_dist.get_value().get(
+				Distance::SYSTEM_UNITS,
+				get_canvas_view()->get_canvas()->rend_desc()
+		);
+	}
+	void set_skel_deform_bone_width(Distance x){return skel_deform_bone_width_dist.set_value(x);}
+
+	Real get_bone_width() const{
+		if(skel_bone_width_dist.is_sensitive()){
+			return get_skel_bone_width();
+		}else if(skel_deform_bone_width_dist.is_sensitive()){
+			return get_skel_deform_bone_width();
+		}else{
+			return DEFAULT_WIDTH;
+		}
+	}
 
 	void update_layer(){
 		if(c_layer==0) {
@@ -173,6 +191,7 @@ public:
 	}
 
 	void make_layer();
+	void update_tool_options(int i);
 
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
 	Smach::event_result event_mouse_drag_handler(const Smach::event& x);
@@ -191,7 +210,6 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() const {return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas() const {return canvas_view_->get_canvas();}
 	WorkArea * get_work_area() const {return canvas_view_->get_work_area();}
-	const synfig::TransformStack& get_transform_stack() const {return get_work_area()->get_curr_transform_stack();}
 	int find_bone(Point point,Layer::Handle layer,int lay=0)const;
 	void _on_signal_change_active_bone(ValueNode::Handle node);
 	int change_active_bone(ValueNode::Handle node);
@@ -202,42 +220,7 @@ public:
 	void increment_id();
 
 	bool egress_on_selection_change;
-	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
-	{
-		Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-		Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-		Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
-		string value;
-		if(skel_layer){
-			if(settings.get_value("bone.skel_id",value))
-				set_id(value);
-			else
-				set_id(_("NewSkeleton"));
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
-		}else if(deform_layer){
-			if(settings.get_value("bone.skel_deform_id",value))
-				set_id(value);
-			else
-				set_id(_("NewSkeletonDeformation"));
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
-			layer->disable();
-			get_canvas_interface()->signal_layer_status_changed()(layer,false);
-		}else{
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
-			get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-		}
-
-		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-		if(egress_on_selection_change){
-			active_bone=-1;
-			get_work_area()->set_active_bone_value_node(0);
-		}
-		get_work_area()->queue_draw();
-		get_canvas_view()->queue_rebuild_ducks();
-
-		return Smach::RESULT_OK;
-	}
-
+	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/);
 }; // END of class StateBone_Context
 
 /* === M E T H O D S ======================================================= */
@@ -280,17 +263,15 @@ StateBone_Context::load_settings()
 				set_id(_("NewSkeletonDeformation"));
 		}
 
-		if(c_layer==0){
-			if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
-				set_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
-			else
-				set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
-		}else{
-			if(settings.get_value("bone.skel_deform_bone_width",value) && !value.empty())
-				set_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
-			else
-				set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
-		}
+		if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
+			set_skel_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
+		else
+			set_skel_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+
+		if(settings.get_value("bone.skel_deform_bone_width",value) && !value.empty())
+			set_skel_deform_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
+		else
+			set_skel_deform_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
 	}
 	catch(...)
 	{
@@ -308,11 +289,9 @@ StateBone_Context::save_settings()
 			settings.set_value("bone.skel_id",get_id().c_str());
 		else
 			settings.set_value("bone.skel_deform_id",get_id().c_str());
-		if(c_layer==0){
-			settings.set_value("bone.skel_bone_width",bone_width_dist.get_value().get_string());
-		}else{
-			settings.set_value("bone.skel_deform_bone_width",bone_width_dist.get_value().get_string());
-		}
+
+		settings.set_value("bone.skel_bone_width",skel_bone_width_dist.get_value().get_string());
+		settings.set_value("bone.skel_deform_bone_width",skel_deform_bone_width_dist.get_value().get_string());
 	}
 	catch (...)
 	{
@@ -325,7 +304,8 @@ StateBone_Context::reset()
 {
 	active_bone = -1;
 	set_id(_("NewSkeleton"));
-	set_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+	set_skel_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+	set_skel_deform_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
 }
 
 void
@@ -405,10 +385,12 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// 2, Bone width
 	bone_width_label.set_label(_("Bone Width:"));
 	bone_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	bone_width_label.set_sensitive(true);
-	bone_width_dist.set_digits(2);
-	bone_width_dist.set_range(0,10000000);
-	bone_width_dist.set_sensitive(true);
+	skel_bone_width_dist.set_digits(2);
+	skel_bone_width_dist.set_range(0,10000000);
+	skel_bone_width_dist.set_sensitive(true);
+	skel_deform_bone_width_dist.set_digits(2);
+	skel_deform_bone_width_dist.set_range(0,10000000);
+	skel_deform_bone_width_dist.set_sensitive(true);
 
 	load_settings();
 
@@ -432,21 +414,24 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	options_table.attach(id_entry,2, 1,3,1);
 	// 2, default bone width
 	options_table.attach(bone_width_label,0,2,1,1);
-	options_table.attach(bone_width_dist,2, 2,3,1);
+	options_table.attach(skel_bone_width_dist,2, 2,3,1);
+	options_table.attach(skel_deform_bone_width_dist,2, 2,3,1);
 	// 3, Layer choice
-	options_table.attach(layer_label,0, 3,1,1);
-	options_table.attach(radiobutton_skel,0, 4,2,1);
-	options_table.attach(radiobutton_skel_deform,2, 4,2,1);
-	options_table.attach(create_layer,2,5,2,1);
+	options_table.attach(layer_label,0, 4,1,1);
+	options_table.attach(radiobutton_skel,0, 5,2,1);
+	options_table.attach(radiobutton_skel_deform,2, 5,2,1);
+	options_table.attach(create_layer,2,6,2,1);
 
 	create_layer.signal_clicked().connect(sigc::mem_fun(*this,&StateBone_Context::make_layer));
-	radiobutton_skel.signal_toggled().connect(sigc::mem_fun(*this,&StateBone_Context::update_layer));	
+	radiobutton_skel.signal_toggled().connect(sigc::mem_fun(*this,&StateBone_Context::update_layer));
 
 	// fine-tune options layout
 	options_table.set_border_width(GAP*2); // border width
 	options_table.set_row_spacing(GAP); // row gap
 	options_table.set_margin_bottom(0);
 	options_table.show_all();
+
+	skel_deform_bone_width_dist.hide();
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -468,9 +453,11 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		layer->disable();
 		get_canvas_interface()->signal_layer_status_changed()(layer,false);
+		update_tool_options(1);
 	}else{
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+		update_tool_options(0);
 	}
 
 
@@ -512,6 +499,21 @@ StateBone_Context::refresh_tool_options()
 					&StateBone_Context::reset
 			)
 	);
+}
+
+void
+StateBone_Context::update_tool_options(int i) {
+	if(i==0){
+		if(!skel_bone_width_dist.is_visible()){
+			skel_bone_width_dist.show();
+			skel_deform_bone_width_dist.hide();
+		}
+	}else if(i==1){
+		if(!skel_deform_bone_width_dist.is_visible()){
+			skel_deform_bone_width_dist.show();
+			skel_bone_width_dist.hide();
+		}
+	}
 }
 
 Smach::event_result
@@ -648,6 +650,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 			releaseOrigin = transform.unperform(releaseOrigin);
 			if(drawing){ //! if the user was not modifying a duck
 				if(skel_layer){ //!if selected layer is a Skeleton Layer and user wants to work on a skeleton layer
+					update_tool_options(0);
 					bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 					if(is_currently_on){
 						get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
@@ -770,6 +773,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					}
 				}
 				else if(deform_layer){ //!if selected layer is a Skeleton deform Layer and user wants to work on a skeleton deform layer
+					update_tool_options(1);
 					bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 					if(!is_currently_on){
 						get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
@@ -919,9 +923,10 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					ValueNode_StaticList::Handle list_node;
 					list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 					ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
-					active_bone = 0;
 					ValueNode_Bone::Handle bone_node;
+					update_tool_options(c_layer);
 					if(c_layer==0){
+
 						bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 						if(is_currently_on){
 							get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
@@ -971,6 +976,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
 					egress_on_selection_change=true;
 
+					active_bone = 0;
+
 					get_canvas_view()->queue_rebuild_ducks();
 				}
 				drawing = false;
@@ -986,6 +993,45 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		default:
 			return Smach::RESULT_OK;
 	}
+}
+
+Smach::event_result
+StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x*/)
+{
+	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
+	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
+	string value;
+	if(skel_layer){
+		if(settings.get_value("bone.skel_id",value))
+			set_id(value);
+		else
+			set_id(_("NewSkeleton"));
+		update_tool_options(0);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+	}else if(deform_layer){
+		if(settings.get_value("bone.skel_deform_id",value))
+			set_id(value);
+		else
+			set_id(_("NewSkeletonDeformation"));
+		update_tool_options(1);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
+		layer->disable();
+		get_canvas_interface()->signal_layer_status_changed()(layer,false);
+	}else{
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	}
+
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	if(egress_on_selection_change){
+		active_bone=-1;
+		get_work_area()->set_active_bone_value_node(0);
+	}
+	get_work_area()->queue_draw();
+	get_canvas_view()->queue_rebuild_ducks();
+
+	return Smach::RESULT_OK;
 }
 
 int
@@ -1078,6 +1124,7 @@ StateBone_Context::make_layer(){
 	egress_on_selection_change=false;
 
 	bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+	update_tool_options(c_layer);
 	if(c_layer==0){
 		if(is_currently_on){
 			get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
