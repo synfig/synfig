@@ -185,6 +185,8 @@ private:
 
 		void recheck_for_value_nodes();
 
+		bool is_valid() const;
+
 	protected:
 		synfigapp::ValueDesc value_desc;
 		Geometry geometry;
@@ -197,7 +199,7 @@ private:
 		void clear_connections();
 	};
 
-	std::map<std::string, RowInfo*> param_info_map;
+	std::map<std::string, RowInfo> param_info_map;
 	int param_list_height;
 
 	std::mutex param_list_mutex;
@@ -208,9 +210,9 @@ private:
 	void queue_update_param_list_geometries();
 	void update_param_list_geometries();
 
-	void draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo *row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
-	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath& path, const RowInfo *row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
-	void draw_selected_background(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath& path, const RowInfo* row_info) const;
+	void draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
+	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath &path, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
+	void draw_selected_background(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath &path, const RowInfo &row_info) const;
 
 	void on_waypoint_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_double_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
