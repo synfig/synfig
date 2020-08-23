@@ -220,44 +220,7 @@ public:
 	void increment_id();
 
 	bool egress_on_selection_change;
-	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
-	{
-		Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-		Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-		Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
-		string value;
-		if(skel_layer){
-			if(settings.get_value("bone.skel_id",value))
-				set_id(value);
-			else
-				set_id(_("NewSkeleton"));
-			update_tool_options(0);
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
-		}else if(deform_layer){
-			if(settings.get_value("bone.skel_deform_id",value))
-				set_id(value);
-			else
-				set_id(_("NewSkeletonDeformation"));
-			update_tool_options(1);
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
-			layer->disable();
-			get_canvas_interface()->signal_layer_status_changed()(layer,false);
-		}else{
-			get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
-			get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-		}
-
-		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-		if(egress_on_selection_change){
-			active_bone=-1;
-			get_work_area()->set_active_bone_value_node(0);
-		}
-		get_work_area()->queue_draw();
-		get_canvas_view()->queue_rebuild_ducks();
-
-		return Smach::RESULT_OK;
-	}
-
+	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/);
 }; // END of class StateBone_Context
 
 /* === M E T H O D S ======================================================= */
@@ -1030,6 +993,45 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		default:
 			return Smach::RESULT_OK;
 	}
+}
+
+Smach::event_result
+StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x*/)
+{
+	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
+	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
+	string value;
+	if(skel_layer){
+		if(settings.get_value("bone.skel_id",value))
+			set_id(value);
+		else
+			set_id(_("NewSkeleton"));
+		update_tool_options(0);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+	}else if(deform_layer){
+		if(settings.get_value("bone.skel_deform_id",value))
+			set_id(value);
+		else
+			set_id(_("NewSkeletonDeformation"));
+		update_tool_options(1);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
+		layer->disable();
+		get_canvas_interface()->signal_layer_status_changed()(layer,false);
+	}else{
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	}
+
+	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
+	if(egress_on_selection_change){
+		active_bone=-1;
+		get_work_area()->set_active_bone_value_node(0);
+	}
+	get_work_area()->queue_draw();
+	get_canvas_view()->queue_rebuild_ducks();
+
+	return Smach::RESULT_OK;
 }
 
 int
