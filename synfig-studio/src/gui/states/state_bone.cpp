@@ -209,7 +209,6 @@ public:
 		Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
 		string value;
 		if(skel_layer){
-			get_work_area()->set_active_bone_value_node(0);
 			if(settings.get_value("bone.skel_id",value))
 				set_id(value);
 			else
@@ -229,8 +228,10 @@ public:
 		}
 
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-		get_work_area()->set_active_bone_value_node(0);
-		active_bone=-1;
+		if(egress_on_selection_change){
+			active_bone=-1;
+			get_work_area()->set_active_bone_value_node(0);
+		}
 		get_work_area()->queue_draw();
 		get_canvas_view()->queue_rebuild_ducks();
 
