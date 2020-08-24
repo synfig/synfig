@@ -133,9 +133,13 @@ def init_logs():
 parser = argparse.ArgumentParser()
 parser.add_argument("infile")
 parser.add_argument("outfile")
+parser.add_argument("-without_variable_width", default=False)
 ns = parser.parse_args()
-
+	
 settings.init()
+
+if ns.without_variable_width == "True":
+	settings.WITHOUT_VARIABLE_WIDTH = True
 
 out = parse(ns.infile)
 if ns.outfile.endswith(".html"):

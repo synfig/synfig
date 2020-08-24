@@ -99,7 +99,10 @@ def gen_layers(lottie, canvas, layer_itr):
 	skeleton = settings.SKELETON_LAYER
 	blur = settings.BLUR_LAYER
 	supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton,blur)
-
+	if settings.WITHOUT_VARIABLE_WIDTH:
+		shape.add("outline")
+		settings.WITHOUT_VARIABLE_WIDTH = False
+		
 	while itr >= 0:
 		layer = canvas[itr]
 		if layer.get_type() not in supported_layers:  # Only supported layers
