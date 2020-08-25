@@ -133,7 +133,7 @@ def init_logs():
 parser = argparse.ArgumentParser()
 parser.add_argument("infile")
 parser.add_argument("outfile")
-parser.add_argument("-without_variable_width", default=False)
+parser.add_argument("--without_variable_width",action='store', default=False)
 ns = parser.parse_args()
 	
 settings.init()
