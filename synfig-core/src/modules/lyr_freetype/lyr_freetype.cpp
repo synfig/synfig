@@ -111,10 +111,13 @@ SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.3");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
 
 #ifndef __APPLE__
-static const std::vector<const char *> known_font_extensions = {".ttf", ".otf"};
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".ttc"};
 #else
-static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".dfont"};
+static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".dfont", ".ttc"};
 #endif
+
+extern FT_Library ft_library;
+
 /* === C L A S S E S ======================================================= */
 
 struct Glyph
@@ -196,9 +199,147 @@ TextLine::clear_and_free()
 	glyph_table.clear();
 }
 
-bool
+static bool
 has_valid_font_extension(const std::string &filename) {
 	return std::find(known_font_extensions.begin(), known_font_extensions.end(), filename) != known_font_extensions.end();
+}
+
+
+/// Try to map a font family to a filename (without extension nor directory)
+static void
+get_possible_font_filenames(synfig::String family, int style, int weight, std::vector<std::string>& list)
+{
+	// string :: tolower
+	std::transform(family.begin(), family.end(), family.begin(),
+		[](unsigned char c){ return std::tolower(c); });
+
+	enum FontSuffixStyle {FONT_SUFFIX_NONE, FONT_SUFFIX_BI_BD, FONT_SUFFIX_BI_BD_IT, FONT_SUFFIX_BI_RI};
+	enum FontClassification {FONT_SANS_SERIF, FONT_SERIF, FONT_MONOSPACED, FONT_SCRIPT};
+
+	struct FontFileNameEntry {
+		const char *alias;
+		const char *preffix;
+		const char *alternative_preffix;
+		FontSuffixStyle suffix_style;
+		FontClassification classification;
+
+		std::string get_suffix(int style, int weight) const {
+			std::string suffix;
+			switch (suffix_style) {
+			case FONT_SUFFIX_NONE:
+				break;
+			case FONT_SUFFIX_BI_BD:
+				if (weight>TEXT_WEIGHT_NORMAL)
+					suffix+='b';
+				if (style==TEXT_STYLE_ITALIC || style==TEXT_STYLE_OBLIQUE)
+					suffix+='i';
+				else if (weight>TEXT_WEIGHT_NORMAL)
+					suffix+='d';
+				break;
+			case FONT_SUFFIX_BI_BD_IT:
+				if (weight>TEXT_WEIGHT_NORMAL)
+					suffix+='b';
+				if (style==TEXT_STYLE_ITALIC || style==TEXT_STYLE_OBLIQUE)
+				{
+					suffix+='i';
+					if (weight<=TEXT_WEIGHT_NORMAL)
+						suffix+='t';
+				}
+				else if(weight>TEXT_WEIGHT_NORMAL)
+					suffix+='d';
+				break;
+			case FONT_SUFFIX_BI_RI:
+				if(weight>TEXT_WEIGHT_NORMAL)
+					suffix+='b';
+				else
+					suffix+='r';
+				if(style==TEXT_STYLE_ITALIC || style==TEXT_STYLE_OBLIQUE)
+					suffix+='i';
+				break;
+			}
+			return suffix;
+		}
+
+		static std::string get_alternative_suffix(int style, int weight) {
+			if (weight > TEXT_WEIGHT_NORMAL) {
+				if (style == TEXT_STYLE_ITALIC)
+					return " Bold Italic";
+				else if (style == TEXT_STYLE_OBLIQUE)
+					return " Bold Oblique";
+				else
+					return " Bold";
+			} else {
+				if (style == TEXT_STYLE_ITALIC)
+					return " Italic";
+				else if (style == TEXT_STYLE_OBLIQUE)
+					return " Oblique";
+				else
+					return "";
+			}
+		}
+
+	};
+
+	struct SpecialFontFamily {
+		const char * const alias;
+		const char * const option1;
+		const char * const option2;
+		const char * const option3;
+	};
+
+	const SpecialFontFamily special_font_family_db[] = {
+		{"sans serif", "arial", "luxi sans", "helvetica"},
+		{"serif", "times new roman", "luxi serif", nullptr},
+		{"comic", "comic sans", nullptr, nullptr},
+		{"courier", "courier new", nullptr, nullptr},
+		{"times", "times new roman", nullptr, nullptr},
+		{nullptr, nullptr, nullptr, nullptr}
+	};
+
+	const FontFileNameEntry font_filename_db[] = {
+		{"arial black", "ariblk", nullptr, FONT_SUFFIX_NONE, FONT_SANS_SERIF},
+		{"arial", "arial", "Arial", FONT_SUFFIX_BI_BD, FONT_SANS_SERIF},
+		{"comic sans", "comic", nullptr, FONT_SUFFIX_BI_BD, FONT_SANS_SERIF},
+		{"courier new", "cour", "Courier New", FONT_SUFFIX_BI_BD, FONT_MONOSPACED},
+		{"times new roman", "times", "Times New Roman", FONT_SUFFIX_BI_BD, FONT_SERIF},
+		{"trebuchet", "trebuc", "Trebuchet MS", FONT_SUFFIX_BI_BD_IT, FONT_SANS_SERIF},
+		{"luxi sans", "luxis", nullptr, FONT_SUFFIX_BI_RI, FONT_SANS_SERIF},
+		{"luxi serif", "luxir", nullptr, FONT_SUFFIX_BI_RI, FONT_SERIF},
+		{"luxi mono", "luxim", nullptr, FONT_SUFFIX_BI_RI, FONT_MONOSPACED},
+		{"luxi", "luxim", nullptr, FONT_SUFFIX_BI_RI, FONT_MONOSPACED},
+		{nullptr, nullptr, nullptr, FONT_SUFFIX_NONE, FONT_SANS_SERIF},
+	};
+
+	std::vector<std::string> possible_families;
+	for (int i = 0; special_font_family_db[i].alias; i++) {
+		const SpecialFontFamily &special_family = special_font_family_db[i];
+		if (special_family.alias == family) {
+			possible_families.push_back(special_family.option1);
+			if (special_family.option2) {
+				possible_families.push_back(special_family.option2);
+				if (special_family.option3)
+					possible_families.push_back(special_family.option3);
+			}
+			break;
+		}
+	}
+	if (possible_families.empty())
+		possible_families.push_back(family);
+
+	for (const std::string &possible_family : possible_families) {
+		for (int i = 0; font_filename_db[i].alias; i++) {
+			const FontFileNameEntry &entry = font_filename_db[i];
+			if (possible_family == entry.alias) {
+				std::string filename = entry.preffix;
+				filename += entry.get_suffix(style, weight);
+				list.push_back(filename);
+
+				filename = entry.preffix;
+				filename += entry.get_alternative_suffix(style, weight);
+				list.push_back(filename);
+			}
+		}
+	}
 }
 
 /* === M E T H O D S ======================================================= */
@@ -261,6 +402,11 @@ Layer_Freetype::on_canvas_set()
 	new_font(family,style,weight);
 }
 
+/*! The new_font() function try to render
+**	text until it work by simplyfing font style(s).
+** In last chance, render text as "sans serif" Normal
+** font style.
+*/
 void
 Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 {
@@ -276,11 +422,6 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 		new_font_("sans serif",TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
 }
 
-/*! The new_font() function try to render
-**	text until it work by simplyfing font style(s).
-** In last chance, render text as "sans serif" Normal
-** font style.
-*/
 bool
 Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 {
@@ -295,153 +436,13 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		return true;
 #endif
 
-	// string :: tolower
-	std::transform(font_fam.begin(), font_fam.end(), font_fam.begin(),
-		[](unsigned char c){ return std::tolower(c); });
+	std::vector<std::string> filename_list;
+	get_possible_font_filenames(font_fam_, style, weight, filename_list);
 
-	if(font_fam=="arial black")
-	{
-#ifndef __APPLE__
-		if(new_face("ariblk"))
+	for (std::string& filename : filename_list)
+		if (new_face(filename))
 			return true;
-		else
-#endif
-		font_fam="sans serif";
-	}
-
-	if(font_fam=="sans serif" || font_fam=="arial")
-	{
-		String arial("arial");
-		if(weight>TEXT_WEIGHT_NORMAL)
-			arial+='b';
-		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
-			arial+='i';
-		else
-			if(weight>TEXT_WEIGHT_NORMAL) arial+='d';
-
-		if(new_face(arial))
-			return true;
-#ifdef __APPLE__
-		if(new_face("Helvetica RO"))
-			return true;
-#endif
-	}
-
-	if(font_fam=="comic" || font_fam=="comic sans")
-	{
-		String filename("comic");
-		if(weight>TEXT_WEIGHT_NORMAL)
-			filename+='b';
-		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
-			filename+='i';
-		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
-
-		if(new_face(filename))
-			return true;
-	}
-
-	if(font_fam=="courier" || font_fam=="courier new")
-	{
-		String filename("cour");
-		if(weight>TEXT_WEIGHT_NORMAL)
-			filename+='b';
-		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
-			filename+='i';
-		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
-
-		if(new_face(filename))
-			return true;
-	}
-
-	if(font_fam=="serif" || font_fam=="times" || font_fam=="times new roman")
-	{
-		String filename("times");
-		if(weight>TEXT_WEIGHT_NORMAL)
-			filename+='b';
-		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
-			filename+='i';
-		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
-
-		if(new_face(filename))
-			return true;
-	}
-
-	if(font_fam=="trebuchet")
-	{
-		String filename("trebuc");
-		if(weight>TEXT_WEIGHT_NORMAL)
-			filename+='b';
-		if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
-		{
-			filename+='i';
-			if(weight<=TEXT_WEIGHT_NORMAL) filename+='t';
-		}
-		else if(weight>TEXT_WEIGHT_NORMAL) filename+='d';
-
-		if(new_face(filename))
-			return true;
-	}
-
-	if(font_fam=="sans serif" || font_fam=="luxi sans")
-	{
-		{
-			String luxi("luxis");
-			if(weight>TEXT_WEIGHT_NORMAL)
-				luxi+='b';
-			else
-				luxi+='r';
-			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
-				luxi+='i';
-
-			if(new_face(luxi))
-				return true;
-		}
-		if(new_face("arial"))
-			return true;
-		if(new_face("Arial"))
-			return true;
-	}
-	if(font_fam=="serif" || font_fam=="times" || font_fam=="times new roman" || font_fam=="luxi serif")
-	{
-		{
-			String luxi("luxir");
-			if(weight>TEXT_WEIGHT_NORMAL)
-				luxi+='b';
-			else
-				luxi+='r';
-			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
-				luxi+='i';
-
-			if(new_face(luxi))
-				return true;
-		}
-		if(new_face("Times New Roman"))
-			return true;
-		if(new_face("Times"))
-			return true;
-	}
-	if(font_fam=="luxi")
-	{
-		{
-			String luxi("luxim");
-			if(weight>TEXT_WEIGHT_NORMAL)
-				luxi+='b';
-			else
-				luxi+='r';
-			if(style==TEXT_STYLE_ITALIC||style==TEXT_STYLE_OBLIQUE)
-				luxi+='i';
-
-			if(new_face(luxi))
-				return true;
-		}
-
-		if(new_face("Times New Roman"))
-			return true;
-		if(new_face("Times"))
-			return true;
-	}
-
-	return new_face(font_fam) || new_face(font_fam_);
+	return new_face(font_fam_);
 }
 
 #ifdef WITH_FONTCONFIG
@@ -552,10 +553,8 @@ Layer_Freetype::new_face(const String &newfont)
 	std::vector<const char *> possible_font_extensions = {""};
 
 	// if newfont doesn't have a known extension, try to append those extensions
-	{
-		if (! has_valid_font_extension(newfont))
-			possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
-	}
+	if (! has_valid_font_extension(newfont))
+		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
 
 	std::vector<std::string> possible_font_directories = {""};
 	std::string canvas_path;
@@ -904,11 +903,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	int w=abs(round_to_int(size[0]*pw));
 	int h=abs(round_to_int(size[1]*ph));
 
-    //int bx=(int)((origin[0]-renddesc.get_tl()[0])*pw*64+0.5);
-    //int by=(int)((origin[1]-renddesc.get_tl()[1])*ph*64+0.5);
-    int bx=0;
-    int by=0;
-
     // If the font is the size of a pixel, don't bother rendering any text
 	if(w<=1 || h<=1)
 	{
@@ -955,6 +949,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	lines.push_front(TextLine());
 	string::const_iterator iter;
+	int bx=0;
+	int by=0;
+
 	for (iter=text.begin(); iter!=text.end(); ++iter)
 	{
 		int multiplier(1);
@@ -1362,5 +1359,5 @@ Layer_Freetype::get_bounding_rect()const
 	if(needs_sync_)
 		const_cast<Layer_Freetype*>(this)->sync();
 //	if(!is_disabled())
-		return synfig::Rect::full_plane();
+	return synfig::Rect::full_plane();
 }
