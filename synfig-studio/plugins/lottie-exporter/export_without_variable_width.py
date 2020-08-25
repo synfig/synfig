@@ -136,6 +136,7 @@ parser.add_argument("outfile")
 ns = parser.parse_args()
 	
 settings.init()
+settings.WITHOUT_VARIABLE_WIDTH = True
 
 out = parse(ns.infile)
 if ns.outfile.endswith(".html"):

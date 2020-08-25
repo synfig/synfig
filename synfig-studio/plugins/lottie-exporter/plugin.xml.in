@@ -14,17 +14,11 @@
    <exporter>
        <extension>html</extension>
        <_description>Lottie HTML Preview without variable widths (*.html)</_description>
-       <exec stdout="log" interpreter="python">lottie-exporter.py</exec>
-       <options>
-			<option name="--without_variable_width" value="True" type="hidden" />
-		</options>
+       <exec stdout="log" interpreter="python">export_without_variable_width.py</exec>
    </exporter>
    <exporter>
        <extension>json</extension>
        <_description>Lottie HTML Preview without variable widths(*.json)</_description>
-       <exec stdout="log" interpreter="python">lottie-exporter.py</exec>
-       <options>
-			   <option name="--without_variable_width" value="True" type="hidden" />
-		   </options>
+       <exec stdout="log" interpreter="python">export_without_variable_width.py</exec>
    </exporter>
 </plugin> 
