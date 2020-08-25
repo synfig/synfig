@@ -589,7 +589,7 @@ etl::loose_handle<Canvas>
 ValueNode::get_parent_canvas()const
 {
 	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-		printf("%s:%d get_parent_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas_.get()));
+		printf("%s:%d get_parent_canvas of %p is %p\n", __FILE__, __LINE__, this, canvas_.get());
 
 	return canvas_;
 }
@@ -598,7 +598,7 @@ etl::loose_handle<Canvas>
 ValueNode::get_root_canvas()const
 {
 	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-		printf("%s:%d get_root_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(root_canvas_.get()));
+		printf("%s:%d get_root_canvas of %p is %p\n", __FILE__, __LINE__, this, root_canvas_.get());
 
 	return root_canvas_;
 }
@@ -613,7 +613,7 @@ ValueNode::get_non_inline_ancestor_canvas()const
 		etl::loose_handle<Canvas> ret(parent->get_non_inline_ancestor());
 
 		if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-			printf("%s:%d get_non_inline_ancestor_canvas of %lx is %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(ret.get()));
+			printf("%s:%d get_non_inline_ancestor_canvas of %p is %p\n", __FILE__, __LINE__, this, ret.get());
 
 		return ret;
 	}
@@ -625,12 +625,12 @@ void
 ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set_parent_canvas of %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()));
+		printf("%s:%d set_parent_canvas of %p to %p\n", __FILE__, __LINE__, this, x.get());
 
 	canvas_=x;
 
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d now %lx\n", __FILE__, __LINE__, uintptr_t(canvas_.get()));
+		printf("%s:%d now %p\n", __FILE__, __LINE__, canvas_.get());
 
 	if(x) set_root_canvas(x);
 }
@@ -639,12 +639,12 @@ void
 ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set_root_canvas of %lx to %lx - ", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()));
+		printf("%s:%d set_root_canvas of %p to %p - ", __FILE__, __LINE__, this, x.get());
 
 	root_canvas_=x->get_root();
 
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("now %lx\n", uintptr_t(root_canvas_.get()));
+		printf("now %p\n", root_canvas_.get());
 }
 
 String

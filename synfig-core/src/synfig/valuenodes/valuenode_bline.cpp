@@ -387,7 +387,7 @@ ValueNode_BLine::ValueNode_BLine(Canvas::LooseHandle canvas):
 	ValueNode_DynamicList(type_bline_point, canvas)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d should have already set parent canvas for bline %lx to %lx (using dynamic_list constructor)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+		printf("%s:%d should have already set parent canvas for bline %p to %p (using dynamic_list constructor)\n", __FILE__, __LINE__, this, canvas.get());
 }
 
 ValueNode_BLine::~ValueNode_BLine()

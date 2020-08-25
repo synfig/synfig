@@ -580,7 +580,7 @@ ValueNode_DynamicList::erase(const ValueNode::Handle &value_node_)
 				if(get_non_inline_ancestor_canvas())
 					get_non_inline_ancestor_canvas()->invoke_signal_value_node_child_removed(this,value_node);
 				else
-					printf("%s:%d == can't get non_inline_ancestor_canvas - parent canvas = %lx\n", __FILE__, __LINE__, uintptr_t(get_parent_canvas().get()));
+					printf("%s:%d == can't get non_inline_ancestor_canvas - parent canvas = %p\n", __FILE__, __LINE__, get_parent_canvas().get());
 			}
 			break;
 		}
@@ -594,7 +594,7 @@ ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Canvas::Loose
 	loop_(false)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for dynamic_list %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+		printf("%s:%d set parent canvas for dynamic_list %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 	set_parent_canvas(canvas);
 }
 
@@ -604,7 +604,7 @@ ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Type &type, C
 	loop_(false)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for dynamic_list %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+		printf("%s:%d set parent canvas for dynamic_list %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 	set_parent_canvas(canvas);
 }
 

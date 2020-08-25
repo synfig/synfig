@@ -64,7 +64,7 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 	value		(x)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for const %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+		printf("%s:%d set parent canvas for const %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 
 	if (x.get_type() == type_bone_valuenode)
 		add_child(x.get(ValueNode_Bone::Handle()).get());

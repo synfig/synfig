@@ -261,7 +261,7 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 				if(get_non_inline_ancestor_canvas())
 					get_non_inline_ancestor_canvas()->invoke_signal_value_node_child_removed(this,value_node);
 				else
-					printf("%s:%d == can't get non_inline_ancestor_canvas - parent canvas = %lx\n", __FILE__, __LINE__, uintptr_t(get_parent_canvas().get()));
+					printf("%s:%d == can't get non_inline_ancestor_canvas - parent canvas = %p\n", __FILE__, __LINE__, get_parent_canvas().get());
 			}
 			break;
 		}
@@ -273,10 +273,10 @@ ValueNode_StaticList::ValueNode_StaticList(Type &container_type, Canvas::LooseHa
 	loop_(false)
 {
 	if (getenv("SYNFIG_DEBUG_STATICLIST_CONSTRUCTORS"))
-		printf("%s:%d ValueNode_StaticList::ValueNode_StaticList() construct %lx\n", __FILE__, __LINE__, uintptr_t(this));
+		printf("%s:%d ValueNode_StaticList::ValueNode_StaticList() construct %p\n", __FILE__, __LINE__, this);
 
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for static_list %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+		printf("%s:%d set parent canvas for static_list %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 	set_parent_canvas(canvas);
 }
 
@@ -485,7 +485,7 @@ ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // lin
 	for (vector<ReplaceableListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
 	{
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-			printf("%s:%d set parent canvas of member (%lx) to (%lx)\n", __FILE__, __LINE__, uintptr_t((*iter).get()), uintptr_t(canvas.get()));
+			printf("%s:%d set parent canvas of member (%p) to (%p)\n", __FILE__, __LINE__, iter->get(), canvas.get());
 		(*iter)->set_parent_canvas(canvas);
 	}
 }
@@ -507,7 +507,7 @@ void
 ValueNode_StaticList::ref()const
 {
 	if (getenv("SYNFIG_DEBUG_STATICLIST_REFCOUNT"))
-		printf("%s:%d %lx   ref staticlist %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+		printf("%s:%d %p   ref staticlist %*s -> %2d\n", __FILE__, __LINE__, this, (count()*2), "", count()+1);
 
 	LinkableValueNode::ref();
 }
@@ -516,7 +516,7 @@ bool
 ValueNode_StaticList::unref()const
 {
 	if (getenv("SYNFIG_DEBUG_STATICLIST_REFCOUNT"))
-		printf("%s:%d %lx unref staticlist %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+		printf("%s:%d %p unref staticlist %*s%2d <-\n", __FILE__, __LINE__, this, ((count()-1)*2), "", count()-1);
 
 	return LinkableValueNode::unref();
 }
