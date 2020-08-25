@@ -38,7 +38,7 @@ pkg_check_modules(LIBMNG libmng) # for mod_mng (set as optional as it is not cor
 pkg_check_modules(LIBJPEG REQUIRED libjpeg) # for mod_mng
 pkg_check_modules(OPENEXR OpenEXR) # for mod_openexr
 pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
-pkg_check_modules(FONT_CONFIG FontConfig) # for FontConfig
+pkg_check_modules(FONT_CONFIG fontconfig) # for FontConfig
 
 ## TODO: move to module where it is actually required
 pkg_check_modules(PANGO REQUIRED pango)
