@@ -71,16 +71,10 @@ do
     brew info "$pkg" | grep 'Not installed' >/dev/null && brew install "$pkg"
 done
 
-if ! ( which pip >/dev/null ); then
-    echo "No pip found. Installing..."
-    echo "Running python in sudo (you need root privelegies to do that)..."
-    # Dependency for lxml
-    curl https://bootstrap.pypa.io/get-pip.py | sudo python
-fi
-
+# pip is part of the brew python formula (so it is already installed)
 # Installing lxml using pip
 export PIPBINARY=pip
 if `which pip3 >/dev/null`; then
     PIPBINARY=pip3
 fi
-STATIC_DEPS=true sudo $PIPBINARY install lxml
+STATIC_DEPS=true $PIPBINARY install lxml
