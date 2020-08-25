@@ -6,7 +6,7 @@ target_sources(mptr_mplayer
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
 )
 
-install (
+SYNFIG_INSTALL(
     TARGETS mptr_mplayer
     DESTINATION lib/synfig/modules
 )

@@ -7,7 +7,7 @@ set(STUDIO_VERSION_MINOR 5)
 set(STUDIO_VERSION_PATCH 0)
 
 # Options
-option(MACOSX_PACKAGE "Makes Synfig in a .app format" ON)
+option(MACOSX_PACKAGE "Makes Synfig in a .app format" OFF)
 
 set(SYNFIG_BUILD_ROOT ${CMAKE_BINARY_DIR}/output)
 
@@ -36,6 +36,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline-functions -fno-i
 message("-- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
 include(SynfigFindGit)
+include(SynfigInstall)
 
 add_subdirectory(ETL)
 include_directories(ETL)

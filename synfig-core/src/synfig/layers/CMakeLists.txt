@@ -23,7 +23,7 @@ target_sources(synfig
 
 file(GLOB LAYERS_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
 
-install(
+SYNFIG_INSTALL(
     FILES ${LAYERS_HEADERS}
     DESTINATION include/synfig/layers
 )

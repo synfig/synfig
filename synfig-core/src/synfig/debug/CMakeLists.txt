@@ -7,7 +7,7 @@ target_sources(synfig
 
 file(GLOB DEBUG_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
 
-install(
+SYNFIG_INSTALL(
     FILES ${DEBUG_HEADERS}
     DESTINATION include/synfig/debug
 )

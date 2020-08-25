@@ -2,7 +2,7 @@
 function(install_all_headers DEST)
     file(GLOB HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
 
-    install(
+    SYNFIG_INSTALL(
         FILES ${HEADERS}
         DESTINATION include/synfig/${DEST}
     )

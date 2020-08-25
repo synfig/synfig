@@ -9,7 +9,7 @@ target_sources(mod_particle
 
 target_link_libraries(mod_particle synfig ${CAIRO_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_particle
     DESTINATION lib/synfig/modules
 )

@@ -264,7 +264,7 @@ foreach (IMAGE IN ITEMS ${IMAGES})
     )
 
     list(APPEND PIXMAPS ${PIXMAPS_DIR}/${IMAGE}.png)
-    install(
+    SYNFIG_INSTALL(
         FILES ${PIXMAPS_DIR}/${IMAGE}.png
         DESTINATION share/synfig/icons/classic
     )
@@ -276,7 +276,7 @@ file(
     DESTINATION ${SYNFIG_BUILD_ROOT}/share/icons/hicolor/scalable/apps
 )
 
-install(
+SYNFIG_INSTALL(
     FILES ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.svg
     DESTINATION share/icons/hicolor/scalable/apps
 )
@@ -303,7 +303,7 @@ add_custom_command(
 )
 
 list(APPEND PIXMAPS ${PIXMAPS_DIR}/splash_screen.png)
-install(
+SYNFIG_INSTALL(
     FILES ${PIXMAPS_DIR}/splash_screen.png
     DESTINATION share/pixmaps/synfigstudio
 )

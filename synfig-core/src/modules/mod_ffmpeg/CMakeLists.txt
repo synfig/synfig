@@ -9,7 +9,7 @@ target_sources(mod_ffmpeg
 
 target_link_libraries(mod_ffmpeg synfig ${SIGCPP_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_ffmpeg
     DESTINATION lib/synfig/modules
 )

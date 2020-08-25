@@ -8,7 +8,7 @@ target_sources(mod_gif
 
 target_link_libraries(mod_gif synfig ${SIGCPP_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_gif
     DESTINATION lib/synfig/modules
 )

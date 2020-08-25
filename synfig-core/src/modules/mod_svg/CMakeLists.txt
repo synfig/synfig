@@ -15,7 +15,7 @@ target_sources(mod_svg
 
 target_link_libraries(mod_svg synfig ${LIBXML_LIBRARIES} ${GLIBMM_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_svg
     DESTINATION lib/synfig/modules
 )

@@ -8,7 +8,7 @@ target_sources(mod_dv
 
 target_link_libraries(mod_dv synfig ${SIGCPP_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_dv
     DESTINATION lib/synfig/modules
 )

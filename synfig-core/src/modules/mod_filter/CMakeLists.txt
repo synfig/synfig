@@ -14,7 +14,7 @@ target_sources(mod_filter
 
 target_link_libraries(mod_filter synfig ${CAIRO_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_filter
     DESTINATION lib/synfig/modules
 )

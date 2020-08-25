@@ -9,7 +9,7 @@ target_sources(mod_example
 
 target_link_libraries(mod_example synfig)
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_example
     DESTINATION lib/synfig/modules
 )

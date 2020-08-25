@@ -34,7 +34,6 @@ if(LINUX)
 endif()
 
 # NSIS (Windows .exe installer)
-
 set(CPACK_NSIS_MUI_ICON "${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic/synfig_icon.ico")
 set(CPACK_NSIS_MUI_HEADERIMAGE "${CMAKE_SOURCE_DIR}/packaging/nsis/header.bmp")
 set(CPACK_NSIS_MUI_WELCOMEFINISHPAGE_BITMAP "${CMAKE_SOURCE_DIR}/packaging/nsis/welcomefinish.bmp")

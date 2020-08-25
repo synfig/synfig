@@ -12,7 +12,7 @@ target_sources(mod_png
 
 target_link_libraries(mod_png synfig ${LIBPNG_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_png
     DESTINATION lib/synfig/modules
 )

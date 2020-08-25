@@ -13,7 +13,7 @@ target_include_directories(mod_openexr SYSTEM PRIVATE ${OPENEXR_INCLUDE_DIRS})
 
 target_link_libraries(mod_openexr synfig ${OPENEXR_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_openexr
     DESTINATION lib/synfig/modules
 )

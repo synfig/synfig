@@ -70,7 +70,7 @@ target_sources(synfig
 
 file(GLOB VALUENODES_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
 
-install(
+SYNFIG_INSTALL(
     FILES ${VALUENODES_HEADERS}
     DESTINATION include/synfig/valuenodes
 )

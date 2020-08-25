@@ -83,7 +83,7 @@ configure_file(
     COPYONLY
 )
 
-install(
+SYNFIG_INSTALL(
     FILES synfig_modules.cfg
     DESTINATION etc
 )

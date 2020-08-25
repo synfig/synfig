@@ -5,15 +5,22 @@ if(APPLE)
             COPY ${CMAKE_SOURCE_DIR}/autobuild/osx/app-template/Contents 
             DESTINATION ${CMAKE_BINARY_DIR}/output/SynfigStudio.app
         )
+        install(
+            DIRECTORY ${CMAKE_SOURCE_DIR}/autobuild/osx/app-template/Contents
+            DESTINATION SynfigStudio.app
+        )
 
         add_executable(SynfigStudio ${CMAKE_SOURCE_DIR}/autobuild/osx/synfig_osx_launcher.cpp)
         set_target_properties(SynfigStudio
             PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output/SynfigStudio.app/Contents/MacOS
         )
+        install(
+            TARGETS SynfigStudio
+            DESTINATION SynfigStudio.app/Contents/MacOS
+        )
 
-        set(MAC_PORT /usr/local/opt) 
-        #set(APP_CONTENTS SynfigStudio.app/Contents/Resources) 
+        set(MAC_PORT /usr/local/opt)
         set(OSX_RELOCATE_BINARY ${CMAKE_SOURCE_DIR}/autobuild/osx/relocate-binary.sh)
     
         set(OSX_BINARIES 
@@ -34,7 +41,6 @@ if(APPLE)
 
             python3/bin/python3
         )
-
         file(GLOB PYTHON_FRAMEWORK
             ${MAC_PORT}/python3/Frameworks/Python.framework/Versions/3.*/Resources/Python.app/Contents/MacOS/Python
         )
@@ -48,6 +54,9 @@ if(APPLE)
                 COMMAND ${OSX_RELOCATE_BINARY} ${MAC_PORT}/${OSX_BINARY} ${MAC_PORT} ${SYNFIG_BUILD_ROOT}
                 DEPENDS ${MAC_PORT}/${OSX_BINARY}
             )
+            install(CODE "
+                execute_process(COMMAND ${OSX_RELOCATE_BINARY} ${MAC_PORT}/${OSX_BINARY} ${MAC_PORT} \${CMAKE_INSTALL_PREFIX}/SynfigStudio.app/Contents/Resources)
+            ")
 
             list(APPEND OSX_RELOCATED_BINARIES ${SYNFIG_BUILD_ROOT}/bin/${OSX_BINARY_NAME})
         endforeach()
@@ -76,9 +85,11 @@ if(APPLE)
                 COMMAND ${OSX_RELOCATE_BINARY} ${OSX_LIBRARY} ${MAC_PORT} ${SYNFIG_BUILD_ROOT}
                 DEPENDS ${OSX_LIBRARY}
             )
+            install(CODE "
+                execute_process(COMMAND ${OSX_RELOCATE_BINARY} ${OSX_LIBRARY} ${MAC_PORT} \${CMAKE_INSTALL_PREFIX}/SynfigStudio.app/Contents/Resources)
+            ")
 
             list(APPEND OSX_RELOCATED_LIBRARIES ${SYNFIG_BUILD_ROOT}/lib/${OSX_LIBRARY_NAME})
-            #message(${OSX_LIBRARY_NAME})
         endforeach()
 
         file(GLOB PYTHON_LIBRARY
@@ -87,6 +98,10 @@ if(APPLE)
         string(REPLACE "${MAC_PORT}/python3/Frameworks/Python.framework/Versions/" "" PYTHON_VERSION ${PYTHON_LIBRARY})
         string(REPLACE "/lib" "" PYTHON_VERSION ${PYTHON_VERSION})
         file(COPY ${PYTHON_LIBRARY} DESTINATION ${SYNFIG_BUILD_ROOT}/Frameworks/Python.framework/Versions/${PYTHON_VERSION})
+        install(
+            DIRECTORY ${PYTHON_LIBRARY}
+            DESTINATION SynfigStudio.app/Contents/Resources/Frameworks/Python.framework/Versions/${PYTHON_VERSION}
+        )
 
         file(GLOB OSX_SHARES
             ${MAC_PORT}/gdk-pixbuf/share/gir-1.0
@@ -106,24 +121,38 @@ if(APPLE)
             ${MACPORTS}/mlt/share/mlt
         )
         file(COPY ${OSX_SHARES} DESTINATION ${SYNFIG_BUILD_ROOT}/share)
+        install(
+            DIRECTORY ${OSX_SHARES}
+            DESTINATION SynfigStudio.app/Contents/Resources/share
+        )
 
         file(GLOB ADWAITA_ICON_THEME
             ${MACPORTS}/adwaita-icon-theme/share/icons/Adwaita
         )
         file(COPY ${ADWAITA_ICON_THEME} DESTINATION ${SYNFIG_BUILD_ROOT}/share/icons)
+        install(
+            DIRECTORY ${ADWAITA_ICON_THEME}
+            DESTINATION SynfigStudio.app/Contents/Resources/share/icons
+        )
         
         add_custom_target(relocate_osx_binaries DEPENDS ${OSX_RELOCATED_BINARIES} ${OSX_RELOCATED_LIBRARIES})
         add_dependencies(SynfigStudio relocate_osx_binaries)
 
-        install(
-            DIRECTORY ${CMAKE_BINARY_DIR}/output/SynfigStudio.app
-            DESTINATION .
+        # Relocate Synfig Binary now.
+        file(GLOB OSX_SYNFIG_BINARIES
+            ${SYNFIG_BUILD_ROOT}/bin/synfig*
+            ${SYNFIG_BUILD_ROOT}/lib/libsynfig*.dylib
+            ${SYNFIG_BUILD_ROOT}/lib/synfig/Modules/*.so
         )
+        
+        foreach(OSX_SYNFIG_BINARY ${OSX_SYNFIG_BINARIES})
+            install(CODE "
+                execute_process(COMMAND ${OSX_RELOCATE_BINARY} ${OSX_SYNFIG_BINARY} ${SYNFIG_BUILD_ROOT} \${CMAKE_INSTALL_PREFIX}/SynfigStudio.app/Contents/Resources)
+            ")
+        endforeach()
 
-        # Note Mac specific extension .app
-        set(APPS "\${CMAKE_INSTALL_PREFIX}/SynfigStudio.app")
-
-        # Directories to look for dependencies
-        set(DIRS ${CMAKE_BINARY_DIR}output)
+        install(CODE "
+            execute_process(COMMAND chmod +x \${CMAKE_INSTALL_PREFIX}/SynfigStudio.app/Contents/MacOS/SynfigStudio.sh)
+        ")
     endif()
 endif()
