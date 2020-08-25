@@ -197,6 +197,36 @@ void
 Action::ValueDescSet::prepare()
 {
 	clear();
+	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
+	if(comp && ){
+		ValueNode_Bone::Handle bone(0);
+		if(value_desc.get_parent_value_node() == comp->get_link("first")){
+			bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
+		}else if(value_desc.get_parent_value_node() == comp->get_link("second")){
+			bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
+		}
+
+		if(bone){
+			Action::Handle action(Action::create("ValueDescSet"));
+
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",value);
+			action->set_param("value_desc",ValueDesc(bone,value_desc.get_index()));
+
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+
+			add_action(action);
+
+		}
+
+	}
+
 
 	get_canvas_interface()->signal_value_desc_set()(value_desc,value);
 
