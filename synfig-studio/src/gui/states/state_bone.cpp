@@ -168,9 +168,9 @@ public:
 	void set_skel_deform_bone_width(Distance x){return skel_deform_bone_width_dist.set_value(x);}
 
 	Real get_bone_width() const{
-		if(skel_bone_width_dist.is_sensitive()){
+		if(skel_bone_width_dist.is_visible()){
 			return get_skel_bone_width();
-		}else if(skel_deform_bone_width_dist.is_sensitive()){
+		}else if(skel_deform_bone_width_dist.is_visible()){
 			return get_skel_deform_bone_width();
 		}else{
 			return DEFAULT_WIDTH;
@@ -181,11 +181,13 @@ public:
 		if(c_layer==0) {
 			save_settings();
 			c_layer=1;
+			update_tool_options(1);
 			load_settings();
 		}
 		else{
 			save_settings();
 			c_layer=0;
+			update_tool_options(0);
 			load_settings();
 		}
 	}
@@ -212,6 +214,7 @@ public:
 	WorkArea * get_work_area() const {return canvas_view_->get_work_area();}
 	int find_bone(Point point,Layer::Handle layer,int lay=0)const;
 	void _on_signal_change_active_bone(ValueNode::Handle node);
+	void _on_signal_value_desc_set(ValueDesc value_desc,ValueBase value);
 	int change_active_bone(ValueNode::Handle node);
 
 	void load_settings();
@@ -367,6 +370,8 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 {
 	egress_on_selection_change=true;
 
+	get_canvas_interface()->set_state("bone");
+
 	/*setting up the tool options menu*/
 
 	// 0, title
@@ -463,6 +468,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 
 	//signals
 	get_canvas_interface()->signal_active_bone_changed().connect(sigc::mem_fun(*this,&studio::StateBone_Context::_on_signal_change_active_bone));
+	get_canvas_interface()->signal_value_desc_set().connect(sigc::mem_fun(*this,&studio::StateBone_Context::_on_signal_value_desc_set));
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
@@ -525,6 +531,8 @@ StateBone_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 
 StateBone_Context::~StateBone_Context()
 {
+	get_canvas_interface()->set_state("");
+
 	save_settings();
 	App::dialog_tool_options->clear();
 
@@ -1244,4 +1252,19 @@ StateBone_Context::change_active_bone(ValueNode::Handle node){
 		return -1;
 	}
 	return -1;
+}
+
+void
+StateBone_Context::_on_signal_value_desc_set(ValueDesc value_desc,ValueBase value) {
+	cout<<value_desc.get_description()<<endl;
+	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
+	if(comp){
+			int index = value_desc.get_index();
+			cout<<"cc "<<index<<endl;
+			if(index==7 || index==6){
+				if(skel_bone_width_dist.is_visible())set_skel_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
+				if(skel_deform_bone_width_dist.is_visible())set_skel_deform_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
+
+			}
+	}
 }

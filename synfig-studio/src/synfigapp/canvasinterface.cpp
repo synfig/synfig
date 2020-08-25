@@ -100,7 +100,8 @@ CanvasInterface::CanvasInterface(etl::loose_handle<Instance> instance,etl::handl
 	instance_(instance),
 	canvas_(canvas),
 	cur_time_(canvas->rend_desc().get_frame_start()),
-	mode_(MODE_NORMAL|MODE_ANIMATE_PAST|MODE_ANIMATE_FUTURE)
+	mode_(MODE_NORMAL|MODE_ANIMATE_PAST|MODE_ANIMATE_FUTURE),
+	state_("")
 {
 	set_selection_manager(get_instance()->get_selection_manager());
 	set_ui_interface(get_instance()->get_ui_interface());
@@ -188,6 +189,17 @@ CanvasInterface::Mode
 CanvasInterface::get_mode()const
 {
 	return mode_;
+}
+
+void
+CanvasInterface::set_state(synfig::String x) {
+	state_=x;
+}
+
+synfig::String
+CanvasInterface::get_state()const
+{
+	return state_;
 }
 
 synfig::Layer::Handle
