@@ -35,11 +35,13 @@ STUDIO_INTLTOOL_MERGE(
     INSTALL_DESTINATION "share/applications"
 )
 
-add_custom_command(
-    TARGET desktop_file POST_BUILD
-    COMMAND sed -i -E \"s|^Icon=\(.*\)|Icon=/usr/share/icons/hicolor/scalable/apps/org.synfig.SynfigStudio.svg|g\"
-        ${SYNFIG_BUILD_ROOT}/share/applications/org.synfig.SynfigStudio.desktop
-)
+if(TARGET desktop_file)
+    add_custom_command(
+        TARGET desktop_file POST_BUILD
+        COMMAND sed -i -E \"s|^Icon=\(.*\)|Icon=/usr/share/icons/hicolor/scalable/apps/org.synfig.SynfigStudio.svg|g\"
+            ${SYNFIG_BUILD_ROOT}/share/applications/org.synfig.SynfigStudio.desktop
+    )
+endif()
 
 add_dependencies(synfigstudio
     build_images

@@ -23,25 +23,33 @@ if (CMAKE_USE_PTHREADS_INIT)
 endif()
 
 include(FindPkgConfig)
-pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
-pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
-pkg_check_modules(GIOMM REQUIRED giomm-2.4)
-pkg_check_modules(CAIRO REQUIRED cairo)
-pkg_check_modules(PANGOCAIRO REQUIRED pangocairo) # lyr_freetype
-pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
-pkg_check_modules(MLT REQUIRED mlt++)
-pkg_check_modules(FFTW REQUIRED fftw3)
-pkg_check_modules(FT REQUIRED freetype2) # for lyr_freetype
-pkg_check_modules(LIBPNG REQUIRED libpng) # for mod_png
-#TODO(ice0): find solution for libmng
-pkg_check_modules(LIBMNG libmng) # for mod_mng (set as optional as it is not correctly installed in Debian)
-pkg_check_modules(LIBJPEG REQUIRED libjpeg) # for mod_mng
-pkg_check_modules(OPENEXR OpenEXR) # for mod_openexr
-pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
-pkg_check_modules(FONT_CONFIG fontconfig) # for FontConfig
+if(PKG_CONFIG_FOUND)
+    pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
+    pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
+    pkg_check_modules(GIOMM REQUIRED giomm-2.4)
+    pkg_check_modules(CAIRO REQUIRED cairo)
+    pkg_check_modules(PANGOCAIRO REQUIRED pangocairo) # lyr_freetype
+    pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
+    pkg_check_modules(MLT REQUIRED mlt++)
+    pkg_check_modules(FFTW REQUIRED fftw3)
+    pkg_check_modules(FT REQUIRED freetype2) # for lyr_freetype
+    pkg_check_modules(LIBPNG REQUIRED libpng) # for mod_png
+    #TODO(ice0): find solution for libmng
+    pkg_check_modules(LIBMNG libmng) # for mod_mng (set as optional as it is not correctly installed in Debian)
+    pkg_check_modules(LIBJPEG REQUIRED libjpeg) # for mod_mng
+    pkg_check_modules(OPENEXR OpenEXR) # for mod_openexr
+    pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
+    pkg_check_modules(FONT_CONFIG fontconfig) # for FontConfig
 
-## TODO: move to module where it is actually required
-pkg_check_modules(PANGO REQUIRED pango)
+    ## TODO: move to module where it is actually required
+    pkg_check_modules(PANGO REQUIRED pango)
+else()
+    find_package(FFTW3 CONFIG REQUIRED)
+    find_package(FFTW3f CONFIG REQUIRED)
+    find_package(FFTW3l CONFIG REQUIRED)
+    find_package(unofficial-gettext CONFIG REQUIRED)
+    find_package(sdl2-mixer CONFIG REQUIRED)
+endif()
 
 foreach(pkg_config_lib 
   SIGCPP 
