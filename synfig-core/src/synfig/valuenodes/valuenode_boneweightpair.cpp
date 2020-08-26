@@ -71,7 +71,7 @@ ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value, Canva
 		set_link("weight",ValueNode_Const::create(Real(bone_weight_pair.get_weight())));
 
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-			printf("%s:%d set parent canvas for bwp to %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()));
+			printf("%s:%d set parent canvas for bwp to %p\n", __FILE__, __LINE__, canvas.get());
 		set_parent_canvas(canvas);
 
 		ValueNode_Bone::show_bone_map(canvas, __FILE__, __LINE__, "after making new boneweightpair");

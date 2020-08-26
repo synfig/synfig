@@ -167,7 +167,7 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 	}
 
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for composite %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+		printf("%s:%d set parent canvas for composite %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 	set_parent_canvas(canvas);
 }
 

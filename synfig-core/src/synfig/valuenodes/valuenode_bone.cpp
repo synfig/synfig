@@ -104,7 +104,7 @@ ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int 
 	for (ValueNode_Bone::BoneMap::iterator iter = bone_map.begin(); iter != bone_map.end(); iter++)
 		bone_set.insert(iter->second);
 
-	printf("\n  %s:%d (canvas %lx) %s we now have %d bones (%d unreachable):\n", file, line, uintptr_t(canvas.get()), text.c_str(), int(bone_map.size()), int(bone_map.size() - bone_set.size()));
+	printf("\n  %s:%d (canvas %p) %s we now have %d bones (%d unreachable):\n", file, line, canvas.get(), text.c_str(), int(bone_map.size()), int(bone_map.size() - bone_set.size()));
 
 	for (set<ValueNode_Bone::LooseHandle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
 	{
@@ -242,7 +242,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 	if (getenv("SYNFIG_DEBUG_BONE_CONSTRUCTORS"))
 	{
 		printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
-		printf("%s:%d --- ValueNode_Bone() for %s at %lx---\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), uintptr_t(this));
+		printf("%s:%d --- ValueNode_Bone() for %s at %p---\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), this);
 		printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 	}
 	Vocab ret(get_children_vocab());
@@ -278,10 +278,10 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		canvas_map[get_root_canvas()][get_guid()] = this;
 
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-			printf("%s:%d set parent canvas for bone %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+			printf("%s:%d set parent canvas for bone %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 		set_parent_canvas(canvas);
 
-		show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in constructor of %s at %lx", GET_GUID_CSTR(get_guid()), uintptr_t(this)));
+		show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in constructor of %s at %p", GET_GUID_CSTR(get_guid()), this));
 	}
 	else
 	{
@@ -314,7 +314,7 @@ ValueNode_Bone::~ValueNode_Bone()
 	if (getenv("SYNFIG_DEBUG_BONE_CONSTRUCTORS"))
 	{
 		printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
-		printf("%s:%d --- ~ValueNode_Bone() for %s at %lx---\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), uintptr_t(this));
+		printf("%s:%d --- ~ValueNode_Bone() for %s at %p---\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), this);
 		printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 	}
 
@@ -344,17 +344,17 @@ ValueNode_Bone::set_root_canvas(etl::loose_handle<Canvas> canvas)
 {
 	GUID guid(get_guid());
 	Canvas::LooseHandle old_canvas(get_root_canvas());
-	show_bone_map(old_canvas, __FILE__, __LINE__, strprintf("before changing canvas from %lx to (%lx)", uintptr_t(old_canvas.get()), uintptr_t(canvas.get())));
+	show_bone_map(old_canvas, __FILE__, __LINE__, strprintf("before changing canvas from %p to (%p)", old_canvas.get(), canvas.get()));
 	LinkableValueNode::set_root_canvas(canvas);
 	Canvas::LooseHandle new_canvas(get_root_canvas()); // it isn't necessarily what we passed in, because set_root_canvas walks up to the root
 	if (new_canvas != old_canvas)
 	{
 		if (!canvas_map[old_canvas].count(guid))
-			warning("%s:%d the node we're moving (%lx) isn't in the map", __FILE__, __LINE__, uintptr_t(this));
+			warning("%s:%d the node we're moving (%p) isn't in the map", __FILE__, __LINE__, this);
 
 		canvas_map[new_canvas][guid] = canvas_map[old_canvas][guid];
 		canvas_map[old_canvas].erase(guid);
-		show_bone_map(new_canvas, __FILE__, __LINE__, strprintf("after changing canvas from %lx to %lx", uintptr_t(old_canvas.get()), uintptr_t(new_canvas.get())));
+		show_bone_map(new_canvas, __FILE__, __LINE__, strprintf("after changing canvas from %p to %p", old_canvas.get(), new_canvas.get()));
 	}
 	else
 		if (getenv("SYNFIG_DEBUG_BONE_MAP"))
@@ -830,7 +830,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 	if (getenv("SYNFIG_DEBUG_SUITABLE_PARENTS"))
 		debug = true;
 
-	if (debug) printf("getting bones affected by %lx %s\n", uintptr_t(value_node.get()), value_node->get_string().c_str());
+	if (debug) printf("getting bones affected by %p %s\n", value_node.get(), value_node->get_string().c_str());
 
 	// initialise current_nodes with the node we're editing
 	current_nodes.insert(value_node.get());
@@ -845,8 +845,8 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 		{
 			// loop through the parents of each node in current_nodes
 			set<Node*> node_parents((*iter)->parent_set);
-			if (debug) printf("%s:%d node %d %lx (%s) has %zd parents\n",
-							  __FILE__, __LINE__, count, uintptr_t(*iter), (*iter)->get_string().c_str(), node_parents.size());
+			if (debug) printf("%s:%d node %d %p (%s) has %zd parents\n",
+							  __FILE__, __LINE__, count, *iter, (*iter)->get_string().c_str(), node_parents.size());
 			int count2 = 0;
 			for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
 			{
@@ -882,26 +882,26 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 	if (getenv("SYNFIG_DEBUG_SUITABLE_PARENTS"))
 		debug = true;
 
-	if (debug) printf("%s:%d which bones can be parents of %lx (%s)\n", __FILE__, __LINE__, uintptr_t(value_node.get()), value_node->get_string().c_str());
+	if (debug) printf("%s:%d which bones can be parents of %p (%s)\n", __FILE__, __LINE__, value_node.get(), value_node->get_string().c_str());
 
 	// which bones are we currently editing the parent of - it can be more than one due to linking
 	ValueNode_Bone::BoneSet affected_bones(ValueNode_Bone::get_bones_affected_by(value_node));
 	if (debug) printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, affected_bones.size());
 	Canvas::LooseHandle canvas(value_node->get_root_canvas());
-	if (debug) printf("%s:%d canvas %lx\n", __FILE__, __LINE__, uintptr_t(canvas.get()));
+	if (debug) printf("%s:%d canvas %p\n", __FILE__, __LINE__, canvas.get());
 	for (ValueNode_Bone::BoneSet::iterator iter = affected_bones.begin(); iter != affected_bones.end(); iter++)
 	{
 		if (!canvas)
 		{
 			canvas = (*iter)->get_root_canvas();
-			printf("%s:%d root canvas %lx\n", __FILE__, __LINE__, uintptr_t((*iter)->get_root_canvas().get()));
-			printf("%s:%d parent canvas %lx\n", __FILE__, __LINE__, uintptr_t((*iter)->get_parent_canvas().get()));
-			printf("%s:%d ancestor canvas %lx\n", __FILE__, __LINE__, uintptr_t((*iter)->get_non_inline_ancestor_canvas().get()));
+			printf("%s:%d root canvas %p\n", __FILE__, __LINE__, (*iter)->get_root_canvas().get());
+			printf("%s:%d parent canvas %p\n", __FILE__, __LINE__, (*iter)->get_parent_canvas().get());
+			printf("%s:%d ancestor canvas %p\n", __FILE__, __LINE__, (*iter)->get_non_inline_ancestor_canvas().get());
 
 		}
 		if (canvas != (*iter)->get_root_canvas())
-			warning("%s:%d multiple root canvases in affected bones: %lx and %lx", __FILE__, __LINE__,
-					uintptr_t(canvas.get()), uintptr_t((*iter)->get_root_canvas().get()));
+			warning("%s:%d multiple root canvases in affected bones: %p and %p", __FILE__, __LINE__,
+					canvas.get(), (*iter)->get_root_canvas().get());
 	}
 
 	BoneMap bone_map(canvas_map[canvas]);
