@@ -679,10 +679,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					else{
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-						//cout<<"Active Bone: "<<active_bone<<endl;
 						if(active_bone!=-1 && !list_node->list.empty()){ //! if active bone is already set
 							ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
-							//cout<<"Active bone name : "<<value_desc.get_name()<<endl;
 							ValueNode_Bone::Handle bone_node;
 							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 							{
@@ -1194,18 +1192,23 @@ StateBone_Context::_on_signal_change_active_bone(ValueNode::Handle node){
 	
 
 	if(bone = ValueNode_Bone::Handle::cast_dynamic(node)){
-		if(skel_layer){
-			ValueDesc list_desc(layer,"bones");
-			ValueNode_StaticList::Handle list_node;
-			list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-			for(int i=0;i<list_node->link_count();i++){
-				ValueDesc value_desc(list_node,i,list_desc);
+		ValueDesc list_desc(layer,"bones");
+		ValueNode_StaticList::Handle list_node;
+		list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+		for(int i=0;i<list_node->link_count();i++){
+			ValueDesc value_desc(list_node,i,list_desc);
+			if(skel_layer){
 				if(value_desc.get_value_node()==node){
 					active_bone = i;
 					return;
 				}
+			}else if(deform_layer){
+				ValueNode_Composite::Handle v_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+				if(v_node->get_link("first")==node || v_node->get_link("second")==node){
+					active_bone = i;
+					return;
+				}
 			}
-	
 		}
 	}
 }
@@ -1219,18 +1222,21 @@ StateBone_Context::change_active_bone(ValueNode::Handle node){
 
 
 	if(bone = ValueNode_Bone::Handle::cast_dynamic(node)){
-		if(skel_layer){
-			ValueDesc list_desc(layer,"bones");
-			ValueNode_StaticList::Handle list_node;
-			list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-			for(int i=0;i<list_node->link_count();i++){
-				ValueDesc value_desc(list_node,i,list_desc);
+		ValueDesc list_desc(layer,"bones");
+		ValueNode_StaticList::Handle list_node;
+		list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+		for(int i=0;i<list_node->link_count();i++){
+			ValueDesc value_desc(list_node,i,list_desc);
+			if(skel_layer){
 				if(value_desc.get_value_node()==node){
-					active_bone = i;
 					return i;
 				}
+			}else if(deform_layer){
+				ValueNode_Composite::Handle v_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+				if(v_node->get_link("first")==node || v_node->get_link("second")==node){
+					return i ;
+				}
 			}
-			return -1;
 		}
 		return -1;
 	}
