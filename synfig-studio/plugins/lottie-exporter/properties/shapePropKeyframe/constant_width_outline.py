@@ -80,11 +80,7 @@ def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 	#Constant width
 	loop = bline.get_loop()
 	width = layer.get_param("width")
-	if loop:
-		width.scale_convert_link(1)
-	else:
-		width.scale_convert_link(4)
-
+	width.scale_convert_link(1)
 	width.animate("real")
 	width.fill_path(lottie["it"][1],"w")
 
@@ -93,8 +89,8 @@ def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 	lottie["it"][0]["ty"] = "sh"
 	lottie["it"][0]["ix"] = 1
 	lottie["it"][0]["ks"] = {}
-	lottie["it"][0]["nm"] =  "Path 1",
-	lottie["it"][0]["mn"] =  "ADBE Vector Shape - Group",
+	lottie["it"][0]["nm"] =  "Path 1"
+	lottie["it"][0]["mn"] =  "ADBE Vector Shape - Group"
 	lottie["it"][0]["hd"] =  "false"
 	lottie["it"][0]["ks"]["a"] = 1 
 	lottie["it"][0]["ks"]["ix"] = lottie["it"][0]["ix"] + 1 
@@ -176,10 +172,11 @@ def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 		flag = True
 
 	for fr in frames:
-		st_val = insert_dict_at(lottie["it"][0]["ks"]["k"], -1, fr, flag,True)
-		cur_origin = origin.get_value(fr)
-		for point in range(0,length):
-			pos_ret, width, t1, t2, split_r_val, split_a_val = get_outline_param_at_frame(bline[point],fr)
-			cubic_to(pos_ret,t1,t2,st_val,cur_origin,False,True)
+		if fr!=1:
+			st_val = insert_dict_at(lottie["it"][0]["ks"]["k"], -1, fr, flag,True)
+			cur_origin = origin.get_value(fr)
+			for point in range(0,length):
+				pos_ret, width, t1, t2, split_r_val, split_a_val = get_outline_param_at_frame(bline[point],fr)
+				cubic_to(pos_ret,t1,t2,st_val,cur_origin,False,True)
 
 
