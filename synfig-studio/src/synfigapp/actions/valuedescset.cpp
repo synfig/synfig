@@ -202,7 +202,7 @@ Action::ValueDescSet::prepare()
 	// then both bones in a ValueNode_Composite
 	// should follow each other
 	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
-	if(comp){
+	if(comp && get_canvas_interface()->get_state()=="bone"){
 		ValueNode_Bone::Handle bone(0);
 		if(value_desc.get_parent_value_node() == comp->get_link("first")){
 			bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
