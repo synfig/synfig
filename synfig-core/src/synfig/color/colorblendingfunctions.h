@@ -376,7 +376,7 @@ C blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 template <class C>
 C blendfunc_ALPHA(C &a,C &b,float amount)
 {
-	const float one(C::ceil);
+	//const float one(C::ceil);
 	C rm(b);
 
 	//multiply the alpha channel with the one below us

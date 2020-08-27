@@ -301,7 +301,7 @@ static void sampleColor(
       // Found a color change - apply splitting procedure
       // NOTE: The function RETURNS BEFORE THE FOR IS CONTINUED!
 
-      synfig::Color nextColor = pixelToColor(rsurface, x1, y1, gamma);
+      //synfig::Color nextColor = pixelToColor(rsurface, x1, y1, gamma);
 
       // Identify split segment
       int u;

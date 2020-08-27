@@ -146,7 +146,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
 
   if(flag == 1)
   {
-    for (num, point = 2; num < segment_size - 3; point++, num += 2)
+    for (/*num, */point = 2; num < segment_size - 3; point++, num += 2)
     {
       bline_point_list.push_back(synfig::BLinePoint());
       bline_point_list[point].set_vertex(segment[num + 2].to_2d()); // last point
