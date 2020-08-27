@@ -89,7 +89,7 @@ if(WIN32)
         set(MLT_DIRECTORY "${MINGW_PATH}/../opt/mlt-6.16.0")
     endif()
 
-    set(MLT_FILES
+    file(GLOB MLT_FILES
         ${MLT_DIRECTORY}/libmlt++-3.dll
         ${MLT_DIRECTORY}/libmlt-6.dll
         ${MLT_DIRECTORY}/melt.exe
@@ -97,7 +97,7 @@ if(WIN32)
     file(COPY ${MLT_FILES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
     install(FILES ${MLT_FILES} DESTINATION bin)
 
-    set(MLT_DIRECTORIES
+   file(GLOB MLT_DIRECTORIES
         ${MLT_DIRECTORY}/lib
         ${MLT_DIRECTORY}/share
     )
