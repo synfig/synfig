@@ -203,32 +203,36 @@ Action::ValueDescSet::prepare()
 	// should follow each other
 	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
 	if(comp && get_canvas_interface()->get_state()=="bone"){
-		ValueNode_Bone::Handle bone(0);
+
 		if(value_desc.get_parent_value_node() == comp->get_link("first")){
-			bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
-		}else if(value_desc.get_parent_value_node() == comp->get_link("second")){
-			bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
+			ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
+			ValueNode_Bone::Handle bone1 = 	ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
+			if(bone){
+				Action::Handle action(Action::create("ValueDescSet"));
+				cout<<value.type_name()<<" "<<value_desc.get_index()<<endl;
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				switch (value_desc.get_index()) {
+					case 2:
+						value = ValueBase(value.get(Point())+bone->get_link(value_desc.get_index())->operator()(time).get(Point())-bone1->get_link(value_desc.get_index())->operator()(time).get(Point()));
+					case 3:
+						value = ValueBase(value.get(Angle())+bone->get_link(value_desc.get_index())->operator()(time).get(Angle())-bone1->get_link(value_desc.get_index())->operator()(time).get(Angle()));
+					case 4:
+						value = ValueBase(value.get(Real())+bone->get_link(value_desc.get_index())->operator()(time).get(Real())-bone1->get_link(value_desc.get_index())->operator()(time).get(Real()));
+				}
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",value);
+				action->set_param("value_desc",ValueDesc(bone,value_desc.get_index()));
+
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+
+				add_action(action);
+
+			}
 		}
-
-		if(bone){
-			Action::Handle action(Action::create("ValueDescSet"));
-
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",value);
-			action->set_param("value_desc",ValueDesc(bone,value_desc.get_index()));
-
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-
-			add_action(action);
-
-		}
-
 	}
 
 
