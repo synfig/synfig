@@ -161,9 +161,11 @@ synfig::check_version_(size_t version, size_t vec_size, size_t color_size, size_
 	return ret;
 }
 
+#if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 static void broken_pipe_signal (int /*sig*/)  {
 	synfig::warning("Broken Pipe...");
 }
+#endif
 
 bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
 {
