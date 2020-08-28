@@ -248,11 +248,11 @@ About::About()
 	extra_info += etl::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
 	extra_info += etl::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
 	extra_info += etl::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
-	#ifdef __GNUC__
+	#if defined(__clang__)
+		extra_info += etl::strprintf(_("Apple LLVM version %s\n"), __clang_version__);
+	#elif defined(__GNUC__) || defined(__GNUG__)
 		extra_info += etl::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
-	#endif
-
-	#ifdef _MSC_VER
+	#elif defined(_MSC_VER)
 		extra_info += etl::strprintf("Microsoft Visual C/C++ (%d)\n", _MSC_VER);
 	#endif
 
