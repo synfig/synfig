@@ -164,7 +164,7 @@ def gen_layer_text(lottie, layer, idx):
     lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
-
+        
     calc_font_data(settings.lottie_format,layer)
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
