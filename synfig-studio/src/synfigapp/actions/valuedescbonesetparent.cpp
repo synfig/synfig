@@ -49,7 +49,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueDescBoneSetParent);
 ACTION_SET_NAME(Action::ValueDescBoneSetParent,"ValueDescBoneSetParent");
-ACTION_SET_LOCAL_NAME(Action::ValueDescBoneSetParent,N_("Make Parent To Active Bone"));
+ACTION_SET_LOCAL_NAME(Action::ValueDescBoneSetParent,N_("Set as Parent to Active Bone"));
 ACTION_SET_TASK(Action::ValueDescBoneSetParent,"make_parent_to_active");
 ACTION_SET_CATEGORY(Action::ValueDescBoneSetParent,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescBoneSetParent,0);
