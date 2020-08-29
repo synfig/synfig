@@ -982,8 +982,11 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 			}
 			else{
 				if(duck){
-					_on_signal_change_active_bone(duck->get_value_desc().get_parent_value_node());
-					get_work_area()->set_active_bone_value_node(duck->get_value_desc().get_parent_value_node());
+				    ValueNode::Handle parent = duck->get_value_desc().get_parent_desc().get_value_node();
+					if(duck->get_value_desc().is_parent_desc_declared() && ValueNode_Bone::Handle::cast_dynamic(parent)){
+						_on_signal_change_active_bone(parent);
+						get_work_area()->set_active_bone_value_node(parent);
+					}
 				}
 			}
 			return Smach::RESULT_ACCEPT;
