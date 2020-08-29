@@ -73,6 +73,7 @@ foreach(MOD IN ITEMS ${MODS_ENABLED})
     message("--   ${MOD}")
     set(SYNFIG_MODULES_CONTENT "${SYNFIG_MODULES_CONTENT}\n${MOD}")
     add_subdirectory(${MOD})
+    add_dependencies(synfig_bin ${MOD})
 endforeach(MOD)
 
 file(WRITE synfig_modules.cfg ${SYNFIG_MODULES_CONTENT})
