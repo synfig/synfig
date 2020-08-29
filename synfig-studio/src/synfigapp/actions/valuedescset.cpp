@@ -209,21 +209,30 @@ Action::ValueDescSet::prepare()
 			ValueNode_Bone::Handle bone1 = 	ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
 			if(bone){
 				Action::Handle action(Action::create("ValueDescSet"));
-				cout<<value.type_name()<<" "<<value_desc.get_index()<<endl;
+				ValueBase svalue(0);
 				if(!action)
 					throw Error(_("Unable to find action ValueDescSet (bug)"));
-				switch (value_desc.get_index()) {
-					case 2:
-						value = ValueBase(value.get(Point())+bone->get_link(value_desc.get_index())->operator()(time).get(Point())-bone1->get_link(value_desc.get_index())->operator()(time).get(Point()));
-					case 3:
-						value = ValueBase(value.get(Angle())+bone->get_link(value_desc.get_index())->operator()(time).get(Angle())-bone1->get_link(value_desc.get_index())->operator()(time).get(Angle()));
-					case 4:
-						value = ValueBase(value.get(Real())+bone->get_link(value_desc.get_index())->operator()(time).get(Real())-bone1->get_link(value_desc.get_index())->operator()(time).get(Real()));
+				int index = value_desc.get_index();
+				if(index==2) {
+					Point p = value.get(Point());
+					p += bone->get_link(value_desc.get_index())->operator()(time).get(Point());
+					p -= -bone1->get_link(value_desc.get_index())->operator()(time).get(Point());
+					svalue = ValueBase(p);
+				}else if(index==3){
+					Angle a = value.get(Angle());
+					a+=bone->get_link(value_desc.get_index())->operator()(time).get(Angle());
+					a-=bone1->get_link(value_desc.get_index())->operator()(time).get(Angle());
+					svalue = ValueBase(a);
+				}else if(index==4){
+					Real r = value.get(Real());
+					r+= bone->get_link(value_desc.get_index())->operator()(time).get(Real());
+					r-=bone1->get_link(value_desc.get_index())->operator()(time).get(Real());
+					svalue = ValueBase(r);
 				}
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
-				action->set_param("new_value",value);
+				action->set_param("new_value",svalue);
 				action->set_param("value_desc",ValueDesc(bone,value_desc.get_index()));
 
 				if(!action->is_ready())
