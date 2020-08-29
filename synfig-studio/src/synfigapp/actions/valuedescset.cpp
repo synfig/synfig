@@ -213,32 +213,35 @@ Action::ValueDescSet::prepare()
 				if(!action)
 					throw Error(_("Unable to find action ValueDescSet (bug)"));
 				int index = value_desc.get_index();
-				if(index==2) {
-					Point p = value.get(Point());
-					p += bone->get_link(value_desc.get_index())->operator()(time).get(Point());
-					p -= -bone1->get_link(value_desc.get_index())->operator()(time).get(Point());
-					svalue = ValueBase(p);
-				}else if(index==3){
-					Angle a = value.get(Angle());
-					a+=bone->get_link(value_desc.get_index())->operator()(time).get(Angle());
-					a-=bone1->get_link(value_desc.get_index())->operator()(time).get(Angle());
-					svalue = ValueBase(a);
-				}else if(index==4){
-					Real r = value.get(Real());
-					r+= bone->get_link(value_desc.get_index())->operator()(time).get(Real());
-					r-=bone1->get_link(value_desc.get_index())->operator()(time).get(Real());
-					svalue = ValueBase(r);
+				if(index==2 || index==3 || index==4){
+
+					if(index==2) {
+						Point p = value.get(Point());
+						p += bone->get_link(value_desc.get_index())->operator()(time).get(Point());
+						p -= -bone1->get_link(value_desc.get_index())->operator()(time).get(Point());
+						svalue = ValueBase(p);
+					}else if(index==3){
+						Angle a = value.get(Angle());
+						a+=bone->get_link(value_desc.get_index())->operator()(time).get(Angle());
+						a-=bone1->get_link(value_desc.get_index())->operator()(time).get(Angle());
+						svalue = ValueBase(a);
+					}else if(index==4){
+						Real r = value.get(Real());
+						r+= bone->get_link(value_desc.get_index())->operator()(time).get(Real());
+						r-=bone1->get_link(value_desc.get_index())->operator()(time).get(Real());
+						svalue = ValueBase(r);
+					}
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",svalue);
+					action->set_param("value_desc",ValueDesc(bone,value_desc.get_index()));
+
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+
+					add_action(action);
 				}
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",svalue);
-				action->set_param("value_desc",ValueDesc(bone,value_desc.get_index()));
-
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-
-				add_action(action);
 
 			}
 		}
