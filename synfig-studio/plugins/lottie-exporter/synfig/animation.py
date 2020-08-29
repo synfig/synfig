@@ -317,7 +317,6 @@ def get_bool_at_frame(anim, frame):
 		else:
 			val = anim[-1][0][0][0][0][0].attrib["value"]
 
-	print(val,not_convert_flag)
 	if val == "false" and not not_convert_flag:
 		val = False
 	elif val == "true" and not not_convert_flag:
