@@ -1218,13 +1218,13 @@ StateBone_Context::_on_signal_change_active_bone(ValueNode::Handle node){
 
 int
 StateBone_Context::change_active_bone(ValueNode::Handle node){
-	ValueNode_Bone::Handle bone;
+	ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(node);
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
 	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
 
 
-	if(bone = ValueNode_Bone::Handle::cast_dynamic(node)){
+	if((skel_layer || deform_layer) && bone ){
 		ValueDesc list_desc(layer,"bones");
 		ValueNode_StaticList::Handle list_node;
 		list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
