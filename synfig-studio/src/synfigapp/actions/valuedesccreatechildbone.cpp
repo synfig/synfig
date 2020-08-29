@@ -246,7 +246,7 @@ Action::ValueDescCreateChildBone::prepare()
 		bone.set_tipwidth(tipwidth.get(Real()));
 		bone.set_angle(angle.get(Angle()));
 
-		ValueNode_Bone::Handle bone_node = ValueNode_Bone::create(bone);
+		ValueNode_Bone::Handle bone_node = ValueNode_Bone::Handle::cast_dynamic(ValueNode_Const::create(bone,get_canvas()));
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_node));
 
 		action->set_param("value_desc",ValueDesc(value_node,index));
