@@ -55,12 +55,28 @@ def gen_layer_shape_solid(lottie, layer, idx):
 
     invert = False
     Inv = layer.get_param("invert").get()
+    flag = False
+    #So far only 'not' convert method seems to be supported for invert param in circle, will add more subsequently.
     if Inv is not None:
-        is_animate = is_animated(Inv[0])
+        if "bool" not in str(Inv[0]) and "animated" not in str(Inv[0]):
+            is_animate = is_animated(Inv[0][0][0])
+            flag = True
+        else:
+            is_animate = is_animated(Inv[0])
         if is_animate == settings.NOT_ANIMATED:
-            val = Inv[0].attrib["value"]
+            if flag:
+                val = "false"
+                if Inv[0][0][0].attrib["value"] == "false":
+                    val = "true"
+            else:
+                val = Inv[0].attrib["value"]
         elif is_animate == settings.SINGLE_WAYPOINT:
-            val = Inv[0][0][0].attrib["value"]
+            if flag:
+                val = "false"
+                if Inv[0][0][0][0][0].attrib["value"] == "false":
+                    val = "true"
+            else:
+                val = Inv[0][0][0].attrib["value"]
         else:
             # If animated, always set invert to false
             val = "false"
