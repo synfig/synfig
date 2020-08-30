@@ -3497,7 +3497,10 @@ App::dialog_message_2b(const std::string &message,
 	dialog.add_button(button1, 0);
 	dialog.add_button(button2, 1);
 
-	return	dialog.run();
+	if(dialog.run() == 1)
+		return true;
+
+	return false;
 }
 
 
