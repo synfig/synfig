@@ -60,20 +60,21 @@ def append_blur_dict(layer,itr,group_flag):
 	blur_dict = []
 	layers = [settings.blur_dictionary[layer_var] for layer_var in settings.non_blur_dictionary[itr]]
 	gen_layer_blur(blur_dict,layers)
-	if group_flag:
-		for asset_index,_ in enumerate(settings.lottie_format["assets"]):
-			if "layers" in _.keys():
-				for index,val in enumerate(settings.lottie_format["assets"][asset_index]["layers"]):
-					blur_flag = blur_test(settings.lottie_format["assets"][asset_index]["layers"][index]["ef"])
-					if not blur_flag:
-						for blur in blur_dict:
-							settings.lottie_format["assets"][asset_index]["layers"][index]["ef"].append(blur)
+	if len(layers)!=0:
+		if group_flag:
+			for asset_index,_ in enumerate(settings.lottie_format["assets"]):
+				if "layers" in _.keys():
+					for index,val in enumerate(settings.lottie_format["assets"][asset_index]["layers"]):
+						blur_flag = blur_test(settings.lottie_format["assets"][asset_index]["layers"][index]["ef"])
+						if not blur_flag:
+							for blur in blur_dict:
+								settings.lottie_format["assets"][asset_index]["layers"][index]["ef"].append(blur)
 
-	else:
-		for index,val in enumerate(settings.lottie_format["layers"]):
-			if settings.lottie_format["layers"][index]["nm"] == layer.get_description():
-				for blur in blur_dict:
-					settings.lottie_format["layers"][index]["ef"].append(blur)
+		else:
+			for index,val in enumerate(settings.lottie_format["layers"]):
+				if settings.lottie_format["layers"][index]["nm"] == layer.get_description():
+					for blur in blur_dict:
+						settings.lottie_format["layers"][index]["ef"].append(blur)
 
 def gen_layers(lottie, canvas, layer_itr):
 	"""
@@ -98,7 +99,10 @@ def gen_layers(lottie, canvas, layer_itr):
 	skeleton = settings.SKELETON_LAYER
 	blur = settings.BLUR_LAYER
 	supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton,blur)
-
+	if settings.WITHOUT_VARIABLE_WIDTH:
+		shape.add("outline")
+		settings.WITHOUT_VARIABLE_WIDTH = False
+		
 	while itr >= 0:
 		layer = canvas[itr]
 		if layer.get_type() not in supported_layers:  # Only supported layers

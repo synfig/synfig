@@ -5,7 +5,8 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     lottie-exporter.py
     settings.py
     test_bodymovin.js
-
+    export_without_variable_width.py
+    
     # common
     common/Bline.py
     common/Canvas.py
@@ -61,6 +62,7 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
 
     # properties/shapePropKeyframe
     properties/shapePropKeyframe/circle.py
+    properties/shapePropKeyframe/constant_width_outline.py
     properties/shapePropKeyframe/helper.py
     properties/shapePropKeyframe/outline.py
     properties/shapePropKeyframe/polygon.py

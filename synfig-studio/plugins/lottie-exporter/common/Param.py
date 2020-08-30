@@ -1319,6 +1319,7 @@ class Param:
         if is_animated(node) == settings.ANIMATED:
             for waypoint in node:
                 fr = common.misc.get_frame(waypoint)
+                settings.WAYPOINTS_LIST.append(fr)
                 if fr > window["last"]:
                     window["last"] = fr
                 if fr < window["first"]:

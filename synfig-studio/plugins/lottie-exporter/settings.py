@@ -80,6 +80,9 @@ ANIMATED = 2
 SINGLE_WAYPOINT = 1
 NOT_ANIMATED = 0
 LEVEL = 0 #Indicates the depth of a layer
+OUTLINE_FLAG = False #Flag to check for outline as outline needs the newer version of bodymovin.js
+WAYPOINTS_LIST = []
+WITHOUT_VARIABLE_WIDTH = False
 
 def init():
     """

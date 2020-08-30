@@ -14,6 +14,7 @@ from shapes.gFill import gen_linear_gradient, gen_radial_gradient
 from helpers.blendMode import get_blend
 from helpers.transform import gen_helpers_transform
 from synfig.rectangle import gen_dummy_rectangle
+from properties.shapePropKeyframe.constant_width_outline import gen_bline_outline_constant
 sys.path.append("..")
 
 
@@ -58,12 +59,17 @@ def gen_layer_shape(lottie, layer, idx):
         gen_shapes_rectangle(lottie["shapes"][0], layer.get_layer(), index.inc())
     elif layer.get_type() in {"linear_gradient", "radial_gradient"}:
         gen_shapes_shape(lottie["shapes"][0], layer, index.inc())
+    elif layer.get_type() in {"outline"}:
+        settings.OUTLINE_FLAG = True
+        gen_bline_outline_constant(lottie["shapes"][0],layer.get_param("bline"),layer,lottie["ks"],index.inc())
 
     lottie["shapes"].append({})  # For the fill or color
     if layer.get_type() in {"linear_gradient"}:
         gen_linear_gradient(lottie["shapes"][1], layer, index.inc())
     elif layer.get_type() in {"radial_gradient"}:
         gen_radial_gradient(lottie["shapes"][1], layer, index.inc())
+    elif layer.get_type() in {"outline"}:
+        pass
     else:
         gen_shapes_fill(lottie["shapes"][1], layer)
 
