@@ -72,9 +72,10 @@ def append_blur_dict(layer,itr,group_flag):
 
 		else:
 			for index,val in enumerate(settings.lottie_format["layers"]):
-				if settings.lottie_format["layers"][index]["nm"] == layer.get_description():
-					for blur in blur_dict:
-						settings.lottie_format["layers"][index]["ef"].append(blur)
+				if len(val.keys()) > 1:
+					if settings.lottie_format["layers"][index]["nm"] == layer.get_description():
+						for blur in blur_dict:
+							settings.lottie_format["layers"][index]["ef"].append(blur)
 
 
 def calculate_max_index(non_group_shade_dictionary, level):
