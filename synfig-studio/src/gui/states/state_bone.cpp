@@ -739,7 +739,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								bone.set_angle((releaseOrigin - clickOrigin).angle());
 							}
 
-							ValueNode_Bone::Handle bone_node = ValueNode_Bone::create(bone);
+							ValueNode_Bone::Handle bone_node = ValueNode_Bone::Handle::cast_dynamic(ValueNode_Const::create(bone,get_canvas()));
 							action->set_param("item",ValueNode::Handle::cast_dynamic(bone_node));
 
 							action->set_param("value_desc",ValueDesc(list_node,0));
@@ -877,7 +877,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								bone2.set_angle((releaseOrigin - clickOrigin).angle());
 							}
 
-							ValueNode_Composite::Handle bone_pair = ValueNode_Composite::create(pair<Bone,Bone>(bone1,bone2));
+							ValueNode_Composite::Handle bone_pair = ValueNode_Composite::create(pair<Bone,Bone>(bone1,bone2),get_canvas());
 
 							action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
 							action->set_param("value_desc",ValueDesc(list_node,0));
