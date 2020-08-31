@@ -165,9 +165,9 @@ def gen_layers(lottie, canvas, layer_itr):
 			# No return statement here
 
 		elif layer.get_type() in text:
-            gen_layer_text(lottie[-1],
-                           layer,
-                           itr)
+			gen_layer_text(lottie[-1],
+						   layer,
+						   itr)
 
 		elif layer.get_type() in skeleton:
 			pass
