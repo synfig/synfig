@@ -26,7 +26,8 @@ libmod_magickpp_la_LDFLAGS = \
 	-avoid-version
 
 libmod_magickpp_la_CXXFLAGS = \
-	@SYNFIG_CFLAGS@
+	@SYNFIG_CFLAGS@ \
+	@MAGICKPP_CFLAGS@
 
 libmod_magickpp_la_LIBADD = \
 	../../synfig/libsynfig.la \
