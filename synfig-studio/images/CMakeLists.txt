@@ -296,15 +296,16 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES Release)
     set(SYNFIG_SPLASH_SCREEN ${CMAKE_CURRENT_SOURCE_DIR}/splash_screen.sif)
 endif()
 
+set(SPLASH_SCREEN_DIR ${SYNFIG_BUILD_ROOT}/share/synfig/images)
 add_custom_command(
-    OUTPUT ${PIXMAPS_DIR}/splash_screen.png
-    COMMAND synfig_bin ${SYNFIG_SPLASH_SCREEN} -o ${PIXMAPS_DIR}/splash_screen.png --time 0f --quiet
+    OUTPUT ${SPLASH_SCREEN_DIR}/splash_screen.png
+    COMMAND synfig_bin ${SYNFIG_SPLASH_SCREEN} -o ${SPLASH_SCREEN_DIR}/splash_screen.png --time 0f --quiet
     DEPENDS ${SYNFIG_SPLASH_SCREEN} synfig_bin
 )
 
-list(APPEND PIXMAPS ${PIXMAPS_DIR}/splash_screen.png)
+list(APPEND PIXMAPS ${SPLASH_SCREEN_DIR}/splash_screen.png)
 install(
-    FILES ${PIXMAPS_DIR}/splash_screen.png
+    FILES ${SPLASH_SCREEN_DIR}/splash_screen.png
     DESTINATION share/pixmaps/synfigstudio
 )
 
