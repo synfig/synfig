@@ -11,7 +11,7 @@ target_sources(mod_noise
 
 target_link_libraries(mod_noise synfig ${SIGCPP_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_noise
     DESTINATION lib/synfig/modules
 )

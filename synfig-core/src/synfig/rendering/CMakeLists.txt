@@ -10,7 +10,7 @@ target_sources(synfig
 
 file(GLOB RENDERING_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
 
-install(
+SYNFIG_INSTALL(
     FILES ${RENDERING_HEADERS}
     DESTINATION include/synfig/rendering
 )

@@ -150,24 +150,26 @@ target_link_libraries(synfig
 ## TODO: find a better way to do that, maybe?
 file(GLOB SYNFIG_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
 
-install(
+SYNFIG_INSTALL(
     FILES ${SYNFIG_HEADERS}
     DESTINATION include/synfig
 )
 
-install(
-    TARGETS synfig
-    EXPORT synfig
-    LIBRARY DESTINATION lib
-)
+if(NOT ${MACOSX_PACKAGE})
+    install(
+        TARGETS synfig
+        EXPORT synfig
+        LIBRARY DESTINATION lib
+    )
 
-export(
-    EXPORT synfig
-    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake"
-)
+    export(
+        EXPORT synfig
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake"
+    )
 
-install(
-    EXPORT synfig
-    FILE "${PROJECT_NAME}-config.cmake"
-    DESTINATION "lib/cmake/${PROJECT_NAME}"
-)
+    install(
+        EXPORT synfig
+        FILE "${PROJECT_NAME}-config.cmake"
+        DESTINATION "lib/cmake/${PROJECT_NAME}"
+    )
+endif()

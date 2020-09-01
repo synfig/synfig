@@ -9,7 +9,7 @@ target_sources(mod_imagemagick
 
 target_link_libraries(mod_imagemagick synfig)
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_imagemagick
     DESTINATION lib/synfig/modules
 )

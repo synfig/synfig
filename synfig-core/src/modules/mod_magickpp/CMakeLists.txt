@@ -22,7 +22,7 @@ target_sources(mod_magickpp
 
 target_link_libraries(mod_magickpp synfig ${MAGICKCORE_LIBRARIES} ${ImageMagick_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_magickpp
     DESTINATION lib/synfig/modules
 )

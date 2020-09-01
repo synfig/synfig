@@ -6,7 +6,14 @@ set(STUDIO_VERSION_MAJOR 1)
 set(STUDIO_VERSION_MINOR 5)
 set(STUDIO_VERSION_PATCH 0)
 
+# Options
+option(MACOSX_PACKAGE "Makes Synfig in a .app format" OFF)
+
 set(SYNFIG_BUILD_ROOT ${CMAKE_BINARY_DIR}/output)
+
+if(${MACOSX_PACKAGE})
+    set(SYNFIG_BUILD_ROOT ${CMAKE_BINARY_DIR}/output/SynfigStudio.app/Contents/Resources)
+endif()
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib)
@@ -29,6 +36,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline-functions -fno-i
 message("-- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
 include(SynfigFindGit)
+include(SynfigInstall)
 
 add_subdirectory(ETL)
 include_directories(ETL)
@@ -44,6 +52,8 @@ add_subdirectory(synfig-studio)
 
 if(WIN32)
     include(InstallMSYS2)
+elseif(APPLE)
+    include(InstallMacOSX)
 endif()
 
 include(CPackConfig)

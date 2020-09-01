@@ -8,7 +8,7 @@ target_sources(mod_yuv420p
 
 target_link_libraries(mod_yuv420p synfig)
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_yuv420p
     DESTINATION lib/synfig/modules
 )

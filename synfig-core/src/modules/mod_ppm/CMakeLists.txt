@@ -9,7 +9,7 @@ target_sources(mod_ppm
 
 target_link_libraries(mod_ppm synfig)
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_ppm
     DESTINATION lib/synfig/modules
 )

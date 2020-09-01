@@ -28,7 +28,7 @@ target_sources(lyr_std
 
 target_link_libraries(lyr_std synfig ${CAIRO_LIBRARIES} ${GLIBMM_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS lyr_std
     DESTINATION lib/synfig/modules
 )

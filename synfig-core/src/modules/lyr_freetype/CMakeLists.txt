@@ -13,7 +13,7 @@ target_sources(lyr_freetype
 
 target_link_libraries(lyr_freetype synfig ${CAIRO_LIBRARIES} ${PANGO_LIBRARIES} ${PANGOCAIRO_LIBRARIES} ${FT_LIBRARIES} ${FONT_CONFIG_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS lyr_freetype
     DESTINATION lib/synfig/modules
 )

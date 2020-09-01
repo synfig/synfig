@@ -9,7 +9,7 @@ target_sources(mod_libavcodec
 
 target_link_libraries(mod_libavcodec synfig)
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_libavcodec
     DESTINATION lib/synfig/modules
 )

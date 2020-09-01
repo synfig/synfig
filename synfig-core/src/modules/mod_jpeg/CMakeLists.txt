@@ -9,7 +9,7 @@ target_sources(mod_jpeg
 
 target_link_libraries(mod_jpeg synfig ${LIBJPEG_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_jpeg
     DESTINATION lib/synfig/modules
 )

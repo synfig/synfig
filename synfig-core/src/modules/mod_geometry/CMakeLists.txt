@@ -14,7 +14,7 @@ target_sources(mod_geometry
 
 target_link_libraries(mod_geometry synfig ${CAIRO_LIBRARIES} ${GLIBMM_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_geometry
     DESTINATION lib/synfig/modules
 )

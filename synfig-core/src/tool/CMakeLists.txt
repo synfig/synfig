@@ -24,7 +24,7 @@ target_link_libraries(synfig_bin
     ${GIOMM_LIBRARIES}
 )
 
-install (
+SYNFIG_INSTALL(
     TARGETS synfig_bin
     DESTINATION bin
 )

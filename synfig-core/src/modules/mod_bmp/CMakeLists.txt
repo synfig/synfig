@@ -9,7 +9,7 @@ target_sources(mod_bmp
 
 target_link_libraries(mod_bmp synfig ${SIGCPP_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_bmp
     DESTINATION lib/synfig/modules
 )

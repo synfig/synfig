@@ -52,7 +52,7 @@ set(ETL_HEADERS
         "${PROJECT_BINARY_DIR}/ETL/etl_profile.h" 
 )
 
-install(
+SYNFIG_INSTALL(
     FILES ${ETL_HEADERS}
     DESTINATION include/ETL
 )

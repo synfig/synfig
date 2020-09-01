@@ -12,7 +12,7 @@ target_sources(mod_gradient
 
 target_link_libraries(mod_gradient synfig ${CAIRO_LIBRARIES})
 
-install (
+SYNFIG_INSTALL(
     TARGETS mod_gradient
     DESTINATION lib/synfig/modules
 )

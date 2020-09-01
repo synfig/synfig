@@ -73,7 +73,7 @@ function(STUDIO_INTLTOOL_MERGE)
             DEPENDS ${_OUTPUT_FILE}
         )
 
-        install(FILES ${_OUTPUT_FILE}
+        SYNFIG_INSTALL(FILES ${_OUTPUT_FILE}
             DESTINATION ${_parsedArguments_INSTALL_DESTINATION}
         )
     else()

@@ -74,7 +74,7 @@ function(SYNFIG_PROCESS_PO_FILES)
             )
 
             if(_parsedArguments_INSTALL_DESTINATION)
-                install(
+                SYNFIG_INSTALL(
                     FILES ${_moFile} DESTINATION
                     ${_parsedArguments_INSTALL_DESTINATION}/${_current_LANGUAGE}/LC_MESSAGES/
                 )
