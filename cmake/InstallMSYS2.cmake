@@ -132,4 +132,7 @@ if(WIN32)
     )
     file(COPY ${LIB_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
     install(DIRECTORY ${LIB_DIRECTORIES} DESTINATION lib)
+
+    file(COPY ${MINGW_PATH}/share/icons/Adwaita DESTINATION ${SYNFIG_BUILD_ROOT}/share/icons)
+    install(DIRECTORY ${MINGW_PATH}/share/icons/Adwaita DESTINATION share/icons)
 endif()
