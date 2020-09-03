@@ -6,11 +6,8 @@ set -e # exit on error
 
 SCRIPT_DIR=`dirname "$0"`
 
-# set environment variables
-source ${SCRIPT_DIR}/set_env.sh
-
 VERSION_MLT="6.16.0"
-PATH="${PREFIX}/lib/ccache/bin:${PATH}"
+PATH="${MINGW_PREFIX}/lib/ccache/bin:${PATH}"
 MLT_PATH="/opt/mlt-${VERSION_MLT}"
 
 if [ ! -f ${MLT_PATH}/done ] || [ ! -f ${MLT_PATH}/lib/mlt/libmltavformat.dll ]; then
@@ -27,7 +24,7 @@ pushd mlt-${VERSION_MLT}/
 FIXED_MLT_PATH=`cygpath -m ${MLT_PATH}`
 echo "Install path: ${MLT_PATH}"
 echo "Fixed MLT Path: ${FIXED_MLT_PATH}"
-./configure --prefix=${FIXED_MLT_PATH} --target-arch=$MSYS2_ARCH --disable-gtk2 --enable-avformat
+./configure --prefix=${FIXED_MLT_PATH} --target-arch=$MSYSTEM_CARCH --disable-gtk2 --enable-avformat
 make -j2 --silent
 make install
 popd
