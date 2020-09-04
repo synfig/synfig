@@ -12,10 +12,7 @@
 
 SCRIPT_DIR=`dirname "$0"`
 
-# set environment variables
-source ${SCRIPT_DIR}/autobuild/msys2/set_env.sh
-
-echo "Selected ARCH: ${ARCH}"
+echo "Selected ARCH: ${MINGW_PACKAGE_PREFIX}"
 
 #echo "Sync pacman package databases"
 #pacman -Sy
@@ -30,24 +27,24 @@ intltool \
 make \
 patch \
 tar \
-$ARCH-gcc \
-$ARCH-ccache \
-$ARCH-libtool \
-$ARCH-make \
-$ARCH-pkg-config \
-$ARCH-dlfcn \
-$ARCH-SDL2  \
-$ARCH-boost \
-$ARCH-cairomm \
-$ARCH-ffmpeg \
-$ARCH-fftw \
-$ARCH-glibmm \
-$ARCH-imagemagick \
-$ARCH-libxml++2.6 \
-$ARCH-pango \
-$ARCH-gtkmm3 \
-$ARCH-openexr \
-$ARCH-libmng
+$MINGW_PACKAGE_PREFIX-gcc \
+$MINGW_PACKAGE_PREFIX-ccache \
+$MINGW_PACKAGE_PREFIX-libtool \
+$MINGW_PACKAGE_PREFIX-make \
+$MINGW_PACKAGE_PREFIX-pkg-config \
+$MINGW_PACKAGE_PREFIX-dlfcn \
+$MINGW_PACKAGE_PREFIX-SDL2  \
+$MINGW_PACKAGE_PREFIX-boost \
+$MINGW_PACKAGE_PREFIX-cairomm \
+$MINGW_PACKAGE_PREFIX-ffmpeg \
+$MINGW_PACKAGE_PREFIX-fftw \
+$MINGW_PACKAGE_PREFIX-glibmm \
+$MINGW_PACKAGE_PREFIX-imagemagick \
+$MINGW_PACKAGE_PREFIX-libxml++2.6 \
+$MINGW_PACKAGE_PREFIX-pango \
+$MINGW_PACKAGE_PREFIX-gtkmm3 \
+$MINGW_PACKAGE_PREFIX-openexr \
+$MINGW_PACKAGE_PREFIX-libmng
 
 # build mlt
 bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
@@ -56,4 +53,4 @@ bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
 # and std::sprintf is stop working. But std::sprintf is used by Boost::Odeint library
 # so we need it.
 
-patch $PREFIX/include/libintl.h < ${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch
+patch $MINGW_PREFIX/include/libintl.h < ${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch
