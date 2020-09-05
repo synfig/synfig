@@ -217,9 +217,16 @@ Action::ValueDescSet::prepare()
 
 					if(index==2) {
 						Point p = value.get(Point());
-						p += bone->get_link(value_desc.get_index())->operator()(time).get(Point());
-						p -= -bone1->get_link(value_desc.get_index())->operator()(time).get(Point());
-						svalue = ValueBase(p);
+
+						Bone parentBone = (*bone->get_link("parent"))(time).get(Bone());
+						Bone parentBone1 = (*bone1->get_link("parent"))(time).get(Bone());
+						
+						Matrix parentAnimMatrix = parentBone.get_animated_matrix();
+						Matrix parentAnimMatrix1 = parentBone1.get_animated_matrix();
+
+						p += parentAnimMatrix.get_transformed(bone->get_link(value_desc.get_index())->operator()(time).get(Point()));
+						p -= parentAnimMatrix1.get_transformed(-bone1->get_link(value_desc.get_index())->operator()(time).get(Point()));
+						svalue = ValueBase(parentAnimMatrix.get_inverted().get_transformed(p));
 					}else if(index==3){
 						Angle a = value.get(Angle());
 						a+=bone->get_link(value_desc.get_index())->operator()(time).get(Angle());
