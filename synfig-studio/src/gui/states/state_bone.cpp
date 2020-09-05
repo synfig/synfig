@@ -367,6 +367,8 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 {
 	egress_on_selection_change=true;
 
+	get_canvas_interface()->set_state("bone");
+
 	/*setting up the tool options menu*/
 
 	// 0, title
@@ -525,6 +527,8 @@ StateBone_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 
 StateBone_Context::~StateBone_Context()
 {
+	get_canvas_interface()->set_state("");
+
 	save_settings();
 	App::dialog_tool_options->clear();
 

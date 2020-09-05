@@ -103,10 +103,14 @@ Action::ValueDescBoneSetParent::is_candidate(const ParamList &x)
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
 
+	i = x.find("canvas_interface");
+	etl::handle<CanvasInterface> ci = i->second.get_canvas_interface();
+
 	return value_desc.parent_is_value_node()
 		&& ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())
 		&& child
-		&& ValueNode_Bone::Handle::cast_dynamic(child);
+		&& ValueNode_Bone::Handle::cast_dynamic(child)
+		&& ci->get_state()=="bone";
 }
 
 bool
