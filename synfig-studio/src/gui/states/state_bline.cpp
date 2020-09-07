@@ -887,8 +887,6 @@ StateBLine_Context::run_()
 		value_node_bline->set_member_canvas(canvas);
 
 		synfigapp::SelectionManager::LayerList layer_selection;
-		if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
-			layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
 		// count how many layers we're going to be creating
 		int layers_to_create = this->layers_to_create();

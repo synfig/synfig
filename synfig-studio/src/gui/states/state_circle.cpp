@@ -864,8 +864,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	}
 
 	synfigapp::SelectionManager::LayerList layer_selection;
-	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
-		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));

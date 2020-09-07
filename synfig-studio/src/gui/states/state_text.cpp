@@ -627,8 +627,6 @@ StateText_Context::make_text(const Point& _point)
 	}
 
 	synfigapp::SelectionManager::LayerList layer_selection;
-	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
-		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point point(transform.unperform(_point));
