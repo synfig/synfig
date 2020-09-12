@@ -303,7 +303,7 @@ LayerTree::create_param_tree()
 		column->set_min_width(75);
 		column->set_resizable();
 		column->set_clickable();
-		column->set_sort_column(param_model.name);
+		column->set_sort_column(param_model.label);
 
 		param_tree_view().append_column(*column);
 	}
