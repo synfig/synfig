@@ -1,4 +1,4 @@
-find_program(INTLTOOL_MERGE_EXECUTABLE intltool-merge)
+find_program(INTLTOOL_MERGE_EXECUTABLE intltool-merge PATHS c:/msys64/usr/bin)
 mark_as_advanced(INTLTOOL_MERGE_EXECUTABLE)
 
 if(INTLTOOL_MERGE_EXECUTABLE)
@@ -18,7 +18,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Intltool
     REQUIRED_VARS INTLTOOL_MERGE_EXECUTABLE
     VERSION_VAR INTLTOOL_VERSION_STRING
-)   
+)
 
 set(INTLTOOL_OPTIONS_DEFAULT "--quiet")
 
@@ -28,7 +28,7 @@ set(INTLTOOL_OPTIONS_DEFAULT "--quiet")
 # to run it. In this case, we need to explicitly add the interpreter to the command.
 if(INTLTOOL_MERGE_EXECUTABLE AND MINGW AND NOT MSYS)
     message(STATUS "Fixing intltool-merge command...")
-    set(INTLTOOL_MERGE_EXECUTABLE perl ${INTLTOOL_MERGE_EXECUTABLE})
+    set(INTLTOOL_MERGE_EXECUTABLE c:/msys64/usr/bin/perl ${INTLTOOL_MERGE_EXECUTABLE})
 endif()
 
 function(STUDIO_INTLTOOL_MERGE)
@@ -38,15 +38,15 @@ function(STUDIO_INTLTOOL_MERGE)
     set(_outputFile OUTPUT_FILE)
     set(_installDestination INSTALL_DESTINATION)
 
-    if(INTLTOOL_MERGE_EXECUTABLE)
-        cmake_parse_arguments(
+    cmake_parse_arguments(
             _parsedArguments
             "${_desktop}"
             "${_targetName};${_inputFile};${_installDestination};${_outputFile}"
             ""
             ${ARGN}
-        )
+    )
 
+    if(INTLTOOL_MERGE_EXECUTABLE)
         if(_parsedArguments_OUTPUT_FILE)
             set(_OUTPUT_FILE "${SYNFIG_BUILD_ROOT}/${_parsedArguments_INSTALL_DESTINATION}/${_parsedArguments_OUTPUT_FILE}")
         else()
@@ -77,6 +77,6 @@ function(STUDIO_INTLTOOL_MERGE)
             DESTINATION ${_parsedArguments_INSTALL_DESTINATION}
         )
     else()
-        message(WARNING "-- Could not find intltool-merge: No translations made for ${_name}.")
+        message(WARNING "-- Could not find intltool-merge: No translations made for ${_parsedArguments_TARGET_NAME}.")
     endif()
 endfunction()

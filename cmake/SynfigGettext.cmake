@@ -33,7 +33,7 @@ if(MSGFMT_EXECUTABLE)
     if (GETTEXT_VERSION MATCHES "^(${MSGMERGE_NAME}|${MSGMERGE_NAMEWE}) \\([^\\)]*\\) ([0-9\\.]+[^ \n]*)")
         set(GETTEXT_VERSION_STRING "${CMAKE_MATCH_2}")
     endif()
-    
+
     unset(GETTEXT_VERSION)
     unset(MSGMERGE_NAME)
     unset(MSGMERGE_NAMEWE)
