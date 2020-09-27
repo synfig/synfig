@@ -4,13 +4,31 @@ if(WIN32)
     set(MINGW_BIN "${MINGW_PATH}/bin")
     set(MINGW_LIB "${MINGW_PATH}/lib")
 
+    # MSYS2 Hacks
+
+    # This code fixes MSYS2 related problems and can be safely removed after these problems are resolved
+
+    # ImageMagick has problems finding modules in MSYS2. For example, if you copy `magick.exe` somewhere
+    # outside the `/mingw64/bin` folder and try to do some manipulation with images, for example:
+    # `./magick.exe test.jpg test.png`, then this command will fail with error
+    # `magick.exe: NoDecodeDelegateForThisImageFormat `JPEG '@ error / Create.c / ReadImage / 562.`
+    # `synfig-cli` also fails when trying to make icons and images, so to fix this issue we need to copy ImageMagick's
+    # libs inside our build directory. Read more about ImageMagick paths and environment variables:
+    # https://imagemagick.org/script/resources.php#environment
+
+    file(GLOB MAGICK_LIBS ${MINGW_LIB}/ImageMagick-*)
+    file(COPY ${MAGICK_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
+
+    # End of hacks
+
+
     # /output/bin
     file(GLOB MINGW_LIBS
         ${MINGW_BIN}/libatk-1.0-[0-9]*.dll
         ${MINGW_BIN}/libatkmm-1.6-[0-9]*.dll
         ${MINGW_BIN}/libbz2-[0-9]*.dll
-        ${MINGW_BIN}/libbrotlicommon.dll 
-        ${MINGW_BIN}/libbrotlidec.dll 
+        ${MINGW_BIN}/libbrotlicommon.dll
+        ${MINGW_BIN}/libbrotlidec.dll
         ${MINGW_BIN}/libcairo-[0-9]*.dll
         ${MINGW_BIN}/libcairo-gobject-[0-9]*.dll
         ${MINGW_BIN}/libcairo-script-interpreter-[0-9]*.dll
@@ -19,7 +37,7 @@ if(WIN32)
         ${MINGW_BIN}/libdl.dll
         ${MINGW_BIN}/libepoxy-[0-9]*.dll
         ${MINGW_BIN}/libexpat-[0-9]*.dll
-        ${MINGW_BIN}/libffi-[0-9]*.dll 
+        ${MINGW_BIN}/libffi-[0-9]*.dll
         ${MINGW_BIN}/libfftw3-[0-9]*.dll
         ${MINGW_BIN}/libfftw3f-[0-9]*.dll
         ${MINGW_BIN}/libfribidi-[0-9]*.dll
@@ -71,8 +89,8 @@ if(WIN32)
         ${MINGW_BIN}/libxml2-[0-9]*.dll
         ${MINGW_BIN}/zlib[0-9]*.dll
     )
-    file(COPY ${MINGW_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
-    install(FILES ${MINGW_LIBS} DESTINATION bin) 
+#    file(COPY ${MINGW_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
+    install(FILES ${MINGW_LIBS} DESTINATION bin)
 
     find_program(CYGPATH_EXECUTABLE cygpath)
     if(CYGPATH_EXECUTABLE)
@@ -109,7 +127,7 @@ if(WIN32)
         ${MINGW_PATH}/etc/ImageMagick-[0-9]*
         ${MINGW_PATH}/etc/gtk-3.[0-9]*
     )
-    file(COPY ${ETC_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/etc)
+#    file(COPY ${ETC_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/etc)
     INSTALL(DIRECTORY ${ETC_DIRECTORIES} DESTINATION etc)
 
     # /output/lib
@@ -130,9 +148,9 @@ if(WIN32)
         ${MINGW_LIB}/libxml++-2.[0-9]
         ${MINGW_LIB}/pkgconfig
     )
-    file(COPY ${LIB_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
+#    file(COPY ${LIB_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
     install(DIRECTORY ${LIB_DIRECTORIES} DESTINATION lib)
 
-    file(COPY ${MINGW_PATH}/share/icons/Adwaita DESTINATION ${SYNFIG_BUILD_ROOT}/share/icons)
+#    file(COPY ${MINGW_PATH}/share/icons/Adwaita DESTINATION ${SYNFIG_BUILD_ROOT}/share/icons)
     install(DIRECTORY ${MINGW_PATH}/share/icons/Adwaita DESTINATION share/icons)
 endif()
