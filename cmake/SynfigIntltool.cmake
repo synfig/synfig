@@ -26,7 +26,7 @@ set(INTLTOOL_OPTIONS_DEFAULT "--quiet")
 # generator uses the standard Windows `cmd` shell for building), `intltool-merge`
 # cannot be started, because it is just a Perl script, and `cmd` does not know how
 # to run it. In this case, we need to explicitly add the interpreter to the command.
-if(INTLTOOL_MERGE_EXECUTABLE AND MINGW AND NOT MSYS)
+if(INTLTOOL_MERGE_EXECUTABLE AND MSYS)
     message(STATUS "Fixing intltool-merge command...")
     set(INTLTOOL_MERGE_EXECUTABLE c:/msys64/usr/bin/perl ${INTLTOOL_MERGE_EXECUTABLE})
 endif()
