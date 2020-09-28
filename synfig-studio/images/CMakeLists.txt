@@ -297,6 +297,7 @@ elseif(${CMAKE_BUILD_TYPE} MATCHES Release)
 endif()
 
 set(SPLASH_SCREEN_DIR ${SYNFIG_BUILD_ROOT}/share/synfig/images)
+file(MAKE_DIRECTORY ${SPLASH_SCREEN_DIR})
 add_custom_command(
     OUTPUT ${SPLASH_SCREEN_DIR}/splash_screen.png
     COMMAND synfig_bin ${SYNFIG_SPLASH_SCREEN} -o ${SPLASH_SCREEN_DIR}/splash_screen.png --time 0f --quiet

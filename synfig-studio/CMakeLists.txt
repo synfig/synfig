@@ -27,6 +27,7 @@ STUDIO_INTLTOOL_MERGE(
     INSTALL_DESTINATION "share/appdata"
 )
 
+if(NOT WIN32) # desktop file needs to be build only for nix systems
 STUDIO_INTLTOOL_MERGE(
     DESKTOP
     TARGET_NAME desktop_file
@@ -34,6 +35,7 @@ STUDIO_INTLTOOL_MERGE(
     OUTPUT_FILE "org.synfig.SynfigStudio.desktop"
     INSTALL_DESTINATION "share/applications"
 )
+endif()
 
 if(TARGET desktop_file)
     add_custom_command(
