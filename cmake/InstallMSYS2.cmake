@@ -92,7 +92,7 @@ if(WIN32)
 #    file(COPY ${MINGW_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
     install(FILES ${MINGW_LIBS} DESTINATION bin)
 
-    find_program(CYGPATH_EXECUTABLE cygpath)
+    find_program(CYGPATH_EXECUTABLE cygpath ${MINGW_PATH}/../usr/bin/)
     if(CYGPATH_EXECUTABLE)
         set(MLT_PATH "/opt/mlt-6.16.0")
         execute_process(
