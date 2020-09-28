@@ -55,7 +55,7 @@ add_subdirectory(synfig-core)
 include_directories(synfig-core/src)
 add_subdirectory(synfig-studio)
 
-if(WIN32)
+if(MSYS)
 	include(InstallMSYS2)
 endif()
 
