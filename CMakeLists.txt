@@ -12,11 +12,24 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/bin)
 
+# MSYS is defined for MSYS Makefiles generator and undefined for Ninja (for example)
+# But if you run CMake from MSYS shell, we can still detect MSYS by environment variables (MINGW_PREFIX)
+# https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Write-Platform-Checks
+if(MINGW AND NOT MSYS)
+	if (NOT DEFINED ENV{MINGW_PREFIX})
+		message(FATAL_ERROR "Currently we only support MSYS2 environment for MinGW compiler on Windows."
+				" Please pass '-DMSYS=1' to your CMake command to force using MSYS."
+				" Also you need to set MINGW_PREFIX environment variable if your MSYS2 installation is not in standard path (c:\\msys64\\)")
+	else()
+		set(MSYS ON)
+	endif()
+endif()
+
 #set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Debug)
+	set(CMAKE_BUILD_TYPE Debug)
 endif()
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-inline-functions -fno-inline -g -O0 -Wall")
@@ -43,7 +56,7 @@ include_directories(synfig-core/src)
 add_subdirectory(synfig-studio)
 
 if(WIN32)
-    include(InstallMSYS2)
+	include(InstallMSYS2)
 endif()
 
 include(CPackConfig)
