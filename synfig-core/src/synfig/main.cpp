@@ -347,6 +347,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	for(i=0;i<locations.size();i++)
 		if(retrieve_modules_to_load(locations[i],modules_to_load))
 		{
+			synfig::info("Using settings from '%s'",locations[i].replace(String(MODULE_LIST_FILENAME),""));
 			if(cb) {
 				cb->task(strprintf(_("Loading modules from %s"),locations[i].c_str()));
 			} else {
@@ -357,6 +358,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	if (i == locations.size())
 	{
+		synfig::warning("The configuration file '%s', was not found.\n Searched in the following directories :", MODULE_LIST_FILENAME);
+		for(i=0;i<locations.size();i++)
+			synfig::warning("- %s \n",locations[i].replace(String(MODULE_LIST_FILENAME),""));
 		synfig::warning("Cannot find '%s', trying to load default modules", MODULE_LIST_FILENAME);
 		Module::register_default_modules(cb);
 	}
