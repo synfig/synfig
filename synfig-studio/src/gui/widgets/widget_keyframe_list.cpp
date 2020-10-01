@@ -80,6 +80,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	moving_tooltip.set_border_width(4);
 	moving_tooltip.set_default_size(10, 10);
 	moving_tooltip.set_type_hint(Gdk::WINDOW_TYPE_HINT_TOOLTIP);
+	moving_tooltip.set_transient_for(*App::main_window);
 	moving_tooltip.add(moving_tooltip_label);
 }
 
