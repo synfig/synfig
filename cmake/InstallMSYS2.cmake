@@ -2,6 +2,7 @@ set(MINGW_PATH $ENV{MINGW_PREFIX})
 
 set(MINGW_BIN "${MINGW_PATH}/bin")
 set(MINGW_LIB "${MINGW_PATH}/lib")
+set(MINGW_SHARE "${MINGW_PATH}/share")
 
 # MSYS2 Hacks
 
@@ -124,6 +125,7 @@ install(DIRECTORY ${MLT_DIRECTORIES} DESTINATION bin)
 # /output/etc
 file(GLOB ETC_DIRECTORIES
 	    ${MINGW_PATH}/etc/ImageMagick-[0-9]*
+		${MINGW_PATH}/etc/fonts
 	    ${MINGW_PATH}/etc/gtk-3.[0-9]*
 	    )
 #    file(COPY ${ETC_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/etc)
@@ -131,24 +133,22 @@ INSTALL(DIRECTORY ${ETC_DIRECTORIES} DESTINATION etc)
 
 # /output/lib
 file(GLOB LIB_DIRECTORIES
-	    ${MINGW_LIB}/atkmm-1.[0-9]
-	    ${MINGW_LIB}/cmake
 	    ${MINGW_LIB}/gdk-pixbuf-2.[0-9]
-	    ${MINGW_LIB}/giomm-2.[0-9]
-	    ${MINGW_LIB}/glibmm-2.[0-9]
-	    ${MINGW_LIB}/gtkmm-3.[0-9]
-	    ${MINGW_LIB}/pangomm-1.[0-9]
-	    ${MINGW_LIB}/sigc++-2.[0-9]
-	    ${MINGW_LIB}/cairomm-1.[0-9]
-	    ${MINGW_LIB}/gdkmm-3.[0-9]
-	    ${MINGW_LIB}/glib-2.[0-9]
 	    ${MINGW_LIB}/gtk-3.[0-9]
 	    ${MINGW_LIB}/ImageMagick-*
-	    ${MINGW_LIB}/libxml++-2.[0-9]
-	    ${MINGW_LIB}/pkgconfig
 	    )
 #    file(COPY ${LIB_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
 install(DIRECTORY ${LIB_DIRECTORIES} DESTINATION lib)
 
-#    file(COPY ${MINGW_PATH}/share/icons/Adwaita DESTINATION ${SYNFIG_BUILD_ROOT}/share/icons)
-install(DIRECTORY ${MINGW_PATH}/share/icons/Adwaita DESTINATION share/icons)
+# /output/share
+file(GLOB SHARE_DIRECTORIES
+	${MINGW_SHARE}/fontconfig
+	${MINGW_SHARE}/glib-2.[0-9]
+	${MINGW_SHARE}/gtk-3.[0-9]
+	${MINGW_SHARE}/icons
+	${MINGW_SHARE}/ImageMagick-*
+	${MINGW_SHARE}/mime
+	${MINGW_SHARE}/xml
+)
+
+install(DIRECTORY ${SHARE_DIRECTORIES} DESTINATION share)
