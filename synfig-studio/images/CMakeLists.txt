@@ -307,7 +307,7 @@ add_custom_command(
 list(APPEND PIXMAPS ${SPLASH_SCREEN_DIR}/splash_screen.png)
 install(
     FILES ${SPLASH_SCREEN_DIR}/splash_screen.png
-    DESTINATION share/pixmaps/synfigstudio
+    DESTINATION share/synfig/images
 )
 
 # WIN32 Icon
