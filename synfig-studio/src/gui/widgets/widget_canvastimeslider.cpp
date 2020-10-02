@@ -37,6 +37,7 @@
 
 #include "widget_canvastimeslider.h"
 
+#include "app.h"
 #include "gui/timeplotdata.h"
 
 #include <gui/exception_guard.h>
@@ -99,6 +100,8 @@ Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)
 void
 Widget_CanvasTimeslider::show_tooltip(const synfig::Point &p, const synfig::Point &root)
 {
+	tooltip.set_transient_for(*App::main_window);
+
 	thumb_background = Cairo::RefPtr<Cairo::SurfacePattern>();
 	thumb_surface = Cairo::RefPtr<Cairo::ImageSurface>();
 
