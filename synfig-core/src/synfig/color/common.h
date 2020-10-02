@@ -30,11 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <cmath>
-#include <stdint.h>
-#include <synfig/string.h>
-#include <synfig/angle.h>
-
 /* === M A C R O S ========================================================= */
 
 namespace synfig {

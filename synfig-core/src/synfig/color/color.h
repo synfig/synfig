@@ -27,6 +27,8 @@
 #define __SYNFIG_COLOR_COLOR_H
 
 #include <synfig/color/common.h>
+#include <synfig/string.h>
+#include <synfig/angle.h>
 
 namespace synfig {
 

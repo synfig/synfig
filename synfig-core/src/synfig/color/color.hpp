@@ -26,9 +26,6 @@
 #ifndef __SYNFIG_COLOR_COLOR_HPP
 #define __SYNFIG_COLOR_COLOR_HPP
 
-#include <cmath>
-#include <cassert>
-#include <stdint.h>
 
 #include <synfig/string.h>
 #include <synfig/angle.h>
@@ -41,9 +38,7 @@
 #	include <config.h>
 #endif
 
-#include <ETL/angle>
-#include <cstdio>
-
+#include "color.h"
 #endif
 
 namespace synfig {

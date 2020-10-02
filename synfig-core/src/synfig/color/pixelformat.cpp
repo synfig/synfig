@@ -25,6 +25,7 @@
 /* ========================================================================= */
 
 #include "pixelformat.h"
+#include <cassert>
 
 using namespace synfig;
 

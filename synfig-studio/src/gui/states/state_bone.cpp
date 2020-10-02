@@ -33,17 +33,12 @@
 #include <synfig/general.h>
 
 
-#include "state_normal.h"
 #include <synfigapp/value_desc.h>
 #include "canvasview.h"
 #include "duckmatic.h"
 #include "workarea.h"
 #include "app.h"
-#include <synfig/valuenodes/valuenode_bline.h>
-#include <ETL/hermite>
 #include "event_mouse.h"
-#include "event_keyboard.h"
-#include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include "widgets/widget_enum.h"
@@ -55,17 +50,14 @@
 #include "synfig/valuenodes/valuenode_bone.h"
 #include "synfig/valuenodes/valuenode_composite.h"
 #include "synfig/valuenodes/valuenode_staticlist.h"
-#include "synfigapp/value_desc.h"
 #include "synfig/valuetransformation.h"
 
 #include <gui/localization.h>
 #include <gtkmm/radiobutton.h>
 
 #include <gtkmm/separatormenuitem.h>
-#include <gtkmm/imagemenuitem.h>
 #include "synfigapp/action_system.h"
 #include "synfigapp/actions/layeradd.h"
-#include "synfigapp/actions/valuedesccreatechildbone.h"
 
 #endif
 
