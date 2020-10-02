@@ -29,9 +29,11 @@
 #	include <config.h>
 #endif
 
+#include <cassert>
 #include <cstring>
+#include <ETL/stringf>
+#include <synfig/real.h>
 
-#include <synfig/general.h>
 #include "colormatrix.h"
 
 #endif

@@ -32,29 +32,16 @@
 
 #include <synfig/general.h>
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-
 #include "state_sketch.h"
 #include "state_normal.h"
 #include "state_stroke.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include <synfig/valuenodes/valuenode_bline.h>
-#include <ETL/hermite>
-#include <ETL/calculus>
-#include <utility>
 #include "event_mouse.h"
-#include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 
-#include <synfigapp/blineconvert.h>
 #include <synfigapp/main.h>
-
-#include <ETL/gaussian>
 
 #include "docks/dialog_tooloptions.h"
 
@@ -62,7 +49,6 @@
 #include <gtkmm/label.h>
 #include <gtkmm/button.h>
 #include <gtkmm/checkbutton.h>
-#include <gtkmm/actiongroup.h>
 
 #include <gui/localization.h>
 

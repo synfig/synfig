@@ -32,9 +32,6 @@
 
 #include <synfig/general.h>
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #include "state_stroke.h"
@@ -43,10 +40,7 @@
 #include "app.h"
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <ETL/hermite>
-#include <ETL/calculus>
-#include <utility>
 #include "event_mouse.h"
-#include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include <synfigapp/main.h>
 

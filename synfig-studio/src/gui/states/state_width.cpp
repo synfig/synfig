@@ -33,12 +33,8 @@
 
 #include <synfig/general.h>
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-
 #include <ETL/bezier>
 
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/blinepoint.h>
@@ -52,13 +48,11 @@
 
 #include <synfigapp/action.h>
 #include "event_mouse.h"
-#include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 #include "docks/dialog_tooloptions.h"
 #include "widgets/widget_distance.h"
 #include "duck.h"
 
-//#include <synfigapp/value_desc.h>
 #include <synfigapp/main.h>
 
 #include <ETL/clock>

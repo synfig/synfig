@@ -32,12 +32,6 @@
 
 #include <synfig/general.h>
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/grid.h>
-#include <gtkmm/toggletoolbutton.h>
-#include <glibmm/timeval.h>
-#include <giomm.h>
 
 #include <synfig/canvasfilenaming.h>
 #include <synfig/layers/layer_switch.h>
@@ -47,14 +41,9 @@
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include <ETL/hermite>
-#include <ETL/calculus>
-#include <utility>
 #include "event_mouse.h"
-#include "event_layerclick.h"
 #include "docks/dock_toolbox.h"
 
-#include <synfigapp/blineconvert.h>
 #include <synfigapp/wplistconverter.h>
 #include <synfigapp/main.h>
 #include <synfigapp/actions/layerpaint.h>

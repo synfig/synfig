@@ -39,6 +39,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <cassert>
 #include "cairocolorblendingfunctions.h"
 
 #endif

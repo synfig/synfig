@@ -26,16 +26,6 @@
 #define __SYNFIG_COLORMATRIX_H
 
 /* === H E A D E R S ======================================================= */
-
-#include <cassert>
-#include <cmath>
-
-#include <ETL/stringf>
-
-#include <synfig/angle.h>
-#include <synfig/real.h>
-#include <synfig/string.h>
-
 #include "color.h"
 
 

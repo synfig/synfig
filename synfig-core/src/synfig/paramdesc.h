@@ -32,6 +32,7 @@
 #include "color.h"
 #include "interpolation.h"
 #include <list>
+#include <cassert>
 
 /* === M A C R O S ========================================================= */
 
