@@ -36,6 +36,7 @@
 
 #include <string>
 #include <cstdarg>
+#include <cstdlib>
 
 /* === M A C R O S ========================================================= */
 
