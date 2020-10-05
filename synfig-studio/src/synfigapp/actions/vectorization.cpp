@@ -269,7 +269,7 @@ Action::Vectorization::perform()
         move_depth = std::distance(get_canvas()->begin(), iter);
     }
     new_layer->set_canvas(get_canvas());
-    for(int i=0;i < Result.size();i++)
+    for(unsigned long i=0;i < Result.size();i++)
     {
       Result[i]->set_canvas(child_canvas);
       child_canvas->push_front(Result[i]);
