@@ -55,7 +55,7 @@
 #include "synfigtoolexception.h"
 #include "printing_functions.h"
 #include "optionsprocessor.h"
-
+#include <glibmm/init.h>
 #endif
 
 using namespace std;

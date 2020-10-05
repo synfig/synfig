@@ -33,6 +33,7 @@
 #include "string.h"
 #include "releases.h"
 #include "layer.h"
+#include "version.h"
 
 /* === M A C R O S ========================================================= */
 

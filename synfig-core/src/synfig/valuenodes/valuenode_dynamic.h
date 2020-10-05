@@ -30,6 +30,7 @@
 #include <synfig/valuenode.h>
 #include "valuenode_derivative.h"
 #include "valuenode_const.h"
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 #define MASS_INERTIA_MINIMUM 0.0000001

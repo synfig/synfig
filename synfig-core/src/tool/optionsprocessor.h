@@ -28,6 +28,9 @@
 #include <string>
 #include <vector>
 #include <synfig/canvas.h>
+
+#include <glibmm/optioncontext.h>
+#include <glibmm/optiongroup.h>
 //#include <boost/program_options.hpp>
 
 // TODO rename to CommandLineHandler and move the options creation inside.

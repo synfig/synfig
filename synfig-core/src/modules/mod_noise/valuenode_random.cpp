@@ -37,6 +37,8 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include "synfig/color.h"
+#include <synfig/vector.h>
+
 #include <ETL/misc>
 #include <time.h>
 

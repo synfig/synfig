@@ -48,7 +48,7 @@
 #include "time.h"
 #include "vector.h"
 #include "value.h"
-#include <giomm.h>
+#include <giomm/filemonitor.h>
 
 /* === M A C R O S ========================================================= */
 

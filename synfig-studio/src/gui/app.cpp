@@ -84,6 +84,7 @@
 #include <synfig/savecanvas.h>
 #include <synfig/layer.h>
 #include <synfig/soundprocessor.h>
+#include <synfig/version.h>
 
 #include "app.h"
 #include "splash.h"

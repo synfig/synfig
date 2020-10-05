@@ -31,6 +31,8 @@
 
 #include <libxml++/libxml++.h>
 
+#include <ETL/stringf>
+
 #include "general.h"
 #include "localization.h"
 

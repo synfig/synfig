@@ -42,6 +42,8 @@
 #include <synfig/real.h>
 #include <algorithm> // for std::mix/max
 
+#include <ETL/stringf>
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -43,6 +43,7 @@
 #include <synfig/angle.h>
 #include <synfig/real.h>
 #include <ETL/misc>
+#include <ETL/stringf>
 
 #endif
 

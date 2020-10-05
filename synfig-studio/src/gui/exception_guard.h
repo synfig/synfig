@@ -3,6 +3,7 @@
 
 #include <ETL/stringf>
 #include <synfig/general.h> // for synfig::error()
+#include <synfig/exception.h> // for synfig::Exception
 
 #ifdef _WIN32
 # ifndef __PRETTY_FUNCTION__

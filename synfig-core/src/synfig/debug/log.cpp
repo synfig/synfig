@@ -35,6 +35,7 @@
 
 #include "log.h"
 
+#include <ETL/stringf>
 #include <synfig/general.h>
 
 #endif

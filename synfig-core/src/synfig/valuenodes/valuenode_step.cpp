@@ -36,8 +36,8 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/color.h>
+#include <synfig/vector.h>
 #include <ETL/misc>
-
 #endif
 
 /* === U S I N G =========================================================== */
