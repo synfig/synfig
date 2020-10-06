@@ -62,6 +62,8 @@
 #include "renderprogress.h"
 #include "joblistprocessor.h"
 
+#include <giomm/file.h>
+
 #endif
 
 using namespace synfig;

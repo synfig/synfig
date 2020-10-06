@@ -29,11 +29,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <clocale>
-
-#include <ETL/stringf>
-
 #include "string.h"
-#include "version.h"
+
 
 /* === M A C R O S ========================================================= */
 

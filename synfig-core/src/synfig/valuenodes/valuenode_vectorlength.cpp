@@ -36,6 +36,7 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
+#include <synfig/vector.h>
 
 #endif
 

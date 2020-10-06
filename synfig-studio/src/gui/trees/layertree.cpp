@@ -47,6 +47,8 @@
 #include "instance.h"
 #include <gtkmm/treemodelsort.h>
 
+#include <glibmm/main.h> //Glib::signal_timeout()
+
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 #  include <synfig/timepointcollect.h>
 #endif	// TIMETRACK_IN_PARAMS_PANEL

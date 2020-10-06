@@ -67,6 +67,7 @@
 
 #include "importer.h"
 #include <atomic>
+#include <giomm.h>
 
 #endif
 

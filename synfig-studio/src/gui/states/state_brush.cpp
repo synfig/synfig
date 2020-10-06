@@ -56,6 +56,7 @@
 #include <gui/resourcehelper.h>
 
 #include <gui/localization.h>
+#include <glibmm/fileutils.h> //Glib::FileError
 
 #endif
 

@@ -74,6 +74,7 @@
 #include <fcntl.h>
 #endif
 
+#include <glibmm/miscutils.h> //Glib::build_filename
 
 #endif
 

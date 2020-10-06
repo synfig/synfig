@@ -41,6 +41,9 @@
 #include "gui/resourcehelper.h"
 #include "widgets/widget_vector.h"
 
+#include <glibmm/fileutils.h> // Glib::FileError
+#include <glibmm/markup.h> // Glib::MarkupError
+
 #endif
 
 /* === U S I N G =========================================================== */

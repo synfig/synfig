@@ -28,19 +28,15 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "vector.h"
 #include "value.h"
 #include "string.h"
 #include "releases.h"
 #include "exception.h"
 #include "guid.h"
 #include "paramdesc.h"
-#include "interpolation.h"
 #include "node.h"
 
-#include <ETL/angle>
 #include <ETL/handle>
-#include <ETL/stringf>
 
 #include <sigc++/signal.h>
 

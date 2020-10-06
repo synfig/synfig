@@ -34,6 +34,7 @@
 #include <glib/gstdio.h>
 #include <sys/stat.h>
 
+#include <ETL/stringf>
 #include "general.h"
 #include <synfig/localization.h>
 

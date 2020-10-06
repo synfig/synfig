@@ -39,6 +39,8 @@
 
 #include <synfig/canvasfilenaming.h>
 
+#include <glibmm/convert.h> // Glib::filename_from_uri
+
 #endif
 
 using namespace studio;
