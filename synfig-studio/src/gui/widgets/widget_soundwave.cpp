@@ -198,7 +198,7 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		if (t >= sound_delay) {
 			synfig::Time dt = t - sound_delay;
 			unsigned long index = int(dt * stride) + channel_idx;
-			if (index >= 0 && index < buffer.size())
+			if (index < buffer.size())
 				std::copy(buffer.begin() + index, buffer.begin() + index + bytes_per_sample, &value);
 		}
 		int y = time_plot_data->get_pixel_y_coord(value);
