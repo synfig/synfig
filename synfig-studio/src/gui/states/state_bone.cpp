@@ -1089,7 +1089,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 		Real close_line(10000000),close_origin(10000000);
 		Vector direction;
 		Angle angle;
-		int ret;
+		unsigned long ret;
 		Matrix m;
 		for(auto iter=list.begin();iter!=list.end();++iter){
 
