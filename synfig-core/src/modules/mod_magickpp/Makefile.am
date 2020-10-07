@@ -7,6 +7,10 @@ AM_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_srcdir)/src
 
+AM_CXXFLAGS = \
+	@CXXFLAGS@ \
+	@MAGICKPP_CFLAGS@
+
 
 moduledir = @MODULE_DIR@
 
@@ -26,8 +30,8 @@ libmod_magickpp_la_LDFLAGS = \
 	-avoid-version
 
 libmod_magickpp_la_CXXFLAGS = \
-	@SYNFIG_CFLAGS@ \
-	@MAGICKPP_CFLAGS@
+	@MAGICKPP_CFLAGS@ \
+	@SYNFIG_CFLAGS@
 
 libmod_magickpp_la_LIBADD = \
 	../../synfig/libsynfig.la \
