@@ -96,7 +96,7 @@ class studio::StateBone_Context : public sigc::trackable
 	bool prev_workarea_layer_status_;
 	Duck::Type prev_type_mask;
 
-	int depth;
+	//int depth;
 	Canvas::Handle canvas;
 
 	Duck::Handle  point2_duck,point1_duck;
@@ -349,7 +349,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	is_working(*canvas_view),
 	prev_table_status(false),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
-	depth(-1),
+	//depth(-1),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	active_bone(change_active_bone(get_work_area()->get_active_bone_value_node())),
 	radiobutton_skel(radiogroup,_("Skeleton Layer")),

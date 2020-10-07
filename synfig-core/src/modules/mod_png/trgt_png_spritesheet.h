@@ -67,7 +67,7 @@ private:
 	static void png_out_error(png_struct *png,const char *msg);
 	static void png_out_warning(png_struct *png,const char *msg);
 	bool ready;
-	bool initialized;
+	//bool initialized;
 	int imagecount;
 	int lastimage;
 	int numimages;

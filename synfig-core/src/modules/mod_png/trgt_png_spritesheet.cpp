@@ -97,7 +97,7 @@ string png_trgt_spritesheet::get_image_size_error_message() const
 
 png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::TargetParam &params):
 	ready(false),
-	initialized(false),
+	//initialized(false),
 	imagecount(),
 	lastimage(),
 	numimages(),

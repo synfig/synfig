@@ -109,7 +109,7 @@ ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int 
 	for (set<ValueNode_Bone::LooseHandle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
 	{
 		ValueNode_Bone::LooseHandle bone(*iter);
-		GUID guid(bone->get_guid());
+		//GUID guid(bone->get_guid());
 //		printf("%s:%d loop 1 get_node_parent_node\n", __FILE__, __LINE__);
 		ValueNode_Bone::LooseHandle parent(GET_NODE_PARENT_NODE(bone,t));
 		String id;

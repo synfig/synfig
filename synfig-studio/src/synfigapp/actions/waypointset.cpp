@@ -121,7 +121,7 @@ Action::WaypointSet::is_ready()const
 void
 Action::WaypointSet::perform()
 {
-	WaypointList::iterator iter;
+	//WaypointList::iterator iter;
 
 #if 1
 	vector<WaypointList::iterator>	iters;

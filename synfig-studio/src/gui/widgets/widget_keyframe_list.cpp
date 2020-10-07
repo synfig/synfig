@@ -61,8 +61,8 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	dragging(),
 	changed(),
 	selected(),
-	moving_tooltip(Gtk::WINDOW_POPUP),
-	moving_tooltip_y()
+	moving_tooltip(Gtk::WINDOW_POPUP)
+	//moving_tooltip_y()
 {
 	set_size_request(-1, 10);
 	add_events( Gdk::BUTTON_PRESS_MASK

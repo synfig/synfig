@@ -69,13 +69,13 @@ user cancels.
 \sa VectorizerPopup, Vectorizer, VectorizerConfiguration classes.*/
 class VectorizerCore
 {
-  int m_currPartial;
-  int m_totalPartials;
+  //int m_currPartial;
+  //int m_totalPartials;
 
   bool m_isCanceled;
 
 public:
-  VectorizerCore() : m_currPartial(0), m_totalPartials(0), m_isCanceled(false) {}
+  VectorizerCore() : /*m_currPartial(0), m_totalPartials(0),*/ m_isCanceled(false) {}
   ~VectorizerCore() {}
 
   //! Returns true if vectorization was aborted at user's request

@@ -86,7 +86,7 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	//! The Moving handmade tooltip label
 	Gtk::Label moving_tooltip_label;
 	//! The Moving handmade tooltip y fixed coordinate
-	int moving_tooltip_y;
+	//int moving_tooltip_y;
 
 	//! Connectors for handling the signal of the time model
 	sigc::connection time_model_change;
