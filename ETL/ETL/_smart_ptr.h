@@ -165,7 +165,7 @@ public:
 	void spawn() { operator=(smart_ptr(new T)); }
 
 	//! Returns number of instances
-	const count_type& count()const { return refcount; }
+	count_type count() const { return refcount; }
 
 	//! Returns true if there is only one instance of the object
 	bool unique()const { return refcount.unique(); }

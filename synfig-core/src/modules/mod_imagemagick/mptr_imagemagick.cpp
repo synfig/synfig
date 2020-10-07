@@ -86,8 +86,8 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(imagemagick_mptr, false);
 
 imagemagick_mptr::imagemagick_mptr(const synfig::FileSystem::Identifier &identifier):
 synfig::Importer(identifier),
-file(NULL),
-cur_frame(0)
+file(NULL)
+//cur_frame(0)
 { }
 
 imagemagick_mptr::~imagemagick_mptr()

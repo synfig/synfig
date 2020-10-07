@@ -53,7 +53,7 @@ class Dock_Layers : public Dock_CanvasSpecific
 
 	Glib::RefPtr<Gtk::Action> action_new_layer;
 
-	Gtk::HScale *layer_amount_hscale;
+	//Gtk::HScale *layer_amount_hscale;
 
 	LayerActionManager* layer_action_manager;
 

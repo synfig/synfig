@@ -71,7 +71,7 @@ SYNFIG_LAYER_SET_CVS_ID(CurveWarp,"$Id$");
 
 inline float calculate_distance(const std::vector<BLinePoint>& bline)
 {
-	std::vector<BLinePoint>::const_iterator iter,next,ret;
+	std::vector<BLinePoint>::const_iterator iter,next/*,ret*/;
 	std::vector<BLinePoint>::const_iterator end(bline.end());
 
 	float dist(0);

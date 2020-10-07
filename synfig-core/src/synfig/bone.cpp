@@ -199,7 +199,7 @@ Bone::distance_to_shape_center_percent(const Shape &shape, const Vector &x)
 		Real ll = length - r0*cos0 - r1*cos1;
 		Vector direction = (p1 - p0)/length;
 		Vector pp0(p0 + direction * (r0*cos0));
-		Vector pp1(p0 + direction * (length - r1*cos1));
+		//Vector pp1(p0 + direction * (length - r1*cos1));
 		Real rr0 = r0*sin0;
 		Real rr1 = r1*sin1;
 

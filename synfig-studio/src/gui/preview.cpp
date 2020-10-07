@@ -342,9 +342,7 @@ Widget_Preview::Widget_Preview():
 	b_loop(/*_("Loop")*/),
 	currentindex(-100000),//TODO get the value from canvas setting or preview option
 	timedisp(-1),
-	audiotime(0),
-	jackbutton(),
-	offset_widget(),
+	//audiotime(0),
 	adj_sound(Gtk::Adjustment::create(0, 0, 4)),
 	l_lasttime("0s"),
 	playing(false),
@@ -356,12 +354,15 @@ Widget_Preview::Widget_Preview():
 	pause_button(),
 	jackdial(NULL),
 	jack_enabled(false),
-	jack_is_playing(false),
 	jack_time(0),
 	jack_offset(0),
 	jack_initial_time(0)
 #ifdef WITH_JACK
 	,
+	jackbutton(),
+	offset_widget(),
+
+	jack_is_playing(false),
 	jack_client(NULL),
 	jack_synchronizing(false)
 #endif

@@ -124,7 +124,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	WorkArea::PushState push_state;
 
 	bool prev_table_status;
-	bool loop_;
+	//bool loop_;
 
 	int nested;
 	sigc::connection process_queue_connection;
@@ -623,7 +623,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	push_state(*get_work_area()),
-	loop_(false),
+	//loop_(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(0.0f, 1.0125f, 0.0125f),
 	min_pressure_adj(Gtk::Adjustment::create(0,0,1,0.01,0.1)),

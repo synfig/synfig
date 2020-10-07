@@ -79,7 +79,7 @@ inline Real calculate_distance(const synfig::BLinePoint& a,const synfig::BLinePo
 
 inline Real calculate_distance(const std::vector<synfig::BLinePoint>& bline, bool bline_loop)
 {
-	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
+	std::vector<synfig::BLinePoint>::const_iterator iter,next/*,ret*/;
 	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
 
 	Real dist(0);

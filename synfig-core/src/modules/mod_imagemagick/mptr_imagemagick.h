@@ -45,7 +45,7 @@ class imagemagick_mptr : public synfig::Importer
 	SYNFIG_IMPORTER_MODULE_EXT
 private:
 	FILE *file;
-	int cur_frame;
+	//int cur_frame;
 	synfig::Surface frame;
 
 public:

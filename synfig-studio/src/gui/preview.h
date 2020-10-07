@@ -207,14 +207,12 @@ class Widget_Preview : public Gtk::Table
 	int					currentindex;
 	//double			timeupdate;
 	double				timedisp;
-	double				audiotime;
+	//double				audiotime;
 
 	//preview encapsulation
 	etl::handle<Preview>	preview;
 	sigc::connection	prevchanged;
 
-	Gtk::ToggleButton *jackbutton;
-	Widget_Time *offset_widget;
 	Glib::RefPtr<Gtk::Adjustment> adj_sound;
 
 	Gtk::Label		l_lasttime;
@@ -320,7 +318,6 @@ private:
 
 	JackDial *jackdial;
 	bool jack_enabled;
-	bool jack_is_playing;
 	synfig::Time jack_time;
 	synfig::Time jack_offset;
 	synfig::Time jack_initial_time;
@@ -329,10 +326,14 @@ private:
 	void set_jack_enabled(bool value);
 
 #ifdef WITH_JACK
+	Gtk::ToggleButton *jackbutton;
+	Widget_Time *offset_widget;
 	void toggle_jack_button();
 	void on_jack_offset_changed();
+
 	Glib::Dispatcher jack_dispatcher;
 	jack_client_t *jack_client;
+    bool jack_is_playing;
 	bool jack_synchronizing;
 	void on_jack_sync();
 	static int jack_sync_callback(jack_transport_state_t state, jack_position_t *pos, void *arg);
