@@ -4,7 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
-	
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleGetInfoString</key>
 	<string>_VERSION_, © 2001-2008 The Synfig Team</string>
 	<key>CFBundleShortVersionString</key>
