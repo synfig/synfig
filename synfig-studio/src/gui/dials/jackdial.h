@@ -64,7 +64,7 @@ public:
 	void set_offset(const synfig::Time &value)       { offset->set_value(value); }
 	synfig::Time get_offset() const                  { return offset->get_value(); }
 	void set_fps(float value)                        { offset->set_fps(value); }
-}; // END of class FrameDial
+}; // END of class JackDial
 
 }; // END of namespace studio
 
