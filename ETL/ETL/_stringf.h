@@ -50,9 +50,14 @@
 
 /* === T Y P E D E F S ===================================================== */
 
+#ifdef _MSC_VER
+#include <direct.h> /* for _getcwd() and _chdir() */
+#define getcwd _getcwd
+#else
 extern "C" {
 #include <unistd.h>
 }
+#endif
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -61,6 +66,9 @@ namespace etl {
 inline std::string
 vstrprintf(const char *format, va_list args)
 {
+#ifdef _MSC_VER
+	const int size = 8192; // MSVC doesn't support dynamic allocation, so make it static
+#else
 	// determine the length
 	va_list args_copy;
 	va_copy(args_copy, args);
@@ -68,9 +76,9 @@ vstrprintf(const char *format, va_list args)
 	va_end(args_copy);
 	if (size < 0) size = 0;
 	++size;
-	
+#endif
 	// allocate buffer in stack (c99/c++11 only) and call vsnprintf again
-	char buffer[size];
+	char buffer[size + 1]; // +space for trailing zero
 	vsnprintf(buffer, size, format, args);
 	return buffer;
 }

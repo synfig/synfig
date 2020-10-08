@@ -13,7 +13,7 @@ message(STATUS "MLT DIR: ${MLT_INCLUDE_DIRS}")
 # using the `-sysroot` flag, and this header cannot be found. (https://gitlab.kitware.com/cmake/cmake/-/issues/19120)
 # So, we need to manually find it.
 
-if(APPLE)
+if(APPLE OR VCPKG_TOOLCHAIN)
     find_path(LTDL_INCLUDE_DIRS ltdl.h)
     find_library(LTDL_LIBRARIES ltdl)
     message(STATUS "Libltdl headers:   ${LTDL_INCLUDE_DIRS}")
@@ -135,10 +135,11 @@ include(debug/CMakeLists.txt)
 target_link_libraries(synfig
     PUBLIC
         ${SIGCPP_LIBRARIES}
-        ${GLIBMM_LIBARIES}
+        ${GLIBMM_LIBRARIES}
         ${GIOMM_LIBRARIES}
         ${CAIRO_LIBRARIES}
         ${LIBXML_LIBRARIES}
+        ${XMLPP_LIBRARIES}
         ${MLT_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${FFTW_LIBRARIES}

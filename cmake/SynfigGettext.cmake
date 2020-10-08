@@ -53,15 +53,15 @@ function(SYNFIG_PROCESS_PO_FILES)
     set(_language LANGUAGES)
     set(_moFiles)
 
-    if(MSGFMT_EXECUTABLE)
-        cmake_parse_arguments(
-            _parsedArguments
-            "${_options}"
-            "${_targetName};${_moName};${_installDestination}"
-            "${_language}"
-            ${ARGN}
-        )
+    cmake_parse_arguments(
+        _parsedArguments
+        "${_options}"
+        "${_targetName};${_moName};${_installDestination}"
+        "${_language}"
+        ${ARGN}
+    )
 
+    if(MSGFMT_EXECUTABLE)
         foreach(_current_LANGUAGE ${_parsedArguments_LANGUAGES})
             set(_poFile ${CMAKE_CURRENT_SOURCE_DIR}/${_current_LANGUAGE}.po)
             set(_moDirectory ${SYNFIG_BUILD_ROOT}/share/locale/${_current_LANGUAGE}/LC_MESSAGES)
@@ -98,6 +98,6 @@ function(SYNFIG_PROCESS_PO_FILES)
             add_dependencies(build_pofiles ${_parsedArguments_TARGET_NAME})
         endif()
     else()
-        message(WARNING "-- Could not find msgfmt: Cannot process .po files for ${_parsedArguments_TARGET_NAME}.")
+        message(STATUS "-- Could not find msgfmt: Cannot process .po files for ${_parsedArguments_TARGET_NAME}.")
     endif()
 endfunction()
