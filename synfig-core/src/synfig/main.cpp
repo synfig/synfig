@@ -173,7 +173,6 @@ bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load
 
 	if(!file)
 	{
-		synfig::warning("Cannot open "+filename);
 		return false;
 	}
 
@@ -358,6 +357,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	if (i == locations.size())
 	{
 		synfig::warning("Cannot find '%s', trying to load default modules", MODULE_LIST_FILENAME);
+		synfig::warning("Searched in the following directories: ");
+		for (i=0;i<locations.size();i++) 
+			synfig::warning(" - "+locations[i]);
 		Module::register_default_modules(cb);
 	}
 
