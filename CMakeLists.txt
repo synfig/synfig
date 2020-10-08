@@ -12,6 +12,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/bin)
 
+if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+	set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+endif()
+
 # MSYS is defined for MSYS Makefiles generator and undefined for Ninja (for example)
 # But if you run CMake from MSYS shell, we can still detect MSYS by environment variables (MINGW_PREFIX)
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/How-To-Write-Platform-Checks
@@ -32,8 +36,16 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-inline-functions -fno-inline -g -O0 -Wall")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline-functions -fno-inline -g -O0 -Wall")
+if(MSVC)
+	add_definitions(-D_USE_MATH_DEFINES) # <cmath> header need this define to add M_PI define
+	add_definitions(-DNOMINMAX) # windows.h defines min/max and brokes std::min/max
+
+	## /MP Enable multi-processor compilation (faster)
+	add_compile_options(/MP /W0 /bigobj)
+else()
+	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-sinline-functions -fno-inline -g -O0 -Wall")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline-functions -fno-inline -g -O0 -Wall")
+endif(MSVC)
 
 # This can be enabled once the address sanitization related errors are resolved.
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fsanitize=undefined  -fsanitize=address -fno-omit-frame-pointer")
