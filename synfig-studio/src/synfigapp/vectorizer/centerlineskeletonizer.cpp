@@ -1395,9 +1395,9 @@ inline void Event::processSplitEvent() {
  *  m_generator =  b   x   b' = m_coGenerator
  *                /         \
  *               a     R     c'
-
- * Reflex vertices b and b' collide. Observe that a new reflex vertex may rise
 */
+
+// Reflex vertices b and b' collide. Observe that a new reflex vertex may rise
 // here.
 
 inline void Event::processVertexEvent() {
