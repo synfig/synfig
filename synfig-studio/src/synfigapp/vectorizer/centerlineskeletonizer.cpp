@@ -1278,17 +1278,18 @@ inline void Event::processMaxEvent() {
   m_generator->m_next->setAttribute(ContourNode::ELIMINATED);
 }
 
-//--------------------------------------------------------------------------
+/*--------------------------------------------------------------------------
 
-// EXPLANATION: Ordinary split event:
+ * EXPLANATION: Ordinary split event:
 
-//   m_coGenerator = a'---------b'
-//                         x
-//                         b = m_generator
-//                        / \
-//                       c   a
+ *   m_coGenerator = a'---------b'
+ *                         x
+ *                         b = m_generator
+ *                        / \
+ *                       c   a
 
-// We eliminate b and split/merge the border/s represented in the scheme.
+ * We eliminate b and split/merge the border/s represented in the scheme.
+*/
 
 inline void Event::processSplitEvent() {
   ContourNode *newLeftNode,
@@ -1385,17 +1386,18 @@ inline void Event::processSplitEvent() {
     m_context->m_timeline.push(newRightEvent);
 }
 
-//--------------------------------------------------------------------------
+/*--------------------------------------------------------------------------
 
-// EXPLANATION:
+ * EXPLANATION:
 
-//               c     L     a'
-//                \         /
-//  m_generator =  b   x   b' = m_coGenerator
-//                /         \
-//               a     R     c'
+ *               c     L     a'
+ *                \         /
+ *  m_generator =  b   x   b' = m_coGenerator
+ *                /         \
+ *               a     R     c'
 
-// Reflex vertices b and b' collide. Observe that a new reflex vertex may rise
+ * Reflex vertices b and b' collide. Observe that a new reflex vertex may rise
+*/
 // here.
 
 inline void Event::processVertexEvent() {
