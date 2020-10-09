@@ -1179,17 +1179,18 @@ inline bool Event::process()
   return true;  // Processing succeeded
 }
 
-//--------------------------------------------------------------------------
+/*--------------------------------------------------------------------------
 
-// EXPLANATION:  Here is the typical case:
+* EXPLANATION:  Here is the typical case:
 
-//        \       /
-//         \  x  /
-//          2---1 = m_coGenerator
+*       \       /
+*        \  x  /
+*         2---1 = m_coGenerator
 
-// m_coGenerator's edge reduces to 0. Then, nodes 1 and 2 gets ELIMINATED from
-// the active contour and a new node at position "x" is placed instead.
-// Observe also that nodes 1 or 2 may be concave (but not both)...
+* m_coGenerator's edge reduces to 0. Then, nodes 1 and 2 gets ELIMINATED from
+* the active contour and a new node at position "x" is placed instead.
+* Observe also that nodes 1 or 2 may be concave (but not both)...
+*/
 
 inline void Event::processEdgeEvent() {
   ContourNode *newNode;
@@ -1278,17 +1279,18 @@ inline void Event::processMaxEvent() {
   m_generator->m_next->setAttribute(ContourNode::ELIMINATED);
 }
 
-//--------------------------------------------------------------------------
+/*--------------------------------------------------------------------------
 
-// EXPLANATION: Ordinary split event:
+* EXPLANATION: Ordinary split event:
 
-//   m_coGenerator = a'---------b'
-//                         x
-//                         b = m_generator
-//                        / \
-//                       c   a
+*  m_coGenerator = a'---------b'
+*                         x
+*                        b = m_generator
+*                       / \
+*                      c   a
 
-// We eliminate b and split/merge the border/s represented in the scheme.
+* We eliminate b and split/merge the border/s represented in the scheme.
+*/
 
 inline void Event::processSplitEvent() {
   ContourNode *newLeftNode,
@@ -1385,18 +1387,19 @@ inline void Event::processSplitEvent() {
     m_context->m_timeline.push(newRightEvent);
 }
 
-//--------------------------------------------------------------------------
+/*--------------------------------------------------------------------------
 
-// EXPLANATION:
+* EXPLANATION:
 
-//               c     L     a'
-//                \         /
-//  m_generator =  b   x   b' = m_coGenerator
-//                /         \
-//               a     R     c'
+*               c     L     a'
+*                \         /
+*  m_generator =  b   x   b' = m_coGenerator
+*               /         \
+*              a     R     c'
 
-// Reflex vertices b and b' collide. Observe that a new reflex vertex may rise
-// here.
+* Reflex vertices b and b' collide. Observe that a new reflex vertex may rise
+* here.
+*/
 
 inline void Event::processVertexEvent() {
   ContourNode *newLeftNode, *newRightNode;  // left-right in the sense of the picture
