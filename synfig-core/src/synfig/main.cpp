@@ -334,7 +334,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		locations.push_back(SYSCONFDIR"/" MODULE_LIST_FILENAME);
 	#endif
 		locations.push_back(root_path + ETL_DIRECTORY_SEPARATOR + "etc" + ETL_DIRECTORY_SEPARATOR + MODULE_LIST_FILENAME);
+	#ifndef _WIN32
 		locations.push_back("/usr/local/etc/" MODULE_LIST_FILENAME);
+	#endif
 	#ifdef __APPLE__
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/" MODULE_LIST_FILENAME);
 		locations.push_back("/Library/Synfig/" MODULE_LIST_FILENAME);
