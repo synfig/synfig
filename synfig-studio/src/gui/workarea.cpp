@@ -1469,7 +1469,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		if (get_drag_mode() == DRAG_WINDOW) {
 			set_focus_point(get_focus_point() + mouse_pos-drag_point);
-    	} else
+    	} 
 		if (get_drag_mode() == DRAG_ZOOM_WINDOW) {
 			set_zoom(get_zoom() * (1.0 + (drag_point[1] - event->motion.y) / 100.0));
 			drag_point = synfig::Point(event->motion.x, event->motion.y);
