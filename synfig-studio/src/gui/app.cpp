@@ -1359,8 +1359,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-inc"		));
 	ACCEL2(Gtk::AccelKey(']',Gdk::CONTROL_MASK,					"<Actions>/canvasview/jump-next-keyframe"				));
 	ACCEL2(Gtk::AccelKey('[',Gdk::CONTROL_MASK,					"<Actions>/canvasview/jump-prev-keyframe"				));
-	ACCEL2(Gtk::AccelKey('=',Gdk::CONTROL_MASK,					"<Actions>/canvasview/canvas-zoom-in"					));
-	ACCEL2(Gtk::AccelKey('-',Gdk::CONTROL_MASK,					"<Actions>/canvasview/canvas-zoom-out"					));
+	ACCEL("equal",									"<Actions>/canvasview/canvas-zoom-in"					);
+	ACCEL("minus",									"<Actions>/canvasview/canvas-zoom-out"					);
 	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-in"					));
 	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-out"					));
 	ACCEL2(Gtk::AccelKey('.',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-next-frame"					));
@@ -1368,7 +1368,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-next-second"					));
 	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-prev-second"					));
 	ACCEL("<Mod1>o",								"<Actions>/canvasview/toggle-onion-skin"				);
-	ACCEL("<Control><Shift>z",							"<Actions>/canvasview/canvas-zoom-fit"					);
+	ACCEL("0",									"<Actions>/canvasview/canvas-zoom-fit"					);
 	ACCEL("<Control>p",								"<Actions>/canvasview/play"						);
 
 
