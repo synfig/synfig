@@ -6,6 +6,8 @@
 ## TODO: optional static linking?
 add_library(synfig SHARED "")
 
+add_definitions(-DVERSION="${STUDIO_VERSION_MAJOR}.${STUDIO_VERSION_MINOR}.${STUDIO_VERSION_PATCH}")
+
 message(STATUS "MLT DIR: ${MLT_INCLUDE_DIRS}")
 
 # By default, the libtool places its headers in the system directory (/usr/local/include), and

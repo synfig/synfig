@@ -18,6 +18,7 @@ add_definitions(-DIMAGE_DIR="${DATA_PREFIX}/share/pixmaps")
 add_definitions(-DSYNFIG_DATADIR="${SYNFIG_DATA_PREFIX}")
 add_definitions(-DLOCALEDIR="${DATA_PREFIX}/share/locale")
 add_definitions(-DCMAKE_BUILD)
+add_definitions(-DDEVEL_VERSION="Revision date: ${GIT_DATE}\\nBranch: ${GIT_BRANCH}\\nRevision ID: ${GIT_HASH}")
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     add_definitions("-DSHOW_EXTRA_INFO")
