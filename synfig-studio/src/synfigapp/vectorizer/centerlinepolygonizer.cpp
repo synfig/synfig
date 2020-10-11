@@ -415,10 +415,12 @@ static BorderList *extractBorders(const Handle &ras, int threshold, int despeckl
         {
           if ((foundPath = extractPath(byteImage, x, y, !enteredRegionType,
                                        xOuterPixel, despeckling)))
+          {
             if (enteredRegionType == outer)
               innerBorders.push_back(foundPath);
             else
               outerBorders.push_back(foundPath);
+          }
         }
 
         // If leaving a white region, remember it - in order to establish
