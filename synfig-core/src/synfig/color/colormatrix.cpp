@@ -528,42 +528,41 @@ ColorMatrix::operator==(const ColorMatrix &rhs) const
 ColorMatrix
 ColorMatrix::operator*=(const ColorMatrix &rhs)
 {
-	value_type r, g, b, a, w;
+	const value_type r1 = m00, g1 = m01, b1 = m02, a1 = m03, w1 = m04;
+	const value_type r2 = m10, g2 = m11, b2 = m12, a2 = m13, w2 = m14;
+	const value_type r3 = m20, g3 = m21, b3 = m22, a3 = m23, w3 = m24;
+	const value_type r4 = m30, g4 = m31, b4 = m32, a4 = m33, w4 = m34;
+	const value_type r5 = m40, g5 = m41, b5 = m42, a5 = m43, w5 = m44;
 
-	r = m00; g = m01; b = m02; a = m03; w = m04;
-	m00 = r*rhs.m00 + g*rhs.m10 + b*rhs.m20 + a*rhs.m30 + w*rhs.m40;
-	m01 = r*rhs.m01 + g*rhs.m11 + b*rhs.m21 + a*rhs.m31 + w*rhs.m41;
-	m02 = r*rhs.m02 + g*rhs.m12 + b*rhs.m22 + a*rhs.m32 + w*rhs.m42;
-	m03 = r*rhs.m03 + g*rhs.m13 + b*rhs.m23 + a*rhs.m33 + w*rhs.m43;
-	m04 = r*rhs.m04 + g*rhs.m14 + b*rhs.m24 + a*rhs.m34 + w*rhs.m44;
+	m00 = r1*rhs.m00 + g1*rhs.m10 + b1*rhs.m20 + a1*rhs.m30 + w1*rhs.m40;
+	m01 = r1*rhs.m01 + g1*rhs.m11 + b1*rhs.m21 + a1*rhs.m31 + w1*rhs.m41;
+	m02 = r1*rhs.m02 + g1*rhs.m12 + b1*rhs.m22 + a1*rhs.m32 + w1*rhs.m42;
+	m03 = r1*rhs.m03 + g1*rhs.m13 + b1*rhs.m23 + a1*rhs.m33 + w1*rhs.m43;
+	m04 = r1*rhs.m04 + g1*rhs.m14 + b1*rhs.m24 + a1*rhs.m34 + w1*rhs.m44;
 
-	r = m10; g = m11; b = m12; a = m13; w = m14;
-	m10 = r*rhs.m00 + g*rhs.m10 + b*rhs.m20 + a*rhs.m30 + w*rhs.m40;
-	m11 = r*rhs.m01 + g*rhs.m11 + b*rhs.m21 + a*rhs.m31 + w*rhs.m41;
-	m12 = r*rhs.m02 + g*rhs.m12 + b*rhs.m22 + a*rhs.m32 + w*rhs.m42;
-	m13 = r*rhs.m03 + g*rhs.m13 + b*rhs.m23 + a*rhs.m33 + w*rhs.m43;
-	m14 = r*rhs.m04 + g*rhs.m14 + b*rhs.m24 + a*rhs.m34 + w*rhs.m44;
+	m10 = r2*rhs.m00 + g2*rhs.m10 + b2*rhs.m20 + a2*rhs.m30 + w2*rhs.m40;
+	m11 = r2*rhs.m01 + g2*rhs.m11 + b2*rhs.m21 + a2*rhs.m31 + w2*rhs.m41;
+	m12 = r2*rhs.m02 + g2*rhs.m12 + b2*rhs.m22 + a2*rhs.m32 + w2*rhs.m42;
+	m13 = r2*rhs.m03 + g2*rhs.m13 + b2*rhs.m23 + a2*rhs.m33 + w2*rhs.m43;
+	m14 = r2*rhs.m04 + g2*rhs.m14 + b2*rhs.m24 + a2*rhs.m34 + w2*rhs.m44;
 
-	r = m20; g = m21; b = m22; a = m23; w = m24;
-	m20 = r*rhs.m00 + g*rhs.m10 + b*rhs.m20 + a*rhs.m30 + w*rhs.m40;
-	m21 = r*rhs.m01 + g*rhs.m11 + b*rhs.m21 + a*rhs.m31 + w*rhs.m41;
-	m22 = r*rhs.m02 + g*rhs.m12 + b*rhs.m22 + a*rhs.m32 + w*rhs.m42;
-	m23 = r*rhs.m03 + g*rhs.m13 + b*rhs.m23 + a*rhs.m33 + w*rhs.m43;
-	m24 = r*rhs.m04 + g*rhs.m14 + b*rhs.m24 + a*rhs.m34 + w*rhs.m44;
+	m20 = r3*rhs.m00 + g3*rhs.m10 + b3*rhs.m20 + a3*rhs.m30 + w3*rhs.m40;
+	m21 = r3*rhs.m01 + g3*rhs.m11 + b3*rhs.m21 + a3*rhs.m31 + w3*rhs.m41;
+	m22 = r3*rhs.m02 + g3*rhs.m12 + b3*rhs.m22 + a3*rhs.m32 + w3*rhs.m42;
+	m23 = r3*rhs.m03 + g3*rhs.m13 + b3*rhs.m23 + a3*rhs.m33 + w3*rhs.m43;
+	m24 = r3*rhs.m04 + g3*rhs.m14 + b3*rhs.m24 + a3*rhs.m34 + w3*rhs.m44;
 
-	r = m30; g = m31; b = m32; a = m33; w = m34;
-	m30 = r*rhs.m00 + g*rhs.m10 + b*rhs.m20 + a*rhs.m30 + w*rhs.m40;
-	m31 = r*rhs.m01 + g*rhs.m11 + b*rhs.m21 + a*rhs.m31 + w*rhs.m41;
-	m32 = r*rhs.m02 + g*rhs.m12 + b*rhs.m22 + a*rhs.m32 + w*rhs.m42;
-	m33 = r*rhs.m03 + g*rhs.m13 + b*rhs.m23 + a*rhs.m33 + w*rhs.m43;
-	m34 = r*rhs.m04 + g*rhs.m14 + b*rhs.m24 + a*rhs.m34 + w*rhs.m44;
+	m30 = r4*rhs.m00 + g4*rhs.m10 + b4*rhs.m20 + a4*rhs.m30 + w4*rhs.m40;
+	m31 = r4*rhs.m01 + g4*rhs.m11 + b4*rhs.m21 + a4*rhs.m31 + w4*rhs.m41;
+	m32 = r4*rhs.m02 + g4*rhs.m12 + b4*rhs.m22 + a4*rhs.m32 + w4*rhs.m42;
+	m33 = r4*rhs.m03 + g4*rhs.m13 + b4*rhs.m23 + a4*rhs.m33 + w4*rhs.m43;
+	m34 = r4*rhs.m04 + g4*rhs.m14 + b4*rhs.m24 + a4*rhs.m34 + w4*rhs.m44;
 
-	r = m40; g = m41; b = m42; a = m43; w = m44;
-	m40 = r*rhs.m00 + g*rhs.m10 + b*rhs.m20 + a*rhs.m30 + w*rhs.m40;
-	m41 = r*rhs.m01 + g*rhs.m11 + b*rhs.m21 + a*rhs.m31 + w*rhs.m41;
-	m42 = r*rhs.m02 + g*rhs.m12 + b*rhs.m22 + a*rhs.m32 + w*rhs.m42;
-	m43 = r*rhs.m03 + g*rhs.m13 + b*rhs.m23 + a*rhs.m33 + w*rhs.m43;
-	m44 = r*rhs.m04 + g*rhs.m14 + b*rhs.m24 + a*rhs.m34 + w*rhs.m44;
+	m40 = r5*rhs.m00 + g5*rhs.m10 + b5*rhs.m20 + a5*rhs.m30 + w5*rhs.m40;
+	m41 = r5*rhs.m01 + g5*rhs.m11 + b5*rhs.m21 + a5*rhs.m31 + w5*rhs.m41;
+	m42 = r5*rhs.m02 + g5*rhs.m12 + b5*rhs.m22 + a5*rhs.m32 + w5*rhs.m42;
+	m43 = r5*rhs.m03 + g5*rhs.m13 + b5*rhs.m23 + a5*rhs.m33 + w5*rhs.m43;
+	m44 = r5*rhs.m04 + g5*rhs.m14 + b5*rhs.m24 + a5*rhs.m34 + w5*rhs.m44;
 
 	return *this;
 }
