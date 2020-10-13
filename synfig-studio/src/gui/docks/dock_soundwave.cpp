@@ -38,6 +38,7 @@
 #include <synfig/general.h>
 
 #include <synfig/canvasfilenaming.h>
+#include <synfigapp/value_desc.h>
 
 #include <glibmm/convert.h> // Glib::filename_from_uri
 
