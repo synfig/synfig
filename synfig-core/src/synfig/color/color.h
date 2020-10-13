@@ -48,8 +48,8 @@ private:
 
 public:
 	
-	static const value_type ceil;
-	static const value_type floor;
+	static constexpr value_type ceil  = 1.0f;
+	static constexpr value_type floor = 0.0f;
 	
 	const String get_string(void) const;
 
