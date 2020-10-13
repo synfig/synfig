@@ -42,6 +42,7 @@ if(MSVC)
 
 	## /MP Enable multi-processor compilation (faster)
 	add_compile_options(/MP /W0 /bigobj)
+	set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 else()
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-sinline-functions -fno-inline -g -O0 -Wall")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline-functions -fno-inline -g -O0 -Wall")

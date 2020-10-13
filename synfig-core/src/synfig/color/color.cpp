@@ -51,9 +51,6 @@ using namespace std;
 
 #define COLOR_EPSILON	(0.000001f)
 
-const Color::value_type Color::ceil=1;
-const Color::value_type Color::floor=0;
-
 /* === M E T H O D S ======================================================= */
 
 ColorReal

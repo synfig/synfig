@@ -70,12 +70,13 @@ namespace synfig
 		};
 
 	private:
-		static const Handle instance__;
 		FileSystemNative();
 
 	public:
-		static const Handle& instance()
-			{ return instance__; }
+		static const Handle& instance() {
+			static const Handle fs_instance_(new FileSystemNative());
+			return fs_instance_;
+		}
 
 		virtual ~FileSystemNative();
 

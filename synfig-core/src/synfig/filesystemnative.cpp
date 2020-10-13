@@ -57,8 +57,6 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-const FileSystemNative::Handle FileSystemNative::instance__(new FileSystemNative);
-
 // ReadStream
 
 FileSystemNative::ReadStream::ReadStream(FileSystem::Handle file_system, FILE *file):
