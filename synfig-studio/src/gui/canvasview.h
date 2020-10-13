@@ -42,7 +42,7 @@
 #include <gtkmm/window.h>
 #include <gtkmm/image.h>
 #include <gtkmm/tooltip.h>
-#include <gtkmm/box.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/statusbar.h>
 #include <gtkmm/progressbar.h>
 #include <gtkmm/button.h>
@@ -290,12 +290,12 @@ private:
 	Gtk::ToggleToolButton *background_rendering_button;
 	Gtk::ToolButton *refreshbutton;
 	Gtk::ComboBoxText *render_combobox;
-	Gtk::VBox *timebar;
+	Gtk::Grid *timebar;
 	Gtk::Toolbar *displaybar;
 	Widget_Enum *widget_interpolation;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
-	Gtk::VBox *timetrack;
+	Gtk::Grid *timetrack;
 	Gtk::Button *keyframebutton;
 	Gtk::ToggleButton *pastkeyframebutton;
 	Gtk::ToggleButton *futurekeyframebutton;
