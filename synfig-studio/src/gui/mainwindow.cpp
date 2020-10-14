@@ -100,19 +100,25 @@ MainWindow::MainWindow() :
 	bin_->add(*main_dock_book_);
 	bin_->show();
 
-	Gtk::VBox *vbox = manage(new Gtk::VBox());
+	auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	auto hidden_box   = manage(new Gtk::Box());
 
-	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
-	if (menubar != NULL)
+	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
+	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
+	if (visible_menubar != NULL)
 	{
-		vbox->pack_start(*menubar, false, false, 0);
+		hidden_box->add(*hidden_menubar);
+		hidden_box->hide();
+
+		visible_vbox->add(*hidden_box);
+		visible_vbox->pack_start(*visible_menubar, false, false, 0);
 	}
 
-	vbox->pack_end(*bin_, true, true, 0);
-	vbox->show();
-	if(!App::enable_mainwin_menubar && menubar) menubar->hide();
+	visible_vbox->pack_end(*bin_, true, true, 0);
+	visible_vbox->show();
+	if(!App::enable_mainwin_menubar && visible_menubar) visible_menubar->hide();
 
-	add(*vbox);
+	add(*visible_vbox);
 
 	init_menus();
 	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
@@ -206,6 +212,13 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
 		sigc::ptr_fun(studio::App::dialog_help)
 	);
+
+#if GTK_CHECK_VERSION(3, 20, 0)
+	action_group->add( Gtk::Action::create(
+			"help-shortcuts", _("Keyboard Shortcuts")),
+		sigc::ptr_fun(studio::App::window_shortcuts)
+	);
+#endif
 
 	// TRANSLATORS:         | Help menu entry:              | A wiki page:          |
 	WIKI("help-tutorials",	_("Tutorials"),					_("/Category:Tutorials"));
