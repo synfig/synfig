@@ -145,6 +145,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	last_event_time(0),
 	progresscallback(0),
 	drag_mode(DRAG_NONE),
+	active_bone_(0),
+	highlight_active_bone(false),
 	show_grid(false),
 	show_guides(true),
 	background_size(15,15),
@@ -158,7 +160,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	dirty_trap_count(0),
 	dirty_trap_queued(0),
 	onion_skin(false),
-	highlight_active_bone(false),
 	background_rendering(false),
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
@@ -168,8 +169,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	timecode_width(0),
 	timecode_height(0),
 	bonesetup_width(0),
-	bonesetup_height(0),
-	active_bone_(0)
+	bonesetup_height(0)
 {
 	// default onion
 	onion_skins[0] = 1;

@@ -350,12 +350,13 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	prev_table_status(false),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	//depth(-1),
-	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	active_bone(change_active_bone(get_work_area()->get_active_bone_value_node())),
-	radiobutton_skel(radiogroup,_("Skeleton Layer")),
-	radiobutton_skel_deform(radiogroup,_("Skeleton Deform Layer")),
 	c_layer(0),
-	drawing(false)
+	drawing(false),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
+	radiobutton_skel(radiogroup,_("Skeleton Layer")),
+	radiobutton_skel_deform(radiogroup,_("Skeleton Deform Layer"))
+	
 {
 	egress_on_selection_change=true;
 
