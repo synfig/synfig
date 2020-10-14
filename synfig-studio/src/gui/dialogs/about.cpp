@@ -30,6 +30,7 @@
 #endif
 
 #include <vector>
+#include<fstream>
 
 #include <gtk/gtk.h>
 
@@ -105,48 +106,18 @@ About::About()
 	set_wrap_license(true);
 
 	std::vector<Glib::ustring> authors;
-	authors.push_back(_("Original developers:"));
-	authors.push_back("");
-	authors.push_back("Robert B. Quattlebaum Jr (darco)");
-	authors.push_back("Adrian Bentley");
-	authors.push_back("");
-	authors.push_back(_("Contributors:"));
-	authors.push_back("");
-	authors.push_back("Adrian Winchell (SnapSilverlight)");
-	authors.push_back("Andreas Jochens");
-	authors.push_back("Brendon Higgins");
-	authors.push_back("Carlos López González (genete)");
-	authors.push_back("Carlos A. Sosa Navarro");
-	authors.push_back("caryoscelus");
-	authors.push_back("Chris Moore (dooglus)");
-	authors.push_back("Chris Norman (pixelgeek)");
-	authors.push_back("Cyril Brulebois (KiBi)");
-	authors.push_back("Daniel Fort");
-	authors.push_back("Daniel Hornung (rubikcube)");
-	authors.push_back("David Roden (Bombe)");
-	authors.push_back("Denis Zdorovtsov (trizer)");
-	authors.push_back("Dmitriy Pomerantsev (Atrus)");
-	authors.push_back("Douglas Lau");
-	authors.push_back("Evgenij Katunov");
-	authors.push_back("Gerald Young (Yoyobuae)");
-	authors.push_back("Gerco Ballintijn");
-	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
-	authors.push_back("Ivan Mahonin");
-	authors.push_back("Jerome Blanchi (d.j.a.y.)");
-	authors.push_back("Konstantin Dmitriev (zelgadis)");
-	authors.push_back("Luka Pravica");
-	authors.push_back("Nikita Kitaev (nikitakit)");
-	authors.push_back("Martin Michlmayr (tbm)");
-	authors.push_back("Max May (Permutatrix)");
-	authors.push_back("Miguel Gea Milvaques (xerakko)");
-	authors.push_back("Paul Wise (pabs)");
-	authors.push_back("Ralf Corsepius");
-	authors.push_back("Ramon Miranda");
-	authors.push_back("Ray Frederikson");
-	authors.push_back("Timo Paulssen (timonator)");
-	authors.push_back("Yu Chen (jcome)");
-	authors.push_back("Yue Shi Lai");
-	set_authors(authors);
+
+	std::string author_name;
+	std::ifstream author_file("AUTHORS");
+	if (!author_file) {
+		synfig::warning("AUTHORS file not found");
+	} else {
+		while(getline(author_file, author_name)) {
+			authors.push_back(author_name);
+		}
+		set_authors(authors); 
+		author_file.close();
+	}
 
 	std::vector<Glib::ustring> artists;
 	artists.push_back("Aurore D (rore)");
