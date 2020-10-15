@@ -49,7 +49,6 @@
 #include <gtkmm/separator.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/label.h>
-#include <gtkmm/box.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/menuitem.h>
@@ -905,10 +904,13 @@ CanvasView::create_time_bar()
 	//time_window_scroll->set_can_focus(true); // Uncomment this produce bad render of the HScroll
 	time_window_scroll->show();
 
-	timetrack = manage(new class Gtk::VBox());
-	timetrack->pack_start(*widget_kf_list);
-	timetrack->pack_start(*timeslider);
-	timetrack->pack_start(*time_window_scroll);
+	timetrack = manage(new Gtk::Grid());
+	time_window_scroll->set_hexpand(true);
+	timetrack->attach(*time_window_scroll, 0, 0, 1, 1);
+	timeslider->set_hexpand(true);
+	timetrack->attach(*timeslider, 0, 1, 1, 1);
+	timeslider->set_hexpand(true);
+	timetrack->attach(*widget_kf_list, 0, 2, 1, 1);
 	timetrack->hide();
 
 	// Interpolation widget
@@ -1061,23 +1063,33 @@ CanvasView::create_time_bar()
 
 	//Attach widgets to the timebar
 
-	Gtk::HBox *controls = manage(new Gtk::HBox());
-	controls->pack_start(*timetrackbutton,      false, true);
-	controls->pack_start(*current_time_widget,  false, true);
-	controls->pack_start(*framedial,            false, true);
-	controls->pack_start(*separator,            false, true);
-	controls->pack_start(*jackdial,             false, true);
-	controls->pack_start(*statusbar,            true, true);
-	controls->pack_start(*progressbar,          true,  true);
-	controls->pack_start(*widget_interpolation, false, true);
-	controls->pack_start(*keyframedial,         false, true);
-	controls->pack_start(*space,                false, true);
-	controls->pack_start(*animatebutton,        false, true);
-	controls->show();
+	Gtk::Grid *controls = manage(new Gtk::Grid());
+	{
+		int left_pos = 0;
+		controls->attach(*timetrackbutton, left_pos++, 0, 1, 1);
+		controls->attach(*current_time_widget, left_pos++, 0, 1, 1);
+		controls->attach(*framedial, left_pos++, 0, 1, 1);
+		controls->attach(*separator, left_pos++, 0, 1, 1);
+		controls->attach(*jackdial, left_pos++, 0, 1, 1);
+		controls->attach(*statusbar, left_pos++, 0, 1, 1);
+		controls->attach(*progressbar, left_pos++, 0, 1, 1);
+		controls->attach(*widget_interpolation, left_pos++, 0, 1, 1);
+		controls->attach(*keyframedial, left_pos++, 0, 1, 1);
+		controls->attach(*space, left_pos++, 0, 1, 1);
+		controls->attach(*animatebutton, left_pos++, 0, 1, 1);
 
-	timebar = Gtk::manage(new Gtk::VBox());
-	timebar->pack_end(*timetrack, false, true);
-	timebar->pack_end(*controls, false, true);
+		progressbar->set_hexpand(true);
+		progressbar->set_halign(Gtk::Align::ALIGN_FILL);
+
+		statusbar->set_hexpand(true);
+		statusbar->set_halign(Gtk::Align::ALIGN_FILL);
+
+		controls->show();
+	}
+
+	timebar = Gtk::manage(new Gtk::Grid());
+	timebar->attach(*controls, 0, 0, 1, 1);
+	timebar->attach(*timetrack, 0, 1, 1, 1);
 	timebar->set_hexpand();
 	timebar->show();
 
@@ -1391,13 +1403,13 @@ CanvasView::create_display_bar()
 		stopbutton->show();
 	}
 
-	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
-	hbox->pack_start(*displaybar, false, true);
-	hbox->pack_end(*stopbutton, false, false);
-	hbox->set_hexpand();
-	hbox->show();
+	Gtk::Grid *grid = manage(new Gtk::Grid());
+	grid->attach(*displaybar, 0, 0, 1, 1);
+	grid->attach(*stopbutton, 1, 0, 1, 1);
+	grid->set_hexpand();
+	grid->show();
 
-	return hbox;
+	return grid;
 }
 
 void CanvasView::grab_focus()
@@ -1969,12 +1981,12 @@ CanvasView::create_tab_label()
 
 	Glib::ustring text(get_local_name());
 
-	Gtk::HBox* box(manage(new Gtk::HBox()));
-	event_box->add(*box);
-	box->show();
+	Gtk::Grid* grid(manage(new Gtk::Grid()));
+	event_box->add(*grid);
+	grid->show();
 
 	Gtk::Label* label(manage(new Gtk::Label(text)));
-	box->pack_start(*label, false, true);
+	grid->attach(*label, 0, 0, 1, 1);
 	if (this == App::get_selected_canvas_view().get())
 	{
 		Pango::AttrList list;
@@ -1985,7 +1997,8 @@ CanvasView::create_tab_label()
 	label->show();
 
 	closebutton = manage(new Gtk::Button());
-	box->pack_end(*closebutton, false, false, 0);
+	closebutton->set_margin_end(4);
+	grid->attach(*closebutton, 1, 0, 1, 1);
 	Gtk::Image* closebutton_image(manage(new Gtk::Image(
 			Gtk::StockID("gtk-close"),
 			Gtk::IconSize::from_name("synfig-small_icon") )));
