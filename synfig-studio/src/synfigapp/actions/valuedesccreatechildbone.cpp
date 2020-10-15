@@ -68,11 +68,11 @@ ACTION_SET_CVS_ID(Action::ValueDescCreateChildBone,"$Id$");
 Action::ValueDescCreateChildBone::ValueDescCreateChildBone():
 	time(0),
 	origin(ValueBase(Point(1.1,0))),
-	scalelx(ValueBase(1.0)),
 	angle(Angle::rad(0)),
-	c_parent(false),
+	scalelx(ValueBase(1.0)),
 	width(0.1),
 	tipwidth(0.1),
+	c_parent(false),
 	c_active_bone(false)
 {
 }

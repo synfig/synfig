@@ -55,18 +55,14 @@ using namespace studio;
 
 VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
  etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
-	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
-	layer_bitmap_(my_layer_bitmap),
-	reference_layer_(reference_layer),
-	instance(selected_instance),
-	adjustment_threshold(Gtk::Adjustment::create(configmap["threshold"],1,10)),
-	entry_threshold(adjustment_threshold,1,0),
 	adjustment_accuracy(Gtk::Adjustment::create(configmap["accuracy"],1,10)),
 	entry_accuracy(adjustment_accuracy,1,0),
-	adjustment_despeckling(Gtk::Adjustment::create(configmap["despeckling"],0,500)),
-	entry_despeckling(adjustment_despeckling,1,0),
 	adjustment_accuracy2(Gtk::Adjustment::create(5,1,10)),
 	entry_accuracy2(adjustment_accuracy2,1,0),
+	adjustment_threshold(Gtk::Adjustment::create(configmap["threshold"],1,10)),
+	entry_threshold(adjustment_threshold,1,0),
+	adjustment_despeckling(Gtk::Adjustment::create(configmap["despeckling"],0,500)),
+	entry_despeckling(adjustment_despeckling,1,0),
 	adjustment_despeckling2(Gtk::Adjustment::create(3,0,500)),
 	entry_despeckling2(adjustment_despeckling2,1,0),
 	adjustment_maxthickness(Gtk::Adjustment::create(configmap["maxthickness"],0,500)),
@@ -76,7 +72,12 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	adjustment_adherence(Gtk::Adjustment::create(100,1,100)),
 	entry_adherence(adjustment_adherence,1,0),
 	adjustment_angle(Gtk::Adjustment::create(100,1,100)),
-	entry_angle(adjustment_angle,1,0)
+	entry_angle(adjustment_angle,1,0),
+	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
+	layer_bitmap_(my_layer_bitmap),
+	instance(selected_instance),
+	reference_layer_(reference_layer)
+	
 {
 	//Centerline and Outline option in the comboboxtext
 	// comboboxtext_mode.append(_("Centerline"));
