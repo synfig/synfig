@@ -49,6 +49,7 @@ SUBDIRS = \
 EXTRA_DIST = \
 	COPYING \
 	TODO \
+	AUTHORS \
 	m4/subs.m4 \
 	doxygen.cfg.in \
 	doxygen.cfg \

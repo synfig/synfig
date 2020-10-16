@@ -30,6 +30,7 @@
 #endif
 
 #include <vector>
+
 #include<fstream>
 
 #include <gtk/gtk.h>
@@ -108,11 +109,15 @@ About::About()
 	std::vector<Glib::ustring> authors;
 
 	std::string author_name;
-	std::ifstream author_file("AUTHORS");
-	if (!author_file) {
+	std::ifstream author_file(ResourceHelper::get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "AUTHORS");
+	if(!author_file)
+	{
 		synfig::warning("AUTHORS file not found");
-	} else {
-		while(getline(author_file, author_name)) {
+	} 
+	else 
+	{
+		while(getline(author_file, author_name))
+		{
 			authors.push_back(author_name);
 		}
 		set_authors(authors); 

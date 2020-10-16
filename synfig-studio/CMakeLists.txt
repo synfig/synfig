@@ -27,6 +27,16 @@ STUDIO_INTLTOOL_MERGE(
     INSTALL_DESTINATION "share/appdata"
 )
 
+file(
+    COPY AUTHORS
+    DESTINATION ${SYNFIG_BUILD_ROOT}/share/synfig
+)
+
+install(
+    FILES AUTHORS
+    DESTINATION share/synfig
+)
+
 if(NOT WIN32) # desktop file needs to be build only for nix systems
 STUDIO_INTLTOOL_MERGE(
     DESKTOP
