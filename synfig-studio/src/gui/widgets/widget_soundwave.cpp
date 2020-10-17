@@ -35,7 +35,9 @@
 
 #include <gui/localization.h>
 
+#ifndef WITHOUT_MLT
 #include <Mlt.h>
+#endif
 
 #include <cairomm/cairomm.h>
 #include <gdkmm.h>
@@ -263,6 +265,7 @@ void Widget_SoundWave::setup_mouse_handler()
 
 bool Widget_SoundWave::do_load(const std::string& filename)
 {
+#ifndef WITHOUT_MLT	
 	std::string real_filename = Glib::filename_from_utf8(filename);
 	Mlt::Profile profile;
 	Mlt::Producer *track = new Mlt::Producer(profile, (std::string("avformat:") + real_filename).c_str());
@@ -321,5 +324,6 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 		channel_idx = 0;
 	queue_draw();
 	delete track;
+#endif	
 	return true;
 }

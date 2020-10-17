@@ -29,11 +29,11 @@
 #	include <config.h>
 #endif
 
-#include <cmath>
-
 #include <vector>
 
+#ifndef WITHOUT_MLT
 #include <Mlt.h>
+#endif
 
 #include "general.h"
 #include "soundprocessor.h"
@@ -57,20 +57,28 @@ class SoundProcessor::Internal
 public:
 	static bool initialized;
 	std::vector<PlayOptions> stack;
+#ifndef WITHOUT_MLT
 	Mlt::Profile profile;
 	Mlt::Producer *last_track;
 	Mlt::Consumer *consumer;
+#endif
 	bool playing;
 	Time position;
 
 	void clear() {
+#ifndef WITHOUT_MLT
 		if (last_track != NULL) { delete last_track; last_track = NULL; }
 		if (consumer != NULL) { consumer->stop(); delete consumer; consumer = NULL; }
 		stack.clear();
 		stack.push_back(PlayOptions());
+#endif
 	}
 
-	Internal(): last_track(), consumer(), playing(), position(0.0) { clear(); }
+	Internal():
+#ifndef WITHOUT_MLT
+		last_track(), consumer(),
+#endif
+		playing(), position(0.0) { clear(); }
 	~Internal() { clear(); }
 };
 
@@ -97,13 +105,16 @@ void SoundProcessor::beginGroup(const PlayOptions &playOptions)
 
 void SoundProcessor::endGroup()
 {
+#ifndef WITHOUT_MLT
 	assert(internal->stack.size() > 1);
 	if (internal->stack.size() > 1)
 		internal->stack.pop_back();
+#endif
 }
 
 void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound)
 {
+#ifndef WITHOUT_MLT
 	PlayOptions options(
 			internal->stack.back().delay + playOptions.delay,
 			internal->stack.back().volume * playOptions.volume );
@@ -190,6 +201,7 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 
 	delete internal->last_track;
 	internal->last_track = tractor;
+#endif
 }
 
 void SoundProcessor::set_infinite(bool value)
@@ -199,12 +211,17 @@ void SoundProcessor::set_infinite(bool value)
 
 Time SoundProcessor::get_position() const
 {
+#ifndef WITHOUT_MLT
 	return Time(internal->last_track == NULL ? 0.0 :
 				(double)internal->last_track->position()/internal->profile.fps() );
+#else
+	return Time();
+#endif
 }
 
 void SoundProcessor::set_position(Time value)
 {
+#ifndef WITHOUT_MLT
 	Time dt = value - get_position();
 	if (dt >= Time(-0.01) && dt <= Time(0.01))
 		return;
@@ -214,6 +231,7 @@ void SoundProcessor::set_position(Time value)
 		internal->last_track->seek( (int)round(value*internal->profile.fps()) );
 		if (restart) set_playing(true);
 	}
+#endif
 }
 
 bool SoundProcessor::get_playing() const
@@ -221,6 +239,7 @@ bool SoundProcessor::get_playing() const
 
 void SoundProcessor::set_playing(bool value)
 {
+#ifndef WITHOUT_MLT
 	if (value == internal->playing) return;
 	internal->playing = value;
 	if (internal->playing) {
@@ -237,10 +256,12 @@ void SoundProcessor::set_playing(bool value)
 			internal->consumer = NULL;
 		}
 	}
+#endif
 }
 
 void SoundProcessor::do_export(String path)
 {
+#ifndef WITHOUT_MLT
 	if (internal->last_track != NULL) {
 		internal->last_track->set_speed(1.0);
 		internal->consumer = new Mlt::Consumer(internal->profile, "avformat");
@@ -248,17 +269,24 @@ void SoundProcessor::do_export(String path)
 		internal->consumer->set("target", path.c_str());
 		internal->consumer->run();
 	}
+#endif
 }
 
 bool SoundProcessor::subsys_init() {
 	if (!Internal::initialized)
+#ifndef WITHOUT_MLT
 		Internal::initialized = Mlt::Factory::init();
+#else
+		Internal::initialized = true;
+#endif
 	return Internal::initialized;
 }
 
 bool SoundProcessor::subsys_stop()
 {
+#ifndef WITHOUT_MLT
 	Mlt::Factory::close();
+#endif
 	return true;
 }
 
