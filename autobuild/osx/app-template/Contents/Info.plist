@@ -4,15 +4,17 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.synfig.SynfigStudio</string>
 	
 	<key>CFBundleGetInfoString</key>
-	<string>_VERSION_, © 2001-2008 The Synfig Team</string>
+	<string>_VERSION_, © 2001-2020 The Synfig Team</string>
 	<key>CFBundleShortVersionString</key>
 	<string>_VERSION_</string>
 	<key>CFBundleVersion</key>
 	<string>_VERSION_</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>© 2001-2008 The Synfig Team</string>
+	<string>© 2001-2020 The Synfig Team</string>
 	<key>CFBundleIconFile</key>
 	<string>SynfigStudio</string>
 	<key>CFBundleDocumentTypes</key>
