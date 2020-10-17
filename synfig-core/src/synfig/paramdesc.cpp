@@ -52,8 +52,6 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-const ParamDesc ParamVocab::blank;
-
 ParamDesc::ParamDesc(const ValueBase&, const String &a):
 	name_           (a),
 	local_name_     (a),
