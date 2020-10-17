@@ -167,16 +167,17 @@ inline bool intersect(const rect<T> &r1, const rect<T> &r2)
 
 
 template<typename T, typename F>
-inline bool contains(const rect<T> &big, const rect<T> &small, const F &less)
+// MSVC defines `small` type. To avoid confusion, we use the name `small_rect` instead of `small`.
+inline bool contains(const rect<T> &big, const rect<T> &small_rect, const F &less)
 {
-	return !less(small.minx, big.minx) &&
-		   !less(big.maxx, small.maxx) &&
-		   !less(small.miny, big.miny) &&
-		   !less(big.maxy, small.maxy);
+	return !less(small_rect.minx, big.minx) &&
+		   !less(big.maxx, small_rect.maxx) &&
+		   !less(small_rect.miny, big.miny) &&
+		   !less(big.maxy, small_rect.maxy);
 }
 template<typename T>
-inline bool contains(const rect<T> &big, const rect<T> &small)
-	{ return contains(big, small, std::less<T>()); }
+inline bool contains(const rect<T> &big, const rect<T> &small_rect)
+	{ return contains(big, small_rect, std::less<T>()); }
 
 
 //! Takes the intersection of the two rectangles
