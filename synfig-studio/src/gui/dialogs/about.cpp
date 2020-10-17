@@ -88,19 +88,27 @@ About::About()
 
 	set_copyright(_("Copyright (c) 2001-2020\nSynfig developers & contributors"));
 	Glib::ustring license =
+		"== Synfig Studio ==\n"
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
 		"the Free Software Foundation; either version 2 of the License, or "
 		"(at your option) any later version.\n\n"
-
-		"This program is distributed in the hope that it will be useful, "
-		"but WITHOUT ANY WARRANTY; without even the implied warranty of "
-		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
-		"GNU General Public License for more details.\n\n"
-
+		"This program is distributed in the hope that it will be useful, but "
+		"WITHOUT ANY WARRANTY; without even the implied warranty of "
+		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the "
+		"\"GNU General Public License\" for more details.\n\n"
 		"You should have received a copy of the GNU General Public License along "
 		"with this program; if not, write to the Free Software Foundation, Inc., "
-		"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or visit: http://www.gnu.org/";
+		"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or visit: http://www.gnu.org/\n\n\n"
+		"== Vectorizer ==\n"
+		"Vectorizer feature is ported from OpenToonz open-source animation "
+		"software, which is developed from Toonz, a software originall created "
+		"by Digital Video, S.p.A., Rome Italy.\n"
+		"https://github.com/opentoonz/opentoonz/\n\n"
+		"Vectorizer feature code is licensed under BSD 3-Clause \"New\" or "
+		"\"Revised\" License. Redistribution and use in source and binary forms, "
+		"with or without modification, are permitted provided that conditions "
+		"are met. See the \"The 3-Clause BSD License\" for more details.\n";
 	set_license(license);
 	set_wrap_license(true);
 
@@ -171,54 +179,15 @@ About::About()
 	Glib::ustring section_name = "Vectorizer feature";
 	std::vector<Glib::ustring> credits;
 	credits.push_back("Credits:");
-	Glib::ustring credit_header =
-		"Vectorizer feature is ported from OpenToonz open-source animation\n"
-		"software, which is developed from Toonz, a software originally\n"
-		"created by Digital Video, S.p.A., Rome Italy.";
 
-	credits.push_back(credit_header);
-	credits.push_back("https://github.com/opentoonz/opentoonz/\n");
-	
 	credits.push_back("Copyright (c) 2016 - 2019, DWANGO Co., Ltd.");
 	credits.push_back("Copyright (c) 2016 Toshihiro Shimizu https://github.com/meso");
 	credits.push_back("Copyright (c) 2016 Shinya Kitaoka https://github.com/skitaoka");
 	credits.push_back("Copyright (c) 2016 shun-iwasawa https://github.com/shun-iwasawa");
 	credits.push_back("Copyright (c) 2016 Campbell Barton https://github.com/ideasman42");
 	credits.push_back("Copyright (c) 2019 luzpaz https://github.com/luzpaz");
-	credits.push_back("Copyright (c) 2019 - 2020, Ankit Kumar Dwivedi https://github.com/ankit-kumar-dwivedi");
+	credits.push_back("Copyright (c) 2019 - 2020, Ankit Kumar Dwivedi https://github.com/ankit-kumar-dwivedi\n");
 	
-	Glib::ustring credit_footer =
-		"\n== Vectorizer License ==\n\n"
-		"Vectorizer feature code is licensed under BSD 3-Clause \"New\" or \"Revised\"   \n"
-		"License. Redistribution and use in source and binary forms, with or             \n"
-		"without modification, are permitted provided that the following conditions      \n"
-		"are met:\n"
-		"\t1. Redistributions of source code must retain the above copyright notice,     \n"
-		"\t    this list of conditions and the following disclaimer.\n"
-		"\t2. Redistributions in binary form must reproduce the above copyright\n"
-		"\t    notice, this list of conditions and the following disclaimer in the\n"
-		"\t    documentation and/or other materials provided with the distribution.      \n"
-		"\t3. Neither the name of the copyright holder nor the names of its\n"
-		"\t    contributors may be used to endorse or promote products derived \n"
-		"\t    from this software without specific prior written permission.\n"
-		"\n"
-		"THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND\n"
-		"CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED\n"
-		"WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n"
-		"WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n"
-		"PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n"
-		"HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,\n"
-		"INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n"
-		"(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE\n"
-		"GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS\n"
-		"INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,\n"
-		"WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n"
-		"NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n"
-		"OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF \n"
-		"SUCH DAMAGE.\n\n"
-		"== Vectorizer License End ==\n";
-
-	credits.push_back(credit_footer);
 	add_credit_section(section_name,credits);
 	
 	// TRANSLATORS: change this to your name, separate multiple names with \n
