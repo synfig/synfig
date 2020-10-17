@@ -41,6 +41,11 @@ set(MODS_ENABLED
     mod_yuv420p
 #    mptr_mplayer # - "This code has vulnerabilities"
 )
+if(MSVC)
+set(MODS_ENABLED
+    mod_example
+)
+endif()
 if(LIBMNG_FOUND)
   list(APPEND MODS_ENABLED mod_mng)
 else()
