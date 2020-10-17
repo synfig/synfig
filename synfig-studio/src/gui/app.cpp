@@ -4462,6 +4462,7 @@ studio::App::process_all_events(long unsigned int us)
 bool
 studio::App::check_python_version(String path)
 {
+#ifndef _MSC_VER	
 	String command;
 	String result;
 	command = path + " --version 2>&1";
@@ -4480,4 +4481,7 @@ studio::App::check_python_version(String path)
 		return false;
 	}
 	return true;
+#else
+	return false;
+#endif
 }
