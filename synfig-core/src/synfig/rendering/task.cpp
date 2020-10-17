@@ -53,13 +53,13 @@ synfig::Token Task::token;
 
 const Task::Handle Task::blank;
 
-Task::Token TaskSurface::token(
+SYNFIG_EXPORT Task::Token TaskSurface::token(
 	DescSpecial<TaskSurface>("Surface") );
 Task::Token TaskLockSurface::token(
 	DescSpecial<TaskLockSurface>("LoskSurface") );
 Task::Token TaskList::token(
 	DescSpecial<TaskList>("List") );
-Task::Token TaskEvent::token(
+SYNFIG_EXPORT Task::Token TaskEvent::token(
 	DescSpecial<TaskEvent>("Event") );
 
 

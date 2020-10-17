@@ -35,6 +35,7 @@
 
 #include <synfig/rect.h>
 #include <synfig/vector.h>
+#include <synfig/synfig_export.h>
 
 #include "surface.h"
 
@@ -507,7 +508,7 @@ class TaskSurface: public Task
 {
 public:
 	typedef etl::handle<TaskSurface> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 };
 
@@ -562,7 +563,7 @@ class TaskEvent: public Task
 public:
 	typedef etl::handle<TaskEvent> Handle;
 	typedef std::vector<Handle> List;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 private:

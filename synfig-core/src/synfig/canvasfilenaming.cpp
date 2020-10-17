@@ -45,7 +45,7 @@ using namespace std;
 
 /* === M A C R O S ========================================================= */
 
-const String CanvasFileNaming::container_prefix("#");
+SYNFIG_EXPORT const String CanvasFileNaming::container_prefix("#");
 const String CanvasFileNaming::container_directory_separator("/");
 const String CanvasFileNaming::container_canvas_filename("project.sifz");
 

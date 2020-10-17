@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/surface.h>
+#include <synfig/synfig_export.h>
 
 #include "../surface.h"
 
@@ -46,7 +47,7 @@ class SurfaceSW: public Surface
 {
 public:
 	typedef etl::handle<SurfaceSW> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const
 		{ return token.handle(); }
 

@@ -29,6 +29,7 @@
 
 #include "../../task.h"
 #include "../../primitive/transformationaffine.h"
+#include <synfig/synfig_export.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -90,7 +91,7 @@ class TaskTransformationAffine: public TaskTransformation
 {
 public:
 	typedef etl::handle<TaskTransformationAffine> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Holder<TransformationAffine> transformation;

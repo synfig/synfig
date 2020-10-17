@@ -65,6 +65,9 @@ using namespace synfigapp;
 #if defined(__APPLE__) || defined(__OpenBSD__)
 time_t _daylight_() { time_t t(time(0)); return localtime(&t)->tm_gmtoff; }
 #define daylight _daylight_()
+#elif defined(_MSC_VER)
+time_t _daylight_() { time_t t(time(0)); return localtime(&t)->tm_isdst; }
+#define daylight _daylight_()
 #endif
 
 /* === G L O B A L S ======================================================= */

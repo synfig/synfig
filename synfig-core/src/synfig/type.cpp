@@ -46,8 +46,8 @@ using namespace etl;
 Type::OperationBookBase *Type::OperationBookBase::first = NULL;
 Type::OperationBookBase *Type::OperationBookBase::last = NULL;
 
-Type *Type::first = NULL;
-Type *Type::last = NULL;
+SYNFIG_EXPORT Type *Type::first = NULL;
+SYNFIG_EXPORT Type *Type::last = NULL;
 TypeId Type::last_identifier = 0;
 Type::StaticData Type::staticData;
 
@@ -255,7 +255,7 @@ namespace types_namespace {
 			register_to_string(to_string);
 		}
 	public:
-		static TypeNil instance;
+		SYNFIG_EXPORT static TypeNil instance;
 	};
 
 	TypeNil TypeNil::instance;

@@ -237,12 +237,11 @@ public:
 
 class ParamVocab : public std::list< ParamDesc >
 {
-private:
-	static const ParamDesc blank;
-
 public:
 	const ParamDesc& operator[] (const String &name) const
 	{
+		static const ParamDesc blank;
+
 		for(const_iterator i = begin(); i != end(); ++i)
 			if (i->get_name() == name) return *i;
 		assert(false);
@@ -250,7 +249,7 @@ public:
 	}
 };
 
-}; // END of namespace synfig
+} // END of namespace synfig
 
 /* === E N D =============================================================== */
 

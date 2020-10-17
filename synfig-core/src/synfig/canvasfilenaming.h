@@ -32,6 +32,7 @@
 #include "filesystem.h"
 #include "filecontainerzip.h"
 #include "string.h"
+#include "synfig_export.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -44,7 +45,7 @@ namespace synfig {
 class CanvasFileNaming
 {
 public:
-	static const String container_prefix;
+	SYNFIG_EXPORT static const String container_prefix;
 	static const String container_directory_separator;
 	static const String container_canvas_filename;
 

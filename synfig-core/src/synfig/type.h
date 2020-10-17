@@ -57,6 +57,7 @@ namespace synfig {
 #include "string.h"
 #include "angle.h"
 #include <ETL/handle>
+#include "synfig_export.h"
 
 namespace synfig {
 
@@ -120,7 +121,7 @@ namespace types_namespace
 
 namespace synfig {
 
-extern Type &type_nil;
+SYNFIG_EXPORT extern Type &type_nil;
 
 typedef unsigned int TypeId;
 
@@ -357,7 +358,7 @@ private:
 		}
 	};
 
-	static Type *first, *last;
+	SYNFIG_EXPORT static Type *first, *last;
 	static TypeId last_identifier;
 
 	static struct StaticData {

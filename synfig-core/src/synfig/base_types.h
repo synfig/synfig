@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "type.h"
+#include "synfig_export.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -36,26 +37,26 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-	extern Type &type_bool;
-	extern Type &type_integer;
-	extern Type &type_angle;
-	extern Type &type_time;
-	extern Type &type_real;
-	extern Type &type_vector;
-	extern Type &type_color;
-	extern Type &type_segment;
-	extern Type &type_bline_point;
-	extern Type &type_matrix;
-	extern Type &type_bone_weight_pair;
-	extern Type &type_width_point;
-	extern Type &type_dash_item;
-	extern Type &type_list;
-	extern Type &type_canvas;
-	extern Type &type_string;
-	extern Type &type_gradient;
-	extern Type &type_bone_object;
-	extern Type &type_bone_valuenode;
-	extern Type &type_transformation;
+	SYNFIG_EXPORT extern Type &type_bool;
+	SYNFIG_EXPORT extern Type &type_integer;
+	SYNFIG_EXPORT extern Type &type_angle;
+	SYNFIG_EXPORT extern Type &type_time;
+	SYNFIG_EXPORT extern Type &type_real;
+	SYNFIG_EXPORT extern Type &type_vector;
+	SYNFIG_EXPORT extern Type &type_color;
+	SYNFIG_EXPORT extern Type &type_segment;
+	SYNFIG_EXPORT extern Type &type_bline_point;
+	SYNFIG_EXPORT extern Type &type_matrix;
+	SYNFIG_EXPORT extern Type &type_bone_weight_pair;
+	SYNFIG_EXPORT extern Type &type_width_point;
+	SYNFIG_EXPORT extern Type &type_dash_item;
+	SYNFIG_EXPORT extern Type &type_list;
+	SYNFIG_EXPORT extern Type &type_canvas;
+	SYNFIG_EXPORT extern Type &type_string;
+	SYNFIG_EXPORT extern Type &type_gradient;
+	SYNFIG_EXPORT extern Type &type_bone_object;
+	SYNFIG_EXPORT extern Type &type_bone_valuenode;
+	SYNFIG_EXPORT extern Type &type_transformation;
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */
