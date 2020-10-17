@@ -85,14 +85,11 @@ DockDialog::DockDialog():
 	set_id(synfig::UniqueID().get_uid()^reinterpret_cast<intptr_t>(this));
 
 	set_role(strprintf("dock_dialog_%d",get_id()));
-	GRAB_HINT_DATA(
-		"dock_dialog",
 #ifdef __APPLE__
-		Gdk::WINDOW_TYPE_HINT_NORMAL
+	GRAB_HINT_DATA("dock_dialog", Gdk::WINDOW_TYPE_HINT_NORMAL);
 #else
-		Gdk::WINDOW_TYPE_HINT_UTILITY
+	GRAB_HINT_DATA("dock_dialog", Gdk::WINDOW_TYPE_HINT_UTILITY);
 #endif
-	);
 	set_keep_above(false);
 
 	//! \todo can we set dialog windows transient for all normal windows, not just the toolbox?
