@@ -5,9 +5,8 @@
 #include <synfig/general.h> // for synfig::error()
 #include <synfig/exception.h> // for synfig::Exception
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 # ifndef __PRETTY_FUNCTION__
-#  define SYNFIG_DEFINED_PRETTY_FUNCTION_
 #  define __PRETTY_FUNCTION__ __FUNCSIG__
 #endif
 #endif
@@ -127,10 +126,5 @@
 			return success_value; \
 		} \
 	}
-
-#ifdef SYNFIG_DEFINED_PRETTY_FUNCTION_
-#undef __PRETTY_FUNCTION__
-#undef SYNFIG_UNDEF_PRETTY_FUNCTION_
-#endif
 
 #endif // SYNFIG_EXCEPTION_GUARD_H
