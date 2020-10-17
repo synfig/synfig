@@ -29,7 +29,7 @@ endif()
 ## Targets
 ##
 
-if(WIN32)
+if(MINGW)
     configure_file(synfigstudio.rc ${CMAKE_CURRENT_BINARY_DIR}/synfigstudio.rc)
     add_executable(synfigstudio main.cpp ${CMAKE_CURRENT_BINARY_DIR}/synfigstudio.rc)
 else()
