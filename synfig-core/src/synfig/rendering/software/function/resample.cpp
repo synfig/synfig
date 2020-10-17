@@ -44,6 +44,12 @@ using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
+#ifdef _MSC_VER
+// MSVC requires explicit template instantiation. Without it, it will crash with an internal compiler error :(
+template Color etl::surface<Color, ColorAccumulator, ColorPrep>::reader<etl::clamping::clamp, etl::clamping::clamp>(const void*, int, int);
+template Color software::PackedSurface::Reader::reader<etl::clamping::clamp, etl::clamping::clamp>(void const*, int, int);
+#endif
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
