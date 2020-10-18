@@ -57,28 +57,30 @@ namespace {
 	class Internal
 	{
 	public:
+		// TODO remove inlining to see if it helps/hurts
 		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
 		static inline ColorMatrix::value_type transform(const ColorMatrix &m, const Color &c)
 		{
-			ColorMatrix::value_type x(mode_o ? m[4][channel] : ColorMatrix::value_type(0.0));
+			ColorMatrix::value_type x(mode_o ? m[4][channel] : ColorMatrix::value_type(0.0)),
+			r = 0, g = 0, b = 0, a = 0;
 
-			if (mode_r == -1) x -= c.get_r();
-			if (mode_r ==  1) x += c.get_r();
-			if (mode_r ==  2) x += m[0][channel]*c.get_r();
+			if (mode_r == -1) r = -c.get_r();
+			if (mode_r ==  1) r =  c.get_r();
+			if (mode_r ==  2) r =  m[0][channel]*c.get_r();
 
-			if (mode_g == -1) x -= c.get_g();
-			if (mode_g ==  1) x += c.get_g();
-			if (mode_g ==  2) x += m[1][channel]*c.get_g();
+			if (mode_g == -1) g = -c.get_g();
+			if (mode_g ==  1) g =  c.get_g();
+			if (mode_g ==  2) g =  m[1][channel]*c.get_g();
 
-			if (mode_b == -1) x -= c.get_b();
-			if (mode_b ==  1) x += c.get_b();
-			if (mode_b ==  2) x += m[2][channel]*c.get_b();
+			if (mode_b == -1) b = -c.get_b();
+			if (mode_b ==  1) b =  c.get_b();
+			if (mode_b ==  2) b =  m[2][channel]*c.get_b();
 
-			if (mode_a == -1) x -= c.get_a();
-			if (mode_a ==  1) x += c.get_a();
-			if (mode_a ==  2) x += m[3][channel]*c.get_a();
+			if (mode_a == -1) a = -c.get_a();
+			if (mode_a ==  1) a =  c.get_a();
+			if (mode_a ==  2) a =  m[3][channel]*c.get_a();
 
-			return x;
+			return x + r + g + b + a;
 		}
 
 		template<int channel, int mode_r, int mode_g, int mode_b, int mode_a, int mode_o>
@@ -96,7 +98,7 @@ namespace {
 			return approximate_equal_lp(m[4][channel], ColorMatrix::value_type( 0.0)) ? transform<channel, mode_r, mode_g, mode_b, mode_a,  0>(m, src)
 				 : approximate_equal_lp(m[4][channel], ColorMatrix::value_type( 1.0)) ? transform<channel, mode_r, mode_g, mode_b, mode_a,  1>(m, src)
 				 : approximate_equal_lp(m[4][channel], ColorMatrix::value_type(-1.0)) ? transform<channel, mode_r, mode_g, mode_b, mode_a, -1>(m, src)
-				                                                                      : transform<channel, mode_r, mode_g, mode_b, mode_a,  2>(m, src);
+																					  : transform<channel, mode_r, mode_g, mode_b, mode_a,  2>(m, src);
 		}
 
 		template<int channel, int mode_r, int mode_g, int mode_b>
@@ -105,7 +107,7 @@ namespace {
 			return approximate_equal_lp(m[3][channel], ColorMatrix::value_type( 0.0)) ? transform_crgba<channel, mode_r, mode_g, mode_b,  0>(m, src)
 				 : approximate_equal_lp(m[3][channel], ColorMatrix::value_type( 1.0)) ? transform_crgba<channel, mode_r, mode_g, mode_b,  1>(m, src)
 				 : approximate_equal_lp(m[3][channel], ColorMatrix::value_type(-1.0)) ? transform_crgba<channel, mode_r, mode_g, mode_b, -1>(m, src)
-				                                                                      : transform_crgba<channel, mode_r, mode_g, mode_b,  2>(m, src);
+																					  : transform_crgba<channel, mode_r, mode_g, mode_b,  2>(m, src);
 		}
 
 		template<int channel, int mode_r, int mode_g>
@@ -114,7 +116,7 @@ namespace {
 			return approximate_equal_lp(m[2][channel], ColorMatrix::value_type( 0.0)) ? transform_crgb<channel, mode_r, mode_g,  0>(m, src)
 				 : approximate_equal_lp(m[2][channel], ColorMatrix::value_type( 1.0)) ? transform_crgb<channel, mode_r, mode_g,  1>(m, src)
 				 : approximate_equal_lp(m[2][channel], ColorMatrix::value_type(-1.0)) ? transform_crgb<channel, mode_r, mode_g, -1>(m, src)
-				                                                                      : transform_crgb<channel, mode_r, mode_g,  2>(m, src);
+																					  : transform_crgb<channel, mode_r, mode_g,  2>(m, src);
 		}
 
 		template<int channel, int mode_r>
@@ -123,7 +125,7 @@ namespace {
 			return approximate_equal_lp(m[1][channel], ColorMatrix::value_type( 0.0)) ? transform_crg<channel, mode_r,  0>(m, src)
 				 : approximate_equal_lp(m[1][channel], ColorMatrix::value_type( 1.0)) ? transform_crg<channel, mode_r,  1>(m, src)
 				 : approximate_equal_lp(m[1][channel], ColorMatrix::value_type(-1.0)) ? transform_crg<channel, mode_r, -1>(m, src)
-				                                                                      : transform_crg<channel, mode_r,  2>(m, src);
+																					  : transform_crg<channel, mode_r,  2>(m, src);
 		}
 
 		template<int channel>
@@ -132,7 +134,7 @@ namespace {
 			return approximate_equal_lp(m[0][channel], ColorMatrix::value_type( 0.0)) ? transform_cr<channel,  0>(m, src)
 				 : approximate_equal_lp(m[0][channel], ColorMatrix::value_type( 1.0)) ? transform_cr<channel,  1>(m, src)
 				 : approximate_equal_lp(m[0][channel], ColorMatrix::value_type(-1.0)) ? transform_cr<channel, -1>(m, src)
-				                                                                      : transform_cr<channel,  2>(m, src);
+																					  : transform_cr<channel,  2>(m, src);
 		}
 
 
@@ -143,7 +145,7 @@ namespace {
 			return approximate_equal_lp(m[4][channel], ColorMatrix::value_type( 0.0)) ? batch_transform<channel, mode_r, mode_g, mode_b, mode_a,  0>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[4][channel], ColorMatrix::value_type( 1.0)) ? batch_transform<channel, mode_r, mode_g, mode_b, mode_a,  1>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[4][channel], ColorMatrix::value_type(-1.0)) ? batch_transform<channel, mode_r, mode_g, mode_b, mode_a, -1>(m, dest, src, src_end)
-				                                                                      : batch_transform<channel, mode_r, mode_g, mode_b, mode_a,  2>(m, dest, src, src_end);
+																					  : batch_transform<channel, mode_r, mode_g, mode_b, mode_a,  2>(m, dest, src, src_end);
 		}
 
 		template<int channel, int mode_r, int mode_g, int mode_b>
@@ -152,7 +154,7 @@ namespace {
 			return approximate_equal_lp(m[3][channel], ColorMatrix::value_type( 0.0)) ? batch_crgba<channel, mode_r, mode_g, mode_b,  0>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[3][channel], ColorMatrix::value_type( 1.0)) ? batch_crgba<channel, mode_r, mode_g, mode_b,  1>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[3][channel], ColorMatrix::value_type(-1.0)) ? batch_crgba<channel, mode_r, mode_g, mode_b, -1>(m, dest, src, src_end)
-				                                                                      : batch_crgba<channel, mode_r, mode_g, mode_b,  2>(m, dest, src, src_end);
+																					  : batch_crgba<channel, mode_r, mode_g, mode_b,  2>(m, dest, src, src_end);
 		}
 
 		template<int channel, int mode_r, int mode_g>
@@ -161,7 +163,7 @@ namespace {
 			return approximate_equal_lp(m[2][channel], ColorMatrix::value_type( 0.0)) ? batch_crgb<channel, mode_r, mode_g,  0>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[2][channel], ColorMatrix::value_type( 1.0)) ? batch_crgb<channel, mode_r, mode_g,  1>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[2][channel], ColorMatrix::value_type(-1.0)) ? batch_crgb<channel, mode_r, mode_g, -1>(m, dest, src, src_end)
-				                                                                      : batch_crgb<channel, mode_r, mode_g,  2>(m, dest, src, src_end);
+																					  : batch_crgb<channel, mode_r, mode_g,  2>(m, dest, src, src_end);
 		}
 
 		template<int channel, int mode_r>
@@ -170,7 +172,7 @@ namespace {
 			return approximate_equal_lp(m[1][channel], ColorMatrix::value_type( 0.0)) ? batch_crg<channel, mode_r,  0>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[1][channel], ColorMatrix::value_type( 1.0)) ? batch_crg<channel, mode_r,  1>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[1][channel], ColorMatrix::value_type(-1.0)) ? batch_crg<channel, mode_r, -1>(m, dest, src, src_end)
-				                                                                      : batch_crg<channel, mode_r,  2>(m, dest, src, src_end);
+																					  : batch_crg<channel, mode_r,  2>(m, dest, src, src_end);
 		}
 
 		template<int channel>
@@ -179,7 +181,7 @@ namespace {
 			return approximate_equal_lp(m[0][channel], ColorMatrix::value_type( 0.0)) ? batch_cr<channel,  0>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[0][channel], ColorMatrix::value_type( 1.0)) ? batch_cr<channel,  1>(m, dest, src, src_end)
 				 : approximate_equal_lp(m[0][channel], ColorMatrix::value_type(-1.0)) ? batch_cr<channel, -1>(m, dest, src, src_end)
-				                                                                      : batch_cr<channel,  2>(m, dest, src, src_end);
+																					  : batch_cr<channel,  2>(m, dest, src, src_end);
 		}
 	};
 }
@@ -297,7 +299,7 @@ bool
 ColorMatrix::is_zero(int channel) const
 {
 	return is_constant(channel)
-	    && approximate_equal_lp(m[4][channel], value_type(0.0));
+		&& approximate_equal_lp(m[4][channel], value_type(0.0));
 }
 
 bool
