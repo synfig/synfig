@@ -57,8 +57,8 @@ KeyFrameDial::KeyFrameDial(): Gtk::Table(2, 1, false)
 {
 	toggle_keyframe_past = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_past_on",_("Unlock past keyframe"));
 	toggle_keyframe_future = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_future_on",_("Unlock future keyframe"));
-	attach(*toggle_keyframe_past, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*toggle_keyframe_future, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*toggle_keyframe_past, 0, 1, 0, 1, Gtk::SHRINK, Gtk::EXPAND, 0, 0);
+	attach(*toggle_keyframe_future, 1, 2, 0, 1, Gtk::SHRINK, Gtk::EXPAND, 0, 0);
 }
 
 Gtk::ToggleButton *

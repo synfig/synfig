@@ -40,6 +40,8 @@
 #include <synfig/canvasfilenaming.h>
 #include <synfigapp/value_desc.h>
 
+#include <gtkmm/stylecontext.h>
+
 #include <glibmm/convert.h> // Glib::filename_from_uri
 
 #endif
@@ -441,6 +443,10 @@ Dock_SoundWave::Dock_SoundWave()
 	: Dock_CanvasSpecific("soundwave", _("Sound"), Gtk::StockID("synfig-layer_other_sound")),
 	  current_grid_sound(nullptr)
 {
+	// Make Sound toolbar buttons small for space efficiency
+	auto context = get_style_context();
+	context->add_class("synfigstudio-efficient-workspace");
+
 	set_use_scrolled(false);
 
 	widget_kf_list.set_hexpand();

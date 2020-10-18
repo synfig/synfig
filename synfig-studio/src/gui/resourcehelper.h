@@ -50,6 +50,9 @@ public:
 
 	static synfig::String get_brush_path();
 	static synfig::String get_brush_path(const synfig::String& brush_filename);
+
+	static synfig::String get_css_path();
+	static synfig::String get_css_path(const synfig::String& css_filename);
 };
 
 };

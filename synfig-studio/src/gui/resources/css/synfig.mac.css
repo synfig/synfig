@@ -1,0 +1,9 @@
+@import url("synfig.css");
+
+/*
+ * Fix #810: Insensitive context menus on OS X
+ */
+.window-frame, .window-frame:backdrop {
+	box-shadow: none;
+	margin    : 0;
+}

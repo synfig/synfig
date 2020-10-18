@@ -32,6 +32,8 @@
 
 #include <synfig/general.h>
 
+#include <gtkmm/stylecontext.h>
+
 #include <glibmm/markup.h>
 
 #include "docks/dock_layers.h"
@@ -69,6 +71,10 @@ Dock_Layers::Dock_Layers():
 	Dock_CanvasSpecific("layers",_("Layers"),Gtk::StockID("synfig-layer")),
 	layer_action_manager(new LayerActionManager)
 {
+	// Make Layers button small for space efficiency
+	auto style_context = this->get_style_context();
+	style_context->add_class("synfigstudio-efficient-workspace");
+
 	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());
 
 	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");

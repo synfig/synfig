@@ -45,6 +45,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/imagemenuitem.h>
+#include <gtkmm/stylecontext.h>
 #include <synfigapp/main.h>
 #include "../../app.h"
 #include "../../dialogs/dialog_color.h"
@@ -126,6 +127,10 @@ Dock_PalEdit::Dock_PalEdit():
 	//palette_settings(new PaletteSettings(this,"colors")),
 	table(2,2,false)
 {
+	// Make Palette Editor toolbar buttons small for space efficiency
+	auto context = get_style_context();
+	context->add_class("synfigstudio-efficient-workspace");
+
 	action_group=Gtk::ActionGroup::create("action_group_pal_edit");
 	action_group->add(Gtk::Action::create(
 		"palette-add-color",

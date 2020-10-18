@@ -35,6 +35,8 @@
 #include "app.h"
 
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/stylecontext.h>
+
 #include <cassert>
 #include "instance.h"
 #include "canvasview.h"
@@ -67,6 +69,10 @@ Dock_LayerGroups::Dock_LayerGroups():
 	action_group_group_ops(Gtk::ActionGroup::create("action_group_dock_layergroups")),
 	group_action_manager(new GroupActionManager)
 {
+	// Make Sets toolbar buttons small for space efficiency
+	auto context = get_style_context();
+	context->add_class("synfigstudio-efficient-workspace");
+
 	group_action_manager->set_ui_manager(App::ui_manager());
 
 	action_group_group_ops->add( Gtk::Action::create("toolbar-groups", _("Set Ops")) );

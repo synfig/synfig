@@ -84,6 +84,8 @@ include(trees/CMakeLists.txt)
 include(widgets/CMakeLists.txt)
 include(workarearenderer/CMakeLists.txt)
 
+add_subdirectory(resources)
+
 target_include_directories(synfigstudio PRIVATE ${MLT_INCLUDE_DIRS}) # required for widget_soundwave
 
 target_link_libraries(synfigstudio

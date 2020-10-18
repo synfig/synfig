@@ -123,3 +123,14 @@ synfig::String studio::ResourceHelper::get_brush_path(const synfig::String& brus
 {
 	return get_brush_path() + '/' + brush_filename;
 }
+
+synfig::String studio::ResourceHelper::get_css_path()
+{
+	std::string csspath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "css";
+	return csspath;
+}
+
+synfig::String studio::ResourceHelper::get_css_path(const synfig::String& css_filename)
+{
+	return get_css_path() + '/' + css_filename;
+}
