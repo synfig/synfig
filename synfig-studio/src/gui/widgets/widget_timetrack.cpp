@@ -44,6 +44,12 @@
 #include <gui/exception_guard.h>
 #endif
 
+#ifdef _MSC_VER
+# ifndef __PRETTY_FUNCTION__
+#  define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+#endif
+
 using namespace studio;
 
 Widget_Timetrack::Widget_Timetrack()

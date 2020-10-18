@@ -11,7 +11,9 @@ set(CMAKE_CXX_STANDARD 11)
 add_subdirectory(src)
 
 add_subdirectory(brushes)
+if(NOT MSVC)
 add_subdirectory(images)
+endif()
 add_subdirectory(plugins)
 add_subdirectory(po)
 add_subdirectory(sounds)
@@ -45,6 +47,7 @@ if(TARGET desktop_file)
     )
 endif()
 
+if(NOT MSVC)
 add_dependencies(synfigstudio
     build_images
     build_pofiles_synfigstudio
@@ -60,4 +63,5 @@ endif()
 
 if(TARGET desktop_file)
     add_dependencies(synfigstudio desktop_file)
+endif()
 endif()

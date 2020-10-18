@@ -39,6 +39,7 @@ endif()
 if(MSVC)
 	add_definitions(-D_USE_MATH_DEFINES) # <cmath> header need this define to add M_PI define
 	add_definitions(-DNOMINMAX) # windows.h defines min/max and brokes std::min/max
+	add_definitions(-DWITHOUT_MLT) # Disable MLT for MSVC build (as there are no such package yet)
 
 	## /MP Enable multi-processor compilation (faster)
 	add_compile_options(/MP /W0 /bigobj)

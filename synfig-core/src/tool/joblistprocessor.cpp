@@ -66,6 +66,13 @@
 
 #endif
 
+#ifdef _MSC_VER
+#include  <io.h>
+#define access _access_s
+#define W_OK 2
+#pragma message("TODO: Move this to FileSystem class")
+#endif
+
 using namespace synfig;
 
 void process_job_list(std::list<Job>& job_list, const TargetParam& target_params)

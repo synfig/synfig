@@ -59,6 +59,13 @@
 
 #endif
 
+#ifdef _MSC_VER
+#include  <io.h>
+#define access _access_s
+#define W_OK 2
+#pragma message("TODO: Move this to FileSystem class")
+#endif
+
 /* === U S I N G =========================================================== */
 
 using namespace std;
