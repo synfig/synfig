@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeStaticListLoop,"loop");
 ACTION_SET_CATEGORY(Action::ValueNodeStaticListLoop,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeStaticListLoop,0);
 ACTION_SET_VERSION(Action::ValueNodeStaticListLoop,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeStaticListLoop,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

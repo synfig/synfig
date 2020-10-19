@@ -63,7 +63,6 @@ SYNFIG_LAYER_SET_NAME(Layer_ColorCorrect,"colorcorrect");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_ColorCorrect,N_("Color Correct"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_ColorCorrect,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Layer_ColorCorrect,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_ColorCorrect,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

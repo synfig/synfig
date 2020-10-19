@@ -59,7 +59,6 @@ SYNFIG_IMPORTER_INIT(exr_mptr);
 SYNFIG_IMPORTER_SET_NAME(exr_mptr,"openexr");
 SYNFIG_IMPORTER_SET_EXT(exr_mptr,"exr");
 SYNFIG_IMPORTER_SET_VERSION(exr_mptr,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(exr_mptr,"$Id$");
 SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(exr_mptr, false);
 
 /* === M E T H O D S ======================================================= */

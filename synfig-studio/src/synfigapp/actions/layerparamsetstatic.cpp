@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::LayerParamSetStatic,"setstatic");
 ACTION_SET_CATEGORY(Action::LayerParamSetStatic,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::LayerParamSetStatic,0);
 ACTION_SET_VERSION(Action::LayerParamSetStatic,"0.0");
-ACTION_SET_CVS_ID(Action::LayerParamSetStatic,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

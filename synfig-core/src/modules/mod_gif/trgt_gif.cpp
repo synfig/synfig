@@ -56,7 +56,6 @@ SYNFIG_TARGET_INIT(gif);
 SYNFIG_TARGET_SET_NAME(gif,"gif");
 SYNFIG_TARGET_SET_EXT(gif,"gif");
 SYNFIG_TARGET_SET_VERSION(gif,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(gif,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

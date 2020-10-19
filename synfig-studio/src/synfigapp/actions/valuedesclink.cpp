@@ -63,7 +63,6 @@ ACTION_SET_TASK(Action::ValueDescLink,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescLink,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescLink,0);
 ACTION_SET_VERSION(Action::ValueDescLink,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescLink,"$Id$");
 
 ACTION_INIT(Action::ValueDescLinkOpposite);
 ACTION_SET_NAME(Action::ValueDescLinkOpposite,"ValueDescLinkOpposite");
@@ -72,7 +71,6 @@ ACTION_SET_TASK(Action::ValueDescLinkOpposite,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescLinkOpposite,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescLinkOpposite,0);
 ACTION_SET_VERSION(Action::ValueDescLinkOpposite,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescLinkOpposite,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

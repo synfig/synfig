@@ -62,7 +62,6 @@ SYNFIG_LAYER_SET_NAME(Layer_Duplicate,"duplicate");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Duplicate,N_("Duplicate"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Duplicate,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Duplicate,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Duplicate,"$Id$");
 
 /* === M E M B E R S ======================================================= */
 

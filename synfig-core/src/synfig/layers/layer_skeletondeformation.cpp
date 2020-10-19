@@ -67,7 +67,6 @@ SYNFIG_LAYER_SET_NAME(Layer_SkeletonDeformation,"skeleton_deformation");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SkeletonDeformation,N_("Skeleton Deformation"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_SkeletonDeformation,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Layer_SkeletonDeformation,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Layer_SkeletonDeformation,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

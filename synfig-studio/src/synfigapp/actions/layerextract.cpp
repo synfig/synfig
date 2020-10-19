@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::LayerExtract,"extract");
 ACTION_SET_CATEGORY(Action::LayerExtract,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerExtract,0);
 ACTION_SET_VERSION(Action::LayerExtract,"0.0");
-ACTION_SET_CVS_ID(Action::LayerExtract,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

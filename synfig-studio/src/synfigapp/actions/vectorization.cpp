@@ -58,7 +58,6 @@ ACTION_SET_TASK(Action::Vectorization,"vectorize");
 ACTION_SET_CATEGORY(Action::Vectorization,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::Vectorization,0);
 ACTION_SET_VERSION(Action::Vectorization,"0.0");
-ACTION_SET_CVS_ID(Action::Vectorization,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 /* === P R O C E D U R E S ================================================= */

@@ -77,7 +77,6 @@ SYNFIG_TARGET_INIT(dv_trgt);
 SYNFIG_TARGET_SET_NAME(dv_trgt,"dv");
 SYNFIG_TARGET_SET_EXT(dv_trgt,"dv");
 SYNFIG_TARGET_SET_VERSION(dv_trgt,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(dv_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

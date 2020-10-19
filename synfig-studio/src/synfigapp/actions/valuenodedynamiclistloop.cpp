@@ -56,7 +56,6 @@ ACTION_SET_TASK(Action::ValueNodeDynamicListLoop,"loop");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListLoop,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListLoop,0);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListLoop,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeDynamicListLoop,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

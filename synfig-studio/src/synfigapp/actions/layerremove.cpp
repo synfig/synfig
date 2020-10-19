@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::LayerRemove,"remove");
 ACTION_SET_CATEGORY(Action::LayerRemove,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerRemove,0);
 ACTION_SET_VERSION(Action::LayerRemove,"0.0");
-ACTION_SET_CVS_ID(Action::LayerRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

@@ -50,7 +50,6 @@ SYNFIG_TARGET_INIT(magickpp_trgt);
 SYNFIG_TARGET_SET_NAME(magickpp_trgt,"magick++");
 SYNFIG_TARGET_SET_EXT(magickpp_trgt,"gif");
 SYNFIG_TARGET_SET_VERSION(magickpp_trgt,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(magickpp_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

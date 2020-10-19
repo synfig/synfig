@@ -63,7 +63,6 @@ ACTION_SET_TASK(Action::BLinePointTangentMerge,"connect");
 ACTION_SET_CATEGORY(Action::BLinePointTangentMerge,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentMerge,0);
 ACTION_SET_VERSION(Action::BLinePointTangentMerge,"0.1");
-ACTION_SET_CVS_ID(Action::BLinePointTangentMerge,"$Id$");
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentMergeRadius);
 ACTION_SET_NAME(Action::BLinePointTangentMergeRadius,"BLinePointTangentMergeRadius");
@@ -72,7 +71,6 @@ ACTION_SET_TASK(Action::BLinePointTangentMergeRadius,"type_vector");
 ACTION_SET_CATEGORY(Action::BLinePointTangentMergeRadius,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentMergeRadius,0);
 ACTION_SET_VERSION(Action::BLinePointTangentMergeRadius,"0.0");
-ACTION_SET_CVS_ID(Action::BLinePointTangentMergeRadius,"$Id$");
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentMergeAngle);
 ACTION_SET_NAME(Action::BLinePointTangentMergeAngle,"BLinePointTangentMergeAngle");
@@ -81,7 +79,6 @@ ACTION_SET_TASK(Action::BLinePointTangentMergeAngle,"type_angle");
 ACTION_SET_CATEGORY(Action::BLinePointTangentMergeAngle,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentMergeAngle,0);
 ACTION_SET_VERSION(Action::BLinePointTangentMergeAngle,"0.0");
-ACTION_SET_CVS_ID(Action::BLinePointTangentMergeAngle,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

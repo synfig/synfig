@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ActivepointSet,"set");
 ACTION_SET_CATEGORY(Action::ActivepointSet,Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::ActivepointSet,0);
 ACTION_SET_VERSION(Action::ActivepointSet,"0.0");
-ACTION_SET_CVS_ID(Action::ActivepointSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

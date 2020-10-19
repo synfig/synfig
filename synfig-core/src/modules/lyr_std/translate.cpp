@@ -68,7 +68,6 @@ SYNFIG_LAYER_SET_NAME(Translate,"translate");
 SYNFIG_LAYER_SET_LOCAL_NAME(Translate,N_("Translate"));
 SYNFIG_LAYER_SET_CATEGORY(Translate,N_("Transform"));
 SYNFIG_LAYER_SET_VERSION(Translate,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Translate,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

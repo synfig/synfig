@@ -60,7 +60,6 @@ SYNFIG_LAYER_SET_NAME(SpiralGradient,"spiral_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(SpiralGradient,N_("Spiral Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(SpiralGradient,N_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(SpiralGradient,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(SpiralGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

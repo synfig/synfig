@@ -57,7 +57,6 @@ ACTION_SET_TASK(Action::KeyframeWaypointSet,"set");
 ACTION_SET_CATEGORY(Action::KeyframeWaypointSet,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeWaypointSet,0);
 ACTION_SET_VERSION(Action::KeyframeWaypointSet,"0.0");
-ACTION_SET_CVS_ID(Action::KeyframeWaypointSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

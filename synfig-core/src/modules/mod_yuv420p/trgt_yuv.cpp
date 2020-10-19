@@ -58,7 +58,6 @@ SYNFIG_TARGET_INIT(yuv);
 SYNFIG_TARGET_SET_NAME(yuv,"yuv420p");
 SYNFIG_TARGET_SET_EXT(yuv,"yuv");
 SYNFIG_TARGET_SET_VERSION(yuv,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(yuv,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

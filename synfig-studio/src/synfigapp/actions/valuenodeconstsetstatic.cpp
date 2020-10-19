@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeConstSetStatic,"setstatic");
 ACTION_SET_CATEGORY(Action::ValueNodeConstSetStatic,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeConstSetStatic,0);
 ACTION_SET_VERSION(Action::ValueNodeConstSetStatic,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeConstSetStatic,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

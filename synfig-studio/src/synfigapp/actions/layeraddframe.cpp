@@ -56,7 +56,6 @@ ACTION_SET_TASK(Action::LayerAddFrame,"add_frame");
 ACTION_SET_CATEGORY(Action::LayerAddFrame,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerAddFrame,0);
 ACTION_SET_VERSION(Action::LayerAddFrame,"0.0");
-ACTION_SET_CVS_ID(Action::LayerAddFrame,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

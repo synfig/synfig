@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeRename,"rename");
 ACTION_SET_CATEGORY(Action::ValueNodeRename,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeRename,0);
 ACTION_SET_VERSION(Action::ValueNodeRename,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeRename,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

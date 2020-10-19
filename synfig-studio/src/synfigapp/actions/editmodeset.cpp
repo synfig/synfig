@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::EditModeSet,"set");
 ACTION_SET_CATEGORY(Action::EditModeSet,Action::CATEGORY_OTHER);
 ACTION_SET_PRIORITY(Action::EditModeSet,0);
 ACTION_SET_VERSION(Action::EditModeSet,"0.0");
-ACTION_SET_CVS_ID(Action::EditModeSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

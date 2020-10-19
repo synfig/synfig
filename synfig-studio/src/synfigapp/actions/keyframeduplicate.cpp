@@ -57,7 +57,6 @@ ACTION_SET_TASK(Action::KeyframeDuplicate,"duplicate");
 ACTION_SET_CATEGORY(Action::KeyframeDuplicate,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeDuplicate,0);
 ACTION_SET_VERSION(Action::KeyframeDuplicate,"0.0");
-ACTION_SET_CVS_ID(Action::KeyframeDuplicate,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

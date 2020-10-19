@@ -48,7 +48,7 @@
 //! Defines various variables and the create method, common for all Targets.
 //! To be used in the private part of the target class definition.
 #define SYNFIG_TARGET_MODULE_EXT \
-		public: static const char name__[], version__[], ext__[], cvs_id__[];\
+		public: static const char name__[], version__[], ext__[];\
 		static Target* create (const char *filename, const synfig::TargetParam& p);
 
 //! Sets the name of the target
@@ -59,9 +59,6 @@
 
 //! Sets the version of the target
 #define SYNFIG_TARGET_SET_VERSION(class,x) const char class::version__[]=x
-
-//! Sets the CVS ID of the target
-#define SYNFIG_TARGET_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
 //! Defines implementation of the create method for the target
 //! \param filename The file name to be created by the target.

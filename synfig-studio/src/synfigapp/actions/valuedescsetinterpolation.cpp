@@ -57,7 +57,6 @@ ACTION_SET_TASK(Action::ValueDescSetInterpolation,"setinterpolation");
 ACTION_SET_CATEGORY(Action::ValueDescSetInterpolation,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescSetInterpolation,0);
 ACTION_SET_VERSION(Action::ValueDescSetInterpolation,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescSetInterpolation,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

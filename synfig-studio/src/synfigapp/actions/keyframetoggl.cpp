@@ -58,7 +58,6 @@ ACTION_SET_TASK(Action::KeyframeToggl,"disconnect");
 ACTION_SET_CATEGORY(Action::KeyframeToggl,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeToggl,0);
 ACTION_SET_VERSION(Action::KeyframeToggl,"0.0");
-ACTION_SET_CVS_ID(Action::KeyframeToggl,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

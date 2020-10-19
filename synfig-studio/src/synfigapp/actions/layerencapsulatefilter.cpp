@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::LayerEncapsulateFilter,"encapsulate_filter");
 ACTION_SET_CATEGORY(Action::LayerEncapsulateFilter,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEncapsulateFilter,0);
 ACTION_SET_VERSION(Action::LayerEncapsulateFilter,"0.0");
-ACTION_SET_CVS_ID(Action::LayerEncapsulateFilter,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

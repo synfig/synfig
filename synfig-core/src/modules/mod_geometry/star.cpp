@@ -66,7 +66,6 @@ SYNFIG_LAYER_SET_NAME(Star,"star");
 SYNFIG_LAYER_SET_LOCAL_NAME(Star,N_("Star"));
 SYNFIG_LAYER_SET_CATEGORY(Star,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Star,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Star,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

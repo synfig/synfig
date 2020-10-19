@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::ValueDescResetPose,"reset_pose");
 ACTION_SET_CATEGORY(Action::ValueDescResetPose,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescResetPose,0);
 ACTION_SET_VERSION(Action::ValueDescResetPose,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescResetPose,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

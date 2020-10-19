@@ -62,7 +62,6 @@ SYNFIG_LAYER_SET_NAME(Layer_MotionBlur,"MotionBlur"); // todo: use motion_blur
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_MotionBlur,N_("Motion Blur"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_MotionBlur,N_("Blurs"));
 SYNFIG_LAYER_SET_VERSION(Layer_MotionBlur,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_MotionBlur,"$Id$");
 
 /* === M E M B E R S ======================================================= */
 

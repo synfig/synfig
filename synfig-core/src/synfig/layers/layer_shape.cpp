@@ -73,7 +73,6 @@ SYNFIG_LAYER_SET_NAME(Layer_Shape,"shape");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Shape,N_("Shape"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Shape,N_("Internal"));
 SYNFIG_LAYER_SET_VERSION(Layer_Shape,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Shape,"$Id$");
 
 /* === C L A S S E S ======================================================= */
 

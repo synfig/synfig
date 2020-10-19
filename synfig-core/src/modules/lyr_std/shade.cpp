@@ -79,7 +79,6 @@ SYNFIG_LAYER_SET_NAME(Layer_Shade,"shade");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Shade,N_("Shade"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Shade,N_("Stylize"));
 SYNFIG_LAYER_SET_VERSION(Layer_Shade,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Shade,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 

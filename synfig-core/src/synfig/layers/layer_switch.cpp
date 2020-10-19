@@ -63,7 +63,6 @@ SYNFIG_LAYER_SET_NAME(Layer_Switch,"switch");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Switch,N_("Switch"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Switch,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Switch,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Switch,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

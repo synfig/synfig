@@ -54,7 +54,6 @@ using namespace Action;
 	ACTION_SET_CATEGORY(Action::class_name,Action::CATEGORY_LAYER); \
 	ACTION_SET_PRIORITY(Action::class_name,0); \
 	ACTION_SET_VERSION(Action::class_name,"0.0"); \
-	ACTION_SET_CVS_ID(Action::class_name,"$Id$"); \
 	bool Action::class_name::is_candidate(const ParamList &x) \
 		{ return is_candidate_for_exclude(x,task); }
 

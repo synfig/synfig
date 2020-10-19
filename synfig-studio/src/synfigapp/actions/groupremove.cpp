@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::GroupRemove,"remove");
 ACTION_SET_CATEGORY(Action::GroupRemove,Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRemove,0);
 ACTION_SET_VERSION(Action::GroupRemove,"0.0");
-ACTION_SET_CVS_ID(Action::GroupRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

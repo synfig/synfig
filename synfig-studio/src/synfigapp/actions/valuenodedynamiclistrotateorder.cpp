@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeDynamicListRotateOrder,"rotate");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListRotateOrder,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListRotateOrder,0);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListRotateOrder,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeDynamicListRotateOrder,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

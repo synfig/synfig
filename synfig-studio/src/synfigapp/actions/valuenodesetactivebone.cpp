@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::ValueNodeSetActiveBone,"set_active_bone");
 ACTION_SET_CATEGORY(Action::ValueNodeSetActiveBone,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE|Action::CATEGORY_HIDDEN);
 ACTION_SET_PRIORITY(Action::ValueNodeSetActiveBone,0);
 ACTION_SET_VERSION(Action::ValueNodeSetActiveBone,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeSetActiveBone,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

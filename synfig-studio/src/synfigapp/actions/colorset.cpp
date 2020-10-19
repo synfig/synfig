@@ -59,7 +59,6 @@ ACTION_SET_TASK(Action::ColorSetFromOC, "set");
 ACTION_SET_CATEGORY(Action::ColorSetFromOC, Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ColorSetFromOC, 0);
 ACTION_SET_VERSION(Action::ColorSetFromOC, "0.0");
-ACTION_SET_CVS_ID(Action::ColorSetFromOC, "$Id$");
 
 ACTION_INIT(Action::ColorSetFromFC);
 ACTION_SET_NAME(Action::ColorSetFromFC, "ColorSetFromFC");
@@ -68,7 +67,6 @@ ACTION_SET_TASK(Action::ColorSetFromFC, "set");
 ACTION_SET_CATEGORY(Action::ColorSetFromFC, Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ColorSetFromFC, 0);
 ACTION_SET_VERSION(Action::ColorSetFromFC, "0.0");
-ACTION_SET_CVS_ID(Action::ColorSetFromFC, "$Id$");
 
 /* === G L O B A L S ======================================================= */
 

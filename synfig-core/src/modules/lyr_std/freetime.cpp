@@ -59,7 +59,6 @@ SYNFIG_LAYER_SET_NAME(Layer_FreeTime,"freetime");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_FreeTime,N_("Free Time"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_FreeTime,N_("Time"));
 SYNFIG_LAYER_SET_VERSION(Layer_FreeTime,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_FreeTime,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

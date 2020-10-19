@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::GroupRename,"rename");
 ACTION_SET_CATEGORY(Action::GroupRename,Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRename,0);
 ACTION_SET_VERSION(Action::GroupRename,"0.0");
-ACTION_SET_CVS_ID(Action::GroupRename,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

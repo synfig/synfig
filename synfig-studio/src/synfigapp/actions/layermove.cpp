@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::LayerMove,"move");
 ACTION_SET_CATEGORY(Action::LayerMove,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerMove,0);
 ACTION_SET_VERSION(Action::LayerMove,"0.0");
-ACTION_SET_CVS_ID(Action::LayerMove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

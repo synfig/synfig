@@ -61,7 +61,6 @@ ACTION_SET_TASK(Action::ActivepointSetSmart,"set");
 ACTION_SET_CATEGORY(Action::ActivepointSetSmart,Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::ActivepointSetSmart,0);
 ACTION_SET_VERSION(Action::ActivepointSetSmart,"0.0");
-ACTION_SET_CVS_ID(Action::ActivepointSetSmart,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

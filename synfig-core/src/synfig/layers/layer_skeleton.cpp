@@ -58,7 +58,6 @@ SYNFIG_LAYER_SET_NAME(Layer_Skeleton,"skeleton");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Skeleton,N_("Skeleton"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Skeleton,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Skeleton,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Skeleton,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

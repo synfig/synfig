@@ -59,7 +59,6 @@ ACTION_SET_TASK(Action::KeyframeSet,"set");
 ACTION_SET_CATEGORY(Action::KeyframeSet,Action::CATEGORY_KEYFRAME|Action::CATEGORY_HIDDEN);
 ACTION_SET_PRIORITY(Action::KeyframeSet,0);
 ACTION_SET_VERSION(Action::KeyframeSet,"0.0");
-ACTION_SET_CVS_ID(Action::KeyframeSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

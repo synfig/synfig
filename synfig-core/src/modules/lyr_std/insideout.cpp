@@ -64,7 +64,6 @@ SYNFIG_LAYER_SET_NAME(InsideOut,"inside_out");
 SYNFIG_LAYER_SET_LOCAL_NAME(InsideOut,N_("Inside Out"));
 SYNFIG_LAYER_SET_CATEGORY(InsideOut,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(InsideOut,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(InsideOut,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

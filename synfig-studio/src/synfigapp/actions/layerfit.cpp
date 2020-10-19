@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::LayerFit,"fit");
 ACTION_SET_CATEGORY(Action::LayerFit,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerFit,0);
 ACTION_SET_VERSION(Action::LayerFit,"0.0");
-ACTION_SET_CVS_ID(Action::LayerFit,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

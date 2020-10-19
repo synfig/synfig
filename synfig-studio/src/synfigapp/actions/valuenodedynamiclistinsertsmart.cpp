@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::ValueNodeDynamicListInsertSmart,"insert");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListInsertSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListInsertSmart,-20);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListInsertSmart,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeDynamicListInsertSmart,"$Id$");
 
 ACTION_INIT(Action::ValueNodeDynamicListInsertSmartKeepShape);
 ACTION_SET_NAME(Action::ValueNodeDynamicListInsertSmartKeepShape,"ValueNodeDynamicListInsertSmartKeepShape");
@@ -64,7 +63,6 @@ ACTION_SET_TASK(Action::ValueNodeDynamicListInsertSmartKeepShape,"insert");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListInsertSmartKeepShape,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListInsertSmartKeepShape,-21);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListInsertSmartKeepShape,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeDynamicListInsertSmartKeepShape,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

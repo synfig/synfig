@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::ValueNodeAdd,"add");
 ACTION_SET_CATEGORY(Action::ValueNodeAdd,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeAdd,0);
 ACTION_SET_VERSION(Action::ValueNodeAdd,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeAdd,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

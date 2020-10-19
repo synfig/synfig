@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ActivepointRemove,"remove");
 ACTION_SET_CATEGORY(Action::ActivepointRemove,Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::ActivepointRemove,0);
 ACTION_SET_VERSION(Action::ActivepointRemove,"0.0");
-ACTION_SET_CVS_ID(Action::ActivepointRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

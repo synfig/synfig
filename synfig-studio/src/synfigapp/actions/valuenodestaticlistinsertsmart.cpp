@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::ValueNodeStaticListInsertSmart,"insert");
 ACTION_SET_CATEGORY(Action::ValueNodeStaticListInsertSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeStaticListInsertSmart,-20);
 ACTION_SET_VERSION(Action::ValueNodeStaticListInsertSmart,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeStaticListInsertSmart,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

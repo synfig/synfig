@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::LayerParamConnect,"connect");
 ACTION_SET_CATEGORY(Action::LayerParamConnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::LayerParamConnect,0);
 ACTION_SET_VERSION(Action::LayerParamConnect,"0.0");
-ACTION_SET_CVS_ID(Action::LayerParamConnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

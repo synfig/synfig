@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeRemove,"unexport");
 ACTION_SET_CATEGORY(Action::ValueNodeRemove,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeRemove,0);
 ACTION_SET_VERSION(Action::ValueNodeRemove,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

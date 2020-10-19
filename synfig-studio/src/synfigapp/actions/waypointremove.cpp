@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::WaypointRemove,"remove");
 ACTION_SET_CATEGORY(Action::WaypointRemove,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::WaypointRemove,0);
 ACTION_SET_VERSION(Action::WaypointRemove,"0.0");
-ACTION_SET_CVS_ID(Action::WaypointRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

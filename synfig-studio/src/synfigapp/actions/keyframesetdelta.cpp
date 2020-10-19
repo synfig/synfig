@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::KeyframeSetDelta,"set");
 ACTION_SET_CATEGORY(Action::KeyframeSetDelta,Action::CATEGORY_KEYFRAME|Action::CATEGORY_HIDDEN);
 ACTION_SET_PRIORITY(Action::KeyframeSetDelta,0);
 ACTION_SET_VERSION(Action::KeyframeSetDelta,"0.0");
-ACTION_SET_CVS_ID(Action::KeyframeSetDelta,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

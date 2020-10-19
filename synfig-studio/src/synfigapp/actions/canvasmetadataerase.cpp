@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::CanvasMetadataErase,"set");
 ACTION_SET_CATEGORY(Action::CanvasMetadataErase,Action::CATEGORY_CANVAS);
 ACTION_SET_PRIORITY(Action::CanvasMetadataErase,0);
 ACTION_SET_VERSION(Action::CanvasMetadataErase,"0.0");
-ACTION_SET_CVS_ID(Action::CanvasMetadataErase,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

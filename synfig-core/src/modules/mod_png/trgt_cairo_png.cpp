@@ -57,7 +57,6 @@ SYNFIG_TARGET_INIT(cairo_png_trgt);
 SYNFIG_TARGET_SET_NAME(cairo_png_trgt,"cairo_png");
 SYNFIG_TARGET_SET_EXT(cairo_png_trgt,"png");
 SYNFIG_TARGET_SET_VERSION(cairo_png_trgt,"0.2");
-SYNFIG_TARGET_SET_CVS_ID(cairo_png_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

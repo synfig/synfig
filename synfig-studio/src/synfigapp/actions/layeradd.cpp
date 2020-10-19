@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::LayerAdd,"add");
 ACTION_SET_CATEGORY(Action::LayerAdd,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerAdd,0);
 ACTION_SET_VERSION(Action::LayerAdd,"0.0");
-ACTION_SET_CVS_ID(Action::LayerAdd,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

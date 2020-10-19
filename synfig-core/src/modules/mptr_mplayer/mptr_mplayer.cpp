@@ -54,7 +54,6 @@ SYNFIG_IMPORTER_INIT(mplayer_mptr);
 SYNFIG_IMPORTER_SET_NAME(mplayer_mptr,"mplayer");
 SYNFIG_IMPORTER_SET_EXT(mplayer_mptr,"avi");
 SYNFIG_IMPORTER_SET_VERSION(mplayer_mptr,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(mplayer_mptr,"$Id$");
 SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(mplayer_mptr, false);
 
 /* === M E T H O D S ======================================================= */

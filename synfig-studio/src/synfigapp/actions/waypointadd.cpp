@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::WaypointAdd,"add");
 ACTION_SET_CATEGORY(Action::WaypointAdd,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::WaypointAdd,0);
 ACTION_SET_VERSION(Action::WaypointAdd,"0.0");
-ACTION_SET_CVS_ID(Action::WaypointAdd,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

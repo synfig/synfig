@@ -63,7 +63,6 @@ ACTION_SET_TASK(Action::WaypointSetSmart,"set");
 ACTION_SET_CATEGORY(Action::WaypointSetSmart,Action::CATEGORY_WAYPOINT|Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::WaypointSetSmart,0);
 ACTION_SET_VERSION(Action::WaypointSetSmart,"0.0");
-ACTION_SET_CVS_ID(Action::WaypointSetSmart,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

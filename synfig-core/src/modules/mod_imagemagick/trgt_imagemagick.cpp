@@ -77,7 +77,6 @@ SYNFIG_TARGET_INIT(imagemagick_trgt);
 SYNFIG_TARGET_SET_NAME(imagemagick_trgt,"imagemagick");
 SYNFIG_TARGET_SET_EXT(imagemagick_trgt,"miff");
 SYNFIG_TARGET_SET_VERSION(imagemagick_trgt,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

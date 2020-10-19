@@ -62,7 +62,6 @@ ACTION_SET_TASK(Action::TimepointsCopy,"copy");
 ACTION_SET_CATEGORY(Action::TimepointsCopy,Action::CATEGORY_WAYPOINT|Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::TimepointsCopy,0);
 ACTION_SET_VERSION(Action::TimepointsCopy,"0.0");
-ACTION_SET_CVS_ID(Action::TimepointsCopy,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

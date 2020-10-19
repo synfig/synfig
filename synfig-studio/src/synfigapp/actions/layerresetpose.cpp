@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::LayerResetPose,"layer_reset_pose");
 ACTION_SET_CATEGORY(Action::LayerResetPose,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerResetPose,0);
 ACTION_SET_VERSION(Action::LayerResetPose,"0.0");
-ACTION_SET_CVS_ID(Action::LayerResetPose,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

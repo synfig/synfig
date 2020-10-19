@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::CanvasIdSet,"set");
 ACTION_SET_CATEGORY(Action::CanvasIdSet,Action::CATEGORY_CANVAS);
 ACTION_SET_PRIORITY(Action::CanvasIdSet,0);
 ACTION_SET_VERSION(Action::CanvasIdSet,"0.0");
-ACTION_SET_CVS_ID(Action::CanvasIdSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

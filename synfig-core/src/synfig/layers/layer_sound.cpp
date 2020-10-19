@@ -59,7 +59,6 @@ SYNFIG_LAYER_SET_NAME(Layer_Sound,"sound");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Sound,N_("Sound"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Sound,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Sound,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Sound,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 
