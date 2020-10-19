@@ -323,7 +323,6 @@ SYNFIGAPPHH = \
 	blineconvert.h \
 	wplistconverter.h \
 	canvasinterface.h \
-	cvs.h \
 	inputdevice.h \
 	instance.h \
 	main.h \
@@ -341,7 +340,6 @@ SYNFIGAPPCC = \
 	blineconvert.cpp \
 	wplistconverter.cpp \
 	canvasinterface.cpp \
-	cvs.cpp \
 	inputdevice.cpp \
 	instance.cpp \
 	main.cpp \

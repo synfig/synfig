@@ -10,7 +10,6 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/blineconvert.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/wplistconverter.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/canvasinterface.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/cvs.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/inputdevice.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/instance.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"

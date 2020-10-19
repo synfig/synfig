@@ -1472,20 +1472,6 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
 	);
-	/*
-	action_group->add( Gtk::Action::create("cvs-add", Gtk::StockID("synfig-cvs_add")),
-		sigc::hide_return(sigc::mem_fun(*get_instance(), &Instance::dialog_cvs_add))
-	);
-	action_group->add( Gtk::Action::create("cvs-update", Gtk::StockID("synfig-cvs_update")),
-		sigc::hide_return(sigc::mem_fun(*get_instance(), &Instance::dialog_cvs_update))
-	);
-	action_group->add( Gtk::Action::create("cvs-revert", Gtk::StockID("synfig-cvs_revert")),
-		sigc::hide_return(sigc::mem_fun(*get_instance(), &Instance::dialog_cvs_revert))
-	);
-	action_group->add( Gtk::Action::create("cvs-commit", Gtk::StockID("synfig-cvs_commit")),
-		sigc::hide_return(sigc::mem_fun(*get_instance(), &Instance::dialog_cvs_commit))
-	);
-	*/
 	action_group->add( Gtk::Action::create("import", _("Import...")),
 		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::image_import))
 	);
@@ -1951,15 +1937,6 @@ CanvasView::update_title()
 			     : is_root ? filename
 			     : filename + " (" + canvas_title + ")";
 	if (modified) title = "*" + title;
-
-	if (get_instance()->Instance::in_repository()) {
-		title += " (CVS";
-		if (get_instance()->Instance::is_modified())
-			title += _("-MODIFIED");
-		if (get_instance()->Instance::is_updated())
-			title += _("-UPDATED");
-		title += ')';
-	}
 
 	set_local_name(title);
 	App::dock_manager->update_window_titles();

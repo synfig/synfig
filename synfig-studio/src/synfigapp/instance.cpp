@@ -128,7 +128,6 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 /* === M E T H O D S ======================================================= */
 
 Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container):
-	CVSInfo(canvas->get_file_name()),
 	canvas_(canvas),
 	container_(container)
 {
@@ -158,7 +157,6 @@ void
 Instance::set_file_name(const synfig::String &name)
 {
 	get_canvas()->set_file_name(name);
-	CVSInfo::set_file_name(name);
 }
 
 Instance::~Instance()
@@ -700,7 +698,6 @@ Instance::save_as(const synfig::String &file_name)
 	{
 		signal_saved_();
 		signal_filename_changed_();
-		if (is_filename_changed) CVSInfo::set_file_name(new_canvas_filename);
 		return true;
 	}
 
