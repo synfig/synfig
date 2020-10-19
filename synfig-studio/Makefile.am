@@ -89,9 +89,6 @@ PRINTF=printf
 SH=sh
 DOXYGEN=doxygen
 
-SVN=svn
-TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
-
 ChangeLog:
 	../autobuild/git2cl > ChangeLog
 
@@ -109,14 +106,14 @@ listfixmes:
 	-@echo
 	-@echo  -- List of pending FIXMEs
 	-@echo
-	-@$(GREP) FIXME -n `shell find $(top_srcdir) -name '*.[ch]*' | grep -v svn`
+	-@$(GREP) FIXME -n `shell find $(top_srcdir) -name '*.[ch]*' | grep -v .git`
 	-@echo
 
 listhacks:
 	-@echo
 	-@echo  -- List of pending HACKs
 	-@echo
-	-@$(GREP) HACK -n `shell find $(top_srcdir) -name '*.[ch]*' | grep -v svn`
+	-@$(GREP) HACK -n `shell find $(top_srcdir) -name '*.[ch]*' | grep -v .git`
 	-@echo
 
 run: check

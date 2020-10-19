@@ -17,9 +17,6 @@ AM_MAINTAINER_MODE
 
 debug="no"
 
-SVN_REPOSITORY=https://synfig.svn.sourceforge.net/svnroot/synfig/ETL
-AC_SUBST(SVN_REPOSITORY)
-
 # -- A R G U M E N T S ----------------------------------------
 
 
