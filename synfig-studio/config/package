@@ -217,12 +217,12 @@ if ( $?resDir ) then
     pushd $resDir > /dev/null
 	# get lists of resources. We'll want to change
 	# permissions on just these things later.
-        set directoriesInResDir = `find . -type d | grep -v -e svn -e CVS`
-        set filesInResDir = `find . -type f | grep -v -e svn -e CVS`
+        set directoriesInResDir = `find . -type d | grep -v -e .git`
+        set filesInResDir = `find . -type f | grep -v -e .git`
     popd > /dev/null
 
     # copy the resource directory contents into the package directory
-    foreach resFile (`cd $resDir && find . | grep -v svn`)
+    foreach resFile (`cd $resDir && find . | grep -v -e .git`)
 
 	cp -fr "$resDir/$resFile" "$pkg/Contents/Resources"
     end

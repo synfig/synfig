@@ -197,14 +197,6 @@ public:
 
 	Status save();
 
-	void dialog_cvs_commit();
-
-	void dialog_cvs_add();
-
-	void dialog_cvs_update();
-
-	void dialog_cvs_revert();
-
 	//! Closes the instance of this composition
 	void close(bool remove_temporary_files = true);
 

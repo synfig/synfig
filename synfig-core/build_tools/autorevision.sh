@@ -30,24 +30,6 @@ get_git_id(){
 	#REVISION="$REVISION"`cd "$1"; [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"`
 }
 
-get_git_svn_id(){
-	export SCM=git-svn
-	export REVISION=`cd "$1"; git svn find-rev HEAD`
-	export COMPARE="$1/.git/"
-	if [ x = "x$REVISION" ] ; then
-		# The extra M at the end is for Modified
-		export REVISION=`cd "$1"; git svn find-rev \`git rev-list --max-count=1 --grep='git-svn-id: ' HEAD\``M
-	else
-		export REVISION="$REVISION"`cd "$1"; git diff --quiet HEAD || echo M`
-	fi
-}
-
-get_svn_id(){
-	export SCM=svn
-	export REVISION=`cd "$1"; svnversion || svn info | sed -n 's/^Revision: \(.*\)/\1/p'`
-}
-
-
 HEADER="$2/autorevision.h"
 SCM=none
 
@@ -57,21 +39,9 @@ if [ ! -f "$HEADER" ] ; then
 fi
 
 
-# Extract the revision from SVN/git/etc
+# Extract the revision from git
 if git rev-parse --git-dir > /dev/null  2>&1 ; then
 	get_git_id "."
-elif [ -d "$1/.git/svn" ] ; then
-	get_git_svn_id "$1"
-elif [ -d "$1/../.git/svn" ] ; then
-	get_git_svn_id "$1/.."
-elif [ -d "$1/../../.git/svn" ] ; then
-	get_git_svn_id "$1/../.."
-elif [ -d "$1/.svn" ] ; then
-	COMPARE="$1/.svn"
-	get_svn_id "$1"
-elif [ -d "$1/_svn" ] ; then
-	COMPARE="$1/_svn"
-	get_svn_id "$1"
 fi
 
 
@@ -88,11 +58,7 @@ if [ "$COMPARE" -ot "$HEADER" ] ; then exit; fi
 # Set the development version string
 if [ x = "x$DEVEL_VERSION" ] ; then
 	if [ x != "x$REVISION" ] ; then
-		if [ $SCM = svn ] ; then
-			DEVEL_VERSION="SVN r$REVISION"
-		elif [ $SCM = git-svn ] ; then
-			DEVEL_VERSION="SVN r$REVISION (via git)"
-		elif [ $SCM = git ] ; then
+		if [ $SCM = git ] ; then
 			DEVEL_VERSION="Revision: ${REVISION}\\\\nBranch: ${BRANCH}\\\\nRevision ID: ${REVISION_ID}"
 		elif [ $SCM = manual ] ; then
 			DEVEL_VERSION="$REVISION (manually configured)"

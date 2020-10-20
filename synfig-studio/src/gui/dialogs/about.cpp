@@ -40,7 +40,7 @@
 #include <synfig/general.h>
 #include <synfig/version.h>
 
-// This is generated at make time from .svn or .git/svn or autorevision.conf
+// This is generated at make time from .git or autorevision.conf
 #include <autorevision.h>
 
 #include "about.h"

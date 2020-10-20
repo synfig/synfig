@@ -87,9 +87,6 @@ PRINTF=printf
 SH=sh
 DOXYGEN=doxygen
 
-SVN=svn
-TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
-
 stats:
 	-@echo
 	-@echo  -- Stats

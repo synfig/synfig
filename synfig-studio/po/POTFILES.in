@@ -503,8 +503,6 @@ src/synfigapp/blineconvert.cpp
 src/synfigapp/blineconvert.h
 src/synfigapp/canvasinterface.cpp
 src/synfigapp/canvasinterface.h
-src/synfigapp/cvs.cpp
-src/synfigapp/cvs.h
 src/synfigapp/editmode.h
 src/synfigapp/inputdevice.cpp
 src/synfigapp/inputdevice.h

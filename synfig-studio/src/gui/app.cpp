@@ -3926,15 +3926,6 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
 
 			one_moment.hide();
-
-			if(instance->is_updated() && App::dialog_message_2b(
-				_("Newer version of this file available on the CVS repository!"),
-				_("repository. Would you like to update now? (It would probably be a good idea)"),
-				Gtk::MESSAGE_QUESTION,
-				_("Cancel"),
-				_("Update Anyway"))
-			)
-				instance->dialog_cvs_update();
 		}
 	}
 	catch(String &x)
@@ -4036,15 +4027,6 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""), temporary_filename.c_str());
 
 			one_moment.hide();
-
-			if(instance->is_updated() && App::dialog_message_2b(
-				_("Newer version of this file available on the CVS repository!"),
-				_("Would you like to update now? (It would probably be a good idea)"),
-				Gtk::MESSAGE_QUESTION,
-				_("Cancel"),
-				_("Update Anyway"))
-			)
-				instance->dialog_cvs_update();
 
 			// This file isn't saved! mark it as such
 			instance->inc_action_count();

@@ -38,7 +38,6 @@
 #include <sigc++/sigc++.h>
 #include "action_system.h"
 #include "selectionmanager.h"
-#include "cvs.h"
 #include <synfig/rendering/surface.h>
 
 /* === M A C R O S ========================================================= */
@@ -52,7 +51,7 @@ namespace synfigapp {
 class CanvasInterface;
 
 
-class Instance : public Action::System , public CVSInfo
+class Instance : public Action::System
 {
 	friend class PassiveGrouper;
 	/*

@@ -352,11 +352,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(utils_chain_link_off, "utils_chain_link_off_icon." IMAGE_EXT, _("Unlinked"));
 	INIT_STOCK_ICON(utils_timetrack_align, "utils_timetrack_align_icon." IMAGE_EXT, _("Utils Timetrack align"));
 
-	INIT_STOCK_ICON_CLONE(cvs_add, _("CVS Add"));
-	INIT_STOCK_ICON_CLONE(cvs_update, _("CVS Update"));
-	INIT_STOCK_ICON_CLONE(cvs_commit, _("CVS Commit"));
-	INIT_STOCK_ICON_CLONE(cvs_revert, _("CVS Revert"));
-
 #undef INIT_STOCK_ICON
 #undef INIT_STOCK_ICON_CLONE
 #undef INIT_STOCK_ITEM
