@@ -26,6 +26,7 @@ if(MINGW AND NOT MSYS)
 				" Also you need to set MINGW_PREFIX environment variable if your MSYS2 installation is not in standard path (c:\\msys64\\)")
 	else()
 		set(MSYS ON)
+		set(MSYS_ROOT "$ENV{MINGW_PREFIX}/..")
 	endif()
 endif()
 
