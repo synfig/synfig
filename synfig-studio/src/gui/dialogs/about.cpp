@@ -79,6 +79,7 @@ using namespace studio;
 About::About()
 {
 	set_transient_for((Gtk::Window&)(*App::main_window));
+	set_modal(true);
 	set_program_name(PACKAGE_NAME);
 	set_version(VERSION);
 	set_comments(_("2D vector animation studio"));
