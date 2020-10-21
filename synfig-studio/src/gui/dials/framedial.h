@@ -30,8 +30,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/box.h>
 #include <gtkmm/button.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/togglebutton.h>
 #include "widgets/widget_time.h"
 
@@ -44,7 +44,7 @@
 namespace studio
 {
 
-class FrameDial : public Gtk::HBox
+class FrameDial : public Gtk::Grid
 {
 private:
 	Gtk::Button *seek_begin;

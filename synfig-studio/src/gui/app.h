@@ -437,6 +437,10 @@ public:
 
 	static void dialog_help();
 
+#if GTK_CHECK_VERSION(3, 20, 0)
+	static void window_shortcuts();
+#endif
+
 	static void dialog_message_1b(
 			const std::string &type,
 			const std::string &message,

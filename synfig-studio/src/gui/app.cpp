@@ -46,6 +46,7 @@
 #include <sys/errno.h>
 #endif
 #include <gtkmm/accelmap.h>
+#include <gtkmm/builder.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/filechooserdialog.h>
@@ -53,6 +54,9 @@
 #include <gtkmm/iconsource.h>
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
+#if GTK_CHECK_VERSION(3, 20, 0)
+#include <gtkmm/shortcutswindow.h>
+#endif
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/uimanager.h>
@@ -905,7 +909,6 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
 
 	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
-	menus_action_group->add( Gtk::Action::create("menu-navigation",            _("_Navigation")));
 	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
 	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
 
@@ -923,6 +926,8 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-help",            _("_Help")));
 
 	menus_action_group->add(Gtk::Action::create("menu-keyframe",          _("Keyframe")));
+
+	menus_action_group->add( Gtk::Action::create("menu-navigation",      _("_Navigation")));
 
 	// Add the synfigapp actions (layer panel toolbar items, etc...)
 	synfigapp::Action::Book::iterator iter;
@@ -1004,20 +1009,20 @@ DEFINE_ACTION("canvas-zoom-100",             Gtk::StockID("gtk-zoom-100"));
 DEFINE_ACTION("time-zoom-in",                Gtk::StockID("gtk-zoom-in"));
 DEFINE_ACTION("time-zoom-out",               Gtk::StockID("gtk-zoom-out"));
 
-//actions in Navigation menu
+// actions in Navigation menu
 DEFINE_ACTION("play", _("Play"));
 // the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
 // icon. the internal code is still using stop.
-DEFINE_ACTION("stop", _("Pause"));
+DEFINE_ACTION("pause", _("Pause"));
 
-DEFINE_ACTION("jump-next-keyframe",          _("Seek to Next Keyframe"));
-DEFINE_ACTION("jump-prev-keyframe",          _("Seek to previous Keyframe"));
-DEFINE_ACTION("seek-next-frame",             _("Seek to Next Frame"));
-DEFINE_ACTION("seek-prev-frame",             _("Seek to Previous Frame"));
-DEFINE_ACTION("seek-next-second",            _("Seek Forward"));
-DEFINE_ACTION("seek-prev-second",            _("Seek Backward"));
-DEFINE_ACTION("seek-begin",                  _("Seek to Begin"));
-DEFINE_ACTION("seek-end",                    _("Seek to End"));
+DEFINE_ACTION("jump-next-keyframe", _("Seek to Next Keyframe"));
+DEFINE_ACTION("jump-prev-keyframe", _("Seek to previous Keyframe"));
+DEFINE_ACTION("seek-next-frame",    _("Seek to Next Frame"));
+DEFINE_ACTION("seek-prev-frame",    _("Seek to Previous Frame"));
+DEFINE_ACTION("seek-next-second",   _("Seek Forward"));
+DEFINE_ACTION("seek-prev-second",   _("Seek Backward"));
+DEFINE_ACTION("seek-begin",         _("Seek to Begin"));
+DEFINE_ACTION("seek-end",           _("Seek to End"));
 
 
 // actions in Canvas menu
@@ -1054,6 +1059,9 @@ DEFINE_ACTION("panel-timetrack",      _("Timetrack"));
 
 // actions in Help menu
 DEFINE_ACTION("help",           Gtk::Stock::HELP);
+#if GTK_CHECK_VERSION(3, 20, 0)
+DEFINE_ACTION("help-shortcuts", Gtk::Stock::INFO);
+#endif
 DEFINE_ACTION("help-tutorials", Gtk::Stock::HELP);
 DEFINE_ACTION("help-reference", Gtk::Stock::HELP);
 DEFINE_ACTION("help-faq",       Gtk::Stock::HELP);
@@ -1148,19 +1156,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "		<menuitem action='time-zoom-in'/>"
 "		<menuitem action='time-zoom-out'/>"
 "	</menu>"
-"    <menu action='menu-navigation'>"
-"		<menuitem action='play'/>"
-"		<menuitem action='stop'/>"
-"		<separator name='sep-view1'/>"
-"		<menuitem action='jump-prev-keyframe'/>"
-"		<menuitem action='jump-next-keyframe'/>"
-"		<menuitem action='seek-prev-frame'/>"
-"		<menuitem action='seek-next-frame'/>"
-"		<menuitem action='seek-prev-second'/>"
-"		<menuitem action='seek-next-second'/>"
-"		<menuitem action='seek-begin'/>"
-"		<menuitem action='seek-end'/>"
-"	</menu>"
 "	<menu action='menu-canvas'>"
 "		<menuitem action='properties'/>"
 "		<menuitem action='options'/>"
@@ -1215,7 +1210,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	</menu>"
 "	<menu action='menu-help'>"
 "		<menuitem action='help'/>"
-"		<separator name='sep-help1'/>"
+"		<separator name='sep-help1'/>";
+#if GTK_CHECK_VERSION(3, 20, 0)
+	ui_info_menu +=
+"		<menuitem action='help-shortcuts'/>";
+#endif
+	ui_info_menu +=
 "		<menuitem action='help-tutorials'/>"
 "		<menuitem action='help-reference'/>"
 "		<menuitem action='help-faq'/>"
@@ -1238,6 +1238,21 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "		<toolitem action='render'/>"
 "		<toolitem action='preview'/>";
 
+	Glib::ustring hidden_ui_info_menu =
+"	<menu action='menu-navigation'>"
+"		<menuitem action='play'/>"
+"		<menuitem action='pause'/>"
+"		<separator name='sep-view1'/>"
+"		<menuitem action='jump-prev-keyframe'/>"
+"		<menuitem action='jump-next-keyframe'/>"
+"		<menuitem action='seek-prev-frame'/>"
+"		<menuitem action='seek-next-frame'/>"
+"		<menuitem action='seek-prev-second'/>"
+"		<menuitem action='seek-next-second'/>"
+"		<menuitem action='seek-begin'/>"
+"		<menuitem action='seek-end'/>"
+"	</menu>";
+
 	Glib::ustring ui_info =
 "<ui>"
 "   <popup name='menu-toolbox' action='menu-toolbox'>"
@@ -1249,6 +1264,11 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	<toolbar name='toolbar-main'>" + ui_info_main_tool + "</toolbar>"
 "</ui>";
 
+	Glib::ustring hidden_ui_info =
+"<ui>"
+"	<menubar name='menubar-hidden' action='menubar-hidden'>" + hidden_ui_info_menu + "</menubar>"
+"</ui>";
+
 	#undef DEFINE_ACTION
 
 	try
@@ -1258,6 +1278,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 		App::ui_manager()->insert_action_group(menus_action_group,1);
 		App::ui_manager()->insert_action_group(actions_action_group,1);
 		App::ui_manager()->add_ui_from_string(ui_info);
+		App::ui_manager()->add_ui_from_string(hidden_ui_info);
 
 		//App::ui_manager()->get_accel_group()->unlock();
 	}
@@ -1311,7 +1332,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("F12",									"<Actions>/canvasview/options"						);
 	ACCEL("<control>i",								"<Actions>/canvasview/import"						);
 	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0), 		"<Actions>/canvasview/stop"						));
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(), 		"<Actions>/canvasview/stop"						));
+//	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(), 		"<Actions>/canvasview/stop"						));
 	ACCEL("<Control>g",								"<Actions>/canvasview/toggle-grid-show"					);
 	ACCEL("<Control>l",								"<Actions>/canvasview/toggle-grid-snap"					);
 	ACCEL("<Control>n",								"<Actions>/mainwindow/new"						);
@@ -1349,19 +1370,22 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,					"<Actions>/canvasview/increase-low-res-pixel-size"			));
 	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-dec"		));
 	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-inc"		));
-	ACCEL2(Gtk::AccelKey(']',Gdk::CONTROL_MASK,					"<Actions>/canvasview/jump-next-keyframe"				));
-	ACCEL2(Gtk::AccelKey('[',Gdk::CONTROL_MASK,					"<Actions>/canvasview/jump-prev-keyframe"				));
 	ACCEL("equal",									"<Actions>/canvasview/canvas-zoom-in"					);
 	ACCEL("minus",									"<Actions>/canvasview/canvas-zoom-out"					);
 	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-in"					));
 	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-out"					));
-	ACCEL2(Gtk::AccelKey('.',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-next-frame"					));
-	ACCEL2(Gtk::AccelKey(',',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-prev-frame"					));
-	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-next-second"					));
-	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-prev-second"					));
-	ACCEL("<Mod1>o",								"<Actions>/canvasview/toggle-onion-skin"				);
-	ACCEL("0",									"<Actions>/canvasview/canvas-zoom-fit"					);
-	ACCEL("<Control>p",								"<Actions>/canvasview/play"						);
+	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe");
+	ACCEL("bracketright",            "<Actions>/canvasview/jump-next-keyframe");
+	ACCEL("comma",                   "<Actions>/canvasview/seek-prev-frame");
+	ACCEL("period",                  "<Actions>/canvasview/seek-next-frame");
+	ACCEL("<Shift>less",             "<Actions>/canvasview/seek-prev-second");
+	ACCEL("<Shift>greater",          "<Actions>/canvasview/seek-next-second");
+	ACCEL("<Control><Shift>less",    "<Actions>/canvasview/seek-begin");
+	ACCEL("<Control><Shift>greater", "<Actions>/canvasview/seek-end");
+	ACCEL("<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin");
+	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit");
+	ACCEL("space",                   "<Actions>/canvasview/play");
+	ACCEL("space",                   "<Actions>/canvasview/pause");
 
 
 #undef ACCEL
@@ -3724,6 +3748,24 @@ App::dialog_help()
 		dialog.run();
 	}
 }
+
+#if GTK_CHECK_VERSION(3, 20, 0)
+void
+App::window_shortcuts()
+{
+	auto shortcuts_resource = Gtk::Builder::create_from_file(
+				ResourceHelper::get_ui_path("shortcuts_window.glade"));
+
+	Gtk::ShortcutsWindow *shortcuts_window = nullptr;
+	shortcuts_resource->get_widget("shortcuts_window", shortcuts_window);
+
+	shortcuts_window->set_transient_for(*App::main_window);
+	shortcuts_window->set_modal();
+
+	shortcuts_window->present();
+}
+#endif
+
 void App::open_img_in_external(const std::string &uri)
 {
 	synfig::info("Opening with external tool: " + uri);

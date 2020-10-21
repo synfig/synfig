@@ -89,7 +89,7 @@ FrameDial::on_bounds_toggled()
 void
 FrameDial::create_separator()
 {
-	Gtk::HSeparator *separator = manage(new Gtk::HSeparator());
+	auto separator = manage(new Gtk::Separator());
 	separator->show();
 	add(*separator);
 }
