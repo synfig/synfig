@@ -1,4 +1,4 @@
-find_program(INTLTOOL_MERGE_EXECUTABLE intltool-merge PATHS c:/msys64/usr/bin)
+find_program(INTLTOOL_MERGE_EXECUTABLE intltool-merge PATHS ${MSYS_ROOT}/usr/bin)
 mark_as_advanced(INTLTOOL_MERGE_EXECUTABLE)
 
 if(INTLTOOL_MERGE_EXECUTABLE)
@@ -28,7 +28,7 @@ set(INTLTOOL_OPTIONS_DEFAULT "--quiet")
 # to run it. In this case, we need to explicitly add the interpreter to the command.
 if(INTLTOOL_MERGE_EXECUTABLE AND MSYS)
     message(STATUS "Fixing intltool-merge command...")
-    set(INTLTOOL_MERGE_EXECUTABLE c:/msys64/usr/bin/perl ${INTLTOOL_MERGE_EXECUTABLE})
+    set(INTLTOOL_MERGE_EXECUTABLE ${MSYS_ROOT}/usr/bin/perl ${INTLTOOL_MERGE_EXECUTABLE})
 endif()
 
 function(STUDIO_INTLTOOL_MERGE)
