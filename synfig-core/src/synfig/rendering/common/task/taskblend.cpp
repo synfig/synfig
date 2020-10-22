@@ -45,7 +45,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskBlend::token(
+SYNFIG_EXPORT Task::Token TaskBlend::token(
 	DescAbstract<TaskBlend>("Blend") );
 
 int

@@ -46,7 +46,7 @@
 
 namespace synfig {
 
-const float CairoColor::range = CairoColor::ceil - CairoColor::floor;
+//const float CairoColor::range = CairoColor::ceil - CairoColor::floor;
 
 /* === M E T H O D S ======================================================= */
 

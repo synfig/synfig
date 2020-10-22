@@ -45,11 +45,11 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskPixelProcessor::token(
+SYNFIG_EXPORT Task::Token TaskPixelProcessor::token(
 	DescAbstract<TaskPixelProcessor>("PixelProcessor") );
 Task::Token TaskPixelGamma::token(
 	DescAbstract<TaskPixelGamma, TaskPixelProcessor>("PixelGamma") );
-Task::Token TaskPixelColorMatrix::token(
+SYNFIG_EXPORT Task::Token TaskPixelColorMatrix::token(
 	DescAbstract<TaskPixelColorMatrix, TaskPixelProcessor>("PixelColorMatrix") );
 
 

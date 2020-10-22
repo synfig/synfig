@@ -51,7 +51,7 @@ class TaskPixelProcessor: public Task,
 {
 public:
 	typedef etl::handle<TaskPixelProcessor> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }
@@ -108,7 +108,7 @@ class TaskPixelColorMatrix: public TaskPixelProcessor
 {
 public:
 	typedef etl::handle<TaskPixelColorMatrix> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 	ColorMatrix matrix;

@@ -350,7 +350,7 @@ public:
 	static synfig::Token token;
 	virtual Token::Handle get_token() const = 0;
 
-	static const etl::handle<Task> blank;
+	SYNFIG_EXPORT static const etl::handle<Task> blank;
 
 private:
 	mutable bool bounds_calculated;
