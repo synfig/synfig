@@ -51,7 +51,7 @@ using namespace rendering;
 synfig::Token Mode::mode_token;
 synfig::Token Task::token;
 
-const Task::Handle Task::blank;
+SYNFIG_EXPORT const Task::Handle Task::blank;
 
 SYNFIG_EXPORT Task::Token TaskSurface::token(
 	DescSpecial<TaskSurface>("Surface") );

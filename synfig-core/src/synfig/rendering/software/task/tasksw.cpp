@@ -47,6 +47,6 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-ModeToken TaskSW::mode_token("software");
+SYNFIG_EXPORT ModeToken TaskSW::mode_token("software");
 
 /* === E N T R Y P O I N T ================================================= */

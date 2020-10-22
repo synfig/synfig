@@ -71,6 +71,7 @@
 #include "loadcanvas.h"
 
 #include <giomm.h>
+#include <synfig/synfig_export.h>
 
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
@@ -439,7 +440,7 @@ current_time()
 	return String(b);
 }
 
-bool synfig::synfig_quiet_mode = false;
+SYNFIG_EXPORT bool synfig::synfig_quiet_mode = false;
 
 void
 synfig::error(const char *format,...)

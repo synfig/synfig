@@ -68,7 +68,7 @@ class TaskBlend: public Task,
 {
 public:
 	typedef etl::handle<TaskBlend> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Color::BlendMethod blend_method;

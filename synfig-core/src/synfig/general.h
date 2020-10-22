@@ -30,6 +30,7 @@
 
 #include <clocale>
 #include "string.h"
+#include "synfig_export.h"
 
 
 /* === M A C R O S ========================================================= */
@@ -67,7 +68,7 @@ public:
 };
 
 //! If true, do not report "info"-level log, only errors and warnings
-extern bool synfig_quiet_mode;
+SYNFIG_EXPORT extern bool synfig_quiet_mode;
 
 //! Reports an error
 /*! Call this when an error occurs, describing what happened */

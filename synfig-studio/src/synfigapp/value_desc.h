@@ -37,6 +37,7 @@
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/canvas.h>
 #include <synfig/interpolation.h>
+#include "synfigapp_export.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -73,7 +74,7 @@ class ValueDesc
 	ValueDesc *parent_desc;
 	int links_count;
 
-	static const ValueDesc blank;
+	SYNFIGAPP_EXPORT static const ValueDesc blank;
 
 	static ValueDesc* init_parent(const ValueDesc& parent)
 	{

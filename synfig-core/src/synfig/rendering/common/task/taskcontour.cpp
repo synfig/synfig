@@ -45,7 +45,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskContour::token(
+SYNFIG_EXPORT Task::Token TaskContour::token(
 	DescAbstract<TaskContour>("Contour") );
 
 

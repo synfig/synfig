@@ -48,7 +48,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskBlur::token(
+SYNFIG_EXPORT Task::Token TaskBlur::token(
 	DescAbstract<TaskBlur>("Blur") );
 
 Rect
