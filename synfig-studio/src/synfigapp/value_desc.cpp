@@ -50,7 +50,7 @@ using namespace synfigapp;
 
 /* === M E T H O D S ======================================================= */
 
-const ValueDesc ValueDesc::blank;
+SYNFIGAPP_EXPORT const ValueDesc ValueDesc::blank;
 
 void ValueDesc::on_id_changed()
 {
