@@ -76,6 +76,7 @@ private:
 	etl::handle<UIInterface> ui_interface_;
 	synfig::Time cur_time_;
 	Mode mode_;
+	synfig::String state_;
 
 	sigc::signal<void,synfig::Layer::Handle> signal_layer_raised_;
 	sigc::signal<void,synfig::Layer::Handle> signal_layer_lowered_;
@@ -90,6 +91,7 @@ private:
 	sigc::signal<void,synfig::Canvas::Handle> signal_canvas_removed_;
 
 	sigc::signal<void,synfig::ValueNode::Handle> signal_value_node_added_;
+	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase> signal_value_desc_set_;
 	sigc::signal<void,synfig::ValueNode::Handle> signal_value_node_deleted_;
 	sigc::signal<void,synfig::ValueNode::Handle,synfig::ValueNode::Handle> signal_value_node_replaced_;
 
@@ -166,6 +168,9 @@ public:	// Signal Interface
 
 	//! Signal called when a ValueNode has been changed
 	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_changed() { return get_canvas()->signal_value_node_changed(); }
+
+	//! Signal called when a ValueDesc has been set
+	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase>& signal_value_desc_set() { return signal_value_desc_set_; }
 
 	//! Signal called when a ValueNode has been renamed
 	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_renamed() { return get_canvas()->signal_value_node_renamed(); }
@@ -281,6 +286,14 @@ public:
 	/*! \see Mode */
 	Mode get_mode()const;
 
+	//! Sets the current smach
+	/*! \see  Smach*/
+	void set_state(synfig::String x);
+
+	//! Retrieves the current editing mode
+	/*! \see Smach */
+	synfig::String get_state()const;
+
 
 
 	//! Creates a new layer, of type \c id at the top of the layer stack
@@ -299,7 +312,6 @@ public:
 	bool convert(ValueDesc value_desc, synfig::String type);
 	//! Adds the given ValueNode to the canvas.
 	bool add_value_node(synfig::ValueNode::Handle value_node, synfig::String name);
-
 
 	Action::ParamList generate_param_list(const synfigapp::ValueDesc &);
 

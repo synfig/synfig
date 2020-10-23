@@ -199,6 +199,64 @@ Action::ValueDescSet::prepare()
 {
 	clear();
 
+	get_canvas_interface()->signal_value_desc_set()(value_desc,value);
+
+	// If the tool is state_bone
+	// then both bones in a ValueNode_Composite
+	// should follow each other
+	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
+	if(comp && get_canvas_interface()->get_state()=="bone"){
+
+		if(value_desc.get_parent_value_node() == comp->get_link("first")){
+			ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
+			ValueNode_Bone::Handle bone1 = 	ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
+			if(bone){
+				Action::Handle action(Action::create("ValueDescSet"));
+				ValueBase svalue(0);
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+				int index = value_desc.get_index();
+				if(index==2 || index==3 || index==4){
+
+					if(index==2) {
+						Point p = value.get(Point());
+
+						Bone parentBone = (*bone->get_link("parent"))(time).get(Bone());
+						Bone parentBone1 = (*bone1->get_link("parent"))(time).get(Bone());
+						
+						Matrix parentAnimMatrix = parentBone.get_animated_matrix();
+						Matrix parentAnimMatrix1 = parentBone1.get_animated_matrix();
+
+						p += parentAnimMatrix.get_transformed(bone->get_link(value_desc.get_index())->operator()(time).get(Point()));
+						p -= parentAnimMatrix1.get_transformed(-bone1->get_link(value_desc.get_index())->operator()(time).get(Point()));
+						svalue = ValueBase(parentAnimMatrix.get_inverted().get_transformed(p));
+					}else if(index==3){
+						Angle a = value.get(Angle());
+						a+=bone->get_link(value_desc.get_index())->operator()(time).get(Angle());
+						a-=bone1->get_link(value_desc.get_index())->operator()(time).get(Angle());
+						svalue = ValueBase(a);
+					}else if(index==4){
+						Real r = value.get(Real());
+						r+= bone->get_link(value_desc.get_index())->operator()(time).get(Real());
+						r-=bone1->get_link(value_desc.get_index())->operator()(time).get(Real());
+						svalue = ValueBase(r);
+					}
+					action->set_param("canvas",get_canvas());
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("time",time);
+					action->set_param("new_value",svalue);
+					action->set_param("value_desc",ValueDesc(bone,value_desc.get_index()));
+
+					if(!action->is_ready())
+						throw Error(Error::TYPE_NOTREADY);
+
+					add_action(action);
+				}
+			}
+		}
+	}
+
+
 	// If we are a reference value node, then
 	// we need to distribute the changes to the
 	// referenced value node
