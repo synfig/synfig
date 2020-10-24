@@ -34,6 +34,10 @@ endforeach()
 ## Config
 ##
 
+if(FONT_CONFIG_FOUND)
+add_definitions(-DWITH_FONTCONFIG)
+endif()
+
 add_definitions(-DHAVE_CONFIG_H)
 configure_file(config.h.cmake.in config.h)
 
