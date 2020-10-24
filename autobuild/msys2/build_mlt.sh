@@ -24,7 +24,7 @@ pushd mlt-${VERSION_MLT}/
 FIXED_MLT_PATH=`cygpath -m ${MLT_PATH}`
 echo "Install path: ${MLT_PATH}"
 echo "Fixed MLT Path: ${FIXED_MLT_PATH}"
-./configure --prefix=${FIXED_MLT_PATH} --target-arch=$MSYSTEM_CARCH --disable-gtk2 --enable-avformat
+./configure --prefix=${FIXED_MLT_PATH} --target-arch=$MSYSTEM_CARCH --disable-gtk2 --enable-avformat --disable-lumas
 make -j2 --silent
 make install
 popd
