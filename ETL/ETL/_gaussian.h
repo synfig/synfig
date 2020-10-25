@@ -1,7 +1,6 @@
 /*! ========================================================================
 ** Extended Template Library
 ** Gaussian Blur Template Implementation
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

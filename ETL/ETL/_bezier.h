@@ -1,7 +1,6 @@
 /*! ========================================================================
 ** Extended Template Library
 ** Bezier Template Class Implementation
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2007 Chris Moore

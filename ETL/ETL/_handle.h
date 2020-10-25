@@ -1,6 +1,5 @@
 /* === E T L =============================================================== */
 /*!	\file _handle.h
-**	$Id$
 **	\brief Template Object Handle Implementation
 **	\internal
 **
