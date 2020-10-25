@@ -246,7 +246,7 @@ Action::ValueDescCreateChildBone::prepare()
 		bone.set_tipwidth(tipwidth.get(Real()));
 		bone.set_angle(angle.get(Angle()));
 
-		ValueNode_Bone::Handle bone_node = ValueNode_Bone::Handle::cast_dynamic(ValueNode_Const::create(bone,get_canvas()));
+		ValueNode_Bone::Handle bone_node = ValueNode_Bone::create(bone,get_canvas());
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_node));
 
 		action->set_param("value_desc",ValueDesc(value_node,index));
@@ -282,7 +282,7 @@ Action::ValueDescCreateChildBone::prepare()
 		bone->set_link("width",ValueNode_Const::create(width.get(Real())));
 		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
 		if(c_parent){
-			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+			bone->set_link("parent",ValueNode_Bone::create(bone->get_root_bone()));
 		}
 
 		bone = ValueNode_Bone::Handle::cast_dynamic(bone_pair->get_link("first"));
@@ -294,7 +294,7 @@ Action::ValueDescCreateChildBone::prepare()
 		bone->set_link("tipwidth",ValueNode_Const::create(tipwidth.get(Real())));
 
 		if(c_parent){
-			bone->set_link("parent",ValueNode_Const::create(bone->get_root_bone()));
+			bone->set_link("parent",ValueNode_Bone::create(bone->get_root_bone(),get_canvas()));
 		}
 
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
