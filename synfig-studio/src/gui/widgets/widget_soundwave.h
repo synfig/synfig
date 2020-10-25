@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_soundwave.h
 **	\brief Widget for display a sound wave time-graph
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2019 Rodolfo Ribeiro Gomes

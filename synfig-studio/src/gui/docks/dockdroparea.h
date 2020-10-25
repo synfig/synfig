@@ -2,8 +2,6 @@
 /*!	\file docks/dockdroparea.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

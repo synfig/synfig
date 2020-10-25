@@ -2,8 +2,6 @@
 /*!	\file keymapsettings.h
 **	\brief Defines the structures for managing key map settings
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

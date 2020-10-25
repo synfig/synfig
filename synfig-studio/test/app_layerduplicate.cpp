@@ -1,8 +1,6 @@
 /*!	\file test/app_layerduplicate.cpp
 **	\brief Tests for synfigapp::Action LayerDuplicate
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2021 Synfig authors

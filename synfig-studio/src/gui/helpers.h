@@ -2,8 +2,6 @@
 /*!	\file helpers.h
 **	\brief Helpers Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

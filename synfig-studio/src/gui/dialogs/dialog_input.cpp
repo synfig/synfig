@@ -2,8 +2,6 @@
 /*!	\file dialog_input.cpp
 **	\brief Input dialog implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

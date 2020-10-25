@@ -2,8 +2,6 @@
 /*!	\file cellrenderer_timetrack.cpp
 **	\brief Cell renderer for the timetrack. Render all time points (waypoints / keyframes and current time line ...)
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore

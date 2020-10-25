@@ -2,8 +2,6 @@
 /*!	\file valuedesccreatechildbone.h
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **  Copyright (c) 2013 Ivan Mahonin
 **  Copyright (c) 2020 Aditya Abhiram J

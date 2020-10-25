@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_ruler.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

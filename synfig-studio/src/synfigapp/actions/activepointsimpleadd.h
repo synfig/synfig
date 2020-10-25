@@ -2,8 +2,6 @@
 /*!	\file activepointsimpleadd.h
 **	\brief A simple add a activepoint function Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

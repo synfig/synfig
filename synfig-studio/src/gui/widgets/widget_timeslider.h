@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_timeslider.h
 **	\brief Time Slider Widget Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **	......... ... 2018 Ivan Mahonin

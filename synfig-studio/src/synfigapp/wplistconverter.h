@@ -3,8 +3,6 @@
 **	\brief Header for a converter between widths and positions
 **	form a extended device and a equivalent ValueNode_WPList
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011 Carlos López

@@ -2,8 +2,6 @@
 /*!	\file activepointsimpleadd.cpp
 **	\brief Simple add activepoint File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

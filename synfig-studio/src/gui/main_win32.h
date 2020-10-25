@@ -2,8 +2,6 @@
 /*!	\file main_win32.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2015 Konstantin Dmitriev
 **

@@ -1,8 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file waypointrenderer.h
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2019 Rodolfo R. Gomes

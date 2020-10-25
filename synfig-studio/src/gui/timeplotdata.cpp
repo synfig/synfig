@@ -2,8 +2,6 @@
 /*!	\file widget_curves.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  ......... ... 2019 Rodolfo R. Gomes

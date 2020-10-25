@@ -2,8 +2,6 @@
 /*!	\file widget_canvastimeslider.cpp
 **	\brief Canvas Time Slider Widget Implementation File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_canvastimeslider.h
 **	\brief Canvas Time Slider Widget Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahohnin
 **

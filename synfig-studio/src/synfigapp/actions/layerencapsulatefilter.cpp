@@ -2,8 +2,6 @@
 /*!	\file layerencapsulatefilter.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017 Ivan Mahonin
 **

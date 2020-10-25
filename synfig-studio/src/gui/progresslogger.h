@@ -2,8 +2,6 @@
 /*!	\file gui/progresslogger.h
 **	\brief ProgressCallback to log error messages
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2020 Rodolfo Ribeiro Gomes

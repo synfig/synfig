@@ -2,8 +2,6 @@
 /*!	\file waypointsimpleadd.cpp
 **	\brief Simple add waypoint File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

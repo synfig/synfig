@@ -2,8 +2,6 @@
 /*!	\file widget_keyframe_list.h
 **	\brief A custom widget to manage keyframes in the timeline.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2009 Carlos López

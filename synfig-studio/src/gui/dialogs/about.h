@@ -2,8 +2,6 @@
 /*!	\file about.h
 **	\brief About dialog class
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Paul Wise
 **

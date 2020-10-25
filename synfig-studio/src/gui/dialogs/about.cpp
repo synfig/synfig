@@ -2,8 +2,6 @@
 /*!	\file about.cpp
 **	\brief About dialog implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Paul Wise
 **

@@ -2,8 +2,6 @@
 /*!	\file workspacehandler.h
 **	\brief Handle with custom workspaces
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2019 Rodolfo R Gomes

@@ -2,8 +2,6 @@
 /*!	\file widget_timeslider.cpp
 **	\brief Time Slider Widget Implementation File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore

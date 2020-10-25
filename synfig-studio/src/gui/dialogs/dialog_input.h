@@ -2,8 +2,6 @@
 /*!	\file dialog_input.h
 **	\brief Input dialog class
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

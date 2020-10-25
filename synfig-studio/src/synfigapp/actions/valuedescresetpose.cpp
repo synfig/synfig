@@ -2,8 +2,6 @@
 /*!	\file valuedescresetpose.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

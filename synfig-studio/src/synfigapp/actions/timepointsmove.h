@@ -2,8 +2,6 @@
 /*!	\file timepointsmove.h
 **	\brief Move the Time Points Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

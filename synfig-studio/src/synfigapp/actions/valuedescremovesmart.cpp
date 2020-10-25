@@ -2,8 +2,6 @@
 /*!	\file ValueDescRemoveSmart.cpp
 **	\brief Implementation of multiple value descriptions remove action
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011, 2012 Carlos López

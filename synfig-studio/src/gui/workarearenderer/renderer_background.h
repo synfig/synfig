@@ -2,8 +2,6 @@
 /*!	\file renderer_background.h
  **	\brief Renderer for the background of the canvas
  **
- **	$Id$
- **
  **	\legal
  **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
  **	Copyright (c) 2013 Carlos López

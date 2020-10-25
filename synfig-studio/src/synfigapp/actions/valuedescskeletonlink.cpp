@@ -2,8 +2,6 @@
 /*!	\file valuedescskeletonlink.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

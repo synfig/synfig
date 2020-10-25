@@ -2,8 +2,6 @@
 /*!	\file brushlib.h
 **	\brief Helper file to integrte brushlib into synfig
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

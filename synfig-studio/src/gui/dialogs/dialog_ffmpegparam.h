@@ -2,8 +2,6 @@
 /*!	\file dialogs/dialog_ffmpegparam.h
 **	\brief FFmpegParam Dialog header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2010 Carlos López González
 **	Copyright (c) 2015 Denis Zdorovtsov

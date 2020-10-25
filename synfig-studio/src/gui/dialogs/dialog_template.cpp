@@ -2,8 +2,6 @@
 /*!	\file dialogs/dialog_template.cpp
 **	\brief Dialog design list and panel template Implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2016 Jerome Blanchi

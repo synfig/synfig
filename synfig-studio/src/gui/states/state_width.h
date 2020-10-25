@@ -2,8 +2,6 @@
 /*!	\file state_width.h
 **	\brief Width creation state
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

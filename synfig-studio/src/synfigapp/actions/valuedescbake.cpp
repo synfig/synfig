@@ -2,8 +2,6 @@
 /*!	\file valuedescbake.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2019 Ivan Mahonin
 **

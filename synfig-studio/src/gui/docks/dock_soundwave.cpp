@@ -2,8 +2,6 @@
 /*!	\file docks/dock_soundwave.cpp
 **	\brief Dock for display a user-configurable Widget_SoundWave
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  ......... ... 2019 Rodolfo Ribeiro Gomes

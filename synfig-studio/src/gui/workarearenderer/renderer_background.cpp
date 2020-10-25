@@ -2,8 +2,6 @@
 /*!	\file renderer_background.cpp
  **	\brief Implementation of the background renderer. Usually a checkerboard
  **
- **	$Id$
- **
  **	\legal
  **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
  **	Copyright (c) 2013 Carlos López

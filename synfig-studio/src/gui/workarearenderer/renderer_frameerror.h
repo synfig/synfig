@@ -2,8 +2,6 @@
 /*!	\file renderer_frameerror.h
 **	\brief Workarea renderer of frame rendering error messages of current frame
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

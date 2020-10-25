@@ -2,8 +2,6 @@
 /*!	\file timepointscopy.cpp
 **	\brief Copy the Time Points File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

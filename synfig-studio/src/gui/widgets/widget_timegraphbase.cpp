@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_timegraphbase.cpp
 **	\brief Base class for widgets that are graph-like representations with time axis
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2019 Rodolfo Ribeiro Gomes

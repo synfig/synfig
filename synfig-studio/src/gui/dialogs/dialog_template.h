@@ -2,8 +2,6 @@
 /*!	\file dialogs/dialog_template.h
 **	\brief Dialog design list and panel template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2016 Jerome Blanchi

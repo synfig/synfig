@@ -2,8 +2,6 @@
 /*!	\file dialog_targetparam.cpp
 **	\brief Implementation for the FFmpegParam Dialog
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2010 Carlos López González
 **	Copyright (c) 2015 Denis Zdorovtsov
