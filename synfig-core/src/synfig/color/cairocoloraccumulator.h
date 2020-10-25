@@ -102,7 +102,7 @@ public:
 	
 	bool
 	operator==(const CairoColorAccumulator &rhs)const
-	{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_!=rhs.a_; }
+	{ return r_==rhs.r_ && g_==rhs.g_ && b_==rhs.b_ && a_==rhs.a_; }
 	
 	bool
 	operator!=(const CairoColorAccumulator &rhs)const
