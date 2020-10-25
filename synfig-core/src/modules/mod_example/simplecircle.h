@@ -2,8 +2,6 @@
 /*!	\file simplecircle.h
 **	\brief Header file for implementation of the "Simple Circle" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

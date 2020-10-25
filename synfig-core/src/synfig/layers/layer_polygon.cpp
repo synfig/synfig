@@ -2,8 +2,6 @@
 /*!	\file layer_polygon.cpp
 **	\brief Implementation of the "Polygon" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore

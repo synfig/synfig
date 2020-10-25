@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/optimizer/optimizerdraft.cpp
 **	\brief Draft Optimizers
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017-2018 Ivan Mahonin
 **

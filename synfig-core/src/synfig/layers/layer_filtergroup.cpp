@@ -2,8 +2,6 @@
 /*!	\file layer_filtergroup.cpp
 **	\brief Implementation of the "Filter Group" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017 Ivan Mahonin
 **

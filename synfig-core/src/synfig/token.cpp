@@ -2,8 +2,6 @@
 /*!	\file token.cpp
 **	\brief Token File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

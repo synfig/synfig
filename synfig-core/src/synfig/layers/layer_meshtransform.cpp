@@ -2,8 +2,6 @@
 /*!	\file layer_meshtransform.cpp
 **	\brief Implementation of the "MeshTransform" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

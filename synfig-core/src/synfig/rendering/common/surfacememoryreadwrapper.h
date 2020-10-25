@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/surfacememoryreadwrapper.h
 **	\brief SurfaceMemoryReadWrapper Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

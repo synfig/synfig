@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/surfaceswpacked.h
 **	\brief SurfaceSWPacked Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016-2018 Ivan Mahonin
 **

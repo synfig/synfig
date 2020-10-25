@@ -2,8 +2,6 @@
 /*!	\file valuenode_or.h
 **	\brief Header file for implementation of the "Or" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2009 Nikita Kitaev

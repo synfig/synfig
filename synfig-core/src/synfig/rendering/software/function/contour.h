@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/contour.h
 **	\brief Contour Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

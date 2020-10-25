@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/task/taskgl.h
 **	\brief TaskGL Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

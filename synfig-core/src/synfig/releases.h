@@ -2,8 +2,6 @@
 /*!	\file releases.h
 **	\brief Define the synfig releases, for tying to features
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2010-2013 Carlos López

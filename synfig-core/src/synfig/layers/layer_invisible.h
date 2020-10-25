@@ -2,8 +2,6 @@
 /*!	\file layer_invisible.h
 **	\brief Invisible Layer Class Implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

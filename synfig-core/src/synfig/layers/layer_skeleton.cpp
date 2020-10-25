@@ -2,8 +2,6 @@
 /*!	\file layer_skeleton.cpp
 **	\brief Implementation of the "Layer_Skeleton" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **

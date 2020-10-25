@@ -2,8 +2,6 @@
 /*!	\file weightedvalue.h
 **	\brief A weighted value template
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

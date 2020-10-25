@@ -2,8 +2,6 @@
 /*!	\file valuenode_derivative.cpp
 **	\brief Implementation of the "Derivative" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014 Carlos López
 **

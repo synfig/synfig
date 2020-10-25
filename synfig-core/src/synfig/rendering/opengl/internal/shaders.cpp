@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/shaders.cpp
 **	\brief Environment
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

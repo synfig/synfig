@@ -2,8 +2,6 @@
 /*!	\file layer_duplicate.h
 **	\brief Header file for implementation of the "Duplicate" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore

@@ -2,8 +2,6 @@
 /*!	\file valuenode_step.h
 **	\brief Header file for implementation of the "Step" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López

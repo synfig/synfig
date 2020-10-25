@@ -2,8 +2,6 @@
 /*!	\file real.h
 **	\brief Provides the synfig::Real typedef
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

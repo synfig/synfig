@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/glsl/color_fragment.glsl
 **	\brief Color Fragment Shader
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

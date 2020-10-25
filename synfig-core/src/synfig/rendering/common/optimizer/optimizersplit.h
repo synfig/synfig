@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/optimizer/optimizersplit.h
 **	\brief OptimizerSplit Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

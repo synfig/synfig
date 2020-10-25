@@ -2,8 +2,6 @@
 /*!	\file layer_rendering_task.h
 **	\brief Layer_RenderingTask Headers
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

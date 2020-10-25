@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/task/taskcontour.h
 **	\brief TaskContour Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

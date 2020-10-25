@@ -2,8 +2,6 @@
 /*!	\file filesystemtemporary.cpp
 **	\brief FileSystemTemporary Implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

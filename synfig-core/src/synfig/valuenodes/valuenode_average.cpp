@@ -2,8 +2,6 @@
 /*!	\file valuenode_average.cpp
 **	\brief Implementation of the "Average" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

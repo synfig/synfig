@@ -2,8 +2,6 @@
 /*!	\file polygon.h
 **	\brief Polygon
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

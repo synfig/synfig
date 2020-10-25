@@ -2,8 +2,6 @@
 /*!	\file transformation.h
 **	\brief Affine Transformation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

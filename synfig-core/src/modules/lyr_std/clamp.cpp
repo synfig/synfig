@@ -2,8 +2,6 @@
 /*!	\file clamp.cpp
 **	\brief Implementation of the "Clamp" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011-2013 Carlos López

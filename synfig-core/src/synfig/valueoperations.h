@@ -2,8 +2,6 @@
 /*!	\file valueoperations.h
 **	\brief Common operations with ValueBase
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

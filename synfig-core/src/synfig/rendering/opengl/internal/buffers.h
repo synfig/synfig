@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/buffers.h
 **	\brief Buffers Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

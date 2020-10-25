@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/renderersafe.cpp
 **	\brief RendererSafe
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

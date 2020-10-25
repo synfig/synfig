@@ -2,8 +2,6 @@
 /*!	\file layer_solidcolor.h
 **	\brief Header file for implementation of the "Solid Color" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2012-2013 Carlos López

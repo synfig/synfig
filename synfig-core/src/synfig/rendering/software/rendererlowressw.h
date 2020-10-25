@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/rendererlowressw.h
 **	\brief RendererLowResSW Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017 Ivan Mahonin
 **

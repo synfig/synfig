@@ -2,8 +2,6 @@
 /*!	\file layer_composite.h
 **	\brief Composite Layer Class Implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore

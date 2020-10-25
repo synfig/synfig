@@ -2,8 +2,6 @@
 /*!	\file threadpool.h
 **	\brief ThreadPool Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

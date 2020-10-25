@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/primitive/bend.cpp
 **	\brief Bend
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2019 Ivan Mahonin
 **

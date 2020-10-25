@@ -2,8 +2,6 @@
 /*!	\file token.h
 **	\brief Token Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

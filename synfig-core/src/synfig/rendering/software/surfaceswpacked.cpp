@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/surfaceswpacked.cpp
 **	\brief SurfaceSWPacked
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016-2018 Ivan Mahonin
 **

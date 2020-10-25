@@ -2,8 +2,6 @@
 /*!	\file layer_switch.cpp
 **	\brief Implementation of the "Switch" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

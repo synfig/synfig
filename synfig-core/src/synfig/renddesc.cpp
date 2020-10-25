@@ -3,8 +3,6 @@
 **	\brief Class that defines the parameters needed by the Renderer to
 * render a context to a surface.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore

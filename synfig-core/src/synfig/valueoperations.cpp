@@ -2,8 +2,6 @@
 /*!	\file valueoperations.cpp
 **	\brief Implementation of common operations with ValueBase.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

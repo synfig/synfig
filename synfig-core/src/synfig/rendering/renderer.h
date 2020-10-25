@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/renderer.h
 **	\brief Renderer Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

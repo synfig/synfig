@@ -2,8 +2,6 @@
 /*!	\file trgt_mng.cpp
 **	\brief MNG Target Module
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2007 Paul Wise
 **	Copyright (c) 2007 Chris Moore

@@ -2,8 +2,6 @@
 /*!	\file mptr_ppm.cpp
 **	\brief ppm Target Module
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/task/tasktransfromationaffinegl.cpp
 **	\brief TaskTransformationAffineGL
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

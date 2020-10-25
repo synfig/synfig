@@ -2,8 +2,6 @@
 /*!	\file valuenode_not.h
 **	\brief Header file for implementation of the "Not" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2009 Nikita Kitaev

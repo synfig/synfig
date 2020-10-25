@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/rendererpreviewsw.h
 **	\brief RendererPreviewSW Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

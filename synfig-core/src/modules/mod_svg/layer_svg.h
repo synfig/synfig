@@ -2,7 +2,6 @@
 /*!	\file layer_svg.h
 **	\brief Header file for implementation of the Svg Canvas layer
 **
-**	$Id:$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

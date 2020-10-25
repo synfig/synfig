@@ -2,8 +2,6 @@
 /*!	\file test_bline.cpp
 **	\brief Test BLine class
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2020 Synfig contributors
 **

@@ -4,8 +4,6 @@
 **	\brief Based on SVG XML specification 1.1
 **	\brief See: http://www.w3.org/TR/xml11/ for deatils
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore

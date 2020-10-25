@@ -2,8 +2,6 @@
 /*!	\file savecanvas.h
 **	\brief Implementation for the Synfig Save Canvas to file
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore

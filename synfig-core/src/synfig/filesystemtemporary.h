@@ -2,8 +2,6 @@
 /*!	\file filesystemtemporary.h
 **	\brief FileSystemTemporary Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

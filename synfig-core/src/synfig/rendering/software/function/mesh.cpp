@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/mesh.cpp
 **	\brief Mesh
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2019 Ivan Mahonin
 **

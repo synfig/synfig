@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/renderer.cpp
 **	\brief Renderer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

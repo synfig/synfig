@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/fft.h
 **	\brief FFT Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

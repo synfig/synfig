@@ -2,8 +2,6 @@
 /*!	\file curve_helper.h
 **	\brief Curve Helper Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

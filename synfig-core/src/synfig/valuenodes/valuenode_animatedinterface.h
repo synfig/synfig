@@ -2,8 +2,6 @@
 /*!	\file valuenode_animatedbase.h
 **	\brief Header file for implementation of the "Animated" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2016 Ivan Mahonin

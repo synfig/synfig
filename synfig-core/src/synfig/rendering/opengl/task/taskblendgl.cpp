@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/task/taskblendgl.cpp
 **	\brief TaskBlendGL
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/primitive/affinetransformation.cpp
 **	\brief AffineTransformation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

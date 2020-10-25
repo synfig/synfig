@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/clcontext.h
 **	\brief ClContext Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

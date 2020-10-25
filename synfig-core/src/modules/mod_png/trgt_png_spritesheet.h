@@ -2,8 +2,6 @@
 /*!	\file trgt_png_spritesheet.h
 **	\brief Sprite sheet render target.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2013		Moritz Grosch (LittleFox) <littlefox@fsfe.org>

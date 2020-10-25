@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/task/tasklayer.cpp
 **	\brief TaskLayer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016-2018 Ivan Mahonin
 **

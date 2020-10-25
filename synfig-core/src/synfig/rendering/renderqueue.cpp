@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/renderqueue.cpp
 **	\brief RenderQueue
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

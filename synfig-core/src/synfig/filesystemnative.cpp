@@ -2,8 +2,6 @@
 /*!	\file filesystemnative.cpp
 **	\brief FileSystemNative
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

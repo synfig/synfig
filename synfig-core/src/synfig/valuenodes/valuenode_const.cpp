@@ -2,8 +2,6 @@
 /*!	\file valuenode_const.cpp
 **	\brief Implementation of the "Constant" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

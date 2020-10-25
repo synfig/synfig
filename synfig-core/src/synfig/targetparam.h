@@ -2,8 +2,6 @@
 /*!	\file synfig/targetparam.h
 **	\brief Class for extra parameters of the target modules
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2010 Diego Barrios Romero
 **

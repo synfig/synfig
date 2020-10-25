@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/task/taskmesh.cpp
 **	\brief TaskMesh
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

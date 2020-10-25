@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/blur.cpp
 **	\brief Blur
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

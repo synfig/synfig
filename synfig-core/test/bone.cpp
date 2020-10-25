@@ -2,8 +2,6 @@
 /*!	\file bone.cpp
 **	\brief Bone Test File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **

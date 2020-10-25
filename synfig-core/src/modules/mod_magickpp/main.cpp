@@ -2,8 +2,6 @@
 /*!	\file mod_magickpp/main.cpp
 **	\brief Magick++ plugin
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2007, 2008 Chris Moore
 **

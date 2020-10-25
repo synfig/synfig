@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/resource.h
 **	\brief Resource Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

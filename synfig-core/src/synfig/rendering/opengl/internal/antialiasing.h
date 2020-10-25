@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/antialiasing.h
 **	\brief Antialiasing Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

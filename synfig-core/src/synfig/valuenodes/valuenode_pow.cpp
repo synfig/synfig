@@ -2,8 +2,6 @@
 /*!	\file valuenode_pow.cpp
 **	\brief Implementation of the "Power" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore

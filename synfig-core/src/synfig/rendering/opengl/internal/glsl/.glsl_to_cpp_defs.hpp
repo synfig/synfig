@@ -3,8 +3,6 @@
 **	\brief Fake C++ header which helps to edit .glsl files
 **         in IDE like .cpp files
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

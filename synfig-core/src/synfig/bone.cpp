@@ -2,8 +2,6 @@
 /*!	\file bone.cpp
 **	\brief Bone File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Carlos López & Chirs Moore

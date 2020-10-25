@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/task/taskmeshsw.cpp
 **	\brief TaskMeshSW
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2019 Ivan Mahonin
 **

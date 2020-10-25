@@ -2,8 +2,6 @@
 /*!	\file mod_mng/main.cpp
 **	\brief MNG plugin
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2007 Paul Wise
 **

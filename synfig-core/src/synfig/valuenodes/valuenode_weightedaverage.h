@@ -2,8 +2,6 @@
 /*!	\file valuenode_weightedaverage.h
 **	\brief Header file for implementation of the "Weighted Average" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

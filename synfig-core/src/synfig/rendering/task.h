@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/task.h
 **	\brief Task Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

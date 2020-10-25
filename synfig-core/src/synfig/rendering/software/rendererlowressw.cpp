@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/rendererlowressw.cpp
 **	\brief RendererLowResSW
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017 Ivan Mahonin
 **

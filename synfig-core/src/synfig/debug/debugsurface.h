@@ -2,8 +2,6 @@
 /*!	\file debugsurface.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/blur_iir_coefficients.hpp
 **	\brief Initialization of IIR coefficients for Blur
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **
