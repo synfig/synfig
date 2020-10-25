@@ -1,5 +1,3 @@
-# $Id$
-
 PLUGIN_NAME = add-skeleton-simple
 
 EXTRA_FILES = stickman.sif

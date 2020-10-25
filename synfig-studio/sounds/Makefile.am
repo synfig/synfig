@@ -1,5 +1,3 @@
-# $Id$
-
 MAINTAINERCLEANFILES = Makefile.in
 
 SOUNDS     = readme.txt \
