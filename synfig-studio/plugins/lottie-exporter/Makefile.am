@@ -1,5 +1,3 @@
-# $Id$
-
 PLUGIN_NAME = lottie-exporter
 
 EXTRA_FILES = bodymovin.js \

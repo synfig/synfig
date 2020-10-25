@@ -1,5 +1,3 @@
-# $Id$
-
 synfiglibdir = @SYNFIGLIB_DIR@
 
 MAINTAINERCLEANFILES = \
