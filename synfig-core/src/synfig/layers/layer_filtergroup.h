@@ -2,8 +2,6 @@
 /*!	\file layer_filtergroup.h
 **	\brief Header file for implementation of the "Filter Group" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017 Ivan Mahonin
 **

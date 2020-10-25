@@ -2,8 +2,6 @@
 /*!	\file layer_skeletondeformation.cpp
 **	\brief SkeletonDeformation layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

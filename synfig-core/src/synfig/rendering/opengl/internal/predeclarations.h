@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/predeclarations.h
 **	\brief Predeclarations
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

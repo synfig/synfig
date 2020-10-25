@@ -2,8 +2,6 @@
 /*!	\file canvasfilenaming.cpp
 **	\brief CanvasFilenaming Implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

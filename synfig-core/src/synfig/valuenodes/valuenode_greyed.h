@@ -2,8 +2,6 @@
 /*!	\file valuenode_greyed.h
 **	\brief Header file for implementation of the "Greyed" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/task.cpp
 **	\brief Task
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

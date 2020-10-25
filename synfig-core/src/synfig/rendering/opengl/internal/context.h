@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/context.h
 **	\brief Context Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

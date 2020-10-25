@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/resample.cpp
 **	\brief Resample
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2019 Ivan Mahonin
 **

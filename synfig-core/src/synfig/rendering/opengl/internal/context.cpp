@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/context.cpp
 **	\brief Context
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

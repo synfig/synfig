@@ -2,8 +2,6 @@
 /*!	\file valuenode_bone.h
 **	\brief Header file for implementation of the "Bone" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore

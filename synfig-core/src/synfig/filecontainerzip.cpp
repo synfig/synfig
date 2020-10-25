@@ -2,8 +2,6 @@
 /*!	\file filecontainerzip.cpp
 **	\brief FileContainerZip
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

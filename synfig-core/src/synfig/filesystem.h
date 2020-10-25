@@ -2,8 +2,6 @@
 /*!	\file filesystem.h
 **	\brief FileSystem
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

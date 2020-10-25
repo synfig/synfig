@@ -2,8 +2,6 @@
 /*!	\file layer_sound.h
 **	\brief Header file for implementation of the "Sound" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

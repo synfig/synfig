@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/optimizer/optimizerdraft.h
 **	\brief Draftt Optimizers Headers
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017-2018 Ivan Mahonin
 **

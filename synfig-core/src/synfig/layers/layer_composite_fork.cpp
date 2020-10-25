@@ -2,8 +2,6 @@
 /*!	\file layer_composite_fork.cpp
 **	\brief Layer_CompositeFork implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

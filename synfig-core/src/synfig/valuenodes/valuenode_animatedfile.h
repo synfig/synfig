@@ -2,8 +2,6 @@
 /*!	\file valuenode_animatedfile.h
 **	\brief Header file for Valuenode_AnimatedFile.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

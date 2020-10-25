@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/task/taskblendsw.cpp
 **	\brief TaskBlendSW
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

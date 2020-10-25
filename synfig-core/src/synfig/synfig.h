@@ -2,8 +2,6 @@
 /*!	\file synfig.h
 **	\brief Primary Header for Synfig
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

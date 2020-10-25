@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/primitive/mesh.h
 **	\brief Mesh Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file layer_sound.cpp
 **	\brief Implementation of the "Sound" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

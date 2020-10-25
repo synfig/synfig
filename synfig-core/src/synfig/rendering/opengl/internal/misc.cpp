@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/misc.cpp
 **	\brief Misc
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

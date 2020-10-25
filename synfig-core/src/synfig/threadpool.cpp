@@ -2,8 +2,6 @@
 /*!	\file threadpool.cpp
 **	\brief ThreadPool File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

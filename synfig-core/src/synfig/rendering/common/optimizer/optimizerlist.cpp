@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/optimizer/optimizerlist.cpp
 **	\brief OptimizerList
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

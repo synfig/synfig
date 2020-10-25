@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/rendererdraftsw.h
 **	\brief RendererDraftSW Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017 Ivan Mahonin
 **

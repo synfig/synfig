@@ -2,8 +2,6 @@
 /*!	\file pair.h
 **	\brief A pair value template
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

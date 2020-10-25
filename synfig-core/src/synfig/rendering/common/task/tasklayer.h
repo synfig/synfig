@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/task/tasklayer.h
 **	\brief TaskLayer Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

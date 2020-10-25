@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/resample.h
 **	\brief Resample Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2019 Ivan Mahonin
 **

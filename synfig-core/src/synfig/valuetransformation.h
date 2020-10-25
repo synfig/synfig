@@ -3,8 +3,6 @@
 /*!	\file value_transformation.h
 **	\brief Affine Transformation of ValueBase class
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file valuenode_linear.h
 **	\brief Header file for implementation of the "Linear" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore

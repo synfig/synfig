@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/shaders.h
 **	\brief Environment Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

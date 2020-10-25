@@ -2,8 +2,6 @@
 /*!	\file complex.h
 **	\brief Provides the synfig::Complex typedef
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

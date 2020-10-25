@@ -2,8 +2,6 @@
 /*!	\file layer_composite_fork.h
 **	\brief Layer_CompositeFork Class Headers
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

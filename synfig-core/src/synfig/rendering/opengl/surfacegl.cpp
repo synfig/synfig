@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/surfacegl.cpp
 **	\brief SurfaceGL
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

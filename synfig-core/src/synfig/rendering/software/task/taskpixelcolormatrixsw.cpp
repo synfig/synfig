@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/task/taskpixelcolormatrixsw.cpp
 **	\brief TaskPixelColorMatrixSW
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016-2018 Ivan Mahonin
 **

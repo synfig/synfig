@@ -2,8 +2,6 @@
 /*!	\file valuenode_dynamic.cpp
 **	\brief Implementation of the "Dynamic" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014 Carlos López
 **

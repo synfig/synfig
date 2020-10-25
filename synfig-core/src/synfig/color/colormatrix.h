@@ -2,8 +2,6 @@
 /*!	\file colormatrix.h
 **	\brief Matrix definitions for 4D affine transformations of color channels
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file lyr_freetype.cpp
 **	\brief Implementation of the "Text" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2006 Paul Wise

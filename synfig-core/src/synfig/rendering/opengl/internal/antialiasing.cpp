@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/antialiasing.cpp
 **	\brief Antialiasing
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

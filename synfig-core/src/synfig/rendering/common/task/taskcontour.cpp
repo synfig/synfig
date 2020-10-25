@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/task/taskcontour.cpp
 **	\brief TaskContour
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

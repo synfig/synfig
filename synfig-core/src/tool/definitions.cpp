@@ -2,8 +2,6 @@
 /*!	\file tool/definitions.cpp
 **	\brief Implementation of the definitions header file for synfig tool
 **
-**	$Id$
-**
 **	\legal
 **  Copyright (c) 2014 Diego Barrios Romero
 **

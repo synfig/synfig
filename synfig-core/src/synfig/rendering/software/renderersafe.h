@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/renderersafe.h
 **	\brief RendererSafe Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

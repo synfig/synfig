@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/task/tasksw.h
 **	\brief TaskSW Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

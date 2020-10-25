@@ -2,8 +2,6 @@
 /*!	\file layer_invisible.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

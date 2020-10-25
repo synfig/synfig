@@ -2,8 +2,6 @@
 /*!	\file freetimr.cpp
 **	\brief Implementation of the "Free Time" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

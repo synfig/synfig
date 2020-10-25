@@ -2,8 +2,6 @@
 /*!	\file type.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

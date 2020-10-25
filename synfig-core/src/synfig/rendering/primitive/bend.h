@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/primitive/bend.h
 **	\brief Bend Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2019 Ivan Mahonin
 **

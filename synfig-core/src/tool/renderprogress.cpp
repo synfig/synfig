@@ -1,8 +1,6 @@
 /*!	\file tool/renderprogress.cpp
 **	\brief Implementation of the functions from the render progress class
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014, 2015 Diego Barrios Romero
 **

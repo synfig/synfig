@@ -2,8 +2,6 @@
 /*!	\file valuenode_animatedfile.cpp
 **	\brief Implementation of the "AnimatedFile" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file rectangle.cpp
 **	\brief Implementation of the "Rectangle" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **	Copyright (c) 2007, 2008 Chris Moore

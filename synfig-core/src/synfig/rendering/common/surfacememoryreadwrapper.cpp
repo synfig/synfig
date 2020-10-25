@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/surfacememoryreadwrapper.cpp
 **	\brief SurfaceMemoryReadWrapper
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

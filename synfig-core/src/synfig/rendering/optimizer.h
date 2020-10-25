@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/optimizer.h
 **	\brief Optimizer Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

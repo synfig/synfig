@@ -2,8 +2,6 @@
 /*!	\file layer_switch.h
 **	\brief Header file for implementation of the "Switch" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

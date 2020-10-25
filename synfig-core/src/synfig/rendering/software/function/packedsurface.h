@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/packedsurface.h
 **	\brief PackedSurface Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/surface.h
 **	\brief Surface Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

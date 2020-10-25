@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/task/taskpixelgammasw.cpp
 **	\brief TaskPixelGammaSW
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016-2018 Ivan Mahonin
 **

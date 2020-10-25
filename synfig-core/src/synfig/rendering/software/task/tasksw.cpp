@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/task/tasksw.cpp
 **	\brief TaskSW
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

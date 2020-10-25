@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/task/taskpixelprocessor.h
 **	\brief TaskPixelProcessor Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016-2018 Ivan Mahonin
 **

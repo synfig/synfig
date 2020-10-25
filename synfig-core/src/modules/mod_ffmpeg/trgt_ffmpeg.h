@@ -2,8 +2,6 @@
 /*!	\file trgt_ffmpeg.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2010 Diego Barrios Romero

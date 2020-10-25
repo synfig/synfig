@@ -2,8 +2,6 @@
 /*!	\file layer_rendering_task.cpp
 **	\brief Layer_RenderingTask implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/sampler.h
 **	\brief Sampler Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

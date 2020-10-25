@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/framebuffers.cpp
 **	\brief Framebuffers
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

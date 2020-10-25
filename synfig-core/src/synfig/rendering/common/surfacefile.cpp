@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/surfacefile.cpp
 **	\brief SurfaceFile
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

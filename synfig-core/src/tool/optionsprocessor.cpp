@@ -2,8 +2,6 @@
 /*!	\file tool/optionsprocessor.cpp
 **	\brief Synfig Tool Options Processor Class
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore

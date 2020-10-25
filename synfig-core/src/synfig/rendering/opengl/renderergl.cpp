@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/renderergl.cpp
 **	\brief RendererGL
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

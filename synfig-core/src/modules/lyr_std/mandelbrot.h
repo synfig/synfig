@@ -2,8 +2,6 @@
 /*!	\file mandelbrot.h
 **	\brief Header file for implementation of the "Mandelbrot Set" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

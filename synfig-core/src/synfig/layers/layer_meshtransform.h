@@ -2,8 +2,6 @@
 /*!	\file layer_meshtransform.h
 **	\brief Header file for implementation of the "MeshTransform" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

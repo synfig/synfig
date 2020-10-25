@@ -2,8 +2,6 @@
 /*!	\file matrix.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **  Copyright (c) 2008 Carlos López
 **  Copyright (c) 2008 Chris Moore

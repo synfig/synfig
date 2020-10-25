@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/blur.h
 **	\brief Blur Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

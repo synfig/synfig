@@ -2,8 +2,6 @@
 /*!	\file valuenode_animated.h
 **	\brief Header file for Valuenode_Animated.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

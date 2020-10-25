@@ -2,8 +2,6 @@
 /*!	\file valuenode_step.cpp
 **	\brief Implementation of the "Step" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López

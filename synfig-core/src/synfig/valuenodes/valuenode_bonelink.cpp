@@ -2,8 +2,6 @@
 /*!	\file valuenode_bonelink.cpp
 **	\brief Implementation of the "BoneLink" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/function/packedsurface.cpp
 **	\brief PackedSurface
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

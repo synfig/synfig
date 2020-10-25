@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/internal/glsl/simple_vertex.glsl
 **	\brief Simple Vertex Shader
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

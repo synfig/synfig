@@ -2,8 +2,6 @@
 /*!	\file curve.cpp
 **	\brief Operations with cubic curves
 **
-**	$Id$
-**
 **	\legal
 **  ......... ... 2019 Ivan Mahonin
 **

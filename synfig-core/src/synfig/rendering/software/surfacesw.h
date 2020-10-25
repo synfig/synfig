@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/surfacesw.h
 **	\brief SurfaceSW Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

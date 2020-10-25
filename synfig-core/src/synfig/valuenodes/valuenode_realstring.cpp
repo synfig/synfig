@@ -2,8 +2,6 @@
 /*!	\file valuenode_realstring.cpp
 **	\brief Implementation of the "RealString" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore

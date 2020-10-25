@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/optimizer.cpp
 **	\brief Optimizer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

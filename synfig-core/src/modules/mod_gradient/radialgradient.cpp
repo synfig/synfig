@@ -2,8 +2,6 @@
 /*!	\file mod_gradient/radialgradient.cpp
 **	\brief Implementation of the "Radial Gradient" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore

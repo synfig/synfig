@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/opengl/task/taskcontourgl.cpp
 **	\brief TaskContourGL
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

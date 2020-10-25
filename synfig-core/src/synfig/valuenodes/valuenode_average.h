@@ -2,8 +2,6 @@
 /*!	\file valuenode_average.h
 **	\brief Header file for implementation of the "Average" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **

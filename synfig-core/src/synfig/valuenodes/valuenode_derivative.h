@@ -2,8 +2,6 @@
 /*!	\file valuenode_derivative.h
 **	\brief Header file for implementation of the "Derivative" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014 Carlos López
 **

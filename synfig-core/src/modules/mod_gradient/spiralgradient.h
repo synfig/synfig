@@ -2,8 +2,6 @@
 /*!	\file spiralgradient.h
 **	\brief Header file for implementation of the "Spiral Gradient" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

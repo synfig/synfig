@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/optimizer/optimizerblendmerge.h
 **	\brief OptimizerBlendMerge Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **

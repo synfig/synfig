@@ -2,8 +2,6 @@
 /*!	\file measure.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

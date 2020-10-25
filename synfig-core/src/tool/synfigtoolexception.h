@@ -2,8 +2,6 @@
 /*!	\file tool/synfigtoolexception.h
 **	\brief Exception class for Synfig Tool
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2012 Diego Barrios Romero
 **

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/primitive/contour.cpp
 **	\brief Contour
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

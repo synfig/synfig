@@ -2,8 +2,6 @@
 /*!	\file valuenode_bonelink.h
 **	\brief Header file for implementation of the "BoneLink" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

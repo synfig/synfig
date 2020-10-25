@@ -2,8 +2,6 @@
 /*!	\file freetime.h
 **	\brief Header file for implementation of the "Free Time" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

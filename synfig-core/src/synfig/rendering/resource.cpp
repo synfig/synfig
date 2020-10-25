@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/resource.cpp
 **	\brief Resource
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

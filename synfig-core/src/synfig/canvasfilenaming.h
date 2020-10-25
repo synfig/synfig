@@ -2,8 +2,6 @@
 /*!	\file canvasfilenaming.h
 **	\brief CanvasFileNaming Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **

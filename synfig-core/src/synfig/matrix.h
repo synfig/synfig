@@ -2,8 +2,6 @@
 /*!	\file matrix.h
 **	\brief Matrix definitions for 2D affine transformations
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Carlos López & Chirs Moore
 **

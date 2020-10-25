@@ -2,8 +2,6 @@
 /*!	\file trgt_magickpp.cpp
 **	\brief Magick++ Target Module
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2007, 2008 Chris Moore
 **

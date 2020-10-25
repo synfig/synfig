@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/software/renderersw.cpp
 **	\brief RendererSW
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file layer_skeleton.h
 **	\brief Header file for implementation of the "Layer_Skeleton" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

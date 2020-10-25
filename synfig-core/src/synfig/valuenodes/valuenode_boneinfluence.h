@@ -2,8 +2,6 @@
 /*!	\file valuenode_boneinfluence.h
 **	\brief Header file for implementation of the "BoneInfluence" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

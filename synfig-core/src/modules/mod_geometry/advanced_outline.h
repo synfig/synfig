@@ -2,8 +2,6 @@
 /*!	\file outline.h
 **	\brief Header file for implementation of the "Advanced Outline" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011-2013 Carlos López

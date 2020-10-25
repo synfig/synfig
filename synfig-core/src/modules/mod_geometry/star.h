@@ -2,8 +2,6 @@
 /*!	\file star.h
 **	\brief Header file for implementation of the "Star" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore

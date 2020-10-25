@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/renderqueue.h
 **	\brief RenderQueue Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **

@@ -2,8 +2,6 @@
 /*!	\file synfig/rendering/common/optimizer/optimizerblendtotarget.h
 **	\brief OptimizerBlendToTarget Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **
