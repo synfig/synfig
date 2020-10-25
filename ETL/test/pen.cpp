@@ -1,7 +1,6 @@
 /*! ========================================================================
 ** Extended Template and Library Test Suite
 ** Handle Template Class Test
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

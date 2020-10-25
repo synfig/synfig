@@ -1,7 +1,6 @@
 /*! ========================================================================
 ** Extended Template and Library
 ** Misc
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2007 Chris Moore

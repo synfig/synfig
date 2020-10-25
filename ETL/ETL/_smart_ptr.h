@@ -1,7 +1,6 @@
 /* ========================================================================
 ** Extended Template and Library
 ** Template Smart Pointer Implementation
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

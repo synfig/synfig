@@ -1,7 +1,6 @@
 /*! ========================================================================
 ** Extended Template Library
 ** Hermite Template Class Implementation
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

@@ -1,7 +1,6 @@
 /*! ========================================================================
 ** Extended Template and Library
 ** Utility Curve Template Class Implementations
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

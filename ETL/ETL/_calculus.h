@@ -1,7 +1,6 @@
 /*! ========================================================================
 ** Extended Template and Library
 ** Calculus Functional Classes Implementation
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2008 Chris Moore
