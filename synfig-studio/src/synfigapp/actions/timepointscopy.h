@@ -2,8 +2,6 @@
 /*!	\file timepointscopy.h
 **	\brief Copy the Time Points Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

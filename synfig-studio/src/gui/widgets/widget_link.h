@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_link.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014 Jérôme Blanchi
 **

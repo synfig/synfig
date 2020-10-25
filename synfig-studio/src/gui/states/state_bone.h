@@ -2,8 +2,6 @@
 /*!	\file state_bone.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2020 Aditya Abhiram J
 **

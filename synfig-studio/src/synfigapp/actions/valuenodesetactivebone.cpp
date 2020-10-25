@@ -2,8 +2,6 @@
 /*!	\file valuenodesetactivebone.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **  Copyright (c) 2020 Aditya Abhiram J
 **

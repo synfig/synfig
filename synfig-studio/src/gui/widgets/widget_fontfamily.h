@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_fontfamily.h
 **	\brief Widget to select font family
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2020 Rodolfo Ribeiro Gomes

@@ -2,8 +2,6 @@
 /*!	\file state_mirror.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2009 Nikita Kitaev

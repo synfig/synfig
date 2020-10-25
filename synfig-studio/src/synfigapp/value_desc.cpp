@@ -2,8 +2,6 @@
 /*!	\file value_desc.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev

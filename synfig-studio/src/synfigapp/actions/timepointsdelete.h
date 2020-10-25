@@ -2,8 +2,6 @@
 /*!	\file timepointsdelete.h
 **	\brief Delete the Time Points Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

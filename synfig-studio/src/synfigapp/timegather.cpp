@@ -2,8 +2,6 @@
 /*!	\file timegather.cpp
 **	\brief Time Gather File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **	Copyright (c) 2007 Chris Moore

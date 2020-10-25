@@ -2,8 +2,6 @@
 /*!	\file layerfit.h
 **	\brief LayerFit
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

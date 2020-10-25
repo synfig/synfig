@@ -2,8 +2,6 @@
 /*!	\file vectorization.h
 **	\brief Vectorization Action File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

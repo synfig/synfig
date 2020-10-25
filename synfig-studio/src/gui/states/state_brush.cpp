@@ -2,8 +2,6 @@
 /*!	\file state_brush.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **	......... ... 2014 Jerome Blanchi

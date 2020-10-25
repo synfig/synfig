@@ -2,8 +2,6 @@
 /*!	\file gui/localization.h
 **	\brief Localization
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2007 Paul Wise
 **

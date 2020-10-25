@@ -2,8 +2,6 @@
 /*!	\file valuelink.cpp
 **	\brief ValueBase Link Implementation File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

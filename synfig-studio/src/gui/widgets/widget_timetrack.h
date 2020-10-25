@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_timetrack.h
 **	\brief Widget to displaying layer parameter waypoints along time
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2020 Rodolfo Ribeiro Gomes

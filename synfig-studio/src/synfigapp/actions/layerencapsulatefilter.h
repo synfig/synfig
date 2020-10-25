@@ -2,8 +2,6 @@
 /*!	\file layerencapsulatefilter.h
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2017 Ivan Mahonin
 **

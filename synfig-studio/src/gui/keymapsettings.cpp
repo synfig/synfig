@@ -2,8 +2,6 @@
 /*!	\file keymapsettings.cpp
 **	\brief Contains Info for Key Map settings
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

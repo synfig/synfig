@@ -2,8 +2,6 @@
 /*!	\file dialogs/dialog_keyframe.h
 **	\brief Keyframe properties dialog Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

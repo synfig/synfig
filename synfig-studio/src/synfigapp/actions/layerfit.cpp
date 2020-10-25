@@ -2,8 +2,6 @@
 /*!	\file template.cpp
 **	\brief LayerFit
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **

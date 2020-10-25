@@ -2,8 +2,6 @@
 /*!	\file timemodel.h
 **	\brief TimeModel Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **	......... ... 2018 Ivan Mahonin

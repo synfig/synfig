@@ -2,8 +2,6 @@
 /*!	\file valuedescbonelink.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **	......... ... 2014 Jerome Blanchi

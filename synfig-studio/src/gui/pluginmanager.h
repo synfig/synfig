@@ -2,8 +2,6 @@
 /*!	\file synfigapp/pluginmanager.h
 **	\brief Plugin Manager responsible for loading plugins
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2012-2013 Konstantin Dmitriev
 **

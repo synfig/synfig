@@ -2,8 +2,6 @@
 /*!	\file synfig/synfig_export.h
 **	\brief Export definition for MSVC
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2020 Artem Konoplin
 **

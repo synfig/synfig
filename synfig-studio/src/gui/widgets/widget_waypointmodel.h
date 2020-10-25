@@ -2,8 +2,6 @@
 /*!	\file widgets/widget_waypointmodel.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

@@ -2,8 +2,6 @@
 /*!	\file synfigapp/localization.h
 **	\brief Localization
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2007 Paul Wise
 **	Copyright (c) 2007 Chris Moore

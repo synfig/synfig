@@ -3,8 +3,6 @@
 **  \brief Renderer_BBox class is used to render in the workarea the bounding box
 ** of the selected layer(s)
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

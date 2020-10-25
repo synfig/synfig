@@ -2,8 +2,6 @@
 /*!	\file docks/dock_timetrack2.h
 **	\brief Dock to displaying layer parameters timetrack
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2020 Rodolfo Ribeiro Gomes

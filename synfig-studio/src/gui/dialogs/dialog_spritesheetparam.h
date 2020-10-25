@@ -2,8 +2,6 @@
 /*!	\file dialogs/dialog_spritesheetparam.h
 **	\brief SpriteSheetParam
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2015 Denis Zdorovtsov
 **

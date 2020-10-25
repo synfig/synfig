@@ -2,8 +2,6 @@
 /*!	\file valuelink.h
 **	\brief ValueBase Link Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

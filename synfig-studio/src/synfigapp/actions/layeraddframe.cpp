@@ -2,8 +2,6 @@
 /*!	\file layeraddframe.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014 Ivan Mahonin
 **	Copyright (c) 2016 Jérôme Blanchi

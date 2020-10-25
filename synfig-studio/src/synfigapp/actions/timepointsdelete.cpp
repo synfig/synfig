@@ -2,8 +2,6 @@
 /*!	\file timepointsdelete.cpp
 **	\brief Delete the Time Points File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **

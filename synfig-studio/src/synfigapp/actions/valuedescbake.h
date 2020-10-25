@@ -2,8 +2,6 @@
 /*!	\file valuedescbake.h
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2019 Ivan Mahonin
 **

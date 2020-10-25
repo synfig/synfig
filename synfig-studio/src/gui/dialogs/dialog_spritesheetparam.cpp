@@ -2,8 +2,6 @@
 /*!	\file dialog_spritesheetparam.cpp
 **	\brief Implementation for the SpriteSheetParam Dialog
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2015 Denis Zdorovtsov
 **

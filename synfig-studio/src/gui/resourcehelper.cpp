@@ -2,8 +2,6 @@
 /*!	\file resourcehelper.h
 **	\brief Helper to retrieve the app resource paths, such as icons and plugins
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2019 Rodolfo R Gomes

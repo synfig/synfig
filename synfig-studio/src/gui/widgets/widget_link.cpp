@@ -2,8 +2,6 @@
 /*!	\file widget_vector.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014 Jérôme Blanchi
 **

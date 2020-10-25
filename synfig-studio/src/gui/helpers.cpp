@@ -2,8 +2,6 @@
 /*!	\file helpers.cpp
 **	\brief Helpers File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **

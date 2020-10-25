@@ -2,8 +2,6 @@
 /*!	\file dialogs/dialog_soundselect.h
 **	\brief Sound Select Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 David Roden
