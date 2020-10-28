@@ -21,16 +21,6 @@ add_subdirectory(ui)
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/appdata")
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/applications")
 
-if(NOT WIN32) # desktop file needs to be build only for nix systems
-STUDIO_INTLTOOL_MERGE(
-    DESKTOP
-    TARGET_NAME desktop_file
-    INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.desktop.in
-    OUTPUT_FILE "org.synfig.SynfigStudio.desktop"
-    INSTALL_DESTINATION "share/applications"
-)
-endif()
-
 if(TARGET desktop_file)
     add_custom_command(
         TARGET desktop_file POST_BUILD
