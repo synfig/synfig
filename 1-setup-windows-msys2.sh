@@ -23,7 +23,6 @@ echo "Installing development tools"
 pacman -S --needed --noconfirm --color=auto \
 autoconf \
 automake-wrapper \
-intltool \
 make \
 patch \
 tar \

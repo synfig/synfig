@@ -862,7 +862,6 @@ $CYGWIN_SETUP \
 -P $TOOLCHAIN-gcc  \
 -P $TOOLCHAIN-gcc-g++  \
 -P gdb \
--P intltool \
 -P autoconf \
 -P automake \
 -P libtool \
