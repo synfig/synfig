@@ -71,11 +71,24 @@ FrameDial::FrameDial():
 	bounds_enable      (create_toggle("synfig-animate_bounds"             , _("Enable playback bounds")   )),
 	bound_upper        (create_button("synfig-animate_bound_upper"        , _("Right bound")              ))
 {
+	end_time->signal_leave_notify_event().connect(
+		sigc::mem_fun(*this, &FrameDial::on_end_time_leave_event));
+
 	repeat->signal_toggled().connect(
 		sigc::mem_fun(*this, &FrameDial::on_repeat_toggled) );
 	bounds_enable->signal_toggled().connect(
 		sigc::mem_fun(*this, &FrameDial::on_bounds_toggled) );
 	toggle_play_pause_button(false);
+}
+
+bool
+FrameDial::on_end_time_leave_event(GdkEventCrossing *event)
+{
+	if (event->type == GDK_LEAVE_NOTIFY) {
+		play->grab_focus();
+		return true;
+	}
+	return false;
 }
 
 void

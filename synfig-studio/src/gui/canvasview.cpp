@@ -975,6 +975,8 @@ CanvasView::create_time_bar()
 	current_time_widget->signal_value_changed().connect(
 		sigc::mem_fun(*this,&CanvasView::on_current_time_widget_changed)
 	);
+	current_time_widget->signal_leave_notify_event().connect(
+		sigc::mem_fun(*this, &CanvasView::on_leave_notify_event));
 	current_time_widget->set_size_request(0,-1); // request horizontal shrink
 	current_time_widget->set_width_chars(5);
 	current_time_widget->set_tooltip_text(_("Current time"));
@@ -1353,6 +1355,8 @@ CanvasView::create_display_bar()
 		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
 		past_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &CanvasView::set_onion_skins));
+		past_onion_spin->signal_leave_notify_event().connect(
+			sigc::mem_fun(*this, &CanvasView::on_leave_notify_event));
 		past_onion_spin->set_tooltip_text( _("Past onion skins"));
 		past_onion_spin->show();
 
@@ -1368,6 +1372,8 @@ CanvasView::create_display_bar()
 		future_onion_spin=Gtk::manage(new class Gtk::SpinButton(future_onion_adjustment_));
 		future_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &CanvasView::set_onion_skins));
+		future_onion_spin->signal_leave_notify_event().connect(
+			sigc::mem_fun(*this, &CanvasView::on_leave_notify_event));
 		future_onion_spin->set_tooltip_text( _("Future onion skins"));
 		future_onion_spin->show();
 
@@ -2026,6 +2032,16 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 	}
 	return false;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
+
+bool
+CanvasView::on_leave_notify_event(GdkEventCrossing* event)
+{
+	if (event->type == GDK_LEAVE_NOTIFY) {
+		animatebutton->grab_focus();
+		return true;
+	}
+	return false;
 }
 
 bool

@@ -72,6 +72,8 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 	current_zoom->set_editable(true);
 	current_zoom->set_width_chars(6);
 	current_zoom->add_events(Gdk::SCROLL_MASK);
+	current_zoom->signal_leave_notify_event().connect(
+		sigc::mem_fun(*this, &ZoomDial::on_current_zoom_leave_event));
 	current_zoom->signal_event().connect(
 		sigc::mem_fun(*this, &ZoomDial::current_zoom_event) );
 	current_zoom->show();
@@ -86,6 +88,16 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 	attach(*zoom_in, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_norm, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_fit, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+}
+
+bool
+ZoomDial::on_current_zoom_leave_event(GdkEventCrossing *event)
+{
+	if (event->type == GDK_LEAVE_NOTIFY) {
+		zoom_fit->grab_focus();
+		return true;
+	}
+	return false;
 }
 
 void

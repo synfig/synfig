@@ -683,6 +683,8 @@ protected:
 	void on_meta_data_changed();
 	bool on_key_press_event(GdkEventKey* event); //!< Keyboard event dispatcher following window priority
 	bool on_delete_event(GdkEventAny* event);
+	// Make toolbar entries focusability intelligent using mouse leave event
+	bool on_leave_notify_event(GdkEventCrossing* event);
 
 	Gtk::Widget* create_tab_label();
 	void toggle_past_keyframe_button();

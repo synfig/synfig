@@ -94,6 +94,7 @@ public:
 	void toggle_repeat(bool enable);
 	void toggle_bounds_enable(bool enable);
 	void set_end_time(float fps, float value);
+	bool on_end_time_leave_event(GdkEventCrossing *event);
 	void on_end_time_widget_changed();
 	float get_end_time();
 }; // END of class FrameDial

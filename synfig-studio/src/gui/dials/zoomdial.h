@@ -57,6 +57,7 @@ class ZoomDial : public Gtk::Table
 			const char * tooltip);
 	void after_event(GdkEvent *event);
 	bool current_zoom_event(GdkEvent* event);
+	bool on_current_zoom_leave_event(GdkEventCrossing *event);
 
 public:
 	ZoomDial(Gtk::IconSize &size);
