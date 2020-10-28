@@ -41,6 +41,7 @@
 #include "app.h"
 #include <gtkmm/menu.h>
 #include <gtkmm/scale.h>
+#include <gtkmm/stylecontext.h>
 #include <gtkmm/toolitem.h>
 #include <gtkmm/toolitemgroup.h>
 #include <gtkmm/toolpalette.h>
@@ -185,6 +186,10 @@ public:
 
 Widget_Defaults::Widget_Defaults()
 {
+	// Make Brushes button small for space efficiency
+	auto style_context = this->get_style_context();
+	style_context->add_class("synfigstudio-efficient-workspace");
+
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-tiny_icon");
 
 	// widget colors: outline color and fill color.

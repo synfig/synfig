@@ -67,6 +67,8 @@
 #include <glibmm/thread.h>
 #include <glibmm/timer.h>
 
+#include <giomm/file.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 
@@ -2329,48 +2331,24 @@ App::apply_gtk_settings()
 	// enable menu icons
 	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
 
-	// fix CSS
-	Glib::ustring data;
-	// Fix GtkPaned (big margin makes it hard to grab first keyframe))
-	data += "GtkPaned { margin: 2px; }\n";
-	// Fix #348: Synfig's Interface went Too Thick
-	// following css works in gtk since 3.14:
-	data += ".button                            { padding-left: 4px; padding-right: 4px; }\n";
-	data += ".button                            { padding-top: 0px; padding-bottom: 0px; }\n";
-	data += ".button *                          { padding-top: 4px; padding-bottom: 4px; }\n";
-	data += ".button > GtkBox                   { padding-top: 0px; padding-bottom: 0px; }\n";
-	data += ".button > GtkBox > *               { padding-top: 4px; padding-bottom: 4px; }\n";
-	data += ".button > GtkLabel                 { padding-top: 0px; padding-bottom: 0px; }\n";
-	data += "GtkComboBox > .button > GtkBox > * { padding-top: 0px; padding-bottom: 0px; }\n";
-	data += ".entry                             { padding-top: 0px; padding-bottom: 0px; }\n";
-	data += "progress, trough 					{ min-height: 20px; }\n";
-#if GTKMM_MAJOR_VERSION < 3 || (GTKMM_MAJOR_VERSION == 3 && GTKMM_MINOR_VERSION < 22)
-	// following css works in old versions of gtk
-	data += "button { padding: 0px; }\n";
-#else
-	// following css works for gtk 3.22:
-	data += "entry, spinbutton { min-height: 16px; }\n";
-	data += "button { min-height: 16px; min-width: 16px; padding: 0px; }\n";
-#endif
-	data += "button > box { padding: 5px; }\n";
-	data += "button > image { padding: 5px; }\n";
-	data += "combobox > box > button > box { padding-top: 0px; padding-bottom: 0px; }\n";
-	// Fix #810: Insetsetive context menus on OSX
-	g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
-	if ( String(theme_name) == "Adwaita" )
-		data += ".window-frame, .window-frame:backdrop { box-shadow: none; margin: 0; }\n";
-	g_free(theme_name);
+	auto provider = Gtk::CssProvider::create();
+	auto screen   = Gdk::Screen::get_default();
+	auto css_file = Gio::File::create_for_path(ResourceHelper::get_css_path("synfig.css"));
 
-	if (!data.empty()) {
-		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
-		try {
-			css->load_from_data(data);
-		} catch (Gtk::CssProviderError &e) {
-			synfig::warning("Failed to load css rules. %s", e.what().c_str());
-		}
-		Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
-		Gtk::StyleContext::add_provider_for_screen(screen,css, GTK_STYLE_PROVIDER_PRIORITY_USER);
+#ifdef __APPLE__
+		g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
+		if ( String(theme_name) == "Adwaita" )
+			css_file = Gio::File::create_for_path(ResourceHelper::get_css_path("synfig.mac.css"));
+		g_free(theme_name);
+#endif
+
+	try {
+		provider->load_from_file(css_file);
+	} catch (Glib::Error &e) {
+		synfig::warning("%s", e.what().c_str());
 	}
+
+	Gtk::StyleContext::add_provider_for_screen(screen, provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 }
 
 std::string

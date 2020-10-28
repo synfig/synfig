@@ -35,6 +35,8 @@
 #include "app.h"
 
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/stylecontext.h>
+
 #include <cassert>
 #include "instance.h"
 #include "trees/keyframetreestore.h"
@@ -65,6 +67,10 @@ Dock_Keyframes::Dock_Keyframes():
 	Dock_CanvasSpecific("keyframes", _("Keyframes"),Gtk::StockID("synfig-keyframes")),
 	keyframe_action_manager(new KeyframeActionManager())
 {
+	// Make Keyframes toolbar small for space efficiency
+	auto context = get_style_context();
+	context->add_class("synfigstudio-efficient-workspace");
+
 	keyframe_action_manager->set_ui_manager(App::ui_manager());
 	keyframe_action_manager->signal_show_keyframe_properties().connect(
 		sigc::mem_fun(*this,&Dock_Keyframes::show_keyframe_properties) );

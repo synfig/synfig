@@ -36,6 +36,8 @@
 #include "app.h"
 
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/stylecontext.h>
+
 #include <cassert>
 #include "instance.h"
 #include "trees/metadatatreestore.h"
@@ -65,6 +67,10 @@ Dock_MetaData::Dock_MetaData():
 	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("synfig-meta_data")),
 	action_group(Gtk::ActionGroup::create("action_group_dock_meta_data"))
 {
+	// Make Canvas MetaData toolbar small for space efficiency
+	auto context = get_style_context();
+	context->add_class("synfigstudio-efficient-workspace");
+
 	action_group->add(Gtk::Action::create(
 		"action-MetadataAdd",
 		Gtk::StockID("gtk-add"),

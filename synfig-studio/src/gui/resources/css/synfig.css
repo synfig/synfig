@@ -1,0 +1,53 @@
+#render-progress * {
+	min-height: 20px;
+}
+
+/*
+ * Toolbar buttons are too big for default Adwaita theme
+ * Make it small
+ */
+.synfigstudio-efficient-workspace button {
+	padding: 0px;
+}
+
+/*
+ * The above sets button padding to 0
+ * That means buttons are tightly cramped together without spaces
+ * Set button's image padding to 5 px to give consistent top-right-bottom-left space
+ */
+.synfigstudio-efficient-workspace button > image {
+	padding: 5px;
+}
+
+/*
+ * Image padding for buttons are set
+ * Now set padding for text inside buttons
+ */
+#low-resolution label {
+	padding-left : 5px;
+	padding-right: 5px;
+}
+
+/*
+ * Make spinbuttons and entries look consistent with small toolbar buttons
+ */
+.synfigstudio-efficient-workspace entry, spinbutton {
+	min-height: 16px;
+}
+
+/*
+ * We don't want the combobox icons touching the left/right edge.
+ * Give some lil' space.
+ */
+.synfigstudio-efficient-workspace combobox button {
+	padding-left : 5px;
+	padding-right: 5px;
+}
+
+/*
+ * Our timetrack ruler is tight
+ * Set some padding below to give it more space
+ */
+#timetrack button {
+	padding-bottom: 5px;
+}

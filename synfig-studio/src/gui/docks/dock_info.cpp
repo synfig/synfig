@@ -171,6 +171,9 @@ studio::Dock_Info::Dock_Info()
 	render_progress_label->set_markup(etl::strprintf("<b>%s</b>", _("Render Progress: ")));
 	table->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8,1);
 
+	// Render progress CSS ID
+	render_progress.set_name("render-progress");
+
 	table->attach_next_to(render_progress, *render_progress_label, Gtk::POS_BOTTOM, 7,1);
 	render_progress.set_hexpand(true);
 	render_progress.set_vexpand(false);

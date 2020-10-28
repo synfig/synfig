@@ -95,6 +95,9 @@ ResolutionDial::init_button(Gtk::ToolButton &button, Gtk::IconSize size, const G
 void
 ResolutionDial::init_toggle_button(Gtk::ToggleToolButton &button, const char *label, const char *tooltip)
 {
+	// For label left/right padding
+	button.set_name("low-resolution");
+
 	button.set_label(label);
 	button.set_tooltip_text(tooltip);
 	button.set_is_important(true);

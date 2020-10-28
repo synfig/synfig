@@ -59,6 +59,7 @@
 #include <gtkmm/toggletoolbutton.h>
 #include <gtkmm/separatortoolitem.h>
 #include <gtkmm/menutoolbutton.h>
+#include <gtkmm/stylecontext.h>
 
 #include <glibmm/uriutils.h>
 #include <glibmm/convert.h>
@@ -596,6 +597,10 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	keyframe_dialog          (*App::main_window,canvas_interface_),
 	preview_dialog           ()
 {
+	// Make this toolbar small for space efficiency
+	auto style_context = this->get_style_context();
+	style_context->add_class("synfigstudio-efficient-workspace");
+
 	canvas_options = CanvasOptions::create(*App::main_window, this);
 
 	layer_tree=0;
@@ -944,7 +949,6 @@ CanvasView::create_time_bar()
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
 		animatebutton = Gtk::manage(new class Gtk::ToggleButton());
 		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
-		icon->set_padding(0,0);
 		icon->show();
 		animatebutton->add(*icon);
 		animatebutton->signal_toggled().connect(sigc::mem_fun(*this, &CanvasView::toggle_animatebutton));
@@ -957,7 +961,6 @@ CanvasView::create_time_bar()
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-timetrack"), iconsize));
 		timetrackbutton = Gtk::manage(new class Gtk::ToggleButton());
 		timetrackbutton->set_tooltip_text(_("Toggle timebar"));
-		icon->set_padding(0,0);
 		icon->show();
 		timetrackbutton->add(*icon);
 		timetrackbutton->signal_toggled().connect(sigc::mem_fun(*this, &CanvasView::toggle_timetrackbutton));
@@ -1178,7 +1181,6 @@ CanvasView::create_display_bar()
 
 	{ // Setup render options dialog button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
-		icon->set_padding(0, 0);
 		icon->show();
 
 		render_options_button = Gtk::manage(new class Gtk::ToolButton());
@@ -1194,7 +1196,6 @@ CanvasView::create_display_bar()
 
 	{ // Setup preview options dialog button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
-		icon->set_padding(0, 0);
 		icon->show();
 
 		preview_options_button = Gtk::manage(new class Gtk::ToolButton());
@@ -1233,7 +1234,6 @@ CanvasView::create_display_bar()
 
 	{ // Set up the show grid toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
-		icon->set_padding(0, 0);
 		icon->show();
 
 		show_grid = Gtk::manage(new class Gtk::ToggleToolButton());
@@ -1250,7 +1250,6 @@ CanvasView::create_display_bar()
 
 	{ // Set up the snap to grid toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), iconsize));
-		icon->set_padding(0, 0);
 		icon->show();
 
 		snap_grid = Gtk::manage(new class Gtk::ToggleToolButton());
@@ -1270,7 +1269,6 @@ CanvasView::create_display_bar()
 
 	{ // Setup refresh button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
-		icon->set_padding(0, 0);
 		icon->show();
 
 		refreshbutton = Gtk::manage(new class Gtk::ToolButton());
@@ -1305,7 +1303,6 @@ CanvasView::create_display_bar()
 
 	{ // Set up the background rendering button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_background_rendering"), iconsize));
-		icon->set_padding(0, 0);
 		icon->show();
 
 		background_rendering_button = Gtk::manage(new class Gtk::ToggleToolButton());
@@ -1338,7 +1335,6 @@ CanvasView::create_display_bar()
 
 	{ // Set up the onion skin toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
-		icon->set_padding(0, 0);
 		icon->show();
 
 		onion_skin = Gtk::manage(new class Gtk::ToggleToolButton());
@@ -1391,7 +1387,6 @@ CanvasView::create_display_bar()
 
 	{
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-stop"), iconsize));
-		icon->set_padding(0, 0);
 		icon->show();
 
 		stopbutton = Gtk::manage(new class Gtk::Button());
@@ -2368,7 +2363,6 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		animatebutton->remove();
 		animatebutton->add(*icon);
 		animatebutton->set_tooltip_text(_("Turn off animate editing mode"));
-		icon->set_padding(0,0);
 		icon->show();
 		animatebutton->set_active(true);
 	}
@@ -2379,7 +2373,6 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		animatebutton->remove();
 		animatebutton->add(*icon);
 		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
-		icon->set_padding(0,0);
 		icon->show();
 		animatebutton->set_active(false);
 	}
@@ -2391,7 +2384,6 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		futurekeyframebutton->remove();
 		futurekeyframebutton->add(*icon);
 		futurekeyframebutton->set_tooltip_text(_("Unlock future keyframes"));
-		icon->set_padding(0,0);
 		icon->show();
 		futurekeyframebutton->set_active(true);
 	}
@@ -2402,7 +2394,6 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		futurekeyframebutton->remove();
 		futurekeyframebutton->add(*icon);
 		futurekeyframebutton->set_tooltip_text(_("Lock future keyframes"));
-		icon->set_padding(0,0);
 		icon->show();
 		futurekeyframebutton->set_active(false);
 	}
@@ -2413,7 +2404,6 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		pastkeyframebutton->remove();
 		pastkeyframebutton->add(*icon);
 		pastkeyframebutton->set_tooltip_text(_("Unlock past keyframes"));
-		icon->set_padding(0,0);
 		icon->show();
 		pastkeyframebutton->set_active(true);
 	}
@@ -2424,7 +2414,6 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		pastkeyframebutton->remove();
 		pastkeyframebutton->add(*icon);
 		pastkeyframebutton->set_tooltip_text(_("Lock past keyframes"));
-		icon->set_padding(0,0);
 		icon->show();
 		pastkeyframebutton->set_active(false);
 	}

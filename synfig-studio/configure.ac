@@ -217,6 +217,8 @@ AC_CONFIG_FILES([
     brushes/CD_concept/Makefile
     src/Makefile
     src/gui/Makefile
+    src/gui/resources/Makefile
+    src/gui/resources/css/Makefile
     src/synfigapp/Makefile
     src/player/Makefile
     images/Makefile

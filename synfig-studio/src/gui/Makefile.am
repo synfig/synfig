@@ -3,6 +3,9 @@
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
+SUBDIRS = \
+	resources
+
 synfigstudio_src = main.cpp
 
 #include makefile inserts from subdirectories
