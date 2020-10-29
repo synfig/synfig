@@ -1350,8 +1350,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("<Control>8",								"<Actions>/canvasview/quality-08"					);
 	ACCEL("<Control>9",								"<Actions>/canvasview/quality-09"					);
 	ACCEL("<Control>0",								"<Actions>/canvasview/quality-10"					);
-	ACCEL("<Control>z",								"<Actions>/action_group_dock_history/undo"				);
-	ACCEL("<Control>r",								"<Actions>/action_group_dock_history/redo"				);
+	ACCEL("<Primary>z",        "<Actions>/action_group_dock_history/undo");
+#if _WIN32
+	ACCEL("<Control>y",        "<Actions>/action_group_dock_history/redo");
+#else
+	ACCEL("<Primary><Shift>z", "<Actions>/action_group_dock_history/redo");
+#endif
 	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::ModifierType(),				"<Actions>/action_group_layer_action_manager/action-LayerRemove"	));
 	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,					"<Actions>/canvasview/decrease-low-res-pixel-size"			));
 	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,					"<Actions>/canvasview/increase-low-res-pixel-size"			));
