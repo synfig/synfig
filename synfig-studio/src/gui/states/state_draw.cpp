@@ -1285,7 +1285,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 Smach::event_result
 StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool loop_bline_flag,float radius,ValueNode::Handle &value_node_origin)
 {
-	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
+	synfigapp::SelectionManager::LayerList layer_list;
 
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Spline"));
