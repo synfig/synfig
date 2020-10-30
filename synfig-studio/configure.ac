@@ -6,6 +6,8 @@ AC_PREREQ([2.60])
 AC_INIT([Synfig Studio],[1.5.0],[https://github.com/synfig/synfig/issues],[synfigstudio])
 AC_REVISION()
 
+AM_SILENT_RULES([yes])
+
 AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
 
 AC_CONFIG_AUX_DIR([config])
