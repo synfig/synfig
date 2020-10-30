@@ -55,13 +55,20 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
-	Gtk::Alignment(0, 0, 1, 1),
+	Gtk::Box(Gtk::ORIENTATION_VERTICAL),
 	waypoint(synfig::ValueBase(),0),
 	adj_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
 	adj_continuity(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
 	adj_bias(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
 	adj_temporal_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1))
 {
+	set_spacing(12);
+
+	set_margin_start (12);
+	set_margin_end   (12);
+	set_margin_top   (12);
+	set_margin_bottom(12);
+
 	value_widget=manage(new Widget_ValueBase());
 	value_widget->set_canvas(canvas);
 	value_widget->show();
@@ -112,107 +119,106 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	spin_continuity=manage(new class Gtk::SpinButton(adj_continuity,0.1,3));
 	spin_bias=manage(new class Gtk::SpinButton(adj_bias,0.1,3));
 	spin_temporal_tension=manage(new class Gtk::SpinButton(adj_temporal_tension,0.1,3));
-	set_padding(12, 12, 12, 12);
-
-	Gtk::VBox *widgetBox = manage(new Gtk::VBox(false, 12));
-	add(*widgetBox);
+	spin_tension         ->set_hexpand();
+	spin_continuity      ->set_hexpand();
+	spin_bias            ->set_hexpand();
+	spin_temporal_tension->set_hexpand();
 
 	Gtk::Frame *waypointFrame = manage(new Gtk::Frame(_("Waypoint")));
 	waypointFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) waypointFrame->get_label_widget())->set_markup(_("<b>Waypoint</b>"));
-	widgetBox->pack_start(*waypointFrame, false, false, 0);
 
-	Gtk::Alignment *waypointPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	waypointPadding->set_padding(6, 0, 24, 0);
-	waypointFrame->add(*waypointPadding);
-
-	Gtk::Table *waypointTable = manage(new Gtk::Table(2, 2, false));
-	waypointTable->set_row_spacings(6);
-	waypointTable->set_col_spacings(12);
-	waypointPadding->add(*waypointTable);
+	auto waypointGrid = manage(new Gtk::Grid());
+	waypointGrid->set_row_spacing(6);
+	waypointGrid->set_column_spacing(12);
 
 	Gtk::Label *waypointValueLabel = manage(new Gtk::Label(_("_Value"), true));
-	waypointValueLabel->set_alignment(0, 0.5);
+	waypointValueLabel->set_margin_top(6);
+	waypointValueLabel->set_margin_start(24);
 	waypointValueLabel->set_mnemonic_widget(*value_widget);
-	waypointTable->attach(*waypointValueLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	waypointTable->attach(*value_widget, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	waypointTable->attach(*value_node_label, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	waypointGrid->attach(*waypointValueLabel, 0, 0, 1, 1);
+	waypointGrid->attach(*value_widget      , 1, 0, 1, 1);
+	waypointGrid->attach(*value_node_label  , 2, 0, 1, 1);
 
 	Gtk::Label *waypointTimeLabel = manage(new Gtk::Label(_("_Time"), true));
-	waypointTimeLabel->set_alignment(0, 0.5);
+	waypointTimeLabel->set_margin_top(6);
+	waypointTimeLabel->set_margin_start(24);
 	waypointTimeLabel->set_mnemonic_widget(*time_widget);
-	waypointTable->attach(*waypointTimeLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	waypointTable->attach(*time_widget, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	waypointGrid->attach(*waypointTimeLabel, 0, 1, 1, 1);
+	waypointGrid->attach(*time_widget,       1, 1, 1, 1);
 
 	Gtk::Frame *interpolationFrame = manage(new Gtk::Frame(_("Interpolation")));
 	interpolationFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) interpolationFrame->get_label_widget())->set_markup(_("<b>Interpolation</b>"));
-	widgetBox->pack_start(*interpolationFrame, false, false, 0);
 
-	Gtk::Alignment *interpolationPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	interpolationPadding->set_padding(6, 0, 24, 0);
-	interpolationFrame->add(*interpolationPadding);
-
-	Gtk::Table *interpolationTable = manage(new Gtk::Table(2, 2, false));
-	interpolationTable->set_row_spacings(6);
-	interpolationTable->set_col_spacings(12);
-	interpolationPadding->add(*interpolationTable);
+	auto interpolationGrid = manage(new Gtk::Grid());
+	interpolationGrid->set_row_spacing(6);
+	interpolationGrid->set_column_spacing(12);
 
 	Gtk::Label *interpolationInLabel = manage(new Gtk::Label(_("_In Interpolation"), true));
-	interpolationInLabel->set_alignment(0, 0.5);
+	interpolationInLabel->set_halign(Gtk::ALIGN_START);
+	interpolationInLabel->set_margin_top(6);
+	interpolationInLabel->set_margin_start(24);
 	interpolationInLabel->set_mnemonic_widget(*before_options);
-	interpolationTable->attach(*interpolationInLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	interpolationTable->attach(*before_options, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	interpolationGrid->attach(*interpolationInLabel, 0, 0, 1, 1);
+	interpolationGrid->attach(*before_options,       1, 0, 1, 1);
 
 	Gtk::Label *interpolationOutLabel = manage(new Gtk::Label(_("O_ut Interpolation"), true));
-	interpolationOutLabel->set_alignment(0, 0.5);
+	interpolationOutLabel->set_halign(Gtk::ALIGN_START);
+	interpolationOutLabel->set_margin_top(6);
+	interpolationOutLabel->set_margin_start(24);
 	interpolationOutLabel->set_mnemonic_widget(*after_options);
-	interpolationTable->attach(*interpolationOutLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	interpolationTable->attach(*after_options, 1, 2, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	interpolationGrid->attach(*interpolationOutLabel, 0, 1, 1, 1);
+	interpolationGrid->attach(*after_options,         1, 1, 1, 1);
 
 	tcbFrame = manage(new Gtk::Frame(_("TCB Parameters")));
 	tcbFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) tcbFrame->get_label_widget())->set_markup(_("<b>TCB Parameter</b>"));
-	widgetBox->pack_start(*tcbFrame, false, false, 0);
 
-	Gtk::Alignment *tcbPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	tcbPadding->set_padding(6, 0, 24, 0);
-	tcbFrame->add(*tcbPadding);
-
-	Gtk::Table *tcbTable = manage(new Gtk::Table(4, 2, false));
-	tcbTable->set_row_spacings(6);
-	tcbTable->set_col_spacings(12);
-	tcbPadding->add(*tcbTable);
+	tcbGrid = manage(new Gtk::Grid());
+	tcbGrid->set_row_spacing(6);
+	tcbGrid->set_column_spacing(12);
+	tcbGrid->add(*tcbFrame);
 
 	Gtk::Label *tensionLabel = manage(new Gtk::Label(_("T_ension"), true));
-	tensionLabel->set_alignment(0, 0.5);
+	tensionLabel->set_halign(Gtk::ALIGN_START);
+	tensionLabel->set_margin_top(6);
+	tensionLabel->set_margin_start(24);
 	tensionLabel->set_mnemonic_widget(*spin_tension);
-	spin_tension->set_alignment(1);
-	tcbTable->attach(*tensionLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	tcbTable->attach(*spin_tension, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	tcbGrid->attach(*tensionLabel, 0, 1, 1, 1);
+	tcbGrid->attach(*spin_tension, 1, 1, 1, 1);
 
 	Gtk::Label *continuityLabel = manage(new Gtk::Label(_("Continuit_y"), true));
-	continuityLabel->set_alignment(0, 0.5);
+	continuityLabel->set_halign(Gtk::ALIGN_START);
+	continuityLabel->set_margin_top(6);
+	continuityLabel->set_margin_start(24);
 	continuityLabel->set_mnemonic_widget(*spin_continuity);
-	spin_continuity->set_alignment(1);
-	tcbTable->attach(*continuityLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	tcbTable->attach(*spin_continuity, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	tcbGrid->attach(*continuityLabel, 0, 2, 1, 1);
+	tcbGrid->attach(*spin_continuity, 1, 2, 1, 1);
 
 	Gtk::Label *biasLabel = manage(new Gtk::Label(_("_Bias"), true));
-	biasLabel->set_alignment(0, 0.5);
+	biasLabel->set_halign(Gtk::ALIGN_START);
+	biasLabel->set_margin_top(6);
+	biasLabel->set_margin_start(24);
 	biasLabel->set_mnemonic_widget(*spin_bias);
-	spin_bias->set_alignment(1);
-	tcbTable->attach(*biasLabel, 0, 1, 2, 3, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	tcbTable->attach(*spin_bias, 1, 2, 2, 3, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	tcbGrid->attach(*biasLabel, 0, 3, 1, 1);
+	tcbGrid->attach(*spin_bias, 1, 3, 1, 1);
 
 	Gtk::Label *temporalTensionLabel = manage(new Gtk::Label(_("Te_mporal Tension"), true));
-	temporalTensionLabel->set_alignment(0, 0.5);
+	temporalTensionLabel->set_halign(Gtk::ALIGN_START);
+	temporalTensionLabel->set_margin_top(6);
+	temporalTensionLabel->set_margin_start(24);
 	temporalTensionLabel->set_mnemonic_widget(*spin_temporal_tension);
-	spin_temporal_tension->set_alignment(1);
-	tcbTable->attach(*temporalTensionLabel, 0, 1, 3, 4, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
-	tcbTable->attach(*spin_temporal_tension, 1, 2, 3, 4, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	tcbGrid->attach(*temporalTensionLabel,  0, 4, 1, 1);
+	tcbGrid->attach(*spin_temporal_tension, 1, 4, 1, 1);
 
 	set_canvas(canvas);
+
+	add(*waypointFrame);
+	add(*waypointGrid);
+	add(*interpolationFrame);
+	add(*interpolationGrid);
+	add(*tcbGrid);
 }
 
 void
@@ -286,7 +292,7 @@ Widget_Waypoint::config_tcb_params(bool show_params)
 		adj_temporal_tension->set_value(waypoint.get_temporal_tension());
 	}
 
-	tcbFrame->set_visible(show_params);
+	tcbGrid->set_visible(show_params);
 }
 void
 Widget_Waypoint::update_tcb_params_visibility()

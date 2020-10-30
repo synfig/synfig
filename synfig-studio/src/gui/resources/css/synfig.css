@@ -51,3 +51,13 @@
 #timetrack button {
 	padding-bottom: 5px;
 }
+
+/*
+ * Synfig Studio dialog box
+ */
+.dialog-main-content, .color-grid {
+	margin-left  : 12px;
+	margin-right : 12px;
+	margin-top   : 12px;
+	margin-bottom: 12px;
+}

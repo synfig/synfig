@@ -81,6 +81,8 @@ Widget_ValueBase::Widget_ValueBase():
 	integer_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
 	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0))
 {
+	set_hexpand();
+
 	set_no_show_all();
 
 	label=manage(new class Gtk::Label("Unknown Datatype"));

@@ -30,8 +30,8 @@
 #include <gtkmm/button.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/entry.h>
-#include <gtkmm/table.h>
 #include <gtkmm/box.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/alignment.h>
 #include <synfig/gradient.h>
 #include "widgets/widget_gradient.h"
@@ -52,7 +52,7 @@ class Widget_Color;
 class Widget_Distance;
 //class Widget_Enum;
 
-class Widget_Defaults : public Gtk::VBox
+class Widget_Defaults : public Gtk::Box
 {
 	Widget_Color 	*_widget_otln_color;
 	//Gtk::Alignment 	*widget_otln_color; // Seems to be unused
@@ -60,13 +60,13 @@ class Widget_Defaults : public Gtk::VBox
 	Widget_Color 	*_widget_fill_color;
 	Gtk::Alignment 	*widget_fill_color;
 
-	Gtk::Table	*_widget_colors;
+	Gtk::Grid	*_widget_colors;
 	Gtk::Alignment	*widget_colors;
 
 	Widget_Gradient	*_widget_gradient;
 	Gtk::Alignment	*widget_gradient;
 
-	Gtk::VBox 	*widget_colors_gradient;
+	Gtk::Box 	*widget_colors_gradient;
 
 	Widget_Brush 	*_widget_brush;
 	Gtk::Entry	*brush_entry;

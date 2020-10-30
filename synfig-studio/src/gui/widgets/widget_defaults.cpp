@@ -184,7 +184,8 @@ public:
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Defaults::Widget_Defaults()
+Widget_Defaults::Widget_Defaults():
+	Gtk::Box(Gtk::ORIENTATION_VERTICAL)
 {
 	// Make Brushes button small for space efficiency
 	auto style_context = this->get_style_context();
@@ -194,7 +195,7 @@ Widget_Defaults::Widget_Defaults()
 
 	// widget colors: outline color and fill color.
 
-	_widget_colors = manage(new Gtk::Table());
+	_widget_colors = manage(new Gtk::Grid());
 	{
 		// widget outline color
 		_widget_otln_color = manage(new Widget_Color());
@@ -247,10 +248,10 @@ Widget_Defaults::Widget_Defaults()
 		button_reset->add(*_button_reset);
 
 		// ship child widgets together
-		_widget_colors->attach(*widget_otln_color,	 0, 8, 0, 7, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
-		_widget_colors->attach(*widget_fill_color,	 3, 11, 3, 10, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
-		_widget_colors->attach(*button_swap, 		 9, 10, 0, 1, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
-		_widget_colors->attach(*button_reset,		 0, 1, 9, 10, Gtk::FILL, Gtk::FILL|Gtk::SHRINK, 0, 0);
+		_widget_colors->attach(*widget_otln_color, 0, 0, 1, 1);
+		_widget_colors->attach(*widget_fill_color, 1, 1, 1, 1);
+		_widget_colors->attach(*button_swap,       1, 0, 1, 1);
+		_widget_colors->attach(*button_reset,      0, 1, 1, 1);
 
 		// fixed colors widget size
 		widget_colors = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
@@ -280,11 +281,11 @@ Widget_Defaults::Widget_Defaults()
 	brush_entry->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_entry_changed));
 	brush_entry->set_tooltip_text(_("Brush Size"));
 
-	Gtk::Table* brush_layout = Gtk::manage(new class Gtk::Table(2, 3, false));
-	brush_layout->attach(*_widget_brush, 0, 2, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	brush_layout->attach(*brush_decrease, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	brush_layout->attach(*brush_increase, 1, 2, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	brush_layout->attach(*brush_entry, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 2);
+	auto brush_layout = Gtk::manage(new class Gtk::Grid());
+	brush_layout->attach(*_widget_brush,  0, 0, 2, 1);
+	brush_layout->attach(*brush_decrease, 0, 1, 1, 1);
+	brush_layout->attach(*brush_increase, 1, 1, 1, 1);
+	brush_layout->attach(*brush_entry,    0, 2, 2, 1);
 	brush_layout->show_all();
 
 	// fixed brush widget size
@@ -347,7 +348,7 @@ Widget_Defaults::Widget_Defaults()
 	{
 		// pack colors and gradient widgets
 		{
-			widget_colors_gradient = manage(new Gtk::VBox(false, 0));
+			widget_colors_gradient = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 			widget_colors_gradient->pack_start(*widget_colors);
 			widget_colors_gradient->pack_start(*widget_gradient);
 		}
