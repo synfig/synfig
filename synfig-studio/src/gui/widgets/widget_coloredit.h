@@ -27,7 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/drawingarea.h>
@@ -121,7 +121,7 @@ private:
 }; // END of class ColorSlider
 
 
-class Widget_ColorEdit : public Gtk::Table
+class Widget_ColorEdit : public Gtk::Grid
 {
 	sigc::signal<void> signal_activated_;
 	sigc::signal<void> signal_value_changed_;
@@ -195,10 +195,10 @@ private:
 	bool colorHVSChanged; //Spike. Look more in the code.
 	///@brief Sets color to the widget
 	void setHVSColor(synfig::Color color);
-	///@brief The function adds slider into the row table with label. 
-	void SliderRow(int i,ColorSlider * n, char * l, Pango::AttrList & attr_list, Gtk::Table* table);
-	///@brief The function adds spin button into the table.
-	void AttachSpinButton(int i, Gtk::SpinButton * n, Gtk::Table * table);
+	///@brief The function adds slider into the row grid with label.
+	void SliderRow(int left, int top, ColorSlider *color_widget, std::string l, Gtk::Grid *grid);
+	///@brief The function adds spin button into the grid.
+	void AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid);
 
 }; // END of class Widget_ColorEdit
 

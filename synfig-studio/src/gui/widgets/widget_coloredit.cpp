@@ -38,9 +38,12 @@
 #include <pangomm/attributes.h>
 #include <pangomm/attrlist.h>
 #include <algorithm>
+
 #include <gtkmm/notebook.h>
 #include <gtkmm/box.h>
 #include <gtkmm/colorselection.h>
+#include <gtkmm/separator.h>
+#include <gtkmm/stylecontext.h>
 
 #include <gui/localization.h>
 
@@ -57,7 +60,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define SPINBUTTON_WIDTH 100
 #define ARROW_NEGATIVE_THRESHOLD 0.4
 
 /* === G L O B A L S ======================================================= */
@@ -316,27 +318,30 @@ ColorSlider::on_event(GdkEvent *event)
 
 /* === M E T H O D S ======================================================= */
 void
-Widget_ColorEdit::SliderRow(int i,ColorSlider * n, char * l, Pango::AttrList & attr_list, Gtk::Table* table)
+Widget_ColorEdit::SliderRow(int left, int top, ColorSlider* color_widget, string l, Gtk::Grid *grid)
 {
-	Gtk::Label *label;
-	n->signal_slider_moved().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_slider_moved));
-	//n->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::activated));
-	n->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	label=manage(new class Gtk::Label(l,0.0,0.5));
-	label->set_use_markup(false);
-	label->set_use_underline(false);
-	label->set_attributes(attr_list);
-	table->attach(*label, 0, 1, 1+2*i, 2+2*i, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	table->attach(*n, 0, 1, 2+2*i, 3+2*i, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	auto label = manage(new class Gtk::Label(l));
+	label->set_halign(Gtk::ALIGN_START);
+
+	color_widget->set_valign(Gtk::ALIGN_CENTER);
+	color_widget->set_hexpand();
+	color_widget->set_margin_start(12);
+	color_widget->set_margin_bottom(6);
+	color_widget->signal_slider_moved().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_slider_moved));
+	//color_widget->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::activated));
+	color_widget->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
+
+	grid->attach(*label,        left,   top, 1, 1);
+	grid->attach(*color_widget, left+1, top, 1, 1);
 }
 
 void
-Widget_ColorEdit::AttachSpinButton(int i, Gtk::SpinButton * n, Gtk::Table * table)
+Widget_ColorEdit::AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid)
 {
-	n->set_update_policy(Gtk::UPDATE_ALWAYS);
-	n->set_size_request(SPINBUTTON_WIDTH,-1);
-	n->show();
-	table->attach(*n, 1, 2, 1+2*i, 3+2*i, Gtk::SHRINK, Gtk::EXPAND, 2, 0);
+	spin_button->set_margin_start(12);
+	spin_button->set_margin_bottom(6);
+	spin_button->set_update_policy(Gtk::UPDATE_ALWAYS);
+	grid->attach(*spin_button, left, top, 1, 1);
 }
 
 Widget_ColorEdit::Widget_ColorEdit():
@@ -346,20 +351,32 @@ Widget_ColorEdit::Widget_ColorEdit():
 	A_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
 	colorHVSChanged(false)
 {
-	notebook=manage(new Gtk::Notebook);
+	// Set left/right/up/down margin on this widget's content
+	auto dialog_context = get_style_context();
+	dialog_context->add_class("dialog-main-content");
 
-	Gtk::Table* rgb_table(manage(new Gtk::Table()));
-	Gtk::Table* yuv_table(manage(new Gtk::Table()));
-	Gtk::Table* hvs_table(manage(new Gtk::Table()));
-	Gtk::Table* main_table(this);
+	notebook=manage(new Gtk::Notebook);
+	notebook->set_vexpand();
+
+	auto rgb_grid  (manage(new Gtk::Grid));
+	auto yuv_grid  (manage(new Gtk::Grid));
+	auto hvs_grid  (manage(new Gtk::Grid));
+	auto alpha_grid(manage(new Gtk::Grid));
+
+	auto rgb_context = rgb_grid->get_style_context();
+	auto yuv_context = yuv_grid->get_style_context();
+	auto hvs_context = hvs_grid->get_style_context();
+	rgb_context->add_class("color-grid");
+	yuv_context->add_class("color-grid");
+	hvs_context->add_class("color-grid");
 
 	{
-		Gtk::VBox* rgb_box(manage(new Gtk::VBox()));
-		Gtk::VBox* yuv_box(manage(new Gtk::VBox()));
-		Gtk::VBox* hvs_box(manage(new Gtk::VBox()));
-		rgb_box->pack_start(*rgb_table,false,false);
-		yuv_box->pack_start(*yuv_table,false,false);
-		hvs_box->pack_start(*hvs_table,false,false);
+		auto rgb_box(manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)));
+		auto yuv_box(manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)));
+		auto hvs_box(manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)));
+		rgb_box->add(*rgb_grid);
+		yuv_box->add(*yuv_grid);
+		hvs_box->add(*hvs_grid);
 		notebook->append_page(*rgb_box,_("RGB"));
 		notebook->append_page(*yuv_box,_("YUV"));
 		notebook->append_page(*hvs_box,_("HSV"));
@@ -371,48 +388,47 @@ Widget_ColorEdit::Widget_ColorEdit():
 	hold_signals=true;
 	clamp_=true;
 
-	Pango::AttrList attr_list;
-	Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*7));
-	pango_size.set_start_index(0);
-	pango_size.set_end_index(64);
-	attr_list.change(pango_size);
-
-	widget_color.set_size_request(-1,16);
-	attach(widget_color, 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(*notebook, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	widget_color.set_size_request(-1, 32);
+	attach(widget_color, 0, 0, 1, 1);
+	attach(*notebook,    0, 1, 1, 1);
+	attach(*alpha_grid,  0, 2, 1, 1);
 
 	//This defines are used for code below simplification.
-	#define SLIDER_ROW(i,n,l) SliderRow(i, slider_##n = manage(new ColorSlider(ColorSlider::TYPE_##n)), l,attr_list,table);
-	#define ATTACH_SPIN_BUTTON(i,n) AttachSpinButton(i, spinbutton_##n = manage(new class Gtk::SpinButton(n##_adjustment, 1, 0)),table);
+	#define SLIDER_ROW(left,top,n,l) SliderRow(left, top, slider_##n = manage(new ColorSlider(ColorSlider::TYPE_##n)), l, grid);
+	#define ATTACH_SPIN_BUTTON(left,top,n) AttachSpinButton(left, top, spinbutton_##n = manage(new class Gtk::SpinButton(n##_adjustment, 1, 0)),grid);
 
 	{ //RGB frame
-		Gtk::Table* table(rgb_table);
-		SLIDER_ROW(0,R,_("Red"));
-		ATTACH_SPIN_BUTTON(0,R);
-		SLIDER_ROW(1,G,_("Green"));
-		ATTACH_SPIN_BUTTON(1,G);
-		SLIDER_ROW(2,B,_("Blue"));
-		ATTACH_SPIN_BUTTON(2,B);
+		auto grid(rgb_grid);
+		SLIDER_ROW(0, 0, R, _("Red"));
+		SLIDER_ROW(0, 1, G, _("Green"));
+		SLIDER_ROW(0, 2, B, _("Blue"));
+		ATTACH_SPIN_BUTTON(2, 0, R);
+		ATTACH_SPIN_BUTTON(2, 1, G);
+		ATTACH_SPIN_BUTTON(2, 2, B);
 
-		hex_color_label = manage(new Gtk::Label(_("HTML code"), 0.0, 0.5));
-		hex_color_label->set_use_markup(false);
-		hex_color_label->set_use_underline(false);
-		hex_color_label->set_attributes(attr_list);
-		rgb_table->attach(*hex_color_label, 0, 1, 7, 8, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+		auto separator = manage(new Gtk::Separator);
+		grid->attach(*separator, 0, 3, 3, 1);
+
+		hex_color_label = manage(new Gtk::Label("HTML code"));
+		hex_color_label->set_halign(Gtk::ALIGN_START);
+		grid->attach(*hex_color_label, 0, 4, 1, 1);
 
 		hex_color = manage(new Gtk::Entry());
-		hex_color->set_width_chars(8);
+		hex_color->set_halign(Gtk::ALIGN_START);
+		hex_color->set_width_chars(16);
+		hex_color->set_margin_start(12);
 		hex_color->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_hex_edited));
 		hex_color->signal_focus_out_event().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_hex_focus_out));
-		rgb_table->attach(*hex_color, 0, 1, 8, 9, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+		grid->attach(*hex_color, 1, 4, 1, 1);
 	}
 	{ //YUM frame
-		Gtk::Table* table(yuv_table);
-		SLIDER_ROW(0,Y,_("Luma"));
-		SLIDER_ROW(1,HUE,_("Hue"));
-		SLIDER_ROW(2,SAT,_("Saturation"));
-		SLIDER_ROW(3,U,_("U"));
-		SLIDER_ROW(4,V,_("V"));
+		auto grid(yuv_grid);
+		grid->set_row_spacing(16);
+		SLIDER_ROW(0, 0, Y,   _("Luma"));
+		SLIDER_ROW(0, 1, HUE, _("Hue"));
+		SLIDER_ROW(0, 2, SAT, _("Saturation"));
+		SLIDER_ROW(0, 3, U,   _("U"));
+		SLIDER_ROW(0, 4, V,   _("V"));
 	}
 	{ //HVS frame
 		//I use Gtk::ColorSelection widget here.
@@ -420,12 +436,13 @@ Widget_ColorEdit::Widget_ColorEdit():
 		setHVSColor(get_value());
 		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
 		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
-		hvs_table->attach(*(hvsColorWidget), 0, 1, 0, 1, Gtk::FILL, Gtk::FILL, 2, 2);
+		hvs_grid->attach(*(hvsColorWidget), 0, 4, 1, 1);
 	}
 	{
-		Gtk::Table* table(main_table);
-		SLIDER_ROW(1,A,_("Alpha"));
-		ATTACH_SPIN_BUTTON(1,A);
+		auto grid(alpha_grid);
+		grid->set_margin_top(6);
+		SLIDER_ROW(0, 0, A, _("Alpha"));
+		ATTACH_SPIN_BUTTON(2, 0, A);
 	}
 
 #undef SLIDER_ROW
@@ -574,10 +591,6 @@ Widget_ColorEdit::set_has_frame(bool x)
 	spinbutton_G->set_has_frame(x);
 	spinbutton_B->set_has_frame(x);
 	spinbutton_A->set_has_frame(x);
-	spinbutton_R->set_size_request(SPINBUTTON_WIDTH,-1);
-	spinbutton_G->set_size_request(SPINBUTTON_WIDTH,-1);
-	spinbutton_B->set_size_request(SPINBUTTON_WIDTH,-1);
-	spinbutton_A->set_size_request(SPINBUTTON_WIDTH,-1);
 }
 
 void
@@ -587,10 +600,6 @@ Widget_ColorEdit::set_digits(int x)
 	spinbutton_G->set_digits(x);
 	spinbutton_B->set_digits(x);
 	spinbutton_A->set_digits(x);
-	spinbutton_R->set_size_request(SPINBUTTON_WIDTH,-1);
-	spinbutton_G->set_size_request(SPINBUTTON_WIDTH,-1);
-	spinbutton_B->set_size_request(SPINBUTTON_WIDTH,-1);
-	spinbutton_A->set_size_request(SPINBUTTON_WIDTH,-1);
 }
 
 void

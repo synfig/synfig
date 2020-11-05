@@ -58,6 +58,8 @@ using namespace studio;
 Widget_Enum::Widget_Enum():
 	value()
 {
+	set_hexpand();
+
 	enum_TreeModel = Gtk::ListStore::create(enum_model);
 	set_model(enum_TreeModel);
 	pack_start(enum_model.icon, false);
