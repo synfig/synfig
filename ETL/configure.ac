@@ -5,6 +5,8 @@ AC_PREREQ(2.60)
 AC_INIT([Extended Template Library],[1.5.0],[https://github.com/synfig/synfig/issues],[ETL])
 AC_REVISION
 
+AM_SILENT_RULES([yes])
+
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADERS([ETL/etl_profile_.h])
 AC_CANONICAL_HOST

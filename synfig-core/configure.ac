@@ -6,6 +6,8 @@ AC_PREREQ([2.60])
 AC_INIT([Synfig Core],[1.5.0],[https://github.com/synfig/synfig/issues],[synfig])
 AC_REVISION()
 
+AM_SILENT_RULES([yes])
+
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
