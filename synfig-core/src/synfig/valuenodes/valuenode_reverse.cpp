@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file ValueNode_Reverse.cpp
+/*!	\file valuenode_reverse.cpp
 **	\brief Implementation of the "Reverse" valuenode conversion.
 **
 **	\legal

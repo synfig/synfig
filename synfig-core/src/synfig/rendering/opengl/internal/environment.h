@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/enveironment.h
+/*!	\file synfig/rendering/opengl/internal/environment.h
 **	\brief Environment Header
 **
 **	\legal

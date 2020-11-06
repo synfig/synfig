@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacefile.h
+/*!	\file synfig/rendering/common/surfacefile.h
 **	\brief SurfaceFile Header
 **
 **	\legal

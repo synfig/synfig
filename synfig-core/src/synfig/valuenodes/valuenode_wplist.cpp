@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_WPList.cpp
+/*!	\file valuenode_wplist.cpp
 **	\brief Implementation of the "Width Point List" valuenode conversion.
 **
 **	\legal

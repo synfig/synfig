@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/simple_vertex.glsl
-**	\brief Simple Vertex Shader
+/*!	\file synfig/rendering/opengl/internal/glsl/antialiased_textured_rect_vertex.glsl
+**	\brief Antialiased Textured Rect Vertex Shader
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin

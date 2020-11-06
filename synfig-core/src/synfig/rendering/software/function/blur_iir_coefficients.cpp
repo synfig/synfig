@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/function/blur_iir_coefficients.hpp
+/*!	\file synfig/rendering/software/function/blur_iir_coefficients.cpp
 **	\brief Initialization of IIR coefficients for Blur
 **
 **	\legal

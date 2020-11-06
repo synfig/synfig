@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_animatedbase.h
-**	\brief Header file for implementation of the "Animated" valuenode conversion.
+/*!	\file valuenode_animatedinterface.h
+**	\brief Header file for implementation of the "Animated" valuenode interface.
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

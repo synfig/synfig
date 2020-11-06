@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/sampler.h
-**	\brief Sampler Header
+/*!	\file synfig/rendering/opengl/internal/samplers.h
+**	\brief Samplers Header
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin

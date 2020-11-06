@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file example/main.cpp
+/*!	\file modules/mod_example/main.cpp
 **	\brief Template Header
 **
 **	\legal

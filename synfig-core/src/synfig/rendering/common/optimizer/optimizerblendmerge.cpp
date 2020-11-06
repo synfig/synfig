@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/common/optimizer/optimizerblendblend.cpp
-**	\brief OptimizerBlendBlend
+/*!	\file synfig/rendering/common/optimizer/optimizerblendmerge.cpp
+**	\brief OptimizerBlendMerge
 **
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin

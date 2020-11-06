@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file outline.h
+/*!	\file advanced_outline.h
 **	\brief Header file for implementation of the "Advanced Outline" layer
 **
 **	\legal

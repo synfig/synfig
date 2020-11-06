@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_DIList.cpp
+/*!	\file valuenode_dilist.cpp
 **	\brief Implementation of the "Dash Item List" valuenode conversion.
 **
 **	\legal

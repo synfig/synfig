@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/primitive/affinetransformation.cpp
-**	\brief AffineTransformation
+/*!	\file synfig/rendering/primitive/transformationaffine.cpp
+**	\brief TransformationAffine
 **
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin

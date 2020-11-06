@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file
+/*!	\file synfig/color/common.h
 **	\brief Common definitions for color classes
 **
 **	\legal

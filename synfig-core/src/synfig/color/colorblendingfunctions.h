@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file
+/*!	\file synfig/color/colorblendingfunctions.h
 **	\brief Color blending function implementation
 **
 **	\legal
