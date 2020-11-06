@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfigapp/pluginmanager.cpp
-**	\brief  Plugin Manager responsible for loading plugins
+/*!	\file gui/pluginmanager.cpp
+**	\brief Plugin Manager responsible for loading plugins
 **
 **	\legal
 **	Copyright (c) 2012-2013 Konstantin Dmitriev

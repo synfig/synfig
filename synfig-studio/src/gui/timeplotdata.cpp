@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widget_curves.cpp
+/*!	\file timeplotdata.cpp
 **	\brief Template File
 **
 **	\legal

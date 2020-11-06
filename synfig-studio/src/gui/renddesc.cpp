@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/renddesc.cpp
+/*!	\file gui/renddesc.cpp
 **	\brief Template File
 **
 **	\legal

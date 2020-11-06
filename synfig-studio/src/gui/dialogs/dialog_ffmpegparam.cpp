@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_targetparam.cpp
+/*!	\file dialogs/dialog_ffmpegparam.cpp
 **	\brief Implementation for the FFmpegParam Dialog
 **
 **	\legal

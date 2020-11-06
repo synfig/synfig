@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file zoomdial.h
+/*!	\file dials/framedial.h
 **	\brief Template Header
 **
 **	\legal

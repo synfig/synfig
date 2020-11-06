@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/render.h
+/*!	\file gui/render.h
 **	\brief Template Header
 **
 **	\legal

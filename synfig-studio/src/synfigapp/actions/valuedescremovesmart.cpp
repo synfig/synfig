@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file ValueDescRemoveSmart.cpp
+/*!	\file valuedescremovesmart.cpp
 **	\brief Implementation of multiple value descriptions remove action
 **
 **	\legal

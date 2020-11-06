@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerfit.h
+/*!	\file synfigapp/actions/layerfit.h
 **	\brief LayerFit
 **
 **	\legal

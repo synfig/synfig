@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfigapp/pluginmanager.h
+/*!	\file gui/pluginmanager.h
 **	\brief Plugin Manager responsible for loading plugins
 **
 **	\legal

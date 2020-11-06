@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_frameerror.h
+/*!	\file gui/workarearenderer/renderer_frameerror.cpp
 **	\brief Workarea renderer of frame rendering error messages of current frame
 **
 **	\legal

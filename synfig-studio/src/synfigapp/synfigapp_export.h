@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/synfig_export.h
+/*!	\file synfigapp/synfigapp_export.h
 **	\brief Export definition for MSVC
 **
 **	\legal

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/instance.cpp
+/*!	\file gui/instance.cpp
 **	\brief writeme
 **
 **	\legal

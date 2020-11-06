@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_paledit.h
+/*!	\file modules/mod_palette/dock_paledit.h
 **	\brief Template Header
 **
 **	\legal
