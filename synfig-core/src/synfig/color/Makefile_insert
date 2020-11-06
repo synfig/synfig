@@ -1,7 +1,6 @@
 COLOR_HH = \
 	color/color.h \
 	color/color.hpp \
-	color/coloraccumulator.h \
 	color/colormatrix.h \
 	color/cairocolor.h \
 	color/cairocoloraccumulator.h \
