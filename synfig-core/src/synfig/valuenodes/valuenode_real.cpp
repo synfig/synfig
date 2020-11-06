@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file ValueNode_Real.cpp
+/*!	\file valuenode_real.cpp
 **	\brief Implementation of the "Real" valuenode conversion.
 **
 **	\legal

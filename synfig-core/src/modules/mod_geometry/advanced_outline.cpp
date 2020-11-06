@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file outline.cpp
+/*!	\file advanced_outline.cpp
 **	\brief Implementation of the "Advanced Outline" layer
 **
 **	\legal

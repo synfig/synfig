@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/tasksw.cpp
+/*!	\file synfig/rendering/software/task/tasksw.cpp
 **	\brief TaskSW
 **
 **	\legal

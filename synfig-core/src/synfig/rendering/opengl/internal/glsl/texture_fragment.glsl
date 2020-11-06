@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/color_fragment.glsl
-**	\brief Color Fragment Shader
+/*!	\file synfig/rendering/opengl/internal/glsl/texture_fragment.glsl
+**	\brief Texture Fragment Shader
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin

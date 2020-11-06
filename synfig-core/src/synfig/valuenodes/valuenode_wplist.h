@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_bline.h
+/*!	\file valuenode_wplist.h
 **	\brief Header file for implementation of the "Width Point List" valuenode
 **	conversion.
 **

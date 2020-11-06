@@ -1,6 +1,8 @@
-/*! ========================================================================
-** Synfig
+/* === S Y N F I G ========================================================= */
+/*!	\file trgt_magickpp.h
+**	\brief Magick++ Target Module
 **
+**	\legal
 **	Copyright (c) 2007 Chris Moore
 **
 **	This file is part of Synfig.
@@ -17,6 +19,7 @@
 **
 **	You should have received a copy of the GNU General Public License
 **	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+** \endlegal
 **
 ** === N O T E S ===========================================================
 **

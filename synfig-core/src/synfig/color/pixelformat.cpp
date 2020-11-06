@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!    \file
+/*!   \file synfig/color/pixelformat.cpp
 **    \brief PixelFormat and conversions
 **
 **    \legal

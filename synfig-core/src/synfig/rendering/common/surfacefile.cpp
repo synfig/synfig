@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacefile.cpp
+/*!	\file synfig/rendering/common/surfacefile.cpp
 **	\brief SurfaceFile
 **
 **	\legal

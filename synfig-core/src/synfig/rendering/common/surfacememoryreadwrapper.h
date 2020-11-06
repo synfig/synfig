@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/surfacememoryreadwrapper.h
+/*!	\file synfig/rendering/common/surfacememoryreadwrapper.h
 **	\brief SurfaceMemoryReadWrapper Header
 **
 **	\legal

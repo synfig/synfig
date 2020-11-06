@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/tasktransformationaffinesw.cpp
+/*!	\file synfig/rendering/software/task/tasktransformationaffinesw.cpp
 **	\brief TaskTransformationAffineSW
 **
 **	\legal

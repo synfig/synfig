@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file
+/*!	\file synfig/color/color.hpp
 **	\brief Color class function implementation
 **
 **	\legal

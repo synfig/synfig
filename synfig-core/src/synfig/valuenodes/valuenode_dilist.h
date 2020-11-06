@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_bline.h
+/*!	\file valuenode_dilist.h
 **	\brief Header file for implementation of the "Dash Item List" valuenode
 **	conversion.
 **

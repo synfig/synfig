@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/sampler.cpp
-**	\brief Sampler
+/*!	\file synfig/rendering/opengl/internal/samplers.cpp
+**	\brief Samplers
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin

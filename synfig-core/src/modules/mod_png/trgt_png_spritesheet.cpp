@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file trgt_png_spriteengine.cpp
+/*!	\file trgt_png_spritesheet.cpp
 **	\brief png_trgt Target Module
 **
 **	\legal

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/simple_vertex.glsl
-**	\brief Simple Vertex Shader
+/*!	\file synfig/rendering/opengl/internal/glsl/texture_vertex.glsl
+**	\brief Texture Vertex Shader
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin

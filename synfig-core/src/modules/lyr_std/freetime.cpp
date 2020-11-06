@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file freetimr.cpp
+/*!	\file freetime.cpp
 **	\brief Implementation of the "Free Time" layer
 **
 **	\legal

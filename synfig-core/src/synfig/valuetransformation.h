@@ -1,6 +1,6 @@
 
 /* === S Y N F I G ========================================================= */
-/*!	\file value_transformation.h
+/*!	\file valuetransformation.h
 **	\brief Affine Transformation of ValueBase class
 **
 **	\legal
