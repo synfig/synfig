@@ -69,7 +69,6 @@ Dialog_Color::Dialog_Color():
 			sigc::mem_fun(*this, &Dialog_Color::on_set_fc_pressed));
 	create_close_button();
 
-	add_accel_group(App::ui_manager()->get_accel_group());
 	show_all_children();
 }
 

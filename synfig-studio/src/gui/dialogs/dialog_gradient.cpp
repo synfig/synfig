@@ -107,8 +107,6 @@ Dialog_Gradient::Dialog_Gradient():
 	table->attach(*spinbutton_pos, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 
-	add_accel_group(App::ui_manager()->get_accel_group());
-
 	show_all_children();
 }
 
