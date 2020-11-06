@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file ValueDescBoneSetParent.h
+/*!	\file synfigapp/actions/valuedescbonesetparent.h
 **	\brief Template File
 **
 **	\legal

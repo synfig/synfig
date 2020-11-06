@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/render.cpp
+/*!	\file gui/render.cpp
 **	\brief Template File
 **
 **	\legal

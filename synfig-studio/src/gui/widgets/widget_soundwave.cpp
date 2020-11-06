@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widgets/widget_soundwave.h
+/*!	\file widgets/widget_soundwave.cpp
 **	\brief Widget for display a sound wave time-graph
 **
 **	\legal

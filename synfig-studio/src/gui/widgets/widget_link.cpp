@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widget_vector.cpp
+/*!	\file widgets/widget_link.cpp
 **	\brief Template File
 **
 **	\legal

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file resourcehelper.h
+/*!	\file resourcehelper.cpp
 **	\brief Helper to retrieve the app resource paths, such as icons and plugins
 **
 **	\legal

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file framedial.cpp
+/*!	\file dials/framedial.cpp
 **	\brief Template File
 **
 **	\legal

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/renddesc.h
+/*!	\file gui/renddesc.h
 **	\brief Header File
 **
 **	\legal

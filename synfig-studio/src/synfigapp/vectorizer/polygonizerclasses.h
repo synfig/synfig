@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.h
+/*!	\file synfigapp/vectorizer/polygonizerclasses.h
 **	\brief Template Header
 **
 **	\legal

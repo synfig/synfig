@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dock_palbrowse.cpp
+/*!	\file modules/mod_palette/dock_palbrowse.cpp
 **	\brief Template File
 **
 **	\legal

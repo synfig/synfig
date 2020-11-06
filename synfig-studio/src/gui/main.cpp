@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/main.cpp
+/*!	\file gui/main.cpp
 **	\brief Synfig Studio Entrypoint
 **
 **	\legal

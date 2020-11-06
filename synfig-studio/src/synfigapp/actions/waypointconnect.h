@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenodeconnect.h
+/*!	\file waypointconnect.h
 **	\brief Template File
 **
 **	\legal
