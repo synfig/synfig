@@ -522,7 +522,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 {
-	double upper = range_adjustment->get_upper();
+	//double upper = range_adjustment->get_upper();
 	Widget_TimeGraphBase::on_size_allocate(allocation);
 	int height = allocation.get_height();
 	set_default_page_size(height);

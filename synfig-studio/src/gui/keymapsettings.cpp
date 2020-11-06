@@ -62,8 +62,8 @@ using namespace Gtk;
 /* === E N T R Y P O I N T ================================================= */
 
 // KeyMapSettings Definitions
-KeyMapSettings::KeyMapSettings():
-	unsaved()
+KeyMapSettings::KeyMapSettings()/*:
+	unsaved()*/
 { }
 
 KeyMapSettings::~KeyMapSettings()
