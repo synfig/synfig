@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mod_ffmpeg/main.cpp
-**	\brief Template Header
+**	\brief Entry Point for FFMPEG module (mod_ffmpeg)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

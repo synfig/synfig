@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_gif.cpp
-**	\brief BMP Target Module
+**	\brief GIF Target Module
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

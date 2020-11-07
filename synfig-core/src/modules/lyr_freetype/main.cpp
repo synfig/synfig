@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file lyr_freetype/main.cpp
-**	\brief Template Header
+**	\brief Entry point for Layer_Freetype module
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

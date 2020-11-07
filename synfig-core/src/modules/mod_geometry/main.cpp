@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mod_geometry/main.cpp
-**	\brief Template Header
+**	\brief Entry Point for Geometry module (libmod_geometry)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

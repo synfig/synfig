@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_openexr.h
-**	\brief Template Header
+**	\brief Header for OpenEXR Exporter (exr_trgt)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

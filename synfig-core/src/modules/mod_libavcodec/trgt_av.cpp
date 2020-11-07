@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_av.cpp
-**	\brief \writeme
+**	\brief AV Exporter module (Target_LibAVCodec)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

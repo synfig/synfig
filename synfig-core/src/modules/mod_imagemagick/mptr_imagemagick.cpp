@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mptr_imagemagick.cpp
-**	\brief ppm Target Module
+**	\brief ImageMagick Importer Module
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

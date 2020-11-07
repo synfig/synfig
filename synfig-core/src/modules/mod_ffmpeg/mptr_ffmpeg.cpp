@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mptr_ffmpeg.cpp
-**	\brief ppm Target Module
+**	\brief FFMPEG Importer Module
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

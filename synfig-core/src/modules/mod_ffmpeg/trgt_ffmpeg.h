@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_ffmpeg.h
-**	\brief Template Header
+**	\brief Header for FFMPEG Exporter (ffmpeg_trgt)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mptr_png.cpp
-**	\brief ppm Target Module
+**	\brief PNG Importer Module
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

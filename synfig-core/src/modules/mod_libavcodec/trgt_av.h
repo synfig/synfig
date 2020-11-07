@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_av.h
-**	\brief Template Header
+**	\brief Header for AV Exporter (trgt_av)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mod_yuv420p/main.cpp
-**	\brief Template Header
+**	\brief Entry Point for YUV420p module (mod_yuv420p)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

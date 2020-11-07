@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file modules/mod_example/main.cpp
-**	\brief Template Header
+**	\brief Entry Point for an example module
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

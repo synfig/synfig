@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file lyr_std/main.cpp
-**	\brief Template Header
+**	\brief Entry point for Standard Layers module
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
