@@ -1,7 +1,10 @@
 /*! ========================================================================
 ** Extended Template and Library
-** Utility Curve Template Class Implementations
+** \file _curve_func.h
+** \brief Utility Curve Template Class Implementations
+** \internal
 **
+** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **
 ** This file is part of Synfig.
@@ -18,9 +21,9 @@
 **
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+** \endlegal
 **
-** === N O T E S ===========================================================
-**
+** \note
 ** This is an internal header file, included by other ETL headers.
 ** You should not attempt to use it directly.
 **

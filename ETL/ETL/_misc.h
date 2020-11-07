@@ -1,7 +1,10 @@
 /*! ========================================================================
 ** Extended Template and Library
-** Misc
+** \file _misc.h
+** \brief Misc
+** \internal
 **
+** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2007 Chris Moore
 **
@@ -19,8 +22,7 @@
 **
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
-**
-** === N O T E S ===========================================================
+** \endlegal
 **
 ** ========================================================================= */
 
