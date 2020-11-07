@@ -19,8 +19,6 @@
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **
-** === N O T E S ===========================================================
-**
 ** ========================================================================= */
 
 //#define DEBUGPOINT()	fprintf(stderr,__FILE__":%d: DEBUGPOINT\n",__LINE__)
