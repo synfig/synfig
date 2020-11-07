@@ -20,8 +20,6 @@
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **
-** === N O T E S ===========================================================
-**
 ** ========================================================================= */
 
 /* === H E A D E R S ======================================================= */

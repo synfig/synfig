@@ -22,8 +22,7 @@
 **	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 **
-** === N O T E S ===========================================================
-**
+** \note
 ** You will need to read the PNG and MNG specs to understand this code
 **
 ** ========================================================================= */
