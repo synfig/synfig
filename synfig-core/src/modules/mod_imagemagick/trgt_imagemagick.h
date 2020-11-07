@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_imagemagick.h
-**	\brief Template Header
+**	\brief Header for ImageMagick Exporter (imagemagick_trgt)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

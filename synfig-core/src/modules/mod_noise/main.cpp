@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mod_noise/main.cpp
-**	\brief Template Header
+**	\brief Entry Point for Noise module (libmod_noise)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

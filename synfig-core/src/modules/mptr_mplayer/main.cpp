@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mptr_mplayer/main.cpp
-**	\brief Template Header
+**	\brief Entry Point for MPlayer module (mptr_mplayer)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
