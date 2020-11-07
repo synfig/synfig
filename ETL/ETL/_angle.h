@@ -1,7 +1,10 @@
 /* ========================================================================
 ** Extended Template and Library
-** Angle Abstraction Class Implementation
+** \file _angle.h
+** \brief Angle Abstraction Class Implementation
+** \internal
 **
+** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2007 Chris Moore
 **
@@ -19,9 +22,9 @@
 **
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+** \endlegal
 **
-** === N O T E S ===========================================================
-**
+** \note
 ** This is an internal header file, included by other ETL headers.
 ** You should not attempt to use it directly.
 **
