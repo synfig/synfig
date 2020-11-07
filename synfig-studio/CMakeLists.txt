@@ -1,5 +1,6 @@
 ## TODO: find out which version is actually required
 cmake_minimum_required(VERSION 3.1)
+include(SynfigGettext)
 
 project(synfigstudio)
 
@@ -20,6 +21,23 @@ add_subdirectory(ui)
 
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/appdata")
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/applications")
+
+STUDIO_GETTEXT_MSGFMT(
+    TARGET_NAME appdata_xml
+    INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.appdata.xml.in
+    OUTPUT_FILE "org.synfig.SynfigStudio.appdata.xml"
+    INSTALL_DESTINATION "share/appdata"
+)
+
+if(NOT WIN32) # desktop file needs to be build only for nix systems
+STUDIO_GETTEXT_MSGFMT(
+    DESKTOP
+    TARGET_NAME desktop_file
+    INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.desktop.in
+    OUTPUT_FILE "org.synfig.SynfigStudio.desktop"
+    INSTALL_DESTINATION "share/applications"
+)
+endif()
 
 if(TARGET desktop_file)
     add_custom_command(
