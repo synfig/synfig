@@ -1316,7 +1316,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("b",								"<Actions>/action_group_state_manager/state-bline"			);
 	ACCEL("<Mod1>o",								"<Actions>/action_group_state_manager/state-bone"			);
 	ACCEL("t",								"<Actions>/action_group_state_manager/state-text"			);
-	ACCEL("<Mod1>f",								"<Actions>/action_group_state_manager/state-fill"			);
+	ACCEL("u",								"<Actions>/action_group_state_manager/state-fill"			);
 	ACCEL("d",								"<Actions>/action_group_state_manager/state-eyedrop"			);
 	ACCEL("<Mod1>z",								"<Actions>/action_group_state_manager/state-zoom"			);
 	ACCEL("<Mod1>d",								"<Actions>/action_group_state_manager/state-draw"			);
