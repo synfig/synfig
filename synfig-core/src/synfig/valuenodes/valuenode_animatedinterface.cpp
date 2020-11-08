@@ -835,25 +835,17 @@ public:
 				return animated.waypoint_list_.front().get_value(t);
 			if(animated.waypoint_list_.empty())
 				return false;
-			if(t<r)
+			if(t<=r)
 				return animated.waypoint_list_.front().get_value(t);
-			if(t>s)
+			if(t>=s)
 				return animated.waypoint_list_.back().get_value(t);
 
-			WaypointList::const_iterator iter;
-			WaypointList::const_iterator next;
+			WaypointList::const_iterator iter = animated.waypoint_list_.begin();
 
-			// This next line will set iter to the
-			// correct iterator for the given time.
-			for(next=animated.waypoint_list_.begin(),iter=next++;next!=animated.waypoint_list_.end() && t>=next->get_time();iter=next++)
-				if(iter->get_time()==t)
+			// A waypoint sets the boolean value until next waypoint
+			for (auto next = iter+1; next != animated.waypoint_list_.end(); iter = next++)
+				if (iter->get_time()==t || t < next->get_time())
 					return iter->get_value(t);
-
-			if(iter->get_time()==t)
-				return iter->get_value(t);
-
-			if(next!=animated.waypoint_list_.end())
-				return iter->get_value(t).get(bool()) || next->get_value(t).get(bool());
 			return iter->get_value(t);
 		}
 
