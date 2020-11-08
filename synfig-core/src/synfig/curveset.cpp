@@ -48,18 +48,18 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
-const Real ERROR = 1e-10;
+//const Real ERROR = 1e-10;
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
-template < typename T >
+/*template < typename T >
 inline bool Zero(const T &a, const T &tol = (T)ERROR)
 {
 	return a < tol && a > -tol;
-}
+}*/
 
 CurvePoint::CurvePoint(const Point &pin, const Vector &left, const Vector &right)
 :p(pin),l(left),r(right)

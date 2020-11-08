@@ -333,7 +333,7 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 
-	Time time(duckmatic->get_time());
+	//Time time(duckmatic->get_time());
 
 	// do the Vertex and Position ducks first
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)

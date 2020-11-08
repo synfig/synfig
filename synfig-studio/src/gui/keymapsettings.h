@@ -59,7 +59,7 @@ class KeyMapSettings : public Gtk::Dialog
 	//std::map<const char *,AcKeyInfo>	pathmap; //uses string info from paths set
 	//std::set<std::string>				accelpaths;
 
-	bool unsaved; //Assume as such...
+	//bool unsaved; //Assume as such...
 
 public:
 

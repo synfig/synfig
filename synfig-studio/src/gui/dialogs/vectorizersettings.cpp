@@ -55,6 +55,7 @@ using namespace studio;
 
 VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
  etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
+	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
 	adjustment_accuracy(Gtk::Adjustment::create(configmap["accuracy"],1,10)),
 	entry_accuracy(adjustment_accuracy,1,0),
 	adjustment_accuracy2(Gtk::Adjustment::create(5,1,10)),
@@ -73,11 +74,10 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	entry_adherence(adjustment_adherence,1,0),
 	adjustment_angle(Gtk::Adjustment::create(100,1,100)),
 	entry_angle(adjustment_angle,1,0),
-	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
 	layer_bitmap_(my_layer_bitmap),
-	instance(selected_instance),
-	reference_layer_(reference_layer)
-	
+	reference_layer_(reference_layer),
+	instance(selected_instance)
+
 {
 	//Centerline and Outline option in the comboboxtext
 	// comboboxtext_mode.append(_("Centerline"));
