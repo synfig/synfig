@@ -68,6 +68,7 @@ private:
 	int id_;
 
 	bool on_delete_event(GdkEventAny *event);
+	bool on_key_press_event(GdkEventKey *evkey);
 	void set_id(int x) { id_=x; }
 
 public:
