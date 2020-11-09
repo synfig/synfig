@@ -97,13 +97,16 @@ public:
 	Real z_range_depth;
 	//! Layers with z_Depth inside transition are partially visible
 	Real z_range_blur;
+	//! Force set_time (to current time mark) at every rendering
+	bool force_set_time;
 
 	explicit ContextParams(bool render_excluded_contexts = false):
 	render_excluded_contexts(render_excluded_contexts),
 	z_range(false),
 	z_range_position(0.0),
 	z_range_depth(0.0),
-	z_range_blur(0.0){ }
+	z_range_blur(0.0),
+	force_set_time(false){ }
 };
 
 /*!	\class Context
