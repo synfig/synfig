@@ -77,9 +77,7 @@ For more details please refer to this page - https://support.apple.com/kb/PH2508
 
 #### Building from source
 
-See autotools/make instructions here - https://synfig-docs-dev.readthedocs.io/en/latest/common/building.html
-
-See CMake instructions here - https://synfig-docs-dev.readthedocs.io/en/latest/common/cmake.html
+See instructions for installing dependencies and building using autotools/make or CMAKE here - https://synfig-docs-dev.readthedocs.io/en/latest/building/Building%20Synfig.html
 
 If you have previous synfig build installed in system path (e.g. `/usr/local/`),
 you are recommended to uninstall that.
