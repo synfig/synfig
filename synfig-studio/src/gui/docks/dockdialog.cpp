@@ -41,6 +41,7 @@
 #include <synfig/general.h>
 #include <synfig/uniqueid.h>
 #include <gtkmm/table.h>
+#include <gtkmm/textview.h>
 #include "canvasview.h"
 #include <gtkmm/paned.h>
 #include <gtkmm/box.h>
@@ -155,6 +156,19 @@ DockDialog::on_delete_event(GdkEventAny * /* event */)
 	}
 	delete this;
 	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
+
+bool DockDialog::on_key_press_event(GdkEventKey* key_event)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	Gtk::Widget * widget = get_focus();
+	if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
+		bool handled = gtk_window_propagate_key_event(this->gobj(), key_event);
+		if (handled)
+			return true;
+	}
+	return Gtk::Window::on_key_press_event(key_event);
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
