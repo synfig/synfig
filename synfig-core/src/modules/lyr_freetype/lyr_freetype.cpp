@@ -283,10 +283,7 @@ TextLine::clear_and_free()
 
 static bool
 has_valid_font_extension(const std::string &filename) {
-	auto pos = filename.find_last_of(".");
-	if (pos == filename.npos)
-		return false;
-	std::string extension = filename.substr(pos);
+	std::string extension = etl::filename_extension(filename);
 	return std::find(known_font_extensions.begin(), known_font_extensions.end(), extension) != known_font_extensions.end();
 }
 
@@ -477,10 +474,12 @@ Layer_Freetype::on_canvas_set()
 {
 	Layer_Composite::on_canvas_set();
 
-	if (!font_path_from_canvas)
+	synfig::String family=param_family.get(synfig::String());
+
+	// Is it a font family or an absolute path for a font file? No need to reload it
+	if (!has_valid_font_extension(family) || etl::is_absolute_path(family))
 		return;
 
-	synfig::String family=param_family.get(synfig::String());
 	int style=param_style.get(int());
 	int weight=param_weight.get(int());
 	new_font(family,style,weight);
