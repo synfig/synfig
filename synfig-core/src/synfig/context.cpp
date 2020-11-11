@@ -522,8 +522,12 @@ Context::build_rendering_task() const
 
 	// TODO: apply z_range and z_blur (now applies in Canvas::optimize_layers)
 
-	return *context
-		 ? (*context)->build_rendering_task(context.get_next())
-		 : rendering::Task::Handle();
+	if (!*context)
+		return rendering::Task::Handle();
+	else {
+		if (context.get_params().force_set_time)
+			context.set_time((*context)->get_time_mark(), true);
+		return (*context)->build_rendering_task(context.get_next());
+	}
 }
 
