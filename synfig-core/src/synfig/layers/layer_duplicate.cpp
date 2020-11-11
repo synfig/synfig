@@ -271,15 +271,16 @@ Layer_Duplicate::build_rendering_task_vfunc(Context context) const
 
 	std::lock_guard<std::mutex> lock(mutex);
 	duplicate_param->reset_index(time_cur);
+	ContextParams dup_context_params(context.get_params());
+	dup_context_params.force_set_time = true;
+	Context dup_context(context, dup_context_params);
 	do
 	{
-		context.set_time(time_cur, true);
-
 		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
 		task_blend->amount = amount;
 		task_blend->blend_method = blend_method;
 		task_blend->sub_task_a() = task;
-		task_blend->sub_task_b() = context.build_rendering_task();
+		task_blend->sub_task_b() = dup_context.build_rendering_task();
 		task = task_blend;
 	}
 	while (duplicate_param->step(time_cur));
