@@ -289,7 +289,8 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		vargs.push_back("0");
 	}
 	vargs.push_back("-acodec");
-	vargs.push_back("pcm_s16le");
+	// MPEG-1 cannot work with 'le' audio, it requires 'be'
+	vargs.push_back(video_codec == "mpeg1video" ? "pcm_s16be" : "pcm_s16le");
 	vargs.push_back("-y");
 	vargs.push_back("-shortest");
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
