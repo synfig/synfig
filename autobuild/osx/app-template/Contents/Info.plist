@@ -2,11 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+
+	<key>LSMultipleInstancesProhibited</key>
+	<true/>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+
 	<key>CFBundleIdentifier</key>
 	<string>org.synfig.SynfigStudio</string>
-	
+
+	<key>CFBundleExecutable</key>
+	<string>SynfigStudio</string>
+
 	<key>CFBundleGetInfoString</key>
 	<string>_VERSION_, © 2001-2020 The Synfig Team</string>
 	<key>CFBundleShortVersionString</key>
