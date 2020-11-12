@@ -9,5 +9,7 @@ int main(int argc, char* argv[]) {
     buf = buf.substr(0, found + 1); // get the directory where exe is located
   }
 
-  return system(buf.append("SynfigStudio.sh").c_str());
+  buf = "\"" + buf + "SynfigStudio.sh" + "\"";
+
+  return system(buf.c_str());
 }
