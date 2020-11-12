@@ -30,7 +30,6 @@
 #endif
 
 #include <iostream>
-//#include <boost/format.hpp>
 
 #include <autorevision.h>
 #include <synfig/general.h>
@@ -41,10 +40,8 @@
 #include <synfig/target.h>
 #include <synfig/layer.h>
 #include <synfig/module.h>
-#include <synfig/main.h>
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
-#include <synfig/guid.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/filesystemgroup.h>
 #include <synfig/filesystemnative.h>
@@ -58,11 +55,10 @@
 #include <glibmm/init.h>
 #endif
 
-using namespace std;
 using namespace synfig;
 
 template<typename T>
-void SynfigCommandLineParser::add_option(Glib::OptionGroup& og, const std::string& name, const gchar& short_name, 
+void SynfigCommandLineParser::add_option(Glib::OptionGroup& og, const std::string& name, const gchar& short_name,
 	T& entry, const std::string& description, const Glib::ustring& arg_description) {
 
 	    Glib::OptionEntry new_entry;
@@ -272,8 +268,8 @@ bool SynfigCommandLineParser::parse(int argc, char* argv[])
 void SynfigCommandLineParser::extract_canvas_info(Job& job)
 {
 	job.canvas_info = true;
-	string value;
-	string values = misc_canvas_info;//_vm["canvas-info"].as<string>();
+	std::string value;
+	std::string values = misc_canvas_info;//_vm["canvas-info"].as<string>();
 
 	std::string::size_type pos;
 	while (!values.empty())
@@ -322,12 +318,12 @@ void SynfigCommandLineParser::extract_canvas_info(Job& job)
 		else if (value == "metadata")		job.canvas_info_metadata		= true;
 		else
 		{
-			cerr << _("Unrecognised canvas variable: ") << "'" << value.c_str() << "'" << endl;
-			cerr << _("Recognized variables are:") << endl <<
-				"  all, time_start, time_end, frame_rate, frame_start, frame_end, w, h," << endl <<
-				"  image_aspect, pw, ph, pixel_aspect, tl, br, physical_w, physical_h," << endl <<
-				"  x_res, y_res, span, interlaced, antialias, clamp, flags," << endl <<
-				"  focus, bg_color, metadata" << endl;
+			std::cerr << _("Unrecognised canvas variable: ") << "'" << value.c_str() << "'" << std::endl;
+			std::cerr << _("Recognized variables are:\n") <<
+				"  all, time_start, time_end, frame_rate, frame_start, frame_end, w, h,\n"
+				"  image_aspect, pw, ph, pixel_aspect, tl, br, physical_w, physical_h,\n"
+				"  x_res, y_res, span, interlaced, antialias, clamp, flags,\n"
+				"  focus, bg_color, metadata" << std::endl;
 		}
 
 		if (pos == std::string::npos)
@@ -335,7 +331,7 @@ void SynfigCommandLineParser::extract_canvas_info(Job& job)
 	};
 }
 
-void SynfigCommandLineParser::process_settings_options()
+void SynfigCommandLineParser::process_settings_options() const
 {
 	if (sw_verbosity > 0)
 	{
@@ -376,42 +372,41 @@ void SynfigCommandLineParser::process_trivial_info_options()
 
 	if (show_build_info)
 	{
-		cout << PACKAGE "-" VERSION << endl;
+		std::cout << PACKAGE "-" VERSION << std::endl;
 #ifdef DEVEL_VERSION
-			cout << endl << DEVEL_VERSION << endl << endl;
+		std::cout << std::endl << DEVEL_VERSION << std::endl << std::endl;
 #endif
-		cout << "Compiled on " __DATE__ /* " at "__TIME__ */;
+		std::cout << "Compiled on " __DATE__ /* " at "__TIME__ */;
 #ifdef __GNUC__
-		cout << " with GCC " << __VERSION__;
+		std::cout << " with GCC " << __VERSION__;
 #endif
 #ifdef _MSC_VER
-		cout << " with Microsoft Visual C++ "
+		std::cout << " with Microsoft Visual C++ "
 			 << (_MSC_VER>>8) << '.' << (_MSC_VER&255);
 #endif
 #ifdef __TCPLUSPLUS__
-		cout << " with Borland Turbo C++ "
+		std::cout << " with Borland Turbo C++ "
 			 << (__TCPLUSPLUS__>>8) << '.'
 			 << ((__TCPLUSPLUS__&255)>>4) << '.'
 			 << (__TCPLUSPLUS__&15);
 #endif
-		cout << endl << SYNFIG_COPYRIGHT << endl;
-		cout << endl;
+		std::cout << std::endl << SYNFIG_COPYRIGHT << std::endl << std::endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (show_version)
 	{
-		cerr << PACKAGE << " " << VERSION << endl;
+		std::cerr << PACKAGE << " " << VERSION << std::endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
 	if (show_license)
 	{
-		cerr << PACKAGE << " " << VERSION << endl;
-		cout << SYNFIG_COPYRIGHT << endl << endl;
-		cerr << SYNFIG_LICENSE << endl << endl;
+		std::cerr << PACKAGE << " " << VERSION << std::endl;
+		std::cout << SYNFIG_COPYRIGHT << std::endl << std::endl;
+		std::cerr << SYNFIG_LICENSE << std::endl << std::endl;
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
@@ -428,83 +423,72 @@ void SynfigCommandLineParser::process_trivial_info_options()
 //void OptionsProcessor::process_info_options()
 void SynfigCommandLineParser::process_info_options()
 {
-	if (show_layers_list)
-	{
-		synfig::Layer::Book::iterator iter =
-			synfig::Layer::book().begin();
-		for(; iter != synfig::Layer::book().end(); iter++)
-			if (iter->second.category != CATEGORY_DO_NOT_USE)
-				cout << (iter->first).c_str() << endl;
-
-		throw (SynfigToolException(SYNFIGTOOL_HELP));
-	}
-
-	if (!show_layer_info.empty())
-	{
-		Layer::Handle layer = synfig::Layer::create(show_layer_info.c_str());
-
-		cout << _("Layer Name: ") << layer->get_name() << endl;
-		cout << _("Localized Layer Name: ")
-			 << layer->get_local_name() << endl;
-		cout << _("Version: ") << layer->get_version() << endl;
-
-		Layer::Vocab vocab = layer->get_param_vocab();
-		for(; !vocab.empty(); vocab.pop_front())
-		{
-			cout << _("param - ") << vocab.front().get_name().c_str();
-			if(!vocab.front().get_critical())
-				cout << _(" (not critical)");
-			cout << endl << _("\tLocalized Name: ")
-				 << vocab.front().get_local_name().c_str() << endl;
-
-			if(!vocab.front().get_description().empty())
-				cout << _("\tDescription: ")
-					 << vocab.front().get_description().c_str() << endl;
-
-			if(!vocab.front().get_hint().empty())
-				cout << _("\tHint: ")
-					 << vocab.front().get_hint().c_str() << endl;
+	if (show_layers_list) {
+		for(const auto& iter : synfig::Layer::book()) {
+			if (iter.second.category != CATEGORY_DO_NOT_USE)
+				std::cout << (iter.first).c_str() << std::endl;
 		}
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (show_modules)
-	{
-		synfig::Module::Book::iterator iter =
-			synfig::Module::book().begin();
-		for(; iter != synfig::Module::book().end(); iter++)
-			cout << (iter->first).c_str() << endl;
+	if (!show_layer_info.empty()) {
+		Layer::Handle layer = synfig::Layer::create(show_layer_info.c_str());
+
+		std::cout << _("Layer Name: ") << layer->get_name() << std::endl;
+		std::cout << _("Localized Layer Name: ")
+			 << layer->get_local_name() << std::endl;
+		std::cout << _("Version: ") << layer->get_version() << std::endl;
+
+		Layer::Vocab vocab = layer->get_param_vocab();
+		for(; !vocab.empty(); vocab.pop_front())
+		{
+			std::cout << _("param - ") << vocab.front().get_name().c_str();
+			if(!vocab.front().get_critical())
+				std::cout << _(" (not critical)");
+			std::cout << std::endl << _("\tLocalized Name: ")
+				 << vocab.front().get_local_name().c_str() << std::endl;
+
+			if(!vocab.front().get_description().empty())
+				std::cout << _("\tDescription: ")
+					 << vocab.front().get_description().c_str() << std::endl;
+
+			if(!vocab.front().get_hint().empty())
+				std::cout << _("\tHint: ")
+					 << vocab.front().get_hint().c_str() << std::endl;
+		}
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (show_targets)
-	{
-		synfig::Target::Book::iterator iter =
-			synfig::Target::book().begin();
-		for(; iter != synfig::Target::book().end(); iter++)
-			cout << (iter->first).c_str() << endl;
+	if (show_modules) {
+		for (const auto& iter : synfig::Module::book()) {
+			std::cout << (iter.first).c_str() << std::endl;
+		}
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (show_value_nodes)
-	{
-		synfig::ValueNodeRegistry::Book::iterator iter =
-			synfig::ValueNodeRegistry::book().begin();
-		for(; iter != synfig::ValueNodeRegistry::book().end(); iter++)
-			cout << (iter->first).c_str() << endl;
+	if (show_targets) {
+		for(const auto& iter : synfig::Target::book()) {
+			std::cout << (iter.first).c_str() << std::endl;
+		}
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 
-	if (show_importers)
-	{
-		synfig::Importer::Book::iterator iter =
-			synfig::Importer::book().begin();
-		for(; iter != synfig::Importer::book().end(); iter++)
-			cout << (iter->first).c_str() << endl;
+	if (show_value_nodes) {
+		for(const auto& iter : synfig::ValueNodeRegistry::book()) {
+			std::cout << (iter.first).c_str() << std::endl;
+		}
+
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
+	}
+
+	if (show_importers)	{
+		for(const auto& iter : synfig::Importer::book()) {
+			std::cout << (iter.first).c_str() << std::endl;
+		}
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
@@ -528,60 +512,43 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 		desc.set_antialias(a);
 		synfig::info(_("Antialiasing set to %d, "
 					"(%d samples per pixel)"), a, (a*a));
-		/*VERBOSE_OUT(1) << boost::format(_("Antialiasing set to %d, "
-										  "(%d samples per pixel)")) % a % (a*a)
-						<< std::endl;*/
 	}
-	if (set_span > 0)
-	{
+	if (set_span > 0) {
 	    span = set_span;
 		synfig::info(_("Span set to %d units"), span);
-		/*VERBOSE_OUT(1) << boost::format(_("Span set to %d units")) % span
-                       << std::endl;*/
 	}
-	if (set_fps > 0)
-	{
+
+	if (set_fps > 0) {
 		float fps = (float)set_fps;
 		desc.set_frame_rate(fps);
-		synfig::info(_("Frame rate set to %d frames per "
-										   "second"), fps);
-		/*VERBOSE_OUT(1) << boost::format(_("Frame rate set to %d frames per "
-										   "second")) % fps << std::endl;*/
+		synfig::info(_("Frame rate set to %.3f frames per second"), fps);
 	}
-	if (set_dpi > 0)
-	{
+
+	if (set_dpi > 0) {
 		float dpi, dots_per_meter;
 		dpi = (float)set_dpi;
 		dots_per_meter = dpi * 39.3700787402; // TODO: ???
 		desc.set_x_res(dots_per_meter);
 		desc.set_y_res(dots_per_meter);
-		synfig::info(_("Physical resolution set to %f "
-                                          "dpi"), dpi);
-		/*VERBOSE_OUT(1) << boost::format(_("Physical resolution set to %f "
-                                          "dpi")) % dpi << std::endl;*/
+		synfig::info(_("Physical resolution set to %f dpi"), dpi);
 	}
-	if (set_dpi_x)
-	{
+
+	if (set_dpi_x) {
 		float dpi, dots_per_meter;
 		dpi = (float)set_dpi_x;
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_x_res(dots_per_meter);
-		synfig::info(_("Physical X resolution set to %f "
-										  "dpi"), dpi);
-		/*VERBOSE_OUT(1) << boost::format(_("Physical X resolution set to %f "
-										  "dpi")) % dpi << std::endl;*/
+		synfig::info(_("Physical X resolution set to %f dpi"), dpi);
 	}
-	if (set_dpi_y)
-	{
+
+	if (set_dpi_y) {
 		float dpi, dots_per_meter;
 		dpi = (float)set_dpi_y;
 		dots_per_meter = dpi * 39.3700787402;
 		desc.set_y_res(dots_per_meter);
-		synfig::info(_("Physical Y resolution set to %f "
-                                          "dpi"), dpi);
-		/*VERBOSE_OUT(1) << boost::format(_("Physical Y resolution set to %f "
-                                          "dpi")) % dpi << std::endl;*/
+		synfig::info(_("Physical Y resolution set to %f dpi"), dpi);
 	}
+
 	if (!set_start_time.empty())
 	{
 		desc.set_time_start(Time(set_start_time.c_str(), desc.get_frame_rate()));
@@ -600,7 +567,7 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 
 		VERBOSE_OUT(1) << _("Rendering frame at ")
 					   << desc.get_time_start().get_string(desc.get_frame_rate())
-					   << endl;
+					   << std::endl;
 	}
 
 	if (w || h)
@@ -690,7 +657,7 @@ Job SynfigCommandLineParser::extract_job()
 		job.filename = set_input_file;
 
 		// Open the composition
-		string errors, warnings;
+		std::string errors, warnings;
 		try
 		{
 			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename))
@@ -703,7 +670,7 @@ Job SynfigCommandLineParser::extract_job()
 				errors.append("Cannot open container " + job.filename + "\n");
 			}
 		}
-		catch(runtime_error& x)
+		catch(std::runtime_error& x)
 		{
 			job.root = 0;
 		}
@@ -803,7 +770,7 @@ Job SynfigCommandLineParser::extract_job()
 		if(!composite)
 		{
 			VERBOSE_OUT(1) << _("Unable to append '") << composite_file.c_str()
-							<< "'." << endl;
+							<< "'." << std::endl;
 		}
 		else
 		{
@@ -816,7 +783,7 @@ Job SynfigCommandLineParser::extract_job()
 			}
 		}
 
-		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << endl;
+		VERBOSE_OUT(2) << _("Appended contents of ") << composite_file << std::endl;
 	}
 
 	//if (_vm.count("list-canvases") || misc_canvases)
