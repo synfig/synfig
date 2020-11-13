@@ -97,7 +97,7 @@ public:
 
 	/// Settings options
 	/// verbose, quiet, threads, benchmarks
-	void process_settings_options();
+	void process_settings_options() const;
 
 	/// Trivial information options
 	/// Options that will only display information
