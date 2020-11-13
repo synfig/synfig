@@ -102,10 +102,9 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	const ValueBase::List bline = (*bline_)(t).get_list();
-	handle<ValueNode_BLine> bline_value_node( handle<ValueNode_BLine>::cast_dynamic(bline_) );
-	assert(bline_value_node);
+	const ValueBase bline_value_node = (*bline_)(t);
 
-	const bool looped = bline_value_node->get_loop();
+	const bool looped = bline_value_node.get_loop();
 	int size = (int)bline.size();
 	int count = looped ? size : size - 1;
 	if (count < 1) return Vector();
