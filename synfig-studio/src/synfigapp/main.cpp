@@ -38,8 +38,6 @@
 #include <synfig/gradient.h>
 #include <glibmm.h>
 
-#include <ETL/trivial>
-
 #include <list>
 
 #include <synfigapp/localization.h>
@@ -83,15 +81,13 @@ static synfig::Distance bline_width_;
 static synfigapp::InputDevice::Handle selected_input_device_;
 static list<synfigapp::InputDevice::Handle> input_devices_;
 
-trivial<sigc::signal<void> > signal_outline_color_changed_;
-trivial<sigc::signal<void> > signal_fill_color_changed_;
-trivial<sigc::signal<void> > signal_gradient_changed_;
-trivial<sigc::signal<void> > signal_bline_width_changed_;
-//trivial<sigc::signal<void> > signal_blend_method_changed_;
-//trivial<sigc::signal<void> > signal_opacity_changed_;
-trivial<sigc::signal<void> > signal_interpolation_changed_;
+sigc::signal<void> signal_outline_color_changed_;
+sigc::signal<void> signal_fill_color_changed_;
+sigc::signal<void> signal_gradient_changed_;
+sigc::signal<void> signal_bline_width_changed_;
+sigc::signal<void> signal_interpolation_changed_;
 
-trivial<Settings> settings_;
+Settings settings_;
 
 static synfig::Waypoint::Interpolation interpolation_;
 
@@ -121,15 +117,6 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 
 	action_main=new synfigapp::Action::Main();
 
-	settings_.construct();
-
-	signal_outline_color_changed_.construct();
-	signal_fill_color_changed_.construct();
-	signal_gradient_changed_.construct();
-	//signal_opacity_changed_.construct();
-	//signal_blend_method_changed_.construct();
-	signal_interpolation_changed_.construct();
-
 	set_outline_color(Color::black());
 	set_fill_color(Color::white());
 	set_gradient_default_colors();
@@ -151,15 +138,6 @@ synfigapp::Main::~Main()
 
 	selected_input_device_=0;
 	input_devices_.clear();
-
-	settings_.destruct();
-	signal_outline_color_changed_.destruct();
-	signal_fill_color_changed_.destruct();
-	signal_gradient_changed_.destruct();
-
-	//signal_opacity_changed_.destruct();
-	//signal_blend_method_changed_.destruct();
-	signal_interpolation_changed_.destruct();
 }
 
 Settings&
