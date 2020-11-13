@@ -6,7 +6,7 @@ AC_PREREQ([2.60])
 AC_INIT([Synfig Studio],[1.4.0],[https://github.com/synfig/synfig/issues],[synfigstudio])
 AC_REVISION()
 
-AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
+AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, false)
 
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
