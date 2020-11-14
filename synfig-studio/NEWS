@@ -1,5 +1,54 @@
               synfigstudio releases
 
+ 1.4.0 (git tag "v1.4.0") - Major release.
+ 
+  * Curves in Graphs Panel now can be edited.
+  * New Sound Panel to display waveform.
+  * Vectorization of bitmaps (algorithm is ported from OpenToonz animation software).
+  * Export to Lottie JSON format.
+  * Playback cache - Synfig now remembers already rendered frames, which is greatly improves experience of playback and timeline scrubbing.
+  * Background rendering. Synfig now does background rendering of all frames in current animation and the result of rendering is saved into cache.
+  * Added "Preview" rendering mode for workarea.
+  * Simple way to import image sequences vi "File" -> "Import sequence..." menu command.
+  * Transformation widget got a special control point to easily change origin of transformation.
+  * New "Bake" command allow to bake animation for any parameter.
+  * Now it is possible to open images in external editor (right click -> "Edit image in external tool...").
+  * Workspace layout cna be saved ("Workspace" - "Save workspace"/"Edit workspace list..." menu commands).
+  * Hovering mouse cursor over timetrack now shows frame preview.
+  * Now it is possible to select playback range on the timeline and make playback looped.
+  * Workarea handles now hidden during playback.
+  * Playback is stopped when user clicks on timeline (issue #415).
+  * Now it is possible to set default background for newly created documents (issue #636). The background can be a solid color or image. You can configure this via “Edit” -> “Preferences” -> “Document”.
+  * Rendering status is now indicated with a progress bar at Info Panel (issues #383, #626).
+  * A sound notification is played when rendering is done (issue #648).
+  * Now it is possible to configure color of transparent areas in Preview Window (issue #636).
+  * Default render settings: now we use avi format with popular mpeg4 codec by default (issue #464).
+  * Do not waste space for dropdowns in combo boxes (issue #650).
+  * When new Text Layer is created, its name is set the same as text content (issue #407).
+  * Vertex handles now placed above tangent handles (issue #645).
+  * Color dialog now opens with HSV tab active (issue #672).
+  * Fixed "No disc in drive" error (issues #489, #724).
+  * Autosave now enabled by default (issue #657).
+  * Removed "Cancelled by user" dialog that happens when the user tries to move an animated object (issue #693).
+  * Fixed incorrect behavior of Draft rendering mode in some circumstances (issue 582).
+  * Timebar is not hidden anymore for cases when timeline is only 1 frame long.
+  * Fixed issue with incorrect GUI font on some Windows systems (issue #667).
+  * Fixed issues with incorrect window placement on Windows (issue #523).
+  * Fixed issue which was preventing to change parameters at some circumstances (issues #659, #526, #520).
+  * Fixed crash when exported value is set from parameters panel in animation mode (issue #588).
+  * Fixed crash when user cancels parameter changing (issue #671).
+  * Disabled scientific notation when displaying numbers (issue #635).
+  * Fixed bug with empty floating windows appearing after workspace switching (issue #1143).
+  * Show interpolation type directly in waypoint’s context menu.
+  * Fixed popup menu disappearing right after button release for Widget Gradient/Spline (issue #1274).
+  * Fixed hang when opening a second .sif file from Explorer on Windows (issue #291).
+  * Fixed issue when copying skeletons from one file to another. Previously this was resulting in corrupted file, but now it isn’t.
+  * Fixed issues opening and exporting of files with multibyte (i.e. Arabic) symbols in filename.
+  * Removed unused Change Preview Quality menu item.
+  * Activate widget_filename right after user chooses file via button/file dialog (issue #1425).
+  * Fixed crash when unexporting value node (issue #231).
+  * Fixed renaming layer set affecting other names (issue #1146).
+
  1.2.2 (git tag "1.2.2") - Bugfix release.
  
   * Remove cairo-rendering from preview dialog (issue #370). Thanks to Ivan Mahonin.
