@@ -1303,25 +1303,25 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	}
 
 	// the toolbox
-	ACCEL("<Mod1>a",								"<Actions>/action_group_state_manager/state-normal"			);
-	ACCEL("<Mod1>v",								"<Actions>/action_group_state_manager/state-smooth_move"		);
-	ACCEL("<Mod1>s",								"<Actions>/action_group_state_manager/state-scale"			);
-	ACCEL("<Mod1>t",								"<Actions>/action_group_state_manager/state-rotate"			);
-	ACCEL("<Mod1>m",								"<Actions>/action_group_state_manager/state-mirror"			);
-	ACCEL("<Mod1>c",								"<Actions>/action_group_state_manager/state-circle"			);
-	ACCEL("<Mod1>r",								"<Actions>/action_group_state_manager/state-rectangle"			);
-	ACCEL("<Mod1>q",								"<Actions>/action_group_state_manager/state-star"			);
-	ACCEL("<Mod1>g",								"<Actions>/action_group_state_manager/state-gradient"			);
-	ACCEL("<Mod1>p",								"<Actions>/action_group_state_manager/state-polygon"			);
-	ACCEL("<Mod1>b",								"<Actions>/action_group_state_manager/state-bline"			);
-	ACCEL("<Mod1>o",								"<Actions>/action_group_state_manager/state-bone"			);
-	ACCEL("<Mod1>x",								"<Actions>/action_group_state_manager/state-text"			);
-	ACCEL("<Mod1>f",								"<Actions>/action_group_state_manager/state-fill"			);
-	ACCEL("<Mod1>e",								"<Actions>/action_group_state_manager/state-eyedrop"			);
-	ACCEL("<Mod1>z",								"<Actions>/action_group_state_manager/state-zoom"			);
-	ACCEL("<Mod1>d",								"<Actions>/action_group_state_manager/state-draw"			);
-	ACCEL("<Mod1>k",								"<Actions>/action_group_state_manager/state-sketch"			);
-	ACCEL("<Mod1>w",								"<Actions>/action_group_state_manager/state-width"			);
+	ACCEL("s",								"<Actions>/action_group_state_manager/state-normal"			);
+	ACCEL("m",								"<Actions>/action_group_state_manager/state-smooth_move"		);
+	ACCEL("l",								"<Actions>/action_group_state_manager/state-scale"			);
+	ACCEL("a",								"<Actions>/action_group_state_manager/state-rotate"			);
+	ACCEL("i",								"<Actions>/action_group_state_manager/state-mirror"			);
+	ACCEL("e",								"<Actions>/action_group_state_manager/state-circle"			);
+	ACCEL("r",								"<Actions>/action_group_state_manager/state-rectangle"			);
+	ACCEL("asterisk",								"<Actions>/action_group_state_manager/state-star"			);
+	ACCEL("g",								"<Actions>/action_group_state_manager/state-gradient"			);
+	ACCEL("o",								"<Actions>/action_group_state_manager/state-polygon"			);
+	ACCEL("b",								"<Actions>/action_group_state_manager/state-bline"			);
+	ACCEL("n",								"<Actions>/action_group_state_manager/state-bone"			);
+	ACCEL("t",								"<Actions>/action_group_state_manager/state-text"			);
+	ACCEL("u",								"<Actions>/action_group_state_manager/state-fill"			);
+	ACCEL("d",								"<Actions>/action_group_state_manager/state-eyedrop"			);
+	ACCEL("z",								"<Actions>/action_group_state_manager/state-zoom"			);
+	ACCEL("p",								"<Actions>/action_group_state_manager/state-draw"			);
+	ACCEL("k",								"<Actions>/action_group_state_manager/state-sketch"			);
+	ACCEL("w",								"<Actions>/action_group_state_manager/state-width"			);
 
 	// everything else
 	ACCEL("<Control>a",								"<Actions>/canvasview/select-all-ducks"					);
