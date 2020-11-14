@@ -1,5 +1,30 @@
               synfig releases
 
+ 1.4.0 (git tag "v1.4.0") - Major release.
+ 
+  * Implemented downsampling for image layers.
+  * Added "Preview" rendering mode for workarea.
+  * Major optimization of parsing scenes with many layers (issue #314).
+  * Optimizations for Outline Layer, Region Layer, Checkerboard Layer, SuperSample Layer.
+  * Basic functionality for importing video files.
+  * Fixed onionsking.
+  * Changes for onion-skin functionality - in all previous versions it was linked to keyframes only, now it is set relatively to ordinary frames.
+  * Major cleanup of code responsible for sound playback, fixed non-working volume parameter and eliminated synchronization issues.
+  * Advanced Outline Layer: Added two new types of tips - "Off-Peak Stop" and "Inner Rounded Stop". They can be used to define outline start/end and dashes.
+  * Switch Layer: Now it is possible to select visible layer by index (see "Active Layer Depth" parameter).
+  * Rectangle Layer: now it is posible to define two types of rounded corners and horizontal/vertical feather.
+  * Filled Rectangle Layer deprecated.
+  * Changed Gamma handling: Global Gamma option removed, Gamma is now defined on per-document basis, default gamma value = 1.0, for old documents it is set to 2.2.
+  * Fixed behavior “Local Time” parameter of Time Loop layer (issue #479).
+  * DashItem Offset and Length parameters now use consistent units when editing them (issue #1265).
+  * Fixed issues opening and exporting of files with multibyte (i.e. Arabic) symbols in filename.
+  * Homogenous parameter of Advanced Outline is enabled and static by default.
+  * Set Animation Speed parameter of Noise Distort Layer as static by default.
+  * Fixed crash when exporting with “pngspritesheet” target (issue #356).
+  * Fixed crash when removing spline vertex too fast.
+  * Fixed crash when unexporting value node (issue #231).
+  
+
  1.2.2 (git tag "1.2.2") - Bugfix release.
  
   * Amount set to 0 for missing images (issue #373). Thanks to Ivan Mahonin.

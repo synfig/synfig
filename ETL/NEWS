@@ -1,8 +1,24 @@
               ETL releases
 
-More detailed notes are available on the releases page:
+1.4.0 (git tag "v1.4.0") - Major release.
 
-http://synfig.org/en/news/releases
+  * Improve etl::handle - use atomic refcounter instead of mutex
+  * Refactor etl::rect
+  * Vstrprintf clean and performance improvements
+  * Removed virtually empty and unused ETL _curve file
+  * Remove unused ETL _condition file
+  * Removed unused ETL random files
+  * Remove unused ETL bit-rotation file
+  * Always use vsnprintf in etl::vstrprintf
+  * Always use vsscanf in etl::vstrscanf()
+  * Apply/force etl:: namespace for ETL library
+  * Functionality to bend contour along other contour
+  * Removed fastangle from ETL
+  * Removed ipc from the ETL library
+  * Thread-safe etl::reference_counter
+  * Remove unused ETL mutex and thread classes
+  * Remove unused #define assert_cast
+  * Remove unused ETL/value include file
 
 1.2.2 (git tag "1.2.2")
 
