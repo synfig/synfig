@@ -523,6 +523,7 @@ Renderer_Canvas::enqueue_render()
 		etl::handle<CanvasView> canvas_view = get_work_area()->get_canvas_view();
 		etl::handle<TimeModel> time_model = canvas_view->time_model();
 		bool			is_playing = canvas_view->is_playing();
+		bool			is_bounded = time_model->get_play_bounds_enabled();
 
 		build_onion_frames();
 
@@ -538,7 +539,7 @@ Renderer_Canvas::enqueue_render()
 				int enqueued = 0;
 
 				// generate rendering task for thumbnail
-				// do it first to be sure that thmubnails will always fully covered by the single tile
+				// do it first to be sure that thumbnails will always fully covered by the single tile
 				if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb))
 					++enqueued;
 
@@ -568,7 +569,7 @@ Renderer_Canvas::enqueue_render()
 
 					Time past_time = current_frame.time - frame_duration*past;
 					bool past_exists = false;
-					if (!is_playing)
+					if(!is_playing)
 						past_exists = past_time >= time_model->get_lower()
 									&& past_time <= time_model->get_upper();
 					Real weight_past_current = !time_in_repeat_range
@@ -576,32 +577,46 @@ Renderer_Canvas::enqueue_render()
 							                  && past_time <= time_model->get_play_bounds_upper() )
 											 ? weight_past : weight_past_extra;
 
-					if (!future_exists && !past_exists) break;
+					if(!future_exists && !past_exists)
+						break;
 
 					bool future_priority = weight_future_current*future < weight_past_current*past;
 
-					if (future_exists && (!past_exists || future_priority)) {
+					bool in_repeat_range = future_time <= time_model->get_play_bounds_upper()
+											&& past_time >= time_model->get_play_bounds_lower();
+
+					// If repeat mode is active, we need to force render all playback bounds range
+					if(is_bounded)
+						if(in_repeat_range)
+							if(future_time < time_model->get_play_bounds_upper())
+								future_priority = true;
+							else
+								future_priority = false;
+						else
+							break;
+
+					if(future_exists && (!past_exists || future_priority)) {
 						// queue future
-						if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(future_time)))
+						if(enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(future_time)))
 							++enqueued;
-						if (enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(future_time)))
+						if(enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(future_time)))
 							++enqueued;
 						++future;
 					} else {
 						// queue past
-						if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(past_time)))
+						if(enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(past_time)))
 							++enqueued;
-						if (enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(past_time)))
+						if(enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(past_time)))
 							++enqueued;
 						++past;
 					}
 				}
 
 				// restore canvas time
-				if (!is_playing)
+				if(!is_playing)
 					canvas->set_time(orig_time);
 
-				if (enqueued)
+				if(enqueued)
 					get_work_area()->signal_rendering()();
 			}
 		}
