@@ -1025,7 +1025,9 @@ DEFINE_ACTION("seek-next-second",   _("Seek Forward"));
 DEFINE_ACTION("seek-prev-second",   _("Seek Backward"));
 DEFINE_ACTION("seek-begin",         _("Seek to Begin"));
 DEFINE_ACTION("seek-end",           _("Seek to End"));
-
+DEFINE_ACTION("canvas-zoom-in-2",              Gtk::StockID("gtk-zoom-in"));
+DEFINE_ACTION("canvas-zoom-out-2",             Gtk::StockID("gtk-zoom-out"));
+DEFINE_ACTION("canvas-zoom-fit-2",             Gtk::StockID("gtk-zoom-fit"));
 
 // actions in Canvas menu
 DEFINE_ACTION("properties", _("Properties..."));
@@ -1255,6 +1257,13 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "		<menuitem action='seek-end'/>"
 "	</menu>";
 
+	hidden_ui_info_menu +=
+"	<menu action='menu-view'>"
+"		<menuitem action='canvas-zoom-in-2'/>"
+"		<menuitem action='canvas-zoom-out-2'/>"
+"		<menuitem action='canvas-zoom-fit-2'/>"
+"	</menu>";
+
 	Glib::ustring ui_info =
 "<ui>"
 "   <popup name='menu-toolbox' action='menu-toolbox'>"
@@ -1334,7 +1343,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("F12",									"<Actions>/canvasview/options"						);
 	ACCEL("<control>i",								"<Actions>/canvasview/import"						);
 	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0), 		"<Actions>/canvasview/stop"						));
-//	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(), 		"<Actions>/canvasview/stop"						));
+	//	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(), 		"<Actions>/canvasview/stop"						));
 	ACCEL("<Control>g",								"<Actions>/canvasview/toggle-grid-show"					);
 	ACCEL("<Control>l",								"<Actions>/canvasview/toggle-grid-snap"					);
 	ACCEL("<Control>n",								"<Actions>/mainwindow/new"						);
@@ -1376,8 +1385,9 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,					"<Actions>/canvasview/increase-low-res-pixel-size"			));
 	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-dec"		));
 	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-inc"		));
-	ACCEL("equal",									"<Actions>/canvasview/canvas-zoom-in"					);
-	ACCEL("minus",									"<Actions>/canvasview/canvas-zoom-out"					);
+	ACCEL("equal",                                                                  "<Actions>/canvasview/canvas-zoom-in"                                   );
+	ACCEL("minus",                                                                  "<Actions>/canvasview/canvas-zoom-out"                                  );
+	ACCEL("0",                                                                      "<Actions>/canvasview/canvas-zoom-fit"                                  );
 	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-in"					));
 	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-out"					));
 	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe");
@@ -1389,7 +1399,9 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("<Control><Shift>less",    "<Actions>/canvasview/seek-begin");
 	ACCEL("<Control><Shift>greater", "<Actions>/canvasview/seek-end");
 	ACCEL("<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin");
-	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit");
+	ACCEL("<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" );
+	ACCEL("<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2");	
+	ACCEL("<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2");
 	ACCEL("space",                   "<Actions>/canvasview/play");
 	ACCEL("space",                   "<Actions>/canvasview/pause");
 
