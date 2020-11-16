@@ -32,8 +32,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/clock>
-
 #include <synfig/general.h>
 
 #include <synfig/canvasfilenaming.h>

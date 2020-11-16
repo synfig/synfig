@@ -36,7 +36,6 @@
 #include <vector>
 #include <ETL/gaussian>
 #include <ETL/hermite>
-#include <ETL/clock>
 #include <float.h>
 #include <algorithm>
 #include <cassert>

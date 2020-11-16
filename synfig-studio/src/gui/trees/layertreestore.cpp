@@ -49,7 +49,6 @@
 #include <synfig/context.h>
 
 #include <gtk/gtk.h>
-#include <ETL/clock>
 #include <gui/localization.h>
 
 #endif
@@ -749,9 +748,6 @@ LayerTreeStore::rebuild()
 void
 LayerTreeStore::refresh()
 {
-	etl::clock timer;
-	timer.reset();
-
 	Gtk::TreeModel::Children children_(children());
 	Gtk::TreeModel::Children::iterator iter;
 

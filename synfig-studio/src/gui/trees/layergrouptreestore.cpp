@@ -44,7 +44,6 @@
 #include "docks/dockable.h"
 
 #include <gtk/gtk.h>
-#include <ETL/clock>
 #include <gui/localization.h>
 
 #endif
@@ -710,7 +709,6 @@ void
 LayerGroupTreeStore::rebuild()
 {
 	rebuilding=true;
-	// etl::clock timer;timer.reset();
 	try {
 
 		// Clear out the current list
