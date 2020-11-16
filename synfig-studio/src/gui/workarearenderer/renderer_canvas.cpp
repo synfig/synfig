@@ -586,17 +586,18 @@ Renderer_Canvas::enqueue_render()
 											&& past_time >= time_model->get_play_bounds_lower();
 
 					// If repeat mode is active, we need to force render all playback bounds range
-					if(is_bounded)
-						if(in_repeat_range)
-							if(future_time >= time_model->get_play_bounds_upper())
+					if(is_bounded) {
+						if(in_repeat_range) {
+							if(future_time >= time_model->get_play_bounds_upper()
+								&& future_priority == true)
 								future_priority = false;
-							else if(future_time < time_model->get_play_bounds_upper()
-									&& past_time > time_model->get_play_bounds_lower())
-								future_priority = future_priority;
-							else
+							else if(past_time <= time_model->get_play_bounds_lower()
+								&& future_priority == false)
 								future_priority = true;
+						}
 						else
 							break;
+					}
 
 					if(future_exists && (!past_exists || future_priority)) {
 						// queue future
