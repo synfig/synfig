@@ -31,10 +31,7 @@
 #include <synfig/string.h>
 #include <synfig/canvas.h>
 #include <ETL/handle>
-#include <ETL/stringf>
-#include <ETL/trivial>
 
-#include <map>
 #include <list>
 
 #include <synfig/layer.h>
@@ -44,7 +41,6 @@
 #include <synfig/value.h>
 #include <synfig/activepoint.h>
 #include <synfig/valuenodes/valuenode_animated.h>
-#include <synfig/string.h>
 #include <synfig/keyframe.h>
 #include <synfig/waypoint.h>
 
@@ -57,10 +53,9 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-class ProgressCallback;
 class Canvas;
 class RendDesc;
-}; // END of namespace synfig
+} // END of namespace synfig
 
 namespace synfigapp {
 
@@ -97,30 +92,29 @@ public:
 		TYPE_END				// 19
 	};
 private:
-	Type type_;
+	Type type_ = TYPE_NIL;
 
 	union
 	{
-		etl::trivial<synfig::Canvas::LooseHandle> canvas;
-		etl::trivial<synfig::Layer::LooseHandle> layer;
-		etl::trivial<synfig::ValueNode::LooseHandle> value_node;
-		etl::trivial<synfig::ValueBase> value;
-		etl::trivial<synfig::Activepoint> activepoint;
-		etl::trivial<synfig::ValueNode_Animated::Waypoint> waypoint;
-		etl::trivial<synfig::ValueNode_Animated::Waypoint::Model> waypoint_model;
-		etl::trivial<synfig::String> string;
-		etl::trivial<synfig::Keyframe> keyframe;
-		etl::trivial<synfig::Time> time;
-		etl::trivial<synfigapp::ValueDesc> value_desc;
-		etl::trivial<etl::loose_handle<synfigapp::CanvasInterface> > canvas_interface;
-		etl::trivial<synfig::RendDesc> rend_desc;
-		int integer;
-		synfig::Real real;
-		bool b;
-		EditMode edit_mode;
-		synfig::Interpolation interpolation;
-
-	} data;
+		synfig::Canvas::LooseHandle canvas_;
+		synfig::Layer::LooseHandle layer_;
+		synfig::ValueNode::LooseHandle value_node_;
+		synfig::ValueBase value_;
+		synfig::Activepoint activepoint_;
+		synfig::ValueNode_Animated::Waypoint waypoint_;
+		synfig::ValueNode_Animated::Waypoint::Model waypoint_model_;
+		synfig::String string_;
+		synfig::Keyframe keyframe_;
+		synfig::Time time_;
+		synfigapp::ValueDesc value_desc_;
+		etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+		synfig::RendDesc rend_desc_;
+		int integer_;
+		synfig::Real real_;
+		bool bool_;
+		EditMode edit_mode_;
+		synfig::Interpolation interpolation_;
+	};
 public:
 
 	Param():type_(TYPE_NIL) { }
@@ -155,25 +149,26 @@ public:
 	Param& operator=(const Param& rhs);
 
 	void clear();
+	void set(const Param& rhs);
 
-	const synfig::Canvas::LooseHandle& get_canvas()const { assert(type_==TYPE_CANVAS); return data.canvas.get(); }
-	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface()const { assert(type_==TYPE_CANVASINTERFACE); return data.canvas_interface.get(); }
-	const synfig::Layer::LooseHandle& get_layer()const { assert(type_==TYPE_LAYER); return data.layer.get(); }
-	const synfig::ValueNode::LooseHandle& get_value_node()const { assert(type_==TYPE_VALUENODE); return data.value_node.get(); }
-	const synfig::ValueBase& get_value()const { assert(type_==TYPE_VALUE); return data.value.get(); }
-	const synfig::Activepoint& get_activepoint()const { assert(type_==TYPE_ACTIVEPOINT); return data.activepoint.get(); }
-	const synfig::Waypoint& get_waypoint()const { assert(type_==TYPE_WAYPOINT); return data.waypoint.get(); }
-	const synfig::Waypoint::Model& get_waypoint_model()const { assert(type_==TYPE_WAYPOINTMODEL); return data.waypoint_model.get(); }
-	const synfig::String& get_string()const { assert(type_==TYPE_STRING); return data.string.get(); }
-	const synfig::Keyframe& get_keyframe()const { assert(type_==TYPE_KEYFRAME); return data.keyframe.get(); }
-	const synfigapp::ValueDesc& get_value_desc()const { assert(type_==TYPE_VALUEDESC); return data.value_desc.get(); }
-	const synfig::Real& get_real()const { assert(type_==TYPE_REAL); return data.real; }
-	const synfig::Time& get_time()const { assert(type_==TYPE_TIME); return data.time.get(); }
-	const synfig::RendDesc& get_rend_desc()const { assert(type_==TYPE_RENDDESC); return data.rend_desc.get(); }
-	int get_integer()const { assert(type_==TYPE_INTEGER); return data.integer; }
-	EditMode get_edit_mode()const { assert(type_==TYPE_EDITMODE); return data.edit_mode; }
-	bool get_bool()const { assert(type_==TYPE_BOOL); return data.b; }
-	const synfig::Interpolation& get_interpolation()const { assert(type_==TYPE_INTERPOLATION); return data.interpolation; }
+	const synfig::Canvas::LooseHandle& get_canvas()const { assert(type_==TYPE_CANVAS); return canvas_; }
+	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface()const { assert(type_==TYPE_CANVASINTERFACE); return canvas_interface_; }
+	const synfig::Layer::LooseHandle& get_layer()const { assert(type_==TYPE_LAYER); return layer_; }
+	const synfig::ValueNode::LooseHandle& get_value_node()const { assert(type_==TYPE_VALUENODE); return value_node_; }
+	const synfig::ValueBase& get_value()const { assert(type_==TYPE_VALUE); return value_; }
+	const synfig::Activepoint& get_activepoint()const { assert(type_==TYPE_ACTIVEPOINT); return activepoint_; }
+	const synfig::Waypoint& get_waypoint()const { assert(type_==TYPE_WAYPOINT); return waypoint_; }
+	const synfig::Waypoint::Model& get_waypoint_model()const { assert(type_==TYPE_WAYPOINTMODEL); return waypoint_model_; }
+	const synfig::String& get_string()const { assert(type_==TYPE_STRING); return string_; }
+	const synfig::Keyframe& get_keyframe()const { assert(type_==TYPE_KEYFRAME); return keyframe_; }
+	const synfigapp::ValueDesc& get_value_desc()const { assert(type_==TYPE_VALUEDESC); return value_desc_; }
+	const synfig::Real& get_real()const { assert(type_==TYPE_REAL); return real_; }
+	const synfig::Time& get_time()const { assert(type_==TYPE_TIME); return time_; }
+	const synfig::RendDesc& get_rend_desc()const { assert(type_==TYPE_RENDDESC); return rend_desc_; }
+	int get_integer()const { assert(type_==TYPE_INTEGER); return integer_; }
+	EditMode get_edit_mode()const { assert(type_==TYPE_EDITMODE); return edit_mode_; }
+	bool get_bool()const { assert(type_==TYPE_BOOL); return bool_; }
+	const synfig::Interpolation& get_interpolation()const { assert(type_==TYPE_INTERPOLATION); return interpolation_; }
 
 
 	const Type& get_type()const { return type_; }

@@ -23,7 +23,6 @@ etl_HEADERS = \
 	hermite \
 	calculus \
 	stringf \
-	trivial \
 	_stringf.h \
 	_calculus.h \
 	_hermite.h \
@@ -33,7 +32,6 @@ etl_HEADERS = \
 	_clock_gettimeofday.h \
 	_angle.h \
 	_handle.h \
-	_trivial.h \
 	_fixed.h \
 	etl_config.h \
 	$(top_builddir)/ETL/etl_profile.h \

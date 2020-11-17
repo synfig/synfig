@@ -35,11 +35,8 @@
 #include "action.h"
 #include "canvasinterface.h"
 
-#include <synfigapp/localization.h>
-
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -80,396 +77,295 @@ Action::candidate_check(const ParamVocab& param_vocab, const ParamList& param_li
 
 /* === S T A T I C S ======================================================= */
 
-struct _ParamCounter
+struct ParamCounter
 {
 	static int counter;
-	~_ParamCounter()
+	~ParamCounter()
 	{
 		if(counter)
 			synfig::error("%d action params not yet deleted!",counter);
 	}
-} _param_counter;
+};
 
-int _ParamCounter::counter(0);
+int ParamCounter::counter(0);
 
 /* === M E T H O D S ======================================================= */
 
-Param::Param(const Param &rhs):
-	type_(rhs.type_)
+// We using placement new here `new(&obj)` to call the object constructor
+// without allocating memory. Memory is already allocated by anonymous union
+// But as a drawback, we SHOULD call destructor manually (see `clear()` method and `destruct` function)
+template<typename T, typename X>
+void inline construct(T* field, X& value) {
+	new(field) T(value);
+}
+
+// This function is used to automatically detect destructor name
+template<typename T>
+void inline destruct(T& field) {
+	field.~T();
+}
+
+Param::Param(const Param &rhs)
 {
-	_ParamCounter::counter++;
-	switch(type_)
-	{
-	case TYPE_ACTIVEPOINT:
-		data.activepoint.construct();
-		data.activepoint.get()=rhs.data.activepoint.get();
-		break;
-	case TYPE_WAYPOINT:
-		data.waypoint.construct();
-		data.waypoint.get()=rhs.data.waypoint.get();
-		break;
-	case TYPE_WAYPOINTMODEL:
-		data.waypoint_model.construct();
-		data.waypoint_model.get()=rhs.data.waypoint_model.get();
-		break;
-	case TYPE_KEYFRAME:
-		data.keyframe.construct();
-		data.keyframe.get()=rhs.data.keyframe.get();
-		break;
-	case TYPE_CANVAS:
-		data.canvas.construct();
-		data.canvas.get()=rhs.data.canvas.get();
-		break;
-	case TYPE_CANVASINTERFACE:
-		data.canvas_interface.construct();
-		data.canvas_interface.get()=rhs.data.canvas_interface.get();
-		break;
-	case TYPE_LAYER:
-		data.layer.construct();
-		data.layer.get()=rhs.data.layer.get();
-		break;
-	case TYPE_VALUENODE:
-		data.value_node.construct();
-		data.value_node.get()=rhs.data.value_node.get();
-		break;
-	case TYPE_VALUEDESC:
-		data.value_desc.construct();
-		data.value_desc.get()=rhs.data.value_desc.get();
-		break;
-	case TYPE_VALUE:
-		data.value.construct();
-		data.value.get()=rhs.data.value.get();
-		break;
-	case TYPE_STRING:
-		data.string.construct();
-		data.string.get()=rhs.data.string.get();
-		break;
-	case TYPE_RENDDESC:
-		data.rend_desc.construct();
-		data.rend_desc.get()=rhs.data.rend_desc.get();
-		break;
-	case TYPE_TIME:
-		data.time.construct();
-		data.time.get()=rhs.data.time.get();
-		break;
-
-	case TYPE_INTEGER:
-		data.integer=rhs.data.integer;
-		break;
-	case TYPE_EDITMODE:
-		data.edit_mode=rhs.data.edit_mode;
-		break;
-	case TYPE_REAL:
-		data.real=rhs.data.real;
-		break;
-	case TYPE_BOOL:
-		data.b=rhs.data.b;
-		break;
-	case TYPE_INTERPOLATION:
-	    	data.interpolation=rhs.data.interpolation;
-		break;
-
-	case TYPE_NIL:
-		break;
-
-	default:
-		assert(0);
-		break;
-	}
+	++ParamCounter::counter;
+	set(rhs);
 }
 
 Param::Param(const etl::handle<synfigapp::CanvasInterface>& x):
 
 	type_(TYPE_CANVASINTERFACE)
 {
-	_ParamCounter::counter++;
-	data.canvas_interface.construct();
-	data.canvas_interface.get()=x;
+	++ParamCounter::counter;
+	construct(&canvas_interface_, x);
 }
-
-/*
-Param::Param(synfigapp::CanvasInterface* x):
-
-	type_(TYPE_CANVASINTERFACE)
-{
-	_ParamCounter::counter++;
-	data.canvas_interface.construct();
-	data.canvas_interface=x;
-}
-*/
 
 Param::Param(const etl::loose_handle<synfigapp::CanvasInterface>& x):
 
 	type_(TYPE_CANVASINTERFACE)
 {
-	_ParamCounter::counter++;
-	data.canvas_interface.construct();
-	data.canvas_interface.get()=x;
+	++ParamCounter::counter;
+	construct(&canvas_interface_, x);
 }
 
 Param::Param(const synfig::Canvas::Handle& x):
 	type_(TYPE_CANVAS)
 {
-	_ParamCounter::counter++;
-	data.canvas.construct();
-	data.canvas.get()=x;
+	++ParamCounter::counter;
+	construct(&canvas_, x);
 }
 
 Param::Param(const synfig::Canvas::LooseHandle& x):
 	type_(TYPE_CANVAS)
 {
-	_ParamCounter::counter++;
-	data.canvas.construct();
-	data.canvas.get()=x;
+	++ParamCounter::counter;
+	construct(&canvas_, x);
 }
 
 Param::Param(const synfig::Layer::Handle& x):
 
 	type_(TYPE_LAYER)
 {
-	_ParamCounter::counter++;
-	data.layer.construct();
-	data.layer.get()=x;
+	++ParamCounter::counter;
+	construct(&layer_, x);
 }
 
 Param::Param(const synfig::Layer::LooseHandle& x):
 
 	type_(TYPE_LAYER)
 {
-	_ParamCounter::counter++;
-	data.layer.construct();
-	data.layer.get()=x;
+	++ParamCounter::counter;
+	construct(&layer_, x);
 }
 
 Param::Param(const synfig::ValueNode::Handle& x):
 
 	type_(TYPE_VALUENODE)
 {
-	_ParamCounter::counter++;
-	data.value_node.construct();
-	data.value_node.get()=x;
+	++ParamCounter::counter;
+	construct(&value_node_, x);
 }
 
 Param::Param(const synfig::ValueNode::LooseHandle& x):
 
 	type_(TYPE_VALUENODE)
 {
-	_ParamCounter::counter++;
-	data.value_node.construct();
-	data.value_node.get()=x;
+	++ParamCounter::counter;
+	construct(&value_node_, x);
 }
 
 Param::Param(const synfig::ValueBase& x):
 
 	type_(TYPE_VALUE)
 {
-	_ParamCounter::counter++;
-	data.value.construct();
-	data.value.get()=x;
+	++ParamCounter::counter;
+	construct(&value_, x);
 }
 
 Param::Param(const synfig::RendDesc& x):
 	type_(TYPE_RENDDESC)
 {
-	_ParamCounter::counter++;
-	data.rend_desc.construct();
-	data.rend_desc.get()=x;
+	++ParamCounter::counter;
+	construct(&rend_desc_, x);
 }
 
 Param::Param(const synfig::Time& x):
 	type_(TYPE_TIME)
 {
-	_ParamCounter::counter++;
-	data.time.construct();
-	data.time.get()=x;
+	++ParamCounter::counter;
+	construct(&time_, x);
 }
 
 Param::Param(const synfig::Activepoint& x):
 
 	type_(TYPE_ACTIVEPOINT)
 {
-	_ParamCounter::counter++;
-	data.activepoint.construct();
-	data.activepoint.get()=x;
+	++ParamCounter::counter;
+	construct(&activepoint_, x);
 }
 
 Param::Param(const synfig::Waypoint& x):
 	type_(TYPE_WAYPOINT)
 {
-	_ParamCounter::counter++;
-	data.waypoint.construct();
-	data.waypoint.get()=x;
+	++ParamCounter::counter;
+	construct(&waypoint_, x);
 }
 
 Param::Param(const synfig::Waypoint::Model& x):
 	type_(TYPE_WAYPOINTMODEL)
 {
-	_ParamCounter::counter++;
-	data.waypoint_model.construct();
-	data.waypoint_model.get()=x;
+	++ParamCounter::counter;
+	construct(&waypoint_model_, x);
 }
 
 Param::Param(const synfig::String& x):
 	type_(TYPE_STRING)
 {
-	_ParamCounter::counter++;
-	data.string.construct();
-	data.string.get()=x;
+	++ParamCounter::counter;
+	construct(&string_, x);
 }
 
 Param::Param(const char * x):
 	type_(TYPE_STRING)
 {
-	_ParamCounter::counter++;
-	data.string.construct();
-	data.string.get()=x;
+	++ParamCounter::counter;
+	construct(&string_, x);
 }
 
 Param::Param(const synfig::Keyframe& x):
 
 	type_(TYPE_KEYFRAME)
 {
-	_ParamCounter::counter++;
-	data.keyframe.construct();
-	data.keyframe.get()=x;
+	++ParamCounter::counter;
+	construct(&keyframe_, x);
 }
 
 Param::Param(const synfigapp::ValueDesc& x):
 
 	type_(TYPE_VALUEDESC)
 {
-	_ParamCounter::counter++;
-	data.value_desc.construct();
-	data.value_desc.get()=x;
+	++ParamCounter::counter;
+	construct(&value_desc_, x);
 }
 
 Param::Param(const int& x):
 	type_(TYPE_INTEGER)
 {
-	_ParamCounter::counter++;
-	data.integer=x;
+	++ParamCounter::counter;
+	integer_ = x;
 }
 
 Param::Param(const EditMode& x):
 	type_(TYPE_EDITMODE)
 {
-	_ParamCounter::counter++;
-	data.edit_mode=x;
+	++ParamCounter::counter;
+	edit_mode_ = x;
 }
 
 Param::Param(const synfig::Real& x):
 
 	type_(TYPE_REAL)
 {
-	_ParamCounter::counter++;
-	data.real=x;
+	++ParamCounter::counter;
+	real_ = x;
 }
 
 Param::Param(const bool& x):
 
 	type_(TYPE_BOOL)
 {
-	_ParamCounter::counter++;
-	data.b=x;
+	++ParamCounter::counter;
+	bool_ = x;
 }
 
 Param::Param(const synfig::Interpolation& x):
 	type_(TYPE_INTERPOLATION)
 {
-	_ParamCounter::counter++;
-	data.interpolation=x;
+	++ParamCounter::counter;
+	interpolation_ = x;
 }
 
 Param::~Param()
 {
 	clear();
-	_ParamCounter::counter--;
+	--ParamCounter::counter;
+}
+
+void Param::set(const Param& rhs) {
+	type_ = rhs.type_;
+
+	switch(type_)
+	{
+		case TYPE_ACTIVEPOINT:
+			construct(&activepoint_, rhs.activepoint_);
+			break;
+		case TYPE_WAYPOINT:
+			construct(&waypoint_, rhs.waypoint_);
+			break;
+		case TYPE_WAYPOINTMODEL:
+			construct(&waypoint_model_, rhs.waypoint_model_);
+			break;
+		case TYPE_KEYFRAME:
+			construct(&keyframe_, rhs.keyframe_);
+			break;
+		case TYPE_CANVAS:
+			construct(&canvas_, rhs.canvas_);
+			break;
+		case TYPE_CANVASINTERFACE:
+			construct(&canvas_interface_, rhs.canvas_interface_);
+			break;
+		case TYPE_TIME:
+			construct(&time_, rhs.time_);
+			break;
+		case TYPE_LAYER:
+			construct(&layer_, rhs.layer_);
+			break;
+		case TYPE_VALUENODE:
+			construct(&value_node_, rhs.value_node_);
+			break;
+		case TYPE_VALUEDESC:
+			construct(&value_desc_, rhs.value_desc_);
+			break;
+		case TYPE_VALUE:
+			construct(&value_, rhs.value_);
+			break;
+		case TYPE_RENDDESC:
+			construct(&rend_desc_, rhs.rend_desc_);
+			break;
+		case TYPE_STRING:
+			construct(&string_, rhs.string_);
+			break;
+
+		// Trivially constructed
+		case TYPE_INTEGER:
+			integer_ = rhs.integer_;
+			break;
+		case TYPE_EDITMODE:
+			edit_mode_ = rhs.edit_mode_;
+			break;
+		case TYPE_REAL:
+			real_ = rhs.real_;
+			break;
+		case TYPE_BOOL:
+			bool_ = rhs.bool_;
+			break;
+		case TYPE_INTERPOLATION:
+			interpolation_ = rhs.interpolation_;
+			break;
+
+		case TYPE_NIL:
+			break;
+
+		default:
+			assert(0);
+			break;
+	}
 }
 
 Param&
 Param::operator=(const Param& rhs)
 {
 	clear();
-	type_=rhs.type_;
-
-	switch(type_)
-	{
-	case TYPE_ACTIVEPOINT:
-		data.activepoint.construct();
-		data.activepoint.get()=rhs.data.activepoint.get();
-		break;
-	case TYPE_WAYPOINT:
-		data.waypoint.construct();
-		data.waypoint.get()=rhs.data.waypoint.get();
-		break;
-	case TYPE_WAYPOINTMODEL:
-		data.waypoint_model.construct();
-		data.waypoint_model.get()=rhs.data.waypoint_model.get();
-		break;
-	case TYPE_KEYFRAME:
-		data.keyframe.construct();
-		data.keyframe.get()=rhs.data.keyframe.get();
-		break;
-	case TYPE_CANVAS:
-		data.canvas.construct();
-		data.canvas.get()=rhs.data.canvas.get();
-		break;
-	case TYPE_CANVASINTERFACE:
-		data.canvas_interface.construct();
-		data.canvas_interface.get()=rhs.data.canvas_interface.get();
-		break;
-	case TYPE_TIME:
-		data.time.construct();
-		data.time.get()=rhs.data.time.get();
-		break;
-	case TYPE_LAYER:
-		data.layer.construct();
-		data.layer.get()=rhs.data.layer.get();
-		break;
-	case TYPE_VALUENODE:
-		data.value_node.construct();
-		data.value_node.get()=rhs.data.value_node.get();
-		break;
-	case TYPE_VALUEDESC:
-		data.value_desc.construct();
-		data.value_desc.get()=rhs.data.value_desc.get();
-		break;
-	case TYPE_VALUE:
-		data.value.construct();
-		data.value.get()=rhs.data.value.get();
-		break;
-	case TYPE_RENDDESC:
-		data.rend_desc.construct();
-		data.rend_desc.get()=rhs.data.rend_desc.get();
-		break;
-	case TYPE_STRING:
-		data.string.construct();
-		data.string.get()=rhs.data.string.get();
-		break;
-
-	case TYPE_INTEGER:
-		data.integer=rhs.data.integer;
-		break;
-	case TYPE_EDITMODE:
-		data.integer=rhs.data.integer;
-		break;
-	case TYPE_REAL:
-		data.real=rhs.data.real;
-		break;
-	case TYPE_BOOL:
-		data.b=rhs.data.b;
-		break;
-	case TYPE_INTERPOLATION:
-		data.interpolation=rhs.data.interpolation;
-		break;
-
-	case TYPE_NIL:
-		break;
-
-	default:
-		assert(0);
-		break;
-	}
+	set(rhs);
 	return *this;
 }
 
@@ -479,43 +375,43 @@ Param::clear()
 	switch(type_)
 	{
 	case TYPE_ACTIVEPOINT:
-		data.activepoint.destruct();
+		destruct(activepoint_);
 		break;
 	case TYPE_WAYPOINT:
-		data.waypoint.destruct();
+		destruct(waypoint_);
 		break;
 	case TYPE_WAYPOINTMODEL:
-		data.waypoint_model.destruct();
+		destruct(waypoint_model_);
 		break;
 	case TYPE_KEYFRAME:
-		data.keyframe.destruct();
+		destruct(keyframe_);
 		break;
 	case TYPE_CANVAS:
-		data.canvas.destruct();
+		destruct(canvas_);
 		break;
 	case TYPE_CANVASINTERFACE:
-		data.canvas_interface.destruct();
+		destruct(canvas_interface_);
 		break;
 	case TYPE_LAYER:
-		data.layer.destruct();
+		destruct(layer_);
 		break;
 	case TYPE_TIME:
-		data.time.destruct();
+		destruct(time_);
 		break;
 	case TYPE_VALUENODE:
-		data.value_node.destruct();
+		destruct(value_node_);
 		break;
 	case TYPE_VALUEDESC:
-		data.value_desc.destruct();
+		destruct(value_desc_);
 		break;
 	case TYPE_VALUE:
-		data.value.destruct();
+		destruct(value_);
 		break;
 	case TYPE_RENDDESC:
-		data.rend_desc.destruct();
+		destruct(rend_desc_);
 		break;
 	case TYPE_STRING:
-		data.string.destruct();
+		destruct(string_);
 		break;
 
 	case TYPE_NIL:
