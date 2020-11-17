@@ -43,12 +43,8 @@
 #include "autorecover.h"
 #include "duck.h"
 
-#include <ETL/stringf>
-#include <ETL/misc>
-
 #include <synfig/rendering/renderer.h>
 
-#include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
 
 #include <gui/resourcehelper.h>

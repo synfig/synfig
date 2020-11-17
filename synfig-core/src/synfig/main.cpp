@@ -54,7 +54,6 @@
 
 #include "token.h"
 #include "target.h"
-#include <ETL/stringf>
 #include "cairolistimporter.h"
 #include "listimporter.h"
 #include "cairoimporter.h"

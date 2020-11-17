@@ -35,8 +35,6 @@
 
 #include <gtkmm/aboutdialog.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/version.h>
 

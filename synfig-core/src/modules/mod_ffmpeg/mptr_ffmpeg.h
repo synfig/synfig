@@ -32,7 +32,6 @@
 #include <synfig/importer.h>
 #include <sys/types.h>
 #include <cstdio>
-#include "string.h"
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
 #endif

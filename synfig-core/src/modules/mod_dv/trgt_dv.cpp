@@ -36,7 +36,6 @@
 #include <synfig/general.h>
 
 #include <glib/gstdio.h>
-#include <ETL/stringf>
 #include "trgt_dv.h"
 #include <cstdio>
 #include <sys/types.h>

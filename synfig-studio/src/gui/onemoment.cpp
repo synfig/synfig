@@ -32,18 +32,9 @@
 #	include <config.h>
 #endif
 
-#include <iostream>
 #include <string>
 
-#include <ETL/stringf>
-
-#include <synfig/general.h>
-
-#include <gtkmm/image.h>
-#include <gdkmm/pixbufloader.h>
-#include <gtkmm/button.h>
 #include <gtkmm/label.h>
-#include <gtkmm/fixed.h>
 
 #include "onemoment.h"
 #include "app.h"

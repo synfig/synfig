@@ -35,9 +35,6 @@
 #endif
 
 #include "region.h"
-#include <ETL/stringf>
-#include <ETL/bezier>
-#include <ETL/hermite>
 
 #include <synfig/localization.h>
 #include <synfig/general.h>

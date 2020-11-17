@@ -37,11 +37,9 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include <string.h>
 #include <synfig/module.h>
 #include "lyr_freetype.h"
 #include <iostream>
-#include <ETL/stringf>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

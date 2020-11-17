@@ -32,9 +32,7 @@
 
 #include <synfig/general.h>
 
-#include <gtkmm/menu.h>
 #include "widgets/widget_sublayer.h"
-#include <ETL/stringf>
 #include <synfig/valuenode.h>
 #include <synfig/canvas.h>
 #include <synfig/context.h>

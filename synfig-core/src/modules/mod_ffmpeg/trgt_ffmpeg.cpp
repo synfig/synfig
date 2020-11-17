@@ -37,7 +37,6 @@
 #include <synfig/general.h>
 #include <synfig/soundprocessor.h>
 
-#include <ETL/stringf>
 #include "trgt_ffmpeg.h"
 #include <cstdio>
 #include <sys/types.h>

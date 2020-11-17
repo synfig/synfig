@@ -41,11 +41,8 @@
 #include <glib/gstdio.h>
 #include "trgt_png_spritesheet.h"
 #include <png.h>
-#include <ETL/stringf>
 #include <cstdio>
 #include <cstring> 
-#include <algorithm>
-#include <functional>
 #include <ETL/misc>
 #include <iostream>
 

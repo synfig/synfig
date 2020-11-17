@@ -22,15 +22,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <iostream>
-
 #include <map>
 #include <glibmm.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
-#include <cmath>
-#include <ETL/stringf>
 #include "vectorizersettings.h"
 #include <synfig/rendering/software/surfacesw.h>
 #include <gui/localization.h>

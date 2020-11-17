@@ -33,7 +33,6 @@
 #include "guid.h"
 #include "quick_rng.h"
 #include <ETL/stringf>
-#include <functional>
 
 #include <cstring>
 

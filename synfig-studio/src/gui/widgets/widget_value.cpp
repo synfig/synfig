@@ -36,8 +36,6 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/eventbox.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 
 #include "widgets/widget_value.h"

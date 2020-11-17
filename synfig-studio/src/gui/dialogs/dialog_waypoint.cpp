@@ -36,7 +36,6 @@
 #include <gtk/gtk.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/combobox.h>
-#include <ETL/stringf>
 #include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>

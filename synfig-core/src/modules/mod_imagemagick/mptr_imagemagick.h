@@ -31,7 +31,6 @@
 
 #include <synfig/importer.h>
 #include <cstdio>
-#include "string.h"
 #include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */

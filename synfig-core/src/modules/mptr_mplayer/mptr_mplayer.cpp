@@ -33,13 +33,9 @@
 
 #include <glib/gstdio.h>
 #include <synfig/synfig.h>
-#include <ETL/stringf>
 #include "mptr_mplayer.h"
 #include <cstdio>
 #include <iostream>
-#include <algorithm>
-#include <functional>
-#include <ETL/stringf>
 #endif
 
 /* === M A C R O S ========================================================= */

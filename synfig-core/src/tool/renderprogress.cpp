@@ -21,7 +21,6 @@
 #include <cmath>
 #include <iostream>
 #include "renderprogress.h"
-//#include <boost/format.hpp>
 #include <ETL/stringf>
 #include <sstream>
 

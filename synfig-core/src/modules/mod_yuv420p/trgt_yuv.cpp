@@ -32,10 +32,7 @@
 
 #include <glib/gstdio.h>
 #include "trgt_yuv.h"
-#include <ETL/stringf>
 #include <cstdio>
-#include <algorithm>
-#include <functional>
 #endif
 
 using namespace synfig;
