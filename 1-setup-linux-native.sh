@@ -30,7 +30,7 @@ echo "Detecting Linux OS..."
 # Check if /etc/os-release file is available
 if [ -f /etc/os-release ]; then
     source /etc/os-release
-    if [ -z $ID_LIKE ] && [ ! -z $ID ]; then
+    if [ -z "$ID_LIKE" ] && [ ! -z $ID ]; then
         ID_LIKE=$ID
     fi
     echo "ID_LIKE=$ID_LIKE"
@@ -38,7 +38,7 @@ if [ -f /etc/os-release ]; then
 fi
 
 # Fallback whether /etc/os-release is not available, or if ID_LIKE is not set
-if [ -z $ID_LIKE ]; then
+if [ -z "$ID_LIKE" ]; then
     if command -v dnf >/dev/null; then
         # Fedora DNF package manager
         export ID_LIKE="fedora"
@@ -189,7 +189,7 @@ elif [ "$ID_LIKE" == "arch" ]; then
     echo
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
 
-elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] ; then
+elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" == "ubuntu debian" ]; then
     if [ ! -f /etc/altlinux-release ]; then
             #  Debian / Ubuntu
             PKG_LIST=" \
