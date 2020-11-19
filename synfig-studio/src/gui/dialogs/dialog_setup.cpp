@@ -385,9 +385,12 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	pi.grid->attach(fcbutton_image,            1,   row, 2, 1);
 	fcbutton_image.signal_file_set().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_image_set) );
 
-	if (App::default_background_layer_type == "none")        def_background_none.set_active();
-	if (App::default_background_layer_type == "solid_color") def_background_color.set_active();
-	if (App::default_background_layer_type == "image")       def_background_image.set_active();
+	if (App::default_background_layer_type == "none")
+		def_background_none.set_active();
+	if (App::default_background_layer_type == "solid_color")
+		def_background_color.set_active();
+	if (App::default_background_layer_type == "image")
+		def_background_image.set_active();
 
 }
 
@@ -456,7 +459,6 @@ Dialog_Setup::on_choose_editor_pressed()
 	String filepath = image_editor_path_entry.get_text();
 	if (select_path_dialog(_("Select Editor"), filepath)) {
 		image_editor_path_entry.set_text(filepath);
-		App::image_editor_path = filepath;
 	}
 }
 
@@ -629,9 +631,8 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	//! change resume signal connexion
 	ui_language_combo.signal_changed().connect(
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_LANGUAGE));
-	//TODO signal change on value
-	//toggle_use_dark_theme.signal_changed().connect(
-	//	sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_THEME));
+	toggle_use_dark_theme.property_active().signal_changed().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_theme_changed));
 	toggle_handle_tooltip_widthpoint.property_active().signal_changed().connect(
 		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 	toggle_handle_tooltip_radius.property_active().signal_changed().connect(
@@ -647,8 +648,51 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 void
 Dialog_Setup::on_restore_pressed()
 {
-	App::restore_default_settings();
-	refresh();
+	if (App::dialog_message_2b(
+		_("Restore default settings"),
+		_("Settings will be restored to default. Are you sure?"),
+		Gtk::MESSAGE_QUESTION,
+		_("Cancel"),
+		_("Restore")))
+	{
+		// Assign (without applying) default values
+		adj_recent_files->set_value(25);
+		timestamp_comboboxtext.set_active(5);
+		toggle_autobackup.set_active(true);
+		auto_backup_interval.set_value(15);
+		widget_enum->set_value(Distance::SYSTEM_POINTS);
+		toggle_restrict_radius_ducks.set_active(true);
+		toggle_animation_thumbnail_preview.set_active(true);
+		toggle_enable_experimental_features.set_active(false);
+		toggle_use_dark_theme.set_active(false);
+		toggle_show_file_toolbar.set_active(true);
+		listviewtext_brushes_path->clear_items();
+		textbox_custom_filename_prefix.set_text(DEFAULT_FILENAME_PREFIX);
+		image_editor_path_entry.set_text("");
+		adj_pref_x_size->set_value(480);
+		adj_pref_y_size->set_value(270);
+		size_template_combo->set_active_text(DEFAULT_PREDEFINED_SIZE);
+		fps_template_combo->set_active_text(DEFAULT_PREDEFINED_FPS);
+		adj_pref_fps->set_value(24.0);
+		image_sequence_separator.set_text(".");
+		workarea_renderer_combo.set_active_id("");
+		def_background_none.set_active();
+		
+		Gdk::RGBA m_color;
+		m_color.set_rgba(1.000000, 1.000000, 1.000000, 1.000000);
+		def_background_color_button.set_rgba(m_color);
+		m_color.set_rgba(0.742187, 0.742187, 0.742187, 1.000000);
+		preview_background_color_button.set_rgba(m_color);
+		fcbutton_image.unselect_all();
+		
+		toggle_play_sound_on_render_done.set_active(true);
+		ui_language_combo.set_active_id(App::ui_language);
+		toggle_handle_tooltip_widthpoint.set_active(true);
+		toggle_handle_tooltip_radius.set_active(true);
+		toggle_handle_tooltip_transformation.set_active(false);
+		toggle_handle_tooltip_transfo_name.set_active(false);
+		toggle_handle_tooltip_transfo_value.set_active(false);
+	}
 }
 
 
@@ -713,7 +757,7 @@ Dialog_Setup::on_apply_pressed()
 	App::custom_filename_prefix = textbox_custom_filename_prefix.get_text();
 
 	// Set the preferred image editor
-	App::image_editor_path = image_editor_path_entry.get_text();
+	App::image_editor_path		= image_editor_path_entry.get_text();
 
 	// Set the preferred new Document X dimension
 	App::preferred_x_size       = int(adj_pref_x_size->get_value());
@@ -730,6 +774,24 @@ Dialog_Setup::on_apply_pressed()
 	// Set the preferred FPS
 	App::preferred_fps          = Real(adj_pref_fps->get_value());
 
+	// Set the background color
+	Gdk::RGBA m_color = def_background_color_button.get_rgba();
+
+	App::default_background_layer_color = synfig::Color(m_color.get_red(),
+														m_color.get_green(),
+														m_color.get_blue(),
+														m_color.get_alpha());
+	
+	if (def_background_none.get_active())
+		App::default_background_layer_type = "none";
+	if (def_background_color.get_active())
+		App::default_background_layer_type = "solid_color";
+	if (def_background_image.get_active())
+		App::default_background_layer_type = "image";
+	
+	// Set the background image
+	App::default_background_layer_image = fcbutton_image.get_filename();
+	
 	// Set the preferred image sequence separator
 	App::sequence_separator     = image_sequence_separator.get_text();
 
@@ -738,6 +800,14 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the use of a render done sound
 	App::use_render_done_sound  = toggle_play_sound_on_render_done.get_active();
+	
+	// Set the preview background color
+	m_color = preview_background_color_button.get_rgba();
+
+	App::preview_background_color = synfig::Color(m_color.get_red(),
+												  m_color.get_green(),
+												  m_color.get_blue(),
+												  m_color.get_alpha());
 
 	// Set ui language
 	if (pref_modification_flag & CHANGE_UI_LANGUAGE)
@@ -805,6 +875,11 @@ Dialog_Setup::on_ui_language_combo_change()
 {
 }
 
+void
+Dialog_Setup::on_theme_changed()
+{
+	//TODO: update theme as toggle_use_dark_theme is changed
+}
 
 void
 Dialog_Setup::on_fps_template_combo_change()
@@ -833,52 +908,31 @@ void
 Dialog_Setup::on_autobackup_changed()
 {
 	auto_backup_interval.set_sensitive(toggle_autobackup.get_active());
-	App::auto_recover->set_enabled(toggle_autobackup.get_active());
 }
 
 void
 Dialog_Setup::on_play_sound_on_render_done_changed()
 {
-	App::use_render_done_sound = toggle_play_sound_on_render_done.get_active();
 }
 
 void
 Dialog_Setup::on_def_background_type_changed()
 {
-	if (def_background_none.get_active())  App::default_background_layer_type = "none";
-	if (def_background_color.get_active()) App::default_background_layer_type = "solid_color";
-	if (def_background_image.get_active()) App::default_background_layer_type = "image";
 }
 
 void
 Dialog_Setup::on_def_background_color_changed()
 {
-	Gdk::RGBA m_color = def_background_color_button.get_rgba();
-
-	App::default_background_layer_color =
-		synfig::Color(m_color.get_red(),
-		              m_color.get_green(),
-		              m_color.get_blue(),
-		              m_color.get_alpha());
 }
 
 void
 Dialog_Setup::on_def_background_image_set()
 {
-	App::default_background_layer_image = fcbutton_image.get_filename();
 }
 
 void
 Dialog_Setup::on_preview_background_color_changed()
 {
-	Gdk::RGBA m_color = preview_background_color_button.get_rgba();
-
-	App::preview_background_color =
-		synfig::Color(m_color.get_red(),
-		              m_color.get_green(),
-		              m_color.get_blue(),
-		              m_color.get_alpha());
-	//studio::Widget_Preview::
 }
 
 void
@@ -926,15 +980,19 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
-	App::apply_gtk_settings();
 
 	// Refresh the status of the render done sound flag
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
 	
 	// Refresh the default background
-	if (App::default_background_layer_type == "none")        def_background_none.set_active();
-	if (App::default_background_layer_type == "solid_color") def_background_color.set_active();
-	if (App::default_background_layer_type == "image")       def_background_image.set_active();
+	if (App::default_background_layer_type == "none")
+		def_background_none.set_active();
+	if (App::default_background_layer_type == "solid_color")
+		def_background_color.set_active();
+	if (App::default_background_layer_type == "image")
+		def_background_image.set_active();
+	
+	fcbutton_image.set_filename(App::default_background_layer_image);
 	
 	// Refresh the colors of background and preview background buttons
 	Gdk::RGBA m_color;
@@ -1018,6 +1076,8 @@ Dialog_Setup::refresh()
 	// Refresh ui tooltip handle info
 	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
 	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
+	
+	// Refresh widget tooltip
 	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
 			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE))
 	{
@@ -1030,7 +1090,9 @@ Dialog_Setup::refresh()
 	else
 	{
 		toggle_handle_tooltip_transformation.set_active(false);
+		toggle_handle_tooltip_transfo_name.set_active(false);
 		toggle_handle_tooltip_transfo_name.set_sensitive(false);
+		toggle_handle_tooltip_transfo_value.set_active(false);
 		toggle_handle_tooltip_transfo_value.set_sensitive(false);
 	}
 
