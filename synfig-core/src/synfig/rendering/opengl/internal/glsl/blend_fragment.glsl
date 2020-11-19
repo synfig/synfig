@@ -212,6 +212,27 @@ void main()
 		dest = vec4(0);
 
 #endif
+#ifdef method_add_composite
+
+	float alpha = max(0.f, min(1.f, dest.a + src.a));
+	float k = abs(alpha) > 1e-8 ? 1.0/alpha : 0.0;
+	dest.a = alpha;
+	dest.rgb = k*(dest.rgb * dest.a + src.rgb * src.a);
+
+#endif
+#ifdef method_alpha
+
+	vec4 rm = dest;
+	rm.a = src.a * dest.a;
+	src = rm;
+	// copied from alpha_over
+	dest.a = 1 - amount*src.a;
+	if (abs(dest.a) > epsilon)
+		dest.rgb *= (1 + amount*src.a)/dest.a;
+	else
+		dest = vec4(0);
+
+#endif
 
 	out_color = dest;
 }

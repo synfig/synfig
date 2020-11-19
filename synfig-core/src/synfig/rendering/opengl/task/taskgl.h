@@ -52,7 +52,7 @@ public:
 
 	static ModeToken mode_token;
 	virtual Surface::Token::Handle get_mode_target_token() const
-		{ return TargetSurface::token; }
+		{ return TargetSurface::token.handle(); }
 	virtual bool get_mode_allow_multithreading() const
 		{ return false; }
 protected:

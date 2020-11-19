@@ -56,7 +56,7 @@ class TaskBlendGL: public TaskBlend, public TaskGL
 public:
 	typedef etl::handle<TaskBlendGL> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token; }
+	virtual Token::Handle get_token() const { return token.handle(); }
 
 	virtual bool run(RunParams &params) const {
 		/* TODO:

@@ -57,7 +57,7 @@ RendererGL::RendererGL()
 	register_mode(TaskGL::mode_token.handle());
 
 	// register optimizers
-	register_optimizer(new OptimizerTransformation(true));
+	register_optimizer(new OptimizerTransformation());
 }
 
 RendererGL::~RendererGL() { }

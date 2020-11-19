@@ -57,7 +57,7 @@ protected:
 
 	virtual bool create_vfunc(int width, int height);
 	virtual bool assign_vfunc(const Surface &surface);
-	virtual void reset_vfunc();
+	virtual bool reset_vfunc();
 	virtual bool get_pixels_vfunc(Color *buffer) const;
 
 public:

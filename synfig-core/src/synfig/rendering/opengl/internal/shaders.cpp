@@ -110,7 +110,6 @@ gl::Shaders::Shaders(Context &context):
 	load_blend(Color::BLEND_ALPHA_OVER,     "alphaover");
 	load_blend(Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten");
 	load_blend(Color::BLEND_ALPHA_DARKEN,   "alphadarken");
-#error implement add_composite and alpha
 	load_blend(Color::BLEND_ADD_COMPOSITE,  "add_composite");
 	load_blend(Color::BLEND_ALPHA,          "alpha");
 	#ifndef NDEBUG
