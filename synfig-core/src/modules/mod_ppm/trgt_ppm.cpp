@@ -34,10 +34,6 @@
 
 #include <glib/gstdio.h>
 #include "trgt_ppm.h"
-#include <ETL/stringf>
-#include <cstdio>
-#include <algorithm>
-#include <functional>
 #endif
 
 /* === M A C R O S ========================================================= */

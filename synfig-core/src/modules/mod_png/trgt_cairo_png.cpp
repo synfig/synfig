@@ -37,11 +37,6 @@
 #include <synfig/general.h>
 
 #include "trgt_cairo_png.h"
-#include <ETL/stringf>
-#include <cstdio>
-#include <algorithm>
-#include <functional>
-#include <ETL/misc>
 
 #endif
 

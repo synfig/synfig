@@ -30,8 +30,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/importer.h>
-#include <cstdio>
-#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 

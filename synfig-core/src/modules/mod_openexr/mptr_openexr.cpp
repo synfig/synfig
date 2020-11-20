@@ -36,10 +36,6 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/surface.h>
-#include <ETL/stringf>
-#include <cstdio>
-#include <algorithm>
-#include <functional>
 
 #include <ImfArray.h>
 #include <ImfRgbaFile.h>

@@ -63,7 +63,6 @@
 #include "cairoimporter.h"
 
 #include <libxml++/libxml++.h>
-#include <ETL/stringf>
 #include "gradient.h"
 
 /*extern "C" {

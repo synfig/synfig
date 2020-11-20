@@ -29,7 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
 
 #include "module.h"
 

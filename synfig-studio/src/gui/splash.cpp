@@ -35,10 +35,7 @@
 
 #include <synfig/general.h>
 
-#include <iostream>
 #include <string>
-
-#include <ETL/stringf>
 
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>

@@ -35,7 +35,6 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include <ETL/stringf>
 #include "trgt_imagemagick.h"
 #include <cstdio>
 #include <sys/types.h>
@@ -52,9 +51,6 @@
  #include <fcntl.h>
 #endif
 #include <unistd.h>
-#include <algorithm>
-#include <functional>
-#include <ETL/clock>
 #include <ETL/misc>
 
 #endif

@@ -34,7 +34,6 @@
 
 #include <glib/gstdio.h>
 #include "trgt_jpeg.h"
-#include <ETL/stringf>
 #endif
 
 /* === M A C R O S ========================================================= */

@@ -32,7 +32,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
 #include "mptr_ffmpeg.h"
 #include <cstdio>
 #include <sys/types.h>
@@ -52,9 +51,6 @@
 #endif
 #include <unistd.h>
 #include <iostream>
-#include <algorithm>
-#include <functional>
-#include <ETL/stringf>
 #endif
 
 /* === M A C R O S ========================================================= */

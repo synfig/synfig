@@ -34,13 +34,10 @@
 #include "value.h"
 #include "general.h"
 #include <synfig/localization.h>
-#include <ETL/stringf>
 #include "canvas.h"
 #include "valuenodes/valuenode_bone.h"
 #include "gradient.h"
-#include "bone.h"
 #include "matrix.h"
-#include "boneweightpair.h"
 #include "transformation.h"
 
 

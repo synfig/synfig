@@ -40,10 +40,7 @@
 #include <glib/gstdio.h>
 #include "trgt_mng.h"
 #include <libmng.h>
-#include <ETL/stringf>
 #include <cstdio>
-#include <algorithm>
-#include <functional>
 #include <ETL/misc>
 
 #endif

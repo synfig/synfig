@@ -33,10 +33,8 @@
 #include <synfig/string.h>
 #include <synfig/surface.h>
 #include <synfig/targetparam.h>
-#include <cstdio>
 #include <OpenEXR/ImfArray.h>
 #include <OpenEXR/ImfRgbaFile.h>
-#include <exception>
 
 /* === M A C R O S ========================================================= */
 

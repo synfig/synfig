@@ -38,10 +38,7 @@
 #include <glib/gstdio.h>
 #include "trgt_png.h"
 #include <png.h>
-#include <ETL/stringf>
 #include <cstdio>
-#include <algorithm>
-#include <functional>
 #include <ETL/misc>
 #include <string.h>
 

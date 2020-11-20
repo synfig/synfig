@@ -37,7 +37,6 @@
 #include <synfig/color.h>
 
 #include <glib/gstdio.h>
-#include <ETL/stringf>
 #include "trgt_gif.h"
 #include <cstdio>
 #endif

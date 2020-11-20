@@ -46,8 +46,6 @@
 #include <libxml++/libxml++.h>
 #include <sigc++/bind.h>
 
-#include <ETL/stringf>
-
 #include "loadcanvas.h"
 
 #include "general.h"

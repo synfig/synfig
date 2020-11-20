@@ -53,8 +53,6 @@
 #include <gtkmm/button.h>
 #include <gtkmm/actiongroup.h>
 
-#include <ETL/stringf>
-
 #include <synfig/savecanvas.h>
 #include <synfig/canvasfilenaming.h>
 #include <synfig/layers/layer_switch.h>

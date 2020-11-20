@@ -31,9 +31,7 @@
 #endif
 
 #include "bone.h"
-#include "guid.h"
 #include "valuenodes/valuenode_bone.h"
-#include <ETL/stringf>
 #include <cmath>
 
 #include <synfig/general.h>

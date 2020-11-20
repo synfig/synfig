@@ -37,8 +37,6 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/target_scanline.h>
 #include <synfig/canvas.h>

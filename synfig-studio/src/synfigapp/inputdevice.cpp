@@ -34,8 +34,6 @@
 
 #include "inputdevice.h"
 #include "settings.h"
-#include <cstdio>
-#include <ETL/stringf>
 #include "main.h"
 
 #include <synfigapp/localization.h>

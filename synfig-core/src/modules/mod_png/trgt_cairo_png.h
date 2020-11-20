@@ -35,7 +35,6 @@
 #include <synfig/string.h>
 #include <synfig/targetparam.h>
 #include <cairo.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
