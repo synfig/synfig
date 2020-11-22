@@ -59,6 +59,7 @@
 #include "workarearenderer/workarearenderer.h"
 #include "workarearenderer/renderer_background.h"
 #include "workarearenderer/renderer_canvas.h"
+#include "workarearenderer/renderer_frameerror.h"
 #include "workarearenderer/renderer_grid.h"
 #include "workarearenderer/renderer_guides.h"
 #include "workarearenderer/renderer_timecode.h"
@@ -186,6 +187,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	insert_renderer(new Renderer_Dragbox,    400);
 	insert_renderer(new Renderer_Timecode,   500);
 	insert_renderer(new Renderer_BoneSetup,  501);
+	insert_renderer(new Renderer_FrameError, 502);
 
 	signal_duck_selection_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
 	signal_duck_selection_single().connect(sigc::mem_fun(*this, &studio::WorkArea::on_duck_selection_single));
@@ -2111,6 +2113,15 @@ WorkArea::sync_render(bool refresh)
 	if (refresh) renderer_canvas->clear_render();
 	renderer_canvas->enqueue_render();
 	renderer_canvas->wait_render();
+
+	// report error while animating... It hinders some frame rendering while user doesn't interact with dialog
+	std::vector<std::string> error_msg_list;
+	renderer_canvas->get_rendering_error_messages(error_msg_list);
+	std::string error_msg;
+	for (auto& msg : error_msg_list)
+		error_msg.append(msg + "\n");
+	if (!error_msg.empty())
+		App::get_ui_interface()->error(error_msg);
 }
 
 void

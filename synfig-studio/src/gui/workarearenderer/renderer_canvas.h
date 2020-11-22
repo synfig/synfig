@@ -213,6 +213,8 @@ private:
 		const synfig::RectInt &window_rect,
 		const FrameId &id );
 
+	std::map<synfig::Time, std::set<std::string>> rendering_error_msg_map;
+
 public:
 	Renderer_Canvas();
 	~Renderer_Canvas();
@@ -224,6 +226,9 @@ public:
 	void clear_render();
 
 	void get_render_status(StatusMap &out_map);
+
+	void get_rendering_error_messages(std::vector<std::string>& messages);
+	void get_rendering_error_messages_for_time(const synfig::Time& time, std::set<std::string>& message_set);
 
 	// just paint already rendered tiles at window
 	void render_vfunc(
