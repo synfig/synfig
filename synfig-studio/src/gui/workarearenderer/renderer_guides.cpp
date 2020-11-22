@@ -30,36 +30,24 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "renderer_guides.h"
-#include "workarea.h"
-#include <ETL/misc>
-
-#include <gui/localization.h>
+#include <gui/workarea.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+#define GUIDE_COLOR_CURRENT     Gdk::Color("#ff6f6f")
 
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-
-Renderer_Guides::Renderer_Guides()//:
-	//dragging(false)
-{
-
-}
 
 Renderer_Guides::~Renderer_Guides()
 {

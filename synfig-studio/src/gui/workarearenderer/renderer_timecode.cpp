@@ -31,28 +31,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "renderer_timecode.h"
-#include "workarea.h"
-#include <pangomm/layout.h>
-#include <pangomm/context.h>
-#include <pango/pango.h>
-#include "app.h"
-#include <cassert>
 
-#include <gui/localization.h>
+#include <cassert>
+#include <gui/workarea.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+#define TIMECODE_COLOR_TEXT     Gdk::Color("#5f0000")
 
 /* === G L O B A L S ======================================================= */
 
@@ -70,12 +63,6 @@ Renderer_Timecode::get_enabled_vfunc()const
 	Canvas::Handle canvas(get_work_area()->get_canvas());
 	return (canvas->rend_desc().get_time_start()!=canvas->rend_desc().get_time_end() ||
 		canvas->get_time()!=canvas->rend_desc().get_time_start());
-}
-
-synfig::Vector
-Renderer_Timecode::get_grid_size()const
-{
-	return get_work_area()->get_grid_size();
 }
 
 void
@@ -115,7 +102,7 @@ Renderer_Timecode::render_vfunc(
 		cr->save();
 
 		cr->set_source_rgb(GDK_COLOR_TO_RGB(TIMECODE_COLOR_TEXT));
-		cr->move_to(4,4);
+		cr->move_to(timecode_x, timecode_y);
 		layout->show_in_cairo_context(cr);
 
 		cr->restore();

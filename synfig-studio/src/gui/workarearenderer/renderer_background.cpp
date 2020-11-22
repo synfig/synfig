@@ -30,20 +30,13 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "renderer_background.h"
-#include "workarea.h"
-#include <ETL/misc>
-
-#include <gui/localization.h>
+#include <gui/workarea.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

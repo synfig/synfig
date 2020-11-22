@@ -32,22 +32,18 @@
 #	include <config.h>
 #endif
 
-#include <ctime>
 #include <cstring>
 #include <valarray>
 
-#include <glib.h>
-
 #include <synfig/general.h>
-#include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/threadpool.h>
 #include <synfig/rendering/renderer.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 
-#include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/timemodel.h>
+#include <gui/workarea.h>
 
 #include "renderer_canvas.h"
 

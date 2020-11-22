@@ -45,7 +45,7 @@ protected:
 
 public:
     ~Renderer_Background();
-    void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
+    void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area);
 };
 	
 }; // END of namespace studio

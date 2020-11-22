@@ -29,14 +29,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include "workarearenderer.h"
-#include <vector>
-#include <synfig/vector.h>
 #include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
-
-#define BBOX_COLOR_OUTLINE      Gdk::Color("#ffffff")
-#define BBOX_COLOR_FAILBACK     Gdk::Color("#000000")
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -49,15 +44,11 @@ class Renderer_BBox : public studio::WorkAreaRenderer
 	synfig::Rect bbox;
 
 public:
-	Renderer_BBox();
 	~Renderer_BBox();
 
-	const synfig::Rect& get_bbox();
+	const synfig::Rect& get_bbox() const;
 
-	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
-
-protected:
-	//bool get_enabled_vfunc()const;
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area);
 };
 
 }; // END of namespace studio

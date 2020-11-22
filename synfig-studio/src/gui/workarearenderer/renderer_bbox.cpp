@@ -31,23 +31,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "renderer_bbox.h"
-#include "workarea.h"
-#include "canvasview.h"
-#include <gui/localization.h>
+#include <gui/canvasview.h>
+#include <gui/workarea.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+#define BBOX_COLOR_OUTLINE      Gdk::Color("#ffffff")
+#define BBOX_COLOR_FAILBACK     Gdk::Color("#000000")
 
 /* === G L O B A L S ======================================================= */
 
@@ -55,16 +53,12 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Renderer_BBox::Renderer_BBox()
-{
-}
-
 Renderer_BBox::~Renderer_BBox()
 {
 }
 
 const synfig::Rect&
-Renderer_BBox::get_bbox()
+Renderer_BBox::get_bbox() const
 {
 	return get_work_area()->get_canvas_view()->get_bbox();
 }
@@ -101,9 +95,9 @@ Renderer_BBox::render_vfunc(
 		br[0]=(br[0]-window_startx)/pw;
 		br[1]=(br[1]-window_starty)/ph;
 		if(tl[0]>br[0])
-			swap(tl[0],br[0]);
+			std::swap(tl[0],br[0]);
 		if(tl[1]>br[1])
-			swap(tl[1],br[1]);
+			std::swap(tl[1],br[1]);
 
 		cr->save();
 		cr->set_line_cap(Cairo::LINE_CAP_BUTT);

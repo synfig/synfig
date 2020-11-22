@@ -28,13 +28,12 @@
 /* === H E A D E R S ======================================================= */
 
 #include "workarearenderer.h"
-#include <vector>
 
 /* === M A C R O S ========================================================= */
 
-#define TIMECODE_COLOR_TEXT     Gdk::Color("#5f0000")
-
+namespace studio {
 static const int timecode_x  = 4, timecode_y  =  4;
+};
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -48,9 +47,7 @@ class Renderer_Timecode : public studio::WorkAreaRenderer
 public:
 	~Renderer_Timecode();
 
-	synfig::Vector get_grid_size()const;
-
-	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area);
 
 protected:
 	bool get_enabled_vfunc()const;
