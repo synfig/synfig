@@ -2120,8 +2120,10 @@ WorkArea::sync_render(bool refresh)
 	std::string error_msg;
 	for (auto& msg : error_msg_list)
 		error_msg.append(msg + "\n");
-	if (!error_msg.empty())
+	if (!error_msg.empty()) {
 		App::get_ui_interface()->error(error_msg);
+		canvas_view->stop_async();
+	}
 }
 
 void
