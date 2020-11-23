@@ -28,11 +28,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "workarearenderer.h"
-#include <vector>
 
 /* === M A C R O S ========================================================= */
-
-#define GUIDE_COLOR_CURRENT     Gdk::Color("#ff6f6f")
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -42,10 +39,7 @@ namespace studio {
 
 class Renderer_Guides : public studio::WorkAreaRenderer
 {
-	//bool dragging;
-	// Warining: Unused variable dragging
 public:
-	Renderer_Guides();
 	~Renderer_Guides();
 
 	std::list<float>& get_guide_list_x();

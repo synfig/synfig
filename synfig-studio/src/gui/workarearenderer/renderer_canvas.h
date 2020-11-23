@@ -28,16 +28,14 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <climits>
-
 #include <vector>
 #include <map>
 
-#include <synfig/time.h>
+#include <synfig/canvas.h>
 #include <synfig/rendering/task.h>
 #include <synfig/rendering/renderer.h>
+#include <synfig/time.h>
 
-#include "../workarea.h"
 #include "workarearenderer.h"
 
 /* === M A C R O S ========================================================= */

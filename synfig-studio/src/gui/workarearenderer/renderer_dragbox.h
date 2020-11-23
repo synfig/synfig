@@ -31,15 +31,12 @@
 /* === H E A D E R S ======================================================= */
 
 #include "workarearenderer.h"
-#include "duckmatic.h"
-#include <vector>
+#include <gui/duckmatic.h>
 #include <synfig/vector.h>
 #include <synfig/guidset.h>
 
 
 /* === M A C R O S ========================================================= */
-
-#define DRAGBOX_COLOR_OUTLINE      Gdk::Color("#000000")
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -69,7 +66,7 @@ protected:
 	bool get_enabled_vfunc()const;
 
 	//! Redraw the drag box
-	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area	);
+	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,const Gdk::Rectangle& expose_area);
 	//! Catch some mouse events to select objects (handles) in the workarea
 	bool event_vfunc(GdkEvent* event);
 };

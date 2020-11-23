@@ -33,26 +33,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "renderer_dragbox.h"
-#include "workarea.h"
-#include <ETL/misc>
-
-#include <gui/localization.h>
 
 #include <gui/exception_guard.h>
+#include <gui/workarea.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+#define DRAGBOX_COLOR_OUTLINE      Gdk::Color("#000000")
 
 /* === G L O B A L S ======================================================= */
 
@@ -218,9 +213,9 @@ Renderer_Dragbox::render_vfunc(
 		br[0]=(br[0]-window_startx)/pw;
 		br[1]=(br[1]-window_starty)/ph;
 		if(tl[0]>br[0])
-			swap(tl[0],br[0]);
+			std::swap(tl[0],br[0]);
 		if(tl[1]>br[1])
-			swap(tl[1],br[1]);
+			std::swap(tl[1],br[1]);
 
 		cr->rectangle(
 			tl[0],

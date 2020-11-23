@@ -30,24 +30,16 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "renderer_bonesetup.h"
-#include "workarea.h"
-#include <pangomm/layout.h>
-#include <pangomm/context.h>
-#include <pango/pango.h>
-#include "app.h"
-#include <cassert>
 
 #include <gui/localization.h>
+#include <gui/workarea.h>
+#include <cassert>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

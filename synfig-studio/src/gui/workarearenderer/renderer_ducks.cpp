@@ -34,22 +34,17 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "renderer_ducks.h"
-#include "workarea.h"
-#include "duckmatic.h"
+
 #include <ETL/bezier>
-#include <ETL/misc>
-#include "widgets/widget_color.h"
 #include <synfig/distance.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/transformation.h>
-#include "app.h"
-
-#include <gui/localization.h>
+#include <gui/app.h>
+#include <gui/duckmatic.h>
+#include <gui/workarea.h>
 
 #endif
 
@@ -61,6 +56,55 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
+
+/** DUCK_COLOR_NOT_EDITABLE : light grey - for parameter (handle) like converted (linked also?) for example*/
+#define DUCK_COLOR_NOT_EDITABLE	Gdk::Color("#cfcfcf")
+/** DUCK_COLOR_ORIGIN : green */
+#define DUCK_COLOR_ORIGIN        Gdk::Color("#00ff00") // green
+/** DUCK_COLOR_ANGLE : blue */
+#define DUCK_COLOR_ANGLE		Gdk::Color("#0000ff") // blue
+/** DUCK_COLOR_RADIUS : cyan */
+#define DUCK_COLOR_RADIUS		Gdk::Color("#00ffff") // cyan
+/** DUCK_COLOR_LINEAR : cyan for linear radius ducks */
+#define DUCK_COLOR_LINEAR		Gdk::Color("#00ffff") // cyan // for linear radius ducks
+/** DUCK_COLOR_TANGENT_1 : yellow */
+#define DUCK_COLOR_TANGENT_1	Gdk::Color("#ffff00") // yellow
+/** DUCK_COLOR_TANGENT_2 : red (not used) */
+#define DUCK_COLOR_TANGENT_2	Gdk::Color("#ff0000") // red
+/** DUCK_COLOR_SKEW : red */
+#define DUCK_COLOR_SKEW         Gdk::Color("#ff0000") // red
+/** DUCK_COLOR_VERTEX : orange */
+#define DUCK_COLOR_VERTEX		Gdk::Color("#ff7f00") // orange
+/** DUCK_COLOR_WIDTH : magenta */
+#define DUCK_COLOR_WIDTH		Gdk::Color("#ff00ff") // magenta
+/** DUCK_COLOR_WIDTHPOINT_POSITION : purple */
+#define DUCK_COLOR_WIDTHPOINT_POSITION	Gdk::Color("#d3afff") // purple
+/** DUCK_COLOR_OTHER : green */
+#define DUCK_COLOR_OTHER		Gdk::Color("#00ff00") // green
+/** DUCK_COLOR_OUTLINE : black , the outline around each duck*/
+#define DUCK_COLOR_OUTLINE		Gdk::Color("#000000") // the outline around each duck
+/** DUCK_COLOR_BEZIER_1 : black, the 2 colors used to draw bezier curves */
+#define DUCK_COLOR_BEZIER_1		Gdk::Color("#000000") // black // the 2 colors used to draw bezier curves
+/** DUCK_COLOR_BEZIER_2 : grey , the second colors used to draw bezier curves*/
+#define DUCK_COLOR_BEZIER_2		Gdk::Color("#afafaf") // grey
+/** DUCK_COLOR_COLOR_BOX_1 : white , the first color used to draw boxes*/
+#define DUCK_COLOR_BOX_1		Gdk::Color("#ffffff") // white // the 2 colors used to draw boxes
+/** DUCK_COLOR_BOX_2 : black , the second color used to draw boxes*/
+#define DUCK_COLOR_BOX_2		Gdk::Color("#000000") // black
+/** DUCK_COLOR_SELECTED : red , the color of the box drawn when a valuenode is selected*/
+#define DUCK_COLOR_SELECTED		Gdk::Color("#ff0000") // red // the color of the box drawn when a valuenode is selected
+/** DUCK_COLOR_CONNECT_INSIDE : the color of the inside of the line connecting a vertex duck to the tangent ducks */
+#define DUCK_COLOR_CONNECT_INSIDE	Gdk::Color("#9fefef") // the color of the inside of the line connecting a vertex duck to the tangent ducks
+/** DUCK_COLOR_CONNECT_OUTSIDE : black, the color of the outside of the line connecting a vertex duck to the tangent ducks*/
+#define DUCK_COLOR_CONNECT_OUTSIDE	Gdk::Color("#000000") // the color of the outside of the line connecting a vertex duck to the tangent ducks
+/** DUCK_COLOR_WIDTH_TEXT_1 : black, the color of the text's shadow when hovering over a width duck*/
+#define DUCK_COLOR_WIDTH_TEXT_1	Gdk::Color("#000000") // the color of the text's shadow when hovering over a width duck
+/** DUCK_COLOR_WIDTH_TEXT_2 : magenta, the color of the text when hovering over a width duck*/
+#define DUCK_COLOR_WIDTH_TEXT_2	Gdk::Color("#ff00ff") // the color of the text when hovering over a width duck
+/** DUCK_COLOR_TRANSFO_TEXT_1 : black , the color of the text's shadow when hovering over any duck of a transformation widget*/
+#define DUCK_COLOR_TRANSFO_TEXT_1 Gdk::Color("#000000") // the color of the text's shadow when hovering over any duck of a transformation widget
+/** ACTIVE_BONE : Color of active bone rectangle */
+#define ACTIVE_BONE Gdk::Color("#fff700") // the color of the text's shadow when hovering over any duck of a transformation widget
 
 /* === G L O B A L S ======================================================= */
 
@@ -84,16 +128,16 @@ struct ScreenDuck
 {
 	synfig::Point pos;
 	Gdk::Color color;
+	Real width;
 	bool selected;
 	bool hover;
-	Real width;
 	bool has_alternative;
 	bool has_move_origin;
 
 	ScreenDuck():
+	    width(0),
 		selected(),
 		hover(),
-		width(0),
 		has_alternative(false),
 		has_move_origin(false)
 	{ }
@@ -646,8 +690,8 @@ Renderer_Ducks::render_vfunc(
 				synfig::Canvas::Handle canvas_h(get_work_area()->get_canvas());
 				synfig::Time time(canvas_h?canvas_h->get_time():synfig::Time(0));
 				synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
-				synfig::ValueNode_WPList::Handle wplist=NULL;
-				ValueNode_Composite::Handle wpoint_composite=NULL;
+				synfig::ValueNode_WPList::Handle wplist;
+				ValueNode_Composite::Handle wpoint_composite;
 				Real radius=0.0;
 				Real new_value;
 				Point p(sub_trans_point-sub_trans_origin);
