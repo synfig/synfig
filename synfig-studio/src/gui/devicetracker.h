@@ -29,9 +29,6 @@
 
 #include <vector>
 
-#include <synfig/string.h>
-#include <synfigapp/inputdevice.h>
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */

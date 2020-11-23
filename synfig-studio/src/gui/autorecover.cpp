@@ -30,16 +30,13 @@
 #	include <config.h>
 #endif
 
-#include <glibmm/miscutils.h>
 #include <glibmm/main.h>
 
 #include <synfig/general.h>
 #include <synfig/filesystemtemporary.h>
 
-#include <gui/localization.h>
-
-#include "app.h"
-#include "instance.h"
+#include <gui/app.h>
+#include <gui/instance.h>
 
 #include "autorecover.h"
 

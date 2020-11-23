@@ -33,8 +33,6 @@
 #include <vector>
 #include <string>
 
-#include <synfig/time.h>
-
 /* === M A C R O S ========================================================= */
 const float DEF_DISPLAYSAMPLERATE = 400;
 /* === T Y P E D E F S ===================================================== */

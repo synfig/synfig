@@ -31,17 +31,9 @@
 #include <ctime>
 
 #include <ETL/handle>
-#include <synfig/target_scanline.h>
-#include <synfig/target_tile.h>
-#include <synfig/target_cairo.h>
-#include <synfig/target_cairo_tile.h>
-#include <synfig/surface.h>
-#include <glibmm/main.h>
-#include <ETL/ref_count>
+#include <synfig/target.h>
 #include <glibmm/thread.h>
 #include <glibmm/dispatcher.h>
-
-#include "app.h"
 
 /* === M A C R O S ========================================================= */
 

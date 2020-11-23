@@ -33,110 +33,54 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include <sstream>
 #include <algorithm>
 #include <cmath>
 
-#include <gtkmm/paned.h>
-#include <gtkmm/scale.h>
-#include <gtkmm/dialog.h>
 #include <gtkmm/messagedialog.h>
-#include <gtkmm/treemodelsort.h>
-#include <gtkmm/button.h>
-#include <gtkmm/buttonbox.h>
-#include <gtkmm/separator.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/label.h>
-#include <gtkmm/grid.h>
-#include <gtkmm/menu.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/toolitem.h>
 #include <gtkmm/toolbutton.h>
-#include <gtkmm/toggletoolbutton.h>
-#include <gtkmm/separatortoolitem.h>
-#include <gtkmm/menutoolbutton.h>
 #include <gtkmm/stylecontext.h>
+#include <gtkmm/hvseparator.h>
+#include <gtkmm/radioaction.h>
 
 #include <glibmm/uriutils.h>
 #include <glibmm/convert.h>
 
-#include <gtk/gtk.h>
-
-#include <gdk/gdk.h>
-#include <synfig/canvasfilenaming.h>
-
-#include <synfig/valuenodes/valuenode_reference.h>
-#include <synfig/valuenodes/valuenode_subtract.h>
-#include <synfig/valuenodes/valuenode_linear.h>
-#include <synfig/valuenodes/valuenode_timedswap.h>
-#include <synfig/valuenodes/valuenode_scale.h>
-#include <synfig/valuenodes/valuenode_range.h>
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-#include <synfig/valuenodes/valuenode_twotone.h>
-#include <synfig/valuenodes/valuenode_stripes.h>
-#include <synfig/valuenodes/valuenode_blinecalctangent.h>
-#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
-#include <synfig/valuenodes/valuenode_blinecalcwidth.h>
-#include <synfig/valuenodes/valuenode_bline.h>
-#include <synfig/valuenodes/valuenode_bone.h>
-#include <synfig/layer.h>
-#include <synfig/layers/layer_pastecanvas.h>
-#include <synfig/context.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 
 #include <synfigapp/uimanager.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
-//#include <synfigapp/action_setwaypoint.h>
-//#include <synfigapp/action_deletewaypoint.h>
 
 #include "canvasview.h"
-#include "instance.h"
 #include "app.h"
-#include "cellrenderer/cellrenderer_value.h"
-#include "cellrenderer/cellrenderer_timetrack.h"
 #include "workarea.h"
-#include "dialogs/dialog_color.h"
 #include "eventkey.h"
 
-#include "states/state_polygon.h"
-#include "states/state_bline.h"
 #include "states/state_normal.h"
-#include "states/state_eyedrop.h"
 
-#include "ducktransform_scale.h"
-#include "ducktransform_translate.h"
-#include "ducktransform_rotate.h"
-
-#include "event_mouse.h"
-#include "event_layerclick.h"
-
-#include "mainwindow.h"
 #include "docks/dockmanager.h"
 #include "docks/dockbook.h"
 #include "docks/dock_toolbox.h"
 
-#include "dialogs/dialog_preview.h"
-#include "dialogs/dialog_soundselect.h"
-
 #include "preview.h"
-#include "audiocontainer.h"
 #include "widgets/widget_canvastimeslider.h"
 #include "widgets/widget_enum.h"
 #include "dials/keyframedial.h"
-#include "dials/jackdial.h"
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
 
 #include <pangomm.h>
 
-#include <gui/localization.h>
-
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
 
 #endif
 
