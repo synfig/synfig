@@ -64,36 +64,36 @@ jobs:
       - ccache --set-config=compression=true
     script: ./travis.sh core && autobuild/synfigrenderer-regression-test.sh
 
-  - os: osx
-    name: "Synfig Studio OS X 10.10 Yosemite (Clang/Autotools/Brew)"
-    osx_image: xcode6.4
-    env:
-      - HOMEBREW_NO_AUTO_UPDATE=1
-      - HOMEBREW_NO_ANALYTICS=1
-    cache: ccache
-    before_install: brew reinstall libtool # fix no sed
-    install: ./1-setup-osx-brew.sh
-    before_script:
-      - ccache -s
-      - ccache --set-config=compression=true
-    script: ./travis.sh
-    after_script: ccache -s # show ccache stats
+#  - os: osx
+#    name: "Synfig Studio OS X 10.10 Yosemite (Clang/Autotools/Brew)"
+#    osx_image: xcode6.4
+#    env:
+#      - HOMEBREW_NO_AUTO_UPDATE=1
+#      - HOMEBREW_NO_ANALYTICS=1
+#    cache: ccache
+#    before_install: brew reinstall libtool # fix no sed
+#    install: ./1-setup-osx-brew.sh
+#    before_script:
+#      - ccache -s
+#      - ccache --set-config=compression=true
+#    script: ./travis.sh
+#    after_script: ccache -s # show ccache stats
 
-  - os: osx
-    name: "Synfig Studio OS X 10.13 High Sierra (Clang/Autotools/Brew)"
-    osx_image: xcode10
-    env:
-      - HOMEBREW_NO_AUTO_UPDATE=1
-      - HOMEBREW_NO_ANALYTICS=1
-    cache: ccache
+#  - os: osx
+#    name: "Synfig Studio OS X 10.13 High Sierra (Clang/Autotools/Brew)"
+#    osx_image: xcode10
+#    env:
+#      - HOMEBREW_NO_AUTO_UPDATE=1
+#      - HOMEBREW_NO_ANALYTICS=1
+#    cache: ccache
     # oclint already uninstalled (fixed in Nov 2018)
     #before_install: brew cask uninstall oclint # fix gcc installing
-    install: ./1-setup-osx-brew.sh
-    before_script:
-      - ccache -s
-      - ccache --set-config=compression=true
-    script: ./travis.sh
-    after_script: ccache -s # show ccache stats
+#    install: ./1-setup-osx-brew.sh
+#    before_script:
+#      - ccache -s
+#      - ccache --set-config=compression=true
+#    script: ./travis.sh
+#    after_script: ccache -s # show ccache stats
 
   - os: linux
     name: "Lottie exporter Ubuntu 16.04 Xenial"
