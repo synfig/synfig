@@ -4,4 +4,5 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 SUBDIRS = \
-  css
+  css \
+  ui

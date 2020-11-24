@@ -6,10 +6,11 @@ set(UI_FILES
 	shortcuts_window.glade
 )
 
-file(COPY ${UI_FILES}
-	DESTINATION ${SYNFIG_BUILD_ROOT}/${INSTALL_DESTINATION}
-)
+foreach(UI_FILE ${UI_FILES})
+	configure_file(${UI_FILE} ${SYNFIG_BUILD_ROOT}/${INSTALL_DESTINATION}/${UI_FILE} COPYONLY)
+endforeach()
 
 install(FILES ${UI_FILES}
 	DESTINATION ${INSTALL_DESTINATION}
 )
+
