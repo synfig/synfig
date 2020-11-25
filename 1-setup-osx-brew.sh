@@ -86,4 +86,8 @@ export PIPBINARY=pip
 if `which pip3 >/dev/null`; then
     PIPBINARY=pip3
 fi
-STATIC_DEPS=true sudo $PIPBINARY install lxml
+
+# Do not install lxml for GitHub Actions (it fails to build on MacOS 11.0)
+if [[ -z "${CI}" ]]; then
+    STATIC_DEPS=true sudo $PIPBINARY install lxml
+fi

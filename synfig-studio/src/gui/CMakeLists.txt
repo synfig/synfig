@@ -88,8 +88,10 @@ add_subdirectory(resources)
 
 target_include_directories(synfigstudio PRIVATE ${MLT_INCLUDE_DIRS}) # required for widget_soundwave
 
+# on MacOS/Brew FontConfig located in non-standard folder
+# so we need to add it's path to target
 target_link_libraries(synfigstudio
-	${FONT_CONFIG_LIBRARIES}
+	${FONT_CONFIG_LDFLAGS}
 	${GTKMM_LIBRARIES}
 	${Gettext_LIBRARIES}
 	${MLT_LIBRARIES} # required for widget_soundwave
