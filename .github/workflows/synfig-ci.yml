@@ -27,16 +27,19 @@ jobs:
         - os: macos-10.15
           name: MacOS 10.15 Catalina (Autotools)
           toolchain: autotools
+          allow_failures: false
         - os: macos-11.0
           name: MacOS 11.0 Big Sur (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
         - os: ubuntu-16.04
           name: Ubuntu 16.04 Xenial (Autotools)
+          allow_failures: false
           toolchain: autotools
         - os: ubuntu-20.04
           name: Ubuntu 20.04 Focal (CMake+Ninja)
           toolchain: cmake-ninja
+          allow_failures: false
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
