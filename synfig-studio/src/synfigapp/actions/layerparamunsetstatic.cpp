@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::LayerParamUnSetStatic,"unsetstatic");
 ACTION_SET_CATEGORY(Action::LayerParamUnSetStatic,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::LayerParamUnSetStatic,0);
 ACTION_SET_VERSION(Action::LayerParamUnSetStatic,"0.0");
-ACTION_SET_CVS_ID(Action::LayerParamUnSetStatic,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

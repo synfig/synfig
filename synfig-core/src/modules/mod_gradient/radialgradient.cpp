@@ -60,7 +60,6 @@ SYNFIG_LAYER_SET_NAME(RadialGradient,"radial_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(RadialGradient,N_("Radial Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(RadialGradient,N_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(RadialGradient,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(RadialGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

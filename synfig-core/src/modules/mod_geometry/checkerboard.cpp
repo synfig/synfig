@@ -65,7 +65,6 @@ SYNFIG_LAYER_SET_NAME(CheckerBoard,"checker_board");
 SYNFIG_LAYER_SET_LOCAL_NAME(CheckerBoard,N_("Checkerboard"));
 SYNFIG_LAYER_SET_CATEGORY(CheckerBoard,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(CheckerBoard,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

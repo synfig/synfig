@@ -65,7 +65,6 @@ SYNFIG_LAYER_SET_NAME(Zoom,"zoom");
 SYNFIG_LAYER_SET_LOCAL_NAME(Zoom,N_("Scale"));
 SYNFIG_LAYER_SET_CATEGORY(Zoom,N_("Transform"));
 SYNFIG_LAYER_SET_VERSION(Zoom,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Zoom,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

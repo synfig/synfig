@@ -61,7 +61,6 @@ SYNFIG_IMPORTER_INIT(jpeg_mptr);
 SYNFIG_IMPORTER_SET_NAME(jpeg_mptr,"jpeg");
 SYNFIG_IMPORTER_SET_EXT(jpeg_mptr,"jpg");
 SYNFIG_IMPORTER_SET_VERSION(jpeg_mptr,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(jpeg_mptr,"$Id$");
 SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(jpeg_mptr, false);
 
 /* === M E T H O D S ======================================================= */

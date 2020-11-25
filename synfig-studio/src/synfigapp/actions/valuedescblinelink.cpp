@@ -65,7 +65,6 @@ ACTION_SET_TASK(Action::ValueDescBLineLink,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescBLineLink,Action::CATEGORY_BEZIER);
 ACTION_SET_PRIORITY(Action::ValueDescBLineLink,0);
 ACTION_SET_VERSION(Action::ValueDescBLineLink,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescBLineLink,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

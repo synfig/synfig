@@ -62,7 +62,6 @@ SYNFIG_LAYER_SET_NAME(LumaKey,"lumakey");
 SYNFIG_LAYER_SET_LOCAL_NAME(LumaKey,N_("Luma Key"));
 SYNFIG_LAYER_SET_CATEGORY(LumaKey,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(LumaKey,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(LumaKey,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

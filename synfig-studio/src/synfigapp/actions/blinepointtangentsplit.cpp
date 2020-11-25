@@ -63,7 +63,6 @@ ACTION_SET_TASK(Action::BLinePointTangentSplit,"disconnect");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplit,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentSplit,0);
 ACTION_SET_VERSION(Action::BLinePointTangentSplit,"0.1");
-ACTION_SET_CVS_ID(Action::BLinePointTangentSplit,"$Id$");
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentSplitRadius);
 ACTION_SET_NAME(Action::BLinePointTangentSplitRadius,"BLinePointTangentSplitRadius");
@@ -72,7 +71,6 @@ ACTION_SET_TASK(Action::BLinePointTangentSplitRadius,"type_vector");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplitRadius,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentSplitRadius,0);
 ACTION_SET_VERSION(Action::BLinePointTangentSplitRadius,"0.0");
-ACTION_SET_CVS_ID(Action::BLinePointTangentSplitRadius,"$Id$");
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentSplitAngle);
 ACTION_SET_NAME(Action::BLinePointTangentSplitAngle,"BLinePointTangentSplitAngle");
@@ -81,7 +79,6 @@ ACTION_SET_TASK(Action::BLinePointTangentSplitAngle,"type_angle");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplitAngle,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentSplitAngle,0);
 ACTION_SET_VERSION(Action::BLinePointTangentSplitAngle,"0.0");
-ACTION_SET_CVS_ID(Action::BLinePointTangentSplitAngle,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

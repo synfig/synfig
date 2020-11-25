@@ -73,7 +73,6 @@ SYNFIG_LAYER_SET_NAME(Plant,"plant");
 SYNFIG_LAYER_SET_LOCAL_NAME(Plant,N_("Plant"));
 SYNFIG_LAYER_SET_CATEGORY(Plant,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Plant,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Plant,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

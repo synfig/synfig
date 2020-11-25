@@ -68,7 +68,6 @@ SYNFIG_LAYER_SET_NAME(Advanced_Outline,"advanced_outline");
 SYNFIG_LAYER_SET_LOCAL_NAME(Advanced_Outline,N_("Advanced Outline"));
 SYNFIG_LAYER_SET_CATEGORY(Advanced_Outline,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Advanced_Outline,"0.3");
-SYNFIG_LAYER_SET_CVS_ID(Advanced_Outline,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

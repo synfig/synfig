@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::LayerParamDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::LayerParamDisconnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::LayerParamDisconnect,0);
 ACTION_SET_VERSION(Action::LayerParamDisconnect,"0.0");
-ACTION_SET_CVS_ID(Action::LayerParamDisconnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

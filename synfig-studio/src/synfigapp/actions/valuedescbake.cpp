@@ -57,7 +57,6 @@ ACTION_SET_TASK(Action::ValueDescBake,"convert");
 ACTION_SET_CATEGORY(Action::ValueDescBake,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescBake,0);
 ACTION_SET_VERSION(Action::ValueDescBake,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescBake,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

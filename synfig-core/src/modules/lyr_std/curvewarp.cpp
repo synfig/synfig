@@ -65,7 +65,6 @@ SYNFIG_LAYER_SET_NAME(CurveWarp,"curve_warp");
 SYNFIG_LAYER_SET_LOCAL_NAME(CurveWarp,N_("Curve Warp"));
 SYNFIG_LAYER_SET_CATEGORY(CurveWarp,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(CurveWarp,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(CurveWarp,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

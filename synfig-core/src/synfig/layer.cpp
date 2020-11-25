@@ -119,7 +119,6 @@ Layer::subsys_init()
 				  class::name__,								\
 				   _(class::local_name__),		\
 				  class::category__,							\
-				  class::cvs_id__,								\
 				  class::version__)
 
 #define LAYER_ALIAS(class,alias)								\
@@ -128,7 +127,6 @@ Layer::subsys_init()
 				  alias,										\
 				  alias,										\
 				  CATEGORY_DO_NOT_USE,							\
-				  class::cvs_id__,								\
 				  class::version__)
 
 	INCLUDE_LAYER(Layer_SolidColor);

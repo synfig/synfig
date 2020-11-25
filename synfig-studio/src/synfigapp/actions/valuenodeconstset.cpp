@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::ValueNodeConstSet,"set");
 ACTION_SET_CATEGORY(Action::ValueNodeConstSet,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeConstSet,0);
 ACTION_SET_VERSION(Action::ValueNodeConstSet,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeConstSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

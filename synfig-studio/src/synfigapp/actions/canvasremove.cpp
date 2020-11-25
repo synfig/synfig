@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::CanvasRemove,"remove");
 ACTION_SET_CATEGORY(Action::CanvasRemove,Action::CATEGORY_CANVAS);
 ACTION_SET_PRIORITY(Action::CanvasRemove,0);
 ACTION_SET_VERSION(Action::CanvasRemove,"0.0");
-ACTION_SET_CVS_ID(Action::CanvasRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

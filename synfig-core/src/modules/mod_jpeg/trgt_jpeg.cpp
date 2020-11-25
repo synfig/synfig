@@ -48,7 +48,6 @@ SYNFIG_TARGET_INIT(jpeg_trgt);
 SYNFIG_TARGET_SET_NAME(jpeg_trgt,"jpeg");
 SYNFIG_TARGET_SET_EXT(jpeg_trgt,"jpg");
 SYNFIG_TARGET_SET_VERSION(jpeg_trgt,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(jpeg_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

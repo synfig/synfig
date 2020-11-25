@@ -90,7 +90,6 @@
 								 class::name__,													\
 								 synfigcore_localize(class::local_name__),		\
 								 class::category__,												\
-								 class::cvs_id__,												\
 								 class::version__));
 
 //! Register a Layer class in the book of layers with an alias
@@ -100,7 +99,6 @@
 								 alias,															\
 								 alias,															\
 								 CATEGORY_DO_NOT_USE,											\
-								 class::cvs_id__,												\
 								 class::version__));
 
 //! Marks the end of the layers in the module's inventory

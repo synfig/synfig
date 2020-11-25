@@ -59,7 +59,6 @@ ACTION_SET_TASK(Action::LayerEmbed,"embed");
 ACTION_SET_CATEGORY(Action::LayerEmbed,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEmbed,0);
 ACTION_SET_VERSION(Action::LayerEmbed,"0.0");
-ACTION_SET_CVS_ID(Action::LayerEmbed,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

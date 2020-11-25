@@ -59,7 +59,6 @@ SYNFIG_LAYER_SET_NAME(Metaballs,"metaballs");
 SYNFIG_LAYER_SET_LOCAL_NAME(Metaballs,N_("Metaballs"));
 SYNFIG_LAYER_SET_CATEGORY(Metaballs,N_("Example"));
 SYNFIG_LAYER_SET_VERSION(Metaballs,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Metaballs,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

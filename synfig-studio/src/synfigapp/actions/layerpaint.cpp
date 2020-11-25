@@ -57,7 +57,6 @@ ACTION_SET_TASK(Action::LayerPaint,"paint");
 ACTION_SET_CATEGORY(Action::LayerPaint,Action::CATEGORY_NONE);
 ACTION_SET_PRIORITY(Action::LayerPaint,0);
 ACTION_SET_VERSION(Action::LayerPaint,"0.0");
-ACTION_SET_CVS_ID(Action::LayerPaint,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

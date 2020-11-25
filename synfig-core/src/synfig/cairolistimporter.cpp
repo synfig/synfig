@@ -55,7 +55,6 @@ SYNFIG_CAIROIMPORTER_INIT(CairoListImporter);
 SYNFIG_CAIROIMPORTER_SET_NAME(CairoListImporter,"lst");
 SYNFIG_CAIROIMPORTER_SET_EXT(CairoListImporter,"lst");
 SYNFIG_CAIROIMPORTER_SET_VERSION(CairoListImporter,"0.1");
-SYNFIG_CAIROIMPORTER_SET_CVS_ID(CairoListImporter,"$Id$");
 SYNFIG_CAIROIMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(CairoListImporter,false);
 
 /* === P R O C E D U R E S ================================================= */

@@ -57,7 +57,6 @@ SYNFIG_LAYER_SET_NAME(svg_layer,"svg_layer");
 SYNFIG_LAYER_SET_LOCAL_NAME(svg_layer,N_("Import Svg"));
 SYNFIG_LAYER_SET_CATEGORY(svg_layer,CATEGORY_DO_NOT_USE);//Hide this layer in the menu
 SYNFIG_LAYER_SET_VERSION(svg_layer,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(svg_layer,"$Id: layer_svg.cpp 2240 2008-11-22 15:35:33Z dooglus $");
 
 /* === P R O C E D U R E S ================================================= */
 

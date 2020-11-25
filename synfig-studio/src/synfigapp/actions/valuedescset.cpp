@@ -85,7 +85,6 @@ ACTION_SET_TASK(Action::ValueDescSet,"set");
 ACTION_SET_CATEGORY(Action::ValueDescSet,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescSet,0);
 ACTION_SET_VERSION(Action::ValueDescSet,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

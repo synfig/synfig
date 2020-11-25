@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::ValueNodeStaticListRemoveSmart,"remove");
 ACTION_SET_CATEGORY(Action::ValueNodeStaticListRemoveSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeStaticListRemoveSmart,-19);
 ACTION_SET_VERSION(Action::ValueNodeStaticListRemoveSmart,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeStaticListRemoveSmart,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

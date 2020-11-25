@@ -64,7 +64,6 @@ ACTION_SET_TASK(Action::ValueDescDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::ValueDescDisconnect,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescDisconnect,-100);
 ACTION_SET_VERSION(Action::ValueDescDisconnect,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescDisconnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

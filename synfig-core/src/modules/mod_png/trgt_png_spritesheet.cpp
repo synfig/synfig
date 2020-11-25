@@ -60,7 +60,6 @@ SYNFIG_TARGET_INIT(png_trgt_spritesheet);
 SYNFIG_TARGET_SET_NAME(png_trgt_spritesheet,"png-spritesheet");
 SYNFIG_TARGET_SET_EXT(png_trgt_spritesheet,"png");
 SYNFIG_TARGET_SET_VERSION(png_trgt_spritesheet,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(png_trgt_spritesheet,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

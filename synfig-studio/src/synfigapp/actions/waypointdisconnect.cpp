@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::WaypointDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::WaypointDisconnect,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::WaypointDisconnect,0);
 ACTION_SET_VERSION(Action::WaypointDisconnect,"0.0");
-ACTION_SET_CVS_ID(Action::WaypointDisconnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

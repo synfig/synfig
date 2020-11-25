@@ -69,7 +69,6 @@ SYNFIG_LAYER_SET_NAME(Import,"import");
 SYNFIG_LAYER_SET_LOCAL_NAME(Import,N_("Import Image"));
 SYNFIG_LAYER_SET_CATEGORY(Import,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Import,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Import,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

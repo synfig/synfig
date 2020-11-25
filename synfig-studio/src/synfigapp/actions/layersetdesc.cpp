@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::LayerSetDesc,"set_desc");
 ACTION_SET_CATEGORY(Action::LayerSetDesc,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerSetDesc,0);
 ACTION_SET_VERSION(Action::LayerSetDesc,"0.0");
-ACTION_SET_CVS_ID(Action::LayerSetDesc,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

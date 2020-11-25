@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::LayerEncapsulateSwitch,"encapsulate_switch");
 ACTION_SET_CATEGORY(Action::LayerEncapsulateSwitch,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEncapsulateSwitch,0);
 ACTION_SET_VERSION(Action::LayerEncapsulateSwitch,"0.0");
-ACTION_SET_CVS_ID(Action::LayerEncapsulateSwitch,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

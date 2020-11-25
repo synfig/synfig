@@ -74,7 +74,6 @@ SYNFIG_IMPORTER_INIT(imagemagick_mptr);
 SYNFIG_IMPORTER_SET_NAME(imagemagick_mptr,"imagemagick");
 SYNFIG_IMPORTER_SET_EXT(imagemagick_mptr,"miff");
 SYNFIG_IMPORTER_SET_VERSION(imagemagick_mptr,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(imagemagick_mptr,"$Id$");
 SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(imagemagick_mptr, false);
 
 /* === M E T H O D S ======================================================= */

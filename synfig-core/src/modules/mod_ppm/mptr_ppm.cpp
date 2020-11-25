@@ -58,7 +58,6 @@ SYNFIG_IMPORTER_INIT(ppm_mptr);
 SYNFIG_IMPORTER_SET_NAME(ppm_mptr,"ppm");
 SYNFIG_IMPORTER_SET_EXT(ppm_mptr,"ppm");
 SYNFIG_IMPORTER_SET_VERSION(ppm_mptr,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(ppm_mptr,"$Id$");
 SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ppm_mptr, false);
 
 /* === M E T H O D S ======================================================= */

@@ -62,7 +62,6 @@ SYNFIG_LAYER_SET_NAME(Layer_FilterGroup,"filter_group");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_FilterGroup,N_("Filter Group"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_FilterGroup,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_FilterGroup,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_FilterGroup,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

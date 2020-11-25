@@ -61,7 +61,6 @@ SYNFIG_LAYER_SET_NAME(NoiseDistort,"noise_distort");
 SYNFIG_LAYER_SET_LOCAL_NAME(NoiseDistort,N_("Noise Distort"));
 SYNFIG_LAYER_SET_CATEGORY(NoiseDistort,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(NoiseDistort,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(NoiseDistort,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

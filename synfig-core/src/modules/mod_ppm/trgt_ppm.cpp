@@ -48,7 +48,6 @@ SYNFIG_TARGET_INIT(ppm);
 SYNFIG_TARGET_SET_NAME(ppm,"ppm");
 SYNFIG_TARGET_SET_EXT(ppm,"ppm");
 SYNFIG_TARGET_SET_VERSION(ppm,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(ppm,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

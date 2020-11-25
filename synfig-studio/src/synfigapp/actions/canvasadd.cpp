@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::CanvasAdd,"add");
 ACTION_SET_CATEGORY(Action::CanvasAdd,Action::CATEGORY_CANVAS);
 ACTION_SET_PRIORITY(Action::CanvasAdd,0);
 ACTION_SET_VERSION(Action::CanvasAdd,"0.0");
-ACTION_SET_CVS_ID(Action::CanvasAdd,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

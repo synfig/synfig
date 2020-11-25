@@ -62,7 +62,6 @@ SYNFIG_LAYER_SET_NAME(Layer_Polygon,"polygon");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Polygon,N_("Polygon"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Polygon,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Layer_Polygon,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Polygon,"$Id$");
 
 /* === C L A S S E S ======================================================= */
 

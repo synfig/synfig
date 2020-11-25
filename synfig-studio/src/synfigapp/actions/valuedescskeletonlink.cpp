@@ -68,7 +68,6 @@ ACTION_SET_TASK(Action::ValueDescSkeletonLink,"bone_link");
 ACTION_SET_CATEGORY(Action::ValueDescSkeletonLink,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescSkeletonLink,0);
 ACTION_SET_VERSION(Action::ValueDescSkeletonLink,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescSkeletonLink,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

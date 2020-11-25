@@ -80,7 +80,6 @@ SYNFIG_LAYER_SET_NAME(Layer_SphereDistort,"spherize");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SphereDistort,N_("Spherize"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_SphereDistort,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Layer_SphereDistort,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Layer_SphereDistort,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

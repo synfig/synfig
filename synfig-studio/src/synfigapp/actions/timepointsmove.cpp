@@ -62,7 +62,6 @@ ACTION_SET_TASK(Action::TimepointsMove,"move");
 ACTION_SET_CATEGORY(Action::TimepointsMove,Action::CATEGORY_WAYPOINT|Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::TimepointsMove,0);
 ACTION_SET_VERSION(Action::TimepointsMove,"0.0");
-ACTION_SET_CVS_ID(Action::TimepointsMove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

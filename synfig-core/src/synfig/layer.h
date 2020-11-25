@@ -62,7 +62,7 @@
 //! To be used in the private part of the importer class definition.
 #define SYNFIG_LAYER_MODULE_EXT															\
 	public:																				\
-	static const char name__[], version__[], cvs_id__[], local_name__[], category__[];	\
+	static const char name__[], version__[], local_name__[], category__[];	\
 	static Layer *create();
 
 //! Sets the name of the layer
@@ -80,10 +80,6 @@
 //! Sets the version string for the layer
 #define SYNFIG_LAYER_SET_VERSION(class,x)												\
 	const char class::version__[]=x
-
-//! Sets the CVS ID string for the layer
-#define SYNFIG_LAYER_SET_CVS_ID(class,x)												\
-	const char class::cvs_id__[]=x
 
 //! Defines de implementation of the create method for the importer
 #define SYNFIG_LAYER_INIT(class)														\
@@ -217,20 +213,17 @@ public:
 		String name;
 		String local_name;
 		String category;
-		String cvs_id;
 		String version;
 		BookEntry(): factory() { }
 		BookEntry(Factory		 factory,
 				  const String	&name,
 				  const String	&local_name,
 				  const String	&category,
-				  const String	&cvs_id,
 				  const String	&version):
 			factory(factory),
 			name(name),
 			local_name(local_name),
 			category(category),
-			cvs_id(cvs_id),
 			version(version) { }
 	};
 

@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeStaticListUnLoop,"unloop");
 ACTION_SET_CATEGORY(Action::ValueNodeStaticListUnLoop,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeStaticListUnLoop,0);
 ACTION_SET_VERSION(Action::ValueNodeStaticListUnLoop,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeStaticListUnLoop,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

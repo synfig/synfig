@@ -59,7 +59,6 @@ ACTION_SET_TASK(Action::GradientSet,"set");
 ACTION_SET_CATEGORY(Action::GradientSet,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::GradientSet,0);
 ACTION_SET_VERSION(Action::GradientSet,"0.0");
-ACTION_SET_CVS_ID(Action::GradientSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

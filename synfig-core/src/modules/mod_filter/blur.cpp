@@ -75,7 +75,6 @@ SYNFIG_LAYER_SET_NAME(Blur_Layer,"blur");
 SYNFIG_LAYER_SET_LOCAL_NAME(Blur_Layer,N_("Blur"));
 SYNFIG_LAYER_SET_CATEGORY(Blur_Layer,N_("Blurs"));
 SYNFIG_LAYER_SET_VERSION(Blur_Layer,"0.3");
-SYNFIG_LAYER_SET_CVS_ID(Blur_Layer,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 

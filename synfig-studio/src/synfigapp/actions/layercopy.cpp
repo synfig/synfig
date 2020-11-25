@@ -56,7 +56,6 @@ ACTION_SET_TASK(Action::LayerCopy,"copy");
 ACTION_SET_CATEGORY(Action::LayerCopy,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerCopy,0);
 ACTION_SET_VERSION(Action::LayerCopy,"0.0");
-ACTION_SET_CVS_ID(Action::LayerCopy,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

@@ -71,7 +71,6 @@ SYNFIG_LAYER_SET_NAME(Perspective,"warp");
 SYNFIG_LAYER_SET_LOCAL_NAME(Perspective,N_("Perspective"));
 SYNFIG_LAYER_SET_CATEGORY(Perspective,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Perspective,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Perspective,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -58,7 +58,6 @@ ACTION_SET_TASK(Action::KeyframeRemove,"remove");
 ACTION_SET_CATEGORY(Action::KeyframeRemove,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeRemove,0);
 ACTION_SET_VERSION(Action::KeyframeRemove,"0.0");
-ACTION_SET_CVS_ID(Action::KeyframeRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

@@ -33,7 +33,7 @@
 /* === M A C R O S ========================================================= */
 
 #define ACTION_MODULE_EXT public: \
-	static const char name__[], local_name__[], version__[], cvs_id__[], task__[]; \
+	static const char name__[], local_name__[], version__[], task__[]; \
 	static const Category category__; \
 	static const int priority__; \
 	static Action::Base *create(); \
@@ -52,8 +52,6 @@
 #define ACTION_SET_LOCAL_NAME(class,x) const char class::local_name__[]=x
 
 #define ACTION_SET_VERSION(class,x) const char class::version__[]=x
-
-#define ACTION_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
 //! don't define get_local_name() - allow the action code to define its own
 #define ACTION_INIT_NO_GET_LOCAL_NAME(class)			  \

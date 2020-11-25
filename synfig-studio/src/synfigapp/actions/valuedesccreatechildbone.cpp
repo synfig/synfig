@@ -57,7 +57,6 @@ ACTION_SET_TASK(Action::ValueDescCreateChildBone,"create_child_bone");
 ACTION_SET_CATEGORY(Action::ValueDescCreateChildBone,Action::CATEGORY_HIDDEN);
 ACTION_SET_PRIORITY(Action::ValueDescCreateChildBone,0);
 ACTION_SET_VERSION(Action::ValueDescCreateChildBone,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescCreateChildBone,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

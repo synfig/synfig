@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeLinkDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::ValueNodeLinkDisconnect,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeLinkDisconnect,0);
 ACTION_SET_VERSION(Action::ValueNodeLinkDisconnect,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeLinkDisconnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

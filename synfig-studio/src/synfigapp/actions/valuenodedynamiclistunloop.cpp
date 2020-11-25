@@ -56,7 +56,6 @@ ACTION_SET_TASK(Action::ValueNodeDynamicListUnLoop,"unloop");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListUnLoop,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListUnLoop,0);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListUnLoop,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeDynamicListUnLoop,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::LayerLower,"lower");
 ACTION_SET_CATEGORY(Action::LayerLower,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerLower,10);
 ACTION_SET_VERSION(Action::LayerLower,"0.0");
-ACTION_SET_CVS_ID(Action::LayerLower,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

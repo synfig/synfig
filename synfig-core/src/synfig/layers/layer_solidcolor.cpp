@@ -62,7 +62,6 @@ SYNFIG_LAYER_SET_NAME(Layer_SolidColor,"SolidColor"); // todo: use solid_color
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SolidColor,N_("Solid Color"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_SolidColor,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Layer_SolidColor,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_SolidColor,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

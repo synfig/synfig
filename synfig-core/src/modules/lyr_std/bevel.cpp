@@ -73,7 +73,6 @@ SYNFIG_LAYER_SET_NAME(Layer_Bevel,"bevel");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Bevel,N_("Bevel"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Bevel,N_("Stylize"));
 SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Bevel,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 

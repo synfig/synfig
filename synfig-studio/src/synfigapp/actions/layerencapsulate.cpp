@@ -56,7 +56,6 @@ ACTION_SET_TASK(Action::LayerEncapsulate,"encapsulate");
 ACTION_SET_CATEGORY(Action::LayerEncapsulate,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEncapsulate,0);
 ACTION_SET_VERSION(Action::LayerEncapsulate,"0.0");
-ACTION_SET_CVS_ID(Action::LayerEncapsulate,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

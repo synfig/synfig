@@ -58,7 +58,6 @@ ACTION_SET_TASK(Action::LayerZDepthRangeSet,"zdetph_range_set");
 ACTION_SET_CATEGORY(Action::LayerZDepthRangeSet,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerZDepthRangeSet,0);
 ACTION_SET_VERSION(Action::LayerZDepthRangeSet,"0.0");
-ACTION_SET_CVS_ID(Action::LayerZDepthRangeSet,"$Id$");
 
 #define ZDEPTH_MAX 1e8
 #define ZDEPTH_EPS 0.0

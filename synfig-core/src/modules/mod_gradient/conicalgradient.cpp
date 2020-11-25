@@ -60,7 +60,6 @@ SYNFIG_LAYER_SET_NAME(ConicalGradient,"conical_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(ConicalGradient,N_("Conical Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(ConicalGradient,N_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(ConicalGradient,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(ConicalGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

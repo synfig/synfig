@@ -57,7 +57,6 @@ SYNFIG_TARGET_INIT(mng_trgt);
 SYNFIG_TARGET_SET_NAME(mng_trgt,"mng");
 SYNFIG_TARGET_SET_EXT(mng_trgt,"mng");
 SYNFIG_TARGET_SET_VERSION(mng_trgt,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(mng_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

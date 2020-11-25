@@ -62,7 +62,6 @@ SYNFIG_LAYER_SET_NAME(Halftone3,"halftone3");
 SYNFIG_LAYER_SET_LOCAL_NAME(Halftone3,N_("Halftone 3"));
 SYNFIG_LAYER_SET_CATEGORY(Halftone3,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Halftone3,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(Halftone3,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

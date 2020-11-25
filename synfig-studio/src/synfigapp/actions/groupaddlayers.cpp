@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::GroupAddLayers,"add_to_group");
 ACTION_SET_CATEGORY(Action::GroupAddLayers,Action::CATEGORY_LAYER|Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupAddLayers,0);
 ACTION_SET_VERSION(Action::GroupAddLayers,"0.0");
-ACTION_SET_CVS_ID(Action::GroupAddLayers,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

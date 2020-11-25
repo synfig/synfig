@@ -50,7 +50,6 @@ SYNFIG_LAYER_SET_NAME(Circle,"circle");
 SYNFIG_LAYER_SET_LOCAL_NAME(Circle,N_("Circle"));
 SYNFIG_LAYER_SET_CATEGORY(Circle,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Circle,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 

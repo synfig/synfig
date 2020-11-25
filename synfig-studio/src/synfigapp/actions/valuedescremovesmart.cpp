@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::ValueDescRemoveSmart,"remove");
 ACTION_SET_CATEGORY(Action::ValueDescRemoveSmart,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescRemoveSmart,-19);
 ACTION_SET_VERSION(Action::ValueDescRemoveSmart,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescRemoveSmart,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

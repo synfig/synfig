@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::WaypointConnect,"connect");
 ACTION_SET_CATEGORY(Action::WaypointConnect,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::WaypointConnect,0);
 ACTION_SET_VERSION(Action::WaypointConnect,"0.0");
-ACTION_SET_CVS_ID(Action::WaypointConnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

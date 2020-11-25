@@ -56,7 +56,6 @@ ACTION_SET_TASK(Action::LayerDuplicate,"duplicate");
 ACTION_SET_CATEGORY(Action::LayerDuplicate,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerDuplicate,0);
 ACTION_SET_VERSION(Action::LayerDuplicate,"0.0");
-ACTION_SET_CVS_ID(Action::LayerDuplicate,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

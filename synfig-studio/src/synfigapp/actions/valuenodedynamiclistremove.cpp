@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeDynamicListRemove,"remove");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListRemove,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE|Action::CATEGORY_HIDDEN);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListRemove,-19);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListRemove,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeDynamicListRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

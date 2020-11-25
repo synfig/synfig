@@ -59,7 +59,6 @@ ACTION_SET_TASK(Action::ValueDescConnect,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescConnect,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueDescConnect,0);
 ACTION_SET_VERSION(Action::ValueDescConnect,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescConnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

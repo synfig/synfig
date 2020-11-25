@@ -65,7 +65,6 @@ SYNFIG_LAYER_SET_NAME(Region,"region");
 SYNFIG_LAYER_SET_LOCAL_NAME(Region,N_("Region"));
 SYNFIG_LAYER_SET_CATEGORY(Region,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Region,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Region,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

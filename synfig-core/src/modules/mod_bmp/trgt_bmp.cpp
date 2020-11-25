@@ -52,7 +52,6 @@ SYNFIG_TARGET_INIT(bmp);
 SYNFIG_TARGET_SET_NAME(bmp,"bmp");
 SYNFIG_TARGET_SET_EXT(bmp,"bmp");
 SYNFIG_TARGET_SET_VERSION(bmp,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(bmp,"$Id$");
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 namespace synfig {

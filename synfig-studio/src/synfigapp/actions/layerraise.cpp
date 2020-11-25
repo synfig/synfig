@@ -55,7 +55,6 @@ ACTION_SET_TASK(Action::LayerRaise,"raise");
 ACTION_SET_CATEGORY(Action::LayerRaise,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerRaise,9);
 ACTION_SET_VERSION(Action::LayerRaise,"0.0");
-ACTION_SET_CVS_ID(Action::LayerRaise,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

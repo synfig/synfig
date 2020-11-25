@@ -46,7 +46,7 @@
 //! Defines various variables and the create method, common for all importers.
 //! To be used in the private part of the importer class definition.
 #define SYNFIG_IMPORTER_MODULE_EXT \
-		public: static const char name__[], version__[], ext__[],cvs_id__[]; \
+		public: static const char name__[], version__[], ext__[]; \
 		static const bool supports_file_system_wrapper__; \
 		static synfig::Importer *create(const synfig::FileSystem::Identifier &identifier);
 
@@ -80,9 +80,6 @@
 
 //! Sets the version of the importer.
 #define SYNFIG_IMPORTER_SET_VERSION(class,x) const char class::version__[]=x
-
-//! Sets the CVS ID of the importer.
-#define SYNFIG_IMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
 //! Sets the supports_file_system_wrapper flag of the importer.
 #define SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(class,x) const bool class::supports_file_system_wrapper__=x

@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::ValueNodeLinkConnect,"connect");
 ACTION_SET_CATEGORY(Action::ValueNodeLinkConnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeLinkConnect,0);
 ACTION_SET_VERSION(Action::ValueNodeLinkConnect,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeLinkConnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

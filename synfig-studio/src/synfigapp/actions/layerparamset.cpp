@@ -53,7 +53,6 @@ ACTION_SET_TASK(Action::LayerParamSet,"set");
 ACTION_SET_CATEGORY(Action::LayerParamSet,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerParamSet,0);
 ACTION_SET_VERSION(Action::LayerParamSet,"0.0");
-ACTION_SET_CVS_ID(Action::LayerParamSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

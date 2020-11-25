@@ -54,7 +54,6 @@ ACTION_SET_TASK(Action::ValueNodeStaticListRotateOrder,"rotate");
 ACTION_SET_CATEGORY(Action::ValueNodeStaticListRotateOrder,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeStaticListRotateOrder,0);
 ACTION_SET_VERSION(Action::ValueNodeStaticListRotateOrder,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeStaticListRotateOrder,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 
