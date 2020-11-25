@@ -2114,13 +2114,16 @@ WorkArea::sync_render(bool refresh)
 	renderer_canvas->enqueue_render();
 	renderer_canvas->wait_render();
 
-	// report error while animating... It hinders some frame rendering while user doesn't interact with dialog
-	std::vector<std::string> error_msg_list;
-	renderer_canvas->get_rendering_error_messages(error_msg_list);
-	std::string error_msg;
-	for (auto& msg : error_msg_list)
-		error_msg.append(msg + "\n");
-	if (!error_msg.empty()) {
+	// Check for frame rendering error while playing the animation, report it and stops the playback at problematic frame
+	if (!canvas_view || !canvas_view->time_model())
+		return;
+	std::set<std::string> error_msg_set;
+	renderer_canvas->get_rendering_error_messages_for_time(canvas_view->time_model()->get_time(), error_msg_set);
+
+	if (!error_msg_set.empty()) {
+		std::string error_msg;
+		for (auto& msg : error_msg_set)
+			error_msg.append(msg + "\n");
 		App::get_ui_interface()->error(error_msg);
 		canvas_view->stop_async();
 	}
