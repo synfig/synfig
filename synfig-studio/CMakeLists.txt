@@ -17,7 +17,6 @@ endif()
 add_subdirectory(plugins)
 add_subdirectory(po)
 add_subdirectory(sounds)
-add_subdirectory(ui)
 
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/appdata")
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/applications")

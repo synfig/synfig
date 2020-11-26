@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<glade-catalog name="synfigstudio" depends="gtk+" version="0.2" domain="synfigstudio">
+
+  <glade-widget-classes>
+    <glade-widget-class name="gtkmm__CustomObject_widget_vector" generic-name="vector" title="Vector" parent="GtkEntry" toplevel="false" default-width="100" />
+    <glade-widget-class name="gtkmm__CustomObject_widget_time" since="0.2" generic-name="time" title="Time" parent="GtkEntry" toplevel="false" default-width="100" />
+  </glade-widget-classes>
+
+
+  <glade-widget-group name="synfigwidgets" title="Synfig Widgets" >
+    <glade-widget-class-ref name="gtkmm__CustomObject_widget_vector" />
+    <glade-widget-class-ref name="gtkmm__CustomObject_widget_time" />
+  </glade-widget-group>
+
+</glade-catalog>

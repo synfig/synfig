@@ -43,7 +43,6 @@ SUBDIRS = \
 	$(IMAGE_DIR) \
 	$(SOUND_DIR) \
 	plugins \
-	ui \
 	po
 
 EXTRA_DIST = \

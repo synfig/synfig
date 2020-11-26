@@ -221,6 +221,7 @@ AC_CONFIG_FILES([
     src/gui/Makefile
     src/gui/resources/Makefile
     src/gui/resources/css/Makefile
+    src/gui/resources/ui/Makefile
     src/synfigapp/Makefile
     src/player/Makefile
     images/Makefile
@@ -239,7 +240,6 @@ AC_CONFIG_FILES([
     plugins/lottie-exporter/sources/Makefile
     plugins/lottie-exporter/synfig/Makefile
     sounds/Makefile
-    ui/Makefile
 ])
 AC_OUTPUT
 
