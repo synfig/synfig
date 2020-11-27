@@ -29,12 +29,8 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "workarearenderer.h"
-#include "workarea.h"
-
-#include <gui/localization.h>
+#include <gui/workarea.h>
 
 #endif
 
@@ -56,7 +52,7 @@ using namespace studio;
 WorkAreaRenderer::WorkAreaRenderer():
 	enabled_(true),
 	priority_(0),
-	work_area_(NULL)
+	work_area_(nullptr)
 { }
 
 WorkAreaRenderer::~WorkAreaRenderer()

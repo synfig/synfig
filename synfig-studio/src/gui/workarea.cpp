@@ -50,8 +50,6 @@
 
 #include <synfigapp/canvasinterface.h>
 
-#include <gui/localization.h>
-
 #include "helpers.h"
 #include "canvasview.h"
 #include "event_mouse.h"
@@ -69,7 +67,10 @@
 #include "workarearenderer/renderer_dragbox.h"
 #include "workarearenderer/renderer_bbox.h"
 
+#include <gui/app.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+
 #endif
 
 /* === U S I N G =========================================================== */

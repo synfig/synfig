@@ -43,6 +43,7 @@
 #include <instance.h>
 #include <canvasview.h>
 #include <workarea.h>
+#include <cellrenderer/cellrenderer_timetrack.h>
 #include <trees/layertree.h>
 #include <trees/layerparamtreestore.h>
 #include <widgets/widget_canvastimeslider.h>

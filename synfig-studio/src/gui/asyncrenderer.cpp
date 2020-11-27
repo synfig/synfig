@@ -31,17 +31,19 @@
 #endif
 
 #include "asyncrenderer.h"
-#include "app.h"
-#include <glibmm/thread.h>
-#include <glibmm/dispatcher.h>
 
-#include <synfig/general.h>
-#include <synfig/context.h>
 #include <ETL/clock>
 
-#include <gui/localization.h>
-#include <docks/dock_info.h>
+#include <synfig/context.h>
+#include <synfig/general.h>
+#include <synfig/target_scanline.h>
+#include <synfig/target_tile.h>
+#include <synfig/target_cairo.h>
+#include <synfig/target_cairo_tile.h>
 
+#include <gui/app.h>
+#include <gui/docks/dock_info.h>
+#include <gui/localization.h>
 #include <gui/progresslogger.h>
 
 #endif

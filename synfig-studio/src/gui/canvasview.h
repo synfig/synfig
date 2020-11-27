@@ -39,28 +39,20 @@
 
 #include <glibmm/dispatcher.h>
 
-#include <gtkmm/window.h>
-#include <gtkmm/image.h>
-#include <gtkmm/tooltip.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/statusbar.h>
 #include <gtkmm/progressbar.h>
 #include <gtkmm/button.h>
 #include <gtkmm/menu.h>
-#include <gtkmm/treeview.h>
-#include <gtkmm/treestore.h>
 #include <gdkmm/device.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/alignment.h>
 #include <gtkmm/toolbar.h>
-#include <gtkmm/toolitem.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toggletoolbutton.h>
 #include <gtkmm/separatortoolitem.h>
-#include <gtkmm/scale.h>
 #include <gtkmm/uimanager.h>
 #include <gtkmm/toggleaction.h>
-#include <gtkmm/radioaction.h>
+#include <gtkmm/radiobuttongroup.h>
 
 #include <ETL/clock>
 
@@ -69,20 +61,17 @@
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/rect.h>
-#include <synfig/transform.h>
 #include <synfig/soundprocessor.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
 
-#include "app.h"
 #include "instance.h"
 #include "smach.h"
 #include "render.h"
 #include "duckmatic.h"
 #include "timemodel.h"
 #include "helpers.h"
-#include "cellrenderer/cellrenderer_timetrack.h"
 #include "docks/dockable.h"
 #include "dialogs/canvasoptions.h"
 #include "dialogs/canvasproperties.h"

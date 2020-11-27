@@ -29,8 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <gui/localization.h>
-
 #include "mainwindow.h"
 #include "canvasview.h"
 #include "docks/dockable.h"
@@ -48,7 +46,10 @@
 #include "gui/widgets/widget_time.h"
 #include "gui/widgets/widget_vector.h"
 
+#include <gui/app.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+
 
 #endif
 

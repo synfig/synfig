@@ -29,27 +29,11 @@
 #	include <config.h>
 #endif
 
-#include <algorithm>
-#include <sigc++/sigc++.h>
-
-#include <ETL/stringf>
-//#include <ETL/thread>
-#include <glibmm/thread.h>
-
-#include <synfig/general.h>
-
-#include <glibmm/main.h>
+#include <ETL/clock>
 
 #include "audiocontainer.h"
 
-#include <cstdio>
-#include <sys/stat.h>
-#include <errno.h>
-
-#include <set>
 #include <vector>
-
-#include <gui/localization.h>
 
 #endif
 
@@ -57,7 +41,6 @@
 
 using namespace std;
 using namespace etl;
-using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 #ifdef __WIN32

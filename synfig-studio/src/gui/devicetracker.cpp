@@ -32,7 +32,6 @@
 #endif
 
 #include <gdkmm/device.h>
-#include <gdkmm/display.h>
 #include <gdkmm/displaymanager.h>
 
 #if GDKMM_MAJOR_VERSION < 3 || (GDKMM_MAJOR_VERSION == 3 && GDKMM_MINOR_VERSION < 20)
@@ -42,13 +41,9 @@
 	#include <gdkmm/seat.h>
 #endif
 
-#include <synfig/general.h>
-
 #include <synfigapp/main.h>
 
 #include "devicetracker.h"
-
-#include <gui/localization.h>
 
 #endif
 

@@ -70,6 +70,7 @@
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/layers/layer_filtergroup.h>
 
+#include <gui/app.h>
 #include "ducktransform_matrix.h"
 #include "ducktransform_rotate.h"
 #include "ducktransform_translate.h"
