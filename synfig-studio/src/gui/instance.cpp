@@ -1015,7 +1015,8 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 				String label = _("Name: ");
 
 				// export and rename value dialog
-				if (entry.name == "ValueNodeRename") button2 = _("Rename");
+				if (entry.name == "ValueNodeRename")
+					button2 = _("Rename");
 				// set layer description dialog
 				else if (entry.name == "LayerSetDesc")
 				{
@@ -1025,13 +1026,21 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 					button2 = _("Add");
 				}
 
-				if(!studio::App::dialog_entry(entry.local_name,
+				if(entry.name == "GroupAddLayers"){
+					if(!studio::App::dialog_sets_entry(entry.local_name,
 							label,
-							//iter->get_local_name()+": "+iter->get_desc(),
 							str,
 							_("Cancel"),
 							button2))
-					return;
+						return;
+				} else {
+					if(!studio::App::dialog_entry(entry.local_name,
+							label,
+							str,
+							_("Cancel"),
+							button2))
+						return;
+				}
 				action->set_param(iter->get_name(),str);
 				break;
 			}
