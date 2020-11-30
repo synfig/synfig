@@ -78,6 +78,7 @@ Dialog_ToolOptions::clear()
 	set_local_name(_("Tool Options"));
 	add(sub_vbox_);
 	set_widget(empty_label);
+	sub_vbox_.set_valign(Gtk::Align::ALIGN_CENTER);
 	empty_label.show();
 
 	set_stock_id(Gtk::StockID("synfig-about"));
@@ -91,6 +92,7 @@ Dialog_ToolOptions::set_widget(Gtk::Widget&x)
 		sub_vbox_.remove(**i);
 	sub_vbox_.show();
 	sub_vbox_.pack_start(x,false,false);
+	sub_vbox_.set_valign(Gtk::Align::ALIGN_FILL);
 	x.show();
 }
 
