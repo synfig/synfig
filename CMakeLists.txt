@@ -23,7 +23,7 @@ if(MINGW AND NOT MSYS)
 	if (NOT DEFINED ENV{MINGW_PREFIX})
 		message(FATAL_ERROR "Currently we only support MSYS2 environment for MinGW compiler on Windows."
 				" Please pass '-DMSYS=1' to your CMake command to force using MSYS."
-				" Also you need to set MINGW_PREFIX environment variable if your MSYS2 installation is not in standard path (c:\\msys64\\)")
+				" Also you need to set MINGW_PREFIX environment variable if your MSYS2 installation is not in standard path (c:\\msys64\\mingw64)")
 	else()
 		set(MSYS ON)
 		set(MSYS_ROOT "$ENV{MINGW_PREFIX}/..")
