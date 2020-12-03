@@ -14,6 +14,8 @@ MacOS.
 https://synfig.org/
 
 [![Build Status](https://travis-ci.com/synfig/synfig.svg?branch=master)](https://travis-ci.com/synfig/synfig)
+[![GitHub Actions](https://github.com/synfig/synfig/workflows/Synfig%20CI/badge.svg?branch=master)](https://github.com/synfig/synfig/actions)
+[![Windows Build status](https://img.shields.io/appveyor/ci/synfig/synfig/master.svg?label=Windows%20build)](https://ci.appveyor.com/project/Synfig/synfig/branch/master)
 
 Installing
 ----------
@@ -40,13 +42,17 @@ If you get an error message like "can't be opened because it comes from a non id
 
 The app is saved as an exception to your security settings, and you can open it in the future by double-clicking it just as you can any registered app.
 
-Note: You can also grant an exception for a blocked app by clicking the “Open Anyway” button in the General pane of Security & Privacy preferences. This button is available for about an hour after you try to open the app. To open this pane, choose Apple menu > System Preferences, click Security & Privacy, then click General.
+***
+> **NOTE**
 
-For more details please refer to this page - https://support.apple.com/kb/PH25088?locale=en_US
+> You can also grant an exception for a blocked app by clicking the “Open Anyway” button in the General pane of Security & Privacy preferences. This button is available for about an hour after you try to open the app. To open this pane, choose Apple menu > System Preferences, click Security & Privacy, then click General.
+***
+
+For more details please refer to this [page](https://support.apple.com/kb/PH25088?locale=en_US)
 
 #### Building from source
 
-See instructions for installing dependencies and building using autotools/make or CMAKE here - https://synfig-docs-dev.readthedocs.io/en/latest/building/Building%20Synfig.html
+See instructions for installing dependencies and building using autotools/make or CMake [here](https://synfig-docs-dev.readthedocs.io/en/latest/building/Building%20Synfig.html)
 
 If you have previous synfig build installed in system path (e.g. `/usr/local/`),
 you are recommended to uninstall that.
