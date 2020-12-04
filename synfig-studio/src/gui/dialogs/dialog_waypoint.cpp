@@ -69,26 +69,25 @@ Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas>
     waypointwidget=manage(new class Widget_Waypoint(canvas));
 	get_vbox()->pack_start(*waypointwidget);
 
-	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
-	ok_button->show();
-	add_action_widget(*ok_button,2);
-	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Waypoint::on_ok_pressed));
+	Gtk::Button *delete_button(manage(new class Gtk::Button(Gtk::StockID("gtk-delete"))));
+	delete_button->show();
+	add_action_widget(*delete_button,3);
+	delete_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Waypoint::on_delete_pressed));
 
 	Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
 	apply_button->show();
 	add_action_widget(*apply_button,1);
 	apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Waypoint::on_apply_pressed));
 
-	Gtk::Button *delete_button(manage(new class Gtk::Button(Gtk::StockID("gtk-delete"))));
-	delete_button->show();
-	add_action_widget(*delete_button,3);
-	delete_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Waypoint::on_delete_pressed));
-
 	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Waypoint::hide));
 
+	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
+	ok_button->show();
+	add_action_widget(*ok_button,2);
+	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Waypoint::on_ok_pressed));
 
 	waypointwidget->show_all();
 }
