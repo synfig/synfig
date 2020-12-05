@@ -310,9 +310,11 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		{
 			if (filename_ext == ".sifz")
 				stream_in = new ZReadStream(stream_in);
-			std::ofstream  outfile(filename_processed, std::ios::binary);
-			outfile << stream_in->rdbuf();
-			outfile.close();
+
+			FileSystem::WriteStream::Handle outfile = FileSystemNative::instance()->get_write_stream(filename_processed);
+			*outfile << stream_in->rdbuf();
+			outfile.reset();
+
 			stream_in.reset();
 		}
 
@@ -330,13 +332,13 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 			{
 				synfig::error("run_plugin(): Unable to open file for write");
 			} else {
-				std::ifstream  infile(filename_processed, std::ios::binary);
-				*stream << infile.rdbuf();
-				infile.close();
+				FileSystem::ReadStream::Handle infile = FileSystemNative::instance()->get_read_stream(filename_processed);
+				*stream << infile->rdbuf();
+				infile.reset();
 				stream.reset();
 			}
 		}
-		remove(filename_processed.c_str());
+		FileSystemNative::instance()->file_remove(filename_processed);
 	}
 
 	canvas=0;
