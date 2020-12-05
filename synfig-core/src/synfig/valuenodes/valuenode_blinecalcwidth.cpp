@@ -105,7 +105,7 @@ ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 	const bool looped = bline_value_node.get_loop();
 	int size = (int)bline.size();
 	int count = looped ? size : size - 1;
-	if (count < 1) return Vector();
+	if (count < 1) return Real();
 
 	bool loop         = (*loop_)(t).get(bool());
 	bool homogeneous  = (*homogeneous_)(t).get(bool());
