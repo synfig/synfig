@@ -332,13 +332,13 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 			{
 				synfig::error("run_plugin(): Unable to open file for write");
 			} else {
-				std::ifstream  infile(filename_processed, std::ios::binary);
-				*stream << infile.rdbuf();
-				infile.close();
-				stream.reset();
+				FileSystem::ReadStream::Handle infile = FileSystemNative::instance()->get_read_stream(filename_processed);
+				*stream << infile->rdbuf();
+				infile.reset();
+				stream.reset();				
 			}
 		}
-		remove(filename_processed.c_str());
+		FileSystemNative::instance()->file_remove(filename_processed);
 	}
 
 	canvas=0;
