@@ -21,7 +21,7 @@ Installing
 ----------
 
 #### Debian/Ubuntu
-1. Download the appimage file from the website.
+1. Download the AppImage file from the website.
 2. Left-click on the file and select `properties`. Navigate to `permissions` and check the box that says `Allow executing file as program`. Finally, run the  file.
 
 For more information see https://discourse.appimage.org/t/how-to-make-an-appimage-executable/80.
@@ -34,19 +34,18 @@ For more information see https://discourse.appimage.org/t/how-to-make-an-appimag
 1. Download the `.dmg` file from the website.
 2. Drag the file into your applications directory, then run it.
 
-If you get an error message like "can't be opened because it comes from a non identified developer", then do the fllowing:
+If you get an error message like "can't be opened because it comes from a non identified developer", then do the following:
 
-1. Locate the Synfig app in Finder (don’t use Launchpad to do this - Launchpad doesn’t allow you to access the shortcut menu)
+1. Locate the Synfig app in Finder (don’t use Launchpad to do this - Launchpad doesn't allow you to access the shortcut menu)
 2. Control-click the app icon, choose "Open" from the shortcut menu.
 3. Click Open.
 
 The app is saved as an exception to your security settings, and you can open it in the future by double-clicking it just as you can any registered app.
 
-***
 > **NOTE**
-
+> 
 > You can also grant an exception for a blocked app by clicking the “Open Anyway” button in the General pane of Security & Privacy preferences. This button is available for about an hour after you try to open the app. To open this pane, choose Apple menu > System Preferences, click Security & Privacy, then click General.
-***
+
 
 For more details please refer to this [page](https://support.apple.com/kb/PH25088?locale=en_US)
 
@@ -54,7 +53,7 @@ For more details please refer to this [page](https://support.apple.com/kb/PH2508
 
 See instructions for installing dependencies and building using autotools/make or CMake [here](https://synfig-docs-dev.readthedocs.io/en/latest/building/Building%20Synfig.html)
 
-If you have previous synfig build installed in system path (e.g. `/usr/local/`),
+If you have previous Synfig build installed in system path (e.g. `/usr/local/`),
 you are recommended to uninstall that.
 
 ## Credits
