@@ -30,22 +30,20 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <glibmm.h>
 #include "groupactionmanager.h"
-#include "trees/layergrouptree.h"
-#include <synfigapp/action_param.h>
-#include "instance.h"
+
+#include <glibmm/main.h>
 #include <gtkmm/stock.h>
 
+#include <gui/instance.h>
 #include <gui/localization.h>
+#include <gui/trees/layergrouptree.h>
+#include <synfig/general.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -214,7 +212,7 @@ GroupActionManager::refresh()
 
 				for(iter=selected_groups.begin();iter!=selected_groups.end();++iter)
 				{
-					param_list.add("group",(synfig::String)*iter);
+					param_list.add("group",*iter);
 				}
 			}
 

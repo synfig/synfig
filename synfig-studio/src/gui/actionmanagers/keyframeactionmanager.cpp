@@ -30,20 +30,19 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "keyframeactionmanager.h"
-#include "trees/keyframetree.h"
-#include <synfigapp/action_param.h>
-#include "instance.h"
 
+#include <glibmm/main.h>
+
+#include <gui/instance.h>
 #include <gui/localization.h>
+#include <gui/trees/keyframetree.h>
+#include <synfig/general.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

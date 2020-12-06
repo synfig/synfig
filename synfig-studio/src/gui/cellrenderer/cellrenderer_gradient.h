@@ -30,11 +30,7 @@
 #include <glibmm/property.h>
 #include <glibmm/propertyproxy.h>
 
-#include <gtkmm/entry.h>
 #include <gtkmm/cellrenderertext.h>
-
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
 
 #include <synfig/gradient.h>
 

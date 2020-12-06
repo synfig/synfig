@@ -37,7 +37,6 @@
 
 #include <cassert>
 #include <cerrno>
-#include <iostream>
 
 #include <sys/stat.h>
 #include <sigc++/sigc++.h>

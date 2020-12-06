@@ -29,14 +29,10 @@
 #	include <config.h>
 #endif
 
-#include <gtk/gtk.h>
-#include <glibmm/main.h>
-
-#include <synfig/general.h>
-
 #include "helpers.h"
 
-#include <gui/localization.h>
+#include <gtk/gtk.h>
+#include <glibmm/main.h>
 
 #endif
 

@@ -28,7 +28,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/uimanager.h>
-#include <gtkmm/treeview.h>
 #include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
@@ -44,7 +43,6 @@ class LayerTree;
 class LayerActionManager
 {
 	Glib::RefPtr<Gtk::UIManager> ui_manager_;
-	//Glib::RefPtr<Gtk::TreeSelection> tree_selection_;
 	LayerTree* layer_tree_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 

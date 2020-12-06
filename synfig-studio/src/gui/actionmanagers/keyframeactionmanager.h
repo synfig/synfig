@@ -27,9 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <glibmm.h>
 #include <gtkmm/uimanager.h>
-#include <gtkmm/treeview.h>
 #include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
@@ -49,7 +47,6 @@ class KeyframeActionManager
 	sigc::signal<void> signal_keyframe_description_set_;
 
 	Glib::RefPtr<Gtk::UIManager> ui_manager_;
-	//Glib::RefPtr<Gtk::TreeSelection> tree_selection_;
 	KeyframeTree* keyframe_tree_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 

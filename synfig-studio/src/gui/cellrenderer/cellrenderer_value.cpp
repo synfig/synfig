@@ -31,31 +31,24 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <ETL/stringf>
-#include <gtkmm/celleditable.h>
-#include <gtkmm/editable.h>
-#include <gtkmm/eventbox.h>
-
-#include "app.h"
-#include "widgets/widget_value.h"
-
-#include "cellrenderer_gradient.h"
 #include "cellrenderer_value.h"
 
-#include <synfig/valuenodes/valuenode_bone.h>
-#include <synfig/transformation.h>
-
-#include "widgets/widget_gradient.h"
-#include "dialogs/dialog_gradient.h"
-#include "dialogs/dialog_color.h"
-
 #include <gdkmm/general.h>
+#include <gtkmm/celleditable.h>
+#include <gtkmm/eventbox.h>
 
-#include <gui/localization.h>
+#include <ETL/stringf>
 
+#include <synfig/general.h>
+#include <synfig/transformation.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+
+#include <gui/app.h>
+#include <gui/dialogs/dialog_gradient.h>
+#include <gui/dialogs/dialog_color.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+#include <gui/widgets/widget_value.h>
 
 #endif
 

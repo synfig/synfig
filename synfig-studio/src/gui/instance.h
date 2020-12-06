@@ -30,14 +30,13 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
-#include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <synfigapp/instance.h>
+#include <gui/trees/historytreestore.h>
 #include <sigc++/sigc++.h>
-#include <synfigapp/value_desc.h>
-#include "trees/historytreestore.h"
-#include <synfig/layers/layer_switch.h>
 #include <synfig/canvas.h>
+#include <synfig/layers/layer_switch.h>
+#include <synfigapp/instance.h>
+#include <synfigapp/value_desc.h>
 
 /* === M A C R O S ========================================================= */
 #define DEFAULT_FILENAME_PREFIX _("Synfig Animation ") // will be followed by a different number for each document

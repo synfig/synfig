@@ -30,19 +30,18 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <glibmm.h>
 #include "layeractionmanager.h"
-#include "trees/layertree.h"
+
+#include <glibmm/main.h>
+
+#include <gui/instance.h>
+#include <gui/localization.h>
+#include <gui/trees/layertree.h>
 #include <synfig/context.h>
+#include <synfig/general.h>
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/layers/layer_skeleton.h>
-#include <synfigapp/action_param.h>
-#include "instance.h"
 #include <synfigapp/selectionmanager.h>
-
-#include <gui/localization.h>
 
 #endif
 
