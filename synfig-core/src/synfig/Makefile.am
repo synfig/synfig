@@ -52,6 +52,7 @@ VALUEHEADERS = \
 	weightedvalue.h \
 	pair.h \
 	type.h \
+	synfig_export.h \
 	base_types.h \
 	value.h
 
