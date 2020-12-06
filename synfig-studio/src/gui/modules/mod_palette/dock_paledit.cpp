@@ -272,7 +272,13 @@ Dock_PalEdit::on_save_pressed()
 			)
 				continue;
 		}
-		palette_.save_to_file(filename);
+		try {
+			palette_.save_to_file(filename);
+		} catch (const std::string& err) {
+			App::dialog_message_1b("ERROR", err, "details", _("Close"));
+		} catch (...) {
+			synfig::error("Unknown error!");
+		}
 		return;
 	}
 }
