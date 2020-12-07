@@ -212,7 +212,7 @@ Action::ValueDescCreateChildBone::prepare()
 	if (!value_desc.parent_is_value_node()
 	 || !value_desc.is_parent_desc_declared()
 	 || !value_desc.get_parent_desc().is_value_node() )
-			throw Error(Error::TYPE_NOTREADY);
+			throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: not a value node");
 
 	Action::Handle action;
 
@@ -227,8 +227,7 @@ Action::ValueDescCreateChildBone::prepare()
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_value_node());
 		if(!value_node){
 			cout<<"Error"<<endl;
-			throw Error(Error::TYPE_NOTREADY);
-
+			throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: not a static list");
 		}
 
 		int index=parent_desc.get_index();
@@ -259,7 +258,7 @@ Action::ValueDescCreateChildBone::prepare()
 			setActiveBone->set_param("prev_active_bone_node",prev_active_bone);
 
 			if (!setActiveBone->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
+				throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: ValueNodeSetActiveBone not ready");
 			add_action_front(setActiveBone);
 
 		}
@@ -267,7 +266,7 @@ Action::ValueDescCreateChildBone::prepare()
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_desc().get_parent_value_node());
 		if(!value_node){
 			cout<<"Error"<<endl;
-			throw Error(Error::TYPE_NOTREADY);
+			throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: parent value node is not a static list");
 		}
 		int index=parent_desc.get_parent_desc().get_index();
 		action->set_param("value_desc",ValueDesc(value_node,index));
@@ -306,7 +305,7 @@ Action::ValueDescCreateChildBone::prepare()
 			setActiveBone->set_param("prev_active_bone_node",prev_active_bone);
 
 			if (!setActiveBone->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
+				throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: parent value node: ValueNodeSetActiveBone not ready");
 			add_action_front(setActiveBone);
 
 		}
@@ -315,6 +314,6 @@ Action::ValueDescCreateChildBone::prepare()
 		
 	
 	if (!action->is_ready())
-		throw Error(Error::TYPE_NOTREADY);
+		throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: action not ready");
 	add_action_front(action);
 }
