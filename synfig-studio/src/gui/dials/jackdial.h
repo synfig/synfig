@@ -31,8 +31,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
 #include <gtkmm/button.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/togglebutton.h>
 
 #include <gui/widgets/widget_time.h>
@@ -46,7 +46,7 @@
 namespace studio
 {
 
-class JackDial : public Gtk::Table
+class JackDial : public Gtk::Grid
 {
 	Gtk::ToggleButton *toggle_jack;
 	Widget_Time *offset;

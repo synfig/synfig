@@ -55,7 +55,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-JackDial::JackDial(): Gtk::Table(3, 1, false)
+JackDial::JackDial(): Gtk::Grid()
 {
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	toggle_jack =  create_icon(iconsize, "synfig-jack",_("Disable JACK"));
@@ -69,11 +69,10 @@ JackDial::JackDial(): Gtk::Table(3, 1, false)
 	space->set_size_request(4);
         space->show();
 	
+	attach(*toggle_jack, 0, 0, 1, 1);
+	attach(*offset, 1, 0, 1, 1);
+	attach(*space, 2, 0, 1, 1);
 
-	attach(*toggle_jack,  0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*offset,       1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
-	attach(*space,  2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	
 	offset->hide();
 #ifndef WITH_JACK
 	offset->set_sensitive(false);

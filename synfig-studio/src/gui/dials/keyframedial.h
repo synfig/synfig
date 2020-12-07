@@ -31,7 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/togglebutton.h>
 
 /* === M A C R O S ========================================================= */
@@ -43,7 +43,7 @@
 namespace studio
 {
 
-class KeyFrameDial : public Gtk::Table
+class KeyFrameDial : public Gtk::Grid
 {
 	Gtk::ToggleButton *toggle_keyframe_past;
 	Gtk::ToggleButton *toggle_keyframe_future;
