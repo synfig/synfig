@@ -30,11 +30,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltip.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toggletoolbutton.h>
-#include "duckmatic.h"
+#include <gui/duckmatic.h>
 
 /* === M A C R O S ========================================================= */
 
