@@ -1,5 +1,7 @@
 name: synfigstudio
 title: 'Synfig Studio'
+base: core18
+version: '1.4.0'
 summary: Create and edit 2D animations and compositions
 description: |
   Synfig Studio is a free and open-source 2D animation software, designed as
@@ -23,12 +25,14 @@ description: |
   - Linking data on file- or parameter-level
   - Automatic animation using mathematical functions
 
-base: core18
-adopt-info: cleanup
+
 confinement: strict
 license: GPL-3.0
+grade: stable
 
 architectures:
+  - build-on: arm64
+  - build-on: armhf
   - build-on: amd64
 
 apps:
@@ -72,7 +76,6 @@ parts:
       - libboost-system-dev
       - libmng-dev
       - git
-      - libxml2-utils # to extract version from appdata file
     stage-packages:
       - libilmbase12
       - libmagick++-6.q16-7
@@ -94,14 +97,16 @@ parts:
   etl:
     after: [synfig-deps]
     plugin: autotools
-    source: ETL
+    source: https://github.com/synfig/synfig/releases/download/v1.4.0/ETL-1.4.0.tar.gz
+    source-checksum: sha256/d43396c0ac356114713469216a9257247c2588d5475590a46db63cf201d1a011
     configflags: &cfgflags
       - --prefix=/usr
 
   synfig-core:
     after: [etl]
     plugin: autotools
-    source: synfig-core
+    source: https://github.com/synfig/synfig/releases/download/v1.4.0/synfig-1.4.0.tar.gz
+    source-checksum: sha256/7f36d57eba9dc959e1deae89e6908585a08db7f2d9399915a46a9eff33080c9c
     configflags: *cfgflags
     override-build: &build |
       set -xe
@@ -112,42 +117,27 @@ parts:
   synfig-studio:
     after: [synfig-core]
     plugin: autotools
-    source: synfig-studio
+    source: https://github.com/synfig/synfig/releases/download/v1.4.0/synfigstudio-1.4.0.tar.gz
+    source-checksum: sha256/ca1eb1a3e2264c57974a576d1995e005079d96cee19d3dffaacded72c93fbd56
     configflags: *cfgflags
     override-build: *build
-
-  cleanup:
-    after: [synfig-studio]
-    plugin: nil
-    build-snaps: [core18, gnome-3-34-1804]
-
     override-stage: |
       set -xe
       snapcraftctl stage
 
       appdata_file="usr/share/appdata/org.synfig.SynfigStudio.appdata.xml"
-      appdata_version=$(xmllint --xpath 'string(//release[1]/@version)' "$appdata_file")
 
       # fix the icon path and point it to a file inside the snap
       sed -i -E "s|^Icon=(.*)|Icon=\${SNAP}/usr/share/icons/hicolor/scalable/apps/\1.svg|g" \
         usr/share/applications/org.synfig.SynfigStudio.desktop
 
-      cd "$SNAPCRAFT_PROJECT_DIR"
-
-      # consider grade to be stable if commit is tagged
-      git describe --exact-match HEAD && grade="stable" || grade="devel"
-      snapcraftctl set-grade "$grade"
-
-      # append build date and git hash to version for untagged ("devel") builds
-      if [ "$grade" = "devel" ]; then
-        githash=$(git rev-parse --short=7 HEAD)
-        datestring=$(date -u +%Y%m%d)
-        snapcraftctl set-version "${appdata_version}-${datestring}~${githash}"
-      fi
-
+  cleanup:
+    after: [synfig-studio]
+    plugin: nil
+    build-snaps: [core18, gnome-3-34-1804]
     override-prime: |
       set -eux
-      for lib in "libharfbuzz" "libglibmm" "libgiomm" "libQt" "libflite" "qt5"; do
+      for lib in "libharfbuzz" "libglibmm" "libgiomm" "libQt" "qt5"; do
         rm -rf "usr/lib/$SNAPCRAFT_ARCH_TRIPLET/$lib"*
       done
       for cruft in "bug" "lintian" "man" "icons/Humanity"; do
@@ -158,5 +148,6 @@ parts:
       # Remove all files from snap that are already included in the base snap or in
       # any connected content snaps
       for snap in "core18" "gnome-3-34-1804"; do  # List all content-snaps and base snaps you're using here
+        echo "Removing: $SNAPCRAFT_PRIME/{}"
         cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
       done
