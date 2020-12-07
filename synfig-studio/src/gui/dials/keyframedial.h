@@ -52,10 +52,10 @@ class KeyFrameDial : public Gtk::Grid
 public:
 
 	KeyFrameDial();
-	Glib::SignalProxy0<void> signal_toggle_keyframe_past()	{ return toggle_keyframe_past->signal_toggled(); }
-	Glib::SignalProxy0<void> signal_toggle_keyframe_future()	{ return toggle_keyframe_future->signal_toggled(); }
-	Gtk::ToggleButton *get_toggle_pastbutton()		{ return toggle_keyframe_past; }
-	Gtk::ToggleButton *get_toggle_futurebutton()		{ return toggle_keyframe_future; }
+	Glib::SignalProxy0<void> signal_toggle_keyframe_past() { return toggle_keyframe_past->signal_toggled(); }
+	Glib::SignalProxy0<void> signal_toggle_keyframe_future() { return toggle_keyframe_future->signal_toggled(); }
+	Gtk::ToggleButton *get_toggle_pastbutton() { return toggle_keyframe_past; }
+	Gtk::ToggleButton *get_toggle_futurebutton() { return toggle_keyframe_future; }
 
 }; // END of class KeyFrameDial
 

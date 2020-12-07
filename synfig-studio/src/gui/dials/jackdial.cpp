@@ -57,7 +57,7 @@ using namespace studio;
 JackDial::JackDial(): Gtk::Grid()
 {
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	toggle_jack =  create_icon(iconsize, "synfig-jack",_("Disable JACK"));
+	toggle_jack = create_icon(iconsize, "synfig-jack",_("Disable JACK"));
 	offset = manage(new Widget_Time());
 	offset->set_value(synfig::Time(0.0));
 	offset->set_size_request(0,-1); // request horizontal shrink
