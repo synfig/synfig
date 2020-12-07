@@ -32,8 +32,8 @@
 #include <gtkmm/cellrenderertext.h>
 
 #include <synfig/paramdesc.h>
-#include <synfigapp/value_desc.h>
 #include <synfig/value.h>
+#include <synfigapp/value_desc.h>
 
 
 /* === M A C R O S ========================================================= */

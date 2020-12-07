@@ -31,25 +31,19 @@
 #	include <config.h>
 #endif
 
+#include "cellrenderer_timetrack.h"
+
 #include <valarray>
 
 #include <gdkmm/general.h>
 
-#include <ETL/stringf>
-
-#include <synfig/general.h>
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 
-#include <gui/instance.h>
-
-#include "cellrenderer_timetrack.h"
-
-#include <gui/localization.h>
-
 #include <gui/exception_guard.h>
-
-#include "gui/waypointrenderer.h"
+#include <gui/instance.h>
+#include <gui/waypointrenderer.h>
 
 #endif
 

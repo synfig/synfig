@@ -36,8 +36,6 @@
 #include <gtkmm/cellrenderer.h>
 
 #include <synfig/time.h>
-#include <synfig/string.h>
-#include <synfig/valuenodes/valuenode_animated.h>
 
 #include <synfigapp/value_desc.h>
 #include <synfigapp/canvasinterface.h>

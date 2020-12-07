@@ -28,11 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <glibmm/property.h>
-#include <gtkmm/entry.h>
 #include <gtkmm/cellrenderertext.h>
-
-#include <sigc++/signal.h>
-#include <sigc++/slot.h>
 
 #include <synfig/time.h>
 

@@ -28,7 +28,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/uimanager.h>
-#include <gtkmm/treeview.h>
 #include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */

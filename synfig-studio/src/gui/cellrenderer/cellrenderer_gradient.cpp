@@ -29,22 +29,15 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <gtkmm/entry.h>
-#include <gtkmm/button.h>
+#include <cassert>
 #include "cellrenderer_gradient.h"
 #include "widgets/widget_gradient.h"
-#include "app.h"
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-//using namespace etl;
 using namespace synfig;
 using namespace studio;
 

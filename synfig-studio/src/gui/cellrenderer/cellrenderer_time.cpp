@@ -30,24 +30,19 @@
 #	include <config.h>
 #endif
 
+#include "cellrenderer_time.h"
+
 #include <synfig/general.h>
 
-#include <gtkmm/entry.h>
-#include <gtkmm/button.h>
-#include "cellrenderer_time.h"
-#include "app.h"
-#include "widgets/widget_time.h"
-
-#include <gui/localization.h>
-
+#include <gui/app.h>
 #include <gui/exception_guard.h>
+#include <gui/widgets/widget_time.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-//using namespace etl;
 using namespace synfig;
 using namespace studio;
 
