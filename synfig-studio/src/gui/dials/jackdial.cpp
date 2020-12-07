@@ -64,20 +64,14 @@ JackDial::JackDial(): Gtk::Grid()
 	offset->set_width_chars(6);
 	offset->set_tooltip_text(_("JACK Offset"));
 
-	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-	space->set_size_request(4);
-        space->show();
-	
 	attach(*toggle_jack, 0, 0, 1, 1);
 	attach(*offset, 1, 0, 1, 1);
-	attach(*space, 2, 0, 1, 1);
 
 	offset->hide();
 #ifndef WITH_JACK
 	offset->set_sensitive(false);
 #endif
 }
-
 
 Gtk::ToggleButton *
 JackDial::create_icon(Gtk::IconSize iconsize, const char *stockid, const char *tooltip)
@@ -94,4 +88,3 @@ JackDial::create_icon(Gtk::IconSize iconsize, const char *stockid, const char *t
 
 	return button;
 }
-
