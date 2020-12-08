@@ -26,12 +26,13 @@
 #define __SYNFIG_DOCK_INFO_H
 
 /* === H E A D E R S ======================================================= */
-#include "docks/dock_canvasspecific.h"
-#include "sigc++/signal.h"
 
-#include "asyncrenderer.h"
-#include "widgets/widget_distance.h"
+#include <gtkmm/button.h>
+#include <gtkmm/label.h>
 #include <gtkmm/progressbar.h>
+
+#include <gui/asyncrenderer.h>
+#include <gui/docks/dock_canvasspecific.h>
 
 /* === M A C R O S ========================================================= */
 

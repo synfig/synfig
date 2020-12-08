@@ -30,31 +30,23 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <gtkmm/stylecontext.h>
+#include "docks/dock_layers.h"
 
 #include <glibmm/markup.h>
+#include <gtkmm/stylecontext.h>
 
-#include "docks/dock_layers.h"
-#include "app.h"
-
-#include "instance.h"
-#include <sigc++/sigc++.h>
-#include "trees/layertreestore.h"
-#include "trees/layertree.h"
-#include "canvasview.h"
-#include "actionmanagers/layeractionmanager.h"
-
-#include <gui/localization.h>
-
+#include <gui/actionmanagers/layeractionmanager.h>
+#include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+#include <gui/trees/layertreestore.h>
+#include <gui/trees/layertree.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

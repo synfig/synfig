@@ -29,24 +29,17 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include "app.h"
-
 #include "docks/dockable.h"
-#include "docks/dockmanager.h"
-#include "docks/dockbook.h"
-#include "docks/dockdialog.h"
 
-#include <gui/localization.h>
+#include <gui/app.h>
+#include <gui/docks/dockmanager.h>
+#include <gui/docks/dockbook.h>
+#include <gui/docks/dockdialog.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

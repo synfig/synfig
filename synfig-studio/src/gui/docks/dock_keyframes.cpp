@@ -29,29 +29,23 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "docks/dock_keyframes.h"
-#include "app.h"
-
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/stylecontext.h>
 
 #include <cassert>
-#include "instance.h"
-#include "trees/keyframetreestore.h"
-#include "trees/keyframetree.h"
-#include "canvasview.h"
-#include "actionmanagers/keyframeactionmanager.h"
 
+#include <gtkmm/stylecontext.h>
+
+#include <gui/app.h>
+#include <gui/actionmanagers/keyframeactionmanager.h>
+#include <gui/canvasview.h>
 #include <gui/localization.h>
+#include <gui/trees/keyframetree.h>
+#include <gui/trees/keyframetreestore.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

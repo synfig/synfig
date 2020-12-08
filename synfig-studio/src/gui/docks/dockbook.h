@@ -29,7 +29,6 @@
 
 #include <gtkmm/notebook.h>
 #include <synfig/string.h>
-#include <gtkmm/tooltip.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -32,22 +32,18 @@
 #	include <config.h>
 #endif
 
-#include <cassert>
+#include "dock_navigator.h"
+
 #include <algorithm>
 
 #include <gdkmm/general.h>
 #include <gtkmm/separator.h>
 
-#include <synfig/general.h>
-
-#include <gui/localization.h>
-#include <workarea.h>
-#include <canvasview.h>
-#include <workarearenderer/renderer_canvas.h>
-
-#include "dock_navigator.h"
-
+#include <gui/canvasview.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+#include <gui/workarea.h>
+#include <gui/workarearenderer/renderer_canvas.h>
 
 #endif
 

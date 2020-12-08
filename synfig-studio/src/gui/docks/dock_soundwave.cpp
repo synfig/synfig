@@ -29,20 +29,19 @@
 
 #include "dock_soundwave.h"
 
-#include <widgets/widget_soundwave.h>
-#include <gui/canvasview.h>
-#include <gui/localization.h>
-
-#include <synfig/layers/layer_sound.h>
-
-#include <synfig/general.h>
-
-#include <synfig/canvasfilenaming.h>
-#include <synfigapp/value_desc.h>
-
+#include <glibmm/convert.h> // Glib::filename_from_uri
 #include <gtkmm/stylecontext.h>
 
-#include <glibmm/convert.h> // Glib::filename_from_uri
+#include <gui/canvasview.h>
+#include <gui/localization.h>
+#include <gui/widgets/widget_soundwave.h>
+#include <gui/widgets/widget_time.h>
+
+#include <synfig/canvasfilenaming.h>
+#include <synfig/general.h>
+#include <synfig/layers/layer_sound.h>
+
+#include <synfigapp/value_desc.h>
 
 #endif
 

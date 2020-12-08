@@ -30,29 +30,17 @@
 #	include <config.h>
 #endif
 
-#include "app.h"
-#include <synfig/general.h>
-
 #include "docks/dock_info.h"
-#include "canvasview.h"
-#include "workarea.h"
 
-#include <synfig/canvas.h>
-#include <synfig/color.h>		// for gamma_in()
-#include <synfig/context.h>
-
-#include <gtkmm/separator.h>
-#include <gtkmm/invisible.h>
-#include <gtkmm/progressbar.h>
-
+#include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/localization.h>
-#include <sigc++/sigc++.h>
+#include <gui/workarea.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 

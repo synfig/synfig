@@ -27,9 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "docks/dockable.h"
-#include <gtkmm/treeview.h>
-#include "instance.h"
 #include "docks/dock_canvasspecific.h"
 
 /* === M A C R O S ========================================================= */
@@ -47,7 +44,6 @@ protected:
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
 public:
-
 
 	Dock_Children();
 	~Dock_Children();

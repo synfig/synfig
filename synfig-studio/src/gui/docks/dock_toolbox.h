@@ -29,21 +29,16 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "docks/dockable.h"
+#include <gui/docks/dockable.h>
+#include <gui/smach.h>
 
-#include <gtkmm/toolbar.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/togglebutton.h>
 #include <gtkmm/toggletoolbutton.h>
-#include <gtkmm/toolpalette.h>
 #include <gtkmm/toolitemgroup.h>
-#include <gtkmm/alignment.h>
-#include <gtkmm/table.h>
 #include <gtkmm/box.h>
-#include <synfig/string.h>
-#include "smach.h"
+
 #include <map>
-#include "dialogsettings.h"
+
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -31,35 +31,26 @@
 #	include <config.h>
 #endif
 
+#include "dock_timetrack.h"
+
 #include <cassert>
 
 #include <gtkmm/scrolledwindow.h>
 
-#include <synfig/general.h>
-#include <synfig/timepointcollect.h>
-
-#include <helpers.h>
-#include <app.h>
-#include <instance.h>
-#include <canvasview.h>
-#include <workarea.h>
-#include <cellrenderer/cellrenderer_timetrack.h>
-#include <trees/layertree.h>
-#include <trees/layerparamtreestore.h>
-#include <widgets/widget_canvastimeslider.h>
-#include <widgets/widget_keyframe_list.h>
-
-#include "dock_timetrack.h"
-
-#include <gui/localization.h>
-
+#include <gui/canvasview.h>
+#include <gui/cellrenderer/cellrenderer_timetrack.h>
 #include <gui/exception_guard.h>
+#include <gui/instance.h>
+#include <gui/localization.h>
+#include <gui/trees/layertree.h>
+#include <gui/trees/layerparamtreestore.h>
+
+#include <synfig/timepointcollect.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

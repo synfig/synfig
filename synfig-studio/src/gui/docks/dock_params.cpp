@@ -29,26 +29,19 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "docks/dock_params.h"
-#include "app.h"
 
-#include <gtkmm/scrolledwindow.h>
 #include <cassert>
-#include "instance.h"
-#include "canvasview.h"
-#include "trees/layerparamtreestore.h"
-#include "workarea.h"
 
+#include <gui/canvasview.h>
 #include <gui/localization.h>
+#include <gui/trees/layerparamtreestore.h>
+#include <gui/workarea.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

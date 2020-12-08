@@ -28,8 +28,11 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/drawingarea.h>
+#include <gtkmm/window.h>
 
-#include "widget_timeslider.h"
+#include <gui/widgets/widget_timeslider.h>
+
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -27,10 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/accelgroup.h>
-
-#include "instance.h"
-#include "docks/dock_canvasspecific.h"
+#include <gtkmm/actiongroup.h>
+#include <gui/docks/dock_canvasspecific.h>
 
 /* === M A C R O S ========================================================= */
 

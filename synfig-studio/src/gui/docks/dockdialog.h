@@ -27,17 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/stockid.h>
-#include <gtkmm/button.h>
-#include "dialogsettings.h"
-#include <synfig/string.h>
-#include <gtkmm/dialog.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/label.h>
-#include <gtkmm/frame.h>
-#include <gtkmm/handlebox.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/accelgroup.h>
+#include <gtkmm/window.h>
 
 /* === M A C R O S ========================================================= */
 

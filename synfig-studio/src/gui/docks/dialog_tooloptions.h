@@ -27,9 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/dialog.h>
+#include <gtkmm/box.h>
 #include <gtkmm/label.h>
-#include <gtkmm/scrolledwindow.h>
 #include "docks/dockable.h"
 
 /* === M A C R O S ========================================================= */
