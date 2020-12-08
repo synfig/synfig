@@ -31,12 +31,12 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <gui/localization.h>
 #include "keyframedial.h"
+
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
+
+#include <gui/localization.h>
 
 #endif
 
@@ -53,12 +53,12 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-KeyFrameDial::KeyFrameDial(): Gtk::Table(2, 1, false)
+KeyFrameDial::KeyFrameDial(): Gtk::Grid()
 {
 	toggle_keyframe_past = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_past_on",_("Unlock past keyframe"));
 	toggle_keyframe_future = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_future_on",_("Unlock future keyframe"));
-	attach(*toggle_keyframe_past, 0, 1, 0, 1, Gtk::SHRINK, Gtk::EXPAND, 0, 0);
-	attach(*toggle_keyframe_future, 1, 2, 0, 1, Gtk::SHRINK, Gtk::EXPAND, 0, 0);
+	attach(*toggle_keyframe_past, 0, 0, 1, 1);
+	attach(*toggle_keyframe_future, 1, 0, 1, 1);
 }
 
 Gtk::ToggleButton *

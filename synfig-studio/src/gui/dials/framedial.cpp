@@ -32,12 +32,10 @@
 #	include <config.h>
 #endif
 
-#include <gtkmm/stock.h>
-#include <gtkmm/separator.h>
-
-#include <synfig/general.h>
-
 #include "framedial.h"
+
+#include <gtkmm/separator.h>
+#include <gtkmm/stock.h>
 
 #include <gui/localization.h>
 

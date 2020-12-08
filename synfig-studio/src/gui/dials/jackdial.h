@@ -30,9 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
-#include <gtkmm/button.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/togglebutton.h>
 
 #include <gui/widgets/widget_time.h>
@@ -46,7 +44,7 @@
 namespace studio
 {
 
-class JackDial : public Gtk::Table
+class JackDial : public Gtk::Grid
 {
 	Gtk::ToggleButton *toggle_jack;
 	Widget_Time *offset;
@@ -55,9 +53,9 @@ class JackDial : public Gtk::Table
 
 public:
 	JackDial();
-	Glib::SignalProxy0<void> signal_toggle_jack()	{ return toggle_jack->signal_toggled(); }
-	Gtk::ToggleButton *get_toggle_jackbutton()	{ return toggle_jack; }
-	Widget_Time *get_offsetwidget()	{ return offset; }
+	Glib::SignalProxy0<void> signal_toggle_jack() { return toggle_jack->signal_toggled(); }
+	Gtk::ToggleButton *get_toggle_jackbutton() { return toggle_jack; }
+	Widget_Time *get_offsetwidget() { return offset; }
 
 	sigc::signal<void>& signal_offset_changed()      { return offset->signal_value_changed(); }
 

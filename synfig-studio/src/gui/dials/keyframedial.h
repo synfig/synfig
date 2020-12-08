@@ -30,8 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/togglebutton.h>
 
 /* === M A C R O S ========================================================= */
@@ -43,7 +42,7 @@
 namespace studio
 {
 
-class KeyFrameDial : public Gtk::Table
+class KeyFrameDial : public Gtk::Grid
 {
 	Gtk::ToggleButton *toggle_keyframe_past;
 	Gtk::ToggleButton *toggle_keyframe_future;
@@ -53,10 +52,10 @@ class KeyFrameDial : public Gtk::Table
 public:
 
 	KeyFrameDial();
-	Glib::SignalProxy0<void> signal_toggle_keyframe_past()	{ return toggle_keyframe_past->signal_toggled(); }
-	Glib::SignalProxy0<void> signal_toggle_keyframe_future()	{ return toggle_keyframe_future->signal_toggled(); }
-	Gtk::ToggleButton *get_toggle_pastbutton()		{ return toggle_keyframe_past; }
-	Gtk::ToggleButton *get_toggle_futurebutton()		{ return toggle_keyframe_future; }
+	Glib::SignalProxy0<void> signal_toggle_keyframe_past() { return toggle_keyframe_past->signal_toggled(); }
+	Glib::SignalProxy0<void> signal_toggle_keyframe_future() { return toggle_keyframe_future->signal_toggled(); }
+	Gtk::ToggleButton *get_toggle_pastbutton() { return toggle_keyframe_past; }
+	Gtk::ToggleButton *get_toggle_futurebutton() { return toggle_keyframe_future; }
 
 }; // END of class KeyFrameDial
 

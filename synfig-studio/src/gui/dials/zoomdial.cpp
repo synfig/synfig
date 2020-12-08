@@ -30,15 +30,12 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "zoomdial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
 
-#include <gui/localization.h>
-
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
 
 #endif
 
@@ -57,7 +54,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 ZoomDial::ZoomDial(Gtk::IconSize & size):
-	Table(5, 1, false)
+	Gtk::Grid()
 {
 	zoom_in = create_icon(size, Gtk::Stock::ZOOM_IN, _("Zoom In"));
 	zoom_out = create_icon(size, Gtk::Stock::ZOOM_OUT, _("Zoom Out"));
@@ -79,11 +76,11 @@ ZoomDial::ZoomDial(Gtk::IconSize & size):
 	current_zoom->signal_event_after().connect(
 		sigc::mem_fun(*this, &ZoomDial::after_event) );
 
-	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*current_zoom, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	attach(*zoom_in, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*zoom_norm, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*zoom_fit, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*zoom_out, 0, 0, 1, 1);
+	attach(*current_zoom, 1, 0, 1, 1);
+	attach(*zoom_in, 2, 0, 1, 1);
+	attach(*zoom_norm, 3, 0, 1, 1);
+	attach(*zoom_fit, 4, 0, 1, 1);
 }
 
 void

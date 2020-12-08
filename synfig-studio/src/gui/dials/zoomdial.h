@@ -29,10 +29,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/grid.h>
 
 #include <synfig/real.h>
 
@@ -45,7 +44,7 @@
 namespace studio
 {
 
-class ZoomDial : public Gtk::Table
+class ZoomDial : public Gtk::Grid
 {
 	Gtk::Button *zoom_in;
 	Gtk::Button *zoom_out;
