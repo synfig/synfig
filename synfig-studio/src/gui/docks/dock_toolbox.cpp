@@ -34,37 +34,26 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/docks/dock_toolbox.h>
 
-#include <sstream>
-
-#include <gtk/gtk.h>
 #include <gtkmm/accelmap.h>
+#include <gtkmm/toolpalette.h>
 
-#include "localization.h"
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/instance.h>
+#include <gui/localization.h>
+#include <gui/widgets/widget_defaults.h>
 
-#include "dock_toolbox.h"
-
-#include "instance.h"
-#include "app.h"
-#include "canvasview.h"
-#include "dialogs/dialog_gradient.h"
-#include "dialogs/dialog_color.h"
-#include "docks/dialog_tooloptions.h"
-#include "docks/dockable.h"
-#include "docks/dockmanager.h"
-#include "docks/dockdialog.h"
-#include "widgets/widget_defaults.h"
+#include <synfig/general.h>
 
 #include <synfigapp/main.h>
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
-using namespace sigc;
 
 /* === M A C R O S ========================================================= */
 
@@ -134,14 +123,14 @@ Dock_Toolbox::~Dock_Toolbox()
 		studio::App::dock_toolbox=NULL;
 }
 
-void Dock_Toolbox::write_layout_string(string& params) const
+void Dock_Toolbox::write_layout_string(std::string& params) const
 {
 	char num_str[6];
 	snprintf(num_str, 5, "%d", tool_box_paned->get_position());
 	params += std::string(num_str);
 }
 
-void Dock_Toolbox::read_layout_string(const string& params) const
+void Dock_Toolbox::read_layout_string(const std::string& params) const
 {
 	try {
 		int pos = std::stoi(params.c_str());

@@ -29,22 +29,15 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include "app.h"
 #include "docks/dock_canvasspecific.h"
 
-#include "instance.h"
-#include "canvasview.h"
-
-#include <gui/localization.h>
+#include <gui/app.h>
+#include <gui/canvasview.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

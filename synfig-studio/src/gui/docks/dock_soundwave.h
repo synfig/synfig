@@ -23,17 +23,12 @@
 #ifndef SYNFIG_STUDIO_DOCK_SOUNDWAVE_H
 #define SYNFIG_STUDIO_DOCK_SOUNDWAVE_H
 
-#include "dock_canvasspecific.h"
-
-#include <widgets/widget_canvastimeslider.h>
-#include <widgets/widget_keyframe_list.h>
-#include <widgets/widget_time.h>
-
 #include <gtkmm/grid.h>
-#include <gtkmm/box.h>
 #include <gtkmm/scrollbar.h>
-#include <gtkmm/filechooserbutton.h>
-#include <gtkmm/comboboxtext.h>
+
+#include <gui/docks/dock_canvasspecific.h>
+#include <gui/widgets/widget_canvastimeslider.h>
+#include <gui/widgets/widget_keyframe_list.h>
 
 namespace studio {
 

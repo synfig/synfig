@@ -27,14 +27,14 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <vector>
 #include <list>
 #include <map>
-#include <synfig/string.h>
-#include <sigc++/sigc++.h>
+
 #include <ETL/smart_ptr>
 
 #include <gtkmm/widget.h>
+
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 

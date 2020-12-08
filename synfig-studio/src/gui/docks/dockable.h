@@ -27,16 +27,14 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "dialogsettings.h"
-
-#include <synfig/string.h>
-
 #include <gtkmm/stockid.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
+
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 

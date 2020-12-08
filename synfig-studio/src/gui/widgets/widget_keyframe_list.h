@@ -31,8 +31,9 @@
 
 #include <sigc++/sigc++.h>
 
+#include <gtkmm/button.h>
 #include <gtkmm/drawingarea.h>
-#include <gtkmm/tooltip.h>
+#include <gtkmm/label.h>
 #include <gtkmm/window.h>
 
 #include <synfig/keyframe.h>

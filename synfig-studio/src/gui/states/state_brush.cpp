@@ -58,6 +58,8 @@
 #include <gui/localization.h>
 #include <glibmm/fileutils.h> //Glib::FileError
 
+#include <gtkmm/toolpalette.h>
+
 #endif
 
 /* === U S I N G =========================================================== */

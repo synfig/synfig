@@ -30,26 +30,17 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "docks/dock_children.h"
-#include "app.h"
 
-#include <gtkmm/scrolledwindow.h>
-#include <cassert>
-#include "instance.h"
-#include "trees/childrentreestore.h"
-#include "trees/childrentree.h"
-#include "canvasview.h"
-
+#include <gui/canvasview.h>
 #include <gui/localization.h>
+#include <gui/trees/childrentreestore.h>
+#include <gui/trees/childrentree.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

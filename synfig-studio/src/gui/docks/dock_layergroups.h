@@ -27,11 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "docks/dockable.h"
-#include <gtkmm/treeview.h>
-#include "instance.h"
-#include "docks/dock_canvasspecific.h"
 #include <gtkmm/actiongroup.h>
+#include <gui/docks/dock_canvasspecific.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -55,10 +52,7 @@ protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
-private:
-
 public:
-
 
 	Dock_LayerGroups();
 	~Dock_LayerGroups();

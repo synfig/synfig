@@ -28,12 +28,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/treeview.h>
-#include <gtkmm/scrollbar.h>
 #include <gtkmm/grid.h>
+#include <gtkmm/scrollbar.h>
 
-#include "instance.h"
-#include "docks/dock_canvasspecific.h"
+#include <gui/docks/dock_canvasspecific.h>
+#include <gui/widgets/widget_canvastimeslider.h>
+#include <gui/widgets/widget_keyframe_list.h>
 
 /* === M A C R O S ========================================================= */
 

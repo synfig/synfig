@@ -29,11 +29,9 @@
 
 #include "dock_timetrack2.h"
 
-#include <widgets/widget_timetrack.h>
+#include <gui/widgets/widget_timetrack.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
-
-#include <synfig/general.h>
 
 #endif
 

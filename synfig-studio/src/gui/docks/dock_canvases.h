@@ -27,9 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "docks/dockable.h"
 #include <gtkmm/treeview.h>
-#include "instance.h"
+#include <gui/docks/dockable.h>
+#include <gui/instance.h>
 
 /* === M A C R O S ========================================================= */
 

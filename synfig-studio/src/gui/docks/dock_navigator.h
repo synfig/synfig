@@ -28,17 +28,14 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "sigc++/signal.h"
-
-#include <cairomm/surface.h>
+#include <cairomm/context.h>
 
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/label.h>
+#include <gtkmm/table.h>
 
-#include <widgets/widget_distance.h>
-
-#include "dock_canvasspecific.h"
+#include <gui/docks/dock_canvasspecific.h>
 
 /* === M A C R O S ========================================================= */
 

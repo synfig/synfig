@@ -30,10 +30,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <gtkmm/label.h>
-#include <gtkmm/scrolledwindow.h>
 #include "docks/dialog_tooloptions.h"
 #include <gui/localization.h>
 
@@ -41,8 +37,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

@@ -23,16 +23,14 @@
 #ifndef SYNFIG_STUDIO_DOCK_TIMETRACK2_H
 #define SYNFIG_STUDIO_DOCK_TIMETRACK2_H
 
-#include "dock_canvasspecific.h"
-
-#include <widgets/widget_canvastimeslider.h>
-#include <widgets/widget_keyframe_list.h>
-
 #include <gtkmm/grid.h>
-#include <gtkmm/box.h>
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/toolpalette.h>
 #include <gtkmm/radiotoolbutton.h>
+
+#include <gui/docks/dock_canvasspecific.h>
+#include <gui/widgets/widget_canvastimeslider.h>
+#include <gui/widgets/widget_keyframe_list.h>
 
 namespace studio {
 

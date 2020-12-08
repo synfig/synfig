@@ -30,28 +30,22 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "docks/dock_history.h"
-#include "app.h"
 
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/stylecontext.h>
 
-#include <cassert>
-#include "instance.h"
-#include <synfigapp/action.h>
-#include "trees/historytreestore.h"
-
-#include <gui/localization.h>
-
+#include <gui/app.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+#include <gui/trees/historytreestore.h>
+
+#include <synfigapp/action.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

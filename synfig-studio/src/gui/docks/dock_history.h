@@ -27,11 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "docks/dockable.h"
-#include <gtkmm/treeview.h>
-#include "instance.h"
 #include <gtkmm/actiongroup.h>
-#include "docks/dock_canvasspecific.h"
+#include <gtkmm/treeview.h>
+#include <gui/instance.h>
+#include <gui/docks/dock_canvasspecific.h>
 
 /* === M A C R O S ========================================================= */
 

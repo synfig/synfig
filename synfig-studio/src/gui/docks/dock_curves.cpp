@@ -29,28 +29,17 @@
 #	include <config.h>
 #endif
 
-#include <cassert>
-
-#include <gtkmm/scrolledwindow.h>
-
-#include <synfig/general.h>
-
-#include <gui/localization.h>
-#include <app.h>
-#include <instance.h>
-#include <canvasview.h>
-#include <workarea.h>
-#include <trees/layerparamtreestore.h>
-#include <widgets/widget_curves.h>
-
 #include "dock_curves.h"
+
+#include <gui/canvasview.h>
+#include <gui/localization.h>
+#include <gui/trees/layerparamtreestore.h>
+#include <gui/widgets/widget_curves.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

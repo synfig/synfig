@@ -30,34 +30,33 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "docks/dockmanager.h"
+
 #include <stdexcept>
-#include "docks/dockable.h"
-#include "docks/dockbook.h"
-#include "docks/dockdialog.h"
-#include <synfigapp/settings.h>
-#include <synfigapp/main.h>
+
 #include <gdkmm/general.h>
 
-#include <gui/localization.h>
-
 #include <gtkmm/paned.h>
-#include <gtkmm/box.h>
 #include <gtkmm/window.h>
 
-#include "app.h"
-#include "mainwindow.h"
-#include "canvasview.h"
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dockable.h>
+#include <gui/docks/dockbook.h>
+#include <gui/docks/dockdialog.h>
+#include <gui/localization.h>
+#include <gui/mainwindow.h>
+
+#include <synfig/general.h>
+
+#include <synfigapp/settings.h>
+#include <synfigapp/main.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
-using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

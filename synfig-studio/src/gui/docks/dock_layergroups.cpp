@@ -29,30 +29,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "docks/dock_layergroups.h"
-#include "app.h"
 
-#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/stylecontext.h>
 
-#include <cassert>
-#include "instance.h"
-#include "canvasview.h"
-
-#include "trees/layergrouptreestore.h"
-#include "trees/layergrouptree.h"
-#include "actionmanagers/groupactionmanager.h"
-
+#include <gui/actionmanagers/groupactionmanager.h>
+#include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/localization.h>
+#include <gui/trees/layergrouptreestore.h>
+#include <gui/trees/layergrouptree.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
