@@ -429,6 +429,7 @@ public:
 	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
 
 	static bool dialog_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2);
+	static bool dialog_sets_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2);
 
 	static bool dialog_paragraph(const std::string &title, const std::string &message,std::string &text);
 

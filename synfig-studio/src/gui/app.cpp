@@ -453,6 +453,16 @@ public:
 	}
 };
 
+class SetsModel : public Gtk::TreeModel::ColumnRecord
+{
+	public:
+		SetsModel() {
+			add(entry_set_name);
+		}
+
+		Gtk::TreeModelColumn<Glib::ustring> entry_set_name;
+};
+
 /* === P R O C E D U R E S ================================================= */
 
 /*
@@ -3802,6 +3812,65 @@ App::dialog_entry(const std::string &action, const std::string &content, std::st
 	return true;
 }
 
+bool
+App::dialog_sets_entry(const std::string &action, const std::string &content, std::string &text, const std::string &button1, const std::string &button2)
+{
+	Gtk::MessageDialog dialog(
+		*App::main_window,
+		action,
+		false,
+		Gtk::MESSAGE_INFO,
+		Gtk::BUTTONS_NONE,
+		true
+	);
+
+#define DIALOG_ENTRY_MARGIN 18
+	Gtk::Label* label = manage (new Gtk::Label(content));
+	label->set_margin_start(DIALOG_ENTRY_MARGIN);
+
+	Gtk::ComboBoxText* combo_entry = manage(new Gtk::ComboBoxText(true));
+	combo_entry->set_hexpand(true);
+	combo_entry->set_margin_end(DIALOG_ENTRY_MARGIN);
+	combo_entry->set_halign(Gtk::ALIGN_FILL);
+#undef DIALOG_ENTRY_MARGIN
+
+	std::set<std::string> available_sets = App::get_selected_canvas_view()->canvas_interface()->get_canvas()->get_groups();
+
+	SetsModel m_columns;
+
+	combo_entry->set_entry_text_column(m_columns.entry_set_name);
+
+	Glib::RefPtr<Gtk::TreeStore> m_refTreeModel;
+
+	m_refTreeModel = Gtk::TreeStore::create(m_columns);
+	combo_entry->set_model(m_refTreeModel);
+
+	for(std::set<std::string>::iterator i = available_sets.begin(); i != available_sets.end(); i++){
+		Gtk::TreeModel::Row row = *(m_refTreeModel->append());
+		row[m_columns.entry_set_name] = *i;
+	}
+
+	Gtk::Grid* grid = manage (new Gtk::Grid());
+	grid->add(*label);
+	grid->add(*combo_entry);
+
+	grid->show_all();
+
+	dialog.get_content_area()->pack_start(*grid);
+	dialog.add_button(button1, Gtk::RESPONSE_CANCEL);
+	dialog.add_button(button2, Gtk::RESPONSE_OK);
+
+	dialog.set_default_response(Gtk::RESPONSE_OK);
+	//entry->signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
+	dialog.show();
+
+	if(dialog.run()!=Gtk::RESPONSE_OK)
+		return false;
+
+	text = combo_entry->get_entry_text();
+
+	return true;
+}
 
 bool
 App::dialog_paragraph(const std::string &title, const std::string &message,std::string &text)
