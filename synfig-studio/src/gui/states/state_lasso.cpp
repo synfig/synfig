@@ -32,43 +32,29 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <ETL/hermite>
-#include <ETL/calculus>
-#include <ETL/gaussian>
-
-#include <synfig/valuenodes/valuenode_bline.h>
-#include <synfig/valuenodes/valuenode_wplist.h>
-#include <synfig/valuenodes/valuenode_composite.h>
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-
-#include <synfigapp/blineconvert.h>
-#include <synfigapp/wplistconverter.h>
-#include <synfigapp/main.h>
-
-#include "widgets/widget_distance.h"
-#include "widgets/widget_enum.h"
-
-#include "event_mouse.h"
-#include "event_layerclick.h"
-#include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "state_lasso.h"
-#include "state_stroke.h"
-#include "state_normal.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
-
-#include "synfigapp/actions/layerencapsulate.h"
-
-#include <utility>
+#include <gui/states/state_lasso.h>
 
 #include <gtkmm/radiobutton.h>
-#include <gtkmm/radiobuttongroup.h>
 
+#include <synfig/general.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
+
+#include <synfigapp/blineconvert.h>
+#include <synfigapp/main.h>
+#include <synfigapp/wplistconverter.h>
+
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/event_mouse.h>
 #include <gui/localization.h>
+#include <gui/states/state_stroke.h>
+#include <gui/states/state_normal.h>
+#include <gui/widgets/widget_distance.h>
+#include <gui/workarea.h>
 
 #endif
 

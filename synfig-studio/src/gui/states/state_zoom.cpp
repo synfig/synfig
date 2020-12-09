@@ -30,28 +30,22 @@
 #	include <config.h>
 #endif
 
-#include "app.h"
-#include <synfig/general.h>
-
-#include <ETL/handle>
-#include <synfig/vector.h>
-
 #include "state_zoom.h"
-#include "state_normal.h"
-#include "event_mouse.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "docks/dock_toolbox.h"
-#include <synfigapp/main.h>
 
-#include <gui/localization.h>
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/event_mouse.h>
+#include <gui/states/state_normal.h>
+#include <gui/workarea.h>
+
+#include <synfig/vector.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

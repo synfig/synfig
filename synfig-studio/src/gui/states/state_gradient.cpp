@@ -31,34 +31,26 @@
 #	include <config.h>
 #endif
 
+#include <gui/states/state_gradient.h>
+
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/event_mouse.h>
+#include <gui/localization.h>
+#include <gui/states/state_normal.h>
+#include <gui/widgets/widget_enum.h>
+#include <gui/workarea.h>
+
 #include <synfig/general.h>
 
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-#include <synfigapp/action_system.h>
-
-#include "state_gradient.h"
-#include "state_normal.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
-
-#include <synfigapp/action.h>
-#include "event_mouse.h"
-#include "event_layerclick.h"
-#include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "duck.h"
-
-#include "widgets/widget_enum.h"
 #include <synfigapp/main.h>
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

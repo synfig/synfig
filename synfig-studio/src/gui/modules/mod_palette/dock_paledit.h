@@ -27,26 +27,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtk/gtk.h>
-#include <gtkmm/adjustment.h>
+#include <gtkmm/actiongroup.h>
 #include <gtkmm/table.h>
-#include <gtkmm/button.h>
-#include <gtkmm/dialog.h>
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/checkbutton.h>
+
+#include <gui/docks/dockable.h>
 
 #include <synfig/color.h>
-#include <synfig/time.h>
-
-#include "../../widgets/widget_coloredit.h"
-
-#include <synfigapp/value_desc.h>
-#include <synfig/time.h>
-
-#include "../../docks/dockable.h"
-#include <vector>
-#include <gtkmm/actiongroup.h>
-
 #include <synfig/palette.h>
 
 /* === M A C R O S ========================================================= */

@@ -29,29 +29,24 @@
 #	include <config.h>
 #endif
 
+#include <gui/states/state_fill.h>
+
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/event_layerclick.h>
+#include <gui/localization.h>
+#include <gui/states/state_normal.h>
+#include <gui/workarea.h>
+
 #include <synfig/general.h>
 
-#include "state_fill.h"
-#include "state_normal.h"
-#include "workarea.h"
-#include <synfig/context.h>
-#include "app.h"
-#include "dialogs/dialog_color.h"
-#include "event_mouse.h"
-#include "event_layerclick.h"
-#include "docks/dock_toolbox.h"
-#include "canvasview.h"
 #include <synfigapp/main.h>
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -172,7 +167,7 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 	//synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 	synfigapp::ValueDesc value_desc(event.layer,"color");
 
-	if(!get_canvas_interface()->change_value(value_desc,ValueBase(synfigapp::Main::get_fill_color())))
+	if(!get_canvas_interface()->change_value(value_desc,synfig::ValueBase(synfigapp::Main::get_fill_color())))
 	{
 		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
 		return Smach::RESULT_ERROR;

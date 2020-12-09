@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "duckmatic.h"
+#include <synfig/general.h>
 #include <synfig/matrix.h>
 
 /* === M A C R O S ========================================================= */

@@ -29,35 +29,29 @@
 #	include <config.h>
 #endif
 
-#include "state_bone.h"
-#include <synfig/general.h>
+#include <gui/states/state_bone.h>
 
-
-#include <synfigapp/value_desc.h>
-#include "canvasview.h"
-#include "duckmatic.h"
-#include "workarea.h"
-#include "app.h"
-#include "event_mouse.h"
-#include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "widgets/widget_enum.h"
-#include "widgets/widget_distance.h"
-#include <synfig/transform.h>
-#include <synfigapp/main.h>
-#include "synfig/layers/layer_skeleton.h"
-#include "synfig/layers/layer_skeletondeformation.h"
-#include "synfig/valuenodes/valuenode_bone.h"
-#include "synfig/valuenodes/valuenode_composite.h"
-#include "synfig/valuenodes/valuenode_staticlist.h"
-#include "synfig/valuetransformation.h"
-
-#include <gui/localization.h>
 #include <gtkmm/radiobutton.h>
-
 #include <gtkmm/separatormenuitem.h>
-#include "synfigapp/action_system.h"
-#include "synfigapp/actions/layeradd.h"
+
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/event_mouse.h>
+#include <gui/localization.h>
+#include <gui/widgets/widget_distance.h>
+#include <gui/workarea.h>
+
+#include <synfig/general.h>
+#include <synfig/layers/layer_skeleton.h>
+#include <synfig/layers/layer_skeletondeformation.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_staticlist.h>
+
+#include <synfigapp/actions/layeradd.h>
+#include <synfigapp/main.h>
 
 #endif
 

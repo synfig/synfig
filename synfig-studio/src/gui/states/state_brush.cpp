@@ -30,35 +30,27 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/states/state_brush.h>
 
-
-#include <synfig/canvasfilenaming.h>
-#include <synfig/layers/layer_switch.h>
-
-#include "state_brush.h"
-#include "state_normal.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
-#include "event_mouse.h"
-#include "docks/dock_toolbox.h"
-
-#include <synfigapp/wplistconverter.h>
-#include <synfigapp/main.h>
-#include <synfigapp/actions/layerpaint.h>
-
-#include <ETL/gaussian>
-#include "docks/dialog_tooloptions.h"
-
-#include "ducktransform_matrix.h"
-
-#include <gui/resourcehelper.h>
-
-#include <gui/localization.h>
 #include <glibmm/fileutils.h> //Glib::FileError
 
 #include <gtkmm/toolpalette.h>
+
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/event_mouse.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/ducktransform_matrix.h>
+#include <gui/localization.h>
+#include <gui/resourcehelper.h>
+#include <gui/states/state_normal.h>
+#include <gui/workarea.h>
+
+#include <synfig/general.h>
+
+#include <synfigapp/main.h>
+#include <synfigapp/actions/layerpaint.h>
 
 #endif
 

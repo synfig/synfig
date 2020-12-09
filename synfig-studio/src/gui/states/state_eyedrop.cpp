@@ -29,28 +29,24 @@
 #	include <config.h>
 #endif
 
+#include <gui/states/state_eyedrop.h>
+
+#include <gui/states/state_normal.h>
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/dialogs/dialog_color.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/event_mouse.h>
+#include <gui/workarea.h>
+
 #include <synfig/general.h>
 
-#include "state_eyedrop.h"
-#include "state_normal.h"
-#include "workarea.h"
-#include <synfig/context.h>
-#include "app.h"
-#include "dialogs/dialog_color.h"
-#include "event_mouse.h"
-#include "event_layerclick.h"
-#include "docks/dock_toolbox.h"
-#include "canvasview.h"
 #include <synfigapp/main.h>
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
