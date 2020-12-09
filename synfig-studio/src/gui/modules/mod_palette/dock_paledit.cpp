@@ -31,27 +31,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <sys/stat.h>
 #include "dock_paledit.h"
-#include "../../widgets/widget_color.h"
-#include <gtkmm/frame.h>
-#include <gtkmm/table.h>
-#include <gtkmm/label.h>
-#include <synfigapp/canvasinterface.h>
-#include <synfigapp/value_desc.h>
-#include "../../widgets/widget_color.h"
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/menu.h>
-#include <gtkmm/imagemenuitem.h>
-#include <gtkmm/stylecontext.h>
-#include <synfigapp/main.h>
-#include "../../app.h"
-#include "../../dialogs/dialog_color.h"
-#include <errno.h>
 
+#include <errno.h>
+#include <sys/stat.h>
+
+#include <gtkmm/imagemenuitem.h>
+#include <gtkmm/menu.h>
+#include <gtkmm/stylecontext.h>
+
+#include <gui/app.h>
+#include <gui/dialogs/dialog_color.h>
 #include <gui/localization.h>
+#include <gui/widgets/widget_color.h>
+
+#include <synfigapp/main.h>
 
 #endif
 

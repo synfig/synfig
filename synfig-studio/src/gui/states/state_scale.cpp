@@ -31,27 +31,26 @@
 #	include <config.h>
 #endif
 
+#include <gui/states/state_scale.h>
+
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/duck.h>
+#include <gui/localization.h>
+#include <gui/states/state_normal.h>
+#include <gui/workarea.h>
+
 #include <synfig/general.h>
 
-#include "state_scale.h"
-#include "state_normal.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
-
-#include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "duck.h"
 #include <synfigapp/main.h>
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

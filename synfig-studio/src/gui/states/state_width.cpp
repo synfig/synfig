@@ -31,33 +31,26 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <ETL/bezier>
-
-#include <synfig/valuenodes/valuenode_wplist.h>
-#include <synfig/valuenodes/valuenode_composite.h>
-#include <synfig/blinepoint.h>
-#include <synfigapp/action_system.h>
-
-#include "state_width.h"
-#include "state_normal.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
-
-#include <synfigapp/action.h>
-#include "event_mouse.h"
-#include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "widgets/widget_distance.h"
-#include "duck.h"
-
-#include <synfigapp/main.h>
-
 #include <ETL/clock>
 
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/duck.h>
+#include <gui/event_mouse.h>
 #include <gui/localization.h>
+#include <gui/states/state_normal.h>
+#include <gui/states/state_width.h>
+#include <gui/widgets/widget_distance.h>
+#include <gui/workarea.h>
+
+#include <synfig/blinepoint.h>
+#include <synfig/general.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
+
+#include <synfigapp/action.h>
+#include <synfigapp/main.h>
 
 #endif
 

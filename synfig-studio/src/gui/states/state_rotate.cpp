@@ -31,22 +31,20 @@
 #	include <config.h>
 #endif
 
+#include <gui/states/state_rotate.h>
+
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/duck.h>
+#include <gui/localization.h>
+#include <gui/workarea.h>
+
+#include <synfig/angle.h>
 #include <synfig/general.h>
 
-#include <synfigapp/action_system.h>
-
-#include "state_rotate.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
-
-#include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "duck.h"
-#include <synfig/angle.h>
 #include <synfigapp/main.h>
-
-#include <gui/localization.h>
 
 #endif
 

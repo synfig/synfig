@@ -29,11 +29,8 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
 
 #include "dock_palbrowse.h"
-#include "dock_paledit.h"
-#include "mod_palette.h"
 
 #include <gui/localization.h>
 
@@ -41,9 +38,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

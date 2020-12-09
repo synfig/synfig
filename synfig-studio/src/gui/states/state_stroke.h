@@ -27,15 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "canvasview.h"
-#include "workarea.h"
-#include <sigc++/sigc++.h>
-#include "duckmatic.h"
-#include <synfig/blinepoint.h>
-#include <list>
 #include <ETL/smart_ptr>
-#include "eventkey.h"
-#include <gdkmm/types.h>
+#include <gui/canvasview.h>
+#include <gui/smach.h>
+#include <list>
 
 /* === M A C R O S ========================================================= */
 

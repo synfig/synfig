@@ -30,33 +30,29 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/states/state_sketch.h>
 
-#include "state_sketch.h"
-#include "state_normal.h"
-#include "state_stroke.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
-#include "event_mouse.h"
-#include "docks/dock_toolbox.h"
-
-#include <synfigapp/main.h>
-
-#include "docks/dialog_tooloptions.h"
-
-#include <gtkmm/table.h>
-#include <gtkmm/label.h>
 #include <gtkmm/button.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/label.h>
+#include <gtkmm/table.h>
 
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/event_mouse.h>
 #include <gui/localization.h>
+#include <gui/states/state_normal.h>
+#include <gui/states/state_stroke.h>
+#include <gui/workarea.h>
+
+#include <synfigapp/main.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

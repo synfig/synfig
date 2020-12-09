@@ -27,8 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../docks/dockable.h"
-#include <synfig/palette.h>
+#include <gui/docks/dockable.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -31,24 +31,22 @@
 #	include <config.h>
 #endif
 
-#include <synfig/valuenodes/valuenode_animated.h>
-#include <synfig/valuenodes/valuenode_blinecalcvertex.h>
+#include <gui/states/state_normal.h>
 
-#include "state_normal.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/event_keyboard.h>
+#include <gui/event_layerclick.h>
+#include <gui/event_mouse.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/localization.h>
+#include <gui/workarea.h>
 
-#include "event_mouse.h"
-#include "event_layerclick.h"
-#include "event_keyboard.h"
-#include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "duck.h"
 #include <synfig/angle.h>
+
 #include <synfigapp/main.h>
 
-#include <gui/localization.h>
 #endif
 
 /* === U S I N G =========================================================== */

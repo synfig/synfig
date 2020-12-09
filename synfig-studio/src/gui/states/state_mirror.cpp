@@ -30,34 +30,24 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/states/state_mirror.h>
 
 #include <gtkmm/radiobutton.h>
 
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-
-#include "state_mirror.h"
-#include "state_normal.h"
-#include "canvasview.h"
-#include "workarea.h"
-#include "app.h"
-
-#include "event_mouse.h"
-#include "docks/dock_toolbox.h"
-#include "docks/dialog_tooloptions.h"
-#include "duck.h"
-#include <synfigapp/main.h>
-
-#include <gui/localization.h>
-
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/event_mouse.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+#include <gui/states/state_normal.h>
+#include <gui/workarea.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
