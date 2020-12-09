@@ -107,7 +107,15 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 	const bool looped = bline_value_node.get_loop();
 	int size = (int)bline.size();
 	int count = looped ? size : size - 1;
-	if (count < 1) return Vector();
+	if (count < 1)
+	{
+		Type &type(get_type());
+		if (type == type_angle)  return Angle();
+		if (type == type_real)   return Real();
+		if (type == type_vector) return Vector();
+		assert(0);
+		return ValueBase();
+	}
 
 	bool loop         = (*loop_)(t).get(bool());
 	bool homogeneous  = (*homogeneous_)(t).get(bool());
