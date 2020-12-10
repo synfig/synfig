@@ -45,6 +45,7 @@
 #include <gui/localization.h>
 #include <gui/widgets/widget_color.h>
 
+#include <synfig/general.h>
 #include <synfigapp/main.h>
 
 #endif
@@ -257,11 +258,11 @@ Dock_PalEdit::on_save_pressed()
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
 			std::string message = etl::strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-											etl::basename(filename).c_str());
+							etl::basename(filename).c_str());
 
 			std::string details = etl::strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-											etl::basename(etl::dirname(filename)).c_str());
+							etl::basename(etl::dirname(filename)).c_str());
 
 			if ((stat_return == 0) && !App::dialog_message_2b(
 				message,
@@ -275,9 +276,8 @@ Dock_PalEdit::on_save_pressed()
 		try {
 			palette_.save_to_file(filename);
 		} catch (const std::string& err) {
+			synfig::error(err);
 			App::dialog_message_1b("ERROR", err, "details", _("Close"));
-		} catch (...) {
-			synfig::error("Unknown error!");
 		}
 		return;
 	}
