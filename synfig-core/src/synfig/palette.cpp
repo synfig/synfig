@@ -34,6 +34,7 @@
 #include "palette.h"
 #include "surface.h"
 #include "general.h"
+#include "filesystemnative.h"
 #include <synfig/localization.h>
 #include <fstream>
 #include <iostream>
@@ -296,65 +297,58 @@ Palette::grayscale(int steps, ColorReal gamma)
 }
 
 void
-Palette::save_to_file(const synfig::String& filename)const
+Palette::save_to_file(const synfig::String& filename) const
 {
-	const_iterator iter;
-
-	std::ofstream file(filename.c_str());
+	FileSystem::WriteStream::Handle file = FileSystemNative::instance()->get_write_stream(filename);
 
 	if(!file)
 		throw strprintf(_("Unable to open %s for write"),filename.c_str());
 
-	file<<PALETTE_SYNFIG_FILE_COOKIE<<endl;
-	file<<name_.c_str()<<endl;
-	for(iter=begin();iter!=end();++iter)
-	{
-		file<<iter->name.c_str()<<endl;
-		file
-			<<iter->color.get_r()<<endl
-			<<iter->color.get_g()<<endl
-			<<iter->color.get_b()<<endl
-			<<iter->color.get_a()<<endl;
-
+	*file << PALETTE_SYNFIG_FILE_COOKIE << "\n" << name_ << "\n";
+	for (const_iterator iter=begin();iter!=end();++iter) {
+		*file << iter->name << "\n"
+		      << iter->color.get_r() << "\n"
+			  << iter->color.get_g() << "\n"
+			  << iter->color.get_b() << "\n"
+			  << iter->color.get_a() << "\n";
 	}
 }
 
 Palette
 Palette::load_from_file(const synfig::String& filename)
 {
-	std::ifstream file(filename.c_str());
+	FileSystem::ReadStream::Handle file = FileSystemNative::instance()->get_read_stream(filename);
 
 	if(!file)
 		throw strprintf(_("Unable to open %s for read"),filename.c_str());
 
 	Palette ret;
-	String line("");
-	String ext(filename_extension(filename));
+	std::string line("");
+	const std::string ext(filename_extension(filename));
 
 
 	if (ext==PALETTE_SYNFIG_EXT)
 	{
-		getline(file,line);
+		getline(*file, line);
 
 		if(line!=PALETTE_SYNFIG_FILE_COOKIE)
 			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"Synfig");
 
-		getline(file,ret.name_);
+		getline(*file, ret.name_);
 
-		while(!file.eof())
-		{
+		while(!file->eof())	{
 			PaletteItem item;
 			String n;
 			float r, g, b, a;
-			getline(file,item.name);
-			file >> r >> g >> b >> a;
+			getline(*file, item.name);
+			*file >> r >> g >> b >> a;
 			item.color.set_r(r);
 			item.color.set_g(g);
 			item.color.set_b(b);
 			item.color.set_a(a);
 
 			// file ends in new line
-			if (!file.eof())
+			if (!file->eof())
 				ret.push_back(item);
 		}
 	}
@@ -375,8 +369,8 @@ Palette::load_from_file(const synfig::String& filename)
 		*/
 
 		do {
-			getline(file,line);
-		} while (!file.eof() && line != PALETTE_GIMP_FILE_COOKIE);
+			getline(*file, line);
+		} while (!file->eof() && line != PALETTE_GIMP_FILE_COOKIE);
 
 		if (line != PALETTE_GIMP_FILE_COOKIE)
 			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"GIMP");
@@ -386,7 +380,7 @@ Palette::load_from_file(const synfig::String& filename)
 
 		do
 		{
-			getline(file, line);
+			getline(*file, line);
 
 			if (!line.empty() && line.substr(0,5) == "Name:")
 				ret.name_ = String(line.substr(6));
@@ -400,17 +394,17 @@ Palette::load_from_file(const synfig::String& filename)
 				has_color = true;
 				// line contains the first color so we put it back in (including \n)
 				for (int i = line.length()+1; i; i--)
-					file.unget();
+					file->unget();
 			}
-		} while (!file.eof() && !has_color);
+		} while (!file->eof() && !has_color);
 
-		while(!file.eof() && has_color)
+		while(!file->eof() && has_color)
 		{
 			PaletteItem item;
 			float r, g, b;
 
 			stringstream ss;
-			getline (file, line);
+			getline(*file, line);
 
 			if (!line.empty())
 			{
