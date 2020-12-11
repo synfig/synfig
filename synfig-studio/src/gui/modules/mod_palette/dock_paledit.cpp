@@ -234,14 +234,14 @@ Dock_PalEdit::on_save_pressed()
 	// it would be nice to have initial spal file name same as current canvas name, 
 	// use "My Palette" as temporary spal file name as a hack.
 	//synfig::String filename = selected_instance->get_file_name();
-	synfig::String filename = "My Palette";
+	std::string filename = "My Palette";
 	while (App::dialog_save_file_spal(_("Please choose a file name"), filename, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		string base_filename = basename(filename);
-		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
+		if (etl::basename(filename).find('*') != std::string::npos) {
 			continue;
+		}
 
 		{
 			struct stat	s;
@@ -252,24 +252,19 @@ Dock_PalEdit::on_save_pressed()
 			if (stat_return == -1 && errno != ENOENT)
 			{
 				perror(filename.c_str());
-				string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
-				App::dialog_message_1b(
-						"ERROR",
-						msg.c_str(),
-						"details",
-						_("Close"));
-
+				std::string msg(etl::strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
+				App::dialog_message_1b("ERROR", msg, "details", _("Close"));
 				continue;
 			}
 
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
-			string message = strprintf(_("A file named \"%s\" already exists. "
+			std::string message = etl::strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-						basename(filename).c_str());
+							etl::basename(filename).c_str());
 
-			string details = strprintf(_("The file already exists in \"%s\". "
+			std::string details = etl::strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-						basename(dirname(filename)).c_str());
+							etl::basename(etl::dirname(filename)).c_str());
 
 			if ((stat_return == 0) && !App::dialog_message_2b(
 				message,
@@ -280,7 +275,12 @@ Dock_PalEdit::on_save_pressed()
 			)
 				continue;
 		}
-		palette_.save_to_file(filename);
+		try {
+			palette_.save_to_file(filename);
+		} catch (const std::string& err) {
+			synfig::error(err);
+			App::dialog_message_1b("ERROR", err, "details", _("Close"));
+		}
 		return;
 	}
 }
@@ -293,17 +293,18 @@ Dock_PalEdit::on_open_pressed()
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		if(find(filename.begin(),filename.end(),'*')!=filename.end())
+		if (filename.find('*') != std::string::npos) {
 			continue;
-
-		try
-		{
-			palette_=synfig::Palette::load_from_file(filename);
 		}
-		catch (...)
-		{
-			App::get_ui_interface()->error(_("Unable to open file"));
-			continue;
+
+		try	{
+			palette_=synfig::Palette::load_from_file(filename);
+		} catch (const std::string& err) {
+			App::get_ui_interface()->error(err);
+			break;
+		} catch (...) {
+			App::get_ui_interface()->error(std::string(_("Unable to open file")) + " " + _("Unknown error"));
+			break;
 		}
 		break;
 	}
