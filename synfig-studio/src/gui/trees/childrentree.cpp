@@ -30,26 +30,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/trees/childrentree.h>
 
-#include "trees/childrentree.h"
-#include "cellrenderer/cellrenderer_value.h"
-#include "cellrenderer/cellrenderer_timetrack.h"
-#include <synfigapp/action.h>
-#include <synfigapp/instance.h>
 #include <gtkmm/scrolledwindow.h>
-#include <synfig/timepointcollect.h>
 
+#include <gui/cellrenderer/cellrenderer_value.h>
+#include <gui/cellrenderer/cellrenderer_timetrack.h>
+#include <gui/exception_guard.h>
 #include <gui/localization.h>
 
-#include <gui/exception_guard.h>
+#include <synfig/timepointcollect.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

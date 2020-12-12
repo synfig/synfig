@@ -28,11 +28,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/liststore.h>
+#include <gtkmm/treestore.h>
 #include <synfigapp/canvasinterface.h>
-#include <gdkmm/pixbuf.h>
 #include <synfig/keyframe.h>
-#include <map>
 
 /* === M A C R O S ========================================================= */
 

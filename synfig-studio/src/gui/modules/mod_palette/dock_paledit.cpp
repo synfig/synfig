@@ -47,6 +47,7 @@
 
 #include <synfig/general.h>
 #include <synfigapp/main.h>
+#include <synfigapp/uimanager.h>
 
 #endif
 

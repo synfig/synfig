@@ -51,6 +51,8 @@
 
 #include <gui/localization.h>
 
+#include <gtkmm/filechooserdialog.h>
+
 #endif
 
 /* === U S I N G =========================================================== */

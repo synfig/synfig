@@ -29,22 +29,19 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/trees/layergrouptree.h>
 
-#include <synfig/layer.h>
-#include "trees/layergrouptree.h"
-#include <gtkmm/treemodelsort.h>
 #include <ETL/misc>
 
+#include <gui/exception_guard.h>
 #include <gui/localization.h>
 
-#include <gui/exception_guard.h>
+#include <synfig/layer.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

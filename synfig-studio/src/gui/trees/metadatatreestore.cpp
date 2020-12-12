@@ -30,19 +30,14 @@
 #	include <config.h>
 #endif
 
+#include <gui/trees/metadatatreestore.h>
+
 #include <synfig/general.h>
-
-#include "metadatatreestore.h"
-#include <synfigapp/canvasinterface.h>
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

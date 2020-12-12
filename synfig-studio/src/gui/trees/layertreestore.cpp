@@ -30,33 +30,27 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/trees/layertreestore.h>
 
 #include <glibmm/main.h>
 
-#include "layertreestore.h"
-#include "iconcontroller.h"
 #include <gtkmm/button.h>
-#include <synfig/paramdesc.h>
-#include <synfigapp/action.h>
-#include <synfigapp/instance.h>
-#include "app.h"
-#include "instance.h"
-#include <synfig/layers/layer_pastecanvas.h>
-#include <synfig/layers/layer_group.h>
-#include <synfig/layers/layer_switch.h>
-#include <synfigapp/action_system.h>
-#include <synfig/context.h>
 
-#include <gtk/gtk.h>
+#include <gui/iconcontroller.h>
 #include <gui/localization.h>
+
+#include <synfig/context.h>
+#include <synfig/general.h>
+#include <synfig/layers/layer_group.h>
+#include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_switch.h>
+
+#include <synfigapp/instance.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

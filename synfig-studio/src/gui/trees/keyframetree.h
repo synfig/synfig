@@ -28,10 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treeview.h>
-#include <gtkmm/treestore.h>
-#include <synfigapp/canvasinterface.h>
-#include <synfigapp/value_desc.h>
-#include "trees/keyframetreestore.h"
+#include <gui/trees/keyframetreestore.h>
 #include <synfig/keyframe.h>
 
 /* === M A C R O S ========================================================= */

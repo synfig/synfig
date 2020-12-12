@@ -30,17 +30,13 @@
 #	include <config.h>
 #endif
 
-#include <glibmm/main.h>
+#include <gui/trees/childrentreestore.h>
 
-#include <synfig/general.h>
-
-#include "trees/childrentreestore.h"
-#include "iconcontroller.h"
-#include <gtkmm/button.h>
-#include <synfig/paramdesc.h>
 #include <ETL/clock>
-
+#include <glibmm/main.h>
+#include <gtkmm/button.h>
 #include <gui/localization.h>
+#include <synfig/general.h>
 
 class Profiler : private etl::clock
 {

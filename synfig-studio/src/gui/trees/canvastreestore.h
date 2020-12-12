@@ -27,11 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/treestore.h>
-#include <synfigapp/canvasinterface.h>
 #include <gdkmm/pixbuf.h>
-#include <synfigapp/value_desc.h>
+#include <gtkmm/treestore.h>
 #include <gtkmm/treeview.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
 
 /* === M A C R O S ========================================================= */
 

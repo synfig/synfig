@@ -30,21 +30,18 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/trees/historytreestore.h>
 
-#include "trees/historytreestore.h"
-#include <synfig/valuenode.h>
-#include <synfigapp/action.h>
-#include "instance.h"
-
+#include <gui/instance.h>
 #include <gui/localization.h>
+
+#include <synfig/general.h>
+#include <synfig/valuenode.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

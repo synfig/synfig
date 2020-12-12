@@ -31,36 +31,22 @@
 #	include <config.h>
 #endif
 
-#include <cstdlib>
+#include <gui/trees/keyframetreestore.h>
+
 #include <ctime>
 
-#include <gtkmm/button.h>
-#include <gtkmm/treerowreference.h>
-
 #include <synfig/general.h>
-
-#include <synfig/canvas.h>
 #include <synfig/keyframe.h>
-#include <synfig/exception.h>
-#include <synfig/valuenode.h>
-#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <gui/localization.h>
+#include <gui/onemoment.h>
 
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
-
-#include <gui/iconcontroller.h>
-#include <gui/onemoment.h>
-
-#include "keyframetreestore.h"
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

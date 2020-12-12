@@ -44,6 +44,8 @@
 #include "app.h"
 
 #include <gui/localization.h>
+#include <synfigapp/action_system.h>
+#include <synfigapp/instance.h>
 
 #endif
 

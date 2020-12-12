@@ -32,29 +32,23 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/trees/layerparamtreestore.h>
 
 #include <glibmm/main.h>
 
-#include "layerparamtreestore.h"
-#include "iconcontroller.h"
-#include <gtkmm/button.h>
-#include <synfig/paramdesc.h>
-#include <synfig/valuenodes/valuenode_bone.h>
-#include <synfig/valuenodes/valuenode_composite.h>
-
-#include "layertree.h"
-#include <synfigapp/action_system.h>
-#include <synfigapp/instance.h>
-#include "app.h"
-
+#include <gui/app.h>
+#include <gui/trees/layertree.h>
 #include <gui/localization.h>
+
+#include <synfig/general.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+
+#include <synfigapp/action_system.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
