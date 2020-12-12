@@ -107,10 +107,9 @@ public:
 	static VectorInt get_extra_size(rendering::Blur::Type type, const Vector &size);
 
 private:
-	static const Real iir_min_radius;
-	static const Real iir_max_radius;
-	static const Real iir_radius_step;
-	static const Real iir_coefficients_unprepared[][3];
+	static constexpr Real iir_min_radius = 1.0;
+	static constexpr Real iir_max_radius = 2048.0;
+	static constexpr Real iir_radius_step = 0.1;
 
 	static IIRCoefficients get_iir_coefficients(Real radius);
 

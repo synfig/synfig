@@ -23,23 +23,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifdef USING_PCH
-#	include "pch.h"
-#else
-#ifdef HAVE_CONFIG_H
-#	include <config.h>
-#endif
-
-#include "blur.h"
-
-#include <synfig/general.h>
-
-#endif
-
-using namespace std;
-using namespace synfig;
-using namespace rendering;
-
+#include <synfig/real.h>
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -48,10 +32,7 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-const Real software::Blur::iir_min_radius = 1.0;
-const Real software::Blur::iir_max_radius = 2048.0;
-const Real software::Blur::iir_radius_step = 0.1;
-const Real software::Blur::iir_coefficients_unprepared[][3] = {
+constexpr synfig::Real iir_coefficients_unprepared[][3] = {
 	{ 0.45313319191336631775, 0.37030425295233726501, 0.42185796722769736133 },
 	{ 0.47401428446173671238, 0.34647000357508656032, 0.44355906620621676772 },
 	{ 0.49175928458571438462, 0.32472521439194673709, 0.46248708739876753793 },

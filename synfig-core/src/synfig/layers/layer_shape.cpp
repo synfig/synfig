@@ -31,10 +31,6 @@
 #	include <config.h>
 #endif
 
-#include <cfloat>
-
-#include <vector>
-
 #include "layer_shape.h"
 
 #include <synfig/general.h>
@@ -42,14 +38,6 @@
 
 #include <synfig/blur.h>
 #include <synfig/context.h>
-#include <synfig/curve_helper.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/string.h>
-#include <synfig/surface.h>
-#include <synfig/time.h>
-#include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #include <synfig/rendering/primitive/intersector.h>
 #include <synfig/rendering/common/task/taskblend.h>
@@ -63,8 +51,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -84,7 +70,7 @@ Layer_Shape::Layer_Shape(const Real &a, const Color::BlendMethod m):
 	param_origin         (Vector(0,0)),
 	param_invert         (bool(false)),
 	param_antialias      (bool(true)),
-	param_blurtype       (int(Blur::FASTGAUSSIAN)),
+	param_blurtype       (int(Blur::FASTGAUSSIAN)), // Feather
 	param_feather        (Real(0.0)),
 	param_winding_style	 (int(rendering::Contour::WINDING_NON_ZERO)),
 	contour				 (new rendering::Contour)
