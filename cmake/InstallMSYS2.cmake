@@ -44,7 +44,7 @@ file(GLOB MINGW_LIBS
 	    ${MINGW_BIN}/libfontconfig-[0-9]*.dll
 	    ${MINGW_BIN}/libfreetype-[0-9]*.dll
 	    ${MINGW_BIN}/libgailutil-3-[0-9]*.dll
-	    ${MINGW_BIN}/libgcc_s_seh-[0-9]*.dll
+		${MINGW_BIN}/libgcc_s_*.dll
 	    ${MINGW_BIN}/libgdk_pixbuf-2.0-[0-9]*.dll
 	    ${MINGW_BIN}/libgdk-3-[0-9]*.dll
 	    ${MINGW_BIN}/libgdkmm-3.0-[0-9]*.dll
