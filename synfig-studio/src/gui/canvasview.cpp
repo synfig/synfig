@@ -1208,6 +1208,38 @@ CanvasView::create_display_bar()
 		displaybar->append(*snap_grid);
 	}
 
+	{ // Set up the show guide toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_guide"), iconsize));
+		icon->show();
+
+		show_guides = Gtk::manage(new class Gtk::ToggleToolButton());
+		show_guides->set_active(work_area->get_show_guides());
+		show_guides->set_icon_widget(*icon);
+		show_guides->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
+		show_guides->set_label(_("Show guides"));
+		show_guides->set_tooltip_text(_("Show guides when enabled"));
+		show_guides->show();
+
+		displaybar->append(*show_guides);
+	}
+
+	{ // Set up the snap to guides toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_guide"), iconsize));
+		icon->show();
+
+		snap_guides = Gtk::manage(new class Gtk::ToggleToolButton());
+		snap_guides->set_active(work_area->get_guide_snap());
+		snap_guides->set_icon_widget(*icon);
+		snap_guides->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
+		snap_guides->set_label(_("Snap to guides"));
+		snap_guides->set_tooltip_text(_("Snap to guides when enabled"));
+		snap_guides->show();
+
+		displaybar->append(*snap_guides);
+	}
+
 	// Separator
 	displaybar->append( *create_tool_separator() );
 
@@ -1519,13 +1551,13 @@ CanvasView::init_menus()
 		grid_snap_toggle->set_active(work_area->get_grid_snap());
 		action_group->add(grid_snap_toggle, sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
 
-		action = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
-		action->set_active(work_area->get_show_guides());
-		action_group->add(action, sigc::mem_fun(*work_area, &WorkArea::toggle_show_guides));
+		guides_show_toggle = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
+		guides_show_toggle->set_active(work_area->get_show_guides());
+		action_group->add(guides_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
 
-		action = Gtk::ToggleAction::create("toggle-guide-snap", _("Snap to Guides"));
-		action->set_active(work_area->get_guide_snap());
-		action_group->add(action, sigc::mem_fun(*work_area, &WorkArea::toggle_guide_snap));
+		guides_snap_toggle = Gtk::ToggleAction::create("toggle-guide-snap", _("Snap to Guides"));
+		guides_snap_toggle->set_active(work_area->get_guide_snap());
+		action_group->add(guides_snap_toggle, sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
 
 		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
 		action->set_active(work_area->get_low_resolution_flag());
@@ -2617,6 +2649,30 @@ CanvasView::toggle_snap_grid()
 }
 
 void
+CanvasView::toggle_show_guides()
+{
+	if(toggling_show_guides)
+		return;
+	toggling_show_guides=true;
+	work_area->toggle_show_guides();
+	set_guides_show_toggle(work_area->get_show_guides());
+	show_guides->set_active(work_area->get_show_guides());
+	toggling_show_guides=false;
+}
+
+void
+CanvasView::toggle_snap_guides()
+{
+	if(toggling_snap_guides)
+		return;
+	toggling_snap_guides=true;
+	work_area->toggle_guide_snap();
+	set_guides_snap_toggle(work_area->get_guide_snap());
+	snap_guides->set_active(work_area->get_guide_snap());
+	toggling_snap_guides=false;
+}
+
+void
 CanvasView::toggle_onion_skin()
 {
 	if(toggling_onion_skin)
@@ -3376,6 +3432,8 @@ CanvasView::on_meta_data_changed()
 	// update the buttons and actions that are associated
 	toggling_show_grid=true;
 	toggling_snap_grid=true;
+	toggling_show_guides=true;
+	toggling_snap_guides=true;
 	toggling_onion_skin=true;
 	toggling_background_rendering=true;
 	try
@@ -3388,10 +3446,16 @@ CanvasView::on_meta_data_changed()
 		action->set_active((bool)(work_area->grid_status()));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-snap"));
 		action->set_active((bool)(work_area->get_grid_snap()));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-show"));
+		action->set_active((bool)(work_area->get_show_guides()));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-snap"));
+		action->set_active((bool)(work_area->get_guide_snap()));
 		// Update the toggle buttons
 		onion_skin->set_active(work_area->get_onion_skin());
 		snap_grid->set_active(work_area->get_grid_snap());
 		show_grid->set_active(work_area->grid_status());
+		snap_guides->set_active(work_area->get_guide_snap());
+		show_guides->set_active(work_area->get_show_guides());
 		// Update the onion skin spins
 		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
@@ -3400,11 +3464,15 @@ CanvasView::on_meta_data_changed()
 	{
 		toggling_show_grid=false;
 		toggling_snap_grid=false;
+		toggling_show_guides=false;
+		toggling_snap_guides=false;
 		toggling_onion_skin=false;
 		toggling_background_rendering=false;
 	}
 	toggling_show_grid=false;
 	toggling_snap_grid=false;
+	toggling_show_guides=false;
+	toggling_snap_guides=false;
 	toggling_onion_skin=false;
 	toggling_background_rendering=false;
 }
