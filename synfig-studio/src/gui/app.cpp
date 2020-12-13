@@ -3654,50 +3654,6 @@ App::dialog_message_3b(const std::string &message,
 }
 
 static bool
-try_open_img_external(const std::string &uri)
-{
-	std::string new_uri=uri;
-	std::string s = "file://";
-	std::string::size_type i = new_uri.find(s);
-	if (i != std::string::npos)
-	{
-		new_uri.erase(i, s.length());
-	}
-   	size_t start_pos = 0;
-	std::string to = " ";
-	std::string from = "%20";
-    while((start_pos = new_uri.find(from, start_pos)) != std::string::npos) 
-	{
-        new_uri.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-    }
-	new_uri = "\"" + new_uri + "\"";
-	if(App::image_editor_path!="")
-	{
-		#ifdef WIN32
-			char buffer[512];
-    		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
-    		Glib::spawn_command_line_async(buffer);
-		#elif defined(__APPLE__)
-    		char buffer[512];
-    		::snprintf(buffer, sizeof(buffer), "open -a %s %s", App::image_editor_path.c_str(), new_uri.c_str());
-    		Glib::spawn_command_line_async(buffer);
-		#else
-    		char buffer[512];
-    		::snprintf(buffer, sizeof(buffer), "%s %s",App::image_editor_path.c_str(), new_uri.c_str());
-			Glib::spawn_command_line_async(buffer);
-		#endif
-		return true;
-
-	}
-	else
-	{
-		return false;
-	}
-	
-	
-}
-static bool
 try_open_uri(const std::string &uri)
 {
 #if GTK_CHECK_VERSION(3, 22, 0)
@@ -3723,15 +3679,25 @@ App::dialog_help()
 }
 void App::open_img_in_external(const std::string &uri)
 {
-	synfig::info("Opening with external tool: " + uri);
-	if(!try_open_img_external(uri))
-	{
-		Gtk::MessageDialog dialog(*App::main_window, _("Make sure Preferred editing tool was set in \n Edit->Preferences->Editing:"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
-		dialog.set_secondary_text(uri);
-		dialog.set_title(_("Error"));
-		dialog.run();
+	// Check if external editor is set
+	if (App::image_editor_path.empty()) {
+		ui_interface_->error(_("Please set preferred editing tool in \nEdit->Preferences->Editing"));
+		return;
 	}
 
+	const std::string filename = Glib::filename_from_uri(uri);
+	synfig::info("Opening with external tool: " + filename);
+
+	std::vector<std::string> args;
+	args.emplace_back(App::image_editor_path);
+	args.emplace_back(filename);
+
+	try {
+		// Glib::spawn_* needs `gspawn-win??-helper.exe` for Windows
+		Glib::spawn_async("", args);
+	} catch (const Glib::SpawnError& e) {
+		ui_interface_->error(etl::strprintf(_("Failed to run command: %s (%s)"), App::image_editor_path.c_str(), e.what().c_str()));
+	}
 }
 
 std::unordered_map<std::string, int> configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
