@@ -880,6 +880,7 @@ CanvasView::create_time_bar()
 	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 	widget_interpolation->set_popup_fixed_width(false);
+	widget_interpolation->set_hexpand(false);
 	widget_interpolation->show();
 	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::on_interpolation_changed));
 
