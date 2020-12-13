@@ -38,6 +38,7 @@
 #include "docks/dockbook.h"
 #include "docks/dockdialog.h"
 
+#include <gtkmm/stock.h>
 #if GTK_CHECK_VERSION (3,20,0)
 #include <gdkmm/seat.h>
 #else
