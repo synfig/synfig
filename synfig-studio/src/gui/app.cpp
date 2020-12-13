@@ -4426,6 +4426,7 @@ studio::App::scale_imported_box()
 	Gtk::Switch *toggle_resize = manage(new Gtk::Switch);
 	
 	label_resize->set_margin_end(5);
+	toggle_resize->set_valign(Gtk::ALIGN_CENTER);
 	toggle_resize->set_active(App::resize_imported_images);
 	
 	toggle_resize->property_active().signal_changed().connect(
