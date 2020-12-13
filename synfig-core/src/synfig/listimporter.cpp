@@ -30,8 +30,6 @@
 #	include <config.h>
 #endif
 
-#include <fstream>
-
 #include "listimporter.h"
 
 #include "general.h"
@@ -45,8 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -71,10 +67,11 @@ Importer(identifier)
 {
 	fps=15;
 
-	ifstream stream(identifier.filename.c_str());
+	FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 
-	if(!stream)
-	{
+	// TODO(ice0): There is no way to report about error to GUI. We can't
+	//  throw error from constructor (bad practice), and can't return error code.
+	if(!stream)	{
 		synfig::error("Unable to open "+identifier.filename);
 		return;
 	}
@@ -83,14 +80,14 @@ Importer(identifier)
 	String prefix=etl::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
 
 	///! read first line and check whether it is a Papagayo lip sync file
-	if(!FileSystem::safe_get_line(stream, line).eof())
+	if(!FileSystem::safe_get_line(*stream, line).eof())
 	if (line == "MohoSwitch1")
 	{
 		//! it is a Papagayo lipsync file
 		String phoneme, prevphoneme, prevext, ext(".jpg"); // default image format
 		int frame, prevframe = -1; // it means that the previous phoneme is not known
 
-		while(!FileSystem::safe_get_line(stream, line).eof())
+		while(!FileSystem::safe_get_line(*stream, line).eof())
 		{
 			if(line.find(String("FPS ")) == 0)
 			{
@@ -136,8 +133,8 @@ Importer(identifier)
 		return;
 	}
 
-	stream.seekg(ios_base::beg);
-	while(!FileSystem::safe_get_line(stream, line).eof())
+	stream->seekg(std::ios_base::beg);
+	while(!FileSystem::safe_get_line(*stream, line).eof())
 	{
 		if(line.empty())
 			continue;
@@ -155,16 +152,14 @@ Importer(identifier)
 }
 
 
-ListImporter::~ListImporter()
-{
-}
+ListImporter::~ListImporter() = default;
 
 Importer::Handle
 ListImporter::get_sub_importer(const RendDesc &renddesc, Time time, ProgressCallback *cb)
 {
 	float document_fps=renddesc.get_frame_rate();
-	int document_frame=round_to_int(time*document_fps);
-	int frame=floor_to_int(document_frame*fps/document_fps);
+	int document_frame=etl::round_to_int(time*document_fps);
+	int frame=etl::floor_to_int(document_frame*fps/document_fps);
 
 	if(!filename_list.size())
 	{
