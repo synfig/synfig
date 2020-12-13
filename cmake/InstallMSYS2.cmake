@@ -24,6 +24,8 @@ file(COPY ${MAGICK_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
 
 # /output/bin
 file(GLOB MINGW_LIBS
+		${MINGW_BIN}/gspawn-win??-helper.exe
+		${MINGW_BIN}/gspawn-win??-helper-console.exe
 	    ${MINGW_BIN}/libatk-1.0-[0-9]*.dll
 	    ${MINGW_BIN}/libatkmm-1.6-[0-9]*.dll
 	    ${MINGW_BIN}/libbz2-[0-9]*.dll
