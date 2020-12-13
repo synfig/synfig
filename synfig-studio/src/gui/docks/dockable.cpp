@@ -31,7 +31,11 @@
 
 #include "docks/dockable.h"
 
-#include <gtkmm/stock.h>
+#if GTK_CHECK_VERSION (3,20,0)
+#include <gdkmm/seat.h>
+#else
+#include <gdkmm/devicemanager.h>
+#endif
 
 #include <gui/app.h>
 #include <gui/docks/dockmanager.h>
@@ -113,8 +117,7 @@ void
 Dockable::on_drag_end(const Glib::RefPtr<Gdk::DragContext>&/*context*/)
 {
 	if (!dnd_success_) {
-		DockManager::remove_widget_recursive(*this);
-		present();
+		detach_to_pointer();
 	}
 	App::dock_manager->set_dock_area_visibility(false, nullptr);
 }
@@ -156,6 +159,30 @@ Dockable::attach_dnd_to(Gtk::Widget& widget)
 	widget.signal_drag_end().connect( sigc::mem_fun(*this, &Dockable::on_drag_end ));
 	widget.signal_drag_begin().connect( sigc::mem_fun(*this, &Dockable::on_drag_begin ));
 	widget.signal_drag_data_received().connect( sigc::mem_fun(*this, &Dockable::on_drag_data_received ));
+}
+
+void Dockable::detach()
+{
+	DockManager::remove_widget_recursive(*this);
+	present();
+}
+
+void Dockable::detach_to_pointer()
+{
+	Glib::RefPtr<Gdk::Device> mouse_device;
+#if GTK_CHECK_VERSION (3,20,0)
+	Glib::RefPtr<Gdk::Seat> seat = get_display()->get_default_seat();
+	mouse_device = seat->get_pointer();
+#else
+	Glib::RefPtr<Gdk::DeviceManager> dev_manager = get_display()->get_device_manager();
+	dev_manager->get_client_pointer();
+#endif
+	int x, y;
+	mouse_device->get_position(x, y);
+
+	detach();
+
+	get_window()->move(x, y);
 }
 
 void
