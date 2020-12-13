@@ -36,7 +36,9 @@
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_color.h>
 #include <gui/docks/dock_toolbox.h>
+#include <gui/docks/dialog_tooloptions.h>
 #include <gui/event_mouse.h>
+#include <gui/localization.h>
 #include <gui/workarea.h>
 
 #include <synfig/general.h>
@@ -52,22 +54,27 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+const int GAP = 3;
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class studio::StateEyedrop_Context
+class studio::StateEyedrop_Context : public sigc::trackable
 {
 	CanvasView *canvas_view;
 	CanvasView::IsWorking is_working;
+
+	Gtk::Table options_table;
+	Gtk::Label title_label;
 
 public:
 	StateEyedrop_Context(CanvasView *canvas_view);
 	~StateEyedrop_Context();
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
-
 	Smach::event_result event_refresh_handler(const Smach::event& x);
-
 	Smach::event_result event_workarea_mouse_button_down_handler(const Smach::event& x);
+	Smach::event_result event_refresh_tool_options(const Smach::event& x);
+	void refresh_tool_options();
 
 }; // END of class StateEyedrop_Context
 
@@ -86,6 +93,7 @@ StateEyedrop::StateEyedrop():
 	insert(event_def(EVENT_STOP,&StateEyedrop_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateEyedrop_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateEyedrop_Context::event_workarea_mouse_button_down_handler));
+	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateEyedrop_Context::event_refresh_tool_options));
 }
 
 StateEyedrop::~StateEyedrop()
@@ -104,6 +112,27 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	synfig::info("Entered Eyedrop State");
 	canvas_view->get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
 
+	// Setup Eyedrop options dialog
+	title_label.set_label(_("Eyedrop Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+
+	options_table.attach(title_label,
+		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Clic to assign Outline Color"), Gtk::ALIGN_START)),
+		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Ctrl + Clic to assign Fill Color"), Gtk::ALIGN_START)),
+		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.set_border_width(GAP*2);
+	options_table.set_row_spacings(GAP);
+
+	options_table.show_all();
+	refresh_tool_options();
+
 	App::dock_toolbox->refresh();
 }
 
@@ -111,7 +140,25 @@ StateEyedrop_Context::~StateEyedrop_Context()
 {
 	synfig::info("Left Eyedrop State");
 	canvas_view->get_work_area()->reset_cursor();
+
+	App::dialog_tool_options->clear();
 	App::dock_toolbox->refresh();
+}
+
+void
+StateEyedrop_Context::refresh_tool_options()
+{
+	App::dialog_tool_options->clear();
+	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_local_name(_("Eyedrop Tool"));
+	App::dialog_tool_options->set_name("eyedrop");
+}
+
+Smach::event_result
+StateEyedrop_Context::event_refresh_tool_options(const Smach::event& /*x*/)
+{
+	refresh_tool_options();
+	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
