@@ -122,9 +122,9 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 
 	options_table.attach(title_label,
 		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Clic to assign Outline Color"), Gtk::ALIGN_START)),
+	options_table.attach(*manage(new Gtk::Label(_("Click to assign Outline Color"), Gtk::ALIGN_START)),
 		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Ctrl + Clic to assign Fill Color"), Gtk::ALIGN_START)),
+	options_table.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Fill Color"), Gtk::ALIGN_START)),
 		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.set_border_width(GAP*2);
