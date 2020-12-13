@@ -94,6 +94,8 @@ public:
 	void clear();
 
 	void attach_dnd_to(Gtk::Widget& widget);
+	void detach();
+	void detach_to_pointer();
 	virtual void present();
 	virtual Gtk::Widget* create_tab_label();
 
