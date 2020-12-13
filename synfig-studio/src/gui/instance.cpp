@@ -1892,7 +1892,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 				item2->show();
 				menu->append(*item2);
 		}
-		else if(etl::handle<Layer_PasteCanvas> reference_layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(layers.front()))
+		else if(etl::handle<Layer_Switch> reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front()))
 		{
 			//the layer selected is a switch group
 			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
