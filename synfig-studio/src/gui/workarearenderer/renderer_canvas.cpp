@@ -50,6 +50,7 @@
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
+#include <gui/localization.h>
 #include <gui/timemodel.h>
 
 #include "renderer_canvas.h"
@@ -456,7 +457,26 @@ Renderer_Canvas::enqueue_render_frame(
 
 	// build rendering task
 	canvas->set_time(id.time);
-	canvas->load_resources(id.time);
+
+	std::string loading_error_msg;
+	try {
+		canvas->load_resources(id.time);
+	} catch (std::runtime_error &err) {
+		loading_error_msg = err.what();
+	} catch (std::exception &ex) {
+		loading_error_msg = ex.what();
+	} catch (std::string &str) {
+		loading_error_msg = str;
+	} catch (...) {
+		loading_error_msg = _("Unknown reason");
+	}
+	if (!loading_error_msg.empty()) {
+		std::string full_error_msg = etl::strprintf(_("Error loading canvas resources at %s (%s):\n\t%s"), id.time.get_string().c_str(), canvas->get_name().c_str(), loading_error_msg.c_str());
+		rendering_error_msg_map[id.time].insert(full_error_msg);
+		synfig::error(full_error_msg);
+		return false;
+	}
+
 	canvas->set_outline_grow(rend_desc.get_outline_grow());
 	rendering::Task::Handle task = canvas->build_rendering_task(context_params);
 
@@ -647,6 +667,7 @@ Renderer_Canvas::clear_render()
 				erase_tile(i->second, j, events);
 			}
 		tiles.clear();
+		rendering_error_msg_map.clear();
 	}
 	rendering::Renderer::cancel(events);
 	if (cleared && get_work_area())
@@ -717,6 +738,27 @@ Renderer_Canvas::get_render_status(StatusMap &out_map)
 			calc_frame_status(current_thumb.with_time(i->first), current_thumb.rect()) );
 		if (i->second == FS_None) out_map.erase(i++); else ++i;
 	}
+}
+
+void Renderer_Canvas::get_rendering_error_messages(std::vector<std::string>& messages)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+
+	messages.clear();
+	for (auto& msgs_for_time : rendering_error_msg_map) {
+		for (auto& msg : msgs_for_time.second)
+			messages.push_back(msg);
+	}
+}
+
+void Renderer_Canvas::get_rendering_error_messages_for_time(const Time& time, std::set<std::string>& message_set)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+
+	message_set.clear();
+	auto it = rendering_error_msg_map.find(time);
+	if (it != rendering_error_msg_map.end())
+		message_set = it->second;
 }
 
 void

@@ -877,6 +877,7 @@ AsyncRenderer::render_target()
 {
 	etl::handle<Target> target(AsyncRenderer::target);
 
+	std::string error_str;
 	try {
 		if(target && target->render(cb))
 		{
@@ -889,9 +890,18 @@ AsyncRenderer::render_target()
 			return;
 #endif
 		}
+	} catch (std::runtime_error &err) {
+		error_str = std::string(_("AsynRenderer: ")) + _("runtime error: ") + err.what();
+	} catch (std::exception &ex) {
+		error_str = std::string(_("AsynRenderer: ")) + _("exception: ") + ex.what();
+	} catch (std::string &str) {
+		error_str = std::string(_("AsynRenderer: ")) + _("string exception: ") + str;
 	} catch (...) {
+		error_str = std::string(_("AsynRenderer: ")) + _("internal error: ") + _("some exception has been thrown while rendering");
+	}
+
+	if (!error_str.empty()) {
 		status = RENDERING_ERROR;
-		string error_str = _("Internal error: some exception has been thrown while rendering");
 		synfig::error(error_str);
 		if (cb)
 			cb->error(error_str);
