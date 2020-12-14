@@ -60,6 +60,7 @@
 #include "workarearenderer/workarearenderer.h"
 #include "workarearenderer/renderer_background.h"
 #include "workarearenderer/renderer_canvas.h"
+#include "workarearenderer/renderer_frameerror.h"
 #include "workarearenderer/renderer_grid.h"
 #include "workarearenderer/renderer_guides.h"
 #include "workarearenderer/renderer_timecode.h"
@@ -182,6 +183,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	insert_renderer(new Renderer_Dragbox,    400);
 	insert_renderer(new Renderer_Timecode,   500);
 	insert_renderer(new Renderer_BoneSetup,  501);
+	insert_renderer(new Renderer_FrameError, 502);
 
 	signal_duck_selection_changed().connect(sigc::mem_fun(*this,&studio::WorkArea::queue_draw));
 	signal_duck_selection_single().connect(sigc::mem_fun(*this, &studio::WorkArea::on_duck_selection_single));
@@ -2106,6 +2108,20 @@ WorkArea::sync_render(bool refresh)
 	if (refresh) renderer_canvas->clear_render();
 	renderer_canvas->enqueue_render();
 	renderer_canvas->wait_render();
+
+	// Check for frame rendering error while playing the animation, report it and stops the playback at problematic frame
+	if (!canvas_view || !canvas_view->time_model())
+		return;
+	std::set<std::string> error_msg_set;
+	renderer_canvas->get_rendering_error_messages_for_time(canvas_view->time_model()->get_time(), error_msg_set);
+
+	if (!error_msg_set.empty()) {
+		std::string error_msg;
+		for (auto& msg : error_msg_set)
+			error_msg.append(msg + "\n");
+		App::get_ui_interface()->error(error_msg);
+		canvas_view->stop_async();
+	}
 }
 
 void
