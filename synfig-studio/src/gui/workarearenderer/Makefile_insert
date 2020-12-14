@@ -4,6 +4,7 @@ WORKAREARENDERER_HH = \
 	workarearenderer/renderer_canvas.h \
 	workarearenderer/renderer_dragbox.h \
 	workarearenderer/renderer_ducks.h \
+	workarearenderer/renderer_frameerror.h \
 	workarearenderer/renderer_grid.h \
 	workarearenderer/renderer_guides.h \
 	workarearenderer/renderer_timecode.h \
@@ -16,6 +17,7 @@ WORKAREARENDERER_CC = \
 	workarearenderer/renderer_canvas.cpp \
 	workarearenderer/renderer_dragbox.cpp \
 	workarearenderer/renderer_ducks.cpp \
+	workarearenderer/renderer_frameerror.cpp \
 	workarearenderer/renderer_grid.cpp \
 	workarearenderer/renderer_guides.cpp \
 	workarearenderer/renderer_timecode.cpp \

@@ -5,6 +5,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/renderer_canvas.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_dragbox.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_ducks.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/renderer_frameerror.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_grid.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_guides.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_timecode.cpp"
