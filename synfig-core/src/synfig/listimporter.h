@@ -32,7 +32,6 @@
 #include "surface.h"
 #include <vector>
 #include <list>
-#include <utility>
 
 /* === M A C R O S ========================================================= */
 
