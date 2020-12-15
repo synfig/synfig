@@ -3169,6 +3169,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 				.add_enum_value(synfig::RELEASE_VERSION_0_61_07, "0.61.07", "0.61.07")
 				.add_enum_value(synfig::RELEASE_VERSION_0_61_06, "0.61.06", strprintf("0.61.06 %s", _("and older"))));
 		file_type_enum->set_value(RELEASE_VERSION_END-1); // default to the most recent version
+		file_type_enum->set_hexpand(false);
 
 		Gtk::Grid *grid = manage(new Gtk::Grid);
 		grid->attach(*manage(new Gtk::Label(_("File Format Version: "))),0,0,1,1);
