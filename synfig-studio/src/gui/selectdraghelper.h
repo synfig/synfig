@@ -26,14 +26,14 @@
 
 #include <vector>
 #include <cairomm/context.h>
-#include <gdkmm/rectangle.h>
 #include <gdkmm/event.h>
+#include <gdkmm/rectangle.h>
 
 #include <ETL/handle>
-#include <synfigapp/canvasinterface.h>
-#include "app.h"
-
+#include <gui/app.h>
 #include <gui/exception_guard.h>
+#include <synfigapp/action_system.h>
+#include <synfigapp/canvasinterface.h>
 
 namespace synfigapp {
 namespace Action {

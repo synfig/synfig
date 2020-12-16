@@ -30,20 +30,16 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include "trees/metadatatree.h"
-#include <ETL/misc>
+#include <gui/trees/metadatatree.h>
 
 #include <gui/localization.h>
+
+#include <synfig/general.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
-using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

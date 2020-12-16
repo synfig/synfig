@@ -29,29 +29,25 @@
 #	include <config.h>
 #endif
 
+#include <gui/trees/layergrouptreestore.h>
+
+#include <gtkmm/button.h>
+
+#include <gui/app.h>
+#include <gui/docks/dockmanager.h>
+#include <gui/docks/dockable.h>
+#include <gui/localization.h>
+
 #include <synfig/general.h>
 
-#include "trees/layergrouptreestore.h"
-#include "iconcontroller.h"
-#include <gtkmm/button.h>
-#include <synfig/paramdesc.h>
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
-#include "app.h"
-#include "instance.h"
-#include <synfigapp/action_system.h>
-#include "docks/dockmanager.h"
-#include "docks/dockable.h"
-
-#include <gtk/gtk.h>
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

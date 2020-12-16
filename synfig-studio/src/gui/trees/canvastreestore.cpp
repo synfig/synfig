@@ -32,29 +32,24 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/trees/canvastreestore.h>
 
-#include "trees/canvastreestore.h"
-#include <synfig/valuenode.h>
-#include "iconcontroller.h"
-#include <synfig/valuenodes/valuenode_timedswap.h>
-#include <synfig/valuenodes/valuenode_bone.h>
-#include <synfig/boneweightpair.h>
-#include <synfig/valuenodes/valuenode_animated.h>
-#include <gtkmm/button.h>
-#include <synfigapp/instance.h>
-#include "cellrenderer/cellrenderer_value.h"
-#include "cellrenderer/cellrenderer_timetrack.h"
-#include <synfig/interpolation.h>
-
+#include <gui/cellrenderer/cellrenderer_value.h>
+#include <gui/cellrenderer/cellrenderer_timetrack.h>
 #include <gui/localization.h>
+#include <gui/iconcontroller.h>
+
+#include <synfig/boneweightpair.h>
+#include <synfig/general.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+
+#include <synfigapp/instance.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

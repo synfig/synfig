@@ -29,16 +29,12 @@
 
 #include <gtkmm/treestore.h>
 #include <synfigapp/canvasinterface.h>
-#include <gdkmm/pixbuf.h>
-#include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
-namespace synfigapp { class CanvasInterface; }
 
 namespace studio {
 

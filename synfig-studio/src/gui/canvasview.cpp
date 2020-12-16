@@ -1690,6 +1690,9 @@ CanvasView::add_layer(String x)
 void
 CanvasView::popup_layer_menu(Layer::Handle layer)
 {
+	if (!layer)
+		return;
+
 	Gtk::Menu* menu(&parammenu);
 	std::vector<Widget*> children = menu->get_children();
 	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)

@@ -29,27 +29,30 @@
 #define __SYNFIG_STUDIO_APP_H
 
 /* === H E A D E R S ======================================================= */
-#include <sigc++/sigc++.h>
-#include <gtkmm/main.h>
-#include <string>
-#include <list>
-#include <set>
-
 #include <ETL/smart_ptr>
 
+#include <gtkmm/box.h>
+#include <gtkmm/main.h>
+#include <gtkmm/uimanager.h>
+
+#include <gui/iconcontroller.h>
+#include <gui/mainwindow.h>
+#include <gui/pluginmanager.h>
+
+#include <list>
+#include <set>
+#include <string>
+
+#include <synfig/canvas.h>
+#include <synfig/color.h>
 #include <synfig/distance.h>
+#include <synfig/filecontainerzip.h>
+#include <synfig/filesystemtemporary.h>
+#include <synfig/layers/layer_bitmap.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
-#include <synfig/color.h>
-#include <synfig/layers/layer_bitmap.h>
-#include <synfig/filecontainerzip.h>
 
-#include <gtkmm/uimanager.h>
 #include <synfigapp/instance.h>
-#include <synfigapp/canvasinterface.h>
-#include "pluginmanager.h"
-#include "iconcontroller.h"
-#include "mainwindow.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -62,12 +65,6 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
-namespace Gtk
-{
-	class UIManager;
-	class ActionGroup;
-};
 
 namespace synfig
 {
@@ -120,7 +117,6 @@ class IPC;
 class Module;
 
 class StateManager;
-class IconController;
 
 class WorkspaceHandler;
 
@@ -418,7 +414,7 @@ public:
 	static bool dialog_open_file_image(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference, std::string& plugin_importer);
-	static bool dialog_open_folder(const std::string &title, std::string &filename, std::string preference, Gtk::Window& transientwind=*App::main_window);
+	static bool dialog_open_folder(const std::string &title, std::string &filename, std::string preference, Gtk::Window& transientwind);
 	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
 	static std::string dialog_export_file(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference);

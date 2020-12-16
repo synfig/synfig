@@ -29,9 +29,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treeview.h>
-#include <gtkmm/treestore.h>
-#include <synfigapp/canvasinterface.h>
-#include "trees/metadatatreestore.h"
+#include <gui/trees/metadatatreestore.h>
 
 /* === M A C R O S ========================================================= */
 

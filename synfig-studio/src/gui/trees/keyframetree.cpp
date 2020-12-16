@@ -31,22 +31,19 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/trees/keyframetree.h>
 
-#include "app.h"
-#include "trees/keyframetree.h"
-#include "cellrenderer/cellrenderer_time.h"
 #include <gtkmm/treemodelsort.h>
-#include <ETL/misc>
 
+#include <gui/app.h>
+#include <gui/cellrenderer/cellrenderer_time.h>
+#include <gui/exception_guard.h>
 #include <gui/localization.h>
 
-#include <gui/exception_guard.h>
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

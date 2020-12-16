@@ -30,8 +30,7 @@
 #include <gtkmm/treestore.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
-#include <gtkmm/treeview.h>
+#include <pangomm.h>
 
 /* === M A C R O S ========================================================= */
 

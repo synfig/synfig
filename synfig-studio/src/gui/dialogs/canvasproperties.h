@@ -34,7 +34,7 @@
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
 
-#include "renddesc.h"
+#include <gui/renddesc.h>
 
 /* === M A C R O S ========================================================= */
 

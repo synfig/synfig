@@ -28,12 +28,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/treestore.h>
-#include <synfigapp/canvasinterface.h>
-#include "trees/canvastreestore.h"
+#include <gui/trees/canvastreestore.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <synfig/paramdesc.h>
 
 /* === M A C R O S ========================================================= */
 

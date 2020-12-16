@@ -28,9 +28,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/treestore.h>
-#include <synfigapp/canvasinterface.h>
 #include <gdkmm/pixbuf.h>
+#include <gtkmm/treestore.h>
 #include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */
