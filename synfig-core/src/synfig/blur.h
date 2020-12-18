@@ -67,7 +67,7 @@ public:
 	int get_type() const { return type; }
 
 	static synfig::Real get_surface_extra_size_amplifier(int type) {
-		static const synfig::Real gauss_max_deviation = 1.0 / 512.0;
+		static constexpr synfig::Real gauss_max_deviation = 1.0 / 512.0;
 		static const synfig::Real gauss_size_amplifier = 0.5*sqrt(-2.0*log(gauss_max_deviation));
 
 		switch(type)

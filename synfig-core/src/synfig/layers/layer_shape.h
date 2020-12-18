@@ -32,11 +32,8 @@
 #include "layer_composite.h"
 #include <synfig/color.h>
 #include <synfig/vector.h>
-#include <synfig/blur.h>
 
 #include <synfig/rendering/primitive/contour.h>
-
-#include <vector>
 
 /* === M A C R O S ========================================================= */
 

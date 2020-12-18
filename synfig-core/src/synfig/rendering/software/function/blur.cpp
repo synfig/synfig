@@ -38,9 +38,7 @@
 
 #include "blurtemplates.h"
 #include "fft.h"
-#include <synfig/angle.h>
-#include <synfig/general.h>
-
+#include "blur_iir_coefficients.cpp"
 #endif
 
 using namespace std;
