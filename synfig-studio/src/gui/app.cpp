@@ -35,23 +35,28 @@
 #	include <config.h>
 #endif
 
+#ifdef USE_WIN32_FILE_DIALOGS
+# include <cstring>
+#endif
+
 #include <fstream>
 #include <iostream>
-#include <locale>
-#include <cstring>
 
 #ifdef __OpenBSD__
 #include <errno.h>
 #elif defined(HAVE_SYS_ERRNO_H)
 #include <sys/errno.h>
 #endif
+
+#include <giomm/file.h>
+#include <glibmm/spawn.h>
+
 #include <gtkmm/accelmap.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/filefilter.h>
-#include <gtkmm/iconsource.h>
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
 #if GTK_CHECK_VERSION(3, 20, 0)
@@ -59,113 +64,91 @@
 #endif
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
-#include <gtkmm/uimanager.h>
-
-#include <glibmm/main.h>
-#include <glibmm/miscutils.h>
-#include <glibmm/spawn.h>
-#include <glibmm/thread.h>
-#include <glibmm/timer.h>
-
-#include <giomm/file.h>
-
-#include <gtk/gtk.h>
-#include <gdk/gdk.h>
-
-#include <gdkmm/general.h>
 
 #ifdef _WIN32
 #define WINVER 0x0500
 #include <windows.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/color.h>
+#include <gui/app.h>
+#include <gui/autorecover.h>
+#include <gui/canvasview.h>
+#include <gui/devicetracker.h>
+
+#include <gui/dialogs/about.h>
+#include <gui/dialogs/dialog_color.h>
+#include <gui/dialogs/dialog_gradient.h>
+#include <gui/dialogs/dialog_input.h>
+#include <gui/dialogs/dialog_setup.h>
+#include <gui/dialogs/dialog_workspaces.h>
+#include <gui/dialogs/vectorizersettings.h>
+
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dockmanager.h>
+#include <gui/docks/dock_canvases.h>
+#include <gui/docks/dock_children.h>
+#include <gui/docks/dock_curves.h>
+#include <gui/docks/dock_history.h>
+#include <gui/docks/dock_info.h>
+#include <gui/docks/dock_keyframes.h>
+#include <gui/docks/dock_layers.h>
+#include <gui/docks/dock_layergroups.h>
+#include <gui/docks/dock_params.h>
+#include <gui/docks/dock_metadata.h>
+#include <gui/docks/dock_navigator.h>
+#include <gui/docks/dock_soundwave.h>
+#include <gui/docks/dock_timetrack.h>
+#include <gui/docks/dock_timetrack2.h>
+#include <gui/docks/dock_toolbox.h>
+
+#include <gui/instance.h>
+#include <gui/ipc.h>
+#include <gui/localization.h>
+#include <gui/modules/mod_palette/mod_palette.h>
+#include <gui/onemoment.h>
+#include <gui/resourcehelper.h>
+#include <gui/splash.h>
+
+#include <gui/statemanager.h>
+#include <gui/states/state_bline.h>
+#include <gui/states/state_bone.h>
+#include <gui/states/state_brush.h>
+#include <gui/states/state_circle.h>
+#include <gui/states/state_draw.h>
+#include <gui/states/state_eyedrop.h>
+#include <gui/states/state_fill.h>
+#include <gui/states/state_gradient.h>
+#include <gui/states/state_lasso.h>
+#include <gui/states/state_mirror.h>
+#include <gui/states/state_normal.h>
+#include <gui/states/state_polygon.h>
+#include <gui/states/state_rectangle.h>
+#include <gui/states/state_rotate.h>
+#include <gui/states/state_scale.h>
+#include <gui/states/state_sketch.h>
+#include <gui/states/state_smoothmove.h>
+#include <gui/states/state_star.h>
+#include <gui/states/state_text.h>
+#include <gui/states/state_width.h>
+#include <gui/states/state_zoom.h>
+
+#include <gui/widgets/widget_enum.h>
+#include <gui/workspacehandler.h>
+
 #include <synfig/canvasfilenaming.h>
+#include <synfig/color.h>
 #include <synfig/filesystemnative.h>
-#include <synfig/filesystemgroup.h>
-#include <synfig/filesystemtemporary.h>
-#include <synfig/importer.h>
+#include <synfig/general.h>
+#include <synfig/layer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
-#include <synfig/layer.h>
 #include <synfig/soundprocessor.h>
 #include <synfig/version.h>
 
-#include "app.h"
-#include "splash.h"
-#include "instance.h"
-#include "canvasview.h"
-#include "dialogs/about.h"
-#include "dialogs/dialog_color.h"
-#include "dialogs/dialog_gradient.h"
-#include "dialogs/dialog_input.h"
-#include "dialogs/dialog_setup.h"
-#include "dialogs/dialog_workspaces.h"
-#include "dialogs/vectorizersettings.h"
-#include "onemoment.h"
-#include "devicetracker.h"
-#include "widgets/widget_enum.h"
-
-#include <synfigapp/canvasinterface.h>
-
-#include "statemanager.h"
-
-#include "states/state_bline.h"
-#include "states/state_bone.h"
-#include "states/state_brush.h"
-#include "states/state_circle.h"
-#include "states/state_draw.h"
-#include "states/state_eyedrop.h"
-#include "states/state_fill.h"
-#include "states/state_gradient.h"
-#include "states/state_lasso.h"
-#include "states/state_mirror.h"
-#include "states/state_normal.h"
-#include "states/state_polygon.h"
-#include "states/state_rectangle.h"
-#include "states/state_rotate.h"
-#include "states/state_scale.h"
-#include "states/state_sketch.h"
-#include "states/state_smoothmove.h"
-#include "states/state_star.h"
-#include "states/state_text.h"
-#include "states/state_width.h"
-#include "states/state_zoom.h"
-
-#include "autorecover.h"
-
-#include <synfigapp/settings.h>
 #include <synfigapp/action.h>
-
-#include "docks/dockmanager.h"
-#include "docks/dialog_tooloptions.h"
-#include "docks/dock_canvases.h"
-#include "docks/dock_children.h"
-#include "docks/dock_curves.h"
-#include "docks/dock_history.h"
-#include "docks/dock_info.h"
-#include "docks/dock_keyframes.h"
-#include "docks/dock_layers.h"
-#include "docks/dock_layergroups.h"
-#include "docks/dock_params.h"
-#include "docks/dock_metadata.h"
-#include "docks/dock_navigator.h"
-#include "docks/dock_soundwave.h"
-#include "docks/dock_timetrack.h"
-#include "docks/dock_timetrack2.h"
-#include "docks/dock_toolbox.h"
-
-#include "modules/module.h"
-#include "modules/mod_palette/mod_palette.h"
-
-#include "ipc.h"
-
-#include <gui/localization.h>
-
-#include "gui/resourcehelper.h"
-#include "gui/workspacehandler.h"
-#include <algorithm>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/main.h>
+#include <synfigapp/settings.h>
 
 #endif
 
@@ -185,8 +168,6 @@ using namespace studio;
 #ifndef IMAGE_EXT
 #	define IMAGE_EXT	"tif"
 #endif
-
-#include <synfigapp/main.h>
 
 /* === S I G N A L S ======================================================= */
 
