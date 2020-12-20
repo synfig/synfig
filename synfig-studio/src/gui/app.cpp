@@ -438,53 +438,6 @@ class SetsModel : public Gtk::TreeModel::ColumnRecord
 
 /* === P R O C E D U R E S ================================================= */
 
-/*
-void
-studio::UIManager::insert_action_group (const Glib::RefPtr<Gtk::ActionGroup>& action_group, int pos)
-{
-	action_group_list.push_back(action_group);
-	Gtk::UIManager::insert_action_group(action_group, pos);
-}
-
-void
-studio::UIManager::remove_action_group (const Glib::RefPtr<Gtk::ActionGroup>& action_group)
-{
-	std::list<Glib::RefPtr<Gtk::ActionGroup> >::iterator iter;
-	for(iter=action_group_list.begin();iter!=action_group_list.end();++iter)
-		if(*iter==action_group)
-		{
-			action_group_list.erase(iter);
-			Gtk::UIManager::remove_action_group(action_group);
-			return;
-		}
-	synfig::error("Unable to find action group");
-}
-
-void
-studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib::RefPtr<Gtk::ActionGroup> group)
-{
-	ui_manager->insert_action_group(group,0);
-	return;
-	std::list<Glib::RefPtr<Gtk::ActionGroup> > prev_groups(ui_manager->get_action_groups());
-	std::list<Glib::RefPtr<Gtk::ActionGroup> >::reverse_iterator iter;
-
-	for(iter=prev_groups.rbegin();iter!=prev_groups.rend();++iter)
-	{
-		if(*iter && (*iter)->get_name()!="menus")
-		{
-			synfig::info("Removing action group "+(*iter)->get_name());
-			ui_manager->remove_action_group(*iter);
-		}
-	}
-	ui_manager->insert_action_group(group,0);
-
-	for(;!prev_groups.empty();prev_groups.pop_front())
-	{
-		if(prev_groups.front() && prev_groups.front()!=group && prev_groups.front()->get_name()!="menus")
-			ui_manager->insert_action_group(prev_groups.front(),1);
-	}
-}
-*/
 class Preferences : public synfigapp::Settings
 {
 public:
