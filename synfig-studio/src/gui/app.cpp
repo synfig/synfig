@@ -160,15 +160,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifndef DPM2DPI
-#define DPM2DPI(x)	(float(x)/39.3700787402f)
-#define DPI2DPM(x)	(float(x)*39.3700787402f)
-#endif
-
-#ifndef IMAGE_EXT
-#	define IMAGE_EXT	"tif"
-#endif
-
 /* === S I G N A L S ======================================================= */
 
 static sigc::signal<void> signal_present_all_;
