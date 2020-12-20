@@ -727,7 +727,7 @@ Layer_Freetype::new_face(const String &newfont)
 	if(error)
 	{
 		if (!newfont.empty())
-			synfig::error(strprintf("Layer_Freetype: %s (err=%d)",_("Unable to open font face."),error));
+			synfig::error(strprintf("Layer_Freetype: %s (err=%d): %s",_("Unable to open font face."),error,newfont.c_str()));
 		return false;
 	}
 
