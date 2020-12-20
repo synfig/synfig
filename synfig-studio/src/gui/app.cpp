@@ -306,12 +306,9 @@ static StateManager* state_manager;
 
 studio::WorkspaceHandler *studio::App::workspaces = nullptr;
 
-namespace studio {
-
-bool
+static bool
 really_delete_widget(Gtk::Widget *widget)
 {
-	// synfig::info("really delete %p", (void*)widget);
 	delete widget;
 	return false;
 }
@@ -320,16 +317,10 @@ really_delete_widget(Gtk::Widget *widget)
 // attaching to the signal_hide() signal gets us here before the action on the menu has run,
 // so schedule the real delete to happen in 50ms, giving the action a chance to run
 void
-delete_widget(Gtk::Widget *widget)
+studio::delete_widget(Gtk::Widget *widget)
 {
-	// synfig::info("delete %p", (void*)widget);
 	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
 }
-
-}; // END of namespace studio
-
-
-
 
 class GlobalUIInterface : public synfigapp::UIInterface
 {
