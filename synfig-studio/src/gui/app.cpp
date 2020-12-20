@@ -219,7 +219,7 @@ synfig::Distance::System  App::distance_system;
 
 studio::Dialog_Setup     *App::dialog_setup = nullptr;
 
-etl::handle< studio::ModPalette > mod_palette_;
+static etl::handle< studio::ModPalette > mod_palette_;
 //studio::Dialog_Palette* App::dialog_palette;
 
 std::list<etl::handle<Instance> > App::instance_list;
@@ -234,7 +234,7 @@ studio::About              *studio::App::about          = nullptr;
 studio::MainWindow         *studio::App::main_window    = nullptr;
 studio::Dock_Toolbox       *studio::App::dock_toolbox   = nullptr;
 studio::AutoRecover        *studio::App::auto_recover   = nullptr;
-studio::IPC                *ipc                         = nullptr;
+static studio::IPC         *ipc                         = nullptr;
 studio::DockManager        *studio::App::dock_manager   = nullptr;
 studio::DeviceTracker      *studio::App::device_tracker = nullptr;
 
@@ -244,22 +244,22 @@ studio::Dialog_Input       *studio::App::dialog_input;
 studio::Dialog_ToolOptions *studio::App::dialog_tool_options;
 studio::VectorizerSettings *studio::App::vectorizerpopup;
 
-studio::Dock_History       *dock_history;
-studio::Dock_Canvases      *dock_canvases;
-studio::Dock_Keyframes     *dock_keyframes;
-studio::Dock_Layers        *dock_layers;
-studio::Dock_Params        *dock_params;
-studio::Dock_MetaData      *dock_meta_data;
-studio::Dock_Children      *dock_children;
-studio::Dock_Info          *dock_info;
-studio::Dock_LayerGroups   *dock_layer_groups;
-studio::Dock_Navigator     *dock_navigator;
-studio::Dock_SoundWave     *dock_soundwave;
-studio::Dock_Timetrack_Old     *dock_timetrack_old;
-studio::Dock_Timetrack2    *dock_timetrack;
-studio::Dock_Curves        *dock_curves;
+static studio::Dock_History       *dock_history;
+static studio::Dock_Canvases      *dock_canvases;
+static studio::Dock_Keyframes     *dock_keyframes;
+static studio::Dock_Layers        *dock_layers;
+static studio::Dock_Params        *dock_params;
+static studio::Dock_MetaData      *dock_meta_data;
+static studio::Dock_Children      *dock_children;
+static studio::Dock_Info          *dock_info;
+static studio::Dock_LayerGroups   *dock_layer_groups;
+static studio::Dock_Navigator     *dock_navigator;
+static studio::Dock_SoundWave     *dock_soundwave;
+static studio::Dock_Timetrack_Old *dock_timetrack_old;
+static studio::Dock_Timetrack2    *dock_timetrack;
+static studio::Dock_Curves        *dock_curves;
 
-std::list< etl::handle< studio::Module > > module_list_;
+static std::list< etl::handle< studio::Module > > module_list_;
 
 bool   studio::App::restrict_radius_ducks        = true;
 bool   studio::App::resize_imported_images       = false;
@@ -299,6 +299,8 @@ void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; 
 
 static synfig::String app_base_path_;
 
+static StateManager* state_manager;
+
 studio::WorkspaceHandler *studio::App::workspaces = nullptr;
 
 namespace studio {
@@ -326,7 +328,6 @@ SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
 
 }; // END of namespace studio
-studio::StateManager* state_manager;
 
 
 
@@ -3681,16 +3682,16 @@ void App::open_img_in_external(const std::string &uri)
 	}
 }
 
-std::unordered_map<std::string, int> configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
+static std::unordered_map<std::string, int> vectorizer_configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
 
 void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
 {
 	String desc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+desc);
-	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,configmap,reference_layer);
+	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,vectorizer_configmap,reference_layer);
 	App::vectorizerpopup->show();
-
 }
+
 void App::open_uri(const std::string &uri)
 {
 	synfig::info("Opening URI: " + uri);
