@@ -774,7 +774,7 @@ Duckmatic::set_grid_size(const synfig::Vector &s)
 	if(grid_size!=s)
 	{
 		grid_size=s;
-		signal_grid_changed();
+		signal_grid_changed().emit();
 	}
 }
 
@@ -784,7 +784,7 @@ Duckmatic::set_grid_color(const synfig::Color &c)
 	if(grid_color!=c)
 	{
 		grid_color=c;
-		signal_grid_changed();
+		signal_grid_changed().emit();
 	}
 }
 
@@ -794,7 +794,7 @@ Duckmatic::set_grid_snap(bool x)
 	if(grid_snap!=x)
 	{
 		grid_snap=x;
-		signal_grid_changed();
+		signal_grid_changed().emit();
 	}
 }
 
@@ -804,7 +804,7 @@ Duckmatic::set_guide_snap(bool x)
 	if(guide_snap!=x)
 	{
 		guide_snap=x;
-		signal_grid_changed();
+		signal_grid_changed().emit();
 	}
 }
 
@@ -814,7 +814,7 @@ Duckmatic::set_guides_color(const synfig::Color &c)
 	if(guides_color!=c)
 	{
 		guides_color=c;
-		signal_grid_changed();
+		signal_grid_changed().emit();
 	}
 }
 
