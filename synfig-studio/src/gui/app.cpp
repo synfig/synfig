@@ -230,13 +230,13 @@ const  etl::handle<synfigapp::UIInterface>& App::get_ui_interface() { return ui_
 etl::handle<Instance>   App::selected_instance;
 etl::handle<CanvasView> App::selected_canvas_view;
 
-studio::About              *studio::App::about          = NULL;
-studio::MainWindow         *studio::App::main_window    = NULL;
-studio::Dock_Toolbox       *studio::App::dock_toolbox   = NULL;
-studio::AutoRecover        *studio::App::auto_recover   = NULL;
-studio::IPC                *ipc                         = NULL;
-studio::DockManager        *studio::App::dock_manager   = 0;
-studio::DeviceTracker      *studio::App::device_tracker = 0;
+studio::About              *studio::App::about          = nullptr;
+studio::MainWindow         *studio::App::main_window    = nullptr;
+studio::Dock_Toolbox       *studio::App::dock_toolbox   = nullptr;
+studio::AutoRecover        *studio::App::auto_recover   = nullptr;
+studio::IPC                *ipc                         = nullptr;
+studio::DockManager        *studio::App::dock_manager   = nullptr;
+studio::DeviceTracker      *studio::App::device_tracker = nullptr;
 
 studio::Dialog_Gradient    *studio::App::dialog_gradient;
 studio::Dialog_Color       *studio::App::dialog_color;
@@ -1817,7 +1817,7 @@ App::~App()
 
 	synfigapp::Main::settings().remove_domain("pref");
 
-	selected_instance=0;
+	selected_instance=nullptr;
 
 	// Unload all of the modules
 	for(;!module_list_.empty();module_list_.pop_back())
@@ -1850,7 +1850,7 @@ App::~App()
 	instance_list.clear();
 
 	if (sound_render_done) delete sound_render_done;
-	sound_render_done = NULL;
+	sound_render_done = nullptr;
 }
 
 synfig::String
@@ -3113,7 +3113,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	dialog->add_filter(filter_sif);
 	dialog->add_filter(filter_sfg);
 
-	Widget_Enum *file_type_enum = 0;
+	Widget_Enum *file_type_enum = nullptr;
 	if (preference == ANIMATION_DIR_PREFERENCE)
 	{
 		file_type_enum = manage(new Widget_Enum());
@@ -3621,8 +3621,8 @@ try_open_uri(const std::string &uri)
 {
 #if GTK_CHECK_VERSION(3, 22, 0)
 	return gtk_show_uri_on_window(
-		App::main_window ? App::main_window->gobj() : NULL,
-		uri.c_str(), GDK_CURRENT_TIME, NULL );
+		App::main_window ? App::main_window->gobj() : nullptr,
+		uri.c_str(), GDK_CURRENT_TIME, nullptr );
 #else
 	return gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
 #endif
@@ -4313,7 +4313,7 @@ App::set_selected_instance(etl::loose_handle<Instance> instance)
 		if (instance) {
 			instance->focus( instance->get_canvas() );
 		} else {
-			set_selected_canvas_view(0);
+			set_selected_canvas_view(nullptr);
 		}
 	} else {
 		selected_instance = instance;
@@ -4350,7 +4350,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 etl::loose_handle<Instance>
 App::get_instance(etl::handle<synfig::Canvas> canvas)
 {
-	if(!canvas) return 0;
+	if(!canvas) return nullptr;
 	canvas=canvas->get_root();
 
 	std::list<etl::handle<Instance> >::iterator iter;
@@ -4359,7 +4359,7 @@ App::get_instance(etl::handle<synfig::Canvas> canvas)
 		if((*iter)->get_canvas()==canvas)
 			return *iter;
 	}
-	return 0;
+	return nullptr;
 }
 
 Gamma
@@ -4458,7 +4458,7 @@ studio::App::check_python_version(String path)
 	}
 	char buffer[128];
 	while(!feof(pipe)) {
-		if(fgets(buffer, 128, pipe) != NULL)
+		if(fgets(buffer, 128, pipe) != nullptr)
 				result += buffer;
 	}
 	pclose(pipe);
