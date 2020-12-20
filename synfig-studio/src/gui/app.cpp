@@ -1359,7 +1359,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	ACCEL("<Control>9",              "<Actions>/canvasview/quality-09")
 	ACCEL("<Control>0",              "<Actions>/canvasview/quality-10")
 	ACCEL("<Primary>z",              "<Actions>/action_group_dock_history/undo")
-#if _WIN32
+#ifdef _WIN32
 	ACCEL("<Control>y",              "<Actions>/action_group_dock_history/redo")
 #else
 	ACCEL("<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo")
@@ -3037,7 +3037,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 {
 	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
-#if USE_WIN32_FILE_DIALOGS
+#ifdef USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
