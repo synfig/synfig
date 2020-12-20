@@ -299,6 +299,9 @@ void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; 
 
 static synfig::String app_base_path_;
 
+SoundProcessor *App::sound_render_done = nullptr;
+bool App::use_render_done_sound = true;
+
 static StateManager* state_manager;
 
 studio::WorkspaceHandler *studio::App::workspaces = nullptr;
@@ -322,10 +325,6 @@ delete_widget(Gtk::Widget *widget)
 	// synfig::info("delete %p", (void*)widget);
 	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
 }
-
-//Static members need to be initialized outside of class declaration
-SoundProcessor *App::sound_render_done = nullptr;
-bool App::use_render_done_sound = true;
 
 }; // END of namespace studio
 
