@@ -213,14 +213,9 @@ bool App::shutdown_in_progress;
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 
 int        App::jack_locks_ = 0;
-Dock_Info* App::dock_info_  = nullptr;
-
 synfig::Distance::System  App::distance_system;
 
-studio::Dialog_Setup     *App::dialog_setup = nullptr;
-
 static etl::handle< studio::ModPalette > mod_palette_;
-//studio::Dialog_Palette* App::dialog_palette;
 
 std::list<etl::handle<Instance> > App::instance_list;
 
@@ -231,33 +226,36 @@ etl::handle<Instance>   App::selected_instance;
 etl::handle<CanvasView> App::selected_canvas_view;
 
 studio::About              *studio::App::about          = nullptr;
-studio::MainWindow         *studio::App::main_window    = nullptr;
-studio::Dock_Toolbox       *studio::App::dock_toolbox   = nullptr;
 studio::AutoRecover        *studio::App::auto_recover   = nullptr;
-static studio::IPC         *ipc                         = nullptr;
-studio::DockManager        *studio::App::dock_manager   = nullptr;
 studio::DeviceTracker      *studio::App::device_tracker = nullptr;
+static studio::IPC         *ipc                         = nullptr;
+studio::MainWindow         *studio::App::main_window    = nullptr;
 
-studio::Dialog_Gradient    *studio::App::dialog_gradient;
 studio::Dialog_Color       *studio::App::dialog_color;
+studio::Dialog_Gradient    *studio::App::dialog_gradient;
 studio::Dialog_Input       *studio::App::dialog_input;
+//studio::Dialog_Palette     *studio::App::dialog_palette;
+studio::Dialog_Setup       *studio::App::dialog_setup = nullptr;
 studio::Dialog_ToolOptions *studio::App::dialog_tool_options;
 studio::VectorizerSettings *studio::App::vectorizerpopup;
 
-static studio::Dock_History       *dock_history;
+       studio::DockManager   *App::dock_manager = nullptr;
 static studio::Dock_Canvases      *dock_canvases;
+static studio::Dock_Children      *dock_children;
+static studio::Dock_Curves        *dock_curves;
+static studio::Dock_History       *dock_history;
+static studio::Dock_Info          *dock_info;
+               Dock_Info     *App::dock_info_ = nullptr;
 static studio::Dock_Keyframes     *dock_keyframes;
 static studio::Dock_Layers        *dock_layers;
-static studio::Dock_Params        *dock_params;
-static studio::Dock_MetaData      *dock_meta_data;
-static studio::Dock_Children      *dock_children;
-static studio::Dock_Info          *dock_info;
 static studio::Dock_LayerGroups   *dock_layer_groups;
+static studio::Dock_MetaData      *dock_meta_data;
+static studio::Dock_Params        *dock_params;
 static studio::Dock_Navigator     *dock_navigator;
 static studio::Dock_SoundWave     *dock_soundwave;
 static studio::Dock_Timetrack_Old *dock_timetrack_old;
 static studio::Dock_Timetrack2    *dock_timetrack;
-static studio::Dock_Curves        *dock_curves;
+       studio::Dock_Toolbox  *App::dock_toolbox = nullptr;
 
 static std::list< etl::handle< studio::Module > > module_list_;
 
@@ -274,7 +272,7 @@ String studio::App::predefined_size              (DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps               (DEFAULT_PREDEFINED_FPS);
 float  studio::App::preferred_fps                = 24.0;
 PluginManager studio::App::plugin_manager;
-std::set< String >       studio::App::brushes_path;
+std::set< String > studio::App::brushes_path;
 String studio::App::image_editor_path;
 
 String studio::App::sequence_separator(".");
