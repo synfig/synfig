@@ -20,6 +20,7 @@
   <object class="GtkDialog" id="preview_options">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Preview Options</property>
+    <property name="resizable">False</property>
     <property name="type_hint">dialog</property>
     <child>
       <placeholder/>
