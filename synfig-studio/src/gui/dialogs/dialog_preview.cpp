@@ -62,7 +62,7 @@ Dialog_Preview::Dialog_Preview()
 :settings(this,"preview"),preview_table(1, 1, true)
 
 {
-	set_title(_("Preview Window"));
+	set_title(_("Preview"));
 	set_keep_above();
 	add(preview_table);
 	preview_table.attach(preview, 0, 1, 0, 1);
