@@ -28,7 +28,6 @@
 /* === H E A D E R S ======================================================= */
 
 
-#include "canvas.h"
 #include "filesystem.h"
 #include "filecontainerzip.h"
 #include "string.h"

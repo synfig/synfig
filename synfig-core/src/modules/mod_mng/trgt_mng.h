@@ -26,12 +26,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/target_scanline.h>
-#include <synfig/string.h>
-#include <synfig/targetparam.h>
-#include <cstdio>
-
-// #include <png.h>
-// #include <jpeglib.h>
+#include <cstdio> // FILE
 
 #if !defined(MNG_SUPPORT_FULL)
 #define MNG_SUPPORT_FULL 1
