@@ -35,10 +35,6 @@
 #	include <config.h>
 #endif
 
-#ifdef USE_WIN32_FILE_DIALOGS
-# include <cstring>
-#endif
-
 #include <fstream>
 #include <iostream>
 
@@ -64,11 +60,6 @@
 #endif
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
-
-#ifdef _WIN32
-#define WINVER 0x0500
-#include <windows.h>
-#endif
 
 #include <gui/app.h>
 #include <gui/autorecover.h>
@@ -149,6 +140,20 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
 #include <synfigapp/settings.h>
+
+#ifdef _WIN32
+#define WINVER 0x0500
+#include <windows.h>
+#include <gdk/gdkwin32.h>
+#define mkdir(x,y) mkdir(x)
+
+//#define USE_WIN32_FILE_DIALOGS 1
+#ifdef USE_WIN32_FILE_DIALOGS
+ #include <cstring>
+ static OPENFILENAME ofn={};
+#endif // USE_WIN32_FILE_DIALOGS
+
+#endif // _WIN32
 
 #endif
 
@@ -2308,18 +2313,6 @@ App::show_setup()
 
 gint Signal_Open_Ok    (GtkWidget */*widget*/, int *val){*val=1; return 0;}
 gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2; return 0;}
-
-//#ifdef _WIN32
-//#define USE_WIN32_FILE_DIALOGS 1
-//#endif
-
-#ifdef USE_WIN32_FILE_DIALOGS
-static OPENFILENAME ofn={};
-#endif
-
-#ifdef _WIN32
-#include <gdk/gdkwin32.h>
-#endif
 
 bool
 App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
