@@ -37,21 +37,22 @@
 
 #include <fstream>
 #include <iostream>
-#include <locale>
-#include <cstring>
 
 #ifdef __OpenBSD__
 #include <errno.h>
 #elif defined(HAVE_SYS_ERRNO_H)
 #include <sys/errno.h>
 #endif
+
+#include <giomm/file.h>
+#include <glibmm/spawn.h>
+
 #include <gtkmm/accelmap.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/filefilter.h>
-#include <gtkmm/iconsource.h>
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
 #if GTK_CHECK_VERSION(3, 20, 0)
@@ -59,113 +60,100 @@
 #endif
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
-#include <gtkmm/uimanager.h>
 
-#include <glibmm/main.h>
-#include <glibmm/miscutils.h>
-#include <glibmm/spawn.h>
-#include <glibmm/thread.h>
-#include <glibmm/timer.h>
+#include <gui/app.h>
+#include <gui/autorecover.h>
+#include <gui/canvasview.h>
+#include <gui/devicetracker.h>
 
-#include <giomm/file.h>
+#include <gui/dialogs/about.h>
+#include <gui/dialogs/dialog_color.h>
+#include <gui/dialogs/dialog_gradient.h>
+#include <gui/dialogs/dialog_input.h>
+#include <gui/dialogs/dialog_setup.h>
+#include <gui/dialogs/dialog_workspaces.h>
+#include <gui/dialogs/vectorizersettings.h>
 
-#include <gtk/gtk.h>
-#include <gdk/gdk.h>
+#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dockmanager.h>
+#include <gui/docks/dock_canvases.h>
+#include <gui/docks/dock_children.h>
+#include <gui/docks/dock_curves.h>
+#include <gui/docks/dock_history.h>
+#include <gui/docks/dock_info.h>
+#include <gui/docks/dock_keyframes.h>
+#include <gui/docks/dock_layers.h>
+#include <gui/docks/dock_layergroups.h>
+#include <gui/docks/dock_params.h>
+#include <gui/docks/dock_metadata.h>
+#include <gui/docks/dock_navigator.h>
+#include <gui/docks/dock_soundwave.h>
+#include <gui/docks/dock_timetrack.h>
+#include <gui/docks/dock_timetrack2.h>
+#include <gui/docks/dock_toolbox.h>
 
-#include <gdkmm/general.h>
+#include <gui/instance.h>
+#include <gui/ipc.h>
+#include <gui/localization.h>
+#include <gui/modules/mod_palette/mod_palette.h>
+#include <gui/onemoment.h>
+#include <gui/resourcehelper.h>
+#include <gui/splash.h>
+
+#include <gui/statemanager.h>
+#include <gui/states/state_bline.h>
+#include <gui/states/state_bone.h>
+#include <gui/states/state_brush.h>
+#include <gui/states/state_circle.h>
+#include <gui/states/state_draw.h>
+#include <gui/states/state_eyedrop.h>
+#include <gui/states/state_fill.h>
+#include <gui/states/state_gradient.h>
+#include <gui/states/state_lasso.h>
+#include <gui/states/state_mirror.h>
+#include <gui/states/state_normal.h>
+#include <gui/states/state_polygon.h>
+#include <gui/states/state_rectangle.h>
+#include <gui/states/state_rotate.h>
+#include <gui/states/state_scale.h>
+#include <gui/states/state_sketch.h>
+#include <gui/states/state_smoothmove.h>
+#include <gui/states/state_star.h>
+#include <gui/states/state_text.h>
+#include <gui/states/state_width.h>
+#include <gui/states/state_zoom.h>
+
+#include <gui/widgets/widget_enum.h>
+#include <gui/workspacehandler.h>
+
+#include <synfig/canvasfilenaming.h>
+#include <synfig/color.h>
+#include <synfig/filesystemnative.h>
+#include <synfig/general.h>
+#include <synfig/layer.h>
+#include <synfig/loadcanvas.h>
+#include <synfig/savecanvas.h>
+#include <synfig/soundprocessor.h>
+#include <synfig/version.h>
+
+#include <synfigapp/action.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/main.h>
+#include <synfigapp/settings.h>
 
 #ifdef _WIN32
 #define WINVER 0x0500
 #include <windows.h>
-#endif
+#include <gdk/gdkwin32.h>
+#define mkdir(x,y) mkdir(x)
 
-#include <synfig/general.h>
-#include <synfig/color.h>
-#include <synfig/canvasfilenaming.h>
-#include <synfig/filesystemnative.h>
-#include <synfig/filesystemgroup.h>
-#include <synfig/filesystemtemporary.h>
-#include <synfig/importer.h>
-#include <synfig/loadcanvas.h>
-#include <synfig/savecanvas.h>
-#include <synfig/layer.h>
-#include <synfig/soundprocessor.h>
-#include <synfig/version.h>
+//#define USE_WIN32_FILE_DIALOGS 1
+#ifdef USE_WIN32_FILE_DIALOGS
+ #include <cstring>
+ static OPENFILENAME ofn={};
+#endif // USE_WIN32_FILE_DIALOGS
 
-#include "app.h"
-#include "splash.h"
-#include "instance.h"
-#include "canvasview.h"
-#include "dialogs/about.h"
-#include "dialogs/dialog_color.h"
-#include "dialogs/dialog_gradient.h"
-#include "dialogs/dialog_input.h"
-#include "dialogs/dialog_setup.h"
-#include "dialogs/dialog_workspaces.h"
-#include "dialogs/vectorizersettings.h"
-#include "onemoment.h"
-#include "devicetracker.h"
-#include "widgets/widget_enum.h"
-
-#include <synfigapp/canvasinterface.h>
-
-#include "statemanager.h"
-
-#include "states/state_bline.h"
-#include "states/state_bone.h"
-#include "states/state_brush.h"
-#include "states/state_circle.h"
-#include "states/state_draw.h"
-#include "states/state_eyedrop.h"
-#include "states/state_fill.h"
-#include "states/state_gradient.h"
-#include "states/state_lasso.h"
-#include "states/state_mirror.h"
-#include "states/state_normal.h"
-#include "states/state_polygon.h"
-#include "states/state_rectangle.h"
-#include "states/state_rotate.h"
-#include "states/state_scale.h"
-#include "states/state_sketch.h"
-#include "states/state_smoothmove.h"
-#include "states/state_star.h"
-#include "states/state_text.h"
-#include "states/state_width.h"
-#include "states/state_zoom.h"
-
-#include "autorecover.h"
-
-#include <synfigapp/settings.h>
-#include <synfigapp/action.h>
-
-#include "docks/dockmanager.h"
-#include "docks/dialog_tooloptions.h"
-#include "docks/dock_canvases.h"
-#include "docks/dock_children.h"
-#include "docks/dock_curves.h"
-#include "docks/dock_history.h"
-#include "docks/dock_info.h"
-#include "docks/dock_keyframes.h"
-#include "docks/dock_layers.h"
-#include "docks/dock_layergroups.h"
-#include "docks/dock_params.h"
-#include "docks/dock_metadata.h"
-#include "docks/dock_navigator.h"
-#include "docks/dock_soundwave.h"
-#include "docks/dock_timetrack.h"
-#include "docks/dock_timetrack2.h"
-#include "docks/dock_toolbox.h"
-
-#include "modules/module.h"
-#include "modules/mod_palette/mod_palette.h"
-
-#include "ipc.h"
-
-#include <gui/localization.h>
-
-#include "gui/resourcehelper.h"
-#include "gui/workspacehandler.h"
-#include <algorithm>
+#endif // _WIN32
 
 #endif
 
@@ -176,17 +164,6 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
-#ifndef DPM2DPI
-#define DPM2DPI(x)	(float(x)/39.3700787402f)
-#define DPI2DPM(x)	(float(x)*39.3700787402f)
-#endif
-
-#ifndef IMAGE_EXT
-#	define IMAGE_EXT	"tif"
-#endif
-
-#include <synfigapp/main.h>
 
 /* === S I G N A L S ======================================================= */
 
@@ -241,14 +218,9 @@ bool App::shutdown_in_progress;
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 
 int        App::jack_locks_ = 0;
-Dock_Info* App::dock_info_  = nullptr;
-
 synfig::Distance::System  App::distance_system;
 
-studio::Dialog_Setup     *App::dialog_setup = nullptr;
-
-etl::handle< studio::ModPalette > mod_palette_;
-//studio::Dialog_Palette* App::dialog_palette;
+static etl::handle< studio::ModPalette > mod_palette_;
 
 std::list<etl::handle<Instance> > App::instance_list;
 
@@ -258,36 +230,39 @@ const  etl::handle<synfigapp::UIInterface>& App::get_ui_interface() { return ui_
 etl::handle<Instance>   App::selected_instance;
 etl::handle<CanvasView> App::selected_canvas_view;
 
-studio::About              *studio::App::about          = NULL;
-studio::MainWindow         *studio::App::main_window    = NULL;
-studio::Dock_Toolbox       *studio::App::dock_toolbox   = NULL;
-studio::AutoRecover        *studio::App::auto_recover   = NULL;
-studio::IPC                *ipc                         = NULL;
-studio::DockManager        *studio::App::dock_manager   = 0;
-studio::DeviceTracker      *studio::App::device_tracker = 0;
+studio::About              *studio::App::about          = nullptr;
+studio::AutoRecover        *studio::App::auto_recover   = nullptr;
+studio::DeviceTracker      *studio::App::device_tracker = nullptr;
+static studio::IPC         *ipc                         = nullptr;
+studio::MainWindow         *studio::App::main_window    = nullptr;
 
-studio::Dialog_Gradient    *studio::App::dialog_gradient;
 studio::Dialog_Color       *studio::App::dialog_color;
+studio::Dialog_Gradient    *studio::App::dialog_gradient;
 studio::Dialog_Input       *studio::App::dialog_input;
+//studio::Dialog_Palette     *studio::App::dialog_palette;
+studio::Dialog_Setup       *studio::App::dialog_setup = nullptr;
 studio::Dialog_ToolOptions *studio::App::dialog_tool_options;
 studio::VectorizerSettings *studio::App::vectorizerpopup;
 
-studio::Dock_History       *dock_history;
-studio::Dock_Canvases      *dock_canvases;
-studio::Dock_Keyframes     *dock_keyframes;
-studio::Dock_Layers        *dock_layers;
-studio::Dock_Params        *dock_params;
-studio::Dock_MetaData      *dock_meta_data;
-studio::Dock_Children      *dock_children;
-studio::Dock_Info          *dock_info;
-studio::Dock_LayerGroups   *dock_layer_groups;
-studio::Dock_Navigator     *dock_navigator;
-studio::Dock_SoundWave     *dock_soundwave;
-studio::Dock_Timetrack_Old     *dock_timetrack_old;
-studio::Dock_Timetrack2    *dock_timetrack;
-studio::Dock_Curves        *dock_curves;
+       studio::DockManager   *App::dock_manager = nullptr;
+static studio::Dock_Canvases      *dock_canvases;
+static studio::Dock_Children      *dock_children;
+static studio::Dock_Curves        *dock_curves;
+static studio::Dock_History       *dock_history;
+static studio::Dock_Info          *dock_info;
+               Dock_Info     *App::dock_info_ = nullptr;
+static studio::Dock_Keyframes     *dock_keyframes;
+static studio::Dock_Layers        *dock_layers;
+static studio::Dock_LayerGroups   *dock_layer_groups;
+static studio::Dock_MetaData      *dock_meta_data;
+static studio::Dock_Params        *dock_params;
+static studio::Dock_Navigator     *dock_navigator;
+static studio::Dock_SoundWave     *dock_soundwave;
+static studio::Dock_Timetrack_Old *dock_timetrack_old;
+static studio::Dock_Timetrack2    *dock_timetrack;
+       studio::Dock_Toolbox  *App::dock_toolbox = nullptr;
 
-std::list< etl::handle< studio::Module > > module_list_;
+static std::list< etl::handle< studio::Module > > module_list_;
 
 bool   studio::App::restrict_radius_ducks        = true;
 bool   studio::App::resize_imported_images       = false;
@@ -302,7 +277,7 @@ String studio::App::predefined_size              (DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps               (DEFAULT_PREDEFINED_FPS);
 float  studio::App::preferred_fps                = 24.0;
 PluginManager studio::App::plugin_manager;
-std::set< String >       studio::App::brushes_path;
+std::set< String > studio::App::brushes_path;
 String studio::App::image_editor_path;
 
 String studio::App::sequence_separator(".");
@@ -327,14 +302,16 @@ void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; 
 
 static synfig::String app_base_path_;
 
+SoundProcessor *App::sound_render_done = nullptr;
+bool App::use_render_done_sound = true;
+
+static StateManager* state_manager;
+
 studio::WorkspaceHandler *studio::App::workspaces = nullptr;
 
-namespace studio {
-
-bool
+static bool
 really_delete_widget(Gtk::Widget *widget)
 {
-	// synfig::info("really delete %p", (void*)widget);
 	delete widget;
 	return false;
 }
@@ -343,21 +320,10 @@ really_delete_widget(Gtk::Widget *widget)
 // attaching to the signal_hide() signal gets us here before the action on the menu has run,
 // so schedule the real delete to happen in 50ms, giving the action a chance to run
 void
-delete_widget(Gtk::Widget *widget)
+studio::delete_widget(Gtk::Widget *widget)
 {
-	// synfig::info("delete %p", (void*)widget);
 	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
 }
-
-//Static members need to be initialized outside of class declaration
-SoundProcessor *App::sound_render_done = nullptr;
-bool App::use_render_done_sound = true;
-
-}; // END of namespace studio
-studio::StateManager* state_manager;
-
-
-
 
 class GlobalUIInterface : public synfigapp::UIInterface
 {
@@ -465,53 +431,6 @@ class SetsModel : public Gtk::TreeModel::ColumnRecord
 
 /* === P R O C E D U R E S ================================================= */
 
-/*
-void
-studio::UIManager::insert_action_group (const Glib::RefPtr<Gtk::ActionGroup>& action_group, int pos)
-{
-	action_group_list.push_back(action_group);
-	Gtk::UIManager::insert_action_group(action_group, pos);
-}
-
-void
-studio::UIManager::remove_action_group (const Glib::RefPtr<Gtk::ActionGroup>& action_group)
-{
-	std::list<Glib::RefPtr<Gtk::ActionGroup> >::iterator iter;
-	for(iter=action_group_list.begin();iter!=action_group_list.end();++iter)
-		if(*iter==action_group)
-		{
-			action_group_list.erase(iter);
-			Gtk::UIManager::remove_action_group(action_group);
-			return;
-		}
-	synfig::error("Unable to find action group");
-}
-
-void
-studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib::RefPtr<Gtk::ActionGroup> group)
-{
-	ui_manager->insert_action_group(group,0);
-	return;
-	std::list<Glib::RefPtr<Gtk::ActionGroup> > prev_groups(ui_manager->get_action_groups());
-	std::list<Glib::RefPtr<Gtk::ActionGroup> >::reverse_iterator iter;
-
-	for(iter=prev_groups.rbegin();iter!=prev_groups.rend();++iter)
-	{
-		if(*iter && (*iter)->get_name()!="menus")
-		{
-			synfig::info("Removing action group "+(*iter)->get_name());
-			ui_manager->remove_action_group(*iter);
-		}
-	}
-	ui_manager->insert_action_group(group,0);
-
-	for(;!prev_groups.empty();prev_groups.pop_front())
-	{
-		if(prev_groups.front() && prev_groups.front()!=group && prev_groups.front()->get_name()!="menus")
-			ui_manager->insert_action_group(prev_groups.front(),1);
-	}
-}
-*/
 class Preferences : public synfigapp::Settings
 {
 public:
@@ -958,132 +877,132 @@ init_ui_manager()
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 // actions in File menu
-DEFINE_ACTION("new",            Gtk::StockID("synfig-new"));
-DEFINE_ACTION("open",           Gtk::StockID("synfig-open"));
-DEFINE_ACTION("save",           Gtk::StockID("synfig-save"));
-DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"));
-DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"));
-DEFINE_ACTION("export",         Gtk::StockID("synfig-export"));
-DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED);
-DEFINE_ACTION("import",         _("Import..."));
-DEFINE_ACTION("import-sequence",_("Import Sequence..."));
-DEFINE_ACTION("render",         _("Render..."));
-DEFINE_ACTION("preview",        _("Preview..."));
-DEFINE_ACTION("close-document", _("Close Document"));
-DEFINE_ACTION("quit",           Gtk::Stock::QUIT);
+DEFINE_ACTION("new",            Gtk::StockID("synfig-new"))
+DEFINE_ACTION("open",           Gtk::StockID("synfig-open"))
+DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
+DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
+DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
+DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
+DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
+DEFINE_ACTION("import",         _("Import..."))
+DEFINE_ACTION("import-sequence",_("Import Sequence..."))
+DEFINE_ACTION("render",         _("Render..."))
+DEFINE_ACTION("preview",        _("Preview..."))
+DEFINE_ACTION("close-document", _("Close Document"))
+DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
 
 // actions in Edit menu
-DEFINE_ACTION("undo",                     Gtk::StockID("synfig-undo"));
-DEFINE_ACTION("redo",                     Gtk::StockID("synfig-redo"));
-DEFINE_ACTION("copy",                     Gtk::Stock::COPY);
-DEFINE_ACTION("cut",                      Gtk::Stock::CUT);
-DEFINE_ACTION("paste",                    Gtk::Stock::PASTE);
-DEFINE_ACTION("select-all-ducks",         _("Select All Handles"));
-DEFINE_ACTION("unselect-all-ducks",       _("Unselect All Handles"));
-DEFINE_ACTION("select-all-layers",        _("Select All Layers"));
-DEFINE_ACTION("unselect-all-layers",      _("Unselect All Layers"));
-DEFINE_ACTION("input-devices",            _("Input Devices..."));
-DEFINE_ACTION("setup",                    _("Preferences..."));
+DEFINE_ACTION("undo",                     Gtk::StockID("synfig-undo"))
+DEFINE_ACTION("redo",                     Gtk::StockID("synfig-redo"))
+DEFINE_ACTION("copy",                     Gtk::Stock::COPY)
+DEFINE_ACTION("cut",                      Gtk::Stock::CUT)
+DEFINE_ACTION("paste",                    Gtk::Stock::PASTE)
+DEFINE_ACTION("select-all-ducks",         _("Select All Handles"))
+DEFINE_ACTION("unselect-all-ducks",       _("Unselect All Handles"))
+DEFINE_ACTION("select-all-layers",        _("Select All Layers"))
+DEFINE_ACTION("unselect-all-layers",      _("Unselect All Layers"))
+DEFINE_ACTION("input-devices",            _("Input Devices..."))
+DEFINE_ACTION("setup",                    _("Preferences..."))
 
 // actions in View menu
-DEFINE_ACTION("toggle-mainwin-menubar",   _("Menubar"));
-DEFINE_ACTION("toggle-mainwin-toolbar",   _("Toolbar"));
+DEFINE_ACTION("toggle-mainwin-menubar",   _("Menubar"))
+DEFINE_ACTION("toggle-mainwin-toolbar",   _("Toolbar"))
 
-DEFINE_ACTION("mask-none-ducks",                _("Toggle None/Last visible Handles"));
-DEFINE_ACTION("mask-position-ducks",            _("Show Position Handles"));
-DEFINE_ACTION("mask-vertex-ducks",              _("Show Vertex Handles"));
-DEFINE_ACTION("mask-tangent-ducks",             _("Show Tangent Handles"));
-DEFINE_ACTION("mask-radius-ducks",              _("Show Radius Handles"));
-DEFINE_ACTION("mask-width-ducks",               _("Show Width Handles"));
-DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"));
-DEFINE_ACTION("mask-angle-ducks",               _("Show Angle Handles"));
-DEFINE_ACTION("mask-bone-setup-ducks",          _("Show Bone Setup Handles"));
-DEFINE_ACTION("mask-bone-recursive-ducks",      _("Show Recursive Scale Bone Handles"));
-DEFINE_ACTION("mask-bone-ducks",                _("Next Bone Handles"));
+DEFINE_ACTION("mask-none-ducks",                _("Toggle None/Last visible Handles"))
+DEFINE_ACTION("mask-position-ducks",            _("Show Position Handles"))
+DEFINE_ACTION("mask-vertex-ducks",              _("Show Vertex Handles"))
+DEFINE_ACTION("mask-tangent-ducks",             _("Show Tangent Handles"))
+DEFINE_ACTION("mask-radius-ducks",              _("Show Radius Handles"))
+DEFINE_ACTION("mask-width-ducks",               _("Show Width Handles"))
+DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"))
+DEFINE_ACTION("mask-angle-ducks",               _("Show Angle Handles"))
+DEFINE_ACTION("mask-bone-setup-ducks",          _("Show Bone Setup Handles"))
+DEFINE_ACTION("mask-bone-recursive-ducks",      _("Show Recursive Scale Bone Handles"))
+DEFINE_ACTION("mask-bone-ducks",                _("Next Bone Handles"))
 
 for(std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
-DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
+DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter))
 
-DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"));
-DEFINE_ACTION("toggle-grid-snap",  _("Toggle Grid Snap"));
-DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
-DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"));
-DEFINE_ACTION("toggle-low-res",    _("Toggle Low-Res"));
+DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"))
+DEFINE_ACTION("toggle-grid-snap",  _("Toggle Grid Snap"))
+DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"))
+DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"))
+DEFINE_ACTION("toggle-low-res",    _("Toggle Low-Res"))
 
-DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
-DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
-DEFINE_ACTION("toggle-background-rendering", _("Toggle Background Rendering"));
-DEFINE_ACTION("toggle-onion-skin",           _("Toggle Onion Skin"));
-DEFINE_ACTION("canvas-zoom-in",              Gtk::StockID("gtk-zoom-in"));
-DEFINE_ACTION("canvas-zoom-out",             Gtk::StockID("gtk-zoom-out"));
-DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"));
-DEFINE_ACTION("canvas-zoom-100",             Gtk::StockID("gtk-zoom-100"));
-DEFINE_ACTION("time-zoom-in",                Gtk::StockID("gtk-zoom-in"));
-DEFINE_ACTION("time-zoom-out",               Gtk::StockID("gtk-zoom-out"));
+DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"))
+DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"))
+DEFINE_ACTION("toggle-background-rendering", _("Toggle Background Rendering"))
+DEFINE_ACTION("toggle-onion-skin",           _("Toggle Onion Skin"))
+DEFINE_ACTION("canvas-zoom-in",              Gtk::StockID("gtk-zoom-in"))
+DEFINE_ACTION("canvas-zoom-out",             Gtk::StockID("gtk-zoom-out"))
+DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"))
+DEFINE_ACTION("canvas-zoom-100",             Gtk::StockID("gtk-zoom-100"))
+DEFINE_ACTION("time-zoom-in",                Gtk::StockID("gtk-zoom-in"))
+DEFINE_ACTION("time-zoom-out",               Gtk::StockID("gtk-zoom-out"))
 
 // actions in Navigation menu
-DEFINE_ACTION("play", _("Play"));
+DEFINE_ACTION("play", _("Play"))
 // the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
 // icon. the internal code is still using stop.
-DEFINE_ACTION("pause", _("Pause"));
+DEFINE_ACTION("pause", _("Pause"))
 
-DEFINE_ACTION("jump-next-keyframe", _("Seek to Next Keyframe"));
-DEFINE_ACTION("jump-prev-keyframe", _("Seek to previous Keyframe"));
-DEFINE_ACTION("seek-next-frame",    _("Seek to Next Frame"));
-DEFINE_ACTION("seek-prev-frame",    _("Seek to Previous Frame"));
-DEFINE_ACTION("seek-next-second",   _("Seek Forward"));
-DEFINE_ACTION("seek-prev-second",   _("Seek Backward"));
-DEFINE_ACTION("seek-begin",         _("Seek to Begin"));
-DEFINE_ACTION("seek-end",           _("Seek to End"));
-DEFINE_ACTION("canvas-zoom-in-2",              Gtk::StockID("gtk-zoom-in"));
-DEFINE_ACTION("canvas-zoom-out-2",             Gtk::StockID("gtk-zoom-out"));
-DEFINE_ACTION("canvas-zoom-fit-2",             Gtk::StockID("gtk-zoom-fit"));
+DEFINE_ACTION("jump-next-keyframe", _("Seek to Next Keyframe"))
+DEFINE_ACTION("jump-prev-keyframe", _("Seek to previous Keyframe"))
+DEFINE_ACTION("seek-next-frame",    _("Seek to Next Frame"))
+DEFINE_ACTION("seek-prev-frame",    _("Seek to Previous Frame"))
+DEFINE_ACTION("seek-next-second",   _("Seek Forward"))
+DEFINE_ACTION("seek-prev-second",   _("Seek Backward"))
+DEFINE_ACTION("seek-begin",         _("Seek to Begin"))
+DEFINE_ACTION("seek-end",           _("Seek to End"))
+DEFINE_ACTION("canvas-zoom-in-2",   Gtk::StockID("gtk-zoom-in"))
+DEFINE_ACTION("canvas-zoom-out-2",  Gtk::StockID("gtk-zoom-out"))
+DEFINE_ACTION("canvas-zoom-fit-2",  Gtk::StockID("gtk-zoom-fit"))
 
 // actions in Canvas menu
-DEFINE_ACTION("properties", _("Properties..."));
-DEFINE_ACTION("options",    _("Options..."));
+DEFINE_ACTION("properties", _("Properties..."))
+DEFINE_ACTION("options",    _("Options..."))
 
 // actions in Layer menu
 DEFINE_ACTION("amount-inc", _("Increase Layer Amount"))
 DEFINE_ACTION("amount-dec", _("Decrease Layer Amount"))
 
 // actions in Window menu
-DEFINE_ACTION("workspace-compositing", _("Compositing"));
-DEFINE_ACTION("workspace-default",     _("Default"));
-DEFINE_ACTION("workspace-animating",   _("Animating"));
-DEFINE_ACTION("save-workspace",        _("Save workspace..."));
-DEFINE_ACTION("dialog-flipbook",       _("Preview Dialog"));
-DEFINE_ACTION("panel-toolbox",         _("Toolbox"));
-DEFINE_ACTION("panel-tool_options",    _("Tool Options"));
-DEFINE_ACTION("panel-history",         _("History"));
-DEFINE_ACTION("panel-canvases",        _("Canvas Browser"));
-DEFINE_ACTION("panel-keyframes",       _("Keyframes"));
-DEFINE_ACTION("panel-layers",          _("Layers"));
-DEFINE_ACTION("panel-params",          _("Parameters"));
-DEFINE_ACTION("panel-meta_data",       _("Canvas MetaData"));
-DEFINE_ACTION("panel-children",        _("Library"));
-DEFINE_ACTION("panel-info",            _("Info"));
-DEFINE_ACTION("panel-navigator",       _("Navigator"));
-DEFINE_ACTION("panel-timetrack-old",   _("Timetrack (old)"));
-DEFINE_ACTION("panel-curves",          _("Graphs"));
-DEFINE_ACTION("panel-groups",          _("Sets"));
-DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"));
-DEFINE_ACTION("panel-soundwave",       _("Sound"));
-DEFINE_ACTION("panel-timetrack",      _("Timetrack"));
+DEFINE_ACTION("workspace-compositing", _("Compositing"))
+DEFINE_ACTION("workspace-default",     _("Default"))
+DEFINE_ACTION("workspace-animating",   _("Animating"))
+DEFINE_ACTION("save-workspace",        _("Save workspace..."))
+DEFINE_ACTION("dialog-flipbook",       _("Preview Dialog"))
+DEFINE_ACTION("panel-toolbox",         _("Toolbox"))
+DEFINE_ACTION("panel-tool_options",    _("Tool Options"))
+DEFINE_ACTION("panel-history",         _("History"))
+DEFINE_ACTION("panel-canvases",        _("Canvas Browser"))
+DEFINE_ACTION("panel-keyframes",       _("Keyframes"))
+DEFINE_ACTION("panel-layers",          _("Layers"))
+DEFINE_ACTION("panel-params",          _("Parameters"))
+DEFINE_ACTION("panel-meta_data",       _("Canvas MetaData"))
+DEFINE_ACTION("panel-children",        _("Library"))
+DEFINE_ACTION("panel-info",            _("Info"))
+DEFINE_ACTION("panel-navigator",       _("Navigator"))
+DEFINE_ACTION("panel-timetrack-old",   _("Timetrack (old)"))
+DEFINE_ACTION("panel-curves",          _("Graphs"))
+DEFINE_ACTION("panel-groups",          _("Sets"))
+DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"))
+DEFINE_ACTION("panel-soundwave",       _("Sound"))
+DEFINE_ACTION("panel-timetrack",       _("Timetrack"))
 
 // actions in Help menu
-DEFINE_ACTION("help",           Gtk::Stock::HELP);
+DEFINE_ACTION("help",           Gtk::Stock::HELP)
 #if GTK_CHECK_VERSION(3, 20, 0)
-DEFINE_ACTION("help-shortcuts", Gtk::Stock::INFO);
+DEFINE_ACTION("help-shortcuts", Gtk::Stock::INFO)
 #endif
-DEFINE_ACTION("help-tutorials", Gtk::Stock::HELP);
-DEFINE_ACTION("help-reference", Gtk::Stock::HELP);
-DEFINE_ACTION("help-faq",       Gtk::Stock::HELP);
-DEFINE_ACTION("help-support",   Gtk::Stock::HELP);
-DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"));
+DEFINE_ACTION("help-tutorials", Gtk::Stock::HELP)
+DEFINE_ACTION("help-reference", Gtk::Stock::HELP)
+DEFINE_ACTION("help-faq",       Gtk::Stock::HELP)
+DEFINE_ACTION("help-support",   Gtk::Stock::HELP)
+DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"))
 
 // actions: Keyframe
-DEFINE_ACTION("keyframe-properties", _("Properties"));
+DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
@@ -1187,7 +1106,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
 		// TODO: (Plugins) Arrange menu items into groups
 
-		DEFINE_ACTION(plugin.id, plugin.name.get());
+		DEFINE_ACTION(plugin.id, plugin.name.get())
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}
 
@@ -1322,99 +1241,99 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	}
 
 	// Toolbox
-	ACCEL("s",             "<Actions>/action_group_state_manager/state-normal");
-	ACCEL("m",             "<Actions>/action_group_state_manager/state-smooth_move");
-	ACCEL("l",             "<Actions>/action_group_state_manager/state-scale");
-	ACCEL("a",             "<Actions>/action_group_state_manager/state-rotate");
-	ACCEL("i",             "<Actions>/action_group_state_manager/state-mirror");
-	ACCEL("e",             "<Actions>/action_group_state_manager/state-circle");
-	ACCEL("r",             "<Actions>/action_group_state_manager/state-rectangle");
-	ACCEL("asterisk",      "<Actions>/action_group_state_manager/state-star");
-	ACCEL("g",             "<Actions>/action_group_state_manager/state-gradient");
-	ACCEL("o",             "<Actions>/action_group_state_manager/state-polygon");
-	ACCEL("b",             "<Actions>/action_group_state_manager/state-bline");
-	ACCEL("n",             "<Actions>/action_group_state_manager/state-bone");
-	ACCEL("t",             "<Actions>/action_group_state_manager/state-text");
-	ACCEL("u",             "<Actions>/action_group_state_manager/state-fill");
-	ACCEL("d",             "<Actions>/action_group_state_manager/state-eyedrop");
-	ACCEL("c",             "<Actions>/action_group_state_manager/state-lasso");
-	ACCEL("z",             "<Actions>/action_group_state_manager/state-zoom");
-	ACCEL("p",             "<Actions>/action_group_state_manager/state-draw");
-	ACCEL("k",             "<Actions>/action_group_state_manager/state-sketch");
-	ACCEL("w",             "<Actions>/action_group_state_manager/state-width");
+	ACCEL("s",             "<Actions>/action_group_state_manager/state-normal")
+	ACCEL("m",             "<Actions>/action_group_state_manager/state-smooth_move")
+	ACCEL("l",             "<Actions>/action_group_state_manager/state-scale")
+	ACCEL("a",             "<Actions>/action_group_state_manager/state-rotate")
+	ACCEL("i",             "<Actions>/action_group_state_manager/state-mirror")
+	ACCEL("e",             "<Actions>/action_group_state_manager/state-circle")
+	ACCEL("r",             "<Actions>/action_group_state_manager/state-rectangle")
+	ACCEL("asterisk",      "<Actions>/action_group_state_manager/state-star")
+	ACCEL("g",             "<Actions>/action_group_state_manager/state-gradient")
+	ACCEL("o",             "<Actions>/action_group_state_manager/state-polygon")
+	ACCEL("b",             "<Actions>/action_group_state_manager/state-bline")
+	ACCEL("n",             "<Actions>/action_group_state_manager/state-bone")
+	ACCEL("t",             "<Actions>/action_group_state_manager/state-text")
+	ACCEL("u",             "<Actions>/action_group_state_manager/state-fill")
+	ACCEL("d",             "<Actions>/action_group_state_manager/state-eyedrop")
+	ACCEL("c",             "<Actions>/action_group_state_manager/state-lasso")
+	ACCEL("z",             "<Actions>/action_group_state_manager/state-zoom")
+	ACCEL("p",             "<Actions>/action_group_state_manager/state-draw")
+	ACCEL("k",             "<Actions>/action_group_state_manager/state-sketch")
+	ACCEL("w",             "<Actions>/action_group_state_manager/state-width")
 
 	// Everything else
-	ACCEL("<Control>a",              "<Actions>/canvasview/select-all-ducks");
-	ACCEL("<Control>d",              "<Actions>/canvasview/unselect-all-ducks");
-	ACCEL("<Control><Shift>a",       "<Actions>/canvasview/select-all-layers");
-	ACCEL("<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers");
-	ACCEL("F9",                      "<Actions>/canvasview/render");
-	ACCEL("F11",                     "<Actions>/canvasview/preview");
-	ACCEL("F8",                      "<Actions>/canvasview/properties");
-	ACCEL("F12",                     "<Actions>/canvasview/options");
-	ACCEL("<control>i",              "<Actions>/canvasview/import");
-	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0),  "<Actions>/canvasview/stop"));
-	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(),               "<Actions>/canvasview/stop"));
-	ACCEL("<Control>g",              "<Actions>/canvasview/toggle-grid-show");
-	ACCEL("<Control>l",              "<Actions>/canvasview/toggle-grid-snap");
-	ACCEL("<Control>n",              "<Actions>/mainwindow/new");
-	ACCEL("<Control>o",              "<Actions>/mainwindow/open");
-	ACCEL("<Control>s",              "<Actions>/canvasview/save");
-	ACCEL("<Control><Shift>s",       "<Actions>/canvasview/save-as");
-	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,                "<Actions>/canvasview/toggle-low-res"));
-	ACCEL("<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks");
-	ACCEL("<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks");
-	ACCEL("<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks");
-	ACCEL("<Mod1>3",                 "<Actions>/canvasview/mask-tangent-ducks");
-	ACCEL("<Mod1>4",                 "<Actions>/canvasview/mask-radius-ducks");
-	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-width-ducks");
-	ACCEL("<Mod1>6",                 "<Actions>/canvasview/mask-angle-ducks");
-	ACCEL("<Mod1>7",                 "<Actions>/canvasview/mask-bone-setup-ducks");
-	ACCEL("<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks");
-	ACCEL("<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks");
-	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks");
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Up,Gdk::SHIFT_MASK,      "<Actions>/action_group_layer_action_manager/action-LayerRaise"));
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Down,Gdk::SHIFT_MASK,    "<Actions>/action_group_layer_action_manager/action-LayerLower"));
-	ACCEL("<Control>1",              "<Actions>/canvasview/quality-01");
-	ACCEL("<Control>2",              "<Actions>/canvasview/quality-02");
-	ACCEL("<Control>3",              "<Actions>/canvasview/quality-03");
-	ACCEL("<Control>4",              "<Actions>/canvasview/quality-04");
-	ACCEL("<Control>5",              "<Actions>/canvasview/quality-05");
-	ACCEL("<Control>6",              "<Actions>/canvasview/quality-06");
-	ACCEL("<Control>7",              "<Actions>/canvasview/quality-07");
-	ACCEL("<Control>8",              "<Actions>/canvasview/quality-08");
-	ACCEL("<Control>9",              "<Actions>/canvasview/quality-09");
-	ACCEL("<Control>0",              "<Actions>/canvasview/quality-10");
-	ACCEL("<Primary>z",              "<Actions>/action_group_dock_history/undo");
-#if _WIN32
-	ACCEL("<Control>y",              "<Actions>/action_group_dock_history/redo");
+	ACCEL("<Control>a",              "<Actions>/canvasview/select-all-ducks")
+	ACCEL("<Control>d",              "<Actions>/canvasview/unselect-all-ducks")
+	ACCEL("<Control><Shift>a",       "<Actions>/canvasview/select-all-layers")
+	ACCEL("<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers")
+	ACCEL("F9",                      "<Actions>/canvasview/render")
+	ACCEL("F11",                     "<Actions>/canvasview/preview")
+	ACCEL("F8",                      "<Actions>/canvasview/properties")
+	ACCEL("F12",                     "<Actions>/canvasview/options")
+	ACCEL("<control>i",              "<Actions>/canvasview/import")
+	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0),  "<Actions>/canvasview/stop"))
+	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(),               "<Actions>/canvasview/stop"))
+	ACCEL("<Control>g",              "<Actions>/canvasview/toggle-grid-show")
+	ACCEL("<Control>l",              "<Actions>/canvasview/toggle-grid-snap")
+	ACCEL("<Control>n",              "<Actions>/mainwindow/new")
+	ACCEL("<Control>o",              "<Actions>/mainwindow/open")
+	ACCEL("<Control>s",              "<Actions>/canvasview/save")
+	ACCEL("<Control><Shift>s",       "<Actions>/canvasview/save-as")
+	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,                "<Actions>/canvasview/toggle-low-res"))
+	ACCEL("<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks")
+	ACCEL("<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks")
+	ACCEL("<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks")
+	ACCEL("<Mod1>3",                 "<Actions>/canvasview/mask-tangent-ducks")
+	ACCEL("<Mod1>4",                 "<Actions>/canvasview/mask-radius-ducks")
+	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-width-ducks")
+	ACCEL("<Mod1>6",                 "<Actions>/canvasview/mask-angle-ducks")
+	ACCEL("<Mod1>7",                 "<Actions>/canvasview/mask-bone-setup-ducks")
+	ACCEL("<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks")
+	ACCEL("<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks")
+	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks")
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Up,Gdk::SHIFT_MASK,      "<Actions>/action_group_layer_action_manager/action-LayerRaise"))
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Down,Gdk::SHIFT_MASK,    "<Actions>/action_group_layer_action_manager/action-LayerLower"))
+	ACCEL("<Control>1",              "<Actions>/canvasview/quality-01")
+	ACCEL("<Control>2",              "<Actions>/canvasview/quality-02")
+	ACCEL("<Control>3",              "<Actions>/canvasview/quality-03")
+	ACCEL("<Control>4",              "<Actions>/canvasview/quality-04")
+	ACCEL("<Control>5",              "<Actions>/canvasview/quality-05")
+	ACCEL("<Control>6",              "<Actions>/canvasview/quality-06")
+	ACCEL("<Control>7",              "<Actions>/canvasview/quality-07")
+	ACCEL("<Control>8",              "<Actions>/canvasview/quality-08")
+	ACCEL("<Control>9",              "<Actions>/canvasview/quality-09")
+	ACCEL("<Control>0",              "<Actions>/canvasview/quality-10")
+	ACCEL("<Primary>z",              "<Actions>/action_group_dock_history/undo")
+#ifdef _WIN32
+	ACCEL("<Control>y",              "<Actions>/action_group_dock_history/redo")
 #else
-	ACCEL("<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo");
+	ACCEL("<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo")
 #endif
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::ModifierType(),    "<Actions>/action_group_layer_action_manager/action-LayerRemove"));
-	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/decrease-low-res-pixel-size"));
-	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/increase-low-res-pixel-size"));
-	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,  "<Actions>/action_group_layer_action_manager/amount-dec"));
-	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,  "<Actions>/action_group_layer_action_manager/amount-inc"));
-	ACCEL("equal",                   "<Actions>/canvasview/canvas-zoom-in");
-	ACCEL("minus",                   "<Actions>/canvasview/canvas-zoom-out");
-	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit");
-	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/time-zoom-in"));
-	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/time-zoom-out"));
-	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe");
-	ACCEL("bracketright",            "<Actions>/canvasview/jump-next-keyframe");
-	ACCEL("comma",                   "<Actions>/canvasview/seek-prev-frame");
-	ACCEL("period",                  "<Actions>/canvasview/seek-next-frame");
-	ACCEL("<Shift>less",             "<Actions>/canvasview/seek-prev-second");
-	ACCEL("<Shift>greater",          "<Actions>/canvasview/seek-next-second");
-	ACCEL("<Control><Shift>less",    "<Actions>/canvasview/seek-begin");
-	ACCEL("<Control><Shift>greater", "<Actions>/canvasview/seek-end");
-	ACCEL("<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin");
-	ACCEL("<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" );
-	ACCEL("<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2");	
-	ACCEL("<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2");
-	ACCEL("space",                   "<Actions>/canvasview/play");
-	ACCEL("space",                   "<Actions>/canvasview/pause");
+	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::ModifierType(),    "<Actions>/action_group_layer_action_manager/action-LayerRemove"))
+	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/decrease-low-res-pixel-size"))
+	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/increase-low-res-pixel-size"))
+	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,  "<Actions>/action_group_layer_action_manager/amount-dec"))
+	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,  "<Actions>/action_group_layer_action_manager/amount-inc"))
+	ACCEL("equal",                   "<Actions>/canvasview/canvas-zoom-in")
+	ACCEL("minus",                   "<Actions>/canvasview/canvas-zoom-out")
+	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit")
+	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/time-zoom-in"))
+	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/time-zoom-out"))
+	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe")
+	ACCEL("bracketright",            "<Actions>/canvasview/jump-next-keyframe")
+	ACCEL("comma",                   "<Actions>/canvasview/seek-prev-frame")
+	ACCEL("period",                  "<Actions>/canvasview/seek-next-frame")
+	ACCEL("<Shift>less",             "<Actions>/canvasview/seek-prev-second")
+	ACCEL("<Shift>greater",          "<Actions>/canvasview/seek-next-second")
+	ACCEL("<Control><Shift>less",    "<Actions>/canvasview/seek-begin")
+	ACCEL("<Control><Shift>greater", "<Actions>/canvasview/seek-end")
+	ACCEL("<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin")
+	ACCEL("<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" )
+	ACCEL("<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2")
+	ACCEL("<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2")
+	ACCEL("space",                   "<Actions>/canvasview/play")
+	ACCEL("space",                   "<Actions>/canvasview/pause")
 
 
 #undef ACCEL
@@ -1845,7 +1764,7 @@ App::~App()
 
 	synfigapp::Main::settings().remove_domain("pref");
 
-	selected_instance=0;
+	selected_instance=nullptr;
 
 	// Unload all of the modules
 	for(;!module_list_.empty();module_list_.pop_back())
@@ -1878,7 +1797,7 @@ App::~App()
 	instance_list.clear();
 
 	if (sound_render_done) delete sound_render_done;
-	sound_render_done = NULL;
+	sound_render_done = nullptr;
 }
 
 synfig::String
@@ -2394,18 +2313,6 @@ App::show_setup()
 
 gint Signal_Open_Ok    (GtkWidget */*widget*/, int *val){*val=1; return 0;}
 gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2; return 0;}
-
-//#ifdef _WIN32
-//#define USE_WIN32_FILE_DIALOGS 1
-//#endif
-
-#ifdef USE_WIN32_FILE_DIALOGS
-static OPENFILENAME ofn={};
-#endif
-
-#ifdef _WIN32
-#include <gdk/gdkwin32.h>
-#endif
 
 bool
 App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
@@ -3064,7 +2971,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 {
 	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
-#if USE_WIN32_FILE_DIALOGS
+#ifdef USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
@@ -3141,7 +3048,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	dialog->add_filter(filter_sif);
 	dialog->add_filter(filter_sfg);
 
-	Widget_Enum *file_type_enum = 0;
+	Widget_Enum *file_type_enum = nullptr;
 	if (preference == ANIMATION_DIR_PREFERENCE)
 	{
 		file_type_enum = manage(new Widget_Enum());
@@ -3649,8 +3556,8 @@ try_open_uri(const std::string &uri)
 {
 #if GTK_CHECK_VERSION(3, 22, 0)
 	return gtk_show_uri_on_window(
-		App::main_window ? App::main_window->gobj() : NULL,
-		uri.c_str(), GDK_CURRENT_TIME, NULL );
+		App::main_window ? App::main_window->gobj() : nullptr,
+		uri.c_str(), GDK_CURRENT_TIME, nullptr );
 #else
 	return gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
 #endif
@@ -3709,16 +3616,16 @@ void App::open_img_in_external(const std::string &uri)
 	}
 }
 
-std::unordered_map<std::string, int> configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
+static std::unordered_map<std::string, int> vectorizer_configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
 
 void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
 {
 	String desc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+desc);
-	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,configmap,reference_layer);
+	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,vectorizer_configmap,reference_layer);
 	App::vectorizerpopup->show();
-
 }
+
 void App::open_uri(const std::string &uri)
 {
 	synfig::info("Opening URI: " + uri);
@@ -4341,7 +4248,7 @@ App::set_selected_instance(etl::loose_handle<Instance> instance)
 		if (instance) {
 			instance->focus( instance->get_canvas() );
 		} else {
-			set_selected_canvas_view(0);
+			set_selected_canvas_view(nullptr);
 		}
 	} else {
 		selected_instance = instance;
@@ -4378,7 +4285,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 etl::loose_handle<Instance>
 App::get_instance(etl::handle<synfig::Canvas> canvas)
 {
-	if(!canvas) return 0;
+	if(!canvas) return nullptr;
 	canvas=canvas->get_root();
 
 	std::list<etl::handle<Instance> >::iterator iter;
@@ -4387,7 +4294,7 @@ App::get_instance(etl::handle<synfig::Canvas> canvas)
 		if((*iter)->get_canvas()==canvas)
 			return *iter;
 	}
-	return 0;
+	return nullptr;
 }
 
 Gamma
@@ -4486,7 +4393,7 @@ studio::App::check_python_version(String path)
 	}
 	char buffer[128];
 	while(!feof(pipe)) {
-		if(fgets(buffer, 128, pipe) != NULL)
+		if(fgets(buffer, 128, pipe) != nullptr)
 				result += buffer;
 	}
 	pclose(pipe);
