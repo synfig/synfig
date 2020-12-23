@@ -447,7 +447,7 @@ Widget_Preview::Widget_Preview():
 
 	//loop
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,"synfig-animate_loop", _("Repeat"));
+	IMAGIFY_BUTTON(button,"synfig-animate_loop", _("Loop"));
 	toolbar->pack_start(b_loop, Gtk::PACK_SHRINK,0);
 
 	//spacing
