@@ -3073,22 +3073,8 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 
 		if(String(selection_data_.get_data_type())=="text/uri-list")
 		{
-			String selection_data((gchar *)(selection_data_.get_data()));
-
-			// For some reason, GTK hands us a list of URLs separated
-			// by not only Carriage-Returns, but also Line-Feeds.
-			// Line-Feeds will mess us up. Remove all the line-feeds.
-			while(selection_data.find_first_of('\r')!=String::npos)
-				selection_data.erase(selection_data.begin()+selection_data.find_first_of('\r'));
-
-			std::stringstream stream(selection_data);
-
-			//PassiveGrouper group(canvas_interface()->get_instance(),_("Insert Image"));
-			while(stream)
-			{
-				String URI;
-				getline(stream, URI);
-
+			std::vector<Glib::ustring> uris = selection_data_.get_uris();
+			for (const auto& URI : uris) {
 				// If we don't have an URI, move on.
 				if(URI.empty())
 					continue;
