@@ -37,34 +37,21 @@
 #include <synfig/general.h>
 #include <synfig/soundprocessor.h>
 
-#include "trgt_ffmpeg.h"
 #include <cstdio>
-#include <sys/types.h>
 #include <glib/gstdio.h>
+#include <thread>
+
+#include "trgt_ffmpeg.h"
+
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>
 #endif
-#if HAVE_IO_H
- #include <io.h>
-#endif
-#if HAVE_PROCESS_H
- #include <process.h>
-#endif
-#if HAVE_FCNTL_H
- #include <fcntl.h>
-#endif
-#include <unistd.h>
-#include <algorithm>
-#include <functional>
-#include <thread>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
@@ -195,49 +182,40 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	}
 
 	String ffmpeg_binary_path;
-	std::list< String > binary_choices;
-	binary_choices.push_back("ffmpeg");
-	binary_choices.push_back("avconv");
-	std::list< String >::iterator iter;
-	for(iter=binary_choices.begin();iter!=binary_choices.end();iter++)
-	{
-		String binary_path;
 #if defined(WIN32_PIPE_TO_PROCESSES)
-		binary_path = synfig::get_binary_path("");
-		if (binary_path != "")
-			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
-		binary_path += *iter+".exe";
-		if (g_access( binary_path.c_str(), F_OK ) != -1 ) {
-			binary_path = "\"" + binary_path + "\"";
-			ffmpeg_binary_path = binary_path;
-			break;
-		}
+	// Windows always have ffmpeg
+	std::string binary_path = etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe";
+	if (g_access(binary_path.c_str(), F_OK ) != -1 ) { // File found
+		ffmpeg_binary_path = "\"" + binary_path + "\"";
+	}
 #else
-		binary_path = *iter;
-		
-		String command;
+	// Some Linux OS may have `avconv` instead of `ffmpeg`, so let's check both
+	const std::vector<std::string> binary_choices = {"ffmpeg", "avconv"};
+	for (const auto& bin_name : binary_choices) {
+		std::string command = "which " + bin_name;
 		String result;
-		command = "which "+binary_path;
 		FILE* pipe = popen(command.c_str(), "r");
 		if (!pipe) {
 			continue;
 		}
-		char buffer[128];
+		char buf[128];
 		while(!feof(pipe)) {
-			if(fgets(buffer, 128, pipe) != NULL)
-					result += buffer;
+			if(fgets(buf, 128, pipe) != NULL)
+				result += buf;
 		}
-		pclose(pipe);
-		synfig::info(strprintf("\"%s\" --> %s", command.c_str(), result.c_str()));
-		if (result.substr(0,1) == "/" || result.substr(0,2) == "./" ){
-			ffmpeg_binary_path = binary_path;
+		/* `which` exit status
+		 * 0      if all specified commands are found and executable
+		 * 1      if one or more specified commands is nonexistent or not executable
+		 * 2      if an invalid option is specified */
+		synfig::info("\"%s\" --> %s", command.c_str(), result.c_str());
+		if (pclose(pipe) == 0) { // If we need to check non-zero exit code we should use `WEXITSTATUS` for this
+			ffmpeg_binary_path = bin_name; // we can use `result` value here, but in this case we need to remove trailing `\n`
 			break;
 		}
+	}
 #endif
 
-	}
-	if (ffmpeg_binary_path == "")
-	{
+	if (ffmpeg_binary_path.empty()) {
 		if (cb) cb->error(_("Error: No FFmpeg binary found.\n\nPlease install \"ffmpeg\" or \"avconv\" (libav-tools package)."));
 		return false;
 	}
@@ -248,57 +226,53 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	// this should avoid conflicts with locale settings
 	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 	
-	String video_codec_real;
-	if (video_codec == "libx264-lossless")
-		video_codec_real="libx264";
-	else
-		video_codec_real=video_codec;
-	
-	std::vector<String> vargs;
-	vargs.push_back(ffmpeg_binary_path);
+	std::string video_codec_real = (video_codec == "libx264-lossless" ? "libx264" : video_codec);
+
+	std::vector<std::string> vargs;
+	vargs.emplace_back(ffmpeg_binary_path);
 	if (with_sound) {
-		vargs.push_back("-i");
+		vargs.emplace_back("-i");
 #if defined(WIN32_PIPE_TO_PROCESSES)
-		vargs.push_back("\"" + sound_filename + "\"");
+		vargs.emplace_back("\"" + sound_filename + "\"");
 #else
-		vargs.push_back(sound_filename);
+		vargs.emplace_back(sound_filename);
 #endif
 	}
-	vargs.push_back("-f");
-	vargs.push_back("image2pipe");
-	vargs.push_back("-vcodec");
-	vargs.push_back("ppm");
-	vargs.push_back("-r");
-	vargs.push_back(strprintf("%f", desc.get_frame_rate()));
-	vargs.push_back("-i");
-	vargs.push_back("pipe:");
-	vargs.push_back("-metadata");
-	vargs.push_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
-	vargs.push_back("-vcodec");
-	vargs.push_back(video_codec_real);
-	vargs.push_back("-b:v");
-	vargs.push_back(strprintf("%ik", bitrate));
+	vargs.emplace_back("-f");
+	vargs.emplace_back("image2pipe");
+	vargs.emplace_back("-vcodec");
+	vargs.emplace_back("ppm");
+	vargs.emplace_back("-r");
+	vargs.emplace_back(etl::strprintf("%f", desc.get_frame_rate()));
+	vargs.emplace_back("-i");
+	vargs.emplace_back("pipe:");
+	vargs.emplace_back("-metadata");
+	vargs.emplace_back(etl::strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
+	vargs.emplace_back("-vcodec");
+	vargs.emplace_back(video_codec_real);
+	vargs.emplace_back("-b:v");
+	vargs.emplace_back(etl::strprintf("%ik", bitrate));
 	if (video_codec == "libx264-lossless") {
-		vargs.push_back("-tune");
-		vargs.push_back("fastdecode");
-		vargs.push_back("-pix_fmt");
-		vargs.push_back("yuv420p");
-		vargs.push_back("-qp");
-		vargs.push_back("0");
+		vargs.emplace_back("-tune");
+		vargs.emplace_back("fastdecode");
+		vargs.emplace_back("-pix_fmt");
+		vargs.emplace_back("yuv420p");
+		vargs.emplace_back("-qp");
+		vargs.emplace_back("0");
 	}
-	vargs.push_back("-acodec");
+	vargs.emplace_back("-acodec");
 	// MPEG-1 cannot work with 'le' audio, it requires 'be'
-	vargs.push_back(video_codec == "mpeg1video" ? "pcm_s16be" : "pcm_s16le");
-	vargs.push_back("-y");
-	vargs.push_back("-shortest");
+	vargs.emplace_back(video_codec == "mpeg1video" ? "pcm_s16be" : "pcm_s16le");
+	vargs.emplace_back("-y");
+	vargs.emplace_back("-shortest");
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
 	if ( filename.substr(0,1) == "-" )
-		vargs.push_back("--"); 
+		vargs.emplace_back("--");
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
-	vargs.push_back("\"" + filename + "\"");
+	vargs.emplace_back("\"" + filename + "\"");
 #else
-	vargs.push_back(filename);
+	vargs.emplace_back(filename);
 #endif
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
@@ -326,7 +300,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	if (pipe(p)) {
 		synfig::error(_("Unable to open pipe to ffmpeg (no pipe)"));
 		return false;
-	};
+	}
 
 	pid = fork();
 
