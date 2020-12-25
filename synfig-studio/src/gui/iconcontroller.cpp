@@ -329,8 +329,8 @@ IconController::init_icons(const synfig::String& path_to_icons)
 
 	INIT_STOCK_ICON(toggle_show_grid, "show_grid_icon." IMAGE_EXT, _("Toggle show grid"));
 	INIT_STOCK_ICON(toggle_snap_grid, "snap_grid_icon." IMAGE_EXT, _("Toggle snap grid"));
-	INIT_STOCK_ICON(toggle_show_guide, "show_guide_icon." IMAGE_EXT, _("Toggle show guide"));
-	INIT_STOCK_ICON(toggle_snap_guide, "snap_guide_icon." IMAGE_EXT, _("Toggle snap guide"));
+	INIT_STOCK_ICON(toggle_show_guide, "show_guideline_icon." IMAGE_EXT, _("Toggle show guide"));
+	INIT_STOCK_ICON(toggle_snap_guide, "snap_guideline_icon." IMAGE_EXT, _("Toggle snap guide"));
 
 	INIT_STOCK_ICON(toggle_onion_skin, "onion_skin_icon." IMAGE_EXT, _("Toggle onion skin"));
 

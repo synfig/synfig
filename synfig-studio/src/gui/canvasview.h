@@ -223,6 +223,8 @@ public:
 
 	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
 	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
+	void set_guides_snap_toggle(bool flag) { guides_snap_toggle->set_active(flag); }
+	void set_guides_show_toggle(bool flag) { guides_show_toggle->set_active(flag); }
 	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
 
 	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
@@ -303,11 +305,15 @@ private:
 	Gtk::SpinButton *future_onion_spin;
 	Gtk::ToggleToolButton *show_grid;
 	Gtk::ToggleToolButton *snap_grid;
+	Gtk::ToggleToolButton *show_guides;
+	Gtk::ToggleToolButton *snap_guides;
 	Gtk::ToggleToolButton *onion_skin;
 	Gtk::ToolButton *render_options_button;
 	Gtk::ToolButton *preview_options_button;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
+	bool toggling_show_guides;
+	bool toggling_snap_guides;
 	bool toggling_onion_skin;
 	bool toggling_background_rendering;
 	//! Shows current time and allows edition
@@ -333,6 +339,8 @@ private:
 
 	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
 
 	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
@@ -455,6 +463,8 @@ private:
 	void set_onion_skins();
 	void toggle_show_grid();
 	void toggle_snap_grid();
+	void toggle_show_guides();
+	void toggle_snap_guides();
 	void toggle_onion_skin();
 	void toggle_background_rendering();
 
