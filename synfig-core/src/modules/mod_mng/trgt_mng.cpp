@@ -34,13 +34,11 @@
 #	include <config.h>
 #endif
 
-#include <synfig/listimporter.h>
 #include <synfig/general.h>
 
 #include <glib/gstdio.h>
 #include "trgt_mng.h"
 #include <libmng.h>
-#include <cstdio>
 #include <ETL/misc>
 
 #endif
@@ -48,7 +46,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
