@@ -554,6 +554,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	changing_resolution_=false;
 	toggling_show_grid=false;
 	toggling_snap_grid=false;
+	toggling_show_guides=false;
+	toggling_snap_guides=false;
 	toggling_onion_skin=false;
 	toggling_background_rendering=false;
 
