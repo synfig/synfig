@@ -1135,7 +1135,7 @@ CanvasView::create_display_bar()
 		render_options_button->signal_clicked().connect(
 			sigc::mem_fun0(render_settings,&RenderSettings::present));
 		render_options_button->set_label(_("Render"));
-		render_options_button->set_tooltip_text( _("Shows the Render Settings Dialog"));
+		render_options_button->set_tooltip_text(_("Open Render Settings Dialog"));
 		render_options_button->show();
 
 		displaybar->append(*render_options_button);
@@ -1150,7 +1150,7 @@ CanvasView::create_display_bar()
 		preview_options_button->signal_clicked().connect(
 			sigc::mem_fun(*this,&CanvasView::on_preview_option));
 		preview_options_button->set_label(_("Preview"));
-		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
+		preview_options_button->set_tooltip_text(_("Open Preview Settings Dialog"));
 		preview_options_button->show();
 
 		displaybar->append(*preview_options_button);

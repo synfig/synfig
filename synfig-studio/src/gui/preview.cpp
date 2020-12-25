@@ -447,7 +447,7 @@ Widget_Preview::Widget_Preview():
 
 	//loop
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,"synfig-animate_loop", _("Loop"));
+	IMAGIFY_BUTTON(button, "synfig-animate_loop", _("Loop"));
 	toolbar->pack_start(b_loop, Gtk::PACK_SHRINK,0);
 
 	//spacing
@@ -457,21 +457,21 @@ Widget_Preview::Widget_Preview():
 
 
 	//halt render
-	button = manage(new Gtk::Button(/*_("Halt Render")*/));
+	button = manage(new Gtk::Button());
 	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::stoprender));
 	IMAGIFY_BUTTON(button,Gtk::Stock::STOP, _("Stop rendering"));
 
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//re-preview
-	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
+	button = manage(new Gtk::Button());
 	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button, Gtk::Stock::EDIT, _("Reopen the Preview Settings Dialog"));
+	IMAGIFY_BUTTON(button, "synfig-preview_options", _("Open Preview Settings Dialog"));
 
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//erase all
-	button = manage(new Gtk::Button(/*_("Erase All")*/));
+	button = manage(new Gtk::Button());
 	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::eraseall));
 	IMAGIFY_BUTTON(button, Gtk::Stock::CLEAR, _("Erase all rendered frames"));
 
