@@ -10,8 +10,6 @@ CLEANFILES = \
 etldir = $(etlincludedir)/ETL
 
 etl_HEADERS = \
-	rect \
-	_rect.h \
 	misc \
 	_misc.h \
 	ref_count \

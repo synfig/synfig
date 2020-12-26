@@ -28,11 +28,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/rect>
 #include "real.h"
 #include "vector.h"
 #include <limits>
 #include <cmath>
+#include <algorithm> //std::min/max
 
 /* === M A C R O S ========================================================= */
 
