@@ -1294,107 +1294,108 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	}
 
 	// Add default keyboard accelerators
-#define ACCEL(accel,path)						\
-	{											\
-		Gtk::AccelKey accel_key(accel,path);	\
-		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
-	}
+	const std::vector<std::pair<const char*, const char*>> default_accel_map = {
+		// Toolbox
+		{"s",             "<Actions>/action_group_state_manager/state-normal"},
+		{"m",             "<Actions>/action_group_state_manager/state-smooth_move"},
+		{"l",             "<Actions>/action_group_state_manager/state-scale"},
+		{"a",             "<Actions>/action_group_state_manager/state-rotate"},
+		{"i",             "<Actions>/action_group_state_manager/state-mirror"},
+		{"e",             "<Actions>/action_group_state_manager/state-circle"},
+		{"r",             "<Actions>/action_group_state_manager/state-rectangle"},
+		{"asterisk",      "<Actions>/action_group_state_manager/state-star"},
+		{"g",             "<Actions>/action_group_state_manager/state-gradient"},
+		{"o",             "<Actions>/action_group_state_manager/state-polygon"},
+		{"b",             "<Actions>/action_group_state_manager/state-bline"},
+		{"t",             "<Actions>/action_group_state_manager/state-text"},
+		{"u",             "<Actions>/action_group_state_manager/state-fill"},
+		{"d",             "<Actions>/action_group_state_manager/state-eyedrop"},
+		{"c",             "<Actions>/action_group_state_manager/state-lasso"},
+		{"z",             "<Actions>/action_group_state_manager/state-zoom"},
+		{"p",             "<Actions>/action_group_state_manager/state-draw"},
+		{"k",             "<Actions>/action_group_state_manager/state-sketch"},
+		{"w",             "<Actions>/action_group_state_manager/state-width"},
 
-	// Toolbox
-	ACCEL("s",             "<Actions>/action_group_state_manager/state-normal");
-	ACCEL("m",             "<Actions>/action_group_state_manager/state-smooth_move");
-	ACCEL("l",             "<Actions>/action_group_state_manager/state-scale");
-	ACCEL("a",             "<Actions>/action_group_state_manager/state-rotate");
-	ACCEL("i",             "<Actions>/action_group_state_manager/state-mirror");
-	ACCEL("e",             "<Actions>/action_group_state_manager/state-circle");
-	ACCEL("r",             "<Actions>/action_group_state_manager/state-rectangle");
-	ACCEL("asterisk",      "<Actions>/action_group_state_manager/state-star");
-	ACCEL("g",             "<Actions>/action_group_state_manager/state-gradient");
-	ACCEL("o",             "<Actions>/action_group_state_manager/state-polygon");
-	ACCEL("b",             "<Actions>/action_group_state_manager/state-bline");
-	ACCEL("t",             "<Actions>/action_group_state_manager/state-text");
-	ACCEL("u",             "<Actions>/action_group_state_manager/state-fill");
-	ACCEL("d",             "<Actions>/action_group_state_manager/state-eyedrop");
-	ACCEL("c",             "<Actions>/action_group_state_manager/state-lasso");
-	ACCEL("z",             "<Actions>/action_group_state_manager/state-zoom");
-	ACCEL("p",             "<Actions>/action_group_state_manager/state-draw");
-	ACCEL("k",             "<Actions>/action_group_state_manager/state-sketch");
-	ACCEL("w",             "<Actions>/action_group_state_manager/state-width");
-
-	// Everything else
-	ACCEL("<Control>a",              "<Actions>/canvasview/select-all-ducks")
-	ACCEL("<Control>d",              "<Actions>/canvasview/unselect-all-ducks")
-	ACCEL("<Control><Shift>a",       "<Actions>/canvasview/select-all-layers")
-	ACCEL("<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers")
-	ACCEL("F9",                      "<Actions>/canvasview/render")
-	ACCEL("F11",                     "<Actions>/canvasview/preview")
-	ACCEL("F8",                      "<Actions>/canvasview/properties")
-	ACCEL("F12",                     "<Actions>/canvasview/options")
-	ACCEL("<control>i",              "<Actions>/canvasview/import")
-	//ACCEL("escape",  "<Actions>/canvasview/stop"))
-	ACCEL("<Control>g",              "<Actions>/canvasview/toggle-grid-show")
-	ACCEL("<Control>l",              "<Actions>/canvasview/toggle-grid-snap")
-	ACCEL("<Control>n",              "<Actions>/mainwindow/new")
-	ACCEL("<Control>o",              "<Actions>/mainwindow/open")
-	ACCEL("<Control>s",              "<Actions>/canvasview/save")
-	ACCEL("<Control><Shift>s",       "<Actions>/canvasview/save-as")
-	ACCEL("<Control>grave",          "<Actions>/canvasview/toggle-low-res")
-	ACCEL("<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks")
-	ACCEL("<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks")
-	ACCEL("<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks")
-	ACCEL("<Mod1>3",                 "<Actions>/canvasview/mask-tangent-ducks")
-	ACCEL("<Mod1>4",                 "<Actions>/canvasview/mask-radius-ducks")
-	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-width-ducks")
-	ACCEL("<Mod1>6",                 "<Actions>/canvasview/mask-angle-ducks")
-	ACCEL("<Mod1>7",                 "<Actions>/canvasview/mask-bone-setup-ducks")
-	ACCEL("<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks")
-	ACCEL("<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks")
-	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks")
-    ACCEL("<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise")
-	ACCEL("<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower")
-	ACCEL("<Control>1",              "<Actions>/canvasview/quality-01")
-	ACCEL("<Control>2",              "<Actions>/canvasview/quality-02")
-	ACCEL("<Control>3",              "<Actions>/canvasview/quality-03")
-	ACCEL("<Control>4",              "<Actions>/canvasview/quality-04")
-	ACCEL("<Control>5",              "<Actions>/canvasview/quality-05")
-	ACCEL("<Control>6",              "<Actions>/canvasview/quality-06")
-	ACCEL("<Control>7",              "<Actions>/canvasview/quality-07")
-	ACCEL("<Control>8",              "<Actions>/canvasview/quality-08")
-	ACCEL("<Control>9",              "<Actions>/canvasview/quality-09")
-	ACCEL("<Control>0",              "<Actions>/canvasview/quality-10")
-	ACCEL("<Primary>z",              "<Actions>/action_group_dock_history/undo")
+		// Everything else
+		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},
+		{"<Control>d",              "<Actions>/canvasview/unselect-all-ducks"},
+		{"<Control><Shift>a",       "<Actions>/canvasview/select-all-layers"},
+		{"<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers"},
+		{"F9",                      "<Actions>/canvasview/render"},
+		{"F11",                     "<Actions>/canvasview/preview"},
+		{"F8",                      "<Actions>/canvasview/properties"},
+		{"F12",                     "<Actions>/canvasview/options"},
+		{"<control>i",              "<Actions>/canvasview/import"},
+		//{"escape",                  "<Actions>/canvasview/stop")},
+		{"<Control>g",              "<Actions>/canvasview/toggle-grid-show"},
+		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
+		{"<Control>n",              "<Actions>/mainwindow/new"},
+		{"<Control>o",              "<Actions>/mainwindow/open"},
+		{"<Control>s",              "<Actions>/canvasview/save"},
+		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
+		{"<Control>grave",          "<Actions>/canvasview/toggle-low-res"},
+		{"<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks"},
+		{"<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks"},
+		{"<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks"},
+		{"<Mod1>3",                 "<Actions>/canvasview/mask-tangent-ducks"},
+		{"<Mod1>4",                 "<Actions>/canvasview/mask-radius-ducks"},
+		{"<Mod1>5",                 "<Actions>/canvasview/mask-width-ducks"},
+		{"<Mod1>6",                 "<Actions>/canvasview/mask-angle-ducks"},
+		{"<Mod1>7",                 "<Actions>/canvasview/mask-bone-setup-ducks"},
+		{"<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks"},
+		{"<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks"},
+		{"<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks"},
+		{"<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise"},
+		{"<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower"},
+		{"<Control>1",              "<Actions>/canvasview/quality-01"},
+		{"<Control>2",              "<Actions>/canvasview/quality-02"},
+		{"<Control>3",              "<Actions>/canvasview/quality-03"},
+		{"<Control>4",              "<Actions>/canvasview/quality-04"},
+		{"<Control>5",              "<Actions>/canvasview/quality-05"},
+		{"<Control>6",              "<Actions>/canvasview/quality-06"},
+		{"<Control>7",              "<Actions>/canvasview/quality-07"},
+		{"<Control>8",              "<Actions>/canvasview/quality-08"},
+		{"<Control>9",              "<Actions>/canvasview/quality-09"},
+		{"<Control>0",              "<Actions>/canvasview/quality-10"},
+		{"<Primary>z",              "<Actions>/action_group_dock_history/undo"},
 #ifdef _WIN32
-	ACCEL("<Control>y",              "<Actions>/action_group_dock_history/redo")
+		{"<Control>y",              "<Actions>/action_group_dock_history/redo"},
 #else
-	ACCEL("<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo");
+		{"<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo"},
 #endif
-	ACCEL("Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove")
-    ACCEL("KP_Delete",               "<Actions>/action_group_layer_action_manager/action-LayerRemove")
-	ACCEL("<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size")
-	ACCEL("<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size")
-	ACCEL("<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec")
-	ACCEL("<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc")
-	ACCEL("equal",                   "<Actions>/canvasview/canvas-zoom-in")
-	ACCEL("minus",                   "<Actions>/canvasview/canvas-zoom-out")
-	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit")
-	ACCEL("<Control>plus",           "<Actions>/canvasview/time-zoom-in")
-	ACCEL("<Control>underscore",     "<Actions>/canvasview/time-zoom-out")
-	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe")
-	ACCEL("bracketright",            "<Actions>/canvasview/jump-next-keyframe")
-	ACCEL("comma",                   "<Actions>/canvasview/seek-prev-frame")
-	ACCEL("period",                  "<Actions>/canvasview/seek-next-frame")
-	ACCEL("<Shift>less",             "<Actions>/canvasview/seek-prev-second")
-	ACCEL("<Shift>greater",          "<Actions>/canvasview/seek-next-second")
-	ACCEL("<Control><Shift>less",    "<Actions>/canvasview/seek-begin")
-	ACCEL("<Control><Shift>greater", "<Actions>/canvasview/seek-end")
-	ACCEL("<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin")
-	ACCEL("<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" )
-	ACCEL("<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2")
-	ACCEL("<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2")
-	ACCEL("space",                   "<Actions>/canvasview/play")
-	ACCEL("space",                   "<Actions>/canvasview/pause")
+		{"Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
+    	{"KP_Delete",               "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
+		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
+		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
+		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
+		{"<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc"},
+		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},
+		{"minus",                   "<Actions>/canvasview/canvas-zoom-out"},
+		{"0",                       "<Actions>/canvasview/canvas-zoom-fit"},
+		{"<Control>plus",           "<Actions>/canvasview/time-zoom-in"},
+		{"<Control>underscore",     "<Actions>/canvasview/time-zoom-out"},
+		{"bracketleft",             "<Actions>/canvasview/jump-prev-keyframe"},
+		{"bracketright",            "<Actions>/canvasview/jump-next-keyframe"},
+		{"comma",                   "<Actions>/canvasview/seek-prev-frame"},
+		{"period",                  "<Actions>/canvasview/seek-next-frame"},
+		{"<Shift>less",             "<Actions>/canvasview/seek-prev-second"},
+		{"<Shift>greater",          "<Actions>/canvasview/seek-next-second"},
+		{"<Control><Shift>less",    "<Actions>/canvasview/seek-begin"},
+		{"<Control><Shift>greater", "<Actions>/canvasview/seek-end"},
+		{"<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin"},
+		{"<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" },
+		{"<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2"},
+		{"<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2"},
+		{"space",                   "<Actions>/canvasview/play"},
+		{"space",                   "<Actions>/canvasview/pause"},
+	};
 
-#undef ACCEL
+	for (const auto& accel_item : default_accel_map) {
+		Gtk::AccelKey accel_key(accel_item.first, accel_item.second);
+		if (accel_key.get_key() == 0)
+			synfig::warning(_("Invalid accelerator: %s (for action: %s)"), accel_item.first, accel_item.second);
+		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());
+	}
 }
 
 #ifdef _WIN32
