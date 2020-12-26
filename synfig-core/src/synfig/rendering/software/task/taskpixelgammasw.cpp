@@ -193,7 +193,7 @@ public:
 		RectInt rd = target_rect;
 		VectorInt offset = get_offset();
 		RectInt rs = sub_task()->target_rect + rd.get_min() + offset;
-		etl::set_intersect(rs, rs, rd);
+		rect_set_intersect(rs, rs, rd);
 		if (rs.is_valid())
 		{
 			LockWrite ldst(this);

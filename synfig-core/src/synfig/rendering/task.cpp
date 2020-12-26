@@ -289,12 +289,12 @@ Task::allow_run_before(Task &other) const {
 		if ( !get_mode_allow_simultaneous_write()
 		  || !other.get_mode_allow_simultaneous_write()
 		  || get_target_token() != other.get_target_token()
-		  || etl::intersect(target_rect, other.target_rect) )
+		  || rect_intersect(target_rect, other.target_rect) )
 			return false;
 	for(Task::List::const_iterator i = sub_tasks.begin(); i != sub_tasks.end(); ++i)
 		if ( *i && (*i)->is_valid()
 		  && (*i)->target_surface == other.target_surface
-		  && etl::intersect((*i)->target_rect, other.target_rect) ) return false;
+		  && rect_intersect((*i)->target_rect, other.target_rect) ) return false;
 	return true;
 }
 

@@ -386,7 +386,7 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 		windr.expand(renddesc.get_br()[0],renddesc.get_br()[1]);
 
 		//test bounding boxes for collision
-		if( (type == TYPE_NORMAL && !intersect(sphr,windr)) ||
+		if( (type == TYPE_NORMAL && !rect_intersect(sphr,windr)) ||
 			(type == TYPE_DISTH && (sphr.minx >= windr.maxx || windr.minx >= sphr.maxx)) ||
 			(type == TYPE_DISTV && (sphr.miny >= windr.maxy || windr.miny >= sphr.maxy)) )
 		{
@@ -610,7 +610,7 @@ Layer_SphereDistort::accelerated_cairorender(Context context, cairo_t *cr, int q
 		windr.expand(renddesc.get_br()[0],renddesc.get_br()[1]);
 		
 		//test bounding boxes for collision
-		if( (type == TYPE_NORMAL && !intersect(sphr,windr)) ||
+		if( (type == TYPE_NORMAL && !rect_intersect(sphr,windr)) ||
 		   (type == TYPE_DISTH && (sphr.minx >= windr.maxx || windr.minx >= sphr.maxx)) ||
 		   (type == TYPE_DISTV && (sphr.miny >= windr.maxy || windr.miny >= sphr.maxy)) )
 		{
