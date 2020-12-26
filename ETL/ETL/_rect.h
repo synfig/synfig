@@ -68,9 +68,7 @@ public:
 		{ return max - min; }
 
 	bool operator<(const range &other) const {
-		return min < other.min ? true
-			 : other.min < min ? false
-			 : max < other.max;
+		return min == other.min ? max < other.max : min < other.min;
 	}
 	bool operator==(const range &other) const
 		{ return min == other.min && max == other.max; }
