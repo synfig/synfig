@@ -29,6 +29,7 @@
 #	include <config.h>
 #endif
 
+#include <algorithm> // std::transform
 #include "canvasfilenaming.h"
 
 #include "filecontainerzip.h"
@@ -40,8 +41,6 @@
 #endif
 
 using namespace synfig;
-using namespace etl;
-using namespace std;
 
 /* === M A C R O S ========================================================= */
 

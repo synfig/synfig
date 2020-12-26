@@ -28,6 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cassert>
+#include <algorithm> //std::min
 
 #include "real.h"
 #include "vector.h"

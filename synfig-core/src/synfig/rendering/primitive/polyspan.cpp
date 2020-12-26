@@ -34,6 +34,7 @@
 
 #include "polyspan.h"
 
+#include <algorithm> // std::sort
 #include <cassert>
 
 #include <synfig/general.h>
@@ -137,7 +138,7 @@ void
 Polyspan::merge_all()
 {
 	finish_line();
-	sort(covers.begin(),covers.end());
+	std::sort(covers.begin(),covers.end());
 	open_index = 0;
 }
 
@@ -152,7 +153,7 @@ Polyspan::sort_marks()
 		addcurrent();
 		current.setcover(0,0);
 
-		sort(covers.begin() + open_index,covers.end());
+		std::sort(covers.begin() + open_index,covers.end());
 		flags &= ~NotSorted;
 	}
 }

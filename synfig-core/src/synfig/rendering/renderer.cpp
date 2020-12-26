@@ -29,6 +29,7 @@
 #	include <config.h>
 #endif
 
+#include <algorithm> // std::sort
 #include <cstdlib>
 #include <climits>
 
