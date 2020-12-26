@@ -1300,12 +1300,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
 	}
 
-#define ACCEL2(accel)							\
-	{											\
-		Gtk::AccelKey accel_key(accel);			\
-		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
-	}
-
 	// Toolbox
 	ACCEL("s",             "<Actions>/action_group_state_manager/state-normal");
 	ACCEL("m",             "<Actions>/action_group_state_manager/state-smooth_move");
@@ -1328,80 +1322,79 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("w",             "<Actions>/action_group_state_manager/state-width");
 
 	// Everything else
-	ACCEL("<Control>a",              "<Actions>/canvasview/select-all-ducks");
-	ACCEL("<Control>d",              "<Actions>/canvasview/unselect-all-ducks");
-	ACCEL("<Control><Shift>a",       "<Actions>/canvasview/select-all-layers");
-	ACCEL("<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers");
-	ACCEL("F9",                      "<Actions>/canvasview/render");
-	ACCEL("F11",                     "<Actions>/canvasview/preview");
-	ACCEL("F8",                      "<Actions>/canvasview/properties");
-	ACCEL("F12",                     "<Actions>/canvasview/options");
-	ACCEL("<control>i",              "<Actions>/canvasview/import");
-	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0),  "<Actions>/canvasview/stop"));
-	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(),               "<Actions>/canvasview/stop"));
-	ACCEL("<Control>g",              "<Actions>/canvasview/toggle-grid-show");
-	ACCEL("<Control>l",              "<Actions>/canvasview/toggle-grid-snap");
-	ACCEL("<Control>n",              "<Actions>/mainwindow/new");
-	ACCEL("<Control>o",              "<Actions>/mainwindow/open");
-	ACCEL("<Control>s",              "<Actions>/canvasview/save");
-	ACCEL("<Control><Shift>s",       "<Actions>/canvasview/save-as");
-	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,                "<Actions>/canvasview/toggle-low-res"));
-	ACCEL("<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks");
-	ACCEL("<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks");
-	ACCEL("<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks");
-	ACCEL("<Mod1>3",                 "<Actions>/canvasview/mask-tangent-ducks");
-	ACCEL("<Mod1>4",                 "<Actions>/canvasview/mask-radius-ducks");
-	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-width-ducks");
-	ACCEL("<Mod1>6",                 "<Actions>/canvasview/mask-angle-ducks");
-	ACCEL("<Mod1>7",                 "<Actions>/canvasview/mask-bone-setup-ducks");
-	ACCEL("<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks");
-	ACCEL("<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks");
-	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks");
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Up,Gdk::SHIFT_MASK,      "<Actions>/action_group_layer_action_manager/action-LayerRaise"));
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Down,Gdk::SHIFT_MASK,    "<Actions>/action_group_layer_action_manager/action-LayerLower"));
-	ACCEL("<Control>1",              "<Actions>/canvasview/quality-01");
-	ACCEL("<Control>2",              "<Actions>/canvasview/quality-02");
-	ACCEL("<Control>3",              "<Actions>/canvasview/quality-03");
-	ACCEL("<Control>4",              "<Actions>/canvasview/quality-04");
-	ACCEL("<Control>5",              "<Actions>/canvasview/quality-05");
-	ACCEL("<Control>6",              "<Actions>/canvasview/quality-06");
-	ACCEL("<Control>7",              "<Actions>/canvasview/quality-07");
-	ACCEL("<Control>8",              "<Actions>/canvasview/quality-08");
-	ACCEL("<Control>9",              "<Actions>/canvasview/quality-09");
-	ACCEL("<Control>0",              "<Actions>/canvasview/quality-10");
-	ACCEL("<Primary>z",              "<Actions>/action_group_dock_history/undo");
-#if _WIN32
-	ACCEL("<Control>y",              "<Actions>/action_group_dock_history/redo");
+	ACCEL("<Control>a",              "<Actions>/canvasview/select-all-ducks")
+	ACCEL("<Control>d",              "<Actions>/canvasview/unselect-all-ducks")
+	ACCEL("<Control><Shift>a",       "<Actions>/canvasview/select-all-layers")
+	ACCEL("<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers")
+	ACCEL("F9",                      "<Actions>/canvasview/render")
+	ACCEL("F11",                     "<Actions>/canvasview/preview")
+	ACCEL("F8",                      "<Actions>/canvasview/properties")
+	ACCEL("F12",                     "<Actions>/canvasview/options")
+	ACCEL("<control>i",              "<Actions>/canvasview/import")
+	//ACCEL("escape",  "<Actions>/canvasview/stop"))
+	ACCEL("<Control>g",              "<Actions>/canvasview/toggle-grid-show")
+	ACCEL("<Control>l",              "<Actions>/canvasview/toggle-grid-snap")
+	ACCEL("<Control>n",              "<Actions>/mainwindow/new")
+	ACCEL("<Control>o",              "<Actions>/mainwindow/open")
+	ACCEL("<Control>s",              "<Actions>/canvasview/save")
+	ACCEL("<Control><Shift>s",       "<Actions>/canvasview/save-as")
+	ACCEL("<Control>grave",          "<Actions>/canvasview/toggle-low-res")
+	ACCEL("<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks")
+	ACCEL("<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks")
+	ACCEL("<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks")
+	ACCEL("<Mod1>3",                 "<Actions>/canvasview/mask-tangent-ducks")
+	ACCEL("<Mod1>4",                 "<Actions>/canvasview/mask-radius-ducks")
+	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-width-ducks")
+	ACCEL("<Mod1>6",                 "<Actions>/canvasview/mask-angle-ducks")
+	ACCEL("<Mod1>7",                 "<Actions>/canvasview/mask-bone-setup-ducks")
+	ACCEL("<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks")
+	ACCEL("<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks")
+	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks")
+    ACCEL("<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise")
+	ACCEL("<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower")
+	ACCEL("<Control>1",              "<Actions>/canvasview/quality-01")
+	ACCEL("<Control>2",              "<Actions>/canvasview/quality-02")
+	ACCEL("<Control>3",              "<Actions>/canvasview/quality-03")
+	ACCEL("<Control>4",              "<Actions>/canvasview/quality-04")
+	ACCEL("<Control>5",              "<Actions>/canvasview/quality-05")
+	ACCEL("<Control>6",              "<Actions>/canvasview/quality-06")
+	ACCEL("<Control>7",              "<Actions>/canvasview/quality-07")
+	ACCEL("<Control>8",              "<Actions>/canvasview/quality-08")
+	ACCEL("<Control>9",              "<Actions>/canvasview/quality-09")
+	ACCEL("<Control>0",              "<Actions>/canvasview/quality-10")
+	ACCEL("<Primary>z",              "<Actions>/action_group_dock_history/undo")
+#ifdef _WIN32
+	ACCEL("<Control>y",              "<Actions>/action_group_dock_history/redo")
 #else
 	ACCEL("<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo");
 #endif
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::ModifierType(),    "<Actions>/action_group_layer_action_manager/action-LayerRemove"));
-	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/decrease-low-res-pixel-size"));
-	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/increase-low-res-pixel-size"));
-	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,  "<Actions>/action_group_layer_action_manager/amount-dec"));
-	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,  "<Actions>/action_group_layer_action_manager/amount-inc"));
-	ACCEL("equal",                   "<Actions>/canvasview/canvas-zoom-in");
-	ACCEL("minus",                   "<Actions>/canvasview/canvas-zoom-out");
-	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit");
-	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/time-zoom-in"));
-	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/time-zoom-out"));
-	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe");
-	ACCEL("bracketright",            "<Actions>/canvasview/jump-next-keyframe");
-	ACCEL("comma",                   "<Actions>/canvasview/seek-prev-frame");
-	ACCEL("period",                  "<Actions>/canvasview/seek-next-frame");
-	ACCEL("<Shift>less",             "<Actions>/canvasview/seek-prev-second");
-	ACCEL("<Shift>greater",          "<Actions>/canvasview/seek-next-second");
-	ACCEL("<Control><Shift>less",    "<Actions>/canvasview/seek-begin");
-	ACCEL("<Control><Shift>greater", "<Actions>/canvasview/seek-end");
-	ACCEL("<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin");
-	ACCEL("<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" );
-	ACCEL("<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2");
-	ACCEL("<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2");
-	ACCEL("space",                   "<Actions>/canvasview/play");
-	ACCEL("space",                   "<Actions>/canvasview/pause");
+	ACCEL("Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove")
+    ACCEL("KP_Delete",               "<Actions>/action_group_layer_action_manager/action-LayerRemove")
+	ACCEL("<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size")
+	ACCEL("<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size")
+	ACCEL("<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec")
+	ACCEL("<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc")
+	ACCEL("equal",                   "<Actions>/canvasview/canvas-zoom-in")
+	ACCEL("minus",                   "<Actions>/canvasview/canvas-zoom-out")
+	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit")
+	ACCEL("<Control>plus",           "<Actions>/canvasview/time-zoom-in")
+	ACCEL("<Control>underscore",     "<Actions>/canvasview/time-zoom-out")
+	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe")
+	ACCEL("bracketright",            "<Actions>/canvasview/jump-next-keyframe")
+	ACCEL("comma",                   "<Actions>/canvasview/seek-prev-frame")
+	ACCEL("period",                  "<Actions>/canvasview/seek-next-frame")
+	ACCEL("<Shift>less",             "<Actions>/canvasview/seek-prev-second")
+	ACCEL("<Shift>greater",          "<Actions>/canvasview/seek-next-second")
+	ACCEL("<Control><Shift>less",    "<Actions>/canvasview/seek-begin")
+	ACCEL("<Control><Shift>greater", "<Actions>/canvasview/seek-end")
+	ACCEL("<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin")
+	ACCEL("<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" )
+	ACCEL("<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2")
+	ACCEL("<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2")
+	ACCEL("space",                   "<Actions>/canvasview/play")
+	ACCEL("space",                   "<Actions>/canvasview/pause")
 
 #undef ACCEL
-#undef ACCEL2
 }
 
 #ifdef _WIN32
