@@ -1234,12 +1234,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
 	}
 
-#define ACCEL2(accel)							\
-	{											\
-		Gtk::AccelKey accel_key(accel);			\
-		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
-	}
-
 	// Toolbox
 	ACCEL("s",             "<Actions>/action_group_state_manager/state-normal")
 	ACCEL("m",             "<Actions>/action_group_state_manager/state-smooth_move")
@@ -1272,15 +1266,14 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	ACCEL("F8",                      "<Actions>/canvasview/properties")
 	ACCEL("F12",                     "<Actions>/canvasview/options")
 	ACCEL("<control>i",              "<Actions>/canvasview/import")
-	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0),  "<Actions>/canvasview/stop"))
-	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(),               "<Actions>/canvasview/stop"))
+	//ACCEL("escape",  "<Actions>/canvasview/stop"))
 	ACCEL("<Control>g",              "<Actions>/canvasview/toggle-grid-show")
 	ACCEL("<Control>l",              "<Actions>/canvasview/toggle-grid-snap")
 	ACCEL("<Control>n",              "<Actions>/mainwindow/new")
 	ACCEL("<Control>o",              "<Actions>/mainwindow/open")
 	ACCEL("<Control>s",              "<Actions>/canvasview/save")
 	ACCEL("<Control><Shift>s",       "<Actions>/canvasview/save-as")
-	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,                "<Actions>/canvasview/toggle-low-res"))
+	ACCEL("<Control>grave",          "<Actions>/canvasview/toggle-low-res")
 	ACCEL("<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks")
 	ACCEL("<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks")
 	ACCEL("<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks")
@@ -1292,8 +1285,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	ACCEL("<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks")
 	ACCEL("<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks")
 	ACCEL("<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks")
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Up,Gdk::SHIFT_MASK,      "<Actions>/action_group_layer_action_manager/action-LayerRaise"))
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Page_Down,Gdk::SHIFT_MASK,    "<Actions>/action_group_layer_action_manager/action-LayerLower"))
+    ACCEL("<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise")
+	ACCEL("<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower")
 	ACCEL("<Control>1",              "<Actions>/canvasview/quality-01")
 	ACCEL("<Control>2",              "<Actions>/canvasview/quality-02")
 	ACCEL("<Control>3",              "<Actions>/canvasview/quality-03")
@@ -1310,16 +1303,17 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 #else
 	ACCEL("<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo")
 #endif
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Delete,Gdk::ModifierType(),    "<Actions>/action_group_layer_action_manager/action-LayerRemove"))
-	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/decrease-low-res-pixel-size"))
-	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/increase-low-res-pixel-size"))
-	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,  "<Actions>/action_group_layer_action_manager/amount-dec"))
-	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,  "<Actions>/action_group_layer_action_manager/amount-inc"))
+	ACCEL("Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove")
+    ACCEL("KP_Delete",               "<Actions>/action_group_layer_action_manager/action-LayerRemove")
+	ACCEL("<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size")
+	ACCEL("<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size")
+	ACCEL("<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec")
+	ACCEL("<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc")
 	ACCEL("equal",                   "<Actions>/canvasview/canvas-zoom-in")
 	ACCEL("minus",                   "<Actions>/canvasview/canvas-zoom-out")
 	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit")
-	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/time-zoom-in"))
-	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,                 "<Actions>/canvasview/time-zoom-out"))
+	ACCEL("<Control>plus",           "<Actions>/canvasview/time-zoom-in")
+	ACCEL("<Control>underscore",     "<Actions>/canvasview/time-zoom-out")
 	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe")
 	ACCEL("bracketright",            "<Actions>/canvasview/jump-next-keyframe")
 	ACCEL("comma",                   "<Actions>/canvasview/seek-prev-frame")
@@ -1335,9 +1329,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	ACCEL("space",                   "<Actions>/canvasview/play")
 	ACCEL("space",                   "<Actions>/canvasview/pause")
 
-
 #undef ACCEL
-#undef ACCEL2
 }
 
 #ifdef _WIN32
