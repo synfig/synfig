@@ -225,8 +225,8 @@ namespace {
 								(int)approximate_ceil (boundsf.maxx) + 1,
 								(int)approximate_ceil (boundsf.maxy) + 1 );
 
-				etl::set_intersect(bounds, bounds, dest_bounds);
-				etl::set_intersect(bounds, bounds, RectInt(0, 0, dest.get_w(), dest.get_h()));
+				rect_set_intersect(bounds, bounds, dest_bounds);
+				rect_set_intersect(bounds, bounds, RectInt(0, 0, dest.get_w(), dest.get_h()));
 
 				// texture matrices
 

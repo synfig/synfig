@@ -243,7 +243,7 @@ SurfaceResource::get_surface(
 
 	if (width <= 0 || height <= 0)
 		return Surface::Handle();
-	if (!full && !etl::contains(RectInt(0, 0, width, height), rect))
+	if (!full && !rect_contains(RectInt(0, 0, width, height), rect))
 		return Surface::Handle();
 
 	Surface::Handle surface;

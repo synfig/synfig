@@ -70,7 +70,7 @@ software::Blur::Params::validate()
 	amplified_size[1] = fabs(amplified_size[1]);
 
 	extra_size = get_extra_size(type, size);
-	etl::set_intersect(dest_rect, dest_rect, RectInt(0, 0, dest->get_w(), dest->get_h()));
+	rect_set_intersect(dest_rect, dest_rect, RectInt(0, 0, dest->get_w(), dest->get_h()));
 	if (!dest_rect.valid()) return false;
 
 	VectorInt offset = src_offset - dest_rect.get_min();
@@ -80,7 +80,7 @@ software::Blur::Params::validate()
 	src_rect.maxx += extra_size[0];
 	src_rect.maxy += extra_size[1];
 	if (!src_rect.valid()) return false;
-	etl::set_intersect(src_rect, src_rect, RectInt(0, 0, src->get_w(), src->get_h()));
+	rect_set_intersect(src_rect, src_rect, RectInt(0, 0, src->get_w(), src->get_h()));
 	if (!src_rect.valid()) return false;
 
 	dest_rect = src_rect - offset;
@@ -89,7 +89,7 @@ software::Blur::Params::validate()
 	dest_rect.maxx -= extra_size[0];
 	dest_rect.maxy -= extra_size[1];
 	if (!dest_rect.valid()) return false;
-	if (!etl::contains(RectInt(0, 0, dest->get_w(), dest->get_h()), dest_rect)) return false;
+	if (!rect_contains(RectInt(0, 0, dest->get_w(), dest->get_h()), dest_rect)) return false;
 
 	return true;
 }

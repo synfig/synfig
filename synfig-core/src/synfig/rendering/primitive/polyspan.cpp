@@ -957,7 +957,7 @@ Polyspan::calc_bounds() const
 	RectInt bounds(covers.front().x, covers.front().y);
 	for(cover_array::const_iterator i = covers.begin() + 1; i != covers.end(); ++i)
 		bounds.expand(i->x, i->y);
-	set_intersect(bounds, bounds, window);
+	rect_set_intersect(bounds, bounds, window);
 	return bounds;
 }
 
