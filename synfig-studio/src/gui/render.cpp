@@ -231,7 +231,12 @@ RenderSettings::set_entry_filename()
 	}
 
 	if (!is_absolute_path(filename))
-		filename = Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename;
+	{
+		if (filename.find(App::custom_filename_prefix) == 0)
+			filename = Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename;
+		else
+			filename = etl::absolute_path(filename);
+	}
 	
 	try
 	{
