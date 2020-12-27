@@ -90,7 +90,55 @@ file(GLOB MINGW_LIBS
 	    ${MINGW_BIN}/libxml++-2.6-[0-9]*.dll
 	    ${MINGW_BIN}/libxml2-[0-9]*.dll
 	    ${MINGW_BIN}/zlib[0-9]*.dll
-	    )
+
+		# ffmpeg dependencies
+		${MINGW_BIN}/avcodec*.dll
+		${MINGW_BIN}/avdevice*.dll
+		${MINGW_BIN}/avfilter*.dll
+		${MINGW_BIN}/avformat*.dll
+		${MINGW_BIN}/avutil*.dll
+		${MINGW_BIN}/ffmpeg.exe
+		${MINGW_BIN}/libaom.dll
+		${MINGW_BIN}/libass*.dll
+		${MINGW_BIN}/libbluray*.dll
+		${MINGW_BIN}/libcaca*.dll
+		${MINGW_BIN}/libcelt*.dll
+		${MINGW_BIN}/libcrypto-1_1*.dll
+		${MINGW_BIN}/libdav1d.dll
+		${MINGW_BIN}/libidn2*.dll
+		${MINGW_BIN}/libgnutls-*.dll
+		${MINGW_BIN}/libgmp*.dll
+		${MINGW_BIN}/libgsm.dll
+		${MINGW_BIN}/libhogweed*.dll
+		${MINGW_BIN}/libmfx*.dll
+		${MINGW_BIN}/libmodplug*.dll
+		${MINGW_BIN}/libmp3lame*.dll
+		${MINGW_BIN}/libnettle*.dll
+		${MINGW_BIN}/libogg*.dll
+		${MINGW_BIN}/libopenal*.dll
+		${MINGW_BIN}/libopencore-amr*.dll
+		${MINGW_BIN}/libopenjp*.dll
+		${MINGW_BIN}/libopus*.dll
+		${MINGW_BIN}/libp11-kit*.dll
+		${MINGW_BIN}/librtmp*.dll
+		${MINGW_BIN}/libspeex*.dll
+		${MINGW_BIN}/libsrt.dll
+		${MINGW_BIN}/libtasn1*.dll
+		${MINGW_BIN}/libtheora*.dll
+		${MINGW_BIN}/libunistring*.dll
+		${MINGW_BIN}/libvorbis*.dll
+		${MINGW_BIN}/libvpx*.dll
+		${MINGW_BIN}/libvulkan*.dll
+		${MINGW_BIN}/libwavpack*.dll
+		${MINGW_BIN}/libwebp*.dll
+		${MINGW_BIN}/libx264.dll
+		${MINGW_BIN}/libx265.dll
+		${MINGW_BIN}/postproc*.dll
+		${MINGW_BIN}/swresample*.dll
+		${MINGW_BIN}/swscale*.dll
+		${MINGW_BIN}/xvidcore.dll
+		${MINGW_BIN}/SDL2.dll
+)
 #    file(COPY ${MINGW_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
 install(FILES ${MINGW_LIBS} DESTINATION bin)
 
