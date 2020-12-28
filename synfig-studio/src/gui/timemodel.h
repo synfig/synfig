@@ -28,12 +28,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <list>
-
-#include <gtkmm/adjustment.h>
-
 #include <ETL/handle>
-
+#include <gtkmm/adjustment.h>
+#include <list>
 #include <synfig/real.h>
 #include <synfig/time.h>
 

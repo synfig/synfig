@@ -29,6 +29,7 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/builder.h>
+#include <gtkmm/checkbutton.h>
 
 #include <gui/dialogsettings.h>
 
@@ -43,7 +44,6 @@
 
 namespace Gtk {
 class Adjustment;
-class CheckButton;
 }
 
 namespace studio {

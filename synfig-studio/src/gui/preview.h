@@ -26,41 +26,33 @@
 #define __SYNFIG_PREVIEW_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/handle>
 #include <ETL/clock> /* indirectly includes winnt.h on WIN32 - needs to be included before gtkmm headers, which fix this */
+#include <ETL/handle>
 
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/table.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/image.h>
 #include <gdkmm/pixbuf.h>
-#include <gtkmm/dialog.h>
-#include <gtkmm/scrollbar.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/alignment.h>
-#include <gtkmm/comboboxtext.h>
-#include <gtkmm/hvscale.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/liststore.h>
 
 #include <glibmm/dispatcher.h>
 
-#include <synfig/time.h>
-#include <synfig/vector.h>
-#include <synfig/renddesc.h>
-#include <synfig/canvas.h>
+#include <gtkmm/adjustment.h>
+#include <gtkmm/box.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/drawingarea.h>
+#include <gtkmm/hvscale.h>
+#include <gtkmm/liststore.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/table.h>
 
-#include "dials/jackdial.h"
-
-#include <vector>
+#include <gui/dials/jackdial.h>
 
 #ifdef WITH_JACK
 #include <jack/jack.h>
-#include <jack/transport.h>
 #endif
 
+#include <synfig/canvas.h>
 #include <synfig/soundprocessor.h>
+#include <synfig/time.h>
+
+#include <vector>
 
 /* === M A C R O S ========================================================= */
 

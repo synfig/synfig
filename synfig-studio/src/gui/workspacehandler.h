@@ -24,9 +24,8 @@
 #ifndef SYNFIG_STUDIO_WORKSPACEHANDLER_H
 #define SYNFIG_STUDIO_WORKSPACEHANDLER_H
 
-#include <iostream>
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
 #include <sigc++/signal.h>
 

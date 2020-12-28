@@ -27,8 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <glibmm/iochannel.h>
 #include <synfig/smartfile.h>
-#include <glibmm/main.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */

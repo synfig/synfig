@@ -34,43 +34,30 @@
 #	include <config.h>
 #endif
 
-#include <gtkmm/arrow.h>
-#include <gtkmm/frame.h>
-#include <gtkmm/scrollbar.h>
-#include <gtkmm/window.h>
-
-#include <ETL/misc>
-
-#include <synfig/general.h>
-
-#include <synfig/blinepoint.h>
-#include <synfig/rendering/renderer.h>
-#include <synfig/valuenodes/valuenode_composite.h>
-#include <synfig/valuenodes/valuenode_bone.h>
-
-#include <synfigapp/canvasinterface.h>
-
-#include "helpers.h"
-#include "canvasview.h"
-#include "event_mouse.h"
-#include "event_layerclick.h"
-#include "event_keyboard.h"
-#include "workarea.h"
-#include "workarearenderer/workarearenderer.h"
-#include "workarearenderer/renderer_background.h"
-#include "workarearenderer/renderer_canvas.h"
-#include "workarearenderer/renderer_frameerror.h"
-#include "workarearenderer/renderer_grid.h"
-#include "workarearenderer/renderer_guides.h"
-#include "workarearenderer/renderer_timecode.h"
-#include "workarearenderer/renderer_bonesetup.h"
-#include "workarearenderer/renderer_ducks.h"
-#include "workarearenderer/renderer_dragbox.h"
-#include "workarearenderer/renderer_bbox.h"
+#include <gui/workarea.h>
 
 #include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/event_keyboard.h>
+#include <gui/event_layerclick.h>
+#include <gui/event_mouse.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/workarearenderer/workarearenderer.h>
+#include <gui/workarearenderer/renderer_background.h>
+#include <gui/workarearenderer/renderer_bbox.h>
+#include <gui/workarearenderer/renderer_bonesetup.h>
+#include <gui/workarearenderer/renderer_canvas.h>
+#include <gui/workarearenderer/renderer_dragbox.h>
+#include <gui/workarearenderer/renderer_ducks.h>
+#include <gui/workarearenderer/renderer_frameerror.h>
+#include <gui/workarearenderer/renderer_grid.h>
+#include <gui/workarearenderer/renderer_guides.h>
+#include <gui/workarearenderer/renderer_timecode.h>
+
+#include <synfig/blinepoint.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 
 #endif
 

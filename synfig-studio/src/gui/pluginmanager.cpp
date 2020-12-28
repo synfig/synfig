@@ -29,23 +29,17 @@
 #	include <config.h>
 #endif
 
-#include "pluginmanager.h"
+#include <gui/pluginmanager.h>
 
 #include <libxml++/libxml++.h>
 #include <glibmm/fileutils.h>
 #include <glibmm/spawn.h>
 
-#include <ETL/handle>
+#include <gui/app.h>
+#include <gui/localization.h>
+#include <gui/onemoment.h>
 
 #include <synfig/general.h>
-#include <synfig/savecanvas.h>
-#include <synfig/filesystemnative.h>
-#include <synfigapp/main.h>
-
-#include <synfigapp/localization.h>
-
-#include "app.h"
-#include "onemoment.h"
 
 #endif
 

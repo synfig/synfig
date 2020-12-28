@@ -28,8 +28,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <glibmm/refptr.h>
+#include <gui/smach.h>
 #include <vector>
-#include "smach.h"
 
 /* === M A C R O S ========================================================= */
 

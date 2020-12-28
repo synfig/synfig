@@ -27,10 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/stockid.h>
-#include <gtkmm/grid.h>
 #include <gtkmm/eventbox.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/stockid.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
 

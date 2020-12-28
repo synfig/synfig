@@ -31,10 +31,11 @@
 #include <ctime>
 
 #include <ETL/handle>
-#include <synfig/target.h>
-#include <glibmm/thread.h>
-#include <glibmm/dispatcher.h>
 
+#include <glibmm/dispatcher.h>
+#include <glibmm/thread.h>
+
+#include <synfig/target.h>
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */

@@ -31,8 +31,8 @@
 
 #include "helpers.h"
 
-#include <gtk/gtk.h>
 #include <glibmm/main.h>
+#include <gtk/gtk.h>
 
 #endif
 

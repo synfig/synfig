@@ -34,6 +34,8 @@
 
 #include <gui/states/state_lasso.h>
 
+#include <gtkmm/alignment.h>
+
 #include <gtkmm/radiobutton.h>
 
 #include <synfig/general.h>

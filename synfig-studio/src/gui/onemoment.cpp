@@ -32,31 +32,20 @@
 #	include <config.h>
 #endif
 
-#include <string>
+#include <gui/onemoment.h>
 
 #include <gtkmm/label.h>
 
-#include "onemoment.h"
-#include "app.h"
-
+#include <gui/app.h>
 #include <gui/localization.h>
 
 #endif
 
-using namespace std;
-using namespace etl;
+/* === U S I N G =========================================================== */
+
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
-#ifndef VERSION
-#define VERSION	"unknown"
-#define PACKAGE	"synfigstudio"
-#endif
-
-#ifndef IMAGE_EXT
-#	define IMAGE_EXT	"png"
-#endif
 
 /* === G L O B A L S ======================================================= */
 

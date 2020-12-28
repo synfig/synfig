@@ -24,7 +24,7 @@
 #ifndef SYNFIG_STUDIO_RESOURCEHELPER_H
 #define SYNFIG_STUDIO_RESOURCEHELPER_H
 
-#include "synfig/string.h"
+#include <synfig/string.h>
 
 namespace studio {
 

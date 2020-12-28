@@ -30,23 +30,24 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <set>
 
 #include <ETL/handle>
 
+#include <gdkmm/device.h>
+#include <gtkmm/adjustment.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/grid.h>
-#include <gtkmm/adjustment.h>
-#include <gdkmm/device.h>
 
+#include <gui/dials/zoomdial.h>
+#include <gui/duckmatic.h>
+#include <gui/instance.h>
+#include <gui/widgets/widget_ruler.h>
+
+#include <set>
+
+#include <synfig/canvas.h>
 #include <synfig/time.h>
 #include <synfig/vector.h>
-#include <synfig/canvas.h>
-
-#include "dials/zoomdial.h"
-#include "widgets/widget_ruler.h"
-#include "duckmatic.h"
-#include "instance.h"
 
 /* === M A C R O S ========================================================= */
 

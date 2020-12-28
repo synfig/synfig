@@ -32,55 +32,46 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-#include <fstream>
-#include <iostream>
+
+#include <gui/duckmatic.h>
+
 #include <algorithm>
+#include <fstream>
 
-#include <ETL/hermite>
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/ducktransform_matrix.h>
+#include <gui/ducktransform_origin.h>
+#include <gui/ducktransform_rotate.h>
+#include <gui/ducktransform_scale.h>
+#include <gui/ducktransform_translate.h>
+#include <gui/localization.h>
+#include <gui/onemoment.h>
 
-#include <synfig/general.h>
-
-#include "duckmatic.h"
-#include "ducktransform_scale.h"
-#include "ducktransform_translate.h"
-#include "ducktransform_rotate.h"
-#include <synfigapp/value_desc.h>
-#include <synfigapp/canvasinterface.h>
+#include <synfig/context.h>
+#include <synfig/curve_helper.h>
+#include <synfig/layers/layer_filtergroup.h>
+#include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/pair.h>
 #include <synfig/paramdesc.h>
-#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/segment.h>
 #include <synfig/valuenodes/valuenode_animated.h>
-#include <synfig/valuenodes/valuenode_composite.h>
-#include <synfig/valuenodes/valuenode_range.h>
-#include <synfig/valuenodes/valuenode_scale.h>
 #include <synfig/valuenodes/valuenode_bline.h>
-#include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_blinecalctangent.h>
 #include <synfig/valuenodes/valuenode_blinecalcvertex.h>
 #include <synfig/valuenodes/valuenode_blinecalcwidth.h>
-#include <synfig/valuenodes/valuenode_staticlist.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_boneinfluence.h>
 #include <synfig/valuenodes/valuenode_boneweightpair.h>
-#include <synfig/segment.h>
-#include <synfig/pair.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_range.h>
+#include <synfig/valuenodes/valuenode_scale.h>
+#include <synfig/valuenodes/valuenode_staticlist.h>
+#include <synfig/valuenodes/valuenode_timedswap.h>
+#include <synfig/valuenodes/valuenode_wplist.h>
 
-#include <synfig/curve_helper.h>
-
-#include <synfig/context.h>
-#include <synfig/layers/layer_pastecanvas.h>
-#include <synfig/layers/layer_filtergroup.h>
-
-#include <gui/app.h>
-#include "ducktransform_matrix.h"
-#include "ducktransform_rotate.h"
-#include "ducktransform_translate.h"
-#include "ducktransform_scale.h"
-#include "ducktransform_origin.h"
-#include "canvasview.h"
-
-#include "onemoment.h"
-
-#include <gui/localization.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
 
 #endif
 

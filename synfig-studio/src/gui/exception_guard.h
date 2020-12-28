@@ -2,8 +2,8 @@
 #define SYNFIG_EXCEPTION_GUARD_H
 
 #include <ETL/stringf>
-#include <synfig/general.h> // for synfig::error()
 #include <synfig/exception.h> // for synfig::Exception
+#include <synfig/general.h> // for synfig::error()
 
 #ifdef _MSC_VER
 # ifndef __PRETTY_FUNCTION__

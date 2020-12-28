@@ -28,26 +28,22 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <vector>
-
-#include <gtkmm/dialog.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
-#include <gtkmm/entry.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/comboboxtext.h>
+#include <gtkmm/dialog.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/spinbutton.h>
+
+#include <gui/dialogs/dialog_targetparam.h>
+#include <gui/renddesc.h>
 
 #include <synfig/string.h>
-#include <synfig/targetparam.h>
 #include <synfig/target.h>
 
 #include <synfigapp/canvasinterface.h>
 
-#include "renddesc.h"
-
-#include <dialogs/dialog_targetparam.h>
+#include <vector>
 
 /* === M A C R O S ========================================================= */
 

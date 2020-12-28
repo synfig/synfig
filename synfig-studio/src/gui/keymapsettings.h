@@ -26,13 +26,9 @@
 #define __SYNFIG_KEYMAPSETTINGS_H
 
 /* === H E A D E R S ======================================================= */
-#include <gtkmm/dialog.h>
-
-#include <set>
-#include <map>
-#include <string>
 
 #include <gtkmm/accelkey.h>
+#include <gtkmm/dialog.h>
 
 /* === M A C R O S ========================================================= */
 

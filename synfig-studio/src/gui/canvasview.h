@@ -29,50 +29,44 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <set>
 #include <map>
+#include <set>
 
 #ifdef WITH_JACK
 #include <jack/jack.h>
 #include <jack/transport.h>
 #endif
 
+#include <gdkmm/device.h>
+
 #include <glibmm/dispatcher.h>
 
-#include <gtkmm/grid.h>
-#include <gtkmm/statusbar.h>
-#include <gtkmm/progressbar.h>
 #include <gtkmm/button.h>
+#include <gtkmm/grid.h>
 #include <gtkmm/menu.h>
-#include <gdkmm/device.h>
+#include <gtkmm/progressbar.h>
+#include <gtkmm/radiobuttongroup.h>
+#include <gtkmm/separatortoolitem.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/statusbar.h>
+#include <gtkmm/toggleaction.h>
+#include <gtkmm/toggletoolbutton.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
-#include <gtkmm/toggletoolbutton.h>
-#include <gtkmm/separatortoolitem.h>
 #include <gtkmm/uimanager.h>
-#include <gtkmm/toggleaction.h>
-#include <gtkmm/radiobuttongroup.h>
 
 #include <ETL/clock>
 
 #include <synfig/canvas.h>
 #include <synfig/context.h>
-#include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/rect.h>
 #include <synfig/soundprocessor.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
 
-#include "instance.h"
-#include "smach.h"
-#include "render.h"
-#include "duckmatic.h"
-#include "timemodel.h"
-#include "helpers.h"
-#include "docks/dockable.h"
 #include "dialogs/canvasoptions.h"
 #include "dialogs/canvasproperties.h"
 #include "dialogs/dialog_keyframe.h"
@@ -80,14 +74,22 @@
 #include "dialogs/dialog_waypoint.h"
 #include "dials/framedial.h"
 #include "dials/jackdial.h"
-#include "dials/toggleducksdial.h"
 #include "dials/resolutiondial.h"
+#include "dials/toggleducksdial.h"
+#include "docks/dockable.h"
+#include "helpers.h"
+#include "instance.h"
+#include "render.h"
+#include "smach.h"
+#include "timemodel.h"
+#include "trees/childrentree.h"
+#include "trees/childrentreestore.h"
+#include "trees/keyframetree.h"
 #include "trees/layertree.h"
 #include "trees/layertreestore.h"
-#include "trees/childrentreestore.h"
-#include "trees/childrentree.h"
-#include "trees/keyframetree.h"
 #include "widgets/widget_keyframe_list.h"
+
+/* === M A C R O S ========================================================= */
 
 #ifndef ONION_SKIN_PAST
 #define ONION_SKIN_PAST 10
@@ -96,8 +98,6 @@
 #ifndef ONION_SKIN_FUTURE
 #define ONION_SKIN_FUTURE 10
 #endif
-
-/* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -114,7 +114,6 @@ class CanvasViewSelectionManager;
 class CellRenderer_TimeTrack;
 class CellRenderer_ValueBase;
 class WorkArea;
-class Duckmatic;
 class Widget_Enum;
 class Preview;
 struct PreviewInfo;

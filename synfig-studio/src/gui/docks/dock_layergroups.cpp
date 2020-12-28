@@ -31,6 +31,7 @@
 
 #include "docks/dock_layergroups.h"
 
+#include <gtkmm/stock.h>
 #include <gtkmm/stylecontext.h>
 
 #include <gui/actionmanagers/groupactionmanager.h>

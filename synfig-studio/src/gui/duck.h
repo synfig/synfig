@@ -33,10 +33,10 @@
 #include <set>
 #include <list>
 
-#include <sigc++/sigc++.h>
-
 #include <ETL/smart_ptr>
 #include <ETL/handle>
+
+#include <sigc++/sigc++.h>
 
 #include <synfig/vector.h>
 #include <synfig/string.h>

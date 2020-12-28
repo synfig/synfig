@@ -29,6 +29,8 @@
 
 #include "dock_timetrack2.h"
 
+#include <gtkmm/stock.h>
+
 #include <gui/widgets/widget_timetrack.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>

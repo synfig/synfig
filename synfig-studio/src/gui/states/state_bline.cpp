@@ -33,6 +33,7 @@
 
 #include <gui/states/state_bline.h>
 
+#include <gtkmm/alignment.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 

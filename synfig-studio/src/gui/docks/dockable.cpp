@@ -31,6 +31,8 @@
 
 #include "docks/dockable.h"
 
+#include <gtkmm/stock.h>
+
 #include <gui/app.h>
 #include <gui/docks/dockmanager.h>
 #include <gui/docks/dockbook.h>

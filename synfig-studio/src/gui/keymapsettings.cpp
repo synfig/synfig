@@ -31,25 +31,15 @@
 
 #include "keymapsettings.h"
 
-#include <synfig/general.h>
-
 #include <gtkmm/accelkey.h>
 #include <gtkmm/accelmap.h>
-#include <gtk/gtk.h>
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-//using namespace etl;
-//using namespace synfig;
 using namespace studio;
-
-using namespace Gtk;
-//using namespace Gtk::Menu_Helpers;
 
 /* === M A C R O S ========================================================= */
 
@@ -73,10 +63,10 @@ bool KeyMapSettings::set_key(const char *path, guint key, Gdk::ModifierType mod,
 {
 	if(gtk_accel_map_lookup_entry(path,NULL))
 	{
-		return AccelMap::change_entry(path,key,mod,replace);
+		return Gtk::AccelMap::change_entry(path,key,mod,replace);
 	}else
 	{
-		AccelMap::add_entry(path,key,mod);
+		Gtk::AccelMap::add_entry(path,key,mod);
 		return true;
 	}
 }
@@ -86,7 +76,7 @@ bool KeyMapSettings::get_key(const char *path, Gtk::AccelKey *key)
 	GtkAccelKey	ac;
 	if(gtk_accel_map_lookup_entry(path,&ac))
 	{
-		*key = AccelKey(ac.accel_key,(Gdk::ModifierType)ac.accel_mods,string(path));
+		*key = Gtk::AccelKey(ac.accel_key,(Gdk::ModifierType)ac.accel_mods,string(path));
 		return true;
 	}
 
@@ -98,7 +88,7 @@ bool KeyMapSettings::load(const char *filename)
 	string n(filename);
 	n += ".skm";
 
-	AccelMap::load(filename);
+	Gtk::AccelMap::load(filename);
 
 	return true;
 }
@@ -108,7 +98,7 @@ bool KeyMapSettings::save(const char *filename)
 	string n(filename);
 	n += ".skm";
 
-	AccelMap::save(filename);
+	Gtk::AccelMap::save(filename);
 
 	return true;
 }

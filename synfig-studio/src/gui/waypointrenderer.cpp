@@ -29,14 +29,12 @@
 #  include <config.h>
 # endif
 
-#include <cmath>
-
 #include "waypointrenderer.h"
 
+#include <cmath>
 #include <gdkmm/rgba.h>
 
 #include <synfig/interpolation.h>
-
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #endif

@@ -30,21 +30,18 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include "app.h"
-#include <iostream>
-#include "ipc.h"
-#include <stdexcept>
-
-#include <gui/localization.h>
 #include <glibmm/convert.h>
 
+#include <gui/app.h>
+#include <gui/exception_guard.h>
+#include <gui/ipc.h>
+#include <gui/localization.h>
+
 #ifdef _WIN32
-#include "main_win32.h"
+#include <gui/main_win32.h>
 #endif
 
-#include <gui/exception_guard.h>
+#include <iostream>
 
 #endif
 

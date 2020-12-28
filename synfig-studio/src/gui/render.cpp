@@ -30,30 +30,32 @@
 #	include <config.h>
 #endif
 
+#include <gui/render.h>
+
 #include <cerrno>
-#include <map>
-#include <glibmm.h>
+#include <cstring> // strerror()
 
-#include <gtkmm/frame.h>
+#include <glibmm/fileutils.h>
+#include <glibmm/miscutils.h>
+
 #include <gtkmm/alignment.h>
+#include <gtkmm/frame.h>
+#include <gtkmm/table.h>
 
-#include <synfig/general.h>
-#include <synfig/target_scanline.h>
-#include <synfig/canvas.h>
-#include <synfig/soundprocessor.h>
-
-#include "app.h"
-#include "asyncrenderer.h"
-#include "docks/dockmanager.h"
-#include "docks/dock_info.h"
-#include "dialogs/dialog_ffmpegparam.h"
-#include "dialogs/dialog_spritesheetparam.h"
-
-#include "render.h"
-
+#include <gui/app.h>
+#include <gui/asyncrenderer.h>
+#include <gui/dialogs/dialog_ffmpegparam.h>
+#include <gui/dialogs/dialog_spritesheetparam.h>
+#include <gui/docks/dockmanager.h>
+#include <gui/docks/dock_info.h>
 #include <gui/localization.h>
-
 #include <gui/progresslogger.h>
+
+#include <map>
+
+#include <synfig/canvas.h>
+#include <synfig/general.h>
+#include <synfig/soundprocessor.h>
 
 #endif
 
