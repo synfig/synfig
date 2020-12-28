@@ -438,7 +438,8 @@ private:
 
 	Gtk::ToolButton* create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action);
 	Gtk::SeparatorToolItem* create_tool_separator();
-	Gtk::Widget* create_display_bar();
+	Gtk::Widget* create_top_toolbar();
+	Gtk::Widget* create_right_toolbar();
 
 	//! Pop up menu for the bezier (bline, draw) tool (?)
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)

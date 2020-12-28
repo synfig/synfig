@@ -583,14 +583,16 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	Gtk::Widget *widget_work_area = create_work_area();
 	init_menus();
-	Gtk::Widget *widget_display_bar = create_display_bar();
+	Gtk::Widget *widget_top_bar = create_top_toolbar();
+	Gtk::Widget *widget_right_bar = create_right_toolbar();
 	Gtk::Widget *widget_time_bar = create_time_bar();
 	
 	Gtk::Grid *layout_grid = manage(new Gtk::Grid());
-	layout_grid->attach(*widget_display_bar, 0, 0, 1, 1);
+	layout_grid->attach(*widget_top_bar,     0, 0, 2, 1);
+	layout_grid->attach(*widget_right_bar,   1, 1, 1, 2);
 	layout_grid->attach(*widget_space,       0, 1, 1, 1);
 	layout_grid->attach(*widget_work_area,   0, 2, 1, 1);
-	layout_grid->attach(*widget_time_bar,    0, 3, 1, 1);
+	layout_grid->attach(*widget_time_bar,    0, 3, 2, 1);
 	layout_grid->show();
 
 	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
@@ -1119,7 +1121,7 @@ void CanvasView::toggle_render_combobox()
 }
 
 Gtk::Widget*
-CanvasView::create_display_bar()
+CanvasView::create_top_toolbar()
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
@@ -1174,93 +1176,6 @@ CanvasView::create_display_bar()
 		preview_options_button->show();
 
 		displaybar->append(*preview_options_button);
-	}
-
-	// Separator
-	displaybar->append( *create_tool_separator() );
-
-	// Setup the ToggleDuckDial widget
-	Duck::Type m = work_area->get_type_mask();
-	toggleducksdial.update_toggles(m);
-	toggleducksdial.signal_ducks_position().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_POSITION) );
-	toggleducksdial.signal_ducks_vertex().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX) );
-	toggleducksdial.signal_ducks_tangent().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT) );
-	toggleducksdial.signal_ducks_radius().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS) );
-	toggleducksdial.signal_ducks_width().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH) );
-	toggleducksdial.signal_ducks_angle().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE) );
-	toggleducksdial.insert_to_toolbar(*displaybar);
-
-	// Separator
-	displaybar->append( *create_tool_separator() );
-
-	{ // Set up the show grid toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
-		icon->show();
-
-		show_grid = Gtk::manage(new class Gtk::ToggleToolButton());
-		show_grid->set_active(work_area->grid_status());
-		show_grid->set_icon_widget(*icon);
-		show_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
-		show_grid->set_label(_("Show grid"));
-		show_grid->set_tooltip_text( _("Show grid when enabled"));
-		show_grid->show();
-
-		displaybar->append(*show_grid);
-	}
-
-	{ // Set up the snap to grid toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), iconsize));
-		icon->show();
-
-		snap_grid = Gtk::manage(new class Gtk::ToggleToolButton());
-		snap_grid->set_active(work_area->grid_status());
-		snap_grid->set_icon_widget(*icon);
-		snap_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
-		snap_grid->set_label(_("Snap to grid"));
-		snap_grid->set_tooltip_text( _("Snap to grid when enabled"));
-		snap_grid->show();
-
-		displaybar->append(*snap_grid);
-	}
-
-	{ // Set up the show guide toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_guide"), iconsize));
-		icon->show();
-
-		show_guides = Gtk::manage(new class Gtk::ToggleToolButton());
-		show_guides->set_active(work_area->get_show_guides());
-		show_guides->set_icon_widget(*icon);
-		show_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
-		show_guides->set_label(_("Show guides"));
-		show_guides->set_tooltip_text(_("Show guides when enabled"));
-		show_guides->show();
-
-		displaybar->append(*show_guides);
-	}
-
-	{ // Set up the snap to guides toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_guide"), iconsize));
-		icon->show();
-
-		snap_guides = Gtk::manage(new class Gtk::ToggleToolButton());
-		snap_guides->set_active(work_area->get_guide_snap());
-		snap_guides->set_icon_widget(*icon);
-		snap_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
-		snap_guides->set_label(_("Snap to guides"));
-		snap_guides->set_tooltip_text(_("Snap to guides when enabled"));
-		snap_guides->show();
-
-		displaybar->append(*snap_guides);
 	}
 
 	// Separator
@@ -1404,6 +1319,105 @@ CanvasView::create_display_bar()
 	grid->show();
 
 	return grid;
+}
+
+Gtk::Widget*
+CanvasView::create_right_toolbar()
+{
+	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+
+	displaybar = manage(new class Gtk::Toolbar());
+	displaybar->set_icon_size(iconsize);
+	displaybar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
+	displaybar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
+
+	// Setup the ToggleDuckDial widget
+	Duck::Type m = work_area->get_type_mask();
+	toggleducksdial.update_toggles(m);
+	toggleducksdial.signal_ducks_position().connect(
+		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_POSITION) );
+	toggleducksdial.signal_ducks_vertex().connect(
+		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX) );
+	toggleducksdial.signal_ducks_tangent().connect(
+		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT) );
+	toggleducksdial.signal_ducks_radius().connect(
+		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS) );
+	toggleducksdial.signal_ducks_width().connect(
+		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH) );
+	toggleducksdial.signal_ducks_angle().connect(
+		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE) );
+	toggleducksdial.insert_to_toolbar(*displaybar);
+
+	// Separator
+	displaybar->append( *create_tool_separator() );
+
+	{ // Set up the show grid toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
+		icon->show();
+
+		show_grid = Gtk::manage(new class Gtk::ToggleToolButton());
+		show_grid->set_active(work_area->grid_status());
+		show_grid->set_icon_widget(*icon);
+		show_grid->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
+		show_grid->set_label(_("Show grid"));
+		show_grid->set_tooltip_text( _("Show grid when enabled"));
+		show_grid->show();
+
+		displaybar->append(*show_grid);
+	}
+
+	{ // Set up the snap to grid toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), iconsize));
+		icon->show();
+
+		snap_grid = Gtk::manage(new class Gtk::ToggleToolButton());
+		snap_grid->set_active(work_area->grid_status());
+		snap_grid->set_icon_widget(*icon);
+		snap_grid->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
+		snap_grid->set_label(_("Snap to grid"));
+		snap_grid->set_tooltip_text( _("Snap to grid when enabled"));
+		snap_grid->show();
+
+		displaybar->append(*snap_grid);
+	}
+
+	{ // Set up the show guide toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_guide"), iconsize));
+		icon->show();
+
+		show_guides = Gtk::manage(new class Gtk::ToggleToolButton());
+		show_guides->set_active(work_area->get_show_guides());
+		show_guides->set_icon_widget(*icon);
+		show_guides->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
+		show_guides->set_label(_("Show guides"));
+		show_guides->set_tooltip_text(_("Show guides when enabled"));
+		show_guides->show();
+
+		displaybar->append(*show_guides);
+	}
+
+	{ // Set up the snap to guides toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_guide"), iconsize));
+		icon->show();
+
+		snap_guides = Gtk::manage(new class Gtk::ToggleToolButton());
+		snap_guides->set_active(work_area->get_guide_snap());
+		snap_guides->set_icon_widget(*icon);
+		snap_guides->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
+		snap_guides->set_label(_("Snap to guides"));
+		snap_guides->set_tooltip_text(_("Snap to guides when enabled"));
+		snap_guides->show();
+
+		displaybar->append(*snap_guides);
+	}
+
+	displaybar->show();
+
+	return displaybar;
 }
 
 void CanvasView::grab_focus()
