@@ -245,9 +245,9 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	//Have a look to global function init_ui_manager() from app.cpp for "accel_path" definition
 	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);
 	//Gets the, is exist, accelerator representation for labels
-	Glib::ustring accel_path = !key.is_null() ? key.get_abbrev () :"";
+	Glib::ustring accel_path = key.is_null() ? "" : gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
 	
-	tool_button->set_tooltip_text(stock_item.get_label()+" "+accel_path);
+	tool_button->set_tooltip_text(stock_item.get_label()+"  "+accel_path);
 	tool_button->show();
 
 	tool_item_group->insert(*tool_button);
