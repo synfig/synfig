@@ -31,19 +31,15 @@
 #	include <config.h>
 #endif
 
-
-#include <gtkmm/label.h>
-#include <gtkmm/frame.h>
-#include <gtkmm/alignment.h>
-#include <gtkmm/box.h>
-#include <gtkmm/grid.h>
-#include <gtkmm/drawingarea.h>
+#include <gui/renddesc.h>
 
 #include <ETL/misc>
 
-#include <synfig/general.h>
-
-#include "renddesc.h"
+#include <gtkmm/alignment.h>
+#include <gtkmm/box.h>
+#include <gtkmm/drawingarea.h>
+#include <gtkmm/grid.h>
+#include <gtkmm/label.h>
 
 #include <gui/localization.h>
 

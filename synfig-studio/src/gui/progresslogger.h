@@ -23,8 +23,8 @@
 #ifndef SYNFIG_STUDIO_PROGRESSLOGGER_H
 #define SYNFIG_STUDIO_PROGRESSLOGGER_H
 
-#include <synfig/progresscallback.h>
 #include <mutex>
+#include <synfig/progresscallback.h>
 
 namespace studio {
 

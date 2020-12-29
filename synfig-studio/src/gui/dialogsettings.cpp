@@ -31,14 +31,14 @@
 #endif
 
 #include "dialogsettings.h"
-#include <synfigapp/main.h>
+
 #include <gdkmm/general.h>
+#include <synfigapp/main.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

@@ -27,11 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/vector.h>
-#include "event_mouse.h"
+#include <gui/event_mouse.h>
 #include <synfig/layer.h>
-#include "smach.h"
-#include <gdkmm/types.h>
 
 /* === M A C R O S ========================================================= */
 

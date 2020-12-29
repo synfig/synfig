@@ -29,9 +29,9 @@
 #	include <config.h>
 #endif
 
-#include "resourcehelper.h"
+#include <resourcehelper.h>
 
-#include "app.h"
+#include <gui/app.h>
 
 #endif
 

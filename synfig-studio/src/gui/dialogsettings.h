@@ -27,8 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfigapp/settings.h>
 #include <gtkmm/window.h>
+#include <synfigapp/settings.h>
 
 /* === M A C R O S ========================================================= */
 

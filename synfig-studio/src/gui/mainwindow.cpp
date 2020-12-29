@@ -29,27 +29,24 @@
 #	include <config.h>
 #endif
 
-#include "mainwindow.h"
-#include "canvasview.h"
-#include "docks/dockable.h"
-#include "docks/dockbook.h"
-#include "docks/dockmanager.h"
-#include "dialogs/dialog_input.h"
+#include <gui/mainwindow.h>
 
-#include <synfigapp/main.h>
-
-#include <gtkmm/menubar.h>
 #include <gtkmm/box.h>
-
+#include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
-#include "gui/widgets/widget_time.h"
-#include "gui/widgets/widget_vector.h"
-
 #include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/dialogs/dialog_input.h>
+#include <gui/docks/dockable.h>
+#include <gui/docks/dockbook.h>
+#include <gui/docks/dockmanager.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/widgets/widget_time.h>
+#include <gui/widgets/widget_vector.h>
 
+#include <synfigapp/main.h>
 
 #endif
 

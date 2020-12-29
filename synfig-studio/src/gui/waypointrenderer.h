@@ -26,13 +26,8 @@
 #define __SYNFIG_STUDIO_WAYPOINTRENDERER_H
 
 /* === H E A D E R S ======================================================= */
-#include <gdkmm/rectangle.h>
-#include <cairomm/context.h>
-
-#include <synfig/node.h>
-
-#include "synfigapp/value_desc.h"
-#include "gui/timeplotdata.h"
+#include <gui/timeplotdata.h>
+#include <synfigapp/value_desc.h>
 
 /* === M A C R O S ========================================================= */
 

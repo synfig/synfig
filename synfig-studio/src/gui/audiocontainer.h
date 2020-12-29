@@ -26,12 +26,11 @@
 #define __SYNFIG_AUDIOCONTAINER_H
 
 /* === H E A D E R S ======================================================= */
-#include <sigc++/sigc++.h>
-
 #include <ETL/handle>
 
-#include <vector>
+#include <sigc++/sigc++.h>
 #include <string>
+#include <vector>
 
 /* === M A C R O S ========================================================= */
 const float DEF_DISPLAYSAMPLERATE = 400;

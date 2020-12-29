@@ -34,6 +34,7 @@
 
 #include <gui/states/state_draw.h>
 
+#include <gtkmm/alignment.h>
 #include <gtkmm/radiobutton.h>
 
 #include <gui/app.h>

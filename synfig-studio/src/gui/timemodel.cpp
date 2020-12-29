@@ -30,16 +30,10 @@
 #	include <config.h>
 #endif
 
+#include <gui/timemodel.h>
+
 #include <algorithm>
-
-#include <synfig/general.h>
-
-#include "app.h"
-#include "helpers.h"
-
-#include "timemodel.h"
-
-#include <gui/localization.h>
+#include <gui/helpers.h>
 
 #endif
 

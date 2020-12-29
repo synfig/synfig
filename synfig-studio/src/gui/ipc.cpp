@@ -30,17 +30,7 @@
 #	include <config.h>
 #endif
 
-#include <atomic>
-
 #include "ipc.h"
-
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
-#ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
-#endif
 
 #ifdef __OpenBSD__
 #include <errno.h>
@@ -48,22 +38,30 @@
 #include <sys/errno.h>
 #endif
 
-#include "app.h"
+//#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+//#endif
+
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_FCNTL_H
-#include <fcntl.h>
-#endif
+#include <atomic>
+
+#include <glibmm/dispatcher.h>
+#include <glibmm/miscutils.h> //Glib::build_filename and Glib::signal_io
+
+#include <gui/app.h>
 
 #include <synfig/general.h>
-
-#include "docks/dock_toolbox.h"
-#include <glibmm/dispatcher.h>
-#include <mutex>
-#include <thread>
 #include <synfig/string.h>
 #include <synfigapp/main.h>
 #ifdef _WIN32
@@ -72,9 +70,10 @@
 #define read	_read
 #include <io.h>
 #include <fcntl.h>
+#include <mutex>
+#include <thread>
+#else
 #endif
-
-#include <glibmm/miscutils.h> //Glib::build_filename
 
 #endif
 

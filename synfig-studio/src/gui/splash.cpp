@@ -33,25 +33,24 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include "splash.h"
 
 #include <string>
 
+#include <gtkmm/fixed.h>
+#include <gtkmm/frame.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
-#include <gtkmm/frame.h>
-#include <gtkmm/fixed.h>
 #include <gdkmm/rgba.h>
 
-#include "splash.h"
-#include "app.h"
-
+#include <gui/app.h>
 #include <gui/localization.h>
-#include "gui/resourcehelper.h"
+#include <gui/resourcehelper.h>
+
+#include <synfig/general.h>
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace studio;
 
@@ -59,7 +58,6 @@ using namespace studio;
 
 #ifndef VERSION
 #define VERSION	"unknown"
-#define PACKAGE	"synfigstudio"
 #endif
 
 #ifndef IMAGE_EXT

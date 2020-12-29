@@ -33,6 +33,8 @@
 
 #include <gui/states/state_polygon.h>
 
+#include <gtkmm/alignment.h>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dialog_tooloptions.h>

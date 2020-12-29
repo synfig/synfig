@@ -27,9 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/vector.h>
-#include "smach.h"
 #include <gdkmm/types.h>
+#include <gui/smach.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 

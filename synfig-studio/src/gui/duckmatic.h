@@ -29,14 +29,15 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <ETL/smart_ptr>
+#include <ETL/handle>
+
+#include <gui/duck.h>
+
 #include <list>
 #include <map>
 #include <set>
-
 #include <sigc++/sigc++.h>
-
-#include <ETL/smart_ptr>
-#include <ETL/handle>
 
 #include <synfig/vector.h>
 #include <synfig/string.h>
@@ -44,8 +45,6 @@
 #include <synfig/time.h>
 #include <synfig/color.h>
 #include <synfig/guidset.h>
-
-#include "duck.h"
 
 /* === M A C R O S ========================================================= */
 

@@ -28,11 +28,14 @@
 # ifdef HAVE_CONFIG_H
 #  include <config.h>
 # endif
-# include "workspacehandler.h"
-# include <algorithm>
-# include <fstream>
-# include "synfig/general.h"
-# include "gui/localization.h"
+
+#include "workspacehandler.h"
+
+#include <algorithm>
+#include <fstream>
+
+#include <gui/localization.h>
+#include <synfig/general.h>
 #endif
 
 using namespace studio;

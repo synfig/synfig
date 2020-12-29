@@ -31,6 +31,8 @@
 #	include <config.h>
 #endif
 
+#include "devicetracker.h"
+
 #include <gdkmm/device.h>
 #include <gdkmm/displaymanager.h>
 
@@ -42,8 +44,6 @@
 #endif
 
 #include <synfigapp/main.h>
-
-#include "devicetracker.h"
 
 #endif
 

@@ -29,10 +29,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/window.h>
 #include <gtkmm/label.h>
-#include <gtkmm/button.h>
 #include <gtkmm/progressbar.h>
+#include <gtkmm/window.h>
 
 /* === M A C R O S ========================================================= */
 

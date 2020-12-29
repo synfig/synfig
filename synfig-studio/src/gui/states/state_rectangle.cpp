@@ -33,6 +33,8 @@
 
 #include <gui/states/state_rectangle.h>
 
+#include <gtkmm/alignment.h>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/event_mouse.h>

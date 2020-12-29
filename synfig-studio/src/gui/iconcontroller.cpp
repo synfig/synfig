@@ -34,25 +34,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "iconcontroller.h"
-#include <synfig/valuenodes/valuenode_const.h>
+
 #include <gtkmm/button.h>
+#include <gtkmm/stock.h>
 #include <gtkmm/window.h>
-#include <synfigapp/action.h>
-#include <synfig/interpolation.h>
-
-#include <gdkmm.h>
-
 #include <gui/localization.h>
+#include <synfig/general.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfigapp/action.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace etl;
-using namespace std;
 using namespace studio;
 using namespace synfig;
 

@@ -31,6 +31,7 @@
 
 #include <gui/states/state_bone.h>
 
+#include <gtkmm/alignment.h>
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/separatormenuitem.h>
 

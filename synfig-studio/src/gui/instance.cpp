@@ -33,46 +33,44 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/instance.h>
 
 #include <cassert>
 #include <cerrno>
+#include <fstream>
+#include <giomm.h>
 
-#include <sys/stat.h>
+#include <gtkmm/actiongroup.h>
+#include <gtkmm/button.h>
+#include <gtkmm/image.h>
+#include <gtkmm/imagemenuitem.h>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/separatormenuitem.h>
+#include <gtkmm/stock.h>
+
+#include <gui/app.h>
+#include <gui/autorecover.h>
+#include <gui/canvasview.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/iconcontroller.h>
+#include <gui/localization.h>
+#include <gui/onemoment.h>
+#include <gui/widgets/widget_waypointmodel.h>
+#include <gui/workarea.h>
+
 #include <sigc++/sigc++.h>
 
-#include <giomm.h>
-#include <fstream>
-
-#include <gtkmm/stock.h>
-#include <gtkmm/image.h>
-#include <gtkmm/menuitem.h>
-#include <gtkmm/imagemenuitem.h>
-#include <gtkmm/separatormenuitem.h>
-#include <gtkmm/button.h>
-#include <gtkmm/actiongroup.h>
-
-#include <synfig/savecanvas.h>
 #include <synfig/canvasfilenaming.h>
+#include <synfig/general.h>
 #include <synfig/layers/layer_switch.h>
+#include <synfig/savecanvas.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_duplicate.h>
 #include <synfig/widthpoint.h>
 #include <synfig/zstreambuf.h>
 
-#include "instance.h"
-#include "canvasview.h"
-#include "app.h"
-#include "onemoment.h"
-#include "autorecover.h"
-#include "iconcontroller.h"
-#include "workarea.h"
-
-#include "docks/dock_toolbox.h"
-#include "widgets/widget_waypointmodel.h"
-
-#include <gui/localization.h>
+#include <sys/stat.h>
 
 #endif
 

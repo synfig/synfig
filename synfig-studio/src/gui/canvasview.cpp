@@ -33,54 +33,53 @@
 #	include <config.h>
 #endif
 
-#include <sstream>
+#include <gui/canvasview.h>
+
 #include <algorithm>
 #include <cmath>
 
-#include <gtkmm/messagedialog.h>
-#include <gtkmm/eventbox.h>
-#include <gtkmm/label.h>
-#include <gtkmm/menuitem.h>
-#include <gtkmm/imagemenuitem.h>
-#include <gtkmm/separatormenuitem.h>
-#include <gtkmm/toolitem.h>
-#include <gtkmm/toolbutton.h>
-#include <gtkmm/stylecontext.h>
-#include <gtkmm/hvseparator.h>
-#include <gtkmm/radioaction.h>
-
-#include <glibmm/uriutils.h>
 #include <glibmm/convert.h>
+#include <glibmm/uriutils.h>
+
+#include <gtkmm/alignment.h>
+#include <gtkmm/eventbox.h>
+#include <gtkmm/hvseparator.h>
+#include <gtkmm/imagemenuitem.h>
+#include <gtkmm/label.h>
+#include <gtkmm/messagedialog.h>
+#include <gtkmm/menuitem.h>
+#include <gtkmm/radioaction.h>
+#include <gtkmm/separatormenuitem.h>
+#include <gtkmm/stock.h>
+#include <gtkmm/stylecontext.h>
+#include <gtkmm/toolbutton.h>
+#include <gtkmm/toolitem.h>
+
+#include <gui/app.h>
+#include <gui/dials/keyframedial.h>
+#include <gui/docks/dockbook.h>
+#include <gui/docks/dockmanager.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/eventkey.h>
+#include <gui/exception_guard.h>
+#include <gui/localization.h>
+#include <gui/preview.h>
+#include <gui/states/state_normal.h>
+#include <gui/widgets/widget_canvastimeslider.h>
+#include <gui/widgets/widget_enum.h>
+#include <gui/workarea.h>
+
+#include <pangomm.h>
+#include <sstream>
+#include <string>
 
 #include <synfig/valuenodes/valuenode_animated.h>
 
-#include <synfigapp/uimanager.h>
 #include <synfigapp/canvasinterface.h>
-#include <synfigapp/selectionmanager.h>
-
-#include "canvasview.h"
-#include "app.h"
-#include "workarea.h"
-#include "eventkey.h"
-
-#include "states/state_normal.h"
-
-#include "docks/dockmanager.h"
-#include "docks/dockbook.h"
-#include "docks/dock_toolbox.h"
-
-#include "preview.h"
-#include "widgets/widget_canvastimeslider.h"
-#include "widgets/widget_enum.h"
-#include "dials/keyframedial.h"
-
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
-
-#include <pangomm.h>
-
-#include <gui/exception_guard.h>
-#include <gui/localization.h>
+#include <synfigapp/selectionmanager.h>
+#include <synfigapp/uimanager.h>
 
 #endif
 

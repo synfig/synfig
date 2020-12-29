@@ -27,12 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/stock.h>
-#include <gtkmm/iconfactory.h>
-#include <gtkmm/iconset.h>
 #include <gdkmm/cursor.h>
+#include <gtkmm/iconfactory.h>
 
-#include <synfig/value.h>
+#include <synfig/interpolation.h>
+#include <synfig/type.h>
 
 /* === M A C R O S ========================================================= */
 

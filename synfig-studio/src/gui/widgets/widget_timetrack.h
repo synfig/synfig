@@ -23,11 +23,11 @@
 #ifndef SYNFIG_STUDIO_WIDGET_TIMETRACK_H
 #define SYNFIG_STUDIO_WIDGET_TIMETRACK_H
 
-
-#include <gui/widgets/widget_timegraphbase.h>
-#include <gui/selectdraghelper.h>
-
 #include <gtkmm/treeview.h>
+
+#include <gui/canvasview.h>
+#include <gui/selectdraghelper.h>
+#include <gui/widgets/widget_timegraphbase.h>
 
 namespace studio {
 

@@ -32,47 +32,30 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/preview.h>
 
-#include "preview.h"
-#include "app.h"
-#include "audiocontainer.h"
-#include <gtkmm/stock.h>
-#include <gtkmm/separator.h>
 #include <gdkmm/general.h>
 
-#include <synfig/target_scanline.h>
-#include <synfig/target_cairo.h>
-#include <synfig/surface.h>
+#include <gtkmm/alignment.h>
+#include <gtkmm/stock.h>
 
-#include <algorithm>
-#include "asyncrenderer.h"
-#include "canvasview.h"
-
-#include <cmath>
-#include <cassert>
-#include <algorithm>
-#include <cstdio>
-#include <ctype.h>
-#include <synfig/string.h>
-#include <gui/helpers.h>
-
-#include <gui/localization.h>
-#include <cairomm/context.h>
-#include <cairomm/enums.h>
-
+#include <gui/app.h>
+#include <gui/asyncrenderer.h>
+#include <gui/canvasview.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+
+#include <synfig/string.h>
+#include <synfig/surface.h>
+#include <synfig/target_scanline.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
-
-#define tolower ::tolower
 
 /* === M A C R O S ========================================================= */
 

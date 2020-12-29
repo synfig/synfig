@@ -27,12 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-#include <gtkmm/window.h>
-#include <gtkmm/box.h>
-#include <gtkmm/notebook.h>
 #include <gtkmm/actiongroup.h>
-#include <gtkmm/toggleaction.h>
+#include <gtkmm/window.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */

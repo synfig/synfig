@@ -33,6 +33,8 @@
 
 #include "state_text.h"
 
+#include <gtkmm/alignment.h>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>

@@ -29,19 +29,18 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/table.h>
-#include <gtkmm/frame.h>
-#include <gtkmm/scale.h>
-#include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/frame.h>
 #include <gtkmm/notebook.h>
+#include <gtkmm/scale.h>
+#include <gtkmm/spinbutton.h>
+
+#include <gui/widgets/widget_link.h>
+#include <gui/widgets/widget_time.h>
+#include <gui/widgets/widget_vector.h>
 
 #include <synfig/renddesc.h>
-
-#include "widgets/widget_vector.h"
-#include "widgets/widget_time.h"
-#include "widgets/widget_link.h"
 
 /* === M A C R O S ========================================================= */
 

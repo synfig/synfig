@@ -32,6 +32,7 @@
 #include <glibmm/convert.h> // Glib::filename_from_uri
 #include <gtkmm/stylecontext.h>
 
+#include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 #include <gui/widgets/widget_soundwave.h>

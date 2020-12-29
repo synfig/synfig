@@ -28,11 +28,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "gui/timemodel.h"
-#include <synfig/time.h>
-
-#include <gtkmm/widget.h>
 #include <gtkmm/adjustment.h>
+#include <gtkmm/widget.h>
+
+#include <gui/timemodel.h>
 
 /* === M A C R O S ========================================================= */
 

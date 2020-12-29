@@ -29,22 +29,18 @@
 #	include <config.h>
 #endif
 
-#include <ETL/clock>
-
 #include "audiocontainer.h"
 
-#include <vector>
+#include <ETL/clock>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 
 /* === M A C R O S ========================================================= */
-#ifdef __WIN32
-#else //linux...
+#ifndef __WIN32
 #define AUDIO_OUTPUT	FSOUND_OUTPUT_OSS
 #endif
 
