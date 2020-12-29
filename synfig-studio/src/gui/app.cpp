@@ -1333,10 +1333,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	}
 }
 
-#ifdef _WIN32
-#define mkdir(x,y) mkdir(x)
-#endif
-
 /* === M E T H O D S ======================================================= */
 
 App::App(const synfig::String& basepath, int *argc, char ***argv):
