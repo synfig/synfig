@@ -1,3 +1,10 @@
+# base image (VS2019 has newer MSYS)
+image: Visual Studio 2019
+
+# avoid building 32-bit if 64-bit failed already
+matrix:
+  fast_finish: true
+
 environment:
   CCACHE_DIR: "%APPVEYOR_BUILD_FOLDER%\\.ccache"
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
@@ -13,5 +20,13 @@ cache:
 
 build_script:
   - '%APPVEYOR_BUILD_FOLDER%\autobuild\msys2\appveyor.bat'
+
+# scripts to run after build (working directory and environment changes are persisted from the previous steps)
+after_build:
+  - cmd: set SYNFIG_ID="%APPVEYOR_REPO_COMMIT_TIMESTAMP:~0,10%-win%MSYSTEM:~-2%-%APPVEYOR_REPO_COMMIT:~0,5%"
+  - cmd: call 7z a "SynfigStudio-1.5.0-testing-%SYNFIG_ID%.zip" %APPVEYOR_BUILD_FOLDER%\cmake-build-msys\install\*
+
+artifacts:
+  - path: "SynfigStudio-*.zip"
 
 deploy: off
