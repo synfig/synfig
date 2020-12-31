@@ -96,6 +96,7 @@ target_link_libraries(synfigstudio
 	${Gettext_LIBRARIES}
 	${MLT_LIBRARIES} # required for widget_soundwave
 	${LIBXML_LIBRARIES} # required for gui/pluginmanager
+	${FONT_CONFIG_LIBRARIES}
 	synfig
 	synfigapp
 )
