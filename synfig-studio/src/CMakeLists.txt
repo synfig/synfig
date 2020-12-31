@@ -16,19 +16,38 @@ if (Gettext_FOUND)
     set(GETTEXT_PACKAGE ${PROJECT_NAME})
 endif()
 
-## TODO: check if we really need to find deps common with synfig core
-include(FindPkgConfig)
-if(PKG_CONFIG_FOUND)
-    pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
-    pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
-    pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
-    pkg_check_modules(MLT REQUIRED mlt++) # required for widget_soundwave
+if(VCPKG_TOOLCHAIN)
+	set(GTKMM_LIBRARIES
+		${ATK_LIBRARY} ${ATKMM_LIBRARY}
+		${CAIROMM_LIBRARY}
+		${GDK_LIBRARY}
+		${GDKMM_LIBRARY}
+		${GIOMM_LIBRARY}
+		${GLIB_LIBRARIES}
+		${GLIBMM_LIBRARY}
+		${GTK_LIBRARY}
+		${GTKMM_LIBRARY}
+		${PANGOMM_LIBRARY}
+	)
+else()
+	## TODO: check if we really need to find deps common with synfig core
+	include(FindPkgConfig)
+	if(PKG_CONFIG_FOUND)
+		pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
+		pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
+		pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
+		pkg_check_modules(MLT REQUIRED mlt++) # required for widget_soundwave
+	endif()
+
+	foreach(pkg_config_lib SIGCPP GTKMM LIBXML MLT FFTW)
+		include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
+		link_directories(${${pkg_config_lib}_LIBRARY_DIRS})
+	endforeach()
 endif()
 
-foreach(pkg_config_lib SIGCPP GTKMM LIBXML MLT FFTW)
-    include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
-    link_directories(${${pkg_config_lib}_LIBRARY_DIRS})
-endforeach()
+if(FONT_CONFIG_FOUND)
+	add_definitions(-DWITH_FONTCONFIG)
+endif()
 
 ##
 ## Config
