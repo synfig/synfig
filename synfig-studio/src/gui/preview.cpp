@@ -466,7 +466,7 @@ Widget_Preview::Widget_Preview():
 	//re-preview
 	button = manage(new Gtk::Button());
 	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button, "synfig-preview_options", _("Open Preview Settings Dialog"));
+	IMAGIFY_BUTTON(button, "synfig-preview_options", _("Preview Settings"));
 
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
