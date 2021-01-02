@@ -28,13 +28,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <list>
-
-#include <synfigapp/value_desc.h>
-
+#include <gui/selectdraghelper.h>
 #include <gui/widgets/widget_timegraphbase.h>
-
-#include "selectdraghelper.h"
+#include <list>
+#include <synfigapp/value_desc.h>
 
 /* === M A C R O S ========================================================= */
 

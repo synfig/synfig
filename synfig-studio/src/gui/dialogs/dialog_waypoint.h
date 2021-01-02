@@ -27,33 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtk/gtk.h>
-#include <gtkmm/arrow.h>
-#include <gtkmm/image.h>
-#include <gdkmm/pixbufloader.h>
-#include <gtkmm/viewport.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/table.h>
-#include <gtkmm/statusbar.h>
-#include <gtkmm/button.h>
-#include <gtkmm/progressbar.h>
-#include <gtkmm/paned.h>
-#include <gtkmm/treeview.h>
-#include <gtkmm/treestore.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/box.h>
-#include <gtkmm/scrollbar.h>
-#include <gtkmm/cellrenderer.h>
-
 #include <gtkmm/dialog.h>
-#include <gtkmm/menu.h>
-
 
 #include <synfigapp/value_desc.h>
 #include <synfig/valuenodes/valuenode_animated.h>
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-#include <synfig/string.h>
-#include <synfig/time.h>
 
 /* === M A C R O S ========================================================= */
 

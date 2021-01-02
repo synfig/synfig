@@ -23,8 +23,8 @@
 #ifndef SYNFIG_STUDIO_WIDGET_SOUNDWAVE_H
 #define SYNFIG_STUDIO_WIDGET_SOUNDWAVE_H
 
-#include <gui/widgets/widget_timegraphbase.h>
 #include <gui/selectdraghelper.h>
+#include <gui/widgets/widget_timegraphbase.h>
 
 namespace studio {
 

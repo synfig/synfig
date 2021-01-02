@@ -28,9 +28,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/box.h>
-#include <gtkmm/adjustment.h>
-#include <synfig/vector.h>
 #include <synfig/canvas.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 

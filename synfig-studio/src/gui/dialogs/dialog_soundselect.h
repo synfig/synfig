@@ -30,9 +30,8 @@
 
 #include <gtkmm/dialog.h>
 
-#include "docks/dockdialog.h"
-#include "widgets/widget_filename.h"
-#include "widgets/widget_time.h"
+#include <gui/widgets/widget_filename.h>
+#include <gui/widgets/widget_time.h>
 
 #include <synfigapp/canvasinterface.h>
 

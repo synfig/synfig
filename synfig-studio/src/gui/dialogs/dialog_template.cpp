@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "dialog_template.h"
+#include <gui/dialogs/dialog_template.h>
 
 #include <gtkmm/eventbox.h>
 

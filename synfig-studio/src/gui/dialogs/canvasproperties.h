@@ -30,8 +30,6 @@
 #include <ETL/handle>
 
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
 #include <gtkmm/entry.h>
 
 #include <gui/renddesc.h>
@@ -42,8 +40,8 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class TreeView; };
-namespace synfigapp { class CanvasInterface; };
+namespace Gtk { class TreeView; }
+namespace synfigapp { class CanvasInterface; }
 
 namespace studio
 {

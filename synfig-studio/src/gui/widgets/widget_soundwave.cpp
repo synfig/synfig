@@ -27,24 +27,23 @@
 #	include <config.h>
 #endif
 
-#include "widget_soundwave.h"
+#include <gui/widgets/widget_soundwave.h>
 
-#include <synfig/general.h>
-#include <gui/canvasview.h>
-#include <gui/timeplotdata.h>
+#include <cairomm/cairomm.h>
+#include <gdkmm.h>
+#include <glibmm/convert.h>
 
+#include <gui/exception_guard.h>
+#include <gui/helpers.h>
 #include <gui/localization.h>
+#include <gui/timeplotdata.h>
 
 #ifndef WITHOUT_MLT
 #include <Mlt.h>
 #endif
 
-#include <cairomm/cairomm.h>
-#include <gdkmm.h>
-#include <glibmm/convert.h>
-#include <cstring>
+#include <synfig/general.h>
 
-#include <gui/exception_guard.h>
 #endif
 
 using namespace studio;

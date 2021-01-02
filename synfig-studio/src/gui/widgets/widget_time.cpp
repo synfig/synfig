@@ -31,19 +31,15 @@
 #	include <config.h>
 #endif
 
-#include "widgets/widget_time.h"
-#include "app.h"
+#include <gui/widgets/widget_time.h>
 
-#include <gui/localization.h>
-
+#include <gui/app.h>
 #include <gui/exception_guard.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-//using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -129,7 +125,7 @@ Widget_Time::refresh_value()
 	}
 	catch(...)
 	{
-		throw string("Caught unknown exception");
+		throw std::string("Caught unknown exception");
 	}
 }
 

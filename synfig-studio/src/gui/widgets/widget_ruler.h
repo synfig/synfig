@@ -27,8 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/sigc++.h>
-
 #include <gtkmm/drawingarea.h>
 #include <pangomm/layout.h>
 

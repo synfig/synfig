@@ -30,20 +30,15 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/widgets/widget_canvaschooser.h>
 
-#include "widgets/widget_canvaschooser.h"
-#include <gtkmm/menu.h>
-#include "app.h"
-
+#include <gui/app.h>
 #include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -55,8 +50,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_CanvasChooser::Widget_CanvasChooser():
-	canvas_menu(NULL)
+Widget_CanvasChooser::Widget_CanvasChooser()
 { }
 
 Widget_CanvasChooser::~Widget_CanvasChooser()

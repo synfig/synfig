@@ -27,7 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/sigc++.h>
 #include <gtkmm/entry.h>
 #include <synfig/time.h>
 

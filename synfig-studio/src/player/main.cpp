@@ -1,21 +1,22 @@
 
+#include <glibmm/init.h>
+
+#include <gtkmm/application.h>
+
 #include <iostream>
+
+#include <synfig/filesystemnative.h>
+#include <synfig/general.h>
+#include <synfig/loadcanvas.h>
+#include <synfig/main.h>
+
 #include <vector>
+
+#include "visualizationwindow.h"
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
-
-#include <glibmm.h>
-
-#include <gtkmm/application.h>
-
-#include <synfig/general.h>
-#include <synfig/main.h>
-#include <synfig/loadcanvas.h>
-#include <synfig/filesystemnative.h>
-
-#include "visualizationwindow.h"
 
 
 using namespace synfig;

@@ -33,25 +33,21 @@
 #	include <config.h>
 #endif
 
-#include "dialogs/dialog_setup.h"
+#include <gui/dialogs/dialog_setup.h>
 
-#include <gtkmm/eventbox.h>
-#include <gtkmm/scale.h>
+#include <gtkmm/filechooserdialog.h>
 
-#include "canvasview.h"
-#include "widgets/widget_enum.h"
-#include "autorecover.h"
-#include "duck.h"
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/duck.h>
+#include <gui/localization.h>
+#include <gui/resourcehelper.h>
+#include <gui/widgets/widget_enum.h>
+#include <gui/autorecover.h>
 
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/main.h>
-
-#include <gui/resourcehelper.h>
-
-#include <gui/localization.h>
-
-#include <gtkmm/filechooserdialog.h>
 
 #endif
 

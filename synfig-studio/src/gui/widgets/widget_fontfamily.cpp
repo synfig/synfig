@@ -30,14 +30,12 @@
 #	include <config.h>
 #endif
 
-#include "widgets/widget_fontfamily.h"
-
-#include <gui/localization.h>
+#include <gui/widgets/widget_fontfamily.h>
 
 #ifdef WITH_FONTCONFIG
 #include <fontconfig/fontconfig.h>
-#include <set>
 #include <mutex>
+#include <set>
 #endif
 
 #endif

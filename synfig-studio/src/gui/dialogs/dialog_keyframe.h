@@ -27,12 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/dialog.h>
-#include <gtkmm/window.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/grid.h>
-#include <gtkmm/entry.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/dialog.h>
+#include <gtkmm/entry.h>
 
 #include <synfigapp/canvasinterface.h>
 

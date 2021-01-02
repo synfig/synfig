@@ -27,13 +27,11 @@
 #define __SYNFIG_STUDIO_DIALOG_FFMPEGPARAM_H
 
 /* === H E A D E R S ======================================================= */
-#include <gtkmm/dialog.h>
-#include <gtkmm/button.h>
+
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>
 
-#include <synfig/targetparam.h>
-#include "dialogs/dialog_targetparam.h"
+#include <gui/dialogs/dialog_targetparam.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -27,21 +27,16 @@
 #	include <config.h>
 #endif
 
-#include "widget_timetrack.h"
+#include <gui/widgets/widget_timetrack.h>
 
-#include <gui/canvasview.h>
+#include <gui/exception_guard.h>
+#include <gui/localization.h>
 #include <gui/timeplotdata.h>
 #include <gui/waypointrenderer.h>
-
-#include <gui/localization.h>
-
-#include <cairomm/cairomm.h>
-#include <gdkmm.h>
 
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
 
-#include <gui/exception_guard.h>
 #endif
 
 #ifdef _MSC_VER

@@ -49,6 +49,7 @@
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/radioaction.h>
+#include <gtkmm/scrollbar.h>
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/stylecontext.h>

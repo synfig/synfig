@@ -29,37 +29,26 @@
 #	include <config.h>
 #endif
 
-#include <gtk/gtk.h>
-#include <gtkmm/label.h>
-#include <gtkmm/celleditable.h>
-#include <gtkmm/editable.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/eventbox.h>
+#include <gui/widgets/widget_value.h>
+
+#include <gui/app.h>
+#include <gui/widgets/widget_bonechooser.h>
+#include <gui/widgets/widget_canvaschooser.h>
+#include <gui/widgets/widget_coloredit.h>
+#include <gui/widgets/widget_distance.h>
+#include <gui/widgets/widget_enum.h>
+#include <gui/widgets/widget_filename.h>
+#include <gui/widgets/widget_fontfamily.h>
+#include <gui/widgets/widget_sublayer.h>
+#include <gui/widgets/widget_time.h>
+#include <gui/widgets/widget_vector.h>
 
 #include <synfig/general.h>
 
-#include "widgets/widget_value.h"
-
-#include "widgets/widget_vector.h"
-#include "widgets/widget_filename.h"
-#include "widgets/widget_enum.h"
-#include "widgets/widget_sublayer.h"
-#include "widgets/widget_coloredit.h"
-#include "widgets/widget_bonechooser.h"
-#include "widgets/widget_canvaschooser.h"
-#include "widgets/widget_time.h"
-#include "widgets/widget_distance.h"
-#include "widgets/widget_fontfamily.h"
-
-#include "app.h"
-
-#include <gui/localization.h>
-
 #endif
 
-using namespace synfig;
-using namespace etl;
 using namespace std;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

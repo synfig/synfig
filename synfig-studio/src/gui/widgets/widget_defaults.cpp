@@ -31,36 +31,29 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/widgets/widget_defaults.h>
 
-#include "widgets/widget_defaults.h"
-#include "widgets/widget_color.h"
-#include "widgets/widget_gradient.h"
-#include "dialogs/dialog_color.h"
-#include "dialogs/dialog_gradient.h"
-#include "app.h"
-#include <gtkmm/menu.h>
-#include <gtkmm/scale.h>
 #include <gtkmm/stylecontext.h>
 #include <gtkmm/toolitem.h>
 #include <gtkmm/toolitemgroup.h>
 #include <gtkmm/toolpalette.h>
-#include <synfig/exception.h>
-#include <synfigapp/main.h>
-#include "canvasview.h"
-#include "widgets/widget_enum.h"
-#include "widgets/widget_distance.h"
 
-#include <gui/localization.h>
-
+#include <gui/app.h>
+#include <gui/canvasview.h>
+#include <gui/dialogs/dialog_color.h>
+#include <gui/dialogs/dialog_gradient.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+#include <gui/widgets/widget_color.h>
+#include <gui/widgets/widget_distance.h>
+#include <gui/widgets/widget_gradient.h>
+
+#include <synfigapp/main.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

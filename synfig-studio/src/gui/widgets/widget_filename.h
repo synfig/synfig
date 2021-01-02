@@ -27,13 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/sigc++.h>
-#include <gtkmm/grid.h>
 #include <gtkmm/entry.h>
-#include <gtkmm/button.h>
+#include <gtkmm/grid.h>
 
 #include <synfig/canvas.h>
-
 
 /* === M A C R O S ========================================================= */
 
@@ -41,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class Entry; class Button; };
+namespace Gtk { class Button; }
 
 namespace studio {
 

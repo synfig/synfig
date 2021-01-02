@@ -30,24 +30,20 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/widgets/widget_gradient.h>
 
-#include "widgets/widget_gradient.h"
-#include "app.h"
-#include <gtkmm/menu.h>
-#include <synfig/exception.h>
 #include <ETL/misc>
 
-#include <gui/localization.h>
+#include <gtkmm/menu.h>
 
+#include <gui/app.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -162,14 +158,14 @@ Widget_Gradient::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 		get_style_context()->render_arrow(
 			cr,
 			1.5*M_PI,
-			round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
+			etl::round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
 			h-CONTROL_HEIGHT,
 			CONTROL_HEIGHT
 		);
 		get_style_context()->render_arrow(
 			cr,
 			1.5*M_PI,
-			round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
+			etl::round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
 			h-CONTROL_HEIGHT*1.3,
 			CONTROL_HEIGHT
 		);

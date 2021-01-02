@@ -27,13 +27,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/dialog.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/dialog.h>
 
 #include <gui/dialogsettings.h>
-
-#include "preview.h"
+#include <gui/preview.h>
 
 /* === M A C R O S ========================================================= */
 

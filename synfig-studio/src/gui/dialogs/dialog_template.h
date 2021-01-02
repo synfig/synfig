@@ -27,7 +27,6 @@
 #define __SYNFIG_STUDIO_DIALOG_TEMPLATE_H
 
 /* === H E A D E R S ======================================================= */
-#include <synfig/general.h>
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/grid.h>
@@ -35,6 +34,8 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/treestore.h>
 #include <gtkmm/treeview.h>
+
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -27,14 +27,14 @@
 #	include <config.h>
 #endif
 
-#include "widget_timegraphbase.h"
+#include <gui/widgets/widget_timegraphbase.h>
+
+#include <cairomm/cairomm.h>
+#include <gdkmm.h>
 
 #include <gui/canvasview.h>
 #include <gui/timeplotdata.h>
 
-#include <cairomm/cairomm.h>
-#include <gdkmm.h>
-#include <cstring>
 #endif
 
 using namespace studio;

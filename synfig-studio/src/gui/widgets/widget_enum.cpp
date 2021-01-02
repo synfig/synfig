@@ -29,20 +29,14 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/widgets/widget_enum.h>
 
-#include <gtkmm/menu.h>
-#include "widgets/widget_enum.h"
 #include <ETL/stringf>
-#include <synfig/valuenode.h>
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;

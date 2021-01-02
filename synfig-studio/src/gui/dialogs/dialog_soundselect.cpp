@@ -30,9 +30,8 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/dialogs/dialog_soundselect.h>
 
-#include "dialogs/dialog_soundselect.h"
 #include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
@@ -44,8 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */

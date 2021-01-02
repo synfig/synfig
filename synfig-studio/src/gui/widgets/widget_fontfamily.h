@@ -28,9 +28,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <string>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/liststore.h>
+#include <string>
 
 /* === M A C R O S ========================================================= */
 

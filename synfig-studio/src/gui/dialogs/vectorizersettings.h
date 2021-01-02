@@ -26,24 +26,16 @@
 
 /* === H E A D E R S ======================================================= */
 #include <ETL/handle>
-#include <vector>
-#include <unordered_map> 
-#include <gtkmm.h>
-// #include <gtkmm/grid.h>
-// #include <gtkmm/dialog.h>
-// #include <gtkmm/switch.h>
-// #include <gtkmm/tooltip.h>
-// #include <gtkmm/table.h>
-// #include <gtkmm/entry.h>
-// #include <gtkmm/adjustment.h>
-// #include <gtkmm/spinbutton.h>
-// #include <gtkmm/checkbutton.h>
-// #include <gtkmm/comboboxtext.h>
-#include <synfig/string.h>
-#include <synfigapp/canvasinterface.h>
+#include <gtkmm/adjustment.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/dialog.h>
+#include <gtkmm/grid.h>
+#include <gtkmm/separator.h>
+#include <gtkmm/spinbutton.h>
+#include <gtkmm/switch.h>
+#include <gui/instance.h>
 #include <synfig/layers/layer_bitmap.h>
-#include <synfig/layers/layer_pastecanvas.h>
-#include "instance.h"
+#include <unordered_map>
 
 /* === M A C R O S ========================================================= */
 

@@ -30,22 +30,19 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/widgets/widget_sublayer.h>
 
-#include "widgets/widget_sublayer.h"
-#include <synfig/valuenode.h>
+#include <gui/localization.h>
+
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/layers/layer_pastecanvas.h>
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

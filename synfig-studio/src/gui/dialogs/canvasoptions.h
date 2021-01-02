@@ -27,10 +27,10 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <ETL/handle>
+
 #include <gtkmm/dialog.h>
 #include <gtkmm/builder.h>
-
-#include "ETL/handle"
 
 /* === M A C R O S ========================================================= */
 

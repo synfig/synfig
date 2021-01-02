@@ -33,12 +33,13 @@
 #	include <config.h>
 #endif
 
+#include <gui/widgets/widget_keyframe_list.h>
+
 #include <gtkmm/menu.h>
-#include <synfig/general.h>
 #include <gui/app.h>
-#include "widget_keyframe_list.h"
-#include <gui/localization.h>
 #include <gui/exception_guard.h>
+#include <gui/localization.h>
+//#include <synfig/general.h>
 #endif
 
 /* === U S I N G =========================================================== */

@@ -28,13 +28,17 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/dialog.h>
-#include "dialogsettings.h"
+#include <gui/dialogsettings.h>
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+
+namespace Gtk {
+class ScrolledWindow;
+}
 
 namespace studio {
 

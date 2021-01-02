@@ -22,22 +22,19 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <map>
-#include <glibmm.h>
-#include <gtkmm/grid.h>
-#include <gtkmm/frame.h>
+#include <gui/dialogs/vectorizersettings.h>
+
 #include <gtkmm/alignment.h>
-#include "vectorizersettings.h"
-#include <synfig/rendering/software/surfacesw.h>
+
 #include <gui/localization.h>
-#include <synfigapp/action_param.h>
+
 #include <synfig/debug/log.h>
 
+#include <synfigapp/action.h>
+#include <synfigapp/canvasinterface.h>
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

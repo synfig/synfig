@@ -29,27 +29,15 @@
 #	include <config.h>
 #endif
 
-#include <cmath>
-
-#include <gtkmm/drawingarea.h>
-
-#include <synfig/general.h>
+#include <gui/widgets/widget_color.h>
 
 #include <gui/app.h>
-#include <gui/canvasview.h>
-
-#include "widget_color.h"
-
-#include <gui/localization.h>
-
 #include <gui/exception_guard.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -81,7 +69,7 @@ studio::render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gd
 		bool toggle(false);
 		for(int i=0;i<width;i+=square_size)
 		{
-			const int square_width(min(square_size,width-i));
+			const int square_width(std::min(square_size,width-i));
 
 			if(toggle)
 			{

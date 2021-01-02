@@ -23,11 +23,11 @@
 #ifndef SYNFIG_STUDIO_WIDGET_TIMEGRAPHBASE_H
 #define SYNFIG_STUDIO_WIDGET_TIMEGRAPHBASE_H
 
-#include <gtkmm/drawingarea.h>
 #include <gtkmm/adjustment.h>
+#include <gtkmm/drawingarea.h>
 
-#include <synfigapp/canvasinterface.h>
 #include <gui/timemodel.h>
+#include <synfigapp/canvasinterface.h>
 
 namespace studio {
 

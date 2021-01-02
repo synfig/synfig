@@ -6,20 +6,21 @@
 #	include <config.h>
 #endif
 
-#include "dialog_workspaces.h"
+#include <gui/dialogs/dialog_workspaces.h>
 
-#include "gui/resourcehelper.h"
-#include "gui/localization.h"
-#include "gui/app.h"
-#include "gui/workspacehandler.h"
-
-#include <synfig/general.h>
+#include <gui/app.h>
+#include <gui/localization.h>
+#include <gui/resourcehelper.h>
+#include <gui/workspacehandler.h>
 
 #include <glibmm/fileutils.h>
 #include <glibmm/markup.h>
-#include <gtkmm/treeview.h>
+
 #include <gtkmm/liststore.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/treeview.h>
+
+#include <synfig/general.h>
 
 #endif
 

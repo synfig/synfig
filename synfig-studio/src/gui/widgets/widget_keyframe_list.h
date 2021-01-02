@@ -29,16 +29,13 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/sigc++.h>
-
-#include <gtkmm/button.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/label.h>
 #include <gtkmm/window.h>
 
-#include <synfig/keyframe.h>
-
 #include <gui/timemodel.h>
+
+#include <synfig/keyframe.h>
 
 #include <synfigapp/canvasinterface.h>
 

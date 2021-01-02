@@ -33,28 +33,22 @@
 #	include <config.h>
 #endif
 
-#include "widgets/widget_coloredit.h"
-#include <gui/app.h>
-#include <pangomm/attributes.h>
-#include <pangomm/attrlist.h>
-#include <algorithm>
+#include <gui/widgets/widget_coloredit.h>
 
 #include <gtkmm/notebook.h>
 #include <gtkmm/box.h>
-#include <gtkmm/colorselection.h>
 #include <gtkmm/separator.h>
 #include <gtkmm/stylecontext.h>
 
+#include <gui/app.h>
+#include <gui/exception_guard.h>
 #include <gui/localization.h>
 
-#include <gui/exception_guard.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -318,7 +312,7 @@ ColorSlider::on_event(GdkEvent *event)
 
 /* === M E T H O D S ======================================================= */
 void
-Widget_ColorEdit::SliderRow(int left, int top, ColorSlider* color_widget, string l, Gtk::Grid *grid)
+Widget_ColorEdit::SliderRow(int left, int top, ColorSlider* color_widget, std::string l, Gtk::Grid *grid)
 {
 	auto label = manage(new class Gtk::Label(l));
 	label->set_halign(Gtk::ALIGN_START);

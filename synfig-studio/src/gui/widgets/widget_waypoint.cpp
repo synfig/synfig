@@ -31,19 +31,18 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/widgets/widget_waypoint.h>
 
 #include <gtkmm/label.h>
-#include "widgets/widget_value.h"
-#include "widgets/widget_time.h"
-#include "widgets/widget_waypoint.h"
-#include <widgets/widget_enum.h>
+
 #include <gui/localization.h>
+#include <gui/widgets/widget_enum.h>
+#include <gui/widgets/widget_time.h>
+#include <gui/widgets/widget_value.h>
 
 #endif
 
 using namespace synfig;
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

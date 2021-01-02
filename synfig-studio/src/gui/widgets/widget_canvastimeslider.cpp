@@ -29,18 +29,17 @@
 #	include <config.h>
 #endif
 
-#include <cmath>
+#include <gui/widgets/widget_canvastimeslider.h>
+
 #include <cairomm/surface.h>
+#include <cmath>
+
+#include <gui/app.h>
 #include <gui/canvasview.h>
+#include <gui/exception_guard.h>
+#include <gui/timeplotdata.h>
 #include <gui/workarea.h>
 #include <gui/workarearenderer/renderer_canvas.h>
-
-#include "widget_canvastimeslider.h"
-
-#include "app.h"
-#include "gui/timeplotdata.h"
-
-#include <gui/exception_guard.h>
 
 #endif
 

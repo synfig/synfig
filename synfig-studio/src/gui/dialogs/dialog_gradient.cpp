@@ -29,27 +29,21 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/dialogs/dialog_gradient.h>
 
-#include "dialogs/dialog_gradient.h"
-#include "widgets/widget_gradient.h"
-#include <gtkmm/frame.h>
-#include <gtkmm/table.h>
-#include <gtkmm/label.h>
-#include <synfigapp/canvasinterface.h>
-#include <synfigapp/value_desc.h>
-#include <synfigapp/main.h>
-#include "widgets/widget_color.h"
 #include <gtkmm/spinbutton.h>
-#include "app.h"
+#include <gtkmm/table.h>
 
 #include <gui/localization.h>
+#include <gui/widgets/widget_coloredit.h>
+#include <gui/widgets/widget_gradient.h>
 
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/main.h>
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -118,6 +112,12 @@ void
 Dialog_Gradient::set_gradient(const synfig::Gradient& x)
 {
 	widget_gradient->set_value(x);
+}
+
+const Gradient&
+Dialog_Gradient::get_gradient() const
+{
+	return widget_gradient->get_value();
 }
 
 void

@@ -29,31 +29,23 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/dialogs/dialog_preview.h>
 
-#include "dialogs/dialog_preview.h"
-#include <gtkmm/adjustment.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/spinbutton.h>
-
-#include <gui/widgets/widget_time.h>
-#include <gui/localization.h>
-
-#include <gui/exception_guard.h>
-
-#include "gui/resourcehelper.h"
 #include <glibmm/fileutils.h>
 #include <glibmm/markup.h>
+
+#include <gtkmm/spinbutton.h>
+
+#include <gui/exception_guard.h>
+#include <gui/localization.h>
+#include <gui/resourcehelper.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
-using namespace Gtk;
 
 /* === M A C R O S ========================================================= */
 

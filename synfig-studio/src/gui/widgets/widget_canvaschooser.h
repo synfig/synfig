@@ -27,11 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <vector>
-
-#include <synfig/canvas.h>
 #include <gtkmm/comboboxtext.h>
-
+#include <synfig/canvas.h>
+#include <vector>
 
 /* === M A C R O S ========================================================= */
 
@@ -39,13 +37,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class Menu; };
-
 namespace studio {
 
 class Widget_CanvasChooser : public Gtk::ComboBoxText
 {
-	Gtk::Menu *canvas_menu;
 	synfig::Canvas::Handle parent_canvas;
 	std::vector<synfig::Canvas::Handle> canvases;
 

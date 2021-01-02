@@ -1,8 +1,6 @@
 #ifndef __SYNFIG_TEST_VISULIZATION_WINDOW_H
 #define __SYNFIG_TEST_VISULIZATION_WINDOW_H
 
-#include <vector>
-
 #include <gtkmm/window.h>
 
 #include <synfig/canvas.h>
@@ -10,6 +8,7 @@
 #include <synfig/rendering/renderer.h>
 #include <synfig/rendering/surface.h>
 
+#include <vector>
 
 class VisualizationWindow: public Gtk::Window {
 public:

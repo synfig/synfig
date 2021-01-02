@@ -27,21 +27,17 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <vector>
-
+#include <gtkmm/comboboxtext.h>
 #include <synfig/canvas.h>
 #include <synfig/valuenodes/valuenode_bone.h>
-#include <gtkmm/comboboxtext.h>
 #include <synfigapp/value_desc.h>
-
+#include <vector>
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
-namespace Gtk { class Menu; };
 
 namespace studio {
 
