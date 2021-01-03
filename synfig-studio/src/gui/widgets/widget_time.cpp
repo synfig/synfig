@@ -137,20 +137,26 @@ bool
 Widget_Time::on_event(GdkEvent* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	const Time scroll_amount(0.25);
+	const Time scroll_amount(1/fps_);
 
 	switch(event->type)
 	{
 	case GDK_SCROLL:
 		if(event->scroll.direction==GDK_SCROLL_DOWN || event->scroll.direction==GDK_SCROLL_LEFT)
 		{
-			time_-=scroll_amount;
+			if((event->scroll.state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK)
+				time_-=(scroll_amount*10);
+			else
+				time_-=scroll_amount;
 			refresh_text();
 			signal_value_changed()();
 		}
 		else if(event->scroll.direction==GDK_SCROLL_UP || event->scroll.direction==GDK_SCROLL_RIGHT)
 		{
-			time_+=scroll_amount;
+			if((event->scroll.state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK)
+				time_+=(scroll_amount*10);
+			else
+				time_+=scroll_amount;
 			refresh_text();
 			signal_value_changed()();
 		}
