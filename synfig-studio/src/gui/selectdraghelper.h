@@ -92,8 +92,8 @@ private:
 	sigc::signal<void> signal_zoom_in_requested_;
 	sigc::signal<void> signal_zoom_out_requested_;
 
-        sigc::signal<void> signal_zoom_horizontal_in_requested_;
-        sigc::signal<void> signal_zoom_horizontal_out_requested_;
+	sigc::signal<void> signal_zoom_horizontal_in_requested_;
+	sigc::signal<void> signal_zoom_horizontal_out_requested_;
 
 	sigc::signal<void> signal_scroll_up_requested_;
 	sigc::signal<void> signal_scroll_down_requested_;
@@ -220,8 +220,8 @@ public:
 	sigc::signal<void>& signal_zoom_in_requested() { return signal_zoom_in_requested_; }
 	sigc::signal<void>& signal_zoom_out_requested() { return signal_zoom_out_requested_; }
 
-        sigc::signal<void>& signal_zoom_horizontal_in_requested() { return signal_zoom_horizontal_in_requested_; }
-        sigc::signal<void>& signal_zoom_horizontal_out_requested() { return signal_zoom_horizontal_out_requested_; }
+	sigc::signal<void>& signal_zoom_horizontal_in_requested() { return signal_zoom_horizontal_in_requested_; }
+	sigc::signal<void>& signal_zoom_horizontal_out_requested() { return signal_zoom_horizontal_out_requested_; }
 
 	sigc::signal<void>& signal_scroll_up_requested() { return signal_scroll_up_requested_; }
 	sigc::signal<void>& signal_scroll_down_requested() { return signal_scroll_down_requested_; }
