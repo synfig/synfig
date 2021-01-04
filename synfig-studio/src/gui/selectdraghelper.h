@@ -92,6 +92,9 @@ private:
 	sigc::signal<void> signal_zoom_in_requested_;
 	sigc::signal<void> signal_zoom_out_requested_;
 
+        sigc::signal<void> signal_zoom_horizontal_in_requested_;
+        sigc::signal<void> signal_zoom_horizontal_out_requested_;
+
 	sigc::signal<void> signal_scroll_up_requested_;
 	sigc::signal<void> signal_scroll_down_requested_;
 
@@ -216,6 +219,9 @@ public:
 
 	sigc::signal<void>& signal_zoom_in_requested() { return signal_zoom_in_requested_; }
 	sigc::signal<void>& signal_zoom_out_requested() { return signal_zoom_out_requested_; }
+
+        sigc::signal<void>& signal_zoom_horizontal_in_requested() { return signal_zoom_horizontal_in_requested_; }
+        sigc::signal<void>& signal_zoom_horizontal_out_requested() { return signal_zoom_horizontal_out_requested_; }
 
 	sigc::signal<void>& signal_scroll_up_requested() { return signal_scroll_up_requested_; }
 	sigc::signal<void>& signal_scroll_down_requested() { return signal_scroll_down_requested_; }
@@ -763,9 +769,13 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 		case GDK_SCROLL_UP:
 		case GDK_SCROLL_RIGHT: {
 			if ((event->state & GDK_CONTROL_MASK) && zoom_enabled) {
-				// Ctrl+scroll , perform zoom in
-				signal_zoom_in_requested().emit();
-			} else {
+                                if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+                                    // Ctrl+Shift+scroll, perform horizontal zoom in
+                                    signal_zoom_horizontal_in_requested().emit();
+                                else
+                                    // Ctrl+scroll, perform vertical zoom in
+                                    signal_zoom_in_requested().emit();
+                        } else {
 				if (!scroll_enabled)
 					return false;
 				// Scroll up
@@ -776,7 +786,11 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 		case GDK_SCROLL_DOWN:
 		case GDK_SCROLL_LEFT: {
 			if ((event->state & GDK_CONTROL_MASK) && zoom_enabled) {
-				// Ctrl+scroll , perform zoom out
+                            if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+                                //Ctrl+Shift+Scroll, perform horizontal zoom out
+                                signal_zoom_horizontal_out_requested().emit();
+                            else
+				// Ctrl+scroll, perform vertical zoom out
 				signal_zoom_out_requested().emit();
 			} else {
 				if (!scroll_enabled)

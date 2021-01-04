@@ -72,6 +72,8 @@ public:
 	virtual void zoom_100();
 	virtual void set_zoom(double new_zoom_factor);
 	virtual double get_zoom() const;
+	virtual void zoom_horizontal_in();
+	virtual void zoom_horizontal_out();
 
 	//! Scroll vertically by step_increment units of Widget_TimeGraphBase#range_adjustment
 	virtual void scroll_up();

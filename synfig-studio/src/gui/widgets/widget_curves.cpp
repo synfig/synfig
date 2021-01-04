@@ -516,6 +516,8 @@ Widget_Curves::Widget_Curves()
 	});
 	channel_point_sd.signal_zoom_in_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_in));
 	channel_point_sd.signal_zoom_out_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_out));
+	channel_point_sd.signal_zoom_horizontal_in_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_horizontal_in));
+	channel_point_sd.signal_zoom_horizontal_out_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_horizontal_out));
 	channel_point_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_up));
 	channel_point_sd.signal_scroll_down_requested().connect(sigc::mem_fun(*this, &Widget_Curves::scroll_down));
 	channel_point_sd.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_Curves::pan));

@@ -111,6 +111,26 @@ double Widget_TimeGraphBase::get_zoom() const {
 	return default_page_size / range_adjustment->get_page_size();
 }
 
+void Widget_TimeGraphBase::zoom_horizontal_in()
+{
+	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+
+	if(!time_model || get_width() <= 0 || get_height() <= 0)
+		return;
+
+	time_model->zoom(DEFAULT_ZOOM_CHANGING_FACTOR, time_plot_data->time);
+}
+
+void Widget_TimeGraphBase::zoom_horizontal_out()
+{
+	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+
+	if(!time_model || get_width() <= 0 || get_height() <= 0)
+		return;
+
+	time_model->zoom(1/DEFAULT_ZOOM_CHANGING_FACTOR, time_plot_data->time);
+}
+
 void Widget_TimeGraphBase::scroll_up()
 {
 	ConfigureAdjustment(range_adjustment)
