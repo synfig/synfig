@@ -229,7 +229,7 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 			{
 				canvas->find_value_node(name, true);
 			}
-			catch (const Exception::IDNotFound& x)
+			catch (const Exception::IDNotFound&)
 			{
 				Action::Handle action(Action::create("ValueNodeAdd"));
 
