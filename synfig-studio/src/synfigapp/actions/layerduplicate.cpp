@@ -120,9 +120,10 @@ Action::LayerDuplicate::prepare()
 	if(!first_time())
 		return;
 
-	std::list<synfig::Layer::Handle>::const_iterator i;
+	// pair (canvas, last exported valuenode "Index #" -> Layer_Duplicate parameter: index )
+	std::map<Canvas::LooseHandle, int> last_index;
 
-	for(i=layers.begin();i!=layers.end();++i)
+	for(auto i=layers.cbegin();i!=layers.cend();++i)
 	{
 		Layer::Handle layer(*i);
 
@@ -165,8 +166,11 @@ Action::LayerDuplicate::prepare()
 		}
 
 		// automatically export the Index parameter of Duplicate layers when duplicating
-		int index = 1;
+		auto last_index_iter = last_index.find(subcanvas);
+		int index = last_index_iter == last_index.end() ? 1 : last_index_iter->second;
 		export_dup_nodes(new_layer, subcanvas, index);
+		last_index[subcanvas] = index;
+
 	}
 }
 
