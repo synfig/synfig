@@ -129,7 +129,7 @@ Action::ValueNodeAdd::perform()
 	}
 	catch (Exception::IDAlreadyExists&)
 	{
-		throw Error(_("Another exported ValueBase with this name already exists"));
+		throw Error(_("Another exported ValueBase with this name already exists: '%s'"), name.c_str());
 	}
 	catch(...)
 	{
