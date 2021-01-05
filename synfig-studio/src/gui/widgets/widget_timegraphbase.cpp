@@ -113,22 +113,28 @@ double Widget_TimeGraphBase::get_zoom() const {
 
 void Widget_TimeGraphBase::zoom_horizontal_in()
 {
+	int x, y;
+	get_pointer(x, y);
+
 	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
 
 	if(!time_model || get_width() <= 0 || get_height() <= 0)
 		return;
 
-	time_model->zoom(DEFAULT_ZOOM_CHANGING_FACTOR, time_plot_data->time);
+	time_model->zoom(DEFAULT_ZOOM_CHANGING_FACTOR, time_plot_data->get_t_from_pixel_coord(x));
 }
 
 void Widget_TimeGraphBase::zoom_horizontal_out()
 {
+	int x, y;
+	get_pointer(x, y);
+
 	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
 
 	if(!time_model || get_width() <= 0 || get_height() <= 0)
 		return;
 
-	time_model->zoom(1/DEFAULT_ZOOM_CHANGING_FACTOR, time_plot_data->time);
+	time_model->zoom(1/DEFAULT_ZOOM_CHANGING_FACTOR, time_plot_data->get_t_from_pixel_coord(x));
 }
 
 void Widget_TimeGraphBase::scroll_up()
