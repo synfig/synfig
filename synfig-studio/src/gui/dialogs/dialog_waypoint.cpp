@@ -133,8 +133,7 @@ void
 Dialog_Waypoint::set_value_desc(synfigapp::ValueDesc value_desc)
 {
 	value_desc_=value_desc;
-	if(value_desc.get_value_node() && value_desc.get_value_node()->get_parent_canvas())
-		waypointwidget->set_canvas(value_desc.get_value_node()->get_parent_canvas());
+	waypointwidget->set_valuedesc(value_desc_);
 
 	if (value_desc.is_value_node())
 		value_desc_changed = value_desc.get_value_node()->signal_changed().connect(
@@ -145,7 +144,6 @@ Dialog_Waypoint::set_value_desc(synfigapp::ValueDesc value_desc)
 	if (value_desc.parent_is_layer())
 		value_desc_changed = value_desc.get_layer()->signal_changed().connect(
 				sigc::mem_fun(*this, &Dialog_Waypoint::refresh ));
-
 }
 
 void

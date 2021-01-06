@@ -67,6 +67,7 @@ public:
 	Widget_Waypoint(etl::handle<synfig::Canvas> canvas);
 	void set_canvas(synfig::Canvas::Handle x);
 	void set_waypoint(synfig::Waypoint &x);
+	void set_valuedesc(synfigapp::ValueDesc &x);
 	const synfig::Waypoint &get_waypoint()const;
 	
 	// TCB Parameter functions
