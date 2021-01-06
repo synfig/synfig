@@ -266,6 +266,17 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	update_tcb_params_visibility();
 }
 
+void Widget_Waypoint::set_valuedesc(synfigapp::ValueDesc& value_desc)
+{
+	if(value_desc.get_value_node() && value_desc.get_value_node()->get_parent_canvas())
+		set_canvas(value_desc.get_value_node()->get_parent_canvas());
+
+	value_widget->set_value_desc(value_desc);
+	synfig::ParamDesc param_desc;
+	if (value_desc.find_param_desc(param_desc))
+		value_widget->set_param_desc(param_desc);
+}
+
 const synfig::Waypoint &
 Widget_Waypoint::get_waypoint()const
 {
