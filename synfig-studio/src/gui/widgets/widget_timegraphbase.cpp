@@ -151,6 +151,36 @@ void Widget_TimeGraphBase::scroll_down()
 			.finish();
 }
 
+void Widget_TimeGraphBase::scroll_right()
+{
+	int x, y;
+	get_pointer(x, y);
+
+	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+
+	if(!time_model || get_width() <= 0 || get_height() <= 0)
+		return;
+
+	synfig::Time shift = time_plot_data->time_model->get_page_size() / 10;
+
+	time_model->move_by(-shift);
+}
+
+void Widget_TimeGraphBase::scroll_left()
+{
+	int x, y;
+	get_pointer(x, y);
+
+	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+
+	if(!time_model || get_width() <= 0 || get_height() <= 0)
+		return;
+
+	synfig::Time shift = time_plot_data->time_model->get_page_size() / 10;
+
+	time_model->move_by(shift);
+}
+
 void Widget_TimeGraphBase::pan(int dx, int dy, int /*total_dx*/, int /*total_dy*/)
 {
 	synfig::Time dt(-dx*time_plot_data->dt);

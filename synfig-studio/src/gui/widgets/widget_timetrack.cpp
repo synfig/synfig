@@ -580,6 +580,8 @@ void Widget_Timetrack::setup_mouse_handler()
 	waypoint_sd.signal_zoom_horizontal_out_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::zoom_horizontal_out));
 	waypoint_sd.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_up));
 	waypoint_sd.signal_scroll_down_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_down));
+	waypoint_sd.signal_scroll_right_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_right));
+	waypoint_sd.signal_scroll_left_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::scroll_left));
 	waypoint_sd.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::pan));
 
 	waypoint_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));

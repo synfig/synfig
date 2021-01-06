@@ -261,6 +261,8 @@ void Widget_SoundWave::setup_mouse_handler()
 	mouse_handler.signal_zoom_horizontal_out_requested().connect(sigc::mem_fun(*this, &Widget_SoundWave::zoom_horizontal_out));
 	mouse_handler.signal_scroll_up_requested().connect(sigc::mem_fun(*this, &Widget_SoundWave::scroll_up));
 	mouse_handler.signal_scroll_down_requested().connect(sigc::mem_fun(*this, &Widget_SoundWave::scroll_down));
+	mouse_handler.signal_scroll_right_requested().connect(sigc::mem_fun(*this, &Widget_SoundWave::scroll_right));
+	mouse_handler.signal_scroll_left_requested().connect(sigc::mem_fun(*this, &Widget_SoundWave::scroll_left));
 	mouse_handler.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_SoundWave::pan));
 }
 
