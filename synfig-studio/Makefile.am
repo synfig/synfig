@@ -43,7 +43,8 @@ SUBDIRS = \
 	$(IMAGE_DIR) \
 	$(SOUND_DIR) \
 	plugins \
-	po
+	po \
+	test
 
 EXTRA_DIST = \
 	COPYING \

@@ -240,6 +240,7 @@ AC_CONFIG_FILES([
     plugins/lottie-exporter/sources/Makefile
     plugins/lottie-exporter/synfig/Makefile
     sounds/Makefile
+    test/Makefile
 ])
 AC_OUTPUT
 
