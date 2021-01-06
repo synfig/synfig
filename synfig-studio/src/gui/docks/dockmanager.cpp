@@ -35,6 +35,9 @@
 #include <stdexcept>
 
 #include <gdkmm/general.h>
+#if GTK_CHECK_VERSION(3,22,0)
+#include <gdkmm/monitor.h>
+#endif
 
 #include <gtkmm/paned.h>
 #include <gtkmm/window.h>
@@ -420,6 +423,70 @@ bool DockManager::read_bool(std::string &x)
 	return read_string(x) == "true";
 }
 
+static void check_and_fix_window_position(int &x, int &y, int &width, int &height)
+{
+	// At least magic_mininum_length x magic_mininum_length pixels of window must be shown on display
+	constexpr int magic_mininum_length = 50;
+
+	// First & easy checks
+	if (width < magic_mininum_length)
+		width = magic_mininum_length;
+	if (height < magic_mininum_length)
+		height = magic_mininum_length;
+
+	if (y + height < magic_mininum_length)
+		y = 0;
+	if (x + width < magic_mininum_length)
+		x = 0;
+
+	// How much of window is visible on monitor layout?
+	auto display = Gdk::Display::get_default();
+	const Gdk::Rectangle window_rect(x,y,width,height);
+	Gdk::Rectangle window_visible_rect;
+
+#if GTK_CHECK_VERSION(3,22,0)
+	int n_monitors = display->get_n_monitors();
+#else
+	auto screen = display->get_default_screen();
+	int n_monitors = display->get_default_screen()->get_n_monitors();
+#endif
+
+	for (int i = 0; i < n_monitors; i++) {
+		Gdk::Rectangle rect;
+#if GTK_CHECK_VERSION(3,22,0)
+		display->get_monitor(i)->get_geometry(rect);
+#else
+		screen->get_monitor_geometry(i, rect);
+#endif
+
+		rect.intersect(window_rect);
+
+		// Is the minimum required size and pos in this monitor? Ok, then, no need to fix anything more
+		if (rect.get_height() >= magic_mininum_length && rect.get_width() >= magic_mininum_length)
+			return;
+
+		window_visible_rect.join(rect);
+	}
+
+	// If minimum visible area is too small, move the window...
+	bool bad_visible_height = window_visible_rect.get_height() < magic_mininum_length;
+	bool bad_visible_width = window_visible_rect.get_width() < magic_mininum_length;
+	if (bad_visible_height || bad_visible_width) {
+		Gdk::Rectangle monitor_rect;
+#if GTK_CHECK_VERSION(3,22,0)
+		display->get_monitor_at_point(x,y)->get_geometry(monitor_rect);
+#else
+		int monitor_idx = screen->get_monitor_at_point(x,y);
+		screen->get_monitor_geometry(monitor_idx, monitor_rect);
+#endif
+		if (bad_visible_height)
+			y = monitor_rect.get_y();
+		if (bad_visible_width)
+			y = monitor_rect.get_x();
+	}
+
+}
+
 Gtk::Widget* DockManager::read_widget(std::string &x)
 {
 	bool hor = x.substr(0, 5) == "[hor|";
@@ -500,6 +567,8 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		int height = read_int(x);
 		if (!read_separator(x)) return NULL;
 
+		check_and_fix_window_position(left, top, width, height);
+
 		Gtk::Widget *widget = read_widget(x);
 		read_separator(x);
 
@@ -507,6 +576,9 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 
 		DockDialog *dialog = new DockDialog();
 		dialog->add(*widget);
+		// FIXME(ice0): hack to fix incorrect positioning https://github.com/synfig/synfig/issues/1975
+		if (dialog->is_visible())
+			dialog->hide();
 		dialog->move(left, top);
 		dialog->set_default_size(width, height);
 		dialog->resize(width, height);
@@ -517,7 +589,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	else
 	if (x.substr(0, 12) == "[mainwindow|")
 	{
-		// skip "[dialog|"
+		// skip "[mainwindow|"
 		x = x.substr(1);
 		if (!read_separator(x)) return NULL;
 
@@ -535,12 +607,17 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 
 		if (!widget) return NULL;
 
+		check_and_fix_window_position(left, top, width, height);
+
 		Gtk::Widget *child = App::main_window->root().get_child();
 		App::main_window->root().remove();
 		if (child && child != &App::main_window->main_dock_book())
 			delete child;
 		App::main_window->root().add(*widget);
 
+		// FIXME(ice0): hack to fix incorrect positioning https://github.com/synfig/synfig/issues/1975
+		if (App::main_window->is_visible())
+			App::main_window->hide();
 		App::main_window->move(left, top);
 		App::main_window->set_default_size(width, height);
 		App::main_window->resize(width, height);
