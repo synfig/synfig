@@ -170,6 +170,7 @@ Layer_SphereDistort::get_param_vocab()const
 		.set_local_name(_("Distort Type"))
 		.set_description(_("Direction of the distortion"))
 		.set_hint("enum")
+		.set_static(true)
 		.add_enum_value(TYPE_NORMAL,"normal",_("Spherize"))
 		.add_enum_value(TYPE_DISTH,"honly",_("Vertical Bar"))
 		.add_enum_value(TYPE_DISTV,"vonly",_("Horizontal Bar"))

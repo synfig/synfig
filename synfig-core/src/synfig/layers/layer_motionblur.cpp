@@ -73,7 +73,7 @@ Layer_MotionBlur::Layer_MotionBlur():
 	param_subsample_start   (ValueBase(Real(0.0))),
 	param_subsample_end     (ValueBase(Real(1.0)))
 {
-
+	SET_STATIC_DEFAULTS();
 }
 
 bool
@@ -136,6 +136,7 @@ Layer_MotionBlur::get_param_vocab()const
 		.set_local_name(_("Subsampling Type"))
 		.set_description(_("Curve type for weighting subsamples"))
 		.set_hint("enum")
+		.set_static(true)
 		.add_enum_value(SUBSAMPLING_CONSTANT,"constant",_("Constant"))
 		.add_enum_value(SUBSAMPLING_LINEAR,"linear",_("Linear"))
 		.add_enum_value(SUBSAMPLING_HYPERBOLIC,"hyperbolic",_("Hyperbolic"))
