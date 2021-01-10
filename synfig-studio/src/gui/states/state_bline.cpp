@@ -890,6 +890,10 @@ StateBLine_Context::run_()
 		// count how many layers we're going to be creating
 		int layers_to_create = this->layers_to_create();
 
+		// Set blend_method to static (consistent with other Layers)
+		ValueBase blend_param_value(get_blend());
+		blend_param_value.set_static(true);
+
 		///////////////////////////////////////////////////////////////////////////
 		//   C U R V E   G R A D I E N T
 		///////////////////////////////////////////////////////////////////////////
@@ -910,7 +914,7 @@ StateBLine_Context::run_()
 			layer->set_description(get_id()+_(" Gradient"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-			layer->set_param("blend_method",get_blend());
+			layer->set_param("blend_method",blend_param_value);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 			layer->set_param("amount",get_opacity());
@@ -981,7 +985,7 @@ StateBLine_Context::run_()
 			layer->set_description(get_id()+_(" Plant"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-			layer->set_param("blend_method",get_blend());
+			layer->set_param("blend_method",blend_param_value);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 			layer->set_param("amount",get_opacity());
@@ -1051,7 +1055,7 @@ StateBLine_Context::run_()
 			layer->set_description(get_id()+_(" Region"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-			layer->set_param("blend_method",get_blend());
+			layer->set_param("blend_method",blend_param_value);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 			layer->set_param("amount",get_opacity());
@@ -1129,7 +1133,7 @@ StateBLine_Context::run_()
 			layer->set_description(get_id()+_(" Outline"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-			layer->set_param("blend_method",get_blend());
+			layer->set_param("blend_method",blend_param_value);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 			layer->set_param("amount",get_opacity());
@@ -1208,7 +1212,7 @@ StateBLine_Context::run_()
 			layer->set_description(get_id()+_(" Advanced Outline"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-			layer->set_param("blend_method",get_blend());
+			layer->set_param("blend_method",blend_param_value);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 			layer->set_param("amount",get_opacity());

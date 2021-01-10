@@ -632,6 +632,10 @@ StateText_Context::make_text(const Point& _point)
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 	const Point point(transform.unperform(_point));
 
+	// Set blend_method to static (consistent with other Layers)
+	ValueBase blend_param_value(get_blend());
+	blend_param_value.set_static(true);
+
 	String text;
 	if (get_paragraph_flag())
 		App::dialog_paragraph(_("Text Paragraph"), _("Enter text here:"), text);
@@ -649,7 +653,7 @@ StateText_Context::make_text(const Point& _point)
 	}
 	layer_selection.push_back(layer);
 
-	layer->set_param("blend_method", get_blend());
+	layer->set_param("blend_method", blend_param_value);
 	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 	layer->set_param("amount", get_opacity());
