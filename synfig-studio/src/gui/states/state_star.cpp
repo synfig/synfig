@@ -1028,6 +1028,10 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	// count how many layers we're going to be creating
 	int layers_to_create = this->layers_to_create();
 
+	// Set blend_method to static (consistent with other Layers)
+	ValueBase blend_param_value(get_blend());
+	blend_param_value.set_static(true);
+
 	///////////////////////////////////////////////////////////////////////////
 	//   S T A R
 	///////////////////////////////////////////////////////////////////////////
@@ -1048,7 +1052,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
-		layer->set_param("blend_method",get_blend());
+		layer->set_param("blend_method",blend_param_value);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 		layer->set_param("radius1",radius1);
@@ -1129,7 +1133,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
-		layer->set_param("blend_method",get_blend());
+		layer->set_param("blend_method",blend_param_value);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 		layer->set_param("width",get_bline_width());
@@ -1208,7 +1212,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
-		layer->set_param("blend_method",get_blend());
+		layer->set_param("blend_method",blend_param_value);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 		{
@@ -1283,7 +1287,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
-		layer->set_param("blend_method",get_blend());
+		layer->set_param("blend_method",blend_param_value);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 		layer->set_param("feather",get_feather_size());
@@ -1366,7 +1370,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
-		layer->set_param("blend_method",get_blend());
+		layer->set_param("blend_method",blend_param_value);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 		layer->set_param("width",get_bline_width());
@@ -1450,7 +1454,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
 
-		layer->set_param("blend_method",get_blend());
+		layer->set_param("blend_method",blend_param_value);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 		layer->set_param("width",get_bline_width());
