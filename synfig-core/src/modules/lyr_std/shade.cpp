@@ -197,6 +197,7 @@ Layer_Shade::get_param_vocab(void)const
 		.set_local_name(_("Type"))
 		.set_description(_("Type of blur to use"))
 		.set_hint("enum")
+		.set_static(true)
 		.add_enum_value(Blur::BOX,"box",_("Box Blur"))
 		.add_enum_value(Blur::FASTGAUSSIAN,"fastgaussian",_("Fast Gaussian Blur"))
 		.add_enum_value(Blur::CROSS,"cross",_("Cross-Hatch Blur"))

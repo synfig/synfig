@@ -278,6 +278,7 @@ Noise::get_param_vocab()const
 		.set_local_name(_("Interpolation"))
 		.set_description(_("What type of interpolation to use"))
 		.set_hint("enum")
+		.set_static(true)
 		.add_enum_value(RandomNoise::SMOOTH_DEFAULT,	"nearest",	_("Nearest Neighbor"))
 		.add_enum_value(RandomNoise::SMOOTH_LINEAR,	"linear",	_("Linear"))
 		.add_enum_value(RandomNoise::SMOOTH_COSINE,	"cosine",	_("Cosine"))
