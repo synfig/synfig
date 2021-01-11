@@ -28,9 +28,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <string>
 #include <gtkmm/combobox.h>
 #include <gtkmm/liststore.h>
+#include <string>
 #include <synfigapp/value_desc.h>
 
 /* === M A C R O S ========================================================= */

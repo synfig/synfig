@@ -29,23 +29,20 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/dialogs/dialog_keyframe.h>
 
-#include "dialogs/dialog_keyframe.h"
-#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/button.h>
-#include "widgets/widget_waypointmodel.h"
-#include <synfigapp/action.h>
-#include <synfigapp/instance.h>
 
 #include <gui/localization.h>
+#include <gui/widgets/widget_waypointmodel.h>
+
+#include <synfigapp/action.h>
+#include <synfigapp/instance.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

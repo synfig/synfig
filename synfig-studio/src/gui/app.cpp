@@ -45,6 +45,10 @@
 #endif
 
 #include <giomm/file.h>
+#include <glibmm/convert.h>
+#include <glibmm/init.h>
+#include <glibmm/miscutils.h>
+#include <glibmm/timer.h>
 #include <glibmm/spawn.h>
 
 #include <gtkmm/accelmap.h>

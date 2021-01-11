@@ -29,26 +29,22 @@
 #	include <config.h>
 #endif
 
-#include <vector>
+#include <gui/dialogs/dialog_input.h>
 
 #include <gdkmm/device.h>
 
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/label.h>
+#include <gtkmm/separator.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/table.h>
-#include <gtkmm/label.h>
-#include <gtkmm/comboboxtext.h>
-#include <gtkmm/separator.h>
 
-#include <synfig/general.h>
+#include <gui/devicetracker.h>
+#include <gui/localization.h>
 
 #include <synfigapp/main.h>
 
-#include <gui/devicetracker.h>
-
-#include "dialog_input.h"
-
-#include <gui/localization.h>
-
+#include <vector>
 #endif
 
 /* === U S I N G =========================================================== */

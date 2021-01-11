@@ -30,22 +30,13 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/widgets/widget_waypointmodel.h>
 
-#include <gtkmm/label.h>
-#include <gtkmm/spinbutton.h>
-#include "widgets/widget_value.h"
-#include "app.h"
-#include <gtkmm/menu.h>
-#include "widgets/widget_time.h"
-#include "widgets/widget_waypointmodel.h"
 #include <gui/localization.h>
 
 #endif
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

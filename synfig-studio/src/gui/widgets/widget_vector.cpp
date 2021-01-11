@@ -29,21 +29,18 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/distance.h>
+#include <gui/widgets/widget_vector.h>
 
 #include <gtkmm/spinbutton.h>
-#include "widgets/widget_vector.h"
-#include "widgets/widget_distance.h"
-#include "app.h"
 
-#include <gui/localization.h>
+#include <gui/app.h>
+#include <gui/widgets/widget_distance.h>
+#include <synfig/general.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 

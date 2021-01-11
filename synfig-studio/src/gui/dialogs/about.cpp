@@ -34,14 +34,12 @@
 // This is generated at make time from .git or autorevision.conf
 #include <autorevision.h>
 
-#include <gtkmm/aboutdialog.h>
 #include <gtkmm/image.h>
 
 #include <gui/app.h>
 #include <gui/localization.h>
 #include <gui/resourcehelper.h>
 
-#include <synfig/general.h>
 #include <synfig/version.h>
 
 #include <vector>

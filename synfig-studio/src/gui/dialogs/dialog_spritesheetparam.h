@@ -27,12 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/comboboxtext.h>
-#include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/comboboxtext.h>
+#include <gtkmm/spinbutton.h>
 
-#include "dialogs/dialog_targetparam.h"
+#include <gui/dialogs/dialog_targetparam.h>
 
 /* === M A C R O S ========================================================= */
 

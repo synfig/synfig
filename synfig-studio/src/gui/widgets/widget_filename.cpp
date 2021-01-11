@@ -30,27 +30,21 @@
 #	include <config.h>
 #endif
 
-#include <gtkmm/entry.h>
+#include <gui/widgets/widget_filename.h>
+
 #include <gtkmm/button.h>
 
-#include <synfig/general.h>
-
-#include <synfig/canvasfilenaming.h>
-
+#include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/localization.h>
 
-#include "widgets/widget_filename.h"
-#include "app.h"
-#include "canvasview.h"
-
+#include <synfig/canvasfilenaming.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace std;
-//using namespace etl;
-//using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

@@ -29,34 +29,22 @@
 #define __SYNFIG_STUDIO_DIALOG_SETUP_H
 
 /* === H E A D E R S ======================================================= */
-#include <dialogs/dialog_template.h>
-
 #include <gtkmm/adjustment.h>
 #include <gtkmm/button.h>
-#include <gtkmm/checkbutton.h>
 #include <gtkmm/colorbutton.h>
-#include <gtkmm/radiobutton.h>
-#include <gtkmm/filechooser.h>
-#include <gtkmm/filechooserbutton.h>
-#include <gtkmm/filechooserdialog.h>
-#include <gtkmm/filechooserwidget.h>
-#include <gtkmm/filefilter.h>
 #include <gtkmm/comboboxtext.h>
-#include <gtkmm/drawingarea.h>
+#include <gtkmm/filechooserbutton.h>
 #include <gtkmm/listviewtext.h>
+#include <gtkmm/radiobutton.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/switch.h>
-#include <gtkmm/tooltip.h>
 
+#include <gui/dialogs/dialog_template.h>
 #include <gui/widgets/widget_time.h>
 
-#include <synfig/color.h>
 #include <synfig/time.h>
-#include <algorithm>
 
 #include <synfigapp/settings.h>
-
-#include "app.h"
 
 /* === M A C R O S ========================================================= */
 #ifndef DEFAULT_PREDEFINED_SIZE
@@ -69,8 +57,6 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
-namespace Gtk { class Menu; };
 
 namespace studio {
 

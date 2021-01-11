@@ -23,10 +23,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/general.h>
+#include <gui/dialogs/dialog_targetparam.h>
 
 #include <gui/localization.h>
-#include "dialogs/dialog_targetparam.h"
 
 /* === U S I N G =========================================================== */
 

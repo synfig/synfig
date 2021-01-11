@@ -27,13 +27,13 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <gtkmm/adjustment.h>
+#include <gtkmm/colorselection.h>
+#include <gtkmm/drawingarea.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/colorselection.h>
+#include <gui/widgets/widget_color.h>
 #include <synfig/color.h>
-#include "widgets/widget_color.h"
 
 /* === M A C R O S ========================================================= */
 

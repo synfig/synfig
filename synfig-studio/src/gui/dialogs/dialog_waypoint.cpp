@@ -29,28 +29,16 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <gtkmm/label.h>
-#include "dialogs/dialog_waypoint.h"
-#include <gtk/gtk.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/combobox.h>
-#include "widgets/widget_value.h"
-#include "app.h"
-#include <gtkmm/menu.h>
-#include "widgets/widget_time.h"
-#include "widgets/widget_waypoint.h"
-
-#include <synfig/timepointcollect.h>
+#include <gui/dialogs/dialog_waypoint.h>
 
 #include <gui/localization.h>
+#include <gui/widgets/widget_waypoint.h>
+
+#include <synfig/timepointcollect.h>
 
 #endif
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

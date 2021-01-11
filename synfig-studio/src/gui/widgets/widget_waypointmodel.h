@@ -27,20 +27,15 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/grid.h>
-#include <gtkmm/button.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/box.h>
-#include <gtkmm/comboboxtext.h>
-#include <gtkmm/spinbutton.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/grid.h>
+#include <gtkmm/spinbutton.h>
 
-
+#include <gui/widgets/widget_enum.h>
 #include <synfig/waypoint.h>
 #include <synfig/string.h>
-#include <synfig/time.h>
-#include "widgets/widget_enum.h"
-
 
 /* === M A C R O S ========================================================= */
 

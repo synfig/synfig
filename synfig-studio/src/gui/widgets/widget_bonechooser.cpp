@@ -30,11 +30,7 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "widgets/widget_bonechooser.h"
-#include <gtkmm/menu.h>
-#include "app.h"
 
 #include <gui/localization.h>
 
@@ -42,8 +38,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

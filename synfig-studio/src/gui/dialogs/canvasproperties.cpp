@@ -30,29 +30,23 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/dialogs/canvasproperties.h>
 
-#include "dialogs/canvasproperties.h"
-#include <gtkmm/frame.h>
-#include <gtkmm/table.h>
-#include <gtkmm/label.h>
 #include <gtkmm/alignment.h>
-#include <synfigapp/canvasinterface.h>
-#include "trees/metadatatreestore.h"
-#include <gtkmm/treeview.h>
-#include <gtkmm/scrolledwindow.h>
-#include "app.h"
+#include <gtkmm/frame.h>
+#include <gtkmm/label.h>
+#include <gtkmm/table.h>
 
 #include <gui/localization.h>
+
 #include <synfigapp/action_system.h>
+#include <synfigapp/canvasinterface.h>
 #include <synfigapp/instance.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

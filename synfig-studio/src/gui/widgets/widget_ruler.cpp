@@ -29,20 +29,14 @@
 #	include <config.h>
 #endif
 
-
-#include <synfig/general.h>
+#include <gui/widgets/widget_ruler.h>
 
 #include <ETL/stringf>
-
-#include "widgets/widget_ruler.h"
-
-#include <gui/localization.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 

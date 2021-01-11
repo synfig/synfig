@@ -27,9 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/sigc++.h>
-#include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
+#include <gtkmm/spinbutton.h>
 #include <synfig/distance.h>
 
 /* === M A C R O S ========================================================= */
@@ -38,14 +37,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class Entry; class Button; };
-
 namespace studio {
 
 class Widget_Distance : public Gtk::SpinButton
 {
-	//sigc::signal<void> signal_value_changed_;
-
 	mutable synfig::Distance distance_;
 
 	Glib::RefPtr<Gtk::Adjustment> adjustment;
@@ -59,7 +54,6 @@ protected:
 	bool on_key_release_event(GdkEventKey* event);
 
 public:
-	//sigc::signal<void> &signal_value_changed() { return signal_value_changed_; }
 	void set_value(const synfig::Distance &data);
 	synfig::Distance get_value()const;
 	Widget_Distance();

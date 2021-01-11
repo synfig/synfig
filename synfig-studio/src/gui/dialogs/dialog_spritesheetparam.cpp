@@ -21,13 +21,13 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
+#include <gui/dialogs/dialog_spritesheetparam.h>
+
 #include <cmath>
 
-#include <synfig/general.h>
-
 #include <gtkmm/grid.h>
+
 #include <gui/localization.h>
-#include "dialogs/dialog_spritesheetparam.h"
 
 namespace studio
 {

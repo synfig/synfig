@@ -30,10 +30,7 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <iostream>
-#include "dialogs/dialog_ffmpegparam.h"
+#include <gui/dialogs/dialog_ffmpegparam.h>
 
 #include <gui/localization.h>
 
@@ -41,7 +38,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

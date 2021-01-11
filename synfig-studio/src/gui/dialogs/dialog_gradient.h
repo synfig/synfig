@@ -27,24 +27,16 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtk/gtk.h>
 #include <gtkmm/adjustment.h>
-#include <gtkmm/table.h>
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/checkbutton.h>
 
-#include <synfig/color.h>
+#include <gui/dialogsettings.h>
+
+#include <synfig/gradient.h>
 #include <synfig/time.h>
-
-#include "widgets/widget_gradient.h"
-#include "widgets/widget_coloredit.h"
 
 #include <synfigapp/value_desc.h>
-#include <synfig/time.h>
-
-#include "dialogsettings.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -93,7 +85,7 @@ public:
 
 	void set_gradient(const synfig::Gradient& x);
 
-	const synfig::Gradient& get_gradient()const { return widget_gradient->get_value(); }
+	const synfig::Gradient& get_gradient()const;
 
 	void set_default_button_set_sensitive(bool sensitive) { set_default_button->set_sensitive(sensitive); }
 

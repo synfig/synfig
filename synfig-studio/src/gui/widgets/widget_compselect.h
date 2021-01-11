@@ -27,19 +27,16 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <vector>
-
+#include <ETL/handle>
 #include <gtkmm/comboboxtext.h>
-#include <gtkmm/menu.h>
-#include "app.h"
+#include <gui/instance.h>
+#include <vector>
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
-namespace Gtk { class Menu; };
 
 namespace studio {
 

@@ -37,6 +37,7 @@
 #include <gui/docks/dock_toolbox.h>
 
 #include <gtkmm/accelmap.h>
+#include <gtkmm/paned.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/toolpalette.h>
 

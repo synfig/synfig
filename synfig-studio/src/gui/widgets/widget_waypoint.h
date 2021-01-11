@@ -28,9 +28,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/box.h>
-#include <gtkmm/spinbutton.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
+#include <gtkmm/spinbutton.h>
 
 #include <synfig/canvas.h>
 #include <synfig/waypoint.h>

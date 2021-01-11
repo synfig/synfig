@@ -48,6 +48,8 @@
 #include <gui/dialogs/dialog_color.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/widgets/widget_color.h> // render_color_to_window()
+#include <gui/widgets/widget_gradient.h> // render_gradient_to_window()
 #include <gui/widgets/widget_value.h>
 
 #endif

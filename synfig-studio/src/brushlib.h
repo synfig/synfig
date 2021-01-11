@@ -27,9 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/surface.h>
+#include <brushlib/brushlib.hpp>
 #include <ETL/angle> // we need PI
-#include "brushlib/brushlib.hpp"
+#include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
 

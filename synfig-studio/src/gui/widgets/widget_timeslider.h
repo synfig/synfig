@@ -29,9 +29,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/drawingarea.h>
-
-#include <synfig/time.h>
-
 #include <gui/timemodel.h>
 
 /* === M A C R O S ========================================================= */

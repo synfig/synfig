@@ -32,34 +32,28 @@
 #	include <config.h>
 #endif
 
-#include <map>
-#include <vector>
+#include <gui/widgets/widget_curves.h>
 
 #include <gdkmm/general.h>
 
-#include <ETL/misc>
+#include <gui/exception_guard.h>
+#include <gui/helpers.h>
+#include <gui/localization.h>
+#include <gui/timeplotdata.h>
+#include <gui/waypointrenderer.h>
+
+#include <map>
 
 #include <synfig/blinepoint.h>
-#include <synfig/widthpoint.h>
 #include <synfig/dashitem.h>
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
+#include <synfig/widthpoint.h>
 
-#include <gui/helpers.h>
-
-#include "widget_curves.h"
-#include "gui/timeplotdata.h"
-
-#include "gui/waypointrenderer.h"
-#include <synfig/layers/layer_pastecanvas.h>
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-
-#include "instance.h"
 #include <synfigapp/action_system.h>
 
-#include <gui/localization.h>
+#include <vector>
 
-#include <gui/exception_guard.h>
 #endif
 
 /* === U S I N G =========================================================== */

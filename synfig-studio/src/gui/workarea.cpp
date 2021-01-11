@@ -36,6 +36,9 @@
 
 #include <gui/workarea.h>
 
+#include <gtkmm/arrow.h>
+#include <gtkmm/scrollbar.h>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/event_keyboard.h>

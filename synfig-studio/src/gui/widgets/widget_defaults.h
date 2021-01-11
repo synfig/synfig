@@ -27,15 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/button.h>
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/box.h>
-#include <gtkmm/grid.h>
 #include <gtkmm/alignment.h>
-#include <synfig/gradient.h>
-#include "widgets/widget_gradient.h"
-#include <gtkmm/tooltip.h>
+#include <gtkmm/box.h>
+#include <gtkmm/button.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/grid.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,14 +39,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class HScale; }
-
 namespace studio {
 
 class Widget_Brush;
 class Widget_Color;
 class Widget_Distance;
-//class Widget_Enum;
+class Widget_Gradient;
 
 class Widget_Defaults : public Gtk::Box
 {

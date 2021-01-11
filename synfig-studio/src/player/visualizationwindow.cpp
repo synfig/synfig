@@ -1,21 +1,20 @@
 
 #include <cassert>
-#include <iostream>
 #include <iomanip>
-
-#include <glib.h>
-
-#include <glibmm.h>
+#include <iostream>
 
 #include <cairomm/cairomm.h>
 
+#include <ETL/misc>
+
+#include <glibmm.h>
+
 #include <gtkmm/drawingarea.h>
 
-#include <synfig/general.h>
 #include <synfig/context.h>
+#include <synfig/general.h>
 #include <synfig/rendering/task.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
-#include <ETL/_misc.h>
 
 #include "visualizationwindow.h"
 

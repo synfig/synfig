@@ -29,22 +29,20 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/dialogs/dialog_color.h>
 
-#include <dialogs/dialog_color.h>
-#include <widgets/widget_coloredit.h>
-#include <synfigapp/main.h>
 #include <gtkmm/button.h>
-#include <gui/app.h>
 
+#include <gui/app.h>
 #include <gui/localization.h>
+#include <gui/widgets/widget_coloredit.h>
+
+#include <synfigapp/main.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

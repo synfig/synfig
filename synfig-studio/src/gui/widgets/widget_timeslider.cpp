@@ -32,23 +32,15 @@
 #	include <config.h>
 #endif
 
+#include <gui/widgets/widget_timeslider.h>
+
 #include <cmath>
 
 #include <gdkmm/general.h>
 
-#include <ETL/misc>
-
-#include <synfig/general.h>
-
 #include <gui/app.h>
-
-#include "widget_timeslider.h"
-
-#include <gui/localization.h>
-
-#include "gui/timeplotdata.h"
-
 #include <gui/exception_guard.h>
+#include <gui/timeplotdata.h>
 
 #endif
 
