@@ -35,6 +35,8 @@
 #include <synfig/canvas.h>
 #include <synfig/waypoint.h>
 
+#include <synfigapp/value_desc.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
