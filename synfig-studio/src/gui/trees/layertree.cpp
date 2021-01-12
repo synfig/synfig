@@ -600,8 +600,6 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 	else
 		layer_tree_view().set_model(layer_tree_store_);
 
-	layer_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::LayerTree::on_dirty_preview));
-
 	layer_tree_store_->canvas_interface()->signal_time_changed().connect(
 		sigc::mem_fun(
 			&param_tree_view(),
@@ -627,27 +625,6 @@ LayerTree::set_time_model(const etl::handle<TimeModel> &x)
 	cellrenderer_time_track->set_time_model(x);
 	#endif
 	x->signal_time_changed().connect(sigc::mem_fun(param_tree_view(),&Gtk::TreeView::queue_draw));
-}
-
-void
-LayerTree::on_dirty_preview()
-{
-/*
-	if(quick_layer && !disable_amount_changed_signal)
-	{
-		layer_amount_hscale->set_sensitive(true);
-		disable_amount_changed_signal=true;
-		layer_amount_adjustment_->set_value(quick_layer->get_param("amount").get(Real()));
-		disable_amount_changed_signal=false;
-		if(quick_layer->get_param("blend_method").is_valid())
-		{
-			blend_method_widget.set_sensitive(true);
-			disable_amount_changed_signal=true;
-			blend_method_widget.set_value(quick_layer->get_param("blend_method"));
-			disable_amount_changed_signal=false;
-		}
-	}
-*/
 }
 
 void
