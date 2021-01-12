@@ -82,8 +82,6 @@ private:
 	Gtk::TreeView layer_tree_view_;
 	Gtk::TreeView param_tree_view_;
 
-	synfig::Layer::Handle quick_layer;
-
 	Glib::RefPtr<LayerTreeStore> layer_tree_store_;
 
 	Glib::RefPtr<LayerParamTreeStore> param_tree_store_;
