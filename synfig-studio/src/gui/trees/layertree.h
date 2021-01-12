@@ -28,10 +28,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/adjustment.h>
-#include <gtkmm/box.h>
-#include <gtkmm/scale.h>
-#include <gtkmm/table.h>
 #include <gtkmm/treeview.h>
 
 #include <gui/timemodel.h>
@@ -58,7 +54,7 @@ namespace studio {
 class CellRenderer_TimeTrack;
 class CellRenderer_ValueBase;
 
-class LayerTree : public Gtk::Table
+class LayerTree : public Gtk::Widget
 {
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
@@ -85,12 +81,6 @@ public:
 private:
 	Gtk::TreeView layer_tree_view_;
 	Gtk::TreeView param_tree_view_;
-
-	Gtk::HBox *hbox;
-
-	Glib::RefPtr<Gtk::Adjustment> layer_amount_adjustment_;
-
-	Gtk::HScale *layer_amount_hscale;
 
 	synfig::Layer::Handle quick_layer;
 
@@ -122,10 +112,6 @@ private:
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int> signal_waypoint_clicked_layertree_;
 
 	sigc::signal<void,int> signal_param_tree_header_height_changed_;
-
-	bool disable_amount_changed_signal;
-
-	Widget_ValueBase blend_method_widget;
 
 	bool param_tree_style_changed;
 
@@ -177,10 +163,6 @@ private:
 
 	void on_dirty_preview();
 
-	void on_amount_value_changed();
-
-	void on_blend_method_changed();
-
 	void on_param_column_label_tree_style_updated();
 	bool on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
 
@@ -189,8 +171,6 @@ private:
 	*/
 
 public:
-	Gtk::HBox& get_hbox() { return *hbox; }
-
 	Gtk::TreeView& layer_tree_view() { return layer_tree_view_; }
 	const Gtk::TreeView& layer_tree_view()const { return layer_tree_view_; }
 
