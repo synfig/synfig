@@ -117,25 +117,12 @@ bool LayerTree::on_key_press_event(GdkEventKey* event)
 }
 
 
-LayerTree::LayerTree():
-	layer_amount_adjustment_(Gtk::Adjustment::create(1,0,1,0.01,0.01,0))
+LayerTree::LayerTree()
 {
 	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_key_press_event));
 
 	create_layer_tree();
 	create_param_tree();
-
-	hbox=manage(new Gtk::HBox());
-
-	attach(*hbox, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(blend_method_widget, 2, 3, 1, 2,Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-
-	layer_amount_hscale=manage(new Gtk::HScale(layer_amount_adjustment_));
-	layer_amount_hscale->set_digits(2);
-	layer_amount_hscale->set_value_pos(Gtk::POS_LEFT);
-	layer_amount_hscale->set_sensitive(false);
-	attach(*layer_amount_hscale, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 1, 1);
-	layer_amount_adjustment_->signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
@@ -147,21 +134,8 @@ LayerTree::LayerTree():
 	layer_tree_view().show();
 	param_tree_view().show();
 
-	hbox->show();
-	layer_amount_hscale->show();
-	blend_method_widget.show();
-
 	param_tree_view().set_has_tooltip();
 	layer_tree_view().set_has_tooltip();
-
-	disable_amount_changed_signal=false;
-
-	blend_method_widget.set_param_desc(ParamDesc((int)Color::BlendMethod(),"blend_method"));
-
-	blend_method_widget.set_value((int)Color::BLEND_COMPOSITE);
-	blend_method_widget.set_size_request(150,-1);
-	blend_method_widget.set_sensitive(false);
-	blend_method_widget.signal_activate().connect(sigc::mem_fun(*this, &studio::LayerTree::on_blend_method_changed));
 
 	disable_single_click_for_param_editing = false;
 }
@@ -706,8 +680,6 @@ LayerTree::on_selection_changed()
 
 	if(layer_list.empty())
 	{
-		layer_amount_hscale->set_sensitive(false);
-		blend_method_widget.set_sensitive(false);
 		return;
 	}
 
@@ -717,57 +689,6 @@ LayerTree::on_selection_changed()
 	}
 	else
 		quick_layer=nullptr;
-
-	if(quick_layer)
-	{
-		layer_amount_hscale->set_sensitive(true);
-		disable_amount_changed_signal=true;
-		layer_amount_adjustment_->set_value(quick_layer->get_param("amount").get(Real()));
-		disable_amount_changed_signal=false;
-		if(quick_layer->get_param("blend_method").is_valid())
-		{
-			blend_method_widget.set_sensitive(true);
-			disable_amount_changed_signal=true;
-			blend_method_widget.set_value(quick_layer->get_param("blend_method"));
-			disable_amount_changed_signal=false;
-		}
-		else
-			blend_method_widget.set_sensitive(false);
-	}
-	else
-	{
-		layer_amount_hscale->set_sensitive(false);
-		blend_method_widget.set_sensitive(false);
-	}
-}
-
-void
-LayerTree::on_blend_method_changed()
-{
-	if(disable_amount_changed_signal)
-		return;
-	if(!quick_layer)
-		return;
-
-	if(quick_layer->get_param("blend_method").is_valid())
-	{
-		disable_amount_changed_signal=true;
-		signal_edited_value()(synfigapp::ValueDesc(quick_layer,"blend_method"),blend_method_widget.get_value());
-		disable_amount_changed_signal=false;
-	}
-}
-
-void
-LayerTree::on_amount_value_changed()
-{
-	if(disable_amount_changed_signal)
-		return;
-	if(!quick_layer)
-		return;
-
-	disable_amount_changed_signal=true;
-	signal_edited_value()(synfigapp::ValueDesc(quick_layer,"amount"),synfig::ValueBase(layer_amount_adjustment_->get_value()));
-	disable_amount_changed_signal=false;
 }
 
 void
