@@ -161,8 +161,6 @@ private:
 
 	void on_selection_changed();
 
-	void on_dirty_preview();
-
 	void on_param_column_label_tree_style_updated();
 	bool on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
 
