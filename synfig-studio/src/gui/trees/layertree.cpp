@@ -654,18 +654,6 @@ LayerTree::on_selection_changed()
 			last_top_selected_layer=nullptr;
 		}
 	}
-
-	if(layer_list.empty())
-	{
-		return;
-	}
-
-	if(layer_list.size()==1 && (*layer_list.begin())->get_param("amount").is_valid()&& (*layer_list.begin())->get_param("amount").same_type_as(Real()))
-	{
-		quick_layer=*layer_list.begin();
-	}
-	else
-		quick_layer=nullptr;
 }
 
 void
