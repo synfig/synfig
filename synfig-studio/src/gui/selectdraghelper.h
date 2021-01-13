@@ -782,11 +782,11 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 					return false;
 
 				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
-					// Shift+Scroll: scroll right
-					signal_scroll_right_requested().emit();
-				else
-					// Scroll: scroll up
+					// Shift+Scroll: scroll up
 					signal_scroll_up_requested().emit();
+				else
+					// Scroll: scroll right
+					signal_scroll_right_requested().emit();
 			}
 			return true;
 		}
@@ -804,11 +804,11 @@ bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 					return false;
 
 				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
-					// Shift+Scroll: scroll left
-					signal_scroll_left_requested().emit();
-				else
-					// Scroll: scroll down
+					// Shift+Scroll: scroll down
 					signal_scroll_down_requested().emit();
+				else
+					// Scroll: scroll left
+					signal_scroll_left_requested().emit();
 			}
 			return true;
 		}
