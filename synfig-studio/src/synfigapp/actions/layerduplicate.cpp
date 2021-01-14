@@ -88,6 +88,15 @@ do_replace_valuenodes(LinkableValueNode::Handle link_vn, const std::pair<etl::rh
 	}
 }
 
+/// Go up in Canvas tree to the first parent canvas that is not inline or root canvas
+/// Valuenodes are exported to this canvas via Canvas::add_value_node()
+static Canvas::Handle get_top_parent_if_inline_canvas(Canvas::Handle canvas)
+{
+	if(canvas->is_inline() && canvas->parent())
+		return get_top_parent_if_inline_canvas(canvas->parent());
+	return canvas;
+}
+
 /* === M E T H O D S ======================================================= */
 
 Action::LayerDuplicate::LayerDuplicate()
@@ -195,10 +204,11 @@ Action::LayerDuplicate::prepare()
 		}
 
 		// automatically export the Index parameter of Duplicate layers when duplicating
-		auto last_index_iter = last_index.find(subcanvas);
+		Canvas::Handle canvas_with_exported_valuenodes = get_top_parent_if_inline_canvas(subcanvas);
+		auto last_index_iter = last_index.find(canvas_with_exported_valuenodes);
 		int index = last_index_iter == last_index.end() ? 1 : last_index_iter->second;
 		export_dup_nodes(new_layer, subcanvas, index);
-		last_index[subcanvas] = index;
+		last_index[canvas_with_exported_valuenodes] = index;
 
 		// include this layer and all of its inner layers in a list
 		traverse_layers(layer, new_layer, cloned_layer_map);
