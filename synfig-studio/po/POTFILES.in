@@ -524,6 +524,7 @@ src/synfigapp/value_desc.h
 # src/template.h
 
 # Now, UI xml files
-ui/canvas_options.glade
-ui/preview_options.glade
-ui/dialog_workspaces.glade
+src/gui/resources/ui/canvas_options.glade
+src/gui/resources/ui/dialog_workspaces.glade
+src/gui/resources/ui/preview_options.glade
+src/gui/resources/ui/shortcuts_window.glade

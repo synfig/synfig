@@ -327,6 +327,7 @@ SYNFIGAPPHH = \
 	instance.h \
 	main.h \
 	settings.h \
+	synfigapp_export.h \
 	uimanager.h \
 	value_desc.h \
 	localization.h
