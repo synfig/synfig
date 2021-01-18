@@ -389,7 +389,7 @@ Widget_Preview::Widget_Preview():
 	Gtk::Button *prev_framebutton;
 	Gtk::Image *icon0 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_prev_frame"), Gtk::ICON_SIZE_BUTTON));
 	prev_framebutton = manage(new class Gtk::Button());
-	prev_framebutton->set_tooltip_text(_("Prev frame"));
+	prev_framebutton->set_tooltip_text(_("Seek to previous frame"));
 	icon0->set_padding(0,0);
 	icon0->show();
 	prev_framebutton->add(*icon0);
@@ -429,7 +429,7 @@ Widget_Preview::Widget_Preview():
 	Gtk::Button *next_framebutton;
 	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_next_frame"), Gtk::ICON_SIZE_BUTTON));
 	next_framebutton = manage(new class Gtk::Button());
-	next_framebutton->set_tooltip_text(_("Next frame"));
+	next_framebutton->set_tooltip_text(_("Seek to next frame"));
 	icon2->set_padding(0,0);
 	icon2->show();
 	next_framebutton->add(*icon2);
@@ -447,7 +447,7 @@ Widget_Preview::Widget_Preview():
 
 	//loop
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,"synfig-animate_loop", _("Loop"));
+	IMAGIFY_BUTTON(button, "synfig-animate_loop", _("Loop"));
 	toolbar->pack_start(b_loop, Gtk::PACK_SHRINK,0);
 
 	//spacing
@@ -457,23 +457,23 @@ Widget_Preview::Widget_Preview():
 
 
 	//halt render
-	button = manage(new Gtk::Button(/*_("Halt Render")*/));
+	button = manage(new Gtk::Button());
 	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::stoprender));
-	IMAGIFY_BUTTON(button,Gtk::Stock::STOP, _("Halt render"));
+	IMAGIFY_BUTTON(button,Gtk::Stock::STOP, _("Stop rendering"));
 
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//re-preview
-	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
+	button = manage(new Gtk::Button());
 	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button, Gtk::Stock::EDIT, _("Re-preview"));
+	IMAGIFY_BUTTON(button, "synfig-preview_options", _("Preview Settings"));
 
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//erase all
-	button = manage(new Gtk::Button(/*_("Erase All")*/));
+	button = manage(new Gtk::Button());
 	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::eraseall));
-	IMAGIFY_BUTTON(button, Gtk::Stock::CLEAR, _("Erase all rendered frame(s)"));
+	IMAGIFY_BUTTON(button, Gtk::Stock::CLEAR, _("Erase all rendered frames"));
 
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 

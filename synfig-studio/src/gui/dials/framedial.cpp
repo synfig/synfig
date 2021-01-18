@@ -64,10 +64,10 @@ FrameDial::FrameDial():
 	seek_next_keyframe (create_button("synfig-animate_seek_next_keyframe" , _("Seek to next keyframe")    )),
 	seek_end           (create_button("synfig-animate_seek_end"           , _("Seek to end")              )),
 	end_time           (create_end_time_entry(                              _("End Time")                 )),
-	repeat             (create_toggle("synfig-animate_loop"               , _("Repeat")                   , true)),
-	bound_lower        (create_button("synfig-animate_bound_lower"        , _("Left bound")               , true)),
+	repeat             (create_toggle("synfig-animate_loop"               , _("Loop")                     , true)),
+	bound_lower        (create_button("synfig-animate_bound_lower"        , _("Set lower playback bound") , true)),
 	bounds_enable      (create_toggle("synfig-animate_bounds"             , _("Enable playback bounds")   )),
-	bound_upper        (create_button("synfig-animate_bound_upper"        , _("Right bound")              ))
+	bound_upper        (create_button("synfig-animate_bound_upper"        , _("Set upper playback bound") ))
 {
 	repeat->signal_toggled().connect(
 		sigc::mem_fun(*this, &FrameDial::on_repeat_toggled) );
