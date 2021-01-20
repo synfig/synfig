@@ -255,7 +255,8 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		Type &type(value.get_type());
 		if (type == type_vector)
 		{
-			vector_widget->set_canvas(canvas);
+			if (child_param_desc.get_is_distance() || param_desc.get_is_distance())
+				vector_widget->set_canvas(canvas);
 			vector_widget->set_value(value.get(Vector()));
 			vector_widget->show();
 		}
@@ -455,7 +456,7 @@ Widget_ValueBase::on_grab_focus()
 	else
 	if (type == type_real)
 	{
-		if(param_desc.get_is_distance()&& canvas)
+		if((param_desc.get_is_distance() || child_param_desc.get_is_distance()) && canvas)
 			distance_widget->grab_focus();
 		else
 			real_widget->grab_focus();

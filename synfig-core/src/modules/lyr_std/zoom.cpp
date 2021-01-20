@@ -117,6 +117,7 @@ Zoom::get_param_vocab()const
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Origin"))
 		.set_description(_("Point to scale from"))
+		.set_is_distance()
 	);
 
 	return ret;

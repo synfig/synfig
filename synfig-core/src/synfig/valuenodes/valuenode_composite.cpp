@@ -672,10 +672,12 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"width")
 			.set_local_name(_("Width"))
 			.set_description(_("The width of the Spline Point"))
+			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"origin")
 			.set_local_name(_("Origin"))
 			.set_description(_("Defines the Off and On position relative to neighbours"))
+			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"split")
 			.set_local_name(_("Split"))
@@ -786,6 +788,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"offset")
 			.set_local_name(_("Offset"))
 			.set_description(_("The Offset component of the transformation"))
+			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"angle")
 			.set_local_name(_("Angle"))

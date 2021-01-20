@@ -594,6 +594,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	ret.push_back(ParamDesc(ValueBase(),"origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("The rotating origin of the bone relative to its parent"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"angle")
@@ -609,6 +610,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	ret.push_back(ParamDesc(ValueBase(),"width")
 		.set_local_name(_("Bone Width"))
 		.set_description(_("Bone width at its origin"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"scalex")
@@ -619,6 +621,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	ret.push_back(ParamDesc(ValueBase(),"tipwidth")
 		.set_local_name(_("Tip Width"))
 		.set_description(_("Bone width at its tip"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"bone_depth")
@@ -629,6 +632,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	ret.push_back(ParamDesc(ValueBase(),"length")
 		.set_local_name(_("Length Setup"))
 		.set_description(_("The length of the bone at setup"))
+		.set_is_distance()
 	);
 
 	return ret;

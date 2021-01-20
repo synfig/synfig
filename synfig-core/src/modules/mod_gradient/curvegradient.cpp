@@ -525,6 +525,7 @@ CurveGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("origin")
 				  .set_local_name(_("Origin"))
 				  .set_description(_("Offset for the Vertices List"))
+				  .set_is_distance()
 	);
 	ret.push_back(ParamDesc("width")
 				  .set_is_distance()

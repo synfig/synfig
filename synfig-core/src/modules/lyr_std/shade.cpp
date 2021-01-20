@@ -185,6 +185,7 @@ Layer_Shade::get_param_vocab(void)const
 	);
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))

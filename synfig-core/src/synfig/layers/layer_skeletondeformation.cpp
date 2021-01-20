@@ -109,11 +109,13 @@ Layer_SkeletonDeformation::get_param_vocab()const
 		.set_local_name(_("Point 1"))
 		.set_box("point2")
 		.set_description(_("First corner of the bounds rectangle"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("point2")
 		.set_local_name(_("Point 2"))
 		.set_description(_("Second corner of the bounds rectangle"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("x_subdivisions")

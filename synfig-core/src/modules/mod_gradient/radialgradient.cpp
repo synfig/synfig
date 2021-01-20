@@ -119,6 +119,7 @@ RadialGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
 		.set_description(_("Center of the gradient"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("radius")

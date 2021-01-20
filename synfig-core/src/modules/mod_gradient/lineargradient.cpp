@@ -161,10 +161,12 @@ LinearGradient::get_param_vocab()const
 		.set_local_name(_("Point 1"))
 		.set_connect("p2")
 		.set_description(_("Start point of the gradient"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("p2")
 		.set_local_name(_("Point 2"))
 		.set_description(_("End point of the gradient"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))

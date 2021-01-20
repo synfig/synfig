@@ -136,11 +136,13 @@ XORPattern::get_param_vocab()const
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Center of the pattern"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
 		.set_description(_("Size of the pattern"))
 		.set_origin("origin")
+		.set_is_distance()
 	);
 
 	return ret;

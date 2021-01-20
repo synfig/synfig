@@ -328,6 +328,7 @@ Halftone3::get_param_vocab()const
 
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Mask Size"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("type")
 		.set_local_name(_(" Type"))

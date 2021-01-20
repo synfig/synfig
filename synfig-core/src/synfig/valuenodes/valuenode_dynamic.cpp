@@ -236,6 +236,7 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 	ret.push_back(ParamDesc(ValueBase(),"origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Basement of the dynamic system"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc(ValueBase(),"force")
 		.set_local_name(_("Force"))
