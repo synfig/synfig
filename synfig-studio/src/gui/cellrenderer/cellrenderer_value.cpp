@@ -65,6 +65,7 @@ using namespace studio;
 
 // Number of decimal places for real values
 static constexpr int real_num_decimals = 6;
+static constexpr int angle_num_decimals = 2;
 
 class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
 {
@@ -338,7 +339,8 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_angle)
 	{
-		property_text() = (Glib::ustring) strprintf( "%.2fᵒ", (Real) Angle::deg( data.get(Angle()) ).get() );
+		const std::string angle_format = strprintf("%%.%df°", angle_num_decimals);
+		property_text() = (Glib::ustring) strprintf( angle_format.c_str(), (Real) Angle::deg( data.get(Angle()) ).get() );
 	}
 	else
 	if (type == type_integer)
@@ -405,8 +407,9 @@ CellRenderer_ValueBase::render_vfunc(
 		sx.convert( App::distance_system, get_canvas()->rend_desc() );
 		sy.convert( App::distance_system, get_canvas()->rend_desc() );
 
+		std::string format = strprintf("%%s,%%s,%%.%df°,%%s,%%s", angle_num_decimals);
 		property_text() = static_cast<Glib::ustring>(strprintf(
-			"%s,%s,%.2fᵒ,%s,%s",
+			format.c_str(),
 			x.get_string(real_num_decimals).c_str(),
 			y.get_string(real_num_decimals).c_str(),
 			(Real) angle.get(),
