@@ -1045,35 +1045,41 @@ Perspective::get_param_vocab()const
 		.set_local_name(_("Source TL"))
 		.set_box("src_br")
 		.set_description(_("Top Left corner of the source to perspective"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("src_br")
 		.set_local_name(_("Source BR"))
 		.set_description(_("Bottom Right corner of the source to perspective"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("dest_tl")
 		.set_local_name(_("Dest TL"))
 		.set_connect("dest_tr")
 		.set_description(_("Top Left corner of the destination"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("dest_tr")
 		.set_local_name(_("Dest TR"))
 		.set_connect("dest_br")
 		.set_description(_("Top Right corner of the destination"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("dest_br")
 		.set_local_name(_("Dest BR"))
 		.set_connect("dest_bl")
 		.set_description(_("Bottom Right corner of the destination"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("dest_bl")
 		.set_local_name(_("Dest BL"))
 		.set_connect("dest_tl")
 		.set_description(_("Bottom Left corner of the destination"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("clip")

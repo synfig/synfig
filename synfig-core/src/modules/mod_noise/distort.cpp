@@ -211,11 +211,13 @@ NoiseDistort::get_param_vocab()const
 	ret.push_back(ParamDesc("displacement")
 		.set_local_name(_("Displacement"))
 		.set_description(_("How big the distortion displaces the context"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
 		.set_description(_("Distance between distortions"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("seed")
 		.set_local_name(_("RandomNoise Seed"))

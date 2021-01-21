@@ -405,6 +405,7 @@ CurveWarp::get_param_vocab()const
 	ret.push_back(ParamDesc("origin")
 				  .set_local_name(_("Origin"))
 				  .set_description(_("Position of the destiny Spline line"))
+				  .set_is_distance()
 	);
 	ret.push_back(ParamDesc("perp_width")
 				  .set_local_name(_("Width"))
@@ -415,10 +416,12 @@ CurveWarp::get_param_vocab()const
 				  .set_local_name(_("Start Point"))
 				  .set_connect("end_point")
 				  .set_description(_("First point of the source line"))
+				  .set_is_distance()
 	);
 	ret.push_back(ParamDesc("end_point")
 				  .set_local_name(_("End Point"))
 				  .set_description(_("Final point of the source line"))
+				  .set_is_distance()
 	);
 	ret.push_back(ParamDesc("bline")
 				  .set_local_name(_("Vertices"))

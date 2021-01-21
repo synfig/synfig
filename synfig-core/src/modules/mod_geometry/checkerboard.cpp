@@ -274,11 +274,13 @@ CheckerBoard::get_param_vocab()const
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Center of the checkers"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
 		.set_description(_("Size of checkers"))
 		.set_origin("origin")
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("antialias")
 		.set_local_name(_("Antialiasing"))

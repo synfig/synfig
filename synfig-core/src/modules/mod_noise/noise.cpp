@@ -272,6 +272,7 @@ Noise::get_param_vocab()const
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
 		.set_description(_("Size of the noise"))
+		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("smooth")
 		.set_local_name(_("Interpolation"))

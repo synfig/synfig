@@ -897,7 +897,7 @@ Layer_Freetype::get_param_vocab(void)const
 		.set_description(_("Size of the text"))
 		.set_hint("size")
 		.set_origin("origin")
-		.set_scalar(1)
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("orient")
@@ -909,6 +909,7 @@ Layer_Freetype::get_param_vocab(void)const
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Text Position"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("font")

@@ -158,11 +158,13 @@ Layer_Bitmap::get_param_vocab()const
 	ret.push_back(ParamDesc("tl")
 		.set_local_name(_("Top-Left"))
 		.set_description(_("Upper left-hand Corner of image"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("br")
 		.set_local_name(_("Bottom-Right"))
 		.set_description(_("Lower right-hand Corner of image"))
+		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("c")
