@@ -174,7 +174,7 @@ std::string Time::get_string(Time::Format format) const
 	if(format <= FORMAT_NORMAL)
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		return strprintf("%.3f", (float)time);
+		return strprintf("%.3f", 1+time);
 	}
 
 
@@ -241,7 +241,7 @@ Time::get_string(float fps, Time::Format format)const
 	if (format <= FORMAT_FRAMES)
 	{
 		if (fps && fps>0)
-			return strprintf("%df", round_to_int(time * fps));
+			return strprintf("%df", round_to_int(time * fps)+1);
 		else
 			return strprintf("%ds", round_to_int(time * 1));
 	}
@@ -286,9 +286,9 @@ Time::get_string(float fps, Time::Format format)const
 				ret += " ";
 
 			if (fabs(frame-floor(frame)) >= epsilon_())
-				ret += strprintf("%0.3ff", frame);
+				ret += strprintf("%0.3ff", frame+1);
 			else
-				ret += strprintf("%0.0ff", frame);
+				ret += strprintf("%0.0ff", frame+1);
 		}
 	}
 	else
