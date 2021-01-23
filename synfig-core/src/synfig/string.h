@@ -35,18 +35,6 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-/*
-namespace std
-{
-template<class _CharT> struct char_traits;
-template<> struct char_traits<char>;
-template<typename _Alloc> class allocator;
-template<typename _CharT, typename _Traits,typename _Alloc>class basic_string;
-typedef basic_string<char,char_traits<char>,allocator<char> >    string;
-
-}; // END of namespace std
-*/
-
 namespace synfig
 {
 
