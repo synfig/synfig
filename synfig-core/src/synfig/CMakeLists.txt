@@ -51,6 +51,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/renddesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/render.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/savecanvas.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/string_helper.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/surface.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/time.cpp"

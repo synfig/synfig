@@ -62,8 +62,6 @@ public:
 
 	sigc::signal<void> & signal_list_changed();
 
-	static void	trim_string(std::string &text);
-
 private:
 	std::map<std::string, std::string> workspaces;
 
