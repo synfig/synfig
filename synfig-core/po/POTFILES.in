@@ -299,7 +299,6 @@ src/synfig/savecanvas.h
 src/synfig/segment.h
 src/synfig/smartfile.h
 src/synfig/string.h
-src/synfig/string_decl.h
 src/synfig/surface.cpp
 src/synfig/surface.h
 src/synfig/synfig.h
