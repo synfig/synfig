@@ -138,6 +138,7 @@
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/soundprocessor.h>
+#include <synfig/string_helper.h>
 #include <synfig/version.h>
 
 #include <synfigapp/action.h>
@@ -2152,18 +2153,6 @@ void App::load_custom_workspaces()
 	workspaces->load(filename);
 }
 
-static void trim_string(std::string &text)
-{
-	text.erase(text.begin(),
-			   std::find_if(text.begin(), text.end(),
-							[](int chr) { return !std::isspace(chr);})
-			   );
-	text.erase(std::find_if(text.rbegin(), text.rend(),
-							[](int chr) { return !std::isspace(chr);}).base(),
-			   text.end()
-			   );
-}
-
 void App::save_custom_workspace()
 {
 	Gtk::MessageDialog dialog(*App::main_window, _("Type a name for this custom workspace:"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
@@ -2176,8 +2165,7 @@ void App::save_custom_workspace()
 	name_entry->set_margin_start(16);
 	name_entry->set_margin_end(16);
 	name_entry->signal_changed().connect([&](){
-		std::string name = name_entry->get_text();
-		trim_string(name);
+		std::string name = synfig::trim(name_entry->get_text());
 		bool has_equal_sign = name.find("=") != std::string::npos;
 		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
 		if (ok_button->is_sensitive())
@@ -2196,8 +2184,7 @@ void App::save_custom_workspace()
 	if (response == Gtk::RESPONSE_CANCEL)
 		return;
 
-	std::string name = name_entry->get_text();
-	trim_string(name);
+	std::string name = synfig::trim(name_entry->get_text());
 
 	std::string tpl = dock_manager->save_layout_to_string();
 	if (!workspaces->has_workspace(name))

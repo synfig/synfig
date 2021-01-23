@@ -21,6 +21,7 @@
 #include <gtkmm/treeview.h>
 
 #include <synfig/general.h>
+#include <synfig/string_helper.h>
 
 #endif
 
@@ -161,7 +162,7 @@ void Dialog_Workspaces::on_rename_clicked()
 	name_entry->set_margin_end(16);
 	name_entry->signal_changed().connect([&](){
 		std::string name = name_entry->get_text();
-		WorkspaceHandler::trim_string(name);
+		synfig::trim(name);
 		bool has_equal_sign = name.find("=") != std::string::npos;
 		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
 		if (ok_button->is_sensitive())
@@ -182,7 +183,7 @@ void Dialog_Workspaces::on_rename_clicked()
 		return;
 
 	std::string name = name_entry->get_text();
-	WorkspaceHandler::trim_string(name);
+	synfig::trim(name);
 
 	if (old_name == name)
 		return;

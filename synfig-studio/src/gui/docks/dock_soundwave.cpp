@@ -41,6 +41,7 @@
 #include <synfig/canvasfilenaming.h>
 #include <synfig/general.h>
 #include <synfig/layers/layer_sound.h>
+#include <synfig/string_helper.h>
 
 #include <synfigapp/value_desc.h>
 
@@ -541,11 +542,7 @@ void Dock_SoundWave::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragCont
 		std::istringstream f(uri_list_string);
 		std::string s;
 		while (getline(f, s)) {
-			// r-trim
-			s.erase(std::find_if(s.rbegin(), s.rend(),
-									[](int chr) { return !std::isspace(chr);}).base(),
-			        s.end()
-			       );
+			s = synfig::right_trim(s);
 			uris.push_back(s);
 		}
 
