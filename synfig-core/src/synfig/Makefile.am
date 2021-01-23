@@ -82,7 +82,6 @@ SYNFIGHEADERS = \
 	segment.h \
 	smartfile.h \
 	string.h \
-	string_decl.h \
 	types.h \
 	vector.h \
 	transformation.h \
