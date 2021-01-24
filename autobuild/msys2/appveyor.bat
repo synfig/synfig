@@ -12,4 +12,4 @@ echo %APPVEYOR_BUILD_FOLDER%
 pwd
 
 bash --login -c "$APPVEYOR_BUILD_FOLDER/1-setup-windows-msys2.sh"
-bash --login -c "cd ${APPVEYOR_BUILD_FOLDER} && ./autobuild/synfigstudio-release.sh"
+bash --login -c "cd ${APPVEYOR_BUILD_FOLDER} && PKG_CONFIG_PATH=/opt/mlt-6.16.0/lib/pkgconfig ./autobuild/synfigstudio-release.sh"
