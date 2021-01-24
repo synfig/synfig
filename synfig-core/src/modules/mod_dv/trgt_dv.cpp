@@ -56,6 +56,7 @@
 #include <algorithm>
 #include <functional>
 #include <ETL/clock>
+#include <thread>
 
 #endif
 
@@ -237,7 +238,7 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 
 
 	// Sleep for a moment to let the pipe catch up
-	etl::clock().sleep(0.25f);
+	std::this_thread::sleep_for(std::chrono::milliseconds(25));
 
 	return true;
 }
