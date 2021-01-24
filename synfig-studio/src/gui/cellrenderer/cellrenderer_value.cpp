@@ -321,26 +321,26 @@ CellRenderer_ValueBase::render_vfunc(
 		{
 			Distance x( data.get(Real()), Distance::SYSTEM_UNITS);
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
-			property_text() = (Glib::ustring) x.get_string(real_num_decimals).c_str();
+			property_text() = x.get_string(real_num_decimals).c_str();
 		}
 		else
 		{
 			std::string format = strprintf("%%.%df", real_num_decimals);
-			property_text() = (Glib::ustring) strprintf(format.c_str(), data.get(Real()));
+			property_text() = strprintf(format.c_str(), data.get(Real()));
 		}
 	}
 	else
 	if (type == type_time)
 	{
 		property_text() =
-			(Glib::ustring) data.get(Time()).get_string( get_canvas()->rend_desc().get_frame_rate(),
+			data.get(Time()).get_string( get_canvas()->rend_desc().get_frame_rate(),
 				                                         App::get_time_format());
 	}
 	else
 	if (type == type_angle)
 	{
 		const std::string angle_format = strprintf("%%.%df°", angle_num_decimals);
-		property_text() = (Glib::ustring) strprintf( angle_format.c_str(), (Real) Angle::deg( data.get(Angle()) ).get() );
+		property_text() = strprintf( angle_format.c_str(), (Real) Angle::deg( data.get(Angle()) ).get() );
 	}
 	else
 	if (type == type_integer)
@@ -350,11 +350,11 @@ CellRenderer_ValueBase::render_vfunc(
 		child_param_hint = get_child_param_desc().get_hint();
 		if ( param_hint != "enum" && child_param_hint != "enum" )
 		{
-			property_text() = (Glib::ustring) strprintf("%i", data.get(int()));
+			property_text() = strprintf("%i", data.get(int()));
 		}
 		else
 		{
-			property_text() = (Glib::ustring) strprintf("(%i)",data.get(int()));
+			property_text() = strprintf("(%i)",data.get(int()));
 
 			std::list<synfig::ParamDesc::EnumData> enum_list;
 			if (param_hint == "enum")
@@ -385,10 +385,10 @@ CellRenderer_ValueBase::render_vfunc(
 			Distance x( vector[0], Distance::SYSTEM_UNITS ), y( vector[1], Distance::SYSTEM_UNITS );
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
 			y.convert( App::distance_system, get_canvas()->rend_desc() );
-			property_text() = (Glib::ustring) strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
+			property_text() = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
 		} else {
 			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
-			property_text() = (Glib::ustring) strprintf(format.c_str(), vector[0], vector[1]);
+			property_text() = strprintf(format.c_str(), vector[0], vector[1]);
 		}
 	}
 	else
@@ -433,7 +433,7 @@ CellRenderer_ValueBase::render_vfunc(
 			if (data.get( etl::handle<synfig::Canvas>())->is_inline() )
 				property_text() = _("<Group>");
 			else
-				property_text() = (Glib::ustring) data.get(etl::handle<synfig::Canvas>())->get_id();
+				property_text() = data.get(etl::handle<synfig::Canvas>())->get_id();
 		}
 		else
 			property_text() = _("<No Image Selected>");
@@ -502,7 +502,7 @@ CellRenderer_ValueBase::render_vfunc(
 	 || type == type_width_point
 	 || type == type_dash_item)
 	{
-		property_text() = (Glib::ustring)(data.get_type().description.local_name);
+		property_text() = data.get_type().description.local_name;
 	}
 	else
 	if (type == type_bone_valuenode)
@@ -517,7 +517,7 @@ CellRenderer_ValueBase::render_vfunc(
 				name = bone_node->get_guid().get_string();
 		}
 
-		property_text() = (Glib::ustring)(name);
+		property_text() = name;
 	}
 	else
 	{
@@ -599,7 +599,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	//else
 	//if (type == type_time)
 	//{
-	//	property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format()|Time::FORMAT_FULL);
+	//	property_text()=data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format()|Time::FORMAT_FULL);
 	//	return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
 	//}
 	else
