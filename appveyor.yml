@@ -10,7 +10,7 @@ environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
   matrix:
     - MSYSTEM: MINGW64
-    - MSYSTEM: MINGW32
+#    - MSYSTEM: MINGW32
 
 # set clone depth
 clone_depth: 1 # clone entire repository history if not defined
@@ -22,11 +22,11 @@ build_script:
   - '%APPVEYOR_BUILD_FOLDER%\autobuild\msys2\appveyor.bat'
 
 # scripts to run after build (working directory and environment changes are persisted from the previous steps)
-after_build:
-  - cmd: set SYNFIG_ID="%APPVEYOR_REPO_COMMIT_TIMESTAMP:~0,10%-win%MSYSTEM:~-2%-%APPVEYOR_REPO_COMMIT:~0,5%"
-  - cmd: call 7z a "SynfigStudio-1.5.0-testing-%SYNFIG_ID%.zip" %APPVEYOR_BUILD_FOLDER%\cmake-build-msys\install\*
+#after_build:
+#  - cmd: set SYNFIG_ID="%APPVEYOR_REPO_COMMIT_TIMESTAMP:~0,10%-win%MSYSTEM:~-2%-%APPVEYOR_REPO_COMMIT:~0,5%"
+#  - cmd: call 7z a "SynfigStudio-1.4.1-testing-%SYNFIG_ID%.zip" %APPVEYOR_BUILD_FOLDER%\cmake-build-msys\install\*
 
-artifacts:
-  - path: "SynfigStudio-*.zip"
+#artifacts:
+#  - path: "SynfigStudio-*.zip"
 
 deploy: off
