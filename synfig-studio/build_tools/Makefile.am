@@ -1,4 +1,4 @@
-dist_noinst_SCRIPTS = autorevision.sh
+dist_noinst_SCRIPTS = autorevision.sh sif2ico.sh
 
 if DEVELOPMENT_SNAPSHOT
 all-local:
