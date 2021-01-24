@@ -285,6 +285,7 @@ std::set< String > studio::App::brushes_path;
 String studio::App::image_editor_path;
 
 String studio::App::sequence_separator(".");
+String studio::App::number_of_cores("" + ('0'+g_get_num_processors()) );
 String studio::App::navigator_renderer;
 String studio::App::workarea_renderer;
 
@@ -542,6 +543,11 @@ public:
 				value=App::sequence_separator;
 				return true;
 			}
+			if(key=="number_of_cores")
+			{
+				value=App::number_of_cores;
+				return true;
+			}
 			if(key=="navigator_renderer")
 			{
 				value=App::navigator_renderer;
@@ -725,6 +731,11 @@ public:
 				App::sequence_separator=value;
 				return true;
 			}
+			if(key=="number_of_cores")
+			{
+				App::number_of_cores=value;
+				return true;
+			}
 			if(key=="navigator_renderer")
 			{
 				App::navigator_renderer=value;
@@ -813,6 +824,7 @@ public:
 		ret.push_back("preferred_fps");
 		ret.push_back("predefined_fps");
 		ret.push_back("sequence_separator");
+		ret.push_back("number_of_cores");
 		ret.push_back("navigator_renderer");
 		ret.push_back("workarea_renderer");
 		ret.push_back("default_background_layer_type");
