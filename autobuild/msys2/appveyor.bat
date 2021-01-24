@@ -11,5 +11,5 @@ cd %APPVEYOR_BUILD_FOLDER%
 echo %APPVEYOR_BUILD_FOLDER%
 pwd
 
-bash -c "./1-setup-windows-msys2.sh"
-bash -c "./2-build-production.sh"
+bash --login -c "$APPVEYOR_BUILD_FOLDER/1-setup-windows-msys2.sh"
+bash --login -c "cd ${APPVEYOR_BUILD_FOLDER} && ./autobuild/synfigstudio-release.sh"
