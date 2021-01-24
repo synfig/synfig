@@ -97,7 +97,7 @@ public:
 		smart_ptrs much like we would pointers. */
 #ifdef _WIN32
 	template <class U>
-	smart_ptr(const smart_ptr<U> &x):obj((pointer)&*x.obj),refcount(x.refcount())
+	smart_ptr(const smart_ptr<U> &x):obj((pointer)&*x.obj),refcount(x.refcount)
 		{ }
 #endif
 

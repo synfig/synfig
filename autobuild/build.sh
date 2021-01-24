@@ -150,7 +150,7 @@ cd ..
 etl_configure()
 {
 cd ETL
-echo "Going to configure..."
+echo "Going to ETL configure..."
 pushd "${REPO_DIR}/ETL/" >/dev/null
 /bin/bash "${REPO_DIR}/ETL/bootstrap.sh"
 popd
@@ -196,6 +196,7 @@ cd ..
 core_configure()
 {
 cd synfig-core
+echo "Going to synfig-core configure..."
 pushd "${REPO_DIR}/synfig-core/" >/dev/null
 /bin/bash "${REPO_DIR}/synfig-core/bootstrap.sh"
 popd >/dev/null
@@ -255,6 +256,7 @@ cd ..
 studio_configure()
 {
 cd synfig-studio
+echo "Going to synfig-studio configure..."
 pushd "${REPO_DIR}/synfig-studio/" >/dev/null
 /bin/bash "${REPO_DIR}/synfig-studio/bootstrap.sh"
 popd >/dev/null
