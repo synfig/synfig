@@ -74,7 +74,7 @@ stats:
 	-@echo 
 
 ChangeLog:
-	../autobuild/git2cl > ChangeLog
+	cd $(top_srcdir) && ../autobuild/git2cl > ChangeLog
 
 listfixmes:
 	-@echo
