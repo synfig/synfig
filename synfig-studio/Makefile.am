@@ -99,7 +99,7 @@ SVN=svn
 TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
 
 ChangeLog:
-	../autobuild/git2cl > ChangeLog
+	cd $(top_srcdir) && ../autobuild/git2cl > ChangeLog
 
 stats:
 	-@echo
