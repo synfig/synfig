@@ -503,10 +503,10 @@ Dialog_Setup::create_render_page(PageInfo pi)
 
 	// render - cores
 	attach_label(pi.grid, _("Limit render to number of cores"), ++row);
-	pi.grid->attach(core_render, 1, row, 1, 1);
-	core_render.set_hexpand(true);
-	core_render.signal_changed().connect(
-	sigc::mem_fun(*this, &Dialog_Setup::on_core_change) );
+	pi.grid->attach(number_of_core_select, 1, row, 1, 1);
+	number_of_core_select.set_hexpand(true);
+	number_of_core_select.signal_changed().connect(
+	sigc::mem_fun(*this, &Dialog_Setup::on_number_of_core_select) );
 
 	// Render - WorkArea
 	attach_label(pi.grid, _("WorkArea renderer"), ++row);
@@ -542,7 +542,7 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	preview_background_color_button.signal_color_set().connect(
 		sigc::mem_fun(*this, &studio::Dialog_Setup::on_preview_background_color_changed) );
 
-}	
+}
 
 void
 Dialog_Setup::create_interface_page(PageInfo pi)
@@ -676,7 +676,7 @@ Dialog_Setup::on_restore_pressed()
 		fps_template_combo->set_active_text(DEFAULT_PREDEFINED_FPS);
 		adj_pref_fps->set_value(24.0);
 		image_sequence_separator.set_text(".");
-		core_render.set_text("" + ('0'+g_get_num_processors()));
+		number_of_core_select.set_text(std::to_string(g_get_num_processors()));
 
 		workarea_renderer_combo.set_active_id("");
 		def_background_none.set_active();
@@ -799,7 +799,7 @@ Dialog_Setup::on_apply_pressed()
 	App::sequence_separator     = image_sequence_separator.get_text();
 
 	// Set the number of cores
-	App::number_of_cores = core_render.get_text();
+	App::number_of_cores = atoi((number_of_core_select.get_text().c_str()));
 
 	// Set the workarea render and navigator render flag
 	App::navigator_renderer = App::workarea_renderer  = workarea_renderer_combo.get_active_id();
@@ -917,9 +917,9 @@ Dialog_Setup::on_autobackup_changed()
 }
 
 void
-Dialog_Setup::on_core_change()
+Dialog_Setup::on_number_of_core_select()
 {
-	ThreadPool::instance().set_threads(3);
+	ThreadPool::instance().set_num_threads(App::number_of_cores);
 }
 
 void
@@ -1082,7 +1082,8 @@ Dialog_Setup::refresh()
 	// Refresh the sequence separator
 	image_sequence_separator.set_text(App::sequence_separator);
 
-	core_render.set_text(App::number_of_cores);
+	// Refresh the number of core
+	number_of_core_select.set_text(std::to_string(App::number_of_cores));
 
 	// Refresh the status of the workarea_renderer
 	workarea_renderer_combo.set_active_id(App::workarea_renderer);

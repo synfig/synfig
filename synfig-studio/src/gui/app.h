@@ -228,7 +228,7 @@ public:
 	static synfig::String predefined_fps;
 	static float preferred_fps;
 	static synfig::String sequence_separator;
-	static synfig::String number_of_cores;
+	static int number_of_cores;
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
 	static bool enable_mainwin_menubar;
