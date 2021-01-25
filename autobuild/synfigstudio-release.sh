@@ -23,6 +23,7 @@ export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 export SRCPREFIX=`dirname "$SCRIPTPATH"`
 
 BUILD_RELEASE_DIR=${SRCPREFIX}/_release/
+FAST_TEST=true # skips building from prepared archive (make distinstall should already check that)
 
 export PREFIX="$HOME/local-synfig"
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PREFIX/lib/pkgconfig"
@@ -53,7 +54,7 @@ if [ -z $THREADS ]; then
 	export THREADS=8
 fi
 
-start_stage() 
+start_stage()
 {
 	echo -e "Starting ${YLW}$1${NC} stage"
 }
@@ -112,7 +113,11 @@ etl()
 {
 	start_stage "ETL"
 	pack-etl
-	test-etl
+	if [ "$FAST_TEST" = true ] ; then
+		cd $BUILD_RELEASE_DIR/ETL && make install -j${THREADS}
+	else
+		test-etl
+	fi
 	end_stage "ETL"
 }
 
@@ -146,7 +151,11 @@ core()
 {
 	start_stage "Synfig Core"
 	pack-core
-	test-core
+	if [ "$FAST_TEST" = true ] ; then
+		cd $BUILD_RELEASE_DIR/synfig-core && make install -j${THREADS}
+	else
+		test-core
+	fi
 	end_stage "Synfig Core"
 }
 
@@ -179,7 +188,11 @@ studio()
 {
 	start_stage "Synfig Studio"
 	pack-studio
-	test-studio
+	if [ "$FAST_TEST" = true ] ; then
+		cd $BUILD_RELEASE_DIR/synfig-studio && make install -j${THREADS}
+	else
+		test-studio
+	fi
 	end_stage "Synfig Studio"
 }
 
