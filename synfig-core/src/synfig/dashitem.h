@@ -69,7 +69,7 @@ public:
 	int get_side_type_after()const;
 	void set_side_type_after(int sideafter);
 	int get_side_type(int i)const;
-	bool operator == (const DashItem& rhs);
+	bool operator == (const DashItem& rhs) const;
 	
 	static WidthPoint::SideType to_wp_side_type(SideType st)
 		{ return (WidthPoint::SideType)(int)st; }
