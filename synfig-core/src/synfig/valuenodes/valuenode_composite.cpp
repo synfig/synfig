@@ -680,6 +680,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"point")
 			.set_local_name(_("Vertex"))
 			.set_description(_("The vertex of the Spline Point"))
+			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"width")
 			.set_local_name(_("Width"))
