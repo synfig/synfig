@@ -61,8 +61,8 @@ public:
 	//! Does this activepoint turn the entry on, or off?
 	bool state;
 
-	bool operator<(const Activepoint& rhs) { return time<rhs.time; }
-	bool operator<(const Time& rhs) { return time<rhs; }
+	bool operator<(const Activepoint& rhs) const { return time<rhs.time; }
+	bool operator<(const Time& rhs) const { return time<rhs; }
 
 	Activepoint(const Time &time, const bool &state, int p=0):
 		index(), time(time), priority(p),state(state) { }

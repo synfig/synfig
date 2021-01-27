@@ -425,8 +425,8 @@ public:
 	void initialize();
 	void deinitialize();
 
-	inline bool operator== (const Type &other) { return private_identifier == other.private_identifier; }
-	inline bool operator!= (const Type &other) { return private_identifier != other.private_identifier; }
+	inline bool operator== (const Type &other) const { return private_identifier == other.private_identifier; }
+	inline bool operator!= (const Type &other) const { return private_identifier != other.private_identifier; }
 
 	static void initialize_all();
 	static void deinitialize_all();

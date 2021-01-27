@@ -92,8 +92,8 @@ public:
 	void set_lower_bound(Real lb);
 	Real get_upper_bound()const;
 	void set_upper_bound(Real ub);
-	bool operator < (const WidthPoint& rhs);
-	bool operator == (const WidthPoint& rhs);
+	bool operator < (const WidthPoint& rhs) const;
+	bool operator == (const WidthPoint& rhs) const;
 
 }; // END of class WidthPoint
 
