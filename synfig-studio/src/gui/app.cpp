@@ -1759,7 +1759,7 @@ App::~App()
 
 	// Unload all of the modules
 	for(;!module_list_.empty();module_list_.pop_back())
-		;
+		module_list_.back()->stop();
 
 	delete state_manager;
 
