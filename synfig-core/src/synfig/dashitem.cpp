@@ -117,7 +117,7 @@ DashItem::get_side_type(int i)const
 }
 
 bool
-DashItem::operator == (const DashItem& rhs)
+DashItem::operator == (const DashItem& rhs) const
 {
 	return 	side_type_[0] == rhs.get_side_type(0) &&
 			side_type_[1] == rhs.get_side_type(1) &&

@@ -198,13 +198,13 @@ WidthPoint::get_upper_bound()const
 }
 
 bool
-WidthPoint::operator<(const WidthPoint& rhs)
+WidthPoint::operator<(const WidthPoint& rhs) const
 {
 	return get_position() < rhs.get_position();
 }
 
 bool
-WidthPoint::operator == (const WidthPoint& rhs)
+WidthPoint::operator == (const WidthPoint& rhs) const
 {
 	return 	side_type_[0] == rhs.get_side_type(0) &&
 			side_type_[1] == rhs.get_side_type(1) &&
