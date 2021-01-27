@@ -224,8 +224,6 @@ Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
 
-static etl::handle< studio::ModPalette > mod_palette_;
-
 std::list<etl::handle<Instance> > App::instance_list;
 
 static etl::handle<synfigapp::UIInterface>           ui_interface_;
