@@ -100,7 +100,7 @@ protected:
 	virtual bool get_enabled_vfunc()const;
 
 public:
-	bool operator<(const WorkAreaRenderer &rhs)
+	bool operator<(const WorkAreaRenderer &rhs) const
 		{ return priority_<rhs.priority_; }
 };
 
