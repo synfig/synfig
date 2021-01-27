@@ -51,7 +51,6 @@ Module::Module():status_(false)
 
 Module::~Module()
 {
-	stop();
 }
 
 bool
