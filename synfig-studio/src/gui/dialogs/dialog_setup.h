@@ -165,7 +165,7 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::ComboBoxText workarea_renderer_combo;
 	Gtk::Switch       toggle_play_sound_on_render_done;
 	Glib::RefPtr<Gtk::Adjustment> adj_number_of_core;
-	Gtk::SpinButton*		  number_of_core_select;	
+	Gtk::SpinButton*	number_of_core_select;	
 
 	Gtk::Switch toggle_handle_tooltip_widthpoint;
 	Gtk::Switch toggle_handle_tooltip_radius;

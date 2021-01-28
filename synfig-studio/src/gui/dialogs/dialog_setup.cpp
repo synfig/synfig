@@ -44,6 +44,7 @@
 #include <gui/resourcehelper.h>
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
+#include <synfig/threadpool.h>
 
 #include <synfig/rendering/renderer.h>
 

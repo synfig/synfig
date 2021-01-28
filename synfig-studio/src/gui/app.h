@@ -51,7 +51,6 @@
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
-#include <synfig/threadpool.h>
 
 #include <synfigapp/instance.h>
 
