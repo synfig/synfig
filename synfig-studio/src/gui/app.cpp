@@ -285,7 +285,6 @@ std::set< String > studio::App::brushes_path;
 String studio::App::image_editor_path;
 
 String studio::App::sequence_separator(".");
-int studio::App::number_of_cores(g_get_num_processors());
 String studio::App::navigator_renderer;
 String studio::App::workarea_renderer;
 
@@ -543,11 +542,6 @@ public:
 				value=App::sequence_separator;
 				return true;
 			}
-			if(key=="number_of_cores")
-			{
-				value=App::number_of_cores;
-				return true;
-			}
 			if(key=="navigator_renderer")
 			{
 				value=App::navigator_renderer;
@@ -729,11 +723,6 @@ public:
 			if(key=="sequence_separator")
 			{
 				App::sequence_separator=value;
-				return true;
-			}
-			if(key=="number_of_cores")
-			{
-				App::number_of_cores=atoi(value.c_str());
 				return true;
 			}
 			if(key=="navigator_renderer")
