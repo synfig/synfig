@@ -87,7 +87,7 @@ public:
 			ra = sub_task_a()->target_rect - oa;
 			if (ra.is_valid())
 			{
-				etl::set_intersect(ra, ra, r);
+				rect_set_intersect(ra, ra, r);
 				if (ra.is_valid() && sub_task_a()->target_surface != target_surface)
 				{
 					LockRead la(sub_task_a());
@@ -118,7 +118,7 @@ public:
 			RectInt rb = sub_task_b()->target_rect - ob;
 			if (rb.is_valid())
 			{
-				etl::set_intersect(rb, rb, r);
+				rect_set_intersect(rb, rb, r);
 				if (rb.is_valid())
 				{
 					LockRead lb(sub_task_b());

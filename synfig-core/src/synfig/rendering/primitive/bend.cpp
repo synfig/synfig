@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-
+#include <algorithm> //std::sort
 #include <ETL/hermite>
 
 #include <synfig/curve.h>
@@ -445,7 +445,7 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 		Real bsl = step;
 		for(int i = 1; i < segments; ++i, bsl += step)
 			intersections.push_back( Intersection(bsl, interpolate( h.p(0, bsl) )) );
-		sort(intersections.begin(), intersections.end());
+		std::sort(intersections.begin(), intersections.end());
 		
 		Intersection prev(0, interpolate(h.p0[0]));
 		intersections.push_back( Intersection(1, interpolate(h.p1[0])) );

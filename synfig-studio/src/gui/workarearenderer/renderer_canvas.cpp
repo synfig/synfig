@@ -441,8 +441,8 @@ Renderer_Canvas::enqueue_render_frame(
 	rects.reserve(20);
 	rects.push_back(window_rect);
 	for(TileList::const_iterator j = frame_tiles.begin(); j != frame_tiles.end(); ++j)
-		if (*j) etl::rects_subtract(rects, (*j)->rect);
-	etl::rects_merge(rects);
+		if (*j) rects_subtract(rects, (*j)->rect);
+	rects_merge(rects);
 
 	if (rects.empty()) return false;
 
@@ -717,9 +717,9 @@ Renderer_Canvas::calc_frame_status(const FrameId &id, const RectInt &window_rect
 			if ((*j)->event)
 				return FS_InProcess;
 			if ((*j)->cairo_surface)
-				etl::rects_subtract(rects, (*j)->rect);
+				rects_subtract(rects, (*j)->rect);
 		}
-	etl::rects_merge(rects);
+	rects_merge(rects);
 
 	if (rects.size() == 1 && rects.front() == window_rect)
 		return FS_None;
@@ -878,7 +878,7 @@ Renderer_Canvas::render_vfunc(
 			for(TileList::const_iterator j = ii->second.begin(); j != ii->second.end(); ++j) {
 				if (!*j) continue;
 				if ((*j)->cairo_surface) {
-					etl::rects_subtract(empty_rects, (*j)->rect); // mark area as not empty
+					rects_subtract(empty_rects, (*j)->rect); // mark area as not empty
 					canvas_context->save();
 					canvas_context->rectangle((*j)->rect.minx, (*j)->rect.miny, (*j)->rect.get_width(), (*j)->rect.get_height());
 					canvas_context->clip();
@@ -896,7 +896,7 @@ Renderer_Canvas::render_vfunc(
 	}
 
 	// fill empty areas with previous surface
-	etl::rects_merge(empty_rects);
+	rects_merge(empty_rects);
 	if (!empty_rects.empty()) {
 		canvas_context->save();
 

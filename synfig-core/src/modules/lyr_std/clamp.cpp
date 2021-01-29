@@ -138,7 +138,7 @@ TaskClampSW::run(RunParams&) const
 		RectInt ra = sub_task()->target_rect + r.get_min() + get_offset();
 		if (ra.valid())
 		{
-			etl::set_intersect(ra, ra, r);
+			rect_set_intersect(ra, ra, r);
 			if (ra.valid())
 			{
 				LockWrite ldst(this);

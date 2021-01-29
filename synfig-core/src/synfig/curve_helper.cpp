@@ -570,7 +570,7 @@ int intersect(const bezier<Point> &b, const Point &p)
 void CIntersect::recurse_intersect(const SCurve &left, const SCurve &right, int depth)
 {
 	//reject curves that do not overlap with bounding boxes
-	if(!intersect(left.aabb,right.aabb)) return;
+	if(!rect_intersect(left.aabb,right.aabb)) return;
 
 	//accept curves (and perform super detailed check for intersections)
 	//if the values are below tolerance

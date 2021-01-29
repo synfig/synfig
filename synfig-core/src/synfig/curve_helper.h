@@ -112,7 +112,7 @@ Real find_closest(const etl::bezier<Point> &curve, const Point &point, float ste
 //----------- Rectangle helper functions ---------------
 
 template < typename T >
-inline void Bound(etl::rect<T> &r, const etl::bezier<Point> &b)
+inline void Bound(synfig::rect<T> &r, const etl::bezier<Point> &b)
 {
 	r.set_point(b[0][0],b[0][1]);
 	r.expand(b[1][0],b[1][1]);

@@ -135,7 +135,7 @@ public:
 		} else
 		if (params.prev_type == LINE) {
 			params.line_bounds = params.line_bounds.expand(p1);
-			if ( !etl::intersect(params.bounds, params.line_bounds)
+			if ( !rect_intersect(params.bounds, params.line_bounds)
 			  || ( params.line_bounds.maxx - params.line_bounds.minx <= params.min_line_size[0]
 				&& params.line_bounds.maxy - params.line_bounds.miny <= params.min_line_size[0] ))
 			{
@@ -169,7 +169,7 @@ public:
 		assert(params.level > 0);
 		const Vector &p0 = params.get_p0();
 		Rect bounds = conic_bounds(p0, p1, pp0);
-		if ( !etl::intersect(params.bounds, bounds)
+		if ( !rect_intersect(params.bounds, bounds)
 		  || ( bounds.maxx - bounds.minx <= params.min_size[0]
 			&& bounds.maxy - bounds.miny <= params.min_size[0] ))
 		{
@@ -195,7 +195,7 @@ public:
 		assert(params.level > 0);
 		const Vector &p0 = params.get_p0();
 		Rect b = cubic_bounds(p0, p1, pp0, pp1);
-		if ( !etl::intersect(params.bounds, b)
+		if ( !rect_intersect(params.bounds, b)
 		  || ( b.maxx - b.minx <= params.min_size[0]
 			&& b.maxy - b.miny <= params.min_size[0] ))
 		{

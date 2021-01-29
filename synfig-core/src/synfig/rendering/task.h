@@ -439,7 +439,7 @@ public:
 	bool is_valid_surface_size() const
 		{ return target_surface
 			  && target_surface->is_exists()
-			  && etl::contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect); }
+			  && rect_contains(RectInt(VectorInt::zero(), target_surface->get_size()), target_rect); }
 	bool is_valid() const
 		{ return is_valid_coords() && is_valid_surface_size(); }
 

@@ -1906,7 +1906,7 @@ WorkArea::get_window_rect() const
 		-offset[0] + drawing_area->get_width(),
 		-offset[1] + drawing_area->get_height() );
 
-	etl::set_intersect(rect, rect, RectInt(0, 0, w, h));
+	rect_set_intersect(rect, rect, RectInt(0, 0, w, h));
 	return rect;
 }
 

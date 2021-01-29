@@ -204,7 +204,7 @@ synfig::Target_Tile::render_frame_(Canvas::Handle canvas, ContextParams context_
 
 		rect = *i;
 		if (clipping_)
-			etl::set_intersect(rect, rect, RectInt(0, 0, rend_desc.get_w(), rend_desc.get_h()));
+			rect_set_intersect(rect, rect, RectInt(0, 0, rend_desc.get_w(), rend_desc.get_h()));
 
 		if (!rect.valid())
 			continue;
