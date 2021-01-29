@@ -429,12 +429,12 @@ win32icons_DATA = $(WIN32_ICONS)
 all: $(IMAGES) $(ICONS)
 
 .sifz.ico:
-	bash $(srcdir)/../build_tools/sif2ico.sh $<
+	bash $(top_srcdir)/build_tools/sif2ico.sh $<
 	echo "  File \"images\\$@\"" >>./icons.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
 
 .sif.ico:
-	bash $(srcdir)/../build_tools/sif2ico.sh $<
+	bash $(top_srcdir)/build_tools/sif2ico.sh $<
 	echo "  File \"images\\$@\"" >>./icons.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
 

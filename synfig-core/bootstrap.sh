@@ -27,7 +27,7 @@ if [ -z $LIBTOOLIZE ]; then
         exit 1
 fi
 
-echo "running libtooize ($LIBTOOLIZE)..."
+echo "running libtoolize ($LIBTOOLIZE)..."
 $LIBTOOLIZE  --ltdl --copy --force
 
 echo "running autopoint..."

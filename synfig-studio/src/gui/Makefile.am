@@ -39,6 +39,7 @@ EVENTS_HH = \
 
 OTHER_HH = \
 	eventkey.h \
+	_smach.h \
 	smach.h \
 	timemodel.h \
 	app.h \

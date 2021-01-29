@@ -89,7 +89,7 @@ SH=sh
 DOXYGEN=doxygen
 
 ChangeLog:
-	../autobuild/git2cl > ChangeLog
+	cd $(top_srcdir) && ../autobuild/git2cl > ChangeLog
 
 stats:
 	-@echo

@@ -166,7 +166,7 @@ int hermite_int_test()
 	int i;
 
 	etl::clock timer;
-	etl::clock::value_type t;
+	float t;
 
 	Hermie.p1()=0;
 	Hermie.t1()=40000;
