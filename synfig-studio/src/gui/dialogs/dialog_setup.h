@@ -99,7 +99,7 @@ class Dialog_Setup : public Dialog_Template
 	void on_def_background_type_changed(); //bound on clicked
 	void on_def_background_color_changed();
 	void on_def_background_image_set();
-	void on_number_of_core_select();
+	void on_number_of_thread_changed();
 	void on_preview_background_color_changed();
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
@@ -165,7 +165,7 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::ComboBoxText workarea_renderer_combo;
 	Gtk::Switch       toggle_play_sound_on_render_done;
 	Glib::RefPtr<Gtk::Adjustment> adj_number_of_core;
-	Gtk::SpinButton*	number_of_core_select;	
+	Gtk::SpinButton*  number_of_core_select;	
 
 	Gtk::Switch toggle_handle_tooltip_widthpoint;
 	Gtk::Switch toggle_handle_tooltip_radius;
