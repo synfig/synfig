@@ -277,10 +277,10 @@ ThreadPool::enqueue(const Slot &slot) {
 
 
 void 
-ThreadPool::set_num_threads(int num_cores){
+ThreadPool::set_num_threads(int num_threadsd){
 	max_running_threads = g_get_num_processors();
-	if(num_cores!=0){
-		max_running_threads = num_cores;
+	if(num_threadsd!=0){
+		max_running_threads = num_threadsd;
 	}
 	if (const char *s = getenv("SYNFIG_GENERIC_THREADS"))
 		max_running_threads = atoi(s) + 1;
