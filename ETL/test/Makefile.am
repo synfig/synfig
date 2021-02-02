@@ -49,7 +49,3 @@ clock_SOURCES=clock.cpp
 hermite_SOURCES=hermite.cpp
 spline_SOURCES=spline.cpp
 stringf_SOURCES=stringf.cpp
-
-# FIXME: fix compiler errors for the spline test.
-EXTRA_DIST = \
-	spline.cpp
