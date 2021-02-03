@@ -62,6 +62,9 @@
 #include "renderprogress.h"
 #include "joblistprocessor.h"
 
+#include <giomm/file.h>
+#include <glib/gstdio.h>
+
 #endif
 
 using namespace synfig;
@@ -163,7 +166,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// Check permissions
 	//if (access(bfs::canonical(bfs::path(job.outfilename).parent_path()).string().c_str(), W_OK) == -1)
 	// az: fixme
-	if (access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1)
+	if (g_access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1)
 	{
 	    /*const std::string message =
             (boost::format(_("Unable to create output for \"%s\": %s"))
