@@ -207,7 +207,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		if (binary_path != "")
 			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
 		binary_path += *iter+".exe";
-		if( access( binary_path.c_str(), F_OK ) != -1 ) {
+		if (g_access( binary_path.c_str(), F_OK ) != -1 ) {
 			binary_path = "\"" + binary_path + "\"";
 			ffmpeg_binary_path = binary_path;
 			break;
