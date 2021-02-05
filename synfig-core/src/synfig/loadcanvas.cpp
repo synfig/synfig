@@ -53,7 +53,6 @@
 
 #include "blur.h"
 #include "boneweightpair.h"
-#include "boneweightpair.h"
 #include "exception.h"
 #include "importer.h"
 #include "gradient.h"
@@ -100,12 +99,12 @@ using namespace etl;
 
 /* === M A C R O S ========================================================= */
 
-#define VALUENODE_COMPATIBILITY_URL "http://synfig.org/Convert#Compatibility"
+#define VALUENODE_COMPATIBILITY_URL "https://wiki.synfig.org/Convert#Compatibility"
 
 inline bool is_whitespace(char x) { return ((x)=='\n' || (x)=='\t' || (x)==' '); }
 
-inline bool is_true(string s) { return s=="1" || s=="true" || s=="TRUE" || s=="True"; }
-inline bool is_false(string s) { return s=="0" || s=="false" || s=="FALSE" || s=="False"; }
+inline bool is_true(const std::string& s) { return s=="1" || s=="true" || s=="TRUE" || s=="True"; }
+inline bool is_false(const std::string& s) { return s=="0" || s=="false" || s=="FALSE" || s=="False"; }
 
 std::set<FileSystem::Identifier> CanvasParser::loading_;
 
@@ -2285,6 +2284,13 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 	return value_node;
 }
 
+static bool is_bool_attribute_true(xmlpp::Element* element, const char* name) {
+	if (xmlpp::Attribute* attr = element->get_attribute(name)) {
+		return is_true(attr->get_value());
+	}
+	return false;
+}
+
 // This will also parse a bline
 handle<ValueNode_DynamicList>
 CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
@@ -2324,35 +2330,26 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_name()=="bline")
 	{
 		value_node=bline_value_node=ValueNode_BLine::create(type_list, canvas);
-		if(element->get_attribute("loop"))
-		{
-			String loop_str=element->get_attribute("loop")->get_value();
-			bool loop = is_true(loop_str);
-			bline_value_node->set_loop(loop);
+		if (is_bool_attribute_true(element, "loop")) {
+			bline_value_node->set_loop(true);
 
-			if (loop) {
-				string version = canvas->get_version();
-				if (version == "1.0" || (version[0] == '0' && version[1] == '.'))
-					must_rotate_point_list = true;
-			}
+			std::string version = canvas->get_version();
+			if (version == "1.0" || (version[0] == '0' && version[1] == '.'))
+				must_rotate_point_list = true;
 		}
 	}
 	else if(element->get_name()=="wplist")
 	{
 		value_node=wplist_value_node=ValueNode_WPList::create();
-		if(element->get_attribute("loop"))
-		{
-			String loop=element->get_attribute("loop")->get_value();
-			wplist_value_node->set_loop(is_true(loop));
+		if (is_bool_attribute_true(element, "loop")) {
+			wplist_value_node->set_loop(true);
 		}
 	}
 	else if(element->get_name()=="dilist")
 	{
 		value_node=dilist_value_node=ValueNode_DIList::create();
-		if(element->get_attribute("loop"))
-		{
-			String loop=element->get_attribute("loop")->get_value();
-			dilist_value_node->set_loop(is_true(loop));
+		if (is_bool_attribute_true(element, "loop")) {
+			dilist_value_node->set_loop(true);
 		}
 	}
 	else if(element->get_name()=="weighted_average")
@@ -2360,17 +2357,14 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		Type& contained_type = ValueAverage::get_type_from_weighted(type);
 		weightedaverage_value_node=new ValueNode_WeightedAverage(contained_type, canvas);
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(weightedaverage_value_node);
-		if(element->get_attribute("loop"))
-		{
-			String loop=element->get_attribute("loop")->get_value();
-			weightedaverage_value_node->set_loop(is_true(loop));
+		if (is_bool_attribute_true(element, "loop")) {
+			weightedaverage_value_node->set_loop(true);
 		}
 	} else if (element->get_name()=="average") {
 		average_value_node = new synfig::ValueNode_Average(type, canvas);
 		value_node = ValueNode_DynamicList::Handle::cast_dynamic(average_value_node);
-		if(element->get_attribute("loop")) {
-			String loop=element->get_attribute("loop")->get_value();
-			average_value_node->set_loop(is_true(loop));
+		if (is_bool_attribute_true(element, "loop")) {
+			average_value_node->set_loop(true);
 		}
 	}
 	else
