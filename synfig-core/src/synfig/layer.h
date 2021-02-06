@@ -60,79 +60,79 @@
 
 //! Defines various variables and the create method, common for all importers.
 //! To be used in the private part of the importer class definition.
-#define SYNFIG_LAYER_MODULE_EXT															\
-	public:																				\
-	static const char name__[], version__[], local_name__[], category__[];	\
+#define SYNFIG_LAYER_MODULE_EXT \
+	public: \
+	static const char name__[], version__[], local_name__[], category__[]; \
 	static Layer *create();
 
 //! Sets the name of the layer
-#define SYNFIG_LAYER_SET_NAME(class,x)													\
+#define SYNFIG_LAYER_SET_NAME(class,x) \
 	const char class::name__[]=x
 
 //! Sets the local name of the layer
-#define SYNFIG_LAYER_SET_LOCAL_NAME(class,x)											\
+#define SYNFIG_LAYER_SET_LOCAL_NAME(class,x) \
 	const char class::local_name__[]=x;
 
 //! Sets the category of the layer
-#define SYNFIG_LAYER_SET_CATEGORY(class,x)												\
+#define SYNFIG_LAYER_SET_CATEGORY(class,x) \
 	const char class::category__[]=x
 
 //! Sets the version string for the layer
-#define SYNFIG_LAYER_SET_VERSION(class,x)												\
+#define SYNFIG_LAYER_SET_VERSION(class,x) \
 	const char class::version__[]=x
 
 //! Defines de implementation of the create method for the importer
-#define SYNFIG_LAYER_INIT(class)														\
-	synfig::Layer* class::create()														\
-	{																					\
-		return new class();																\
+#define SYNFIG_LAYER_INIT(class) \
+	synfig::Layer* class::create() \
+	{ \
+		return new class(); \
 	}
 
 //! Imports a parameter if it is of the same type as param
-#define IMPORT_VALUE(x)                                                         \
-	if (#x=="param_"+param && x.get_type()==value.get_type())                   \
-	{                                                                           \
-		x=value;                                                                \
-        static_param_changed(param);                                            \
-		return true;                                                            \
+#define IMPORT_VALUE(x) \
+	if (#x=="param_"+param && x.get_type()==value.get_type()) \
+	{ \
+		x=value; \
+        static_param_changed(param); \
+		return true; \
 	}
 
 //! Imports a parameter 'x' and perform an action usually based on
 //! some condition 'y'
-#define IMPORT_VALUE_PLUS_BEGIN(x)                                              \
-	if (#x=="param_"+param && x.get_type()==value.get_type())                   \
-	{                                                                           \
-		x=value;                                                                \
+#define IMPORT_VALUE_PLUS_BEGIN(x) \
+	if (#x=="param_"+param && x.get_type()==value.get_type()) \
+	{ \
+		x=value; \
 		{
-#define IMPORT_VALUE_PLUS_END                                                   \
-		}                                                                       \
-        static_param_changed(param);                                            \
-		return true;                                                            \
+#define IMPORT_VALUE_PLUS_END \
+		} \
+        static_param_changed(param); \
+		return true; \
 	}
-#define IMPORT_VALUE_PLUS(x,y)                                                  \
-        IMPORT_VALUE_PLUS_BEGIN(x)                                              \
-			y;                                                                  \
+#define IMPORT_VALUE_PLUS(x,y) \
+        IMPORT_VALUE_PLUS_BEGIN(x) \
+			y; \
         IMPORT_VALUE_PLUS_END
 
 //! Exports a parameter if it is the same type as value
-#define EXPORT_VALUE(x)                                                         \
-	if (#x=="param_"+param)                                                     \
-	{                                                                           \
-		synfig::ValueBase ret;					\
-		ret.copy(x);							\
-		return ret;							\
+#define EXPORT_VALUE(x) \
+	if (#x=="param_"+param) \
+	{ \
+		synfig::ValueBase ret; \
+		ret.copy(x); \
+		return ret; \
 	}
 
 //! Exports the name or the local name of the layer
-#define EXPORT_NAME()																	\
-	if (param=="Name" || param=="name" || param=="name__")								\
-		return name__;																	\
-	else if (param=="local_name__")														\
+#define EXPORT_NAME() \
+	if (param=="Name" || param=="name" || param=="name__") \
+		return name__; \
+	else if (param=="local_name__") \
 		return synfigcore_localize(local_name__);
 
 //! Exports the version of the layer
-#define EXPORT_VERSION()																\
-	if (param=="Version" || param=="version" || param=="version__")						\
+#define EXPORT_VERSION() \
+	if (param=="Version" || param=="version" || param=="version__") \
 		return version__;
 
 //! This is used as the category for layer book entries which represent aliases of layers.
@@ -140,30 +140,30 @@
 #define CATEGORY_DO_NOT_USE "Do Not Use"
 
 //! Sets the interpolation defaults for the layer
-#define SET_INTERPOLATION_DEFAULTS()                                           \
-{                                                                              \
-	Vocab vocab(get_param_vocab());                                            \
-	Vocab::const_iterator viter;                                               \
-	for(viter=vocab.begin();viter!=vocab.end();viter++)                        \
-	{                                                                          \
-		ValueBase v=get_param(viter->get_name());                              \
-		v.set_interpolation(viter->get_interpolation());                       \
-		set_param(viter->get_name(), v);                                       \
-	}                                                                          \
-}                                                                              \
+#define SET_INTERPOLATION_DEFAULTS() \
+{ \
+	Vocab vocab(get_param_vocab()); \
+	Vocab::const_iterator viter; \
+	for(viter=vocab.begin();viter!=vocab.end();viter++) \
+	{ \
+		ValueBase v=get_param(viter->get_name()); \
+		v.set_interpolation(viter->get_interpolation()); \
+		set_param(viter->get_name(), v); \
+	} \
+} \
 
 //! Sets the static defaults for the layer
-#define SET_STATIC_DEFAULTS()                                                  \
-{                                                                              \
-	Vocab vocab(get_param_vocab());                                            \
-	Vocab::const_iterator viter;                                               \
-	for(viter=vocab.begin();viter!=vocab.end();viter++)                        \
-	{                                                                          \
-		ValueBase v=get_param(viter->get_name());                              \
-		v.set_static(viter->get_static());                                     \
-		set_param(viter->get_name(), v);                                       \
-	}                                                                          \
-}                                                                              \
+#define SET_STATIC_DEFAULTS() \
+{ \
+	Vocab vocab(get_param_vocab()); \
+	Vocab::const_iterator viter; \
+	for(viter=vocab.begin();viter!=vocab.end();viter++) \
+	{ \
+		ValueBase v=get_param(viter->get_name()); \
+		v.set_static(viter->get_static()); \
+		set_param(viter->get_name(), v); \
+	} \
+} \
 
 /* === T Y P E D E F S ===================================================== */
 

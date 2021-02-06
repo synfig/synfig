@@ -114,9 +114,24 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		WidthPoint wpoint(value.get(WidthPoint()));
 		set_link("position",ValueNode_Const::create(wpoint.get_position()));
 		set_link("width",ValueNode_Const::create(wpoint.get_width()));
-		set_link("side_before",ValueNode_Const::create(wpoint.get_side_type_before()));
-		set_link("side_after",ValueNode_Const::create(wpoint.get_side_type_after()));
 		ValueNode_Const::Handle value_node;
+		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_side_type_before()));
+		if(value_node)
+		{
+			value_node->set_static(true);
+			set_link("side_before",value_node);
+		}
+		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_side_type_after()));
+		if(value_node)
+		{
+			value_node->set_static(true);
+			set_link("side_after",value_node);
+		}
+		if(value_node)
+		{
+			value_node->set_static(true);
+			set_link("lower_bound",value_node);
+		}
 		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_lower_bound()));
 		if(value_node)
 		{
@@ -136,8 +151,19 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		DashItem ditem(value.get(DashItem()));
 		set_link("offset",ValueNode_Const::create(ditem.get_offset()));
 		set_link("length",ValueNode_Const::create(ditem.get_length()));
-		set_link("side_before",ValueNode_Const::create(ditem.get_side_type_before()));
-		set_link("side_after",ValueNode_Const::create(ditem.get_side_type_after()));
+		ValueNode_Const::Handle value_node;
+		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(ditem.get_side_type_before()));
+		if(value_node)
+		{
+			value_node->set_static(true);
+			set_link("side_before",value_node);
+		}
+		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(ditem.get_side_type_after()));
+		if(value_node)
+		{
+			value_node->set_static(true);
+			set_link("side_after",value_node);
+		}
 	}
 	else
 	if (type == type_transformation)
@@ -718,6 +744,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_local_name(_("Side Type Before"))
 			.set_description(_("Defines the interpolation type of the width point"))
 			.set_hint("enum")
+			.set_static(true)
 			.add_enum_value(WidthPoint::TYPE_INTERPOLATE,"interpolate",_("Interpolate"))
 			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))
@@ -730,6 +757,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.set_local_name(_("Side Type After"))
 			.set_description(_("Defines the interpolation type of the width point"))
 			.set_hint("enum")
+			.set_static(true)
 			.add_enum_value(WidthPoint::TYPE_INTERPOLATE,"interpolate",_("Interpolate"))
 			.add_enum_value(WidthPoint::TYPE_ROUNDED,"rounded", _("Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_SQUARED,"squared", _("Squared Stop"))

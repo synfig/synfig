@@ -1290,6 +1290,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 	int start_duck_index = 0,finish_duck_index = 0; // initialized to keep the compiler happy; shouldn't be needed though
 	ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
 
+	// Set blend_method to static (consistent with other Layers)
+	ValueBase blend_param_value(get_blend());
+	blend_param_value.set_static(true);
+
 	// Find any ducks at the start or end that we might attach to
 	// (this used to only run if we didn't just draw a loop - ie. !loop_bline_flag
 	// but having loops auto-connect can be useful as well)
@@ -1574,7 +1578,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				}
 				layer->set_description(get_id()+_(" Outline"));
 
-				layer->set_param("blend_method",get_blend());
+				layer->set_param("blend_method",blend_param_value);
 				get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 				layer->set_param("amount",get_opacity());
@@ -1601,7 +1605,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 				}
 				layer2->set_description(get_id()+_(" Advanced Outline"));
 
-				layer2->set_param("blend_method",get_blend());
+				layer2->set_param("blend_method",blend_param_value);
 				get_canvas_interface()->signal_layer_param_changed()(layer2,"blend_method");
 
 				layer2->set_param("amount",get_opacity());
@@ -1641,7 +1645,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 			}
 			layer->set_description(get_id()+_(" Region"));
 
-			layer->set_param("blend_method",get_blend());
+			layer->set_param("blend_method",blend_param_value);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 			layer->set_param("amount",get_opacity());
@@ -2966,7 +2970,11 @@ StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 	if (!layer) return Smach::RESULT_ERROR;
 	layer->set_description(last_stroke_id + _(" Region"));
 
-	layer->set_param("blend_method",get_blend());
+	// Set blend_method to static (consistent with other Layers)
+	ValueBase blend_param_value(get_blend());
+	blend_param_value.set_static(true);
+
+	layer->set_param("blend_method",blend_param_value);
 	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
 
 	layer->set_param("amount",get_opacity());

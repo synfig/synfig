@@ -179,6 +179,7 @@ Layer_Shape::get_param_vocab()const
 		.set_local_name(_("Type of Feather"))
 		.set_description(_("Type of feathering to use"))
 		.set_hint("enum")
+		.set_static(true)
 		.add_enum_value(Blur::BOX,"box",_("Box Blur"))
 		.add_enum_value(Blur::FASTGAUSSIAN,"fastgaussian",_("Fast Gaussian Blur"))
 		.add_enum_value(Blur::CROSS,"cross",_("Cross-Hatch Blur"))
@@ -189,6 +190,7 @@ Layer_Shape::get_param_vocab()const
 		.set_local_name(_("Winding Style"))
 		.set_description(_("Winding style to use"))
 		.set_hint("enum")
+		.set_static(true)
 		.add_enum_value(rendering::Contour::WINDING_NON_ZERO, "nonzero", _("Non Zero"))
 		.add_enum_value(rendering::Contour::WINDING_EVEN_ODD, "evenodd", _("Even/Odd"))
 	);

@@ -175,6 +175,7 @@ Halftone2::get_param_vocab()const
 	ret.push_back(ParamDesc("type")
 		.set_local_name(_("Type"))
 		.set_hint("enum")
+		.set_static(true)
 		.add_enum_value(TYPE_SYMMETRIC,"symmetric",_("Symmetric"))
 		.add_enum_value(TYPE_LIGHTONDARK,"lightondark",_("Light On Dark"))
 		//.add_enum_value(TYPE_DARKONLIGHT,"darkonlight",_("Dark on Light"))

@@ -674,7 +674,11 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	}
 	else return;
 
-	layer->set_param("blend_method", get_blend());
+	// Set blend_method to static (consistent with other Layers)
+	ValueBase blend_param_value(get_blend());
+	blend_param_value.set_static(true);
+
+	layer->set_param("blend_method", blend_param_value);
 	get_canvas_interface()->signal_layer_param_changed()(layer, "blend_method");
 
 	layer->set_param("amount", get_opacity());
