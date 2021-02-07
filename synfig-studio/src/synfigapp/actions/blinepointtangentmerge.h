@@ -47,7 +47,7 @@ class BLinePointTangentMerge :
 {
 private:
 
-	synfig::ValueNode_Composite::Handle value_node;
+	std::set<synfig::ValueNode_Composite::Handle> value_nodes;
 	synfig::Time time;
 
 public:
@@ -70,7 +70,7 @@ class BLinePointTangentMergeRadius :
 	{
 private:
 		
-	synfig::ValueNode_Composite::Handle value_node;
+	std::set<synfig::ValueNode_Composite::Handle> value_nodes;
 	synfig::Time time;
 		
 public:
@@ -94,7 +94,7 @@ public Super
 {
 private:
 	
-	synfig::ValueNode_Composite::Handle value_node;
+	std::set<synfig::ValueNode_Composite::Handle> value_nodes;
 	synfig::Time time;
 	
 public:
