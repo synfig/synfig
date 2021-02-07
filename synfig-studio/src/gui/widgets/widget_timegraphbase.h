@@ -72,10 +72,17 @@ public:
 	virtual void zoom_100();
 	virtual void set_zoom(double new_zoom_factor);
 	virtual double get_zoom() const;
+	//! Zoom in along horizontal-axis
+	virtual void zoom_horizontal_in();
+	//! Zoom out along horizontal-axis
+	virtual void zoom_horizontal_out();
 
 	//! Scroll vertically by step_increment units of Widget_TimeGraphBase#range_adjustment
 	virtual void scroll_up();
 	virtual void scroll_down();
+
+	virtual void scroll_right();
+	virtual void scroll_left();
 
 	virtual void pan(int dx, int dy, int /*total_dx*/, int /*total_dy*/);
 

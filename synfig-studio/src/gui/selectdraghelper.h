@@ -91,9 +91,13 @@ private:
 
 	sigc::signal<void> signal_zoom_in_requested_;
 	sigc::signal<void> signal_zoom_out_requested_;
+	sigc::signal<void> signal_zoom_horizontal_in_requested_;
+	sigc::signal<void> signal_zoom_horizontal_out_requested_;
 
 	sigc::signal<void> signal_scroll_up_requested_;
 	sigc::signal<void> signal_scroll_down_requested_;
+	sigc::signal<void> signal_scroll_right_requested_;
+	sigc::signal<void> signal_scroll_left_requested_;
 
 	sigc::signal<void, int, int, int, int> signal_panning_requested_;
 
@@ -216,9 +220,13 @@ public:
 
 	sigc::signal<void>& signal_zoom_in_requested() { return signal_zoom_in_requested_; }
 	sigc::signal<void>& signal_zoom_out_requested() { return signal_zoom_out_requested_; }
+	sigc::signal<void>& signal_zoom_horizontal_in_requested() { return signal_zoom_horizontal_in_requested_; }
+	sigc::signal<void>& signal_zoom_horizontal_out_requested() { return signal_zoom_horizontal_out_requested_; }
 
 	sigc::signal<void>& signal_scroll_up_requested() { return signal_scroll_up_requested_; }
 	sigc::signal<void>& signal_scroll_down_requested() { return signal_scroll_down_requested_; }
+	sigc::signal<void>& signal_scroll_right_requested() { return signal_scroll_right_requested_; }
+	sigc::signal<void>& signal_scroll_left_requested() { return signal_scroll_left_requested_; }
 
 	sigc::signal<void, int, int, int, int>& signal_panning_requested() { return signal_panning_requested_; }
 
@@ -760,29 +768,71 @@ template<class T>
 bool SelectDragHelper<T>::process_scroll_event(GdkEventScroll* event)
 {
 	switch(event->direction) {
-		case GDK_SCROLL_UP:
-		case GDK_SCROLL_RIGHT: {
+		case GDK_SCROLL_UP: {
 			if ((event->state & GDK_CONTROL_MASK) && zoom_enabled) {
-				// Ctrl+scroll , perform zoom in
-				signal_zoom_in_requested().emit();
+				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+					signal_zoom_in_requested().emit();
+				else
+					signal_zoom_horizontal_in_requested().emit();
 			} else {
 				if (!scroll_enabled)
 					return false;
-				// Scroll up
-				signal_scroll_up_requested().emit();
+
+				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+					signal_scroll_right_requested().emit();
+				else
+					signal_scroll_up_requested().emit();
 			}
 			return true;
 		}
-		case GDK_SCROLL_DOWN:
-		case GDK_SCROLL_LEFT: {
+		case GDK_SCROLL_DOWN: {
 			if ((event->state & GDK_CONTROL_MASK) && zoom_enabled) {
-				// Ctrl+scroll , perform zoom out
-				signal_zoom_out_requested().emit();
+				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+					signal_zoom_out_requested().emit();
+				else
+					signal_zoom_horizontal_out_requested().emit();
 			} else {
 				if (!scroll_enabled)
 					return false;
-				// Scroll down
-				signal_scroll_down_requested().emit();
+
+				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+					signal_scroll_left_requested().emit();
+				else
+					signal_scroll_down_requested().emit();
+			}
+			return true;
+		}
+		case GDK_SCROLL_RIGHT: {
+			if ((event->state & GDK_CONTROL_MASK) && zoom_enabled) {
+				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+					signal_zoom_in_requested().emit();
+				else
+					signal_zoom_horizontal_in_requested().emit();
+			} else {
+				if (!scroll_enabled)
+					return false;
+
+				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+					signal_scroll_up_requested().emit();
+				else
+					signal_scroll_right_requested().emit();
+			}
+			return true;
+		}
+		case GDK_SCROLL_LEFT: {
+			if ((event->state & GDK_CONTROL_MASK) && zoom_enabled) {
+				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+					signal_zoom_out_requested().emit();
+				else
+					signal_zoom_horizontal_out_requested().emit();
+			} else {
+				if (!scroll_enabled)
+					return false;
+
+				if ((event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK)
+					signal_scroll_down_requested().emit();
+				else
+					signal_scroll_left_requested().emit();
 			}
 			return true;
 		}
