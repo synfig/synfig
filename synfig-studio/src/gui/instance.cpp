@@ -878,6 +878,20 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
+			bool is_item_already_in_menu = false;
+			std::vector<Gtk::Widget*> children = menu->get_children();
+			for (const Gtk::Widget* child : children) {
+				if (const Gtk::MenuItem* menu_item = dynamic_cast<const Gtk::MenuItem*>(child)) {
+					if (menu_item->get_label() == iter->local_name) {
+						is_item_already_in_menu = true;
+						break;
+					}
+				}
+			}
+			// Maybe the action supports multiple ducks or layers and is already listed in menu
+			if (is_item_already_in_menu)
+				continue;
+
 			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
 				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
 				iter->local_name ));

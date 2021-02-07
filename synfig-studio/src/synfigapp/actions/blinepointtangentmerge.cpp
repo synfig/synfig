@@ -62,7 +62,7 @@ ACTION_SET_LOCAL_NAME(Action::BLinePointTangentMerge,N_("Merge Tangents"));
 ACTION_SET_TASK(Action::BLinePointTangentMerge,"connect");
 ACTION_SET_CATEGORY(Action::BLinePointTangentMerge,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentMerge,0);
-ACTION_SET_VERSION(Action::BLinePointTangentMerge,"0.1");
+ACTION_SET_VERSION(Action::BLinePointTangentMerge,"0.2");
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentMergeRadius);
 ACTION_SET_NAME(Action::BLinePointTangentMergeRadius,"BLinePointTangentMergeRadius");
@@ -70,7 +70,7 @@ ACTION_SET_LOCAL_NAME(Action::BLinePointTangentMergeRadius,N_("Merge Tangents's 
 ACTION_SET_TASK(Action::BLinePointTangentMergeRadius,"type_vector");
 ACTION_SET_CATEGORY(Action::BLinePointTangentMergeRadius,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentMergeRadius,0);
-ACTION_SET_VERSION(Action::BLinePointTangentMergeRadius,"0.0");
+ACTION_SET_VERSION(Action::BLinePointTangentMergeRadius,"0.1");
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentMergeAngle);
 ACTION_SET_NAME(Action::BLinePointTangentMergeAngle,"BLinePointTangentMergeAngle");
@@ -78,7 +78,7 @@ ACTION_SET_LOCAL_NAME(Action::BLinePointTangentMergeAngle,N_("Merge Tangents's A
 ACTION_SET_TASK(Action::BLinePointTangentMergeAngle,"type_angle");
 ACTION_SET_CATEGORY(Action::BLinePointTangentMergeAngle,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentMergeAngle,0);
-ACTION_SET_VERSION(Action::BLinePointTangentMergeAngle,"0.0");
+ACTION_SET_VERSION(Action::BLinePointTangentMergeAngle,"0.1");
 
 /* === G L O B A L S ======================================================= */
 
@@ -122,7 +122,14 @@ Action::BLinePointTangentMerge::BLinePointTangentMerge()
 synfig::String
 Action::BLinePointTangentMerge::get_local_name()const
 {
-	return strprintf(_("Merge Tangents of '%s'"), ((ValueNode::Handle)(value_node))->get_description().c_str());
+	if (value_nodes.size() == 1)
+		return strprintf(_("Merge Tangents of '%s'"), ValueNode::Handle(*value_nodes.begin())->get_description().c_str());
+	else {
+		std::string descriptions;
+		for (const auto& value_node : value_nodes)
+			descriptions.append(ValueNode::Handle(value_node)->get_description());
+		return strprintf(_("Merge Tangents of %zu vertices: '%s'"), value_nodes.size(), descriptions.c_str());
+	}
 }
 
 Action::ParamVocab
@@ -131,6 +138,7 @@ Action::BLinePointTangentMerge::get_param_vocab()
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode of Spline Point"))
+		.set_supports_multiple()
 	);
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))
@@ -143,18 +151,21 @@ Action::BLinePointTangentMerge::is_candidate(const ParamList &x)
 {
 	if(candidate_check(get_param_vocab(),x))
 	{
-		const Action::Param& param_valuenode = x.find("value_node")->second;
-		ValueNode_Composite::Handle value_node;
-		value_node=search_for_related_blinepoint(param_valuenode);
-		// at this point we should have a value node and it should be blinepoint
-		// if we haven't, then return false
-		if(!value_node)
-			return false;
-		synfig::Time time(x.find("time")->second.get_time());
-		bool split_radius=(*value_node->get_link("split_radius"))(time).get(bool());
-		bool split_angle=(*value_node->get_link("split_angle"))(time).get(bool());
-		if(split_radius==false && split_angle==false)
-			return false;
+		auto valuenode_range = x.equal_range("value_node");
+		for (auto param_iter = valuenode_range.first; param_iter != valuenode_range.second; ++param_iter) {
+			const Action::Param& param_valuenode = param_iter->second;
+			ValueNode_Composite::Handle value_node;
+			value_node=search_for_related_blinepoint(param_valuenode);
+			// at this point we should have a value node and it should be blinepoint
+			// if we haven't, then return false
+			if(!value_node)
+				return false;
+			synfig::Time time(x.find("time")->second.get_time());
+			bool split_radius=(*value_node->get_link("split_radius"))(time).get(bool());
+			bool split_angle=(*value_node->get_link("split_angle"))(time).get(bool());
+			if(split_radius==false && split_angle==false)
+				return false;
+		}
 		return true;
 	}
 	return false;
@@ -165,9 +176,12 @@ Action::BLinePointTangentMerge::set_param(const synfig::String& name, const Acti
 {
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
+		ValueNode_Composite::Handle value_node;
 		value_node = search_for_related_blinepoint(param.get_value_node());
-		if (value_node)
+		if (value_node) {
+			value_nodes.insert(value_node);
 			return true;
+		}
 		return false;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
@@ -181,11 +195,11 @@ Action::BLinePointTangentMerge::set_param(const synfig::String& name, const Acti
 bool
 Action::BLinePointTangentMerge::is_ready()const
 {
-	if(!value_node)
+	if(value_nodes.empty())
 		synfig::error("Missing or bad value_node");
 	if(time==(Time::begin()-1))
 		synfig::error("Missing time");
-	if(!value_node || time==(Time::begin()-1))
+	if(value_nodes.empty() || time==(Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -194,6 +208,7 @@ void
 Action::BLinePointTangentMerge::prepare()
 {
 	clear();
+	for (const auto& value_node : value_nodes)
 	{
 		Action::Handle action;
 		action=Action::create("ValueDescSet");
@@ -208,9 +223,8 @@ Action::BLinePointTangentMerge::prepare()
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 		add_action(action);
-	}
-	{
-		Action::Handle action;
+
+
 		action=Action::create("ValueDescSet");
 		if(!action)
 			throw Error(_("Couldn't find action \"ValueDescSet\""));
@@ -239,7 +253,14 @@ Action::BLinePointTangentMergeRadius::BLinePointTangentMergeRadius()
 synfig::String
 Action::BLinePointTangentMergeRadius::get_local_name()const
 {
-	return strprintf(_("Merge Tangents's Radius of '%s'"), ((ValueNode::Handle)(value_node))->get_description().c_str());
+	if (value_nodes.size() == 1)
+		return strprintf(_("Merge Tangents' Radius of '%s'"), ValueNode::Handle(*value_nodes.begin())->get_description().c_str());
+	else {
+		std::string descriptions;
+		for (const auto& value_node : value_nodes)
+			descriptions.append(ValueNode::Handle(value_node)->get_description());
+		return strprintf(_("Merge Tangents' Radius of %zu vertices: '%s'"), value_nodes.size(), descriptions.c_str());
+	}
 }
 
 Action::ParamVocab
@@ -248,6 +269,7 @@ Action::BLinePointTangentMergeRadius::get_param_vocab()
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 				  .set_local_name(_("ValueNode of Spline Point"))
+				  .set_supports_multiple()
 				  );
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 				  .set_local_name(_("Time"))
@@ -260,17 +282,20 @@ Action::BLinePointTangentMergeRadius::is_candidate(const ParamList &x)
 {
 	if(candidate_check(get_param_vocab(),x))
 	{
-		const Action::Param& param_valuenode = x.find("value_node")->second;
-		ValueNode_Composite::Handle value_node;
-		value_node=search_for_related_blinepoint(param_valuenode);
-		// at this point we should have a value node and it should be blinepoint
-		// if we haven't, then return false
-		if(!value_node)
-			return false;
-		synfig::Time time(x.find("time")->second.get_time());
-		bool split_radius=(*value_node->get_link("split_radius"))(time).get(bool());
-		if(split_radius==false)
-			return false;
+		auto valuenode_range = x.equal_range("value_node");
+		for (auto param_iter = valuenode_range.first; param_iter != valuenode_range.second; ++param_iter) {
+			const Action::Param& param_valuenode = param_iter->second;
+			ValueNode_Composite::Handle value_node;
+			value_node=search_for_related_blinepoint(param_valuenode);
+			// at this point we should have a value node and it should be blinepoint
+			// if we haven't, then return false
+			if(!value_node)
+				return false;
+			synfig::Time time(x.find("time")->second.get_time());
+			bool split_radius=(*value_node->get_link("split_radius"))(time).get(bool());
+			if(split_radius==false)
+				return false;
+		}
 		return true;
 	}
 	return false;
@@ -281,9 +306,12 @@ Action::BLinePointTangentMergeRadius::set_param(const synfig::String& name, cons
 {
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
-		value_node = search_for_related_blinepoint(param);
-		if (value_node)
+		ValueNode_Composite::Handle value_node;
+		value_node = search_for_related_blinepoint(param.get_value_node());
+		if (value_node) {
+			value_nodes.insert(value_node);
 			return true;
+		}
 		return false;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
@@ -297,11 +325,11 @@ Action::BLinePointTangentMergeRadius::set_param(const synfig::String& name, cons
 bool
 Action::BLinePointTangentMergeRadius::is_ready()const
 {
-	if(!value_node)
+	if(value_nodes.empty())
 		synfig::error("Missing or bad value_node");
 	if(time==(Time::begin()-1))
 		synfig::error("Missing time");
-	if(!value_node || time==(Time::begin()-1))
+	if(value_nodes.empty() || time==(Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -310,6 +338,7 @@ void
 Action::BLinePointTangentMergeRadius::prepare()
 {
 	clear();
+	for (const auto& value_node : value_nodes)
 	{
 		Action::Handle action;
 		action=Action::create("ValueDescSet");
@@ -339,7 +368,14 @@ Action::BLinePointTangentMergeAngle::BLinePointTangentMergeAngle()
 synfig::String
 Action::BLinePointTangentMergeAngle::get_local_name()const
 {
-	return strprintf(_("Merge Tangents's Angle of '%s'"), ((ValueNode::Handle)(value_node))->get_description().c_str());
+	if (value_nodes.size() == 1)
+		return strprintf(_("Merge Tangents' Angle of '%s'"), ValueNode::Handle(*value_nodes.begin())->get_description().c_str());
+	else {
+		std::string descriptions;
+		for (const auto& value_node : value_nodes)
+			descriptions.append(ValueNode::Handle(value_node)->get_description());
+		return strprintf(_("Merge Tangents' Angle of %zu vertices: '%s'"), value_nodes.size(), descriptions.c_str());
+	}
 }
 
 Action::ParamVocab
@@ -348,6 +384,7 @@ Action::BLinePointTangentMergeAngle::get_param_vocab()
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 				  .set_local_name(_("ValueNode of Spline Point"))
+				  .set_supports_multiple()
 				  );
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 				  .set_local_name(_("Time"))
@@ -360,17 +397,20 @@ Action::BLinePointTangentMergeAngle::is_candidate(const ParamList &x)
 {
 	if(candidate_check(get_param_vocab(),x))
 	{
-		const Action::Param& param_valuenode = x.find("value_node")->second;
-		ValueNode_Composite::Handle value_node;
-		value_node=search_for_related_blinepoint(param_valuenode);
-		// at this point we should have a value node and it should be blinepoint
-		// if we haven't, then return false
-		if(!value_node)
-			return false;
-		synfig::Time time(x.find("time")->second.get_time());
-		bool split_angle=(*value_node->get_link("split_angle"))(time).get(bool());
-		if(split_angle==false)
-			return false;
+		auto valuenode_range = x.equal_range("value_node");
+		for (auto param_iter = valuenode_range.first; param_iter != valuenode_range.second; ++param_iter) {
+			const Action::Param& param_valuenode = param_iter->second;
+			ValueNode_Composite::Handle value_node;
+			value_node=search_for_related_blinepoint(param_valuenode);
+			// at this point we should have a value node and it should be blinepoint
+			// if we haven't, then return false
+			if(!value_node)
+				return false;
+			synfig::Time time(x.find("time")->second.get_time());
+			bool split_angle=(*value_node->get_link("split_angle"))(time).get(bool());
+			if(split_angle==false)
+				return false;
+		}
 		return true;
 	}
 	return false;
@@ -381,9 +421,12 @@ Action::BLinePointTangentMergeAngle::set_param(const synfig::String& name, const
 {
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
-		value_node = search_for_related_blinepoint(param);
-		if (value_node)
+		ValueNode_Composite::Handle value_node;
+		value_node = search_for_related_blinepoint(param.get_value_node());
+		if (value_node) {
+			value_nodes.insert(value_node);
 			return true;
+		}
 		return false;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
@@ -397,11 +440,11 @@ Action::BLinePointTangentMergeAngle::set_param(const synfig::String& name, const
 bool
 Action::BLinePointTangentMergeAngle::is_ready()const
 {
-	if(!value_node)
+	if(value_nodes.empty())
 		synfig::error("Missing or bad value_node");
 	if(time==(Time::begin()-1))
 		synfig::error("Missing time");
-	if(!value_node || time==(Time::begin()-1))
+	if(value_nodes.empty() || time==(Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -410,6 +453,7 @@ void
 Action::BLinePointTangentMergeAngle::prepare()
 {
 	clear();
+	for (const auto& value_node : value_nodes)
 	{
 		Action::Handle action;
 		action=Action::create("ValueDescSet");
