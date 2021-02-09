@@ -275,6 +275,19 @@ ThreadPool::enqueue(const Slot &slot) {
 	wakeup();
 }
 
+
+void 
+ThreadPool::set_num_threads(int num_threads){
+	max_running_threads = g_get_num_processors();
+	if(num_threads!=0){
+		max_running_threads = num_threads;
+	}
+	if (const char *s = getenv("SYNFIG_GENERIC_THREADS"))
+		max_running_threads = atoi(s) + 1;
+
+	if (max_running_threads < 2) max_running_threads = 2;
+}
+
 void
 ThreadPool::wait(std::condition_variable &cond, std::unique_lock<std::mutex> &lock) {
 	if (--running_threads < max_running_threads)

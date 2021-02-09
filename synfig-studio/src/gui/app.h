@@ -229,6 +229,7 @@ public:
 	static synfig::String sequence_separator;
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
+	static int number_of_threads;
 	static bool enable_mainwin_menubar;
 	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;
