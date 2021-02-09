@@ -98,6 +98,8 @@ public:
 	void enqueue(const Slot &slot);
 	void wait(std::condition_variable &cond, std::unique_lock<std::mutex>& lock);
 
+	void set_num_threads(int num_threads);
+
 	int get_max_threads() const
 		{ return max_running_threads; }
 	int get_running_threads() const

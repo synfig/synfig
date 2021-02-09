@@ -44,6 +44,7 @@
 #include <gui/resourcehelper.h>
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
+#include <synfig/threadpool.h>
 
 #include <synfig/rendering/renderer.h>
 
@@ -76,6 +77,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0)),
+	adj_number_of_threads(Gtk::Adjustment::create(App::number_of_threads,2,g_get_num_processors(),1,10,0)),
 	pref_modification_flag(false),
 	refreshing(false)
 {
@@ -496,11 +498,17 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	 */
 
 	int row(1);
+	// Render - Number of threads used
+	attach_label(pi.grid, _("Number of threads used"), row);
+	number_of_threads_select = Gtk::manage(new Gtk::SpinButton(adj_number_of_threads,0,0));
+	pi.grid->attach(*number_of_threads_select, 1, row, 1, 1);
+	number_of_threads_select->set_tooltip_text(_("Number of threads change"));
+	number_of_threads_select->signal_changed().connect(sigc::mem_fun(*this, &Dialog_Setup::on_number_of_thread_changed) );
+	number_of_threads_select->set_hexpand(true);
 	// Render - Image sequence separator
-	attach_label(pi.grid, _("Image Sequence Separator String"), row);
+	attach_label(pi.grid, _("Image Sequence Separator String"), ++row);
 	pi.grid->attach(image_sequence_separator, 1, row, 1, 1);
 	image_sequence_separator.set_hexpand(true);
-
 	// Render - WorkArea
 	attach_label(pi.grid, _("WorkArea renderer"), ++row);
 	pi.grid->attach(workarea_renderer_combo, 1, row, 1, 1);
@@ -669,6 +677,8 @@ Dialog_Setup::on_restore_pressed()
 		fps_template_combo->set_active_text(DEFAULT_PREDEFINED_FPS);
 		adj_pref_fps->set_value(24.0);
 		image_sequence_separator.set_text(".");
+		adj_number_of_threads->set_value(g_get_num_processors());
+
 		workarea_renderer_combo.set_active_id("");
 		def_background_none.set_active();
 		
@@ -789,6 +799,9 @@ Dialog_Setup::on_apply_pressed()
 	// Set the preferred image sequence separator
 	App::sequence_separator     = image_sequence_separator.get_text();
 
+	// Set the number of threads
+	App::number_of_threads = int(adj_number_of_threads->get_value());
+
 	// Set the workarea render and navigator render flag
 	App::navigator_renderer = App::workarea_renderer  = workarea_renderer_combo.get_active_id();
 
@@ -902,6 +915,13 @@ void
 Dialog_Setup::on_autobackup_changed()
 {
 	auto_backup_interval.set_sensitive(toggle_autobackup.get_active());
+}
+
+void
+Dialog_Setup::on_number_of_thread_changed()
+{
+	App::number_of_threads = int(adj_number_of_threads->get_value());
+	ThreadPool::instance().set_num_threads(App::number_of_threads);
 }
 
 void
@@ -1063,6 +1083,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the sequence separator
 	image_sequence_separator.set_text(App::sequence_separator);
+
+	// Refresh the number of threads
+	number_of_threads_select->set_value(App::number_of_threads);
 
 	// Refresh the status of the workarea_renderer
 	workarea_renderer_combo.set_active_id(App::workarea_renderer);
