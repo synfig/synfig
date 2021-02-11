@@ -62,7 +62,7 @@ public:
 	Widget_FontFamily();
 	~Widget_FontFamily();
 
-	void set_value(std::string data);
+	void set_value(const std::string& data);
 	std::string get_value() const;
 
 	sigc::signal<void>& signal_activate() { return signal_activate_; }

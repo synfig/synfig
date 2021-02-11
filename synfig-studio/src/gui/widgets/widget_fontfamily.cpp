@@ -35,14 +35,13 @@
 #ifdef WITH_FONTCONFIG
 #include <fontconfig/fontconfig.h>
 #include <mutex>
-#include <set>
+#include <glibmm.h>
 #endif
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -92,6 +91,15 @@ private:
 		FcConfig* config = FcInitLoadConfigAndFonts();
 		if (!config)
 			return;
+#ifdef _WIN32
+		// Windows 10 (1809) Added local user fonts installed to C:\Users\%USERNAME%\AppData\Local\Microsoft\Windows\Fonts
+		std::string localdir = Glib::getenv("LOCALAPPDATA");
+		if (!localdir.empty()) {
+			localdir.append("\\Microsoft\\Windows\\Fonts\\");
+			FcConfigAppFontAddDir(config, (const FcChar8 *)localdir.c_str());
+		}
+#endif
+
 		FcPattern* pattern = FcPatternCreate();
 		if (pattern) {
 			FcObjectSet* os = FcObjectSetBuild (FC_FAMILY, nullptr);
@@ -154,7 +162,7 @@ Widget_FontFamily::~Widget_FontFamily()
 }
 
 void
-Widget_FontFamily::set_value(string data)
+Widget_FontFamily::set_value(const std::string& data)
 {
 	value=data;
 	set_active_text(data);
@@ -163,7 +171,7 @@ Widget_FontFamily::set_value(string data)
 			static_cast<Gtk::Entry*>(get_child())->set_text(data);
 }
 
-string
+std::string
 Widget_FontFamily::get_value() const
 {
 	if (get_active_row_number() == -1)
