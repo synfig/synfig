@@ -252,7 +252,7 @@ magickpp_trgt::end_frame()
 }
 
 bool
-magickpp_trgt::start_frame(synfig::ProgressCallback *callback)
+magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
 	if (start_pointer == buffer1)
 		start_pointer = buffer_pointer = buffer2;
@@ -266,7 +266,7 @@ magickpp_trgt::start_frame(synfig::ProgressCallback *callback)
 }
 
 Color*
-magickpp_trgt::start_scanline(int scanline)
+magickpp_trgt::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

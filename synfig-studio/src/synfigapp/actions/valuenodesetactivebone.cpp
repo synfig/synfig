@@ -89,7 +89,7 @@ Action::ValueNodeSetActiveBone::get_param_vocab()
 }
 
 bool
-Action::ValueNodeSetActiveBone::is_candidate(const ParamList &x)
+Action::ValueNodeSetActiveBone::is_candidate(const ParamList &)
 {
 	return false;
 }

@@ -1378,8 +1378,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 	// don't call thread_init() if threads are already initialized
 	// on some machines bonobo_init() initialized threads before we get here
-	if (!g_thread_supported())
-		Glib::thread_init();
+	//if (!Glib::thread_supported())
+	//	Glib::thread_init();
 
 	distance_system=Distance::SYSTEM_PIXELS;
 	
