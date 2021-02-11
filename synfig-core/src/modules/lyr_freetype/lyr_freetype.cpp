@@ -61,6 +61,7 @@
 #endif
 
 #include <algorithm>
+#include <glibmm.h>
 
 #endif
 
@@ -169,6 +170,14 @@ private:
 	FontConfigWrap()
 	{
 		config = FcInitLoadConfigAndFonts();
+#ifdef _WIN32
+		// Windows 10 (1809) Added local user fonts installed to C:\Users\%USERNAME%\AppData\Local\Microsoft\Windows\Fonts
+		std::string localdir = Glib::getenv("LOCALAPPDATA");
+		if (!localdir.empty()) {
+			localdir.append("\\Microsoft\\Windows\\Fonts\\");
+			FcConfigAppFontAddDir(config, (const FcChar8 *)localdir.c_str());
+		}
+#endif
 	}
 	~FontConfigWrap() {
 		FcConfigDestroy(config);
@@ -675,7 +684,18 @@ Layer_Freetype::new_face(const String &newfont)
 	}
 
 #ifdef _WIN32
-	possible_font_directories.push_back("C:\\WINDOWS\\FONTS\\");
+	// All users fonts
+	std::string windir = Glib::getenv("windir");
+	if (windir.empty()) {
+		possible_font_directories.emplace_back("C:\\WINDOWS\\FONTS\\");
+	} else {
+		possible_font_directories.emplace_back(windir + "\\Fonts\\");
+	}
+	// Windows 10 (1809) Added local user fonts installed to C:\Users\%USERNAME%\AppData\Local\Microsoft\Windows\Fonts
+	std::string localdir = Glib::getenv("LOCALAPPDATA");
+	if (!localdir.empty()) {
+		possible_font_directories.emplace_back(localdir + "\\Microsoft\\Windows\\Fonts\\");
+	}
 #else
 
 #ifdef __APPLE__
