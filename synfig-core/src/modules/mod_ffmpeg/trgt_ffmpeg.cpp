@@ -55,6 +55,7 @@ using namespace synfig;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
+ #include <unistd.h> // for popen
 #else
  #define WIN32_PIPE_TO_PROCESSES
 #endif
@@ -98,7 +99,7 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	if(file)
 	{
 		std::this_thread::yield();
-		sleep(1);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 #if defined(WIN32_PIPE_TO_PROCESSES)
 		pclose(file);
 #elif defined(UNIX_PIPE_TO_PROCESSES)

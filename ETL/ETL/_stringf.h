@@ -37,6 +37,7 @@
 #include <string>
 #include <cstdarg>
 #include <cstdlib>
+#include <glibmm/miscutils.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,15 +50,6 @@
 #endif
 
 /* === T Y P E D E F S ===================================================== */
-
-#ifdef _MSC_VER
-#include <direct.h> /* for _getcwd() and _chdir() */
-#define getcwd _getcwd
-#else
-extern "C" {
-#include <unistd.h>
-}
-#endif
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -247,12 +239,8 @@ unix_to_local_path(const std::string &path)
 }
 
 inline std::string
-current_working_directory()
-{
-	char dir[256];
-	// TODO: current_working_directory() should use Glib::locale_to_utf8()
-	std::string ret(getcwd(dir,sizeof(dir)));
-	return ret;
+current_working_directory() {
+	return Glib::get_current_dir();
 }
 
 inline std::string
