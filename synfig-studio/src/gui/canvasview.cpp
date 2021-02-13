@@ -1028,6 +1028,9 @@ CanvasView::create_time_bar()
 		controls->attach(*space, left_pos++, 0, 1, 1);
 		controls->attach(*animatebutton, left_pos++, 0, 1, 1);
 
+		// Make progress bar bigger than the default GTK one
+		progressbar->set_name("status-progress");
+
 		progressbar->set_hexpand(true);
 		progressbar->set_halign(Gtk::Align::ALIGN_FILL);
 
