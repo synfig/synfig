@@ -11,8 +11,7 @@ AM_CPPFLAGS = \
 EXTRA_DIST = \
 	pch.h \
 	synfig.nsh \
-	synfig.h \
-	nodebase.h
+	synfig.h
 
 
 TARGETHEADERS = \

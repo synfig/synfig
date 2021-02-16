@@ -33,7 +33,6 @@
 #include <cstdlib>
 #include <cstdio>
 #include "node.h"
-// #include "nodebase.h"		// this defines a bunch of sigc::slots that are never used
 
 #include <map>
 
