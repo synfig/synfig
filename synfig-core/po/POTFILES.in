@@ -270,7 +270,6 @@ src/synfig/module.cpp
 src/synfig/module.h
 src/synfig/node.cpp
 src/synfig/node.h
-src/synfig/nodebase.h
 src/synfig/palette.cpp
 src/synfig/palette.h
 src/synfig/paramdesc.cpp
