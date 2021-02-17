@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file string.h
-**	\brief Template Header
+/*!	\file string_helper.h
+**	\brief Helper functions to handle strings
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2021 Rodolfo R Gomes
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -20,31 +21,28 @@
 */
 /* ========================================================================= */
 
-/* === S T A R T =========================================================== */
-
-#ifndef __SYNFIG_STRING_H
-#define __SYNFIG_STRING_H
-
-/* === H E A D E R S ======================================================= */
+#ifndef SYNFIG_STRING_HELPER_H
+#define SYNFIG_STRING_HELPER_H
 
 #include <string>
-
-/* === M A C R O S ========================================================= */
-
-/* === T Y P E D E F S ===================================================== */
-
-/* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig
 {
 
-/*!	\typedef String
-**	\todo writeme
-*/
-typedef std::string String;
+/// Remove trailing zeroes of a string with a real number.
+/// It respects decimal point defined by locale and leave at least one decimal place
+std::string remove_trailing_zeroes(const std::string& text);
+
+/// Remove whitespaces from both ends of a string
+std::string trim(const std::string& text);
+std::wstring trim(const std::wstring& text);
+/// Remove the leading whitespaces from a string
+std::string left_trim(const std::string& text);
+std::wstring left_trim(const std::wstring& text);
+/// Remove the trailing whitespaces from a string
+std::string right_trim(const std::string& text);
+std::wstring right_trim(const std::wstring& text);
 
 }; // END of namespace synfig
 
-/* === E N D =============================================================== */
-
-#endif
+#endif // SYNFIG_STRING_HELPER_H

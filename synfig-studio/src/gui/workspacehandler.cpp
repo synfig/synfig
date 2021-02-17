@@ -31,11 +31,11 @@
 
 #include "workspacehandler.h"
 
-#include <algorithm>
 #include <fstream>
 
 #include <gui/localization.h>
 #include <synfig/general.h>
+#include <synfig/string_helper.h>
 #endif
 
 using namespace studio;
@@ -44,24 +44,10 @@ WorkspaceHandler::WorkspaceHandler()
 {
 }
 
-void
-WorkspaceHandler::trim_string(std::string &text)
-{
-	text.erase(text.begin(),
-			   std::find_if(text.begin(), text.end(),
-							[](int chr) { return !std::isspace(chr);})
-			   );
-	text.erase(std::find_if(text.rbegin(), text.rend(),
-							[](int chr) { return !std::isspace(chr);}).base(),
-			   text.end()
-			   );
-}
-
 bool
 WorkspaceHandler::is_valid_name(const std::string& name)
 {
-	std::string valid_name = name;
-	trim_string(valid_name);
+	std::string valid_name = synfig::trim(name);
 	return !valid_name.empty() && valid_name.find("=") == std::string::npos;
 }
 
@@ -76,8 +62,7 @@ WorkspaceHandler::add_workspace(const std::string& name, const std::string& tpl)
 {
 	if (!is_valid_name(name) || tpl.empty())
 		return false;
-	std::string valid_name(name);
-	trim_string(valid_name);
+	std::string valid_name = synfig::trim(name);
 	if (has_workspace(valid_name))
 		return false;
 	workspaces[valid_name] = tpl;
@@ -106,8 +91,7 @@ WorkspaceHandler::set_workspace(const std::string& name, const std::string& tpl)
 {
 	if (!is_valid_name(name) || tpl.empty())
 		return false;
-	std::string valid_name(name);
-	trim_string(valid_name);
+	std::string valid_name = synfig::trim(name);
 	if (!has_workspace(valid_name))
 		return false;
 	workspaces[valid_name] = tpl;

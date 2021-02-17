@@ -81,7 +81,7 @@ SYNFIGHEADERS = \
 	segment.h \
 	smartfile.h \
 	string.h \
-	string_decl.h \
+	string_helper.h \
 	types.h \
 	vector.h \
 	transformation.h \
@@ -170,6 +170,7 @@ SYNFIGSOURCES = \
 	renddesc.cpp \
 	render.cpp \
 	savecanvas.cpp \
+	string_helper.cpp \
 	surface.cpp \
 	target.cpp \
 	time.cpp \
