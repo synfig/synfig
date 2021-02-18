@@ -121,19 +121,6 @@ public:
 
 };
 
-class GUIDHash
-{
-public:
-	size_t operator()(const GUID& guid)const
-	{
-		return
-			guid.get_hi_hi()+
-			guid.get_hi_lo()+
-			guid.get_lo_hi()+
-			guid.get_lo_lo();
-	}
-};
-
 };
 
 /* === E N D =============================================================== */
