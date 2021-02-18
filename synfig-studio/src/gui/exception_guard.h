@@ -4,6 +4,7 @@
 #include <ETL/stringf>
 #include <synfig/exception.h> // for synfig::Exception
 #include <synfig/general.h> // for synfig::error()
+#include <synfigapp/action.h> // for synfigapp::Action::Error
 
 #ifdef _MSC_VER
 # ifndef __PRETTY_FUNCTION__
@@ -42,34 +43,25 @@
 
 /// Normally, you shouldn't use this macro directly
 #define SYNFIG_EXCEPTION_GUARD_END_COMMON \
-		} \
-		catch(int ret) \
-		{ \
+		} catch(int ret) { \
 			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:int: %i", __PRETTY_FUNCTION__, ret); \
 			_exception_guard_error_code = ret; \
-		} \
-		catch(std::string& str) \
-		{ \
+		} catch(std::string& str) { \
 			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:string: %s", __PRETTY_FUNCTION__, str.c_str()); \
 			_exception_guard_error_code = 1001; \
-		} \
-		catch(synfig::Exception::Exception& x) \
-		{ \
+		} catch(synfig::Exception::Exception& x) { \
 			_exception_guard_error_str = etl::strprintf("%s Synfig Exception: %s", __PRETTY_FUNCTION__, x.what()); \
 			_exception_guard_error_code = 1002; \
-		} \
-		catch(std::exception& x) \
-		{ \
+		} catch(std::exception& x) { \
 			_exception_guard_error_str = etl::strprintf("%s Standard Exception: %s", __PRETTY_FUNCTION__, x.what()); \
-			_exception_guard_error_code = 1002; \
-		} \
-		catch(Glib::Exception& x) \
-		{ \
+			_exception_guard_error_code = 1004; \
+		} catch(Glib::Exception& x) { \
 			_exception_guard_error_str = etl::strprintf("%s GLib Exception: %s", __PRETTY_FUNCTION__, x.what().c_str()); \
 			_exception_guard_error_code = 1003; \
-		} \
-		catch(...) \
-		{ \
+		} catch(synfigapp::Action::Error& x) { \
+			_exception_guard_error_str = etl::strprintf("%s SynfigApp Exception: $i - %s", __PRETTY_FUNCTION__, x.get_type(), x.get_desc().c_str()); \
+			_exception_guard_error_code = 1005; \
+		} catch(...) { \
 			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:unknown type", __PRETTY_FUNCTION__); \
 			_exception_guard_error_code = 1100; \
 		}
