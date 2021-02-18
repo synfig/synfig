@@ -181,8 +181,7 @@ Widget_Defaults::Widget_Defaults():
 	Gtk::Box(Gtk::ORIENTATION_VERTICAL)
 {
 	// Make Brushes button small for space efficiency
-	auto style_context = this->get_style_context();
-	style_context->add_class("synfigstudio-efficient-workspace");
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-tiny_icon");
 

@@ -122,8 +122,7 @@ Dock_PalEdit::Dock_PalEdit():
 	table(2,2,false)
 {
 	// Make Palette Editor toolbar buttons small for space efficiency
-	auto context = get_style_context();
-	context->add_class("synfigstudio-efficient-workspace");
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	action_group=Gtk::ActionGroup::create("action_group_pal_edit");
 	action_group->add(Gtk::Action::create(

@@ -542,8 +542,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	preview_dialog           ()
 {
 	// Make this toolbar small for space efficiency
-	auto style_context = this->get_style_context();
-	style_context->add_class("synfigstudio-efficient-workspace");
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	canvas_options = CanvasOptions::create(*App::main_window, this);
 
