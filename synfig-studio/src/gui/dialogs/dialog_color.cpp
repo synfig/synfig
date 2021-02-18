@@ -67,6 +67,9 @@ Dialog_Color::Dialog_Color():
 			sigc::mem_fun(*this, &Dialog_Color::on_set_fc_pressed));
 	create_close_button();
 
+	// Turn off resizability
+	set_resizable(false);
+
 	show_all_children();
 }
 
