@@ -60,8 +60,7 @@ Dock_MetaData::Dock_MetaData():
 	action_group(Gtk::ActionGroup::create("action_group_dock_meta_data"))
 {
 	// Make Canvas MetaData toolbar small for space efficiency
-	auto context = get_style_context();
-	context->add_class("synfigstudio-efficient-workspace");
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	action_group->add(Gtk::Action::create(
 		"action-MetadataAdd",

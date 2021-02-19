@@ -62,8 +62,7 @@ Dock_LayerGroups::Dock_LayerGroups():
 	group_action_manager(new GroupActionManager)
 {
 	// Make Sets toolbar buttons small for space efficiency
-	auto context = get_style_context();
-	context->add_class("synfigstudio-efficient-workspace");
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	group_action_manager->set_ui_manager(App::ui_manager());
 

@@ -346,8 +346,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 	colorHVSChanged(false)
 {
 	// Set left/right/up/down margin on this widget's content
-	auto dialog_context = get_style_context();
-	dialog_context->add_class("dialog-main-content");
+	get_style_context()->add_class("dialog-main-content");
 
 	notebook=manage(new Gtk::Notebook);
 	notebook->set_vexpand();
@@ -357,12 +356,9 @@ Widget_ColorEdit::Widget_ColorEdit():
 	auto hvs_grid  (manage(new Gtk::Grid));
 	auto alpha_grid(manage(new Gtk::Grid));
 
-	auto rgb_context = rgb_grid->get_style_context();
-	auto yuv_context = yuv_grid->get_style_context();
-	auto hvs_context = hvs_grid->get_style_context();
-	rgb_context->add_class("color-grid");
-	yuv_context->add_class("color-grid");
-	hvs_context->add_class("color-grid");
+	rgb_grid->get_style_context()->add_class("color-grid");
+	yuv_grid->get_style_context()->add_class("color-grid");
+	hvs_grid->get_style_context()->add_class("color-grid");
 
 	{
 		auto rgb_box(manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)));

@@ -64,8 +64,7 @@ Dock_Layers::Dock_Layers():
 	layer_action_manager(new LayerActionManager)
 {
 	// Make Layers button small for space efficiency
-	auto style_context = this->get_style_context();
-	style_context->add_class("synfigstudio-efficient-workspace");
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());
 

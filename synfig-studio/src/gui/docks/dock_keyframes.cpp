@@ -62,8 +62,7 @@ Dock_Keyframes::Dock_Keyframes():
 	keyframe_action_manager(new KeyframeActionManager())
 {
 	// Make Keyframes toolbar small for space efficiency
-	auto context = get_style_context();
-	context->add_class("synfigstudio-efficient-workspace");
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	keyframe_action_manager->set_ui_manager(App::ui_manager());
 	keyframe_action_manager->signal_show_keyframe_properties().connect(

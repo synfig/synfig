@@ -445,8 +445,7 @@ Dock_SoundWave::Dock_SoundWave()
 	  current_grid_sound(nullptr)
 {
 	// Make Sound toolbar buttons small for space efficiency
-	auto context = get_style_context();
-	context->add_class("synfigstudio-efficient-workspace");
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	set_use_scrolled(false);
 
