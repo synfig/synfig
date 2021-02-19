@@ -1195,6 +1195,8 @@ void Widget_Timetrack::WaypointSD::on_modifier_keys_changed()
 	if (action != NONE) {
 		std::string action_name;
 		switch (action) {
+		case NONE:
+			return; // just to hide warning "enumeration value ‘NONE’ not handled in switch"
 		case MOVE:
 			action_name = _("Move waypoints");
 			break;

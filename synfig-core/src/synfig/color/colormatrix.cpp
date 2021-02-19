@@ -241,9 +241,9 @@ ColorMatrix::BatchProcessor::process(Color *dest, int dest_stride, const Color *
 	{
 		if (dest_dr)
 			for(; dest != dest_end; dest += dest_stride)
-				memset(dest, 0, sizeof(*dest)*width);
+				memset(static_cast<void*>(dest), 0, sizeof(*dest)*width);
 		else
-			memset(dest, 0, sizeof(*dest)*width*height);
+			memset(static_cast<void*>(dest), 0, sizeof(*dest)*width*height);
 	}
 	else
 	if (copy_all)

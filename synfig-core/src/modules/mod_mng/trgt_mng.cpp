@@ -64,13 +64,13 @@ mng_alloc_proc(mng_size_t size)
 }
 
 static void MNG_DECL
-mng_free_proc(mng_ptr ptr, mng_size_t size)
+mng_free_proc(mng_ptr ptr, mng_size_t /*size*/)
 {
 	free(ptr); return;
 }
 
 static mng_bool MNG_DECL
-mng_null_proc(mng_handle mng)
+mng_null_proc(mng_handle /*mng*/)
 {
 	// synfig::info("%s:%d mng_trgt::mng_null_proc was called", __FILE__, __LINE__);
 	return MNG_TRUE;
@@ -85,10 +85,10 @@ mng_write_proc(mng_handle mng, mng_ptr buf, mng_uint32 size, mng_uint32* written
 }
 
 static mng_bool MNG_DECL
-mng_error_proc(mng_handle mng, mng_int32 error,
-			   mng_int8 severity, mng_chunkid chunkname,
-			   mng_uint32 chunkseq, mng_int32 extra1,
-			   mng_int32 extra2, mng_pchar errortext)
+mng_error_proc(mng_handle /*mng*/, mng_int32 /*error*/,
+			   mng_int8 /*severity*/, mng_chunkid /*chunkname*/,
+			   mng_uint32 /*chunkseq*/, mng_int32 /*extra1*/,
+			   mng_int32 /*extra2*/, mng_pchar errortext)
 {
 	synfig::error("%s:%d mng_trgt: error: %s", __FILE__, __LINE__, errortext);
 	return MNG_TRUE;
@@ -267,7 +267,7 @@ mng_trgt::end_frame()
 }
 
 bool
-mng_trgt::start_frame(synfig::ProgressCallback *callback)
+mng_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
 	// synfig::info("%s:%d mng_trgt::start_frame()", __FILE__, __LINE__);
 
@@ -308,7 +308,7 @@ mng_trgt::start_frame(synfig::ProgressCallback *callback)
 }
 
 Color*
-mng_trgt::start_scanline(int scanline)
+mng_trgt::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

@@ -171,7 +171,7 @@ static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
 	
 	AT *SC0=new AT[w];
 
-	memcpy(SC0,surface[0],w*sizeof(AT));
+	memcpy(static_cast<void*>(SC0), surface[0], w*sizeof(AT));
 
 	for(y=0;y<h;y++)
 	{

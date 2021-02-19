@@ -767,7 +767,7 @@ inline double penalty(RawBorder &path, int a, int b)
   synfig::PointInt p;
 
   int n = b - a + 1;
-  p = path[b == path.size() ? 0 : b].pos() - path[a].pos();
+  p = path[b == static_cast<std::int32_t>(path.size()) ? 0 : b].pos() - path[a].pos();
 
   synfig::Point v(-p[1],p[0]);//convert(rotate90(p))
   synfig::Point sum   = path.sums()[b] - path.sums()[a];

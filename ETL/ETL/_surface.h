@@ -481,7 +481,7 @@ public:
 	{
 		assert(data_);
 		if(pitch_==(signed int)sizeof(value_type)*w_)
-			memset(data_,0,h_*pitch_);
+			memset(static_cast<void*>(data_), 0, h_*pitch_);
 		else
 			fill(value_type());
 	}
