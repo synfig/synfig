@@ -22,6 +22,7 @@ set -e
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
 export SRCPREFIX=`dirname "$SCRIPTPATH"`
 
+BUILD_RELEASE_DIR=${SRCPREFIX}/_release/
 
 export PREFIX="$HOME/local-synfig"
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PREFIX/lib/pkgconfig"
@@ -47,12 +48,17 @@ if [ -e /etc/debian_version ] && [ -z $with_boost_libdir ]; then
 	fi
 fi
 
+if [[ `uname` == "MINGW"* ]]; then # MacOS doesn't support `uname -o` flag
+	PATH="${MINGW_PREFIX}/lib/ccache/bin:${PATH}"
+	PKG_CONFIG_PATH="/opt/mlt-6.16.0/lib/pkgconfig:${PKG_CONFIG_PATH}"
+	echo "ccache enabled"
+fi
 
 if [ -z $THREADS ]; then
 	export THREADS=4
 fi
 
-start_stage() 
+start_stage()
 {
 	echo -e "Starting ${YLW}$1${NC} stage"
 }
@@ -87,22 +93,23 @@ pack-etl()
 	start_stage "Pack ETL"
 	cd $SRCPREFIX/ETL
 	autoreconf -if
-	./configure --prefix="$PREFIX"
-	make distcheck -j${THREADS}
-	mv ETL-${ETL_VERSION}.tar.gz ../../
+	mkdir -p ${BUILD_RELEASE_DIR}/ETL && cd $BUILD_RELEASE_DIR/ETL
+	$SRCPREFIX/ETL/configure --prefix="$PREFIX"
+	make V=0 CXXFLAGS="-w" distcheck -j${THREADS}
+	mv ETL-${ETL_VERSION}.tar.gz ${BUILD_RELEASE_DIR}
 	end_stage "Pack ETL"
 }
 
 test-etl()
 {
 	start_stage "Test ETL"
-	cd $SRCPREFIX/../
+	cd ${BUILD_RELEASE_DIR}
 	tar xf ETL-${ETL_VERSION}.tar.gz
 	cd ETL-${ETL_VERSION}
 	./configure --prefix="$PREFIX"
-	make install -j${THREADS}
+	make V=0 CXXFLAGS="-w" install -j${THREADS}
 	cd ..
-	rm -rf $SRCPREFIX/../ETL-${ETL_VERSION}
+	rm -rf ${BUILD_RELEASE_DIR}/ETL-${ETL_VERSION}
 	end_stage "Test ETL"
 }
 
@@ -118,24 +125,25 @@ pack-core()
 {
 	start_stage "Pack Synfig Core"
 	cd $SRCPREFIX/synfig-core
-    ./bootstrap.sh
-	./configure --prefix="$PREFIX"
+	./bootstrap.sh
+	mkdir -p ${BUILD_RELEASE_DIR}/synfig-core && cd $BUILD_RELEASE_DIR/synfig-core
+	$SRCPREFIX/synfig-core/configure --prefix="$PREFIX"
 	echo "------------------------------------- pack-core make"
-	make distcheck -j${THREADS}
-	mv synfig-${CORE_VERSION}.tar.gz ../../
+	make V=0 CXXFLAGS="-w" distcheck -j${THREADS}
+	mv synfig-${CORE_VERSION}.tar.gz ${BUILD_RELEASE_DIR}
 	end_stage "Pack Synfig Core"
 }
 
 test-core()
 {
 	start_stage "Test Synfig Core"
-	cd $SRCPREFIX/../
+	cd ${BUILD_RELEASE_DIR}
 	tar xf synfig-${CORE_VERSION}.tar.gz
 	cd synfig-${CORE_VERSION}
 	./configure --prefix="$PREFIX"
-	make install -j${THREADS}
+	make V=0 CXXFLAGS="-w" install -j${THREADS}
 	cd ..
-	rm -rf $SRCPREFIX/../synfig-${CORE_VERSION}
+	rm -rf ${BUILD_RELEASE_DIR}/synfig-${CORE_VERSION}
 	end_stage "Test Synfig Core"
 }
 
@@ -152,22 +160,23 @@ pack-studio()
 	start_stage "Pack Synfig Studio"
 	cd $SRCPREFIX/synfig-studio
 	./bootstrap.sh
-	./configure --prefix="$PREFIX"
-	make distcheck -j${THREADS}
-	mv synfigstudio-${STUDIO_VERSION}.tar.gz ../..
+	mkdir -p ${BUILD_RELEASE_DIR}/synfig-studio && cd $BUILD_RELEASE_DIR/synfig-studio
+	$SRCPREFIX/synfig-studio/configure --prefix="$PREFIX"
+	make V=0 CXXFLAGS="-w" distcheck -j${THREADS}
+	mv synfigstudio-${STUDIO_VERSION}.tar.gz ${BUILD_RELEASE_DIR}
 	end_stage "Pack Synfig Studio"
 }
 
 test-studio()
 {
 	start_stage "Test Synfig Studio"
-	cd $SRCPREFIX/../
+	cd ${BUILD_RELEASE_DIR}
 	tar xf synfigstudio-${STUDIO_VERSION}.tar.gz
 	cd synfigstudio-${STUDIO_VERSION}
 	./configure --prefix="$PREFIX"
 	make install -j${THREADS}
 	cd ..
-	rm -rf $SRCPREFIX/../synfigstudio-${STUDIO_VERSION}
+	rm -rf ${BUILD_RELEASE_DIR}/synfigstudio-${STUDIO_VERSION}
 	end_stage "Test Synfig Studio"
 }
 
