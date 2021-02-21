@@ -498,13 +498,9 @@ void SynfigCommandLineParser::process_info_options()
 RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 {
 	RendDesc desc = renddesc;
-	int w, h;
-	float span;
-	span = w = h = 0;
-
-	w = set_width;
-
-	h = set_height;
+	Real span = 0;
+	int w = set_width;
+	int h = set_height;
 
 	if (set_antialias > 0)
 	{
@@ -582,7 +578,7 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 		VERBOSE_OUT(1) << etl::strprintf(_("Resolution set to %dx%d."), w, h) << std::endl;
 	}
 
-	if(span)
+	if(span > 0)
 		desc.set_span(span);
 
 	return desc;
