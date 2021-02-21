@@ -62,14 +62,9 @@ using namespace studio;
 #define SYNFIG_MAX_PIXEL_HEIGHT	(~(1<<31))
 #endif
 
-#ifndef DPM2DPI
-#define DPM2DPI(x)	((x)/39.3700787402)
-#define DPI2DPM(x)	((x)*39.3700787402)
-#endif
-
 #ifndef METERS2INCHES
-#define METERS2INCHES(x)	((x)*39.3700787402)
-#define INCHES2METERS(x)	((x)/39.3700787402)
+#define METERS2INCHES(x)	(DPI2DPM(x))
+#define INCHES2METERS(x)	(DPM2DPI(x))
 #endif
 
 /* === G L O B A L S ======================================================= */

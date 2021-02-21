@@ -521,28 +521,25 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 	}
 
 	if (set_dpi > 0) {
-		float dpi, dots_per_meter;
-		dpi = (float)set_dpi;
-		dots_per_meter = dpi * 39.3700787402; // TODO: ???
+		Real dots_per_meter;
+		dots_per_meter = DPI2DPM(set_dpi);
 		desc.set_x_res(dots_per_meter);
 		desc.set_y_res(dots_per_meter);
-		synfig::info(_("Physical resolution set to %f dpi"), dpi);
+		synfig::info(_("Physical resolution set to %f dpi"), set_dpi);
 	}
 
-	if (set_dpi_x) {
-		float dpi, dots_per_meter;
-		dpi = (float)set_dpi_x;
-		dots_per_meter = dpi * 39.3700787402;
+	if (set_dpi_x > 0) {
+		Real dots_per_meter;
+		dots_per_meter = DPI2DPM(set_dpi_x);
 		desc.set_x_res(dots_per_meter);
-		synfig::info(_("Physical X resolution set to %f dpi"), dpi);
+		synfig::info(_("Physical X resolution set to %f dpi"), set_dpi_x);
 	}
 
-	if (set_dpi_y) {
-		float dpi, dots_per_meter;
-		dpi = (float)set_dpi_y;
-		dots_per_meter = dpi * 39.3700787402;
+	if (set_dpi_y > 0) {
+		Real dots_per_meter;
+		dots_per_meter = DPI2DPM(set_dpi_y);
 		desc.set_y_res(dots_per_meter);
-		synfig::info(_("Physical Y resolution set to %f dpi"), dpi);
+		synfig::info(_("Physical Y resolution set to %f dpi"), set_dpi_y);
 	}
 
 	if (!set_start_time.empty())
