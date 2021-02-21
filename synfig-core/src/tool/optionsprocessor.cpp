@@ -604,12 +604,12 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 
 		bool found = false;
 		// Check if the given video codec is allowed.
-		for (std::vector<VideoCodec>::const_iterator itr = _allowed_video_codecs.begin();
-		 itr != _allowed_video_codecs.end(); ++itr)
+		for (const VideoCodec& vcodec : _allowed_video_codecs)
 		{
-			if (params.video_codec == itr->name)
+			if (params.video_codec == vcodec.name)
 			{
 				found = true;
+				break;
 			}
 		}
 
