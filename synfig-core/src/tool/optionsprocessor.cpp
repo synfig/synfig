@@ -328,7 +328,7 @@ void SynfigCommandLineParser::extract_canvas_info(Job& job)
 
 		if (pos == std::string::npos)
 			break;
-	};
+	}
 }
 
 void SynfigCommandLineParser::process_settings_options() const
@@ -353,7 +353,7 @@ void SynfigCommandLineParser::process_settings_options() const
 
 	if (set_num_threads > 0)
 	{
-		SynfigToolGeneralOptions::instance()->set_threads(set_num_threads);
+		SynfigToolGeneralOptions::instance()->set_threads(size_t(set_num_threads));
 	}
 
 	VERBOSE_OUT(1) << _("Threads set to ")
@@ -515,7 +515,7 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 	}
 
 	if (set_fps > 0) {
-		float fps = (float)set_fps;
+		float fps = float(set_fps);
 		desc.set_frame_rate(fps);
 		synfig::info(_("Frame rate set to %.3f frames per second"), fps);
 	}
@@ -663,9 +663,9 @@ Job SynfigCommandLineParser::extract_job()
 				errors.append("Cannot open container " + job.filename + "\n");
 			}
 		}
-		catch(std::runtime_error& x)
+		catch(std::runtime_error& /*x*/)
 		{
-			job.root = 0;
+			job.root = nullptr;
 		}
 
 		// By default, the canvas to render is the root canvas
