@@ -77,7 +77,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_pref_x_size(Gtk::Adjustment::create(480,1,10000,1,10,0)),
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0)),
-	adj_number_of_threads(Gtk::Adjustment::create(App::number_of_threads,2,g_get_num_processors(),1,10,0)),
+	adj_number_of_threads(Gtk::Adjustment::create(App::number_of_threads,2,std::thread::hardware_concurrency(),1,10,0)),
 	pref_modification_flag(false),
 	refreshing(false)
 {
@@ -677,7 +677,7 @@ Dialog_Setup::on_restore_pressed()
 		fps_template_combo->set_active_text(DEFAULT_PREDEFINED_FPS);
 		adj_pref_fps->set_value(24.0);
 		image_sequence_separator.set_text(".");
-		adj_number_of_threads->set_value(g_get_num_processors());
+		adj_number_of_threads->set_value(std::thread::hardware_concurrency());
 
 		workarea_renderer_combo.set_active_id("");
 		def_background_none.set_active();

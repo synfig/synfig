@@ -39,7 +39,6 @@
 
 #include <cassert>
 #include <sigc++/bind.h>
-#include <glibmm/thread.h> // For g_get_num_processors()
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
@@ -141,7 +140,7 @@ ThreadPool::ThreadPool():
 	queue_size(0),
 	stopped(false)
 {
-	max_running_threads = g_get_num_processors();
+	max_running_threads = std::thread::hardware_concurrency();
 
 	if (const char *s = getenv("SYNFIG_GENERIC_THREADS"))
 		max_running_threads = atoi(s) + 1;
@@ -278,7 +277,7 @@ ThreadPool::enqueue(const Slot &slot) {
 
 void 
 ThreadPool::set_num_threads(int num_threads){
-	max_running_threads = g_get_num_processors();
+	max_running_threads = std::thread::hardware_concurrency();
 	if(num_threads!=0){
 		max_running_threads = num_threads;
 	}

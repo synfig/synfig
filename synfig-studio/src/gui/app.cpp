@@ -146,6 +146,8 @@
 #include <synfigapp/main.h>
 #include <synfigapp/settings.h>
 
+#include <thread>
+
 #ifdef _WIN32
 #define WINVER 0x0500
 #include <windows.h>
@@ -284,7 +286,7 @@ std::set< String > studio::App::brushes_path;
 String studio::App::image_editor_path;
 
 String studio::App::sequence_separator(".");
-int    studio::App::number_of_threads = g_get_num_processors();
+int    studio::App::number_of_threads = std::thread::hardware_concurrency();
 String studio::App::navigator_renderer;
 String studio::App::workarea_renderer;
 
