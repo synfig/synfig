@@ -82,13 +82,15 @@ namespace {
 			return i == map.end() ? nullptr : i->second;
 		}
 
-		void add(const GUID &guid, Node *node) {
+		bool add(const GUID &guid, Node *node) {
 			assert(guid);
 			assert(node);
 			
 			std::lock_guard<std::mutex> lock(mutex);
-			assert(!map.count(guid));
+			if (map.count(guid) > 0)
+				return false;
 			map[guid] = node;
+			return true;
 		}
 
 		void remove(const GUID &guid, Node *node) {
@@ -221,8 +223,11 @@ Node::get_guid()const
 	std::lock_guard<std::mutex> lock(guid_mutex_);
 	if(!guid_)
 	{
-		guid_.make_unique();
-		global_node_map().add(guid_, const_cast<Node*>(this));
+		bool added = false;
+		do {
+			guid_.make_unique();
+			added = global_node_map().add(guid_, const_cast<Node*>(this));
+		} while (!added);
 	}
 	return guid_;
 }
