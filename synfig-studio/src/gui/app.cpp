@@ -4006,8 +4006,8 @@ App::new_instance()
 	canvas->rend_desc().set_frame_rate(preferred_fps);
 	canvas->rend_desc().set_time_start(0.0);
 	canvas->rend_desc().set_time_end(5.0);
-	canvas->rend_desc().set_x_res(DPI2DPM(72.0f));
-	canvas->rend_desc().set_y_res(DPI2DPM(72.0f));
+	canvas->rend_desc().set_x_res(DPI2DPM(72.0));
+	canvas->rend_desc().set_y_res(DPI2DPM(72.0));
 	// The top left and bottom right positions are expressed in units
 	// Original convention is that 1 unit = 60 pixels
 	canvas->rend_desc().set_tl(Vector(-(preferred_x_size/60.0)/2.0,  (preferred_y_size/60.0)/2.0));

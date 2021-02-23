@@ -39,8 +39,8 @@
 /* === M A C R O S ========================================================= */
 
 #ifndef DPM2DPI
-#define DPM2DPI(x)	(float(x)/39.3700787402f)
-#define DPI2DPM(x)	(float(x)*39.3700787402f)
+#define DPM2DPI(x)	((x)/39.3700787402)
+#define DPI2DPM(x)	((x)*39.3700787402)
 #endif
 
 /* === T Y P E D E F S ===================================================== */
@@ -125,8 +125,8 @@ public:
 		h_                      (270),
 		w_ratio_                (1),
 		h_ratio_                (1),
-		x_res                   (DPI2DPM(72.0f)),
-		y_res                   (DPI2DPM(72.0f)),
+		x_res                   (DPI2DPM(72.0)),
+		y_res                   (DPI2DPM(72.0)),
 		x_res_ratio_            (1),
 		y_res_ratio_            (1),
 		tl_                     (-4,  2.25),

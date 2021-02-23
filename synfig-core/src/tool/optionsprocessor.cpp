@@ -328,7 +328,7 @@ void SynfigCommandLineParser::extract_canvas_info(Job& job)
 
 		if (pos == std::string::npos)
 			break;
-	};
+	}
 }
 
 void SynfigCommandLineParser::process_settings_options() const
@@ -353,7 +353,7 @@ void SynfigCommandLineParser::process_settings_options() const
 
 	if (set_num_threads > 0)
 	{
-		SynfigToolGeneralOptions::instance()->set_threads(set_num_threads);
+		SynfigToolGeneralOptions::instance()->set_threads(size_t(set_num_threads));
 	}
 
 	VERBOSE_OUT(1) << _("Threads set to ")
@@ -498,13 +498,9 @@ void SynfigCommandLineParser::process_info_options()
 RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 {
 	RendDesc desc = renddesc;
-	int w, h;
-	float span;
-	span = w = h = 0;
-
-	w = set_width;
-
-	h = set_height;
+	Real span = 0;
+	int w = set_width;
+	int h = set_height;
 
 	if (set_antialias > 0)
 	{
@@ -519,34 +515,31 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 	}
 
 	if (set_fps > 0) {
-		float fps = (float)set_fps;
+		float fps = float(set_fps);
 		desc.set_frame_rate(fps);
 		synfig::info(_("Frame rate set to %.3f frames per second"), fps);
 	}
 
 	if (set_dpi > 0) {
-		float dpi, dots_per_meter;
-		dpi = (float)set_dpi;
-		dots_per_meter = dpi * 39.3700787402; // TODO: ???
+		Real dots_per_meter;
+		dots_per_meter = DPI2DPM(set_dpi);
 		desc.set_x_res(dots_per_meter);
 		desc.set_y_res(dots_per_meter);
-		synfig::info(_("Physical resolution set to %f dpi"), dpi);
+		synfig::info(_("Physical resolution set to %f dpi"), set_dpi);
 	}
 
-	if (set_dpi_x) {
-		float dpi, dots_per_meter;
-		dpi = (float)set_dpi_x;
-		dots_per_meter = dpi * 39.3700787402;
+	if (set_dpi_x > 0) {
+		Real dots_per_meter;
+		dots_per_meter = DPI2DPM(set_dpi_x);
 		desc.set_x_res(dots_per_meter);
-		synfig::info(_("Physical X resolution set to %f dpi"), dpi);
+		synfig::info(_("Physical X resolution set to %f dpi"), set_dpi_x);
 	}
 
-	if (set_dpi_y) {
-		float dpi, dots_per_meter;
-		dpi = (float)set_dpi_y;
-		dots_per_meter = dpi * 39.3700787402;
+	if (set_dpi_y > 0) {
+		Real dots_per_meter;
+		dots_per_meter = DPI2DPM(set_dpi_y);
 		desc.set_y_res(dots_per_meter);
-		synfig::info(_("Physical Y resolution set to %f dpi"), dpi);
+		synfig::info(_("Physical Y resolution set to %f dpi"), set_dpi_y);
 	}
 
 	if (!set_start_time.empty())
@@ -582,7 +575,7 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 		VERBOSE_OUT(1) << etl::strprintf(_("Resolution set to %dx%d."), w, h) << std::endl;
 	}
 
-	if(span)
+	if(span > 0)
 		desc.set_span(span);
 
 	return desc;
@@ -611,12 +604,12 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 
 		bool found = false;
 		// Check if the given video codec is allowed.
-		for (std::vector<VideoCodec>::const_iterator itr = _allowed_video_codecs.begin();
-		 itr != _allowed_video_codecs.end(); ++itr)
+		for (const VideoCodec& vcodec : _allowed_video_codecs)
 		{
-			if (params.video_codec == itr->name)
+			if (params.video_codec == vcodec.name)
 			{
 				found = true;
+				break;
 			}
 		}
 
@@ -670,9 +663,9 @@ Job SynfigCommandLineParser::extract_job()
 				errors.append("Cannot open container " + job.filename + "\n");
 			}
 		}
-		catch(std::runtime_error& x)
+		catch(std::runtime_error& /*x*/)
 		{
-			job.root = 0;
+			job.root = nullptr;
 		}
 
 		// By default, the canvas to render is the root canvas
