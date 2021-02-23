@@ -108,12 +108,12 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	comboboxtext_target.set_active(0);
 	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
 
-	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	dialogPadding->set_padding(12, 12, 12, 12);
-	get_vbox()->pack_start(*dialogPadding, false, false, 0);
-
-	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
-	dialogPadding->add(*dialogBox);
+	Gtk::Box *dialogBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	dialogBox->set_margin_top(12);
+	dialogBox->set_margin_bottom(12);
+	dialogBox->set_margin_start(12);
+	dialogBox->set_margin_end(12);
+	get_vbox()->pack_start(*dialogBox, false, false, 0);
 
 	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
 	choose_button->show();
@@ -128,28 +128,39 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	target_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) target_frame->get_label_widget())->set_markup(_("<b>Target</b>"));
 	dialogBox->pack_start(*target_frame);
-	Gtk::Alignment *targetPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	targetPadding->set_padding(6, 0, 24, 0);
-	target_frame->add(*targetPadding);
 
-	Gtk::Table *target_table = manage(new Gtk::Table(2, 3, false));
-	target_table->set_row_spacings(6);
-	target_table->set_col_spacings(12);
-	targetPadding->add(*target_table);
+	Gtk::Grid *target_table = manage(new Gtk::Grid());
+	target_table->set_margin_top(6);
+	target_table->set_margin_start(24);
+	target_table->set_row_spacing(6);
+	target_table->set_column_spacing(12);
+	target_table->set_hexpand(true);
+	target_frame->add(*target_table);
 
 	Gtk::Label *filenameLabel = manage(new Gtk::Label(_("_Filename"), true));
-	filenameLabel->set_alignment(0, 0.5);
+	filenameLabel->set_halign(Gtk::ALIGN_START);
+	filenameLabel->set_valign(Gtk::ALIGN_CENTER);
 	filenameLabel->set_mnemonic_widget(entry_filename);
-	target_table->attach(*filenameLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(entry_filename, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(*choose_button, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	filenameLabel->set_hexpand(false);
+	entry_filename.set_hexpand(true);
+	choose_button->set_hexpand(false);
+	target_table->attach(*filenameLabel, 0, 0, 1, 1);
+	target_table->attach(entry_filename, 1, 0, 3, 1);
+	target_table->attach(*choose_button, 4, 0, 1, 1);
 
 	Gtk::Label *targetLabel = manage(new Gtk::Label(_("_Target"), true));
-	targetLabel->set_alignment(0, 0.5);
+	targetLabel->set_halign(Gtk::ALIGN_START);
+	targetLabel->set_valign(Gtk::ALIGN_CENTER);
 	targetLabel->set_mnemonic_widget(comboboxtext_target);
-	target_table->attach(*targetLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(comboboxtext_target, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(*tparam_button, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	targetLabel->set_hexpand(false);
+	comboboxtext_target.set_hexpand(false);
+	tparam_button->set_hexpand(false);
+	Gtk::Label *separator0 = manage(new Gtk::Label());
+	separator0->set_hexpand(true);
+	target_table->attach(*targetLabel, 0, 1, 1, 1);
+	target_table->attach(comboboxtext_target, 1, 1, 1, 1);
+	target_table->attach(*tparam_button, 2, 1, 1, 1);
+	target_table->attach(*separator0, 3, 1, 1, 1);
 
 	toggle_single_frame.signal_toggled().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_single_frame_toggle));
 
@@ -158,34 +169,45 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	((Gtk::Label *) settings_frame->get_label_widget())->set_markup(_("<b>Settings</b>"));
 	dialogBox->pack_start(*settings_frame);
 
-	Gtk::Alignment *settingsPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	settingsPadding->set_padding(6, 0, 24, 0);
-	settings_frame->add(*settingsPadding);
-
-	Gtk::Table *settings_table=manage(new Gtk::Table(3,2,false));
-	settings_table->set_row_spacings(6);
-	settings_table->set_col_spacings(12);
-	settingsPadding->add(*settings_table);
+	Gtk::Grid *settings_table=manage(new Gtk::Grid());
+	settings_table->set_margin_top(6);
+	settings_table->set_margin_start(24);
+	settings_table->set_row_spacing(6);
+	settings_table->set_column_spacing(12);
+	settings_table->set_hexpand(true);
+	settings_frame->add(*settings_table);
 
 	Gtk::Label *qualityLabel = manage(new Gtk::Label(_("_Quality"), true));
-	qualityLabel->set_alignment(0, 0.5);
+	qualityLabel->set_halign(Gtk::ALIGN_START);
+	qualityLabel->set_valign(Gtk::ALIGN_CENTER);
 	qualityLabel->set_mnemonic_widget(entry_quality);
-	settings_table->attach(*qualityLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	settings_table->attach(entry_quality, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	qualityLabel->set_hexpand(false);
+	settings_table->attach(*qualityLabel, 0, 0, 1, 1);
+	settings_table->attach(entry_quality, 1, 0, 1, 1);
 
 	Gtk::Label *antiAliasLabel = manage(new Gtk::Label(_("_Anti-Aliasing"), true));
-	antiAliasLabel->set_alignment(0, 0.5);
+	antiAliasLabel->set_halign(Gtk::ALIGN_START);
+	antiAliasLabel->set_valign(Gtk::ALIGN_CENTER);
 	antiAliasLabel->set_mnemonic_widget(entry_antialias);
-	settings_table->attach(*antiAliasLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	settings_table->attach(entry_antialias, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	antiAliasLabel->set_hexpand(false);
+	settings_table->attach(*antiAliasLabel, 0, 1, 1, 1);
+	settings_table->attach(entry_antialias, 1, 1, 1, 1);
 
-	toggle_single_frame.set_alignment(0, 0.5);
-	settings_table->attach(toggle_single_frame, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	Gtk::Label *separator1 = manage(new Gtk::Label());
+	separator1->set_hexpand(true);
+	toggle_single_frame.set_halign(Gtk::ALIGN_START);
+	toggle_single_frame.set_valign(Gtk::ALIGN_CENTER);
 	toggle_single_frame.set_active(false);
+	settings_table->attach(*separator1, 2, 0, 1, 1);
+	settings_table->attach(toggle_single_frame, 3, 0, 1, 1);
 
-	toggle_extract_alpha.set_alignment(0, 0.5);
-	settings_table->attach(toggle_extract_alpha, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	Gtk::Label *separator2 = manage(new Gtk::Label());
+	separator2->set_hexpand(true);
+	toggle_extract_alpha.set_halign(Gtk::ALIGN_START);
+	toggle_extract_alpha.set_valign(Gtk::ALIGN_CENTER);
 	toggle_extract_alpha.set_active(false);
+	settings_table->attach(*separator2, 2, 1, 1, 1);
+	settings_table->attach(toggle_extract_alpha, 3, 1, 1, 1);
 
 	dialogBox->pack_start(widget_rend_desc);
 
