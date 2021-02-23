@@ -330,7 +330,7 @@ private:
 
 	//! State stack data
 	const state_base* 	state_stack[SMACH_STATE_STACK_SIZE];
-	void* 				state_context_stack[SMACH_STATE_STACK_SIZE];
+	void* 				state_context_stack[SMACH_STATE_STACK_SIZE] = {0};
 	int 				states_on_stack;
 	
 	bool changing_state;

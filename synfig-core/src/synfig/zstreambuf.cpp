@@ -36,8 +36,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -51,7 +49,8 @@ using namespace synfig;
 zstreambuf::zstreambuf(std::streambuf *buf):
 	buf_(buf),
 	inflate_initialized(false),
-	deflate_initialized(false)
+	deflate_initialized(false),
+	deflate_stream_{}
 {
 }
 

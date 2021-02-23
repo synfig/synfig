@@ -139,7 +139,7 @@ public:
   double m_height;
   double m_displacement;
   ContourNode *m_generator;
-  ContourNode *m_coGenerator;
+  ContourNode *m_coGenerator = nullptr;
   Type m_type;
   unsigned int m_algorithmicTime;
 
@@ -286,18 +286,18 @@ struct VectorizationContext {
   VectorizerCoreGlobals *m_globals;
 
   // Globals
-  unsigned int m_totalNodes;      // Number of original contour nodes
-  unsigned int m_contoursCount;   // Number of contours in input region
-  IndexTable m_activeTable;       // Index table of active contours
-  SkeletonGraph *m_output;        // Output skeleton of input region
-  double m_currentHeight;         // Height of our 'roof-flooding' process
-  Timeline m_timeline;            // Ordered queue of all possible events
-  unsigned int m_algorithmicTime; // Number of events processed up to now
+  unsigned int m_totalNodes = 0;      // Number of original contour nodes
+  unsigned int m_contoursCount = 0;   // Number of contours in input region
+  IndexTable m_activeTable;           // Index table of active contours
+  SkeletonGraph *m_output = nullptr;  // Output skeleton of input region
+  double m_currentHeight = 0;         // Height of our 'roof-flooding' process
+  Timeline m_timeline;                // Ordered queue of all possible events
+  unsigned int m_algorithmicTime = 0; // Number of events processed up to now
 
   // Containers
   std::vector<ContourEdge> m_edgesHeap;
   std::vector<ContourNode> m_nodesHeap;  // of *non-original* nodes only
-  unsigned int m_nodesHeapCount;         // number of nodes used in nodesHeap
+  unsigned int m_nodesHeapCount = 0;     // number of nodes used in nodesHeap
 
   //'Linear Axis-added' *pseudo-original* nodes and edges
   std::vector<ContourNode> m_linearNodesHeap;
