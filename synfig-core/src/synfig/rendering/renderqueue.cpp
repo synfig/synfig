@@ -32,6 +32,7 @@
 #include <cstdlib>
 #include <climits>
 
+#include <thread>
 #include <typeinfo>
 
 #include <synfig/general.h>
@@ -97,7 +98,7 @@ RenderQueue::start()
 	// one thread reserved for non-multithreading tasks (OpenGL)
 	// also this thread almost don't use CPU time
 	// so we have ~50% of one core for GUI
-	int count = g_get_num_processors();
+	unsigned int count = std::thread::hardware_concurrency();
 
 	#ifdef DEBUG_TASK_SURFACE
 	count = 2;
