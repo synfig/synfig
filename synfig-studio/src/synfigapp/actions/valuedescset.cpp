@@ -855,7 +855,7 @@ Action::ValueDescSet::prepare()
 			}
 			else
 			{
-				if (old_length == 0) return;
+				if (approximate_zero(old_length)) return;
 				new_scale = new_length * scale / old_length;
 			}
 		}
@@ -875,7 +875,7 @@ Action::ValueDescSet::prepare()
 				new_scale = new_length;
 			}
 			else
-			if (old_length != 0)
+			if (approximate_not_zero(old_length))
 			{
 				new_scale = new_length * scale / old_length;
 				Action::Handle action(Action::create("ValueDescSet"));
@@ -911,7 +911,7 @@ Action::ValueDescSet::prepare()
 			return;
 		}
 
-		if (new_scale.get(synfig::Real()) != 0)
+		if (approximate_not_zero(new_scale.get(synfig::Real())))
 		{
 			Action::Handle action(Action::create("ValueDescSet"));
 			if(!action)
