@@ -527,7 +527,7 @@ Action::ValueDescSet::prepare()
 			KeyValue("length",   bone.get_length())
 		};
 
-		for(int i = 0; i < (int)(sizeof(values)/sizeof(values[0])); ++i)
+		for(size_t i = 0; i < sizeof(values)/sizeof(values[0]); ++i)
 		{
 			ValueDesc component_value_desc(
 				bone_value_node,
