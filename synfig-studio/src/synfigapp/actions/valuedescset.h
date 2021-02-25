@@ -55,6 +55,9 @@ private:
 	bool lock_animation;
 	synfig::ValueNode_Animated::Handle value_node_animated;
 
+	/// convenient method to create a ValueDescSet action and and it to stack
+	void add_action_valuedescset(const synfig::ValueBase& value, const ValueDesc& value_desc, bool recursive = true);
+
 public:
 
 	ValueDescSet();
