@@ -215,9 +215,12 @@ Action::ValueDescSet::prepare()
 				if(!action)
 					throw Error(_("Unable to find action ValueDescSet (bug)"));
 				int index = value_desc.get_index();
-				if(index==2 || index==3 || index==4){
+				const int origin_index = bone->get_link_index_from_name("origin");
+				const int angle_index = bone->get_link_index_from_name("angle");
+				const int scalelx_index = bone->get_link_index_from_name("scalelx");
+				if(index==origin_index || index==angle_index || index==scalelx_index){
 
-					if(index==2) {
+					if(index==origin_index) {
 						Point p = value.get(Point());
 
 						Bone parentBone = (*bone->get_link("parent"))(time).get(Bone());
@@ -226,18 +229,18 @@ Action::ValueDescSet::prepare()
 						Matrix parentAnimMatrix = parentBone.get_animated_matrix();
 						Matrix parentAnimMatrix1 = parentBone1.get_animated_matrix();
 
-						p += parentAnimMatrix.get_transformed(bone->get_link(value_desc.get_index())->operator()(time).get(Point()));
-						p -= parentAnimMatrix1.get_transformed(-bone1->get_link(value_desc.get_index())->operator()(time).get(Point()));
+						p += parentAnimMatrix.get_transformed(bone->get_link(index)->operator()(time).get(Point()));
+						p -= parentAnimMatrix1.get_transformed(-bone1->get_link(index)->operator()(time).get(Point()));
 						svalue = ValueBase(parentAnimMatrix.get_inverted().get_transformed(p));
-					}else if(index==3){
+					}else if(index==angle_index){
 						Angle a = value.get(Angle());
-						a+=bone->get_link(value_desc.get_index())->operator()(time).get(Angle());
-						a-=bone1->get_link(value_desc.get_index())->operator()(time).get(Angle());
+						a+=bone->get_link(index)->operator()(time).get(Angle());
+						a-=bone1->get_link(index)->operator()(time).get(Angle());
 						svalue = ValueBase(a);
-					}else if(index==4){
+					}else if(index==scalelx_index){
 						Real r = value.get(Real());
-						r+= bone->get_link(value_desc.get_index())->operator()(time).get(Real());
-						r-=bone1->get_link(value_desc.get_index())->operator()(time).get(Real());
+						r+= bone->get_link(index)->operator()(time).get(Real());
+						r-=bone1->get_link(index)->operator()(time).get(Real());
 						svalue = ValueBase(r);
 					}
 					action->set_param("canvas",get_canvas());
