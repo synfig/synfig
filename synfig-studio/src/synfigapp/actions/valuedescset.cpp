@@ -974,8 +974,8 @@ Action::ValueDescSet::prepare()
 			Real new_value(value.get(Real()));
 			Real lower = (*low)(Time(0.0)).get(Real());
 			Real upper = (*upp)(Time(0.0)).get(Real());
-			if( (i==4 && new_value > (upper- 0.00000001))
-			||  (i==5 && new_value < (lower+ 0.00000001)) )
+			if( (i==4 && approximate_greater_or_equal(new_value, upper))
+			||  (i==5 && approximate_less_or_equal(new_value, lower)) )
 			{
 				throw Error(_("It is forbidden to set lower boundary equal or bigger than upper boundary"));
 				return;
