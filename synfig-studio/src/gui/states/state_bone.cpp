@@ -1261,15 +1261,15 @@ StateBone_Context::change_active_bone(ValueNode::Handle node){
 
 void
 StateBone_Context::_on_signal_value_desc_set(ValueDesc value_desc,ValueBase value) {
-	cout<<value_desc.get_description()<<endl;
-	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
-	if(comp){
-			int index = value_desc.get_index();
-			cout<<"cc "<<index<<endl;
-			if(index==7 || index==6){
-				if(skel_bone_width_dist.is_visible())set_skel_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
-				if(skel_deform_bone_width_dist.is_visible())set_skel_deform_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
-
-			}
+	if (ValueNode_Bone::Handle bone_valuenode = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())) {
+		const int index = value_desc.get_index();
+		static const int width_index = bone_valuenode->get_link_index_from_name("width");
+		static const int tip_width_index = bone_valuenode->get_link_index_from_name("tipwidth");
+		if(index==tip_width_index || index==width_index){
+			if(skel_bone_width_dist.is_visible())
+				set_skel_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
+			if(skel_deform_bone_width_dist.is_visible())
+				set_skel_deform_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
+		}
 	}
 }
