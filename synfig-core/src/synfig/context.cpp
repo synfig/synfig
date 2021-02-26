@@ -176,31 +176,6 @@ Context::get_color(const Point &pos)const
 	return (*context)->get_color(context.get_next(), pos);
 }
 
-CairoColor
-Context::get_cairocolor(const Point &pos)const
-{
-	Context context(*this);
-	
-	while(!context->empty())
-	{
-		// If this layer is active, then go
-		// ahead and break out of the loop
-		if(context.active() && context.in_z_range())
-			break;
-		
-		// Otherwise, we want to keep searching
-		// till we find either an active layer,
-		// or the end of the layer list
-		++context;
-	}
-	
-	// If this layer isn't defined, return alpha
-	if((context)->empty()) return CairoColor::alpha();
-	
-	Glib::Threads::RWLock::ReaderLock lock((*context)->get_rw_lock());
-	
-	return (*context)->get_cairocolor(context.get_next(), pos);
-}
 
 
 Rect

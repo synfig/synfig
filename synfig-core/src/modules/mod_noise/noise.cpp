@@ -318,16 +318,6 @@ Noise::get_color(Context context, const Point &point)const
 		return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 }
 
-CairoColor
-Noise::get_cairocolor(Context context, const Point &point)const
-{
-	const CairoColor color(color_func(point,0,context));
-	
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-		return color;
-	else
-		return CairoColor::blend(color,context.get_cairocolor(point),get_amount(),get_blend_method());
-}
 
 bool
 Noise::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const

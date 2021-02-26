@@ -124,15 +124,6 @@ InsideOut::get_color(Context context, const Point &p)const
 	return context.get_color(invpos+origin);
 }
 
-CairoColor
-InsideOut::get_cairocolor(Context context, const Point &p)const
-{
-	Point origin=param_origin.get(Point());
-	Point pos(p-origin);
-	Real inv_mag=pos.inv_mag();
-	Point invpos(pos*inv_mag*inv_mag);
-	return context.get_cairocolor(invpos+origin);
-}
 
 class lyr_std::InsideOut_Trans : public Transform
 {

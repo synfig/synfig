@@ -156,7 +156,6 @@ public:
 	//!	Returns the color of the context at the Point \pos.
 	//! It is the blended color of the context
 	Color get_color(const Point &pos)const;
-	CairoColor get_cairocolor(const Point &pos)const;
 
 	//!	With a given \quality and a given render description it puts the context
 	//! blend result into the painting \surface */

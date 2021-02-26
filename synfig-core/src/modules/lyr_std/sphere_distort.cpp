@@ -777,7 +777,7 @@ Layer_SphereDistort::accelerated_cairorender(Context context, cairo_t *cr, int q
 			
 			if(!(xs >= 0 && xs < nw && ys >= 0 && ys < nh))
 			{
-				cresult[y][x]=context.get_cairocolor(trans).premult_alpha();
+				//cresult[y][x]=context.get_cairocolor(trans).premult_alpha();
 				continue;
 			}
 			
