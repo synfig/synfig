@@ -3,6 +3,15 @@
 }
 
 /*
+ * Make progress bar noticeable and align it correctly on the status bar
+ */
+#status-progress * {
+	min-height   : 18px;
+	margin-right : 8px;
+	margin-bottom: 3px;
+}
+
+/*
  * Toolbar buttons are too big for default Adwaita theme
  * Make it small
  */
