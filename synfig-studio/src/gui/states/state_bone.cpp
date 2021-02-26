@@ -447,7 +447,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 
 	if(etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer)){
-		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH));
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		layer->disable();
 		get_canvas_interface()->signal_layer_status_changed()(layer,false);
@@ -1025,7 +1025,7 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 		else
 			set_id(_("NewSkeletonDeformation"));
 		update_tool_options(1);
-		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT|Duck::TYPE_WIDTH);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH));
 		layer->disable();
 		get_canvas_interface()->signal_layer_status_changed()(layer,false);
 	}else{
@@ -1080,8 +1080,10 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 
 		}
 		if(abs(close_line)<=0.2){
-			if(ret<list.size())return ret;
-			else return -1;
+			if (ret < static_cast<int>(list.size()))
+				return ret;
+			else
+				return -1;
 		}else{
 			return -1;
 		}

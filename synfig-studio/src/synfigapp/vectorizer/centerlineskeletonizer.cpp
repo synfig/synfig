@@ -1173,6 +1173,8 @@ inline bool Event::process()
       }
 
       break;
+    case failure:
+	    return false;
     }
   }
 
