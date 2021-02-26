@@ -1386,6 +1386,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 		{"<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2"},
 		{"space",                   "<Actions>/canvasview/play"},
 		{"space",                   "<Actions>/canvasview/pause"},
+		{"<Control>space",          "<Actions>/canvasview/animate"},
 	};
 
 	for (const auto& accel_item : default_accel_map) {

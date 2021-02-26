@@ -939,6 +939,11 @@ CanvasView::create_time_bar()
 		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
 		icon->set_padding(0,0);
 		icon->show();
+
+		// Set hotkey to toggle animate button on and off
+		auto accel_group = App::ui_manager()->get_accel_group();
+		animatebutton->set_accel_path("<Actions>/canvasview/animate", accel_group);
+
 		animatebutton->add(*icon);
 		animatebutton->signal_toggled().connect(sigc::mem_fun(*this, &CanvasView::toggle_animatebutton));
 		animatebutton->set_relief(Gtk::RELIEF_NONE);
