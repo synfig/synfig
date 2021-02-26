@@ -546,7 +546,7 @@ public:
 			}
 			if(key=="number_of_threads")
 			{
-				value=App::number_of_threads;
+				value=strprintf("%i",App::number_of_threads);
 				return true;
 			}
 			if(key=="navigator_renderer")
