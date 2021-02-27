@@ -27,12 +27,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <cstdio>
-
 #include <map>
 
 #include <mutex>
 #include <condition_variable>
+#include <thread>
 
 #include "task.h"
 
@@ -50,7 +49,7 @@ namespace rendering
 class RenderQueue
 {
 public:
-	typedef std::list<Glib::Threads::Thread*> ThreadList;
+	typedef std::list<std::thread> ThreadList;
 	typedef std::map<int, Task::Handle> ThreadTaskMap;
 	typedef std::set<Task::Handle> TaskSet;
 	typedef std::list<Task::Handle> TaskQueue;
