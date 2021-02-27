@@ -104,7 +104,6 @@ Import::set_param(const String & param, const ValueBase &value)
 		if(!get_canvas() || !get_canvas()->get_file_system())
 		{
 			importer.reset();
-			cimporter.reset();
 			rendering_surface.reset();
 			param_filename.set(value.get(String()));
 			return true;
@@ -128,7 +127,6 @@ Import::set_param(const String & param, const ValueBase &value)
 		if (full_filename.empty())
 		{
 			importer.reset();
-			cimporter.reset();
 			rendering_surface.reset();
 			param_filename.set(filename);
 			return true;
@@ -157,7 +155,6 @@ Import::set_param(const String & param, const ValueBase &value)
 			{
 				error(strprintf("Unable to create an importer object with file \"%s\"", independent_filename.c_str()));
 				importer.reset();
-				cimporter.reset();
 				param_filename.set(filename);
 				rendering_surface.reset();
 				return true;

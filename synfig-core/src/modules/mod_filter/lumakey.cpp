@@ -43,7 +43,6 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/segment.h>
-#include <synfig/cairo_renddesc.h>
 
 #endif
 
@@ -163,73 +162,7 @@ LumaKey::accelerated_render(Context context,Surface *surface,int quality, const 
 	return true;
 }
 
-////
-bool
-LumaKey::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
-{
-	RendDesc	renddesc(renddesc_);
-	
-	// Untransform the render desc
-	if(!cairo_renddesc_untransform(cr, renddesc))
-		return false;
-	
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	const Point tl(renddesc.get_tl());
-	const int w(renddesc.get_w());
-	const int h(renddesc.get_h());
-	
-	SuperCallback supercb(cb,0,9500,10000);
-	
-	if(get_amount()==0)
-		return true;
-	
-	cairo_surface_t *surface;
-	
-	surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, w, h);
-	cairo_t* subcr=cairo_create(surface);
-	cairo_scale(subcr, 1/pw, 1/ph);
-	cairo_translate(subcr, -tl[0], -tl[1]);
-	if(!context.accelerated_cairorender(subcr,quality,renddesc,&supercb))
-	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
-		return false;
-	}
-	cairo_destroy(subcr);
 
-	int x,y;
-	
-	CairoSurface cairosurface(surface);
-	if(!cairosurface.map_cairo_image())
-	{
-		synfig::info("map cairo image failed");
-		return false;
-	}
-	CairoSurface::pen pen(cairosurface.begin());
-	
-	for(y=0;y<h;y++,pen.inc_y(),pen.dec_x(x))
-		for(x=0;x<w;x++,pen.inc_x())
-		{
-			Color tmp(Color(pen.get_value().demult_alpha()));
-			tmp.set_a(tmp.get_y()*tmp.get_a());
-			tmp.set_y(1);
-			pen.put_value(CairoColor(tmp.clamped()).premult_alpha());
-		}
-	
-	cairosurface.unmap_cairo_image();
-	// paint surface on cr
-	cairo_save(cr);
-	cairo_translate(cr, tl[0], tl[1]);
-	cairo_scale(cr, pw, ph);
-	cairo_set_source_surface(cr, surface, 0, 0);
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);
-	cairo_restore(cr);
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-}
 
 ////
 

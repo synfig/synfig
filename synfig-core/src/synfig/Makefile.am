@@ -19,9 +19,7 @@ TARGETHEADERS = \
 	target_null.h \
 	target_null_tile.h \
 	target_scanline.h \
-	target_cairo.h \
 	target_tile.h \
-	target_cairo_tile.h \
 	targetparam.h
 
 TARGETSOURCES = \
@@ -29,18 +27,14 @@ TARGETSOURCES = \
 	target_null.cpp \
 	target_null_tile.cpp \
 	target_scanline.cpp \
-	target_cairo.cpp \
-	target_tile.cpp \
-	target_cairo_tile.cpp
+	target_tile.cpp
 
 
 IMPORTERHEADERS = \
-	listimporter.h \
-	cairolistimporter.h
+	listimporter.h
 
 IMPORTERSOURCES = \
-	listimporter.cpp \
-	cairolistimporter.cpp
+	listimporter.cpp
 
 
 VALUEHEADERS = \
@@ -90,8 +84,6 @@ SYNFIGHEADERS = \
 	activepoint.h \
 	blur.h \
 	bone.h \
-	cairo_operators.h \
-	cairo_renddesc.h \
 	canvas.h \
 	color.h \
 	context.h \
@@ -102,7 +94,6 @@ SYNFIGHEADERS = \
 	exception.h \
 	guid.h \
 	importer.h \
-	cairoimporter.h \
 	keyframe.h \
 	layer.h \
 	loadcanvas.h \
@@ -145,8 +136,6 @@ SYNFIGSOURCES = \
 	activepoint.cpp \
 	bone.cpp \
 	blur.cpp \
-	cairo_operators.cpp \
-	cairo_renddesc.cpp \
 	canvas.cpp \
 	context.cpp \
 	curve.cpp \
@@ -156,7 +145,6 @@ SYNFIGSOURCES = \
 	exception.cpp \
 	guid.cpp \
 	importer.cpp \
-	cairoimporter.cpp \
 	keyframe.cpp \
 	layer.cpp \
 	loadcanvas.cpp \

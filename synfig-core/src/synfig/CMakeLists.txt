@@ -44,8 +44,6 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/activepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/bone.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/blur.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/cairo_operators.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/cairo_renddesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/canvas.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/context.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/curve_helper.cpp"
@@ -54,7 +52,6 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/exception.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/guid.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/importer.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/cairoimporter.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/keyframe.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/loadcanvas.cpp"
@@ -102,14 +99,11 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/target_null.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_null_tile.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_scanline.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/target_cairo.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_tile.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/target_cairo_tile.cpp"
 )
 target_sources(synfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/listimporter.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/cairolistimporter.cpp"
 )
 target_sources(synfig
     PRIVATE
@@ -140,7 +134,6 @@ target_link_libraries(synfig
         ${SIGCPP_LIBRARIES}
         ${GLIBMM_LIBRARIES}
         ${GIOMM_LIBRARIES}
-        ${CAIRO_LIBRARIES}
         ${LIBXML_LIBRARIES}
         ${XMLPP_LIBRARIES}
         ${MLT_LIBRARIES}

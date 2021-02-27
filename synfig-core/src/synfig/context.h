@@ -160,7 +160,6 @@ public:
 	//!	With a given \quality and a given render description it puts the context
 	//! blend result into the painting \surface */
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
-	bool accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
 	//!	Make rendering task
 	rendering::Task::Handle build_rendering_task() const;

@@ -30,7 +30,7 @@
 
 #include <synfig/layer.h>
 #include <synfig/color.h>
-#include <synfig/cairo_operators.h>
+
 
 /* === M A C R O S ========================================================= */
 

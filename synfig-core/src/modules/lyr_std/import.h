@@ -32,7 +32,6 @@
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/importer.h>
-#include <synfig/cairoimporter.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -59,7 +58,6 @@ private:
 
 	String independent_filename;
 	Importer::Handle importer;
-	CairoImporter::Handle cimporter;
 
 protected:
 	Import();

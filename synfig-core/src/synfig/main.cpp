@@ -54,9 +54,7 @@
 
 #include "token.h"
 #include "target.h"
-#include "cairolistimporter.h"
 #include "listimporter.h"
-#include "cairoimporter.h"
 #include "color.h"
 #include "vector.h"
 #include <fstream>
@@ -295,19 +293,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		throw std::runtime_error(_("Unable to initialize subsystem \"Importers\""));
 	}
 
-	if(cb)cb->task(_("Starting Subsystem \"Cairo Importers\""));
-	if(!CairoImporter::subsys_init())
-	{
-		Importer::subsys_stop();
-		Target::subsys_stop();
-		Layer::subsys_stop();
-		Module::subsys_stop();
-		rendering::Renderer::subsys_stop();
-		Type::subsys_stop();
-		SoundProcessor::subsys_stop();
-		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
-	}
-
 	if(cb)cb->task(_("Starting Subsystem \"Thread Pool\""));
 	if(!ThreadPool::subsys_init())
 		throw std::runtime_error(_("Unable to initialize subsystem \"Thread Pool\""));
@@ -317,7 +302,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Load up the list importer
 	Importer::book()[String("lst")]=Importer::BookEntry(ListImporter::create, ListImporter::supports_file_system_wrapper__);
-	CairoImporter::book()[String("lst")]=CairoImporter::BookEntry(CairoListImporter::create, CairoListImporter::supports_file_system_wrapper__);
 
 	// Load up the modules
 	std::list<String> modules_to_load;
@@ -404,7 +388,6 @@ synfig::Main::~Main()
 	ThreadPool::subsys_stop();
 	// synfig::info("Importer::subsys_stop()");
 	Importer::subsys_stop();
-	CairoImporter::subsys_stop();
 	// synfig::info("Target::subsys_stop()");
 	Target::subsys_stop();
 	// synfig::info("Layer::subsys_stop()");

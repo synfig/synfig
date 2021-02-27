@@ -264,7 +264,7 @@ RenderSettings::set_entry_filename()
 void
 RenderSettings::on_comboboxtext_target_changed()
 {
-	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"cairo_png",".png"},{"dv",".dv"},
+	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"dv",".dv"},
 					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
 					{"magick++",".gif"},{"mng",".mng"},{"openexr",".exr"},{"png",".png"},
 					{"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}, {"libav",".avi"}};
@@ -421,7 +421,7 @@ RenderSettings::check_target_destination()
 	{
 		//Check format which could have an image sequence as output
 		//If format is selected in comboboxtext_target
-		std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},{"cairo_png",".png"},
+		std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},
 					{"imagemagick",".png"}, {"jpeg",".jpg"},{"mng",".mng"},
 					{"openexr",".exr"},{"png",".png"},{"ppm",".ppm"}};
 	

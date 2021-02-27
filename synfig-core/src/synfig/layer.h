@@ -602,7 +602,6 @@ public:
 	**	\see Context::accelerated_render()
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_t* cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 protected:
 	virtual void set_time_vfunc(IndependentContext context, Time time) const;

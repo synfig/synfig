@@ -525,29 +525,6 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 }
 
 
-///
-bool
-Plant::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	
-	bool ret(context.accelerated_cairorender(cr,quality,renddesc,cb));
-	if(is_disabled() || !ret)
-		return ret;
-
-	if(needs_sync_==true)
-		sync();
-	
-	cairo_save(cr);
-	cairo_push_group(cr);
-	// Here is where drawing occurs
-	draw_particles(cr);
-	cairo_pop_group_to_source(cr);
-	// blend the painted particles on the cr
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	cairo_restore(cr);
-	
-	return true;
-}
 
 
 void
@@ -782,77 +759,6 @@ Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 	}
 }
 
-
-///
-void
-Plant::draw_particles(cairo_t *cr)const
-{
-	Point origin=param_origin.get(Vector());
-	Real size=param_size.get(Real());
-	bool reverse=param_reverse.get(bool());
-	bool size_as_alpha=param_size_as_alpha.get(bool());
-
-	if (particle_list.begin() != particle_list.end())
-	{
-		std::vector<Particle>::iterator iter;
-		Particle *particle;
-		
-		float radius(size);
-		
-		if (reverse)	iter = particle_list.end();
-		else			iter = particle_list.begin();
-		
-		while (true)
-		{
-			if (reverse)	particle = &(*(iter-1));
-			else			particle = &(*iter);
-			
-			float scaled_radius(radius);
-			Color color(particle->color);
-			if(size_as_alpha)
-			{
-				scaled_radius*=color.get_a();
-				color.set_a(1);
-			}
-			
-			// calculate the box that this particle will be drawn as
-			const float x1f=particle->point[0]-scaled_radius*0.5;
-			const float x2f=particle->point[0]+scaled_radius*0.5;
-			const float y1f=particle->point[1]-scaled_radius*0.5;
-			const float y2f=particle->point[1]+scaled_radius*0.5;
-			const double width (x2f-x1f);
-			const double height(y2f-y1f);
-			
-			// grab the color components
-			const float r=color.clamped().get_r();
-			const float g=color.clamped().get_g();
-			const float b=color.clamped().get_b();
-			const float a=color.clamped().get_a();
-			
-			cairo_save(cr);
-			
-			cairo_set_source_rgb(cr, r, g, b);
-			cairo_translate(cr, origin[0], origin[1]);
-			cairo_rectangle(cr, x1f, y1f, width, height);
-			cairo_clip(cr);
-			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-			cairo_paint_with_alpha(cr, a);
-			
-			cairo_restore(cr);
-			
-			if (reverse)
-			{
-				if (--iter == particle_list.begin())
-					break;
-			}
-			else
-			{
-				if (++iter == particle_list.end())
-					break;
-			}
-		}
-	}
-}
 
 
 Rect

@@ -60,14 +60,10 @@
 
 #include "zstreambuf.h"
 #include "importer.h"
-#include "cairoimporter.h"
 
 #include <libxml++/libxml++.h>
 #include "gradient.h"
 
-/*extern "C" {
-#include <libxml/tree.h>
-}*/
 
 #endif
 
@@ -923,12 +919,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 				bool registered_in_importer = Importer::book().count(ext) > 0;
 				bool supports_by_importer = registered_in_importer
 						                 && Importer::book()[ext].supports_file_system_wrapper;
-				bool registered_in_cairoimporter = CairoImporter::book().count(ext) > 0;
-				bool supports_by_cairoimporter = registered_in_cairoimporter
-						                      && CairoImporter::book()[ext].supports_file_system_wrapper;
-				bool supports = (supports_by_importer && supports_by_cairoimporter)
-						     || (supports_by_importer && !registered_in_cairoimporter)
-						     || (!registered_in_importer && supports_by_cairoimporter);
+				bool supports = supports_by_importer;
 				if (supports)
 					if (save_canvas_external_file_callback(save_canvas_external_file_user_data, layer, iter->get_name(), filename))
 						value.set(filename);
