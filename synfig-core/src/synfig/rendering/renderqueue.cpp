@@ -407,8 +407,14 @@ RenderQueue::remove_task(const Task::Handle &task)
 		TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
 		TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
 
-		for(TaskQueue::iterator i = queue.begin(); i != queue.end();)
-			if (*i == task) found = true, queue.erase(i++); else ++i;
+		for(TaskQueue::iterator i = queue.begin(); i != queue.end(); ) {
+			if (*i == task) {
+				found = true;
+				i = queue.erase(i);
+			} else {
+				++i;
+			}
+		}
 		if (wait.erase(task)) found = true;
 	}
 	return found;
