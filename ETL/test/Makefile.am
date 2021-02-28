@@ -49,3 +49,6 @@ clock_SOURCES=clock.cpp
 hermite_SOURCES=hermite.cpp
 spline_SOURCES=spline.cpp
 stringf_SOURCES=stringf.cpp
+
+stringf_CXXFLAGS = @GLIBMM_CFLAGS@
+stringf_LDADD = @GLIBMM_LIBS@
