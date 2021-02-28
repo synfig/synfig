@@ -32,7 +32,6 @@
 #include <cstdlib>
 #include <climits>
 
-#include <thread>
 #include <typeinfo>
 
 #include <synfig/general.h>
@@ -110,9 +109,9 @@ RenderQueue::start()
 	if (count > SYNFIG_RENDERING_MAX_THREADS) count = SYNFIG_RENDERING_MAX_THREADS;
 	if (count < 2) count = 2;
 
-	for(int i = 0; i < count; ++i)
+	for(unsigned int i = 0; i < count; ++i)
 		threads.push_back(
-			Glib::Threads::Thread::create(
+			std::thread(
 				sigc::bind(sigc::mem_fun(*this, &RenderQueue::process), i) ));
 	info("rendering threads %d", count);
 	started = true;
@@ -128,7 +127,7 @@ RenderQueue::stop()
 		single_cond.notify_all();
 	}
 	while(!threads.empty())
-		{ threads.front()->join(); threads.pop_front(); }
+		{ threads.front().join(); threads.pop_front(); }
 }
 
 void
