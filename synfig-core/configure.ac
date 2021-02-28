@@ -339,52 +339,6 @@ PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
 	AC_MSG_ERROR([ ** You need to install cairo version 1.12.0 or higher.])
 ])
 
-AC_MSG_CHECKING([for OpenGL])
-AC_ARG_WITH(opengl,
-	AS_HELP_STRING(--with-opengl, [enable OpenGL (default=no)]),[
-],[
-	with_opengl="no"
-])
-if test $with_opengl != "no" ; then {
-	case "$host" in
-		*darwin*)
-			AC_MSG_RESULT([ ** OpenGL is not available for OSX yet. Disabled.])
-			with_opengl="no"
-		;;
-		*)
-			PKG_CHECK_MODULES(LIBGL, gl, [
-				CONFIG_DEPS="$CONFIG_DEPS gl"
-				LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
-				CONFIG_CFLAGS="$CONFIG_CFLAGS -DWITH_OPENGL"
-				with_opengl="yes"
-			],[
-				AC_MSG_RESULT([ ** Cannot find gl.pc. OpenGL disabled.])
-				with_opengl="no"
-			])
-		;;
-	esac
-} ; fi
-AM_CONDITIONAL(WITH_OPENGL, test $with_opengl = yes)
-
-AC_ARG_WITH(opencl,
-	AS_HELP_STRING(--with-opencl, [enable OpenCL (default=auto)]),[
-],[
-	with_opencl="no"
-])
-
-if test $with_opencl != "no" ; then {
-	AC_CHECK_HEADER(CL/opencl.h,,AC_MSG_ERROR([ ** You need to install opencl-headers package.]))
-	PKG_CHECK_MODULES(LIBCL, OpenCL,[
-		CONFIG_DEPS="$CONFIG_DEPS OpenCL"
-		with_opencl="yes"
-	],[
-		AC_MSG_ERROR([ ** You need to install OpenCL.])
-		with_opencl="no"
-	])
-	
-} ; fi
-AM_CONDITIONAL(WITH_OPENCL, test $with_opencl = yes)
-
 PKG_CHECK_MODULES(LIBFFTW, fftw3,,[
 	AC_MSG_ERROR([ ** You need to install FFTW 3.])
 ])
@@ -631,8 +585,6 @@ vImage ---------------------------> $with_vimage
 ImageMagick ----------------------> $with_imagemagick
 Magick++ -------------------------> $with_magickpp
 FFMPEG ---------------------------> $with_ffmpeg
-OpenGL ---------------------------> $with_opengl
-OpenCL ---------------------------> $with_opencl
 libdv ----------------------------> $with_libdv
 OpenEXR --------------------------> $with_openexr
 
