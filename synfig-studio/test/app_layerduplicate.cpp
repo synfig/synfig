@@ -560,7 +560,7 @@ static bool test_synfigapp_layerduplicate_two_layer_duplicate_in_different_group
 }
 
 // User try to duplicate a group AND an inner layer_duplicate
-// Check if it creates a new group with two layer_duplicate (with different Index parameters)
+// Check if it creates a new group and don't duplicate layer_duplicate
 static bool test_synfigapp_layerduplicate_encapsulated_and_inner_layer_duplicate()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
@@ -585,26 +585,24 @@ static bool test_synfigapp_layerduplicate_encapsulated_and_inner_layer_duplicate
 	action->perform();
 
 	ASSERT_EQUAL(2, canvas->size())
-	ASSERT_EQUAL(3, canvas->value_node_list().size())
+	ASSERT_EQUAL(2, canvas->value_node_list().size())
 
 	// - dup_group
-	//   - dup_layer_duplicate1
-	//   - dup_layer_duplicate2
+	//   - dup_layer_duplicate
 	// - group
 	//   - layer_duplicate
 	auto dup_group = canvas->front();
 	ASSERT_EQUAL("group", dup_group->get_name())
 	auto dup_child_canvas = dup_group->get_param("canvas").get(canvas);
+	ASSERT_EQUAL(1, dup_child_canvas->size())
+	ASSERT_EQUAL(1, child_canvas->size())
 	auto dup_layer_duplicate1 = dup_child_canvas->front();
 	ASSERT_EQUAL("duplicate", dup_layer_duplicate1->get_name())
-	auto dup_layer_duplicate2 = *std::next(dup_child_canvas->begin(), 1);
-	ASSERT_EQUAL("duplicate", dup_layer_duplicate2->get_name())
 
 	std::string new_id1 = dup_layer_duplicate1->dynamic_param_list().find("index")->second->get_id();
-	std::string new_id2 = dup_layer_duplicate2->dynamic_param_list().find("index")->second->get_id();
+	std::string id0 = duplicate_layer->dynamic_param_list().find("index")->second->get_id();
 	ASSERT_NOT_EQUAL("some_index1", new_id1)
-	ASSERT_NOT_EQUAL("some_index1", new_id2)
-	ASSERT_NOT_EQUAL(new_id2, new_id1)
+	ASSERT_EQUAL("some_index1", id0)
 
 	return false;
 }
