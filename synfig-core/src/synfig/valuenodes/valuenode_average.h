@@ -43,8 +43,8 @@ public:
 	typedef etl::handle<const ValueNode_Average> ConstHandle;
 
 
-	ValueNode_Average(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
-	ValueNode_Average(Type &type, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_Average(const ValueBase &value, etl::loose_handle<Canvas> canvas);
+	ValueNode_Average(Type &type, etl::loose_handle<Canvas> canvas);
 	virtual ~ValueNode_Average();
 
  	virtual ValueBase operator()(Time t)const;
