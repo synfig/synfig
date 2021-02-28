@@ -207,14 +207,14 @@ CanvasInterface::layer_create(
 	if (id == "duplicate")
 		for (int i = 1; ; i++)
 		{
-			String name = strprintf(_("Index %d"), i);
+			String valuenode_id = strprintf(_("Index %d"), i);
 			try
 			{
-				canvas->find_value_node(name, true);
+				canvas->find_value_node(valuenode_id, true);
 			}
 			catch (const Exception::IDNotFound& x)
 			{
-				add_value_node(layer->dynamic_param_list().find("index")->second, id);
+				add_value_node(layer->dynamic_param_list().find("index")->second, valuenode_id);
 				break;
 			}
 		}

@@ -215,6 +215,7 @@ AC_CONFIG_FILES([
     plugins/lottie-exporter/synfig/Makefile
     sounds/Makefile
     ui/Makefile
+    test/Makefile
 ])
 AC_OUTPUT
 
