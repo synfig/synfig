@@ -831,7 +831,10 @@ LayerTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase val
 {
 	Gtk::TreePath path(path_string);
 
-	const Gtk::TreeRow row = *(param_tree_view().get_model()->get_iter(path));
+	const Gtk::TreeIter iter = param_tree_view().get_model()->get_iter(path);
+	if (!iter)
+		return;
+	const Gtk::TreeRow& row = *iter;
 	if(!row)
 		return;
 	row[param_model.value]=value;
@@ -843,7 +846,10 @@ LayerTree::on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring&
 {
 	Gtk::TreePath path(path_string);
 
-	const Gtk::TreeRow row = *(layer_tree_view().get_model()->get_iter(path));
+	const Gtk::TreeIter iter = layer_tree_view().get_model()->get_iter(path);
+	if (!iter)
+		return;
+	const Gtk::TreeRow& row = *iter;
 	if(!row)
 		return;
 	row[layer_model.label]=value;
@@ -855,7 +861,12 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 {
 	Gtk::TreePath path(path_string);
 
-	const Gtk::TreeRow row = *(layer_tree_view().get_model()->get_iter(path));
+	const Gtk::TreeIter iter = layer_tree_view().get_model()->get_iter(path);
+	if (!iter)
+		return;
+	const Gtk::TreeRow& row = *iter;
+	if (!row)
+		return;
 	bool active=static_cast<bool>(row[layer_model.active]);
 	row[layer_model.active]=!active;
 }
