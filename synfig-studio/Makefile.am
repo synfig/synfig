@@ -44,7 +44,8 @@ SUBDIRS = \
 	$(SOUND_DIR) \
 	plugins \
 	ui \
-	po
+	po \
+	test
 
 EXTRA_DIST = \
 	COPYING \
