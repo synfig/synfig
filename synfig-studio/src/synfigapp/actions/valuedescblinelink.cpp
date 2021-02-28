@@ -105,22 +105,28 @@ Action::ValueDescBLineLink::get_param_vocab()
 bool
 Action::ValueDescBLineLink::is_candidate(const ParamList &x)
 {
-	ParamList::const_iterator i;
-
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
 
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
-	ValueDesc selected_value_desc(x.find("selected_value_desc")->second.get_value_desc());
 
-	//! if the valuedesc belong to the spline, can't link.
-	if(value_desc.parent_is_value_node() && selected_value_desc.parent_is_value_node() &&
-	        value_desc.get_parent_value_node() == selected_value_desc.get_parent_value_node())
-	    return false;
+	if (!value_desc.parent_is_value_node())
+		return false;
 
-	return (value_desc.parent_is_value_node() &&
-			// We need a dynamic list.
-			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+	// We need a dynamic list.
+	ValueNode::Handle value_desc_valuenode = value_desc.get_parent_value_node();
+	if (!ValueNode_DynamicList::Handle::cast_dynamic(value_desc_valuenode))
+		return false;
+
+	//! if any of the selected valuedesc belongs to the spline, can't link.
+	const auto range = x.equal_range("selected_value_desc");
+	for (auto it = range.first; it != range.second; ++it) {
+		const auto& selected_value_desc = it->second.get_value_desc();
+		if (selected_value_desc.parent_is_value_node() && value_desc == selected_value_desc.get_parent_value_node())
+			return false;
+	}
+
+	return true;
 }
 
 bool
