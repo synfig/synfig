@@ -30,18 +30,18 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "layerduplicate.h"
-#include "layeradd.h"
-#include <synfig/context.h>
-#include <synfigapp/canvasinterface.h>
 
+#include <synfig/context.h>
+#include <synfig/general.h>
+#include <synfig/layers/layer_pastecanvas.h>
+
+#include <synfigapp/actions/layeradd.h>
+#include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -96,6 +96,34 @@ static Canvas::Handle get_top_parent_if_inline_canvas(Canvas::Handle canvas)
 	if(canvas->is_inline() && canvas->parent())
 		return get_top_parent_if_inline_canvas(canvas->parent());
 	return canvas;
+}
+
+/// Remove the layers that are inside an already listed group-kind layer, as they would be duplicated twice
+static std::list<Layer::LooseHandle>
+remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_list)
+{
+	std::vector<Layer::LooseHandle> layerpastecanvas_list;
+	for (const auto& layer : layer_list) {
+		if (Layer_PasteCanvas* pastecanvas = dynamic_cast<Layer_PasteCanvas*>(layer.get())) {
+			layerpastecanvas_list.push_back(layer);
+		}
+	}
+
+	std::list<Layer::LooseHandle> clean_layer_list;
+	for (const Layer::LooseHandle layer : layer_list) {
+		bool is_inside_a_selected_pastelayer = false;
+		auto pastelayer = layer->get_parent_paste_canvas_layer();
+		while (pastelayer) {
+			if (std::find(layerpastecanvas_list.begin(), layerpastecanvas_list.end(), pastelayer) != layerpastecanvas_list.end()) {
+				is_inside_a_selected_pastelayer = true;
+				break;
+			}
+			pastelayer = pastelayer->get_parent_paste_canvas_layer();
+		}
+		if (!is_inside_a_selected_pastelayer)
+			clean_layer_list.push_back(layer);
+	}
+	return clean_layer_list;
 }
 
 /* === M E T H O D S ======================================================= */
@@ -157,6 +185,9 @@ Action::LayerDuplicate::prepare()
 	if(!first_time())
 		return;
 
+	// remove layers that would be duplicated twice
+	std::list<Layer::LooseHandle> clean_layer_list = remove_layers_inside_included_pastelayers(layers);
+
 	// pair (original layer, cloned layer)
 	std::map<synfig::Layer::Handle,synfig::Layer::Handle> cloned_layer_map;
 	// pair (original special valuenode, cloned special valuenode)
@@ -164,7 +195,7 @@ Action::LayerDuplicate::prepare()
 	// pair (canvas, last exported valuenode "Index #" -> Layer_Duplicate parameter: index )
 	std::map<Canvas::LooseHandle, int> last_index;
 
-	for(auto layer : layers)
+	for(auto layer : clean_layer_list)
 	{
 		Canvas::Handle subcanvas(layer->get_canvas());
 
