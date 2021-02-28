@@ -100,7 +100,7 @@ ValueNode_Average::operator()(Time t)const
 
 LinkableValueNode*
 ValueNode_Average::create_new()const
-	{ return new ValueNode_Average(get_type()); }
+	{ return new ValueNode_Average(get_type(), nullptr); }
 
 bool
 ValueNode_Average::check_type(Type &type)

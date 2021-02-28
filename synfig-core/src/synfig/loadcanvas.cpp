@@ -90,6 +90,7 @@
 #include "valuenodes/valuenode_twotone.h"
 #include "valuenodes/valuenode_weightedaverage.h"
 #include "valuenodes/valuenode_wplist.h"
+#include "valuenodes/valuenode_average.h"
 
 #endif
 
@@ -2308,6 +2309,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		element->get_name()=="bline" ||
 		element->get_name()=="wplist" ||
 		element->get_name()=="dilist" ||
+		element->get_name()=="average" ||
 		element->get_name()=="weighted_average" );
 
 	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
@@ -2331,6 +2333,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	handle<ValueNode_WPList> wplist_value_node;
 	handle<ValueNode_DIList> dilist_value_node;
 	handle<ValueNode_WeightedAverage> weightedaverage_value_node;
+	handle<synfig::ValueNode_Average> average_value_node;
 
 	bool must_rotate_point_list = false;
 
@@ -2377,6 +2380,13 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		{
 			String loop=element->get_attribute("loop")->get_value();
 			weightedaverage_value_node->set_loop(is_true(loop));
+		}
+	} else if (element->get_name()=="average") {
+		average_value_node = new synfig::ValueNode_Average(type, canvas);
+		value_node = ValueNode_DynamicList::Handle::cast_dynamic(average_value_node);
+		if(element->get_attribute("loop")) {
+			String loop=element->get_attribute("loop")->get_value();
+			average_value_node->set_loop(is_true(loop));
 		}
 	}
 	else
@@ -2663,7 +2673,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_name()=="dilist") // This is not a typo. The dynamic list parser will parse a dilist.
 		value_node=parse_dynamic_list(element,canvas);
 	else
-	if(element->get_name()=="weighted_average") // This is not a typo. The dynamic list parser will parse a weighted_average.
+	if(element->get_name()=="weighted_average" || element->get_name()=="average") // This is not a typo. The dynamic list parser will parse a weighted_average.
 		value_node=parse_dynamic_list(element,canvas);
 	else
 	if(ValueNodeRegistry::book().count(element->get_name()))
