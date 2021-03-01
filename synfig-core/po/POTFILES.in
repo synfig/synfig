@@ -287,7 +287,8 @@ src/synfig/renddesc.cpp
 src/synfig/renddesc.h
 src/synfig/render.cpp
 src/synfig/render.h
-src/synfig/rendering/opengl/renderergl.cpp
+# Disable OpenGL in stable build
+#src/synfig/rendering/opengl/renderergl.cpp
 src/synfig/rendering/software/rendererdraftsw.cpp
 src/synfig/rendering/software/rendererlowressw.cpp
 src/synfig/rendering/software/renderersafe.cpp
