@@ -1579,7 +1579,6 @@ void
 Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *out_transform_count)
 {
 	int transforms(0);
-	String layer_name;
 
 #define QUEUE_REBUILD_DUCKS     sigc::mem_fun(*canvas_view,&CanvasView::queue_rebuild_ducks)
 
@@ -1614,9 +1613,6 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 			bbox|=transform_stack.perform(layer_bounds);
 
-			// Grab the layer's list of parameters
-			Layer::ParamList paramlist(layer->get_param_list());
-
 			// Grab the layer vocabulary
 			Layer::Vocab vocab=layer->get_param_vocab();
 			Layer::Vocab::iterator iter;
@@ -1632,8 +1628,6 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 				}
 			}
 		}
-
-		layer_name=layer->get_name();
 
 		if(layer->active())
 		{
