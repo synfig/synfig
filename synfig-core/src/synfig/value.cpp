@@ -122,16 +122,14 @@ ValueBase::operator=(ValueBase x)
 	return *this;
 }
 
-#ifdef _DEBUG
 String
 ValueBase::get_string() const
 {
 	Operation::ToStringFunc func =
 		Type::get_operation<Operation::ToStringFunc>(
 			Operation::Description::get_to_string(type->identifier) );
-	return func == NULL ? "Invalid type" : func(data);
+	return func ? func(data) : "Invalid type";
 }
-#endif	// _DEBUG
 
 bool
 ValueBase::is_valid()const
