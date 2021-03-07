@@ -67,17 +67,17 @@ static void
 traverse_layers(synfig::Layer::Handle layer, synfig::Layer::Handle cloned_layer, std::map<synfig::Layer::Handle, synfig::Layer::Handle>& cloned_layer_map);
 
 /// Get value nodes that are special cases when duplicating
-static etl::rhandle<ValueNode>
+static ValueNode::RHandle
 get_special_layer_valuenode(synfig::Layer::Handle layer)
 {
 	if (layer->get_name() == "duplicate")
 		return layer->dynamic_param_list().find("index")->second;
-	return etl::rhandle<ValueNode>();
+	return nullptr;
 }
 
-/// Scan a LinkableValueNode parameter tree and replaces special valuenodes with their respective duplicates (clones)
+/// Scan a ValueNode parameter tree and replaces special valuenodes with their respective duplicates (clones)
 static void
-do_replace_valuenodes(LinkableValueNode::Handle link_vn, const std::pair<etl::rhandle<synfig::ValueNode>, etl::rhandle<synfig::ValueNode>>& vn_pair)
+do_replace_valuenodes(ValueNode::Handle vn, const std::pair<ValueNode::RHandle, ValueNode::RHandle>& vn_pair)
 {
 	const int link_count = link_vn->link_count();
 	for (int i=0; i < link_count; i++) {
@@ -191,7 +191,7 @@ Action::LayerDuplicate::prepare()
 	// pair (original layer, cloned layer)
 	std::map<synfig::Layer::Handle,synfig::Layer::Handle> cloned_layer_map;
 	// pair (original special valuenode, cloned special valuenode)
-	std::map<etl::rhandle<ValueNode>, etl::rhandle<ValueNode>> cloned_valuenode_map;
+	std::map<ValueNode::RHandle, ValueNode::RHandle> cloned_valuenode_map;
 	// pair (canvas, last exported valuenode "Index #" -> Layer_Duplicate parameter: index )
 	std::map<Canvas::LooseHandle, int> last_index;
 
@@ -343,7 +343,7 @@ traverse_layers(synfig::Layer::Handle layer, synfig::Layer::Handle cloned_layer,
 }
 
 void
-LayerDuplicate::replace_valuenodes(const std::map<synfig::Layer::Handle,synfig::Layer::Handle>& cloned_layer_map, const std::map<etl::rhandle<synfig::ValueNode>, etl::rhandle<synfig::ValueNode>>& cloned_valuenode_map)
+LayerDuplicate::replace_valuenodes(const std::map<synfig::Layer::Handle,synfig::Layer::Handle>& cloned_layer_map, const std::map<synfig::ValueNode::RHandle, synfig::ValueNode::RHandle>& cloned_valuenode_map)
 {
 	if (cloned_valuenode_map.empty())
 		return;
