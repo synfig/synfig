@@ -35,6 +35,7 @@
 #include <synfig/context.h>
 #include <synfig/general.h>
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 
 #include <synfigapp/actions/layeradd.h>
 #include <synfigapp/canvasinterface.h>
@@ -67,24 +68,76 @@ static void
 traverse_layers(synfig::Layer::Handle layer, synfig::Layer::Handle cloned_layer, std::map<synfig::Layer::Handle, synfig::Layer::Handle>& cloned_layer_map);
 
 /// Get value nodes that are special cases when duplicating
-static ValueNode::RHandle
-get_special_layer_valuenode(synfig::Layer::Handle layer)
+/// Attention: The order of returned value nodes MUST be deterministic!
+/// \param layer where to search for special value nodes
+/// \param canvas the Layer Duplicate action canvas
+/// \param src_layer_canvas the canvas of layer that is being duplicated/cloned
+static std::vector<ValueNode::RHandle>
+get_special_layer_valuenodes(synfig::Layer::Handle layer, synfig::Canvas::Handle canvas, synfig::Canvas::Handle src_layer_canvas)
 {
-	if (layer->get_name() == "duplicate")
-		return layer->dynamic_param_list().find("index")->second;
-	return nullptr;
+	std::vector<ValueNode::RHandle> valuenodes;
+	if (layer->get_name() == "duplicate") {
+		valuenodes.push_back(layer->dynamic_param_list().find("index")->second);
+	} else if (layer->get_name() == "skeleton") {
+		if (layer->get_canvas() != src_layer_canvas) {
+			// I don't know why, but it's needed for updating cloned skeleton layer bone names
+			layer->set_time(canvas->get_independent_context(), canvas->get_time());
+		}
+
+		ValueBase param_bones = layer->get_param("bones");
+		if (!param_bones.is_valid()) {
+			error(_("Skeleton layer without 'bones' parameter!"));
+		} else {
+			std::vector<Bone> bone_list = param_bones.get_list_of(Bone());
+			const size_t num_bones = bone_list.size();
+
+			ValueNode_Bone::Handle ref_bone = ValueNode_Bone::create(Bone(), src_layer_canvas);
+			for (size_t i = 0; i < num_bones; i++) {
+				ValueNode_Bone::LooseHandle bone_vn = ref_bone->find(bone_list[i].get_name());
+				if (bone_vn) {
+					valuenodes.push_back(bone_vn.get());
+				}
+			}
+		}
+	}
+	return valuenodes;
 }
 
 /// Scan a ValueNode parameter tree and replaces special valuenodes with their respective duplicates (clones)
 static void
 do_replace_valuenodes(ValueNode::Handle vn, const std::pair<ValueNode::RHandle, ValueNode::RHandle>& vn_pair)
 {
-	const int link_count = link_vn->link_count();
-	for (int i=0; i < link_count; i++) {
-		if (link_vn->get_link(i) == vn_pair.first) {
-			link_vn->set_link(i, vn_pair.second);
-		} else if (auto inner_link_vn = LinkableValueNode::Handle::cast_dynamic(link_vn->get_link(i))) {
-			do_replace_valuenodes(inner_link_vn, vn_pair);
+	if (!vn)
+		warning(_("Can't replace a null valuenode"));
+
+	if (auto const_vn = ValueNode_Const::Handle::cast_dynamic(vn)) {
+		// Check and replace value with special cloned valuenode
+		if (const_vn->get_type() == type_bone_valuenode) {
+			if (const_vn->get_value().get(ValueNode_Bone::Handle()) == vn_pair.first)
+				if (ValueNode_Bone::Handle bone_valuenode = ValueNode_Bone::Handle::cast_dynamic(vn_pair.second)) {
+					ValueBase ret_vb(bone_valuenode);
+					ret_vb.copy_properties_of(bone_valuenode);
+					const_vn->set_value(ret_vb);
+				}
+		} else {
+			// There isn't any other value node that can be placed into a ValueBase (see type_*)
+		}
+	} else if (auto link_vn = LinkableValueNode::Handle::cast_dynamic(vn)) {
+		// Check and replace every link with special cloned valuenode
+		for (int i = 0; i < link_vn->link_count(); i++)
+		{
+			if (link_vn->get_link(i) == vn_pair.first) {
+				link_vn->set_link(i, vn_pair.second);
+			} else {
+				do_replace_valuenodes(link_vn->get_link(i), vn_pair);
+			}
+		}
+	} else if (auto animated_vn = ValueNode_Animated::Handle::cast_dynamic(vn)) {
+		// Check and replace every waypoint value with special cloned valuenode
+		const ValueNode_Animated::WaypointList& list(animated_vn->waypoint_list());
+		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(); iter != list.cend(); ++iter)
+		{
+			do_replace_valuenodes(iter->get_value_node(), vn_pair);
 		}
 	}
 }
@@ -249,12 +302,24 @@ Action::LayerDuplicate::prepare()
 	// search cloned layers for special parameter valuenodes that need to be remapped to those cloned ones
 	// Known cases are currently:
 	// - Index of Duplicate Layer
+	// - Bone list of Skeleton Layer
 	for (auto& layer_pair : cloned_layer_map) {
-		auto src_valuenode = get_special_layer_valuenode(layer_pair.first);
-		if (src_valuenode) {
-			cloned_valuenode_map[src_valuenode] = get_special_layer_valuenode(layer_pair.second);
+		Canvas::LooseHandle src_layer_canvas = layer_pair.first->get_canvas();
+		std::vector<ValueNode::RHandle> src_valuenodes = get_special_layer_valuenodes(layer_pair.first, get_canvas(), src_layer_canvas);
+		std::vector<ValueNode::RHandle> cloned_valuenodes = get_special_layer_valuenodes(layer_pair.second, get_canvas(), src_layer_canvas);
+		const size_t num_valuenodes = src_valuenodes.size();
+		if (num_valuenodes != cloned_valuenodes.size()) {
+			error(_("Internal error: get_special_valuenodes doesn't return same number of valuenodes: %zu x %zu"),
+			      num_valuenodes, cloned_valuenodes.size());
+			continue;
+		}
+
+		for (size_t i = 0; i < num_valuenodes; i++) {
+			if (src_valuenodes[i] != cloned_valuenodes[i])
+				cloned_valuenode_map[src_valuenodes[i]] = cloned_valuenodes[i];
 		}
 	}
+
 	// fix special cases of cloned layer parameter or cloned valuenodes that are linked to original valuenodes instead of cloned ones
 	replace_valuenodes(cloned_layer_map, cloned_valuenode_map);
 }
@@ -350,18 +415,16 @@ LayerDuplicate::replace_valuenodes(const std::map<synfig::Layer::Handle,synfig::
 
 	for (const auto& layer_pair : cloned_layer_map) {
 
-		auto layer = layer_pair.first;
+		auto cloned_layer = layer_pair.second;
 
-		// Replace the dynamic paramlist, but only the exported value nodes
-		for(auto iter=layer->dynamic_param_list().cbegin();iter!=layer->dynamic_param_list().cend();++iter)
+		for(auto iter=cloned_layer->dynamic_param_list().cbegin();iter!=cloned_layer->dynamic_param_list().cend();++iter)
 		{
 			for (const auto& vn_pair : cloned_valuenode_map) {
 				if (iter->second == vn_pair.first) {
-					auto cloned_layer = layer_pair.second;
 					cloned_layer->disconnect_dynamic_param(iter->first);
 					cloned_layer->connect_dynamic_param(iter->first, vn_pair.second);
-				} else if (LinkableValueNode::Handle link_vn = LinkableValueNode::Handle::cast_dynamic(layer_pair.second->dynamic_param_list().at(iter->first))) {
-					do_replace_valuenodes(link_vn, vn_pair);
+				} else {
+					do_replace_valuenodes(iter->second, vn_pair);
 				}
 			}
 		}
