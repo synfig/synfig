@@ -22,6 +22,9 @@
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/valuenode_registry.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_bonelink.h>
+#include <synfig/valuenodes/valuenode_staticlist.h>
 
 #include <synfigapp/actions/layerduplicate.h>
 #include <synfigapp/canvasinterface.h>
@@ -607,6 +610,222 @@ static bool test_synfigapp_layerduplicate_encapsulated_and_inner_layer_duplicate
 	return false;
 }
 
+static bool test_synfigapp_layerduplicate_skeleton_with_bone_link()
+{
+	synfig::Canvas::Handle canvas = synfig::Canvas::create();
+	canvas->set_id("MyCanvas");
+	auto instance = synfigapp::Instance::create(canvas, nullptr);
+
+	// create bones for skeleton
+	std::vector<synfig::Bone> bones(2);
+	bones[0] = synfig::Bone(synfig::Point(0,0), synfig::Point(0.5,0.5));
+	bones[0].set_parent(synfig::ValueNode_Bone_Root::create(synfig::Bone()));
+	bones[0].set_name("my bone 0");
+
+	bones[1] = synfig::Bone(synfig::Point(0.5,0.5), synfig::Point(1,1));
+	bones[1].set_parent(synfig::ValueNode_Bone_Root::create(synfig::Bone()));
+	bones[1].set_name("my bone 1");
+
+	// create skeleton
+	auto layer = synfig::Layer::create("skeleton");
+	synfig::ValueBase param_bones;
+	param_bones.set_list_of(bones);
+	// Layer clone does not work as expected without `layer->set_param("bones", param_bones);` - bone valuenodes are not cloned if not dynamic
+	layer->set_param("bones", param_bones);
+	ASSERT(layer->connect_dynamic_param("bones", synfig::ValueNode_StaticList::create(param_bones)))
+
+	canvas->push_back(layer);
+
+	// retrieve bone[0] value node for setting as bone[1] parent
+	synfig::ValueNode_Bone::Handle bone0_vn;
+	// it should be the line below, but find() is not static, as it depends on bone canvas
+	//	bone0_vn = synfig::ValueNode_Bone::Handle::find("my bone 0");
+	{
+		const auto& bone_map = synfig::ValueNode_Bone::get_bone_map(canvas);
+		for (auto iter =  bone_map.cbegin(); iter != bone_map.cend(); ++iter)
+			if ((*iter->second->get_link("name"))(0).get(synfig::String()) == "my bone 0")
+			{
+				bone0_vn = iter->second;
+			}
+	}
+
+	ASSERT(bone0_vn)
+	bones[1].set_parent(bone0_vn.get());
+
+	ASSERT_EQUAL(2, bone0_vn->get_bone_map(canvas).size())
+
+	// add circle and link its origin to bone[0]
+	auto circle = synfig::Layer::create("circle");
+	synfig::ValueNode_BoneLink::Handle bone_link = synfig::ValueNode_BoneLink::create(synfig::Vector(3,5));
+	bone_link->set_link("bone", synfig::ValueNode_Const::create(bone0_vn));
+	circle->connect_dynamic_param("origin", bone_link.get());
+	canvas->push_back(circle);
+
+	// duplicate current layers
+	synfigapp::Action::Handle action = synfigapp::Action::create("LayerDuplicate");
+	action->set_param("layer", layer);
+	action->set_param("layer", circle);
+	action->set_param("canvas", canvas);
+	action->set_param("canvas_interface", instance->find_canvas_interface(canvas));
+	action->perform();
+
+	ASSERT_EQUAL(4, canvas->size())
+	ASSERT_EQUAL(4, synfig::ValueNode_Bone::get_bone_map(canvas).size())
+
+	// check result layer list order
+	ASSERT_EQUAL("skeleton", canvas->front()->get_name())
+	ASSERT_EQUAL("circle", (*std::next(canvas->begin(),1))->get_name())
+	ASSERT_EQUAL("circle", canvas->back()->get_name())
+	ASSERT_EQUAL(circle, canvas->back())
+	ASSERT_NOT_EQUAL(circle, (*std::next(canvas->begin(),1)))
+
+	// check if bones were duplicated too: they would be automatically with different names
+	ASSERT_EQUAL("my bone 0", (*std::next(canvas->begin(),2))->get_param("bones").get_list_of(synfig::Bone())[0].get_name())
+	ASSERT_NOT_EQUAL("my bone 0", canvas->front()->get_param("bones").get_list_of(synfig::Bone())[0].get_name())
+
+	// are the circles' bone links different?
+	auto cloned_circle = (*std::next(canvas->begin(),1));
+	auto cloned_origin_pair = cloned_circle->dynamic_param_list().find("origin");
+	ASSERT(cloned_origin_pair->second)
+	auto cloned_origin = cloned_origin_pair->second;
+	ASSERT_EQUAL("bone_link", cloned_origin->get_name())
+	auto cloned_bone_link = synfig::ValueNode_BoneLink::Handle::cast_static(cloned_origin);
+	ASSERT_NOT_EQUAL(bone_link, cloned_bone_link)
+
+	ASSERT_EQUAL("constant", bone_link->get_link("bone")->get_name())
+	auto bone_link_const = synfig::ValueNode_Const::Handle::cast_static(bone_link->get_link("bone"));
+	ASSERT_EQUAL("my bone 0", bone_link_const->get_value().get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
+
+	// truth time : the new circle layer is linked to new skeleton bone?
+	ASSERT_EQUAL("constant", cloned_bone_link->get_link("bone")->get_name())
+	auto cloned_bone_link_const = synfig::ValueNode_Const::Handle::cast_static(cloned_bone_link->get_link("bone"));
+	ASSERT_NOT_EQUAL("my bone 0", cloned_bone_link_const->get_value().get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
+
+	return false;
+}
+
+static bool test_synfigapp_layerduplicate_skeleton_with_animated_bone_link()
+{
+	// same setup of previous test: test_synfigapp_layerduplicate_skeleton_with_animated_bone_link
+
+	synfig::Canvas::Handle canvas = synfig::Canvas::create();
+	canvas->set_id("MyCanvas");
+	auto instance = synfigapp::Instance::create(canvas, nullptr);
+
+	// create bones for skeleton
+	std::vector<synfig::Bone> bones(2);
+	bones[0] = synfig::Bone(synfig::Point(0,0), synfig::Point(0.5,0.5));
+	bones[0].set_parent(synfig::ValueNode_Bone_Root::create(synfig::Bone()));
+	bones[0].set_name("my bone 0");
+
+	bones[1] = synfig::Bone(synfig::Point(0.5,0.5), synfig::Point(1,1));
+	bones[1].set_parent(synfig::ValueNode_Bone_Root::create(synfig::Bone()));
+	bones[1].set_name("my bone 1");
+
+	// create skeleton
+	auto layer = synfig::Layer::create("skeleton");
+	synfig::ValueBase param_bones;
+	param_bones.set_list_of(bones);
+	// Layer clone does not work as expected without `layer->set_param("bones", param_bones);` - bone valuenodes are not cloned if not dynamic
+	layer->set_param("bones", param_bones);
+	ASSERT(layer->connect_dynamic_param("bones", synfig::ValueNode_StaticList::create(param_bones)))
+
+	canvas->push_back(layer);
+
+	// retrieve bone[0] value node for setting as bone[1] parent
+	synfig::ValueNode_Bone::Handle bone0_vn;
+	// it should be the line below, but find() is not static, as it depends on bone canvas
+	//	bone0_vn = synfig::ValueNode_Bone::Handle::find("my bone 0");
+	{
+		const auto& bone_map = synfig::ValueNode_Bone::get_bone_map(canvas);
+		for (auto iter =  bone_map.cbegin(); iter != bone_map.cend(); ++iter)
+			if ((*iter->second->get_link("name"))(0).get(synfig::String()) == "my bone 0")
+			{
+				bone0_vn = iter->second;
+			}
+	}
+
+	ASSERT(bone0_vn)
+	bones[1].set_parent(bone0_vn.get());
+
+	// retrieve bone[1] value node
+	synfig::ValueNode_Bone::Handle bone1_vn;
+	// it should be the line below, but find() is not static, as it depends on bone canvas
+	//	bone0_vn = synfig::ValueNode_Bone::Handle::find("my bone 0");
+	{
+		const auto& bone_map = synfig::ValueNode_Bone::get_bone_map(canvas);
+		for (auto iter =  bone_map.cbegin(); iter != bone_map.cend(); ++iter)
+			if ((*iter->second->get_link("name"))(0).get(synfig::String()) == "my bone 1")
+			{
+				bone1_vn = iter->second;
+			}
+	}
+
+	ASSERT(bone1_vn)
+
+	ASSERT_EQUAL(2, bone0_vn->get_bone_map(canvas).size())
+
+	// NEW: Animated valuenode for bone link for origin!
+	auto animated_vn = synfig::ValueNode_Animated::create(synfig::type_bone_valuenode);
+	animated_vn->new_waypoint(0.0, synfig::ValueBase(bone0_vn));
+	animated_vn->new_waypoint(1.0, synfig::ValueBase(bone1_vn));
+
+	// add circle and link its origin to bone[0]
+	auto circle = synfig::Layer::create("circle");
+	synfig::ValueNode_BoneLink::Handle bone_link = synfig::ValueNode_BoneLink::create(synfig::Vector(3,5));
+	bone_link->set_link("bone", animated_vn);
+	circle->connect_dynamic_param("origin", bone_link.get());
+	canvas->push_back(circle);
+
+	// duplicate current layers
+	synfigapp::Action::Handle action = synfigapp::Action::create("LayerDuplicate");
+	action->set_param("layer", layer);
+	action->set_param("layer", circle);
+	action->set_param("canvas", canvas);
+	action->set_param("canvas_interface", instance->find_canvas_interface(canvas));
+	action->perform();
+
+	ASSERT_EQUAL(4, canvas->size())
+	ASSERT_EQUAL(4, synfig::ValueNode_Bone::get_bone_map(canvas).size())
+
+	// check result layer list order
+	ASSERT_EQUAL("skeleton", canvas->front()->get_name())
+	ASSERT_EQUAL("circle", (*std::next(canvas->begin(),1))->get_name())
+	ASSERT_EQUAL("circle", canvas->back()->get_name())
+	ASSERT_EQUAL(circle, canvas->back())
+	ASSERT_NOT_EQUAL(circle, (*std::next(canvas->begin(),1)))
+
+	// check if bones were duplicated too: they would be automatically with different names
+	ASSERT_EQUAL("my bone 0", (*std::next(canvas->begin(),2))->get_param("bones").get_list_of(synfig::Bone())[0].get_name())
+	std::string cloned_bone0_name = canvas->front()->get_param("bones").get_list_of(synfig::Bone())[0].get_name();
+	ASSERT_NOT_EQUAL("my bone 0", cloned_bone0_name)
+	std::string cloned_bone1_name = canvas->front()->get_param("bones").get_list_of(synfig::Bone())[1].get_name();
+	ASSERT_NOT_EQUAL("my bone 1", cloned_bone1_name)
+
+	// are the circles' bone links different?
+	auto cloned_circle = (*std::next(canvas->begin(),1));
+	auto cloned_origin_pair = cloned_circle->dynamic_param_list().find("origin");
+	ASSERT(cloned_origin_pair->second)
+	auto cloned_origin = cloned_origin_pair->second;
+	ASSERT_EQUAL("bone_link", cloned_origin->get_name())
+	auto cloned_bone_link = synfig::ValueNode_BoneLink::Handle::cast_static(cloned_origin);
+	ASSERT_NOT_EQUAL(bone_link, cloned_bone_link)
+
+	ASSERT_EQUAL("animated", bone_link->get_link("bone")->get_name())
+	auto bone_link_animated = synfig::ValueNode_Animated::Handle::cast_static(bone_link->get_link("bone"));
+
+	ASSERT_EQUAL("my bone 0", (*bone_link_animated)(0.0).get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
+	ASSERT_EQUAL("my bone 1", (*bone_link_animated)(1.0).get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
+
+	// truth time : the new circle layer is linked to new skeleton bone?
+	ASSERT_EQUAL("animated", cloned_bone_link->get_link("bone")->get_name())
+	auto cloned_bone_link_animated = synfig::ValueNode_Animated::Handle::cast_static(cloned_bone_link->get_link("bone"));
+	ASSERT_EQUAL(cloned_bone0_name, (*cloned_bone_link_animated)(0.0).get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
+	ASSERT_EQUAL(cloned_bone1_name, (*cloned_bone_link_animated)(1.0).get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
+
+	return false;
+}
+
 int main()
 {
 	synfigapp::Main Main("");
@@ -628,6 +847,9 @@ int main()
 		TEST_FUNCTION(test_synfigapp_layerduplicate_two_groups_with_layer_duplicate_each)
 		TEST_FUNCTION(test_synfigapp_layerduplicate_two_layer_duplicate_in_different_groups)
 		TEST_FUNCTION(test_synfigapp_layerduplicate_encapsulated_and_inner_layer_duplicate)
+
+		TEST_FUNCTION(test_synfigapp_layerduplicate_skeleton_with_bone_link)
+		TEST_FUNCTION(test_synfigapp_layerduplicate_skeleton_with_animated_bone_link)
 	} catch (...) {
 		synfig::error("Some exception has been thrown.");
 		exception_thrown = true;
