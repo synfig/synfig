@@ -1,6 +1,5 @@
 name: synfigstudio
 title: 'Synfig Studio'
-base: core18
 version: '1.4.0'
 summary: Create and edit 2D animations and compositions
 description: |
@@ -25,7 +24,7 @@ description: |
   - Linking data on file- or parameter-level
   - Automatic animation using mathematical functions
 
-
+base: core18
 confinement: strict
 license: GPL-3.0
 grade: stable
@@ -44,6 +43,7 @@ apps:
     plugs: &plugs [opengl, home, removable-media, gsettings, network]
     environment: &env
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gnome-platform/usr/share/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages:$PYTHONPATH
 
   synfig:
     command: usr/bin/synfig
@@ -90,9 +90,9 @@ parts:
       - ffmpeg # mod_ffmpeg
       - libflite1 # ffmpeg required
       - imagemagick # mod_imagemagick
-      - libslang2
       - libglu1-mesa
       - freeglut3
+      - python3-lxml # lottie exporter
 
   etl:
     after: [synfig-deps]
@@ -110,7 +110,7 @@ parts:
     configflags: *cfgflags
     override-build: &build |
       set -xe
-      autoreconf -i
+      autoreconf -if
       intltoolize --force
       snapcraftctl build
 
@@ -148,6 +148,5 @@ parts:
       # Remove all files from snap that are already included in the base snap or in
       # any connected content snaps
       for snap in "core18" "gnome-3-34-1804"; do  # List all content-snaps and base snaps you're using here
-        echo "Removing: $SNAPCRAFT_PRIME/{}"
         cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
       done
