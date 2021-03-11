@@ -237,7 +237,7 @@ def insert_dict_at(lottie, idx, fr, loop,constant=False):
 
     Args:
         lottie (dict) : Shape layer will be stored in this main dictionary
-        idx    (int)  : index at which dicionary needs to be stored
+        idx    (int)  : index at which dictionary needs to be stored
         fr     (int)  : frame number
         loop   (bool) : Specifies if the shape is loop or not
 

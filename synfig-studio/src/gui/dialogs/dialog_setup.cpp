@@ -630,7 +630,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	toggle_handle_tooltip_transfo_value.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transfo_value.set_hexpand(false);
 
-	//! change resume signal connexion
+	//! change resume signal connection
 	ui_language_combo.signal_changed().connect(
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_LANGUAGE));
 	toggle_use_dark_theme.property_active().signal_changed().connect(

@@ -856,9 +856,9 @@ int main()
 	}
 
 	if (exception_thrown)
-		synfig::error("Test interrupted due to an execption thrown (%i errors and %i successfull tests until then)", failures, successes);
+		synfig::error("Test interrupted due to an exception thrown (%i errors and %i successful tests until then)", failures, successes);
 	else if (failures)
-		synfig::error("Test finished with %i errors and %i successfull tests", failures, successes);
+		synfig::error("Test finished with %i errors and %i successful tests", failures, successes);
 	else
 		synfig::info("Success");
 

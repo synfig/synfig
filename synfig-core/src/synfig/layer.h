@@ -585,7 +585,7 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
-	// Temporary function to render transformed layer for leyers which yet not suppurt transformed rendering
+	// Temporary function to render transformed layer for layers which yet not support transformed rendering
 	static bool render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, const char *file, int line);
 
 	//! Renders the Canvas to the given Surface in an accelerated manner

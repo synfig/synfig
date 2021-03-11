@@ -799,7 +799,7 @@ namespace {
 					li->alpha_matrix
 				  * from_pixels_matrix;
 				
-				// trucate rect by sub_task rect
+				// truncate rect by sub_task rect
 				rect_float &= TransformationPerspective::transform_bounds_perspective(
 						matrix.get_inverted(),
 						rendering::Transformation::Bounds(

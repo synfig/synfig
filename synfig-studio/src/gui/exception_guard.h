@@ -31,7 +31,7 @@
 ///     SYNFIG_EXCEPTION_GUARD_BEGIN()
 ///     ... code
 ///     ... code
-///     SYNFIG_EXCEPTION_GUARD_END_BOOL(true) // return true if successfull, false if it caught any exception
+///     SYNFIG_EXCEPTION_GUARD_END_BOOL(true) // return true if successful, false if it caught any exception
 /// }
 ///
 

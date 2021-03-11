@@ -546,7 +546,7 @@ get_version_release_string()
 		VERSION=${VERSION%%-*}
 	fi
 	if [ ! -z $BREED ]; then
-		BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
+		BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, because RPM and DEB complain
 		BREED=.$BREED
 	fi
 	REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`

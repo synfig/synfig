@@ -141,7 +141,7 @@ public:
 
 public:
 
-	//! Template for the operator assigment operator for non ValueBase classes
+	//! Template for the operator assignment operator for non ValueBase classes
 	//! \see set()
 	template <class T> ValueBase& operator=(const T& x)
 		{ set(x); return *this; }

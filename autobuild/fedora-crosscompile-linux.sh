@@ -140,7 +140,7 @@ if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
 	VERSION=${VERSION%%-*}
 fi
 [[ $DEBUG == 1 ]] && BREED=${BREED}.dbg
-BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, becuse RPM and DEB complain
+BREED=`echo $BREED | tr _ . | tr - .`	# No "-" or "_" characters, because RPM and DEB complain
 
 popd > /dev/null
 

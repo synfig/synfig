@@ -219,6 +219,6 @@ Action::ValueDescBoneSetParent::undo() {
 			child_bone->set_link("angle",ValueNode_Const::create(angle));
 		}
 	}else{
-		get_canvas_interface()->get_ui_interface()->error("Could'nt find parent to active bone");
+		get_canvas_interface()->get_ui_interface()->error("Couldn't find parent to active bone");
 	}
 }

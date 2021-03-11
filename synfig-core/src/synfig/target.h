@@ -234,7 +234,7 @@ public:
 	//!	Sets the time for the next frame at \a time
 	/*! It modifies the curr_frame_ member which has to be set to zero when next_frame is called for the first time
 	 ** \param time The time reference to be modified
-	 **	\return The number of remainig frames to render
+	 **	\return The number of remaining frames to render
 	 **	\sa curr_frame_
 	*/
 	virtual int	next_frame(Time& time);

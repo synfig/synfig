@@ -388,7 +388,7 @@ def get_vector(waypoint):
 
 def radial_to_tangent(radius, angle):
     """
-    Converts a tangent from radius and angle format to x, y axis co-ordinate
+    Converts a tangent from radius and angle format to x, y axis coordinate
     system
 
     Args:

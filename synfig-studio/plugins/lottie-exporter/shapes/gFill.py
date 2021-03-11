@@ -15,7 +15,7 @@ sys.path.append("..")
 
 def gen_radial_gradient(lottie, layer, idx):
     """
-    Generates the dictionary correspnding to shapes/gFill.json but with radial gradient
+    Generates the dictionary corresponding to shapes/gFill.json but with radial gradient
 
     Args:
     """
