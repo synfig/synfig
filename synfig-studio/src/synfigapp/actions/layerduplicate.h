@@ -63,7 +63,7 @@ public:
 	virtual void prepare();
 
 	void export_dup_nodes(synfig::Layer::Handle, synfig::Canvas::Handle, int &);
-	void replace_valuenodes(const std::map<synfig::Layer::Handle, synfig::Layer::Handle>& cloned_layer_map, const std::map<etl::rhandle<synfig::ValueNode>, etl::rhandle<synfig::ValueNode>>& cloned_valuenode_map);
+	void replace_valuenodes(const std::map<synfig::Layer::Handle, synfig::Layer::Handle>& cloned_layer_map, const std::map<synfig::ValueNode::RHandle, synfig::ValueNode::RHandle>& cloned_valuenode_map);
 
 	ACTION_MODULE_EXT
 };
