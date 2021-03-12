@@ -802,6 +802,18 @@ LinkableValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 		get_link(i)->set_root_canvas(x);
 }
 
+LinkableValueNode::InvertibleStatus LinkableValueNode::is_invertible(const Time& /*t*/, const ValueBase& /*target_value*/, int* link_index) const
+{
+	if (link_index)
+		*link_index = -1;
+	return INVERSE_NOT_SUPPORTED;
+}
+
+ValueBase LinkableValueNode::get_inverse(const Time& /*t*/, const ValueBase& /*target_value*/) const
+{
+	return ValueBase();
+}
+
 void
 LinkableValueNode::get_values_vfunc(std::map<Time, ValueBase> &x) const
 {

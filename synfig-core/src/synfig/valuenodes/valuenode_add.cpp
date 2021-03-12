@@ -166,24 +166,6 @@ synfig::ValueNode_Add::operator()(Time t)const
 	return ValueBase();
 }
 
-ValueBase
-synfig::ValueNode_Add::get_inverse(Time t, const synfig::Real &target_value) const
-{
-	return target_value / (*scalar)(t).get(Real()) - (*ref_b)(t).get(Real());
-}
-
-ValueBase
-synfig::ValueNode_Add::get_inverse(Time t, const synfig::Angle &target_value) const
-{
-	return target_value / (*scalar)(t).get(Real()) - (*ref_b)(t).get(Angle());
-}
-
-ValueBase
-synfig::ValueNode_Add::get_inverse(Time t, const synfig::Vector &target_value) const
-{
-	return target_value / (*scalar)(t).get(Real()) - (*ref_b)(t).get(Vector());
-}
-
 bool
 ValueNode_Add::set_link_vfunc(int i,ValueNode::Handle value)
 {
@@ -245,4 +227,40 @@ ValueNode_Add::get_children_vocab_vfunc() const
 	);
 
 	return ret;
+}
+
+LinkableValueNode::InvertibleStatus
+ValueNode_Add::is_invertible(const Time& t, const ValueBase& target_value, int* link_index) const
+{
+	if (!t.is_valid())
+		return INVERSE_ERROR_BAD_TIME;
+	if (approximate_zero((*scalar)(t).get(Real()))) {
+		if (link_index)
+			*link_index = get_link_index_from_name("scalar");
+		return INVERSE_ERROR_BAD_PARAMETER;
+	}
+	const Type& type = target_value.get_type();
+	if (type != type_real && type != type_angle && type != type_vector)
+		return INVERSE_ERROR_BAD_TYPE;
+	if (link_index)
+		*link_index = get_link_index_from_name("lhs");
+	return INVERSE_OK;
+}
+
+ValueBase
+ValueNode_Add::get_inverse(const Time& t, const ValueBase& target_value) const
+{
+	Real scalar_value = (*scalar)(t).get(Real());
+
+	if (approximate_zero(scalar_value))
+		throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Scalar is zero")));
+
+	const Type& type = target_value.get_type();
+	if (type == type_real)
+		return target_value.get(Real()) / scalar_value - (*ref_b)(t).get(Real());
+	if (type == type_angle)
+		return target_value.get(Angle()) / scalar_value - (*ref_b)(t).get(Angle());
+	if (type == type_vector)
+		return target_value.get(Vector()) / scalar_value - (*ref_b)(t).get(Vector());
+	throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
 }

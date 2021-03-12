@@ -426,6 +426,24 @@ public:
 
 	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
 
+	//! If get_inverse() can be called
+	enum InvertibleStatus {
+		INVERSE_OK, ///< get_inverse() will return valid value
+		INVERSE_NOT_SUPPORTED, ///< valuenode does not support reverse function or does not implement it
+		INVERSE_ERROR_BAD_TYPE, ///< valuenode can't handle the target_value type
+		INVERSE_ERROR_BAD_VALUE, ///< the provided target_value does not allow a inverse function (e.g. leads to a division by zero)
+		INVERSE_ERROR_BAD_TIME, ///< time is invalid
+		INVERSE_ERROR_BAD_PARAMETER ///< another valuenode parameter does not allow a inverse function (e.g. leads to a division by zero)
+	};
+
+	//! Checks if it is possible to call get_inverse() for target_value at time t.
+	//! If so, return the link_index related to the return value provided by get_inverse().
+	//! If is_invertible returns INVERSE_ERROR_BAD_PARAMETER, link_index returns the invalid link index
+	//! Otherwise, link_index is invalid
+	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const;
+	//! Returns the Link value that leads this value node to match the target value at time t
+	virtual ValueBase get_inverse(const Time& t, const ValueBase& target_value) const;
+
 protected:
 	//! Member to store the children vocabulary
 	Vocab children_vocab;

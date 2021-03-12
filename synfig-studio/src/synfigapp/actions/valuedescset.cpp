@@ -495,77 +495,6 @@ Action::ValueDescSet::prepare()
 
 	// Perform reverse manipulations
 
-	// If we are a scale value node, then edit the link
-	// such that it will scale to our target value
-	if (ValueNode_Scale::Handle scale_value_node = ValueNode_Scale::Handle::cast_dynamic(value_desc.get_value_node()))
-	{
-		if(! scale_value_node->is_invertible(time))
-		{
-			synfig::warning(_("Attempt to edit scale ValueNode with a scale factor of zero."));
-			return;
-		}
-		ValueBase new_value;
-		if (value.get_type() == type_angle)
-			new_value = scale_value_node->get_inverse(time, value.get(Angle()));
-		else if(value.get_type() == type_vector)
-			new_value = scale_value_node->get_inverse(time, value.get(Vector()));
-		else if(value.get_type() == type_real)
-			new_value = scale_value_node->get_inverse(time, value.get(Real()));
-		else
-			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
-		add_action_valuedescset(new_value,ValueDesc(scale_value_node, scale_value_node->get_link_index_from_name("link")));
-		return;
-	}
-    // Range: disallow values outside the range
-	if (ValueNode_Range::Handle range_value_node = ValueNode_Range::Handle::cast_dynamic(value_desc.get_value_node()))
-	{
-		ValueBase new_value;
-		if (value.get_type() == type_angle)
-			new_value = range_value_node->get_inverse(time, value.get(Angle()));
-		else
-			throw Error(_("Inverse manipulation of %s range values not implemented in core."), value.type_name().c_str());
-		add_action_valuedescset(new_value,ValueDesc(range_value_node,range_value_node->get_link_index_from_name("link")));
-		return;
-	}
-	// Integer: integer values only
-	if (ValueNode_Integer::Handle integer_value_node = ValueNode_Integer::Handle::cast_dynamic(value_desc.get_value_node()))
-	{
-		ValueBase new_value;
-		if (value.get_type() == type_angle)
-			new_value = integer_value_node->get_inverse(time, value.get(Angle()));
-		else if(value.get_type() == type_real)
-			new_value = integer_value_node->get_inverse(time, value.get(Real()));
-		else
-			throw Error(_("Inverse manipulation of %s integer values not implemented in core."), value.type_name().c_str());
-		add_action_valuedescset(new_value,ValueDesc(integer_value_node,integer_value_node->get_link_index_from_name("link")));
-		return;
-	}
-	// Add value node
-	if (ValueNode_Add::Handle add_value_node = ValueNode_Add::Handle::cast_dynamic(value_desc.get_value_node()))
-	{
-		ValueBase new_value;
-		if (value.get_type() == type_angle)
-			new_value = add_value_node->get_inverse(time, value.get(Angle()));
-		else if(value.get_type() == type_real)
-			new_value = add_value_node->get_inverse(time, value.get(Real()));
-		else if(value.get_type() == type_vector)
-			new_value = add_value_node->get_inverse(time, value.get(Vector()));
-		else
-			throw Error(_("Inverse manipulation of %s add values not implemented in core."), value.type_name().c_str());
-		add_action_valuedescset(new_value,ValueDesc(add_value_node,add_value_node->get_link_index_from_name("lhs")));
-		return;
-	}
-	// Real: Reverse manipulations for Real->Angle convert
-	if (ValueNode_Real::Handle real_value_node = ValueNode_Real::Handle::cast_dynamic(value_desc.get_value_node()))
-	{
-		ValueBase new_value;
-		if (value.get_type() == type_angle)
-			new_value = real_value_node->get_inverse(time, value.get(Angle()));
-		else
-			throw Error(_("Inverse manipulation of %s real values not implemented in core."), value.type_name().c_str());
-		add_action_valuedescset(new_value,ValueDesc(real_value_node,real_value_node->get_link_index_from_name("link")));
-		return;
-	}
 	// BlineCalcWidth: modify the scale value node
 	// so that the target width is achieved
 	if (ValueNode_BLineCalcWidth::Handle bline_width = ValueNode_BLineCalcWidth::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -737,6 +666,41 @@ Action::ValueDescSet::prepare()
 					return;
 				}
 			}
+		}
+	}
+
+	// Linkable value nodes has methods to do reverse manipulations
+	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		int link_index;
+		LinkableValueNode::InvertibleStatus invertible = linkable_value_node->is_invertible(time, value, &link_index);
+		switch (invertible) {
+		case synfig::LinkableValueNode::INVERSE_OK: {
+			ValueBase new_value = linkable_value_node->get_inverse(time, value);
+			add_action_valuedescset(new_value,ValueDesc(linkable_value_node, link_index));
+			return;
+		}
+		case synfig::LinkableValueNode::INVERSE_NOT_SUPPORTED:
+			throw Error(_("Inverse manipulation of valuenode '%s' is not supported."),
+			            linkable_value_node->get_type().description.local_name.c_str());
+		case synfig::LinkableValueNode::INVERSE_ERROR_BAD_TYPE:
+			throw Error(_("Inverse manipulation of valuenode '%s' with %s values is not implemented."),
+			            linkable_value_node->get_type().description.local_name.c_str(),
+			            value.type_name().c_str());
+		case synfig::LinkableValueNode::INVERSE_ERROR_BAD_VALUE:
+			throw Error(_("Inverse manipulation of valuenode '%s' is not possible for value %s."),
+			            linkable_value_node->get_type().description.local_name.c_str(),
+			            value.get_string().c_str());
+		case synfig::LinkableValueNode::INVERSE_ERROR_BAD_TIME:
+			throw Error(_("Inverse manipulation of valuenode '%s' is not possible at current time point %s."),
+			            linkable_value_node->get_type().description.local_name.c_str(),
+			            time.get_string(Time::FORMAT_NORMAL).c_str());
+		case synfig::LinkableValueNode::INVERSE_ERROR_BAD_PARAMETER:
+			throw Error(_("Attempt to edit valuenode '%s' is not possible due to another parameter of valuenode: %s."),
+			            linkable_value_node->get_type().description.local_name.c_str(),
+			            link_index >= 0 && link_index < linkable_value_node->link_count() ?
+			                linkable_value_node->link_local_name(link_index).c_str()
+			              : _("unknown parameter (please report)"));
 		}
 	}
 
