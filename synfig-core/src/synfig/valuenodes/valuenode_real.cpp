@@ -38,6 +38,7 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <ETL/misc>
+#include <ETL/stringf>
 
 #endif
 
@@ -147,15 +148,29 @@ ValueNode_Real::operator()(Time t)const
 	throw runtime_error(get_local_name()+_(":Bad type ")+get_type().description.local_name);
 }
 
-synfig::ValueBase
-synfig::ValueNode_Real::get_inverse(Time /*t*/, const synfig::Angle &target_value) const
+LinkableValueNode::InvertibleStatus
+ValueNode_Real::is_invertible(const Time& t, const ValueBase& target_value, int* link_index) const
 {
-	return (float)Angle::deg(target_value).get();
+	if (!t.is_valid())
+		return INVERSE_ERROR_BAD_TIME;
+
+	const Type& type = target_value.get_type();
+	if (type != type_angle)
+		return INVERSE_ERROR_BAD_TYPE;
+
+	if (link_index)
+		*link_index = get_link_index_from_name("link");
+	return INVERSE_OK;
 }
 
-
-
-
+synfig::ValueBase
+synfig::ValueNode_Real::get_inverse(const Time& /*t*/, const synfig::ValueBase &target_value) const
+{
+	const Type& target_type = target_value.get_type();
+	if (target_type == type_angle)
+		return Angle::deg(target_value.get(Angle())).get();
+	throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
+}
 
 bool
 ValueNode_Real::check_type(Type &type __attribute__ ((unused)))

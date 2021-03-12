@@ -170,8 +170,34 @@ synfig::ValueNode_Range::operator()(Time t)const
 	return ValueBase();
 }
 
+LinkableValueNode::InvertibleStatus
+synfig::ValueNode_Range::is_invertible(const Time& t, const ValueBase& target_value, int* link_index) const
+{
+	if (!t.is_valid())
+		return INVERSE_ERROR_BAD_TIME;
+
+	const Type& type = target_value.get_type();
+	if (type != type_angle && type != type_vector)
+		return INVERSE_ERROR_BAD_TYPE;
+
+	if (link_index)
+		*link_index = get_link_index_from_name("link");
+	return INVERSE_OK;
+}
+
+ValueBase
+ValueNode_Range::get_inverse(const Time& t, const ValueBase& target_value) const
+{
+	const Type& type = target_value.get_type();
+	if (type == type_angle)
+		return get_inverse(t, target_value.get(Angle()));
+	if (type == type_vector)
+		return get_inverse(t, target_value.get(Vector()));
+	throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
+}
+
 synfig::ValueBase
-synfig::ValueNode_Range::get_inverse(Time t, const synfig::Vector &target_value) const
+synfig::ValueNode_Range::get_inverse(const Time& t, const synfig::Vector &target_value) const
 {
 	Type &type(get_type());
 	if (type == type_integer)
@@ -207,7 +233,7 @@ synfig::ValueNode_Range::get_inverse(Time t, const synfig::Vector &target_value)
 }
 
 synfig::ValueBase
-synfig::ValueNode_Range::get_inverse(Time t, const synfig::Angle &target_value) const
+synfig::ValueNode_Range::get_inverse(const Time& t, const synfig::Angle &target_value) const
 {
 	Angle minimum = (* min_)(t).get(Angle());
 	Angle maximum = (* max_)(t).get(Angle());
