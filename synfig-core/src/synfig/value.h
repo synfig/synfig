@@ -282,9 +282,7 @@ public:
 		*this = List(list.begin(), list.end());
 	}
 
-#ifdef _DEBUG
 	String get_string() const;
-#endif	// _DEBUG
 	// ========================================================================
 
 	//! Put template for any class

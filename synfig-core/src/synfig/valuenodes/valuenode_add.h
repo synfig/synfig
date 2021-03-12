@@ -62,10 +62,12 @@ public:
 	virtual String get_local_name()const;
 	static bool check_type(Type &type);
 	virtual Vocab get_children_vocab_vfunc()const;
+
+	//! Checks if it is possible to call get_inverse() for target_value at time t.
+	//! If so, return the link_index related to the return value provided by get_inverse()
+	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const;
 	//! Returns the modified Link to match the target value at time t
-	ValueBase get_inverse(Time t, const synfig::Real &target_value) const;
-	ValueBase get_inverse(Time t, const synfig::Angle &target_value) const;
-	ValueBase get_inverse(Time t, const synfig::Vector &target_value) const;
+	virtual ValueBase get_inverse(const Time& t, const synfig::ValueBase &target_value) const;
 	
 }; // END of class ValueNode_Add
 

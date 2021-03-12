@@ -38,6 +38,7 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <ETL/misc>
+#include <ETL/stringf>
 
 #endif
 
@@ -147,16 +148,27 @@ ValueNode_Integer::operator()(Time t)const
 	throw runtime_error(get_local_name()+_(":Bad type ")+get_type().description.local_name);
 }
 
-ValueBase
-synfig::ValueNode_Integer::get_inverse(Time /*t*/, const synfig::Real &target_value) const
+LinkableValueNode::InvertibleStatus
+synfig::ValueNode_Integer::is_invertible(const Time& /*t*/, const ValueBase& target_value, int* link_index) const
 {
-	return (int)round(target_value);
+	const Type& type = target_value.get_type();
+	if (type != type_real && type != type_angle)
+		return INVERSE_ERROR_BAD_TYPE;
+
+	if (link_index)
+		*link_index = get_link_index_from_name("link");
+	return INVERSE_OK;
 }
 
 synfig::ValueBase
-synfig::ValueNode_Integer::get_inverse(Time /*t*/, const synfig::Angle &target_value) const
+synfig::ValueNode_Integer::get_inverse(const Time& /*t*/, const ValueBase &target_value) const
 {
-	return (int)round(Angle::deg(target_value).get());
+	const Type& target_type = target_value.get_type();
+	if (target_type == type_real)
+		return int(round(target_value.get(Real())));
+	if (target_type == type_angle)
+		return int(round(Angle::deg(target_value.get(Angle())).get()));
+	throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
 }
 
 
