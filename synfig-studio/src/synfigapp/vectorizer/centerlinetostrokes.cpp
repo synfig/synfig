@@ -66,7 +66,7 @@ float h_factor = 1;
 float w_factor = 1;
 /* === P R O C E D U R E S ================================================= */
 
-// this function will be responsible for unit conversion and height, width tranformation
+// this function will be responsible for unit conversion and height, width transformation
 void PreProcessSegment(studio::PointList &segment)
 {
   int size = segment.size();

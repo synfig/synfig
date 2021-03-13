@@ -214,7 +214,7 @@ class Module : public etl::shared_object
 public:
 	//! The initializer of the module. Default implementation does nothing
 	virtual bool constructor_(synfig::ProgressCallback */*cb*/) { return true; }
-	//! The module cleanup funtion
+	//! The module cleanup function
 	virtual void destructor_() { }
 
 	typedef etl::handle<Module> Handle;

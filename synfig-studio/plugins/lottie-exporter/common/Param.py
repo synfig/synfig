@@ -212,7 +212,7 @@ class Param:
         if self.param.tag in settings.BONES or self.param[0].tag in settings.CONVERT_METHODS:
             self.extract_subparams()
 
-            if self.param.tag == "bone":  # Carefull about param[0] and param here
+            if self.param.tag == "bone":  # Careful about param[0] and param here
 
                 # Get the animation of this origin
                 bone_origin, eff_1 = self.subparams["origin"].recur_animate("vector")

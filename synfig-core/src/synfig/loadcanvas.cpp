@@ -3015,7 +3015,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					// the layer linked it
 					if(!layer->set_param(param_name,data))
 					{
-						// TODO(ice0): Add normal version comparision function (check glib)
+						// TODO(ice0): Add normal version comparison function (check glib)
 						// TODO(ice0): Remove stubs after updating image files (.sif)
 						if (param_name == "loopyness" && layer->get_name() == "outline" && (layer->get_version() == "0.3")) {
 							continue;

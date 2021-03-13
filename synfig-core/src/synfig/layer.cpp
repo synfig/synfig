@@ -673,7 +673,7 @@ Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 	return context.hit_check(pos);
 }
 
-// Temporary function to render transformed layer for layers which yet not suppurt transformed rendering
+// Temporary function to render transformed layer for layers which yet not support transformed rendering
 #ifdef _DEBUG
 bool
 Layer::render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, const char *file, int line)

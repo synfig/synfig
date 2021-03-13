@@ -175,7 +175,7 @@ public:
 
 	sigc::signal<void> signal_bounds_changed()      { return signal_bounds_changed_; }      // raises on bounds changed
 	sigc::signal<void> signal_visible_changed()     { return signal_visible_changed_; }     // raises on visible bounds changed
-	sigc::signal<void> signal_play_bounds_changed() { return signal_play_bounds_changed_; } // raises on play bounsd changed
+	sigc::signal<void> signal_play_bounds_changed() { return signal_play_bounds_changed_; } // raises on play bounds changed
 	sigc::signal<void> signal_time_changed()        { return signal_time_changed_; }        // raises on current time changed
 	sigc::signal<void> signal_play_time_changed()   { return signal_play_time_changed_; }   // raises on play time changed
 

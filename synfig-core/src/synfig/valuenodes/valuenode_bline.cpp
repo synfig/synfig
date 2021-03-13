@@ -948,7 +948,7 @@ ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, 
 	Vector tt1,tt2; // Calculated tangents
 	Point v,vn,vp; // Transformed current Vertex, next Vertex, previous Vertex
 	Point vs,vns,vps; // Setup current Vertex, next Vertex, previous Vertex
-	Angle beta1,beta2; //Final angle of tangents (trasformed)
+	Angle beta1,beta2; //Final angle of tangents (transformed)
 	Angle beta01,beta02; //Original angle of tangnets (untransformed)
 	Angle alpha; // Increment of angle produced in the segment next-previous
 	Angle gamma; // Compensation due to the variation relative to the midpoint.

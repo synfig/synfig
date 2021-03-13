@@ -1147,7 +1147,7 @@ void Widget_Curves::ChannelPointSD::delta_drag(int total_dx, int total_dy, bool 
 	const Time deltatime = next_time - base_time;
 
 	if (deltatime != 0) {
-		// new dragging position allow us to restore previouly overlapped waypoints
+		// new dragging position allow us to restore previously overlapped waypoints
 		auto waypoints_to_restore = widget.overlapped_waypoints;
 		// let it store new overlapped waypoints until next drag motion
 		widget.overlapped_waypoints.clear();

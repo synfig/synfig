@@ -2659,7 +2659,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 				}
 			}
 		} // endif wplist_value_node exists
-	} // endif is avanced outline
+	} // endif is advanced outline
 
 	if (complete_loop)
 	{
@@ -2850,7 +2850,7 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 				}
 			}
 		} // endif wplist_value_node exists
-	} // endif is avanced outline
+	} // endif is advanced outline
 
 	if (complete_loop)
 	{

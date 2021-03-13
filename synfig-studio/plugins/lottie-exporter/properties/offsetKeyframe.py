@@ -84,9 +84,9 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     when clamped waypoints are used
 
     Args:
-        p1       (common.Vector.Vector)         : First point in Co-ordinate System
-        p2       (common.Vector.Vector)         : Second point in Co-ordinate System
-        p3       (common.Vector.Vector)         : Third point in Co-ordinate System
+        p1       (common.Vector.Vector)         : First point in Coordinate System
+        p2       (common.Vector.Vector)         : Second point in Coordinate System
+        p3       (common.Vector.Vector)         : Third point in Coordinate System
         animated (lxml.etree._Element) : Synfig format animation
         i        (int)                 : Iterator over animation
         ease     (str)                 : Specifies if it is an ease in animation ease out

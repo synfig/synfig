@@ -13,7 +13,7 @@
   * Transformation widget got a special control point to easily change origin of transformation.
   * New "Bake" command allow to bake animation for any parameter.
   * Now it is possible to open images in external editor (right click -> "Edit image in external tool...").
-  * Workspace layout cna be saved ("Workspace" - "Save workspace"/"Edit workspace list..." menu commands).
+  * Workspace layout can be saved ("Workspace" - "Save workspace"/"Edit workspace list..." menu commands).
   * Hovering mouse cursor over timetrack now shows frame preview.
   * Now it is possible to select playback range on the timeline and make playback looped.
   * Workarea handles now hidden during playback.
@@ -98,7 +98,7 @@
   * Tooltips for group transformation widget. Thanks to Jerome Blanchi.
   * Completely reworked preferences dialogue. Thanks to Yu Chen (concept), Jerome Blanchi (implementation) and Caryoscelus (fixes).
   * Fixed behavior of “Insert Item” action for Splines (it should be different from “Insert item & Keep shape” action). Thanks to Ivan Mahonin.
-  * Fix crash when manipulating with guides. Alow to remove guides by dragging them back to onto rulers. Thanks to Jerome Blanchi.
+  * Fix crash when manipulating with guides. Allow to remove guides by dragging them back to onto rulers. Thanks to Jerome Blanchi.
   * Zoom level now can be edited via dedicated widget in the bottom-left corner of Canvas Window. Thanks to Caryoscelus.
   * Now it is possible to hide File buttons on the toolbar to save horizontal space. Available via “Edit” -> “Preferences” -> “Preferences”. Thanks to Caryoscelus.
   * Fixed readability of “Current Time” text widget when using dark theme. Thanks to Chris London.
@@ -120,7 +120,7 @@
  1.0.1 (git tag "1.0.1") - July 21, 2015 - Bugfix release.
  
   * Fix switching bone parent.
-  * Interactively highlight handles during bouding box selection.
+  * Interactively highlight handles during bounding box selection.
   * Update icons for "New", "Open", "Save/As/All" and "Undo/Redo".
   * Keyframes widget: Double click opens keyframe properties dialog box.
   * Keyframe properties dialog: Show keyframe description and active status.
@@ -189,10 +189,10 @@
 
  0.64.0 (git tag "synfigstudio-0.64.0") - May 06, 2013 - Major features, bug fixes.
 
-  * New pluging system
+  * New plugin system
   * New Cairo render engine
   * Terminology renaming
-  * Traslation is now handled by intltool
+  * Translation is now handled by intltool
   * Keyframes can now be enabled and disabled
   * New sequence separator option
   * Fix bug ID: 2684968: render is one frame short.
@@ -222,7 +222,7 @@
  ** Rewording some UI strings
  * New Outline Grow parameter on Paste Canvas layer. For inline canvases it increases (decreases) the width of the children layers by a exponential factor.
  * Support for load Gimp palettes. Patch thanks to Bretrand Gregoire.
- * Improve constrast on color sliders for Color Edit and Gradient Edit widgets. Patch thanks to Bertrand Gregoire
+ * Improve contrast on color sliders for Color Edit and Gradient Edit widgets. Patch thanks to Bertrand Gregoire
  * Rename icon source from zoom to scale. Patch thanks to Bertrand Gregoire
 
  0.63.04 (git tag: "synfigstudio-0.63.04") - February 08, 2012 - Features, bug fixes.
@@ -247,7 +247,7 @@
   * Fix bug https://pivotaltracker.com/story/show/18136743: BLine linked objects get wrong initial position
   * Use Gtk::Tooltip instead of deprecated Gtk::Tooltips. This fully fix tooltips for Layer parameter panel.
   * When modify a value that has a waypoint at the current time, don't modify its interpolations, only the value.
-  * Widhtpoint position duck now allows 'Edit Waypoint' contextual menu.
+  * Widthpoint position duck now allows 'Edit Waypoint' contextual menu.
   * Add feature to delete multiple vertices at the same time on blines and other list types.
   * Enum Widget allows icons now. Add icons to Default Interpolation widget.
   * Insert Item smart is allowed now over empty lists.
@@ -265,7 +265,7 @@
   * Add undo capability for guides.
   * Snap to guides is now relative to zoom.
   * OptionMenu (deprecatd) has been replaced by ComboBox.
-  * When change the Setup Dialog, spread it inmediately to the canvas's rules.
+  * When change the Setup Dialog, spread it immediately to the canvas's rules.
   * Circle, Rectangle, Star and Polygon Tools allows create Advanced Outlines Layers.
   * Linked to BLine has the option of be curve length based. On by default.
   * New icons for canvas navigation, preview, render and animate mode buttons.
@@ -277,7 +277,7 @@
  0.63.00 (git tag: "synfigstudio-0.63.00") - June 5, 2011 - Bug fixes, major features
 
   * Fix bug #31044763: fps rounding to integer.
-  * Fix bug: Change default bline width spin button widthout first focus a canvas
+  * Fix bug: Change default bline width spin button without first focus a canvas
     produces undesired changes to the width size.
   * Fix tool tips for layer parameters and add tool tip support for linkable
     value node parameters.
@@ -376,7 +376,7 @@
   * Input Device configuration can be saved/loaded now.
   * Fill/Outline instead of Background/Foreground.
   * Additions to the Canvas Window: Update Zoom Dial, Frame Dial, Keyframe Dial
-    Toogle Ducks Dial, Resolution Dial, Quality Butons, Show/Snap to Grid,
+    Toggle Ducks Dial, Resolution Dial, Quality Buttons, Show/Snap to Grid,
     Onion Skinning buttons.
   * Past and future onion skins enabled and selectable.
   * Improved UI on crash recovery dialog.
