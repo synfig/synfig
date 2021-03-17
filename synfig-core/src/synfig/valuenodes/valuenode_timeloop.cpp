@@ -185,3 +185,17 @@ ValueNode_TimeLoop::get_children_vocab_vfunc()const
 	);
 	return ret;
 }
+
+LinkableValueNode::InvertibleStatus ValueNode_TimeLoop::is_invertible(const Time& t, const ValueBase& target_value, int* link_index) const
+{
+	if (target_value.get_type() != get_link("link")->get_type())
+		return INVERSE_ERROR_BAD_TYPE;
+	if (link_index)
+		*link_index = get_link_index_from_name("link");
+	return INVERSE_OK;
+}
+
+ValueBase ValueNode_TimeLoop::get_inverse(const Time& /*t*/, const ValueBase& target_value) const
+{
+	return target_value;
+}
