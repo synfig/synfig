@@ -62,6 +62,7 @@
 #include <synfig/valuenodes/valuenode_bonelink.h>
 #include <synfig/valuenodes/valuenode_average.h>
 #include <synfig/valuenodes/valuenode_weightedaverage.h>
+#include <synfig/valuenodes/valuenode_timeloop.h>
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/rendering/software/surfacesw.h>
@@ -112,6 +113,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 		|| ValueNode_BoneLink::Handle::cast_dynamic(value_node)
 		|| ValueNode_Average::Handle::cast_dynamic(value_node)
 		|| ValueNode_WeightedAverage::Handle::cast_dynamic(value_node)
+		|| ValueNode_TimeLoop::Handle::cast_dynamic(value_node)
 	)
 		return true;
 	return false;
