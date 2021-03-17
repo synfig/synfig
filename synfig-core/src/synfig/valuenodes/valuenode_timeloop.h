@@ -71,6 +71,12 @@ public:
 	static bool check_type(Type &type);
 	static ValueNode_TimeLoop* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
+
+	//! Checks if it is possible to call get_inverse() for target_value at time t.
+	//! If so, return the link_index related to the return value provided by get_inverse()
+	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const;
+	//! Returns the modified Link to match the target value at time t
+	virtual ValueBase get_inverse(const Time& t, const synfig::ValueBase &target_value) const;
 }; // END of class ValueNode_TimeLoop
 
 }; // END of namespace synfig
