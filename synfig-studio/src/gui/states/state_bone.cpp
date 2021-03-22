@@ -109,7 +109,7 @@ class studio::StateBone_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 	// holder of optons
-	Gtk::Grid options_table;
+	Gtk::Grid options_grid;
 
 	// title
 	Gtk::Label title_label;
@@ -121,6 +121,7 @@ class studio::StateBone_Context : public sigc::trackable
 
 	//  bone width
 	Gtk::Label bone_width_label;
+	Gtk::HBox skel_box;
 	Widget_Distance skel_bone_width_dist;
 	Widget_Distance skel_deform_bone_width_dist;
 
@@ -363,7 +364,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	/*setting up the tool options menu*/
 
 	// 0, title
-	title_label.set_label(_("Skeleton Creation"));
+	title_label.set_label(_("Skeleton Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
@@ -373,6 +374,9 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
 	id_label.set_alignment(Gtk::ALIGN_START,Gtk::ALIGN_CENTER);
+	id_entry.set_hexpand();
+	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
+	id_box.pack_start(id_entry);
 
 
 	// 2, Bone width
@@ -385,44 +389,44 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	skel_deform_bone_width_dist.set_range(0,10000000);
 	skel_deform_bone_width_dist.set_sensitive(true);
 
+	skel_box.pack_start(skel_bone_width_dist);
+	skel_box.pack_start(skel_deform_bone_width_dist);
+
 	load_settings();
 
 	// 4, Layer choice
-	layer_label.set_label(_("Layer to Create:"));
+	layer_label.set_label(_("Layer"));
 	layer_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	layer_label.set_attributes(list);
-	layer_label.set_sensitive(true);
 	
 	create_layer.set_label(_("Create Layer"));
 	create_layer.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER);
 	create_layer.set_sensitive(true);
 
 
-	// pack all options to the options_table
+	// pack all options to the options_grid
 
 	// 0, title
-	options_table.attach(title_label,0, 0,1,1);
+	options_grid.attach(title_label, 0, 0, 2, 1);
 	// 1, name
-	options_table.attach(id_label,0, 1,1,1);
-	options_table.attach(id_entry,2, 1,3,1);
+	options_grid.attach(id_box, 0, 1, 2, 1);
 	// 2, default bone width
-	options_table.attach(bone_width_label,0,2,1,1);
-	options_table.attach(skel_bone_width_dist,2, 2,3,1);
-	options_table.attach(skel_deform_bone_width_dist,2, 2,3,1);
+	options_grid.attach(bone_width_label, 0, 2);
+	options_grid.attach(skel_box, 1, 2);
 	// 3, Layer choice
-	options_table.attach(layer_label,0, 4,1,1);
-	options_table.attach(radiobutton_skel,0, 5,2,1);
-	options_table.attach(radiobutton_skel_deform,2, 5,2,1);
-	options_table.attach(create_layer,2,6,2,1);
+	options_grid.attach(layer_label, 0, 3, 2, 1);
+	options_grid.attach(radiobutton_skel, 0, 4, 2, 1);
+	options_grid.attach(radiobutton_skel_deform, 0, 5, 2, 1);
+	options_grid.attach(create_layer, 0, 6, 2, 1);
 
 	create_layer.signal_clicked().connect(sigc::mem_fun(*this,&StateBone_Context::make_layer));
 	radiobutton_skel.signal_toggled().connect(sigc::mem_fun(*this,&StateBone_Context::update_layer));
 
 	// fine-tune options layout
-	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacing(GAP); // row gap
-	options_table.set_margin_bottom(0);
-	options_table.show_all();
+	options_grid.set_hexpand();
+	options_grid.set_border_width(GAP*2); // border width
+	options_grid.set_row_spacing(GAP); // row gap
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
 	skel_deform_bone_width_dist.hide();
 
@@ -485,7 +489,7 @@ void
 StateBone_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Skeleton Tool"));
 	App::dialog_tool_options->set_name("bone");
 
