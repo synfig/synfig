@@ -128,7 +128,8 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_ok_pressed));
 
 	get_vbox()->show_all();
-	refresh();
+	//refresh();
+	signal_show().connect(sigc::mem_fun(*this, &studio::CanvasProperties::refresh));
 
 	update_title();
 }
