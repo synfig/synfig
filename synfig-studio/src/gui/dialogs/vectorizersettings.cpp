@@ -81,6 +81,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
 	config_map = &configmap;
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(1, 1, 1, 1));
+	dialogPadding->set_padding(12, 12, 12, 12);
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
 	dialogPadding->add(*dialogBox);
