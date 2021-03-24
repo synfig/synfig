@@ -4,6 +4,7 @@ set(UI_FILES
 	preview_options.glade
 	dialog_workspaces.glade
 	shortcuts_window.glade
+	vectorizer_settings.glade
 )
 
 foreach(UI_FILE ${UI_FILES})

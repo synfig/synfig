@@ -528,3 +528,4 @@ src/gui/resources/ui/canvas_options.glade
 src/gui/resources/ui/dialog_workspaces.glade
 src/gui/resources/ui/preview_options.glade
 src/gui/resources/ui/shortcuts_window.glade
+src/gui/resources/ui/vectorizer_settings.glade
