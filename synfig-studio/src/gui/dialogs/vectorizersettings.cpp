@@ -24,9 +24,14 @@
 
 #include <gui/dialogs/vectorizersettings.h>
 
+#include <glibmm/fileutils.h>
+#include <glibmm/markup.h>
+
 #include <gtkmm/alignment.h>
 
+#include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/resourcehelper.h>
 
 #include <synfig/debug/log.h>
 
@@ -71,7 +76,7 @@ using namespace studio;
 //	reference_layer_(reference_layer),
 //	instance(selected_instance)
 
-VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade) :
+VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade) :
 	Gtk::Dialog(cobject),
 	builder(refGlade)
 {
@@ -225,19 +230,15 @@ VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& re
 	///Outline_setting_grid->hide();
 	///on_comboboxtext_mode_changed();
 
-}
+	Gtk::Button *button = nullptr;
 
-VectorizerSettings* VectorizerSettings::create(/*Gtk::Window& parent*/)
-{
-	auto refBuilder = load_interface("vectorizer_settings.glade");
-	if (!refBuilder)
-		return nullptr;
-	VectorizerSettings * dialog = nullptr;
-	refBuilder->get_widget_derived("vectorizer_settings", dialog);
-//	if (dialog) {
-//		dialog->set_transient_for(parent);
-//	}
-	return dialog;
+	refGlade->get_widget("cancel_button", button);
+	if (button)
+		button->signal_clicked().connect(sigc::mem_fun(*this, &VectorizerSettings::on_cancel_pressed));
+
+	refGlade->get_widget("convert_button", button);
+	if (button)
+		button->signal_clicked().connect(sigc::mem_fun(*this, &VectorizerSettings::on_convert_pressed));
 }
 
 // There are repeated load_interface methods in dialogs that use Glade
@@ -263,6 +264,19 @@ static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
 		return Glib::RefPtr<Gtk::Builder>();
 	}
 	return refBuilder;
+}
+
+VectorizerSettings* VectorizerSettings::create(/*Gtk::Window& parent*/)
+{
+	auto refBuilder = load_interface("vectorizer_settings.glade");
+	if (!refBuilder)
+		return nullptr;
+	VectorizerSettings * dialog = nullptr;
+	refBuilder->get_widget_derived("vectorizer_settings", dialog);
+//	if (dialog) {
+//		dialog->set_transient_for(parent);
+//	}
+	return dialog;
 }
 
 VectorizerSettings::~VectorizerSettings()

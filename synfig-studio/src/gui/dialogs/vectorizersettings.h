@@ -33,6 +33,7 @@
 #include <gtkmm/separator.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/switch.h>
+#include <gtkmm/builder.h>
 #include <gui/instance.h>
 #include <synfig/layers/layer_bitmap.h>
 #include <unordered_map>
@@ -81,6 +82,8 @@ class VectorizerSettings : public Gtk::Dialog
 	etl::handle<synfig::Layer> reference_layer_;
 	const etl::handle<Instance> instance;
 	std::unordered_map <std::string,int>* config_map;
+
+	const Glib::RefPtr<Gtk::Builder>& builder;
 
 public:
 
