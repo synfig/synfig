@@ -85,8 +85,10 @@ class VectorizerSettings : public Gtk::Dialog
 public:
 
 	bool isOutline;
-	VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
+	//VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+	//		etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
+	VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
+	static VectorizerSettings * create(/*Gtk::Window& parent*/);
 	~VectorizerSettings();
 
 	// CenterlineConfiguration getCenterlineConfiguration() const;
