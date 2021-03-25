@@ -99,7 +99,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 		// FIXME: 24 fps is hardcoded now, but in fact we have to get it from canvas
 		//float position = (frame+1)/24; // ffmpeg didn't work with 0 frame
 		//float position = 1000/24; // ffmpeg didn't work with 0 frame
-		const char* position = time.get_string(Time::FORMAT_NORMAL).c_str();
+		const std::string position = time.get_string(Time::FORMAT_NORMAL);
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
@@ -147,7 +147,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 			close(p[1]);
 			/*std::string command = strprintf("\"%s\" -ss '%s' -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n", "ffmpeg", position2, identifier.filename.c_str());
 			synfig::warning("ffmpeg command: '%s'", command.c_str());*/
-			execlp("ffmpeg", "ffmpeg", "-ss", position, "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			execlp("ffmpeg", "ffmpeg", "-ss", position.c_str(), "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
 			cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<endl;
 			_exit(1);

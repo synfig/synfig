@@ -100,7 +100,7 @@ class Dialog_PreviewOptions : public Gtk::Dialog
 
 	DialogSettings	settings;
 
-	float globalfps;
+	float globalfps = 0;
 
 	// for finishing
 	void on_ok_pressed();
