@@ -413,7 +413,9 @@ ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 	puts(get_contained_type().description.name.c_str());
 
 	std::map<const ValueNode*, ValueNode::Handle> clone_map;
-	bool is_actually_tree = get_contained_type() == type_bone_object;
+	const bool is_actually_skeleton_tree = get_contained_type() == type_bone_object;
+	const types_namespace::TypePair<Bone, Bone>& type_bone_pair = types_namespace::TypePair<Bone, Bone>::instance;
+	const bool is_actually_skeleton_deform = get_contained_type() == type_bone_pair;
 
 	for(std::vector<ReplaceableListEntry>::const_iterator iter=list.begin();iter!=list.end();++iter)
 		if((*iter)->is_exported())
@@ -421,16 +423,25 @@ ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 		else {
 			ValueNode::Handle item_clone = (*iter)->clone(canvas, deriv_guid);
 			ret->add(item_clone);
-			if (is_actually_tree)
+			if (is_actually_skeleton_tree)
 				clone_map[iter->get()] = item_clone;
+			else if (is_actually_skeleton_deform) {
+				ValueNode_Composite::Handle value_node_composite =
+					ValueNode_Composite::Handle::cast_dynamic(*iter);
+				if (value_node_composite) {
+					clone_map[value_node_composite->get_link("first").get()] = ValueNode_Composite::Handle::cast_static(item_clone)->get_link("first").get();
+					clone_map[value_node_composite->get_link("second").get()] = ValueNode_Composite::Handle::cast_static(item_clone)->get_link("second").get();
+				}
+			}
 		}
 
-	if (is_actually_tree) {
+	if (is_actually_skeleton_tree || is_actually_skeleton_deform) {
 		// fix referencing to old items (eg. bone parenting)
 		for (std::vector<ReplaceableListEntry>::const_iterator iter=list.begin(), ret_iter=ret->list.begin(); iter!=list.end();++iter, ++ret_iter) {
 			if ((*iter)->is_exported())
 				continue;
-			if ((*iter)->get_type() == type_bone_object)
+			const Type& type = (*iter)->get_type();
+			if (type == type_bone_object || type == type_bone_pair)
 				ValueNode_Bone::fix_bones_referenced_by(*iter, *ret_iter, false, clone_map);
 		}
 	}
