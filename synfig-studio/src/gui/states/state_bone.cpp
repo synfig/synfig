@@ -361,9 +361,8 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 
 	get_canvas_interface()->set_state("bone");
 
-	/*setting up the tool options menu*/
-
-	// 0, title
+	// Set up state_bone Toolbox window
+	// Title
 	title_label.set_label(_("Skeleton Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -371,15 +370,18 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	title_label.set_attributes(list);
 	title_label.set_alignment(Gtk::ALIGN_START,Gtk::ALIGN_CENTER);
 
-	// 1, layer name label and entry
+	// Layer name
 	id_label.set_label(_("Name:"));
 	id_label.set_alignment(Gtk::ALIGN_START,Gtk::ALIGN_CENTER);
 	id_entry.set_hexpand();
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(id_entry);
 
+	// Layer type
+	layer_label.set_label(_("Layer Type:"));
+	layer_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
-	// 2, Bone width
+	// Layer settings
 	bone_width_label.set_label(_("Bone Width:"));
 	bone_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	skel_bone_width_dist.set_digits(2);
@@ -394,28 +396,24 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 
 	load_settings();
 
-	// 4, Layer choice
-	layer_label.set_label(_("Layer"));
-	layer_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
+	// Create button
 	create_layer.set_label(_("Create Layer"));
 	create_layer.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER);
 	create_layer.set_sensitive(true);
 
-
-	// pack all options to the options_grid
-
-	// 0, title
+	// Layout widgets in options_grid
+	// Title
 	options_grid.attach(title_label, 0, 0, 2, 1);
-	// 1, name
+	// Layer name
 	options_grid.attach(id_box, 0, 1, 2, 1);
-	// 2, default bone width
-	options_grid.attach(bone_width_label, 0, 2, 1, 1);
-	options_grid.attach(skel_box, 1, 2, 1, 1);
-	// 3, Layer choice
-	options_grid.attach(layer_label, 0, 3, 2, 1);
-	options_grid.attach(radiobutton_skel, 0, 4, 2, 1);
-	options_grid.attach(radiobutton_skel_deform, 0, 5, 2, 1);
+	// Layer type
+	options_grid.attach(layer_label, 0, 2, 2, 1);
+	options_grid.attach(radiobutton_skel, 0, 3, 2, 1);
+	options_grid.attach(radiobutton_skel_deform, 0, 4, 2, 1);
+	// Layer settings
+	options_grid.attach(bone_width_label, 0, 5, 1, 1);
+	options_grid.attach(skel_box, 1, 5, 1, 1);
+	// Create button
 	options_grid.attach(create_layer, 0, 6, 2, 1);
 
 	create_layer.signal_clicked().connect(sigc::mem_fun(*this,&StateBone_Context::make_layer));
