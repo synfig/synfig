@@ -47,6 +47,8 @@
 #include <synfig/general.h>
 
 #include <synfigapp/main.h>
+#include <gtkmm-3.0/gtkmm/widget.h>
+#include <gtkmm-3.0/gtkmm/enums.h>
 
 #endif
 
@@ -99,7 +101,7 @@ class studio::StateSmoothMove_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_SmoothMove> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_radius;
@@ -196,34 +198,37 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	pressure=1.0f;
 
 	// Set up the tool options dialog
-	
 	title_label.set_label(_("SmoothMove Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
 	spin_label.set_label(_("Radius:"));
-	spin_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(spin_label,
-		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(spin_radius,
-		1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	spin_label.set_halign(Gtk::ALIGN_START);
+	spin_label.set_valign(Gtk::ALIGN_CENTER);
+
+	spin_radius.set_halign(Gtk::ALIGN_END);
+	spin_radius.set_valign(Gtk::ALIGN_CENTER);
+
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(spin_label,
+		0, 1, 1, 1);
+	options_grid.attach(spin_radius,
+		1, 1, 1, 1);
 
 	spin_radius.signal_value_changed().connect(sigc::mem_fun(*this,&StateSmoothMove_Context::refresh_radius));
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
+	options_grid.set_hexpand();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
@@ -241,7 +246,7 @@ void
 StateSmoothMove_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Smooth Move"));
 	App::dialog_tool_options->set_name("smooth_move");
 }

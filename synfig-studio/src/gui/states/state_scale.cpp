@@ -95,7 +95,7 @@ class studio::StateScale_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_Scale> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	Gtk::Label aspect_lock_label;
@@ -190,26 +190,29 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
 	aspect_lock_label.set_label(_("Lock Aspect Ratio"));
-	aspect_lock_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	aspect_lock_label.set_hexpand();
+	aspect_lock_label.set_halign(Gtk::ALIGN_START);
+	aspect_lock_label.set_valign(Gtk::ALIGN_CENTER);
 
 	aspect_lock_box.pack_start(aspect_lock_label);
 	aspect_lock_box.pack_end(aspect_lock_checkbutton, Gtk::PACK_SHRINK);
 	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(aspect_lock_box,
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(aspect_lock_box,
+		0, 1, 2, 1);
 
 	aspect_lock_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateScale_Context::refresh_aspect_lock_flag));
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
+	options_grid.set_hexpand();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -229,7 +232,7 @@ void
 StateScale_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Scale Tool"));
 	App::dialog_tool_options->set_name("scale");
 }

@@ -46,6 +46,7 @@
 #include <synfig/angle.h>
 
 #include <synfigapp/main.h>
+#include <gtkmm-3.0/gtkmm/widget.h>
 
 #endif
 
@@ -109,7 +110,7 @@ class studio::StateNormal_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_Combo> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	bool ctrl_pressed;
@@ -285,22 +286,20 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	title_label.set_attributes(list);
 	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_START)),
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_START)),
-		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_START)),
-		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_grid.attach(title_label,
+		0, 0, 1, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_START)),
+		0, 1, 1, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_START)),
+		0, 2, 1, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_START)),
+		0, 3, 1, 1);
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-
-	options_table.show_all();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
-	//App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
@@ -316,7 +315,7 @@ void
 StateNormal_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Transform Tool"));
 	App::dialog_tool_options->set_name("normal");
 }

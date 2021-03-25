@@ -88,7 +88,7 @@ class studio::StateMirror_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_Mirror> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	sigc::connection keypress_connect;
@@ -171,16 +171,18 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
-	options_table.attach(radiobutton_axis_x,
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(radiobutton_axis_y,
-		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("(Shift key toggles axis)"))),
-		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(radiobutton_axis_x,
+		0, 1, 1, 1);
+	options_grid.attach(radiobutton_axis_y,
+		0, 2, 1, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("(Shift key toggles axis)"))),
+		0, 3, 2, 1);
 
 	radiobutton_axis_x.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
 	radiobutton_axis_y.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
@@ -188,9 +190,9 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	keypress_connect=get_work_area()->signal_key_press_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_press_event),false);
 	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_release_event),false);
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -241,7 +243,7 @@ void
 StateMirror_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Mirror Tool"));
 	App::dialog_tool_options->set_name("mirror");
 }
