@@ -410,8 +410,8 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// 1, name
 	options_grid.attach(id_box, 0, 1, 2, 1);
 	// 2, default bone width
-	options_grid.attach(bone_width_label, 0, 2);
-	options_grid.attach(skel_box, 1, 2);
+	options_grid.attach(bone_width_label, 0, 2, 1, 1);
+	options_grid.attach(skel_box, 1, 2, 1, 1);
 	// 3, Layer choice
 	options_grid.attach(layer_label, 0, 3, 2, 1);
 	options_grid.attach(radiobutton_skel, 0, 4, 2, 1);
