@@ -51,34 +51,38 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-//VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-// etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
-//	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
-//	adjustment_accuracy(Gtk::Adjustment::create(configmap["accuracy"],1,10)),
-//	entry_accuracy(adjustment_accuracy,1,0),
-//	adjustment_accuracy2(Gtk::Adjustment::create(5,1,10)),
-//	entry_accuracy2(adjustment_accuracy2,1,0),
-//	adjustment_threshold(Gtk::Adjustment::create(configmap["threshold"],1,10)),
-//	entry_threshold(adjustment_threshold,1,0),
-//	adjustment_despeckling(Gtk::Adjustment::create(configmap["despeckling"],0,500)),
-//	entry_despeckling(adjustment_despeckling,1,0),
-//	adjustment_despeckling2(Gtk::Adjustment::create(3,0,500)),
-//	entry_despeckling2(adjustment_despeckling2,1,0),
-//	adjustment_maxthickness(Gtk::Adjustment::create(configmap["maxthickness"],0,500)),
-//	entry_maxthickness(adjustment_maxthickness,1,0),
-//	adjustment_radius(Gtk::Adjustment::create(100,1,100)),
-//	entry_radius(adjustment_radius,1,0),
-//	adjustment_adherence(Gtk::Adjustment::create(100,1,100)),
-//	entry_adherence(adjustment_adherence,1,0),
-//	adjustment_angle(Gtk::Adjustment::create(100,1,100)),
-//	entry_angle(adjustment_angle,1,0),
-//	layer_bitmap_(my_layer_bitmap),
-//	reference_layer_(reference_layer),
-//	instance(selected_instance)
+///VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+/// etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
+///	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
+///	adjustment_accuracy(Gtk::Adjustment::create(configmap["accuracy"],1,10)),
+///	entry_accuracy(adjustment_accuracy,1,0),
+///	adjustment_accuracy2(Gtk::Adjustment::create(5,1,10)),
+///	entry_accuracy2(adjustment_accuracy2,1,0),
+///	adjustment_threshold(Gtk::Adjustment::create(configmap["threshold"],1,10)),
+///	entry_threshold(adjustment_threshold,1,0),
+///	adjustment_despeckling(Gtk::Adjustment::create(configmap["despeckling"],0,500)),
+///	entry_despeckling(adjustment_despeckling,1,0),
+///	adjustment_despeckling2(Gtk::Adjustment::create(3,0,500)),
+///	entry_despeckling2(adjustment_despeckling2,1,0),
+///	adjustment_maxthickness(Gtk::Adjustment::create(configmap["maxthickness"],0,500)),
+///	entry_maxthickness(adjustment_maxthickness,1,0),
+///	adjustment_radius(Gtk::Adjustment::create(100,1,100)),
+///	entry_radius(adjustment_radius,1,0),
+///	adjustment_adherence(Gtk::Adjustment::create(100,1,100)),
+///	entry_adherence(adjustment_adherence,1,0),
+///	adjustment_angle(Gtk::Adjustment::create(100,1,100)),
+///	entry_angle(adjustment_angle,1,0),
+///	layer_bitmap_(my_layer_bitmap),
+///	reference_layer_(reference_layer),
+///	instance(selected_instance)
 
-VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade) :
+VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
 	Gtk::Dialog(cobject),
-	builder(refGlade)
+	builder(refGlade),
+	layer_bitmap_(my_layer_bitmap),
+	reference_layer_(reference_layer),
+	instance(selected_instance)
 {
 	//Centerline and Outline option in the comboboxtext
 	// comboboxtext_mode.append(_("Centerline"));
@@ -87,7 +91,7 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	// comboboxtext_mode.set_active(0);
 	// comboboxtext_mode.signal_changed().connect(
 	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
-	///config_map = &configmap;
+	config_map = &configmap;
 	///Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(1, 1, 1, 1));
 	///get_vbox()->pack_start(*dialogPadding, false, false, 0);
 	///Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
@@ -230,6 +234,34 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	///Outline_setting_grid->hide();
 	///on_comboboxtext_mode_changed();
 
+	Gtk::SpinButton * thresholdSpinner;
+	refGlade->get_widget("threshold_spinner", thresholdSpinner);
+	if (thresholdSpinner){
+		adjustment_threshold = thresholdSpinner->get_adjustment();
+		adjustment_threshold->set_value(configmap["threshold"]);
+	}
+
+	Gtk::SpinButton * accuracySpinner;
+	refGlade->get_widget("accuracy_spinner", accuracySpinner);
+	if (accuracySpinner){
+		adjustment_accuracy = accuracySpinner->get_adjustment();
+		adjustment_accuracy->set_value(configmap["accuracy"]);
+	}
+
+	Gtk::SpinButton * despecklingSpinner;
+	refGlade->get_widget("despeckling_spinner", despecklingSpinner);
+	if (despecklingSpinner){
+		adjustment_despeckling = despecklingSpinner->get_adjustment();
+		adjustment_despeckling->set_value(configmap["despeckling"]);
+	}
+
+	Gtk::SpinButton * maxthicknessSpinner;
+	refGlade->get_widget("maxthickness_spinner", maxthicknessSpinner);
+	if (maxthicknessSpinner){
+		adjustment_maxthickness = maxthicknessSpinner->get_adjustment();
+		adjustment_maxthickness->set_value(configmap["maxthickness"]);
+	}
+
 	Gtk::Button *button = nullptr;
 
 	refGlade->get_widget("cancel_button", button);
@@ -266,15 +298,15 @@ static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
 	return refBuilder;
 }
 
-VectorizerSettings* VectorizerSettings::create(/*Gtk::Window& parent*/)
+VectorizerSettings * VectorizerSettings::create(etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+ etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
 {
 	auto refBuilder = load_interface("vectorizer_settings.glade");
 	if (!refBuilder)
 		return nullptr;
 	VectorizerSettings * dialog = nullptr;
-	refBuilder->get_widget_derived("vectorizer_settings", dialog);
+	refBuilder->get_widget_derived("vectorizer_settings", dialog, my_layer_bitmap, selected_instance, configmap, reference_layer);
 //	if (dialog) {
-//		dialog->set_transient_for(parent);
 //	}
 	return dialog;
 }

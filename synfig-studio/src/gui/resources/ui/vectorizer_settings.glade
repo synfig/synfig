@@ -2,23 +2,23 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <object class="GtkAdjustment" id="adj_accuracy">
+  <object class="GtkAdjustment" id="adjustment_accuracy">
     <property name="lower">1</property>
     <property name="upper">10</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adj_despeckling">
+  <object class="GtkAdjustment" id="adjustment_despeckling">
     <property name="upper">500</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adj_maxthickness">
+  <object class="GtkAdjustment" id="adjustment_maxthickness">
     <property name="upper">500</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="adj_threshold">
+  <object class="GtkAdjustment" id="adjustment_threshold">
     <property name="lower">1</property>
     <property name="upper">10</property>
     <property name="step-increment">1</property>
@@ -29,7 +29,7 @@
     <property name="title" translatable="yes">Vectorizer Settings</property>
     <property name="resizable">False</property>
     <property name="default-width">320</property>
-    <property name="default-height">260</property>
+    <property name="default-height">220</property>
     <property name="type-hint">dialog</property>
     <child internal-child="vbox">
       <object class="GtkBox">
@@ -42,6 +42,7 @@
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can-focus">False</property>
+            <property name="margin-end">6</property>
             <property name="layout-style">end</property>
             <child>
               <object class="GtkButton" id="convert_button">
@@ -83,6 +84,8 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="margin-start">6</property>
+            <property name="margin-end">6</property>
             <property name="hexpand">True</property>
             <property name="row-spacing">6</property>
             <property name="column-spacing">12</property>
@@ -90,6 +93,7 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="tooltip-text" translatable="yes">sets value of the darkest pixels to be taken into account to detect lines to be converted to vector strokes</property>
                 <property name="label" translatable="yes">_Threshold</property>
                 <property name="use-underline">True</property>
               </object>
@@ -102,9 +106,8 @@
               <object class="GtkSpinButton" id="threshold_spinner">
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
-                <property name="margin-left">74</property>
                 <property name="hexpand">True</property>
-                <property name="adjustment">adj_threshold</property>
+                <property name="adjustment">adjustment_threshold</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -116,7 +119,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="hexpand">True</property>
-                <property name="adjustment">adj_accuracy</property>
+                <property name="adjustment">adjustment_accuracy</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -128,7 +131,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="hexpand">True</property>
-                <property name="adjustment">adj_despeckling</property>
+                <property name="adjustment">adjustment_despeckling</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -140,7 +143,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="hexpand">True</property>
-                <property name="adjustment">adj_maxthickness</property>
+                <property name="adjustment">adjustment_maxthickness</property>
               </object>
               <packing>
                 <property name="left-attach">1</property>
@@ -151,6 +154,7 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="tooltip-text" translatable="yes">sets how much the vector stroke will follow the shape of the original drawing lines</property>
                 <property name="label" translatable="yes">_Accuracy</property>
                 <property name="use-underline">True</property>
               </object>
@@ -163,6 +167,7 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="tooltip-text" translatable="yes">sets value to ignore small areas generated by the image noise</property>
                 <property name="label" translatable="yes">_Despeckling</property>
                 <property name="use-underline">True</property>
               </object>
@@ -175,6 +180,7 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="tooltip-text" translatable="yes">sets the maximum vector stroke thickness</property>
                 <property name="label" translatable="yes">_Max Thickness</property>
                 <property name="use-underline">True</property>
               </object>
@@ -187,7 +193,6 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="padding">6</property>
             <property name="position">1</property>
           </packing>
         </child>

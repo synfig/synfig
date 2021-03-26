@@ -77,21 +77,21 @@ class VectorizerSettings : public Gtk::Dialog
 
   	Gtk::Separator Separator;
 
+	const Glib::RefPtr<Gtk::Builder>& builder;
+
 	Gtk::ComboBoxText comboboxtext_mode;
 	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
 	etl::handle<synfig::Layer> reference_layer_;
 	const etl::handle<Instance> instance;
 	std::unordered_map <std::string,int>* config_map;
 
-	const Glib::RefPtr<Gtk::Builder>& builder;
-
 public:
 
 	bool isOutline;
-	//VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-	//		etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
-	VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
-	static VectorizerSettings * create(/*Gtk::Window& parent*/);
+	VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
+	static VectorizerSettings * create(etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+			etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer);
 	~VectorizerSettings();
 
 	// CenterlineConfiguration getCenterlineConfiguration() const;
