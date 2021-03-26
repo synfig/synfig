@@ -46,7 +46,6 @@
 #include <synfig/angle.h>
 
 #include <synfigapp/main.h>
-#include <gtkmm-3.0/gtkmm/widget.h>
 
 #endif
 

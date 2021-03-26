@@ -47,8 +47,6 @@
 #include <synfig/general.h>
 
 #include <synfigapp/main.h>
-#include <gtkmm-3.0/gtkmm/widget.h>
-#include <gtkmm-3.0/gtkmm/enums.h>
 
 #endif
 
