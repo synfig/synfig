@@ -604,8 +604,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 {
 	egress_on_selection_change=true;
 
-	/* Set up the tool options dialog */
-
+	// Toolbox widgets
 	title_label.set_label(_("Star Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -749,6 +748,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 
 	load_settings();
 
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(id_box,
@@ -810,11 +810,9 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_grid.attach(origins_at_center_box,
 		0, 18, 2, 1);
 
-	// fine-tune options layout
-	options_grid.set_border_width(GAP*2); // border width
+	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
-
 	options_grid.show_all();
 
 	refresh_tool_options();

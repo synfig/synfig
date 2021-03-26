@@ -234,6 +234,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	button_load_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::load_sketch));
 	show_sketch_checkbutton.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::toggle_show_sketch));
 
+	// Toolbox widgets
 	title_label.set_label(_("Sketch Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -249,7 +250,8 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 
 	show_sketch_box.pack_start(show_sketch_label);
 	show_sketch_box.pack_end(show_sketch_checkbutton, Gtk::PACK_SHRINK);
-	
+
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(show_sketch_box,

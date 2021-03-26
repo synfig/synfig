@@ -604,9 +604,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	width_max_error_spin(width_max_error_adj, 0.01, 2),
 	fill_last_stroke_button(_("Fill Last Stroke"))
 {
-	/* Set up the tool options dialog */
-
-	// 0, title
+	// Toolbox widgets
 	title_label.set_label(_("Cutout Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -616,7 +614,6 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	title_label.set_halign(Gtk::ALIGN_START);
 	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
 	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
@@ -625,7 +622,6 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 
 	id_box.pack_start(id_entry);
 
-	// 2, layer types creation
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
@@ -633,18 +629,15 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 		("synfig-layer_geometry_region"), _("Create a region layer"));
 
 	
-
 	SPACING(layer_types_indent, INDENTATION);
 
 	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
-//	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
+	//layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
 	//layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
 
-	// 3, blend method label and dropdown list
 	SPACING(blend_gap, GAP);
 	
-	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
 	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
@@ -652,21 +645,18 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
 	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
 
-	// 6, pressure width
 	pressure_width_label.set_label(_("Pressure Sensitive"));
 	pressure_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	pressure_width_box.pack_start(pressure_width_label, Gtk::PACK_SHRINK);
 	pressure_width_box.pack_end(pressure_width_checkbutton, Gtk::PACK_SHRINK);
 
-	// 7, min pressure, sub option of pressure width
 	SPACING(min_pressure_indent, INDENTATION);
 	SPACING(min_pressure_gap, GAP);
 	min_pressure_label.set_label(_("Min Width:"));
@@ -678,18 +668,15 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	min_pressure_box.pack_end(*min_pressure_gap, Gtk::PACK_SHRINK);
 	min_pressure_box.pack_end(min_pressure_spin);
 
-	// 8, Smoothness
 	smoothness_label.set_label(_("Smoothness"));
 	smoothness_label.set_halign(Gtk::ALIGN_START);
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 9, local threshold
 	SPACING(localthres_indent, INDENTATION);
 	localthres_box.pack_start(*localthres_indent, Gtk::PACK_SHRINK);
 	localthres_box.pack_start(localthres_radiobutton, Gtk::PACK_SHRINK);
 	localthres_radiobutton.set_label("Local:");
 
-	// 10, global threshold
 	SPACING(globalthres_indent, INDENTATION);
 	globalthres_box.pack_start(*globalthres_indent, Gtk::PACK_SHRINK);
 	globalthres_box.pack_start(globalthres_radiobutton, Gtk::PACK_SHRINK);
@@ -698,42 +685,36 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	smoothness_group = localthres_radiobutton.get_group();
 	globalthres_radiobutton.set_group(smoothness_group);
 
-	// 11, width max error of advanced outline layer
 	width_max_error_label.set_label(_("Width Max Error:"));
 	SPACING(width_max_error_gap, GAP);
 	width_max_error_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	width_max_error_box.pack_start(width_max_error_label, Gtk::PACK_SHRINK);
 	width_max_error_box.pack_start(*width_max_error_gap, Gtk::PACK_SHRINK);
 
-	// 12, round ends
 	round_ends_label.set_label(_("Round Ends"));
 	round_ends_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	round_ends_box.pack_start(round_ends_label, Gtk::PACK_SHRINK);
 	round_ends_box.pack_end(round_ends_checkbutton, Gtk::PACK_SHRINK);
 
-	// 13, auto loop
 	auto_loop_label.set_label(_("Auto Loop"));
 	auto_loop_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_loop_box.pack_start(auto_loop_label, Gtk::PACK_SHRINK);
 	auto_loop_box.pack_end(auto_loop_checkbutton, Gtk::PACK_SHRINK);
 
-	// 14, auto extend
 	auto_extend_label.set_label(_("Auto Extend"));
 	auto_extend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_extend_box.pack_start(auto_extend_label, Gtk::PACK_SHRINK);
 	auto_extend_box.pack_end(auto_extend_checkbutton, Gtk::PACK_SHRINK);
 
-	// 15, auto link
 	auto_link_label.set_label(_("Auto Link"));
 	auto_link_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_link_box.pack_start(auto_link_label, Gtk::PACK_SHRINK);
 	auto_link_box.pack_end(auto_link_checkbutton, Gtk::PACK_SHRINK);
 
-	// 16, feather
 	feather_label.set_label(_("Feather:"));
 	feather_label.set_halign(Gtk::ALIGN_START);
 	feather_label.set_valign(Gtk::ALIGN_CENTER);
@@ -741,13 +722,11 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 
-	// 17, auto export
 	auto_export_label.set_label(_("Auto Export"));
 	auto_export_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	auto_export_box.pack_start(auto_export_label, Gtk::PACK_SHRINK);
 	auto_export_box.pack_end(auto_export_checkbutton, Gtk::PACK_SHRINK);
-
 
 	nested=0;
 	load_settings();
@@ -756,8 +735,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	UpdateCreateAdvancedOutline();
 	UpdateSmoothness();
 
-
-	// pack all options to the options_grid
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(smoothness_label,
@@ -780,18 +758,16 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
 
-
 	fill_last_stroke_button.signal_pressed().connect(
 		sigc::mem_fun(*this, &StateLasso_Context::fill_last_stroke));
 	pressure_width_checkbutton.signal_toggled().connect(
 		sigc::mem_fun(*this, &StateLasso_Context::UpdateUsePressure));
-//	layer_advanced_outline_togglebutton.signal_toggled().connect(
+	//layer_advanced_outline_togglebutton.signal_toggled().connect(
 	//	sigc::mem_fun(*this, &StateLasso_Context::UpdateCreateAdvancedOutline));
 	localthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
 		&StateLasso_Context::UpdateSmoothness));
 	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
 		&StateLasso_Context::UpdateSmoothness));
-
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();

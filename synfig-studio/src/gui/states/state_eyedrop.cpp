@@ -112,7 +112,7 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	synfig::info("Entered Eyedrop State");
 	canvas_view->get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
 
-	// Setup Eyedrop options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Eyedrop Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -122,6 +122,7 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	title_label.set_halign(Gtk::ALIGN_START);
 	title_label.set_valign(Gtk::ALIGN_CENTER);
 
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(*manage(new Gtk::Label(_("Click to assign Outline Color"), Gtk::ALIGN_START)),

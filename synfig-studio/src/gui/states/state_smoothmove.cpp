@@ -195,7 +195,7 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 {
 	pressure=1.0f;
 
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("SmoothMove Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -212,6 +212,9 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	spin_radius.set_halign(Gtk::ALIGN_END);
 	spin_radius.set_valign(Gtk::ALIGN_CENTER);
 
+	load_settings();
+
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(spin_label,
@@ -221,11 +224,11 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 
 	spin_radius.signal_value_changed().connect(sigc::mem_fun(*this,&StateSmoothMove_Context::refresh_radius));
 
-	options_grid.set_hexpand();
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -236,8 +239,6 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 
 	get_work_area()->set_cursor(Gdk::FLEUR);
 	//get_work_area()->reset_cursor();
-
-	load_settings();
 }
 
 void

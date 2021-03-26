@@ -389,8 +389,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 {
 	egress_on_selection_change=true;
 
-	// Set up the tool options dialog
-
+	// Toolbox widgets
 	title_label.set_label(_("Gradient Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -404,6 +403,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(name_gap, GAP);
+
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*name_gap, Gtk::PACK_SHRINK);
 	id_box.pack_start(id_entry, Gtk::PACK_EXPAND_WIDGET);
@@ -428,28 +428,29 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	layer_types_box.pack_start(layer_conical_gradient_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_spiral_gradient_togglebutton, Gtk::PACK_SHRINK);
 
-	// blend method label
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
+
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
-	// blend method
+
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for gradients")));
 
-	// opacity label
 	opacity_label.set_label(_("Opacity:"));
 	opacity_label.set_halign(Gtk::ALIGN_START);
 	opacity_label.set_valign(Gtk::ALIGN_CENTER);
-	// opacity
+
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
+	load_settings();
 
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(id_box,
@@ -467,16 +468,13 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	options_grid.attach(opacity_hscl,
 		1, 5, 1, 1);
 
-	// fine-tune options layout
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
 
-	load_settings();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
-
 
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);

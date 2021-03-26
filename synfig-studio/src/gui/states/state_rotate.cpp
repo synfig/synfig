@@ -198,7 +198,7 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Rotate Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -207,15 +207,16 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	title_label.set_hexpand();
 	title_label.set_halign(Gtk::ALIGN_START);
 	title_label.set_valign(Gtk::ALIGN_CENTER);
-	
+
 	scale_label.set_label(_("Allow Scale"));
 	scale_label.set_hexpand();
 	scale_label.set_halign(Gtk::ALIGN_START);
 	scale_label.set_valign(Gtk::ALIGN_CENTER);
-	
+
 	scale_box.pack_start(scale_label);
 	scale_box.pack_end(scale_checkbutton, Gtk::PACK_SHRINK);
-	
+
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(scale_box,
@@ -227,6 +228,7 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.show_all();
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -234,7 +236,6 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	get_work_area()->set_cursor(Gdk::EXCHANGE);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 

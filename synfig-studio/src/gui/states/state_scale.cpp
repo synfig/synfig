@@ -184,7 +184,7 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Scale())
 {
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Scale Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -198,10 +198,10 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	aspect_lock_label.set_hexpand();
 	aspect_lock_label.set_halign(Gtk::ALIGN_START);
 	aspect_lock_label.set_valign(Gtk::ALIGN_CENTER);
-
 	aspect_lock_box.pack_start(aspect_lock_label);
 	aspect_lock_box.pack_end(aspect_lock_checkbutton, Gtk::PACK_SHRINK);
-	
+
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(aspect_lock_box,
@@ -209,10 +209,10 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 
 	aspect_lock_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateScale_Context::refresh_aspect_lock_flag));
 
-	options_grid.set_hexpand();
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.show_all();
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 

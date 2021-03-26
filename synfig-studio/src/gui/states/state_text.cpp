@@ -389,9 +389,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 {
 	egress_on_selection_change=true;
 
-
-	/* Set up the tool options dialog */
-
+	// Toolbox widgets
 	title_label.set_label(_("Text Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -464,8 +462,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	family_label.set_halign(Gtk::ALIGN_START);
 	family_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// pack all options to the options_grid
-
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(id_box,

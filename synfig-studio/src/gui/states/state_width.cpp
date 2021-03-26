@@ -233,15 +233,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	adj_delta(Gtk::Adjustment::create(6,0,20,0.01,0.1)),
 	spin_delta(adj_delta,0.01,3)
 {
-	influence_radius=manage(new Widget_Distance());
-	influence_radius->show();
-	influence_radius->set_digits(0);
-	influence_radius->set_range(0,10000000);
-	influence_radius->set_size_request(24,-1);
-
-	load_settings();
-
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Width Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -265,7 +257,16 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	radius_label.set_label(_("Radius:"));
 	radius_label.set_halign(Gtk::ALIGN_START);
 	radius_label.set_valign(Gtk::ALIGN_CENTER);
-	
+
+	influence_radius=manage(new Widget_Distance());
+	influence_radius->show();
+	influence_radius->set_digits(0);
+	influence_radius->set_range(0,10000000);
+	influence_radius->set_size_request(24,-1);
+
+	load_settings();
+
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(growth_label,

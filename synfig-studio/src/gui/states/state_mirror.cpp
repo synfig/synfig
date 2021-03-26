@@ -165,7 +165,7 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	radiobutton_axis_x(radiobutton_group,_("Horizontal")),
 	radiobutton_axis_y(radiobutton_group,_("Vertical"))
 {
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Mirror Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -174,7 +174,8 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	title_label.set_hexpand();
 	title_label.set_halign(Gtk::ALIGN_START);
 	title_label.set_valign(Gtk::ALIGN_CENTER);
-	
+
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(radiobutton_axis_x,
@@ -184,15 +185,16 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	options_grid.attach(*manage(new Gtk::Label(_("(Shift key toggles axis)"))),
 		0, 3, 2, 1);
 
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.show_all();
+
 	radiobutton_axis_x.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
 	radiobutton_axis_y.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
 	shift_is_pressed=false;
 	keypress_connect=get_work_area()->signal_key_press_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_press_event),false);
 	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_release_event),false);
 
-	options_grid.set_border_width(GAP*2);
-	options_grid.set_row_spacing(GAP);
-	options_grid.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 

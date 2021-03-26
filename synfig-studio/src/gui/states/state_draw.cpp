@@ -626,8 +626,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	width_max_error_spin(width_max_error_adj, 0.01, 2),
 	fill_last_stroke_button(_("Fill Last Stroke"))
 {
-	/* Set up the tool options dialog */
-
+	// Toolbox widgets
 	title_label.set_label(_("Draw Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -783,7 +782,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	auto_export_box.pack_start(auto_export_label, Gtk::PACK_SHRINK);
 	auto_export_box.pack_end(auto_export_checkbutton, Gtk::PACK_SHRINK);
 
-
 	nested=0;
 	load_settings();
 
@@ -791,7 +789,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	UpdateCreateAdvancedOutline();
 	UpdateSmoothness();
 
-
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(id_box,
@@ -849,7 +847,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	options_grid.attach(auto_export_box,
 		0, 19, 2, 1);
 
-	// fine-tune options layout
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
@@ -865,7 +862,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		&StateDraw_Context::UpdateSmoothness));
 	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
 		&StateDraw_Context::UpdateSmoothness));
-
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();

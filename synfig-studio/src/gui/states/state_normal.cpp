@@ -277,7 +277,7 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Transform Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
@@ -286,7 +286,8 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	title_label.set_hexpand();
 	title_label.set_halign(Gtk::ALIGN_START);
 	title_label.set_valign(Gtk::ALIGN_CENTER);
-	
+
+	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 1, 1);
 	options_grid.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_START)),
@@ -300,14 +301,11 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
+
 	refresh_tool_options();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
-
-	//these will segfault
-//	get_work_area()->set_cursor(Gdk::CROSSHAIR);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 }
