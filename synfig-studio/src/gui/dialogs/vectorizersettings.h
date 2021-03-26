@@ -80,16 +80,15 @@ class VectorizerSettings : public Gtk::Dialog
 	const Glib::RefPtr<Gtk::Builder>& builder;
 
 	Gtk::ComboBoxText comboboxtext_mode;
-	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
+	etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
 	etl::handle<synfig::Layer> reference_layer_;
-	const etl::handle<Instance> instance;
+	etl::handle<Instance> instance;
 	std::unordered_map <std::string,int>* config_map;
 
 public:
 
 	bool isOutline;
-	VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
+	VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
 	static VectorizerSettings * create(etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
 			etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer);
 	~VectorizerSettings();
@@ -104,7 +103,10 @@ public:
     //                    : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
   	// }
 	
-private:
+private:	
+	void initialize_parameters(etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+		etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer);
+
 	void on_comboboxtext_mode_changed();
 
 	void on_threshold_changed();

@@ -76,13 +76,9 @@ using namespace studio;
 ///	reference_layer_(reference_layer),
 ///	instance(selected_instance)
 
-VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
+VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade) :
 	Gtk::Dialog(cobject),
-	builder(refGlade),
-	layer_bitmap_(my_layer_bitmap),
-	reference_layer_(reference_layer),
-	instance(selected_instance)
+	builder(refGlade)
 {
 	//Centerline and Outline option in the comboboxtext
 	// comboboxtext_mode.append(_("Centerline"));
@@ -91,7 +87,7 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	// comboboxtext_mode.set_active(0);
 	// comboboxtext_mode.signal_changed().connect(
 	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
-	config_map = &configmap;
+	///config_map = &configmap;
 	///Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(1, 1, 1, 1));
 	///get_vbox()->pack_start(*dialogPadding, false, false, 0);
 	///Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
@@ -238,28 +234,24 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	refGlade->get_widget("threshold_spinner", thresholdSpinner);
 	if (thresholdSpinner){
 		adjustment_threshold = thresholdSpinner->get_adjustment();
-		adjustment_threshold->set_value(configmap["threshold"]);
 	}
 
 	Gtk::SpinButton * accuracySpinner;
 	refGlade->get_widget("accuracy_spinner", accuracySpinner);
 	if (accuracySpinner){
 		adjustment_accuracy = accuracySpinner->get_adjustment();
-		adjustment_accuracy->set_value(configmap["accuracy"]);
 	}
 
 	Gtk::SpinButton * despecklingSpinner;
 	refGlade->get_widget("despeckling_spinner", despecklingSpinner);
 	if (despecklingSpinner){
 		adjustment_despeckling = despecklingSpinner->get_adjustment();
-		adjustment_despeckling->set_value(configmap["despeckling"]);
 	}
 
 	Gtk::SpinButton * maxthicknessSpinner;
 	refGlade->get_widget("maxthickness_spinner", maxthicknessSpinner);
 	if (maxthicknessSpinner){
 		adjustment_maxthickness = maxthicknessSpinner->get_adjustment();
-		adjustment_maxthickness->set_value(configmap["maxthickness"]);
 	}
 
 	Gtk::Button *button = nullptr;
@@ -298,16 +290,31 @@ static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
 	return refBuilder;
 }
 
+void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
+{
+	layer_bitmap_ = my_layer_bitmap;
+	reference_layer_ = reference_layer;
+	instance = selected_instance;
+
+	config_map = &configmap;
+	adjustment_threshold->set_value(configmap["threshold"]);
+	adjustment_accuracy->set_value(configmap["accuracy"]);
+	adjustment_despeckling->set_value(configmap["despeckling"]);
+	adjustment_maxthickness->set_value(configmap["maxthickness"]);
+}
+
 VectorizerSettings * VectorizerSettings::create(etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
- etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
+	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
 {
 	auto refBuilder = load_interface("vectorizer_settings.glade");
 	if (!refBuilder)
 		return nullptr;
 	VectorizerSettings * dialog = nullptr;
-	refBuilder->get_widget_derived<VectorizerSettings>("vectorizer_settings", dialog, my_layer_bitmap, selected_instance, configmap, reference_layer);
-//	if (dialog) {
-//	}
+	refBuilder->get_widget_derived("vectorizer_settings", dialog);
+	if (dialog) {
+		dialog->initialize_parameters(my_layer_bitmap, selected_instance, configmap, reference_layer);
+	}
 	return dialog;
 }
 
