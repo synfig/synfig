@@ -106,7 +106,7 @@ class studio::StateText_Context
 	synfigapp::Settings& settings;
 
 	// holder of options
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 
 	// title
 	Gtk::Label title_label;
@@ -392,26 +392,27 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 
 	/* Set up the tool options dialog */
 
-	// 0, title
 	title_label.set_label(_("Text Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	id_label.set_halign(Gtk::ALIGN_START);
+	id_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
 
 	id_box.pack_start(id_entry);
 
-	// 2, layer types creation
 	layer_types_label.set_label(_("Layer Type:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	layer_types_label.set_halign(Gtk::ALIGN_START);
+	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_text_togglebutton,
 		("synfig-layer_other_text"), _("Create a text layer"));
@@ -421,9 +422,9 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_text_togglebutton, Gtk::PACK_SHRINK);
 
-	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	blend_label.set_halign(Gtk::ALIGN_START);
+	blend_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -432,102 +433,74 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for texts")));
 
-	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	opacity_label.set_halign(Gtk::ALIGN_START);
+	opacity_label.set_valign(Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	// 5, paragraph
 	paragraph_label.set_label(_("Multiline Text"));
-	paragraph_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	paragraph_label.set_halign(Gtk::ALIGN_START);
+	paragraph_label.set_valign(Gtk::ALIGN_CENTER);
 	paragraph_box.pack_start(paragraph_label, Gtk::PACK_SHRINK);
 	paragraph_box.pack_end(paragraph_checkbutton, Gtk::PACK_SHRINK);
 
-	// 6, size
 	size_label.set_label(_("Size:"));
-	size_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	size_label.set_halign(Gtk::ALIGN_START);
+	size_label.set_valign(Gtk::ALIGN_CENTER);
 
 	size_widget.set_digits(2);
 	size_widget.set_canvas(canvas_view->get_canvas());
 
-	// 7, orientation
 	orientation_label.set_label(_("Orientation:"));
-	orientation_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	orientation_label.set_halign(Gtk::ALIGN_START);
+	orientation_label.set_valign(Gtk::ALIGN_CENTER);
 
 	orientation_widget.set_digits(2);
 
-	// 8, family
 	family_label.set_label(_("Family:"));
-	family_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	family_label.set_halign(Gtk::ALIGN_START);
+	family_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// pack all options to the options_table
+	// pack all options to the options_grid
 
-	// 0, title
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 1, name
-	options_table.attach(id_box,
-		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 2, layer types creation
-	options_table.attach(layer_types_label,
-		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(layer_types_box,
-		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 3, blend method
-	options_table.attach(blend_box,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(blend_enum,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 4, opacity
-	options_table.attach(opacity_label,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(opacity_hscl,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 5, paragraph
-	options_table.attach(paragraph_box,
-		0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 6, size
-	options_table.attach(size_label,
-		0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(size_widget,
-		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 7, orientation
-	options_table.attach(orientation_label,
-		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(orientation_widget,
-		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 8, family
-	options_table.attach(family_label,
-		0, 1, 9, 10, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(family_entry,
-		1, 2, 9, 10, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-		// fine-tune options layout
-	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacings(GAP); // row gap
-	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	//options_table.set_row_spacing(9, 0); // the final row using border width of table
-	options_table.set_margin_bottom(0);
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(id_box,
+		0, 1, 2, 1);
+	options_grid.attach(layer_types_label,
+		0, 2, 2, 1);
+	options_grid.attach(layer_types_box,
+		0, 3, 2, 1);
+	options_grid.attach(blend_box,
+		0, 4, 1, 1);
+	options_grid.attach(blend_enum,
+		1, 4, 1, 1);
+	options_grid.attach(opacity_label,
+		0, 5, 1, 1);
+	options_grid.attach(opacity_hscl,
+		1, 5, 1, 1);
+	options_grid.attach(paragraph_box,
+		0, 6, 2, 1);
+	options_grid.attach(size_label,
+		0, 7, 1, 1);
+	options_grid.attach(size_widget,
+		1, 7, 1, 1);
+	options_grid.attach(orientation_label,
+		0, 8, 1, 1);
+	options_grid.attach(orientation_widget,
+		1, 8, 1, 1);
+	options_grid.attach(family_label,
+		0, 9, 1, 1);
+	options_grid.attach(family_entry,
+		1, 9, 1, 1);
 
-	options_table.show_all();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
 	load_settings();
 
@@ -561,7 +534,7 @@ void
 StateText_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Text Tool"));
 	App::dialog_tool_options->set_name("text");
 }

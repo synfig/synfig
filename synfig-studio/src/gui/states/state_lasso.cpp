@@ -143,7 +143,7 @@ class studio::StateLasso_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 	// holder of options
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 
 	// title
 	Gtk::Label title_label;
@@ -612,7 +612,9 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
@@ -678,7 +680,8 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 
 	// 8, Smoothness
 	smoothness_label.set_label(_("Smoothness"));
-	smoothness_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	smoothness_label.set_halign(Gtk::ALIGN_START);
+	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
 	// 9, local threshold
 	SPACING(localthres_indent, INDENTATION);
@@ -732,7 +735,8 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 
 	// 16, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	feather_label.set_halign(Gtk::ALIGN_START);
+	feather_label.set_valign(Gtk::ALIGN_CENTER);
 
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
@@ -753,113 +757,28 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	UpdateSmoothness();
 
 
-	// pack all options to the options_table
+	// pack all options to the options_grid
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(smoothness_label,
+		0, 1, 2, 1);
+	options_grid.attach(localthres_box,
+		0, 2, 1, 1);
+	options_grid.attach(localthres_spin,
+		1, 2, 1, 1);
+	options_grid.attach(globalthres_box,
+		0, 3, 1, 1);
+	options_grid.attach(globalthres_spin,
+		1, 3, 1, 1);
+	options_grid.attach(feather_label,
+		0, 4, 1, 1);
+	options_grid.attach(feather_dist,
+		1, 4, 1, 1);
 
-	// 0, title
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 1, name
-	//options_table.attach(id_box,
-	////	0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 2, layer types creation
-	//options_table.attach(layer_types_label,
-	////	0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	//options_table.attach(layer_types_box,
-	//	0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 3, blend method
-	
-	// 4, opacity
-	//options_table.attach(opacity_label,
-	//	0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	//options_table.attach(opacity_hscl,
-	//	1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 5, brush size
-	//options_table.attach(bline_width_label,
-	//	0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	//options_table.attach(bline_width_dist,
-	//	1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 6, pressure width
-	//options_table.attach(pressure_width_box,
-	///	0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 7, min pressure, sub-option of pressure width
-	//options_table.attach(min_pressure_label_box,
-	//	0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	//options_table.attach(min_pressure_box,
-	//	1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 8, smoothness
-	options_table.attach(smoothness_label,
-		0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 9, local threshold
-	options_table.attach(localthres_box,
-		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(localthres_spin,
-		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 10, global threshold
-	options_table.attach(globalthres_box,
-		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(globalthres_spin,
-		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 11, width max error of advanced outline layer
-	//options_table.attach(width_max_error_box,
-	//	0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	//options_table.attach(width_max_error_spin,
-	//	1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 12, round ends
-	//options_table.attach(round_ends_box,
-	///	0, 2, 13, 14, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 13, auto loop
-	//options_table.attach(auto_loop_box,
-	//	0, 2, 14, 15, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 14, auto extend
-	//options_table.attach(auto_extend_box,
-	//	0, 2, 15, 16, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 15, auto link
-	//options_table.attach(auto_link_box,
-	//	0, 2, 16, 17, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-	// 16, feather
-	options_table.attach(feather_label,
-		0, 1, 17, 18, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(feather_dist,
-		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 17, auto export
-	//options_table.attach(auto_export_box,
-	//	0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
-	//	);
-
-	// fine-tune options layout
-	options_table.set_border_width(GAP*2); // border width
-	//options_table.set_row_spacings(GAP); // row gap
-	//options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	//options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	options_table.set_row_spacing(16, GAP*2);
-	//options_table.set_row_spacing(19, 0); // the final row using border width of table
-	options_table.set_margin_bottom(0);
-
-	options_table.show_all();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
 
 	fill_last_stroke_button.signal_pressed().connect(
@@ -934,7 +853,7 @@ void
 StateLasso_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Cutout Tool"));
 	App::dialog_tool_options->set_name("lasso");
 
