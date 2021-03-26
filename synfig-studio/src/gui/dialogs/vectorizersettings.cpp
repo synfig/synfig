@@ -305,7 +305,7 @@ VectorizerSettings * VectorizerSettings::create(etl::handle<synfig::Layer_Bitmap
 	if (!refBuilder)
 		return nullptr;
 	VectorizerSettings * dialog = nullptr;
-	refBuilder->get_widget_derived("vectorizer_settings", dialog, my_layer_bitmap, selected_instance, configmap, reference_layer);
+	refBuilder->get_widget_derived<VectorizerSettings>("vectorizer_settings", dialog, my_layer_bitmap, selected_instance, configmap, reference_layer);
 //	if (dialog) {
 //	}
 	return dialog;
