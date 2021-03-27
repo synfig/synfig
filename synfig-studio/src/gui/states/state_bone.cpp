@@ -73,8 +73,9 @@ using namespace synfigapp;
 	name->set_size_request(px)
 #endif
 
-#define GAP	(3)
 #define DEFAULT_WIDTH (0.1)
+
+const int GAP = 3;
 
 /* === G L O B A L S ======================================================= */
 
@@ -361,29 +362,32 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 
 	get_canvas_interface()->set_state("bone");
 
-	// Set up state_bone Toolbox window
-	// Title
+	// Toolbox widgets
 	title_label.set_label(_("Skeleton Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START,Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// Layer name
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_START,Gtk::ALIGN_CENTER);
-	id_entry.set_hexpand();
+	id_label.set_halign(Gtk::ALIGN_START);
+	id_label.set_valign(Gtk::ALIGN_CENTER);
+	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
+	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
+
 	id_box.pack_start(id_entry);
 
-	// Layer type
 	layer_label.set_label(_("Layer Type:"));
-	layer_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	layer_label.set_halign(Gtk::ALIGN_START);
+	layer_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// Layer settings
 	bone_width_label.set_label(_("Bone Width:"));
-	bone_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	bone_width_label.set_halign(Gtk::ALIGN_START);
+	bone_width_label.set_valign(Gtk::ALIGN_CENTER);
 	skel_bone_width_dist.set_digits(2);
 	skel_bone_width_dist.set_range(0,10000000);
 	skel_bone_width_dist.set_sensitive(true);
@@ -396,33 +400,26 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 
 	load_settings();
 
-	// Create button
-	create_layer.set_label(_("Create Layer"));
-	create_layer.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER);
-	create_layer.set_sensitive(true);
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(id_box,
+		0, 1, 2, 1);
+	options_grid.attach(layer_label,
+		0, 2, 2, 1);
+	options_grid.attach(radiobutton_skel,
+		0, 3, 2, 1);
+	options_grid.attach(radiobutton_skel_deform,
+		0, 4, 2, 1);
+	options_grid.attach(bone_width_label,
+		0, 5, 1, 1);
+	options_grid.attach(skel_box,
+		1, 5, 1, 1);
 
-	// Layout widgets in options_grid
-	// Title
-	options_grid.attach(title_label, 0, 0, 2, 1);
-	// Layer name
-	options_grid.attach(id_box, 0, 1, 2, 1);
-	// Layer type
-	options_grid.attach(layer_label, 0, 2, 2, 1);
-	options_grid.attach(radiobutton_skel, 0, 3, 2, 1);
-	options_grid.attach(radiobutton_skel_deform, 0, 4, 2, 1);
-	// Layer settings
-	options_grid.attach(bone_width_label, 0, 5, 1, 1);
-	options_grid.attach(skel_box, 1, 5, 1, 1);
-	// Create button
-	options_grid.attach(create_layer, 0, 6, 2, 1);
-
-	create_layer.signal_clicked().connect(sigc::mem_fun(*this,&StateBone_Context::make_layer));
 	radiobutton_skel.signal_toggled().connect(sigc::mem_fun(*this,&StateBone_Context::update_layer));
 
-	// fine-tune options layout
-	options_grid.set_hexpand();
-	options_grid.set_border_width(GAP*2); // border width
-	options_grid.set_row_spacing(GAP); // row gap
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
 
@@ -490,6 +487,16 @@ StateBone_Context::refresh_tool_options()
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Skeleton Tool"));
 	App::dialog_tool_options->set_name("bone");
+
+	App::dialog_tool_options->add_button(
+			Gtk::StockID("gtk-add"),
+			_("Create Layer")
+	)->signal_clicked().connect(
+			sigc::mem_fun(
+					*this,
+					&StateBone_Context::make_layer
+			)
+	);
 
 	App::dialog_tool_options->add_button(
 			Gtk::StockID("gtk-clear"),
