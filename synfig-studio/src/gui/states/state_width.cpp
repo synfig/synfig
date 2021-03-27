@@ -97,7 +97,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 	//Toolbox display
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_delta;
@@ -233,6 +233,31 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	adj_delta(Gtk::Adjustment::create(6,0,20,0.01,0.1)),
 	spin_delta(adj_delta,0.01,3)
 {
+	// Toolbox widgets
+	title_label.set_label(_("Width Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
+	
+	relative_label.set_label(_("Relative Growth"));
+	relative_label.set_halign(Gtk::ALIGN_START);
+	relative_label.set_valign(Gtk::ALIGN_CENTER);
+	
+	relative_box.pack_start(relative_label);
+	relative_box.pack_end(relative_checkbutton, Gtk::PACK_SHRINK);
+
+	growth_label.set_label(_("Growth:"));
+	growth_label.set_halign(Gtk::ALIGN_START);
+	growth_label.set_valign(Gtk::ALIGN_CENTER);
+
+	radius_label.set_label(_("Radius:"));
+	radius_label.set_halign(Gtk::ALIGN_START);
+	radius_label.set_valign(Gtk::ALIGN_CENTER);
+
 	influence_radius=manage(new Widget_Distance());
 	influence_radius->show();
 	influence_radius->set_digits(0);
@@ -241,48 +266,25 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 
 	load_settings();
 
-	// Set up the tool options dialog
-	title_label.set_label(_("Width Tool"));
-	Pango::AttrList list;
-	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
-	list.insert(attr);
-	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	relative_label.set_label(_("Relative Growth"));
-	relative_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	relative_box.pack_start(relative_label);
-	relative_box.pack_end(relative_checkbutton, Gtk::PACK_SHRINK);
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(growth_label,
+		0, 1, 1, 1);
+	options_grid.attach(spin_delta,
+		1, 1, 1, 1);
+	options_grid.attach(radius_label,
+		0, 2, 1, 1);
+	options_grid.attach(*influence_radius,
+		1, 2, 1, 1);
+	options_grid.attach(relative_box,
+		0, 3, 2, 1);
 
-	growth_label.set_label(_("Growth:"));
-	growth_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.show_all();
+	options_grid.set_margin_bottom(0);
 
-	radius_label.set_label(_("Radius:"));
-	radius_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(growth_label,
-		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	options_table.attach(spin_delta,
-		1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	options_table.attach(radius_label,
-		0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	options_table.attach(*influence_radius,
-		1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	options_table.attach(relative_box,
-		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 	// Turn off layer clicking
@@ -329,7 +331,7 @@ void
 StateWidth_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Width Tool"));
 	App::dialog_tool_options->set_name("width");
 }

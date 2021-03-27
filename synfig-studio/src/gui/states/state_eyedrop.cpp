@@ -63,7 +63,7 @@ class studio::StateEyedrop_Context : public sigc::trackable
 	CanvasView *canvas_view;
 	CanvasView::IsWorking is_working;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 public:
@@ -112,27 +112,30 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	synfig::info("Entered Eyedrop State");
 	canvas_view->get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
 
-	// Setup Eyedrop options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Eyedrop Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Click to assign Outline Color"), Gtk::ALIGN_START)),
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Fill Color"), Gtk::ALIGN_START)),
-		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Click to assign Outline Color"), Gtk::ALIGN_START)),
+		0, 1, 2, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Fill Color"), Gtk::ALIGN_START)),
+		0, 2, 2, 1);
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
-	options_table.show_all();
 	refresh_tool_options();
-
 	App::dock_toolbox->refresh();
 }
 
@@ -149,7 +152,7 @@ void
 StateEyedrop_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Eyedrop Tool"));
 	App::dialog_tool_options->set_name("eyedrop");
 }

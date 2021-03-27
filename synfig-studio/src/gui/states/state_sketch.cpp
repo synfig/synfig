@@ -76,7 +76,7 @@ class studio::StateSketch_Context : public sigc::trackable
 
 	bool prev_table_status;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 	Gtk::Button button_clear_sketch;
 	Gtk::Button button_undo_stroke;
@@ -234,33 +234,34 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	button_load_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::load_sketch));
 	show_sketch_checkbutton.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::toggle_show_sketch));
 
+	// Toolbox widgets
 	title_label.set_label(_("Sketch Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 	
 	show_sketch_label.set_label(_("Show Sketch"));
-	show_sketch_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	show_sketch_label.set_halign(Gtk::ALIGN_START);
+	show_sketch_label.set_valign(Gtk::ALIGN_CENTER);
 
 	show_sketch_box.pack_start(show_sketch_label);
 	show_sketch_box.pack_end(show_sketch_checkbutton, Gtk::PACK_SHRINK);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(show_sketch_box,
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	//options_table.attach(button_undo_stroke, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//options_table.attach(button_clear_sketch, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//options_table.attach(button_save_sketch, 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//options_table.attach(button_load_sketch, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(show_sketch_box,
+		0, 1, 2, 1);
+
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -313,7 +314,7 @@ void
 StateSketch_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Sketch Tool"));
 	App::dialog_tool_options->set_name("sketch");
 

@@ -142,7 +142,7 @@ class studio::StateBLine_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 	// holder of options
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 
 	// title
 	Gtk::Label title_label;
@@ -509,41 +509,37 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 {
 	egress_on_selection_change=true;
 
-	/* Set up the tool options dialog */
-
-	// 0, title
+	// Toolbox widgets
 	title_label.set_label(_("Spline Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	id_label.set_halign(Gtk::ALIGN_START);
+	id_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
 
 	id_box.pack_start(id_entry);
 
-	// 2, layer types creation
 	layer_types_label.set_label(_("Layer Type:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	layer_types_label.set_halign(Gtk::ALIGN_START);
+	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_region_togglebutton,
 		("synfig-layer_geometry_region"), _("Create a region layer"));
-
 	LAYER_CREATION(layer_outline_togglebutton,
 		("synfig-layer_geometry_outline"), _("Create an outline layer"));
-
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
 		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
-
 	LAYER_CREATION(layer_plant_togglebutton,
 		("synfig-layer_other_plant"), _("Create a plant layer"));
-
 	LAYER_CREATION(layer_curve_gradient_togglebutton,
 		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
 
@@ -556,9 +552,9 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
 
-	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	blend_label.set_halign(Gtk::ALIGN_START);
+	blend_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -567,43 +563,43 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for splines")));
 
-	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	opacity_label.set_halign(Gtk::ALIGN_START);
+	opacity_label.set_valign(Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	bline_width_label.set_halign(Gtk::ALIGN_START);
+	bline_width_label.set_valign(Gtk::ALIGN_CENTER);
 	bline_width_label.set_sensitive(false);
 
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
 	bline_width_dist.set_sensitive(false);
 
-	// 6, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	feather_label.set_halign(Gtk::ALIGN_START);
+	feather_label.set_valign(Gtk::ALIGN_CENTER);
 	feather_label.set_sensitive(false);
 
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 	feather_dist.set_sensitive(false);
 
-	// 7, link origins
 	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	link_origins_label.set_halign(Gtk::ALIGN_START);
+	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
 
 	link_origins_box.pack_start(link_origins_label);
 	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
 	link_origins_box.set_sensitive(false);
 
-	// 8, auto export
 	auto_export_label.set_label(_("Auto Export"));
-	auto_export_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	auto_export_label.set_halign(Gtk::ALIGN_START);
+	auto_export_label.set_valign(Gtk::ALIGN_CENTER);
 
 	auto_export_box.pack_start(auto_export_label);
 	auto_export_box.pack_end(auto_export_checkbutton, Gtk::PACK_SHRINK);
@@ -611,68 +607,40 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	load_settings();
 
-	// pack all options to the options_table
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(id_box,
+		0, 1, 2, 1);
+	options_grid.attach(layer_types_label,
+		0, 2, 2, 1);
+	options_grid.attach(layer_types_box,
+		0, 3, 2, 1);
+	options_grid.attach(blend_box,
+		0, 4, 1, 1);
+	options_grid.attach(blend_enum,
+		1, 4, 1, 1);
+	options_grid.attach(opacity_label,
+		0, 5, 1, 1);
+	options_grid.attach(opacity_hscl,
+		1, 5, 1, 1);
+	options_grid.attach(bline_width_label,
+		0, 6, 1, 1);
+	options_grid.attach(bline_width_dist,
+		1, 6, 1, 1);
+	options_grid.attach(feather_label,
+		0, 7, 1, 1);
+	options_grid.attach(feather_dist,
+		1, 7, 1, 1);
+	options_grid.attach(link_origins_box,
+		0, 8, 2, 1);
+	options_grid.attach(auto_export_box,
+		0, 9, 2, 1);
 
-	// 0, title
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 1, name
-	options_table.attach(id_box,
-		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 2, layer types creation
-	options_table.attach(layer_types_label,
-		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(layer_types_box,
-		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 3, blend method
-	options_table.attach(blend_box,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(blend_enum,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 4, opacity
-	options_table.attach(opacity_label,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(opacity_hscl,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 5, brush size
-	options_table.attach(bline_width_label,
-		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(bline_width_dist,
-		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 6, feather
-	options_table.attach(feather_label,
-		0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(feather_dist,
-		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 7, link origins
-	options_table.attach(link_origins_box,
-		0, 2, 8, 9, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 8, auto export
-	options_table.attach(auto_export_box,
-		0, 2, 9, 10, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-
-	// fine-tune options layout
-	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacings(GAP); // row gap
-	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	//options_table.set_row_spacing(10, 0); //// the final row using border width of table
-	options_table.set_margin_bottom(0);
-	options_table.show_all();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -702,7 +670,7 @@ void
 StateBLine_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Spline Tool"));
 	App::dialog_tool_options->set_name("bline");
 

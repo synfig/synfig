@@ -107,7 +107,7 @@ class studio::StateRotate_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_Rotate> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	Gtk::Label scale_label;
@@ -198,41 +198,44 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Rotate Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
+
 	scale_label.set_label(_("Allow Scale"));
-	scale_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
+	scale_label.set_hexpand();
+	scale_label.set_halign(Gtk::ALIGN_START);
+	scale_label.set_valign(Gtk::ALIGN_CENTER);
+
 	scale_box.pack_start(scale_label);
 	scale_box.pack_end(scale_checkbutton, Gtk::PACK_SHRINK);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(scale_box,
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
+
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(scale_box,
+		0, 1, 2, 1);
 
 	scale_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateRotate_Context::refresh_scale_flag));
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
+	options_grid.set_hexpand();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.show_all();
+
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	get_work_area()->set_cursor(Gdk::EXCHANGE);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 
@@ -244,7 +247,7 @@ void
 StateRotate_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Rotate Tool"));
 	App::dialog_tool_options->set_name("rotate");
 }

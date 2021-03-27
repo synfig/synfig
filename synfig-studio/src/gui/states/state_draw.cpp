@@ -146,7 +146,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 	// holder of options
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 
 	// title
 	Gtk::Label title_label;
@@ -626,35 +626,33 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	width_max_error_spin(width_max_error_adj, 0.01, 2),
 	fill_last_stroke_button(_("Fill Last Stroke"))
 {
-	/* Set up the tool options dialog */
-
-	// 0, title
+	// Toolbox widgets
 	title_label.set_label(_("Draw Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	id_label.set_halign(Gtk::ALIGN_START);
+	id_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
 
 	id_box.pack_start(id_entry);
 
-	// 2, layer types creation
 	layer_types_label.set_label(_("Layer Type:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	layer_types_label.set_halign(Gtk::ALIGN_START);
+	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_region_togglebutton,
 		("synfig-layer_geometry_region"), _("Create a region layer"));
-
 	LAYER_CREATION(layer_outline_togglebutton,
 		("synfig-layer_geometry_outline"), _("Create an outline layer"));
-
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
 		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
 
@@ -665,9 +663,9 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
 	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
 
-	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	blend_label.set_halign(Gtk::ALIGN_START);
+	blend_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
 	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
 	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
@@ -676,33 +674,33 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for draws")));
 
-	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	opacity_label.set_halign(Gtk::ALIGN_START);
+	opacity_label.set_valign(Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	bline_width_label.set_halign(Gtk::ALIGN_START);
+	bline_width_label.set_valign(Gtk::ALIGN_CENTER);
 
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
 
-	// 6, pressure width
 	pressure_width_label.set_label(_("Pressure Sensitive"));
-	pressure_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	pressure_width_label.set_halign(Gtk::ALIGN_START);
+	pressure_width_label.set_valign(Gtk::ALIGN_CENTER);
 
 	pressure_width_box.pack_start(pressure_width_label, Gtk::PACK_SHRINK);
 	pressure_width_box.pack_end(pressure_width_checkbutton, Gtk::PACK_SHRINK);
 
-	// 7, min pressure, sub option of pressure width
 	SPACING(min_pressure_indent, INDENTATION);
 	SPACING(min_pressure_gap, GAP);
 	min_pressure_label.set_label(_("Min Width:"));
-	min_pressure_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	min_pressure_label.set_halign(Gtk::ALIGN_START);
+	min_pressure_label.set_valign(Gtk::ALIGN_CENTER);
 	min_pressure_label_box.pack_start(*min_pressure_indent, Gtk::PACK_SHRINK);
 	min_pressure_label_box.pack_start(min_pressure_label, Gtk::PACK_SHRINK);
 
@@ -710,17 +708,15 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	min_pressure_box.pack_end(*min_pressure_gap, Gtk::PACK_SHRINK);
 	min_pressure_box.pack_end(min_pressure_spin);
 
-	// 8, Smoothness
 	smoothness_label.set_label(_("Smoothness"));
-	smoothness_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	smoothness_label.set_halign(Gtk::ALIGN_START);
+	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 9, local threshold
 	SPACING(localthres_indent, INDENTATION);
 	localthres_box.pack_start(*localthres_indent, Gtk::PACK_SHRINK);
 	localthres_box.pack_start(localthres_radiobutton, Gtk::PACK_SHRINK);
 	localthres_radiobutton.set_label(_("Local:"));
 
-	// 10, global threshold
 	SPACING(globalthres_indent, INDENTATION);
 	globalthres_box.pack_start(*globalthres_indent, Gtk::PACK_SHRINK);
 	globalthres_box.pack_start(globalthres_radiobutton, Gtk::PACK_SHRINK);
@@ -729,63 +725,62 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	smoothness_group = localthres_radiobutton.get_group();
 	globalthres_radiobutton.set_group(smoothness_group);
 
-	// 11, width max error of advanced outline layer
 	width_max_error_label.set_label(_("Width Max Error:"));
 	SPACING(width_max_error_gap, GAP);
-	width_max_error_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	width_max_error_label.set_halign(Gtk::ALIGN_START);
+	width_max_error_label.set_valign(Gtk::ALIGN_CENTER);
 	width_max_error_box.pack_start(width_max_error_label, Gtk::PACK_SHRINK);
 	width_max_error_box.pack_start(*width_max_error_gap, Gtk::PACK_SHRINK);
 
-	// 12, round ends
 	round_ends_label.set_label(_("Round Ends"));
-	round_ends_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	round_ends_label.set_halign(Gtk::ALIGN_START);
+	round_ends_label.set_valign(Gtk::ALIGN_CENTER);
 
 	round_ends_box.pack_start(round_ends_label, Gtk::PACK_SHRINK);
 	round_ends_box.pack_end(round_ends_checkbutton, Gtk::PACK_SHRINK);
 
-	// 13, auto loop
 	auto_loop_label.set_label(_("Auto Loop"));
-	auto_loop_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	auto_loop_label.set_halign(Gtk::ALIGN_START);
+	auto_loop_label.set_valign(Gtk::ALIGN_CENTER);
 
 	auto_loop_box.pack_start(auto_loop_label, Gtk::PACK_SHRINK);
 	auto_loop_box.pack_end(auto_loop_checkbutton, Gtk::PACK_SHRINK);
 
-	// 14, auto extend
 	auto_extend_label.set_label(_("Auto Extend"));
-	auto_extend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	auto_extend_label.set_halign(Gtk::ALIGN_START);
+	auto_extend_label.set_valign(Gtk::ALIGN_CENTER);
 
 	auto_extend_box.pack_start(auto_extend_label, Gtk::PACK_SHRINK);
 	auto_extend_box.pack_end(auto_extend_checkbutton, Gtk::PACK_SHRINK);
 
-	// 15, auto link
 	auto_link_label.set_label(_("Auto Link"));
-	auto_link_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	auto_link_label.set_halign(Gtk::ALIGN_START);
+	auto_link_label.set_valign(Gtk::ALIGN_CENTER);
 
 	auto_link_box.pack_start(auto_link_label, Gtk::PACK_SHRINK);
 	auto_link_box.pack_end(auto_link_checkbutton, Gtk::PACK_SHRINK);
 
-	// 16, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	feather_label.set_halign(Gtk::ALIGN_START);
+	feather_label.set_valign(Gtk::ALIGN_CENTER);
 
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 
-	// 17, link origins
 	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	link_origins_label.set_halign(Gtk::ALIGN_START);
+	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
 
 	link_origins_box.pack_start(link_origins_label);
 	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
 	link_origins_box.set_sensitive(false);
 
-	// 18, auto export
 	auto_export_label.set_label(_("Auto Export"));
-	auto_export_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	auto_export_label.set_halign(Gtk::ALIGN_START);
+	auto_export_label.set_valign(Gtk::ALIGN_CENTER);
 
 	auto_export_box.pack_start(auto_export_label, Gtk::PACK_SHRINK);
 	auto_export_box.pack_end(auto_export_checkbutton, Gtk::PACK_SHRINK);
-
 
 	nested=0;
 	load_settings();
@@ -794,123 +789,68 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	UpdateCreateAdvancedOutline();
 	UpdateSmoothness();
 
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(id_box,
+		0, 1, 2, 1);
+	options_grid.attach(layer_types_label,
+		0, 2, 2, 1);
+	options_grid.attach(layer_types_box,
+		0, 3, 2, 1);
+	options_grid.attach(blend_box,
+		0, 4, 1, 1);
+	options_grid.attach(blend_enum,
+		1, 4, 1, 1);
+	options_grid.attach(opacity_label,
+		0, 5, 1, 1);
+	options_grid.attach(opacity_hscl,
+		1, 5, 1, 1);
+	options_grid.attach(bline_width_label,
+		0, 6, 1, 1);
+	options_grid.attach(bline_width_dist,
+		1, 6, 1, 1);
+	options_grid.attach(pressure_width_box,
+		0, 7, 2, 1);
+	options_grid.attach(min_pressure_label_box,
+		0, 8, 1, 1);
+	options_grid.attach(min_pressure_box,
+		1, 8, 1, 1);
+	options_grid.attach(smoothness_label,
+		0, 9, 2, 1);
+	options_grid.attach(localthres_box,
+		0, 10, 1, 1);
+	options_grid.attach(localthres_spin,
+		1, 10, 1, 1);
+	options_grid.attach(globalthres_box,
+		0, 11, 1, 1);
+	options_grid.attach(globalthres_spin,
+		1, 11, 1, 1);
+	options_grid.attach(width_max_error_box,
+		0, 12, 1, 1);
+	options_grid.attach(width_max_error_spin,
+		1, 12, 1, 1);
+	options_grid.attach(round_ends_box,
+		0, 13, 2, 1);
+	options_grid.attach(auto_loop_box,
+		0, 14, 2, 1);
+	options_grid.attach(auto_extend_box,
+		0, 15, 2, 1);
+	options_grid.attach(auto_link_box,
+		0, 16, 2, 1);
+	options_grid.attach(feather_label,
+		0, 17, 1, 1);
+	options_grid.attach(feather_dist,
+		1, 17, 1, 1);
+	options_grid.attach(link_origins_box,
+		0, 18, 2, 1);
+	options_grid.attach(auto_export_box,
+		0, 19, 2, 1);
 
-	// pack all options to the options_table
-
-	// 0, title
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 1, name
-	options_table.attach(id_box,
-		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 2, layer types creation
-	options_table.attach(layer_types_label,
-		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(layer_types_box,
-		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 3, blend method
-	options_table.attach(blend_box,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(blend_enum,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 4, opacity
-	options_table.attach(opacity_label,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(opacity_hscl,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 5, brush size
-	options_table.attach(bline_width_label,
-		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(bline_width_dist,
-		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 6, pressure width
-	options_table.attach(pressure_width_box,
-		0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 7, min pressure, sub-option of pressure width
-	options_table.attach(min_pressure_label_box,
-		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(min_pressure_box,
-		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 8, smoothness
-	options_table.attach(smoothness_label,
-		0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 9, local threshold
-	options_table.attach(localthres_box,
-		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(localthres_spin,
-		1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 10, global threshold
-	options_table.attach(globalthres_box,
-		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(globalthres_spin,
-		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 11, width max error of advanced outline layer
-	options_table.attach(width_max_error_box,
-		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(width_max_error_spin,
-		1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 12, round ends
-	options_table.attach(round_ends_box,
-		0, 2, 13, 14, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 13, auto loop
-	options_table.attach(auto_loop_box,
-		0, 2, 14, 15, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 14, auto extend
-	options_table.attach(auto_extend_box,
-		0, 2, 15, 16, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 15, auto link
-	options_table.attach(auto_link_box,
-		0, 2, 16, 17, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 16, feather
-	options_table.attach(feather_label,
-		0, 1, 17, 18, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(feather_dist,
-		1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 17, link origins
-	options_table.attach(link_origins_box,
-		0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 18, auto export
-	options_table.attach(auto_export_box,
-		0, 2, 19, 20, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-
-	// fine-tune options layout
-	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacings(GAP); // row gap
-	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	//options_table.set_row_spacing(19, 0); // the final row using border width of table
-	options_table.set_margin_bottom(0);
-
-	options_table.show_all();
-
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
 	fill_last_stroke_button.signal_pressed().connect(
 		sigc::mem_fun(*this, &StateDraw_Context::fill_last_stroke));
@@ -922,7 +862,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		&StateDraw_Context::UpdateSmoothness));
 	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
 		&StateDraw_Context::UpdateSmoothness));
-
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -984,7 +923,7 @@ void
 StateDraw_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Draw Tool"));
 	App::dialog_tool_options->set_name("draw");
 
