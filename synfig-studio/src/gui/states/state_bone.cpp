@@ -66,6 +66,19 @@ using namespace synfigapp;
 
 /* === M A C R O S ========================================================= */
 
+#ifndef LAYER_CREATION
+#define LAYER_CREATION(button, fun, stockid, tooltip)	\
+	{ \
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
+			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
+		button.add(*icon); \
+	} \
+	button.set_relief(Gtk::RELIEF_NONE); \
+	button.set_tooltip_text(tooltip); \
+	button.signal_toggled().connect(sigc::mem_fun(*this, \
+		&studio::StateBone_Context::fun))
+#endif
+
 // indentation for options layout
 #ifndef SPACING
 #define SPACING(name, px) \
@@ -76,6 +89,7 @@ using namespace synfigapp;
 #define DEFAULT_WIDTH (0.1)
 
 const int GAP = 3;
+const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -126,17 +140,13 @@ class studio::StateBone_Context : public sigc::trackable
 	Widget_Distance skel_bone_width_dist;
 	Widget_Distance skel_deform_bone_width_dist;
 
-
-	// Layer creation radio group
+	// Layer Type
 	Gtk::Label layer_label;
-	Gtk::RadioButton::Group radiogroup;
-	Gtk::RadioButton radiobutton_skel;
-	Gtk::RadioButton radiobutton_skel_deform;
-	Gtk::Button create_layer;
-
+	Gtk::ToggleButton layer_skel_togglebutton;
+	Gtk::ToggleButton layer_skel_deform_togglebutton;
+	Gtk::HBox layer_types_box;
 
 public:
-
 	synfig::String get_id() const { return id_entry.get_text();}
 	void set_id(const synfig::String& x){ return id_entry.set_text(x);}
 
@@ -213,6 +223,32 @@ public:
 
 	bool egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/);
+
+	bool get_layer_skel_flag() const
+	{
+		return layer_skel_togglebutton.get_active();
+	}
+
+	void set_layer_skel_flag(bool x)
+	{
+		return layer_skel_togglebutton.set_active(x);
+	}
+
+	bool get_layer_skel_deform_flag() const
+	{
+		return layer_skel_deform_togglebutton.get_active();
+	}
+
+	void set_layer_skel_deform_flag(bool x)
+	{
+		return layer_skel_deform_togglebutton.set_active(x);
+	}
+
+	bool layer_skel_flag;
+	bool layer_skel_deform_flag;
+
+	void toggle_layer_skel();
+	void toggle_layer_skel_deform();
 }; // END of class StateBone_Context
 
 /* === M E T H O D S ======================================================= */
@@ -255,6 +291,16 @@ StateBone_Context::load_settings()
 				set_id(_("NewSkeletonDeformation"));
 		}
 
+		if(settings.get_value("bone.layer_skel",value) && value=="0")
+			set_layer_skel_flag(false);
+		else
+			set_layer_skel_flag(true);
+
+		if(settings.get_value("bone.layer_skel_deform",value) && value =="0")
+			set_layer_skel_deform_flag(false);
+		else
+			set_layer_skel_deform_flag(true);
+
 		if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
 			set_skel_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
 		else
@@ -282,6 +328,8 @@ StateBone_Context::save_settings()
 		else
 			settings.set_value("bone.skel_deform_id",get_id().c_str());
 
+		settings.set_value("bone.layer_skel", get_layer_skel_flag() ? "1" : "0");
+		settings.set_value("bone.layer_skel_deform", get_layer_skel_deform_flag() ? "1" : "0");
 		settings.set_value("bone.skel_bone_width",skel_bone_width_dist.get_value().get_string());
 		settings.set_value("bone.skel_deform_bone_width",skel_deform_bone_width_dist.get_value().get_string());
 	}
@@ -353,10 +401,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	active_bone(change_active_bone(get_work_area()->get_active_bone_value_node())),
 	c_layer(0),
 	drawing(false),
-	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	radiobutton_skel(radiogroup,_("Skeleton Layer")),
-	radiobutton_skel_deform(radiogroup,_("Skeleton Deform Layer"))
-	
+	settings(synfigapp::Main::get_selected_input_device()->settings())
 {
 	egress_on_selection_change=true;
 
@@ -385,6 +430,16 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	layer_label.set_halign(Gtk::ALIGN_START);
 	layer_label.set_valign(Gtk::ALIGN_CENTER);
 
+	LAYER_CREATION(layer_skel_togglebutton, toggle_layer_skel,
+		("synfig-layer_other_skeleton"), _("Skeleton Layer"));
+	LAYER_CREATION(layer_skel_deform_togglebutton, toggle_layer_skel_deform,
+		("synfig-encapsulate_filter"), _("Skeleton Deform Layer"));
+
+	SPACING(layer_types_indent, INDENTATION);
+	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_skel_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_skel_deform_togglebutton, Gtk::PACK_SHRINK);
+
 	bone_width_label.set_label(_("Bone Width:"));
 	bone_width_label.set_halign(Gtk::ALIGN_START);
 	bone_width_label.set_valign(Gtk::ALIGN_CENTER);
@@ -407,16 +462,17 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 		0, 1, 2, 1);
 	options_grid.attach(layer_label,
 		0, 2, 2, 1);
-	options_grid.attach(radiobutton_skel,
+	options_grid.attach(layer_types_box,
 		0, 3, 2, 1);
-	options_grid.attach(radiobutton_skel_deform,
-		0, 4, 2, 1);
 	options_grid.attach(bone_width_label,
-		0, 5, 1, 1);
+		0, 4, 1, 1);
 	options_grid.attach(skel_box,
-		1, 5, 1, 1);
+		1, 4, 1, 1);
 
-	radiobutton_skel.signal_toggled().connect(sigc::mem_fun(*this,&StateBone_Context::update_layer));
+	layer_skel_togglebutton.signal_toggled().connect(
+		sigc::mem_fun(*this,&StateBone_Context::toggle_layer_skel));
+	layer_skel_deform_togglebutton.signal_toggled().connect(
+		sigc::mem_fun(*this,&StateBone_Context::toggle_layer_skel_deform));
 
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
@@ -500,7 +556,7 @@ StateBone_Context::refresh_tool_options()
 
 	App::dialog_tool_options->add_button(
 			Gtk::StockID("gtk-clear"),
-			_("Clear current Skeleton")
+			_("Reset parameters")
 	)->signal_clicked().connect(
 			sigc::mem_fun(
 					*this,
@@ -1281,4 +1337,48 @@ StateBone_Context::_on_signal_value_desc_set(ValueDesc value_desc,ValueBase valu
 				set_skel_deform_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
 		}
 	}
+}
+
+void
+StateBone_Context::toggle_layer_skel()
+{
+	if(!layer_skel_flag)
+	{
+		set_layer_skel_flag(true);
+		set_layer_skel_deform_flag(false);
+
+		layer_skel_flag = true;
+		layer_skel_deform_flag = false;
+
+		save_settings();
+		c_layer = 0;
+		update_tool_options(0);
+		load_settings();
+	}
+
+	if(get_layer_skel_flag() +
+	   get_layer_skel_deform_flag() == 0)
+		set_layer_skel_flag(true);
+}
+
+void
+StateBone_Context::toggle_layer_skel_deform()
+{
+	if(!layer_skel_deform_flag)
+	{
+		set_layer_skel_flag(false);
+		set_layer_skel_deform_flag(true);
+
+		layer_skel_flag = false;
+		layer_skel_deform_flag = true;
+
+		save_settings();
+		c_layer = 1;
+		update_tool_options(1);
+		load_settings();
+	}
+
+	if(get_layer_skel_flag() +
+	   get_layer_skel_deform_flag() == 0)
+		set_layer_skel_deform_flag(true);
 }
