@@ -40,6 +40,7 @@ apps:
     plugs: &plugs [opengl, home, removable-media, gsettings, network]
     environment: &env
       __EGL_VENDOR_LIBRARY_DIRS: $SNAP/gnome-platform/usr/share/glvnd/egl_vendor.d:$SNAP/usr/share/glvnd/egl_vendor.d
+      PYTHONPATH: $SNAP/usr/lib/python3/dist-packages:$PYTHONPATH
 
   synfig:
     command: usr/bin/synfig
@@ -87,9 +88,9 @@ parts:
       - ffmpeg # mod_ffmpeg
       - libflite1 # ffmpeg required
       - imagemagick # mod_imagemagick
-      - libslang2
       - libglu1-mesa
       - freeglut3
+      - python3-lxml # lottie exporter
 
   etl:
     after: [synfig-deps]
