@@ -45,12 +45,12 @@
             <property name="margin-end">6</property>
             <property name="layout-style">end</property>
             <child>
-              <object class="GtkButton" id="convert_button">
-                <property name="label">gtk-convert</property>
+              <object class="GtkButton" id="cancel_button">
+                <property name="label">_Cancel</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="use-stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -59,12 +59,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="cancel_button">
-                <property name="label">gtk-cancel</property>
+              <object class="GtkButton" id="convert_button">
+                <property name="label">_Convert</property>
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="use-stock">True</property>
+                <property name="use-underline">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -84,11 +84,8 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-start">6</property>
-            <property name="margin-end">6</property>
             <property name="hexpand">True</property>
             <property name="row-spacing">6</property>
-            <property name="column-spacing">12</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
@@ -189,6 +186,9 @@
                 <property name="top-attach">3</property>
               </packing>
             </child>
+            <style>
+              <class name="color-grid"/>
+            </style>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -198,5 +198,8 @@
         </child>
       </object>
     </child>
+    <style>
+      <class name="dialog-main-content"/>
+    </style>
   </object>
 </interface>

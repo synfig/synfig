@@ -3615,7 +3615,7 @@ void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_
 {
 	String desc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+desc);
-	App::vectorizerpopup = studio::VectorizerSettings::create(my_layer_bitmap,selected_instance,vectorizer_configmap,reference_layer);
+	App::vectorizerpopup = studio::VectorizerSettings::create(*App::main_window,my_layer_bitmap,selected_instance,vectorizer_configmap,reference_layer);
 	if(!vectorizerpopup){
 		App::dialog_message_1b(
 			"ERROR",
