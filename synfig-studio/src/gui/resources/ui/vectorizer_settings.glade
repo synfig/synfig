@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.38.2 -->
 <interface>
-  <requires lib="gtk+" version="3.24"/>
+  <requires lib="gtk+" version="3.12"/>
   <object class="GtkAdjustment" id="adjustment_accuracy">
     <property name="lower">1</property>
     <property name="upper">10</property>
@@ -34,10 +34,6 @@
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can-focus">False</property>
-        <property name="margin-start">12</property>
-        <property name="margin-end">12</property>
-        <property name="margin-top">12</property>
-        <property name="margin-bottom">12</property>
         <property name="orientation">vertical</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox">
@@ -187,7 +183,7 @@
               </packing>
             </child>
             <style>
-              <class name="color-grid"/>
+              <class name="dialog-main-content"/>
             </style>
           </object>
           <packing>
@@ -198,8 +194,5 @@
         </child>
       </object>
     </child>
-    <style>
-      <class name="dialog-main-content"/>
-    </style>
   </object>
 </interface>
