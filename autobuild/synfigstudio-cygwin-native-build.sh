@@ -15,7 +15,6 @@ $CYGWIN_SETUP \
 -P gcc-core \
 -P gcc-g++ \
 -P gdb \
--P intltool \
 -P autoconf \
 -P automake \
 -P libtool \

@@ -45,6 +45,55 @@ find_package_handle_standard_args(Gettext
     VERSION_VAR GETTEXT_VERSION_STRING
 )
 
+function(STUDIO_GETTEXT_MSGFMT)
+    set(_desktop DESKTOP)
+    set(_targetName TARGET_NAME)
+    set(_inputFile INPUT_FILE)
+    set(_outputFile OUTPUT_FILE)
+    set(_installDestination INSTALL_DESTINATION)
+
+    cmake_parse_arguments(
+            _parsedArguments
+            "${_desktop}"
+            "${_targetName};${_inputFile};${_installDestination};${_outputFile}"
+            ""
+            ${ARGN}
+    )
+	
+    if(GETTEXT_MSGFMT_EXECUTABLE)
+		if(_parsedArguments_OUTPUT_FILE)
+            set(_OUTPUT_FILE "${SYNFIG_BUILD_ROOT}/${_parsedArguments_INSTALL_DESTINATION}/${_parsedArguments_OUTPUT_FILE}")
+        else()
+            set(_OUTPUT_FILE "${SYNFIG_BUILD_ROOT}/${_parsedArguments_INSTALL_DESTINATION}/plugin.xml")
+        endif()
+		
+		if(_parsedArguments_DESKTOP)
+            set(GETTEXT_MSGFMT_OPTION "--desktop")
+        else()
+            set(GETTEXT_MSGFMT_OPTION "--xml")
+        endif()
+		
+		add_custom_command(
+            OUTPUT ${_OUTPUT_FILE}
+            COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} ${GETTEXT_MSGFMT_OPTION} -d
+            ${CMAKE_SOURCE_DIR}/synfig-studio/po --template
+            ${_parsedArguments_INPUT_FILE} -o
+            ${_OUTPUT_FILE}
+            DEPENDS ${_parsedArguments_INPUT_FILE}
+        )
+		
+		add_custom_target(${_parsedArguments_TARGET_NAME}
+            DEPENDS ${_OUTPUT_FILE}
+        )
+
+        install(FILES ${_OUTPUT_FILE}
+            DESTINATION ${_parsedArguments_INSTALL_DESTINATION}
+        )
+    else()
+        message(WARNING "-- Could not find gettext-msgfmt: No translations made for ${_parsedArguments_TARGET_NAME}.")
+    endif()
+endfunction()
+
 function(SYNFIG_PROCESS_PO_FILES)
     set(_options ALL)
     set(_targetName TARGET_NAME)

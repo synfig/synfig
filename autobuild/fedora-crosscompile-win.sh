@@ -82,7 +82,6 @@ if [ ! -z $DEPS ]; then
 	sudo $DNF_BINARY install -y \
 		wget xz make which unzip \
 		libXdmcp  \
-		intltool \
 		gcc-c++ \
 		autoconf \
 		automake \

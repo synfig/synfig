@@ -1,6 +1,6 @@
 ## TODO: find out which version is actually required
 cmake_minimum_required(VERSION 3.1)
-include(SynfigIntltool)
+include(SynfigGettext)
 
 project(synfigstudio)
 
@@ -21,7 +21,7 @@ add_subdirectory(sounds)
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/appdata")
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/applications")
 
-STUDIO_INTLTOOL_MERGE(
+STUDIO_GETTEXT_MSGFMT(
     TARGET_NAME appdata_xml
     INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.appdata.xml.in
     OUTPUT_FILE "org.synfig.SynfigStudio.appdata.xml"
@@ -29,7 +29,7 @@ STUDIO_INTLTOOL_MERGE(
 )
 
 if(NOT WIN32) # desktop file needs to be build only for nix systems
-STUDIO_INTLTOOL_MERGE(
+STUDIO_GETTEXT_MSGFMT(
     DESKTOP
     TARGET_NAME desktop_file
     INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.desktop.in
