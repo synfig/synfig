@@ -157,30 +157,30 @@ studio::Dock_Info::Dock_Info()
 	// Render Progress Bar
 	Gtk::HBox *render_box = manage(new Gtk::HBox());
 	Gtk::Label *render_progress_label = manage(new Gtk::Label());
-	Gtk::Label *left_spacer_label = manage(new Gtk::Label());
+	Gtk::Overlay *overlay = manage(new Gtk::Overlay());
+
 	render_progress_label->set_markup(etl::strprintf("<b>%s</b>", _("Render Progress:")));
-	grid->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8, 1);
 
 	// Render progress CSS ID
 	render_progress.set_name("render-progress");
 	render_progress.set_hexpand(true);
 	render_progress.set_vexpand(false);
-	render_progress.set_show_text(true);
-	render_progress.set_text(strprintf("%.1f%%", 0.0));
+	render_progress.set_margin_end(5);
+	render_progress.set_valign(Gtk::ALIGN_CENTER);
 	render_progress.set_fraction(0.0);
 
+	render_percentage.set_text(strprintf("%.1f%%", 0.0));
+
+	overlay->add_overlay(render_progress);
+	overlay->add_overlay(render_percentage);
+
 	stop_button.set_image_from_icon_name("process-stop", Gtk::IconSize::from_name("synfig-small_icon"));
-	stop_button.set_hexpand(false);
-	stop_button.set_vexpand(false);
-	stop_button.set_valign(Gtk::ALIGN_END);
+	stop_button.set_valign(Gtk::ALIGN_CENTER);
 	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
-	// Use this label to make sure layout is symmetric, 30 is the value used for render_progress height
-	left_spacer_label->set_size_request(30, 0);
-
-	render_box->pack_start(*left_spacer_label, false, true, 0);
-	render_box->pack_start(render_progress);
+	render_box->pack_start(*overlay);
 	render_box->pack_start(stop_button, Gtk::PACK_SHRINK);
+	grid->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8, 1);
 	grid->attach_next_to(*render_box, *render_progress_label, Gtk::POS_BOTTOM, 7, 1);
 
 	grid->set_margin_start(5);
@@ -249,7 +249,7 @@ void studio::Dock_Info::set_render_progress(float value)
 	float already_done = coeff * (float)(n_passes_requested - n_passes_pending -1); 
 	float r            = ( coeff * value ) + already_done;
 
-	render_progress.set_text( strprintf( "%.1f%%", r*100 ));
+	render_percentage.set_text(strprintf("%.1f%%", r*100));
 	render_progress.set_fraction(r);
 
 	if(r > 0.0 && r < 1.0)

@@ -47,6 +47,7 @@ class Dock_Info : public Dock_CanvasSpecific
 	Gtk::Label       r,g,b,a;
 	Gtk::Label       x,y;
 	Gtk::ProgressBar render_progress;
+	Gtk::Label       render_percentage;
 	Gtk::Button      stop_button;
 
 	etl::handle<AsyncRenderer> async_renderer;
