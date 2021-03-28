@@ -310,6 +310,9 @@ StateBone_Context::load_settings()
 			set_skel_deform_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
 		else
 			set_skel_deform_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+
+		layer_skel_flag = get_layer_skel_flag();
+		layer_skel_deform_flag = get_layer_skel_deform_flag();
 	}
 	catch(...)
 	{
