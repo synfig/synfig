@@ -29,6 +29,7 @@
 
 #include <gtkmm/button.h>
 #include <gtkmm/label.h>
+#include <gtkmm/overlay.h>
 #include <gtkmm/progressbar.h>
 
 #include <gui/asyncrenderer.h>
