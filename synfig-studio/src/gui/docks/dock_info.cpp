@@ -171,7 +171,7 @@ studio::Dock_Info::Dock_Info()
 
 	render_percentage.set_text(strprintf("%.1f%%", 0.0));
 
-	overlay->add_overlay(render_progress);
+	overlay->add(render_progress);
 	overlay->add_overlay(render_percentage);
 
 	stop_button.set_image_from_icon_name("process-stop", Gtk::IconSize::from_name("synfig-small_icon"));
