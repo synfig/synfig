@@ -50,26 +50,21 @@ class VectorizerSettings : public Gtk::Dialog
 {
 	Glib::RefPtr<Gtk::Adjustment> adjustment_accuracy;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_accuracy2;
-	Gtk::SpinButton entry_accuracy2;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_threshold;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_despeckling;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_despeckling2;
-	Gtk::SpinButton entry_despeckling2;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_maxthickness;
 	
 	Glib::RefPtr<Gtk::Adjustment> adjustment_radius;
-	Gtk::SpinButton entry_radius;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_adherence;
-	Gtk::SpinButton entry_adherence;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_angle;
-	Gtk::SpinButton entry_angle;
 
 	Gtk::Switch toggle_pparea;
-	Gtk::Switch toggle_pparea2;
+	Gtk::Switch *toggle_pparea2;
 	Gtk::Switch toggle_add_border;
 
-	Gtk::Grid *Outline_setting_grid = manage(new Gtk::Grid());
-	Gtk::Grid *Centerline_setting_grid = manage(new Gtk::Grid());
+	Gtk::Grid *Outline_setting_grid;
+	Gtk::Grid *Centerline_setting_grid;
 
   	Gtk::Separator Separator;
 

@@ -55,25 +55,16 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	Gtk::Dialog(cobject),
 	builder(refGlade)
 {
-	//Centerline and Outline option in the comboboxtext
-	// comboboxtext_mode.append(_("Centerline"));
-	// comboboxtext_mode.append("Outline");
-	// //set Centerline Method active by default
-	// comboboxtext_mode.set_active(0);
+	Gtk::ComboBoxText * comboboxtext_mode;
+	refGlade->get_widget("comboboxtext_mode", comboboxtext_mode);
 	// comboboxtext_mode.signal_changed().connect(
 	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
 
-	// Gtk::Frame *target_frame=manage(new Gtk::Frame());
-	// target_frame->set_shadow_type(Gtk::SHADOW_NONE);
-	// dialogBox->pack_start(*target_frame);
-	// Gtk::Grid *mode_grid = manage(new Gtk::Grid());
-	// Gtk::Label *mode_label = manage(new Gtk::Label(_("_Mode"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// mode_label->set_mnemonic_widget(comboboxtext_mode);
-	// mode_label->set_margin_right(10);
-	// mode_grid->attach(*mode_label, 0, 0, 1, 1);
-	// mode_grid->attach(comboboxtext_mode, 1, 0, 1, 1);
-	// mode_grid->set_column_homogeneous(true);
-	// target_frame->add(*mode_grid);
+	Gtk::Grid *mode_grid;
+	refGlade->get_widget("mode_grid", mode_grid);
+
+	refGlade->get_widget("Outline_setting_grid", Outline_setting_grid);
+	refGlade->get_widget("Centerline_setting_grid", Centerline_setting_grid);
 
 	//---------------------------------Centerline--------------------------------------//
 	Gtk::SpinButton * thresholdSpinner;
@@ -104,47 +95,39 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	///Gtk::Label *lab = manage(new Gtk::Label(_("_Under Development"), true));
 	///Outline_setting_grid->attach(*lab, 0, 0, 2, 1);
 	// --> The below lines are for Outline params but outline vectorization is not yet implemented
-	// Gtk::Label *accuracy_label2 = manage(new Gtk::Label(_("_Accuracy"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// accuracy_label2->set_mnemonic_widget(entry_accuracy2);
-	// accuracy_label2->set_margin_right(10);
-	// Outline_setting_grid->attach(*accuracy_label2, 0, 0, 1, 1);
-	// Outline_setting_grid->attach(entry_accuracy2, 1, 0, 1, 1);
 
-	// Gtk::Label *despeckling_label2 = manage(new Gtk::Label(_("_Despeckling"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// despeckling_label2->set_mnemonic_widget(entry_despeckling2);
-	// despeckling_label2->set_margin_right(10);
-	// Outline_setting_grid->attach(*despeckling_label2, 0, 1, 1, 1);
-	// Outline_setting_grid->attach(entry_despeckling2, 1, 1, 1, 1);
+	Gtk::SpinButton * accuracy2Spinner;
+	refGlade->get_widget("accuracy2_spinner", accuracy2Spinner);
+	if (accuracy2Spinner){
+		adjustment_accuracy2 = accuracy2Spinner->get_adjustment();
+	}
 
-	// Gtk::Label *ppa_label2 = manage(new Gtk::Label(_("_Preserve Painted Areas"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// ppa_label2->set_mnemonic_widget(toggle_pparea2);
-	// ppa_label2->set_margin_right(10);
-	// toggle_pparea2.set_halign(Gtk::ALIGN_START);
-	// Outline_setting_grid->attach(*ppa_label2, 0, 2, 1, 1);
-	// Outline_setting_grid->attach(toggle_pparea2, 1, 2, 1, 1);
-	
-	// Gtk::Label *adherence_label = manage(new Gtk::Label(_("_Corners Adherenece"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// adherence_label->set_mnemonic_widget(entry_adherence);
-	// adherence_label->set_margin_right(10);
-	// Outline_setting_grid->attach(*adherence_label, 0, 3, 1, 1);
-	// Outline_setting_grid->attach(entry_adherence, 1, 3, 1, 1);
+	Gtk::SpinButton * despeckling2Spinner;
+	refGlade->get_widget("despeckling2_spinner", despeckling2Spinner);
+	if (despeckling2Spinner){
+		adjustment_despeckling2 = despeckling2Spinner->get_adjustment();
+	}
 
-	// Gtk::Label *angle_label = manage(new Gtk::Label(_("_Corners Angle"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// angle_label->set_mnemonic_widget(entry_angle);
-	// angle_label->set_margin_right(10);
-	// Outline_setting_grid->attach(*angle_label, 0, 4, 1, 1);
-	// Outline_setting_grid->attach(entry_angle, 1, 4, 1, 1);
+	refGlade->get_widget("toggle_pparea2", toggle_pparea2);
 
-	// Gtk::Label *radius_label = manage(new Gtk::Label(_("_Corners Curve Radius"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// radius_label->set_mnemonic_widget(entry_radius);
-	// radius_label->set_margin_right(10);
-	// Outline_setting_grid->attach(*radius_label, 0, 5, 1, 1);
-	// Outline_setting_grid->attach(entry_radius, 1, 5, 1, 1);
+	Gtk::SpinButton * adherenceSpinner;
+	refGlade->get_widget("adherence_spinner", adherenceSpinner);
+	if (adherenceSpinner){
+		adjustment_adherence = adherenceSpinner->get_adjustment();
+	}
 
-	///Outline_setting_grid->set_column_homogeneous(true);
-	///Outline_setting_grid->set_hexpand(true);
+	Gtk::SpinButton * angleSpinner;
+	refGlade->get_widget("angle_spinner", angleSpinner);
+	if (angleSpinner){
+		adjustment_angle = angleSpinner->get_adjustment();
+	}
 
-	///settings_box->add(*Outline_setting_grid);
+	Gtk::SpinButton * radiusSpinner;
+	refGlade->get_widget("radius_spinner", radiusSpinner);
+	if (radiusSpinner){
+		adjustment_radius = radiusSpinner->get_adjustment();
+	}
+
 	//---------------------------------------------------------------------------------//
 	Gtk::Button *button = nullptr;
 
@@ -156,8 +139,8 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	if (button)
 		button->signal_clicked().connect(sigc::mem_fun(*this, &VectorizerSettings::on_convert_pressed));
 
-	///get_vbox()->show_all();
-	///Outline_setting_grid->hide();
+	Outline_setting_grid->hide();
+	mode_grid->hide();
 	///on_comboboxtext_mode_changed();
 }
 
