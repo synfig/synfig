@@ -61,11 +61,11 @@ Dialog_Color::Dialog_Color():
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 
 	create_color_edit_widget();
+	create_close_button();
 	create_set_color_button("synfig-set_outline_color", _("Set as Outline"), 0,
 			sigc::mem_fun(*this, &Dialog_Color::on_set_oc_pressed));
 	create_set_color_button("synfig-set_fill_color", _("Set as Fill"), 1,
 			sigc::mem_fun(*this, &Dialog_Color::on_set_fc_pressed));
-	create_close_button();
 
 	// Turn off resizability
 	set_resizable(false);
