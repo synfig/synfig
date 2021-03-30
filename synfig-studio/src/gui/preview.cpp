@@ -42,6 +42,7 @@
 #include <gui/app.h>
 #include <gui/asyncrenderer.h>
 #include <gui/canvasview.h>
+#include <gui/docks/dock_info.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 
@@ -1065,6 +1066,7 @@ void studio::Widget_Preview::stoprender()
 		if (!preview->renderer)
 			return;
 		preview->renderer.detach();
+		App::dock_info_->set_render_progress(0.0);
 	}
 }
 
