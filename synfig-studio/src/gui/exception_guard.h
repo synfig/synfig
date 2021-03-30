@@ -60,7 +60,7 @@
 			_exception_guard_error_str = etl::strprintf("%s GLib Exception: %s", __PRETTY_FUNCTION__, x.what().c_str()); \
 			_exception_guard_error_code = 1003; \
 		} catch(synfigapp::Action::Error& x) { \
-			_exception_guard_error_str = etl::strprintf("%s SynfigApp Exception: $i - %s", __PRETTY_FUNCTION__, x.get_type(), x.get_desc().c_str()); \
+			_exception_guard_error_str = etl::strprintf("%s SynfigApp Exception: %i - %s", __PRETTY_FUNCTION__, x.get_type(), x.get_desc().c_str()); \
 			_exception_guard_error_code = 1005; \
 		} catch(...) { \
 			_exception_guard_error_str = etl::strprintf("%s Uncaught Exception:unknown type", __PRETTY_FUNCTION__); \
