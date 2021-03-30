@@ -155,8 +155,6 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	refGlade->get_widget("convert_button", button);
 	if (button)
 		button->signal_clicked().connect(sigc::mem_fun(*this, &VectorizerSettings::on_convert_pressed));
-	
-	///set_title(_("Vectorizer Settings - ")+ layer_bitmap_->get_description());
 
 	///get_vbox()->show_all();
 	///Outline_setting_grid->hide();
@@ -191,6 +189,8 @@ void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap>
 	etl::handle<studio::Instance>& selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer>& reference_layer)
 {
 	layer_bitmap_ = my_layer_bitmap;
+	set_title(_("Vectorizer Settings - ")+ layer_bitmap_->get_description());
+
 	reference_layer_ = reference_layer;
 	instance = selected_instance;
 

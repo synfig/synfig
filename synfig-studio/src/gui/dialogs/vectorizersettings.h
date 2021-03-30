@@ -49,17 +49,13 @@ namespace studio
 class VectorizerSettings : public Gtk::Dialog
 {
 	Glib::RefPtr<Gtk::Adjustment> adjustment_accuracy;
-	Gtk::SpinButton entry_accuracy;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_accuracy2;
 	Gtk::SpinButton entry_accuracy2;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_threshold;
-	Gtk::SpinButton entry_threshold;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_despeckling;
-	Gtk::SpinButton entry_despeckling;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_despeckling2;
 	Gtk::SpinButton entry_despeckling2;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_maxthickness;
-	Gtk::SpinButton entry_maxthickness;
 	
 	Glib::RefPtr<Gtk::Adjustment> adjustment_radius;
 	Gtk::SpinButton entry_radius;
