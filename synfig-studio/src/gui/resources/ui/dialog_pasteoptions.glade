@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 -->
+<interface>
+  <requires lib="gtk+" version="3.14"/>
+  <object class="GtkCheckButton" id="copy_column_header">
+    <property name="label" translatable="yes">Copy?</property>
+    <property name="visible">True</property>
+    <property name="can-focus">True</property>
+    <property name="receives-default">False</property>
+    <property name="draw-indicator">True</property>
+  </object>
+  <object class="GtkListStore" id="valuenodes_liststore">
+    <columns>
+      <!-- column-name Original_Name -->
+      <column type="gchararray"/>
+      <!-- column-name Name -->
+      <column type="gchararray"/>
+      <!-- column-name Is_Name_Editable -->
+      <column type="gboolean"/>
+      <!-- column-name File -->
+      <column type="gchararray"/>
+      <!-- column-name Is_FilePath_Visible -->
+      <column type="gboolean"/>
+      <!-- column-name Status -->
+      <column type="gchararray"/>
+      <!-- column-name Status_Icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name Type_Icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name Copy? -->
+      <column type="gboolean"/>
+    </columns>
+  </object>
+  <object class="GtkDialog" id="dialog_pasteoptions">
+    <property name="can-focus">False</property>
+    <property name="modal">True</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can-focus">False</property>
+        <property name="margin-start">12</property>
+        <property name="margin-end">12</property>
+        <property name="margin-top">12</property>
+        <property name="margin-bottom">12</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton" id="cancel_button">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="ok_button">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">Some layers have exported valuenodes from another file.
+Do you want to link to their original files or create a copy? Choose below for each valuenode.
+
+&lt;b&gt;Note&lt;/b&gt;: if you choose to keep a valuenode linked to other file, you won't be able to load this one if source file(s) are deleted, moved or renamed.</property>
+                <property name="use-markup">True</property>
+                <property name="wrap">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkTreeView" id="treeview_valuenodes">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="model">valuenodes_liststore</property>
+                <property name="enable-grid-lines">horizontal</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection"/>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="sizing">fixed</property>
+                    <property name="fixed-width">24</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort-column-id">4</property>
+                    <child>
+                      <object class="GtkCellRendererPixbuf"/>
+                      <attributes>
+                        <attribute name="pixbuf">6</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="name_column">
+                    <property name="resizable">True</property>
+                    <property name="title" translatable="yes" context="ValueNode id / name">Name</property>
+                    <property name="expand">True</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort-column-id">1</property>
+                    <child>
+                      <object class="GtkCellRendererPixbuf"/>
+                      <attributes>
+                        <attribute name="pixbuf">7</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText" id="name_column_renderer"/>
+                      <attributes>
+                        <attribute name="editable">2</attribute>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="filepath_column">
+                    <property name="resizable">True</property>
+                    <property name="title" translatable="yes">Source file</property>
+                    <property name="expand">True</property>
+                    <child>
+                      <object class="GtkCellRendererText">
+                        <property name="ellipsize">middle</property>
+                        <property name="scale">0.80</property>
+                      </object>
+                      <attributes>
+                        <attribute name="visible">4</attribute>
+                        <attribute name="text">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="copy_column">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Copy?</property>
+                    <child>
+                      <object class="GtkCellRendererToggle" id="copy_column_renderer">
+                        <property name="xalign">0</property>
+                      </object>
+                      <attributes>
+                        <attribute name="active">8</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-6">cancel_button</action-widget>
+      <action-widget response="-5">ok_button</action-widget>
+    </action-widgets>
+  </object>
+</interface>
