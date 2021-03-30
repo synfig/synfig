@@ -4,6 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 UIFILES     = \
   canvas_options.glade \
+  dialog_pasteoptions.glade \
   preview_options.glade \
   dialog_workspaces.glade \
   shortcuts_window.glade
