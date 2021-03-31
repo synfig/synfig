@@ -83,6 +83,9 @@ class LayerActionManager
 	void amount_inc();
 	void amount_dec();
 
+	typedef std::map<std::string,std::pair<synfig::ValueNode::Handle, std::string>> ValueNodeReplacementMap;
+	void query_user_about_foreign_exported_value_nodes(synfig::Canvas::Handle canvas, ValueNodeReplacementMap& answer) const;
+	void export_value_nodes(synfig::Canvas::Handle canvas, const ValueNodeReplacementMap& valuenodes) const;
 public:
 	void queue_refresh();
 
