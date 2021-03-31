@@ -34,6 +34,8 @@
 
 #include <glibmm/main.h>
 
+#include <gui/app.h>
+#include <gui/dialogs/dialog_pasteoptions.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
 #include <gui/trees/layertree.h>
@@ -41,6 +43,7 @@
 #include <synfig/general.h>
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/layers/layer_skeleton.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 #include <synfigapp/selectionmanager.h>
 
 #endif
@@ -61,6 +64,270 @@ static const guint no_prev_popup((guint)-1);
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
+
+struct TraverseLayerStatus
+{
+	// - SETTINGS -
+	/// Should traverse into layer paramenter valuenodes of canvas type and they are inline
+	bool traverse_dynamic_inline_canvas = true;
+	/// Should traverse into layer paramenter valuenodes of canvas type and they are not inline
+	bool traverse_dynamic_non_inline_canvas = false;
+	// - STATUS -
+	/// Tracks the index of each recursive iteration. The last element is the current level. Its size is, then, the real depth
+	std::vector<int> depth = {-1};
+	/// Is inside a canvas of a layer dynamic parameter
+	bool is_dynamic_canvas = false;
+};
+
+/// Used in traverse_layers()
+typedef std::function<void(Layer::LooseHandle, const TraverseLayerStatus&)> TraverseLayerCallback;
+
+static void
+do_traverse_layers(Layer::Handle layer, TraverseLayerStatus& status, TraverseLayerCallback& callback)
+{
+	++status.depth.back();
+	callback(layer, status);
+
+	Layer::ParamList param_list(layer->get_param_list());
+	for (Layer::ParamList::const_iterator iter(param_list.begin())
+			 ; iter != param_list.end()
+			 ; ++iter)
+	{
+		if (layer->dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==type_canvas)
+		{
+			bool previous_is_dynamic = status.is_dynamic_canvas;
+			/*status.is_dynamic_canvas = false;*/
+			status.depth.push_back(-1);
+			Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
+			if (subcanvas && subcanvas->is_inline())
+				for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); iter++)
+					do_traverse_layers(*iter, status, callback);
+			status.depth.pop_back();
+			status.is_dynamic_canvas = previous_is_dynamic;
+		}
+	}
+
+	if (!status.traverse_dynamic_inline_canvas && !status.traverse_dynamic_non_inline_canvas)
+		return;
+
+	for (Layer::DynamicParamList::const_iterator iter(layer->dynamic_param_list().begin())
+			 ; iter != layer->dynamic_param_list().end()
+			 ; ++iter)
+	{
+		if (iter->second->get_type()==type_canvas)
+		{
+			std::set<ValueBase> values;
+			iter->second->get_values(values);
+			for (const ValueBase& value : values)
+			{
+				bool previous_is_dynamic = status.is_dynamic_canvas;
+				status.is_dynamic_canvas = true;
+				status.depth.push_back(-1);
+
+				Canvas::Handle subcanvas(value.get(Canvas::Handle()));
+				if (subcanvas && subcanvas->is_inline()) {
+					if (status.traverse_dynamic_inline_canvas)
+						for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); ++iter)
+							do_traverse_layers(*iter, status, callback);
+				} else {
+					//! \todo do we need to implement this?
+					if (status.traverse_dynamic_non_inline_canvas)
+						warning("%s:%d not yet implemented - do we need to traverse non-inline canvases in layer dynamic parameters?", __FILE__, __LINE__);
+				}
+
+				status.depth.pop_back();
+				status.is_dynamic_canvas = previous_is_dynamic;
+			}
+		}
+	}
+}
+
+/// Search for layers listed/pointed by another (via Canvas-type parameters)
+/// Normally used for Layer_PasteCanvas, but another ones may have canvases
+///
+/// \param layer The starting point to scannning
+/// \param callback A functor called at each layer found
+static void
+traverse_layers(Layer::Handle layer, TraverseLayerCallback callback)
+{
+	TraverseLayerStatus status;
+	do_traverse_layers(layer, status, callback);
+}
+
+// Maybe this function should be generalized to a foreach_valuenode() and placed in synfig or synfigapp folder
+// synfigapp action LayerDuplicate use something similar. Same for ValueNode_Bone::fix_bones_referenced_by()
+/// \param canvas Local canvas. If a value node doesn't belong to this canvas, it is from an 'external' one
+/// \param value_node The 'root' value node from where we search for other linked/pointed value nodes
+/// \param[out] foreign_exported_valuenodes List of the external exported value nodes found
+static void
+search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, ValueNode::LooseHandle value_node, std::vector<ValueNode::LooseHandle>& foreign_exported_valuenodes)
+{
+	if (!value_node) {
+		synfig::warning("%s:%d null valuenode?!\n", __FILE__, __LINE__);
+		assert(false);
+		return;
+	}
+
+	if (value_node->is_exported()) {
+		if (value_node->get_root_canvas() != canvas->get_root())
+			foreign_exported_valuenodes.push_back(value_node);
+	}
+
+	if (auto linkable_vn = LinkableValueNode::Handle::cast_dynamic(value_node)) {
+		for (int i=0; i < linkable_vn->link_count(); i++) {
+			search_for_foreign_exported_value_nodes(canvas, linkable_vn->get_link(i), foreign_exported_valuenodes);
+		}
+	} else if (auto const_vn = ValueNode_Const::Handle::cast_dynamic(value_node)) {
+		if (const_vn->get_type() == type_bone_valuenode) {
+			ValueNode_Bone::Handle bone_vn = const_vn->get_value().get(ValueNode_Bone::Handle());
+			search_for_foreign_exported_value_nodes(canvas, bone_vn.get(), foreign_exported_valuenodes);
+		}
+	} else if (auto animated_vn = ValueNode_Animated::Handle::cast_dynamic(value_node)) {
+		const ValueNode_Animated::WaypointList& list(animated_vn->waypoint_list());
+		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(); iter != list.cend(); ++iter) {
+			search_for_foreign_exported_value_nodes(canvas, iter->get_value_node(), foreign_exported_valuenodes);
+		}
+	} else {
+		// actually there is a known case: PlaceholderValueNode
+		// but maybe user has custom valuenode modules...
+		warning(_("Unknown value node type (%s) to search into it. Ignoring it."), value_node->get_local_name().c_str());
+	}
+}
+
+/// \param canvas Local canvas. If a value node doesn't belong to this canvas, it is from an 'external' one
+/// \param layer_list Layers from where it searches for exported valuenodes that are not from canvas
+/// \param[out] foreign_exported_valuenodes List of the external exported value nodes found
+static void
+search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, std::list<Layer::Handle> layer_list, std::vector<ValueNode::LooseHandle>& foreign_exported_valuenodes)
+{
+	auto fetch_exported_valuenodes_from_layer = [&canvas, &foreign_exported_valuenodes](Layer::LooseHandle layer, const TraverseLayerStatus& /*status*/) {
+		for (auto dyn_param : layer->dynamic_param_list()) {
+			auto value_node = dyn_param.second;
+			if (!value_node) {
+				error(_("Internal error: layer dynamic parameter list element could not be null"));
+				continue;
+			}
+			search_for_foreign_exported_value_nodes(canvas, value_node, foreign_exported_valuenodes);
+		}
+	};
+
+	for (Layer::LooseHandle layer : layer_list) {
+		traverse_layers(layer, fetch_exported_valuenodes_from_layer);
+	}
+}
+// Maybe this function should be placed in synfig or synfigapp folder
+// synfigapp action LayerDuplicate use something similar. Same for ValueNode_Bone::fix_bones_referenced_by()
+/// \param value_node starting point to scan
+/// \param fetch_replacement_for functor to return the value-node replacement for a given value node
+static void
+replace_value_nodes(ValueNode::LooseHandle value_node, std::function<ValueNode::LooseHandle(ValueNode::LooseHandle)> fetch_replacement_for)
+{
+	if (!value_node) {
+		synfig::warning("%s:%d null valuenode?!\n", __FILE__, __LINE__);
+		assert(false);
+		return;
+	}
+
+	if (auto linkable_vn = LinkableValueNode::Handle::cast_dynamic(value_node)) {
+		for (int i=0; i < linkable_vn->link_count(); i++) {
+			auto ith_link = linkable_vn->get_link(i);
+			if (auto replacement = fetch_replacement_for(ith_link)) {
+				linkable_vn->set_link(i, replacement);
+			} else {
+				replace_value_nodes(ith_link, fetch_replacement_for);
+			}
+		}
+	} else if (auto const_vn = ValueNode_Const::Handle::cast_dynamic(value_node)) {
+		if (const_vn->get_type() == type_bone_valuenode) {
+			ValueNode_Bone::Handle bone_vn = const_vn->get_value().get(ValueNode_Bone::Handle());
+			if (auto replacement = fetch_replacement_for(bone_vn.get())) {
+				ValueBase vb(ValueNode_Bone::Handle::cast_dynamic(replacement));
+				vb.copy_properties_of(bone_vn);
+				const_vn->set_value(vb);
+			} else {
+				replace_value_nodes(bone_vn.get(), fetch_replacement_for);
+			}
+		}
+	} else if (auto animated_vn = ValueNode_Animated::Handle::cast_dynamic(value_node)) {
+		ValueNode_Animated::WaypointList& list(animated_vn->editable_waypoint_list());
+		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); ++iter) {
+			ValueNode::Handle vn = iter->get_value_node();
+			if (auto replacement = fetch_replacement_for(vn))
+				iter->set_value_node(replacement);
+			else
+				replace_value_nodes(vn, fetch_replacement_for);
+		}
+	} else {
+		// actually there is a known case: PlaceholderValueNode
+		// but maybe user has custom valuenode modules...
+		warning(_("Unknown value node type (%s) to search/replace into it. Ignoring it."), value_node->get_local_name().c_str());
+	}
+}
+
+// Maybe this function should be placed in synfig or synfigapp folder
+// synfigapp action LayerDuplicate use something similar.
+/// \param layer Where to look for replaceable value nodes
+/// \param fetch_replacement_for functor to return the value-node replacement for a given value node
+static void
+replace_value_nodes(Layer::LooseHandle layer, std::function<ValueNode::LooseHandle(ValueNode::LooseHandle)> fetch_replacement_for)
+{
+	auto replace_value_nodes_from_layer = [fetch_replacement_for](Layer::LooseHandle layer, const TraverseLayerStatus& /*status*/) {
+		for (auto dyn_param : layer->dynamic_param_list()) {
+			if (auto new_vn = fetch_replacement_for(dyn_param.second)) {
+				layer->disconnect_dynamic_param(dyn_param.first);
+				layer->connect_dynamic_param(dyn_param.first, new_vn);
+			} else {
+				replace_value_nodes(dyn_param.second, fetch_replacement_for);
+			}
+		}
+	};
+	traverse_layers(layer, replace_value_nodes_from_layer);
+}
+
+/// \param layer Where to look for replaceable value nodes
+/// \param valuenode_replacements Maps the valuenode ID to be replaced -> (new value node, new ID for this new value node - if different)
+static void
+replace_exported_value_nodes(Layer::LooseHandle layer, const std::map<std::string,std::pair<ValueNode::Handle, std::string>>& valuenode_replacements)
+{
+	auto search_clone = [valuenode_replacements](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
+		auto iter = valuenode_replacements.find(vn->get_id());
+		if (iter != valuenode_replacements.end()) {
+			auto replacement = iter->second.first;
+			return replacement;
+		}
+		return nullptr;
+	};
+	replace_value_nodes(layer, search_clone);
+}
+
+// COPIED FROM synfigapp/actions/layerduplicate.cpp
+/// Remove the layers that are inside an already listed group-kind layer, as they would be duplicated twice
+static std::list<Layer::Handle>
+remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_list)
+{
+	std::vector<Layer::LooseHandle> layerpastecanvas_list;
+	for (const auto& layer : layer_list) {
+		if (Layer_PasteCanvas* pastecanvas = dynamic_cast<Layer_PasteCanvas*>(layer.get())) {
+			layerpastecanvas_list.push_back(layer);
+		}
+	}
+
+	std::list<Layer::Handle> clean_layer_list;
+	for (const Layer::LooseHandle layer : layer_list) {
+		bool is_inside_a_selected_pastelayer = false;
+		auto pastelayer = layer->get_parent_paste_canvas_layer();
+		while (pastelayer) {
+			if (std::find(layerpastecanvas_list.begin(), layerpastecanvas_list.end(), pastelayer) != layerpastecanvas_list.end()) {
+				is_inside_a_selected_pastelayer = true;
+				break;
+			}
+			pastelayer = pastelayer->get_parent_paste_canvas_layer();
+		}
+		if (!is_inside_a_selected_pastelayer)
+			clean_layer_list.push_back(layer);
+	}
+	return clean_layer_list;
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -371,6 +638,8 @@ LayerActionManager::copy()
 	clipboard_.clear();
 	synfig::GUID guid;
 
+	layer_list = remove_layers_inside_included_pastelayers(layer_list);
+
 	while(!layer_list.empty())
 	{
 		clipboard_.push_back(layer_list.front()->clone(0, guid));
@@ -393,7 +662,7 @@ LayerActionManager::paste()
 	Canvas::Handle canvas(get_canvas_interface()->get_canvas());
 	int depth(0);
 
-	// we are temporarily using the layer to hold something
+	// we paste layers right above the current layer selection
 	Layer::Handle layer(layer_tree_->get_selected_layer());
 	if(layer)
 	{
@@ -401,13 +670,22 @@ LayerActionManager::paste()
 		canvas=layer->get_canvas();
 	}
 
+	ValueNodeReplacementMap valuenode_replacements;
+
+	query_user_about_foreign_exported_value_nodes(canvas, valuenode_replacements);
+	if (!valuenode_replacements.empty())
+		export_value_nodes(canvas, valuenode_replacements);
+
 	synfigapp::SelectionManager::LayerList layer_selection;
 
 	for(std::list<synfig::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
 	{
 		layer=(*iter)->clone(canvas, guid);
 		layer_selection.push_back(layer);
-		synfigapp::Action::Handle 	action(synfigapp::Action::create("LayerAdd"));
+
+		replace_exported_value_nodes(layer, valuenode_replacements);
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("LayerAdd"));
 
 		assert(action);
 		if(!action)
@@ -546,5 +824,92 @@ LayerActionManager::amount_dec()
 		ValueBase value(layer_list.front()->get_param("amount"));
 		if(value.same_type_as(Real()))
 			get_canvas_interface()->change_value(synfigapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
+	}
+}
+
+void LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, LayerActionManager::ValueNodeReplacementMap& valuenode_replacements) const
+{
+	std::vector<ValueNode::LooseHandle> foreign_exported_valuenode_list;
+
+	search_for_foreign_exported_value_nodes(canvas, clipboard_, foreign_exported_valuenode_list);
+
+	if (!foreign_exported_valuenode_list.empty()) {
+		auto dlg = Dialog_PasteOptions::create(*App::main_window);
+		dlg->set_value_nodes(foreign_exported_valuenode_list);
+		dlg->set_destination_canvas(canvas);
+		int ret = dlg->run();
+		if (ret != Gtk::RESPONSE_OK)
+			return;
+
+		std::map<std::string, std::string> user_choices;
+		dlg->get_user_choices(user_choices);
+
+		for (auto item : user_choices) {
+			// Will it be linked to the external canvas/file? (i.e. not to be copied?)
+			if (item.second.empty())
+				continue;
+
+			const std::string& original_id = item.first;
+			const std::string& modified_id = item.second;
+
+			// shall the exported valuenode be cloned or linked to a locally existent one?
+			ValueNode::Handle local_canvas_value_node;
+			try {
+				if (modified_id.empty())
+					local_canvas_value_node = canvas->find_value_node(original_id, true);
+				else
+					local_canvas_value_node = canvas->find_value_node(modified_id, true);
+			} catch (...) {
+			}
+			const bool link_to_local_canvas = local_canvas_value_node;
+
+			if (link_to_local_canvas) {
+				valuenode_replacements[original_id] = std::pair<ValueNode::Handle, std::string>(local_canvas_value_node, "");
+			} else {
+				auto foreign_value_node = dlg->find_value_node_by_name(original_id);
+				ValueNode::Handle cloned_value_node = foreign_value_node->clone(canvas);// TODO Use paste guid?!
+				valuenode_replacements[original_id] = std::pair<ValueNode::Handle, std::string>(cloned_value_node, modified_id);
+			}
+		}
+	}
+}
+
+void
+LayerActionManager::export_value_nodes(Canvas::Handle canvas, const std::map<std::string, std::pair<ValueNode::Handle, std::string>>& valuenodes) const
+{
+	synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeAdd"));
+
+	assert(action);
+	if(!action)
+		return;
+
+	action->set_param("canvas",canvas);
+	action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
+
+	for (auto item : valuenodes) {
+//		const std::string& original_id = item.first;
+		const std::string& modified_id = item.second.second;
+
+		// if ID isn't modified, it doesn't need to (re)export it
+		if (modified_id.empty())
+			continue;
+
+		try {
+			canvas->find_value_node(modified_id, true);
+		} catch (...) {
+			action->set_param("new",item.second.first);
+			action->set_param("name",modified_id);
+
+			if(!action->is_ready())
+			{
+				continue;
+			}
+
+			if(!get_instance()->perform_action(action))
+			{
+				error(_("Couldn't export value node %s"), modified_id.c_str());
+				continue;
+			}
+		}
 	}
 }
