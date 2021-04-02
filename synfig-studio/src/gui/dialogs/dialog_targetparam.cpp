@@ -43,15 +43,15 @@ Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent,
                                        const char* title = _("Target Parameters")):
 	Gtk::Dialog(title, parent)
 {
-	ok_button = manage(new class Gtk::Button(Gtk::StockID("gtk-ok")));
-	ok_button->show();
-	add_action_widget(*ok_button,Gtk::RESPONSE_OK);
-	ok_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_TargetParam::on_ok));
-
 	cancel_button = manage(new class Gtk::Button(Gtk::StockID("gtk-cancel")));
 	cancel_button->show();
 	add_action_widget(*cancel_button,Gtk::RESPONSE_CANCEL);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_TargetParam::on_cancel));
+
+	ok_button = manage(new class Gtk::Button(Gtk::StockID("gtk-ok")));
+	ok_button->show();
+	add_action_widget(*ok_button,Gtk::RESPONSE_OK);
+	ok_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_TargetParam::on_ok));
 }
 
 int Dialog_TargetParam::run()
