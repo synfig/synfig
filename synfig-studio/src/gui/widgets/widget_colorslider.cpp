@@ -39,19 +39,84 @@
 using namespace synfig;
 using namespace studio;
 
-ColorSlider::ColorSlider(Type x):
-	type(x)
+static const Gdk::RGBA default_color("#F00");
+
+static synfig::Color
+to_synfig_color(const Gdk::RGBA& c)
 {
+	Color color;
+	color.set_r(c.get_red());
+	color.set_g(c.get_green());
+	color.set_b(c.get_blue());
+	color.set_a(c.get_alpha());
+	return color;
+}
+
+static Gdk::RGBA
+to_gdk_rgba(const synfig::Color& c)
+{
+	Gdk::RGBA color;
+	color.set_red(c.get_r());
+	color.set_green(c.get_g());
+	color.set_blue(c.get_b());
+	color.set_alpha(c.get_a());
+	return color;
+}
+
+
+void
+ColorSlider::init(Type t)
+{
+	property_type = t;
 	set_size_request(-1,16);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
+
+	property_type.get_proxy().signal_changed().connect([=](){
+		queue_draw();
+	});
+
+	property_color.get_proxy().signal_changed().connect([=](){
+		set_color(to_synfig_color(property_color.get_value()));
+	});
+}
+
+ColorSlider::ColorSlider(Type x)
+	: Glib::ObjectBase("widget_colorslider"),
+	  property_type(*this, "type", x),
+	  property_color(*this, "color", default_color)
+{
+	init(x);
+}
+
+ColorSlider::ColorSlider(BaseObjectType* cobject)
+	: Glib::ObjectBase("widget_colorslider"),
+	  Gtk::DrawingArea(cobject),
+	  property_type(*this, "type", TYPE_Y),
+	  property_color(*this, "color", default_color)
+{
+	init(TYPE_Y);
 }
 
 void
-ColorSlider::set_type(Type x) { type=x; queue_draw(); }
+ColorSlider::set_type(Type x)
+{
+	if (property_type == x)
+		return;
+	property_type = x;
+}
 
 void
-ColorSlider::set_color(synfig::Color x) { color_=x; queue_draw(); }
+ColorSlider::set_color(synfig::Color x)
+{
+	if (color_ == x)
+		return;
+	color_=x;
+	if (color_ != to_synfig_color(property_color.get_value()))
+		property_color = to_gdk_rgba(color_);
+
+	queue_draw();
+}
 
 void
 ColorSlider::slider_color_TYPE_R(synfig::Color &color, float amount) { color.set_r(amount); }
@@ -145,12 +210,12 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		slider_color_TYPE_A,
 	};
 
-	slider_color_func color_func = jump_table[int(type)];
+	slider_color_func color_func = jump_table[property_type];
 
 	Gamma gamma = App::get_selected_canvas_gamma().get_inverted();
 
 	float amount;
-	switch(type)
+	switch(property_type)
 	{
 		case TYPE_R: amount=color.get_r(); break;
 		case TYPE_G: amount=color.get_g(); break;
@@ -228,7 +293,7 @@ ColorSlider::on_event(GdkEvent *event)
 	if( GDK_SCROLL == event->type ){
 		Color color(color_);
 		float amount;
-		switch(type)
+		switch(property_type)
 		{
 			case TYPE_R: amount=color.get_r(); break;
 			case TYPE_G: amount=color.get_g(); break;
@@ -265,7 +330,7 @@ ColorSlider::on_event(GdkEvent *event)
 	switch(event->type)
 	{
 	case GDK_SCROLL:
-		signal_slider_moved_(type,pos);
+		signal_slider_moved_(property_type,pos);
 		queue_draw();
 		signal_activated_();
 		return true;
@@ -276,7 +341,7 @@ ColorSlider::on_event(GdkEvent *event)
 
 	case GDK_BUTTON_PRESS:
 	case GDK_MOTION_NOTIFY:
-		signal_slider_moved_(type,pos);
+		signal_slider_moved_(property_type,pos);
 		queue_draw();
 		return true;
 		break;
@@ -285,4 +350,51 @@ ColorSlider::on_event(GdkEvent *event)
 	}
 	return false;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
+
+// Glade & GtkBuilder related
+
+GType ColorSlider::gtype = 0;
+
+Glib::ObjectBase* ColorSlider::wrap_new(GObject* o)
+{
+	if (gtk_widget_is_toplevel(GTK_WIDGET(o)))
+		return new ColorSlider(GTK_DRAWING_AREA(o));
+	else
+		return Gtk::manage(new ColorSlider(GTK_DRAWING_AREA(o)));
+}
+
+void ColorSlider::register_type()
+{
+	if (gtype)
+		return;
+
+	ColorSlider dummy;
+
+	gtype = G_OBJECT_TYPE(dummy.gobj());
+
+	Glib::wrap_register(gtype, ColorSlider::wrap_new);
+}
+
+GType
+Glib::Value<studio::ColorSlider::Type>::value_type()
+{
+	static std::atomic<gsize> type_id(0);
+
+	 if (!type_id) {
+		 static const GEnumValue color_components_enum[10] = {
+			 {studio::ColorSlider::TYPE_R,   "COLORSLIDER_TYPE_R",   "red"},
+			 {studio::ColorSlider::TYPE_G,   "COLORSLIDER_TYPE_G",   "green"},
+			 {studio::ColorSlider::TYPE_B,   "COLORSLIDER_TYPE_B",   "blue"},
+			 {studio::ColorSlider::TYPE_Y,   "COLORSLIDER_TYPE_Y",   "y"},
+			 {studio::ColorSlider::TYPE_U,   "COLORSLIDER_TYPE_U",   "u"},
+			 {studio::ColorSlider::TYPE_V,   "COLORSLIDER_TYPE_V",   "v"},
+			 {studio::ColorSlider::TYPE_HUE, "COLORSLIDER_TYPE_HUE", "hue"},
+			 {studio::ColorSlider::TYPE_SAT, "COLORSLIDER_TYPE_SAT", "sat"},
+			 {studio::ColorSlider::TYPE_A,   "COLORSLIDER_TYPE_A",   "a"},
+			 {0, nullptr, nullptr}
+		 };
+		 type_id = g_enum_register_static(g_intern_static_string("SynfigColorSliderType"), color_components_enum);
+	 }
+	 return type_id;
 }

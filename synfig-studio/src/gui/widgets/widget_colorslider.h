@@ -24,6 +24,7 @@
 #ifndef STUDIO_WIDGET_COLORSLIDER_H
 #define STUDIO_WIDGET_COLORSLIDER_H
 
+#include <glibmm/property.h>
 #include <gtkmm/drawingarea.h>
 #include <synfig/color.h>
 
@@ -59,15 +60,21 @@ private:
 	sigc::signal<void,Type,float> signal_slider_moved_;
 	sigc::signal<void> signal_activated_;
 
-	Type type;
 	synfig::Color color_;
+
+	void init(Type t);
 
 public:
 
-	Type get_type()const { return type; }
+	ColorSlider(Type x=TYPE_Y);
+
+	void set_type(Type x);
+	Type get_type()const { return property_type; }
+	Glib::Property<Type> property_type;
 
 	void set_color(synfig::Color x);
 	const synfig::Color& get_color()const { return color_; }
+	Glib::Property<Gdk::RGBA> property_color;
 
 	sigc::signal<void,Type,float>& signal_slider_moved() { return signal_slider_moved_; }
 	sigc::signal<void>& signal_activated() { return signal_activated_; }
@@ -98,8 +105,28 @@ private:
 		double width, double height,
 		int size,
 		bool fill);
+
+// Glade & GtkBuilder related
+public:
+	ColorSlider(BaseObjectType* cobject);
+	static Glib::ObjectBase* wrap_new(GObject* o);
+	static void register_type();
+private:
+	static GType gtype;
 }; // END of class ColorSlider
 
 }; // END of namespace studio
+
+namespace Glib
+{
+
+template <>
+class Value<studio::ColorSlider::Type> : public Glib::Value_Enum<studio::ColorSlider::Type>
+{
+public:
+  static GType value_type() G_GNUC_CONST;
+};
+
+} // END of namespace Glib
 
 #endif // STUDIO_WIDGET_COLORSLIDER_H
