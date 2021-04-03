@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<glade-catalog name="synfigstudio" depends="gtk+" version="0.2" domain="synfigstudio">
+<glade-catalog name="synfigstudio" depends="gtk+" version="0.3" domain="synfigstudio">
 
   <glade-widget-classes>
     <glade-widget-class name="gtkmm__CustomObject_widget_vector" generic-name="vector" title="Vector" parent="GtkEntry" toplevel="false" default-width="100" />
@@ -23,11 +23,17 @@
         <property id="orientation" default="GTK_ORIENTATION_HORIZONTAL" optional="True" optional-default="False"/>
       </properties>
     </glade-widget-class>
+    <glade-widget-class name="gtkmm__CustomObject_widget_hsv_plane" since="0.3" generic-name="hsv_plane" title="HSV Plane" parent="GtkDrawingArea" toplevel="false" default-width="256" default-height="256">
+      <properties>
+        <property id="color" default="Red" optional="True" optional-default="False"/>
+      </properties>
+    </glade-widget-class>
   </glade-widget-classes>
 
 
   <glade-widget-group name="synfigwidgets" title="Synfig Widgets" >
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_colorslider" />
+    <glade-widget-class-ref name="gtkmm__CustomObject_widget_hsv_plane" />
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_time" />
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_vector" />
   </glade-widget-group>

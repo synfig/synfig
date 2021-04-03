@@ -45,6 +45,7 @@
 #include <gui/localization.h>
 
 #include <gui/widgets/widget_colorslider.h>
+#include <gui/widgets/widget_hsv_plane.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
 
@@ -242,6 +243,7 @@ MainWindow::init_menus()
 void MainWindow::register_custom_widget_types()
 {
 	Widget_ColorSlider::register_type();
+	Widget_HSV_Plane::register_type();
 	Widget_Time::register_type();
 	Widget_Vector::register_type();
 }
