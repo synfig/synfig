@@ -99,8 +99,12 @@ private:
 
 	static float get_amount(Type type, const synfig::Color& color);
 
-	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
-	bool on_event(GdkEvent *event);
+	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
+	bool on_event(GdkEvent *event) override;
+	void get_preferred_height_vfunc(int & minimum_height, int & natural_height) const override;
+	void get_preferred_width_vfunc(int & minimum_width, int & natural_width) const override;
+	void get_preferred_height_for_width_vfunc(int width, int & minimum_height, int & natural_height) const override;
+	void get_preferred_width_for_height_vfunc(int height, int & minimum_width, int & natural_width) const override;
 
     ///@brief Draw face to face contrasted arrows
 	void draw_arrow(

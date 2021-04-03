@@ -40,6 +40,7 @@ using namespace synfig;
 using namespace studio;
 
 static const Gdk::RGBA default_color("#F00");
+static const int default_min_size = 16;
 
 static synfig::Color
 to_synfig_color(const Gdk::RGBA& c)
@@ -68,7 +69,6 @@ void
 ColorSlider::init(Type t)
 {
 	property_type = t;
-	set_size_request(-1,16);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 
@@ -364,6 +364,34 @@ ColorSlider::on_event(GdkEvent *event)
 	}
 	return false;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
+
+void
+ColorSlider::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
+{
+	minimum_height = default_min_size;
+	natural_height = default_min_size;
+}
+
+void
+ColorSlider::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
+{
+	minimum_width = default_min_size;
+	natural_width = default_min_size;
+}
+
+void
+ColorSlider::get_preferred_height_for_width_vfunc(int /*width*/, int& minimum_height, int& natural_height) const
+{
+	minimum_height = default_min_size;
+	natural_height = default_min_size;
+}
+
+void
+ColorSlider::get_preferred_width_for_height_vfunc(int /*height*/, int& minimum_width, int& natural_width) const
+{
+	minimum_width = default_min_size;
+	natural_width = default_min_size;
 }
 
 // Glade & GtkBuilder related
