@@ -33,6 +33,7 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/spinbutton.h>
 #include <gui/widgets/widget_color.h>
+#include <gui/widgets/widget_colorslider.h>
 #include <synfig/color.h>
 
 /* === M A C R O S ========================================================= */
@@ -46,80 +47,6 @@ namespace Gtk {
 };
 
 namespace studio {
-
-class ColorSlider : public Gtk::DrawingArea
-{
-public:
-	enum Type
-	{
-		TYPE_R,
-		TYPE_G,
-		TYPE_B,
-		TYPE_Y,
-		TYPE_U,
-		TYPE_V,
-		TYPE_HUE,
-		TYPE_SAT,
-		TYPE_A,
-
-		TYPE_END
-	};
-
-private:
-
-	sigc::signal<void,Type,float> signal_slider_moved_;
-	sigc::signal<void> signal_activated_;
-
-	Type type;
-	synfig::Color color_;
-
-public:
-
-	sigc::signal<void,Type,float>& signal_slider_moved() { return signal_slider_moved_; }
-	sigc::signal<void>& signal_activated() { return signal_activated_; }
-
-	Type
-	get_type()const { return type; }
-
-	const synfig::Color&
-	get_color()const { return color_; }
-
-
-	ColorSlider(const Type &x=TYPE_Y);
-
-	void
-	set_type(Type x);
-
-	void
-	set_color(synfig::Color x);
-
-	static void adjust_color(Type type, synfig::Color &color, float amount);
-
-private:
-	typedef void (*slider_color_func)(synfig::Color &,float);
-
-	static void slider_color_TYPE_R(synfig::Color &color, float amount);
-	static void slider_color_TYPE_G(synfig::Color &color, float amount);
-	static void slider_color_TYPE_B(synfig::Color &color, float amount);
-	static void slider_color_TYPE_Y(synfig::Color &color, float amount);
-	static void slider_color_TYPE_U(synfig::Color &color, float amount);
-	static void slider_color_TYPE_V(synfig::Color &color, float amount);
-	static void slider_color_TYPE_HUE(synfig::Color &color, float amount);
-	static void slider_color_TYPE_SAT(synfig::Color &color, float amount);
-	static void slider_color_TYPE_A(synfig::Color &color, float amount);
-
-	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
-	bool on_event(GdkEvent *event);
-
-    ///@brief Draw face to face contrasted arrows
-	void draw_arrow(
-		const Cairo::RefPtr<Cairo::Context> &cr,
-		double x, double y,
-		double width, double height,
-		int size,
-		bool fill);
-}; // END of class ColorSlider
-
 
 class Widget_ColorEdit : public Gtk::Grid
 {

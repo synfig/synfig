@@ -3,6 +3,7 @@ WIDGETS_HH = \
 	widgets/widget_canvastimeslider.h \
 	widgets/widget_color.h \
 	widgets/widget_coloredit.h \
+	widgets/widget_colorslider.h \
 	widgets/widget_compselect.h \
 	widgets/widget_curves.h \
 	widgets/widget_defaults.h \
@@ -31,6 +32,7 @@ WIDGETS_CC = \
 	widgets/widget_canvastimeslider.cpp \
 	widgets/widget_color.cpp \
 	widgets/widget_coloredit.cpp \
+	widgets/widget_colorslider.cpp \
 	widgets/widget_compselect.cpp \
 	widgets/widget_curves.cpp \
 	widgets/widget_defaults.cpp \
