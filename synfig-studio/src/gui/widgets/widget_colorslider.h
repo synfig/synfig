@@ -72,7 +72,7 @@ public:
 	const synfig::Color& get_color()const { return color_; }
 
 
-	ColorSlider(const Type &x=TYPE_Y);
+	ColorSlider(Type x=TYPE_Y);
 
 	void set_type(Type x);
 

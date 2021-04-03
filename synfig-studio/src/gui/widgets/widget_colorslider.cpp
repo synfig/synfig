@@ -39,7 +39,7 @@
 using namespace synfig;
 using namespace studio;
 
-ColorSlider::ColorSlider(const ColorSlider::Type &x):
+ColorSlider::ColorSlider(Type x):
 	type(x)
 {
 	set_size_request(-1,16);
