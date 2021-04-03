@@ -76,6 +76,8 @@ public:
 	const synfig::Color& get_color()const { return color_; }
 	Glib::Property<Gdk::RGBA> property_color;
 
+	float get_amount() const;
+
 	sigc::signal<void,Type,float>& signal_slider_moved() { return signal_slider_moved_; }
 	sigc::signal<void>& signal_activated() { return signal_activated_; }
 
@@ -94,6 +96,8 @@ private:
 	static void slider_color_TYPE_HUE(synfig::Color &color, float amount);
 	static void slider_color_TYPE_SAT(synfig::Color &color, float amount);
 	static void slider_color_TYPE_A(synfig::Color &color, float amount);
+
+	static float get_amount(Type type, const synfig::Color& color);
 
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);

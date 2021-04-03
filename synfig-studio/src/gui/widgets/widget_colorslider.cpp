@@ -118,6 +118,33 @@ ColorSlider::set_color(synfig::Color x)
 	queue_draw();
 }
 
+float
+ColorSlider::get_amount() const
+{
+	return get_amount(property_type, color_);
+}
+
+float
+ColorSlider::get_amount(Type type, const synfig::Color& color)
+{
+	switch(type)
+	{
+	case TYPE_R: return color.get_r();
+	case TYPE_G: return color.get_g();
+	case TYPE_B: return color.get_b();
+	case TYPE_Y: return color.get_y();
+	case TYPE_U: return color.get_u()+0.5f;
+	case TYPE_V: return color.get_v()+0.5f;
+	case TYPE_HUE: {
+		float amount = Angle::rot(color.get_uv_angle()).get();
+		return amount - floor(amount);
+	}
+	case TYPE_SAT: return color.get_s()*2.0f;
+	case TYPE_A: return color.get_a();
+	default: return 0;
+	}
+}
+
 void
 ColorSlider::slider_color_TYPE_R(synfig::Color &color, float amount) { color.set_r(amount); }
 void
@@ -214,20 +241,7 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	Gamma gamma = App::get_selected_canvas_gamma().get_inverted();
 
-	float amount;
-	switch(property_type)
-	{
-		case TYPE_R: amount=color.get_r(); break;
-		case TYPE_G: amount=color.get_g(); break;
-		case TYPE_B: amount=color.get_b(); break;
-		case TYPE_Y: amount=color.get_y(); break;
-		case TYPE_U: amount=color.get_u()+0.5; break;
-		case TYPE_V: amount=color.get_v()+0.5; break;
-		case TYPE_HUE: amount=Angle::rot(color.get_uv_angle()).get(); amount-=floor(amount); break;
-		case TYPE_SAT: amount=color.get_s()*2.0; break;
-		case TYPE_A: amount=color.get_a(); break;
-		default: amount=0; break;
-	}
+	float amount = get_amount();
 
 	const int height(get_height());
 	const int width(get_width());
