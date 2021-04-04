@@ -144,7 +144,7 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	// opacity
 	Gtk::Label opacity_label;
-	Gtk::HScale opacity_hscl;
+	Gtk::Scale opacity_hscl;
 
 	// brush size
 	Gtk::Label bline_width_label;
@@ -525,7 +525,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f),
+	opacity_hscl(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	number_of_bline_points_adj(Gtk::Adjustment::create(0, 2, 120, 1, 1)),
 	number_of_bline_points_spin(number_of_bline_points_adj, 1, 0),
 	bline_point_angle_offset_adj(Gtk::Adjustment::create(0, -360, 360, 0.1, 1)),

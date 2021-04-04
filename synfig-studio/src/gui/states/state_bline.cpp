@@ -168,7 +168,7 @@ class studio::StateBLine_Context : public sigc::trackable
 
 	// opacity
 	Gtk::Label opacity_label;
-	Gtk::HScale opacity_hscl;
+	Gtk::Scale opacity_hscl;
 
 	// brush size
 	Gtk::Label bline_width_label;
@@ -505,7 +505,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	depth(-1),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f)
+	opacity_hscl(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1))
 {
 	egress_on_selection_change=true;
 
