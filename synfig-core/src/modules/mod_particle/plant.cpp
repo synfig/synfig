@@ -96,7 +96,7 @@ Plant::Plant():
 	param_random_factor(ValueBase(Real(0.2))),
 	param_drag(ValueBase(Real(0.1))),
 	param_use_width(ValueBase(true)),
-	version(version__)
+	version(get_register_version())
 {
 	bounding_rect=Rect::zero();
 	Random random;

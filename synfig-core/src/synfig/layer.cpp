@@ -114,12 +114,12 @@ Layer::subsys_init()
 	_layer_book=new Book();
 
 #define INCLUDE_LAYER(class)									\
-	synfig::Layer::book() [synfig::String(class::name__)] =		\
+	synfig::Layer::book() [class::get_register_name()] =		\
 		BookEntry(class::create,								\
-				  class::name__,								\
-				   _(class::local_name__),		\
-				  class::category__,							\
-				  class::version__)
+				  class::get_register_name(),					\
+				   _(class::get_register_local_name()),			\
+				  class::get_register_category(),				\
+				  class::get_register_version())
 
 #define LAYER_ALIAS(class,alias)								\
 	synfig::Layer::book()[synfig::String(alias)] =				\
@@ -127,7 +127,7 @@ Layer::subsys_init()
 				  alias,										\
 				  alias,										\
 				  CATEGORY_DO_NOT_USE,							\
-				  class::version__)
+				  class::get_register_version())
 
 	INCLUDE_LAYER(Layer_SolidColor);
 		LAYER_ALIAS(Layer_SolidColor,	"solid_color");

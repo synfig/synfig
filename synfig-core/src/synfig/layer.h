@@ -60,26 +60,31 @@
 
 //! Defines various variables and the create method, common for all importers.
 //! To be used in the private part of the importer class definition.
+// Static `name`, `local_name`, `version`, and `category` is needed to register layer.
+// We also have non-static versions of these methods in order to be able to change the
+// layer name (visual presentation) at runtime depending on its parameters.
 #define SYNFIG_LAYER_MODULE_EXT \
 	public: \
-	static const char name__[], version__[], local_name__[], category__[]; \
+	static const char* get_register_name(); \
+	static const char* get_register_version(); \
+	static const char* get_register_local_name(); \
+	static const char* get_register_category(); \
 	static Layer *create();
-
 //! Sets the name of the layer
 #define SYNFIG_LAYER_SET_NAME(class,x) \
-	const char class::name__[]=x
+	const char* class::get_register_name() { return x; }
 
 //! Sets the local name of the layer
 #define SYNFIG_LAYER_SET_LOCAL_NAME(class,x) \
-	const char class::local_name__[]=x;
+	const char* class::get_register_local_name() { return x; }
 
 //! Sets the category of the layer
 #define SYNFIG_LAYER_SET_CATEGORY(class,x) \
-	const char class::category__[]=x
+	const char* class::get_register_category() { return x; }
 
 //! Sets the version string for the layer
 #define SYNFIG_LAYER_SET_VERSION(class,x) \
-	const char class::version__[]=x
+	const char* class::get_register_version() { return x; }
 
 //! Defines de implementation of the create method for the importer
 #define SYNFIG_LAYER_INIT(class) \
@@ -126,14 +131,14 @@
 //! Exports the name or the local name of the layer
 #define EXPORT_NAME() \
 	if (param=="Name" || param=="name" || param=="name__") \
-		return name__; \
+		return get_register_name(); \
 	else if (param=="local_name__") \
-		return synfigcore_localize(local_name__);
+		return synfigcore_localize(get_register_local_name());
 
 //! Exports the version of the layer
 #define EXPORT_VERSION() \
 	if (param=="Version" || param=="version" || param=="version__") \
-		return version__;
+		return get_register_version();
 
 //! This is used as the category for layer book entries which represent aliases of layers.
 //! It prevents these layers showing up in the menu.
