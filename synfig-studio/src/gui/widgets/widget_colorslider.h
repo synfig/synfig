@@ -64,20 +64,15 @@ private:
 
 public:
 
+	Type get_type()const { return type; }
+
+	void set_color(synfig::Color x);
+	const synfig::Color& get_color()const { return color_; }
+
 	sigc::signal<void,Type,float>& signal_slider_moved() { return signal_slider_moved_; }
 	sigc::signal<void>& signal_activated() { return signal_activated_; }
 
-	Type get_type()const { return type; }
-
-	const synfig::Color& get_color()const { return color_; }
-
-
-	ColorSlider(Type x=TYPE_Y);
-
-	void set_type(Type x);
-
-	void set_color(synfig::Color x);
-
+	/// Modify the given color by changing the color component type to amount
 	static void adjust_color(Type type, synfig::Color &color, float amount);
 
 private:
