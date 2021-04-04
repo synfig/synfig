@@ -107,7 +107,7 @@ ColorSlider::set_type(Type x)
 }
 
 void
-ColorSlider::set_color(synfig::Color x)
+ColorSlider::set_color(const Color& x)
 {
 	if (color_ == x)
 		return;

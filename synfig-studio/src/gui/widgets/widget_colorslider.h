@@ -72,7 +72,7 @@ public:
 	Type get_type()const { return property_type; }
 	Glib::Property<Type> property_type;
 
-	void set_color(synfig::Color x);
+	void set_color(const synfig::Color& x);
 	const synfig::Color& get_color()const { return color_; }
 	Glib::Property<Gdk::RGBA> property_color;
 
