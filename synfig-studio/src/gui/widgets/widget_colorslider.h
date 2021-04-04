@@ -26,6 +26,7 @@
 
 #include <glibmm/property.h>
 #include <gtkmm/drawingarea.h>
+#include <gtkmm/orientable.h>
 #include <synfig/color.h>
 
 namespace studio {
@@ -75,6 +76,10 @@ public:
 	void set_color(const synfig::Color& x);
 	const synfig::Color& get_color()const { return color_; }
 	Glib::Property<Gdk::RGBA> property_color;
+
+	void set_orientation(Gtk::Orientation x);
+	Gtk::Orientation get_orientation() const;
+	Glib::Property<Gtk::Orientation> property_orientation;
 
 	float get_amount() const;
 

@@ -79,21 +79,27 @@ ColorSlider::init(Type t)
 	property_color.get_proxy().signal_changed().connect([=](){
 		set_color(to_synfig_color(property_color.get_value()));
 	});
+
+	property_orientation.get_proxy().signal_changed().connect([=](){
+		queue_draw();
+	});
 }
 
 ColorSlider::ColorSlider(Type x)
 	: Glib::ObjectBase("widget_colorslider"),
 	  property_type(*this, "type", x),
-	  property_color(*this, "color", default_color)
+	  property_color(*this, "color", default_color),
+	  property_orientation(*this, "orientation", Gtk::ORIENTATION_HORIZONTAL)
 {
 	init(x);
 }
 
-ColorSlider::ColorSlider(BaseObjectType* cobject)
+ColorSlider::ColorSlider(Gtk::DrawingArea::BaseObjectType* cobject)
 	: Glib::ObjectBase("widget_colorslider"),
 	  Gtk::DrawingArea(cobject),
 	  property_type(*this, "type", TYPE_Y),
-	  property_color(*this, "color", default_color)
+	  property_color(*this, "color", default_color),
+	  property_orientation(*this, "orientation", Gtk::ORIENTATION_HORIZONTAL)
 {
 	init(TYPE_Y);
 }
@@ -116,6 +122,18 @@ ColorSlider::set_color(const Color& x)
 		property_color = to_gdk_rgba(color_);
 
 	queue_draw();
+}
+
+void ColorSlider::set_orientation(Gtk::Orientation x)
+{
+	if (property_orientation == x)
+		return;
+	property_orientation = x;
+}
+
+Gtk::Orientation ColorSlider::get_orientation() const
+{
+	return property_orientation;
 }
 
 float
@@ -191,27 +209,41 @@ ColorSlider::draw_arrow(
 	bool fill)
 {
 	// hardcoded colors
-	Color dark(0, 0, 0);
-	Color light(1, 1, 1);
+	const Color dark(0, 0, 0);
+	const Color light(1, 1, 1);
 
-	// Upper black pointing down arrow
+	const bool is_horizontal = property_orientation == Gtk::ORIENTATION_HORIZONTAL;
+
+	// Upper (or left) black pointing down (or right) arrow
 	cr->set_source_rgb(dark.get_r(), dark.get_g(), dark.get_b());
 	cr->set_line_width(1.0);
-	cr->move_to(x, y);
-	cr->line_to(x - 0.5*width, y - height);
-	cr->line_to(x + 0.5*width, y - height);
+	if (is_horizontal) {
+		cr->move_to(x, y);
+		cr->line_to(x - 0.5*width, y - height);
+		cr->line_to(x + 0.5*width, y - height);
+	} else {
+		cr->move_to(x, y);
+		cr->line_to(x - width, y - height/2);
+		cr->line_to(x - width, y + height/2);
+	}
 	cr->close_path();
 	if (fill)
 		cr->fill();
 	else
 		cr->stroke();
 
-	// Bottom light pointing up arrow
+	// Bottom light (or right) pointing up (or left) arrow
 	cr->set_source_rgb(light.get_r(), light.get_g(), light.get_b());
 	cr->set_line_width(1.0);
-	cr->move_to(x, size - height);
-	cr->line_to(x - 0.5*width, size);
-	cr->line_to(x + 0.5*width, size);
+	if (is_horizontal) {
+		cr->move_to(x, size - height);
+		cr->line_to(x - 0.5*width, size);
+		cr->line_to(x + 0.5*width, size);
+	} else {
+		cr->move_to(size - width, y);
+		cr->line_to(size, y - height/2);
+		cr->line_to(size, y + height/2);
+	}
 	cr->close_path();
 	if (fill)
 		cr->fill();
@@ -243,17 +275,21 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	float amount = get_amount();
 
-	const int height(get_height());
-	const int width(get_width());
+	const bool is_horizontal = property_orientation == Gtk::ORIENTATION_HORIZONTAL;
+	const int length = is_horizontal ? get_width() : get_height();
+	const int thickness = is_horizontal ? get_height() : get_width();
 
-	Gdk::Rectangle ca(0,0,width,height);
+	const Gdk::Rectangle ca(0, 0, length, thickness);
 
 	const Color bg1(0.75, 0.75, 0.75);
 	const Color bg2(0.5, 0.5, 0.5);
-	for(int i = width-1; i >= 0; --i)
+
+	const int bg_size = thickness/2;
+
+	for(int i = length-1; i >= 0; --i)
 	{
 		Color c = color;
-		color_func(c, i/float(width));
+		color_func(c, i/float(length));
 
 		const Color c1 = gamma.apply(
 				Color::blend(c,bg1,1.0).clamped() );
@@ -262,38 +298,49 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		assert(c1.is_valid());
 		assert(c2.is_valid());
 
-		if((i*2/height)&1)
+		int x1 = is_horizontal ? ca.get_x()+i         : ca.get_x();
+		int x2 = is_horizontal ? ca.get_x()+i         : ca.get_x() + bg_size;
+		int y1 = is_horizontal ? ca.get_y()           : ca.get_y() + length - i;
+		int y2 = is_horizontal ? ca.get_y() + bg_size : ca.get_y() + length - i;
+		int w  = is_horizontal ? 1       : bg_size;
+		int h  = is_horizontal ? bg_size : 1;
+
+		if((i*2/thickness) & 1)
 		{
 	        cr->set_source_rgb(c1.get_r(), c1.get_g(), c1.get_b());
-	        cr->rectangle(ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->rectangle(x1, y1, w, h);
 	        cr->fill();
 
 	        cr->set_source_rgb(c2.get_r(), c2.get_g(), c2.get_b());
-	        cr->rectangle(ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->rectangle(x2, y2, w, h);
 	        cr->fill();
 		}
 		else
 		{
 	        cr->set_source_rgb(c2.get_r(), c2.get_g(), c2.get_b());
-	        cr->rectangle(ca.get_x()+i, ca.get_y(), 1, height/2);
+	        cr->rectangle(x1, y1, w, h);
 	        cr->fill();
 
 	        cr->set_source_rgb(c1.get_r(), c1.get_g(), c1.get_b());
-	        cr->rectangle(ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
+	        cr->rectangle(x2, y2, w, h);
 	        cr->fill();
 		}
 	}
 
     cr->set_source_rgb(1, 1, 1);
-    cr->rectangle(ca.get_x()+1, ca.get_y()+1, width-3, height-3);
+    cr->rectangle(ca.get_x()+1, ca.get_y()+1, get_width()-3, get_height()-3);
     cr->stroke();
 
     cr->set_source_rgb(0, 0, 0);
-    cr->rectangle(ca.get_x(), ca.get_y(), width-1, height-1);
+    cr->rectangle(ca.get_x(), ca.get_y(), get_width()-1, get_height()-1);
     cr->stroke();
 
     // Draw face to face contrasted arrows
-    draw_arrow(cr, int(amount*width), height/2, height/2, height/2, height, 1);
+	const int arrow_size = std::min(bg_size, 20);
+	if (is_horizontal)
+		draw_arrow(cr, int(amount*length), thickness/2, arrow_size, bg_size, thickness, true);
+	else
+		draw_arrow(cr, thickness/2, int((1 - amount)*length), bg_size, arrow_size, thickness, true);
 
 	return true;
 }
@@ -302,7 +349,8 @@ bool
 ColorSlider::on_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	const int width(get_width());
+	const bool is_horizontal = property_orientation == Gtk::ORIENTATION_HORIZONTAL;
+	const int max_value = is_horizontal ? get_width() : get_height();
 	float x = 0;
 	if( GDK_SCROLL == event->type ){
 		Color color(color_);
@@ -320,7 +368,7 @@ ColorSlider::on_event(GdkEvent *event)
 			case TYPE_A: amount=color.get_a(); break;
 			default: amount=0; break;
 		}
-		x = amount*width;
+		x = amount * max_value;
 		switch(event->scroll.direction){
 			case GDK_SCROLL_UP:
 			case GDK_SCROLL_RIGHT:
@@ -334,12 +382,14 @@ ColorSlider::on_event(GdkEvent *event)
 				break;
 		}
 	} else {
-		x = float(event->button.x);
+		if (is_horizontal)
+			x = float(event->button.x);
+		else
+			x = float(max_value - event->button.y);
 	}
 
-	float pos(x/width);
-	if (pos > 1) pos = 1;
-	if (pos < 0 || x <= 0 || event->button.x <= 0) pos=0;
+	float pos = x/max_value;
+	pos = clamp(pos, 0.0f, 1.0f);
 
 	switch(event->type)
 	{
@@ -370,28 +420,44 @@ void
 ColorSlider::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
 	minimum_height = default_min_size;
-	natural_height = default_min_size;
+	if (property_orientation == Gtk::ORIENTATION_HORIZONTAL) {
+		natural_height = default_min_size;
+	} else {
+		natural_height = 200;
+	}
 }
 
 void
 ColorSlider::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
 	minimum_width = default_min_size;
-	natural_width = default_min_size;
+	if (property_orientation == Gtk::ORIENTATION_HORIZONTAL) {
+		natural_width = 200;
+	} else {
+		natural_width = default_min_size;
+	}
 }
 
 void
-ColorSlider::get_preferred_height_for_width_vfunc(int /*width*/, int& minimum_height, int& natural_height) const
+ColorSlider::get_preferred_height_for_width_vfunc(int width, int& minimum_height, int& natural_height) const
 {
 	minimum_height = default_min_size;
-	natural_height = default_min_size;
+	if (property_orientation == Gtk::ORIENTATION_HORIZONTAL) {
+		natural_height = default_min_size;
+	} else {
+		natural_height = std::min(width * 10, 300);
+	}
 }
 
 void
-ColorSlider::get_preferred_width_for_height_vfunc(int /*height*/, int& minimum_width, int& natural_width) const
+ColorSlider::get_preferred_width_for_height_vfunc(int height, int& minimum_width, int& natural_width) const
 {
 	minimum_width = default_min_size;
-	natural_width = default_min_size;
+	if (property_orientation == Gtk::ORIENTATION_HORIZONTAL) {
+		natural_width = std::min(height * 10, 300);
+	} else {
+		natural_width = default_min_size;
+	}
 }
 
 // Glade & GtkBuilder related

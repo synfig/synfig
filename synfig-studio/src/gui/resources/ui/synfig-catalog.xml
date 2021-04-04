@@ -20,6 +20,7 @@
 <!--          </displayable-values>-->
         </property>
         <property id="color" default="Black" optional="True" optional-default="False"/>
+        <property id="orientation" default="GTK_ORIENTATION_HORIZONTAL" optional="True" optional-default="False"/>
       </properties>
     </glade-widget-class>
   </glade-widget-classes>
