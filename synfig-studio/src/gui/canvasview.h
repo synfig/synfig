@@ -677,6 +677,8 @@ protected:
 	void on_layer_toggle(synfig::Layer::Handle);
 	void on_edited_value(synfigapp::ValueDesc,synfig::ValueBase);
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+	void on_seek_begin_pressed();
+	void on_seek_end_pressed();
 	void on_play_pause_pressed();
 	void on_meta_data_changed();
 	bool on_key_press_event(GdkEventKey* event); //!< Keyboard event dispatcher following window priority

@@ -937,7 +937,7 @@ CanvasView::create_time_bar()
 	framedial->set_end_time(get_canvas()->rend_desc().get_frame_rate(), get_canvas()->rend_desc().get_time_end());
 
 	framedial->signal_seek_begin().connect(
-		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time), Time::begin()) );
+		sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) );
 	framedial->signal_seek_prev_keyframe().connect(
 		sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_prev_keyframe) );
 	framedial->signal_seek_prev_frame().connect(
@@ -951,7 +951,7 @@ CanvasView::create_time_bar()
 	framedial->signal_seek_next_keyframe().connect(
 		sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_next_keyframe) );
 	framedial->signal_seek_end().connect(
-		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time), Time::end()) );
+		sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) );
 	framedial->signal_end_time_changed().connect(
 		sigc::mem_fun(*this,&CanvasView::on_set_end_time_widget_changed));
 	framedial->signal_repeat().connect(
@@ -1606,10 +1606,10 @@ CanvasView::init_menus()
 		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time),Time(-1)));
 
 		action=Gtk::Action::create("seek-end", Gtk::StockID("synfig-animate_seek_end"));
-		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time),Time::end()));
+		action_group->add(action, sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed));
 
 		action=Gtk::Action::create("seek-begin", Gtk::StockID("synfig-animate_seek_begin"));
-		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time),Time::begin()));
+		action_group->add( action, sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed));
 
 		action=Gtk::Action::create("jump-next-keyframe", Gtk::StockID("synfig-animate_seek_next_keyframe"));
 		action_group->add( action,sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_next_keyframe));
@@ -3729,6 +3729,18 @@ CanvasView::on_delete_event(GdkEventAny* /*event*/)
 	// if(event) return Gtk::Window::on_delete_event(event);
 
 	return true;
+}
+
+void
+CanvasView::on_seek_begin_pressed()
+{
+	canvas_interface()->set_time(time_model()->get_actual_play_bounds_lower());
+}
+
+void
+CanvasView::on_seek_end_pressed()
+{
+	canvas_interface()->set_time(time_model()->get_actual_play_bounds_upper());
 }
 
 //! Modify the play stop button apearence and play stop the animation
