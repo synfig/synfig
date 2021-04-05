@@ -170,7 +170,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	// opacity
 	Gtk::Label opacity_label;
-	Gtk::HScale opacity_hscl;
+	Gtk::Scale opacity_hscl;
 
 	// brush size
 	Gtk::Label bline_width_label;
@@ -615,7 +615,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	push_state(*get_work_area()),
 	//loop_(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f),
+	opacity_hscl(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	min_pressure_adj(Gtk::Adjustment::create(0,0,1,0.01,0.1)),
 	min_pressure_spin(min_pressure_adj,0.1,3),
 	localthres_adj(Gtk::Adjustment::create(20, 1, 100000, 0.1, 1)),
