@@ -72,24 +72,23 @@ Widget_ColorSlider::init(Type t)
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 
-	property_type.get_proxy().signal_changed().connect([=](){
-		queue_draw();
-	});
+	property_type.get_proxy().signal_changed().connect(sigc::mem_fun(*this, &Widget_ColorSlider::queue_draw));
 
 	property_color.get_proxy().signal_changed().connect([=](){
 		set_color(to_synfig_color(property_color.get_value()));
 	});
 
-	property_orientation.get_proxy().signal_changed().connect([=](){
-		queue_draw();
-	});
+	property_orientation.get_proxy().signal_changed().connect(sigc::mem_fun(*this, &Widget_ColorSlider::queue_draw));
+
+	property_has_frame.get_proxy().signal_changed().connect(sigc::mem_fun(*this, &Widget_ColorSlider::queue_draw));
 }
 
 Widget_ColorSlider::Widget_ColorSlider(Type x)
 	: Glib::ObjectBase("widget_colorslider"),
 	  property_type(*this, "type", x),
 	  property_color(*this, "color", default_color),
-	  property_orientation(*this, "orientation", Gtk::ORIENTATION_HORIZONTAL)
+	  property_orientation(*this, "orientation", Gtk::ORIENTATION_HORIZONTAL),
+	  property_has_frame(*this, "has-frame", true)
 {
 	init(x);
 }
@@ -99,7 +98,8 @@ Widget_ColorSlider::Widget_ColorSlider(Gtk::DrawingArea::BaseObjectType* cobject
 	  Gtk::DrawingArea(cobject),
 	  property_type(*this, "type", TYPE_Y),
 	  property_color(*this, "color", default_color),
-	  property_orientation(*this, "orientation", Gtk::ORIENTATION_HORIZONTAL)
+	  property_orientation(*this, "orientation", Gtk::ORIENTATION_HORIZONTAL),
+	  property_has_frame(*this, "has-frame", true)
 {
 	init(TYPE_Y);
 }
@@ -327,13 +327,15 @@ Widget_ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		}
 	}
 
-    cr->set_source_rgb(1, 1, 1);
-    cr->rectangle(ca.get_x()+1, ca.get_y()+1, get_width()-3, get_height()-3);
-    cr->stroke();
+	if (property_has_frame) {
+		cr->set_source_rgb(1, 1, 1);
+		cr->rectangle(ca.get_x()+1, ca.get_y()+1, get_width()-3, get_height()-3);
+		cr->stroke();
 
-    cr->set_source_rgb(0, 0, 0);
-    cr->rectangle(ca.get_x(), ca.get_y(), get_width()-1, get_height()-1);
-    cr->stroke();
+		cr->set_source_rgb(0, 0, 0);
+		cr->rectangle(ca.get_x(), ca.get_y(), get_width()-1, get_height()-1);
+		cr->stroke();
+	}
 
     // Draw face to face contrasted arrows
 	const int arrow_size = std::min(bg_size, 20);

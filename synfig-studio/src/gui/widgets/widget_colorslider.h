@@ -81,6 +81,8 @@ public:
 	Gtk::Orientation get_orientation() const;
 	Glib::Property<Gtk::Orientation> property_orientation;
 
+	Glib::Property<bool> property_has_frame;
+
 	float get_amount() const;
 
 	sigc::signal<void,Type,float>& signal_slider_moved() { return signal_slider_moved_; }
