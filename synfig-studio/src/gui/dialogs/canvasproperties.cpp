@@ -35,7 +35,7 @@
 #include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 
 #include <gui/localization.h>
 
@@ -62,6 +62,7 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	Gtk::Dialog(_("Canvas Properties"),parent),
 	canvas_interface_(canvas_interface)
 {
+	this->set_resizable(false);
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::on_rend_desc_changed));
 
@@ -69,45 +70,51 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	dialogPadding->set_padding(12, 12, 12, 12);
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 
-	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
-	dialogPadding->add(*dialogBox);
+	Gtk::Grid *dialogGrid = manage(new Gtk::Grid());
+	dialogGrid->set_row_spacing(12);
+	dialogPadding->add(*dialogGrid);
 
-	Gtk::Frame *info_frame=manage(new Gtk::Frame(_("Canvas Info")));
+	Gtk::Frame *info_frame = manage(new Gtk::Frame(_("Canvas Info")));
 	info_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) info_frame->get_label_widget())->set_markup(_("<b>Canvas Info</b>"));
-	dialogBox->pack_start(*info_frame, false, false, 0);
+	dialogGrid->attach(*info_frame, 0, 0, 1, 1);
 
 	Gtk::Alignment *infoPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	infoPadding->set_padding(6, 0, 24, 0);
 	info_frame->add(*infoPadding);
 
-	Gtk::Table *info_table=manage(new Gtk::Table(2,2,false));
-	info_table->set_row_spacings(6);
-	info_table->set_col_spacings(12);
-	infoPadding->add(*info_table);
+	Gtk::Grid *info_grid = manage(new Gtk::Grid());
+	info_grid->set_row_spacing(6);
+	info_grid->set_column_spacing(12);
+	infoPadding->add(*info_grid);
 
 	// The root canvas doesn't have an ID, so don't
 	// display it if this is a root canvas.
 	if(!canvas_interface_->get_canvas()->is_root())
 	{
 		Gtk::Label *idLabel = manage(new Gtk::Label(_("_ID"), true));
-		idLabel->set_alignment(0, 0.5);
+		idLabel->set_halign(Gtk::ALIGN_START);
+		idLabel->set_valign(Gtk::ALIGN_CENTER);
 		idLabel->set_mnemonic_widget(entry_id);
-		info_table->attach(*idLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-		info_table->attach(entry_id, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+		info_grid->attach(*idLabel, 0, 0, 1, 1);
+		info_grid->attach(entry_id, 1, 0, 1, 1);
 	}
 	Gtk::Label *nameLabel = manage(new Gtk::Label(_("_Name"), true));
-	nameLabel->set_alignment(0, 0.5);
+	nameLabel->set_halign(Gtk::ALIGN_START);
+	nameLabel->set_valign(Gtk::ALIGN_CENTER);
 	nameLabel->set_mnemonic_widget(entry_name);
 	Gtk::Label *descriptionLabel = manage(new Gtk::Label(_("_Description"), true));
-	descriptionLabel->set_alignment(0, 0.5);
+	descriptionLabel->set_halign(Gtk::ALIGN_START);
+	descriptionLabel->set_valign(Gtk::ALIGN_CENTER);
 	descriptionLabel->set_mnemonic_widget(entry_description);
-	info_table->attach(*nameLabel,        0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	info_table->attach(*descriptionLabel, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	info_table->attach(entry_name,        1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	info_table->attach(entry_description, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	entry_name.set_hexpand();
+	entry_description.set_hexpand();
+	info_grid->attach(*nameLabel, 0, 0, 1, 1);
+	info_grid->attach(entry_name, 1, 0, 1, 1);
+	info_grid->attach(*descriptionLabel, 0, 1, 1, 1);
+	info_grid->attach(entry_description, 1, 1, 1, 1);
 
-	dialogBox->pack_start(widget_rend_desc, false, false, 0);
+	dialogGrid->attach(widget_rend_desc, 0, 1, 1, 1);
 
 	canvas_interface_->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
 	canvas_interface_->signal_id_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
