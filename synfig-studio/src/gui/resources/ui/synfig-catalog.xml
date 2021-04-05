@@ -23,6 +23,7 @@
         <property id="orientation" default="GTK_ORIENTATION_HORIZONTAL" optional="True" optional-default="False"/>
       </properties>
     </glade-widget-class>
+    <glade-widget-class name="gtkmm__CustomObject_widget_eyedropper" since="0.3" generic-name="eyedropper" title="EyeDropper" parent="GtkDrawingArea" toplevel="false" default-width="10" />
     <glade-widget-class name="gtkmm__CustomObject_widget_hsv_plane" since="0.3" generic-name="hsv_plane" title="HSV Plane" parent="GtkDrawingArea" toplevel="false" default-width="256" default-height="256">
       <properties>
         <property id="color" default="Red" optional="True" optional-default="False"/>
@@ -33,6 +34,7 @@
 
   <glade-widget-group name="synfigwidgets" title="Synfig Widgets" >
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_colorslider" />
+    <glade-widget-class-ref name="gtkmm__CustomObject_widget_eyedropper" />
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_hsv_plane" />
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_time" />
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_vector" />

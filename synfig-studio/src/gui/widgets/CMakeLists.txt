@@ -10,6 +10,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/widget_defaults.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_distance.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_enum.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/widget_eyedropper.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_sublayer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_filename.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_fontfamily.cpp"
