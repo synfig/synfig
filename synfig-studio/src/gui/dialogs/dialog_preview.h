@@ -66,7 +66,7 @@ public:
 	Dialog_Preview();
 	~Dialog_Preview();
 
-    void set_preview(etl::handle<Preview> prev);
+	void set_preview(etl::handle<Preview> prev);
 
 	Widget_Preview &get_widget() {return preview;}
 	const Widget_Preview &get_widget() const {return preview;}
@@ -82,7 +82,7 @@ private:
 	void close_window_handler();
 
 protected:
-	Gtk::Table preview_table;
+	Gtk::Grid preview_grid;
 
 }; // END of Dialog_Preview
 
