@@ -241,7 +241,7 @@ MainWindow::init_menus()
 
 void MainWindow::register_custom_widget_types()
 {
-	ColorSlider::register_type();
+	Widget_ColorSlider::register_type();
 	Widget_Time::register_type();
 	Widget_Vector::register_type();
 }

@@ -53,18 +53,18 @@ class Widget_ColorEdit : public Gtk::Grid
 	sigc::signal<void> signal_activated_;
 	sigc::signal<void> signal_value_changed_;
 
-	ColorSlider *slider_R;
-	ColorSlider *slider_G;
-	ColorSlider *slider_B;
+	Widget_ColorSlider *slider_R;
+	Widget_ColorSlider *slider_G;
+	Widget_ColorSlider *slider_B;
 	Gtk::Label *hex_color_label;
 	Gtk::Entry *hex_color;
 
-	ColorSlider *slider_A;
-	ColorSlider *slider_Y;
-	ColorSlider *slider_U;
-	ColorSlider *slider_V;
-	ColorSlider *slider_SAT;
-	ColorSlider *slider_HUE;
+	Widget_ColorSlider *slider_A;
+	Widget_ColorSlider *slider_Y;
+	Widget_ColorSlider *slider_U;
+	Widget_ColorSlider *slider_V;
+	Widget_ColorSlider *slider_SAT;
+	Widget_ColorSlider *slider_HUE;
 
 	Widget_Color widget_color;
 
@@ -92,7 +92,7 @@ protected:
 
 	void on_value_changed();
 
-	void on_slider_moved(ColorSlider::Type type, float amount);
+	void on_slider_moved(Widget_ColorSlider::Type type, float amount);
 	void on_hex_edited();
 	bool on_hex_focus_out(GdkEventFocus* event);
 
@@ -123,7 +123,7 @@ private:
 	///@brief Sets color to the widget
 	void setHVSColor(synfig::Color color);
 	///@brief The function adds slider into the row grid with label.
-	void SliderRow(int left, int top, ColorSlider *color_widget, std::string l, Gtk::Grid *grid);
+	void SliderRow(int left, int top, Widget_ColorSlider *color_widget, std::string l, Gtk::Grid *grid);
 	///@brief The function adds spin button into the grid.
 	void AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid);
 

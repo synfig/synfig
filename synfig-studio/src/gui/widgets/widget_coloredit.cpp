@@ -62,7 +62,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 void
-Widget_ColorEdit::SliderRow(int left, int top, ColorSlider* color_widget, std::string l, Gtk::Grid *grid)
+Widget_ColorEdit::SliderRow(int left, int top, Widget_ColorSlider* color_widget, std::string l, Gtk::Grid *grid)
 {
 	auto label = manage(new class Gtk::Label(l));
 	label->set_halign(Gtk::ALIGN_START);
@@ -134,7 +134,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 	attach(*alpha_grid,  0, 2, 1, 1);
 
 	//This defines are used for code below simplification.
-	#define SLIDER_ROW(left,top,n,l) SliderRow(left, top, slider_##n = manage(new ColorSlider(ColorSlider::TYPE_##n)), l, grid);
+	#define SLIDER_ROW(left,top,n,l) SliderRow(left, top, slider_##n = manage(new Widget_ColorSlider(Widget_ColorSlider::TYPE_##n)), l, grid);
 	#define ATTACH_SPIN_BUTTON(left,top,n) AttachSpinButton(left, top, spinbutton_##n = manage(new class Gtk::SpinButton(n##_adjustment, 1, 0)),grid);
 
 	{ //RGB frame
@@ -256,12 +256,12 @@ Widget_ColorEdit::on_color_changed()
 }
 
 void
-Widget_ColorEdit::on_slider_moved(ColorSlider::Type type, float amount)
+Widget_ColorEdit::on_slider_moved(Widget_ColorSlider::Type type, float amount)
 {
 	Color color(get_value_raw());
 
 	assert(color.is_valid());
-	ColorSlider::adjust_color(type,color,amount);
+	Widget_ColorSlider::adjust_color(type,color,amount);
 	assert(color.is_valid());
 
 	// If a non-primary colorslider is adjusted,

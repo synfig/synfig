@@ -38,7 +38,7 @@ namespace studio {
  *
  * Alpha is supported too.
  */
-class ColorSlider : public Gtk::DrawingArea
+class Widget_ColorSlider : public Gtk::DrawingArea
 {
 public:
 	enum Type
@@ -67,7 +67,7 @@ private:
 
 public:
 
-	ColorSlider(Type x=TYPE_Y);
+	Widget_ColorSlider(Type x=TYPE_Y);
 
 	void set_type(Type x);
 	Type get_type()const { return property_type; }
@@ -121,7 +121,7 @@ private:
 
 // Glade & GtkBuilder related
 public:
-	ColorSlider(BaseObjectType* cobject);
+	Widget_ColorSlider(BaseObjectType* cobject);
 	static Glib::ObjectBase* wrap_new(GObject* o);
 	static void register_type();
 private:
@@ -134,7 +134,7 @@ namespace Glib
 {
 
 template <>
-class Value<studio::ColorSlider::Type> : public Glib::Value_Enum<studio::ColorSlider::Type>
+class Value<studio::Widget_ColorSlider::Type> : public Glib::Value_Enum<studio::Widget_ColorSlider::Type>
 {
 public:
   static GType value_type() G_GNUC_CONST;

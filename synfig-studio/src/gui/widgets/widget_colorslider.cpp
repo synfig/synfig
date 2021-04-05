@@ -66,7 +66,7 @@ to_gdk_rgba(const synfig::Color& c)
 
 
 void
-ColorSlider::init(Type t)
+Widget_ColorSlider::init(Type t)
 {
 	property_type = t;
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
@@ -85,7 +85,7 @@ ColorSlider::init(Type t)
 	});
 }
 
-ColorSlider::ColorSlider(Type x)
+Widget_ColorSlider::Widget_ColorSlider(Type x)
 	: Glib::ObjectBase("widget_colorslider"),
 	  property_type(*this, "type", x),
 	  property_color(*this, "color", default_color),
@@ -94,7 +94,7 @@ ColorSlider::ColorSlider(Type x)
 	init(x);
 }
 
-ColorSlider::ColorSlider(Gtk::DrawingArea::BaseObjectType* cobject)
+Widget_ColorSlider::Widget_ColorSlider(Gtk::DrawingArea::BaseObjectType* cobject)
 	: Glib::ObjectBase("widget_colorslider"),
 	  Gtk::DrawingArea(cobject),
 	  property_type(*this, "type", TYPE_Y),
@@ -105,7 +105,7 @@ ColorSlider::ColorSlider(Gtk::DrawingArea::BaseObjectType* cobject)
 }
 
 void
-ColorSlider::set_type(Type x)
+Widget_ColorSlider::set_type(Type x)
 {
 	if (property_type == x)
 		return;
@@ -113,7 +113,7 @@ ColorSlider::set_type(Type x)
 }
 
 void
-ColorSlider::set_color(const Color& x)
+Widget_ColorSlider::set_color(const Color& x)
 {
 	if (color_ == x)
 		return;
@@ -124,26 +124,26 @@ ColorSlider::set_color(const Color& x)
 	queue_draw();
 }
 
-void ColorSlider::set_orientation(Gtk::Orientation x)
+void Widget_ColorSlider::set_orientation(Gtk::Orientation x)
 {
 	if (property_orientation == x)
 		return;
 	property_orientation = x;
 }
 
-Gtk::Orientation ColorSlider::get_orientation() const
+Gtk::Orientation Widget_ColorSlider::get_orientation() const
 {
 	return property_orientation;
 }
 
 float
-ColorSlider::get_amount() const
+Widget_ColorSlider::get_amount() const
 {
 	return get_amount(property_type, color_);
 }
 
 float
-ColorSlider::get_amount(Type type, const synfig::Color& color)
+Widget_ColorSlider::get_amount(Type type, const synfig::Color& color)
 {
 	switch(type)
 	{
@@ -164,26 +164,26 @@ ColorSlider::get_amount(Type type, const synfig::Color& color)
 }
 
 void
-ColorSlider::slider_color_TYPE_R(synfig::Color &color, float amount) { color.set_r(amount); }
+Widget_ColorSlider::slider_color_TYPE_R(synfig::Color &color, float amount) { color.set_r(amount); }
 void
-ColorSlider::slider_color_TYPE_G(synfig::Color &color, float amount) { color.set_g(amount); }
+Widget_ColorSlider::slider_color_TYPE_G(synfig::Color &color, float amount) { color.set_g(amount); }
 void
-ColorSlider::slider_color_TYPE_B(synfig::Color &color, float amount) { color.set_b(amount); }
+Widget_ColorSlider::slider_color_TYPE_B(synfig::Color &color, float amount) { color.set_b(amount); }
 void
-ColorSlider::slider_color_TYPE_Y(synfig::Color &color, float amount) { color.set_y(amount); }
+Widget_ColorSlider::slider_color_TYPE_Y(synfig::Color &color, float amount) { color.set_y(amount); }
 void
-ColorSlider::slider_color_TYPE_U(synfig::Color &color, float amount) { color.set_u(amount-0.5f); }
+Widget_ColorSlider::slider_color_TYPE_U(synfig::Color &color, float amount) { color.set_u(amount-0.5f); }
 void
-ColorSlider::slider_color_TYPE_V(synfig::Color &color, float amount) { color.set_v(amount-0.5f); }
+Widget_ColorSlider::slider_color_TYPE_V(synfig::Color &color, float amount) { color.set_v(amount-0.5f); }
 void
-ColorSlider::slider_color_TYPE_HUE(synfig::Color &color, float amount) { color.set_uv_angle(Angle::rot(amount)); }
+Widget_ColorSlider::slider_color_TYPE_HUE(synfig::Color &color, float amount) { color.set_uv_angle(Angle::rot(amount)); }
 void
-ColorSlider::slider_color_TYPE_SAT(synfig::Color &color, float amount) { color.set_s(amount*0.5f); }
+Widget_ColorSlider::slider_color_TYPE_SAT(synfig::Color &color, float amount) { color.set_s(amount*0.5f); }
 void
-ColorSlider::slider_color_TYPE_A(synfig::Color &color, float amount) { color.set_a(amount); }
+Widget_ColorSlider::slider_color_TYPE_A(synfig::Color &color, float amount) { color.set_a(amount); }
 
 void
-ColorSlider::adjust_color(Type type, synfig::Color &color, float amount)
+Widget_ColorSlider::adjust_color(Type type, synfig::Color &color, float amount)
 {
 	static const slider_color_func jump_table[int(TYPE_END)] =
 	{
@@ -201,7 +201,7 @@ ColorSlider::adjust_color(Type type, synfig::Color &color, float amount)
 }
 
 void
-ColorSlider::draw_arrow(
+Widget_ColorSlider::draw_arrow(
 	const Cairo::RefPtr<Cairo::Context> &cr,
 	double x, double y,
 	double width, double height,
@@ -252,7 +252,7 @@ ColorSlider::draw_arrow(
 }
 
 bool
-ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
+Widget_ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	Color color = color_;
 
@@ -346,7 +346,7 @@ ColorSlider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 }
 
 bool
-ColorSlider::on_event(GdkEvent *event)
+Widget_ColorSlider::on_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	const bool is_horizontal = property_orientation == Gtk::ORIENTATION_HORIZONTAL;
@@ -417,7 +417,7 @@ ColorSlider::on_event(GdkEvent *event)
 }
 
 void
-ColorSlider::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
+Widget_ColorSlider::get_preferred_height_vfunc(int& minimum_height, int& natural_height) const
 {
 	minimum_height = default_min_size;
 	if (property_orientation == Gtk::ORIENTATION_HORIZONTAL) {
@@ -428,7 +428,7 @@ ColorSlider::get_preferred_height_vfunc(int& minimum_height, int& natural_height
 }
 
 void
-ColorSlider::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
+Widget_ColorSlider::get_preferred_width_vfunc(int& minimum_width, int& natural_width) const
 {
 	minimum_width = default_min_size;
 	if (property_orientation == Gtk::ORIENTATION_HORIZONTAL) {
@@ -439,7 +439,7 @@ ColorSlider::get_preferred_width_vfunc(int& minimum_width, int& natural_width) c
 }
 
 void
-ColorSlider::get_preferred_height_for_width_vfunc(int width, int& minimum_height, int& natural_height) const
+Widget_ColorSlider::get_preferred_height_for_width_vfunc(int width, int& minimum_height, int& natural_height) const
 {
 	minimum_height = default_min_size;
 	if (property_orientation == Gtk::ORIENTATION_HORIZONTAL) {
@@ -450,7 +450,7 @@ ColorSlider::get_preferred_height_for_width_vfunc(int width, int& minimum_height
 }
 
 void
-ColorSlider::get_preferred_width_for_height_vfunc(int height, int& minimum_width, int& natural_width) const
+Widget_ColorSlider::get_preferred_width_for_height_vfunc(int height, int& minimum_width, int& natural_width) const
 {
 	minimum_width = default_min_size;
 	if (property_orientation == Gtk::ORIENTATION_HORIZONTAL) {
@@ -462,44 +462,44 @@ ColorSlider::get_preferred_width_for_height_vfunc(int height, int& minimum_width
 
 // Glade & GtkBuilder related
 
-GType ColorSlider::gtype = 0;
+GType Widget_ColorSlider::gtype = 0;
 
-Glib::ObjectBase* ColorSlider::wrap_new(GObject* o)
+Glib::ObjectBase* Widget_ColorSlider::wrap_new(GObject* o)
 {
 	if (gtk_widget_is_toplevel(GTK_WIDGET(o)))
-		return new ColorSlider(GTK_DRAWING_AREA(o));
+		return new Widget_ColorSlider(GTK_DRAWING_AREA(o));
 	else
-		return Gtk::manage(new ColorSlider(GTK_DRAWING_AREA(o)));
+		return Gtk::manage(new Widget_ColorSlider(GTK_DRAWING_AREA(o)));
 }
 
-void ColorSlider::register_type()
+void Widget_ColorSlider::register_type()
 {
 	if (gtype)
 		return;
 
-	ColorSlider dummy;
+	Widget_ColorSlider dummy;
 
 	gtype = G_OBJECT_TYPE(dummy.gobj());
 
-	Glib::wrap_register(gtype, ColorSlider::wrap_new);
+	Glib::wrap_register(gtype, Widget_ColorSlider::wrap_new);
 }
 
 GType
-Glib::Value<studio::ColorSlider::Type>::value_type()
+Glib::Value<studio::Widget_ColorSlider::Type>::value_type()
 {
 	static std::atomic<gsize> type_id(0);
 
 	 if (!type_id) {
 		 static const GEnumValue color_components_enum[10] = {
-			 {studio::ColorSlider::TYPE_R,   "COLORSLIDER_TYPE_R",   "red"},
-			 {studio::ColorSlider::TYPE_G,   "COLORSLIDER_TYPE_G",   "green"},
-			 {studio::ColorSlider::TYPE_B,   "COLORSLIDER_TYPE_B",   "blue"},
-			 {studio::ColorSlider::TYPE_Y,   "COLORSLIDER_TYPE_Y",   "y"},
-			 {studio::ColorSlider::TYPE_U,   "COLORSLIDER_TYPE_U",   "u"},
-			 {studio::ColorSlider::TYPE_V,   "COLORSLIDER_TYPE_V",   "v"},
-			 {studio::ColorSlider::TYPE_HUE, "COLORSLIDER_TYPE_HUE", "hue"},
-			 {studio::ColorSlider::TYPE_SAT, "COLORSLIDER_TYPE_SAT", "sat"},
-			 {studio::ColorSlider::TYPE_A,   "COLORSLIDER_TYPE_A",   "a"},
+			 {studio::Widget_ColorSlider::TYPE_R,   "COLORSLIDER_TYPE_R",   "red"},
+			 {studio::Widget_ColorSlider::TYPE_G,   "COLORSLIDER_TYPE_G",   "green"},
+			 {studio::Widget_ColorSlider::TYPE_B,   "COLORSLIDER_TYPE_B",   "blue"},
+			 {studio::Widget_ColorSlider::TYPE_Y,   "COLORSLIDER_TYPE_Y",   "y"},
+			 {studio::Widget_ColorSlider::TYPE_U,   "COLORSLIDER_TYPE_U",   "u"},
+			 {studio::Widget_ColorSlider::TYPE_V,   "COLORSLIDER_TYPE_V",   "v"},
+			 {studio::Widget_ColorSlider::TYPE_HUE, "COLORSLIDER_TYPE_HUE", "hue"},
+			 {studio::Widget_ColorSlider::TYPE_SAT, "COLORSLIDER_TYPE_SAT", "sat"},
+			 {studio::Widget_ColorSlider::TYPE_A,   "COLORSLIDER_TYPE_A",   "a"},
 			 {0, nullptr, nullptr}
 		 };
 		 type_id = g_enum_register_static(g_intern_static_string("SynfigColorSliderType"), color_components_enum);
