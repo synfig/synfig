@@ -4,7 +4,7 @@
 # https://stackoverflow.com/questions/59895/how-to-get-the-source-directory-of-a-bash-script-from-within-the-script-itself
 SOURCE="${BASH_SOURCE[0]}"
 DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
-CHANGELOG="${DIR}/ChangeLog.md"
+CHANGELOG="${DIR}/ChangeLog-development.md"
 
 if [ -z "$1" ]; then
     # Read starting commit ID from ChangeLog.md
