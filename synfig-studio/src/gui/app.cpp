@@ -1394,14 +1394,10 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
 #endif
 
-	if(mkdir(synfigapp::Main::get_user_app_directory().c_str(),ACCESSPERMS)<0)
-	{
-		if(errno!=EEXIST)
-			synfig::error("UNABLE TO CREATE \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
-	}
-	else
-	{
+	if (FileSystemNative::instance()->directory_create(synfigapp::Main::get_user_app_directory())) {
 		synfig::info("Created directory \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
+	} else {
+		synfig::error("UNABLE TO CREATE \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
 	}
 
 
