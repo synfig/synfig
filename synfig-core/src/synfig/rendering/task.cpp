@@ -49,7 +49,7 @@ using namespace rendering;
 
 
 synfig::Token Mode::mode_token;
-synfig::Token Task::token;
+SYNFIG_EXPORT synfig::Token Task::token;
 
 SYNFIG_EXPORT const Task::Handle Task::blank;
 
