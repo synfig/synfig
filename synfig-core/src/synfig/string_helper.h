@@ -31,7 +31,8 @@ namespace synfig
 
 /// Remove trailing zeroes of a string with a real number.
 /// It respects decimal point defined by locale and leave at least one decimal place
-std::string remove_trailing_zeroes(const std::string& text);
+/// \param force_decimal_point The result string will always show the decimal point even if it isn't needed (e.g. 4 -> 4.0)
+std::string remove_trailing_zeroes(const std::string& text, bool force_decimal_point = true);
 
 /// Remove whitespaces from both ends of a string
 std::string trim(const std::string& text);
