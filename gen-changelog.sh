@@ -7,8 +7,13 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 CHANGELOG="${DIR}/ChangeLog-development.md"
 
 if [ -z "$1" ]; then
-    # Read starting commit ID from ChangeLog.md
-    START=`cat "${CHANGELOG}" | head -n1 | awk '{print $1;}'`
+    # Read starting commit ID from ChangeLog.last_id
+    if [ -f "${DIR}/ChangeLog.last_id" ]; then
+	START=`cat "${DIR}/ChangeLog.last_id" | head -n1 | awk '{print $1;}'`
+    else
+	echo "ERROR: Please specify starting commit id as first argument."
+	exit 1
+    fi
 else
     START="$1"
 fi
@@ -47,6 +52,9 @@ while IFS= read -r CMT; do
     echo "${CMT} ${MESSAGE}${TAGS}" >> "${CHANGELOG}.new"
 done <<< "$COMMITS"
 fi
+#Save last commit ID
+git rev-parse master > "${DIR}/ChangeLog.last_id"
 
 tac "${CHANGELOG}.new" > "${CHANGELOG}"
 rm "${CHANGELOG}.new" ||  true
+
