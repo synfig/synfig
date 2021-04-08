@@ -23,7 +23,9 @@ fi
 # Get list of all commits
 COMMITS=`git log ${START}...master --pretty=format:'%H' --reverse`
 
-tac "${CHANGELOG}" > "${CHANGELOG}.new"
+if [ -f "${CHANGELOG}" ]; then
+    tac "${CHANGELOG}" > "${CHANGELOG}.new"
+fi
 
 if [ ! -z "${COMMITS}" ]; then
 while IFS= read -r CMT; do
