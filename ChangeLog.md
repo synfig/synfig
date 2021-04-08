@@ -1,8 +1,8 @@
-== Version 1.4.1 ==
+## Version 1.4.1
 - ...
 - <code>[9700b67](https://github.com/synfig/synfig/commit/9700b677051ed95660887938a95a784576502ba0)</code> Export video files with sound [core]
 
-== Version 1.4.0 ==
+## Version 1.4.0
 - ...
 - <code>[9967a77](https://github.com/synfig/synfig/commit/9967a771d5d1e8dfda6e26b8b5451f9f4493bc9f)</code> Automake: Add sounds to Extra_Dist [studio]
 - <code>[c0c24e0](https://github.com/synfig/synfig/commit/c0c24e0bc5652713f4defb3684c2573bf8cc2bd3)</code> Autotools: Add missing file [studio]
