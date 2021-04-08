@@ -1,991 +1,992 @@
-- <code>[41b7682](https://github.com/synfig/synfig/commit/41b7682921c0a83576d116a5f9b57991860620af)</code> Changed the order of buttons in various dialog boxes (Color, Paragraph, Gradient, Target options) ([#2090](https://github.com/synfig/synfig/issues/2090)) [studio]
-- <code>[ef901e4](https://github.com/synfig/synfig/commit/ef901e498d8a9653b06971f034b9641946ba4f50)</code> Reset progress bar in Info window as Preview rendering is stopped ([#2083](https://github.com/synfig/synfig/issues/2083)) [studio]
-- <code>[0b5e1d2](https://github.com/synfig/synfig/commit/0b5e1d29174f6b2e348a5560a7bd5b513b639b5e)</code> [Synfig Studio] Stop rendering button has been moved to the right of the progress bar ([#2078](https://github.com/synfig/synfig/issues/2078)) [studio]
-- <code>[6b5a3c8](https://github.com/synfig/synfig/commit/6b5a3c8900916fe0a092ba37b9743333c7aa0906)</code> [Synfig Studio] fix format string for synfigapp exception guard ([#2084](https://github.com/synfig/synfig/issues/2084)) [studio]
-- <code>[1ffe5c3](https://github.com/synfig/synfig/commit/1ffe5c321e0c8c6a13168e6a4f65025f4fbd0537)</code> [Snapcraft] Added Lottie dependency (lxml) ([#2060](https://github.com/synfig/synfig/issues/2060))
-- <code>[53153ef](https://github.com/synfig/synfig/commit/53153efa00f93bd9e31e4c6c37676acec4875f83)</code> [Synfig Studio] Toolbox migration from Gtk::Table to Gtk::Grid ([#2079](https://github.com/synfig/synfig/issues/2079)) [studio]
-- <code>[25e03d1](https://github.com/synfig/synfig/commit/25e03d14d0eacb471f06724e7a22e0fe8b720190)</code> [Core/Studio] Fix coverity warnings ([#2045](https://github.com/synfig/synfig/issues/2045)) [core] [studio]
-- <code>[65f50eb](https://github.com/synfig/synfig/commit/65f50eb4e4c180243b58425620a0905ae0f7c01b)</code> [Synfig Studio] fix skeleton deformation duplication ([#2071](https://github.com/synfig/synfig/issues/2071)) [core]
-- <code>[209319c](https://github.com/synfig/synfig/commit/209319c741b40ac43e8c8f3244caeacfa50ffa4a)</code> [Python] Allow to use updated dependencies ([#2069](https://github.com/synfig/synfig/issues/2069))
-- <code>[431ab77](https://github.com/synfig/synfig/commit/431ab77d7a34d59b888a8b24fb572267b3761e48)</code> [Synfig Studio] The canvas properties dialog now displays values correctly after being closed with the window close button. ([#2076](https://github.com/synfig/synfig/issues/2076)) [studio]
-- <code>[7ffa0d6](https://github.com/synfig/synfig/commit/7ffa0d67f8f3056c4f43d5229c012d62a22ae8ee)</code> [Appveyor] Temporarily disable artifact storing (run out of space) ([#2072](https://github.com/synfig/synfig/issues/2072))
-- <code>[2fd42d2](https://github.com/synfig/synfig/commit/2fd42d255e6dd59f2024b17fef51d723e92e8d22)</code> Bump pillow from 8.0.0 to 8.1.1 in /perf/scripts ([#2070](https://github.com/synfig/synfig/issues/2070))
-- <code>[b1468c7](https://github.com/synfig/synfig/commit/b1468c7dead6f12e0882ac4cd364c445074d4cf7)</code> [Synfig Studio] make TimeLoop valuenode editable via workspace ([#2066](https://github.com/synfig/synfig/issues/2066)) [core] [studio]
-- <code>[71de9ff](https://github.com/synfig/synfig/commit/71de9ff60b337c952abd983563cc7736a00ad714)</code> Fix various typos ([#2061](https://github.com/synfig/synfig/issues/2061)) [core] [studio]
-- <code>[0f7fb39](https://github.com/synfig/synfig/commit/0f7fb391fb4c682515aaa94098ae85c180a92dbb)</code> [Core] LinkableValueNode now provides methods for inverse manipulation ([#2057](https://github.com/synfig/synfig/issues/2057)) [core] [studio]
-- <code>[ab8cd14](https://github.com/synfig/synfig/commit/ab8cd14891a389142695c47e0f9be68adbbca1a9)</code> Merge PR [#2059](https://github.com/synfig/synfig/issues/2059): [Synfig Studio] fix action LayerDuplicate for skeleton and its bone links
-- <code>[15d55af](https://github.com/synfig/synfig/commit/15d55af7505b989df3d5c8924343a11600f21a51)</code> add LayerDuplicate action tests for Skeleton layer [studio]
-- <code>[87d10c6](https://github.com/synfig/synfig/commit/87d10c6c31d2fe791465c06adc8ff0a6b60be825)</code> [Synfig Studio] fix Action LayerDuplicate for Skeleton Layer [studio]
-- <code>[42b9750](https://github.com/synfig/synfig/commit/42b9750dc5e7f16706ea4e0f521316e99d1c688d)</code> prefer ValueNode::RHandle rather explicit etl::rhandle<ValueNode> [studio]
-- <code>[c2371f7](https://github.com/synfig/synfig/commit/c2371f7955abb21edd716da45f5552ab9b5a0e38)</code> Merge PR [#1979](https://github.com/synfig/synfig/issues/1979): [Synfig Studio] Minor cleanup on LayerTree (Improve LayerTree speed)
-- <code>[ef37687](https://github.com/synfig/synfig/commit/ef376872dae04158e393cefc30a7d48f9fcc12cb)</code> LayerTree: remove unused variable quick_layer [studio]
-- <code>[58f933d](https://github.com/synfig/synfig/commit/58f933d4f736f02191ec4fd995492b348fd96912)</code> LayerTree: remove unused callback on_dirty_preview() [studio]
-- <code>[1169f8e](https://github.com/synfig/synfig/commit/1169f8e411493a0386f10818214e9c07547b7bb0)</code> [Synfig Studio] LayerTree: remove unused widgets [studio]
-- <code>[3f608be](https://github.com/synfig/synfig/commit/3f608be77e6ffd44f3dee93aa12b463801d290da)</code> [Synfig Studio] Duckmatic: minor cleanup ([#2056](https://github.com/synfig/synfig/issues/2056)) [studio]
-- <code>[a1f27de](https://github.com/synfig/synfig/commit/a1f27de8c154776c1822bccbc2931cbc5d9150dd)</code> [Core] avoid comma operator and prefer return value of std::list::erase() ([#2053](https://github.com/synfig/synfig/issues/2053)) [core]
-- <code>[23d0559](https://github.com/synfig/synfig/commit/23d05595b97028b18a7b01b5aa2e4d0ecfeddc48)</code> [Core] prefer std::thread rather deprecated Glib::Threads ([#2052](https://github.com/synfig/synfig/issues/2052)) [core]
-- <code>[c526bf2](https://github.com/synfig/synfig/commit/c526bf2186871d5b4133f3527b3da54390e44f78)</code> [Synfig Studio] don't let inner layer be duplicated twice ([#2050](https://github.com/synfig/synfig/issues/2050)) [studio]
-- <code>[17d685c](https://github.com/synfig/synfig/commit/17d685c6a81b483cb5c1475c25207f119bc960f9)</code> [Synfig Studio] Bone Tool: fix bone width on wrong situations ([#2048](https://github.com/synfig/synfig/issues/2048)) [studio]
-- <code>[ae6925b](https://github.com/synfig/synfig/commit/ae6925bd26e03d15e566b96c42ce169801d40821)</code> [Core] Fixed warnings ([#2044](https://github.com/synfig/synfig/issues/2044)) [studio]
-- <code>[bc2e3e5](https://github.com/synfig/synfig/commit/bc2e3e570a1e47a5e2b0245ad44f31efffcf35f8)</code> [Synfig Studio] Noticeable progress bar ([#2019](https://github.com/synfig/synfig/issues/2019)) [studio]
-- <code>[c7e0960](https://github.com/synfig/synfig/commit/c7e0960da15c8dde969880c182940d2e85d283fd)</code> [Synfig Studio] Remember the Number of rendering thread ([#2023](https://github.com/synfig/synfig/issues/2023)) [studio]
-- <code>[505d8c5](https://github.com/synfig/synfig/commit/505d8c55081d9c50b9c318a728b2fd35c7ddf678)</code> [Synfig Studio] Implemented toggle animate hotkey ([#2033](https://github.com/synfig/synfig/issues/2033)) [studio]
-- <code>[bbdd853](https://github.com/synfig/synfig/commit/bbdd8536c7512d47724c8c166257ab416facf103)</code> Merge PR [#2046](https://github.com/synfig/synfig/issues/2046): [Synfig Studio] some cleanup on synfigapp::ValueDescSet
-- <code>[9105f66](https://github.com/synfig/synfig/commit/9105f6623c19ee0bd18d0cbbaa698dc29351ab55)</code> [Synfig Studio] add convenient private method to create and add ValueDescSet action [studio]
-- <code>[d72ae10](https://github.com/synfig/synfig/commit/d72ae10f131e3d3c73829c0e7e41ccff44246dac)</code> [Synfig Studio] use helper comparison functions [studio]
-- <code>[d2c259d](https://github.com/synfig/synfig/commit/d2c259d9509151c004be4a9dd7fc6e688f9ee825)</code> [Synfig Studio] not future-proof: ValueNode_Bone may change parameter order [studio]
-- <code>[ba77baf](https://github.com/synfig/synfig/commit/ba77baf6771e45195289c5553935169c97a342e2)</code> [Synfig Studio] fix compiler warning for signedness issue [studio]
-- <code>[1af456f](https://github.com/synfig/synfig/commit/1af456f5f49c374749cce4ff78160cd98ef9c036)</code> [Synfig Studio] better comparison for Real with 0 value [studio]
-- <code>[8dc38c5](https://github.com/synfig/synfig/commit/8dc38c51ed028a37caeec6d62807337c729b470d)</code> [Synfig Studio] avoid double dynamic_cast [studio]
-- <code>[ba9149a](https://github.com/synfig/synfig/commit/ba9149aaf3839cd205560fad2630daa23131554e)</code> [Synfig Studio] avoid dereference of invalid TreeIter on Layer TreeView ([#2043](https://github.com/synfig/synfig/issues/2043)) [studio]
-- <code>[94d8c47](https://github.com/synfig/synfig/commit/94d8c476189891c0fab33fdff31f04b89db47daf)</code> [Core/Studio] use std::thread::hardware_concurrency() instead of g_get_num_processors() ([#2042](https://github.com/synfig/synfig/issues/2042)) [core] [studio]
-- <code>[5664a71](https://github.com/synfig/synfig/commit/5664a7140e1f9e6120b747f2c22583d905fcd7a7)</code> Merge PR [#2040](https://github.com/synfig/synfig/issues/2040): [CLI] minor cleanup in command-line option parser
-- <code>[ddb5001](https://github.com/synfig/synfig/commit/ddb50017e2e495a5cf940e252404e7533e140abe)</code> [CLI] stop searching for video-codec as soon as found [core]
-- <code>[0e2504c](https://github.com/synfig/synfig/commit/0e2504c94ff128d1aca015b356ddfe318986f3ed)</code> [CLI] minor warning cleanup fixes [core]
-- <code>[9ae2dec](https://github.com/synfig/synfig/commit/9ae2decc512ffbee27c09a3b27e3ddc721361496)</code> [Core] DPI2DPM and DPM2DPI should use Real (double), not float [core] [studio]
-- <code>[4ecafb5](https://github.com/synfig/synfig/commit/4ecafb5f4b3ce6251623a3e8e8763499287c64aa)</code> [CLI] fix span option var type [core]
-- <code>[2f18910](https://github.com/synfig/synfig/commit/2f18910f4dc1657300574cec93db60a429755d9b)</code> [Core] assure uniqueness for new node guid ([#2029](https://github.com/synfig/synfig/issues/2029)) [core]
-- <code>[d3ce556](https://github.com/synfig/synfig/commit/d3ce5563e2315d72d786b2d0fb7d71a0832b6f07)</code> Update issue templates
-- <code>[06d71c5](https://github.com/synfig/synfig/commit/06d71c59856fb40951235a478f7d996191404e91)</code> [Synfig Studio] exception-guard now lists SynfigApp exception too ([#2028](https://github.com/synfig/synfig/issues/2028)) [studio]
-- <code>[7f67cc2](https://github.com/synfig/synfig/commit/7f67cc22dc831edb199b82c71aab22b407aa3292)</code> [Autotools] Fixed `make distcheck`. Reduced build output for synfigstudio-release.sh script. ([#2004](https://github.com/synfig/synfig/issues/2004)) [ETL] [core] [studio]
-- <code>[05b1ee2](https://github.com/synfig/synfig/commit/05b1ee273f564b1422b2e14c039e22455b380a5a)</code> [ETL/Core] Fixed warnings ([#2013](https://github.com/synfig/synfig/issues/2013)) [ETL] [core] [studio]
-- <code>[17c9a70](https://github.com/synfig/synfig/commit/17c9a7080ad52e40b50f176b590e7a6d37d63de9)</code> Turn off color dialog's resizability ([#2031](https://github.com/synfig/synfig/issues/2031)) [studio]
-- <code>[a9f00b7](https://github.com/synfig/synfig/commit/a9f00b73fc61a14cc4f1ed2c793547206c77d938)</code> [Synfig Studio] Improve style context code to one line ([#2032](https://github.com/synfig/synfig/issues/2032)) [studio]
-- <code>[73dcea6](https://github.com/synfig/synfig/commit/73dcea631b8b5dd22d5babf613c63b6b2d2fc379)</code> [Core] remove unused class GUIDHash ([#2030](https://github.com/synfig/synfig/issues/2030)) [core]
-- <code>[4ddd22d](https://github.com/synfig/synfig/commit/4ddd22d8de1f4729c83fe0b0e8cde5b46fd84e87)</code> Merge PR [#1995](https://github.com/synfig/synfig/issues/1995): [Core] create stringhelper
-- <code>[9e653c6](https://github.com/synfig/synfig/commit/9e653c6b0a013b1a40a414f314d3035285dffb1a)</code> [Core] remove unused synfig/nodebase.h ([#2024](https://github.com/synfig/synfig/issues/2024)) [core]
-- <code>[10b7715](https://github.com/synfig/synfig/commit/10b7715872763b7b488e43fb2284f6535336a895)</code> Merge PR [#2012](https://github.com/synfig/synfig/issues/2012): [Synfig Studio] Added support for merge/split tangents for multiple vertices of object
-- <code>[a509ebd](https://github.com/synfig/synfig/commit/a509ebd64fd7af777130abd9753e2e333ffb8575)</code> create string_helper.h to avoid code duplication [core] [studio]
-- <code>[f7e6897](https://github.com/synfig/synfig/commit/f7e6897d959fd52fdbc27bffba7bff84da6106ec)</code> remove commented-out code since 2005 [core]
-- <code>[d658aaa](https://github.com/synfig/synfig/commit/d658aaa270e2f1d248745e97c46bb53b80c53707)</code> remove unused string_decl.h [core]
-- <code>[e76af7e](https://github.com/synfig/synfig/commit/e76af7ee71eebebeb620abd1c421ec0a7e0d1df5)</code> add support for multiple vertices for actions BLinePointTangentSplit and BLinePointTangentMerge [studio]
-- <code>[80270a0](https://github.com/synfig/synfig/commit/80270a0e8b5e506eb7a57888e24ec53274d59694)</code> improve search function on BLinePointTangentSplit and BLinePointTangentMerge [studio]
-- <code>[07820e9](https://github.com/synfig/synfig/commit/07820e9605aec0298d2027b5fd7b41bd9a3c6990)</code> simplify code for actions BLinePointTangentSplit and BLinePointTangentMerge [studio]
-- <code>[94c0805](https://github.com/synfig/synfig/commit/94c0805673d4888665cf0179062226f01acf6f00)</code> [ETL] current_working_directory() function now works correctly with non-Latin filenames ([#2011](https://github.com/synfig/synfig/issues/2011)) [ETL] [core]
-- <code>[4c33e75](https://github.com/synfig/synfig/commit/4c33e75956ae62185f0b5103d0d0b03af437f628)</code> [Core/Studio] Added support for user-installed fonts on Windows 10 (1809) ([#1997](https://github.com/synfig/synfig/issues/1997)) [core] [studio]
-- <code>[03fd60f](https://github.com/synfig/synfig/commit/03fd60fe879f9be0619f68cd9fbffec5ba243830)</code> [Synfig Studio] fix "Link to Spline" showing when a vertex of spline itself is selected ([#1988](https://github.com/synfig/synfig/issues/1988)) [studio]
-- <code>[fe6dd29](https://github.com/synfig/synfig/commit/fe6dd2941ea77709ddf7f0ca0a98fb5a1b82917d)</code> [Synfig Studio] Allow to set number of rendering threads from Preferences dialog ([#1999](https://github.com/synfig/synfig/issues/1999)) [core] [studio]
-- <code>[39a0ab4](https://github.com/synfig/synfig/commit/39a0ab456021155a85d2936fbedff59464c74023)</code> Merge PR [#1970](https://github.com/synfig/synfig/issues/1970): [Synfig Studio] Implement Ctrl+Shift+Scroll to zoom horizontally in panels
-- <code>[8a6b0db](https://github.com/synfig/synfig/commit/8a6b0dbc1e315707f2a220d3218fc5b30b51ec2f)</code> Separate up/right and down/left scroll events [studio]
-- <code>[e279a16](https://github.com/synfig/synfig/commit/e279a165e1ec0c8bff6eb5ccfe7f3c1ebef62174)</code> Shift toggles vertical axis [studio]
-- <code>[b766b14](https://github.com/synfig/synfig/commit/b766b14dc5f7250c9872faeda897794ca1e09056)</code> Swap horizontal and vertical zoom hotkeys [studio]
-- <code>[8d0b088](https://github.com/synfig/synfig/commit/8d0b088a875f1d91d2ad925fd021459a076fc73a)</code> Fix indentations [studio]
-- <code>[8b74237](https://github.com/synfig/synfig/commit/8b74237e5af94e13141d00bb7c14d9713a29e454)</code> Scroll time horizontally in graphs with Shift+Scroll [studio]
-- <code>[b60044a](https://github.com/synfig/synfig/commit/b60044a64294d26f404b765be59664c1af74123f)</code> Zoom at mouse cursor position [studio]
-- <code>[2c6fdc5](https://github.com/synfig/synfig/commit/2c6fdc5149a249a8ad75448066d78986bb87aeed)</code> Connect Timetrack and Sound panels [studio]
-- <code>[1e25813](https://github.com/synfig/synfig/commit/1e25813b4a3caa71e9320c7911f03a5d486bcfc2)</code> Implement Ctrl+Shift+Scroll to zoom horizontally in Graphs panel [studio]
-- <code>[d8e1837](https://github.com/synfig/synfig/commit/d8e183799995c5ade40bfac4a031e3d9c25266ea)</code> Merge PR[#1971](https://github.com/synfig/synfig/issues/1971): [Synfig Studio] Fix action LayerDuplicate with layers "duplicate"
-- <code>[697e50f](https://github.com/synfig/synfig/commit/697e50fbed5e22f06c11f7f3b82ec5831f4c1eff)</code> fix bug duplicating layer_duplicate of different groups [studio]
-- <code>[8a45542](https://github.com/synfig/synfig/commit/8a455424300f858720f956210cc4c73febb9e6d3)</code> add test for synfigapp action LayerDuplicate [studio]
-- <code>[951545c](https://github.com/synfig/synfig/commit/951545c1ae55350f4f3002f179d8b32a06c4ea9d)</code> fix unused variable warning [studio]
-- <code>[592c3d4](https://github.com/synfig/synfig/commit/592c3d4c443c9431ae0d8bc015735ab3c1b1b7dc)</code> detail duplicated valuenode name on error [studio]
-- <code>[86b1229](https://github.com/synfig/synfig/commit/86b1229cb4149cd467d9160950af4d48efe25b11)</code> Duplicating Layer_Duplicate connects cloned layers to new Index [studio]
-- <code>[e027603](https://github.com/synfig/synfig/commit/e0276038420fb6fc43662419b0ff920bec7dc850)</code> fix bug when duplicating two Layer_Duplicate in same canvas [studio]
-- <code>[ab48748](https://github.com/synfig/synfig/commit/ab487484a0fcf2a5c1dcaf5d745ada93b428de00)</code> fix auto-exported valuenode id of Layer_Duplicate index parameter [studio]
-- <code>[48959a9](https://github.com/synfig/synfig/commit/48959a99ad979ff72fc07280e814d87ef2932690)</code> Merge PR [#1929](https://github.com/synfig/synfig/issues/1929): [Synfig Studio] Added ability to undock panel using the context menu command
-- <code>[ab138e4](https://github.com/synfig/synfig/commit/ab138e4e7ec8c6be1b6d091c576f1beed9b885d4)</code> add menu item "Undock panel" to Panel tab [studio]
-- <code>[3a07fe2](https://github.com/synfig/synfig/commit/3a07fe28a582f235c5a39085d2b1aa8a91504b3a)</code> when undocking a panel, it shows up near mouse pointer [studio]
-- <code>[34127e8](https://github.com/synfig/synfig/commit/34127e88e94ea3ec36a39a1246ee1d946093f58d)</code> Merge PR [#1974](https://github.com/synfig/synfig/issues/1974): [Synfig Studio] Set Enum parameters to Static by default
-- <code>[5273296](https://github.com/synfig/synfig/commit/5273296ca3dbb9f96f40c3fe17e9af3c8bfb10d8)</code> Set blend_method to static also for Layers created with Tools [studio]
-- <code>[f1f9c88](https://github.com/synfig/synfig/commit/f1f9c8859fc9aebfc16a13f6f5b4528856597941)</code> Set Enum parameters to Static by default [core]
-- <code>[4789a5b](https://github.com/synfig/synfig/commit/4789a5b864a290caf1d3081c84c17b79869f7a4c)</code> [Core] A little refactoring of loadcanvas.cpp ([#1956](https://github.com/synfig/synfig/issues/1956)) [core]
-- <code>[8809482](https://github.com/synfig/synfig/commit/8809482a2f4485155324b6b49481fb8303094bb9)</code> [Synfig Core] Added support for loading `average` values ([#1955](https://github.com/synfig/synfig/issues/1955)) [core]
-- <code>[76e827e](https://github.com/synfig/synfig/commit/76e827e2ab186e4635cc5942478956b41cb86b0e)</code> [Core] Refactored trgt_ffmpeg ([#1947](https://github.com/synfig/synfig/issues/1947)) [core]
-- <code>[349810e](https://github.com/synfig/synfig/commit/349810e2f9a25af3297b776ee88c6c035abdb717)</code> [Synfig Studio/Windows] Fixed issue with rendering to file when using non-Latin filenames ([#1940](https://github.com/synfig/synfig/issues/1940)) [core] [studio]
-- <code>[44b46a2](https://github.com/synfig/synfig/commit/44b46a230c1a3e7f14451b3cfde5ea8f45e163dc)</code> [CMake/Core] Added glib dependency ([#2009](https://github.com/synfig/synfig/issues/2009)) [core]
-- <code>[53aebba](https://github.com/synfig/synfig/commit/53aebba8412d1c28a3218365bf18d4105e955cd2)</code> Merge PR [#1950](https://github.com/synfig/synfig/issues/1950): [ETL/Core] `rect` class moved from ETL to core.
-- <code>[8a97261](https://github.com/synfig/synfig/commit/8a972616a7f7e7e42fa7ec474aeb8727416f0851)</code> [ETL] `rect` removed from ETL [ETL] [core]
-- <code>[c4a4961](https://github.com/synfig/synfig/commit/c4a4961315fe45b66fd3704b0aa441183362e5ed)</code> [ETL/Core] `rect` class moved from ETL to core. `intersect` and `contains` functions renamed to `rect_xxx` to avoid ambiguity [ETL] [core] [studio]
-- <code>[3c97b06](https://github.com/synfig/synfig/commit/3c97b06fcbcdd3622707389042662ab9cc01da25)</code> [ETL/Core] Moved `range` class from ETL to core [ETL] [core]
-- <code>[88f4c33](https://github.com/synfig/synfig/commit/88f4c33a05b1b890a224bc88c5ff698e74e98845)</code> [ETL] Simplified `range` class comparison function [ETL]
-- <code>[cf42eb4](https://github.com/synfig/synfig/commit/cf42eb4ffc769737c43893877f92d8404cb63af4)</code> [Synfig Studio] destructors should not call virtual methods ([#2003](https://github.com/synfig/synfig/issues/2003)) [studio]
-- <code>[cc4aa73](https://github.com/synfig/synfig/commit/cc4aa73b6114faec56afb7b7ac1c69fa9dea4a33)</code> [Synfig Studio] remove unused variable mod_palette_ from App ([#2002](https://github.com/synfig/synfig/issues/2002)) [studio]
-- <code>[b660807](https://github.com/synfig/synfig/commit/b6608075a87fe17e3615947b08a73ad91be05726)</code> [Core/Studio] Fix missing const qualifier for some relational operators overrides ([#2001](https://github.com/synfig/synfig/issues/2001)) [core] [studio]
-- <code>[885f3ac](https://github.com/synfig/synfig/commit/885f3ac6ebb87252439df7bbb2eec2eb8b29e2c4)</code> [Core] Fix missing is_distance hint for vertex coordinates ([#2000](https://github.com/synfig/synfig/issues/2000)) [core]
-- <code>[cde3553](https://github.com/synfig/synfig/commit/cde355308969770d4af2b78604bdbc7a36375c4d)</code> [CI] Fixed wrong stable branch name for GitHub Actions ([#1998](https://github.com/synfig/synfig/issues/1998))
-- <code>[a9b80ea](https://github.com/synfig/synfig/commit/a9b80ea7e1531ccd2eaed074930526a246dce7df)</code> [Synfig Studio] Improve layout of Workspaces editor ([#1991](https://github.com/synfig/synfig/issues/1991)) [studio]
-- <code>[d75cd9f](https://github.com/synfig/synfig/commit/d75cd9fd91a9702af3d49db64197a5298a45c728)</code> [Synfig Studio] Removed unnecessary explicit cast std::string to Glib::ustring ([#1993](https://github.com/synfig/synfig/issues/1993)) [studio]
-- <code>[99fe201](https://github.com/synfig/synfig/commit/99fe201d203c450e69a9123a14f70b4d8a07069b)</code> Merge PR [#1992](https://github.com/synfig/synfig/issues/1992): [Synfig Studio] Fix parameter values of several layers shown as distance metrics when they are not
-- <code>[248ca69](https://github.com/synfig/synfig/commit/248ca69633d9127e8efb7aedf13bafafe6d6aa82)</code> fix angle degree character: it was using ordinal symbol instead [studio]
-- <code>[30080e6](https://github.com/synfig/synfig/commit/30080e6902cef3b990d03795ce726b32d4abf9fb)</code> fix cellrenderer text for scale parameter and other non-distance parameters [core] [studio]
-- <code>[12b29c7](https://github.com/synfig/synfig/commit/12b29c735a62f1896e557361f5dfcc3de41a0a11)</code> Merge PR [#1945](https://github.com/synfig/synfig/issues/1945): [Synfig Studio] Make Preview tooltips and titles consistent with other dialogs
-- <code>[0362883](https://github.com/synfig/synfig/commit/03628836e932d68851a3578cdf53c2579dffebd3)</code> Revert changes to canvasview.cpp [studio]
-- <code>[ee25be9](https://github.com/synfig/synfig/commit/ee25be96c25fcd890c0dfd7b5f891db657213129)</code> Set Preview dialog as transient for main window [studio]
-- <code>[da85f14](https://github.com/synfig/synfig/commit/da85f14afe69248a8d1d39e293d99ca96c63dc6a)</code> Change tooltip and icon of Preview Settings [studio]
-- <code>[e09ed09](https://github.com/synfig/synfig/commit/e09ed097a012355acde9ff8adc27263446549c56)</code> Use "Loop" and improve playback bounds tootlips [studio]
-- <code>[1fc5783](https://github.com/synfig/synfig/commit/1fc578332a91ab990be987c3d83acf844d8dcf9c)</code> Edit Preview tooltips and dialog titles to make them consistent with other dialogs [studio]
-- <code>[7ccb5d7](https://github.com/synfig/synfig/commit/7ccb5d702f5369f09a3524e0e9715394d629be91)</code> Merge PR [#1985](https://github.com/synfig/synfig/issues/1985): [CI] GitHub actions improvements
-- <code>[1cbf8c3](https://github.com/synfig/synfig/commit/1cbf8c3e710b85b0c63f678c42f4e8fb3d212e8d)</code> [CI] Added GitHub actions for stable branch
-- <code>[8e24b08](https://github.com/synfig/synfig/commit/8e24b0867e1cf51e8bdecbd2a211c727bbc5a194)</code> [CI] Temporary replaced MacOS 11 with MacOS 10.15 until GitHub Action issue is not resolved
-- <code>[6b0d418](https://github.com/synfig/synfig/commit/6b0d4185255cc534940709c9001227d1ef52ba68)</code> [Autotools] Fixed problem with missing *.glsl files in distribution ([#1982](https://github.com/synfig/synfig/issues/1982)) [core]
-- <code>[c1e6ca0](https://github.com/synfig/synfig/commit/c1e6ca001861dd5d815b91f9c6e35ccb0c59a84c)</code> [Synfig Studio] fix states accelerator shortcut in tooltips ([#1959](https://github.com/synfig/synfig/issues/1959)) [studio]
-- <code>[39807ad](https://github.com/synfig/synfig/commit/39807ad99f89c0f626c98006e40e855c62a26a32)</code> [Synfig Studio] Bumped year in About dialog ([#1977](https://github.com/synfig/synfig/issues/1977)) [studio]
-- <code>[6d407c2](https://github.com/synfig/synfig/commit/6d407c2c7a6e86eed34687214123fddc6fbc4a66)</code> autotools: fix POTFILES.in again and Makefile.am ([#1981](https://github.com/synfig/synfig/issues/1981)) [studio]
-- <code>[ca04f3d](https://github.com/synfig/synfig/commit/ca04f3dfa23ea14d53ea281dd1ff832750ab5fce)</code> [Synfig Studio] fix mainwindow not showing when is offscreen ([#1973](https://github.com/synfig/synfig/issues/1973)) [studio]
-- <code>[456bf8c](https://github.com/synfig/synfig/commit/456bf8c80d8d78bbc37b6fb9eb92ca017e5a4813)</code> [Synfig Studio] Fixed build error ([#1976](https://github.com/synfig/synfig/issues/1976)) [studio]
-- <code>[ba211ba](https://github.com/synfig/synfig/commit/ba211bafbe5963bc863ad4e99d38e73a3d96fe92)</code> [Synfig Studio] remove some unneeded headers ([#1963](https://github.com/synfig/synfig/issues/1963)) [studio]
-- <code>[b555b22](https://github.com/synfig/synfig/commit/b555b228a6a574babad9a6aeebc46353795313b2)</code> [Synfig Studio] Waypoint Editor didn't properly support enums ([#1968](https://github.com/synfig/synfig/issues/1968)) [studio]
-- <code>[0672879](https://github.com/synfig/synfig/commit/06728793ad0432d8350ff7886ba7f7da16d7c180)</code> Scroll step size set to 1 frame and 10 with Ctrl ([#1967](https://github.com/synfig/synfig/issues/1967)) [studio]
-- <code>[4d7689b](https://github.com/synfig/synfig/commit/4d7689b40a7a846400195672e9dfc3f2db653c1c)</code> [CMake] Fixed issue with CMake generating file inside source tree when using out-of-source build ([#1964](https://github.com/synfig/synfig/issues/1964)) [core]
-- <code>[8a893b8](https://github.com/synfig/synfig/commit/8a893b8e2821da000d9a5feebd60b730b558c235)</code> [CMake/MSVC] Added required packages ([#1962](https://github.com/synfig/synfig/issues/1962)) [core] [studio]
-- <code>[55ec4cc](https://github.com/synfig/synfig/commit/55ec4ccb3160783c2d2a5aeb0655be38cd036eb4)</code> [Synfig Studio] Removed Win32 mkdir() redefinition ([#1960](https://github.com/synfig/synfig/issues/1960)) [studio]
-- <code>[0954a7f](https://github.com/synfig/synfig/commit/0954a7f07803855ab3c20ec2c83e615eaeb0a8c9)</code> [Synfig Studio] remove unused headers ([#1957](https://github.com/synfig/synfig/issues/1957)) [studio]
-- <code>[86cb9ce](https://github.com/synfig/synfig/commit/86cb9ce0e412a2e58750516e63370ed1f0cfb86b)</code> Merge PR [#1953](https://github.com/synfig/synfig/issues/1953): [Synfig Studio] Clean default accel map implementation
-- <code>[8e64d33](https://github.com/synfig/synfig/commit/8e64d33ab7dd5d0b58aa57c8e815187ab2f77571)</code> app.cpp: remove ACCEL macro to cleanup default accel map definition [studio]
-- <code>[cd38167](https://github.com/synfig/synfig/commit/cd38167999499c6185ef27572da37900cc396e48)</code> app.cpp: replace macro ACCEL2 with ACCEL [studio]
-- <code>[4b7f89b](https://github.com/synfig/synfig/commit/4b7f89beab97bd565df50d7dd559124ebb163b52)</code> [Synfig Studio] Make sure Show/Snap Guides toolbar buttons are always working ([#1949](https://github.com/synfig/synfig/issues/1949)) [studio]
-- <code>[3f6e3c9](https://github.com/synfig/synfig/commit/3f6e3c9215d6097391617ca97f7a846865d0b0cb)</code> [Synfig Core] Removed unused headers ([#1944](https://github.com/synfig/synfig/issues/1944)) [core]
-- <code>[d6ab408](https://github.com/synfig/synfig/commit/d6ab4088273205931a69363fae2016bd77bb3d75)</code> [Synfig Studio] Add Show/Snap Guides to Toolbar ([#1928](https://github.com/synfig/synfig/issues/1928)) [studio]
-- <code>[70c5ff6](https://github.com/synfig/synfig/commit/70c5ff6cc55eab34d86142b00d6d0f0d132b0af0)</code> [Synfig Studio] Duckmatic: signal_grid_changed never emitted ([#1937](https://github.com/synfig/synfig/issues/1937)) [studio]
-- <code>[4690620](https://github.com/synfig/synfig/commit/4690620760afb60540ac52ee063eda3bafcc04e9)</code> Merge PR [#1939](https://github.com/synfig/synfig/issues/1939): [Synfig Studio] app.cpp : some cleanup
-- <code>[a9ef157](https://github.com/synfig/synfig/commit/a9ef15773780308e462c55add44f445227097054)</code> [Synfig Studio] refactored URI code in CanvasView ([#1943](https://github.com/synfig/synfig/issues/1943)) [studio]
-- <code>[a472077](https://github.com/synfig/synfig/commit/a4720773c9aeb35b31804166e32e6e4035d16866)</code> app.cpp: merge all #ifdef _WIN32 stuff [studio]
-- <code>[84b1710](https://github.com/synfig/synfig/commit/84b1710613ea1e8285fd5ff343af9f7244f9e72e)</code> some variable/class property sorting [studio]
-- <code>[e9b8b78](https://github.com/synfig/synfig/commit/e9b8b782e05939ddc56762ee72979ba760dcc38a)</code> no need for namespace scope here [studio]
-- <code>[74f9c7e](https://github.com/synfig/synfig/commit/74f9c7ea452b2beef8543b57a25fa30a27663ba7)</code> move static variable next other ones [studio]
-- <code>[f5e619c](https://github.com/synfig/synfig/commit/f5e619c4a1684ada7df5d4968bbdbffec791fe18)</code> remove commented-out code [studio]
-- <code>[398ec45](https://github.com/synfig/synfig/commit/398ec45291fcc8d569187604acfb6bbe4cb19cd6)</code> use #ifdef instead of #if [studio]
-- <code>[4b7051f](https://github.com/synfig/synfig/commit/4b7051f5a21b8bb4df79ef6d9d6d5bdc6fe79edc)</code> prepend static keyword for 'internal' variables [studio]
-- <code>[4c9ec28](https://github.com/synfig/synfig/commit/4c9ec288f07d5237f913ba4ec9dba9b1f0ddab68)</code> remove unneeded ending comma in some macro uses [studio]
-- <code>[14c9dd1](https://github.com/synfig/synfig/commit/14c9dd1b7d39d02af6b954a1d907faf2d75fe3d4)</code> prefer nullptr rather than 0 or NULL [studio]
-- <code>[adaa01a](https://github.com/synfig/synfig/commit/adaa01a456b730a4f38647da490d5b5f480d2fcc)</code> remove unused macros [studio]
-- <code>[4753a8c](https://github.com/synfig/synfig/commit/4753a8c6a740d01c7c79fa6d26e471d2df9e9c5f)</code> [Synfig Studio] app.cpp: remove unused headers and sort [studio]
-- <code>[e320613](https://github.com/synfig/synfig/commit/e3206139323757abdc878acc9cd5651ae0e24ce1)</code> [Synfig Studio] Disabled resizing of the Preview Options dialog ([#1942](https://github.com/synfig/synfig/issues/1942)) [studio]
-- <code>[c32de32](https://github.com/synfig/synfig/commit/c32de327f81abcfb4786ca3f7f60e0440a67e036)</code> [Synfig Core] Added freetype detail (font face/filename) to error description ([#1938](https://github.com/synfig/synfig/issues/1938)) [core]
-- <code>[20f4bda](https://github.com/synfig/synfig/commit/20f4bda968b7ca87901685f1a9fb86072fd95d34)</code> [Synfig Studio] Add Eyedrop Tool legend in Toolbox ([#1925](https://github.com/synfig/synfig/issues/1925)) [studio]
-- <code>[ca869b1](https://github.com/synfig/synfig/commit/ca869b1cf3d6c602c9c8432022b2950a2c30df60)</code> [Synfig Studio] Don't expand File Format Version drop-down list ([#1933](https://github.com/synfig/synfig/issues/1933)) [studio]
-- <code>[ce8834e](https://github.com/synfig/synfig/commit/ce8834ebbb2ba6a0136f2d98b93c0cbd88e27c6a)</code> [CMake/Windows] Fixed missing `libgcc_s_dw2-1.dll` file in portable archive (x32) ([#1919](https://github.com/synfig/synfig/issues/1919))
-- <code>[7e63655](https://github.com/synfig/synfig/commit/7e636558274ba7c1a89347d99994dc211c80b047)</code> [Core] Cleanup blur code ([#1918](https://github.com/synfig/synfig/issues/1918)) [core]
-- <code>[6676204](https://github.com/synfig/synfig/commit/6676204d88abf9f213d6fa5b342477c8afcadddb)</code> [Synfig Studio] remove unused headers ([#1923](https://github.com/synfig/synfig/issues/1923)) [studio]
-- <code>[a4327a8](https://github.com/synfig/synfig/commit/a4327a87e36aaf19c71e143c7cfb642cddb0b7e1)</code> [Synfig Studio] Don't expand Interpolation widget more than allocated width ([#1927](https://github.com/synfig/synfig/issues/1927)) [studio]
-- <code>[9f51f5e](https://github.com/synfig/synfig/commit/9f51f5ecafad570c64e38fdecaf455d7e44e3e1c)</code> [Synfig Studio] Center "Scale to fit Canvas" switch vertically to avoid stretching ([#1926](https://github.com/synfig/synfig/issues/1926)) [studio]
-- <code>[f47d674](https://github.com/synfig/synfig/commit/f47d6740bacae90b52019aee338c272cef02f49a)</code> Merge PR [#1861](https://github.com/synfig/synfig/issues/1861): [Synfig Studio] Fixed crash when frame rendering throws exception while animating
-- <code>[ba89fe0](https://github.com/synfig/synfig/commit/ba89fe0bea32e36038e2726721e6437f524921a3)</code> stop the animation playback only at problematic frame [studio]
-- <code>[52936a4](https://github.com/synfig/synfig/commit/52936a48cec67ae68b8e8ecdb85a1c02935f4684)</code> detail better the async render error: try to show error string [studio]
-- <code>[d605f64](https://github.com/synfig/synfig/commit/d605f64a1038aa382e1c6ae148fa42b3505cd33c)</code> Stop animation playback when frame rendering error occurs [studio]
-- <code>[a0e9b18](https://github.com/synfig/synfig/commit/a0e9b181ae03f2ea34992ffa9fe49dea37c02869)</code> don't crash if frame rendering throws exception while animating [studio]
-- <code>[7d68380](https://github.com/synfig/synfig/commit/7d683807d8141e1269f8acb40454d62d1c5c254a)</code> [Synfig Studio] Fixed incorrect import of `lst` files when path contains non-Latin characters ([#1924](https://github.com/synfig/synfig/issues/1924)) [core]
-- <code>[9653378](https://github.com/synfig/synfig/commit/9653378d5f91f1539a8ab5d4d6c4b17dff2578ce)</code> [Synfig Studio] Fixed crash when right-clicking on group in the Sets panel ([#1920](https://github.com/synfig/synfig/issues/1920)) [studio]
-- <code>[9f9a09e](https://github.com/synfig/synfig/commit/9f9a09e67711728ccbdb54028f2a22a0f952bed5)</code> [Synfig Studio/Windows] Fixed non-working command "Edit image editing in external tool..." ([#1912](https://github.com/synfig/synfig/issues/1912)) [studio]
-- <code>[0bd6fd5](https://github.com/synfig/synfig/commit/0bd6fd5bde72abe358f841c8a06cc56f3c1f8f86)</code> Merge PR [#1889](https://github.com/synfig/synfig/issues/1889): [Synfig Studio/Windows] Fixed load/save operations for Palette editor
-- <code>[a741486](https://github.com/synfig/synfig/commit/a741486fc5e2b3e20eba294c4c2af364496f6325)</code> [Synfig Studio/Windows]  Fixed saving/loading palette to file with non-Latin name [core] [studio]
-- <code>[484e2ac](https://github.com/synfig/synfig/commit/484e2aceeb51c4f91f3b44854f9dae7c24918650)</code> [Synfig Studio] Fixed crash when trying to save a palette to a file with a non-Latin name [studio]
-- <code>[474fc00](https://github.com/synfig/synfig/commit/474fc00eb8d201980483ee0ff7f312918f3a1e89)</code> [Synfig Studio] Cleanup Palette editor code [studio]
-- <code>[f25b03e](https://github.com/synfig/synfig/commit/f25b03e06407558c9b49dc53ac0709bc095657ba)</code> [Appveyor] Bump artifact version ([#1913](https://github.com/synfig/synfig/issues/1913))
-- <code>[e84f6cb](https://github.com/synfig/synfig/commit/e84f6cb328a2fce8fbb7bde1bbcc4227aefbfac9)</code> [Synfig Studio] remove unused headers ([#1911](https://github.com/synfig/synfig/issues/1911))
-- <code>[77039da](https://github.com/synfig/synfig/commit/77039da08eed4197accb3f58b1fdb9fbe12eec4f)</code> [Snap] Added snap for stable release. Fixed snap for git build ([#1897](https://github.com/synfig/synfig/issues/1897))
-- <code>[4aac1b8](https://github.com/synfig/synfig/commit/4aac1b85c241b3b5b000e7cd82a5139864efbcc2)</code> [Synfig Studio] remove unused headers ([#1907](https://github.com/synfig/synfig/issues/1907)) [studio]
-- <code>[9b580c6](https://github.com/synfig/synfig/commit/9b580c65825c73c9fcce8bcf58b12c0403b06b19)</code> Merge PR[#1890](https://github.com/synfig/synfig/issues/1890): Fix crash in Spline Width and return of improper type in Spline converters
-- <code>[e8920ca](https://github.com/synfig/synfig/commit/e8920ca8ab7cc76431d3f1b7c4c3a075b17f154f)</code> Fix incorrect type in Spline converters for Real values [core]
-- <code>[ac61143](https://github.com/synfig/synfig/commit/ac611436079e2a2d8f91aba9c3b07c42048a2998)</code> Fix crash in Spline Width converter [core]
-- <code>[4ed6b79](https://github.com/synfig/synfig/commit/4ed6b79edc201011e7fa2aefc78f78c1db95caf0)</code> [Synfig Studio] remove unused headers ([#1906](https://github.com/synfig/synfig/issues/1906)) [studio]
-- <code>[bc33af8](https://github.com/synfig/synfig/commit/bc33af859718feb026d064daa3db118313cad818)</code> Merge PR [#1894](https://github.com/synfig/synfig/issues/1894): Minor cleanup for Dials
-- <code>[56ee9cf](https://github.com/synfig/synfig/commit/56ee9cf9f7c333a841420f0c13a7bee53c4e1f60)</code> avoid deprecated Gtk::Alignment [studio]
-- <code>[6711313](https://github.com/synfig/synfig/commit/67113133472606e8f92e9b53ae5c3154db052909)</code> studio: dials: don't use tab for vertical alignment [studio]
-- <code>[0a62228](https://github.com/synfig/synfig/commit/0a622284e90a079b29f7eefbccd24e91552bcefe)</code> studio: dials: remove unused headers [studio]
-- <code>[ff2838b](https://github.com/synfig/synfig/commit/ff2838bae7e4317dafd714ecf8437c7bb6c7eee9)</code> studio: dials don't use deprecated Gtk::Table anymore [studio]
-- <code>[cadeed3](https://github.com/synfig/synfig/commit/cadeed3e2812fbb63158515db7d84f261ed8be7e)</code> [Synfig Studio] Added ability to select available Sets when adding Layers to Sets ([#1878](https://github.com/synfig/synfig/issues/1878)) [studio]
-- <code>[0febc74](https://github.com/synfig/synfig/commit/0febc749210a7611880afd3139701455d04bdd3c)</code> [Synfig Studio] Added extended information about possible errors in ValueDescCreateChildBone ([#1892](https://github.com/synfig/synfig/issues/1892)) [studio]
-- <code>[05181f8](https://github.com/synfig/synfig/commit/05181f850b9ca959e8d39b43a1d5902b781bbba4)</code> [Synfig Studio] Removed unused headers ([#1893](https://github.com/synfig/synfig/issues/1893)) [studio]
-- <code>[5276fd4](https://github.com/synfig/synfig/commit/5276fd448f58878564aa75e10076ae0feedbf0d9)</code> Updated README.md ([#1891](https://github.com/synfig/synfig/issues/1891))
-- <code>[95dea12](https://github.com/synfig/synfig/commit/95dea12eca788eba8323f9fb0c59a839ac3213d1)</code> [Autotools] Added missing synfig_export.h file ([#1886](https://github.com/synfig/synfig/issues/1886)) [core]
-- <code>[a623aac](https://github.com/synfig/synfig/commit/a623aac9f456e078a53efe08b61a361f10ffe7a4)</code> [CMake] Fixed incorrect MINGW_PREFIX path suggested in error message ([#1883](https://github.com/synfig/synfig/issues/1883))
-- <code>[f7e71c9](https://github.com/synfig/synfig/commit/f7e71c95d4aa0b2fd63e40fdc43fc5e1b2168f63)</code> Fixed problem with non-working plugins when using paths containing non-Latin characters ([#1882](https://github.com/synfig/synfig/issues/1882)) [studio]
-- <code>[dd3dcd6](https://github.com/synfig/synfig/commit/dd3dcd6ca133f9124063a812b7fb65956be5e15e)</code> [Synfig Studio] Eyedropper tool: Added ability to select fill color using Ctrl+click ([#1872](https://github.com/synfig/synfig/issues/1872)) [studio]
-- <code>[74a9f4b](https://github.com/synfig/synfig/commit/74a9f4b707585387bd0f04e07fcfebd910f85871)</code> Change order of Waypoint Editor buttons to match other dialogs ([#1880](https://github.com/synfig/synfig/issues/1880)) [studio]
-- <code>[d254d74](https://github.com/synfig/synfig/commit/d254d747bd2d3cb0bbf20a854247736a5af92dfa)</code> Updated README.md ([#1884](https://github.com/synfig/synfig/issues/1884))
-- <code>[5156403](https://github.com/synfig/synfig/commit/5156403d193864c9afb76c24326f56c509ea9e15)</code> Center vertically empty tool options label ([#1879](https://github.com/synfig/synfig/issues/1879)) [studio]
-- <code>[bbb2dd7](https://github.com/synfig/synfig/commit/bbb2dd7c274785398d7f46475175053a9a7d9bf0)</code> [Synfig Studio] Removed some unused headers ([#1863](https://github.com/synfig/synfig/issues/1863)) [studio]
-- <code>[3f90ae2](https://github.com/synfig/synfig/commit/3f90ae2b9b16692e547335e0bd913b14e94b882a)</code> Moving `ui` folder to `resources` folder ([#1865](https://github.com/synfig/synfig/issues/1865)) [studio]
-- <code>[d3906ca](https://github.com/synfig/synfig/commit/d3906ca969de15df00776353d13387317e08ca38)</code> Merge PR [#1853](https://github.com/synfig/synfig/issues/1853): `etl::clock` refactored to use `std::chrono`
-- <code>[d035955](https://github.com/synfig/synfig/commit/d035955acf2e2ccec99110acc002f41e48f3eeb8)</code> `etl::clock` refactored to use `std::chrono`. Fix an issue with animation playback in CMake builds [ETL] [core]
-- <code>[4ea5d64](https://github.com/synfig/synfig/commit/4ea5d640fc1f8bc3b041566ce0697652c57bc0f3)</code> Remove unused `ETL/clock` headers [ETL] [studio]
-- <code>[d80d64c](https://github.com/synfig/synfig/commit/d80d64cc09c7f5f405da6686fd564704841a014e)</code> Removed old CVS ID field from layers, importers, ([#1792](https://github.com/synfig/synfig/issues/1792)) [core] [studio]
-- <code>[f41490a](https://github.com/synfig/synfig/commit/f41490ac58de26500dabbe7097c2cde2b8bd3a7e)</code> Fixed build on GitHub Actions (MacOS 11) ([#1870](https://github.com/synfig/synfig/issues/1870)) [studio]
-- <code>[684dfa5](https://github.com/synfig/synfig/commit/684dfa5744866bfe8fce12bdb0cf5a3eb513aa68)</code> Fix GitHub actions ([#1867](https://github.com/synfig/synfig/issues/1867))
-- <code>[32af8ad](https://github.com/synfig/synfig/commit/32af8adf9bf20eee5faa8d4a1c8336d07c9249c5)</code> [CI] Added GitHub Actions ([#1866](https://github.com/synfig/synfig/issues/1866))
-- <code>[520d972](https://github.com/synfig/synfig/commit/520d9721a9d28243f8d2ba2efce4c4178a8ecf9a)</code> [CI] Disabled macOS builds on Travis-CI ([#1864](https://github.com/synfig/synfig/issues/1864))
-- <code>[a1e4a17](https://github.com/synfig/synfig/commit/a1e4a17a042fb648eea5719ca89fb612182151ec)</code> Minor cleanup in WorkArea Renderers ([#1862](https://github.com/synfig/synfig/issues/1862)) [studio]
-- <code>[24e6f86](https://github.com/synfig/synfig/commit/24e6f868d63b1bbc8f37d0905b7f5c6ebdbe99c4)</code> Removed unused `ETL/stringf` headers. Preparing to move stringf from ETL to core. ([#1856](https://github.com/synfig/synfig/issues/1856)) [core] [studio]
-- <code>[1b9ec56](https://github.com/synfig/synfig/commit/1b9ec56dd3234ae403cacc908a5692e45f4b1497)</code> Fixed OpenGL build. But it still doesn't render :( ([#1845](https://github.com/synfig/synfig/issues/1845)) [core]
-- <code>[3d32977](https://github.com/synfig/synfig/commit/3d329775ff210eea3b5ce390485654e472bf1bc1)</code> Merge PR [#1445](https://github.com/synfig/synfig/issues/1445): Restore Defaults is applied only on OK pressed
-- <code>[d51978a](https://github.com/synfig/synfig/commit/d51978a35fe6b3116a8e54c8e0a00a790ebbdeb5)</code> Fix build error [studio]
-- <code>[e8c4634](https://github.com/synfig/synfig/commit/e8c46344026d8f51c237f4894520dc6906c430d9)</code> Restore new parameter for animation thumbnail preview [studio]
-- <code>[743c605](https://github.com/synfig/synfig/commit/743c6057e0a68dd3bdb8785b95d96a9960916dea)</code> Remove unused code [studio]
-- <code>[73172fb](https://github.com/synfig/synfig/commit/73172fbc67618e284bc80fd2e2d0b8dafe7b55ca)</code> Add code for reading current settings [studio]
-- <code>[4a60dab](https://github.com/synfig/synfig/commit/4a60dab49514d309afd1f2e79922133c82fb98d7)</code> Avoid unintended overwriting of current settings [studio]
-- <code>[cc638df](https://github.com/synfig/synfig/commit/cc638dfd639587121616100d539cccc05c1d01d9)</code> Add confirm dialog and code for not applied settings [studio]
-- <code>[d831641](https://github.com/synfig/synfig/commit/d831641f1e0a2a224a7317f73c56fd8db321f7e6)</code> Restore Defaults is  applied on Ok pressed [studio]
-- <code>[495ce1f](https://github.com/synfig/synfig/commit/495ce1f6d7695032e6ed8735d63075b6a3147786)</code> Add confirm dialog for Restore Defaults in Preferences [studio]
-- <code>[05c760f](https://github.com/synfig/synfig/commit/05c760f4506b42659e4aba0b3364c0e36159b677)</code> Fix regression: didn't load font with relative path ([#1833](https://github.com/synfig/synfig/issues/1833)) [core]
-- <code>[5e3a087](https://github.com/synfig/synfig/commit/5e3a087dd7e28ebf6dab4ce4b60a315562da1e1b)</code> Add double quotes and option when ID_LIKE=ubuntu debian in PopOS ([#1858](https://github.com/synfig/synfig/issues/1858))
-- <code>[3c71750](https://github.com/synfig/synfig/commit/3c71750e8b0f6ade2f7bf0fea71e0a3e3f8d144f)</code> Add accelerator key for Cutout tool ([#1855](https://github.com/synfig/synfig/issues/1855)) [studio]
-- <code>[9343c01](https://github.com/synfig/synfig/commit/9343c01913e9617dfb672d490151f28b59006fb8)</code> Implementing Canvas Zoom Legacy Keyboard shortcuts ([#1848](https://github.com/synfig/synfig/issues/1848)) [studio]
-- <code>[bac00ea](https://github.com/synfig/synfig/commit/bac00ea77cc0c318e22a85da266ea5e6e097e952)</code> [ETL] Removed `etl::trivial` class. Refactored `Param` class. ([#1839](https://github.com/synfig/synfig/issues/1839)) [ETL] [studio]
-- <code>[67c3f77](https://github.com/synfig/synfig/commit/67c3f77828ce2bdd26472bbc7ca11e8ac98f1533)</code> Limit background rendering to playback bounds ([#1852](https://github.com/synfig/synfig/issues/1852)) [studio]
-- <code>[ebf2eea](https://github.com/synfig/synfig/commit/ebf2eeac25a9f2b73920569e646bd959bf82002b)</code> Merge PR [#1844](https://github.com/synfig/synfig/issues/1844):  Fix doxygen
-- <code>[4223362](https://github.com/synfig/synfig/commit/42233625d28d52b877ec778bb1d7043acfb6ce3c)</code> fix doxygen input dir and exclude some non-synfig classes [ETL] [core] [studio]
-- <code>[b3301bd](https://github.com/synfig/synfig/commit/b3301bd63b5eb88fa6a7159d43996ec1649ff7b2)</code> update doxygen files [ETL] [core] [studio]
-- <code>[2d4d8b0](https://github.com/synfig/synfig/commit/2d4d8b01dd59912587b2b1f0a59c4908553f7306)</code> Improving Keyboard Shortcuts for the toolbox items ([#1823](https://github.com/synfig/synfig/issues/1823)) [studio]
-- <code>[6e79d1e](https://github.com/synfig/synfig/commit/6e79d1e651bfc73e204972f3427d3be71756fb35)</code> Update NEWS files for 1.4.0 ([#1841](https://github.com/synfig/synfig/issues/1841)) [ETL] [core] [studio]
-- <code>[ebc4b31](https://github.com/synfig/synfig/commit/ebc4b316373368b3254d9736c32703b155b764cb)</code> [CMake] Added CFLAGS from MagickCore to mod_magickpp (fixes build on some OS) ([#1819](https://github.com/synfig/synfig/issues/1819)) [core]
-- <code>[d4eb1dc](https://github.com/synfig/synfig/commit/d4eb1dc212b123e4b366588a471706cf4cd76cc1)</code> OptionsProcessor small cleanup ([#1831](https://github.com/synfig/synfig/issues/1831)) [core]
-- <code>[f8de319](https://github.com/synfig/synfig/commit/f8de31931c1de367f70f46c839a518ea8d4012d2)</code> Fix crash in Spline Tangent converter ([#1836](https://github.com/synfig/synfig/issues/1836)) [core]
-- <code>[5ad6ac5](https://github.com/synfig/synfig/commit/5ad6ac576c900574e29f3ae4145b622143168173)</code> [MacOS] Fixed SynfigStudio.app won't start if renamed (or contain spaces in name) ([#1834](https://github.com/synfig/synfig/issues/1834))
-- <code>[03ab84d](https://github.com/synfig/synfig/commit/03ab84debd51a23d430c8e214ed799ab6ef4a59f)</code> Fixed error when output to MPEG-1 format with audio ([#1830](https://github.com/synfig/synfig/issues/1830)) [core]
-- <code>[23bf66a](https://github.com/synfig/synfig/commit/23bf66ab53aa7bd3ef3a70fb4488a97b005da3da)</code> Fix animation interpolation for boolean values ([#1826](https://github.com/synfig/synfig/issues/1826)) [core]
-- <code>[985afc4](https://github.com/synfig/synfig/commit/985afc44935778396406150c130b9653b977def3)</code> fix Duplicate layer ignoring all layers but the first one ([#1829](https://github.com/synfig/synfig/issues/1829)) [core]
-- <code>[dbde6c6](https://github.com/synfig/synfig/commit/dbde6c6f34d621b9d4a1b81d88cefe0a10479c1c)</code> Fix regression: Text layer accepts font filename again ([#1828](https://github.com/synfig/synfig/issues/1828)) [core]
-- <code>[e6ae677](https://github.com/synfig/synfig/commit/e6ae677cbea5a9e81b7ef9764576381625da4629)</code> Dock widget shortcuts have priority over App Accels - fix [#1820](https://github.com/synfig/synfig/issues/1820) ([#1827](https://github.com/synfig/synfig/issues/1827)) [studio]
-- <code>[5a9d9ab](https://github.com/synfig/synfig/commit/5a9d9abd07576caddbe645c8ed1d480b452045b3)</code> Update link to build ([#1824](https://github.com/synfig/synfig/issues/1824))
-- <code>[5b37e43](https://github.com/synfig/synfig/commit/5b37e43f9cccf160c7424d8a94a71206e2e5e657)</code> Fixed clang warnings (unused variables, reorder) ([#1822](https://github.com/synfig/synfig/issues/1822)) [core] [studio]
-- <code>[7832633](https://github.com/synfig/synfig/commit/7832633f8fe3069e5d83be9bebe0e3258d2f1f93)</code> Merge PR [#1810](https://github.com/synfig/synfig/issues/1810): Delete ColorAccumulator
-- <code>[86538ad](https://github.com/synfig/synfig/commit/86538ad3df1030d9b0a1040a32a38ad9b13c0f1e)</code> Removed coloraccumulator.h from Makefile (fixes build) [core]
-- <code>[13bd46c](https://github.com/synfig/synfig/commit/13bd46c144361704b49e29298bea1edbbacdb1a1)</code> Delete ColorAccumualtor [core]
-- <code>[7deb121](https://github.com/synfig/synfig/commit/7deb121deaf940c269f71b11c15fdf11e23e6b7e)</code> Restore ctrl-c ctrl+v ctrl+a in Color and Gradient Dialogs ([#1821](https://github.com/synfig/synfig/issues/1821)) [studio]
-- <code>[677c1a7](https://github.com/synfig/synfig/commit/677c1a78fc26933d1531daef105d9b92c7c3dd52)</code> [Autotools] Verbose mode is disabled by default ([#1815](https://github.com/synfig/synfig/issues/1815)) [ETL] [core] [studio]
-- <code>[2a5d837](https://github.com/synfig/synfig/commit/2a5d8371ef5c95fb4a3fb7fbc2e96a01d5bb89a5)</code> Migrate old containers from widget classes to new containers. Table->Grid ([#1816](https://github.com/synfig/synfig/issues/1816)) [studio]
-- <code>[207f7d7](https://github.com/synfig/synfig/commit/207f7d7814df7d56bfffa6e4436b890b51c44647)</code> Changed redo shortcut to Ctr+Y (Win)/Shift+Ctrl+Z (Linux) ([#1811](https://github.com/synfig/synfig/issues/1811)) [studio]
-- <code>[8e712de](https://github.com/synfig/synfig/commit/8e712deee58f4750161088b5cfc90e1c3364a5ed)</code> Don't hold layer selection for Draw Tool ([#1812](https://github.com/synfig/synfig/issues/1812)) [studio]
-- <code>[dd2d919](https://github.com/synfig/synfig/commit/dd2d919f617e01eef993b2551e38c4b948eb63b4)</code> Added ability to stylize Synfig using a CSS file ([#1789](https://github.com/synfig/synfig/issues/1789)) [studio]
-- <code>[1d1c166](https://github.com/synfig/synfig/commit/1d1c1660a077d3e50ffd7671c27b8f7855d89f07)</code> [Skeleton Tool] Fixed console warning when adding bone with a parent (PR [#1695](https://github.com/synfig/synfig/issues/1695)) [studio]
-- <code>[19112f1](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de)</code> Fix crash in Spline Vertex converter (https://github.com/synfig/synfig/issues/1731) [core]
-- <code>[def5ae0](https://github.com/synfig/synfig/commit/def5ae02c649f0cd808ecbbf5d1b26069ac4cbf7)</code> [MSYS/MLT] Disabled lumas module. Greatly reduces Windows installer size. ([#1801](https://github.com/synfig/synfig/issues/1801))
-- <code>[31516f4](https://github.com/synfig/synfig/commit/31516f4ec6788335749d80b1662b0664e41d69a7)</code> [CMake] Added FontConfig support to Synfig Studio build ([#1799](https://github.com/synfig/synfig/issues/1799)) [studio]
-- <code>[9664b8c](https://github.com/synfig/synfig/commit/9664b8c8273d36335bb3ed2d7c6c01cc9d0a9a96)</code> [Skeleton Tool] Second bone follows first bone (PR [#1698](https://github.com/synfig/synfig/issues/1698)) [studio]
-- <code>[5a28c15](https://github.com/synfig/synfig/commit/5a28c1593cb36bd94c76eea19a576db670c220a0)</code> Merge PR [#1797](https://github.com/synfig/synfig/issues/1797): [MSVC] Added export variables
-- <code>[f43612e](https://github.com/synfig/synfig/commit/f43612e9d5b5201693bda3cbd9b62dfcd155b6e3)</code> [MSVC] Added exports required for lyr_std [core]
-- <code>[390c988](https://github.com/synfig/synfig/commit/390c988feb882f59dc45b6dc6e055517c6f9d16b)</code> [MSVC] Added export variables [core] [studio]
-- <code>[fa4021d](https://github.com/synfig/synfig/commit/fa4021de0c7df32af1420880a23aa95bff27bffd)</code> Implemented Gtk::ShortcutsWindow and improved navigation hotkeys ([#1776](https://github.com/synfig/synfig/issues/1776)) [studio]
-- <code>[7449118](https://github.com/synfig/synfig/commit/744911808afe2b0f86bf2a3a9f103d04a1553318)</code> [MSYS/CMake] Fix hard-coded path (c:/msys64/usr/bin/perl) ([#1795](https://github.com/synfig/synfig/issues/1795))
-- <code>[d40c745](https://github.com/synfig/synfig/commit/d40c74522e701d866abd4b1f2209a562c9fb169a)</code> Merge PR [#1769](https://github.com/synfig/synfig/issues/1769): Improve Canvas Zoom Keyboard Shortcut UX
-- <code>[144524a](https://github.com/synfig/synfig/commit/144524a50d25bfd1b4bfdd43824bf7e3d972367e)</code> Merge PR [#1791](https://github.com/synfig/synfig/issues/1791): Remove some old CVS/SVN stuff
-- <code>[4b50b78](https://github.com/synfig/synfig/commit/4b50b782d1f063b41d0e3107fee5cac655757812)</code> [#1722](https://github.com/synfig/synfig/issues/1722): Set modal property on AboutDialog ([#1788](https://github.com/synfig/synfig/issues/1788)) [studio]
-- <code>[26fde94](https://github.com/synfig/synfig/commit/26fde94c8de9c0565a0c866902308823a1401112)</code> remove old hidden feature of CVS support for synfig document [studio]
-- <code>[6e16a80](https://github.com/synfig/synfig/commit/6e16a80cf02c54f732ee7aa254111a6a7bb5ad49)</code> remove old SVN-related stuff [ETL] [core] [studio]
-- <code>[581535b](https://github.com/synfig/synfig/commit/581535b971875e100bd715bf00b8725359e6bd46)</code> Merge PR [#1783](https://github.com/synfig/synfig/issues/1783): MSVC build improvements [#2](https://github.com/synfig/synfig/issues/2)
-- <code>[a877175](https://github.com/synfig/synfig/commit/a8771753d9527b97c0edba6cca8bd0120ecfeba4)</code> [MSVC] Added explicit template instantiation [core]
-- <code>[a735898](https://github.com/synfig/synfig/commit/a735898033f61c2195cd25cd3b431143bf509321)</code> [MSVC] Disabled python detection for MSVC build (no popen support) [studio]
-- <code>[ae44920](https://github.com/synfig/synfig/commit/ae449201b4177f8f55cd6ca45f56a99863a27557)</code> [MSVC] Added option to build Synfig without MLT. Enabled for MSVC build. [core] [studio]
-- <code>[851b2de](https://github.com/synfig/synfig/commit/851b2de9e4b79a6ec6a75c42284d2bed0b920d34)</code> [CMake] Disabled all modules except mod_example for MSVC build [core]
-- <code>[63b7cd8](https://github.com/synfig/synfig/commit/63b7cd86eddb8a25b5eb654b46ab27dd79c5de46)</code> [CMake] Disabled images, rc, po files generation for MSVC (need to be fixed later) [studio]
-- <code>[fdebad1](https://github.com/synfig/synfig/commit/fdebad1779ed3ea10041c7a14cce5a89743abcf4)</code> [MSVC] Fixed function call with ifdef args [studio]
-- <code>[d9178ae](https://github.com/synfig/synfig/commit/d9178ae8c8bd0428749c9d65a7a0c542e82c1407)</code> [MSVC] Fixed PRETTY_FUNCTION [studio]
-- <code>[5e065c6](https://github.com/synfig/synfig/commit/5e065c6dc2521bb505a6da673f48a97566df5d53)</code> [MSVC] Added access function support [core] [studio]
-- <code>[b01d549](https://github.com/synfig/synfig/commit/b01d549b87f4ae118a792cf1f40304e167696cff)</code> Merge PR [#1781](https://github.com/synfig/synfig/issues/1781): MSVC build improvements
-- <code>[ac48ad3](https://github.com/synfig/synfig/commit/ac48ad3e70566a3eca2430ca01b450ca1b752b03)</code> [MSVC] Fixed paramdesc class (no need to export blank_ symbol) [core]
-- <code>[2e33cee](https://github.com/synfig/synfig/commit/2e33cee151c73c4f68fe26ddf6366797b4a57725)</code> [MSVC] Fixed libsynfig symbols export [core]
-- <code>[e4cce86](https://github.com/synfig/synfig/commit/e4cce864604d1e5cae0909ebcac81813d928742e)</code> [MSVC] Fixed daylight definition [studio]
-- <code>[029d36a](https://github.com/synfig/synfig/commit/029d36ab2aaa58912b9604f0ce61ac995e6b22ed)</code> [MSVC] Fixed error with 'small' type [ETL]
-- <code>[139da75](https://github.com/synfig/synfig/commit/139da756c6c39bda8a34a8d375fa11a49b87ac5a)</code> Resolve misleading indentation warning ([#1780](https://github.com/synfig/synfig/issues/1780)) [studio]
-- <code>[e51bebe](https://github.com/synfig/synfig/commit/e51bebe7cff64ddef7c114cd749868eba0acf630)</code> Merge PR [#1778](https://github.com/synfig/synfig/issues/1778): Performance improvements
-- <code>[e3a864e](https://github.com/synfig/synfig/commit/e3a864eecac3a4f4a17be703ca3cf6251e3c6894)</code> Added missing bundle identifier key in Info.plist ([#1767](https://github.com/synfig/synfig/issues/1767))
-- <code>[94adb2e](https://github.com/synfig/synfig/commit/94adb2e4bfe18abd81e7f5f779d199db820d3f0f)</code> Slight perf bump in `ColorMatrix::operator*=()` [core]
-- <code>[6bd569f](https://github.com/synfig/synfig/commit/6bd569fced23ddfa1157c307fe8005a813213a30)</code> Add two scripts to aid in performance profiling
-- <code>[0576fa8](https://github.com/synfig/synfig/commit/0576fa82b92210aacdc9b8ed6d32a3dfbceea9b7)</code> Fixing GCC Wreorder warnings ([#1750](https://github.com/synfig/synfig/issues/1750)) [studio]
-- <code>[6cba5a6](https://github.com/synfig/synfig/commit/6cba5a65be4a6dac6a8a87ba756f2ea196b06631)</code> Merge PR [#1774](https://github.com/synfig/synfig/issues/1774): Replaced gtk::HBox and gtk::VBox with gtk::Grid in synfig-studio CanvasView
-- <code>[8b31696](https://github.com/synfig/synfig/commit/8b31696ad26fa9f1139506c36e424aeb354147c6)</code> Fix whitespace indentation in duckmatic.cpp ([#1773](https://github.com/synfig/synfig/issues/1773)) [studio]
-- <code>[6054cf8](https://github.com/synfig/synfig/commit/6054cf84f3b00f619d6f3e687699a104f7a6cc3e)</code> replace deprecated set_margin_right with set_margin_end [studio]
-- <code>[c995d9b](https://github.com/synfig/synfig/commit/c995d9b5d3ca6e80a45b1bd272a78afe79cc4653)</code> Increased closebutton margin [studio]
-- <code>[997fb2e](https://github.com/synfig/synfig/commit/997fb2e590428389477e657b3f2a868d3fc30e1c)</code> Replaced gtk::HBox and gtk::VBox with gtk::Grid in synfig-studio CanvasView class [studio]
-- <code>[044390e](https://github.com/synfig/synfig/commit/044390e07476da87d0d957eb7b9770bc7d618f42)</code> Merge PR [#1772](https://github.com/synfig/synfig/issues/1772): Various fixes for MSVC
-- <code>[97078c6](https://github.com/synfig/synfig/commit/97078c6b6d7d9b7bd2d8de7497bc39f46ec27fe6)</code> [MSVC] Added required dependency [studio]
-- <code>[d1e192b](https://github.com/synfig/synfig/commit/d1e192bc01dc4e4a0cfc5aef5c75e4c40323ae0d)</code> [MSVC] Refactored color class (no need to export static const members) [core]
-- <code>[12bb2c8](https://github.com/synfig/synfig/commit/12bb2c81c15dedf2b1f08227e85916f59de3c8d7)</code> [MSVC] Refactored FileSystemNative (no need to export instance__ symbol) [core]
-- <code>[5d12ae8](https://github.com/synfig/synfig/commit/5d12ae8520cce5fbbc0f10606b114f5ce6f86f72)</code> [CMake] Allow auto export all symbols on Windows (MSVC)
-- <code>[37fe404](https://github.com/synfig/synfig/commit/37fe4048f2b412865b1fe21e68b4e30143f8186a)</code> [CMake] Fixed incomplete information in About dialog ([#1770](https://github.com/synfig/synfig/issues/1770)) [core] [studio]
-- <code>[30f6878](https://github.com/synfig/synfig/commit/30f687850e3766f9b4251e100ffbc604b3209657)</code> Add braces to avoid ambiguous else on extractBorders. Fixes [-Wdangling-else] warning ([#1771](https://github.com/synfig/synfig/issues/1771)) [studio]
-- <code>[0daafca](https://github.com/synfig/synfig/commit/0daafca26c904d4488d8904ab2f6f57384a131de)</code> Improve Canvas Zoom Keyboard Shortcut UX [studio]
-- <code>[5d0abc1](https://github.com/synfig/synfig/commit/5d0abc1f718ad67469afb0252a9ce42a946cabf3)</code> Fixed wrong documented comment (FrameDial=>JackDial) [studio]
-- <code>[c48f248](https://github.com/synfig/synfig/commit/c48f248795f091f2bc06405f3c87d00931dbe88e)</code> Fix GCC multi-line comment warning (-wcomment) ([#1759](https://github.com/synfig/synfig/issues/1759)) [studio]
-- <code>[dfcfdf9](https://github.com/synfig/synfig/commit/dfcfdf9fc94953d10562d0fd01d2a83039538068)</code> Don't search for linux paths on Windows for synfig_modules.cfg ([#1758](https://github.com/synfig/synfig/issues/1758)) [core]
-- <code>[cde6d0a](https://github.com/synfig/synfig/commit/cde6d0a960a6bee84473fddcaa425fe6c67c9d64)</code> Removed warning message if config file (synfig_modules.cfg) is found ([#1751](https://github.com/synfig/synfig/issues/1751)) [core]
-- <code>[edce8cc](https://github.com/synfig/synfig/commit/edce8cc811ff8a58bc3a30cdd72aca846b814128)</code> Adding QtCreator projects to .gitignore ([#1753](https://github.com/synfig/synfig/issues/1753))
-- <code>[0450390](https://github.com/synfig/synfig/commit/045039035ffc3c54c21f29d1c14957f4a47e1808)</code> Merge PR [#1746](https://github.com/synfig/synfig/issues/1746): MSVC/vcpkg improving
-- <code>[de153ad](https://github.com/synfig/synfig/commit/de153ad3bbe43bab894c1e06dcce2d5721ae1d6e)</code> [Appveyor] Switched back to the main MSYS2 mirror
-- <code>[7db6c0a](https://github.com/synfig/synfig/commit/7db6c0aa32d6b9f02dbc53915b0ad2f2c7b0496c)</code> [MSVC] Fixed libsynfig build [ETL]
-- <code>[fa2f061](https://github.com/synfig/synfig/commit/fa2f061235333916dec2d4d118e0dfe03a123486)</code> [CMake] Fixed vcpkg libraries search [core]
-- <code>[2aa8c47](https://github.com/synfig/synfig/commit/2aa8c4797d0d74b192731f6bd6f85ff4c8aa2e21)</code> [CMake] Added MSVC compilation flags
-- <code>[a59e482](https://github.com/synfig/synfig/commit/a59e48275d631876243634e4879899e48b793e68)</code> Merge PR [#1741](https://github.com/synfig/synfig/issues/1741): Fixed clang warnings
-- <code>[fdf7b58](https://github.com/synfig/synfig/commit/fdf7b58bb8c3ab572444287f6a10653871ad91f4)</code> [CMake] Fixed target name output in warning message if msgfmt not found
-- <code>[b377a11](https://github.com/synfig/synfig/commit/b377a11865a0fc6a671e536e93e0f65efede8003)</code> [Autotools] Make autotools use imagemagick++ cflags from pkg-config ([#1600](https://github.com/synfig/synfig/issues/1600)) [core]
-- <code>[85a6e54](https://github.com/synfig/synfig/commit/85a6e5400802362ce917705ca90ceb111fc55258)</code> Fixed clang warnings (returning reference to local temporary object) [ETL]
-- <code>[bb58ecf](https://github.com/synfig/synfig/commit/bb58ecfd8319631b7b224f9c38d286aabbe9b2d6)</code> Fixed clang warnings (unused variables) [core] [studio]
-- <code>[65d47b3](https://github.com/synfig/synfig/commit/65d47b33fc8672a638b42115e04a324a133d82de)</code> Fixed GCC warnings (different signedness comparison) ([#1739](https://github.com/synfig/synfig/issues/1739)) [studio]
-- <code>[60dc5b6](https://github.com/synfig/synfig/commit/60dc5b6b29c215e73c38bd3da4d2884696faf49e)</code> Remove unused headers (should reduce build time) ([#1740](https://github.com/synfig/synfig/issues/1740)) [core] [studio]
-- <code>[08c13e7](https://github.com/synfig/synfig/commit/08c13e738639ffd31988afef84cb56a213f0367f)</code> Merge PR [#1737](https://github.com/synfig/synfig/issues/1737):  [Appveyor] Added artifacts build
-- <code>[1026d74](https://github.com/synfig/synfig/commit/1026d74791316197d926ec2256300693914a22d0)</code> Fix MSYS2 repo unavailable
-- <code>[e085029](https://github.com/synfig/synfig/commit/e08502999707e7be6da0c4883d74eceb38816364)</code> [Appveyor] Added artifacts build
-- <code>[75f78f2](https://github.com/synfig/synfig/commit/75f78f249e76c70453c992f5795908979f8dd40d)</code> Removed unused headers ([#1729](https://github.com/synfig/synfig/issues/1729)) [ETL] [core] [studio]
-- <code>[306f756](https://github.com/synfig/synfig/commit/306f7562b2b5e29524647698c5a40918333bce2f)</code> [CMake] Fixed MSYS2 installer (removed unnecessary folders, required folders added) ([#1728](https://github.com/synfig/synfig/issues/1728)) [studio]
-- <code>[fa78a4d](https://github.com/synfig/synfig/commit/fa78a4df4f991b039cfe67c6530c377a8713db6b)</code> [Appveyor] Switched to Release build (increase link speed, decrease size) ([#1727](https://github.com/synfig/synfig/issues/1727))
-- <code>[43019c6](https://github.com/synfig/synfig/commit/43019c68d71882b643b0d22bde257f7a19b5aea1)</code> Corrected keyframe tooltip position for Wayland ([#1725](https://github.com/synfig/synfig/issues/1725)) [studio]
-- <code>[7268fc8](https://github.com/synfig/synfig/commit/7268fc8009f10265fc4ebfcf856def876400246f)</code> Corrected thumbnail position for Wayland ([#1726](https://github.com/synfig/synfig/issues/1726)) [studio]
-- <code>[41fda6c](https://github.com/synfig/synfig/commit/41fda6cf928e46e6ac3915d74ffdd599842afa6b)</code> Merge PR [#1711](https://github.com/synfig/synfig/issues/1711): CMake improvements
-- <code>[42dd20a](https://github.com/synfig/synfig/commit/42dd20a6bfa683c84787bb0e286d9816d55b37da)</code> [CMake] Fixed broken intltool-merge patching
-- <code>[50f725d](https://github.com/synfig/synfig/commit/50f725d1da611a691a6d1657a52dc46f1adaac79)</code> [CMake] Fixed indents
-- <code>[7c49593](https://github.com/synfig/synfig/commit/7c4959366fe73adeab12eb2524a50a1ff9573954)</code> [CMake] Improved cygpath detection in some situations
-- <code>[1d690d4](https://github.com/synfig/synfig/commit/1d690d4818d2d70df35b57ea10020d04f49963f0)</code> [CMake] Added error message if MSYS2 environment not detected on Windows. Improved MSYS2 detection by using environment variable (MINGW_PREFIX)
-- <code>[9cbd7af](https://github.com/synfig/synfig/commit/9cbd7af6b50f0a3816b1d8309a9fb9d8ae1fb076)</code> [CMake] desktop_file target disabled for Windows build. Fixes 'sed not found' error. [studio]
-- <code>[ce8b148](https://github.com/synfig/synfig/commit/ce8b148e135f6b94053eff5d1556f3ba3c4f51d5)</code> [CMake] Fixed splash screen image build. It could not be built because the target directory did not exist. [studio]
-- <code>[42d0e6a](https://github.com/synfig/synfig/commit/42d0e6aba4fd2d4f8b32b5b02d354847754c91c2)</code> [CMake/MSYS2] Disabled copying of dependent libraries to build output during configuration stage. Added hacks for MSYS2 ImageMagick.
-- <code>[9d39d47](https://github.com/synfig/synfig/commit/9d39d478857bc81ec1fafdc3cc04a234c4975b25)</code> Merge PR [#1696](https://github.com/synfig/synfig/issues/1696): [Skeleton Tool] Fix crash when editing control point. Closes 1685. [studio]
-- <code>[153579a](https://github.com/synfig/synfig/commit/153579a76901ae9dc8995177716dd56a7db66505)</code> [CMake] Improved intltool-merge search, fixed warning if not found ([#1709](https://github.com/synfig/synfig/issues/1709))
-- <code>[adaac77](https://github.com/synfig/synfig/commit/adaac77070225cea746626760ae8425c28899287)</code> Don't hold layers selection when creating a new layer ([#1699](https://github.com/synfig/synfig/issues/1699)) [studio]
-- <code>[f1d830a](https://github.com/synfig/synfig/commit/f1d830afc790f775fc020a78383adaaa7ebfe8e6)</code> Fixed: Order by Name has no effect in Parameters Panel ([#1703](https://github.com/synfig/synfig/issues/1703)) [studio]
-- <code>[88e56d2](https://github.com/synfig/synfig/commit/88e56d2379a70b5a4ffec8f4fa16a7becd3867c4)</code> [Appveyor/MSYS2] Removed set_env.sh script. All variables replaced by native MSYS2 environment variables. ([#1693](https://github.com/synfig/synfig/issues/1693))
-- <code>[e7441e4](https://github.com/synfig/synfig/commit/e7441e4efba0c8f70fa63b67ad9771278a8356a3)</code> [CMake] Fixed path for splash screen image and added Adwaita icons for MSYS2 builds. ([#1689](https://github.com/synfig/synfig/issues/1689)) [studio]
-- <code>[a583e73](https://github.com/synfig/synfig/commit/a583e73d4c47914284b15f4a8d7719eafddfe1b4)</code> autotools: pango and imagemagick c++ flags and libs have been moved to their respective modules ([#1688](https://github.com/synfig/synfig/issues/1688)) [core]
-- <code>[9f1362c](https://github.com/synfig/synfig/commit/9f1362c72392080df90a25231422054db2e9ee11)</code> [Skeleton Tool] Fix for [#1680](https://github.com/synfig/synfig/issues/1680): Can't load saved file that has layers made with skeleton tool ([#1681](https://github.com/synfig/synfig/issues/1681)) [studio]
-- <code>[2124e6a](https://github.com/synfig/synfig/commit/2124e6aa8ca7ebf6371ed8a92a84cdcaa812ad70)</code> [Skeleton Tool] Fixed crash when switching to Skeleton Tool ([#1684](https://github.com/synfig/synfig/issues/1684)) [studio]
-- <code>[2b8ea4d](https://github.com/synfig/synfig/commit/2b8ea4dff492cba62f5df026a8b04c19ba40da36)</code> [Lottie Exporter] Export outlines without variable widths ([#1647](https://github.com/synfig/synfig/issues/1647)) [studio]
-- <code>[d31d62d](https://github.com/synfig/synfig/commit/d31d62da1a288798cb9423226be3c2a0c3c6f1bd)</code> [Lottie Exporter] Add support for not convert method ([#1587](https://github.com/synfig/synfig/issues/1587)) [studio]
-- <code>[43ced7b](https://github.com/synfig/synfig/commit/43ced7b9c8851a262a7c0a517fcec1c277698559)</code> [Lottie Exporter] Add support for vectorlength convert method ([#1650](https://github.com/synfig/synfig/issues/1650)) [studio]
-- <code>[905994a](https://github.com/synfig/synfig/commit/905994a7fb626cf53174c9365fa04b7b5ec428ee)</code> [Lottie Exporter] Add support for range convert method ([#1606](https://github.com/synfig/synfig/issues/1606)) [studio]
-- <code>[bbd7a85](https://github.com/synfig/synfig/commit/bbd7a85b1f65d2ac02397853b79c19d0f8b672e0)</code> Return true only if id=1 (accept) is clicked ([#1573](https://github.com/synfig/synfig/issues/1573))
-- <code>[7cd80d2](https://github.com/synfig/synfig/commit/7cd80d2166ce088ccf25c39ca9ad8621d3ea83bc)</code> [Lottie Exporter] Added support for reciprocal convert method ([#1619](https://github.com/synfig/synfig/issues/1619)) [studio]
-- <code>[e6c62c2](https://github.com/synfig/synfig/commit/e6c62c2e2c4871ee2c916388e6f70c2ae8173288)</code> Add Visual Studio Code configuration for debugging on Linux ([#1682](https://github.com/synfig/synfig/issues/1682))
-- <code>[4906e91](https://github.com/synfig/synfig/commit/4906e9188f025ab31d17d46500f277080853f2f6)</code> [Skeleton Tool] Synfig crashes when we try to edit any other duck other than a bone's ([#1679](https://github.com/synfig/synfig/issues/1679)) [studio]
-- <code>[08893ed](https://github.com/synfig/synfig/commit/08893ed697f5a79af90ee26f948affee3483b370)</code> All enabled modules added as a dependency for synfig_bin. ([#1677](https://github.com/synfig/synfig/issues/1677)) [core]
-- <code>[3d14739](https://github.com/synfig/synfig/commit/3d147391b22e871f8e7f8b85d002ea5b52500dcd)</code> [Skeleton Tool] Rename 'Make parent to active bone' ([#1676](https://github.com/synfig/synfig/issues/1676)). Closes [#1673](https://github.com/synfig/synfig/issues/1673). [studio]
-- <code>[afb5d3c](https://github.com/synfig/synfig/commit/afb5d3cfb0782ada635d61f36d245722e7a7d769)</code> Added proper Clang info to About dialog ([#1675](https://github.com/synfig/synfig/issues/1675)) [studio]
-- <code>[6385086](https://github.com/synfig/synfig/commit/63850863f68f56e85bed296fbddc8a12a6e9e042)</code> Fixed unused/redefined variables warnings ([#1672](https://github.com/synfig/synfig/issues/1672)) [core] [studio]
-- <code>[d345097](https://github.com/synfig/synfig/commit/d345097c64e0975132035b7aade09081bb7b53ee)</code> [Skeleton Tool] Fixed 'Make parent to active bone' crash ([#1671](https://github.com/synfig/synfig/issues/1671)). Closes [#1670](https://github.com/synfig/synfig/issues/1670). [studio]
-- <code>[8cd3084](https://github.com/synfig/synfig/commit/8cd3084e7e4f1f6dfade4c8bf5ea307f63793f2e)</code> [CMake] Added basic support for MSVS 2019 and vcpkg ([#1646](https://github.com/synfig/synfig/issues/1646)) [core] [studio]
-- <code>[c7737d6](https://github.com/synfig/synfig/commit/c7737d6dba84eafe6cf59a7c23615eb08c9337c7)</code> [Skeleton Tool] Remove "Create Child Bone" action menu ([#1663](https://github.com/synfig/synfig/issues/1663)) [studio]
-- <code>[bfe6612](https://github.com/synfig/synfig/commit/bfe6612cb35a2264d225c543f56c6259bab88170)</code> Fixed warnings 'format '%lx' expects argument of type...' ([#1668](https://github.com/synfig/synfig/issues/1668)) [core]
-- <code>[61d81cb](https://github.com/synfig/synfig/commit/61d81cb74db228c042e2c0e4114fddf7f585f3cf)</code> [Skeleton Tool] Fixed active bone setting while pressed on Duck ([#1662](https://github.com/synfig/synfig/issues/1662)). Closes [#1656](https://github.com/synfig/synfig/issues/1656). [studio]
-- <code>[7a9a116](https://github.com/synfig/synfig/commit/7a9a116b90afe65751c64e0a38e26969ef867b9d)</code> Speed up Layer_Freetype: don't load face file on every rendering ([#1655](https://github.com/synfig/synfig/issues/1655)) [core]
-- <code>[bb1a80b](https://github.com/synfig/synfig/commit/bb1a80b67738c0a581768219fb7ee7dfd4a4782a)</code> Merge PR [#1653](https://github.com/synfig/synfig/issues/1653): Layer FreeType code cleanup
-- <code>[625c0ec](https://github.com/synfig/synfig/commit/625c0ece69684261a3fff0b166021d26949c356b)</code> fix indentation [core]
-- <code>[1e9775c](https://github.com/synfig/synfig/commit/1e9775cd1340dc1dbb929a656e54032e538bfbae)</code> add TrueType Collection as supported extension via FreeType [core]
-- <code>[3522c51](https://github.com/synfig/synfig/commit/3522c5124b8b216f9ef8395336bafce6683d020d)</code> separate algorithm to find out the font filename from family name [core]
-- <code>[056fe96](https://github.com/synfig/synfig/commit/056fe969772745e9c31fb49917edf224e93b21c6)</code> move variables closer to where they are used [core]
-- <code>[ca9c51f](https://github.com/synfig/synfig/commit/ca9c51f3b5747f30e37057da6e2be3b76e17dbaf)</code> fix indentation [core]
-- <code>[c063f81](https://github.com/synfig/synfig/commit/c063f811cd106e1dfdf15c70fed19bccf366a84c)</code> move comment to the method it describes [core]
-- <code>[7ba7623](https://github.com/synfig/synfig/commit/7ba76239528f55561956a0a85f854d85a9d2ef2c)</code> reduces function scope [core]
-- <code>[5b1d9dd](https://github.com/synfig/synfig/commit/5b1d9dd85797e4555ef5740798a0e3bf9c43d717)</code> don't use extern on .h without need and properly free FreeType [core]
-- <code>[617fd4b](https://github.com/synfig/synfig/commit/617fd4b7dbda9bdf0b7543eafcd9cba71a37505b)</code> [CMake] Fixed FontConfig detection [core]
-- <code>[51d7972](https://github.com/synfig/synfig/commit/51d797231a04c06d781491ba2bffe5766f99a522)</code> Fixed 'Error: Broken pipe' message, when installing brew packages on MacOS ([#1659](https://github.com/synfig/synfig/issues/1659))
-- <code>[14ca537](https://github.com/synfig/synfig/commit/14ca5370be1aba5887cbcce114009fb02c72ffc1)</code> Fixed memory leak when destroying ThreadPool ([#1651](https://github.com/synfig/synfig/issues/1651)) [core]
-- <code>[db77ed1](https://github.com/synfig/synfig/commit/db77ed10b3c8a15aa07d69f1d31ea8fa6bc587c6)</code> Fixed memory leak with Widget_Timetrack: row_info now stored by value instead of pointer ([#1652](https://github.com/synfig/synfig/issues/1652)) [studio]
-- <code>[0b210b5](https://github.com/synfig/synfig/commit/0b210b5862669115295580007ed2a428203df4be)</code> Skeleton tool: Use single parameter to define bone width ([#1604](https://github.com/synfig/synfig/issues/1604))
-- <code>[9b5c101](https://github.com/synfig/synfig/commit/9b5c1019fdbdada4ce31e0f30e477799a427e88e)</code> Restructured code [studio]
-- <code>[570d12a](https://github.com/synfig/synfig/commit/570d12abd3361250be6519c32d38d87a57cd3825)</code> Working single parameter for bonewidth [studio]
-- <code>[39388cc](https://github.com/synfig/synfig/commit/39388cc8aa86e9a6bba552b00c7037d5630e0771)</code> Fixed issues [studio]
-- <code>[3a43592](https://github.com/synfig/synfig/commit/3a43592d0261325f3cf5b6678c000f98f779fa52)</code> Modified tool options [studio]
-- <code>[a480643](https://github.com/synfig/synfig/commit/a480643a5953fd193d4a82f9bec2b314348bd068)</code> [Skeleton Tool] Do not switch to Arrow tool when user selects other layer ([#1618](https://github.com/synfig/synfig/issues/1618)). Closes [#1603](https://github.com/synfig/synfig/issues/1603). [studio]
-- <code>[d8388ca](https://github.com/synfig/synfig/commit/d8388cabf95fefa21d6d950798a58b841dc3b652)</code> Make position of dialog buttons consistent ([#1638](https://github.com/synfig/synfig/issues/1638)) [studio]
-- <code>[fb03700](https://github.com/synfig/synfig/commit/fb037008607153b239cbe7d56fa378cc50655330)</code> Fix crash on unsuccessful action with a clean undo history ([#1643](https://github.com/synfig/synfig/issues/1643)) [studio]
-- <code>[f604e21](https://github.com/synfig/synfig/commit/f604e21423d517af9df49470c44bc321f0916108)</code> Removed README-CMake.md and linked CMake documentation in README.md ([#1644](https://github.com/synfig/synfig/issues/1644))
-- <code>[d58e958](https://github.com/synfig/synfig/commit/d58e95803a06560fd5529211c3b7b1bbcba4fa91)</code> Fix usage of locale_from_utf8() instead locale_to_utf8() ([#1642](https://github.com/synfig/synfig/issues/1642)) [studio]
-- <code>[c3bd657](https://github.com/synfig/synfig/commit/c3bd65788e3807a8ed3840666b909bf67a0f5fd0)</code> Merge PR [#1507](https://github.com/synfig/synfig/issues/1507): Added "Scale to fit canvas" button to Import dialog
-- <code>[95beb2a](https://github.com/synfig/synfig/commit/95beb2aa230c8e03a62b120560806822c02536ef)</code> Avoid code repetition and add it for "Import Image" [studio]
-- <code>[a2be3ab](https://github.com/synfig/synfig/commit/a2be3abe24ff4b577754b340c1b0cbe4be2fa56f)</code> Add option also for "Import Sequence,,," [studio]
-- <code>[e74bca4](https://github.com/synfig/synfig/commit/e74bca4a4341022628347a0d1dd01bcda3d26e25)</code> Rebase to current master [studio]
-- <code>[8adcde3](https://github.com/synfig/synfig/commit/8adcde3b88ec09228cc2915b2ce75c3d56e816a8)</code> Replace deprecated method [studio]
-- <code>[4bb01bd](https://github.com/synfig/synfig/commit/4bb01bdf6e385eb3195de907b19c25c75d593f6b)</code> Connect Switch to preference value [studio]
-- <code>[7d6ce40](https://github.com/synfig/synfig/commit/7d6ce40f90cb93f8edf785aede2c6d5ccc53e877)</code> Add "Scale to fit canvas" button to Import dialog [studio]
-- <code>[2beffbe](https://github.com/synfig/synfig/commit/2beffbeb8918309ded223e4be97bc56ce7c928bd)</code> [Skeleton Tool] Fixed bone placement in Skeleton Deformation ([#1641](https://github.com/synfig/synfig/issues/1641)) [studio]
-- <code>[9880e14](https://github.com/synfig/synfig/commit/9880e148c54c6073368cc0a79c6338dd5f923c40)</code> Update POTFILES.in ([#1640](https://github.com/synfig/synfig/issues/1640)) [studio]
-- <code>[6a91825](https://github.com/synfig/synfig/commit/6a91825bf8a817c8fd7c1ffcdd1c8836331ba288)</code> Configuration for Visual Studio Code on Windows ([#1639](https://github.com/synfig/synfig/issues/1639))
-- <code>[723e88d](https://github.com/synfig/synfig/commit/723e88d40fc4d3cc3acf1053f8f2235bb6e64e3a)</code> [Skeleton Tool] Conditional disable/enable of Deformation layer on tool switch ([#1635](https://github.com/synfig/synfig/issues/1635))
-- <code>[739f38a](https://github.com/synfig/synfig/commit/739f38add8a1911c65b88d9e194d4546b22b26f0)</code> Removing cout's [studio]
-- <code>[df1a854](https://github.com/synfig/synfig/commit/df1a854603088393bfdc84797a182763616181b1)</code> Conditional disable/enable of Deformation layer [studio]
-- <code>[85aed48](https://github.com/synfig/synfig/commit/85aed489ed967149c09dce14c7c76d9c0f01fd79)</code> [Skeleton Tool] Creating new Skeleton layer without a bone ([#1620](https://github.com/synfig/synfig/issues/1620))
-- <code>[a6935a4](https://github.com/synfig/synfig/commit/a6935a40f3f3f0689f24c6797513864b6ea4b829)</code> Crash fix [#2](https://github.com/synfig/synfig/issues/2) [studio]
-- <code>[8f40921](https://github.com/synfig/synfig/commit/8f409214bedbc57e56f38710c7ea74fddc2c100d)</code> Removing comments [studio]
-- <code>[c7a6c5e](https://github.com/synfig/synfig/commit/c7a6c5e8964cc437c2e4b69de74470ce88e4aff0)</code> Crash fix [studio]
-- <code>[6c081ca](https://github.com/synfig/synfig/commit/6c081caa7613dfee1a8f16324558603bbc1e01f7)</code> Passive Grouper added [studio]
-- <code>[83ab374](https://github.com/synfig/synfig/commit/83ab3742069c0d34647282508c1278741a0d2a5c)</code> Making previous active bone optional [studio]
-- <code>[2dd6550](https://github.com/synfig/synfig/commit/2dd6550069617bf9b108f64100abc72d102ad1c2)</code> Working no bones condition; Need to add passive grouper [studio]
-- <code>[f287077](https://github.com/synfig/synfig/commit/f287077ea54cb08cffe9f4f61d394d3c9a8d326e)</code> No bones in layer conditions testing [studio]
-- <code>[09d6069](https://github.com/synfig/synfig/commit/09d60691618fbae84ad6384dab655ae95b63c004)</code> Do not use Glib::locale_to_utf8() in synfig::get_binary_path() ([#1633](https://github.com/synfig/synfig/issues/1633)) [core]
-- <code>[99a1cde](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305)</code> Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623))
-- <code>[0e576cb](https://github.com/synfig/synfig/commit/0e576cb5aabdb6c0ed38aa2aff319da47e3bdbe0)</code> Fix export to file with multibyte characters in name on Windows [core]
-- <code>[ef6be78](https://github.com/synfig/synfig/commit/ef6be78878a288e4e2729695bb3f8cfb1a3312e2)</code> Windows build: Enable avformat module in MLT
-- <code>[c90153f](https://github.com/synfig/synfig/commit/c90153f2bf528824fb81033e3037cd6a90b98b74)</code> Use g_file_test() instead of g_stat() [core]
-- <code>[02fc369](https://github.com/synfig/synfig/commit/02fc3691f3595e8b8ff9ffdfc63e2bb5e5bc6c96)</code> Check for callback object [core]
-- <code>[b654059](https://github.com/synfig/synfig/commit/b6540590119dbb18272638826cc4a501949e87b8)</code> Show filename in warning [core]
-- <code>[15b154c](https://github.com/synfig/synfig/commit/15b154c86981fccc1b7f5c28a6d193da195750c9)</code> Replace exception with error message [core]
-- <code>[0f54d6d](https://github.com/synfig/synfig/commit/0f54d6dc699e1fa0b13868219774484d3ce9a19a)</code> Fix compilation on Windows [core]
-- <code>[e78053d](https://github.com/synfig/synfig/commit/e78053d4c292c2d24b6f5d6773359fba8feac0b8)</code> Avoid double "Loading modules" message ([#1631](https://github.com/synfig/synfig/issues/1631)) [core]
-- <code>[4e0e245](https://github.com/synfig/synfig/commit/4e0e245c51da09b634093f32d275d5b81e3e10cc)</code> Skeleton Tool: Trigger visibility of Width Points depending on conditions ([#1616](https://github.com/synfig/synfig/issues/1616))
-- <code>[0485671](https://github.com/synfig/synfig/commit/048567137d1235fd4f46754adb6f126d0c1a3eb4)</code> CMake NSIS Installer ([#1582](https://github.com/synfig/synfig/issues/1582)) [studio]
-- <code>[fd4088e](https://github.com/synfig/synfig/commit/fd4088e3592ceae6e02fc3275047e3ee29e608ea)</code> Update tool bar [studio]
-- <code>[4887895](https://github.com/synfig/synfig/commit/4887895b9be1ad165d7e78298f32aad716ae8f54)</code> Reverting previous duck visibility state [studio]
-- <code>[28dae99](https://github.com/synfig/synfig/commit/28dae990d1a4b405dfef7eedf9a35064ef3d6385)</code> Fixed Width toggle [studio]
-- <code>[b92a370](https://github.com/synfig/synfig/commit/b92a3708db735f18c45534066fe158c960978a35)</code> Skeleton Tool: Fixed Skeleton Deformation layer Highlighting ([#1628](https://github.com/synfig/synfig/issues/1628)) [studio]
-- <code>[8d27d97](https://github.com/synfig/synfig/commit/8d27d97bfd709cecd5f52ca77b5693fac338df43)</code> Added button to stop rendering process ([#1585](https://github.com/synfig/synfig/issues/1585)) [studio]
-- <code>[6269d8f](https://github.com/synfig/synfig/commit/6269d8f98ea130c9ad657aef12c09609226f125f)</code> [Lottie Exporter] Add support for Logarithm convert method ([#1586](https://github.com/synfig/synfig/issues/1586)) [studio]
-- <code>[f89c807](https://github.com/synfig/synfig/commit/f89c8079d407f5863f4f3ddf76bff37f36b6fb72)</code> Merge PR [#1622](https://github.com/synfig/synfig/issues/1622): Freetype: avoid uneeded font search
-- <code>[1e5f31f](https://github.com/synfig/synfig/commit/1e5f31fe85bc41cf1e6da1fbc3afa0014d3c8d5e)</code> don't reload font on canvas change if it doesn't depend on canvas [core]
-- <code>[72857f0](https://github.com/synfig/synfig/commit/72857f0a54979a6a07ac51703422fbb801ea1b22)</code> don't do anything if parent doesn't actually change [core]
-- <code>[241b6c5](https://github.com/synfig/synfig/commit/241b6c5947e6519311fd24c2e7ef0e6f3a8ea5ed)</code> don't emit signal if filename doesn't actually change [core]
-- <code>[ee4e533](https://github.com/synfig/synfig/commit/ee4e533ed85f704e2f2f7ef4efbb08410424bc82)</code> Merge PR [#1505](https://github.com/synfig/synfig/issues/1505): [Lottie Exporter] Add support for blur layers
-- <code>[e4fc29d](https://github.com/synfig/synfig/commit/e4fc29ded69a60a459b02d08a507dab5269b065e)</code> Added new files in the CMake file [studio]
-- <code>[e0b44f4](https://github.com/synfig/synfig/commit/e0b44f4da14464deaeadd2b5817fb68ba2ed18cb)</code> Minor changes [studio]
-- <code>[beedf5f](https://github.com/synfig/synfig/commit/beedf5f8ea5572b0dabc7c54929837328c2d80d6)</code> Fixed LGTM warnings [studio]
-- <code>[17a2691](https://github.com/synfig/synfig/commit/17a26911a4fd1a2703efcc7a4291da6679a46504)</code> Fixed build failing error [studio]
-- <code>[7efe9ef](https://github.com/synfig/synfig/commit/7efe9efe08c875115e3c90ce7ab490e30cf9e810)</code> Fixing blurring issue and adding comments [studio]
-- <code>[633dc54](https://github.com/synfig/synfig/commit/633dc54922b33c2f74aec96a015b78ab01f31d8d)</code> Group layer ordering fixed [studio]
-- <code>[5833b3f](https://github.com/synfig/synfig/commit/5833b3fb3d0948aeb524f54b81ba1ef40e9623eb)</code> Added support for blur layers minus group layer [studio]
-- <code>[549fdd5](https://github.com/synfig/synfig/commit/549fdd50e5399f812a9b857695161bddcd07f71b)</code> Multiple Images blurring fixed [studio]
-- <code>[0208450](https://github.com/synfig/synfig/commit/0208450726fe65c47eb62d39c4370413d7b61651)</code> Fixed ordering of blur layers [studio]
-- <code>[5d9bde2](https://github.com/synfig/synfig/commit/5d9bde2becf9d1b0f6b1203b3c144917a7c233b7)</code> Add support for blur layers [studio]
-- <code>[161fd5b](https://github.com/synfig/synfig/commit/161fd5b5f2f3294a6537d1e287002cf60bc84384)</code> Canvas end-time could be set by wrong reason ([#1614](https://github.com/synfig/synfig/issues/1614)) [core]
-- <code>[8cece27](https://github.com/synfig/synfig/commit/8cece276ec0891f3573a4975a1ab1d444e5b3985)</code> Merge PR [#1617](https://github.com/synfig/synfig/issues/1617): Skeleton Tool - Skeleton Deformation Layer created as "disabled". Closes [#1615](https://github.com/synfig/synfig/issues/1615).
-- <code>[9c78798](https://github.com/synfig/synfig/commit/9c78798a9db3dd078bbb6899aa101313dc05d160)</code> Deformation layer gets disabled [studio]
-- <code>[e02a3a8](https://github.com/synfig/synfig/commit/e02a3a8c944fbd3731c6486de9ecd2eea73f597d)</code> Removed old (2005) simple hack for gcc < 4.1.2 bugged warning ([#1613](https://github.com/synfig/synfig/issues/1613)) [core]
-- <code>[80d63a7](https://github.com/synfig/synfig/commit/80d63a75ee19b63272b0b9f2e69cf850debd8eed)</code> Merge PR [#1611](https://github.com/synfig/synfig/issues/1611): Skeleton Tool - Fixed Active Bone rendering. Closes [#1610](https://github.com/synfig/synfig/issues/1610).
-- <code>[eaec65d](https://github.com/synfig/synfig/commit/eaec65dd541c1289ea975ffc9b9191e6aa42853a)</code> Fixed Active bone rendering [#2](https://github.com/synfig/synfig/issues/2) [studio]
-- <code>[ccdc4e5](https://github.com/synfig/synfig/commit/ccdc4e5b1f147e0b08284d2eb5a451be63861725)</code> Fixed Active Bone  rendering [studio]
-- <code>[554eaea](https://github.com/synfig/synfig/commit/554eaea80d10eee130468fa7eedd286a3a5d01fd)</code> Proper MSYS detection, also fixes MacOS "uname -o" illegal option error. ([#1612](https://github.com/synfig/synfig/issues/1612))
-- <code>[28422b8](https://github.com/synfig/synfig/commit/28422b8505dfaf47487e1e9f7730163f20a58f05)</code> Merge PR [#1605](https://github.com/synfig/synfig/issues/1605): Skeleton Tool - Use dashed outline to show parent-child relationships for bones
-- <code>[7d35299](https://github.com/synfig/synfig/commit/7d352994564b638159700ad94ff7ddea8f3ecbb8)</code> Indentation fixes [studio]
-- <code>[c05acd1](https://github.com/synfig/synfig/commit/c05acd11f6ad51a73d210ac7bcaa20224460ebbe)</code> Indentation fixes [studio]
-- <code>[6bee811](https://github.com/synfig/synfig/commit/6bee8115f4f07de30f137fc3f83fddeeb830778d)</code> Working dashed lines [studio]
-- <code>[1025c01](https://github.com/synfig/synfig/commit/1025c0108b0704cfe0e18420c70dc65b9a71b3bb)</code> Working dashed line between origins of parent and child [studio]
-- <code>[a8748c1](https://github.com/synfig/synfig/commit/a8748c124a13c03dfbbd45fb94b4d72c05ae03df)</code> Attempt to add dashed line between parent and child bones [studio]
-- <code>[0948ac4](https://github.com/synfig/synfig/commit/0948ac4b5883d4d10563a98fd0b38459ff7b6a38)</code> GSoC 2020: Skeleton tool - basic implementation ([#1485](https://github.com/synfig/synfig/issues/1485)) [studio]
-- <code>[79c10de](https://github.com/synfig/synfig/commit/79c10de80b13afef75528d415b6d608536ed23f2)</code> Merge PR [#1597](https://github.com/synfig/synfig/issues/1597): Fix dashed outline behavior in non homogenous outline
-- <code>[98d8b2a](https://github.com/synfig/synfig/commit/98d8b2a09658d7537b1211c995dbaae5bd5563dc)</code> make dash metrics not relative, but absolute ones [core]
-- <code>[3faaf49](https://github.com/synfig/synfig/commit/3faaf491410735304db2aa22d01fb5e3f16f52ab)</code> fix dashed outline behavior in non homogeous outline [core]
-- <code>[bcc84f1](https://github.com/synfig/synfig/commit/bcc84f1c47090ff1dbb4eccc8e05231754195a57)</code> [CMake] Icon and program info integrated into synfigstudio.exe Windows binary. ([#1581](https://github.com/synfig/synfig/issues/1581)) [studio]
-- <code>[a27993c](https://github.com/synfig/synfig/commit/a27993cb52075a433a175b59789dbd8e59ace20d)</code> Disabled ImageMagick for OSX >= 10.13 (Fixes OSX High Sierra, Mojave and Catalina build) ([#1486](https://github.com/synfig/synfig/issues/1486))
-- <code>[d23807e](https://github.com/synfig/synfig/commit/d23807e2e2e8278f2434bc4c66dbe12d090a5299)</code> Fixed libmng linking problem on 32-bit platform ([#1598](https://github.com/synfig/synfig/issues/1598)) [core]
-- <code>[faad4ab](https://github.com/synfig/synfig/commit/faad4ab5abc79d23fb189a99ee6d18cedf37b4d1)</code> [Lottie Exporter] Add support for dot product convert method ([#1593](https://github.com/synfig/synfig/issues/1593)) [studio]
-- <code>[6d3f1cb](https://github.com/synfig/synfig/commit/6d3f1cb89cce05cb95341b38284b537975935a50)</code> Merge PR [#1596](https://github.com/synfig/synfig/issues/1596): Fixed warnings
-- <code>[3cf4ca2](https://github.com/synfig/synfig/commit/3cf4ca24ba165a7606b94b30846c2943fe1af9c8)</code> Fixed "_exception_guard_error_code not used" warning [studio]
-- <code>[7757540](https://github.com/synfig/synfig/commit/7757540e2bb719d1f9d1a6250e9ab2421c35dafb)</code> Fixed NOMINMAX redefined warning [ETL] [core]
-- <code>[357dda4](https://github.com/synfig/synfig/commit/357dda4d5988316a9dfbf12fbca158ba93764e85)</code> Merge PR [#1595](https://github.com/synfig/synfig/issues/1595): Fixed Magick NoEncodeDelegateForThisImageFormat issues on appveyor build.
-- <code>[7538ae5](https://github.com/synfig/synfig/commit/7538ae5b9de8f0fa9e880512f1910dbcda924d17)</code> Fixed Magick NoEncodeDelegateForThisImageFormat issues on MSYS build
-- <code>[5fe1258](https://github.com/synfig/synfig/commit/5fe125846e4e5bdd8702eda3bbcb30089f0340ec)</code> MergePR [#1491](https://github.com/synfig/synfig/issues/1491): Changes for Appveyor build using CMake and ninja.
-- <code>[ff40532](https://github.com/synfig/synfig/commit/ff4053293e4593865cb983238ce0be3108c8cbf8)</code> Changes for CMake MSYS builds. [studio]
-- <code>[3c5438c](https://github.com/synfig/synfig/commit/3c5438c75598cd2756729eaddf6adf288481078b)</code> Fixed MLT Path added different dependency for MSYS2 builds. [studio]
-- <code>[ec68c0a](https://github.com/synfig/synfig/commit/ec68c0ac35255aaa5de94f48a6418771a9a22510)</code> Windows related changes [core]
-- <code>[7ebb19b](https://github.com/synfig/synfig/commit/7ebb19b0b2cf693a756feeeb670943cc7dc7cc8f)</code> don't crash debug version when rotating vertex order ([#1583](https://github.com/synfig/synfig/issues/1583)) [studio]
-- <code>[8b93aa1](https://github.com/synfig/synfig/commit/8b93aa1c2baf37ca687010c617db988632df79fb)</code> Merge PR [#1432](https://github.com/synfig/synfig/issues/1432): Fixed text layer family search and allow user selection
-- <code>[032be6f](https://github.com/synfig/synfig/commit/032be6f086da9fc7a3d6277aa426a38ad4d2e027)</code> fix invalid data free - it was causing crash on MacOS [studio]
-- <code>[83a053e](https://github.com/synfig/synfig/commit/83a053e848defae3797efe88ecdec34e47856028)</code> update POTFILES.in - just in case [studio]
-- <code>[66dfdea](https://github.com/synfig/synfig/commit/66dfdeae12ff8cd3c339eec3a1a30d3235353ebd)</code> in a possible future call to refresh, clear the family list first [studio]
-- <code>[8f2672d](https://github.com/synfig/synfig/commit/8f2672d07cd80869fd6274cf7b721809410a2478)</code> fix font search path priority order [core]
-- <code>[ccb98a3](https://github.com/synfig/synfig/commit/ccb98a3d95cdca341cec37814090d9ddc2d32c64)</code> allow user to select font family if FontConfig is available [studio]
-- <code>[681a0c8](https://github.com/synfig/synfig/commit/681a0c80438f94873a2d06f14d1dd32892c3a14a)</code> text layer: fontconfig ignored slant and weight parameters [core]
-- <code>[da9a88b](https://github.com/synfig/synfig/commit/da9a88b740063db74750bc4db49214e2d835b8b9)</code> remove unreachable code [core]
-- <code>[aed8870](https://github.com/synfig/synfig/commit/aed887098b326921db2a16ce7ce37d2cf7b40c7c)</code> if font family is actually a file, don't append other extension [core]
-- <code>[b52157f](https://github.com/synfig/synfig/commit/b52157f0b93cfb4a7c1764f36715b17e42a11c75)</code> text layer: bye, "evil hack" [core]
-- <code>[a3d7246](https://github.com/synfig/synfig/commit/a3d72466d3801ccc0e2e62615ac5046e1cbf11b7)</code> text layer: bump layer version due to new weight values [core]
-- <code>[e7c38ec](https://github.com/synfig/synfig/commit/e7c38ecca5d9791aa24f9e90656ebe4f64307eba)</code> text layer: use enum to style values [core]
-- <code>[0140492](https://github.com/synfig/synfig/commit/01404922b2aa029c9c37709889dca7cd4163e9db)</code> text layer: add new weight options [core]
-- <code>[a856a5b](https://github.com/synfig/synfig/commit/a856a5bdc2e8f316bbf4d6f65571a44283653244)</code> text layer: use enum to weight values [core]
-- <code>[bad6e68](https://github.com/synfig/synfig/commit/bad6e688072b8d430792a5a8d4d66cf84a557c45)</code> Improved documentation of exception_guard.h ([#1578](https://github.com/synfig/synfig/issues/1578)) [studio]
-- <code>[1cf1d6e](https://github.com/synfig/synfig/commit/1cf1d6ee2b53ef14e6da8db2e235bde2cc762e82)</code> Autotools: Add missing header ([#1575](https://github.com/synfig/synfig/issues/1575)) [studio]
-- <code>[7ece93c](https://github.com/synfig/synfig/commit/7ece93c86ea09475ea123fda59a02e588f3c5997)</code> Merge PR [#1571](https://github.com/synfig/synfig/issues/1571): fix uncaught exceptions in destructors
-- <code>[ef8f17e](https://github.com/synfig/synfig/commit/ef8f17e9ceab89b620bb5387285ee463acfabdf9)</code> fix uncaught exception in state_stroke destructor [studio]
-- <code>[f3d757d](https://github.com/synfig/synfig/commit/f3d757db2c4aaf5302849ab13ba73aeb518a21b3)</code> fix uncaught exceptions in destructors in canvasview.cpp [studio]
-- <code>[2f2f78c](https://github.com/synfig/synfig/commit/2f2f78c65086518015d853b090db88af926a4116)</code> fix uncaught exceptions in state_polygon destructor [studio]
-- <code>[6e32978](https://github.com/synfig/synfig/commit/6e3297813bc4f825a9019c837be420857f65cd21)</code> Return true only if id=1 (accept) is clicked [studio]
-- <code>[efbef4f](https://github.com/synfig/synfig/commit/efbef4f708085982dc1a5a06e98fcd800cb41a10)</code> Merge PR [#1568](https://github.com/synfig/synfig/issues/1568): Fix rendering to files with non-latin symbols via ffmpeg on Windows. Closes [#1567](https://github.com/synfig/synfig/issues/1567).
-- <code>[199948c](https://github.com/synfig/synfig/commit/199948c75dd597afd0e4b027766701fdf9bac146)</code> Fix rendering to files with non-latin symbols via ffmpeg on Windows. Closes [#1567](https://github.com/synfig/synfig/issues/1567). [core]
-- <code>[2b0a887](https://github.com/synfig/synfig/commit/2b0a8874afafb0881a466e595d99cad74d2fafdd)</code> Merge PR [#1413](https://github.com/synfig/synfig/issues/1413): Added toggleable option for thumbnail preview
-- <code>[6709d28](https://github.com/synfig/synfig/commit/6709d28f77f8c3a568e200237221b12b87fd0b12)</code> Added togglable option for thumbnail preview [studio]
-- <code>[067e0b4](https://github.com/synfig/synfig/commit/067e0b46e70cc39c5d7fca0e58d0c93749842140)</code> fix crash when undoing creation of a moved/changed vertex of spline ([#1551](https://github.com/synfig/synfig/issues/1551))
-- <code>[5149cf6](https://github.com/synfig/synfig/commit/5149cf6f7f02aeaacfbf396708686d47d87fac89)</code> fix crash when undoing creation of a moved/changed vertex of spline [studio]
-- <code>[52deae9](https://github.com/synfig/synfig/commit/52deae93f5dc3b06d9d01253ee3be8f45fbf4852)</code> minor cleanup: nullptr and avoid old-style cast [studio]
-- <code>[bb199c2](https://github.com/synfig/synfig/commit/bb199c2db454321e6eb8f7ba07799ccc2baf4135)</code> make method private and remove unused parameter [studio]
-- <code>[5b6bfd1](https://github.com/synfig/synfig/commit/5b6bfd142cd9b129502857ab4295c1a2f04967f2)</code> remove unused #Includes and a commented-out code for > 6 years [studio]
-- <code>[2b95739](https://github.com/synfig/synfig/commit/2b95739ecce659c07e11ed3031e5c0f0ea3c39ff)</code> just change the loop structure [studio]
-- <code>[ef271b0](https://github.com/synfig/synfig/commit/ef271b00332c1c74bf8f0cd83cb0721b11ba8d2e)</code> restrict constructor access modifier and do minor header cleanup [studio]
-- <code>[6e9e095](https://github.com/synfig/synfig/commit/6e9e095c5b4c3beb203b49c2bd0d416a6b9f6e59)</code> Fixed crash when user deletes the sound layer displayed in Sound panel ([#1564](https://github.com/synfig/synfig/issues/1564))
-- <code>[dc3c31e](https://github.com/synfig/synfig/commit/dc3c31e7f85f1b46dee27805ec6a01c8ac1680e2)</code> Removed unused ETL spline header ([#1563](https://github.com/synfig/synfig/issues/1563))
-- <code>[9cafe22](https://github.com/synfig/synfig/commit/9cafe22266d43ad536a914663f95afb9c65280a2)</code> remove unused ETL spline header [ETL] [core]
-- <code>[2493870](https://github.com/synfig/synfig/commit/2493870f6aebe27dfd07e7ce5a1dc1803b2b9f93)</code> fix crash when user delete the sound layer being shown in Sound panel [studio]
-- <code>[a74530f](https://github.com/synfig/synfig/commit/a74530f8ed068502a6940ade6efa6d57afe943fa)</code> Remove ancient 3rd party sources (gtkmm-osx) ([#1554](https://github.com/synfig/synfig/issues/1554))
-- <code>[41dd480](https://github.com/synfig/synfig/commit/41dd480890b1a3a797075db1b2af1a711b1e5fb4)</code> Fixed crash when exception is thrown while rendering WorkArea ([#1561](https://github.com/synfig/synfig/issues/1561))
-- <code>[820d6ca](https://github.com/synfig/synfig/commit/820d6ca6fa81974aa1f8806dc67364c1a9fbb5d6)</code> refine (a bit) the class of exception thrown [core] [studio]
-- <code>[d90457c](https://github.com/synfig/synfig/commit/d90457cc73f978223f6b43ad8c6a22aa960b52f8)</code> ValueDesc of exported valuenode keeps tracking its name changes [studio]
-- <code>[26c4b65](https://github.com/synfig/synfig/commit/26c4b659396f55d6614d617115b99d4220a5b527)</code> another exception-thrown guard - now in a draw-event [studio]
-- <code>[d2083d6](https://github.com/synfig/synfig/commit/d2083d656aaa17490b7b8278be5686dd9a22cb22)</code> [Lottie Exporter] Added support for Power Convert method ([#1515](https://github.com/synfig/synfig/issues/1515)) [studio]
-- <code>[f4a59e9](https://github.com/synfig/synfig/commit/f4a59e96ffa382ed68795c1578545890c207b12a)</code> Merge PR [#1518](https://github.com/synfig/synfig/issues/1518): Fix rendering of Advanced Outline cusps. Closes [#1480](https://github.com/synfig/synfig/issues/1480).
-- <code>[d67972a](https://github.com/synfig/synfig/commit/d67972ab3b1d881c2794fca7556f5b8174ae9109)</code> fix case of unlooped spline with single width point [core]
-- <code>[2af6370](https://github.com/synfig/synfig/commit/2af637088645cfc88b7ccf4b752c18160f5e9259)</code> force width points on spline edges (or truncate points) to obey general sides [core]
-- <code>[460f7f2](https://github.com/synfig/synfig/commit/460f7f2041fed705f872de4442219c5fc59ba650)</code> fix trunc of widthpoints for unlooped adv.outline [core]
-- <code>[7a7861e](https://github.com/synfig/synfig/commit/7a7861e54a9e39bba60d87b295f6f353ab778240)</code> avoid cubic curves when there's no change of width [core]
-- <code>[a86922a](https://github.com/synfig/synfig/commit/a86922a1e7e54ec6d4b1e592a1f18bc13d4755de)</code> overlapping width points merge their Side Tips [core]
-- <code>[e1491d3](https://github.com/synfig/synfig/commit/e1491d326c510251b17c51b3bfb845d920f6a803)</code> replace comma with semicolon [core]
-- <code>[e6623fd](https://github.com/synfig/synfig/commit/e6623fdcc2b075936bc9210cd4e092d26aaf92d9)</code> fix render for not-looped advanced outline without Interpolate ending tip [core]
-- <code>[f17715b](https://github.com/synfig/synfig/commit/f17715b2f6f7da7a005040128617ff1c29fb774d)</code> Fix opening files with Arabic names ([#1532](https://github.com/synfig/synfig/issues/1532))
-- <code>[3597fb1](https://github.com/synfig/synfig/commit/3597fb1779de9bd1a377b336029f330b57e6b8f4)</code> FileSystemNative: Fix file_rename() and file_remove() [core]
-- <code>[821b1d1](https://github.com/synfig/synfig/commit/821b1d1cdb84f5d1b79c78008be0b20b2c463bcd)</code> Fix fopen function in filecontainersip.cpp [core]
-- <code>[a4dde54](https://github.com/synfig/synfig/commit/a4dde54dbb8ce4129cd432b8ad44d673214279eb)</code> Improve fix for parsing commandline in SynfigPlayer. Thanks to Rodolfo Ribeiro Gomes. [studio]
-- <code>[b6dacff](https://github.com/synfig/synfig/commit/b6dacff5fe039727307ad7c21ac95a9d7bbddc4b)</code> Improve fix for parsing commandline arguments. Thanks to Rodolfo Ribeiro Gomes. [core] [studio]
-- <code>[943c6f1](https://github.com/synfig/synfig/commit/943c6f10d8c2e11ae875113ac296b60d5fc050c9)</code> fix initial value for filename entry of Render Settings dialog ([#1544](https://github.com/synfig/synfig/issues/1544)) [studio]
-- <code>[acde8c3](https://github.com/synfig/synfig/commit/acde8c3a7d81b52716598fa6eadc8ae6fb68b312)</code> [CMake] CPack added ability to generate .deb package ([#1519](https://github.com/synfig/synfig/issues/1519))
-- <code>[60af052](https://github.com/synfig/synfig/commit/60af052d2f63bb503f6899b412c0db7d21911454)</code> .deb package [core] [studio]
-- <code>[978905c](https://github.com/synfig/synfig/commit/978905c8facd6d084baec50c545fad72372ca8e5)</code> [CMake] Fixed MacOS build ([#1534](https://github.com/synfig/synfig/issues/1534))
-- <code>[6ccb08b](https://github.com/synfig/synfig/commit/6ccb08b762b80d6771da5a14471aebd11702cfe7)</code> [CMake] Added FontConfig detection [core]
-- <code>[72acbe4](https://github.com/synfig/synfig/commit/72acbe479c9604470cb3f1db6730c1060f51b6bc)</code> Updated Homebrew install script
-- <code>[f8f918f](https://github.com/synfig/synfig/commit/f8f918f6610ed01f66dc1d89b79a17b53123f8cb)</code> [CMake] Fixed libraries search Libmng/Libltdl(Libtool)/FFTW3 [core] [studio]
-- <code>[d82b5ae](https://github.com/synfig/synfig/commit/d82b5aeab7df3fb5b183d442affa8ecf5f7ce3e5)</code> [Vectorization] Bezier enhance ([#1240](https://github.com/synfig/synfig/issues/1240)) [studio]
-- <code>[dec2884](https://github.com/synfig/synfig/commit/dec28849cbb304ca58fe31efc764799b41460d85)</code> Cleanup module.h ([#1530](https://github.com/synfig/synfig/issues/1530))
-- <code>[c146297](https://github.com/synfig/synfig/commit/c14629785035b5aee14ac3d80945bc145baa3c18)</code> Set defaults for Homogenous parameter of Advanced Outline: enabled and static ([#1533](https://github.com/synfig/synfig/issues/1533)) [core] [studio]
-- <code>[99981e8](https://github.com/synfig/synfig/commit/99981e8cfdf07c9f4485e8076d8d7323ccdd221e)</code> don't re-add the first brush path to brush path list ! [studio]
-- <code>[0220f13](https://github.com/synfig/synfig/commit/0220f13ab39070c7b27684981e3557ebd7102325)</code> SynfigPlayer: Fix handling files with Arabic names [studio]
-- <code>[8d2b939](https://github.com/synfig/synfig/commit/8d2b9399abb982191e2ee801375851711c5c0882)</code> Fix exporting to files with Arabic names [core] [studio]
-- <code>[efe26eb](https://github.com/synfig/synfig/commit/efe26ebeec47079086af7eb547d26d0e47541b37)</code> Fix parsing Arabic filenames for synfig CLI [core]
-- <code>[25d4d0a](https://github.com/synfig/synfig/commit/25d4d0a544262ffee36bd03074dd820e5f7d64ee)</code> Fix opening of files with Arabic names [core] [studio]
-- <code>[f538260](https://github.com/synfig/synfig/commit/f538260216b4268cb61302f624e05d358e353f5d)</code> Brush paths moved to ResourceHelpre ([#1528](https://github.com/synfig/synfig/issues/1528))
-- <code>[7a8d894](https://github.com/synfig/synfig/commit/7a8d894335f4adf368fefc6c44e4dba901fa62f2)</code> fix constness [core]
-- <code>[d60760c](https://github.com/synfig/synfig/commit/d60760c0f5997525cfd52d6de8e3f6739a271bd7)</code> improve module documentation [core]
-- <code>[d86ee31](https://github.com/synfig/synfig/commit/d86ee31a27a7fcb24912010ecff2cd21715c2bf7)</code> minor cleanup [core]
-- <code>[28ab69a](https://github.com/synfig/synfig/commit/28ab69acba6780dc5c28962f3493d6cf3d2503c2)</code> maybe module 'constructor' should be virtual, as 'destructor' is [core]
-- <code>[36b6c7d](https://github.com/synfig/synfig/commit/36b6c7d1a1e14ed548e816bb1afe45c88db2816f)</code> avoid weak-vtable [core]
-- <code>[52012e0](https://github.com/synfig/synfig/commit/52012e0c715dce149b6153bb4e007663b02a5138)</code> synfig::Module class should not have a default name, desc, etc. [core]
-- <code>[1dfbed4](https://github.com/synfig/synfig/commit/1dfbed4ea012909646fa8f5b79ca093e19696687)</code> simplify access to default brush resource path [studio]
-- <code>[7df6915](https://github.com/synfig/synfig/commit/7df69152246a816f5797240b93213718ce5bb116)</code> fix [#1523](https://github.com/synfig/synfig/issues/1523) WidthPoint worngly computed on non-homogenous Advanced Outline [core]
-- <code>[2af6b11](https://github.com/synfig/synfig/commit/2af6b11f8e30efce45a7d67c3a470702305330c8)</code> Cleanup general.h ([#1526](https://github.com/synfig/synfig/issues/1526))
-- <code>[fb84c92](https://github.com/synfig/synfig/commit/fb84c922518ecd6a0e5c49fb7a2657cb39b559a5)</code> [CMake] Copy logo.sif to build-dir for building splash_screen ([#1525](https://github.com/synfig/synfig/issues/1525)) [studio]
-- <code>[a519e6a](https://github.com/synfig/synfig/commit/a519e6a2c40fb4b4275b3331266a848537e7b9b9)</code> add some missing documentation [core]
-- <code>[182be3a](https://github.com/synfig/synfig/commit/182be3a5e10efa21df776b788f375fb07c99ddaa)</code> prefer nullptr rather NULL [core]
-- <code>[4aab731](https://github.com/synfig/synfig/commit/4aab7317323adb9aeb7a7e78e1e30a9ca00991e2)</code> Fixed Arch linux detection ([#1521](https://github.com/synfig/synfig/issues/1521))
-- <code>[850aa0a](https://github.com/synfig/synfig/commit/850aa0ad77c2a343e5bc40bee95b48847c6ee63e)</code> Fix renaming a "layer set" - it affected other ones with certain names - [#1146](https://github.com/synfig/synfig/issues/1146) ([#1194](https://github.com/synfig/synfig/issues/1194))
-- <code>[6061b30](https://github.com/synfig/synfig/commit/6061b30314ae7261527061f44ce48870640064bb)</code> remove unused macro DEBUGPOINT [core] [studio]
-- <code>[c26e6bb](https://github.com/synfig/synfig/commit/c26e6bbbdb8dc93240931004ea2a038227a08714)</code> remove not implemented function [core]
-- <code>[a20a6b5](https://github.com/synfig/synfig/commit/a20a6b5622e87bfd6a67c6e094d9eff54f1624c9)</code> remove commented-out declaration since 2005 [core]
-- <code>[549cce8](https://github.com/synfig/synfig/commit/549cce8df2b421699299972cc1cd92b868d2306a)</code> remove unused macro [core]
-- <code>[eaeeea3](https://github.com/synfig/synfig/commit/eaeeea3e8561e05a281522744e6bf47d9a17f736)</code> fix renaming of empty sets [core]
-- <code>[e2456f2](https://github.com/synfig/synfig/commit/e2456f27a9e0d18413f1dca6233ddc28684aecf4)</code> fix renaming layer set affecting other names [core]
-- <code>[97940e9](https://github.com/synfig/synfig/commit/97940e960d81b7fd02c070bfd1d1416e5ab96b39)</code> Cleanup module.cpp a bit ([#1418](https://github.com/synfig/synfig/issues/1418))
-- <code>[94f07ac](https://github.com/synfig/synfig/commit/94f07ac27d2bba616cf36e2b73a230dc7cd25750)</code> let Windows & OSX users have custom(?) modules too [core]
-- <code>[d289bd2](https://github.com/synfig/synfig/commit/d289bd2ca10fc56ba36ccff9828b914db541b282)</code> remove unused headers [core]
-- <code>[95c9f22](https://github.com/synfig/synfig/commit/95c9f2200677039082fb5d4469012806f5c17d64)</code> simplify search for module constructor symbol [core]
-- <code>[d0510c0](https://github.com/synfig/synfig/commit/d0510c0687220219e42111787cf954d9cc387d93)</code> prefer nullptr rather NULL [core]
-- <code>[db2053d](https://github.com/synfig/synfig/commit/db2053d9ffbcd52f15eaef918c90ec9eafc0ef52)</code> remove commented out code since 04.2005 [core]
-- <code>[5862c76](https://github.com/synfig/synfig/commit/5862c7611232cb180d8eb2934b17b2f306404f10)</code> ThreadPool: prefer std::mutex and std::condition_variable ([#1036](https://github.com/synfig/synfig/issues/1036)) [core]
-- <code>[2fb1e65](https://github.com/synfig/synfig/commit/2fb1e659f70ede5ba97ff149efdb2b352680a5b1)</code> Copy plugins, brushes and sounds to the appropriate place in CMake build. ([#1501](https://github.com/synfig/synfig/issues/1501))
-- <code>[5102d5e](https://github.com/synfig/synfig/commit/5102d5e149811ec9832736e5f3851f82ebe0f9cb)</code> [Lottie Exporter] Added support for Vector X and Vector Y convert method ([#1516](https://github.com/synfig/synfig/issues/1516)) [studio]
-- <code>[d007f97](https://github.com/synfig/synfig/commit/d007f97f889425abc9f66461f6d8ab0114b9b732)</code> Added a custom function for intltool_merge [core] [studio]
-- <code>[836b46a](https://github.com/synfig/synfig/commit/836b46a978c0c0abbc7457fc0a7f320a7f045f40)</code> Copy plugins, brushes, sounds and ui to /share/synfig in CMake builds [studio]
-- <code>[15080f9](https://github.com/synfig/synfig/commit/15080f98a5fb3490865d006c2c250f6e316c71a1)</code> Different CMake builds based on CMAKE_BUILD_TYPE. ([#1500](https://github.com/synfig/synfig/issues/1500))
-- <code>[0b965c0](https://github.com/synfig/synfig/commit/0b965c0f2e5acf60ae7bf4e4e1426ae772295974)</code> Avoid deadlock when converting vector to 'dynamic' ([#1073](https://github.com/synfig/synfig/issues/1073)) [studio]
-- <code>[c323060](https://github.com/synfig/synfig/commit/c3230601682226b0b0d009a31adbaa6db809fa0d)</code> Different CMake builds based on CMAKE_BUILD_TYPE. [core] [studio]
-- <code>[7d16c26](https://github.com/synfig/synfig/commit/7d16c263f412873329ef5a495e4a993dc1d57c8f)</code> Edit tooltips for style consistency ([#1514](https://github.com/synfig/synfig/issues/1514)) [core]
-- <code>[2e0b896](https://github.com/synfig/synfig/commit/2e0b89692ba6a881b79f5bd71b15871bd6acd1a4)</code> Updated CMake icons directory ([#1512](https://github.com/synfig/synfig/issues/1512)) [studio]
-- <code>[13dab06](https://github.com/synfig/synfig/commit/13dab0681156014e7c0c84db0e6750c284decfc8)</code> Generate l10n files from .po files. ([#1462](https://github.com/synfig/synfig/issues/1462)) [core] [studio]
-- <code>[2ce6c92](https://github.com/synfig/synfig/commit/2ce6c92c88dbb039e3d4b2df6df6884f81c63aba)</code> Not using modules/layer_std/import/ but synfig/layers/layer_bitmap for importing sequences [studio]
-- <code>[67b1ab7](https://github.com/synfig/synfig/commit/67b1ab7fc451c2d201da6bfc6b31083125481537)</code> Make titles and spacings consistent across tool options ([#1369](https://github.com/synfig/synfig/issues/1369)) [studio]
-- <code>[d72bbc9](https://github.com/synfig/synfig/commit/d72bbc943d6b3205fb86b0e343b451fcfd49f2cc)</code> VLA replaced by std::vector class (fixes MSVC compilation) ([#1474](https://github.com/synfig/synfig/issues/1474)) [core]
-- <code>[5a3f423](https://github.com/synfig/synfig/commit/5a3f4232224bbf9d3524158682bd7eb0ff7166c7)</code> Use ScrolledWindow and label wrapping for message dialog ([#1496](https://github.com/synfig/synfig/issues/1496)) [core] [studio]
-- <code>[8081eb8](https://github.com/synfig/synfig/commit/8081eb89d66dfdefb20d3d88ac2fd2e928e882df)</code> Check if target output has same name as existing files ([#1461](https://github.com/synfig/synfig/issues/1461)) [studio]
-- <code>[48ac6ff](https://github.com/synfig/synfig/commit/48ac6ffa41b74e649f6208b0004005a1e0987830)</code> Resource path changes for CMake build. ([#1484](https://github.com/synfig/synfig/issues/1484)) [studio]
-- <code>[b7884bb](https://github.com/synfig/synfig/commit/b7884bb9287d546acd7dfdddaabeb91bbf1a54aa)</code> Replace deprecated set_margin method ([#1482](https://github.com/synfig/synfig/issues/1482)) [studio]
-- <code>[5d3056e](https://github.com/synfig/synfig/commit/5d3056e28e19413136e321b320edfb30c0a56a3f)</code> Merge PR[#1487](https://github.com/synfig/synfig/issues/1487): minor improvements in Info panel
-- <code>[633d54d](https://github.com/synfig/synfig/commit/633d54dc90d54f2e78b42160635a5c70f11d16e6)</code> Merge PR [#1483](https://github.com/synfig/synfig/issues/1483): Change installation folder of synfig images and icons
-- <code>[0cb71d7](https://github.com/synfig/synfig/commit/0cb71d7f48740e8f11939758b0c9b7afb0016c73)</code> minor improvements in Info panel [studio]
-- <code>[bd0246a](https://github.com/synfig/synfig/commit/bd0246a16ec6ee8b38092a00cd2232356fb85b46)</code> install icons in share/synfig/icons/classic and enable theming [studio]
-- <code>[f92abf4](https://github.com/synfig/synfig/commit/f92abf485bc107b99b897bba17bab37a50fc16a6)</code> clean Makefile of synfig-studio/images [studio]
-- <code>[7010939](https://github.com/synfig/synfig/commit/701093982d573012f36a2ea687235d53bf5473c1)</code> move variable definitions to where they are used [studio]
-- <code>[42c53f1](https://github.com/synfig/synfig/commit/42c53f1ef6ef17eab84b96e21045c4b3d7b16cb3)</code> simplification of a file of autotools [studio]
-- <code>[7ab41fa](https://github.com/synfig/synfig/commit/7ab41fa0a9bfdcddaecb579e4cf84eafe9e3e803)</code> fix build_images target's rebuilding behavior ([#1478](https://github.com/synfig/synfig/issues/1478)) [studio]
-- <code>[35c3012](https://github.com/synfig/synfig/commit/35c3012b8e1d57a493a109924f6c04942ad609a9)</code> Merge PR [#1477](https://github.com/synfig/synfig/issues/1477): Simplify access to resource
-- <code>[73ca88f](https://github.com/synfig/synfig/commit/73ca88fbb7c4b767aecfca8bac1125a8469f6982)</code> Merge PR [#1438](https://github.com/synfig/synfig/issues/1438): Trying to fix skeleton copy
-- <code>[63bfa85](https://github.com/synfig/synfig/commit/63bfa8545dea5e8bf0f0f01b1c77b237163c549c)</code> don't try to (re)link bones of cloned skeleton [core]
-- <code>[0854f8a](https://github.com/synfig/synfig/commit/0854f8a7c60fcd88f0852e76104c0157d6d5cdca)</code> fix skeleton duplication [core]
-- <code>[e194811](https://github.com/synfig/synfig/commit/e194811d4fe7762a747232616cd5c18b182dd12d)</code> minor efficiency improvement [core]
-- <code>[1794330](https://github.com/synfig/synfig/commit/1794330c196605b7795c0dbcd146fbc766012680)</code> avoid another (improbable) crash [core]
-- <code>[93f7956](https://github.com/synfig/synfig/commit/93f79566b779206a8336bf2e0fab1f8f6c493866)</code> avoid (an improbable) crash [studio]
-- <code>[6c5eec6](https://github.com/synfig/synfig/commit/6c5eec652a72b55d5b23d4e9a66f42c65901d0fb)</code> bones: minor cleanups of header files and #include [core]
-- <code>[27cd14e](https://github.com/synfig/synfig/commit/27cd14ea7a25dbf9e3226d3f357afd8404a349a8)</code> Merge PR[#1475](https://github.com/synfig/synfig/issues/1475): try to catch all exceptions thrown in GTK event callback/handlers
-- <code>[c9d4855](https://github.com/synfig/synfig/commit/c9d4855244b3ff3b4c52dcd69cf7d1a08f113bcb)</code> simplify access to sounds/plugins/ui resources [studio]
-- <code>[adcb3ba](https://github.com/synfig/synfig/commit/adcb3ba9b5f5257bac8a4455f16b1be905c5c841)</code> remove unused file [studio]
-- <code>[d276eb2](https://github.com/synfig/synfig/commit/d276eb2881a16dd99801093952101bd8f34cccf3)</code> simplify autotools dir [studio]
-- <code>[27f38ad](https://github.com/synfig/synfig/commit/27f38ad306a91a41b8e121f220a27fe461d1adec)</code> Let Windows print useful function name [studio]
-- <code>[2515be2](https://github.com/synfig/synfig/commit/2515be25e158787d45b96ae252720f631b54364e)</code> try to catch all exceptions thrown in GTK event callback handlers [studio]
-- <code>[b6995dc](https://github.com/synfig/synfig/commit/b6995dc5864f43239b4e5ac9b119222328af6af1)</code> Add test file for conversion between homogeneous and standard width points ([#1471](https://github.com/synfig/synfig/issues/1471)) [core]
-- <code>[18e6acb](https://github.com/synfig/synfig/commit/18e6acbf8682e7b4b7f2b3c10fbf9f7e9e6a3324)</code> Update lottie test script
-- <code>[4f1e92f](https://github.com/synfig/synfig/commit/4f1e92f74cb2862ae83fba73d8b35ea669fa264a)</code> Fix [#1467](https://github.com/synfig/synfig/issues/1467): "Link to Spline" places vertex into wrong position when Spline is looped ([#1468](https://github.com/synfig/synfig/issues/1468)) [studio]
-- <code>[334b5b9](https://github.com/synfig/synfig/commit/334b5b9b6d888ad68bf6b1f3202f581cb3a3e14d)</code> Fix Incorrect position of Widthpoints on Homogenous Advanced Outline. Closes [#1431](https://github.com/synfig/synfig/issues/1431).
-- <code>[0f873c9](https://github.com/synfig/synfig/commit/0f873c9a165469104676bc11c9f4521d6ad1138b)</code> fix homogeneous <-> standard system position conversions [core]
-- <code>[c8fb721](https://github.com/synfig/synfig/commit/c8fb721b01ce312972f1e400ed23784ed346cc64)</code> fix bline_length() computation [core]
-- <code>[068c884](https://github.com/synfig/synfig/commit/068c884e8a10638cd625fbd3b42bfc6605eb2f34)</code> Merge PR [#1466](https://github.com/synfig/synfig/issues/1466): fix POTFILES.in
-- <code>[1fb9c45](https://github.com/synfig/synfig/commit/1fb9c45c44311573a64dd84c986a187a665d64e2)</code> fix POTFILES.in [core] [studio]
-- <code>[8943867](https://github.com/synfig/synfig/commit/894386769881efe2702ff18b71054e6b1e9224fa)</code> [Lottie exporter] Refactor lottie modules/Added named constants ([#1456](https://github.com/synfig/synfig/issues/1456)) [studio]
-- <code>[c51cef4](https://github.com/synfig/synfig/commit/c51cef4a4381edc249884c2ff4fd2efdb94b69c4)</code> [Lottie Exporter] Add support for radial gradient layer ([#1446](https://github.com/synfig/synfig/issues/1446)) [studio]
-- <code>[4c519a9](https://github.com/synfig/synfig/commit/4c519a9539905788b66101b4b440880949733a6b)</code> Merge PR [#1450](https://github.com/synfig/synfig/issues/1450): Improved warning dialog UI
-- <code>[9fc95fe](https://github.com/synfig/synfig/commit/9fc95fe147179dac8f779881236d18fb76fa604c)</code> [Lottie exporter] Refactor radial_composite convert method ([#1447](https://github.com/synfig/synfig/issues/1447)) [studio]
-- <code>[1fc89f1](https://github.com/synfig/synfig/commit/1fc89f1654264400b34ab931aeed4f6f1d15edff)</code> Improved warning dialog UI [studio]
-- <code>[c9e9d2f](https://github.com/synfig/synfig/commit/c9e9d2f0d3021779ea351f37ddf0665a4a1d76bb)</code> [Lottie Exporter] Add support for Vector Angle convert method ([#1409](https://github.com/synfig/synfig/issues/1409)) [studio]
-- <code>[6d3f75f](https://github.com/synfig/synfig/commit/6d3f75ffc8a3450587c8105a738e1b6db79f7956)</code> quick workaround to fix crash in new timetrack ([#1439](https://github.com/synfig/synfig/issues/1439)) [studio]
-- <code>[7684be8](https://github.com/synfig/synfig/commit/7684be864f20b5cda39dd07833e74e78a874e6d3)</code> Removing Duplicate frames while importing an image sequence [core] [studio]
-- <code>[60bf6e3](https://github.com/synfig/synfig/commit/60bf6e30f211b093e2724d7a0f80d6981c8ad8dc)</code> DashItem Offset and Length variables are not consistent when editing them [core]
-- <code>[454ac39](https://github.com/synfig/synfig/commit/454ac396850dd6ac58360f14039a7419460c4700)</code> REVISION_ID with 7 characters instead of 6 [studio]
-- <code>[ec79049](https://github.com/synfig/synfig/commit/ec79049a8abd482b53acb3915ad472accd24b0f9)</code> Animation Speed of Noise Distort Layer set to static by default [core]
-- <code>[e60a668](https://github.com/synfig/synfig/commit/e60a668e53cd718e910ad4172774f2672e797172)</code> Cleaned clock functions. Fixed compilation on MSVC. ([#1426](https://github.com/synfig/synfig/issues/1426)) [ETL] [core]
-- <code>[c50ec55](https://github.com/synfig/synfig/commit/c50ec55dfb32ab6f7336f9061d5ddd61787879a2)</code> fix crashing when removing spline point too fast ([#1434](https://github.com/synfig/synfig/issues/1434)) [studio]
-- <code>[14667dd](https://github.com/synfig/synfig/commit/14667ddf6f9b495b76517b276cb26f4b09aece17)</code> [Lottie Exporter] Add support for aTan2 convert method ([#1363](https://github.com/synfig/synfig/issues/1363)) [studio]
-- <code>[dbd27fb](https://github.com/synfig/synfig/commit/dbd27fb50fedf129a7ea05a87297505ae13da55a)</code> Remove old commented-out code (gui/layertree) ([#1429](https://github.com/synfig/synfig/issues/1429)) [studio]
-- <code>[5d56cdc](https://github.com/synfig/synfig/commit/5d56cdcc1ee24de17007f77bdac335e2c6da5005)</code> Merge PR [#1435](https://github.com/synfig/synfig/issues/1435): Minor cleanup in skeleton files
-- <code>[f14a5bb](https://github.com/synfig/synfig/commit/f14a5bbc64e147bd091a75c8572c6ae4b44ba742)</code> Merge PR [#1400](https://github.com/synfig/synfig/issues/1400): Add support for building snap packages
-- <code>[cdd01d8](https://github.com/synfig/synfig/commit/cdd01d8f28d7a9a665edba304051aaa6a890349a)</code> remove useless macro - use method get_string() instead [core]
-- <code>[05dd664](https://github.com/synfig/synfig/commit/05dd66478bc18bdb40716e612f9181ed92c946dc)</code> prefer nullptr rather than 0 [core]
-- <code>[f4c8ad4](https://github.com/synfig/synfig/commit/f4c8ad46fc04a7a6e39dab39f257c057c00002db)</code> remove unused #include [core]
-- <code>[2ab96a9](https://github.com/synfig/synfig/commit/2ab96a95adfe3fcc4e3e64485c0380a66218eedf)</code> Fixes glitching widthpoints. Closes [#1401](https://github.com/synfig/synfig/issues/1401). [core]
-- <code>[217c238](https://github.com/synfig/synfig/commit/217c23851aaba6978232a639aa26ad598c03c141)</code> snap: Improve cleanup part
-- <code>[34d75aa](https://github.com/synfig/synfig/commit/34d75aaadf70b62e5afa78cdcb74d791d57324b2)</code> Merge PR [#1427](https://github.com/synfig/synfig/issues/1427): [Timetrack] fix in rectangle-selection bottom-top
-- <code>[b5e5294](https://github.com/synfig/synfig/commit/b5e5294121bda033f2a9f86a80e7e2fdbdb3d9ef)</code> Activate widget_filename when user chooses file via button/file dialog ([#1425](https://github.com/synfig/synfig/issues/1425)) [studio]
-- <code>[db75d5a](https://github.com/synfig/synfig/commit/db75d5aaa420a9fa97b3903bfcc5735ed6bef197)</code> just in case: avoid repetition of selected rows [studio]
-- <code>[69a23da](https://github.com/synfig/synfig/commit/69a23da7098b08bfe8991fdf26028a3f45d29466)</code> allow to select waypoints by rectangle area bottom-top where top is above [studio]
-- <code>[b680ec9](https://github.com/synfig/synfig/commit/b680ec970f1fc28b359816e0376218277b933827)</code> Don't try to delete/move/copy zero waypoints ([#1424](https://github.com/synfig/synfig/issues/1424)) [studio]
-- <code>[0e5aca0](https://github.com/synfig/synfig/commit/0e5aca00d20380923e6f7ffb02888ca02235a9ca)</code> Fixed smach (state machine) compilation on MSVC ([#1423](https://github.com/synfig/synfig/issues/1423)) [studio]
-- <code>[6d32e5b](https://github.com/synfig/synfig/commit/6d32e5b21f53cf86bef1a420cbd34debf4aa35e9)</code> hide GUID int constructor ([#1404](https://github.com/synfig/synfig/issues/1404)) [core] [studio]
-- <code>[30a059e](https://github.com/synfig/synfig/commit/30a059e035768e99fd5eec7d812119f2188de2da)</code> remove unneeded path var [core]
-- <code>[1873f44](https://github.com/synfig/synfig/commit/1873f44504e4d6270c245dd7b1f56df5ca799fe2)</code> Merge PR [#1094](https://github.com/synfig/synfig/issues/1094): Remove unused Change Preview Quality menu item [studio]
-- <code>[fe42b80](https://github.com/synfig/synfig/commit/fe42b8076c0d333dfab3561b59f1e50c74798b40)</code> snap: Append build date & git hash to version for untagged commits
-- <code>[f4f3c75](https://github.com/synfig/synfig/commit/f4f3c7511a4b3900e395483433e7099c30ea7aa7)</code> Add support for building snap packages
-- <code>[27c7b95](https://github.com/synfig/synfig/commit/27c7b956ea343ee71b1927e4082abd2df647eecb)</code> Merge PR [#1406](https://github.com/synfig/synfig/issues/1406): fix time and delta values in tooltip while dragging in Graph panel
-- <code>[b6efff5](https://github.com/synfig/synfig/commit/b6efff5fb8e3f7ee91829b24520a4cc2d6b87f32)</code> Merge PR [#1370](https://github.com/synfig/synfig/issues/1370): Soundwave dock now loads sound layers from canvas
-- <code>[042bee7](https://github.com/synfig/synfig/commit/042bee72b8c1f92bca671fc94bae3ccac0fe4a1e)</code> ellipsize long filenames in Sound panel combobox [studio]
-- <code>[b387550](https://github.com/synfig/synfig/commit/b387550e565abdeb6cf3229ed4a04b060aa3cb7e)</code> always show filename in the combobox [studio]
-- <code>[e12b768](https://github.com/synfig/synfig/commit/e12b7687c5d6385447ebdc7843520c857d87300a)</code> fix combobox popup weird width [studio]
-- <code>[6b52903](https://github.com/synfig/synfig/commit/6b5290395e6b3fdd928e32e057a55f04528cca29)</code> Sound panel now lists sound layer description too if different [studio]
-- <code>[2315149](https://github.com/synfig/synfig/commit/23151497c12471193e57f07233631aca0c26df9e)</code> fix catch exceptions [studio]
-- <code>[5cd05ad](https://github.com/synfig/synfig/commit/5cd05ad8f52f63132e5f9f432adb6a2a226b0e34)</code> sound panel: fix loading sound file on a saved file [studio]
-- <code>[4b4e9fc](https://github.com/synfig/synfig/commit/4b4e9fc54b13421baf27883b43c6d9ca49a842b3)</code> don't reload after setting sound delay [studio]
-- <code>[f362564](https://github.com/synfig/synfig/commit/f3625641151be7cb9362630eecdd8a443af17039)</code> fix displaying sound delay [studio]
-- <code>[8b5e8bd](https://github.com/synfig/synfig/commit/8b5e8bdaabd116eea62d545d19a653175007431e)</code> Soundwave dock now uses sound layers in canvas [studio]
-- <code>[5d873a3](https://github.com/synfig/synfig/commit/5d873a34c7b9295a059ebed1007af330014140fd)</code> Merge PR [#1408](https://github.com/synfig/synfig/issues/1408): Fixed 'font not found' error in FreeType layers (Fix [#1407](https://github.com/synfig/synfig/issues/1407))
-- <code>[18c174e](https://github.com/synfig/synfig/commit/18c174e42e82c564db6c18e2c58e50b3da05353f)</code> don't waste time trying to open face of unnamed font [core]
-- <code>[0ca3942](https://github.com/synfig/synfig/commit/0ca3942209ed033bec9f2c0b5a6018c63e5fbfa5)</code> fix 'font not found' in freetype layers - fix [#1407](https://github.com/synfig/synfig/issues/1407) [core]
-- <code>[b5b8239](https://github.com/synfig/synfig/commit/b5b8239a7b7b1d896e125a2d7c4d7a70b98000e5)</code> Minor cleanup on color dialog ([#1396](https://github.com/synfig/synfig/issues/1396)) [studio]
-- <code>[692f105](https://github.com/synfig/synfig/commit/692f105841d3d3eafb53110b1a0d1f0349b668aa)</code> fix time and delta values in tooltip while dragging in Graph panel [studio]
-- <code>[2349d94](https://github.com/synfig/synfig/commit/2349d947bbcceafe9dcdc782e2bb8fafb090f91f)</code> PR [#1356](https://github.com/synfig/synfig/issues/1356): Add option to playback animation in realtime [studio]
-- <code>[eede90c](https://github.com/synfig/synfig/commit/eede90c6a874eced59b77b3855a5f04a033813ed)</code> [Lottie exporter] Add support for linear gradient ([#1286](https://github.com/synfig/synfig/issues/1286)) [studio]
-- <code>[77164ff](https://github.com/synfig/synfig/commit/77164ff0d3b2b05476306300fbd57360ce34b478)</code> Some clean up on layer freetype ([#1403](https://github.com/synfig/synfig/issues/1403)) [core]
-- <code>[a724c75](https://github.com/synfig/synfig/commit/a724c758a5147554ade0a9dfbdbe4e0a9d6b039f)</code> Merge PR [#1399](https://github.com/synfig/synfig/issues/1399): Cmake fixes
-- <code>[d972346](https://github.com/synfig/synfig/commit/d9723460cf84db0363f5afe7ba783f219ac710cf)</code> studio: CMake: Add include & library dirs for each pkg_config module [studio]
-- <code>[e8589a5](https://github.com/synfig/synfig/commit/e8589a5975fff82ed6a13953a4704b93a5e71318)</code> core: CMake: Add include & library dirs for each pkg_config module [core]
-- <code>[15a4167](https://github.com/synfig/synfig/commit/15a41673a92458a735c5945759cb51852b92b4e7)</code> ETL: CMake: Do not install non-existing header [ETL]
-- <code>[02747a2](https://github.com/synfig/synfig/commit/02747a2f8e050729c5845a62888b963118c1014d)</code> Don't show multiple warning messages about old canvas. Closes [#1380](https://github.com/synfig/synfig/issues/1380). [core]
-- <code>[8dc4c06](https://github.com/synfig/synfig/commit/8dc4c0642176ec57679cb5b2ac7fdb5897efef23)</code> Merge PR [#1354](https://github.com/synfig/synfig/issues/1354): Make first vertex selectable when creating spline. Fixes [#1281](https://github.com/synfig/synfig/issues/1281).
-- <code>[dd22899](https://github.com/synfig/synfig/commit/dd22899aee08b5905db62f3099706aa4f88b1f8f)</code> make polygon creation consistent with spline creation [studio]
-- <code>[ee9c0fe](https://github.com/synfig/synfig/commit/ee9c0fe83a772a39c87ff97500781a35f842d569)</code> make first vertex selectable when creating spline [studio]
-- <code>[cfe18dd](https://github.com/synfig/synfig/commit/cfe18dd9dcf053dc4da6e495e53573a49adf0606)</code> View-Toolbar is effective for all canvases [studio]
-- <code>[9ad7d22](https://github.com/synfig/synfig/commit/9ad7d22d857c42b49bde109af298c77d661a68b4)</code> Merge PR [#1386](https://github.com/synfig/synfig/issues/1386): Toolbar menu
-- <code>[af4b833](https://github.com/synfig/synfig/commit/af4b8333a2d176e06ca4503dc4d679cbbc5c0b02)</code> toogle_displaybar() is renamed to toggle_show_toolbar() [studio]
-- <code>[c903f71](https://github.com/synfig/synfig/commit/c903f71474eb2ae4112654ea6558c790978338c9)</code> fix View -> Toolbar menu [studio]
-- <code>[251f37a](https://github.com/synfig/synfig/commit/251f37a0c255ee89beb94b523adc2ec21474bf4b)</code> Merge PR [#1222](https://github.com/synfig/synfig/issues/1222): Warp layer is now renamed to perspective layer
-- <code>[d40d812](https://github.com/synfig/synfig/commit/d40d812f646d9260502c9677a965ced4c2617772)</code> Delete trace.log
-- <code>[65b18fd](https://github.com/synfig/synfig/commit/65b18fd6878ac42ca76aa8a1fc52ff59f97aef58)</code> now we can open  files with warp layer which is saved by old Synfig version. [core]
-- <code>[c488480](https://github.com/synfig/synfig/commit/c4884804cf43059d1c8152ee310ba9eb3fffa24c)</code> warp layer is now renamed to perspective layer [core]
-- <code>[51ba106](https://github.com/synfig/synfig/commit/51ba10644bd4aab01866bb5a2c8dad4805556e41)</code> Merge PR [#1313](https://github.com/synfig/synfig/issues/1313): Rework the plugin system
-- <code>[d234429](https://github.com/synfig/synfig/commit/d23442958d9b5546f9ba1dea21b150e52c424cd3)</code> Moved state machine (smach) from ETL to synfig-studio/src/gui [ETL] [studio]
-- <code>[3fb1847](https://github.com/synfig/synfig/commit/3fb18476777d5efa82723ea50213fff8f446818d)</code> Save canvas as fallback if get_read_stream fails [studio]
-- <code>[8208138](https://github.com/synfig/synfig/commit/8208138aba02c4193b39c3e8bc1062d98bcc9df7)</code> Enforce synfig file extension in run plugin [studio]
-- <code>[9bd9506](https://github.com/synfig/synfig/commit/9bd9506384701e34cefa6951cf762633a024b5d2)</code> Rename variables [studio]
-- <code>[509cefc](https://github.com/synfig/synfig/commit/509cefc180c4f356845bdc204808c5eca4e6b3f2)</code> Set the canvas filename to that of a new file when imported from a plugin [studio]
-- <code>[252c833](https://github.com/synfig/synfig/commit/252c8330d63fbb1f40c8a0f9f3fdfe6c5938a2e9)</code> Add filter for all supported files [studio]
-- <code>[52cafe5](https://github.com/synfig/synfig/commit/52cafe59e80084edde18f2edf05edcb9e916621c)</code> Support imported files in open recent [studio]
-- <code>[ee00a56](https://github.com/synfig/synfig/commit/ee00a563bfc67b410f06986ffa2a261c3b8e3885)</code> Show a dialog to select the right importer plugin [studio]
-- <code>[8e42823](https://github.com/synfig/synfig/commit/8e428231cb1afdcc4e8c7a7caf1e2d8ee0d66ccc)</code> Handle plugins on Any files [studio]
-- <code>[0e1e256](https://github.com/synfig/synfig/commit/0e1e25612f16780b201b446637f9784343d4c0df)</code> Propely load importers [studio]
-- <code>[0adc445](https://github.com/synfig/synfig/commit/0adc445b7d868526527695cba3d262acd283305e)</code> Use ui_language to select the plugin string [studio]
-- <code>[ca705d8](https://github.com/synfig/synfig/commit/ca705d8e0dc66e3aa38ec0561bc373233c938fca)</code> Use stdout for logs from lottie-exporter [studio]
-- <code>[7155860](https://github.com/synfig/synfig/commit/71558609b79fb587af64bf29fe2f568219c1a23e)</code> Add extension dot when loading them from the plugin file [studio]
-- <code>[c3d4f37](https://github.com/synfig/synfig/commit/c3d4f37d0a9ba3712a1a6a2eee8e1a72fad73cb5)</code> Removed unused declarations [studio]
-- <code>[ad301f9](https://github.com/synfig/synfig/commit/ad301f90aa4ae7160ac9cae1a450d3eb1db6cd12)</code> Base pluginin script ids on the xml file name rather than its directory [studio]
-- <code>[d2b792f](https://github.com/synfig/synfig/commit/d2b792f49b45dbd91b81c7ef20a00ab14b62fd30)</code> Implicit . on plugin extension import/export [studio]
-- <code>[13fcb5a](https://github.com/synfig/synfig/commit/13fcb5a7541f6253b3d2627e420ef649867d5309)</code> Avoid name collision for stdout/stderr [studio]
-- <code>[79cac4a](https://github.com/synfig/synfig/commit/79cac4a36768dee4ac305bc3814382a3780756c7)</code> Show plugin importers under Open [studio]
-- <code>[ee68545](https://github.com/synfig/synfig/commit/ee6854500484255a943902608ef351e7adff9100)</code> Add a message in case there is no importer installed [studio]
-- <code>[2c56ee8](https://github.com/synfig/synfig/commit/2c56ee8aa64336d1e25b927599e4aa277d133ba5)</code> Importer plugins [studio]
-- <code>[42cbd4a](https://github.com/synfig/synfig/commit/42cbd4acb6ffbc56f322fb0ab6445dba7f1aa561)</code> Rework the plugin system [studio]
-- <code>[7480aeb](https://github.com/synfig/synfig/commit/7480aebdb3a988e38da5c0e08e64c6f75e9df111)</code> fix readable name of Alpha parameter of Radial Composite valuenode [core]
-- <code>[1141307](https://github.com/synfig/synfig/commit/114130756fc5b43c04b09c11252bfa600a7ada3d)</code> Fix typo in source code [studio]
-- <code>[40593a0](https://github.com/synfig/synfig/commit/40593a09e815c08229334bce57001c69ca0d1607)</code> Update translations 2020-04-24 [core] [studio]
-- <code>[e821d31](https://github.com/synfig/synfig/commit/e821d3193e980b89851d86642630dc129c942caf)</code> Warning when opening file of older version. Closes [#1307](https://github.com/synfig/synfig/issues/1307). [core]
-- <code>[93e758b](https://github.com/synfig/synfig/commit/93e758b73349ddd0463018d3efff6837f9db60d9)</code> fix bline point order when saving for older canvas (part 3). [core]
-- <code>[3b1471f](https://github.com/synfig/synfig/commit/3b1471fca5d8405999cd5b4ed24aba078046a20b)</code> fix endianess of 16-bit PNG importing [core]
-- <code>[52eb2c8](https://github.com/synfig/synfig/commit/52eb2c84ab8c34ca5701648b89241276e6c3d014)</code> Workarea: replace deprecated Gtk::Table ([#1357](https://github.com/synfig/synfig/issues/1357)) [studio]
-- <code>[d2821dd](https://github.com/synfig/synfig/commit/d2821ddcf1c09f453a0cfca2b7110e8399af6fac)</code> Merge PR [#1373](https://github.com/synfig/synfig/issues/1373): don't let user delete waypoints while dragging them in Timetrack panel
-- <code>[892c6e2](https://github.com/synfig/synfig/commit/892c6e2338c1bf2c535180619d6c1099498150fa)</code> Merge PR [#1372](https://github.com/synfig/synfig/issues/1372): don't let user delete waypoints while dragging them in Graph panel
-- <code>[53c5ded](https://github.com/synfig/synfig/commit/53c5dedf74de98c5fea310bc540abe527d210ef4)</code> don't let user delete waypoints while dragging them in Timetrack panel [studio]
-- <code>[8c8c985](https://github.com/synfig/synfig/commit/8c8c9859f2550eeee7da3e94f4024fc57f718cb0)</code> don't let user delete waypoints while dragging them in Graph panel [studio]
-- <code>[d385778](https://github.com/synfig/synfig/commit/d3857788ad8c61a742154e7d9ef1f9c10458a74e)</code> Improve formatting of Vectorizer license in About dialog [studio]
-- <code>[008ab83](https://github.com/synfig/synfig/commit/008ab83f655334711559bcb6e5f64ce15293b9f2)</code> added vectorizer feature credits to about dialog. [studio]
-- <code>[7d0ef7e](https://github.com/synfig/synfig/commit/7d0ef7e89b47970e7339d62217aa2e87d28ddf5a)</code> fix bline point order when saving for older canvas (part 2) ([#1365](https://github.com/synfig/synfig/issues/1365)) [core]
-- <code>[2ed703e](https://github.com/synfig/synfig/commit/2ed703e6e6d43265e2b75ebd18156a248c5ed9d8)</code> README: Move list of contrubutors to top, fix "contribute" link.
-- <code>[f7d0565](https://github.com/synfig/synfig/commit/f7d0565b829f225266487faca04e0c2e6520a748)</code> Added financial contributors to the README
-- <code>[7327b78](https://github.com/synfig/synfig/commit/7327b78d4e27e0a743a43cccae012f1b1e46ae22)</code> Add link to OpenCollective in FUNDING.yml
-- <code>[3ef74a5](https://github.com/synfig/synfig/commit/3ef74a55560c92463d33f7bc831a38faaa854ba8)</code> fix bline point order when saving for older canvas (< synfig 1.4) [core]
-- <code>[7c57f7a](https://github.com/synfig/synfig/commit/7c57f7ac0867a5cd768d8c2f060d057cd2d222e0)</code> Show interpolation type directly in waypoint's context menu. ([#1353](https://github.com/synfig/synfig/issues/1353)) [studio]
-- <code>[f93735e](https://github.com/synfig/synfig/commit/f93735e6fa638357396cfc8c373aace1c374341d)</code> Avoid crash on pngspritesheet exporting ([#1339](https://github.com/synfig/synfig/issues/1339)) [core] [studio]
-- <code>[a8eccbe](https://github.com/synfig/synfig/commit/a8eccbe0b9780c29ac517ec6852c6bcf795515bc)</code> Cleanup unwanted console messages ([#1352](https://github.com/synfig/synfig/issues/1352)) [studio]
-- <code>[2df3379](https://github.com/synfig/synfig/commit/2df33799b30f777b6ff3818578ed376111094b49)</code> Merge PR [#1351](https://github.com/synfig/synfig/issues/1351): Canvas, bone & sublayer parameters now pops up in one single click
-- <code>[869bcc9](https://github.com/synfig/synfig/commit/869bcc9d8534e26079c2c0d860b59438dd38699f)</code> sublayer parameter now pops up in one single click [studio]
-- <code>[2e2e776](https://github.com/synfig/synfig/commit/2e2e7764e1c58f562f54d33629b35cc15798e4d3)</code> canvas and bone parameters now pop up in one single click [studio]
-- <code>[29d8878](https://github.com/synfig/synfig/commit/29d887824118dc8372994fdf27f73a3a9074a459)</code> Merge PR [#1337](https://github.com/synfig/synfig/issues/1337): Single click for parameter editing
-- <code>[81b9115](https://github.com/synfig/synfig/commit/81b9115d3af5f1d905c2f56190efe8d2dfa6904b)</code> single click for edit parameters of any type [studio]
-- <code>[7e99f48](https://github.com/synfig/synfig/commit/7e99f48debfba48c8a646e64224a094c73441093)</code> fix internal property scope: private [studio]
-- <code>[320a6a6](https://github.com/synfig/synfig/commit/320a6a60b8a2230a87dbf121058f74945a3c031e)</code> reduces variable scope and fixes type [studio]
-- <code>[5f2fe66](https://github.com/synfig/synfig/commit/5f2fe66e8491b48817cda59be6d53bd016ff6002)</code> prefer nullptr rather NULL or 0 [studio]
-- <code>[73a6a0a](https://github.com/synfig/synfig/commit/73a6a0ae3334fad7e3185d4965b44497ba72d1af)</code> remove wrong callback binding [studio]
-- <code>[788d72d](https://github.com/synfig/synfig/commit/788d72dea3fb5769bdcf85583a15053ba2031c06)</code> Merge PR [#1344](https://github.com/synfig/synfig/issues/1344): Different look for indirect waypoints 
-- <code>[ccf39ec](https://github.com/synfig/synfig/commit/ccf39ec9900fbd6835e651630e986e9645c1bbd8)</code> Minor code cleanup trgt_jpeg and mptr_jpeg ([#1343](https://github.com/synfig/synfig/issues/1343)) [core]
-- <code>[5b37d15](https://github.com/synfig/synfig/commit/5b37d157dfdfa771290992ed1e27c1028ce6f545)</code> make division with doubles in order to avoid minor errors [studio]
-- <code>[175e547](https://github.com/synfig/synfig/commit/175e547a44e418094b9964298bd48acf86297fc7)</code> remove useless code for halt waypoint rendering [studio]
-- <code>[b819fba](https://github.com/synfig/synfig/commit/b819fba9418f4919c463876647a312ecdde3b437)</code> add second outline for waypoints of not-animated valuebase_nodes [studio]
-- <code>[aa6f2e9](https://github.com/synfig/synfig/commit/aa6f2e9c2af654e8d0b540b527e0e1bf11c4629c)</code> FIXUP HALT _ SQUASH [studio]
-- <code>[79cc906](https://github.com/synfig/synfig/commit/79cc9063116f861f1881f0530a4190a6808e090b)</code> cleanup linear, clamped, constant and undefined waypoint rendering [studio]
-- <code>[fd90636](https://github.com/synfig/synfig/commit/fd90636fbc0b9e070fc11f72247c1df104ad9fb7)</code> cleanup halt waypoint rendering [studio]
-- <code>[ea8e3f9](https://github.com/synfig/synfig/commit/ea8e3f99c7b2b429b5c6352c33f11d817ad07768)</code> rename properly outline_color var due to possible dark mode support [studio]
-- <code>[b3ae782](https://github.com/synfig/synfig/commit/b3ae782bc2c234f171c482009cff1d197d87d01e)</code> Show workarea task messages as tooltip too ([#1338](https://github.com/synfig/synfig/issues/1338)) [studio]
-- <code>[8abcd40](https://github.com/synfig/synfig/commit/8abcd4001cca830379259a6e4b1719c6dc38d53c)</code> Improved generation of recent files list. Fixed MAX_PATH on Windows. ([#1335](https://github.com/synfig/synfig/issues/1335)) [studio]
-- <code>[28696ba](https://github.com/synfig/synfig/commit/28696ba976cbf6dfab33cf75da4a4b8aab31e44f)</code> Merge PR [#1325](https://github.com/synfig/synfig/issues/1325): Allow enum parameter be edited with a double click instead of triple click
-- <code>[fe96d4c](https://github.com/synfig/synfig/commit/fe96d4ce64d4270efa0a8e5897ee8ba421e1053f)</code> remove more commented code (since 2005) [studio]
-- <code>[a968cdc](https://github.com/synfig/synfig/commit/a968cdcf82388d943968be60f4df9d927333e13b)</code> fix warning about unused method parameters [studio]
-- <code>[46e3ccd](https://github.com/synfig/synfig/commit/46e3ccda680091857a1f9587787cd9d3a3627fd4)</code> allow enum parameter be edited with a single click [studio]
-- <code>[7e989f1](https://github.com/synfig/synfig/commit/7e989f1831da30f2e8d74c34df0649e83b099918)</code> remove more commented code [studio]
-- <code>[783e0b3](https://github.com/synfig/synfig/commit/783e0b31785859b2b7062e09438b1e40f6b52aff)</code> reorder properties due to memory alignment issue [studio]
-- <code>[b09286e](https://github.com/synfig/synfig/commit/b09286e878a136617489d58884c0e747f57aa01c)</code> remove commented code (since 2005) [studio]
-- <code>[a064eb2](https://github.com/synfig/synfig/commit/a064eb24d9b83aba36cc304e21aa2084aed6f17b)</code> remove unused #include [studio]
-- <code>[0f93005](https://github.com/synfig/synfig/commit/0f93005f8a8242668cda922ee8286c0cd8ae3d52)</code> unnecessary type cast [studio]
-- <code>[83b9118](https://github.com/synfig/synfig/commit/83b9118d0222eacf6f8fea7ab887e23b0ab4962b)</code> prefer nullptr rather 0 or NULL [studio]
-- <code>[0742e14](https://github.com/synfig/synfig/commit/0742e14ccf251bc9d5e934008844eca485184086)</code> remove unused macro [studio]
-- <code>[70989c3](https://github.com/synfig/synfig/commit/70989c3fda9bd031dbd74178019a3fbfecdc96cf)</code> remove unused #include [core]
-- <code>[d1459cf](https://github.com/synfig/synfig/commit/d1459cfda8e12e8b01307fb5649aeeef5b87f990)</code> Remove unused CairoImporter method ([#1331](https://github.com/synfig/synfig/issues/1331)) [core]
-- <code>[f3f8745](https://github.com/synfig/synfig/commit/f3f874523e71a25129e75210c7b3b716aff09407)</code> Fixed current_rendered_frames_count assignment [studio]
-- <code>[02eaf8c](https://github.com/synfig/synfig/commit/02eaf8c033b574c361a8c1b84976908cfe0d3f0f)</code> avoid duplicated dynamic_cast (other cases) ([#1328](https://github.com/synfig/synfig/issues/1328)) [core]
-- <code>[90e4e3b](https://github.com/synfig/synfig/commit/90e4e3b887d0f8085902c26af0777a7a4c20bf77)</code> fixes "local time" of Time Loop layer - fix [#479](https://github.com/synfig/synfig/issues/479) [core]
-- <code>[6d8904e](https://github.com/synfig/synfig/commit/6d8904e6c38161574c5c77e40745edc09be9a400)</code> Merge PR [#1072](https://github.com/synfig/synfig/issues/1072): Fixed crash when undoing layer deletion
-- <code>[7f13889](https://github.com/synfig/synfig/commit/7f13889c86bddb4b9e666259864b347d2598c314)</code> don't unset as dirty if it is due to another to-be-deleted layer [studio]
-- <code>[84f8685](https://github.com/synfig/synfig/commit/84f8685d8321bf9ea876acfd1b5edb37cabd2417)</code> fix undoing layer deletion from different groups [studio]
-- <code>[509bdb8](https://github.com/synfig/synfig/commit/509bdb8508cb7465f00e88eaf5d46ac27679fbea)</code> fix crash when undoing deletion of layer group and an inner layer [studio]
-- <code>[403c9b6](https://github.com/synfig/synfig/commit/403c9b62ae529b57beea01b0810f8159d60991f9)</code> delete old-commented code [studio]
-- <code>[81dc3b6](https://github.com/synfig/synfig/commit/81dc3b66b7c525aca19782e8b802eb0bb542ef36)</code> Minor fixes for timeplotdata ([#1321](https://github.com/synfig/synfig/issues/1321)) [studio]
-- <code>[da3922e](https://github.com/synfig/synfig/commit/da3922e92b2356dcb050478341d13e1a440a3af4)</code> Fix uninitialized variable in CairoColor ([#1322](https://github.com/synfig/synfig/issues/1322)) [core]
-- <code>[5a6473b](https://github.com/synfig/synfig/commit/5a6473b5629ff6a8423df2e687b16d08340bb2f3)</code> Avoid duplicate dynamic cast calls ([#1323](https://github.com/synfig/synfig/issues/1323)) [core]
-- <code>[c9b53c3](https://github.com/synfig/synfig/commit/c9b53c3c142b2ed56e07246983bde26170492024)</code> Fixed: [CMake Build] Import Image Layer has no icon. ([#1320](https://github.com/synfig/synfig/issues/1320)) [studio]
-- <code>[f584626](https://github.com/synfig/synfig/commit/f584626f07efbc655800eb5b4af2a81450015718)</code> Fixed compiling with Cairomm 1.15 [studio]
-- <code>[d1368fb](https://github.com/synfig/synfig/commit/d1368fbeb0d4cff7f45a975df1c3743f38790609)</code> more memory leaks on blur [core]
-- <code>[0b9ab1c](https://github.com/synfig/synfig/commit/0b9ab1c1ce672f826fa1b9bb7d198b5f1b46ce81)</code> prefer nullptr rather NULL or 0 [core]
-- <code>[54c666f](https://github.com/synfig/synfig/commit/54c666fc54803b3dfef976c5d9b072b82a5beaf2)</code> remove useless Importer::get_frame overloaded method [core]
-- <code>[c157348](https://github.com/synfig/synfig/commit/c157348d9d0dca81b9b5ddbf2b416e90773b6360)</code> Single Copy Layer visible for Bitmap layers only [studio]
-- <code>[4817575](https://github.com/synfig/synfig/commit/48175757bfea0999912c3d595c9c6eafa5410224)</code> fix indentation [studio]
-- <code>[fb59acf](https://github.com/synfig/synfig/commit/fb59acf1638c0b4eb328bb0b8e285f9508493aad)</code> added copyright to vectorizer [studio]
-- <code>[8229068](https://github.com/synfig/synfig/commit/8229068928bed8a234d41d9f42c75986fe39ec5a)</code> Revert "OSX: brew's coreutils package required for "realpath" command. See https://github.com/whatwg/html-build/issues/90"
-- <code>[91431ee](https://github.com/synfig/synfig/commit/91431ee6741db839cf357f951e8eeb5bd1d43edf)</code> Do not use "realpath" command in build process (Autotools) [studio]
-- <code>[e32f5b5](https://github.com/synfig/synfig/commit/e32f5b50b6aae90bf044531d2d954437a535111b)</code> Updated po file [studio]
-- <code>[6cd9585](https://github.com/synfig/synfig/commit/6cd958553d6b7e2a16a6037aa0cdf8dcf1c1f360)</code> Travis-CI job for translations validation ([#1283](https://github.com/synfig/synfig/issues/1283))
-- <code>[48729c7](https://github.com/synfig/synfig/commit/48729c71839993fd71c9ddeed1aad92dc9773f93)</code> Merge PR [#1289](https://github.com/synfig/synfig/issues/1289): Export plugins. Closes [#1218](https://github.com/synfig/synfig/issues/1218).
-- <code>[6e6eee5](https://github.com/synfig/synfig/commit/6e6eee54232375bfd30dca43b4a4a745d7d21d43)</code> Unindent over-indented line [studio]
-- <code>[76f8c49](https://github.com/synfig/synfig/commit/76f8c496c75405f4724452859696bc833b8af2a5)</code> A couple more missed tabs [studio]
-- <code>[4180eac](https://github.com/synfig/synfig/commit/4180eac5b524b47cd52302aefea877c061b84401)</code> Indentation / style cleanup [studio]
-- <code>[3602463](https://github.com/synfig/synfig/commit/3602463600e3ef45b30be7bfe3459cec4a4ac56f)</code> Simplify plugin XML parsing [studio]
-- <code>[4e74d76](https://github.com/synfig/synfig/commit/4e74d76ec61652fffcc490cde94eb0a4d58b2dff)</code> Fix calls to lottie-exporter.py
-- <code>[30525fc](https://github.com/synfig/synfig/commit/30525fcc109f1f831d00c0a6b303e03183e16003)</code> Use the reference-counted pointer [studio]
-- <code>[1f0774b](https://github.com/synfig/synfig/commit/1f0774baddda3058470bf8c283f2d31f68bb2a78)</code> Remove pdb breakpoints [studio]
-- <code>[499b7eb](https://github.com/synfig/synfig/commit/499b7eb48852666e6a5bf0b2baaa34104e04dfcb)</code> Export plugins [studio]
-- <code>[6be4045](https://github.com/synfig/synfig/commit/6be4045e9629f049d266dc9503b4d1deb801a20f)</code> fix outline vertex order for older files - again :) [core]
-- <code>[97acd21](https://github.com/synfig/synfig/commit/97acd21167910c34c809a4363ea2e7a0746cf0ac)</code> Code cleanup. Added MSVC compiler detection to About dialog. ([#1303](https://github.com/synfig/synfig/issues/1303)) [core] [studio]
-- <code>[c1b8488](https://github.com/synfig/synfig/commit/c1b8488d24ef0737be63ed0e8ab504e0ddc4466f)</code> Fixed hang when opening a second .sif file from Explorer (Windows) [studio]
-- <code>[11340af](https://github.com/synfig/synfig/commit/11340afee34da98673f5aa6cc5846f15a86ffda2)</code> Added necessary headers for MSVC [ETL] [core]
-- <code>[a714f50](https://github.com/synfig/synfig/commit/a714f50d64b97f58eed8b010f2e4d75ed21b2c44)</code> Fixed incorrect placement of vertex on bline in 1.3.13 - https://github.com/synfig/synfig/issues/314#issuecomment-601336943 [core]
-- <code>[abb7beb](https://github.com/synfig/synfig/commit/abb7beb4ec08f5052c8dcccd125c283d8b196034)</code> Fixed uninitialized members and memory leak in vectorizer ([#1294](https://github.com/synfig/synfig/issues/1294)) [studio]
-- <code>[102dace](https://github.com/synfig/synfig/commit/102daceabb934a50f2a8d337c950fbba052047f9)</code> Deleted GCC __attribute__ ((unused)) (fixes MSVC compilation) [ETL] [core] [studio]
-- <code>[0acaf30](https://github.com/synfig/synfig/commit/0acaf30b90b0730dc1f80be9ab47af8f6d8e8e26)</code> Removed unnecessary headers and variables ([#1295](https://github.com/synfig/synfig/issues/1295)) [studio]
-- <code>[cb4c6b3](https://github.com/synfig/synfig/commit/cb4c6b3b0c7f0b8a1a004ecd8086218c0fd5598b)</code> Fixed memory leaks for blur ([#1293](https://github.com/synfig/synfig/issues/1293)) [core]
-- <code>[ce325ef](https://github.com/synfig/synfig/commit/ce325ef85289e454fc0710d9d464510451b25af0)</code> Fixed memory leaks ([#1292](https://github.com/synfig/synfig/issues/1292)) [studio]
-- <code>[904629d](https://github.com/synfig/synfig/commit/904629dd12959d4424ee0d95b7f11de4aff6ab9d)</code> Fixed incorrect position of width points on outline when opened old files in 1.3.13 ([#1290](https://github.com/synfig/synfig/issues/1290)) [core]
-- <code>[faa52c9](https://github.com/synfig/synfig/commit/faa52c974ba8211f29dde123afcae1f648354245)</code> Merge PR [#1273](https://github.com/synfig/synfig/issues/1273): [MSYS2] Enable building of images (Autotools)
-- <code>[f806eb5](https://github.com/synfig/synfig/commit/f806eb5649408a395b383e7991da6149ded94832)</code> Fixed crash when removing a Spline vertex using "Remove item (Smart)" ([#1188](https://github.com/synfig/synfig/issues/1188)) [core] [studio]
-- <code>[0739b18](https://github.com/synfig/synfig/commit/0739b1853c2c4a38d359f2ccd9a45e416dc4a8e3)</code> Update notes about canvas versions. [core]
-- <code>[f08dbc0](https://github.com/synfig/synfig/commit/f08dbc085146dc33a276f6ae177db48d48eb2230)</code> OSX: brew's coreutils package required for "realpath" command. See https://github.com/whatwg/html-build/issues/90
-- <code>[1db7f4d](https://github.com/synfig/synfig/commit/1db7f4d4952355dd844a6e0fb4924ecda2f3df3c)</code> add option Link Origins to Draw tool - fix [#344](https://github.com/synfig/synfig/issues/344) [studio]
-- <code>[ae11655](https://github.com/synfig/synfig/commit/ae11655a9bba068543be7a5df9090958579de78e)</code> Fixed assertion 'GDK_IS_WINDOW (window)' failed ([#1257](https://github.com/synfig/synfig/issues/1257)) [studio]
-- <code>[ca0b663](https://github.com/synfig/synfig/commit/ca0b663adb263addd060ea59cdf5cf476cad3da4)</code> Fixed popup menu popping down right after button release for Widget Gradient/Spline ([#1277](https://github.com/synfig/synfig/issues/1277)) [studio]
-- <code>[9be0c34](https://github.com/synfig/synfig/commit/9be0c34235d4899e937b70ace413bd6c63904fa2)</code> fix uninitialized geometry [studio]
-- <code>[2503cc4](https://github.com/synfig/synfig/commit/2503cc440f8377a29beaa80f11e9338a5d7f15cd)</code> fix bad overrides reported by Coverity [studio]
-- <code>[d20d830](https://github.com/synfig/synfig/commit/d20d830c7483d8500f5f821e3eef1af9abb8f9ae)</code> remove unneeded #include [studio]
-- <code>[a959302](https://github.com/synfig/synfig/commit/a959302d0b6601af3cd689c324d0e6ab5647312f)</code> if Layer_Shade has no sublayers, it shouldn't try to render ([#1272](https://github.com/synfig/synfig/issues/1272)) [core]
-- <code>[1fdc4a3](https://github.com/synfig/synfig/commit/1fdc4a3d2aa07647510efe01a33ac3e124f14a92)</code> Fix IMAGE_DIR path on Windows (Autotools) [studio]
-- <code>[ba306d2](https://github.com/synfig/synfig/commit/ba306d2cc4d8575166d59a45d7c948c5c692bc68)</code> Enable building of images on Windows (MSYS2) [studio]
-- <code>[8d20efc](https://github.com/synfig/synfig/commit/8d20efc5a760d46d872b6b76c32e5d9377da0e40)</code> Fix configure to properly handle --without-magickpp flag (synfig-core) [core]
-- <code>[3f3c797](https://github.com/synfig/synfig/commit/3f3c7979181ee74282deb5d6deaa60e7959e254a)</code> OSX build: Remove hardcoded references to Python version ([#1244](https://github.com/synfig/synfig/issues/1244))
-- <code>[b57b280](https://github.com/synfig/synfig/commit/b57b2809af3e52f16bc5d67b351e79fd04d9b222)</code> "Lock Selection" parameter of Group Layer should be static by default ([#1259](https://github.com/synfig/synfig/issues/1259)) [studio]
-- <code>[616ba52](https://github.com/synfig/synfig/commit/616ba526c7111bdf98d13f97c666a80c34082c0c)</code> 1-setup-linux-native.sh can now use /etc/os-release for better OS detection ([#1263](https://github.com/synfig/synfig/issues/1263))
-- <code>[3b66367](https://github.com/synfig/synfig/commit/3b66367e6217013c2b21377bf4ce64c4534a4a66)</code> Add support for Cos convert and Integer convert method ([#1254](https://github.com/synfig/synfig/issues/1254)) [studio]
-- <code>[a12bbfb](https://github.com/synfig/synfig/commit/a12bbfbee316953834e17d8a0acd134ad5979471)</code> fix missing breaks in switch ([#1268](https://github.com/synfig/synfig/issues/1268)) [studio]
-- <code>[75029fb](https://github.com/synfig/synfig/commit/75029fb7b942c66eaefbbd5a0fdaa4cb8f4c8624)</code> Merge PR [#1248](https://github.com/synfig/synfig/issues/1248): Restore defaults now reset all settings
-- <code>[6591875](https://github.com/synfig/synfig/commit/6591875e830e41352d753a0f9f1b47135fbd31b9)</code> Add FUNDING.yml
-- <code>[70c851e](https://github.com/synfig/synfig/commit/70c851e9028527208109f7cb49a90576f068d616)</code> Merge PR [#1135](https://github.com/synfig/synfig/issues/1135): New timetrack
-- <code>[f0c5d31](https://github.com/synfig/synfig/commit/f0c5d3197af226a88154e74739b25bc242cffa86)</code> Refresh use_dark_theme [studio]
-- <code>[9a2187c](https://github.com/synfig/synfig/commit/9a2187cdb250c958f46c9d9357b53d6606bccf1d)</code> Merge PR [#1260](https://github.com/synfig/synfig/issues/1260): Fixed exception throwing by mistake in dot-product valuenode creation
-- <code>[1318782](https://github.com/synfig/synfig/commit/131878248ff0c27bdb6ac97c3c2b11b84b87bb9c)</code> fix exception throwing by mistake in dot-product valuenode creation [core]
-- <code>[81ebdd1](https://github.com/synfig/synfig/commit/81ebdd1a4d15d904d3c30aef85dee0416826ece1)</code> use nullptr instead of NULL or 0 [core]
-- <code>[2ffe7b4](https://github.com/synfig/synfig/commit/2ffe7b4f764f7d8c66913f90cd10162b194bd6f0)</code> add error message to inexistent value node type [core]
-- <code>[92d448d](https://github.com/synfig/synfig/commit/92d448d13d90d3077f0b297c58dd1086a984a6c5)</code> fix initialization of tuple for some (old?) compilers [studio]
-- <code>[b0900b7](https://github.com/synfig/synfig/commit/b0900b7d3f8661c4dea08b6e1ff06f305c5100ea)</code> fix non-initialized variable [studio]
-- <code>[e55ef1c](https://github.com/synfig/synfig/commit/e55ef1ceaa1d289707701b67baeb3829ee50756b)</code> add tool palette for waypoint moving operations: move, copy & scale [studio]
-- <code>[122b3a5](https://github.com/synfig/synfig/commit/122b3a5b482cbd39532bc25d1bef6e158a3181d3)</code> if moving waypoints to same starting place, show them back [studio]
-- <code>[22394da](https://github.com/synfig/synfig/commit/22394da9cfcb10f0e4a845875b8ae1b37ccc0479)</code> show moving/scaling waypoints as selected [studio]
-- <code>[fc1f2ea](https://github.com/synfig/synfig/commit/fc1f2eacad7531904186be2e4100828dc4cc809b)</code> change Timetrack cursor according to current action being performed [studio]
-- <code>[ffc6454](https://github.com/synfig/synfig/commit/ffc64543eb72b65b5fd21ed39d9ce958aae839e6)</code> rename old Dock_Timetrack class to Dock_Timetrack_Old [studio]
-- <code>[c600005](https://github.com/synfig/synfig/commit/c600005b95ee16d8feaefd182e73f5b20d460094)</code> fix regression of keyframe line drawing for imported layers [studio]
-- <code>[9546728](https://github.com/synfig/synfig/commit/95467289e8a794b1ea047c4548f9d52e8805e4c2)</code> don't waste time drawing outside visible area [studio]
-- <code>[1e63e90](https://github.com/synfig/synfig/commit/1e63e903a24b6194cd113b4ec27eea153de5f44c)</code> make new proposed timetrack the default one [studio]
-- <code>[d299985](https://github.com/synfig/synfig/commit/d2999856c18cd1341c48eb5e610cc9d509325ff0)</code> fix key modifier state due to widget loosing focus [studio]
-- <code>[cde0c87](https://github.com/synfig/synfig/commit/cde0c87ce8a02e7198cb0b77916a4355927fe553)</code> don't display static intervals for canvas values [studio]
-- <code>[d22d000](https://github.com/synfig/synfig/commit/d22d0003800a64f7f7134eb8d9647c4cd79ce1a0)</code> fix crash when clicking on waypoint of (imported) canvas [studio]
-- <code>[cf2875e](https://github.com/synfig/synfig/commit/cf2875e04749d3b136daff6f9f205a9eb557df95)</code> fix last parameter not shown in timetrack [studio]
-- <code>[5616730](https://github.com/synfig/synfig/commit/5616730fdb1486fb4b4f6708dee9ab003db5f38c)</code> fix not redrawing when a new value node is created via editor [studio]
-- <code>[ea43301](https://github.com/synfig/synfig/commit/ea433015dcaa5f7bec1b8bbb0b3602db66e02c4a)</code> fix consecutive drag-scale operations [studio]
-- <code>[64b5f40](https://github.com/synfig/synfig/commit/64b5f4071dc06b2fa2ad91305bffce3aeb249624)</code> scale waypoints via Alt key + mouse dragging [studio]
-- <code>[836979c](https://github.com/synfig/synfig/commit/836979c6dc3f3058766caae1e4608c04ad60da88)</code> one single method to discover which drag action is happening [studio]
-- <code>[77fff86](https://github.com/synfig/synfig/commit/77fff860258ef53916c2e1088c5ac093faea7ffd)</code> arrow keys only move waypoints - even if shift or alt is pressed [studio]
-- <code>[0d7cdea](https://github.com/synfig/synfig/commit/0d7cdeafdb6521882f2969317d5788d6b931fee5)</code> minor doc line added [studio]
-- <code>[1fde7de](https://github.com/synfig/synfig/commit/1fde7de431e0260cc6abe74d42f574499957c026)</code> fix action name for copying waypoints [studio]
-- <code>[1309588](https://github.com/synfig/synfig/commit/1309588660b5f546b18058262b1053b1742c028a)</code> fix moving waypoint to its initial place [studio]
-- <code>[e7796e4](https://github.com/synfig/synfig/commit/e7796e4470fec0c897c50b0912eea89d8c3a333f)</code> translate error and warning strings [studio]
-- <code>[7242f94](https://github.com/synfig/synfig/commit/7242f94e45d8c58280a14302b73f414edd0e2e8f)</code> instantaneous visual feedback when toggling modifier keys while dragging [studio]
-- <code>[d6bd8a9](https://github.com/synfig/synfig/commit/d6bd8a96431c173b4546a42bb7f18fdaf1724535)</code> add copy'n drag selected waypoints : shift key [studio]
-- <code>[cc04ead](https://github.com/synfig/synfig/commit/cc04ead54276b46965b5e8431ad662846a483bb0)</code> simplify waypoint move code [studio]
-- <code>[3ca7ecd](https://github.com/synfig/synfig/commit/3ca7ecd3892f28c676a628562a68178718ef6f0e)</code> only performs waypoint movement when drag finishes [studio]
-- <code>[895a2e9](https://github.com/synfig/synfig/commit/895a2e96aa93be1e6b9f339e343f433914ab841b)</code> update cached timepoint correctly [studio]
-- <code>[6b7c687](https://github.com/synfig/synfig/commit/6b7c6878af47261a357a11fbb3855ab7b661e626)</code> just draw what is visible [studio]
-- <code>[2615503](https://github.com/synfig/synfig/commit/2615503ccea9b9c9520d51d39e7fa2cd03b19787)</code> fix demi-transparent waypoints for (non-animated) value nodes [studio]
-- <code>[4ed212b](https://github.com/synfig/synfig/commit/4ed212bc44f26e904daef2a81390ab71839cc500)</code> fix type mismatch for mingw build [studio]
-- <code>[3d8866a](https://github.com/synfig/synfig/commit/3d8866a88031527143fe1086dc68c929f6880d8a)</code> synchronize param selection with timetrack [studio]
-- <code>[effc855](https://github.com/synfig/synfig/commit/effc855f0b3c224f907897a8f30fb618f5e43c3c)</code> add waypoint navigation to new timetrack [studio]
-- <code>[e1da24f](https://github.com/synfig/synfig/commit/e1da24f6f4360fd39c0101e5a0d88660aab680ca)</code> fix for old gtk [studio]
-- <code>[6ba4fbf](https://github.com/synfig/synfig/commit/6ba4fbf672a4accc9b7c394862958cf2fe03583d)</code> allow multiple waypoint selection [studio]
-- <code>[ad4ad67](https://github.com/synfig/synfig/commit/ad4ad67aa3d973c2af41fab95b868382c853836e)</code> when single-selection, click in blank space unselect item [studio]
-- <code>[42d52fa](https://github.com/synfig/synfig/commit/42d52fac03bab5e2ea7c6cb8ae7e734f202cf404)</code> redraw when selection is updated [studio]
-- <code>[9a75c15](https://github.com/synfig/synfig/commit/9a75c1523fe865b63a227e86912413dd8eddcd37)</code> allow to drag waypoint in new timetrack [studio]
-- <code>[b683c87](https://github.com/synfig/synfig/commit/b683c871f31a1459828747aaeb7027bc4d6facf2)</code> fix Delete behavior: accept converted nodes too (as CellRenderer does) [studio]
-- <code>[b3dd34c](https://github.com/synfig/synfig/commit/b3dd34c953bae6ea72465d56e7dcfc1a5a91583c)</code> Delete key deletes selected waypoint [studio]
-- <code>[06a0825](https://github.com/synfig/synfig/commit/06a0825c3a23e334435a04fc5a960a3c51bd878f)</code> new dock timetrack reacts to right-click and double-click in waypoint [studio]
-- <code>[7e17eaf](https://github.com/synfig/synfig/commit/7e17eaf7ff6e8d5e70d60895bcb759eabed27ff4)</code> display hovered and selected timetrack item [studio]
-- <code>[f28be15](https://github.com/synfig/synfig/commit/f28be15aa01657a9fd705c6e090fd49d9a3fa559)</code> minor improvement in documentation [studio]
-- <code>[750e02e](https://github.com/synfig/synfig/commit/750e02eeddcf143bdc8ce01cc3103df83c1976ea)</code> fix detection of hovered item by SelectDragHelper [studio]
-- <code>[0f70b2b](https://github.com/synfig/synfig/commit/0f70b2b56be9fbc2341733079ee00eb58eb8e3b6)</code> Display “static intervals” between waypoints [studio]
-- <code>[1fb1844](https://github.com/synfig/synfig/commit/1fb1844f3bd933a8b50d00d3d134304667d09f7a)</code> ease user life with keyframe and waypoint in time zero [studio]
-- <code>[4c799b1](https://github.com/synfig/synfig/commit/4c799b1c785a05520bcdb421de46dc32cb156827)</code> start drawing waypoints [studio]
-- <code>[8ff9633](https://github.com/synfig/synfig/commit/8ff96332d4b9ba34a3cb4326cabb6defec1ba0cd)</code> widget_timetrack row doesn't care about general layer changes [studio]
-- <code>[7312588](https://github.com/synfig/synfig/commit/73125883080a4e9d02d5fe7ae307c7ec92f0eca8)</code> fix crashing when resizing widget_timetrack [studio]
-- <code>[99b85d5](https://github.com/synfig/synfig/commit/99b85d5d0ff999a3fb3a53101671ae8b642a18d7)</code> improve param data tracking [studio]
-- <code>[f76aa3d](https://github.com/synfig/synfig/commit/f76aa3d033ee35e356e68916ee11177c7061a1e7)</code> change variable/method names for better understanding [studio]
-- <code>[78454b0](https://github.com/synfig/synfig/commit/78454b0389abfcbc0cbfe406a61cb13eeddd2f1c)</code> Widget_Timetrack synchronizes with a TreeView [studio]
-- <code>[f30b03f](https://github.com/synfig/synfig/commit/f30b03fb652c783302f79f59da27781fe2a55454)</code> make Widget_Timetrack reacts to simple mouse events [studio]
-- <code>[ee2ee84](https://github.com/synfig/synfig/commit/ee2ee8439c761b5a99bfd4653e5b8d73ad2b7997)</code> syncing Params treeview with new Timetrack widget [studio]
-- <code>[9632a39](https://github.com/synfig/synfig/commit/9632a39caeec1ad4cad329079584bd53f62634bc)</code> draft for new timetrack widget [studio]
-- <code>[fa2126d](https://github.com/synfig/synfig/commit/fa2126da0d657ff4d0abbfbb8ee34b880e65fc41)</code> fix zoom after change default page size in Widget_TimeGraphBase [studio]
-- <code>[1eeed1a](https://github.com/synfig/synfig/commit/1eeed1ace73c5bca359f2dc113a6e0354d983bfa)</code> add some documentation for Widget_TimeGraphBase [studio]
-- <code>[32e6e79](https://github.com/synfig/synfig/commit/32e6e793f78c10342eba7d3e2f4f5a215e81cb10)</code> minor cleanup [studio]
-- <code>[10e956a](https://github.com/synfig/synfig/commit/10e956a588b1e826f3751b6d7f7b9ae60ad3a8a6)</code> add keyframe line for timegraphbase [studio]
-- <code>[2dbc760](https://github.com/synfig/synfig/commit/2dbc76041d379ea1232788dd5157a2eb2d5425a7)</code> Merge PR [#1247](https://github.com/synfig/synfig/issues/1247): [CMake] build_images target now places images in the correct folder
-- <code>[a85cada](https://github.com/synfig/synfig/commit/a85cadae6212031d2b7173115982c0b5b1420281)</code> Fixes the build_images CMake target. [studio]
-- <code>[77164e8](https://github.com/synfig/synfig/commit/77164e8371269afb0490287f200f6c35fe067e88)</code> Fix issue [#1216](https://github.com/synfig/synfig/issues/1216) [studio]
-- <code>[2b82874](https://github.com/synfig/synfig/commit/2b82874cd336cd72c1b6d5dc2b1c12a5446dc042)</code> Fix issue [#1231](https://github.com/synfig/synfig/issues/1231)
-- <code>[5370add](https://github.com/synfig/synfig/commit/5370add11d6a2aa6bcf56a64470e39c9041646fd)</code> Merge PR [#1232](https://github.com/synfig/synfig/issues/1232): [CMake] Fixed images search logic in case SYNFIG_ROOT is undefined.
-- <code>[c63f879](https://github.com/synfig/synfig/commit/c63f8790829695cbcf84345b50b8428fb4a5b1ec)</code> Updated imagepath in case SYNFIG_ROOT is undefined.  [studio]
-- <code>[15ad054](https://github.com/synfig/synfig/commit/15ad054f18c37c0e36caca3c15b69d25ac51b04d)</code> Fix typos and non translatable strings ([#1162](https://github.com/synfig/synfig/issues/1162)) [core] [studio]
-- <code>[0b5a28f](https://github.com/synfig/synfig/commit/0b5a28f7d38afbe55d460facddcbb4da19307c31)</code> Add code to refresh colors of Gtk::ColorButton [studio]
-- <code>[786f25f](https://github.com/synfig/synfig/commit/786f25f7f3985f14005d48cb7b0956f4435092d3)</code> Merge PR [#1236](https://github.com/synfig/synfig/issues/1236): [Lottie Exporter] Add support for Sine convert method
-- <code>[fd3cca5](https://github.com/synfig/synfig/commit/fd3cca5c2dfc0d91ba9817b619146d94e22e396d)</code> Add support for sine convert method [studio]
-- <code>[a021dd1](https://github.com/synfig/synfig/commit/a021dd1d251a24b0d0ec031d66b26f49cb44f5fa)</code> Update App::restore_default_settings() to reset all settings. Fixes [#1154](https://github.com/synfig/synfig/issues/1154) [studio]
-- <code>[f6abd56](https://github.com/synfig/synfig/commit/f6abd56b4066b7bdd3ba91fe9db2afc1cec31da0)</code> Merge PR [#1241](https://github.com/synfig/synfig/issues/1241): Bump version for settings file
-- <code>[fddb982](https://github.com/synfig/synfig/commit/fddb982c9e13cd697a386d55648a9ee94c0eae05)</code> Bump version for settings file [studio]
-- <code>[ad20c3e](https://github.com/synfig/synfig/commit/ad20c3e25925d39499dd1f222ac1c038598f65f2)</code> Update translations (ar,ru) [core] [studio]
-- <code>[5e800fa](https://github.com/synfig/synfig/commit/5e800fa9325f6558ed96882c2071741b69869148)</code> Changes made to offsetKeyFrame file ([#1233](https://github.com/synfig/synfig/issues/1233)) [studio]
-- <code>[e222ce6](https://github.com/synfig/synfig/commit/e222ce647dc94d4dc332ddd4f969b1844ee18c8c)</code> Fixed travis-ci warnings
-- <code>[053841b](https://github.com/synfig/synfig/commit/053841be1bb8b6c75a1dd098c40948d74c22bd46)</code> Year is fixed in About dialog ([#1238](https://github.com/synfig/synfig/issues/1238)) [studio]
-- <code>[1f08cfc](https://github.com/synfig/synfig/commit/1f08cfca9c70ea940609324520ecab5559eea885)</code> Remove references to missing translation files ([#1239](https://github.com/synfig/synfig/issues/1239)) [studio]
-- <code>[5d8a08b](https://github.com/synfig/synfig/commit/5d8a08be5c8a257b8c32dcb23764487681cf7442)</code> [Lottie Exporter] Code cleanup for Lottie exporter plugin ([#1226](https://github.com/synfig/synfig/issues/1226)) [studio]
-- <code>[eb99ee6](https://github.com/synfig/synfig/commit/eb99ee6b4847b4b4c575ed576aa55fba5a149ba7)</code> New job for running "autobuild/transifex-push-template.sh" ([#1234](https://github.com/synfig/synfig/issues/1234))
-- <code>[b380d8a](https://github.com/synfig/synfig/commit/b380d8a35d882f5d5d839b396a7d3912b8488c9f)</code> keep undo history clean when deleteing multiple curve waypoints ([#1134](https://github.com/synfig/synfig/issues/1134)) [studio]
-- <code>[c3054c4](https://github.com/synfig/synfig/commit/c3054c4d648783a1877e42801f97d435ba184303)</code> Merge PR [#1228](https://github.com/synfig/synfig/issues/1228): [CMake] Update CMake script for /share and /etc.
-- <code>[246c424](https://github.com/synfig/synfig/commit/246c424778cf17ebc59860e9f4238dd7d08efbd2)</code> Updated CMake script for share and etc [core] [studio]
-- <code>[50bab45](https://github.com/synfig/synfig/commit/50bab454ff238af0a286f7a5a81bb7ef45eca914)</code> Merge PR [#1224](https://github.com/synfig/synfig/issues/1224): [CMake] Updated CMake script to change layout of build files.
-- <code>[8d946dd](https://github.com/synfig/synfig/commit/8d946dd011e84511cce5b39da676e020fa23b00b)</code> Updated CMake script for bin and lib [core]
-- <code>[eaafbcb](https://github.com/synfig/synfig/commit/eaafbcbd2a9afc17c88ff0c888a5ee21eb70be29)</code> [Lottie exporter] Important comments regarding effects/fill.py ([#1213](https://github.com/synfig/synfig/issues/1213)) [studio]
-- <code>[f1aae3d](https://github.com/synfig/synfig/commit/f1aae3dbe08eb13711aab233da7eeb579d31e49a)</code> Disable background rendering by default. Closes [#1170](https://github.com/synfig/synfig/issues/1170). [studio]
-- <code>[9210f30](https://github.com/synfig/synfig/commit/9210f307e3cf24be53070cc739f52fd8b5e6d48d)</code> Fix typo [studio]
-- <code>[691b81b](https://github.com/synfig/synfig/commit/691b81b364b7bfc7abc518c2bbc07b8daf804f55)</code> Merge PR [#1201](https://github.com/synfig/synfig/issues/1201): Rename "vizualization" test app to "synfigplayer"
-- <code>[9e189c3](https://github.com/synfig/synfig/commit/9e189c35d3167a71048f9b7fe4a16d86f58871b4)</code> Merge PR [#1209](https://github.com/synfig/synfig/issues/1209): fix i18n for Set Keyframe Description dialog
-- <code>[5390415](https://github.com/synfig/synfig/commit/5390415e58a9c2229a19aa487b9a945945d83622)</code> Merge PR [#1211](https://github.com/synfig/synfig/issues/1211): Fixed wrong filename in plugins dialog box
-- <code>[9affa6b](https://github.com/synfig/synfig/commit/9affa6b31d78dca216cbe555769f65e1ad68f464)</code> Correct name appears on alert dialog box now when using plugins [studio]
-- <code>[b6f445e](https://github.com/synfig/synfig/commit/b6f445e49a0b4df8a587107afe06e108c5413c9c)</code> fix i18n for Set Keyframe Description dialog [studio]
-- <code>[afe6dc8](https://github.com/synfig/synfig/commit/afe6dc83a4b30a59c5b93ad81c37c29e865fcfc1)</code> [Lottie exporter] Add variable gamma correction (PR [#1179](https://github.com/synfig/synfig/issues/1179)) [studio]
-- <code>[8230752](https://github.com/synfig/synfig/commit/8230752f2301d94410a36940807762d985549398)</code> Automate Lottie exporter tests using Travis (PR [#1197](https://github.com/synfig/synfig/issues/1197))
-- <code>[a983515](https://github.com/synfig/synfig/commit/a98351568cfe8bd1403b4dfcf6d817f680b05ae9)</code> Merge PR [#1202](https://github.com/synfig/synfig/issues/1202): allow glade UI files to be translated
-- <code>[4b87138](https://github.com/synfig/synfig/commit/4b8713809df567f9396d034372324573472544f1)</code> allow glade UI files to be translated [studio]
-- <code>[f7cea7e](https://github.com/synfig/synfig/commit/f7cea7e5c48afb3d79207a7c0edc180b49b27d70)</code> Rename "vizualization" app to "synfigplayer" [studio]
-- <code>[7d83a44](https://github.com/synfig/synfig/commit/7d83a445870fecc20a10851fbd99b822930735e6)</code> Merge PR [#1199](https://github.com/synfig/synfig/issues/1199): [Lottie Exporter] Code cleanup for Lottie exporter plugin
-- <code>[d793b3e](https://github.com/synfig/synfig/commit/d793b3e83d670a517e28e2d4008f530f7760203a)</code> Code cleanup for Lottie exporter plugin [studio]
-- <code>[4f6e09c](https://github.com/synfig/synfig/commit/4f6e09c576477df12dc2726efbcaee25f1914288)</code> Merge PR [#1195](https://github.com/synfig/synfig/issues/1195): [Lottie exporter] Convert methods working with radius of simple circle layer
-- <code>[db22dd2](https://github.com/synfig/synfig/commit/db22dd28e15aa946472b38d82c8f8d579a85fd1b)</code> get away, ghost dockers [studio]
-- <code>[891e772](https://github.com/synfig/synfig/commit/891e772f2c6c787053169ff404b07bba0c1a7d4f)</code> Resolves [#1101](https://github.com/synfig/synfig/issues/1101) [studio]
-- <code>[ef2da51](https://github.com/synfig/synfig/commit/ef2da51e6eaa456d8806735a04432f443efc57e5)</code> Merge PR [#1182](https://github.com/synfig/synfig/issues/1182): Improved dialog waypoint UX [studio]
-- <code>[8f89ca2](https://github.com/synfig/synfig/commit/8f89ca29ee724e59cce0271ef892272c9c68c7a0)</code> Merge PR [#1192](https://github.com/synfig/synfig/issues/1192): upgrade minimum required version of libav/FFmpeg
-- <code>[6c234ce](https://github.com/synfig/synfig/commit/6c234ce5d078f6cd44be71da6c68f0a5e7ffd5cd)</code> minor fixes for test visualization [studio]
-- <code>[c4ee388](https://github.com/synfig/synfig/commit/c4ee388ab95f87c55d628399734b7957242f7cf8)</code> time measure for test visualization [studio]
-- <code>[8508356](https://github.com/synfig/synfig/commit/85083560576d8641ed82c1b3d930e54fe4d7acea)</code> upgrade minimum version of libav/FFmpeg [core]
-- <code>[9ea54ae](https://github.com/synfig/synfig/commit/9ea54ae2ce09b5cd2ff00b559fb0f2bd77243650)</code> simple visualization test [studio]
-- <code>[6af075f](https://github.com/synfig/synfig/commit/6af075f1fe0ef00a7dbfbbb77bf8c724b2702866)</code> improve warl layer clipping [core]
-- <code>[e2adcad](https://github.com/synfig/synfig/commit/e2adcad8be02a3580c7af11247c01abbfc02d5e3)</code> blend method Alpha [core]
-- <code>[8af0f3d](https://github.com/synfig/synfig/commit/8af0f3d41a7734c7a9428fac3dfd09eab3772cf3)</code> draft: degrade underlayer for nonaffine transforms [core]
-- <code>[7edc151](https://github.com/synfig/synfig/commit/7edc151696dd73f15569b3df6ba4e8b64de20b68)</code> cubic interpolation by default for Warp [core]
-- <code>[9abc9ed](https://github.com/synfig/synfig/commit/9abc9edef37b3ce4fea50b06609099e440d0f5b9)</code> interpolation param for Warp [core]
-- <code>[650b0cf](https://github.com/synfig/synfig/commit/650b0cf6a8e15a45ade4014786ba91e19698d5cf)</code> antialias param for CheckerBoard [core]
-- <code>[57b243c](https://github.com/synfig/synfig/commit/57b243cf78d0ed22957e2292ee4c63610064448a)</code> remove some old rendering from modules [core]
-- <code>[b8aa2b1](https://github.com/synfig/synfig/commit/b8aa2b1e6d81296fe8a4a4e2cd644eb81bf5d062)</code> remove old rendering from core layers [core]
-- <code>[952b9b7](https://github.com/synfig/synfig/commit/952b9b79a77f8885fdc463cd2bff9eac2e0bf2c7)</code> fix bugs with iterators, thx to ice0 [core] [studio]
-- <code>[478b0db](https://github.com/synfig/synfig/commit/478b0db1fb5dac27a64b36eaff120b60cc92f49c)</code> fix smach [ETL] [studio]
-- <code>[6b433d2](https://github.com/synfig/synfig/commit/6b433d2503ed81bd6577c17748d2ae59ce0573c6)</code> add noexcept to move constructor [core]
-- <code>[3b27a85](https://github.com/synfig/synfig/commit/3b27a8547c0440a584d18289a3cb5bc09e4775c0)</code> Merge PR [#1177](https://github.com/synfig/synfig/issues/1177): Add a separate LICENSE file
-- <code>[fc7a046](https://github.com/synfig/synfig/commit/fc7a046ad041978bf4071d1e15e6dc2e64176d4c)</code> fix calculation of resolution [core]
-- <code>[941ab05](https://github.com/synfig/synfig/commit/941ab05ac45ffcec1d691242ec5f0f820d7bf33e)</code> Add a separate LICENSE file. Closes [#1111](https://github.com/synfig/synfig/issues/1111). [ETL] [core] [studio]
-- <code>[b7305a9](https://github.com/synfig/synfig/commit/b7305a9a3893caefffc1c36118e67f2f0610a1d5)</code> Merge pull request [#1173](https://github.com/synfig/synfig/issues/1173) from rodolforg/fix-sound-dock-scroll
-- <code>[f27fe23](https://github.com/synfig/synfig/commit/f27fe23db124455bcb5681a483f5748027c21e4e)</code> don't show extra vertical scrollbar for Dock Sound [studio]
-- <code>[cf1df92](https://github.com/synfig/synfig/commit/cf1df92b252699989e3c36ce4406259a1e40ddd3)</code> refactoring of Warp Layer [core]
-- <code>[61ff9b8](https://github.com/synfig/synfig/commit/61ff9b8d620a045ad454fb55125dc69880c2b317)</code> OptimizerTransformation: merge child into parent [core]
-- <code>[3ae388d](https://github.com/synfig/synfig/commit/3ae388d8789484ffdb0c14dd6785d4fbece682cf)</code> remove extra const keyword [core]
-- <code>[f44ff0a](https://github.com/synfig/synfig/commit/f44ff0a64636419ff9d9e223ca355319fd0388e7)</code> improve rendering::Transformation [core]
-- <code>[34a6856](https://github.com/synfig/synfig/commit/34a6856a6784c0f0959c64c173e0edf55fb15d7f)</code> improve synfig::Matrix [core]
-- <code>[7cea642](https://github.com/synfig/synfig/commit/7cea64284d1326d05039b76648cf113040889b10)</code> libmng made optional, fixed build using 2-build-cmake.sh [core] [studio]
-- <code>[2cccbf4](https://github.com/synfig/synfig/commit/2cccbf43557fd68b297a7b4b18b618ea4078581f)</code> Merge PR [#1166](https://github.com/synfig/synfig/issues/1166): Do not require to explicitly call FileSystemTemporary::discard_changes()
-- <code>[e03d878](https://github.com/synfig/synfig/commit/e03d878375e677aeb54808096607a7eb3c83ea67)</code> Better approach for 93f25328c15 and 28db040026. [core] [studio]
-- <code>[4df4085](https://github.com/synfig/synfig/commit/4df4085e997213b6072364e9f36da6ab14746571)</code> Update translations [core] [studio]
-- <code>[09220ed](https://github.com/synfig/synfig/commit/09220ed3bbae82a2a9f601b554d5b1aea3af3581)</code> Added PACKAGE_NAME macro [studio]
-- <code>[474fc99](https://github.com/synfig/synfig/commit/474fc99690d271a6998e180372ea4b5fd624f45b)</code> Merge PR [#1155](https://github.com/synfig/synfig/issues/1155): Clicking "Ignore" button doesn't removes backup
-- <code>[b4b6a75](https://github.com/synfig/synfig/commit/b4b6a752214c5f56f51788b78f3b71fcfdec2492)</code> Fix some typos and some non translatable strings ([#1159](https://github.com/synfig/synfig/issues/1159)) [core] [studio]
-- <code>[93f2532](https://github.com/synfig/synfig/commit/93f25328c15a3e7d17f9f7ae94f09f58657ee636)</code> Fix [#1140](https://github.com/synfig/synfig/issues/1140): Clicking "Ignore" button doesn't removes backup [studio]
-- <code>[30ce7c4](https://github.com/synfig/synfig/commit/30ce7c4209a618643b26f40144ae9e0bd99c0830)</code> minor fixes for some ValueBase method comments [core]
-- <code>[302b06d](https://github.com/synfig/synfig/commit/302b06dd4bf726e063f6acd02dff882b76f53751)</code> fix relation operators for ValueBase [core]
-- <code>[2608b0c](https://github.com/synfig/synfig/commit/2608b0c6ee0533346fba58adac38bfbc3e5a3945)</code> remove unused definitions of libpng versions [core]
-- <code>[f05955a](https://github.com/synfig/synfig/commit/f05955ae30217fdc3c8d75bb12d85bab454ac89f)</code> add a comment [core]
-- <code>[7b7b2dd](https://github.com/synfig/synfig/commit/7b7b2dd14dcf8a6bd3e0522b3f90fd139594dd26)</code> synfig::Mutex no longer exists [core]
-- <code>[96306f6](https://github.com/synfig/synfig/commit/96306f6fc31918377aaecc481f860cf8714f43f4)</code> autotools: remove unused definition [core]
-- <code>[8339ee0](https://github.com/synfig/synfig/commit/8339ee07b9edc8bd7ad29cdb58fc9e86ba13aee7)</code> Merge PR [#1096](https://github.com/synfig/synfig/issues/1096): remove strange #include in Dialog_Setup
-- <code>[52d58fa](https://github.com/synfig/synfig/commit/52d58faa57366f79d86c3d1b26590d9cd042baaf)</code> Merge PR [#1157](https://github.com/synfig/synfig/issues/1157): Fix some ui typos [studio]
-- <code>[6d479d8](https://github.com/synfig/synfig/commit/6d479d806839eac50d083f40837a8087732d6499)</code> remove unused action restore-defaults-settings [studio]
-- <code>[2d453f2](https://github.com/synfig/synfig/commit/2d453f288a651a1142d46f2f45d13850db428e5e)</code> Fix typo [studio]
-- <code>[fe24023](https://github.com/synfig/synfig/commit/fe240231c01c2bd3102ef901b2001a923cc86095)</code> Fix previous commit [studio]
-- <code>[7c08f5b](https://github.com/synfig/synfig/commit/7c08f5b8717000a1662754b0ce7d4706873c292d)</code> Fix typo [studio]
-- <code>[d974ed5](https://github.com/synfig/synfig/commit/d974ed5af43b762a1d9c4e44f4c57cfcd17e562b)</code> Update translations (new pot) [core] [studio]
-- <code>[86eaf56](https://github.com/synfig/synfig/commit/86eaf560d1eb7f4f3a14391c75a6474997fd051b)</code> Update translations [core] [studio]
-- <code>[b218c01](https://github.com/synfig/synfig/commit/b218c019070e39afab50f244039575d1f88fac98)</code> Merge PR [#1076](https://github.com/synfig/synfig/issues/1076): define copy constructor if assignment operator is defined
-- <code>[288b115](https://github.com/synfig/synfig/commit/288b1154de2afbef36e6a5bd37cf40ac875aca3d)</code> define copy constructor if assignment operator is defined [core]
-- <code>[3b90f0c](https://github.com/synfig/synfig/commit/3b90f0cf14295ae240036ddd501b4fa50ac50c5e)</code> prefer nullptr rather NULL [core]
-- <code>[6ebc9a8](https://github.com/synfig/synfig/commit/6ebc9a8e7402bbdf834a4645837a2b7b27c85069)</code> Merge PR [#1105](https://github.com/synfig/synfig/issues/1105): Fixed MLT build on MSYS via autobuild/build.sh script
-- <code>[5ac3ae6](https://github.com/synfig/synfig/commit/5ac3ae640c7f532ac168f6160fcf9214cbad03e9)</code> Fixed MLT build on MSYS via autobuild/build.sh script
-- <code>[e8281c6](https://github.com/synfig/synfig/commit/e8281c679184cf9e9e6a7554ccaac0a5bff761a2)</code> Merge PR [#1034](https://github.com/synfig/synfig/issues/1034): there is no reason for using float instead of Real
-- <code>[76a0070](https://github.com/synfig/synfig/commit/76a00704862badc39fde63ac2e9fac9f0a310d86)</code> there is no reason for being float instead of Real [core]
-- <code>[00e3c96](https://github.com/synfig/synfig/commit/00e3c96c42a756666610a12c853e3784792b7b9c)</code> Temporarily disable distcheck (as it exceeds build time)
-- <code>[58cf959](https://github.com/synfig/synfig/commit/58cf959a34436bcf4b54acfd476f179c821f61f9)</code> remove unused code : commented since 2005 [studio]
-- <code>[859cc1a](https://github.com/synfig/synfig/commit/859cc1a3a720dae09cd61e76cbe567a93e85ce3e)</code> Merge PR [#1128](https://github.com/synfig/synfig/issues/1128): Travis: Add distcheck job
-- <code>[790a6f7](https://github.com/synfig/synfig/commit/790a6f74af0587047295d68726734572b0609177)</code> Travis: Add distcheck job
-- <code>[0da5999](https://github.com/synfig/synfig/commit/0da59994cb17c895771e237a2c1f3897d1223ff2)</code> remove test for (removed) etl::loose_smart_ptr [ETL]
-- <code>[ee74a24](https://github.com/synfig/synfig/commit/ee74a24c8ae4d8295d1e1c1ef5b9c5bf478271ce)</code> Bump version to 1.5.0 [ETL] [core] [studio]
-- <code>[3a2b3a1](https://github.com/synfig/synfig/commit/3a2b3a1def3b57ddfadafa9f6f5c5cd42c3fc415)</code> remove strange #include in Dialog_Setup [studio]
+- [`41b7682`](https://github.com/synfig/synfig/commit/41b7682921c0a83576d116a5f9b57991860620af) Changed the order of buttons in various dialog boxes (Color, Paragraph, Gradient, Target options) ([#2090](https://github.com/synfig/synfig/issues/2090)) [studio]
+- [`ef901e4`](https://github.com/synfig/synfig/commit/ef901e498d8a9653b06971f034b9641946ba4f50) Reset progress bar in Info window as Preview rendering is stopped ([#2083](https://github.com/synfig/synfig/issues/2083)) [studio]
+- [`0b5e1d2`](https://github.com/synfig/synfig/commit/0b5e1d29174f6b2e348a5560a7bd5b513b639b5e) [Synfig Studio] Stop rendering button has been moved to the right of the progress bar ([#2078](https://github.com/synfig/synfig/issues/2078)) [studio]
+- [`6b5a3c8`](https://github.com/synfig/synfig/commit/6b5a3c8900916fe0a092ba37b9743333c7aa0906) [Synfig Studio] fix format string for synfigapp exception guard ([#2084](https://github.com/synfig/synfig/issues/2084)) [studio]
+- [`1ffe5c3`](https://github.com/synfig/synfig/commit/1ffe5c321e0c8c6a13168e6a4f65025f4fbd0537) [Snapcraft] Added Lottie dependency (lxml) ([#2060](https://github.com/synfig/synfig/issues/2060))
+- [`53153ef`](https://github.com/synfig/synfig/commit/53153efa00f93bd9e31e4c6c37676acec4875f83) [Synfig Studio] Toolbox migration from Gtk::Table to Gtk::Grid ([#2079](https://github.com/synfig/synfig/issues/2079)) [studio]
+- [`25e03d1`](https://github.com/synfig/synfig/commit/25e03d14d0eacb471f06724e7a22e0fe8b720190) [Core/Studio] Fix coverity warnings ([#2045](https://github.com/synfig/synfig/issues/2045)) [core] [studio]
+- [`65f50eb`](https://github.com/synfig/synfig/commit/65f50eb4e4c180243b58425620a0905ae0f7c01b) [Synfig Studio] fix skeleton deformation duplication ([#2071](https://github.com/synfig/synfig/issues/2071)) [core]
+- [`209319c`](https://github.com/synfig/synfig/commit/209319c741b40ac43e8c8f3244caeacfa50ffa4a) [Python] Allow to use updated dependencies ([#2069](https://github.com/synfig/synfig/issues/2069))
+- [`431ab77`](https://github.com/synfig/synfig/commit/431ab77d7a34d59b888a8b24fb572267b3761e48) [Synfig Studio] The canvas properties dialog now displays values correctly after being closed with the window close button. ([#2076](https://github.com/synfig/synfig/issues/2076)) [studio]
+- [`7ffa0d6`](https://github.com/synfig/synfig/commit/7ffa0d67f8f3056c4f43d5229c012d62a22ae8ee) [Appveyor] Temporarily disable artifact storing (run out of space) ([#2072](https://github.com/synfig/synfig/issues/2072))
+- [`2fd42d2`](https://github.com/synfig/synfig/commit/2fd42d255e6dd59f2024b17fef51d723e92e8d22) Bump pillow from 8.0.0 to 8.1.1 in /perf/scripts ([#2070](https://github.com/synfig/synfig/issues/2070))
+- [`b1468c7`](https://github.com/synfig/synfig/commit/b1468c7dead6f12e0882ac4cd364c445074d4cf7) [Synfig Studio] make TimeLoop valuenode editable via workspace ([#2066](https://github.com/synfig/synfig/issues/2066)) [core] [studio]
+- [`71de9ff`](https://github.com/synfig/synfig/commit/71de9ff60b337c952abd983563cc7736a00ad714) Fix various typos ([#2061](https://github.com/synfig/synfig/issues/2061)) [core] [studio]
+- [`0f7fb39`](https://github.com/synfig/synfig/commit/0f7fb391fb4c682515aaa94098ae85c180a92dbb) [Core] LinkableValueNode now provides methods for inverse manipulation ([#2057](https://github.com/synfig/synfig/issues/2057)) [core] [studio]
+- [`ab8cd14`](https://github.com/synfig/synfig/commit/ab8cd14891a389142695c47e0f9be68adbbca1a9) Merge PR [#2059](https://github.com/synfig/synfig/issues/2059): [Synfig Studio] fix action LayerDuplicate for skeleton and its bone links
+- [`15d55af`](https://github.com/synfig/synfig/commit/15d55af7505b989df3d5c8924343a11600f21a51) add LayerDuplicate action tests for Skeleton layer [studio]
+- [`87d10c6`](https://github.com/synfig/synfig/commit/87d10c6c31d2fe791465c06adc8ff0a6b60be825) [Synfig Studio] fix Action LayerDuplicate for Skeleton Layer [studio]
+- [`42b9750`](https://github.com/synfig/synfig/commit/42b9750dc5e7f16706ea4e0f521316e99d1c688d) prefer ValueNode::RHandle rather explicit etl::rhandle<ValueNode> [studio]
+- [`c2371f7`](https://github.com/synfig/synfig/commit/c2371f7955abb21edd716da45f5552ab9b5a0e38) Merge PR [#1979](https://github.com/synfig/synfig/issues/1979): [Synfig Studio] Minor cleanup on LayerTree (Improve LayerTree speed)
+- [`ef37687`](https://github.com/synfig/synfig/commit/ef376872dae04158e393cefc30a7d48f9fcc12cb) LayerTree: remove unused variable quick_layer [studio]
+- [`58f933d`](https://github.com/synfig/synfig/commit/58f933d4f736f02191ec4fd995492b348fd96912) LayerTree: remove unused callback on_dirty_preview() [studio]
+- [`1169f8e`](https://github.com/synfig/synfig/commit/1169f8e411493a0386f10818214e9c07547b7bb0) [Synfig Studio] LayerTree: remove unused widgets [studio]
+- [`3f608be`](https://github.com/synfig/synfig/commit/3f608be77e6ffd44f3dee93aa12b463801d290da) [Synfig Studio] Duckmatic: minor cleanup ([#2056](https://github.com/synfig/synfig/issues/2056)) [studio]
+- [`a1f27de`](https://github.com/synfig/synfig/commit/a1f27de8c154776c1822bccbc2931cbc5d9150dd) [Core] avoid comma operator and prefer return value of std::list::erase() ([#2053](https://github.com/synfig/synfig/issues/2053)) [core]
+- [`23d0559`](https://github.com/synfig/synfig/commit/23d05595b97028b18a7b01b5aa2e4d0ecfeddc48) [Core] prefer std::thread rather deprecated Glib::Threads ([#2052](https://github.com/synfig/synfig/issues/2052)) [core]
+- [`c526bf2`](https://github.com/synfig/synfig/commit/c526bf2186871d5b4133f3527b3da54390e44f78) [Synfig Studio] don't let inner layer be duplicated twice ([#2050](https://github.com/synfig/synfig/issues/2050)) [studio]
+- [`17d685c`](https://github.com/synfig/synfig/commit/17d685c6a81b483cb5c1475c25207f119bc960f9) [Synfig Studio] Bone Tool: fix bone width on wrong situations ([#2048](https://github.com/synfig/synfig/issues/2048)) [studio]
+- [`ae6925b`](https://github.com/synfig/synfig/commit/ae6925bd26e03d15e566b96c42ce169801d40821) [Core] Fixed warnings ([#2044](https://github.com/synfig/synfig/issues/2044)) [studio]
+- [`bc2e3e5`](https://github.com/synfig/synfig/commit/bc2e3e570a1e47a5e2b0245ad44f31efffcf35f8) [Synfig Studio] Noticeable progress bar ([#2019](https://github.com/synfig/synfig/issues/2019)) [studio]
+- [`c7e0960`](https://github.com/synfig/synfig/commit/c7e0960da15c8dde969880c182940d2e85d283fd) [Synfig Studio] Remember the Number of rendering thread ([#2023](https://github.com/synfig/synfig/issues/2023)) [studio]
+- [`505d8c5`](https://github.com/synfig/synfig/commit/505d8c55081d9c50b9c318a728b2fd35c7ddf678) [Synfig Studio] Implemented toggle animate hotkey ([#2033](https://github.com/synfig/synfig/issues/2033)) [studio]
+- [`bbdd853`](https://github.com/synfig/synfig/commit/bbdd8536c7512d47724c8c166257ab416facf103) Merge PR [#2046](https://github.com/synfig/synfig/issues/2046): [Synfig Studio] some cleanup on synfigapp::ValueDescSet
+- [`9105f66`](https://github.com/synfig/synfig/commit/9105f6623c19ee0bd18d0cbbaa698dc29351ab55) [Synfig Studio] add convenient private method to create and add ValueDescSet action [studio]
+- [`d72ae10`](https://github.com/synfig/synfig/commit/d72ae10f131e3d3c73829c0e7e41ccff44246dac) [Synfig Studio] use helper comparison functions [studio]
+- [`d2c259d`](https://github.com/synfig/synfig/commit/d2c259d9509151c004be4a9dd7fc6e688f9ee825) [Synfig Studio] not future-proof: ValueNode_Bone may change parameter order [studio]
+- [`ba77baf`](https://github.com/synfig/synfig/commit/ba77baf6771e45195289c5553935169c97a342e2) [Synfig Studio] fix compiler warning for signedness issue [studio]
+- [`1af456f`](https://github.com/synfig/synfig/commit/1af456f5f49c374749cce4ff78160cd98ef9c036) [Synfig Studio] better comparison for Real with 0 value [studio]
+- [`8dc38c5`](https://github.com/synfig/synfig/commit/8dc38c51ed028a37caeec6d62807337c729b470d) [Synfig Studio] avoid double dynamic_cast [studio]
+- [`ba9149a`](https://github.com/synfig/synfig/commit/ba9149aaf3839cd205560fad2630daa23131554e) [Synfig Studio] avoid dereference of invalid TreeIter on Layer TreeView ([#2043](https://github.com/synfig/synfig/issues/2043)) [studio]
+- [`94d8c47`](https://github.com/synfig/synfig/commit/94d8c476189891c0fab33fdff31f04b89db47daf) [Core/Studio] use std::thread::hardware_concurrency() instead of g_get_num_processors() ([#2042](https://github.com/synfig/synfig/issues/2042)) [core] [studio]
+- [`5664a71`](https://github.com/synfig/synfig/commit/5664a7140e1f9e6120b747f2c22583d905fcd7a7) Merge PR [#2040](https://github.com/synfig/synfig/issues/2040): [CLI] minor cleanup in command-line option parser
+- [`ddb5001`](https://github.com/synfig/synfig/commit/ddb50017e2e495a5cf940e252404e7533e140abe) [CLI] stop searching for video-codec as soon as found [core]
+- [`0e2504c`](https://github.com/synfig/synfig/commit/0e2504c94ff128d1aca015b356ddfe318986f3ed) [CLI] minor warning cleanup fixes [core]
+- [`9ae2dec`](https://github.com/synfig/synfig/commit/9ae2decc512ffbee27c09a3b27e3ddc721361496) [Core] DPI2DPM and DPM2DPI should use Real (double), not float [core] [studio]
+- [`4ecafb5`](https://github.com/synfig/synfig/commit/4ecafb5f4b3ce6251623a3e8e8763499287c64aa) [CLI] fix span option var type [core]
+- [`2f18910`](https://github.com/synfig/synfig/commit/2f18910f4dc1657300574cec93db60a429755d9b) [Core] assure uniqueness for new node guid ([#2029](https://github.com/synfig/synfig/issues/2029)) [core]
+- [`d3ce556`](https://github.com/synfig/synfig/commit/d3ce5563e2315d72d786b2d0fb7d71a0832b6f07) Update issue templates
+- [`06d71c5`](https://github.com/synfig/synfig/commit/06d71c59856fb40951235a478f7d996191404e91) [Synfig Studio] exception-guard now lists SynfigApp exception too ([#2028](https://github.com/synfig/synfig/issues/2028)) [studio]
+- [`7f67cc2`](https://github.com/synfig/synfig/commit/7f67cc22dc831edb199b82c71aab22b407aa3292) [Autotools] Fixed `make distcheck`. Reduced build output for synfigstudio-release.sh script. ([#2004](https://github.com/synfig/synfig/issues/2004)) [ETL] [core] [studio]
+- [`05b1ee2`](https://github.com/synfig/synfig/commit/05b1ee273f564b1422b2e14c039e22455b380a5a) [ETL/Core] Fixed warnings ([#2013](https://github.com/synfig/synfig/issues/2013)) [ETL] [core] [studio]
+- [`17c9a70`](https://github.com/synfig/synfig/commit/17c9a7080ad52e40b50f176b590e7a6d37d63de9) Turn off color dialog's resizability ([#2031](https://github.com/synfig/synfig/issues/2031)) [studio]
+- [`a9f00b7`](https://github.com/synfig/synfig/commit/a9f00b73fc61a14cc4f1ed2c793547206c77d938) [Synfig Studio] Improve style context code to one line ([#2032](https://github.com/synfig/synfig/issues/2032)) [studio]
+- [`73dcea6`](https://github.com/synfig/synfig/commit/73dcea631b8b5dd22d5babf613c63b6b2d2fc379) [Core] remove unused class GUIDHash ([#2030](https://github.com/synfig/synfig/issues/2030)) [core]
+- [`4ddd22d`](https://github.com/synfig/synfig/commit/4ddd22d8de1f4729c83fe0b0e8cde5b46fd84e87) Merge PR [#1995](https://github.com/synfig/synfig/issues/1995): [Core] create stringhelper
+- [`9e653c6`](https://github.com/synfig/synfig/commit/9e653c6b0a013b1a40a414f314d3035285dffb1a) [Core] remove unused synfig/nodebase.h ([#2024](https://github.com/synfig/synfig/issues/2024)) [core]
+- [`10b7715`](https://github.com/synfig/synfig/commit/10b7715872763b7b488e43fb2284f6535336a895) Merge PR [#2012](https://github.com/synfig/synfig/issues/2012): [Synfig Studio] Added support for merge/split tangents for multiple vertices of object
+- [`a509ebd`](https://github.com/synfig/synfig/commit/a509ebd64fd7af777130abd9753e2e333ffb8575) create string_helper.h to avoid code duplication [core] [studio]
+- [`f7e6897`](https://github.com/synfig/synfig/commit/f7e6897d959fd52fdbc27bffba7bff84da6106ec) remove commented-out code since 2005 [core]
+- [`d658aaa`](https://github.com/synfig/synfig/commit/d658aaa270e2f1d248745e97c46bb53b80c53707) remove unused string_decl.h [core]
+- [`e76af7e`](https://github.com/synfig/synfig/commit/e76af7ee71eebebeb620abd1c421ec0a7e0d1df5) add support for multiple vertices for actions BLinePointTangentSplit and BLinePointTangentMerge [studio]
+- [`80270a0`](https://github.com/synfig/synfig/commit/80270a0e8b5e506eb7a57888e24ec53274d59694) improve search function on BLinePointTangentSplit and BLinePointTangentMerge [studio]
+- [`07820e9`](https://github.com/synfig/synfig/commit/07820e9605aec0298d2027b5fd7b41bd9a3c6990) simplify code for actions BLinePointTangentSplit and BLinePointTangentMerge [studio]
+- [`94c0805`](https://github.com/synfig/synfig/commit/94c0805673d4888665cf0179062226f01acf6f00) [ETL] current_working_directory() function now works correctly with non-Latin filenames ([#2011](https://github.com/synfig/synfig/issues/2011)) [ETL] [core]
+- [`4c33e75`](https://github.com/synfig/synfig/commit/4c33e75956ae62185f0b5103d0d0b03af437f628) [Core/Studio] Added support for user-installed fonts on Windows 10 (1809) ([#1997](https://github.com/synfig/synfig/issues/1997)) [core] [studio]
+- [`03fd60f`](https://github.com/synfig/synfig/commit/03fd60fe879f9be0619f68cd9fbffec5ba243830) [Synfig Studio] fix "Link to Spline" showing when a vertex of spline itself is selected ([#1988](https://github.com/synfig/synfig/issues/1988)) [studio]
+- [`fe6dd29`](https://github.com/synfig/synfig/commit/fe6dd2941ea77709ddf7f0ca0a98fb5a1b82917d) [Synfig Studio] Allow to set number of rendering threads from Preferences dialog ([#1999](https://github.com/synfig/synfig/issues/1999)) [core] [studio]
+- [`39a0ab4`](https://github.com/synfig/synfig/commit/39a0ab456021155a85d2936fbedff59464c74023) Merge PR [#1970](https://github.com/synfig/synfig/issues/1970): [Synfig Studio] Implement Ctrl+Shift+Scroll to zoom horizontally in panels
+- [`8a6b0db`](https://github.com/synfig/synfig/commit/8a6b0dbc1e315707f2a220d3218fc5b30b51ec2f) Separate up/right and down/left scroll events [studio]
+- [`e279a16`](https://github.com/synfig/synfig/commit/e279a165e1ec0c8bff6eb5ccfe7f3c1ebef62174) Shift toggles vertical axis [studio]
+- [`b766b14`](https://github.com/synfig/synfig/commit/b766b14dc5f7250c9872faeda897794ca1e09056) Swap horizontal and vertical zoom hotkeys [studio]
+- [`8d0b088`](https://github.com/synfig/synfig/commit/8d0b088a875f1d91d2ad925fd021459a076fc73a) Fix indentations [studio]
+- [`8b74237`](https://github.com/synfig/synfig/commit/8b74237e5af94e13141d00bb7c14d9713a29e454) Scroll time horizontally in graphs with Shift+Scroll [studio]
+- [`b60044a`](https://github.com/synfig/synfig/commit/b60044a64294d26f404b765be59664c1af74123f) Zoom at mouse cursor position [studio]
+- [`2c6fdc5`](https://github.com/synfig/synfig/commit/2c6fdc5149a249a8ad75448066d78986bb87aeed) Connect Timetrack and Sound panels [studio]
+- [`1e25813`](https://github.com/synfig/synfig/commit/1e25813b4a3caa71e9320c7911f03a5d486bcfc2) Implement Ctrl+Shift+Scroll to zoom horizontally in Graphs panel [studio]
+- [`d8e1837`](https://github.com/synfig/synfig/commit/d8e183799995c5ade40bfac4a031e3d9c25266ea) Merge PR[#1971](https://github.com/synfig/synfig/issues/1971): [Synfig Studio] Fix action LayerDuplicate with layers "duplicate"
+- [`697e50f`](https://github.com/synfig/synfig/commit/697e50fbed5e22f06c11f7f3b82ec5831f4c1eff) fix bug duplicating layer_duplicate of different groups [studio]
+- [`8a45542`](https://github.com/synfig/synfig/commit/8a455424300f858720f956210cc4c73febb9e6d3) add test for synfigapp action LayerDuplicate [studio]
+- [`951545c`](https://github.com/synfig/synfig/commit/951545c1ae55350f4f3002f179d8b32a06c4ea9d) fix unused variable warning [studio]
+- [`592c3d4`](https://github.com/synfig/synfig/commit/592c3d4c443c9431ae0d8bc015735ab3c1b1b7dc) detail duplicated valuenode name on error [studio]
+- [`86b1229`](https://github.com/synfig/synfig/commit/86b1229cb4149cd467d9160950af4d48efe25b11) Duplicating Layer_Duplicate connects cloned layers to new Index [studio]
+- [`e027603`](https://github.com/synfig/synfig/commit/e0276038420fb6fc43662419b0ff920bec7dc850) fix bug when duplicating two Layer_Duplicate in same canvas [studio]
+- [`ab48748`](https://github.com/synfig/synfig/commit/ab487484a0fcf2a5c1dcaf5d745ada93b428de00) fix auto-exported valuenode id of Layer_Duplicate index parameter [studio]
+- [`48959a9`](https://github.com/synfig/synfig/commit/48959a99ad979ff72fc07280e814d87ef2932690) Merge PR [#1929](https://github.com/synfig/synfig/issues/1929): [Synfig Studio] Added ability to undock panel using the context menu command
+- [`ab138e4`](https://github.com/synfig/synfig/commit/ab138e4e7ec8c6be1b6d091c576f1beed9b885d4) add menu item "Undock panel" to Panel tab [studio]
+- [`3a07fe2`](https://github.com/synfig/synfig/commit/3a07fe28a582f235c5a39085d2b1aa8a91504b3a) when undocking a panel, it shows up near mouse pointer [studio]
+- [`34127e8`](https://github.com/synfig/synfig/commit/34127e88e94ea3ec36a39a1246ee1d946093f58d) Merge PR [#1974](https://github.com/synfig/synfig/issues/1974): [Synfig Studio] Set Enum parameters to Static by default
+- [`5273296`](https://github.com/synfig/synfig/commit/5273296ca3dbb9f96f40c3fe17e9af3c8bfb10d8) Set blend_method to static also for Layers created with Tools [studio]
+- [`f1f9c88`](https://github.com/synfig/synfig/commit/f1f9c8859fc9aebfc16a13f6f5b4528856597941) Set Enum parameters to Static by default [core]
+- [`4789a5b`](https://github.com/synfig/synfig/commit/4789a5b864a290caf1d3081c84c17b79869f7a4c) [Core] A little refactoring of loadcanvas.cpp ([#1956](https://github.com/synfig/synfig/issues/1956)) [core]
+- [`8809482`](https://github.com/synfig/synfig/commit/8809482a2f4485155324b6b49481fb8303094bb9) [Synfig Core] Added support for loading `average` values ([#1955](https://github.com/synfig/synfig/issues/1955)) [core]
+- [`76e827e`](https://github.com/synfig/synfig/commit/76e827e2ab186e4635cc5942478956b41cb86b0e) [Core] Refactored trgt_ffmpeg ([#1947](https://github.com/synfig/synfig/issues/1947)) [core]
+- [`349810e`](https://github.com/synfig/synfig/commit/349810e2f9a25af3297b776ee88c6c035abdb717) [Synfig Studio/Windows] Fixed issue with rendering to file when using non-Latin filenames ([#1940](https://github.com/synfig/synfig/issues/1940)) [core] [studio]
+- [`44b46a2`](https://github.com/synfig/synfig/commit/44b46a230c1a3e7f14451b3cfde5ea8f45e163dc) [CMake/Core] Added glib dependency ([#2009](https://github.com/synfig/synfig/issues/2009)) [core]
+- [`53aebba`](https://github.com/synfig/synfig/commit/53aebba8412d1c28a3218365bf18d4105e955cd2) Merge PR [#1950](https://github.com/synfig/synfig/issues/1950): [ETL/Core] `rect` class moved from ETL to core.
+- [`8a97261`](https://github.com/synfig/synfig/commit/8a972616a7f7e7e42fa7ec474aeb8727416f0851) [ETL] `rect` removed from ETL [ETL] [core]
+- [`c4a4961`](https://github.com/synfig/synfig/commit/c4a4961315fe45b66fd3704b0aa441183362e5ed) [ETL/Core] `rect` class moved from ETL to core. `intersect` and `contains` functions renamed to `rect_xxx` to avoid ambiguity [ETL] [core] [studio]
+- [`3c97b06`](https://github.com/synfig/synfig/commit/3c97b06fcbcdd3622707389042662ab9cc01da25) [ETL/Core] Moved `range` class from ETL to core [ETL] [core]
+- [`88f4c33`](https://github.com/synfig/synfig/commit/88f4c33a05b1b890a224bc88c5ff698e74e98845) [ETL] Simplified `range` class comparison function [ETL]
+- [`cf42eb4`](https://github.com/synfig/synfig/commit/cf42eb4ffc769737c43893877f92d8404cb63af4) [Synfig Studio] destructors should not call virtual methods ([#2003](https://github.com/synfig/synfig/issues/2003)) [studio]
+- [`cc4aa73`](https://github.com/synfig/synfig/commit/cc4aa73b6114faec56afb7b7ac1c69fa9dea4a33) [Synfig Studio] remove unused variable mod_palette_ from App ([#2002](https://github.com/synfig/synfig/issues/2002)) [studio]
+- [`b660807`](https://github.com/synfig/synfig/commit/b6608075a87fe17e3615947b08a73ad91be05726) [Core/Studio] Fix missing const qualifier for some relational operators overrides ([#2001](https://github.com/synfig/synfig/issues/2001)) [core] [studio]
+- [`885f3ac`](https://github.com/synfig/synfig/commit/885f3ac6ebb87252439df7bbb2eec2eb8b29e2c4) [Core] Fix missing is_distance hint for vertex coordinates ([#2000](https://github.com/synfig/synfig/issues/2000)) [core]
+- [`cde3553`](https://github.com/synfig/synfig/commit/cde355308969770d4af2b78604bdbc7a36375c4d) [CI] Fixed wrong stable branch name for GitHub Actions ([#1998](https://github.com/synfig/synfig/issues/1998))
+- [`a9b80ea`](https://github.com/synfig/synfig/commit/a9b80ea7e1531ccd2eaed074930526a246dce7df) [Synfig Studio] Improve layout of Workspaces editor ([#1991](https://github.com/synfig/synfig/issues/1991)) [studio]
+- [`d75cd9f`](https://github.com/synfig/synfig/commit/d75cd9fd91a9702af3d49db64197a5298a45c728) [Synfig Studio] Removed unnecessary explicit cast std::string to Glib::ustring ([#1993](https://github.com/synfig/synfig/issues/1993)) [studio]
+- [`99fe201`](https://github.com/synfig/synfig/commit/99fe201d203c450e69a9123a14f70b4d8a07069b) Merge PR [#1992](https://github.com/synfig/synfig/issues/1992): [Synfig Studio] Fix parameter values of several layers shown as distance metrics when they are not
+- [`248ca69`](https://github.com/synfig/synfig/commit/248ca69633d9127e8efb7aedf13bafafe6d6aa82) fix angle degree character: it was using ordinal symbol instead [studio]
+- [`30080e6`](https://github.com/synfig/synfig/commit/30080e6902cef3b990d03795ce726b32d4abf9fb) fix cellrenderer text for scale parameter and other non-distance parameters [core] [studio]
+- [`12b29c7`](https://github.com/synfig/synfig/commit/12b29c735a62f1896e557361f5dfcc3de41a0a11) Merge PR [#1945](https://github.com/synfig/synfig/issues/1945): [Synfig Studio] Make Preview tooltips and titles consistent with other dialogs
+- [`0362883`](https://github.com/synfig/synfig/commit/03628836e932d68851a3578cdf53c2579dffebd3) Revert changes to canvasview.cpp [studio]
+- [`ee25be9`](https://github.com/synfig/synfig/commit/ee25be96c25fcd890c0dfd7b5f891db657213129) Set Preview dialog as transient for main window [studio]
+- [`da85f14`](https://github.com/synfig/synfig/commit/da85f14afe69248a8d1d39e293d99ca96c63dc6a) Change tooltip and icon of Preview Settings [studio]
+- [`e09ed09`](https://github.com/synfig/synfig/commit/e09ed097a012355acde9ff8adc27263446549c56) Use "Loop" and improve playback bounds tootlips [studio]
+- [`1fc5783`](https://github.com/synfig/synfig/commit/1fc578332a91ab990be987c3d83acf844d8dcf9c) Edit Preview tooltips and dialog titles to make them consistent with other dialogs [studio]
+- [`7ccb5d7`](https://github.com/synfig/synfig/commit/7ccb5d702f5369f09a3524e0e9715394d629be91) Merge PR [#1985](https://github.com/synfig/synfig/issues/1985): [CI] GitHub actions improvements
+- [`1cbf8c3`](https://github.com/synfig/synfig/commit/1cbf8c3e710b85b0c63f678c42f4e8fb3d212e8d) [CI] Added GitHub actions for stable branch
+- [`8e24b08`](https://github.com/synfig/synfig/commit/8e24b0867e1cf51e8bdecbd2a211c727bbc5a194) [CI] Temporary replaced MacOS 11 with MacOS 10.15 until GitHub Action issue is not resolved
+- [`6b0d418`](https://github.com/synfig/synfig/commit/6b0d4185255cc534940709c9001227d1ef52ba68) [Autotools] Fixed problem with missing *.glsl files in distribution ([#1982](https://github.com/synfig/synfig/issues/1982)) [core]
+- [`c1e6ca0`](https://github.com/synfig/synfig/commit/c1e6ca001861dd5d815b91f9c6e35ccb0c59a84c) [Synfig Studio] fix states accelerator shortcut in tooltips ([#1959](https://github.com/synfig/synfig/issues/1959)) [studio]
+- [`39807ad`](https://github.com/synfig/synfig/commit/39807ad99f89c0f626c98006e40e855c62a26a32) [Synfig Studio] Bumped year in About dialog ([#1977](https://github.com/synfig/synfig/issues/1977)) [studio]
+- [`6d407c2`](https://github.com/synfig/synfig/commit/6d407c2c7a6e86eed34687214123fddc6fbc4a66) autotools: fix POTFILES.in again and Makefile.am ([#1981](https://github.com/synfig/synfig/issues/1981)) [studio]
+- [`ca04f3d`](https://github.com/synfig/synfig/commit/ca04f3dfa23ea14d53ea281dd1ff832750ab5fce) [Synfig Studio] fix mainwindow not showing when is offscreen ([#1973](https://github.com/synfig/synfig/issues/1973)) [studio]
+- [`456bf8c`](https://github.com/synfig/synfig/commit/456bf8c80d8d78bbc37b6fb9eb92ca017e5a4813) [Synfig Studio] Fixed build error ([#1976](https://github.com/synfig/synfig/issues/1976)) [studio]
+- [`ba211ba`](https://github.com/synfig/synfig/commit/ba211bafbe5963bc863ad4e99d38e73a3d96fe92) [Synfig Studio] remove some unneeded headers ([#1963](https://github.com/synfig/synfig/issues/1963)) [studio]
+- [`b555b22`](https://github.com/synfig/synfig/commit/b555b228a6a574babad9a6aeebc46353795313b2) [Synfig Studio] Waypoint Editor didn't properly support enums ([#1968](https://github.com/synfig/synfig/issues/1968)) [studio]
+- [`0672879`](https://github.com/synfig/synfig/commit/06728793ad0432d8350ff7886ba7f7da16d7c180) Scroll step size set to 1 frame and 10 with Ctrl ([#1967](https://github.com/synfig/synfig/issues/1967)) [studio]
+- [`4d7689b`](https://github.com/synfig/synfig/commit/4d7689b40a7a846400195672e9dfc3f2db653c1c) [CMake] Fixed issue with CMake generating file inside source tree when using out-of-source build ([#1964](https://github.com/synfig/synfig/issues/1964)) [core]
+- [`8a893b8`](https://github.com/synfig/synfig/commit/8a893b8e2821da000d9a5feebd60b730b558c235) [CMake/MSVC] Added required packages ([#1962](https://github.com/synfig/synfig/issues/1962)) [core] [studio]
+- [`55ec4cc`](https://github.com/synfig/synfig/commit/55ec4ccb3160783c2d2a5aeb0655be38cd036eb4) [Synfig Studio] Removed Win32 mkdir() redefinition ([#1960](https://github.com/synfig/synfig/issues/1960)) [studio]
+- [`0954a7f`](https://github.com/synfig/synfig/commit/0954a7f07803855ab3c20ec2c83e615eaeb0a8c9) [Synfig Studio] remove unused headers ([#1957](https://github.com/synfig/synfig/issues/1957)) [studio]
+- [`86cb9ce`](https://github.com/synfig/synfig/commit/86cb9ce0e412a2e58750516e63370ed1f0cfb86b) Merge PR [#1953](https://github.com/synfig/synfig/issues/1953): [Synfig Studio] Clean default accel map implementation
+- [`8e64d33`](https://github.com/synfig/synfig/commit/8e64d33ab7dd5d0b58aa57c8e815187ab2f77571) app.cpp: remove ACCEL macro to cleanup default accel map definition [studio]
+- [`cd38167`](https://github.com/synfig/synfig/commit/cd38167999499c6185ef27572da37900cc396e48) app.cpp: replace macro ACCEL2 with ACCEL [studio]
+- [`4b7f89b`](https://github.com/synfig/synfig/commit/4b7f89beab97bd565df50d7dd559124ebb163b52) [Synfig Studio] Make sure Show/Snap Guides toolbar buttons are always working ([#1949](https://github.com/synfig/synfig/issues/1949)) [studio]
+- [`3f6e3c9`](https://github.com/synfig/synfig/commit/3f6e3c9215d6097391617ca97f7a846865d0b0cb) [Synfig Core] Removed unused headers ([#1944](https://github.com/synfig/synfig/issues/1944)) [core]
+- [`d6ab408`](https://github.com/synfig/synfig/commit/d6ab4088273205931a69363fae2016bd77bb3d75) [Synfig Studio] Add Show/Snap Guides to Toolbar ([#1928](https://github.com/synfig/synfig/issues/1928)) [studio]
+- [`70c5ff6`](https://github.com/synfig/synfig/commit/70c5ff6cc55eab34d86142b00d6d0f0d132b0af0) [Synfig Studio] Duckmatic: signal_grid_changed never emitted ([#1937](https://github.com/synfig/synfig/issues/1937)) [studio]
+- [`4690620`](https://github.com/synfig/synfig/commit/4690620760afb60540ac52ee063eda3bafcc04e9) Merge PR [#1939](https://github.com/synfig/synfig/issues/1939): [Synfig Studio] app.cpp : some cleanup
+- [`a9ef157`](https://github.com/synfig/synfig/commit/a9ef15773780308e462c55add44f445227097054) [Synfig Studio] refactored URI code in CanvasView ([#1943](https://github.com/synfig/synfig/issues/1943)) [studio]
+- [`a472077`](https://github.com/synfig/synfig/commit/a4720773c9aeb35b31804166e32e6e4035d16866) app.cpp: merge all #ifdef _WIN32 stuff [studio]
+- [`84b1710`](https://github.com/synfig/synfig/commit/84b1710613ea1e8285fd5ff343af9f7244f9e72e) some variable/class property sorting [studio]
+- [`e9b8b78`](https://github.com/synfig/synfig/commit/e9b8b782e05939ddc56762ee72979ba760dcc38a) no need for namespace scope here [studio]
+- [`74f9c7e`](https://github.com/synfig/synfig/commit/74f9c7ea452b2beef8543b57a25fa30a27663ba7) move static variable next other ones [studio]
+- [`f5e619c`](https://github.com/synfig/synfig/commit/f5e619c4a1684ada7df5d4968bbdbffec791fe18) remove commented-out code [studio]
+- [`398ec45`](https://github.com/synfig/synfig/commit/398ec45291fcc8d569187604acfb6bbe4cb19cd6) use #ifdef instead of #if [studio]
+- [`4b7051f`](https://github.com/synfig/synfig/commit/4b7051f5a21b8bb4df79ef6d9d6d5bdc6fe79edc) prepend static keyword for 'internal' variables [studio]
+- [`4c9ec28`](https://github.com/synfig/synfig/commit/4c9ec288f07d5237f913ba4ec9dba9b1f0ddab68) remove unneeded ending comma in some macro uses [studio]
+- [`14c9dd1`](https://github.com/synfig/synfig/commit/14c9dd1b7d39d02af6b954a1d907faf2d75fe3d4) prefer nullptr rather than 0 or NULL [studio]
+- [`adaa01a`](https://github.com/synfig/synfig/commit/adaa01a456b730a4f38647da490d5b5f480d2fcc) remove unused macros [studio]
+- [`4753a8c`](https://github.com/synfig/synfig/commit/4753a8c6a740d01c7c79fa6d26e471d2df9e9c5f) [Synfig Studio] app.cpp: remove unused headers and sort [studio]
+- [`e320613`](https://github.com/synfig/synfig/commit/e3206139323757abdc878acc9cd5651ae0e24ce1) [Synfig Studio] Disabled resizing of the Preview Options dialog ([#1942](https://github.com/synfig/synfig/issues/1942)) [studio]
+- [`c32de32`](https://github.com/synfig/synfig/commit/c32de327f81abcfb4786ca3f7f60e0440a67e036) [Synfig Core] Added freetype detail (font face/filename) to error description ([#1938](https://github.com/synfig/synfig/issues/1938)) [core]
+- [`20f4bda`](https://github.com/synfig/synfig/commit/20f4bda968b7ca87901685f1a9fb86072fd95d34) [Synfig Studio] Add Eyedrop Tool legend in Toolbox ([#1925](https://github.com/synfig/synfig/issues/1925)) [studio]
+- [`ca869b1`](https://github.com/synfig/synfig/commit/ca869b1cf3d6c602c9c8432022b2950a2c30df60) [Synfig Studio] Don't expand File Format Version drop-down list ([#1933](https://github.com/synfig/synfig/issues/1933)) [studio]
+- [`ce8834e`](https://github.com/synfig/synfig/commit/ce8834ebbb2ba6a0136f2d98b93c0cbd88e27c6a) [CMake/Windows] Fixed missing `libgcc_s_dw2-1.dll` file in portable archive (x32) ([#1919](https://github.com/synfig/synfig/issues/1919))
+- [`7e63655`](https://github.com/synfig/synfig/commit/7e636558274ba7c1a89347d99994dc211c80b047) [Core] Cleanup blur code ([#1918](https://github.com/synfig/synfig/issues/1918)) [core]
+- [`6676204`](https://github.com/synfig/synfig/commit/6676204d88abf9f213d6fa5b342477c8afcadddb) [Synfig Studio] remove unused headers ([#1923](https://github.com/synfig/synfig/issues/1923)) [studio]
+- [`a4327a8`](https://github.com/synfig/synfig/commit/a4327a87e36aaf19c71e143c7cfb642cddb0b7e1) [Synfig Studio] Don't expand Interpolation widget more than allocated width ([#1927](https://github.com/synfig/synfig/issues/1927)) [studio]
+- [`9f51f5e`](https://github.com/synfig/synfig/commit/9f51f5ecafad570c64e38fdecaf455d7e44e3e1c) [Synfig Studio] Center "Scale to fit Canvas" switch vertically to avoid stretching ([#1926](https://github.com/synfig/synfig/issues/1926)) [studio]
+- [`f47d674`](https://github.com/synfig/synfig/commit/f47d6740bacae90b52019aee338c272cef02f49a) Merge PR [#1861](https://github.com/synfig/synfig/issues/1861): [Synfig Studio] Fixed crash when frame rendering throws exception while animating
+- [`ba89fe0`](https://github.com/synfig/synfig/commit/ba89fe0bea32e36038e2726721e6437f524921a3) stop the animation playback only at problematic frame [studio]
+- [`52936a4`](https://github.com/synfig/synfig/commit/52936a48cec67ae68b8e8ecdb85a1c02935f4684) detail better the async render error: try to show error string [studio]
+- [`d605f64`](https://github.com/synfig/synfig/commit/d605f64a1038aa382e1c6ae148fa42b3505cd33c) Stop animation playback when frame rendering error occurs [studio]
+- [`a0e9b18`](https://github.com/synfig/synfig/commit/a0e9b181ae03f2ea34992ffa9fe49dea37c02869) don't crash if frame rendering throws exception while animating [studio]
+- [`7d68380`](https://github.com/synfig/synfig/commit/7d683807d8141e1269f8acb40454d62d1c5c254a) [Synfig Studio] Fixed incorrect import of `lst` files when path contains non-Latin characters ([#1924](https://github.com/synfig/synfig/issues/1924)) [core]
+- [`9653378`](https://github.com/synfig/synfig/commit/9653378d5f91f1539a8ab5d4d6c4b17dff2578ce) [Synfig Studio] Fixed crash when right-clicking on group in the Sets panel ([#1920](https://github.com/synfig/synfig/issues/1920)) [studio]
+- [`9f9a09e`](https://github.com/synfig/synfig/commit/9f9a09e67711728ccbdb54028f2a22a0f952bed5) [Synfig Studio/Windows] Fixed non-working command "Edit image editing in external tool..." ([#1912](https://github.com/synfig/synfig/issues/1912)) [studio]
+- [`0bd6fd5`](https://github.com/synfig/synfig/commit/0bd6fd5bde72abe358f841c8a06cc56f3c1f8f86) Merge PR [#1889](https://github.com/synfig/synfig/issues/1889): [Synfig Studio/Windows] Fixed load/save operations for Palette editor
+- [`a741486`](https://github.com/synfig/synfig/commit/a741486fc5e2b3e20eba294c4c2af364496f6325) [Synfig Studio/Windows]  Fixed saving/loading palette to file with non-Latin name [core] [studio]
+- [`484e2ac`](https://github.com/synfig/synfig/commit/484e2aceeb51c4f91f3b44854f9dae7c24918650) [Synfig Studio] Fixed crash when trying to save a palette to a file with a non-Latin name [studio]
+- [`474fc00`](https://github.com/synfig/synfig/commit/474fc00eb8d201980483ee0ff7f312918f3a1e89) [Synfig Studio] Cleanup Palette editor code [studio]
+- [`f25b03e`](https://github.com/synfig/synfig/commit/f25b03e06407558c9b49dc53ac0709bc095657ba) [Appveyor] Bump artifact version ([#1913](https://github.com/synfig/synfig/issues/1913))
+- [`e84f6cb`](https://github.com/synfig/synfig/commit/e84f6cb328a2fce8fbb7bde1bbcc4227aefbfac9) [Synfig Studio] remove unused headers ([#1911](https://github.com/synfig/synfig/issues/1911))
+- [`77039da`](https://github.com/synfig/synfig/commit/77039da08eed4197accb3f58b1fdb9fbe12eec4f) [Snap] Added snap for stable release. Fixed snap for git build ([#1897](https://github.com/synfig/synfig/issues/1897))
+- [`4aac1b8`](https://github.com/synfig/synfig/commit/4aac1b85c241b3b5b000e7cd82a5139864efbcc2) [Synfig Studio] remove unused headers ([#1907](https://github.com/synfig/synfig/issues/1907)) [studio]
+- [`9b580c6`](https://github.com/synfig/synfig/commit/9b580c65825c73c9fcce8bcf58b12c0403b06b19) Merge PR[#1890](https://github.com/synfig/synfig/issues/1890): Fix crash in Spline Width and return of improper type in Spline converters
+- [`e8920ca`](https://github.com/synfig/synfig/commit/e8920ca8ab7cc76431d3f1b7c4c3a075b17f154f) Fix incorrect type in Spline converters for Real values [core]
+- [`ac61143`](https://github.com/synfig/synfig/commit/ac611436079e2a2d8f91aba9c3b07c42048a2998) Fix crash in Spline Width converter [core]
+- [`4ed6b79`](https://github.com/synfig/synfig/commit/4ed6b79edc201011e7fa2aefc78f78c1db95caf0) [Synfig Studio] remove unused headers ([#1906](https://github.com/synfig/synfig/issues/1906)) [studio]
+- [`bc33af8`](https://github.com/synfig/synfig/commit/bc33af859718feb026d064daa3db118313cad818) Merge PR [#1894](https://github.com/synfig/synfig/issues/1894): Minor cleanup for Dials
+- [`56ee9cf`](https://github.com/synfig/synfig/commit/56ee9cf9f7c333a841420f0c13a7bee53c4e1f60) avoid deprecated Gtk::Alignment [studio]
+- [`6711313`](https://github.com/synfig/synfig/commit/67113133472606e8f92e9b53ae5c3154db052909) studio: dials: don't use tab for vertical alignment [studio]
+- [`0a62228`](https://github.com/synfig/synfig/commit/0a622284e90a079b29f7eefbccd24e91552bcefe) studio: dials: remove unused headers [studio]
+- [`ff2838b`](https://github.com/synfig/synfig/commit/ff2838bae7e4317dafd714ecf8437c7bb6c7eee9) studio: dials don't use deprecated Gtk::Table anymore [studio]
+- [`cadeed3`](https://github.com/synfig/synfig/commit/cadeed3e2812fbb63158515db7d84f261ed8be7e) [Synfig Studio] Added ability to select available Sets when adding Layers to Sets ([#1878](https://github.com/synfig/synfig/issues/1878)) [studio]
+- [`0febc74`](https://github.com/synfig/synfig/commit/0febc749210a7611880afd3139701455d04bdd3c) [Synfig Studio] Added extended information about possible errors in ValueDescCreateChildBone ([#1892](https://github.com/synfig/synfig/issues/1892)) [studio]
+- [`05181f8`](https://github.com/synfig/synfig/commit/05181f850b9ca959e8d39b43a1d5902b781bbba4) [Synfig Studio] Removed unused headers ([#1893](https://github.com/synfig/synfig/issues/1893)) [studio]
+- [`5276fd4`](https://github.com/synfig/synfig/commit/5276fd448f58878564aa75e10076ae0feedbf0d9) Updated README.md ([#1891](https://github.com/synfig/synfig/issues/1891))
+- [`95dea12`](https://github.com/synfig/synfig/commit/95dea12eca788eba8323f9fb0c59a839ac3213d1) [Autotools] Added missing synfig_export.h file ([#1886](https://github.com/synfig/synfig/issues/1886)) [core]
+- [`a623aac`](https://github.com/synfig/synfig/commit/a623aac9f456e078a53efe08b61a361f10ffe7a4) [CMake] Fixed incorrect MINGW_PREFIX path suggested in error message ([#1883](https://github.com/synfig/synfig/issues/1883))
+- [`f7e71c9`](https://github.com/synfig/synfig/commit/f7e71c95d4aa0b2fd63e40fdc43fc5e1b2168f63) Fixed problem with non-working plugins when using paths containing non-Latin characters ([#1882](https://github.com/synfig/synfig/issues/1882)) [studio]
+- [`dd3dcd6`](https://github.com/synfig/synfig/commit/dd3dcd6ca133f9124063a812b7fb65956be5e15e) [Synfig Studio] Eyedropper tool: Added ability to select fill color using Ctrl+click ([#1872](https://github.com/synfig/synfig/issues/1872)) [studio]
+- [`74a9f4b`](https://github.com/synfig/synfig/commit/74a9f4b707585387bd0f04e07fcfebd910f85871) Change order of Waypoint Editor buttons to match other dialogs ([#1880](https://github.com/synfig/synfig/issues/1880)) [studio]
+- [`d254d74`](https://github.com/synfig/synfig/commit/d254d747bd2d3cb0bbf20a854247736a5af92dfa) Updated README.md ([#1884](https://github.com/synfig/synfig/issues/1884))
+- [`5156403`](https://github.com/synfig/synfig/commit/5156403d193864c9afb76c24326f56c509ea9e15) Center vertically empty tool options label ([#1879](https://github.com/synfig/synfig/issues/1879)) [studio]
+- [`bbb2dd7`](https://github.com/synfig/synfig/commit/bbb2dd7c274785398d7f46475175053a9a7d9bf0) [Synfig Studio] Removed some unused headers ([#1863](https://github.com/synfig/synfig/issues/1863)) [studio]
+- [`3f90ae2`](https://github.com/synfig/synfig/commit/3f90ae2b9b16692e547335e0bd913b14e94b882a) Moving `ui` folder to `resources` folder ([#1865](https://github.com/synfig/synfig/issues/1865)) [studio]
+- [`d3906ca`](https://github.com/synfig/synfig/commit/d3906ca969de15df00776353d13387317e08ca38) Merge PR [#1853](https://github.com/synfig/synfig/issues/1853): `etl::clock` refactored to use `std::chrono`
+- [`d035955`](https://github.com/synfig/synfig/commit/d035955acf2e2ccec99110acc002f41e48f3eeb8) `etl::clock` refactored to use `std::chrono`. Fix an issue with animation playback in CMake builds [ETL] [core]
+- [`4ea5d64`](https://github.com/synfig/synfig/commit/4ea5d640fc1f8bc3b041566ce0697652c57bc0f3) Remove unused `ETL/clock` headers [ETL] [studio]
+- [`d80d64c`](https://github.com/synfig/synfig/commit/d80d64cc09c7f5f405da6686fd564704841a014e) Removed old CVS ID field from layers, importers, ([#1792](https://github.com/synfig/synfig/issues/1792)) [core] [studio]
+- [`f41490a`](https://github.com/synfig/synfig/commit/f41490ac58de26500dabbe7097c2cde2b8bd3a7e) Fixed build on GitHub Actions (MacOS 11) ([#1870](https://github.com/synfig/synfig/issues/1870)) [studio]
+- [`684dfa5`](https://github.com/synfig/synfig/commit/684dfa5744866bfe8fce12bdb0cf5a3eb513aa68) Fix GitHub actions ([#1867](https://github.com/synfig/synfig/issues/1867))
+- [`32af8ad`](https://github.com/synfig/synfig/commit/32af8adf9bf20eee5faa8d4a1c8336d07c9249c5) [CI] Added GitHub Actions ([#1866](https://github.com/synfig/synfig/issues/1866))
+- [`520d972`](https://github.com/synfig/synfig/commit/520d9721a9d28243f8d2ba2efce4c4178a8ecf9a) [CI] Disabled macOS builds on Travis-CI ([#1864](https://github.com/synfig/synfig/issues/1864))
+- [`a1e4a17`](https://github.com/synfig/synfig/commit/a1e4a17a042fb648eea5719ca89fb612182151ec) Minor cleanup in WorkArea Renderers ([#1862](https://github.com/synfig/synfig/issues/1862)) [studio]
+- [`24e6f86`](https://github.com/synfig/synfig/commit/24e6f868d63b1bbc8f37d0905b7f5c6ebdbe99c4) Removed unused `ETL/stringf` headers. Preparing to move stringf from ETL to core. ([#1856](https://github.com/synfig/synfig/issues/1856)) [core] [studio]
+- [`1b9ec56`](https://github.com/synfig/synfig/commit/1b9ec56dd3234ae403cacc908a5692e45f4b1497) Fixed OpenGL build. But it still doesn't render :( ([#1845](https://github.com/synfig/synfig/issues/1845)) [core]
+- [`3d32977`](https://github.com/synfig/synfig/commit/3d329775ff210eea3b5ce390485654e472bf1bc1) Merge PR [#1445](https://github.com/synfig/synfig/issues/1445): Restore Defaults is applied only on OK pressed
+- [`d51978a`](https://github.com/synfig/synfig/commit/d51978a35fe6b3116a8e54c8e0a00a790ebbdeb5) Fix build error [studio]
+- [`e8c4634`](https://github.com/synfig/synfig/commit/e8c46344026d8f51c237f4894520dc6906c430d9) Restore new parameter for animation thumbnail preview [studio]
+- [`743c605`](https://github.com/synfig/synfig/commit/743c6057e0a68dd3bdb8785b95d96a9960916dea) Remove unused code [studio]
+- [`73172fb`](https://github.com/synfig/synfig/commit/73172fbc67618e284bc80fd2e2d0b8dafe7b55ca) Add code for reading current settings [studio]
+- [`4a60dab`](https://github.com/synfig/synfig/commit/4a60dab49514d309afd1f2e79922133c82fb98d7) Avoid unintended overwriting of current settings [studio]
+- [`cc638df`](https://github.com/synfig/synfig/commit/cc638dfd639587121616100d539cccc05c1d01d9) Add confirm dialog and code for not applied settings [studio]
+- [`d831641`](https://github.com/synfig/synfig/commit/d831641f1e0a2a224a7317f73c56fd8db321f7e6) Restore Defaults is  applied on Ok pressed [studio]
+- [`495ce1f`](https://github.com/synfig/synfig/commit/495ce1f6d7695032e6ed8735d63075b6a3147786) Add confirm dialog for Restore Defaults in Preferences [studio]
+- [`05c760f`](https://github.com/synfig/synfig/commit/05c760f4506b42659e4aba0b3364c0e36159b677) Fix regression: didn't load font with relative path ([#1833](https://github.com/synfig/synfig/issues/1833)) [core]
+- [`5e3a087`](https://github.com/synfig/synfig/commit/5e3a087dd7e28ebf6dab4ce4b60a315562da1e1b) Add double quotes and option when ID_LIKE=ubuntu debian in PopOS ([#1858](https://github.com/synfig/synfig/issues/1858))
+- [`3c71750`](https://github.com/synfig/synfig/commit/3c71750e8b0f6ade2f7bf0fea71e0a3e3f8d144f) Add accelerator key for Cutout tool ([#1855](https://github.com/synfig/synfig/issues/1855)) [studio]
+- [`9343c01`](https://github.com/synfig/synfig/commit/9343c01913e9617dfb672d490151f28b59006fb8) Implementing Canvas Zoom Legacy Keyboard shortcuts ([#1848](https://github.com/synfig/synfig/issues/1848)) [studio]
+- [`bac00ea`](https://github.com/synfig/synfig/commit/bac00ea77cc0c318e22a85da266ea5e6e097e952) [ETL] Removed `etl::trivial` class. Refactored `Param` class. ([#1839](https://github.com/synfig/synfig/issues/1839)) [ETL] [studio]
+- [`67c3f77`](https://github.com/synfig/synfig/commit/67c3f77828ce2bdd26472bbc7ca11e8ac98f1533) Limit background rendering to playback bounds ([#1852](https://github.com/synfig/synfig/issues/1852)) [studio]
+- [`ebf2eea`](https://github.com/synfig/synfig/commit/ebf2eeac25a9f2b73920569e646bd959bf82002b) Merge PR [#1844](https://github.com/synfig/synfig/issues/1844):  Fix doxygen
+- [`4223362`](https://github.com/synfig/synfig/commit/42233625d28d52b877ec778bb1d7043acfb6ce3c) fix doxygen input dir and exclude some non-synfig classes [ETL] [core] [studio]
+- [`b3301bd`](https://github.com/synfig/synfig/commit/b3301bd63b5eb88fa6a7159d43996ec1649ff7b2) update doxygen files [ETL] [core] [studio]
+- [`2d4d8b0`](https://github.com/synfig/synfig/commit/2d4d8b01dd59912587b2b1f0a59c4908553f7306) Improving Keyboard Shortcuts for the toolbox items ([#1823](https://github.com/synfig/synfig/issues/1823)) [studio]
+- [`6e79d1e`](https://github.com/synfig/synfig/commit/6e79d1e651bfc73e204972f3427d3be71756fb35) Update NEWS files for 1.4.0 ([#1841](https://github.com/synfig/synfig/issues/1841)) [ETL] [core] [studio]
+- [`ebc4b31`](https://github.com/synfig/synfig/commit/ebc4b316373368b3254d9736c32703b155b764cb) [CMake] Added CFLAGS from MagickCore to mod_magickpp (fixes build on some OS) ([#1819](https://github.com/synfig/synfig/issues/1819)) [core]
+- [`d4eb1dc`](https://github.com/synfig/synfig/commit/d4eb1dc212b123e4b366588a471706cf4cd76cc1) OptionsProcessor small cleanup ([#1831](https://github.com/synfig/synfig/issues/1831)) [core]
+- [`f8de319`](https://github.com/synfig/synfig/commit/f8de31931c1de367f70f46c839a518ea8d4012d2) Fix crash in Spline Tangent converter ([#1836](https://github.com/synfig/synfig/issues/1836)) [core]
+- [`5ad6ac5`](https://github.com/synfig/synfig/commit/5ad6ac576c900574e29f3ae4145b622143168173) [MacOS] Fixed SynfigStudio.app won't start if renamed (or contain spaces in name) ([#1834](https://github.com/synfig/synfig/issues/1834))
+- [`03ab84d`](https://github.com/synfig/synfig/commit/03ab84debd51a23d430c8e214ed799ab6ef4a59f) Fixed error when output to MPEG-1 format with audio ([#1830](https://github.com/synfig/synfig/issues/1830)) [core]
+- [`23bf66a`](https://github.com/synfig/synfig/commit/23bf66ab53aa7bd3ef3a70fb4488a97b005da3da) Fix animation interpolation for boolean values ([#1826](https://github.com/synfig/synfig/issues/1826)) [core]
+- [`985afc4`](https://github.com/synfig/synfig/commit/985afc44935778396406150c130b9653b977def3) fix Duplicate layer ignoring all layers but the first one ([#1829](https://github.com/synfig/synfig/issues/1829)) [core]
+- [`dbde6c6`](https://github.com/synfig/synfig/commit/dbde6c6f34d621b9d4a1b81d88cefe0a10479c1c) Fix regression: Text layer accepts font filename again ([#1828](https://github.com/synfig/synfig/issues/1828)) [core]
+- [`e6ae677`](https://github.com/synfig/synfig/commit/e6ae677cbea5a9e81b7ef9764576381625da4629) Dock widget shortcuts have priority over App Accels - fix [#1820](https://github.com/synfig/synfig/issues/1820) ([#1827](https://github.com/synfig/synfig/issues/1827)) [studio]
+- [`5a9d9ab`](https://github.com/synfig/synfig/commit/5a9d9abd07576caddbe645c8ed1d480b452045b3) Update link to build ([#1824](https://github.com/synfig/synfig/issues/1824))
+- [`5b37e43`](https://github.com/synfig/synfig/commit/5b37e43f9cccf160c7424d8a94a71206e2e5e657) Fixed clang warnings (unused variables, reorder) ([#1822](https://github.com/synfig/synfig/issues/1822)) [core] [studio]
+- [`7832633`](https://github.com/synfig/synfig/commit/7832633f8fe3069e5d83be9bebe0e3258d2f1f93) Merge PR [#1810](https://github.com/synfig/synfig/issues/1810): Delete ColorAccumulator
+- [`86538ad`](https://github.com/synfig/synfig/commit/86538ad3df1030d9b0a1040a32a38ad9b13c0f1e) Removed coloraccumulator.h from Makefile (fixes build) [core]
+- [`13bd46c`](https://github.com/synfig/synfig/commit/13bd46c144361704b49e29298bea1edbbacdb1a1) Delete ColorAccumualtor [core]
+- [`7deb121`](https://github.com/synfig/synfig/commit/7deb121deaf940c269f71b11c15fdf11e23e6b7e) Restore ctrl-c ctrl+v ctrl+a in Color and Gradient Dialogs ([#1821](https://github.com/synfig/synfig/issues/1821)) [studio]
+- [`677c1a7`](https://github.com/synfig/synfig/commit/677c1a78fc26933d1531daef105d9b92c7c3dd52) [Autotools] Verbose mode is disabled by default ([#1815](https://github.com/synfig/synfig/issues/1815)) [ETL] [core] [studio]
+- [`2a5d837`](https://github.com/synfig/synfig/commit/2a5d8371ef5c95fb4a3fb7fbc2e96a01d5bb89a5) Migrate old containers from widget classes to new containers. Table->Grid ([#1816](https://github.com/synfig/synfig/issues/1816)) [studio]
+- [`207f7d7`](https://github.com/synfig/synfig/commit/207f7d7814df7d56bfffa6e4436b890b51c44647) Changed redo shortcut to Ctr+Y (Win)/Shift+Ctrl+Z (Linux) ([#1811](https://github.com/synfig/synfig/issues/1811)) [studio]
+- [`8e712de`](https://github.com/synfig/synfig/commit/8e712deee58f4750161088b5cfc90e1c3364a5ed) Don't hold layer selection for Draw Tool ([#1812](https://github.com/synfig/synfig/issues/1812)) [studio]
+- [`dd2d919`](https://github.com/synfig/synfig/commit/dd2d919f617e01eef993b2551e38c4b948eb63b4) Added ability to stylize Synfig using a CSS file ([#1789](https://github.com/synfig/synfig/issues/1789)) [studio]
+- [`1d1c166`](https://github.com/synfig/synfig/commit/1d1c1660a077d3e50ffd7671c27b8f7855d89f07) [Skeleton Tool] Fixed console warning when adding bone with a parent (PR [#1695](https://github.com/synfig/synfig/issues/1695)) [studio]
+- [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter (https://github.com/synfig/synfig/issues/1731) [core]
+- [`def5ae0`](https://github.com/synfig/synfig/commit/def5ae02c649f0cd808ecbbf5d1b26069ac4cbf7) [MSYS/MLT] Disabled lumas module. Greatly reduces Windows installer size. ([#1801](https://github.com/synfig/synfig/issues/1801))
+- [`31516f4`](https://github.com/synfig/synfig/commit/31516f4ec6788335749d80b1662b0664e41d69a7) [CMake] Added FontConfig support to Synfig Studio build ([#1799](https://github.com/synfig/synfig/issues/1799)) [studio]
+- [`9664b8c`](https://github.com/synfig/synfig/commit/9664b8c8273d36335bb3ed2d7c6c01cc9d0a9a96) [Skeleton Tool] Second bone follows first bone (PR [#1698](https://github.com/synfig/synfig/issues/1698)) [studio]
+- [`5a28c15`](https://github.com/synfig/synfig/commit/5a28c1593cb36bd94c76eea19a576db670c220a0) Merge PR [#1797](https://github.com/synfig/synfig/issues/1797): [MSVC] Added export variables
+- [`f43612e`](https://github.com/synfig/synfig/commit/f43612e9d5b5201693bda3cbd9b62dfcd155b6e3) [MSVC] Added exports required for lyr_std [core]
+- [`390c988`](https://github.com/synfig/synfig/commit/390c988feb882f59dc45b6dc6e055517c6f9d16b) [MSVC] Added export variables [core] [studio]
+- [`fa4021d`](https://github.com/synfig/synfig/commit/fa4021de0c7df32af1420880a23aa95bff27bffd) Implemented Gtk::ShortcutsWindow and improved navigation hotkeys ([#1776](https://github.com/synfig/synfig/issues/1776)) [studio]
+- [`7449118`](https://github.com/synfig/synfig/commit/744911808afe2b0f86bf2a3a9f103d04a1553318) [MSYS/CMake] Fix hard-coded path (c:/msys64/usr/bin/perl) ([#1795](https://github.com/synfig/synfig/issues/1795))
+- [`d40c745`](https://github.com/synfig/synfig/commit/d40c74522e701d866abd4b1f2209a562c9fb169a) Merge PR [#1769](https://github.com/synfig/synfig/issues/1769): Improve Canvas Zoom Keyboard Shortcut UX
+- [`144524a`](https://github.com/synfig/synfig/commit/144524a50d25bfd1b4bfdd43824bf7e3d972367e) Merge PR [#1791](https://github.com/synfig/synfig/issues/1791): Remove some old CVS/SVN stuff
+- [`4b50b78`](https://github.com/synfig/synfig/commit/4b50b782d1f063b41d0e3107fee5cac655757812) [#1722](https://github.com/synfig/synfig/issues/1722): Set modal property on AboutDialog ([#1788](https://github.com/synfig/synfig/issues/1788)) [studio]
+- [`26fde94`](https://github.com/synfig/synfig/commit/26fde94c8de9c0565a0c866902308823a1401112) remove old hidden feature of CVS support for synfig document [studio]
+- [`6e16a80`](https://github.com/synfig/synfig/commit/6e16a80cf02c54f732ee7aa254111a6a7bb5ad49) remove old SVN-related stuff [ETL] [core] [studio]
+- [`581535b`](https://github.com/synfig/synfig/commit/581535b971875e100bd715bf00b8725359e6bd46) Merge PR [#1783](https://github.com/synfig/synfig/issues/1783): MSVC build improvements [#2](https://github.com/synfig/synfig/issues/2)
+- [`a877175`](https://github.com/synfig/synfig/commit/a8771753d9527b97c0edba6cca8bd0120ecfeba4) [MSVC] Added explicit template instantiation [core]
+- [`a735898`](https://github.com/synfig/synfig/commit/a735898033f61c2195cd25cd3b431143bf509321) [MSVC] Disabled python detection for MSVC build (no popen support) [studio]
+- [`ae44920`](https://github.com/synfig/synfig/commit/ae449201b4177f8f55cd6ca45f56a99863a27557) [MSVC] Added option to build Synfig without MLT. Enabled for MSVC build. [core] [studio]
+- [`851b2de`](https://github.com/synfig/synfig/commit/851b2de9e4b79a6ec6a75c42284d2bed0b920d34) [CMake] Disabled all modules except mod_example for MSVC build [core]
+- [`63b7cd8`](https://github.com/synfig/synfig/commit/63b7cd86eddb8a25b5eb654b46ab27dd79c5de46) [CMake] Disabled images, rc, po files generation for MSVC (need to be fixed later) [studio]
+- [`fdebad1`](https://github.com/synfig/synfig/commit/fdebad1779ed3ea10041c7a14cce5a89743abcf4) [MSVC] Fixed function call with ifdef args [studio]
+- [`d9178ae`](https://github.com/synfig/synfig/commit/d9178ae8c8bd0428749c9d65a7a0c542e82c1407) [MSVC] Fixed PRETTY_FUNCTION [studio]
+- [`5e065c6`](https://github.com/synfig/synfig/commit/5e065c6dc2521bb505a6da673f48a97566df5d53) [MSVC] Added access function support [core] [studio]
+- [`b01d549`](https://github.com/synfig/synfig/commit/b01d549b87f4ae118a792cf1f40304e167696cff) Merge PR [#1781](https://github.com/synfig/synfig/issues/1781): MSVC build improvements
+- [`ac48ad3`](https://github.com/synfig/synfig/commit/ac48ad3e70566a3eca2430ca01b450ca1b752b03) [MSVC] Fixed paramdesc class (no need to export blank_ symbol) [core]
+- [`2e33cee`](https://github.com/synfig/synfig/commit/2e33cee151c73c4f68fe26ddf6366797b4a57725) [MSVC] Fixed libsynfig symbols export [core]
+- [`e4cce86`](https://github.com/synfig/synfig/commit/e4cce864604d1e5cae0909ebcac81813d928742e) [MSVC] Fixed daylight definition [studio]
+- [`029d36a`](https://github.com/synfig/synfig/commit/029d36ab2aaa58912b9604f0ce61ac995e6b22ed) [MSVC] Fixed error with 'small' type [ETL]
+- [`139da75`](https://github.com/synfig/synfig/commit/139da756c6c39bda8a34a8d375fa11a49b87ac5a) Resolve misleading indentation warning ([#1780](https://github.com/synfig/synfig/issues/1780)) [studio]
+- [`e51bebe`](https://github.com/synfig/synfig/commit/e51bebe7cff64ddef7c114cd749868eba0acf630) Merge PR [#1778](https://github.com/synfig/synfig/issues/1778): Performance improvements
+- [`e3a864e`](https://github.com/synfig/synfig/commit/e3a864eecac3a4f4a17be703ca3cf6251e3c6894) Added missing bundle identifier key in Info.plist ([#1767](https://github.com/synfig/synfig/issues/1767))
+- [`94adb2e`](https://github.com/synfig/synfig/commit/94adb2e4bfe18abd81e7f5f779d199db820d3f0f) Slight perf bump in `ColorMatrix::operator*=()` [core]
+- [`6bd569f`](https://github.com/synfig/synfig/commit/6bd569fced23ddfa1157c307fe8005a813213a30) Add two scripts to aid in performance profiling
+- [`0576fa8`](https://github.com/synfig/synfig/commit/0576fa82b92210aacdc9b8ed6d32a3dfbceea9b7) Fixing GCC Wreorder warnings ([#1750](https://github.com/synfig/synfig/issues/1750)) [studio]
+- [`6cba5a6`](https://github.com/synfig/synfig/commit/6cba5a65be4a6dac6a8a87ba756f2ea196b06631) Merge PR [#1774](https://github.com/synfig/synfig/issues/1774): Replaced gtk::HBox and gtk::VBox with gtk::Grid in synfig-studio CanvasView
+- [`8b31696`](https://github.com/synfig/synfig/commit/8b31696ad26fa9f1139506c36e424aeb354147c6) Fix whitespace indentation in duckmatic.cpp ([#1773](https://github.com/synfig/synfig/issues/1773)) [studio]
+- [`6054cf8`](https://github.com/synfig/synfig/commit/6054cf84f3b00f619d6f3e687699a104f7a6cc3e) replace deprecated set_margin_right with set_margin_end [studio]
+- [`c995d9b`](https://github.com/synfig/synfig/commit/c995d9b5d3ca6e80a45b1bd272a78afe79cc4653) Increased closebutton margin [studio]
+- [`997fb2e`](https://github.com/synfig/synfig/commit/997fb2e590428389477e657b3f2a868d3fc30e1c) Replaced gtk::HBox and gtk::VBox with gtk::Grid in synfig-studio CanvasView class [studio]
+- [`044390e`](https://github.com/synfig/synfig/commit/044390e07476da87d0d957eb7b9770bc7d618f42) Merge PR [#1772](https://github.com/synfig/synfig/issues/1772): Various fixes for MSVC
+- [`97078c6`](https://github.com/synfig/synfig/commit/97078c6b6d7d9b7bd2d8de7497bc39f46ec27fe6) [MSVC] Added required dependency [studio]
+- [`d1e192b`](https://github.com/synfig/synfig/commit/d1e192bc01dc4e4a0cfc5aef5c75e4c40323ae0d) [MSVC] Refactored color class (no need to export static const members) [core]
+- [`12bb2c8`](https://github.com/synfig/synfig/commit/12bb2c81c15dedf2b1f08227e85916f59de3c8d7) [MSVC] Refactored FileSystemNative (no need to export instance__ symbol) [core]
+- [`5d12ae8`](https://github.com/synfig/synfig/commit/5d12ae8520cce5fbbc0f10606b114f5ce6f86f72) [CMake] Allow auto export all symbols on Windows (MSVC)
+- [`37fe404`](https://github.com/synfig/synfig/commit/37fe4048f2b412865b1fe21e68b4e30143f8186a) [CMake] Fixed incomplete information in About dialog ([#1770](https://github.com/synfig/synfig/issues/1770)) [core] [studio]
+- [`30f6878`](https://github.com/synfig/synfig/commit/30f687850e3766f9b4251e100ffbc604b3209657) Add braces to avoid ambiguous else on extractBorders. Fixes [-Wdangling-else] warning ([#1771](https://github.com/synfig/synfig/issues/1771)) [studio]
+- [`0daafca`](https://github.com/synfig/synfig/commit/0daafca26c904d4488d8904ab2f6f57384a131de) Improve Canvas Zoom Keyboard Shortcut UX [studio]
+- [`5d0abc1`](https://github.com/synfig/synfig/commit/5d0abc1f718ad67469afb0252a9ce42a946cabf3) Fixed wrong documented comment (FrameDial=>JackDial) [studio]
+- [`c48f248`](https://github.com/synfig/synfig/commit/c48f248795f091f2bc06405f3c87d00931dbe88e) Fix GCC multi-line comment warning (-wcomment) ([#1759](https://github.com/synfig/synfig/issues/1759)) [studio]
+- [`dfcfdf9`](https://github.com/synfig/synfig/commit/dfcfdf9fc94953d10562d0fd01d2a83039538068) Don't search for linux paths on Windows for synfig_modules.cfg ([#1758](https://github.com/synfig/synfig/issues/1758)) [core]
+- [`cde6d0a`](https://github.com/synfig/synfig/commit/cde6d0a960a6bee84473fddcaa425fe6c67c9d64) Removed warning message if config file (synfig_modules.cfg) is found ([#1751](https://github.com/synfig/synfig/issues/1751)) [core]
+- [`edce8cc`](https://github.com/synfig/synfig/commit/edce8cc811ff8a58bc3a30cdd72aca846b814128) Adding QtCreator projects to .gitignore ([#1753](https://github.com/synfig/synfig/issues/1753))
+- [`0450390`](https://github.com/synfig/synfig/commit/045039035ffc3c54c21f29d1c14957f4a47e1808) Merge PR [#1746](https://github.com/synfig/synfig/issues/1746): MSVC/vcpkg improving
+- [`de153ad`](https://github.com/synfig/synfig/commit/de153ad3bbe43bab894c1e06dcce2d5721ae1d6e) [Appveyor] Switched back to the main MSYS2 mirror
+- [`7db6c0a`](https://github.com/synfig/synfig/commit/7db6c0aa32d6b9f02dbc53915b0ad2f2c7b0496c) [MSVC] Fixed libsynfig build [ETL]
+- [`fa2f061`](https://github.com/synfig/synfig/commit/fa2f061235333916dec2d4d118e0dfe03a123486) [CMake] Fixed vcpkg libraries search [core]
+- [`2aa8c47`](https://github.com/synfig/synfig/commit/2aa8c4797d0d74b192731f6bd6f85ff4c8aa2e21) [CMake] Added MSVC compilation flags
+- [`a59e482`](https://github.com/synfig/synfig/commit/a59e48275d631876243634e4879899e48b793e68) Merge PR [#1741](https://github.com/synfig/synfig/issues/1741): Fixed clang warnings
+- [`fdf7b58`](https://github.com/synfig/synfig/commit/fdf7b58bb8c3ab572444287f6a10653871ad91f4) [CMake] Fixed target name output in warning message if msgfmt not found
+- [`b377a11`](https://github.com/synfig/synfig/commit/b377a11865a0fc6a671e536e93e0f65efede8003) [Autotools] Make autotools use imagemagick++ cflags from pkg-config ([#1600](https://github.com/synfig/synfig/issues/1600)) [core]
+- [`85a6e54`](https://github.com/synfig/synfig/commit/85a6e5400802362ce917705ca90ceb111fc55258) Fixed clang warnings (returning reference to local temporary object) [ETL]
+- [`bb58ecf`](https://github.com/synfig/synfig/commit/bb58ecfd8319631b7b224f9c38d286aabbe9b2d6) Fixed clang warnings (unused variables) [core] [studio]
+- [`65d47b3`](https://github.com/synfig/synfig/commit/65d47b33fc8672a638b42115e04a324a133d82de) Fixed GCC warnings (different signedness comparison) ([#1739](https://github.com/synfig/synfig/issues/1739)) [studio]
+- [`60dc5b6`](https://github.com/synfig/synfig/commit/60dc5b6b29c215e73c38bd3da4d2884696faf49e) Remove unused headers (should reduce build time) ([#1740](https://github.com/synfig/synfig/issues/1740)) [core] [studio]
+- [`08c13e7`](https://github.com/synfig/synfig/commit/08c13e738639ffd31988afef84cb56a213f0367f) Merge PR [#1737](https://github.com/synfig/synfig/issues/1737):  [Appveyor] Added artifacts build
+- [`1026d74`](https://github.com/synfig/synfig/commit/1026d74791316197d926ec2256300693914a22d0) Fix MSYS2 repo unavailable
+- [`e085029`](https://github.com/synfig/synfig/commit/e08502999707e7be6da0c4883d74eceb38816364) [Appveyor] Added artifacts build
+- [`75f78f2`](https://github.com/synfig/synfig/commit/75f78f249e76c70453c992f5795908979f8dd40d) Removed unused headers ([#1729](https://github.com/synfig/synfig/issues/1729)) [ETL] [core] [studio]
+- [`306f756`](https://github.com/synfig/synfig/commit/306f7562b2b5e29524647698c5a40918333bce2f) [CMake] Fixed MSYS2 installer (removed unnecessary folders, required folders added) ([#1728](https://github.com/synfig/synfig/issues/1728)) [studio]
+- [`fa78a4d`](https://github.com/synfig/synfig/commit/fa78a4df4f991b039cfe67c6530c377a8713db6b) [Appveyor] Switched to Release build (increase link speed, decrease size) ([#1727](https://github.com/synfig/synfig/issues/1727))
+- [`43019c6`](https://github.com/synfig/synfig/commit/43019c68d71882b643b0d22bde257f7a19b5aea1) Corrected keyframe tooltip position for Wayland ([#1725](https://github.com/synfig/synfig/issues/1725)) [studio]
+- [`7268fc8`](https://github.com/synfig/synfig/commit/7268fc8009f10265fc4ebfcf856def876400246f) Corrected thumbnail position for Wayland ([#1726](https://github.com/synfig/synfig/issues/1726)) [studio]
+- [`41fda6c`](https://github.com/synfig/synfig/commit/41fda6cf928e46e6ac3915d74ffdd599842afa6b) Merge PR [#1711](https://github.com/synfig/synfig/issues/1711): CMake improvements
+- [`42dd20a`](https://github.com/synfig/synfig/commit/42dd20a6bfa683c84787bb0e286d9816d55b37da) [CMake] Fixed broken intltool-merge patching
+- [`50f725d`](https://github.com/synfig/synfig/commit/50f725d1da611a691a6d1657a52dc46f1adaac79) [CMake] Fixed indents
+- [`7c49593`](https://github.com/synfig/synfig/commit/7c4959366fe73adeab12eb2524a50a1ff9573954) [CMake] Improved cygpath detection in some situations
+- [`1d690d4`](https://github.com/synfig/synfig/commit/1d690d4818d2d70df35b57ea10020d04f49963f0) [CMake] Added error message if MSYS2 environment not detected on Windows. Improved MSYS2 detection by using environment variable (MINGW_PREFIX)
+- [`9cbd7af`](https://github.com/synfig/synfig/commit/9cbd7af6b50f0a3816b1d8309a9fb9d8ae1fb076) [CMake] desktop_file target disabled for Windows build. Fixes 'sed not found' error. [studio]
+- [`ce8b148`](https://github.com/synfig/synfig/commit/ce8b148e135f6b94053eff5d1556f3ba3c4f51d5) [CMake] Fixed splash screen image build. It could not be built because the target directory did not exist. [studio]
+- [`42d0e6a`](https://github.com/synfig/synfig/commit/42d0e6aba4fd2d4f8b32b5b02d354847754c91c2) [CMake/MSYS2] Disabled copying of dependent libraries to build output during configuration stage. Added hacks for MSYS2 ImageMagick.
+- [`9d39d47`](https://github.com/synfig/synfig/commit/9d39d478857bc81ec1fafdc3cc04a234c4975b25) Merge PR [#1696](https://github.com/synfig/synfig/issues/1696): [Skeleton Tool] Fix crash when editing control point. Closes 1685. [studio]
+- [`153579a`](https://github.com/synfig/synfig/commit/153579a76901ae9dc8995177716dd56a7db66505) [CMake] Improved intltool-merge search, fixed warning if not found ([#1709](https://github.com/synfig/synfig/issues/1709))
+- [`adaac77`](https://github.com/synfig/synfig/commit/adaac77070225cea746626760ae8425c28899287) Don't hold layers selection when creating a new layer ([#1699](https://github.com/synfig/synfig/issues/1699)) [studio]
+- [`f1d830a`](https://github.com/synfig/synfig/commit/f1d830afc790f775fc020a78383adaaa7ebfe8e6) Fixed: Order by Name has no effect in Parameters Panel ([#1703](https://github.com/synfig/synfig/issues/1703)) [studio]
+- [`88e56d2`](https://github.com/synfig/synfig/commit/88e56d2379a70b5a4ffec8f4fa16a7becd3867c4) [Appveyor/MSYS2] Removed set_env.sh script. All variables replaced by native MSYS2 environment variables. ([#1693](https://github.com/synfig/synfig/issues/1693))
+- [`e7441e4`](https://github.com/synfig/synfig/commit/e7441e4efba0c8f70fa63b67ad9771278a8356a3) [CMake] Fixed path for splash screen image and added Adwaita icons for MSYS2 builds. ([#1689](https://github.com/synfig/synfig/issues/1689)) [studio]
+- [`a583e73`](https://github.com/synfig/synfig/commit/a583e73d4c47914284b15f4a8d7719eafddfe1b4) autotools: pango and imagemagick c++ flags and libs have been moved to their respective modules ([#1688](https://github.com/synfig/synfig/issues/1688)) [core]
+- [`9f1362c`](https://github.com/synfig/synfig/commit/9f1362c72392080df90a25231422054db2e9ee11) [Skeleton Tool] Fix for [#1680](https://github.com/synfig/synfig/issues/1680): Can't load saved file that has layers made with skeleton tool ([#1681](https://github.com/synfig/synfig/issues/1681)) [studio]
+- [`2124e6a`](https://github.com/synfig/synfig/commit/2124e6aa8ca7ebf6371ed8a92a84cdcaa812ad70) [Skeleton Tool] Fixed crash when switching to Skeleton Tool ([#1684](https://github.com/synfig/synfig/issues/1684)) [studio]
+- [`2b8ea4d`](https://github.com/synfig/synfig/commit/2b8ea4dff492cba62f5df026a8b04c19ba40da36) [Lottie Exporter] Export outlines without variable widths ([#1647](https://github.com/synfig/synfig/issues/1647)) [studio]
+- [`d31d62d`](https://github.com/synfig/synfig/commit/d31d62da1a288798cb9423226be3c2a0c3c6f1bd) [Lottie Exporter] Add support for not convert method ([#1587](https://github.com/synfig/synfig/issues/1587)) [studio]
+- [`43ced7b`](https://github.com/synfig/synfig/commit/43ced7b9c8851a262a7c0a517fcec1c277698559) [Lottie Exporter] Add support for vectorlength convert method ([#1650](https://github.com/synfig/synfig/issues/1650)) [studio]
+- [`905994a`](https://github.com/synfig/synfig/commit/905994a7fb626cf53174c9365fa04b7b5ec428ee) [Lottie Exporter] Add support for range convert method ([#1606](https://github.com/synfig/synfig/issues/1606)) [studio]
+- [`bbd7a85`](https://github.com/synfig/synfig/commit/bbd7a85b1f65d2ac02397853b79c19d0f8b672e0) Return true only if id=1 (accept) is clicked ([#1573](https://github.com/synfig/synfig/issues/1573))
+- [`7cd80d2`](https://github.com/synfig/synfig/commit/7cd80d2166ce088ccf25c39ca9ad8621d3ea83bc) [Lottie Exporter] Added support for reciprocal convert method ([#1619](https://github.com/synfig/synfig/issues/1619)) [studio]
+- [`e6c62c2`](https://github.com/synfig/synfig/commit/e6c62c2e2c4871ee2c916388e6f70c2ae8173288) Add Visual Studio Code configuration for debugging on Linux ([#1682](https://github.com/synfig/synfig/issues/1682))
+- [`4906e91`](https://github.com/synfig/synfig/commit/4906e9188f025ab31d17d46500f277080853f2f6) [Skeleton Tool] Synfig crashes when we try to edit any other duck other than a bone's ([#1679](https://github.com/synfig/synfig/issues/1679)) [studio]
+- [`08893ed`](https://github.com/synfig/synfig/commit/08893ed697f5a79af90ee26f948affee3483b370) All enabled modules added as a dependency for synfig_bin. ([#1677](https://github.com/synfig/synfig/issues/1677)) [core]
+- [`3d14739`](https://github.com/synfig/synfig/commit/3d147391b22e871f8e7f8b85d002ea5b52500dcd) [Skeleton Tool] Rename 'Make parent to active bone' ([#1676](https://github.com/synfig/synfig/issues/1676)). Closes [#1673](https://github.com/synfig/synfig/issues/1673). [studio]
+- [`afb5d3c`](https://github.com/synfig/synfig/commit/afb5d3cfb0782ada635d61f36d245722e7a7d769) Added proper Clang info to About dialog ([#1675](https://github.com/synfig/synfig/issues/1675)) [studio]
+- [`6385086`](https://github.com/synfig/synfig/commit/63850863f68f56e85bed296fbddc8a12a6e9e042) Fixed unused/redefined variables warnings ([#1672](https://github.com/synfig/synfig/issues/1672)) [core] [studio]
+- [`d345097`](https://github.com/synfig/synfig/commit/d345097c64e0975132035b7aade09081bb7b53ee) [Skeleton Tool] Fixed 'Make parent to active bone' crash ([#1671](https://github.com/synfig/synfig/issues/1671)). Closes [#1670](https://github.com/synfig/synfig/issues/1670). [studio]
+- [`8cd3084`](https://github.com/synfig/synfig/commit/8cd3084e7e4f1f6dfade4c8bf5ea307f63793f2e) [CMake] Added basic support for MSVS 2019 and vcpkg ([#1646](https://github.com/synfig/synfig/issues/1646)) [core] [studio]
+- [`c7737d6`](https://github.com/synfig/synfig/commit/c7737d6dba84eafe6cf59a7c23615eb08c9337c7) [Skeleton Tool] Remove "Create Child Bone" action menu ([#1663](https://github.com/synfig/synfig/issues/1663)) [studio]
+- [`bfe6612`](https://github.com/synfig/synfig/commit/bfe6612cb35a2264d225c543f56c6259bab88170) Fixed warnings 'format '%lx' expects argument of type...' ([#1668](https://github.com/synfig/synfig/issues/1668)) [core]
+- [`61d81cb`](https://github.com/synfig/synfig/commit/61d81cb74db228c042e2c0e4114fddf7f585f3cf) [Skeleton Tool] Fixed active bone setting while pressed on Duck ([#1662](https://github.com/synfig/synfig/issues/1662)). Closes [#1656](https://github.com/synfig/synfig/issues/1656). [studio]
+- [`7a9a116`](https://github.com/synfig/synfig/commit/7a9a116b90afe65751c64e0a38e26969ef867b9d) Speed up Layer_Freetype: don't load face file on every rendering ([#1655](https://github.com/synfig/synfig/issues/1655)) [core]
+- [`bb1a80b`](https://github.com/synfig/synfig/commit/bb1a80b67738c0a581768219fb7ee7dfd4a4782a) Merge PR [#1653](https://github.com/synfig/synfig/issues/1653): Layer FreeType code cleanup
+- [`625c0ec`](https://github.com/synfig/synfig/commit/625c0ece69684261a3fff0b166021d26949c356b) fix indentation [core]
+- [`1e9775c`](https://github.com/synfig/synfig/commit/1e9775cd1340dc1dbb929a656e54032e538bfbae) add TrueType Collection as supported extension via FreeType [core]
+- [`3522c51`](https://github.com/synfig/synfig/commit/3522c5124b8b216f9ef8395336bafce6683d020d) separate algorithm to find out the font filename from family name [core]
+- [`056fe96`](https://github.com/synfig/synfig/commit/056fe969772745e9c31fb49917edf224e93b21c6) move variables closer to where they are used [core]
+- [`ca9c51f`](https://github.com/synfig/synfig/commit/ca9c51f3b5747f30e37057da6e2be3b76e17dbaf) fix indentation [core]
+- [`c063f81`](https://github.com/synfig/synfig/commit/c063f811cd106e1dfdf15c70fed19bccf366a84c) move comment to the method it describes [core]
+- [`7ba7623`](https://github.com/synfig/synfig/commit/7ba76239528f55561956a0a85f854d85a9d2ef2c) reduces function scope [core]
+- [`5b1d9dd`](https://github.com/synfig/synfig/commit/5b1d9dd85797e4555ef5740798a0e3bf9c43d717) don't use extern on .h without need and properly free FreeType [core]
+- [`617fd4b`](https://github.com/synfig/synfig/commit/617fd4b7dbda9bdf0b7543eafcd9cba71a37505b) [CMake] Fixed FontConfig detection [core]
+- [`51d7972`](https://github.com/synfig/synfig/commit/51d797231a04c06d781491ba2bffe5766f99a522) Fixed 'Error: Broken pipe' message, when installing brew packages on MacOS ([#1659](https://github.com/synfig/synfig/issues/1659))
+- [`14ca537`](https://github.com/synfig/synfig/commit/14ca5370be1aba5887cbcce114009fb02c72ffc1) Fixed memory leak when destroying ThreadPool ([#1651](https://github.com/synfig/synfig/issues/1651)) [core]
+- [`db77ed1`](https://github.com/synfig/synfig/commit/db77ed10b3c8a15aa07d69f1d31ea8fa6bc587c6) Fixed memory leak with Widget_Timetrack: row_info now stored by value instead of pointer ([#1652](https://github.com/synfig/synfig/issues/1652)) [studio]
+- [`0b210b5`](https://github.com/synfig/synfig/commit/0b210b5862669115295580007ed2a428203df4be) Skeleton tool: Use single parameter to define bone width ([#1604](https://github.com/synfig/synfig/issues/1604))
+- [`9b5c101`](https://github.com/synfig/synfig/commit/9b5c1019fdbdada4ce31e0f30e477799a427e88e) Restructured code [studio]
+- [`570d12a`](https://github.com/synfig/synfig/commit/570d12abd3361250be6519c32d38d87a57cd3825) Working single parameter for bonewidth [studio]
+- [`39388cc`](https://github.com/synfig/synfig/commit/39388cc8aa86e9a6bba552b00c7037d5630e0771) Fixed issues [studio]
+- [`3a43592`](https://github.com/synfig/synfig/commit/3a43592d0261325f3cf5b6678c000f98f779fa52) Modified tool options [studio]
+- [`a480643`](https://github.com/synfig/synfig/commit/a480643a5953fd193d4a82f9bec2b314348bd068) [Skeleton Tool] Do not switch to Arrow tool when user selects other layer ([#1618](https://github.com/synfig/synfig/issues/1618)). Closes [#1603](https://github.com/synfig/synfig/issues/1603). [studio]
+- [`d8388ca`](https://github.com/synfig/synfig/commit/d8388cabf95fefa21d6d950798a58b841dc3b652) Make position of dialog buttons consistent ([#1638](https://github.com/synfig/synfig/issues/1638)) [studio]
+- [`fb03700`](https://github.com/synfig/synfig/commit/fb037008607153b239cbe7d56fa378cc50655330) Fix crash on unsuccessful action with a clean undo history ([#1643](https://github.com/synfig/synfig/issues/1643)) [studio]
+- [`f604e21`](https://github.com/synfig/synfig/commit/f604e21423d517af9df49470c44bc321f0916108) Removed README-CMake.md and linked CMake documentation in README.md ([#1644](https://github.com/synfig/synfig/issues/1644))
+- [`d58e958`](https://github.com/synfig/synfig/commit/d58e95803a06560fd5529211c3b7b1bbcba4fa91) Fix usage of locale_from_utf8() instead locale_to_utf8() ([#1642](https://github.com/synfig/synfig/issues/1642)) [studio]
+- [`c3bd657`](https://github.com/synfig/synfig/commit/c3bd65788e3807a8ed3840666b909bf67a0f5fd0) Merge PR [#1507](https://github.com/synfig/synfig/issues/1507): Added "Scale to fit canvas" button to Import dialog
+- [`95beb2a`](https://github.com/synfig/synfig/commit/95beb2aa230c8e03a62b120560806822c02536ef) Avoid code repetition and add it for "Import Image" [studio]
+- [`a2be3ab`](https://github.com/synfig/synfig/commit/a2be3abe24ff4b577754b340c1b0cbe4be2fa56f) Add option also for "Import Sequence,,," [studio]
+- [`e74bca4`](https://github.com/synfig/synfig/commit/e74bca4a4341022628347a0d1dd01bcda3d26e25) Rebase to current master [studio]
+- [`8adcde3`](https://github.com/synfig/synfig/commit/8adcde3b88ec09228cc2915b2ce75c3d56e816a8) Replace deprecated method [studio]
+- [`4bb01bd`](https://github.com/synfig/synfig/commit/4bb01bdf6e385eb3195de907b19c25c75d593f6b) Connect Switch to preference value [studio]
+- [`7d6ce40`](https://github.com/synfig/synfig/commit/7d6ce40f90cb93f8edf785aede2c6d5ccc53e877) Add "Scale to fit canvas" button to Import dialog [studio]
+- [`2beffbe`](https://github.com/synfig/synfig/commit/2beffbeb8918309ded223e4be97bc56ce7c928bd) [Skeleton Tool] Fixed bone placement in Skeleton Deformation ([#1641](https://github.com/synfig/synfig/issues/1641)) [studio]
+- [`9880e14`](https://github.com/synfig/synfig/commit/9880e148c54c6073368cc0a79c6338dd5f923c40) Update POTFILES.in ([#1640](https://github.com/synfig/synfig/issues/1640)) [studio]
+- [`6a91825`](https://github.com/synfig/synfig/commit/6a91825bf8a817c8fd7c1ffcdd1c8836331ba288) Configuration for Visual Studio Code on Windows ([#1639](https://github.com/synfig/synfig/issues/1639))
+- [`723e88d`](https://github.com/synfig/synfig/commit/723e88d40fc4d3cc3acf1053f8f2235bb6e64e3a) [Skeleton Tool] Conditional disable/enable of Deformation layer on tool switch ([#1635](https://github.com/synfig/synfig/issues/1635))
+- [`739f38a`](https://github.com/synfig/synfig/commit/739f38add8a1911c65b88d9e194d4546b22b26f0) Removing cout's [studio]
+- [`df1a854`](https://github.com/synfig/synfig/commit/df1a854603088393bfdc84797a182763616181b1) Conditional disable/enable of Deformation layer [studio]
+- [`85aed48`](https://github.com/synfig/synfig/commit/85aed489ed967149c09dce14c7c76d9c0f01fd79) [Skeleton Tool] Creating new Skeleton layer without a bone ([#1620](https://github.com/synfig/synfig/issues/1620))
+- [`a6935a4`](https://github.com/synfig/synfig/commit/a6935a40f3f3f0689f24c6797513864b6ea4b829) Crash fix [#2](https://github.com/synfig/synfig/issues/2) [studio]
+- [`8f40921`](https://github.com/synfig/synfig/commit/8f409214bedbc57e56f38710c7ea74fddc2c100d) Removing comments [studio]
+- [`c7a6c5e`](https://github.com/synfig/synfig/commit/c7a6c5e8964cc437c2e4b69de74470ce88e4aff0) Crash fix [studio]
+- [`6c081ca`](https://github.com/synfig/synfig/commit/6c081caa7613dfee1a8f16324558603bbc1e01f7) Passive Grouper added [studio]
+- [`83ab374`](https://github.com/synfig/synfig/commit/83ab3742069c0d34647282508c1278741a0d2a5c) Making previous active bone optional [studio]
+- [`2dd6550`](https://github.com/synfig/synfig/commit/2dd6550069617bf9b108f64100abc72d102ad1c2) Working no bones condition; Need to add passive grouper [studio]
+- [`f287077`](https://github.com/synfig/synfig/commit/f287077ea54cb08cffe9f4f61d394d3c9a8d326e) No bones in layer conditions testing [studio]
+- [`09d6069`](https://github.com/synfig/synfig/commit/09d60691618fbae84ad6384dab655ae95b63c004) Do not use Glib::locale_to_utf8() in synfig::get_binary_path() ([#1633](https://github.com/synfig/synfig/issues/1633)) [core]
+- [`99a1cde`](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305) Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623))
+- [`0e576cb`](https://github.com/synfig/synfig/commit/0e576cb5aabdb6c0ed38aa2aff319da47e3bdbe0) Fix export to file with multibyte characters in name on Windows [core]
+- [`ef6be78`](https://github.com/synfig/synfig/commit/ef6be78878a288e4e2729695bb3f8cfb1a3312e2) Windows build: Enable avformat module in MLT
+- [`c90153f`](https://github.com/synfig/synfig/commit/c90153f2bf528824fb81033e3037cd6a90b98b74) Use g_file_test() instead of g_stat() [core]
+- [`02fc369`](https://github.com/synfig/synfig/commit/02fc3691f3595e8b8ff9ffdfc63e2bb5e5bc6c96) Check for callback object [core]
+- [`b654059`](https://github.com/synfig/synfig/commit/b6540590119dbb18272638826cc4a501949e87b8) Show filename in warning [core]
+- [`15b154c`](https://github.com/synfig/synfig/commit/15b154c86981fccc1b7f5c28a6d193da195750c9) Replace exception with error message [core]
+- [`0f54d6d`](https://github.com/synfig/synfig/commit/0f54d6dc699e1fa0b13868219774484d3ce9a19a) Fix compilation on Windows [core]
+- [`e78053d`](https://github.com/synfig/synfig/commit/e78053d4c292c2d24b6f5d6773359fba8feac0b8) Avoid double "Loading modules" message ([#1631](https://github.com/synfig/synfig/issues/1631)) [core]
+- [`4e0e245`](https://github.com/synfig/synfig/commit/4e0e245c51da09b634093f32d275d5b81e3e10cc) Skeleton Tool: Trigger visibility of Width Points depending on conditions ([#1616](https://github.com/synfig/synfig/issues/1616))
+- [`0485671`](https://github.com/synfig/synfig/commit/048567137d1235fd4f46754adb6f126d0c1a3eb4) CMake NSIS Installer ([#1582](https://github.com/synfig/synfig/issues/1582)) [studio]
+- [`fd4088e`](https://github.com/synfig/synfig/commit/fd4088e3592ceae6e02fc3275047e3ee29e608ea) Update tool bar [studio]
+- [`4887895`](https://github.com/synfig/synfig/commit/4887895b9be1ad165d7e78298f32aad716ae8f54) Reverting previous duck visibility state [studio]
+- [`28dae99`](https://github.com/synfig/synfig/commit/28dae990d1a4b405dfef7eedf9a35064ef3d6385) Fixed Width toggle [studio]
+- [`b92a370`](https://github.com/synfig/synfig/commit/b92a3708db735f18c45534066fe158c960978a35) Skeleton Tool: Fixed Skeleton Deformation layer Highlighting ([#1628](https://github.com/synfig/synfig/issues/1628)) [studio]
+- [`8d27d97`](https://github.com/synfig/synfig/commit/8d27d97bfd709cecd5f52ca77b5693fac338df43) Added button to stop rendering process ([#1585](https://github.com/synfig/synfig/issues/1585)) [studio]
+- [`6269d8f`](https://github.com/synfig/synfig/commit/6269d8f98ea130c9ad657aef12c09609226f125f) [Lottie Exporter] Add support for Logarithm convert method ([#1586](https://github.com/synfig/synfig/issues/1586)) [studio]
+- [`f89c807`](https://github.com/synfig/synfig/commit/f89c8079d407f5863f4f3ddf76bff37f36b6fb72) Merge PR [#1622](https://github.com/synfig/synfig/issues/1622): Freetype: avoid uneeded font search
+- [`1e5f31f`](https://github.com/synfig/synfig/commit/1e5f31fe85bc41cf1e6da1fbc3afa0014d3c8d5e) don't reload font on canvas change if it doesn't depend on canvas [core]
+- [`72857f0`](https://github.com/synfig/synfig/commit/72857f0a54979a6a07ac51703422fbb801ea1b22) don't do anything if parent doesn't actually change [core]
+- [`241b6c5`](https://github.com/synfig/synfig/commit/241b6c5947e6519311fd24c2e7ef0e6f3a8ea5ed) don't emit signal if filename doesn't actually change [core]
+- [`ee4e533`](https://github.com/synfig/synfig/commit/ee4e533ed85f704e2f2f7ef4efbb08410424bc82) Merge PR [#1505](https://github.com/synfig/synfig/issues/1505): [Lottie Exporter] Add support for blur layers
+- [`e4fc29d`](https://github.com/synfig/synfig/commit/e4fc29ded69a60a459b02d08a507dab5269b065e) Added new files in the CMake file [studio]
+- [`e0b44f4`](https://github.com/synfig/synfig/commit/e0b44f4da14464deaeadd2b5817fb68ba2ed18cb) Minor changes [studio]
+- [`beedf5f`](https://github.com/synfig/synfig/commit/beedf5f8ea5572b0dabc7c54929837328c2d80d6) Fixed LGTM warnings [studio]
+- [`17a2691`](https://github.com/synfig/synfig/commit/17a26911a4fd1a2703efcc7a4291da6679a46504) Fixed build failing error [studio]
+- [`7efe9ef`](https://github.com/synfig/synfig/commit/7efe9efe08c875115e3c90ce7ab490e30cf9e810) Fixing blurring issue and adding comments [studio]
+- [`633dc54`](https://github.com/synfig/synfig/commit/633dc54922b33c2f74aec96a015b78ab01f31d8d) Group layer ordering fixed [studio]
+- [`5833b3f`](https://github.com/synfig/synfig/commit/5833b3fb3d0948aeb524f54b81ba1ef40e9623eb) Added support for blur layers minus group layer [studio]
+- [`549fdd5`](https://github.com/synfig/synfig/commit/549fdd50e5399f812a9b857695161bddcd07f71b) Multiple Images blurring fixed [studio]
+- [`0208450`](https://github.com/synfig/synfig/commit/0208450726fe65c47eb62d39c4370413d7b61651) Fixed ordering of blur layers [studio]
+- [`5d9bde2`](https://github.com/synfig/synfig/commit/5d9bde2becf9d1b0f6b1203b3c144917a7c233b7) Add support for blur layers [studio]
+- [`161fd5b`](https://github.com/synfig/synfig/commit/161fd5b5f2f3294a6537d1e287002cf60bc84384) Canvas end-time could be set by wrong reason ([#1614](https://github.com/synfig/synfig/issues/1614)) [core]
+- [`8cece27`](https://github.com/synfig/synfig/commit/8cece276ec0891f3573a4975a1ab1d444e5b3985) Merge PR [#1617](https://github.com/synfig/synfig/issues/1617): Skeleton Tool - Skeleton Deformation Layer created as "disabled". Closes [#1615](https://github.com/synfig/synfig/issues/1615).
+- [`9c78798`](https://github.com/synfig/synfig/commit/9c78798a9db3dd078bbb6899aa101313dc05d160) Deformation layer gets disabled [studio]
+- [`e02a3a8`](https://github.com/synfig/synfig/commit/e02a3a8c944fbd3731c6486de9ecd2eea73f597d) Removed old (2005) simple hack for gcc < 4.1.2 bugged warning ([#1613](https://github.com/synfig/synfig/issues/1613)) [core]
+- [`80d63a7`](https://github.com/synfig/synfig/commit/80d63a75ee19b63272b0b9f2e69cf850debd8eed) Merge PR [#1611](https://github.com/synfig/synfig/issues/1611): Skeleton Tool - Fixed Active Bone rendering. Closes [#1610](https://github.com/synfig/synfig/issues/1610).
+- [`eaec65d`](https://github.com/synfig/synfig/commit/eaec65dd541c1289ea975ffc9b9191e6aa42853a) Fixed Active bone rendering [#2](https://github.com/synfig/synfig/issues/2) [studio]
+- [`ccdc4e5`](https://github.com/synfig/synfig/commit/ccdc4e5b1f147e0b08284d2eb5a451be63861725) Fixed Active Bone  rendering [studio]
+- [`554eaea`](https://github.com/synfig/synfig/commit/554eaea80d10eee130468fa7eedd286a3a5d01fd) Proper MSYS detection, also fixes MacOS "uname -o" illegal option error. ([#1612](https://github.com/synfig/synfig/issues/1612))
+- [`28422b8`](https://github.com/synfig/synfig/commit/28422b8505dfaf47487e1e9f7730163f20a58f05) Merge PR [#1605](https://github.com/synfig/synfig/issues/1605): Skeleton Tool - Use dashed outline to show parent-child relationships for bones
+- [`7d35299`](https://github.com/synfig/synfig/commit/7d352994564b638159700ad94ff7ddea8f3ecbb8) Indentation fixes [studio]
+- [`c05acd1`](https://github.com/synfig/synfig/commit/c05acd11f6ad51a73d210ac7bcaa20224460ebbe) Indentation fixes [studio]
+- [`6bee811`](https://github.com/synfig/synfig/commit/6bee8115f4f07de30f137fc3f83fddeeb830778d) Working dashed lines [studio]
+- [`1025c01`](https://github.com/synfig/synfig/commit/1025c0108b0704cfe0e18420c70dc65b9a71b3bb) Working dashed line between origins of parent and child [studio]
+- [`a8748c1`](https://github.com/synfig/synfig/commit/a8748c124a13c03dfbbd45fb94b4d72c05ae03df) Attempt to add dashed line between parent and child bones [studio]
+- [`0948ac4`](https://github.com/synfig/synfig/commit/0948ac4b5883d4d10563a98fd0b38459ff7b6a38) GSoC 2020: Skeleton tool - basic implementation ([#1485](https://github.com/synfig/synfig/issues/1485)) [studio]
+- [`79c10de`](https://github.com/synfig/synfig/commit/79c10de80b13afef75528d415b6d608536ed23f2) Merge PR [#1597](https://github.com/synfig/synfig/issues/1597): Fix dashed outline behavior in non homogenous outline
+- [`98d8b2a`](https://github.com/synfig/synfig/commit/98d8b2a09658d7537b1211c995dbaae5bd5563dc) make dash metrics not relative, but absolute ones [core]
+- [`3faaf49`](https://github.com/synfig/synfig/commit/3faaf491410735304db2aa22d01fb5e3f16f52ab) fix dashed outline behavior in non homogeous outline [core]
+- [`bcc84f1`](https://github.com/synfig/synfig/commit/bcc84f1c47090ff1dbb4eccc8e05231754195a57) [CMake] Icon and program info integrated into synfigstudio.exe Windows binary. ([#1581](https://github.com/synfig/synfig/issues/1581)) [studio]
+- [`a27993c`](https://github.com/synfig/synfig/commit/a27993cb52075a433a175b59789dbd8e59ace20d) Disabled ImageMagick for OSX >= 10.13 (Fixes OSX High Sierra, Mojave and Catalina build) ([#1486](https://github.com/synfig/synfig/issues/1486))
+- [`d23807e`](https://github.com/synfig/synfig/commit/d23807e2e2e8278f2434bc4c66dbe12d090a5299) Fixed libmng linking problem on 32-bit platform ([#1598](https://github.com/synfig/synfig/issues/1598)) [core]
+- [`faad4ab`](https://github.com/synfig/synfig/commit/faad4ab5abc79d23fb189a99ee6d18cedf37b4d1) [Lottie Exporter] Add support for dot product convert method ([#1593](https://github.com/synfig/synfig/issues/1593)) [studio]
+- [`6d3f1cb`](https://github.com/synfig/synfig/commit/6d3f1cb89cce05cb95341b38284b537975935a50) Merge PR [#1596](https://github.com/synfig/synfig/issues/1596): Fixed warnings
+- [`3cf4ca2`](https://github.com/synfig/synfig/commit/3cf4ca24ba165a7606b94b30846c2943fe1af9c8) Fixed "_exception_guard_error_code not used" warning [studio]
+- [`7757540`](https://github.com/synfig/synfig/commit/7757540e2bb719d1f9d1a6250e9ab2421c35dafb) Fixed NOMINMAX redefined warning [ETL] [core]
+- [`357dda4`](https://github.com/synfig/synfig/commit/357dda4d5988316a9dfbf12fbca158ba93764e85) Merge PR [#1595](https://github.com/synfig/synfig/issues/1595): Fixed Magick NoEncodeDelegateForThisImageFormat issues on appveyor build.
+- [`7538ae5`](https://github.com/synfig/synfig/commit/7538ae5b9de8f0fa9e880512f1910dbcda924d17) Fixed Magick NoEncodeDelegateForThisImageFormat issues on MSYS build
+- [`5fe1258`](https://github.com/synfig/synfig/commit/5fe125846e4e5bdd8702eda3bbcb30089f0340ec) MergePR [#1491](https://github.com/synfig/synfig/issues/1491): Changes for Appveyor build using CMake and ninja.
+- [`ff40532`](https://github.com/synfig/synfig/commit/ff4053293e4593865cb983238ce0be3108c8cbf8) Changes for CMake MSYS builds. [studio]
+- [`3c5438c`](https://github.com/synfig/synfig/commit/3c5438c75598cd2756729eaddf6adf288481078b) Fixed MLT Path added different dependency for MSYS2 builds. [studio]
+- [`ec68c0a`](https://github.com/synfig/synfig/commit/ec68c0ac35255aaa5de94f48a6418771a9a22510) Windows related changes [core]
+- [`7ebb19b`](https://github.com/synfig/synfig/commit/7ebb19b0b2cf693a756feeeb670943cc7dc7cc8f) don't crash debug version when rotating vertex order ([#1583](https://github.com/synfig/synfig/issues/1583)) [studio]
+- [`8b93aa1`](https://github.com/synfig/synfig/commit/8b93aa1c2baf37ca687010c617db988632df79fb) Merge PR [#1432](https://github.com/synfig/synfig/issues/1432): Fixed text layer family search and allow user selection
+- [`032be6f`](https://github.com/synfig/synfig/commit/032be6f086da9fc7a3d6277aa426a38ad4d2e027) fix invalid data free - it was causing crash on MacOS [studio]
+- [`83a053e`](https://github.com/synfig/synfig/commit/83a053e848defae3797efe88ecdec34e47856028) update POTFILES.in - just in case [studio]
+- [`66dfdea`](https://github.com/synfig/synfig/commit/66dfdeae12ff8cd3c339eec3a1a30d3235353ebd) in a possible future call to refresh, clear the family list first [studio]
+- [`8f2672d`](https://github.com/synfig/synfig/commit/8f2672d07cd80869fd6274cf7b721809410a2478) fix font search path priority order [core]
+- [`ccb98a3`](https://github.com/synfig/synfig/commit/ccb98a3d95cdca341cec37814090d9ddc2d32c64) allow user to select font family if FontConfig is available [studio]
+- [`681a0c8`](https://github.com/synfig/synfig/commit/681a0c80438f94873a2d06f14d1dd32892c3a14a) text layer: fontconfig ignored slant and weight parameters [core]
+- [`da9a88b`](https://github.com/synfig/synfig/commit/da9a88b740063db74750bc4db49214e2d835b8b9) remove unreachable code [core]
+- [`aed8870`](https://github.com/synfig/synfig/commit/aed887098b326921db2a16ce7ce37d2cf7b40c7c) if font family is actually a file, don't append other extension [core]
+- [`b52157f`](https://github.com/synfig/synfig/commit/b52157f0b93cfb4a7c1764f36715b17e42a11c75) text layer: bye, "evil hack" [core]
+- [`a3d7246`](https://github.com/synfig/synfig/commit/a3d72466d3801ccc0e2e62615ac5046e1cbf11b7) text layer: bump layer version due to new weight values [core]
+- [`e7c38ec`](https://github.com/synfig/synfig/commit/e7c38ecca5d9791aa24f9e90656ebe4f64307eba) text layer: use enum to style values [core]
+- [`0140492`](https://github.com/synfig/synfig/commit/01404922b2aa029c9c37709889dca7cd4163e9db) text layer: add new weight options [core]
+- [`a856a5b`](https://github.com/synfig/synfig/commit/a856a5bdc2e8f316bbf4d6f65571a44283653244) text layer: use enum to weight values [core]
+- [`bad6e68`](https://github.com/synfig/synfig/commit/bad6e688072b8d430792a5a8d4d66cf84a557c45) Improved documentation of exception_guard.h ([#1578](https://github.com/synfig/synfig/issues/1578)) [studio]
+- [`1cf1d6e`](https://github.com/synfig/synfig/commit/1cf1d6ee2b53ef14e6da8db2e235bde2cc762e82) Autotools: Add missing header ([#1575](https://github.com/synfig/synfig/issues/1575)) [studio]
+- [`7ece93c`](https://github.com/synfig/synfig/commit/7ece93c86ea09475ea123fda59a02e588f3c5997) Merge PR [#1571](https://github.com/synfig/synfig/issues/1571): fix uncaught exceptions in destructors
+- [`ef8f17e`](https://github.com/synfig/synfig/commit/ef8f17e9ceab89b620bb5387285ee463acfabdf9) fix uncaught exception in state_stroke destructor [studio]
+- [`f3d757d`](https://github.com/synfig/synfig/commit/f3d757db2c4aaf5302849ab13ba73aeb518a21b3) fix uncaught exceptions in destructors in canvasview.cpp [studio]
+- [`2f2f78c`](https://github.com/synfig/synfig/commit/2f2f78c65086518015d853b090db88af926a4116) fix uncaught exceptions in state_polygon destructor [studio]
+- [`6e32978`](https://github.com/synfig/synfig/commit/6e3297813bc4f825a9019c837be420857f65cd21) Return true only if id=1 (accept) is clicked [studio]
+- [`efbef4f`](https://github.com/synfig/synfig/commit/efbef4f708085982dc1a5a06e98fcd800cb41a10) Merge PR [#1568](https://github.com/synfig/synfig/issues/1568): Fix rendering to files with non-latin symbols via ffmpeg on Windows. Closes [#1567](https://github.com/synfig/synfig/issues/1567).
+- [`199948c`](https://github.com/synfig/synfig/commit/199948c75dd597afd0e4b027766701fdf9bac146) Fix rendering to files with non-latin symbols via ffmpeg on Windows. Closes [#1567](https://github.com/synfig/synfig/issues/1567). [core]
+- [`2b0a887`](https://github.com/synfig/synfig/commit/2b0a8874afafb0881a466e595d99cad74d2fafdd) Merge PR [#1413](https://github.com/synfig/synfig/issues/1413): Added toggleable option for thumbnail preview
+- [`6709d28`](https://github.com/synfig/synfig/commit/6709d28f77f8c3a568e200237221b12b87fd0b12) Added togglable option for thumbnail preview [studio]
+- [`067e0b4`](https://github.com/synfig/synfig/commit/067e0b46e70cc39c5d7fca0e58d0c93749842140) fix crash when undoing creation of a moved/changed vertex of spline ([#1551](https://github.com/synfig/synfig/issues/1551))
+- [`5149cf6`](https://github.com/synfig/synfig/commit/5149cf6f7f02aeaacfbf396708686d47d87fac89) fix crash when undoing creation of a moved/changed vertex of spline [studio]
+- [`52deae9`](https://github.com/synfig/synfig/commit/52deae93f5dc3b06d9d01253ee3be8f45fbf4852) minor cleanup: nullptr and avoid old-style cast [studio]
+- [`bb199c2`](https://github.com/synfig/synfig/commit/bb199c2db454321e6eb8f7ba07799ccc2baf4135) make method private and remove unused parameter [studio]
+- [`5b6bfd1`](https://github.com/synfig/synfig/commit/5b6bfd142cd9b129502857ab4295c1a2f04967f2) remove unused #Includes and a commented-out code for > 6 years [studio]
+- [`2b95739`](https://github.com/synfig/synfig/commit/2b95739ecce659c07e11ed3031e5c0f0ea3c39ff) just change the loop structure [studio]
+- [`ef271b0`](https://github.com/synfig/synfig/commit/ef271b00332c1c74bf8f0cd83cb0721b11ba8d2e) restrict constructor access modifier and do minor header cleanup [studio]
+- [`6e9e095`](https://github.com/synfig/synfig/commit/6e9e095c5b4c3beb203b49c2bd0d416a6b9f6e59) Fixed crash when user deletes the sound layer displayed in Sound panel ([#1564](https://github.com/synfig/synfig/issues/1564))
+- [`dc3c31e`](https://github.com/synfig/synfig/commit/dc3c31e7f85f1b46dee27805ec6a01c8ac1680e2) Removed unused ETL spline header ([#1563](https://github.com/synfig/synfig/issues/1563))
+- [`9cafe22`](https://github.com/synfig/synfig/commit/9cafe22266d43ad536a914663f95afb9c65280a2) remove unused ETL spline header [ETL] [core]
+- [`2493870`](https://github.com/synfig/synfig/commit/2493870f6aebe27dfd07e7ce5a1dc1803b2b9f93) fix crash when user delete the sound layer being shown in Sound panel [studio]
+- [`a74530f`](https://github.com/synfig/synfig/commit/a74530f8ed068502a6940ade6efa6d57afe943fa) Remove ancient 3rd party sources (gtkmm-osx) ([#1554](https://github.com/synfig/synfig/issues/1554))
+- [`41dd480`](https://github.com/synfig/synfig/commit/41dd480890b1a3a797075db1b2af1a711b1e5fb4) Fixed crash when exception is thrown while rendering WorkArea ([#1561](https://github.com/synfig/synfig/issues/1561))
+- [`820d6ca`](https://github.com/synfig/synfig/commit/820d6ca6fa81974aa1f8806dc67364c1a9fbb5d6) refine (a bit) the class of exception thrown [core] [studio]
+- [`d90457c`](https://github.com/synfig/synfig/commit/d90457cc73f978223f6b43ad8c6a22aa960b52f8) ValueDesc of exported valuenode keeps tracking its name changes [studio]
+- [`26c4b65`](https://github.com/synfig/synfig/commit/26c4b659396f55d6614d617115b99d4220a5b527) another exception-thrown guard - now in a draw-event [studio]
+- [`d2083d6`](https://github.com/synfig/synfig/commit/d2083d656aaa17490b7b8278be5686dd9a22cb22) [Lottie Exporter] Added support for Power Convert method ([#1515](https://github.com/synfig/synfig/issues/1515)) [studio]
+- [`f4a59e9`](https://github.com/synfig/synfig/commit/f4a59e96ffa382ed68795c1578545890c207b12a) Merge PR [#1518](https://github.com/synfig/synfig/issues/1518): Fix rendering of Advanced Outline cusps. Closes [#1480](https://github.com/synfig/synfig/issues/1480).
+- [`d67972a`](https://github.com/synfig/synfig/commit/d67972ab3b1d881c2794fca7556f5b8174ae9109) fix case of unlooped spline with single width point [core]
+- [`2af6370`](https://github.com/synfig/synfig/commit/2af637088645cfc88b7ccf4b752c18160f5e9259) force width points on spline edges (or truncate points) to obey general sides [core]
+- [`460f7f2`](https://github.com/synfig/synfig/commit/460f7f2041fed705f872de4442219c5fc59ba650) fix trunc of widthpoints for unlooped adv.outline [core]
+- [`7a7861e`](https://github.com/synfig/synfig/commit/7a7861e54a9e39bba60d87b295f6f353ab778240) avoid cubic curves when there's no change of width [core]
+- [`a86922a`](https://github.com/synfig/synfig/commit/a86922a1e7e54ec6d4b1e592a1f18bc13d4755de) overlapping width points merge their Side Tips [core]
+- [`e1491d3`](https://github.com/synfig/synfig/commit/e1491d326c510251b17c51b3bfb845d920f6a803) replace comma with semicolon [core]
+- [`e6623fd`](https://github.com/synfig/synfig/commit/e6623fdcc2b075936bc9210cd4e092d26aaf92d9) fix render for not-looped advanced outline without Interpolate ending tip [core]
+- [`f17715b`](https://github.com/synfig/synfig/commit/f17715b2f6f7da7a005040128617ff1c29fb774d) Fix opening files with Arabic names ([#1532](https://github.com/synfig/synfig/issues/1532))
+- [`3597fb1`](https://github.com/synfig/synfig/commit/3597fb1779de9bd1a377b336029f330b57e6b8f4) FileSystemNative: Fix file_rename() and file_remove() [core]
+- [`821b1d1`](https://github.com/synfig/synfig/commit/821b1d1cdb84f5d1b79c78008be0b20b2c463bcd) Fix fopen function in filecontainersip.cpp [core]
+- [`a4dde54`](https://github.com/synfig/synfig/commit/a4dde54dbb8ce4129cd432b8ad44d673214279eb) Improve fix for parsing commandline in SynfigPlayer. Thanks to Rodolfo Ribeiro Gomes. [studio]
+- [`b6dacff`](https://github.com/synfig/synfig/commit/b6dacff5fe039727307ad7c21ac95a9d7bbddc4b) Improve fix for parsing commandline arguments. Thanks to Rodolfo Ribeiro Gomes. [core] [studio]
+- [`943c6f1`](https://github.com/synfig/synfig/commit/943c6f10d8c2e11ae875113ac296b60d5fc050c9) fix initial value for filename entry of Render Settings dialog ([#1544](https://github.com/synfig/synfig/issues/1544)) [studio]
+- [`acde8c3`](https://github.com/synfig/synfig/commit/acde8c3a7d81b52716598fa6eadc8ae6fb68b312) [CMake] CPack added ability to generate .deb package ([#1519](https://github.com/synfig/synfig/issues/1519))
+- [`60af052`](https://github.com/synfig/synfig/commit/60af052d2f63bb503f6899b412c0db7d21911454) .deb package [core] [studio]
+- [`978905c`](https://github.com/synfig/synfig/commit/978905c8facd6d084baec50c545fad72372ca8e5) [CMake] Fixed MacOS build ([#1534](https://github.com/synfig/synfig/issues/1534))
+- [`6ccb08b`](https://github.com/synfig/synfig/commit/6ccb08b762b80d6771da5a14471aebd11702cfe7) [CMake] Added FontConfig detection [core]
+- [`72acbe4`](https://github.com/synfig/synfig/commit/72acbe479c9604470cb3f1db6730c1060f51b6bc) Updated Homebrew install script
+- [`f8f918f`](https://github.com/synfig/synfig/commit/f8f918f6610ed01f66dc1d89b79a17b53123f8cb) [CMake] Fixed libraries search Libmng/Libltdl(Libtool)/FFTW3 [core] [studio]
+- [`d82b5ae`](https://github.com/synfig/synfig/commit/d82b5aeab7df3fb5b183d442affa8ecf5f7ce3e5) [Vectorization] Bezier enhance ([#1240](https://github.com/synfig/synfig/issues/1240)) [studio]
+- [`dec2884`](https://github.com/synfig/synfig/commit/dec28849cbb304ca58fe31efc764799b41460d85) Cleanup module.h ([#1530](https://github.com/synfig/synfig/issues/1530))
+- [`c146297`](https://github.com/synfig/synfig/commit/c14629785035b5aee14ac3d80945bc145baa3c18) Set defaults for Homogenous parameter of Advanced Outline: enabled and static ([#1533](https://github.com/synfig/synfig/issues/1533)) [core] [studio]
+- [`99981e8`](https://github.com/synfig/synfig/commit/99981e8cfdf07c9f4485e8076d8d7323ccdd221e) don't re-add the first brush path to brush path list ! [studio]
+- [`0220f13`](https://github.com/synfig/synfig/commit/0220f13ab39070c7b27684981e3557ebd7102325) SynfigPlayer: Fix handling files with Arabic names [studio]
+- [`8d2b939`](https://github.com/synfig/synfig/commit/8d2b9399abb982191e2ee801375851711c5c0882) Fix exporting to files with Arabic names [core] [studio]
+- [`efe26eb`](https://github.com/synfig/synfig/commit/efe26ebeec47079086af7eb547d26d0e47541b37) Fix parsing Arabic filenames for synfig CLI [core]
+- [`25d4d0a`](https://github.com/synfig/synfig/commit/25d4d0a544262ffee36bd03074dd820e5f7d64ee) Fix opening of files with Arabic names [core] [studio]
+- [`f538260`](https://github.com/synfig/synfig/commit/f538260216b4268cb61302f624e05d358e353f5d) Brush paths moved to ResourceHelpre ([#1528](https://github.com/synfig/synfig/issues/1528))
+- [`7a8d894`](https://github.com/synfig/synfig/commit/7a8d894335f4adf368fefc6c44e4dba901fa62f2) fix constness [core]
+- [`d60760c`](https://github.com/synfig/synfig/commit/d60760c0f5997525cfd52d6de8e3f6739a271bd7) improve module documentation [core]
+- [`d86ee31`](https://github.com/synfig/synfig/commit/d86ee31a27a7fcb24912010ecff2cd21715c2bf7) minor cleanup [core]
+- [`28ab69a`](https://github.com/synfig/synfig/commit/28ab69acba6780dc5c28962f3493d6cf3d2503c2) maybe module 'constructor' should be virtual, as 'destructor' is [core]
+- [`36b6c7d`](https://github.com/synfig/synfig/commit/36b6c7d1a1e14ed548e816bb1afe45c88db2816f) avoid weak-vtable [core]
+- [`52012e0`](https://github.com/synfig/synfig/commit/52012e0c715dce149b6153bb4e007663b02a5138) synfig::Module class should not have a default name, desc, etc. [core]
+- [`1dfbed4`](https://github.com/synfig/synfig/commit/1dfbed4ea012909646fa8f5b79ca093e19696687) simplify access to default brush resource path [studio]
+- [`7df6915`](https://github.com/synfig/synfig/commit/7df69152246a816f5797240b93213718ce5bb116) fix [#1523](https://github.com/synfig/synfig/issues/1523) WidthPoint worngly computed on non-homogenous Advanced Outline [core]
+- [`2af6b11`](https://github.com/synfig/synfig/commit/2af6b11f8e30efce45a7d67c3a470702305330c8) Cleanup general.h ([#1526](https://github.com/synfig/synfig/issues/1526))
+- [`fb84c92`](https://github.com/synfig/synfig/commit/fb84c922518ecd6a0e5c49fb7a2657cb39b559a5) [CMake] Copy logo.sif to build-dir for building splash_screen ([#1525](https://github.com/synfig/synfig/issues/1525)) [studio]
+- [`a519e6a`](https://github.com/synfig/synfig/commit/a519e6a2c40fb4b4275b3331266a848537e7b9b9) add some missing documentation [core]
+- [`182be3a`](https://github.com/synfig/synfig/commit/182be3a5e10efa21df776b788f375fb07c99ddaa) prefer nullptr rather NULL [core]
+- [`4aab731`](https://github.com/synfig/synfig/commit/4aab7317323adb9aeb7a7e78e1e30a9ca00991e2) Fixed Arch linux detection ([#1521](https://github.com/synfig/synfig/issues/1521))
+- [`850aa0a`](https://github.com/synfig/synfig/commit/850aa0ad77c2a343e5bc40bee95b48847c6ee63e) Fix renaming a "layer set" - it affected other ones with certain names - [#1146](https://github.com/synfig/synfig/issues/1146) ([#1194](https://github.com/synfig/synfig/issues/1194))
+- [`6061b30`](https://github.com/synfig/synfig/commit/6061b30314ae7261527061f44ce48870640064bb) remove unused macro DEBUGPOINT [core] [studio]
+- [`c26e6bb`](https://github.com/synfig/synfig/commit/c26e6bbbdb8dc93240931004ea2a038227a08714) remove not implemented function [core]
+- [`a20a6b5`](https://github.com/synfig/synfig/commit/a20a6b5622e87bfd6a67c6e094d9eff54f1624c9) remove commented-out declaration since 2005 [core]
+- [`549cce8`](https://github.com/synfig/synfig/commit/549cce8df2b421699299972cc1cd92b868d2306a) remove unused macro [core]
+- [`eaeeea3`](https://github.com/synfig/synfig/commit/eaeeea3e8561e05a281522744e6bf47d9a17f736) fix renaming of empty sets [core]
+- [`e2456f2`](https://github.com/synfig/synfig/commit/e2456f27a9e0d18413f1dca6233ddc28684aecf4) fix renaming layer set affecting other names [core]
+- [`97940e9`](https://github.com/synfig/synfig/commit/97940e960d81b7fd02c070bfd1d1416e5ab96b39) Cleanup module.cpp a bit ([#1418](https://github.com/synfig/synfig/issues/1418))
+- [`94f07ac`](https://github.com/synfig/synfig/commit/94f07ac27d2bba616cf36e2b73a230dc7cd25750) let Windows & OSX users have custom(?) modules too [core]
+- [`d289bd2`](https://github.com/synfig/synfig/commit/d289bd2ca10fc56ba36ccff9828b914db541b282) remove unused headers [core]
+- [`95c9f22`](https://github.com/synfig/synfig/commit/95c9f2200677039082fb5d4469012806f5c17d64) simplify search for module constructor symbol [core]
+- [`d0510c0`](https://github.com/synfig/synfig/commit/d0510c0687220219e42111787cf954d9cc387d93) prefer nullptr rather NULL [core]
+- [`db2053d`](https://github.com/synfig/synfig/commit/db2053d9ffbcd52f15eaef918c90ec9eafc0ef52) remove commented out code since 04.2005 [core]
+- [`5862c76`](https://github.com/synfig/synfig/commit/5862c7611232cb180d8eb2934b17b2f306404f10) ThreadPool: prefer std::mutex and std::condition_variable ([#1036](https://github.com/synfig/synfig/issues/1036)) [core]
+- [`2fb1e65`](https://github.com/synfig/synfig/commit/2fb1e659f70ede5ba97ff149efdb2b352680a5b1) Copy plugins, brushes and sounds to the appropriate place in CMake build. ([#1501](https://github.com/synfig/synfig/issues/1501))
+- [`5102d5e`](https://github.com/synfig/synfig/commit/5102d5e149811ec9832736e5f3851f82ebe0f9cb) [Lottie Exporter] Added support for Vector X and Vector Y convert method ([#1516](https://github.com/synfig/synfig/issues/1516)) [studio]
+- [`d007f97`](https://github.com/synfig/synfig/commit/d007f97f889425abc9f66461f6d8ab0114b9b732) Added a custom function for intltool_merge [core] [studio]
+- [`836b46a`](https://github.com/synfig/synfig/commit/836b46a978c0c0abbc7457fc0a7f320a7f045f40) Copy plugins, brushes, sounds and ui to /share/synfig in CMake builds [studio]
+- [`15080f9`](https://github.com/synfig/synfig/commit/15080f98a5fb3490865d006c2c250f6e316c71a1) Different CMake builds based on CMAKE_BUILD_TYPE. ([#1500](https://github.com/synfig/synfig/issues/1500))
+- [`0b965c0`](https://github.com/synfig/synfig/commit/0b965c0f2e5acf60ae7bf4e4e1426ae772295974) Avoid deadlock when converting vector to 'dynamic' ([#1073](https://github.com/synfig/synfig/issues/1073)) [studio]
+- [`c323060`](https://github.com/synfig/synfig/commit/c3230601682226b0b0d009a31adbaa6db809fa0d) Different CMake builds based on CMAKE_BUILD_TYPE. [core] [studio]
+- [`7d16c26`](https://github.com/synfig/synfig/commit/7d16c263f412873329ef5a495e4a993dc1d57c8f) Edit tooltips for style consistency ([#1514](https://github.com/synfig/synfig/issues/1514)) [core]
+- [`2e0b896`](https://github.com/synfig/synfig/commit/2e0b89692ba6a881b79f5bd71b15871bd6acd1a4) Updated CMake icons directory ([#1512](https://github.com/synfig/synfig/issues/1512)) [studio]
+- [`13dab06`](https://github.com/synfig/synfig/commit/13dab0681156014e7c0c84db0e6750c284decfc8) Generate l10n files from .po files. ([#1462](https://github.com/synfig/synfig/issues/1462)) [core] [studio]
+- [`2ce6c92`](https://github.com/synfig/synfig/commit/2ce6c92c88dbb039e3d4b2df6df6884f81c63aba) Not using modules/layer_std/import/ but synfig/layers/layer_bitmap for importing sequences [studio]
+- [`67b1ab7`](https://github.com/synfig/synfig/commit/67b1ab7fc451c2d201da6bfc6b31083125481537) Make titles and spacings consistent across tool options ([#1369](https://github.com/synfig/synfig/issues/1369)) [studio]
+- [`d72bbc9`](https://github.com/synfig/synfig/commit/d72bbc943d6b3205fb86b0e343b451fcfd49f2cc) VLA replaced by std::vector class (fixes MSVC compilation) ([#1474](https://github.com/synfig/synfig/issues/1474)) [core]
+- [`5a3f423`](https://github.com/synfig/synfig/commit/5a3f4232224bbf9d3524158682bd7eb0ff7166c7) Use ScrolledWindow and label wrapping for message dialog ([#1496](https://github.com/synfig/synfig/issues/1496)) [core] [studio]
+- [`8081eb8`](https://github.com/synfig/synfig/commit/8081eb89d66dfdefb20d3d88ac2fd2e928e882df) Check if target output has same name as existing files ([#1461](https://github.com/synfig/synfig/issues/1461)) [studio]
+- [`48ac6ff`](https://github.com/synfig/synfig/commit/48ac6ffa41b74e649f6208b0004005a1e0987830) Resource path changes for CMake build. ([#1484](https://github.com/synfig/synfig/issues/1484)) [studio]
+- [`b7884bb`](https://github.com/synfig/synfig/commit/b7884bb9287d546acd7dfdddaabeb91bbf1a54aa) Replace deprecated set_margin method ([#1482](https://github.com/synfig/synfig/issues/1482)) [studio]
+- [`5d3056e`](https://github.com/synfig/synfig/commit/5d3056e28e19413136e321b320edfb30c0a56a3f) Merge PR[#1487](https://github.com/synfig/synfig/issues/1487): minor improvements in Info panel
+- [`633d54d`](https://github.com/synfig/synfig/commit/633d54dc90d54f2e78b42160635a5c70f11d16e6) Merge PR [#1483](https://github.com/synfig/synfig/issues/1483): Change installation folder of synfig images and icons
+- [`0cb71d7`](https://github.com/synfig/synfig/commit/0cb71d7f48740e8f11939758b0c9b7afb0016c73) minor improvements in Info panel [studio]
+- [`bd0246a`](https://github.com/synfig/synfig/commit/bd0246a16ec6ee8b38092a00cd2232356fb85b46) install icons in share/synfig/icons/classic and enable theming [studio]
+- [`f92abf4`](https://github.com/synfig/synfig/commit/f92abf485bc107b99b897bba17bab37a50fc16a6) clean Makefile of synfig-studio/images [studio]
+- [`7010939`](https://github.com/synfig/synfig/commit/701093982d573012f36a2ea687235d53bf5473c1) move variable definitions to where they are used [studio]
+- [`42c53f1`](https://github.com/synfig/synfig/commit/42c53f1ef6ef17eab84b96e21045c4b3d7b16cb3) simplification of a file of autotools [studio]
+- [`7ab41fa`](https://github.com/synfig/synfig/commit/7ab41fa0a9bfdcddaecb579e4cf84eafe9e3e803) fix build_images target's rebuilding behavior ([#1478](https://github.com/synfig/synfig/issues/1478)) [studio]
+- [`35c3012`](https://github.com/synfig/synfig/commit/35c3012b8e1d57a493a109924f6c04942ad609a9) Merge PR [#1477](https://github.com/synfig/synfig/issues/1477): Simplify access to resource
+- [`73ca88f`](https://github.com/synfig/synfig/commit/73ca88fbb7c4b767aecfca8bac1125a8469f6982) Merge PR [#1438](https://github.com/synfig/synfig/issues/1438): Trying to fix skeleton copy
+- [`63bfa85`](https://github.com/synfig/synfig/commit/63bfa8545dea5e8bf0f0f01b1c77b237163c549c) don't try to (re)link bones of cloned skeleton [core]
+- [`0854f8a`](https://github.com/synfig/synfig/commit/0854f8a7c60fcd88f0852e76104c0157d6d5cdca) fix skeleton duplication [core]
+- [`e194811`](https://github.com/synfig/synfig/commit/e194811d4fe7762a747232616cd5c18b182dd12d) minor efficiency improvement [core]
+- [`1794330`](https://github.com/synfig/synfig/commit/1794330c196605b7795c0dbcd146fbc766012680) avoid another (improbable) crash [core]
+- [`93f7956`](https://github.com/synfig/synfig/commit/93f79566b779206a8336bf2e0fab1f8f6c493866) avoid (an improbable) crash [studio]
+- [`6c5eec6`](https://github.com/synfig/synfig/commit/6c5eec652a72b55d5b23d4e9a66f42c65901d0fb) bones: minor cleanups of header files and #include [core]
+- [`27cd14e`](https://github.com/synfig/synfig/commit/27cd14ea7a25dbf9e3226d3f357afd8404a349a8) Merge PR[#1475](https://github.com/synfig/synfig/issues/1475): try to catch all exceptions thrown in GTK event callback/handlers
+- [`c9d4855`](https://github.com/synfig/synfig/commit/c9d4855244b3ff3b4c52dcd69cf7d1a08f113bcb) simplify access to sounds/plugins/ui resources [studio]
+- [`adcb3ba`](https://github.com/synfig/synfig/commit/adcb3ba9b5f5257bac8a4455f16b1be905c5c841) remove unused file [studio]
+- [`d276eb2`](https://github.com/synfig/synfig/commit/d276eb2881a16dd99801093952101bd8f34cccf3) simplify autotools dir [studio]
+- [`27f38ad`](https://github.com/synfig/synfig/commit/27f38ad306a91a41b8e121f220a27fe461d1adec) Let Windows print useful function name [studio]
+- [`2515be2`](https://github.com/synfig/synfig/commit/2515be25e158787d45b96ae252720f631b54364e) try to catch all exceptions thrown in GTK event callback handlers [studio]
+- [`b6995dc`](https://github.com/synfig/synfig/commit/b6995dc5864f43239b4e5ac9b119222328af6af1) Add test file for conversion between homogeneous and standard width points ([#1471](https://github.com/synfig/synfig/issues/1471)) [core]
+- [`18e6acb`](https://github.com/synfig/synfig/commit/18e6acbf8682e7b4b7f2b3c10fbf9f7e9e6a3324) Update lottie test script
+- [`4f1e92f`](https://github.com/synfig/synfig/commit/4f1e92f74cb2862ae83fba73d8b35ea669fa264a) Fix [#1467](https://github.com/synfig/synfig/issues/1467): "Link to Spline" places vertex into wrong position when Spline is looped ([#1468](https://github.com/synfig/synfig/issues/1468)) [studio]
+- [`334b5b9`](https://github.com/synfig/synfig/commit/334b5b9b6d888ad68bf6b1f3202f581cb3a3e14d) Fix Incorrect position of Widthpoints on Homogenous Advanced Outline. Closes [#1431](https://github.com/synfig/synfig/issues/1431).
+- [`0f873c9`](https://github.com/synfig/synfig/commit/0f873c9a165469104676bc11c9f4521d6ad1138b) fix homogeneous <-> standard system position conversions [core]
+- [`c8fb721`](https://github.com/synfig/synfig/commit/c8fb721b01ce312972f1e400ed23784ed346cc64) fix bline_length() computation [core]
+- [`068c884`](https://github.com/synfig/synfig/commit/068c884e8a10638cd625fbd3b42bfc6605eb2f34) Merge PR [#1466](https://github.com/synfig/synfig/issues/1466): fix POTFILES.in
+- [`1fb9c45`](https://github.com/synfig/synfig/commit/1fb9c45c44311573a64dd84c986a187a665d64e2) fix POTFILES.in [core] [studio]
+- [`8943867`](https://github.com/synfig/synfig/commit/894386769881efe2702ff18b71054e6b1e9224fa) [Lottie exporter] Refactor lottie modules/Added named constants ([#1456](https://github.com/synfig/synfig/issues/1456)) [studio]
+- [`c51cef4`](https://github.com/synfig/synfig/commit/c51cef4a4381edc249884c2ff4fd2efdb94b69c4) [Lottie Exporter] Add support for radial gradient layer ([#1446](https://github.com/synfig/synfig/issues/1446)) [studio]
+- [`4c519a9`](https://github.com/synfig/synfig/commit/4c519a9539905788b66101b4b440880949733a6b) Merge PR [#1450](https://github.com/synfig/synfig/issues/1450): Improved warning dialog UI
+- [`9fc95fe`](https://github.com/synfig/synfig/commit/9fc95fe147179dac8f779881236d18fb76fa604c) [Lottie exporter] Refactor radial_composite convert method ([#1447](https://github.com/synfig/synfig/issues/1447)) [studio]
+- [`1fc89f1`](https://github.com/synfig/synfig/commit/1fc89f1654264400b34ab931aeed4f6f1d15edff) Improved warning dialog UI [studio]
+- [`c9e9d2f`](https://github.com/synfig/synfig/commit/c9e9d2f0d3021779ea351f37ddf0665a4a1d76bb) [Lottie Exporter] Add support for Vector Angle convert method ([#1409](https://github.com/synfig/synfig/issues/1409)) [studio]
+- [`6d3f75f`](https://github.com/synfig/synfig/commit/6d3f75ffc8a3450587c8105a738e1b6db79f7956) quick workaround to fix crash in new timetrack ([#1439](https://github.com/synfig/synfig/issues/1439)) [studio]
+- [`7684be8`](https://github.com/synfig/synfig/commit/7684be864f20b5cda39dd07833e74e78a874e6d3) Removing Duplicate frames while importing an image sequence [core] [studio]
+- [`60bf6e3`](https://github.com/synfig/synfig/commit/60bf6e30f211b093e2724d7a0f80d6981c8ad8dc) DashItem Offset and Length variables are not consistent when editing them [core]
+- [`454ac39`](https://github.com/synfig/synfig/commit/454ac396850dd6ac58360f14039a7419460c4700) REVISION_ID with 7 characters instead of 6 [studio]
+- [`ec79049`](https://github.com/synfig/synfig/commit/ec79049a8abd482b53acb3915ad472accd24b0f9) Animation Speed of Noise Distort Layer set to static by default [core]
+- [`e60a668`](https://github.com/synfig/synfig/commit/e60a668e53cd718e910ad4172774f2672e797172) Cleaned clock functions. Fixed compilation on MSVC. ([#1426](https://github.com/synfig/synfig/issues/1426)) [ETL] [core]
+- [`c50ec55`](https://github.com/synfig/synfig/commit/c50ec55dfb32ab6f7336f9061d5ddd61787879a2) fix crashing when removing spline point too fast ([#1434](https://github.com/synfig/synfig/issues/1434)) [studio]
+- [`14667dd`](https://github.com/synfig/synfig/commit/14667ddf6f9b495b76517b276cb26f4b09aece17) [Lottie Exporter] Add support for aTan2 convert method ([#1363](https://github.com/synfig/synfig/issues/1363)) [studio]
+- [`dbd27fb`](https://github.com/synfig/synfig/commit/dbd27fb50fedf129a7ea05a87297505ae13da55a) Remove old commented-out code (gui/layertree) ([#1429](https://github.com/synfig/synfig/issues/1429)) [studio]
+- [`5d56cdc`](https://github.com/synfig/synfig/commit/5d56cdcc1ee24de17007f77bdac335e2c6da5005) Merge PR [#1435](https://github.com/synfig/synfig/issues/1435): Minor cleanup in skeleton files
+- [`f14a5bb`](https://github.com/synfig/synfig/commit/f14a5bbc64e147bd091a75c8572c6ae4b44ba742) Merge PR [#1400](https://github.com/synfig/synfig/issues/1400): Add support for building snap packages
+- [`cdd01d8`](https://github.com/synfig/synfig/commit/cdd01d8f28d7a9a665edba304051aaa6a890349a) remove useless macro - use method get_string() instead [core]
+- [`05dd664`](https://github.com/synfig/synfig/commit/05dd66478bc18bdb40716e612f9181ed92c946dc) prefer nullptr rather than 0 [core]
+- [`f4c8ad4`](https://github.com/synfig/synfig/commit/f4c8ad46fc04a7a6e39dab39f257c057c00002db) remove unused #include [core]
+- [`2ab96a9`](https://github.com/synfig/synfig/commit/2ab96a95adfe3fcc4e3e64485c0380a66218eedf) Fixes glitching widthpoints. Closes [#1401](https://github.com/synfig/synfig/issues/1401). [core]
+- [`217c238`](https://github.com/synfig/synfig/commit/217c23851aaba6978232a639aa26ad598c03c141) snap: Improve cleanup part
+- [`34d75aa`](https://github.com/synfig/synfig/commit/34d75aaadf70b62e5afa78cdcb74d791d57324b2) Merge PR [#1427](https://github.com/synfig/synfig/issues/1427): [Timetrack] fix in rectangle-selection bottom-top
+- [`b5e5294`](https://github.com/synfig/synfig/commit/b5e5294121bda033f2a9f86a80e7e2fdbdb3d9ef) Activate widget_filename when user chooses file via button/file dialog ([#1425](https://github.com/synfig/synfig/issues/1425)) [studio]
+- [`db75d5a`](https://github.com/synfig/synfig/commit/db75d5aaa420a9fa97b3903bfcc5735ed6bef197) just in case: avoid repetition of selected rows [studio]
+- [`69a23da`](https://github.com/synfig/synfig/commit/69a23da7098b08bfe8991fdf26028a3f45d29466) allow to select waypoints by rectangle area bottom-top where top is above [studio]
+- [`b680ec9`](https://github.com/synfig/synfig/commit/b680ec970f1fc28b359816e0376218277b933827) Don't try to delete/move/copy zero waypoints ([#1424](https://github.com/synfig/synfig/issues/1424)) [studio]
+- [`0e5aca0`](https://github.com/synfig/synfig/commit/0e5aca00d20380923e6f7ffb02888ca02235a9ca) Fixed smach (state machine) compilation on MSVC ([#1423](https://github.com/synfig/synfig/issues/1423)) [studio]
+- [`6d32e5b`](https://github.com/synfig/synfig/commit/6d32e5b21f53cf86bef1a420cbd34debf4aa35e9) hide GUID int constructor ([#1404](https://github.com/synfig/synfig/issues/1404)) [core] [studio]
+- [`30a059e`](https://github.com/synfig/synfig/commit/30a059e035768e99fd5eec7d812119f2188de2da) remove unneeded path var [core]
+- [`1873f44`](https://github.com/synfig/synfig/commit/1873f44504e4d6270c245dd7b1f56df5ca799fe2) Merge PR [#1094](https://github.com/synfig/synfig/issues/1094): Remove unused Change Preview Quality menu item [studio]
+- [`fe42b80`](https://github.com/synfig/synfig/commit/fe42b8076c0d333dfab3561b59f1e50c74798b40) snap: Append build date & git hash to version for untagged commits
+- [`f4f3c75`](https://github.com/synfig/synfig/commit/f4f3c7511a4b3900e395483433e7099c30ea7aa7) Add support for building snap packages
+- [`27c7b95`](https://github.com/synfig/synfig/commit/27c7b956ea343ee71b1927e4082abd2df647eecb) Merge PR [#1406](https://github.com/synfig/synfig/issues/1406): fix time and delta values in tooltip while dragging in Graph panel
+- [`b6efff5`](https://github.com/synfig/synfig/commit/b6efff5fb8e3f7ee91829b24520a4cc2d6b87f32) Merge PR [#1370](https://github.com/synfig/synfig/issues/1370): Soundwave dock now loads sound layers from canvas
+- [`042bee7`](https://github.com/synfig/synfig/commit/042bee72b8c1f92bca671fc94bae3ccac0fe4a1e) ellipsize long filenames in Sound panel combobox [studio]
+- [`b387550`](https://github.com/synfig/synfig/commit/b387550e565abdeb6cf3229ed4a04b060aa3cb7e) always show filename in the combobox [studio]
+- [`e12b768`](https://github.com/synfig/synfig/commit/e12b7687c5d6385447ebdc7843520c857d87300a) fix combobox popup weird width [studio]
+- [`6b52903`](https://github.com/synfig/synfig/commit/6b5290395e6b3fdd928e32e057a55f04528cca29) Sound panel now lists sound layer description too if different [studio]
+- [`2315149`](https://github.com/synfig/synfig/commit/23151497c12471193e57f07233631aca0c26df9e) fix catch exceptions [studio]
+- [`5cd05ad`](https://github.com/synfig/synfig/commit/5cd05ad8f52f63132e5f9f432adb6a2a226b0e34) sound panel: fix loading sound file on a saved file [studio]
+- [`4b4e9fc`](https://github.com/synfig/synfig/commit/4b4e9fc54b13421baf27883b43c6d9ca49a842b3) don't reload after setting sound delay [studio]
+- [`f362564`](https://github.com/synfig/synfig/commit/f3625641151be7cb9362630eecdd8a443af17039) fix displaying sound delay [studio]
+- [`8b5e8bd`](https://github.com/synfig/synfig/commit/8b5e8bdaabd116eea62d545d19a653175007431e) Soundwave dock now uses sound layers in canvas [studio]
+- [`5d873a3`](https://github.com/synfig/synfig/commit/5d873a34c7b9295a059ebed1007af330014140fd) Merge PR [#1408](https://github.com/synfig/synfig/issues/1408): Fixed 'font not found' error in FreeType layers (Fix [#1407](https://github.com/synfig/synfig/issues/1407))
+- [`18c174e`](https://github.com/synfig/synfig/commit/18c174e42e82c564db6c18e2c58e50b3da05353f) don't waste time trying to open face of unnamed font [core]
+- [`0ca3942`](https://github.com/synfig/synfig/commit/0ca3942209ed033bec9f2c0b5a6018c63e5fbfa5) fix 'font not found' in freetype layers - fix [#1407](https://github.com/synfig/synfig/issues/1407) [core]
+- [`b5b8239`](https://github.com/synfig/synfig/commit/b5b8239a7b7b1d896e125a2d7c4d7a70b98000e5) Minor cleanup on color dialog ([#1396](https://github.com/synfig/synfig/issues/1396)) [studio]
+- [`692f105`](https://github.com/synfig/synfig/commit/692f105841d3d3eafb53110b1a0d1f0349b668aa) fix time and delta values in tooltip while dragging in Graph panel [studio]
+- [`2349d94`](https://github.com/synfig/synfig/commit/2349d947bbcceafe9dcdc782e2bb8fafb090f91f) PR [#1356](https://github.com/synfig/synfig/issues/1356): Add option to playback animation in realtime [studio]
+- [`eede90c`](https://github.com/synfig/synfig/commit/eede90c6a874eced59b77b3855a5f04a033813ed) [Lottie exporter] Add support for linear gradient ([#1286](https://github.com/synfig/synfig/issues/1286)) [studio]
+- [`77164ff`](https://github.com/synfig/synfig/commit/77164ff0d3b2b05476306300fbd57360ce34b478) Some clean up on layer freetype ([#1403](https://github.com/synfig/synfig/issues/1403)) [core]
+- [`a724c75`](https://github.com/synfig/synfig/commit/a724c758a5147554ade0a9dfbdbe4e0a9d6b039f) Merge PR [#1399](https://github.com/synfig/synfig/issues/1399): Cmake fixes
+- [`d972346`](https://github.com/synfig/synfig/commit/d9723460cf84db0363f5afe7ba783f219ac710cf) studio: CMake: Add include & library dirs for each pkg_config module [studio]
+- [`e8589a5`](https://github.com/synfig/synfig/commit/e8589a5975fff82ed6a13953a4704b93a5e71318) core: CMake: Add include & library dirs for each pkg_config module [core]
+- [`15a4167`](https://github.com/synfig/synfig/commit/15a41673a92458a735c5945759cb51852b92b4e7) ETL: CMake: Do not install non-existing header [ETL]
+- [`02747a2`](https://github.com/synfig/synfig/commit/02747a2f8e050729c5845a62888b963118c1014d) Don't show multiple warning messages about old canvas. Closes [#1380](https://github.com/synfig/synfig/issues/1380). [core]
+- [`8dc4c06`](https://github.com/synfig/synfig/commit/8dc4c0642176ec57679cb5b2ac7fdb5897efef23) Merge PR [#1354](https://github.com/synfig/synfig/issues/1354): Make first vertex selectable when creating spline. Fixes [#1281](https://github.com/synfig/synfig/issues/1281).
+- [`dd22899`](https://github.com/synfig/synfig/commit/dd22899aee08b5905db62f3099706aa4f88b1f8f) make polygon creation consistent with spline creation [studio]
+- [`ee9c0fe`](https://github.com/synfig/synfig/commit/ee9c0fe83a772a39c87ff97500781a35f842d569) make first vertex selectable when creating spline [studio]
+- [`cfe18dd`](https://github.com/synfig/synfig/commit/cfe18dd9dcf053dc4da6e495e53573a49adf0606) View-Toolbar is effective for all canvases [studio]
+- [`9ad7d22`](https://github.com/synfig/synfig/commit/9ad7d22d857c42b49bde109af298c77d661a68b4) Merge PR [#1386](https://github.com/synfig/synfig/issues/1386): Toolbar menu
+- [`af4b833`](https://github.com/synfig/synfig/commit/af4b8333a2d176e06ca4503dc4d679cbbc5c0b02) toogle_displaybar() is renamed to toggle_show_toolbar() [studio]
+- [`c903f71`](https://github.com/synfig/synfig/commit/c903f71474eb2ae4112654ea6558c790978338c9) fix View -> Toolbar menu [studio]
+- [`251f37a`](https://github.com/synfig/synfig/commit/251f37a0c255ee89beb94b523adc2ec21474bf4b) Merge PR [#1222](https://github.com/synfig/synfig/issues/1222): Warp layer is now renamed to perspective layer
+- [`d40d812`](https://github.com/synfig/synfig/commit/d40d812f646d9260502c9677a965ced4c2617772) Delete trace.log
+- [`65b18fd`](https://github.com/synfig/synfig/commit/65b18fd6878ac42ca76aa8a1fc52ff59f97aef58) now we can open  files with warp layer which is saved by old Synfig version. [core]
+- [`c488480`](https://github.com/synfig/synfig/commit/c4884804cf43059d1c8152ee310ba9eb3fffa24c) warp layer is now renamed to perspective layer [core]
+- [`51ba106`](https://github.com/synfig/synfig/commit/51ba10644bd4aab01866bb5a2c8dad4805556e41) Merge PR [#1313](https://github.com/synfig/synfig/issues/1313): Rework the plugin system
+- [`d234429`](https://github.com/synfig/synfig/commit/d23442958d9b5546f9ba1dea21b150e52c424cd3) Moved state machine (smach) from ETL to synfig-studio/src/gui [ETL] [studio]
+- [`3fb1847`](https://github.com/synfig/synfig/commit/3fb18476777d5efa82723ea50213fff8f446818d) Save canvas as fallback if get_read_stream fails [studio]
+- [`8208138`](https://github.com/synfig/synfig/commit/8208138aba02c4193b39c3e8bc1062d98bcc9df7) Enforce synfig file extension in run plugin [studio]
+- [`9bd9506`](https://github.com/synfig/synfig/commit/9bd9506384701e34cefa6951cf762633a024b5d2) Rename variables [studio]
+- [`509cefc`](https://github.com/synfig/synfig/commit/509cefc180c4f356845bdc204808c5eca4e6b3f2) Set the canvas filename to that of a new file when imported from a plugin [studio]
+- [`252c833`](https://github.com/synfig/synfig/commit/252c8330d63fbb1f40c8a0f9f3fdfe6c5938a2e9) Add filter for all supported files [studio]
+- [`52cafe5`](https://github.com/synfig/synfig/commit/52cafe59e80084edde18f2edf05edcb9e916621c) Support imported files in open recent [studio]
+- [`ee00a56`](https://github.com/synfig/synfig/commit/ee00a563bfc67b410f06986ffa2a261c3b8e3885) Show a dialog to select the right importer plugin [studio]
+- [`8e42823`](https://github.com/synfig/synfig/commit/8e428231cb1afdcc4e8c7a7caf1e2d8ee0d66ccc) Handle plugins on Any files [studio]
+- [`0e1e256`](https://github.com/synfig/synfig/commit/0e1e25612f16780b201b446637f9784343d4c0df) Propely load importers [studio]
+- [`0adc445`](https://github.com/synfig/synfig/commit/0adc445b7d868526527695cba3d262acd283305e) Use ui_language to select the plugin string [studio]
+- [`ca705d8`](https://github.com/synfig/synfig/commit/ca705d8e0dc66e3aa38ec0561bc373233c938fca) Use stdout for logs from lottie-exporter [studio]
+- [`7155860`](https://github.com/synfig/synfig/commit/71558609b79fb587af64bf29fe2f568219c1a23e) Add extension dot when loading them from the plugin file [studio]
+- [`c3d4f37`](https://github.com/synfig/synfig/commit/c3d4f37d0a9ba3712a1a6a2eee8e1a72fad73cb5) Removed unused declarations [studio]
+- [`ad301f9`](https://github.com/synfig/synfig/commit/ad301f90aa4ae7160ac9cae1a450d3eb1db6cd12) Base pluginin script ids on the xml file name rather than its directory [studio]
+- [`d2b792f`](https://github.com/synfig/synfig/commit/d2b792f49b45dbd91b81c7ef20a00ab14b62fd30) Implicit . on plugin extension import/export [studio]
+- [`13fcb5a`](https://github.com/synfig/synfig/commit/13fcb5a7541f6253b3d2627e420ef649867d5309) Avoid name collision for stdout/stderr [studio]
+- [`79cac4a`](https://github.com/synfig/synfig/commit/79cac4a36768dee4ac305bc3814382a3780756c7) Show plugin importers under Open [studio]
+- [`ee68545`](https://github.com/synfig/synfig/commit/ee6854500484255a943902608ef351e7adff9100) Add a message in case there is no importer installed [studio]
+- [`2c56ee8`](https://github.com/synfig/synfig/commit/2c56ee8aa64336d1e25b927599e4aa277d133ba5) Importer plugins [studio]
+- [`42cbd4a`](https://github.com/synfig/synfig/commit/42cbd4acb6ffbc56f322fb0ab6445dba7f1aa561) Rework the plugin system [studio]
+- [`7480aeb`](https://github.com/synfig/synfig/commit/7480aebdb3a988e38da5c0e08e64c6f75e9df111) fix readable name of Alpha parameter of Radial Composite valuenode [core]
+- [`1141307`](https://github.com/synfig/synfig/commit/114130756fc5b43c04b09c11252bfa600a7ada3d) Fix typo in source code [studio]
+- [`40593a0`](https://github.com/synfig/synfig/commit/40593a09e815c08229334bce57001c69ca0d1607) Update translations 2020-04-24 [core] [studio]
+- [`e821d31`](https://github.com/synfig/synfig/commit/e821d3193e980b89851d86642630dc129c942caf) Warning when opening file of older version. Closes [#1307](https://github.com/synfig/synfig/issues/1307). [core]
+- [`93e758b`](https://github.com/synfig/synfig/commit/93e758b73349ddd0463018d3efff6837f9db60d9) fix bline point order when saving for older canvas (part 3). [core]
+- [`3b1471f`](https://github.com/synfig/synfig/commit/3b1471fca5d8405999cd5b4ed24aba078046a20b) fix endianess of 16-bit PNG importing [core]
+- [`52eb2c8`](https://github.com/synfig/synfig/commit/52eb2c84ab8c34ca5701648b89241276e6c3d014) Workarea: replace deprecated Gtk::Table ([#1357](https://github.com/synfig/synfig/issues/1357)) [studio]
+- [`d2821dd`](https://github.com/synfig/synfig/commit/d2821ddcf1c09f453a0cfca2b7110e8399af6fac) Merge PR [#1373](https://github.com/synfig/synfig/issues/1373): don't let user delete waypoints while dragging them in Timetrack panel
+- [`892c6e2`](https://github.com/synfig/synfig/commit/892c6e2338c1bf2c535180619d6c1099498150fa) Merge PR [#1372](https://github.com/synfig/synfig/issues/1372): don't let user delete waypoints while dragging them in Graph panel
+- [`53c5ded`](https://github.com/synfig/synfig/commit/53c5dedf74de98c5fea310bc540abe527d210ef4) don't let user delete waypoints while dragging them in Timetrack panel [studio]
+- [`8c8c985`](https://github.com/synfig/synfig/commit/8c8c9859f2550eeee7da3e94f4024fc57f718cb0) don't let user delete waypoints while dragging them in Graph panel [studio]
+- [`d385778`](https://github.com/synfig/synfig/commit/d3857788ad8c61a742154e7d9ef1f9c10458a74e) Improve formatting of Vectorizer license in About dialog [studio]
+- [`008ab83`](https://github.com/synfig/synfig/commit/008ab83f655334711559bcb6e5f64ce15293b9f2) added vectorizer feature credits to about dialog. [studio]
+- [`7d0ef7e`](https://github.com/synfig/synfig/commit/7d0ef7e89b47970e7339d62217aa2e87d28ddf5a) fix bline point order when saving for older canvas (part 2) ([#1365](https://github.com/synfig/synfig/issues/1365)) [core]
+- [`2ed703e`](https://github.com/synfig/synfig/commit/2ed703e6e6d43265e2b75ebd18156a248c5ed9d8) README: Move list of contrubutors to top, fix "contribute" link.
+- [`f7d0565`](https://github.com/synfig/synfig/commit/f7d0565b829f225266487faca04e0c2e6520a748) Added financial contributors to the README
+- [`7327b78`](https://github.com/synfig/synfig/commit/7327b78d4e27e0a743a43cccae012f1b1e46ae22) Add link to OpenCollective in FUNDING.yml
+- [`3ef74a5`](https://github.com/synfig/synfig/commit/3ef74a55560c92463d33f7bc831a38faaa854ba8) fix bline point order when saving for older canvas (< synfig 1.4) [core]
+- [`7c57f7a`](https://github.com/synfig/synfig/commit/7c57f7ac0867a5cd768d8c2f060d057cd2d222e0) Show interpolation type directly in waypoint's context menu. ([#1353](https://github.com/synfig/synfig/issues/1353)) [studio]
+- [`f93735e`](https://github.com/synfig/synfig/commit/f93735e6fa638357396cfc8c373aace1c374341d) Avoid crash on pngspritesheet exporting ([#1339](https://github.com/synfig/synfig/issues/1339)) [core] [studio]
+- [`a8eccbe`](https://github.com/synfig/synfig/commit/a8eccbe0b9780c29ac517ec6852c6bcf795515bc) Cleanup unwanted console messages ([#1352](https://github.com/synfig/synfig/issues/1352)) [studio]
+- [`2df3379`](https://github.com/synfig/synfig/commit/2df33799b30f777b6ff3818578ed376111094b49) Merge PR [#1351](https://github.com/synfig/synfig/issues/1351): Canvas, bone & sublayer parameters now pops up in one single click
+- [`869bcc9`](https://github.com/synfig/synfig/commit/869bcc9d8534e26079c2c0d860b59438dd38699f) sublayer parameter now pops up in one single click [studio]
+- [`2e2e776`](https://github.com/synfig/synfig/commit/2e2e7764e1c58f562f54d33629b35cc15798e4d3) canvas and bone parameters now pop up in one single click [studio]
+- [`29d8878`](https://github.com/synfig/synfig/commit/29d887824118dc8372994fdf27f73a3a9074a459) Merge PR [#1337](https://github.com/synfig/synfig/issues/1337): Single click for parameter editing
+- [`81b9115`](https://github.com/synfig/synfig/commit/81b9115d3af5f1d905c2f56190efe8d2dfa6904b) single click for edit parameters of any type [studio]
+- [`7e99f48`](https://github.com/synfig/synfig/commit/7e99f48debfba48c8a646e64224a094c73441093) fix internal property scope: private [studio]
+- [`320a6a6`](https://github.com/synfig/synfig/commit/320a6a60b8a2230a87dbf121058f74945a3c031e) reduces variable scope and fixes type [studio]
+- [`5f2fe66`](https://github.com/synfig/synfig/commit/5f2fe66e8491b48817cda59be6d53bd016ff6002) prefer nullptr rather NULL or 0 [studio]
+- [`73a6a0a`](https://github.com/synfig/synfig/commit/73a6a0ae3334fad7e3185d4965b44497ba72d1af) remove wrong callback binding [studio]
+- [`788d72d`](https://github.com/synfig/synfig/commit/788d72dea3fb5769bdcf85583a15053ba2031c06) Merge PR [#1344](https://github.com/synfig/synfig/issues/1344): Different look for indirect waypoints 
+- [`ccf39ec`](https://github.com/synfig/synfig/commit/ccf39ec9900fbd6835e651630e986e9645c1bbd8) Minor code cleanup trgt_jpeg and mptr_jpeg ([#1343](https://github.com/synfig/synfig/issues/1343)) [core]
+- [`5b37d15`](https://github.com/synfig/synfig/commit/5b37d157dfdfa771290992ed1e27c1028ce6f545) make division with doubles in order to avoid minor errors [studio]
+- [`175e547`](https://github.com/synfig/synfig/commit/175e547a44e418094b9964298bd48acf86297fc7) remove useless code for halt waypoint rendering [studio]
+- [`b819fba`](https://github.com/synfig/synfig/commit/b819fba9418f4919c463876647a312ecdde3b437) add second outline for waypoints of not-animated valuebase_nodes [studio]
+- [`aa6f2e9`](https://github.com/synfig/synfig/commit/aa6f2e9c2af654e8d0b540b527e0e1bf11c4629c) FIXUP HALT _ SQUASH [studio]
+- [`79cc906`](https://github.com/synfig/synfig/commit/79cc9063116f861f1881f0530a4190a6808e090b) cleanup linear, clamped, constant and undefined waypoint rendering [studio]
+- [`fd90636`](https://github.com/synfig/synfig/commit/fd90636fbc0b9e070fc11f72247c1df104ad9fb7) cleanup halt waypoint rendering [studio]
+- [`ea8e3f9`](https://github.com/synfig/synfig/commit/ea8e3f99c7b2b429b5c6352c33f11d817ad07768) rename properly outline_color var due to possible dark mode support [studio]
+- [`b3ae782`](https://github.com/synfig/synfig/commit/b3ae782bc2c234f171c482009cff1d197d87d01e) Show workarea task messages as tooltip too ([#1338](https://github.com/synfig/synfig/issues/1338)) [studio]
+- [`8abcd40`](https://github.com/synfig/synfig/commit/8abcd4001cca830379259a6e4b1719c6dc38d53c) Improved generation of recent files list. Fixed MAX_PATH on Windows. ([#1335](https://github.com/synfig/synfig/issues/1335)) [studio]
+- [`28696ba`](https://github.com/synfig/synfig/commit/28696ba976cbf6dfab33cf75da4a4b8aab31e44f) Merge PR [#1325](https://github.com/synfig/synfig/issues/1325): Allow enum parameter be edited with a double click instead of triple click
+- [`fe96d4c`](https://github.com/synfig/synfig/commit/fe96d4ce64d4270efa0a8e5897ee8ba421e1053f) remove more commented code (since 2005) [studio]
+- [`a968cdc`](https://github.com/synfig/synfig/commit/a968cdcf82388d943968be60f4df9d927333e13b) fix warning about unused method parameters [studio]
+- [`46e3ccd`](https://github.com/synfig/synfig/commit/46e3ccda680091857a1f9587787cd9d3a3627fd4) allow enum parameter be edited with a single click [studio]
+- [`7e989f1`](https://github.com/synfig/synfig/commit/7e989f1831da30f2e8d74c34df0649e83b099918) remove more commented code [studio]
+- [`783e0b3`](https://github.com/synfig/synfig/commit/783e0b31785859b2b7062e09438b1e40f6b52aff) reorder properties due to memory alignment issue [studio]
+- [`b09286e`](https://github.com/synfig/synfig/commit/b09286e878a136617489d58884c0e747f57aa01c) remove commented code (since 2005) [studio]
+- [`a064eb2`](https://github.com/synfig/synfig/commit/a064eb24d9b83aba36cc304e21aa2084aed6f17b) remove unused #include [studio]
+- [`0f93005`](https://github.com/synfig/synfig/commit/0f93005f8a8242668cda922ee8286c0cd8ae3d52) unnecessary type cast [studio]
+- [`83b9118`](https://github.com/synfig/synfig/commit/83b9118d0222eacf6f8fea7ab887e23b0ab4962b) prefer nullptr rather 0 or NULL [studio]
+- [`0742e14`](https://github.com/synfig/synfig/commit/0742e14ccf251bc9d5e934008844eca485184086) remove unused macro [studio]
+- [`70989c3`](https://github.com/synfig/synfig/commit/70989c3fda9bd031dbd74178019a3fbfecdc96cf) remove unused #include [core]
+- [`d1459cf`](https://github.com/synfig/synfig/commit/d1459cfda8e12e8b01307fb5649aeeef5b87f990) Remove unused CairoImporter method ([#1331](https://github.com/synfig/synfig/issues/1331)) [core]
+- [`f3f8745`](https://github.com/synfig/synfig/commit/f3f874523e71a25129e75210c7b3b716aff09407) Fixed current_rendered_frames_count assignment [studio]
+- [`02eaf8c`](https://github.com/synfig/synfig/commit/02eaf8c033b574c361a8c1b84976908cfe0d3f0f) avoid duplicated dynamic_cast (other cases) ([#1328](https://github.com/synfig/synfig/issues/1328)) [core]
+- [`90e4e3b`](https://github.com/synfig/synfig/commit/90e4e3b887d0f8085902c26af0777a7a4c20bf77) fixes "local time" of Time Loop layer - fix [#479](https://github.com/synfig/synfig/issues/479) [core]
+- [`6d8904e`](https://github.com/synfig/synfig/commit/6d8904e6c38161574c5c77e40745edc09be9a400) Merge PR [#1072](https://github.com/synfig/synfig/issues/1072): Fixed crash when undoing layer deletion
+- [`7f13889`](https://github.com/synfig/synfig/commit/7f13889c86bddb4b9e666259864b347d2598c314) don't unset as dirty if it is due to another to-be-deleted layer [studio]
+- [`84f8685`](https://github.com/synfig/synfig/commit/84f8685d8321bf9ea876acfd1b5edb37cabd2417) fix undoing layer deletion from different groups [studio]
+- [`509bdb8`](https://github.com/synfig/synfig/commit/509bdb8508cb7465f00e88eaf5d46ac27679fbea) fix crash when undoing deletion of layer group and an inner layer [studio]
+- [`403c9b6`](https://github.com/synfig/synfig/commit/403c9b62ae529b57beea01b0810f8159d60991f9) delete old-commented code [studio]
+- [`81dc3b6`](https://github.com/synfig/synfig/commit/81dc3b66b7c525aca19782e8b802eb0bb542ef36) Minor fixes for timeplotdata ([#1321](https://github.com/synfig/synfig/issues/1321)) [studio]
+- [`da3922e`](https://github.com/synfig/synfig/commit/da3922e92b2356dcb050478341d13e1a440a3af4) Fix uninitialized variable in CairoColor ([#1322](https://github.com/synfig/synfig/issues/1322)) [core]
+- [`5a6473b`](https://github.com/synfig/synfig/commit/5a6473b5629ff6a8423df2e687b16d08340bb2f3) Avoid duplicate dynamic cast calls ([#1323](https://github.com/synfig/synfig/issues/1323)) [core]
+- [`c9b53c3`](https://github.com/synfig/synfig/commit/c9b53c3c142b2ed56e07246983bde26170492024) Fixed: [CMake Build] Import Image Layer has no icon. ([#1320](https://github.com/synfig/synfig/issues/1320)) [studio]
+- [`f584626`](https://github.com/synfig/synfig/commit/f584626f07efbc655800eb5b4af2a81450015718) Fixed compiling with Cairomm 1.15 [studio]
+- [`d1368fb`](https://github.com/synfig/synfig/commit/d1368fbeb0d4cff7f45a975df1c3743f38790609) more memory leaks on blur [core]
+- [`0b9ab1c`](https://github.com/synfig/synfig/commit/0b9ab1c1ce672f826fa1b9bb7d198b5f1b46ce81) prefer nullptr rather NULL or 0 [core]
+- [`54c666f`](https://github.com/synfig/synfig/commit/54c666fc54803b3dfef976c5d9b072b82a5beaf2) remove useless Importer::get_frame overloaded method [core]
+- [`c157348`](https://github.com/synfig/synfig/commit/c157348d9d0dca81b9b5ddbf2b416e90773b6360) Single Copy Layer visible for Bitmap layers only [studio]
+- [`4817575`](https://github.com/synfig/synfig/commit/48175757bfea0999912c3d595c9c6eafa5410224) fix indentation [studio]
+- [`fb59acf`](https://github.com/synfig/synfig/commit/fb59acf1638c0b4eb328bb0b8e285f9508493aad) added copyright to vectorizer [studio]
+- [`8229068`](https://github.com/synfig/synfig/commit/8229068928bed8a234d41d9f42c75986fe39ec5a) Revert "OSX: brew's coreutils package required for "realpath" command. See https://github.com/whatwg/html-build/issues/90"
+- [`91431ee`](https://github.com/synfig/synfig/commit/91431ee6741db839cf357f951e8eeb5bd1d43edf) Do not use "realpath" command in build process (Autotools) [studio]
+- [`e32f5b5`](https://github.com/synfig/synfig/commit/e32f5b50b6aae90bf044531d2d954437a535111b) Updated po file [studio]
+- [`6cd9585`](https://github.com/synfig/synfig/commit/6cd958553d6b7e2a16a6037aa0cdf8dcf1c1f360) Travis-CI job for translations validation ([#1283](https://github.com/synfig/synfig/issues/1283))
+- [`48729c7`](https://github.com/synfig/synfig/commit/48729c71839993fd71c9ddeed1aad92dc9773f93) Merge PR [#1289](https://github.com/synfig/synfig/issues/1289): Export plugins. Closes [#1218](https://github.com/synfig/synfig/issues/1218).
+- [`6e6eee5`](https://github.com/synfig/synfig/commit/6e6eee54232375bfd30dca43b4a4a745d7d21d43) Unindent over-indented line [studio]
+- [`76f8c49`](https://github.com/synfig/synfig/commit/76f8c496c75405f4724452859696bc833b8af2a5) A couple more missed tabs [studio]
+- [`4180eac`](https://github.com/synfig/synfig/commit/4180eac5b524b47cd52302aefea877c061b84401) Indentation / style cleanup [studio]
+- [`3602463`](https://github.com/synfig/synfig/commit/3602463600e3ef45b30be7bfe3459cec4a4ac56f) Simplify plugin XML parsing [studio]
+- [`4e74d76`](https://github.com/synfig/synfig/commit/4e74d76ec61652fffcc490cde94eb0a4d58b2dff) Fix calls to lottie-exporter.py
+- [`30525fc`](https://github.com/synfig/synfig/commit/30525fcc109f1f831d00c0a6b303e03183e16003) Use the reference-counted pointer [studio]
+- [`1f0774b`](https://github.com/synfig/synfig/commit/1f0774baddda3058470bf8c283f2d31f68bb2a78) Remove pdb breakpoints [studio]
+- [`499b7eb`](https://github.com/synfig/synfig/commit/499b7eb48852666e6a5bf0b2baaa34104e04dfcb) Export plugins [studio]
+- [`6be4045`](https://github.com/synfig/synfig/commit/6be4045e9629f049d266dc9503b4d1deb801a20f) fix outline vertex order for older files - again :) [core]
+- [`97acd21`](https://github.com/synfig/synfig/commit/97acd21167910c34c809a4363ea2e7a0746cf0ac) Code cleanup. Added MSVC compiler detection to About dialog. ([#1303](https://github.com/synfig/synfig/issues/1303)) [core] [studio]
+- [`c1b8488`](https://github.com/synfig/synfig/commit/c1b8488d24ef0737be63ed0e8ab504e0ddc4466f) Fixed hang when opening a second .sif file from Explorer (Windows) [studio]
+- [`11340af`](https://github.com/synfig/synfig/commit/11340afee34da98673f5aa6cc5846f15a86ffda2) Added necessary headers for MSVC [ETL] [core]
+- [`a714f50`](https://github.com/synfig/synfig/commit/a714f50d64b97f58eed8b010f2e4d75ed21b2c44) Fixed incorrect placement of vertex on bline in 1.3.13 - https://github.com/synfig/synfig/issues/314#issuecomment-601336943 [core]
+- [`abb7beb`](https://github.com/synfig/synfig/commit/abb7beb4ec08f5052c8dcccd125c283d8b196034) Fixed uninitialized members and memory leak in vectorizer ([#1294](https://github.com/synfig/synfig/issues/1294)) [studio]
+- [`102dace`](https://github.com/synfig/synfig/commit/102daceabb934a50f2a8d337c950fbba052047f9) Deleted GCC __attribute__ ((unused)) (fixes MSVC compilation) [ETL] [core] [studio]
+- [`0acaf30`](https://github.com/synfig/synfig/commit/0acaf30b90b0730dc1f80be9ab47af8f6d8e8e26) Removed unnecessary headers and variables ([#1295](https://github.com/synfig/synfig/issues/1295)) [studio]
+- [`cb4c6b3`](https://github.com/synfig/synfig/commit/cb4c6b3b0c7f0b8a1a004ecd8086218c0fd5598b) Fixed memory leaks for blur ([#1293](https://github.com/synfig/synfig/issues/1293)) [core]
+- [`ce325ef`](https://github.com/synfig/synfig/commit/ce325ef85289e454fc0710d9d464510451b25af0) Fixed memory leaks ([#1292](https://github.com/synfig/synfig/issues/1292)) [studio]
+- [`904629d`](https://github.com/synfig/synfig/commit/904629dd12959d4424ee0d95b7f11de4aff6ab9d) Fixed incorrect position of width points on outline when opened old files in 1.3.13 ([#1290](https://github.com/synfig/synfig/issues/1290)) [core]
+- [`faa52c9`](https://github.com/synfig/synfig/commit/faa52c974ba8211f29dde123afcae1f648354245) Merge PR [#1273](https://github.com/synfig/synfig/issues/1273): [MSYS2] Enable building of images (Autotools)
+- [`f806eb5`](https://github.com/synfig/synfig/commit/f806eb5649408a395b383e7991da6149ded94832) Fixed crash when removing a Spline vertex using "Remove item (Smart)" ([#1188](https://github.com/synfig/synfig/issues/1188)) [core] [studio]
+- [`0739b18`](https://github.com/synfig/synfig/commit/0739b1853c2c4a38d359f2ccd9a45e416dc4a8e3) Update notes about canvas versions. [core]
+- [`f08dbc0`](https://github.com/synfig/synfig/commit/f08dbc085146dc33a276f6ae177db48d48eb2230) OSX: brew's coreutils package required for "realpath" command. See https://github.com/whatwg/html-build/issues/90
+- [`1db7f4d`](https://github.com/synfig/synfig/commit/1db7f4d4952355dd844a6e0fb4924ecda2f3df3c) add option Link Origins to Draw tool - fix [#344](https://github.com/synfig/synfig/issues/344) [studio]
+- [`ae11655`](https://github.com/synfig/synfig/commit/ae11655a9bba068543be7a5df9090958579de78e) Fixed assertion 'GDK_IS_WINDOW (window)' failed ([#1257](https://github.com/synfig/synfig/issues/1257)) [studio]
+- [`ca0b663`](https://github.com/synfig/synfig/commit/ca0b663adb263addd060ea59cdf5cf476cad3da4) Fixed popup menu popping down right after button release for Widget Gradient/Spline ([#1277](https://github.com/synfig/synfig/issues/1277)) [studio]
+- [`9be0c34`](https://github.com/synfig/synfig/commit/9be0c34235d4899e937b70ace413bd6c63904fa2) fix uninitialized geometry [studio]
+- [`2503cc4`](https://github.com/synfig/synfig/commit/2503cc440f8377a29beaa80f11e9338a5d7f15cd) fix bad overrides reported by Coverity [studio]
+- [`d20d830`](https://github.com/synfig/synfig/commit/d20d830c7483d8500f5f821e3eef1af9abb8f9ae) remove unneeded #include [studio]
+- [`a959302`](https://github.com/synfig/synfig/commit/a959302d0b6601af3cd689c324d0e6ab5647312f) if Layer_Shade has no sublayers, it shouldn't try to render ([#1272](https://github.com/synfig/synfig/issues/1272)) [core]
+- [`1fdc4a3`](https://github.com/synfig/synfig/commit/1fdc4a3d2aa07647510efe01a33ac3e124f14a92) Fix IMAGE_DIR path on Windows (Autotools) [studio]
+- [`ba306d2`](https://github.com/synfig/synfig/commit/ba306d2cc4d8575166d59a45d7c948c5c692bc68) Enable building of images on Windows (MSYS2) [studio]
+- [`8d20efc`](https://github.com/synfig/synfig/commit/8d20efc5a760d46d872b6b76c32e5d9377da0e40) Fix configure to properly handle --without-magickpp flag (synfig-core) [core]
+- [`3f3c797`](https://github.com/synfig/synfig/commit/3f3c7979181ee74282deb5d6deaa60e7959e254a) OSX build: Remove hardcoded references to Python version ([#1244](https://github.com/synfig/synfig/issues/1244))
+- [`b57b280`](https://github.com/synfig/synfig/commit/b57b2809af3e52f16bc5d67b351e79fd04d9b222) "Lock Selection" parameter of Group Layer should be static by default ([#1259](https://github.com/synfig/synfig/issues/1259)) [studio]
+- [`616ba52`](https://github.com/synfig/synfig/commit/616ba526c7111bdf98d13f97c666a80c34082c0c) 1-setup-linux-native.sh can now use /etc/os-release for better OS detection ([#1263](https://github.com/synfig/synfig/issues/1263))
+- [`3b66367`](https://github.com/synfig/synfig/commit/3b66367e6217013c2b21377bf4ce64c4534a4a66) Add support for Cos convert and Integer convert method ([#1254](https://github.com/synfig/synfig/issues/1254)) [studio]
+- [`a12bbfb`](https://github.com/synfig/synfig/commit/a12bbfbee316953834e17d8a0acd134ad5979471) fix missing breaks in switch ([#1268](https://github.com/synfig/synfig/issues/1268)) [studio]
+- [`75029fb`](https://github.com/synfig/synfig/commit/75029fb7b942c66eaefbbd5a0fdaa4cb8f4c8624) Merge PR [#1248](https://github.com/synfig/synfig/issues/1248): Restore defaults now reset all settings
+- [`6591875`](https://github.com/synfig/synfig/commit/6591875e830e41352d753a0f9f1b47135fbd31b9) Add FUNDING.yml
+- [`70c851e`](https://github.com/synfig/synfig/commit/70c851e9028527208109f7cb49a90576f068d616) Merge PR [#1135](https://github.com/synfig/synfig/issues/1135): New timetrack
+- [`f0c5d31`](https://github.com/synfig/synfig/commit/f0c5d3197af226a88154e74739b25bc242cffa86) Refresh use_dark_theme [studio]
+- [`9a2187c`](https://github.com/synfig/synfig/commit/9a2187cdb250c958f46c9d9357b53d6606bccf1d) Merge PR [#1260](https://github.com/synfig/synfig/issues/1260): Fixed exception throwing by mistake in dot-product valuenode creation
+- [`1318782`](https://github.com/synfig/synfig/commit/131878248ff0c27bdb6ac97c3c2b11b84b87bb9c) fix exception throwing by mistake in dot-product valuenode creation [core]
+- [`81ebdd1`](https://github.com/synfig/synfig/commit/81ebdd1a4d15d904d3c30aef85dee0416826ece1) use nullptr instead of NULL or 0 [core]
+- [`2ffe7b4`](https://github.com/synfig/synfig/commit/2ffe7b4f764f7d8c66913f90cd10162b194bd6f0) add error message to inexistent value node type [core]
+- [`92d448d`](https://github.com/synfig/synfig/commit/92d448d13d90d3077f0b297c58dd1086a984a6c5) fix initialization of tuple for some (old?) compilers [studio]
+- [`b0900b7`](https://github.com/synfig/synfig/commit/b0900b7d3f8661c4dea08b6e1ff06f305c5100ea) fix non-initialized variable [studio]
+- [`e55ef1c`](https://github.com/synfig/synfig/commit/e55ef1ceaa1d289707701b67baeb3829ee50756b) add tool palette for waypoint moving operations: move, copy & scale [studio]
+- [`122b3a5`](https://github.com/synfig/synfig/commit/122b3a5b482cbd39532bc25d1bef6e158a3181d3) if moving waypoints to same starting place, show them back [studio]
+- [`22394da`](https://github.com/synfig/synfig/commit/22394da9cfcb10f0e4a845875b8ae1b37ccc0479) show moving/scaling waypoints as selected [studio]
+- [`fc1f2ea`](https://github.com/synfig/synfig/commit/fc1f2eacad7531904186be2e4100828dc4cc809b) change Timetrack cursor according to current action being performed [studio]
+- [`ffc6454`](https://github.com/synfig/synfig/commit/ffc64543eb72b65b5fd21ed39d9ce958aae839e6) rename old Dock_Timetrack class to Dock_Timetrack_Old [studio]
+- [`c600005`](https://github.com/synfig/synfig/commit/c600005b95ee16d8feaefd182e73f5b20d460094) fix regression of keyframe line drawing for imported layers [studio]
+- [`9546728`](https://github.com/synfig/synfig/commit/95467289e8a794b1ea047c4548f9d52e8805e4c2) don't waste time drawing outside visible area [studio]
+- [`1e63e90`](https://github.com/synfig/synfig/commit/1e63e903a24b6194cd113b4ec27eea153de5f44c) make new proposed timetrack the default one [studio]
+- [`d299985`](https://github.com/synfig/synfig/commit/d2999856c18cd1341c48eb5e610cc9d509325ff0) fix key modifier state due to widget loosing focus [studio]
+- [`cde0c87`](https://github.com/synfig/synfig/commit/cde0c87ce8a02e7198cb0b77916a4355927fe553) don't display static intervals for canvas values [studio]
+- [`d22d000`](https://github.com/synfig/synfig/commit/d22d0003800a64f7f7134eb8d9647c4cd79ce1a0) fix crash when clicking on waypoint of (imported) canvas [studio]
+- [`cf2875e`](https://github.com/synfig/synfig/commit/cf2875e04749d3b136daff6f9f205a9eb557df95) fix last parameter not shown in timetrack [studio]
+- [`5616730`](https://github.com/synfig/synfig/commit/5616730fdb1486fb4b4f6708dee9ab003db5f38c) fix not redrawing when a new value node is created via editor [studio]
+- [`ea43301`](https://github.com/synfig/synfig/commit/ea433015dcaa5f7bec1b8bbb0b3602db66e02c4a) fix consecutive drag-scale operations [studio]
+- [`64b5f40`](https://github.com/synfig/synfig/commit/64b5f4071dc06b2fa2ad91305bffce3aeb249624) scale waypoints via Alt key + mouse dragging [studio]
+- [`836979c`](https://github.com/synfig/synfig/commit/836979c6dc3f3058766caae1e4608c04ad60da88) one single method to discover which drag action is happening [studio]
+- [`77fff86`](https://github.com/synfig/synfig/commit/77fff860258ef53916c2e1088c5ac093faea7ffd) arrow keys only move waypoints - even if shift or alt is pressed [studio]
+- [`0d7cdea`](https://github.com/synfig/synfig/commit/0d7cdeafdb6521882f2969317d5788d6b931fee5) minor doc line added [studio]
+- [`1fde7de`](https://github.com/synfig/synfig/commit/1fde7de431e0260cc6abe74d42f574499957c026) fix action name for copying waypoints [studio]
+- [`1309588`](https://github.com/synfig/synfig/commit/1309588660b5f546b18058262b1053b1742c028a) fix moving waypoint to its initial place [studio]
+- [`e7796e4`](https://github.com/synfig/synfig/commit/e7796e4470fec0c897c50b0912eea89d8c3a333f) translate error and warning strings [studio]
+- [`7242f94`](https://github.com/synfig/synfig/commit/7242f94e45d8c58280a14302b73f414edd0e2e8f) instantaneous visual feedback when toggling modifier keys while dragging [studio]
+- [`d6bd8a9`](https://github.com/synfig/synfig/commit/d6bd8a96431c173b4546a42bb7f18fdaf1724535) add copy'n drag selected waypoints : shift key [studio]
+- [`cc04ead`](https://github.com/synfig/synfig/commit/cc04ead54276b46965b5e8431ad662846a483bb0) simplify waypoint move code [studio]
+- [`3ca7ecd`](https://github.com/synfig/synfig/commit/3ca7ecd3892f28c676a628562a68178718ef6f0e) only performs waypoint movement when drag finishes [studio]
+- [`895a2e9`](https://github.com/synfig/synfig/commit/895a2e96aa93be1e6b9f339e343f433914ab841b) update cached timepoint correctly [studio]
+- [`6b7c687`](https://github.com/synfig/synfig/commit/6b7c6878af47261a357a11fbb3855ab7b661e626) just draw what is visible [studio]
+- [`2615503`](https://github.com/synfig/synfig/commit/2615503ccea9b9c9520d51d39e7fa2cd03b19787) fix demi-transparent waypoints for (non-animated) value nodes [studio]
+- [`4ed212b`](https://github.com/synfig/synfig/commit/4ed212bc44f26e904daef2a81390ab71839cc500) fix type mismatch for mingw build [studio]
+- [`3d8866a`](https://github.com/synfig/synfig/commit/3d8866a88031527143fe1086dc68c929f6880d8a) synchronize param selection with timetrack [studio]
+- [`effc855`](https://github.com/synfig/synfig/commit/effc855f0b3c224f907897a8f30fb618f5e43c3c) add waypoint navigation to new timetrack [studio]
+- [`e1da24f`](https://github.com/synfig/synfig/commit/e1da24f6f4360fd39c0101e5a0d88660aab680ca) fix for old gtk [studio]
+- [`6ba4fbf`](https://github.com/synfig/synfig/commit/6ba4fbf672a4accc9b7c394862958cf2fe03583d) allow multiple waypoint selection [studio]
+- [`ad4ad67`](https://github.com/synfig/synfig/commit/ad4ad67aa3d973c2af41fab95b868382c853836e) when single-selection, click in blank space unselect item [studio]
+- [`42d52fa`](https://github.com/synfig/synfig/commit/42d52fac03bab5e2ea7c6cb8ae7e734f202cf404) redraw when selection is updated [studio]
+- [`9a75c15`](https://github.com/synfig/synfig/commit/9a75c1523fe865b63a227e86912413dd8eddcd37) allow to drag waypoint in new timetrack [studio]
+- [`b683c87`](https://github.com/synfig/synfig/commit/b683c871f31a1459828747aaeb7027bc4d6facf2) fix Delete behavior: accept converted nodes too (as CellRenderer does) [studio]
+- [`b3dd34c`](https://github.com/synfig/synfig/commit/b3dd34c953bae6ea72465d56e7dcfc1a5a91583c) Delete key deletes selected waypoint [studio]
+- [`06a0825`](https://github.com/synfig/synfig/commit/06a0825c3a23e334435a04fc5a960a3c51bd878f) new dock timetrack reacts to right-click and double-click in waypoint [studio]
+- [`7e17eaf`](https://github.com/synfig/synfig/commit/7e17eaf7ff6e8d5e70d60895bcb759eabed27ff4) display hovered and selected timetrack item [studio]
+- [`f28be15`](https://github.com/synfig/synfig/commit/f28be15aa01657a9fd705c6e090fd49d9a3fa559) minor improvement in documentation [studio]
+- [`750e02e`](https://github.com/synfig/synfig/commit/750e02eeddcf143bdc8ce01cc3103df83c1976ea) fix detection of hovered item by SelectDragHelper [studio]
+- [`0f70b2b`](https://github.com/synfig/synfig/commit/0f70b2b56be9fbc2341733079ee00eb58eb8e3b6) Display “static intervals” between waypoints [studio]
+- [`1fb1844`](https://github.com/synfig/synfig/commit/1fb1844f3bd933a8b50d00d3d134304667d09f7a) ease user life with keyframe and waypoint in time zero [studio]
+- [`4c799b1`](https://github.com/synfig/synfig/commit/4c799b1c785a05520bcdb421de46dc32cb156827) start drawing waypoints [studio]
+- [`8ff9633`](https://github.com/synfig/synfig/commit/8ff96332d4b9ba34a3cb4326cabb6defec1ba0cd) widget_timetrack row doesn't care about general layer changes [studio]
+- [`7312588`](https://github.com/synfig/synfig/commit/73125883080a4e9d02d5fe7ae307c7ec92f0eca8) fix crashing when resizing widget_timetrack [studio]
+- [`99b85d5`](https://github.com/synfig/synfig/commit/99b85d5d0ff999a3fb3a53101671ae8b642a18d7) improve param data tracking [studio]
+- [`f76aa3d`](https://github.com/synfig/synfig/commit/f76aa3d033ee35e356e68916ee11177c7061a1e7) change variable/method names for better understanding [studio]
+- [`78454b0`](https://github.com/synfig/synfig/commit/78454b0389abfcbc0cbfe406a61cb13eeddd2f1c) Widget_Timetrack synchronizes with a TreeView [studio]
+- [`f30b03f`](https://github.com/synfig/synfig/commit/f30b03fb652c783302f79f59da27781fe2a55454) make Widget_Timetrack reacts to simple mouse events [studio]
+- [`ee2ee84`](https://github.com/synfig/synfig/commit/ee2ee8439c761b5a99bfd4653e5b8d73ad2b7997) syncing Params treeview with new Timetrack widget [studio]
+- [`9632a39`](https://github.com/synfig/synfig/commit/9632a39caeec1ad4cad329079584bd53f62634bc) draft for new timetrack widget [studio]
+- [`fa2126d`](https://github.com/synfig/synfig/commit/fa2126da0d657ff4d0abbfbb8ee34b880e65fc41) fix zoom after change default page size in Widget_TimeGraphBase [studio]
+- [`1eeed1a`](https://github.com/synfig/synfig/commit/1eeed1ace73c5bca359f2dc113a6e0354d983bfa) add some documentation for Widget_TimeGraphBase [studio]
+- [`32e6e79`](https://github.com/synfig/synfig/commit/32e6e793f78c10342eba7d3e2f4f5a215e81cb10) minor cleanup [studio]
+- [`10e956a`](https://github.com/synfig/synfig/commit/10e956a588b1e826f3751b6d7f7b9ae60ad3a8a6) add keyframe line for timegraphbase [studio]
+- [`2dbc760`](https://github.com/synfig/synfig/commit/2dbc76041d379ea1232788dd5157a2eb2d5425a7) Merge PR [#1247](https://github.com/synfig/synfig/issues/1247): [CMake] build_images target now places images in the correct folder
+- [`a85cada`](https://github.com/synfig/synfig/commit/a85cadae6212031d2b7173115982c0b5b1420281) Fixes the build_images CMake target. [studio]
+- [`77164e8`](https://github.com/synfig/synfig/commit/77164e8371269afb0490287f200f6c35fe067e88) Fix issue [#1216](https://github.com/synfig/synfig/issues/1216) [studio]
+- [`2b82874`](https://github.com/synfig/synfig/commit/2b82874cd336cd72c1b6d5dc2b1c12a5446dc042) Fix issue [#1231](https://github.com/synfig/synfig/issues/1231)
+- [`5370add`](https://github.com/synfig/synfig/commit/5370add11d6a2aa6bcf56a64470e39c9041646fd) Merge PR [#1232](https://github.com/synfig/synfig/issues/1232): [CMake] Fixed images search logic in case SYNFIG_ROOT is undefined.
+- [`c63f879`](https://github.com/synfig/synfig/commit/c63f8790829695cbcf84345b50b8428fb4a5b1ec) Updated imagepath in case SYNFIG_ROOT is undefined.  [studio]
+- [`15ad054`](https://github.com/synfig/synfig/commit/15ad054f18c37c0e36caca3c15b69d25ac51b04d) Fix typos and non translatable strings ([#1162](https://github.com/synfig/synfig/issues/1162)) [core] [studio]
+- [`0b5a28f`](https://github.com/synfig/synfig/commit/0b5a28f7d38afbe55d460facddcbb4da19307c31) Add code to refresh colors of Gtk::ColorButton [studio]
+- [`786f25f`](https://github.com/synfig/synfig/commit/786f25f7f3985f14005d48cb7b0956f4435092d3) Merge PR [#1236](https://github.com/synfig/synfig/issues/1236): [Lottie Exporter] Add support for Sine convert method
+- [`fd3cca5`](https://github.com/synfig/synfig/commit/fd3cca5c2dfc0d91ba9817b619146d94e22e396d) Add support for sine convert method [studio]
+- [`a021dd1`](https://github.com/synfig/synfig/commit/a021dd1d251a24b0d0ec031d66b26f49cb44f5fa) Update App::restore_default_settings() to reset all settings. Fixes [#1154](https://github.com/synfig/synfig/issues/1154) [studio]
+- [`f6abd56`](https://github.com/synfig/synfig/commit/f6abd56b4066b7bdd3ba91fe9db2afc1cec31da0) Merge PR [#1241](https://github.com/synfig/synfig/issues/1241): Bump version for settings file
+- [`fddb982`](https://github.com/synfig/synfig/commit/fddb982c9e13cd697a386d55648a9ee94c0eae05) Bump version for settings file [studio]
+- [`ad20c3e`](https://github.com/synfig/synfig/commit/ad20c3e25925d39499dd1f222ac1c038598f65f2) Update translations (ar,ru) [core] [studio]
+- [`5e800fa`](https://github.com/synfig/synfig/commit/5e800fa9325f6558ed96882c2071741b69869148) Changes made to offsetKeyFrame file ([#1233](https://github.com/synfig/synfig/issues/1233)) [studio]
+- [`e222ce6`](https://github.com/synfig/synfig/commit/e222ce647dc94d4dc332ddd4f969b1844ee18c8c) Fixed travis-ci warnings
+- [`053841b`](https://github.com/synfig/synfig/commit/053841be1bb8b6c75a1dd098c40948d74c22bd46) Year is fixed in About dialog ([#1238](https://github.com/synfig/synfig/issues/1238)) [studio]
+- [`1f08cfc`](https://github.com/synfig/synfig/commit/1f08cfca9c70ea940609324520ecab5559eea885) Remove references to missing translation files ([#1239](https://github.com/synfig/synfig/issues/1239)) [studio]
+- [`5d8a08b`](https://github.com/synfig/synfig/commit/5d8a08be5c8a257b8c32dcb23764487681cf7442) [Lottie Exporter] Code cleanup for Lottie exporter plugin ([#1226](https://github.com/synfig/synfig/issues/1226)) [studio]
+- [`eb99ee6`](https://github.com/synfig/synfig/commit/eb99ee6b4847b4b4c575ed576aa55fba5a149ba7) New job for running "autobuild/transifex-push-template.sh" ([#1234](https://github.com/synfig/synfig/issues/1234))
+- [`b380d8a`](https://github.com/synfig/synfig/commit/b380d8a35d882f5d5d839b396a7d3912b8488c9f) keep undo history clean when deleteing multiple curve waypoints ([#1134](https://github.com/synfig/synfig/issues/1134)) [studio]
+- [`c3054c4`](https://github.com/synfig/synfig/commit/c3054c4d648783a1877e42801f97d435ba184303) Merge PR [#1228](https://github.com/synfig/synfig/issues/1228): [CMake] Update CMake script for /share and /etc.
+- [`246c424`](https://github.com/synfig/synfig/commit/246c424778cf17ebc59860e9f4238dd7d08efbd2) Updated CMake script for share and etc [core] [studio]
+- [`50bab45`](https://github.com/synfig/synfig/commit/50bab454ff238af0a286f7a5a81bb7ef45eca914) Merge PR [#1224](https://github.com/synfig/synfig/issues/1224): [CMake] Updated CMake script to change layout of build files.
+- [`8d946dd`](https://github.com/synfig/synfig/commit/8d946dd011e84511cce5b39da676e020fa23b00b) Updated CMake script for bin and lib [core]
+- [`eaafbcb`](https://github.com/synfig/synfig/commit/eaafbcbd2a9afc17c88ff0c888a5ee21eb70be29) [Lottie exporter] Important comments regarding effects/fill.py ([#1213](https://github.com/synfig/synfig/issues/1213)) [studio]
+- [`f1aae3d`](https://github.com/synfig/synfig/commit/f1aae3dbe08eb13711aab233da7eeb579d31e49a) Disable background rendering by default. Closes [#1170](https://github.com/synfig/synfig/issues/1170). [studio]
+- [`9210f30`](https://github.com/synfig/synfig/commit/9210f307e3cf24be53070cc739f52fd8b5e6d48d) Fix typo [studio]
+- [`691b81b`](https://github.com/synfig/synfig/commit/691b81b364b7bfc7abc518c2bbc07b8daf804f55) Merge PR [#1201](https://github.com/synfig/synfig/issues/1201): Rename "vizualization" test app to "synfigplayer"
+- [`9e189c3`](https://github.com/synfig/synfig/commit/9e189c35d3167a71048f9b7fe4a16d86f58871b4) Merge PR [#1209](https://github.com/synfig/synfig/issues/1209): fix i18n for Set Keyframe Description dialog
+- [`5390415`](https://github.com/synfig/synfig/commit/5390415e58a9c2229a19aa487b9a945945d83622) Merge PR [#1211](https://github.com/synfig/synfig/issues/1211): Fixed wrong filename in plugins dialog box
+- [`9affa6b`](https://github.com/synfig/synfig/commit/9affa6b31d78dca216cbe555769f65e1ad68f464) Correct name appears on alert dialog box now when using plugins [studio]
+- [`b6f445e`](https://github.com/synfig/synfig/commit/b6f445e49a0b4df8a587107afe06e108c5413c9c) fix i18n for Set Keyframe Description dialog [studio]
+- [`afe6dc8`](https://github.com/synfig/synfig/commit/afe6dc83a4b30a59c5b93ad81c37c29e865fcfc1) [Lottie exporter] Add variable gamma correction (PR [#1179](https://github.com/synfig/synfig/issues/1179)) [studio]
+- [`8230752`](https://github.com/synfig/synfig/commit/8230752f2301d94410a36940807762d985549398) Automate Lottie exporter tests using Travis (PR [#1197](https://github.com/synfig/synfig/issues/1197))
+- [`a983515`](https://github.com/synfig/synfig/commit/a98351568cfe8bd1403b4dfcf6d817f680b05ae9) Merge PR [#1202](https://github.com/synfig/synfig/issues/1202): allow glade UI files to be translated
+- [`4b87138`](https://github.com/synfig/synfig/commit/4b8713809df567f9396d034372324573472544f1) allow glade UI files to be translated [studio]
+- [`f7cea7e`](https://github.com/synfig/synfig/commit/f7cea7e5c48afb3d79207a7c0edc180b49b27d70) Rename "vizualization" app to "synfigplayer" [studio]
+- [`7d83a44`](https://github.com/synfig/synfig/commit/7d83a445870fecc20a10851fbd99b822930735e6) Merge PR [#1199](https://github.com/synfig/synfig/issues/1199): [Lottie Exporter] Code cleanup for Lottie exporter plugin
+- [`d793b3e`](https://github.com/synfig/synfig/commit/d793b3e83d670a517e28e2d4008f530f7760203a) Code cleanup for Lottie exporter plugin [studio]
+- [`4f6e09c`](https://github.com/synfig/synfig/commit/4f6e09c576477df12dc2726efbcaee25f1914288) Merge PR [#1195](https://github.com/synfig/synfig/issues/1195): [Lottie exporter] Convert methods working with radius of simple circle layer
+- [`db22dd2`](https://github.com/synfig/synfig/commit/db22dd28e15aa946472b38d82c8f8d579a85fd1b) get away, ghost dockers [studio]
+- [`891e772`](https://github.com/synfig/synfig/commit/891e772f2c6c787053169ff404b07bba0c1a7d4f) Resolves [#1101](https://github.com/synfig/synfig/issues/1101) [studio]
+- [`ef2da51`](https://github.com/synfig/synfig/commit/ef2da51e6eaa456d8806735a04432f443efc57e5) Merge PR [#1182](https://github.com/synfig/synfig/issues/1182): Improved dialog waypoint UX [studio]
+- [`8f89ca2`](https://github.com/synfig/synfig/commit/8f89ca29ee724e59cce0271ef892272c9c68c7a0) Merge PR [#1192](https://github.com/synfig/synfig/issues/1192): upgrade minimum required version of libav/FFmpeg
+- [`6c234ce`](https://github.com/synfig/synfig/commit/6c234ce5d078f6cd44be71da6c68f0a5e7ffd5cd) minor fixes for test visualization [studio]
+- [`c4ee388`](https://github.com/synfig/synfig/commit/c4ee388ab95f87c55d628399734b7957242f7cf8) time measure for test visualization [studio]
+- [`8508356`](https://github.com/synfig/synfig/commit/85083560576d8641ed82c1b3d930e54fe4d7acea) upgrade minimum version of libav/FFmpeg [core]
+- [`9ea54ae`](https://github.com/synfig/synfig/commit/9ea54ae2ce09b5cd2ff00b559fb0f2bd77243650) simple visualization test [studio]
+- [`6af075f`](https://github.com/synfig/synfig/commit/6af075f1fe0ef00a7dbfbbb77bf8c724b2702866) improve warl layer clipping [core]
+- [`e2adcad`](https://github.com/synfig/synfig/commit/e2adcad8be02a3580c7af11247c01abbfc02d5e3) blend method Alpha [core]
+- [`8af0f3d`](https://github.com/synfig/synfig/commit/8af0f3d41a7734c7a9428fac3dfd09eab3772cf3) draft: degrade underlayer for nonaffine transforms [core]
+- [`7edc151`](https://github.com/synfig/synfig/commit/7edc151696dd73f15569b3df6ba4e8b64de20b68) cubic interpolation by default for Warp [core]
+- [`9abc9ed`](https://github.com/synfig/synfig/commit/9abc9edef37b3ce4fea50b06609099e440d0f5b9) interpolation param for Warp [core]
+- [`650b0cf`](https://github.com/synfig/synfig/commit/650b0cf6a8e15a45ade4014786ba91e19698d5cf) antialias param for CheckerBoard [core]
+- [`57b243c`](https://github.com/synfig/synfig/commit/57b243cf78d0ed22957e2292ee4c63610064448a) remove some old rendering from modules [core]
+- [`b8aa2b1`](https://github.com/synfig/synfig/commit/b8aa2b1e6d81296fe8a4a4e2cd644eb81bf5d062) remove old rendering from core layers [core]
+- [`952b9b7`](https://github.com/synfig/synfig/commit/952b9b79a77f8885fdc463cd2bff9eac2e0bf2c7) fix bugs with iterators, thx to ice0 [core] [studio]
+- [`478b0db`](https://github.com/synfig/synfig/commit/478b0db1fb5dac27a64b36eaff120b60cc92f49c) fix smach [ETL] [studio]
+- [`6b433d2`](https://github.com/synfig/synfig/commit/6b433d2503ed81bd6577c17748d2ae59ce0573c6) add noexcept to move constructor [core]
+- [`3b27a85`](https://github.com/synfig/synfig/commit/3b27a8547c0440a584d18289a3cb5bc09e4775c0) Merge PR [#1177](https://github.com/synfig/synfig/issues/1177): Add a separate LICENSE file
+- [`fc7a046`](https://github.com/synfig/synfig/commit/fc7a046ad041978bf4071d1e15e6dc2e64176d4c) fix calculation of resolution [core]
+- [`941ab05`](https://github.com/synfig/synfig/commit/941ab05ac45ffcec1d691242ec5f0f820d7bf33e) Add a separate LICENSE file. Closes [#1111](https://github.com/synfig/synfig/issues/1111). [ETL] [core] [studio]
+- [`b7305a9`](https://github.com/synfig/synfig/commit/b7305a9a3893caefffc1c36118e67f2f0610a1d5) Merge pull request [#1173](https://github.com/synfig/synfig/issues/1173) from rodolforg/fix-sound-dock-scroll
+- [`f27fe23`](https://github.com/synfig/synfig/commit/f27fe23db124455bcb5681a483f5748027c21e4e) don't show extra vertical scrollbar for Dock Sound [studio]
+- [`cf1df92`](https://github.com/synfig/synfig/commit/cf1df92b252699989e3c36ce4406259a1e40ddd3) refactoring of Warp Layer [core]
+- [`61ff9b8`](https://github.com/synfig/synfig/commit/61ff9b8d620a045ad454fb55125dc69880c2b317) OptimizerTransformation: merge child into parent [core]
+- [`3ae388d`](https://github.com/synfig/synfig/commit/3ae388d8789484ffdb0c14dd6785d4fbece682cf) remove extra const keyword [core]
+- [`f44ff0a`](https://github.com/synfig/synfig/commit/f44ff0a64636419ff9d9e223ca355319fd0388e7) improve rendering::Transformation [core]
+- [`34a6856`](https://github.com/synfig/synfig/commit/34a6856a6784c0f0959c64c173e0edf55fb15d7f) improve synfig::Matrix [core]
+- [`7cea642`](https://github.com/synfig/synfig/commit/7cea64284d1326d05039b76648cf113040889b10) libmng made optional, fixed build using 2-build-cmake.sh [core] [studio]
+- [`2cccbf4`](https://github.com/synfig/synfig/commit/2cccbf43557fd68b297a7b4b18b618ea4078581f) Merge PR [#1166](https://github.com/synfig/synfig/issues/1166): Do not require to explicitly call FileSystemTemporary::discard_changes()
+- [`e03d878`](https://github.com/synfig/synfig/commit/e03d878375e677aeb54808096607a7eb3c83ea67) Better approach for 93f25328c15 and 28db040026. [core] [studio]
+- [`4df4085`](https://github.com/synfig/synfig/commit/4df4085e997213b6072364e9f36da6ab14746571) Update translations [core] [studio]
+- [`09220ed`](https://github.com/synfig/synfig/commit/09220ed3bbae82a2a9f601b554d5b1aea3af3581) Added PACKAGE_NAME macro [studio]
+- [`474fc99`](https://github.com/synfig/synfig/commit/474fc99690d271a6998e180372ea4b5fd624f45b) Merge PR [#1155](https://github.com/synfig/synfig/issues/1155): Clicking "Ignore" button doesn't removes backup
+- [`b4b6a75`](https://github.com/synfig/synfig/commit/b4b6a752214c5f56f51788b78f3b71fcfdec2492) Fix some typos and some non translatable strings ([#1159](https://github.com/synfig/synfig/issues/1159)) [core] [studio]
+- [`93f2532`](https://github.com/synfig/synfig/commit/93f25328c15a3e7d17f9f7ae94f09f58657ee636) Fix [#1140](https://github.com/synfig/synfig/issues/1140): Clicking "Ignore" button doesn't removes backup [studio]
+- [`30ce7c4`](https://github.com/synfig/synfig/commit/30ce7c4209a618643b26f40144ae9e0bd99c0830) minor fixes for some ValueBase method comments [core]
+- [`302b06d`](https://github.com/synfig/synfig/commit/302b06dd4bf726e063f6acd02dff882b76f53751) fix relation operators for ValueBase [core]
+- [`2608b0c`](https://github.com/synfig/synfig/commit/2608b0c6ee0533346fba58adac38bfbc3e5a3945) remove unused definitions of libpng versions [core]
+- [`f05955a`](https://github.com/synfig/synfig/commit/f05955ae30217fdc3c8d75bb12d85bab454ac89f) add a comment [core]
+- [`7b7b2dd`](https://github.com/synfig/synfig/commit/7b7b2dd14dcf8a6bd3e0522b3f90fd139594dd26) synfig::Mutex no longer exists [core]
+- [`96306f6`](https://github.com/synfig/synfig/commit/96306f6fc31918377aaecc481f860cf8714f43f4) autotools: remove unused definition [core]
+- [`8339ee0`](https://github.com/synfig/synfig/commit/8339ee07b9edc8bd7ad29cdb58fc9e86ba13aee7) Merge PR [#1096](https://github.com/synfig/synfig/issues/1096): remove strange #include in Dialog_Setup
+- [`52d58fa`](https://github.com/synfig/synfig/commit/52d58faa57366f79d86c3d1b26590d9cd042baaf) Merge PR [#1157](https://github.com/synfig/synfig/issues/1157): Fix some ui typos [studio]
+- [`6d479d8`](https://github.com/synfig/synfig/commit/6d479d806839eac50d083f40837a8087732d6499) remove unused action restore-defaults-settings [studio]
+- [`2d453f2`](https://github.com/synfig/synfig/commit/2d453f288a651a1142d46f2f45d13850db428e5e) Fix typo [studio]
+- [`fe24023`](https://github.com/synfig/synfig/commit/fe240231c01c2bd3102ef901b2001a923cc86095) Fix previous commit [studio]
+- [`7c08f5b`](https://github.com/synfig/synfig/commit/7c08f5b8717000a1662754b0ce7d4706873c292d) Fix typo [studio]
+- [`d974ed5`](https://github.com/synfig/synfig/commit/d974ed5af43b762a1d9c4e44f4c57cfcd17e562b) Update translations (new pot) [core] [studio]
+- [`86eaf56`](https://github.com/synfig/synfig/commit/86eaf560d1eb7f4f3a14391c75a6474997fd051b) Update translations [core] [studio]
+- [`b218c01`](https://github.com/synfig/synfig/commit/b218c019070e39afab50f244039575d1f88fac98) Merge PR [#1076](https://github.com/synfig/synfig/issues/1076): define copy constructor if assignment operator is defined
+- [`288b115`](https://github.com/synfig/synfig/commit/288b1154de2afbef36e6a5bd37cf40ac875aca3d) define copy constructor if assignment operator is defined [core]
+- [`3b90f0c`](https://github.com/synfig/synfig/commit/3b90f0cf14295ae240036ddd501b4fa50ac50c5e) prefer nullptr rather NULL [core]
+- [`6ebc9a8`](https://github.com/synfig/synfig/commit/6ebc9a8e7402bbdf834a4645837a2b7b27c85069) Merge PR [#1105](https://github.com/synfig/synfig/issues/1105): Fixed MLT build on MSYS via autobuild/build.sh script
+- [`5ac3ae6`](https://github.com/synfig/synfig/commit/5ac3ae640c7f532ac168f6160fcf9214cbad03e9) Fixed MLT build on MSYS via autobuild/build.sh script
+- [`e8281c6`](https://github.com/synfig/synfig/commit/e8281c679184cf9e9e6a7554ccaac0a5bff761a2) Merge PR [#1034](https://github.com/synfig/synfig/issues/1034): there is no reason for using float instead of Real
+- [`76a0070`](https://github.com/synfig/synfig/commit/76a00704862badc39fde63ac2e9fac9f0a310d86) there is no reason for being float instead of Real [core]
+- [`00e3c96`](https://github.com/synfig/synfig/commit/00e3c96c42a756666610a12c853e3784792b7b9c) Temporarily disable distcheck (as it exceeds build time)
+- [`58cf959`](https://github.com/synfig/synfig/commit/58cf959a34436bcf4b54acfd476f179c821f61f9) remove unused code : commented since 2005 [studio]
+- [`859cc1a`](https://github.com/synfig/synfig/commit/859cc1a3a720dae09cd61e76cbe567a93e85ce3e) Merge PR [#1128](https://github.com/synfig/synfig/issues/1128): Travis: Add distcheck job
+- [`bb18fa7`](https://github.com/synfig/synfig/commit/bb18fa7fc4d58ea41142d3b821dfc8b939a9ff1e) Remove reference to missing file [core]
+- [`790a6f7`](https://github.com/synfig/synfig/commit/790a6f74af0587047295d68726734572b0609177) Travis: Add distcheck job
+- [`0da5999`](https://github.com/synfig/synfig/commit/0da59994cb17c895771e237a2c1f3897d1223ff2) remove test for (removed) etl::loose_smart_ptr [ETL]
+- [`ee74a24`](https://github.com/synfig/synfig/commit/ee74a24c8ae4d8295d1e1c1ef5b9c5bf478271ce) Bump version to 1.5.0 [ETL] [core] [studio]
+- [`3a2b3a1`](https://github.com/synfig/synfig/commit/3a2b3a1def3b57ddfadafa9f6f5c5cd42c3fc415) remove strange #include in Dialog_Setup [studio]
