@@ -2,6 +2,16 @@
 ## Includes
 ##
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
+
+# for multi-config builds (e.g. msvc)
+foreach(CONFIG_TYPE  ${CMAKE_CONFIGURATION_TYPES})
+	string(TOUPPER ${CONFIG_TYPE} CONFIG_TYPE)
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_TYPE} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONFIG_TYPE} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+endforeach(CONFIG_TYPE CMAKE_CONFIGURATION_TYPES)
+
 include_directories(
     SYSTEM
         ${SIGCPP_INCLUDE_DIRS}
@@ -58,9 +68,6 @@ if(LIBMNG_FOUND)
 else()
   message(STATUS "mod_mng: Disabled")
 endif()
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
 
 ## Magick++ support
 option(WITH_MAGICPP "Enable Magic++ module (output format support)" OFF)
