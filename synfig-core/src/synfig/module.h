@@ -87,10 +87,10 @@
 #define LAYER(class)																			\
 	synfig::Layer::register_in_book(															\
 		synfig::Layer::BookEntry(class::create,													\
-								 class::name__,													\
-								 synfigcore_localize(class::local_name__),		\
-								 class::category__,												\
-								 class::version__));
+								 class::get_register_name(),													\
+								 synfigcore_localize(class::get_register_local_name()),		\
+								 class::get_register_category(),												\
+								 class::get_register_version()));
 
 //! Register a Layer class in the book of layers with an alias
 #define LAYER_ALIAS(class,alias)																\
@@ -99,7 +99,7 @@
 								 alias,															\
 								 alias,															\
 								 CATEGORY_DO_NOT_USE,											\
-								 class::version__));
+								 class::get_register_version()));
 
 //! Marks the end of the layers in the module's inventory
 #define END_LAYERS }
