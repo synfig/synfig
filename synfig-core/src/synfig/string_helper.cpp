@@ -36,7 +36,7 @@
 #endif
 
 std::string
-synfig::remove_trailing_zeroes(const std::string& text)
+synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point)
 {
 	std::string result(text);
 	std::locale l(setlocale(LC_NUMERIC, nullptr));
@@ -44,10 +44,16 @@ synfig::remove_trailing_zeroes(const std::string& text)
 	const size_t decimal_point_pos = text.find(decimal_point);
 
 	if (decimal_point_pos == text.npos) {
-		result += decimal_point + '0';
+		if (force_decimal_point)
+			result += decimal_point + std::string("0");
+	} else if (decimal_point_pos == text.length()-1) {
+		if (force_decimal_point)
+			result += '0';
+		else
+			result.pop_back();
 	} else {
 		const size_t last_non_zero_pos = result.find_last_not_of('0');
-		result = result.substr(0, std::max(decimal_point_pos, last_non_zero_pos) + 1);
+		result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1);
 	}
 	return result;
 }
