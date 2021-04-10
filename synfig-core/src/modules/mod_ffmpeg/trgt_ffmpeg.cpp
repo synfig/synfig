@@ -49,6 +49,11 @@
 
 #endif
 
+// MSVC
+#ifndef F_OK
+#define F_OK 0
+#endif
+
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
@@ -70,7 +75,6 @@ SYNFIG_TARGET_SET_VERSION(ffmpeg_trgt,"0.1");
 /* === M E T H O D S ======================================================= */
 
 ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params):
-	pid(-1),
 	imagecount(0),
 	multi_image(false),
 	file(NULL),
@@ -98,10 +102,8 @@ ffmpeg_trgt::~ffmpeg_trgt()
 {
 	if(file)
 	{
-		std::this_thread::yield();
-		std::this_thread::sleep_for(std::chrono::seconds(1));
 #if defined(WIN32_PIPE_TO_PROCESSES)
-		pclose(file);
+		_pclose(file);
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 		fclose(file);
 		int status;
