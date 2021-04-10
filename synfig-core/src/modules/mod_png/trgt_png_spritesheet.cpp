@@ -394,7 +394,6 @@ png_trgt_spritesheet::write_png_file()
 	cout << "write_png_file()" << endl;
 	png_structp png_ptr;
 	png_infop info_ptr;
-	unsigned char buffer [4 * sheet_width];
 
 	
     if (filename == "-")
@@ -479,6 +478,7 @@ png_trgt_spritesheet::write_png_file()
     png_write_info_before_PLTE(png_ptr, info_ptr);
     png_write_info(png_ptr, info_ptr);
 
+	unsigned char* buffer = new unsigned char[4 * sheet_width];
     //Writing spritesheet into png image
 	for (cur_out_image_row = 0; cur_out_image_row < sheet_height; cur_out_image_row++)
 	{
@@ -492,6 +492,8 @@ png_trgt_spritesheet::write_png_file()
 		setjmp(png_jmpbuf(png_ptr));
 		png_write_row(png_ptr,buffer);
 	}
+	delete[] buffer;
+
 	cur_out_image_row = 0;
     if(out_file_pointer)
     {
