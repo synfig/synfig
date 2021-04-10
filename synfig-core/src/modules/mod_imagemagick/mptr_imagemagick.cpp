@@ -92,8 +92,6 @@ imagemagick_mptr::~imagemagick_mptr()
 		_pclose(file);
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 		fclose(file);
-		int status;
-		waitpid(pid, &status, 0);
 #endif
 	}
 }
