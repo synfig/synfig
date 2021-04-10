@@ -1903,54 +1903,20 @@ Svg_parser::getBlue(String hex){
 	return getColor(hex,3);
 }
 int
-Svg_parser::hextodec(String hex){
-	int result=0;
-	if(!hex.empty()){
-		int top=hex.size();
-		int ihex[top];
-		int i=0;
-		while(i<top){
-			if(hex.at(i)=='0')
-				ihex[i]=0;
-			else if(hex.at(i)=='1')
-				ihex[i]=1;
-			else if(hex.at(i)=='2')
-				ihex[i]=2;
-			else if(hex.at(i)=='3')
-				ihex[i]=3;
-			else if(hex.at(i)=='4')
-				ihex[i]=4;
-			else if(hex.at(i)=='5')
-				ihex[i]=5;
-			else if(hex.at(i)=='6')
-				ihex[i]=6;
-			else if(hex.at(i)=='7')
-				ihex[i]=7;
-			else if(hex.at(i)=='8')
-				ihex[i]=8;
-			else if(hex.at(i)=='9')
-				ihex[i]=9;
-			else if(hex.at(i)=='a')
-				ihex[i]=10;
-			else if(hex.at(i)=='b')
-				ihex[i]=11;
-			else if(hex.at(i)=='c')
-				ihex[i]=12;
-			else if(hex.at(i)=='d')
-				ihex[i]=13;
-			else if(hex.at(i)=='e')
-				ihex[i]=14;
-			else if(hex.at(i)=='f')
-				ihex[i]=15;
-			else
-				return 0;
-			i++;
-		}
-		i=0;
-		while(i<top){
-			result+=pow(16,i)*ihex[top-i-1];
-			i++;
-		}
+Svg_parser::hextodec(const std::string& hex){
+	if (hex.empty()) {
+		return 0;
+	}
+	unsigned long long result = 0;
+	for (size_t i = 0, v = 0; i < hex.size(); ++i)
+	{
+		const char c = hex[i];
+		if      ('a' <= c && c <='f') {	v = c - 'a' + 10; }
+		else if ('A' <= c && c <='F') {	v = c - 'A' + 10; }
+		else if ('0' <= c && c <='9') {	v = c - '0'; }
+		else break;
+		result*=16;
+		result+=v;
 	}
 	return result;
 }
