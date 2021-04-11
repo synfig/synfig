@@ -60,7 +60,10 @@ studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<
 canvas_interface(ci)
 {
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	dialogPadding->set_padding(12, 12, 12, 12);
+	dialogPadding->set_margin_start(12);
+	dialogPadding->set_margin_end(12);
+	dialogPadding->set_margin_top(12);
+	dialogPadding->set_margin_bottom(12);
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 
 	Gtk::Frame *soundFrame = manage(new Gtk::Frame(_("Sound Parameters")));
@@ -69,14 +72,19 @@ canvas_interface(ci)
 	dialogPadding->add(*soundFrame);
 
 	Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	framePadding->set_padding(6, 0, 24, 0);
+	framePadding->set_margin_start(24);
+	framePadding->set_margin_end(0);
+	framePadding->set_margin_top(6);
+	framePadding->set_margin_bottom(0);
 	soundFrame->add(*framePadding);
 
 	Gtk::Label *fileLabel = manage(new Gtk::Label(_("_Sound File"), true));
-	fileLabel->set_alignment(0, 0.5);
+	fileLabel->set_halign(Gtk::ALIGN_START);
+	fileLabel->set_valign(Gtk::ALIGN_CENTER);
 	fileLabel->set_mnemonic_widget(soundfile);
 	Gtk::Label *offsetLabel = manage(new Gtk::Label(_("Time _Offset"), true));
-	offsetLabel->set_alignment(0, 0.5);
+	offsetLabel->set_halign(Gtk::ALIGN_START);
+	offsetLabel->set_valign(Gtk::ALIGN_CENTER);
 	offsetLabel->set_mnemonic_widget(offset);
 
 	Gtk::Table *table = manage(new Gtk::Table(2, 2, false));

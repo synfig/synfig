@@ -35,23 +35,27 @@ namespace studio
 Dialog_SpriteSheetParam::Dialog_SpriteSheetParam(Gtk::Window &parent):
 	Dialog_TargetParam(parent, _("Sprite sheet parameters")), 
 	frame_count(0)
-{	
+{
+	this->set_resizable(false);
 	//Checkbox
-	check_button = Gtk::manage(new Gtk::CheckButton(_("Add into an existing file."),true));
+	check_button = Gtk::manage(new Gtk::CheckButton(_("Add into an existing file"),true));
 
 	//Offset X
 	Gtk::Label* offset_x_label(manage(new Gtk::Label(_("Offset X:"))));
-	offset_x_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	offset_x_label->set_halign(Gtk::ALIGN_START);
+	offset_x_label->set_valign(Gtk::ALIGN_CENTER);
 	offset_x_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 0.0,10000.0)));
 
 	//Offset Y
 	Gtk::Label* offset_y_label(manage(new Gtk::Label(_("Offset Y:"))));
-	offset_y_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	offset_y_label->set_halign(Gtk::ALIGN_START);
+	offset_y_label->set_valign(Gtk::ALIGN_CENTER);
 	offset_y_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 0.0,10000.0)));
 
 	//Dirrection
 	Gtk::Label* direction_label(manage(new Gtk::Label(_("Direction:"))));
-	direction_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	direction_label->set_halign(Gtk::ALIGN_START);
+	direction_label->set_valign(Gtk::ALIGN_CENTER);
 	direction_box = Gtk::manage(new Gtk::ComboBoxText());
 	direction_box->append("horizontal");
 	direction_box->append("vertical");
@@ -60,13 +64,15 @@ Dialog_SpriteSheetParam::Dialog_SpriteSheetParam(Gtk::Window &parent):
 	
 	//Row count
 	Gtk::Label* rows_label(manage(new Gtk::Label(_("Rows:"))));
-	rows_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	rows_label->set_halign(Gtk::ALIGN_START);
+	rows_label->set_valign(Gtk::ALIGN_CENTER);
 	rows_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 1.0,1000.0)));
 	rows_box->signal_value_changed().connect(sigc::mem_fun(*this, &Dialog_SpriteSheetParam::on_rows_change));
 
 	//Column count
 	Gtk::Label* columns_label(manage(new Gtk::Label(_("Columns:"))));
-	columns_label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	columns_label->set_halign(Gtk::ALIGN_START);
+	columns_label->set_valign(Gtk::ALIGN_CENTER);
 	columns_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 1.0,1000.0)));
 	columns_box->signal_value_changed().connect(sigc::mem_fun(*this, &Dialog_SpriteSheetParam::on_cols_change));
 

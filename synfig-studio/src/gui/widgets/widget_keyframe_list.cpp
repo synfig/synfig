@@ -73,7 +73,8 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 
 	// Window of the moving tooltip
 
-	moving_tooltip_label.set_alignment(0.5, 0.5);
+	moving_tooltip_label.set_halign(Gtk::ALIGN_CENTER);
+	moving_tooltip_label.set_valign(Gtk::ALIGN_CENTER);
 	moving_tooltip_label.show();
 
 	moving_tooltip.set_resizable(false);

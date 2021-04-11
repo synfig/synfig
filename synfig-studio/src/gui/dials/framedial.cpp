@@ -98,7 +98,10 @@ FrameDial::init_button(Gtk::Button &button, const char *stockid, const char *too
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
-	icon->set_padding(0, 0);
+	icon->set_margin_start(0);
+	icon->set_margin_end(0);
+	icon->set_margin_top(0);
+	icon->set_margin_bottom(0);
 	icon->show();
 
 	button.add(*icon);

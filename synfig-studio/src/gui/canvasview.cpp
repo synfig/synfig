@@ -102,7 +102,10 @@ using namespace studio;
 		icon=manage(new Gtk::Image(Gtk::StockID(stockid),iconsize)); \
 		button->add(*icon); \
 		button->set_tooltip_text(tooltip); \
-		icon->set_padding(0,0); \
+		icon->set_margin_start(0); \
+		icon->set_margin_end(0); \
+		icon->set_margin_top(0); \
+		icon->set_margin_bottom(0); \
 		icon->show(); \
 		button->set_relief(Gtk::RELIEF_NONE); \
 		button->show() \
@@ -116,7 +119,10 @@ using namespace studio;
 		icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON)); \
 		button->add(*icon); \
 		button->set_tooltip_text(tooltip); \
-		icon->set_padding(0,0); \
+		icon->set_margin_start(0); \
+		icon->set_margin_end(0); \
+		icon->set_margin_top(0); \
+		icon->set_margin_bottom(0); \
 		icon->show(); \
 		/*button->set_relief(Gtk::RELIEF_NONE);*/ \
 		button->show(); \
@@ -807,7 +813,10 @@ void CanvasView::set_jack_enabled(bool value)
 			jackbutton->remove();
 			jackbutton->add(*icon);
 			jackbutton->set_tooltip_text(_("Disable JACK"));
-			icon->set_padding(0,0);
+			icon->set_margin_start(0);
+			icon->set_margin_end(0);
+			icon->set_margin_top(0);
+			icon->set_margin_bottom(0);
 			icon->show();
 			offset_widget->show();
 		}
@@ -817,7 +826,10 @@ void CanvasView::set_jack_enabled(bool value)
 			jackbutton->remove();
 			jackbutton->add(*icon);
 			jackbutton->set_tooltip_text(_("Enable JACK"));
-			icon->set_padding(0,0);
+			icon->set_margin_start(0);
+			icon->set_margin_end(0);
+			icon->set_margin_top(0);
+			icon->set_margin_bottom(0);
 			icon->show();
 			offset_widget->hide();
 		}

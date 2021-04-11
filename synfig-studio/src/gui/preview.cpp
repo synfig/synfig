@@ -311,12 +311,15 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 }
 
 #define IMAGIFY_BUTTON(button,stockid,tooltip) \
-        icon = manage(new Gtk::Image(Gtk::StockID(stockid), Gtk::ICON_SIZE_BUTTON)); \
+	icon = manage(new Gtk::Image(Gtk::StockID(stockid), Gtk::ICON_SIZE_BUTTON)); \
 	button->set_tooltip_text(tooltip); \
-        button->add(*icon); \
-        button->set_relief(Gtk::RELIEF_NONE); \
-        button->show(); \
-	icon->set_padding(0,0); \
+	button->add(*icon); \
+	button->set_relief(Gtk::RELIEF_NONE); \
+	button->show(); \
+	icon->set_margin_start(0); \
+	icon->set_margin_end(0); \
+	icon->set_margin_top(0); \
+	icon->set_margin_bottom(0); \
 	icon->show();
 
 Widget_Preview::Widget_Preview():
@@ -391,7 +394,10 @@ Widget_Preview::Widget_Preview():
 	Gtk::Image *icon0 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_prev_frame"), Gtk::ICON_SIZE_BUTTON));
 	prev_framebutton = manage(new class Gtk::Button());
 	prev_framebutton->set_tooltip_text(_("Seek to previous frame"));
-	icon0->set_padding(0,0);
+	icon0->set_margin_start(0);
+	icon0->set_margin_end(0);
+	icon0->set_margin_top(0);
+	icon0->set_margin_bottom(0);
 	icon0->show();
 	prev_framebutton->add(*icon0);
 	prev_framebutton->set_relief(Gtk::RELIEF_NONE);
@@ -404,7 +410,10 @@ Widget_Preview::Widget_Preview():
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
 		play_button = manage(new class Gtk::Button());
 		play_button->set_tooltip_text(_("Play"));
-		icon->set_padding(0,0);
+		icon->set_margin_start(0);
+		icon->set_margin_end(0);
+		icon->set_margin_top(0);
+		icon->set_margin_bottom(0);
 		icon->show();
 		play_button->add(*icon);
 		play_button->set_relief(Gtk::RELIEF_NONE);
@@ -417,7 +426,10 @@ Widget_Preview::Widget_Preview():
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
 		pause_button = manage(new class Gtk::Button());
 		pause_button->set_tooltip_text(_("Pause"));
-		icon->set_padding(0,0);
+		icon->set_margin_start(0);
+		icon->set_margin_end(0);
+		icon->set_margin_top(0);
+		icon->set_margin_bottom(0);
 		icon->show();
 		pause_button->add(*icon);
 		pause_button->set_relief(Gtk::RELIEF_NONE);
@@ -431,7 +443,10 @@ Widget_Preview::Widget_Preview():
 	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_next_frame"), Gtk::ICON_SIZE_BUTTON));
 	next_framebutton = manage(new class Gtk::Button());
 	next_framebutton->set_tooltip_text(_("Seek to next frame"));
-	icon2->set_padding(0,0);
+	icon2->set_margin_start(0);
+	icon2->set_margin_end(0);
+	icon2->set_margin_top(0);
+	icon2->set_margin_bottom(0);
 	icon2->show();
 	next_framebutton->add(*icon2);
 	next_framebutton->set_relief(Gtk::RELIEF_NONE);
@@ -1326,7 +1341,10 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		jackbutton->remove();
 		jackbutton->add(*icon);
 		jackbutton->set_tooltip_text(_("Disable JACK"));
-		icon->set_padding(0,0);
+		icon->set_margin_start(0);
+		icon->set_margin_end(0);
+		icon->set_margin_top(0);
+		icon->set_margin_bottom(0);
 		icon->show();
 
 		offset_widget->show();
@@ -1337,7 +1355,10 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		jackbutton->remove();
 		jackbutton->add(*icon);
 		jackbutton->set_tooltip_text(_("Enable JACK"));
-		icon->set_padding(0,0);
+		icon->set_margin_start(0);
+		icon->set_margin_end(0);
+		icon->set_margin_top(0);
+		icon->set_margin_bottom(0);
 		icon->show();
 
 		offset_widget->hide();

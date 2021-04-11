@@ -70,7 +70,10 @@ KeyFrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid,
 	Gtk::ToggleButton *button = manage(new class Gtk::ToggleButton());
 	button->add(*icon);
 	button->set_tooltip_text(tooltip);
-	icon->set_padding(0, 0);
+	icon->set_margin_start(0);
+	icon->set_margin_end(0);
+	icon->set_margin_top(0);
+	icon->set_margin_bottom(0);
 	icon->show();
 	button->set_relief(Gtk::RELIEF_NONE);
 	button->set_active();
