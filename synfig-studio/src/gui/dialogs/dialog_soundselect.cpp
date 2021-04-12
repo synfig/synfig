@@ -60,22 +60,15 @@ studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<
 canvas_interface(ci)
 {
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	dialogPadding->set_margin_start(12);
-	dialogPadding->set_margin_end(12);
-	dialogPadding->set_margin_top(12);
-	dialogPadding->set_margin_bottom(12);
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 
 	Gtk::Frame *soundFrame = manage(new Gtk::Frame(_("Sound Parameters")));
 	((Gtk::Label *) soundFrame->get_label_widget())->set_markup(_("<b>Sound Parameters</b>"));
+	soundFrame->get_style_context()->add_class("dialog-main-content");
 	soundFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	dialogPadding->add(*soundFrame);
 
 	Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	framePadding->set_margin_start(24);
-	framePadding->set_margin_end(0);
-	framePadding->set_margin_top(6);
-	framePadding->set_margin_bottom(0);
 	soundFrame->add(*framePadding);
 
 	Gtk::Label *fileLabel = manage(new Gtk::Label(_("_Sound File"), true));
@@ -88,6 +81,7 @@ canvas_interface(ci)
 	offsetLabel->set_mnemonic_widget(offset);
 
 	Gtk::Table *table = manage(new Gtk::Table(2, 2, false));
+	table->get_style_context()->add_class("dialog-secondary-content");
 	table->set_row_spacings(6);
 	table->set_col_spacings(12);
 	framePadding->add(*table);

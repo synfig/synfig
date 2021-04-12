@@ -53,6 +53,7 @@ Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas>
 	Dialog(_("Waypoint Editor"),parent),
 	canvas(canvas)
 {
+	this->set_resizable(false);
 	assert(canvas);
     waypointwidget=manage(new class Widget_Waypoint(canvas));
 	get_vbox()->pack_start(*waypointwidget);

@@ -36,6 +36,7 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
 #include <gtkmm/grid.h>
+#include <gtkmm/stylecontext.h>
 
 #include <gui/localization.h>
 
@@ -67,13 +68,10 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::on_rend_desc_changed));
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	dialogPadding->set_margin_start(12);
-	dialogPadding->set_margin_end(12);
-	dialogPadding->set_margin_top(12);
-	dialogPadding->set_margin_bottom(12);
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 
 	Gtk::Grid *dialogGrid = manage(new Gtk::Grid());
+	dialogGrid->get_style_context()->add_class("dialog-main-content");
 	dialogGrid->set_row_spacing(12);
 	dialogPadding->add(*dialogGrid);
 
@@ -83,13 +81,10 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	dialogGrid->attach(*info_frame, 0, 0, 1, 1);
 
 	Gtk::Alignment *infoPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	infoPadding->set_margin_start(24);
-	infoPadding->set_margin_end(0);
-	infoPadding->set_margin_top(6);
-	infoPadding->set_margin_bottom(0);
 	info_frame->add(*infoPadding);
 
 	Gtk::Grid *info_grid = manage(new Gtk::Grid());
+	info_grid->get_style_context()->add_class("dialog-secondary-content");
 	info_grid->set_row_spacing(6);
 	info_grid->set_column_spacing(12);
 	infoPadding->add(*info_grid);
