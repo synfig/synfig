@@ -194,6 +194,8 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	tcbGrid->attach(*temporalTensionLabel,  0, 4, 1, 1);
 	tcbGrid->attach(*spin_temporal_tension, 1, 4, 1, 1);
 
+	tcbFrame->add(*tcbGrid);
+
 	set_canvas(canvas);
 
 	add(*waypointFrame);
@@ -201,7 +203,6 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	add(*interpolationFrame);
 	add(*interpolationGrid);
 	add(*tcbFrame);
-	add(*tcbGrid);
 }
 
 void
@@ -287,7 +288,6 @@ Widget_Waypoint::config_tcb_params(bool show_params)
 	}
 
 	tcbFrame->set_visible(show_params);
-	tcbGrid->set_visible(show_params);
 }
 void
 Widget_Waypoint::update_tcb_params_visibility()
