@@ -778,6 +778,7 @@ void CanvasView::deactivate()
 
 void CanvasView::present()
 {
+	show(); // gtk_widget_show also checks visibility, so there is no need to call `is_visible()`
 	App::set_selected_canvas_view(this);
 	update_title();
 	Dockable::present();
