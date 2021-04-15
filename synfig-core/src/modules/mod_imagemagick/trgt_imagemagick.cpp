@@ -50,7 +50,6 @@
 #if HAVE_FCNTL_H
  #include <fcntl.h>
 #endif
-#include <unistd.h>
 #include <ETL/misc>
 
 #endif
@@ -63,6 +62,7 @@ using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
+ #include <unistd.h>
 #else
  #define WIN32_PIPE_TO_PROCESSES
 #endif
@@ -77,7 +77,6 @@ SYNFIG_TARGET_SET_VERSION(imagemagick_trgt,"0.1");
 /* === M E T H O D S ======================================================= */
 
 imagemagick_trgt::imagemagick_trgt(const char *Filename,  const synfig::TargetParam &params):
-	pid(-1),
 	imagecount(),
 	multi_image(false),
 	file(NULL),
@@ -92,7 +91,7 @@ imagemagick_trgt::~imagemagick_trgt()
 {
 	if(file){
 #if defined(WIN32_PIPE_TO_PROCESSES)
-		pclose(file);
+		_pclose(file);
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 		fclose(file);
 		int status;
@@ -138,7 +137,7 @@ imagemagick_trgt::end_frame()
 		fputc(0,file);
 		fflush(file);
 #if defined(WIN32_PIPE_TO_PROCESSES)
-		pclose(file);
+		_pclose(file);
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 		fclose(file);
 		int status;
@@ -175,7 +174,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 	                  round_to_int(desc.get_y_res()/39.3700787402),
 	                  newfilename.c_str());
 
-	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
+	file=_popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 

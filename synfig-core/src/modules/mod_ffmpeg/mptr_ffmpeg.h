@@ -48,7 +48,9 @@ class ffmpeg_mptr : public synfig::Importer
 	SYNFIG_IMPORTER_MODULE_EXT
 public:
 private:
-	pid_t pid;
+#ifdef HAVE_FORK
+	pid_t pid = -1;
+#endif
 	FILE *file;
 	int cur_frame;
 	synfig::Surface frame;

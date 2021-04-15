@@ -203,7 +203,7 @@ private:
 		int getRed(String hex);
 		int getGreen(String hex);
 		int getBlue(String hex);
-		int hextodec(String hex);
+		int hextodec(const std::string& hex);
 		int getColor(String name, int position);
 		float getDimension(const String ac);
 		//string functions

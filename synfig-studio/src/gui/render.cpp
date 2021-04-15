@@ -61,6 +61,10 @@
 
 #endif
 
+// MSVC doesn't define W_OK
+#ifndef W_OK
+#define W_OK 2
+#endif
 
 /* === U S I N G =========================================================== */
 

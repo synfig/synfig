@@ -67,6 +67,11 @@
 
 #endif
 
+// MSVC
+#ifndef W_OK
+#define W_OK 2
+#endif
+
 using namespace synfig;
 
 void process_job_list(std::list<Job>& job_list, const TargetParam& target_params)

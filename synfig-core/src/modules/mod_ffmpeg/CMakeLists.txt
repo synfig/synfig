@@ -7,7 +7,7 @@ target_sources(mod_ffmpeg
         "${CMAKE_CURRENT_LIST_DIR}/mptr_ffmpeg.cpp"
 )
 
-target_link_libraries(mod_ffmpeg synfig ${SIGCPP_LIBRARIES})
+target_link_libraries(mod_ffmpeg synfig)
 
 install (
     TARGETS mod_ffmpeg

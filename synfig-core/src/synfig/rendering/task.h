@@ -347,7 +347,7 @@ public:
 	};
 
 
-	static synfig::Token token;
+	SYNFIG_EXPORT static synfig::Token token;
 	virtual Token::Handle get_token() const = 0;
 
 	SYNFIG_EXPORT static const etl::handle<Task> blank;

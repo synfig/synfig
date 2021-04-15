@@ -48,7 +48,9 @@ class ffmpeg_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
 private:
-	pid_t pid;
+#ifdef HAVE_FORK
+	pid_t pid = -1;
+#endif
 	int imagecount;
 	bool multi_image;
 	FILE *file;

@@ -2,6 +2,16 @@
 ## Includes
 ##
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
+
+# for multi-config builds (e.g. msvc)
+foreach(CONFIG_TYPE  ${CMAKE_CONFIGURATION_TYPES})
+	string(TOUPPER ${CONFIG_TYPE} CONFIG_TYPE)
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_TYPE} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONFIG_TYPE} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+endforeach(CONFIG_TYPE CMAKE_CONFIGURATION_TYPES)
+
 include_directories(
     SYSTEM
         ${SIGCPP_INCLUDE_DIRS}
@@ -43,14 +53,27 @@ set(MODS_ENABLED
 )
 if(MSVC)
 	set(MODS_ENABLED
-		lyr_std
-		mod_bmp
-		mod_example
-		mod_gif
-		mod_noise
-		mod_particle
-		mod_ppm
-		mod_yuv420p
+			lyr_freetype
+			lyr_std
+			mod_bmp
+			#mod_dv
+			mod_example
+			mod_ffmpeg
+			mod_filter
+			mod_geometry
+			mod_gif
+			mod_gradient
+			mod_imagemagick
+			mod_jpeg
+			#    mod_libavcodec # - build failure
+			#    mod_magickpp # - made optional
+			mod_noise
+			#mod_openexr
+			mod_particle
+			mod_png
+			mod_ppm
+			mod_svg
+			mod_yuv420p
 	)
 endif()
 if(LIBMNG_FOUND)
@@ -58,9 +81,6 @@ if(LIBMNG_FOUND)
 else()
   message(STATUS "mod_mng: Disabled")
 endif()
-
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${SYNFIG_BUILD_ROOT}/lib/synfig/modules)
 
 ## Magick++ support
 option(WITH_MAGICPP "Enable Magic++ module (output format support)" OFF)
