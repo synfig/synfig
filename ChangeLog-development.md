@@ -117,7 +117,7 @@
 - [`7ccb5d7`](https://github.com/synfig/synfig/commit/7ccb5d702f5369f09a3524e0e9715394d629be91) Merge PR [#1985](https://github.com/synfig/synfig/issues/1985): [CI] GitHub actions improvements
 - [`1cbf8c3`](https://github.com/synfig/synfig/commit/1cbf8c3e710b85b0c63f678c42f4e8fb3d212e8d) [CI] Added GitHub actions for stable branch
 - [`8e24b08`](https://github.com/synfig/synfig/commit/8e24b0867e1cf51e8bdecbd2a211c727bbc5a194) [CI] Temporary replaced MacOS 11 with MacOS 10.15 until GitHub Action issue is not resolved
-- [`6b0d418`](https://github.com/synfig/synfig/commit/6b0d4185255cc534940709c9001227d1ef52ba68) [Autotools] Fixed problem with missing *.glsl files in distribution ([#1982](https://github.com/synfig/synfig/issues/1982)) [core]
+- [`6b0d418`](https://github.com/synfig/synfig/commit/6b0d4185255cc534940709c9001227d1ef52ba68) [Autotools] Fixed problem with missing \*.glsl files in distribution ([#1982](https://github.com/synfig/synfig/issues/1982)) [core]
 - [`c1e6ca0`](https://github.com/synfig/synfig/commit/c1e6ca001861dd5d815b91f9c6e35ccb0c59a84c) [Synfig Studio] fix states accelerator shortcut in tooltips ([#1959](https://github.com/synfig/synfig/issues/1959)) [studio]
 - [`39807ad`](https://github.com/synfig/synfig/commit/39807ad99f89c0f626c98006e40e855c62a26a32) [Synfig Studio] Bumped year in About dialog ([#1977](https://github.com/synfig/synfig/issues/1977)) [studio]
 - [`6d407c2`](https://github.com/synfig/synfig/commit/6d407c2c7a6e86eed34687214123fddc6fbc4a66) autotools: fix POTFILES.in again and Makefile.am ([#1981](https://github.com/synfig/synfig/issues/1981)) [studio]
@@ -139,7 +139,7 @@
 - [`70c5ff6`](https://github.com/synfig/synfig/commit/70c5ff6cc55eab34d86142b00d6d0f0d132b0af0) [Synfig Studio] Duckmatic: signal_grid_changed never emitted ([#1937](https://github.com/synfig/synfig/issues/1937)) [studio]
 - [`4690620`](https://github.com/synfig/synfig/commit/4690620760afb60540ac52ee063eda3bafcc04e9) Merge PR [#1939](https://github.com/synfig/synfig/issues/1939): [Synfig Studio] app.cpp : some cleanup
 - [`a9ef157`](https://github.com/synfig/synfig/commit/a9ef15773780308e462c55add44f445227097054) [Synfig Studio] refactored URI code in CanvasView ([#1943](https://github.com/synfig/synfig/issues/1943)) [studio]
-- [`a472077`](https://github.com/synfig/synfig/commit/a4720773c9aeb35b31804166e32e6e4035d16866) app.cpp: merge all #ifdef _WIN32 stuff [studio]
+- [`a472077`](https://github.com/synfig/synfig/commit/a4720773c9aeb35b31804166e32e6e4035d16866) app.cpp: merge all #ifdef \_WIN32 stuff [studio]
 - [`84b1710`](https://github.com/synfig/synfig/commit/84b1710613ea1e8285fd5ff343af9f7244f9e72e) some variable/class property sorting [studio]
 - [`e9b8b78`](https://github.com/synfig/synfig/commit/e9b8b782e05939ddc56762ee72979ba760dcc38a) no need for namespace scope here [studio]
 - [`74f9c7e`](https://github.com/synfig/synfig/commit/74f9c7ea452b2beef8543b57a25fa30a27663ba7) move static variable next other ones [studio]
