@@ -110,10 +110,10 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	dialogPadding->set_padding(12, 12, 12, 12);
 	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 
 	Gtk::Grid *dialogGrid = manage(new Gtk::Grid());
+	dialogGrid->get_style_context()->add_class("dialog-main-content");
 	dialogGrid->set_row_spacing(12);
 	dialogPadding->add(*dialogGrid);
 
@@ -131,10 +131,10 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	((Gtk::Label *) target_frame->get_label_widget())->set_markup(_("<b>Target</b>"));
 	dialogGrid->attach(*target_frame, 0, 0, 1, 1);
 	Gtk::Alignment *targetPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	targetPadding->set_padding(6, 0, 24, 0);
 	target_frame->add(*targetPadding);
 
 	Gtk::Grid *target_grid = manage(new Gtk::Grid());
+	target_grid->get_style_context()->add_class("dialog-secondary-content");
 	target_grid->set_row_spacing(6);
 	target_grid->set_column_spacing(12);
 	targetPadding->add(*target_grid);
@@ -165,10 +165,10 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	dialogGrid->attach(*settings_frame, 0, 1, 1, 1);
 
 	Gtk::Alignment *settingsPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	settingsPadding->set_padding(6, 0, 24, 0);
 	settings_frame->add(*settingsPadding);
 
 	Gtk::Grid *settings_grid = manage(new Gtk::Grid());
+	settings_grid->get_style_context()->add_class("dialog-secondary-content");
 	settings_grid->set_row_spacing(6);
 	settings_grid->set_column_spacing(12);
 	settingsPadding->add(*settings_grid);

@@ -83,7 +83,10 @@ void
 ResolutionDial::init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID & stockid, const char *label, const char *tooltip)
 {
 	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
-	icon->set_padding(0, 0);
+	icon->set_margin_start(0);
+	icon->set_margin_end(0);
+	icon->set_margin_top(0);
+	icon->set_margin_bottom(0);
 	icon->show();
 
 	button.set_icon_widget(*icon);

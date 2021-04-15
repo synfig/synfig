@@ -150,8 +150,12 @@ Splash::Splash():
 	splash_image->set(imagepath+"splash_screen"+strprintf("%d",number)+"." IMAGE_EXT);
 	*/
 	splash_image->set(imagepath + "splash_screen." IMAGE_EXT);
-	splash_image->set_alignment(0.5,0.5);
-	splash_image->set_padding(0,0);
+	splash_image->set_halign(Gtk::ALIGN_CENTER);
+	splash_image->set_halign(Gtk::ALIGN_CENTER);
+	splash_image->set_margin_start(0);
+	splash_image->set_margin_end(0);
+	splash_image->set_margin_top(0);
+	splash_image->set_margin_bottom(0);
 
 	// Get the image size
 	int image_w = 350; int image_h = 0;

@@ -70,3 +70,14 @@
 	margin-top   : 12px;
 	margin-bottom: 12px;
 }
+
+/*
+ * Synfig Studio options in dialogs
+ * Slightly moved to the right
+ */
+.dialog-secondary-content {
+	margin-left  : 24px;
+	margin-right : 0px;
+	margin-top   : 6px;
+	margin-bottom: 0px;
+}

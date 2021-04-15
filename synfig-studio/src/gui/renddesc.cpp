@@ -40,6 +40,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/label.h>
+#include <gtkmm/stylecontext.h>
 
 #include <gui/localization.h>
 
@@ -571,19 +572,26 @@ Widget_RendDesc::create_widgets()
 	scale_gamma_g=manage(new Gtk::Scale(adjustment_gamma_g));
 	scale_gamma_b=manage(new Gtk::Scale(adjustment_gamma_b));
 	toggle_px_aspect=manage(new Gtk::CheckButton(_("_Pixel Aspect"), true));
-	toggle_px_aspect->set_alignment(0, 0.5);
+	toggle_px_aspect->set_halign(Gtk::ALIGN_START);
+	toggle_px_aspect->set_valign(Gtk::ALIGN_CENTER);
 	toggle_px_width=manage(new Gtk::CheckButton(_("Pi_xel Width"), true));
-	toggle_px_width->set_alignment(0, 0.5);
+	toggle_px_width->set_halign(Gtk::ALIGN_START);
+	toggle_px_width->set_valign(Gtk::ALIGN_CENTER);
 	toggle_px_height=manage(new Gtk::CheckButton(_("Pix_el Height"), true));
-	toggle_px_height->set_alignment(0, 0.5);
+	toggle_px_height->set_halign(Gtk::ALIGN_START);
+	toggle_px_height->set_valign(Gtk::ALIGN_CENTER);
 	toggle_im_aspect=manage(new Gtk::CheckButton(_("Image _Aspect"), true));
-	toggle_im_aspect->set_alignment(0, 0.5);
+	toggle_im_aspect->set_halign(Gtk::ALIGN_START);
+	toggle_im_aspect->set_valign(Gtk::ALIGN_CENTER);
 	toggle_im_width=manage(new Gtk::CheckButton(_("Image _Width"), true));
-	toggle_im_width->set_alignment(0, 0.5);
+	toggle_im_width->set_halign(Gtk::ALIGN_START);
+	toggle_im_width->set_valign(Gtk::ALIGN_CENTER);
 	toggle_im_height=manage(new Gtk::CheckButton(_("Image _Height"), true));
-	toggle_im_height->set_alignment(0, 0.5);
+	toggle_im_height->set_halign(Gtk::ALIGN_START);
+	toggle_im_height->set_valign(Gtk::ALIGN_CENTER);
 	toggle_im_span=manage(new Gtk::CheckButton(_("Image _Span"), true));
-	toggle_im_span->set_alignment(0, 0.5);
+	toggle_im_span->set_halign(Gtk::ALIGN_START);
+	toggle_im_span->set_valign(Gtk::ALIGN_CENTER);
 
 	toggle_wh_ratio=manage(new Widget_Link(_("Link width and height"), _("Unlink width and height")));
 	toggle_res_ratio=manage(new Widget_Link(_("Link x and y resolution"), _("Unlink x and y resolution")));
@@ -627,9 +635,9 @@ Gtk::Widget *
 Widget_RendDesc::create_image_tab()
 {
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
-	paddedPanel->set_padding(12, 12, 12, 12);
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 
@@ -640,8 +648,8 @@ Widget_RendDesc::create_image_tab()
 	panelBox->pack_start(*imageSizeFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *tableSizePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	tableSizePadding->set_padding(6, 0, 24, 0);
 	Gtk::Grid *imageSizeGrid = manage(new Gtk::Grid());
+	imageSizeGrid->get_style_context()->add_class("dialog-secondary-content");
 
 	tableSizePadding->add(*imageSizeGrid);
 	imageSizeFrame->add(*tableSizePadding);
@@ -696,17 +704,16 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Frame *imageAreaFrame = manage(new Gtk::Frame(_("Image Area")));
 	imageAreaFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) imageAreaFrame->get_label_widget())->set_markup(_("<b>Image Area</b>"));
-	//panelBox->pack_start(*imageAreaFrame, false, false, 0);
 	panelBox->pack_start(*imageAreaFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *imageAreaPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	imageAreaPadding->set_padding(6, 0, 24, 0);
 	imageAreaFrame->add(*imageAreaPadding);
 
 	Gtk::Box *imageAreaBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,12));
 	Gtk::Box *imageAreaTlbrLabelBox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
 	Gtk::Box *imageAreaTlbrBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
 	Gtk::Box *imageAreaSpanBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,6));
+	imageAreaBox->get_style_context()->add_class("dialog-secondary-content");
 	imageAreaPadding->add(*imageAreaBox);
 
 	Gtk::Label *imageAreaTopLeftLabel = manage(new Gtk::Label(_("_Top Left"), 0, 0.5, true));
@@ -738,9 +745,9 @@ Gtk::Widget *
 Widget_RendDesc::create_time_tab()
 {
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
-	paddedPanel->set_padding(12, 12, 12, 12);
 	
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));  // for future widgets
+	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 	
@@ -752,13 +759,13 @@ Widget_RendDesc::create_time_tab()
 		time_frame = frame;
 		
 		Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-		framePadding->set_padding(6, 0, 24, 0);
 		frame->add(*framePadding);
 		
 		Gtk::Grid *frameGrid = manage(new Gtk::Grid());
-		framePadding->add(*frameGrid);
+		frameGrid->get_style_context()->add_class("dialog-secondary-content");
 		frameGrid->set_row_spacing(6);
 		frameGrid->set_column_spacing(250);
+		framePadding->add(*frameGrid);
 		int row = 0;
 		
 		{
@@ -799,9 +806,9 @@ Gtk::Widget *
 Widget_RendDesc::create_gamma_tab()
 {
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
-	paddedPanel->set_padding(12, 12, 12, 12);
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 	
@@ -812,7 +819,10 @@ Widget_RendDesc::create_gamma_tab()
 		panelBox->pack_start(*frame, Gtk::PACK_SHRINK);
 
 		Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-		framePadding->set_padding(6, 0, 6, 0);
+		framePadding->set_margin_start(6);
+		framePadding->set_margin_end(0);
+		framePadding->set_margin_top(6);
+		framePadding->set_margin_bottom(0);
 		frame->add(*framePadding);
 		gamma_frame = frame;
 		
@@ -883,9 +893,9 @@ Gtk::Widget *
 Widget_RendDesc::create_other_tab()
 {
 	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
-	paddedPanel->set_padding(12, 12, 12, 12);
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
 	paddedPanel->add(*panelBox);
 
@@ -895,10 +905,10 @@ Widget_RendDesc::create_other_tab()
 	panelBox->pack_start(*lockFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *lockPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	lockPadding->set_padding(6, 0, 24, 0);
 	lockFrame->add(*lockPadding);
 
 	Gtk::Grid *lockGrid = manage(new Gtk::Grid());
+	lockGrid->get_style_context()->add_class("dialog-secondary-content");
 	lockGrid->set_row_spacing(6);
 	lockGrid->set_column_spacing(12);
 	lockPadding->add(*lockGrid);
@@ -922,10 +932,10 @@ Widget_RendDesc::create_other_tab()
 	panelBox->pack_start(*focusFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Alignment *focusPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	focusPadding->set_padding(6, 0, 24, 0);
 	focusFrame->add(*focusPadding);
 
 	Gtk::Box *focusBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 12));
+	focusBox->get_style_context()->add_class("dialog-secondary-content");
 	focusPadding->add(*focusBox);
 
 	Gtk::Label *focusLabel = manage(new Gtk::Label(_("_Focus Point"), 0, 0.5, true));
