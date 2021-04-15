@@ -478,21 +478,20 @@ png_trgt_spritesheet::write_png_file()
     png_write_info_before_PLTE(png_ptr, info_ptr);
     png_write_info(png_ptr, info_ptr);
 
-	unsigned char* buffer = new unsigned char[4 * sheet_width];
+	std::unique_ptr<unsigned char[]> buffer {new unsigned char[4 * sheet_width]};
     //Writing spritesheet into png image
 	for (cur_out_image_row = 0; cur_out_image_row < sheet_height; cur_out_image_row++)
 	{
 		color_to_pixelformat(
-			buffer,
+			buffer.get(),
 			color_data[cur_out_image_row],
             //PF_RGB|(get_alpha_mode()==TARGET_ALPHA_MODE_KEEP)?PF_A:PF_RGB, //Note: PF_RGB == 0
 			(get_alpha_mode() == TARGET_ALPHA_MODE_KEEP) ? PF_RGB | PF_A : PF_RGB, //Note: PF_RGB == 0
 			0,
 			sheet_width );
 		setjmp(png_jmpbuf(png_ptr));
-		png_write_row(png_ptr,buffer);
+		png_write_row(png_ptr, buffer.get());
 	}
-	delete[] buffer;
 
 	cur_out_image_row = 0;
     if(out_file_pointer)
