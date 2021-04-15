@@ -15,7 +15,7 @@
 - [`3ef74a5`](https://github.com/synfig/synfig/commit/3ef74a55560c92463d33f7bc831a38faaa854ba8) fix bline point order when saving for older canvas (< synfig 1.4) [core]
 - [`7c57f7a`](https://github.com/synfig/synfig/commit/7c57f7ac0867a5cd768d8c2f060d057cd2d222e0) Show interpolation type directly in waypoint's context menu. ([#1353](https://github.com/synfig/synfig/issues/1353)) [studio]
 - [`a8eccbe`](https://github.com/synfig/synfig/commit/a8eccbe0b9780c29ac517ec6852c6bcf795515bc) Cleanup unwanted console messages ([#1352](https://github.com/synfig/synfig/issues/1352)) [studio]
-- [`a7d3727d`](https://github.com/synfig/synfig/commit/a7d3727d) Fix TimeTrack not updating when new waypoints added to bone. Closes [#1342](https://github.com/synfig/synfig/issues/1342). [studio]
+- [`a7d3727`](https://github.com/synfig/synfig/commit/a7d3727d) Fix TimeTrack not updating when new waypoints added to bone. Closes [#1342](https://github.com/synfig/synfig/issues/1342). [studio]
 - [`6d8904e`](https://github.com/synfig/synfig/commit/6d8904e6c38161574c5c77e40745edc09be9a400) Merge PR [#1072](https://github.com/synfig/synfig/issues/1072): Fixed crash when undoing layer deletion [studio]
 - [`f3f8745`](https://github.com/synfig/synfig/commit/f3f874523e71a25129e75210c7b3b716aff09407) Fixed current_rendered_frames_count assignment [studio]
 - [`90e4e3b`](https://github.com/synfig/synfig/commit/90e4e3b887d0f8085902c26af0777a7a4c20bf77) fixes "local time" of Time Loop layer - fix [#479](https://github.com/synfig/synfig/issues/479) [core]
