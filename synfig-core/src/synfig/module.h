@@ -38,7 +38,7 @@
 /* === M A C R O S ========================================================= */
 
 //! Marks the start of a module description
-#define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { x##_modclass(synfig::ProgressCallback *callback=nullptr);
+#define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { explicit x##_modclass(synfig::ProgressCallback *callback=nullptr);
 
 //! Sets the localized name of the module
 #define MODULE_NAME(x) 			virtual const char * Name() const { return x; }
