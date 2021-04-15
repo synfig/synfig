@@ -51,7 +51,7 @@ while IFS= read -r CMT; do
 	#echo "...     ${FILENAME}"
     done <<< "$FILES"
     MESSAGE=`git log --format=%B -n 1 ${CMT} | head -n 1`
-    MESSAGE=`echo "$MESSAGE" | sed -e "s/#\([0-9]\+\)/\[\\\#\1\]\(https\:\/\/github\.com\/synfig\/synfig\/issues\/\1\)/g"`
+    MESSAGE=`echo "$MESSAGE" | sed -e "s/#\([0-9]\+\)/\[\\\#\1\]\(https\:\/\/github\.com\/synfig\/synfig\/issues\/\1\)/g" | sed -e "s/\*/\\\*/g" | sed -e "s/\_/\\\_/g"`
     echo "- [\`${CMT:0:7}\`](https://github.com/synfig/synfig/commit/${CMT}) ${MESSAGE}${TAGS}" >> "${CHANGELOG}.new"
 done <<< "$COMMITS"
 fi
