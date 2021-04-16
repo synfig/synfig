@@ -31,36 +31,30 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include <gui/trees/layertree.h>
 
-#include "layertree.h"
-#include "layerparamtreestore.h"
-#include "cellrenderer/cellrenderer_value.h"
-#include "cellrenderer/cellrenderer_timetrack.h"
-#include <synfigapp/action.h>
-#include <synfigapp/action_system.h>
-#include <synfigapp/actions/layerremove.h>
-#include <synfigapp/instance.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/paned.h>
-#include "app.h"
-#include "instance.h"
+#include <glibmm/main.h> //Glib::signal_timeout()
+
 #include <gtkmm/treemodelsort.h>
+
+#include <gui/app.h>
+#include <gui/cellrenderer/cellrenderer_value.h>
+#include <gui/cellrenderer/cellrenderer_timetrack.h>
+#include <gui/exception_guard.h>
+#include <gui/instance.h>
+#include <gui/localization.h>
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 #  include <synfig/timepointcollect.h>
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 
-#include <gui/localization.h>
-
-#include <gui/exception_guard.h>
+#include <synfigapp/actions/layerremove.h>
+#include <synfigapp/instance.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
