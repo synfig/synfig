@@ -28,25 +28,18 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/treeview.h>
-#include <gtkmm/treestore.h>
-#include <gtkmm/tooltip.h>
-#include <gtkmm/table.h>
-#include <gtkmm/box.h>
 #include <gtkmm/adjustment.h>
+#include <gtkmm/box.h>
 #include <gtkmm/scale.h>
-#include <gtkmm/button.h>
+#include <gtkmm/table.h>
+#include <gtkmm/treeview.h>
 
-#include <synfig/valuenodes/valuenode_animated.h>
+#include <gui/timemodel.h>
+#include <gui/trees/layerparamtreestore.h>
+#include <gui/trees/layertreestore.h>
+#include <gui/widgets/widget_value.h>
 
 #include <synfigapp/value_desc.h>
-#include <synfigapp/canvasinterface.h>
-
-#include <widgets/widget_value.h>
-#include <gui/timemodel.h>
-
-#include "layertreestore.h"
-#include "layerparamtreestore.h"
 
 /* === M A C R O S ========================================================= */
 
