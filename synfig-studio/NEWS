@@ -1,4 +1,7 @@
-              synfigstudio releases
+## Version 1.4.1
+- [`fb03700`](https://github.com/synfig/synfig/commit/fb037008607153b239cbe7d56fa378cc50655330) Fix crash on unsuccessful action with a clean undo history ([#1643](https://github.com/synfig/synfig/issues/1643))
+
+--------------------------
 
  1.4.0 (git tag "v1.4.0") - Major release.
  
@@ -534,3 +537,347 @@
 
   * First public release!
 
+------------------------------------
+
+2005-11-26	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/gtkmm/layertreestore.cpp: Fixed bug which caused crash on DND layer move 
+	
+2005-11-03	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/gtkmm/render.cpp: Fixed default render file to use the directory seperator for the given OS, rather than just use forward slashes all the time.
+
+2004-04-26 (darco): Delete button now deletes layers
+2004-04-21 (darco): Various improvements to the dock/dialog system
+2004-04-19 (adruab): Added Zoom out to the zoom tool using the Ctrl key
+2004-04-16 (adruab): Added basic zoom tool
+2004-04-15 (darco): Added meta data stuff to properties dialog
+2004-04-12 (darco): Dockable Dialog madness!
+2004-04-08 (darco): Changed "Select All Ducks" from CTRL-F to CTRL-G
+2004-04-08 (darco): Added search capability to layer tree. (Ctrl-F)
+2004-04-08 (darco): The order of the layers is now accurate for a given moment in time
+2004-04-07 (darco): Foldy... Powers?
+2004-04-07 (darco): Added the length field to keyframe tab
+2004-04-02 (adruab): Added a preview thing... it's cool
+2004-04-02 (darco): The rulers now adhere to the default unit system
+2004-04-02 (darco): Improved defaults display
+2004-04-01 (darco): Different units now supported
+2004-03-31 (darco): Tweaks now preserved!
+2004-03-30 (darco): Checkerboard pattern now used to convey alpha
+2004-03-30 (darco): got rid of stupid negative zero thing in color selection dialog
+2004-03-30 (darco): Adjustments to color dialog to reduce crashes (hopefully)
+2004-03-30 (darco): Changed default frame rate from 30 to 24 FPS
+2004-03-30 (darco): Fixed keyframe weirdness
+2004-03-25 (darco): fixed the zillion dialog box bug
+2004-03-25 (darco): Minor improvements to parameter view
+2004-03-25 (darco): Added "Select all children" option for layers
+2004-03-24 (darco): Added hack to make connecting and disconnecting BLinePoints(vertices) easier
+2004-03-22 (darco): Improved grid snap
+2004-03-18 (darco): You can now rotate the order of the items in a list!
+2004-03-17 (darco): Linking!
+2004-03-16 (darco): You can now rename layers with a single click
+2004-03-16 (darco): You can now edit parameters even when you have multiple layers selected (Useful!)
+2004-03-15 (darco): Added the ability to jump around on the history tab
+2004-03-15 (darco): You can now right-click on ducks to edit waypoints! Group selection even!
+2004-03-08 (darco): Improved vertex addition/removal
+2004-03-05 (darco): Fixed weird tangent bug in BLine tool
+2004-03-05 (darco): You can now change all of the waypoints in a keyframe rather easily by right clicking on the keyframe in the keyframe tab and selecting "Properties".
+2004-03-05 (darco): Keyframe manipulation now much faster
+2004-03-04 (darco): BLine tool will now automaticly create if you leave the tool with something in it
+2004-03-04 (darco): You can now close polygons in the polygon tool by clicking on the first point in the polygon
+2004-03-04 (darco): Improved grid snap stuff
+2004-03-02 (darco): Fixed weird selection box when using fill tool
+2004-03-02 (darco): Fixed crash on undo stroke from sketch tool
+2004-03-02 (darco): Added Rotate Tool
+2004-03-02 (darco): Improved the performance of the duck manipulation tools
+2004-03-01 (darco): minor adjustment for deleting waypoints
+2004-03-01 (darco): Fixed a crash bug on waypoint manipulation
+2004-02-20 (darco): Changed the way the BLine tool operates
+2004-02-20 (darco): Added "Clear History" button to the "history" tab
+2004-02-18 (darco): Added palette dialog
+2004-02-18 (darco): Menus no longer activate the first item in the menu when you click to open it
+2004-02-16 (darco): slight improvement to the way gradients are handled
+2004-02-16 (darco): Added "Apply Deafult Gradient" action for gradient parameters. (just right click on them)
+2004-02-16 (darco): The mouse pointer will now change depending on the currently selected tool.
+2004-02-16 (darco): Moved icons around
+2004-02-16 (darco): File selection dialog box now remembers previous path
+2004-02-13 (darco): Added box select
+2004-02-12 (darco): Added Scale tool!
+2004-02-12 (darco): Added SmoothMove tool!
+2004-02-11 (darco): You can now drag sketch files into canvases to load the sketch
+2004-02-11 (adruab): Added rect tool and futzed with the tool options for the draw tool.
+2004-02-11 (darco) : Fixed crash-on-exit bug
+2004-02-11 (darco) : Added "File->Revert" menu option
+2004-02-10 (darco) : Crash on "CVS-Update" bug fixed
+2004-02-10 (darco) : Fixed layer-click problem after using the gradient tool
+2004-02-10 (darco) : Added "Grab" button
+2004-02-10 (darco) : Draw, Gradient, and BLine tool now add layers "in place"
+2004-02-09 (darco) : Added preliminary gradient support
+2004-02-09 (darco) : Added "CTRL-D" to unselect all layers
+2004-02-09 (darco) : Added feather option to the draw and bline tools.
+2004-02-09 (darco) : Polygon tool is now implemented correctly
+2004-02-09 (darco) : Increased the size of the "One moment please..." font.
+2004-02-09 (darco) : Negative color values are now clamped off.
+2004-02-07 (darco) : Auto recovery now no longer saves the recovery files in the same directory, which should lead to a more tidy filesystem.
+2004-02-06 (darco) : You can now move multiple layers at once
+2004-02-06 (darco) : Layer heirarchies are now less likely to collapse when moving layers.
+2004-02-06 (darco) : Raising multiple layers at the same time now works correctly
+2004-02-06 (darco) : Encapsulating no longer puts the encapsulated layer at the top
+2004-02-06 (darco) : Gradient previews are now antialiased
+2004-02-06 (darco) : Fixed odd positioning of dialogs
+2004-02-06 (darco) : Changed the BLine tool to have a more consistant user interface
+2004-02-05 (darco) : Fixed a bug in the text layer regarding the size duck
+2004-01-27 (darco) : Strokes in the draw tool should now draw better and undo better.
+2004-01-27 (darco) : Added "fill last stroke" button to draw tool options
+2004-01-27 (darco) : Auto crash-recovery feature now implemented!
+2004-01-27 (darco) : Canvas should now only redraw when a value is truly changed. (ie: just opening a parameter and not changing it will now no longer force a redraw, or add a new action)
+2004-01-24 (darco) : Improved consistancy of tool options dialog when working with several canvases at the same time
+2004-01-24 (darco) : Fixed a bug with loading sketches where the loaded sketch would dissapear.
+2004-01-23 (darco) : Fixed width duck size bug
+2004-01-23 (darco) : Improved existing icons
+2004-01-23 (darco) : Added new icons
+2004-01-23 (darco) : Fixed bug where studio would ask you to commit file not in repository or sandbox
+2004-01-22 (darco) : Initial version of the split layer tab
+2004-01-21 (darco) : Changed the "default width" to "0.01" and the default increment to "0.005"
+2004-01-21 (darco) : SINFG Studio will now ask you to commit your file to CVS upon exit if you haven't already.
+2004-01-21 (darco) : Fixed bug where the color sliders in the gradient editor didn't work.
+2004-01-21 (darco) : You can now load and save sketches
+2004-01-19 (darco) : Minor fix for remembering settings
+2004-01-19 (darco) : Added "Auto Loop" and "Auto Connect" toggles to the tool options for the draw tool.
+2004-01-19 (darco) : Tool options for the draw tool are now retained between sessions. Tool options can also be customized for specific input devices.(that last part may be slightly buggy)
+2004-01-19 (darco) : Added a "show sketch" toggle to the tool options for the scribble tool. This allows you to temporarily hide the sketch.
+2004-01-19 (darco) : changed default grid size from 0.2,0.2 to 0.25,0.25
+2004-01-17 (darco) : Individual input devices should now remember their associated settings
+2004-01-17 (darco) : Dialogs should now remember their positions
+2004-01-17 (darco) : Added some tool options for draw tool
+2004-01-16 (darco) : Tool Options dialog has been implemented. Currently the only tool that supports it is the sketch tool
+2004-01-16 (darco) : You can now clear the sketch area via the tool options dialog when the sketch tool is selected
+2004-01-16 (darco) : Changes in the color dialog are now immediately reflected in whatever is in context. (As opposed to having to always hit "apply")
+2004-01-16 (darco) : Sketch tool is now persistant. Still needs some work--as it stands, you can't undo or turn off the sketch without closing the file and opening it up again.
+2004-01-15 (darco) : Added preliminary version of the sketch tool. This version doesn't suport colors, or persist across different tools yet. This support is on the way.
+2004-01-15 (darco) : Renamed tools
+2004-01-14 (darco) : Updates for supporting new BLines
+2004-01-14 (darco) : Import tool now respects the width and height of a bitmap when placing it
+2004-01-13 (darco) : Added support for multiple-line strings (for layers such as the Text layer)
+2004-01-13 (darco) : Added low-resolution mode to work area to speed up render times. You can toggle it on and off via the View->ToggleLow-Res menu item. (Low-res mode is ON by default)
+2004-01-09 (darco) : drawing onto the start or end of an existing BLine will now extend it rather than creating a new BLine
+2004-01-09 (darco) : You can now delete canvases from the canvas browser.
+2004-01-07 (adruab) : Pen sample grouping, gets rid of small errors in line, but also tends to cause breaking to occur at lower curvatures than it should
+2004-01-06 (darco) : Preliminary support for creating regions now implemented. It is EXTREMELY buggy, but it gives you an idea of what you can do with it.
+2004-01-06 (darco) : I fixed an error that is probably the source for many of the random crashes that seem to occur.
+2004-01-05 (darco) : Individual input devices (mouse, wacom tablet, etc) will now remember their associated tool, color, and BLine width. These settings are not yet saved on program exit--this will be implemented in the future.
+2004-01-05 (darco) : You can now adjust the default BLine size by directly clicking up the upper or lower part of the BLine size indicator.
+2004-01-05 (darco) : You can now draw looped blines in the sketch tool.
+2004-01-02 (adruab) : Fixed weird reversing tangents bug
+2004-01-01 (adruab) : Added tangent breaking to the curve input tool (first post of 2004 :P)
+2003-12-28 (adruab) : Fixed the dumb adaptive tesselator, and put pressure sensitivity back in
+2003-12-28 (adruab) : Finished the "dumb" adaptive curve tesselator (-bugs)
+2003-12-28 (darco) : Added physical dimensions to properties and render dialogs
+2003-12-24 (darco) : The clicking-too-fast bug should be fixed
+2003-12-24 (darco) : Added Fill Tool
+2003-12-23 (darco) : Preliminary support for automatic vertex connection when scribbiling in the new rotoscope tool
+2003-12-19 (darco) : Fix for last vertex width being wrong when drawing
+2003-12-18 (darco) : The zero-tangent bug with the new rotoscope should also be fixed
+2003-12-18 (darco) : Tangent handles are now turned off when rotoscoping
+2003-12-18 (darco) : Improved pressure sensitivity.
+2003-12-18 (darco) : Pressure sensitivity... :)
+2003-12-18 (darco) : Preliminary tablet support now implemented
+2003-12-17 (darco) : A handful of under-the-hood tweaks that should make using the program a tad more friendly.
+2003-12-17 (darco) : Improvements to the new rotoscope
+2003-12-17 (darco) : Creating a new layer will now insert it at the depth of the currently selected layer
+2003-12-03 (darco) : The place-holder for the new rotoscope now creates blines
+2003-12-03 (darco) : Fixed minor bug with disconnecting value nodes
+2003-12-02 (darco) : Improved about dialog graphic
+2003-12-02 (darco) : When you open a really big canvas, it is now auto-zoomed out to fit the window.
+2003-12-01 (darco) : Tool buttons can now show you which tool is currently active.
+2003-11-29 (darco) : Changed default aspect ratio of new composition from 4:3 to 16:9
+2003-11-29 (darco) : Changed default resolution of new composition from 75dpi to 72dpi
+2003-11-29 (darco) : Added locks&links to properties dialog.
+2003-11-29 (darco) : Converted resolution in Properties from Dots-per-meter to Dots-per-inch
+2003-11-29 (darco) : Added stub for new rotoscope tool. It doesn't do much at the moment other than let you temporarily draw over the window.
+2003-11-25 (darco) : Removed the useless red-blue selection
+2003-11-18 (darco) : Fixed weird crash-bug when importing compositions
+2003-11-13 (darco) : Fixed bug where encapsulating might re-order the layers
+2003-11-12 (darco) : Opening a new large composition will no longer result in un-weildly large canvas windows.
+2003-11-12 (darco) : Improved all of the CVS command.
+2003-11-12 (darco) : "CVS Add" will no longer ask you for a log entry. You enter the log entry when you "commit"
+2003-11-12 (darco) : Using "saveas" will now append ".sif" to the filename if you didn't specify an extension.
+2003-11-10 (darco) : The default value increment/decrement for the Waypoint Dialog has been changed from 1.0(which is fairly useless) to 0.1. (This is mostly for the TCB controls)
+2003-11-10 (darco) : Ducks now (for the most part) are always accurate with respect to what they are visually representing. They are now context-sensitive. :)
+2003-11-06 (darco) : You can now import other SINFG compositions in the exact same way you would import any other image.
+2003-11-06 (darco) : Added "remove" to waypoint right-click menu.
+2003-11-05 (darco) : Fixed a refresh bug with the time window and the children tab
+2003-11-05 (darco) : Added the ability to duplicate waypoints
+2003-10-31 (darco) : Grid snap now works again
+2003-10-31 (darco) : Added "Jump" column to keyframe tab
+2003-10-31 (darco) : MUCH IMPROVED support for selecting and moving multiple ducks
+2003-10-30 (darco) : Preliminary support for selecting and moving multiple ducks
+2003-10-28 (darco) : Fixed CVS-MODIFIED bug due to daylight-saving time
+2003-10-22 (darco) : Added some CVS features (Although their usefulness is limited in windows)
+2003-10-22 (darco) : Fixed some weirdness with undo/redo/refresh
+2003-10-21 (darco) : Fixed some rotoscope weirdness
+2003-10-21 (darco) : Minor improvement for confusing behavior of progress bar when rendering
+2003-10-21 (darco) : A dialog box will now pop up whenever it is unable to open a composition
+2003-10-21 (darco) : Added placeholders for icons
+2003-10-21 (darco) : Fixed most (all?) of the crazy Gtk/Glib errors.
+2003-10-19 (darco) : Fixed a bug where the "Use Current Frame" option in the Render Dialog was not being checked properly (meaning you couldn't render animatons)
+2003-10-15 (darco) : Added eyedrop tool icon
+2003-10-15 (darco) : Improved scrolling of work area
+2003-10-15 (darco) : Added Eyedrop tool
+2003-10-11 (darco) : Changed default undo/redo behavior to NOT clear the "redo" stack when a new action is performed. (the previous action was to clear the redo stack)
+2003-10-11 (darco) : Fixed some weirdness with the children tab
+2003-10-11 (darco) : Several speed improvements for the tables. This will greatly speed up loading files, editing values, and adjustments to keyframes.
+2003-10-10 (darco) : The "Zoom to 100%" feature can now be accessed by pressing the "`" key. (This is the that has the "~" on it)
+2003-10-10 (darco) : The "Zoom to 100%" feature will not "toggle", meaning that if you are alreay at a "100%" zoom level, then it will return to the previous zoom amount.
+2003-10-08 (darco) : Fixed first/last point on looped bline not being splitable from the work area duck.
+2003-10-07 (darco) : Fixed weird idle->rendering->idle->rendering switching bug
+2003-10-07 (darco) : Added blend_method option to layer tab
+2003-10-07 (darco) : Added amount slider to Layer tab
+2003-10-07 (darco) : Layers are now categorized
+2003-10-06 (darco) : Added red-blue gamma adjustment to setup dialog
+2003-10-06 (darco) : Implemented Image Import Tool. (CTRL-I)
+2003-10-06 (darco) : The Ducks in the Work Area are now more percisely placed. (Especially obvious for radiuses)
+2003-10-06 (darco) : Implemented adjustable default BLine width. To adjust it, use the scroll wheel on your mouse.
+2003-10-06 (darco) : Fixed bug where changing parameters may not always refresh the work area. (AGAIN)
+2003-10-06 (darco) : Fixed dragging-layer-into-inline-canvas crash bug.
+2003-10-06 (darco) : Removed activepoint-specific actions for non-animated canvases
+2003-10-04 (darco) : Fixed bug where when dragging a layer below it ends up being one off.
+2003-10-04 (darco) : Added button to toolbox for quickly displaying the color dialog
+2003-10-04 (darco) : Fixed some minor consistancy issues regarding the layer tab. (ie: disconnections not being visible...)
+2003-10-04 (darco) : You can now sort the ValueNodes in the Children tab
+2003-10-04 (darco) : Fixed bug where changing parameters may not always refresh the work area.
+2003-10-04 (darco) : Hopefuly fixed "dissapearing new layer menu" bug
+2003-10-03 (darco) : Preliminary support for editing layer descriptions
+2003-09-30 (darco) : Changing a canvas parameter now no longer requires you to click elsewhere before it takes effect.
+2003-09-30 (darco) : Changing an Enum parameter now no longer requires you to click elsewhere before it takes effect.
+2003-09-30 (darco) : The Keyframe tab and the TimeTrack columns are now hidden when the canvas's start and end times are equal (ie: if it isn't animated)
+2003-09-30 (darco) : Added hotkey for toggling grid snap -- CONTROL-L
+2003-09-30 (darco) : Added hotkey for toggling the grid -- CONTROL-G
+2003-09-30 (darco) : Right clicking on the default colors (in the toolbox) will swap the FG and BG colors.
+2003-09-30 (darco) : Right clicking on the default gradient (in the toolbox) will revert it back to being the FG->BG gradient.
+2003-09-30 (darco) : Added several keyboard accelerators. F8="Properties Dialog", F9="Render", F12="Options"
+2003-09-30 (darco) : Added "SaveAs..." to CanvasView "File" menu.
+2003-09-30 (darco) : The "Escape" key is now bound to the stop button.
+2003-09-30 (darco) : Added red-border visual queue for when we are in animate mode.
+2003-09-30 (darco) : You can now right click on layers inside of the work area and raise/lower them
+2003-09-30 (darco) : Added the ability to change the render quality of the work area. (View->PreviewQuality)
+2003-09-30 (darco) : You can now loop/unloop BLines and DynamicLists by right clicking on them.
+2003-09-30 (darco) : You can now halt rendering by pressing the stop button
+2003-09-30 (darco) : Improved BLine editing via BLine Rotoscope tool. You now insert points by right clicking on the curve rather than the vertex.
+2003-09-29 (darco) : Improved layer Drag-N-Drop
+2003-09-25 (darco) : Layers can now be rearanged via Drag-N-Drop
+2003-09-25 (darco) : The BLine Rotoscope tool now automaticly uses more reasonable tangents
+2003-09-24 (darco) : You can now select layers from the work area that are inside inline canvases by just clicking on them.
+2003-09-24 (darco) : Selecting a layer from the work area will now cause the layer tab to scroll to make that layer visible.
+2003-09-24 (darco) : Improved in-line canvas editing (now it doesn't collapse ever time you make a change)
+2003-09-24 (darco) : Fixed the bug where the canvas wouldn't refresh if values were edited too quickly
+2003-09-24 (darco) : Added some icons to dynamicly generated menus
+2003-09-24 (darco) : Added jump-to-(next/prev)-keyframe feature (Press '[' and ']')
+2003-09-24 (darco) : Added time-zoom feature (Hold down shift and press '-' and '=')
+2003-09-24 (darco) : Fixed lagging duck bug
+2003-09-23 (darco) : Color editor will now intelegently clamp values if necessary
+2003-09-23 (darco) : Added "selected color" box to color editing dialog
+2003-09-23 (darco) : Implemented keyboard accelerators for zoom. (GIMP style -- '-' for zoom out and '=' for zoom in)
+2003-09-23 (darco) : Implemented keyboard accelerators for Duck Hiding. (press ALT-1...6)
+2003-09-23 (darco) : Angles can now be visually edited
+2003-09-23 (darco) : Added "Split Tangents" action for BLinePoints
+2003-09-23 (darco) : Added "Merge Tangents" action for BLinePoints
+2003-09-23 (darco) : Added visual BLine width adjustment
+2003-09-23 (darco) : Added smart dynamic list item remove and smart dynamic list item insert (works for BLines, too)
+2003-09-22 (darco) : Implemented Duck Masking (see menu View->DuckMask from canvasview menu)
+2003-09-22 (darco) : Implemented key accelerators in CanvasView... (eg: Ctrl-Z=Undo, Ctrl-S=Save, etc)
+2003-09-22 (darco) : Added "Keyframe Lock" button
+2003-09-17 (darco) : Added "Duplicate Keyframe" feature
+2003-09-17 (darco) : Added "Remove Keyframe" feature
+2003-09-17 (darco) : Finished SINFGApp re-write.
+2003-09-05 (darco) : Added default foreground/background colors, as well as a default gradient.
+2003-09-03 (darco) : Version Increment
+2003-09-01 (darco) : If a given layer has a color parameter, then you can now edit the color of a layer by just selecting the layer and adjusting it's color in the color dialog. You can also adjust the color of all selected layers in this way.
+2003-08-31 (darco) : Added color-selection dialog, improving the ease and intuitiveness of color selection.
+2003-08-18 (darco) : Preliminary support for dynamic point removal.
+2003-08-18 (darco) : Improved support for adding points dynamicly. 
+2003-08-14 (darco) : Preliminary support for animating the addition and removal of points
+2003-08-12 (darco) : You can now right click on segments! To add a point ot a bline, right click on the segment where you want to add the point, and then select "add point".
+2003-08-12 (darco) : You can now click on a layer in the work area and it will be selected. (Not yet supported for all layers)
+2003-08-12 (darco) : Gradient editor now works. Right click on the gradient in the editor to display a menu for adding and removing CPoints.
+2003-08-11 (darco) : You can now see ducks appear as you select children. This greatly improves the ability to edit and work with complex images.
+2003-08-06 (darco) : The canvas browser is now hidden by default. When you first load a canvas, it will pop up automaticlly.
+2003-08-06 (darco) : Added blacklevel test pattern to the gamma tab of the setup dialog. As with the other patterns, try to make the middle of the square match the outside of the square. The goal is to have the highest blacklevel setting where the blacklevel pattern looks solid black.
+2003-08-06 (darco) : I am currently working on adding support for the color gradient editor. It isn't done yet, but if you double click on a gradient, you can bring up what will be the gradient editor.
+2003-08-06 (darco) : Added "Visually Linear Color Selection" checkbox to the setup. This adjusts all color values that you see so that they are more linear in scale. The default is ON.
+2003-08-05 (darco) : The "insert point" option in the rotoscope (bline) is being implemented. It currently only works for adding points to the start of the BLine.
+2003-08-05 (darco) : The "delete point" option in the rotoscope (bline) now works. (Although, it seems to crash when you try to delete the most recent point. Investigating...)
+2003-08-04 (darco) : The setup dialog now saves your changes to disk immediately. This makes is so that if the program crashes, then we don't loose our recently-updated changes
+2003-08-04 (darco) : The setup dialog is now broken down into tabs.
+2003-08-04 (darco) : Improved the speed of the gamma adjustments in the setup dialog.
+2003-08-01 (darco) : Changes made to the setup dialog are now saved to disk, and will be automaticly reloaded upon restarting the program.
+2003-08-01 (darco) : Setup dialog is now implemented, with visual gamma adjustments and the ability to choose the type of timestamp you want
+2003-07-28 (darco) : Added gradients as viewable parameters. (the gradient editor isn't ready yet though)
+2003-07-23 (darco) : Added buttons to the toolbar for poly and bline rotoscope
+2003-07-21 (darco) : Faster window scrolling, and better tiling
+2003-07-15 (darco) : For canvas parameters, you can now select canvases that are outside of the current canvas, even in other files
+2003-07-14 (darco) : TCB controls now implemented
+2003-05-22 (darco) : The time code in the canvas view work area will turn turn "red" if you are on a keyframe
+2003-05-22 (darco) : Activepoint keyframe stuff was more broken than I realized, but it should work now..
+2003-05-22 (darco) : Activepoints can now be viewed in the track view. You can select them, but not much else. Red lines are "off" and green lines are "on"
+2003-05-19 (darco) : Fixed a crashing bug that would sneak up while animating stuff.
+2003-05-19 (darco) : Improved keyframe editing even more.
+2003-05-08 (darco) : Improved keyframe editing. One step closer to "just working". *sigh* Ahh... Automagick...
+2003-05-08 (darco) : Many, Many under the hood updates and cleanups
+2003-04-27 (darco) : Adding a new layer now inserts it at the selected depth in the stack
+2003-04-27 (darco) : Duplicating a layer now puts the clone layer next to the original layer
+2003-04-24 (darco) : Preliminary support for keyframes/dope-sheet has now been implemented!
+2003-04-23 (darco) : Fixed bug where new canvases would have weird time
+2003-04-23 (darco) : You can now import image files into a canvas by dragging them onto the canvas window
+2003-04-22 (darco) : Raising and lowering layers is now faster
+2003-04-22 (darco) : Added some convenience buttons for raising and lowering the layers
+2003-04-19 (darco) : Added timecode readout on keyframe view. (still rather non-functional)
+2003-04-17 (darco) : PasteCanvas layers will now display the name of the canvas it is pasting instead of just "PasteCanvas"
+2003-04-17 (darco) : You can now view and edit the contents of an inline canvas
+2003-04-13 (darco) : Fixed crash bug when pressing render button on render dialog with empty filename
+2003-04-13 (darco) : The render dialog now has a default file name.
+2003-04-13 (darco) : On the Canvas Browser -- renamed "Undo/Redo" tab to "History"
+2003-04-13 (darco) : The layer and children tables now do a better job of keeping in sync with the scene -- meaning that you don't have to hit "refresh" as often.
+2003-04-13 (darco) : Fixed the bug where you could not see the polygon as you were rotoscoping it.
+2003-04-11 (darco) : Fixed a bug in the time widget which would crash the program if you pressed "enter" and the de-focused it.
+2003-04-11 (darco) : Start of significant under-the-hood updates
+2003-04-11 (darco) : "Time Bar" now only appears when start time and end time are not equal.
+2003-04-11 (darco) : Implemented the "move to top" and "move to bottom"
+2003-04-07 (darco) : Changes to properties window of canvas is now undoable
+2003-04-07 (darco) : Creation of Canvases is now undoable
+2003-04-04 (darco) : Improved path rotoscope
+2003-04-03 (darco) : Added "encapsulate" option to layer menu
+2003-04-03 (darco) : All references to time now use the time code format. 
+2003-04-02 (darco) : Using the rotoscope tool to create a path is now WYSIWYG (Instead of just showing lines, you now see the curve and the control points)
+2003-04-01 (darco) : Set the default frame-rate for new compositions to 30.
+2003-03-31 (darco) : Tons of under-the-hood changes. 
+2003-03-31 (darco) : Added the ability to delete, raise, and lower items on a dynamic list
+2003-03-31 (darco) : Added dialog box to path rotoscope
+2003-03-26 (darco) : Removed the "ID" entrybox from the Canvas Properties when the canvas is root.
+2003-03-26 (darco) : Set the default end-time for new compositions to ZERO.
+2003-03-26 (darco) : Set the default frame-rate for new compositions to 15.
+2003-03-22 (darco) : Added canvas options dialog
+2003-03-22 (darco) : Added ability to adjust grid size
+
+2003-03-21 (darco) : Added "Delete" button to waypoint dialog
+
+2003-03-20 (darco) : Version Increment (0.60.03)
+2003-03-20 (darco) : Added Waypoint dialog for editing waypoints
+
+2003-03-20 (darco) : Version Increment (0.60.02)
+2003-03-20 (darco) : Names of DataNode parameters are now more readable
+2003-03-20 (darco) : Removed "Rotoscope", added "Rotoscope Path" and "Rotoscope Poly"
+
+2003-03-19 (darco) : Added "Find" button to parameters that represent filenames
+
+2003-03-17 (darco) : Fixed a bug where the "Open Recent" list is reversed when restarting the program
+2003-03-17 (darco) : Added an "Open Recent" option to the file menu on the toolbox. It remembers the last 10 files opened or saved.
+2003-03-17 (darco) : Added target selection box to render dialog.
+2003-03-17 (darco) : Added "Use current frame" checkbox to render dialog.
+
+2003-03-04 (darco) : Implemented Render Functionality.
+2003-03-04 (darco) : Added support for "angle" type.
+2003-03-04 (darco) : Deselecting a parameter-edit popup will now make it dissapear immediately, rather than after the refresh.
+
+2003-03-01 (darco) : The root canvas on a new composition is now clean, instead of having a mandelbrot set.
+
+2003-02-26 (darco) : Changed the file dialogs to use the native Win32 file open/save dialogs when built for Win32 rather than the nasty looking Gtk+ file dialogs.
+2003-02-26 (darco) : Fixed Bug 0000007 (http://dev.sinfg.com/mantis/view_bug_page.php?f_id=0000007)
