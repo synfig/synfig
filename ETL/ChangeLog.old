@@ -1,0 +1,120 @@
+1.4.0 (git tag "v1.4.0") - Major release.
+
+  * Improve etl::handle - use atomic refcounter instead of mutex
+  * Refactor etl::rect
+  * Vstrprintf clean and performance improvements
+  * Removed virtually empty and unused ETL _curve file
+  * Remove unused ETL _condition file
+  * Removed unused ETL random files
+  * Remove unused ETL bit-rotation file
+  * Always use vsnprintf in etl::vstrprintf
+  * Always use vsscanf in etl::vstrscanf()
+  * Apply/force etl:: namespace for ETL library
+  * Functionality to bend contour along other contour
+  * Removed fastangle from ETL
+  * Removed ipc from the ETL library
+  * Thread-safe etl::reference_counter
+  * Remove unused ETL mutex and thread classes
+  * Remove unused #define assert_cast
+  * Remove unused ETL/value include file
+
+1.2.2 (git tag "1.2.2")
+
+  * Fix initialization of accumulator_type.
+  * Fixed 'unused variable warnings' (cleaning output)
+  * Fixed error preventing builing on gcc 8.1
+  * A lot of warnings fixed
+  * Added bootstrap.sh
+
+1.2.1 (git tag "1.2.1") - September 11, 2017
+
+ * Fixed compilation issues with GCC 7.1.0 (issue #396).
+ * Basic support for CMake build system. Thanks to Caryoscelus.
+
+0.04.19 (git tag "1.0.1") - July 21, 2015
+
+ * Minor tweaks of build scripts.
+
+0.04.18 (git tag "1.0") - April 27, 2015
+
+ * Fix compiler warnings.
+ * Change handling of directory separators.
+
+0.04.17 (git tag "0.64.1") - November 4, 2013
+
+ * Bones implementation-related changes
+ * "Unvirtualise" method etl::surface::set_wh(w,h,newdata,pitch)
+ * Fix float literals in etl::surface
+
+0.04.16 (git tag "ETL-0.04.16") - May 06, 2013 - Bug fixes. Cairo adaptation.
+
+ * Fix several compiler warnings: "Statement has no effect" and "Reached non void end of function"
+ * etl::surface, etl::pen and etl::box blur, etl::gaussian. Adapt templates to be used with Cairo surfaces
+ * Added Anjuta IDE configuration
+ * Remove old and unused Xcode configuration files.
+
+0.04.15 (git tag "ETL-0.04.15") - April 09, 2012 - Bug fixes.
+
+ * Apply patch #3424217. Fix compiling issues with clang compiler. Thanks to Hisashi Todd Fujinaka
+ * Commented out unused variable.
+ * Fix value test case what was broken. Patch thanks to Denis Washington
+
+ 0.04.14 (git tag: "ETL-0.04.14") - June 5, 2011 - Bug fixes.
+
+  * Correct code and enable tests for ETL "spline" and "value".
+
+ 0.04.13 (git tag: "ETL-0.04.13") - October 12, 2009 - Bug fixes.
+
+  * Migration to git repository.
+  * Deleted generated ETL/etl_profile_.h.in file.
+  * Improved the rendering of curve gradient layers near vertices with 0-length tangents.
+  * Fixed a division by zero when calculating the distance to a bezier.
+  * Fixed the pthread and kernel32 library check to not check for main.
+  * Don't enable the use of mutexes on platforms other than windows unless pthread is available.
+  * Removed ancient trunk folder from svn repository.
+  * Several compiler warnings fixed.
+
+ 0.04.12 (SVN 2112) - October 21, 2008 - Bug fixes
+
+  * Improve the derivative class for hermites.
+  * Update configure.ac as suggested by autoupdate.
+
+ 0.04.11 (SVN 1837) - March 3, 2008 - Bug fixes
+
+  * Update the website URL to synfig.org instead of synfig.com
+  * Removed the 'bootstrap' script for building.  Use autoreconf instead
+  * Fixed errors and warnings detected by a pre-release version of GCC 4.3
+  * Make ETL-config a wrapper around pkg-config.
+  * Wrap the refcounting stuff in mutexes
+  * Don't wrap angles by 360 degrees
+  * Minor cleanups and typo fixes
+
+ 0.04.10 (SVN 878) - October 10, 2007 - Bug fixes
+
+  * Fix dirname for absolute paths (#1793306)
+  * Fix minor issues and typos
+  * Various changes to the 'angle' code.  89+360 < 90;  90 == 90+360, !360 is true, etc.
+  * Resolve confusion about whether angles are clockwise, and whether they're stored in radians.
+  * Fix 'make check' for 'fixed' so that it doesn't fail.  Tidy the output, too.
+
+ 0.04.09 (SVN 530) - June 20, 2006 - Bug fixes
+
+  * Fix amd64 issue
+  * Some tests fixes
+  * Misc bug fixes
+  * Add better code for finding closest point to a bezier  (#1672033)
+
+ 0.04.08 (SVN 139) - February 27, 2006 - Bug fixes
+
+  * Update doxygen configuration
+  * Misc bug fixes
+
+ 0.04.07 (SVN 52) - November 6, 2005 - Bug fixes
+
+  * Add ./configure options for debug, warnings, optimisation, profiling
+  * Misc bug fixes
+
+ 0.04.06 - November 3, 2005 - First release!
+
+  * First release!
+
