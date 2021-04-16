@@ -1,6 +1,8 @@
-## Version 1.4.1
-- ...
-- [`9700b67`](https://github.com/synfig/synfig/commit/9700b677051ed95660887938a95a784576502ba0) Export video files with sound [core]
+## Version 1.4.1 [ETL] [core] [studio]
+- [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL renderering ([#2055](https://github.com/synfig/synfig/issues/2055)) [core]
+- [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter (https://github.com/synfig/synfig/issues/1731) [core]
+- [`fb03700`](https://github.com/synfig/synfig/commit/fb037008607153b239cbe7d56fa378cc50655330) Fix crash on unsuccessful action with a clean undo history ([#1643](https://github.com/synfig/synfig/issues/1643)) [studio]
+- [`99a1cde`](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305) Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623)) [core]
 
 ## Version 1.4.0 [ETL] [core] [studio]
 - [`79c10de`](https://github.com/synfig/synfig/commit/79c10de80b13afef75528d415b6d608536ed23f2) Merge PR [#1597](https://github.com/synfig/synfig/issues/1597): Fix dashed outline behavior in non homogenous outline [core]
