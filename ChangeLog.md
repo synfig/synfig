@@ -2,8 +2,31 @@
 - ...
 - [`9700b67`](https://github.com/synfig/synfig/commit/9700b677051ed95660887938a95a784576502ba0) Export video files with sound [core]
 
-## Version 1.4.0
-- ...
+## Version 1.4.0 [ETL] [core] [studio]
+- [`79c10de`](https://github.com/synfig/synfig/commit/79c10de80b13afef75528d415b6d608536ed23f2) Merge PR [#1597](https://github.com/synfig/synfig/issues/1597): Fix dashed outline behavior in non homogenous outline [core]
+- [`1cf1d6e`](https://github.com/synfig/synfig/commit/1cf1d6ee2b53ef14e6da8db2e235bde2cc762e82) Autotools: Add missing header ([#1575](https://github.com/synfig/synfig/issues/1575)) [studio]
+- [`efbef4f`](https://github.com/synfig/synfig/commit/efbef4f708085982dc1a5a06e98fcd800cb41a10) Merge PR [#1568](https://github.com/synfig/synfig/issues/1568): Fix rendering to files with non-latin symbols via ffmpeg on Windows. Closes [#1567](https://github.com/synfig/synfig/issues/1567). [core]
+- [`067e0b4`](https://github.com/synfig/synfig/commit/067e0b46e70cc39c5d7fca0e58d0c93749842140) fix crash when undoing creation of a moved/changed vertex of spline ([#1551](https://github.com/synfig/synfig/issues/1551)) [studio]
+- [`41dd480`](https://github.com/synfig/synfig/commit/41dd480890b1a3a797075db1b2af1a711b1e5fb4) Fixed crash when exception is thrown while rendering WorkArea ([#1561](https://github.com/synfig/synfig/issues/1561)) [core] [studio]
+- [`27cd14e`](https://github.com/synfig/synfig/commit/27cd14ea7a25dbf9e3226d3f357afd8404a349a8) Merge PR[#1475](https://github.com/synfig/synfig/issues/1475): try to catch all exceptions thrown in GTK event callback/handlers [studio]
+- [`f4a59e9`](https://github.com/synfig/synfig/commit/f4a59e96ffa382ed68795c1578545890c207b12a) Merge PR [#1518](https://github.com/synfig/synfig/issues/1518): Fix rendering of Advanced Outline cusps. Closes [#1480](https://github.com/synfig/synfig/issues/1480). [core]
+- [`f17715b`](https://github.com/synfig/synfig/commit/f17715b2f6f7da7a005040128617ff1c29fb774d) Fix opening files with Arabic names ([#1532](https://github.com/synfig/synfig/issues/1532)) [core] [studio]
+- [`943c6f1`](https://github.com/synfig/synfig/commit/943c6f10d8c2e11ae875113ac296b60d5fc050c9) fix initial value for filename entry of Render Settings dialog ([#1544](https://github.com/synfig/synfig/issues/1544)) [studio]
+- [`c146297`](https://github.com/synfig/synfig/commit/c14629785035b5aee14ac3d80945bc145baa3c18) Set defaults for Homogenous parameter of Advanced Outline: enabled and static ([#1533](https://github.com/synfig/synfig/issues/1533)) [core] [studio]
+- [`850aa0a`](https://github.com/synfig/synfig/commit/850aa0ad77c2a343e5bc40bee95b48847c6ee63e) Fix renaming a "layer set" - it affected other ones with certain names - [#1146](https://github.com/synfig/synfig/issues/1146) ([#1194](https://github.com/synfig/synfig/issues/1194)) [core]
+- [`7df6915`](https://github.com/synfig/synfig/commit/7df69152246a816f5797240b93213718ce5bb116) fix [#1523](https://github.com/synfig/synfig/issues/1523) WidthPoint worngly computed on non-homogenous Advanced Outline [core]
+- [`73ca88f`](https://github.com/synfig/synfig/commit/73ca88fbb7c4b767aecfca8bac1125a8469f6982) Merge PR [#1438](https://github.com/synfig/synfig/issues/1438): Trying to fix skeleton copy [core] [studio]
+- [`4f1e92f`](https://github.com/synfig/synfig/commit/4f1e92f74cb2862ae83fba73d8b35ea669fa264a) Fix [#1467](https://github.com/synfig/synfig/issues/1467): "Link to Spline" places vertex into wrong position when Spline is looped ([#1468](https://github.com/synfig/synfig/issues/1468)) [studio]
+- [`334b5b9`](https://github.com/synfig/synfig/commit/334b5b9b6d888ad68bf6b1f3202f581cb3a3e14d) Fix Incorrect position of Widthpoints on Homogenous Advanced Outline. Closes [#1431](https://github.com/synfig/synfig/issues/1431). [core]
+- [`60bf6e3`](https://github.com/synfig/synfig/commit/60bf6e30f211b093e2724d7a0f80d6981c8ad8dc) DashItem Offset and Length variables are not consistent when editing them [core]
+- [`ec79049`](https://github.com/synfig/synfig/commit/ec79049a8abd482b53acb3915ad472accd24b0f9) Animation Speed of Noise Distort Layer set to static by default [core]
+- [`c50ec55`](https://github.com/synfig/synfig/commit/c50ec55dfb32ab6f7336f9061d5ddd61787879a2) fix crashing when removing spline point too fast ([#1434](https://github.com/synfig/synfig/issues/1434)) [studio]
+- [`2ab96a9`](https://github.com/synfig/synfig/commit/2ab96a95adfe3fcc4e3e64485c0380a66218eedf) Fixes glitching widthpoints. Closes [#1401](https://github.com/synfig/synfig/issues/1401). [core]
+- [`b5e5294`](https://github.com/synfig/synfig/commit/b5e5294121bda033f2a9f86a80e7e2fdbdb3d9ef) Activate widget_filename when user chooses file via button/file dialog ([#1425](https://github.com/synfig/synfig/issues/1425)) [studio]
+- [`1873f44`](https://github.com/synfig/synfig/commit/1873f44504e4d6270c245dd7b1f56df5ca799fe2) Merge PR [#1094](https://github.com/synfig/synfig/issues/1094): Remove unused Change Preview Quality menu item [studio]
+- [`27c7b95`](https://github.com/synfig/synfig/commit/27c7b956ea343ee71b1927e4082abd2df647eecb) Merge PR [#1406](https://github.com/synfig/synfig/issues/1406): fix time and delta values in tooltip while dragging in Graph panel [studio]
+- [`f93735e`](https://github.com/synfig/synfig/commit/f93735e6fa638357396cfc8c373aace1c374341d) Avoid crash on pngspritesheet exporting ([#1339](https://github.com/synfig/synfig/issues/1339)) [core] [studio]
+- [`3f3c797`](https://github.com/synfig/synfig/commit/3f3c7979181ee74282deb5d6deaa60e7959e254a) OSX build: Remove hardcoded references to Python version ([#1244](https://github.com/synfig/synfig/issues/1244))
 - [`02747a2`](https://github.com/synfig/synfig/commit/02747a2f8e050729c5845a62888b963118c1014d) Don't show multiple warning messages about old canvas. Closes [#1380](https://github.com/synfig/synfig/issues/1380). [core]
 - [`40593a0`](https://github.com/synfig/synfig/commit/40593a09e815c08229334bce57001c69ca0d1607) Update translations 2020-04-24 [core] [studio]
 - [`e821d31`](https://github.com/synfig/synfig/commit/e821d3193e980b89851d86642630dc129c942caf) Warning when opening file of older version. Closes [#1307](https://github.com/synfig/synfig/issues/1307). [core]
