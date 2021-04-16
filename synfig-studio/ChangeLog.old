@@ -1,3 +1,539 @@
+ 1.4.0 (git tag "v1.4.0") - Major release.
+ 
+  * Curves in Graphs Panel now can be edited.
+  * New Sound Panel to display waveform.
+  * Vectorization of bitmaps (algorithm is ported from OpenToonz animation software).
+  * Export to Lottie JSON format.
+  * Playback cache - Synfig now remembers already rendered frames, which is greatly improves experience of playback and timeline scrubbing.
+  * Background rendering. Synfig now does background rendering of all frames in current animation and the result of rendering is saved into cache.
+  * Added "Preview" rendering mode for workarea.
+  * Simple way to import image sequences vi "File" -> "Import sequence..." menu command.
+  * Transformation widget got a special control point to easily change origin of transformation.
+  * New "Bake" command allow to bake animation for any parameter.
+  * Now it is possible to open images in external editor (right click -> "Edit image in external tool...").
+  * Workspace layout can be saved ("Workspace" - "Save workspace"/"Edit workspace list..." menu commands).
+  * Hovering mouse cursor over timetrack now shows frame preview.
+  * Now it is possible to select playback range on the timeline and make playback looped.
+  * Workarea handles now hidden during playback.
+  * Playback is stopped when user clicks on timeline (issue #415).
+  * Now it is possible to set default background for newly created documents (issue #636). The background can be a solid color or image. You can configure this via “Edit” -> “Preferences” -> “Document”.
+  * Rendering status is now indicated with a progress bar at Info Panel (issues #383, #626).
+  * A sound notification is played when rendering is done (issue #648).
+  * Now it is possible to configure color of transparent areas in Preview Window (issue #636).
+  * Default render settings: now we use avi format with popular mpeg4 codec by default (issue #464).
+  * Do not waste space for dropdowns in combo boxes (issue #650).
+  * When new Text Layer is created, its name is set the same as text content (issue #407).
+  * Vertex handles now placed above tangent handles (issue #645).
+  * Color dialog now opens with HSV tab active (issue #672).
+  * Fixed "No disc in drive" error (issues #489, #724).
+  * Autosave now enabled by default (issue #657).
+  * Removed "Cancelled by user" dialog that happens when the user tries to move an animated object (issue #693).
+  * Fixed incorrect behavior of Draft rendering mode in some circumstances (issue 582).
+  * Timebar is not hidden anymore for cases when timeline is only 1 frame long.
+  * Fixed issue with incorrect GUI font on some Windows systems (issue #667).
+  * Fixed issues with incorrect window placement on Windows (issue #523).
+  * Fixed issue which was preventing to change parameters at some circumstances (issues #659, #526, #520).
+  * Fixed crash when exported value is set from parameters panel in animation mode (issue #588).
+  * Fixed crash when user cancels parameter changing (issue #671).
+  * Disabled scientific notation when displaying numbers (issue #635).
+  * Fixed bug with empty floating windows appearing after workspace switching (issue #1143).
+  * Show interpolation type directly in waypoint’s context menu.
+  * Fixed popup menu disappearing right after button release for Widget Gradient/Spline (issue #1274).
+  * Fixed hang when opening a second .sif file from Explorer on Windows (issue #291).
+  * Fixed issue when copying skeletons from one file to another. Previously this was resulting in corrupted file, but now it isn’t.
+  * Fixed issues opening and exporting of files with multibyte (i.e. Arabic) symbols in filename.
+  * Removed unused Change Preview Quality menu item.
+  * Activate widget_filename right after user chooses file via button/file dialog (issue #1425).
+  * Fixed crash when unexporting value node (issue #231).
+  * Fixed renaming layer set affecting other names (issue #1146).
+
+ 1.2.2 (git tag "1.2.2") - Bugfix release.
+ 
+  * Remove cairo-rendering from preview dialog (issue #370). Thanks to Ivan Mahonin.
+  * Fix issue with interface elements consuming too much space on Windows (issue #348). Thanks to Ivan Mahonin.
+  * Auto-recovery now works again (issue #363). Thanks to Ivan Mahonin.
+  * Fix Low-Res rendering mode (issue #401). Thanks to Ivan Mahonin.
+  * Allow to zoom canvas by holding Ctrl and middle mouse button. Thanks to Alyssa Rosenzweig.
+  * New feature: Draft rendering mode (issue #409). Thanks to Ivan Mahonin.
+  * Fix disconnect of Transformation Parameter - it was impossible to disconnect linked (as opposed to converted) nodes of transformation type using "disconnect" action (issue #438). Thanks to Caryoscelus.
+  * Fix color wheel being stuck to red on zero saturation (issue #452). Thanks to Caryoscelus.
+  * New feature: Filter Groups (issue #462). Thanks to Ivan Mahonin.
+  * Implemented correct sorting in Sets Panel (issue #372). Thanks to Caryoscelus.
+  * Fixed crash when user press Esc key during the rotation of the object (issue #470). Thanks to Artem Konoplin.
+  * Fixed crash with Spline Tool tangent menu (issue #485). Thanks to Artem Konoplin.
+  * Fix crash on attempt to run plugin (issue #502). Thanks to Artem Konoplin.
+  * Fixed error preventing user to move keyframe at certain circumstances (issue #503). Thanks to Artem Konoplin.
+  * Automatically select new layer when image is imported (issue #368). Thanks to Artem Konoplin.
+  * Allow to rename layers with F2 key (issue #465).  Thanks to Artem Konoplin.
+  * Allow to delete layers by pressing Del key. Thanks to Artem Konoplin.
+  * New feature: Live image reloading (issue #513). Thanks to Artem Konoplin.
+  * Keyframe widget now available in Curves Panel (issues #504, #505). Thanks to Artem Konoplin.
+
+ 1.2.1 (git tag "1.2.1") - September 11, 2017 - Bugfix release.
+
+  * Basic support for CMake build system. Thanks to Caryoscelus.
+  * Fix size of dock area drop buttons for Gtk >= 3.20 (issue #227). Thanks to Caryoscelus.
+  * Fix support for graphic tablets in Windows version (issue #241). Thanks to Ivan Mahonin.
+  * Initial value of quality in Preview Dialog now independent from current zoom level and set to 1.0 by default. Thanks to Ivan Mahonin.
+  * Fixed crash of Skeleton plugin (issue #334). Thanks to Caryoscelus.
+  * Fix: filename with international characters not saved in “Recent Files” menu. Thanks to Ivan Mahonin.
+  * Fix crash with XP-Pen G540 tablet (issue #351).
+  * Fixed “FFmpeg not found” error in Linux AppImages (issue #332).
+  * JACK support is now available for Linux AppImages (issue #395).
+  
+
+ 1.2.0 (git tag "1.2.0") - December 22, 2016 - Major release.
+ 
+  * Feature: Rendering engine completely rewritten and optimized. Thanks to Ivan Mahonin.
+  * Feature: Integration with Papagayo lipsync software. Demonstration - https://www.youtube.com/watch?v=-Y0Ox0cnlL4. Thanks to Ivan Mahonin.
+  * New layer: Free Time. Thanks to Ivan Mahonin.
+  * New converter: Animated File - allows to read waypoints from external files (only PGO files supported right now). Thanks to Ivan Mahonin.
+  * Switch Group now displays "ghost" elements for missing switch elements. Thanks to Ivan Mahonin.
+  * Split and merged tangents now displayed in different way. Thanks to Jerome Blanchi.
+  * Selecting handle on the workarea now highlights the corresponding parameter in the Parameters Panel. Thanks to Jerome Blanchi.
+  * Alt+0 used to show/hide all handles. Thanks to Jerome Blanchi.
+  * Synfig code now compatible with C++11 (see issue #904). Thanks to Jerome Blanchi.
+  * Tooltips for group transformation widget. Thanks to Jerome Blanchi.
+  * Completely reworked preferences dialogue. Thanks to Yu Chen (concept), Jerome Blanchi (implementation) and Caryoscelus (fixes).
+  * Fixed behavior of “Insert Item” action for Splines (it should be different from “Insert item & Keep shape” action). Thanks to Ivan Mahonin.
+  * Fix crash when manipulating with guides. Allow to remove guides by dragging them back to onto rulers. Thanks to Jerome Blanchi.
+  * Zoom level now can be edited via dedicated widget in the bottom-left corner of Canvas Window. Thanks to Caryoscelus.
+  * Now it is possible to hide File buttons on the toolbar to save horizontal space. Available via “Edit” -> “Preferences” -> “Preferences”. Thanks to Caryoscelus.
+  * Fixed readability of “Current Time” text widget when using dark theme. Thanks to Chris London.
+  * Time Loop Layer, Free Time Layer and Stroboscope Layer placed into separate “Time” category. Thanks to Caryoscelus.
+  * Fix HSV color panel not updated when opened. Thanks to Jerome Blanchi.
+  * Fix #234: Objects created with opacity less than 1.0. Thanks to Caryoscelus.
+  * Fixed crash on attempt to edit “spline point”, “width point” or “dash item” in Parameters Panel. Thanks to Caryoscelus.
+
+ 1.0.2 (git tag "1.0.2") - October 9, 2015 - Bugfix release.
+ 
+  * Dropdown list for Switch Group to choose active layer. Thanks to Max May.
+  * Allow to load Gimp Palette files (.gpl) in Palette Editor Panel (issue #830). Thanks to Tony (aka BobSynfig).
+  * Fix crash on linking regular vertex and width point center (issue #889). Thanks to Jerome Blanchi.
+  * Fix crash of "Link to Spline" operation when trying to link vertex to the spline it belongs to (issue #574). Thanks to Jerome Blanchi.
+  * The "Add" convert type now supports reverse manipulations for Real and Angle values.
+  * Rendering optimizations (every workarea update is faster by 50ms now).
+  * Forbid creating recursive (looped) connections for parameters (issue #48). Thanks to Jerome Blanchi.
+ 
+ 1.0.1 (git tag "1.0.1") - July 21, 2015 - Bugfix release.
+ 
+  * Fix switching bone parent.
+  * Interactively highlight handles during bounding box selection.
+  * Update icons for "New", "Open", "Save/As/All" and "Undo/Redo".
+  * Keyframes widget: Double click opens keyframe properties dialog box.
+  * Keyframe properties dialog: Show keyframe description and active status.
+
+ 1.0 (git tag "1.0") - April 27, 2015 - Major release.
+ 
+  * Single-Window UI.
+  * UI migrated from Gtk2 to Gtk3.
+  * Reworked Toolbox and Tool Options Panel.
+  * Allow to select interface language via preferences.
+  * New transformation widget for Group Layer.
+  * "Link to Bone" action: Allows to link Group Layers to Bones.
+  * "Link to Skeleton" action: Allows automatically to link Spline vertices to the Skeleton (based on the bone Widths).
+  * New Layer: Skeleton Distortion.
+  * Z-Range feature for Group Layer: Hides all child layers with Z-Depth values outside of specified range.
+  * New file format (SFG) which can store embed data.
+  * All linked images are packed into single file when saving as SFG.
+  * Allow to embed/extract images.
+  * New Switch Group layer.
+  * Brush Tool: Allows to paint on bitmaps with MyPaint brushes.
+  * "Add New Frame" action.
+  * Sound: Timeline can be synchronized with global JACK transport.
+  * Sound: Integrate MLT framework for sound Playback.
+  * New layer: Sound Layer.
+  * Allow to modify animated parameters when Animation Mode is off (shift operation applied).
+  * Improved Spline Tangents: Now it is possible to split angle or radius independently.
+  * Now it is possible to insert new vertex into spline without distorting its shape.
+  * Keyframe widget improvements: tooltips, context menus, selection synchronized with Keyframes Panel.
+  * MetaData Panel improvements: Allow to change Guides and Grid colors.
+  * HSV color wheel in the color selection dialog.
+  * Improved spritesheet export.
+  * New tool: Cutout.
+
+ 0.64.3 (git tag "0.64.3") - December 24, 2014 - Bug fixes.
+ 
+  * Use frames as default time format.
+  * Use pixels as default unit of measurement (closes #710).
+  * Always use "By Layer Default" blend method on startup.
+  * Fix glib 2.42 compatibility issues.
+
+ 0.64.2 (git tag "0.64.2") - October 18, 2014 - Minor features, bug fixes.
+  
+  * Rendering: "Extract Alpha" mode.
+  * Rendering: Lossles H.264 encoding profile.
+  * Align rows of Params Panel and Timetrack Panel (bug #161).
+  * Fix file saving in Windows (bug #572).
+  * Show rendering time in status bar (benchmark).
+  * Fix compatibility issues for OSX 10.9.
+
+ 0.64.1 (git tag "0.64.1") - November 4, 2013 - Features, bug fixes.
+ 
+  * Core Bones implementation / Skeleton layer.
+  * Implement Cairo rendering for all layers.
+  * Default interpolation could be defined specifically for parameter.
+  * Option to exclude layers from rendering.
+  * Allow to interactively scale group using control point (handle).
+  * Easy way to convert Regions to Outlines or Advanced Outlines (and vice versa).
+  * Import files by drag'n'drop (Linux only).
+  * "Enable experimental features" option. Currently allows to enable/disable bones functionality.
+  * Add distinction for disabled keyframes on time track panel and keyframe widget.
+  * Toolbox: Display shortcuts in tooltips.
+  * Automatically add first keyframe when new document created.
+  * Add support for Magick++ in Windows and OSX builds.
+  * Fix bug #455: Keyframe widget indicator remains white after drag and drop operation.
+  * Fix ffmpeg target in Windows build (bug #118).
+
+ 0.64.0 (git tag "synfigstudio-0.64.0") - May 06, 2013 - Major features, bug fixes.
+
+  * New plugin system
+  * New Cairo render engine
+  * Terminology renaming
+  * Translation is now handled by intltool
+  * Keyframes can now be enabled and disabled
+  * New sequence separator option
+  * Fix bug ID: 2684968: render is one frame short.
+  * Fix bug ID: 3474332: Play/pause by shortcut causes canvas to stop updating.
+  * Fix bug #420: The Add keyframe button shouldn't be active if there is not timeline
+
+ 0.63.05 (git tag: "synfigstudio-0.63.05") - April 09, 2012 - Feaures, bug fixes.
+
+ * Fix bug ID: 3486075. Add new panel on Preferences Dialog ('Render') and include one option for separator string on image sequence render. Default is a dot '.'.
+ * Fix bug  ID: 3486412 Shortcut inconsistence.
+ * Fix typos and misspelling on various messages. Patch thanks to Bertrand Gregoire
+ * Fix bug 3512887: Crash when drag and drop panels on OSX Lion
+ * Fix bug 3475624: Startup crash on Ubuntu 12.04. Patch thanks to Denis Washington (denis_w)
+ * Fix bug: Warning dialogs hangs if the message is to long. It uses a scrolled window when needed.
+ * Fix bug ID: 3486723: Info Panel not updated when Guides dragged to Canvas WindowInfo.
+ * Fix bug: When grid size is negative, use its positive value.
+ * Rework of the Preview window (thanks to Yu Chen aka jcome):
+ ** Artwork content can be zoomed in/out
+ ** Add a zoom widget, so that user can change zoom factor from a dropdown list to select a factor or type the a specified value the user prefers
+ ** Scrollbars are size of artwork content and window sensitived now
+ ** Toolbar can be hidden to have a simpler UI
+ ** A set of accelerator keys (hard-coded at the moment):
+    a) a-prev frame, s-play/pause, d-next frame,
+    b) h-show/hide toolbar
+    c) 1,2,3,4,5 mapped to zoom factors: 25%, 50% ,100%, 200%, Fit
+ ** Dark background for preview window (hard-coded at the moment)
+ ** Rewording some UI strings
+ * New Outline Grow parameter on Paste Canvas layer. For inline canvases it increases (decreases) the width of the children layers by a exponential factor.
+ * Support for load Gimp palettes. Patch thanks to Bretrand Gregoire.
+ * Improve contrast on color sliders for Color Edit and Gradient Edit widgets. Patch thanks to Bertrand Gregoire
+ * Rename icon source from zoom to scale. Patch thanks to Bertrand Gregoire
+
+ 0.63.04 (git tag: "synfigstudio-0.63.04") - February 08, 2012 - Features, bug fixes.
+
+  * Fix bug 3472549. When editing the parameter don't parse the keyboard shortcuts.
+  * Fix several bugs in the Groups Panel
+  * Allow Loop and Unloop actions when value description is a Tangent of a BLine Point.
+  * Allow merge and split tangents when using a tangent as value node.
+  * Allow split/merge tangents loop/unloop bline and delete vertex every where possible in the BLine Tool.
+  * Include any of the sub parameters of the Composite Value Node to the candidates of remove multiple items smart.
+  * Allow remove item smart when a child of a composite value node is selected and the composite is child of a dynamic list.
+  * Redesign of the preview window updating the slider widget, adding new start/stop button and a new toggle loop button. Close button for Gnome 3 users is also included.
+
+ 0.63.03 (git tag: "synfigstudio-0.63.03") - December 05, 2011 - Features, bug fixes.
+
+  * Use Widget::Distance for feather spin button on Draw Tool options.
+  * Enable tool tips for Tool Options dialogue buttons.
+  * Make Draw Tool options greyed when not usable.
+  * Full support to create Advanced Outlines with the Draw Tool. Stylus pressure used.
+  * Widthpoint position duck shows a text with its value when mouse hovers.
+  * Don't stretch button in file selection widget. Use shorter text. Patch by Konstantin Dmitriev
+  * Fix bug https://pivotaltracker.com/story/show/18136743: BLine linked objects get wrong initial position
+  * Use Gtk::Tooltip instead of deprecated Gtk::Tooltips. This fully fix tooltips for Layer parameter panel.
+  * When modify a value that has a waypoint at the current time, don't modify its interpolations, only the value.
+  * Widthpoint position duck now allows 'Edit Waypoint' contextual menu.
+  * Add feature to delete multiple vertices at the same time on blines and other list types.
+  * Enum Widget allows icons now. Add icons to Default Interpolation widget.
+  * Insert Item smart is allowed now over empty lists.
+  * Fix bug #1863133: Metadata doesn't work.
+  * Update for all the languages.
+  * Update on the splash screen. Patch from Yu Chen.
+
+ 0.63.02 (git tag: "synfigstudio-0.63.03") - September 28, 2011 -No changes
+
+ 0.63.01 (git tag: "synfigstudio-0.63.01") - September 24, 2011 - Bub fixes, features
+
+  * Refactor duck creation for selected layers into duckmatic.
+  * Guides are saved now between sessions. Fix bug
+  * Guides are not dragged if not visible. Fix bug
+  * Add undo capability for guides.
+  * Snap to guides is now relative to zoom.
+  * OptionMenu (deprecatd) has been replaced by ComboBox.
+  * When change the Setup Dialog, spread it immediately to the canvas's rules.
+  * Circle, Rectangle, Star and Polygon Tools allows create Advanced Outlines Layers.
+  * Linked to BLine has the option of be curve length based. On by default.
+  * New icons for canvas navigation, preview, render and animate mode buttons.
+  * Canvas window buttons rearranged.
+  * Imported canvases are now 'Children Locked' by default.
+  * New language support: Persian, Lituanian
+  * Updated existing translations.
+
+ 0.63.00 (git tag: "synfigstudio-0.63.00") - June 5, 2011 - Bug fixes, major features
+
+  * Fix bug #31044763: fps rounding to integer.
+  * Fix bug: Change default bline width spin button without first focus a canvas
+    produces undesired changes to the width size.
+  * Fix tool tips for layer parameters and add tool tip support for linkable
+    value node parameters.
+  * New cairo renderer for ducks, timecode, preview, navigator, grid and guides.
+  * New beizer dragging system pulling from the bezier itself.
+  * Fix workarea guides usage.
+  * New advanced outline layer. Slidable variable width support and other features.
+  * Fix Width Tool adding influence radius feedback and duck influence position visibility.
+  * Fix bug: Avoid Crash when reversed manipulation for certain converted types.
+  * Fix bug #3000536: Press ALT+5 when using Width Tool causes Studio to hang.
+  * Fix bug #3000535: ALT+2 when using Draw Tool causes Studio to hang.
+  * New languages support: Portuguese (Brazilian) and Slovakian
+  * Updates for Spanish, French, Italian, Chinese and German.
+  * Updates and fixes for autobuild script.
+  * Added support for 256x256 icons needed by Gnome 3.
+  * Set priorities for duck selection with mouse when they are at the same place.
+  * Fix #2175043: Crash when rendering in directory without write permission.
+  * Use high resolution by default at the work area.
+  * Enable restrict radius duck to top right quadrant by default.
+  * Install freedesktop.org mime info.
+  * Combine Name column with Icon column to clean up layer dock.
+  * Don't show debug info in about dialog for stable releases.
+  * Various fixes in the windows NSIS installer scripts.
+
+ 0.62.02 (git tag: "synfigstudio-0.62.02") - November 13, 2010 - Features
+
+  * Code restructure into folders grouping common files for easy coding,
+    and cleaning dead code. Use of Makefile inserts for each folder.
+  * Add load and save palette buttons. File extension is spal
+  * Don't limit bitrate to 1000 in target parameters.
+  * Britain English translation. Robert Readman.
+  * Full rework of the Synfig Studio icons. Yu Chen
+  * More translatable strings.
+  * Simplified Chinese translation. Yu Chen
+  * New "By Layer Default" blend method. Now some layers define its own
+    blend method instead of Composite or the selected by user.
+    For example Shade->Behind
+  * Added "Static" option for individual parameters.
+    If "Static" is on, then in animation mode it is no created any waypoint
+    when modified. Only valid for layer parameters and constant value nodes.
+  * Smart linking bline tangents implementation. Now all tangents are yellow ducks.
+  * Move reverse manipulation code to Value Desc.
+    This allows recursive reverse manipulation for valuenodes which has
+    inverse manipulation implemented.
+  * Splash Screen for development snapshots. Konstantin Dmitriev
+  * Make Work Area rulers even smaller.
+  * Spanish translation update.
+
+ 0.62.01 (git tag: "synfigstudio-0.62.01") - May 31, 2010 - Bug fixes, features.
+
+  * Enable reverse manipulation to range value nodes. Fix bug in value node range.
+  * Add new functionalities to the Normal tool. It can rotate (CTRL), scale, (ALT)
+  as well as translate. Using SHIFT constraints the three operations.
+  * Update Mirror tool to allow use SHIFT to alternate between horizontal and vertical
+  mirrors.
+  * Enable single threaded renderer for windows version. It increases stability.
+  * Fix file chooser label to fit into button size.
+  * Stop button now works properly.
+  * By default disable extended input devices. Fix a previous introduced bug.
+  * Suit custom mouse cursors for some tools.
+  * Add code to make possible pass parameters to the renderers. Implementation for ffmpeg.
+  * Repack rulers and caret menu to get less space.
+  * New italian and German translations.
+  * New parameters for Motion Blur layer. Now allows linear and constant interpolation too.
+  * New icons for actions and layers. Thanks to several authors.
+  * Fixed feature that reset windows docks to default size and position.
+  * Separate the reset setup values to original values feature in a new menu entry.
+  * Updated Russian, French and Spanish translation.
+  * Automatic build script for linux system. Please report success of usage.
+  * Update Help menu entries according to new website.
+
+ 0.62.00 (git tag: "synfigstudio-0.62.00") - October 12, 2009 - Bug fixes, major features.
+
+  * Migration to git repository.
+  * Bugs fixed: #2205700, #2112320, #2116947, #1814151, launchpad.net/ubuntu/#195447
+  * Bugs fixed: #2256600, #2119775, #1826376, #1848018, #1901753, #1829182
+  * Bugs fixed: #2315706, #2321845, #2350636, #1501383, #2378787, #2435346
+  * Bugs fixed: #2579838, #2652974, #1677510, #2175043.
+  * Build rectangular blines using the rectangle tool.
+  * Updated time ruler properly when modified the start or end time.
+  * New layer Curve Warp.
+  * Updated options for Polygon, Circle and Star Tools.
+  * New option: Scale New imported Images to Fit Canvas.
+  * Fixed the rendered position of a polygon under a transform layers.
+  * Fixed zoom to fit button result. Now border is visible.
+  * Better errors when opening a file that doesn't exist.
+  * Paste canvases now update when the canvas parameter changes.
+  * Paste canvas with unset canvas parameter can be exported now.
+  * If holding control in the zoom tool when releasing the mouse button to
+    complete a drawing, a box will zoom out such that the currently displayed
+    area is zoomed out to fill the drawn box.
+  * Enabled the Focus Point parameter in the Paste canvas layer.
+  * Reordered ducks render stack and preferences from mouse interaction.
+  * Fixed crash with LC_ALL=fr@euro
+  * Improved Color Dialog.
+  * Input Device configuration can be saved/loaded now.
+  * Fill/Outline instead of Background/Foreground.
+  * Additions to the Canvas Window: Update Zoom Dial, Frame Dial, Keyframe Dial
+    Toggle Ducks Dial, Resolution Dial, Quality Buttons, Show/Snap to Grid,
+    Onion Skinning buttons.
+  * Past and future onion skins enabled and selectable.
+  * Improved UI on crash recovery dialog.
+  * Added Preferred and Predefined FPS in the Setup Dialog.
+  * Keyframes are shown now in the Curves dialog too.
+  * Keyframe Set Delta enabled and fixed.
+  * New Keyframe Widget. Allows dragging of keyframes with mouse.
+  * Synfigstudio cph-monitor.
+  * Adapted About Dialog to git repository.
+  * Removed ancient trunk folder from svn repository.
+  * New Import SVG files module. Basic SVG import, see release notes.
+  * Some new icons.
+  * Updated translations.
+  * First time Russian translation.
+  * Several compiler warnings fixed.
+
+ 0.61.09 (SVN 2114) - October 21, 2008 - Bug fixes, features
+
+  * Fix building synfigstudio in the fink distribution
+  * Improved plant layer
+  * Added new options for Circle and Rectangle tools
+  * Added Text and Star tools.
+  * Added new plant, text, star and polygon icons
+  * Added Spanish, French and Catalan translations
+  * Added "Link to Bline" feature
+  * Improved main window zoom behaviour and added new zoom icons
+  * Several fixes and improvements on timetrack slider and waypoints drawing
+  * Depreciate Manual as interpolation type
+  * Added new icons for reset and swap FG and BG colors. Re-arrange them
+    to show properly in all GTK themes
+  * Added some improvements in the Render Description
+  * Improved GUI for the sound selection dialog
+  * When adding layers leave the previously selected layer selected
+  * Button tools are arranged in the Tool box
+  * Added and fixed some keyboard shortcuts
+  * Show only shared compatible parameters when more than one layer is selected
+  * Added more functionality to colour and time sliders
+  * Added new 'Document' tab in Setup dialog for more user preferences
+  * Fixed some crashes and errors
+  * Width tool returned to the Tool Box by default.
+
+ 0.61.08 (SVN 1839) - March 3, 2008 - Bug fixes, features
+
+  * Update the website URL to synfig.org instead of synfig.com
+  * Synfig is now translatable using gettext
+  * Removed the 'bootstrap' script for building. Use autoreconf instead
+  * Fixed errors and warnings detected by a pre-release version of GCC 4.3
+  * Fixes to allow sigc++ 2.1 and newer to be used.
+  * Add a new bog-standard about dialog and a new splash screen
+  * Add a new icons for rename, encapsulate, show child layers and time
+  * Usability enhancements for new users, env vars to control them
+  * Improvements to the draw, bline and sketch tools
+  * Improvements for linking, quality menu, save dialog, render dialog
+  * Cut down on the console output and output a user-friendly message
+  * Don't wrap angles at 360 degrees, allows better rotations
+  * Settings for auto-backup interval, run everything in one thread
+  * Fix waypoint issues; drawing, menus, crash, label and others
+  * Fix time issues; time field expansion & editing, ticks and others
+  * Fix ducks issues; prioritise & restrict radius, show circle size, others
+  * Allow horizontal scrolling the time field and the default brush size
+  * Allow different pixel sizes in the workarea window
+  * Remember window locations and ignore corrupted values
+  * Widen the toolbox to 5 icons instead of 4 icons
+  * Tile renderer changes: disable with env var, fix wrong placing
+  * Improves the details in the history dialog quite a bit
+  * Fix typos, several crashes, usability and other issues
+
+0.61.07 (SVN 878) - October 10, 2007 - Bug fixes
+
+  * Fix some tooltips and menu stuff (#1787437)
+  * Allow left-right scrolling in canvas window with shift + mouse-wheel
+  * Rework mouse interaction with ducks and tangents
+  * Move icons to a subdir
+  * Fix some typos, several crashes (#1780016, #1785598) and other bugs
+  * Re-enable sketch, draw, polygon by default
+  * Add keyboard shortcuts for all tools ( http://synfig.org/Keyboard_Shortcuts )
+  * Fix crash when setting canvas resolution to zero (#1779616)
+  * Add 'auto-export' checkbox and layer name box to the draw tool
+  * Various GUI fixes (#1794006, #1796110)
+  * File-selector fixes (#1383736)
+  * Fix the View>Play menu entry to allow playback inside the workarea, shortcut Ctrl-P
+  * Save to .sifz (compressed) format by default if no extension is given
+  * Remember the path used when saving a document and default to it in future
+  * Call new documents "Synfig Animation <n>" by default, rather than "untitled0"
+  * Don't quit until the user clearly answers "do you want to save?" (#1799722)
+  * Remember the filename the animation was last rendered to, and default to it (#1799250)
+  * Improved the 'Groups' function a little (#1368694).  It's still quite broken
+  * Fixed the colors displayed on the sliders in the Color Editor dialog
+  * Added option to Bline Tool to allow positions to be automatically linked (#1776156)
+  * Added menu entry to restore all dialogs to their default positions
+  * Fix red "Animate Editing Mode" frame so it shows up in all themes (#1801220)
+  * Allow user to "export SYNFIG_DISABLE_POPUP_WINDOWS=1" to make splash screen etc. less obtrusive
+  * Fixed the logic used to decide which value to use when linking values together
+  * Update child canvas time sliders when parent time slider is moved
+  * Prevent the caret menu entries from being disabled when another canvas is closed
+  * Show the correct initial quality level in the View > Preview Quality menu
+
+ 0.61.06 (SVN 543) - June 20, 2007 - Bug fixes
+
+  * Fix amd64 issues
+  * Fix corruption of gamma settings
+  * Fix manipulating layers in the layer dialog
+  * Disable the timebar instead of hiding it
+  * Fix File -> Close & input devices close button
+  * Fix targets that crash in synfigstudio
+  * Fix some doxygen warnings
+  * Fixes in the sketch tool
+  * Fixes in the draw tool
+  * Fix several crashes
+  * Fix bline looping
+  * Misc Win32 fixes
+  * Add optional GNOME thumbnailer
+  * Rework several dialogs to use GNOME HIG
+  * Disable several tools, see FAQ to re-enable
+  * Disable the empty Palette Browser dialog
+  * Add mousewheel support in canvas windows
+  * Add tooltips to preview window & give it a default size
+  * Display HTML values in the colour dialog
+  * Add an icon for the curves dialog
+  * New Tango ArtLibreSet styled icons by PXEGeek
+
+ 0.61.05 (SVN 128) - February 27, 2006 - build issues
+
+  * Fixed building with gtkmm 2.8 (#1373933, #1358304)
+  * Allow the toolbox to come to the front (#1367916)
+  * Make the user prefs dir configurable at build time
+  * Fixed minor build issues
+
+ 0.61.04 (SVN 103) - January 10, 2006 - MacOS X packaging
+
+  * Fixes for the MacOS X packaging
+
+ 0.61.03 - December 8, 2005 - Build & copyright fixes
+
+  * Update more old copyright and licence notices
+  * Fully fix building with GCC 4
+
+ 0.61.02 - November 26, 2005 - Build fixes
+
+  * Better Win32 / MacOS X packaging
+  * Use new GTK+ file chooser
+  * Adds some GCC 4 tweaks
+  * Fixes crash on layer reorder
+  * Include errno.h where needed
+  * Other tweaks
+
+ 0.61.01 - November 6, 2005 - Copyright updates
+
+  * Update old copyright and licence notices
+  * Add ./configure options for debug, warnings, optimisation, profiling
+  * Uses per-os directory separator
+  * Add TODO file
+
+ 0.61.00-39 - November 1, 2005 - Developer preview
+
+  * First public release!
+
+------------------------------------
+
 2005-11-26	Robert Quattlebaum	<darco@deepdarc.com>
 	* src/gtkmm/layertreestore.cpp: Fixed bug which caused crash on DND layer move 
 	
