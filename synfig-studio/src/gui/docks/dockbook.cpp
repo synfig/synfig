@@ -268,7 +268,17 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
-	if (canvas_view && canvas_view != App::get_selected_canvas_view())
+
+	if (!canvas_view)
+		return false;
+
+	// Handle middle mouse click event first before showing the canvas
+	if (event->button == 2) {
+		canvas_view->close_instance();
+		return true;
+	}
+
+	if (canvas_view != App::get_selected_canvas_view())
 		App::set_selected_canvas_view(canvas_view);
 
 	if(event->button!=3)
