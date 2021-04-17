@@ -205,17 +205,7 @@ Action::ValueDescSet::prepare()
 	if(ValueNode_Reference::Handle reference_value_node = ValueNode_Reference::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueDesc reference_value_desc(reference_value_node,0);
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",value);
-		action->set_param("value_desc",reference_value_desc);
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(value,reference_value_desc);
 		return;
 	}
 
@@ -235,21 +225,7 @@ Action::ValueDescSet::prepare()
 			else
 				throw Error(_("this node isn't editable - in the future it will be greyed to prevent editing"));
 
-			Action::Handle action(Action::create("ValueDescSet"));
-
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",value);
-			action->set_param("value_desc",bone_influence_value_desc);
-
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-
-			add_action(action);
+			add_action_valuedescset(value,bone_influence_value_desc);
 
 			return;
 		}
@@ -269,23 +245,7 @@ Action::ValueDescSet::prepare()
 			ValueAverage::set_average_value_generic(values_list.begin(), values_list.end(), value);
 
 			for(int i = 0; i < bone_average_value_node->link_count(); ++i)
-			{
-				Action::Handle action(Action::create("ValueDescSet"));
-
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",values_list[i]);
-				action->set_param("value_desc", ValueDesc(bone_average_value_node, i ));
-
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-
-				add_action(action);
-			}
+				add_action_valuedescset(values_list[i], ValueDesc(bone_average_value_node, i ));
 
 			return;
 		}
@@ -307,23 +267,7 @@ Action::ValueDescSet::prepare()
 			const ValueBase::List &new_values_list = values_list_value.get_list();
 
 			for(int i = 0; i < bone_weighted_average_value_node->link_count(); ++i)
-			{
-				Action::Handle action(Action::create("ValueDescSet"));
-
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",new_values_list[i]);
-				action->set_param("value_desc", ValueDesc(bone_weighted_average_value_node, i ));
-
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-
-				add_action(action);
-			}
+				add_action_valuedescset(new_values_list[i], ValueDesc(bone_weighted_average_value_node, i ));
 
 			return;
 		}
@@ -339,17 +283,7 @@ Action::ValueDescSet::prepare()
 			ValueTransformation::back_transform(
 				value_node->get_bone_transformation(time), value );
 
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",new_base_value);
-		action->set_param("value_desc",base_value_desc);
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(new_base_value,base_value_desc);
 		return;
 	}
 
@@ -434,22 +368,16 @@ Action::ValueDescSet::prepare()
 		else
 			throw Error(_("Bad type for composite (%s)"), type.description.local_name.c_str());
 
-		for(int i=0;i<n_components;i++)
+		if (index >= 0 && index < n_components)
 		{
-			if (index < 0 || index == i)
+			add_action_valuedescset(components[index],ValueDesc(composite_value_node,index));
+		}
+		else if (index < 0)
+		{
+			for(int i=0;i<n_components;i++)
 			{
 				ValueDesc component_value_desc(composite_value_node,i);
-				Action::Handle action(Action::create("ValueDescSet"));
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",components[i]);
-				action->set_param("value_desc",component_value_desc);
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-				add_action(action);
+				add_action_valuedescset(components[i],component_value_desc);
 			}
 		}
 		return;
@@ -487,18 +415,7 @@ Action::ValueDescSet::prepare()
 			if (index1 < 0 || index1 == order[i] || index2 == order[i])
 			{
 				ValueDesc component_value_desc(composite_value_node,order[i]);
-				Action::Handle action(Action::create("ValueDescSet"));
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value",components[order[i]]);
-				action->set_param("value_desc",component_value_desc);
-				action->set_param("recursive", false);
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-				add_action(action);
+				add_action_valuedescset(components[order[i]],component_value_desc,false);
 			}
 		}
 		return;
@@ -532,17 +449,7 @@ Action::ValueDescSet::prepare()
 			ValueDesc component_value_desc(
 				bone_value_node,
 				bone_value_node->get_link_index_from_name(values[i].first));
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",values[i].second);
-			action->set_param("value_desc",component_value_desc);
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
+			add_action_valuedescset(values[i].second,component_value_desc);
 		}
 		return;
 	}
@@ -581,17 +488,7 @@ Action::ValueDescSet::prepare()
 		for(int i=0;i<n_components;i++)
 		{
 			ValueDesc component_value_desc(radialcomposite_value_node,i);
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",components[i]);
-			action->set_param("value_desc",component_value_desc);
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
+			add_action_valuedescset(components[i],component_value_desc);
 		}
 		return;
 	}
@@ -616,17 +513,7 @@ Action::ValueDescSet::prepare()
 			new_value = scale_value_node->get_inverse(time, value.get(Real()));
 		else
 			throw Error(_("Inverse manipulation of %s scale values not implemented in core."), value.type_name().c_str());
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(scale_value_node, scale_value_node->get_link_index_from_name("link")));
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(new_value,ValueDesc(scale_value_node, scale_value_node->get_link_index_from_name("link")));
 		return;
 	}
     // Range: disallow values outside the range
@@ -637,17 +524,7 @@ Action::ValueDescSet::prepare()
 			new_value = range_value_node->get_inverse(time, value.get(Angle()));
 		else
 			throw Error(_("Inverse manipulation of %s range values not implemented in core."), value.type_name().c_str());
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(range_value_node,range_value_node->get_link_index_from_name("link")));
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(new_value,ValueDesc(range_value_node,range_value_node->get_link_index_from_name("link")));
 		return;
 	}
 	// Integer: integer values only
@@ -660,17 +537,7 @@ Action::ValueDescSet::prepare()
 			new_value = integer_value_node->get_inverse(time, value.get(Real()));
 		else
 			throw Error(_("Inverse manipulation of %s integer values not implemented in core."), value.type_name().c_str());
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(integer_value_node,integer_value_node->get_link_index_from_name("link")));
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(new_value,ValueDesc(integer_value_node,integer_value_node->get_link_index_from_name("link")));
 		return;
 	}
 	// Add value node
@@ -685,17 +552,7 @@ Action::ValueDescSet::prepare()
 			new_value = add_value_node->get_inverse(time, value.get(Vector()));
 		else
 			throw Error(_("Inverse manipulation of %s add values not implemented in core."), value.type_name().c_str());
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(add_value_node,add_value_node->get_link_index_from_name("lhs")));
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(new_value,ValueDesc(add_value_node,add_value_node->get_link_index_from_name("lhs")));
 		return;
 	}
 	// Real: Reverse manipulations for Real->Angle convert
@@ -706,17 +563,7 @@ Action::ValueDescSet::prepare()
 			new_value = real_value_node->get_inverse(time, value.get(Angle()));
 		else
 			throw Error(_("Inverse manipulation of %s real values not implemented in core."), value.type_name().c_str());
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",new_value);
-		action->set_param("value_desc",ValueDesc(real_value_node,real_value_node->get_link_index_from_name("link")));
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(new_value,ValueDesc(real_value_node,real_value_node->get_link_index_from_name("link")));
 		return;
 	}
 	// BlineCalcWidth: modify the scale value node
@@ -726,17 +573,7 @@ Action::ValueDescSet::prepare()
 		Real old_width((*bline_width)(time).get(Real()));
 		Real scale((*(bline_width->get_link("scale")))(time).get(Real()));
 		ValueBase new_width(value.get(Real()) * scale / old_width);
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",new_width);
-		action->set_param("value_desc",ValueDesc(bline_width, bline_width->get_link_index_from_name("scale")));
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(new_width,ValueDesc(bline_width, bline_width->get_link_index_from_name("scale")));
 		return;
 	}
 	// BLineCalcVertex: snap the point to the nearest
@@ -765,17 +602,7 @@ Action::ValueDescSet::prepare()
 		bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 		if(homogeneous)
 			new_amount=std_to_hom((*bline)(time), new_amount, (*(bline_vertex->get_link("loop")))(time).get(bool()), bline->get_loop() );
-		Action::Handle action(Action::create("ValueDescSet"));
-		if(!action)
-			throw Error(_("Unable to find action ValueDescSet (bug)"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",ValueBase(new_amount));
-		action->set_param("value_desc",ValueDesc(bline_vertex, bline_vertex->get_link_index_from_name("amount")));
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action(action);
+		add_action_valuedescset(new_amount,ValueDesc(bline_vertex, bline_vertex->get_link_index_from_name("amount")));
 		return;
 	}
 	// BLineCalcTangent: adjust scale and offset
@@ -821,17 +648,7 @@ Action::ValueDescSet::prepare()
 			if (approximate_not_zero(old_length))
 			{
 				new_scale = new_length * scale / old_length;
-				Action::Handle action(Action::create("ValueDescSet"));
-				if(!action)
-					throw Error(_("Unable to find action ValueDescSet (bug)"));
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("time",time);
-				action->set_param("new_value", ValueBase(old_offset + new_angle - old_angle));
-				action->set_param("value_desc",offset_value_desc);
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-				add_action(action);
+				add_action_valuedescset(ValueBase(old_offset + new_angle - old_angle),offset_value_desc);
 			}
 		}
 		else
@@ -840,34 +657,12 @@ Action::ValueDescSet::prepare()
 			Angle old_angle = (*bline_tangent)(time).get(Angle());
 			Angle new_angle = value.get(Angle());
 			Angle old_offset((*(bline_tangent->get_link("offset")))(time).get(Angle()));
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value", ValueBase(old_offset + new_angle - old_angle));
-			action->set_param("value_desc",offset_value_desc);
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
+			add_action_valuedescset(ValueBase(old_offset + new_angle - old_angle),offset_value_desc);
 			return;
 		}
 
 		if (approximate_not_zero(new_scale.get(synfig::Real())))
-		{
-			Action::Handle action(Action::create("ValueDescSet"));
-			if(!action)
-				throw Error(_("Unable to find action ValueDescSet (bug)"));
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("new_value",new_scale);
-			action->set_param("value_desc",scale_value_desc);
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-			add_action(action);
-		}
+			add_action_valuedescset(new_scale,scale_value_desc);
 		return;
 	}
 
@@ -938,17 +733,7 @@ Action::ValueDescSet::prepare()
 						// convert the value inside the boundaries
 						new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
 					}
-					Action::Handle action(Action::create("ValueDescSet"));
-					if(!action)
-						throw Error(_("Unable to find action ValueDescSet (bug)"));
-					action->set_param("canvas",get_canvas());
-					action->set_param("canvas_interface",get_canvas_interface());
-					action->set_param("time",time);
-					action->set_param("new_value",ValueBase(new_amount));
-					action->set_param("value_desc",ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("position")));
-					if(!action->is_ready())
-						throw Error(Error::TYPE_NOTREADY);
-					add_action(action);
+					add_action_valuedescset(new_amount,ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("position")));
 					return;
 				}
 			}
@@ -1176,6 +961,22 @@ Action::ValueDescSet::prepare()
 		}
 		throw Error(_("Unsupported ValueDesc type"));
 	}
-
 	
+}
+
+void ValueDescSet::add_action_valuedescset(const ValueBase& value, const ValueDesc& value_desc, bool recursive)
+{
+	Action::Handle action(Action::create("ValueDescSet"));
+	if(!action)
+		throw Error(_("Unable to find action ValueDescSet (bug)"));
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",get_canvas_interface());
+	action->set_param("time",time);
+	action->set_param("new_value",value);
+	action->set_param("value_desc",value_desc);
+	if (!recursive)
+		action->set_param("recursive", false);
+	if(!action->is_ready())
+		throw Error(Error::TYPE_NOTREADY);
+	add_action(action);
 }
