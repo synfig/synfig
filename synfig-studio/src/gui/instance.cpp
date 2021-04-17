@@ -1366,7 +1366,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	Widget_WaypointModel widget_waypoint_model;
 	widget_waypoint_model.show();
 
-	dialog.get_vbox()->pack_start(widget_waypoint_model);
+	dialog.get_content_area()->pack_start(widget_waypoint_model);
 
 	dialog.add_button(_("Cancel"), 0);
 	dialog.add_button(_("Apply"), 1);

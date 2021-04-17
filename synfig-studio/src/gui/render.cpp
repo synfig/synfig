@@ -114,7 +114,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	get_vbox()->pack_start(*dialogPadding, false, false, 0);
+	get_content_area()->pack_start(*dialogPadding, false, false, 0);
 
 	Gtk::Grid *dialogGrid = manage(new Gtk::Grid());
 	dialogGrid->get_style_context()->add_class("dialog-main-content");
@@ -222,7 +222,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	set_entry_filename();
 
-	get_vbox()->show_all();
+	get_content_area()->show_all();
 }
 
 RenderSettings::~RenderSettings()

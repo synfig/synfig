@@ -68,7 +68,7 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::on_rend_desc_changed));
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	get_vbox()->pack_start(*dialogPadding, false, false, 0);
+	get_content_area()->pack_start(*dialogPadding, false, false, 0);
 
 	Gtk::Grid *dialogGrid = manage(new Gtk::Grid());
 	dialogGrid->get_style_context()->add_class("dialog-main-content");
@@ -135,7 +135,7 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	add_action_widget(*ok_button,2);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_ok_pressed));
 
-	get_vbox()->show_all();
+	get_content_area()->show_all();
 	signal_show().connect(sigc::mem_fun(*this, &studio::CanvasProperties::refresh));
 
 	update_title();

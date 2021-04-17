@@ -95,7 +95,7 @@ Dialog_Color::create_color_edit_widget()
 	color_edit_widget = manage(new Widget_ColorEdit());
 	color_edit_widget->signal_value_changed().connect(sigc::mem_fun(*this,
 			&studio::Dialog_Color::on_color_changed));
-	get_vbox()->pack_start(*color_edit_widget);
+	get_content_area()->pack_start(*color_edit_widget);
 }
 
 void
