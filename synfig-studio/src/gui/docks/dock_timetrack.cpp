@@ -350,6 +350,7 @@ Dock_Timetrack_Old::Dock_Timetrack_Old():
 	grid_()
 {
 	set_use_scrolled(false);
+	vscrollbar_.set_orientation(Gtk::ORIENTATION_VERTICAL);
 }
 
 Dock_Timetrack_Old::~Dock_Timetrack_Old()

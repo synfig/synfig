@@ -36,8 +36,6 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class HScale; }
-
 namespace studio {
 
 class GroupActionManager ;

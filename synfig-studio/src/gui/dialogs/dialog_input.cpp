@@ -191,7 +191,7 @@ void Dialog_Input::create_widgets()
 			table->attach(*comboboxtext, 1, 2, row, row+1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL);
 		}
 
-		table->attach( *manage(new class Gtk::HSeparator()),
+		table->attach( *manage(new class Gtk::Separator()),
 					   0,
 					   2,
 					   (int)options->devices.size(),

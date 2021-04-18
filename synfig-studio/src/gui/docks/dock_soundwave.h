@@ -55,8 +55,8 @@ private:
 	Widget_Keyframe_List widget_kf_list;
 	Widget_CanvasTimeslider widget_timeslider;
 	Grid_SoundWave *current_grid_sound;
-	Gtk::VScrollbar vscrollbar;
-	Gtk::HScrollbar hscrollbar;
+	Gtk::Scrollbar vscrollbar;
+	Gtk::Scrollbar hscrollbar;
 };
 
 }

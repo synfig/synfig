@@ -51,8 +51,8 @@ private:
 	Widget_Keyframe_List widget_kf_list;
 	Widget_CanvasTimeslider widget_timeslider;
 	Widget_Timetrack *current_widget_timetrack;
-	Gtk::VScrollbar vscrollbar;
-	Gtk::HScrollbar hscrollbar;
+	Gtk::Scrollbar vscrollbar;
+	Gtk::Scrollbar hscrollbar;
 	Gtk::ToolPalette tool_palette;
 
 	void on_update_header_height(int height);

@@ -69,10 +69,10 @@ Widget_NavView::Widget_NavView():
 {
 	//zooming stuff
 	zoom_print.set_size_request(40,-1);
-	Gtk::HScale *hs = manage(new Gtk::HScale(adj_zoom));
+	Gtk::Scale *hs = manage(new Gtk::Scale(adj_zoom));
 	hs->set_draw_value(false);
 
-	Gtk::HSeparator *sep = manage(new Gtk::HSeparator());
+	Gtk::Separator *sep = manage(new Gtk::Separator());
 
 	attach(drawto,     0, 4, 0, 1);
 	attach(*sep,       0, 4, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);

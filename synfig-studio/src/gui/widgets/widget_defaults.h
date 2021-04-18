@@ -72,7 +72,7 @@ class Widget_Defaults : public Gtk::Box
 
 	//Widget_Enum	*widget_blend_method;
 
-	//Gtk::HScale 	*widget_opacity;
+	//Gtk::Scale 	*widget_opacity;
 
 	void otln_color_refresh();
 	void fill_color_refresh();
