@@ -33,7 +33,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/label.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
 
 #include <gui/docks/dock_canvasspecific.h>
 
@@ -47,7 +47,7 @@ namespace studio {
 
 class CanvasView;
 
-class Widget_NavView : public Gtk::Table
+class Widget_NavView : public Gtk::Grid
 {
 	etl::loose_handle<CanvasView> canvas_view;
 	Cairo::RefPtr<Cairo::ImageSurface> surface;

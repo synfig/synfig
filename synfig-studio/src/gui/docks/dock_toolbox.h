@@ -59,7 +59,6 @@ class Dock_Toolbox : public Dockable
 	friend class studio::StateManager;
 
 	Gtk::ToolItemGroup *tool_item_group;
-	Gtk::VBox *tool_box;
 	Gtk::Paned *tool_box_paned;
 
 	std::map<synfig::String,Gtk::ToggleToolButton *> state_button_map;
