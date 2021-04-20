@@ -1,4 +1,9 @@
-              synfig releases
+## Version 1.4.1
+- [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL renderering ([#2055](https://github.com/synfig/synfig/issues/2055))
+- [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter (https://github.com/synfig/synfig/issues/1731)
+- [`99a1cde`](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305) Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623))
+
+--------------------------
 
  1.4.0 (git tag "v1.4.0") - Major release.
  
@@ -393,3 +398,141 @@
 
   * First public release!
 
+------------------------------------
+
+2005-11-28	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/modules/lyr_std/sphere_distort.cpp/h: Clarified namespace issues 
+2005-11-08	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/modules/lyr_std/stretch.cpp/h: Clarified namespace issues 
+2005-11-03	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/synfig/savecanvas.cpp: added #include <sys/errorno.h>
+	* src/synfig/value.cpp: Various GCC 4.0 fixes
+	* src/modules/mod_bmp/trgt_bmp.cpp: The BMP target was broken. It's now fixed.
+	* examples: Removed SFAutomaton font due to licensing issues.
+	* All: Updated copyright notice to reflect new license
+
+2004-04-07 (darco): Foldy... Powers?
+2004-03-30 (darco): Fix for weird keyframe problem
+2004-03-24 (darco): Speed improvements for both the pastecanvas layer and the checkerboard layer
+2004-03-15 (darco): "Noise" layer split into two different layers: NoiseGradient, and NoiseDistort, which can be found in the Gradients and Distortions categories respectively.
+2004-03-05 (darco): New stuff tangents should interpolate using polar coordinates. Awesome.
+2004-03-05 (darco): Added "Bevel" Layer
+2004-03-05 (darco): Added "Shade" Layer
+2004-03-04 (darco): Fixed problem with tangents not animating correctly
+2004-02-25 (darco): Added the "time_offset" parameter to the Paste Canvas layer
+2004-02-20 (darco): Significantly improved the BLine (which will be later called "outline") layer
+2004-02-16 (darco): Added some under-the-hood-updates
+2004-02-16 (darco): Improved renddesc editing slightly
+2004-02-16 (darco): fixed the hit checks for the gradient layers. You can now more easily click on layers under them
+2004-02-11 (darco): fixed a memory leak in the freetype layer
+2004-02-11 (darco): fixed the onto blend method
+2004-02-10 (adruab): Added shape specific blurs
+2004-01-23 (darco) : Fixed minor loop problem
+2004-01-23 (darco) : Added "Cosine" falloff to circle. (should be better than sigmond)
+2004-01-21 (darco) : Support for paletted PNG files added
+2004-01-15 (darco) : BLine Layer: Added "width" parameter, removed "width_list" parameter
+2004-01-13 (darco) : Font layer largely re-written--now supports multiple lines. Also much more consistent.
+2004-01-09 (darco) : fixed all the loose ends with the rectangle layer
+2004-01-09 (darco) : Added expand parameter to rectangle layer
+2004-01-09 (darco) : Adjusted the rectangle layer -- you can now invert it
+2004-01-09 (darco) : You can now duplicate inline canvases
+2004-01-05 (darco) : Both ends of a BLine can now have round edges (which are now on by default)
+2004-01-05 (darco) : Increased threshold for cusp cut-off of tangents are too sharp
+2003-12-29 (darco) : Added support for sharp cusp points (on by default now)
+2003-12-24 (darco) : Adjusted Copyright Notice
+2003-12-24 (darco) : Improved the horizontal placement consistancy of the Text layer.
+2003-12-24 (darco) : Fix for obscure bug in scale valuenode that would cause a failure to load a saved file
+2003-11-25 (darco) : Improved the Text layer again. *sigh*
+2003-11-20 (darco) : Improved the consistancy of the Text layer again. :P
+2003-11-18 (darco) : Improved the consistancy of the Text layer. You should be able to use it without worrying about the layout going weird anymore.
+2003-11-12 (darco) : Added "--dpi", "--dpi-x", and "--dpi-y" arguments to the SINFG command line tool.  these allow you to change the DPI of what you are rendering.
+2003-11-10 (darco) : Fixed odd animation behavior
+2003-11-10 (darco) : Fixed a bug in the PasteCanvas layer where mouse clicks wouldn't match up if the "origin" was changed from 0,0.
+2003-11-04 (darco) : Inserting points into a polygon is now smarter -- puts the new point between the original two
+2003-10-28 (darco) : Added support for physical dimension information in file format (xres/yres)
+2003-10-20 (adruab) : Added support for video encoding through use of FFMPEG (avi,mpg,asf,rm,wmv)
+2003-10-07 (darco) : Changed dynamic list/bline pad the index with zeros (001, 002, etc.)
+2003-10-06 (darco) : Added Red-Blue color-corection adjustment to gamma
+2003-10-06 (darco) : Added "displacement" mode for noise
+2003-10-06 (darco) : The "scale" valuenode will now NOT scale the alpha channel of a color. (Otherwise, it's kinda useless)
+2003-10-05 (darco) : The noise layer is now... Animated!
+2003-10-05 (darco) : Added new layer... Noise!
+2003-10-04 (darco) : You should now be able to create polygons layers without crashing. (Regions and BLines are another story though...)
+2003-10-03 (darco) : Implemented layer descriptions
+2003-09-30 (darco) : Fixed bug where BLine would "warp" when introducing new vertices.
+2003-09-30 (darco) : Editing stuff while the work area refreshes in SINFG Studio should now be smoother
+2003-09-24 (darco) : Adjusted the hit check in PasteCanvas layer to support inline canvases
+2003-09-23 (darco) : ConicalGradient had incorrect angle, it was 90 degrees off. Fixed.
+2003-09-17 (darco) : Fixed bewildering "wobble" animation bug
+2003-09-02 (darco) : Added antialiasing to the gradient layers
+2003-09-01 (darco) : Added Twirl Layer
+2003-09-01 (darco) : Added Star Layer
+2003-08-31 (darco) : Negative values are now clamped to the black point rather than having some kind of visualization. 
+2003-08-13 (darco) : Fixed some gamma issues on the PNG and ImageMagick image importers
+2003-08-13 (darco) : Again, Improved support for clickable layers
+2003-08-12 (darco) : Improved support for clickable layers
+2003-08-06 (darco) : Added accelerated renderer for all gradient layers, they are now much faster. (Needs adaptive supersampling though...)
+2003-07-31 (darco) : Added support for black level adjustment in gamma correction
+2003-07-30 (darco) : Added support for gamma correction
+2003-07-30 (darco) : Adjusted the mandelbrot layer to support gradients
+2003-07-29 (darco) : Improved blend methods: Brighten, Darken
+2003-07-29 (darco) : Added new blend methods: Screen, Overlay, and Difference
+2003-07-24 (darco) : Added gradients!!!
+2003-07-16 (darco) : Tiled Renderer now implemented
+2003-07-14 (darco) : TCB controls now implemented
+2003-05-05 (darco) : Dynamic List entries can now have multiple start times and end times
+2003-05-05 (darco) : Phasing out Timed Stamp Value Node, because the animated value node is now capable.
+2003-05-05 (darco) : The Animated Value Node can now use exported values in waypoints.
+2003-04-23 (darco) : Added "stretch" layer. (Allows distortions to things like circles)
+2003-04-18 (darco) : Added "exposure" parameter to color correct layer
+2003-04-17 (darco) : Added native suport for JPEG files
+2003-04-15 (darco) : The parametric renderer is now multi-threaded, meaning it can take advantage of multiple processors. Doesn't work in Win32.
+2003-04-14 (darco) : Added "ColorCorrect" layer
+2003-04-14 (darco) : Added "bailout" parameter to Mandelbrot and Julia layers. Use larger values to improve smoothing.
+2003-04-14 (darco) : Improved clamp layer
+2003-04-14 (darco) : Fix a bug with the "Color" blend method
+2003-04-11 (darco) : Added "XORPattern" layer
+2003-04-11 (darco) : Added "clamp" layer for clamping colors
+2003-04-10 (darco) : Fixed a bug with the "smooth outside" parameter of the Julia and Mandelbrot layers
+2003-04-10 (darco) : Major under-the-hood changes
+2003-04-07 (darco) : Implemented support for inline (nested) canvases in parameters
+2003-04-07 (darco) : Removed "time blur" option from "blur" layer
+2003-04-07 (darco) : Created "motion blur" layer
+2003-04-04 (darco) : Added layer "julia"
+2003-04-04 (darco) : Added layer "inside out"
+2003-04-03 (darco) : Fixed some minor issues with the polygon layer
+2003-04-03 (darco) : Improvements to the way that time is handed
+2003-04-02 (darco) : Added "offset" parameter to polygon layer
+
+2003-04-01 (darco) : Added a new value type, "Time"
+2003-04-01 (darco) : Fixed a bug where values were not getting clamped
+2003-03-31 (darco) : Tons of under-the-hood changes
+2003-03-27 (darco) : Added "-c" argument to sinfg tool.
+2003-03-26 (darco) : Added "antialias" attribute to <canvas> in SIF file format.
+2003-03-26 (darco) : Fixed bug #0000010 ("DataNode_Subtract always reverts 'scalar' to constant after save/load")
+2003-03-25 (darco) : Added support for linking to DataNodes/Canvases in other Compositions.
+2003-03-24 (darco) : Added support for linking to DataNodes in different Canvases.
+
+2003-03-23 (darco) : Fixed a small bug in circle layer that caused inconsistant results when the feather was set to zero and the parametric renderer used.
+2003-03-23 (darco) : Added "zoom" parameter to PasteCanvas layer
+
+2003-03-22 (darco) : Fixed color-order bug in ImageMagick importer
+2003-03-22 (darco) : Fixed a layer-cloning bug (For example, attempting to clone the Import layer would crash SINFG Studio)
+
+2003-03-20 (darco) : Fixed bug where numbers would be appended to filename when using bitmap target
+2003-03-20 (darco) : PPM Module wasn't being loaded. Fixed.
+2003-03-20 (darco) : Version Increment
+
+2003-03-19 (darco) : Added BMP importer
+2003-03-19 (darco) : Added PNG importer
+
+2003-03-19 (darco) : Added "--importers" option to sinfg tool, for listing loaded importers
+
+2003-03-17 (darco) : Slight optimization to Region layer
+2003-03-17 (darco) : Slight optimization to BLine layer
+
+2003-03-04 (darco) : Improved some layers to improve responsiveness during rendering.
+2003-03-04 (darco) : Added rotate layer.
+2003-03-04 (darco) : Fully implemented the "angle" type in loading and saving.
+
+2003-03-01 (darco) : Changed the default zoom amount from 1.0 to 0.0

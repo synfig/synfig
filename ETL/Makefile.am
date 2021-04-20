@@ -41,6 +41,7 @@ aclocaldir = $(prefix)/share/aclocal
 ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = \
+	ChangeLog.old \
 	COPYING \
 	m4/subs.m4 \
 	config/depcomp \
