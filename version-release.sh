@@ -6,6 +6,10 @@ DIRNAME=`dirname "$0"`
 cd $DIRNAME
 DIRNAME=`pwd`
 
+# Update NEWS files
+./ChangeLog-split.sh
+git add ETL/NEWS synfig-core/NEWS synfig-studio/NEWS
+
 # Get current version
 VERSION_CURRENT=`cat synfig-studio/configure.ac | grep "AC_INIT(\[Synfig Studio\]" | sed 's/.*Studio\],\[\(.*\)\],\[http.*/\1/'`
 DATE=`date +%Y-%m-%d`
