@@ -34,10 +34,8 @@
 
 #include "mptr_openexr.h"
 #include <synfig/general.h>
-#include <synfig/localization.h>
 #include <synfig/surface.h>
 
-#include <ImfArray.h>
 #include <ImfRgbaFile.h>
 #include <exception>
 

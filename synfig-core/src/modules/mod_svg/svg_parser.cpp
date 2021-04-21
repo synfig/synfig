@@ -36,7 +36,6 @@
 
 #include <cstring>
 
-#include <synfig/localization.h>
 #include <synfig/general.h>
 #include <synfig/loadcanvas.h>
 #include <unordered_map>

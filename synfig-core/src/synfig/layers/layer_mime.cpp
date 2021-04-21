@@ -37,13 +37,10 @@
 #include <synfig/vector.h>
 
 #include <synfig/context.h>
-#include <synfig/time.h>
-#include <synfig/color.h>
 #include <synfig/surface.h>
 #include <synfig/renddesc.h>
 #include <synfig/target.h>
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/paramdesc.h>
 

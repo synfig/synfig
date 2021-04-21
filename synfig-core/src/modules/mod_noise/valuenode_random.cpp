@@ -40,7 +40,6 @@
 #include <synfig/vector.h>
 
 #include <ETL/misc>
-#include <time.h>
 
 #endif
 

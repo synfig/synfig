@@ -32,11 +32,8 @@
 #endif
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
-#include <synfig/time.h>
 #include <synfig/context.h>
-#include <synfig/canvas.h>
 #include <synfig/value.h>
 #include <synfig/paramdesc.h>
 

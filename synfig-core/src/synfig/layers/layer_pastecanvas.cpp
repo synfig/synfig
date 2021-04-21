@@ -34,17 +34,14 @@
 
 #include "layer_pastecanvas.h"
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
-#include <synfig/cairo_renddesc.h>
 #include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/time.h>
 #include <synfig/string.h>
-#include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 

@@ -39,12 +39,9 @@
 #endif
 
 #include "mptr_jpeg.h"
-#include <synfig/time.h>
 #include <synfig/general.h>
-#include <synfig/localization.h>
 
 #include <cstdio>
-#include <sstream>
 #endif
 
 /* === M A C R O S ========================================================= */

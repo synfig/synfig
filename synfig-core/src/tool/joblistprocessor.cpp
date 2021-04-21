@@ -35,30 +35,20 @@
 #include <errno.h>
 #include <cstring>
 
-//#include <boost/program_options/options_description.hpp>
-//#include <boost/program_options/variables_map.hpp>
-//#include <boost/format.hpp>
 #include <chrono>
 
 #include <autorevision.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
-#include <synfig/canvas.h>
 #include <synfig/target.h>
-#include <synfig/layer.h>
-#include <synfig/time.h>
 #include <synfig/target_scanline.h>
-#include <synfig/paramdesc.h>
-#include <synfig/module.h>
 #include <synfig/importer.h>
-#include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/filesystemnative.h>
 
 #include "definitions.h"
 #include "job.h"
 #include "synfigtoolexception.h"
-#include "printing_functions.h"
 #include "renderprogress.h"
 #include "joblistprocessor.h"
 

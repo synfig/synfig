@@ -37,17 +37,11 @@
 #include "stroboscope.h"
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
-#include <synfig/valuenode.h>
-#include <synfig/valuenodes/valuenode_const.h>
-#include <synfig/valuenodes/valuenode_subtract.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
 #include <synfig/value.h>
-#include <synfig/canvas.h>
 
 #endif
 

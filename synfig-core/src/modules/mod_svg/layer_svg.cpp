@@ -32,13 +32,11 @@
 #endif
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/canvasfilenaming.h>
 #include <synfig/string.h>
 #include <synfig/paramdesc.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #include "layer_svg.h"
 

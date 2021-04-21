@@ -34,7 +34,6 @@
 #include <ETL/misc>
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include "rectangle.h"
 

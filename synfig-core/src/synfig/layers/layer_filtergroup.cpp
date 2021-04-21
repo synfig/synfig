@@ -31,7 +31,6 @@
 
 #include "layer_filtergroup.h"
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
 #include <synfig/canvas.h>

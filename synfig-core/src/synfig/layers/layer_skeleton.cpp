@@ -31,7 +31,6 @@
 
 #include "layer_skeleton.h"
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
 #include <synfig/context.h>

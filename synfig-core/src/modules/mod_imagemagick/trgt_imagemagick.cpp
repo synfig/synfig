@@ -37,7 +37,7 @@
 
 #include "trgt_imagemagick.h"
 #include <cstdio>
-#include <sys/types.h>
+
 #if HAVE_SYS_WAIT_H
  #include <sys/wait.h>
 #endif

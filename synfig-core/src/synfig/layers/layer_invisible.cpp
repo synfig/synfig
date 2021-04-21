@@ -29,8 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/localization.h>
 #include <synfig/context.h>
 
 #include "layer_invisible.h"
