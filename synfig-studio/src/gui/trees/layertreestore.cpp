@@ -67,6 +67,22 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static void
+retrieve_layers_from_dragging(const Gtk::SelectionData &selection_data, synfigapp::SelectionManager::LayerList &layers)
+{
+	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
+	{
+		if(synfig::String(selection_data.get_data_type())=="LAYER")
+		{
+			for(unsigned int i=0; i<selection_data.get_length()/sizeof(void*); i++)
+			{
+				Layer::Handle l(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
+				if (l) layers.push_back(l);
+			}
+		}
+	}
+}
+
 /* === M E T H O D S ======================================================= */
 
 static LayerTreeStore::Model& ModelHack()
@@ -518,23 +534,45 @@ LayerTreeStore::drag_data_delete_vfunc (const TreeModel::Path& /*path*/)
 bool
 LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)const
 {
-	//synfig::info("possible_drop -- data of type \"%s\"",selection_data.get_data_type());
-	//synfig::info("possible_drop -- data of target \"%s\"",gdk_atom_name(selection_data->target));
-	//synfig::info("possible_drop -- selection=\"%s\"",gdk_atom_name(selection_data->selection));
+	//synfig::info("possible_drop -- data of type \"%s\"",selection_data.get_data_type().c_str());
+	//synfig::info("possible_drop -- data of target \"%s\"",selection_data.get_target().c_str());
+	//synfig::info("possible_drop -- selection=\"%s\"",selection_data.get_selection().c_str());
 
 	if (synfig::String(selection_data.get_data_type())=="LAYER")
 	{
 		TreeModel::Path dest_parent(dest);
 		if (!dest_parent.up() || dest.size()==1)
 		{
+			// top-level canvas
 			return true;
 		}
 		else
-		if ((bool)const_cast<LayerTreeStore*>(this)->get_iter(dest_parent))
 		{
-			TreeModel::Row row = *const_cast<LayerTreeStore*>(this)->get_iter(dest_parent);
-			return RECORD_TYPE_LAYER == (RecordType)row[model.record_type]
-				&& (bool)(Canvas::Handle)row[model.contained_canvas];
+			// does it have a parent layer and it has a canvas set?
+			Gtk::TreeIter parent_iter = const_cast<LayerTreeStore*>(this)->get_iter(dest_parent);
+			if (parent_iter)
+			{
+				TreeModel::Row parent_row = *parent_iter;
+				if (RECORD_TYPE_LAYER == static_cast<RecordType>(parent_row[model.record_type]))
+				{
+					Canvas::Handle target_canvas = static_cast<Canvas::Handle>(parent_row[model.contained_canvas]);
+					if (target_canvas)
+					{
+						// don't let user drop a group layer into a child of its own
+
+						synfigapp::SelectionManager::LayerList dragged_layers;
+						retrieve_layers_from_dragging(selection_data, dragged_layers);
+						Layer::Handle parent_layer = parent_row[model.layer];
+						do {
+							for (const auto& drag_layer : dragged_layers) {
+								if (parent_layer == drag_layer)
+									return false;
+							}
+						} while ((parent_layer = parent_layer->get_parent_paste_canvas_layer()));
+						return true;
+					}
+				}
+			}
 		}
 	}
 	return false;
@@ -561,12 +599,7 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
 		synfigapp::SelectionManager::LayerList dropped_layers;
-		if(synfig::String(selection_data.get_data_type())=="LAYER")
-			for(unsigned int i=0; i<selection_data.get_length()/sizeof(void*); i++)
-			{
-				Layer::Handle l(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
-				if (l) dropped_layers.push_back(l);
-			}
+		retrieve_layers_from_dragging(selection_data, dropped_layers);
 		if (dropped_layers.empty())
 			return false;
 
