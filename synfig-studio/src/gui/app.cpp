@@ -1285,6 +1285,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 		{"<Control>o",              "<Actions>/mainwindow/open"},
 		{"<Control>s",              "<Actions>/canvasview/save"},
 		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
+		{"<Control>e",              "<Actions>/canvasview/save-all"},
 		{"<Control>grave",          "<Actions>/canvasview/toggle-low-res"},
 		{"<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks"},
 		{"<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks"},
