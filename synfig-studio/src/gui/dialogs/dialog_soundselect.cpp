@@ -60,7 +60,7 @@ studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<
 canvas_interface(ci)
 {
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	get_vbox()->pack_start(*dialogPadding, false, false, 0);
+	get_content_area()->pack_start(*dialogPadding, false, false, 0);
 
 	Gtk::Frame *soundFrame = manage(new Gtk::Frame(_("Sound Parameters")));
 	((Gtk::Label *) soundFrame->get_label_widget())->set_markup(_("<b>Sound Parameters</b>"));
@@ -94,7 +94,7 @@ canvas_interface(ci)
 	okbutton = manage(new Gtk::Button(Gtk::StockID("gtk-ok")));
 	add_action_widget(*okbutton, 0);
 
-	get_vbox()->show_all();
+	get_content_area()->show_all();
 
 	offset.set_value(0);
 

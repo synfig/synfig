@@ -78,7 +78,7 @@ Dialog_Gradient::Dialog_Gradient():
 	set_default_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_set_default_pressed));
 
 	Gtk::Table* table(manage(new Gtk::Table(2,2,false)));
-	get_vbox()->pack_start(*table);
+	get_content_area()->pack_start(*table);
 
 	widget_gradient=manage(new Widget_Gradient());
 	widget_gradient->set_editable();

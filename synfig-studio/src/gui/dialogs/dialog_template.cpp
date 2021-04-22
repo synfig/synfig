@@ -133,8 +133,8 @@ Dialog_Template::Dialog_Template(Gtk::Window& parent, synfig::String dialog_titl
 	//! TODO create a warning zone to push message on rare events (like no brush path, zero fps ...)
 	//! this warning zone could also hold normal message like : "x change to come"  (and a link to "Changes summary" page)
 
-	get_vbox()->pack_start(main_grid);
-	get_vbox()->set_border_width(12);
+	get_content_area()->pack_start(main_grid);
+	get_content_area()->set_border_width(12);
 
 	show_all_children();
 }

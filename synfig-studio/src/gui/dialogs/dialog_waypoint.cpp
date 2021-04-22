@@ -56,7 +56,7 @@ Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas>
 	this->set_resizable(false);
 	assert(canvas);
     waypointwidget=manage(new class Widget_Waypoint(canvas));
-	get_vbox()->pack_start(*waypointwidget);
+	get_content_area()->pack_start(*waypointwidget);
 
 	Gtk::Button *delete_button(manage(new class Gtk::Button(Gtk::StockID("gtk-delete"))));
 	delete_button->show();

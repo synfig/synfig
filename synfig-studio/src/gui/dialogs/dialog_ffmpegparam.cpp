@@ -105,11 +105,11 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent):
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
 					allowed_video_codecs_description[i] != NULL; i++)
 		vcodec->append(allowed_video_codecs_description[i]);
-	//Adds the Combo Box and the Custom Video Codec entry to the vertical box
-	get_vbox()->pack_start(*label, true, true, 0);
-	get_vbox()->pack_start(*vcodec, true, true, 0);
-	get_vbox()->pack_start(*custom_label, true, true, 0);
-	get_vbox()->pack_start(*customvcodec, true, true, 0);
+	//Adds the Combo Box and the Custom Video Codec entry to the box
+	get_content_area()->pack_start(*label, true, true, 0);
+	get_content_area()->pack_start(*vcodec, true, true, 0);
+	get_content_area()->pack_start(*custom_label, true, true, 0);
+	get_content_area()->pack_start(*customvcodec, true, true, 0);
 
 	// Connect the signal change to the handler
 	vcodec->signal_changed().connect(sigc::mem_fun(*this, &Dialog_FFmpegParam::on_vcodec_change));
@@ -119,10 +119,10 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent):
 	Gtk::Label* label2(manage(new Gtk::Label(_("Video Bit Rate:"))));
 	label2->set_halign(Gtk::ALIGN_START);
 	label2->set_valign(Gtk::ALIGN_CENTER);
-	get_vbox()->pack_start(*label2, true, true, 0);
-	get_vbox()->pack_start(*bitrate,true, true, 0);
+	get_content_area()->pack_start(*label2, true, true, 0);
+	get_content_area()->pack_start(*bitrate,true, true, 0);
 
-	get_vbox()->show_all();
+	get_content_area()->show_all();
 }
 
 
