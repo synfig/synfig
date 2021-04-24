@@ -46,8 +46,8 @@ class Widget_Curves;
 
 class Dock_Curves : public Dock_CanvasSpecific
 {
-	Gtk::HScrollbar hscrollbar_;
-	Gtk::VScrollbar vscrollbar_;
+	Gtk::Scrollbar hscrollbar_;
+	Gtk::Scrollbar vscrollbar_;
 
 	Widget_CanvasTimeslider widget_timeslider_;
 	Widget_Keyframe_List widget_kf_list_;

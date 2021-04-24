@@ -55,7 +55,9 @@ Dock_Curves::Dock_Curves():
 	Dock_CanvasSpecific("curves",_("Graphs"),Gtk::StockID("synfig-curves")),
 	table_(),
 	last_widget_curves_()
-{ }
+{
+	vscrollbar_.set_orientation(Gtk::ORIENTATION_VERTICAL);
+}
 
 Dock_Curves::~Dock_Curves()
 {

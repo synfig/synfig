@@ -862,7 +862,7 @@ CanvasView::create_time_bar()
 	timeslider->show();
 
 	// Setup Time Scroll
-	Gtk::HScrollbar *time_window_scroll = manage(new class Gtk::HScrollbar(time_model()->scroll_time_adjustment()));
+	Gtk::Scrollbar *time_window_scroll = manage(new class Gtk::Scrollbar(time_model()->scroll_time_adjustment()));
 	time_window_scroll->set_tooltip_text(_("Moves the time window"));
 	//time_window_scroll->set_can_focus(true); // Uncomment this produce bad render of the HScroll
 	time_window_scroll->show();
@@ -981,7 +981,7 @@ CanvasView::create_time_bar()
 		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_upper_to_current) );
 	framedial->show();
 
-	Gtk::HSeparator *separator = manage(new Gtk::HSeparator());
+	Gtk::Separator *separator = manage(new Gtk::Separator());
 	separator->show();
 
 	//Setup the KeyFrameDial widget

@@ -36,8 +36,6 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class HScale; }
-
 namespace studio {
 
 class LayerActionManager;
@@ -49,7 +47,7 @@ class Dock_Layers : public Dock_CanvasSpecific
 
 	Glib::RefPtr<Gtk::Action> action_new_layer;
 
-	//Gtk::HScale *layer_amount_hscale;
+	//Gtk::Scale *layer_amount_hscale;
 
 	LayerActionManager* layer_action_manager;
 

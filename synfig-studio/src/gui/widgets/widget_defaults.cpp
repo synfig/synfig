@@ -324,7 +324,7 @@ Widget_Defaults::Widget_Defaults():
 	//widget_blend_method->set_tooltip_text(_("Default Blend Method"));
 
 	// widget opacity
-	//widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
+	//widget_opacity = manage(new Gtk::Scale(0.0f,1.01f,0.01f));
 	//widget_opacity->set_digits(2);
 	//widget_opacity->set_value_pos(Gtk::POS_LEFT);
 	//widget_opacity->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_opacity_changed));

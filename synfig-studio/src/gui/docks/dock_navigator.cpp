@@ -67,17 +67,23 @@ Widget_NavView::Widget_NavView():
 	adj_zoom(Gtk::Adjustment::create(0, -4, 4, 1, 2)),
 	scrolling(0)
 {
-	//zooming stuff
-	zoom_print.set_size_request(40,-1);
-	Gtk::HScale *hs = manage(new Gtk::HScale(adj_zoom));
+	drawto.set_hexpand();
+	drawto.set_vexpand();
+
+	Gtk::Separator *sep = manage(new Gtk::Separator());
+
+	zoom_print.set_size_request(60,-1);
+	zoom_print.set_margin_start(5);
+	zoom_print.set_margin_end(5);
+
+	Gtk::Scale *hs = manage(new Gtk::Scale(adj_zoom));
 	hs->set_draw_value(false);
+	hs->set_hexpand();
 
-	Gtk::HSeparator *sep = manage(new Gtk::HSeparator());
-
-	attach(drawto,     0, 4, 0, 1);
-	attach(*sep,       0, 4, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	attach(zoom_print, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	attach(*hs,        1, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	attach(drawto,     0, 0, 2, 1);
+	attach(*sep,       0, 1, 2, 1);
+	attach(zoom_print, 0, 2, 1, 1);
+	attach(*hs,        1, 2, 1, 1);
 	show_all();
 
 	adj_zoom->signal_value_changed().connect(sigc::mem_fun(*this, &Widget_NavView::on_number_modify));

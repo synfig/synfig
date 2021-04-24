@@ -52,6 +52,7 @@ Dock_Timetrack2::Dock_Timetrack2()
 
 	vscrollbar.set_vexpand();
 	vscrollbar.set_hexpand(false);
+	vscrollbar.set_orientation(Gtk::ORIENTATION_VERTICAL);
 	vscrollbar.show();
 	hscrollbar.set_hexpand();
 	hscrollbar.show();
