@@ -138,15 +138,6 @@ NoiseDistort::color_func(const Point &point, float /*supersample*/,Context conte
 	return ret;
 }
 
-inline CairoColor
-NoiseDistort::cairocolor_func(const Point &point, float /*supersample*/,Context context)const
-{
-	CairoColor ret(0,0,0,0);
-	//ret=context.get_cairocolor(point_func(point));
-	return ret;
-}
-
-
 inline float
 NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
 {

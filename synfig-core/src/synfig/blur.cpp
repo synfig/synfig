@@ -154,12 +154,6 @@ inline Color zero<Color>()
 	return Color::alpha();
 }
 
-template <>
-inline CairoColorAccumulator zero<CairoColorAccumulator>()
-{
-	return CairoColorAccumulator(0);
-}
-
 template <typename T,typename AT,class VP>
 static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
 {

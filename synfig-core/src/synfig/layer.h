@@ -176,8 +176,6 @@
 
 namespace synfig {
 
-class CairoColor;
-class CairoSurface;
 class Canvas;
 class Color;
 class Context;

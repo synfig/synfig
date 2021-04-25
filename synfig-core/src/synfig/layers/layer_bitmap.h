@@ -49,7 +49,6 @@ namespace synfig {
 class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 {
 	const Color& filter(Color& c)const;
-	const CairoColor& filter(CairoColor& c)const;
 
 	GUID surface_modification_id;
 public:

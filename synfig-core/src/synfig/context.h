@@ -48,7 +48,6 @@ class Vector;
 typedef Vector Point;
 class Color;
 class Surface;
-class CairoSurface;
 class RendDesc;
 class ProgressCallback;
 class Layer;

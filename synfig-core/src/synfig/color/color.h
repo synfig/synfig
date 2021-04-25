@@ -32,8 +32,6 @@
 
 namespace synfig {
 
-class CairoColor;
-
 /*!	\class Color
 **	\ RGBA 128 bits Color class implementation
 **	Future optimizations: lookup table for sqrt()?
@@ -94,9 +92,6 @@ public:
 	**	\param A Opacity(alpha) */
 	inline Color(const Color& c, const value_type& A);
 
-	//! Convert from CairoColor to Color
-	inline Color(const CairoColor& c);
-	
 	//! Returns the RED component
 	const value_type& get_r()const { return r_; }
 
