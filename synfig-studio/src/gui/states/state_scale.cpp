@@ -198,7 +198,7 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	aspect_lock_label.set_hexpand();
 	aspect_lock_label.set_halign(Gtk::ALIGN_START);
 	aspect_lock_label.set_valign(Gtk::ALIGN_CENTER);
-	aspect_lock_grid.attach(aspect_lock_label, 0, 0);
+	aspect_lock_grid.attach(aspect_lock_label, 0, 0, 1, 1);
 	aspect_lock_grid.attach_next_to(aspect_lock_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	// Toolbox layout

@@ -213,7 +213,7 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	scale_label.set_halign(Gtk::ALIGN_START);
 	scale_label.set_valign(Gtk::ALIGN_CENTER);
 
-	scale_grid.attach(scale_label, 0, 0);
+	scale_grid.attach(scale_label, 0, 0, 1, 1);
 	scale_grid.attach_next_to(scale_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	// Toolbox layout

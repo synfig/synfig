@@ -247,7 +247,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	relative_label.set_valign(Gtk::ALIGN_CENTER);
 	relative_label.set_hexpand();
 	
-	relative_grid.attach(relative_label, 0, 0);
+	relative_grid.attach(relative_label, 0, 0, 1, 1);
 	relative_grid.attach_next_to(relative_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	growth_label.set_label(_("Growth:"));

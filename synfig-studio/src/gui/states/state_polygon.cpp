@@ -469,7 +469,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	id_label.set_valign(Gtk::ALIGN_CENTER);
 	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_grid.attach(id_label, 0, 0);
+	id_grid.attach(id_label, 0, 0, 1, 1);
 	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
 	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
 
@@ -491,7 +491,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
 
 	SPACING(layer_types_indent, INDENTATION);
-	layer_types_grid.attach(*layer_types_indent, 0, 0);
+	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
 	layer_types_grid.attach_next_to(layer_polygon_togglebutton, Gtk::POS_RIGHT, 1, 1);
 	layer_types_grid.attach_next_to(layer_region_togglebutton, Gtk::POS_RIGHT, 1, 1);
 	layer_types_grid.attach_next_to(layer_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
@@ -504,7 +504,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
 	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_grid.attach(blend_label, 0, 0);
+	blend_grid.attach(blend_label, 0, 0, 1, 1);
 	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
@@ -533,7 +533,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	invert_label.set_valign(Gtk::ALIGN_CENTER);
 	invert_label.set_hexpand();
 
-	invert_grid.attach(invert_label, 0, 0);
+	invert_grid.attach(invert_label, 0, 0, 1, 1);
 	invert_grid.attach_next_to(invert_checkbutton, Gtk::POS_RIGHT, 1, 1);
 	invert_grid.set_sensitive(false);
 
@@ -551,7 +551,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
 	link_origins_label.set_hexpand();
 
-	link_origins_grid.attach(link_origins_label, 0, 0);
+	link_origins_grid.attach(link_origins_label, 0, 0, 1, 1);
 	link_origins_grid.attach_next_to(layer_link_origins_checkbutton, Gtk::POS_RIGHT, 1, 1);
 	link_origins_grid.set_sensitive(false);
 

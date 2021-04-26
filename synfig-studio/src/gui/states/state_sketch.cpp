@@ -249,7 +249,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	show_sketch_label.set_valign(Gtk::ALIGN_CENTER);
 	show_sketch_label.set_hexpand();
 
-	show_sketch_grid.attach(show_sketch_label, 0, 0);
+	show_sketch_grid.attach(show_sketch_label, 0, 0, 1, 1);
 	show_sketch_grid.attach_next_to(show_sketch_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	// Toolbox layout

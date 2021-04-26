@@ -669,12 +669,12 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
 	SPACING(localthres_indent, INDENTATION);
-	localthres_grid.attach(*localthres_indent, 0, 0);
+	localthres_grid.attach(*localthres_indent, 0, 0, 1, 1);
 	localthres_grid.attach_next_to(localthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
 	localthres_radiobutton.set_label("Local:");
 
 	SPACING(globalthres_indent, INDENTATION);
-	globalthres_grid.attach(*globalthres_indent, 0, 0);
+	globalthres_grid.attach(*globalthres_indent, 0, 0, 1, 1);
 	globalthres_grid.attach_next_to(globalthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
 	globalthres_radiobutton.set_label("Global:");
 

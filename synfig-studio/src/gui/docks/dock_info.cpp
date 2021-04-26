@@ -178,7 +178,7 @@ studio::Dock_Info::Dock_Info()
 	stop_button.set_valign(Gtk::ALIGN_CENTER);
 	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
-	render_grid->attach(*overlay, 0, 0);
+	render_grid->attach(*overlay, 0, 0, 1, 1);
 	render_grid->attach_next_to(stop_button, Gtk::POS_RIGHT, 1, 1);
 	grid->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8, 1);
 	grid->attach_next_to(*render_grid, *render_progress_label, Gtk::POS_BOTTOM, 7, 1);

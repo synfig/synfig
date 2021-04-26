@@ -619,7 +619,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	id_label.set_valign(Gtk::ALIGN_CENTER);
 	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_grid.attach(id_label, 0, 0);
+	id_grid.attach(id_label, 0, 0, 1, 1);
 	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
 	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
 
@@ -636,7 +636,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_grid.attach(*layer_types_indent, 0, 0);
+	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
 	layer_types_grid.attach_next_to(layer_region_togglebutton, Gtk::POS_RIGHT, 1, 1);
 	layer_types_grid.attach_next_to(layer_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
 	layer_types_grid.attach_next_to(layer_advanced_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
@@ -646,7 +646,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
 	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_grid.attach(blend_label, 0, 0);
+	blend_grid.attach(blend_label, 0, 0, 1, 1);
 	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
@@ -674,7 +674,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	pressure_width_label.set_valign(Gtk::ALIGN_CENTER);
 	pressure_width_label.set_hexpand();
 
-	pressure_width_grid.attach(pressure_width_label, 0, 0);
+	pressure_width_grid.attach(pressure_width_label, 0, 0, 1, 1);
 	pressure_width_grid.attach_next_to(pressure_width_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	SPACING(min_pressure_indent, INDENTATION);
@@ -683,11 +683,11 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	min_pressure_label.set_halign(Gtk::ALIGN_START);
 	min_pressure_label.set_valign(Gtk::ALIGN_CENTER);
 	min_pressure_label.set_vexpand();
-	min_pressure_label_grid.attach(*min_pressure_indent, 0, 0);
+	min_pressure_label_grid.attach(*min_pressure_indent, 0, 0, 1, 1);
 	min_pressure_label_grid.attach_next_to(min_pressure_label, Gtk::POS_RIGHT, 1, 1);
 
 	min_pressure_spin.set_hexpand();
-	min_pressure_grid.attach(min_pressure_spin, 0, 0);
+	min_pressure_grid.attach(min_pressure_spin, 0, 0, 1, 1);
 	min_pressure_grid.attach_next_to(*min_pressure_gap, Gtk::POS_RIGHT, 1, 1);
 	min_pressure_grid.attach_next_to(min_pressure_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
@@ -696,13 +696,13 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
 	SPACING(localthres_indent, INDENTATION);
-	localthres_grid.attach(*localthres_indent, 0, 0);
+	localthres_grid.attach(*localthres_indent, 0, 0, 1, 1);
 	localthres_grid.attach_next_to(localthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
 	localthres_radiobutton.set_label(_("Local:"));
 	localthres_radiobutton.set_vexpand();
 
 	SPACING(globalthres_indent, INDENTATION);
-	globalthres_grid.attach(*globalthres_indent, 0, 0);
+	globalthres_grid.attach(*globalthres_indent, 0, 0, 1, 1);
 	globalthres_grid.attach_next_to(globalthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
 	globalthres_radiobutton.set_label(_("Global:"));
 	globalthres_radiobutton.set_vexpand();
@@ -715,7 +715,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	width_max_error_label.set_halign(Gtk::ALIGN_START);
 	width_max_error_label.set_valign(Gtk::ALIGN_CENTER);
 	width_max_error_label.set_vexpand();
-	width_max_error_grid.attach(width_max_error_label, 0, 0);
+	width_max_error_grid.attach(width_max_error_label, 0, 0, 1, 1);
 	width_max_error_grid.attach_next_to(*width_max_error_gap, Gtk::POS_RIGHT, 1, 1);
 
 	round_ends_label.set_label(_("Round Ends"));
@@ -723,7 +723,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	round_ends_label.set_valign(Gtk::ALIGN_CENTER);
 	round_ends_label.set_hexpand();
 
-	round_ends_grid.attach(round_ends_label, 0, 0);
+	round_ends_grid.attach(round_ends_label, 0, 0, 1, 1);
 	round_ends_grid.attach_next_to(round_ends_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	auto_loop_label.set_label(_("Auto Loop"));
@@ -731,7 +731,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	auto_loop_label.set_valign(Gtk::ALIGN_CENTER);
 	auto_loop_label.set_hexpand();
 
-	auto_loop_grid.attach(auto_loop_label, 0, 0);
+	auto_loop_grid.attach(auto_loop_label, 0, 0, 1, 1);
 	auto_loop_grid.attach_next_to(auto_loop_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	auto_extend_label.set_label(_("Auto Extend"));
@@ -739,7 +739,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	auto_extend_label.set_valign(Gtk::ALIGN_CENTER);
 	auto_extend_label.set_hexpand();
 
-	auto_extend_grid.attach(auto_extend_label, 0, 0);
+	auto_extend_grid.attach(auto_extend_label, 0, 0, 1, 1);
 	auto_extend_grid.attach_next_to(auto_extend_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	auto_link_label.set_label(_("Auto Link"));
@@ -747,7 +747,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	auto_link_label.set_valign(Gtk::ALIGN_CENTER);
 	auto_link_label.set_hexpand();
 
-	auto_link_grid.attach(auto_link_label, 0, 0);
+	auto_link_grid.attach(auto_link_label, 0, 0, 1, 1);
 	auto_link_grid.attach_next_to(auto_link_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	feather_label.set_label(_("Feather:"));
@@ -762,7 +762,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
 	link_origins_label.set_hexpand();
 
-	link_origins_grid.attach(link_origins_label, 0, 0);
+	link_origins_grid.attach(link_origins_label, 0, 0, 1, 1);
 	link_origins_grid.attach_next_to(layer_link_origins_checkbutton, Gtk::POS_RIGHT, 1, 1);
 	link_origins_grid.set_sensitive(false);
 
@@ -771,7 +771,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	auto_export_label.set_valign(Gtk::ALIGN_CENTER);
 	auto_export_label.set_hexpand();
 
-	auto_export_grid.attach(auto_export_label, 0, 0);
+	auto_export_grid.attach(auto_export_label, 0, 0, 1, 1);
 	auto_export_grid.attach_next_to(auto_export_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	nested=0;

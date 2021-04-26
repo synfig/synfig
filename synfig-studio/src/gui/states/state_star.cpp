@@ -600,7 +600,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	id_label.set_valign(Gtk::ALIGN_CENTER);
 	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_grid.attach(id_label, 0, 0);
+	id_grid.attach(id_label, 0, 0, 1, 1);
 	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
 	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
 
@@ -623,7 +623,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_grid.attach(*layer_types_indent, 0, 0);
+	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
 	layer_types_grid.attach_next_to(layer_star_togglebutton, Gtk::POS_RIGHT, 1, 1);
 	layer_types_grid.attach_next_to(layer_region_togglebutton, Gtk::POS_RIGHT, 1, 1);
 	layer_types_grid.attach_next_to(layer_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
@@ -636,7 +636,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
 	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_grid.attach(blend_label, 0, 0);
+	blend_grid.attach(blend_label, 0, 0, 1, 1);
 	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
@@ -677,7 +677,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	regular_polygon_label.set_valign(Gtk::ALIGN_CENTER);
 	regular_polygon_label.set_hexpand();
 
-	regular_polygon_grid.attach(regular_polygon_label, 0, 0);
+	regular_polygon_grid.attach(regular_polygon_label, 0, 0, 1, 1);
 	regular_polygon_grid.attach_next_to(regular_polygon_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	inner_width_label.set_label(_("Inner Width:"));
@@ -701,7 +701,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	invert_label.set_valign(Gtk::ALIGN_CENTER);
 	invert_label.set_hexpand();
 
-	invert_grid.attach(invert_label, 0, 0);
+	invert_grid.attach(invert_label, 0, 0, 1, 1);
 	invert_grid.attach_next_to(invert_checkbutton, Gtk::POS_RIGHT, 1, 1);
 	invert_grid.set_sensitive(false);
 
@@ -719,7 +719,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
 	link_origins_label.set_hexpand();
 
-	link_origins_grid.attach(link_origins_label, 0, 0);
+	link_origins_grid.attach(link_origins_label, 0, 0, 1, 1);
 	link_origins_grid.attach_next_to(layer_link_origins_checkbutton, Gtk::POS_RIGHT, 1, 1);
 	link_origins_grid.set_sensitive(false);
 
@@ -728,7 +728,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	origins_at_center_label.set_valign(Gtk::ALIGN_CENTER);
 	origins_at_center_label.set_hexpand();
 
-	origins_at_center_grid.attach(origins_at_center_label, 0, 0);
+	origins_at_center_grid.attach(origins_at_center_label, 0, 0, 1, 1);
 	origins_at_center_grid.attach_next_to(layer_origins_at_center_checkbutton, Gtk::POS_RIGHT, 1, 1);
 	origins_at_center_grid.set_sensitive(false);
 
