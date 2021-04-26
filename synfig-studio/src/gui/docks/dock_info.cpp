@@ -155,7 +155,7 @@ studio::Dock_Info::Dock_Info()
 	grid->attach(*separator2, 0, 4, 8, 1);
 
 	// Render Progress Bar
-	Gtk::HBox *render_box = manage(new Gtk::HBox());
+	Gtk::Grid *render_grid = manage(new Gtk::Grid());
 	Gtk::Label *render_progress_label = manage(new Gtk::Label());
 	Gtk::Overlay *overlay = manage(new Gtk::Overlay());
 
@@ -178,10 +178,10 @@ studio::Dock_Info::Dock_Info()
 	stop_button.set_valign(Gtk::ALIGN_CENTER);
 	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
-	render_box->pack_start(*overlay);
-	render_box->pack_start(stop_button, Gtk::PACK_SHRINK);
+	render_grid->attach(*overlay, 0, 0);
+	render_grid->attach_next_to(stop_button, Gtk::POS_RIGHT, 1, 1);
 	grid->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8, 1);
-	grid->attach_next_to(*render_box, *render_progress_label, Gtk::POS_BOTTOM, 7, 1);
+	grid->attach_next_to(*render_grid, *render_progress_label, Gtk::POS_BOTTOM, 7, 1);
 
 	grid->set_margin_start(5);
 	grid->set_margin_end(5);

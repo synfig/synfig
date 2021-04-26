@@ -139,13 +139,11 @@ class studio::StateLasso_Context : public sigc::trackable
 	void reverse_bline(std::list<synfig::BLinePoint> &bline);
 	void reverse_wplist(std::list<synfig::WidthPoint> &wplist);
 
-	//Toolbox settings
+	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	// holder of options
 	Gtk::Grid options_grid;
 
-	// title
 	Gtk::Label title_label;
 
 	// layer name:
@@ -191,17 +189,15 @@ class studio::StateLasso_Context : public sigc::trackable
 	Gtk::Label smoothness_label;
 	Gtk::RadioButton::Group smoothness_group;
 
-	// local threshold
 	Gtk::RadioButton localthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> localthres_adj;
 	Gtk::SpinButton localthres_spin;
-	Gtk::HBox localthres_box;
+	Gtk::Grid localthres_grid;
 
-	// global threshold
 	Gtk::RadioButton globalthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> globalthres_adj;
 	Gtk::SpinButton globalthres_spin;
-	Gtk::HBox globalthres_box;
+	Gtk::Grid globalthres_grid;
 
 	// width max error advanced outline layer
 	Gtk::Label width_max_error_label;
@@ -673,13 +669,13 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
 	SPACING(localthres_indent, INDENTATION);
-	localthres_box.pack_start(*localthres_indent, Gtk::PACK_SHRINK);
-	localthres_box.pack_start(localthres_radiobutton, Gtk::PACK_SHRINK);
+	localthres_grid.attach(*localthres_indent, 0, 0);
+	localthres_grid.attach_next_to(localthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
 	localthres_radiobutton.set_label("Local:");
 
 	SPACING(globalthres_indent, INDENTATION);
-	globalthres_box.pack_start(*globalthres_indent, Gtk::PACK_SHRINK);
-	globalthres_box.pack_start(globalthres_radiobutton, Gtk::PACK_SHRINK);
+	globalthres_grid.attach(*globalthres_indent, 0, 0);
+	globalthres_grid.attach_next_to(globalthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
 	globalthres_radiobutton.set_label("Global:");
 
 	smoothness_group = localthres_radiobutton.get_group();
@@ -740,11 +736,11 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 		0, 0, 2, 1);
 	options_grid.attach(smoothness_label,
 		0, 1, 2, 1);
-	options_grid.attach(localthres_box,
+	options_grid.attach(localthres_grid,
 		0, 2, 1, 1);
 	options_grid.attach(localthres_spin,
 		1, 2, 1, 1);
-	options_grid.attach(globalthres_box,
+	options_grid.attach(globalthres_grid,
 		0, 3, 1, 1);
 	options_grid.attach(globalthres_spin,
 		1, 3, 1, 1);
@@ -753,6 +749,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	options_grid.attach(feather_dist,
 		1, 4, 1, 1);
 
+	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);

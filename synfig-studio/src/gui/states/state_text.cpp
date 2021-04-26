@@ -102,48 +102,38 @@ class studio::StateText_Context
 
 	bool prev_workarea_layer_status_;
 
-	//Toolbox settings
+	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	// holder of options
 	Gtk::Grid options_grid;
 
-	// title
 	Gtk::Label title_label;
 
-	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
+	Gtk::Grid id_grid;
 
-	// layer types to create:
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_text_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Grid layer_types_grid;
 
-	// blend method
 	Gtk::Label blend_label;
-	Gtk::HBox blend_box;
 	Widget_Enum blend_enum;
+	Gtk::Grid blend_grid;
 
-	// opacity
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
 
-	// paragraph
 	Gtk::Label paragraph_label;
 	Gtk::CheckButton paragraph_checkbutton;
-	Gtk::HBox paragraph_box;
+	Gtk::Grid paragraph_grid;
 
-	// size
 	Gtk::Label size_label;
 	Widget_Vector size_widget;
 
-	// orientation
 	Gtk::Label orientation_label;
 	Widget_Vector orientation_widget;
 
-	// font family
 	Gtk::Label family_label;
 	Gtk::Entry family_entry;
 
@@ -402,11 +392,11 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
+	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
-
-	id_box.pack_start(id_entry);
+	id_grid.attach(id_label, 0, 0);
+	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
+	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -417,15 +407,16 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_text_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_grid.attach(*layer_types_indent, 0, 0);
+	layer_types_grid.attach_next_to(layer_text_togglebutton, Gtk::POS_RIGHT, 1, 1);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
+	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
-	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+	blend_grid.attach(blend_label, 0, 0);
+	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -442,8 +433,9 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	paragraph_label.set_label(_("Multiline Text"));
 	paragraph_label.set_halign(Gtk::ALIGN_START);
 	paragraph_label.set_valign(Gtk::ALIGN_CENTER);
-	paragraph_box.pack_start(paragraph_label, Gtk::PACK_SHRINK);
-	paragraph_box.pack_end(paragraph_checkbutton, Gtk::PACK_SHRINK);
+	paragraph_label.set_hexpand();
+	paragraph_grid.attach(paragraph_label, 0, 0);
+	paragraph_grid.attach_next_to(paragraph_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	size_label.set_label(_("Size:"));
 	size_label.set_halign(Gtk::ALIGN_START);
@@ -465,13 +457,13 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(id_box,
+	options_grid.attach(id_grid,
 		0, 1, 2, 1);
 	options_grid.attach(layer_types_label,
 		0, 2, 2, 1);
-	options_grid.attach(layer_types_box,
+	options_grid.attach(layer_types_grid,
 		0, 3, 2, 1);
-	options_grid.attach(blend_box,
+	options_grid.attach(blend_grid,
 		0, 4, 1, 1);
 	options_grid.attach(blend_enum,
 		1, 4, 1, 1);
@@ -479,7 +471,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 		0, 5, 1, 1);
 	options_grid.attach(opacity_hscl,
 		1, 5, 1, 1);
-	options_grid.attach(paragraph_box,
+	options_grid.attach(paragraph_grid,
 		0, 6, 2, 1);
 	options_grid.attach(size_label,
 		0, 7, 1, 1);
@@ -494,6 +486,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	options_grid.attach(family_entry,
 		1, 9, 1, 1);
 
+	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);

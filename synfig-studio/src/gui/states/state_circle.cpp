@@ -113,21 +113,17 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	//Toolbox settings
+	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	// holder of options
 	Gtk::Grid options_grid;
 
-	// title
 	Gtk::Label title_label;
 
-	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
+	Gtk::Grid id_grid;
 
-	// layer types to create:
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_circle_togglebutton;
 	Gtk::ToggleButton layer_region_togglebutton;
@@ -135,55 +131,45 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::ToggleButton layer_curve_gradient_togglebutton;
 	Gtk::ToggleButton layer_plant_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Grid layer_types_grid;
 
-	// blend method
 	Gtk::Label blend_label;
-	Gtk::HBox blend_box;
 	Widget_Enum blend_enum;
+	Gtk::Grid blend_grid;
 
-	// opacity
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
 
-	// brush size
 	Gtk::Label bline_width_label;
 	Widget_Distance bline_width_dist;
 
-	// spline points
 	Gtk::Label bline_points_label;
 	Glib::RefPtr<Gtk::Adjustment> number_of_bline_points_adj;
 	Gtk::SpinButton	number_of_bline_points_spin;
 
-	// spline point angle offset
 	Gtk::Label bline_point_angle_offset_label;
 	Glib::RefPtr<Gtk::Adjustment> bline_point_angle_offset_adj;
 	Gtk::SpinButton	bline_point_angle_offset_spin;
-	Gtk::HBox bline_point_angle_offset_box;
+	Gtk::Grid bline_point_angle_offset_grid;
 
-	// invert
 	Gtk::Label invert_label;
 	Gtk::CheckButton invert_checkbutton;
-	Gtk::HBox invert_box;
+	Gtk::Grid invert_grid;
 
-	// feather size
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
-	// falloff of feather of circle layer
 	Gtk::Label falloff_label;
-	Gtk::HBox falloff_box;
 	Widget_Enum falloff_enum;
+	Gtk::Grid falloff_grid;
 
-	// link origins
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::HBox link_origins_box;
+	Gtk::Grid link_origins_grid;
 
-	// spline origins at center
 	Gtk::Label origins_at_center_label;
 	Gtk::CheckButton layer_origins_at_center_checkbutton;
-	Gtk::HBox origins_at_center_box;
+	Gtk::Grid origins_at_center_grid;
 
 public:
 
@@ -546,11 +532,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
+	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
-
-	id_box.pack_start(id_entry);
+	id_grid.attach(id_label, 0, 0);
+	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
+	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -571,20 +557,21 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_circle_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_grid.attach(*layer_types_indent, 0, 0);
+	layer_types_grid.attach_next_to(layer_circle_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_grid.attach_next_to(layer_region_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_grid.attach_next_to(layer_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_grid.attach_next_to(layer_advanced_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_grid.attach_next_to(layer_plant_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_grid.attach_next_to(layer_curve_gradient_togglebutton, Gtk::POS_RIGHT, 1, 1);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
+	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
-	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+	blend_grid.attach(blend_label, 0, 0);
+	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -610,26 +597,29 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_points_label.set_label(_("Spline Points:"));
 	bline_points_label.set_halign(Gtk::ALIGN_START);
 	bline_points_label.set_valign(Gtk::ALIGN_CENTER);
+	bline_points_label.set_vexpand();
 	bline_points_label.set_sensitive(false);
 	number_of_bline_points_spin.set_sensitive(false);
 
 	bline_point_angle_offset_label.set_label(_("Offset:"));
 	bline_point_angle_offset_label.set_halign(Gtk::ALIGN_START);
 	bline_point_angle_offset_label.set_valign(Gtk::ALIGN_CENTER);
+	bline_point_angle_offset_label.set_vexpand();
 	bline_point_angle_offset_label.set_sensitive(false);
 	bline_point_angle_offset_spin.set_sensitive(false);
 
 	SPACING(bline_point_angle_offset_indent, INDENTATION);
-	bline_point_angle_offset_box.pack_start(*bline_point_angle_offset_indent, Gtk::PACK_SHRINK);
-	bline_point_angle_offset_box.pack_start(bline_point_angle_offset_label, Gtk::PACK_SHRINK);
+	bline_point_angle_offset_grid.attach(*bline_point_angle_offset_indent, 0, 0);
+	bline_point_angle_offset_grid.attach_next_to(bline_point_angle_offset_label, Gtk::POS_RIGHT, 1, 1);
 
 	invert_label.set_label(_("Invert"));
 	invert_label.set_halign(Gtk::ALIGN_START);
 	invert_label.set_valign(Gtk::ALIGN_CENTER);
+	invert_label.set_hexpand();
 
-	invert_box.pack_start(invert_label);
-	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
-	invert_box.set_sensitive(false);
+	invert_grid.attach(invert_label, 0, 0);
+	invert_grid.attach_next_to(invert_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	invert_grid.set_sensitive(false);
 
 	feather_label.set_label(_("Feather:"));
 	feather_label.set_halign(Gtk::ALIGN_START);
@@ -643,10 +633,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	falloff_label.set_label(_("Falloff:"));
 	falloff_label.set_halign(Gtk::ALIGN_START);
 	falloff_label.set_valign(Gtk::ALIGN_CENTER);
+	falloff_label.set_vexpand();
 	falloff_label.set_sensitive(false);
 	SPACING(falloff_indent, INDENTATION);
-	falloff_box.pack_start(*falloff_indent, Gtk::PACK_SHRINK);
-	falloff_box.pack_start(falloff_label, Gtk::PACK_SHRINK);
+	falloff_grid.attach(*falloff_indent, 0, 0);
+	falloff_grid.attach_next_to(falloff_label, Gtk::POS_RIGHT, 1, 1);
 
 	falloff_enum.set_param_desc(ParamDesc("falloff")
 		.set_local_name(_("Falloff"))
@@ -662,31 +653,33 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	link_origins_label.set_label(_("Link Origins"));
 	link_origins_label.set_halign(Gtk::ALIGN_START);
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
+	link_origins_label.set_hexpand();
 
-	link_origins_box.pack_start(link_origins_label);
-	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
-	link_origins_box.set_sensitive(false);
+	link_origins_grid.attach(link_origins_label, 0, 0);
+	link_origins_grid.attach_next_to(layer_link_origins_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	link_origins_grid.set_sensitive(false);
 
 	origins_at_center_label.set_label(_("Spline Origins at Center"));
 	origins_at_center_label.set_halign(Gtk::ALIGN_START);
 	origins_at_center_label.set_valign(Gtk::ALIGN_CENTER);
+	origins_at_center_label.set_hexpand();
 
-	origins_at_center_box.pack_start(origins_at_center_label);
-	origins_at_center_box.pack_end(layer_origins_at_center_checkbutton, Gtk::PACK_SHRINK);
-	origins_at_center_box.set_sensitive(false);
+	origins_at_center_grid.attach(origins_at_center_label, 0, 0);
+	origins_at_center_grid.attach_next_to(layer_origins_at_center_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	origins_at_center_grid.set_sensitive(false);
 
 	load_settings();
 
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(id_box,
+	options_grid.attach(id_grid,
 		0, 1, 2, 1);
 	options_grid.attach(layer_types_label,
 		0, 2, 2, 1);
-	options_grid.attach(layer_types_box,
+	options_grid.attach(layer_types_grid,
 		0, 3, 2, 1);
-	options_grid.attach(blend_box,
+	options_grid.attach(blend_grid,
 		0, 4, 1, 1);
 	options_grid.attach(blend_enum,
 		1, 4, 1, 1);
@@ -702,25 +695,26 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		0, 7, 1, 1);
 	options_grid.attach(number_of_bline_points_spin,
 		1, 7, 1, 1);
-	options_grid.attach(bline_point_angle_offset_box,
+	options_grid.attach(bline_point_angle_offset_grid,
 		0, 8, 1, 1);
 	options_grid.attach(bline_point_angle_offset_spin,
 		1, 8, 1, 1);
-	options_grid.attach(invert_box,
+	options_grid.attach(invert_grid,
 		0, 9, 2, 1);
 	options_grid.attach(feather_label,
 		0, 10, 1, 1);
 	options_grid.attach(feather_dist,
 		1, 10, 1, 1);
-	options_grid.attach(falloff_box,
+	options_grid.attach(falloff_grid,
 		0, 11, 1, 1);
 	options_grid.attach(falloff_enum,
 		1, 11, 1, 1);
-	options_grid.attach(link_origins_box,
+	options_grid.attach(link_origins_grid,
 		0, 12, 2, 1);
-	options_grid.attach(origins_at_center_box,
+	options_grid.attach(origins_at_center_grid,
 		0, 13, 2, 1);
 
+	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
@@ -1473,10 +1467,10 @@ StateCircle_Context::toggle_layer_creation()
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag())
 	{
-		invert_box.set_sensitive(true);
+		invert_grid.set_sensitive(true);
 	}
 	else
-		invert_box.set_sensitive(false);
+		invert_grid.set_sensitive(false);
 
 	// feather size
 	if (get_layer_circle_flag() ||
@@ -1516,10 +1510,10 @@ StateCircle_Context::toggle_layer_creation()
 		get_layer_plant_flag() ||
 		get_layer_curve_gradient_flag())
 	{
-		origins_at_center_box.set_sensitive(true);
+		origins_at_center_grid.set_sensitive(true);
 	}
 	else
-		origins_at_center_box.set_sensitive(false);
+		origins_at_center_grid.set_sensitive(false);
 
 	// link origins
 	if (get_layer_region_flag() +
@@ -1529,9 +1523,9 @@ StateCircle_Context::toggle_layer_creation()
 		get_layer_curve_gradient_flag() +
 		get_layer_circle_flag() >= 2)
 		{
-			link_origins_box.set_sensitive(true);
+			link_origins_grid.set_sensitive(true);
 		}
-	else link_origins_box.set_sensitive(false);
+	else link_origins_grid.set_sensitive(false);
 
   // update layer flags
   layer_circle_flag = get_layer_circle_flag();

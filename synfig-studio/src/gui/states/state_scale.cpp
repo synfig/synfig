@@ -100,7 +100,7 @@ class studio::StateScale_Context : public sigc::trackable
 
 	Gtk::Label aspect_lock_label;
 	Gtk::CheckButton aspect_lock_checkbutton;
-	Gtk::HBox aspect_lock_box;
+	Gtk::Grid aspect_lock_grid;
 
 public:
 
@@ -198,17 +198,18 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	aspect_lock_label.set_hexpand();
 	aspect_lock_label.set_halign(Gtk::ALIGN_START);
 	aspect_lock_label.set_valign(Gtk::ALIGN_CENTER);
-	aspect_lock_box.pack_start(aspect_lock_label);
-	aspect_lock_box.pack_end(aspect_lock_checkbutton, Gtk::PACK_SHRINK);
+	aspect_lock_grid.attach(aspect_lock_label, 0, 0);
+	aspect_lock_grid.attach_next_to(aspect_lock_checkbutton, Gtk::POS_RIGHT, 1, 1);
 
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(aspect_lock_box,
+	options_grid.attach(aspect_lock_grid,
 		0, 1, 2, 1);
 
 	aspect_lock_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateScale_Context::refresh_aspect_lock_flag));
 
+	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.show_all();
