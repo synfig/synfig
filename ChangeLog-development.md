@@ -1,3 +1,8 @@
+- [`b277312`](https://github.com/synfig/synfig/commit/b2773121ccd27694b8b86f01e896db25647bef56) [Synfig Studio] Replace some other deprecated Gtk libraries ([#2113](https://github.com/synfig/synfig/issues/2113)) [studio]
+- [`d667744`](https://github.com/synfig/synfig/commit/d66774460d52b3a5b237cae04b81585c45970476) Replace deprecated get_vbox() method ([#2112](https://github.com/synfig/synfig/issues/2112)) [studio]
+- [`d15df18`](https://github.com/synfig/synfig/commit/d15df1895026e4b6161056f6fec40cc664ae9e1c) Added Ctrl+E as keyboard shortcut for the "Save All" menu action ([#2114](https://github.com/synfig/synfig/issues/2114)) [studio]
+- [`926d5e2`](https://github.com/synfig/synfig/commit/926d5e2ea8a70c1fde86e4949bcba9302a7fdece) Fixed crash when user drags a group to a child group ([#2116](https://github.com/synfig/synfig/issues/2116)) [studio]
+- [`b2b4b91`](https://github.com/synfig/synfig/commit/b2b4b918511463cbd50813366e9e73b9003341de) Fixed an issue due to which menus were not displayed on all panels except the canvas ([#2120](https://github.com/synfig/synfig/issues/2120)) [studio]
 - [`73f4540`](https://github.com/synfig/synfig/commit/73f4540df5291c20a6981f81e30347fdb621c005) Merge PR [#2093](https://github.com/synfig/synfig/issues/2093): Add tools for maintaining ChangeLog
 - [`8fdfae6`](https://github.com/synfig/synfig/commit/8fdfae6877260c265ffb8a60567740441f77d413) [Synfig Studio] fix 'Undock Panel' menu item always showing ([#2109](https://github.com/synfig/synfig/issues/2109)) [studio]
 - [`81b13a4`](https://github.com/synfig/synfig/commit/81b13a488b9d958d53a2bd910a47ac896d0071eb) Close tabs with middle mouse click ([#2107](https://github.com/synfig/synfig/issues/2107)) [studio]
