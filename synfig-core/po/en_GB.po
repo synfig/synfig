@@ -3,9 +3,9 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Bertrand <berteh@hotmail.com>, 2012
-# Bertrand <berteh@hotmail.com>, 2012
-# Bertrand <berteh@hotmail.com>, 2012
+# Bertrand, 2012
+# Bertrand, 2012
+# Bertrand, 2012
 # Chris Norman <pxe.geek@gmail.com>, 2012
 # d.j.a.y, 2012
 # d.j.a.y, 2012
