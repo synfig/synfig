@@ -3,14 +3,16 @@
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
-# Hadi Fadakar <h_adi_f@yahoo.com>, 2011
+# Hadi F <h_adi_f@yahoo.com>, 2011
+# Pikhosh <pikhosh@gmail.com>, 2020
+# Pikhosh <pikhosh@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-02-14 15:06+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2020-10-21 02:12+0000\n"
+"Last-Translator: Pikhosh <pikhosh@gmail.com>\n"
 "Language-Team: Persian (Iran) (http://www.transifex.com/morevnaproject/synfig/language/fa_IR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +22,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:1 ../src/gui/dialogs/about.cpp:85
 msgid "2D vector animation studio"
-msgstr "استودیوی پویانمایی وکتور 2بعدی"
+msgstr "استودیو انیمیشن سازی وکتور 2 بعدی"
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:2
 msgid "Create and edit 2D animations and compositions"
@@ -37,7 +39,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:2
 msgid "Features:"
-msgstr ""
+msgstr "ویژگی ها:"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:3
 msgid "Can manipulate vector and bitmap artwork"
@@ -85,11 +87,11 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:13
 msgid "Synfig Studio workspace"
-msgstr ""
+msgstr "فضای کاری سین فیگ استودیو"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:1
 msgid "enable"
-msgstr ""
+msgstr "فعال"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:2
 msgid "Enable this thumbnailer."
@@ -269,7 +271,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:49
 msgid "Anti-aliasing"
-msgstr ""
+msgstr "Anti-aliasing"
 
 #: ../src/brushlib/brushsettings.py:49
 msgid ""
@@ -436,7 +438,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:68
 msgid "Save color"
-msgstr ""
+msgstr "ذخیره رنگ"
 
 #: ../src/brushlib/brushsettings.py:68
 msgid ""
@@ -545,7 +547,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:77 ../src/gui/states/state_brush.cpp:513
 msgid "Eraser"
-msgstr ""
+msgstr "پاک کن"
 
 #: ../src/brushlib/brushsettings.py:77
 msgid ""
@@ -588,7 +590,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:82
 msgid "Custom input"
-msgstr ""
+msgstr "ورودی سفارشی"
 
 #: ../src/brushlib/brushsettings.py:82
 msgid ""
@@ -662,11 +664,11 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:240
 msgid "Add New Keyframe"
-msgstr "اضافه کردن فریم کلیدی جدید"
+msgstr "اضافه کردن کی فریم جدید"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:245
 msgid "Keyframe Properties"
-msgstr "ویژگی های فریم کلیدی"
+msgstr "مشخصات کی فریم"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:249
 msgid "Toggle Keyframe"
@@ -724,7 +726,7 @@ msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:437
 msgid "<Group>"
-msgstr ""
+msgstr "<Group>"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:442
 msgid "<No Image Selected>"
@@ -736,7 +738,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:88
 msgid "Visit the Synfig website"
-msgstr "وبگاه سینفیگ را ببینید"
+msgstr "وب سایت سین فیگ را ببینید"
 
 #: ../src/gui/dialogs/about.cpp:90
 msgid ""
@@ -750,7 +752,7 @@ msgstr "توسعه دهندگان اصلی :"
 
 #: ../src/gui/dialogs/about.cpp:114
 msgid "Contributors:"
-msgstr "همکاران :"
+msgstr "مشارکت کنندگان:"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:172
@@ -827,7 +829,7 @@ msgstr "ویژگی های طرح"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:79
 msgid "Canvas Info"
-msgstr "اطلاعات نقاشی"
+msgstr "اطلاعات Canvas"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:81
 msgid "<b>Canvas Info</b>"
@@ -839,11 +841,11 @@ msgstr "شناسه"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:103
 msgid "_Name"
-msgstr "نام"
+msgstr "_نام"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:106
 msgid "_Description"
-msgstr "توصیفات"
+msgstr "_توضیحات"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:199 ../src/gui/app.cpp:1083
 msgid "Properties"
@@ -851,7 +853,7 @@ msgstr "ویژگی ها"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:228
 msgid "Edit Canvas Properties"
-msgstr "ویرایش  ویژگی های نقاشی"
+msgstr "ویرایش مشخصات Canvas"
 
 #: ../src/gui/dialogs/dialog_color.cpp:60
 msgid "Colors"
@@ -891,7 +893,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:76
 msgid "H.264 / AVC / MPEG-4 AVC"
-msgstr ""
+msgstr "H.264 / AVC / MPEG-4 AVC"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:77
 msgid "H.264 / AVC / MPEG-4 AVC (LossLess)"
@@ -939,11 +941,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:102
 msgid "Available Video Codecs:"
-msgstr "کدک های ویدئویی موجود :"
+msgstr "کدک های ویدیویی موجود:"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:120
 msgid "Video Bit Rate:"
-msgstr "سرعت بیت ویدئو"
+msgstr "بیت ریت ویدیو:"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:66
 msgid "Gradient Editor"
@@ -960,7 +962,7 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_input.cpp:112 ../src/gui/app.cpp:3722
 #: ../src/gui/instance.cpp:1291
 msgid "OK"
-msgstr ""
+msgstr "باشه"
 
 #: ../src/gui/dialogs/dialog_input.cpp:113
 #: ../src/gui/dialogs/dialog_workspaces.cpp:154
@@ -980,7 +982,7 @@ msgstr ""
 #: ../src/gui/instance.cpp:1301 ../src/gui/instance.cpp:1616
 #: ../src/synfigapp/action_system.cpp:119
 msgid "Cancel"
-msgstr ""
+msgstr "لغو"
 
 #: ../src/gui/dialogs/dialog_input.cpp:182
 msgid "Disabled"
@@ -988,27 +990,27 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_input.cpp:183
 msgid "Screen"
-msgstr ""
+msgstr "صفحه نمایش"
 
 #: ../src/gui/dialogs/dialog_input.cpp:184
 msgid "Window"
-msgstr ""
+msgstr "پنجره"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:61
 msgid "Keyframe Dialog"
-msgstr "پنجره ی فریم اصلی"
+msgstr "پنجره کی فریم"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:95
 msgid "Description :"
-msgstr ""
+msgstr "توضیحات :"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:100
 msgid "Active :"
-msgstr ""
+msgstr "فعال :"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:71 ../src/gui/canvasview.cpp:1549
 msgid "Preview Window"
-msgstr "پنجره بی پیش نمایش"
+msgstr "پنجره پیش نمایش"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:74
 msgid "Synfig Studio Preferences"
@@ -1016,7 +1018,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:87
 msgid "Interface"
-msgstr ""
+msgstr "رابط"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:88
 msgid "Document"
@@ -1024,16 +1026,16 @@ msgstr "سند"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:89
 msgid "Editing"
-msgstr ""
+msgstr "ویرایش کردن"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:90 ../src/gui/canvasview.cpp:1167
 #: ../src/gui/render.cpp:187
 msgid "Render"
-msgstr ""
+msgstr "رندر"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:91
 msgid "System"
-msgstr ""
+msgstr "سیستم"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:127
 #: ../src/gui/dialogs/dialog_setup.cpp:155
@@ -1046,31 +1048,31 @@ msgstr "برچسب زمان"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:156
 msgid "Pixels"
-msgstr "پیکسل"
+msgstr "پیکسل ها"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:157
 msgid "Points"
-msgstr "نقطه "
+msgstr "نقطه ها"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:158
 msgid "Inches"
-msgstr "اینچ"
+msgstr "اینچ ها"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:159
 msgid "Meters"
-msgstr "متر"
+msgstr "متر ها"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:160
 msgid "Centimeters"
-msgstr "سانتی متر"
+msgstr "سانتی متر ها"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:161
 msgid "Millimeters"
-msgstr "میلی متر"
+msgstr "میلی متر ها"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:166
 msgid "Unit System"
-msgstr "واحد سیستم"
+msgstr "یونیت سیستم"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:172
 msgid "Recent Files"
@@ -1078,7 +1080,7 @@ msgstr "فایل های اخیر"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:177
 msgid "Autosave"
-msgstr ""
+msgstr "ذخیره خودکار"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:184
 msgid "Interval"
@@ -1107,11 +1109,11 @@ msgstr "پیشوند نام فایل برای ایجاد سند جدید"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:258
 msgid "FPS"
-msgstr ""
+msgstr "فریم بر ثانیه"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:261
 msgid "Frames per second of the new created document"
-msgstr "فریم بر ثانیه ی سند جدید"
+msgstr "فریم بر ثانیه داکیومنت ساخته شده جدید"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:283
 msgid "Size"
@@ -1135,19 +1137,19 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:316
 msgid "4096x3112 Full Aperture 4K"
-msgstr "4096x3112 4k دیافراگم کامل"
+msgstr "4096x3112 Full Aperture 4K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:317
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr "2048x1556 2K دیافراگم کامل بومی"
+msgstr "2048x1556 Full Aperture Native 2K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:318
 msgid "1920x1080 HDTV 1080p/i"
-msgstr "1920x1080  HDTV 1080 پیکسل در اینچ"
+msgstr "1920x1080 HDTV 1080p/i"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:319
 msgid "1280x720  HDTV 720p"
-msgstr "1280x720 HDTV 720پیکسل"
+msgstr "1280x720  HDTV 720p"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:320
 msgid "720x576   DVD PAL"
@@ -1203,12 +1205,12 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:360 ../src/gui/renddesc.cpp:231
 msgid "Image"
-msgstr ""
+msgstr "تصویر"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:365
 #: ../src/gui/dialogs/dialog_setup.cpp:477
 msgid "Select"
-msgstr ""
+msgstr "انتخاب"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:408
 msgid "Imported Image"
@@ -1262,7 +1264,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:476
 msgid "_Cancel"
-msgstr ""
+msgstr "_لغو"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:501
 msgid "Image Sequence Separator String"
@@ -1283,35 +1285,35 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_setup.cpp:518 ../src/gui/app.cpp:1053
 #: ../src/gui/instance.cpp:1415 ../src/gui/mainwindow.cpp:186
 msgid "Default"
-msgstr ""
+msgstr "پیش فرض"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:527
 msgid "Preview Background Color"
-msgstr ""
+msgstr "رنگ پس زمینه پیش نمایش"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:565
 msgid "System Language"
-msgstr ""
+msgstr "زبان سیستم"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:577
 msgid "Language"
-msgstr ""
+msgstr "زبان"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:583
 msgid "Color Theme"
-msgstr ""
+msgstr "تم رنگی"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:585
 msgid "Dark UI theme (if available)"
-msgstr ""
+msgstr "تم رابط کاربری تاریک (در صورت وجود)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:591
 msgid "Toolbars"
-msgstr ""
+msgstr "نوار ابزار ها"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:593
 msgid "Show file toolbar (requires restart)"
-msgstr ""
+msgstr "نمایش نوار ابزار فایل (نیازمند راه اندازی مجدد)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:599
 msgid "Handle Tooltips"
@@ -1351,7 +1353,7 @@ msgstr "اندازه ی سفارشی"
 
 #: ../src/gui/dialogs/dialog_setup.h:66
 msgid "Custom fps"
-msgstr "فریم در ثانیه ی سفارشی"
+msgstr "فریم بر ثانیه سفارشی"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:62
 msgid "Sound Select"
@@ -1359,11 +1361,11 @@ msgstr "انتخاب صدا"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:69
 msgid "Sound Parameters"
-msgstr "متغیرهای صدا"
+msgstr "پارامتر های صدا"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:70
 msgid "<b>Sound Parameters</b>"
-msgstr "<b>متغیرهای صدا</b>"
+msgstr "<b>پارامتر های صدا</b>"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:78
 msgid "_Sound File"
@@ -1411,7 +1413,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_template.cpp:117
 msgid "Category"
-msgstr ""
+msgstr "دسته بندی"
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:66
 msgid "Waypoint Editor"
@@ -1430,7 +1432,7 @@ msgstr ""
 #: ../src/gui/docks/dock_metadata.cpp:150 ../src/gui/states/state_text.cpp:635
 #: ../src/gui/app.cpp:2240
 msgid "Ok"
-msgstr ""
+msgstr "باشه"
 
 #: ../src/gui/dialogs/dialog_workspaces.cpp:190
 msgid "There is already a workspace with this name."
@@ -1484,7 +1486,7 @@ msgstr "پخش"
 #: ../src/gui/dials/framedial.cpp:64 ../src/gui/app.cpp:1031
 #: ../src/gui/iconcontroller.cpp:301 ../src/gui/preview.cpp:432
 msgid "Pause"
-msgstr ""
+msgstr "مکث"
 
 #: ../src/gui/dials/framedial.cpp:65
 msgid "Seek to next frame"
@@ -1634,7 +1636,7 @@ msgstr "این ابزار هیچ تنظیماتی ندارد"
 
 #: ../src/gui/docks/dock_canvases.cpp:57 ../src/gui/app.cpp:1060
 msgid "Canvas Browser"
-msgstr "مرورگر طرح"
+msgstr "مرورگر Canvas"
 
 #: ../src/gui/docks/dock_canvases.cpp:110 ../src/gui/trees/childrentree.cpp:95
 #: ../src/synfigapp/actions/canvasadd.cpp:81
@@ -1644,12 +1646,12 @@ msgstr "شناسه"
 #: ../src/gui/docks/dock_children.cpp:65 ../src/gui/app.cpp:1065
 #: ../src/gui/iconcontroller.cpp:273
 msgid "Library"
-msgstr ""
+msgstr "کتابخانه"
 
 #: ../src/gui/docks/dock_curves.cpp:66 ../src/gui/app.cpp:1069
 #: ../src/gui/iconcontroller.cpp:274
 msgid "Graphs"
-msgstr ""
+msgstr "گراف ها"
 
 #: ../src/gui/docks/dock_history.cpp:66 ../src/gui/docks/dock_history.cpp:122
 #: ../src/gui/app.cpp:1059 ../src/gui/iconcontroller.cpp:279
@@ -1682,19 +1684,19 @@ msgstr "پاک کردن پشته های واگرد و ازنو "
 
 #: ../src/gui/docks/dock_history.cpp:108 ../src/gui/iconcontroller.cpp:182
 msgid "Undo"
-msgstr "واگرد"
+msgstr "برگشت"
 
 #: ../src/gui/docks/dock_history.cpp:109
 msgid "Undo the previous action"
-msgstr "لغو عمل قبلی"
+msgstr "برگشت عمل قبلی"
 
 #: ../src/gui/docks/dock_history.cpp:116 ../src/gui/iconcontroller.cpp:181
 msgid "Redo"
-msgstr "ازنو"
+msgstr "جلو رفتن"
 
 #: ../src/gui/docks/dock_history.cpp:117
 msgid "Redo the previously undone action"
-msgstr "انجام دوباره ی عمل لغو شده ی قبلی"
+msgstr "جلو رفتن عمل انجام نشده قبلی"
 
 #: ../src/gui/docks/dock_history.cpp:187 ../src/gui/trees/keyframetree.cpp:106
 #: ../src/gui/trees/keyframetree.cpp:293
@@ -1707,7 +1709,7 @@ msgstr "(JMP)"
 
 #: ../src/gui/docks/dock_history.cpp:204
 msgid "Action"
-msgstr "اقدام"
+msgstr "عمل"
 
 #: ../src/gui/docks/dock_history.cpp:252 ../src/gui/docks/dock_history.cpp:266
 #: ../src/gui/docks/dock_history.cpp:280
@@ -1724,7 +1726,7 @@ msgstr ""
 #: ../src/gui/docks/dock_history.cpp:285
 #: ../src/gui/docks/dock_soundwave.cpp:57
 msgid "Clear"
-msgstr "پاک سازی"
+msgstr "پاک کردن"
 
 #: ../src/gui/docks/dock_history.cpp:267
 msgid ""
@@ -1773,7 +1775,7 @@ msgstr ""
 #: ../src/gui/docks/dock_keyframes.cpp:65 ../src/gui/app.cpp:1061
 #: ../src/gui/iconcontroller.cpp:275
 msgid "Keyframes"
-msgstr "فریم اصلی  "
+msgstr "کی فریم ها"
 
 #: ../src/gui/docks/dock_layergroups.cpp:66 ../src/gui/app.cpp:1070
 msgid "Sets"
@@ -1789,7 +1791,7 @@ msgstr "لایه ها"
 
 #: ../src/gui/docks/dock_layers.cpp:150
 msgid "Layer Ops"
-msgstr "لایه های  Ops"
+msgstr "Ops لایه"
 
 #: ../src/gui/docks/dock_layers.cpp:152 ../src/gui/app.cpp:923
 #: ../src/gui/canvasview.cpp:2158 ../src/synfigapp/actions/layeradd.cpp:85
@@ -1799,7 +1801,7 @@ msgstr ""
 #: ../src/gui/docks/dock_metadata.cpp:65 ../src/gui/docks/dock_metadata.cpp:92
 #: ../src/gui/app.cpp:1064
 msgid "Canvas MetaData"
-msgstr "فراداده ی طرح"
+msgstr "متا دیتا Canvas"
 
 #: ../src/gui/docks/dock_metadata.cpp:71
 msgid "Add new MetaData entry"
@@ -1952,7 +1954,7 @@ msgstr "ناتوان از بررسی وجود '%s'."
 #: ../src/gui/instance.cpp:948 ../src/gui/instance.cpp:962
 #: ../src/gui/instance.cpp:989
 msgid "Close"
-msgstr ""
+msgstr "بستن"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:266
 #: ../src/gui/instance.cpp:601
@@ -2448,7 +2450,7 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:736 ../src/gui/states/state_lasso.cpp:721
 msgid "Auto Loop"
-msgstr "حلقه ی خودکار"
+msgstr "لوپ خودکار"
 
 #: ../src/gui/states/state_draw.cpp:743 ../src/gui/states/state_lasso.cpp:728
 msgid "Auto Extend"
@@ -2662,7 +2664,7 @@ msgstr "اجازه ی تغییر اندازه"
 #: ../src/gui/states/state_rotate.cpp:203
 #: ../src/gui/states/state_rotate.cpp:230 ../src/gui/iconcontroller.cpp:157
 msgid "Rotate Tool"
-msgstr "ابزار چرخاندن"
+msgstr "ابزار چرخش"
 
 #: ../src/gui/states/state_rotate.cpp:404
 msgid "Move Handle"
@@ -2949,7 +2951,7 @@ msgstr ""
 
 #: ../src/gui/trees/layergrouptree.cpp:91 ../src/gui/trees/layertree.cpp:257
 msgid "Z Depth"
-msgstr ""
+msgstr "عمق Z"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:452
 msgid "Activate "
@@ -3002,7 +3004,7 @@ msgstr ""
 
 #: ../src/gui/trees/layertree.cpp:230
 msgid "Icon"
-msgstr ""
+msgstr "آیکون"
 
 #: ../src/gui/trees/layertreestore.cpp:435
 msgid "Create Group from Ghost"
@@ -3162,7 +3164,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:253
 msgid "Brush Preview"
-msgstr ""
+msgstr "پیش نمایش قلم مو"
 
 #: ../src/gui/widgets/widget_defaults.cpp:256
 msgid "Increase brush size"
@@ -3399,7 +3401,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:917
 msgid "Preview Quality"
-msgstr ""
+msgstr "کیفیت پیش نمایش"
 
 #: ../src/gui/app.cpp:918
 msgid "Low-Res Pixel Size"
@@ -3407,19 +3409,19 @@ msgstr ""
 
 #: ../src/gui/app.cpp:920
 msgid "_Canvas"
-msgstr ""
+msgstr "_Canvas"
 
 #: ../src/gui/app.cpp:922
 msgid "_Layer"
-msgstr ""
+msgstr "_لایه"
 
 #: ../src/gui/app.cpp:925
 msgid "Plug-Ins"
-msgstr ""
+msgstr "افزونه ها"
 
 #: ../src/gui/app.cpp:927
 msgid "_Window"
-msgstr ""
+msgstr "_پنجره"
 
 #: ../src/gui/app.cpp:928
 msgid "_Arrange"
@@ -3427,11 +3429,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:929
 msgid "Work_space"
-msgstr ""
+msgstr "فضای_کاری"
 
 #: ../src/gui/app.cpp:931
 msgid "_Help"
-msgstr ""
+msgstr "_کمک"
 
 #: ../src/gui/app.cpp:933 ../src/synfigapp/actions/keyframeduplicate.cpp:81
 #: ../src/synfigapp/actions/keyframeremove.cpp:81
@@ -3439,27 +3441,27 @@ msgstr ""
 #: ../src/synfigapp/actions/keyframetoggl.cpp:95
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:80
 msgid "Keyframe"
-msgstr ""
+msgstr "کی فریم"
 
 #: ../src/gui/app.cpp:958 ../src/gui/canvasview.cpp:1462
 msgid "Import..."
-msgstr ""
+msgstr "وارد کردن..."
 
 #: ../src/gui/app.cpp:959 ../src/gui/canvasview.cpp:1465
 msgid "Import Sequence..."
-msgstr ""
+msgstr "وارد کردن سکانس..."
 
 #: ../src/gui/app.cpp:960 ../src/gui/canvasview.cpp:1468
 msgid "Render..."
-msgstr ""
+msgstr "رندر..."
 
 #: ../src/gui/app.cpp:961 ../src/gui/canvasview.cpp:1471
 msgid "Preview..."
-msgstr ""
+msgstr "پیش نمایش..."
 
 #: ../src/gui/app.cpp:962 ../src/gui/canvasview.cpp:1480
 msgid "Close Document"
-msgstr ""
+msgstr "بستن داکیومنت"
 
 #: ../src/gui/app.cpp:971 ../src/gui/canvasview.cpp:1487
 msgid "Select All Handles"
@@ -3479,19 +3481,19 @@ msgstr ""
 
 #: ../src/gui/app.cpp:975 ../src/gui/mainwindow.cpp:167
 msgid "Input Devices..."
-msgstr ""
+msgstr "دستگاه های ورودی..."
 
 #: ../src/gui/app.cpp:976 ../src/gui/mainwindow.cpp:170
 msgid "Preferences..."
-msgstr ""
+msgstr "تنظیمات..."
 
 #: ../src/gui/app.cpp:980
 msgid "Menubar"
-msgstr ""
+msgstr "منو بار"
 
 #: ../src/gui/app.cpp:981
 msgid "Toolbar"
-msgstr ""
+msgstr "نوار ابزار"
 
 #: ../src/gui/app.cpp:983 ../src/gui/canvasview.cpp:1636
 msgid "Toggle None/Last visible Handles"
@@ -3656,11 +3658,11 @@ msgstr "رفتن به پایان"
 
 #: ../src/gui/app.cpp:1044 ../src/gui/canvasview.cpp:1513
 msgid "Properties..."
-msgstr ""
+msgstr "مشخصات..."
 
 #: ../src/gui/app.cpp:1045 ../src/gui/canvasview.cpp:1477
 msgid "Options..."
-msgstr ""
+msgstr "گزینه ها..."
 
 #: ../src/gui/app.cpp:1048
 msgid "Increase Layer Amount"
@@ -3676,15 +3678,15 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1054 ../src/gui/mainwindow.cpp:183
 msgid "Animating"
-msgstr ""
+msgstr "انیمیت کردن"
 
 #: ../src/gui/app.cpp:1055 ../src/gui/mainwindow.cpp:189
 msgid "Save workspace..."
-msgstr ""
+msgstr "ذخیره فضای کاری..."
 
 #: ../src/gui/app.cpp:1056
 msgid "Preview Dialog"
-msgstr ""
+msgstr "پنجره پیش نمایش"
 
 #: ../src/gui/app.cpp:1488
 msgid "Synfig version mismatched!"
@@ -3871,7 +3873,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1738
 msgid "Thanks"
-msgstr ""
+msgstr "تشکر"
 
 #: ../src/gui/app.cpp:1755
 msgid "Loading files..."
@@ -3928,7 +3930,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2502 ../src/synfigapp/canvasinterface.cpp:697
 msgid "Import"
-msgstr ""
+msgstr "وارد کردن"
 
 #: ../src/gui/app.cpp:2507
 msgid "All supported files"
@@ -3936,11 +3938,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2540
 msgid "Synfig files (*.sif, *.sifz)"
-msgstr ""
+msgstr "فایل های سین فیگ (*.sif, *.sifz)"
 
 #: ../src/gui/app.cpp:2547
 msgid "Images (*.png, *.jpeg, *.bmp, *.svg)"
-msgstr ""
+msgstr "تصاویر (*.png, *.jpeg, *.bmp, *.svg)"
 
 #: ../src/gui/app.cpp:2561
 msgid "Image sequence files (*.lst)"
@@ -3948,37 +3950,37 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2566 ../src/gui/app.cpp:2795
 msgid "Audio (*.ogg, *.mp3, *.wav)"
-msgstr ""
+msgstr "صدا (*.ogg, *.mp3, *.wav)"
 
 #: ../src/gui/app.cpp:2576
 msgid "Video (*.avi, *.mp4)"
-msgstr ""
+msgstr "ویدیو (*.avi, *.mp4)"
 
 #: ../src/gui/app.cpp:2584
 msgid "Lipsync (*.pgo)"
-msgstr ""
+msgstr "لیپ سینک (*.pgo)"
 
 #: ../src/gui/app.cpp:2589 ../src/gui/app.cpp:2752 ../src/gui/app.cpp:2806
 #: ../src/gui/app.cpp:2863 ../src/gui/app.cpp:2973
 msgid "Any files"
-msgstr ""
+msgstr "هر فایلی"
 
 #: ../src/gui/app.cpp:2636 ../src/gui/app.cpp:2689 ../src/gui/app.cpp:2732
 #: ../src/gui/app.cpp:2791 ../src/gui/app.cpp:2845
 msgid "Load"
-msgstr ""
+msgstr "بارگذاری"
 
 #: ../src/gui/app.cpp:2639
 msgid "Palette files (*.spal, *.gpl)"
-msgstr ""
+msgstr "فایل های پالت (*.spal, *.gpl)"
 
 #: ../src/gui/app.cpp:2646 ../src/gui/app.cpp:3229
 msgid "Synfig palette files (*.spal)"
-msgstr ""
+msgstr "فایل های پالت سین فیگ (*.spal)"
 
 #: ../src/gui/app.cpp:2652
 msgid "GIMP palette files (*.gpl)"
-msgstr ""
+msgstr "فایل های پالت گیمپ (*.gpl)"
 
 #: ../src/gui/app.cpp:2693 ../src/gui/app.cpp:3291
 msgid "Synfig sketch files (*.sketch)"
@@ -3990,28 +3992,28 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2849
 msgid "Images files (*.png, *.jpg, *.jpeg, *.bmp)"
-msgstr ""
+msgstr "فایل های تصاویر (*.png, *.jpg, *.jpeg, *.bmp)"
 
 #: ../src/gui/app.cpp:2958 ../src/gui/app.cpp:3021
 #: ../src/gui/iconcontroller.cpp:177 ../src/gui/mainwindow.cpp:159
 msgid "Open"
-msgstr ""
+msgstr "باز کردن"
 
 #: ../src/gui/app.cpp:2959
 msgid "Open history"
-msgstr ""
+msgstr "باز کردن تاریخچه"
 
 #: ../src/gui/app.cpp:2966
 msgid "Synfig files (*.sif, *.sifz, *.sfg)"
-msgstr ""
+msgstr "فایل های سین فیگ (*.sif, *.sifz, *.sfg)"
 
 #: ../src/gui/app.cpp:3093
 msgid "Uncompressed Synfig file (*.sif)"
-msgstr ""
+msgstr "فایل سین فیگ فشرده نشده (*.sif)"
 
 #: ../src/gui/app.cpp:3101
 msgid "Compressed Synfig file (*.sifz)"
-msgstr ""
+msgstr "فایل سین فیگ فشرده شده (*.sifz)"
 
 #: ../src/gui/app.cpp:3105
 msgid "Container format file (*.sfg)"
@@ -4039,7 +4041,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:3614
 msgid "Documentation"
-msgstr ""
+msgstr "مستندات"
 
 #: ../src/gui/app.cpp:3615
 msgid ""
@@ -4050,7 +4052,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:3616
 msgid "Help"
-msgstr ""
+msgstr "کمک"
 
 #: ../src/gui/app.cpp:3625
 msgid ""
@@ -4061,7 +4063,7 @@ msgstr ""
 #: ../src/gui/app.cpp:3627 ../src/gui/app.cpp:3648 ../src/gui/app.cpp:4071
 #: ../src/gui/canvasview.cpp:3462 ../src/gui/canvasview.cpp:3485
 msgid "Error"
-msgstr ""
+msgstr "خطا"
 
 #: ../src/gui/app.cpp:3646
 msgid "No compatible application was found. Please load open file manually:"
@@ -4146,7 +4148,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:278
 msgid "ERROR"
-msgstr ""
+msgstr "خطا"
 
 #: ../src/gui/canvasview.cpp:345
 msgid "Feature not yet implemented"
@@ -4190,7 +4192,7 @@ msgstr "پیش نمایش"
 
 #: ../src/gui/canvasview.cpp:1184
 msgid "Shows the Preview Settings Dialog"
-msgstr ""
+msgstr "نمایش پنجره تنظیمات پیش نمایش"
 
 #: ../src/gui/canvasview.cpp:1223
 msgid "Show grid"
@@ -4251,27 +4253,27 @@ msgstr ""
 #: ../src/gui/canvasview.cpp:1436 ../src/gui/iconcontroller.cpp:178
 #: ../src/gui/instance.cpp:1051
 msgid "Save"
-msgstr ""
+msgstr "ذخیره"
 
 #: ../src/gui/canvasview.cpp:1439
 msgid "Save As..."
-msgstr ""
+msgstr "ذخیره به عنوان..."
 
 #: ../src/gui/canvasview.cpp:1439 ../src/gui/iconcontroller.cpp:179
 msgid "Save As"
-msgstr ""
+msgstr "ذخیره به عنوان"
 
 #: ../src/gui/canvasview.cpp:1442 ../src/gui/iconcontroller.cpp:180
 msgid "Save All"
-msgstr ""
+msgstr "ذخیره همه"
 
 #: ../src/gui/canvasview.cpp:1442
 msgid "Save all opened documents"
-msgstr ""
+msgstr "ذخیره تمام داکیومنت های باز شده"
 
 #: ../src/gui/canvasview.cpp:1483 ../src/gui/mainwindow.cpp:162
 msgid "Quit"
-msgstr ""
+msgstr "خروج"
 
 #: ../src/gui/canvasview.cpp:1558 ../src/gui/iconcontroller.cpp:253
 #: ../src/gui/iconcontroller.cpp:258
@@ -4448,20 +4450,20 @@ msgstr ""
 #: ../src/gui/canvasview.cpp:3740
 #: ../src/synfigapp/actions/valuedescset.cpp:1127
 msgid "No"
-msgstr ""
+msgstr "نه"
 
 #: ../src/gui/canvasview.cpp:3741
 #: ../src/synfigapp/actions/valuedescset.cpp:1128
 msgid "Yes"
-msgstr ""
+msgstr "آره"
 
 #: ../src/gui/iconcontroller.cpp:130
 msgid "Bool"
-msgstr ""
+msgstr "Bool"
 
 #: ../src/gui/iconcontroller.cpp:131
 msgid "Integer"
-msgstr ""
+msgstr "عدد صحیح"
 
 #: ../src/gui/iconcontroller.cpp:132
 msgid "Angle"
@@ -4473,7 +4475,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:135
 msgid "Vector"
-msgstr ""
+msgstr "وکتور"
 
 #: ../src/gui/iconcontroller.cpp:136
 msgid "Color"
@@ -4538,15 +4540,15 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:170 ../src/gui/instance.cpp:1287
 msgid "Rename"
-msgstr ""
+msgstr "تغییر نام"
 
 #: ../src/gui/iconcontroller.cpp:175
 msgid "About"
-msgstr ""
+msgstr "درباره"
 
 #: ../src/gui/iconcontroller.cpp:176 ../src/gui/mainwindow.cpp:156
 msgid "New"
-msgstr ""
+msgstr "جدید"
 
 #: ../src/gui/iconcontroller.cpp:187
 msgid "Blur Layer"
@@ -4692,13 +4694,13 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:229
 msgid "Import Image Layer"
-msgstr ""
+msgstr "وارد کردن لایه تصویر"
 
 #: ../src/gui/iconcontroller.cpp:230
 #: ../src/synfigapp/actions/layerencapsulate.cpp:54
 #: ../src/synfigapp/actions/layerencapsulate.cpp:75
 msgid "Group Layer"
-msgstr ""
+msgstr "گروه کردن لایه"
 
 #: ../src/gui/iconcontroller.cpp:231
 msgid "Plant Layer"
@@ -4714,7 +4716,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:234
 msgid "Sound Layer"
-msgstr ""
+msgstr "لایه صدا"
 
 #: ../src/gui/iconcontroller.cpp:235
 msgid "Switch Layer"
@@ -4782,7 +4784,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:263
 msgid "Group"
-msgstr ""
+msgstr "گروه"
 
 #: ../src/gui/iconcontroller.cpp:265
 msgid "Group into Switch"
@@ -4794,7 +4796,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:276
 msgid "MetaData"
-msgstr ""
+msgstr "متا دیتا"
 
 #: ../src/gui/iconcontroller.cpp:280
 msgid "Palette"
@@ -4932,7 +4934,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:340
 msgid "Preview Options Dialog"
-msgstr ""
+msgstr "پنجره گزینه های پیش نمایش"
 
 #: ../src/gui/iconcontroller.cpp:341
 msgid "Render Options Dialog"
@@ -5052,7 +5054,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:572
 msgid "Sure"
-msgstr ""
+msgstr "مطمئنا"
 
 #: ../src/gui/instance.cpp:759
 msgid "You must first add this composition to the repository"
@@ -5099,7 +5101,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:884
 msgid "Update"
-msgstr ""
+msgstr "بروزرسانی"
 
 #: ../src/gui/instance.cpp:904 ../src/gui/instance.cpp:960
 msgid "An error has occurred when trying to UPDATE"
@@ -5148,11 +5150,11 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1031
 msgid "The animation is currently playing so the window cannot be closed."
-msgstr ""
+msgstr "انیمیشن در حال پخش است بنابراین پنجره نمی تواند بسته شود."
 
 #: ../src/gui/instance.cpp:1033
 msgid "Thanks!"
-msgstr ""
+msgstr "تشکر!"
 
 #: ../src/gui/instance.cpp:1040
 #, c-format
@@ -5167,7 +5169,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1049
 msgid "Close without Saving"
-msgstr ""
+msgstr "بستن بدون ذخیره سازی"
 
 #: ../src/gui/instance.cpp:1068
 #, c-format
@@ -5190,20 +5192,20 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1283
 msgid "Export"
-msgstr ""
+msgstr "خروجی گرفتن"
 
 #: ../src/gui/instance.cpp:1284
 msgid "Name: "
-msgstr ""
+msgstr "نام:"
 
 #: ../src/gui/instance.cpp:1294
 msgid "Add"
-msgstr ""
+msgstr "اضافه کردن"
 
 #: ../src/gui/instance.cpp:1393
 #: ../src/synfigapp/actions/valuedescconvert.cpp:63
 msgid "Convert"
-msgstr ""
+msgstr "تبدیل"
 
 #: ../src/gui/instance.cpp:1444
 msgid "Ease"
@@ -5223,7 +5225,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1617
 msgid "Apply"
-msgstr ""
+msgstr "اعمال کردن"
 
 #: ../src/gui/instance.cpp:1622
 msgid "Set Waypoints"
@@ -5251,7 +5253,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1905 ../src/gui/instance.cpp:1964
 msgid "Open file"
-msgstr ""
+msgstr "باز کردن فایل"
 
 #: ../src/gui/instance.cpp:1917 ../src/gui/instance.cpp:1976
 msgid "Convert to Vector"
@@ -5287,21 +5289,21 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:175
 msgid "Show Menubar"
-msgstr ""
+msgstr "نمایش منو بار"
 
 #: ../src/gui/mainwindow.cpp:193
 msgid "Edit workspaces..."
-msgstr ""
+msgstr "ویرایش فضا های کاری..."
 
 #. TRANSLATORS:         | Help menu entry:              | A wiki page:
 #. |
 #: ../src/gui/mainwindow.cpp:209
 msgid "Tutorials"
-msgstr ""
+msgstr "آموزش ها"
 
 #: ../src/gui/mainwindow.cpp:209
 msgid "/Category:Tutorials"
-msgstr ""
+msgstr "/Category:Tutorials"
 
 #: ../src/gui/mainwindow.cpp:210
 msgid "Reference"
@@ -5309,31 +5311,31 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:210
 msgid "/Category:Reference"
-msgstr ""
+msgstr "/Category:Reference"
 
 #: ../src/gui/mainwindow.cpp:211
 msgid "Frequently Asked Questions"
-msgstr ""
+msgstr "سوالات متداول"
 
 #: ../src/gui/mainwindow.cpp:211
 msgid "/FAQ"
-msgstr ""
+msgstr "/FAQ"
 
 #: ../src/gui/mainwindow.cpp:212
 msgid "Get Support"
-msgstr ""
+msgstr "پشتیبانی گرفتن"
 
 #: ../src/gui/mainwindow.cpp:212
 msgid "https://forums.synfig.org/"
-msgstr ""
+msgstr "https://forums.synfig.org/"
 
 #: ../src/gui/mainwindow.cpp:215
 msgid "About Synfig Studio"
-msgstr ""
+msgstr "درباره سین فیگ استودیو"
 
 #: ../src/gui/onemoment.cpp:90
 msgid "One Moment, Please..."
-msgstr ""
+msgstr "یه لحظه، لطفا..."
 
 #: ../src/gui/onemoment.cpp:92
 msgid "Working..."
@@ -5359,7 +5361,7 @@ msgstr ""
 
 #: ../src/gui/preview.cpp:483
 msgid "Re-preview"
-msgstr ""
+msgstr "پیش نمایش مجدد"
 
 #: ../src/gui/preview.cpp:490
 msgid "Erase all rendered frame(s)"
@@ -5486,7 +5488,7 @@ msgstr "<b>تنظیمات زمان</b>"
 
 #: ../src/gui/renddesc.cpp:774
 msgid "_Frames per second"
-msgstr "فریم بر ثانیه"
+msgstr "_فریم بر ثانیه"
 
 #: ../src/gui/renddesc.cpp:782
 msgid "_Start Time"
@@ -5494,11 +5496,11 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:789
 msgid "_End Time"
-msgstr "زمان پایان"
+msgstr "_زمان اتمام"
 
 #: ../src/gui/renddesc.cpp:796
 msgid "_Duration"
-msgstr ""
+msgstr "_مدت"
 
 #: ../src/gui/renddesc.cpp:818
 msgid "Gamma Correction Settings"
@@ -5510,15 +5512,15 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:848
 msgid "_Red"
-msgstr ""
+msgstr "_قرمز"
 
 #: ../src/gui/renddesc.cpp:861
 msgid "_Green"
-msgstr ""
+msgstr "_سبز"
 
 #: ../src/gui/renddesc.cpp:874
 msgid "_Blue"
-msgstr ""
+msgstr "_آبی"
 
 #: ../src/gui/renddesc.cpp:901
 msgid "Locks and Links"
@@ -5542,7 +5544,7 @@ msgstr ""
 
 #: ../src/gui/render.cpp:76 ../src/gui/render.cpp:199
 msgid "Render Settings"
-msgstr ""
+msgstr "تنظیمات رندر"
 
 #: ../src/gui/render.cpp:82
 msgid "Render _current frame only"
@@ -5554,43 +5556,43 @@ msgstr ""
 
 #: ../src/gui/render.cpp:93
 msgid "Auto"
-msgstr ""
+msgstr "خودکار"
 
 #: ../src/gui/render.cpp:116
 msgid "Parameters..."
-msgstr ""
+msgstr "پارامتر ها..."
 
 #: ../src/gui/render.cpp:121
 msgid "Target"
-msgstr ""
+msgstr "هدف"
 
 #: ../src/gui/render.cpp:123
 msgid "<b>Target</b>"
-msgstr ""
+msgstr "<b>هدف</b>"
 
 #: ../src/gui/render.cpp:134
 msgid "_Filename"
-msgstr ""
+msgstr "_نام فایل"
 
 #: ../src/gui/render.cpp:141
 msgid "_Target"
-msgstr ""
+msgstr "_هدف"
 
 #: ../src/gui/render.cpp:150
 msgid "Settings"
-msgstr ""
+msgstr "تنظیمات"
 
 #: ../src/gui/render.cpp:152
 msgid "<b>Settings</b>"
-msgstr ""
+msgstr "<b>تنظیمات</b>"
 
 #: ../src/gui/render.cpp:164
 msgid "_Quality"
-msgstr ""
+msgstr "_کیفیت"
 
 #: ../src/gui/render.cpp:170
 msgid "_Anti-Aliasing"
-msgstr ""
+msgstr "_Anti-Aliasing"
 
 #: ../src/gui/render.cpp:312
 msgid "You must supply a filename!"
@@ -5618,11 +5620,11 @@ msgstr ""
 
 #: ../src/gui/render.cpp:421
 msgid "Rendering "
-msgstr ""
+msgstr "رندر کردن "
 
 #: ../src/gui/render.cpp:452
 msgid "File rendered successfully"
-msgstr ""
+msgstr "فایل با موفقیت رندر شد"
 
 #: ../src/gui/render.cpp:454
 msgid "sec"
@@ -5630,11 +5632,11 @@ msgstr ""
 
 #: ../src/gui/splash.cpp:102
 msgid "ERROR:"
-msgstr ""
+msgstr "خطا:"
 
 #: ../src/gui/splash.cpp:116
 msgid "WARNING:"
-msgstr ""
+msgstr "هشدار:"
 
 #: ../src/gui/workarea.cpp:497
 msgid "Unable to set \"grid_color\""
@@ -5666,7 +5668,7 @@ msgstr ""
 
 #: ../src/synfigapp/action.cpp:565 ../src/synfigapp/action.cpp:566
 msgid "Canvas Interface"
-msgstr ""
+msgstr "رابط Canvas"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:52
 msgid "Add Activepoint"
@@ -5922,18 +5924,18 @@ msgstr ""
 
 #: ../src/synfigapp/actions/canvasnameset.cpp:52
 msgid "Set Canvas Name"
-msgstr ""
+msgstr "تنظیم نام Canvas"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. name changed.
 #: ../src/synfigapp/actions/canvasnameset.cpp:73
 #, c-format
 msgid "Change canvas name from '%s' to '%s'"
-msgstr ""
+msgstr "تغییر نام Canvas از '%s' به '%s'"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:51
 msgid "Remove Canvas"
-msgstr ""
+msgstr "حذف Canvas"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:109
 msgid "You cannot remove the root canvas!"
@@ -6026,12 +6028,12 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:51
 msgid "Add Keyframe"
-msgstr ""
+msgstr "اضافه کردن کی فریم"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:76
 #: ../src/synfigapp/actions/keyframeset.cpp:82
 msgid "New Keyframe"
-msgstr ""
+msgstr "کی فریم جدید"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:77
 #: ../src/synfigapp/actions/keyframeset.cpp:83
@@ -6074,7 +6076,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:56
 msgid "Remove Keyframe"
-msgstr ""
+msgstr "حذف کی فریم"
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:82
 msgid "Keyframe to be removed"
@@ -6096,7 +6098,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframesetdelta.cpp:80
 msgid "Delta"
-msgstr ""
+msgstr "دلتا"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:56
 msgid "Activate/Deactivate Keyframe"
@@ -6170,7 +6172,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layeradd.cpp:74
 #: ../src/synfigapp/actions/layeradd.cpp:76
 msgid "Add Layer"
-msgstr ""
+msgstr "اضافه کردن لایه"
 
 #: ../src/synfigapp/actions/layeradd.cpp:86
 msgid "Layer to be added"
@@ -6178,7 +6180,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layeraddframe.cpp:54
 msgid "Make New Frame"
-msgstr ""
+msgstr "ساخت فریم جدید"
 
 #: ../src/synfigapp/actions/layeraddframe.cpp:79
 msgid "New frame should be added into this Switch Layer"
@@ -6257,7 +6259,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:75
 msgid "Group Layers"
-msgstr ""
+msgstr "گروه کردن لایه ها"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:85
 #: ../src/synfigapp/actions/layerencapsulatefilter.cpp:83
@@ -6323,7 +6325,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerextract.cpp:77
 msgid "File name"
-msgstr ""
+msgstr "نام فایل"
 
 #: ../src/synfigapp/actions/layerextract.cpp:78
 msgid "File name witch path to store exported file"
@@ -6494,11 +6496,11 @@ msgstr ""
 #: ../src/synfigapp/actions/layerremove.cpp:52
 #: ../src/synfigapp/actions/layerremove.cpp:72
 msgid "Delete Layer"
-msgstr ""
+msgstr "حذف لایه"
 
 #: ../src/synfigapp/actions/layerremove.cpp:72
 msgid "Delete Layers"
-msgstr ""
+msgstr "حذف لایه ها"
 
 #: ../src/synfigapp/actions/layerremove.cpp:82
 msgid "Layer to be deleted"
@@ -6518,7 +6520,7 @@ msgstr ""
 #: ../src/synfigapp/actions/layersetdesc.cpp:77
 #: ../src/synfigapp/actions/layersetdesc.cpp:78
 msgid "[default]"
-msgstr ""
+msgstr "[پیش فرض]"
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:88
 msgid "Layer to be described"
@@ -6526,7 +6528,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:92
 msgid "New Description"
-msgstr ""
+msgstr "توضیحات جدید"
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:93
 msgid "Enter a new description for this layer"
@@ -6722,14 +6724,14 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:57
 msgid "Connect"
-msgstr ""
+msgstr "اتصال"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a connection is
 #. made.
 #: ../src/synfigapp/actions/valuedescconnect.cpp:78
 #, c-format
 msgid "Connect '%s' to '%s'"
-msgstr ""
+msgstr "اتصال '%s' به '%s'"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:89
 msgid "Destination ValueDesc"
@@ -6780,14 +6782,14 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:62
 msgid "Disconnect"
-msgstr ""
+msgstr "قطع اتصال"
 
 #. TRANSLATORS: This is used in the History dialog when a ValueNode is
 #. disconnected.
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:84
 #, c-format
 msgid "Disconnect %s"
-msgstr ""
+msgstr "قطع اتصال %s"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:61
 msgid "Export Value"
@@ -6799,7 +6801,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedescexport.cpp:82
 #, c-format
 msgid "Export '%s' as '%s'"
-msgstr ""
+msgstr "خروجی گرفتن '%s' به عنوان '%s'"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:98
 msgid "Export the value."
@@ -6925,7 +6927,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:135
 msgid "Animate"
-msgstr ""
+msgstr "انیمیت"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:139
 msgid "Lock animation"
@@ -7091,7 +7093,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistremove.cpp:52
 #: ../src/synfigapp/actions/valuenodestaticlistremove.cpp:52
 msgid "Remove Item"
-msgstr ""
+msgstr "حذف آیتم"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:55
 #: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:53
@@ -7235,7 +7237,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/vectorization.cpp:117
 msgid "Image Layer"
-msgstr ""
+msgstr "لایه تصویر"
 
 #: ../src/synfigapp/actions/vectorization.cpp:121
 msgid "Vectorization mode"
@@ -7410,17 +7412,17 @@ msgstr ""
 
 #: ../src/synfigapp/action_system.cpp:120
 msgid "Continue"
-msgstr ""
+msgstr "ادامه دادن"
 
 #: ../src/synfigapp/action_system.cpp:132
 #: ../src/synfigapp/action_system.cpp:143
 #: ../src/synfigapp/action_system.cpp:149
 msgid "Failed"
-msgstr ""
+msgstr "ناموفق"
 
 #: ../src/synfigapp/action_system.cpp:177
 msgid "Successful"
-msgstr ""
+msgstr "موفقیت آمیز"
 
 #: ../src/synfigapp/action_system.cpp:196
 #: ../src/synfigapp/action_system.cpp:198
@@ -7532,7 +7534,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:949
 msgid "Import sequence"
-msgstr ""
+msgstr "وارد کردن سکانس"
 
 #: ../src/synfigapp/canvasinterface.cpp:960
 #: ../src/synfigapp/canvasinterface.cpp:1064
@@ -7576,23 +7578,23 @@ msgstr ""
 
 #: ../src/synfigapp/uimanager.cpp:98
 msgid "(no/yes)"
-msgstr ""
+msgstr "(نه/آره)"
 
 #: ../src/synfigapp/uimanager.cpp:100
 msgid "(yes/no)"
-msgstr ""
+msgstr "(آره/نه)"
 
 #: ../src/synfigapp/uimanager.cpp:132
 msgid "error: "
-msgstr ""
+msgstr "خطا:"
 
 #: ../src/synfigapp/uimanager.cpp:140
 msgid "warning: "
-msgstr ""
+msgstr "هشدار:"
 
 #: ../src/synfigapp/value_desc.cpp:65
 msgid "Layer Parameter"
-msgstr ""
+msgstr "پارامتر لایه"
 
 #: ../src/synfigapp/value_desc.cpp:82
 msgid "Const ValueNode"

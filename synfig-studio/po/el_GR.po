@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
+# BobSynfig, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2020-02-14 22:06+0700\n"
-"PO-Revision-Date: 2020-02-14 15:06+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2020-12-29 19:13+0000\n"
+"Last-Translator: BobSynfig\n"
 "Language-Team: Greek (Greece) (http://www.transifex.com/morevnaproject/synfig/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,7 +20,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:1 ../src/gui/dialogs/about.cpp:85
 msgid "2D vector animation studio"
-msgstr ""
+msgstr "2D διανυσματικό στούντιο κινουμένων σχεδίων"
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:2
 msgid "Create and edit 2D animations and compositions"
@@ -36,7 +37,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:2
 msgid "Features:"
-msgstr ""
+msgstr "Χαρακτηριστικά:"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:3
 msgid "Can manipulate vector and bitmap artwork"
@@ -72,7 +73,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:10
 msgid "Sound support"
-msgstr ""
+msgstr "Υποστήριξη ήχου:"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:11
 msgid "Linking data on file- or parameter-level"
@@ -88,7 +89,7 @@ msgstr ""
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:1
 msgid "enable"
-msgstr ""
+msgstr "επιτρέπω"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:2
 msgid "Enable this thumbnailer."
@@ -147,7 +148,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:29
 msgid "Random"
-msgstr ""
+msgstr "Τυχαίος"
 
 #: ../src/brushlib/brushsettings.py:29
 msgid ""
@@ -215,7 +216,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:551
 #: ../src/gui/states/state_star.cpp:673 ../src/gui/states/state_text.cpp:435
 msgid "Opacity"
-msgstr ""
+msgstr "Αδιαφάνεια"
 
 #: ../src/brushlib/brushsettings.py:44
 msgid ""
@@ -268,7 +269,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:49
 msgid "Anti-aliasing"
-msgstr ""
+msgstr "Κορεσμός χρώματος"
 
 #: ../src/brushlib/brushsettings.py:49
 msgid ""
@@ -544,7 +545,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:77 ../src/gui/states/state_brush.cpp:513
 msgid "Eraser"
-msgstr ""
+msgstr "Γόμα"
 
 #: ../src/brushlib/brushsettings.py:77
 msgid ""
@@ -679,13 +680,13 @@ msgstr ""
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:271
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:525
 msgid "Increase Amount"
-msgstr ""
+msgstr "Αυξήστε το ποσό"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:122
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:272
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:542
 msgid "Decrease Amount"
-msgstr ""
+msgstr "Μειώστε το ποσό"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:134
 #: ../src/gui/iconcontroller.cpp:268
@@ -694,11 +695,11 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:268
 msgid "Increase Opacity"
-msgstr ""
+msgstr "Αυξήστε την αδιαφάνεια"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:269
 msgid "Decrease Opacity"
-msgstr ""
+msgstr "Μειώστε την αδιαφάνεια"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:392
 msgid "Paste"
@@ -776,12 +777,12 @@ msgstr ""
 #: ../src/gui/dialogs/about.cpp:197
 #, c-format
 msgid "ETL %s\n"
-msgstr ""
+msgstr "ETL %s\n"
 
 #: ../src/gui/dialogs/about.cpp:198
 #, c-format
 msgid "Synfig API %s\n"
-msgstr ""
+msgstr "Synfig API %s\n"
 
 #: ../src/gui/dialogs/about.cpp:199
 #, c-format
@@ -791,12 +792,12 @@ msgstr ""
 #: ../src/gui/dialogs/about.cpp:200
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
-msgstr ""
+msgstr "GTK+ %d.%d.%d\n"
 
 #: ../src/gui/dialogs/about.cpp:202
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
-msgstr ""
+msgstr "GNU G++ %d.%d.%d\n"
 
 #: ../src/gui/dialogs/about.cpp:207
 msgid "Using:\n"
@@ -805,12 +806,12 @@ msgstr ""
 #: ../src/gui/dialogs/about.cpp:208
 #, c-format
 msgid "Synfig %s\n"
-msgstr ""
+msgstr "Synfig %s\n"
 
 #: ../src/gui/dialogs/about.cpp:209
 #, c-format
 msgid "GTK+ %d.%d.%d"
-msgstr ""
+msgstr "GTK+ %d.%d.%d"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:151
 msgid "Options"
@@ -834,15 +835,15 @@ msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:97
 msgid "_ID"
-msgstr ""
+msgstr "_ID"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:103
 msgid "_Name"
-msgstr ""
+msgstr "_Name"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:106
 msgid "_Description"
-msgstr ""
+msgstr "_Description"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:199 ../src/gui/app.cpp:1083
 msgid "Properties"
@@ -854,7 +855,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_color.cpp:60
 msgid "Colors"
-msgstr ""
+msgstr "Χρωματιστά"
 
 #: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:293
 msgid "Set as Outline"
@@ -878,59 +879,59 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:73
 msgid "H.263+ / H.263-1998 / H.263 version 2"
-msgstr ""
+msgstr "H.263+ / H.263-1998 / H.263 version 2"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:74
 msgid "Huffyuv / HuffYUV"
-msgstr ""
+msgstr "Huffyuv / HuffYUV"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:75
 msgid "libtheora Theora"
-msgstr ""
+msgstr "libtheora Theora"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:76
 msgid "H.264 / AVC / MPEG-4 AVC"
-msgstr ""
+msgstr "H.264 / AVC / MPEG-4 AVC"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:77
 msgid "H.264 / AVC / MPEG-4 AVC (LossLess)"
-msgstr ""
+msgstr "H.264 / AVC / MPEG-4 AVC (LossLess)"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:78
 msgid "MJPEG (Motion JPEG)"
-msgstr ""
+msgstr "MJPEG (Motion JPEG)"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:79
 msgid "raw MPEG-1 video"
-msgstr ""
+msgstr "raw MPEG-1 video"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:80
 msgid "raw MPEG-2 video"
-msgstr ""
+msgstr "raw MPEG-2 video"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:81
 msgid "MPEG-4 part 2. (XviD/DivX)"
-msgstr ""
+msgstr "MPEG-4 part 2. (XviD/DivX)"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:82
 msgid "MPEG-4 part 2 Microsoft variant version 3"
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 3"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:83
 msgid "MPEG-4 part 2 Microsoft variant version 1"
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 1"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:84
 msgid "MPEG-4 part 2 Microsoft variant version 2"
-msgstr ""
+msgstr "MPEG-4 part 2 Microsoft variant version 2"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:85
 msgid "Windows Media Video 7"
-msgstr ""
+msgstr "Windows Media Video 7"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:86
 msgid "Windows Media Video 8"
-msgstr ""
+msgstr "Windows Media Video 8"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:95
 msgid "FFmpeg parameters"
@@ -1118,7 +1119,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:288
 msgid "Width"
-msgstr ""
+msgstr "Πλάτος"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:293
 msgid "Width in pixels of the new created document"
@@ -1126,7 +1127,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:304
 msgid "Height"
-msgstr ""
+msgstr "Υψος"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:307
 msgid "Height in pixels of the new created document"
@@ -1134,59 +1135,59 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:316
 msgid "4096x3112 Full Aperture 4K"
-msgstr ""
+msgstr "4096x3112 Full Aperture 4K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:317
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr ""
+msgstr "2048x1556 Full Aperture Native 2K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:318
 msgid "1920x1080 HDTV 1080p/i"
-msgstr ""
+msgstr "1920x1080 HDTV 1080p/i"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:319
 msgid "1280x720  HDTV 720p"
-msgstr ""
+msgstr "1280x720  HDTV 720p"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:320
 msgid "720x576   DVD PAL"
-msgstr ""
+msgstr "720x576   DVD PAL"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:321
 msgid "720x480   DVD NTSC"
-msgstr ""
+msgstr "720x480   DVD NTSC"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:322
 msgid "720x540   Web 720x"
-msgstr ""
+msgstr "720x540   Web 720x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:323
 msgid "720x405   Web 720x HD"
-msgstr ""
+msgstr "720x405   Web 720x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:324
 msgid "640x480   Web 640x"
-msgstr ""
+msgstr "640x480   Web 640x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:325
 msgid "640x360   Web 640x HD"
-msgstr ""
+msgstr "640x360   Web 640x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:326
 msgid "480x360   Web 480x"
-msgstr ""
+msgstr "480x360   Web 480x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:327
 msgid "480x270   Web 480x HD"
-msgstr ""
+msgstr "480x270   Web 480x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:328
 msgid "360x270   Web 360x"
-msgstr ""
+msgstr "360x270   Web 360x"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:329
 msgid "360x203   Web 360x HD"
-msgstr ""
+msgstr "360x203   Web 360x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:334
 msgid "Default Background"
@@ -1202,7 +1203,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:360 ../src/gui/renddesc.cpp:231
 msgid "Image"
-msgstr ""
+msgstr "Εικόνα"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:365
 #: ../src/gui/dialogs/dialog_setup.cpp:477
@@ -1294,7 +1295,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:577
 msgid "Language"
-msgstr ""
+msgstr "Γλώσσα"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:583
 msgid "Color Theme"
@@ -1410,7 +1411,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_template.cpp:117
 msgid "Category"
-msgstr ""
+msgstr "Κατηγορία"
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:66
 msgid "Waypoint Editor"
@@ -1608,11 +1609,11 @@ msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:62
 msgid "Zoom In"
-msgstr ""
+msgstr "Μεγέθυνση"
 
 #: ../src/gui/dials/zoomdial.cpp:63
 msgid "Zoom Out"
-msgstr ""
+msgstr "Σμίκρυνση"
 
 #: ../src/gui/dials/zoomdial.cpp:64
 msgid "Zoom to Fit"
@@ -1620,7 +1621,7 @@ msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:65
 msgid "Zoom to 100%"
-msgstr ""
+msgstr "Μεγέθυνση έως 100%"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:58
 #: ../src/gui/docks/dialog_tooloptions.cpp:78 ../src/gui/app.cpp:1058
@@ -1681,19 +1682,19 @@ msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:108 ../src/gui/iconcontroller.cpp:182
 msgid "Undo"
-msgstr ""
+msgstr "Ξεκάνω"
 
 #: ../src/gui/docks/dock_history.cpp:109
 msgid "Undo the previous action"
-msgstr ""
+msgstr "Αναίρεση της προηγούμενης ενέργειας"
 
 #: ../src/gui/docks/dock_history.cpp:116 ../src/gui/iconcontroller.cpp:181
 msgid "Redo"
-msgstr ""
+msgstr "Ξανακάνω"
 
 #: ../src/gui/docks/dock_history.cpp:117
 msgid "Redo the previously undone action"
-msgstr ""
+msgstr "Επανάληψη της προηγούμενης αναίρεσης ενέργειας"
 
 #: ../src/gui/docks/dock_history.cpp:187 ../src/gui/trees/keyframetree.cpp:106
 #: ../src/gui/trees/keyframetree.cpp:293
@@ -1702,11 +1703,11 @@ msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:192 ../src/gui/trees/keyframetree.cpp:110
 msgid "(JMP)"
-msgstr ""
+msgstr "(JMP)"
 
 #: ../src/gui/docks/dock_history.cpp:204
 msgid "Action"
-msgstr ""
+msgstr "Δράση"
 
 #: ../src/gui/docks/dock_history.cpp:252 ../src/gui/docks/dock_history.cpp:266
 #: ../src/gui/docks/dock_history.cpp:280
@@ -1743,11 +1744,11 @@ msgstr ""
 
 #: ../src/gui/docks/dock_info.cpp:112
 msgid "X: "
-msgstr ""
+msgstr "X: "
 
 #: ../src/gui/docks/dock_info.cpp:113
 msgid "Y: "
-msgstr ""
+msgstr "Y: "
 
 #: ../src/gui/docks/dock_info.cpp:123
 msgid "R: "
@@ -1873,7 +1874,7 @@ msgstr ""
 #: ../src/gui/docks/dockmanager.cpp:751 ../src/gui/docks/dockmanager.cpp:761
 #: ../src/gui/app.cpp:1498
 msgid "Synfig Studio"
-msgstr ""
+msgstr "Synfig Studio"
 
 #: ../src/gui/modules/mod_palette/dock_palbrowse.cpp:58
 msgid "Palette Browser"
@@ -1885,7 +1886,7 @@ msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:133
 msgid "Add Color"
-msgstr ""
+msgstr "Προσθέστε χρώμα"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:134
 msgid ""
@@ -1951,7 +1952,7 @@ msgstr ""
 #: ../src/gui/instance.cpp:948 ../src/gui/instance.cpp:962
 #: ../src/gui/instance.cpp:989
 msgid "Close"
-msgstr ""
+msgstr "Κλείσε"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:266
 #: ../src/gui/instance.cpp:601
@@ -2394,7 +2395,7 @@ msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:665
 msgid "Cosine"
-msgstr ""
+msgstr "Συνημίτονο"
 
 #: ../src/gui/states/state_circle.cpp:677 ../src/gui/states/state_star.cpp:745
 msgid "Spline Origins at Center"
@@ -2561,11 +2562,11 @@ msgstr ""
 
 #: ../src/gui/states/state_mirror.cpp:174
 msgid "Horizontal"
-msgstr ""
+msgstr "Οριζόντιος"
 
 #: ../src/gui/states/state_mirror.cpp:175
 msgid "Vertical"
-msgstr ""
+msgstr "Κάθετος"
 
 #: ../src/gui/states/state_mirror.cpp:178
 #: ../src/gui/states/state_mirror.cpp:237 ../src/gui/iconcontroller.cpp:161
@@ -2884,7 +2885,7 @@ msgstr ""
 #: ../src/gui/trees/layergrouptree.cpp:75 ../src/gui/trees/layertree.cpp:217
 #: ../src/gui/trees/layertree.cpp:367
 msgid " "
-msgstr ""
+msgstr " "
 
 #: ../src/gui/trees/keyframetree.cpp:76 ../src/gui/iconcontroller.cpp:133
 #: ../src/gui/renddesc.cpp:232 ../src/synfigapp/actions/activepointadd.cpp:89
@@ -3024,7 +3025,7 @@ msgstr ""
 #: ../src/gui/widgets/widget_bonechooser.cpp:117
 #: ../src/gui/widgets/widget_bonechooser.cpp:135
 msgid "<None>"
-msgstr ""
+msgstr "<None>"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:120
 msgid "Other..."
@@ -3070,15 +3071,15 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:407
 msgid "Red"
-msgstr ""
+msgstr "Κόκκινο"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:409
 msgid "Green"
-msgstr ""
+msgstr "Πράσινο"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:411
 msgid "Blue"
-msgstr ""
+msgstr "Μπλε"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:414
 msgid "HTML code"
@@ -3231,7 +3232,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_sublayer.cpp:90
 msgid "<empty>"
-msgstr ""
+msgstr "<empty>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:80
 msgid "(Non-static value)"
@@ -3844,11 +3845,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1722
 msgid "Ignore"
-msgstr ""
+msgstr "Αγνοώ"
 
 #: ../src/gui/app.cpp:1723
 msgid "Recover"
-msgstr ""
+msgstr "Αναρρώνω"
 
 #: ../src/gui/app.cpp:1729
 msgid "Unable to fully recover from previous crash"
@@ -3870,7 +3871,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1738
 msgid "Thanks"
-msgstr ""
+msgstr "Ευχαριστώ"
 
 #: ../src/gui/app.cpp:1755
 msgid "Loading files..."
@@ -5098,7 +5099,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:884
 msgid "Update"
-msgstr ""
+msgstr "Εκσυγχρονίζω"
 
 #: ../src/gui/instance.cpp:904 ../src/gui/instance.cpp:960
 msgid "An error has occurred when trying to UPDATE"
@@ -5151,7 +5152,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1033
 msgid "Thanks!"
-msgstr ""
+msgstr "Ευχαριστώ!"
 
 #: ../src/gui/instance.cpp:1040
 #, c-format
@@ -5166,7 +5167,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1049
 msgid "Close without Saving"
-msgstr ""
+msgstr "Κλείσιμο χωρίς αποθήκευση"
 
 #: ../src/gui/instance.cpp:1068
 #, c-format
@@ -5197,7 +5198,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1294
 msgid "Add"
-msgstr ""
+msgstr "Προσθέτω"
 
 #: ../src/gui/instance.cpp:1393
 #: ../src/synfigapp/actions/valuedescconvert.cpp:63
@@ -5222,7 +5223,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1617
 msgid "Apply"
-msgstr ""
+msgstr "Εφαρμόζω"
 
 #: ../src/gui/instance.cpp:1622
 msgid "Set Waypoints"
@@ -5262,7 +5263,7 @@ msgstr ""
 
 #: ../src/gui/instance.h:43
 msgid "Synfig Animation "
-msgstr ""
+msgstr "Synfig Animation "
 
 #: ../src/gui/main.cpp:99
 msgid "synfig studio is already running"
@@ -5274,7 +5275,7 @@ msgstr ""
 
 #: ../src/gui/main.cpp:119
 msgid "synfig studio -- starting up application..."
-msgstr ""
+msgstr "synfig studio - εκκίνηση εφαρμογής ..."
 
 #: ../src/gui/mainwindow.cpp:156
 msgid "Create a new document"
@@ -5296,11 +5297,11 @@ msgstr ""
 #. |
 #: ../src/gui/mainwindow.cpp:209
 msgid "Tutorials"
-msgstr ""
+msgstr "Μαθήματα"
 
 #: ../src/gui/mainwindow.cpp:209
 msgid "/Category:Tutorials"
-msgstr ""
+msgstr "/Category:Tutorials"
 
 #: ../src/gui/mainwindow.cpp:210
 msgid "Reference"
@@ -5308,7 +5309,7 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:210
 msgid "/Category:Reference"
-msgstr ""
+msgstr "/Category:Reference"
 
 #: ../src/gui/mainwindow.cpp:211
 msgid "Frequently Asked Questions"
@@ -5328,7 +5329,7 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:215
 msgid "About Synfig Studio"
-msgstr ""
+msgstr "Σχετικά με το Synfig Studio"
 
 #: ../src/gui/onemoment.cpp:90
 msgid "One Moment, Please..."
@@ -5336,7 +5337,7 @@ msgstr ""
 
 #: ../src/gui/onemoment.cpp:92
 msgid "Working..."
-msgstr ""
+msgstr "Εργαζόμενος..."
 
 #: ../src/gui/preview.cpp:406
 msgid "Prev frame"
@@ -5509,15 +5510,15 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:848
 msgid "_Red"
-msgstr ""
+msgstr "_Κόκκινο"
 
 #: ../src/gui/renddesc.cpp:861
 msgid "_Green"
-msgstr ""
+msgstr "_Πράσινο"
 
 #: ../src/gui/renddesc.cpp:874
 msgid "_Blue"
-msgstr ""
+msgstr "_Μπλε"
 
 #: ../src/gui/renddesc.cpp:901
 msgid "Locks and Links"
@@ -7575,7 +7576,7 @@ msgstr ""
 
 #: ../src/synfigapp/uimanager.cpp:98
 msgid "(no/yes)"
-msgstr ""
+msgstr "(όχι/ναι)"
 
 #: ../src/synfigapp/uimanager.cpp:100
 msgid "(yes/no)"
@@ -7583,11 +7584,11 @@ msgstr ""
 
 #: ../src/synfigapp/uimanager.cpp:132
 msgid "error: "
-msgstr ""
+msgstr "σφάλμα:"
 
 #: ../src/synfigapp/uimanager.cpp:140
 msgid "warning: "
-msgstr ""
+msgstr "προειδοποίηση:"
 
 #: ../src/synfigapp/value_desc.cpp:65
 msgid "Layer Parameter"

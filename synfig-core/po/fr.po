@@ -6,10 +6,10 @@
 # Animtim <animtim@gmail.com>, 2011
 # Animtim <animtim@gmail.com>, 2011
 # Aurore D <aurore.d@gmail.com>, 2007,2010
-# Bertrand <berteh@hotmail.com>, 2012
-# Bertrand <berteh@hotmail.com>, 2013
-# Bertrand <berteh@hotmail.com>, 2012
-# Bertrand <berteh@hotmail.com>, 2012-2013
+# Bertrand, 2012
+# Bertrand, 2013
+# Bertrand, 2012
+# Bertrand, 2012-2013
 # BobSynfig, 2014,2019
 # BobSynfig, 2019
 # BobSynfig, 2014-2015
