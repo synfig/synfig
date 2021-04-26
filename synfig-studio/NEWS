@@ -1,4 +1,24 @@
 ## Version 1.4.1
+- [`74a9f4b`](https://github.com/synfig/synfig/commit/74a9f4b707585387bd0f04e07fcfebd910f85871) Change order of Waypoint Editor buttons to match other dialogs ([#1880](https://github.com/synfig/synfig/issues/1880))
+- [`ef2da51`](https://github.com/synfig/synfig/commit/ef2da51e6eaa456d8806735a04432f443efc57e5) Merge PR ([#1182](https://github.com/synfig/synfig/issues/1182)): Improved dialog waypoint UX
+- [`b555b22`](https://github.com/synfig/synfig/commit/b555b228a6a574babad9a6aeebc46353795313b2) Waypoint Editor didn't properly support enums ([#1968](https://github.com/synfig/synfig/issues/1968))
+- [`ca04f3d`](https://github.com/synfig/synfig/commit/ca04f3dfa23ea14d53ea281dd1ff832750ab5fce) fix mainwindow not showing when is offscreen ([#1973](https://github.com/synfig/synfig/issues/1973))
+- [`39807ad`](https://github.com/synfig/synfig/commit/39807ad99f89c0f626c98006e40e855c62a26a32) Bumped year in About dialog ([#1977](https://github.com/synfig/synfig/issues/1977))
+- [`c526bf2`](https://github.com/synfig/synfig/commit/c526bf2186871d5b4133f3527b3da54390e44f78) don't let inner layer be duplicated twice ([#2050](https://github.com/synfig/synfig/issues/2050))
+- [`d8e1837`](https://github.com/synfig/synfig/commit/d8e183799995c5ade40bfac4a031e3d9c25266ea) Merge PR[#1971](https://github.com/synfig/synfig/issues/1971): Fix action LayerDuplicate with layers "duplicate"
+- [`03fd60f`](https://github.com/synfig/synfig/commit/03fd60fe879f9be0619f68cd9fbffec5ba243830) fix "Link to Spline" showing when a vertex of spline itself is selected ([#1988](https://github.com/synfig/synfig/issues/1988))
+- [`06d71c5`](https://github.com/synfig/synfig/commit/06d71c59856fb40951235a478f7d996191404e91) exception-guard now lists SynfigApp exception too ([#2028](https://github.com/synfig/synfig/issues/2028))
+- [`ba9149a`](https://github.com/synfig/synfig/commit/ba9149aaf3839cd205560fad2630daa23131554e) avoid dereference of invalid TreeIter on Layer TreeView ([#2043](https://github.com/synfig/synfig/issues/2043))
+- [`349810e`](https://github.com/synfig/synfig/commit/349810e2f9a25af3297b776ee88c6c035abdb717) Fixed issue with rendering to file when using non-Latin filenames ([#1940](https://github.com/synfig/synfig/issues/1940))
+- [`f47d674`](https://github.com/synfig/synfig/commit/f47d6740bacae90b52019aee338c272cef02f49a) Merge PR [#1861](https://github.com/synfig/synfig/issues/1861): Fixed crash when frame rendering throws exception while animating
+- [`9653378`](https://github.com/synfig/synfig/commit/9653378d5f91f1539a8ab5d4d6c4b17dff2578ce) Fixed crash when right-clicking on group in the Sets panel ([#1920](https://github.com/synfig/synfig/issues/1920))
+- [`9f9a09e`](https://github.com/synfig/synfig/commit/9f9a09e67711728ccbdb54028f2a22a0f952bed5) Fixed non-working command "Edit image editing in external tool..." ([#1912](https://github.com/synfig/synfig/issues/1912))
+- [`0bd6fd5`](https://github.com/synfig/synfig/commit/0bd6fd5bde72abe358f841c8a06cc56f3c1f8f86) Merge PR [#1889](https://github.com/synfig/synfig/issues/1889): [Synfig Studio/Windows] Fixed load/save operations for Palette editor
+- [`f7e71c9`](https://github.com/synfig/synfig/commit/f7e71c95d4aa0b2fd63e40fdc43fc5e1b2168f63) Fixed problem with non-working plugins when using paths containing non-Latin characters ([#1882](https://github.com/synfig/synfig/issues/1882))
+- [`7deb121`](https://github.com/synfig/synfig/commit/7deb121deaf940c269f71b11c15fdf11e23e6b7e) Restore ctrl-c ctrl+v ctrl+a in Color and Gradient Dialogs ([#1821](https://github.com/synfig/synfig/issues/1821))
+- [`bbd7a85`](https://github.com/synfig/synfig/commit/bbd7a85b1f65d2ac02397853b79c19d0f8b672e0) Return true only if id=1 (accept) is clicked ([#1573](https://github.com/synfig/synfig/issues/1573))
+- [`9ad7d22`](https://github.com/synfig/synfig/commit/9ad7d22d857c42b49bde109af298c77d661a68b4) Merge PR [#1386](https://github.com/synfig/synfig/issues/1386): Toolbar menu
+- [`053841b`](https://github.com/synfig/synfig/commit/053841be1bb8b6c75a1dd098c40948d74c22bd46) Year is fixed in About dialog ([#1238](https://github.com/synfig/synfig/issues/1238))
 - [`fb03700`](https://github.com/synfig/synfig/commit/fb037008607153b239cbe7d56fa378cc50655330) Fix crash on unsuccessful action with a clean undo history ([#1643](https://github.com/synfig/synfig/issues/1643))
 
 --------------------------
@@ -16,7 +36,7 @@
   * Transformation widget got a special control point to easily change origin of transformation.
   * New "Bake" command allow to bake animation for any parameter.
   * Now it is possible to open images in external editor (right click -> "Edit image in external tool...").
-  * Workspace layout cna be saved ("Workspace" - "Save workspace"/"Edit workspace list..." menu commands).
+  * Workspace layout can be saved ("Workspace" - "Save workspace"/"Edit workspace list..." menu commands).
   * Hovering mouse cursor over timetrack now shows frame preview.
   * Now it is possible to select playback range on the timeline and make playback looped.
   * Workarea handles now hidden during playback.
@@ -101,7 +121,7 @@
   * Tooltips for group transformation widget. Thanks to Jerome Blanchi.
   * Completely reworked preferences dialogue. Thanks to Yu Chen (concept), Jerome Blanchi (implementation) and Caryoscelus (fixes).
   * Fixed behavior of “Insert Item” action for Splines (it should be different from “Insert item & Keep shape” action). Thanks to Ivan Mahonin.
-  * Fix crash when manipulating with guides. Alow to remove guides by dragging them back to onto rulers. Thanks to Jerome Blanchi.
+  * Fix crash when manipulating with guides. Allow to remove guides by dragging them back to onto rulers. Thanks to Jerome Blanchi.
   * Zoom level now can be edited via dedicated widget in the bottom-left corner of Canvas Window. Thanks to Caryoscelus.
   * Now it is possible to hide File buttons on the toolbar to save horizontal space. Available via “Edit” -> “Preferences” -> “Preferences”. Thanks to Caryoscelus.
   * Fixed readability of “Current Time” text widget when using dark theme. Thanks to Chris London.
@@ -123,7 +143,7 @@
  1.0.1 (git tag "1.0.1") - July 21, 2015 - Bugfix release.
  
   * Fix switching bone parent.
-  * Interactively highlight handles during bouding box selection.
+  * Interactively highlight handles during bounding box selection.
   * Update icons for "New", "Open", "Save/As/All" and "Undo/Redo".
   * Keyframes widget: Double click opens keyframe properties dialog box.
   * Keyframe properties dialog: Show keyframe description and active status.
@@ -192,10 +212,10 @@
 
  0.64.0 (git tag "synfigstudio-0.64.0") - May 06, 2013 - Major features, bug fixes.
 
-  * New pluging system
+  * New plugin system
   * New Cairo render engine
   * Terminology renaming
-  * Traslation is now handled by intltool
+  * Translation is now handled by intltool
   * Keyframes can now be enabled and disabled
   * New sequence separator option
   * Fix bug ID: 2684968: render is one frame short.
@@ -225,7 +245,7 @@
  ** Rewording some UI strings
  * New Outline Grow parameter on Paste Canvas layer. For inline canvases it increases (decreases) the width of the children layers by a exponential factor.
  * Support for load Gimp palettes. Patch thanks to Bretrand Gregoire.
- * Improve constrast on color sliders for Color Edit and Gradient Edit widgets. Patch thanks to Bertrand Gregoire
+ * Improve contrast on color sliders for Color Edit and Gradient Edit widgets. Patch thanks to Bertrand Gregoire
  * Rename icon source from zoom to scale. Patch thanks to Bertrand Gregoire
 
  0.63.04 (git tag: "synfigstudio-0.63.04") - February 08, 2012 - Features, bug fixes.
@@ -250,7 +270,7 @@
   * Fix bug https://pivotaltracker.com/story/show/18136743: BLine linked objects get wrong initial position
   * Use Gtk::Tooltip instead of deprecated Gtk::Tooltips. This fully fix tooltips for Layer parameter panel.
   * When modify a value that has a waypoint at the current time, don't modify its interpolations, only the value.
-  * Widhtpoint position duck now allows 'Edit Waypoint' contextual menu.
+  * Widthpoint position duck now allows 'Edit Waypoint' contextual menu.
   * Add feature to delete multiple vertices at the same time on blines and other list types.
   * Enum Widget allows icons now. Add icons to Default Interpolation widget.
   * Insert Item smart is allowed now over empty lists.
@@ -268,7 +288,7 @@
   * Add undo capability for guides.
   * Snap to guides is now relative to zoom.
   * OptionMenu (deprecatd) has been replaced by ComboBox.
-  * When change the Setup Dialog, spread it inmediately to the canvas's rules.
+  * When change the Setup Dialog, spread it immediately to the canvas's rules.
   * Circle, Rectangle, Star and Polygon Tools allows create Advanced Outlines Layers.
   * Linked to BLine has the option of be curve length based. On by default.
   * New icons for canvas navigation, preview, render and animate mode buttons.
@@ -280,7 +300,7 @@
  0.63.00 (git tag: "synfigstudio-0.63.00") - June 5, 2011 - Bug fixes, major features
 
   * Fix bug #31044763: fps rounding to integer.
-  * Fix bug: Change default bline width spin button widthout first focus a canvas
+  * Fix bug: Change default bline width spin button without first focus a canvas
     produces undesired changes to the width size.
   * Fix tool tips for layer parameters and add tool tip support for linkable
     value node parameters.
@@ -379,7 +399,7 @@
   * Input Device configuration can be saved/loaded now.
   * Fill/Outline instead of Background/Foreground.
   * Additions to the Canvas Window: Update Zoom Dial, Frame Dial, Keyframe Dial
-    Toogle Ducks Dial, Resolution Dial, Quality Butons, Show/Snap to Grid,
+    Toggle Ducks Dial, Resolution Dial, Quality Buttons, Show/Snap to Grid,
     Onion Skinning buttons.
   * Past and future onion skins enabled and selectable.
   * Improved UI on crash recovery dialog.

@@ -1,4 +1,5 @@
 ## Version 1.4.1
+- [`94c0805`](https://github.com/synfig/synfig/commit/94c0805673d4888665cf0179062226f01acf6f00)current_working_directory() function now works correctly with non-Latin filenames ([#2011](https://github.com/synfig/synfig/issues/2011))
 
 --------------------------
 

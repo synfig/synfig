@@ -1,6 +1,16 @@
 ## Version 1.4.1
+- [`2f18910`](https://github.com/synfig/synfig/commit/2f18910f4dc1657300574cec93db60a429755d9b) assure uniqueness for new node guid ([#2029](https://github.com/synfig/synfig/issues/2029))
+- [`349810e`](https://github.com/synfig/synfig/commit/349810e2f9a25af3297b776ee88c6c035abdb717) Fixed issue with rendering to file when using non-Latin filenames ([#1940](https://github.com/synfig/synfig/issues/1940))
+- [`8809482`](https://github.com/synfig/synfig/commit/8809482a2f4485155324b6b49481fb8303094bb9) Added support for loading `average` values ([#1955](https://github.com/synfig/synfig/issues/1955))
+- [`7d68380`](https://github.com/synfig/synfig/commit/7d683807d8141e1269f8acb40454d62d1c5c254a) Fixed incorrect import of `lst` files when path contains non-Latin characters ([#1924](https://github.com/synfig/synfig/issues/1924))
+- [`0bd6fd5`](https://github.com/synfig/synfig/commit/0bd6fd5bde72abe358f841c8a06cc56f3c1f8f86) Merge PR [#1889](https://github.com/synfig/synfig/issues/1889): [Synfig Studio/Windows] Fixed load/save operations for Palette editor
+- [`f8de319`](https://github.com/synfig/synfig/commit/f8de31931c1de367f70f46c839a518ea8d4012d2) Fix crash in Spline Tangent converter ([#1836](https://github.com/synfig/synfig/issues/1836))
+- [`03ab84d`](https://github.com/synfig/synfig/commit/03ab84debd51a23d430c8e214ed799ab6ef4a59f) Fixed error when output to MPEG-1 format with audio ([#1830](https://github.com/synfig/synfig/issues/1830))
+- [`23bf66a`](https://github.com/synfig/synfig/commit/23bf66ab53aa7bd3ef3a70fb4488a97b005da3da) Fix animation interpolation for boolean values ([#1826](https://github.com/synfig/synfig/issues/1826))
+- [`985afc4`](https://github.com/synfig/synfig/commit/985afc44935778396406150c130b9653b977def3) fix Duplicate layer ignoring all layers but the first one ([#1829](https://github.com/synfig/synfig/issues/1829))
+- [`a583e73`](https://github.com/synfig/synfig/commit/a583e73d4c47914284b15f4a8d7719eafddfe1b4) autotools: pango and imagemagick c++ flags and libs have been moved to their respective modules ([#1688](https://github.com/synfig/synfig/issues/1688))
 - [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL renderering ([#2055](https://github.com/synfig/synfig/issues/2055))
-- [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter (https://github.com/synfig/synfig/issues/1731)
+- [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter ([#1802](https://github.com/synfig/synfig/issues/1802))
 - [`99a1cde`](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305) Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623))
 
 --------------------------
@@ -17,13 +27,13 @@
   * Major cleanup of code responsible for sound playback, fixed non-working volume parameter and eliminated synchronization issues.
   * Advanced Outline Layer: Added two new types of tips - "Off-Peak Stop" and "Inner Rounded Stop". They can be used to define outline start/end and dashes.
   * Switch Layer: Now it is possible to select visible layer by index (see "Active Layer Depth" parameter).
-  * Rectangle Layer: now it is posible to define two types of rounded corners and horizontal/vertical feather.
+  * Rectangle Layer: now it is possible to define two types of rounded corners and horizontal/vertical feather.
   * Filled Rectangle Layer deprecated.
   * Changed Gamma handling: Global Gamma option removed, Gamma is now defined on per-document basis, default gamma value = 1.0, for old documents it is set to 2.2.
   * Fixed behavior “Local Time” parameter of Time Loop layer (issue #479).
   * DashItem Offset and Length parameters now use consistent units when editing them (issue #1265).
   * Fixed issues opening and exporting of files with multibyte (i.e. Arabic) symbols in filename.
-  * Homogenous parameter of Advanced Outline is enabled and static by default.
+  * Homogeneous parameter of Advanced Outline is enabled and static by default.
   * Set Animation Speed parameter of Noise Distort Layer as static by default.
   * Fixed crash when exporting with “pngspritesheet” target (issue #356).
   * Fixed crash when removing spline vertex too fast.
@@ -120,7 +130,7 @@
  0.64.0 (git tag "synfig-0.64.0") - May 06 2013 - Major features, bug fixes.
  
   * New CLI based on boost libraries. 
-  * New pluging system
+  * New plugin system
   * New Cairo render engine
   * Terminology renaming
   * Keyframes can now be enabled and disabled
@@ -157,7 +167,7 @@
   * Support to create Advanced Outlines with the Draw Tool.
   * Fixed script to generate synfig API.
   * Added two new parameters to the WidthPoint class. Lower Boundary and Upper Boundary
-    They define the lower and upper boundaries value of the widhtpoint position
+    They define the lower and upper boundaries value of the widthpoint position
     When placed at start and end of the BLine. By default lower = 0.0 and upper = 1.0
     Lower boundary must be always smaller than Upper boundary.
     As parameters they cannot be exported, converted or animated.
