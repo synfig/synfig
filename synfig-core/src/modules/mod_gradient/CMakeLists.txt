@@ -1,7 +1,4 @@
-add_library(mod_gradient MODULE "")
-
-target_sources(mod_gradient
-    PUBLIC
+add_library(mod_gradient MODULE
         "${CMAKE_CURRENT_LIST_DIR}/conicalgradient.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/radialgradient.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"

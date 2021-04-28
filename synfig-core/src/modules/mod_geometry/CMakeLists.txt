@@ -1,7 +1,4 @@
-add_library(mod_geometry MODULE "")
-
-target_sources(mod_geometry
-    PUBLIC
+add_library(mod_geometry MODULE
         "${CMAKE_CURRENT_LIST_DIR}/advanced_outline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/checkerboard.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/circle.cpp"

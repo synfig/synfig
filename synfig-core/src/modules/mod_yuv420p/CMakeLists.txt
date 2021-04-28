@@ -1,7 +1,4 @@
-add_library(mod_yuv420p MODULE "")
-
-target_sources(mod_yuv420p
-    PUBLIC
+add_library(mod_yuv420p MODULE
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/trgt_yuv.cpp"
 )

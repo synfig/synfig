@@ -1,7 +1,4 @@
-add_library(mod_mng MODULE "")
-
-target_sources(mod_mng
-    PUBLIC
+add_library(mod_mng MODULE
         "${CMAKE_CURRENT_LIST_DIR}/trgt_mng.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
 )
