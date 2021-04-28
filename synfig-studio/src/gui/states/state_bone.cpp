@@ -123,28 +123,23 @@ class studio::StateBone_Context : public sigc::trackable
 	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	// holder of optons
 	Gtk::Grid options_grid;
 
-	// title
 	Gtk::Label title_label;
 
-	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
+	Gtk::Box id_box;
 
-	//  bone width
 	Gtk::Label bone_width_label;
-	Gtk::HBox skel_box;
 	Widget_Distance skel_bone_width_dist;
 	Widget_Distance skel_deform_bone_width_dist;
+	Gtk::Box skel_box;
 
-	// Layer Type
 	Gtk::Label layer_label;
 	Gtk::ToggleButton layer_skel_togglebutton;
 	Gtk::ToggleButton layer_skel_deform_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Box layer_types_box;
 
 public:
 	synfig::String get_id() const { return id_entry.get_text();}
@@ -424,10 +419,9 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
-	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
-
-	id_box.pack_start(id_entry);
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(*id_gap, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_label.set_label(_("Layer Type:"));
 	layer_label.set_halign(Gtk::ALIGN_START);
@@ -439,9 +433,9 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 		("synfig-encapsulate_filter"), _("Skeleton Deform Layer"));
 
 	SPACING(layer_types_indent, INDENTATION);
-	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_skel_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_skel_deform_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_types_box.pack_start(layer_skel_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_skel_deform_togglebutton, false, false, 0);
 
 	bone_width_label.set_label(_("Bone Width:"));
 	bone_width_label.set_halign(Gtk::ALIGN_START);
@@ -453,8 +447,8 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	skel_deform_bone_width_dist.set_range(0,10000000);
 	skel_deform_bone_width_dist.set_sensitive(true);
 
-	skel_box.pack_start(skel_bone_width_dist);
-	skel_box.pack_start(skel_deform_bone_width_dist);
+	skel_box.pack_start(skel_bone_width_dist, true, true, 0);
+	skel_box.pack_start(skel_deform_bone_width_dist, true, true, 0);
 
 	load_settings();
 
@@ -477,6 +471,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	layer_skel_deform_togglebutton.signal_toggled().connect(
 		sigc::mem_fun(*this,&StateBone_Context::toggle_layer_skel_deform));
 
+	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
