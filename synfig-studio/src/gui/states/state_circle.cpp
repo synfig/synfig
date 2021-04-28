@@ -122,7 +122,7 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	Gtk::Label id_label;
 	Gtk::Entry id_entry;
-	Gtk::Grid id_grid;
+	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_circle_togglebutton;
@@ -131,11 +131,11 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::ToggleButton layer_curve_gradient_togglebutton;
 	Gtk::ToggleButton layer_plant_togglebutton;
-	Gtk::Grid layer_types_grid;
+	Gtk::Box layer_types_box;
 
 	Gtk::Label blend_label;
 	Widget_Enum blend_enum;
-	Gtk::Grid blend_grid;
+	Gtk::Box blend_box;
 
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
@@ -150,26 +150,26 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Label bline_point_angle_offset_label;
 	Glib::RefPtr<Gtk::Adjustment> bline_point_angle_offset_adj;
 	Gtk::SpinButton	bline_point_angle_offset_spin;
-	Gtk::Grid bline_point_angle_offset_grid;
+	Gtk::Box bline_point_angle_offset_box;
 
 	Gtk::Label invert_label;
 	Gtk::CheckButton invert_checkbutton;
-	Gtk::Grid invert_grid;
+	Gtk::Box invert_box;
 
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
 	Gtk::Label falloff_label;
 	Widget_Enum falloff_enum;
-	Gtk::Grid falloff_grid;
+	Gtk::Box falloff_box;
 
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::Grid link_origins_grid;
+	Gtk::Box link_origins_box;
 
 	Gtk::Label origins_at_center_label;
 	Gtk::CheckButton layer_origins_at_center_checkbutton;
-	Gtk::Grid origins_at_center_grid;
+	Gtk::Box origins_at_center_box;
 
 public:
 
@@ -532,11 +532,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_grid.attach(id_label, 0, 0, 1, 1);
-	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
-	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(*id_gap, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -557,21 +556,20 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
-	layer_types_grid.attach_next_to(layer_circle_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_region_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_advanced_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_plant_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_curve_gradient_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_types_box.pack_start(layer_circle_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_plant_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_curve_gradient_togglebutton, false, false, 0);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_grid.attach(blend_label, 0, 0, 1, 1);
-	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
+	blend_box.pack_start(blend_label, false, false, 0);
+	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -597,29 +595,26 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_points_label.set_label(_("Spline Points:"));
 	bline_points_label.set_halign(Gtk::ALIGN_START);
 	bline_points_label.set_valign(Gtk::ALIGN_CENTER);
-	bline_points_label.set_vexpand();
 	bline_points_label.set_sensitive(false);
 	number_of_bline_points_spin.set_sensitive(false);
 
 	bline_point_angle_offset_label.set_label(_("Offset:"));
 	bline_point_angle_offset_label.set_halign(Gtk::ALIGN_START);
 	bline_point_angle_offset_label.set_valign(Gtk::ALIGN_CENTER);
-	bline_point_angle_offset_label.set_vexpand();
 	bline_point_angle_offset_label.set_sensitive(false);
 	bline_point_angle_offset_spin.set_sensitive(false);
 
 	SPACING(bline_point_angle_offset_indent, INDENTATION);
-	bline_point_angle_offset_grid.attach(*bline_point_angle_offset_indent, 0, 0, 1, 1);
-	bline_point_angle_offset_grid.attach_next_to(bline_point_angle_offset_label, Gtk::POS_RIGHT, 1, 1);
+	bline_point_angle_offset_box.pack_start(*bline_point_angle_offset_indent, false, false, 0);
+	bline_point_angle_offset_box.pack_start(bline_point_angle_offset_label, false, false, 0);
 
 	invert_label.set_label(_("Invert"));
 	invert_label.set_halign(Gtk::ALIGN_START);
 	invert_label.set_valign(Gtk::ALIGN_CENTER);
-	invert_label.set_hexpand();
 
-	invert_grid.attach(invert_label, 0, 0, 1, 1);
-	invert_grid.attach_next_to(invert_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	invert_grid.set_sensitive(false);
+	invert_box.pack_start(invert_label, true, true, 0);
+	invert_box.pack_start(invert_checkbutton, false, false, 0);
+	invert_box.set_sensitive(false);
 
 	feather_label.set_label(_("Feather:"));
 	feather_label.set_halign(Gtk::ALIGN_START);
@@ -633,11 +628,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	falloff_label.set_label(_("Falloff:"));
 	falloff_label.set_halign(Gtk::ALIGN_START);
 	falloff_label.set_valign(Gtk::ALIGN_CENTER);
-	falloff_label.set_vexpand();
 	falloff_label.set_sensitive(false);
 	SPACING(falloff_indent, INDENTATION);
-	falloff_grid.attach(*falloff_indent, 0, 0, 1, 1);
-	falloff_grid.attach_next_to(falloff_label, Gtk::POS_RIGHT, 1, 1);
+	falloff_box.pack_start(*falloff_indent, false, false, 0);
+	falloff_box.pack_start(falloff_label, false, false, 0);
 
 	falloff_enum.set_param_desc(ParamDesc("falloff")
 		.set_local_name(_("Falloff"))
@@ -653,33 +647,31 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	link_origins_label.set_label(_("Link Origins"));
 	link_origins_label.set_halign(Gtk::ALIGN_START);
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
-	link_origins_label.set_hexpand();
 
-	link_origins_grid.attach(link_origins_label, 0, 0, 1, 1);
-	link_origins_grid.attach_next_to(layer_link_origins_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	link_origins_grid.set_sensitive(false);
+	link_origins_box.pack_start(link_origins_label, true, true, 0);
+	link_origins_box.pack_start(layer_link_origins_checkbutton, false, false, 0);
+	link_origins_box.set_sensitive(false);
 
 	origins_at_center_label.set_label(_("Spline Origins at Center"));
 	origins_at_center_label.set_halign(Gtk::ALIGN_START);
 	origins_at_center_label.set_valign(Gtk::ALIGN_CENTER);
-	origins_at_center_label.set_hexpand();
 
-	origins_at_center_grid.attach(origins_at_center_label, 0, 0, 1, 1);
-	origins_at_center_grid.attach_next_to(layer_origins_at_center_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	origins_at_center_grid.set_sensitive(false);
+	origins_at_center_box.pack_start(origins_at_center_label, true, true, 0);
+	origins_at_center_box.pack_start(layer_origins_at_center_checkbutton, false, false, 0);
+	origins_at_center_box.set_sensitive(false);
 
 	load_settings();
 
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(id_grid,
+	options_grid.attach(id_box,
 		0, 1, 2, 1);
 	options_grid.attach(layer_types_label,
 		0, 2, 2, 1);
-	options_grid.attach(layer_types_grid,
+	options_grid.attach(layer_types_box,
 		0, 3, 2, 1);
-	options_grid.attach(blend_grid,
+	options_grid.attach(blend_box,
 		0, 4, 1, 1);
 	options_grid.attach(blend_enum,
 		1, 4, 1, 1);
@@ -695,23 +687,23 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		0, 7, 1, 1);
 	options_grid.attach(number_of_bline_points_spin,
 		1, 7, 1, 1);
-	options_grid.attach(bline_point_angle_offset_grid,
+	options_grid.attach(bline_point_angle_offset_box,
 		0, 8, 1, 1);
 	options_grid.attach(bline_point_angle_offset_spin,
 		1, 8, 1, 1);
-	options_grid.attach(invert_grid,
+	options_grid.attach(invert_box,
 		0, 9, 2, 1);
 	options_grid.attach(feather_label,
 		0, 10, 1, 1);
 	options_grid.attach(feather_dist,
 		1, 10, 1, 1);
-	options_grid.attach(falloff_grid,
+	options_grid.attach(falloff_box,
 		0, 11, 1, 1);
 	options_grid.attach(falloff_enum,
 		1, 11, 1, 1);
-	options_grid.attach(link_origins_grid,
+	options_grid.attach(link_origins_box,
 		0, 12, 2, 1);
-	options_grid.attach(origins_at_center_grid,
+	options_grid.attach(origins_at_center_box,
 		0, 13, 2, 1);
 
 	options_grid.set_vexpand(false);
@@ -1467,10 +1459,10 @@ StateCircle_Context::toggle_layer_creation()
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag())
 	{
-		invert_grid.set_sensitive(true);
+		invert_box.set_sensitive(true);
 	}
 	else
-		invert_grid.set_sensitive(false);
+		invert_box.set_sensitive(false);
 
 	// feather size
 	if (get_layer_circle_flag() ||
@@ -1510,10 +1502,10 @@ StateCircle_Context::toggle_layer_creation()
 		get_layer_plant_flag() ||
 		get_layer_curve_gradient_flag())
 	{
-		origins_at_center_grid.set_sensitive(true);
+		origins_at_center_box.set_sensitive(true);
 	}
 	else
-		origins_at_center_grid.set_sensitive(false);
+		origins_at_center_box.set_sensitive(false);
 
 	// link origins
 	if (get_layer_region_flag() +
@@ -1523,9 +1515,9 @@ StateCircle_Context::toggle_layer_creation()
 		get_layer_curve_gradient_flag() +
 		get_layer_circle_flag() >= 2)
 		{
-			link_origins_grid.set_sensitive(true);
+			link_origins_box.set_sensitive(true);
 		}
-	else link_origins_grid.set_sensitive(false);
+	else link_origins_box.set_sensitive(false);
 
   // update layer flags
   layer_circle_flag = get_layer_circle_flag();

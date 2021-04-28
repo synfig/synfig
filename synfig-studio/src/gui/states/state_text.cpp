@@ -111,22 +111,22 @@ class studio::StateText_Context
 
 	Gtk::Label id_label;
 	Gtk::Entry id_entry;
-	Gtk::Grid id_grid;
+	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_text_togglebutton;
-	Gtk::Grid layer_types_grid;
+	Gtk::Box layer_types_box;
 
 	Gtk::Label blend_label;
 	Widget_Enum blend_enum;
-	Gtk::Grid blend_grid;
+	Gtk::Box blend_box;
 
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
 
 	Gtk::Label paragraph_label;
 	Gtk::CheckButton paragraph_checkbutton;
-	Gtk::Grid paragraph_grid;
+	Gtk::Box paragraph_box;
 
 	Gtk::Label size_label;
 	Widget_Vector size_widget;
@@ -392,11 +392,10 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_grid.attach(id_label, 0, 0, 1, 1);
-	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
-	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(*id_gap, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -407,16 +406,15 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
-	layer_types_grid.attach_next_to(layer_text_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_types_box.pack_start(layer_text_togglebutton, false, false, 0);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_grid.attach(blend_label, 0, 0, 1, 1);
-	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
+	blend_box.pack_start(blend_label, false, false, 0);
+	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -433,9 +431,8 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	paragraph_label.set_label(_("Multiline Text"));
 	paragraph_label.set_halign(Gtk::ALIGN_START);
 	paragraph_label.set_valign(Gtk::ALIGN_CENTER);
-	paragraph_label.set_hexpand();
-	paragraph_grid.attach(paragraph_label, 0, 0, 1, 1);
-	paragraph_grid.attach_next_to(paragraph_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	paragraph_box.pack_start(paragraph_label, true, true, 0);
+	paragraph_box.pack_start(paragraph_checkbutton, false, false, 0);
 
 	size_label.set_label(_("Size:"));
 	size_label.set_halign(Gtk::ALIGN_START);
@@ -457,13 +454,13 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(id_grid,
+	options_grid.attach(id_box,
 		0, 1, 2, 1);
 	options_grid.attach(layer_types_label,
 		0, 2, 2, 1);
-	options_grid.attach(layer_types_grid,
+	options_grid.attach(layer_types_box,
 		0, 3, 2, 1);
-	options_grid.attach(blend_grid,
+	options_grid.attach(blend_box,
 		0, 4, 1, 1);
 	options_grid.attach(blend_enum,
 		1, 4, 1, 1);
@@ -471,7 +468,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 		0, 5, 1, 1);
 	options_grid.attach(opacity_hscl,
 		1, 5, 1, 1);
-	options_grid.attach(paragraph_grid,
+	options_grid.attach(paragraph_box,
 		0, 6, 2, 1);
 	options_grid.attach(size_label,
 		0, 7, 1, 1);

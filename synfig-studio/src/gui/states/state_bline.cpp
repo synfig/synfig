@@ -145,9 +145,9 @@ class studio::StateBLine_Context : public sigc::trackable
 
 	Gtk::Label title_label;
 
-	Gtk::Grid id_grid;
 	Gtk::Label id_label;
 	Gtk::Entry id_entry;
+	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_region_togglebutton;
@@ -155,11 +155,11 @@ class studio::StateBLine_Context : public sigc::trackable
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::ToggleButton layer_curve_gradient_togglebutton;
 	Gtk::ToggleButton layer_plant_togglebutton;
-	Gtk::Grid layer_types_grid;
+	Gtk::Box layer_types_box;
 
 	Gtk::Label blend_label;
 	Widget_Enum blend_enum;
-	Gtk::Grid blend_grid;
+	Gtk::Box blend_box;
 
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
@@ -172,11 +172,11 @@ class studio::StateBLine_Context : public sigc::trackable
 
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::Grid link_origins_grid;
+	Gtk::Box link_origins_box;
 
 	Gtk::Label auto_export_label;
 	Gtk::CheckButton auto_export_checkbutton;
-	Gtk::Grid auto_export_grid;
+	Gtk::Box auto_export_box;
 
 public:
 
@@ -512,11 +512,10 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_grid.attach(id_label, 0, 0, 1, 1);
-	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
-	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(*id_gap, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -535,20 +534,19 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
-	layer_types_grid.attach_next_to(layer_region_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_advanced_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_plant_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_curve_gradient_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_plant_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_curve_gradient_togglebutton, false, false, 0);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_grid.attach(blend_label, 0, 0, 1, 1);
-	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
+	blend_box.pack_start(blend_label, false, false, 0);
+	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -583,33 +581,31 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	link_origins_label.set_label(_("Link Origins"));
 	link_origins_label.set_halign(Gtk::ALIGN_START);
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
-	link_origins_label.set_hexpand();
 
-	link_origins_grid.attach(link_origins_label, 0, 0, 1, 1);
-	link_origins_grid.attach_next_to(layer_link_origins_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	link_origins_grid.set_sensitive(false);
+	link_origins_box.pack_start(link_origins_label, true, true, 0);
+	link_origins_box.pack_start(layer_link_origins_checkbutton, false, false, 0);
+	link_origins_box.set_sensitive(false);
 
 	auto_export_label.set_label(_("Auto Export"));
 	auto_export_label.set_halign(Gtk::ALIGN_START);
 	auto_export_label.set_valign(Gtk::ALIGN_CENTER);
-	auto_export_label.set_hexpand();
 
-	auto_export_grid.attach(auto_export_label, 0, 0, 1, 1);
-	auto_export_grid.attach_next_to(auto_export_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	auto_export_grid.set_sensitive(true);
+	auto_export_box.pack_start(auto_export_label, true, true, 0);
+	auto_export_box.pack_start(auto_export_checkbutton, false, false, 0);
+	auto_export_box.set_sensitive(true);
 
 	load_settings();
 
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(id_grid,
+	options_grid.attach(id_box,
 		0, 1, 2, 1);
 	options_grid.attach(layer_types_label,
 		0, 2, 2, 1);
-	options_grid.attach(layer_types_grid,
+	options_grid.attach(layer_types_box,
 		0, 3, 2, 1);
-	options_grid.attach(blend_grid,
+	options_grid.attach(blend_box,
 		0, 4, 1, 1);
 	options_grid.attach(blend_enum,
 		1, 4, 1, 1);
@@ -625,9 +621,9 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 		0, 7, 1, 1);
 	options_grid.attach(feather_dist,
 		1, 7, 1, 1);
-	options_grid.attach(link_origins_grid,
+	options_grid.attach(link_origins_box,
 		0, 8, 2, 1);
-	options_grid.attach(auto_export_grid,
+	options_grid.attach(auto_export_box,
 		0, 9, 2, 1);
 
 	options_grid.set_vexpand(false);
@@ -2011,9 +2007,9 @@ StateBLine_Context::toggle_layer_creation()
 		get_layer_plant_flag() +
 		get_layer_curve_gradient_flag() >= 2)
 		{
-			link_origins_grid.set_sensitive(true);
+			link_origins_box.set_sensitive(true);
 		}
-	else link_origins_grid.set_sensitive(false);
+	else link_origins_box.set_sensitive(false);
 
   // update layer flags
   layer_region_flag = get_layer_region_flag();

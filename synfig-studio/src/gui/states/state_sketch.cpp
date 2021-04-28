@@ -85,7 +85,7 @@ class studio::StateSketch_Context : public sigc::trackable
 
 	Gtk::Label show_sketch_label;
 	Gtk::CheckButton show_sketch_checkbutton;
-	Gtk::Grid show_sketch_grid;
+	Gtk::Box show_sketch_box;
 
 	void clear_sketch();
 	void save_sketch();
@@ -249,13 +249,13 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	show_sketch_label.set_valign(Gtk::ALIGN_CENTER);
 	show_sketch_label.set_hexpand();
 
-	show_sketch_grid.attach(show_sketch_label, 0, 0, 1, 1);
-	show_sketch_grid.attach_next_to(show_sketch_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	show_sketch_box.pack_start(show_sketch_label, true, true, 0);
+	show_sketch_box.pack_start(show_sketch_checkbutton, false, false, 0);
 
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(show_sketch_grid,
+	options_grid.attach(show_sketch_box,
 		0, 1, 2, 1);
 
 	options_grid.set_vexpand(false);

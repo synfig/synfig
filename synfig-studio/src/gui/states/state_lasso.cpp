@@ -192,12 +192,12 @@ class studio::StateLasso_Context : public sigc::trackable
 	Gtk::RadioButton localthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> localthres_adj;
 	Gtk::SpinButton localthres_spin;
-	Gtk::Grid localthres_grid;
+	Gtk::Box localthres_box;
 
 	Gtk::RadioButton globalthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> globalthres_adj;
 	Gtk::SpinButton globalthres_spin;
-	Gtk::Grid globalthres_grid;
+	Gtk::Box globalthres_box;
 
 	// width max error advanced outline layer
 	Gtk::Label width_max_error_label;
@@ -669,13 +669,13 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
 	SPACING(localthres_indent, INDENTATION);
-	localthres_grid.attach(*localthres_indent, 0, 0, 1, 1);
-	localthres_grid.attach_next_to(localthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
+	localthres_box.pack_start(*localthres_indent, false, false, 0);
+	localthres_box.pack_start(localthres_radiobutton, false, false, 0);
 	localthres_radiobutton.set_label("Local:");
 
 	SPACING(globalthres_indent, INDENTATION);
-	globalthres_grid.attach(*globalthres_indent, 0, 0, 1, 1);
-	globalthres_grid.attach_next_to(globalthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
+	globalthres_box.pack_start(*globalthres_indent, false, false, 0);
+	globalthres_box.pack_start(globalthres_radiobutton, false, false, 0);
 	globalthres_radiobutton.set_label("Global:");
 
 	smoothness_group = localthres_radiobutton.get_group();
@@ -736,11 +736,11 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 		0, 0, 2, 1);
 	options_grid.attach(smoothness_label,
 		0, 1, 2, 1);
-	options_grid.attach(localthres_grid,
+	options_grid.attach(localthres_box,
 		0, 2, 1, 1);
 	options_grid.attach(localthres_spin,
 		1, 2, 1, 1);
-	options_grid.attach(globalthres_grid,
+	options_grid.attach(globalthres_box,
 		0, 3, 1, 1);
 	options_grid.attach(globalthres_spin,
 		1, 3, 1, 1);

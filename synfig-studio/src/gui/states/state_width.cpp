@@ -106,7 +106,7 @@ class studio::StateWidth_Context : public sigc::trackable
 
 	Gtk::Label relative_label;
 	Gtk::CheckButton relative_checkbutton;
-	Gtk::Grid relative_grid;
+	Gtk::Box relative_box;
 
 	Gtk::Label growth_label;
 	Gtk::Label radius_label;
@@ -247,8 +247,8 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	relative_label.set_valign(Gtk::ALIGN_CENTER);
 	relative_label.set_hexpand();
 	
-	relative_grid.attach(relative_label, 0, 0, 1, 1);
-	relative_grid.attach_next_to(relative_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	relative_box.pack_start(relative_label, true, true, 0);
+	relative_box.pack_start(relative_checkbutton, false, false, 0);
 
 	growth_label.set_label(_("Growth:"));
 	growth_label.set_halign(Gtk::ALIGN_START);
@@ -277,7 +277,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 		0, 2, 1, 1);
 	options_grid.attach(*influence_radius,
 		1, 2, 1, 1);
-	options_grid.attach(relative_grid,
+	options_grid.attach(relative_box,
 		0, 3, 2, 1);
 
 	options_grid.set_vexpand(false);

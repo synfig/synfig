@@ -112,7 +112,7 @@ class studio::StateRotate_Context : public sigc::trackable
 
 	Gtk::Label scale_label;
 	Gtk::CheckButton scale_checkbutton;
-	Gtk::Grid scale_grid;
+	Gtk::Box scale_box;
 
 public:
 
@@ -209,17 +209,16 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	title_label.set_valign(Gtk::ALIGN_CENTER);
 
 	scale_label.set_label(_("Allow Scale"));
-	scale_label.set_hexpand();
 	scale_label.set_halign(Gtk::ALIGN_START);
 	scale_label.set_valign(Gtk::ALIGN_CENTER);
 
-	scale_grid.attach(scale_label, 0, 0, 1, 1);
-	scale_grid.attach_next_to(scale_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	scale_box.pack_start(scale_label, true, true, 0);
+	scale_box.pack_start(scale_checkbutton, false, false, 0);
 
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(scale_grid,
+	options_grid.attach(scale_box,
 		0, 1, 2, 1);
 
 	scale_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateRotate_Context::refresh_scale_flag));

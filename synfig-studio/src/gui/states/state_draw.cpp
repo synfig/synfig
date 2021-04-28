@@ -151,17 +151,17 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Gtk::Label id_label;
 	Gtk::Entry id_entry;
-	Gtk::Grid id_grid;
+	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_region_togglebutton;
 	Gtk::ToggleButton layer_outline_togglebutton;
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
-	Gtk::Grid layer_types_grid;
+	Gtk::Box layer_types_box;
 
 	Gtk::Label blend_label;
 	Widget_Enum blend_enum;
-	Gtk::Grid blend_grid;
+	Gtk::Box blend_box;
 
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
@@ -171,15 +171,15 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Gtk::Label pressure_width_label;
 	Gtk::CheckButton pressure_width_checkbutton;
-	Gtk::Grid pressure_width_grid;
+	Gtk::Box pressure_width_box;
 
 	Gtk::Label min_pressure_label;
-	Gtk::Grid min_pressure_label_grid;
+	Gtk::Box min_pressure_label_box;
 
 	Gtk::CheckButton min_pressure_checkbutton;
 	Glib::RefPtr<Gtk::Adjustment> min_pressure_adj;
 	Gtk::SpinButton  min_pressure_spin;
-	Gtk::Grid min_pressure_grid;
+	Gtk::Box min_pressure_box;
 
 	Gtk::Label smoothness_label;
 	Gtk::RadioButton::Group smoothness_group;
@@ -187,44 +187,44 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::RadioButton localthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> localthres_adj;
 	Gtk::SpinButton localthres_spin;
-	Gtk::Grid localthres_grid;
+	Gtk::Box localthres_box;
 
 	Gtk::RadioButton globalthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> globalthres_adj;
 	Gtk::SpinButton globalthres_spin;
-	Gtk::Grid globalthres_grid;
+	Gtk::Box globalthres_box;
 
 	Gtk::Label width_max_error_label;
-	Gtk::Grid width_max_error_grid;
+	Gtk::Box width_max_error_box;
 	Glib::RefPtr<Gtk::Adjustment> width_max_error_adj;
 	Gtk::SpinButton width_max_error_spin;
 
 	Gtk::Label round_ends_label;
 	Gtk::CheckButton round_ends_checkbutton;
-	Gtk::Grid round_ends_grid;
+	Gtk::Box round_ends_box;
 
 	Gtk::Label auto_loop_label;
 	Gtk::CheckButton auto_loop_checkbutton;
-	Gtk::Grid auto_loop_grid;
+	Gtk::Box auto_loop_box;
 
 	Gtk::Label auto_extend_label;
 	Gtk::CheckButton auto_extend_checkbutton;
-	Gtk::Grid auto_extend_grid;
+	Gtk::Box auto_extend_box;
 
 	Gtk::Label auto_link_label;
 	Gtk::CheckButton auto_link_checkbutton;
-	Gtk::Grid auto_link_grid;
+	Gtk::Box auto_link_box;
 
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::Grid link_origins_grid;
+	Gtk::Box link_origins_box;
 
 	Gtk::Label auto_export_label;
 	Gtk::CheckButton auto_export_checkbutton;
-	Gtk::Grid auto_export_grid;
+	Gtk::Box auto_export_box;
 
 	Gtk::Button fill_last_stroke_button;
 
@@ -617,11 +617,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_grid.attach(id_label, 0, 0, 1, 1);
-	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
-	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(*id_gap, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -636,18 +635,17 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
-	layer_types_grid.attach_next_to(layer_region_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_advanced_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_grid.attach(blend_label, 0, 0, 1, 1);
-	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
+	blend_box.pack_start(blend_label, false, false, 0);
+	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -664,7 +662,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	bline_width_label.set_label(_("Brush Size:"));
 	bline_width_label.set_halign(Gtk::ALIGN_START);
 	bline_width_label.set_valign(Gtk::ALIGN_CENTER);
-	bline_width_label.set_vexpand();
 
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
@@ -672,40 +669,35 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	pressure_width_label.set_label(_("Pressure Sensitive"));
 	pressure_width_label.set_halign(Gtk::ALIGN_START);
 	pressure_width_label.set_valign(Gtk::ALIGN_CENTER);
-	pressure_width_label.set_hexpand();
 
-	pressure_width_grid.attach(pressure_width_label, 0, 0, 1, 1);
-	pressure_width_grid.attach_next_to(pressure_width_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	pressure_width_box.pack_start(pressure_width_label, true, true, 0);
+	pressure_width_box.pack_start(pressure_width_checkbutton, false, false, 0);
 
 	SPACING(min_pressure_indent, INDENTATION);
 	SPACING(min_pressure_gap, GAP);
 	min_pressure_label.set_label(_("Min Width:"));
 	min_pressure_label.set_halign(Gtk::ALIGN_START);
 	min_pressure_label.set_valign(Gtk::ALIGN_CENTER);
-	min_pressure_label.set_vexpand();
-	min_pressure_label_grid.attach(*min_pressure_indent, 0, 0, 1, 1);
-	min_pressure_label_grid.attach_next_to(min_pressure_label, Gtk::POS_RIGHT, 1, 1);
+	min_pressure_label_box.pack_start(*min_pressure_indent, false, false, 0);
+	min_pressure_label_box.pack_start(min_pressure_label, false, false, 0);
 
-	min_pressure_spin.set_hexpand();
-	min_pressure_grid.attach(min_pressure_spin, 0, 0, 1, 1);
-	min_pressure_grid.attach_next_to(*min_pressure_gap, Gtk::POS_RIGHT, 1, 1);
-	min_pressure_grid.attach_next_to(min_pressure_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	min_pressure_box.pack_start(min_pressure_spin, true, true, 0);
+	min_pressure_box.pack_start(*min_pressure_gap, false, false, 0);
+	min_pressure_box.pack_start(min_pressure_checkbutton, false, false, 0);
 
 	smoothness_label.set_label(_("Smoothness"));
 	smoothness_label.set_halign(Gtk::ALIGN_START);
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
 	SPACING(localthres_indent, INDENTATION);
-	localthres_grid.attach(*localthres_indent, 0, 0, 1, 1);
-	localthres_grid.attach_next_to(localthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
+	localthres_box.pack_start(*localthres_indent, false, false, 0);
+	localthres_box.pack_start(localthres_radiobutton, false, false, 0);
 	localthres_radiobutton.set_label(_("Local:"));
-	localthres_radiobutton.set_vexpand();
 
 	SPACING(globalthres_indent, INDENTATION);
-	globalthres_grid.attach(*globalthres_indent, 0, 0, 1, 1);
-	globalthres_grid.attach_next_to(globalthres_radiobutton, Gtk::POS_RIGHT, 1, 1);
+	globalthres_box.pack_start(*globalthres_indent, false, false, 0);
+	globalthres_box.pack_start(globalthres_radiobutton, false, false, 0);
 	globalthres_radiobutton.set_label(_("Global:"));
-	globalthres_radiobutton.set_vexpand();
 
 	smoothness_group = localthres_radiobutton.get_group();
 	globalthres_radiobutton.set_group(smoothness_group);
@@ -714,41 +706,36 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	SPACING(width_max_error_gap, GAP);
 	width_max_error_label.set_halign(Gtk::ALIGN_START);
 	width_max_error_label.set_valign(Gtk::ALIGN_CENTER);
-	width_max_error_label.set_vexpand();
-	width_max_error_grid.attach(width_max_error_label, 0, 0, 1, 1);
-	width_max_error_grid.attach_next_to(*width_max_error_gap, Gtk::POS_RIGHT, 1, 1);
+	width_max_error_box.pack_start(width_max_error_label, false, false, 0);
+	width_max_error_box.pack_start(*width_max_error_gap, false, false, 0);
 
 	round_ends_label.set_label(_("Round Ends"));
 	round_ends_label.set_halign(Gtk::ALIGN_START);
 	round_ends_label.set_valign(Gtk::ALIGN_CENTER);
-	round_ends_label.set_hexpand();
 
-	round_ends_grid.attach(round_ends_label, 0, 0, 1, 1);
-	round_ends_grid.attach_next_to(round_ends_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	round_ends_box.pack_start(round_ends_label, true, true, 0);
+	round_ends_box.pack_start(round_ends_checkbutton, false, false, 0);
 
 	auto_loop_label.set_label(_("Auto Loop"));
 	auto_loop_label.set_halign(Gtk::ALIGN_START);
 	auto_loop_label.set_valign(Gtk::ALIGN_CENTER);
-	auto_loop_label.set_hexpand();
 
-	auto_loop_grid.attach(auto_loop_label, 0, 0, 1, 1);
-	auto_loop_grid.attach_next_to(auto_loop_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	auto_loop_box.pack_start(auto_loop_label, true, true, 0);
+	auto_loop_box.pack_start(auto_loop_checkbutton, false, false, 0);
 
 	auto_extend_label.set_label(_("Auto Extend"));
 	auto_extend_label.set_halign(Gtk::ALIGN_START);
 	auto_extend_label.set_valign(Gtk::ALIGN_CENTER);
-	auto_extend_label.set_hexpand();
 
-	auto_extend_grid.attach(auto_extend_label, 0, 0, 1, 1);
-	auto_extend_grid.attach_next_to(auto_extend_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	auto_extend_box.pack_start(auto_extend_label, true, true, 0);
+	auto_extend_box.pack_start(auto_extend_checkbutton, false, false, 0);
 
 	auto_link_label.set_label(_("Auto Link"));
 	auto_link_label.set_halign(Gtk::ALIGN_START);
 	auto_link_label.set_valign(Gtk::ALIGN_CENTER);
-	auto_link_label.set_hexpand();
 
-	auto_link_grid.attach(auto_link_label, 0, 0, 1, 1);
-	auto_link_grid.attach_next_to(auto_link_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	auto_link_box.pack_start(auto_link_label, true, true, 0);
+	auto_link_box.pack_start(auto_link_checkbutton, false, false, 0);
 
 	feather_label.set_label(_("Feather:"));
 	feather_label.set_halign(Gtk::ALIGN_START);
@@ -760,19 +747,17 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	link_origins_label.set_label(_("Link Origins"));
 	link_origins_label.set_halign(Gtk::ALIGN_START);
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
-	link_origins_label.set_hexpand();
 
-	link_origins_grid.attach(link_origins_label, 0, 0, 1, 1);
-	link_origins_grid.attach_next_to(layer_link_origins_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	link_origins_grid.set_sensitive(false);
+	link_origins_box.pack_start(link_origins_label, true, true, 0);
+	link_origins_box.pack_start(layer_link_origins_checkbutton, false, false, 0);
+	link_origins_box.set_sensitive(false);
 
 	auto_export_label.set_label(_("Auto Export"));
 	auto_export_label.set_halign(Gtk::ALIGN_START);
 	auto_export_label.set_valign(Gtk::ALIGN_CENTER);
-	auto_export_label.set_hexpand();
 
-	auto_export_grid.attach(auto_export_label, 0, 0, 1, 1);
-	auto_export_grid.attach_next_to(auto_export_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	auto_export_box.pack_start(auto_export_label, true, true, 0);
+	auto_export_box.pack_start(auto_export_checkbutton, false, false, 0);
 
 	nested=0;
 	load_settings();
@@ -784,13 +769,13 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(id_grid,
+	options_grid.attach(id_box,
 		0, 1, 2, 1);
 	options_grid.attach(layer_types_label,
 		0, 2, 2, 1);
-	options_grid.attach(layer_types_grid,
+	options_grid.attach(layer_types_box,
 		0, 3, 2, 1);
-	options_grid.attach(blend_grid,
+	options_grid.attach(blend_box,
 		0, 4, 1, 1);
 	options_grid.attach(blend_enum,
 		1, 4, 1, 1);
@@ -802,41 +787,41 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		0, 6, 1, 1);
 	options_grid.attach(bline_width_dist,
 		1, 6, 1, 1);
-	options_grid.attach(pressure_width_grid,
+	options_grid.attach(pressure_width_box,
 		0, 7, 2, 1);
-	options_grid.attach(min_pressure_label_grid,
+	options_grid.attach(min_pressure_label_box,
 		0, 8, 1, 1);
-	options_grid.attach(min_pressure_grid,
+	options_grid.attach(min_pressure_box,
 		1, 8, 1, 1);
 	options_grid.attach(smoothness_label,
 		0, 9, 2, 1);
-	options_grid.attach(localthres_grid,
+	options_grid.attach(localthres_box,
 		0, 10, 1, 1);
 	options_grid.attach(localthres_spin,
 		1, 10, 1, 1);
-	options_grid.attach(globalthres_grid,
+	options_grid.attach(globalthres_box,
 		0, 11, 1, 1);
 	options_grid.attach(globalthres_spin,
 		1, 11, 1, 1);
-	options_grid.attach(width_max_error_grid,
+	options_grid.attach(width_max_error_box,
 		0, 12, 1, 1);
 	options_grid.attach(width_max_error_spin,
 		1, 12, 1, 1);
-	options_grid.attach(round_ends_grid,
+	options_grid.attach(round_ends_box,
 		0, 13, 2, 1);
-	options_grid.attach(auto_loop_grid,
+	options_grid.attach(auto_loop_box,
 		0, 14, 2, 1);
-	options_grid.attach(auto_extend_grid,
+	options_grid.attach(auto_extend_box,
 		0, 15, 2, 1);
-	options_grid.attach(auto_link_grid,
+	options_grid.attach(auto_link_box,
 		0, 16, 2, 1);
 	options_grid.attach(feather_label,
 		0, 17, 1, 1);
 	options_grid.attach(feather_dist,
 		1, 17, 1, 1);
-	options_grid.attach(link_origins_grid,
+	options_grid.attach(link_origins_box,
 		0, 18, 2, 1);
-	options_grid.attach(auto_export_grid,
+	options_grid.attach(auto_export_box,
 		0, 19, 2, 1);
 
 	options_grid.set_vexpand(false);
@@ -2978,7 +2963,7 @@ StateDraw_Context::toggle_layer_creation()
 		get_layer_outline_flag() +
 		get_layer_advanced_outline_flag() >= 2)
 		{
-			link_origins_grid.set_sensitive(true);
+			link_origins_box.set_sensitive(true);
 		}
-	else link_origins_grid.set_sensitive(false);
+	else link_origins_box.set_sensitive(false);
 }

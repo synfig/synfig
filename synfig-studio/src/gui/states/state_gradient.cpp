@@ -111,7 +111,7 @@ class studio::StateGradient_Context : public sigc::trackable
 
 	Gtk::Label id_label;
 	Gtk::Entry id_entry;
-	Gtk::Grid id_grid;
+	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_circle_togglebutton;
@@ -119,11 +119,11 @@ class studio::StateGradient_Context : public sigc::trackable
 	Gtk::ToggleButton layer_radial_gradient_togglebutton;
 	Gtk::ToggleButton layer_conical_gradient_togglebutton;
 	Gtk::ToggleButton layer_spiral_gradient_togglebutton;
-	Gtk::Grid layer_types_grid;
+	Gtk::Box layer_types_box;
 
 	Gtk::Label blend_label;
 	Widget_Enum blend_enum;
-	Gtk::Grid blend_grid;
+	Gtk::Box blend_box;
 
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
@@ -395,11 +395,10 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	id_entry.set_hexpand();
 	SPACING(name_gap, GAP);
-	id_grid.attach(id_label, 0, 0, 1, 1);
-	id_grid.attach_next_to(*name_gap, Gtk::POS_RIGHT, 1, 1);
-	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(*name_gap, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -415,20 +414,19 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 		("synfig-layer_gradient_spiral"), _("Create a spiral gradient"));
 
 	SPACING(layer_types_indent, INDENTATION);
-	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
-	layer_types_grid.attach_next_to(layer_linear_gradient_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_radial_gradient_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_conical_gradient_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_spiral_gradient_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_types_box.pack_start(layer_linear_gradient_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_radial_gradient_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_conical_gradient_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_spiral_gradient_togglebutton, false, false, 0);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
 
-	blend_grid.attach(blend_label, 0, 0, 1, 1);
-	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
+	blend_box.pack_start(blend_label, false, false, 0);
+	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -447,13 +445,13 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(id_grid,
+	options_grid.attach(id_box,
 		0, 1, 2, 1);
 	options_grid.attach(layer_types_label,
 		0, 2, 2, 1);
-	options_grid.attach(layer_types_grid,
+	options_grid.attach(layer_types_box,
 		0, 3, 2, 1);
-	options_grid.attach(blend_grid,
+	options_grid.attach(blend_box,
 		0, 4, 1, 1);
 	options_grid.attach(blend_enum,
 		1, 4, 1, 1);

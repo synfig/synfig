@@ -116,7 +116,7 @@ class studio::StateStar_Context : public sigc::trackable
 
 	Gtk::Label id_label;
 	Gtk::Entry id_entry;
-	Gtk::Grid id_grid;
+	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_star_togglebutton;
@@ -125,11 +125,11 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::ToggleButton layer_curve_gradient_togglebutton;
 	Gtk::ToggleButton layer_plant_togglebutton;
-	Gtk::Grid layer_types_grid;
+	Gtk::Box layer_types_box;
 
 	Gtk::Label blend_label;
 	Widget_Enum blend_enum;
-	Gtk::Grid blend_grid;
+	Gtk::Box blend_box;
 
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
@@ -151,7 +151,7 @@ class studio::StateStar_Context : public sigc::trackable
 
 	Gtk::Label regular_polygon_label;
 	Gtk::CheckButton regular_polygon_checkbutton;
-	Gtk::Grid regular_polygon_grid;
+	Gtk::Box regular_polygon_box;
 
 	Gtk::Label outer_width_label;
 	Glib::RefPtr<Gtk::Adjustment> outer_width_adj;
@@ -171,18 +171,18 @@ class studio::StateStar_Context : public sigc::trackable
 
 	Gtk::Label invert_label;
 	Gtk::CheckButton invert_checkbutton;
-	Gtk::Grid invert_grid;
+	Gtk::Box invert_box;
 
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::Grid link_origins_grid;
+	Gtk::Box link_origins_box;
 
 	Gtk::Label origins_at_center_label;
 	Gtk::CheckButton layer_origins_at_center_checkbutton;
-	Gtk::Grid origins_at_center_grid;
+	Gtk::Box origins_at_center_box;
 
 public:
 
@@ -598,11 +598,10 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	id_entry.set_hexpand();
 	SPACING(id_gap, GAP);
-	id_grid.attach(id_label, 0, 0, 1, 1);
-	id_grid.attach_next_to(*id_gap, Gtk::POS_RIGHT, 1, 1);
-	id_grid.attach_next_to(id_entry, Gtk::POS_RIGHT, 1, 1);
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(*id_gap, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -623,21 +622,20 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_grid.attach(*layer_types_indent, 0, 0, 1, 1);
-	layer_types_grid.attach_next_to(layer_star_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_region_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_advanced_outline_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_plant_togglebutton, Gtk::POS_RIGHT, 1, 1);
-	layer_types_grid.attach_next_to(layer_curve_gradient_togglebutton, Gtk::POS_RIGHT, 1, 1);
+	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_types_box.pack_start(layer_star_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_plant_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_curve_gradient_togglebutton, false, false, 0);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	blend_label.set_vexpand();
 	SPACING(blend_gap, GAP);
-	blend_grid.attach(blend_label, 0, 0, 1, 1);
-	blend_grid.attach_next_to(*blend_gap, Gtk::POS_RIGHT, 1, 1);
+	blend_box.pack_start(blend_label, false, false, 0);
+	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -675,10 +673,9 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	regular_polygon_label.set_label(_("Regular Polygon"));
 	regular_polygon_label.set_halign(Gtk::ALIGN_START);
 	regular_polygon_label.set_valign(Gtk::ALIGN_CENTER);
-	regular_polygon_label.set_hexpand();
 
-	regular_polygon_grid.attach(regular_polygon_label, 0, 0, 1, 1);
-	regular_polygon_grid.attach_next_to(regular_polygon_checkbutton, Gtk::POS_RIGHT, 1, 1);
+	regular_polygon_box.pack_start(regular_polygon_label, true, true, 0);
+	regular_polygon_box.pack_start(regular_polygon_checkbutton, false, false, 0);
 
 	inner_width_label.set_label(_("Inner Width:"));
 	inner_width_label.set_halign(Gtk::ALIGN_START);
@@ -699,11 +696,10 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	invert_label.set_label(_("Invert"));
 	invert_label.set_halign(Gtk::ALIGN_START);
 	invert_label.set_valign(Gtk::ALIGN_CENTER);
-	invert_label.set_hexpand();
 
-	invert_grid.attach(invert_label, 0, 0, 1, 1);
-	invert_grid.attach_next_to(invert_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	invert_grid.set_sensitive(false);
+	invert_box.pack_start(invert_label, true, true, 0);
+	invert_box.pack_start(invert_checkbutton, false, false, 0);
+	invert_box.set_sensitive(false);
 
 	feather_label.set_label(_("Feather:"));
 	feather_label.set_halign(Gtk::ALIGN_START);
@@ -717,33 +713,31 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	link_origins_label.set_label(_("Link Origins"));
 	link_origins_label.set_halign(Gtk::ALIGN_START);
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
-	link_origins_label.set_hexpand();
 
-	link_origins_grid.attach(link_origins_label, 0, 0, 1, 1);
-	link_origins_grid.attach_next_to(layer_link_origins_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	link_origins_grid.set_sensitive(false);
+	link_origins_box.pack_start(link_origins_label, true, true, 0);
+	link_origins_box.pack_start(layer_link_origins_checkbutton, false, false, 0);
+	link_origins_box.set_sensitive(false);
 
 	origins_at_center_label.set_label(_("Spline Origins at Center"));
 	origins_at_center_label.set_halign(Gtk::ALIGN_START);
 	origins_at_center_label.set_valign(Gtk::ALIGN_CENTER);
-	origins_at_center_label.set_hexpand();
 
-	origins_at_center_grid.attach(origins_at_center_label, 0, 0, 1, 1);
-	origins_at_center_grid.attach_next_to(layer_origins_at_center_checkbutton, Gtk::POS_RIGHT, 1, 1);
-	origins_at_center_grid.set_sensitive(false);
+	origins_at_center_box.pack_start(origins_at_center_label, true, true, 0);
+	origins_at_center_box.pack_start(layer_origins_at_center_checkbutton, false, false, 0);
+	origins_at_center_box.set_sensitive(false);
 
 	load_settings();
 
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(id_grid,
+	options_grid.attach(id_box,
 		0, 1, 2, 1);
 	options_grid.attach(layer_types_label,
 		0, 2, 2, 1);
-	options_grid.attach(layer_types_grid,
+	options_grid.attach(layer_types_box,
 		0, 3, 2, 1);
-	options_grid.attach(blend_grid,
+	options_grid.attach(blend_box,
 		0, 4, 1, 1);
 	options_grid.attach(blend_enum,
 		1, 4, 1, 1);
@@ -767,7 +761,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 		0, 9, 1, 1);
 	options_grid.attach(radius_ratio_spin,
 		1, 9, 1, 1);
-	options_grid.attach(regular_polygon_grid,
+	options_grid.attach(regular_polygon_box,
 		0, 10, 2, 1);
 	options_grid.attach(inner_width_label,
 		0, 11, 1, 1);
@@ -785,15 +779,15 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 		0, 14, 1, 1);
 	options_grid.attach(outer_tangent_spin,
 		1, 14, 1, 1);
-	options_grid.attach(invert_grid,
+	options_grid.attach(invert_box,
 		0, 15, 2, 1);
 	options_grid.attach(feather_label,
 		0, 16, 1, 1);
 	options_grid.attach(feather_dist,
 		1, 16, 1, 1);
-	options_grid.attach(link_origins_grid,
+	options_grid.attach(link_origins_box,
 		0, 17, 2, 1);
-	options_grid.attach(origins_at_center_grid,
+	options_grid.attach(origins_at_center_box,
 		0, 18, 2, 1);
 
 	options_grid.set_vexpand(false);
@@ -1579,10 +1573,10 @@ StateStar_Context::toggle_layer_creation()
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag())
 	{
-		invert_grid.set_sensitive(true);
+		invert_box.set_sensitive(true);
 	}
 	else
-		invert_grid.set_sensitive(false);
+		invert_box.set_sensitive(false);
 
 	// feather size
 	if (get_layer_star_flag() ||
@@ -1606,10 +1600,10 @@ StateStar_Context::toggle_layer_creation()
 		get_layer_plant_flag() ||
 		get_layer_curve_gradient_flag())
 	{
-		origins_at_center_grid.set_sensitive(true);
+		origins_at_center_box.set_sensitive(true);
 	}
 	else
-		origins_at_center_grid.set_sensitive(false);
+		origins_at_center_box.set_sensitive(false);
 
 	// link origins
 	if (get_layer_region_flag() +
@@ -1619,9 +1613,9 @@ StateStar_Context::toggle_layer_creation()
 		get_layer_curve_gradient_flag() +
 		get_layer_star_flag() >= 2)
 	{
-		link_origins_grid.set_sensitive(true);
+		link_origins_box.set_sensitive(true);
 	}
-	else link_origins_grid.set_sensitive(false);
+	else link_origins_box.set_sensitive(false);
 
   // update layer flags
   layer_star_flag = get_layer_star_flag();
