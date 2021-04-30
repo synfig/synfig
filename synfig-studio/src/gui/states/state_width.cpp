@@ -93,10 +93,9 @@ class studio::StateWidth_Context : public sigc::trackable
 
 	WorkArea::PushState push_state;
 
-	//Toolbox settings
+	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	//Toolbox display
 	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
@@ -107,7 +106,7 @@ class studio::StateWidth_Context : public sigc::trackable
 
 	Gtk::Label relative_label;
 	Gtk::CheckButton relative_checkbutton;
-	Gtk::HBox relative_box;
+	Gtk::Box relative_box;
 
 	Gtk::Label growth_label;
 	Gtk::Label radius_label;
@@ -246,9 +245,10 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	relative_label.set_label(_("Relative Growth"));
 	relative_label.set_halign(Gtk::ALIGN_START);
 	relative_label.set_valign(Gtk::ALIGN_CENTER);
+	relative_label.set_hexpand();
 	
-	relative_box.pack_start(relative_label);
-	relative_box.pack_end(relative_checkbutton, Gtk::PACK_SHRINK);
+	relative_box.pack_start(relative_label, true, true, 0);
+	relative_box.pack_start(relative_checkbutton, false, false, 0);
 
 	growth_label.set_label(_("Growth:"));
 	growth_label.set_halign(Gtk::ALIGN_START);
@@ -280,6 +280,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	options_grid.attach(relative_box,
 		0, 3, 2, 1);
 
+	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.show_all();

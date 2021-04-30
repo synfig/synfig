@@ -107,21 +107,17 @@ class studio::StateStar_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	//Toolbox settings
+	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	// holder of options
 	Gtk::Grid options_grid;
 
-	// title
 	Gtk::Label title_label;
 
-	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
+	Gtk::Box id_box;
 
-	// layer types to create:
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_star_togglebutton;
 	Gtk::ToggleButton layer_region_togglebutton;
@@ -129,79 +125,64 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::ToggleButton layer_curve_gradient_togglebutton;
 	Gtk::ToggleButton layer_plant_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Box layer_types_box;
 
-	// blend method
 	Gtk::Label blend_label;
-	Gtk::HBox blend_box;
 	Widget_Enum blend_enum;
+	Gtk::Box blend_box;
 
-	// opacity
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
 
-	// brush size
 	Gtk::Label bline_width_label;
 	Widget_Distance bline_width_dist;
 
-	// star points
 	Gtk::Label number_of_points_label;
 	Glib::RefPtr<Gtk::Adjustment> number_of_points_adj;
 	Gtk::SpinButton	number_of_points_spin;
 
-	// radius ratio
 	Gtk::Label radius_ratio_label;
 	Glib::RefPtr<Gtk::Adjustment> radius_ratio_adj;
 	Gtk::SpinButton	radius_ratio_spin;
 
-	// angle offset
 	Gtk::Label angle_offset_label;
 	Glib::RefPtr<Gtk::Adjustment> angle_offset_adj;
 	Gtk::SpinButton	angle_offset_spin;
 
-	// regular polygon
 	Gtk::Label regular_polygon_label;
 	Gtk::CheckButton regular_polygon_checkbutton;
-	Gtk::HBox regular_polygon_box;
+	Gtk::Box regular_polygon_box;
 
-	// inner width
 	Gtk::Label outer_width_label;
 	Glib::RefPtr<Gtk::Adjustment> outer_width_adj;
 	Gtk::SpinButton	outer_width_spin;
 
-	// inner tangent
 	Gtk::Label inner_tangent_label;
 	Glib::RefPtr<Gtk::Adjustment> inner_tangent_adj;
 	Gtk::SpinButton	inner_tangent_spin;
 
-	// outer width
 	Gtk::Label inner_width_label;
 	Glib::RefPtr<Gtk::Adjustment> inner_width_adj;
 	Gtk::SpinButton	inner_width_spin;
 
-	// outer tangent
 	Gtk::Label outer_tangent_label;
 	Glib::RefPtr<Gtk::Adjustment> outer_tangent_adj;
 	Gtk::SpinButton	outer_tangent_spin;
 
-	// invert
 	Gtk::Label invert_label;
 	Gtk::CheckButton invert_checkbutton;
-	Gtk::HBox invert_box;
+	Gtk::Box invert_box;
 
-	// feather size
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
-	// link origins
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::HBox link_origins_box;
+	Gtk::Box link_origins_box;
 
-	// spline origins at center
 	Gtk::Label origins_at_center_label;
 	Gtk::CheckButton layer_origins_at_center_checkbutton;
-	Gtk::HBox origins_at_center_box;
+	Gtk::Box origins_at_center_box;
 
 public:
 
@@ -618,10 +599,9 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(id_gap, GAP);
-	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
-
-	id_box.pack_start(id_entry);
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(*id_gap, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
 	layer_types_label.set_halign(Gtk::ALIGN_START);
@@ -642,20 +622,20 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 
 	SPACING(layer_types_indent, INDENTATION);
 
-	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_star_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_types_box.pack_start(layer_star_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_plant_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_curve_gradient_togglebutton, false, false, 0);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
 	SPACING(blend_gap, GAP);
-	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
-	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+	blend_box.pack_start(blend_label, false, false, 0);
+	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -694,8 +674,8 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	regular_polygon_label.set_halign(Gtk::ALIGN_START);
 	regular_polygon_label.set_valign(Gtk::ALIGN_CENTER);
 
-	regular_polygon_box.pack_start(regular_polygon_label);
-	regular_polygon_box.pack_end(regular_polygon_checkbutton, Gtk::PACK_SHRINK);
+	regular_polygon_box.pack_start(regular_polygon_label, true, true, 0);
+	regular_polygon_box.pack_start(regular_polygon_checkbutton, false, false, 0);
 
 	inner_width_label.set_label(_("Inner Width:"));
 	inner_width_label.set_halign(Gtk::ALIGN_START);
@@ -717,8 +697,8 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	invert_label.set_halign(Gtk::ALIGN_START);
 	invert_label.set_valign(Gtk::ALIGN_CENTER);
 
-	invert_box.pack_start(invert_label);
-	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
+	invert_box.pack_start(invert_label, true, true, 0);
+	invert_box.pack_start(invert_checkbutton, false, false, 0);
 	invert_box.set_sensitive(false);
 
 	feather_label.set_label(_("Feather:"));
@@ -734,16 +714,16 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	link_origins_label.set_halign(Gtk::ALIGN_START);
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
 
-	link_origins_box.pack_start(link_origins_label);
-	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
+	link_origins_box.pack_start(link_origins_label, true, true, 0);
+	link_origins_box.pack_start(layer_link_origins_checkbutton, false, false, 0);
 	link_origins_box.set_sensitive(false);
 
 	origins_at_center_label.set_label(_("Spline Origins at Center"));
 	origins_at_center_label.set_halign(Gtk::ALIGN_START);
 	origins_at_center_label.set_valign(Gtk::ALIGN_CENTER);
 
-	origins_at_center_box.pack_start(origins_at_center_label);
-	origins_at_center_box.pack_end(layer_origins_at_center_checkbutton, Gtk::PACK_SHRINK);
+	origins_at_center_box.pack_start(origins_at_center_label, true, true, 0);
+	origins_at_center_box.pack_start(layer_origins_at_center_checkbutton, false, false, 0);
 	origins_at_center_box.set_sensitive(false);
 
 	load_settings();
@@ -810,6 +790,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_grid.attach(origins_at_center_box,
 		0, 18, 2, 1);
 
+	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
