@@ -33,7 +33,6 @@
 
 #include "base_types.h"
 
-#include "general.h"
 #include <synfig/localization.h>
 
 #include "value.h"

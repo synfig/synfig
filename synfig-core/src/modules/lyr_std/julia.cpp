@@ -35,16 +35,13 @@
 #include "julia.h"
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
-#include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #endif
 

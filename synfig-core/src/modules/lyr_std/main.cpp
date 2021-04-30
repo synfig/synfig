@@ -42,14 +42,11 @@
 #include <synfig/rendering/renderer.h>
 
 #include "zoom.h"
-//#include "blur.h"
 #include "import.h"
 #include "translate.h"
 #include "rotate.h"
 #include "clamp.h"
 #include "stretch.h"
-
-//#include "colorcorrect.h"
 
 #include "supersample.h"
 
@@ -62,9 +59,6 @@
 
 #include "shade.h"
 #include "bevel.h"
-//#include "halftone2.h"
-
-//#include "radialblur.h"
 
 #include "perspective.h"
 #include "timeloop.h"

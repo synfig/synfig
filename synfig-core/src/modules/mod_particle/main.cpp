@@ -37,7 +37,6 @@
 #include <synfig/general.h>
 #include <synfig/module.h>
 #include <synfig/string.h>
-#include <synfig/canvas.h>
 
 #include "plant.h"
 

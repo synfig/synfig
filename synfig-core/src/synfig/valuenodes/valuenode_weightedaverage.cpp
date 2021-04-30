@@ -31,7 +31,6 @@
 
 #include "valuenode_weightedaverage.h"
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 

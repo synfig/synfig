@@ -31,16 +31,13 @@
 
 #include "layer_skeletondeformation.h"
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
-#include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/tasklayer.h>

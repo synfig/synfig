@@ -33,21 +33,12 @@
 #endif
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/context.h>
-#include <synfig/cairo_renddesc.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/render.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 #include <synfig/string.h>
-#include <synfig/surface.h>
-#include <synfig/target.h>
-#include <synfig/target_scanline.h>
-#include <synfig/time.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #include "supersample.h"
 

@@ -37,7 +37,6 @@
 #include <synfig/angle.h>
 #include "plant.h"
 #include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
@@ -46,10 +45,8 @@
 #include <synfig/valuenode.h>
 
 #include <ETL/calculus>
-#include <ETL/bezier>
 #include <ETL/hermite>
 #include <vector>
-#include <time.h>
 
 #include <synfig/valuenodes/valuenode_bline.h>
 

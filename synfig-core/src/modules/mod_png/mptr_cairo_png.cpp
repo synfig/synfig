@@ -35,13 +35,10 @@
 #include "mptr_cairo_png.h"
 #include <synfig/cairoimporter.h>
 #include <synfig/time.h>
-#include <synfig/general.h>
-#include <synfig/localization.h>
 
 
 #include <cstdio>
 #include <algorithm>
-#include <functional>
 #endif
 
 /* === M A C R O S ========================================================= */

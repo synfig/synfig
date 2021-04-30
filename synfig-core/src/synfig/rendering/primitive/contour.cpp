@@ -31,8 +31,6 @@
 
 #include <algorithm>
 
-#include <synfig/general.h>
-
 #include "intersector.h"
 
 #include "contour.h"

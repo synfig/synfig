@@ -50,7 +50,6 @@
 #include "checkerboard.h"
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #endif
 

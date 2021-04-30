@@ -29,8 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include <synfig/debug/debugsurface.h>
 
 #include "../../common/task/taskblend.h"

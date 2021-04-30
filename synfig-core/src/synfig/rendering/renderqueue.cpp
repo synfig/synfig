@@ -30,9 +30,7 @@
 #endif
 
 #include <cstdlib>
-#include <climits>
 
-#include <typeinfo>
 
 #include <synfig/general.h>
 #include <synfig/localization.h>

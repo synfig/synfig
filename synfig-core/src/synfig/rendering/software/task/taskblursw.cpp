@@ -29,8 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "../../common/task/taskblur.h"
 #include "../../common/task/taskblend.h"
 #include "tasksw.h"

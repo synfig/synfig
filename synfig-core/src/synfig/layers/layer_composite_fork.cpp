@@ -29,7 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
 #include "layer_composite_fork.h"

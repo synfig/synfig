@@ -30,7 +30,6 @@
 #endif
 
 #include <synfig/debug/debugsurface.h>
-#include <synfig/general.h>
 
 #include "../../common/task/taskpixelprocessor.h"
 #include "tasksw.h"

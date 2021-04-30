@@ -39,7 +39,6 @@
 
 #include <cstdio>
 #include <glib/gstdio.h>
-#include <thread>
 
 #include "trgt_ffmpeg.h"
 

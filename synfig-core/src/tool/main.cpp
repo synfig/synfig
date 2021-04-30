@@ -35,26 +35,15 @@
 #include <string>
 #include <list>
 
-//#include <boost/program_options/options_description.hpp>
-//#include <boost/program_options/parsers.hpp>
-//#include <boost/program_options/variables_map.hpp>
-#include <boost/tokenizer.hpp>
-#include <boost/token_functions.hpp>
-//#include <boost/format.hpp>
 
 #include <glibmm.h>
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
-
 #include <synfig/module.h>
-#include <synfig/importer.h>
 #include <synfig/cairoimporter.h>
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
 #include <synfig/target.h>
-#include <synfig/targetparam.h>
-#include <synfig/string.h>
 #include <synfig/paramdesc.h>
 #include <synfig/main.h>
 #include <autorevision.h>
@@ -66,10 +55,8 @@
 #include "joblistprocessor.h"
 #include "printing_functions.h"
 
-//#include "named_type.h"
 #endif
 
-//namespace po=boost::program_options;
 
 std::string _appendAlphaToFilename(std::string input_filename)
 {

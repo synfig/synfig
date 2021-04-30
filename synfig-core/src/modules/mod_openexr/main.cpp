@@ -35,9 +35,6 @@
 #warning HAVE_CONFIG_H not defined!
 #endif
 
-#include <synfig/localization.h>
-#include <synfig/general.h>
-
 #include <synfig/module.h>
 #include "trgt_openexr.h"
 #include "mptr_openexr.h"

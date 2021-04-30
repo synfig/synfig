@@ -29,9 +29,6 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/localization.h>
-
 #include <synfig/debug/debugsurface.h>
 
 #include "resample.h"

@@ -39,13 +39,10 @@
 
 #include <synfig/module.h>
 #include <synfig/string.h>
-#include <synfig/canvas.h>
 #include <synfig/valuenode.h>
 
 #include "noise.h"
 #include "distort.h"
-#include "random_noise.h"
-#include "valuenode_random.h"
 
 #endif
 
