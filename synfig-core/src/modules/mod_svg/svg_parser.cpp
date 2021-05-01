@@ -61,20 +61,20 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 //attributes
-static int extractSubAttribute(const String attribute, String name,String* value);
-static String loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal);
-static String loadAttribute(String name,const String path_style,const String master_style,const String defaultVal);
-static std::vector<String> get_tokens_path(String path);
+static int extractSubAttribute(const String& attribute, const String& name, String& value);
+static String loadAttribute(const String& name, const String& path_style, const String& master_style, String subattribute, String defaultVal);
+static String loadAttribute(const String& name, const String& path_style, const String& master_style, String defaultVal);
+static std::vector<String> get_tokens_path(const String& path);
 static int randomLetter();
-static int getRed(String hex);
-static int getGreen(String hex);
-static int getBlue(String hex);
+static int getRed(const String& hex);
+static int getGreen(const String& hex);
+static int getBlue(const String& hex);
 static int hextodec(const std::string& hex);
-static int getColor(String name, int position);
-static float getDimension(const String ac);
+static int getColor(const String& name, int position);
+static float getDimension(const String& ac);
 static float getRadian(float sexa);
 //string functions
-static void removeIntoS(String *input);
+static void removeIntoS(String& input);
 static std::vector<String> tokenize(const String& str,const String& delimiters);
 
 /* === M E T H O D S ======================================================= */
@@ -1190,8 +1190,8 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 						String stop_color;
 						String opacity;
 						if(!style.empty()){
-							extractSubAttribute (style,"stop-color",&stop_color);
-							extractSubAttribute (style,"stop-opacity",&opacity);
+							extractSubAttribute (style,"stop-color",stop_color);
+							extractSubAttribute (style,"stop-opacity",opacity);
 						}
 						if(opacity.empty()) opacity="1";
 						if(stop_color.empty()) stop_color="#000000";//black for default :S
@@ -1602,7 +1602,7 @@ SVGMatrix*
 Svg_parser::parser_transform(const String transform){
 	SVGMatrix* a=NULL;
 	String tf(transform);
-	removeIntoS(&tf);
+	removeIntoS(tf);
 	std::vector<String> tokens=tokenize(tf," ");
 	std::vector<String>::iterator aux=tokens.begin();
 	while(aux!=tokens.end()){
@@ -1729,7 +1729,8 @@ Svg_parser::matrixIsNull(SVGMatrix *mtx){
 /* === EXTRA METHODS ======================================================= */
 
 static int
-extractSubAttribute(const String attribute, String name,String* value){
+extractSubAttribute(const String& attribute, const String& name, String& value)
+{
 	int encounter=0;
 	if(!attribute.empty()){
 		String str = synfig::trim(attribute);
@@ -1739,7 +1740,7 @@ extractSubAttribute(const String attribute, String name,String* value){
 			int mid= (*aux).find_first_of(":");
 			if((*aux).substr(0,mid).compare(name)==0){
 				int end=(*aux).size();
-				*value=(*aux).substr(mid+1,end-mid);
+				value=(*aux).substr(mid+1,end-mid);
 				return 1;
 			}
 			aux++;
@@ -1749,27 +1750,29 @@ extractSubAttribute(const String attribute, String name,String* value){
 }
 
 static String
-loadAttribute(String name,const String path_style,const String master_style,const String defaultVal){
+loadAttribute(const String& name, const String& path_style, const String& master_style, String defaultVal)
+{
 	String value;
 	int fnd=0;
 	if(!path_style.empty())
-		fnd=extractSubAttribute(path_style,name,&value);
+		fnd=extractSubAttribute(path_style,name,value);
 	if(fnd==0){
 		if(!master_style.empty())
-			fnd=extractSubAttribute(master_style,name,&value);
+			fnd=extractSubAttribute(master_style,name,value);
 		if(fnd==0)
 			value=defaultVal;
 	}
 	return value;
 }
 static String
-loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal){
+loadAttribute(const String& name, const String& path_style, const String& master_style, String subattribute, String defaultVal)
+{
 	String value;
 	int fnd=0;
 	if(!path_style.empty())
-		fnd=extractSubAttribute(path_style,name,&value);
+		fnd=extractSubAttribute(path_style,name,value);
 	if(fnd==0 && !master_style.empty())
-			fnd=extractSubAttribute(master_style,name,&value);
+			fnd=extractSubAttribute(master_style,name,value);
 	if(fnd==0){
 		if(!subattribute.empty())
 			value=subattribute;
@@ -1780,7 +1783,8 @@ loadAttribute(String name,const String path_style,const String master_style,cons
 }
 
 static std::vector<String>
-get_tokens_path(String path){ //mini path lexico-parser
+get_tokens_path(const String& path) //mini path lexico-parser
+{
 	std::vector<String> tokens;
 	String buffer;
 	int e=0;
@@ -1875,14 +1879,16 @@ get_tokens_path(String path){ //mini path lexico-parser
 }
 
 static int
-randomLetter(){
+randomLetter()
+{
 	int a=rand()%2;
 	if(a) return (49 + rand()%9);
 	else return  (65 + rand()%24);
 }
 
 static int
-getRed(String hex){
+getRed(const String& hex)
+{
 	if(hex.at(0)=='#'){
 		//allow for 3-digit hex codes (#rgb = #rrggbb)
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(1,1));
@@ -1896,7 +1902,8 @@ getRed(String hex){
 	return getColor(hex,1);
 }
 static int
-getGreen(String hex){
+getGreen(const String& hex)
+{
 	if(hex.at(0)=='#'){
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(2,1));
 		return hextodec(hex.substr(3,2));
@@ -1909,7 +1916,8 @@ getGreen(String hex){
 	return getColor(hex,2);
 }
 static int
-getBlue(String hex){
+getBlue(const String& hex)
+{
 	if(hex.at(0)=='#'){
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(3,1));
 		return hextodec(hex.substr(5,2));
@@ -1922,7 +1930,8 @@ getBlue(String hex){
 	return getColor(hex,3);
 }
 static int
-hextodec(const std::string& hex){
+hextodec(const std::string& hex)
+{
 	if (hex.empty()) {
 		return 0;
 	}
@@ -1941,7 +1950,8 @@ hextodec(const std::string& hex){
 }
 
 static float
-getDimension(const String ac){
+getDimension(const String& ac)
+{
 	if(ac.empty()){
 		return 0;
 	}
@@ -1981,15 +1991,15 @@ getRadian(float sexa){
 }
 
 static void
-removeIntoS(String *input){
+removeIntoS(String& input){
 	bool into=false;
-	for(unsigned int i=0;i<input->size();i++){
-		if(input->at(i)=='('){
+	for(unsigned int i=0;i<input.size();i++){
+		if(input.at(i)=='('){
 			into=true;
-		}else if(input->at(i)==')'){
+		}else if(input.at(i)==')'){
 			into=false;
-		}else if(into && input->at(i)==' '){
-			input->erase(i,1);
+		}else if(into && input.at(i)==' '){
+			input.erase(i,1);
 		}
 	}
 }
@@ -2015,7 +2025,7 @@ Svg_parser::new_guid(){
 #define COLOR_NAME(color, r, g, b) {color, {r, g, b}},
 
 static int
-getColor(String name, int position) {
+getColor(const String& name, int position) {
 	if (position < 1 || position > 3) return 0;
 
 	struct RGB {
