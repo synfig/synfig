@@ -64,6 +64,10 @@ endif(MSVC)
 
 message("-- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
+if (${ENABLE_TESTS})
+	enable_testing()
+endif()
+
 include(SynfigFindGit)
 
 add_subdirectory(ETL)
