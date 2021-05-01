@@ -531,7 +531,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx){
 	std::list<BLine *> k0;
 	if(polygon_points.empty())
 		return k0;
-	std::list<Vertex*> points;
+	std::list<Vertex> points;
 	std::vector<String> tokens=get_tokens_path (polygon_points);
 	unsigned int i;
 	float ax,ay; ax=ay=0;
@@ -544,7 +544,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx){
 		//adjust
 		coor2vect(&ax,&ay);
 		//save
-		points.push_back(newVertex(ax,ay));
+		points.push_back(Vertex(ax,ay));
 	}
 	k0.push_front(newBLine(&points, true));
 	return k0;
@@ -553,7 +553,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx){
 std::list<BLine *>
 Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 	std::list<BLine *> k;
-	std::list<Vertex*> k1;
+	std::list<Vertex> k1;
 
 	std::vector<String> tokens=get_tokens_path(path_d);
 	String command="M"; //the current command
@@ -596,8 +596,8 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			//operate and save
 			if(mtx) transformPoint2D(mtx,&ax,&ay);
 			coor2vect(&ax,&ay);
-			k1.push_back(newVertex (ax,ay)); //first element
-			setSplit(k1.back(),TRUE);
+			k1.push_back(Vertex(ax,ay)); //first element
+			k1.back().setSplit(true);
 			//"If a moveto is followed by multiple pairs of coordinates,
 			// the subsequent pairs are treated as implicit lineto commands."
 			if (command.compare("M")==0)
@@ -631,13 +631,13 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			coor2vect(&ax,&ay);
 			coor2vect(&tgx,&tgy);
 			//save
-			setTg2(k1.back(),k1.back()->x,k1.back()->y,tgx2,tgy2);
-			if(isFirst(k1.front(),ax,ay)){
-				setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
+			k1.back().setTg2(k1.back().x,k1.back().y,tgx2,tgy2);
+			if(k1.front().isFirst(ax,ay)){
+				k1.front().setTg1(k1.front().x,k1.front().y,tgx,tgy);
 			}else{
-				k1.push_back(newVertex (ax,ay));
-				setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
-				setSplit(k1.back(),TRUE);
+				k1.push_back(Vertex(ax,ay));
+				k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+				k1.back().setSplit(true);
 			}
 		}else if(command.compare("Q")==0 || command.compare("q")==0){ //quadractic curve
 			//tg1 and tg2
@@ -660,10 +660,10 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			coor2vect(&ax,&ay);
 			coor2vect(&tgx,&tgy);
 			//save
-			setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
-			setSplit(k1.back(),FALSE);
-			k1.push_back(newVertex (ax,ay));
-			setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
+			k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+			k1.back().setSplit(false);
+			k1.push_back(Vertex(ax,ay));
+			k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
 		}else if(command.compare("L")==0 || command.compare("l")==0){ //line to
 			//point
 			actual_x+=atof(tokens.at(i).data());
@@ -677,12 +677,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
-			setTg2(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			if(isFirst(k1.front(),ax,ay)){
-				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
+			k1.back().setTg2(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+			if(k1.front().isFirst(ax,ay)){
+				k1.front().setTg1(k1.front().x,k1.front().y,k1.front().x,k1.front().y);
 			}else{
-				k1.push_back(newVertex(ax,ay));
-				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
+				k1.push_back(Vertex(ax,ay));
+				k1.back().setTg1(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
 			}
 		}else if(command.compare("H")==0 || command.compare("h")==0){// horizontal move
 			//the same that L but only Horizontal movement
@@ -696,12 +696,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
-			setTg2(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			if(isFirst(k1.front(),ax,ay)){
-				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
+			k1.back().setTg2(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+			if(k1.front().isFirst(ax,ay)){
+				k1.front().setTg1(k1.front().x,k1.front().y,k1.front().x,k1.front().y);
 			}else{
-				k1.push_back(newVertex(ax,ay));
-				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
+				k1.push_back(Vertex(ax,ay));
+				k1.back().setTg1(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
 			}
 		}else if(command.compare("V")==0 || command.compare("v")==0){//vertical
 			//point
@@ -714,12 +714,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
-			setTg2(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			if(isFirst(k1.front(),ax,ay)){
-				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
+			k1.back().setTg2(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+			if(k1.front().isFirst(ax,ay)){
+				k1.front().setTg1(k1.front().x,k1.front().y,k1.front().x,k1.front().y);
 			}else{
-				k1.push_back(newVertex(ax,ay));
-				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
+				k1.push_back(Vertex(ax,ay));
+				k1.back().setTg1(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
 			}
 		}else if(command.compare("T")==0 || command.compare("t")==0){// I don't know what does it
 			actual_x+=atof(tokens.at(i).data());
@@ -770,13 +770,13 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				coor2vect(&ax,&ay);
 				coor2vect(&tgx,&tgy);
 				//save
-				setTg2(k1.back(),k1.back()->x,k1.back()->y,tgx2,tgy2);
-				if(isFirst(k1.front(),ax,ay)){
-					setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
+				k1.back().setTg2(k1.back().x,k1.back().y,tgx2,tgy2);
+				if(k1.front().isFirst(ax,ay)){
+					k1.front().setTg1(k1.front().x,k1.front().y,tgx,tgy);
 				}else{
-					k1.push_back(newVertex (ax,ay));
-					setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
-					setSplit(k1.back(),TRUE);
+					k1.push_back(Vertex (ax,ay));
+					k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+					k1.back().setSplit(true);
 				}
 			}else if(!large &&  sweep){
 				//points
@@ -798,13 +798,13 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				coor2vect(&ax,&ay);
 				coor2vect(&tgx,&tgy);
 				//save
-				setTg2(k1.back(),k1.back()->x,k1.back()->y,tgx2,tgy2);
-				if(isFirst(k1.front(),ax,ay)){
-					setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
+				k1.back().setTg2(k1.back().x,k1.back().y,tgx2,tgy2);
+				if(k1.front().isFirst(ax,ay)){
+					k1.front().setTg1(k1.front().x,k1.front().y,tgx,tgy);
 				}else{
-					k1.push_back(newVertex (ax,ay));
-					setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
-					setSplit(k1.back(),TRUE);
+					k1.push_back(Vertex(ax,ay));
+					k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+					k1.back().setSplit(true);
 				}
 			}else if( large && !sweep){//rare
 				//this need more than one vertex
@@ -847,19 +847,19 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				coor2vect(&in_x    , &in_y   );
 
 				//save the last tg2
-				setTg2(k1.back(),k1.back()->x,k1.back()->y,tgx2,tgy2);
+				k1.back().setTg2(k1.back().x,k1.back().y,tgx2,tgy2);
 				//save the intermediate point
-				k1.push_back(newVertex (in_x,in_y));
-				setTg1(k1.back(),k1.back()->x,k1.back()->y, in_tgx1 , in_tgy1);
-				setTg2(k1.back(),k1.back()->x,k1.back()->y, in_tgx2 , in_tgy2);
-				setSplit(k1.back(),TRUE); //this could be changed
+				k1.push_back(Vertex(in_x,in_y));
+				k1.back().setTg1(k1.back().x,k1.back().y, in_tgx1 , in_tgy1);
+				k1.back().setTg2(k1.back().x,k1.back().y, in_tgx2 , in_tgy2);
+				k1.back().setSplit(true); //this could be changed
 				//save the new point
-				if(isFirst(k1.front(),ax,ay)){
-					setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
+				if(k1.front().isFirst(ax,ay)){
+					k1.front().setTg1(k1.front().x,k1.front().y,tgx,tgy);
 				}else{
-					k1.push_back(newVertex (ax,ay));
-					setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
-					setSplit(k1.back(),TRUE);
+					k1.push_back(Vertex(ax,ay));
+					k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+					k1.back().setSplit(true);
 				}
 			}
 		}else if(command.compare("z")==0){
@@ -874,8 +874,8 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				//operate and save
 				if(mtx) transformPoint2D(mtx,&ax,&ay);
 				coor2vect(&ax,&ay);
-				k1.push_back(newVertex (ax,ay)); //first element
-				setSplit(k1.back(),TRUE);
+				k1.push_back(Vertex(ax,ay)); //first element
+				k1.back().setSplit(true);
 			}
 			i--; //decrement i to balance "i++" at command change
 		}else{
@@ -1287,11 +1287,11 @@ Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<Co
 }
 
 BLine*
-Svg_parser::newBLine(std::list<Vertex*> *points,bool loop){
+Svg_parser::newBLine(std::list<Vertex> *points,bool loop){
 	BLine* data;
 	data=(BLine*)malloc(sizeof(BLine));
 	//sprintf(data->name,"%s",name.data());
-	data->points=new std::list<Vertex*> (*points);
+	data->points=new std::list<Vertex> (*points);
 	data->loop=loop;
 	data->bline_id=new String(new_guid());
 	data->offset_id=new String(new_guid());
@@ -1337,30 +1337,30 @@ Svg_parser::build_points(xmlpp::Element* root,std::list<Vertex*> p){
 	}
 }
 void
-Svg_parser::build_vertex(xmlpp::Element* root , Vertex *p){
+Svg_parser::build_vertex(xmlpp::Element* root , const Vertex &p){
 	xmlpp::Element *child_comp=root->add_child("composite");
 	child_comp->set_attribute("type","bline_point");
-	build_vector (child_comp->add_child("param"),"point",p->x,p->y);
+	build_vector (child_comp->add_child("param"),"point",p.x,p.y);
 	build_param (child_comp->add_child("width"),"","real","1.0000000000");
 	build_param (child_comp->add_child("origin"),"","real","0.5000000000");
-	if(p->split) build_param (child_comp->add_child("split"),"","bool","true");
+	if(p.split) build_param (child_comp->add_child("split"),"","bool","true");
 	else build_param (child_comp->add_child("split"),"","bool","false");
 	//tangent 1
 	xmlpp::Element *child_t1=child_comp->add_child("t1");
 	xmlpp::Element *child_rc=child_t1->add_child("radial_composite");
 	child_rc->set_attribute("type","vector");
-	build_param (child_rc->add_child("radius"),"","real",p->radius1);
-	build_param (child_rc->add_child("theta"),"","angle",p->angle1);
+	build_param (child_rc->add_child("radius"),"","real",p.radius1);
+	build_param (child_rc->add_child("theta"),"","angle",p.angle1);
 	//tangent 2
 	xmlpp::Element *child_t2=child_comp->add_child("t2");
 	xmlpp::Element *child_rc2=child_t2->add_child("radial_composite");
 	child_rc2->set_attribute("type","vector");
-	build_param (child_rc2->add_child("radius"),"","real",p->radius2);
-	build_param (child_rc2->add_child("theta"),"","angle",p->angle2);
+	build_param (child_rc2->add_child("radius"),"","real",p.radius2);
+	build_param (child_rc2->add_child("theta"),"","angle",p.angle2);
 
 }
 void
-Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,String blineguid){
+Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex> p,bool loop,String blineguid){
 	root->set_attribute("name","bline");
 	xmlpp::Element *child=root->add_child("bline");
 	child->set_attribute("type","bline_point");
@@ -1369,9 +1369,9 @@ Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,Stri
 	else
 		child->set_attribute("loop","false");
 	if(!blineguid.empty())	child->set_attribute("guid",blineguid);
-	std::list<Vertex*>::iterator aux = p.begin();
+	std::list<Vertex>::iterator aux = p.begin();
 	while(aux!=p.end()){
-		if(*aux) build_vertex (child->add_child("entry"),*aux);
+		build_vertex (child->add_child("entry"),*aux);
 		aux++;
 	}
 }
@@ -1491,7 +1491,8 @@ Svg_parser::coor2vect(float *x,float *y){
 }
 
 void
-Svg_parser::setTg1(Vertex *p,float p1x,float p1y,float p2x,float p2y){
+Vertex::setTg1(float p1x,float p1y,float p2x,float p2y)
+{
 	float rd=0,ag=0;
 	float d1x,d1y,d2x,d2y,dx,dy;
 	d1x=p1x*60;
@@ -1513,23 +1514,25 @@ Svg_parser::setTg1(Vertex *p,float p1x,float p1y,float p2x,float p2y){
 		ag=atan(dy/dx);
 	}else if(dx<0 && dy>0){
 		ag= 2*PI+atan(dy/dx);
-	}else if(dx==0 && dy>0){
+	}else if(approximate_zero(dx) && dy>0){
 		ag=-1*PI/2;
-	}else if(dx==0 && dy<0){
+	}else if(approximate_zero(dx) && dy<0){
 		ag=PI/2;
-	}else if(dx==0 && dy==0){
+	}else if(approximate_zero(dx) && approximate_zero(dy)){
 		ag=0;
-	}else if(dx<0 && dy==0){
+	}else if(dx<0 && approximate_zero(dy)){
 		ag=0;
-	}else if(dx>0 && dy==0){
+	}else if(dx>0 && approximate_zero(dy)){
 		ag=PI;
 	}
 	ag= (ag*180)/PI;
-	p->radius1=rd;
-	p->angle1=ag;
+	this->radius1=rd;
+	this->angle1=ag;
 }
+
 void
-Svg_parser::setTg2(Vertex* p,float p1x,float p1y,float p2x,float p2y){
+Vertex::setTg2(float p1x,float p1y,float p2x,float p2y)
+{
 	float rd=0,ag=0;
 	float d1x,d1y,d2x,d2y,dx,dy;
 	d1x=p1x*60;
@@ -1556,44 +1559,42 @@ Svg_parser::setTg2(Vertex* p,float p1x,float p1y,float p2x,float p2y){
 	}else if(dx<0 && dy>0){
 		ag= 2*PI+atan(dy/dx);
 	//	printf("case 270-360\n");
-	}else if(dx==0 && dy>0){
+	}else if(approximate_zero(dx) && dy>0){
 		ag=-1*PI/2;
-	}else if(dx==0 && dy<0){
+	}else if(approximate_zero(dx) && dy<0){
 		ag=PI/2;
-	}else if(dx==0 && dy==0){
+	}else if(approximate_zero(dx) && approximate_zero(dy)){
 		ag=0;
-	}else if(dx<0 && dy==0){
+	}else if(dx<0 && approximate_zero(dy)){
 		ag=0;
-	}else if(dx>0 && dy==0){
+	}else if(dx>0 && approximate_zero(dy)){
 		ag=PI;
 	}
 	ag= (ag*180)/PI;
 	ag=ag-180;
-	p->radius2=rd;
-	p->angle2=ag;
+
+	this->radius2=rd;
+	this->angle2=ag;
 }
 
 void
-Svg_parser::setSplit(Vertex* p,bool val){
-	if(p!=NULL){
-		p->split=val;
-	}
-}
-int
-Svg_parser::isFirst(Vertex* nodo,float a, float b){
-	if(nodo->x==a && nodo->y==b)
-		return 1;
-	return 0;
+Vertex::setSplit(bool val)
+{
+	split=val;
 }
 
-Vertex*
-Svg_parser::newVertex(float x,float y){
-	Vertex* vert;
-	vert=(Vertex*)malloc(sizeof(Vertex));
-	vert->x=x;
-	vert->y=y;
-	vert->radius1=vert->radius2=vert->angle1=vert->angle2=0;
-	return vert;
+bool
+Vertex::isFirst(float a, float b) const
+{
+	return approximate_equal(x, a) && approximate_equal(y, b);
+}
+
+Vertex::Vertex(float x,float y)
+	: x(x), y(y),
+	  radius1(0), angle1(0),
+	  radius2(0), angle2(0),
+	  split(false)
+{
 }
 
 //matrices

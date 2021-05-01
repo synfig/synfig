@@ -75,15 +75,21 @@ typedef struct url_t{
 	void* data;
 }URL;
 
-typedef struct Vertex_t{
+struct Vertex{
    	float x,y;
 	float radius1,angle1;
 	float radius2,angle2;
 	bool split;
-}Vertex;
+
+	void setTg2(float p1x,float p1y,float p2x,float p2y);
+	void setTg1(float p1x,float p1y,float p2x,float p2y);
+	void setSplit(bool val);
+	bool isFirst(float a, float b) const;
+	Vertex(float x,float y);
+};
 
 typedef struct bline_t{
-	std::list<Vertex*> *points;
+	std::list<Vertex> *points;
 	bool loop;
 	String* bline_id;
 	String* offset_id;
@@ -142,7 +148,7 @@ private:
 		ColorStop* newColorStop(String color,float opacity,float pos);
 		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, SVGMatrix* transform);
 		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, SVGMatrix* transform);
-		BLine* newBLine(std::list<Vertex*> *points,bool loop);
+		BLine* newBLine(std::list<Vertex>* points, bool loop);
 
 		/* === BUILDS ===================================== */
 		void build_transform(xmlpp::Element* root,SVGMatrix* mtx);
@@ -157,8 +163,8 @@ private:
 		void build_rotate(xmlpp::Element* root,float dx,float dy,float angle);
 		void build_translate(xmlpp::Element* root,float dx,float dy);
 		void build_points(xmlpp::Element* root,std::list<Vertex*> p);
-		void build_vertex(xmlpp::Element* root , Vertex *p);
-		void build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,String blineguid);
+		void build_vertex(xmlpp::Element* root, const Vertex& p);
+		void build_bline(xmlpp::Element* root, std::list<Vertex> p, bool loop, String blineguid);
 		void build_param (xmlpp::Element* root,String name,String type,String value);
 		void build_param (xmlpp::Element* root,String name,String type,float value);
 		void build_param (xmlpp::Element* root,String name,String type,int value);
@@ -174,11 +180,6 @@ private:
 
 		//points,etc
 		void coor2vect(float *x,float *y);
-		void setTg2(Vertex* p,float p1x,float p1y,float p2x,float p2y);
-		void setTg1(Vertex *p,float p1x,float p1y,float p2x,float p2y);
-		void setSplit(Vertex* p,bool val);
-		int isFirst(Vertex* nodo,float a, float b);
-		Vertex* newVertex(float x,float y);
 
 		//matrix operations
 		SVGMatrix* parser_transform(const String transform);
