@@ -38,6 +38,7 @@
 
 #include <synfig/general.h>
 #include <synfig/loadcanvas.h>
+#include <synfig/string_helper.h>
 #include <unordered_map>
 
 #include "svg_parser.h"
@@ -1712,8 +1713,7 @@ int
 Svg_parser::extractSubAttribute(const String attribute, String name,String* value){
 	int encounter=0;
 	if(!attribute.empty()){
-		String str(attribute);
-		removeS(&str);
+		String str = synfig::trim(attribute);
 		std::vector<String> tokens=tokenize(str,";");
 		std::vector<String>::iterator aux=tokens.begin();
 		while(aux!=tokens.end()){
@@ -1958,14 +1958,6 @@ Svg_parser::getDimension(const String ac){
 float
 Svg_parser::getRadian(float sexa){
 	return (sexa*2*PI)/360;
-}
-void
-Svg_parser::removeS(String *input){
-	for(unsigned int i=0;i<input->size();i++){
-		if(input->at(i)==' '){
-			input->erase(i,1);
-		}
-	}
 }
 void
 Svg_parser::removeIntoS(String *input){

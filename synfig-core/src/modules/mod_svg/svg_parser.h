@@ -206,7 +206,6 @@ private:
 		int getColor(String name, int position);
 		float getDimension(const String ac);
 		//string functions
-		void removeS(String *input);
 		void removeIntoS(String *input);
 		std::vector<String> tokenize(const String& str,const String& delimiters);
 		String new_guid();
