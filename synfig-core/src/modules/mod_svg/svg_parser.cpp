@@ -2000,6 +2000,7 @@ removeIntoS(String& input){
 			into=false;
 		}else if(into && input.at(i)==' '){
 			input.erase(i,1);
+			i--;
 		}
 	}
 }
