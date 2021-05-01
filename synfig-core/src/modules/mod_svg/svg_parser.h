@@ -189,25 +189,9 @@ private:
 		bool matrixIsNull(SVGMatrix* mtx);
 		void composeSVGMatrix(SVGMatrix **mtx,SVGMatrix *mtx1,SVGMatrix *mtx2);
 		void multiplySVGMatrix(SVGMatrix **mtx1,SVGMatrix *mtx2);
-		float getRadian(float sexa);
 
 		/* === EXTRA METHODS ============================== */
 
-		//attributes
-		int extractSubAttribute(const String attribute, String name,String* value);
-		String loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal);
-		String loadAttribute(String name,const String path_style,const String master_style,const String defaultVal);
-		std::vector<String> get_tokens_path(String path);
-		int randomLetter();
-		int getRed(String hex);
-		int getGreen(String hex);
-		int getBlue(String hex);
-		int hextodec(const std::string& hex);
-		int getColor(String name, int position);
-		float getDimension(const String ac);
-		//string functions
-		void removeIntoS(String *input);
-		std::vector<String> tokenize(const String& str,const String& delimiters);
 		String new_guid();
 };
 // END of Svg_parser class

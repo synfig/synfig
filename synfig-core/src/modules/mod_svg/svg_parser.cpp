@@ -60,6 +60,25 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
+//attributes
+static int extractSubAttribute(const String attribute, String name,String* value);
+static String loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal);
+static String loadAttribute(String name,const String path_style,const String master_style,const String defaultVal);
+static std::vector<String> get_tokens_path(String path);
+static int randomLetter();
+static int getRed(String hex);
+static int getGreen(String hex);
+static int getBlue(String hex);
+static int hextodec(const std::string& hex);
+static int getColor(String name, int position);
+static float getDimension(const String ac);
+static float getRadian(float sexa);
+//string functions
+static void removeIntoS(String *input);
+static std::vector<String> tokenize(const String& str,const String& delimiters);
+
+/* === M E T H O D S ======================================================= */
+
 Canvas::Handle
 synfig::open_svg(std::string _filepath,String &errors, String &warnings){
 	Canvas::Handle canvas;
@@ -1709,8 +1728,8 @@ Svg_parser::matrixIsNull(SVGMatrix *mtx){
 
 /* === EXTRA METHODS ======================================================= */
 
-int
-Svg_parser::extractSubAttribute(const String attribute, String name,String* value){
+static int
+extractSubAttribute(const String attribute, String name,String* value){
 	int encounter=0;
 	if(!attribute.empty()){
 		String str = synfig::trim(attribute);
@@ -1728,8 +1747,9 @@ Svg_parser::extractSubAttribute(const String attribute, String name,String* valu
 	}
 	return encounter;
 }
-String
-Svg_parser::loadAttribute(String name,const String path_style,const String master_style,const String defaultVal){
+
+static String
+loadAttribute(String name,const String path_style,const String master_style,const String defaultVal){
 	String value;
 	int fnd=0;
 	if(!path_style.empty())
@@ -1742,8 +1762,8 @@ Svg_parser::loadAttribute(String name,const String path_style,const String maste
 	}
 	return value;
 }
-String
-Svg_parser::loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal){
+static String
+loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal){
 	String value;
 	int fnd=0;
 	if(!path_style.empty())
@@ -1759,8 +1779,8 @@ Svg_parser::loadAttribute(String name,const String path_style,const String maste
 	return value;
 }
 
-std::vector<String>
-Svg_parser::get_tokens_path(String path){ //mini path lexico-parser
+static std::vector<String>
+get_tokens_path(String path){ //mini path lexico-parser
 	std::vector<String> tokens;
 	String buffer;
 	int e=0;
@@ -1854,15 +1874,15 @@ Svg_parser::get_tokens_path(String path){ //mini path lexico-parser
 	return tokens;
 }
 
-int
-Svg_parser::randomLetter(){
+static int
+randomLetter(){
 	int a=rand()%2;
 	if(a) return (49 + rand()%9);
 	else return  (65 + rand()%24);
 }
 
-int
-Svg_parser::getRed(String hex){
+static int
+getRed(String hex){
 	if(hex.at(0)=='#'){
 		//allow for 3-digit hex codes (#rgb = #rrggbb)
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(1,1));
@@ -1875,8 +1895,8 @@ Svg_parser::getRed(String hex){
 	}
 	return getColor(hex,1);
 }
-int
-Svg_parser::getGreen(String hex){
+static int
+getGreen(String hex){
 	if(hex.at(0)=='#'){
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(2,1));
 		return hextodec(hex.substr(3,2));
@@ -1888,8 +1908,8 @@ Svg_parser::getGreen(String hex){
 	}
 	return getColor(hex,2);
 }
-int
-Svg_parser::getBlue(String hex){
+static int
+getBlue(String hex){
 	if(hex.at(0)=='#'){
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(3,1));
 		return hextodec(hex.substr(5,2));
@@ -1901,8 +1921,8 @@ Svg_parser::getBlue(String hex){
 	}
 	return getColor(hex,3);
 }
-int
-Svg_parser::hextodec(const std::string& hex){
+static int
+hextodec(const std::string& hex){
 	if (hex.empty()) {
 		return 0;
 	}
@@ -1920,8 +1940,8 @@ Svg_parser::hextodec(const std::string& hex){
 	return result;
 }
 
-float
-Svg_parser::getDimension(const String ac){
+static float
+getDimension(const String ac){
 	if(ac.empty()){
 		return 0;
 	}
@@ -1955,12 +1975,13 @@ Svg_parser::getDimension(const String ac){
 	return af;
 }
 
-float
-Svg_parser::getRadian(float sexa){
+static float
+getRadian(float sexa){
 	return (sexa*2*PI)/360;
 }
-void
-Svg_parser::removeIntoS(String *input){
+
+static void
+removeIntoS(String *input){
 	bool into=false;
 	for(unsigned int i=0;i<input->size();i++){
 		if(input->at(i)=='('){
@@ -1972,8 +1993,8 @@ Svg_parser::removeIntoS(String *input){
 		}
 	}
 }
-std::vector<String>
-Svg_parser::tokenize(const String& str,const String& delimiters){
+static std::vector<String>
+tokenize(const String& str,const String& delimiters){
 	std::vector<String> tokens;
 	String::size_type lastPos = str.find_first_not_of(delimiters, 0);
 	String::size_type pos = str.find_first_of(delimiters, lastPos);
@@ -1993,8 +2014,8 @@ Svg_parser::new_guid(){
 
 #define COLOR_NAME(color, r, g, b) {color, {r, g, b}},
 
-int
-Svg_parser::getColor(String name, int position) {
+static int
+getColor(String name, int position) {
 	if (position < 1 || position > 3) return 0;
 
 	struct RGB {
