@@ -1001,10 +1001,10 @@ Svg_parser::build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx){
 			}
 		}
 		if(!encounter && !rg.empty()){
-			std::list<RadialGradient*>::iterator aux=rg.begin();
+			std::list<RadialGradient>::iterator aux=rg.begin();
 			while(aux!=rg.end()){
-				if(find.compare((*aux)->name)==0){
-					build_radialGradient (root,*aux,mtx);
+				if(find.compare(aux->name)==0){
+					build_radialGradient(root,*aux,mtx);
 					encounter=true;
 				}
 				aux++;
@@ -1098,68 +1098,66 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 }
 
 void
-Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMatrix* mtx){
-	if(data){
-		xmlpp::Element* gradient;
+Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& data, SVGMatrix* mtx){
+	xmlpp::Element* gradient;
 
-		if (mtx || data->transform) {
-			xmlpp::Element* layer=root->add_child("layer");
+	if (mtx || data.transform) {
+		xmlpp::Element* layer=root->add_child("layer");
 
-			layer->set_attribute("type","group");
-			layer->set_attribute("active","true");
-			layer->set_attribute("version","0.1");
-			layer->set_attribute("desc",data->name);
-			build_param (layer->add_child("param"),"z_depth","real","0");
-			build_param (layer->add_child("param"),"amount","real","1");
-			build_param (layer->add_child("param"),"blend_method","integer","21"); //straight onto
-			build_vector (layer->add_child("param"),"origin",0,0);
-			xmlpp::Element *child=layer->add_child("param");
-			child->set_attribute("name","canvas");
-			xmlpp::Element* child_layer=child->add_child("canvas");
+		layer->set_attribute("type","group");
+		layer->set_attribute("active","true");
+		layer->set_attribute("version","0.1");
+		layer->set_attribute("desc",data.name);
+		build_param (layer->add_child("param"),"z_depth","real","0");
+		build_param (layer->add_child("param"),"amount","real","1");
+		build_param (layer->add_child("param"),"blend_method","integer","21"); //straight onto
+		build_vector (layer->add_child("param"),"origin",0,0);
+		xmlpp::Element *child=layer->add_child("param");
+		child->set_attribute("name","canvas");
+		xmlpp::Element* child_layer=child->add_child("canvas");
 
-			gradient=child_layer->add_child("layer");
-			gradient->set_attribute("desc",data->name);
-			build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
-			SVGMatrix *mtx2=NULL;
-			if (mtx && data->transform){
-				composeSVGMatrix(&mtx2,mtx,data->transform);
-			}else if (mtx){
-				mtx2=mtx;
-			}else if (data->transform){
-				mtx2=data->transform;
-			}
-			build_transform(child_layer,mtx2);
-			
-		}else {
-			gradient=root->add_child("layer");
-			gradient->set_attribute("desc",data->name);
-			build_param (gradient->add_child("param"),"blend_method","integer","21"); //straight onto
-		}		
+		gradient=child_layer->add_child("layer");
+		gradient->set_attribute("desc",data.name);
+		build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
+		SVGMatrix *mtx2=NULL;
+		if (mtx && data.transform){
+			composeSVGMatrix(&mtx2,mtx,data.transform);
+		}else if (mtx){
+			mtx2=mtx;
+		}else if (data.transform){
+			mtx2=data.transform;
+		}
+		build_transform(child_layer,mtx2);
 
-		gradient->set_attribute("type","radial_gradient");
-		gradient->set_attribute("active","true");
-		build_param (gradient->add_child("param"),"z_depth","real","0");
-		build_param (gradient->add_child("param"),"amount","real","1");
-		//gradient link
-		xmlpp::Element *child_stops=gradient->add_child("param");
-		child_stops->set_attribute("name","gradient");
-		child_stops->set_attribute("guid",GUID::hasher(data->name).get_string());
-		build_stop_color (child_stops->add_child("gradient"),data->stops);
-
-		//here the center point and radius
-		float cx=data->cx;
-		float cy=data->cy;
-		float r =data->r;
-
-		//adjust
-		coor2vect (&cx,&cy);
-		r=r/kux;
-		build_vector (gradient->add_child("param"),"center",cx,cy);
-		build_param (gradient->add_child("param"),"radius","real",r);
-
-		build_param (gradient->add_child("param"),"loop","bool","false");
-		build_param (gradient->add_child("param"),"zigzag","bool","false");
+	}else {
+		gradient=root->add_child("layer");
+		gradient->set_attribute("desc",data.name);
+		build_param (gradient->add_child("param"),"blend_method","integer","21"); //straight onto
 	}
+
+	gradient->set_attribute("type","radial_gradient");
+	gradient->set_attribute("active","true");
+	build_param (gradient->add_child("param"),"z_depth","real","0");
+	build_param (gradient->add_child("param"),"amount","real","1");
+	//gradient link
+	xmlpp::Element *child_stops=gradient->add_child("param");
+	child_stops->set_attribute("name","gradient");
+	child_stops->set_attribute("guid",GUID::hasher(data.name).get_string());
+	build_stop_color (child_stops->add_child("gradient"),data.stops);
+
+	//here the center point and radius
+	float cx=data.cx;
+	float cy=data.cy;
+	float r =data.r;
+
+	//adjust
+	coor2vect (&cx,&cy);
+	r=r/kux;
+	build_vector (gradient->add_child("param"),"center",cx,cy);
+	build_param (gradient->add_child("param"),"radius","real",r);
+
+	build_param (gradient->add_child("param"),"loop","bool","false");
+	build_param (gradient->add_child("param"),"zigzag","bool","false");
 }
 
 void
@@ -1242,7 +1240,7 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 			stops = get_colorStop(link);
 		}
 		if (!stops.empty())
-			rg.push_back(newRadialGradient(id,cx,cy,r,stops,mtx));
+			rg.push_back(RadialGradient(id,cx,cy,r,stops,mtx));
 	}
 }
 
@@ -1272,17 +1270,11 @@ LinearGradient::LinearGradient(const String& name, float x1, float y1, float x2,
 	sprintf(this->name,"%s",name.data());
 }
 
-RadialGradient*
-Svg_parser::newRadialGradient(String name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix* transform){
-	RadialGradient* data;
-	data=(RadialGradient*)malloc(sizeof(RadialGradient));
-	sprintf(data->name,"%s",name.data());
-	data->cx=cx;
-	data->cy=cy;
-	data->r=r;
-	data->stops=stops;
-	data->transform=transform;
-	return data;
+RadialGradient::RadialGradient(const String& name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix* transform)
+	: cx(cx), cy(cy), r(r),
+	  stops(stops), transform(transform)
+{
+	sprintf(this->name,"%s",name.data());
 }
 
 BLine::BLine(std::list<Vertex> points, bool loop)
