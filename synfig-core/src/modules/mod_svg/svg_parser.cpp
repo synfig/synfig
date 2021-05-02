@@ -65,7 +65,6 @@ static int extractSubAttribute(const String& attribute, const String& name, Stri
 static String loadAttribute(const String& name, const String& path_style, const String& master_style, String subattribute, String defaultVal);
 static String loadAttribute(const String& name, const String& path_style, const String& master_style, String defaultVal);
 static std::vector<String> get_tokens_path(const String& path);
-static int randomLetter();
 static int getRed(const String& hex);
 static int getGreen(const String& hex);
 static int getBlue(const String& hex);
@@ -1876,14 +1875,6 @@ get_tokens_path(const String& path) //mini path lexico-parser
 		default: break;
 	}
 	return tokens;
-}
-
-static int
-randomLetter()
-{
-	int a=rand()%2;
-	if(a) return (49 + rand()%9);
-	else return  (65 + rand()%24);
 }
 
 static int
