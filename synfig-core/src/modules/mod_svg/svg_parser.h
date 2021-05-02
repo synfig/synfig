@@ -88,12 +88,14 @@ struct Vertex{
 	Vertex(float x,float y);
 };
 
-typedef struct bline_t{
+struct BLine {
 	std::list<Vertex> points;
 	bool loop;
 	String bline_id;
 	String offset_id;
-}BLine;
+
+	BLine(std::list<Vertex> points, bool loop);
+};
 
 class Svg_parser
 {
@@ -136,8 +138,8 @@ private:
 		void parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,SVGMatrix* mtx);
 		void parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity);
 		/* === CONVERT TO PATH PARSERS ==================== */
-		std::list<BLine *> parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx);
-		std::list<BLine *> parser_path_d(String path_d,SVGMatrix* mtx);
+		std::list<BLine> parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx);
+		std::list<BLine> parser_path_d(String path_d, SVGMatrix* mtx);
 
 		/* === EFFECTS PARSERS ============================ */
 		void parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,SVGMatrix* mtx);
@@ -149,7 +151,6 @@ private:
 		ColorStop* newColorStop(String color,float opacity,float pos);
 		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, SVGMatrix* transform);
 		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, SVGMatrix* transform);
-		BLine* newBLine(std::list<Vertex>* points, bool loop);
 
 		/* === BUILDS ===================================== */
 		void build_transform(xmlpp::Element* root,SVGMatrix* mtx);
