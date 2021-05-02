@@ -1494,17 +1494,8 @@ void
 Vertex::setTg1(float p1x,float p1y,float p2x,float p2y)
 {
 	float rd=0,ag=0;
-	float d1x,d1y,d2x,d2y,dx,dy;
-	d1x=p1x*60;
-	d1y=p1y*60;
-	d2x=p2x*60;
-	d2y=p2y*60;
-	dx=d2x-d1x;
-	dy=d2y-d1y;
-	dx=dx*3;
-	dy=dy*3;
-	dx=dx/60;
-	dy=dy/60;
+	float dx=(p2x-p1x)*3;
+	float dy=(p2y-p1y)*3;
 	rd=sqrt(dx*dx + dy*dy);
 	if(dx>0 && dy>0){
 		ag=PI + atan(dy/dx);
@@ -1534,17 +1525,8 @@ void
 Vertex::setTg2(float p1x,float p1y,float p2x,float p2y)
 {
 	float rd=0,ag=0;
-	float d1x,d1y,d2x,d2y,dx,dy;
-	d1x=p1x*60;
-	d1y=p1y*60;
-	d2x=p2x*60;
-	d2y=p2y*60;
-	dx=d2x-d1x;
-	dy=d2y-d1y;
-	dx=dx*3;
-	dy=dy*3;
-	dx=dx/60;
-	dy=dy/60;
+	float dx=(p2x-p1x)*3;
+	float dy=(p2y-p1y)*3;
 
 	rd=sqrt(dx*dx + dy*dy);
 	if(dx>0 && dy>0){
