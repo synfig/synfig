@@ -972,10 +972,10 @@ Svg_parser::get_colorStop(String name){
 		String find= name;
 		if(find.at(0)=='#') find.erase(0,1);
 		else return none;
-		std::list<LinearGradient*>::iterator aux=lg.begin();
+		std::list<LinearGradient>::iterator aux=lg.begin();
 		while(aux!=lg.end()){//only find into linear gradients
-			if(find.compare((*aux)->name)==0){
-				return (*aux)->stops;
+			if(find.compare(aux->name)==0){
+				return aux->stops;
 			}
 			aux++;
 		}
@@ -991,10 +991,10 @@ Svg_parser::build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx){
 		String find= name.substr(start,end-start);
 		bool encounter=false;
 		if(!lg.empty()){
-			std::list<LinearGradient*>::iterator aux=lg.begin();
+			std::list<LinearGradient>::iterator aux=lg.begin();
 			while(aux!=lg.end()){
-				if(find.compare((*aux)->name)==0){
-					build_linearGradient (root,*aux,mtx);
+				if(find.compare(aux->name)==0){
+					build_linearGradient(root,*aux,mtx);
 					encounter=true;
 				}
 				aux++;
@@ -1027,77 +1027,76 @@ Svg_parser::build_stop_color(xmlpp::Element* root, const std::list<ColorStop>& s
 }
 
 void
-Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMatrix* mtx){
-	if(data){
-		xmlpp::Element* gradient=root->add_child("layer");
+Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& data, SVGMatrix* mtx){
+	xmlpp::Element* gradient=root->add_child("layer");
 
-		gradient->set_attribute("type","linear_gradient");
-		gradient->set_attribute("active","true");
-		gradient->set_attribute("desc",data->name);
-		build_param (gradient->add_child("param"),"z_depth","real","0");
-		build_param (gradient->add_child("param"),"amount","real","1");
-		//straight onto
-		build_param (gradient->add_child("param"),"blend_method","integer","21");
-		float x1,y1,x2,y2;
-		x1=data->x1;
-		y1=data->y1;
-		x2=data->x2;
-		y2=data->y2;
+	gradient->set_attribute("type","linear_gradient");
+	gradient->set_attribute("active","true");
+	gradient->set_attribute("desc",data.name);
+	build_param (gradient->add_child("param"),"z_depth","real","0");
+	build_param (gradient->add_child("param"),"amount","real","1");
+	//straight onto
+	build_param (gradient->add_child("param"),"blend_method","integer","21");
+	float x1,y1,x2,y2;
+	x1=data.x1;
+	y1=data.y1;
+	x2=data.x2;
+	y2=data.y2;
 
 
-		if (mtx || data->transform){
-			SVGMatrix *mtx2=NULL;
-			if (mtx && data->transform){
-				composeSVGMatrix(&mtx2,mtx,data->transform);
-			}else if (mtx){
-				mtx2=mtx;
-			}else if (data->transform){
-				mtx2=data->transform;
-			}
-			//matrix transforms the gradient as a whole
-			//it does not preserve angles, so we can't simply transform both points
-			float x3, y3, k;
-			//set point (x3,y3) on the same gradient line as (x2,y2)
-			//the gradient line is perpendicular to (x1,y1)(x2,y2)
-			x3=x2+(y2-y1);
-			y3=y2-(x2-x1);
-			//transform everything
-			transformPoint2D(mtx2,&x1,&y1);
-			transformPoint2D(mtx2,&x2,&y2);
-			transformPoint2D(mtx2,&x3,&y3);
-
-			if (x2!=x3 && y2!=y3) {//divide by zero check
-
-				//set k as slope between (x2,y2) and (x3,y3)
-				//k is the slope of gradient lines post-transformation
-				k=(y3-y2)/(x3-x2);
-				//set point (x2,y2) on the gradient line passing through (x3,y3)
-				//so that the line (x1,y1)(x2,y2) is perpendicular to (x2,y2)(x3,y3)
-				x2= (x3*k+x1/k+y1-y3)/(k+(1/k));
-				y2= k*(x2-x3)+y3;
-			} else if (x2==x3 && y2!=y3) {
-				y2=y1;
-			} else if (x2!=x3 && y2==y3) {
-				x2=x1;
-			} else {
-				std::cout<<"SVG Import warning: gradient points equal each other"<<std::endl;
-			}
+	if (mtx || data.transform){
+		SVGMatrix *mtx2=NULL;
+		if (mtx && data.transform){
+			composeSVGMatrix(&mtx2,mtx,data.transform);
+		}else if (mtx){
+			mtx2=mtx;
+		}else if (data.transform){
+			mtx2=data.transform;
 		}
+		//matrix transforms the gradient as a whole
+		//it does not preserve angles, so we can't simply transform both points
+		float x3, y3, k;
+		//set point (x3,y3) on the same gradient line as (x2,y2)
+		//the gradient line is perpendicular to (x1,y1)(x2,y2)
+		x3=x2+(y2-y1);
+		y3=y2-(x2-x1);
+		//transform everything
+		transformPoint2D(mtx2,&x1,&y1);
+		transformPoint2D(mtx2,&x2,&y2);
+		transformPoint2D(mtx2,&x3,&y3);
 
-		coor2vect (&x1,&y1);
-		coor2vect (&x2,&y2);
+		if (x2!=x3 && y2!=y3) {//divide by zero check
 
-		build_vector (gradient->add_child("param"),"p1",x1,y1);
-		build_vector (gradient->add_child("param"),"p2",x2,y2);
-		//gradient link
-		xmlpp::Element *child_stops=gradient->add_child("param");
-		child_stops->set_attribute("name","gradient");
-		child_stops->set_attribute("guid",GUID::hasher(data->name).get_string());
-		build_stop_color (child_stops->add_child("gradient"),data->stops);
-		build_param (gradient->add_child("param"),"loop","bool","false");
-		build_param (gradient->add_child("param"),"zigzag","bool","false");
+			//set k as slope between (x2,y2) and (x3,y3)
+			//k is the slope of gradient lines post-transformation
+			k=(y3-y2)/(x3-x2);
+			//set point (x2,y2) on the gradient line passing through (x3,y3)
+			//so that the line (x1,y1)(x2,y2) is perpendicular to (x2,y2)(x3,y3)
+			x2= (x3*k+x1/k+y1-y3)/(k+(1/k));
+			y2= k*(x2-x3)+y3;
+		} else if (x2==x3 && y2!=y3) {
+			y2=y1;
+		} else if (x2!=x3 && y2==y3) {
+			x2=x1;
+		} else {
+			std::cout<<"SVG Import warning: gradient points equal each other"<<std::endl;
+		}
 	}
+
+	coor2vect (&x1,&y1);
+	coor2vect (&x2,&y2);
+
+	build_vector (gradient->add_child("param"),"p1",x1,y1);
+	build_vector (gradient->add_child("param"),"p2",x2,y2);
+	//gradient link
+	xmlpp::Element *child_stops=gradient->add_child("param");
+	child_stops->set_attribute("name","gradient");
+	child_stops->set_attribute("guid",GUID::hasher(data.name).get_string());
+	build_stop_color (child_stops->add_child("gradient"),data.stops);
+	build_param (gradient->add_child("param"),"loop","bool","false");
+	build_param (gradient->add_child("param"),"zigzag","bool","false");
 }
+
 void
 Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMatrix* mtx){
 	if(data){
@@ -1210,7 +1209,7 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 			}
 		}
 		if (!stops.empty())
-			lg.push_back(newLinearGradient(id,x1,y1,x2,y2,stops,mtx));
+			lg.push_back(LinearGradient(id,x1,y1,x2,y2,stops,mtx));
 	}
 }
 
@@ -1265,18 +1264,12 @@ Svg_parser::adjustGamma(float r,float g,float b,float a){
 	return gamma.apply(Color(r,g,b,a));
 }
 
-LinearGradient*
-Svg_parser::newLinearGradient(String name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix* transform){
-	LinearGradient* data;
-	data=(LinearGradient*)malloc(sizeof(LinearGradient));
-	sprintf(data->name,"%s",name.data());
-	data->x1=x1;
-	data->y1=y1;
-	data->x2=x2;
-	data->y2=y2;
-	data->stops=stops;
-	data->transform=transform;
-   	return data;
+LinearGradient::LinearGradient(const String& name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix* transform)
+	: x1(x1), x2(x2),
+	  y1(y1), y2(y2),
+	  stops(stops), transform(transform)
+{
+	sprintf(this->name,"%s",name.data());
 }
 
 RadialGradient*

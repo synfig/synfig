@@ -58,12 +58,15 @@ struct ColorStop {
 	 ColorStop(const String& color, float opacity, const Gamma& gamma, float pos);
 };
 
-typedef struct linear_g{
+struct LinearGradient{
 	char name[80];
 	float x1,x2,y1,y2;
 	std::list<ColorStop> stops;
 	SVGMatrix *transform;
-}LinearGradient;
+
+	LinearGradient(const String &name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix* transform);
+};
+
 typedef struct radial_g{
 	char name[80];
 	float cx,cy;//center point
@@ -120,7 +123,7 @@ private:
 		bool set_canvas;
 		double ox,oy;
 		//urls
-		std::list<LinearGradient*> lg;
+		std::list<LinearGradient> lg;
 		std::list<RadialGradient*> rg;
 
 public:
@@ -151,15 +154,14 @@ private:
 		void parser_defs(const xmlpp::Node* node);
 		void parser_linearGradient(const xmlpp::Node* node);
 		void parser_radialGradient(const xmlpp::Node* node);
-		LinearGradient* newLinearGradient(String name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix* transform);
 		RadialGradient* newRadialGradient(String name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix* transform);
 
 		/* === BUILDS ===================================== */
 		void build_transform(xmlpp::Element* root,SVGMatrix* mtx);
 		std::list<ColorStop> get_colorStop(String name);
 		void build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx);
-		void build_linearGradient(xmlpp::Element* root,LinearGradient* data,SVGMatrix* mtx);
 		void build_radialGradient(xmlpp::Element* root,RadialGradient* data,SVGMatrix* mtx);
+		void build_linearGradient(xmlpp::Element* root, const LinearGradient& data, SVGMatrix* mtx);
 		void build_stop_color(xmlpp::Element* root, const std::list<ColorStop>& stops);
 		Color adjustGamma(float r,float g,float b,float a);
 
