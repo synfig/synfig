@@ -184,7 +184,7 @@ Svg_parser::parser_node(const xmlpp::Node* node){
 			parser_defs (node);
 		}else{
 			if(!set_canvas) parser_canvas(node);
-			parser_graphics(node,nodeRoot,"",NULL);
+			parser_graphics(node,nodeRoot,"",SVGMatrix::indentity);
 			if(nodename.compare("g")==0) return;
 		}
   	}
@@ -260,7 +260,8 @@ Svg_parser::parser_canvas (const xmlpp::Node* node){
 }
 
 void
-Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,SVGMatrix* mtx_parent){
+Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx_parent)
+{
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring nodename = node->get_name();
 		if (nodename.compare("g")==0 || nodename.compare("path")==0 || nodename.compare("polygon")==0 || nodename.compare("rect")==0){} else return;
@@ -270,21 +271,15 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		Glib::ustring transform	=nodeElement->get_attribute_value("transform");
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix mtx;
 		if(!transform.empty())
-			mtx=parser_transform (transform);
+			mtx.parser_transform(transform);
 		if (SVG_SEP_TRANSFORMS)
 		{
-			if(mtx_parent){
-				if(mtx)
-					composeSVGMatrix(&mtx,mtx_parent,mtx);
-				else
-					mtx=newSVGMatrix(mtx_parent);
-			}
+			mtx.compose(mtx_parent, mtx);
 		}
 		if(nodename.compare("g")==0){
 			parser_layer (node,root->add_child("layer"),parent_style,mtx);
-			free(mtx);
 			return;
 		}
 
@@ -328,17 +323,17 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 		//make simple fills
 		if(nodename.compare("rect")==0 && typeFill!=0){
-			if (mtx) child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+			if (!mtx.is_identity())
+				child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 			child_fill=child_layer;
 			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
 			if(typeFill==2){
-				build_fill (child_fill,fill,NULL);
+				build_fill (child_fill,fill,SVGMatrix::indentity);
 			}
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
-			free(mtx);
 			return;
 		}
-		if ((!(SVG_RESOLVE_BLINE) && mtx) || typeFill==2 || typeStroke==2)
+		if ((!SVG_RESOLVE_BLINE) || typeFill==2 || typeStroke==2)
 			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 		child_fill=child_layer;
 		child_stroke=child_layer;
@@ -357,9 +352,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			}
 		} else {
 			if(nodename.compare("path")==0){
-				k = parser_path_d(nodeElement->get_attribute_value("d"),NULL);
+				k = parser_path_d(nodeElement->get_attribute_value("d"),SVGMatrix::indentity);
 			} else if(nodename.compare("polygon")==0){
-				k = parser_path_polygon(nodeElement->get_attribute_value("points"),NULL);
+				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::indentity);
 			}
 		}
 		
@@ -395,7 +390,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			if (SVG_RESOLVE_BLINE)
 				build_fill(child_fill,fill,mtx);
 			else
-				build_fill(child_fill,fill,NULL);
+				build_fill(child_fill,fill,SVGMatrix::indentity);
 		}
 
 		if(typeStroke!=0){//outline layer
@@ -442,22 +437,21 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				if (SVG_RESOLVE_BLINE)
 					build_fill(child_stroke,stroke,mtx);
 				else
-					build_fill(child_stroke,stroke,NULL);
+					build_fill(child_stroke,stroke,SVGMatrix::indentity);
 			}	
 		}
 
 		if (SVG_RESOLVE_BLINE)
-			parser_effects(nodeElement,child_layer,parent_style,NULL);
+			parser_effects(nodeElement,child_layer,parent_style,SVGMatrix::indentity);
 		else
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
-		free(mtx);
 	}
 }
 
 /* === LAYER PARSERS ======================================================= */
 
 void
-Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,SVGMatrix* mtx){
+Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style, const SVGMatrix& mtx){
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring label		=nodeElement->get_attribute_value("label");
 		Glib::ustring style		=nodeElement->get_attribute_value("style");
@@ -497,7 +491,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 				parser_graphics (*iter,child_canvas,layer_style,mtx);
     		}
   		}
-		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,NULL);
+		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,SVGMatrix::indentity);
 		else parser_effects(nodeElement,child_canvas,parent_style,mtx);
 	}
 }
@@ -536,7 +530,8 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,S
 /* === CONVERT TO PATH PARSERS ============================================= */       
 
 std::list<BLine>
-Svg_parser::parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx){
+Svg_parser::parser_path_polygon(Glib::ustring polygon_points, const SVGMatrix& mtx)
+{
 	std::list<BLine> k0;
 	if(polygon_points.empty())
 		return k0;
@@ -549,7 +544,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx){
 		i++; if(tokens.at(i).compare(",")==0) i++;
 		ay=atof(tokens.at(i).data());
 		//mtx
-		if(mtx) transformPoint2D(mtx,&ax,&ay);
+		mtx.transformPoint2D(ax,ay);
 		//adjust
 		coor2vect(&ax,&ay);
 		//save
@@ -559,7 +554,9 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, SVGMatrix* mtx){
 	return k0;
 }
 
-std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
+std::list<BLine>
+Svg_parser::parser_path_d(String path_d, const SVGMatrix& mtx)
+{
 	std::list<BLine> k;
 	std::list<Vertex> k1;
 
@@ -602,7 +599,7 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			ax=actual_x;
 			ay=actual_y;
 			//operate and save
-			if(mtx) transformPoint2D(mtx,&ax,&ay);
+			mtx.transformPoint2D(ax,ay);
 			coor2vect(&ax,&ay);
 			k1.push_back(Vertex(ax,ay)); //first element
 			k1.back().setSplit(true);
@@ -629,10 +626,10 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			ax=actual_x;
 			ay=actual_y;
 			//mtx
-			if(mtx){
-				transformPoint2D(mtx,&tgx2,&tgy2);
-				transformPoint2D(mtx,&ax,&ay);
-				transformPoint2D(mtx,&tgx,&tgy);
+			if(!mtx.is_identity()){
+				mtx.transformPoint2D(tgx2,tgy2);
+				mtx.transformPoint2D(ax,ay);
+				mtx.transformPoint2D(tgx,tgy);
 			}
 			//adjust
 			coor2vect(&tgx2,&tgy2);
@@ -660,10 +657,8 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			ax=actual_x;
 			ay=actual_y;
 			//mtx
-			if(mtx){
-				transformPoint2D(mtx,&ax,&ay);
-				transformPoint2D(mtx,&tgx,&tgy);
-			}
+			mtx.transformPoint2D(ax,ay);
+			mtx.transformPoint2D(tgx,tgy);
 			//adjust
 			coor2vect(&ax,&ay);
 			coor2vect(&tgx,&tgy);
@@ -681,7 +676,7 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			ax=actual_x;
 			ay=actual_y;
 			//mtx
-			if(mtx) transformPoint2D(mtx,&ax,&ay);
+			mtx.transformPoint2D(ax,ay);
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
@@ -700,7 +695,7 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			ax=actual_x;
 			ay=old_y;
 			//mtx
-			if(mtx) transformPoint2D(mtx,&ax,&ay);
+			mtx.transformPoint2D(ax,ay);
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
@@ -718,7 +713,7 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			ax=old_x;
 			ay=actual_y;
 			//mtx
-			if(mtx) transformPoint2D(mtx,&ax,&ay);
+			mtx.transformPoint2D(ax,ay);
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
@@ -768,10 +763,10 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				ax=actual_x;
 				ay=actual_y;
 				//transformations
-				if(mtx){
-					transformPoint2D(mtx,&tgx2,&tgy2);
-					transformPoint2D(mtx,&ax,&ay);
-					transformPoint2D(mtx,&tgx,&tgy);
+				if(!mtx.is_identity()){
+					mtx.transformPoint2D(tgx2,tgy2);
+					mtx.transformPoint2D(ax,ay);
+					mtx.transformPoint2D(tgx,tgy);
 				}
 				//adjust
 				coor2vect(&tgx2,&tgy2);
@@ -796,10 +791,10 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				ax=actual_x;
 				ay=actual_y;
 				//transformations
-				if(mtx){
-					transformPoint2D(mtx,&tgx2,&tgy2);
-					transformPoint2D(mtx,&ax,&ay);
-					transformPoint2D(mtx,&tgx,&tgy);
+				if(!mtx.is_identity()){
+					mtx.transformPoint2D(tgx2,tgy2);
+					mtx.transformPoint2D(ax,ay);
+					mtx.transformPoint2D(tgx,tgy);
 				}
 				//adjust
 				coor2vect(&tgx2,&tgy2);
@@ -836,14 +831,14 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				ax=actual_x;
 				ay=actual_y;
 				//transformations
-				if(mtx){
-					transformPoint2D(mtx,&tgx2,&tgy2);
-					transformPoint2D(mtx,&tgx ,&tgy );
-					transformPoint2D(mtx,&ax,&ay);
+				if(!mtx.is_identity()){
+					mtx.transformPoint2D(tgx2,tgy2);
+					mtx.transformPoint2D(tgx ,tgy );
+					mtx.transformPoint2D(ax,ay);
 
-					transformPoint2D(mtx,&in_tgx2,&in_tgy2);
-					transformPoint2D(mtx,&in_tgx1,&in_tgy1);
-					transformPoint2D(mtx,&in_x,&in_y);
+					mtx.transformPoint2D(in_tgx2,in_tgy2);
+					mtx.transformPoint2D(in_tgx1,in_tgy1);
+					mtx.transformPoint2D(in_x,in_y);
 				}
 				//adjust
 				coor2vect(&tgx2 , &tgy2);
@@ -880,7 +875,7 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				ax=actual_x;
 				ay=actual_y;
 				//operate and save
-				if(mtx) transformPoint2D(mtx,&ax,&ay);
+				mtx.transformPoint2D(ax,ay);
 				coor2vect(&ax,&ay);
 				k1.push_back(Vertex(ax,ay)); //first element
 				k1.back().setSplit(true);
@@ -899,7 +894,7 @@ std::list<BLine> Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 /* === EFFECTS PARSERS ===================================================== */
 
 void
-Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/,xmlpp::Element* root,String /*parent_style*/,SVGMatrix* mtx){
+Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/,xmlpp::Element* root,String /*parent_style*/, const SVGMatrix& mtx){
 	build_transform(root, mtx);
 }
 
@@ -924,8 +919,8 @@ Svg_parser::parser_defs(const xmlpp::Node* node){
 /* === BUILDS ============================================================== */
 
 void
-Svg_parser::build_transform(xmlpp::Element* root,SVGMatrix* mtx){
-	if (mtx) {
+Svg_parser::build_transform(xmlpp::Element* root, const SVGMatrix& mtx){
+	if (!mtx.is_identity()) {
 		xmlpp::Element *child_transform=root->add_child("layer");
 		child_transform->set_attribute("type","warp");
 		child_transform->set_attribute("active","true");
@@ -941,19 +936,19 @@ Svg_parser::build_transform(xmlpp::Element* root,SVGMatrix* mtx){
 		
 
 		x=100;y=100;
-		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
+		mtx.transformPoint2D(x,y);coor2vect(&x,&y);
 		build_vector (child_transform->add_child("param"),"dest_tl",x,y);
 
 		x=200;y=100;
-		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
+		mtx.transformPoint2D(x,y);coor2vect(&x,&y);
 		build_vector (child_transform->add_child("param"),"dest_tr",x,y);
 
 		x=200;y=200;
-		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
+		mtx.transformPoint2D(x,y);coor2vect(&x,&y);
 		build_vector (child_transform->add_child("param"),"dest_br",x,y);
 
 		x=100;y=200;
-		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
+		mtx.transformPoint2D(x,y);coor2vect(&x,&y);
 		build_vector (child_transform->add_child("param"),"dest_bl",x,y);
 
 		build_param (child_transform->add_child("param"),"clip","bool","false");
@@ -984,7 +979,8 @@ Svg_parser::get_colorStop(String name){
 }
 
 void
-Svg_parser::build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx){
+Svg_parser::build_fill(xmlpp::Element* root, String name, const SVGMatrix& mtx)
+{
 	if(!name.empty()){
 		int start=name.find_first_of("#")+1;
 		int end=name.find_first_of(")");
@@ -994,7 +990,7 @@ Svg_parser::build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx){
 			std::list<LinearGradient>::iterator aux=lg.begin();
 			while(aux!=lg.end()){
 				if(find.compare(aux->name)==0){
-					build_linearGradient(root,*aux,mtx);
+					build_linearGradient(root, *aux, mtx);
 					encounter=true;
 				}
 				aux++;
@@ -1004,7 +1000,7 @@ Svg_parser::build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx){
 			std::list<RadialGradient>::iterator aux=rg.begin();
 			while(aux!=rg.end()){
 				if(find.compare(aux->name)==0){
-					build_radialGradient(root,*aux,mtx);
+					build_radialGradient(root, *aux, mtx);
 					encounter=true;
 				}
 				aux++;
@@ -1027,7 +1023,7 @@ Svg_parser::build_stop_color(xmlpp::Element* root, const std::list<ColorStop>& s
 }
 
 void
-Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& data, SVGMatrix* mtx){
+Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& data, const SVGMatrix& mtx){
 	xmlpp::Element* gradient=root->add_child("layer");
 
 	gradient->set_attribute("type","linear_gradient");
@@ -1044,15 +1040,10 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 	y2=data.y2;
 
 
-	if (mtx || data.transform){
-		SVGMatrix *mtx2=NULL;
-		if (mtx && data.transform){
-			composeSVGMatrix(&mtx2,mtx,data.transform);
-		}else if (mtx){
-			mtx2=mtx;
-		}else if (data.transform){
-			mtx2=data.transform;
-		}
+	{
+		SVGMatrix mtx2;
+		mtx2.compose(mtx,data.transform);
+
 		//matrix transforms the gradient as a whole
 		//it does not preserve angles, so we can't simply transform both points
 		float x3, y3, k;
@@ -1061,9 +1052,9 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 		x3=x2+(y2-y1);
 		y3=y2-(x2-x1);
 		//transform everything
-		transformPoint2D(mtx2,&x1,&y1);
-		transformPoint2D(mtx2,&x2,&y2);
-		transformPoint2D(mtx2,&x3,&y3);
+		mtx2.transformPoint2D(x1,y1);
+		mtx2.transformPoint2D(x2,y2);
+		mtx2.transformPoint2D(x3,y3);
 
 		if (x2!=x3 && y2!=y3) {//divide by zero check
 
@@ -1098,10 +1089,10 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 }
 
 void
-Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& data, SVGMatrix* mtx){
+Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& data, const SVGMatrix& mtx){
 	xmlpp::Element* gradient;
 
-	if (mtx || data.transform) {
+	if (!mtx.is_identity() || !data.transform.is_identity()) {
 		xmlpp::Element* layer=root->add_child("layer");
 
 		layer->set_attribute("type","group");
@@ -1119,17 +1110,12 @@ Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& dat
 		gradient=child_layer->add_child("layer");
 		gradient->set_attribute("desc",data.name);
 		build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
-		SVGMatrix *mtx2=NULL;
-		if (mtx && data.transform){
-			composeSVGMatrix(&mtx2,mtx,data.transform);
-		}else if (mtx){
-			mtx2=mtx;
-		}else if (data.transform){
-			mtx2=data.transform;
-		}
+		SVGMatrix mtx2;
+		mtx2.compose(mtx,data.transform);
+
 		build_transform(child_layer,mtx2);
 
-	}else {
+	} else {
 		gradient=root->add_child("layer");
 		gradient->set_attribute("desc",data.name);
 		build_param (gradient->add_child("param"),"blend_method","integer","21"); //straight onto
@@ -1175,9 +1161,9 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 			link = nodeElement->get_attribute_value("href","xlink");			
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix mtx;
 		if(!transform.empty())
-			mtx=parser_transform (transform);
+			mtx.parser_transform(transform);
 
 		std::list<ColorStop> stops;
 		if(!link.empty()){
@@ -1230,9 +1216,9 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 			std::cout<<"SVG Parser: ignoring focus attributes for radial gradient";
 
 		//resolve transformations
-		SVGMatrix* mtx=NULL;
+		SVGMatrix mtx;
 		if(!transform.empty())
-			mtx=parser_transform (transform);
+			mtx.parser_transform(transform);
 
 		std::list<ColorStop> stops;
 		if(!link.empty()){
@@ -1262,7 +1248,7 @@ Svg_parser::adjustGamma(float r,float g,float b,float a){
 	return gamma.apply(Color(r,g,b,a));
 }
 
-LinearGradient::LinearGradient(const String& name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix* transform)
+LinearGradient::LinearGradient(const String& name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix transform)
 	: x1(x1), x2(x2),
 	  y1(y1), y2(y2),
 	  stops(stops), transform(transform)
@@ -1270,7 +1256,7 @@ LinearGradient::LinearGradient(const String& name, float x1, float y1, float x2,
 	sprintf(this->name,"%s",name.data());
 }
 
-RadialGradient::RadialGradient(const String& name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix* transform)
+RadialGradient::RadialGradient(const String& name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix transform)
 	: cx(cx), cy(cy), r(r),
 	  stops(stops), transform(transform)
 {
@@ -1566,9 +1552,12 @@ Vertex::Vertex(float x,float y)
 }
 
 //matrices
-SVGMatrix*
-Svg_parser::parser_transform(const String transform){
-	SVGMatrix* a=NULL;
+void
+SVGMatrix::parser_transform(String transform)
+{
+	bool first_iteration = true;
+	SVGMatrix a;
+
 	String tf(transform);
 	removeIntoS(tf);
 	std::vector<String> tokens=tokenize(tf," ");
@@ -1583,13 +1572,13 @@ Svg_parser::parser_transform(const String transform){
 			start	=(*aux).find_first_of(",")+1;
 			end		=(*aux).size()-1;
 			dy		=atof((*aux).substr(start,end-start).data());
-			if(matrixIsNull(a))
-				a=newSVGMatrix(1,0,0,1,dx,dy);
+			if (first_iteration)
+				a = SVGMatrix(1,0,0,1,dx,dy);
 			else
-				multiplySVGMatrix(&a,newSVGMatrix(1,0,0,1,dx,dy));
+				a.multiply(SVGMatrix(1,0,0,1,dx,dy));
 		}else if((*aux).compare(0,5,"scale")==0){
-			if(matrixIsNull(a))
-				a=newSVGMatrix(1,0,0,1,0,0);
+			if (first_iteration)
+				a = SVGMatrix(1,0,0,1,0,0);
 		}else if((*aux).compare(0,6,"rotate")==0){
 			float angle,seno,coseno;
 			int start,end;
@@ -1598,100 +1587,99 @@ Svg_parser::parser_transform(const String transform){
 			angle=getRadian (atof((*aux).substr(start,end-start).data()));
 			seno   =sin(angle);
 			coseno =cos(angle);
-			if(matrixIsNull(a))
-				a=newSVGMatrix(coseno,seno,-1*seno,coseno,0,0);
+			if (first_iteration)
+				a = SVGMatrix(coseno,seno,-1*seno,coseno,0,0);
 			else
-				multiplySVGMatrix(&a,newSVGMatrix(coseno,seno,-1*seno,coseno,0,0));
+				a.multiply(SVGMatrix(coseno,seno,-1*seno,coseno,0,0));
 		}else if((*aux).compare(0,6,"matrix")==0){
 			int start	=(*aux).find_first_of('(')+1;
 			int end		=(*aux).find_first_of(')');
-			if(matrixIsNull(a))
-				a=newSVGMatrix((*aux).substr(start,end-start));
+			if (first_iteration)
+				a = SVGMatrix((*aux).substr(start,end-start));
 			else
-				multiplySVGMatrix(&a,newSVGMatrix((*aux).substr(start,end-start)));
+				a.multiply(SVGMatrix((*aux).substr(start,end-start)));
 		}else{
-			if (!matrixIsNull(a))
-				free(a);
-			a=newSVGMatrix(1,0,0,1,0,0);
+			a = SVGMatrix(1,0,0,1,0,0);
 		}
+		first_iteration = false;
 		aux++;
 	}
-	return a;
+	*this = a;
 }
 
-SVGMatrix*
-Svg_parser::newSVGMatrix(SVGMatrix *a){
-	SVGMatrix* data;
-	data=(SVGMatrix*)malloc(sizeof(SVGMatrix));
-	data->a=a->a;		data->b=a->b;		data->c=a->c;
-	data->d=a->d;		data->e=a->e;		data->f=a->f;
-	return data;
+SVGMatrix::SVGMatrix()
+	: a(1), c(0), e(0),
+	  b(0), d(1), f(0)
+{
 }
-SVGMatrix*
-Svg_parser::newSVGMatrix(float a,float b,float c,float d,float e,float f){
-	SVGMatrix* data;
-	data=(SVGMatrix*)malloc(sizeof(SVGMatrix));
-	data->a=a;		data->b=b;		data->c=c;
-	data->d=d;		data->e=e;		data->f=f;
-	return data;
+
+SVGMatrix::SVGMatrix(float a, float b, float c, float d, float e, float f)
+	: a(a), c(c), e(e),
+	  b(b), d(d), f(f)
+{
 }
-SVGMatrix*
-Svg_parser::newSVGMatrix(const String mvector){
+
+SVGMatrix::SVGMatrix(const String& mvector)
+	: SVGMatrix()
+{
 	if(!mvector.empty()){
 		std::vector<String> tokens=tokenize(mvector,",");
-		if(tokens.size()!=6) return newSVGMatrix(1,0,0,1,0,0);
-		SVGMatrix* data=(SVGMatrix*)malloc(sizeof(SVGMatrix));
-		data->a=atof(tokens.at(0).data());
-		data->b=atof(tokens.at(1).data());
-		data->c=atof(tokens.at(2).data());
-		data->d=atof(tokens.at(3).data());
-		data->e=atof(tokens.at(4).data());
-		data->f=atof(tokens.at(5).data());
-		return data;
-	}else{
-		return newSVGMatrix(1,0,0,1,0,0);
+		if(tokens.size()!=6) return;
+
+		a=atof(tokens.at(0).data());
+		b=atof(tokens.at(1).data());
+		c=atof(tokens.at(2).data());
+		d=atof(tokens.at(3).data());
+		e=atof(tokens.at(4).data());
+		f=atof(tokens.at(5).data());
 	}
 }
-void
-Svg_parser::transformPoint2D(SVGMatrix *mtx,float *a,float *b){
-	float auxa= (*a)*(mtx->a) + (*b)*(mtx->c) + (mtx->e);
-	float auxb= (*a)*(mtx->b) + (*b)*(mtx->d) + (mtx->f);
-	*a=auxa;
-	*b=auxb;
-	return;
-}
-void
-Svg_parser::composeSVGMatrix(SVGMatrix **mtx,SVGMatrix* mtx1,SVGMatrix* mtx2){
-	SVGMatrix* aux=newSVGMatrix(0,0,0,0,0,0);
-	aux->a=(mtx1->a)*(mtx2->a)+(mtx1->c)*(mtx2->b);
-	aux->b=(mtx1->b)*(mtx2->a)+(mtx1->d)*(mtx2->b);
-	aux->c=(mtx1->a)*(mtx2->c)+(mtx1->c)*(mtx2->d);
-	aux->d=(mtx1->b)*(mtx2->c)+(mtx1->d)*(mtx2->d);
-	aux->e=(mtx1->a)*(mtx2->e)+(mtx1->c)*(mtx2->f)+(mtx1->e);
-	aux->f=(mtx1->b)*(mtx2->e)+(mtx1->d)*(mtx2->f)+(mtx1->f);
-	*mtx=aux;
-}
-void
-Svg_parser::multiplySVGMatrix(SVGMatrix **mtx1,SVGMatrix *mtx2){
-	SVGMatrix* aux=newSVGMatrix(0,0,0,0,0,0);
-	aux->a=((*mtx1)->a)*(mtx2->a)+((*mtx1)->c)*(mtx2->b);
-	aux->b=((*mtx1)->b)*(mtx2->a)+((*mtx1)->d)*(mtx2->b);
-	aux->c=((*mtx1)->a)*(mtx2->c)+((*mtx1)->c)*(mtx2->d);
-	aux->d=((*mtx1)->b)*(mtx2->c)+((*mtx1)->d)*(mtx2->d);
-	aux->e=((*mtx1)->a)*(mtx2->e)+((*mtx1)->c)*(mtx2->f)+((*mtx1)->e);
-	aux->f=((*mtx1)->b)*(mtx2->e)+((*mtx1)->d)*(mtx2->f)+((*mtx1)->f);
-	(*mtx1)->a=aux->a;
-	(*mtx1)->b=aux->b;
-	(*mtx1)->c=aux->c;
-	(*mtx1)->d=aux->d;
-	(*mtx1)->e=aux->e;
-	(*mtx1)->f=aux->f;
-	free(aux);
-}
+
+const SVGMatrix SVGMatrix::indentity(1,0,0,1,0,0);
+const SVGMatrix SVGMatrix::zero(0,0,0,0,0,0);
+
 bool
-Svg_parser::matrixIsNull(SVGMatrix *mtx){
-	if(mtx == NULL) return true;
-	return false;
+SVGMatrix::is_identity() const
+{
+	return a == 1.f && d == 1.f &&
+			b == 0.f && e == 0.f &&
+			c == 0.f && f == 0.f;
+}
+
+void
+SVGMatrix::transformPoint2D(float &x,float &y) const
+{
+	float new_x= x*a + y*c + e;
+	float new_y= x*b + y*d + f;
+
+	x = new_x;
+	y = new_y;
+}
+
+void
+SVGMatrix::compose(const SVGMatrix& mtx1, const SVGMatrix& mtx2)
+{
+	SVGMatrix aux;
+	aux.a = mtx1.a*mtx2.a + mtx1.c*mtx2.b;
+	aux.b = mtx1.b*mtx2.a + mtx1.d*mtx2.b;
+	aux.c = mtx1.a*mtx2.c + mtx1.c*mtx2.d;
+	aux.d = mtx1.b*mtx2.c + mtx1.d*mtx2.d;
+	aux.e = mtx1.a*mtx2.e + mtx1.c*mtx2.f + mtx1.e;
+	aux.f = mtx1.b*mtx2.e + mtx1.d*mtx2.f + mtx1.f;
+	*this = aux;
+}
+
+void
+SVGMatrix::multiply(const SVGMatrix &mtx2)
+{
+	SVGMatrix aux;
+	aux.a = a*mtx2.a + c*mtx2.b;
+	aux.b = b*mtx2.a + d*mtx2.b;
+	aux.c = a*mtx2.c + c*mtx2.d;
+	aux.d = b*mtx2.c + d*mtx2.d;
+	aux.e = a*mtx2.e + c*mtx2.f + e;
+	aux.f = b*mtx2.e + d*mtx2.f + f;
+	*this = aux;
 }
 
 /* === EXTRA METHODS ======================================================= */
