@@ -380,7 +380,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				build_param (child_region->add_child("param"),"amount","real","1.0000000000");
 				build_param (child_region->add_child("param"),"blend_method","integer","0");
 				build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
-				build_vector (child_region->add_child("param"),"offset",0,0, *(*aux)->offset_id );
+				build_vector (child_region->add_child("param"),"offset",0,0, (*aux)->offset_id );
 				build_param (child_region->add_child("param"),"invert","bool","false");
 				build_param (child_region->add_child("param"),"antialias","bool","true");
 				build_param (child_region->add_child("param"),"feather","real","0.0000000000");
@@ -388,7 +388,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
 				else build_param (child_region->add_child("param"),"winding_style","integer","0");
 
-				build_bline (child_region->add_child("param"),*(*aux)->points,(*aux)->loop,*(*aux)->bline_id); 
+				build_bline(child_region->add_child("param"), (*aux)->points, (*aux)->loop, (*aux)->bline_id);
 			}
 		}
 		if(typeFill==2){ //gradient in onto mode (fill)
@@ -412,7 +412,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
 				build_param (child_outline->add_child("param"),"blend_method","integer","0");
 				build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
-				build_vector (child_outline->add_child("param"),"offset",0,0,*(*aux)->offset_id);
+				build_vector (child_outline->add_child("param"),"offset",0,0,(*aux)->offset_id);
 				build_param (child_outline->add_child("param"),"invert","bool","false");
 				build_param (child_outline->add_child("param"),"antialias","bool","true");
 				build_param (child_outline->add_child("param"),"feather","real","0.0000000000");
@@ -420,7 +420,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				//outline in nonzero
 				build_param (child_outline->add_child("param"),"winding_style","integer","0");
 
-				build_bline (child_outline->add_child("param"),*(*aux)->points,(*aux)->loop,*(*aux)->bline_id);
+				build_bline(child_outline->add_child("param"), (*aux)->points, (*aux)->loop, (*aux)->bline_id);
 
 				stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
 				build_param (child_outline->add_child("param"),"width","real",stroke_width);
@@ -1300,10 +1300,10 @@ Svg_parser::newBLine(std::list<Vertex> *points,bool loop){
 	BLine* data;
 	data=(BLine*)malloc(sizeof(BLine));
 	//sprintf(data->name,"%s",name.data());
-	data->points=new std::list<Vertex> (*points);
+	data->points=*points;
 	data->loop=loop;
-	data->bline_id=new String(new_guid());
-	data->offset_id=new String(new_guid());
+	data->bline_id=new_guid();
+	data->offset_id=new_guid();
 	return data;
 }
 

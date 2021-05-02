@@ -89,10 +89,10 @@ struct Vertex{
 };
 
 typedef struct bline_t{
-	std::list<Vertex> *points;
+	std::list<Vertex> points;
 	bool loop;
-	String* bline_id;
-	String* offset_id;
+	String bline_id;
+	String offset_id;
 }BLine;
 
 class Svg_parser
