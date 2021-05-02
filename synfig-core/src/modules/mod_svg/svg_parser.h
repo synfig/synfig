@@ -81,8 +81,8 @@ struct Vertex{
 	float radius2,angle2;
 	bool split;
 
-	void setTg2(float p1x,float p1y,float p2x,float p2y);
-	void setTg1(float p1x,float p1y,float p2x,float p2y);
+	void setTg2(float p2x, float p2y);
+	void setTg1(float p2x, float p2y);
 	void setSplit(bool val);
 	bool isFirst(float a, float b) const;
 	Vertex(float x,float y);

@@ -631,12 +631,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			coor2vect(&ax,&ay);
 			coor2vect(&tgx,&tgy);
 			//save
-			k1.back().setTg2(k1.back().x,k1.back().y,tgx2,tgy2);
+			k1.back().setTg2(tgx2,tgy2);
 			if(k1.front().isFirst(ax,ay)){
-				k1.front().setTg1(k1.front().x,k1.front().y,tgx,tgy);
+				k1.front().setTg1(tgx,tgy);
 			}else{
 				k1.push_back(Vertex(ax,ay));
-				k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+				k1.back().setTg1(tgx,tgy);
 				k1.back().setSplit(true);
 			}
 		}else if(command.compare("Q")==0 || command.compare("q")==0){ //quadractic curve
@@ -660,10 +660,10 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			coor2vect(&ax,&ay);
 			coor2vect(&tgx,&tgy);
 			//save
-			k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+			k1.back().setTg1(tgx,tgy);
 			k1.back().setSplit(false);
 			k1.push_back(Vertex(ax,ay));
-			k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+			k1.back().setTg1(tgx,tgy);
 		}else if(command.compare("L")==0 || command.compare("l")==0){ //line to
 			//point
 			actual_x+=atof(tokens.at(i).data());
@@ -677,12 +677,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
-			k1.back().setTg2(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+			k1.back().setTg2(k1.back().x,k1.back().y);
 			if(k1.front().isFirst(ax,ay)){
-				k1.front().setTg1(k1.front().x,k1.front().y,k1.front().x,k1.front().y);
+				k1.front().setTg1(k1.front().x,k1.front().y);
 			}else{
 				k1.push_back(Vertex(ax,ay));
-				k1.back().setTg1(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+				k1.back().setTg1(k1.back().x,k1.back().y);
 			}
 		}else if(command.compare("H")==0 || command.compare("h")==0){// horizontal move
 			//the same that L but only Horizontal movement
@@ -696,12 +696,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
-			k1.back().setTg2(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+			k1.back().setTg2(k1.back().x,k1.back().y);
 			if(k1.front().isFirst(ax,ay)){
-				k1.front().setTg1(k1.front().x,k1.front().y,k1.front().x,k1.front().y);
+				k1.front().setTg1(k1.front().x,k1.front().y);
 			}else{
 				k1.push_back(Vertex(ax,ay));
-				k1.back().setTg1(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+				k1.back().setTg1(k1.back().x,k1.back().y);
 			}
 		}else if(command.compare("V")==0 || command.compare("v")==0){//vertical
 			//point
@@ -714,12 +714,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 			//adjust
 			coor2vect(&ax,&ay);
 			//save
-			k1.back().setTg2(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+			k1.back().setTg2(k1.back().x,k1.back().y);
 			if(k1.front().isFirst(ax,ay)){
-				k1.front().setTg1(k1.front().x,k1.front().y,k1.front().x,k1.front().y);
+				k1.front().setTg1(k1.front().x,k1.front().y);
 			}else{
 				k1.push_back(Vertex(ax,ay));
-				k1.back().setTg1(k1.back().x,k1.back().y,k1.back().x,k1.back().y);
+				k1.back().setTg1(k1.back().x,k1.back().y);
 			}
 		}else if(command.compare("T")==0 || command.compare("t")==0){// I don't know what does it
 			actual_x+=atof(tokens.at(i).data());
@@ -770,12 +770,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				coor2vect(&ax,&ay);
 				coor2vect(&tgx,&tgy);
 				//save
-				k1.back().setTg2(k1.back().x,k1.back().y,tgx2,tgy2);
+				k1.back().setTg2(tgx2,tgy2);
 				if(k1.front().isFirst(ax,ay)){
-					k1.front().setTg1(k1.front().x,k1.front().y,tgx,tgy);
+					k1.front().setTg1(tgx,tgy);
 				}else{
 					k1.push_back(Vertex (ax,ay));
-					k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+					k1.back().setTg1(tgx,tgy);
 					k1.back().setSplit(true);
 				}
 			}else if(!large &&  sweep){
@@ -798,12 +798,12 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				coor2vect(&ax,&ay);
 				coor2vect(&tgx,&tgy);
 				//save
-				k1.back().setTg2(k1.back().x,k1.back().y,tgx2,tgy2);
+				k1.back().setTg2(tgx2,tgy2);
 				if(k1.front().isFirst(ax,ay)){
-					k1.front().setTg1(k1.front().x,k1.front().y,tgx,tgy);
+					k1.front().setTg1(tgx,tgy);
 				}else{
 					k1.push_back(Vertex(ax,ay));
-					k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+					k1.back().setTg1(tgx,tgy);
 					k1.back().setSplit(true);
 				}
 			}else if( large && !sweep){//rare
@@ -847,18 +847,18 @@ Svg_parser::parser_path_d(String path_d,SVGMatrix* mtx){
 				coor2vect(&in_x    , &in_y   );
 
 				//save the last tg2
-				k1.back().setTg2(k1.back().x,k1.back().y,tgx2,tgy2);
+				k1.back().setTg2(tgx2,tgy2);
 				//save the intermediate point
 				k1.push_back(Vertex(in_x,in_y));
-				k1.back().setTg1(k1.back().x,k1.back().y, in_tgx1 , in_tgy1);
-				k1.back().setTg2(k1.back().x,k1.back().y, in_tgx2 , in_tgy2);
+				k1.back().setTg1( in_tgx1 , in_tgy1);
+				k1.back().setTg2( in_tgx2 , in_tgy2);
 				k1.back().setSplit(true); //this could be changed
 				//save the new point
 				if(k1.front().isFirst(ax,ay)){
-					k1.front().setTg1(k1.front().x,k1.front().y,tgx,tgy);
+					k1.front().setTg1(tgx,tgy);
 				}else{
 					k1.push_back(Vertex(ax,ay));
-					k1.back().setTg1(k1.back().x,k1.back().y,tgx,tgy);
+					k1.back().setTg1(tgx,tgy);
 					k1.back().setSplit(true);
 				}
 			}
@@ -1491,11 +1491,11 @@ Svg_parser::coor2vect(float *x,float *y){
 }
 
 void
-Vertex::setTg1(float p1x,float p1y,float p2x,float p2y)
+Vertex::setTg1(float p2x,float p2y)
 {
 	float rd=0,ag=0;
-	float dx=(p2x-p1x)*3;
-	float dy=(p2y-p1y)*3;
+	float dx=(p2x-x)*3;
+	float dy=(p2y-y)*3;
 	rd=sqrt(dx*dx + dy*dy);
 	if(dx>0 && dy>0){
 		ag=PI + atan(dy/dx);
@@ -1522,11 +1522,11 @@ Vertex::setTg1(float p1x,float p1y,float p2x,float p2y)
 }
 
 void
-Vertex::setTg2(float p1x,float p1y,float p2x,float p2y)
+Vertex::setTg2(float p2x,float p2y)
 {
 	float rd=0,ag=0;
-	float dx=(p2x-p1x)*3;
-	float dy=(p2y-p1y)*3;
+	float dx=(p2x-x)*3;
+	float dy=(p2y-y)*3;
 
 	rd=sqrt(dx*dx + dy*dy);
 	if(dx>0 && dy>0){
