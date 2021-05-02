@@ -961,7 +961,7 @@ Svg_parser::build_transform(xmlpp::Element* root,SVGMatrix* mtx){
 	}
 }
 
-std::list<ColorStop*>*
+std::list<ColorStop>*
 Svg_parser::find_colorStop(String name){
 	if(!name.empty()){
 		if(lg.empty()&& rg.empty())
@@ -1011,15 +1011,15 @@ Svg_parser::build_fill(xmlpp::Element* root, String name,SVGMatrix *mtx){
 	}
 }
 void
-Svg_parser::build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops){
-	std::list<ColorStop*>::iterator aux_stop=stops->begin();
+Svg_parser::build_stop_color(xmlpp::Element* root, std::list<ColorStop> *stops){
+	std::list<ColorStop>::iterator aux_stop=stops->begin();
 	while(aux_stop!=stops->end()){
 		xmlpp::Element *child=root->add_child("color");
-		child->set_attribute("pos",etl::strprintf("%f",(*aux_stop)->pos));
-		child->add_child("r")->set_child_text(etl::strprintf("%f",(*aux_stop)->r));
-		child->add_child("g")->set_child_text(etl::strprintf("%f",(*aux_stop)->g));
-		child->add_child("b")->set_child_text(etl::strprintf("%f",(*aux_stop)->b));
-		child->add_child("a")->set_child_text(etl::strprintf("%f",(*aux_stop)->a));
+		child->set_attribute("pos",etl::strprintf("%f",aux_stop->pos));
+		child->add_child("r")->set_child_text(etl::strprintf("%f",aux_stop->r));
+		child->add_child("g")->set_child_text(etl::strprintf("%f",aux_stop->g));
+		child->add_child("b")->set_child_text(etl::strprintf("%f",aux_stop->b));
+		child->add_child("a")->set_child_text(etl::strprintf("%f",aux_stop->a));
 		aux_stop++;
 	}
 }
@@ -1179,12 +1179,12 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
-		std::list<ColorStop*> *stops;
+		std::list<ColorStop> *stops;
 		if(!link.empty()){
 			stops=find_colorStop (link);
 		}else{
 			//color stops
-			stops=new std::list<ColorStop*>();
+			stops=new std::list<ColorStop>();
 			const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
 			if(!nodeContent){
     			xmlpp::Node::NodeList list = node->get_children();
@@ -1202,7 +1202,7 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 						}
 						if(opacity.empty()) opacity="1";
 						if(stop_color.empty()) stop_color="#000000";//black for default :S
-						stops->push_back(newColorStop(stop_color,atof(opacity.data()),offset));
+						stops->push_back(ColorStop(stop_color, atof(opacity.data()), gamma, offset));
 					}
     			}
 			}
@@ -1235,7 +1235,7 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 		if(!transform.empty())
 			mtx=parser_transform (transform);
 
-		std::list<ColorStop*> *stops=NULL;
+		std::list<ColorStop> *stops=NULL;
 		if(!link.empty()){
 			//inkscape always use link, i don't need parser stops here, but it's possible
 			stops=find_colorStop (link);
@@ -1245,21 +1245,17 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 	}
 }
 
-ColorStop*
-Svg_parser::newColorStop(String color,float opacity,float pos){
-	ColorStop* _stop;
-	_stop=(ColorStop*)malloc(sizeof(ColorStop));
-	float r=getRed(color);
-	float g=getGreen(color);
-	float b=getBlue(color);
-	float a=opacity;
-	Color ret=adjustGamma(r/255,g/255,b/255,a);
-	_stop->r=ret.get_r();
-	_stop->g=ret.get_g();
-	_stop->b=ret.get_b();
-	_stop->a=ret.get_a();
-	_stop->pos=pos;
-	return _stop;
+ColorStop::ColorStop(const String& color, float opacity, const Gamma& gamma, float pos)
+	: a(opacity), pos(pos)
+{
+	int red = getRed(color);
+	int green = getGreen(color);
+	int blue = getBlue(color);
+	Color c = gamma.apply(Color(red/255.f, green/255.f, blue/255.f,a));
+	this->r = c.get_r();
+	this->g = c.get_g();
+	this->b = c.get_b();
+	this->a = c.get_a();
 }
 
 Color
@@ -1268,7 +1264,7 @@ Svg_parser::adjustGamma(float r,float g,float b,float a){
 }
 
 LinearGradient*
-Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, SVGMatrix* transform){
+Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop> *stops, SVGMatrix* transform){
 	LinearGradient* data;
 	data=(LinearGradient*)malloc(sizeof(LinearGradient));
 	sprintf(data->name,"%s",name.data());
@@ -1282,7 +1278,7 @@ Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,s
 }
 
 RadialGradient*
-Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, SVGMatrix* transform){
+Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop> *stops, SVGMatrix* transform){
 	RadialGradient* data;
 	data=(RadialGradient*)malloc(sizeof(RadialGradient));
 	sprintf(data->name,"%s",name.data());
