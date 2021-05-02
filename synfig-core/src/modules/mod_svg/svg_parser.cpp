@@ -63,8 +63,10 @@ using namespace synfig;
 
 //attributes
 static int extractSubAttribute(const String& attribute, const String& name, String& value);
-static String loadAttribute(const String& name, const String& path_style, const String& master_style, String subattribute, String defaultVal);
-static String loadAttribute(const String& name, const String& path_style, const String& master_style, String defaultVal);
+/// Get a named subattribute in style attribute. If not found, search in master_style.
+/// If not found in both styles, look up the elem attributes themselves (if elem is not NULL).
+/// Otherwise use the provided defaultVal
+static String loadAttribute(const String& name, const String& path_style, const String& master_style, const xmlpp::Element* elem, String defaultVal);
 static std::vector<String> get_tokens_path(const String& path);
 static int getRed(const String& hex);
 static int getGreen(const String& hex);
@@ -288,20 +290,18 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			return;
 		}
 
-		Glib::ustring obj_style	=nodeElement->get_attribute_value("style");
-		Glib::ustring obj_fill			=nodeElement->get_attribute_value("fill");
+		Glib::ustring obj_style = nodeElement->get_attribute_value("style");
 
 		//style
-		String fill			    =loadAttribute("fill",obj_style,parent_style,obj_fill,"none");
-		String fill_rule		=loadAttribute("fill-rule",obj_style,parent_style,"evenodd");
-		String stroke			=loadAttribute("stroke",obj_style,parent_style,"none");
-		String stroke_width		=loadAttribute("stroke-width",obj_style,parent_style,"1px");
-		String stroke_linecap	=loadAttribute("stroke-linecap",obj_style,parent_style,"butt");
-		String stroke_linejoin	=loadAttribute("stroke-linejoin",obj_style,parent_style,"miter");
-		String stroke_opacity	=loadAttribute("stroke-opacity",obj_style,parent_style,"1");
-		String fill_opacity		=loadAttribute("fill-opacity",obj_style,parent_style,"1");
-		String opacity			=loadAttribute("opacity",obj_style,parent_style,"1");
-
+		String fill			    =loadAttribute("fill",obj_style,parent_style,nodeElement,"none");
+		String fill_rule		=loadAttribute("fill-rule",obj_style,parent_style,nodeElement,"evenodd");
+		String stroke			=loadAttribute("stroke",obj_style,parent_style,nodeElement,"none");
+		String stroke_width		=loadAttribute("stroke-width",obj_style,parent_style,nodeElement,"1px");
+		String stroke_linecap	=loadAttribute("stroke-linecap",obj_style,parent_style,nodeElement,"butt");
+		String stroke_linejoin	=loadAttribute("stroke-linejoin",obj_style,parent_style,nodeElement,"miter");
+		String stroke_opacity	=loadAttribute("stroke-opacity",obj_style,parent_style,nodeElement,"1");
+		String fill_opacity		=loadAttribute("fill-opacity",obj_style,parent_style,nodeElement,"1");
+		String opacity			=loadAttribute("opacity",obj_style,parent_style,nodeElement,"1");
 
 		//Fill
 		int typeFill=0; //nothing
@@ -1192,14 +1192,8 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node)
 						const xmlpp::Element* nodeIter = dynamic_cast<const xmlpp::Element*>(*iter);
 						Glib::ustring style	=nodeIter->get_attribute_value("style");
 						float offset=atof(nodeIter->get_attribute_value("offset").data());
-						String stop_color;
-						String opacity;
-						if(!style.empty()){
-							extractSubAttribute (style,"stop-color",stop_color);
-							extractSubAttribute (style,"stop-opacity",opacity);
-						}
-						if(opacity.empty()) opacity="1";
-						if(stop_color.empty()) stop_color="#000000";//black for default :S
+						String stop_color = loadAttribute("stop-color", style, "", nodeIter, "#000000");
+						String opacity = loadAttribute("stop-opacity", style, "", nodeIter, "1");
 						stops.push_back(ColorStop(stop_color, atof(opacity.data()), gamma, offset));
 					}
     			}
@@ -1725,22 +1719,7 @@ extractSubAttribute(const String& attribute, const String& name, String& value)
 }
 
 static String
-loadAttribute(const String& name, const String& path_style, const String& master_style, String defaultVal)
-{
-	String value;
-	int fnd=0;
-	if(!path_style.empty())
-		fnd=extractSubAttribute(path_style,name,value);
-	if(fnd==0){
-		if(!master_style.empty())
-			fnd=extractSubAttribute(master_style,name,value);
-		if(fnd==0)
-			value=defaultVal;
-	}
-	return value;
-}
-static String
-loadAttribute(const String& name, const String& path_style, const String& master_style, String subattribute, String defaultVal)
+loadAttribute(const String& name, const String& path_style, const String& master_style, const xmlpp::Element* elem, String defaultVal)
 {
 	String value;
 	int fnd=0;
@@ -1749,9 +1728,9 @@ loadAttribute(const String& name, const String& path_style, const String& master
 	if(fnd==0 && !master_style.empty())
 			fnd=extractSubAttribute(master_style,name,value);
 	if(fnd==0){
-		if(!subattribute.empty())
-			value=subattribute;
-		else
+		if(elem)
+			value=elem->get_attribute_value(name);
+		if(value.empty())
 			value=defaultVal;
 	}
 	return value;
