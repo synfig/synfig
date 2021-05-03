@@ -1,3 +1,7 @@
+- [`7d4d8b7`](https://github.com/synfig/synfig/commit/7d4d8b79ba5e00e1e28d66fb3b2ebb30f875387e) Removed unused headers ([#2121](https://github.com/synfig/synfig/issues/2121)) [core]
+- [`6329a76`](https://github.com/synfig/synfig/commit/6329a76d914718b74922c475b6c7f80cdb934068) [Synfig Studio] Replacing Gtk::HBox with Gtk::Box ([#2126](https://github.com/synfig/synfig/issues/2126)) [studio]
+- [`8b1bc8c`](https://github.com/synfig/synfig/commit/8b1bc8c1aa7bbb7222b1539c5029ad13458e5ec9) [CMake] Fixed splash screen creation when build type is differs from debug/release. ([#2130](https://github.com/synfig/synfig/issues/2130)) [studio]
+- [`e6bbcab`](https://github.com/synfig/synfig/commit/e6bbcabf2273bfe67909a2bb3ef63036c8eebda7) [CMake] Bump minimum required CMake version to 3.5 ([#2128](https://github.com/synfig/synfig/issues/2128)) [ETL] [core] [studio]
 - [`b277312`](https://github.com/synfig/synfig/commit/b2773121ccd27694b8b86f01e896db25647bef56) [Synfig Studio] Replace some other deprecated Gtk libraries ([#2113](https://github.com/synfig/synfig/issues/2113)) [studio]
 - [`d667744`](https://github.com/synfig/synfig/commit/d66774460d52b3a5b237cae04b81585c45970476) Replace deprecated get_vbox() method ([#2112](https://github.com/synfig/synfig/issues/2112)) [studio]
 - [`d15df18`](https://github.com/synfig/synfig/commit/d15df1895026e4b6161056f6fec40cc664ae9e1c) Added Ctrl+E as keyboard shortcut for the "Save All" menu action ([#2114](https://github.com/synfig/synfig/issues/2114)) [studio]
