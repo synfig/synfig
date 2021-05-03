@@ -344,7 +344,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 	iter->set_value(COLUMN_IS_NAME_EDITABLE, will_be_copied);
 	iter->set_value(COLUMN_STATUS, status);
 	iter->set_value(COLUMN_STATUS_ICON, status_icon);
-	iter->set_value(COLUMN_FILE_PATH_VISIBILITY, !will_be_copied);
+	iter->set_value(COLUMN_FILE_PATH_VISIBILITY, true);
 	if (!will_be_copied)
 		iter->set_value(COLUMN_NAME, original_name);
 }
