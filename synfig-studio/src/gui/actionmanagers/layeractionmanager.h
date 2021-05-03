@@ -84,7 +84,11 @@ class LayerActionManager
 	void amount_dec();
 
 	typedef std::map<std::string,std::pair<synfig::ValueNode::Handle, std::string>> ValueNodeReplacementMap;
-	void query_user_about_foreign_exported_value_nodes(synfig::Canvas::Handle canvas, ValueNodeReplacementMap& answer) const;
+	/// If there is exported value nodes being copied, prompts user what to do with them
+	/// \param where clipboard data will be pasted
+	/// \param[out] answer maps what to do with each exported valuenode being pasted
+	/// \return false is user cancels the (possibly shown) dialog
+	bool query_user_about_foreign_exported_value_nodes(synfig::Canvas::Handle canvas, ValueNodeReplacementMap& answer) const;
 	void export_value_nodes(synfig::Canvas::Handle canvas, const ValueNodeReplacementMap& valuenodes) const;
 public:
 	void queue_refresh();

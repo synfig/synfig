@@ -520,7 +520,9 @@ LayerActionManager::paste()
 
 	ValueNodeReplacementMap valuenode_replacements;
 
-	query_user_about_foreign_exported_value_nodes(canvas, valuenode_replacements);
+	bool user_accepted = query_user_about_foreign_exported_value_nodes(canvas, valuenode_replacements);
+	if (!user_accepted)
+		return;
 	if (!valuenode_replacements.empty())
 		export_value_nodes(canvas, valuenode_replacements);
 
@@ -675,7 +677,7 @@ LayerActionManager::amount_dec()
 	}
 }
 
-void LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, LayerActionManager::ValueNodeReplacementMap& valuenode_replacements) const
+bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, LayerActionManager::ValueNodeReplacementMap& valuenode_replacements) const
 {
 	std::vector<ValueNode::LooseHandle> foreign_exported_valuenode_list;
 
@@ -687,7 +689,7 @@ void LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 		dlg->set_destination_canvas(canvas);
 		int ret = dlg->run();
 		if (ret != Gtk::RESPONSE_OK)
-			return;
+			return false;
 
 		std::map<std::string, std::string> user_choices;
 		dlg->get_user_choices(user_choices);
@@ -720,6 +722,7 @@ void LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 			}
 		}
 	}
+	return true;
 }
 
 void
