@@ -325,12 +325,37 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 	}
 
 	std::string status;
+	std::string status_tooltip;
 	if (existent_vn) {
-		if (v->get_type() != existent_vn->get_type()
-			|| v->get_name() != existent_vn->get_name())
-			status = "conflict"; // different value node type or value type
-		else if (will_be_copied)
+		if (v->get_type() != existent_vn->get_type()) {
+			status = "conflict"; // different value type
+			const char *format = _("There is an exported value node with same name ('%s') whose value type is %s, "
+			                        "but you are trying to paste one whose value type is %s.\n"
+			                        "Please rename it or cancel copying.");
+			status_tooltip = etl::strprintf(format,
+			                                v->get_id().c_str(),
+			                                v->get_type().description.local_name.c_str(),
+			                                existent_vn->get_type().description.local_name.c_str());
+		} else if (v->get_name() != existent_vn->get_name()) {
+			status = "conflict"; // different value node type
+			const char *format = _("There is an exported value node with same name ('%s') whose value node type is %s, "
+			                       "but you are trying to paste one whose type is %s.\n"
+			                       "Please rename it or cancel copying.");
+			status_tooltip = etl::strprintf(format,
+			                                v->get_id().c_str(),
+			                                v->get_local_name().c_str(),
+			                                existent_vn->get_local_name().c_str());
+		} else if (will_be_copied) {
 			status = "link";
+			status_tooltip = _("This valuenode will be copied and reuse the existent value node in target file.\n"
+			                   "It will not be linked to original file nor will it depend on such file.");
+		} else {
+			status_tooltip = _("This valuenode will be linked to original file and will depend on such file.");
+		}
+	} else {
+		if (!will_be_copied) {
+			status_tooltip = _("This valuenode will be linked to original file and will depend on such file.");
+		}
 	}
 
 	Glib::RefPtr<Gdk::Pixbuf> status_icon;
@@ -344,6 +369,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 	iter->set_value(COLUMN_IS_NAME_EDITABLE, will_be_copied);
 	iter->set_value(COLUMN_STATUS, status);
 	iter->set_value(COLUMN_STATUS_ICON, status_icon);
+	iter->set_value(COLUMN_STATUS_TOOLTIP, status_tooltip);
 	iter->set_value(COLUMN_FILE_PATH_VISIBILITY, true);
 	if (!will_be_copied)
 		iter->set_value(COLUMN_NAME, original_name);
