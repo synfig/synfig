@@ -25,6 +25,8 @@
       <column type="gchararray"/>
       <!-- column-name Status_Icon -->
       <column type="GdkPixbuf"/>
+      <!-- column-name Status_Tooltip -->
+      <column type="gchararray"/>
       <!-- column-name Type_Icon -->
       <column type="GdkPixbuf"/>
       <!-- column-name Copy? -->
@@ -112,6 +114,7 @@ Do you want to link to their original files or create a copy? Choose below for e
                 <property name="can-focus">True</property>
                 <property name="model">valuenodes_liststore</property>
                 <property name="enable-grid-lines">horizontal</property>
+                <property name="tooltip-column">7</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection"/>
                 </child>
@@ -139,7 +142,7 @@ Do you want to link to their original files or create a copy? Choose below for e
                     <child>
                       <object class="GtkCellRendererPixbuf"/>
                       <attributes>
-                        <attribute name="pixbuf">7</attribute>
+                        <attribute name="pixbuf">8</attribute>
                       </attributes>
                     </child>
                     <child>
@@ -177,7 +180,7 @@ Do you want to link to their original files or create a copy? Choose below for e
                         <property name="xalign">0</property>
                       </object>
                       <attributes>
-                        <attribute name="active">8</attribute>
+                        <attribute name="active">9</attribute>
                       </attributes>
                     </child>
                   </object>
