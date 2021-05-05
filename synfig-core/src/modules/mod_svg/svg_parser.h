@@ -184,7 +184,7 @@ private:
 		void build_gamma(xmlpp::Element* root,float gamma);
 		void build_rotate(xmlpp::Element* root,float dx,float dy,float angle);
 		void build_translate(xmlpp::Element* root,float dx,float dy);
-		void build_points(xmlpp::Element* root, const std::list<Vertex*>& p);
+		void build_points(xmlpp::Element* root, const std::list<Vertex>& p);
 		void build_vertex(xmlpp::Element* root, const Vertex& p);
 		void build_bline(xmlpp::Element* root, const std::list<Vertex>& p, bool loop, const String& blineguid);
 		void build_param (xmlpp::Element* root, const String& name, const String& type, const String& value);

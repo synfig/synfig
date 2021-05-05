@@ -1315,17 +1315,17 @@ Svg_parser::build_rotate(xmlpp::Element* root, float dx, float dy, float angle)
 }
 
 void
-Svg_parser::build_points(xmlpp::Element* root, const std::list<Vertex*>& p)
+Svg_parser::build_points(xmlpp::Element* root, const std::list<Vertex>& p)
 {
 	root->set_attribute("name","vector_list");
 	xmlpp::Element *child=root->add_child("dynamic_list");
 	child->set_attribute("type","vector");
-	std::list<Vertex*>::const_iterator aux = p.begin();
+	std::list<Vertex>::const_iterator aux = p.begin();
 	while(aux!=p.end()){
 		xmlpp::Element *child_entry=child->add_child("entry");
 		xmlpp::Element *child_vector=child_entry->add_child("vector");
-		child_vector->add_child("x")->set_child_text(etl::strprintf("%f",(*aux)->x));
-		child_vector->add_child("y")->set_child_text(etl::strprintf("%f",(*aux)->y));
+		child_vector->add_child("x")->set_child_text(etl::strprintf("%f",aux->x));
+		child_vector->add_child("y")->set_child_text(etl::strprintf("%f",aux->y));
 		aux++;
 	}
 }
