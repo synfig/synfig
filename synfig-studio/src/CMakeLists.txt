@@ -34,7 +34,7 @@ else()
 		pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
 		pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 		pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
-		pkg_check_modules(MLT REQUIRED mlt++) # required for widget_soundwave
+		pkg_check_modules(MLT mlt++) # required for widget_soundwave
 	endif()
 
 	foreach(pkg_config_lib SIGCPP GTKMM LIBXML MLT FFTW)
@@ -45,6 +45,10 @@ endif()
 
 if(FONT_CONFIG_FOUND)
 	add_definitions(-DWITH_FONTCONFIG)
+endif()
+
+if (NOT MLT_FOUND)
+	add_definitions(-DWITHOUT_MLT) # disable MLT if not found
 endif()
 
 ##
@@ -66,7 +70,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 include_directories(
-    SYSTEM
         ${SIGCPP_INCLUDE_DIRS}
         ${GTKMM_INCLUDE_DIRS}
 )
