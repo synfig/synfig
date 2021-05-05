@@ -1415,7 +1415,7 @@ Svg_parser::build_param(xmlpp::Element* root, const String& name, const String& 
 void
 Svg_parser::build_integer(xmlpp::Element* root, const String& name, int value)
 {
-	if(name.compare("")!=0) root->set_attribute("name",name);
+	if(!name.empty()) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("integer");
 	char *enteroc=new char[10];
 	sprintf(enteroc,"%d",value);
@@ -1425,7 +1425,7 @@ Svg_parser::build_integer(xmlpp::Element* root, const String& name, int value)
 void
 Svg_parser::build_real(xmlpp::Element* root, const String& name, float value)
 {
-	if(name.compare("")!=0) root->set_attribute("name",name);
+	if(!name.empty()) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("real");
 	char *realc=new char[20];
 	sprintf(realc,"%f",value);
@@ -1453,7 +1453,7 @@ Svg_parser::build_color(xmlpp::Element* root, float r, float g, float b, float a
 void
 Svg_parser::build_vector(xmlpp::Element* root, const String& name, float x, float y)
 {
-	if(name.compare("")!=0) root->set_attribute("name",name);
+	if(!name.empty()) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("vector");
 	child->add_child("x")->set_child_text(etl::strprintf("%f",x));
 	child->add_child("y")->set_child_text(etl::strprintf("%f",y));
@@ -1462,7 +1462,7 @@ Svg_parser::build_vector(xmlpp::Element* root, const String& name, float x, floa
 void
 Svg_parser::build_vector (xmlpp::Element* root, const String& name, float x, float y, const String& guid)
 {
-	if(name.compare("")!=0) root->set_attribute("name",name);
+	if(!name.empty()) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("vector");
 	if(!guid.empty()) child->set_attribute("guid",guid);
 	child->add_child("x")->set_child_text(etl::strprintf("%f",x));
