@@ -544,12 +544,11 @@ Svg_parser::parser_path_polygon(const Glib::ustring& polygon_points, const SVGMa
 		return k0;
 	std::list<Vertex> points;
 	std::vector<String> tokens=get_tokens_path (polygon_points);
-	unsigned int i;
-	float ax,ay; ax=ay=0;
-	for(i=0;i<tokens.size();i++){
-		ax=atof(tokens.at(i).data());
+
+	for(unsigned int i=0;i<tokens.size();i++){
+		float ax=atof(tokens.at(i).data());
 		i++; if(tokens.at(i).compare(",")==0) i++;
-		ay=atof(tokens.at(i).data());
+		float ay=atof(tokens.at(i).data());
 		//mtx
 		mtx.transformPoint2D(ax,ay);
 		//adjust
@@ -1235,13 +1234,12 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node)
 		if(!transform.empty())
 			mtx.parser_transform(transform);
 
-		std::list<ColorStop> stops;
 		if(!link.empty()){
 			//inkscape always use link, i don't need parser stops here, but it's possible
-			stops = get_colorStop(link);
+			std::list<ColorStop> stops = get_colorStop(link);
+			if (!stops.empty())
+				rg.push_back(RadialGradient(id,cx,cy,r,stops,mtx));
 		}
-		if (!stops.empty())
-			rg.push_back(RadialGradient(id,cx,cy,r,stops,mtx));
 	}
 }
 
@@ -1320,13 +1318,11 @@ Svg_parser::build_points(xmlpp::Element* root, const std::list<Vertex>& p)
 	root->set_attribute("name","vector_list");
 	xmlpp::Element *child=root->add_child("dynamic_list");
 	child->set_attribute("type","vector");
-	std::list<Vertex>::const_iterator aux = p.begin();
-	while(aux!=p.end()){
+	for (const Vertex& vertex : p){
 		xmlpp::Element *child_entry=child->add_child("entry");
 		xmlpp::Element *child_vector=child_entry->add_child("vector");
-		child_vector->add_child("x")->set_child_text(etl::strprintf("%f",aux->x));
-		child_vector->add_child("y")->set_child_text(etl::strprintf("%f",aux->y));
-		aux++;
+		child_vector->add_child("x")->set_child_text(etl::strprintf("%f",vertex.x));
+		child_vector->add_child("y")->set_child_text(etl::strprintf("%f",vertex.y));
 	}
 }
 
@@ -1366,10 +1362,8 @@ Svg_parser::build_bline(xmlpp::Element* root, const std::list<Vertex>& p, bool l
 	else
 		child->set_attribute("loop","false");
 	if(!blineguid.empty())	child->set_attribute("guid",blineguid);
-	std::list<Vertex>::const_iterator aux = p.begin();
-	while(aux!=p.end()){
-		build_vertex (child->add_child("entry"),*aux);
-		aux++;
+	for (const Vertex& vertex : p){
+		build_vertex (child->add_child("entry"), vertex);
 	}
 }
 
@@ -1591,48 +1585,46 @@ SVGMatrix::parser_transform(String transform)
 	String tf(transform);
 	removeIntoS(tf);
 	std::vector<String> tokens=tokenize(tf," ");
-	std::vector<String>::iterator aux=tokens.begin();
-	while(aux!=tokens.end()){
-		if((*aux).compare(0,9,"translate")==0){
+	for (const String& token : tokens) {
+		if(token.compare(0,9,"translate")==0){
 			float dx,dy;
 			int start,end;
-			start	=(*aux).find_first_of("(")+1;
-			end		=(*aux).find_first_of(",");
-			dx		=atof((*aux).substr(start,end-start).data());
-			start	=(*aux).find_first_of(",")+1;
-			end		=(*aux).size()-1;
-			dy		=atof((*aux).substr(start,end-start).data());
+			start	=token.find_first_of("(")+1;
+			end		=token.find_first_of(",");
+			dx		=atof(token.substr(start,end-start).data());
+			start	=token.find_first_of(",")+1;
+			end		=token.size()-1;
+			dy		=atof(token.substr(start,end-start).data());
 			if (first_iteration)
 				a = SVGMatrix(1,0,0,1,dx,dy);
 			else
 				a.multiply(SVGMatrix(1,0,0,1,dx,dy));
-		}else if((*aux).compare(0,5,"scale")==0){
+		}else if(token.compare(0,5,"scale")==0){
 			if (first_iteration)
 				a = SVGMatrix(1,0,0,1,0,0);
-		}else if((*aux).compare(0,6,"rotate")==0){
+		}else if(token.compare(0,6,"rotate")==0){
 			float angle,seno,coseno;
 			int start,end;
-			start	=(*aux).find_first_of("(")+1;
-			end		=(*aux).size()-1;
-			angle=getRadian (atof((*aux).substr(start,end-start).data()));
+			start	=token.find_first_of("(")+1;
+			end		=token.size()-1;
+			angle=getRadian (atof(token.substr(start,end-start).data()));
 			seno   =sin(angle);
 			coseno =cos(angle);
 			if (first_iteration)
 				a = SVGMatrix(coseno,seno,-1*seno,coseno,0,0);
 			else
 				a.multiply(SVGMatrix(coseno,seno,-1*seno,coseno,0,0));
-		}else if((*aux).compare(0,6,"matrix")==0){
-			int start	=(*aux).find_first_of('(')+1;
-			int end		=(*aux).find_first_of(')');
+		}else if(token.compare(0,6,"matrix")==0){
+			int start	=token.find_first_of('(')+1;
+			int end		=token.find_first_of(')');
 			if (first_iteration)
-				a = SVGMatrix((*aux).substr(start,end-start));
+				a = SVGMatrix(token.substr(start,end-start));
 			else
-				a.multiply(SVGMatrix((*aux).substr(start,end-start)));
+				a.multiply(SVGMatrix(token.substr(start,end-start)));
 		}else{
 			a = SVGMatrix(1,0,0,1,0,0);
 		}
 		first_iteration = false;
-		aux++;
 	}
 	*this = a;
 }
