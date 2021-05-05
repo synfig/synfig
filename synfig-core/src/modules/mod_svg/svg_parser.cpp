@@ -363,14 +363,11 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			}
 		}
 		
-		std::list<BLine>::iterator aux;
-		//int n = k.size();
-
 		if(typeFill!=0){//region layer
 			/*if(typeFill==2){
 				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
 			}*/
-			for (aux = k.begin(); aux!=k.end(); aux++){
+			for (const BLine& bline : k) {
 				xmlpp::Element *child_region=child_fill->add_child("layer");
 				child_region->set_attribute("type","region");
 				child_region->set_attribute("active","true");
@@ -380,7 +377,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				build_param (child_region->add_child("param"),"amount","real","1.0000000000");
 				build_param (child_region->add_child("param"),"blend_method","integer","0");
 				build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
-				build_vector (child_region->add_child("param"),"offset",0,0, aux->offset_id );
+				build_vector (child_region->add_child("param"),"offset",0,0, bline.offset_id );
 				build_param (child_region->add_child("param"),"invert","bool","false");
 				build_param (child_region->add_child("param"),"antialias","bool","true");
 				build_param (child_region->add_child("param"),"feather","real","0.0000000000");
@@ -388,7 +385,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
 				else build_param (child_region->add_child("param"),"winding_style","integer","0");
 
-				build_bline(child_region->add_child("param"), aux->points, aux->loop, aux->bline_id);
+				build_bline(child_region->add_child("param"), bline.points, bline.loop, bline.bline_id);
 			}
 		}
 		if(typeFill==2){ //gradient in onto mode (fill)
@@ -402,7 +399,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			if(typeStroke==2){
 				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
 			}
-			for (aux=k.begin(); aux!=k.end(); aux++){
+			for (const BLine& bline : k) {
 				xmlpp::Element *child_outline=child_stroke->add_child("layer");
 				child_outline->set_attribute("type","outline");
 				child_outline->set_attribute("active","true");
@@ -412,7 +409,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
 				build_param (child_outline->add_child("param"),"blend_method","integer","0");
 				build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
-				build_vector (child_outline->add_child("param"),"offset",0,0,aux->offset_id);
+				build_vector (child_outline->add_child("param"),"offset",0,0,bline.offset_id);
 				build_param (child_outline->add_child("param"),"invert","bool","false");
 				build_param (child_outline->add_child("param"),"antialias","bool","true");
 				build_param (child_outline->add_child("param"),"feather","real","0.0000000000");
@@ -420,7 +417,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				//outline in nonzero
 				build_param (child_outline->add_child("param"),"winding_style","integer","0");
 
-				build_bline(child_outline->add_child("param"), aux->points, aux->loop, aux->bline_id);
+				build_bline(child_outline->add_child("param"), bline.points, bline.loop, bline.bline_id);
 
 				stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
 				build_param (child_outline->add_child("param"),"width","real",stroke_width);
@@ -974,15 +971,13 @@ Svg_parser::get_colorStop(String name)
 		if(lg.empty()&& rg.empty())
 			return none;
 
-		String find= name;
-		if(find.at(0)=='#') find.erase(0,1);
+		String target_name = name;
+		if(target_name.at(0)=='#') target_name.erase(0,1);
 		else return none;
-		std::list<LinearGradient>::iterator aux=lg.begin();
-		while(aux!=lg.end()){//only find into linear gradients
-			if(find.compare(aux->name)==0){
-				return aux->stops;
-			}
-			aux++;
+		for (const LinearGradient& linear_gradient : lg) {
+			//only find into linear gradients
+			if(linear_gradient.name == target_name)
+				return linear_gradient.stops;
 		}
 	}
 	return none;
@@ -994,26 +989,19 @@ Svg_parser::build_fill(xmlpp::Element* root, String name, const SVGMatrix& mtx)
 	if(!name.empty()){
 		int start=name.find_first_of("#")+1;
 		int end=name.find_first_of(")");
-		String find= name.substr(start,end-start);
-		bool encounter=false;
-		if(!lg.empty()){
-			std::list<LinearGradient>::iterator aux=lg.begin();
-			while(aux!=lg.end()){
-				if(find.compare(aux->name)==0){
-					build_linearGradient(root, *aux, mtx);
-					encounter=true;
-				}
-				aux++;
+		String target_name = name.substr(start,end-start);
+
+		for (const LinearGradient& linear_gradient : lg) {
+			if (linear_gradient.name == target_name) {
+				build_linearGradient(root, linear_gradient, mtx);
+				return;
 			}
 		}
-		if(!encounter && !rg.empty()){
-			std::list<RadialGradient>::iterator aux=rg.begin();
-			while(aux!=rg.end()){
-				if(find.compare(aux->name)==0){
-					build_radialGradient(root, *aux, mtx);
-					encounter=true;
-				}
-				aux++;
+
+		for (const RadialGradient& radial_gradient : rg) {
+			if (radial_gradient.name == target_name) {
+				build_radialGradient(root, radial_gradient, mtx);
+				return;
 			}
 		}
 	}
