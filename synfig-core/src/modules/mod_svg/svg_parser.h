@@ -159,13 +159,13 @@ private:
 
 		/* === LAYER PARSERS ============================== */
 		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx);
-		void parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity);
+		void parser_rect(const xmlpp::Element* nodeElement, xmlpp::Element* root, const String& fill, const String& fill_opacity, const String& opacity);
 		/* === CONVERT TO PATH PARSERS ==================== */
-		std::list<BLine> parser_path_polygon(Glib::ustring polygon_points, const SVGMatrix& mtx);
-		std::list<BLine> parser_path_d(String path_d, const SVGMatrix& mtx);
+		std::list<BLine> parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx);
+		std::list<BLine> parser_path_d(const String& path_d, const SVGMatrix& mtx);
 
 		/* === EFFECTS PARSERS ============================ */
-		void parser_effects(const xmlpp::Element* nodeElement, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx);
+		void parser_effects(const xmlpp::Element* nodeElement, xmlpp::Element* root, const String& parent_style, const SVGMatrix& mtx);
 
 		/* === DEFS PARSERS =============================== */
 		void parser_defs(const xmlpp::Node* node);
@@ -184,19 +184,18 @@ private:
 		void build_gamma(xmlpp::Element* root,float gamma);
 		void build_rotate(xmlpp::Element* root,float dx,float dy,float angle);
 		void build_translate(xmlpp::Element* root,float dx,float dy);
-		void build_points(xmlpp::Element* root,std::list<Vertex*> p);
+		void build_points(xmlpp::Element* root, const std::list<Vertex*>& p);
 		void build_vertex(xmlpp::Element* root, const Vertex& p);
-		void build_bline(xmlpp::Element* root, std::list<Vertex> p, bool loop, String blineguid);
-		void build_param (xmlpp::Element* root,String name,String type,String value);
-		void build_param (xmlpp::Element* root,String name,String type,float value);
-		void build_param (xmlpp::Element* root,String name,String type,int value);
-		void build_integer (xmlpp::Element* root,String name, int value);
-		void build_real (xmlpp::Element* root,String name,float value);
-		void build_vector (xmlpp::Element* root,String name,float x,float y);
-		void build_vector (xmlpp::Element* root,String name,float x,float y,String guid);
+		void build_bline(xmlpp::Element* root, const std::list<Vertex>& p, bool loop, const String& blineguid);
+		void build_param (xmlpp::Element* root, const String& name, const String& type, const String& value);
+		void build_param (xmlpp::Element* root, const String& name, const String& type, float value);
+		void build_param (xmlpp::Element* root, const String& name, const String& type, int value);
+		void build_integer (xmlpp::Element* root, const String& name, int value);
+		void build_real (xmlpp::Element* root, const String& name, float value);
+		void build_vector (xmlpp::Element* root, const String& name, float x, float y);
+		void build_vector (xmlpp::Element* root, const String& name, float x, float y, const String& guid);
 		void build_color(xmlpp::Element* root,float r,float g,float b,float a);
-		xmlpp::Element* nodeStartBasicLayer(xmlpp::Element* root);
-		xmlpp::Element* nodeStartBasicLayer(xmlpp::Element* root, String name);
+		xmlpp::Element* nodeStartBasicLayer(xmlpp::Element* root, const String& name);
 
 		/* === COORDINATES & TRANSFORMATIONS ============== */
 

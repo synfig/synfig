@@ -80,7 +80,8 @@ static std::vector<String> tokenize(const String& str,const String& delimiters);
 /* === M E T H O D S ======================================================= */
 
 Canvas::Handle
-synfig::open_svg(std::string _filepath,String &errors, String &warnings){
+synfig::open_svg(std::string _filepath, String &errors, String &warnings)
+{
 	Canvas::Handle canvas;
 	Svg_parser parser;
 	try
@@ -94,7 +95,8 @@ synfig::open_svg(std::string _filepath,String &errors, String &warnings){
 }
 
 Canvas::Handle
-Svg_parser::load_svg_canvas(std::string _filepath,String &errors, String &warnings){
+Svg_parser::load_svg_canvas(std::string _filepath, String &errors, String &warnings)
+{
 	ChangeLocale locale(LC_NUMERIC, "C");
 
 	filepath = _filepath;
@@ -166,7 +168,8 @@ Svg_parser::set_id(String source){
 /* === PARSERS ============================================================= */
 
 void
-Svg_parser::parser_node(const xmlpp::Node* node){
+Svg_parser::parser_node(const xmlpp::Node* node)
+{
   	const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
   	const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(node);
   	const xmlpp::CommentNode* nodeComment = dynamic_cast<const xmlpp::CommentNode*>(node);
@@ -198,7 +201,8 @@ Svg_parser::parser_node(const xmlpp::Node* node){
 
 //parser elements
 void
-Svg_parser::parser_svg (const xmlpp::Node* node){
+Svg_parser::parser_svg(const xmlpp::Node* node)
+{
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		width = getDimension(nodeElement->get_attribute_value("width"));
 		height = getDimension(nodeElement->get_attribute_value("height"));
@@ -207,7 +211,8 @@ Svg_parser::parser_svg (const xmlpp::Node* node){
 }
 
 void
-Svg_parser::parser_canvas (const xmlpp::Node* node){
+Svg_parser::parser_canvas(const xmlpp::Node* node)
+{
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 
 		if(approximate_zero(width)){
@@ -451,7 +456,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 /* === LAYER PARSERS ======================================================= */
 
 void
-Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style, const SVGMatrix& mtx){
+Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx)
+{
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring label		=nodeElement->get_attribute_value("label");
 		Glib::ustring style		=nodeElement->get_attribute_value("style");
@@ -497,7 +503,8 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 }
 
 void
-Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity){
+Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, const String& fill, const String& fill_opacity, const String& opacity)
+{
 	Glib::ustring rect_id		=nodeElement->get_attribute_value("id");
 	Glib::ustring rect_x		=nodeElement->get_attribute_value("x");
 	Glib::ustring rect_y		=nodeElement->get_attribute_value("y");
@@ -530,7 +537,7 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,S
 /* === CONVERT TO PATH PARSERS ============================================= */       
 
 std::list<BLine>
-Svg_parser::parser_path_polygon(Glib::ustring polygon_points, const SVGMatrix& mtx)
+Svg_parser::parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx)
 {
 	std::list<BLine> k0;
 	if(polygon_points.empty())
@@ -555,7 +562,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, const SVGMatrix& m
 }
 
 std::list<BLine>
-Svg_parser::parser_path_d(String path_d, const SVGMatrix& mtx)
+Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 {
 	std::list<BLine> k;
 	std::list<Vertex> k1;
@@ -894,14 +901,16 @@ Svg_parser::parser_path_d(String path_d, const SVGMatrix& mtx)
 /* === EFFECTS PARSERS ===================================================== */
 
 void
-Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/,xmlpp::Element* root,String /*parent_style*/, const SVGMatrix& mtx){
+Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/, xmlpp::Element* root, const String& /*parent_style*/, const SVGMatrix& mtx)
+{
 	build_transform(root, mtx);
 }
 
 /* === DEFS PARSERS ======================================================== */
 
 void
-Svg_parser::parser_defs(const xmlpp::Node* node){
+Svg_parser::parser_defs(const xmlpp::Node* node)
+{
 	const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
 	if(!nodeContent){
 		xmlpp::Node::NodeList list = node->get_children();
@@ -919,7 +928,8 @@ Svg_parser::parser_defs(const xmlpp::Node* node){
 /* === BUILDS ============================================================== */
 
 void
-Svg_parser::build_transform(xmlpp::Element* root, const SVGMatrix& mtx){
+Svg_parser::build_transform(xmlpp::Element* root, const SVGMatrix& mtx)
+{
 	if (!mtx.is_identity()) {
 		xmlpp::Element *child_transform=root->add_child("layer");
 		child_transform->set_attribute("type","warp");
@@ -957,7 +967,8 @@ Svg_parser::build_transform(xmlpp::Element* root, const SVGMatrix& mtx){
 }
 
 std::list<ColorStop>
-Svg_parser::get_colorStop(String name){
+Svg_parser::get_colorStop(String name)
+{
 	const std::list<ColorStop> none;
 
 	if(!name.empty()){
@@ -1023,7 +1034,8 @@ Svg_parser::build_stop_color(xmlpp::Element* root, const std::list<ColorStop>& s
 }
 
 void
-Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& data, const SVGMatrix& mtx){
+Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& data, const SVGMatrix& mtx)
+{
 	xmlpp::Element* gradient=root->add_child("layer");
 
 	gradient->set_attribute("type","linear_gradient");
@@ -1089,7 +1101,8 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 }
 
 void
-Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& data, const SVGMatrix& mtx){
+Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& data, const SVGMatrix& mtx)
+{
 	xmlpp::Element* gradient;
 
 	if (!mtx.is_identity() || !data.transform.is_identity()) {
@@ -1147,7 +1160,8 @@ Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& dat
 }
 
 void
-Svg_parser::parser_linearGradient(const xmlpp::Node* node){
+Svg_parser::parser_linearGradient(const xmlpp::Node* node)
+{
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring id	=nodeElement->get_attribute_value("id");
 		float x1			=atof(nodeElement->get_attribute_value("x1").data());
@@ -1198,7 +1212,8 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 }
 
 void
-Svg_parser::parser_radialGradient(const xmlpp::Node* node){
+Svg_parser::parser_radialGradient(const xmlpp::Node* node)
+{
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring id	=nodeElement->get_attribute_value("id");
 		float cx			=atof(nodeElement->get_attribute_value("cx").data());
@@ -1244,7 +1259,8 @@ ColorStop::ColorStop(const String& color, float opacity, const Gamma& gamma, flo
 }
 
 Color
-Svg_parser::adjustGamma(float r,float g,float b,float a){
+Svg_parser::adjustGamma(float r, float g, float b, float a)
+{
 	return gamma.apply(Color(r,g,b,a));
 }
 
@@ -1271,7 +1287,7 @@ BLine::BLine(std::list<Vertex> points, bool loop)
 }
 
 void
-Svg_parser::build_gamma(xmlpp::Element* root,float gamma){
+Svg_parser::build_gamma(xmlpp::Element* root, float gamma){
 	root->set_attribute("type","colorcorrect");
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
@@ -1280,26 +1296,31 @@ Svg_parser::build_gamma(xmlpp::Element* root,float gamma){
 }
 
 void
-Svg_parser::build_translate(xmlpp::Element* root,float dx,float dy){
+Svg_parser::build_translate(xmlpp::Element* root, float dx, float dy)
+{
 	root->set_attribute("type","translate");
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
 	build_vector (root->add_child("param"),"origin",dx,dy);
 }
+
 void
-Svg_parser::build_rotate(xmlpp::Element* root,float dx,float dy,float angle){
+Svg_parser::build_rotate(xmlpp::Element* root, float dx, float dy, float angle)
+{
 	root->set_attribute("type","rotate");
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
 	build_vector (root->add_child("param"),"origin",dx,dy);
 	build_real   (root->add_child("param"),"amount",angle);
 }
+
 void
-Svg_parser::build_points(xmlpp::Element* root,std::list<Vertex*> p){
+Svg_parser::build_points(xmlpp::Element* root, const std::list<Vertex*>& p)
+{
 	root->set_attribute("name","vector_list");
 	xmlpp::Element *child=root->add_child("dynamic_list");
 	child->set_attribute("type","vector");
-	std::list<Vertex*>::iterator aux = p.begin();
+	std::list<Vertex*>::const_iterator aux = p.begin();
 	while(aux!=p.end()){
 		xmlpp::Element *child_entry=child->add_child("entry");
 		xmlpp::Element *child_vector=child_entry->add_child("vector");
@@ -1308,8 +1329,10 @@ Svg_parser::build_points(xmlpp::Element* root,std::list<Vertex*> p){
 		aux++;
 	}
 }
+
 void
-Svg_parser::build_vertex(xmlpp::Element* root , const Vertex &p){
+Svg_parser::build_vertex(xmlpp::Element* root, const Vertex &p)
+{
 	xmlpp::Element *child_comp=root->add_child("composite");
 	child_comp->set_attribute("type","bline_point");
 	build_vector (child_comp->add_child("param"),"point",p.x,p.y);
@@ -1331,8 +1354,10 @@ Svg_parser::build_vertex(xmlpp::Element* root , const Vertex &p){
 	build_param (child_rc2->add_child("theta"),"","angle",p.angle2);
 
 }
+
 void
-Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex> p,bool loop,String blineguid){
+Svg_parser::build_bline(xmlpp::Element* root, const std::list<Vertex>& p, bool loop, const String& blineguid)
+{
 	root->set_attribute("name","bline");
 	xmlpp::Element *child=root->add_child("bline");
 	child->set_attribute("type","bline_point");
@@ -1341,7 +1366,7 @@ Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex> p,bool loop,Strin
 	else
 		child->set_attribute("loop","false");
 	if(!blineguid.empty())	child->set_attribute("guid",blineguid);
-	std::list<Vertex>::iterator aux = p.begin();
+	std::list<Vertex>::const_iterator aux = p.begin();
 	while(aux!=p.end()){
 		build_vertex (child->add_child("entry"),*aux);
 		aux++;
@@ -1349,7 +1374,8 @@ Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex> p,bool loop,Strin
 }
 
 void
-Svg_parser::build_param(xmlpp::Element* root,String name,String type,String value){
+Svg_parser::build_param(xmlpp::Element* root, const String& name, const String& type, const String& value)
+{
 	if(!type.empty() && !value.empty()){
 		if(!name.empty())	root->set_attribute("name",name);
 		xmlpp::Element *child=root->add_child(type);
@@ -1358,8 +1384,10 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,String valu
 		root->get_parent()->remove_child(root);
 	}
 }
+
 void
-Svg_parser::build_param(xmlpp::Element* root,String name,String type,float value){
+Svg_parser::build_param(xmlpp::Element* root, const String& name, const String& type, float value)
+{
 	if(!type.empty()){
 		if(!name.empty()) root->set_attribute("name",name);
 		xmlpp::Element *child=root->add_child(type);
@@ -1368,8 +1396,10 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,float value
 		root->get_parent()->remove_child(root);
 	}
 }
+
 void
-Svg_parser::build_param(xmlpp::Element* root,String name,String type,int value){
+Svg_parser::build_param(xmlpp::Element* root, const String& name, const String& type, int value)
+{
 	if(!type.empty()){
 			if(!name.empty()) root->set_attribute("name",name);
 			xmlpp::Element *child=root->add_child(type);
@@ -1383,15 +1413,18 @@ Svg_parser::build_param(xmlpp::Element* root,String name,String type,int value){
 }
 
 void
-Svg_parser::build_integer(xmlpp::Element* root,String name,int value){
+Svg_parser::build_integer(xmlpp::Element* root, const String& name, int value)
+{
 	if(name.compare("")!=0) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("integer");
 	char *enteroc=new char[10];
 	sprintf(enteroc,"%d",value);
 	child->set_attribute("value",enteroc);
 }
+
 void
-Svg_parser::build_real(xmlpp::Element* root,String name,float value){
+Svg_parser::build_real(xmlpp::Element* root, const String& name, float value)
+{
 	if(name.compare("")!=0) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("real");
 	char *realc=new char[20];
@@ -1400,7 +1433,8 @@ Svg_parser::build_real(xmlpp::Element* root,String name,float value){
 }
 
 void
-Svg_parser::build_color(xmlpp::Element* root,float r,float g,float b,float a){
+Svg_parser::build_color(xmlpp::Element* root, float r, float g, float b, float a)
+{
 	if(r>255 || g>255 || b>255 || a>1 || r<0 || g<0 || b<0 || a<0){
 		root->get_parent()->remove_child(root);
 		printf("Color aborted\n");
@@ -1415,17 +1449,19 @@ Svg_parser::build_color(xmlpp::Element* root,float r,float g,float b,float a){
 	child->add_child("b")->set_child_text(etl::strprintf("%f",ret.get_b()));
 	child->add_child("a")->set_child_text(etl::strprintf("%f",ret.get_a()));
 }
-void
-Svg_parser::build_vector(xmlpp::Element* root,String name,float x,float y){
 
+void
+Svg_parser::build_vector(xmlpp::Element* root, const String& name, float x, float y)
+{
 	if(name.compare("")!=0) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("vector");
 	child->add_child("x")->set_child_text(etl::strprintf("%f",x));
 	child->add_child("y")->set_child_text(etl::strprintf("%f",y));
-
 }
+
 void
-Svg_parser::build_vector (xmlpp::Element* root,String name,float x,float y,String guid){
+Svg_parser::build_vector (xmlpp::Element* root, const String& name, float x, float y, const String& guid)
+{
 	if(name.compare("")!=0) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("vector");
 	if(!guid.empty()) child->set_attribute("guid",guid);
@@ -1434,7 +1470,8 @@ Svg_parser::build_vector (xmlpp::Element* root,String name,float x,float y,Strin
 }
 
 xmlpp::Element*
-Svg_parser::nodeStartBasicLayer(xmlpp::Element* root, String name){
+Svg_parser::nodeStartBasicLayer(xmlpp::Element* root, const String& name)
+{
 	root->set_attribute("type","group");
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
