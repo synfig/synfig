@@ -62,7 +62,7 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 //attributes
-static int extractSubAttribute(const String& attribute, const String& name, String& value);
+static bool extractSubAttribute(const String& attribute, const String& name, String& value);
 /// Get a named subattribute in style attribute. If not found, search in master_style.
 /// If not found in both styles, look up the elem attributes themselves (if elem is not NULL).
 /// Otherwise use the provided defaultVal
@@ -1697,37 +1697,36 @@ SVGMatrix::multiply(const SVGMatrix &mtx2)
 
 /* === EXTRA METHODS ======================================================= */
 
-static int
+static bool
 extractSubAttribute(const String& attribute, const String& name, String& value)
 {
-	int encounter=0;
-	if(!attribute.empty()){
+	if (!attribute.empty()) {
 		String str = synfig::trim(attribute);
 		std::vector<String> tokens=tokenize(str,";");
-		std::vector<String>::iterator aux=tokens.begin();
-		while(aux!=tokens.end()){
-			int mid= (*aux).find_first_of(":");
-			if((*aux).substr(0,mid).compare(name)==0){
-				int end=(*aux).size();
-				value=(*aux).substr(mid+1,end-mid);
-				return 1;
+		for (const String& token : tokens) {
+			auto mid = token.find_first_of(":");
+			if (mid == String::npos)
+				continue;
+			if (token.substr(0,mid) == name) {
+				auto end = token.size();
+				value = token.substr(mid+1,end-mid);
+				return true;
 			}
-			aux++;
 		}
 	}
-	return encounter;
+	return false;
 }
 
 static String
 loadAttribute(const String& name, const String& path_style, const String& master_style, const xmlpp::Element* elem, String defaultVal)
 {
 	String value;
-	int fnd=0;
+	bool found=false;
 	if(!path_style.empty())
-		fnd=extractSubAttribute(path_style,name,value);
-	if(fnd==0 && !master_style.empty())
-			fnd=extractSubAttribute(master_style,name,value);
-	if(fnd==0){
+		found=extractSubAttribute(path_style,name,value);
+	if(!found && !master_style.empty())
+		found=extractSubAttribute(master_style,name,value);
+	if(!found){
 		if(elem)
 			value=elem->get_attribute_value(name);
 		if(value.empty())
