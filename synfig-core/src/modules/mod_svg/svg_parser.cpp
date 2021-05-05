@@ -1357,10 +1357,7 @@ Svg_parser::build_bline(xmlpp::Element* root, const std::list<Vertex>& p, bool l
 	root->set_attribute("name","bline");
 	xmlpp::Element *child=root->add_child("bline");
 	child->set_attribute("type","bline_point");
-	if(loop)
-		child->set_attribute("loop","true");
-	else
-		child->set_attribute("loop","false");
+	child->set_attribute("loop", loop? "true" : "false");
 	if(!blineguid.empty())	child->set_attribute("guid",blineguid);
 	for (const Vertex& vertex : p){
 		build_vertex (child->add_child("entry"), vertex);
@@ -1385,7 +1382,7 @@ Svg_parser::build_param(xmlpp::Element* root, const String& name, const String& 
 	if(!type.empty()){
 		if(!name.empty()) root->set_attribute("name",name);
 		xmlpp::Element *child=root->add_child(type);
-		child->set_attribute("value",etl::strprintf ("%f",value));
+		child->set_attribute("value", etl::strprintf("%f",value));
 	}else{
 		root->get_parent()->remove_child(root);
 	}
