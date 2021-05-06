@@ -200,6 +200,12 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerMakeOutline);
 	ADD_ACTION(Action::LayerMakeAdvancedOutline);
 	ADD_ACTION(Action::LayerMakeRegion);
+	auto layer_iter = synfig::Layer::book().find("curve_gradient");
+	if (layer_iter != synfig::Layer::book().end())
+		ADD_ACTION(Action::LayerMakeCurveGradient)
+	layer_iter = synfig::Layer::book().find("plant");
+	if (layer_iter != synfig::Layer::book().end())
+		ADD_ACTION(Action::LayerMakePlant)
 	ADD_ACTION(Action::LayerParamSet);
 	ADD_ACTION(Action::LayerParamSetStatic);
 	ADD_ACTION(Action::LayerParamUnSetStatic);

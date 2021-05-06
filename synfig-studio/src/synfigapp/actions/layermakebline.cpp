@@ -65,15 +65,23 @@ using namespace Action;
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
 		LayerMakeOutline, N_("Make Outline"), "outline", false,
-		"advanced_outline", "region");
+		"advanced_outline", "region", "plant", "curve_gradient");
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
 		LayerMakeAdvancedOutline, N_("Make Advanced Outline"), "advanced_outline", false,
-		"outline", "region");
+		"outline", "region", "plant", "curve_gradient");
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
 		LayerMakeRegion, N_("Make Region"), "region", true,
-		"outline", "advanced_outline");
+		"outline", "advanced_outline", "plant", "curve_gradient");
+
+ACTION_LAYERMAKEBLINE_IMPLEMENT(
+		LayerMakeCurveGradient, N_("Make Curve Gradient"), "curve_gradient", true,
+		"outline", "advanced_outline", "region", "plant");
+
+ACTION_LAYERMAKEBLINE_IMPLEMENT(
+		LayerMakePlant, N_("Make Plant"), "plant", false,
+		"outline", "advanced_outline", "region", "curve_gradient");
 
 /* === G L O B A L S ======================================================= */
 
