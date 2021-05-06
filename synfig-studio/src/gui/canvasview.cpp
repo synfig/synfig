@@ -1966,9 +1966,12 @@ CanvasView::create_tab_label()
 
 	Gtk::Grid* grid(manage(new Gtk::Grid()));
 	event_box->add(*grid);
+	grid->set_hexpand(false);
 	grid->show();
 
 	Gtk::Label* label(manage(new Gtk::Label(text)));
+	label->set_halign(Gtk::ALIGN_START);
+	label->set_hexpand();
 	grid->attach(*label, 0, 0, 1, 1);
 	if (this == App::get_selected_canvas_view().get())
 	{
@@ -1980,6 +1983,7 @@ CanvasView::create_tab_label()
 	label->show();
 
 	closebutton = manage(new Gtk::Button());
+	// Margin is needed to make sure the button is not partially hidden with Adwaita theme
 	closebutton->set_margin_end(4);
 	grid->attach(*closebutton, 1, 0, 1, 1);
 	Gtk::Image* closebutton_image(manage(new Gtk::Image(
