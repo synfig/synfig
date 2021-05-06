@@ -219,29 +219,6 @@ public:
 	bool egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/);
 
-	bool get_layer_skel_flag() const
-	{
-		return layer_skel_togglebutton.get_active();
-	}
-
-	void set_layer_skel_flag(bool x)
-	{
-		return layer_skel_togglebutton.set_active(x);
-	}
-
-	bool get_layer_skel_deform_flag() const
-	{
-		return layer_skel_deform_togglebutton.get_active();
-	}
-
-	void set_layer_skel_deform_flag(bool x)
-	{
-		return layer_skel_deform_togglebutton.set_active(x);
-	}
-
-	bool layer_skel_flag;
-	bool layer_skel_deform_flag;
-
 	void toggle_layer_skel();
 	void toggle_layer_skel_deform();
 }; // END of class StateBone_Context
@@ -287,14 +264,14 @@ StateBone_Context::load_settings()
 		}
 
 		if(settings.get_value("bone.layer_skel",value) && value=="0")
-			set_layer_skel_flag(false);
+			layer_skel_togglebutton.set_active(false);
 		else
-			set_layer_skel_flag(true);
+			layer_skel_togglebutton.set_active(true);
 
-		if(settings.get_value("bone.layer_skel_deform",value) && value =="0")
-			set_layer_skel_deform_flag(false);
+		if(settings.get_value("bone.layer_skel_deform",value) && value =="1")
+			layer_skel_deform_togglebutton.set_active(true);
 		else
-			set_layer_skel_deform_flag(true);
+			layer_skel_deform_togglebutton.set_active(false);
 
 		if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
 			set_skel_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
@@ -305,9 +282,6 @@ StateBone_Context::load_settings()
 			set_skel_deform_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
 		else
 			set_skel_deform_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
-
-		layer_skel_flag = get_layer_skel_flag();
-		layer_skel_deform_flag = get_layer_skel_deform_flag();
 	}
 	catch(...)
 	{
@@ -326,8 +300,8 @@ StateBone_Context::save_settings()
 		else
 			settings.set_value("bone.skel_deform_id",get_id().c_str());
 
-		settings.set_value("bone.layer_skel", get_layer_skel_flag() ? "1" : "0");
-		settings.set_value("bone.layer_skel_deform", get_layer_skel_deform_flag() ? "1" : "0");
+		settings.set_value("bone.layer_skel", layer_skel_togglebutton.get_active() ? "1" : "0");
+		settings.set_value("bone.layer_skel_deform", layer_skel_deform_togglebutton.get_active() ? "1" : "0");
 		settings.set_value("bone.skel_bone_width",skel_bone_width_dist.get_value().get_string());
 		settings.set_value("bone.skel_deform_bone_width",skel_deform_bone_width_dist.get_value().get_string());
 	}
@@ -1340,13 +1314,9 @@ StateBone_Context::_on_signal_value_desc_set(ValueDesc value_desc,ValueBase valu
 void
 StateBone_Context::toggle_layer_skel()
 {
-	if(!layer_skel_flag)
+	if(layer_skel_togglebutton.get_active())
 	{
-		set_layer_skel_flag(true);
-		set_layer_skel_deform_flag(false);
-
-		layer_skel_flag = true;
-		layer_skel_deform_flag = false;
+		layer_skel_deform_togglebutton.set_active(false);
 
 		save_settings();
 		c_layer = 0;
@@ -1354,21 +1324,17 @@ StateBone_Context::toggle_layer_skel()
 		load_settings();
 	}
 
-	if(get_layer_skel_flag() +
-	   get_layer_skel_deform_flag() == 0)
-		set_layer_skel_flag(true);
+	if(layer_skel_togglebutton.get_active() +
+	   layer_skel_deform_togglebutton.get_active() == 0)
+		layer_skel_togglebutton.set_active(true);
 }
 
 void
 StateBone_Context::toggle_layer_skel_deform()
 {
-	if(!layer_skel_deform_flag)
+	if(layer_skel_deform_togglebutton.get_active())
 	{
-		set_layer_skel_flag(false);
-		set_layer_skel_deform_flag(true);
-
-		layer_skel_flag = false;
-		layer_skel_deform_flag = true;
+		layer_skel_togglebutton.set_active(false);
 
 		save_settings();
 		c_layer = 1;
@@ -1376,7 +1342,7 @@ StateBone_Context::toggle_layer_skel_deform()
 		load_settings();
 	}
 
-	if(get_layer_skel_flag() +
-	   get_layer_skel_deform_flag() == 0)
-		set_layer_skel_deform_flag(true);
+	if(layer_skel_togglebutton.get_active() +
+	   layer_skel_deform_togglebutton.get_active() == 0)
+		layer_skel_deform_togglebutton.set_active(true);
 }
