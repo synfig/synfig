@@ -170,7 +170,7 @@ else()
 		pkg_check_modules(CAIRO REQUIRED cairo)
 		pkg_check_modules(PANGOCAIRO REQUIRED pangocairo) # lyr_freetype
 		pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
-		pkg_check_modules(MLT REQUIRED mlt++)
+		pkg_check_modules(MLT mlt++)
 		pkg_check_modules(FFTW REQUIRED fftw3)
 		pkg_check_modules(FT REQUIRED freetype2) # for lyr_freetype
 		pkg_check_modules(LIBPNG REQUIRED libpng) # for mod_png
@@ -184,6 +184,10 @@ else()
 		## TODO: move to module where it is actually required
 		pkg_check_modules(PANGO REQUIRED pango)
 	endif()
+endif()
+
+if (NOT MLT_FOUND)
+	add_definitions(-DWITHOUT_MLT) # disable MLT if not found
 endif()
 
 foreach(pkg_config_lib 
