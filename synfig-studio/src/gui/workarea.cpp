@@ -758,13 +758,22 @@ WorkArea::set_onion_skin(bool x)
 	queue_draw();
 }
 
-void WorkArea::set_onion_skins(int *onions)
+void
+WorkArea::set_onion_skins(int *onions)
 {
 	onion_skins[0] = onions[0];
 	onion_skins[1] = onions[1];
 	if (onion_skin)
 		queue_draw();
 	save_meta_data();
+}
+
+void
+WorkArea::set_onion_skin_keyframes(bool x)
+{
+	if (onion_skin_keyframes == x)
+		return;
+	onion_skin_keyframes = x;
 }
 
 void

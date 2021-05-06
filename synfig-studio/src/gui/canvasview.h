@@ -309,11 +309,13 @@ private:
 	Gtk::ToggleToolButton *onion_skin;
 	Gtk::ToolButton *render_options_button;
 	Gtk::ToolButton *preview_options_button;
+	Gtk::ToggleToolButton *onion_skin_keyframes;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
 	bool toggling_show_guides;
 	bool toggling_snap_guides;
 	bool toggling_onion_skin;
+	bool toggling_onion_skin_keyframes;
 	bool toggling_background_rendering;
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
@@ -467,6 +469,7 @@ private:
 	void toggle_show_guides();
 	void toggle_snap_guides();
 	void toggle_onion_skin();
+	void toggle_onion_skin_keyframes();
 	void toggle_background_rendering();
 
 	void toggle_animatebutton();

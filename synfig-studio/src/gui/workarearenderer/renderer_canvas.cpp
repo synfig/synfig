@@ -349,6 +349,7 @@ Renderer_Canvas::build_onion_frames()
 	int            thumb_h   = get_work_area()->get_thumb_h();
 	int            past      = std::max(0, get_work_area()->get_onion_skins()[0]);
 	int            future    = std::max(0, get_work_area()->get_onion_skins()[1]);
+	bool           keyframes = get_work_area()->get_onion_skin_keyframes();
 
 	Time base_time;
 	if (CanvasView::Handle canvas_view = get_work_area()->get_canvas_view())
@@ -361,6 +362,10 @@ Renderer_Canvas::build_onion_frames()
 	current_thumb = FrameId(base_time, thumb_w, thumb_h);
 	frame_duration = Time(approximate_greater_lp(fps, 0.f) ? 1.0/(double)fps : 0.0);
 
+	// Store vector of past and future Keyframes
+	std::vector<Time> past_keyframes;
+	std::vector<Time> future_keyframes;
+
 	// set onion_frames
 	onion_frames.clear();
 	if ( get_work_area()->get_onion_skin()
@@ -371,19 +376,75 @@ Renderer_Canvas::build_onion_frames()
 		const Color color_future(0.f, 1.f, 0.f, 0.2f);
 		const ColorReal base_alpha = 1.f;
 		const ColorReal current_alpha = 0.5f;
-		// make onion levels
-		for(int i = past; i > 0; --i) {
-			Time time = base_time - frame_duration*i;
-			ColorReal alpha = base_alpha + (ColorReal)(past - i + 1)/(ColorReal)(past + 1);
-			if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-				onion_frames.push_back(FrameDesc(time, w, h, alpha));
+
+		if (keyframes)
+		{
+			// Onion Skin on Keyframes
+			// Find and save past Keyframes
+			Time keyframe_time = base_time;
+			for(int i = past; i > 0; --i) {
+				KeyframeList::iterator iter;
+				if (canvas->keyframe_list().find_prev(keyframe_time, iter)) {
+					if (keyframe_time >= rend_desc.get_time_start() && keyframe_time <= rend_desc.get_time_end()) {
+						keyframe_time = iter->get_time();
+						past_keyframes.push_back(keyframe_time);
+					}
+				}
+				else
+					break;
+			}
+
+			// Find and save future Keyframes
+			keyframe_time = base_time;
+			for(int i = future; i > 0; --i) {
+				KeyframeList::iterator iter;
+				if (canvas->keyframe_list().find_next(keyframe_time, iter)) {
+					if (keyframe_time >= rend_desc.get_time_start() && keyframe_time <= rend_desc.get_time_end()) {
+						keyframe_time = iter->get_time();
+						future_keyframes.push_back(keyframe_time);
+					}
+				}
+				else
+					break;
+			}
+
+			// Check number of available past and future Keyframes
+			int past_frames = (past > past_keyframes.size()) ? past_keyframes.size() : past;
+			int future_frames = (future > future_keyframes.size()) ? future_keyframes.size() : future;
+
+			// Cycle through past Keyframes and retrieve their Time values
+			for(int i = past_frames; i > 0; --i) {
+				ColorReal alpha = base_alpha + (ColorReal)(past_frames - i + 1)/(ColorReal)(past_frames + 1);
+				onion_frames.push_back(FrameDesc(past_keyframes[past_frames - i], w, h, alpha));
+			}
+
+			// Cycle through future Keyframes and retrieve their Time values
+			for(int i = future_frames; i > 0; --i) {
+				ColorReal alpha = base_alpha + (ColorReal)(future_frames - i + 1)/(ColorReal)(future_frames + 1);
+				onion_frames.push_back(FrameDesc(future_keyframes[future_frames - i], w, h, alpha));
+			}
 		}
-		for(int i = future; i > 0; --i) {
-			Time time = base_time + frame_duration*i;
-			ColorReal alpha = base_alpha + (ColorReal)(future - i + 1)/(ColorReal)(future + 1);
-			if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-				onion_frames.push_back(FrameDesc(time, w, h, alpha));
+		else
+		{
+			// Onion Skin on Frames
+			// Past Frames
+			for(int i = past; i > 0; --i) {
+				Time time = base_time - frame_duration*i;
+				ColorReal alpha = base_alpha + (ColorReal)(past - i + 1)/(ColorReal)(past + 1);
+				if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
+					onion_frames.push_back(FrameDesc(time, w, h, alpha));
+			}
+
+			// Future Frames
+			for(int i = future; i > 0; --i) {
+				Time time = base_time + frame_duration*i;
+				ColorReal alpha = base_alpha + (ColorReal)(future - i + 1)/(ColorReal)(future + 1);
+				if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
+					onion_frames.push_back(FrameDesc(time, w, h, alpha));
+			}
 		}
+
+		// Add current time Frame
 		onion_frames.push_back(FrameDesc(current_frame, base_alpha + 1.f + current_alpha));
 
 		// normalize

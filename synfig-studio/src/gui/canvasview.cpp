@@ -561,6 +561,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	toggling_show_guides=false;
 	toggling_snap_guides=false;
 	toggling_onion_skin=false;
+	toggling_onion_skin_keyframes=false;
 	toggling_background_rendering=false;
 
 	set_use_scrolled(false);
@@ -1281,6 +1282,23 @@ CanvasView::create_top_toolbar()
 		toolitem->show();
 
 		displaybar->append(*toolitem);
+	}
+
+	{ // Onion skin on Keyframes/Frames toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-keyframes"), iconsize));
+		icon->show();
+
+		onion_skin_keyframes = Gtk::manage(new class Gtk::ToggleToolButton());
+		// Enable Onion Skin on Keyframes by default
+		onion_skin_keyframes->set_active(true);
+		onion_skin_keyframes->set_icon_widget(*icon);
+		onion_skin_keyframes->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
+		onion_skin_keyframes->set_label(_("Keyframes"));
+		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
+		onion_skin_keyframes->show();
+
+		displaybar->append(*onion_skin_keyframes);
 	}
 
 	if(App::enable_mainwin_toolbar)
@@ -2713,6 +2731,17 @@ CanvasView::toggle_onion_skin()
 	// Update the toggle onion skin button
 	onion_skin->set_active(work_area->get_onion_skin());
 	toggling_onion_skin=false;
+}
+
+void
+CanvasView::toggle_onion_skin_keyframes()
+{
+	if(toggling_onion_skin_keyframes)
+		return;
+	toggling_onion_skin_keyframes=true;
+	work_area->set_onion_skin_keyframes(!work_area->get_onion_skin_keyframes());
+	onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
+	toggling_onion_skin_keyframes=false;
 }
 
 void
