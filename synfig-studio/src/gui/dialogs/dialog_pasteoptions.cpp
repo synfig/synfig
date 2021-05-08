@@ -182,6 +182,7 @@ void Dialog_PasteOptions::on_valuenode_copy_toggled(const Glib::ustring& path)
 	iter->get_value(COLUMN_COPY_OR_NOT, is_copy);
 	iter->set_value(COLUMN_COPY_OR_NOT, !is_copy);
 	refresh_row_status(std::stoul(path));
+	update_ok_button_sensitivity();
 }
 
 void Dialog_PasteOptions::on_valuenode_name_edited(const Glib::ustring& path, const Glib::ustring& new_text)
@@ -310,53 +311,54 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 	if (v->get_root_canvas() == destination_canvas->get_root())
 		return;
 
-
 	bool will_be_copied;
 	iter->get_value(COLUMN_COPY_OR_NOT, will_be_copied);
 
-	ValueNode::ConstHandle existent_vn;
-
-	try {
-		std::string name;
-		iter->get_value(COLUMN_NAME, name);
-		existent_vn = destination_canvas->value_node_list().find(name, true);
-	}  catch (...) {
-
-	}
-
 	std::string status;
 	std::string status_tooltip;
-	if (existent_vn) {
-		if (v->get_type() != existent_vn->get_type()) {
-			status = "conflict"; // different value type
-			const char *format = _("There is an exported value with same name ('%s') whose value type is %s, "
-			                        "but you are trying to paste one whose value type is %s.\n"
-			                        "Please rename it or cancel copying.");
-			status_tooltip = etl::strprintf(format,
-			                                v->get_id().c_str(),
-			                                v->get_type().description.local_name.c_str(),
-			                                existent_vn->get_type().description.local_name.c_str());
-		} else if (v->get_name() != existent_vn->get_name()) {
-			status = "conflict"; // different value node type
-			const char *format = _("There is an exported value with same name ('%s') whose value node type is %s, "
-			                       "but you are trying to paste one whose type is %s.\n"
-			                       "Please rename it or cancel copying.");
-			status_tooltip = etl::strprintf(format,
-			                                v->get_id().c_str(),
-			                                v->get_local_name().c_str(),
-			                                existent_vn->get_local_name().c_str());
-		} else if (will_be_copied) {
-			status = "link";
-			status_tooltip = _("This valuenode will be copied and reuse the existent value node in target file.\n"
-			                   "It will not be linked to original file nor will it depend on such file.");
-		} else {
-			status_tooltip = _("This valuenode will be linked to original file and will depend on such file.");
-		}
+
+	if (!will_be_copied) {
+		status = "external-link";
+		status_tooltip = _("This valuenode will be linked to original file and will depend on such file.");
 	} else {
-		if (!will_be_copied) {
-			status_tooltip = _("This valuenode will be linked to original file and will depend on such file.");
-		} else {
+		ValueNode::ConstHandle existent_vn;
+
+		try {
+			std::string name;
+			iter->get_value(COLUMN_NAME, name);
+			existent_vn = destination_canvas->value_node_list().find(name, true);
+		}  catch (...) {
+
+		}
+
+		if (!existent_vn) {
+			status = "";
 			status_tooltip = _("This valuenode will be copied to target file and will be independent.");
+		} else {
+			if (v->get_type() != existent_vn->get_type()) {
+				status = "conflict"; // different value type
+				const char *format = _("There is an exported value with same name ('%s') whose value type is %s, "
+				                        "but you are trying to paste one whose value type is %s.\n"
+				                        "Please rename it or choose to link it or cancel the whole copying.");
+				status_tooltip = etl::strprintf(format,
+												v->get_id().c_str(),
+												v->get_type().description.local_name.c_str(),
+												existent_vn->get_type().description.local_name.c_str());
+			} else if (v->get_name() != existent_vn->get_name()) {
+				status = "conflict"; // different value node type
+				const char *format = _("There is an exported value with same name ('%s') whose value node type is %s, "
+				                       "but you are trying to paste one whose type is %s.\n"
+				                       "Please rename it or choose to link it or cancel the whole copying.");
+				status_tooltip = etl::strprintf(format,
+												v->get_id().c_str(),
+												v->get_local_name().c_str(),
+												existent_vn->get_local_name().c_str());
+			} else  {
+				status = "link";
+				status_tooltip = _("This valuenode will be copied and reuse the existent value node in target file.\n"
+				                   "It will not be linked to original file nor will it depend on such file.");
+			}
+
 		}
 	}
 
