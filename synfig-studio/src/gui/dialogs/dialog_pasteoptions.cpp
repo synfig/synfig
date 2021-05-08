@@ -234,9 +234,9 @@ void Dialog_PasteOptions::update_ok_button_sensitivity()
 		enable_button = false;
 	} else {
 		valuenodes_model->foreach_iter([=, &enable_button](const Gtk::TreeModel::iterator& iter) -> bool {
-			Glib::RefPtr<Gdk::Pixbuf> data;
-			iter->get_value(COLUMN_STATUS_ICON, data);
-			if (data == pixbuf_conflict) {
+			std::string status;
+			iter->get_value(COLUMN_STATUS, status);
+			if (status == "conflict") {
 				enable_button = false;
 				return true;
 			}
