@@ -159,10 +159,13 @@ void Dialog_PasteOptions::get_user_choices(std::map<std::string, std::string>& u
 	valuenodes_model->foreach_iter([=, &user_choices](const Gtk::TreeModel::iterator& iter) -> bool {
 		std::string original_name;
 		std::string name;
+		std::string status;
 		bool should_copy;
 		iter->get_value(COLUMN_ORIGINAL_NAME, original_name);
 		iter->get_value(COLUMN_NAME, name);
+		iter->get_value(COLUMN_STATUS, status);
 		iter->get_value(COLUMN_COPY_OR_NOT, should_copy);
+		should_copy &= status != "conflict";
 
 		user_choices[original_name] = should_copy ? name : "";
 
