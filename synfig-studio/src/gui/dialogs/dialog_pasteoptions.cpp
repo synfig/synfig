@@ -329,7 +329,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 	if (existent_vn) {
 		if (v->get_type() != existent_vn->get_type()) {
 			status = "conflict"; // different value type
-			const char *format = _("There is an exported value node with same name ('%s') whose value type is %s, "
+			const char *format = _("There is an exported value with same name ('%s') whose value type is %s, "
 			                        "but you are trying to paste one whose value type is %s.\n"
 			                        "Please rename it or cancel copying.");
 			status_tooltip = etl::strprintf(format,
@@ -338,7 +338,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 			                                existent_vn->get_type().description.local_name.c_str());
 		} else if (v->get_name() != existent_vn->get_name()) {
 			status = "conflict"; // different value node type
-			const char *format = _("There is an exported value node with same name ('%s') whose value node type is %s, "
+			const char *format = _("There is an exported value with same name ('%s') whose value node type is %s, "
 			                       "but you are trying to paste one whose type is %s.\n"
 			                       "Please rename it or cancel copying.");
 			status_tooltip = etl::strprintf(format,
@@ -355,6 +355,8 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 	} else {
 		if (!will_be_copied) {
 			status_tooltip = _("This valuenode will be linked to original file and will depend on such file.");
+		} else {
+			status_tooltip = _("This valuenode will be copied to target file and will be independent.");
 		}
 	}
 

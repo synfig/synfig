@@ -95,10 +95,10 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Some layers have exported valuenodes from another file.
-Do you want to link to their original files or create a copy? Choose below for each valuenode.
+                <property name="label" translatable="yes">Some layers have exported values from another file.
+Do you want to link to their original files or create a copy? Choose below for each value node.
 
-&lt;b&gt;Note&lt;/b&gt;: if you choose to keep a valuenode linked to other file, you won't be able to load this one if source file(s) are deleted, moved or renamed.</property>
+&lt;b&gt;Note&lt;/b&gt;: If you choose to keep an exported value linked to other file, then your current file become dependent on source (referenced) file. That means you will not be able to load this file if any source file is deleted, moved or renamed.</property>
                 <property name="use-markup">True</property>
                 <property name="wrap">True</property>
               </object>
