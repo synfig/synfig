@@ -33,8 +33,6 @@
 #include <ETL/surface>
 #include <ETL/handle>
 
-#include "cairo.h"
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -45,7 +43,6 @@ namespace synfig {
 
 class Target;
 class Target_Scanline;
-class Target_Cairo;
 class Target_Tile;
 
 class ColorPrep
@@ -77,18 +74,6 @@ public:
 		{ return uncook_static(x); }
 };
 
-class CairoColorPrep
-{
-public:
-	CairoColor cook(CairoColor x)const
-	{
-		return x.premult_alpha();
-	}
-	CairoColor uncook(CairoColor x)const
-	{
-		return x.demult_alpha();
-	}
-};
 
 /*!	\class Surface
 **	\brief Bitmap Surface
@@ -124,70 +109,6 @@ public:
 	void clear();
 
 	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h);
-};	// END of class Surface
-
-
-/*!	\class CairoSurface
- **	\brief Generic Cairo backed surface. It allows to create a image surface
- ** equivalent to the current backend for custom modifications purposes.
- **	\todo writeme
- */
-class CairoSurface : public etl::surface<CairoColor, CairoColorAccumulator, CairoColorPrep>
-{
-	// This is the Cairo surface pointer
-	// It is NULL if the not initialized
-	cairo_surface_t *cs_;
-	// This pointer is used when map and unmap the cairo_surface to a cairo_image_surface
-	// see map_cairo_surface() unmap_cairo_surface();
-	cairo_surface_t *cs_image_;
-	
-public:
-	typedef CairoColor value_type;
-	class alpha_pen;
-	
-	CairoSurface():cs_(NULL), cs_image_(NULL) {  }
-	CairoSurface(cairo_surface_t *cs):cs_(NULL), cs_image_(NULL) { set_cairo_surface(cs); }
-	~CairoSurface() { 
-	if(cs_!= NULL) cairo_surface_destroy(cs_);
-	if(cs_image_!=NULL) cairo_surface_destroy(cs_image_); }
-	
-
-	// If cs_ is set then the set_wh does nothing
-	// If cs_ is not set then set_wh creates a cairo_surface_image on cs_image_
-	// of size wxh
-	void set_wh(int w, int h, int pitch=0);
-	// Use whits version of set_wh to directly give to the etl::surface the 
-	// pointer to data, the width, height and pitch (stride) between rows 
-	void set_wh(int w, int h, unsigned char* data, int pitch)
-	{ etl::surface<CairoColor, CairoColorAccumulator, CairoColorPrep>::set_wh(w, h, data, pitch); }
-	// specialization of etl::surface::blit_to that considers the possibility of
-	// don't blend colors when blend method is straight and alpha is 1.0
-	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h);
-	
-	// Use this function to reference one given generic cairo_surface 
-	// by this surface class.
-	// When the CairoSurface instance is destructed the reference counter of the
-	// cairo_surface_t should be decreased.
-	// It is also possible to detach the cairo surface passing NULL as argument.
-	// If the cairo surface is mapped at the time of call this function, then
-	// it is unmaped first.
-	void set_cairo_surface(cairo_surface_t *cs);
-	// Returns an increased reference pointer of the surface. The receiver is responsible
-	// of destroy the surface once referenced.
-	cairo_surface_t* get_cairo_surface()const;
-	// Returns an increased reference pointer of the image surface. The receiver is responsible
-	// of destroy the surface once referenced.
-	cairo_surface_t* get_cairo_image_surface()const;
-	// Maps cs_ to cs_image_ and extract the *data to etl::surface::data for further modifications
-	// It will flush any remaining painting operation to the cs_
-	// returns true on success or false if something failed
-	bool map_cairo_image();
-	// Unmap the cs_image_ to cs_ after external modification has been done via *data
-	// It will mark cs_ as dirty
-	void unmap_cairo_image();
-	// Returns true if the cairo_surface_t* cs_ is mapped on cs_image_
-	bool is_mapped()const;
-	
 };	// END of class Surface
 
 
@@ -239,42 +160,10 @@ public:
 
 
 
-/*!	\class CairoSurface::alpha_pen
- **	\brief Alpha-Blending Pen
- **
- **	This pen works like a normal alpha pen, except that it supports
- **	a variety of blending methods. Use set_blend_method() to select
- **	which blending method you want to use.
- **	The default blending method is Color::BLEND_COMPOSITE.
- **	\see Color::BlendMethod
- */
-class CairoSurface::alpha_pen : public etl::alpha_pen< etl::generic_pen<CairoColor, CairoColorAccumulator>, float, _BlendFunc<CairoColor> >
-{
-public:
-	alpha_pen() { }
-	alpha_pen(const etl::alpha_pen< etl::generic_pen<CairoColor, CairoColorAccumulator>, float, _BlendFunc<CairoColor> > &x):
-	etl::alpha_pen< etl::generic_pen<CairoColor, CairoColorAccumulator>, float, _BlendFunc<CairoColor> >(x)
-	{ }
-	
-	alpha_pen(const etl::generic_pen<CairoColor, CairoColorAccumulator>& pen, const float &a = 1, const _BlendFunc<CairoColor> &func = _BlendFunc<CairoColor>()):
-	etl::alpha_pen< etl::generic_pen<CairoColor, CairoColorAccumulator>, float, _BlendFunc<CairoColor> >(pen,a,func)
-	{ }
-	
-	//! Sets the blend method to that described by \a method
-	void set_blend_method(Color::BlendMethod method) { affine_func_.blend_method=method; }
-	
-	//! Returns the blend method being used for this pen
-	Color::BlendMethod get_blend_method()const { return affine_func_.blend_method; }
-};	// END of class CairoSurface::alpha_pen
-
-
-
 //! Creates a target that will render to \a surface by specified \a renderer
 etl::handle<Target_Tile> surface_target(Surface *surface, const String &renderer = String());
 //! Creates a target that will render to \a surface by specified \a renderer
 etl::handle<Target_Scanline> surface_target_scanline(Surface *surface);
-//!Creates a target that will render to a cairo_surface_t image surface
-etl::handle<Target_Cairo> cairo_image_target(cairo_surface_t** surface);
 
 }; // END of namespace synfig
 

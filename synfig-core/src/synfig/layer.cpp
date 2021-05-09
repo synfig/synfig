@@ -657,14 +657,6 @@ Layer::get_color(Context context, const Point &pos)const
 	return context.get_color(pos);
 }
 
-CairoColor
-Layer::get_cairocolor(Context context, const Point &pos)const
-{
-	// When the layer doesn't define its own get_cairocolor
-	// then the normal get_cairo color will be used and 
-	// a Color to CairoColor conversion will be done. 
-	return CairoColor(get_color(context, pos));
-}
 
 
 synfig::Layer::Handle
@@ -865,20 +857,7 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 }
 
 
-bool
-Layer::accelerated_cairorender(Context context, cairo_t *cr, int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
-{
-	// When we render, we want to
-	// make sure that we are rendered too...
-	// Since the context iterator is for
-	// the layer after us, we need to back up.
-	// This could be considered a hack, as
-	// it is a possibility that we are indeed
-	// not the previous layer.
-	--context;
-	
-	return cairorender(context,cr,renddesc,cb);
-}
+
 
 RendDesc
 Layer::get_sub_renddesc_vfunc(const RendDesc &renddesc) const

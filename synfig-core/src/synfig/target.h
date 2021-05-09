@@ -75,7 +75,6 @@
 namespace synfig {
 
 class Surface;
-class CairoSurface;
 class RendDesc;
 class Canvas;
 class ProgressCallback;

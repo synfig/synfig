@@ -221,22 +221,6 @@ synfig::Layer_Bitmap::filter(Color& x)const
 	return x;
 }
 
-inline
-const CairoColor&
-synfig::Layer_Bitmap::filter(CairoColor& x)const
-{
-	Real gamma_adjust(param_gamma_adjust.get(Real()));
-	if(gamma_adjust!=1.0)
-	{
-		x.set_r(powf((float)(x.get_r()/CairoColor::range),gamma_adjust)*CairoColor::range);
-		x.set_g(powf((float)(x.get_g()/CairoColor::range),gamma_adjust)*CairoColor::range);
-		x.set_b(powf((float)(x.get_b()/CairoColor::range),gamma_adjust)*CairoColor::range);
-		x.set_a(powf((float)(x.get_a()/CairoColor::range),gamma_adjust)*CairoColor::range);
-	}
-	return x;
-}
-
-
 Color
 synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 {

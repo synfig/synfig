@@ -117,7 +117,6 @@ public:
 	//	input surface can be the same as output surface,
 	//	though both have to be the same size
 	bool operator()(const synfig::Surface &surface, const synfig::Vector &resolution, synfig::Surface &out) const;
-	bool operator()(cairo_surface_t *surface, const synfig::Vector &resolution, cairo_surface_t *out) const;
 
 	bool operator()(const etl::surface<float> &surface, const synfig::Vector &resolution, etl::surface<float> &out) const;
 	//bool operator()(const etl::surface<unsigned char> &surface, const Vector &resolution, etl::surface<unsigned char> &out) const;

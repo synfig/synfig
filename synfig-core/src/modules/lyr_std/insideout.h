@@ -63,7 +63,6 @@ public:
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 	Layer::Handle hit_check(Context context, const Point &point)const;
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<Transform> get_transform()const;

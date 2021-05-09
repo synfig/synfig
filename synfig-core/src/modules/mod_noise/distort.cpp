@@ -138,15 +138,6 @@ NoiseDistort::color_func(const Point &point, float /*supersample*/,Context conte
 	return ret;
 }
 
-inline CairoColor
-NoiseDistort::cairocolor_func(const Point &point, float /*supersample*/,Context context)const
-{
-	CairoColor ret(0,0,0,0);
-	ret=context.get_cairocolor(point_func(point));
-	return ret;
-}
-
-
 inline float
 NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
 {
@@ -259,16 +250,7 @@ NoiseDistort::get_color(Context context, const Point &point)const
 		return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 }
 
-CairoColor
-NoiseDistort::get_cairocolor(Context context, const Point &point)const
-{
-	const CairoColor color(cairocolor_func(point,0,context));
-	
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-		return color;
-	else
-		return CairoColor::blend(color,context.get_cairocolor(point),get_amount(),get_blend_method());
-}
+
 
 RendDesc
 NoiseDistort::get_sub_renddesc_vfunc(const RendDesc &renddesc) const

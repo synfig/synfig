@@ -12,7 +12,7 @@ target_sources(mod_filter
         "${CMAKE_CURRENT_LIST_DIR}/radialblur.cpp"
 )
 
-target_link_libraries(mod_filter synfig ${CAIRO_LIBRARIES})
+target_link_libraries(mod_filter synfig)
 
 install (
     TARGETS mod_filter

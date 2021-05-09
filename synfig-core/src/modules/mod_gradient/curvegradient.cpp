@@ -46,7 +46,6 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <synfig/cairo_renddesc.h>
 #include <ETL/bezier>
 #include <ETL/hermite>
 #include <ETL/calculus>
@@ -621,69 +620,3 @@ CurveGradient::accelerated_render(Context context,Surface *surface,int quality, 
 	return true;
 }
 
-////
-bool
-CurveGradient::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
-{
-	RendDesc	renddesc(renddesc_);
-	
-	// Untransform the render desc
-	if(!cairo_renddesc_untransform(cr, renddesc))
-		return false;
-	
-	Point pos;
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	const Point tl(renddesc.get_tl());
-	const int w(renddesc.get_w());
-	const int h(renddesc.get_h());
-	
-	SuperCallback supercb(cb,0,9500,10000);
-	
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		cairo_save(cr);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_paint(cr);
-		cairo_restore(cr);
-	}
-	else
-	{
-		if(!context.accelerated_cairorender(cr,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-	
-	
-	int x,y;
-	cairo_surface_t *surface;
-	
-	surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, w, h);
-	
-	CairoSurface csurface(surface);
-	if(!csurface.map_cairo_image())
-	{
-		synfig::warning("Curve Gradient: map cairo surface failed");
-		return false;
-	}
-	for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-		for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-			csurface[y][x]=CairoColor(color_func(pos,calc_supersample(pos,pw,ph))).premult_alpha();
-	csurface.unmap_cairo_image();
-	
-	// paint surface on cr
-	cairo_save(cr);
-	cairo_translate(cr, tl[0], tl[1]);
-	cairo_scale(cr, pw, ph);
-	cairo_set_source_surface(cr, surface, 0, 0);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	cairo_restore(cr);
-	
-	cairo_surface_destroy(surface);
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-
-}

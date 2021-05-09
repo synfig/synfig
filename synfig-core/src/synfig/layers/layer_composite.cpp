@@ -41,7 +41,6 @@
 #include <synfig/target.h>
 #include <synfig/render.h>
 #include <synfig/paramdesc.h>
-#include <synfig/cairo_renddesc.h>
 
 #include "layer_composite.h"
 

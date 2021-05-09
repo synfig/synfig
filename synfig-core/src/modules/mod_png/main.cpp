@@ -38,9 +38,7 @@
 #include <synfig/module.h>
 #include "trgt_png.h"
 #include "trgt_png_spritesheet.h"
-#include "trgt_cairo_png.h"
 #include "mptr_png.h"
-#include "mptr_cairo_png.h"
 #endif
 
 /* === E N T R Y P O I N T ================================================= */
@@ -55,13 +53,11 @@ MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(mod_png)
 	BEGIN_TARGETS
-		TARGET(cairo_png_trgt)
 		TARGET(png_trgt)
 		TARGET(png_trgt_spritesheet)
 		TARGET_EXT(png_trgt, "png")
 	END_TARGETS
 	BEGIN_IMPORTERS
 		IMPORTER(png_mptr)
-		CAIROIMPORTER(cairo_png_mptr)
 	END_IMPORTERS
 MODULE_INVENTORY_END

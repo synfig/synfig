@@ -184,12 +184,6 @@ Twirl::get_color(Context context, const Point &pos)const
 	return context.get_color(distort(pos));
 }
 
-CairoColor
-Twirl::get_cairocolor(Context context, const Point &pos)const
-{
-	return context.get_cairocolor(distort(pos));
-}
-
 
 class lyr_std::Twirl_Trans : public Transform
 {

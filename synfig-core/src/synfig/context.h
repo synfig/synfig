@@ -48,7 +48,6 @@ class Vector;
 typedef Vector Point;
 class Color;
 class Surface;
-class CairoSurface;
 class RendDesc;
 class ProgressCallback;
 class Layer;
@@ -156,12 +155,10 @@ public:
 	//!	Returns the color of the context at the Point \pos.
 	//! It is the blended color of the context
 	Color get_color(const Point &pos)const;
-	CairoColor get_cairocolor(const Point &pos)const;
 
 	//!	With a given \quality and a given render description it puts the context
 	//! blend result into the painting \surface */
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
-	bool accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
 	//!	Make rendering task
 	rendering::Task::Handle build_rendering_task() const;

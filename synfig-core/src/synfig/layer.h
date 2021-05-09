@@ -176,8 +176,6 @@
 
 namespace synfig {
 
-class CairoColor;
-class CairoSurface;
 class Canvas;
 class Color;
 class Context;
@@ -588,7 +586,6 @@ public:
 	**	\see Context::get_color()
 	*/
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
 	// Temporary function to render transformed layer for layers which yet not support transformed rendering
 	static bool render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, const char *file, int line);
@@ -603,7 +600,6 @@ public:
 	**	\see Context::accelerated_render()
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_t* cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 protected:
 	virtual void set_time_vfunc(IndependentContext context, Time time) const;
