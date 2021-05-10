@@ -1,3 +1,8 @@
+- [`46ed36c`](https://github.com/synfig/synfig/commit/46ed36c9a100857b2f2b0a87de40c6ee734e5744) Merge PR [#2054](https://github.com/synfig/synfig/issues/2054): Removed unused CairoRenderer [core] [studio]
+- [`2ef1e6f`](https://github.com/synfig/synfig/commit/2ef1e6f6553b2c6dd844a6b94014350b1b64ea83) [CMake] Disable the use of MLT if MLT library not found ([#2138](https://github.com/synfig/synfig/issues/2138)) [core] [studio]
+- [`14eccd4`](https://github.com/synfig/synfig/commit/14eccd4c009557a03c536fc56761ce577a95ab40) Added the ability to create Plant and Curve Gradient layer from other Splines ([#1476](https://github.com/synfig/synfig/issues/1476)) [studio]
+- [`6afeb2f`](https://github.com/synfig/synfig/commit/6afeb2f5c81e5a643e2a528979e626e809521b83) Align close button of animation tabs to the right for better looking layout ([#2136](https://github.com/synfig/synfig/issues/2136)) [studio]
+- [`9048540`](https://github.com/synfig/synfig/commit/904854058c8a52c43a16fc8bcb30596172914ce4) [CMake] Fixed ETL tests ([#2135](https://github.com/synfig/synfig/issues/2135)) [ETL]
 - [`7d4d8b7`](https://github.com/synfig/synfig/commit/7d4d8b79ba5e00e1e28d66fb3b2ebb30f875387e) Removed unused headers ([#2121](https://github.com/synfig/synfig/issues/2121)) [core]
 - [`6329a76`](https://github.com/synfig/synfig/commit/6329a76d914718b74922c475b6c7f80cdb934068) [Synfig Studio] Replacing Gtk::HBox with Gtk::Box ([#2126](https://github.com/synfig/synfig/issues/2126)) [studio]
 - [`8b1bc8c`](https://github.com/synfig/synfig/commit/8b1bc8c1aa7bbb7222b1539c5029ad13458e5ec9) [CMake] Fixed splash screen creation when build type is differs from debug/release. ([#2130](https://github.com/synfig/synfig/issues/2130)) [studio]
