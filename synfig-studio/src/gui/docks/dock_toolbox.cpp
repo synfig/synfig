@@ -90,10 +90,11 @@ Dock_Toolbox::Dock_Toolbox():
 	scrolled_window->show();
 
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
+	widget_defaults->set_size_request(-1, 100);
 
 	tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
-	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
-	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
+	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, false);
+	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, false);
 	tool_box_paned->set_position(200);
 	tool_box_paned->show_all();
 	add(*tool_box_paned);
