@@ -10,33 +10,13 @@ environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
   matrix:
     - MSYSTEM: MINGW64
-    - MSYSTEM: MINGW32
+#    - MSYSTEM: MINGW32
 
 # set clone depth
 clone_depth: 1 # clone entire repository history if not defined
 
 cache:
   - .ccache
-
-#install:
-#- c:\msys64\usr\bin\bash -lc "curl -O https://mirror.selfnet.de/msys2/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
-#- c:\msys64\usr\bin\bash -lc "curl -O https://mirror.selfnet.de/msys2/msys/x86_64/msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig"
-#- c:\msys64\usr\bin\bash -lc "pacman-key --verify msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz.sig"
-#- c:\msys64\usr\bin\bash -lc "pacman --noconfirm -U msys2-keyring-r21.b39fb11-1-any.pkg.tar.xz"
-# disable inaccessible miror (doing same for sourceforge because it's laggy) - https://github.com/msys2/MINGW-packages/issues/7084
-#- c:\msys64\usr\bin\bash -lc "echo 'Server = https://mirror.yandex.ru/mirrors/msys2/mingw/x86_64/' > /etc/pacman.d/mirrorlist.mingw64"
-#- c:\msys64\usr\bin\bash -lc "echo 'Server = https://mirror.yandex.ru/mirrors/msys2/mingw/i686/' > /etc/pacman.d/mirrorlist.mingw32"
-#- c:\msys64\usr\bin\bash -lc "echo 'Server = https://mirror.yandex.ru/mirrors/msys2/msys/$arch/' > /etc/pacman.d/mirrorlist.msys"
-#- c:\msys64\usr\bin\bash -lc "sed -i 's/^Server\ =\ https:\/\/sourceforge\.net/#Server\ =\ https:\/\/sourceforge\.net/g' /etc/pacman.d/mirrorlist.*"
-
-# remove packages which can break build
-#- c:\msys64\usr\bin\bash -lc "pacman --noconfirm -Rns gcc-fortran gcc"
-
-# update runtime
-#- c:\msys64\usr\bin\bash -lc "pacman --noconfirm -Syuu"
-# Kill bash before next try
-#- taskkill /T /F /IM bash.exe /IM gpg.exe /IM gpg-agent.exe | exit /B 0
-# update packages and install required
 
 build_script:
   - '%APPVEYOR_BUILD_FOLDER%\autobuild\msys2\appveyor.bat'
@@ -46,7 +26,7 @@ after_build:
   - cmd: set SYNFIG_ID="%APPVEYOR_REPO_COMMIT_TIMESTAMP:~0,10%-win%MSYSTEM:~-2%-%APPVEYOR_REPO_COMMIT:~0,5%"
   - cmd: call 7z a "SynfigStudio-1.5.0-testing-%SYNFIG_ID%.zip" %APPVEYOR_BUILD_FOLDER%\cmake-build-msys\install\*
 
-#artifacts:
-#  - path: "SynfigStudio-*.zip"
+artifacts:
+  - path: "SynfigStudio-*.zip"
 
 deploy: off
