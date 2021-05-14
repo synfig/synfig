@@ -135,6 +135,7 @@ Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Selection
 {
 	Dockable* tmp(this);
 	dnd_success_ = true;
+	saved_widget_size_ = {get_width(), get_height()};
 	selection_data.set(8, reinterpret_cast<const guchar*>(&tmp), sizeof(Dockable**));
 }
 
@@ -164,6 +165,7 @@ Dockable::attach_dnd_to(Gtk::Widget& widget)
 
 void Dockable::detach()
 {
+	saved_widget_size_ = {get_width(), get_height()};
 	DockManager::remove_widget_recursive(*this);
 	present();
 }
@@ -273,17 +275,24 @@ Dockable::present()
 		parent->set_current_page(parent->page_num(*this));
 		parent->present();
 	} else {
+		// if the widget does not have a parent - create a window and place this widget in it
 		show();
 
 		DockBook* book = manage(new DockBook());
 		book->add(*this);
 		book->show();
-		
+		int book_min_height = 0, book_natural_height = 0;
+		book->get_preferred_height(book_min_height, book_natural_height);
+
 		DockDialog* dock_dialog(new DockDialog());
+		dock_dialog->set_title(local_name_);
 		dock_dialog->add(*book);
+		if (saved_widget_size_.height > 0) {
+			dock_dialog->set_default_size(saved_widget_size_.width, saved_widget_size_.height + book_natural_height);
+		}
 		dock_dialog->present();
 	}
-	App::dock_manager->update_window_titles();
+	//App::dock_manager->update_window_titles();
 }
 
 Gtk::Widget*

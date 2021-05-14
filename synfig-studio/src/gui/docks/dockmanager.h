@@ -116,7 +116,7 @@ public:
 	static void remove_widget_by_pointer_recursive(Gtk::Widget *widget) { remove_widget_recursive(*widget); }
 	static void remove_empty_container_recursive(Gtk::Container &container);
 	static void remove_empty_container_by_pointer_recursive(Gtk::Container *container) { remove_empty_container_recursive(*container); }
-	static bool add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool vertical, bool first);
+	static bool add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool vertical, bool first, GtkRequisition src_widget_size);
 	static bool add_dockable(Gtk::Widget &dest_widget, Dockable &dockable, bool vertical, bool first);
 }; // END of class DockManager
 

@@ -345,9 +345,14 @@ DockManager::remove_widget_recursive(Gtk::Widget &widget)
 }
 
 bool
-DockManager::add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool vertical, bool first)
+DockManager::add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool vertical, bool first, GtkRequisition src_widget_size)
 {
 	if (&src_widget == &dest_widget) return false;
+
+	// We need to get the size of the parent widget to work correctly when both widgets is
+	// already attached to the same pane, and we just move one of the widgets to the other side.
+	// For example, if we move the toolbar from the left side to the right side.
+	GtkRequisition dst_widget_size {dest_widget.get_parent()->get_width(), dest_widget.get_parent()->get_height()};
 
 	// check for src widget is parent for dest_widget
 	for(Gtk::Widget *parent = src_widget.get_parent(); parent != NULL; parent = parent->get_parent())
@@ -368,6 +373,16 @@ DockManager::add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool 
 	DockLinkPoint(paned, first).link(src_widget);
 	DockLinkPoint(paned, !first).link(dest_widget);
 	dest_link.link(*paned);
+
+	// set paned position in order to keep the size of the widget
+	int paned_pos = -1;
+	if (vertical) {
+		paned_pos = first ? src_widget_size.height : dst_widget_size.height - src_widget_size.height;
+	} else {
+		paned_pos = first ? src_widget_size.width : dst_widget_size.width - src_widget_size.width;
+	}
+
+	paned->set_position(paned_pos);
 	return true;
 }
 
@@ -376,7 +391,7 @@ DockManager::add_dockable(Gtk::Widget &dest_widget, Dockable &dockable, bool ver
 {
 	DockBook *book = manage(new DockBook());
 	book->show();
-	if (add_widget(dest_widget, *book, vertical, first))
+	if (add_widget(dest_widget, *book, vertical, first, dockable.get_size()))
 	{
 		book->add(dockable);
 		return true;
