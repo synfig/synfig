@@ -1,7 +1,4 @@
-add_library(mod_example MODULE "")
-
-target_sources(mod_example
-    PUBLIC
+add_library(mod_example MODULE
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/metaballs.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/simplecircle.cpp"

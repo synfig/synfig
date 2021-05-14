@@ -1,7 +1,4 @@
-add_library(mod_png MODULE "")
-
-target_sources(mod_png
-    PUBLIC
+add_library(mod_png MODULE
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/mptr_png.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/trgt_png_spritesheet.cpp"
