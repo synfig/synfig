@@ -1,6 +1,6 @@
 ---
-name: 'Bug report: Snap, Flatpak or AppImage'
-about: Create a report to help us improve if you use these linux packages
+name: 'Bug report: Development version (master branch)'
+about: Report an issue for latest development version built from source code
 title: ''
 labels: ''
 assignees: ''
@@ -24,10 +24,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **System information:**
- - Linux distro: [eg. Debian, Manjaaro, Ubuntu, etc)
+ - OS: [Windows, Linux or Mac. If Linux, please tell us your distro]
  - OS version:
- - Package: [Snap, AppImage, Flatpak]
- - Synfig version: 1.4.1
+ - Commit ID: PLEASE PUT HERE A COMMIT ID FOR YOUR VERSION OF SYNFIG
 
 **Additional comments**
 Add any other context about the problem here.
