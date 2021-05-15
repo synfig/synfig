@@ -91,7 +91,7 @@ synfig::open_svg(std::string _filepath, String &errors, String &warnings)
 		canvas=parser.load_svg_canvas(_filepath,errors,warnings);
 		//canvas->set_id(parser.get_id());
 	}catch(...){
-		std::cout<<"error"<<std::endl;
+		synfig::error("SVG Parser: error loading SVG");
 	}
 	return canvas;
 }
@@ -115,7 +115,7 @@ Svg_parser::load_svg_canvas(std::string _filepath, String &errors, String &warni
 		}
 	#ifdef LIBXMLCPP_EXCEPTIONS_ENABLED
   	}catch(const std::exception& ex){
-    	std::cout << "Exception caught: " << ex.what() << std::endl;
+    	synfig::error("SVG Parser: exception caught: %s", ex.what());
   	}
   	#endif //LIBXMLCPP_EXCEPTIONS_ENABLED
 	Canvas::Handle canvas;
@@ -469,7 +469,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String p
 		}else if(!parent_style.empty()){
 			layer_style=parent_style;
 		}
-		//build
+		// group attributes
 		root->set_attribute("type","group");
 		root->set_attribute("active","true");
 		root->set_attribute("version","0.1");
@@ -481,8 +481,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String p
 		build_integer(root->add_child("param"),"blend_method",0);
 		build_vector (root->add_child("param"),"origin",0,0);
 
-		//printf(" canvas attributes ");
-		//canvas
+		// canvas attributes
 		xmlpp::Element *child_canvas=root->add_child("param");
 		child_canvas->set_attribute("name","canvas");
 		child_canvas=child_canvas->add_child("canvas");
@@ -885,7 +884,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			}
 			i--; //decrement i to balance "i++" at command change
 		}else{
-			std::cout<<"unsupported path token: "<<tokens.at(i).c_str()<<std::endl;
+			synfig::warning("SVG Parser: unsupported path token: %s", tokens.at(i).c_str());
 		}
 	}
 	if(!k1.empty()) {
@@ -1069,7 +1068,7 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 		} else if (x2!=x3 && y2==y3) {
 			x2=x1;
 		} else {
-			std::cout<<"SVG Import warning: gradient points equal each other"<<std::endl;
+			synfig::warning("SVG Parser: gradient points equal each other");
 		}
 	}
 
@@ -1209,7 +1208,7 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node)
 			link = nodeElement->get_attribute_value("href","xlink");
 
 		if (cx!=fx || cy!=fy)
-			std::cout<<"SVG Parser: ignoring focus attributes for radial gradient";
+			synfig::warning("SVG Parser: ignoring focus attributes for radial gradient");
 
 		//resolve transformations
 		SVGMatrix mtx;
@@ -1403,7 +1402,7 @@ Svg_parser::build_color(xmlpp::Element* root, float r, float g, float b, float a
 {
 	if(r>255 || g>255 || b>255 || a>1 || r<0 || g<0 || b<0 || a<0){
 		root->get_parent()->remove_child(root);
-		printf("Color aborted\n");
+		synfig::warning("SVG Parser: color aborted - invalid data");
 		return;
 	}
 	Color ret=adjustGamma(r/255,g/255,b/255,a);
@@ -1506,16 +1505,16 @@ Vertex::setTg2(float p2x,float p2y)
 	rd=sqrt(dx*dx + dy*dy);
 	if(dx>0 && dy>0){
 		ag=PI + atan(dy/dx);
-	//	printf("case 180-270\n");
+	// case 180-270
 	}else if(dx>0 && dy<0){
 		ag=PI + atan(dy/dx);
-	//	printf("case 90-180\n");
+	// case 90-180
 	}else if(dx<0 && dy<0){
 		ag=atan(dy/dx);
-	//	printf("case 0-90\n");
+	// case 0-90
 	}else if(dx<0 && dy>0){
 		ag= 2*PI+atan(dy/dx);
-	//	printf("case 270-360\n");
+	// case 270-360
 	}else if(approximate_zero(dx) && dy>0){
 		ag=-1*PI/2;
 	}else if(approximate_zero(dx) && dy<0){
@@ -1756,7 +1755,7 @@ get_tokens_path(const String& path) //mini path lexico-parser
 					else if(a==','){ e=19; i++;}
 					else if(a==' '){i++;}
 					else {
-						synfig::warning("unknown token in SVG path '%c'", a);
+						synfig::warning("SVG Parser: unknown token in SVG path '%c'", a);
 						i++;
 					}
 					break;
