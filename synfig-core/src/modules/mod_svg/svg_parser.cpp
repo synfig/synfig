@@ -1884,33 +1884,34 @@ hextodec(const std::string& hex)
 static double
 getDimension(const String& ac)
 {
-	if(ac.empty()){
+	if(ac.empty())
 		return 0;
-	}
+
 	auto length=ac.size();
 	double af=0;
 	if(isdigit(ac.at(length-1))){
-		af=atof(ac.data());
+		af=atof(ac.c_str());
 	}else if(ac.at(length-1)=='%'){
-			return 1024;
+		return 1024;
 	}else{
-		String mtc=ac.substr(length-2,length);
-		String nmc=ac.substr(0,length-2);
-		if(mtc.compare("px")==0){
-			af=atof(nmc.data());
-		}else if(mtc.compare("pt")==0){
-			af=atof(nmc.data())*1.25;
-		}else if(mtc.compare("em")==0){
-			af=atof(nmc.data())*16;
-		}else if(mtc.compare("mm")==0){
-			af=atof(nmc.data())*3.54;
-		}else if(mtc.compare("pc")==0){
-			af=atof(nmc.data())*15;
-		}else if(mtc.compare("cm")==0){
-			af=atof(nmc.data())*35.43;
-		}else if(mtc.compare("in")==0){
-			af=atof(nmc.data())*90;
-		}else{
+		String unit = ac.substr(length-2,length);
+		String nmc = ac.substr(0,length-2);
+		af = atof(nmc.c_str());
+		if (unit == "px"){
+			af *= 1;
+		} else if (unit == "pt"){
+			af *= 1.25;
+		} else if (unit == "em"){
+			af *= 16;
+		} else if (unit == "mm"){
+			af *= 3.54;
+		} else if (unit == "pc"){
+			af *= 15;
+		} else if (unit == "cm"){
+			af *= 35.43;
+		} else if (unit == "in"){
+			af *= 90;
+		} else {
 			return 1024;
 		}
 	}
