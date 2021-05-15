@@ -73,11 +73,13 @@ static int getGreen(const String& hex);
 static int getBlue(const String& hex);
 static int hextodec(const std::string& hex);
 static int getColor(const String& name, int position);
-static double getDimension(const String& ac);
+static double getDimension(const String& ac, bool use_90_ppi = false);
 static float getRadian(float sexa);
 //string functions
 static void removeIntoS(String& input);
 static std::vector<String> tokenize(const String& str,const String& delimiters);
+
+static float get_inkscape_version(const xmlpp::Element* svgNodeElement);
 
 /* === M E T H O D S ======================================================= */
 
@@ -206,8 +208,10 @@ void
 Svg_parser::parser_svg(const xmlpp::Node* node)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		width = getDimension(nodeElement->get_attribute_value("width"));
-		height = getDimension(nodeElement->get_attribute_value("height"));
+		float inkscape_version = get_inkscape_version(nodeElement);
+
+		width = getDimension(nodeElement->get_attribute_value("width"), inkscape_version < 0.92f && approximate_not_zero(inkscape_version));
+		height = getDimension(nodeElement->get_attribute_value("height"), inkscape_version < 0.92f && approximate_not_zero(inkscape_version));
 		docname=nodeElement->get_attribute_value("docname","");
 	}
 }
@@ -419,7 +423,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 
 				build_bline(child_outline->add_child("param"), bline.points, bline.loop, bline.bline_id);
 
-				stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
+				stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux); // this shouldn't use units
 				build_param (child_outline->add_child("param"),"width","real",stroke_width);
 				build_param (child_outline->add_child("param"),"expand","real","0.0000000000");
 				if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child("param"),"sharp_cusps","bool","true");
@@ -1881,12 +1885,14 @@ hextodec(const std::string& hex)
 	return result;
 }
 
+/// \param use_90_ppi : old Inkscape files (<= 0.91) used 90ppi. SVG docs states for 96 pixels per inch
 static double
-getDimension(const String& ac)
+getDimension(const String& ac, bool use_90_ppi)
 {
 	if(ac.empty())
 		return 0;
 
+	const int ppi = use_90_ppi ? 90 : 96;
 	auto length=ac.size();
 	double af=0;
 	if(isdigit(ac.at(length-1))){
@@ -1900,17 +1906,17 @@ getDimension(const String& ac)
 		if (unit == "px"){
 			af *= 1;
 		} else if (unit == "pt"){
-			af *= 1.25;
+			af *= ppi/72.0;
 		} else if (unit == "em"){
 			af *= 16;
 		} else if (unit == "mm"){
-			af *= 3.54;
+			af *= ppi/25.4;
 		} else if (unit == "pc"){
-			af *= 15;
+			af *= ppi/6;
 		} else if (unit == "cm"){
-			af *= 35.43;
+			af *= ppi/2.54;
 		} else if (unit == "in"){
-			af *= 90;
+			af *= ppi;
 		} else {
 			return 1024;
 		}
@@ -2124,3 +2130,16 @@ getColor(const String& name, int position) {
 	return found->second.color[position - 1];
 }
 #undef COLOR_NAME
+
+static float
+get_inkscape_version(const xmlpp::Element* svgNodeElement)
+{
+	try {
+		std::string inkscape_full_version = svgNodeElement->get_attribute_value("version", "inkscape");
+		std::vector<std::string> inkscape_version_tokens = tokenize(inkscape_full_version, " ");
+		if (!inkscape_version_tokens.empty())
+			return stod(inkscape_version_tokens[0]);
+	} catch (...) {
+	}
+	return 0; // not inkscape ;)
+}
