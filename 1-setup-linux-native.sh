@@ -87,7 +87,6 @@ if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
             OpenEXR-devel \
             libmng-devel \
             ImageMagick-c++-devel \
-            jack-audio-connection-kit-devel \
             mlt-devel \
             ocl-icd-devel \
             opencl-headers \
@@ -96,6 +95,12 @@ if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
             SDL2-devel \
             SDL2_mixer-devel \
             libxslt-devel python-devel python3-lxml"
+    # Fedora 34 and onward uses pipewire
+    if dnf -C list installed pipewire-jack-audio-connection-kit &> /dev/null; then
+        PKG_LIST="$PKG_LIST pipewire-jack-audio-connection-kit-devel"
+    else
+        PKG_LIST="$PKG_LIST jack-audio-connection-kit-devel"
+    fi
 
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running dnf (root privileges are needed)..."
