@@ -1,3 +1,7 @@
+- [`e0ad411`](https://github.com/synfig/synfig/commit/e0ad411a079db5cc545e99de286157d602144582) `1-setup-linux-native.sh` script now supports PipeWire ([#2145](https://github.com/synfig/synfig/issues/2145))
+- [`ffb9852`](https://github.com/synfig/synfig/commit/ffb98528b4ec21bb888c5acd09448d0af0320239) [CMake] Removed unnecessary dependencies in modules ([#2129](https://github.com/synfig/synfig/issues/2129)) [core]
+- [`47c01d2`](https://github.com/synfig/synfig/commit/47c01d220b3cfa45b03a236f2ec730159ae590dd) Update issue templates for GitHub ([#2150](https://github.com/synfig/synfig/issues/2150))
+- [`a633cae`](https://github.com/synfig/synfig/commit/a633cae20ffebd14e0f3bb770471a93bd6b3806a) [MacOS] Removed unnecessary pip installation ([#2146](https://github.com/synfig/synfig/issues/2146))
 - [`46ed36c`](https://github.com/synfig/synfig/commit/46ed36c9a100857b2f2b0a87de40c6ee734e5744) Merge PR [#2054](https://github.com/synfig/synfig/issues/2054): Removed unused CairoRenderer [core] [studio]
 - [`2ef1e6f`](https://github.com/synfig/synfig/commit/2ef1e6f6553b2c6dd844a6b94014350b1b64ea83) [CMake] Disable the use of MLT if MLT library not found ([#2138](https://github.com/synfig/synfig/issues/2138)) [core] [studio]
 - [`14eccd4`](https://github.com/synfig/synfig/commit/14eccd4c009557a03c536fc56761ce577a95ab40) Added the ability to create Plant and Curve Gradient layer from other Splines ([#1476](https://github.com/synfig/synfig/issues/1476)) [studio]
