@@ -86,7 +86,7 @@ public:
 		getline(s, word);
 		fields["sound"] = word;
 
-		int first_frame = INT_MAX;
+		int last_frame = 0;
 		Real fps;
 		s >> fps;
 		if (fps <= 1e-10)
@@ -128,17 +128,23 @@ public:
 						if (s)
 						{
 							s >> frame >> phoneme;
-							first_frame = min(frame, first_frame);
+							last_frame = max(frame, last_frame);
 							getline(s, word);
 							value[Time(frame*fk)] = phoneme;
 						} else unexpected_end = true;
 					}
-					value[Time(end_frame*fk)] = "rest";
 				}
 			}
 		}
-		if (first_frame == INT_MAX) first_frame= 1;
-		value[Time((first_frame-1)*fk)] = "rest";
+		// everything after the end of the papagayo file is rest
+		value[Time((last_frame+1)*fk)] = "rest";
+
+		// any frame that doesn't have a specified phoneme is rest
+		for (int i = 0; i < last_frame; ++i) {
+			if (value.find(Time(i*fk)) == value.end()) {
+				value[Time(i*fk)] = "rest";
+			}
+		}
 
 		if (unexpected_end)
 			warning("Unexpected end of .pgo file. Unsupported format?");
