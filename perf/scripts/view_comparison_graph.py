@@ -28,7 +28,7 @@ def main():
 
     run_data_filenames = sys.argv[1:]
 
-    # First one is the refernce
+    # First one is the reference
     ref_run_filename = run_data_filenames[0]
 
     # Chart data
@@ -62,7 +62,7 @@ def main():
             ref_slowest_runs.append(slowest_run - mean_run)
 
     # test run
-    # TODO, this should be put in a reusable fuction!!
+    # TODO, this should be put in a reusable function!!
     test_run_filename = run_data_filenames[1]
     test_mean_runs = []
     test_fastest_runs = []
