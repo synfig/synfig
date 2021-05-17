@@ -51,7 +51,6 @@
 #if HAVE_FCNTL_H
  #include <fcntl.h>
 #endif
-#include <unistd.h>
 #include <algorithm>
 #include <thread>
 
@@ -60,11 +59,11 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
+ #include <unistd.h>
 #else
  #define WIN32_PIPE_TO_PROCESSES
 #endif
@@ -80,7 +79,6 @@ SYNFIG_TARGET_SET_VERSION(dv_trgt,"0.1");
 
 
 dv_trgt::dv_trgt(const char *Filename, const synfig::TargetParam & /* params */):
-	pid(-1),
 	imagecount(0),
 	wide_aspect(false),
 	file(NULL),
@@ -95,7 +93,7 @@ dv_trgt::~dv_trgt()
 {
 	if(file){
 #if defined(WIN32_PIPE_TO_PROCESSES)
-		pclose(file);
+		_pclose(file);
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 		fclose(file);
 		int status;
@@ -150,7 +148,7 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
-	string command;
+	std::string command;
 
 	if(wide_aspect)
 		command=strprintf("encodedv -w 1 - > \"%s\"\n",filename.c_str());
@@ -158,7 +156,7 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 		command=strprintf("encodedv - > \"%s\"\n",filename.c_str());
 
 	// Open the pipe to encodedv
-	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
+	file = _popen(command.c_str(), POPEN_BINARY_WRITE_TYPE);
 
 	if(!file)
 	{
