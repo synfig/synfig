@@ -22,14 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__BOXBLUR__
-#define __ETL__BOXBLUR__
+#ifndef __SYNFIG__BOXBLUR__
+#define __SYNFIG__BOXBLUR__
 
 /* === H E A D E R S ======================================================= */
 
-#include "etl_config.h"
+#include "ETL/etl_config.h"
 
-#include "_boxblur.h"
+#include "boxblur.h"
 
 /* === E N D =============================================================== */
 

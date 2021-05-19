@@ -32,9 +32,9 @@
 
 #include <stdexcept>
 
-#include <ETL/boxblur>
 #include <ETL/gaussian>
 
+#include "boxblur.h"
 #include "blur.h"
 
 #include "general.h"
@@ -594,7 +594,7 @@ bool Blur::operator()(const Surface &surface,
 				length=std::max(1,length);
 
 				//synfig::info("Blur: hbox blur work -> temp %d", length);
-				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				synfig::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 			//synfig::info("Blur: hbox finished");
@@ -609,7 +609,7 @@ bool Blur::operator()(const Surface &surface,
 				length = std::max(1,length);
 
 				//synfig::info("Blur: vbox blur temp -> work %d",length);
-				etl::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
+				synfig::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
 			else worksurface = temp_surface;
 			//synfig::info("Blur: vbox finished");
@@ -648,8 +648,8 @@ bool Blur::operator()(const Surface &surface,
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
-				etl::hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				etl::hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				synfig::hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
+				synfig::hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=worksurface;
 
@@ -660,8 +660,8 @@ bool Blur::operator()(const Surface &surface,
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
-				etl::vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				etl::vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				synfig::vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
+				synfig::vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=temp_surface2;
 
@@ -687,7 +687,7 @@ bool Blur::operator()(const Surface &surface,
 				int length = halfsizex;
 				length = std::max(1,length);
 
-				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				synfig::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 
@@ -700,7 +700,7 @@ bool Blur::operator()(const Surface &surface,
 				int length = halfsizey;
 				length = std::max(1,length);
 
-				etl::vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
+				synfig::vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
 			}
 			else temp_surface2 = worksurface;
 
@@ -991,7 +991,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				int length = halfsizex;
 				length=std::max(1,length);
 
-				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				synfig::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 
@@ -1003,7 +1003,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			{
 				int length = halfsizey;
 				length = std::max(1,length);
-				etl::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
+				synfig::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
 			else worksurface = temp_surface;
 
@@ -1041,8 +1041,8 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
-				etl::hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				etl::hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				synfig::hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
+				synfig::hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=worksurface;
 
@@ -1053,8 +1053,8 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
-				etl::vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				etl::vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				synfig::vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
+				synfig::vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=temp_surface2;
 
@@ -1080,7 +1080,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				int length = halfsizex;
 				length = std::max(1,length);
 
-				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				synfig::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 
@@ -1093,7 +1093,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				int length = halfsizey;
 				length = std::max(1,length);
 
-				etl::vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
+				synfig::vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
 			}
 			else temp_surface2 = worksurface;
 

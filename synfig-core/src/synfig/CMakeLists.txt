@@ -43,6 +43,7 @@ target_sources(synfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/activepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/bone.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/boxblur.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/blur.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/canvas.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/context.cpp"

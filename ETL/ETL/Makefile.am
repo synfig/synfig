@@ -35,8 +35,6 @@ etl_HEADERS = \
 	_bezier_angle.h \
 	pen \
 	_pen.h \
-	boxblur \
-	_boxblur.h \
 	gaussian \
 	_gaussian.h \
 	surface \

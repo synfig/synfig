@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__BOXBLUR_H
-#define __ETL__BOXBLUR_H
+#ifndef __SYNFIG__BOXBLUR_H
+#define __SYNFIG__BOXBLUR_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -37,7 +37,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
 template<typename T1,typename T2> void
 hbox_blur(T1 pen,int w, int h, int length, T2 outpen)

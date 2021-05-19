@@ -29,7 +29,7 @@
 #include <memory>
 #include <map>
 #include <ETL/pen>
-#include <ETL/boxblur>
+#include <synfig/boxblur.h>
 //#include <ETL/gaussian>
 #include <cmath>
 
@@ -37,6 +37,7 @@
 
 using namespace std;
 using namespace etl;
+using namespace synfig;
 
 /* === C L A S S E S ======================================================= */
 

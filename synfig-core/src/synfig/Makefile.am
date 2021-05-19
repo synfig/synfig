@@ -82,6 +82,7 @@ SYNFIGHEADERS = \
 	version.h \
 	boneweightpair.h \
 	activepoint.h \
+	boxblur.h \
 	blur.h \
 	bone.h \
 	canvas.h \
@@ -135,6 +136,7 @@ SYNFIGHEADERS = \
 SYNFIGSOURCES = \
 	activepoint.cpp \
 	bone.cpp \
+	boxblur.cpp \
 	blur.cpp \
 	canvas.cpp \
 	context.cpp \
