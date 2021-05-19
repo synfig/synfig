@@ -1811,6 +1811,17 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	{
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable.") + String("\n\n") + x);
 	}
+	catch(const std::runtime_error& re)	{
+		// specific handling for runtime_error
+		get_ui_interface()->error(std::string("Runtime error: ") + re.what());
+		std::cerr << "Runtime error: " << re.what() << std::endl;
+	}
+	catch(const std::exception& ex)	{
+		// specific handling for all exceptions extending std::exception, except
+		// std::runtime_error which is handled explicitly
+		get_ui_interface()->error(std::string("Exception: ") + ex.what());
+		std::cerr << "Error occurred: " << ex.what() << std::endl;
+	}
 	catch(...)
 	{
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable."));
