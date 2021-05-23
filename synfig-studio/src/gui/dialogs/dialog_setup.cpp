@@ -35,8 +35,8 @@
 
 #include "dialogs/dialog_setup.h"
 
-#include <gtkmm/eventbox.h>
-#include <gtkmm/scale.h>
+#include <gtkmm/accelmap.h>
+#include <gtkmm/filechooserdialog.h>
 
 #include "canvasview.h"
 #include "widgets/widget_enum.h"
@@ -66,6 +66,12 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
+enum ShortcutsColumns{
+	SHORTCUT_COLUMN_ID_ACTION_NAME = 0,
+	SHORTCUT_COLUMN_ID_ACTION_KEY = 1,
+	SHORTCUT_COLUMN_ID_ACTION_MODS = 2,
+};
+
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -88,7 +94,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		document_str(_("Document")),
 		editing_str(_("Editing")),
 		render_str(_("Render")),
-		system_str(_("System"));
+		system_str(_("System")),
+		shortcuts_str(_("Shortcuts"));
 	// WARNING FIXED ORDER : the page added to notebook same has treeview
 	// Interface
 	create_interface_page(add_page(interface_str));
@@ -100,6 +107,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	create_render_page(add_page(render_str));
 	// System
 	create_system_page(add_page(system_str));
+	// Keyboard shortcuts
+	create_shortcuts_page(add_page(shortcuts_str));
 
 	show_all_children();
 }
@@ -445,6 +454,75 @@ dragging the handle to the left bottom part of your 2D space."));
 	
 }
 
+void
+Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
+{
+	int row = 1;
+
+	Gtk::Label *label = manage(new Gtk::Label(_("To change a shortcut, double-click it and then type the new keys. "
+                                                "You can cancel a shortcut edition by pressing Esc.\n"
+                                                "To clear a shortcut, press Backspace when trying to change it.")));
+	label->set_halign(Gtk::ALIGN_START);
+	pi.grid->attach(*label, 0, row++, 1, 1);
+
+	attach_label_section(pi.grid, _("Keyboard Shortcuts"), row++);
+
+	Gtk::TreeModelColumnRecord columns;
+	Gtk::TreeModelColumn<std::string> action_name;
+	Gtk::TreeModelColumn<guint> action_key;
+	Gtk::TreeModelColumn<Gdk::ModifierType> action_mods;
+	columns.add(action_name);  //SHORTCUT_COLUMN_ID_ACTION_NAME
+	columns.add(action_key);   //SHORTCUT_COLUMN_ID_ACTION_KEY
+	columns.add(action_mods);  //SHORTCUT_COLUMN_ID_ACTION_MODS
+	auto model = Gtk::ListStore::create(columns);
+	treeview_accels = manage(new Gtk::TreeView(model));
+	treeview_accels->set_hexpand(true);
+	treeview_accels->set_vexpand(true);
+	treeview_accels->append_column("Action", action_name);
+
+	renderer_accel.property_editable() = true;
+
+	renderer_accel.signal_accel_edited().connect(sigc::mem_fun(*this, &Dialog_Setup::on_accel_edited));
+	renderer_accel.signal_accel_cleared().connect(sigc::mem_fun(*this, &Dialog_Setup::on_accel_cleared));
+
+	const int shortcut_col_idx = -1 + treeview_accels->append_column("Shortcut", renderer_accel);
+	treeview_accels->get_column(shortcut_col_idx)->add_attribute(renderer_accel, "accel-key", action_key);
+	treeview_accels->get_column(shortcut_col_idx)->add_attribute(renderer_accel, "accel-mods", action_mods);
+
+	auto map = App::get_default_accel_map();
+	for (const auto& pair : map) {
+		Gtk::AccelKey accel;
+		Gtk::TreeRow row = *model->append();
+
+		row.set_value(action_name, std::string(pair.second));
+
+		if (!Gtk::AccelMap::lookup_entry(pair.second, accel))
+			accel = Gtk::AccelKey(pair.first, pair.second);
+
+		row.set_value(action_key, accel.get_key());
+		row.set_value(action_mods, accel.get_mod());
+	}
+
+	Gtk::ScrolledWindow *scroll = manage(new Gtk::ScrolledWindow());
+	scroll->add(*treeview_accels);
+
+	pi.grid->attach(*scroll, 0, row++, 1, 1);
+}
+
+void
+Dialog_Setup::on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode)
+{
+	auto iter = treeview_accels->get_model()->get_iter(path_string);
+	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel_key);
+	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel_mods);
+}
+
+void Dialog_Setup::on_accel_cleared(const Glib::ustring& path_string)
+{
+	auto iter = treeview_accels->get_model()->get_iter(path_string);
+	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, 0);
+	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, Gdk::ModifierType(0));
+}
 
 void
 Dialog_Setup::on_choose_editor_pressed()
@@ -646,6 +724,31 @@ void
 Dialog_Setup::on_restore_pressed()
 {
     App::restore_default_settings();
+
+	// Keyboard accels
+	auto accel_rows = treeview_accels->get_model()->children();
+	auto default_accel_map = App::get_default_accel_map();
+	for (auto& row : accel_rows) {
+		Gtk::AccelKey accel;
+
+		std::string accel_path;
+		row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+
+		bool found = false;
+		for (auto it = default_accel_map.begin(); it != default_accel_map.end(); ++it) {
+			if (it->second == accel_path) {
+				Gtk::AccelKey accel(it->first);
+				Gtk::AccelMap::change_entry(accel_path, accel.get_key(), accel.get_mod(), true);
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			Gtk::AccelMap::change_entry(accel_path, 0, Gdk::ModifierType(0), true);
+		}
+	}
+
 	hide();
 }
 
@@ -761,6 +864,20 @@ Dialog_Setup::on_apply_pressed()
 		}
 	}
 
+	// Set keyboard accels for actions
+	auto accel_rows = treeview_accels->get_model()->children();
+	for (auto& row : accel_rows) {
+		Gtk::AccelKey accel;
+
+		std::string accel_path;
+		row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+		guint accel_key;
+		row.get_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel_key);
+		Gdk::ModifierType accel_mod;
+		row.get_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel_mod);
+
+		Gtk::AccelMap::change_entry(accel_path, accel_key, accel_mod, true);
+	}
 
 	App::save_settings();
 	App::setup_changed();
@@ -1003,6 +1120,20 @@ Dialog_Setup::refresh()
 		toggle_handle_tooltip_transformation.set_active(false);
 		toggle_handle_tooltip_transfo_name.set_sensitive(false);
 		toggle_handle_tooltip_transfo_value.set_sensitive(false);
+	}
+
+	// Refresh keyboard accels for actions
+	auto accel_rows = treeview_accels->get_model()->children();
+	for (auto& row : accel_rows) {
+		Gtk::AccelKey accel;
+
+		std::string accel_path;
+		row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+
+		if (Gtk::AccelMap::lookup_entry(accel_path, accel)) {
+			row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel.get_key());
+			row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel.get_mod());
+		}
 	}
 
 	refreshing = false;
