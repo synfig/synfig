@@ -111,6 +111,7 @@ class Dialog_Setup : public Dialog_Template
 	void create_render_page(PageInfo pi);
 	void create_interface_page(PageInfo pi);
 	void create_editing_page(PageInfo pi);
+	void create_shortcuts_page(PageInfo pi);
 
 	synfigapp::Settings &input_settings;
 
@@ -185,6 +186,11 @@ class Dialog_Setup : public Dialog_Template
 	};
 	PrefsBrushPath prefs_brushpath;
 
+	Gtk::CellRendererAccel renderer_accel;
+	Gtk::TreeView *treeview_accels;
+
+	void on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode);
+	void on_accel_cleared(const Glib::ustring& path_string);
 public:
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -204,7 +210,7 @@ public:
 	const synfig::Time::Format& get_time_format()const { return time_format; }
 
     void refresh();
-}; // END of Dialog_Waypoint
+}; // END of Dialog_Setup
 
 }; // END of namespace studio
 

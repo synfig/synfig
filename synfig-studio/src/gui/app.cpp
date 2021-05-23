@@ -1244,8 +1244,20 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 		synfig::error("building menus and toolbars failed: " + ex.what());
 	}
 
+	auto default_accel_map = App::get_default_accel_map();
+	for (const auto& accel_item : default_accel_map) {
+		Gtk::AccelKey accel_key(accel_item.first, accel_item.second);
+		if (accel_key.get_key() == 0)
+			synfig::warning(_("Invalid accelerator: %s (for action: %s)"), accel_item.first, accel_item.second);
+		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());
+	}
+}
+
+const std::multimap<const char*, const char*>&
+App::get_default_accel_map()
+{
 	// Add default keyboard accelerators
-	const std::vector<std::pair<const char*, const char*>> default_accel_map = {
+	static const std::multimap<const char*, const char*> default_accel_map = {
 		// Toolbox
 		{"s",             "<Actions>/action_group_state_manager/state-normal"},
 		{"m",             "<Actions>/action_group_state_manager/state-smooth_move"},
@@ -1344,12 +1356,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 		{"<Control>space",          "<Actions>/canvasview/animate"},
 	};
 
-	for (const auto& accel_item : default_accel_map) {
-		Gtk::AccelKey accel_key(accel_item.first, accel_item.second);
-		if (accel_key.get_key() == 0)
-			synfig::warning(_("Invalid accelerator: %s (for action: %s)"), accel_item.first, accel_item.second);
-		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());
-	}
+	return default_accel_map;
 }
 
 /* === M E T H O D S ======================================================= */
@@ -1776,6 +1783,7 @@ App::~App()
 	shutdown_in_progress=true;
 
 	save_settings();
+	save_accel_map();
 
 	synfigapp::Main::settings().remove_domain("pref");
 
@@ -2006,6 +2014,23 @@ App::load_accel_map()
 	catch(...)
 	{
 		synfig::warning("Caught exception when attempting to load accel map settings.");
+	}
+}
+
+void
+App::save_accel_map()
+{
+	try
+	{
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		{
+			std::string filename=get_config_file("accelrc");
+			Gtk::AccelMap::save(filename);
+		}
+	}
+	catch(...)
+	{
+		synfig::warning("Caught exception when attempting to save accel map settings.");
 	}
 }
 
