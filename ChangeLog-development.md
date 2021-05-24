@@ -1,3 +1,8 @@
+- [`41d6ac0`](https://github.com/synfig/synfig/commit/41d6ac086e2bfc1ffed6bdd3d8bffd6e8326780c) Basic implementation of Keyboard Shortcut Editor ([#2160](https://github.com/synfig/synfig/issues/2160)) [studio]
+- [`3c0f04d`](https://github.com/synfig/synfig/commit/3c0f04d55e54459e36b7872812a07772989e74d0) Fixed 'locale::facet::_S_create_c_locale name not valid' error when compiling with MinGW compiler ([#2157](https://github.com/synfig/synfig/issues/2157)) [core]
+- [`2b7587d`](https://github.com/synfig/synfig/commit/2b7587d24bbcf797bcbb3397fc3a132394c3e8d5) Improved error reporting [studio] ([#2156](https://github.com/synfig/synfig/issues/2156)) [studio]
+- [`96c85ed`](https://github.com/synfig/synfig/commit/96c85edfa3cf72abaa5c2eb85ceb3903a9ff10be) Enabled AppVeyor artifacts back ([#2151](https://github.com/synfig/synfig/issues/2151))
+- [`1233e4c`](https://github.com/synfig/synfig/commit/1233e4cd1913b64706881293e323a77d1d7641b6) Fixed misc. typos ([#2155](https://github.com/synfig/synfig/issues/2155)) [core]
 - [`e0ad411`](https://github.com/synfig/synfig/commit/e0ad411a079db5cc545e99de286157d602144582) `1-setup-linux-native.sh` script now supports PipeWire ([#2145](https://github.com/synfig/synfig/issues/2145))
 - [`ffb9852`](https://github.com/synfig/synfig/commit/ffb98528b4ec21bb888c5acd09448d0af0320239) [CMake] Removed unnecessary dependencies in modules ([#2129](https://github.com/synfig/synfig/issues/2129)) [core]
 - [`47c01d2`](https://github.com/synfig/synfig/commit/47c01d220b3cfa45b03a236f2ec730159ae590dd) Update issue templates for GitHub ([#2150](https://github.com/synfig/synfig/issues/2150))
