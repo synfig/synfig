@@ -2319,20 +2319,13 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 
 	handle<ValueNode_DynamicList> value_node;
-	handle<ValueNode_BLine> bline_value_node;
-	handle<ValueNode_WPList> wplist_value_node;
-	handle<ValueNode_DIList> dilist_value_node;
-	handle<ValueNode_WeightedAverage> weightedaverage_value_node;
-	handle<synfig::ValueNode_Average> average_value_node;
 
 	bool must_rotate_point_list = false;
 
 	if(element->get_name()=="bline")
 	{
-		value_node=bline_value_node=ValueNode_BLine::create(type_list, canvas);
+		value_node = ValueNode_BLine::create(type_list, canvas);
 		if (is_bool_attribute_true(element, "loop")) {
-			bline_value_node->set_loop(true);
-
 			std::string version = canvas->get_version();
 			if (version == "1.0" || (version[0] == '0' && version[1] == '.'))
 				must_rotate_point_list = true;
@@ -2340,35 +2333,21 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 	else if(element->get_name()=="wplist")
 	{
-		value_node=wplist_value_node=ValueNode_WPList::create();
-		if (is_bool_attribute_true(element, "loop")) {
-			wplist_value_node->set_loop(true);
-		}
+		value_node = ValueNode_WPList::create();
 	}
 	else if(element->get_name()=="dilist")
 	{
-		value_node=dilist_value_node=ValueNode_DIList::create();
-		if (is_bool_attribute_true(element, "loop")) {
-			dilist_value_node->set_loop(true);
-		}
+		value_node = ValueNode_DIList::create();
 	}
 	else if(element->get_name()=="weighted_average")
 	{
 		Type& contained_type = ValueAverage::get_type_from_weighted(type);
-		weightedaverage_value_node=new ValueNode_WeightedAverage(contained_type, canvas);
-		value_node=ValueNode_DynamicList::Handle::cast_dynamic(weightedaverage_value_node);
-		if (is_bool_attribute_true(element, "loop")) {
-			weightedaverage_value_node->set_loop(true);
-		}
+		value_node = new ValueNode_WeightedAverage(contained_type, canvas);
 	} else if (element->get_name()=="average") {
-		average_value_node = new synfig::ValueNode_Average(type, canvas);
-		value_node = ValueNode_DynamicList::Handle::cast_dynamic(average_value_node);
-		if (is_bool_attribute_true(element, "loop")) {
-			average_value_node->set_loop(true);
-		}
+		value_node = new synfig::ValueNode_Average(type, canvas);
 	}
 	else
-		value_node=ValueNode_DynamicList::create_on_canvas(type);
+		value_node = ValueNode_DynamicList::create_on_canvas(type);
 
 	if(!value_node)
 	{
@@ -2377,6 +2356,9 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
+
+	if (is_bool_attribute_true(element, "loop"))
+		value_node->set_loop(true);
 
 	xmlpp::Element::NodeList list = element->get_children();
 
