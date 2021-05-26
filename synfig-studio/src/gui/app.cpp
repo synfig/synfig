@@ -1017,16 +1017,16 @@ DEFINE_ACTION("time-zoom-out",               Gtk::StockID("gtk-zoom-out"));
 DEFINE_ACTION("play", _("Play"));
 // the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
 // icon. the internal code is still using stop.
-DEFINE_ACTION("stop", _("Pause"));
+DEFINE_ACTION("pause", _("Pause"));
 
-DEFINE_ACTION("jump-next-keyframe",          _("Seek to Next Keyframe"));
-DEFINE_ACTION("jump-prev-keyframe",          _("Seek to previous Keyframe"));
-DEFINE_ACTION("seek-next-frame",             _("Seek to Next Frame"));
-DEFINE_ACTION("seek-prev-frame",             _("Seek to Previous Frame"));
-DEFINE_ACTION("seek-next-second",            _("Seek Forward"));
-DEFINE_ACTION("seek-prev-second",            _("Seek Backward"));
-DEFINE_ACTION("seek-begin",                  _("Seek to Begin"));
-DEFINE_ACTION("seek-end",                    _("Seek to End"));
+DEFINE_ACTION("jump-next-keyframe", _("Seek to Next Keyframe"));
+DEFINE_ACTION("jump-prev-keyframe", _("Seek to previous Keyframe"));
+DEFINE_ACTION("seek-next-frame",    _("Seek to Next Frame"));
+DEFINE_ACTION("seek-prev-frame",    _("Seek to Previous Frame"));
+DEFINE_ACTION("seek-next-second",   _("Seek Forward"));
+DEFINE_ACTION("seek-prev-second",   _("Seek Backward"));
+DEFINE_ACTION("seek-begin",         _("Seek to Begin"));
+DEFINE_ACTION("seek-end",           _("Seek to End"));
 
 
 // actions in Canvas menu
@@ -1159,7 +1159,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 "	</menu>"
 "    <menu action='menu-navigation'>"
 "		<menuitem action='play'/>"
-"		<menuitem action='stop'/>"
+"		<menuitem action='pause'/>"
 "		<separator name='sep-view1'/>"
 "		<menuitem action='jump-prev-keyframe'/>"
 "		<menuitem action='jump-next-keyframe'/>"
@@ -1319,7 +1319,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL("F12",									"<Actions>/canvasview/options"						);
 	ACCEL("<control>i",								"<Actions>/canvasview/import"						);
 	//ACCEL2(Gtk::AccelKey(GDK_KEY_Escape,static_cast<Gdk::ModifierType>(0), 		"<Actions>/canvasview/stop"						));
-	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(), 		"<Actions>/canvasview/stop"						));
+//	ACCEL2(Gtk::AccelKey(GDK_KEY_Escape, Gdk::ModifierType(), 		"<Actions>/canvasview/stop"						));
 	ACCEL("<Control>g",								"<Actions>/canvasview/toggle-grid-show"					);
 	ACCEL("<Control>l",								"<Actions>/canvasview/toggle-grid-snap"					);
 	ACCEL("<Control>n",								"<Actions>/mainwindow/new"						);
@@ -1357,20 +1357,22 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,					"<Actions>/canvasview/increase-low-res-pixel-size"			));
 	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-dec"		));
 	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>/action_group_layer_action_manager/amount-inc"		));
-	ACCEL2(Gtk::AccelKey(']',Gdk::CONTROL_MASK,					"<Actions>/canvasview/jump-next-keyframe"				));
-	ACCEL2(Gtk::AccelKey('[',Gdk::CONTROL_MASK,					"<Actions>/canvasview/jump-prev-keyframe"				));
 	ACCEL("equal",									"<Actions>/canvasview/canvas-zoom-in"					);
 	ACCEL("minus",									"<Actions>/canvasview/canvas-zoom-out"					);
 	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-in"					));
 	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,					"<Actions>/canvasview/time-zoom-out"					));
-	ACCEL2(Gtk::AccelKey('.',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-next-frame"					));
-	ACCEL2(Gtk::AccelKey(',',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-prev-frame"					));
-	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-next-second"					));
-	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,					"<Actions>/canvasview/seek-prev-second"					));
-	ACCEL("<Mod1>o",								"<Actions>/canvasview/toggle-onion-skin"				);
-	ACCEL("0",									"<Actions>/canvasview/canvas-zoom-fit"					);
-	ACCEL("<Control>p",								"<Actions>/canvasview/play"						);
-
+	ACCEL("bracketleft",             "<Actions>/canvasview/jump-prev-keyframe");
+	ACCEL("bracketright",            "<Actions>/canvasview/jump-next-keyframe");
+	ACCEL("comma",                   "<Actions>/canvasview/seek-prev-frame");
+	ACCEL("period",                  "<Actions>/canvasview/seek-next-frame");
+	ACCEL("<Shift>less",             "<Actions>/canvasview/seek-prev-second");
+	ACCEL("<Shift>greater",          "<Actions>/canvasview/seek-next-second");
+	ACCEL("<Control><Shift>less",    "<Actions>/canvasview/seek-begin");
+	ACCEL("<Control><Shift>greater", "<Actions>/canvasview/seek-end");
+	ACCEL("<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin");
+	ACCEL("0",                       "<Actions>/canvasview/canvas-zoom-fit");
+	ACCEL("space",                   "<Actions>/canvasview/play");
+	ACCEL("space",                   "<Actions>/canvasview/pause");
 
 #undef ACCEL
 #undef ACCEL2
