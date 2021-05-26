@@ -1597,6 +1597,9 @@ CanvasView::init_menus()
 	action_group->add(
 		Gtk::Action::create("canvas-zoom-100", Gtk::StockID("gtk-zoom-100")),
 		sigc::mem_fun(*work_area, &WorkArea::zoom_norm) );
+	action_group->add(
+		Gtk::Action::create("canvas-zoom-fit-2", Gtk::StockID("gtk-zoom-fit")),
+		sigc::mem_fun(*work_area, &WorkArea::zoom_fit) );
 
 	{
 		Glib::RefPtr<Gtk::Action> action;
@@ -1626,7 +1629,13 @@ CanvasView::init_menus()
 		action=Gtk::Action::create("canvas-zoom-in", Gtk::Stock::ZOOM_IN);
 		action_group->add( action,sigc::mem_fun(*work_area, &WorkArea::zoom_in));
 
+		action=Gtk::Action::create("canvas-zoom-in-2", Gtk::Stock::ZOOM_IN);
+		action_group->add( action,sigc::mem_fun(*work_area, &WorkArea::zoom_in));
+
 		action=Gtk::Action::create("canvas-zoom-out", Gtk::Stock::ZOOM_OUT);
+		action_group->add( action, sigc::mem_fun(*work_area, &WorkArea::zoom_out) );
+
+		action=Gtk::Action::create("canvas-zoom-out-2", Gtk::Stock::ZOOM_OUT);
 		action_group->add( action, sigc::mem_fun(*work_area, &WorkArea::zoom_out) );
 
 		action=Gtk::Action::create("time-zoom-in", Gtk::Stock::ZOOM_IN, _("Zoom In on Timeline"));
