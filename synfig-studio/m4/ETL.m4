@@ -1,6 +1,5 @@
 # ETL M4 Macro
 # For GNU Autotools
-# $Id$
 #
 # By Robert B. Quattlebaum Jr. <darco@users.sf.net>
 #

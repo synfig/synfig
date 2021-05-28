@@ -1,5 +1,3 @@
-# $Id$
-
 PLUGIN_NAME = view-unhide-all-layers
 
 EXTRA_FILES = 
