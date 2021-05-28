@@ -96,9 +96,10 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Some layers have exported values from another file.
-Do you want to link to their original files or create a copy? Choose below for each value node.
+Do you want to create a copy of them or link them to their source files? Choose below for each value node.
 
-&lt;b&gt;Note&lt;/b&gt;: If you choose to keep an exported value linked to other file, then your current file become dependent on source (referenced) file. That means you will not be able to load this file if any source file is deleted, moved or renamed.</property>
+&lt;b&gt;Note&lt;/b&gt;: If you choose to keep an exported value linked to another file, then your current file will become dependent of the source (referenced) file.
+In other words, it means you will not be able to load this file if any source file is deleted, moved or renamed.</property>
                 <property name="use-markup">True</property>
                 <property name="wrap">True</property>
               </object>
@@ -174,11 +175,11 @@ Do you want to link to their original files or create a copy? Choose below for e
                 <child>
                   <object class="GtkTreeViewColumn" id="copy_column">
                     <property name="sizing">fixed</property>
+                    <property name="min-width">80</property>
                     <property name="title" translatable="yes">Copy?</property>
+                    <property name="alignment">0.5</property>
                     <child>
-                      <object class="GtkCellRendererToggle" id="copy_column_renderer">
-                        <property name="xalign">0</property>
-                      </object>
+                      <object class="GtkCellRendererToggle" id="copy_column_renderer"/>
                       <attributes>
                         <attribute name="active">9</attribute>
                       </attributes>
