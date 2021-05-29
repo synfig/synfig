@@ -35,6 +35,7 @@
   </object>
   <object class="GtkDialog" id="dialog_pasteoptions">
     <property name="can-focus">False</property>
+    <property name="title" translatable="yes">Synfig Studio - Pasting layers</property>
     <property name="modal">True</property>
     <property name="type-hint">dialog</property>
     <child internal-child="vbox">
