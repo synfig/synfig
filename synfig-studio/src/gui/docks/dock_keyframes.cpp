@@ -64,9 +64,6 @@ Dock_Keyframes::Dock_Keyframes():
 	Dock_CanvasSpecific("keyframes", _("Keyframes"),Gtk::StockID("synfig-keyframes")),
 	keyframe_action_manager(new KeyframeActionManager())
 {
-	// Make Keyframes toolbar small for space efficiency
-	get_style_context()->add_class("synfigstudio-efficient-workspace");
-
 	keyframe_action_manager->set_ui_manager(App::ui_manager());
 	keyframe_action_manager->signal_show_keyframe_properties().connect(
 		sigc::mem_fun(*this,&Dock_Keyframes::show_keyframe_properties) );
@@ -88,7 +85,9 @@ Dock_Keyframes::Dock_Keyframes():
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-keyframe")));
+	auto toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-keyframe"));
+	toolbar->get_style_context()->add_class("synfigstudio-efficient-workspace");
+	set_toolbar(*toolbar);
 }
 
 Dock_Keyframes::~Dock_Keyframes()

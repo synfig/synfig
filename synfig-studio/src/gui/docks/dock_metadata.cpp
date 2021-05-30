@@ -62,9 +62,6 @@ Dock_MetaData::Dock_MetaData():
 	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("synfig-meta_data")),
 	action_group(Gtk::ActionGroup::create("action_group_dock_meta_data"))
 {
-	// Make Canvas MetaData toolbar small for space efficiency
-	get_style_context()->add_class("synfigstudio-efficient-workspace");
-
 	action_group->add(Gtk::Action::create(
 		"action-MetadataAdd",
 		Gtk::StockID("gtk-add"),
@@ -105,7 +102,9 @@ Dock_MetaData::Dock_MetaData():
 
 	action_group->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-meta_data")));
+	auto toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-meta_data"));
+	toolbar->get_style_context()->add_class("synfigstudio-efficient-workspace");
+	set_toolbar(*toolbar);
 }
 
 Dock_MetaData::~Dock_MetaData()

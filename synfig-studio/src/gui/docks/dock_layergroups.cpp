@@ -64,9 +64,6 @@ Dock_LayerGroups::Dock_LayerGroups():
 	action_group_group_ops(Gtk::ActionGroup::create("action_group_dock_layergroups")),
 	group_action_manager(new GroupActionManager)
 {
-	// Make Sets toolbar buttons small for space efficiency
-	get_style_context()->add_class("synfigstudio-efficient-workspace");
-
 	group_action_manager->set_ui_manager(App::ui_manager());
 
 	action_group_group_ops->add( Gtk::Action::create("toolbar-groups", _("Set Ops")) );
@@ -88,7 +85,9 @@ Dock_LayerGroups::Dock_LayerGroups():
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-groups")));
+	auto toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-groups"));
+	toolbar->get_style_context()->add_class("synfigstudio-efficient-workspace");
+	set_toolbar(*toolbar);
 }
 
 Dock_LayerGroups::~Dock_LayerGroups()

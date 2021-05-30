@@ -66,9 +66,6 @@ Dock_Layers::Dock_Layers():
 	Dock_CanvasSpecific("layers",_("Layers"),Gtk::StockID("synfig-layer")),
 	layer_action_manager(new LayerActionManager)
 {
-	// Make Layers button small for space efficiency
-	get_style_context()->add_class("synfigstudio-efficient-workspace");
-
 	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());
 
 	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");
@@ -181,7 +178,9 @@ Dock_Layers::Dock_Layers():
 
 	action_group_new_layers->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer")));
+	auto toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer"));
+	toolbar->get_style_context()->add_class("synfigstudio-efficient-workspace");
+	set_toolbar(*toolbar);
 }
 
 
