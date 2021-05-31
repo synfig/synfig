@@ -547,6 +547,35 @@ Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
 void
 Dialog_Setup::on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode)
 {
+	Gtk::TreeIter problematic_iter;
+	treeview_accels->get_model()->foreach_iter([accel_key, accel_mods, &problematic_iter] (const Gtk::TreeModel::iterator& iter) -> bool {
+		guint row_accel_key;
+		Gdk::ModifierType row_accel_mods;
+		(*iter).get_value(SHORTCUT_COLUMN_ID_ACTION_KEY, row_accel_key);
+		(*iter).get_value(SHORTCUT_COLUMN_ID_ACTION_MODS, row_accel_mods);
+
+		if (accel_key == row_accel_key && accel_mods == row_accel_mods) {
+			problematic_iter = iter;
+			return true;
+		}
+
+		return false;
+	});
+
+	if (problematic_iter && treeview_accels->get_model()->get_path(problematic_iter).to_string() != path_string) {
+		std::string accel_path;
+		problematic_iter->get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+
+		std::string message = _("This shortcut is already set for\n\t%s\n\nAre you sure? It will unset for previously bound action.");
+		message = etl::strprintf(message.c_str(), accel_path.c_str());
+		bool accepted = App::dialog_message_2b(_("Shortcut In Use"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
+		if (!accepted)
+			return;
+
+		problematic_iter->set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, 0);
+		problematic_iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, Gdk::ModifierType(0));
+	}
+
 	auto iter = treeview_accels->get_model()->get_iter(path_string);
 	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel_key);
 	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel_mods);
