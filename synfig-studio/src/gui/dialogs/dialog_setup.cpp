@@ -542,6 +542,10 @@ Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
 	scroll->add(*treeview_accels);
 
 	pi.grid->attach(*scroll, 0, row++, 1, 1);
+
+	Gtk::Button *restore_default_accels = manage(new Gtk::Button(_("Restore default shortcuts")));
+	restore_default_accels->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_restore_default_accels_pressed));
+	pi.grid->attach(*restore_default_accels, 0, row++, 1, 1);
 }
 
 void
@@ -581,11 +585,42 @@ Dialog_Setup::on_accel_edited(const Glib::ustring& path_string, guint accel_key,
 	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel_mods);
 }
 
-void Dialog_Setup::on_accel_cleared(const Glib::ustring& path_string)
+void
+Dialog_Setup::on_accel_cleared(const Glib::ustring& path_string)
 {
 	auto iter = treeview_accels->get_model()->get_iter(path_string);
 	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, 0);
 	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, Gdk::ModifierType(0));
+}
+
+void
+Dialog_Setup::on_restore_default_accels_pressed()
+{
+	std::string message = _("Do you really want to restore the default shortcuts?");
+	bool accepted = App::dialog_message_2b(_("Restore Default Shortcuts"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
+	if (!accepted)
+		return;
+
+	auto accel_rows = treeview_accels->get_model()->children();
+	auto default_accel_map = App::get_default_accel_map();
+	for (const auto& section_row : accel_rows) {
+		for (auto& row : section_row.children()) {
+			Gtk::AccelKey accel;
+
+			std::string accel_path;
+			row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+
+			for (auto it = default_accel_map.begin(); it != default_accel_map.end(); ++it) {
+				if (it->second == accel_path) {
+					accel = Gtk::AccelKey(it->first);
+					break;
+				}
+			}
+
+			row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel.get_key());
+			row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel.get_mod());
+		}
+	}
 }
 
 void
@@ -1207,6 +1242,9 @@ Dialog_Setup::refresh()
 			if (Gtk::AccelMap::lookup_entry(accel_path, accel)) {
 				row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel.get_key());
 				row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel.get_mod());
+			} else {
+				row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, 0);
+				row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, Gdk::ModifierType(0));
 			}
 		}
 	}
