@@ -272,7 +272,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 
 	// Attach signals
-
 	drawing_area->signal_draw().connect(sigc::mem_fun(*this, &WorkArea::refresh));
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
@@ -292,9 +291,11 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_x").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_y").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_rendering").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin_past").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin_future").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("onion_skin_keyframes").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("sketch").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -369,6 +370,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
 	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
 	canvas_interface->set_meta_data("onion_skin_future", strprintf("%d", onion_skins[1]));
+	canvas_interface->set_meta_data("onion_skin_keyframes", get_onion_skin_keyframes() ? "1" : "0");
 	canvas_interface->set_meta_data("background_rendering", background_rendering ? "1" : "0");
 
 	s = get_background_size();
@@ -603,6 +605,13 @@ WorkArea::load_meta_data()
 			render_required = true;
 		}
 	}
+
+	data=canvas->get_meta_data("onion_skin_keyframes");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		set_onion_skin_keyframes(true);
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		set_onion_skin_keyframes(false);
+
 	// Update the canvas
 	if (onion_skin && render_required) queue_render();
 
@@ -774,6 +783,8 @@ WorkArea::set_onion_skin_keyframes(bool x)
 	if (onion_skin_keyframes == x)
 		return;
 	onion_skin_keyframes = x;
+	save_meta_data();
+	queue_draw();
 }
 
 void

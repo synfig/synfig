@@ -1256,6 +1256,7 @@ CanvasView::create_top_toolbar()
 
 	{ // Past onion skin spin button
 		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
+		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		past_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &CanvasView::set_onion_skins));
 		past_onion_spin->set_tooltip_text(_("Past Onion Skins"));
@@ -1271,6 +1272,7 @@ CanvasView::create_top_toolbar()
 
 	{ // Future onion skin spin button
 		future_onion_spin=Gtk::manage(new class Gtk::SpinButton(future_onion_adjustment_));
+		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
 		future_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &CanvasView::set_onion_skins));
 		future_onion_spin->set_tooltip_text(_("Future Onion Skins"));
@@ -1290,7 +1292,7 @@ CanvasView::create_top_toolbar()
 
 		onion_skin_keyframes = Gtk::manage(new class Gtk::ToggleToolButton());
 		// Enable Onion Skin on Keyframes by default
-		onion_skin_keyframes->set_active(true);
+		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 		onion_skin_keyframes->set_icon_widget(*icon);
 		onion_skin_keyframes->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
@@ -3479,6 +3481,7 @@ CanvasView::on_meta_data_changed()
 	toggling_show_guides=true;
 	toggling_snap_guides=true;
 	toggling_onion_skin=true;
+	toggling_onion_skin_keyframes=true;
 	toggling_background_rendering=true;
 	try
 	{
@@ -3495,6 +3498,7 @@ CanvasView::on_meta_data_changed()
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-snap"));
 		action->set_active((bool)(work_area->get_guide_snap()));
 		// Update the toggle buttons
+		background_rendering_button->set_active(work_area->get_background_rendering());
 		onion_skin->set_active(work_area->get_onion_skin());
 		snap_grid->set_active(work_area->get_grid_snap());
 		show_grid->set_active(work_area->grid_status());
@@ -3503,6 +3507,7 @@ CanvasView::on_meta_data_changed()
 		// Update the onion skin spins
 		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
+		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 	}
 	catch(...)
 	{
@@ -3511,6 +3516,7 @@ CanvasView::on_meta_data_changed()
 		toggling_show_guides=false;
 		toggling_snap_guides=false;
 		toggling_onion_skin=false;
+		toggling_onion_skin_keyframes=false;
 		toggling_background_rendering=false;
 	}
 	toggling_show_grid=false;
@@ -3518,6 +3524,7 @@ CanvasView::on_meta_data_changed()
 	toggling_show_guides=false;
 	toggling_snap_guides=false;
 	toggling_onion_skin=false;
+	toggling_onion_skin_keyframes=false;
 	toggling_background_rendering=false;
 }
 
