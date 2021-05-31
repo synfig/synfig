@@ -1302,11 +1302,11 @@ DEFINE_ACTION("keyframe-properties", _("Properties"));
 	}
 }
 
-const std::multimap<const char*, const char*>&
+const std::map<const char*, const char*>&
 App::get_default_accel_map()
 {
 	// Add default keyboard accelerators
-	static const std::multimap<const char*, const char*> default_accel_map = {
+	static const std::map<const char*, const char*> default_accel_map = {
 		// Toolbox
 		{"s",             "<Actions>/action_group_state_manager/state-normal"},
 		{"m",             "<Actions>/action_group_state_manager/state-smooth_move"},
