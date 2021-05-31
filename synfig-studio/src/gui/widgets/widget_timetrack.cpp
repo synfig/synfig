@@ -352,6 +352,7 @@ bool Widget_Timetrack::on_event(GdkEvent* event)
 			return true;
 		switch (event->key.keyval) {
 		case GDK_KEY_Delete:
+		case GDK_KEY_KP_Delete:
 			delete_selected();
 			return true;
 		case GDK_KEY_n:

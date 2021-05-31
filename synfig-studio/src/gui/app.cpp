@@ -1319,7 +1319,6 @@ App::get_default_accel_map()
 		{"<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo"},
 #endif
 		{"Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
-    	{"KP_Delete",               "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
 		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
