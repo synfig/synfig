@@ -603,6 +603,7 @@ Widget_Curves::on_event(GdkEvent *event)
 			return true;
 		switch (event->key.keyval) {
 		case GDK_KEY_Delete:
+		case GDK_KEY_KP_Delete:
 			delete_selected();
 			return true;
 		default:
