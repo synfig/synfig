@@ -1338,7 +1338,6 @@ App::get_default_accel_map()
 		{"F8",                      "<Actions>/canvasview/properties"},
 		{"F12",                     "<Actions>/canvasview/options"},
 		{"<control>i",              "<Actions>/canvasview/import"},
-		//{"escape",                  "<Actions>/canvasview/stop")},
 		{"<Control>g",              "<Actions>/canvasview/toggle-grid-show"},
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
 		{"<Control>n",              "<Actions>/mainwindow/new"},
@@ -1376,7 +1375,6 @@ App::get_default_accel_map()
 		{"<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo"},
 #endif
 		{"Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
-    	{"KP_Delete",               "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
 		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
@@ -1399,7 +1397,7 @@ App::get_default_accel_map()
 		{"<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2"},
 		{"<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2"},
 		{"space",                   "<Actions>/canvasview/play"},
-		{"space",                   "<Actions>/canvasview/pause"},
+		{"<Shift>space",            "<Actions>/canvasview/pause"},
 		{"<Control>space",          "<Actions>/canvasview/animate"},
 	};
 
