@@ -74,7 +74,8 @@ bool LayerTree::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch (event->keyval) {
-		case GDK_KEY_Delete: {
+		case GDK_KEY_Delete:
+		case GDK_KEY_KP_Delete: {
 			LayerList layers = get_selected_layers();
 
 			if (layers.size() == 0) return true; // nothing to do
