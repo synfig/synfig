@@ -109,7 +109,6 @@ private:
 	void sync()const;
 	String version;
 	void draw_particles(Surface *surface, const RendDesc &renddesc)const;
-	void draw_particles(cairo_t *cr)const;
 
 public:
 
