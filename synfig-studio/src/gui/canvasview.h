@@ -225,7 +225,7 @@ public:
 	void set_guides_snap_toggle(bool flag) { guides_snap_toggle->set_active(flag); }
 	void set_guides_show_toggle(bool flag) { guides_show_toggle->set_active(flag); }
 	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
-
+	void set_onion_skin_keyframes_toggle(bool flag) { onion_skin_keyframes_toggle->set_active(flag); }
 	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
 
 	void grab_focus();
@@ -343,7 +343,7 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
-
+	Glib::RefPtr<Gtk::ToggleAction> onion_skin_keyframes_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
 
 	Gtk::RadioButtonGroup low_res_pixel_size_group;

@@ -152,6 +152,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	dirty_trap_count(0),
 	dirty_trap_queued(0),
 	onion_skin(false),
+	onion_skin_keyframes(true),
 	background_rendering(false),
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
@@ -783,8 +784,9 @@ WorkArea::set_onion_skin_keyframes(bool x)
 	if (onion_skin_keyframes == x)
 		return;
 	onion_skin_keyframes = x;
+	if (onion_skin)
+		queue_draw();
 	save_meta_data();
-	queue_draw();
 }
 
 void

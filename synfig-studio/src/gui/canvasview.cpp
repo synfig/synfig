@@ -1291,7 +1291,6 @@ CanvasView::create_top_toolbar()
 		icon->show();
 
 		onion_skin_keyframes = Gtk::manage(new class Gtk::ToggleToolButton());
-		// Enable Onion Skin on Keyframes by default
 		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 		onion_skin_keyframes->set_icon_widget(*icon);
 		onion_skin_keyframes->signal_toggled().connect(
@@ -1612,6 +1611,10 @@ CanvasView::init_menus()
 		onion_skin_toggle = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
 		onion_skin_toggle->set_active(work_area->get_onion_skin());
 		action_group->add(onion_skin_toggle, sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
+
+		onion_skin_keyframes_toggle = Gtk::ToggleAction::create("toggle-onion-skin-keyframes", _("Onion Skin on Keyframes"));
+		onion_skin_keyframes_toggle->set_active(work_area->get_onion_skin_keyframes());
+		action_group->add(onion_skin_keyframes_toggle, sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
 	}
 
 	action_group->add(
@@ -2742,6 +2745,7 @@ CanvasView::toggle_onion_skin_keyframes()
 		return;
 	toggling_onion_skin_keyframes=true;
 	work_area->set_onion_skin_keyframes(!work_area->get_onion_skin_keyframes());
+	set_onion_skin_keyframes_toggle(work_area->get_onion_skin_keyframes());
 	onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 	toggling_onion_skin_keyframes=false;
 }
@@ -3487,8 +3491,12 @@ CanvasView::on_meta_data_changed()
 	{
 		// Update the toggle ducks actions
 		Glib::RefPtr<Gtk::ToggleAction> action;
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-background-rendering"));
+		action->set_active((bool)(work_area->get_background_rendering()));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
 		action->set_active((bool)(work_area->get_onion_skin()));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin-keyframes"));
+		action->set_active((bool)(work_area->get_onion_skin_keyframes()));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-show"));
 		action->set_active((bool)(work_area->grid_status()));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-snap"));
@@ -3500,6 +3508,7 @@ CanvasView::on_meta_data_changed()
 		// Update the toggle buttons
 		background_rendering_button->set_active(work_area->get_background_rendering());
 		onion_skin->set_active(work_area->get_onion_skin());
+		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 		snap_grid->set_active(work_area->get_grid_snap());
 		show_grid->set_active(work_area->grid_status());
 		snap_guides->set_active(work_area->get_guide_snap());
@@ -3507,7 +3516,6 @@ CanvasView::on_meta_data_changed()
 		// Update the onion skin spins
 		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
-		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 	}
 	catch(...)
 	{
