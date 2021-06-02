@@ -330,6 +330,7 @@ void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
+	tparam.sequence_separator = App::sequence_separator;
 	
 	if(!check_target_destination())
 	{
@@ -451,7 +452,7 @@ RenderSettings::check_target_destination()
 					n_frame++)
 			{
 				if(Glib::file_test(filename_sans_extension(filename) +
-					tparam.sequence_separator + 
+					tparam.sequence_separator +
 					etl::strprintf("%04d", n_frame) +
 					extension, Glib::FILE_TEST_EXISTS))
 					n_frames_overwrite++;
