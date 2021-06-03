@@ -277,6 +277,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 		Glib::ustring nodename = node->get_name();
 		if (nodename.compare("g")==0 || nodename.compare("path")==0 || nodename.compare("polygon")==0 || nodename.compare("rect")==0){} else return;
 
+		enum FillType {FILL_TYPE_NONE, FILL_TYPE_SIMPLE, FILL_TYPE_GRADIENT};
+
 		//load sub-attributes
 		Glib::ustring id			=nodeElement->get_attribute_value("id");
 		Glib::ustring transform	=nodeElement->get_attribute_value("transform");
@@ -308,22 +310,22 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 		String opacity			=loadAttribute("opacity",obj_style,parent_style,nodeElement,"1");
 
 		//Fill
-		int typeFill=0; //nothing
+		FillType typeFill = FILL_TYPE_NONE;
 
 		if(fill.compare("none")!=0){
-			typeFill=1; //simple
+			typeFill = FILL_TYPE_SIMPLE;
 		}
-		if(typeFill==1 && fill.compare(0,3,"url")==0){
-			typeFill=2;	//gradient
+		if(typeFill==FILL_TYPE_SIMPLE && fill.compare(0,3,"url")==0){
+			typeFill = FILL_TYPE_GRADIENT;
 		}
 		//Stroke
-		int typeStroke=0;//nothing
+		int typeStroke = FILL_TYPE_NONE;
 
 		if(stroke.compare("none")!=0){
-			typeStroke=1; //simple
+			typeStroke = FILL_TYPE_SIMPLE;
 		}
-		if(typeStroke==1 && stroke.compare(0,3,"url")==0){
-			typeStroke=2;	//gradient
+		if(typeStroke==FILL_TYPE_SIMPLE && stroke.compare(0,3,"url")==0){
+			typeStroke = FILL_TYPE_GRADIENT;
 		}
 		
 		xmlpp::Element* child_layer = root;
@@ -331,18 +333,18 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 		xmlpp::Element* child_stroke;
 
 		//make simple fills
-		if(nodename.compare("rect")==0 && typeFill!=0){
+		if(nodename.compare("rect")==0 && typeFill!=FILL_TYPE_NONE){
 			if (!mtx.is_identity())
 				child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 			child_fill=child_layer;
 			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
-			if(typeFill==2){
+			if(typeFill == FILL_TYPE_GRADIENT){
 				build_fill (child_fill,fill,SVGMatrix::indentity);
 			}
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 			return;
 		}
-		if ((!SVG_RESOLVE_BLINE) || typeFill==2 || typeStroke==2)
+		if ((!SVG_RESOLVE_BLINE) || typeFill == FILL_TYPE_GRADIENT || typeStroke == FILL_TYPE_GRADIENT)
 			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 		child_fill=child_layer;
 		child_stroke=child_layer;
@@ -367,8 +369,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			}
 		}
 		
-		if(typeFill!=0){//region layer
-			/*if(typeFill==2){
+		if(typeFill!=FILL_TYPE_NONE){//region layer
+			/*if(typeFill==FILL_TYPE_GRADIENT){
 				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
 			}*/
 			for (const BLine& bline : k) {
@@ -392,15 +394,15 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				build_bline(child_region->add_child("param"), bline.points, bline.loop, bline.bline_id);
 			}
 		}
-		if(typeFill==2){ //gradient in onto mode (fill)
+		if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
 			if (SVG_RESOLVE_BLINE)
 				build_fill(child_fill,fill,mtx);
 			else
 				build_fill(child_fill,fill,SVGMatrix::indentity);
 		}
 
-		if(typeStroke!=0){//outline layer
-			if(typeStroke==2){
+		if(typeStroke!=FILL_TYPE_NONE){//outline layer
+			if(typeStroke==FILL_TYPE_GRADIENT){
 				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
 			}
 			for (const BLine& bline : k) {
@@ -439,7 +441,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
 			}
 
-			if(typeStroke==2){ //gradient in onto mode (stroke)
+			if(typeStroke==FILL_TYPE_GRADIENT){ //gradient in onto mode (stroke)
 				if (SVG_RESOLVE_BLINE)
 					build_fill(child_stroke,stroke,mtx);
 				else
