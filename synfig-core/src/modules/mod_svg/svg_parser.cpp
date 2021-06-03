@@ -1716,14 +1716,14 @@ loadAttribute(const String& name, const String& path_style, const String& master
 	bool found=false;
 	if(!path_style.empty())
 		found=extractSubAttribute(path_style,name,value);
-	if(!found && !master_style.empty())
-		found=extractSubAttribute(master_style,name,value);
-	if(!found){
-		if(elem)
-			value=elem->get_attribute_value(name);
-		if(value.empty())
-			value=defaultVal;
+	if(!found && elem) {
+		value=elem->get_attribute_value(name);
+		found = !value.empty();
 	}
+	if (!found && !master_style.empty())
+		found=extractSubAttribute(master_style,name,value);
+	if(!found)
+		value=defaultVal;
 	return value;
 }
 
