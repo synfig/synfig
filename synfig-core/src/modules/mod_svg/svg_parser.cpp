@@ -409,7 +409,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				xmlpp::Element *child_outline=child_stroke->add_child("layer");
 				child_outline->set_attribute("type","outline");
 				child_outline->set_attribute("active","true");
-				child_outline->set_attribute("version","0.2");
+				child_outline->set_attribute("version","0.3");
 				child_outline->set_attribute("desc",id);
 				build_param (child_outline->add_child("param"),"z_depth","real","0.0000000000");
 				build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
@@ -437,7 +437,6 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 					build_param (child_outline->add_child("param"),"round_tip[0]","bool","true");
 					build_param (child_outline->add_child("param"),"round_tip[1]","bool","true");
 				}
-				build_param (child_outline->add_child("param"),"loopyness","real","1.0000000000");
 				build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
 			}
 
