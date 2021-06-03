@@ -332,8 +332,11 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 		xmlpp::Element* child_fill;
 		xmlpp::Element* child_stroke;
 
+		bool fill_bline_region = true;
+
 		//make simple fills
-		if(nodename.compare("rect")==0 && typeFill!=FILL_TYPE_NONE){
+		if(nodename.compare("rect")==0 && typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE){
+			// if it has stroke, render as a region, instead of standard shape, to be able to link to outline
 			if (!mtx.is_identity())
 				child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 			child_fill=child_layer;
@@ -342,11 +345,14 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				build_fill (child_fill,fill,SVGMatrix::indentity);
 			}
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
-			return;
+			fill_bline_region = false;
 		}
-		if ((!SVG_RESOLVE_BLINE) || typeFill == FILL_TYPE_GRADIENT || typeStroke == FILL_TYPE_GRADIENT)
-			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
-		child_fill=child_layer;
+
+		if (fill_bline_region) {
+			if ((!SVG_RESOLVE_BLINE) || typeFill == FILL_TYPE_GRADIENT || typeStroke == FILL_TYPE_GRADIENT)
+				child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+			child_fill=child_layer;
+		}
 		child_stroke=child_layer;
 
 		//=======================================================================
@@ -360,45 +366,51 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				k = parser_path_d(nodeElement->get_attribute_value("d"),mtx);
 			} else if(nodename.compare("polygon")==0){
 				k = parser_path_polygon(nodeElement->get_attribute_value("points"),mtx);
+			} else if(nodename.compare("rect")==0){
+				k = parser_path_rect(nodeElement,mtx);
 			}
 		} else {
 			if(nodename.compare("path")==0){
 				k = parser_path_d(nodeElement->get_attribute_value("d"),SVGMatrix::indentity);
 			} else if(nodename.compare("polygon")==0){
 				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::indentity);
+			} else if(nodename.compare("rect")==0){
+				k = parser_path_rect(nodeElement,SVGMatrix::indentity);
 			}
 		}
 		
-		if(typeFill!=FILL_TYPE_NONE){//region layer
-			/*if(typeFill==FILL_TYPE_GRADIENT){
+		if (fill_bline_region) {
+			if(typeFill!=FILL_TYPE_NONE){//region layer
+				/*if(typeFill==FILL_TYPE_GRADIENT){
 				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
 			}*/
-			for (const BLine& bline : k) {
-				xmlpp::Element *child_region=child_fill->add_child("layer");
-				child_region->set_attribute("type","region");
-				child_region->set_attribute("active","true");
-				child_region->set_attribute("version","0.1");
-				child_region->set_attribute("desc",id);
-				build_param (child_region->add_child("param"),"z_depth","real","0.0000000000");
-				build_param (child_region->add_child("param"),"amount","real","1.0000000000");
-				build_param (child_region->add_child("param"),"blend_method","integer","0");
-				build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
-				build_vector (child_region->add_child("param"),"offset",0,0, bline.offset_id );
-				build_param (child_region->add_child("param"),"invert","bool","false");
-				build_param (child_region->add_child("param"),"antialias","bool","true");
-				build_param (child_region->add_child("param"),"feather","real","0.0000000000");
-				build_param (child_region->add_child("param"),"blurtype","integer","1");
-				if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
-				else build_param (child_region->add_child("param"),"winding_style","integer","0");
+				for (const BLine& bline : k) {
+					xmlpp::Element *child_region=child_fill->add_child("layer");
+					child_region->set_attribute("type","region");
+					child_region->set_attribute("active","true");
+					child_region->set_attribute("version","0.1");
+					child_region->set_attribute("desc",id);
+					build_param (child_region->add_child("param"),"z_depth","real","0.0000000000");
+					build_param (child_region->add_child("param"),"amount","real","1.0000000000");
+					build_param (child_region->add_child("param"),"blend_method","integer","0");
+					build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
+					build_vector (child_region->add_child("param"),"offset",0,0, bline.offset_id );
+					build_param (child_region->add_child("param"),"invert","bool","false");
+					build_param (child_region->add_child("param"),"antialias","bool","true");
+					build_param (child_region->add_child("param"),"feather","real","0.0000000000");
+					build_param (child_region->add_child("param"),"blurtype","integer","1");
+					if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
+					else build_param (child_region->add_child("param"),"winding_style","integer","0");
 
-				build_bline(child_region->add_child("param"), bline.points, bline.loop, bline.bline_id);
+					build_bline(child_region->add_child("param"), bline.points, bline.loop, bline.bline_id);
+				}
 			}
-		}
-		if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
-			if (SVG_RESOLVE_BLINE)
-				build_fill(child_fill,fill,mtx);
-			else
-				build_fill(child_fill,fill,SVGMatrix::indentity);
+			if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
+				if (SVG_RESOLVE_BLINE)
+					build_fill(child_fill,fill,mtx);
+				else
+					build_fill(child_fill,fill,SVGMatrix::indentity);
+			}
 		}
 
 		if(typeStroke!=FILL_TYPE_NONE){//outline layer
@@ -450,10 +462,12 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			}	
 		}
 
-		if (SVG_RESOLVE_BLINE)
-			parser_effects(nodeElement,child_layer,parent_style,SVGMatrix::indentity);
-		else
-			parser_effects(nodeElement,child_layer,parent_style,mtx);
+		if (fill_bline_region) {
+			if (SVG_RESOLVE_BLINE)
+				parser_effects(nodeElement,child_layer,parent_style,SVGMatrix::indentity);
+			else
+				parser_effects(nodeElement,child_layer,parent_style,mtx);
+		}
 	}
 }
 
@@ -897,6 +911,29 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 	}
 	if(!k1.empty()) {
 		k.push_front(BLine(k1, false)); //last element
+	}
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_path_rect(const xmlpp::Element* nodeElement, const SVGMatrix& mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+	try {
+		double rect_x		= std::stod(nodeElement->get_attribute_value("x"));
+		double rect_y		= std::stod(nodeElement->get_attribute_value("y"));
+		double rect_width	= std::stod(nodeElement->get_attribute_value("width"));
+		double rect_height	= std::stod(nodeElement->get_attribute_value("height"));
+
+		std::string polygon_points;
+		polygon_points = etl::strprintf("%lf %lf %lf %lf %lf %lf %lf %lf",
+										rect_x, rect_y, rect_x, rect_y + rect_height,
+										rect_x + rect_width, rect_y + rect_height, rect_x + rect_width, rect_y);
+		k = parser_path_polygon(polygon_points,mtx);
+	} catch(...) {
+		synfig::error("SVG Parser: Invalid coordinate value: it should be a real value!");
 	}
 	return k;
 }
