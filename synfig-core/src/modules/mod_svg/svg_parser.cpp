@@ -1896,11 +1896,11 @@ getDimension(const String& ac, bool use_90_ppi)
 	const int ppi = use_90_ppi ? 90 : 96;
 	auto length=ac.size();
 	double af=0;
-	if(isdigit(ac.at(length-1))){
-		af=atof(ac.c_str());
-	}else if(ac.at(length-1)=='%'){
+	if (isdigit(ac[length-1]) || ac[length-1] == '.') {
+		af = atof(ac.c_str());
+	} else if(ac[length-1]=='%') {
 		return 1024;
-	}else{
+	} else {
 		String unit = ac.substr(length-2,length);
 		String nmc = ac.substr(0,length-2);
 		af = atof(nmc.c_str());
