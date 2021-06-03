@@ -38,6 +38,7 @@
 
 #include <synfig/general.h>
 #include <synfig/loadcanvas.h>
+#include <synfig/localization.h>
 #include <synfig/string_helper.h>
 #include <unordered_map>
 
@@ -245,7 +246,7 @@ Svg_parser::parser_canvas (const xmlpp::Node* node){
 		nodeRoot->set_attribute("end-time","5s");
 		nodeRoot->set_attribute("bgcolor","0.500000 0.500000 0.500000 1.000000");
 		if(!id_name.empty()) nodeRoot->add_child("name")->set_child_text(id_name);
-		else nodeRoot->add_child("name")->set_child_text("Synfig Animation 1");
+		else nodeRoot->add_child("name")->set_child_text(_("Synfig Animation 1"));
 	}
 	set_canvas=1;
 }
@@ -468,7 +469,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 		root->set_attribute("active","true");
 		root->set_attribute("version","0.1");
 		if(!label.empty())	root->set_attribute("desc",label);
-		else		root->set_attribute("desc","Inline Canvas");
+		else root->set_attribute("desc",_("Inline Canvas"));
 
 		build_real(root->add_child("param"),"z_depth",0.0);
 		build_real(root->add_child("param"),"amount",1.0);
