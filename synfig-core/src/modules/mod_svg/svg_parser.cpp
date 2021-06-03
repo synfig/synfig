@@ -71,7 +71,7 @@ static int getGreen(const String& hex);
 static int getBlue(const String& hex);
 static int hextodec(const std::string& hex);
 static int getColor(const String& name, int position);
-static float getDimension(const String& ac);
+static double getDimension(const String& ac);
 static float getRadian(float sexa);
 //string functions
 static void removeIntoS(String& input);
@@ -125,9 +125,11 @@ Svg_parser::load_svg_canvas(std::string _filepath,String &errors, String &warnin
 Svg_parser::Svg_parser(const Gamma &gamma):
 	gamma(gamma),
 	nodeRoot(NULL),
+	width(0),
+	height(0),
 	uid(0),
 	kux(60),
-	set_canvas(0), //we must run parser_canvas method
+	set_canvas(false), //we must run parser_canvas method
 	ox(0),
 	oy(0)
 {
@@ -181,7 +183,7 @@ Svg_parser::parser_node(const xmlpp::Node* node){
 		}else if(nodename.compare("defs")==0){
 			parser_defs (node);
 		}else{
-			if(set_canvas==0) parser_canvas (node);
+			if(!set_canvas) parser_canvas(node);
 			parser_graphics(node,nodeRoot,"",NULL);
 			if(nodename.compare("g")==0) return;
 		}
@@ -198,48 +200,54 @@ Svg_parser::parser_node(const xmlpp::Node* node){
 void
 Svg_parser::parser_svg (const xmlpp::Node* node){
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		width	=etl::strprintf("%f",getDimension(nodeElement->get_attribute_value("width")));
-		height	=etl::strprintf("%f",getDimension(nodeElement->get_attribute_value("height")));
+		width = getDimension(nodeElement->get_attribute_value("width"));
+		height = getDimension(nodeElement->get_attribute_value("height"));
 		docname=nodeElement->get_attribute_value("docname","");
 	}
 }
+
 void
 Svg_parser::parser_canvas (const xmlpp::Node* node){
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		if(width.compare("")==0){
-			width=nodeElement->get_attribute_value("width","");
+
+		if(approximate_zero(width)){
+			try {
+				width=std::stod(nodeElement->get_attribute_value("width",""));
+			} catch (...)
+			{}
 		}
-		if(height.compare("")==0){
-			height=nodeElement->get_attribute_value("height","");
+		if(approximate_zero(height)){
+			try {
+				height=std::stod(nodeElement->get_attribute_value("height",""));
+			} catch (...)
+			{}
 		}
-		if(width.compare("")==0 && height.compare("")!=0){
+		if(approximate_zero(width) && approximate_not_zero(height)){
 			width=height;
 		}
-		if(width.compare("")!=0 && height.compare("")==0){
+		if(approximate_not_zero(width) && approximate_zero(height)){
 			height=width;
 		}
-		if(height.compare("")==0 && width.compare("")==0){
-			width="1024";
-			height="768";
+		if(approximate_zero(height) && approximate_zero(width)){
+			width=1024;
+			height=768;
 		}
 		//build
 		nodeRoot=document.create_root_node("canvas", "", "");
 		nodeRoot->set_attribute("version","0.5");
-		nodeRoot->set_attribute("width",width);
-		nodeRoot->set_attribute("height",height);
+		nodeRoot->set_attribute("width",etl::strprintf("%lf", width));
+		nodeRoot->set_attribute("height",etl::strprintf("%lf", height));
 		nodeRoot->set_attribute("xres","2834.645752");
 		nodeRoot->set_attribute("yres","2834.645752");
-		float view_x;
-		float view_y;
-		view_x=atof(width.c_str())/kux;
-		view_y=atof(height.c_str())/kux;
-		view_x=view_x/2.0;
-		view_y=view_y/2.0;
+		double view_x = width/kux;
+		double view_y = height/kux;
+		view_x /= 2.0;
+		view_y /= 2.0;
 		char attr_view_box[60];
 		sprintf(attr_view_box,"%f %f %f %f",-1.0*view_x,view_y,view_x,-1.0*view_y);
 		nodeRoot->set_attribute("view-box",attr_view_box);
-		ox=atof(width.c_str() )/2;
-		oy=atof(height.c_str())/2;
+		ox = width/2;
+		oy = height/2;
 		nodeRoot->set_attribute("antialias","1");
 		nodeRoot->set_attribute("fps","24.000");
 		nodeRoot->set_attribute("begin-time","0f");
@@ -248,7 +256,7 @@ Svg_parser::parser_canvas (const xmlpp::Node* node){
 		if(!id_name.empty()) nodeRoot->add_child("name")->set_child_text(id_name);
 		else nodeRoot->add_child("name")->set_child_text(_("Synfig Animation 1"));
 	}
-	set_canvas=1;
+	set_canvas=true;
 }
 
 void
@@ -1483,7 +1491,7 @@ Svg_parser::coor2vect(float *x,float *y){
 	float sx, sy;
 	sx=*x;
 	sy=*y;
-	sy= atof(height.c_str())-sy;
+	sy= height-sy;
 	sx= sx - ox;
 	sy= sy - oy;
 	sx= sx / kux;
@@ -1924,14 +1932,14 @@ hextodec(const std::string& hex)
 	return result;
 }
 
-static float
+static double
 getDimension(const String& ac)
 {
 	if(ac.empty()){
 		return 0;
 	}
-	int length=ac.size();
-	float af=0;
+	auto length=ac.size();
+	double af=0;
 	if(isdigit(ac.at(length-1))){
 		af=atof(ac.data());
 	}else if(ac.at(length-1)=='%'){

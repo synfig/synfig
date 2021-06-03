@@ -107,12 +107,13 @@ private:
 		xmlpp::DomParser parser;
 		xmlpp::Document document;
 		xmlpp::Element* nodeRoot;//output
-		Glib::ustring width;
-		Glib::ustring height;
+		double width;
+		double height;
 		Glib::ustring docname;
 		int uid;
-		int kux,set_canvas;
-		float ox,oy;
+		int kux;
+		bool set_canvas;
+		double ox,oy;
 		//urls
 		std::list<LinearGradient*> lg;
 		std::list<RadialGradient*> rg;
