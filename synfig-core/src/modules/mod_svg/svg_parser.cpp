@@ -372,6 +372,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			k = parser_path_d(nodeElement->get_attribute_value("d"), bline_matrix);
 		else if(nodename.compare("polygon")==0)
 			k = parser_path_polygon(nodeElement->get_attribute_value("points"), bline_matrix);
+		else if(nodename.compare("rect")==0)
+			k = parser_path_rect(nodeElement, style, mtx);
 
 		if (k.empty())
 			return;
@@ -435,6 +437,32 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			parser_effects(nodeElement,child_layer,style,SVGMatrix::identity);
 		else
 			parser_effects(nodeElement,child_layer,style,mtx);
+	}
+}
+
+void
+Svg_parser::parser_rxry_property(const Style& style, double width_reference, double height_reference, double &rx, double &ry)
+{
+	rx = 0.;
+	ry = 0.;
+
+	String rx_str = style.get("rx", "auto");
+	String ry_str = style.get("ry", "auto");
+
+	if (rx_str != "auto" || ry_str != "auto") {
+
+		if (rx_str == "auto")
+			rx_str = ry_str;
+		else if (ry_str == "auto")
+			ry_str = rx_str;
+
+		rx = std::stod(rx_str);
+		ry = std::stod(ry_str);
+
+		if (rx_str.back() == '%')
+			rx *= 0.01 * width_reference;
+		if (ry_str.back() == '%')
+			ry *= 0.01 * height_reference;
 	}
 }
 
@@ -1074,6 +1102,60 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 	}
 	if(!k1.empty()) {
 		k.push_front(BLine(k1, false)); //last element
+	}
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_path_rect(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+	try {
+		double rect_x      = style.compute("x", "0");
+		double rect_y      = style.compute("y", "0");
+		double rect_width  = style.compute("width", "0");
+		double rect_height = style.compute("height", "0");
+
+		if (approximate_zero(rect_width) || approximate_zero(rect_height))
+			return k;
+
+		if (rect_width < 0 || rect_height < 0) {
+			synfig::error("SVG Parser: Invalid width or height value for <rect>: it cannot be negative!");
+			return k;
+		}
+
+		double rect_rx = 0.;
+		double rect_ry = 0.;
+		parser_rxry_property(style, rect_width, rect_height, rect_rx, rect_ry);
+		{
+			if (rect_rx > rect_width/2)
+				rect_rx = rect_width/2;
+			if (rect_ry > rect_height/2)
+				rect_ry = rect_height/2;
+		}
+
+		std::string path;
+		if (rect_rx > 0 && rect_ry > 0)
+			path = etl::strprintf("M %lf %lf H %lf A %lf %lf 0 0,1 %lf %lf V %lf A %lf %lf 0 0,1 %lf %lf H %lf "
+												  "A %lf %lf 0 0,1 %lf %lf V %lf A %lf %lf 0 0,1 %lf %lf z",
+								  rect_x + rect_rx, rect_y, rect_x + rect_width - rect_rx,
+								  rect_rx, rect_ry, rect_x + rect_width, rect_y + rect_ry,
+								  rect_y + rect_height - rect_ry,
+								  rect_rx, rect_ry, rect_x + rect_width - rect_rx, rect_y + rect_height,
+								  rect_x + rect_rx,
+								  rect_rx, rect_ry, rect_x, rect_y + rect_height - rect_ry,
+								  rect_y + rect_ry,
+								  rect_rx, rect_ry, rect_x + rect_rx, rect_y
+								  );
+		else
+			path = etl::strprintf("M %lf %lf h %lf v %lf h %lf z",
+								  rect_x, rect_y, rect_width, rect_height, -rect_width
+								  );
+		k = parser_path_d(path,mtx);
+	} catch(...) {
+		synfig::error("SVG Parser: Invalid coordinate value: it should be a real value!");
 	}
 	return k;
 }
