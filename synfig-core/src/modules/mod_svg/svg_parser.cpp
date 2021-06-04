@@ -461,7 +461,8 @@ void
 Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		Glib::ustring label		=nodeElement->get_attribute_value("label");
+		Glib::ustring label		=nodeElement->get_attribute_value("label", "inkscape");
+		Glib::ustring id		=nodeElement->get_attribute_value("id");
 		Glib::ustring style		=nodeElement->get_attribute_value("style");
 		Glib::ustring fill		=nodeElement->get_attribute_value("fill");
 
@@ -478,8 +479,8 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String p
 		root->set_attribute("type","group");
 		root->set_attribute("active","true");
 		root->set_attribute("version","0.1");
-		if(!label.empty())	root->set_attribute("desc",label);
-		else root->set_attribute("desc",_("Inline Canvas"));
+		if(label.empty()) label = !id.empty() ? id : _("Inline Canvas");
+		root->set_attribute("desc", label);
 
 		build_real(root->add_child("param"),"z_depth",0.0);
 		build_real(root->add_child("param"),"amount",1.0);
