@@ -61,7 +61,6 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ListImporter, false);
 
 /* === M E T H O D S ======================================================= */
 
-//TODO factorize code with cairolistimporter.cpp
 ListImporter::ListImporter(const FileSystem::Identifier &identifier):
 Importer(identifier)
 {

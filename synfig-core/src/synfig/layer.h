@@ -36,7 +36,6 @@
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 
-#include "cairo.h"
 #include "guid.h"
 #include "interpolation.h"
 #include "node.h"

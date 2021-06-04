@@ -65,7 +65,6 @@ private:
 	void compile();
 	Color color_func(const Point &x, Real supersample=0)const;
 	Real calc_supersample(const Point &x, Real pw, Real ph)const;
-	bool compile_gradient(cairo_pattern_t* pattern, Gradient gradient)const;
 
 public:
 

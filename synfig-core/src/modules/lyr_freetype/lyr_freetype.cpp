@@ -39,8 +39,6 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
-#include <pango/pangocairo.h>
-
 #include "lyr_freetype.h"
 
 #include <synfig/localization.h>

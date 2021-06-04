@@ -213,9 +213,6 @@ Color::blend(Color a, Color b, float amount, Color::BlendMethod type)
 
 	const static blendfunc vtable[BLEND_END]=
 	{
-        // WARNING: any change here must be coordinated with
-        // other specializations of the functions, for example
-        // for CairoColor
 		blendfunc_COMPOSITE<Color>,	// 0
 		blendfunc_STRAIGHT<Color>,
 		blendfunc_BRIGHTEN<Color>,
