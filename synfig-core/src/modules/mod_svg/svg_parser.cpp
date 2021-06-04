@@ -549,7 +549,7 @@ Svg_parser::parser_path_polygon(const Glib::ustring& polygon_points, const SVGMa
 
 	for(unsigned int i=0;i<tokens.size();i++){
 		float ax=atof(tokens.at(i).data());
-		i++; if(tokens.at(i).compare(",")==0) i++;
+		i++; if(tokens[i] == ",") i++;
 		float ay=atof(tokens.at(i).data());
 		//mtx
 		mtx.transformPoint2D(ax,ay);
@@ -578,7 +578,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 
 	for(unsigned int i=0;i<tokens.size();i++){
 		//if the token is a command, change the current command
-		if(tokens.at(i).compare("M")==0 || tokens.at(i).compare("m")==0 || tokens.at(i).compare("L")==0 || tokens.at(i).compare("l")==0 || tokens.at(i).compare("H")==0 || tokens.at(i).compare("h")==0 || tokens.at(i).compare("V")==0 || tokens.at(i).compare("v")==0 || tokens.at(i).compare("C")==0 || tokens.at(i).compare("c")==0 || tokens.at(i).compare("S")==0 || tokens.at(i).compare("s")==0 || tokens.at(i).compare("Q")==0 || tokens.at(i).compare("q")==0 || tokens.at(i).compare("T")==0 || tokens.at(i).compare("t")==0 || tokens.at(i).compare("A")==0 || tokens.at(i).compare("a")==0 || tokens.at(i).compare("z")==0) {
+		if(tokens[i] == "M" || tokens[i] == "m" || tokens[i] == "L" || tokens[i] == "l" || tokens[i] == "H" || tokens[i] == "h" || tokens[i] == "V" || tokens[i] == "v" || tokens[i] == "C" || tokens[i] == "c" || tokens[i] == "S" || tokens[i] == "s" || tokens[i] == "Q" || tokens[i] == "q" || tokens[i] == "T" || tokens[i] == "t" || tokens[i] == "A" || tokens[i] == "a" || tokens[i] == "z") {
 			command=tokens.at(i);
 			i++;
 		}
@@ -586,20 +586,20 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		old_x=actual_x;
 		old_y=actual_y;
 		//if command is absolute, set actual_x/y to zero
-		if(command.compare("M")==0 || command.compare("L")==0 || command.compare("C")==0 || command.compare("S")==0 || command.compare("Q")==0 || command.compare("T")==0 || command.compare("A")==0 || command.compare("H")==0 || command.compare("V")==0) {
+		if(command == "M" || command == "L" || command == "C" || command == "S" || command == "Q" || command == "T" || command == "A" || command == "H" || command == "V") {
 			actual_x=0;
 			actual_y=0;
 		}
 
 		//now parse the commands
-		if(command.compare("M")==0 || command.compare("m")==0){ //move to
+		if(command == "M" || command == "m"){ //move to
 			if(!k1.empty()) {
 				k.push_front(BLine(k1, false));
 				k1.clear();
 			}
 			//read
 			actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			actual_y+=atof(tokens.at(i).data());
 
 			init_x=actual_x;
@@ -613,22 +613,22 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			k1.back().setSplit(true);
 			//"If a moveto is followed by multiple pairs of coordinates,
 			// the subsequent pairs are treated as implicit lineto commands."
-			if (command.compare("M")==0)
+			if (command == "M")
 				command="L";
 			else
 				command="l";
-		}else if(command.compare("C")==0 || command.compare("c")==0){ //curve
+		}else if(command == "C" || command == "c"){ //curve
 			//tg2
 			tgx2=actual_x+atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			tgy2=actual_y+atof(tokens.at(i).data());
 			//tg1
 			i++; tgx=actual_x+atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			tgy=actual_y+atof(tokens.at(i).data());
 			//point
 			i++; actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -652,14 +652,14 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.back().setTg1(tgx,tgy);
 				k1.back().setSplit(true);
 			}
-		}else if(command.compare("Q")==0 || command.compare("q")==0){ //quadractic curve
+		}else if(command == "Q" || command == "q"){ //quadractic curve
 			//tg1 and tg2
 			tgx=actual_x+atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			tgy=actual_y+atof(tokens.at(i).data());
 			//point
 			i++; actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -675,10 +675,10 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			k1.back().setSplit(false);
 			k1.push_back(Vertex(ax,ay));
 			k1.back().setTg1(tgx,tgy);
-		}else if(command.compare("L")==0 || command.compare("l")==0){ //line to
+		}else if(command == "L" || command == "l"){ //line to
 			//point
 			actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -695,7 +695,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.push_back(Vertex(ax,ay));
 				k1.back().setTg1(k1.back().x,k1.back().y);
 			}
-		}else if(command.compare("H")==0 || command.compare("h")==0){// horizontal move
+		}else if(command == "H" || command == "h"){// horizontal move
 			//the same that L but only Horizontal movement
 			//point
 			actual_x+=atof(tokens.at(i).data());
@@ -714,7 +714,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.push_back(Vertex(ax,ay));
 				k1.back().setTg1(k1.back().x,k1.back().y);
 			}
-		}else if(command.compare("V")==0 || command.compare("v")==0){//vertical
+		}else if(command == "V" || command == "v"){//vertical
 			//point
 			actual_y+=atof(tokens.at(i).data());
 
@@ -732,11 +732,11 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.push_back(Vertex(ax,ay));
 				k1.back().setTg1(k1.back().x,k1.back().y);
 			}
-		}else if(command.compare("T")==0 || command.compare("t")==0){// I don't know what does it
+		}else if(command == "T" || command == "t"){// I don't know what does it
 			actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			actual_y+=atof(tokens.at(i).data());
-		}else if(command.compare("A")==0 || command.compare("a")==0){//elliptic arc
+		}else if(command == "A" || command == "a"){//elliptic arc
 
 			//isn't complete support, is only for circles
 
@@ -748,7 +748,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			bool sweep,large;
 			//radius
 			radius_x=atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			radius_y=atof(tokens.at(i).data());
 			//angle
 			// todo: why 'angle' never used?
@@ -758,7 +758,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			i++; sweep=atoi(tokens.at(i).data());
 			//point
 			i++; actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
+			i++; if(tokens[i] == ",") i++;
 			actual_y+=atof(tokens.at(i).data());
 			//how to draw?
 			if(!large && !sweep){
@@ -873,10 +873,10 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 					k1.back().setSplit(true);
 				}
 			}
-		}else if(command.compare("z")==0){
+		}else if(command == "z"){
 			k.push_front(BLine(k1, true));
 			k1.clear();
-			if (i<tokens.size() && tokens.at(i).compare("M")!=0 && tokens.at(i).compare("m")!=0) {
+			if (i<tokens.size() && tokens[i] != "M" && tokens[i] != "m") {
 				//starting a new path, but not with a moveto
 				actual_x=init_x;
 				actual_y=init_y;
