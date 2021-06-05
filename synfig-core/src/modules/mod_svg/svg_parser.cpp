@@ -883,10 +883,10 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		}else if(command == "Z" || command == "z"){
 			k.push_front(BLine(k1, true));
 			k1.clear();
+			actual_x=init_x;
+			actual_y=init_y;
 			if (i<tokens.size() && tokens[i] != "M" && tokens[i] != "m") {
-				//starting a new path, but not with a moveto
-				actual_x=init_x;
-				actual_y=init_y;
+				//starting a new path, but not with a moveto, so it uses the same initial point
 				ax=actual_x;
 				ay=actual_y;
 				//operate and save
