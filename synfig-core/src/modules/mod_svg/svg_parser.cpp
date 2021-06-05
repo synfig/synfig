@@ -1708,7 +1708,8 @@ extractSubAttribute(const String& attribute, const String& name, String& value)
 	if (!attribute.empty()) {
 		String str = synfig::trim(attribute);
 		std::vector<String> tokens=tokenize(str,";");
-		for (const String& token : tokens) {
+		for (String token : tokens) {
+			token = synfig::trim(token);
 			auto mid = token.find_first_of(":");
 			if (mid == String::npos)
 				continue;
