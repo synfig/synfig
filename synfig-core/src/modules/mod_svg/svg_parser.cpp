@@ -570,13 +570,20 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 	float init_x=0,init_y=0; //for closepath commands
 
 	const std::string possible_commands {"MmLlHhVvCcSsQqTtAaZz"};
+	auto report_incomplete = [](const std::string& command) {
+		error("SVG Parser: incomplete <d> element path command: %c!", command[0]);
+	};
+
 	for(unsigned int i=0;i<tokens.size();i++){
 		//if the token is a command, change the current command
 		if(possible_commands.find(tokens[i]) != std::string::npos) {
 			command = tokens[i];
 			i++;
+			if (command != "Z" && command != "z") {
+				if (i >= tokens.size()) { report_incomplete(command); break; }
+			}
 		}
-		
+
 		old_x=actual_x;
 		old_y=actual_y;
 		//if command is absolute, set actual_x/y to zero
@@ -593,7 +600,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			}
 			//read
 			actual_x+=atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
 
 			init_x=actual_x;
@@ -614,15 +621,17 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		}else if(command == "C" || command == "c"){ //curve
 			//tg2
 			tgx2=actual_x+atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			tgy2=actual_y+atof(tokens.at(i).data());
 			//tg1
-			i++; tgx=actual_x+atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			tgx=actual_x+atof(tokens.at(i).data());
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			tgy=actual_y+atof(tokens.at(i).data());
 			//point
-			i++; actual_x+=atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			actual_x+=atof(tokens.at(i).data());
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -649,11 +658,12 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		}else if(command == "Q" || command == "q"){ //quadractic curve
 			//tg1 and tg2
 			tgx=actual_x+atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			tgy=actual_y+atof(tokens.at(i).data());
 			//point
-			i++; actual_x+=atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			actual_x+=atof(tokens.at(i).data());
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -672,7 +682,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		}else if(command == "L" || command == "l"){ //line to
 			//point
 			actual_x+=atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -728,7 +738,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			}
 		}else if(command == "T" || command == "t"){// I don't know what does it
 			actual_x+=atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
 		}else if(command == "A" || command == "a"){//elliptic arc
 
@@ -742,17 +752,20 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			bool sweep,large;
 			//radius
 			radius_x=atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			radius_y=atof(tokens.at(i).data());
 			//angle
 			// todo: why 'angle' never used?
-			i++; // angle=atof(tokens.at(i).data());
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; } // angle=atof(tokens.at(i).data());
 			//flags
-			i++; large=atoi(tokens.at(i).data());
-			i++; sweep=atoi(tokens.at(i).data());
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			large=atoi(tokens.at(i).data());
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			sweep=atoi(tokens.at(i).data());
 			//point
-			i++; actual_x+=atof(tokens.at(i).data());
-			i++;
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			actual_x+=atof(tokens.at(i).data());
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
 			//how to draw?
 			if(!large && !sweep){
