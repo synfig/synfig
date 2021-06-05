@@ -570,8 +570,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 	float old_x=0,old_y=0; //needed in rare cases
 	float init_x=0,init_y=0; //for closepath commands
 
-	bool is_old_tg_valid = false;
-	float old_tgx=0, old_tgy=0; // for shorthand curveto commands
+	bool is_old_cubic_tg_valid = false;
+	bool is_old_quadratic_tg_valid = false;
+	float old_tgx=0, old_tgy=0; // for shorthand cubic or quadratic commands
 
 	const std::string possible_commands {"MmLlHhVvCcSsQqTtAaZz"};
 	auto report_incomplete = [](const std::string& command) {
@@ -597,9 +598,11 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			actual_x=0;
 			actual_y=0;
 		}
-		if (lower_command != 'c' && lower_command != 's') {
-			is_old_tg_valid = false;
-		}
+
+		if (lower_command != 'c' && lower_command != 's')
+			is_old_cubic_tg_valid = false;
+		if (lower_command != 'q' && lower_command != 't')
+			is_old_quadratic_tg_valid = false;
 
 		//now parse the commands
 		switch (lower_command){
@@ -638,7 +641,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 				tgy2=actual_y+atof(tokens.at(i).data());
 			} else { // 's'
-				if (is_old_tg_valid) {
+				if (is_old_cubic_tg_valid) {
 					tgx2 = 2*old_x - old_tgx;
 					tgy2 = 2*old_y - old_tgy;
 				} else {
@@ -661,7 +664,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 
 			old_tgx = tgx;
 			old_tgy = tgy;
-			is_old_tg_valid = true;
+			is_old_cubic_tg_valid = true;
 
 			ax=actual_x;
 			ay=actual_y;
@@ -687,7 +690,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			break;
 		}
 		case 'q':{ //quadractic curve
-			//tg1 and tg2
+			//tg1 and tg2 : they must be decreased 2/3 to correct representation
 			tgx=actual_x+atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			tgy=actual_y+atof(tokens.at(i).data());
@@ -706,10 +709,19 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			coor2vect(&ax,&ay);
 			coor2vect(&tgx,&tgy);
 			//save
-			k1.back().setTg1(tgx,tgy);
-			k1.back().setSplit(false);
+			k1.back().setSplit(true);
+			if (!is_old_quadratic_tg_valid) {
+				k1.back().setTg2(tgx,tgy);
+				k1.back().radius2 *= 2/3.;
+			}
 			k1.push_back(Vertex(ax,ay));
 			k1.back().setTg1(tgx,tgy);
+			k1.back().radius1 *= 2/3.;
+
+			old_tgx = tgx;
+			old_tgy = tgy;
+			is_old_quadratic_tg_valid = true;
+
 			break;
 		}
 		case 'l':
@@ -1343,8 +1355,10 @@ Svg_parser::build_vertex(xmlpp::Element* root, const Vertex &p)
 	build_vector (child_comp->add_child("param"),"point",p.x,p.y);
 	build_param (child_comp->add_child("width"),"","real","1.0000000000");
 	build_param (child_comp->add_child("origin"),"","real","0.5000000000");
-	if(p.split) build_param (child_comp->add_child("split"),"","bool","true");
-	else build_param (child_comp->add_child("split"),"","bool","false");
+	// ??????????
+	build_param (child_comp->add_child("split"),"","bool", p.split_radius || p.split_angle ? "true" : "false");
+	build_param (child_comp->add_child("split_radius"),"","bool", p.split_radius? "true" : "false");
+	build_param (child_comp->add_child("split_angle"),"","bool", p.split_angle? "true" : "false");
 	//tangent 1
 	xmlpp::Element *child_t1=child_comp->add_child("t1");
 	xmlpp::Element *child_rc=child_t1->add_child("radial_composite");
@@ -1532,7 +1546,18 @@ Vertex::setTg2(float p2x,float p2y)
 void
 Vertex::setSplit(bool val)
 {
-	split=val;
+	split_radius = val;
+	split_angle = val;
+}
+
+void Vertex::setSplitRadius(bool val)
+{
+	split_radius = val;
+}
+
+void Vertex::setSplitAngle(bool val)
+{
+	split_angle = val;
 }
 
 bool
@@ -1545,7 +1570,8 @@ Vertex::Vertex(float x,float y)
 	: x(x), y(y),
 	  radius1(0), angle1(0),
 	  radius2(0), angle2(0),
-	  split(false)
+	  split_radius(false),
+	  split_angle(false)
 {
 }
 
