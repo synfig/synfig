@@ -1477,26 +1477,13 @@ Vertex::setTg1(float p2x,float p2y)
 	float dx=(p2x-x)*3;
 	float dy=(p2y-y)*3;
 	rd=sqrt(dx*dx + dy*dy);
-	if(dx>0 && dy>0){
-		ag=PI + atan(dy/dx);
-	}else if(dx>0 && dy<0){
-		ag=PI + atan(dy/dx);
-	}else if(dx<0 && dy<0){
-		ag=atan(dy/dx);
-	}else if(dx<0 && dy>0){
-		ag= 2*PI+atan(dy/dx);
-	}else if(approximate_zero(dx) && dy>0){
-		ag=-1*PI/2;
-	}else if(approximate_zero(dx) && dy<0){
-		ag=PI/2;
-	}else if(approximate_zero(dx) && approximate_zero(dy)){
-		ag=0;
-	}else if(dx<0 && approximate_zero(dy)){
-		ag=0;
-	}else if(dx>0 && approximate_zero(dy)){
-		ag=PI;
-	}
-	ag= (ag*180)/PI;
+	if(approximate_zero(dx) && approximate_zero(dy))
+		ag = 0;
+	else
+		ag = atan2(dy,dx);
+	ag = ag*180/PI;
+	ag += 180;
+
 	this->radius1=rd;
 	this->angle1=ag;
 }
@@ -1509,31 +1496,12 @@ Vertex::setTg2(float p2x,float p2y)
 	float dy=(p2y-y)*3;
 
 	rd=sqrt(dx*dx + dy*dy);
-	if(dx>0 && dy>0){
-		ag=PI + atan(dy/dx);
-	// case 180-270
-	}else if(dx>0 && dy<0){
-		ag=PI + atan(dy/dx);
-	// case 90-180
-	}else if(dx<0 && dy<0){
-		ag=atan(dy/dx);
-	// case 0-90
-	}else if(dx<0 && dy>0){
-		ag= 2*PI+atan(dy/dx);
-	// case 270-360
-	}else if(approximate_zero(dx) && dy>0){
-		ag=-1*PI/2;
-	}else if(approximate_zero(dx) && dy<0){
-		ag=PI/2;
-	}else if(approximate_zero(dx) && approximate_zero(dy)){
-		ag=0;
-	}else if(dx<0 && approximate_zero(dy)){
-		ag=0;
-	}else if(dx>0 && approximate_zero(dy)){
-		ag=PI;
-	}
-	ag= (ag*180)/PI;
-	ag=ag-180;
+	if(approximate_zero(dx) && approximate_zero(dy))
+		ag = 0;
+	else
+		ag = atan2(dy,dx);
+
+	ag = ag*180/PI;
 
 	this->radius2=rd;
 	this->angle2=ag;
