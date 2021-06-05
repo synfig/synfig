@@ -542,7 +542,7 @@ Svg_parser::parser_path_polygon(const Glib::ustring& polygon_points, const SVGMa
 
 	for(unsigned int i=0;i<tokens.size();i++){
 		float ax=atof(tokens.at(i).data());
-		i++; if(tokens[i] == ",") i++;
+		i++;
 		float ay=atof(tokens.at(i).data());
 		//mtx
 		mtx.transformPoint2D(ax,ay);
@@ -593,7 +593,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			}
 			//read
 			actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			actual_y+=atof(tokens.at(i).data());
 
 			init_x=actual_x;
@@ -614,15 +614,15 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		}else if(command == "C" || command == "c"){ //curve
 			//tg2
 			tgx2=actual_x+atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			tgy2=actual_y+atof(tokens.at(i).data());
 			//tg1
 			i++; tgx=actual_x+atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			tgy=actual_y+atof(tokens.at(i).data());
 			//point
 			i++; actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -649,11 +649,11 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		}else if(command == "Q" || command == "q"){ //quadractic curve
 			//tg1 and tg2
 			tgx=actual_x+atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			tgy=actual_y+atof(tokens.at(i).data());
 			//point
 			i++; actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -672,7 +672,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		}else if(command == "L" || command == "l"){ //line to
 			//point
 			actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			actual_y+=atof(tokens.at(i).data());
 
 			ax=actual_x;
@@ -728,7 +728,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			}
 		}else if(command == "T" || command == "t"){// I don't know what does it
 			actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			actual_y+=atof(tokens.at(i).data());
 		}else if(command == "A" || command == "a"){//elliptic arc
 
@@ -742,7 +742,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			bool sweep,large;
 			//radius
 			radius_x=atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			radius_y=atof(tokens.at(i).data());
 			//angle
 			// todo: why 'angle' never used?
@@ -752,7 +752,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			i++; sweep=atoi(tokens.at(i).data());
 			//point
 			i++; actual_x+=atof(tokens.at(i).data());
-			i++; if(tokens[i] == ",") i++;
+			i++;
 			actual_y+=atof(tokens.at(i).data());
 			//how to draw?
 			if(!large && !sweep){
@@ -1683,8 +1683,7 @@ get_tokens_path(const String& path) //mini path lexico-parser
 					else if(a=='H'){ e=16; i++;}
 					else if(a=='z' || a=='Z'){ e=17; i++;}
 					else if(a=='-' || a=='.' || a=='e' || a=='E' || isdigit (a)){ e=18;}
-					else if(a==','){ e=19; i++;}
-					else if(a==' '){i++;}
+					else if(a==',' || a==' '){ i++;}
 					else {
 						synfig::warning("SVG Parser: unknown token in SVG path '%c'", a);
 						i++;
@@ -1716,7 +1715,6 @@ get_tokens_path(const String& path) //mini path lexico-parser
 						e=20;
 					}
 					break;
-			case 19: tokens.push_back(","); e=0; break;
 			case 20: tokens.push_back(buffer);
 					buffer.clear();
 					e=0; break;
@@ -1742,7 +1740,6 @@ get_tokens_path(const String& path) //mini path lexico-parser
 		case 16: tokens.push_back("H"); break;
 		case 17: tokens.push_back("z"); break;
 		case 18: tokens.push_back(buffer); break;
-		case 19: tokens.push_back(","); break;
 		case 20: tokens.push_back(buffer); break;
 		default: break;
 	}
