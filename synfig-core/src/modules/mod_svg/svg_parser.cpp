@@ -570,6 +570,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 	float old_x=0,old_y=0; //needed in rare cases
 	float init_x=0,init_y=0; //for closepath commands
 
+	bool is_old_tg_valid = false;
+	float old_tgx=0, old_tgy=0; // for shorthand curveto commands
+
 	const std::string possible_commands {"MmLlHhVvCcSsQqTtAaZz"};
 	auto report_incomplete = [](const std::string& command) {
 		error("SVG Parser: incomplete <d> element path command: %c!", command[0]);
@@ -593,6 +596,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		if(std::isupper(command[0])) {
 			actual_x=0;
 			actual_y=0;
+		}
+		if (lower_command != 'c' && lower_command != 's') {
+			is_old_tg_valid = false;
 		}
 
 		//now parse the commands
@@ -624,13 +630,26 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				command="l";
 			break;
 		}
-		case 'c':{ //curveto
-			//tg2
-			tgx2=actual_x+atof(tokens.at(i).data());
-			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			tgy2=actual_y+atof(tokens.at(i).data());
+		case 'c':
+		case 's':{ //curveto
+			if (lower_command == 'c') {
+				//tg2
+				tgx2=actual_x+atof(tokens.at(i).data());
+				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+				tgy2=actual_y+atof(tokens.at(i).data());
+			} else { // 's'
+				if (is_old_tg_valid) {
+					tgx2 = 2*old_x - old_tgx;
+					tgy2 = 2*old_y - old_tgy;
+				} else {
+					tgx2 = old_x;
+					tgy2 = old_y;
+				}
+			}
 			//tg1
-			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			if (lower_command == 'c') {
+				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			}
 			tgx=actual_x+atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			tgy=actual_y+atof(tokens.at(i).data());
@@ -639,6 +658,10 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			actual_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
+
+			old_tgx = tgx;
+			old_tgy = tgy;
+			is_old_tg_valid = true;
 
 			ax=actual_x;
 			ay=actual_y;
@@ -1687,6 +1710,8 @@ get_tokens_path(const String& path) //mini path lexico-parser
 					else if(a=='H'){ e=16; i++;}
 					else if(a=='z' || a=='Z'){ e=17; i++;}
 					else if(a=='-' || a=='.' || a=='e' || a=='E' || isdigit (a)){ e=18;}
+					else if(a=='s'){ e=19; i++;}
+					else if(a=='S'){ e=20; i++;}
 					else if(a==',' || a==' '){ i++;}
 					else {
 						synfig::warning("SVG Parser: unknown token in SVG path '%c'", a);
@@ -1716,10 +1741,12 @@ get_tokens_path(const String& path) //mini path lexico-parser
 			case 18: if(a=='-' || a=='.' || a=='e' || a=='E' || isdigit (a)){
 						buffer.append(path.substr(i,1));i++;
 					}else{
-						e=20;
+						e=21;
 					}
 					break;
-			case 20: tokens.push_back(buffer);
+			case 19: tokens.push_back("s"); e=0; break;
+			case 20: tokens.push_back("S"); e=0; break;
+			case 21: tokens.push_back(buffer);
 					buffer.clear();
 					e=0; break;
 			default: break;
@@ -1744,7 +1771,9 @@ get_tokens_path(const String& path) //mini path lexico-parser
 		case 16: tokens.push_back("H"); break;
 		case 17: tokens.push_back("z"); break;
 		case 18: tokens.push_back(buffer); break;
-		case 20: tokens.push_back(buffer); break;
+		case 19: tokens.push_back("s"); break;
+		case 20: tokens.push_back("S"); break;
+		case 21: tokens.push_back(buffer); break;
 		default: break;
 	}
 	return tokens;
