@@ -679,50 +679,21 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			k1.back().setSplit(false);
 			k1.push_back(Vertex(ax,ay));
 			k1.back().setTg1(tgx,tgy);
-		}else if(command == "L" || command == "l"){ //line to
+		}else if(command == "L" || command == "l" || command == "H" || command == "h" || command == "V" || command == "v"){ //line to
 			//point
-			actual_x+=atof(tokens.at(i).data());
-			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			actual_y+=atof(tokens.at(i).data());
+			if (command == "L" || command == "l") {
+				actual_x+=atof(tokens.at(i).data());
+				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+				actual_y+=atof(tokens.at(i).data());
+			} else if (command == "H" || command == "h") { // horizontal move
+				actual_x+=atof(tokens.at(i).data());
+				actual_y=old_y;
+			} else if (command == "V" || command == "v") { //vertical
+				actual_x=old_x;
+				actual_y+=atof(tokens.at(i).data());
+			}
 
 			ax=actual_x;
-			ay=actual_y;
-			//mtx
-			mtx.transformPoint2D(ax,ay);
-			//adjust
-			coor2vect(&ax,&ay);
-			//save
-			k1.back().setTg2(k1.back().x,k1.back().y);
-			if(k1.front().isFirst(ax,ay)){
-				k1.front().setTg1(k1.front().x,k1.front().y);
-			}else{
-				k1.push_back(Vertex(ax,ay));
-				k1.back().setTg1(k1.back().x,k1.back().y);
-			}
-		}else if(command == "H" || command == "h"){// horizontal move
-			//the same that L but only Horizontal movement
-			//point
-			actual_x+=atof(tokens.at(i).data());
-
-			ax=actual_x;
-			ay=old_y;
-			//mtx
-			mtx.transformPoint2D(ax,ay);
-			//adjust
-			coor2vect(&ax,&ay);
-			//save
-			k1.back().setTg2(k1.back().x,k1.back().y);
-			if(k1.front().isFirst(ax,ay)){
-				k1.front().setTg1(k1.front().x,k1.front().y);
-			}else{
-				k1.push_back(Vertex(ax,ay));
-				k1.back().setTg1(k1.back().x,k1.back().y);
-			}
-		}else if(command == "V" || command == "v"){//vertical
-			//point
-			actual_y+=atof(tokens.at(i).data());
-
-			ax=old_x;
 			ay=actual_y;
 			//mtx
 			mtx.transformPoint2D(ax,ay);
