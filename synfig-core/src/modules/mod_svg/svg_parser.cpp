@@ -563,6 +563,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 
 	std::vector<String> tokens=get_tokens_path(path_d);
 	String command="M"; //the current command
+	int lower_command='m';
 	float ax,ay,tgx,tgy,tgx2,tgy2;//each method
 	ax=ay=0;
 	float actual_x=0,actual_y=0; //in svg coordinate space
@@ -579,9 +580,11 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		if(possible_commands.find(tokens[i]) != std::string::npos) {
 			command = tokens[i];
 			i++;
-			if (command != "Z" && command != "z") {
-				if (i >= tokens.size()) { report_incomplete(command); break; }
-			}
+		}
+
+		lower_command = std::tolower(command[0]);
+		if (lower_command != 'z') {
+			if (i >= tokens.size()) { report_incomplete(command); break; }
 		}
 
 		old_x=actual_x;
@@ -593,7 +596,8 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		}
 
 		//now parse the commands
-		if(command == "M" || command == "m"){ //move to
+		switch (lower_command){
+		case 'm':{ //move to
 			if(!k1.empty()) {
 				k.push_front(BLine(k1, false));
 				k1.clear();
@@ -618,7 +622,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				command="L";
 			else
 				command="l";
-		}else if(command == "C" || command == "c"){ //curve
+			break;
+		}
+		case 'c':{ //curveto
 			//tg2
 			tgx2=actual_x+atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
@@ -655,7 +661,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.back().setTg1(tgx,tgy);
 				k1.back().setSplit(true);
 			}
-		}else if(command == "Q" || command == "q"){ //quadractic curve
+			break;
+		}
+		case 'q':{ //quadractic curve
 			//tg1 and tg2
 			tgx=actual_x+atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
@@ -679,7 +687,11 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			k1.back().setSplit(false);
 			k1.push_back(Vertex(ax,ay));
 			k1.back().setTg1(tgx,tgy);
-		}else if(command == "L" || command == "l" || command == "H" || command == "h" || command == "V" || command == "v"){ //line to
+			break;
+		}
+		case 'l':
+		case 'h':
+		case 'v':{ //line to
 			//point
 			if (command == "L" || command == "l") {
 				actual_x+=atof(tokens.at(i).data());
@@ -707,11 +719,15 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.push_back(Vertex(ax,ay));
 				k1.back().setTg1(k1.back().x,k1.back().y);
 			}
-		}else if(command == "T" || command == "t"){// I don't know what does it
+			break;
+		}
+		case 't':{// I don't know what does it
 			actual_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
-		}else if(command == "A" || command == "a"){//elliptic arc
+			break;
+		}
+		case 'a':{//elliptic arc
 
 			//isn't complete support, is only for circles
 
@@ -851,7 +867,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 					k1.back().setSplit(true);
 				}
 			}
-		}else if(command == "Z" || command == "z"){
+			break;
+		}
+		case 'z':{
 			k.push_front(BLine(k1, true));
 			k1.clear();
 			actual_x=init_x;
@@ -867,7 +885,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.back().setSplit(true);
 			}
 			i--; //decrement i to balance "i++" at command change
-		}else{
+			break;
+		}
+		default:
 			synfig::warning("SVG Parser: unsupported path token: %s", tokens.at(i).c_str());
 		}
 	}
