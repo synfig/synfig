@@ -404,6 +404,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			if(typeStroke==FILL_TYPE_GRADIENT){
 				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
 			}
+
+			stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
+
 			for (const BLine& bline : k) {
 				xmlpp::Element *child_outline=child_stroke->add_child("layer");
 				child_outline->set_attribute("type","outline");
@@ -424,7 +427,6 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 
 				build_bline(child_outline->add_child("param"), bline.points, bline.loop, bline.bline_id);
 
-				stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux); // this shouldn't use units
 				build_param (child_outline->add_child("param"),"width","real",stroke_width);
 				build_param (child_outline->add_child("param"),"expand","real","0.0000000000");
 				if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child("param"),"sharp_cusps","bool","true");
