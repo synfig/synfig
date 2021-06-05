@@ -712,37 +712,54 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			}
 			break;
 		}
-		case 'q':{ //quadractic curve
+		case 'q':
+		case 't':{ //quadractic curve
 			//tg1 and tg2
-			tgx=actual_x+atof(tokens.at(i).data());
-			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			tgy=actual_y+atof(tokens.at(i).data());
+			if (lower_command == 'q') {
+				tgx=actual_x+atof(tokens.at(i).data());
+				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+				tgy=actual_y+atof(tokens.at(i).data());
+			} else { // 't'
+				if (is_old_quadratic_tg_valid) {
+					tgx = 2*old_x - old_tgx;
+					tgy = 2*old_y - old_tgy;
+				} else {
+					tgx = old_x;
+					tgy = old_y;
+				}
+			}
 			//point
-			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			if (lower_command == 'q') {
+				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			}
 			actual_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			actual_y+=atof(tokens.at(i).data());
+			warning("Q: tg (%lf, %lf) (%lf, %lf)", tgx, tgy, actual_x, actual_y);
+
+			bool was_previous_command_quad_kind = is_old_quadratic_tg_valid;
+			old_tgx = tgx;
+			old_tgy = tgy;
+			is_old_quadratic_tg_valid = true;
 
 			ax=actual_x;
 			ay=actual_y;
 			//mtx
-			mtx.transformPoint2D(ax,ay);
-			mtx.transformPoint2D(tgx,tgy);
+			if (!mtx.is_identity()) {
+				mtx.transformPoint2D(ax,ay);
+				mtx.transformPoint2D(tgx,tgy);
+			}
 			//adjust
 			coor2vect(&ax,&ay);
 			coor2vect(&tgx,&tgy);
 			//save
 			k1.back().setSplit(true);
-			if (!is_old_quadratic_tg_valid) {
+			if (!was_previous_command_quad_kind) {
 				k1.back().setTg2(tgx,tgy);
 				k1.back().setSplitRadius(false);
 			}
 			k1.push_back(Vertex(ax,ay));
 			k1.back().setTg1(tgx,tgy);
-
-			old_tgx = tgx;
-			old_tgy = tgy;
-			is_old_quadratic_tg_valid = true;
 
 			break;
 		}
@@ -776,12 +793,6 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.push_back(Vertex(ax,ay));
 				k1.back().setTg1(k1.back().x,k1.back().y);
 			}
-			break;
-		}
-		case 't':{// I don't know what does it
-			actual_x+=atof(tokens.at(i).data());
-			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			actual_y+=atof(tokens.at(i).data());
 			break;
 		}
 		case 'a':{//elliptic arc
