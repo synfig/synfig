@@ -569,17 +569,18 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 	float old_x=0,old_y=0; //needed in rare cases
 	float init_x=0,init_y=0; //for closepath commands
 
+	const std::string possible_commands {"MmLlHhVvCcSsQqTtAaZz"};
 	for(unsigned int i=0;i<tokens.size();i++){
 		//if the token is a command, change the current command
-		if(tokens[i] == "M" || tokens[i] == "m" || tokens[i] == "L" || tokens[i] == "l" || tokens[i] == "H" || tokens[i] == "h" || tokens[i] == "V" || tokens[i] == "v" || tokens[i] == "C" || tokens[i] == "c" || tokens[i] == "S" || tokens[i] == "s" || tokens[i] == "Q" || tokens[i] == "q" || tokens[i] == "T" || tokens[i] == "t" || tokens[i] == "A" || tokens[i] == "a" || tokens[i] == "z") {
-			command=tokens.at(i);
+		if(possible_commands.find(tokens[i]) != std::string::npos) {
+			command = tokens[i];
 			i++;
 		}
 		
 		old_x=actual_x;
 		old_y=actual_y;
 		//if command is absolute, set actual_x/y to zero
-		if(command == "M" || command == "L" || command == "C" || command == "S" || command == "Q" || command == "T" || command == "A" || command == "H" || command == "V") {
+		if(std::isupper(command[0])) {
 			actual_x=0;
 			actual_y=0;
 		}
@@ -866,7 +867,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 					k1.back().setSplit(true);
 				}
 			}
-		}else if(command == "z"){
+		}else if(command == "Z" || command == "z"){
 			k.push_front(BLine(k1, true));
 			k1.clear();
 			if (i<tokens.size() && tokens[i] != "M" && tokens[i] != "m") {
