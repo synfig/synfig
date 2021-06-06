@@ -275,7 +275,10 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring nodename = node->get_name();
-		if (nodename.compare("g")==0 || nodename.compare("path")==0 || nodename.compare("polygon")==0 || nodename.compare("rect")==0){} else return;
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle"};
+
+		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
+			return;
 
 		enum FillType {FILL_TYPE_NONE, FILL_TYPE_SIMPLE, FILL_TYPE_GRADIENT};
 
@@ -327,7 +330,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 		if(typeStroke==FILL_TYPE_SIMPLE && stroke.compare(0,3,"url")==0){
 			typeStroke = FILL_TYPE_GRADIENT;
 		}
-		
+
 		xmlpp::Element* child_layer = root;
 		xmlpp::Element* child_fill;
 		xmlpp::Element* child_stroke;
@@ -335,17 +338,24 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 		bool fill_bline_region = true;
 
 		//make simple fills
-		if(nodename.compare("rect")==0 && typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE){
+		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
 			// if it has stroke, render as a region, instead of standard shape, to be able to link to outline
-			if (!mtx.is_identity())
-				child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
-			child_fill=child_layer;
-			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
-			if(typeFill == FILL_TYPE_GRADIENT){
-				build_fill (child_fill,fill,SVGMatrix::indentity);
+			if (nodename.compare("rect") == 0 || nodename.compare("circle") == 0) {
+				if (!mtx.is_identity())
+					child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+				child_fill=child_layer;
+
+				if (nodename.compare("rect") == 0)
+					parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
+				else if (nodename.compare("circle") == 0)
+					parser_circle(nodeElement,child_fill,fill,fill_opacity,opacity);
+
+				if(typeFill == FILL_TYPE_GRADIENT){
+					build_fill (child_fill,fill,SVGMatrix::indentity);
+				}
+				parser_effects(nodeElement,child_layer,parent_style,mtx);
+				fill_bline_region = false;
 			}
-			parser_effects(nodeElement,child_layer,parent_style,mtx);
-			fill_bline_region = false;
 		}
 
 		if (fill_bline_region) {
@@ -368,6 +378,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				k = parser_path_polygon(nodeElement->get_attribute_value("points"),mtx);
 			} else if(nodename.compare("rect")==0){
 				k = parser_path_rect(nodeElement,mtx);
+			} else if(nodename.compare("circle")==0){
+				k = parser_path_circle(nodeElement,mtx);
 			}
 		} else {
 			if(nodename.compare("path")==0){
@@ -376,9 +388,11 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::indentity);
 			} else if(nodename.compare("rect")==0){
 				k = parser_path_rect(nodeElement,SVGMatrix::indentity);
+			} else if(nodename.compare("circle")==0){
+				k = parser_path_circle(nodeElement,SVGMatrix::indentity);
 			}
 		}
-		
+
 		if (fill_bline_region) {
 			if(typeFill!=FILL_TYPE_NONE){//region layer
 				/*if(typeFill==FILL_TYPE_GRADIENT){
@@ -459,7 +473,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 					build_fill(child_stroke,stroke,mtx);
 				else
 					build_fill(child_stroke,stroke,SVGMatrix::indentity);
-			}	
+			}
 		}
 
 		if (fill_bline_region) {
@@ -552,7 +566,35 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, 
 
 }
 
-/* === CONVERT TO PATH PARSERS ============================================= */       
+void
+Svg_parser::parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* root, const String& fill, const String& fill_opacity, const String& opacity)
+{
+	Glib::ustring circle_id		=nodeElement->get_attribute_value("id");
+	Glib::ustring circle_x		=nodeElement->get_attribute_value("cx");
+	Glib::ustring circle_y		=nodeElement->get_attribute_value("cy");
+	Glib::ustring circle_radius	=nodeElement->get_attribute_value("r");
+
+	xmlpp::Element *child_circle=root->add_child("layer");
+	child_circle->set_attribute("type","circle");
+	child_circle->set_attribute("active","true");
+	child_circle->set_attribute("version","0.2");
+	child_circle->set_attribute("desc",circle_id);
+
+	build_real(child_circle->add_child("param"),"z_depth",0.0);
+	build_real(child_circle->add_child("param"),"amount",1.0);
+	build_integer(child_circle->add_child("param"),"blend_method",0);
+	build_color(child_circle->add_child("param"),getRed (fill),getGreen (fill),getBlue(fill),atof(opacity.data())*atof(fill_opacity.data()));
+
+	float cx = atof(circle_x.c_str());
+	float cy = atof(circle_y.c_str());
+	coor2vect(&cx,&cy);
+	build_vector (child_circle->add_child("param"),"origin",cx,cy);
+	float r = atof(circle_radius.c_str());
+	r /= kux;
+	build_real(child_circle->add_child("param"),"radius",r);
+}
+
+/* === CONVERT TO PATH PARSERS ============================================= */
 
 std::list<BLine>
 Svg_parser::parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx)
@@ -985,6 +1027,87 @@ Svg_parser::parser_path_rect(const xmlpp::Element* nodeElement, const SVGMatrix&
 	} catch(...) {
 		synfig::error("SVG Parser: Invalid coordinate value: it should be a real value!");
 	}
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_path_circle(const xmlpp::Element* nodeElement, const SVGMatrix& mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+	float circle_x, circle_y, circle_radius = -1;
+	try {
+		circle_x = std::stod(nodeElement->get_attribute_value("cx"));
+	} catch(...) {
+		synfig::error("SVG Parser: Invalid circle cx value: it should be a real value!");
+		return k;
+	}
+	try {
+		circle_y = std::stod(nodeElement->get_attribute_value("cy"));
+	} catch(...) {
+		synfig::error("SVG Parser: Invalid circle cy value: it should be a real value!");
+		return k;
+	}
+	try {
+		circle_radius = std::stod(nodeElement->get_attribute_value("r"));
+	} catch(...) {
+		synfig::error("SVG Parser: Invalid circle r value: it should be a real value!");
+		return k;
+	}
+
+//	std::vector<std::pair<float,float>> base_vertices = {
+//		{circle_x + circle_radius, circle_y},
+//		{circle_x, circle_y + circle_radius},
+//		{circle_x - circle_radius, circle_y},
+//		{circle_x, circle_y - circle_radius}
+//	};
+//	const float tangent = circle_radius/1.656854153f; // don't ask me why. If it were just 2 vertices, it would be 4/3 * radius
+//	std::vector<std::pair<float,float>> tangents = {
+//		{0, -tangent}, // -90d
+//		{tangent, 0}, // 180d
+//		{0, tangent}, //  90d
+//		{-tangent, 0}   //   0d
+//	};
+
+	std::vector<std::pair<float,float>> base_vertices = {
+		{circle_x, circle_y - circle_radius},
+		{circle_x, circle_y + circle_radius},
+	};
+	const float tangent = circle_radius*4/3.f;
+	std::vector<std::pair<float,float>> tangents = {
+		{tangent, 0},
+		{-tangent, 0},
+	};
+
+	// compute tangents
+	for (size_t i=0; i < tangents.size(); i++) {
+		tangents[i].first += base_vertices[i].first;
+		tangents[i].second += base_vertices[i].second;
+	}
+
+	// transformations
+	if(!mtx.is_identity()){
+		for (size_t i=0; i < tangents.size(); i++) {
+			mtx.transformPoint2D(base_vertices[i].first, base_vertices[i].second);
+			mtx.transformPoint2D(tangents[i].first, tangents[i].second);
+		}
+	}
+
+	std::list<Vertex> vertices;
+	// adjust
+	for (size_t i=0; i < tangents.size(); i++) {
+		coor2vect(&base_vertices[i].first, &base_vertices[i].second);
+		coor2vect(&tangents[i].first, &tangents[i].second);
+
+		Vertex v(base_vertices[i].first, base_vertices[i].second);
+		v.setSplit(false);
+		v.setTg1(tangents[i].first, tangents[i].second);
+		vertices.push_back(v);
+	}
+
+	k.push_back(BLine(vertices, true));
+
 	return k;
 }
 

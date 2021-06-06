@@ -163,10 +163,12 @@ private:
 		/* === LAYER PARSERS ============================== */
 		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx);
 		void parser_rect(const xmlpp::Element* nodeElement, xmlpp::Element* root, const String& fill, const String& fill_opacity, const String& opacity);
+		void parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* root, const String& fill, const String& fill_opacity, const String& opacity);
 		/* === CONVERT TO PATH PARSERS ==================== */
 		std::list<BLine> parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx);
 		std::list<BLine> parser_path_d(const String& path_d, const SVGMatrix& mtx);
 		std::list<BLine> parser_path_rect(const xmlpp::Element* nodeElement, const SVGMatrix& mtx);
+		std::list<BLine> parser_path_circle(const xmlpp::Element* nodeElement, const SVGMatrix& mtx);
 
 		/* === EFFECTS PARSERS ============================ */
 		void parser_effects(const xmlpp::Element* nodeElement, xmlpp::Element* root, const String& parent_style, const SVGMatrix& mtx);
