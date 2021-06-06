@@ -74,13 +74,18 @@ static const guint no_prev_popup((guint)-1);
 /// \param value_node The 'root' value node from where we search for other linked/pointed value nodes
 /// \param[out] foreign_exported_valuenodes List of the external exported value nodes found
 static void
-search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, ValueNode::LooseHandle value_node, std::vector<ValueNode::LooseHandle>& foreign_exported_valuenodes)
+search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, ValueNode::LooseHandle value_node, std::vector<ValueNode::LooseHandle>& foreign_exported_valuenodes, std::set<ValueNode::LooseHandle>& visited_valuenodes)
 {
 	if (!value_node) {
 		synfig::warning("%s:%d null valuenode?!\n", __FILE__, __LINE__);
 		assert(false);
 		return;
 	}
+
+	if (visited_valuenodes.count(value_node))
+		return;
+
+	visited_valuenodes.insert(value_node);
 
 	if (value_node->is_exported()) {
 		if (value_node->get_root_canvas() != canvas->get_root())
@@ -89,17 +94,17 @@ search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, ValueNode::L
 
 	if (auto linkable_vn = LinkableValueNode::Handle::cast_dynamic(value_node)) {
 		for (int i=0; i < linkable_vn->link_count(); i++) {
-			search_for_foreign_exported_value_nodes(canvas, linkable_vn->get_link(i), foreign_exported_valuenodes);
+			search_for_foreign_exported_value_nodes(canvas, linkable_vn->get_link(i), foreign_exported_valuenodes, visited_valuenodes);
 		}
 	} else if (auto const_vn = ValueNode_Const::Handle::cast_dynamic(value_node)) {
 		if (const_vn->get_type() == type_bone_valuenode) {
 			ValueNode_Bone::Handle bone_vn = const_vn->get_value().get(ValueNode_Bone::Handle());
-			search_for_foreign_exported_value_nodes(canvas, bone_vn.get(), foreign_exported_valuenodes);
+			search_for_foreign_exported_value_nodes(canvas, bone_vn.get(), foreign_exported_valuenodes, visited_valuenodes);
 		}
 	} else if (auto animated_vn = ValueNode_Animated::Handle::cast_dynamic(value_node)) {
 		const ValueNode_Animated::WaypointList& list(animated_vn->waypoint_list());
 		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(); iter != list.cend(); ++iter) {
-			search_for_foreign_exported_value_nodes(canvas, iter->get_value_node(), foreign_exported_valuenodes);
+			search_for_foreign_exported_value_nodes(canvas, iter->get_value_node(), foreign_exported_valuenodes, visited_valuenodes);
 		}
 	} else {
 		// actually there is a known case: PlaceholderValueNode
@@ -115,13 +120,14 @@ static void
 search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, std::list<Layer::Handle> layer_list, std::vector<ValueNode::LooseHandle>& foreign_exported_valuenodes)
 {
 	auto fetch_exported_valuenodes_from_layer = [&canvas, &foreign_exported_valuenodes](Layer::LooseHandle layer, const TraverseLayerStatus& /*status*/) {
+		std::set<ValueNode::LooseHandle> visited_valuenodes;
 		for (auto dyn_param : layer->dynamic_param_list()) {
 			auto value_node = dyn_param.second;
 			if (!value_node) {
 				error(_("Internal error: layer dynamic parameter list element could not be null"));
 				continue;
 			}
-			search_for_foreign_exported_value_nodes(canvas, value_node, foreign_exported_valuenodes);
+			search_for_foreign_exported_value_nodes(canvas, value_node, foreign_exported_valuenodes, visited_valuenodes);
 		}
 	};
 
