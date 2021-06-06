@@ -275,7 +275,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		const Glib::ustring nodename = node->get_name();
 
 		// Is element known ?
-		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect"};
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle"};
 		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
 			return;
 
@@ -340,12 +340,15 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		// Only fill and a simple geometric shape? Render as Synfig primitive.
 		// If it has stroke, render as a region, instead of standard shape, to be able to link to outline
 		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
-			if (nodename.compare("rect") == 0) {
+			if (nodename.compare("rect") == 0 || nodename.compare("circle") == 0) {
 				if (!mtx.is_identity())
 					child_layer = initializeGroupLayerNode(root->add_child("layer"), id);
 				child_fill=child_layer;
 
-				parser_rect(nodeElement,child_fill,style);
+				if (nodename.compare("rect") == 0)
+					parser_rect(nodeElement,child_fill,style);
+				else if (nodename.compare("circle") == 0)
+					parser_circle(nodeElement,child_fill,style);
 
 				if(typeFill == FILL_TYPE_GRADIENT){
 					build_fill (child_fill,fill,SVGMatrix::identity);
@@ -374,6 +377,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			k = parser_path_polygon(nodeElement->get_attribute_value("points"), bline_matrix);
 		else if(nodename.compare("rect")==0)
 			k = parser_path_rect(nodeElement, style, mtx);
+		else if(nodename.compare("circle")==0)
+			k = parser_path_circle(nodeElement, style, mtx);
 
 		if (k.empty())
 			return;
@@ -618,7 +623,39 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, 
 
 }
 
-/* === CONVERT TO PATH PARSERS ============================================= */       
+void
+Svg_parser::parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style)
+{
+	Glib::ustring circle_id = nodeElement->get_attribute_value("id");
+	float circle_x      = style.compute("cx", "0", style.compute("width", "0"));
+	float circle_y      = style.compute("cy", "0", style.compute("height", "0"));
+	float circle_radius = atof(style.get("r", "0").c_str()); // FIXME compute for %
+
+	Glib::ustring fill  = style.get("fill", "#000");
+	float fill_opacity  = style.compute("fill_opacity", "1");
+	float opacity       = style.compute("opacity", "1");
+
+	xmlpp::Element *child_circle=root->add_child("layer");
+	child_circle->set_attribute("type","circle");
+	child_circle->set_attribute("active","true");
+	child_circle->set_attribute("version","0.2");
+	child_circle->set_attribute("desc",circle_id);
+
+	build_real(child_circle->add_child("param"),"z_depth",0.0);
+	build_real(child_circle->add_child("param"),"amount",1.0);
+	build_integer(child_circle->add_child("param"),"blend_method",0);
+	build_color(child_circle->add_child("param"),getRed (fill),getGreen (fill),getBlue(fill),opacity*fill_opacity);
+
+	float cx = circle_x;
+	float cy = circle_y;
+	coor2vect(&cx,&cy);
+	build_vector (child_circle->add_child("param"),"origin",cx,cy);
+	float r = circle_radius;
+	r /= kux;
+	build_real(child_circle->add_child("param"),"radius",r);
+}
+
+/* === CONVERT TO PATH PARSERS ============================================= */
 
 std::list<BLine>
 Svg_parser::parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx)
@@ -1157,6 +1194,38 @@ Svg_parser::parser_path_rect(const xmlpp::Element* nodeElement, const Style& sty
 	} catch(...) {
 		synfig::error("SVG Parser: Invalid coordinate value: it should be a real value!");
 	}
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_path_circle(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+	float circle_x = style.compute("cx", "0", style.compute("width", "0"));
+	float circle_y = style.compute("cy", "0", style.compute("height", "0"));
+	float circle_radius = atof(style.get("r", "0").c_str()); // FIXME compute for %
+
+	if (approximate_less(circle_radius, 0.f)) {
+		synfig::error("SVG Parser: Invalid circle r value: it cannot be negative!");
+		return k;
+	}
+
+	if (approximate_zero(circle_radius)) {
+		return k;
+	}
+
+	std::string path = etl::strprintf("M %lf %lf A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf "
+												"A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf z",
+							  circle_x + circle_radius, circle_y,
+							  circle_radius, circle_radius, circle_x, circle_y + circle_radius,
+							  circle_radius, circle_radius, circle_x - circle_radius, circle_y,
+							  circle_radius, circle_radius, circle_x, circle_y - circle_radius,
+							  circle_radius, circle_radius, circle_x + circle_radius, circle_y
+							  );
+	k = parser_path_d(path,mtx);
+
 	return k;
 }
 
@@ -2471,14 +2540,20 @@ Style::compute(const std::string &property, std::string default_value, double re
 
 	double d_value;
 	if (parse_number_or_percent(value, d_value)) {
-		return d_value * reference_value;
+		if (!value.empty() && value.back() == '%')
+			return d_value * reference_value;
+		else
+			return d_value;
 	}
 
 	warning("Layer_Svg: %s",
 		etl::strprintf(_("Invalid number for '%s': %s. Trying default value..."), property.c_str(), value.c_str()).c_str());
 
 	if (parse_number_or_percent(default_value, d_value)) {
-		return d_value * reference_value;
+		if (!value.empty() && value.back() == '%')
+			return d_value * reference_value;
+		else
+			return d_value;
 	}
 
 	error("Layer_Svg: %s", etl::strprintf(_("... No, invalid number for '%s': %s"), property.c_str(), default_value.c_str()).c_str());
