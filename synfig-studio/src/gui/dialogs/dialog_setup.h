@@ -191,6 +191,7 @@ class Dialog_Setup : public Dialog_Template
 
 	void on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode);
 	void on_accel_cleared(const Glib::ustring& path_string);
+	void on_restore_default_accels_pressed();
 public:
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
