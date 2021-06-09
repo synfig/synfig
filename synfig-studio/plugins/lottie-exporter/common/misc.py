@@ -199,6 +199,12 @@ def parse_position(animated, i):
     elif animated.attrib["type"] == "gradient":
         return Gradient(animated[i][0])
 
+    elif animated.attrib["type"] == "shade":
+        x = float(animated[i][0][0].text)*settings.PIX_PER_UNIT
+        y = float(animated[i][0][1].text)*settings.PIX_PER_UNIT
+        ans = math.sqrt(math.pow(x,2)+math.pow(y,2))
+        pos = [ans,get_frame(animated[i])]
+
     return Vector(pos[0], pos[1], animated.attrib["type"])
 
 

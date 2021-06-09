@@ -535,6 +535,30 @@ class Param:
                 self.expression = ret
                 return ret, self.expression_controllers
 
+            elif self.param[0].tag == "distance":
+                self.subparams["distance"].extract_subparams()
+                base, eff_1 = self.subparams["distance"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                
+                ret = "Math.sqrt(sum(Math.pow({base}[1],2),Math.pow({base}[0],2)))"
+                ret = ret.format(base=base)
+                self.expression = ret
+                return ret, self.expression_controllers
+
+            elif self.param[0].tag == "direction":
+                self.subparams["direction"].extract_subparams()
+                base, eff_1 = self.subparams["direction"].recur_animate("vector")
+                self.expression_controllers.extend(eff_1)
+                
+                expr = "radiansToDegrees(Math.atan2(-{base}[1],{base}[0]))"
+                expr = expr.format(base=base)
+                ret  = "if({expr} > 90)\n $bm_rt = sub(450,{expr}) ;\n else\n $bm_rt=sub(90,{expr});" 
+                ret = ret.format(expr=expr)
+
+                settings.RANGE_FLAG = 1
+                self.expression = ret
+                return ret, self.expression_controllers
+
             elif self.param[0].tag == "vectorangle":
                 self.subparams["vectorangle"].extract_subparams()
                 vector, eff_1 = self.subparams["vectorangle"].subparams["vector"].recur_animate("vector")

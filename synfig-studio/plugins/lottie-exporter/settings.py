@@ -63,6 +63,7 @@ NOT_ACTIVE_TEXT = "Layer '%s' is not active"
 EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
 SHAPE_LAYER = {"simple_circle", "linear_gradient", "radial_gradient"}
 BLUR_LAYER = {"blur"}
+SHADE_LAYER = {"shade"}
 SOLID_LAYER = {"SolidColor"}
 SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"} 
 IMAGE_LAYER = {"import"}
@@ -70,7 +71,7 @@ PRE_COMP_LAYER = {"rotate", "zoom", "translate", "stretch"}
 GROUP_LAYER = {"group", "switch"}
 SKELETON_LAYER = {"skeleton"}
 UNKNOWN_LAYER = "unknown_layer"
-CONVERT_METHODS = {"add", "atan2","average", "bone", "bone_link", "bone_root", "composite", "cos", "dotproduct", "exp", "fromint", "linear", "logarithm", "power", "radial_composite", "range", "reciprocal", "scale", "sine", "subtract", "switch", "vectorangle", "vectorlength", "vectorx", "vectory", "weighted_average"}
+CONVERT_METHODS = {"add", "atan2","average", "bone", "bone_link", "bone_root", "composite", "cos", "direction", "distance", "dotproduct", "exp", "fromint", "linear", "logarithm", "power", "radial_composite", "range", "reciprocal", "scale", "sine", "subtract", "switch", "vectorangle", "vectorlength", "vectorx", "vectory", "weighted_average"}
 BONES = {"bone", "bone_root"}
 DOT_FLAG = 0 #Used for the two types of dot product -> angle and real
 BLUR_TYPE = 29
@@ -83,6 +84,7 @@ LEVEL = 0 #Indicates the depth of a layer
 OUTLINE_FLAG = False #Flag to check for outline as outline needs the newer version of bodymovin.js
 WAYPOINTS_LIST = []
 WITHOUT_VARIABLE_WIDTH = False
+GROUP_NUMBER = 0
 
 def init():
     """
@@ -118,3 +120,7 @@ def init():
     blur_dictionary = {}
     global non_blur_dictionary #used to make a dictionary of all non blur layers
     non_blur_dictionary = {}
+    global shade_dictionary #used to make a dictionary of shade layers
+    shade_dictionary = {}
+    global non_group_shade_dictionary #used for making a dictionary of non group shade layers
+    non_group_shade_dictionary = {}
