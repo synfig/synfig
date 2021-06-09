@@ -46,6 +46,7 @@ def parse(file_name):
 
     settings.lottie_format["layers"] = []
     canvas = Canvas(root)
+    settings.ROOT_CANVAS = canvas
     gen_layers(settings.lottie_format["layers"], canvas, canvas.get_num_layers() - 1)
 
     return json.dumps(modify_final_dump(settings.lottie_format))

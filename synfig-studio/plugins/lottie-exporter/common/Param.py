@@ -44,10 +44,26 @@ class Param:
         """
         if self.param is None or "use" not in self.param.attrib.keys():
             return
-        layer = self.get_layer()
-        canvas = layer.getparent()
+
+        canvas = settings.ROOT_CANVAS   # Start searching from the root canvas
         key = self.param.attrib["use"]
-        anim = canvas.get_def(key)
+        # Full ID string format is like: [[file-path]#][canvas-id:][child-canvas-id:][child-canvas-id:]…value-node-id
+        # Refer here: https://github.com/synfig/synfig/issues/993
+        keys = key.split("#")
+
+        if len(keys) == 2:  # Meaning file-path is not empty
+            root = etree.parse(keys[0]).getroot()
+            canvas = common.Canvas.Canvas(root)
+            keys = keys[1].split(":")
+        else:
+            keys = keys[0].split(":")   # Split based on ":" to go to the child-canvas-id
+
+        # Iterate on cavas id's to reach the value node id
+        for i in range(0, len(keys) - 1):
+            if keys[i] == '':
+                continue
+            canvas = common.Canvas.Canvas(canvas.get_def(keys[i]))
+        anim = canvas.get_def(keys[-1])
         assert(anim is not None)
         self.param.append(copy.deepcopy(anim))
         
