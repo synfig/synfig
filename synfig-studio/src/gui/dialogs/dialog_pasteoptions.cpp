@@ -193,7 +193,7 @@ void Dialog_PasteOptions::on_valuenode_name_edited(const Glib::ustring& path, co
 	// Check if it is a valid valuenode id
 	if (new_text.empty())
 		return;
-	if (new_text.find_first_of(":#") != new_text.npos)
+	if (new_text.find_first_of(" :#@$^&()*\t") != new_text.npos)
 		return;
 
 	Gtk::TreeIter edited_iter = valuenodes_model->get_iter(path);
