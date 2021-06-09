@@ -45,15 +45,23 @@ class Param:
         if self.param is None or "use" not in self.param.attrib.keys():
             return
 
-        canvas = settings.ROOT_CANVAS   # Start searching from the root canvas
-        key = self.param.attrib["use"]
         # Full ID string format is like: [[file-path]#][canvas-id:][child-canvas-id:][child-canvas-id:]…value-node-id
         # Refer here: https://github.com/synfig/synfig/issues/993
+        layer = self.get_layer()
+        canvas = layer.getparent()
+        key = self.param.attrib["use"]
+        if ":" in key:  # Start searching from root canvas
+            canvas = settings.ROOT_CANVAS
         keys = key.split("#")
 
         if len(keys) == 2:  # Meaning file-path is not empty
             root = etree.parse(keys[0]).getroot()
-            canvas = common.Canvas.Canvas(root)
+            # This is a hack which changes the actual root canvas, so that we
+            # can store the root canvas of another file in our settings
+            actual_root_canvas = settings.ROOT_CANVAS
+            canvas = common.Canvas.Canvas(root, True)
+            settings.ROOT_CANVAS = actual_root_canvas
+
             keys = keys[1].split(":")
         else:
             keys = keys[0].split(":")   # Split based on ":" to go to the child-canvas-id

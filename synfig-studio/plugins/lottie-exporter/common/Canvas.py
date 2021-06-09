@@ -17,6 +17,9 @@ class Canvas:
     def __init__(self, canvas, is_root_canvas = False):
         """
         """
+        if is_root_canvas:
+            settings.ROOT_CANVAS = self
+
         if isinstance(canvas, Param):
             self.canvas = canvas.get()[0]
             # If canvas is derived from a parameter store that parameter also
@@ -25,9 +28,6 @@ class Canvas:
             self.canvas = canvas
         self.defs = {}
         self.extract_defs(self.defs)
-
-        if is_root_canvas:
-            settings.ROOT_CANVAS = self
 
         self.layers = []
         self.extract_layers(self.layers)
