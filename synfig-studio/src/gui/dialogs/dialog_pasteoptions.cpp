@@ -278,6 +278,7 @@ void Dialog_PasteOptions::rebuild_model()
 
 		auto iter = valuenodes_model->append();
 
+		iter->set_value(COLUMN_VALUENODE_POINTER, v.get());
 		iter->set_value(COLUMN_ORIGINAL_NAME, v->get_id());
 		iter->set_value(COLUMN_NAME, v->get_id());
 		iter->set_value(COLUMN_FILE_PATH, etl::strprintf("(%s)", v->get_root_canvas()->get_file_name().c_str()));
@@ -299,10 +300,15 @@ void Dialog_PasteOptions::refresh_status()
 void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 {
 	auto iter = valuenodes_model->get_iter(std::to_string(row_index));
+	if (!iter)
+		return;
+
 	std::string original_name;
 	iter->get_value(COLUMN_ORIGINAL_NAME, original_name);
 
-	ValueNode::LooseHandle v = find_valuenode_by_id(value_nodes, original_name);
+	ValueNode* pv;
+	iter->get_value(COLUMN_VALUENODE_POINTER, pv);
+	ValueNode::LooseHandle v = pv;
 	if (!v) {
 		error(_("Couldn't find valuenode ID (%s). This shouldn't happen"), original_name.c_str());
 		return;

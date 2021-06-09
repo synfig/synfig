@@ -11,6 +11,8 @@
   </object>
   <object class="GtkListStore" id="valuenodes_liststore">
     <columns>
+      <!-- column-name ValueNode -->
+      <column type="gpointer"/>
       <!-- column-name Original_Name -->
       <column type="gchararray"/>
       <!-- column-name Name -->
@@ -116,7 +118,7 @@ In other words, it means you will not be able to load this file if any source fi
                 <property name="can-focus">True</property>
                 <property name="model">valuenodes_liststore</property>
                 <property name="enable-grid-lines">horizontal</property>
-                <property name="tooltip-column">7</property>
+                <property name="tooltip-column">8</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection"/>
                 </child>
@@ -125,11 +127,11 @@ In other words, it means you will not be able to load this file if any source fi
                     <property name="sizing">fixed</property>
                     <property name="fixed-width">24</property>
                     <property name="reorderable">True</property>
-                    <property name="sort-column-id">4</property>
+                    <property name="sort-column-id">7</property>
                     <child>
                       <object class="GtkCellRendererPixbuf"/>
                       <attributes>
-                        <attribute name="pixbuf">6</attribute>
+                        <attribute name="pixbuf">7</attribute>
                       </attributes>
                     </child>
                   </object>
@@ -140,18 +142,18 @@ In other words, it means you will not be able to load this file if any source fi
                     <property name="title" translatable="yes" context="ValueNode id / name">Name</property>
                     <property name="expand">True</property>
                     <property name="reorderable">True</property>
-                    <property name="sort-column-id">1</property>
+                    <property name="sort-column-id">2</property>
                     <child>
                       <object class="GtkCellRendererPixbuf"/>
                       <attributes>
-                        <attribute name="pixbuf">8</attribute>
+                        <attribute name="pixbuf">9</attribute>
                       </attributes>
                     </child>
                     <child>
                       <object class="GtkCellRendererText" id="name_column_renderer"/>
                       <attributes>
-                        <attribute name="editable">2</attribute>
-                        <attribute name="text">1</attribute>
+                        <attribute name="editable">3</attribute>
+                        <attribute name="text">2</attribute>
                       </attributes>
                     </child>
                   </object>
@@ -167,8 +169,8 @@ In other words, it means you will not be able to load this file if any source fi
                         <property name="scale">0.80</property>
                       </object>
                       <attributes>
-                        <attribute name="visible">4</attribute>
-                        <attribute name="text">3</attribute>
+                        <attribute name="visible">5</attribute>
+                        <attribute name="text">4</attribute>
                       </attributes>
                     </child>
                   </object>
@@ -182,7 +184,7 @@ In other words, it means you will not be able to load this file if any source fi
                     <child>
                       <object class="GtkCellRendererToggle" id="copy_column_renderer"/>
                       <attributes>
-                        <attribute name="active">9</attribute>
+                        <attribute name="active">10</attribute>
                       </attributes>
                     </child>
                   </object>

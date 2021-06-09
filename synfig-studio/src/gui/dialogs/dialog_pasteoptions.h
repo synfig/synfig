@@ -81,6 +81,7 @@ class Dialog_PasteOptions : public Gtk::Dialog
 	Gtk::Button * ok_button;
 
 	enum {
+		COLUMN_VALUENODE_POINTER,
 		COLUMN_ORIGINAL_NAME,
 		COLUMN_NAME,
 		COLUMN_IS_NAME_EDITABLE,
