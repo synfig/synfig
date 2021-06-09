@@ -13,7 +13,8 @@ EXTRA_FILES = \
               shape.py \
 			  solid.py \
 			  shape_solid.py \
-			  translate_layer.py
+			  translate_layer.py \
+			  text.py
 
 plugindir = ${datadir}/synfig/plugins/lottie-exporter/$(PLUGIN_NAME)
 plugin_DATA = \

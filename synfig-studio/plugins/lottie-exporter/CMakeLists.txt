@@ -49,6 +49,7 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     layers/shape.py
     layers/shape_solid.py
     layers/solid.py
+    layers/text.py
     layers/translate_layer.py
 
     # properties

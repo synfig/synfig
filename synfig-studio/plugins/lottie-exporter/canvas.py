@@ -41,7 +41,6 @@ def calc_time(root, lottie, which):
     if which == "op":
         lottie[which] += 1
 
-
 def gen_canvas(lottie, root):
     """
     Generates the canvas for the lottie format
@@ -87,6 +86,7 @@ def gen_canvas(lottie, root):
     lottie["fr"] = float(root.attrib["fps"])
     lottie["assets"] = []       # Creating array for storing assets
     lottie["markers"] = []      # Creating array for storing markers
+    lottie["fonts"] = {"list":[]}        # Creating font element to store font data of a text layer
     calc_time(root, lottie, "ip")
     calc_time(root, lottie, "op")
     calculate_pixels_per_unit()
