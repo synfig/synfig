@@ -14,7 +14,7 @@ class Canvas:
     """
     Class to keep Canvas for Synfig
     """
-    def __init__(self, canvas):
+    def __init__(self, canvas, is_root_canvas = False):
         """
         """
         if isinstance(canvas, Param):
@@ -25,6 +25,10 @@ class Canvas:
             self.canvas = canvas
         self.defs = {}
         self.extract_defs(self.defs)
+
+        if is_root_canvas:
+            settings.ROOT_CANVAS = self
+
         self.layers = []
         self.extract_layers(self.layers)
         self.bones = {}
