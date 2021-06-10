@@ -237,9 +237,17 @@ set(PIXMAPS_DIR ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic)
 file(MAKE_DIRECTORY ${PIXMAPS_DIR})
 
 ## TODO: configure icon size
-foreach (ICON IN ITEMS ${ICONS})
-	set(IMG_SIZE_${ICON} 32 32)
-endforeach()
+#
+# Implement icon sizes after Synfig Studio uses Gtk::IconTheme
+# For now just render to the default document size like Autotools does
+#
+# Note to protential future contributors:
+# Not all icons are of aspect 1:1, eg- toggle button chain link
+# so the below code is faulty and needs to be corrected
+#
+#foreach (ICON IN ITEMS ${ICONS})
+#	set(IMG_SIZE_${ICON} 32 32)
+#endforeach()
 
 foreach (IMAGE IN ITEMS ${IMAGES})
 	if (IMG_SOURCE_${IMAGE})
@@ -249,16 +257,19 @@ foreach (IMAGE IN ITEMS ${IMAGES})
 		set(SRC ${IMAGE})
 		set(TIME 0)
 	endif()
-	if (IMG_SIZE_${IMAGE})
-		list(GET IMG_SIZE_${IMAGE} 0 W)
-		list(GET IMG_SIZE_${IMAGE} 1 H)
-	else()
-		set(W 0)
-		set(H 0)
-	endif()
+	# Wait for Gtk::IconTheme
+#	if (IMG_SIZE_${IMAGE})
+#		list(GET IMG_SIZE_${IMAGE} 0 W)
+#		list(GET IMG_SIZE_${IMAGE} 1 H)
+#	else()
+#		set(W 0)
+#		set(H 0)
+#	endif()
 	add_custom_command(
 		OUTPUT ${PIXMAPS_DIR}/${IMAGE}.png
-		COMMAND synfig_bin ${SRC}.sif -o ${PIXMAPS_DIR}/${IMAGE}.png --time ${TIME}f -w ${W} -h ${H} --quiet
+		# Wait for Gtk::IconTheme
+#		COMMAND synfig_bin ${SRC}.sif -o ${PIXMAPS_DIR}/${IMAGE}.png --time ${TIME}f -w ${W} -h ${H} --quiet
+		COMMAND synfig_bin ${SRC}.sif -o ${PIXMAPS_DIR}/${IMAGE}.png --time ${TIME}f --quiet
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${SRC}.sif synfig_bin
 	)
