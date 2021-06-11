@@ -53,9 +53,6 @@ class Param:
         keys = key.split("#")
 
         if len(keys) == 2:  # Meaning file-path is not empty
-            if ":" in keys[1]:  # Start searching from root canvas
-                canvas = settings.ROOT_CANVAS
-
             root = etree.parse(keys[0]).getroot()
             # This is a hack which changes the actual root canvas, so that we
             # can store the root canvas of another file in our settings
