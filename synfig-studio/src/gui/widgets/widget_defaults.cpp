@@ -196,8 +196,8 @@ Widget_Defaults::Widget_Defaults():
 		_widget_otln_color->set_tooltip_text(_("Outline Color"));
 
 		// fixed outline color widget size
-		Gtk::Alignment *widget_otln_color(manage(new Gtk::Alignment(Gtk::ALIGN_END, Gtk::ALIGN_END, 0.0, 0.0)));
-		widget_otln_color->add(*_widget_otln_color);
+		_widget_otln_color->set_halign(Gtk::ALIGN_END);
+		_widget_otln_color->set_valign(Gtk::ALIGN_END);
 
 
 		// widget fill color
@@ -246,7 +246,7 @@ Widget_Defaults::Widget_Defaults():
 		button_reset->add(*_button_reset);
 
 		// ship child widgets together
-		_widget_colors->attach(*widget_otln_color, 0, 0, 1, 1);
+		_widget_colors->attach(*_widget_otln_color, 0, 0, 1, 1);
 		_widget_colors->attach(*widget_fill_color, 1, 1, 1, 1);
 		_widget_colors->attach(*button_swap,       1, 0, 1, 1);
 		_widget_colors->attach(*button_reset,      0, 1, 1, 1);
