@@ -211,9 +211,6 @@ Dock_Canvases::new_instance(etl::handle<studio::Instance> instance)
 			loose_instance
 		)
 	);
-
-	present();
-
 }
 
 void
