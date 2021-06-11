@@ -50,11 +50,12 @@ class Param:
         layer = self.get_layer()
         canvas = layer.getparent()
         key = self.param.attrib["use"]
-        if ":" in key:  # Start searching from root canvas
-            canvas = settings.ROOT_CANVAS
         keys = key.split("#")
 
         if len(keys) == 2:  # Meaning file-path is not empty
+            if ":" in keys[1]:  # Start searching from root canvas
+                canvas = settings.ROOT_CANVAS
+
             root = etree.parse(keys[0]).getroot()
             # This is a hack which changes the actual root canvas, so that we
             # can store the root canvas of another file in our settings
@@ -64,6 +65,8 @@ class Param:
 
             keys = keys[1].split(":")
         else:
+            if ":" in keys[0]:  # Start searching from root canvas
+                canvas = settings.ROOT_CANVAS
             keys = keys[0].split(":")   # Split based on ":" to go to the child-canvas-id
 
         # Iterate on cavas id's to reach the value node id
