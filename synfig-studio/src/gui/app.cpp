@@ -1702,7 +1702,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		dock_manager->show_all_dock_dialogs();
 
 		main_window->present();
-		dock_toolbox->present();
 
 		splash_screen.hide();
 
