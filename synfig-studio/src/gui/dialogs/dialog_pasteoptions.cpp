@@ -25,9 +25,10 @@
 #include <glibmm/fileutils.h>
 #include <glibmm/markup.h>
 
-#include <gtkmm/liststore.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/cellrenderertoggle.h>
+#include <gtkmm/label.h>
+#include <gtkmm/liststore.h>
 
 #include <gui/iconcontroller.h>
 #include <gui/localization.h>
