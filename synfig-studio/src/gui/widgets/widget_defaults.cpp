@@ -201,15 +201,14 @@ Widget_Defaults::Widget_Defaults():
 
 
 		// widget fill color
-		_widget_fill_color = manage(new Widget_Color());
-		_widget_fill_color->set_size_request(30, 26);
-		_widget_fill_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fill_color_clicked));
-		_widget_fill_color->set_tooltip_text(_("Fill Color"));
+		widget_fill_color = manage(new Widget_Color());
+		widget_fill_color->set_size_request(30, 26);
+		widget_fill_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fill_color_clicked));
+		widget_fill_color->set_tooltip_text(_("Fill Color"));
 
 		// fixed fill color wiget size
-		widget_fill_color = manage(new Gtk::Alignment(Gtk::ALIGN_END, Gtk::ALIGN_END, 0.0, 0.0));
-		widget_fill_color->add(*_widget_fill_color);
-
+		widget_fill_color->set_halign(Gtk::ALIGN_END);
+		widget_fill_color->set_valign(Gtk::ALIGN_END);
 
 		Gtk::Image* icon;
 
@@ -422,7 +421,7 @@ Widget_Defaults::outline_color_refresh()
 void
 Widget_Defaults::fill_color_refresh()
 {
-	_widget_fill_color->set_value(synfigapp::Main::get_fill_color());
+	widget_fill_color->set_value(synfigapp::Main::get_fill_color());
 }
 
 void

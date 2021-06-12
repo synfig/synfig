@@ -50,8 +50,7 @@ class Widget_Defaults : public Gtk::Box
 {
 	Widget_Color 	*widget_outline_color;
 
-	Widget_Color 	*_widget_fill_color;
-	Gtk::Alignment 	*widget_fill_color;
+	Widget_Color 	*widget_fill_color;
 
 	Gtk::Grid	*_widget_colors;
 	Gtk::Alignment	*widget_colors;
