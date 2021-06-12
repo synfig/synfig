@@ -139,10 +139,10 @@ search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, std::list<La
 /// \param layer Where to look for replaceable value nodes
 /// \param valuenode_replacements Maps the valuenode ID to be replaced -> (new value node, new ID for this new value node - if different)
 static void
-replace_exported_value_nodes(Layer::LooseHandle layer, const std::map<std::string,std::pair<ValueNode::Handle, std::string>>& valuenode_replacements)
+replace_exported_value_nodes(Layer::LooseHandle layer, const std::map<ValueNode::Handle,std::pair<ValueNode::Handle, std::string>>& valuenode_replacements)
 {
 	auto search_clone = [valuenode_replacements](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
-		auto iter = valuenode_replacements.find(vn->get_id());
+		auto iter = valuenode_replacements.find(vn);
 		if (iter != valuenode_replacements.end()) {
 			auto replacement = iter->second.first;
 			return replacement;
@@ -683,7 +683,7 @@ LayerActionManager::amount_dec()
 	}
 }
 
-bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, LayerActionManager::ValueNodeReplacementMap& valuenode_replacements) const
+bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, ValueNodeReplacementMap& valuenode_replacements) const
 {
 	std::vector<ValueNode::LooseHandle> foreign_exported_valuenode_list;
 
@@ -697,7 +697,7 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 		if (ret != Gtk::RESPONSE_OK)
 			return false;
 
-		std::map<std::string, std::string> user_choices;
+		std::map<ValueNode::LooseHandle, std::string> user_choices;
 		dlg->get_user_choices(user_choices);
 
 		for (auto item : user_choices) {
@@ -705,26 +705,25 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 			if (item.second.empty())
 				continue;
 
-			const std::string& original_id = item.first;
+			const ValueNode::LooseHandle foreign_value_node = item.first;
 			const std::string& modified_id = item.second;
 
 			// shall the exported valuenode be cloned or linked to a locally existent one?
-			ValueNode::Handle local_canvas_value_node;
-			try {
-				if (modified_id.empty())
-					local_canvas_value_node = canvas->find_value_node(original_id, true);
-				else
-					local_canvas_value_node = canvas->find_value_node(modified_id, true);
-			} catch (...) {
-			}
-			const bool link_to_local_canvas = local_canvas_value_node;
-
-			if (link_to_local_canvas) {
-				valuenode_replacements[original_id] = std::pair<ValueNode::Handle, std::string>(local_canvas_value_node, "");
+			if (modified_id.empty()) {
+				// foreign link
 			} else {
-				auto foreign_value_node = dlg->find_value_node_by_name(original_id);
-				ValueNode::Handle cloned_value_node = foreign_value_node->clone(canvas);// TODO Use paste guid?!
-				valuenode_replacements[original_id] = std::pair<ValueNode::Handle, std::string>(cloned_value_node, modified_id);
+				ValueNode::Handle local_canvas_value_node;
+				try {
+					local_canvas_value_node = canvas->find_value_node(modified_id, true);
+				} catch (...) {
+				}
+				const bool link_to_local_canvas = local_canvas_value_node;
+				if (link_to_local_canvas) {
+					valuenode_replacements[foreign_value_node] = std::pair<ValueNode::Handle, std::string>(local_canvas_value_node, "");
+				} else {
+					ValueNode::Handle cloned_value_node = foreign_value_node->clone(canvas);// TODO Use paste guid?!
+					valuenode_replacements[foreign_value_node] = std::pair<ValueNode::Handle, std::string>(cloned_value_node, modified_id);
+				}
 			}
 		}
 	}
@@ -732,23 +731,30 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 }
 
 void
-LayerActionManager::export_value_nodes(Canvas::Handle canvas, const std::map<std::string, std::pair<ValueNode::Handle, std::string>>& valuenodes) const
+LayerActionManager::export_value_nodes(Canvas::Handle canvas, const ValueNodeReplacementMap& valuenodes) const
 {
-	synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeAdd"));
-
-	assert(action);
-	if(!action)
-		return;
-
-	action->set_param("canvas",canvas);
-	action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
+	std::set<std::string> exported_ids;
 
 	for (auto item : valuenodes) {
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeAdd"));
+
+		assert(action);
+		if(!action)
+			return;
+
+		action->set_param("canvas",canvas);
+		action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
+
 //		const std::string& original_id = item.first;
 		const std::string& modified_id = item.second.second;
 
 		// if ID isn't modified, it doesn't need to (re)export it
 		if (modified_id.empty())
+			continue;
+
+		// if ID is already prepared to export, don't do it again
+		if (exported_ids.count(modified_id))
 			continue;
 
 		try {
@@ -767,6 +773,8 @@ LayerActionManager::export_value_nodes(Canvas::Handle canvas, const std::map<std
 				error(_("Couldn't export value node %s"), modified_id.c_str());
 				continue;
 			}
+
+			exported_ids.insert(modified_id);
 		}
 	}
 }

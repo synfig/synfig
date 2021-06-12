@@ -83,7 +83,7 @@ class LayerActionManager
 	void amount_inc();
 	void amount_dec();
 
-	typedef std::map<std::string,std::pair<synfig::ValueNode::Handle, std::string>> ValueNodeReplacementMap;
+	typedef std::map<synfig::ValueNode::Handle,std::pair<synfig::ValueNode::Handle, std::string>> ValueNodeReplacementMap;
 	/// If there is exported value nodes being copied, prompts user what to do with them
 	/// \param where clipboard data will be pasted
 	/// \param[out] answer maps what to do with each exported valuenode being pasted
