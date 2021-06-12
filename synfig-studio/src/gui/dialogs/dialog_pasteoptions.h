@@ -80,7 +80,6 @@ class Dialog_PasteOptions : public Gtk::Dialog
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_link;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_conflict;
 
-	Gtk::Button * ok_button;
 
 	enum {
 		COLUMN_VALUENODE_POINTER,
