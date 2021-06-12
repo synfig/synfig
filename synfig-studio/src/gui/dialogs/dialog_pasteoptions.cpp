@@ -120,25 +120,24 @@ void Dialog_PasteOptions::set_value_nodes(const std::vector<ValueNode::LooseHand
 		clear();
 		return;
 	}
-	if (value_nodes == value_node_list)
-		return;
+
+	// grant uniqueness
 
 	for (auto value_node : value_node_list) {
 		if (!value_node->is_exported())
 			continue;
 
-		if (auto v = find_valuenode_by_id(value_nodes, value_node->get_id())) {
-			if (v != value_node) {
-				error("There should not be two different valuenodes with same ID '%s':\n\t%s\n\t%s",
-					  value_node->get_id().c_str(),
-					  value_node->get_string().c_str(),
-					  v->get_string().c_str()
-				);
-			}
-			continue;
+		value_nodes.insert(value_node);
+
+		std::vector<ValueNode::LooseHandle> dependencies;
+		for (auto w : value_node_list) {
+			if (w != value_node && value_node->is_descendant(w))
+				dependencies.push_back(w);
 		}
-		value_nodes.push_back(value_node);
+
+		value_node_dependencies[value_node] = dependencies;
 	}
+
 	rebuild_model();
 }
 
@@ -154,28 +153,23 @@ void Dialog_PasteOptions::set_destination_canvas(Canvas::Handle canvas)
 	rebuild_model();
 }
 
-void Dialog_PasteOptions::get_user_choices(std::map<std::string, std::string>& user_choices) const
+void Dialog_PasteOptions::get_user_choices(std::map<ValueNode::LooseHandle, std::string>& user_choices) const
 {
 	valuenodes_model->foreach_iter([=, &user_choices](const Gtk::TreeModel::iterator& iter) -> bool {
-		std::string original_name;
+		ValueNode* value_node;
 		std::string name;
 		std::string status;
 		bool should_copy;
-		iter->get_value(COLUMN_ORIGINAL_NAME, original_name);
+		iter->get_value(COLUMN_VALUENODE_POINTER, value_node);
 		iter->get_value(COLUMN_NAME, name);
 		iter->get_value(COLUMN_STATUS, status);
 		iter->get_value(COLUMN_COPY_OR_NOT, should_copy);
 		should_copy &= status != "conflict";
 
-		user_choices[original_name] = should_copy ? name : "";
+		user_choices[value_node] = should_copy ? name : "";
 
 		return false;
 	});
-}
-
-ValueNode::LooseHandle Dialog_PasteOptions::find_value_node_by_name(const std::string& name)
-{
-	return find_valuenode_by_id(value_nodes, name);
 }
 
 void Dialog_PasteOptions::on_valuenode_copy_toggled(const Glib::ustring& path)
@@ -185,6 +179,37 @@ void Dialog_PasteOptions::on_valuenode_copy_toggled(const Glib::ustring& path)
 	iter->get_value(COLUMN_COPY_OR_NOT, is_copy);
 	iter->set_value(COLUMN_COPY_OR_NOT, !is_copy);
 	refresh_row_status(std::stoul(path));
+
+	// Enable/Disable choice for its dependencies: if this value node will be
+	// external link, all dependencies MUST be linked too
+
+	ValueNode *vn;
+	iter->get_value(COLUMN_VALUENODE_POINTER, vn);
+
+	std::vector<Gtk::TreeIter> dependencies;
+
+	valuenodes_model->foreach_iter([vn, &dependencies, this](const Gtk::TreeModel::iterator& w_iter)-> bool {
+		ValueNode* w;
+		w_iter->get_value(COLUMN_VALUENODE_POINTER, w);
+
+		if (std::find(value_node_dependencies[vn].begin(), value_node_dependencies[vn].end(), w) != value_node_dependencies[vn].end()) {
+			dependencies.push_back(w_iter);
+		}
+		return false;
+	});
+
+	for (auto iter : dependencies) {
+		std::string path_str = valuenodes_model->get_path(iter).to_string();
+		bool would_be_copied;
+		iter->get_value(COLUMN_COPY_OR_NOT, would_be_copied);
+		if (would_be_copied) {
+			iter->set_value(COLUMN_COPY_OR_NOT, false);
+			on_valuenode_copy_toggled(path_str);
+		} else {
+			refresh_row_status(std::stoul(path_str));
+		}
+	}
+
 	update_ok_button_sensitivity();
 }
 
@@ -284,6 +309,7 @@ void Dialog_PasteOptions::rebuild_model()
 		iter->set_value(COLUMN_FILE_PATH, etl::strprintf("(%s)", v->get_root_canvas()->get_file_name().c_str()));
 		iter->set_value(COLUMN_VALUE_TYPE, get_tree_pixbuf(v->get_type()));
 		iter->set_value(COLUMN_COPY_OR_NOT, true);
+		iter->set_value(COLUMN_IS_EDITABLE, true);
 	}
 
 	refresh_status();
@@ -299,15 +325,15 @@ void Dialog_PasteOptions::refresh_status()
 
 void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 {
-	auto iter = valuenodes_model->get_iter(std::to_string(row_index));
-	if (!iter)
+	auto v_iter = valuenodes_model->get_iter(std::to_string(row_index));
+	if (!v_iter)
 		return;
 
 	std::string original_name;
-	iter->get_value(COLUMN_ORIGINAL_NAME, original_name);
+	v_iter->get_value(COLUMN_ORIGINAL_NAME, original_name);
 
 	ValueNode* pv;
-	iter->get_value(COLUMN_VALUENODE_POINTER, pv);
+	v_iter->get_value(COLUMN_VALUENODE_POINTER, pv);
 	ValueNode::LooseHandle v = pv;
 	if (!v) {
 		error(_("Couldn't find valuenode ID (%s). This shouldn't happen"), original_name.c_str());
@@ -320,21 +346,56 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 	if (v->get_root_canvas() == destination_canvas->get_root())
 		return;
 
+	// Exported value nodes that have value node v as dependency, and that will be externally linked, not copied
+	std::vector<ValueNode::LooseHandle> linked_ascendent_value_nodes;
+
+	valuenodes_model->foreach_iter([v, &linked_ascendent_value_nodes](const Gtk::TreeModel::iterator& w_iter)-> bool {
+		ValueNode* w;
+		w_iter->get_value(COLUMN_VALUENODE_POINTER, w);
+		if (v == w)
+			return false;
+		bool will_w_be_copied;
+		w_iter->get_value(COLUMN_COPY_OR_NOT, will_w_be_copied);
+		if (!will_w_be_copied) {
+			if (w->is_descendant(v)) {
+				linked_ascendent_value_nodes.push_back(w);
+			}
+		}
+		return false;
+	});
+
+	bool is_forced_link = !linked_ascendent_value_nodes.empty();
+
 	bool will_be_copied;
-	iter->get_value(COLUMN_COPY_OR_NOT, will_be_copied);
+	if (is_forced_link)
+		will_be_copied = false;
+	else
+		v_iter->get_value(COLUMN_COPY_OR_NOT, will_be_copied);
 
 	std::string status;
 	std::string status_tooltip;
 
 	if (!will_be_copied) {
 		status = "external-link";
-		status_tooltip = _("This valuenode will be linked to original file and will depend on such file.");
+		if (!is_forced_link) {
+			status_tooltip = _("This valuenode will be linked to original file and will depend on such file.");
+		} else {
+			std::string names;
+			for (auto w : linked_ascendent_value_nodes) {
+				names += w->get_id() + ", ";
+			}
+			names = names.substr(0, names.size()-2);
+			std::string msg = etl::strprintf(_("Some exported values depend on this one, and you chose to keep them linked to external file.\n"
+                           "Therefore, this value must be linked too.\n"
+                           "These are the values: %s"), names.c_str());
+			status_tooltip = msg;
+		}
 	} else {
 		ValueNode::ConstHandle existent_vn;
 
 		try {
 			std::string name;
-			iter->get_value(COLUMN_NAME, name);
+			v_iter->get_value(COLUMN_NAME, name);
 			existent_vn = destination_canvas->value_node_list().find(name, true);
 		}  catch (...) {
 
@@ -379,11 +440,14 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 	else
 		status_icon = pixbuf_empty;
 
-	iter->set_value(COLUMN_IS_NAME_EDITABLE, will_be_copied);
-	iter->set_value(COLUMN_STATUS, status);
-	iter->set_value(COLUMN_STATUS_ICON, status_icon);
-	iter->set_value(COLUMN_STATUS_TOOLTIP, status_tooltip);
-	iter->set_value(COLUMN_FILE_PATH_VISIBILITY, true);
+	v_iter->set_value(COLUMN_IS_NAME_EDITABLE, will_be_copied);
+	v_iter->set_value(COLUMN_STATUS, status);
+	v_iter->set_value(COLUMN_STATUS_ICON, status_icon);
+	v_iter->set_value(COLUMN_STATUS_TOOLTIP, status_tooltip);
+	v_iter->set_value(COLUMN_FILE_PATH_VISIBILITY, true);
 	if (!will_be_copied)
-		iter->set_value(COLUMN_NAME, original_name);
+		v_iter->set_value(COLUMN_NAME, original_name);
+	v_iter->set_value(COLUMN_IS_EDITABLE, !is_forced_link);
+	if (is_forced_link)
+		v_iter->set_value(COLUMN_COPY_OR_NOT, false);
 }

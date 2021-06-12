@@ -71,8 +71,10 @@ class Dialog_PasteOptions : public Gtk::Dialog
 
 	Glib::RefPtr<Gtk::ListStore> valuenodes_model;
 
-	std::vector<synfig::ValueNode::LooseHandle> value_nodes;
+	std::set<synfig::ValueNode::LooseHandle> value_nodes;
 	synfig::Canvas::Handle destination_canvas;
+
+	std::map<synfig::ValueNode::LooseHandle, std::vector<synfig::ValueNode::LooseHandle>> value_node_dependencies;
 
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_empty;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_link;
@@ -91,7 +93,8 @@ class Dialog_PasteOptions : public Gtk::Dialog
 		COLUMN_STATUS_ICON,
 		COLUMN_STATUS_TOOLTIP,
 		COLUMN_VALUE_TYPE,
-		COLUMN_COPY_OR_NOT
+		COLUMN_COPY_OR_NOT,
+		COLUMN_IS_EDITABLE
 	};
 
 public:
@@ -104,14 +107,12 @@ public:
 
 	/**
 	 *  Retrieve user decisions for every valuenode
-	 *  \param[out] user_choices Maps the valuenode ID to a possible new ID.
-	 *       If empty, user chose to link to external canvas
-	 *       If same as original ID (the map key), user chose to link to existent valuenode in local canvas
-	 *       If different from original ID (the map key), user chose to create a new valuenode on copying
+	 *  \param[out] user_choices Maps the valuenode to a possible new ID.
+	 *       If the new ID is empty, user chose to link to external canvas
+	 *       If same as original ID (the current value node/map key ID), user chose to link to existent valuenode in local canvas
+	 *       If different from original ID, user chose to create a new valuenode on copying
 	 */
-	void get_user_choices(std::map<std::string, std::string>& user_choices) const;
-
-	synfig::ValueNode::LooseHandle find_value_node_by_name(const std::string& name);
+	void get_user_choices(std::map<synfig::ValueNode::LooseHandle, std::string>& user_choices) const;
 
 private:
 	void on_valuenode_copy_toggled(const Glib::ustring& path);
