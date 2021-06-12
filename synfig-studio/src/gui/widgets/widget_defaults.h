@@ -48,8 +48,7 @@ class Widget_Gradient;
 
 class Widget_Defaults : public Gtk::Box
 {
-	Widget_Color 	*_widget_otln_color;
-	//Gtk::Alignment 	*widget_otln_color; // Seems to be unused
+	Widget_Color 	*widget_outline_color;
 
 	Widget_Color 	*_widget_fill_color;
 	Gtk::Alignment 	*widget_fill_color;
@@ -74,7 +73,7 @@ class Widget_Defaults : public Gtk::Box
 
 	//Gtk::Scale 	*widget_opacity;
 
-	void otln_color_refresh();
+	void outline_color_refresh();
 	void fill_color_refresh();
 	void gradient_refresh();
 	void bline_width_refresh();
@@ -83,7 +82,7 @@ class Widget_Defaults : public Gtk::Box
 	void on_brush_entry_changed();
 	void on_brush_increase_clicked();
 	void on_brush_decrease_clicked();
-	void on_otln_color_clicked();
+	void on_outline_color_clicked();
 	void on_fill_color_clicked();
 	void on_swap_color_clicked();
 	void on_reset_color_clicked();

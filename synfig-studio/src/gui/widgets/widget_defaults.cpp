@@ -190,14 +190,14 @@ Widget_Defaults::Widget_Defaults():
 	_widget_colors = manage(new Gtk::Grid());
 	{
 		// widget outline color
-		_widget_otln_color = manage(new Widget_Color());
-		_widget_otln_color->set_size_request(30, 26);
-		_widget_otln_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_otln_color_clicked));
-		_widget_otln_color->set_tooltip_text(_("Outline Color"));
+		widget_outline_color = manage(new Widget_Color());
+		widget_outline_color->set_size_request(30, 26);
+		widget_outline_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_outline_color_clicked));
+		widget_outline_color->set_tooltip_text(_("Outline Color"));
 
 		// fixed outline color widget size
-		_widget_otln_color->set_halign(Gtk::ALIGN_END);
-		_widget_otln_color->set_valign(Gtk::ALIGN_END);
+		widget_outline_color->set_halign(Gtk::ALIGN_END);
+		widget_outline_color->set_valign(Gtk::ALIGN_END);
 
 
 		// widget fill color
@@ -246,7 +246,7 @@ Widget_Defaults::Widget_Defaults():
 		button_reset->add(*_button_reset);
 
 		// ship child widgets together
-		_widget_colors->attach(*_widget_otln_color, 0, 0, 1, 1);
+		_widget_colors->attach(*widget_outline_color, 0, 0, 1, 1);
 		_widget_colors->attach(*widget_fill_color, 1, 1, 1, 1);
 		_widget_colors->attach(*button_swap,       1, 0, 1, 1);
 		_widget_colors->attach(*button_reset,      0, 1, 1, 1);
@@ -397,12 +397,12 @@ Widget_Defaults::Widget_Defaults():
 	// Signals
 	//synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::opacity_refresh));
 	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bline_width_refresh));
-	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::otln_color_refresh));
+	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::outline_color_refresh));
 	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fill_color_refresh));
 	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::gradient_refresh));
 	//synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
 
-	otln_color_refresh();
+	outline_color_refresh();
 	fill_color_refresh();
 	gradient_refresh();
 	//blend_method_refresh();
@@ -414,9 +414,9 @@ Widget_Defaults::~Widget_Defaults()
 }
 
 void
-Widget_Defaults::otln_color_refresh()
+Widget_Defaults::outline_color_refresh()
 {
-	_widget_otln_color->set_value(synfigapp::Main::get_outline_color());
+	widget_outline_color->set_value(synfigapp::Main::get_outline_color());
 }
 
 void
@@ -495,7 +495,7 @@ Widget_Defaults::on_brush_decrease_clicked()
 }
 
 void
-Widget_Defaults::on_otln_color_clicked()
+Widget_Defaults::on_outline_color_clicked()
 {
 	// Left click on outline color
 	App::dialog_color->reset();
