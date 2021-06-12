@@ -3581,7 +3581,7 @@ try_open_uri(const std::string &uri)
 void
 App::dialog_help()
 {
-	if (!try_open_uri("https://synfig.readthedocs.io/en/latest/index.html))
+	if (!try_open_uri("https://synfig.readthedocs.io/en/latest/index.html"))
 	{
 		Gtk::MessageDialog dialog(*App::main_window, _("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttps://synfig.readthedocs.io/en/latest/index.html"));
