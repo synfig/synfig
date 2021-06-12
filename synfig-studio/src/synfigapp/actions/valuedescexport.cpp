@@ -58,7 +58,7 @@ using namespace Action;
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescExport);
 ACTION_SET_NAME(Action::ValueDescExport,"ValueDescExport");
-ACTION_SET_LOCAL_NAME(Action::ValueDescExport,N_("Export Value"));
+ACTION_SET_LOCAL_NAME(Action::ValueDescExport,N_("Export Value to project library"));
 ACTION_SET_TASK(Action::ValueDescExport,"export");
 ACTION_SET_CATEGORY(Action::ValueDescExport,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescExport,0);
