@@ -225,7 +225,12 @@ Widget_Defaults::Widget_Defaults():
 		_button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
 		_button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
 
-		Gtk::Alignment *button_swap(manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0, 0)));
+		Gtk::Fixed *button_swap (manage(new Gtk:: Fixed));
+
+		// fixed swap button widget size
+		button_swap->set_valign(Gtk::ALIGN_CENTER);
+		button_swap->set_halign(Gtk::ALIGN_CENTER);
+
 		button_swap->add(*_button_swap);
 
 		// Reset button
@@ -241,7 +246,12 @@ Widget_Defaults::Widget_Defaults():
 		_button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
 		_button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
 
-		Gtk::Alignment *button_reset (manage (new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0 ,0)));
+		Gtk::Fixed *button_reset (manage(new Gtk:: Fixed));
+
+		// fixed reset button widget size
+		button_reset->set_halign(Gtk::ALIGN_CENTER);
+		button_reset->set_valign(Gtk::ALIGN_CENTER);
+		
 		button_reset->add(*_button_reset);
 
 		// ship child widgets together
