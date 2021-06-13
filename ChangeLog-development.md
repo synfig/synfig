@@ -1,5 +1,5 @@
 - [`9b6c3a2`](https://github.com/synfig/synfig/commit/9b6c3a2a62796647f0937c6ad8354f1411c8776c) Merge PR [#2184](https://github.com/synfig/synfig/issues/2184): Fixed CMake icons build [studio]
-- [`7d22123`](https://github.com/synfig/synfig/commit/7d22123c58d729146c0728414e07105eb649e8cd) [Synfig Studio] Fixed closed docks bug ([#2185](https://github.com/synfig/synfig/issues/2185)) [studio]
+- [`7d22123`](https://github.com/synfig/synfig/commit/7d22123c58d729146c0728414e07105eb649e8cd) Fixed [issue](https://github.com/synfig/synfig/issues/1803) with closed docks appearing after application restart ([#2185](https://github.com/synfig/synfig/issues/2185)) [studio]
 - [`93365c5`](https://github.com/synfig/synfig/commit/93365c51a509d6d013d7c0f76c7be64693c8fd75) Merge PR [#2137](https://github.com/synfig/synfig/issues/2137): Fix memory leaks on SVG parser/importer [core]
 - [`27a1a55`](https://github.com/synfig/synfig/commit/27a1a555aa5664d2466059203a9eedee81fd4bb3) Fixed incorrect behavior when passing '-DMSYS=1' to CMake [cmake] ([#2158](https://github.com/synfig/synfig/issues/2158))
 - [`833307f`](https://github.com/synfig/synfig/commit/833307fe6c88d6db75502b187b1c6f7ba620b1ba) Merge PR [#2173](https://github.com/synfig/synfig/issues/2173): Shortcut editor more organized and asks for user confirmation [studio]
