@@ -41,7 +41,7 @@
 #include <glibmm/convert.h>
 #include <glibmm/uriutils.h>
 
-#include <gtkmm/alignment.h>
+#include <gtkmm/fixed.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/imagemenuitem.h>
@@ -577,7 +577,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	//info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
-	Gtk::Alignment *widget_space = Gtk::manage(new Gtk::Alignment());
+	Gtk::Fixed *widget_space = Gtk::manage(new Gtk::Fixed);
 	widget_space->set_size_request(4,4);
 	widget_space->show();
 
@@ -1005,9 +1005,9 @@ CanvasView::create_time_bar()
 	timeslider->set_size_request(-1,header_height-header_height/3+1);
 	widget_kf_list->set_size_request(-1,header_height/3+1);
 
-	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
+	Gtk::Fixed *space = Gtk::manage(new Gtk::Fixed);
 	space->set_size_request(4);
-        space->show();
+    space->show();
 
 	jackdial = manage(new class JackDial());
 
