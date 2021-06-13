@@ -52,19 +52,16 @@ class Widget_Defaults : public Gtk::Box
 
 	Widget_Color 	*widget_fill_color;
 
-	Gtk::Grid	*_widget_colors;
-	Gtk::Alignment	*widget_colors;
+	Gtk::Grid	*widget_colors;
 
-	Widget_Gradient	*_widget_gradient;
-	Gtk::Alignment	*widget_gradient;
+	Widget_Gradient	*widget_gradient;
 
 	Gtk::Box 	*widget_colors_gradient;
 
-	Widget_Brush 	*_widget_brush;
+	Widget_Brush 	*widget_brush;
 	Gtk::Entry	*brush_entry;
 	Gtk::Button	*brush_increase;
 	Gtk::Button	*brush_decrease;
-	Gtk::Alignment 	*widget_brush;
 
 	Widget_Distance *widget_bline_width;
 

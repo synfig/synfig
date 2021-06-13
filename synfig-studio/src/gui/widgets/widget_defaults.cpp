@@ -187,7 +187,7 @@ Widget_Defaults::Widget_Defaults():
 
 	// widget colors: outline color and fill color.
 
-	_widget_colors = manage(new Gtk::Grid());
+	widget_colors = manage(new Gtk::Grid());
 	{
 		// widget outline color
 		widget_outline_color = manage(new Widget_Color());
@@ -245,20 +245,21 @@ Widget_Defaults::Widget_Defaults():
 		button_reset->add(*_button_reset);
 
 		// ship child widgets together
-		_widget_colors->attach(*widget_outline_color, 0, 0, 1, 1);
-		_widget_colors->attach(*widget_fill_color, 1, 1, 1, 1);
-		_widget_colors->attach(*button_swap,       1, 0, 1, 1);
-		_widget_colors->attach(*button_reset,      0, 1, 1, 1);
+		widget_colors->attach(*widget_outline_color, 0, 0, 1, 1);
+		widget_colors->attach(*widget_fill_color, 1, 1, 1, 1);
+		widget_colors->attach(*button_swap,       1, 0, 1, 1);
+		widget_colors->attach(*button_reset,      0, 1, 1, 1);
 
 		// fixed colors widget size
-		widget_colors = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-		widget_colors->add(*_widget_colors);
+		widget_colors->set_valign(Gtk::ALIGN_CENTER);
+		widget_colors->set_halign(Gtk::ALIGN_CENTER);
+
 	}
 
 	// widget brush
-	_widget_brush = manage(new Widget_Brush());
-	_widget_brush->set_size_request(56, 48);
-	_widget_brush->set_tooltip_text(_("Brush Preview"));
+	widget_brush = manage(new Widget_Brush());
+	widget_brush->set_size_request(56, 48);
+	widget_brush->set_tooltip_text(_("Brush Preview"));
 
 	brush_increase = Gtk::manage(new class Gtk::Button("+"));
 	brush_increase->set_tooltip_text(_("Increase brush size"));
@@ -279,16 +280,15 @@ Widget_Defaults::Widget_Defaults():
 	brush_entry->set_tooltip_text(_("Brush Size"));
 
 	auto brush_layout = Gtk::manage(new class Gtk::Grid());
-	brush_layout->attach(*_widget_brush,  0, 0, 2, 1);
+	brush_layout->attach(*widget_brush,  0, 0, 2, 1);
 	brush_layout->attach(*brush_decrease, 0, 1, 1, 1);
 	brush_layout->attach(*brush_increase, 1, 1, 1, 1);
 	brush_layout->attach(*brush_entry,    0, 2, 2, 1);
 	brush_layout->show_all();
 
 	// fixed brush widget size
-	widget_brush = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-	widget_brush->add(*brush_layout);
-
+	widget_brush->set_valign(Gtk::ALIGN_CENTER);
+	widget_brush->set_halign(Gtk::ALIGN_CENTER);
 
 	// widget bline width
 	widget_bline_width = manage(new Widget_Distance());
@@ -331,15 +331,14 @@ Widget_Defaults::Widget_Defaults():
 	//widget_opacity->set_value_pos(Gtk::POS_LEFT);
 
 	// widget gradient
-	_widget_gradient = manage(new Widget_Gradient());
-	_widget_gradient->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_gradient_clicked));
-	_widget_gradient->set_size_request(56, 24);
-	_widget_gradient->set_tooltip_text(_("Default Gradient"));
+	widget_gradient = manage(new Widget_Gradient());
+	widget_gradient->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_gradient_clicked));
+	widget_gradient->set_size_request(56, 24);
+	widget_gradient->set_tooltip_text(_("Default Gradient"));
 
 	// fixed gradient widget size
-	widget_gradient = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-	widget_gradient->add(*_widget_gradient);
-
+	widget_gradient->set_halign(Gtk::ALIGN_CENTER);
+	widget_gradient->set_valign(Gtk::ALIGN_CENTER);
 
 	// pack all widgets
 	{
@@ -427,7 +426,7 @@ Widget_Defaults::fill_color_refresh()
 void
 Widget_Defaults::gradient_refresh()
 {
-	_widget_gradient->set_value(synfigapp::Main::get_gradient());
+	widget_gradient->set_value(synfigapp::Main::get_gradient());
 }
 
 void
