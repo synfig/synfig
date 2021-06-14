@@ -1007,7 +1007,7 @@ CanvasView::create_time_bar()
 
 	Gtk::Fixed *space = Gtk::manage(new Gtk::Fixed);
 	space->set_size_request(4);
-    space->show();
+    	space->show();
 
 	jackdial = manage(new class JackDial());
 
