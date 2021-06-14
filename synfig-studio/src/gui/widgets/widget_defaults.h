@@ -27,7 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/fixed.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>

@@ -213,46 +213,38 @@ Widget_Defaults::Widget_Defaults():
 		Gtk::Image* icon;
 
 		// Swap button
-		Gtk::Button* _button_swap(manage(new Gtk::Button()));
-		_button_swap->set_relief(Gtk::RELIEF_NONE);
-		_button_swap->set_border_width(0);
+		Gtk::Button* button_swap(manage(new Gtk::Button()));
+		button_swap->set_relief(Gtk::RELIEF_NONE);
+		button_swap->set_border_width(0);
 		icon = manage(new Gtk::Image(Gtk::StockID("synfig-swap_colors"), iconsize));
-		_button_swap->add(*icon);
-		dynamic_cast<Gtk::Misc*>(_button_swap->get_child())->set_margin_start(0);
-		dynamic_cast<Gtk::Misc*>(_button_swap->get_child())->set_margin_end(0);
-		dynamic_cast<Gtk::Misc*>(_button_swap->get_child())->set_margin_top(0);
-		dynamic_cast<Gtk::Misc*>(_button_swap->get_child())->set_margin_bottom(0);
-		_button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
-		_button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
-
-		Gtk::Fixed *button_swap (manage(new Gtk:: Fixed));
+		button_swap->add(*icon);
+		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_margin_start(0);
+		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_margin_end(0);
+		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_margin_top(0);
+		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_margin_bottom(0);
+		button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
+		button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
 
 		// fixed swap button widget size
 		button_swap->set_valign(Gtk::ALIGN_CENTER);
 		button_swap->set_halign(Gtk::ALIGN_CENTER);
 
-		button_swap->add(*_button_swap);
-
 		// Reset button
-		Gtk::Button* _button_reset(manage(new Gtk::Button()));
-		_button_reset->set_relief(Gtk::RELIEF_NONE);
-		_button_reset->set_border_width(0);
+		Gtk::Button* button_reset(manage(new Gtk::Button()));
+		button_reset->set_relief(Gtk::RELIEF_NONE);
+		button_reset->set_border_width(0);
 		icon = manage(new Gtk::Image(Gtk::StockID("synfig-reset_colors"), iconsize));
-		_button_reset->add(*icon);
-		dynamic_cast<Gtk::Misc*>(_button_reset->get_child())->set_margin_start(0);
-		dynamic_cast<Gtk::Misc*>(_button_reset->get_child())->set_margin_end(0);
-		dynamic_cast<Gtk::Misc*>(_button_reset->get_child())->set_margin_top(0);
-		dynamic_cast<Gtk::Misc*>(_button_reset->get_child())->set_margin_bottom(0);
-		_button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
-		_button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
-
-		Gtk::Fixed *button_reset (manage(new Gtk:: Fixed));
+		button_reset->add(*icon);
+		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_margin_start(0);
+		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_margin_end(0);
+		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_margin_top(0);
+		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_margin_bottom(0);
+		button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
+		button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
 
 		// fixed reset button widget size
 		button_reset->set_halign(Gtk::ALIGN_CENTER);
 		button_reset->set_valign(Gtk::ALIGN_CENTER);
-		
-		button_reset->add(*_button_reset);
 
 		// ship child widgets together
 		widget_colors->attach(*widget_outline_color, 0, 0, 1, 1);
