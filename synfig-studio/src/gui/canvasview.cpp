@@ -41,7 +41,7 @@
 #include <glibmm/convert.h>
 #include <glibmm/uriutils.h>
 
-#include <gtkmm/fixed.h>
+#include <fixed.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/imagemenuitem.h>
@@ -584,7 +584,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
 	Gtk::Widget *widget_right_bar = create_right_toolbar();
-	widget_right_bar->set_margin_start(4);
 	Gtk::Widget *widget_time_bar = create_time_bar();
 	
 	Gtk::Grid *layout_grid = manage(new Gtk::Grid());
