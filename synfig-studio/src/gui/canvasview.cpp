@@ -41,7 +41,7 @@
 #include <glibmm/convert.h>
 #include <glibmm/uriutils.h>
 
-#include <fixed.h>
+#include <gtkmm/fixed.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/imagemenuitem.h>
