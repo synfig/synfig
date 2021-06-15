@@ -218,10 +218,6 @@ Widget_Defaults::Widget_Defaults():
 		button_swap->set_border_width(0);
 		icon = manage(new Gtk::Image(Gtk::StockID("synfig-swap_colors"), iconsize));
 		button_swap->add(*icon);
-		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_margin_start(0);
-		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_margin_end(0);
-		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_margin_top(0);
-		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_margin_bottom(0);
 		button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
 		button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
 
@@ -235,10 +231,6 @@ Widget_Defaults::Widget_Defaults():
 		button_reset->set_border_width(0);
 		icon = manage(new Gtk::Image(Gtk::StockID("synfig-reset_colors"), iconsize));
 		button_reset->add(*icon);
-		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_margin_start(0);
-		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_margin_end(0);
-		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_margin_top(0);
-		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_margin_bottom(0);
 		button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
 		button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
 
