@@ -577,22 +577,20 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	//info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
-	Gtk::Fixed *widget_space = Gtk::manage(new Gtk::Fixed);
-	widget_space->set_size_request(4,4);
-	widget_space->show();
 
 	Gtk::Widget *widget_work_area = create_work_area();
+	widget_work_area->set_margin_top(4);
 	init_menus();
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
 	Gtk::Widget *widget_right_bar = create_right_toolbar();
+	widget_right_bar->set_margin_start(4);
 	Gtk::Widget *widget_time_bar = create_time_bar();
 	
 	Gtk::Grid *layout_grid = manage(new Gtk::Grid());
 	layout_grid->attach(*widget_top_bar,     0, 0, 1, 1);
 	layout_grid->attach(*widget_stopbutton,  1, 0, 1, 1);
 	layout_grid->attach(*widget_right_bar,   1, 1, 1, 2);
-	layout_grid->attach(*widget_space,       0, 1, 1, 1);
 	layout_grid->attach(*widget_work_area,   0, 2, 1, 1);
 	layout_grid->attach(*widget_time_bar,    0, 3, 2, 1);
 	layout_grid->show();
