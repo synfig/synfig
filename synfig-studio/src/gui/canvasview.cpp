@@ -988,7 +988,7 @@ CanvasView::create_time_bar()
 	KeyFrameDial *keyframedial = Gtk::manage(new class KeyFrameDial());
 	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
 	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
-	keyframedial->set_margin_start(4);
+	keyframedial->set_margin_end(4);
 	keyframedial->show();
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
