@@ -83,6 +83,7 @@ LEVEL = 0 #Indicates the depth of a layer
 OUTLINE_FLAG = False #Flag to check for outline as outline needs the newer version of bodymovin.js
 WAYPOINTS_LIST = []
 WITHOUT_VARIABLE_WIDTH = False
+ROOT_CANVAS = None
 
 def init():
     """
