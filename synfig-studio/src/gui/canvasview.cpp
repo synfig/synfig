@@ -41,7 +41,6 @@
 #include <glibmm/convert.h>
 #include <glibmm/uriutils.h>
 
-#include <gtkmm/fixed.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/imagemenuitem.h>
@@ -989,6 +988,7 @@ CanvasView::create_time_bar()
 	KeyFrameDial *keyframedial = Gtk::manage(new class KeyFrameDial());
 	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
 	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
+	keyframedial->set_margin_start(4);
 	keyframedial->show();
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
@@ -1001,10 +1001,6 @@ CanvasView::create_time_bar()
 		header_height = 24;
 	timeslider->set_size_request(-1,header_height-header_height/3+1);
 	widget_kf_list->set_size_request(-1,header_height/3+1);
-
-	Gtk::Fixed *space = Gtk::manage(new Gtk::Fixed);
-	space->set_size_request(4);
-	space->show();
 
 	jackdial = manage(new class JackDial());
 
@@ -1043,7 +1039,6 @@ CanvasView::create_time_bar()
 		controls->attach(*progressbar, left_pos++, 0, 1, 1);
 		controls->attach(*widget_interpolation, left_pos++, 0, 1, 1);
 		controls->attach(*keyframedial, left_pos++, 0, 1, 1);
-		controls->attach(*space, left_pos++, 0, 1, 1);
 		controls->attach(*animatebutton, left_pos++, 0, 1, 1);
 
 		// Make progress bar bigger than the default GTK one
