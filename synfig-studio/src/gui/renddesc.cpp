@@ -35,7 +35,6 @@
 
 #include <ETL/misc>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/grid.h>
@@ -737,12 +736,10 @@ Widget_RendDesc::create_image_tab()
 Gtk::Widget *
 Widget_RendDesc::create_time_tab()
 {
-	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 	
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));  // for future widgets
 	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
-	paddedPanel->add(*panelBox);
 	
 	{
 		Gtk::Frame *frame = manage(new Gtk::Frame(_("Time Settings")));
@@ -751,14 +748,11 @@ Widget_RendDesc::create_time_tab()
 		panelBox->pack_start(*frame, Gtk::PACK_SHRINK);
 		time_frame = frame;
 		
-		Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-		frame->add(*framePadding);
-		
 		Gtk::Grid *frameGrid = manage(new Gtk::Grid());
 		frameGrid->get_style_context()->add_class("dialog-secondary-content");
 		frameGrid->set_row_spacing(6);
 		frameGrid->set_column_spacing(250);
-		framePadding->add(*frameGrid);
+		frame->add(*frameGrid);
 		int row = 0;
 		
 		{
@@ -791,19 +785,17 @@ Widget_RendDesc::create_time_tab()
 		}
 	}
 	
-	paddedPanel->show_all();
-	return paddedPanel;
+	panelBox->show_all();
+	return panelBox;
 }
 
 Gtk::Widget *
 Widget_RendDesc::create_gamma_tab()
 {
-	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
-	paddedPanel->add(*panelBox);
 	
 	{
 		Gtk::Frame *frame = manage(new Gtk::Frame(_("Gamma Correction Settings")));
@@ -811,16 +803,14 @@ Widget_RendDesc::create_gamma_tab()
 		((Gtk::Label*)frame->get_label_widget())->set_markup(_("<b>Gamma Correction Settings</b>"));
 		panelBox->pack_start(*frame, Gtk::PACK_SHRINK);
 
-		Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-		framePadding->set_margin_start(6);
-		framePadding->set_margin_end(0);
-		framePadding->set_margin_top(6);
-		framePadding->set_margin_bottom(0);
-		frame->add(*framePadding);
+		frame->set_margin_start(6);
+		frame->set_margin_end(0);
+		frame->set_margin_top(6);
+		frame->set_margin_bottom(0);
 		gamma_frame = frame;
 		
 		Gtk::Grid *frameGrid = manage(new Gtk::Grid());
-		framePadding->add(*frameGrid);
+		frame->add(*frameGrid);
 		frameGrid->set_row_spacing(10);
 		frameGrid->set_column_spacing(10);
 		int row = 0;
@@ -878,33 +868,28 @@ Widget_RendDesc::create_gamma_tab()
 		}
 	}
 	
-	paddedPanel->show_all();
-	return paddedPanel;
+	panelBox->show_all();
+	return panelBox;
 }
 
 Gtk::Widget *
 Widget_RendDesc::create_other_tab()
 {
-	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
-	paddedPanel->add(*panelBox);
 
 	Gtk::Frame *lockFrame = manage(new Gtk::Frame(_("Locks and Links")));
 	lockFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) lockFrame->get_label_widget())->set_markup(_("<b>Locks and Links</b>"));
 	panelBox->pack_start(*lockFrame, Gtk::PACK_SHRINK);
 
-	Gtk::Alignment *lockPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	lockFrame->add(*lockPadding);
-
 	Gtk::Grid *lockGrid = manage(new Gtk::Grid());
 	lockGrid->get_style_context()->add_class("dialog-secondary-content");
 	lockGrid->set_row_spacing(6);
 	lockGrid->set_column_spacing(12);
-	lockPadding->add(*lockGrid);
+	lockFrame->add(*lockGrid);
 
 	lockGrid->attach(*toggle_im_width,		0, 0, 1, 1);
 	toggle_im_width->set_hexpand(true);
@@ -924,18 +909,15 @@ Widget_RendDesc::create_other_tab()
 	((Gtk::Label *) focusFrame->get_label_widget())->set_markup(_("<b>Focus Point</b>"));
 	panelBox->pack_start(*focusFrame, Gtk::PACK_SHRINK);
 
-	Gtk::Alignment *focusPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	focusFrame->add(*focusPadding);
-
 	Gtk::Box *focusBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 12));
 	focusBox->get_style_context()->add_class("dialog-secondary-content");
-	focusPadding->add(*focusBox);
+	focusFrame->add(*focusBox);
 
 	Gtk::Label *focusLabel = manage(new Gtk::Label(_("_Focus Point"), 0, 0.5, true));
 	focusLabel->set_mnemonic_widget(*entry_focus);
 	focusBox->pack_start(*focusLabel, Gtk::PACK_SHRINK);
 	focusBox->pack_start(*entry_focus, Gtk::PACK_EXPAND_WIDGET);
 
-	paddedPanel->show_all();
-	return paddedPanel;
+	panelBox->show_all();
+	return panelBox;
 }
