@@ -635,6 +635,8 @@ Widget_RendDesc::create_image_tab()
 {
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
+	panelBox->set_hexpand(true);
+	panelBox->set_vexpand(true);
 	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
 
@@ -645,6 +647,8 @@ Widget_RendDesc::create_image_tab()
 	panelBox->pack_start(*imageSizeFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Grid *imageSizeGrid = manage(new Gtk::Grid());
+	imageSizeGrid->set_vexpand(true);
+	imageSizeGrid->set_hexpand(true);
 	imageSizeGrid->get_style_context()->add_class("dialog-secondary-content");
 
 	imageSizeFrame->add(*imageSizeGrid);
@@ -706,6 +710,8 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Box *imageAreaTlbrBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
 	Gtk::Box *imageAreaSpanBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,6));
 	imageAreaBox->get_style_context()->add_class("dialog-secondary-content");
+	imageAreaBox->set_vexpand(true);
+	imageAreaBox->set_hexpand(true);
 	imageAreaFrame->add(*imageAreaBox);
 
 	Gtk::Label *imageAreaTopLeftLabel = manage(new Gtk::Label(_("_Top Left"), 0, 0.5, true));
@@ -739,6 +745,8 @@ Widget_RendDesc::create_time_tab()
 	
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));  // for future widgets
 	panelBox->get_style_context()->add_class("dialog-main-content");
+	panelBox->set_vexpand(true);
+	panelBox->set_hexpand(true);
 	panelBox->set_homogeneous(false);
 	
 	{
@@ -752,6 +760,8 @@ Widget_RendDesc::create_time_tab()
 		frameGrid->get_style_context()->add_class("dialog-secondary-content");
 		frameGrid->set_row_spacing(6);
 		frameGrid->set_column_spacing(250);
+		frameGrid->set_vexpand(true);
+		frameGrid->set_hexpand(true);
 		frame->add(*frameGrid);
 		int row = 0;
 		
@@ -795,6 +805,8 @@ Widget_RendDesc::create_gamma_tab()
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	panelBox->get_style_context()->add_class("dialog-main-content");
+	panelBox->set_vexpand(true);
+	panelBox->set_hexpand(true);
 	panelBox->set_homogeneous(false);
 	
 	{
@@ -803,16 +815,18 @@ Widget_RendDesc::create_gamma_tab()
 		((Gtk::Label*)frame->get_label_widget())->set_markup(_("<b>Gamma Correction Settings</b>"));
 		panelBox->pack_start(*frame, Gtk::PACK_SHRINK);
 
-		frame->set_margin_start(6);
-		frame->set_margin_end(0);
-		frame->set_margin_top(6);
-		frame->set_margin_bottom(0);
 		gamma_frame = frame;
 		
 		Gtk::Grid *frameGrid = manage(new Gtk::Grid());
 		frame->add(*frameGrid);
 		frameGrid->set_row_spacing(10);
 		frameGrid->set_column_spacing(10);
+		frameGrid->set_margin_start(6);
+		frameGrid->set_margin_end(0);
+		frameGrid->set_margin_top(6);
+		frameGrid->set_margin_bottom(0);
+		frameGrid->set_vexpand(true);
+		frameGrid->set_hexpand(true);
 		int row = 0;
 		int col = 0;
 		
@@ -878,6 +892,8 @@ Widget_RendDesc::create_other_tab()
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	panelBox->get_style_context()->add_class("dialog-main-content");
+	panelBox->set_vexpand(true);
+	panelBox->set_hexpand(true);
 	panelBox->set_homogeneous(false);
 
 	Gtk::Frame *lockFrame = manage(new Gtk::Frame(_("Locks and Links")));
@@ -889,6 +905,8 @@ Widget_RendDesc::create_other_tab()
 	lockGrid->get_style_context()->add_class("dialog-secondary-content");
 	lockGrid->set_row_spacing(6);
 	lockGrid->set_column_spacing(12);
+	lockGrid->set_vexpand(true);
+	lockGrid->set_hexpand(true);
 	lockFrame->add(*lockGrid);
 
 	lockGrid->attach(*toggle_im_width,		0, 0, 1, 1);
@@ -911,6 +929,8 @@ Widget_RendDesc::create_other_tab()
 
 	Gtk::Box *focusBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 12));
 	focusBox->get_style_context()->add_class("dialog-secondary-content");
+	focusBox->set_vexpand(true);
+	focusBox->set_hexpand(true);
 	focusFrame->add(*focusBox);
 
 	Gtk::Label *focusLabel = manage(new Gtk::Label(_("_Focus Point"), 0, 0.5, true));
