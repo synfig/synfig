@@ -32,7 +32,6 @@
 
 #include <gui/dialogs/dialog_soundselect.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
 #include <gtkmm/table.h>
@@ -59,17 +58,14 @@ studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<
 :Dialog(_("Sound Select"), parent),
 canvas_interface(ci)
 {
-	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	get_content_area()->pack_start(*dialogPadding, false, false, 0);
 
 	Gtk::Frame *soundFrame = manage(new Gtk::Frame(_("Sound Parameters")));
 	((Gtk::Label *) soundFrame->get_label_widget())->set_markup(_("<b>Sound Parameters</b>"));
 	soundFrame->get_style_context()->add_class("dialog-main-content");
 	soundFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	dialogPadding->add(*soundFrame);
-
-	Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	soundFrame->add(*framePadding);
+	soundFrame->set_vexpand(true);
+	soundFrame->set_hexpand(true);
+	get_content_area()->pack_start(*soundFrame, false, false, 0);
 
 	Gtk::Label *fileLabel = manage(new Gtk::Label(_("_Sound File"), true));
 	fileLabel->set_halign(Gtk::ALIGN_START);
@@ -84,7 +80,9 @@ canvas_interface(ci)
 	table->get_style_context()->add_class("dialog-secondary-content");
 	table->set_row_spacings(6);
 	table->set_col_spacings(12);
-	framePadding->add(*table);
+	table->set_vexpand(true);
+	table->set_hexpand(true);
+	soundFrame->add(*table);
 
 	table->attach(*fileLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
 	table->attach(soundfile, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);

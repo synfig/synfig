@@ -24,8 +24,6 @@
 
 #include <gui/dialogs/vectorizersettings.h>
 
-#include <gtkmm/alignment.h>
-
 #include <gui/localization.h>
 
 #include <synfig/debug/log.h>
@@ -80,10 +78,12 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	// comboboxtext_mode.signal_changed().connect(
 	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
 	config_map = &configmap;
-	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(1, 1, 1, 1));
-	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
-	dialogPadding->add(*dialogBox);
+	dialogBox->set_valign(Gtk::ALIGN_END);
+	dialogBox->set_halign(Gtk::ALIGN_END);
+	dialogBox->set_hexpand(1);
+	dialogBox->set_vexpand(1);
+	get_vbox()->pack_start(*dialogBox, false, false, 0);
 
 	// Gtk::Frame *target_frame=manage(new Gtk::Frame());
 	// target_frame->set_shadow_type(Gtk::SHADOW_NONE);
