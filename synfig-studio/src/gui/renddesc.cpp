@@ -634,12 +634,10 @@ Widget_RendDesc::connect_signals()
 Gtk::Widget *
 Widget_RendDesc::create_image_tab()
 {
-	Gtk::Alignment *paddedPanel = manage(new Gtk::Alignment(0, 0, 1, 1));
 
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_homogeneous(false);
-	paddedPanel->add(*panelBox);
 
 	Gtk::Frame *imageSizeFrame = manage(new Gtk::Frame(_("Image Size")));
 	imageSizeFrame->set_shadow_type(Gtk::SHADOW_NONE);
@@ -647,12 +645,10 @@ Widget_RendDesc::create_image_tab()
 //	panelBox->pack_start(*imageSizeFrame, false, false, 0);
 	panelBox->pack_start(*imageSizeFrame, Gtk::PACK_SHRINK);
 
-	Gtk::Alignment *tableSizePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	Gtk::Grid *imageSizeGrid = manage(new Gtk::Grid());
 	imageSizeGrid->get_style_context()->add_class("dialog-secondary-content");
 
-	tableSizePadding->add(*imageSizeGrid);
-	imageSizeFrame->add(*tableSizePadding);
+	imageSizeFrame->add(*imageSizeGrid);
 
 	Gtk::Label *size_width_label = manage(new Gtk::Label(_("_Width"), 0, 0.5, true));
 	size_width_label->set_mnemonic_widget(*entry_width);
@@ -706,15 +702,12 @@ Widget_RendDesc::create_image_tab()
 	((Gtk::Label *) imageAreaFrame->get_label_widget())->set_markup(_("<b>Image Area</b>"));
 	panelBox->pack_start(*imageAreaFrame, Gtk::PACK_SHRINK);
 
-	Gtk::Alignment *imageAreaPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	imageAreaFrame->add(*imageAreaPadding);
-
 	Gtk::Box *imageAreaBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,12));
 	Gtk::Box *imageAreaTlbrLabelBox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
 	Gtk::Box *imageAreaTlbrBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,6));
 	Gtk::Box *imageAreaSpanBox = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,6));
 	imageAreaBox->get_style_context()->add_class("dialog-secondary-content");
-	imageAreaPadding->add(*imageAreaBox);
+	imageAreaFrame->add(*imageAreaBox);
 
 	Gtk::Label *imageAreaTopLeftLabel = manage(new Gtk::Label(_("_Top Left"), 0, 0.5, true));
 	imageAreaTopLeftLabel->set_mnemonic_widget(*entry_tl);
@@ -737,8 +730,8 @@ Widget_RendDesc::create_image_tab()
 	imageAreaBox->pack_start(*imageAreaTlbrBox);
 	imageAreaBox->pack_start(*imageAreaSpanBox);
 
-	paddedPanel->show_all();
-	return paddedPanel;
+	panelBox->show_all();
+	return panelBox;
 }
 
 Gtk::Widget *
