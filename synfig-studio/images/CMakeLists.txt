@@ -176,6 +176,16 @@ set(ICONS
 	rename_icon
 	render_options_icon
 	reset_colors_icon
+	resize_disabled_icon
+	resize_up_left_icon
+	resize_up_icon
+	resize_up_right_icon
+	resize_left_icon
+	resize_right_icon
+	resize_down_left_icon
+	resize_down_icon
+	resize_down_right_icon
+	resize_transparent_icon
 	select_all_child_layers_icon
 	set_fill_color
 	set_icon
