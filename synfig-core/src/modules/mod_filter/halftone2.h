@@ -54,7 +54,6 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 class Halftone2 : public Layer_CompositeFork

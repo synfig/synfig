@@ -35,7 +35,6 @@
 #include <synfig/blur.h>
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 class Blur_Layer : public Layer_CompositeFork

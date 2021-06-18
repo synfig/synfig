@@ -44,11 +44,10 @@
 #include <synfig/blinepoint.h>
 
 #include <synfigapp/localization.h>
-#include <zconf.h>
+//#include <zconf.h>
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;

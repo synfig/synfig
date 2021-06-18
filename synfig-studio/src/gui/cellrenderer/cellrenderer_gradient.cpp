@@ -37,7 +37,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
