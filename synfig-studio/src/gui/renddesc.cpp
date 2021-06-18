@@ -822,9 +822,7 @@ Widget_RendDesc::create_gamma_tab()
 		frameGrid->set_row_spacing(10);
 		frameGrid->set_column_spacing(10);
 		frameGrid->set_margin_start(6);
-		frameGrid->set_margin_end(0);
 		frameGrid->set_margin_top(6);
-		frameGrid->set_margin_bottom(0);
 		frameGrid->set_vexpand(true);
 		frameGrid->set_hexpand(true);
 		int row = 0;
