@@ -48,7 +48,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */

@@ -49,7 +49,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 #define PNG_CHECK_BYTES 	8
