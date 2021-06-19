@@ -36,7 +36,7 @@
 
 #include <gdkmm/general.h>
 
-#include <gtkmm/fixed.h>
+#include <gtkmm/alignment.h>
 #include <gtkmm/stock.h>
 
 #include <gui/app.h>
@@ -456,7 +456,7 @@ Widget_Preview::Widget_Preview():
 	toolbar->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
 
 	//spacing
-	Gtk::Fixed *space = Gtk::manage(new Gtk::Fixed);
+	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
 	space->set_size_request(8);
 	toolbar->pack_start(*space, false, true);
 
@@ -467,7 +467,7 @@ Widget_Preview::Widget_Preview():
 	toolbar->pack_start(b_loop, Gtk::PACK_SHRINK,0);
 
 	//spacing
-	Gtk::Fixed *space1 = Gtk::manage(new Gtk::Fixed());
+	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
 	space1->set_size_request(24);
 	toolbar->pack_start(*space1, false, true);
 
@@ -494,7 +494,7 @@ Widget_Preview::Widget_Preview():
 	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
 
 	//spacing
-	Gtk::Fixed *space2 = Gtk::manage(new Gtk::Fixed);
+	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
 	space1->set_size_request(24);
 	toolbar->pack_start(*space2, false, true);
 
