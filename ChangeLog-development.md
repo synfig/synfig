@@ -1,3 +1,6 @@
+- [`4273435`](https://github.com/synfig/synfig/commit/4273435309266fa4181269fdb3e9cc454cf14337) Removed excessive use of std namespace ([#2193](https://github.com/synfig/synfig/issues/2193)) [ETL] [core] [studio]
+- [`bd86b81`](https://github.com/synfig/synfig/commit/bd86b81940487d3b4d4682f6e01df341211b97c3) New arrows icons ([#2192](https://github.com/synfig/synfig/issues/2192)) [studio]
+- [`fd00d1c`](https://github.com/synfig/synfig/commit/fd00d1c9e559d79ce5fb43c3b60caf55f0a634ec) [Lottie exporter] Implement use-defs ([#2182](https://github.com/synfig/synfig/issues/2182)) [studio]
 - [`9b6c3a2`](https://github.com/synfig/synfig/commit/9b6c3a2a62796647f0937c6ad8354f1411c8776c) Merge PR [#2184](https://github.com/synfig/synfig/issues/2184): Fixed CMake icons build [studio]
 - [`7d22123`](https://github.com/synfig/synfig/commit/7d22123c58d729146c0728414e07105eb649e8cd) Fixed [issue](https://github.com/synfig/synfig/issues/1803) with closed docks appearing after application restart ([#2185](https://github.com/synfig/synfig/issues/2185)) [studio]
 - [`93365c5`](https://github.com/synfig/synfig/commit/93365c51a509d6d013d7c0f76c7be64693c8fd75) Merge PR [#2137](https://github.com/synfig/synfig/issues/2137): Fix memory leaks on SVG parser/importer [core]
