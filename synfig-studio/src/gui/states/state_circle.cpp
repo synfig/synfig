@@ -82,13 +82,6 @@ enum CircleFalloff
 		&studio::StateCircle_Context::toggle_layer_creation))
 #endif
 
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
-#endif
-
 const int GAP = 3;
 const int INDENTATION = 6;
 
@@ -532,9 +525,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	SPACING(id_gap, GAP);
+	id_label.set_name("gap");
 	id_box.pack_start(id_label, false, false, 0);
-	id_box.pack_start(*id_gap, false, false, 0);
 	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
@@ -554,9 +546,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	LAYER_CREATION(layer_curve_gradient_togglebutton,
 		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
 
-	SPACING(layer_types_indent, INDENTATION);
+	layer_circle_togglebutton.set_name("indentation");
 
-	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
 	layer_types_box.pack_start(layer_circle_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
@@ -567,9 +558,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	SPACING(blend_gap, GAP);
+	blend_label.set_name("gap");
 	blend_box.pack_start(blend_label, false, false, 0);
-	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -604,8 +594,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_point_angle_offset_label.set_sensitive(false);
 	bline_point_angle_offset_spin.set_sensitive(false);
 
-	SPACING(bline_point_angle_offset_indent, INDENTATION);
-	bline_point_angle_offset_box.pack_start(*bline_point_angle_offset_indent, false, false, 0);
+	bline_point_angle_offset_label.set_name("indentation");
 	bline_point_angle_offset_box.pack_start(bline_point_angle_offset_label, false, false, 0);
 
 	invert_label.set_label(_("Invert"));
@@ -629,8 +618,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	falloff_label.set_halign(Gtk::ALIGN_START);
 	falloff_label.set_valign(Gtk::ALIGN_CENTER);
 	falloff_label.set_sensitive(false);
-	SPACING(falloff_indent, INDENTATION);
-	falloff_box.pack_start(*falloff_indent, false, false, 0);
+	falloff_label.set_name("indentation");
 	falloff_box.pack_start(falloff_label, false, false, 0);
 
 	falloff_enum.set_param_desc(ParamDesc("falloff")
