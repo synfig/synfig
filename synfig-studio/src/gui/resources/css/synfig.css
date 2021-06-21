@@ -81,3 +81,11 @@
 	margin-top   : 6px;
 	margin-bottom: 0px;
 }
+
+#gap {
+	margin-end : 3px;
+}
+
+#indentation{
+	margin-start : 6px;
+}
