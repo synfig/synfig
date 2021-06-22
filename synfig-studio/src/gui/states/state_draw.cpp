@@ -34,7 +34,6 @@
 
 #include <gui/states/state_draw.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/radiobutton.h>
 
 #include <gui/app.h>
@@ -80,13 +79,6 @@ using namespace studio;
 	button.set_tooltip_text(tooltip); \
 	button.signal_toggled().connect(sigc::mem_fun(*this, \
 		&studio::StateDraw_Context::toggle_layer_creation))
-#endif
-
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
 #endif
 
 const int GAP = 3;
@@ -617,9 +609,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	SPACING(id_gap, GAP);
+	id_label.set_name("gap");
 	id_box.pack_start(id_label, false, false, 0);
-	id_box.pack_start(*id_gap, false, false, 0);
 	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
@@ -633,9 +624,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
 		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
 
-	SPACING(layer_types_indent, INDENTATION);
+	layer_region_togglebutton.set_name("indentation");
 
-	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
 	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
@@ -643,9 +633,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	SPACING(blend_gap, GAP);
+	blend_label.set_name("gap");
 	blend_box.pack_start(blend_label, false, false, 0);
-	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -673,29 +662,26 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	pressure_width_box.pack_start(pressure_width_label, true, true, 0);
 	pressure_width_box.pack_start(pressure_width_checkbutton, false, false, 0);
 
-	SPACING(min_pressure_indent, INDENTATION);
-	SPACING(min_pressure_gap, GAP);
+	min_pressure_label.set_name("indentation");
+	min_pressure_spin.set_name("gap");
+
 	min_pressure_label.set_label(_("Min Width:"));
 	min_pressure_label.set_halign(Gtk::ALIGN_START);
 	min_pressure_label.set_valign(Gtk::ALIGN_CENTER);
-	min_pressure_label_box.pack_start(*min_pressure_indent, false, false, 0);
 	min_pressure_label_box.pack_start(min_pressure_label, false, false, 0);
 
 	min_pressure_box.pack_start(min_pressure_spin, true, true, 0);
-	min_pressure_box.pack_start(*min_pressure_gap, false, false, 0);
 	min_pressure_box.pack_start(min_pressure_checkbutton, false, false, 0);
 
 	smoothness_label.set_label(_("Smoothness"));
 	smoothness_label.set_halign(Gtk::ALIGN_START);
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
-	SPACING(localthres_indent, INDENTATION);
-	localthres_box.pack_start(*localthres_indent, false, false, 0);
+	localthres_radiobutton.set_name("indentation");
 	localthres_box.pack_start(localthres_radiobutton, false, false, 0);
 	localthres_radiobutton.set_label(_("Local:"));
 
-	SPACING(globalthres_indent, INDENTATION);
-	globalthres_box.pack_start(*globalthres_indent, false, false, 0);
+	globalthres_radiobutton.set_name("indentation");
 	globalthres_box.pack_start(globalthres_radiobutton, false, false, 0);
 	globalthres_radiobutton.set_label(_("Global:"));
 
@@ -703,11 +689,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	globalthres_radiobutton.set_group(smoothness_group);
 
 	width_max_error_label.set_label(_("Width Max Error:"));
-	SPACING(width_max_error_gap, GAP);
+	width_max_error_label.set_name("gap");
 	width_max_error_label.set_halign(Gtk::ALIGN_START);
 	width_max_error_label.set_valign(Gtk::ALIGN_CENTER);
 	width_max_error_box.pack_start(width_max_error_label, false, false, 0);
-	width_max_error_box.pack_start(*width_max_error_gap, false, false, 0);
 
 	round_ends_label.set_label(_("Round Ends"));
 	round_ends_label.set_halign(Gtk::ALIGN_START);
