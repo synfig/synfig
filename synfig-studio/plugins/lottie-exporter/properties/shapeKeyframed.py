@@ -5,6 +5,7 @@ lottie
 """
 
 import sys
+from properties.shapePropKeyframe.advanced_outline import gen_bline_advanced_outline
 from properties.shapePropKeyframe.outline import gen_bline_outline
 from properties.shapePropKeyframe.region import gen_bline_region
 from properties.shapePropKeyframe.polygon import gen_dynamic_list_polygon
@@ -46,3 +47,5 @@ def gen_properties_shapeKeyframed(lottie, node, idx):
         gen_dynamic_list_polygon(lottie["k"], node)
     elif isinstance(node, Param) and node.get_layer_type() == "outline":
         gen_bline_outline(lottie["k"], node)
+    elif isinstance(node, Param) and node.get_layer_type() == "advanced_outline":
+        gen_bline_advanced_outline(lottie["k"], node)
