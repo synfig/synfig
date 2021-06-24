@@ -16,7 +16,7 @@ from common.Vector import Vector
 from common.Hermite import Hermite
 from synfig.animation import to_Synfig_axis
 from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents
-from properties.shapePropKeyframe.outline import get_outline_grow, get_outline_param_at_frame
+from properties.shapePropKeyframe.outline import line_intersection, get_outline_grow, get_outline_param_at_frame
 sys.path.append("../../")
 
 
@@ -183,6 +183,8 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
     smoothness = to_Synfig_axis(smoothness_p.get_value(fr), "real")
     dash_offset = to_Synfig_axis(dash_offset_p.get_value(fr), "real")
     dash_enabled = dash_enabled_p.get_value(fr)
+    expand = to_Synfig_axis(expand_p.get_value(fr), "real")
+    width = to_Synfig_axis(outer_width_p.get_value(fr), "real")
 
     bline_pos, hbline_pos = [], []
 
@@ -574,8 +576,149 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                 if not fast:
                     p = hipos
                 wplist[wnext].set_width(widthpoint_interpolate(i, n, p, smoothness))
-            # add_tip(side_a, side_b, curve.value(q), unitary, wplist[wnext], gv)
+            add_tip(side_a, side_b, curve.value(q), unitary, wplist[wnext], gv, width, expand)
+
+            witer = wnext
+            switer = swnext
+            wnext += 1
+            swnext += 1
+
+            if wnext == wend or swnext == swend:
+                cwnext = 0
+                cwiter = len(cwplist) - 1
+                scwnext = 0
+                scwiter = len(scwplist) - 1
+
+                if blineloop and get_outline_param_at_frame(bline[bnext], fr)[5] or get_outline_param_at_frame(bline[bnext], fr)[2].mag() == 0 or get_outline_param_at_frame(bline[bnext], fr)[3].mag() == 0:
+                    first = 0
+                    last = len(wplist) - 1
+
+                    if wplist[first].get_side_type_before() == 0 or wplist[last].get_side_type_after() == 0:
+                        i = swcplist[scwiter]
+                        n = swcplist[scwnext]
+                        if not fast_:
+                            i = cwplist[cwiter]
+                            n = cwplist[cwnext]
+                        p = ipos
+                        if not fast_:
+                            h = hipos
+                        add_cusp(side_a,
+                                 side_b,
+                                 get_outline_param_at_frame(bline[bnext], fr)[0],
+                                 first_tangent,
+                                 curve.derivative(1.0-CUSP_TANGENT_ADJUST),
+                                 gv*(expand+width*0.5*widthpoint_interpolate(i, n, p, smoothness)),
+                                 cusp_type)
+
+
+def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
+    CUSP_THRESHOLD = 0.40
+    SPIKE_AMOUNT = 4
+    t1 = last.perp().norm()
+    t2 = curr.perp().norm()
+    cross = t1*t2.perp()
+    perp = (t1-t2).mag()
+    if cusp_type == 0:
+        if cross > CUSP_THRESHOLD:
+            p1 = vertex + t1*w
+            p2 = vertex + t2*w
+            side_a.append([line_intersection(p1, last, p2, curr), Vector(0, 0), Vector(0, 0)])
+        elif cross < -CUSP_THRESHOLD:
+            p1 = vertex - t1*w
+            p2 = vertex - t2*w
+            side_b.append([line_intersection(p1, last, p2, curr), Vector(0, 0), Vector(0, 0)])
+        elif cross > 0 and perp > 1:
+            amount = max(0.0, (cross/CUSP_THRESHOLD)*(SPIKE_AMOUNT-1)+1)
+            side_a.append([vertex+(t1+t2).norm()*w*amount, Vector(0, 0), Vector(0, 0)])
+        elif cross < 0 and perp > 1:
+            amount = max(0.0, (-cross/CUSP_THRESHOLD)*(SPIKE_AMOUNT-1)+1)
+            side_b.append([vertex-(t1+t2).norm()*w*amount, Vector(0, 0), Vector(0, 0)])
+    elif cusp_type == 1:
+        if cross > 0:
+            p1 = vertex + t1*w
+            p2 = vertex + t2*2
+
              
+
+             
+
+def add_tip(side_a, side_b, vertex, tangent, wp, gv, width, expand):
+    ROUND_END_FACTOR = 4
+    SAMPLES = 50
+    w = gv * (expand + width*0.5*wp.get_width())
+    if wp.get_side_type_before() == 1:
+        curve = Hermite(vertex-tangent.perp()*w,
+                        vertex+tangent.perp()*w,
+                        -tangent*w*ROUND_END_FACTOR,
+                        tangent*w*ROUND_END_FACTOR)
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        sdie_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+        n = 0.0
+        while n < 0.499999:
+            side_a.append([curve.value(0.5+n), Vector(0, 0), Vector(0, 0)]) 
+            side_b.append([curve.value(0.5-n), Vector(0, 0), Vector(0, 0)]) 
+            n += 2.0/SAMPLES
+        side_a.append([curve.value(1.0), Vector(0, 0), Vector(0, 0)])
+        side_b.append([curve.value(0.0), Vector(0, 0), Vector(0, 0)])
+    elif wp.get_side_type_before() == 2:
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex-tangent*w, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex+(tangent.perp()-tangent)*w, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex+tangent.perp()*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex-tangent*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex+(-tangent.perp()-tangent)*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex-tangent.perp()*w, Vector(0, 0), Vector(0, 0)])
+    elif wp.get_side_type_before() == 3:
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex-tangent*w, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex+tangent.perp()*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex-tangent*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex-tangent.perp()*w, Vector(0, 0), Vector(0, 0)])
+    elif wp.get_side_type_before() == 4:
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+
+    if wp.get_side_type_after() == 1:
+        curve = Hermite(vertex-tangent.perp()*w,
+                        vertex+tangent.perp()*w,
+                        tangent*w*ROUND_END_FACTOR,
+                        -tangent*w*ROUND_END_FACTOR)
+        n = 0.0
+        while n < 0.499999:
+            side_a.append([curve.value(1-n), Vector(0, 0), Vector(0, 0)]) 
+            side_b.append([curve.value(n), Vector(0, 0), Vector(0, 0)]) 
+            n += 2.0/SAMPLES
+        side_a.append([curve.value(0.5), Vector(0, 0), Vector(0, 0)]) 
+        side_b.append([curve.value(0.5), Vector(0, 0), Vector(0, 0)]) 
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)]) 
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)]) 
+    elif wp.get_side_type_after() == 2:
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex+tangent*w, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex+(-tangent.perp()+tangent)*w, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex-tangent.perp()*w, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex+tangent*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex+(tangent.perp()+tangent)*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex+tangent.perp()*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+    elif wp.get_side_type_after() == 3:
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex+tangent*w, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex-tangent.perp()*w, Vector(0, 0), Vector(0, 0)])
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex+tangent*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex+tangent.perp()*w, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+    elif wp.get_side_type_after() == 4:
+        side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+    return 
+
 
 def bline_to_bezier(bline_pos, origin, bezier_size):
     if bezier_size != 0:
