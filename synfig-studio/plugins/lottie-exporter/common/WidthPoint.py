@@ -62,8 +62,14 @@ class WidthPoint:
     def get_position(self):
         return self.position_
 
+    def set_width(self, width):
+        self.width_ = width
+
     def get_width(self):
         return self.width_
+
+    def get_dash(self):
+        return self.dash_
 
     def __lt__(self, rhs):
         return ((self.position_) < (rhs.position_))

@@ -545,8 +545,42 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         if ipos == swnext_pos:
             unitary = None
             hipos = wnext_pos
+            bezier_ipos = bline_to_bezier(ipos, biter_pos, bezier_size)
+            q = bezier_ipos
+            if q < EPSILON:
+                unitary = iter_t.norm()
+            elif q > (1.0 - EPSILON):
+                unitary = next_t.norm()
+            else:
+                unitary = curve.derivative(q).norm()
+            if wplist[wnext].get_dash():
+                ci = scwiter
+                cn = scwnext
+                if not fast_:    # fast is set to False always
+                    ci = cwiter
+                    cn = cwnext
+                # ASSUMPTION: if fast is set to True, then the code will change below
+                if cwplist[ci].get_position() == 0.0 and cwplist[cn].get_position() != 1.0 and inserted_first:
+                    ci = len(cwplist) - 1
+                    if inserted_last:
+                        ci -= 1
+                if cwplist[cn].get_position() == 1.0 and inserted_last:
+                    cn = 0
+                    if inserted_first:
+                        cn += 1
+                i = cwplist[ci]
+                n = cwplist[cn]
+                p = ipos
+                if not fast:
+                    p = hipos
+                wplist[wnext].set_width(widthpoint_interpolate(i, n, p, smoothness))
+            # add_tip(side_a, side_b, curve.value(q), unitary, wplist[wnext], gv)
              
 
+def bline_to_bezier(bline_pos, origin, bezier_size):
+    if bezier_size != 0:
+        return (bline_pos - origin)/bezier_size
+    return bline_pos
 
 
 def hom_to_std(bline, pos, index_loop, bline_loop, fr):
