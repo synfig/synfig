@@ -189,8 +189,9 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
     wplist = width_point_list.get_list_at_frame(fr)
     dilist = dash_item_list.get_list_at_frame(fr)
     dwplist = []
+    fdwplist = []
 
-    dash_enabled = dash_enabled_p.get_value(fr) and (dash_item_list.get_len() != 0)
+    dash_enabled = dash_enabled and (dash_item_list.get_len() != 0)
     dstart_tip = 4  # WidthPointList::TYPE_FLAT
     dend_tip   = 4  # WidthPointList::TYPE_FLAT
 
@@ -204,7 +205,9 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
     wplist_size = width_point_list.get_len()
 
     # Initializing the iterator
-    bnext = 0
+    biter, bnext = 0, 0
+    bpiter, bpnext, hbpiter = 0, 0, 0
+    witer, wnext, switer, swnext, cwiter, cwnext, scwiter, scwnext, dwiter, dwnext = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
     first = True
     middle_corner = False
@@ -334,8 +337,8 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                 while dpos < blinelength:
                     before_pos = (dpos + dilist[diter].get_offset())/blinelength
                     after_pos = (dpos + dilist[diter].get_offset() + dilist[diter].get_length())/blinelength 
-                    before_pos = before_pos if homogeneous else hom_to_std(bline, before_pos, wplistloop, blineloop)
-                    after_pos = after_pos if homogeneous else hom_to_std(bline, after_pos, wplistloop, blineloop)
+                    before_pos = before_pos if homogeneous else hom_to_std(bline, before_pos, wplistloop, blineloop, fr)
+                    after_pos = after_pos if homogeneous else hom_to_std(bline, after_pos, wplistloop, blineloop, fr)
                     before = WidthPoint(before_pos, 1.0, dilist[diter].get_side_type_before(), 0, True)
                     after = WidthPoint(after_pos, 1.0, 0, dilist[diter].get_side_type_after(), True)
                     dwplist.append(before)
@@ -364,8 +367,8 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                 while dpos > 0.0:
                     before_pos = (dpos - dilist[rditer].get_length())/blinelength
                     after_pos = (dpos) / blinelength
-                    before_pos = before_pos if homogeneous else hom_to_std(bline, before_pos, wplistloop, blineloop)
-                    after_pos = after_pos if homogeneous else hom_to_std(bline, after_pos, wplistloop, blineloop)
+                    before_pos = before_pos if homogeneous else hom_to_std(bline, before_pos, wplistloop, blineloop, fr)
+                    after_pos = after_pos if homogeneous else hom_to_std(bline, after_pos, wplistloop, blineloop, fr)
                     before = WidthPoint(before_pos, 1.0, dilist[rditer].get_side_type_before(), 0.0, True)
                     after = WidthPoint(after_pos, 1.0, 0, dilist[rditer].get_side_type_after(), True)
                     dwplist.insert(0, after)
@@ -396,6 +399,154 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                     dwplist.append(before)
                     dwplist.append(after)
                      
+                wnext = 0
+                if blineloop:
+                    witer = len(wplist) - 1
+                else:
+                    witer = wnext
+
+                while True: # Do while loop
+                    witer_pos = wplist[witer].get_position()
+                    wnext_pos = wplist[wnext].get_position()
+
+                    if wplist[witer].get_side_type_after() == 0 or wplist[wnext].get_side_type_before() == 0:
+                        dwiter = 0
+                        while dwiter != len(dwplist):
+                            dwiter_pos = dwplist[dwiter].get_position()
+                            if dwiter_pos > witer_pos and dwiter_pos < wnext_pos:
+                                fdwplist.append(dwplist[dwiter])
+                            dwiter += 1
+                    witer = wnext
+                    wnext += 1
+
+                    if not (wnext != len(wplist)):
+                        break
+
+                dwiter = 0
+                dwnext = dwiter + 1
+                
+                while True: # Do while loop
+                    dwiter_pos = dwplist[dwiter].get_position()
+                    dwnext_pos = dwplist[dwnext].get_position()
+                    witer = 0
+                    while witer != len(wplist):
+                        witer_pos = wplist[witer].get_position()
+                        if witer_pos <= dwnext_pos and witer_pos >= dwiter_pos:
+                            fdwplist.append(wplist[witer])
+                        witer += 1
+                    dwnext += 1
+                    dwiter = dwnext
+                    if dwnext == len(dwplist):
+                        break
+                    dwnext += 1
+    cwplist = []
+    for my_iterator in wplist:
+        cwplist.append(copy.deepcopy(my_iterator))
+    scwplist = []
+    for my_iterator in wplist:
+        scwplist.append(copy.deepcopy(my_iterator))
+
+    if homogeneous:
+        scwiter = 0
+        while scwiter != len(scwplist):
+            scwplist[scwiter].set_position(hom_to_std(bline, scwplist[scwiter].get_position(), wplistloop, blineloop, fr)) 
+            scwiter += 1
+    else:
+        cwiter = 0
+        while cwiter != len(cwplist):
+            cwplist[cwiter].set_position(std_to_hom(bline, cwplist[cwiter].get_position(), wplistloop, blineloop, fr))
+            cwiter += 1
+
+    if dash_enabled:
+        wplist = []
+        for my_iterator in fdwplist:
+            wplist.append(copy.deepcopy(my_iterator))
+        sorted(wplist)
+        witer = 0
+
+    if len(wplist) == 0:
+        wplist.append(WidthPoint(0.5, 1.0, 4, 4, True))
+
+    swplist = []
+    for my_iterator in wplist:
+        swplist.append(copy.deepcopy(my_iterator))
+
+    if homogeneous:
+        switer = 0
+        while switer != len(swplist):
+            swplist[switer].set_position(hom_to_std(bline, swplist[switer].get_position(), wplistloop, blineloop, fr))
+            switer += 1
+    else:
+        witer = 0
+        while witer != len(wplist):
+            wplist[witer].set_position(std_to_hom(bline, wplist[witer].get_position(), wplistloop, blineloop, fr))
+            witer += 1
+    
+    wnext = 0
+    swnext = 0
+    if blineloop:
+        witer = len(wplist) - 1
+        switer = len(swplist) - 1
+    else:
+        witer = wnext
+        switer = swnext
+    cwnext = 0
+    scwnext = 0
+    if blineloop:
+        cwiter = len(cwplist) - 1
+        scwiter = len(scwplist) - 1
+    else:
+        cwiter = cwnext
+        scwiter = scwnext
+    wend = len(wplist)
+    swend = len(wplist)
+
+    ipos = 0.0
+    hipos = 0.0
+
+    if not blineloop:
+        if wplist[wnext].get_position() == 0.0:
+            wplist[wnext].set_side_type_before(dstart_tip if dash_enabled else start_tip)
+        last = len(wplist) - 1
+        if wplist[last].get_position() == 1.0:
+            wplist[last].set_side_type_after(dend_tip if dash_enabled else end_tip)
+
+    if dash_enabled:
+        first = 0
+        last = len(wplist) - 1
+        if wplist[first].get_side_type_before() == 0:
+            wplist[first].set_side_type_before(dstart_tip)
+        if wplist[last].get_side_type_after() == 0:
+            wplist[last].set_side_type_after(dend_tip)
+
+    # Main loop
+    while True:
+        iter_t = get_outline_param_at_frame(bline[biter], fr)[3] 
+        next_t = get_outline_param_at_frame(bline[bnext], fr)[2]
+        iter_t_mag = iter_t.mag()
+        next_t_mag = next_t.mag()
+
+        split_flag = get_outline_param_at_frame(bline[biter], fr)[5] or get_outline_param_at_frame(bline[biter], fr)[2].mag() == 0 or get_outline_param_at_frame(bline[biter], fr)[3].mag() == 0
+        curve = Hermite(get_outline_param_at_frame(bline[biter], fr)[0],
+                        get_outline_param_at_frame(bline[bnext], fr)[0],
+                        iter_t,
+                        next_t)
+        if iter_t_mag == 0.0:
+            iter_t = curve.derivative(CUSP_TANGENT_ADJUST)
+        if next_t_mag == 0.0:
+            next_t = curve.derivative(1.0 - CUSP_TANGENT_ADJUST) 
+        if blineloop and first:
+            first_tangent = iter_t
+            first = False
+
+        wnext_pos = wplist[wnext].get_position()
+        swnext_pos = swplist[swnext].get_position()
+
+        if ipos == swnext_pos:
+            unitary = None
+            hipos = wnext_pos
+             
+
 
 
 def hom_to_std(bline, pos, index_loop, bline_loop, fr):

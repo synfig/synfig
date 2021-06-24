@@ -47,8 +47,14 @@ class WidthPoint:
             ret = ret if (ret >= 0.0) else (rnge + ret) 
         return ret + self.lower_bound_
 
+    def set_side_type_before(self, sidebefore):
+        side_type_[0] = sidebefore
+
     def get_side_type_before(self):
         return self.side_type_[0]
+
+    def set_side_type_after(self, sideafter):
+        side_type_[1] = sideafter
 
     def get_side_type_after(self):
         return self.side_type_[1]
