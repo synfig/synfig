@@ -212,6 +212,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
     bpiter, bpnext, hbpiter = 0, 0, 0
     witer, wnext, switer, swnext, cwiter, cwnext, scwiter, scwnext, dwiter, dwnext = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
+    first_tangent = None
     first = True
     middle_corner = False
     done_tip = False
@@ -262,7 +263,6 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
 
     wplist = sorted(wplist)
 
-    biter = 0
     if blineloop:
         biter = bline.get_len() - 1
     else:
@@ -293,8 +293,8 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         if wplist_size != 0:
             wpfront = wplist[0]
             wpback = wplist[-1]
-            wpfb_int = wpfront.get_side_type_before() == 0
-            wpba_int = wpback.get_side_type_after() == 0
+            wpfb_int = (wpfront.get_side_type_before() == 0)
+            wpba_int = (wpback.get_side_type_after() == 0)
 
             if wpfb_int or wpba_int:
                 if wpfront.get_position() != 0.0:
@@ -305,7 +305,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                         n.set_position(std_to_hom(bline, n.get_position(), wplistloop, blineloop, fr)) 
                     wplist.append(WidthPoint(0.0, widthpoint_interpolate(i, n, 0.0, smoothness), 0, 0))
                     inserted_first = True
-                if wpfront.get_position() != 1.0:
+                if wpback.get_position() != 1.0:
                     i = copy.deepcopy(wpback)
                     n = copy.deepcopy(wpfront)
                     if not homogeneous and not fast_:
@@ -315,7 +315,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                     inserted_last = True
         else:
             wplist.append(WidthPoint(0.0, 1.0, 0, 0))
-            wplist.append(WidthPoint(1.0, 0.0, 0, 0))
+            wplist.append(WidthPoint(1.0, 1.0, 0, 0))
 
     wplist = sorted(wplist)
 
@@ -372,7 +372,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                     after_pos = (dpos) / blinelength
                     before_pos = before_pos if homogeneous else hom_to_std(bline, before_pos, wplistloop, blineloop, fr)
                     after_pos = after_pos if homogeneous else hom_to_std(bline, after_pos, wplistloop, blineloop, fr)
-                    before = WidthPoint(before_pos, 1.0, dilist[rditer].get_side_type_before(), 0.0, True)
+                    before = WidthPoint(before_pos, 1.0, dilist[rditer].get_side_type_before(), 0, True)
                     after = WidthPoint(after_pos, 1.0, 0, dilist[rditer].get_side_type_after(), True)
                     dwplist.insert(0, after)
                     dwplist.insert(0, before)
@@ -522,6 +522,15 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         if wplist[last].get_side_type_after() == 0:
             wplist[last].set_side_type_after(dend_tip)
 
+    """
+    print("START")
+    for my_it in dwplist:
+        print(str(my_it.get_position()) + " " + str(my_it.get_width()) + " " +
+                str(my_it.get_side_type_before()) + " " +
+                str(my_it.get_side_type_after()))
+    print("END")
+    """
+
     # Main loop
     while True:
         iter_t = get_outline_param_at_frame(bline[biter], fr)[3] 
@@ -529,7 +538,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         iter_t_mag = iter_t.mag()
         next_t_mag = next_t.mag()
 
-        split_flag = get_outline_param_at_frame(bline[biter], fr)[5] or get_outline_param_at_frame(bline[biter], fr)[2].mag() == 0 or get_outline_param_at_frame(bline[biter], fr)[3].mag() == 0
+        split_flag = get_outline_param_at_frame(bline[biter], fr)[5] or (get_outline_param_at_frame(bline[biter], fr)[2].mag() == 0) or (get_outline_param_at_frame(bline[biter], fr)[3].mag() == 0)
         curve = Hermite(get_outline_param_at_frame(bline[biter], fr)[0],
                         get_outline_param_at_frame(bline[bnext], fr)[0],
                         iter_t,
@@ -590,7 +599,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                 scwnext = 0
                 scwiter = len(scwplist) - 1
 
-                if blineloop and get_outline_param_at_frame(bline[bnext], fr)[5] or get_outline_param_at_frame(bline[bnext], fr)[2].mag() == 0 or get_outline_param_at_frame(bline[bnext], fr)[3].mag() == 0:
+                if blineloop and (get_outline_param_at_frame(bline[bnext], fr)[5] or get_outline_param_at_frame(bline[bnext], fr)[2].mag() == 0 or get_outline_param_at_frame(bline[bnext], fr)[3].mag() == 0):
                     first = 0
                     last = len(wplist) - 1
 
@@ -602,7 +611,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                             n = cwplist[cwnext]
                         p = ipos
                         if not fast_:
-                            h = hipos
+                            p = hipos
                         add_cusp(side_a,
                                  side_b,
                                  get_outline_param_at_frame(bline[bnext], fr)[0],
@@ -762,7 +771,24 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
             side_b.append([p-d*w, Vector(0, 0), Vector(0, 0)])
             ipos = ipos + step
     if blineloop:
-        pass
+        side_b.reverse()
+        add_polygon(side_a)
+        add_polygon(side_b)
+        return
+
+    print("Anish")
+    for points in side_a:
+        print(str(points[0].val1) + " " + str(points[0].val2))
+    print("Gulati")
+
+    while len(side_b) != 0:
+        side_a.append(side_b[-1])
+        side_b.pop()
+    add_polygon(side_a)
+
+
+def add_polygon(side_a):
+    pass
 
 
 def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
@@ -783,15 +809,15 @@ def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
             p2 = vertex - t2*w
             side_b.append([line_intersection(p1, last, p2, curr), Vector(0, 0), Vector(0, 0)])
         elif cross > 0 and perp > 1:
-            amount = max(0.0, (cross/CUSP_THRESHOLD)*(SPIKE_AMOUNT-1)+1)
+            amount = max(0.0, (cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1
             side_a.append([vertex+(t1+t2).norm()*w*amount, Vector(0, 0), Vector(0, 0)])
         elif cross < 0 and perp > 1:
-            amount = max(0.0, (-cross/CUSP_THRESHOLD)*(SPIKE_AMOUNT-1)+1)
+            amount = max(0.0, (-cross/CUSP_THRESHOLD))*(SPIKE_AMOUNT-1)+1
             side_b.append([vertex-(t1+t2).norm()*w*amount, Vector(0, 0), Vector(0, 0)])
     elif cusp_type == 1:
         if cross > 0:
             p1 = vertex + t1*w
-            p2 = vertex + t2*2
+            p2 = vertex + t2*w
             offset = t1.angle()
             angle = t2.angle()-offset
             if angle < RadAngle(0) and offset > RadAngle(0):
@@ -1042,8 +1068,8 @@ def std_to_hom(bline, pos, index_loop, bline_loop, fr):
         nxt = nxt + 1
     if from_vertex > size - 1:
         from_vertex = size - 1
-    bline_point0 = bline[from_vertex-1] if from_vertex else bline[itr]
-    bline_point1 = bline[from_vertex]
+    bline_point0 = bline[nxt+from_vertex-1] if from_vertex else bline[itr]
+    bline_point1 = bline[nxt+from_vertex]
     curve = Hermite(get_outline_param_at_frame(bline_point0, fr)[0],
                     get_outline_param_at_frame(bline_point1, fr)[0],
                     get_outline_param_at_frame(bline_point0, fr)[3],
@@ -1133,7 +1159,7 @@ def widthpoint_interpolate(prev, nxt, p, smoothness):
             if np > p:
                 q = (p+1.0-pp)/(np+1.0-pp)
         rw = pw+(nw-pw)*(q*(1.0-smoothness)+q*q*q*(10+q*(6*q-15))*smoothness)
-    elif p > np or p < pp:
+    elif p > np and p < pp:
         q = 0.0
         if nsa != side_int:
             nw = 0.0
