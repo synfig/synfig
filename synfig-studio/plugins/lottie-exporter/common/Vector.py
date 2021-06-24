@@ -122,6 +122,9 @@ class Vector:
         ret = self.val1 * self.val1 + self.val2 * self.val2
         return ret
 
+    def angle(self):
+        return common.Angle.RadAngle(math.atan2(self.val2, self.val1))
+
     def norm(self):
         """
         Returns a normalised version of the vector

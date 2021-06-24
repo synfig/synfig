@@ -14,6 +14,7 @@ from common.WidthPointList import WidthPointList
 from common.DashItemList import DashItemList
 from common.Vector import Vector
 from common.Hermite import Hermite
+from common.Angle import RadAngle, SinAngle, CosAngle
 from synfig.animation import to_Synfig_axis
 from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents
 from properties.shapePropKeyframe.outline import line_intersection, get_outline_grow, get_outline_param_at_frame
@@ -251,7 +252,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
     bpiter += 1
     hbpiter += 1
     bnext_pos = bline_pos[bpiter]
-    hbpnext_pos = hbline_pos[hbpiter]
+    hbnext_pos = hbline_pos[hbpiter]
 
     # Setup chunk list
     side_a, side_b = [], []
@@ -573,7 +574,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                 i = cwplist[ci]
                 n = cwplist[cn]
                 p = ipos
-                if not fast:
+                if not fast_:
                     p = hipos
                 wplist[wnext].set_width(widthpoint_interpolate(i, n, p, smoothness))
             add_tip(side_a, side_b, curve.value(q), unitary, wplist[wnext], gv, width, expand)
@@ -594,8 +595,8 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                     last = len(wplist) - 1
 
                     if wplist[first].get_side_type_before() == 0 or wplist[last].get_side_type_after() == 0:
-                        i = swcplist[scwiter]
-                        n = swcplist[scwnext]
+                        i = scwplist[scwiter]
+                        n = scwplist[scwnext]
                         if not fast_:
                             i = cwplist[cwiter]
                             n = cwplist[cwnext]
@@ -609,11 +610,165 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                                  curve.derivative(1.0-CUSP_TANGENT_ADJUST),
                                  gv*(expand+width*0.5*widthpoint_interpolate(i, n, p, smoothness)),
                                  cusp_type)
+                break
+            else:
+                ipos = ipos + EPSILON
+                if wplist[witer].get_side_type_after() != 0:
+                    done_tip = True
+                else:
+                    done_tip = False
+                if ipos > scwplist[scwnext].get_position():
+                    cwiter = cwnext
+                    scwiter = scwnext
+                    cwnext += 1
+                    scwnext += 1
+                middle_corner = False
+                continue
+        if (wplist[witer].get_side_type_after() != 0 and wplist[wnext].get_side_type_before() != 0) or (witer == 0 and wnext == 0):    
+            ipos = swnext_pos
+            if ipos > scwplist[scwnext].get_position():
+                cwiter = cwnext
+                scwiter = scwnext
+                cwnext += 1
+                scwnext += 1
+            while ipos > bnext_pos and bnext+1 != bend:
+                last_tangent = curve.derivative(1.0-CUSP_TANGENT_ADJUST)
+                biter = bnext
+                bnext += 1
+                biter_pos = bnext_pos
+                bpiter += 1
+                hbpiter += 1
+                bnext_pos = bline_pos[bpiter]
+                hbnext_pos = hbline_pos[hbpiter]
+            middle_corner = False
+            continue
+
+        if middle_corner == True:
+            if split_flag:
+                i = scwplist[scwiter]
+                n = scwplist[scwnext]
+                if not fast_:
+                    i = cwplist[cwiter]
+                    n = cwplist[cwnext]
+                p = ipos
+                if not fast_:
+                    p = hipos
+                add_cusp(side_a,
+                        side_b,
+                        get_outline_param_at_frame(bline[biter], fr)[0],
+                        curve.derivative(CUSP_TANGENT_ADJUST),
+                        last_tangent,
+                        gv*(expand+width*0.5*widthpoint_interpolate(i, n, p, smoothness)),
+                        cusp_type)
+            middle_corner = False
+            ipos = ipos + EPSILON
+        # Secondary loop. For interpolation tasks
+        while True:
+            swnext_pos = swplist[swnext].get_position()
+            if ipos > swnext_pos and bnext_pos >= swnext_pos:
+                unitary = None
+                ipos = swnext_pos
+                hipos = wnext_pos
+                q = bline_to_bezier(ipos, biter_pos, bezier_size)
+                if q < EPSILON:
+                    unitary = iter_t.norm()
+                elif q > (1.0 - EPSILON):
+                    unitary = next_t.norm()
+                else:
+                    unitary = curve.derivative(q).norm()
+                d = unitary.perp()
+                p = curve.value(q)
+                ww = 0.0
+
+                if wplist[wnext].get_side_type_before() != 0:
+                    ww = 0.0
+                else:
+                    if wplist[wnext].get_dash():
+                        i = scwplist[scwiter]
+                        n = scwplist[scwnext]
+                        if not fast_:
+                            i = cwplist[cwiter]
+                            n = cwplist[cwnext]
+                        p_my = ipos
+                        if not fast_:
+                            p_my = hipos
+                        wplist[wnext].set_width(widthpoint_interpolate(i, n, p_my, smoothness))
+                    ww = wplist[wnext].get_width()
+                w = gv*(expand+width*0.5*ww)
+                side_a.append([p+d*w, Vector(0, 0), Vector(0, 0)])
+                side_b.append([p-d*w, Vector(0, 0), Vector(0, 0)])
+                break
+            elif ipos > bnext_pos and bnext_pos < swnext_pos:
+                hipos = hbnext_pos
+                ipos = bnext_pos
+                middle_corner = True
+                q = bline_to_bezier(ipos, biter_pos, bezier_size)
+                q = q if (q > CUSP_TANGENT_ADJUST) else (CUSP_TANGENT_ADJUST)
+                q = (1.0 - CUSP_TANGENT_ADJUST) if (q > 1.0 - CUSP_TANGENT_ADJUST) else q
+                d = curve.derivative(q).perp().norm()
+                p = curve.value(bline_to_bezier(ipos, biter_pos, bezier_size))
+                i = scwplist[scwiter]
+                n = scwplist[scwnext]
+                if not fast_:
+                    i = cwplist[cwiter]
+                    n = cwplist[cwnext]
+                po = ipos
+                if not fast_:
+                    po = hipos
+                w = gv*(expand+width*0.5*widthpoint_interpolate(i, n, po, smoothness))
+                side_a.append([p+d*w, Vector(0, 0), Vector(0, 0)])
+                side_b.append([p-d*w, Vector(0, 0), Vector(0, 0)])
+                biter = bnext
+                bnext += 1
+                biter_pos = bnext_pos
+                bpiter += 1
+                hbpiter += 1
+                bnext_pos = bline_pos[bpiter]
+                hbpnext_pos = hbline_pos[hbpiter]
+                last_tangent = curve.derivative(1.0-CUSP_TANGENT_ADJUST)
+                break
+
+            # Add intepolation
+            unitary = None
+            q = bline_to_bezier(ipos, biter_pos, bezier_size)
+            unitary = curve.derivative(q).norm()
+            d = unitary.perp()
+            p = curve.value(q)
+
+            if cwplist[cwiter].get_position() == 0.0 and cwplist[cwnext].get_position() != 1.0 and inserted_first:
+                cwiter = len(cwplist)
+                cwiter -= 1
+                if inserted_last:
+                    cwiter -= 1
+            if cwplist[cwnext].get_position() == 1.0 and inserted_last:
+                cwnext = 0
+                if inserted_first:
+                    cwnext += 1
+            i = scwplist[scwiter]
+            n = scwplist[scwnext]
+            if not fast_:
+                i = cwplist[cwiter]
+                n = cwplist[cwnext]
+            po = ipos
+            if not fast_:
+                po = std_to_hom(bline, ipos, wplistloop, blineloop, fr)
+            w = 0.0
+            if done_tip:
+                w = 0
+                done_tip = False
+            else:
+                w = (gv*(expand+width*0.5*widthpoint_interpolate(i, n, po, smoothness)))
+            side_a.append([p+d*w, Vector(0, 0), Vector(0, 0)])
+            side_b.append([p-d*w, Vector(0, 0), Vector(0, 0)])
+            ipos = ipos + step
+    if blineloop:
+        pass
 
 
 def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
     CUSP_THRESHOLD = 0.40
     SPIKE_AMOUNT = 4
+    SAMPLES = 50
     t1 = last.perp().norm()
     t2 = curr.perp().norm()
     cross = t1*t2.perp()
@@ -637,9 +792,39 @@ def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
         if cross > 0:
             p1 = vertex + t1*w
             p2 = vertex + t2*2
+            offset = t1.angle()
+            angle = t2.angle()-offset
+            if angle < RadAngle(0) and offset > RadAngle(0):
+                angle += DegAngle(360)
+                offset += DegAngle(360)
+            tangent = 4 * ((2 * CosAngle(angle/2).get() - CosAngle(angle).get() - 1)/ SinAngle(angle).get())
+            curve = Hermite(p1,
+                            p2,
+                            Vector(-tangent*w*SinAngle(angle*0+offset).get(), tangent*w*CosAngle(angle*0+offset).get()),
+                            Vector(-tangent*w*SinAngle(angle*1+offset).get(), tangent*w*CosAngle(angle*1+offset).get()))
+            n = 0.0
+            while n < 0.999999:
+                side_a.append([curve.value(n), Vector(0, 0), Vector(0, 0)]) 
+                n += 4.0 / SAMPLES
 
-             
-
+        if cross < 0:
+            p1 = vertex - t1*w
+            p2 = vertex - t2*w
+            offset = t2.angle()
+            angle = t1.angle() - offset
+            if angle < RadAngle(0) and offset > RadAngle(0):
+                angle += DegAngle(360)
+                offset += DegAngle(360)
+            tangent = 4 * ((2 * CosAngle(angle/2).get() - CosAngle(angle).get() - 1)/ SinAngle(angle).get())
+            curve = Hermite(p1,
+                            p2,
+                            Vector(-tangent*w*SinAngle(angle*1+offset).get(), tangent*w*CosAngle(angle*1+offset).get()),
+                            Vector(-tangent*w*SinAngle(angle*0+offset).get(), tangent*w*CosAngle(angle*0+offset).get()))
+            n = 0.0
+            while n < 0.999999:
+                side_b.append([curve.value(n), Vector(0, 0), Vector(0, 0)]) 
+                n += 4.0 / SAMPLES
+    return
              
 
 def add_tip(side_a, side_b, vertex, tangent, wp, gv, width, expand):
