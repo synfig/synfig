@@ -82,7 +82,6 @@ using namespace studio;
 #endif
 
 const int GAP = 3;
-const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -609,7 +608,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	id_label.set_name("gap");
+	id_label.get_style_context()->add_class("gap");
 	id_box.pack_start(id_label, false, false, 0);
 	id_box.pack_start(id_entry, true, true, 0);
 
@@ -624,7 +623,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
 		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
 
-	layer_region_togglebutton.set_name("indentation");
+	layer_region_togglebutton.get_style_context()->add_class("indentation");
 
 	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
@@ -633,7 +632,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	blend_label.set_name("gap");
+	blend_label.get_style_context()->add_class("gap");
 	blend_box.pack_start(blend_label, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
@@ -662,8 +661,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	pressure_width_box.pack_start(pressure_width_label, true, true, 0);
 	pressure_width_box.pack_start(pressure_width_checkbutton, false, false, 0);
 
-	min_pressure_label.set_name("indentation");
-	min_pressure_spin.set_name("gap");
+	min_pressure_label.get_style_context()->add_class("indentation");
+	min_pressure_spin.get_style_context()->add_class("gap");
 
 	min_pressure_label.set_label(_("Min Width:"));
 	min_pressure_label.set_halign(Gtk::ALIGN_START);
@@ -677,11 +676,11 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	smoothness_label.set_halign(Gtk::ALIGN_START);
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
-	localthres_radiobutton.set_name("indentation");
+	localthres_radiobutton.get_style_context()->add_class("indentation");
 	localthres_box.pack_start(localthres_radiobutton, false, false, 0);
 	localthres_radiobutton.set_label(_("Local:"));
 
-	globalthres_radiobutton.set_name("indentation");
+	globalthres_radiobutton.get_style_context()->add_class("indentation");
 	globalthres_box.pack_start(globalthres_radiobutton, false, false, 0);
 	globalthres_radiobutton.set_label(_("Global:"));
 
@@ -689,7 +688,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	globalthres_radiobutton.set_group(smoothness_group);
 
 	width_max_error_label.set_label(_("Width Max Error:"));
-	width_max_error_label.set_name("gap");
+	width_max_error_label.get_style_context()->add_class("gap");
 	width_max_error_label.set_halign(Gtk::ALIGN_START);
 	width_max_error_label.set_valign(Gtk::ALIGN_CENTER);
 	width_max_error_box.pack_start(width_max_error_label, false, false, 0);

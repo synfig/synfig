@@ -81,7 +81,6 @@ using namespace studio;
 #endif
 
 const int GAP = 3;
-const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -603,7 +602,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 
 	id_label.set_label(_("Name:"));
 	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	id_label.set_name("gap");
+	id_label.get_style_context()->add_class("gap");
 	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
 
 	id_box.pack_start(id_entry);
@@ -614,7 +613,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	LAYER_CREATION(layer_region_togglebutton,
 		("synfig-layer_geometry_region"), _("Create a region layer"));
 
-	layer_region_togglebutton.set_name("indentation");
+	layer_region_togglebutton.get_style_context()->add_class("indentation");
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
 	//layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
 	//layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
@@ -638,8 +637,8 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	pressure_width_box.pack_start(pressure_width_label, Gtk::PACK_SHRINK);
 	pressure_width_box.pack_end(pressure_width_checkbutton, Gtk::PACK_SHRINK);
 
-	min_pressure_label.set_name("indentation");
-	min_pressure_checkbutton.set_name("gap");
+	min_pressure_label.get_style_context()->add_class("indentation");
+	min_pressure_checkbutton.get_style_context()->add_class("gap");
 	min_pressure_label.set_label(_("Min Width:"));
 	min_pressure_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	min_pressure_label_box.pack_start(min_pressure_label, Gtk::PACK_SHRINK);
@@ -651,11 +650,11 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	smoothness_label.set_halign(Gtk::ALIGN_START);
 	smoothness_label.set_valign(Gtk::ALIGN_CENTER);
 
-	localthres_radiobutton.set_name("indentation");
+	localthres_radiobutton.get_style_context()->add_class("indentation");
 	localthres_box.pack_start(localthres_radiobutton, false, false, 0);
 	localthres_radiobutton.set_label("Local:");
 
-	globalthres_radiobutton.set_name("indentation");
+	globalthres_radiobutton.get_style_context()->add_class("indentation");
 	globalthres_box.pack_start(globalthres_radiobutton, false, false, 0);
 	globalthres_radiobutton.set_label("Global:");
 
@@ -663,7 +662,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	globalthres_radiobutton.set_group(smoothness_group);
 
 	width_max_error_label.set_label(_("Width Max Error:"));
-	width_max_error_label.set_name("gap");
+	width_max_error_label.get_style_context()->add_class("gap");
 	width_max_error_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	width_max_error_box.pack_start(width_max_error_label, Gtk::PACK_SHRINK);
 

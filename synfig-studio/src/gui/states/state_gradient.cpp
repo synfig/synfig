@@ -71,7 +71,6 @@ using namespace studio;
 #endif
 
 const int GAP = 3;
-const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -386,7 +385,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	id_label.set_name("gap");
+	id_label.get_style_context()->add_class("gap");
 	id_box.pack_start(id_label, false, false, 0);
 	id_box.pack_start(id_entry, true, true, 0);
 
@@ -403,7 +402,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	LAYER_CREATION(layer_spiral_gradient_togglebutton, toggle_layer_spiral_gradient,
 		("synfig-layer_gradient_spiral"), _("Create a spiral gradient"));
 
-	layer_linear_gradient_togglebutton.set_name("indentation");
+	layer_linear_gradient_togglebutton.get_style_context()->add_class("indentation");
 	layer_types_box.pack_start(layer_linear_gradient_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_radial_gradient_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_conical_gradient_togglebutton, false, false, 0);
@@ -412,7 +411,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	blend_label.set_name("gap");
+	blend_label.get_style_context()->add_class("gap");
 
 	blend_box.pack_start(blend_label, false, false, 0);
 
