@@ -464,7 +464,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                         while dwiter != len(dwplist):
                             dwiter_pos = dwplist[dwiter].get_position()
                             if dwiter_pos > witer_pos and dwiter_pos < wnext_pos:
-                                fdwplist.append(dwplist[dwiter])
+                                fdwplist.append(copy.deepcopy(dwplist[dwiter]))
                             dwiter += 1
                     witer = wnext
                     wnext += 1
@@ -482,13 +482,23 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                     while witer != len(wplist):
                         witer_pos = wplist[witer].get_position()
                         if witer_pos <= dwnext_pos and witer_pos >= dwiter_pos:
-                            fdwplist.append(wplist[witer])
+                            fdwplist.append(copy.deepcopy(wplist[witer]))
                         witer += 1
                     dwnext += 1
                     dwiter = dwnext
                     if dwnext == len(dwplist):
                         break
                     dwnext += 1
+
+    """
+    print("START")
+    for my_it in fdwplist:
+        print(str(my_it.get_position()) + " " + str(my_it.get_width()) + " " +
+                str(my_it.get_side_type_before()) + " " +
+                str(my_it.get_side_type_after()))
+    print("END")
+    """
+
     cwplist = []
     for my_iterator in wplist:
         cwplist.append(copy.deepcopy(my_iterator))
@@ -511,8 +521,9 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         wplist = []
         for my_iterator in fdwplist:
             wplist.append(copy.deepcopy(my_iterator))
-        sorted(wplist)
+        wplist = sorted(wplist)
         witer = 0
+
 
     if len(wplist) == 0:
         wplist.append(WidthPoint(0.5, 1.0, 4, 4, True))
@@ -571,10 +582,12 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
 
     """
     print("START")
-    for my_it in dwplist:
-        print(str(my_it.get_position()) + " " + str(my_it.get_width()) + " " +
-                str(my_it.get_side_type_before()) + " " +
-                str(my_it.get_side_type_after()))
+    print(len(wplist))
+    print(len(swplist))
+    print(len(cwplist))
+    print(len(scwplist))
+    print(len(dwplist))
+    print(len(fdwplist))
     print("END")
     """
 
@@ -823,10 +836,12 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         side_a.extend(side_b)
         return side_a
 
+    """
     print("Anish")
     for points in side_a:
         print(str(points[0].val1) + " " + str(points[0].val2))
     print("Gulati")
+    """
 
     while len(side_b) != 0:
         side_a.append(side_b[-1])
