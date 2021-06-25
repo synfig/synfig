@@ -156,10 +156,12 @@ def gen_bline_advanced_outline(lottie, bline_point):
 
         synfig_advanced_outline(bline, st_val, origin, outer_width, expand,
                 start_tip, end_tip, cusp_type, smoothness, homogeneous,
-                dash_enabled, dash_offset, dash_item_list, width_point_list, fr)
+                dash_enabled, dash_offset, dash_item_list, width_point_list,
+                origin, fr)
         synfig_advanced_outline(bline, en_val, origin, outer_width, expand,
                 start_tip, end_tip, cusp_type, smoothness, homogeneous,
-                dash_enabled, dash_offset, dash_item_list, width_point_list, fr + 1)
+                dash_enabled, dash_offset, dash_item_list, width_point_list,
+                origin, fr + 1)
 
         fr += 1
     # Setting the final time
@@ -169,7 +171,8 @@ def gen_bline_advanced_outline(lottie, bline_point):
 
 def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         start_tip, end_tip, cusp_type, smoothness_p, homogeneous,
-        dash_enabled_p, dash_offset_p, dash_item_list, width_point_list, fr):
+        dash_enabled_p, dash_offset_p, dash_item_list, width_point_list,
+        origin_p, fr):
     """
     Calculates the points for the advanced outline layer as in Synfig:
     https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/modules/mod_geometry/advanced_outline.cpp
@@ -770,25 +773,29 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
             side_a.append([p+d*w, Vector(0, 0), Vector(0, 0)])
             side_b.append([p-d*w, Vector(0, 0), Vector(0, 0)])
             ipos = ipos + step
+
+    # Lottie related
+    origin_cur = origin_p.get_value(fr)
+
     if blineloop:
         side_b.reverse()
-        add_polygon(side_a)
-        add_polygon(side_b)
+        add(side_a, st_val, origin_cur)
+        add(side_b, st_val, origin_cur)
         return
 
+    """
     print("Anish")
     for points in side_a:
         print(str(points[0].val1) + " " + str(points[0].val2))
     print("Gulati")
+    """
 
     while len(side_b) != 0:
         side_a.append(side_b[-1])
         side_b.pop()
-    add_polygon(side_a)
-
-
-def add_polygon(side_a):
-    pass
+    print(fr, len(side_a))
+    add(side_a, st_val, origin_cur)
+    return
 
 
 def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
@@ -863,7 +870,7 @@ def add_tip(side_a, side_b, vertex, tangent, wp, gv, width, expand):
                         -tangent*w*ROUND_END_FACTOR,
                         tangent*w*ROUND_END_FACTOR)
         side_a.append([vertex, Vector(0, 0), Vector(0, 0)])
-        sdie_b.append([vertex, Vector(0, 0), Vector(0, 0)])
+        side_b.append([vertex, Vector(0, 0), Vector(0, 0)])
         n = 0.0
         while n < 0.499999:
             side_a.append([curve.value(0.5+n), Vector(0, 0), Vector(0, 0)]) 
