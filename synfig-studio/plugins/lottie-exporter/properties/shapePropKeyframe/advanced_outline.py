@@ -149,30 +149,74 @@ def gen_bline_advanced_outline(lottie, bline_point):
     ################ SECTION 2 ###########################
     # Generating values for all the frames in the window
 
+    # Store all side_a, side_b values; because we need to make them equal in
+    # size in order to render properly in lottie
+    st_list = []
+    en_list = []
+    lottie_st = []
+    lottie_en = []
 
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
+        lottie_st.append([st_val, fr])
+        lottie_en.append([en_val, fr+1])
 
-        synfig_advanced_outline(bline, st_val, origin, outer_width, expand,
-                start_tip, end_tip, cusp_type, smoothness, homogeneous,
-                dash_enabled, dash_offset, dash_item_list, width_point_list,
-                origin, fr)
-        synfig_advanced_outline(bline, en_val, origin, outer_width, expand,
-                start_tip, end_tip, cusp_type, smoothness, homogeneous,
-                dash_enabled, dash_offset, dash_item_list, width_point_list,
-                origin, fr + 1)
+        st_list_value = synfig_advanced_outline(bline, st_val, origin, outer_width, expand,
+                                start_tip, end_tip, cusp_type, smoothness, homogeneous,
+                                dash_enabled, dash_offset, dash_item_list, width_point_list, fr)
+        en_list_value = synfig_advanced_outline(bline, en_val, origin, outer_width, expand,
+                                start_tip, end_tip, cusp_type, smoothness, homogeneous,
+                                dash_enabled, dash_offset, dash_item_list, width_point_list, fr + 1)
+        st_list.append(st_list_value)
+        en_list.append(en_list_value)
 
         fr += 1
+
+    append_all_lists(st_list, en_list, lottie_st, lottie_en, origin)
+
     # Setting the final time
     lottie.append({})
     lottie[-1]["t"] = fr
 
 
+def append_all_lists(st_list, en_list, lottie_st, lottie_en, origin_p):
+    """
+    
+    """
+    # Find maximum size among all the lists
+    mx = 0
+    for st in st_list:
+        mx = max(mx, len(st))
+    for en in en_list:
+        mx = max(mx, len(en))
+
+    # All the lists should of size mx
+    for st in st_list:
+        diff = mx - len(st)
+        last_value = copy.deepcopy(st[-1])
+        st.extend([last_value for i in range(diff)])
+
+    for en in en_list:
+        diff = mx - len(en)
+        last_value = copy.deepcopy(en[-1])
+        en.extend([last_value for i in range(diff)])
+
+    # Now render 
+    for i in range(0, len(lottie_st)):
+        cur_frame = lottie_st[i][1]
+        origin_cur = origin_p.get_value(cur_frame)
+        add(st_list[i], lottie_st[i][0], origin_cur) 
+
+    for i in range(0, len(lottie_en)):
+        cur_frame = lottie_en[i][1]
+        origin_cur = origin_p.get_value(cur_frame)
+        add(en_list[i], lottie_en[i][0], origin_cur)
+
+
 def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         start_tip, end_tip, cusp_type, smoothness_p, homogeneous,
-        dash_enabled_p, dash_offset_p, dash_item_list, width_point_list,
-        origin_p, fr):
+        dash_enabled_p, dash_offset_p, dash_item_list, width_point_list, fr):
     """
     Calculates the points for the advanced outline layer as in Synfig:
     https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/modules/mod_geometry/advanced_outline.cpp
@@ -774,28 +818,22 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
             side_b.append([p-d*w, Vector(0, 0), Vector(0, 0)])
             ipos = ipos + step
 
-    # Lottie related
-    origin_cur = origin_p.get_value(fr)
-
     if blineloop:
         side_b.reverse()
-        add(side_a, st_val, origin_cur)
-        add(side_b, st_val, origin_cur)
-        return
+        side_a.extend(side_b)
+        return side_a
 
-    """
     print("Anish")
     for points in side_a:
         print(str(points[0].val1) + " " + str(points[0].val2))
     print("Gulati")
-    """
 
     while len(side_b) != 0:
         side_a.append(side_b[-1])
         side_b.pop()
-    print(fr, len(side_a))
-    add(side_a, st_val, origin_cur)
-    return
+
+
+    return side_a
 
 
 def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
