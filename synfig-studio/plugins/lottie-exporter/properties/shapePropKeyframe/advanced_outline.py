@@ -836,8 +836,29 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
 
     if blineloop:
         side_b.reverse()
+        # Remove all data after we encounter a nan value
+        # From add_polygon()
+        itr = 0
+        while itr < len(side_a):
+            if side_a[itr][0].isnan():
+                break
+            itr += 1
+        side_a = side_a[:itr]
+
+        itr = 0
+        while itr < len(side_b):
+            if side_b[itr][0].isnan():
+                break
+            itr += 1
+        side_b = side_b[:itr]
+
         side_a.extend(side_b)
         return side_a
+
+
+    while len(side_b) != 0:
+        side_a.append(side_b[-1])
+        side_b.pop()
 
     """
     print("Anish")
@@ -845,11 +866,6 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         print(str(points[0].val1) + " " + str(points[0].val2))
     print("Gulati")
     """
-
-    while len(side_b) != 0:
-        side_a.append(side_b[-1])
-        side_b.pop()
-
 
     return side_a
 

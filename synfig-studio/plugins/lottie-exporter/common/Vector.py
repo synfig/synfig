@@ -64,6 +64,12 @@ class Vector:
         else:
             self.val1 = value
 
+    def isnan(self):
+        """
+        Returns true is any value of this vector is nan
+        """
+        return math.isnan(self.val1) or math.isnan(self.val2)
+
     def mag(self):
         """
         Returns the magnitude of the vector
@@ -84,7 +90,12 @@ class Vector:
         Returns:
             (float) : Magnitude inversed
         """
-        return 1.0 / self.mag()
+        ret = 0
+        try:
+            ret = 1.0 / self.mag()
+        except ZeroDivisionError:
+            ret = float('nan')
+        return ret
 
     def perp(self):
         """
