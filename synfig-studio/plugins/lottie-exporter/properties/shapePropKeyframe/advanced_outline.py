@@ -1070,12 +1070,21 @@ def hom_to_std(bline, pos, index_loop, bline_loop, fr):
         pl -= lengths[liter]
         from_vertex -= 1
 
+    print(itr, nxt, bline.get_len())
     blinepoint0 = bline[itr]
-    blinepoint1 = bline[nxt]
-    curve = Hermite(get_outline_param_at_frame(blinepoint0, fr)[0],
-                    get_outline_param_at_frame(blinepoint1, fr)[0],
-                    get_outline_param_at_frame(blinepoint0, fr)[3],
-                    get_outline_param_at_frame(blinepoint1, fr)[2])
+
+    a = get_outline_param_at_frame(blinepoint0, fr)[0]
+    c = get_outline_param_at_frame(blinepoint0, fr)[3]
+
+    if nxt == bline.get_len():
+        b = Vector(0, 0)
+        d = Vector(0, 0)
+    else:
+        blinepoint1 = bline[nxt]
+        b = get_outline_param_at_frame(blinepoint1, fr)[0]
+        d = get_outline_param_at_frame(blinepoint1, fr)[2]
+
+    curve = Hermite(a, b, c, d)
 
     sn = 0.0
     sn1 = 0.0
