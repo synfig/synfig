@@ -18,6 +18,7 @@ PI = 3.1415926535897932384626433832795029
 @total_ordering
 class Angle:
     """
+    Class to keep Synfig format Angle
      
     """
     def __init__(self, v = 0):
@@ -63,6 +64,9 @@ class Angle:
 
 
 class RadAngle(Angle):
+    """
+    Class to keep the angle in Radian format
+    """
     def __init__(self, v):
         if isinstance(v, Angle):
             Angle.__init__(self, v.v)
@@ -74,6 +78,9 @@ class RadAngle(Angle):
 
 
 class DegAngle(Angle):
+    """
+    Class to keep the angle in Degree format
+    """
     def __init__(self, x):
         if isinstance(x, Angle):
             Angle.__init__(self, x.v)
@@ -85,6 +92,9 @@ class DegAngle(Angle):
         return self.v * 360 / (PI*2)
 
 class SinAngle(Angle):
+    """
+    Class to keep the angle in Sin format
+    """
     def __init__(self, x):
         if isinstance(x, Angle):
             Angle.__init__(self, x.v)
@@ -96,6 +106,9 @@ class SinAngle(Angle):
         return math.sin(self.v)
 
 class CosAngle(Angle):
+    """
+    Class to keep the angle in Cos format
+    """
     def __init__(self, x):
         if isinstance(x, Angle):
             Angle.__init__(self, x.v)

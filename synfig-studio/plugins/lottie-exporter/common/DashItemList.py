@@ -12,7 +12,7 @@ sys.path.append("..")
 
 class DashItemList:
     """
-    Class to store Synfig format Dash items
+    Class to store Synfig format Dash items list
     """
     def __init__(self, dash_item, parent):
         """

@@ -87,7 +87,7 @@ class Hermite:
         https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/ETL/ETL/_bezier.h#L577
 
         Args:
-            r (flaot) : Time type
+            r (float) : Time type
             s (float) : Time type
 
         Returns:
@@ -115,6 +115,12 @@ class Hermite:
         https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/ETL/ETL/_bezier.h#L337
 
         This might differ, check if the results are wrong, then try this out: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/ETL/ETL/_bezier.h#L96
+
+        Args:
+            t (Float)
+
+        Returns:
+            (Float)
         """
         t -= self.r
         t *= self.drs
@@ -124,6 +130,13 @@ class Hermite:
     def double_operator(self, a, b):
         """
         https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/ETL/ETL/_curve_func.h#L56
+
+        Args:
+            a (Template T):
+            b (Template T):
+
+        Returns:
+            (T)
         """
         delta = b - a
         return delta*delta
@@ -131,17 +144,35 @@ class Hermite:
     def uncook(self, x):
         """
         https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/ETL/ETL/_curve_func.h#L63
+
+        Args:
+            x (float)
+
+        Returns:
+            (float)
         """
         return math.sqrt(x)
 
     def cook(self, x):
         """
         https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/ETL/ETL/_curve_func.h#L62
+
+        Args:
+            x (Template T)
+
+        Returns:
+            (T)
         """
         return x*x
 
     def length(self):
         """
         https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/ETL/ETL/_bezier.h#L595
+
+        Args:
+            (None)
+
+        Returns:
+            (float)
         """
         return self.find_distance(self.r, self.s)

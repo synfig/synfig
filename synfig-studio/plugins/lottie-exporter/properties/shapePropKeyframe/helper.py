@@ -230,7 +230,7 @@ def convert_tangent_to_lottie(t1, t2):
     return t1, t2
 
 
-def insert_dict_at(lottie, idx, fr, loop,constant=False):
+def insert_dict_at(lottie, idx, fr, loop, constant=False):
     """
     Inserts dictionary values in the main dictionary, required by shape layer of
     lottie format
@@ -240,6 +240,7 @@ def insert_dict_at(lottie, idx, fr, loop,constant=False):
         idx    (int)  : index at which dictionary needs to be stored
         fr     (int)  : frame number
         loop   (bool) : Specifies if the shape is loop or not
+        constant(bool): Specifies if the user wants a constant shaped outline
 
     Returns:
         (dict) : Starting dictionary for shape interpolation
@@ -274,7 +275,20 @@ def insert_dict_at(lottie, idx, fr, loop,constant=False):
 
 def insert_dict_at_adv_outline(lottie, idx, fr, loop):
     """
-    
+    Inserts dictionary values in the main dictionary, required by shape layer of
+    Lottie format. But this is specific for advanced outline layer, as we needed
+    hold/constant interpolation between alternate frames
+
+    Args:
+        lottie (dict) : Shape layer will be stored in this main dictionary
+        idx    (int)  : index at which dictionary needs to be stored
+        fr     (int)  : frame number
+        loop   (bool) : Specifies if the shape is loop or not
+
+    Returns:
+        (dict) : Starting dictionary for shape interpolation
+        (dict) : Ending dictionary for shape interpolation
+
     """
     if idx != -1:
         lottie.insert(idx, {})

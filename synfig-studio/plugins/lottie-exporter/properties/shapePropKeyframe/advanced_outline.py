@@ -25,9 +25,6 @@ def gen_bline_advanced_outline(lottie, bline_point):
     Generates the bline corresponding to advanced outline layer by adding some vertices
     to bline and converting it to region layer
 
-    Some parts are common with gen_bline_shapePropKeyframe(), which will be
-    placed in a common function latter
-
     Args:
         lottie (dict) : Lottie format outline layer will be stored in this
         bline_point (common.Param.Param) : Synfig format bline points
@@ -161,12 +158,14 @@ def gen_bline_advanced_outline(lottie, bline_point):
         lottie_st.append([st_val, fr])
         lottie_en.append([en_val, fr+1])
 
-        st_list_value = synfig_advanced_outline(bline, st_val, origin, outer_width, expand,
-                                start_tip, end_tip, cusp_type, smoothness, homogeneous,
-                                dash_enabled, dash_offset, dash_item_list, width_point_list, fr)
-        en_list_value = synfig_advanced_outline(bline, en_val, origin, outer_width, expand,
-                                start_tip, end_tip, cusp_type, smoothness, homogeneous,
-                                dash_enabled, dash_offset, dash_item_list, width_point_list, fr + 1)
+        st_list_value = synfig_advanced_outline(bline, outer_width, expand,
+                start_tip, end_tip, cusp_type, smoothness, homogeneous,
+                dash_enabled, dash_offset, dash_item_list, width_point_list,
+                fr)
+        en_list_value = synfig_advanced_outline(bline, outer_width, expand,
+                start_tip, end_tip, cusp_type, smoothness, homogeneous,
+                dash_enabled, dash_offset, dash_item_list, width_point_list,
+                fr + 1)
         st_list.append(st_list_value)
         en_list.append(en_list_value)
 
@@ -182,7 +181,18 @@ def gen_bline_advanced_outline(lottie, bline_point):
 
 def append_all_lists(st_list, en_list, lottie_st, lottie_en, origin_p):
     """
+    This function collects all the lists(at each different frame), then
+    makes all those lists of equal size(lottie style), and then appends them to
+    the lottie dictionary
+
+    Args:
+        st_list (list[Floats]): These are the points obtained from synfig at frame "st"
+        en_list (list[Floats]): These are the points obtained from synfig at frame "en"
+        lottie_en (list[(dict, Int)]): Contains address of lottie's "en" dict and frame's value
+        origin_p (common.param.param): Lottie format origin of adv outline layer
     
+    Returns:
+        (None)
     """
     # Find maximum size among all the lists
     mx = 0
@@ -216,15 +226,29 @@ def append_all_lists(st_list, en_list, lottie_st, lottie_en, origin_p):
         lottie_en[i][0]["h"] = 1
 
 
-def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
-        start_tip, end_tip, cusp_type, smoothness_p, homogeneous,
-        dash_enabled_p, dash_offset_p, dash_item_list, width_point_list, fr):
+def synfig_advanced_outline(bline, outer_width_p, expand_p, start_tip, end_tip,
+        cusp_type, smoothness_p, homogeneous, dash_enabled_p, dash_offset_p,
+        dash_item_list, width_point_list, fr):
     """
     Calculates the points for the advanced outline layer as in Synfig:
     https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/modules/mod_geometry/advanced_outline.cpp
 
+    Args:
+        bline (common.Bline.Bline): Synfig format bline points of adv outline layer
+        outer_width_p (common.Param.Param): Lottie format outer width
+        expand_p (common.Param.Param): Lottie format expand parameter
+        start_tip (Int): Static value of start tip of adv outline
+        end_tip (Int): Static value of end tip of adv outline
+        cusp_type (Int): Static value of cusp type
+        smoothness_p (common.Param.Param): Lottie format smoothness parameter
+        homogeneous (Bool): Static value of homogeneous parameter
+        dash_enabled_p (common.Param.Param): Lottie format dash_enabled parameter
+        dash_offset_p (common.Param.Param): Lottie format dash_offset parameter
+        dash_item_list (common.DashItemList.DashItemList): Dash item list of Synfig
+        width_point_list (common.WidthPointList.WidthPointList): Width point list of Synfig
+
     Returns:
-        (None)
+        (list[(common.Vector.Vector, common.Vector.Vector, common.Vector.Vector)]): (2D points value, tangent1, tangent2)
     """
     CUSP_TANGENT_ADJUST = 0.025
     SAMPLES = 50
@@ -492,15 +516,6 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                         break
                     dwnext += 1
 
-    """
-    print("START")
-    for my_it in fdwplist:
-        print(str(my_it.get_position()) + " " + str(my_it.get_width()) + " " +
-                str(my_it.get_side_type_before()) + " " +
-                str(my_it.get_side_type_after()))
-    print("END")
-    """
-
     cwplist = []
     for my_iterator in wplist:
         cwplist.append(copy.deepcopy(my_iterator))
@@ -582,17 +597,6 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         if wplist[last].get_side_type_after() == 0:
             wplist[last].set_side_type_after(dend_tip)
 
-    """
-    print("START")
-    print(len(wplist))
-    print(len(swplist))
-    print(len(cwplist))
-    print(len(scwplist))
-    print(len(dwplist))
-    print(len(fdwplist))
-    print("END")
-    """
-
     # Main loop
     while True:
         iter_t = get_outline_param_at_frame(bline[biter], fr)[3] 
@@ -651,7 +655,6 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
             add_tip(side_a, side_b, curve.value(q), unitary, wplist[wnext], gv, width, expand)
 
             witer = wnext
-            switer = swnext
             wnext += 1
             swnext += 1
 
@@ -795,7 +798,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
                 bpiter += 1
                 hbpiter += 1
                 bnext_pos = bline_pos[bpiter]
-                hbpnext_pos = hbline_pos[hbpiter]
+                #hbpnext_pos = hbline_pos[hbpiter]
                 last_tangent = curve.derivative(1.0-CUSP_TANGENT_ADJUST)
                 break
 
@@ -852,18 +855,17 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
     side_a = remove_after_null(side_a)
     side_a.append(side_a[0])        # Closing the contour::   contour->close()
 
-    """
-    print("Anish")
-    for points in side_a:
-        print(str(points[0].val1) + " " + str(points[0].val2))
-    print("Gulati")
-    """
-
     return side_a
 
 
 def remove_after_null(side):
     """
+    Modifies the list according to this condition: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/layers/layer_polygon.cpp#L102
+    Args:
+        side (list[(common.Vector.Vector, common.Vector.Vector, common.Vector.Vector)]): List of points, tangent1, and tangent2
+
+    Returns:
+        (list[(common.Vector.Vector, common.Vector.Vector, common.Vector.Vector)]): Modified list
     """
     itr = 0
     while itr < len(side):
@@ -874,6 +876,21 @@ def remove_after_null(side):
 
 
 def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
+    """
+    Synfig function: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/modules/mod_geometry/advanced_outline.cpp#L1422
+
+    Args:
+        side_a (list[(common.Vector.Vector, common.Vector.Vector, common.Vector.Vector)]): One side of the outline
+        side_b (list[(common.Vector.Vector, common.Vector.Vector, common.Vector.Vector)]): Other side of the outline
+        vertex (Float): 
+        curr (common.Vector.Vector):
+        last (common.Vector.Vector):
+        w (Float):
+        cusp_type (Int): Type of cusp at a frame
+
+    Returns:
+        (None)
+    """
     CUSP_THRESHOLD = 0.40
     SPIKE_AMOUNT = 4
     SAMPLES = 50
@@ -936,6 +953,22 @@ def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
              
 
 def add_tip(side_a, side_b, vertex, tangent, wp, gv, width, expand):
+    """
+    Synfig function: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/modules/mod_geometry/advanced_outline.cpp#L1302
+
+    Args:
+        side_a (list[(common.Vector.Vector, common.Vector.Vector, common.Vector.Vector)]): One side of the outline
+        side_b (list[(common.Vector.Vector, common.Vector.Vector, common.Vector.Vector)]): Other side of the outline
+        vertex (Float):
+        tangent (common.Vector.Vector):
+        wp (common.WidthPoint.WidthPoint):
+        gv (Float):
+        width (Float): width at a particular frame
+        expand (Float): value of expand at a frame
+
+    Returns:
+        (None)
+    """
     ROUND_END_FACTOR = 4
     SAMPLES = 50
     w = gv * (expand + width*0.5*wp.get_width())
@@ -1014,12 +1047,36 @@ def add_tip(side_a, side_b, vertex, tangent, wp, gv, width, expand):
 
 
 def bline_to_bezier(bline_pos, origin, bezier_size):
+    """
+    Synfig function: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/modules/mod_geometry/advanced_outline.cpp#L1289
+
+    Args:
+        bline_pos (Float):
+        origin (Float):
+        bezier_size (Float):
+
+    Returns:
+        (Float)
+    """
     if bezier_size != 0:
         return (bline_pos - origin)/bezier_size
     return bline_pos
 
 
 def hom_to_std(bline, pos, index_loop, bline_loop, fr):
+    """
+    Synfig function: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_bline.cpp#L346
+
+    Args:
+        bline (common.Bline.Bline): Lottie format Bline
+        pos (Float):
+        index_loop (Bool):
+        bline_loop (Bool):
+        fr (Int): Value of frame 
+
+    Returns:
+        (Float)
+    """
     size = bline.get_len()
     from_vertex = 0
 
@@ -1116,6 +1173,19 @@ def hom_to_std(bline, pos, index_loop, bline_loop, fr):
     return int_pos + (from_vertex + sn)/size - one
 
 def std_to_hom(bline, pos, index_loop, bline_loop, fr):
+    """
+    Synfig function: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_bline.cpp#L292
+
+    Args:
+        bline (common.Bline.Bline): Lottie format Bline
+        pos (Float):
+        index_loop (Bool):
+        bline_loop (Bool):
+        fr (Int): Frame number currently processing
+
+    Returns:
+        (Float)
+    """
     size = bline.get_len()
     if pos == 0.0 or pos == 1.0:
         return pos
@@ -1170,6 +1240,18 @@ def std_to_hom(bline, pos, index_loop, bline_loop, fr):
 
 
 def bline_length(bline, bline_loop, lengths, fr):
+    """
+    Synfig function: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_bline.cpp#L441
+
+    Args:
+        bline (common.Bline.bline): Lottie format bline
+        bline_loop (Bool):
+        lengths (list[Float]):
+        fr (Int): Frame number currently processing
+
+    Returns:
+        (Float)
+    """
     size = bline.get_len()
     if not bline_loop:  size -= 1
     if size < 1:    return 0.0
@@ -1198,6 +1280,18 @@ def bline_length(bline, bline_loop, lengths, fr):
     return tl
 
 def widthpoint_interpolate(prev, nxt, p, smoothness):
+    """
+    Synfig function: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_wplist.cpp#L111
+
+    Args:
+        prev (common.WidthPoint.WidthPoint)
+        nxt (common.WidthPoint.WidthPoint)
+        p (Float)
+        smoothness (Float)
+
+    Returns:
+        (Float)
+    """
     side_int = 0
     nw, pw = 0, 0
     rw = 0.0

@@ -11,7 +11,7 @@ sys.path.append("..")
 
 class WidthPointList:
     """
-    Class to store Synfig format Width points
+    Class to store Synfig format Width points list
     """
     def __init__(self, width_point, parent):
         """

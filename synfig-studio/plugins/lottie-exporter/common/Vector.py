@@ -134,6 +134,14 @@ class Vector:
         return ret
 
     def angle(self):
+        """
+        Returns the angle of this Vector in Radians
+
+        Args:
+            (None)
+        Returns:
+            (common.Angle.RadAngle): The angle of Vector
+        """
         return common.Angle.RadAngle(math.atan2(self.val2, self.val1))
 
     def norm(self):
