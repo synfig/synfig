@@ -16,7 +16,7 @@ from common.Vector import Vector
 from common.Hermite import Hermite
 from common.Angle import RadAngle, SinAngle, CosAngle
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents
+from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at_adv_outline, animate_tangents
 from properties.shapePropKeyframe.outline import line_intersection, get_outline_grow, get_outline_param_at_frame
 sys.path.append("../../")
 
@@ -158,7 +158,7 @@ def gen_bline_advanced_outline(lottie, bline_point):
 
     fr = window["first"]
     while fr <= window["last"]:
-        st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
+        st_val, en_val = insert_dict_at_adv_outline(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
         lottie_st.append([st_val, fr])
         lottie_en.append([en_val, fr+1])
 
@@ -178,6 +178,7 @@ def gen_bline_advanced_outline(lottie, bline_point):
     # Setting the final time
     lottie.append({})
     lottie[-1]["t"] = fr
+    lottie[-1]["h"] = 1
 
 
 def append_all_lists(st_list, en_list, lottie_st, lottie_en, origin_p):
@@ -207,11 +208,13 @@ def append_all_lists(st_list, en_list, lottie_st, lottie_en, origin_p):
         cur_frame = lottie_st[i][1]
         origin_cur = origin_p.get_value(cur_frame)
         add(st_list[i], lottie_st[i][0], origin_cur) 
+        lottie_st[i][0]["h"] = 1
 
     for i in range(0, len(lottie_en)):
         cur_frame = lottie_en[i][1]
         origin_cur = origin_p.get_value(cur_frame)
         add(en_list[i], lottie_en[i][0], origin_cur)
+        lottie_en[i][0]["h"] = 1
 
 
 def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,

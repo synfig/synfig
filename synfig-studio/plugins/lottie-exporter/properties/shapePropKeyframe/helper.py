@@ -272,6 +272,28 @@ def insert_dict_at(lottie, idx, fr, loop,constant=False):
         return st_val, en_val
 
 
+def insert_dict_at_adv_outline(lottie, idx, fr, loop):
+    """
+    
+    """
+    if idx != -1:
+        lottie.insert(idx, {})
+    else:
+        lottie.append({})
+    lottie[idx]["i"], lottie[idx]["o"] = {}, {}
+    lottie[idx]["i"]["x"] = lottie[idx]["i"]["y"] = 0.5     # Does not matter because frames are adjacent
+    lottie[idx]["o"]["x"] = lottie[idx]["o"]["y"] = 0.5     # Does not matter because frames are adjacent
+    lottie[idx]["h"] = 1
+    lottie[idx]["t"] = fr
+    lottie[idx]["s"], lottie[idx]["e"] = [], []
+    st_val, en_val = lottie[idx]["s"], lottie[idx]["e"]
+
+    st_val.append({}), en_val.append({})
+    st_val, en_val = st_val[0], en_val[0]
+    st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop
+    en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
+    return st_val, en_val
+
 def quadratic_to_cubic(qp0, qp1, qp2):
     """
     Converts quadratic bezier curve to cubic bezier curve
