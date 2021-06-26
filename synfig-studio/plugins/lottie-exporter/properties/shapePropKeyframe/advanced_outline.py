@@ -7,7 +7,6 @@ in Lottie format
 import sys
 import math
 import copy
-import settings
 from common.Bline import Bline
 from common.WidthPoint import WidthPoint
 from common.WidthPointList import WidthPointList
@@ -16,7 +15,7 @@ from common.Vector import Vector
 from common.Hermite import Hermite
 from common.Angle import RadAngle, SinAngle, CosAngle
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at_adv_outline, animate_tangents
+from properties.shapePropKeyframe.helper import add, insert_dict_at_adv_outline, animate_tangents
 from properties.shapePropKeyframe.outline import line_intersection, get_outline_grow, get_outline_param_at_frame
 sys.path.append("../../")
 
@@ -839,7 +838,9 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         # Remove all data after we encounter a nan value
         # From add_polygon()
         side_a = remove_after_null(side_a)
+        side_a.append(side_a[0])    # Closing the contour:: contour->close()
         side_b = remove_after_null(side_b)
+        side_b.append(side_b[0])    # Closing the contour:: contour->close()
 
         side_a.extend(side_b)
         return side_a
@@ -849,6 +850,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         side_a.append(side_b[-1])
         side_b.pop()
     side_a = remove_after_null(side_a)
+    side_a.append(side_a[0])        # Closing the contour::   contour->close()
 
     """
     print("Anish")

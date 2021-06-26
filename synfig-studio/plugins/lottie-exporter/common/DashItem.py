@@ -7,7 +7,6 @@ https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/s
 """
 
 import sys
-import common
 sys.path.append("..")
 
 
