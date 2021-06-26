@@ -838,19 +838,8 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
         side_b.reverse()
         # Remove all data after we encounter a nan value
         # From add_polygon()
-        itr = 0
-        while itr < len(side_a):
-            if side_a[itr][0].isnan():
-                break
-            itr += 1
-        side_a = side_a[:itr]
-
-        itr = 0
-        while itr < len(side_b):
-            if side_b[itr][0].isnan():
-                break
-            itr += 1
-        side_b = side_b[:itr]
+        side_a = remove_after_null(side_a)
+        side_b = remove_after_null(side_b)
 
         side_a.extend(side_b)
         return side_a
@@ -859,6 +848,7 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
     while len(side_b) != 0:
         side_a.append(side_b[-1])
         side_b.pop()
+    side_a = remove_after_null(side_a)
 
     """
     print("Anish")
@@ -868,6 +858,17 @@ def synfig_advanced_outline(bline, st_val, origin, outer_width_p, expand_p,
     """
 
     return side_a
+
+
+def remove_after_null(side):
+    """
+    """
+    itr = 0
+    while itr < len(side):
+        if side[itr][0].isnan():
+            break
+        itr += 1
+    return side[:itr]
 
 
 def add_cusp(side_a, side_b, vertex, curr, last, w, cusp_type):
@@ -1070,7 +1071,6 @@ def hom_to_std(bline, pos, index_loop, bline_loop, fr):
         pl -= lengths[liter]
         from_vertex -= 1
 
-    print(itr, nxt, bline.get_len())
     blinepoint0 = bline[itr]
 
     a = get_outline_param_at_frame(blinepoint0, fr)[0]
