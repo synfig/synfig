@@ -1,3 +1,4 @@
+- [`c3e196e`](https://github.com/synfig/synfig/commit/c3e196e1974108a264016c61909cf12f8d802560) Replaced `Gtk::Alignment` spaces with CSS margins ([#2195](https://github.com/synfig/synfig/issues/2195)) [studio]
 - [`4273435`](https://github.com/synfig/synfig/commit/4273435309266fa4181269fdb3e9cc454cf14337) Removed excessive use of std namespace ([#2193](https://github.com/synfig/synfig/issues/2193)) [ETL] [core] [studio]
 - [`bd86b81`](https://github.com/synfig/synfig/commit/bd86b81940487d3b4d4682f6e01df341211b97c3) New arrows icons ([#2192](https://github.com/synfig/synfig/issues/2192)) [studio]
 - [`fd00d1c`](https://github.com/synfig/synfig/commit/fd00d1c9e559d79ce5fb43c3b60caf55f0a634ec) [Lottie exporter] Implement use-defs ([#2182](https://github.com/synfig/synfig/issues/2182)) [studio]
