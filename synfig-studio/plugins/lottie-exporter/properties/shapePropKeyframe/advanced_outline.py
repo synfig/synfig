@@ -177,6 +177,8 @@ def gen_bline_advanced_outline(lottie, bline_point):
     lottie.append({})
     lottie[-1]["t"] = fr
     lottie[-1]["h"] = 1
+    # Need to define last frame's "s" value if we have hold interpolation
+    lottie[-1]["s"] = lottie[-2]["s"]
 
 
 def append_all_lists(st_list, en_list, lottie_st, lottie_en, origin_p):
