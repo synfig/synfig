@@ -31,7 +31,6 @@
 
 #include <gui/states/state_bone.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/separatormenuitem.h>
 
@@ -65,13 +64,6 @@ using namespace synfig;
 using namespace synfigapp;
 
 /* === M A C R O S ========================================================= */
-
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
-#endif
 
 #define GAP	(3)
 #define DEFAULT_WIDTH (0.1)

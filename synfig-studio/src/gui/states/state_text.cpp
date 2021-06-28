@@ -33,8 +33,6 @@
 
 #include "state_text.h"
 
-#include <gtkmm/alignment.h>
-
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
@@ -74,15 +72,7 @@ using namespace studio;
 		&studio::StateText_Context::toggle_layer_creation))
 #endif
 
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
-#endif
-
 const int GAP = 3;
-const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -391,9 +381,8 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	SPACING(id_gap, GAP);
+	id_label.get_style_context()->add_class("gap");
 	id_box.pack_start(id_label, false, false, 0);
-	id_box.pack_start(*id_gap, false, false, 0);
 	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
@@ -403,17 +392,14 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	LAYER_CREATION(layer_text_togglebutton,
 		("synfig-layer_other_text"), _("Create a text layer"));
 
-	SPACING(layer_types_indent, INDENTATION);
-
-	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
+	layer_text_togglebutton.get_style_context()->add_class("indentation");
 	layer_types_box.pack_start(layer_text_togglebutton, false, false, 0);
 
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	SPACING(blend_gap, GAP);
+	blend_label.get_style_context()->add_class("gap");
 	blend_box.pack_start(blend_label, false, false, 0);
-	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
