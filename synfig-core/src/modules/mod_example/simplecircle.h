@@ -36,7 +36,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 class SimpleCircle : public Layer_Shape

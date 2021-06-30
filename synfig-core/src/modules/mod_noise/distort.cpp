@@ -48,7 +48,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */

@@ -50,7 +50,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */

@@ -137,6 +137,17 @@ EXTRA_DIST = \
 	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
 	\
+	resize_disabled_icon \
+	resize_up_left_icon \
+	resize_up_icon \
+	resize_up_right_icon \
+	resize_left_icon \
+	resize_right_icon \
+	resize_down_left_icon \
+	resize_down_icon \
+	resize_down_right_icon \
+	resize_transparent_icon \
+	\
 	tool_brush_icon.sif \
 	tool_cutout_icon.sif \
 	tool_spline_icon.sif \
@@ -325,6 +336,17 @@ ICONS = \
 	layer_transform_rotate_icon.$(EXT) \
 	layer_transform_scale_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
+	\
+	resize_disabled_icon.$(EXT) \
+	resize_up_left_icon.$(EXT) \
+	resize_up_icon.$(EXT) \
+	resize_up_right_icon.$(EXT) \
+	resize_left_icon.$(EXT) \
+	resize_right_icon.$(EXT) \
+	resize_down_left_icon.$(EXT) \
+	resize_down_icon.$(EXT) \
+	resize_down_right_icon.$(EXT) \
+	resize_transparent_icon.$(EXT) \
 	\
 	tool_brush_icon.$(EXT) \
 	tool_cutout_icon.$(EXT) \
