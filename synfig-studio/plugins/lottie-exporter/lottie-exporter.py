@@ -64,7 +64,7 @@ def gen_html(file_name):
     """
     if len(settings.blur_dictionary) != 0 or settings.OUTLINE_FLAG:
         settings.lottie_format["v"] = "5.6.5"
-        bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "test_bodymovin.js")
+        bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "bodymovin_5.6.5.js")
     else:
         bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "bodymovin.js")
 
@@ -97,7 +97,9 @@ def gen_html(file_name):
 </head>
 <body>
 
+<script>
 {bodymovin_script}
+</script>
 
 <div id="lottie"></div>
 <script>
