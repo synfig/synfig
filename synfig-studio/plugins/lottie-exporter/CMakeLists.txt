@@ -4,7 +4,7 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     canvas.py
     lottie-exporter.py
     settings.py
-    test_bodymovin.js
+    bodymovin_5.6.5.js
     export_without_variable_width.py
     
     # common
