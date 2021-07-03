@@ -165,21 +165,6 @@ public:
 		links_count(0)
 	{ }
 
-	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index, synfig::Real s,const ValueDesc &parent = blank):
-		parent_value_node(parent_value_node),
-		index(index),
-		scalar(s),
-		parent_desc(init_parent(parent)),
-		links_count(0)
-	{ }
-
-//	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,const synfig::String& param_name,const ValueDesc &parent = blank):
-//		parent_value_node(parent_value_node),
-//		index(parent_value_node->get_link_index_from_name(param_name)),
-//		parent_desc(init_parent(parent)),
-//		links_count(0)
-//	{ }
-
 	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
 		index(IS_WAYPOINT),
