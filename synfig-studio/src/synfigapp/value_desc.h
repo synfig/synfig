@@ -78,7 +78,7 @@ class ValueDesc
 
 	static ValueDesc* init_parent(const ValueDesc& parent)
 	{
-		if (!parent.is_valid()) return NULL;
+		if (!parent.is_valid()) return nullptr;
 		ValueDesc *p = new ValueDesc(parent);
 		p->links_count++;
 		return p;
@@ -124,10 +124,10 @@ public:
 		canvas = other.canvas;
 		scalar = other.scalar;
 		sub_names = other.sub_names;
-		if (parent_desc != NULL && 0 >= --parent_desc->links_count)
+		if (parent_desc && 0 >= --parent_desc->links_count)
 			delete parent_desc;
 		parent_desc = other.parent_desc;
-		if (parent_desc != NULL) parent_desc->links_count++;
+		if (parent_desc) parent_desc->links_count++;
 
 		if (id_changed_connection.connected())
 			id_changed_connection.disconnect();
@@ -238,18 +238,18 @@ public:
 	{
 		if (other.id_changed_connection.connected())
 			id_changed_connection = get_value_node()->signal_id_changed().connect(sigc::mem_fun(*this, &ValueDesc::on_id_changed));
-		if (parent_desc != NULL) parent_desc->links_count++;
+		if (parent_desc) parent_desc->links_count++;
 	}
 
 	ValueDesc():
-		index(-1), scalar(0), parent_desc(NULL), links_count(0) { }
+		index(-1), scalar(0), parent_desc(nullptr), links_count(0) { }
 
 	~ValueDesc()
 	{
 		assert(links_count == 0);
 		if (id_changed_connection.connected())
 			id_changed_connection.disconnect();
-		if (parent_desc != NULL && 0 >= --parent_desc->links_count)
+		if (parent_desc && 0 >= --parent_desc->links_count)
 			delete parent_desc;
 	}
 
@@ -306,11 +306,11 @@ public:
 
 	bool
 	is_parent_desc_declared()const
-		{ return parent_desc != NULL; }
+		{ return parent_desc; }
 	
 	// Get members
 	const ValueDesc& get_sub_parent_desc()const
-		{ return parent_desc == NULL ? blank : *parent_desc; }
+		{ return parent_desc ? *parent_desc : blank; }
 	const ValueDesc& get_origin_desc()const
 		{ return parent_is_value_desc() ? get_sub_parent_desc().get_origin_desc() : *this ; }
 	const ValueDesc& get_parent_desc()const
@@ -377,7 +377,7 @@ public:
 			return layer->get_canvas();
 		if(parent_value_node)
 			return parent_value_node->get_root_canvas();
-		return 0;
+		return nullptr;
 	}
 
 	synfig::ValueNode::Handle
@@ -394,7 +394,7 @@ public:
 			return parent_value_node;
 		if(parent_is_waypoint())
 			return (synfig::ValueNode_Animated::Handle::cast_reinterpret(parent_value_node))->find(waypoint_time)->get_value_node();
-		return 0;
+		return nullptr;
 	}
 
 	synfig::ValueBase
