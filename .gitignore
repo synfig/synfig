@@ -64,11 +64,6 @@ compile
 
 # ------------------------------------------------------------------------
 
-ETL/ETL.pc.in
-ETL/ETL/etl_profile.h
-ETL/ETL/etl_profile_.h
-ETL/ETL/etl_profile_.h.in
-
 synfig-core/libltdl
 synfig-core/pkg-info/macosx/synfig-core.info
 synfig-core/po/*.gmo
@@ -214,20 +209,20 @@ synfig-studio/images/splash_screen_development.sif
 # These are executables produced by 'make check' in ETL/trunk
 # ------------------------------------------------------------------------
 
-ETL/test/angle
-ETL/test/benchmark
-ETL/test/clock
-ETL/test/fixed
-ETL/test/handle
-ETL/test/hermite
-ETL/test/pen
-ETL/test/smach
-ETL/test/smart_ptr
-ETL/test/stringf
-ETL/test/surface
+synfig-core/test/angle
+synfig-core/test/benchmark
+synfig-core/test/clock
+synfig-core/test/fixed
+synfig-core/test/handle
+synfig-core/test/hermite
+synfig-core/test/pen
+synfig-core/test/smach
+synfig-core/test/smart_ptr
+synfig-core/test/stringf
+synfig-core/test/surface
 
 # doxygen-generated docs
-ETL/doc
+#ETL/doc
 synfig-core/doc
 synfig-studio/doc
 /.project
@@ -238,7 +233,7 @@ synfig-studio/doc
 # Netbeans projects
 # ------------------------------------------------------------------------
 /nbproject/
-/ETL/nbproject/
+#/ETL/nbproject/
 /synfig-core/nbproject/
 /synfig-studio/nbproject/
 
