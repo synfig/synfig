@@ -55,6 +55,8 @@ class ValueDesc
 
 	// Info for ValueNode parent
 	synfig::ValueNode::Handle parent_value_node;
+	static const int IS_WAYPOINT = -2;
+	static const int IS_CONST = -1;
 	int index;					// -2 if it's a waypoint, -1 if it's const, >=0 if it's LinkableValueNode
 	synfig::Time waypoint_time;
 
@@ -140,7 +142,7 @@ public:
 	ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name,const ValueDesc &parent = blank):
 		layer(layer),
 		name(param_name),
-		index(-1),
+		index(IS_CONST),
 		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
@@ -149,7 +151,7 @@ public:
 	ValueDesc(synfig::Layer::LooseHandle layer,const synfig::String& param_name,const ValueDesc &parent = blank):
 		layer(layer),
 		name(param_name),
-		index(-1),
+		index(IS_CONST),
 		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
@@ -180,7 +182,7 @@ public:
 
 	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
-		index(-2),
+		index(IS_WAYPOINT),
 		waypoint_time(waypoint_time),
 		scalar(0),
 		parent_desc(init_parent(parent)),
@@ -189,7 +191,7 @@ public:
 
 	ValueDesc(synfig::Canvas::Handle canvas,const synfig::String& name,const ValueDesc &parent = blank):
 		name(name),
-		index(-1),
+		index(IS_CONST),
 		canvas(canvas),
 		scalar(0),
 		parent_desc(init_parent(parent)),
@@ -200,7 +202,7 @@ public:
 
 	ValueDesc(synfig::ValueNode_Const::Handle parent_value_node,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
-		index(-1),
+		index(IS_CONST),
 		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
@@ -242,7 +244,7 @@ public:
 	}
 
 	ValueDesc():
-		index(-1), scalar(0), parent_desc(nullptr), links_count(0) { }
+		index(IS_CONST), scalar(0), parent_desc(nullptr), links_count(0) { }
 
 	~ValueDesc()
 	{
@@ -271,10 +273,10 @@ public:
 		{ return parent_is_value_node() && index>=0; }
 	bool
 	parent_is_value_node_const()const
-		{ return parent_is_value_node() && index==-1; }
+		{ return parent_is_value_node() && index==IS_CONST; }
 	bool
 	parent_is_waypoint()const
-		{ return parent_is_value_node() && index==-2; }
+		{ return parent_is_value_node() && index==IS_WAYPOINT; }
 	bool
 	parent_is_canvas()const
 		{ return (bool)canvas; }
