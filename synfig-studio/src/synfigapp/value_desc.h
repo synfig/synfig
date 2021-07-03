@@ -255,7 +255,7 @@ public:
 			delete parent_desc;
 	}
 
-	// Instrocpection members
+	// Introspection members
 	bool
 	is_valid()const
 		{ return layer || parent_value_node || (canvas && !name.empty()); }
@@ -264,10 +264,10 @@ public:
 
 	bool
 	parent_is_layer()const
-		{ return (bool)layer; }
+		{ return layer; }
 	bool
 	parent_is_value_node()const
-		{ return (bool)parent_value_node; }
+		{ return parent_value_node; }
 	bool
 	parent_is_linkable_value_node()const
 		{ return parent_is_value_node() && index>=0; }
@@ -279,7 +279,7 @@ public:
 		{ return parent_is_value_node() && index==IS_WAYPOINT; }
 	bool
 	parent_is_canvas()const
-		{ return (bool)canvas; }
+		{ return canvas; }
 	bool
 	parent_is_value_desc()const
 		{ return !sub_names.empty(); }
@@ -288,7 +288,7 @@ public:
 	is_value_node()const
 		{ return parent_is_value_node()
 		      || parent_is_canvas()
-			  || (parent_is_layer() && (bool)layer->dynamic_param_list().count(name));
+			  || (parent_is_layer() && layer->dynamic_param_list().count(name) > 0);
 		}
 	bool
 	is_const()const
