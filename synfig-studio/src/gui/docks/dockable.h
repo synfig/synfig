@@ -64,6 +64,8 @@ private:
 	Gtk::ScrolledWindow *container;
 	Gtk::EventBox *toolbar_container;
 	bool dnd_success_;
+	// required to restore the size of the Docked item (size is not available after detaching the widget from the parent container)
+	GtkRequisition saved_widget_size_ = {-1, -1};
 
 public:
 	sigc::signal<void>& signal_stock_id_changed() { return signal_stock_id_changed_; }
@@ -90,6 +92,8 @@ public:
 	void reset_container();
 	void reset_toolbar();
 	void clear();
+
+	GtkRequisition get_size() const { return saved_widget_size_; }
 
 	Gtk::ScrolledWindow* get_container() const
 		{ return container; }
