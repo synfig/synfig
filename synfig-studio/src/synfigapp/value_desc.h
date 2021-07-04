@@ -316,10 +316,6 @@ public:
 	int
 	get_index()const
 		{ assert(parent_is_linkable_value_node()); return index; }
-	
-	synfig::Real
-	get_scalar()const
-	{ assert(parent_is_linkable_value_node()); return 1.0; }
 
 	synfig::String
 	get_name()const

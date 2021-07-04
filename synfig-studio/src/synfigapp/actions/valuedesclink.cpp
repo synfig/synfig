@@ -348,42 +348,7 @@ Action::ValueDescLink::prepare()
 		}
 
 	std::list<ValueDesc>::iterator iter;
-	// Gets the scalar value of the current value node
-	Real current_scalar(0);
-	if(value_desc_list.begin()->parent_is_linkable_value_node())
-		current_scalar=value_desc_list.begin()->get_scalar();
 	bool found_inverse(false);
-	// Check if we are dealing the case of linking different types of tangents
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
-	{
-		ValueDesc& v_desc(*iter);
-		// If parent is linkable value node
-		if(v_desc.parent_is_linkable_value_node())
-		{
-			// if the link describe to any tangent (index 4 or 5), continue
-			if(v_desc.get_index() == 4 || v_desc.get_index() == 5)
-			{
-				synfig::Real iter_scalar=v_desc.get_scalar();
-				// Let's compare the sign  of scalar of the value node with the current one
-				// and remember if a change of sign is seen.
-				if(iter_scalar*current_scalar < 0) // if they have different signs
-				{
-					found_inverse=true;
-					current_scalar=iter_scalar;
-				}
-			}
-			else // link doesn't describe a tangent
-			{
-				found_inverse=false;
-				break;
-			}
-		}
-		else // parent is not a linkable value node
-		{
-			found_inverse=false;
-			break;
-		}
-	}
 	// found_inverse =  true only if all they are tangents and some are inversed tangents
 	//Now let's loop through all the value desc
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
