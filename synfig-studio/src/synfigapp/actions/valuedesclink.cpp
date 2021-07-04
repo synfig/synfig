@@ -348,8 +348,7 @@ Action::ValueDescLink::prepare()
 		}
 
 	std::list<ValueDesc>::iterator iter;
-	bool found_inverse(false);
-	// found_inverse =  true only if all they are tangents and some are inversed tangents
+
 	//Now let's loop through all the value desc
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
 	{
@@ -362,18 +361,16 @@ Action::ValueDescLink::prepare()
 		// Don't link the selected to itself (maybe it is redundant with the previous check)
 		if(value_desc.get_value_node() == link_value_node)
 			continue;
-		// found_inverse xor link_opposite
-		// If     found_inverse and not link_opposite then scale by -1 first (smart link)
-		// If     found inverse and     link_opposite then do a direct link instead
-		// If not found_inverse and not link_opposite then do a direct link instead
-		// If not found_inverse and     link_opposite then scale by -1 first (smart link)
-		if((found_inverse && !link_opposite) || (!found_inverse && link_opposite))
+
+		// If not link_opposite then do a direct link instead
+		// If link_opposite then scale by -1 first (smart link)
+		if(link_opposite)
 		{
 			//Check if the current value node has opposite scalar than the link
 			// value node to convert to scale -1.0 before connect.
 			// Check also if the link value node is NOT also a scale -1
 			// And check also if we are linking opposite
-			if(link_opposite && !link_is_scaled)
+			if(!link_is_scaled)
 			{
 				//Let's create a Scale Value Node
 				synfig::ValueNode::Handle scale_value_node=synfig::ValueNodeRegistry::create("scale",iter->get_value(time));
@@ -422,7 +419,7 @@ Action::ValueDescLink::prepare()
 					throw Error(Error::TYPE_NOTREADY);
 				add_action_front(action3);
 			}
-			else if(link_opposite && link_is_scaled)
+			else
 			{
 				//Let's connect the link value node -> link to the value node
 				// There is not needed conversion to scale of the value node
@@ -438,22 +435,6 @@ Action::ValueDescLink::prepare()
 				if(!action4->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
 				add_action_front(action4);
-			}
-			else
-			{
-				//Let's connect the link value node to the value node
-				Action::Handle action(Action::create("ValueDescConnect"));
-
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("src",link_value_node);
-				action->set_param("dest",value_desc);
-
-				assert(action->is_ready());
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-
-				add_action_front(action);
 			}
 		} // found inverse
 		else // Not found inverse so do a regular link
