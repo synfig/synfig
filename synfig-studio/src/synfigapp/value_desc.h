@@ -67,9 +67,6 @@ class ValueDesc
 	//! When value node id (name) changes, update internal reference
 	void on_id_changed();
 
-	// Info for visual editon
-	synfig::Real scalar;
-
 	// Info for sub-value of parent ValueDesc
 	std::vector<synfig::String> sub_names;
 
@@ -99,8 +96,6 @@ public:
 			return false;
 		if((parent_value_node||rhs.parent_value_node) && (parent_value_node!=rhs.parent_value_node))
 			return false;
-		if(scalar!=rhs.scalar)
-			return false;
 		if(index!=rhs.index)
 			return false;
 		if(sub_names!=rhs.sub_names)
@@ -124,7 +119,6 @@ public:
 		index = other.index;
 		waypoint_time = other.waypoint_time;
 		canvas = other.canvas;
-		scalar = other.scalar;
 		sub_names = other.sub_names;
 		if (parent_desc && 0 >= --parent_desc->links_count)
 			delete parent_desc;
@@ -143,7 +137,6 @@ public:
 		layer(layer),
 		name(param_name),
 		index(IS_CONST),
-		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
@@ -152,7 +145,6 @@ public:
 		layer(layer),
 		name(param_name),
 		index(IS_CONST),
-		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
@@ -160,7 +152,6 @@ public:
 	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
 		index(index),
-		scalar(1.0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
@@ -169,7 +160,6 @@ public:
 		parent_value_node(parent_value_node),
 		index(IS_WAYPOINT),
 		waypoint_time(waypoint_time),
-		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
@@ -178,7 +168,6 @@ public:
 		name(name),
 		index(IS_CONST),
 		canvas(canvas),
-		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{
@@ -188,7 +177,6 @@ public:
 	ValueDesc(synfig::ValueNode_Const::Handle parent_value_node,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
 		index(IS_CONST),
-		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
@@ -200,7 +188,6 @@ public:
 		index(parent.index),
 		waypoint_time(parent.waypoint_time),
 		canvas(parent.canvas),
-		scalar(parent.scalar),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{
@@ -218,7 +205,6 @@ public:
 		index(other.index),
 		waypoint_time(other.waypoint_time),
 		canvas(other.canvas),
-		scalar(other.scalar),
 		sub_names(other.sub_names),
 		parent_desc(other.parent_desc),
 		links_count(0)
@@ -229,7 +215,7 @@ public:
 	}
 
 	ValueDesc():
-		index(IS_CONST), scalar(0), parent_desc(nullptr), links_count(0) { }
+		index(IS_CONST), parent_desc(nullptr), links_count(0) { }
 
 	~ValueDesc()
 	{
@@ -333,7 +319,7 @@ public:
 	
 	synfig::Real
 	get_scalar()const
-	{ assert(parent_is_linkable_value_node()); return scalar; }
+	{ assert(parent_is_linkable_value_node()); return 1.0; }
 	
 	synfig::String
 	get_name()const
