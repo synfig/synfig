@@ -347,13 +347,9 @@ Action::ValueDescLink::prepare()
 					link_is_scaled=true;
 		}
 
-	std::list<ValueDesc>::iterator iter;
-
 	//Now let's loop through all the value desc
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
+	for(const ValueDesc& value_desc : value_desc_list)
 	{
-		ValueDesc& value_desc(*iter);
-
 		// only one of the selected items can be exported - that's the one we're linking to
 		// don't link it to itself
 		if (value_desc.is_exported())
@@ -373,7 +369,7 @@ Action::ValueDescLink::prepare()
 			if(!link_is_scaled)
 			{
 				//Let's create a Scale Value Node
-				synfig::ValueNode::Handle scale_value_node=synfig::ValueNodeRegistry::create("scale",iter->get_value(time));
+				synfig::ValueNode::Handle scale_value_node=synfig::ValueNodeRegistry::create("scale",value_desc.get_value(time));
 				if(!scale_value_node)
 					throw Error(Error::TYPE_BUG);
 				scale_value_node->set_parent_canvas(get_canvas());
