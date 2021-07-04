@@ -285,7 +285,7 @@ def synfig_advanced_outline(bline, outer_width_p, expand_p, start_tip, end_tip,
     # Initializing the iterator
     biter, bnext = 0, 0
     bpiter, bpnext, hbpiter = 0, 0, 0
-    witer, wnext, switer, swnext, cwiter, cwnext, scwiter, scwnext, dwiter, dwnext = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    #witer, wnext, switer, swnext, cwiter, cwnext, scwiter, scwnext, dwiter, dwnext = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
     first_tangent = None
     first = True
@@ -566,10 +566,10 @@ def synfig_advanced_outline(bline, outer_width_p, expand_p, start_tip, end_tip,
     swnext = 0
     if blineloop:
         witer = len(wplist) - 1
-        switer = len(swplist) - 1
+        #switer = len(swplist) - 1
     else:
         witer = wnext
-        switer = swnext
+        #switer = swnext
     cwnext = 0
     scwnext = 0
     if blineloop:
@@ -1295,7 +1295,7 @@ def widthpoint_interpolate(prev, nxt, p, smoothness):
         (Float)
     """
     side_int = 0
-    nw, pw = 0, 0
+    #nw, pw = 0, 0
     rw = 0.0
     epsilon = 0.0000001
     np = nxt.get_position()
@@ -1346,7 +1346,7 @@ def widthpoint_interpolate(prev, nxt, p, smoothness):
                 q = (p+1.0-pp)/(np+1.0-pp)
         rw = pw+(nw-pw)*(q*(1.0-smoothness)+q*q*q*(10+q*(6*q-15))*smoothness)
     elif p > np and p < pp:
-        q = 0.0
+        #q = 0.0
         if nsa != side_int:
             nw = 0.0
         if psb != side_int:
