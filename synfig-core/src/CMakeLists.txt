@@ -262,6 +262,7 @@ include(cmake/install_header.cmake)
 add_subdirectory(synfig)
 add_subdirectory(tool)
 add_subdirectory(modules)
+add_subdirectory(ETL)
 
 ##
 ## Build targets
