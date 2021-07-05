@@ -281,17 +281,17 @@ mkdeps()
 
 }
 
-mketl()
-{
-	# building ETL
-	pushd ${SYNFIG_REPO_DIR}/ETL
-	rm -f aclocal.m4
-	autoreconf --install --force
-	make clean || true
-	./configure --prefix=${SYNFIG_PREFIX}  --includedir=${SYNFIG_PREFIX}/include
-	make -j$JOBS install
-	popd
-}
+#mketl()
+#{
+#	# building ETL
+#	pushd ${SYNFIG_REPO_DIR}/ETL
+#	rm -f aclocal.m4
+#	autoreconf --install --force
+#	make clean || true
+#	./configure --prefix=${SYNFIG_PREFIX}  --includedir=${SYNFIG_PREFIX}/include
+#	make -j$JOBS install
+#	popd
+#}
 
 mksynfig()
 {
@@ -562,7 +562,7 @@ mkall()
 	# cleanup previous synfig installation if any
 	[ ! -d "$SYNFIG_PREFIX" ] || rm -rf "$SYNFIG_PREFIX"
 
-	mketl
+	#mketl
 	mksynfig
 	mksynfigstudio
 

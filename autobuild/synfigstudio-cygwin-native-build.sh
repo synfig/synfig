@@ -32,10 +32,10 @@ $CYGWIN_SETUP \
 -P libgtkmm2.4-devel \
 -q
 
-cd $SRCPREFIX/ETL
-autoreconf --install --force
-./configure --prefix=/usr
-make install
+#cd $SRCPREFIX/ETL
+#autoreconf --install --force
+#./configure --prefix=/usr
+#make install
 
 cd $SRCPREFIX/synfig-core
 ./bootstrap.sh

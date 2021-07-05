@@ -222,7 +222,7 @@ do
 done
 
 # cleaning source tree
-for dir in ETL synfig-core synfig-studio; do
+for dir in synfig-core synfig-studio; do
 	pushd $SCRIPTPATH/../$dir > /dev/null
 	make clean || true
 	popd > /dev/null
@@ -577,14 +577,14 @@ fi
 }
 
 #ETL
-mketl()
-{
-cd $SCRIPTPATH/../ETL
-make clean || true
-autoreconf --install --force
-${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin $DEBUG
-make install
-}
+#mketl()
+#{
+#cd $SCRIPTPATH/../ETL
+#make clean || true
+#autoreconf --install --force
+#${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin $DEBUG
+#make install
+#}
 
 #synfig-core
 mksynfig()
@@ -735,7 +735,7 @@ mkall()
 	mkprep
 	mkimagemagick
 	mkmlt
-	mketl
+	#mketl
 	mksynfig
 	mksynfigstudio
 	mkpackage

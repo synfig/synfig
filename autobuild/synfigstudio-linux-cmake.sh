@@ -12,13 +12,13 @@ BUILD_FLAGS="-GNinja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS=\"${CXX
 #exit
 
 cd ..
-pushd ETL
-mkdir -p build && pushd build
-cmake .. ${BUILD_FLAGS}
-cmake --build . -- all test
-sudo cmake --build . -- install
-popd # build
-popd # ETL
+#pushd ETL
+#mkdir -p build && pushd build
+#cmake .. ${BUILD_FLAGS}
+#cmake --build . -- all test
+#sudo cmake --build . -- install
+#popd # build
+#popd # ETL
 
 pushd synfig-core
 mkdir -p build && pushd build
