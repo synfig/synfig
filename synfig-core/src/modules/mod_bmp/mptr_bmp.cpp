@@ -43,7 +43,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
@@ -192,8 +191,8 @@ bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if(little_endian(infoheader.biCompression))
 	{
-		if(cb)cb->error("bmp_mptr::GetFrame(): "+string(_("Reading compressed bitmaps is not supported")));
-		else synfig::error("bmp_mptr::GetFrame(): "+string(_("Reading compressed bitmaps is not supported")));
+		if(cb)cb->error("bmp_mptr::GetFrame(): "+std::string(_("Reading compressed bitmaps is not supported")));
+		else synfig::error("bmp_mptr::GetFrame(): "+std::string(_("Reading compressed bitmaps is not supported")));
 		return false;
 	}
 

@@ -56,7 +56,6 @@
 
 using namespace synfig;
 using namespace etl;
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -131,8 +130,8 @@ public:
 			Type &type(valuewidget->get_value().get_type());
 			bool popup_combobox = false;
 			if (type == type_integer) {
-				string param_hint = valuewidget->get_param_desc().get_hint();
-				string child_param_hint = valuewidget->get_child_param_desc().get_hint();
+				std::string param_hint = valuewidget->get_param_desc().get_hint();
+				std::string child_param_hint = valuewidget->get_child_param_desc().get_hint();
 				if ( param_hint == "enum" || child_param_hint == "enum" )
 					popup_combobox = true;
 			} else if (type == type_canvas)
@@ -140,8 +139,8 @@ public:
 			else if (type == type_bone_valuenode)
 				popup_combobox = true;
 			else if (type == type_string) {
-				string param_hint = valuewidget->get_param_desc().get_hint();
-				string child_param_hint = valuewidget->get_child_param_desc().get_hint();
+				std::string param_hint = valuewidget->get_param_desc().get_hint();
+				std::string child_param_hint = valuewidget->get_child_param_desc().get_hint();
 				if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
 					popup_combobox = true;
 			}

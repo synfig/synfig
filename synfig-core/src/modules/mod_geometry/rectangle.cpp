@@ -42,7 +42,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -79,16 +78,16 @@ Rectangle::sync_vfunc()
 	Real bevel = fabs(param_bevel.get(Real()));
 	Point p0 = param_point1.get(Point());
 	Point p1 = param_point2.get(Point());
-	if (p1[0] < p0[0]) swap(p0[0], p1[0]);
-	if (p1[1] < p0[1]) swap(p0[1], p1[1]);
+	if (p1[0] < p0[0]) std::swap(p0[0], p1[0]);
+	if (p1[1] < p0[1]) std::swap(p0[1], p1[1]);
 
 	bool bev_circle = param_bevCircle.get(bool());
 	
 	Real w = p1[0] - p0[0] + 2*expand;
 	Real h = p1[1] - p0[1] + 2*expand;
 	Real bev = (bevel > 1) ? 1 : bevel;
-	Real bevx = bev_circle ? min(w*bev/2.0, h*bev/2.0) : w*bev/2.0;
-	Real bevy = bev_circle ? min(w*bev/2.0, h*bev/2.0) : h*bev/2.0;
+	Real bevx = bev_circle ? std::min(w*bev/2.0, h*bev/2.0) : w*bev/2.0;
+	Real bevy = bev_circle ? std::min(w*bev/2.0, h*bev/2.0) : h*bev/2.0;
 	clear();
 	if (approximate_equal(bevel, 0.0))
 	{

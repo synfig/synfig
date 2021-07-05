@@ -52,7 +52,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -118,7 +117,7 @@ synfig::ValueNode_Add::ValueNode_Add(const ValueBase &value):
 	else
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 }
 
@@ -146,7 +145,7 @@ synfig::ValueNode_Add::operator()(Time t)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!ref_a || !ref_b)
-		throw runtime_error(strprintf("ValueNode_Add: %s",_("One or both of my parameters aren't set!")));
+		throw std::runtime_error(strprintf("ValueNode_Add: %s",_("One or both of my parameters aren't set!")));
 	Type &type(get_type());
 	if (type == type_angle)
 		return ((*ref_a)(t).get(Angle())+(*ref_b)(t).get(Angle()))*(*scalar)(t).get(Real());
@@ -254,7 +253,7 @@ ValueNode_Add::get_inverse(const Time& t, const ValueBase& target_value) const
 	Real scalar_value = (*scalar)(t).get(Real());
 
 	if (approximate_zero(scalar_value))
-		throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Scalar is zero")));
+		throw std::runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Scalar is zero")));
 
 	const Type& type = target_value.get_type();
 	if (type == type_real)
@@ -263,5 +262,5 @@ ValueNode_Add::get_inverse(const Time& t, const ValueBase& target_value) const
 		return target_value.get(Angle()) / scalar_value - (*ref_b)(t).get(Angle());
 	if (type == type_vector)
 		return target_value.get(Vector()) / scalar_value - (*ref_b)(t).get(Vector());
-	throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
+	throw std::runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
 }

@@ -59,7 +59,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
@@ -316,8 +315,8 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				case 0:	// Nearest Neighbor
 				default:
 					{
-						int x(min(w-1,max(0,round_to_int(surface_pos[0]))));
-						int y(min(h-1,max(0,round_to_int(surface_pos[1]))));
+						int x(std::min(w-1,std::max(0,round_to_int(surface_pos[0]))));
+						int y(std::min(h-1,std::max(0,round_to_int(surface_pos[1]))));
 						ret= surface[y][x];
 					}
 				break;

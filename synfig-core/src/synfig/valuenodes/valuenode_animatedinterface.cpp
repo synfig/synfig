@@ -56,7 +56,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -339,7 +338,7 @@ public:
 			}
 		}; // END of struct PathSegment
 
-		typedef vector<PathSegment> curve_list_type;
+		typedef std::vector<PathSegment> curve_list_type;
 		curve_list_type curve_list;
 
 		// Bounds of this curve

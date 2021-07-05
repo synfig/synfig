@@ -57,7 +57,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
@@ -153,7 +152,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	const char *msg=_("Unable to open pipe to imagemagick's convert utility");
 
-	string newfilename;
+	std::string newfilename;
 
 	if (multi_image)
 		newfilename = (filename_sans_extension(filename) +
@@ -165,7 +164,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
-	string command;
+	std::string command;
 
 	command=strprintf("convert -depth 8 -size %dx%d rgb%s:-[0] -density %dx%d \"%s\"\n",
 	                  desc.get_w(), desc.get_h(),                                   // size

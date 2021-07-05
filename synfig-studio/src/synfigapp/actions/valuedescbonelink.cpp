@@ -48,7 +48,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -107,7 +106,7 @@ Action::ValueDescBoneLink::is_candidate(const ParamList &x)
 	//ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
 	bool selected_value_desc_is_bone = false;
-	pair<ParamList::const_iterator, ParamList::const_iterator> selected_vd_range = x.equal_range("selected_value_desc");
+	std::pair<ParamList::const_iterator, ParamList::const_iterator> selected_vd_range = x.equal_range("selected_value_desc");
 	//get the range of selected value desc to check if at least one is a bone
 	for (iter = selected_vd_range.first; iter != selected_vd_range.second ; ++iter)
 	{

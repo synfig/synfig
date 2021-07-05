@@ -60,7 +60,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -1345,7 +1344,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 	if(bline_point_list.empty())
 		return;
 
-	list<ValueNode_Const::Handle>::iterator iter;
+	std::list<ValueNode_Const::Handle>::iterator iter;
 
 	handle<WorkArea::Bezier> bezier;
 	handle<WorkArea::Duck> duck,tduck1,tduck2,first_tduck1,first_tduck2;
@@ -1429,7 +1428,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		}
 
 		// Now we see if we need to create a bezier
-		list<ValueNode_Const::Handle>::iterator next(iter);
+		std::list<ValueNode_Const::Handle>::iterator next(iter);
 		next++;
 
 		bezier=new WorkArea::Bezier();
@@ -1764,7 +1763,7 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 void
 StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_node, float origin)
 {
-	list<ValueNode_Const::Handle>::iterator iter;
+	std::list<ValueNode_Const::Handle>::iterator iter;
 
 	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
@@ -1773,7 +1772,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 			BLinePoint next_bline_point((*iter)->get_value().get(BLinePoint()));
 			BLinePoint prev_bline_point;
 
-			list<ValueNode_Const::Handle>::iterator prev(iter);
+			std::list<ValueNode_Const::Handle>::iterator prev(iter);
 			if(iter==bline_point_list.begin())
 			{
 				assert(loop_);
@@ -1814,7 +1813,7 @@ StateBLine_Context::bline_delete_vertex(synfig::ValueNode_Const::Handle value_no
 {
 	bool vertex_deleted = false;
 
-	for(list<ValueNode_Const::Handle>::iterator iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
+	for(std::list<ValueNode_Const::Handle>::iterator iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
 		{
 			bline_point_list.erase(iter);
