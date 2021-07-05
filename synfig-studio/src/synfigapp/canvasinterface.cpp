@@ -1105,7 +1105,7 @@ CanvasInterface::import_sequence(
 		}
 
 		if (layer) {
-			// get parent layer, because image is incapsulated into action switch
+			// get parent layer, because image is encapsulated into action switch
 			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer();
 
 			// connect animated layer_name param

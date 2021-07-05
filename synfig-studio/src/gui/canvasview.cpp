@@ -1471,10 +1471,10 @@ CanvasView::init_menus()
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
 	);
 	action_group->add( Gtk::Action::create("import", _("Import...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::image_import))
+		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
 	);
 	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::squence_import))
+		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence))
 	);
 	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
 		sigc::mem_fun0(render_settings,&RenderSettings::present)
@@ -1482,9 +1482,6 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
 		sigc::mem_fun(*this,&CanvasView::on_preview_option)
 	);
-	//action_group->add( Gtk::Action::create("sound", _("Import Sound File...")),
-	//	sigc::mem_fun(*this,&CanvasView::on_audio_option)
-	//);
 	action_group->add( Gtk::Action::create("options", _("Options...")),
 		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
 	);
@@ -3496,7 +3493,7 @@ CanvasView::on_meta_data_changed()
 }
 
 void
-CanvasView::image_import()
+CanvasView::import_file()
 {
 	// String filename(dirname(get_canvas()->get_file_name()));
 	String filename("*.*");
@@ -3520,7 +3517,7 @@ CanvasView::image_import()
 }
 
 void
-CanvasView::squence_import()
+CanvasView::import_sequence()
 {
 	std::set<String> filenames;
 	String errors, warnings;

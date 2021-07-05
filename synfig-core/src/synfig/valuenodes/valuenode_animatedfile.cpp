@@ -185,7 +185,7 @@ ValueNode_AnimatedFile::file_changed()
 }
 
 void
-ValueNode_AnimatedFile::load_file(const String &filename, bool forse)
+ValueNode_AnimatedFile::load_file(const String &filename, bool force)
 {
 	if ( !get_parent_canvas()
 	  || !get_parent_canvas()->get_file_system() ) return;
@@ -200,7 +200,7 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool forse)
 	String local_filename = CanvasFileNaming::make_local_filename(get_parent_canvas()->get_file_name(), full_filename);
 	String independent_filename = CanvasFileNaming::make_canvas_independent_filename(get_parent_canvas()->get_file_name(), full_filename);
 
-	if (current_filename == independent_filename && !forse) return;
+	if (current_filename == independent_filename && !force) return;
 	current_filename = independent_filename;
 
 	internal->file_monitor.clear();

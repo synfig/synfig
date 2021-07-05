@@ -56,7 +56,7 @@ private:
 
 	explicit ValueNode_AnimatedFile(Type &t);
 
-	void load_file(const String &filename, bool forse = false);
+	void load_file(const String &filename, bool force = false);
 	void file_changed();
 
 public:
