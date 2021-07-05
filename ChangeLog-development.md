@@ -1,3 +1,5 @@
+- [`2c2062c`](https://github.com/synfig/synfig/commit/2c2062c5d11551394126a995b7107d0c85c3cc1b) Add non-minified bodymovin.js ([#2202](https://github.com/synfig/synfig/issues/2202)) [studio]
+- [`4f6cbf3`](https://github.com/synfig/synfig/commit/4f6cbf3f045806b169408f66b28195e1e2f7cb5e) Replaced deprecated Gtk::Alignment class using Widget margins ([#2187](https://github.com/synfig/synfig/issues/2187)) [studio]
 - [`c3e196e`](https://github.com/synfig/synfig/commit/c3e196e1974108a264016c61909cf12f8d802560) Replaced `Gtk::Alignment` spaces with CSS margins ([#2195](https://github.com/synfig/synfig/issues/2195)) [studio]
 - [`4273435`](https://github.com/synfig/synfig/commit/4273435309266fa4181269fdb3e9cc454cf14337) Removed excessive use of std namespace ([#2193](https://github.com/synfig/synfig/issues/2193)) [ETL] [core] [studio]
 - [`bd86b81`](https://github.com/synfig/synfig/commit/bd86b81940487d3b4d4682f6e01df341211b97c3) New arrows icons ([#2192](https://github.com/synfig/synfig/issues/2192)) [studio]
