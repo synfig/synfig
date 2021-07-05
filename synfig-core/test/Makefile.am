@@ -8,9 +8,32 @@ AM_LDFLAGS = \
 
 check_PROGRAMS=$(TESTS)
 
-TESTS=bone bline
+TESTS= \
+    bone \
+    bline \
+    fixed \
+    clock \
+    handle \
+    angle \
+    hermite \
+    stringf \
+    pen \
+    surface \
+    smart_ptr \
+    benchmark
 
-bone_SOURCES=bone.cpp
 
+angle_SOURCES=angle.cpp
+benchmark_SOURCES=benchmark.cpp
 bline_SOURCES=bline.cpp
+bone_SOURCES=bone.cpp
+clock_SOURCES=clock.cpp
+fixed_SOURCES=fixed.cpp
+handle_SOURCES=handle.cpp
+hermite_SOURCES=hermite.cpp
+pen_SOURCES=pen.cpp
+smart_ptr_SOURCES=smart_ptr.cpp
+stringf_SOURCES=stringf.cpp
+surface_SOURCES=surface.cpp
+
 

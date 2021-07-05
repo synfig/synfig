@@ -295,11 +295,6 @@ AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 
-PKG_CHECK_MODULES(ETL, [ETL >= 1.5.0],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 1.5.0 or greater).])
-])
-CONFIG_DEPS="$CONFIG_DEPS ETL"
-
 AC_CHECK_HEADER([zlib.h],[
 	LIBZ_LIBS="-lz"
 	AC_SUBST(LIBZ_LIBS)
@@ -520,10 +515,9 @@ CONFIG_CFLAGS="$CONFIG_CFLAGS"
 AC_SUBST(CONFIG_LIBS)
 AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
-AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $LIBGL_LIBS $LIBCL_LIBS $LIBFFTW_LIBS $MLTPP_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
-SYNFIG_CFLAGS="$BOOST_CPPFLAGS $LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $LIBGL_CFLAGS $LIBCL_CFLAGS $LIBFFTW_CFLAGS $MLTPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $LIBGL_LIBS $LIBCL_LIBS $LIBFFTW_LIBS $MLTPP_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_CFLAGS="$BOOST_CPPFLAGS $LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $LIBGL_CFLAGS $LIBCL_CFLAGS $LIBFFTW_CFLAGS $MLTPP_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
@@ -545,6 +539,7 @@ Makefile
 po/Makefile.in
 src/Makefile
 src/synfig/Makefile
+src/ETL/Makefile
 src/modules/Makefile
 src/modules/lyr_freetype/Makefile
 src/modules/lyr_std/Makefile
@@ -597,7 +592,6 @@ Optimization ---------------------> $optimization
 PNG output target support --------> $TARGET_PNG
 MNG output target support --------> $TARGET_MNG
 JPEG output target support -------> $TARGET_JPEG
-ETL_CFLAGS -----------------------> $ETL_CFLAGS
 FreeType2 ------------------------> $with_freetype
 fontconfig -----------------------> $with_fontconfig
 libavcodec -----------------------> $with_libavcodec
@@ -617,7 +611,6 @@ OpenEXR --------------------------> $with_openexr
 "'$'"GLIBMM_LIBS ---------------------> '$GLIBMM_LIBS'
 "'$'"GIOMM_LIBS ----------------------> '$GIOMM_LIBS'
 "'$'"LIBXMLPP_LIBS -------------------> '$LIBXMLPP_LIBS'
-"'$'"ETL_LIBS ------------------------> '$ETL_LIBS'
 "'$'"LIBSIGC_LIBS --------------------> '$LIBSIGC_LIBS'
 "'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'
 "'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
