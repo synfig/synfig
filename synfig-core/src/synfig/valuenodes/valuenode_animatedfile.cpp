@@ -44,6 +44,8 @@
 #include "valuenode_animatedfile.h"
 #include "valuenode_const.h"
 
+#include <libxml++/libxml++.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -93,6 +95,15 @@ public:
 
 	/// Book of all implemented parsers
 	static const Book book;
+
+	/// Convert string to double in C locale
+	static double strtodouble(const std::string& str) {
+		std::istringstream iss(str);
+		iss.imbue(std::locale::classic());
+		double value;
+		iss >> value;
+		return value;
+	}
 
 	/// Parse a Papagayo file
 	/// \param[in] s the Papagayo stream to be parsed
@@ -198,11 +209,7 @@ public:
 					continue;
 				}
 
-				std::istringstream iss(line.substr(0, tab_pos));
-				iss.imbue(std::locale::classic());
-				double seconds;
-				iss >> seconds;
-
+				double seconds = strtodouble(line.substr(0, tab_pos));
 				std::string data = line.substr(tab_pos+1);
 
 				Time time(seconds);
@@ -214,13 +221,82 @@ public:
 
 		return s.eof() || !s.fail();
 	}
+
+	/// Parse a Rhubarb XML file (lipsync software)
+	/// \param[in] s the XML stream to be parsed
+	/// \param[out] value the map of time -> layer name
+	/// \param[out] fields the map of metafield -> value
+	/// \return true if successful. There is no guarantee about stream offset in case of failure
+	static bool parse_xml(istream &s, map<Time, String> &values, map<String, String> &fields)
+	{
+		try {
+			xmlpp::DomParser parser;
+			parser.parse_stream(s);
+			if (!parser)
+				return false;
+			auto doc = parser.get_document();
+			if (!doc)
+				return false;
+			auto root = doc->get_root_node();
+			if (!root)
+				return false;
+			if (root->get_name() != "rhubarbResult") {
+				synfig::error(_("XML animated file: it only supports Rhubarb Lip Sync files. Found %s"), root->get_name().c_str());
+				return false;
+			}
+			if (auto metadata_node = root->get_first_child("metadata")) {
+				if (auto sound_node = metadata_node->get_first_child("soundFile")) {
+					if (auto sound_element = dynamic_cast<xmlpp::Element*>(sound_node)) {
+						if (auto sound_text_node = sound_element->get_child_text())
+							fields["sound"] = sound_text_node->get_content();
+					}
+					if (fields.count("sound") == 0 || fields["sound"].empty())
+						synfig::warning(_("XML animated file: wrong contents for Rhubarb metadata > soundFile node"));
+				}
+			}
+			if (auto mouthcues_node = root->get_first_child("mouthCues")) {
+				for (auto mouthcue_node : mouthcues_node->get_children("mouthCue")) {
+					if (auto mouthcue_element = dynamic_cast<xmlpp::Element*>(mouthcue_node)) {
+						if (auto mouthcue_text_node = mouthcue_element->get_child_text()) {
+							std::string phoneme = mouthcue_text_node->get_content();
+							if (phoneme.empty()) {
+								synfig::warning(_("XML animated file: missing phoneme for Rhubarb mouthcue element: using X"));
+								phoneme = 'X';
+							}
+
+							if (auto start_attribute = mouthcue_element->get_attribute("start")) {
+								double seconds = strtodouble(start_attribute->get_value());
+								Time time(seconds);
+								values[time] = phoneme;
+							} else {
+								synfig::warning(_("XML animated file: missing attribute 'start' for Rhubarb mouthcue element: skipping"));
+							}
+						}
+					}
+				}
+			}
+			return true;
+		} catch(xmlpp::internal_error &x) {
+			if (std::string(x.what()) == "Couldn't create parsing context")
+				synfig::error(_("XML animated file: Can't XML open file"));
+			else
+				synfig::error(_("XML animated file: %s"), x.what());
+		} catch(const std::exception& ex) {
+			synfig::error(_("XML animated file: Standard Exception: ")+String(ex.what()));
+		} catch (...) {
+			synfig::error(_("XML animated file: Unknown error"));
+		}
+		return false;
+	}
+
 };
 
 /* === M E T H O D S ======================================================= */
 
 const Parser::Book Parser::book {
 	{"pgo", Parser::BookEntry{&Parser::parse_pgo}}, // Papagayo
-	{"tsv", Parser::BookEntry{&Parser::parse_tsv}}  // TSV - Rhubarb, for example
+	{"tsv", Parser::BookEntry{&Parser::parse_tsv}}, // TSV - Rhubarb, for example
+	{"xml", Parser::BookEntry{&Parser::parse_xml}}  // Rhubarb XML file format
 };
 
 ValueNode_AnimatedFile::ValueNode_AnimatedFile(Type &t):
