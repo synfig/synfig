@@ -46,7 +46,6 @@ public:
 
 private:
 	class Internal;
-	class Parser;
 
 	Internal *internal;
 

@@ -56,22 +56,50 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_AnimatedFile, RELEASE_VERSION_1_0_2, "animated_file", "Animation from File")
+REGISTER_VALUENODE(ValueNode_AnimatedFile, RELEASE_VERSION_1_4_0, "animated_file", "Animation from File")
 
 /* === C L A S S E S ======================================================= */
-
-/* === M E T H O D S ======================================================= */
-
 class ValueNode_AnimatedFile::Internal
 {
 public:
 	Glib::RefPtr<Gio::FileMonitor> file_monitor;
 };
 
-class ValueNode_AnimatedFile::Parser
+class Parser
 {
 public:
-	static bool parse_pgo(istream &s, map<Time, String> &value, map<String, String> &fields)
+	/// Check if it provides support for a given file extension
+	static bool supports(const std::string& file_extension, const synfig::Type& value_type) {
+		auto it = book.find(file_extension);
+		if (it == book.end())
+			return false;
+		return value_type == type_string;
+	}
+
+	/// Method signature for parsing a stream
+	/// \param[in] s
+	/// \param[out] values the map of time -> value (phoneme/layer name if lipsync file format)
+	/// \param[out] fields the map of metafield name -> metafield value
+	/// \return true if successful. There is no guarantee about stream offset in case of failure
+	typedef bool (*ParserFunction)(istream &, map<Time, String> &, map<String, String> &);
+
+	/// A parser
+	struct BookEntry {
+		ParserFunction parse;
+	};
+
+	/// maps file extension -> parser entry
+	typedef std::map<const string, BookEntry> Book;
+
+	/// Book of all implemented parsers
+	static const Book book;
+
+	/// Parse a Papagayo file
+	/// \param[in] s the Papagayo stream to be parsed
+	/// \param[out] value the map of time -> layer name
+	/// \param[out] fields the map of metafield -> value
+	/// \return true if successful. There is no guarantee about stream offset in case of failure
+	static bool parse_pgo(istream &s, map<Time, String> &values, map<String, String> &fields)
 	{
 		String word;
 		bool unexpected_end = false;
@@ -130,21 +158,69 @@ public:
 							s >> frame >> phoneme;
 							first_frame = min(frame, first_frame);
 							getline(s, word);
-							value[Time(frame*fk)] = phoneme;
+							values[Time(frame*fk)] = phoneme;
 						} else unexpected_end = true;
 					}
-					value[Time(end_frame*fk)] = "rest";
+					values[Time(end_frame*fk)] = "rest";
 				}
 			}
 		}
 		if (first_frame == INT_MAX) first_frame= 1;
-		value[Time((first_frame-1)*fk)] = "rest";
+		values[Time((first_frame-1)*fk)] = "rest";
 
 		if (unexpected_end)
 			warning("Unexpected end of .pgo file. Unsupported format?");
 
 		return true;
 	}
+
+	/// Parse a TSV file (Table Separated Value)
+	/// \param[in] s the TSV stream to be parsed
+	/// \param[out] value the map of time -> layer name
+	/// \param[out] fields the map of metafield -> value
+	/// \return true if successful. There is no guarantee about stream offset in case of failure
+	static bool parse_tsv(istream &s, map<Time, String> &values, map<String, String> &/*fields*/)
+	{
+		try {
+			size_t line_num = 0;
+			std::string line;
+			while (std::getline(s, line)) {
+				line_num++;
+
+				if (line.empty()) {
+					warning(_("TSV file (line %zu): skipping empty line"), line_num);
+					continue;
+				}
+
+				const auto tab_pos = line.find('\t');
+				if (tab_pos == std::string::npos) {
+					error(_("TSV file (line %zu): no TAB separator"), line_num);
+					continue;
+				}
+
+				std::istringstream iss(line.substr(0, tab_pos));
+				iss.imbue(std::locale::classic());
+				double seconds;
+				iss >> seconds;
+
+				std::string data = line.substr(tab_pos+1);
+
+				Time time(seconds);
+				values[time] = data;
+			}
+		}  catch (...) {
+			return false;
+		}
+
+		return s.eof() || !s.fail();
+	}
+};
+
+/* === M E T H O D S ======================================================= */
+
+const Parser::Book Parser::book {
+	{"pgo", Parser::BookEntry{&Parser::parse_pgo}}, // Papagayo
+	{"tsv", Parser::BookEntry{&Parser::parse_tsv}}  // TSV - Rhubarb, for example
 };
 
 ValueNode_AnimatedFile::ValueNode_AnimatedFile(Type &t):
@@ -209,21 +285,23 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool force)
 
 	if (!full_filename.empty())
 	{
-		// Read papagayo file
-		if ( CanvasFileNaming::filename_extension_lower(full_filename) == "pgo"
-		  && get_type() == type_string )
+		const std::string file_extension = CanvasFileNaming::filename_extension_lower(full_filename);
+		// Read file
+		if ( Parser::supports(file_extension, get_type()) )
 		{
 			FileSystem::ReadStream::Handle rs = get_parent_canvas()->get_file_system()->get_read_stream(full_filename);
 			if (!rs)
 				FileSystem::ReadStream::Handle rs = get_parent_canvas()->get_file_system()->get_read_stream(local_filename);
 
-			map<Time, String> phonemes;
+			map<Time, String> values; // phonemes for lipsync file formats
 			if (!rs)
-				error("Cannot open .pgo file: %s", full_filename.c_str());
+				error("Cannot open .%s file: %s", file_extension.c_str(), full_filename.c_str());
 			else
-			if (Parser::parse_pgo(*rs, phonemes, filefields))
-				for(map<Time, String>::const_iterator i = phonemes.begin(); i != phonemes.end(); ++i)
+			if (Parser::book.at(file_extension).parse(*rs, values, filefields)) {
+				for(map<Time, String>::const_iterator i = values.begin(); i != values.end(); ++i) {
 					new_waypoint(i->first, i->second);
+				}
+			}
 		}
 
 		String uri = get_parent_canvas()->get_identifier().file_system->get_real_uri(full_filename);
