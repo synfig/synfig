@@ -43,7 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -63,7 +62,7 @@ ValueNode_Average::ValueNode_Average(const ValueBase &value, Canvas::LooseHandle
 	if (!check_type(value.get_type()))
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+value.get_type().description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+value.get_type().description.local_name);
 	}
 
 	ref();
@@ -77,7 +76,7 @@ ValueNode_Average::ValueNode_Average(Type &type, Canvas::LooseHandle canvas):
 	if (!check_type(type))
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 }
 

@@ -81,7 +81,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -309,10 +308,10 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 			if(iter->second.get_type()==type_list)
 			{
 				// check whether it's a list of blinepoints or widthpoints only
-				vector<ValueBase> list(iter->second.get_list());
+				std::vector<ValueBase> list(iter->second.get_list());
 				if (list.size())
 				{
-					vector<ValueBase>::iterator iter2 = list.begin();
+					std::vector<ValueBase>::iterator iter2 = list.begin();
 					Type &type(iter2->get_type());
 					for (iter2++; iter2 != list.end(); iter2++)
 						if (iter2->get_type() != type)

@@ -48,7 +48,6 @@
 
 using namespace synfig;
 using namespace etl;
-using namespace std;
 
 /* === G L O B A L S ======================================================= */
 
@@ -173,7 +172,7 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 		if (fabs(subsample_end) < precision) ++samples;
 	}
 
-	vector<Real> scales(samples, 0.0);
+	std::vector<Real> scales(samples, 0.0);
 	Real sum = 0.0;
 	for(int i = 0; i < samples; i++)
 	{

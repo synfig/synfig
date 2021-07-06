@@ -50,7 +50,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -355,7 +354,7 @@ Renderer_Ducks::render_vfunc(
 			Point boxpoint((*iter)->get_box_duck()->get_trans_point());
 			boxpoint[0]=(boxpoint[0]-window_start[0])/pw;
 			boxpoint[1]=(boxpoint[1]-window_start[1])/ph;
-			Point tl(min(point[0],boxpoint[0]),min(point[1],boxpoint[1]));
+			Point tl(std::min(point[0],boxpoint[0]),std::min(point[1],boxpoint[1]));
 
 			if (!boxpoint.is_nan_or_inf() && !tl.is_nan_or_inf())
 			{
@@ -364,8 +363,8 @@ Renderer_Ducks::render_vfunc(
 				cr->rectangle(
 					round_to_int(tl[0]),
 					round_to_int(tl[1]),
-					round_to_int(abs(boxpoint[0]-point[0])),
-					round_to_int(abs(boxpoint[1]-point[1]))
+					round_to_int(std::abs(boxpoint[0]-point[0])),
+					round_to_int(std::abs(boxpoint[1]-point[1]))
 					);
 
 				// Solid white box

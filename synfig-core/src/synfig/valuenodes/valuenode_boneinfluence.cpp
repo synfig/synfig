@@ -46,7 +46,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -232,9 +231,9 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 {
 	Matrix transform;
 	transform *= 0.0;
-	vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
+	std::vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
 	Real total_weight = 0;
-	for (vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
+	for (std::vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
 	{
 		Bone bone(iter->get(BoneWeightPair()).get_bone());
 		Real weight(iter->get(BoneWeightPair()).get_weight());

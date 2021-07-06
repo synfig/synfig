@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -201,7 +200,7 @@ Settings::save_to_file(const synfig::String& filename)const
 			{
 				if(!file)return false;
 				String ret = get_value(*iter);
-				if (ret != String()) file<<(*iter).c_str()<<'='<<(ret == "none" ? "normal" : ret).c_str()<<endl;
+				if (ret != String()) file<<(*iter).c_str()<<'='<<(ret == "none" ? "normal" : ret) << '\n';
 			}
 		}
 

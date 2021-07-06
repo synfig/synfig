@@ -55,7 +55,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -1273,7 +1272,7 @@ Dialog_Setup::refresh()
 			}
 		}
 	}
-	for (set<synfig::String>::iterator setiter = App::brushes_path.begin();
+	for (std::set<synfig::String>::iterator setiter = App::brushes_path.begin();
 			setiter != App::brushes_path.end(); setiter++)
 	{
 		ui_iter = liststore->append();

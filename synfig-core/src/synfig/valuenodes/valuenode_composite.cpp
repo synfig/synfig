@@ -54,7 +54,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -318,7 +317,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		return tp->create_value((*components[0])(t), (*components[1])(t));
 	}
 
-	synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
+	synfig::error(std::string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 	assert(components[0]);
 	return (*components[0])(t);
 }
