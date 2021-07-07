@@ -33,28 +33,20 @@ class Angle:
         return Angle(sub)
 
     def __mul__(self, other):
-        v = 0
-        if not isinstance(other, self.__class__):
-            v = self.v * other
-            return Angle(v)
-        else:
-            v = self.v * other.v
-        return Angle(v)
+        if isinstance(other, self.__class__):
+            return Angle(self.v * other.v)
+        return Angle(self.v * other)
 
     def __rmul__(self, other):
         return self.__mul__(other)
 
     def __truediv__(self, other):
-        div = 0
-        if not isinstance(other, self.__class__):
-            div = self.v / other
-        else:
-            div = self.v / other.v
-        return Angle(div)
+        if isinstance(other, self.__class__):
+            return Angle(self.v / other.v)
+        return Angle(self.v / other)
 
     def __neg__(self):
-        neg = -self.v
-        return Angle(neg)
+        return Angle(-self.v)
 
     def __lt__(self, rhs):
         return self.v < rhs.v

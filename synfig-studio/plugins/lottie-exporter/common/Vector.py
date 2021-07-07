@@ -90,12 +90,9 @@ class Vector:
         Returns:
             (float) : Magnitude inversed
         """
-        ret = 0
-        try:
-            ret = 1.0 / self.mag()
-        except ZeroDivisionError:
-            ret = float('nan')
-        return ret
+        if self.mag() == 0:
+            return float('nan')
+        return 1.0 / self.mag()
 
     def perp(self):
         """

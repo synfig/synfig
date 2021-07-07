@@ -68,12 +68,10 @@ class DashItemList:
         """
         Returns whether the bline is looped or not
         """
-        loop = False
         if "loop" in self.dash_item.keys():
             v = self.dash_item.attrib["loop"]
-            if v == "true":
-                loop = True
-        return loop
+            return v == "true"
+        return False
 
     def extract_entries(self, entry_list):
         """
