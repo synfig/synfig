@@ -720,7 +720,7 @@ void
 LayerTreeStore::queue_rebuild()
 {
 	if (queued) return;
-	queued = false;
+	queued = true;
 	queue_connection.disconnect();
 	queue_connection=Glib::signal_timeout().connect(
 		sigc::bind_return(
@@ -733,7 +733,9 @@ LayerTreeStore::queue_rebuild()
 void
 LayerTreeStore::rebuild()
 {
-	if (queued) queued = false;
+	std::lock_guard<std::mutex> lock(rebuild_queue_mtx);
+
+	queued = false;
 
 	// disconnect any subcanvas_changed connections
 	std::map<synfig::Layer::Handle, sigc::connection>::iterator iter;
