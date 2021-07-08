@@ -150,9 +150,18 @@ ValueNode_Derivative::ValueNode_Derivative(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
+
+	ValueNode_Const::Handle val_acc;
+	val_acc = ValueNode_Const::Handle::cast_static(ValueNode_Const::create((int)(NORMAL)));
+	val_acc->set_static(true);
+
+	ValueNode_Const::Handle val_order;
+	val_order = ValueNode_Const::Handle::cast_static(ValueNode_Const::create((int)(FIRST)));
+	val_order->set_static(true);
+
 	set_link("interval",      ValueNode_Const::create(Real(0.01))); // Default interval
-	set_link("accuracy",      ValueNode_Const::create((int)(NORMAL)));
-	set_link("order",         ValueNode_Const::create((int)(FIRST)));
+	set_link("accuracy",      val_acc);
+	set_link("order",         val_order);
 
 	Type &type(get_type());
 	if (type == type_real)
