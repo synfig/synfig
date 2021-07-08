@@ -30,9 +30,6 @@ etl_HEADERS = \
 	_calculus.h \
 	_hermite.h \
 	_curve_func.h \
-	_clock_base.h \
-	_clock_system.h \
-	_clock_gettimeofday.h \
 	_angle.h \
 	_handle.h \
 	smach \
@@ -53,8 +50,8 @@ etl_HEADERS = \
 	surface \
 	_surface.h \
 	smart_ptr \
-	_smart_ptr.h \
-	_clock_win32hpcount.h
+	_smart_ptr.h
+
 
 
 $(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h

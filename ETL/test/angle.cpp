@@ -24,7 +24,6 @@
 
 #include <stdio.h>
 #include <ETL/angle>
-#include <ETL/clock>
 #include <ETL/bezier>
 #include <ETL/hermite>
 
