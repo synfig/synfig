@@ -47,7 +47,6 @@
 #include <synfigapp/action_system.h>
 #include <synfigapp/instance.h>
 #include "app.h"
-#include <ETL/clock>
 
 #include <gui/localization.h>
 
@@ -61,14 +60,6 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
-class Profiler : private etl::clock
-{
-	const std::string name;
-public:
-	Profiler(const std::string& name):name(name) { reset(); }
-	~Profiler() { float time(operator()()); synfig::info("%s: took %f msec",name.c_str(),time*1000); }
-};
 
 /* === G L O B A L S ======================================================= */
 

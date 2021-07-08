@@ -23,6 +23,8 @@
 
 #include <ETL/clock>
 #include <stdio.h>
+#include <chrono>
+#include <thread>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,12 +38,9 @@ using namespace etl;
 int basic_test(void)
 {
 	int ret=0;
-	fprintf(stderr,"default etl::clock precision:  %0.8f\n",etl::clock::precision());
-	fprintf(stderr,"realtime etl::clock precision: %0.8f\n",etl::clock_realtime::precision());
-	fprintf(stderr,"proctime etl::clock precision: %0.8f\n",etl::clock_proctime::precision());
 
-	etl::clock_realtime timer;
-	etl::clock::value_type amount,total;
+	etl::clock timer;
+	float amount, total;
 
 	for(amount=3.0;amount>=0.00015;amount/=2.0)
 	{
@@ -53,7 +52,7 @@ int basic_test(void)
 			fprintf(stderr,"waiting %f seconds...\n",amount);
 
 		timer.reset();
-		etl::clock::sleep(amount);
+		std::this_thread::sleep_for(std::chrono::microseconds ((std::int64_t)(amount*1000000.f)));
 		total=timer();
 		if((total-amount)*1000000.0<1000.0f)
 			fprintf(stderr," ** I waited %f seconds, error of %f microseconds\n",total,(total-amount)*1000000);

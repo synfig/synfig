@@ -57,7 +57,7 @@
 #include <unistd.h>
 #include <algorithm>
 #include <functional>
-#include <ETL/clock>
+#include <thread>
 
 #endif
 
@@ -112,7 +112,7 @@ ffmpeg_trgt::~ffmpeg_trgt()
 {
 	if(file)
 	{
-		etl::yield();
+		std::this_thread::yield();
 		sleep(1);
 #if defined(WIN32_PIPE_TO_PROCESSES)
 		pclose(file);
