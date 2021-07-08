@@ -54,8 +54,6 @@
 #endif
 #include <unistd.h>
 #include <algorithm>
-#include <functional>
-#include <ETL/clock>
 #include <thread>
 
 #endif

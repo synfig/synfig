@@ -45,7 +45,6 @@
 #include <synfigapp/instance.h>
 #include "cellrenderer/cellrenderer_value.h"
 #include "cellrenderer/cellrenderer_timetrack.h"
-#include <ETL/clock>
 #include <synfig/interpolation.h>
 
 #include <gui/localization.h>

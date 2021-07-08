@@ -33,7 +33,6 @@
 #include <sigc++/sigc++.h>
 
 #include <ETL/stringf>
-#include <ETL/clock>
 //#include <ETL/thread>
 #include <glibmm/thread.h>
 
@@ -133,7 +132,6 @@ struct studio::AudioContainer::AudioImp
 	//Action information
 	bool				playing;
 	double				curscrubpos;
-	etl::clock			timer;	//for getting the time diff between scrub input points
 
 	//Scrubbing information...
 	//the current position of the sound will be sufficient for normal stuff...

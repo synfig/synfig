@@ -49,7 +49,6 @@
 #include <synfig/context.h>
 
 #include <gtk/gtk.h>
-#include <ETL/clock>
 #include <gui/localization.h>
 
 #endif
@@ -752,8 +751,6 @@ LayerTreeStore::rebuild()
 		iter->second.disconnect();
 	switch_changed_connections.clear();
 
-	//etl::clock timer;timer.reset();
-
 	//synfig::warning("---------rebuilding layer table---------");
 	// Save the selection data
 	synfigapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
@@ -782,9 +779,6 @@ LayerTreeStore::rebuild()
 void
 LayerTreeStore::refresh()
 {
-	etl::clock timer;
-	timer.reset();
-
 	Gtk::TreeModel::Children children_(children());
 	Gtk::TreeModel::Children::iterator iter;
 
