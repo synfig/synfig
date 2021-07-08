@@ -107,6 +107,10 @@ def parse_position(animated, i):
         pos = [get_angle(float(animated[i][0].attrib["value"])),
                get_frame(animated[i])]
 
+    elif animated.attrib["type"] == "base":
+        pos = [float(animated[i][0].attrib["value"])*settings.PIX_PER_UNIT,
+               get_frame(animated[i])]
+
     elif animated.attrib["type"] in {"composite_convert", "region_angle", "star_angle_new", "scalar_multiply"}:
         pos = [float(animated[i][0].attrib["value"]),
                get_frame(animated[i])]
@@ -163,11 +167,18 @@ def parse_position(animated, i):
         vec.add_new_val(val3)
         return vec
 
-    elif animated.attrib["type"] == "group_layer_scale":
-        val1 = float(animated[i][0][0].text) * 100
-        val3 = float(animated[i][0][1].text) * 100
-        vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
-        vec.add_new_val(val3)
+    elif animated.attrib["type"] in {"group_layer_scale","blur_anim_x","blur_anim_y"}:
+        if animated.attrib["type"] == "group_layer_scale":
+            val1 = float(animated[i][0][0].text) * 100
+            val3 = float(animated[i][0][1].text) * 100
+            vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
+            vec.add_new_val(val3)
+        elif animated.attrib["type"] == "blur_anim_x":
+            val1 = float(animated[i][0][0].text) * 100
+            vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
+        else:
+            val1 = float(animated[i][0][1].text) * 100
+            vec = Vector(val1, get_frame(animated[i]), animated.attrib["type"])
         return vec
 
     elif animated.attrib["type"] == "time":
@@ -243,14 +254,13 @@ def is_animated(node):
                 1: If only single waypoint is present
                 2: If more than one waypoint is present
     """
-    case = 0
+    case = settings.NOT_ANIMATED
     if node.tag == "animated":
         if len(node) == 1:
-            case = 1
+            case = settings.SINGLE_WAYPOINT
         else:
-            case = 2
-    else:
-        case = 0
+            case = settings.ANIMATED
+
     return case
 
 
@@ -378,7 +388,7 @@ def get_vector(waypoint):
 
 def radial_to_tangent(radius, angle):
     """
-    Converts a tangent from radius and angle format to x, y axis co-ordinate
+    Converts a tangent from radius and angle format to x, y axis coordinate
     system
 
     Args:

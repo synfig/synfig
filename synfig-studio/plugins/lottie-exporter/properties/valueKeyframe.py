@@ -16,8 +16,8 @@ def normalize_tangents(cur_pos, next_pos, t_in, t_out):
     Converts the tangents from arbitrary range to the range of 0-1
 
     Args:
-        cur_pos  (common.Vector.Vector) : Current position in co-ordinate system
-        next_pos (common.Vector.Vector) : Next position in co-ordinate system
+        cur_pos  (common.Vector.Vector) : Current position in coordinate system
+        next_pos (common.Vector.Vector) : Next position in coordinate system
         t_in     (dict)        : In tangent in Lottie format
         t_out    (dict)        : Out tangent in Lottie format
 
@@ -101,7 +101,7 @@ def gen_value_Keyframe(curve_list, animated, i):
 
     # After effects only supports linear,ease-in,ease-out and constant interpolations for color
     ##### No support for TCB and clamped interpolations in color is there yet #####
-    if animated.attrib["type"] == {"color", "linear_gradient"}:
+    if animated.attrib["type"] == {"color", "gradient"}:
         if cur_get_after in {"auto", "clamped"}:
             cur_get_after = "linear"
         if cur_get_before in {"auto", "clamped"}:
@@ -159,8 +159,8 @@ def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
     Args:
         out_val   (common.Vector.Vector)         : Tangent out value
         in_val    (common.Vector.Vector)         : Tangent in value
-        cur_pos   (common.Vector.Vector)         : Current position in co-ordinate system
-        next_pos  (common.Vector.Vector)         : Next position in co-ordinate system
+        cur_pos   (common.Vector.Vector)         : Current position in coordinate system
+        next_pos  (common.Vector.Vector)         : Next position in coordinate system
         lottie    (dict)                : bezier interval in lottie format
         animation (lxml.etree._Element) : Synfig format animation
 
@@ -186,5 +186,5 @@ def set_tangents(out_val, in_val, cur_pos, next_pos, lottie, animated):
     lottie["synfig_o"] = [lottie["o"]["y"][0]]
 
     # If type is color, the tangents are already normalized
-    if animated.attrib["type"] not in {"color", "linear_gradient"}:
+    if animated.attrib["type"] not in {"color", "gradient"}:
         normalize_tangents(cur_pos, next_pos, lottie["i"], lottie["o"])

@@ -84,9 +84,9 @@ def clamped_vector(p1, p2, p3, animated, i, lottie, ease):
     when clamped waypoints are used
 
     Args:
-        p1       (common.Vector.Vector)         : First point in Co-ordinate System
-        p2       (common.Vector.Vector)         : Second point in Co-ordinate System
-        p3       (common.Vector.Vector)         : Third point in Co-ordinate System
+        p1       (common.Vector.Vector)         : First point in Coordinate System
+        p2       (common.Vector.Vector)         : Second point in Coordinate System
+        p3       (common.Vector.Vector)         : Third point in Coordinate System
         animated (lxml.etree._Element) : Synfig format animation
         i        (int)                 : Iterator over animation
         ease     (str)                 : Specifies if it is an ease in animation ease out
@@ -187,7 +187,7 @@ def calc_tangent(animated, lottie, i):
 
     # After effects only supports linear,ease-in,ease-out and constant interpolations for color
     ##### No support for TCB and clamped interpolations in color is there yet #####
-    if animated.attrib["type"] in {"color", "linear_gradient"}:
+    if animated.attrib["type"] in {"color", "gradient"}:
         if cur_get_after in {"auto", "clamped"}:
             cur_get_after = "linear"
         if cur_get_before in {"auto", "clamped"}:
@@ -225,7 +225,7 @@ def calc_tangent(animated, lottie, i):
 
 
     ### Special case for color interpolations ###
-    if animated.attrib["type"] in {"color", "linear_gradient"}:
+    if animated.attrib["type"] in {"color", "gradient"}:
         if cur_get_after == "linear" and next_get_before == "linear":
             return handle_color()
 
