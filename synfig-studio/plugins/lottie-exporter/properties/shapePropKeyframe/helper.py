@@ -5,15 +5,10 @@ in Lottie format
 """
 
 import sys
-import ast
-from lxml import etree
 import settings
-from common.misc import change_axis, get_frame, is_animated, radial_to_tangent
+from common.misc import change_axis, radial_to_tangent
 from common.Vector import Vector
 from common.Param import Param
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import print_animation, get_vector_at_frame, get_bool_at_frame
 sys.path.append("../../")
 
 
@@ -158,7 +153,7 @@ def add_reverse(side, lottie, origin_cur):
         i -= 1
 
 
-def cubic_to(vec, tan1, tan2, lottie, origin_cur, is_rectangle=False):
+def cubic_to(vec, tan1, tan2, lottie, origin_cur, is_rectangle=False,constant_width=False):
     """
     Will have to manipulate the tangents here, but they are not managed as tan1
     and tan2 both are zero always
@@ -176,7 +171,10 @@ def cubic_to(vec, tan1, tan2, lottie, origin_cur, is_rectangle=False):
     vec *= settings.PIX_PER_UNIT
     tan1 *= settings.PIX_PER_UNIT
     tan2 *= settings.PIX_PER_UNIT
-    tan1, tan2 = convert_tangent_to_lottie(3*tan1, 3*tan2)
+    if constant_width:
+        tan1, tan2 = convert_tangent_to_lottie(tan1, tan2)
+    else:
+        tan1, tan2 = convert_tangent_to_lottie(3*tan1, 3*tan2)
     pos = change_axis(vec[0], vec[1], not is_rectangle)
     for i in range(len(pos)):
         pos[i] += origin_cur[i]
@@ -232,14 +230,14 @@ def convert_tangent_to_lottie(t1, t2):
     return t1, t2
 
 
-def insert_dict_at(lottie, idx, fr, loop):
+def insert_dict_at(lottie, idx, fr, loop,constant=False):
     """
     Inserts dictionary values in the main dictionary, required by shape layer of
     lottie format
 
     Args:
         lottie (dict) : Shape layer will be stored in this main dictionary
-        idx    (int)  : index at which dicionary needs to be stored
+        idx    (int)  : index at which dictionary needs to be stored
         fr     (int)  : frame number
         loop   (bool) : Specifies if the shape is loop or not
 
@@ -255,14 +253,23 @@ def insert_dict_at(lottie, idx, fr, loop):
     lottie[idx]["i"]["x"] = lottie[idx]["i"]["y"] = 0.5     # Does not matter because frames are adjacent
     lottie[idx]["o"]["x"] = lottie[idx]["o"]["y"] = 0.5     # Does not matter because frames are adjacent
     lottie[-1]["t"] = fr
-    lottie[idx]["s"], lottie[idx]["e"] = [], []
-    st_val, en_val = lottie[idx]["s"], lottie[idx]["e"]
+    if constant:
+        lottie[idx]["s"] = []
+        st_val = lottie[idx]["s"]
 
-    st_val.append({}), en_val.append({})
-    st_val, en_val = st_val[0], en_val[0]
-    st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop
-    en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
-    return st_val, en_val
+        st_val.append({})
+        st_val = st_val[0]
+        st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop
+        return st_val
+    else:
+        lottie[idx]["s"], lottie[idx]["e"] = [], []
+        st_val, en_val = lottie[idx]["s"], lottie[idx]["e"]
+
+        st_val.append({}), en_val.append({})
+        st_val, en_val = st_val[0], en_val[0]
+        st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop
+        en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
+        return st_val, en_val
 
 
 def quadratic_to_cubic(qp0, qp1, qp2):
@@ -280,6 +287,6 @@ def quadratic_to_cubic(qp0, qp1, qp2):
     """
     cp0 = qp0
     cp3 = qp2
-    cp1 = qp0 + 2/3*(qp1 - qp0)
-    cp2 = qp2 + 2/3*(qp1 - qp2)
+    cp1 = qp0 + 2/3.0*(qp1 - qp0)
+    cp2 = qp2 + 2/3.0*(qp1 - qp2)
     return cp1, cp2

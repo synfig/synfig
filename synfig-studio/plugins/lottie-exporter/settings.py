@@ -36,7 +36,7 @@ DEFAULT_POSITION = [0, 0]
 DEFAULT_ANCHOR = [0, 0, 0]
 DEFAULT_SCALE = [100, 100, 100]
 DEFAULT_SKEW = 0
-GAMMA = 2.2
+GAMMA = [2.2, 2.2, 2.2]     # Default RGB gamma correction values
 PIX_PER_UNIT = 0
 TANGENT_FACTOR = 3.0
 IN_TANGENT_X = 0.58
@@ -61,17 +61,29 @@ ADDITIONAL_PRECOMP_HEIGHT = 0
 NOT_SUPPORTED_TEXT = "Layer '%s' is not supported yet. For more information, contact us on Synfig forums or Github page"
 NOT_ACTIVE_TEXT = "Layer '%s' is not active"
 EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
-SHAPE_LAYER = {"simple_circle"}
+SHAPE_LAYER = {"simple_circle", "linear_gradient", "radial_gradient"}
+BLUR_LAYER = {"blur"}
 SOLID_LAYER = {"SolidColor"}
-SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"}
+SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"} 
 IMAGE_LAYER = {"import"}
 PRE_COMP_LAYER = {"rotate", "zoom", "translate", "stretch"}
 GROUP_LAYER = {"group", "switch"}
 SKELETON_LAYER = {"skeleton"}
 UNKNOWN_LAYER = "unknown_layer"
-CONVERT_METHODS = {"add", "average", "composite", "exp", "linear", "radial_composite", "scale", "subtract", "switch", "weighted_average", "bone_link", "bone", "bone_root"}
+CONVERT_METHODS = {"add", "atan2","average", "bone", "bone_link", "bone_root", "composite", "cos", "dotproduct", "exp", "fromint", "linear", "logarithm", "power", "radial_composite", "range", "reciprocal", "scale", "sine", "subtract", "switch", "vectorangle", "vectorlength", "vectorx", "vectory", "weighted_average"}
 BONES = {"bone", "bone_root"}
-
+DOT_FLAG = 0 #Used for the two types of dot product -> angle and real
+BLUR_TYPE = 29
+RANGE_FLAG = 0 #Used for if-else expressions
+# Some waypoint animated definitions
+ANIMATED = 2
+SINGLE_WAYPOINT = 1
+NOT_ANIMATED = 0
+LEVEL = 0 #Indicates the depth of a layer
+OUTLINE_FLAG = False #Flag to check for outline as outline needs the newer version of bodymovin.js
+WAYPOINTS_LIST = []
+WITHOUT_VARIABLE_WIDTH = False
+ROOT_CANVAS = None
 
 def init():
     """
@@ -103,3 +115,7 @@ def init():
     canvas_count = Count()
     global controller_count # counts the slider and point effects controller
     controller_count = Count()
+    global blur_dictionary #used to make a dictionary of blur layers
+    blur_dictionary = {}
+    global non_blur_dictionary #used to make a dictionary of all non blur layers
+    non_blur_dictionary = {}

@@ -5,10 +5,7 @@ in Lottie format
 """
 
 import sys
-import copy
 from common.Bline import Bline
-from common.Param import Param
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
 sys.path.append("../../")
 

@@ -9,7 +9,6 @@ import settings
 from common.misc import is_animated
 from common.Vector import Vector
 import common
-from synfig.animation import print_animation
 sys.path.append("..")
 
 
@@ -70,7 +69,7 @@ def update_pos(origin):
     """
     offset = get_offset()
     is_animate = is_animated(origin[0])
-    if is_animate == 0:
+    if is_animate == settings.NOT_ANIMATED:
         add(origin[0], offset)
     else:
         for waypoint in origin[0]:

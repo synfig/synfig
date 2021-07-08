@@ -4,7 +4,6 @@ multiDimensionalKeyframed file in lottie
 """
 
 import sys
-import settings
 from properties.offsetKeyframe import gen_properties_offset_keyframe
 from properties.timeAdjust import time_adjust
 from common.misc import get_frame
