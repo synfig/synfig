@@ -4,14 +4,7 @@ This will also support the simple_circle layer of Synfig
 """
 
 import sys
-import copy
 import settings
-from properties.value import gen_properties_value
-from common.misc import is_animated
-from common.Count import Count
-from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
-from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import print_animation
 sys.path.append("..")
 
 
@@ -28,7 +21,6 @@ def gen_shapes_circle(lottie, layer, idx):
     Returns:
         (None)
     """
-    index = Count()
     lottie["ty"] = "el"     # Type: circle
     lottie["p"] = {}        # Position of circle
     lottie["d"] = settings.DEFAULT_DIRECTION
@@ -37,6 +29,7 @@ def gen_shapes_circle(lottie, layer, idx):
 
     # Radius
     radius = layer.get_param("radius")
+    radius.scale_convert_link(2)        # Lottie format expects diameter of the circle as input
     radius.animate("circle_radius")
     radius.fill_path(lottie, "s")
 

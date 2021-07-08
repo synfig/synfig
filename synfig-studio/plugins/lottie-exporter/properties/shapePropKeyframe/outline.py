@@ -8,7 +8,6 @@ import sys
 import math
 import settings
 from common.Bline import Bline
-from common.Param import Param
 from common.Vector import Vector
 from common.Hermite import Hermite
 from synfig.animation import to_Synfig_axis

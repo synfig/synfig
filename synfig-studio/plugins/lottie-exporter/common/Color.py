@@ -1,6 +1,8 @@
 """
 Color.py
 Will store the Color class
+
+NOTE: need to introduce clamping function
 """
 
 import sys

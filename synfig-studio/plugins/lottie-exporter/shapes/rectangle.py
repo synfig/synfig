@@ -8,12 +8,11 @@ import copy
 from lxml import etree
 import settings
 from common.Count import Count
-from common.Vector import Vector
 from common.misc import is_animated, get_frame, get_vector, set_vector
 from properties.value import gen_properties_value
 from properties.multiDimensionalKeyframed import gen_properties_multi_dimensional_keyframed
 from properties.valueKeyframed import gen_value_Keyframed
-from synfig.animation import gen_dummy_waypoint, insert_waypoint_at_frame, print_animation, to_Synfig_axis, get_vector_at_frame, get_animated_time_list, copy_tcb_average, copy_tcb
+from synfig.animation import gen_dummy_waypoint, insert_waypoint_at_frame, to_Synfig_axis, get_vector_at_frame, get_animated_time_list, copy_tcb_average, copy_tcb
 sys.path.append("..")
 
 
@@ -32,17 +31,17 @@ def get_child_value(is_animate, child, what_type):
         (float)           :   If the type of waypoint is "value"
     """
     if what_type == "position":
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             x_val, y_val = float(child[0][0].text), float(child[0][1].text)
-        elif is_animate == 1:
+        elif is_animate == settings.SINGLE_WAYPOINT:
             x_val, y_val = float(child[0][0][0][0].text), float(child[0][0][0][1].text)
         x_val *= settings.PIX_PER_UNIT
         y_val *= settings.PIX_PER_UNIT
         return x_val, y_val
     elif what_type == "value":
-        if is_animate == 0:
+        if is_animate == settings.NOT_ANIMATED:
             val = float(child[0].attrib["value"])
-        elif is_animate == 1:
+        elif is_animate == settings.SINGLE_WAYPOINT:
             val = float(child[0][0][0].attrib["value"])
         return val
 
@@ -85,7 +84,7 @@ def gen_shapes_rectangle(lottie, layer, idx):
             elif child.attrib["name"] == "bevel":
                 bevel_found = True
                 is_animate = is_animated(child[0])
-                if is_animate == 2:
+                if is_animate == settings.ANIMATED:
                     gen_value_Keyframed(lottie["r"], child[0], index.inc())
                 else:
                     bevel = get_child_value(is_animate, child, "value")
