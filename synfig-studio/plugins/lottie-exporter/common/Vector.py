@@ -64,6 +64,12 @@ class Vector:
         else:
             self.val1 = value
 
+    def isnan(self):
+        """
+        Returns true is any value of this vector is nan
+        """
+        return math.isnan(self.val1) or math.isnan(self.val2)
+
     def mag(self):
         """
         Returns the magnitude of the vector
@@ -84,6 +90,8 @@ class Vector:
         Returns:
             (float) : Magnitude inversed
         """
+        if self.mag() == 0:
+            return float('nan')
         return 1.0 / self.mag()
 
     def perp(self):
@@ -121,6 +129,17 @@ class Vector:
         """
         ret = self.val1 * self.val1 + self.val2 * self.val2
         return ret
+
+    def angle(self):
+        """
+        Returns the angle of this Vector in Radians
+
+        Args:
+            (None)
+        Returns:
+            (common.Angle.RadAngle): The angle of Vector
+        """
+        return common.Angle.RadAngle(math.atan2(self.val2, self.val1))
 
     def norm(self):
         """
