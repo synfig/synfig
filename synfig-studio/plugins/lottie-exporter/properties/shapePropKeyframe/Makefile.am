@@ -3,6 +3,7 @@
 PLUGIN_NAME = properties/shapePropKeyframe
 
 EXTRA_FILES = \
+			  advanced_outline.py \
 			  circle.py \
 			  constant_width_outline.py \
 			  helper.py \
