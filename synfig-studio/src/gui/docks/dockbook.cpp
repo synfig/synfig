@@ -271,7 +271,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 
 	// Handle middle mouse click event first before showing the canvas
 	if (event->button == 2 && canvas_view) {
-		canvas_view->close_instance();
+		canvas_view->close_view();
 		return true;
 	}
 
