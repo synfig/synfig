@@ -2421,6 +2421,8 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	filter_supported->add_pattern("*.gif");
 	// 0.5 lipsync files
 	filter_supported->add_pattern("*.pgo");
+	filter_supported->add_pattern("*.tsv");
+	filter_supported->add_pattern("*.xml");
 
 	// Sub fileters
 	// 1 Synfig documents. sfg is not supported to import
@@ -2469,8 +2471,10 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
 	// 5 Lipsync files
 	Glib::RefPtr<Gtk::FileFilter> filter_lipsync = Gtk::FileFilter::create();
-	filter_lipsync->set_name(_("Lipsync (*.pgo)"));
+	filter_lipsync->set_name(_("Lipsync (*.pgo, *.tsv, *.xml)"));
 	filter_lipsync->add_pattern("*.pgo");
+	filter_lipsync->add_pattern("*.tsv");
+	filter_lipsync->add_pattern("*.xml");
 
 	// 6 Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();

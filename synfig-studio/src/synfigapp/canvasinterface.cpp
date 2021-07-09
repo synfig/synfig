@@ -725,7 +725,7 @@ CanvasInterface::import(
 	String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename);
 	String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename);
 
-	if (ext=="pgo")
+	if (ext=="pgo" || ext=="tsv" || ext=="xml")
 	{
 		synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Import Lipsync"));
 
@@ -1105,7 +1105,7 @@ CanvasInterface::import_sequence(
 		}
 
 		if (layer) {
-			// get parent layer, because image is incapsulated into action switch
+			// get parent layer, because image is encapsulated into action switch
 			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer();
 
 			// connect animated layer_name param
