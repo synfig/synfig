@@ -261,7 +261,7 @@ gif::end_frame()
 	if(build_off_previous)
 		gec_flags|=DISPOSE_NONE;
 	else
-		gec_flags|=DISPOSE_RESTORE_PREVIOUS;
+		gec_flags|=DISPOSE_RESTORE_BGCOLOR;
 	if(has_transparency)
 		gec_flags|=1;
 
