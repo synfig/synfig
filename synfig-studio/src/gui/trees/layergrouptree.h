@@ -68,6 +68,7 @@ private:
 
 	sigc::signal<void,etl::handle<synfig::Layer> > signal_popup_layer_menu_;
 
+	Glib::RefPtr<Gtk::TreeSelection> tree_selection;
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -80,7 +81,8 @@ private:
 
 private:
 
-	virtual bool on_event(GdkEvent *event);
+	virtual bool on_button_press_event(GdkEventButton *button_event);
+	void on_selection_changed();
 	void on_toggle(const Glib::ustring& path_string);
 	void on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value);
 
