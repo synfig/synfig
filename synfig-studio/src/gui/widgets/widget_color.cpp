@@ -117,13 +117,25 @@ studio::render_color_to_window(const Cairo::RefPtr<Cairo::Context> &cr, const Gd
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Color::Widget_Color()
+void
+Widget_Color::init()
 {
 	color=Color(0,0,0,0);
 	set_size_request(-1,16);
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-	App::signal_canvas_view_focus().connect(
-		sigc::hide(sigc::mem_fun(*this,&studio::Widget_Color::queue_draw)) );
+}
+
+Widget_Color::Widget_Color()
+	: Glib::ObjectBase("widget_color")
+{
+	init();
+}
+
+Widget_Color::Widget_Color(BaseObjectType* cobject) :
+	Glib::ObjectBase("widget_color"),
+	Gtk::DrawingArea(cobject)
+{
+	init();
 }
 
 Widget_Color::~Widget_Color()
@@ -181,4 +193,28 @@ Widget_Color::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	render_color_to_window(cr, Gdk::Rectangle(0,0,get_width(),get_height()), color);
 	return true;
+}
+
+GType Widget_Color::gtype = 0;
+
+Glib::ObjectBase*
+Widget_Color::wrap_new(GObject* o)
+{
+	if (gtk_widget_is_toplevel(GTK_WIDGET (o)))
+		return new Widget_Color(GTK_DRAWING_AREA(o));
+	else
+		return Gtk::manage(new Widget_Color(GTK_DRAWING_AREA(o)));
+}
+
+void
+Widget_Color::register_type()
+{
+	if (gtype)
+		return;
+
+	Widget_Color dummy;
+
+	gtype = G_OBJECT_TYPE(dummy.gobj());
+
+	Glib::wrap_register(gtype, Widget_Color::wrap_new);
 }

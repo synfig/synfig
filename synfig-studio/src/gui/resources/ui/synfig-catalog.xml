@@ -4,6 +4,7 @@
   <glade-widget-classes>
     <glade-widget-class name="gtkmm__CustomObject_widget_vector" generic-name="vector" title="Vector" parent="GtkEntry" toplevel="false" default-width="100" />
     <glade-widget-class name="gtkmm__CustomObject_widget_time" since="0.2" generic-name="time" title="Time" parent="GtkEntry" toplevel="false" default-width="100" />
+    <glade-widget-class name="gtkmm__CustomObject_widget_color" since="0.3" generic-name="color" title="Color" parent="GtkDrawingArea" toplevel="false" default-width="10" />
     <glade-widget-class name="gtkmm__CustomObject_widget_colorslider" since="0.3" generic-name="colorslider" title="Color Slider" parent="GtkDrawingArea" toplevel="false" default-width="100">
       <properties>
         <property id="type" default="COLORSLIDER_TYPE_Y">
@@ -33,6 +34,7 @@
 
 
   <glade-widget-group name="synfigwidgets" title="Synfig Widgets" >
+    <glade-widget-class-ref name="gtkmm__CustomObject_widget_color" />
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_colorslider" />
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_eyedropper" />
     <glade-widget-class-ref name="gtkmm__CustomObject_widget_hsv_plane" />

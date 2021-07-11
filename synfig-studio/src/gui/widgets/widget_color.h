@@ -50,6 +50,8 @@ private:
 	sigc::signal<void> signal_middle_click_;
 	sigc::signal<void> signal_right_click_;
 
+	void init();
+
 public:
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
 	sigc::signal<void>& signal_clicked() { return signal_activate_; }
@@ -65,6 +67,14 @@ public:
 protected:
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
+
+// Glade & GtkBuilder related
+public:
+	Widget_Color(BaseObjectType* cobject);
+	static Glib::ObjectBase* wrap_new(GObject* o);
+	static void register_type();
+private:
+	static GType gtype;
 }; // END of class Widget_Color
 
 }; // END of namespace studio
