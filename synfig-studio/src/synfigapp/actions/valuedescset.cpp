@@ -45,6 +45,7 @@
 
 #include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
+#include <synfig/layers/layer_skeletondeformation.h>
 #include <synfig/valuenodes/valuenode_add.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
@@ -202,13 +203,30 @@ Action::ValueDescSet::prepare()
 
 	get_canvas_interface()->signal_value_desc_set()(value_desc,value);
 
-	// If the tool is state_bone
-	// then both bones in a ValueNode_Composite
-	// should follow each other
-	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
-	if(comp && get_canvas_interface()->get_state()=="bone"){
+	// If current tool is Bone Tool, changing a bone of a Skeleton Deformation
+	// Layer should affect its pair too. One follow each other with Bone Tool.
+	// Just remembering: Skeleton Deformation a list of bone pairs:
+	//   * the first element of every pair compounds the resting pose
+	//   * the second element of every pair compounds the current animated pose
+	if(get_canvas_interface()->get_state()=="bone") {
+		ValueNode_Composite::Handle comp;
 
-		if(value_desc.get_parent_value_node() == comp->get_link("first")){
+		// Skeleton Deformation layer > Bone pair list > Bone pair item > Bone
+		const ValueDesc grand_parent = value_desc.get_parent_desc().get_parent_desc();
+		if (grand_parent.get_parent_desc().parent_is_layer()) {
+			if (dynamic_cast<Layer_SkeletonDeformation*>(grand_parent.get_parent_desc().get_layer().get())) {
+				types_namespace::TypePair<Bone,Bone> type_bone_pair;
+				type_bone_pair.initialize();
+				if (grand_parent.parent_is_value_node() && grand_parent.get_parent_value_node()->get_type() == type_list)
+					if (value_desc.get_parent_desc().parent_is_value_node()
+						&& value_desc.get_parent_desc().get_parent_value_node()->get_type() == type_bone_pair)
+					{
+						comp = ValueNode_Composite::Handle::cast_dynamic(grand_parent.get_value_node());
+					}
+			}
+		}
+
+		if(comp && value_desc.get_parent_value_node() == comp->get_link("first")){
 			ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
 			ValueNode_Bone::Handle bone1 = 	ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
 			if(bone){
