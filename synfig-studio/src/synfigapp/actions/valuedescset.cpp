@@ -210,19 +210,36 @@ Action::ValueDescSet::prepare()
 			ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
 			ValueNode_Bone::Handle bone1 = 	ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
 			if(bone){
-				ValueBase svalue(0);
 				const int index = value_desc.get_index();
 				const int origin_index = bone->get_link_index_from_name("origin");
 				const int angle_index = bone->get_link_index_from_name("angle");
 				const int scalelx_index = bone->get_link_index_from_name("scalelx");
 				if(index==origin_index || index==angle_index || index==scalelx_index){
+					ValueBase svalue(0);
 
 					if(index==origin_index) {
 						Point p = value.get(Point());
+						ValueBase parentBone_vb = (*bone->get_link("parent"))(time);
+						ValueBase parentBone_vb1 = (*bone1->get_link("parent"))(time);
 
-						Bone parentBone = (*bone->get_link("parent"))(time).get(Bone());
-						Bone parentBone1 = (*bone1->get_link("parent"))(time).get(Bone());
-						
+						Bone parentBone;
+						Bone parentBone1;
+
+						if (parentBone_vb.get_type() == type_bone_valuenode) {
+							parentBone = (*parentBone_vb.get(ValueNode_Bone::Handle()))(time).get(Bone());
+						} else if (parentBone_vb.get_type() == type_bone_object) {
+							parentBone = parentBone_vb.get(Bone());
+						} else {
+							throw Error(_("Parent bone type not supported"));
+						}
+						if (parentBone_vb1.get_type() == type_bone_valuenode) {
+							parentBone1 = (*parentBone_vb1.get(ValueNode_Bone::Handle()))(time).get(Bone());
+						} else if (parentBone_vb1.get_type() == type_bone_object) {
+							parentBone1 = parentBone_vb1.get(Bone());
+						} else {
+							throw Error(_("Parent bone type not supported"));
+						}
+
 						Matrix parentAnimMatrix = parentBone.get_animated_matrix();
 						Matrix parentAnimMatrix1 = parentBone1.get_animated_matrix();
 
