@@ -126,7 +126,8 @@ public:
 
 private:
 
-	bool queued;
+	std::atomic<bool> queued;
+	std::mutex rebuild_queue_mtx;
 
 	sigc::connection queue_connection;
 
