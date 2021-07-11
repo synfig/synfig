@@ -37,7 +37,7 @@
 using namespace etl;
 using namespace synfig;
 
-ostream& operator<<(ostream& os, const Vector& v)
+std::ostream& operator<<(std::ostream& os, const Vector& v)
 {
     os << '(' << v[0] << ',' << v[1] << ')';
     return os;
