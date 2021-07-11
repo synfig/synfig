@@ -54,7 +54,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-LayerGroupTree::LayerGroupTree() : editable_(false)
+LayerGroupTree::LayerGroupTree()
 {
 	const LayerGroupTreeStore::Model model;
 
@@ -131,72 +131,6 @@ LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_sto
 		column->clicked();
 	}
 }
-
-void
-LayerGroupTree::set_editable(bool x)
-{
-	editable_=x;
-/*
-	if(editable_)
-	{
-		cell_renderer_time->property_editable()=true;
-		cell_renderer_time_delta->property_editable()=true;
-		cell_renderer_description->property_editable()=true;
-	}
-	else
-	{
-		cell_renderer_time->property_editable()=false;
-		cell_renderer_time_delta->property_editable()=false;
-		cell_renderer_description->property_editable()=false;
-	}
-*/
-}
-/*
-void
-LayerGroupTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
-{
-	Gtk::TreePath path(path_string);
-
-	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-
-	synfig::Keyframe keyframe(row[model.keyframe]);
-	if(time!=keyframe.get_time())
-	{
-		row[model.time]=time;
-		//keyframe.set_time(time);
-		//signal_edited_time()(keyframe,time);
-		//signal_edited()(keyframe);
-	}
-}
-
-void
-LayerGroupTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time)
-{
-	Gtk::TreePath path(path_string);
-
-	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-
-	if(row)row[model.time_delta]=time;
-}
-
-void
-LayerGroupTree::on_edited_description(const Glib::ustring&path_string,const Glib::ustring &desc)
-{
-	Gtk::TreePath path(path_string);
-
-	const Gtk::TreeRow row = *(get_model()->get_iter(path));
-
-	const synfig::String description(desc);
-	synfig::Keyframe keyframe(row[model.keyframe]);
-	if(description!=keyframe.get_description())
-	{
-		row[model.description]=desc;
-		keyframe.set_description(description);
-		signal_edited_description()(keyframe,description);
-		signal_edited()(keyframe);
-	}
-}
-*/
 
 bool
 LayerGroupTree::on_event(GdkEvent *event)
