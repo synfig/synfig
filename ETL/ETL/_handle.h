@@ -35,6 +35,7 @@
 #include <cassert>
 #include <typeinfo>
 #include <atomic>
+#include <mutex>
 
 /* === M A C R O S ========================================================= */
 
@@ -325,7 +326,7 @@ public:
 class rshared_object : public shared_object
 {
 private:
-	mutable int rrefcount;
+	mutable std::atomic<int> rrefcount;
 
 public:
 	void *front_;
@@ -388,9 +389,11 @@ private:
 
 	rhandle<value_type> *prev_;
 	rhandle<value_type> *next_;
+	static std::mutex rlist_mtx_; // global mutex for all rhandles
 
 	void add_to_rlist()
 	{
+		std::lock_guard<std::mutex> lock(rlist_mtx_);
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 
 		assert(obj);
@@ -412,6 +415,7 @@ private:
 
 	void del_from_rlist()
 	{
+		std::lock_guard<std::mutex> lock(rlist_mtx_);
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
 		obj->runref();
@@ -580,6 +584,7 @@ public:
 	//! \writeme
 	int replace(const handle<value_type> &x)
 	{
+		std::lock_guard<std::mutex> lock(rlist_mtx_);
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
 		assert(x.get()!=obj);
@@ -627,6 +632,8 @@ public:
 	*/
 }; // END of template class rhandle
 
+template <typename T>
+std::mutex rhandle<T>::rlist_mtx_; // Compiler will make sure it's only defined once
 
 // ========================================================================
 /*!	\class	loose_handle _handle.h	ETL/handle

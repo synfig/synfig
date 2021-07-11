@@ -167,6 +167,7 @@ public:
 	//! A set of pointers to parent nodes
 	//! \todo This should really be private
 	std::set<Node*> 	parent_set;
+	static std::mutex parent_set_mtx_;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
