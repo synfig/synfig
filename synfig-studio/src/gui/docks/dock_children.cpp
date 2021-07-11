@@ -32,6 +32,8 @@
 
 #include "docks/dock_children.h"
 
+#include <gtkmm/stylecontext.h>
+
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 #include <gui/trees/childrentreestore.h>
@@ -55,6 +57,9 @@ using namespace studio;
 Dock_Children::Dock_Children():
 	Dock_CanvasSpecific("children",_("Library"),Gtk::StockID("synfig-children"))
 {
+	// Make sure the used style is consistent with other docks
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
+
     //! \todo the combination of set_use_scrolled(false) and
 	//!       add(*tree_view) causes crashes when
 	//!       Dockable::prev_widget_ is left referencing a

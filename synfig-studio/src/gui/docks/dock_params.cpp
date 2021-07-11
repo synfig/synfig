@@ -33,6 +33,8 @@
 
 #include <cassert>
 
+#include <gtkmm/stylecontext.h>
+
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 #include <gui/trees/layerparamtreestore.h>
@@ -58,6 +60,8 @@ Dock_Params::Dock_Params():
 	action_group( Gtk::ActionGroup::create("action_group_dock_params") ),
 	vadjustment( Gtk::Adjustment::create(0, 0, 1, 1, 1) )
 {
+	// Make sure the used style is consistent with other docks
+	get_style_context()->add_class("synfigstudio-efficient-workspace");
 }
 
 Dock_Params::~Dock_Params()

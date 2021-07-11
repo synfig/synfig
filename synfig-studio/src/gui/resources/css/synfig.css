@@ -29,6 +29,13 @@
 }
 
 /*
+ * TreeView header buttons of docks are set with a consistent padding
+ */
+.synfigstudio-efficient-workspace treeview.view header button {
+	padding: 5px;
+}
+
+/*
  * Image padding for buttons are set
  * Now set padding for text inside buttons
  */
