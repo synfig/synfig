@@ -225,7 +225,7 @@ public:
 	void set_guides_snap_toggle(bool flag) { guides_snap_toggle->set_active(flag); }
 	void set_guides_show_toggle(bool flag) { guides_show_toggle->set_active(flag); }
 	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
-
+	void set_onion_skin_keyframes_toggle(bool flag) { onion_skin_keyframes_toggle->set_active(flag); }
 	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
 
 	void grab_focus();
@@ -309,11 +309,13 @@ private:
 	Gtk::ToggleToolButton *onion_skin;
 	Gtk::ToolButton *render_options_button;
 	Gtk::ToolButton *preview_options_button;
+	Gtk::ToggleToolButton *onion_skin_keyframes;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
 	bool toggling_show_guides;
 	bool toggling_snap_guides;
 	bool toggling_onion_skin;
+	bool toggling_onion_skin_keyframes;
 	bool toggling_background_rendering;
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
@@ -341,7 +343,7 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
-
+	Glib::RefPtr<Gtk::ToggleAction> onion_skin_keyframes_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
 
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
@@ -467,6 +469,7 @@ private:
 	void toggle_show_guides();
 	void toggle_snap_guides();
 	void toggle_onion_skin();
+	void toggle_onion_skin_keyframes();
 	void toggle_background_rendering();
 
 	void toggle_animatebutton();

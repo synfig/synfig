@@ -950,6 +950,7 @@ DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"))
 DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"))
 DEFINE_ACTION("toggle-background-rendering", _("Toggle Background Rendering"))
 DEFINE_ACTION("toggle-onion-skin",           _("Toggle Onion Skin"))
+DEFINE_ACTION("toggle-onion-skin-keyframes", _("Toggle Onion Skin on Keyframes"))
 DEFINE_ACTION("canvas-zoom-in",              Gtk::StockID("gtk-zoom-in"))
 DEFINE_ACTION("canvas-zoom-out",             Gtk::StockID("gtk-zoom-out"))
 DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"))
@@ -1097,6 +1098,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-background-rendering'/>"
 "		<menuitem action='toggle-onion-skin'/>"
+"		<menuitem action='toggle-onion-skin-keyframes'/>"
 "		<separator name='sep-view2'/>"
 "		<menuitem action='canvas-zoom-in'/>"
 "		<menuitem action='canvas-zoom-out'/>"
