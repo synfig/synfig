@@ -27,7 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/entry.h>
@@ -48,25 +47,20 @@ class Widget_Gradient;
 
 class Widget_Defaults : public Gtk::Box
 {
-	Widget_Color 	*_widget_otln_color;
-	//Gtk::Alignment 	*widget_otln_color; // Seems to be unused
+	Widget_Color 	*widget_outline_color;
 
-	Widget_Color 	*_widget_fill_color;
-	Gtk::Alignment 	*widget_fill_color;
+	Widget_Color 	*widget_fill_color;
 
-	Gtk::Grid	*_widget_colors;
-	Gtk::Alignment	*widget_colors;
+	Gtk::Grid	*widget_colors;
 
-	Widget_Gradient	*_widget_gradient;
-	Gtk::Alignment	*widget_gradient;
+	Widget_Gradient	*widget_gradient;
 
 	Gtk::Box 	*widget_colors_gradient;
 
-	Widget_Brush 	*_widget_brush;
+	Widget_Brush 	*widget_brush;
 	Gtk::Entry	*brush_entry;
 	Gtk::Button	*brush_increase;
 	Gtk::Button	*brush_decrease;
-	Gtk::Alignment 	*widget_brush;
 
 	Widget_Distance *widget_bline_width;
 
@@ -74,7 +68,7 @@ class Widget_Defaults : public Gtk::Box
 
 	//Gtk::Scale 	*widget_opacity;
 
-	void otln_color_refresh();
+	void outline_color_refresh();
 	void fill_color_refresh();
 	void gradient_refresh();
 	void bline_width_refresh();
@@ -83,7 +77,7 @@ class Widget_Defaults : public Gtk::Box
 	void on_brush_entry_changed();
 	void on_brush_increase_clicked();
 	void on_brush_decrease_clicked();
-	void on_otln_color_clicked();
+	void on_outline_color_clicked();
 	void on_fill_color_clicked();
 	void on_swap_color_clicked();
 	void on_reset_color_clicked();

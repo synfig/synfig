@@ -64,7 +64,7 @@ EXCLUDE_FROM_RENDERING = "Layer '%s' is excluded from rendering"
 SHAPE_LAYER = {"simple_circle", "linear_gradient", "radial_gradient"}
 BLUR_LAYER = {"blur"}
 SOLID_LAYER = {"SolidColor"}
-SHAPE_SOLID_LAYER = {"region", "polygon", "outline", "circle", "rectangle", "filled_rectangle", "star"} 
+SHAPE_SOLID_LAYER = {"region", "polygon", "advanced_outline", "outline", "circle", "rectangle", "filled_rectangle", "star"} 
 IMAGE_LAYER = {"import"}
 PRE_COMP_LAYER = {"rotate", "zoom", "translate", "stretch"}
 GROUP_LAYER = {"group", "switch"}
@@ -83,6 +83,7 @@ LEVEL = 0 #Indicates the depth of a layer
 OUTLINE_FLAG = False #Flag to check for outline as outline needs the newer version of bodymovin.js
 WAYPOINTS_LIST = []
 WITHOUT_VARIABLE_WIDTH = False
+ROOT_CANVAS = None
 
 def init():
     """

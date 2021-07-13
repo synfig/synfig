@@ -49,7 +49,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
@@ -183,7 +182,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 		}
 
 		if(super_sample && pixel_size) {
-			Real da = max(amount3, max(amount,amount2)) - min(amount3, min(amount,amount2));
+			Real da = std::max(amount3, std::max(amount,amount2)) - std::min(amount3, std::min(amount,amount2));
 			ret = compiled_gradient.average(amount - da, amount + da);
 		} else {
 			ret = compiled_gradient.color(amount);

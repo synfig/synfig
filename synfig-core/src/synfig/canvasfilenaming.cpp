@@ -79,7 +79,7 @@ CanvasFileNaming::content_folder_by_extension(const String &ext)
 {
 	if (Importer::book().count(ext))
 		return "images";
-	if (ext == "pgo")
+	if (ext == "pgo" || ext == "tsv" || ext == "xml")
 		return "animations";
 	return String();
 }

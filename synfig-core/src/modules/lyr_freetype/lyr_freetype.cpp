@@ -62,7 +62,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -1016,7 +1015,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	// If there is no font loaded, just bail
 	if(!face)
 	{
-		if(cb)cb->warning(string("Layer_Freetype:")+_("No face loaded, no text will be rendered."));
+		if(cb)cb->warning(std::string("Layer_Freetype:")+_("No face loaded, no text will be rendered."));
 		return true;
 	}
 
@@ -1031,13 +1030,13 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	Vector::value_type ph=renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
 
     // Calculate character width and height
-	int w=abs(round_to_int(size[0]*pw));
-	int h=abs(round_to_int(size[1]*ph));
+	int w=std::abs(round_to_int(size[0]*pw));
+	int h=std::abs(round_to_int(size[1]*ph));
 
     // If the font is the size of a pixel, don't bother rendering any text
 	if(w<=1 || h<=1)
 	{
-		if(cb)cb->warning(string("Layer_Freetype:")+_("Text too small, no text will be rendered."));
+		if(cb)cb->warning(std::string("Layer_Freetype:")+_("Text too small, no text will be rendered."));
 		return true;
 	}
 
@@ -1048,20 +1047,20 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		face,						// handle to face object
 		(int)CHAR_RESOLUTION,	// char_width in 1/64th of points
 		(int)CHAR_RESOLUTION,	// char_height in 1/64th of points
-		round_to_int(abs(size[0]*pw*CHAR_RESOLUTION)),						// horizontal device resolution
-		round_to_int(abs(size[1]*ph*CHAR_RESOLUTION)) );						// vertical device resolution
+		round_to_int(std::abs(size[0]*pw*CHAR_RESOLUTION)),						// horizontal device resolution
+		round_to_int(std::abs(size[1]*ph*CHAR_RESOLUTION)) );						// vertical device resolution
 
 	// Here is where we can compensate for the
 	// error in freetype's rendering engine.
-	const Real xerror(abs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13f/0.996);
-	const Real yerror(abs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13f/0.996);
+	const Real xerror(std::abs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13f/0.996);
+	const Real yerror(std::abs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13f/0.996);
 	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
 	const Real compress(Layer_Freetype::param_compress.get(Real())*xerror);
 	const Real vcompress(Layer_Freetype::param_vcompress.get(Real())*yerror);
 
 	if(error)
 	{
-		if(cb)cb->warning(string("Layer_Freetype:")+_("Unable to set face size.")+strprintf(" (err=%d)",error));
+		if(cb)cb->warning(std::string("Layer_Freetype:")+_("Unable to set face size.")+strprintf(" (err=%d)",error));
 	}
 
 	FT_GlyphSlot  slot = face->glyph;  // a small shortcut
@@ -1079,7 +1078,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	memset(&ps, 0, sizeof(ps));
 
 	lines.push_front(TextLine());
-	string::const_iterator iter;
+	std::string::const_iterator iter;
 	int bx=0;
 	int by=0;
 

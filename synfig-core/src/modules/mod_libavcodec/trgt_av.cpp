@@ -78,7 +78,6 @@ extern "C"
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === I N F O ============================================================= */

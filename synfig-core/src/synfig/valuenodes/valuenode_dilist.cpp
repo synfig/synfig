@@ -49,7 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -158,10 +157,10 @@ ValueNode_DIList::operator()(Time t)const
 		}
 	}
 	if(list.empty())
-		synfig::warning(string("ValueNode_DIList::operator()():")+_("No entries in list"));
+		synfig::warning(std::string("ValueNode_DIList::operator()():")+_("No entries in list"));
 	else
 	if(ret_list.empty())
-		synfig::warning(string("ValueNode_DIList::operator()():")+_("No entries in ret_list"));
+		synfig::warning(std::string("ValueNode_DIList::operator()():")+_("No entries in ret_list"));
 
 	return ValueBase(ret_list,get_loop());
 }

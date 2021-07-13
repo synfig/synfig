@@ -4,14 +4,17 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     canvas.py
     lottie-exporter.py
     settings.py
-    test_bodymovin.js
+    bodymovin_5.6.5.js
     export_without_variable_width.py
     
     # common
+    common/Angle.py
     common/Bline.py
     common/Canvas.py
     common/Color.py
     common/Count.py
+    common/DashItem.py
+    common/DashItemList.py
     common/Gradient.py
     common/Hermite.py
     common/Layer.py
@@ -19,6 +22,8 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     common/misc.py
     common/Param.py
     common/Vector.py
+    common/WidthPoint.py
+    common/WidthPointList.py
 
     # effects
     effects/allmask.py
@@ -61,6 +66,7 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     properties/valueKeyframed.py
 
     # properties/shapePropKeyframe
+    properties/shapePropKeyframe/advanced_outline.py
     properties/shapePropKeyframe/circle.py
     properties/shapePropKeyframe/constant_width_outline.py
     properties/shapePropKeyframe/helper.py

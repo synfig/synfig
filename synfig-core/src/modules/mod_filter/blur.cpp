@@ -51,7 +51,6 @@
 
 using namespace synfig;
 using namespace etl;
-using namespace std;
 
 /*#define TYPE_BOX			0
 #define TYPE_FASTGUASSIAN	1

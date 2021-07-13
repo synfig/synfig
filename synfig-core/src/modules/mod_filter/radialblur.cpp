@@ -166,8 +166,8 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 
 	Vector stl = rect.get_min();
 	Vector sbr = rect.get_max();
-	if (br[0] < tl[0]) swap(stl[0], sbr[0]);
-	if (br[1] < tl[1]) swap(stl[1], sbr[1]);
+	if (br[0] < tl[0]) std::swap(stl[0], sbr[0]);
+	if (br[1] < tl[1]) std::swap(stl[1], sbr[1]);
 
 	// round out to the nearest pixel
 	Point tmp_surface_tl = Point(tl[0] - pw*(int((tl[0]-stl[0])/pw+1-1e-6)),
@@ -248,10 +248,10 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 			if (dy > dx)
 			{
 				steep = 0;
-				swap(x0, y0);
-				swap(dx, dy);
-				swap(sx, sy);
-				swap(w,h);
+				std::swap(x0, y0);
+				std::swap(dx, dy);
+				std::swap(sx, sy);
+				std::swap(w,h);
 			}
 			e = (dy << 1) - dx;
 			for (i = 0; i < dx; i++)

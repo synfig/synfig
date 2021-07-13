@@ -45,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace studio;
 using namespace synfig;

@@ -58,7 +58,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
@@ -110,8 +109,8 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	}
 
 	bool is_temporary_file = false;
-	string filename=identifier.file_system->get_real_filename(identifier.filename);
-	string target_filename=FileSystemTemporary::generate_system_temporary_filename("imagemagick");
+	std::string filename=identifier.file_system->get_real_filename(identifier.filename);
+	std::string target_filename=FileSystemTemporary::generate_system_temporary_filename("imagemagick");
 
 	if (filename.empty()) {
 		is_temporary_file = true;
@@ -131,7 +130,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	if(file)
 		_pclose(file);
 
-	string command;
+	std::string command;
 
 	if(identifier.filename.find("psd")!=String::npos)
 		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),target_filename.c_str());
@@ -143,7 +142,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
-	string output="png32:"+target_filename;
+	std::string output="png32:"+target_filename;
 
 	pid_t pid = fork();
 

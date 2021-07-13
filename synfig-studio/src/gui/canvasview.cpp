@@ -41,7 +41,6 @@
 #include <glibmm/convert.h>
 #include <glibmm/uriutils.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/eventbox.h>
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/imagemenuitem.h>
@@ -577,11 +576,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 
 	//info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
-	Gtk::Alignment *widget_space = Gtk::manage(new Gtk::Alignment());
-	widget_space->set_size_request(4,4);
-	widget_space->show();
 
 	Gtk::Widget *widget_work_area = create_work_area();
+	widget_work_area->set_margin_top(4);
 	init_menus();
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
@@ -592,7 +589,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	layout_grid->attach(*widget_top_bar,     0, 0, 1, 1);
 	layout_grid->attach(*widget_stopbutton,  1, 0, 1, 1);
 	layout_grid->attach(*widget_right_bar,   1, 1, 1, 2);
-	layout_grid->attach(*widget_space,       0, 1, 1, 1);
 	layout_grid->attach(*widget_work_area,   0, 2, 1, 1);
 	layout_grid->attach(*widget_time_bar,    0, 3, 2, 1);
 	layout_grid->show();
@@ -992,6 +988,7 @@ CanvasView::create_time_bar()
 	KeyFrameDial *keyframedial = Gtk::manage(new class KeyFrameDial());
 	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
 	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
+	keyframedial->set_margin_end(4);
 	keyframedial->show();
 	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
 	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
@@ -1004,10 +1001,6 @@ CanvasView::create_time_bar()
 		header_height = 24;
 	timeslider->set_size_request(-1,header_height-header_height/3+1);
 	widget_kf_list->set_size_request(-1,header_height/3+1);
-
-	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-	space->set_size_request(4);
-        space->show();
 
 	jackdial = manage(new class JackDial());
 
@@ -1046,7 +1039,6 @@ CanvasView::create_time_bar()
 		controls->attach(*progressbar, left_pos++, 0, 1, 1);
 		controls->attach(*widget_interpolation, left_pos++, 0, 1, 1);
 		controls->attach(*keyframedial, left_pos++, 0, 1, 1);
-		controls->attach(*space, left_pos++, 0, 1, 1);
 		controls->attach(*animatebutton, left_pos++, 0, 1, 1);
 
 		// Make progress bar bigger than the default GTK one
@@ -1479,10 +1471,10 @@ CanvasView::init_menus()
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
 	);
 	action_group->add( Gtk::Action::create("import", _("Import...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::image_import))
+		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
 	);
 	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::squence_import))
+		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence))
 	);
 	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
 		sigc::mem_fun0(render_settings,&RenderSettings::present)
@@ -1490,9 +1482,6 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
 		sigc::mem_fun(*this,&CanvasView::on_preview_option)
 	);
-	//action_group->add( Gtk::Action::create("sound", _("Import Sound File...")),
-	//	sigc::mem_fun(*this,&CanvasView::on_audio_option)
-	//);
 	action_group->add( Gtk::Action::create("options", _("Options...")),
 		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
 	);
@@ -3504,7 +3493,7 @@ CanvasView::on_meta_data_changed()
 }
 
 void
-CanvasView::image_import()
+CanvasView::import_file()
 {
 	// String filename(dirname(get_canvas()->get_file_name()));
 	String filename("*.*");
@@ -3528,7 +3517,7 @@ CanvasView::image_import()
 }
 
 void
-CanvasView::squence_import()
+CanvasView::import_sequence()
 {
 	std::set<String> filenames;
 	String errors, warnings;

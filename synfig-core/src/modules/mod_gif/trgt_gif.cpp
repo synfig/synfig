@@ -44,7 +44,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 #define MAX_FRAME_RATE	(20.0)
@@ -192,7 +191,7 @@ gif::start_frame(synfig::ProgressCallback *callback)
 
 	if(!file)
 	{
-		if(callback)callback->error(string("BUG:")+_("Description not set!"));
+		if(callback)callback->error(std::string("BUG:")+_("Description not set!"));
 		return false;
 	}
 
@@ -259,7 +258,7 @@ gif::end_frame()
 	if(build_off_previous)
 		gec_flags|=DISPOSE_NONE;
 	else
-		gec_flags|=DISPOSE_RESTORE_PREVIOUS;
+		gec_flags|=DISPOSE_RESTORE_BGCOLOR;
 	if(has_transparency)
 		gec_flags|=1;
 

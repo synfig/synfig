@@ -55,6 +55,8 @@ class ValueDesc
 
 	// Info for ValueNode parent
 	synfig::ValueNode::Handle parent_value_node;
+	static const int IS_WAYPOINT = -2;
+	static const int IS_CONST = -1;
 	int index;					// -2 if it's a waypoint, -1 if it's const, >=0 if it's LinkableValueNode
 	synfig::Time waypoint_time;
 
@@ -64,9 +66,6 @@ class ValueDesc
 	sigc::connection id_changed_connection;
 	//! When value node id (name) changes, update internal reference
 	void on_id_changed();
-
-	// Info for visual editon
-	synfig::Real scalar;
 
 	// Info for sub-value of parent ValueDesc
 	std::vector<synfig::String> sub_names;
@@ -78,7 +77,7 @@ class ValueDesc
 
 	static ValueDesc* init_parent(const ValueDesc& parent)
 	{
-		if (!parent.is_valid()) return NULL;
+		if (!parent.is_valid()) return nullptr;
 		ValueDesc *p = new ValueDesc(parent);
 		p->links_count++;
 		return p;
@@ -96,8 +95,6 @@ public:
 		if((canvas||rhs.canvas) && canvas!=rhs.canvas)
 			return false;
 		if((parent_value_node||rhs.parent_value_node) && (parent_value_node!=rhs.parent_value_node))
-			return false;
-		if(scalar!=rhs.scalar)
 			return false;
 		if(index!=rhs.index)
 			return false;
@@ -122,12 +119,11 @@ public:
 		index = other.index;
 		waypoint_time = other.waypoint_time;
 		canvas = other.canvas;
-		scalar = other.scalar;
 		sub_names = other.sub_names;
-		if (parent_desc != NULL && 0 >= --parent_desc->links_count)
+		if (parent_desc && 0 >= --parent_desc->links_count)
 			delete parent_desc;
 		parent_desc = other.parent_desc;
-		if (parent_desc != NULL) parent_desc->links_count++;
+		if (parent_desc) parent_desc->links_count++;
 
 		if (id_changed_connection.connected())
 			id_changed_connection.disconnect();
@@ -140,8 +136,7 @@ public:
 	ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name,const ValueDesc &parent = blank):
 		layer(layer),
 		name(param_name),
-		index(-1),
-		scalar(0),
+		index(IS_CONST),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
@@ -149,8 +144,7 @@ public:
 	ValueDesc(synfig::Layer::LooseHandle layer,const synfig::String& param_name,const ValueDesc &parent = blank):
 		layer(layer),
 		name(param_name),
-		index(-1),
-		scalar(0),
+		index(IS_CONST),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
@@ -158,40 +152,22 @@ public:
 	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
 		index(index),
-		scalar(1.0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
-
-	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index, synfig::Real s,const ValueDesc &parent = blank):
-		parent_value_node(parent_value_node),
-		index(index),
-		scalar(s),
-		parent_desc(init_parent(parent)),
-		links_count(0)
-	{ }
-
-//	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,const synfig::String& param_name,const ValueDesc &parent = blank):
-//		parent_value_node(parent_value_node),
-//		index(parent_value_node->get_link_index_from_name(param_name)),
-//		parent_desc(init_parent(parent)),
-//		links_count(0)
-//	{ }
 
 	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
-		index(-2),
+		index(IS_WAYPOINT),
 		waypoint_time(waypoint_time),
-		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
 
 	ValueDesc(synfig::Canvas::Handle canvas,const synfig::String& name,const ValueDesc &parent = blank):
 		name(name),
-		index(-1),
+		index(IS_CONST),
 		canvas(canvas),
-		scalar(0),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{
@@ -200,8 +176,7 @@ public:
 
 	ValueDesc(synfig::ValueNode_Const::Handle parent_value_node,const ValueDesc &parent = blank):
 		parent_value_node(parent_value_node),
-		index(-1),
-		scalar(0),
+		index(IS_CONST),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{ }
@@ -213,7 +188,6 @@ public:
 		index(parent.index),
 		waypoint_time(parent.waypoint_time),
 		canvas(parent.canvas),
-		scalar(parent.scalar),
 		parent_desc(init_parent(parent)),
 		links_count(0)
 	{
@@ -231,29 +205,28 @@ public:
 		index(other.index),
 		waypoint_time(other.waypoint_time),
 		canvas(other.canvas),
-		scalar(other.scalar),
 		sub_names(other.sub_names),
 		parent_desc(other.parent_desc),
 		links_count(0)
 	{
 		if (other.id_changed_connection.connected())
 			id_changed_connection = get_value_node()->signal_id_changed().connect(sigc::mem_fun(*this, &ValueDesc::on_id_changed));
-		if (parent_desc != NULL) parent_desc->links_count++;
+		if (parent_desc) parent_desc->links_count++;
 	}
 
 	ValueDesc():
-		index(-1), scalar(0), parent_desc(NULL), links_count(0) { }
+		index(IS_CONST), parent_desc(nullptr), links_count(0) { }
 
 	~ValueDesc()
 	{
 		assert(links_count == 0);
 		if (id_changed_connection.connected())
 			id_changed_connection.disconnect();
-		if (parent_desc != NULL && 0 >= --parent_desc->links_count)
+		if (parent_desc && 0 >= --parent_desc->links_count)
 			delete parent_desc;
 	}
 
-	// Instrocpection members
+	// Introspection members
 	bool
 	is_valid()const
 		{ return layer || parent_value_node || (canvas && !name.empty()); }
@@ -262,22 +235,22 @@ public:
 
 	bool
 	parent_is_layer()const
-		{ return (bool)layer; }
+		{ return layer; }
 	bool
 	parent_is_value_node()const
-		{ return (bool)parent_value_node; }
+		{ return parent_value_node; }
 	bool
 	parent_is_linkable_value_node()const
 		{ return parent_is_value_node() && index>=0; }
 	bool
 	parent_is_value_node_const()const
-		{ return parent_is_value_node() && index==-1; }
+		{ return parent_is_value_node() && index==IS_CONST; }
 	bool
 	parent_is_waypoint()const
-		{ return parent_is_value_node() && index==-2; }
+		{ return parent_is_value_node() && index==IS_WAYPOINT; }
 	bool
 	parent_is_canvas()const
-		{ return (bool)canvas; }
+		{ return canvas; }
 	bool
 	parent_is_value_desc()const
 		{ return !sub_names.empty(); }
@@ -286,7 +259,7 @@ public:
 	is_value_node()const
 		{ return parent_is_value_node()
 		      || parent_is_canvas()
-			  || (parent_is_layer() && (bool)layer->dynamic_param_list().count(name));
+			  || (parent_is_layer() && layer->dynamic_param_list().count(name) > 0);
 		}
 	bool
 	is_const()const
@@ -306,11 +279,11 @@ public:
 
 	bool
 	is_parent_desc_declared()const
-		{ return parent_desc != NULL; }
+		{ return parent_desc; }
 	
 	// Get members
 	const ValueDesc& get_sub_parent_desc()const
-		{ return parent_desc == NULL ? blank : *parent_desc; }
+		{ return parent_desc ? *parent_desc : blank; }
 	const ValueDesc& get_origin_desc()const
 		{ return parent_is_value_desc() ? get_sub_parent_desc().get_origin_desc() : *this ; }
 	const ValueDesc& get_parent_desc()const
@@ -343,11 +316,7 @@ public:
 	int
 	get_index()const
 		{ assert(parent_is_linkable_value_node()); return index; }
-	
-	synfig::Real
-	get_scalar()const
-	{ assert(parent_is_linkable_value_node()); return scalar; }
-	
+
 	synfig::String
 	get_name()const
 		{ assert(parent_is_linkable_value_node()); return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->link_name(index); }
@@ -377,7 +346,7 @@ public:
 			return layer->get_canvas();
 		if(parent_value_node)
 			return parent_value_node->get_root_canvas();
-		return 0;
+		return nullptr;
 	}
 
 	synfig::ValueNode::Handle
@@ -394,7 +363,7 @@ public:
 			return parent_value_node;
 		if(parent_is_waypoint())
 			return (synfig::ValueNode_Animated::Handle::cast_reinterpret(parent_value_node))->find(waypoint_time)->get_value_node();
-		return 0;
+		return nullptr;
 	}
 
 	synfig::ValueBase

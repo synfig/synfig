@@ -47,7 +47,6 @@
 #endif
 
 using namespace etl;
-using namespace std;
 using namespace synfig;
 
 FT_Library  ft_library;

@@ -50,7 +50,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace modules;
@@ -215,12 +214,12 @@ Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 		case Blur::BOX:
 		case Blur::CROSS:
 		{
-			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),offset_w+2*max(1,halfsizex),offset_h+2*max(1,halfsizey));
+			workdesc.set_subwindow(-std::max(1,halfsizex),-std::max(1,halfsizey),offset_w+2*std::max(1,halfsizex),offset_h+2*std::max(1,halfsizey));
 			break;
 		}
 		case Blur::FASTGAUSSIAN:
 		{
-			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),offset_w+2*max(1,halfsizex),offset_h+2*max(1,halfsizey));
+			workdesc.set_subwindow(-std::max(1,halfsizex),-std::max(1,halfsizey),offset_w+2*std::max(1,halfsizex),offset_h+2*std::max(1,halfsizey));
 			break;
 		}
 		case Blur::GAUSSIAN:

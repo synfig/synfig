@@ -32,7 +32,6 @@
 
 #include <gui/dialogs/canvasproperties.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
 #include <gtkmm/grid.h>
@@ -67,27 +66,25 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::on_rend_desc_changed));
 
-	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	get_content_area()->pack_start(*dialogPadding, false, false, 0);
-
 	Gtk::Grid *dialogGrid = manage(new Gtk::Grid());
 	dialogGrid->get_style_context()->add_class("dialog-main-content");
 	dialogGrid->set_row_spacing(12);
-	dialogPadding->add(*dialogGrid);
+	dialogGrid->set_vexpand(true);
+	dialogGrid->set_hexpand(true);
+	get_content_area()->pack_start(*dialogGrid,false,false,0);
 
 	Gtk::Frame *info_frame = manage(new Gtk::Frame(_("Canvas Info")));
 	info_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) info_frame->get_label_widget())->set_markup(_("<b>Canvas Info</b>"));
 	dialogGrid->attach(*info_frame, 0, 0, 1, 1);
 
-	Gtk::Alignment *infoPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	info_frame->add(*infoPadding);
-
 	Gtk::Grid *info_grid = manage(new Gtk::Grid());
 	info_grid->get_style_context()->add_class("dialog-secondary-content");
 	info_grid->set_row_spacing(6);
 	info_grid->set_column_spacing(12);
-	infoPadding->add(*info_grid);
+	info_grid->set_vexpand(true);
+	info_grid->set_hexpand(true);
+	info_frame->add(*info_grid);
 
 	// The root canvas doesn't have an ID, so don't
 	// display it if this is a root canvas.

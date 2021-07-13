@@ -40,7 +40,6 @@
 #include <glibmm/fileutils.h>
 #include <glibmm/miscutils.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
 
@@ -113,13 +112,12 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	comboboxtext_target.set_active(0);
 	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
 
-	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	get_content_area()->pack_start(*dialogPadding, false, false, 0);
-
 	Gtk::Grid *dialogGrid = manage(new Gtk::Grid());
 	dialogGrid->get_style_context()->add_class("dialog-main-content");
 	dialogGrid->set_row_spacing(12);
-	dialogPadding->add(*dialogGrid);
+	dialogGrid->set_vexpand(true);
+	dialogGrid->set_hexpand(true);
+	get_content_area()->pack_start(*dialogGrid,false,false,0);
 
 	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
 	choose_button->show();
@@ -134,14 +132,14 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	target_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) target_frame->get_label_widget())->set_markup(_("<b>Target</b>"));
 	dialogGrid->attach(*target_frame, 0, 0, 1, 1);
-	Gtk::Alignment *targetPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	target_frame->add(*targetPadding);
 
 	Gtk::Grid *target_grid = manage(new Gtk::Grid());
 	target_grid->get_style_context()->add_class("dialog-secondary-content");
 	target_grid->set_row_spacing(6);
 	target_grid->set_column_spacing(12);
-	targetPadding->add(*target_grid);
+	target_grid->set_vexpand(true);
+	target_grid->set_hexpand(true);
+	target_frame->add(*target_grid);
 
 	Gtk::Label *filenameLabel = manage(new Gtk::Label(_("_Filename"), true));
 	filenameLabel->set_halign(Gtk::ALIGN_START);
@@ -168,14 +166,13 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	((Gtk::Label *) settings_frame->get_label_widget())->set_markup(_("<b>Settings</b>"));
 	dialogGrid->attach(*settings_frame, 0, 1, 1, 1);
 
-	Gtk::Alignment *settingsPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	settings_frame->add(*settingsPadding);
-
 	Gtk::Grid *settings_grid = manage(new Gtk::Grid());
 	settings_grid->get_style_context()->add_class("dialog-secondary-content");
 	settings_grid->set_row_spacing(6);
 	settings_grid->set_column_spacing(12);
-	settingsPadding->add(*settings_grid);
+	settings_grid->set_vexpand(true);
+	settings_grid->set_hexpand(true);
+	settings_frame->add(*settings_grid);
 
 	Gtk::Label *qualityLabel = manage(new Gtk::Label(_("_Quality"), true));
 	qualityLabel->set_halign(Gtk::ALIGN_START);

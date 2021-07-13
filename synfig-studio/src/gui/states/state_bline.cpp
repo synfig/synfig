@@ -33,7 +33,6 @@
 
 #include <gui/states/state_bline.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 
@@ -61,7 +60,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -84,15 +82,7 @@ using namespace studio;
 		&studio::StateBLine_Context::toggle_layer_creation))
 #endif
 
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
-#endif
-
 const int GAP = 3;
-const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -512,9 +502,8 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	id_label.set_label(_("Name:"));
 	id_label.set_halign(Gtk::ALIGN_START);
 	id_label.set_valign(Gtk::ALIGN_CENTER);
-	SPACING(id_gap, GAP);
+	id_label.get_style_context()->add_class("gap");
 	id_box.pack_start(id_label, false, false, 0);
-	id_box.pack_start(*id_gap, false, false, 0);
 	id_box.pack_start(id_entry, true, true, 0);
 
 	layer_types_label.set_label(_("Layer Type:"));
@@ -532,9 +521,8 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	LAYER_CREATION(layer_curve_gradient_togglebutton,
 		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
 
-	SPACING(layer_types_indent, INDENTATION);
+	layer_region_togglebutton.get_style_context()->add_class("indentation");
 
-	layer_types_box.pack_start(*layer_types_indent, false, false, 0);
 	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
 	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
@@ -544,9 +532,8 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	blend_label.set_label(_("Blend Method:"));
 	blend_label.set_halign(Gtk::ALIGN_START);
 	blend_label.set_valign(Gtk::ALIGN_CENTER);
-	SPACING(blend_gap, GAP);
+	blend_label.get_style_context()->add_class("gap");
 	blend_box.pack_start(blend_label, false, false, 0);
-	blend_box.pack_start(*blend_gap, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
@@ -1357,7 +1344,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 	if(bline_point_list.empty())
 		return;
 
-	list<ValueNode_Const::Handle>::iterator iter;
+	std::list<ValueNode_Const::Handle>::iterator iter;
 
 	handle<WorkArea::Bezier> bezier;
 	handle<WorkArea::Duck> duck,tduck1,tduck2,first_tduck1,first_tduck2;
@@ -1441,7 +1428,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		}
 
 		// Now we see if we need to create a bezier
-		list<ValueNode_Const::Handle>::iterator next(iter);
+		std::list<ValueNode_Const::Handle>::iterator next(iter);
 		next++;
 
 		bezier=new WorkArea::Bezier();
@@ -1776,7 +1763,7 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 void
 StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_node, float origin)
 {
-	list<ValueNode_Const::Handle>::iterator iter;
+	std::list<ValueNode_Const::Handle>::iterator iter;
 
 	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
@@ -1785,7 +1772,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 			BLinePoint next_bline_point((*iter)->get_value().get(BLinePoint()));
 			BLinePoint prev_bline_point;
 
-			list<ValueNode_Const::Handle>::iterator prev(iter);
+			std::list<ValueNode_Const::Handle>::iterator prev(iter);
 			if(iter==bline_point_list.begin())
 			{
 				assert(loop_);
@@ -1826,7 +1813,7 @@ StateBLine_Context::bline_delete_vertex(synfig::ValueNode_Const::Handle value_no
 {
 	bool vertex_deleted = false;
 
-	for(list<ValueNode_Const::Handle>::iterator iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
+	for(std::list<ValueNode_Const::Handle>::iterator iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
 		{
 			bline_point_list.erase(iter);

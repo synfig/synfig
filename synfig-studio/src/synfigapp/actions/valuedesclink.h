@@ -62,10 +62,6 @@ private:
 	synfig::String status_message;
 	//! Time where the value nodes are evaluated
 	synfig::Time time;
-	//! Scalar value of the link value node. It is used for linking tangents.
-	//! In the synfig::ParamDesc list there is a value used to draw the tangents on the
-	//! canvas that is called scalar
-	synfig::Real link_scalar;
 	//! If true then link opposite is being called.
 	bool link_opposite;
 public:

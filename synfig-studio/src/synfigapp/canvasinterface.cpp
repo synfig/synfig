@@ -81,7 +81,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -309,10 +308,10 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 			if(iter->second.get_type()==type_list)
 			{
 				// check whether it's a list of blinepoints or widthpoints only
-				vector<ValueBase> list(iter->second.get_list());
+				std::vector<ValueBase> list(iter->second.get_list());
 				if (list.size())
 				{
-					vector<ValueBase>::iterator iter2 = list.begin();
+					std::vector<ValueBase>::iterator iter2 = list.begin();
 					Type &type(iter2->get_type());
 					for (iter2++; iter2 != list.end(); iter2++)
 						if (iter2->get_type() != type)
@@ -726,7 +725,7 @@ CanvasInterface::import(
 	String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename);
 	String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename);
 
-	if (ext=="pgo")
+	if (ext=="pgo" || ext=="tsv" || ext=="xml")
 	{
 		synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Import Lipsync"));
 
@@ -1106,7 +1105,7 @@ CanvasInterface::import_sequence(
 		}
 
 		if (layer) {
-			// get parent layer, because image is incapsulated into action switch
+			// get parent layer, because image is encapsulated into action switch
 			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer();
 
 			// connect animated layer_name param
