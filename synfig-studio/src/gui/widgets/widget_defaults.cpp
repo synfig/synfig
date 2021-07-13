@@ -281,8 +281,8 @@ Widget_Defaults::Widget_Defaults():
 	brush_layout->show_all();
 
 	// fixed brush widget size
-	widget_brush->set_valign(Gtk::ALIGN_CENTER);
-	widget_brush->set_halign(Gtk::ALIGN_CENTER);
+	brush_layout->set_valign(Gtk::ALIGN_CENTER);
+	brush_layout->set_halign(Gtk::ALIGN_CENTER);
 
 	// widget bline width
 	widget_bline_width = manage(new Widget_Distance());
@@ -370,7 +370,7 @@ Widget_Defaults::Widget_Defaults():
 		tool_item_group->insert(*tool_item1);
 		tool_item1->show();
 		Gtk::ToolItem *tool_item2 = manage(new class Gtk::ToolItem());
-		tool_item2->add(*widget_brush);
+		tool_item2->add(*brush_layout);
 		tool_item_group->insert(*tool_item2);
 		tool_item2->show();
 
