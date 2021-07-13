@@ -29,10 +29,9 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
+#include "widget_link.h"
 
 #include <gtkmm/stock.h>
-#include "widgets/widget_link.h"
 
 #endif
 
@@ -49,10 +48,51 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 
-
-namespace studio {
+Widget_Link::Widget_Link()
+	: ObjectBase    ("widget_link")
+	, value_active  (*this, "tooltip_active"  , "Unlink")
+	, value_inactive(*this, "tooltip_inactive", "Link")
+{
+	init();
+}
 
 Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt_active)
+	: ObjectBase    ("widget_link")
+	, value_active  (*this, "tooltip_active"  , tlt_active)
+	, value_inactive(*this, "tooltip_inactive", tlt_inactive)
+{
+	init();
+}
+
+Widget_Link::Widget_Link(BaseObjectType *cobject)
+	: ObjectBase    ("widget_link")
+	, ToggleButton  (cobject)
+	, value_active  (*this, "tooltip_active"  , "Unlink")
+	, value_inactive(*this, "tooltip_inactive", "Link")
+{
+	init();
+}
+
+Widget_Link::Widget_Link(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &builder)
+	: ObjectBase    ("widget_link")
+	, ToggleButton  (cobject)
+	, builder       (builder)
+	, value_active  (*this, "tooltip_active"  , "Unlink")
+	, value_inactive(*this, "tooltip_inactive", "Link")
+{
+	init();
+}
+
+void
+Widget_Link::init()
+{
+	set_up_icons();
+
+	refresh_tooltip_text();
+}
+
+void
+Widget_Link::set_up_icons()
 {
 	const Glib::RefPtr<Gtk::StyleContext> context = get_style_context();
 
@@ -62,12 +102,11 @@ Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt
 	Glib::RefPtr<Gdk::Pixbuf> chain_icon_pixbuff_scaled = chain_icon_pixbuff->scale_simple(16, 32, Gdk::INTERP_BILINEAR);
 	// not use manage() otherwise the not-shown icon at exit wouldn't be deleted...
 	icon_off_ = new Gtk::Image(chain_icon_pixbuff_scaled);
-
 	chain_icon = Gtk::IconSet::lookup_default(Gtk::StockID("synfig-utils_chain_link_on"));
 	chain_icon_pixbuff_scaled = chain_icon->render_icon_pixbuf(context, (Gtk::IconSize)-1)->scale_simple(16, 32, Gdk::INTERP_BILINEAR);
 	// not use manage() otherwise the not-shown icon at exit wouldn't be deleted...
 	icon_on_ = new Gtk::Image(chain_icon_pixbuff_scaled);
-
+	// set icon margins
 	icon_off_->set_margin_start(0);
 	icon_off_->set_margin_end(0);
 	icon_off_->set_margin_top(0);
@@ -79,37 +118,57 @@ Widget_Link::Widget_Link(const std::string &tlt_inactive, const std::string &tlt
 
 	icon_off_->show();
 	add(*icon_off_);
-	set_relief(Gtk::RELIEF_NONE);
+}
 
-	tooltip_inactive_ = tlt_inactive;
-	tooltip_active_ = tlt_active;
-	set_tooltip_text(tooltip_inactive_);
+void
+Widget_Link::on_toggled()
+{
+	Gtk::Image *icon;
+
+	// refresh icon
+	get_active() ? icon = icon_on_ : icon = icon_off_;
+
+	refresh_tooltip_text();
+
+	remove();
+	add(*icon);
+	icon->show();
+}
+
+void
+Widget_Link::refresh_tooltip_text()
+{
+	if (get_active())
+		set_tooltip_text(property_tooltip_active().get_value());
+	else
+		set_tooltip_text(property_tooltip_inactive().get_value());
+}
+
+GType Widget_Link::gtype = 0;
+
+Glib::ObjectBase
+*Widget_Link::wrap_new(GObject *o)
+{
+	if (gtk_widget_is_toplevel(GTK_WIDGET(o)))
+		return new Widget_Link(GTK_TOGGLE_BUTTON(o));
+	else
+		return manage(new Widget_Link(GTK_TOGGLE_BUTTON(o)));
+}
+
+void
+Widget_Link::register_type()
+{
+	if(gtype)
+		return;
+
+	Widget_Link dummy;
+
+	gtype = G_OBJECT_TYPE(dummy.gobj());
+
+	wrap_register(gtype, Widget_Link::wrap_new);
 }
 
 Widget_Link::~Widget_Link() {
 	delete icon_on_;
 	delete icon_off_;
-}
-
-}
-
-
-void Widget_Link::on_toggled()
-{
-	Gtk::Image *icon;
-
-	if(get_active())
-	{
-		icon= icon_on_;
-		set_tooltip_text(tooltip_active_);
-	}
-	else
-	{
-		icon=icon_off_;
-		set_tooltip_text(tooltip_inactive_);
-	}
-
-	remove();
-	add(*icon);
-	icon->show();
 }

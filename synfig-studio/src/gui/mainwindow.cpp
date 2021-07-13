@@ -239,8 +239,9 @@ MainWindow::init_menus()
 
 void MainWindow::register_custom_widget_types()
 {
-	Widget_Vector::register_type();
+	Widget_Link::register_type();
 	Widget_Time::register_type();
+	Widget_Vector::register_type();
 }
 
 void

@@ -978,6 +978,7 @@ DEFINE_ACTION("canvas-zoom-fit-2",  Gtk::StockID("gtk-zoom-fit"))
 // actions in Canvas menu
 DEFINE_ACTION("properties", _("Properties..."))
 DEFINE_ACTION("options",    _("Options..."))
+DEFINE_ACTION("resize",     _("Resize..."))
 
 // actions in Layer menu
 DEFINE_ACTION("amount-inc", _("Increase Layer Amount"))
@@ -1109,6 +1110,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "	<menu action='menu-canvas'>"
 "		<menuitem action='properties'/>"
 "		<menuitem action='options'/>"
+"		<menuitem action='resize'/>"
 "	</menu>"
 "	<menu action='menu-toolbox'>"
 "	</menu>"
@@ -3863,6 +3865,9 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		{
 			if(!canvas)
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
+
+			// Set new pixel ratio
+			canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
 
 			if (!warnings.empty())
 				dialog_message_1b(

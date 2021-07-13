@@ -101,6 +101,7 @@ RendDesc::set_w(int x)
 	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
 	{
 		int new_h = h_ratio_*x/w_ratio_;
+		if (new_h == 0) new_h = 1; // default to 1 like our GUI Synfig Studio
 		if(FLAGS(flags,PX_ASPECT))
 		{
 			br_[1]-=focus[1];
@@ -187,6 +188,7 @@ RendDesc::set_h(int y)
 	if(FLAGS(flags,LINK_IM_ASPECT)) // "Width and Height ratio"
 	{
 		int new_w = w_ratio_*y/h_ratio_;
+		if (new_w == 0) new_w = 1; // default to 1 like our GUI Synfig Studio
 		if(FLAGS(flags,PX_ASPECT))
 		{
 			br_[0]-=focus[0];

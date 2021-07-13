@@ -541,6 +541,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	cancel                   (false),
 
 	canvas_properties        (*App::main_window,canvas_interface_),
+	canvas_resize            (*App::main_window,canvas_interface_,canvas_properties),
 	render_settings          (*App::main_window,canvas_interface_),
 	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
 	keyframe_dialog          (*App::main_window,canvas_interface_),
@@ -1519,6 +1520,11 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
 		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
 	);
+
+	action_group->add( Gtk::Action::create("resize", _("Resize...")),
+		sigc::mem_fun0(canvas_resize, &CanvasResize::present)
+	);
+
 
     auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )

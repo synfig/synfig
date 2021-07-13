@@ -1,0 +1,41 @@
+/*
+ * Synfig Studio dialog box
+ */
+.dialog-main-content, .color-grid {
+	margin-left  : 12px;
+	margin-right : 12px;
+	margin-top   : 12px;
+	margin-bottom: 12px;
+}
+
+/*
+ * Synfig Studio options in dialogs
+ * Slightly moved to the right
+ */
+.dialog-secondary-content {
+	margin-left  : 24px;
+	margin-right : 0px;
+	margin-top   : 6px;
+	margin-bottom: 0px;
+}
+
+.initial-widget {
+	margin-left: 24px;
+	margin-top : 6px;
+}
+
+.succeeding-widget {
+	margin-left: 6px;
+	margin-top : 6px;
+}
+
+/*
+ * Buttons for canvas expand direction
+ * Override buttons shape to square for all GTK themes
+ */
+button.direction-cell {
+	border-top-left-radius    : 0px;
+	border-top-right-radius   : 0px;
+	border-bottom-left-radius : 0px;
+	border-bottom-right-radius: 0px;
+}
