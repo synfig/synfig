@@ -1,7 +1,7 @@
-# for test to find generated etl_profile.h
+# for test to find generated config.h
 include_directories(${PROJECT_BINARY_DIR})
 
-# for ETL headers
+# for synfig-core headers
 include_directories(${PROJECT_SOURCE_DIR})
 
 add_executable(angle angle.cpp)
@@ -34,8 +34,13 @@ add_test(NAME test_smart_ptr COMMAND smart_ptr)
 add_executable(benchmark benchmark.cpp)
 add_test(NAME test_benchmark COMMAND benchmark)
 
+add_executable(bline bline.cpp)
+add_test(NAME test_bline COMMAND bline)
+
+add_executable(bone bone.cpp)
+add_test(NAME test_bone COMMAND bone)
 set_target_properties(
-		angle fixed clock handle hermite stringf pen surface smart_ptr benchmark
+		angle fixed clock handle hermite stringf pen surface smart_ptr benchmark bline bone
 		PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
 )
