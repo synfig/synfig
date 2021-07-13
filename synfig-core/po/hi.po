@@ -3,27 +3,25 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Alexander Gabilondo <alexgabi@disroot.org>, 2013,2016
-# Alexander Gabilondo <alexgabi@disroot.org>, 2016
-# Alexander Gabilondo <alexgabi@disroot.org>, 2013
+# Nihaal Moktan Tamang <nihaalmoktan18@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2021-05-28 22:52+0700\n"
-"PO-Revision-Date: 2021-05-28 15:52+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Basque (http://www.transifex.com/morevnaproject/synfig/language/eu/)\n"
+"PO-Revision-Date: 2021-06-17 12:09+0000\n"
+"Last-Translator: Nihaal Moktan Tamang <nihaalmoktan18@gmail.com>\n"
+"Language-Team: Hindi (http://www.transifex.com/morevnaproject/synfig/language/hi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: eu\n"
+"Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:73
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Text"
-msgstr ""
+msgstr "टेक्स्ट "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:74
 #: ../src/modules/lyr_std/import.cpp:70
@@ -37,23 +35,23 @@ msgstr ""
 #: ../src/synfig/layers/layer_sound.cpp:60
 #: ../src/synfig/layers/layer_switch.cpp:64
 msgid "Other"
-msgstr "Beste bat"
+msgstr "अन्य"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:104
 msgid "Text Layer"
-msgstr "Testu-geruza"
+msgstr " टेक्स्ट तह"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "unable to initialize"
-msgstr "Ezin da abiarazi"
+msgstr "प्रारंभ करनेमे असक्षम  "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:436
 msgid "empty font set"
-msgstr ""
+msgstr "खाली फॉन्टका संग्रह "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Text to Render"
-msgstr ""
+msgstr "रेंडर करनेके लिए टेक्स्ट "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:594
 #: ../src/modules/lyr_std/shade.cpp:633
@@ -62,62 +60,62 @@ msgstr ""
 #: ../src/synfig/layers/layer_solidcolor.cpp:120
 #: ../src/synfig/paramdesc.cpp:89
 msgid "Color"
-msgstr "Kolorea"
+msgstr "रंग "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:595
 msgid "Color of the text"
-msgstr "Testuaren kolorea"
+msgstr "टेक्स्टका रंग "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Font Family"
-msgstr ""
+msgstr "टेस्टका समूह "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:604
 msgid "Style"
-msgstr ""
+msgstr "शैली "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:606
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:616
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:373
 msgid "Normal"
-msgstr ""
+msgstr "सामान्य "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:607
 msgid "Oblique"
-msgstr ""
+msgstr "तिरछा "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:608
 msgid "Italic"
-msgstr ""
+msgstr "तिरछे अक्षर "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:612
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:821
 msgid "Weight"
-msgstr ""
+msgstr "भार"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Ultralight"
-msgstr ""
+msgstr "अत्यंत हल्का "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:615
 msgid "light"
-msgstr ""
+msgstr "हल्का "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:617
 msgid "Bold"
-msgstr ""
+msgstr "गाढ़ा"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:618
 msgid "Ultrabold"
-msgstr ""
+msgstr "अत्यंत गाढ़ा "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:619
 msgid "Heavy"
-msgstr ""
+msgstr "भारी "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Horizontal Spacing"
-msgstr ""
+msgstr "अनुप्रस्थ अंतरालन"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:623
 msgid "Describes how close glyphs are horizontally"
@@ -171,7 +169,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:690
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:235
 msgid "Origin"
-msgstr "Jatorria"
+msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:647
 msgid "Text Position"
@@ -205,7 +203,7 @@ msgstr ""
 #: ../src/modules/lyr_std/shade.cpp:656
 #: ../src/synfig/layers/layer_shape.cpp:183
 msgid "Invert"
-msgstr "Alderantzizkatu"
+msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:735
 msgid "No face loaded, no text will be rendered."
@@ -237,7 +235,7 @@ msgstr ""
 #: ../src/modules/mod_filter/blur.cpp:447
 #: ../src/modules/mod_filter/halftone2.cpp:177
 msgid "Type"
-msgstr "Mota"
+msgstr ""
 
 #: ../src/modules/lyr_std/bevel.cpp:666 ../src/modules/lyr_std/shade.cpp:646
 #: ../src/modules/mod_filter/blur.cpp:448
@@ -296,7 +294,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/bevel.cpp:693
 msgid "Use Luma"
-msgstr "Luminantzia"
+msgstr ""
 
 #: ../src/modules/lyr_std/bevel.cpp:696
 msgid "Solid"
@@ -435,7 +433,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:261
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:150
 msgid "Time"
-msgstr "Denbora"
+msgstr ""
 
 #: ../src/modules/lyr_std/freetime.cpp:102
 msgid "Current time for next layers"
@@ -443,7 +441,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/import.cpp:69
 msgid "Import Image"
-msgstr "Inportatu irudia"
+msgstr ""
 
 #: ../src/modules/lyr_std/import.cpp:204
 #: ../src/modules/mod_svg/layer_svg.cpp:107
@@ -664,7 +662,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:155
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:153
 msgid "Amount"
-msgstr "Kopurua"
+msgstr ""
 
 #: ../src/modules/lyr_std/rotate.cpp:137
 msgid "Amount of rotation"
@@ -701,7 +699,7 @@ msgstr ""
 #: ../src/modules/mod_noise/valuenode_random.cpp:248
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:266
 msgid "Radius"
-msgstr "Erradioa"
+msgstr ""
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:155
 msgid "The size of the sphere distortion"
@@ -1031,7 +1029,7 @@ msgstr ""
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:234
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:235
 msgid "Unable to open file"
-msgstr "Ezin da fitxategia ireki"
+msgstr ""
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:266
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:267
@@ -1072,7 +1070,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:158
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:197
 msgid "Gradient"
-msgstr "Gradientea"
+msgstr ""
 
 #: ../src/modules/mod_example/metaballs.cpp:135
 msgid "Balls"
@@ -1224,7 +1222,7 @@ msgstr ""
 
 #: ../src/modules/mod_filter/halftone3.cpp:334
 msgid " Type"
-msgstr "Mota"
+msgstr ""
 
 #: ../src/modules/mod_filter/halftone3.cpp:343
 msgid "Subtractive Flag"
@@ -1232,7 +1230,7 @@ msgstr ""
 
 #: ../src/modules/mod_filter/halftone3.cpp:351
 msgid " Color"
-msgstr "Kolorea"
+msgstr ""
 
 #: ../src/modules/mod_filter/halftone3.cpp:355
 msgid " Mask Origin"
@@ -1391,7 +1389,7 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:773
 msgid "Smoothness"
-msgstr "Leuntasuna"
+msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:774
 msgid ""
@@ -1572,7 +1570,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:149
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:148
 msgid "Angle"
-msgstr "Angelua"
+msgstr ""
 
 #: ../src/modules/mod_geometry/star.cpp:177
 msgid "The orientation of the star"
@@ -1580,7 +1578,7 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/star.cpp:182 ../src/synfig/distance.cpp:251
 msgid "Points"
-msgstr "Puntuak"
+msgstr ""
 
 #: ../src/modules/mod_geometry/star.cpp:183
 msgid "The number of points in the star"
@@ -1588,7 +1586,7 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/star.cpp:187
 msgid "Regular Polygon"
-msgstr "Poligono erregularra"
+msgstr ""
 
 #: ../src/modules/mod_geometry/star.cpp:188
 msgid "Whether to draw a star or a regular polygon"
@@ -1661,7 +1659,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:191
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:162
 msgid "Loop"
-msgstr "Begizta"
+msgstr ""
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:550
 #: ../src/modules/mod_gradient/lineargradient.cpp:179
@@ -1808,7 +1806,7 @@ msgstr ""
 #: ../src/modules/mod_noise/valuenode_random.cpp:263
 #: ../src/synfig/layers/layer_bitmap.cpp:169
 msgid "Interpolation"
-msgstr "Interpolazioa"
+msgstr ""
 
 #: ../src/modules/mod_noise/distort.cpp:227
 #: ../src/modules/mod_noise/noise.cpp:279
@@ -1828,14 +1826,14 @@ msgstr ""
 #: ../src/synfig/layers/layer_bitmap.cpp:173
 #: ../src/synfig/layers/layer_motionblur.cpp:141
 msgid "Linear"
-msgstr "Lineala"
+msgstr ""
 
 #: ../src/modules/mod_noise/distort.cpp:231
 #: ../src/modules/mod_noise/noise.cpp:283
 #: ../src/modules/mod_noise/valuenode_random.cpp:268
 #: ../src/synfig/layers/layer_bitmap.cpp:174
 msgid "Cosine"
-msgstr "kosinu"
+msgstr ""
 
 #: ../src/modules/mod_noise/distort.cpp:232
 #: ../src/modules/mod_noise/noise.cpp:284
@@ -1924,7 +1922,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_step.cpp:186
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:168
 msgid "Link"
-msgstr "Estela"
+msgstr ""
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:244
 msgid "The value node source that provides the central value"
@@ -2128,7 +2126,7 @@ msgstr ""
 
 #: ../src/synfig/base_types.cpp:174 ../src/synfig/base_types.cpp:175
 msgid "real"
-msgstr "Erreala"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:205 ../src/synfig/base_types.cpp:206
 msgid "time"
@@ -2136,15 +2134,15 @@ msgstr ""
 
 #: ../src/synfig/base_types.cpp:232
 msgid "vector"
-msgstr "Bektorea"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:251
 msgid "color"
-msgstr "Kolorea"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:270
 msgid "segment"
-msgstr "Segmentoa"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:290
 msgid "spline_point"
@@ -2172,7 +2170,7 @@ msgstr ""
 
 #: ../src/synfig/base_types.cpp:449
 msgid "canvas"
-msgstr "Oihala"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:480
 msgid "string"
@@ -2219,27 +2217,27 @@ msgstr ""
 
 #: ../src/synfig/distance.cpp:249
 msgid "Units"
-msgstr "Unitate"
+msgstr ""
 
 #: ../src/synfig/distance.cpp:250
 msgid "Pixels"
-msgstr "Pixelak"
+msgstr ""
 
 #: ../src/synfig/distance.cpp:252
 msgid "Inches"
-msgstr "Hazbeteak "
+msgstr ""
 
 #: ../src/synfig/distance.cpp:253
 msgid "Meters"
-msgstr "Metroak"
+msgstr ""
 
 #: ../src/synfig/distance.cpp:254
 msgid "Millimeters"
-msgstr "Milimetroak"
+msgstr ""
 
 #: ../src/synfig/distance.cpp:255
 msgid "Centimeters"
-msgstr "Centimetroak"
+msgstr ""
 
 #: ../src/synfig/importer.cpp:100
 msgid "Importer::open(): Cannot open empty filename"
@@ -2259,7 +2257,7 @@ msgstr ""
 
 #: ../src/synfig/layer.cpp:956
 msgid "Z Depth"
-msgstr "Z sakonera"
+msgstr ""
 
 #: ../src/synfig/layer.cpp:958
 msgid "Modifies the position of the layer in the layer stack"
@@ -2293,7 +2291,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_composite.cpp:185 ../src/synfig/paramdesc.cpp:72
 msgid "Blend Method"
-msgstr "Nahasketa-metodoa"
+msgstr ""
 
 #: ../src/synfig/layers/layer_composite.cpp:186
 msgid "The blending method used to composite on the layers below"
@@ -2301,12 +2299,12 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_duplicate.cpp:62
 msgid "Duplicate"
-msgstr "Bikoiztu"
+msgstr ""
 
 #: ../src/synfig/layers/layer_duplicate.cpp:144
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:157
 msgid "Index"
-msgstr "Aurkibidea"
+msgstr ""
 
 #: ../src/synfig/layers/layer_duplicate.cpp:145
 msgid "Copy Index"
@@ -2320,7 +2318,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_group.cpp:65
 #: ../src/synfig/layers/layer_group.cpp:91
 msgid "Group"
-msgstr "Taldea"
+msgstr ""
 
 #: ../src/synfig/layers/layer_group.cpp:100
 msgid "Z Range"
@@ -2389,7 +2387,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_motionblur.cpp:140
 #: ../src/synfig/valuenodes/valuenode_const.cpp:170
 msgid "Constant"
-msgstr "Konstantea"
+msgstr ""
 
 #: ../src/synfig/layers/layer_motionblur.cpp:142
 msgid "Hyperbolic"
@@ -2425,7 +2423,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:143
 msgid "Canvas"
-msgstr "Oihala"
+msgstr ""
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:144
 msgid "Group content"
@@ -2485,7 +2483,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_shape.cpp:189
 msgid "Feather"
-msgstr "Difuminatu"
+msgstr ""
 
 #: ../src/synfig/layers/layer_shape.cpp:193
 msgid "Type of Feather"
@@ -2518,7 +2516,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_skeleton.cpp:145
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:582
 msgid "Name"
-msgstr "Izena"
+msgstr ""
 
 #: ../src/synfig/layers/layer_skeleton.cpp:148
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:105
@@ -2921,7 +2919,7 @@ msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:3461 ../src/synfig/valuenode.cpp:186
 msgid "ValueNode"
-msgstr "ValueNode"
+msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:3461
 msgid "ValueNodes"
@@ -3148,7 +3146,7 @@ msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:79
 msgid "Screen"
-msgstr "Pantaila"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:80
 msgid "Overlay"
@@ -3189,13 +3187,13 @@ msgstr ""
 #: ../src/synfig/paramdesc.cpp:90
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:255
 msgid "Hue"
-msgstr "Ñabardura"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:91
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:252
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:258
 msgid "Saturation"
-msgstr "Saturazioa"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:92
 msgid "Luminance"
@@ -3251,7 +3249,7 @@ msgstr ""
 #: ../src/synfig/target_cairo.cpp:95 ../src/synfig/target_cairo_tile.cpp:198
 #: ../src/synfig/target_scanline.cpp:139 ../src/synfig/target_tile.cpp:310
 msgid "Target initialization failure"
-msgstr "Errorea helburua hasieratzean"
+msgstr ""
 
 #: ../src/synfig/target_cairo.cpp:159
 msgid "Frame Renderer Failure"
@@ -3517,7 +3515,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:142
 msgid "X"
-msgstr "X"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:143
 msgid "Cosine of the angle"
@@ -3625,7 +3623,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:158
 msgid "Reference"
-msgstr "Erreferentzia"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:159
 msgid "The referenced tangent to reverse"
@@ -3828,7 +3826,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:626
 msgid "Red"
-msgstr "Gorria"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:627
 msgid "The red component of the color"
@@ -3836,7 +3834,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:630
 msgid "Green"
-msgstr "Berdea"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:631
 msgid "The green component of the color"
@@ -3844,7 +3842,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:634
 msgid "Blue"
-msgstr "Urdina"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:635
 msgid "The blue component of the color"
@@ -3852,7 +3850,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:638
 msgid "Alpha"
-msgstr "Alfa"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:639
 msgid "The alpha of the color"
@@ -4007,7 +4005,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:769
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:266
 msgid "Length"
-msgstr "Luzera"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:770
 msgid "The length of the Dash Item"
@@ -4044,7 +4042,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:825
 msgid "Value"
-msgstr "Balioa"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:826
 msgid "The Value"
@@ -4432,7 +4430,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:249
 msgid "Luma"
-msgstr "Luminantzia"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:267
 msgid "The length of the vector"
@@ -4476,7 +4474,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:164
 msgid "Real"
-msgstr "Erreala"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:160
 msgid "The value node used to calculate its reciprocal"
@@ -4566,7 +4564,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:150
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:148
 msgid "Segment"
-msgstr "Segmentoa"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:151
 msgid "The Segment where the tangent is linked to"
@@ -4726,7 +4724,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_vectorx.cpp:135
 #: ../src/synfig/valuenodes/valuenode_vectory.cpp:135
 msgid "Vector"
-msgstr "Bektorea"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_vectorangle.cpp:138
 msgid "The vector where the angle is calculated from"
@@ -4809,7 +4807,7 @@ msgstr ""
 
 #: ../src/tool/joblistprocessor.cpp:271
 msgid "Rendering..."
-msgstr "Errendatzen..."
+msgstr ""
 
 #: ../src/tool/joblistprocessor.cpp:285
 msgid ": Rendered in "
@@ -4821,11 +4819,11 @@ msgstr ""
 
 #: ../src/tool/joblistprocessor.cpp:291
 msgid "Done."
-msgstr "Egina."
+msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:88
 msgid "Settings"
-msgstr "Ezarpenak"
+msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:88
 msgid "Show settings help"
@@ -4955,7 +4953,7 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:179
 msgid "Extract alpha"
-msgstr "Erauzi alfa"
+msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:182
 msgid "Append layers in <filename> to composition"
