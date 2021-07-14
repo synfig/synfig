@@ -54,7 +54,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-LayerGroupTree::LayerGroupTree() : editable_(false)
+LayerGroupTree::LayerGroupTree()
 {
 	const LayerGroupTreeStore::Model model;
 
@@ -109,7 +109,9 @@ LayerGroupTree::LayerGroupTree() : editable_(false)
 
 	set_reorderable(true);
 
-	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
+	tree_selection = get_selection();
+	tree_selection->set_mode(Gtk::SELECTION_MULTIPLE);
+	tree_selection->signal_changed().connect(sigc::mem_fun(*this, &LayerGroupTree::on_selection_changed));
 }
 
 LayerGroupTree::~LayerGroupTree()
@@ -132,140 +134,48 @@ LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_sto
 	}
 }
 
-void
-LayerGroupTree::set_editable(bool x)
-{
-	editable_=x;
-/*
-	if(editable_)
-	{
-		cell_renderer_time->property_editable()=true;
-		cell_renderer_time_delta->property_editable()=true;
-		cell_renderer_description->property_editable()=true;
-	}
-	else
-	{
-		cell_renderer_time->property_editable()=false;
-		cell_renderer_time_delta->property_editable()=false;
-		cell_renderer_description->property_editable()=false;
-	}
-*/
-}
-/*
-void
-LayerGroupTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
-{
-	Gtk::TreePath path(path_string);
-
-	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-
-	synfig::Keyframe keyframe(row[model.keyframe]);
-	if(time!=keyframe.get_time())
-	{
-		row[model.time]=time;
-		//keyframe.set_time(time);
-		//signal_edited_time()(keyframe,time);
-		//signal_edited()(keyframe);
-	}
-}
-
-void
-LayerGroupTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time)
-{
-	Gtk::TreePath path(path_string);
-
-	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-
-	if(row)row[model.time_delta]=time;
-}
-
-void
-LayerGroupTree::on_edited_description(const Glib::ustring&path_string,const Glib::ustring &desc)
-{
-	Gtk::TreePath path(path_string);
-
-	const Gtk::TreeRow row = *(get_model()->get_iter(path));
-
-	const synfig::String description(desc);
-	synfig::Keyframe keyframe(row[model.keyframe]);
-	if(description!=keyframe.get_description())
-	{
-		row[model.description]=desc;
-		keyframe.set_description(description);
-		signal_edited_description()(keyframe,description);
-		signal_edited()(keyframe);
-	}
-}
-*/
-
 bool
-LayerGroupTree::on_event(GdkEvent *event)
+LayerGroupTree::on_button_press_event(GdkEventButton *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-    switch(event->type)
-    {
-	case GDK_BUTTON_PRESS:
+    if (event->type == GDK_BUTTON_PRESS && event->button == 3)
+	{
+		Gtk::TreeModel::Path path;
+		Gtk::TreeViewColumn *column;
+		int cell_x, cell_y;
+		int wx(round_to_int(event->x)),wy(round_to_int(event->y));
+		//tree_to_widget_coords (,, wx, wy);
+		if(!get_path_at_pos(
+			   wx,wy,	// x, y
+			   path, // TreeModel::Path&
+			   column, //TreeViewColumn*&
+			   cell_x,cell_y //int&cell_x,int&cell_y
+			   )
+		   )
+			return Gtk::TreeView::on_button_press_event(event);
+
+		const Gtk::TreeRow row = *(get_model()->get_iter(path));
+
+		if(row[model.is_layer])
 		{
-			Gtk::TreeModel::Path path;
-			Gtk::TreeViewColumn *column;
-			int cell_x, cell_y;
-			int wx(round_to_int(event->button.x)),wy(round_to_int(event->button.y));
-			//tree_to_widget_coords (,, wx, wy);
-			if(!get_path_at_pos(
-				wx,wy,	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
-				)
-			) break;
-			const Gtk::TreeRow row = *(get_model()->get_iter(path));
-
-			if(row[model.is_layer] && event->button.button==3)
-			{
-				signal_popup_layer_menu()((Layer::Handle)row[model.layer]);
-				return true;
-			}
-
-			/*signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
-			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
-			{
-				layer_group_tree_store_->canvas_interface()->set_time(row[model.time]);
-			}*/
+			signal_popup_layer_menu()((Layer::Handle)row[model.layer]);
+			return true;
 		}
-		break;
-	case GDK_2BUTTON_PRESS:
-		{
-			Gtk::TreeModel::Path path;
-			Gtk::TreeViewColumn *column;
-			int cell_x, cell_y;
-			if(!get_path_at_pos(
-				int(event->button.x),int(event->button.y),	// x, y
-				path, // TreeModel::Path&
-				column, //TreeViewColumn*&
-				cell_x,cell_y //int&cell_x,int&cell_y
-				)
-			) break;
-			const Gtk::TreeRow row = *(get_model()->get_iter(path));
-
-			LayerList layer_list(row[model.all_layers]);
-			if(!layer_list.empty())
-			{
-				if(!(event->button.state&GDK_CONTROL_MASK))
-				{
-					layer_group_tree_store_->canvas_interface()->get_selection_manager()->clear_selected_layers();
-				}
-				layer_group_tree_store_->canvas_interface()->get_selection_manager()->set_selected_layers(layer_list);
-				return true;
-			}
-		}
-		break;
-	case GDK_BUTTON_RELEASE:
-		break;
-	default:
-		break;
 	}
-	return Gtk::TreeView::on_event(event);
+	return Gtk::TreeView::on_button_press_event(event);
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
+
+void
+LayerGroupTree::on_selection_changed()
+{
+	layer_group_tree_store_->canvas_interface()->get_selection_manager()->clear_selected_layers();
+
+	for (Gtk::TreePath path : tree_selection->get_selected_rows()) {
+		Gtk::TreeRow row = *get_model()->get_iter(path);
+		LayerList layer_list(row[model.all_layers]);
+		layer_group_tree_store_->canvas_interface()->get_selection_manager()->set_selected_layers(layer_list);
+	}
 }
 
 
