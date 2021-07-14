@@ -66,13 +66,9 @@ private:
 
 	Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_;
 
-	// Gtk::CellRendererText *cell_renderer_description; // seems to be unused
-
-	bool editable_;
-
-
 	sigc::signal<void,etl::handle<synfig::Layer> > signal_popup_layer_menu_;
 
+	Glib::RefPtr<Gtk::TreeSelection> tree_selection;
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -85,7 +81,8 @@ private:
 
 private:
 
-	virtual bool on_event(GdkEvent *event);
+	virtual bool on_button_press_event(GdkEventButton *button_event);
+	void on_selection_changed();
 	void on_toggle(const Glib::ustring& path_string);
 	void on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value);
 
@@ -102,13 +99,7 @@ public:
 
 	sigc::signal<void,etl::handle<synfig::Layer> >& signal_popup_layer_menu() { return signal_popup_layer_menu_; }
 
-//	sigc::signal<void,LayerList>& signal_select_layers() { return signal_select_layers_; }
-
 	void set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_);
-
-	void set_editable(bool x=true);
-
-	bool get_editable()const { return editable_; }
 
 	std::list<synfig::String> get_selected_groups()const;
 
