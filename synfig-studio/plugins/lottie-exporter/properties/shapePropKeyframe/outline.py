@@ -472,7 +472,10 @@ def line_intersection(p1, t1, p2, t2):
     c2 = y2 - m2*x2
 
     # compute the inverse of the determinate
-    det_inv = 1.0 / (a1*b2 - a2*b1)
+    if a1*b2 - a2*b1 == 0:
+        det_inv = float('nan')
+    else:
+        det_inv = 1.0 / (a1*b2 - a2*b1)
 
     # Use kramer's rule to compute intersection
     return Vector((b1*c2 - b2*c1)*det_inv, (a2*c1 - a1*c2)*det_inv)
