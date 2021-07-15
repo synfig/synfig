@@ -800,7 +800,7 @@ def synfig_advanced_outline(bline, outer_width_p, expand_p, start_tip, end_tip,
                 bpiter += 1
                 hbpiter += 1
                 bnext_pos = bline_pos[bpiter]
-                #hbpnext_pos = hbline_pos[hbpiter]
+                hbnext_pos = hbline_pos[hbpiter]
                 last_tangent = curve.derivative(1.0-CUSP_TANGENT_ADJUST)
                 break
 
