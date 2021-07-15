@@ -52,6 +52,7 @@ namespace synfig
 			FILE *file_;
 			ReadStream(FileSystem::Handle file_system, FILE *file);
 			virtual size_t internal_read(void *buffer, size_t size);
+			std::istream::pos_type seekpos(std::istream::pos_type pos, std::ios_base::openmode which = std::ios_base::in | std::ios_base::out) override;
 		public:
 			virtual ~ReadStream();
 		};
