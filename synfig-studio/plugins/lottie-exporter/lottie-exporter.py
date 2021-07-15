@@ -18,8 +18,24 @@ from layers.driver import gen_layers
 from common.misc import modify_final_dump
 from common.Canvas import Canvas
 import settings
-import argparse
 
+
+def write_to(filename, extension, data):
+    """
+    Helps in writing data to a specified file name
+    Args:
+        filename  (str) : Original file name
+        extension (str) : original file name needs to be converted to this
+        data      (str) : Data that needs to be written
+    Returns:
+        (str) : changed file name according to the extension specified
+    """
+    new_name = filename.split(".")
+    new_name[-1] = extension
+    new_name = ".".join(new_name)
+    with open(new_name, "w") as fil:
+        fil.write(data)
+    return new_name
 
 def parse(file_name):
     """
@@ -48,7 +64,8 @@ def parse(file_name):
     canvas = Canvas(root, True)
     gen_layers(settings.lottie_format["layers"], canvas, canvas.get_num_layers() - 1)
 
-    return json.dumps(modify_final_dump(settings.lottie_format))
+    lottie_string = json.dumps(modify_final_dump(settings.lottie_format))
+    return write_to(file_name, "json", lottie_string)
 
 
 def gen_html(file_name):
@@ -120,27 +137,28 @@ def gen_html(file_name):
 </body>
 </html>
 """
-    return html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(modify_final_dump(settings.lottie_format)))
+
+    write_to(file_name, "html", html_text.format(bodymovin_script=bodymovin_script, file_name_data=json.dumps(modify_final_dump(settings.lottie_format))))
 
 
 def init_logs():
     """
-    Initializes the logger, sets the level of the logging(DEBUG | INFO : depending on what is
+    Initializes the logger, sets the file name in which the logs will be stored
+    and sets the level of the logging(DEBUG | INFO : depending on what is
     specified)
     """
-    logging.basicConfig(stream=sys.stdout, format='%(name)s - %(levelname)s - %(message)s')
+    name = os.path.splitext(settings.file_name['fn'])[0] + '.log'
+    path = os.path.join(settings.file_name['fd'], name)
+    path = os.path.abspath(name)
+    logging.basicConfig(filename=path, filemode='w',
+                        format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("infile")
-ns = parser.parse_args()
-	
-settings.init()
-
-outfile_name = os.path.splitext(ns.infile)[0] + '.html'
-out = parse(ns.infile)
-out = gen_html(outfile_name)
-
-with open(outfile_name, "w") as fil:
-    fil.write(out)
+if len(sys.argv) < 2:
+    sys.exit()
+else:
+    settings.init()
+    FILE_NAME = sys.argv[1]
+    new_file_name = parse(FILE_NAME)
+    gen_html(new_file_name)
