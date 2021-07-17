@@ -48,15 +48,6 @@
 
 #include <synfig/context.h>
 
-//#ifdef __APPLE__
-//#define USE_MAC_FT_FUNCS	(1)
-//#endif
-
-#ifdef USE_MAC_FT_FUNCS
-	#include <CoreServices/CoreServices.h>
-	#include FT_MAC_H
-#endif
-
 #include <algorithm>
 #include <glibmm.h>
 
@@ -618,37 +609,6 @@ static std::string fontconfig_get_filename(const std::string& font_fam, int styl
 }
 #endif
 
-#ifdef USE_MAC_FT_FUNCS
-void fss2path(char *path, FSSpec *fss)
-{
-  int l;             //fss->name contains name of last item in path
-  for(l=0; l<(fss->name[0]); l++) path[l] = fss->name[l + 1];
-  path[l] = 0;
-
-  if(fss->parID != fsRtParID) //path is more than just a volume name
-  {
-    int i, len;
-    CInfoPBRec pb;
-
-    pb.dirInfo.ioNamePtr = fss->name;
-    pb.dirInfo.ioVRefNum = fss->vRefNum;
-    pb.dirInfo.ioDrParID = fss->parID;
-    do
-    {
-      pb.dirInfo.ioFDirIndex = -1;  //get parent directory name
-      pb.dirInfo.ioDrDirID = pb.dirInfo.ioDrParID;
-      if(PBGetCatInfoSync(&pb) != noErr) break;
-
-      len = fss->name[0] + 1;
-      for(i=l; i>=0;  i--) path[i + len] = path[i];
-      for(i=1; i<len; i++) path[i - 1] = fss->name[i]; //add to start of path
-      path[i - 1] = ':';
-      l += len;
-} while(pb.dirInfo.ioDrDirID != fsRtDirID); //while more directory levels
-  }
-}
-#endif
-
 bool
 Layer_Freetype::new_face(const String &newfont)
 {
@@ -717,28 +677,6 @@ Layer_Freetype::new_face(const String &newfont)
 			break;
 	}
 
-#ifdef USE_MAC_FT_FUNCS
-	if(error)
-	{
-		FSSpec fs_spec;
-		error=FT_GetFile_From_Mac_Name(newfont.c_str(),&fs_spec,&face_index);
-		if(!error)
-		{
-			char filename[512];
-			fss2path(filename,&fs_spec);
-			//FSSpecToNativePathName(fs_spec,filename,sizeof(filename)-1, 0);
-
-			error=FT_New_Face(ft_library, filename, face_index,&face);
-			//error=FT_New_Face_From_FSSpec(ft_library, &fs_spec, face_index,&face);
-			synfig::info(__FILE__":%d: \"%s\" (%s) -- ft_error=%d",__LINE__,newfont.c_str(),filename,error);
-		}
-		else
-		{
-			synfig::info(__FILE__":%d: \"%s\" -- ft_error=%d",__LINE__,newfont.c_str(),error);
-			// Unable to generate fs_spec
-		}
-	}
-#endif
 
 	if(error)
 	{
