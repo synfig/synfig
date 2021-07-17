@@ -133,7 +133,7 @@ class DashItemList:
             side_after = int(side_after[0].attrib["value"])
             curr = DashItem(offset, length, side_before, side_after)
 
-            if amount > 1 - 0.0000001:
+            if amount > 1 - 0.0000001:  # lgtm [py/redundant-comparison]
                 dilist.append(curr)
 
         return dilist
