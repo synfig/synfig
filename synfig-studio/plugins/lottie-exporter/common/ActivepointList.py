@@ -99,17 +99,17 @@ class ActivepointList:
         try:
             itr = self.find(frame)
             return 1 if itr.state else 0
-        except BaseException as e:
+        except Exception as e:
             pass
 
         try:
             prev_itr = self.find_prev(frame)
-        except BaseException as e:
+        except Exception as e:
             return 1 if self.find_next(frame).state else 0
 
         try:
             next_itr = self.find_next(frame)
-        except BaseException as e:
+        except Exception as e:
             return 1 if prev_itr.state else 0
 
         if next_itr.state == prev_itr.state:
