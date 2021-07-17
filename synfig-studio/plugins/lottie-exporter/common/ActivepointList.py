@@ -54,6 +54,9 @@ class ActivepointList:
         return len(self.active_point_list) == 0
 
     def find(self, frame):
+        """
+        https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_dynamiclist.cpp#L268
+        """
         for itr in self.active_point_list:
             if itr.time == frame:
                 return itr
@@ -61,6 +64,9 @@ class ActivepointList:
         raise Exception("Value not found")
 
     def find_prev(self, frame):
+        """
+        https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_dynamiclist.cpp#L324
+        """
         itr = len(self.active_point_list)
 
         while True:
@@ -74,6 +80,9 @@ class ActivepointList:
         raise Exception("Could not find prev")
 
     def find_next(self, frame):
+        """
+        https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_dynamiclist.cpp#L296
+        """
         for itr in self.active_point_list:
             if itr.time > frame:
                 return itr
@@ -81,6 +90,9 @@ class ActivepointList:
         raise Exception("Could not find next")
 
     def amount_at_time(self, frame, rising):
+        """
+        https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_dynamiclist.cpp#L394
+        """
         if self.empty():
             return 1
 
