@@ -96,6 +96,9 @@ def gen_bline_advanced_outline(lottie, bline_point):
         length.update_frame_window(window)
         length.animate("real")
 
+        # Update frame window if any list point is added/deleted
+        entry["ActivepointList"].update_frame_window(window)
+
     outer_width = layer.get_param("width")
     expand = layer.get_param("expand")
     
