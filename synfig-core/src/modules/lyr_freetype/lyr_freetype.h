@@ -111,6 +111,8 @@ private:
 	void new_font(const synfig::String &family, int style=0, int weight=400);
 	bool new_font_(const synfig::String &family, int style=0, int weight=400);
 	bool new_face(const synfig::String &newfont);
+
+	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);
 };
 
 /* === E N D =============================================================== */
