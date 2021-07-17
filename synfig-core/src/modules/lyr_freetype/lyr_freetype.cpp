@@ -632,12 +632,46 @@ Layer_Freetype::new_face(const String &newfont)
 	if (! has_valid_font_extension(newfont))
 		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
 
-	std::vector<std::string> possible_font_directories = {""};
 	std::string canvas_path;
-	if (get_canvas()) {
+	if (get_canvas())
 		canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
-		possible_font_directories.push_back( canvas_path );
+
+	std::vector<std::string> possible_font_directories = get_possible_font_directories(canvas_path);
+
+	for (std::string directory : possible_font_directories) {
+		for (const char *extension : possible_font_extensions) {
+			std::string path = (directory + newfont + extension);
+			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
+			if (!error) {
+				font_path_from_canvas = !canvas_path.empty() && directory == canvas_path;
+				break;
+			}
+		}
+		if (!error)
+			break;
 	}
+
+	if(error)
+	{
+		if (!newfont.empty())
+			synfig::error(strprintf("Layer_Freetype: %s (err=%d): %s",_("Unable to open font face."),error,newfont.c_str()));
+		return false;
+	}
+
+	// ???
+	font=newfont;
+
+	needs_sync_=true;
+	return true;
+}
+
+std::vector<std::string>
+Layer_Freetype::get_possible_font_directories(const std::string& canvas_path)
+{
+	std::vector<std::string> possible_font_directories = {""};
+
+	if (!canvas_path.empty())
+		possible_font_directories.push_back(canvas_path);
 
 #ifdef _WIN32
 	// All users fonts
@@ -655,7 +689,8 @@ Layer_Freetype::new_face(const String &newfont)
 #else
 
 #ifdef __APPLE__
-	possible_font_directories.push_back("~/Library/Fonts/");
+	std::string userdir = Glib::getenv("HOME");
+	possible_font_directories.push_back(userdir + "/Library/Fonts/");
 	possible_font_directories.push_back("/Library/Fonts/");
 #endif
 
@@ -664,32 +699,7 @@ Layer_Freetype::new_face(const String &newfont)
 
 #endif
 
-	for (std::string directory : possible_font_directories) {
-		for (const char *extension : possible_font_extensions) {
-			std::string path = (directory + newfont + extension);
-			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
-			if (!error) {
-				font_path_from_canvas = !canvas_path.empty() && directory == canvas_path;
-				break;
-			}
-		}
-		if (!error)
-			break;
-	}
-
-
-	if(error)
-	{
-		if (!newfont.empty())
-			synfig::error(strprintf("Layer_Freetype: %s (err=%d): %s",_("Unable to open font face."),error,newfont.c_str()));
-		return false;
-	}
-
-	// ???
-	font=newfont;
-
-	needs_sync_=true;
-	return true;
+	return possible_font_directories;
 }
 
 bool
