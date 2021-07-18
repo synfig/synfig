@@ -46,6 +46,9 @@
 #include <fribidi/fribidi.h>
 #endif
 #include <glibmm.h>
+#if HAVE_HARFBUZZ
+#include <harfbuzz/hb-ft.h>
+#endif
 
 #include <synfig/canvasfilenaming.h>
 #include <synfig/context.h>
@@ -217,18 +220,34 @@ struct FontMeta {
 	}
 };
 
+struct FaceInfo {
+	FT_Face face = nullptr;
+#if HAVE_HARFBUZZ
+	hb_font_t *font = nullptr;
+#endif
+
+	FaceInfo() = default;
+	explicit FaceInfo(FT_Face ft_face)
+		: face(ft_face)
+	{
+#if HAVE_HARFBUZZ
+		font = hb_ft_font_create(face, nullptr);
+#endif
+	}
+};
+
 /// Cache font faces for speeding up the text layer rendering
 class FaceCache {
-	std::map<FontMeta, FT_Face> cache;
+	std::map<FontMeta, FaceInfo> cache;
 public:
-	FT_Face get(const FontMeta &meta) const {
+	FaceInfo get(const FontMeta &meta) const {
 		auto iter = cache.find(meta);
 		if (iter != cache.end())
 			return iter->second;
-		return nullptr;
+		return FaceInfo();
 	}
 
-	void put(const FontMeta &meta, FT_Face face) {
+	void put(const FontMeta &meta, FaceInfo face) {
 		cache[meta] = face;
 	}
 
@@ -238,8 +257,12 @@ public:
 	}
 
 	void clear() {
-		for (auto item : cache)
-			FT_Done_Face(item.second);
+		for (auto item : cache) {
+			FT_Done_Face(item.second.face);
+#if HAVE_HARFBUZZ
+			hb_font_destroy(item.second.font);
+#endif
+		}
 		cache.clear();
 	}
 
@@ -407,6 +430,9 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 Layer_Freetype::Layer_Freetype()
 	: face(nullptr)
 {
+#if HAVE_HARFBUZZ
+	font = nullptr;
+#endif
 	param_size=ValueBase(Vector(0.25,0.25));
 	param_text=ValueBase(_("Text Layer"));
 	param_color=ValueBase(Color::black());
@@ -490,9 +516,13 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 
 	FaceCache &face_cache = FaceCache::instance();
 
-	FT_Face tmp_face = face_cache.get(meta);
+	FaceInfo face_info = face_cache.get(meta);
+	FT_Face tmp_face = face_info.face;
 	if (tmp_face) {
 		face = tmp_face;
+#if HAVE_HARFBUZZ
+		font = face_info.font;
+#endif
 		return true;
 	}
 
@@ -502,7 +532,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		if (new_face(font_fam_)) {
 			if (!font_path_from_canvas)
 				meta.canvas_path.clear();
-			face_cache.put(meta, face);
+			face_cache.put(meta, FaceInfo(face));
 			return true;
 		}
 
@@ -510,7 +540,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if (new_face(fontconfig_get_filename(font_fam_, style, weight))) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		face_cache.put(meta, face);
+		face_cache.put(meta, FaceInfo(face));
 		return true;
 	}
 #endif
@@ -522,14 +552,14 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		if (new_face(filename)) {
 			if (!font_path_from_canvas)
 				meta.canvas_path.clear();
-			face_cache.put(meta, face);
+			face_cache.put(meta, FaceInfo(face));
 			return true;
 		}
 	}
 	if (new_face(font_fam_)) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		face_cache.put(meta, face);
+		face_cache.put(meta, FaceInfo(face));
 		return true;
 	}
 
@@ -1012,6 +1042,11 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	int bx=0;
 	int by=0;
 
+#if HAVE_HARFBUZZ
+	hb_buffer_t *span_buffer = hb_buffer_create();
+	std::unique_ptr<hb_buffer_t, decltype(&hb_buffer_destroy)> safe_buf(span_buffer, hb_buffer_destroy); // auto delete
+#endif
+
 	for (const TextLine& line : lines)
 	{
 		visual_lines.push_front(VisualTextLine());
@@ -1020,18 +1055,34 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		previous=0;
 
 		for (const TextSpan& span : line) {
-			int multiplier = 1;
+#if HAVE_HARFBUZZ
+			hb_buffer_clear_contents(span_buffer);
 
+#if HAVE_FRIBIDI
+			hb_direction_t direction = HB_DIRECTION_LTR; // character order already fixed by FriBiDi
+#else
+			hb_direction_t direction = hb_script_get_horizontal_direction(span.script);
+#endif
+			hb_buffer_set_direction(span_buffer, direction);
+			hb_buffer_set_script(span_buffer, span.script);
+//			hb_buffer_set_language(span_buffer, hb_language_from_string(language.c_str(), -1));
 
+			hb_buffer_add_utf32(span_buffer, span.codepoints.data(), span.codepoints.size(), 0, -1);
+
+			hb_shape(font, span_buffer, nullptr, 0);
+
+			unsigned int glyph_count;
+			hb_glyph_info_t *glyph_info = hb_buffer_get_glyph_infos(span_buffer, &glyph_count);
+#else
 			size_t glyph_count = span.codepoints.size();
+#endif
 
 			for (size_t i = 0; i < glyph_count; i++) {
-				if (span.codepoints[i] != '\t') {
-					glyph_index = FT_Get_Char_Index(face, span.codepoints[i]);
-				} else {
-					glyph_index = FT_Get_Char_Index(face, ' ');
-					multiplier = 8;
-				}
+#if HAVE_HARFBUZZ
+				glyph_index = glyph_info[i].codepoint;
+#else
+				glyph_index = FT_Get_Char_Index(face, span.codepoints[i]);
+#endif
 		// retrieve kerning distance and move pen position
 		if ( FT_HAS_KERNING(face) && use_kerning && previous && glyph_index )
 		{
@@ -1078,13 +1129,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		visual_lines.front().width=bx+slot->advance.x;
 
 		// increment pen position
-		bx += round_to_int(slot->advance.x*multiplier*compress);
-		if (multiplier > 1)
-			bx -= bx % round_to_int(slot->advance.x*multiplier*compress);
+		bx += round_to_int(slot->advance.x*compress);
 
-		//bx += round_to_int(slot->advance.x*compress*multiplier);
-		//by += round_to_int(slot->advance.y*compress);
-		by += slot->advance.y*multiplier;
+		by += slot->advance.y;
 
 		visual_lines.front().glyph_table.push_back(curr_glyph);
 
@@ -1299,8 +1346,39 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 	// 3. Handle BiDirectional text
 #if HAVE_FRIBIDI
 	for (auto& line : base_lines) {
-		std::vector<uint32_t> visual_line(line.size());
 		FriBidiParType base_dir = FRIBIDI_TYPE_ON;
+# if HAVE_HARFBUZZ // FriBiDi + HarfBuzz: don't use FriBiDi simple shaper, just get the BiDi info / character reordering
+		size_t line_size = line.size();
+		std::vector<FriBidiCharType> bidi_types(line_size);
+		fribidi_get_bidi_types(line.data(), line_size, bidi_types.data());
+		std::vector<FriBidiLevel> bidi_levels(line_size);
+#if FRIBIDI_MAJOR_VERSION >= 1
+		std::vector<FriBidiBracketType> bracket_types(line_size);
+		FriBidiLevel fribidi_result = fribidi_get_par_embedding_levels_ex(bidi_types.data(), bracket_types.data(), line_size,
+															  &base_dir, bidi_levels.data());
+#else
+		FriBidiLevel fribidi_result = fribidi_get_par_embedding_levels(bidi_types.data(), line_size,
+																	   &base_dir, bidi_levels.data());
+#endif
+		if (fribidi_result == 0) {
+			error("Layer_FreeType: error running FriBiDi (getting embedding levels)");
+			return new_lines;
+		}
+
+		std::vector<int> l2v(line_size);
+		std::vector<int> v2l(line_size);
+		fribidi_result = fribidi_reorder_line(FRIBIDI_FLAGS_DEFAULT|FRIBIDI_FLAGS_ARABIC, bidi_types.data(), line_size, 0, base_dir,
+							 bidi_levels.data(), line.data(), v2l.data());
+		if (fribidi_result == 0) {
+			error("Layer_FreeType: error running FriBiDi (reordering line)");
+			return new_lines;
+		}
+
+		std::reverse(bidi_levels.begin(), bidi_levels.end());
+		for (size_t i = 0; i < line_size; i++)
+			l2v[v2l[i]] = i;
+# else // use FriBiDi simple shaper (and it'll already solve BiDi, but give us some shape errors)
+		std::vector<uint32_t> visual_line(line.size());
 		FriBidiLevel fribidi_result = fribidi_log2vis(
 			/* input */
 			line.data(),
@@ -1314,21 +1392,21 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 		);
 
 		if (fribidi_result == 0) {
-			error("Layer_FreeType: error running FriBiDi");
-			continue;
+			error("Layer_FreeType: error running FriBiDi (getting visual unicode)");
+			return new_lines;
 		}
 
 		line = visual_line;
+# endif
 	}
 #endif
 
-	// 4. Split text into lines
+	// 4. Split text into lines (and text spans according to their script if we know them)
+#if not HAVE_HARFBUZZ
 	for (auto line : base_lines) {
 		TextLine current_line;
 
-		for (size_t i=0; i<line.size(); i++) {
-			uint32_t codepoint = line[i];
-
+		for (uint32_t codepoint : line) {
 			if (!current_line.empty()) {
 				current_line.back().codepoints.push_back(codepoint);
 			} else {
@@ -1337,5 +1415,27 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 		}
 		new_lines.push_back(current_line);
 	}
+#else
+	hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
+	for (auto line : base_lines) {
+		TextLine current_line;
+		hb_script_t current_script = HB_SCRIPT_INVALID;
+
+		for (uint32_t codepoint : line) {
+			hb_script_t script = hb_unicode_script(ufuncs, codepoint);
+
+			if (!current_line.empty() && (script == current_script || script == HB_SCRIPT_INHERITED)) {
+				current_line.back().codepoints.push_back(codepoint);
+			} else {
+				current_line.push_back(TextSpan{
+										   {codepoint},
+										   script
+									   });
+				current_script = script;
+			}
+		}
+		new_lines.push_back(current_line);
+	}
+#endif
 	return new_lines;
 }

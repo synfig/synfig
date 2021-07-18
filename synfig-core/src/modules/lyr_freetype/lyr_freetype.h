@@ -36,6 +36,10 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
+
+#if HAVE_HARFBUZZ
+#include <harfbuzz/hb.h>
+#endif
 #include <vector>
 
 /* === M A C R O S ========================================================= */
@@ -78,10 +82,15 @@ private:
 	synfig::ValueBase param_invert;
 
 	FT_Face face;
-
+#if HAVE_HARFBUZZ
+	hb_font_t *font;
+#endif
 	struct TextSpan
 	{
 		std::vector<uint32_t> codepoints;
+#if HAVE_HARFBUZZ
+		hb_script_t script;
+#endif
 	};
 
 	typedef std::vector<TextSpan> TextLine;

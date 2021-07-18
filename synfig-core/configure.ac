@@ -280,6 +280,39 @@ AS_IF([test "x$with_fribidi" != xno],
 
 AM_CONDITIONAL(WITH_FRIBIDI, test $with_fribidi = yes)
 
+# HARFBUZZ CHECK--------------------
+
+AC_ARG_WITH([harfbuzz],
+	[AS_HELP_STRING([--with-harfbuzz], [support text rendering for non-latin scripts @<:@default=check@:>@])],
+	[],
+	[with_harfbuzz=check]
+)
+AS_IF([test "x$with_harfbuzz" = xyes],
+	[
+		if test "x$with_freetype" != xyes; then
+			AC_MSG_FAILURE(
+				[--with-harfbuzz was given, but it depends on --with-freetype])
+		fi
+	]
+)
+
+AS_IF([test "x$with_harfbuzz" != xno],
+	[PKG_CHECK_MODULES(HARFBUZZ, harfbuzz,
+		[
+			with_harfbuzz="yes"
+			AC_DEFINE(HAVE_HARFBUZZ, [1],[Enable harfbuzz support])
+		],[
+			if test "x$with_harfbuzz" != xcheck; then
+				AC_MSG_FAILURE(
+					[--with-harfbuzz was given, but it couldn't be found])
+			fi
+		]
+	)]
+)
+
+AM_CONDITIONAL(WITH_HARFBUZZ, test $with_harfbuzz = yes)
+
+
 # OPENEXR CHECK------------------------
 AC_ARG_WITH(openexr,
 	AS_HELP_STRING(--without-openexr, [do not support OpenEXR]),[
