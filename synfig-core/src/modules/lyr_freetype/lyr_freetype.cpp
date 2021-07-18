@@ -1012,7 +1012,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
  --	** -- CREATE GLYPHS -------------------------------------------------------
 	*/
 
-	visual_lines.push_front(VisualTextLine());
 	int bx=0;
 	int by=0;
 
@@ -1082,10 +1081,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		visual_lines.front().width=bx+slot->advance.x;
 
 		// increment pen position
-		if(multiplier>1)
-			bx += round_to_int(slot->advance.x*multiplier*compress)-bx%round_to_int(slot->advance.x*multiplier*compress);
-		else
-			bx += round_to_int(slot->advance.x*compress*multiplier);
+		bx += round_to_int(slot->advance.x*multiplier*compress);
+		if (multiplier > 1)
+			bx -= bx % round_to_int(slot->advance.x*multiplier*compress);
 
 		//bx += round_to_int(slot->advance.x*compress*multiplier);
 		//by += round_to_int(slot->advance.y*compress);
