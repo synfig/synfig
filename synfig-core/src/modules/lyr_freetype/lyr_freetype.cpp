@@ -113,12 +113,10 @@ struct Glyph
 	FT_Vector pos;
 };
 
-struct TextLine
+struct VisualTextLine
 {
-	int width;
+	int width = 0;
 	std::vector<Glyph> glyph_table;
-
-	TextLine():width(0) { }
 
 	int actual_height()const
 	{
@@ -400,6 +398,13 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 	}
 }
 
+/// Is it VT, FF, CR, NEL, LS or PS ?
+static bool
+is_line_ending(uint32_t c)
+{
+	return c == '\n' || c == '\v' || c == '\f' || c == '\r' || c == 0x0085 || c == 0x2028 || c == 0x2029;
+}
+
 /* === M E T H O D S ======================================================= */
 
 Layer_Freetype::Layer_Freetype()
@@ -425,7 +430,7 @@ Layer_Freetype::Layer_Freetype()
 	old_version=false;
 
 	set_blend_method(Color::BLEND_COMPOSITE);
-	needs_sync_=true;
+	needs_sync=true;
 
 	synfig::String family=param_family.get(synfig::String());
 	int style=param_style.get(int());
@@ -640,7 +645,7 @@ Layer_Freetype::new_face(const String &newfont)
 	// ???
 	font=newfont;
 
-	needs_sync_=true;
+	needs_sync=true;
 	return true;
 }
 
@@ -726,11 +731,16 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 				size/=2.0;
 				param_size.set(size);
 			}
-			needs_sync_=true;
+			needs_sync=true;
 		}
 		);
-	IMPORT_VALUE_PLUS(param_text,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_origin,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_text,
+		{
+			on_param_text_changed();
+			needs_sync=true;
+		}
+		);
+	IMPORT_VALUE_PLUS(param_origin,needs_sync=true);
 	IMPORT_VALUE_PLUS(param_color,
 		{
 			Color color=param_color.get(Color());
@@ -746,11 +756,11 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 		}
 		);
 	IMPORT_VALUE(param_invert);
-	IMPORT_VALUE_PLUS(param_orient,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_compress,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_vcompress,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_use_kerning,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_grid_fit,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_orient,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_compress,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_vcompress,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_use_kerning,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_grid_fit,needs_sync=true);
 
 	if(param=="pos")
 		return set_param("origin", value);
@@ -883,7 +893,15 @@ Layer_Freetype::get_param_vocab(void)const
 void
 Layer_Freetype::sync()
 {
-	needs_sync_=false;
+	std::lock_guard<std::mutex> lock(sync_mtx);
+
+	needs_sync=false;
+
+	if(param_text.get(std::string())=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
+	{
+		auto text=basename(get_canvas()->get_file_name());
+		lines = fetch_text_lines(text);
+	}
 }
 
 inline Color
@@ -899,7 +917,7 @@ Layer_Freetype::color_func(const Point &/*point_*/, int /*quality*/, ColorReal /
 Color
 Layer_Freetype::get_color(Context context, const synfig::Point &pos)const
 {
-	if(needs_sync_)
+	if(needs_sync)
 		const_cast<Layer_Freetype*>(this)->sync();
 
 	if(!face)
@@ -927,9 +945,10 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	static std::recursive_mutex freetype_mutex;
 
-	if(needs_sync_)
+	if(needs_sync)
 		const_cast<Layer_Freetype*>(this)->sync();
 
+	std::lock_guard<std::mutex> lock1(sync_mtx);
 	int error;
 	Vector size(Layer_Freetype::param_size.get(synfig::Vector())*2);
 
@@ -944,12 +963,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	{
 		if(cb)cb->warning(std::string("Layer_Freetype:")+_("No face loaded, no text will be rendered."));
 		return true;
-	}
-
-	String text(Layer_Freetype::param_text.get(synfig::String()));
-	if(text=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
-	{
-		text=basename(get_canvas()->get_file_name());
 	}
 
 	// Width and Height of a pixel
@@ -993,65 +1006,37 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	FT_UInt       glyph_index(0);
 	FT_UInt       previous(0);
 
-	std::list<TextLine> lines;
+	std::list<VisualTextLine> visual_lines;
 
 	/*
  --	** -- CREATE GLYPHS -------------------------------------------------------
 	*/
 
-	lines.push_front(TextLine());
-	std::string::const_iterator iter;
+	visual_lines.push_front(VisualTextLine());
 	int bx=0;
 	int by=0;
 
-	for (iter=text.begin(); iter!=text.end(); ++iter)
+	for (const TextLine& line : lines)
 	{
-		int multiplier(1);
-		if(*iter=='\n')
-		{
-			lines.push_front(TextLine());
-			bx=0;
-			by=0;
-			previous=0;
-			continue;
-		}
-		if(*iter=='\t')
-		{
-			multiplier=8;
-			glyph_index = FT_Get_Char_Index( face, ' ' );
-		}
-		else
-		{
-			// read uft8 char
-			unsigned int c = (unsigned char)*iter;
-			unsigned int code = c;
-			int bytes = 0;
-			while ((c & 0x80) != 0) { c = (c << 1) & 0xff; bytes++; }
-			bool bad_char = (bytes == 1);
-			if (bytes > 1)
-			{
-				bytes--;
-				code = c << (5*bytes - 1);
-				while (bytes > 0) {
-					iter++;
-					bytes--;
-					c = (unsigned char)*iter;
-					if (iter >= text.end() || (c & 0xc0) != 0x80) { bad_char = true; break; }
-					code |= (c & 0x3f) << (6 * bytes);
+		visual_lines.push_front(VisualTextLine());
+		bx=0;
+		by=0;
+		previous=0;
+
+		for (const TextSpan& span : line) {
+			int multiplier = 1;
+
+
+			size_t glyph_count = span.codepoints.size();
+
+			for (size_t i = 0; i < glyph_count; i++) {
+				if (span.codepoints[i] != '\t') {
+					glyph_index = FT_Get_Char_Index(face, span.codepoints[i]);
+				} else {
+					glyph_index = FT_Get_Char_Index(face, ' ');
+					multiplier = 8;
 				}
-			}
-
-			if (bad_char)
-			{
-				synfig::warning("Layer_Freetype: multibyte: %s",
-								_("Can't parse multibyte character.\n"));
-				continue;
-			}
-
-			glyph_index = FT_Get_Char_Index( face, code );
-		}
-
-        // retrieve kerning distance and move pen position
+		// retrieve kerning distance and move pen position
 		if ( FT_HAS_KERNING(face) && use_kerning && previous && glyph_index )
 		{
 			FT_Vector  delta;
@@ -1094,7 +1079,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
         previous = glyph_index;
 
 		// Update the line width
-		lines.front().width=bx+slot->advance.x;
+		visual_lines.front().width=bx+slot->advance.x;
 
 		// increment pen position
 		if(multiplier>1)
@@ -1106,14 +1091,16 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		//by += round_to_int(slot->advance.y*compress);
 		by += slot->advance.y*multiplier;
 
-		lines.front().glyph_table.push_back(curr_glyph);
+		visual_lines.front().glyph_table.push_back(curr_glyph);
 
 	}
+}
+}
 
 #define METRICS_SCALE_ONE		((Real)(1<<16))
 
 	Real line_height = vcompress*(face->height*(face->size->metrics.y_scale/METRICS_SCALE_ONE));
-	Real text_height = (lines.size() - 1)*line_height + lines.back().actual_height();
+	Real text_height = (visual_lines.size() - 1)*line_height + visual_lines.back().actual_height();
 
 	// This module sees to expect pixel height to be negative, as it
 	// usually is.  But rendering to .bmp format causes ph to be
@@ -1145,9 +1132,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		Real offset_y = (origin[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION
 				      - sign_y*text_height*(1.0 - orient[1]);
 
-		std::list<TextLine>::iterator iter;
+		std::list<VisualTextLine>::iterator iter;
 		int curr_line;
-		for(curr_line=0,iter=lines.begin();iter!=lines.end();++iter,curr_line++)
+		for(curr_line=0,iter=visual_lines.begin();iter!=visual_lines.end();++iter,curr_line++)
 		{
 			bx=round_to_int(offset_x - orient[0]*iter->width);
 			// I've no idea why 1.5, but it kind of works.  Otherwise,
@@ -1210,8 +1197,83 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 synfig::Rect
 Layer_Freetype::get_bounding_rect()const
 {
-	if(needs_sync_)
+	if(needs_sync)
 		const_cast<Layer_Freetype*>(this)->sync();
 //	if(!is_disabled())
 	return synfig::Rect::full_plane();
+}
+
+void
+Layer_Freetype::on_param_text_changed()
+{
+	std::lock_guard<std::mutex> lock(sync_mtx);
+
+	lines = fetch_text_lines(param_text.get(std::string()));
+}
+
+static std::vector<uint32_t>
+utf8_to_utf32(const std::string& text)
+{
+	std::vector<uint32_t> unicode;
+	for (auto iter = text.cbegin(); iter != text.cend(); ++iter) {
+		unsigned int c = (unsigned char)*iter;
+		unsigned int code = c;
+		int bytes = 0;
+		while ((c & 0x80) != 0) { c = (c << 1) & 0xff; bytes++; }
+		bool bad_char = (bytes == 1);
+		if (bytes > 1)
+		{
+			bytes--;
+			code = c << (5*bytes - 1);
+			while (bytes > 0) {
+				++iter;
+				bytes--;
+				c = (unsigned char)*iter;
+				if (iter >= text.end() || (c & 0xc0) != 0x80) { bad_char = true; break; }
+				code |= (c & 0x3f) << (6 * bytes);
+			}
+		}
+
+		if (bad_char)
+		{
+			synfig::warning("Layer_Freetype: multibyte: %s",
+							_("Can't parse multibyte character.\n"));
+			continue;
+		}
+
+		unicode.push_back(code);
+	}
+	return unicode;
+}
+
+std::vector<Layer_Freetype::TextLine>
+Layer_Freetype::fetch_text_lines(const std::string& text)
+{
+	std::vector<TextLine> new_lines;
+
+	if (text.empty())
+		return new_lines;
+
+	std::vector<uint32_t> unicode = utf8_to_utf32(text);
+	size_t unicode_len = unicode.size();
+
+	TextLine current_line;
+
+	for (unsigned int i = 0; i < unicode_len; i++) {
+		uint32_t codepoint = unicode[i];
+
+		if (is_line_ending(codepoint)) {
+			new_lines.push_back(current_line);
+			current_line.clear();
+			continue;
+		}
+
+		if (!current_line.empty()) {
+			current_line.back().codepoints.push_back(codepoint);
+		} else {
+			current_line.push_back(TextSpan{{codepoint}});
+		}
+	}
+	new_lines.push_back(current_line);
+	return new_lines;
 }
