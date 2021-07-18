@@ -254,8 +254,9 @@ void Widget_Waypoint::set_valuedesc(synfigapp::ValueDesc& value_desc)
 
 	value_widget->set_value_desc(value_desc);
 	synfig::ParamDesc param_desc;
-	if (value_desc.find_param_desc(param_desc))
-		value_widget->set_param_desc(param_desc);
+	if (value_desc.parent_is_layer())
+		value_desc.find_param_desc(param_desc);
+	value_widget->set_param_desc(param_desc);
 }
 
 const synfig::Waypoint &
