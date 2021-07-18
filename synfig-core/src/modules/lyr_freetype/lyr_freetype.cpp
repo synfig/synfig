@@ -403,9 +403,8 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 /* === M E T H O D S ======================================================= */
 
 Layer_Freetype::Layer_Freetype()
+	: face(nullptr)
 {
-	face=0;
-
 	param_size=ValueBase(Vector(0.25,0.25));
 	param_text=ValueBase(_("Text Layer"));
 	param_color=ValueBase(Color::black());
@@ -1190,7 +1189,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 				//synfig::info("GLYPH: line %d, pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
 
-				error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_NORMAL,0/*&pen*/, 1 );
+				error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_NORMAL, nullptr/*&pen*/, 1 );
 				if(error) { FT_Done_Glyph( image ); continue; }
 
 				bit = (FT_BitmapGlyph)image;
