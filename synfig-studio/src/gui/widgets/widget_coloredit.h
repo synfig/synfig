@@ -34,6 +34,8 @@
 #include <gtkmm/spinbutton.h>
 #include <gui/widgets/widget_color.h>
 #include <gui/widgets/widget_colorslider.h>
+#include <gui/widgets/widget_eyedropper.h>
+#include <gui/widgets/widget_hsv_plane.h>
 #include <synfig/color.h>
 
 /* === M A C R O S ========================================================= */
@@ -48,7 +50,7 @@ namespace Gtk {
 
 namespace studio {
 
-class Widget_ColorEdit : public Gtk::Grid
+class Widget_ColorEdit : public Gtk::Bin
 {
 	sigc::signal<void> signal_activated_;
 	sigc::signal<void> signal_value_changed_;
@@ -56,45 +58,27 @@ class Widget_ColorEdit : public Gtk::Grid
 	Widget_ColorSlider *slider_R;
 	Widget_ColorSlider *slider_G;
 	Widget_ColorSlider *slider_B;
-	Gtk::Label *hex_color_label;
-	Gtk::Entry *hex_color;
 
 	Widget_ColorSlider *slider_A;
-	Widget_ColorSlider *slider_Y;
-	Widget_ColorSlider *slider_U;
-	Widget_ColorSlider *slider_V;
-	Widget_ColorSlider *slider_SAT;
-	Widget_ColorSlider *slider_HUE;
+	Widget_ColorSlider *slider_vertical;
 
-	Widget_Color widget_color;
+	Widget_HSV_Plane *hsv_plane;
 
-	bool hold_signals;
+	Widget_Color *widget_color;
+	Widget_Eyedropper *widget_eyedropper;
 
-	bool clamp_;
 
-	Gtk::SpinButton *spinbutton_R;
-	Gtk::SpinButton *spinbutton_G;
-	Gtk::SpinButton *spinbutton_B;
-	Gtk::SpinButton *spinbutton_A;
 
-	Gtk::ColorSelection * hvsColorWidget;
 
-	Glib::RefPtr<Gtk::Adjustment> R_adjustment;
-	Glib::RefPtr<Gtk::Adjustment> G_adjustment;
-	Glib::RefPtr<Gtk::Adjustment> B_adjustment;
-	Glib::RefPtr<Gtk::Adjustment> A_adjustment;
 
 	synfig::Color color;
 
-	Gtk::Notebook* notebook;
 
 protected:
 
-	void on_value_changed();
 
-	void on_slider_moved(Widget_ColorSlider::Type type, float amount);
-	void on_hex_edited();
-	bool on_hex_focus_out(GdkEventFocus* event);
+	void on_button_eyedropper_clicked();
+	void on_eyedropper_picked(const Gdk::RGBA& rgba);
 
 public:
 
@@ -102,30 +86,13 @@ public:
 
 	sigc::signal<void>& signal_activate() { return signal_activated_; }
 
-	//Glib::SignalProxy0<void> signal_activate() { return spinbutton_A->signal_activate(); }
-
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
 	
-	void on_color_changed();
 
-	void activated() { signal_activated_(); }
-	void activate() { signal_activated_(); }
-	void set_value(const synfig::Color &data);
+	void set_value(const synfig::Color &new_color);
 	const synfig::Color &get_value();
-	synfig::Color get_value_raw();
 	void set_has_frame(bool x);
-	void set_digits(int x);
 	Widget_ColorEdit();
-	~Widget_ColorEdit();
-
-private:
-	bool colorHVSChanged; //Spike. Look more in the code.
-	///@brief Sets color to the widget
-	void setHVSColor(synfig::Color color);
-	///@brief The function adds slider into the row grid with label.
-	void SliderRow(int left, int top, Widget_ColorSlider *color_widget, std::string l, Gtk::Grid *grid);
-	///@brief The function adds spin button into the grid.
-	void AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid);
 
 }; // END of class Widget_ColorEdit
 

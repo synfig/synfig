@@ -43,6 +43,7 @@
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/resourcehelper.h>
 
 #endif
 
@@ -61,348 +62,140 @@ using namespace studio;
 
 
 /* === M E T H O D S ======================================================= */
-void
-Widget_ColorEdit::SliderRow(int left, int top, Widget_ColorSlider* color_widget, std::string l, Gtk::Grid *grid)
+#include <glibmm/fileutils.h> // Glib::FileError
+#include <glibmm/main.h> // Glib::signal_idle()
+#include <glibmm/markup.h> // Glib::MarkupError
+#include <gtkmm/builder.h>
+#include <gtkmm/togglebutton.h>
+Widget_ColorEdit::Widget_ColorEdit()
 {
-	auto label = manage(new class Gtk::Label(l));
-	label->set_halign(Gtk::ALIGN_START);
-
-	color_widget->set_valign(Gtk::ALIGN_CENTER);
-	color_widget->set_hexpand();
-	color_widget->set_margin_start(12);
-	color_widget->set_margin_bottom(6);
-	color_widget->signal_slider_moved().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_slider_moved));
-	//color_widget->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::activated));
-	color_widget->signal_activated().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-
-	grid->attach(*label,        left,   top, 1, 1);
-	grid->attach(*color_widget, left+1, top, 1, 1);
-}
-
-void
-Widget_ColorEdit::AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid)
-{
-	spin_button->set_margin_start(12);
-	spin_button->set_margin_bottom(6);
-	spin_button->set_update_policy(Gtk::UPDATE_ALWAYS);
-	grid->attach(*spin_button, left, top, 1, 1);
-}
-
-Widget_ColorEdit::Widget_ColorEdit():
-	R_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
-	G_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
-	B_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
-	A_adjustment(Gtk::Adjustment::create(0,-10000000,10000000,1,10,0)),
-	colorHVSChanged(false)
-{
-	// Set left/right/up/down margin on this widget's content
-	get_style_context()->add_class("dialog-main-content");
-
-	notebook=manage(new Gtk::Notebook);
-	notebook->set_vexpand();
-
-	auto rgb_grid  (manage(new Gtk::Grid));
-	auto yuv_grid  (manage(new Gtk::Grid));
-	auto hvs_grid  (manage(new Gtk::Grid));
-	auto alpha_grid(manage(new Gtk::Grid));
-
-	rgb_grid->get_style_context()->add_class("color-grid");
-	yuv_grid->get_style_context()->add_class("color-grid");
-	hvs_grid->get_style_context()->add_class("color-grid");
-
+	try
 	{
-		auto rgb_box(manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)));
-		auto yuv_box(manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)));
-		auto hvs_box(manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)));
-		rgb_box->add(*rgb_grid);
-		yuv_box->add(*yuv_grid);
-		hvs_box->add(*hvs_grid);
-		notebook->append_page(*rgb_box,_("RGB"));
-		notebook->append_page(*yuv_box,_("YUV"));
-		notebook->append_page(*hvs_box,_("HSV"));
+		auto builder = Gtk::Builder::create_from_file(ResourceHelper::get_ui_path("widget_coloredit.glade"));
+		Gtk::Grid *grid;
+		builder->get_widget("Widget_ColorEdit", grid);
+		add(*grid);
+		builder->get_widget("color_slider_r", slider_R);
+		builder->get_widget("color_slider_g", slider_G);
+		builder->get_widget("color_slider_b", slider_B);
+		builder->get_widget("color_slider_a", slider_A);
+		builder->get_widget("vertical_color_slider", slider_vertical);
+		builder->get_widget("hsv_plane", hsv_plane);
+		builder->get_widget("color", widget_color);
+		builder->get_widget("eyedropper", widget_eyedropper);
+		Gtk::Button *button_eyedropper;
+		builder->get_widget("button_eyedropper", button_eyedropper);
+		if (button_eyedropper && widget_eyedropper) {
+			button_eyedropper->signal_clicked().connect(sigc::mem_fun(*this, &Widget_ColorEdit::on_button_eyedropper_clicked));
+			widget_eyedropper->signal_color_picked().connect(sigc::mem_fun(*this, &Widget_ColorEdit::on_eyedropper_picked));
+		}
+
+		color = Color::red();
+
+		auto on_color_changed = [&](Widget_ColorSlider::Type type) {
+			Color new_color(color);
+			Widget_ColorSlider::adjust_color(type, new_color, .8f);
+			if (color != new_color) {
+				color = new_color;
+				slider_R->set_color(color);
+				slider_G->set_color(color);
+				slider_B->set_color(color);
+				slider_A->set_color(color);
+				slider_vertical->set_color(color);
+				widget_color->set_value(color);
+				hsv_plane->set_color(color);
+			}
+		};
+
+		auto on_slider_moved = [&](Widget_ColorSlider::Type type, float value) {
+			Color new_color(color);
+			Widget_ColorSlider::adjust_color(type, new_color, value);
+			set_value(new_color);
+		};
+
+		slider_R->property_type = Widget_ColorSlider::TYPE_R;
+		slider_G->property_type = Widget_ColorSlider::TYPE_G;
+		slider_B->property_type = Widget_ColorSlider::TYPE_B;
+		slider_A->property_type = Widget_ColorSlider::TYPE_A;
+		slider_vertical->property_type = Widget_ColorSlider::TYPE_HUE;
+		slider_vertical->property_orientation = Gtk::ORIENTATION_VERTICAL;
+
+		slider_R->signal_slider_moved().connect(on_slider_moved);
+		slider_G->signal_slider_moved().connect(on_slider_moved);
+		slider_B->signal_slider_moved().connect(on_slider_moved);
+		slider_A->signal_slider_moved().connect(on_slider_moved);
+		slider_vertical->signal_slider_moved().connect(on_slider_moved);
+
+		hsv_plane->signal_activated().connect([&](){set_value(hsv_plane->get_color());});
+
+		set_value(color);
 	}
-
-	color=Color(0,0,0,0);
-
-	set_size_request(200,-1);
-	hold_signals=true;
-	clamp_=true;
-
-	widget_color.set_size_request(-1, 32);
-	attach(widget_color, 0, 0, 1, 1);
-	attach(*notebook,    0, 1, 1, 1);
-	attach(*alpha_grid,  0, 2, 1, 1);
-
-	//This defines are used for code below simplification.
-	#define SLIDER_ROW(left,top,n,l) SliderRow(left, top, slider_##n = manage(new Widget_ColorSlider(Widget_ColorSlider::TYPE_##n)), l, grid);
-	#define ATTACH_SPIN_BUTTON(left,top,n) AttachSpinButton(left, top, spinbutton_##n = manage(new class Gtk::SpinButton(n##_adjustment, 1, 0)),grid);
-
-	{ //RGB frame
-		auto grid(rgb_grid);
-		SLIDER_ROW(0, 0, R, _("Red"));
-		SLIDER_ROW(0, 1, G, _("Green"));
-		SLIDER_ROW(0, 2, B, _("Blue"));
-		ATTACH_SPIN_BUTTON(2, 0, R);
-		ATTACH_SPIN_BUTTON(2, 1, G);
-		ATTACH_SPIN_BUTTON(2, 2, B);
-
-		auto separator = manage(new Gtk::Separator);
-		grid->attach(*separator, 0, 3, 3, 1);
-
-		hex_color_label = manage(new Gtk::Label("HTML code"));
-		hex_color_label->set_halign(Gtk::ALIGN_START);
-		grid->attach(*hex_color_label, 0, 4, 1, 1);
-
-		hex_color = manage(new Gtk::Entry());
-		hex_color->set_halign(Gtk::ALIGN_START);
-		hex_color->set_width_chars(16);
-		hex_color->set_margin_start(12);
-		hex_color->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_hex_edited));
-		hex_color->signal_focus_out_event().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_hex_focus_out));
-		grid->attach(*hex_color, 1, 4, 1, 1);
-	}
-	{ //YUM frame
-		auto grid(yuv_grid);
-		grid->set_row_spacing(16);
-		SLIDER_ROW(0, 0, Y,   _("Luma"));
-		SLIDER_ROW(0, 1, HUE, _("Hue"));
-		SLIDER_ROW(0, 2, SAT, _("Saturation"));
-		SLIDER_ROW(0, 3, U,   _("U"));
-		SLIDER_ROW(0, 4, V,   _("V"));
-	}
-	{ //HVS frame
-		//I use Gtk::ColorSelection widget here.
-		hvsColorWidget = manage(new Gtk::ColorSelection());
-		setHVSColor(get_value());
-		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
-		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
-		hvs_grid->attach(*(hvsColorWidget), 0, 4, 1, 1);
-	}
+	catch(const Glib::FileError& ex)
 	{
-		auto grid(alpha_grid);
-		grid->set_margin_top(6);
-		SLIDER_ROW(0, 0, A, _("Alpha"));
-		ATTACH_SPIN_BUTTON(2, 0, A);
+		synfig::error("FileError: " + ex.what());
 	}
-
-#undef SLIDER_ROW
-#undef ATTACH_SPIN_BUTTON
-
-	spinbutton_R->signal_activate().connect(sigc::mem_fun(*spinbutton_G,&Gtk::SpinButton::grab_focus));
-	spinbutton_G->signal_activate().connect(sigc::mem_fun(*spinbutton_B,&Gtk::SpinButton::grab_focus));
-	spinbutton_B->signal_activate().connect(sigc::mem_fun(*spinbutton_A,&Gtk::SpinButton::grab_focus));
-	spinbutton_A->signal_activate().connect(sigc::mem_fun(*spinbutton_R,&Gtk::SpinButton::grab_focus));
-
-	R_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	G_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	B_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-	A_adjustment->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_value_changed));
-
-	show_all_children();
-
-	set_digits(1);
-	set_value(color);
-
-	hold_signals=false;
-	notebook->set_current_page(2);
-
-}
-
-Widget_ColorEdit::~Widget_ColorEdit()
-{
-}
-
-#define CLIP_VALUE(value, min, max) (value <= min ? min : (value > max ? max : value))
-
-bool are_close_colors(Gdk::Color const& a, Gdk::Color const& b) {
-	static const int eps = 1;
-	if (a == b)
-		return true;
-	return std::abs(a.get_red()-b.get_red()) <= eps
-		&& std::abs(a.get_green()-b.get_green()) <= eps
-		&& std::abs(a.get_blue()-b.get_blue()) <= eps;
-}
-
-void Widget_ColorEdit::setHVSColor(synfig::Color color)
-{
-	Color c = App::get_selected_canvas_gamma().get_inverted().apply(color).clamped();
-	Gdk::Color gtkColor;
-	gtkColor.set_rgb_p(c.get_r(), c.get_g(), c.get_b());
-	if (!are_close_colors(hvsColorWidget->get_current_color(), gtkColor)) {
-		colorHVSChanged = true;
-		hvsColorWidget->set_current_color(gtkColor);
-	}
-	hvsColorWidget->set_previous_color(hvsColorWidget->get_current_color()); //We can't use it there, cause color changes in realtime.
-	colorHVSChanged = false;
-}
-
-void
-Widget_ColorEdit::on_color_changed()
-{
-	//Spike! Gtk::ColorSelection emits this signal when I use
-	//set_current_color(...). It calls recursion. Used a flag to fix it.
-	if (!colorHVSChanged)
+	catch(const Glib::MarkupError& ex)
 	{
-		Gdk::Color newColor = hvsColorWidget->get_current_color();
-		Color synfigColor(
-			newColor.get_red_p(),
-			newColor.get_green_p(),
-			newColor.get_blue_p() );
-		synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
-		set_value(synfigColor);
-		colorHVSChanged = true; //I reset the flag in setHVSColor(..)
-		on_value_changed();
+		synfig::error("MarkupError: " + ex.what());
 	}
-}
-
-void
-Widget_ColorEdit::on_slider_moved(Widget_ColorSlider::Type type, float amount)
-{
-	Color color(get_value_raw());
-
-	assert(color.is_valid());
-	Widget_ColorSlider::adjust_color(type,color,amount);
-	assert(color.is_valid());
-
-	// If a non-primary colorslider is adjusted,
-	// we want to make sure that we clamp
-	//if(type>ColorSlider::TYPE_B && (color.get_r()<0 ||color.get_g()<0 ||color.get_b()<0))
-	//	clamp_=true;
-
-	/*
-	if(type==ColorSlider::TYPE_R && color.get_r()<0)clamp_=false;
-	if(type==ColorSlider::TYPE_G && color.get_g()<0)clamp_=false;
-	if(type==ColorSlider::TYPE_B && color.get_b()<0)clamp_=false;
-	*/
-	clamp_=false;
-
-	set_value(color);
-	assert(color.is_valid());
-}
-
-void
-Widget_ColorEdit::on_hex_edited()
-{
-	Color color(get_value_raw());
-	String s = hex_color->get_text();
-	color.set_hex(s);
-	set_value(color);
-	signal_value_changed_();
-}
-
-bool
-Widget_ColorEdit::on_hex_focus_out(GdkEventFocus* /*event*/)
-{
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	on_hex_edited();
-	return true;
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-}
-
-void
-Widget_ColorEdit::on_value_changed()
-{
-	if(hold_signals)
-		return;
-
-	const Color color(get_value_raw());
-	assert(color.is_valid());
-	setHVSColor(color);
-	slider_R->set_color(color);
-	slider_G->set_color(color);
-	slider_B->set_color(color);
-	slider_Y->set_color(color);
-	slider_U->set_color(color);
-	slider_V->set_color(color);
-	slider_HUE->set_color(color);
-	slider_SAT->set_color(color);
-	slider_A->set_color(color);
-	hex_color->set_text(color.get_hex());
-	widget_color.set_value(color);
-
-	activate();
-	signal_value_changed_();
+	catch(const Gtk::BuilderError& ex)
+	{
+		synfig::error("BuilderError: " + ex.what());
+	}
 }
 
 void
 Widget_ColorEdit::set_has_frame(bool x)
 {
-	spinbutton_R->set_has_frame(x);
-	spinbutton_G->set_has_frame(x);
-	spinbutton_B->set_has_frame(x);
-	spinbutton_A->set_has_frame(x);
+//	spinbutton_R->set_has_frame(x);
+//	spinbutton_G->set_has_frame(x);
+//	spinbutton_B->set_has_frame(x);
+//	spinbutton_A->set_has_frame(x);
+}
+
+//void
+//Widget_ColorEdit::set_digits(int x)
+//{
+//	spinbutton_R->set_digits(x);
+//	spinbutton_G->set_digits(x);
+//	spinbutton_B->set_digits(x);
+//	spinbutton_A->set_digits(x);
+//}
+
+void Widget_ColorEdit::on_button_eyedropper_clicked()
+{
+	Glib::signal_timeout().connect_once(sigc::mem_fun(*widget_eyedropper, &Widget_Eyedropper::grab), 250);
+}
+
+void Widget_ColorEdit::on_eyedropper_picked(const Gdk::RGBA& rgba)
+{
+	Color picked_color(rgba.get_red(), rgba.get_green(), rgba.get_blue());
+	set_value(picked_color);
 }
 
 void
-Widget_ColorEdit::set_digits(int x)
+Widget_ColorEdit::set_value(const synfig::Color &new_color)
 {
-	spinbutton_R->set_digits(x);
-	spinbutton_G->set_digits(x);
-	spinbutton_B->set_digits(x);
-	spinbutton_A->set_digits(x);
+	if (color != new_color) {
+		color = new_color;
+		Color fixed_color = new_color.clamped();
+		slider_R->set_color(fixed_color);
+		slider_G->set_color(fixed_color);
+		slider_B->set_color(fixed_color);
+		slider_A->set_color(fixed_color);
+		slider_vertical->set_color(fixed_color);
+		widget_color->set_value(fixed_color);
+		hsv_plane->set_color(fixed_color);
+		signal_value_changed().emit();
+	}
+	signal_activate().emit();
 }
 
-void
-Widget_ColorEdit::set_value(const synfig::Color &data)
-{
-	assert(data.is_valid());
-	hold_signals=true;
-	clamp_=false;
 
-	color=data;
-
-	R_adjustment->set_value(color.get_r()*100);
-	G_adjustment->set_value(color.get_g()*100);
-	B_adjustment->set_value(color.get_b()*100);
-	A_adjustment->set_value(color.get_a()*100);
-
-	slider_R->set_color(color);
-	slider_G->set_color(color);
-	slider_B->set_color(color);
-	slider_Y->set_color(color);
-	slider_U->set_color(color);
-	slider_V->set_color(color);
-	slider_HUE->set_color(color);
-	slider_SAT->set_color(color);
-	slider_A->set_color(color);
-	hex_color->set_text(color.get_hex());
-	widget_color.set_value(color);
-	setHVSColor(color);
-
-	hold_signals=false;
-}
-
-synfig::Color
-Widget_ColorEdit::get_value_raw()
-{
-	Color color;
-	color.set_r(R_adjustment->get_value()/100);
-	color.set_g(G_adjustment->get_value()/100);
-	color.set_b(B_adjustment->get_value()/100);
-	color.set_a(A_adjustment->get_value()/100);
-	assert(color.is_valid());
-
-	return color;
-}
 
 const synfig::Color &
 Widget_ColorEdit::get_value()
 {
-	color.set_r(R_adjustment->get_value()/100);
-	color.set_g(G_adjustment->get_value()/100);
-	color.set_b(B_adjustment->get_value()/100);
-	color.set_a(A_adjustment->get_value()/100);
-	assert(color.is_valid());
-
-	if(notebook->get_current_page()!=0)
-		color=color.clamped();
-
-	/*{
-		// Clamp out negative values
-		color.set_r(std::max(0.0f,(float)color.get_r()));
-		color.set_g(std::max(0.0f,(float)color.get_g()));
-		color.set_b(std::max(0.0f,(float)color.get_b()));
-	}*/
 
 	return color;
 }
