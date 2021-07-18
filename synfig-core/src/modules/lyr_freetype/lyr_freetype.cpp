@@ -903,10 +903,10 @@ Layer_Freetype::get_color(Context context, const synfig::Point &pos)const
 	if(needs_sync_)
 		const_cast<Layer_Freetype*>(this)->sync();
 
-	const Color color(color_func(pos,0));
-
 	if(!face)
 		return context.get_color(pos);
+
+	const Color color(color_func(pos,0));
 
 	if(get_amount()==1.0f && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
