@@ -735,7 +735,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_color,
 		{
 			Color color=param_color.get(Color());
-			if (color.get_a() == 0)
+			if (approximate_zero(color.get_a()))
 			{
 				if (converted_blend_)
 				{
@@ -908,7 +908,7 @@ Layer_Freetype::get_color(Context context, const synfig::Point &pos)const
 	if(!face)
 		return context.get_color(pos);
 
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+	if(get_amount()==1.0f && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
 	else
 		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
@@ -1067,7 +1067,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 			else
 				FT_Get_Kerning( face, previous, glyph_index, ft_kerning_unfitted, &delta );
 
-			if(compress<1.0f)
+			if(compress<1.0)
 			{
 				bx += round_to_int(delta.x*compress);
 				by += round_to_int(delta.y*compress);
@@ -1205,9 +1205,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 							y<surface->get_h() &&
 							x<surface->get_w())
 						{
-							Real myamount=(Real)bit->bitmap.buffer[v*bit->bitmap.pitch+u]/255.0f;
+							Real myamount=bit->bitmap.buffer[v*bit->bitmap.pitch+u]/Real(255.0);
 							if(invert)
-								myamount=1.0f-myamount;
+								myamount=1.0-myamount;
 							(*surface)[y][x]=Color::blend(color,(*src_surface)[y][x],myamount*get_amount(),get_blend_method());
 						}
 					}
