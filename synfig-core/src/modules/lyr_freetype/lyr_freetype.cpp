@@ -111,7 +111,6 @@ struct Glyph
 {
 	FT_Glyph glyph;
 	FT_Vector pos;
-	//int width;
 };
 
 struct TextLine
@@ -120,7 +119,6 @@ struct TextLine
 	std::vector<Glyph> glyph_table;
 
 	TextLine():width(0) { }
-	void clear_and_free();
 
 	int actual_height()const
 	{
@@ -259,29 +257,11 @@ private:
 
 /* === P R O C E D U R E S ================================================= */
 
-/*Glyph::~Glyph()
-{
-	if(glyph)FT_Done_Glyph(glyph);
-}
-*/
-void
-TextLine::clear_and_free()
-{
-	std::vector<Glyph>::iterator iter;
-	for(iter=glyph_table.begin();iter!=glyph_table.end();++iter)
-	{
-		if(iter->glyph)FT_Done_Glyph(iter->glyph);
-		iter->glyph=0;
-	}
-	glyph_table.clear();
-}
-
 static bool
 has_valid_font_extension(const std::string &filename) {
 	std::string extension = etl::filename_extension(filename);
 	return std::find(known_font_extensions.begin(), known_font_extensions.end(), extension) != known_font_extensions.end();
 }
-
 
 /// Try to map a font family to a filename (without extension nor directory)
 static void
@@ -1234,7 +1214,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 				FT_Done_Glyph( image );
 			}
-			//iter->clear_and_free();
 		}
 	}
 
