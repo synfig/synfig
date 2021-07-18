@@ -41,15 +41,16 @@
 
 #include "lyr_freetype.h"
 
-#include <synfig/localization.h>
-#include <synfig/general.h>
+#include <algorithm>
+#if HAVE_FRIBIDI
+#include <fribidi/fribidi.h>
+#endif
+#include <glibmm.h>
 
 #include <synfig/canvasfilenaming.h>
-
 #include <synfig/context.h>
-
-#include <algorithm>
-#include <glibmm.h>
+#include <synfig/general.h>
+#include <synfig/localization.h>
 
 #endif
 
@@ -104,6 +105,9 @@ static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", 
 #endif
 
 extern FT_Library ft_library;
+
+/// NL/LF, VT, FF, CR, NEL, LS and PS
+static const std::vector<uint32_t> line_endings{'\n', '\v', '\f', '\r', 0x0085, 0x2028, 0x2029};
 
 /* === C L A S S E S ======================================================= */
 
@@ -396,13 +400,6 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 			}
 		}
 	}
-}
-
-/// Is it VT, FF, CR, NEL, LS or PS ?
-static bool
-is_line_ending(uint32_t c)
-{
-	return c == '\n' || c == '\v' || c == '\f' || c == '\r' || c == 0x0085 || c == 0x2028 || c == 0x2029;
 }
 
 /* === M E T H O D S ======================================================= */
@@ -955,7 +952,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	if(!context.accelerated_render(surface,quality,renddesc,cb))
 		return false;
 
-	if(is_disabled() || param_text.get(synfig::String()).empty())
+	if(is_disabled() || param_text.get(synfig::String()).empty() || lines.empty())
 		return true;
 
 	// If there is no font loaded, just bail
@@ -1213,6 +1210,11 @@ static std::vector<uint32_t>
 utf8_to_utf32(const std::string& text)
 {
 	std::vector<uint32_t> unicode;
+#if HAVE_FRIBIDI
+	unicode.resize(text.size()+1);
+	FriBidiStrIndex unicode_len = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8, text.c_str(), text.size(), unicode.data());
+	unicode.resize(unicode_len);
+#else
 	for (auto iter = text.cbegin(); iter != text.cend(); ++iter) {
 		unsigned int c = (unsigned char)*iter;
 		unsigned int code = c;
@@ -1241,6 +1243,7 @@ utf8_to_utf32(const std::string& text)
 
 		unicode.push_back(code);
 	}
+#endif
 	return unicode;
 }
 
@@ -1252,26 +1255,87 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 	if (text.empty())
 		return new_lines;
 
-	std::vector<uint32_t> unicode = utf8_to_utf32(text);
-	size_t unicode_len = unicode.size();
+	std::vector<uint32_t> unicode;
 
-	TextLine current_line;
+	{
+		std::string parsed_text = text;
+		// 0. Do some pre-parsing still in UTF-8
+		{
+			// 0.1 \r\n -> \n
+			// 0.2 \t -> 8 blank spaces
+			auto pos = parsed_text.find_first_of("\r\t");
+			while (pos != std::string::npos) {
+				if (parsed_text[pos] == '\t') {
+					const char *tab = "        ";
+					const int tab_length = 8;
+					parsed_text.replace(pos, 1, tab);
+					pos += tab_length;
+				} else if (/*parsed_text[pos] == '\r' &&*/ pos+1 != std::string::npos && parsed_text[pos+1] == '\n') {
+					parsed_text.erase(pos, 1);
+				}
+				pos = parsed_text.find_first_of("\r\t", pos);
+			}
+		}
 
-	for (unsigned int i = 0; i < unicode_len; i++) {
-		uint32_t codepoint = unicode[i];
+		// 1. Convert to unicode codepoints
+		unicode = utf8_to_utf32(parsed_text);
+	}
 
-		if (is_line_ending(codepoint)) {
-			new_lines.push_back(current_line);
-			current_line.clear();
+	// 2. Split into lines
+	std::vector<std::vector<uint32_t>> base_lines;
+	{
+		auto it = unicode.begin();
+		while (true) {
+			auto new_it = std::find_first_of(it, unicode.end(), line_endings.begin(), line_endings.end());
+			std::vector<uint32_t> line{it, new_it};
+			base_lines.push_back(line);
+
+			if (new_it == unicode.end())
+				break;
+			it = new_it+1;
+		}
+	}
+
+	// 3. Handle BiDirectional text
+#if HAVE_FRIBIDI
+	for (auto& line : base_lines) {
+		std::vector<uint32_t> visual_line(line.size());
+		FriBidiParType base_dir = FRIBIDI_TYPE_ON;
+		FriBidiLevel fribidi_result = fribidi_log2vis(
+			/* input */
+			line.data(),
+			line.size(),
+			&base_dir,
+			/* output */
+			visual_line.data(),
+			nullptr,
+			nullptr,
+			nullptr
+		);
+
+		if (fribidi_result == 0) {
+			error("Layer_FreeType: error running FriBiDi");
 			continue;
 		}
 
-		if (!current_line.empty()) {
-			current_line.back().codepoints.push_back(codepoint);
-		} else {
-			current_line.push_back(TextSpan{{codepoint}});
-		}
+		line = visual_line;
 	}
-	new_lines.push_back(current_line);
+#endif
+
+	// 4. Split text into lines
+	for (auto line : base_lines) {
+		TextLine current_line;
+
+		for (size_t i=0; i<line.size(); i++) {
+			uint32_t codepoint = line[i];
+
+			if (!current_line.empty()) {
+				current_line.back().codepoints.push_back(codepoint);
+			} else {
+				current_line.push_back(TextSpan{{codepoint}});
+			}
+		}
+		new_lines.push_back(current_line);
+	}
 	return new_lines;
 }
