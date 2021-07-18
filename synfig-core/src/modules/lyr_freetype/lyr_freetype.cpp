@@ -41,15 +41,16 @@
 
 #include "lyr_freetype.h"
 
-#include <synfig/localization.h>
-#include <synfig/general.h>
+#include <algorithm>
+#if HAVE_FRIBIDI
+#include <fribidi/fribidi.h>
+#endif
+#include <glibmm.h>
 
 #include <synfig/canvasfilenaming.h>
-
 #include <synfig/context.h>
-
-#include <algorithm>
-#include <glibmm.h>
+#include <synfig/general.h>
+#include <synfig/localization.h>
 
 #endif
 
@@ -1206,6 +1207,11 @@ static std::vector<uint32_t>
 utf8_to_utf32(const std::string& text)
 {
 	std::vector<uint32_t> unicode;
+#if HAVE_FRIBIDI
+	unicode.resize(text.size()+1);
+	FriBidiStrIndex unicode_len = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8, text.c_str(), text.size(), unicode.data());
+	unicode.resize(unicode_len);
+#else
 	for (auto iter = text.cbegin(); iter != text.cend(); ++iter) {
 		unsigned int c = (unsigned char)*iter;
 		unsigned int code = c;
@@ -1234,6 +1240,7 @@ utf8_to_utf32(const std::string& text)
 
 		unicode.push_back(code);
 	}
+#endif
 	return unicode;
 }
 
@@ -1245,13 +1252,39 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 	if (text.empty())
 		return new_lines;
 
+	// 1. Convert to unicode codepoints
 	std::vector<uint32_t> unicode = utf8_to_utf32(text);
 	size_t unicode_len = unicode.size();
 
+	// 2. Handle BiDirectional text
+	std::vector<uint32_t> visual_unicode(unicode_len);
+#if HAVE_FRIBIDI
+	FriBidiParType pbase_dir = FRIBIDI_TYPE_ON;
+	FriBidiLevel fribidi_result = fribidi_log2vis(
+		/* input */
+		unicode.data(),
+		unicode_len,
+		&pbase_dir,
+		/* output */
+		visual_unicode.data(),
+		nullptr,
+		nullptr,
+		nullptr
+	);
+
+	if (fribidi_result == 0) {
+		error("Layer_FreeType: error running FriBiDi");
+		return new_lines;
+	}
+#else
+	visual_unicode = unicode;
+#endif
+
+	// 3. Split text into lines
 	TextLine current_line;
 
 	for (unsigned int i = 0; i < unicode_len; i++) {
-		uint32_t codepoint = unicode[i];
+		uint32_t codepoint = visual_unicode[i];
 
 		if (codepoint == '\n') {
 			new_lines.push_back(current_line);

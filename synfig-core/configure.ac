@@ -248,6 +248,38 @@ if test $with_fontconfig = "yes" ; then {
 } ; fi
 
 
+# FRIBIDI CHECK--------------------
+
+AC_ARG_WITH([fribidi],
+	[AS_HELP_STRING([--with-fribidi], [support bidirectional text rendering @<:@default=check@:>@])],
+	[],
+	[with_fribidi=check]
+)
+AS_IF([test "x$with_fribidi" = xyes],
+	[
+		if test "x$with_freetype" != xyes; then
+			AC_MSG_FAILURE(
+				[--with-fribidi was given, but it only makes sense if --with-freetype too])
+		fi
+	]
+)
+
+AS_IF([test "x$with_fribidi" != xno],
+	[PKG_CHECK_MODULES(FRIBIDI, fribidi,
+		[
+			with_fribidi="yes"
+			AC_DEFINE(HAVE_FRIBIDI, [1],[Enable fribidi support])
+		],[
+			if test "x$with_fribidi" != xcheck; then
+				AC_MSG_FAILURE(
+					[--with-fribidi was given, but it couldn't be found])
+			fi
+		]
+	)]
+)
+
+AM_CONDITIONAL(WITH_FRIBIDI, test $with_fribidi = yes)
+
 # OPENEXR CHECK------------------------
 AC_ARG_WITH(openexr,
 	AS_HELP_STRING(--without-openexr, [do not support OpenEXR]),[
