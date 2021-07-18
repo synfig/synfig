@@ -972,16 +972,15 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 #define CHAR_RESOLUTION		(64)
 	error = FT_Set_Char_Size(
 		face,						// handle to face object
-		(int)CHAR_RESOLUTION,	// char_width in 1/64th of points
-		(int)CHAR_RESOLUTION,	// char_height in 1/64th of points
+		CHAR_RESOLUTION,	// char_width in 1/64th of points
+		CHAR_RESOLUTION,	// char_height in 1/64th of points
 		round_to_int(std::abs(size[0]*pw*CHAR_RESOLUTION)),						// horizontal device resolution
 		round_to_int(std::abs(size[1]*ph*CHAR_RESOLUTION)) );						// vertical device resolution
 
 	// Here is where we can compensate for the
 	// error in freetype's rendering engine.
-	const Real xerror(std::abs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13f/0.996);
-	const Real yerror(std::abs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13f/0.996);
-	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
+	const Real xerror(std::abs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13/0.996);
+	const Real yerror(std::abs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13/0.996);
 	const Real compress(Layer_Freetype::param_compress.get(Real())*xerror);
 	const Real vcompress(Layer_Freetype::param_vcompress.get(Real())*yerror);
 
@@ -993,16 +992,12 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	FT_GlyphSlot  slot = face->glyph;  // a small shortcut
 	FT_UInt       glyph_index(0);
 	FT_UInt       previous(0);
-	int u,v;
 
 	std::list<TextLine> lines;
 
 	/*
  --	** -- CREATE GLYPHS -------------------------------------------------------
 	*/
-
-	mbstate_t ps;
-	memset(&ps, 0, sizeof(ps));
 
 	lines.push_front(TextLine());
 	std::string::const_iterator iter;
@@ -1115,23 +1110,15 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	}
 
-	//Real	string_height;
-	//string_height=(((lines.size()-1)*face->size->metrics.height+lines.back().actual_height()));
-
-	//int string_height=face->size->metrics.ascender;
-//#define METRICS_SCALE_ONE		(65536.0f)
 #define METRICS_SCALE_ONE		((Real)(1<<16))
 
-	Real line_height = vcompress*((Real)face->height*(((Real)face->size->metrics.y_scale/METRICS_SCALE_ONE)));
+	Real line_height = vcompress*(face->height*(face->size->metrics.y_scale/METRICS_SCALE_ONE));
 	Real text_height = (lines.size() - 1)*line_height + lines.back().actual_height();
 
 	// This module sees to expect pixel height to be negative, as it
 	// usually is.  But rendering to .bmp format causes ph to be
 	// positive, which was causing text to be rendered upside down.
 	//if (ph>0) line_height = -line_height;
-
-	//synfig::info("string_height=%d",string_height);
-	//synfig::info("line_height=%f",line_height);
 
 	/*
  --	** -- RENDER THE GLYPHS ---------------------------------------------------
@@ -1187,15 +1174,13 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 				pen.x = bx + iter2->pos.x;
 				pen.y = by + iter2->pos.y;
 
-				//synfig::info("GLYPH: line %d, pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
-
 				error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_NORMAL, nullptr/*&pen*/, 1 );
 				if(error) { FT_Done_Glyph( image ); continue; }
 
 				bit = (FT_BitmapGlyph)image;
 
-				for(v=0;v<(int)bit->bitmap.rows;v++)
-					for(u=0;u<(int)bit->bitmap.width;u++)
+				for(size_t v=0; v<bit->bitmap.rows; v++)
+					for(size_t u=0; u<bit->bitmap.width; u++)
 					{
 						int x=u+((pen.x+32)>>6)+ bit->left;
 						int y=((pen.y+32)>>6) + (bit->top - v) * sign_y;
