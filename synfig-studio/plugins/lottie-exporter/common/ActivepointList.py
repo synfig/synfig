@@ -20,19 +20,15 @@ class ActivepointList:
         if on_time is None and off_time is None:
             return
 
-        if on_time is None:
-            on_time = 'SOT'
-        if off_time is None:
-            off_time = 'EOT'
+        if on_time is not None:
+            self.on_time = on_time.split(",")
+            for time in self.on_time:
+                self.active_point_list.append(Activepoint(time, True))
 
-        self.on_time = on_time.split(",")
-        self.off_time = off_time.split(",")
-
-        for time in self.on_time:
-            self.active_point_list.append(Activepoint(time, True))
-
-        for time in self.off_time:
-            self.active_point_list.append(Activepoint(time, False))
+        if off_time is not None:
+            self.off_time = off_time.split(",")
+            for time in self.off_time:
+                self.active_point_list.append(Activepoint(time, False))
 
         # Sort this list, and remove duplicates if any
         # Removing duplicates
@@ -121,6 +117,38 @@ class ActivepointList:
         if next_itr.state == True:
             return float((frame - prev_itr.time)/(next_itr.time - prev_itr.time))
         return float((next_itr.time - frame)/(next_itr.time - prev_itr.time))
+
+    def status_at_time(self, t):
+        """
+        https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_dynamiclist.cpp#L441
+        """
+        state = True
+        if not self.empty():
+            if len(self.active_point_list) == 1:
+                state = self.active_point_list[0].state
+            else:
+                entry_itr = 0
+                while entry_itr != len(self.active_point_list):
+                    if self.active_point_list[entry_itr].time == t:
+                        return self.active_point_list[entry_itr].state
+                    if self.active_point_list[entry_itr].time > t:
+                        break
+                    entry_itr += 1
+                prev_itr = entry_itr
+                prev_itr -= 1
+
+                if entry_itr == len(self.active_point_list):
+                    state = self.active_point_list[prev_itr].state
+                elif entry_itr == 0:
+                    state = self.active_point_list[entry_itr].state
+                elif self.active_point_list[entry_itr].priority == self.active_point_list[prev_itr].priority:
+                    state = self.active_point_list[entry_itr].state or self.active_point_list[prev_itr].state
+                elif self.active_point_list[entry_itr].priority > self.active_point_list[prev_itr].priority:
+                    state = self.active_point_list[entry_itr].state
+                else:
+                    state = self.active_point_list[prev_itr].state
+
+        return state
 
     def update_frame_window(self, window):
         """

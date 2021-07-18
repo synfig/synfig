@@ -35,6 +35,9 @@ class WidthPoint:
     def get_norm_position(self, wplistloop):
         return (self.get_bound_position(wplistloop)- self.lower_bound_) / (self.upper_bound_ - self.lower_bound_)
 
+    def normalize(self, loop):
+        self.set_position(self.get_norm_position(loop))
+
     def get_bound_position(self, wplistloop):
         ret = self.position_ - self.lower_bound_
         rnge = self.upper_bound_ - self.lower_bound_

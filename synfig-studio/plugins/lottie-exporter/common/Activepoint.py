@@ -18,8 +18,9 @@ class Activepoint:
     """
     Class to store the active point of Synfig
     """
-    def __init__(self, time, state):
+    def __init__(self, time, state, priority = 0):
         self.state = state
+        self.priority = priority
 
         # Convert time to frames
         if time == 'SOT':

@@ -68,7 +68,7 @@ def gen_bline_advanced_outline(lottie, bline_point):
 
     # For width point list
     width_point_list = layer.get_param("wplist")
-    width_point_list = WidthPointList(width_point_list[0], width_point_list)
+    width_point_list = WidthPointList(width_point_list[0], width_point_list, bline.get_loop())
 
     for entry in width_point_list.get_entry_list():
         pos = entry["position"]
@@ -80,6 +80,8 @@ def gen_bline_advanced_outline(lottie, bline_point):
 
         width.update_frame_window(window)
         width.animate("real")
+
+        entry["ActivepointList"].update_frame_window(window)
 
     # For Dash Item list
     dash_item_list = layer.get_param("dilist")
@@ -1284,7 +1286,7 @@ def bline_length(bline, bline_loop, lengths, fr):
         nxt += 1
     return tl
 
-def widthpoint_interpolate(prev, nxt, p, smoothness):
+def widthpoint_interpolate(prev, nxt, p, smoothness=0.0):
     """
     Synfig function: https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_wplist.cpp#L111
 
