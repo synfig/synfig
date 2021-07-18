@@ -3,15 +3,18 @@ WIDGETS_HH = \
 	widgets/widget_canvastimeslider.h \
 	widgets/widget_color.h \
 	widgets/widget_coloredit.h \
+	widgets/widget_colorslider.h \
 	widgets/widget_compselect.h \
 	widgets/widget_curves.h \
 	widgets/widget_defaults.h \
 	widgets/widget_distance.h \
 	widgets/widget_enum.h \
+	widgets/widget_eyedropper.h \
 	widgets/widget_sublayer.h \
 	widgets/widget_filename.h \
 	widgets/widget_fontfamily.h \
 	widgets/widget_gradient.h \
+	widgets/widget_hsv_plane.h \
 	widgets/widget_link.h \
 	widgets/widget_time.h \
 	widgets/widget_timeslider.h \
@@ -31,15 +34,18 @@ WIDGETS_CC = \
 	widgets/widget_canvastimeslider.cpp \
 	widgets/widget_color.cpp \
 	widgets/widget_coloredit.cpp \
+	widgets/widget_colorslider.cpp \
 	widgets/widget_compselect.cpp \
 	widgets/widget_curves.cpp \
 	widgets/widget_defaults.cpp \
 	widgets/widget_distance.cpp \
 	widgets/widget_enum.cpp \
+	widgets/widget_eyedropper.cpp \
 	widgets/widget_sublayer.cpp \
 	widgets/widget_filename.cpp \
 	widgets/widget_fontfamily.cpp \
 	widgets/widget_gradient.cpp \
+	widgets/widget_hsv_plane.cpp \
 	widgets/widget_link.cpp \
 	widgets/widget_time.cpp \
 	widgets/widget_timeslider.cpp \

@@ -198,6 +198,8 @@ src/gui/widgets/widget_distance.cpp
 src/gui/widgets/widget_distance.h
 src/gui/widgets/widget_enum.cpp
 src/gui/widgets/widget_enum.h
+src/gui/widgets/widget_eyedropper.cpp
+src/gui/widgets/widget_eyedropper.h
 src/gui/widgets/widget_filename.cpp
 src/gui/widgets/widget_filename.h
 src/gui/widgets/widget_fontfamily.cpp
