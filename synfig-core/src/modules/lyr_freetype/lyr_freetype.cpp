@@ -46,6 +46,9 @@
 #include <fribidi/fribidi.h>
 #endif
 #include <glibmm.h>
+#if HAVE_HARFBUZZ
+#include <harfbuzz/hb-ft.h>
+#endif
 
 #include <synfig/canvasfilenaming.h>
 #include <synfig/context.h>
@@ -214,18 +217,34 @@ struct FontMeta {
 	}
 };
 
+struct FaceInfo {
+	FT_Face face = nullptr;
+#if HAVE_HARFBUZZ
+	hb_font_t *font = nullptr;
+#endif
+
+	FaceInfo() = default;
+	explicit FaceInfo(FT_Face ft_face)
+		: face(ft_face)
+	{
+#if HAVE_HARFBUZZ
+		font = hb_ft_font_create(face, nullptr);
+#endif
+	}
+};
+
 /// Cache font faces for speeding up the text layer rendering
 class FaceCache {
-	std::map<FontMeta, FT_Face> cache;
+	std::map<FontMeta, FaceInfo> cache;
 public:
-	FT_Face get(const FontMeta &meta) const {
+	FaceInfo get(const FontMeta &meta) const {
 		auto iter = cache.find(meta);
 		if (iter != cache.end())
 			return iter->second;
-		return nullptr;
+		return FaceInfo();
 	}
 
-	void put(const FontMeta &meta, FT_Face face) {
+	void put(const FontMeta &meta, FaceInfo face) {
 		cache[meta] = face;
 	}
 
@@ -235,8 +254,12 @@ public:
 	}
 
 	void clear() {
-		for (auto item : cache)
-			FT_Done_Face(item.second);
+		for (auto item : cache) {
+			FT_Done_Face(item.second.face);
+#if HAVE_HARFBUZZ
+			hb_font_destroy(item.second.font);
+#endif
+		}
 		cache.clear();
 	}
 
@@ -404,6 +427,9 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 Layer_Freetype::Layer_Freetype()
 	: face(nullptr)
 {
+#if HAVE_HARFBUZZ
+	font = nullptr;
+#endif
 	param_size=ValueBase(Vector(0.25,0.25));
 	param_text=ValueBase(_("Text Layer"));
 	param_color=ValueBase(Color::black());
@@ -487,9 +513,13 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 
 	FaceCache &face_cache = FaceCache::instance();
 
-	FT_Face tmp_face = face_cache.get(meta);
+	FaceInfo face_info = face_cache.get(meta);
+	FT_Face tmp_face = face_info.face;
 	if (tmp_face) {
 		face = tmp_face;
+#if HAVE_HARFBUZZ
+		font = face_info.font;
+#endif
 		return true;
 	}
 
@@ -499,7 +529,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		if (new_face(font_fam_)) {
 			if (!font_path_from_canvas)
 				meta.canvas_path.clear();
-			face_cache.put(meta, face);
+			face_cache.put(meta, FaceInfo(face));
 			return true;
 		}
 
@@ -507,7 +537,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if (new_face(fontconfig_get_filename(font_fam_, style, weight))) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		face_cache.put(meta, face);
+		face_cache.put(meta, FaceInfo(face));
 		return true;
 	}
 #endif
@@ -519,14 +549,14 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		if (new_face(filename)) {
 			if (!font_path_from_canvas)
 				meta.canvas_path.clear();
-			face_cache.put(meta, face);
+			face_cache.put(meta, FaceInfo(face));
 			return true;
 		}
 	}
 	if (new_face(font_fam_)) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		face_cache.put(meta, face);
+		face_cache.put(meta, FaceInfo(face));
 		return true;
 	}
 
@@ -1009,6 +1039,11 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	int bx=0;
 	int by=0;
 
+#if HAVE_HARFBUZZ
+	hb_buffer_t *span_buffer = hb_buffer_create();
+	std::unique_ptr<hb_buffer_t, decltype(&hb_buffer_destroy)> safe_buf(span_buffer, hb_buffer_destroy); // auto delete
+#endif
+
 	for (const TextLine& line : lines)
 	{
 		visual_lines.push_front(VisualTextLine());
@@ -1019,16 +1054,44 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		for (const TextSpan& span : line) {
 			int multiplier = 1;
 
+#if HAVE_HARFBUZZ
+			hb_buffer_clear_contents(span_buffer);
 
+#if HAVE_FRIBIDI
+			hb_direction_t direction = HB_DIRECTION_LTR; // character order already fixed by FriBiDi
+#else
+			hb_direction_t direction = hb_script_get_horizontal_direction(span.script);
+#endif
+			hb_buffer_set_direction(span_buffer, direction);
+			hb_buffer_set_script(span_buffer, span.script);
+//			hb_buffer_set_language(span_buffer, hb_language_from_string(language.c_str(), -1));
+
+			hb_buffer_add_utf32(span_buffer, span.codepoints.data(), span.codepoints.size(), 0, -1);
+
+			hb_shape(font, span_buffer, nullptr, 0);
+
+			unsigned int glyph_count;
+			hb_glyph_info_t *glyph_info = hb_buffer_get_glyph_infos(span_buffer, &glyph_count);
+#else
 			size_t glyph_count = span.codepoints.size();
+#endif
 
 			for (size_t i = 0; i < glyph_count; i++) {
+#if HAVE_HARFBUZZ
+				if (true) { // FIXME: How to check if it is TAB or not?
+					glyph_index = glyph_info[i].codepoint;
+				} else {
+					glyph_index = FT_Get_Char_Index(face, ' ');
+					multiplier = 8;
+				}
+#else
 				if (span.codepoints[i] != '\t') {
 					glyph_index = FT_Get_Char_Index(face, span.codepoints[i]);
 				} else {
 					glyph_index = FT_Get_Char_Index(face, ' ');
 					multiplier = 8;
 				}
+#endif
 		// retrieve kerning distance and move pen position
 		if ( FT_HAS_KERNING(face) && use_kerning && previous && glyph_index )
 		{
@@ -1280,7 +1343,8 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 	visual_unicode = unicode;
 #endif
 
-	// 3. Split text into lines
+	// 3. Split text into lines (and text spans according to their script if we know them)
+#if not HAVE_HARFBUZZ
 	TextLine current_line;
 
 	for (unsigned int i = 0; i < unicode_len; i++) {
@@ -1299,5 +1363,35 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 		}
 	}
 	new_lines.push_back(current_line);
+#else
+	if (unicode_len > 0) {
+		hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
+
+		TextLine current_line;
+		hb_script_t current_script = HB_SCRIPT_INVALID;
+
+		for (unsigned int i = 0; i < unicode_len; i++) {
+			uint32_t codepoint = visual_unicode[i];
+
+			if (codepoint == '\n') {
+				new_lines.push_back(current_line);
+				current_line.clear();
+				continue;
+			}
+			hb_script_t script = hb_unicode_script(ufuncs, codepoint);
+
+			if (!current_line.empty() && (script == current_script || script == HB_SCRIPT_INHERITED)) {
+				current_line.back().codepoints.push_back(codepoint);
+			} else {
+				current_line.push_back(TextSpan{
+										   {codepoint},
+										   script
+									   });
+				current_script = script;
+			}
+		}
+		new_lines.push_back(current_line);
+	}
+#endif
 	return new_lines;
 }
