@@ -1063,9 +1063,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 			FT_Vector  delta;
 
 			if(grid_fit)
-				FT_Get_Kerning( face, previous, glyph_index, ft_kerning_default, &delta );
+				FT_Get_Kerning( face, previous, glyph_index, FT_KERNING_DEFAULT, &delta );
 			else
-				FT_Get_Kerning( face, previous, glyph_index, ft_kerning_unfitted, &delta );
+				FT_Get_Kerning( face, previous, glyph_index, FT_KERNING_UNFITTED, &delta );
 
 			if(compress<1.0)
 			{
@@ -1190,7 +1190,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 				//synfig::info("GLYPH: line %d, pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
 
-				error = FT_Glyph_To_Bitmap( &image, ft_render_mode_normal,0/*&pen*/, 1 );
+				error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_NORMAL,0/*&pen*/, 1 );
 				if(error) { FT_Done_Glyph( image ); continue; }
 
 				bit = (FT_BitmapGlyph)image;
