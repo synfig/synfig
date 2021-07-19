@@ -5,6 +5,10 @@ Will store the Parameters class for Bline
 
 import sys
 import common
+import settings
+from common.BlinePoint import BlinePoint
+from synfig.animation import to_Synfig_axis
+from properties.shapePropKeyframe.helper import get_tangent_at_frame
 sys.path.append("..")
 
 
@@ -110,3 +114,30 @@ class Bline:
         """
         for param in entry:
             self.entry_list[itr][tag] = common.Param.Param(param, entry)
+
+    def get_list_at_frame(self, fr):
+        """
+        Returns the Bline list at a particular frame
+        """
+        bline_list = []
+        for entry in self.get_entry_list():
+            pos = to_Synfig_axis(entry["point"].get_value(fr), "vector")
+            pos = common.Vector.Vector(pos[0], pos[1])
+            width = to_Synfig_axis(entry["width"].get_value(fr), "real")
+            # origin = to_Synfig_axis(entry["origin"].get_value(fr), "real")
+            t1 = entry["t1"]
+            t2 = entry["t2"]
+            split_r = entry["split_radius"]
+            split_a = entry["split_angle"]
+            t1, t2 = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
+            # convert to synfig units
+            t1 /= settings.PIX_PER_UNIT
+            t2 /= settings.PIX_PER_UNIT
+
+            split_r_val = split_r.get_value(fr)
+            split_a_val = split_a.get_value(fr)
+
+            curr = BlinePoint(pos, width, split_r_val, split_a_val, t1, t2)
+            bline_list.append(curr)
+
+        return bline_list

@@ -205,6 +205,7 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
     SPIKE_AMOUNT = 4
     ROUND_END_FACTOR = 4
 
+    bline_list = bline.get_list_at_frame(fr)
     outer_width = to_Synfig_axis(outer_width_p.get_value(fr), "real")
     expand = to_Synfig_axis(expand_p.get_value(fr), "real")
     sharp_cusps = sharp_cusps_p.get_value(fr)
@@ -221,7 +222,7 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
     loop = bline.get_loop()
 
     # Iterators
-    end_it = bline.get_len()
+    end_it = len(bline_list)
     next_it = 0
     if loop:
         iter_it = end_it - 1
@@ -229,58 +230,57 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
         iter_it = next_it
         next_it += 1
 
-    first_point = bline[iter_it]
-    first_tangent = get_outline_param_at_frame(bline[0], fr)[3]
-    last_tangent = get_outline_param_at_frame(first_point, fr)[2]
+    first_point = bline_list[iter_it]
+    first_tangent = bline_list[0].get_tangent2()
+    last_tangent = first_point.get_tangent1()
 
     # If we are looped and drawing sharp cusps, we 'll need a value
     # for the incoming tangent. This code fails if we have a "degraded" spline
     # with just one vertex, so we avoid such case.
-    if loop and sharp_cusps and last_tangent.is_equal_to(Vector(0, 0)) and bline.get_len() > 1:
+    if loop and sharp_cusps and last_tangent.is_equal_to(Vector(0, 0)) and len(bline_list) > 1:
         prev_it = iter_it
         prev_it -= 1
-        prev_it %= bline.get_len()
-        prev_point = bline[prev_it]
-        curve = Hermite(get_outline_param_at_frame(prev_point, fr)[0],
-                        get_outline_param_at_frame(first_point, fr)[0],
-                        get_outline_param_at_frame(prev_point, fr)[3],
-                        get_outline_param_at_frame(first_point, fr)[2])
+        prev_it %= len(bline_list)
+        prev_point = bline_list[prev_it]
+        curve = Hermite(prev_point.get_vertex(),
+                        first_point.get_vertex(),
+                        prev_point.get_tangent2(),
+                        first_point.get_tangent1())
         last_tangent = curve.derivative(1.0 - CUSP_TANGENT_ADJUST)
 
     first = not loop
     while next_it != end_it:
-        bp1 = bline[iter_it]
-        bp2 = bline[next_it]
-
-        # Calculate current vertex and next vertex parameters
-        pos_c, width_c, t1_c, t2_c, split_r_c, split_a_c = get_outline_param_at_frame(bp1, fr)
-        pos_n, width_n, t1_n, t2_n, split_r_n, split_a_n = get_outline_param_at_frame(bp2, fr)
+        bp1 = bline_list[iter_it]
+        bp2 = bline_list[next_it]
 
         # Setup tangents
-        prev_t = t1_c
-        iter_t = t2_c
-        next_t = t1_n
+        prev_t = bp1.get_tangent1()
+        iter_t = bp1.get_tangent2()
+        next_t = bp2.get_tangent1()
 
-        split_flag = split_a_c or split_r_c
+        split_flag = bp1.get_split_tangent_angle() or bp1.get_split_tangent_radius()
 
         # If iter_it.t2 == 0 and next.t1 == 0, this is a straight line
         if iter_t.is_equal_to(Vector(0, 0)) and next_t.is_equal_to(Vector(0, 0)):
-            iter_t = next_t = pos_n - pos_c
+            iter_t = next_1 = bp2.get_vertex() - bp1.get_vertex()
 
             # If the 2 points are on top of each other, ignore this segment
             # leave 'first' true if was before
             if iter_t.is_equal_to(Vector(0, 0)):
                 iter_it = next_it
-                iter_it %= bline.get_len()
+                iter_it %= len(bline_list)
                 next_it += 1
                 continue
 
         # Setup the curve
-        curve = Hermite(pos_c, pos_n, iter_t, next_t)
+        curve = Hermite(bp1.get_vertex(),
+                        bp2.get_vertex(),
+                        iter_t,
+                        next_t)
 
         # Setup width's
-        iter_w = gv*(width_c * outer_width * 0.5 + expand)
-        next_w = gv*(width_n * outer_width * 0.5 + expand)
+        iter_w = gv*(bp1.get_width() * outer_width * 0.5 + expand)
+        next_w = gv*(bp2.get_width() * outer_width * 0.5 + expand)
 
         if first:
             first_tangent = curve.derivative(CUSP_TANGENT_ADJUST)
@@ -299,19 +299,19 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
             cross = t1*t2.perp()
             perp = (t1 - t2).mag()
             if cross > CUSP_THRESHOLD:
-                p1 = pos_c + t1*iter_w
-                p2 = pos_c + t2*iter_w
+                p1 = bp1.get_vertex() + t1*iter_w
+                p2 = bp1.get_vertex() + t2*iter_w
                 side_a.append([line_intersection(p1, last_tangent, p2, curr_tangent), Vector(0, 0), Vector(0, 0)])
             elif cross < -CUSP_THRESHOLD:
-                p1 = pos_c - t1*iter_w
-                p2 = pos_c - t2*iter_w
+                p1 = bp1.get_vertex() - t1*iter_w
+                p2 = bp1.get_vertex() - t2*iter_w
                 side_b.append([line_intersection(p1, last_tangent, p2, curr_tangent), Vector(0, 0), Vector(0, 0)])
             elif cross > 0.0 and perp > 1.0:
                 amount = max(0.0, cross/CUSP_THRESHOLD) * (SPIKE_AMOUNT - 1.0) + 1.0
-                side_a.append([pos_c + (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
+                side_a.append([bp1.get_vertex() + (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
             elif cross < 0 and perp > 1:
                 amount = max(0.0, -cross/CUSP_THRESHOLD) * (SPIKE_AMOUNT - 1.0) + 1.0
-                side_b.append([pos_c - (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
+                side_b.append([bp1.get_vertex() - (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
 
         # Precalculate positions and coefficients
         length = 0.0
@@ -369,7 +369,7 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
         first = False
 
         iter_it = next_it
-        iter_it %= bline.get_len()
+        iter_it %= len(bline_list)
         next_it += 1
 
     if len(side_a) < 2 or len(side_b) < 2:
@@ -384,10 +384,10 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
     else:
         # Insert code for adding end tip
         if r_tip1:
-            bp = bline[-1]
-            vertex = get_outline_param_at_frame(bp, fr)[0]
+            bp = bline_list[-1]
+            vertex = bp.get_vertex()
             tangent = last_tangent.norm()
-            w = gv*(get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand)
+            w = gv*(bp.get_width() * outer_width * 0.5 + expand)
 
             a = vertex + tangent.perp()*w
             b = vertex - tangent.perp()*w
@@ -404,10 +404,10 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
 
         # Insert code for adding beginning tip
         if r_tip0:
-            bp = bline[0]
-            vertex = get_outline_param_at_frame(bp, fr)[0]
+            bp = bline_list[0]
+            vertex = bp.get_vertex()
             tangent = first_tangent.norm()
-            w = gv*(get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand)
+            w = gv*(bp.get_width() * outer_width * 0.5 + expand)
 
             a = vertex - tangent.perp()*w
             b = vertex + tangent.perp()*w

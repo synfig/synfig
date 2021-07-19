@@ -112,7 +112,7 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
         if tangent1.mag_squared() == 0:
             tangent2 = orig_tang2
 
-    return tangent1, tangent2
+    return tangent1, orig_tang2
 
 
 def add(side, lottie, origin_cur, is_rectangle=False):
