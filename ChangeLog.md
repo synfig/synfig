@@ -72,6 +72,8 @@
 - [`3573345`](https://github.com/synfig/synfig/commit/35733456a5744e0392a7dd556618760ad9753264) Fixed crash in rare cases caused by race condition when rebuilding LayerTreeStore ([#2209](https://github.com/synfig/synfig/issues/2209)) [studio]
 - [`5718557`](https://github.com/synfig/synfig/commit/571855713add1c0bf6ac5a1df357a4f47e7f53c3) Fixed incorrect background redrawing on animated GIFs with transparent background ([#2134](https://github.com/synfig/synfig/issues/2134)) [core]
 - [`2c2062c`](https://github.com/synfig/synfig/commit/2c2062c5d11551394126a995b7107d0c85c3cc1b) Add non-minified bodymovin.js ([#2202](https://github.com/synfig/synfig/issues/2202)) [studio]
+- [`223026f`](https://github.com/synfig/synfig/commit/223026f67509dab082509842a215366e2ebe1abf) Resolved 'nan' exception ([#2227](https://github.com/synfig/synfig/issues/2227)) [studio]
+- [`541a5ca`](https://github.com/synfig/synfig/commit/541a5ca1e380622496d5dd9f11557db2fd9cc89f) [Lottie exporter] Remove minor error ([#2229](https://github.com/synfig/synfig/issues/2229)) [studio]
 
 ## Version 1.4.1 [ETL] [core] [studio]
 - [`74a9f4b`](https://github.com/synfig/synfig/commit/74a9f4b707585387bd0f04e07fcfebd910f85871) Change order of Waypoint Editor buttons to match other dialogs ([#1880](https://github.com/synfig/synfig/issues/1880)) [studio]
