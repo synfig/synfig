@@ -36,6 +36,10 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
+
+#if HAVE_HARFBUZZ
+#include <harfbuzz/hb.h>
+#endif
 #include <vector>
 
 /* === M A C R O S ========================================================= */
@@ -78,17 +82,31 @@ private:
 	synfig::ValueBase param_invert;
 
 	FT_Face face;
+#if HAVE_HARFBUZZ
+	hb_font_t *font;
+#endif
+	struct TextSpan
+	{
+		std::vector<uint32_t> codepoints;
+#if HAVE_HARFBUZZ
+		hb_script_t script;
+#endif
+	};
+
+	typedef std::vector<TextSpan> TextLine;
+	std::vector<TextLine> lines;
 
 	bool font_path_from_canvas;
 
 	bool old_version;
-	bool needs_sync_;
+	std::atomic<bool> needs_sync;
 
 	void sync();
 
 	synfig::Color color_func(const synfig::Point &x, int quality=10, synfig::ColorReal supersample=0)const;
 
 	mutable std::mutex mutex;
+	mutable std::mutex sync_mtx;
 
 public:
 	Layer_Freetype();
@@ -111,6 +129,12 @@ private:
 	void new_font(const synfig::String &family, int style=0, int weight=400);
 	bool new_font_(const synfig::String &family, int style=0, int weight=400);
 	bool new_face(const synfig::String &newfont);
+
+	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);
+
+	void on_param_text_changed();
+
+	static std::vector<TextLine> fetch_text_lines(const std::string& text);
 };
 
 /* === E N D =============================================================== */
