@@ -3,6 +3,8 @@
 PLUGIN_NAME = common
 
 EXTRA_FILES = \
+			  Activepoint.py \
+			  ActivepointList.py \
 			  Angle.py \
 			  Bline.py \
 			  Canvas.py \

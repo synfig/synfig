@@ -8,6 +8,8 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     export_without_variable_width.py
     
     # common
+    common/Activepoint.py
+    common/ActivepointList.py
     common/Angle.py
     common/Bline.py
     common/Canvas.py

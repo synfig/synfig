@@ -6,6 +6,7 @@ Will store the Parameters class for Dash item list
 import sys
 import common
 from common.DashItem import DashItem
+from common.ActivepointList import ActivepointList
 from synfig.animation import to_Synfig_axis
 sys.path.append("..")
 
@@ -80,17 +81,17 @@ class DashItemList:
         for entry in self.dash_item:
             # Assuming it's child is always composite for now
             entry_list.append({})
-            if entry[0].tag == "composite":
-                element = entry[0]
-            else:
-                element = entry
+            entry_list[-1]["ActivepointList"] = ActivepointList(entry.attrib.get("on"), entry.attrib.get("off"))
+
+            element = entry[0]
             for param in element:
                 tag = param.tag
                 if tag == "animated":   # For dynamic list
                     tag = param.attrib["type"]
                 entry_list[-1][tag] = common.Param.Param(param, element)
-            if entry[0].tag == "composite":
-                entry_list[-1]["composite"] = element
+
+            assert(entry[0].tag == "composite")
+            entry_list[-1]["composite"] = element
 
     def get_entry_list(self):
         """
@@ -114,16 +115,25 @@ class DashItemList:
     def get_list_at_frame(self, fr):
         """
         Returns list of Dashitems at a particular frame
+        Refer:  https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_dilist.cpp#L129
         """
         dilist = []
+        rising = [False]
+
         for entry in self.get_entry_list():
+            amount = entry["ActivepointList"].amount_at_time(fr, rising)
+            assert(amount >= 0)
+            assert(amount <= 1)
+
             offset = to_Synfig_axis(entry["offset"].get_value(fr), "real")
             length = to_Synfig_axis(entry["length"].get_value(fr), "real")
             side_before = entry["side_before"].get()
             side_before = int(side_before[0].attrib["value"])
             side_after = entry["side_after"].get()
             side_after = int(side_after[0].attrib["value"])
+            curr = DashItem(offset, length, side_before, side_after)
 
-            dilist.append(DashItem(offset, length, side_before, side_after))
+            if amount > 1 - 0.0000001:  # lgtm [py/redundant-comparison]
+                dilist.append(curr)
 
         return dilist
