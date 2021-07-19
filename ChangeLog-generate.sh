@@ -21,7 +21,7 @@ fi
 #START="upstream/changelog"
 
 # Get list of all commits
-COMMITS=`git log ${START}...master --pretty=format:'%H' --reverse`
+COMMITS=`git log ${START}...upstream/master --pretty=format:'%H' --reverse`
 
 if [ -f "${CHANGELOG}" ]; then
     tac "${CHANGELOG}" > "${CHANGELOG}.new"
@@ -56,7 +56,7 @@ while IFS= read -r CMT; do
 done <<< "$COMMITS"
 fi
 #Save last commit ID
-git rev-parse master > "${DIR}/ChangeLog.last_id"
+git rev-parse upstream/master > "${DIR}/ChangeLog.last_id"
 
 tac "${CHANGELOG}.new" > "${CHANGELOG}"
 rm "${CHANGELOG}.new" ||  true
