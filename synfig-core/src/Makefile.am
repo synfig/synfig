@@ -6,7 +6,8 @@ MAINTAINERCLEANFILES = \
 SUBDIRS = \
 	synfig \
 	modules \
-	tool
+	tool     \
+	ETL
 
 EXTRA_DIST = \
 	template.cpp \

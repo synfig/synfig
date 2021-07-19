@@ -1234,7 +1234,7 @@ mkall()
 	mksox
 	mklibvorbis
 	mkmlt
-	mketl
+	#mketl
 	mksynfig
 	mksynfigstudio
 	mkpackage

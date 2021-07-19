@@ -17,7 +17,7 @@ rerender_images="false"
 cmake_debug_build_dir="_debug"
 cmake_release_build_dir="_production"
 cmake_build_dir="$cmake_debug_build_dir"
-etl_build_dir="etl"
+#etl_build_dir="etl"
 synfig_build_dir="synfig-core"
 synfigstudio_build_dir="synfig-studio"
 out_dir="out"
@@ -33,27 +33,27 @@ cmake_install_prefix_option="-DCMAKE_INSTALL_PREFIX=${absolute_base_dir}/${cmake
 cmake_cxxflags_option="-DCMAKE_CXX_FLAGS=-I ${absolute_base_dir}/${cmake_build_dir}/${out_dir}/include"
 cmake_dataprefix_option=""
 
-build_etl() {
-    echo "Building ETL"
-
-    # Navigate to target build dir
-    cd ${absolute_base_dir}
-    cd "./${cmake_build_dir}/${etl_build_dir}"
-    
-    # Configure, make and install
-    cmake "$cmake_build_type_option" "$cmake_install_prefix_option" ../../ETL/ && $make_build_command && make install
-
-    if [ $? -ne 0 ]
-        then
-            echo "Failed to build ETL"
-            cd "$pwd_dir"
-            exit
-    fi
-
-    cd ${absolute_base_dir}
-    
-    echo "Build ETL"
-}
+#build_etl() {
+#    echo "Building ETL"
+#
+#   # Navigate to target build dir
+#    cd ${absolute_base_dir}
+#   cd "./${cmake_build_dir}/${etl_build_dir}"
+#
+#    # Configure, make and install
+#    cmake "$cmake_build_type_option" "$cmake_install_prefix_option" ../../ETL/ && $make_build_command && make install
+#
+#    if [ $? -ne 0 ]
+#        then
+#            echo "Failed to build ETL"
+#            cd "$pwd_dir"
+#            exit
+#    fi
+#
+#    cd ${absolute_base_dir}
+#
+#    echo "Build ETL"
+#}
 
 build_synfig_core() {
     echo "Building synfig-core"
@@ -122,7 +122,7 @@ gen_dir_structure() {
     echo "Construct directory structure"
 
     cd ${absolute_base_dir}
-    mkdir -p "./${cmake_build_dir}/${etl_build_dir}"
+    #mkdir -p "./${cmake_build_dir}/${etl_build_dir}"
     mkdir -p "./${cmake_build_dir}/${synfig_build_dir}"
     mkdir -p "./${cmake_build_dir}/${synfigstudio_build_dir}"
     mkdir -p "./${cmake_build_dir}/${out_dir}"

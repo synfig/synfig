@@ -28,14 +28,6 @@ with import <nixpkgs> {};
 let
   version = "git";
 
-  ETL = stdenv.mkDerivation rec {
-    name = "ETL-${version}";
-
-    src = ../ETL;
-
-    nativeBuildInputs = [ autoreconfHook ];
-  };
-
   synfig = stdenv.mkDerivation rec {
     name = "synfig-${version}";
 

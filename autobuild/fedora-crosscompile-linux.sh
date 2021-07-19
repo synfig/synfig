@@ -1816,18 +1816,18 @@ PATH="$PATH_BAK"
 }
 
 #ETL
-mketl()
-{
-cd $SCRIPTPATH/../ETL
-make clean || true
-run_native autoreconf --install --force
-./configure --host=${HOST} --prefix=${PREFIX} \
-	--includedir=${PREFIX}/include --libdir=${PREFIX}/lib \
-	--bindir=${PREFIX}/bin \
-	$DEBUG_OPT
-make -j${THREADS}
-make install
-}
+#mketl()
+#{
+#cd $SCRIPTPATH/../ETL
+#make clean || true
+#run_native autoreconf --install --force
+#./configure --host=${HOST} --prefix=${PREFIX} \
+#	--includedir=${PREFIX}/include --libdir=${PREFIX}/lib \
+#	--bindir=${PREFIX}/bin \
+#	$DEBUG_OPT
+#make -j${THREADS}
+#make install
+#}
 
 #synfig-core
 mksynfig()
@@ -2030,7 +2030,7 @@ Group:          Applications/Graphics
 License:        GPL
 URL:            http://www.synfig.org/
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Obsoletes:       synfig ETL
+Obsoletes:       synfig
 AutoReqProv: no
 
 
@@ -2348,7 +2348,7 @@ mkall()
 	#	mkgtkglextmm
 	#fi
 	
-	mketl
+	#mketl
 	mksynfig
 	mksynfigstudio
 	mkconfig

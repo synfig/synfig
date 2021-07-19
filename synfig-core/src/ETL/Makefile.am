@@ -3,11 +3,12 @@
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
-CLEANFILES = \
-	$(top_builddir)/ETL/etl_profile.h
+#CLEANFILES = \
+#	$(top_builddir)/ETL/etl_profile.h
 
 
-etldir = $(etlincludedir)/ETL
+#etldir = $(etlincludedir)/ETL
+etldir = @synfigincludedir@/synfig
 
 etl_HEADERS = \
 	misc \
@@ -29,7 +30,7 @@ etl_HEADERS = \
 	_handle.h \
 	_fixed.h \
 	etl_config.h \
-	$(top_builddir)/ETL/etl_profile.h \
+	#$(top_builddir)/ETL/etl_profile.h \
 	bezier \
 	_bezier.h \
 	_bezier_angle.h \
@@ -45,6 +46,6 @@ etl_HEADERS = \
 	_smart_ptr.h
 
 
-$(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h
-	sed "s/PACKAGE/ETL/g;" < $(top_builddir)/ETL/etl_profile_.h > $(top_builddir)/ETL/etl_profile.h
+#$(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h
+#	sed "s/PACKAGE/ETL/g;" < $(top_builddir)/ETL/etl_profile_.h > $(top_builddir)/ETL/etl_profile.h
 
