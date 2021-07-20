@@ -125,6 +125,20 @@ def print_animation(*argv):
 	print("####################### END ##########################")
 
 
+def to_Lottie_axis(pos, animated_name):
+    """
+    Opposite effecto of 'to_Synfig_axis'
+    """
+    if animated_name == "vector":
+        pos[0] *= settings.PIX_PER_UNIT
+        pos[1] *= settings.PIX_PER_UNIT
+        pos[1] = -pos[1]
+        pos[0], pos[1] = pos[0] + settings.lottie_format["w"]/2, pos[1] + settings.lottie_format["h"]/2
+        return pos
+    # should never reach here
+    assert(False)
+
+
 def to_Synfig_axis(pos, animated_name):
 	"""
 	Converts a Lottie format vector or values into Synfig format vector or

@@ -5,8 +5,10 @@ in Lottie format
 """
 
 import sys
+import settings
 from common.Bline import Bline
 from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
+from synfig.animation import to_Lottie_axis
 sys.path.append("../../")
 
 
@@ -37,6 +39,9 @@ def gen_bline_region(lottie, bline_point):
         t2 = entry["t2"]
         split_r = entry["split_radius"]
         split_a = entry["split_angle"]
+        width = entry["width"]  # Not needed, but required by Bline class
+        # Hence we do not update the window also
+        width.animate("real")
 
         # Necassary to update this before inserting new waypoints, as new
         # waypoints might include there on time: 0 seconds
@@ -69,36 +74,32 @@ def gen_bline_region(lottie, bline_point):
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, loop)
-
-        for entry in bline.get_entry_list():
-            pos = entry["point"]
-            pos_cur, pos_next = pos.get_value(fr), pos.get_value(fr + 1)
-            t1 = entry["t1"]
-            t2 = entry["t2"]
-            split_r = entry["split_radius"]
-            split_a = entry["split_angle"]
-
-            tangent1_cur, tangent2_cur = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
-            tangent1_next, tangent2_next = get_tangent_at_frame(t1, t2, split_r, split_a, fr + 1)
-
-            tangent1_cur, tangent2_cur = convert_tangent_to_lottie(tangent1_cur, tangent2_cur)
-            tangent1_next, tangent2_next = convert_tangent_to_lottie(tangent1_next, tangent2_next)
-
-            # Adding origin to each vertex
-            origin_cur, origin_next = origin.get_value(fr), origin.get_value(fr + 1)
-            for i in range(len(pos_cur)):
-                pos_cur[i] += origin_cur[i]
-            for i in range(len(pos_next)):
-                pos_next[i] += origin_next[i]
-
-            # Store values in dictionary
-            st_val["i"].append(tangent1_cur.get_list())
-            st_val["o"].append(tangent2_cur.get_list())
-            st_val["v"].append(pos_cur)
-            en_val["i"].append(tangent1_next.get_list())
-            en_val["o"].append(tangent2_next.get_list())
-            en_val["v"].append(pos_next)
+        synfig_region(bline, st_val, origin, fr)
+        synfig_region(bline, en_val, origin, fr + 1)
         fr += 1
     # Setting final time
     lottie.append({})
     lottie[-1]["t"] = fr
+
+def synfig_region(bline, st_val, origin_p, fr):
+    """
+    Calculates the points for the region layer in Synfig
+    """
+    bline_list = bline.get_list_at_frame(fr)
+    origin_cur = origin_p.get_value(fr)         
+
+    for bline_point in bline_list:
+        tangent1 = bline_point.get_tangent1() * settings.PIX_PER_UNIT
+        tangent2 = bline_point.get_tangent2() * settings.PIX_PER_UNIT
+
+        tangent1, tangent2 = convert_tangent_to_lottie(tangent1, tangent2)
+
+        # Adding origin to each vertex
+        pos = to_Lottie_axis(bline_point.get_vertex().get_list(), "vector")
+        for i in range(len(pos)):
+            pos[i] += origin_cur[i]
+
+        # Store values in dictionary
+        st_val["i"].append(tangent1.get_list())
+        st_val["o"].append(tangent2.get_list())
+        st_val["v"].append(pos)
