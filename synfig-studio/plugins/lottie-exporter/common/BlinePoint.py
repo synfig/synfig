@@ -26,6 +26,7 @@ class BlinePoint:
         self.tangent_ = []
         self.tangent_.append(tangent_1)
         self.tangent_.append(tangent_2)
+        self.vertex_setup_ = vertex_
         self.update_flags()
         self.update_tangent2()
 
@@ -52,6 +53,14 @@ class BlinePoint:
     def get_tangent1(self):
         return self.tangent_[0]
 
+    def set_tangent1(self, x):
+        self.tangent_[0] = x
+        self.update_tangent2()
+
+    def set_tangent2(self, x):
+        self.tangent_[1] = x
+        self.update_tangent2()
+
     def get_vertex(self):
         return self.vertex_
 
@@ -63,3 +72,33 @@ class BlinePoint:
 
     def get_width(self):
         return self.width_
+
+    def set_width(self, x):
+        self.width_ = x
+
+    def set_origin(self, x):
+        self.origin_ = x - 0.5
+
+    def get_origin(self):
+        return self.origin_ + 0.5
+
+    def get_boned_vertex_flag(self):
+        return self.boned_vertex_
+
+    def set_split_tangent_both(self, x=True):
+        self.set_split_tangent_radius(x)
+        self.set_split_tangent_angle(x)
+
+    def set_split_tangent_radius(self, x=True):
+        self.split_tangent_radius_ = x
+        self.update_tangent2()
+        self.update_flags()
+
+    def set_split_tangent_angle(self, x=True):
+        self.split_tangent_angle_ = x
+        self.update_tangent2()
+        self.update_flags()
+
+    def set_vertex(self, x):
+        self.vertex_ = x
+        self.vertex_setup_ = self.vertex_

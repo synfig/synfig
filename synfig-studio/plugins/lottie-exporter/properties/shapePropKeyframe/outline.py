@@ -6,12 +6,13 @@ in Lottie format
 
 import sys
 import math
+import copy
 import settings
 from common.Bline import Bline
 from common.Vector import Vector
 from common.Hermite import Hermite
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents
+from properties.shapePropKeyframe.helper import add_reverse, add, move_to, insert_dict_at, animate_tangents
 sys.path.append("../../")
 
 
@@ -108,17 +109,46 @@ def gen_bline_outline(lottie, bline_point):
     # Generating values for all the frames in the window
 
 
+    lottie_st_list, lottie_en_list = [], []
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
-
+        lottie_st_list.append(st_val)
+        lottie_en_list.append(en_val)
         synfig_outline(bline, st_val, origin, outer_width, sharp_cusps, expand, r_tip0, r_tip1, homo_width, fr)
         synfig_outline(bline, en_val, origin, outer_width, sharp_cusps, expand, r_tip0, r_tip1, homo_width, fr + 1)
-
         fr += 1
+    equalize_length(lottie_st_list, lottie_en_list)
     # Setting the final time
     lottie.append({})
     lottie[-1]["t"] = fr
+
+
+def equalize_length(lottie_st, lottie_en):
+    """
+    This fxn collects all the lists needed to render the outline, and makes them
+    of equal length by adding dummy points: This is a requirement of Lottie
+    """
+    # Find maximum among the lists
+    mx = 0
+    for st in lottie_st:
+        mx = max(mx, len(st["i"]))
+    for en in lottie_en:
+        mx = max(mx, len(en["i"]))
+
+    for st in lottie_st:
+        diff = mx - len(st["i"])
+        last_value_i, lv_o, lv_v = copy.deepcopy(st["i"][-1]), copy.deepcopy(st["o"][-1]), copy.deepcopy(st["v"][-1])
+        st["i"].extend([last_value_i for i in range(diff)])
+        st["o"].extend([lv_o for i in range(diff)])
+        st["v"].extend([lv_v for i in range(diff)])
+
+    for st in lottie_en:
+        diff = mx - len(st["i"])
+        last_value_i, lv_o, lv_v = copy.deepcopy(st["i"][-1]), copy.deepcopy(st["o"][-1]), copy.deepcopy(st["v"][-1])
+        st["i"].extend([last_value_i for i in range(diff)])
+        st["o"].extend([lv_o for i in range(diff)])
+        st["v"].extend([lv_v for i in range(diff)])
 
 
 def get_outline_grow(fr):
@@ -134,47 +164,6 @@ def get_outline_grow(fr):
             ret += val
     ret = math.e ** ret
     return ret
-
-
-def get_outline_param_at_frame(entry, fr):
-    """
-    Given a entry and frame, returns the parameters of the outline layer at
-    that frame
-
-    Args:
-        entry (dict) : Vertex of outline layer in Synfig format
-        fr        (int)                 : frame number
-
-    Returns:
-        (common.Vector.Vector) : position of the vertex
-        (float)       : width of the vertex
-        (common.Vector.Vector) : Tangent 1 of the vertex
-        (common.Vector.Vector) : Tangent 2 of the vertex
-        (bool)        : True if radius split is ticked at this frame
-        (bool)        : True if tangent split is ticked at this frame
-    """
-    pos = entry["point"].get_value(fr)
-    # Convert pos back to Synfig coordinates
-    pos = to_Synfig_axis(pos, "vector")
-    pos_ret = Vector(pos[0], pos[1])
-
-    width = entry["width"].get_value(fr)
-    width = to_Synfig_axis(width, "real")
-    t1 = entry["t1"]
-    t2 = entry["t2"]
-    split_r = entry["split_radius"]
-    split_a = entry["split_angle"]
-
-
-    t1, t2 = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
-    # Convert to Synfig units
-    t1 /= settings.PIX_PER_UNIT
-    t2 /= settings.PIX_PER_UNIT
-
-    split_r_val = split_r.get_value(fr)
-    split_a_val = split_a.get_value(fr)
-
-    return pos_ret, width, t1, t2, split_r_val, split_a_val
 
 
 def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand_p, r_tip0_p, r_tip1_p, homo_width_p, fr):

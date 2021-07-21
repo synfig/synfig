@@ -35,3 +35,6 @@ class Activepoint:
 
     def __eq__(self, rhs):
         return ((self.time) == (rhs.time))
+
+    def get_time(self):
+        return self.time

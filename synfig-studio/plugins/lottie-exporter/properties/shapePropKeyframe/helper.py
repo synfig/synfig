@@ -96,23 +96,9 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     a2 = t2.get_subparam("theta").get_value(fr)
 
     x, y = radial_to_tangent(r2, a2)
-    orig_tang2 = Vector(x, y)
-
-    if not sp_r:
-        # Use t1's radius
-        r2 = r1
-    if not sp_a:
-        # Use t1's angle
-        a2 = a1
-
-    x, y = radial_to_tangent(r2, a2)
     tangent2 = Vector(x, y)
 
-    if sp_r and (not sp_a):
-        if tangent1.mag_squared() == 0:
-            tangent2 = orig_tang2
-
-    return tangent1, orig_tang2
+    return tangent1, tangent2
 
 
 def add(side, lottie, origin_cur, is_rectangle=False):

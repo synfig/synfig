@@ -16,7 +16,7 @@ from common.Hermite import Hermite
 from common.Angle import RadAngle, SinAngle, CosAngle
 from synfig.animation import to_Synfig_axis
 from properties.shapePropKeyframe.helper import add, insert_dict_at_adv_outline, animate_tangents
-from properties.shapePropKeyframe.outline import line_intersection, get_outline_grow, get_outline_param_at_frame
+from properties.shapePropKeyframe.outline import line_intersection, get_outline_grow
 sys.path.append("../../")
 
 
