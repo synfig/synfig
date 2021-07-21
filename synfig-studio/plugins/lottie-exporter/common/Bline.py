@@ -7,6 +7,7 @@ import sys
 import common
 import settings
 from common.BlinePoint import BlinePoint
+from common.Vector import Vector
 from synfig.animation import to_Synfig_axis
 from common.ActivepointList import ActivepointList
 from properties.shapePropKeyframe.helper import get_tangent_at_frame
@@ -171,11 +172,11 @@ class Bline:
             if amount > 1.0 - EPSILON:
                 if first_flag:
                     first_iter = iterr
-                    first = prev = get_blinepoint(iterr, fr)
+                    first = prev = self.get_blinepoint(iterr, fr)
                     first_flag = False
                     ret_list.append(first)
                     continue
-                curr = get_blinepoint(iterr, fr)
+                curr = self.get_blinepoint(iterr, fr)
 
                 if next_scale != 1.0:
                     ret_list[-1].set_split_tangent_both(True)
@@ -216,7 +217,7 @@ class Bline:
                     except:
                         on_time = 32767*512
 
-                blp_here_on = get_blinepoint(iterr, on_time)
+                blp_here_on = self.get_blinepoint(iterr, on_time)
                 end_iter = iterr
 
                 end_iter += 1
@@ -231,7 +232,7 @@ class Bline:
                     else:
                         end_iter = self.get_len() - 1
 
-                blp_next_off = get_blinepoint(end_iter, off_time)
+                blp_next_off = self.get_blinepoint(end_iter, off_time)
 
                 begin_iter = iterr
                 blp_prev_off.set_origin(100)
@@ -249,7 +250,7 @@ class Bline:
                         break
 
                     if self.get_entry_list()[begin_iter]["ActivepointList"].amount_at_time(fr) > amount:
-                        blp_prev_off = get_blinepoint(begin_iter, off_time)
+                        blp_prev_off = self.get_blinepoint(begin_iter, off_time)
                         break
 
                 if blp_prev_off.get_origin() == 100:
@@ -257,7 +258,7 @@ class Bline:
                         begin_iter = 0
                     else:
                         begin_iter = first_iter
-                    blp_prev_off = get_blinepoint(begin_iter, off_time)
+                    blp_prev_off = self.get_blinepoint(begin_iter, off_time)
 
                 curve = Hermite(blp_prev_off.get_vertex(),
                                 blp_next_off.get_vertex(),
@@ -280,27 +281,27 @@ class Bline:
                 if end_iter == (iterr + 1) or dist_from_end == 1:
                     next_tangent_scalar=linear_interpolation(1.0-blp_here_on.get_origin(), 1.0, amount)
                 elif self.get_len() != (iterr + 1):
-                    nextt = get_blinepoint(iterr+1, fr)
+                    nextt = self.get_blinepoint(iterr+1, fr)
                     next_tangent_scalar = linear_interpolation(nextt.get_origin()-blp_here_on.get_origin(), 1.0, amount)
                 else:
                     next_tangent_scalar=linear_interpolation(blp_next_off.get_origin()-blp_here_on.get_origin(), 1.0, amount)
                     next_scale=next_tangent_scalar
 
                 # My second try
-                end_pos_at_off_time = get_blinepoint(end_iter, off_time).get_vertex()
-                begin_pos_at_off_time = get_blinepoint(begin_iter, off_time).get_vertex()
+                end_pos_at_off_time = self.get_blinepoint(end_iter, off_time).get_vertex()
+                begin_pos_at_off_time = self.get_blinepoint(begin_iter, off_time).get_vertex()
                 off_coord_origin = (begin_pos_at_off_time + end_pos_at_off_time)/2
                 off_coord_sys.append((begin_pos_at_off_time - end_pos_at_off_time).norm())
                 off_coord_sys.append(off_coord_sys[0].perp())
 
-                end_pos_at_on_time = get_blinepoint(end_iter,   on_time).get_vertex()
-                begin_pos_at_on_time = get_blinepoint(begin_iter, on_time).get_vertex()
+                end_pos_at_on_time = self.get_blinepoint(end_iter,   on_time).get_vertex()
+                begin_pos_at_on_time = self.get_blinepoint(begin_iter, on_time).get_vertex()
                 on_coord_origin = (begin_pos_at_on_time + end_pos_at_on_time)/2
                 on_coord_sys.append((begin_pos_at_on_time - end_pos_at_on_time).norm())
                 on_coord_sys.append(on_coord_sys[0].perp())
 
-                end_pos_at_current_time = get_blinepoint(end_iter,   t).get_vertex()
-                begin_pos_at_current_time = get_blinepoint(begin_iter, t).get_vertex()
+                end_pos_at_current_time = self.get_blinepoint(end_iter,   t).get_vertex()
+                begin_pos_at_current_time = self.get_blinepoint(begin_iter, t).get_vertex()
                 curr_coord_origin = (begin_pos_at_current_time + end_pos_at_current_time)/2
                 curr_coord_sys.append((begin_pos_at_current_time - end_pos_at_current_time).norm())
                 curr_coord_sys.append(curr_coord_sys[0].perp())
@@ -320,12 +321,12 @@ class Bline:
                 trans_on_point = self.transform_coords(blp_here_on.get_vertex(),  trans_on_point,  on_coord_origin,  on_coord_sys)
                 trans_off_point = self.transform_coords(blp_here_off.get_vertex(), trans_off_point, off_coord_origin, off_coord_sys)
 
-                trans_on_t1 = self.transform_coords(blp_here_on.get_tangent1(),  trans_on_t1,  Point::zero(), on_coord_sys)
-                trans_off_t1 = self.transform_coords(blp_here_off.get_tangent1(), trans_off_t1, Point::zero(), off_coord_sys);
+                trans_on_t1 = self.transform_coords(blp_here_on.get_tangent1(),  trans_on_t1,  Vector(0, 0), on_coord_sys)
+                trans_off_t1 = self.transform_coords(blp_here_off.get_tangent1(), trans_off_t1, Vector(0, 0), off_coord_sys);
 
                 if blp_here_on.get_split_tangent_both():
-                    trans_on_t2 = self.transform_coords(blp_here_on.get_tangent2(),  trans_on_t2,  Point::zero(), on_coord_sys)
-                    trans_off_t2 = self.transform_coords(blp_here_off.get_tangent2(), trans_off_t2, Point::zero(), off_coord_sys)
+                    trans_on_t2 = self.transform_coords(blp_here_on.get_tangent2(),  trans_on_t2,  Vector(0, 0), on_coord_sys)
+                    trans_off_t2 = self.transform_coords(blp_here_off.get_tangent2(), trans_off_t2, Vector(0, 0), off_coord_sys)
 
                 tmp = Vector(0, 0)
                 tmp = self.untransform_coords(self.linear_interpolation(trans_off_point, trans_on_point, amount), tmp, curr_coord_origin, curr_coord_sys)

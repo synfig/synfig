@@ -55,7 +55,7 @@ class Angle:
         return math.fabs(self.v - rhs.v) < ANGLE_EPSILON
 
     def dist(self, rhs):
-        return Angle(self.v) -= rhs
+        return Angle(self.v) - rhs
 
 
 class RadAngle(Angle):
