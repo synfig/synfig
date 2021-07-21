@@ -117,7 +117,7 @@ class Bline:
         for param in entry:
             self.entry_list[itr][tag] = common.Param.Param(param, entry)
 
-    def get_list_at_frame(self, fr):
+    def get_list_at_frame_old(self, fr):
         """
         Returns the Bline list at a particular frame
         """
@@ -193,6 +193,7 @@ class Bline:
             elif amount > 1.0:
                 blp_prev_off = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
                 blp_here_off = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
+                blp_here_now = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
                 dist_from_begin = 0
                 dist_from_end = 0
 
@@ -284,9 +285,119 @@ class Bline:
                 else:
                     next_tangent_scalar=linear_interpolation(blp_next_off.get_origin()-blp_here_on.get_origin(), 1.0, amount)
                     next_scale=next_tangent_scalar
-                     
+
+                # My second try
+                end_pos_at_off_time = get_blinepoint(end_iter, off_time).get_vertex()
+                begin_pos_at_off_time = get_blinepoint(begin_iter, off_time).get_vertex()
+                off_coord_origin = (begin_pos_at_off_time + end_pos_at_off_time)/2
+                off_coord_sys.append((begin_pos_at_off_time - end_pos_at_off_time).norm())
+                off_coord_sys.append(off_coord_sys[0].perp())
+
+                end_pos_at_on_time = get_blinepoint(end_iter,   on_time).get_vertex()
+                begin_pos_at_on_time = get_blinepoint(begin_iter, on_time).get_vertex()
+                on_coord_origin = (begin_pos_at_on_time + end_pos_at_on_time)/2
+                on_coord_sys.append((begin_pos_at_on_time - end_pos_at_on_time).norm())
+                on_coord_sys.append(on_coord_sys[0].perp())
+
+                end_pos_at_current_time = get_blinepoint(end_iter,   t).get_vertex()
+                begin_pos_at_current_time = get_blinepoint(begin_iter, t).get_vertex()
+                curr_coord_origin = (begin_pos_at_current_time + end_pos_at_current_time)/2
+                curr_coord_sys.append((begin_pos_at_current_time - end_pos_at_current_time).norm())
+                curr_coord_sys.append(curr_coord_sys[0].perp())
+
+                # swapping
+                temp = curr_coord_sys[0][1]
+                curr_coord_sys[0][1] = curr_coord_sys[1][0]
+                curr_coord_sys[1][0] = temp
+
+                trans_on_point = Vector(0, 0)
+                trans_off_point = Vector(0, 0)
+                trans_on_t1 = Vector(0, 0)
+                trans_off_t1 = Vector(0, 0)
+                trans_on_t2 = Vector(0, 0)
+                trans_off_t2 = Vector(0, 0)
+
+                trans_on_point = self.transform_coords(blp_here_on.get_vertex(),  trans_on_point,  on_coord_origin,  on_coord_sys)
+                trans_off_point = self.transform_coords(blp_here_off.get_vertex(), trans_off_point, off_coord_origin, off_coord_sys)
+
+                trans_on_t1 = self.transform_coords(blp_here_on.get_tangent1(),  trans_on_t1,  Point::zero(), on_coord_sys)
+                trans_off_t1 = self.transform_coords(blp_here_off.get_tangent1(), trans_off_t1, Point::zero(), off_coord_sys);
+
+                if blp_here_on.get_split_tangent_both():
+                    trans_on_t2 = self.transform_coords(blp_here_on.get_tangent2(),  trans_on_t2,  Point::zero(), on_coord_sys)
+                    trans_off_t2 = self.transform_coords(blp_here_off.get_tangent2(), trans_off_t2, Point::zero(), off_coord_sys)
+
+                tmp = Vector(0, 0)
+                tmp = self.untransform_coords(self.linear_interpolation(trans_off_point, trans_on_point, amount), tmp, curr_coord_origin, curr_coord_sys)
+                blp_here_now.set_vertex(tmp)
+
+                tmp = Vector(0, 0)
+                tmp = self.untransform_coords(self.radial_interpolation(trans_off_t1,trans_on_t1,amount), tmp, Vector(0, 0), curr_coord_sys)
+                blp_here_now.set_tangent1(tmp)
+
+                # blp_here_now.set_tangent1(self.radial_interpolation(blp_here_off.get_tangent1(), blp_here_on.get_tangent1(), amount))
+
+                if blp_here_on.get_split_tangent_both():
+                    blp_here_now.set_split_tangent_both(True)
+                    tmp = Vector(0, 0)
+                    tmp = self.untransform_coords(self.radial_interpolation(trans_off_t2,trans_on_t2,amount), tmp, Vector(0, 0), curr_coord_sys)
+                    blp_here_now.set_tangent2(tmp)
+                else:
+                    blp_here_now.set_split_tangent_both(False)
+
+                blp_here_now.set_origin(blp_here_on.get_origin())
+                blp_here_now.set_width(self.linear_interpolation(blp_here_off.get_width(), blp_here_on.get_width(), amount))
+
+                if first_flag:
+                    blp_here_now.set_tangent1(blp_here_now.get_tangent1()*prev_tangent_scalar)
+                    first_iter = iterr
+                    first = prev = blp_here_now
+                    first_flag = False
+                    ret_list.append(blp_here_now)
+                    continue
+
+                ret_list[-1].set_split_tangent_both(True)
+                ret_list[-1].set_tangent2(prev.get_tangent2()*prev_tangent_scalar)
+                ret_list.append(blp_here_now)
+                ret_list[-1].set_split_tangent_both(True)
+                ret_list[-1].set_tangent1(blp_here_now.get_tangent1()*prev_tangent_scalar)
+                prev = blp_here_now
 
             index += 1
+
+        if next_scale != 1:
+            ret_list[-1].set_split_tangent_both(True)
+            ret_list[-1].set_tangent2(prev.get_tangent2()*next_scale)
+
+        return ret_list
+
+    def radial_interpolation(self, a, b, c):
+        """
+        """
+        if a.is_equal_to(Vector(0, 0)) or b.is_equal_to(Vector(0, 0)):
+            return linear_interpolation(a, b, c)
+
+        mag = (b.mag() - a.mag())*c + a.mag()
+        angle_a = TanAngle(a[1], a[0])
+        angle_b = TanAngle(b[1], b[0])
+        diff = DegAngle(angle_b - angle_a).get()
+        if diff < -180: angle_b += DegAngle(360)
+        elif diff > 180:    angle_a += DegAngle(360)
+        ang = angle_b.dist(angle_v)*c + angle_a
+
+        return Vector(mag*CosAngle(ang).get(), mag*SinAngle(ang).get())
+
+    def untransform_coords(self, inn, out, coord_origin, coord_sys):
+        out[0] = inn * coord_sys[0] 
+        out[1] = inn * coord_sys[1]
+        out += coord_origin
+        return out
+
+    def transform_coords(self, inn, out, coord_origin, coord_sys):
+        inn -= coord_origin
+        out[0] = inn * coord_sys[0]
+        out[1] = inn * coord_sys[1]
+        return out
 
     def linear_interpolation(self, a, b, c):
         return (b-a)*c + a
