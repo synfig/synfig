@@ -63,6 +63,9 @@ def gen_bline_outline(lottie, bline_point):
         animate_tangents(t1, window)
         animate_tangents(t2, window)
 
+        # Open up the window if bline points are animated
+        entry["ActivepointList"].update_frame_window(window)
+
     layer = bline.get_layer().get_layer()
     outer_width = layer.get_param("width")
     sharp_cusps = layer.get_param("sharp_cusps")

@@ -9,6 +9,7 @@ https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/E
 
 import sys
 import math
+from common.Vector import Vector
 from functools import total_ordering
 sys.path.append("..")
 
@@ -121,9 +122,12 @@ class TanAngle(Angle):
     def __init__(self, x):
         if isinstance(x, Angle):
             Angle.__init__(self, x.v)
+        elif isinstance(x, Vector):
+            v = math.atan2(x[0], x[1])
+            Angle.__init__(self, v)
         else:
             v = math.atan(x)
             Angle.__init__(self, v)
 
     def get(self):
-        return math.tang(self.v)
+        return math.tan(self.v)

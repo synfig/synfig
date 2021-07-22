@@ -20,6 +20,7 @@ class BlinePoint:
     def __init__(self, vertex_, width_, split_tangent_radius_, split_tangent_angle_, tangent_1, tangent_2, boned_vertex_ = False):
         self.vertex_ = vertex_
         self.width_ = width_
+        self.origin_ = 0
         self.split_tangent_radius_ = split_tangent_radius_
         self.split_tangent_angle_ = split_tangent_angle_
         self.boned_vertex_ = boned_vertex_
@@ -88,6 +89,9 @@ class BlinePoint:
     def set_split_tangent_both(self, x=True):
         self.set_split_tangent_radius(x)
         self.set_split_tangent_angle(x)
+
+    def get_split_tangent_both(self):
+        return self.split_tangent_both_
 
     def set_split_tangent_radius(self, x=True):
         self.split_tangent_radius_ = x
