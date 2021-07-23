@@ -4,6 +4,7 @@ Will store the Parameters class for Bline
 """
 
 import sys
+import copy
 import common
 import settings
 from common.BlinePoint import BlinePoint
@@ -136,7 +137,7 @@ class Bline:
         pos = to_Synfig_axis(entry["point"].get_value(fr), "vector")
         pos = common.Vector.Vector(pos[0], pos[1])
         width = to_Synfig_axis(entry["width"].get_value(fr), "real")
-        # origin = to_Synfig_axis(entry["origin"].get_value(fr), "real")
+        origin = to_Synfig_axis(entry["origin"].get_value(fr), "real")
         t1 = entry["t1"]
         t2 = entry["t2"]
         split_r = entry["split_radius"]
@@ -147,7 +148,7 @@ class Bline:
         t2 /= settings.PIX_PER_UNIT
         split_r_val = split_r.get_value(fr)
         split_a_val = split_a.get_value(fr)
-        return BlinePoint(pos, width, split_r_val, split_a_val, t1, t2)
+        return BlinePoint(pos, width, split_r_val, split_a_val, t1, t2, origin)
 
     def get_list_at_frame(self, fr):
         """
@@ -158,7 +159,6 @@ class Bline:
         ret_list = []
         first_flag = True
         rising = [False]
-        index = 0
         next_scale = 1.0
 
         first = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
@@ -177,22 +177,21 @@ class Bline:
                     first_iter = iterr
                     first = prev = self.get_blinepoint(iterr, fr)
                     first_flag = False
-                    ret_list.append(first)
+                    ret_list.append(copy.deepcopy(first))
                     iterr += 1
-                    index += 1
                     continue
                 curr = self.get_blinepoint(iterr, fr)
 
                 if next_scale != 1.0:
                     ret_list[-1].set_split_tangent_both(True)
                     ret_list[-1].set_tangent2(prev.get_tangent2()*next_scale)
-                    ret_list.append(curr)
+                    ret_list.append(copy.deepcopy(curr))
                     ret_list[-1].set_split_tangent_both(True)
                     ret_list[-1].set_tangent2(curr.get_tangent2())
                     ret_list[-1].set_tangent1(curr.get_tangent1()*next_scale)
                     next_scale = 1.0
                 else:
-                    ret_list.append(curr)
+                    ret_list.append(copy.deepcopy(curr))
                 prev = curr
 
             # It's partly on
@@ -229,7 +228,7 @@ class Bline:
 
                 end_iter += 1
                 while end_iter != self.get_len():
-                    if self.get_entry_list()[end_iter]["ActivepointList"].amount_at_time(fr, rising) > amount:
+                    if self.get_entry_list()[end_iter]["ActivepointList"].amount_at_time(fr) > amount:
                         break
                     end_iter += 1
 
@@ -256,7 +255,7 @@ class Bline:
                     if begin_iter == iterr:
                         break
 
-                    if self.get_entry_list()[begin_iter]["ActivepointList"].amount_at_time(fr, rising) > amount:
+                    if self.get_entry_list()[begin_iter]["ActivepointList"].amount_at_time(fr) > amount:
                         blp_prev_off = self.get_blinepoint(begin_iter, off_time)
                         break
 
@@ -365,34 +364,24 @@ class Bline:
                     first_iter = iterr
                     first = prev = blp_here_now
                     first_flag = False
-                    ret_list.append(blp_here_now)
+                    ret_list.append(copy.deepcopy(blp_here_now))
                     iterr += 1
-                    index += 1
                     continue
 
                 ret_list[-1].set_split_tangent_both(True)
                 ret_list[-1].set_tangent2(prev.get_tangent2()*prev_tangent_scalar)
-                ret_list.append(blp_here_now)
+
+                ret_list.append(copy.deepcopy(blp_here_now))
                 ret_list[-1].set_split_tangent_both(True)
                 ret_list[-1].set_tangent1(blp_here_now.get_tangent1()*prev_tangent_scalar)
                 prev = blp_here_now
 
-            index += 1
             iterr += 1
 
         if next_scale != 1:
             ret_list[-1].set_split_tangent_both(True)
             ret_list[-1].set_tangent2(prev.get_tangent2()*next_scale)
 
-        """
-        if fr == 1:
-            for bp in ret_list:
-                v = bp.get_vertex()
-                v = bp.get_width()
-                v = bp.get_tangent1()
-                print(v)
-            print("anish", ret_list)
-        """
         return ret_list
 
     def radial_interpolation(self, a, b, c):

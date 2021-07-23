@@ -17,7 +17,7 @@ class BlinePoint:
     TODO: origin_ is not kept as a parameter for Blinepoint because it is not
     yet used. We can set it as a parameter once we know where to use it.
     """
-    def __init__(self, vertex_, width_, split_tangent_radius_, split_tangent_angle_, tangent_1, tangent_2, boned_vertex_ = False):
+    def __init__(self, vertex_, width_, split_tangent_radius_, split_tangent_angle_, tangent_1, tangent_2, origin_ = 0, boned_vertex_ = False):
         self.vertex_ = vertex_
         self.width_ = width_
         self.origin_ = 0
@@ -27,6 +27,7 @@ class BlinePoint:
         self.tangent_ = []
         self.tangent_.append(tangent_1)
         self.tangent_.append(tangent_2)
+        self.origin_ = origin_
         self.vertex_setup_ = vertex_
         self.update_flags()
         self.update_tangent2()
@@ -78,10 +79,10 @@ class BlinePoint:
         self.width_ = x
 
     def set_origin(self, x):
-        self.origin_ = x - 0.5
+        self.origin_ = x
 
     def get_origin(self):
-        return self.origin_ + 0.5
+        return self.origin_
 
     def get_boned_vertex_flag(self):
         return self.boned_vertex_

@@ -41,6 +41,7 @@ def gen_bline_outline(lottie, bline_point):
 
     for entry in bline.get_entry_list():
         pos = entry["point"]
+        origin = entry["origin"]
         width = entry["width"]
         t1 = entry["t1"]
         t2 = entry["t2"]
@@ -50,6 +51,9 @@ def gen_bline_outline(lottie, bline_point):
         pos.update_frame_window(window)
         # Empty the pos and fill in the new animated pos
         pos.animate("vector")
+
+        origin.update_frame_window(window)
+        origin.animate("real")
 
         width.update_frame_window(window)
         width.animate("real")

@@ -24,9 +24,9 @@ class Activepoint:
 
         # Convert time to frames
         if time == 'SOT':
-            self.time = settings.lottie_format["ip"]
+            self.time = -32767*512
         elif time == 'EOT':
-            self.time = settings.lottie_format["op"]
+            self.time = 32767*512
         else:
             self.time = convert_time_to_frames(time)
 
