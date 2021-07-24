@@ -7,7 +7,7 @@ in Lottie format
 import sys
 import settings
 from common.Bline import Bline
-from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
+from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, convert_tangent_to_lottie
 from properties.shapePropKeyframe.outline import equalize_length
 from synfig.animation import to_Lottie_axis
 sys.path.append("../../")

@@ -258,7 +258,7 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
 
         # If iter_it.t2 == 0 and next.t1 == 0, this is a straight line
         if iter_t.is_equal_to(Vector(0, 0)) and next_t.is_equal_to(Vector(0, 0)):
-            iter_t = next_1 = bp2.get_vertex() - bp1.get_vertex()
+            iter_t = next_t = bp2.get_vertex() - bp1.get_vertex()
 
             # If the 2 points are on top of each other, ignore this segment
             # leave 'first' true if was before

@@ -142,7 +142,7 @@ class Bline:
         t2 = entry["t2"]
         split_r = entry["split_radius"]
         split_a = entry["split_angle"]
-        t1, t2 = get_tangent_at_frame(t1, t2, split_r, split_a, fr) 
+        t1, t2 = get_tangent_at_frame(t1, t2, fr) 
         # convert to synfig units
         t1 /= settings.PIX_PER_UNIT
         t2 /= settings.PIX_PER_UNIT
@@ -196,11 +196,9 @@ class Bline:
 
             # It's partly on
             elif amount > 0.0:
-                blp_here_on = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
                 blp_here_off = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
                 blp_here_now = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
                 blp_prev_off = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
-                blp_next_off = BlinePoint(Vector(0, 0), 1, True, False, Vector(0, 0), Vector(0, 0))
                 dist_from_begin = 0
                 dist_from_end = 0
 
@@ -211,7 +209,7 @@ class Bline:
                         on_time = settings.SOT
                     try:
                         off_time = self.get_entry_list()[iterr]["ActivepointList"].find_next(fr).get_time()
-                    except:
+                    except Exception as e:
                         off_time = settings.EOT
                 else:
                     try:
@@ -220,7 +218,7 @@ class Bline:
                         off_time = settings.SOT
                     try:
                         on_time = self.get_entry_list()[iterr]["ActivepointList"].find_next(fr).get_time()
-                    except:
+                    except Exception as e:
                         on_time = settings.EOT
 
                 blp_here_on = self.get_blinepoint(iterr, on_time)
@@ -276,10 +274,6 @@ class Bline:
                 blp_here_off.set_tangent1(curve.derivative(blp_here_on.get_origin()));
                 blp_here_off.set_tangent2(curve.derivative(blp_here_on.get_origin()));
 
-                prev_tangent_scalar = 1
-                next_tangent_scalar = 1
-
-                # QUERY/DOUBT
                 if begin_iter == (iterr - 1) or dist_from_begin == 1:
                     prev_tangent_scalar = self.linear_interpolation(blp_here_on.get_origin(), 1.0, amount)
                 else:
