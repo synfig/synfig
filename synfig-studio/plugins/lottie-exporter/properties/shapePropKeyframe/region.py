@@ -8,6 +8,7 @@ import sys
 import settings
 from common.Bline import Bline
 from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, get_tangent_at_frame, convert_tangent_to_lottie
+from properties.shapePropKeyframe.outline import equalize_length
 from synfig.animation import to_Lottie_axis
 sys.path.append("../../")
 
@@ -35,6 +36,7 @@ def gen_bline_region(lottie, bline_point):
 
     for entry in bline.get_entry_list():
         pos = entry["point"]
+        origin = entry["origin"]
         t1 = entry["t1"]
         t2 = entry["t2"]
         split_r = entry["split_radius"]
@@ -42,6 +44,9 @@ def gen_bline_region(lottie, bline_point):
         width = entry["width"]  # Not needed, but required by Bline class
         # Hence we do not update the window also
         width.animate("real")
+
+        origin.update_frame_window(window)
+        origin.animate("real")
 
         # Necassary to update this before inserting new waypoints, as new
         # waypoints might include there on time: 0 seconds
@@ -56,6 +61,8 @@ def gen_bline_region(lottie, bline_point):
 
         animate_tangents(t1, window)
         animate_tangents(t2, window)
+
+        entry["ActivepointList"].update_frame_window(window)
 
     layer = bline.get_layer().get_layer()
     origin = layer.get_param("origin")
@@ -72,11 +79,16 @@ def gen_bline_region(lottie, bline_point):
     ################ SECTION 2 ###########################
     # Generating values for all the frames in the window
     fr = window["first"]
+    lottie_st_list = []
+    lottie_en_list = []
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, loop)
+        lottie_st_list.append(st_val)
+        lottie_en_list.append(en_val)
         synfig_region(bline, st_val, origin, fr)
         synfig_region(bline, en_val, origin, fr + 1)
         fr += 1
+    equalize_length(lottie_st_list, lottie_en_list)
     # Setting final time
     lottie.append({})
     lottie[-1]["t"] = fr
