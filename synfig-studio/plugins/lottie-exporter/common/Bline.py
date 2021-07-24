@@ -208,20 +208,20 @@ class Bline:
                     try:
                         on_time = self.get_entry_list()[iterr]["ActivepointList"].find_prev(fr).get_time()
                     except Exception as e:
-                        on_time = -32767*512
+                        on_time = settings.SOT
                     try:
                         off_time = self.get_entry_list()[iterr]["ActivepointList"].find_next(fr).get_time()
                     except:
-                        off_time = 32767*512
+                        off_time = settings.EOT
                 else:
                     try:
                         off_time = self.get_entry_list()[iterr]["ActivepointList"].find_prev(fr).get_time()
                     except Exception as e:
-                        off_time = -32767*512
+                        off_time = settings.SOT
                     try:
                         on_time = self.get_entry_list()[iterr]["ActivepointList"].find_next(fr).get_time()
                     except:
-                        on_time = 32767*512
+                        on_time = settings.EOT
 
                 blp_here_on = self.get_blinepoint(iterr, on_time)
                 end_iter = iterr

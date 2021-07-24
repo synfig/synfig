@@ -24,9 +24,9 @@ class Activepoint:
 
         # Convert time to frames
         if time == 'SOT':
-            self.time = -32767*512
+            self.time = settings.SOT
         elif time == 'EOT':
-            self.time = 32767*512
+            self.time = settings.EOT
         else:
             self.time = convert_time_to_frames(time)
 

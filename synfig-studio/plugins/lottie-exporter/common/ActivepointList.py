@@ -7,6 +7,7 @@ https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/s
 """
 
 import sys
+import settings
 from common.Activepoint import Activepoint
 sys.path.append("..")
 
@@ -159,7 +160,7 @@ class ActivepointList:
 
         for itr in self.active_point_list:
             fr = itr.time
-            if fr == -32767*512 or fr == 32767*512:
+            if fr == settings.SOT or fr == settings.EOT:
                 continue
 
             if fr > window["last"]:

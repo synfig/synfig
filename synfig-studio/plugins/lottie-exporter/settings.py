@@ -85,6 +85,10 @@ WAYPOINTS_LIST = []
 WITHOUT_VARIABLE_WIDTH = False
 ROOT_CANVAS = None
 
+# Time.h
+SOT = -32767*512
+EOT = 32767*512
+
 def init():
     """
     Initialises the final dictionary corresponding to conversion and
