@@ -75,7 +75,7 @@ public:
 		auto it = book.find(file_extension);
 		if (it == book.end())
 			return false;
-		return value_type == type_string;
+		return value_type == type_string || !it->second.supports_string_only;
 	}
 
 	/// Method signature for parsing a stream
@@ -88,6 +88,7 @@ public:
 	/// A parser
 	struct BookEntry {
 		ParserFunction parse;
+		bool supports_string_only;
 	};
 
 	/// maps file extension -> parser entry
@@ -291,12 +292,39 @@ public:
 
 };
 
+static ValueBase
+from_string(const Type &t, const std::string& str) {
+	ValueBase v;
+	if (t == type_string)
+		v = str;
+	else if (t == type_angle)
+		v = Angle::deg(Parser::strtodouble(str));
+	else if (t == type_bool)
+		v = str!="0" && str!="false" && str!="FALSE" && str!="False";
+	else if (t == type_integer)
+		v = stoi(str);
+	else if (t == type_real)
+		v = Parser::strtodouble(str);
+	else if (t == type_time)
+		v = Time(str);
+	else if (t == type_vector) {
+		const auto comma1_pos = str.find(",");
+		if (comma1_pos != std::string::npos) {
+			std::string x_str, y_str;
+			x_str = str.substr(0, comma1_pos);
+			y_str = str.substr(comma1_pos+1);
+			v = Vector(Parser::strtodouble(x_str), Parser::strtodouble(y_str));
+		}
+	}
+	return v;
+}
+
 /* === M E T H O D S ======================================================= */
 
 const Parser::Book Parser::book {
-	{"pgo", Parser::BookEntry{&Parser::parse_pgo}}, // Papagayo
-	{"tsv", Parser::BookEntry{&Parser::parse_tsv}}, // TSV - Rhubarb, for example
-	{"xml", Parser::BookEntry{&Parser::parse_xml}}  // Rhubarb XML file format
+	{"pgo", Parser::BookEntry{&Parser::parse_pgo, true}}, // Papagayo
+	{"tsv", Parser::BookEntry{&Parser::parse_tsv, false}},// TSV - Rhubarb, for example
+	{"xml", Parser::BookEntry{&Parser::parse_xml, true}}  // Rhubarb XML file format
 };
 
 ValueNode_AnimatedFile::ValueNode_AnimatedFile(Type &t):
@@ -371,11 +399,19 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool force)
 
 			map<Time, String> values; // phonemes for lipsync file formats
 			if (!rs)
-				error("Cannot open .%s file: %s", file_extension.c_str(), full_filename.c_str());
+				error(_("Cannot open .%s file: %s"), file_extension.c_str(), full_filename.c_str());
 			else
 			if (Parser::book.at(file_extension).parse(*rs, values, filefields)) {
 				for(map<Time, String>::const_iterator i = values.begin(); i != values.end(); ++i) {
-					new_waypoint(i->first, i->second);
+					ValueBase v = from_string(get_type(), i->second);
+					if (!v.is_valid() || v.get_type() == type_nil) {
+						warning(_("Invalid value for type %s: %s at time %s, or value type is currently not supported"),
+								get_type().description.local_name.c_str(),
+								i->second.c_str(),
+								i->first.get_string().c_str());
+						continue;
+					}
+					new_waypoint(i->first, v);
 				}
 			}
 		}
