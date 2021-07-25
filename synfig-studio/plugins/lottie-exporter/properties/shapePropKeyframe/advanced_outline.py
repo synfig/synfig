@@ -1274,7 +1274,7 @@ def bline_length(bline_list, bline_loop, lengths, fr):
     nxt = 0 # nxt = bline.begin()
     itr = 0
     if bline_loop:
-        itr = len(bline_list)
+        itr = len(bline_list) - 1
     else:
         itr = nxt
         nxt = nxt + 1
