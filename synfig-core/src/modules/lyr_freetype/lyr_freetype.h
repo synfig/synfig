@@ -99,7 +99,7 @@ private:
 	bool font_path_from_canvas;
 
 	bool old_version;
-	std::atomic<bool> needs_sync;
+	std::atomic<bool> needs_sync {false};
 
 	void sync();
 
@@ -110,20 +110,20 @@ private:
 
 public:
 	Layer_Freetype();
-	virtual ~Layer_Freetype();
+	~Layer_Freetype() override;
 
-	virtual void on_canvas_set();
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	void on_canvas_set() override;
+	bool set_param(const synfig::String & param, const synfig::ValueBase &value) override;
+	synfig::ValueBase get_param(const synfig::String & param) const override;
+	synfig::Color get_color(synfig::Context context, const synfig::Point &pos) const override;
+	bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb) const override;
 
-	virtual Vocab get_param_vocab()const;
+	Vocab get_param_vocab() const override;
 
-	virtual bool set_version(const synfig::String &ver){if(ver=="0.1")old_version=true;return true;}
-	virtual void reset_version(){old_version=false;}
+	bool set_version(const synfig::String &ver) override { if (ver=="0.1") old_version=true; return true; }
+	void reset_version() override {old_version=false;}
 
-	virtual synfig::Rect get_bounding_rect()const;
+	synfig::Rect get_bounding_rect() const override;
 
 private:
 	void new_font(const synfig::String &family, int style=0, int weight=400);
