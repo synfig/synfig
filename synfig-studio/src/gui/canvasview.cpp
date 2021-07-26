@@ -1431,12 +1431,12 @@ CanvasView::on_current_time_widget_changed()
 void
 CanvasView::on_set_end_time_widget_changed()
 {
-	get_canvas()->rend_desc().set_time_end(framedial->get_end_time());
-	//refresh the renddesc
-	refresh_rend_desc();
-	refresh_time_window();
-	//refresh canvas_properties
-	canvas_properties.refresh();
+	if (framedial->get_end_time() == get_canvas()->rend_desc().get_time_end())
+		return;
+
+	RendDesc rend_desc = get_canvas()->rend_desc();
+	rend_desc.set_time_end(framedial->get_end_time());
+	canvas_interface()->set_rend_desc(rend_desc);
 }
 
 void
