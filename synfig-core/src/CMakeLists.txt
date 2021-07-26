@@ -167,8 +167,6 @@ else()
 		pkg_check_modules(GLIB REQUIRED glib-2.0)
 		pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
 		pkg_check_modules(GIOMM REQUIRED giomm-2.4)
-		pkg_check_modules(CAIRO REQUIRED cairo)
-		pkg_check_modules(PANGOCAIRO REQUIRED pangocairo) # lyr_freetype
 		pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
 		pkg_check_modules(MLT mlt++)
 		pkg_check_modules(FFTW REQUIRED fftw3)
@@ -182,7 +180,6 @@ else()
 		pkg_check_modules(FONT_CONFIG fontconfig) # for FontConfig
 
 		## TODO: move to module where it is actually required
-		pkg_check_modules(PANGO REQUIRED pango)
 		pkg_check_modules(HARFBUZZ harfbuzz)
 		pkg_check_modules(FRIBIDI fribidi)
 	endif()
@@ -196,9 +193,7 @@ foreach(pkg_config_lib
   SIGCPP 
   GLIBMM 
   GIOMM 
-  CAIRO 
-  PANGOCAIRO 
-  LIBXML 
+  LIBXML
   MLT 
   FFTW 
   FT 
@@ -207,7 +202,6 @@ foreach(pkg_config_lib
   LIBJPEG
   OPENEXR
   MAGICKCORE
-  PANGO
   FONT_CONFIG)
     include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
     link_directories(${${pkg_config_lib}_LIBRARY_DIRS})

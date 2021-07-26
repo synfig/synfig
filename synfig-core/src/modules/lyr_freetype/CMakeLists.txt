@@ -11,9 +11,9 @@ if (FRIBIDI_FOUND)
 	target_compile_definitions(lyr_freetype PUBLIC -DHAVE_FRIBIDI=1)
 endif()
 
-target_include_directories(lyr_freetype PRIVATE ${PANGO_INCLUDE_DIRS} ${HARFBUZZ_INCLUDE_DIRS} ${FRIBIDI_INCLUDE_DIRS})
+target_include_directories(lyr_freetype PRIVATE ${HARFBUZZ_INCLUDE_DIRS} ${FRIBIDI_INCLUDE_DIRS})
 
-target_link_libraries(lyr_freetype synfig ${CAIRO_LIBRARIES} ${PANGO_LIBRARIES} ${PANGOCAIRO_LIBRARIES} ${FT_LIBRARIES} ${FONT_CONFIG_LIBRARIES} ${FRIBIDI_LIBRARIES})
+target_link_libraries(lyr_freetype synfig ${FT_LIBRARIES} ${FONT_CONFIG_LIBRARIES} ${HARFBUZZ_LIBRARIES} ${FRIBIDI_LIBRARIES})
 
 install (
     TARGETS lyr_freetype
