@@ -62,8 +62,6 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define MAX_GLYPHS		2000
-
 // Copy of PangoStyle
 // It is necessary to keep original values if Pango ever change them
 //  - because it would change layer rendering as Synfig stores the parameter
@@ -125,17 +123,16 @@ struct VisualTextLine
 	int width = 0;
 	std::vector<Glyph> glyph_table;
 
-	int actual_height()const
+	uint32_t actual_height() const
 	{
-		int height(0);
+		uint32_t height(0);
 
-		std::vector<Glyph>::const_iterator iter;
-		for(iter=glyph_table.begin();iter!=glyph_table.end();++iter)
+		for (const auto& glyph : glyph_table)
 		{
 			FT_BBox   glyph_bbox;
 
 			//FT_Glyph_Get_CBox( glyphs[n], ft_glyph_bbox_pixels, &glyph_bbox );
-			FT_Glyph_Get_CBox( iter->glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
+			FT_Glyph_Get_CBox( glyph.glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
 
 			if(glyph_bbox.yMax>height)
 				height=glyph_bbox.yMax;
@@ -187,8 +184,8 @@ struct FontMeta {
 	//!  Empty string otherwise
 	std::string canvas_path;
 
-	FontMeta(synfig::String family, int style=0, int weight=400)
-		: family(family), style(style), weight(weight)
+	explicit FontMeta(synfig::String family, int style=0, int weight=400)
+		: family(std::move(family)), style(style), weight(weight)
 	{}
 
 	bool operator==(const FontMeta& other) const
