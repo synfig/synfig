@@ -254,7 +254,7 @@ public:
 	}
 
 	void clear() {
-		for (auto item : cache) {
+		for (const auto& item : cache) {
 			FT_Done_Face(item.second.face);
 #if HAVE_HARFBUZZ
 			hb_font_destroy(item.second.font);
@@ -414,7 +414,7 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 				list.push_back(filename);
 
 				filename = entry.preffix;
-				filename += entry.get_alternative_suffix(style, weight);
+				filename += FontFileNameEntry::get_alternative_suffix(style, weight);
 				list.push_back(filename);
 			}
 		}
@@ -461,10 +461,6 @@ Layer_Freetype::Layer_Freetype()
 	SET_STATIC_DEFAULTS();
 
 	set_description(param_text.get(String()));
-}
-
-Layer_Freetype::~Layer_Freetype()
-{
 }
 
 void
@@ -521,8 +517,6 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 #endif
 		return true;
 	}
-
-	synfig::String font_fam(font_fam_);
 
 	if (has_valid_font_extension(font_fam_))
 		if (new_face(font_fam_)) {
@@ -645,7 +639,7 @@ Layer_Freetype::new_face(const String &newfont)
 
 	std::vector<std::string> possible_font_directories = get_possible_font_directories(canvas_path);
 
-	for (std::string directory : possible_font_directories) {
+	for (const std::string& directory : possible_font_directories) {
 		for (const char *extension : possible_font_extensions) {
 			std::string path = (directory + newfont + extension);
 			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
@@ -1108,7 +1102,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
         curr_glyph.pos.y = by;
 
         // load glyph image into the slot. DO NOT RENDER IT !!
-        if(grid_fit)
+		if(grid_fit)
 			error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT);
 		else
 			error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT|FT_LOAD_NO_HINTING );
@@ -1399,7 +1393,7 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 
 	// 4. Split text into lines (and text spans according to their script if we know them)
 #if not HAVE_HARFBUZZ
-	for (auto line : base_lines) {
+	for (const auto& line : base_lines) {
 		TextLine current_line;
 
 		for (uint32_t codepoint : line) {
@@ -1413,7 +1407,7 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 	}
 #else
 	hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
-	for (auto line : base_lines) {
+	for (const auto& line : base_lines) {
 		TextLine current_line;
 		hb_script_t current_script = HB_SCRIPT_INVALID;
 

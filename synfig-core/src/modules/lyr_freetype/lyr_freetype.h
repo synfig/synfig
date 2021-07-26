@@ -110,7 +110,7 @@ private:
 
 public:
 	Layer_Freetype();
-	~Layer_Freetype() override;
+	~Layer_Freetype() override = default;
 
 	void on_canvas_set() override;
 	bool set_param(const synfig::String & param, const synfig::ValueBase &value) override;
