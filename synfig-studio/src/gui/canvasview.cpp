@@ -3481,6 +3481,32 @@ CanvasView::image_import()
 	String errors, warnings;
 	if(App::dialog_open_file(_("Please select files"), filename, IMAGE_DIR_PREFERENCE))
 	{
+		// Don't let user import a file to itself
+		// Check if it's the same file of this canvas
+		{
+			bool is_same_file = get_canvas()->get_file_name() == filename;
+			if (!is_same_file) {
+				Glib::RefPtr<Gio::File> current_file = Gio::File::create_for_path(get_canvas()->get_file_name());
+				Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename);
+				is_same_file = current_file->equal(import_file);
+				if (!is_same_file) {
+					// One more sanity check
+					Glib::RefPtr<Gio::FileInfo> current_file_info = current_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
+					Glib::RefPtr<Gio::FileInfo> import_file_info = import_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
+					is_same_file = current_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE) == import_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE);
+				}
+			}
+			if (is_same_file) {
+				App::dialog_message_1b(
+					"ERROR",
+					_("You cannot import a file to itself"),
+					"details",
+					_("Close"));
+				return;
+			}
+		}
+
+		// Import
 		canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
 		if (!errors.empty())
 			App::dialog_message_1b(
