@@ -183,6 +183,8 @@ else()
 
 		## TODO: move to module where it is actually required
 		pkg_check_modules(PANGO REQUIRED pango)
+		pkg_check_modules(HARFBUZZ harfbuzz)
+		pkg_check_modules(FRIBIDI fribidi)
 	endif()
 endif()
 
