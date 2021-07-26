@@ -268,8 +268,7 @@ public:
 		return obj;
 	}
 
-private:
-	FaceCache() {}
+	FaceCache() = default;
 	FaceCache(const FaceCache&) = delete;
 
 	~FaceCache() {
