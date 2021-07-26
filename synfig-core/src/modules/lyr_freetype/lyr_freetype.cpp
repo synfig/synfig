@@ -236,6 +236,7 @@ struct FaceInfo {
 /// Cache font faces for speeding up the text layer rendering
 class FaceCache {
 	std::map<FontMeta, FaceInfo> cache;
+	FaceCache() = default; // Make constructor private to prevent instancing
 public:
 	FaceInfo get(const FontMeta &meta) const {
 		auto iter = cache.find(meta);
@@ -268,8 +269,9 @@ public:
 		return obj;
 	}
 
-	FaceCache() = default;
-	FaceCache(const FaceCache&) = delete;
+	FaceCache(const FaceCache&) = delete; // Copy prohibited
+	void operator=(const FaceCache&) = delete; // Assignment prohibited
+	FaceCache& operator=(FaceCache&&) = delete; // Move assignment prohibited
 
 	~FaceCache() {
 		clear();
