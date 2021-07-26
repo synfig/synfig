@@ -147,7 +147,7 @@ struct VisualTextLine
 #ifdef WITH_FONTCONFIG
 // Allow proper finalization of FontConfig
 struct FontConfigWrap {
-	static FcConfig* init() {
+	static FcConfig* instance() {
 		static FontConfigWrap obj;
 		return obj.config;
 	}
@@ -570,7 +570,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 
 static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight) {
 	std::string filename;
-	FcConfig* fc = FontConfigWrap::init();
+	FcConfig* fc = FontConfigWrap::instance();
 	if( !fc )
 	{
 		synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
