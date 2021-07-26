@@ -24,9 +24,9 @@ class Activepoint:
 
         # Convert time to frames
         if time == 'SOT':
-            self.time = settings.lottie_format["ip"]
+            self.time = settings.SOT
         elif time == 'EOT':
-            self.time = settings.lottie_format["op"]
+            self.time = settings.EOT
         else:
             self.time = convert_time_to_frames(time)
 
@@ -35,3 +35,6 @@ class Activepoint:
 
     def __eq__(self, rhs):
         return ((self.time) == (rhs.time))
+
+    def get_time(self):
+        return self.time

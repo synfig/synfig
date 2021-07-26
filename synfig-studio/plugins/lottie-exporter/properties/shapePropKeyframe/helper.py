@@ -64,7 +64,7 @@ def update_child_at_parent(parent, new_child, tag, param_name=None):
     parent.insert(0, new_child)
 
 
-def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
+def get_tangent_at_frame(t1, t2, fr):
     """
     Given a frame, returns the in-tangent and out-tangent at a bline point
     depending on whether split_radius and split_angle is "true"/"false"
@@ -80,10 +80,6 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
         (common.Vector.Vector, common.Vector.Vector) : In-tangent and out-tangent at the given frame
     """
 
-    # Get value of split_radius and split_angle at frame
-    sp_r = split_r.get_value(fr)
-    sp_a = split_a.get_value(fr)
-
     # Setting tangent 1
     r1 = t1.get_subparam("radius").get_value(fr)
     a1 = t1.get_subparam("theta").get_value(fr)
@@ -96,21 +92,7 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     a2 = t2.get_subparam("theta").get_value(fr)
 
     x, y = radial_to_tangent(r2, a2)
-    orig_tang2 = Vector(x, y)
-
-    if not sp_r:
-        # Use t1's radius
-        r2 = r1
-    if not sp_a:
-        # Use t1's angle
-        a2 = a1
-
-    x, y = radial_to_tangent(r2, a2)
     tangent2 = Vector(x, y)
-
-    if sp_r and (not sp_a):
-        if tangent1.mag_squared() == 0:
-            tangent2 = orig_tang2
 
     return tangent1, tangent2
 

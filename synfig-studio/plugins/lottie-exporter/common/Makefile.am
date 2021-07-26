@@ -7,6 +7,7 @@ EXTRA_FILES = \
 			  ActivepointList.py \
 			  Angle.py \
 			  Bline.py \
+			  BlinePoint.py \
 			  Canvas.py \
 			  Color.py \
 			  Count.py \

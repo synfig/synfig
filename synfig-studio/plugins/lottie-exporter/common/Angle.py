@@ -9,6 +9,7 @@ https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/E
 
 import sys
 import math
+from common.Vector import Vector
 from functools import total_ordering
 sys.path.append("..")
 
@@ -53,6 +54,9 @@ class Angle:
 
     def __eq__(self, rhs):
         return math.fabs(self.v - rhs.v) < ANGLE_EPSILON
+
+    def dist(self, rhs):
+        return Angle(self.v) - rhs
 
 
 class RadAngle(Angle):
@@ -110,3 +114,20 @@ class CosAngle(Angle):
 
     def get(self):
         return math.cos(self.v)
+
+class TanAngle(Angle):
+    """
+    Class to keep the angle in Tan format
+    """
+    def __init__(self, x):
+        if isinstance(x, Angle):
+            Angle.__init__(self, x.v)
+        elif isinstance(x, Vector):
+            v = math.atan2(x[0], x[1])
+            Angle.__init__(self, v)
+        else:
+            v = math.atan(x)
+            Angle.__init__(self, v)
+
+    def get(self):
+        return math.tan(self.v)

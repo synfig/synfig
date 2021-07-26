@@ -33,9 +33,16 @@ class Vector:
         Returns:
             (None)
         """
-        self.val1 = val1
-        self.val2 = val2
-        self.type = _type
+         
+        #print(type(val2), isinstance(val2, common.Angle.Angle))
+        if isinstance(val2, common.Angle.Angle):
+            self.val1 = val1 * common.Angle.CosAngle(val2).get()
+            self.val2 = val1 * common.Angle.SinAngle(val2).get()
+            self.type = _type
+        else:
+            self.val1 = val1
+            self.val2 = val2
+            self.type = _type
 
     def __str__(self):
         return "({0},{1}, {2})".format(self.val1, self.val2, self.type)

@@ -12,6 +12,7 @@ set(PLUGIN_LOTTIE_EXPORTER_FILES
     common/ActivepointList.py
     common/Angle.py
     common/Bline.py
+    common/BlinePoint.py
     common/Canvas.py
     common/Color.py
     common/Count.py

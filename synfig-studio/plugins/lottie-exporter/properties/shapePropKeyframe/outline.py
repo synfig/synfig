@@ -6,12 +6,13 @@ in Lottie format
 
 import sys
 import math
+import copy
 import settings
 from common.Bline import Bline
 from common.Vector import Vector
 from common.Hermite import Hermite
 from synfig.animation import to_Synfig_axis
-from properties.shapePropKeyframe.helper import add_reverse, add, move_to, get_tangent_at_frame, insert_dict_at, animate_tangents
+from properties.shapePropKeyframe.helper import add_reverse, add, move_to, insert_dict_at, animate_tangents
 sys.path.append("../../")
 
 
@@ -40,6 +41,7 @@ def gen_bline_outline(lottie, bline_point):
 
     for entry in bline.get_entry_list():
         pos = entry["point"]
+        origin = entry["origin"]
         width = entry["width"]
         t1 = entry["t1"]
         t2 = entry["t2"]
@@ -49,6 +51,9 @@ def gen_bline_outline(lottie, bline_point):
         pos.update_frame_window(window)
         # Empty the pos and fill in the new animated pos
         pos.animate("vector")
+
+        origin.update_frame_window(window)
+        origin.animate("real")
 
         width.update_frame_window(window)
         width.animate("real")
@@ -61,6 +66,9 @@ def gen_bline_outline(lottie, bline_point):
 
         animate_tangents(t1, window)
         animate_tangents(t2, window)
+
+        # Open up the window if bline points are animated
+        entry["ActivepointList"].update_frame_window(window)
 
     layer = bline.get_layer().get_layer()
     outer_width = layer.get_param("width")
@@ -108,17 +116,46 @@ def gen_bline_outline(lottie, bline_point):
     # Generating values for all the frames in the window
 
 
+    lottie_st_list, lottie_en_list = [], []
     fr = window["first"]
     while fr <= window["last"]:
         st_val, en_val = insert_dict_at(lottie, -1, fr, False)  # This loop needs to be considered somewhere down
-
+        lottie_st_list.append(st_val)
+        lottie_en_list.append(en_val)
         synfig_outline(bline, st_val, origin, outer_width, sharp_cusps, expand, r_tip0, r_tip1, homo_width, fr)
         synfig_outline(bline, en_val, origin, outer_width, sharp_cusps, expand, r_tip0, r_tip1, homo_width, fr + 1)
-
         fr += 1
+    equalize_length(lottie_st_list, lottie_en_list)
     # Setting the final time
     lottie.append({})
     lottie[-1]["t"] = fr
+
+
+def equalize_length(lottie_st, lottie_en):
+    """
+    This fxn collects all the lists needed to render the outline, and makes them
+    of equal length by adding dummy points: This is a requirement of Lottie
+    """
+    # Find maximum among the lists
+    mx = 0
+    for st in lottie_st:
+        mx = max(mx, len(st["i"]))
+    for en in lottie_en:
+        mx = max(mx, len(en["i"]))
+
+    for st in lottie_st:
+        diff = mx - len(st["i"])
+        last_value_i, lv_o, lv_v = copy.deepcopy(st["i"][-1]), copy.deepcopy(st["o"][-1]), copy.deepcopy(st["v"][-1])
+        st["i"].extend([last_value_i for i in range(diff)])
+        st["o"].extend([lv_o for i in range(diff)])
+        st["v"].extend([lv_v for i in range(diff)])
+
+    for st in lottie_en:
+        diff = mx - len(st["i"])
+        last_value_i, lv_o, lv_v = copy.deepcopy(st["i"][-1]), copy.deepcopy(st["o"][-1]), copy.deepcopy(st["v"][-1])
+        st["i"].extend([last_value_i for i in range(diff)])
+        st["o"].extend([lv_o for i in range(diff)])
+        st["v"].extend([lv_v for i in range(diff)])
 
 
 def get_outline_grow(fr):
@@ -134,47 +171,6 @@ def get_outline_grow(fr):
             ret += val
     ret = math.e ** ret
     return ret
-
-
-def get_outline_param_at_frame(entry, fr):
-    """
-    Given a entry and frame, returns the parameters of the outline layer at
-    that frame
-
-    Args:
-        entry (dict) : Vertex of outline layer in Synfig format
-        fr        (int)                 : frame number
-
-    Returns:
-        (common.Vector.Vector) : position of the vertex
-        (float)       : width of the vertex
-        (common.Vector.Vector) : Tangent 1 of the vertex
-        (common.Vector.Vector) : Tangent 2 of the vertex
-        (bool)        : True if radius split is ticked at this frame
-        (bool)        : True if tangent split is ticked at this frame
-    """
-    pos = entry["point"].get_value(fr)
-    # Convert pos back to Synfig coordinates
-    pos = to_Synfig_axis(pos, "vector")
-    pos_ret = Vector(pos[0], pos[1])
-
-    width = entry["width"].get_value(fr)
-    width = to_Synfig_axis(width, "real")
-    t1 = entry["t1"]
-    t2 = entry["t2"]
-    split_r = entry["split_radius"]
-    split_a = entry["split_angle"]
-
-
-    t1, t2 = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
-    # Convert to Synfig units
-    t1 /= settings.PIX_PER_UNIT
-    t2 /= settings.PIX_PER_UNIT
-
-    split_r_val = split_r.get_value(fr)
-    split_a_val = split_a.get_value(fr)
-
-    return pos_ret, width, t1, t2, split_r_val, split_a_val
 
 
 def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand_p, r_tip0_p, r_tip1_p, homo_width_p, fr):
@@ -205,6 +201,7 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
     SPIKE_AMOUNT = 4
     ROUND_END_FACTOR = 4
 
+    bline_list = bline.get_list_at_frame(fr)
     outer_width = to_Synfig_axis(outer_width_p.get_value(fr), "real")
     expand = to_Synfig_axis(expand_p.get_value(fr), "real")
     sharp_cusps = sharp_cusps_p.get_value(fr)
@@ -221,7 +218,7 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
     loop = bline.get_loop()
 
     # Iterators
-    end_it = bline.get_len()
+    end_it = len(bline_list)
     next_it = 0
     if loop:
         iter_it = end_it - 1
@@ -229,58 +226,57 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
         iter_it = next_it
         next_it += 1
 
-    first_point = bline[iter_it]
-    first_tangent = get_outline_param_at_frame(bline[0], fr)[3]
-    last_tangent = get_outline_param_at_frame(first_point, fr)[2]
+    first_point = bline_list[iter_it]
+    first_tangent = bline_list[0].get_tangent2()
+    last_tangent = first_point.get_tangent1()
 
     # If we are looped and drawing sharp cusps, we 'll need a value
     # for the incoming tangent. This code fails if we have a "degraded" spline
     # with just one vertex, so we avoid such case.
-    if loop and sharp_cusps and last_tangent.is_equal_to(Vector(0, 0)) and bline.get_len() > 1:
+    if loop and sharp_cusps and last_tangent.is_equal_to(Vector(0, 0)) and len(bline_list) > 1:
         prev_it = iter_it
         prev_it -= 1
-        prev_it %= bline.get_len()
-        prev_point = bline[prev_it]
-        curve = Hermite(get_outline_param_at_frame(prev_point, fr)[0],
-                        get_outline_param_at_frame(first_point, fr)[0],
-                        get_outline_param_at_frame(prev_point, fr)[3],
-                        get_outline_param_at_frame(first_point, fr)[2])
+        prev_it %= len(bline_list)
+        prev_point = bline_list[prev_it]
+        curve = Hermite(prev_point.get_vertex(),
+                        first_point.get_vertex(),
+                        prev_point.get_tangent2(),
+                        first_point.get_tangent1())
         last_tangent = curve.derivative(1.0 - CUSP_TANGENT_ADJUST)
 
     first = not loop
     while next_it != end_it:
-        bp1 = bline[iter_it]
-        bp2 = bline[next_it]
-
-        # Calculate current vertex and next vertex parameters
-        pos_c, width_c, t1_c, t2_c, split_r_c, split_a_c = get_outline_param_at_frame(bp1, fr)
-        pos_n, width_n, t1_n, t2_n, split_r_n, split_a_n = get_outline_param_at_frame(bp2, fr)
+        bp1 = bline_list[iter_it]
+        bp2 = bline_list[next_it]
 
         # Setup tangents
-        prev_t = t1_c
-        iter_t = t2_c
-        next_t = t1_n
+        prev_t = bp1.get_tangent1()
+        iter_t = bp1.get_tangent2()
+        next_t = bp2.get_tangent1()
 
-        split_flag = split_a_c or split_r_c
+        split_flag = bp1.get_split_tangent_angle() or bp1.get_split_tangent_radius()
 
         # If iter_it.t2 == 0 and next.t1 == 0, this is a straight line
         if iter_t.is_equal_to(Vector(0, 0)) and next_t.is_equal_to(Vector(0, 0)):
-            iter_t = next_t = pos_n - pos_c
+            iter_t = next_t = bp2.get_vertex() - bp1.get_vertex()
 
             # If the 2 points are on top of each other, ignore this segment
             # leave 'first' true if was before
             if iter_t.is_equal_to(Vector(0, 0)):
                 iter_it = next_it
-                iter_it %= bline.get_len()
+                iter_it %= len(bline_list)
                 next_it += 1
                 continue
 
         # Setup the curve
-        curve = Hermite(pos_c, pos_n, iter_t, next_t)
+        curve = Hermite(bp1.get_vertex(),
+                        bp2.get_vertex(),
+                        iter_t,
+                        next_t)
 
         # Setup width's
-        iter_w = gv*(width_c * outer_width * 0.5 + expand)
-        next_w = gv*(width_n * outer_width * 0.5 + expand)
+        iter_w = gv*(bp1.get_width() * outer_width * 0.5 + expand)
+        next_w = gv*(bp2.get_width() * outer_width * 0.5 + expand)
 
         if first:
             first_tangent = curve.derivative(CUSP_TANGENT_ADJUST)
@@ -299,19 +295,19 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
             cross = t1*t2.perp()
             perp = (t1 - t2).mag()
             if cross > CUSP_THRESHOLD:
-                p1 = pos_c + t1*iter_w
-                p2 = pos_c + t2*iter_w
+                p1 = bp1.get_vertex() + t1*iter_w
+                p2 = bp1.get_vertex() + t2*iter_w
                 side_a.append([line_intersection(p1, last_tangent, p2, curr_tangent), Vector(0, 0), Vector(0, 0)])
             elif cross < -CUSP_THRESHOLD:
-                p1 = pos_c - t1*iter_w
-                p2 = pos_c - t2*iter_w
+                p1 = bp1.get_vertex() - t1*iter_w
+                p2 = bp1.get_vertex() - t2*iter_w
                 side_b.append([line_intersection(p1, last_tangent, p2, curr_tangent), Vector(0, 0), Vector(0, 0)])
             elif cross > 0.0 and perp > 1.0:
                 amount = max(0.0, cross/CUSP_THRESHOLD) * (SPIKE_AMOUNT - 1.0) + 1.0
-                side_a.append([pos_c + (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
+                side_a.append([bp1.get_vertex() + (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
             elif cross < 0 and perp > 1:
                 amount = max(0.0, -cross/CUSP_THRESHOLD) * (SPIKE_AMOUNT - 1.0) + 1.0
-                side_b.append([pos_c - (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
+                side_b.append([bp1.get_vertex() - (t1 + t2).norm()*iter_w*amount, Vector(0, 0), Vector(0, 0)])
 
         # Precalculate positions and coefficients
         length = 0.0
@@ -369,7 +365,7 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
         first = False
 
         iter_it = next_it
-        iter_it %= bline.get_len()
+        iter_it %= len(bline_list)
         next_it += 1
 
     if len(side_a) < 2 or len(side_b) < 2:
@@ -384,10 +380,10 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
     else:
         # Insert code for adding end tip
         if r_tip1:
-            bp = bline[-1]
-            vertex = get_outline_param_at_frame(bp, fr)[0]
+            bp = bline_list[-1]
+            vertex = bp.get_vertex()
             tangent = last_tangent.norm()
-            w = gv*(get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand)
+            w = gv*(bp.get_width() * outer_width * 0.5 + expand)
 
             a = vertex + tangent.perp()*w
             b = vertex - tangent.perp()*w
@@ -404,10 +400,10 @@ def synfig_outline(bline, st_val, origin_p, outer_width_p, sharp_cusps_p, expand
 
         # Insert code for adding beginning tip
         if r_tip0:
-            bp = bline[0]
-            vertex = get_outline_param_at_frame(bp, fr)[0]
+            bp = bline_list[0]
+            vertex = bp.get_vertex()
             tangent = first_tangent.norm()
-            w = gv*(get_outline_param_at_frame(bp, fr)[1] * outer_width * 0.5 + expand)
+            w = gv*(bp.get_width() * outer_width * 0.5 + expand)
 
             a = vertex - tangent.perp()*w
             b = vertex + tangent.perp()*w

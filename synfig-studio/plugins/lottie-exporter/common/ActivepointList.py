@@ -7,6 +7,7 @@ https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/s
 """
 
 import sys
+import settings
 from common.Activepoint import Activepoint
 sys.path.append("..")
 
@@ -85,7 +86,7 @@ class ActivepointList:
 
         raise Exception("Could not find next")
 
-    def amount_at_time(self, frame, rising):
+    def amount_at_time(self, frame, rising = None):
         """
         https://github.com/synfig/synfig/blob/15607089680af560ad031465d31878425af927eb/synfig-core/src/synfig/valuenodes/valuenode_dynamiclist.cpp#L394
         """
@@ -111,7 +112,7 @@ class ActivepointList:
         if next_itr.state == prev_itr.state:
             return 1 if next_itr.state else 0 
 
-        if rising[0]:
+        if rising is not None:
             rising[0] = next_itr.state
 
         if next_itr.state == True:
@@ -159,6 +160,8 @@ class ActivepointList:
 
         for itr in self.active_point_list:
             fr = itr.time
+            if fr == settings.SOT or fr == settings.EOT:
+                continue
 
             if fr > window["last"]:
                 window["last"] = fr
