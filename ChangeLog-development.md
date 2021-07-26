@@ -1,3 +1,6 @@
+- [`101a5aa`](https://github.com/synfig/synfig/commit/101a5aa178019fddcaadf6436ea0c37cc1f5162f) Merge PR [#2236](https://github.com/synfig/synfig/issues/2236): [Lottie exporter] Add animation to addtion/deletion of Bline points [studio]
+- [`fb80f27`](https://github.com/synfig/synfig/commit/fb80f27e956d5a8dcc0b1b03db9262bd76388d24) Added Synfig tests to Github CI workflow ([#2238](https://github.com/synfig/synfig/issues/2238))
+- [`4717669`](https://github.com/synfig/synfig/commit/4717669e5b5f8aabe272a8013607c060adcd9409) Disabled some Travis CI build jobs ([#2237](https://github.com/synfig/synfig/issues/2237))
 - [`f32ae7f`](https://github.com/synfig/synfig/commit/f32ae7fbb91f037b0203e1709c32261ee749ee92) [Lottie exporter] Add animation to addition/deletion of Width points and Dash items in advanced outline ([#2233](https://github.com/synfig/synfig/issues/2233)) [studio]
 - [`1dce9a1`](https://github.com/synfig/synfig/commit/1dce9a1c5282edd13feb35f417b2e5663e3759b0) Pass param_desc only if value_desc is a layer ([#2234](https://github.com/synfig/synfig/issues/2234)) [studio]
 - [`bc658a2`](https://github.com/synfig/synfig/commit/bc658a2aa0610b61477b5b9dffa7b0ad75d56b89) Merge PR [#2215](https://github.com/synfig/synfig/issues/2215): Layers in sets can now be selected with a single click, rather than a double click [studio]
