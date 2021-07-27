@@ -306,7 +306,7 @@ static int max_recent_files_=25;
 int    studio::App::get_max_recent_files()      { return max_recent_files_; }
 void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; }
 
-static synfig::String app_base_path_ ;
+static synfig::String app_base_path_;
 
 SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
@@ -1352,7 +1352,7 @@ App::get_default_accel_map()
 Glib::RefPtr<App> App::create(const synfig::String& basepath)
 {
 	app_base_path_=etl::dirname(basepath);
-	return Glib::RefPtr<App>(new App());
+	return new App();
 }
 
 void App::on_startup()
@@ -1683,7 +1683,6 @@ void App::on_startup()
 		splash_screen.hide();
 
 	}
-
 	catch(String &x)
 	{
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable.") + String("\n\n") + x);
@@ -1728,6 +1727,7 @@ void App::on_activate()
 {
 	main_window = create_main_window();
 	main_window->present();
+	dock_manager->show_all_dock_dialogs();
 
 	String message;
 	String details;
@@ -1772,6 +1772,7 @@ void App::on_open(const Gio::Application::type_vec_files& files, const Glib::ust
 		main_window->open_file_view(file);
 
 	main_window->present();
+	dock_manager->show_all_dock_dialogs();
 
 }
 
