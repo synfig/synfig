@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	// studio::App app(etl::dirname(binary_path), &argc, &argv);
 
-	auto app = studio::App::create();
+	auto app = studio::App::create(binary_path);
 
 	return app->run(argc,argv);
 

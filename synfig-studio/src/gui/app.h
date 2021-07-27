@@ -275,7 +275,7 @@ public:
 */
 public:
 
-	static Glib::RefPtr<App> create();
+	static Glib::RefPtr<App> create(const synfig::String& basepath);
 
 	static sigc::signal<void> &signal_present_all();
 

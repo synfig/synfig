@@ -306,8 +306,7 @@ static int max_recent_files_=25;
 int    studio::App::get_max_recent_files()      { return max_recent_files_; }
 void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; }
 
-// this must be corrected later
-static synfig::String app_base_path_ = "";
+static synfig::String app_base_path_ ;
 
 SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
@@ -1350,8 +1349,9 @@ App::get_default_accel_map()
 
 /* === M E T H O D S ======================================================= */
 
-Glib::RefPtr<App> App::create()
+Glib::RefPtr<App> App::create(const synfig::String& basepath)
 {
+	app_base_path_=etl::dirname(basepath);
 	return Glib::RefPtr<App>(new App());
 }
 
@@ -1428,11 +1428,7 @@ void App::on_startup()
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
 
 	// Initialize the Synfig library
-	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(
-		//basepath
-		// we dont have basepath so we are passing app_base_path_
-		app_base_path_
-		,&synfig_init_cb)); }
+	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(app_base_path_,&synfig_init_cb)); }
 	catch(std::runtime_error &x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
@@ -1779,14 +1775,8 @@ void App::on_open(const Gio::Application::type_vec_files& files, const Glib::ust
 
 }
 
-App::App():
-	Gtk::Application("",Gio::APPLICATION_HANDLES_OPEN)
+App::App():Gtk::Application("",Gio::APPLICATION_HANDLES_OPEN)
 {
-
-	// this needs to be sent to on_startup
-	// app_base_path_=etl::dirname(basepath);
-	// and we have to devise a way to deal with this basepath
-
 }
 
 StateManager* App::get_state_manager() { return state_manager; }
@@ -2337,8 +2327,6 @@ App::quit()
 		if (!instance_list.front()->safe_close())
 			return;
 	process_all_events();
-
-	// Gtk::Main::quit();
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
