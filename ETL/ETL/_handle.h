@@ -48,60 +48,8 @@
 namespace etl {
 
 // Forward Declarations
-template <class T> class handle;
-template <class T> class loose_handle;
 template <class T> class rhandle;
 
-
-// ========================================================================
-/*!	\class	shared_object _handle.h	ETL/handle
-**	\brief	Shared Object Base Class
-**	\see handle, loose_handle
-**	\writeme
-*/
-class shared_object
-{
-private:
-	mutable std::atomic<int> refcount;
-
-protected:
-	shared_object():refcount(0) { }
-	shared_object(const shared_object&):refcount(0) { }
-	shared_object& operator= (const shared_object&) { return *this; }
-
-#ifdef ETL_SELF_DELETING_SHARED_OBJECT
-	virtual ~shared_object() { }
-#else
-	~shared_object() { }
-#endif
-
-public:
-	virtual void ref()const
-	{
-		++refcount;
-	}
-
-	//! Returns \c false if object needs to be deleted
-	virtual bool unref()const
-	{
-		bool ret = (bool)(--refcount);
-#ifdef ETL_SELF_DELETING_SHARED_OBJECT
-		if (!ret)
-			delete this;
-#endif
-		return ret;
-	}
-
-	//! Decrease reference counter without deletion of object
-	//! Returns \c false if references exceed and object should be deleted
-	virtual bool unref_inactive()const
-	{
-		return (bool)(--refcount);
-	}
-
-	int count()const { return refcount; }
-
-}; // END of class shared_object
 
 // ========================================================================
 /*!	\class	virtual_shared_object _handle.h	ETL/handle
@@ -124,190 +72,12 @@ public:
 }; // END of class virtual_shared_object
 
 // ========================================================================
-/*!	\class	handle _handle.h	ETL/handle
-**	\brief	Object Handle
-**	\see shared_object, loose_handle
-**	\writeme
-*/
-template <class T>
-class handle
-{
-public:
-
-	typedef T value_type;
-	typedef T& reference;
-	typedef const T& const_reference;
-	typedef T* pointer;
-	typedef const T* const_pointer;
-	typedef int count_type;
-	typedef int size_type;
-
-protected:
-#ifdef _DEBUG
-public:
-#endif
-	std::shared_ptr<value_type> obj; //!< Pointer to object
-
-public:
-
-	//! Default constructor - empty handle
-	handle():obj(nullptr) {}
-
-	//! Constructor that constructs from a pointer to new object
-	handle(pointer x):obj(x)
-	{
-	}
-
-	//! Default copy constructor
-	handle(const handle<value_type> &x):obj(x.get_shared_ptr())
-	{
-	}
-
-	//! Handle is released on deletion
-	~handle() { detach(); }
-
-	//! Template Assignment operator
-	/*! \note This class may not be necessary, and may be removed
-	**		at some point in the future.
-	*/
-	/*
-	template <class U> handle<value_type> &
-	operator=(const handle<U> &x)
-	{
-		if(x.get()==obj)
-			return *this;
-
-		detach();
-
-		obj=static_cast<value_type*>(x.get());
-		if(obj)obj->ref();
-		return *this;
-	}
-	*/
-
-	//! Assignment operator
-	handle<value_type> &
-	operator=(const handle<value_type> &x)
-	{
-		obj= x.get_shared_ptr();
-		return *this;
-	}
-
-	//! Swaps the values of two handles without reference counts
-	handle<value_type> &
-	swap(handle<value_type> &x)
-	{
-		pointer ptr=x.obj;
-		x.obj=obj;
-		obj=ptr;
-		return *this;
-	}
-
-	//! Handle detach procedure
-	/*! unref()'s the object and sets the internal object pointer to \c NULL */
-	void
-	detach()
-	{
-		obj= nullptr;
-	}
-
-	// This will be reintroduced with a new function
-	//void release() { detach(); }
-
-	void reset() { obj.reset(); }
-
-	bool empty()const { return obj== nullptr; }
-
-	//! Creates a new instance of a T object and puts it in the handle.
-	/*! Uses the default constructor */
-	void spawn() { operator=(handle(new T())); }
-
-	//! Returns a constant handle to our object
-	handle<const value_type> constant()const { assert(obj); return *this; }
-
-    std::shared_ptr<value_type> get_shared_ptr() const { return obj; }
-
-	//! Returns number of instances
-	count_type
-	count()const
-		{ return obj.use_count(); }
-
-	//! Returns true if there is only one instance of the object
-	bool
-	unique()const
-		{ assert(obj); return obj.unique(); }
-
-	reference
-	operator*()const
-		{ assert(obj); return *obj.get(); }
-
-	pointer
-	operator->()const
-		{ assert(obj); return obj.get(); }
-
-	//! More explicit bool cast
-	operator bool()const
-		{ return (bool)obj; }
-
-	operator handle<const value_type>()const
-	{ return handle<const value_type>(static_cast<const_pointer>(obj.get())); }
-
-	//! <tt> static_cast\<\> </tt> wrapper
-	template <class U> static handle<T> cast_static		(const handle<U> &x) { return handle<T>(static_cast		<T*>(x.get())); }
-	//! <tt> dynamic_cast\<\> </tt> wrapper
-	template <class U> static handle<T> cast_dynamic	(const handle<U> &x) { return handle<T>(dynamic_cast	<T*>(x.get())); }
-	//! <tt> const_cast\<\> </tt> wrapper
-	template <class U> static handle<T> cast_const		(const handle<U> &x) { return handle<T>(const_cast		<T*>(x.get())); }
-	//! <tt> reinterpret_cast\<\> </tt> wrapper
-	template <class U> static handle<T> cast_reinterpret(const handle<U> &x) { return handle<T>(reinterpret_cast<T*>(x.get())); }
-
-	template <class U> static handle<T> cast_static		(const loose_handle<U> &x);
-	template <class U> static handle<T> cast_dynamic	(const loose_handle<U> &x);
-	template <class U> static handle<T> cast_const		(const loose_handle<U> &x);
-	template <class U> static handle<T> cast_reinterpret(const loose_handle<U> &x);
-
-	template <class U> static handle<T> cast_static		(const rhandle<U> &x);
-	template <class U> static handle<T> cast_dynamic	(const rhandle<U> &x);
-	template <class U> static handle<T> cast_const		(const rhandle<U> &x);
-	template <class U> static handle<T> cast_reinterpret(const rhandle<U> &x);
-
-	template <class U> static handle<T> cast_static		(U* x);
-	template <class U> static handle<T> cast_dynamic	(U* x);
-	template <class U> static handle<T> cast_const		(U* x);
-	template <class U> static handle<T> cast_reinterpret(U* x);
-
-	//! Returns pointer to the object that is being wrapped
-	pointer get()const { return obj.get(); }
-
-	bool
-	operator!()const
-		{ return !obj; }
-
-	//! static_cast<> overload -- Useful for implicit casts
-	template <class U>
-	operator handle<U>()const
-	{ return handle<U>(obj.get()); }
-
-	template<typename U>
-	bool type_is() const
-	{ return dynamic_cast<const U*>(obj.get()); }
-
-	template<typename U>
-	U* type_pointer() const
-	{ return dynamic_cast<U*>(obj.get()); }
-
-	template<typename U>
-	bool type_equal() const
-	{ return typeid(*obj.get()) == typeid(U); }
-}; // END of template class handle
-
-// ========================================================================
 /*!	\class	rshared_object _handle.h	ETL/handle
 **	\brief	Replaceable Shared Object Base Class
 **	\see rhandle
 **	\writeme
 */
-class rshared_object : public shared_object
+class rshared_object
 {
 private:
 	mutable int rrefcount;
@@ -317,8 +87,8 @@ public:
 	void *back_;
 
 protected:
-	rshared_object():rrefcount(0),front_(0),back_(0) { }
-	rshared_object(const rshared_object &other): shared_object(other), rrefcount(0),front_(0),back_(0) { }
+	rshared_object():rrefcount(0),front_(nullptr),back_(nullptr) { }
+	rshared_object(const rshared_object &other): rrefcount(0),front_(nullptr),back_(nullptr) { }
 	rshared_object& operator= (const rshared_object&) { return *this; }
 
 public:
@@ -332,7 +102,9 @@ public:
 	}
 
 	int rcount()const
-		{ return rrefcount; }
+	{ return rrefcount; }
+    bool runique() const
+    { return front_ == back_; }
 }; // END of class rshared_object
 
 // ========================================================================
@@ -355,9 +127,9 @@ public:
 	typedef int count_type;
 	typedef int size_type;
 
-private:
+public:
     std::shared_ptr<value_type> obj;
-
+private:
 	rhandle<value_type> *prev_;
 	rhandle<value_type> *next_;
 
@@ -414,21 +186,16 @@ public:
 		if(obj)add_to_rlist();
 	}
 
-	rhandle(const handle<value_type> &x):obj(x.get())
+	rhandle(const std::shared_ptr<value_type> &x):obj(x)
 	{
 		if(obj)add_to_rlist();
 	}
 
 	//! Default copy constructor
-	rhandle(const rhandle<value_type> &x):obj(x.get_shared_ptr())
+	rhandle(const rhandle<value_type> &x):obj(x.obj())
 	{
 		if(obj)add_to_rlist();
 	}
-
-    rhandle(const std::shared_ptr<T> &x) : obj(x)
-    {
-        if(obj)add_to_rlist();
-    }
 
 	//! Handle is released on deletion
 	~rhandle() { detach(); }
@@ -437,12 +204,12 @@ public:
 	rhandle<value_type> &
 	operator=(const rhandle<value_type> &x)
 	{
-		if(x.get_shared_ptr()==obj)
+		if(obj==x.obj)
 			return *this;
 
-		detach();
+		detach(); // tests are needed
 
-		obj=x.get_shared_ptr();
+		obj=x.obj();
 		if(obj)add_to_rlist();
 		return *this;
 	}
@@ -460,118 +227,61 @@ public:
         return *this;
     }
 
-	rhandle<value_type>&
-	operator=(const handle<value_type> &x)
-	{
-		if(x.get()==obj.get())
-			return *this;
-
-		detach();
-
-		obj=std::make_shared<value_type>(x.get());
-		if(obj)add_to_rlist();
-		return *this;
-	}
-
-	rhandle<value_type>&
-	operator=(value_type* x)
-	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(x==obj.get())
-			return *this;
-
-		detach();
-
-		obj=std::make_shared<value_type>(x);
-		if(obj)
-			add_to_rlist();
-		return *this;
-	}
-
     //! Returns pointer to the object that is being wrapped
     pointer get() const { return obj.get(); }
 
-    std::shared_ptr<value_type> get_shared_ptr() const { return obj; }
-
-    template<class U>
-    operator loose_handle<U>()const
-    { return loose_handle<U>(obj.get()); }
-
-    operator handle<value_type>()const
-    { return handle<value_type>(obj.get()); }
-
     operator rhandle<const value_type>()const
-    { return rhandle<const value_type>(static_cast<const_pointer>(obj.get())); }
+    { return rhandle<const value_type>(static_cast<const_pointer>(obj)); }
+
+    operator std::shared_ptr<value_type>() const { return obj; }
 
 	//! Handle release procedure
-	/*! unref()'s the object and sets the internal object pointer to \c NULL */
 	void
 	detach()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)del_from_rlist();
 		obj.reset();
 	}
-
-	// This will be reintroduced with a new function
-	//void release() { detach(); }
 
 	void reset() { detach(); }
 
 	//! Creates a new instance of a T object and puts it in the handle.
 	/*! Uses the default constructor */
-	void spawn() { operator=(new T()); }
+	void spawn() { obj = std::make_shared<value_type>(new T); }
 
 	//! Returns number of reversible instances
-	count_type
-	rcount()const
-	{
-//		value_type*const& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		return obj?obj->rcount():0;
-	}
+	count_type rcount()const
+	{ return obj?obj->rcount():0; }
 
-    count_type
-    use_count()const
-    {
-        return obj.use_count();
-    }
+    count_type use_count()const
+    { return obj.use_count(); }
 
-    bool
-    unique()const
-    {
-        assert(obj); return obj.unique();
-    }
+    bool unique()const
+    { return obj.unique(); }
 
     operator bool()const
     { return obj!= nullptr; }
 
-    reference
-    operator*()const
-    {
-        assert(obj); return *obj.get();
-    }
+    template<class U> bool operator==(const rhandle<U> &rhs ) { return obj == rhs.obj; }
 
-    pointer
-    operator->()const
-    {
-        assert(obj); return obj.get();
-    }
+    template<class U> bool operator!=(const rhandle<U> &rhs ) { return obj != rhs.obj; }
+
+    template<class U> bool operator<(const rhandle<U> &rhs ) { return obj < rhs.obj; }
+
+    reference operator*()const { return *obj.get(); }
+
+    pointer operator->()const { return obj.get(); }
 
 	//! Returns true if there is only one instance of the object
-	bool
-	runique()const
-	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		assert(obj); return obj->front_==obj->back_;
-	}
+	bool runique()const { return obj->runique(); }
 
 	//! \writeme
-	int replace(const rhandle<value_type> &x)
+	int replace(const std::shared_ptr<value_type> &x)
 	{
 		assert(obj);
-		assert(x.get()!=obj.get());
+		assert(x!=obj);
 
-		if(x.get()==obj.get())
+		if(x==obj)
 			return 0;
 
 		rhandle<value_type> *iter;
@@ -585,16 +295,16 @@ public:
 
 		int i=0;
 		#ifndef NDEBUG
-		pointer obj_=obj.get();
+        std::shared_ptr<value_type> obj_=obj;
 		#endif
 
 		for(;iter;iter=next,next=iter?iter->next_:nullptr,i++)
 		{
-			assert(iter->get()==obj_);
+			assert(iter->get()==obj_.get());
 			(*iter)=x;
 		}
 
-		assert(obj.get()==x.get());
+        assert(obj==x);
 
 		return i;
 	}
@@ -603,206 +313,9 @@ public:
 	/*!	\warning not yet implemented. \writeme */
     std::shared_ptr<value_type> &
     swap(std::shared_ptr<value_type> &x){
-        obj.swap(x.get());
+        obj.swap(x);
     }
 }; // END of template class rhandle
-
-
-// ========================================================================
-/*!	\class	loose_handle _handle.h	ETL/handle
-**	\brief	Loose Object Handle
-**	\see shared_object, handle
-**	\writeme
-*/
-template <class T>
-class loose_handle
-{
-public:
-
-	typedef T value_type;
-	typedef T& reference;
-	typedef const T& const_reference;
-	typedef T* pointer;
-	typedef const T* const_pointer;
-	typedef int count_type;
-	typedef int size_type;
-
-protected:
-#ifdef _DEBUG
-public:
-#endif
-	value_type *obj;		//!< Pointer to object
-
-public:
-
-	//! Default constructor - empty handle
-	loose_handle():obj(0) {}
-
-	//! Constructor that constructs from a pointer to new object
-	loose_handle(pointer x):obj(x) { }
-
-	//! Default copy constructor
-	loose_handle(const loose_handle<value_type> &x):obj(x.get()) { }
-
-	loose_handle(const handle<value_type> &x):obj(x.get()) { }
-
-	template <class U> const loose_handle<value_type> &
-	operator=(const handle<U> &x)
-	{
-		if(x.get()==obj)
-			return *this;
-
-		obj=x.get();
-		return *this;
-	}
-
-	template <class U> const loose_handle<value_type> &
-	operator=(const loose_handle<U> &x)
-	{
-		if(x.get()==obj)
-			return *this;
-
-		obj=x.get();
-		return *this;
-	}
-
-	//! Assignment operator
-	const loose_handle<value_type> &
-	operator=(const loose_handle<value_type> &x)
-	{
-		if(x.get()==obj)
-			return *this;
-
-		obj=x.get();
-		return *this;
-	}
-
-	//! Swaps the values of two handles without reference counts
-	loose_handle<value_type> &
-	swap(loose_handle<value_type> &x)
-	{
-		pointer ptr=x.obj;
-		x.obj=obj;
-		obj=ptr;
-		return *this;
-	}
-
-	//! Handle release procedure
-	void detach() { obj=0;	}
-
-	// This will be reintroduced with a new function
-	//void release() { detach(); }
-
-	void reset() { detach(); }
-
-	bool empty()const { return obj==0; }
-
-	//! Returns a constant handle to our object
-	loose_handle<const value_type> constant()const { return *this; }
-
-	//! Returns number of instances
-	count_type
-	count()const
-		{ return obj?obj->count():0; }
-
-	reference
-	operator*()const
-		{ assert(obj); return *obj; }
-
-	pointer
-	operator->()const
-		{ assert(obj); return obj; }
-
-	//! static_cast<> overload
-	//template <class U>
-	//operator loose_handle<U>()const
-	//{ return loose_handle<U>(static_cast<U*>(obj)); }
-
-	//! static_cast<> overload (for consts)
-	operator loose_handle<const value_type>()const
-	{ return loose_handle<const value_type>(static_cast<const_pointer>(obj)); }
-
-	operator handle<value_type>()const
-	{ return handle<value_type>(obj); }
-
-	operator rhandle<value_type>()const
-	{ return rhandle<value_type>(obj); }
-
-	//! Returns pointer to the object that is being wrapped
-	pointer get()const { return obj; }
-
-	//! More explicit bool cast
-	operator bool()const
-		{ return obj!=0; }
-
-	bool
-	operator!()const
-		{ return !obj; }
-
-	void ref() { if(obj)obj->ref(); }
-
-	bool unref() { if(obj && !obj->unref()){ obj=0; return false; } return true; }
-
-	template<typename U>
-	bool type_is() const
-	{ return dynamic_cast<const U*>(obj); }
-
-	template<typename U>
-	U* type_pointer() const
-	{ return dynamic_cast<U*>(obj); }
-
-	template<typename U>
-	bool type_equal() const
-	{ return typeid(*obj) == typeid(U); }
-}; // END of template class loose_handle
-
-// cast loose_handle<> -> handle<>
-template <class T> template <class U> handle<T> handle<T>::cast_static	   (const loose_handle<U>& x) { return handle<T>(static_cast	 <T*>(x.get())); }
-template <class T> template <class U> handle<T> handle<T>::cast_dynamic	   (const loose_handle<U>& x) { return handle<T>(dynamic_cast	 <T*>(x.get())); }
-template <class T> template <class U> handle<T> handle<T>::cast_const	   (const loose_handle<U>& x) { return handle<T>(const_cast		 <T*>(x.get())); }
-template <class T> template <class U> handle<T> handle<T>::cast_reinterpret(const loose_handle<U>& x) { return handle<T>(reinterpret_cast<T*>(x.get())); }
-
-// cast rhandle_handle<> -> handle<>
-template <class T> template <class U> handle<T> handle<T>::cast_static	   (const rhandle<U>&	   x) { return handle<T>(static_cast	 <T*>(x.get())); }
-template <class T> template <class U> handle<T> handle<T>::cast_dynamic	   (const rhandle<U>&	   x) { return handle<T>(dynamic_cast	 <T*>(x.get())); }
-template <class T> template <class U> handle<T> handle<T>::cast_const	   (const rhandle<U>&	   x) { return handle<T>(const_cast		 <T*>(x.get())); }
-template <class T> template <class U> handle<T> handle<T>::cast_reinterpret(const rhandle<U>&	   x) { return handle<T>(reinterpret_cast<T*>(x.get())); }
-
-// cast U* -> handle<>
-template <class T> template <class U> handle<T> handle<T>::cast_static	   (U*					   x) { return handle<T>(static_cast	 <T*>(x));		 }
-template <class T> template <class U> handle<T> handle<T>::cast_dynamic	   (U*					   x) { return handle<T>(dynamic_cast	 <T*>(x));		 }
-template <class T> template <class U> handle<T> handle<T>::cast_const	   (U*					   x) { return handle<T>(const_cast		 <T*>(x));		 }
-template <class T> template <class U> handle<T> handle<T>::cast_reinterpret(U*					   x) { return handle<T>(reinterpret_cast<T*>(x));		 }
-
-// operator== for handle<>, loose_handle<> and T*
-template <class T,class U> bool operator==(const handle		 <T>& lhs,const handle		<U>& rhs) { return (lhs.get()==rhs.get()); }
-template <class T,class U> bool operator==(const loose_handle<T>& lhs,const loose_handle<U>& rhs) { return (lhs.get()==rhs.get()); }
-template <class T,class U> bool operator==(const handle		 <T>& lhs,const loose_handle<U>& rhs) { return (lhs.get()==rhs.get()); }
-template <class T,class U> bool operator==(const loose_handle<T>& lhs,const handle		<U>& rhs) { return (lhs.get()==rhs.get()); }
-template <class T>		   bool operator==(const handle<T>&		  lhs,const T*				 rhs) { return (lhs.get()==rhs);	   }
-template <class T>		   bool operator==(const loose_handle<T>& lhs,const T*				 rhs) { return (lhs.get()==rhs);	   }
-template <class T>		   bool operator==(const T*				  lhs,const handle<T>&		 rhs) { return (lhs		 ==rhs.get()); }
-template <class T>		   bool operator==(const T*				  lhs,const loose_handle<T>& rhs) { return (lhs		 ==rhs.get()); }
-
-// operator!= for handle<>, loose_handle<> and T*
-template <class T,class U> bool operator!=(const handle		 <T>& lhs,const handle		<U>& rhs) { return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool operator!=(const loose_handle<T>& lhs,const loose_handle<U>& rhs) { return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool operator!=(const handle		 <T>& lhs,const loose_handle<U>& rhs) { return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool operator!=(const loose_handle<T>& lhs,const handle		<U>& rhs) { return (lhs.get()!=rhs.get()); }
-template <class T>		   bool operator!=(const handle<T>&		  lhs,const T*				 rhs) { return (lhs.get()!=rhs);	   }
-template <class T>		   bool operator!=(const loose_handle<T>& lhs,const T*				 rhs) { return (lhs.get()!=rhs);	   }
-template <class T>		   bool operator!=(const T*				  lhs,const handle<T>&		 rhs) { return (lhs		 !=rhs.get()); }
-template <class T>		   bool operator!=(const T*				  lhs,const loose_handle<T>& rhs) { return (lhs		 !=rhs.get()); }
-
-// operator< for handle<>, loose_handle<> and T*
-template <class T,class U> bool operator<(const handle<T>&		  lhs,const handle<U>&		 rhs) { return (lhs.get()<rhs.get());  }
-template <class T,class U> bool operator<(const loose_handle<T>&  lhs,const loose_handle<U>& rhs) { return (lhs.get()<rhs.get());  }
-template <class T,class U> bool operator<(const handle<T>&		  lhs,const loose_handle<U>& rhs) { return (lhs.get()<rhs.get());  }
-template <class T,class U> bool operator<(const loose_handle<T>&  lhs,const handle<U>&		 rhs) { return (lhs.get()<rhs.get());  }
-template <class T>		   bool operator<(const handle<T>&		  lhs,const T*				 rhs) { return (lhs.get()<rhs);		   }
-template <class T>		   bool operator<(const loose_handle<T>&  lhs,const T*				 rhs) { return (lhs.get()<rhs);		   }
-template <class T>		   bool operator<(const T*				  lhs,const handle<T>&		 rhs) { return (lhs		 <rhs.get());  }
-template <class T>		   bool operator<(const T*				  lhs,const loose_handle<T>& rhs) { return (lhs		 <rhs.get());  }
 
 };
 
