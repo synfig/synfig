@@ -35,6 +35,7 @@
 #include <cassert>
 #include <typeinfo>
 #include <atomic>
+#include <memory>
 
 /* === M A C R O S ========================================================= */
 
@@ -145,25 +146,21 @@ protected:
 #ifdef _DEBUG
 public:
 #endif
-	value_type *obj;		//!< Pointer to object
+	std::shared_ptr<value_type> obj; //!< Pointer to object
 
 public:
 
 	//! Default constructor - empty handle
-	handle():obj(NULL) {}
+	handle():obj(nullptr) {}
 
 	//! Constructor that constructs from a pointer to new object
 	handle(pointer x):obj(x)
 	{
-		if(obj)
-			obj->ref();
 	}
 
 	//! Default copy constructor
-	handle(const handle<value_type> &x):obj(x.get())
+	handle(const handle<value_type> &x):obj(x.get_shared_ptr())
 	{
-		if(obj)
-			obj->ref();
 	}
 
 	//! Handle is released on deletion
@@ -192,13 +189,7 @@ public:
 	handle<value_type> &
 	operator=(const handle<value_type> &x)
 	{
-		if(x.get()==obj)
-			return *this;
-		// add reference before detach
-		pointer xobj(x.get());
-		if(xobj) xobj->ref();
-		detach();
-		obj=xobj;
+		obj= x.get_shared_ptr();
 		return *this;
 	}
 
@@ -217,23 +208,15 @@ public:
 	void
 	detach()
 	{
-		pointer xobj(obj);
-		obj=0;
-#ifdef ETL_SELF_DELETING_SHARED_OBJECT
-		if(xobj)
-			xobj->unref();
-#else
-		if(xobj && !xobj->unref())
-			delete xobj;
-#endif
+		obj= nullptr;
 	}
 
 	// This will be reintroduced with a new function
 	//void release() { detach(); }
 
-	void reset() { detach(); }
+	void reset() { obj.reset(); }
 
-	bool empty()const { return obj==0; }
+	bool empty()const { return obj== nullptr; }
 
 	//! Creates a new instance of a T object and puts it in the handle.
 	/*! Uses the default constructor */
@@ -242,30 +225,32 @@ public:
 	//! Returns a constant handle to our object
 	handle<const value_type> constant()const { assert(obj); return *this; }
 
+    std::shared_ptr<value_type> get_shared_ptr() const { return obj; }
+
 	//! Returns number of instances
 	count_type
 	count()const
-		{ return obj?obj->count():0; }
+		{ return obj.use_count(); }
 
 	//! Returns true if there is only one instance of the object
 	bool
 	unique()const
-		{ assert(obj); return count()==1; }
+		{ assert(obj); return obj.unique(); }
 
 	reference
 	operator*()const
-		{ assert(obj); return *obj; }
+		{ assert(obj); return *obj.get(); }
 
 	pointer
 	operator->()const
-		{ assert(obj); return obj; }
+		{ assert(obj); return obj.get(); }
 
 	//! More explicit bool cast
 	operator bool()const
-		{ return obj!=NULL; }
+		{ return (bool)obj; }
 
 	operator handle<const value_type>()const
-	{ return handle<const value_type>(static_cast<const_pointer>(obj)); }
+	{ return handle<const value_type>(static_cast<const_pointer>(obj.get())); }
 
 	//! <tt> static_cast\<\> </tt> wrapper
 	template <class U> static handle<T> cast_static		(const handle<U> &x) { return handle<T>(static_cast		<T*>(x.get())); }
@@ -292,7 +277,7 @@ public:
 	template <class U> static handle<T> cast_reinterpret(U* x);
 
 	//! Returns pointer to the object that is being wrapped
-	pointer get()const { return obj; }
+	pointer get()const { return obj.get(); }
 
 	bool
 	operator!()const
@@ -301,19 +286,19 @@ public:
 	//! static_cast<> overload -- Useful for implicit casts
 	template <class U>
 	operator handle<U>()const
-	{ return handle<U>(obj); }
+	{ return handle<U>(obj.get()); }
 
 	template<typename U>
 	bool type_is() const
-	{ return dynamic_cast<const U*>(obj); }
+	{ return dynamic_cast<const U*>(obj.get()); }
 
 	template<typename U>
 	U* type_pointer() const
-	{ return dynamic_cast<U*>(obj); }
+	{ return dynamic_cast<U*>(obj.get()); }
 
 	template<typename U>
 	bool type_equal() const
-	{ return typeid(*obj) == typeid(U); }
+	{ return typeid(*obj.get()) == typeid(U); }
 }; // END of template class handle
 
 // ========================================================================
@@ -357,7 +342,7 @@ public:
 **	\writeme
 */
 template <class T>
-class rhandle : public handle<T>
+class rhandle
 {
 	friend class rshared_object;
 public:
@@ -370,29 +355,14 @@ public:
 	typedef int count_type;
 	typedef int size_type;
 
-
-	using handle<value_type>::count;
-	using handle<value_type>::unique;
-	using handle<value_type>::operator bool;
-	using handle<value_type>::get;
-	using handle<value_type>::operator*;
-	using handle<value_type>::operator->;
-
-	/*
-	operator const handle<value_type>&()const
-	{ return *this; }
-	*/
-
 private:
-	using handle<value_type>::obj;
+    std::shared_ptr<value_type> obj;
 
 	rhandle<value_type> *prev_;
 	rhandle<value_type> *next_;
 
 	void add_to_rlist()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-
 		assert(obj);
 		obj->rref();
 
@@ -400,23 +370,21 @@ private:
 		if(!obj->front_)
 		{
 			obj->front_=obj->back_=this;
-			prev_=next_=0;
+			prev_=next_= nullptr;
 			return;
 		}
 
 		prev_=reinterpret_cast<rhandle<value_type>*>(obj->back_);
-		next_=0;
+		next_= nullptr;
 		prev_->next_=this;
 		obj->back_=this;
 	}
 
 	void del_from_rlist()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
 		obj->runref();
 
-		// If this is the last reversible handle
 		if(obj->front_==obj->back_)
 		{
 			obj->front_=obj->back_=0;
@@ -438,88 +406,70 @@ private:
 public:
 
 	//! Default constructor - empty handle
-	rhandle() {}
+	rhandle() : obj(nullptr){}
 
 	//! Constructor that constructs from a pointer to new object
-	rhandle(pointer x):handle<T>(x)
+	rhandle(pointer x):obj(x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
-	rhandle(const handle<value_type> &x):handle<T>(x)
+	rhandle(const handle<value_type> &x):obj(x.get())
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
 	//! Default copy constructor
-	rhandle(const rhandle<value_type> &x):handle<T>(x)
+	rhandle(const rhandle<value_type> &x):obj(x.get_shared_ptr())
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
+    rhandle(const std::shared_ptr<T> &x) : obj(x)
+    {
+        if(obj)add_to_rlist();
+    }
+
 	//! Handle is released on deletion
 	~rhandle() { detach(); }
-
-	//! Template Assignment operator
-	/*! \note This class may not be necessary, and may be removed
-	**		at some point in the future.
-	*/
-	/*
-	template <class U> const handle<value_type> &
-	operator=(const handle<U> &x)
-	{
-		if(x.get()==obj)
-			return *this;
-
-		detach();
-
-		obj=static_cast<value_type*>(x.get());
-		if(obj)
-		{
-			obj->ref();
-			add_to_rlist();
-		}
-		return *this;
-	}
-	*/
 
 	//! Assignment operator
 	rhandle<value_type> &
 	operator=(const rhandle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(x.get()==obj)
+		if(x.get_shared_ptr()==obj)
 			return *this;
 
 		detach();
 
-		obj=x.get();
-		if(obj)
-		{
-			obj->ref();
-			add_to_rlist();
-		}
+		obj=x.get_shared_ptr();
+		if(obj)add_to_rlist();
 		return *this;
 	}
+
+    rhandle<value_type> &
+    operator=(const std::shared_ptr<value_type> &x)
+    {
+        if(x==obj)
+            return *this;
+
+        detach();
+
+        obj=x;
+        if(obj)add_to_rlist();
+        return *this;
+    }
 
 	rhandle<value_type>&
 	operator=(const handle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(x.get()==obj)
+		if(x.get()==obj.get())
 			return *this;
 
 		detach();
 
-		obj=x.get();
-		if(obj)
-		{
-			obj->ref();
-			add_to_rlist();
-		}
+		obj=std::make_shared<value_type>(x.get());
+		if(obj)add_to_rlist();
 		return *this;
 	}
 
@@ -527,19 +477,31 @@ public:
 	operator=(value_type* x)
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(x==obj)
+		if(x==obj.get())
 			return *this;
 
 		detach();
 
-		obj=x;
+		obj=std::make_shared<value_type>(x);
 		if(obj)
-		{
-			obj->ref();
 			add_to_rlist();
-		}
 		return *this;
 	}
+
+    //! Returns pointer to the object that is being wrapped
+    pointer get() const { return obj.get(); }
+
+    std::shared_ptr<value_type> get_shared_ptr() const { return obj; }
+
+    template<class U>
+    operator loose_handle<U>()const
+    { return loose_handle<U>(obj.get()); }
+
+    operator handle<value_type>()const
+    { return handle<value_type>(obj.get()); }
+
+    operator rhandle<const value_type>()const
+    { return rhandle<const value_type>(static_cast<const_pointer>(obj.get())); }
 
 	//! Handle release procedure
 	/*! unref()'s the object and sets the internal object pointer to \c NULL */
@@ -548,8 +510,7 @@ public:
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)del_from_rlist();
-		handle<value_type>::detach();
-		obj=0;
+		obj.reset();
 	}
 
 	// This will be reintroduced with a new function
@@ -559,7 +520,7 @@ public:
 
 	//! Creates a new instance of a T object and puts it in the handle.
 	/*! Uses the default constructor */
-	void spawn() { operator=(handle<value_type>(new T())); }
+	void spawn() { operator=(new T()); }
 
 	//! Returns number of reversible instances
 	count_type
@@ -568,6 +529,33 @@ public:
 //		value_type*const& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		return obj?obj->rcount():0;
 	}
+
+    count_type
+    use_count()const
+    {
+        return obj.use_count();
+    }
+
+    bool
+    unique()const
+    {
+        assert(obj); return obj.unique();
+    }
+
+    operator bool()const
+    { return obj!= nullptr; }
+
+    reference
+    operator*()const
+    {
+        assert(obj); return *obj.get();
+    }
+
+    pointer
+    operator->()const
+    {
+        assert(obj); return obj.get();
+    }
 
 	//! Returns true if there is only one instance of the object
 	bool
@@ -578,13 +566,12 @@ public:
 	}
 
 	//! \writeme
-	int replace(const handle<value_type> &x)
+	int replace(const rhandle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
-		assert(x.get()!=obj);
+		assert(x.get()!=obj.get());
 
-		if(x.get()==obj)
+		if(x.get()==obj.get())
 			return 0;
 
 		rhandle<value_type> *iter;
@@ -598,33 +585,26 @@ public:
 
 		int i=0;
 		#ifndef NDEBUG
-		pointer obj_=obj;
+		pointer obj_=obj.get();
 		#endif
 
-		for(;iter;iter=next,next=iter?iter->next_:0,i++)
+		for(;iter;iter=next,next=iter?iter->next_:nullptr,i++)
 		{
 			assert(iter->get()==obj_);
 			(*iter)=x;
 		}
 
-		assert(obj==x.get());
+		assert(obj.get()==x.get());
 
 		return i;
 	}
 
 	//! Swaps the values of two handles without reference counts
 	/*!	\warning not yet implemented. \writeme */
-	handle<value_type> &
-	swap(handle<value_type> &x);
-	/*
-	{
-		assert(0);
-		pointer ptr=x.obj;
-		x.obj=obj;
-		obj=ptr;
-		return *this;
-	}
-	*/
+    std::shared_ptr<value_type> &
+    swap(std::shared_ptr<value_type> &x){
+        obj.swap(x.get());
+    }
 }; // END of template class rhandle
 
 
