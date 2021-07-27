@@ -129,11 +129,13 @@ int main(int argc, char **argv)
 	cout << "   " << _("synfig studio -- starting up application...") << endl << endl;
 
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	studio::App app(etl::dirname(binary_path), &argc, &argv);
+	// studio::App app(etl::dirname(binary_path), &argc, &argv);
 
-	app.run();
+	auto app = studio::App::create();
+
+	return app->run(argc,argv);
+
 	std::cerr<<"Application appears to have terminated successfully"<<std::endl;
 
-	return 0;
 	SYNFIG_EXCEPTION_GUARD_END_INT(0)
 }

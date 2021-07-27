@@ -31,8 +31,11 @@
 /* === H E A D E R S ======================================================= */
 #include <ETL/smart_ptr>
 
+#include <iostream>
+
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
+#include <gtkmm/application.h>
 #include <gtkmm/uimanager.h>
 
 #include <gui/iconcontroller.h>
@@ -120,7 +123,7 @@ class StateManager;
 
 class WorkspaceHandler;
 
-class App : public Gtk::Main, private IconController
+class App : public Gtk::Application, private IconController
 {
 	friend class Preferences;
 	friend class Dialog_Setup;
@@ -272,6 +275,8 @@ public:
 */
 public:
 
+	static Glib::RefPtr<App> create();
+
 	static sigc::signal<void> &signal_present_all();
 
 	static sigc::signal<void> &signal_recent_files_changed();
@@ -298,6 +303,13 @@ public:
 		etl::handle<Instance>
 	> &signal_instance_deleted();
 
+protected:
+
+	void on_startup() override ;
+	void on_open(const Gio::Application::type_vec_files& files,const Glib::ustring& hint) override ;
+	void on_activate() override ;
+	void on_shutdown();
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -305,14 +317,17 @@ public:
 private:
 	static void add_recent_file(const std::string &filename, bool emit_signal);
 
+	studio::MainWindow* create_main_window();
+	void on_hide_window(Gtk::Window* window);
+
 	/*
- -- ** -- P U B L I C   M E T H O D S -----------------------------------------
+ -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------------
 	*/
 
-public:
+protected:
+	
+	App();
 
-	App(const synfig::String& basepath, int *argc, char ***argv);
-	virtual ~App();
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------

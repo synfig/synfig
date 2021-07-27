@@ -84,6 +84,9 @@ namespace studio {
 		static void make_short_filenames(
 			const std::vector<synfig::String> &fullnames,
 			std::vector<synfig::String> &shortnames );
+
+		void open_file_view(const Glib::RefPtr<Gio::File>& file);
+
 	};
 }; // END of namespace studio
 

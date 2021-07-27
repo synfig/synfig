@@ -142,6 +142,11 @@ MainWindow::MainWindow() :
 
 MainWindow::~MainWindow() = default;
 
+void MainWindow::open_file_view(const Glib::RefPtr<Gio::File>& file)
+{
+
+}
+
 void
 MainWindow::show_dialog_input()
 {
