@@ -77,7 +77,7 @@ private:
 
 	bool dragging;
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 
 	/*
  --	** -- P R O P E R T I E S -------------------------------------------------
@@ -125,8 +125,8 @@ public:
 	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
 	void set_time_model(const etl::handle<TimeModel> &x);
 
-	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }
-	void set_canvas_interface(const etl::loose_handle<synfigapp::CanvasInterface> &x);
+	const std::shared_ptr<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }
+	void set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface> &x);
 
 	synfig::Canvas::Handle get_canvas() const
 		{ return const_cast<CellRenderer_TimeTrack*>(this)->property_canvas().get_value(); }

@@ -133,7 +133,7 @@ private:
 	std::map<synfig::Layer::Handle, sigc::connection> subcanvas_changed_connections;
 	std::map<synfig::Layer::Handle, sigc::connection> switch_changed_connections;
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gdk::Pixbuf> layer_icon;
 
@@ -208,12 +208,12 @@ private:
 
 public:
 
-	LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	LayerTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 	~LayerTreeStore();
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
-	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	std::shared_ptr<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
 	bool find_canvas_row(synfig::Canvas::Handle canvas, Gtk::TreeModel::Children::iterator &iter);
 
@@ -246,7 +246,7 @@ public:
 
 public:
 
-	static Glib::RefPtr<LayerTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	static Glib::RefPtr<LayerTreeStore> create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 
 
 }; // END of class LayerTreeStore

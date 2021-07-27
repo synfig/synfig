@@ -68,7 +68,7 @@ static LayerParamTreeStore::Model& ModelHack()
 	return *model;
 }
 
-LayerParamTreeStore::LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_,LayerTree* layer_tree):
+LayerParamTreeStore::LayerParamTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_,LayerTree* layer_tree):
 	Gtk::TreeStore			(ModelHack()),
 	CanvasTreeStore			(canvas_interface_),
 	layer_tree				(layer_tree)
@@ -110,7 +110,7 @@ LayerParamTreeStore::~LayerParamTreeStore()
 }
 
 Glib::RefPtr<LayerParamTreeStore>
-LayerParamTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree)
+LayerParamTreeStore::create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree)
 {
 	return Glib::RefPtr<LayerParamTreeStore>(new LayerParamTreeStore(canvas_interface_,layer_tree));
 }

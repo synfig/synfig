@@ -217,7 +217,7 @@ public:
 	virtual void destructor_() { }
 
 	typedef etl::handle<Module> Handle;
-	typedef etl::loose_handle<Module> LooseHandle;
+	typedef std::shared_ptr<Module> LooseHandle;
 	typedef etl::handle<const Module> ConstHandle;
 
 	//! Type that represents a pointer to a Module's constructor by name.

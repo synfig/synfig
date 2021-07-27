@@ -59,13 +59,13 @@ Dock_CanvasSpecific::~Dock_CanvasSpecific()
 {
 }
 
-etl::loose_handle<studio::CanvasView>
+std::shared_ptr<studio::CanvasView>
 Dock_CanvasSpecific::get_canvas_view()
 {
 	return App::get_selected_canvas_view();
 }
 
-etl::loose_handle<synfigapp::CanvasInterface>
+std::shared_ptr<synfigapp::CanvasInterface>
 Dock_CanvasSpecific::get_canvas_interface()
 {
 	if(get_canvas_view())
@@ -74,17 +74,17 @@ Dock_CanvasSpecific::get_canvas_interface()
 }
 
 void
-Dock_CanvasSpecific::init_canvas_view_vfunc(etl::loose_handle<CanvasView> /*canvas_view*/)
+Dock_CanvasSpecific::init_canvas_view_vfunc(std::shared_ptr<CanvasView> /*canvas_view*/)
 {
 }
 
 void
-Dock_CanvasSpecific::init_instance_vfunc(etl::loose_handle<Instance> /*instance*/)
+Dock_CanvasSpecific::init_instance_vfunc(std::shared_ptr<Instance> /*instance*/)
 {
 }
 
 void
-Dock_CanvasSpecific::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> /*canvas_view*/)
+Dock_CanvasSpecific::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> /*canvas_view*/)
 {
 }
 
@@ -131,7 +131,7 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 void
 Dock_CanvasSpecific::canvas_view_changed()
 {
-	etl::loose_handle<CanvasView> canvas_view(App::get_selected_canvas_view());
+	std::shared_ptr<CanvasView> canvas_view(App::get_selected_canvas_view());
 /*	if(canvas_view)
 	{
 		canvas_delete_connection.disconnect();
@@ -141,7 +141,7 @@ Dock_CanvasSpecific::canvas_view_changed()
 					*this,
 					&Dock_CanvasSpecific::changed_canvas_view
 				),
-				etl::loose_handle<CanvasView>(0)
+				std::shared_ptr<CanvasView>(0)
 			)
 		);
 	}

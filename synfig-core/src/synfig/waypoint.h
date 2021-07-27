@@ -180,7 +180,7 @@ private:
 	int priority_;
 	//! Usually Animated Value Nodes are parents of waypoints
 	//! \see class ValueNode_Animated
-	etl::loose_handle<ValueNode> parent_;
+	std::shared_ptr<ValueNode> parent_;
 	//! The two Interpolations before and after
 	Interpolation before, after;
 	//! The value node that is hold by the waypoint
@@ -262,10 +262,10 @@ public:
 	void set_priority(int x) { priority_=x; }
 
 	//! Gets parent Value Node
-	const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
+	const std::shared_ptr<ValueNode> &get_parent_value_node()const { return parent_; }
 
 	//! Sets parent Value Node
-	void set_parent_value_node(const etl::loose_handle<ValueNode> &x);
+	void set_parent_value_node(const std::shared_ptr<ValueNode> &x);
 
 	//! \true if the Value Node is constant, not null and not exported
 	bool is_static()const;
@@ -301,7 +301,7 @@ public:
 
 	//! Clones the Value Node if it is not exported and returns a Waypoint
 	//! with no parent.
-	Waypoint clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	Waypoint clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	//! Returns a hack GUID using the UniqueID's value
 	GUID get_guid()const;

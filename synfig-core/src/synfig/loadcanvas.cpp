@@ -112,7 +112,7 @@ std::set<FileSystem::Identifier> CanvasParser::loading_;
 
 static std::map<String, Canvas::LooseHandle>* open_canvas_map_(0);
 
-std::map<synfig::String, etl::loose_handle<Canvas> >& synfig::get_open_canvas_map()
+std::map<synfig::String, std::shared_ptr<Canvas> >& synfig::get_open_canvas_map()
 {
 	if(!open_canvas_map_)
 		open_canvas_map_=new std::map<String, Canvas::LooseHandle>;
@@ -132,7 +132,7 @@ static void _remove_from_open_canvas_map(Canvas *x) {
 
 static void _canvas_file_name_changed(Canvas *x)
 {
-	std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
+	std::map<synfig::String, std::shared_ptr<Canvas> >::iterator iter;
 
 	for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
 		if(iter->second==x)
@@ -3466,12 +3466,12 @@ CanvasParser::show_canvas_map(String file, int line, String text)
 {
 	return;
 	printf("  .-----\n  |  %s:%d %s\n", file.c_str(), line, text.c_str());
-	std::map<synfig::String, etl::loose_handle<Canvas> > canvas_map(synfig::get_open_canvas_map());
-	std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
+	std::map<synfig::String, std::shared_ptr<Canvas> > canvas_map(synfig::get_open_canvas_map());
+	std::map<synfig::String, std::shared_ptr<Canvas> >::iterator iter;
 	for (iter = canvas_map.begin(); iter != canvas_map.end(); iter++)
 	{
 		synfig::String first(iter->first);
-		etl::loose_handle<Canvas> second(iter->second);
+		std::shared_ptr<Canvas> second(iter->second);
 		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
 	}
 	printf("  `-----\n\n");

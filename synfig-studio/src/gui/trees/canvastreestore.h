@@ -139,7 +139,7 @@ public:
 
 private:
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -163,11 +163,11 @@ private:
 
 public:
 
-	CanvasTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	CanvasTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 	~CanvasTreeStore();
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	std::shared_ptr<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
 	virtual void rebuild_row(Gtk::TreeModel::Row &row, bool do_children=true);
 
@@ -186,7 +186,7 @@ public:
 
 	static CellRenderer_TimeTrack* add_cell_renderer_value_node(Gtk::TreeView::Column* column);
 
-	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
 	virtual void on_value_node_changed(synfig::ValueNode::Handle value_node)=0;
 

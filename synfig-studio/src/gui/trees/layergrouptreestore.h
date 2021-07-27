@@ -103,7 +103,7 @@ public:
 
 private:
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gdk::Pixbuf> layer_icon;
 	Glib::RefPtr<Gdk::Pixbuf> group_icon;
@@ -160,13 +160,13 @@ private:
 
 public:
 
-	LayerGroupTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	LayerGroupTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 	~LayerGroupTreeStore();
 
 	Gtk::TreeRow on_group_added(synfig::String group);
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
-	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	std::shared_ptr<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
 	bool find_layer_row(const synfig::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
 
@@ -193,7 +193,7 @@ public:
 
 public:
 
-	static Glib::RefPtr<LayerGroupTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	static Glib::RefPtr<LayerGroupTreeStore> create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 
 }; // END of class LayerGroupTreeStore
 

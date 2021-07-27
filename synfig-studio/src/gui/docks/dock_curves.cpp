@@ -100,7 +100,7 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view, Widget_Curves* curves, 
 }
 
 void
-Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Curves::init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	//! Curves is registered thru CanvasView::set_ext_widget
 	//! and will be deleted during CanvasView::~CanvasView()
@@ -169,7 +169,7 @@ Dock_Curves::refresh_selected_param()
 }
 
 void
-Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Curves::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	if(table_)
 	{
@@ -184,7 +184,7 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
 		widget_kf_list_.set_time_model( etl::handle<TimeModel>() );
-		widget_kf_list_.set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
+		widget_kf_list_.set_canvas_interface( std::shared_ptr<synfigapp::CanvasInterface>() );
 	}
 
 

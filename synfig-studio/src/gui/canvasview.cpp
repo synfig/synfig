@@ -496,7 +496,7 @@ LockDucks::~LockDucks() {
 
 CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
 
-CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasInterface> canvas_interface_):
+CanvasView::CanvasView(std::shared_ptr<Instance> instance,etl::handle<CanvasInterface> canvas_interface_):
 	Dockable(synfig::GUID().get_string(),_("Canvas View")),
 	work_area                (),
 	activation_index_        (true),
@@ -1924,7 +1924,7 @@ CanvasView::close_instance()
 }
 
 etl::handle<CanvasView>
-CanvasView::create(etl::loose_handle<Instance> instance, etl::handle<Canvas> canvas)
+CanvasView::create(std::shared_ptr<Instance> instance, etl::handle<Canvas> canvas)
 	{ return new CanvasView(instance,instance->Instance::find_canvas_interface(canvas)); }
 
 void
@@ -2877,7 +2877,7 @@ CanvasView::set_sensitive_timebar(bool sensitive)
 static void
 set_waypoint_model(std::set<Waypoint, std::less<UniqueID> > waypoints,
 				   Waypoint::Model model,
-				   etl::loose_handle<CanvasInterface> canvas_interface)
+				   std::shared_ptr<CanvasInterface> canvas_interface)
 {
 	// Create the action group
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Change Waypoint Group"));
@@ -2908,7 +2908,7 @@ set_waypoint_model(std::set<Waypoint, std::less<UniqueID> > waypoints,
 
 static void
 duplicate_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
-					etl::loose_handle<CanvasInterface> canvas_interface)
+					std::shared_ptr<CanvasInterface> canvas_interface)
 {
 	// Create the action group
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Duplicate Waypoints"));
@@ -2924,7 +2924,7 @@ duplicate_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 
 static void
 remove_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
-				 etl::loose_handle<CanvasInterface> canvas_interface)
+				 std::shared_ptr<CanvasInterface> canvas_interface)
 {
 	// Create the action group
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Remove Waypoints"));

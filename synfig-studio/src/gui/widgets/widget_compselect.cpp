@@ -91,7 +91,7 @@ Widget_CompSelect::on_changed()
 }
 
 void
-Widget_CompSelect::set_selected_instance(etl::loose_handle<studio::Instance> x)
+Widget_CompSelect::set_selected_instance(std::shared_ptr<studio::Instance> x)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -130,11 +130,11 @@ Widget_CompSelect::new_instance(etl::handle<studio::Instance> instance)
 
 	assert(instance);
 
-	etl::loose_handle<studio::Instance> loose_instance(instance);
+	std::shared_ptr<studio::Instance> loose_instance(instance);
 
 	instance->synfigapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&Widget_CompSelect::refresh));
 	instance->synfigapp::Instance::signal_filename_changed().connect(
-		sigc::bind<etl::loose_handle<studio::Instance> >(
+		sigc::bind<std::shared_ptr<studio::Instance> >(
 			sigc::mem_fun(*this,&Widget_CompSelect::set_selected_instance),
 			loose_instance
 		)
@@ -174,7 +174,7 @@ Widget_CompSelect::refresh()
 	for(iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end();iter++)
 	{
 		std::string name=basename((*iter)->get_file_name());
-		instances.push_back( etl::loose_handle<studio::Instance>(*iter) );
+		instances.push_back( std::shared_ptr<studio::Instance>(*iter) );
 		append(name);
 	}
 }

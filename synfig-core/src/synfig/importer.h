@@ -139,7 +139,7 @@ public:
 	static bool subsys_stop();
 
 	typedef etl::handle<Importer> Handle;
-	typedef etl::loose_handle<Importer> LooseHandle;
+	typedef std::shared_ptr<Importer> LooseHandle;
 	typedef etl::handle<const Importer> ConstHandle;
 
 private:

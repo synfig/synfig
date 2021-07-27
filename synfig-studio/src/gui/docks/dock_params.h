@@ -45,8 +45,8 @@ class Dock_Params : public Dock_CanvasSpecific
 	sigc::connection refresh_selected_param_connection;
 
 protected:
-	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	virtual void init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
+	virtual void changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
 
 	void refresh_selected_param();
 

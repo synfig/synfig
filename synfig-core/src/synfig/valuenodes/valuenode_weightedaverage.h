@@ -43,8 +43,8 @@ public:
 	typedef etl::handle<ValueNode_WeightedAverage> Handle;
 	typedef etl::handle<const ValueNode_WeightedAverage> ConstHandle;
 
-	ValueNode_WeightedAverage(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
-	ValueNode_WeightedAverage(Type &type, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_WeightedAverage(const ValueBase &value, std::shared_ptr<Canvas> canvas = 0);
+	ValueNode_WeightedAverage(Type &type, std::shared_ptr<Canvas> canvas = 0);
 	virtual ~ValueNode_WeightedAverage();
 
  	virtual ValueBase operator()(Time t)const;
@@ -57,7 +57,7 @@ protected:
 
 public:
 	static bool check_type(Type &type);
-	static ValueNode_WeightedAverage* create(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
+	static ValueNode_WeightedAverage* create(const ValueBase &value, std::shared_ptr<Canvas> canvas = 0);
 }; // END of class ValueNode_WeightedAverage
 
 }; // END of namespace synfig

@@ -101,7 +101,7 @@ public:
 		STRUCT_DEFAULT				=	0x44 //STRUCT_RADIUS+STRUCT_WIDTHPOINT
 	};
 	typedef etl::handle<Duck> Handle;
-	typedef etl::loose_handle<Duck> LooseHandle;
+	typedef std::shared_ptr<Duck> LooseHandle;
 
 private:
 

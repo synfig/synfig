@@ -94,7 +94,7 @@ public:
 
 private:
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 
 	//! Unique stamp for this TreeModel.
 	int stamp_;
@@ -182,11 +182,11 @@ private:
 
 public:
 
-	KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	KeyframeTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 	~KeyframeTreeStore();
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	std::shared_ptr<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
 	const synfig::Canvas::Handle& get_canvas()const { return canvas_interface()->get_canvas(); }
 
@@ -199,7 +199,7 @@ public:
 
 public:
 
-	static Glib::RefPtr<KeyframeTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	static Glib::RefPtr<KeyframeTreeStore> create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 
 	static int time_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 	static int description_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);

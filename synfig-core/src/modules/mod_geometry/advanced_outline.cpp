@@ -807,7 +807,7 @@ Advanced_Outline::get_param_vocab()const
 }
 
 bool
-Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x)
+Advanced_Outline::connect_dynamic_param(const String& param, std::shared_ptr<ValueNode> x)
 {
 	if(param=="bline")
 	{
@@ -848,7 +848,7 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 }
 
 bool
-Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
+Advanced_Outline::connect_bline_to_wplist(std::shared_ptr<ValueNode> x)
 {
 	if(x->get_type() != type_list)
 		return false;
@@ -868,7 +868,7 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 }
 
 bool
-Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
+Advanced_Outline::connect_bline_to_dilist(std::shared_ptr<ValueNode> x)
 {
 	if(x->get_type() != type_list)
 		return false;

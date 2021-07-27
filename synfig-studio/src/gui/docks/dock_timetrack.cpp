@@ -359,7 +359,7 @@ Dock_Timetrack_Old::~Dock_Timetrack_Old()
 }
 
 void
-Dock_Timetrack_Old::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Timetrack_Old::init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	LayerParamTreeStore::Model model;
 
@@ -387,7 +387,7 @@ Dock_Timetrack_Old::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_
 }
 
 void
-Dock_Timetrack_Old::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Timetrack_Old::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	if (grid_)
 	{
@@ -396,7 +396,7 @@ Dock_Timetrack_Old::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canv
 		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
 		widget_kf_list_.set_time_model( etl::handle<TimeModel>() );
-		widget_kf_list_.set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
+		widget_kf_list_.set_canvas_interface( std::shared_ptr<synfigapp::CanvasInterface>() );
 
 		delete grid_;
 		grid_=0;

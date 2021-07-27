@@ -45,7 +45,7 @@ private:
 	ValueBase value;
 
 	ValueNode_Const();
-	ValueNode_Const(const ValueBase &x, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_Const(const ValueBase &x, std::shared_ptr<Canvas> canvas = 0);
 
 public:
 
@@ -63,14 +63,14 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 #ifdef _DEBUG
 	String get_string()const;
 #endif	// _DEBUG
 public:
 	// create a new ValueNode_Const object with the given value.
 	// Unless the given value is a Bone, in which case make a ValueNode_Bone.
-	static ValueNode* create(const ValueBase &x=ValueBase(), etl::loose_handle<Canvas> canvas = 0);
+	static ValueNode* create(const ValueBase &x=ValueBase(), std::shared_ptr<Canvas> canvas = 0);
 
 protected:
 	virtual void get_times_vfunc(Node::time_set &set) const;

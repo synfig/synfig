@@ -131,7 +131,7 @@ ValueNode_BoneLink::get_link_vfunc(int i)const
 }
 
 void
-ValueNode_BoneLink::set_root_canvas(etl::loose_handle<Canvas> x)
+ValueNode_BoneLink::set_root_canvas(std::shared_ptr<Canvas> x)
 {
 	LinkableValueNode::set_root_canvas(x);
 	bone_->set_root_canvas(x);

@@ -49,7 +49,7 @@ class CanvasView;
 
 class Widget_NavView : public Gtk::Grid
 {
-	etl::loose_handle<CanvasView> canvas_view;
+	std::shared_ptr<CanvasView> canvas_view;
 	Cairo::RefPtr<Cairo::ImageSurface> surface;
 
 	Gtk::DrawingArea drawto;
@@ -72,8 +72,8 @@ public:
 	Widget_NavView();
 	~Widget_NavView();
 
-	const etl::loose_handle<CanvasView>& get_canvas_view() const { return canvas_view; }
-	void set_canvas_view(const etl::loose_handle<CanvasView> &x);
+	const std::shared_ptr<CanvasView>& get_canvas_view() const { return canvas_view; }
+	void set_canvas_view(const std::shared_ptr<CanvasView> &x);
 };
 
 
@@ -84,7 +84,7 @@ private:
 public:
 	Dock_Navigator();
 	~Dock_Navigator();
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	virtual void changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
 };
 
 }; // END of namespace studio

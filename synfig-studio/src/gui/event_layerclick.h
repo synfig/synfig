@@ -42,10 +42,10 @@ struct EventLayerClick : public Smach::event
 {
 	synfig::Point pos;
 	MouseButton button;
-	etl::loose_handle<synfig::Layer> layer;
+	std::shared_ptr<synfig::Layer> layer;
 	Gdk::ModifierType modifier;
 
-	EventLayerClick(etl::loose_handle<synfig::Layer> layer, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
+	EventLayerClick(std::shared_ptr<synfig::Layer> layer, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
 		Smach::event(EVENT_WORKAREA_LAYER_CLICKED),
 		pos(pos),
 		button(button),

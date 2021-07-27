@@ -315,7 +315,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 			assert(canvas);
 			bone_widget->set_parent_canvas(canvas);
 			bone_widget->set_value_desc(get_value_desc());
-			bone_widget->set_value(value.get(etl::loose_handle<synfig::ValueNode_Bone>()));
+			bone_widget->set_value(value.get(std::shared_ptr<synfig::ValueNode_Bone>()));
 			bone_widget->show();
 		}
 		else
@@ -323,7 +323,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		{
 			assert(canvas);
 			canvas_widget->set_parent_canvas(canvas);
-			canvas_widget->set_value(value.get(etl::loose_handle<synfig::Canvas>()));
+			canvas_widget->set_value(value.get(std::shared_ptr<synfig::Canvas>()));
 			canvas_widget->show();
 		}
 		else

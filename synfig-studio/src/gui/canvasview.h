@@ -154,7 +154,7 @@ class CanvasView : public Dockable, public etl::shared_object
 public:
 	typedef etl::handle<CanvasView> Handle;
 	typedef etl::handle<const CanvasView> ConstHandle;
-	typedef etl::loose_handle<CanvasView> LooseHandle;
+	typedef std::shared_ptr<CanvasView> LooseHandle;
 	typedef LayerTreeStore::Model LayerTreeModel;
 	typedef ChildrenTreeStore::Model ChildrenTreeModel;
 
@@ -248,7 +248,7 @@ private:
 	//! State Machine
 	Smach smach_;
 
-	etl::loose_handle<Instance> instance_;
+	std::shared_ptr<Instance> instance_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	synfig::ContextParams context_params_;
 
@@ -415,7 +415,7 @@ public:
 private:
 
 	// Constructor is private to force the use of the "create()" constructor
-	CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
+	CanvasView(std::shared_ptr<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
@@ -562,7 +562,7 @@ public:
 	synfig::Time get_time() { return time_model()->get_time(); }
 
 	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_interface_->get_canvas(); }
-	const etl::loose_handle<Instance>& get_instance()const { return instance_; }
+	const std::shared_ptr<Instance>& get_instance()const { return instance_; }
 
 	const etl::handle<synfigapp::CanvasInterface>& canvas_interface() { return canvas_interface_; }
 	etl::handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
@@ -696,7 +696,7 @@ protected:
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 public:
-	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static etl::handle<studio::CanvasView> create(std::shared_ptr<Instance> instance,etl::handle<synfig::Canvas> canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:

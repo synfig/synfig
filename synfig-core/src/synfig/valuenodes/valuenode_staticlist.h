@@ -56,7 +56,7 @@ public:
 	typedef ValueNode::RHandle ReplaceableListEntry;
 
 protected:
-	ValueNode_StaticList(Type &container_type=type_nil, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_StaticList(Type &container_type=type_nil, std::shared_ptr<Canvas> canvas = 0);
 
 	virtual ~ValueNode_StaticList();
 
@@ -90,7 +90,7 @@ public:
 	bool get_loop()const { return loop_; }
 	void set_loop(bool x) { loop_=x; }
 
-	void set_member_canvas(etl::loose_handle<Canvas>);
+	void set_member_canvas(std::shared_ptr<Canvas>);
 
 	Type& get_contained_type()const;
 
@@ -108,7 +108,7 @@ public:
 //	void insert_time(const Time& location, const Time& delta);
 	//void manipulate_time(const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end);
 
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 
@@ -124,7 +124,7 @@ public:
 	**	contains, rather than the type that it will yield
 	**	(which is type_list)
 	*/
-	static Handle create_on_canvas(Type &type=type_nil, etl::loose_handle<Canvas> canvas = 0);
+	static Handle create_on_canvas(Type &type=type_nil, std::shared_ptr<Canvas> canvas = 0);
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);

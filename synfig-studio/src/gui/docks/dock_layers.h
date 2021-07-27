@@ -52,8 +52,8 @@ class Dock_Layers : public Dock_CanvasSpecific
 	LayerActionManager* layer_action_manager;
 
 protected:
-	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	virtual void init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
+	virtual void changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
 
 private:
 

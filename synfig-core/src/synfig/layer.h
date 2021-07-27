@@ -256,7 +256,7 @@ public:
 
 	typedef etl::handle<Layer> Handle;
 
-	typedef etl::loose_handle<Layer> LooseHandle;
+	typedef std::shared_ptr<Layer> LooseHandle;
 
 	typedef etl::handle<const Layer> ConstHandle;
 
@@ -288,7 +288,7 @@ private:
 	bool exclude_from_rendering_;
 
 	//! Handle to the canvas to which this layer belongs
-	etl::loose_handle<Canvas> canvas_;
+	std::shared_ptr<Canvas> canvas_;
 
 	//! Map of parameter with animated value nodes
 	DynamicParamList dynamic_param_list_;
@@ -463,10 +463,10 @@ public:
 	void set_z_depth(float x) { param_z_depth=ValueBase(Real(x)); }
 
 	//! Sets the Canvas that this Layer is a part of
-	void set_canvas(etl::loose_handle<Canvas> canvas);
+	void set_canvas(std::shared_ptr<Canvas> canvas);
 
 	//! Returns a handle to the Canvas to which this Layer belongs
-	etl::loose_handle<Canvas> get_canvas()const;
+	std::shared_ptr<Canvas> get_canvas()const;
 
 	//! Returns the description of the layer
 	const String& get_description()const { return description_; }
@@ -630,7 +630,7 @@ public:
 	virtual Handle hit_check(Context context, const Point &point)const;
 
 	//! Duplicates the Layer
-	virtual Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual Handle clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	//! Returns true if the layer needs to be able to examine its context.
 	/*! context to render itself, other than for simple blending.  For
@@ -644,7 +644,7 @@ public:
 	virtual Handle simple_clone()const;
 
 	//! Connects the parameter to another Value Node
-	virtual bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode>);
+	virtual bool connect_dynamic_param(const String& param, std::shared_ptr<ValueNode>);
 
 	//! Disconnects the parameter from any Value Node
 	virtual bool disconnect_dynamic_param(const String& param);

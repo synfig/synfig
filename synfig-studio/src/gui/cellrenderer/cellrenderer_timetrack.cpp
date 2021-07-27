@@ -245,7 +245,7 @@ CellRenderer_TimeTrack::set_time_model(const etl::handle<TimeModel> &x)
 	{ time_model = x; }
 
 void
-CellRenderer_TimeTrack::set_canvas_interface(const etl::loose_handle<CanvasInterface> &x)
+CellRenderer_TimeTrack::set_canvas_interface(const std::shared_ptr<CanvasInterface> &x)
 	{ canvas_interface = x; }
 
 // The following two functions don't get documented correctly by

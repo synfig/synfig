@@ -417,7 +417,7 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 	return false;
 }
 
-Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<System> instance_,synfig::String name_):
+Action::PassiveGrouper::PassiveGrouper(std::shared_ptr<System> instance_,synfig::String name_):
 	instance_(instance_),
 	name_(name_),
 	depth_(0),

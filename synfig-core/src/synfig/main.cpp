@@ -377,7 +377,7 @@ synfig::Main::~Main()
 	if(!get_open_canvas_map().empty())
 	{
 		synfig::warning("Canvases still open!");
-		std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
+		std::map<synfig::String, std::shared_ptr<Canvas> >::iterator iter;
 		for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
 		{
 			synfig::warning("%s: count()=%d",iter->first.c_str(), iter->second.count());

@@ -413,7 +413,7 @@ LayerActionManager::paste()
 			return;
 
 		action->set_param("canvas",canvas);
-		action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
+		action->set_param("canvas_interface",std::shared_ptr<synfigapp::CanvasInterface>(get_canvas_interface()));
 		action->set_param("new",layer);
 
 		if(!action->is_ready())
@@ -441,7 +441,7 @@ LayerActionManager::paste()
 				return;
 
 			action->set_param("canvas",canvas);
-			action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
+			action->set_param("canvas_interface",std::shared_ptr<synfigapp::CanvasInterface>(get_canvas_interface()));
 			action->set_param("layer",layer);
 			action->set_param("new_index",depth);
 

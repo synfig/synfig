@@ -189,8 +189,8 @@ App::signal_custom_workspaces_changed()
 	return signal_custom_workspaces_changed_;
 }
 
-static sigc::signal<void,etl::loose_handle<CanvasView> > signal_canvas_view_focus_;
-sigc::signal<void,etl::loose_handle<CanvasView> >&
+static sigc::signal<void,std::shared_ptr<CanvasView> > signal_canvas_view_focus_;
+sigc::signal<void,std::shared_ptr<CanvasView> >&
 App::signal_canvas_view_focus() { return signal_canvas_view_focus_; }
 
 static sigc::signal<void,etl::handle<Instance> > signal_instance_selected_;
@@ -4256,7 +4256,7 @@ App::dialog_open(std::string filename)
 }
 
 void
-App::set_selected_instance(etl::loose_handle<Instance> instance)
+App::set_selected_instance(std::shared_ptr<Instance> instance)
 {
 	if (selected_instance == instance)
 		return;
@@ -4274,13 +4274,13 @@ App::set_selected_instance(etl::loose_handle<Instance> instance)
 }
 
 void
-App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
+App::set_selected_canvas_view(std::shared_ptr<CanvasView> canvas_view)
 {
 	if (selected_canvas_view == canvas_view)
 		return;
 	
-	etl::loose_handle<CanvasView> prev = selected_canvas_view;
-	etl::loose_handle<Instance> prev_instance = selected_instance;
+	std::shared_ptr<CanvasView> prev = selected_canvas_view;
+	std::shared_ptr<Instance> prev_instance = selected_instance;
 
 	selected_canvas_view.reset();
 	if (prev)
@@ -4299,7 +4299,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 		signal_instance_selected()(selected_instance);
 }
 
-etl::loose_handle<Instance>
+std::shared_ptr<Instance>
 App::get_instance(etl::handle<synfig::Canvas> canvas)
 {
 	if(!canvas) return nullptr;
@@ -4317,7 +4317,7 @@ App::get_instance(etl::handle<synfig::Canvas> canvas)
 Gamma
 App::get_selected_canvas_gamma()
 {
-	if (etl::loose_handle<CanvasView> canvas_view = App::get_selected_canvas_view())
+	if (std::shared_ptr<CanvasView> canvas_view = App::get_selected_canvas_view())
 		return canvas_view->get_canvas()->rend_desc().get_gamma();
 	return Gamma();
 }

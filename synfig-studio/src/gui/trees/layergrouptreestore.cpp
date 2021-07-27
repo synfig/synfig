@@ -68,7 +68,7 @@ static LayerGroupTreeStore::Model& ModelHack()
 	return *model;
 }
 
-LayerGroupTreeStore::LayerGroupTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
+LayerGroupTreeStore::LayerGroupTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore			(ModelHack()),
 	canvas_interface_		(canvas_interface_)
 {
@@ -111,7 +111,7 @@ LayerGroupTreeStore::search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::
 
 
 Glib::RefPtr<LayerGroupTreeStore>
-LayerGroupTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
+LayerGroupTreeStore::create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_)
 {
 	return Glib::RefPtr<LayerGroupTreeStore>(new LayerGroupTreeStore(canvas_interface_));
 }

@@ -130,7 +130,7 @@ private:
 
 public:
 
-	LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_,
+	LayerParamTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_,
 		LayerTree* layer_tree);
 	~LayerParamTreeStore();
 
@@ -169,7 +169,7 @@ public:
 
 public:
 
-	static Glib::RefPtr<LayerParamTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree);
+	static Glib::RefPtr<LayerParamTreeStore> create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree);
 }; // END of class LayerParamTreeStore
 
 }; // END of namespace studio

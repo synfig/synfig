@@ -108,7 +108,7 @@ void clear_iterator(GtkTreeIter* iter)
 /* === M E T H O D S ======================================================= */
 
 
-KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
+KeyframeTreeStore::KeyframeTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_):
 	Glib::ObjectBase	("KeyframeTreeStore"),
 	//! \todo what is going on here?  why the need for this KeyframeTreeStore_Class at all?
 	// Glib::Object		(Glib::ConstructParams(keyframe_tree_store_class_.init(), (char*) 0, (char*) 0)),
@@ -130,7 +130,7 @@ KeyframeTreeStore::~KeyframeTreeStore()
 }
 
 Glib::RefPtr<KeyframeTreeStore>
-KeyframeTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
+KeyframeTreeStore::create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_)
 {
 	KeyframeTreeStore *store(new KeyframeTreeStore(canvas_interface_));
 	Glib::RefPtr<KeyframeTreeStore> ret(store);

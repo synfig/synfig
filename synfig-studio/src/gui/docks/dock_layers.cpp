@@ -189,7 +189,7 @@ Dock_Layers::~Dock_Layers()
 
 
 void
-Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Layers::init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	Glib::RefPtr<LayerTreeStore> layer_tree_store;
 	layer_tree_store=LayerTreeStore::create(canvas_view->canvas_interface());
@@ -242,7 +242,7 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 }
 
 void
-Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Layers::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	if(canvas_view)
 	{
@@ -275,7 +275,7 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 void
 Dock_Layers::add_layer(synfig::String id)
 {
-	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
+	std::shared_ptr<CanvasView> canvas_view(get_canvas_view());
 	if(canvas_view)
 	{
 		canvas_view->add_layer(id);

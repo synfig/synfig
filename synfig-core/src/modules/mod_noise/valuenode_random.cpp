@@ -208,7 +208,7 @@ ValueNode_Random::check_type(Type &type)
 }
 
 ValueNode::Handle
-ValueNode_Random::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
+ValueNode_Random::clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid)const
 {
 	etl::handle<ValueNode_Random> ret =
 		etl::handle<ValueNode_Random>::cast_dynamic(

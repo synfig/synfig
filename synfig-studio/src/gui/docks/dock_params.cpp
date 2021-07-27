@@ -67,7 +67,7 @@ Dock_Params::~Dock_Params()
 
 
 void
-Dock_Params::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Params::init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	canvas_view->get_adjustment_group(get_name())->add(vadjustment);
 }
@@ -75,7 +75,7 @@ Dock_Params::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 void
 Dock_Params::refresh_selected_param()
 {
-	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
+	std::shared_ptr<CanvasView> canvas_view(get_canvas_view());
 	if (!canvas_view) return;
 
 	Gtk::TreeView* tree_view = dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()));
@@ -91,7 +91,7 @@ Dock_Params::refresh_selected_param()
 }
 
 void
-Dock_Params::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Params::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	reset_container();
 	refresh_selected_param_connection.disconnect();

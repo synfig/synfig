@@ -111,7 +111,7 @@ Glib::RefPtr<LayerParamTreeStore> Widget_Timetrack::get_params_model() const
 	return params_store;
 }
 
-bool Widget_Timetrack::use_canvas_view(etl::loose_handle<CanvasView> canvas_view)
+bool Widget_Timetrack::use_canvas_view(std::shared_ptr<CanvasView> canvas_view)
 {
 	if (!canvas_view) {
 		synfig::error(_("No canvas_view for timetrack"));

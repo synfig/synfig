@@ -53,7 +53,7 @@ private:
 	double			samplerate; //samples / second of the profile
 
 	//reference our parent for any native sound info
-	etl::loose_handle<AudioContainer>	parent;
+	std::shared_ptr<AudioContainer>	parent;
 
 public:	//samples interface
 

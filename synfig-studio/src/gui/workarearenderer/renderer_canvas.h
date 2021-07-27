@@ -50,7 +50,7 @@ class Renderer_Canvas : public studio::WorkAreaRenderer
 {
 public:
 	typedef etl::handle<Renderer_Canvas> Handle;
-	typedef etl::loose_handle<Renderer_Canvas> LooseHandle;
+	typedef std::shared_ptr<Renderer_Canvas> LooseHandle;
 
 	enum FrameStatus {
 		FS_None,

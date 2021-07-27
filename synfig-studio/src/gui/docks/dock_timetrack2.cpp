@@ -69,7 +69,7 @@ Dock_Timetrack2::Dock_Timetrack2()
 	add(grid);
 }
 
-void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void Dock_Timetrack2::init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	Widget_Timetrack *widget_timetrack = new Widget_Timetrack();
 	widget_timetrack->use_canvas_view(canvas_view);
@@ -110,7 +110,7 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 	});
 }
 
-void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void Dock_Timetrack2::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	const std::vector<Gtk::Widget*> children = grid.get_children();
 	for (Gtk::Widget * widget : children) {
@@ -120,7 +120,7 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 
 	if( !canvas_view ) {
 		widget_kf_list.set_time_model( etl::handle<TimeModel>() );
-		widget_kf_list.set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
+		widget_kf_list.set_canvas_interface( std::shared_ptr<synfigapp::CanvasInterface>() );
 
 		widget_timeslider.set_canvas_view( CanvasView::Handle() );
 

@@ -90,7 +90,7 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 {
 	set_time_model(etl::handle<TimeModel>());
 	set_kf_list(NULL);
-	set_canvas_interface(etl::loose_handle<CanvasInterface>());
+	set_canvas_interface(std::shared_ptr<CanvasInterface>());
 }
 
 void
@@ -458,7 +458,7 @@ void Widget_Keyframe_List::set_time_model(const etl::handle<TimeModel> &x)
 }
 
 void
-Widget_Keyframe_List::set_canvas_interface(const etl::loose_handle<CanvasInterface> &x)
+Widget_Keyframe_List::set_canvas_interface(const std::shared_ptr<CanvasInterface> &x)
 {
 	if (canvas_interface == x) return;
 

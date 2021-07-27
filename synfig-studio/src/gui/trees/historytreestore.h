@@ -90,7 +90,7 @@ public:
 
 private:
 
-	etl::loose_handle<studio::Instance> instance_;
+	std::shared_ptr<studio::Instance> instance_;
 	//! points to next action
 	Gtk::TreeIter next_action_iter;
 
@@ -142,8 +142,8 @@ private:
 
 public:
 
-	etl::loose_handle<studio::Instance> instance() { return instance_; }
-	etl::loose_handle<const studio::Instance> instance()const { return instance_; }
+	std::shared_ptr<studio::Instance> instance() { return instance_; }
+	std::shared_ptr<const studio::Instance> instance()const { return instance_; }
 
 	//! Use this method carefully: if redo action stack refers to not-yet-(re)created objects
 	//! - like vertex movements -, the Action::get_local_name() can make App crash!
@@ -151,7 +151,7 @@ public:
 
 	static bool search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustring&,const TreeModel::iterator&);
 
-	static Glib::RefPtr<HistoryTreeStore> create(etl::loose_handle<studio::Instance> instance);
+	static Glib::RefPtr<HistoryTreeStore> create(std::shared_ptr<studio::Instance> instance);
 
 	/*
  -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------
@@ -159,7 +159,7 @@ public:
 
 protected:
 
-	HistoryTreeStore(etl::loose_handle<studio::Instance> instance_);
+	HistoryTreeStore(std::shared_ptr<studio::Instance> instance_);
 	~HistoryTreeStore();
 
 }; // END of class HistoryTreeStore

@@ -253,7 +253,7 @@ public:
 /*      //declared as globals in app.cpp
 	static sigc::signal<
 		void,
-		etl::loose_handle<CanvasView>
+		std::shared_ptr<CanvasView>
 	> signal_canvas_view_focus_;
 	static sigc::signal<
 		void,
@@ -280,7 +280,7 @@ public:
 
 	static sigc::signal<
 		void,
-		etl::loose_handle<CanvasView>
+		std::shared_ptr<CanvasView>
 	>& signal_canvas_view_focus();
 
 	static sigc::signal<
@@ -356,13 +356,13 @@ public:
 	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
 
 
-	static void set_selected_instance(etl::loose_handle<Instance> instance);
-	static void set_selected_canvas_view(etl::loose_handle<CanvasView>);
+	static void set_selected_instance(std::shared_ptr<Instance> instance);
+	static void set_selected_canvas_view(std::shared_ptr<CanvasView>);
 
-	static etl::loose_handle<Instance> get_instance(etl::handle<synfig::Canvas> canvas);
+	static std::shared_ptr<Instance> get_instance(etl::handle<synfig::Canvas> canvas);
 
-	static etl::loose_handle<Instance> get_selected_instance() { return selected_instance; }
-	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
+	static std::shared_ptr<Instance> get_selected_instance() { return selected_instance; }
+	static std::shared_ptr<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
 	static synfig::Gamma get_selected_canvas_gamma();
 
 	static std::string get_temporary_directory();

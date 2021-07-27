@@ -149,7 +149,7 @@ Dock_History::~Dock_History()
 }
 
 void
-Dock_History::init_instance_vfunc(etl::loose_handle<Instance> instance)
+Dock_History::init_instance_vfunc(std::shared_ptr<Instance> instance)
 {
 	instance->signal_undo_redo_status_changed().connect(
 		sigc::mem_fun(*this,&Dock_History::update_undo_redo)
@@ -369,7 +369,7 @@ Dock_History::set_selected_instance_signal(etl::handle<studio::Instance> x)
 }
 
 void
-Dock_History::set_selected_instance(etl::loose_handle<studio::Instance> x)
+Dock_History::set_selected_instance(std::shared_ptr<studio::Instance> x)
 {
 	if(studio::App::shutdown_in_progress)
 		return;

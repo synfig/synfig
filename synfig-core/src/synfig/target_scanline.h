@@ -59,7 +59,7 @@ class Target_Scanline : public Target
 
 public:
 	typedef etl::handle<Target_Scanline> Handle;
-	typedef etl::loose_handle<Target_Scanline> LooseHandle;
+	typedef std::shared_ptr<Target_Scanline> LooseHandle;
 	typedef etl::handle<const Target_Scanline> ConstHandle;
 	//! Default constructor (threads = 2 current frame = 0)
 	Target_Scanline();

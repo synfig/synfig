@@ -102,7 +102,7 @@ void set_duck_value_desc(Duck& duck, const synfigapp::ValueDesc& value_desc, con
 
 /* === E N T R Y P O I N T ================================================= */
 
-Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
+Duckmatic::Duckmatic(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface):
 	canvas_interface(canvas_interface),
 	type_mask(Type(
 		Duck::TYPE_ALL

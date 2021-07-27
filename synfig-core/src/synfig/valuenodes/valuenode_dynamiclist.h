@@ -110,8 +110,8 @@ public:
 
 	private:
 		int index;
-		etl::loose_handle<ValueNode> parent_;
-		void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }
+		std::shared_ptr<ValueNode> parent_;
+		void set_parent_value_node(const std::shared_ptr<ValueNode> &x) { parent_=x; }
 
 	public:
 
@@ -151,7 +151,7 @@ public:
 
 		const synfig::Node::time_set	&get_times() const;
 
-		const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
+		const std::shared_ptr<ValueNode> &get_parent_value_node()const { return parent_; }
 
 		ListEntry();
 		ListEntry(const ValueNode::Handle &value_node);
@@ -162,8 +162,8 @@ public:
 	typedef etl::handle<const ValueNode_DynamicList> ConstHandle;
 
 protected:
-	ValueNode_DynamicList(Type &container_type=type_nil, etl::loose_handle<Canvas> canvas = 0);
-	ValueNode_DynamicList(Type &container_type, Type &type, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_DynamicList(Type &container_type=type_nil, std::shared_ptr<Canvas> canvas = 0);
+	ValueNode_DynamicList(Type &container_type, Type &type, std::shared_ptr<Canvas> canvas = 0);
 
 	Type *container_type;
 
@@ -202,7 +202,7 @@ public:
 	bool get_loop()const { return loop_; }
 	void set_loop(bool x) { loop_=x; }
 
-	void set_member_canvas(etl::loose_handle<Canvas>);
+	void set_member_canvas(std::shared_ptr<Canvas>);
 
 	Type& get_contained_type()const;
 
@@ -220,7 +220,7 @@ public:
 	void insert_time(const Time& location, const Time& delta);
 	//void manipulate_time(const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end);
 
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 
@@ -236,7 +236,7 @@ public:
 	**	contains, rather than the type that it will yield
 	**	(which is ValueBase::TYPE_LIST)
 	*/
-	static Handle create_on_canvas(Type &type=type_nil, etl::loose_handle<Canvas> canvas = 0);
+	static Handle create_on_canvas(Type &type=type_nil, std::shared_ptr<Canvas> canvas = 0);
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);

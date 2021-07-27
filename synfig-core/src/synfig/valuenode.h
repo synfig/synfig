@@ -102,7 +102,7 @@ public:
 
 	typedef etl::handle<ValueNode> Handle;
 
-	typedef etl::loose_handle<ValueNode> LooseHandle;
+	typedef std::shared_ptr<ValueNode> LooseHandle;
 
 	typedef etl::handle<const ValueNode> ConstHandle;
 
@@ -122,9 +122,9 @@ private:
 	//! sif file to define the value type: i.e. <param name="amount">
 	String name;
 	//! The canvas this Value Node belongs to
-	etl::loose_handle<Canvas> canvas_;
+	std::shared_ptr<Canvas> canvas_;
 	//! The root canvas this Value Node belongs to
-	etl::loose_handle<Canvas> root_canvas_;
+	std::shared_ptr<Canvas> root_canvas_;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -216,7 +216,7 @@ public:
 	String get_string()const;
 
 	//! Clones a Value Node
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const=0;
+	virtual ValueNode::Handle clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const=0;
 
 	//! Returns \true if the Value Node has an ID (has been exported)
 	bool is_exported()const { return !get_id().empty(); }
@@ -228,22 +228,22 @@ public:
 	Type& get_type()const { return *type; }
 
 	//! Returns a handle to the parent canvas, if it has one.
-	etl::loose_handle<Canvas> get_parent_canvas()const;
+	std::shared_ptr<Canvas> get_parent_canvas()const;
 
 	//! Returns a handle to the parent canvas, if it has one.
-	etl::loose_handle<Canvas> get_root_canvas()const;
+	std::shared_ptr<Canvas> get_root_canvas()const;
 
 	//! Returns a handle to the parent canvas, if it has one.
-	etl::loose_handle<Canvas> get_non_inline_ancestor_canvas()const;
+	std::shared_ptr<Canvas> get_non_inline_ancestor_canvas()const;
 
 	//! Sets the parent canvas for the Value Node
-	void set_parent_canvas(etl::loose_handle<Canvas> x);
+	void set_parent_canvas(std::shared_ptr<Canvas> x);
 
 	//! Sets the root canvas parent for the Value Node
-	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
+	virtual void set_root_canvas(std::shared_ptr<Canvas> x);
 
 	//! Returns the relative ID of a Node when accessed form the \x Canvas
-	String get_relative_id(etl::loose_handle<const Canvas> x)const;
+	String get_relative_id(std::shared_ptr<const Canvas> x)const;
 
 	//! Replaces the Value Node with a given one. It look up all its parents
 	//! remove it self from them and adds the given Value Node
@@ -318,7 +318,7 @@ class PlaceholderValueNode : public ValueNode
 {
 public:
 	typedef etl::handle<PlaceholderValueNode> Handle;
-	typedef etl::loose_handle<PlaceholderValueNode> LooseHandle;
+	typedef std::shared_ptr<PlaceholderValueNode> LooseHandle;
 	typedef etl::handle<const PlaceholderValueNode> ConstHandle;
 	typedef etl::rhandle<PlaceholderValueNode> RHandle;
 
@@ -336,7 +336,7 @@ public:
 
 	String get_string()const;
 
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	static Handle create(Type &type=type_nil);
 
@@ -360,7 +360,7 @@ public:
 
 	typedef etl::handle<LinkableValueNode> Handle;
 
-	typedef etl::loose_handle<LinkableValueNode> LooseHandle;
+	typedef std::shared_ptr<LinkableValueNode> LooseHandle;
 
 	typedef etl::handle<const LinkableValueNode> ConstHandle;
 
@@ -400,7 +400,7 @@ public:
 	virtual int get_link_index_from_name(const String &name)const;
 
 	//! Clones a Value Node
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	//! Sets a new Value Node link by its index
 	bool set_link(int i,ValueNode::Handle x);
@@ -420,7 +420,7 @@ public:
 	//! Gets the children vocabulary for linkable value nodes
 	virtual Vocab get_children_vocab()const;
 
-	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
+	virtual void set_root_canvas(std::shared_ptr<Canvas> x);
 
 	//! If get_inverse() can be called
 	enum InvertibleStatus {

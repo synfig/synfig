@@ -141,7 +141,7 @@ Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 }
 
 void
-Waypoint::set_parent_value_node(const etl::loose_handle<ValueNode> &x)
+Waypoint::set_parent_value_node(const std::shared_ptr<ValueNode> &x)
 {
 	// printf("%s:%d Waypoint::set_parent_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x.get()), x->get_string().c_str());
 	assert(get_value_node());
@@ -186,7 +186,7 @@ Waypoint::apply_model(const Model &x)
 }
 
 Waypoint
-Waypoint::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
+Waypoint::clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid)const
 {
 	Waypoint ret(*this);
 	ret.make_unique();

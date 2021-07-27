@@ -60,7 +60,7 @@ static HistoryTreeStore::Model& ModelHack()
 	return *model;
 }
 
-HistoryTreeStore::HistoryTreeStore(etl::loose_handle<studio::Instance> instance_):
+HistoryTreeStore::HistoryTreeStore(std::shared_ptr<studio::Instance> instance_):
 	Gtk::TreeStore	(ModelHack()),
 	instance_		(instance_),
 	next_action_iter (children().end())
@@ -80,7 +80,7 @@ HistoryTreeStore::~HistoryTreeStore()
 }
 
 Glib::RefPtr<HistoryTreeStore>
-HistoryTreeStore::create(etl::loose_handle<studio::Instance> instance_)
+HistoryTreeStore::create(std::shared_ptr<studio::Instance> instance_)
 {
 	return Glib::RefPtr<HistoryTreeStore>(new HistoryTreeStore(instance_));
 }

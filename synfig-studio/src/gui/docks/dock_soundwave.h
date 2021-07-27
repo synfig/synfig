@@ -40,8 +40,8 @@ public:
 	Dock_SoundWave();
 
 protected:
-	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	virtual void init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
+	virtual void changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
 
 	void on_drop_drag_data_received(
 			const Glib::RefPtr<Gdk::DragContext>& context, int, int,

@@ -93,7 +93,7 @@ using namespace synfigapp;
 
 /* === M E T H O D S ======================================================= */
 
-CanvasInterface::CanvasInterface(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas):
+CanvasInterface::CanvasInterface(std::shared_ptr<Instance> instance,etl::handle<synfig::Canvas> canvas):
 	instance_(instance),
 	canvas_(canvas),
 	cur_time_(canvas->rend_desc().get_frame_start()),
@@ -149,7 +149,7 @@ CanvasInterface::refresh_current_values()
 }
 
 etl::handle<CanvasInterface>
-CanvasInterface::create(etl::loose_handle<Instance> instance, etl::handle<synfig::Canvas> canvas)
+CanvasInterface::create(std::shared_ptr<Instance> instance, etl::handle<synfig::Canvas> canvas)
 {
 	etl::handle<CanvasInterface> intrfc;
 	intrfc=new CanvasInterface(instance,canvas);
@@ -165,7 +165,7 @@ CanvasInterface::set_mode(Mode x)
 	assert(action);
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("edit_mode",x);
 
 	if(!action->is_ready())
@@ -412,7 +412,7 @@ CanvasInterface::layer_add_action(const synfig::Layer::Handle &layer)
 		{ assert(false); return false; }
 
 	action->set_param("canvas", layer->get_canvas());
-	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface", std::shared_ptr<CanvasInterface>(this));
 	action->set_param("new", layer);
 
 	if(!action->is_ready())
@@ -434,7 +434,7 @@ CanvasInterface::layer_move_action(const synfig::Layer::Handle &layer, int depth
 		{ assert(false); return false; }
 
 	action->set_param("canvas", layer->get_canvas());
-	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface", std::shared_ptr<CanvasInterface>(this));
 	action->set_param("layer", layer);
 	action->set_param("new_index", depth);
 
@@ -472,7 +472,7 @@ CanvasInterface::convert(ValueDesc value_desc, synfig::String type)
 		return 0;
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("value_desc",value_desc);
 	action->set_param("type",type);
 	action->set_param("time",get_time());
@@ -506,7 +506,7 @@ CanvasInterface::add_value_node(synfig::ValueNode::Handle value_node, synfig::St
 		return 0;
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("new",value_node);
 	action->set_param("name",name);
 
@@ -603,7 +603,7 @@ CanvasInterface::set_rend_desc(const synfig::RendDesc &rend_desc)
 		return;
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("rend_desc",rend_desc);
 
 	if(!get_instance()->perform_action(action))
@@ -620,7 +620,7 @@ CanvasInterface::set_name(const synfig::String &x)
 		return;
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("name",x);
 
 	if(!get_instance()->perform_action(action))
@@ -639,7 +639,7 @@ CanvasInterface::set_description(const synfig::String &x)
 		return;
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("description",x);
 
 	if(!get_instance()->perform_action(action))
@@ -656,7 +656,7 @@ CanvasInterface::set_id(const synfig::String &x)
 		return;
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("id",x);
 
 	if(!get_instance()->perform_action(action))
@@ -798,7 +798,7 @@ CanvasInterface::import(
 			if(!action)
 				return 0;
 			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+			action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 			action->set_param("layer",_aux_layer);
 			if(!action->is_ready()){
 				get_ui_interface()->error(_("Action Not Ready"));
@@ -927,7 +927,7 @@ CanvasInterface::import(
 		assert(action);
 		if(!action) return false;
 		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 		action->set_param("layer",layer);
 		action->set_param("description",layer->get_description());
 		if(!action->is_ready())
@@ -973,9 +973,9 @@ CanvasInterface::import_sequence(
 		if(!action)
 			{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
 		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 		d_action->set_param("canvas",get_canvas());
-		d_action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		d_action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 
 		// create layers and assign them with LayerEncapsulateSwitch action
 		Layer::Handle layer;
@@ -1113,7 +1113,7 @@ CanvasInterface::import_sequence(
 			if(!action)
 				{ get_ui_interface()->error(_("Cannot create action")); throw int(); }
 			action->set_param("canvas", get_canvas());
-			action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+			action->set_param("canvas_interface", std::shared_ptr<CanvasInterface>(this));
 			action->set_param("layer", layer_switch);
 			action->set_param("param", "layer_name");
 			action->set_param("value_node", ValueNode::Handle(layer_name_animated));
@@ -1143,7 +1143,7 @@ void CanvasInterface::waypoint_set_value_node(ValueNode::Handle value_node, cons
 		return;
 
 	action->set_param("canvas", get_canvas());
-	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface", std::shared_ptr<CanvasInterface>(this));
 	action->set_param("value_node", value_node);
 	action->set_param("waypoint", waypoint);
 //	action->set_param("time",canvas_interface()->get_time());
@@ -1161,7 +1161,7 @@ void CanvasInterface::waypoint_move(const ValueDesc& value_desc, const Time& tim
 		return;
 
 	action->set_param("canvas", get_canvas());
-	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface", std::shared_ptr<CanvasInterface>(this));
 	if (value_desc.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 		action->set_param("addcanvas", value_desc.get_value().get(Canvas::Handle()));
 	} else {
@@ -1196,7 +1196,7 @@ CanvasInterface::waypoint_duplicate(ValueNode::Handle value_node,synfig::Waypoin
 	waypoint.set_time(get_time());
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("waypoint",waypoint);
 	action->set_param("time",get_time());
 	action->set_param("value_node",value_node);
@@ -1222,7 +1222,7 @@ CanvasInterface::waypoint_remove(ValueNode::Handle value_node,synfig::Waypoint w
 		return;
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("waypoint",waypoint);
 	action->set_param("value_node",value_node);
 
@@ -1248,7 +1248,7 @@ CanvasInterface::auto_export(synfig::ValueNode::Handle /*value_node*/)
 	String name(strprintf(_("Unnamed%08d"),synfig::UniqueID().get_uid()));
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("new",value_node);
 	action->set_param("name",name);
 
@@ -1275,7 +1275,7 @@ CanvasInterface::auto_export(const ValueDesc& /*value_desc*/)
 	String name(strprintf(_("Unnamed%08d"),synfig::UniqueID().get_uid()));
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("value_desc",value_desc);
 	action->set_param("name",name);
 
@@ -1331,7 +1331,7 @@ bool CanvasInterface::change_value_at_time(ValueDesc value_desc, ValueBase new_v
 	}
 
 	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	action->set_param("time",time);
 	action->set_param("value_desc",value_desc);
 	action->set_param("new_value",new_value);
@@ -1357,7 +1357,7 @@ CanvasInterface::set_meta_data(const synfig::String& key,const synfig::String& d
 			return;
 
 		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 		action->set_param("key",key);
 		action->set_param("value",data);
 
@@ -1382,7 +1382,7 @@ CanvasInterface::erase_meta_data(const synfig::String& key)
 			return;
 
 		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+		action->set_param("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 		action->set_param("key",key);
 
 		get_instance()->perform_action(action);

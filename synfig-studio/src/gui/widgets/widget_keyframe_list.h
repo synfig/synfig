@@ -53,7 +53,7 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	synfig::KeyframeList* kf_list;
 
 	//! The canvas interface being watched
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 
 	//! Time model
 	etl::handle<TimeModel> time_model;
@@ -105,8 +105,8 @@ public:
 
 	//! Set the canvas interface, it's the place where signals are connected
 	//! This function also replaces the keyframe list (see: set_fk_list())
-	void set_canvas_interface(const etl::loose_handle<synfigapp::CanvasInterface> &x);
-	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }
+	void set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface> &x);
+	const std::shared_ptr<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }
 
 	//! Set the time model and proper connects its change signals
 	void set_time_model(const etl::handle<TimeModel> &x);

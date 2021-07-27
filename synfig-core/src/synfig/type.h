@@ -100,7 +100,7 @@ namespace types_namespace
 	SYNFIG_DECLARE_TYPE_ALIAS(WidthPoint)
 	SYNFIG_DECLARE_TYPE_ALIAS(DashItem)
 	SYNFIG_DECLARE_TYPE_ALIAS(std::vector<ValueBase>)
-	SYNFIG_DECLARE_TYPE_ALIAS(etl::loose_handle<Canvas>)
+	SYNFIG_DECLARE_TYPE_ALIAS(std::shared_ptr<Canvas>)
 	SYNFIG_DECLARE_TYPE_ALIAS(etl::handle<Canvas>)
 	SYNFIG_DECLARE_TYPE_ALIAS(Canvas*)
 	SYNFIG_DECLARE_TYPE_ALIAS(String)
@@ -108,7 +108,7 @@ namespace types_namespace
 	SYNFIG_DECLARE_TYPE_ALIAS(Gradient)
 	SYNFIG_DECLARE_TYPE_ALIAS(Bone)
 	SYNFIG_DECLARE_TYPE_ALIAS(etl::handle<ValueNode_Bone>)
-	SYNFIG_DECLARE_TYPE_ALIAS(etl::loose_handle<ValueNode_Bone>)
+	SYNFIG_DECLARE_TYPE_ALIAS(std::shared_ptr<ValueNode_Bone>)
 	SYNFIG_DECLARE_TYPE_ALIAS(ValueNode_Bone*)
 	SYNFIG_DECLARE_TYPE_ALIAS(Transformation)
 

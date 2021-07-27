@@ -74,7 +74,7 @@ public:
 
 private:
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -98,8 +98,8 @@ public:
 
 	~MetaDataTreeStore();
 
-	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface() { return canvas_interface_; }
+	std::shared_ptr<const synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 	const synfig::Canvas::Handle& get_canvas() const { return canvas_interface_->get_canvas(); }
 
 	void rebuild();
@@ -111,13 +111,13 @@ public:
 	*/
 
 protected:
-	MetaDataTreeStore(etl::loose_handle<synfigapp::CanvasInterface>);
+	MetaDataTreeStore(std::shared_ptr<synfigapp::CanvasInterface>);
 	void get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
 	void set_value_impl(const Gtk::TreeModel::iterator& iter, int column, const Glib::ValueBase& value);
 
 public:
 
-	static Glib::RefPtr<MetaDataTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface>);
+	static Glib::RefPtr<MetaDataTreeStore> create(std::shared_ptr<synfigapp::CanvasInterface>);
 
 }; // END of class MetaDataTreeStore
 

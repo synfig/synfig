@@ -107,7 +107,7 @@ private:
 		synfig::Keyframe keyframe_;
 		synfig::Time time_;
 		synfigapp::ValueDesc value_desc_;
-		etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+		std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 		synfig::RendDesc rend_desc_;
 		int integer_;
 		synfig::Real real_;
@@ -120,7 +120,7 @@ public:
 	Param():type_(TYPE_NIL) { }
 	Param(const Param &x);
 	Param(const etl::handle<synfigapp::CanvasInterface>& x);
-	Param(const etl::loose_handle<synfigapp::CanvasInterface>& x);
+	Param(const std::shared_ptr<synfigapp::CanvasInterface>& x);
 //	Param(synfigapp::CanvasInterface* x);
 	Param(const synfig::Canvas::Handle& x);
 	Param(const synfig::Canvas::LooseHandle& x);
@@ -152,7 +152,7 @@ public:
 	void set(const Param& rhs);
 
 	const synfig::Canvas::LooseHandle& get_canvas()const { assert(type_==TYPE_CANVAS); return canvas_; }
-	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface()const { assert(type_==TYPE_CANVASINTERFACE); return canvas_interface_; }
+	const std::shared_ptr<synfigapp::CanvasInterface>& get_canvas_interface()const { assert(type_==TYPE_CANVASINTERFACE); return canvas_interface_; }
 	const synfig::Layer::LooseHandle& get_layer()const { assert(type_==TYPE_LAYER); return layer_; }
 	const synfig::ValueNode::LooseHandle& get_value_node()const { assert(type_==TYPE_VALUENODE); return value_node_; }
 	const synfig::ValueBase& get_value()const { assert(type_==TYPE_VALUE); return value_; }

@@ -48,7 +48,7 @@ class ValueNode;
 struct Activepoint : public UniqueID
 {
 private:
-	etl::loose_handle<ValueNode> parent_;
+	std::shared_ptr<ValueNode> parent_;
 	int index;
 
 public:
@@ -78,8 +78,8 @@ public:
 	int get_priority()const { return priority; }
 	void set_priority(int x) { priority=x; }
 
-	const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
-	void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }
+	const std::shared_ptr<ValueNode> &get_parent_value_node()const { return parent_; }
+	void set_parent_value_node(const std::shared_ptr<ValueNode> &x) { parent_=x; }
 
 	int get_parent_index()const { return index; }
 	void set_parent_index(int x) { index=x; }

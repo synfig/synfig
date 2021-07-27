@@ -43,19 +43,19 @@ class Dock_Canvases : public Dockable
 {
 	Gtk::TreeView *canvas_tree;
 	//Gtk::Menu	menu;
-	etl::loose_handle<studio::Instance>	selected_instance;
+	std::shared_ptr<studio::Instance>	selected_instance;
 
 private:
 
 	void set_selected_instance_(etl::handle<studio::Instance> x);
 
-	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
+	std::shared_ptr<studio::Instance> get_selected_instance() { return selected_instance; }
 
-	etl::loose_handle<synfig::Canvas> get_selected_canvas();
+	std::shared_ptr<synfig::Canvas> get_selected_canvas();
 
-	etl::loose_handle<studio::CanvasView> get_selected_canvas_view();
+	std::shared_ptr<studio::CanvasView> get_selected_canvas_view();
 
-	void set_selected_instance(etl::loose_handle<studio::Instance> x);
+	void set_selected_instance(std::shared_ptr<studio::Instance> x);
 
 	void set_selected_instance_signal(etl::handle<studio::Instance> x);
 

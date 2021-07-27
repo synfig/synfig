@@ -153,7 +153,7 @@ public:
 
 private:
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 
 	Type type_mask, type_mask_state;
 
@@ -250,7 +250,7 @@ private:
 
 public:
 
-	Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
+	Duckmatic(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface);
 	virtual ~Duckmatic();
 
 	void set_alternative_mode(bool x) { alternative_mode_=x; }

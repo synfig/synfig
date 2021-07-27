@@ -61,14 +61,14 @@ class PassiveGrouper
 {
 	typedef std::set< etl::handle<CanvasInterface> > RedrawSet;
 
-	etl::loose_handle<System> instance_;
+	std::shared_ptr<System> instance_;
 	synfig::String name_;
 	int depth_;
 	RedrawSet redraw_set_;
 	bool finished_;
 
 public:
-	PassiveGrouper(etl::loose_handle<System> instance_,synfig::String name_);
+	PassiveGrouper(std::shared_ptr<System> instance_,synfig::String name_);
 
 	~PassiveGrouper();
 
@@ -76,7 +76,7 @@ public:
 
 	void set_name(const synfig::String &x) { name_=x; }
 
-	etl::loose_handle<System> get_instance() { return instance_; }
+	std::shared_ptr<System> get_instance() { return instance_; }
 
 	void request_redraw(etl::handle<CanvasInterface>);
 

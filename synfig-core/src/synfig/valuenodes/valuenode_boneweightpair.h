@@ -42,7 +42,7 @@ class ValueNode_BoneWeightPair : public LinkableValueNode
 	ValueNode::RHandle bone_;
 	ValueNode::RHandle weight_;
 
-	ValueNode_BoneWeightPair(const ValueBase &value, etl::loose_handle<Canvas> = 0);
+	ValueNode_BoneWeightPair(const ValueBase &value, std::shared_ptr<Canvas> = 0);
 
 public:
 
@@ -68,7 +68,7 @@ public:
 
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);
-	static ValueNode_BoneWeightPair* create(const ValueBase &x, etl::loose_handle<Canvas>);
+	static ValueNode_BoneWeightPair* create(const ValueBase &x, std::shared_ptr<Canvas>);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_BoneWeightPair
 

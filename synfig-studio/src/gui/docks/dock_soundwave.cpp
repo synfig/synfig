@@ -72,10 +72,10 @@ class Grid_SoundWave : public Gtk::Grid {
 	// guid -> layer
 	std::map<std::string, etl::handle<synfig::Layer_Sound>> layer_map;
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 
 public:
-	Grid_SoundWave(etl::loose_handle<CanvasView> canvas_view)
+	Grid_SoundWave(std::shared_ptr<CanvasView> canvas_view)
 		: Gtk::Grid(),
 		  open_dialog_disabled(false),
 		  canvas_interface(canvas_view->canvas_interface())
@@ -145,7 +145,7 @@ private:
 		file_box.show();
 	}
 
-	void setup_soundwave_widget(etl::loose_handle<CanvasView> canvas_view) {
+	void setup_soundwave_widget(std::shared_ptr<CanvasView> canvas_view) {
 		widget_sound.set_time_model(canvas_view->time_model());
 		widget_sound.show();
 		widget_sound.set_size_request(100, 100);
@@ -165,7 +165,7 @@ private:
 
 	}
 
-	void setup_canvas_layer_signals(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface) {
+	void setup_canvas_layer_signals(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface) {
 		canvas_interface->signal_layer_inserted().connect([&](synfig::Layer::Handle layer, int /*pos*/) {
 			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
 			if (!layer_sound)
@@ -259,7 +259,7 @@ private:
 		delay_widget.set_value(widget_sound.get_delay());
 	}
 
-	static std::string create_layer_item_label(etl::loose_handle<synfig::Layer_Sound> layer_sound) {
+	static std::string create_layer_item_label(std::shared_ptr<synfig::Layer_Sound> layer_sound) {
 		const std::string sound_filename = layer_sound->get_param("filename").get(std::string());
 		std::string short_filename = synfig::CanvasFileNaming::make_short_filename(layer_sound->get_canvas()->get_file_name(), sound_filename);
 		const std::string layer_name = layer_sound->get_description();
@@ -389,7 +389,7 @@ private:
 		}
 	}
 
-	void add_layer_to_combo(etl::loose_handle<synfig::Layer_Sound> layer)
+	void add_layer_to_combo(std::shared_ptr<synfig::Layer_Sound> layer)
 	{
 		file_combo.append(layer->get_guid().get_string(), create_layer_item_label(layer));
 		layer_map[layer->get_guid().get_string()] = layer;
@@ -475,14 +475,14 @@ Dock_SoundWave::Dock_SoundWave()
 				&Dock_SoundWave::on_drop_drag_data_received) );
 }
 
-void Dock_SoundWave::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void Dock_SoundWave::init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	Grid_SoundWave *grid_sound = new Grid_SoundWave(canvas_view);
 	grid_sound->show();
 	canvas_view->set_ext_widget(get_name(), grid_sound);
 }
 
-void Dock_SoundWave::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void Dock_SoundWave::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	std::lock_guard<std::mutex> lock(mutex);
 
@@ -494,7 +494,7 @@ void Dock_SoundWave::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> can
 
 	if( !canvas_view ) {
 		widget_kf_list.set_time_model( etl::handle<TimeModel>() );
-		widget_kf_list.set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
+		widget_kf_list.set_canvas_interface( std::shared_ptr<synfigapp::CanvasInterface>() );
 
 		widget_timeslider.set_canvas_view( CanvasView::Handle() );
 

@@ -113,7 +113,7 @@ WorkArea::DirtyTrap::~DirtyTrap()
 }
 
 
-WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
+WorkArea::WorkArea(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Grid(), /* 3 columns by 3 rows*/
 	Duckmatic(canvas_interface),
 	canvas_interface(canvas_interface),
@@ -2192,7 +2192,7 @@ studio::WorkArea::set_zoom(float z)
 }
 
 void
-WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
+WorkArea::set_selected_value_node(std::shared_ptr<synfig::ValueNode> x)
 {
 	if(x!=selected_value_node_)
 	{
@@ -2202,7 +2202,7 @@ WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
 }
 
 void
-WorkArea::set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x)
+WorkArea::set_active_bone_value_node(std::shared_ptr<synfig::ValueNode> x)
 {
 	if(x!=active_bone_ && etl::handle<synfig::ValueNode_Bone>::cast_dynamic(x))
 	{

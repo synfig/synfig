@@ -168,7 +168,7 @@ class Canvas : public CanvasBase, public Node
 
 public:
 	typedef etl::handle<Canvas> Handle;
-	typedef etl::loose_handle<Canvas> LooseHandle;
+	typedef std::shared_ptr<Canvas> LooseHandle;
 	typedef etl::handle<const Canvas> ConstHandle;
 
 	typedef std::list<Handle> Children;
@@ -258,7 +258,7 @@ private:
 	std::map<String,std::set<etl::handle<Layer> > > group_db_;
 
 	//! Layer Signal Connection database. Seems to be unused.
-	std::map<etl::loose_handle<Layer>,std::vector<sigc::connection> > connections_;
+	std::map<std::shared_ptr<Layer>,std::vector<sigc::connection> > connections_;
 
 	//! Value to store temporarily the grow value for the child outline type layers
 	/*! \see get_grow_value set_grow_value */
@@ -450,10 +450,10 @@ public:
 	void erase_meta_data(const String& key);
 
 	//! Gets the relative ID string for an ancestor Canvas
-	String get_relative_id(etl::loose_handle<const Canvas> x)const;
+	String get_relative_id(std::shared_ptr<const Canvas> x)const;
 
 	//! Gets the relative ID string for an ancestor Canvas. Don't call it directly
-	String _get_relative_id(etl::loose_handle<const Canvas> x)const;
+	String _get_relative_id(std::shared_ptr<const Canvas> x)const;
 
 	//! Returns \c true if the Canvas is a root Canvas. \c false otherwise
 	bool is_root()const { return !parent_; }
@@ -691,10 +691,10 @@ private:
 	void remove_group_pair(String group, etl::handle<Layer> layer);
 	//! Seems to be used to add the stored signals connections of the layers.
 	//! \see connections_
-	void add_connection(etl::loose_handle<Layer> layer, sigc::connection connection);
+	void add_connection(std::shared_ptr<Layer> layer, sigc::connection connection);
 	//! Seems to be used to disconnect the stored signals connections of the layers.
 	//! \see connections_
-	void disconnect_connections(etl::loose_handle<Layer> layer);
+	void disconnect_connections(std::shared_ptr<Layer> layer);
 
 protected:
 	//! Parent changed

@@ -49,7 +49,7 @@ class Widget_CanvasTimeslider : public Widget_Timeslider
 {
 protected:
 	sigc::connection rendering_change;
-	etl::loose_handle<CanvasView> canvas_view;
+	std::shared_ptr<CanvasView> canvas_view;
 	etl::handle<LockDucks> lock_ducks;
 	Gtk::Window tooltip;
 	Gtk::DrawingArea thumb;
@@ -70,8 +70,8 @@ public:
 	Widget_CanvasTimeslider();
 	~Widget_CanvasTimeslider();
 
-	const etl::loose_handle<CanvasView>& get_canvas_view() const { return canvas_view; }
-	void set_canvas_view(const etl::loose_handle<CanvasView> &x);
+	const std::shared_ptr<CanvasView>& get_canvas_view() const { return canvas_view; }
+	void set_canvas_view(const std::shared_ptr<CanvasView> &x);
 };
 
 }; // END of namespace studio

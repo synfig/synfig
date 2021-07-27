@@ -772,7 +772,7 @@ ValueNode_DynamicList::check_type(Type &type)
 }
 
 void
-ValueNode_DynamicList::set_member_canvas(etl::loose_handle<Canvas> canvas)
+ValueNode_DynamicList::set_member_canvas(std::shared_ptr<Canvas> canvas)
 {
 	for (vector<ListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
 		iter->value_node->set_parent_canvas(canvas);

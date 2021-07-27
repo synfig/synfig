@@ -50,7 +50,7 @@ class Widget_Vector;
 
 class CanvasOptions  :  public Gtk::Dialog
 {
-	etl::loose_handle<CanvasView> canvas_view_;
+	std::shared_ptr<CanvasView> canvas_view_;
 
 	Gtk::CheckButton * toggle_grid_snap;
 	Gtk::CheckButton * toggle_grid_show;

@@ -105,7 +105,7 @@ private:
 
 public:
 
-	ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	ChildrenTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 	~ChildrenTreeStore();
 
 	void rebuild();
@@ -132,7 +132,7 @@ public:
 
 public:
 
-	static Glib::RefPtr<ChildrenTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
+	static Glib::RefPtr<ChildrenTreeStore> create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_);
 }; // END of class ChildrenTreeStore
 
 }; // END of namespace studio

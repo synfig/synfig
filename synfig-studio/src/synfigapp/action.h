@@ -240,7 +240,7 @@ private:
 	bool is_dirty_;
 	EditMode	mode_;
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 	synfig::Canvas::Handle canvas_;
 
 protected:
@@ -253,10 +253,10 @@ protected:
 public:
 
 	void set_canvas(synfig::Canvas::Handle x) { canvas_=x; }
-	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> x) { canvas_interface_=x; }
+	void set_canvas_interface(std::shared_ptr<synfigapp::CanvasInterface> x) { canvas_interface_=x; }
 
 	const synfig::Canvas::Handle& get_canvas()const { return canvas_; }
-	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface()const { return canvas_interface_; }
+	const std::shared_ptr<synfigapp::CanvasInterface>& get_canvas_interface()const { return canvas_interface_; }
 
 	static ParamVocab get_param_vocab();
 	virtual bool set_param(const synfig::String& name, const Param &);

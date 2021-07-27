@@ -45,7 +45,7 @@ class Dock_History : public Dock_CanvasSpecific
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Gtk::TreeView *action_tree;
 
-	etl::loose_handle<studio::Instance>	selected_instance;
+	std::shared_ptr<studio::Instance>	selected_instance;
 
 	sigc::connection on_undo_tree_changed_connection;
 
@@ -54,7 +54,7 @@ class Dock_History : public Dock_CanvasSpecific
 	void set_selected_instance_(etl::handle<studio::Instance> x);
 
 
-	void set_selected_instance(etl::loose_handle<studio::Instance> x);
+	void set_selected_instance(std::shared_ptr<studio::Instance> x);
 
 	void set_selected_instance_signal(etl::handle<studio::Instance> x);
 
@@ -64,7 +64,7 @@ class Dock_History : public Dock_CanvasSpecific
 
 public:
 
-	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
+	std::shared_ptr<studio::Instance> get_selected_instance() { return selected_instance; }
 
 	void clear_undo();
 	void clear_redo();
@@ -75,7 +75,7 @@ public:
 	Dock_History();
 	~Dock_History();
 protected:
-	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
+	virtual void init_instance_vfunc(std::shared_ptr<Instance> instance);
 
 	bool on_action_event(GdkEvent *event);
 	void on_action_toggle(const Glib::ustring& path);

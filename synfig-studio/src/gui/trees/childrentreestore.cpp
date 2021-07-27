@@ -70,7 +70,7 @@ static ChildrenTreeStore::Model& ModelHack()
 	return *model;
 }
 
-ChildrenTreeStore::ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
+ChildrenTreeStore::ChildrenTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore			(ModelHack()),
 	CanvasTreeStore			(canvas_interface_)
 {
@@ -101,7 +101,7 @@ ChildrenTreeStore::~ChildrenTreeStore()
 }
 
 Glib::RefPtr<ChildrenTreeStore>
-ChildrenTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
+ChildrenTreeStore::create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_)
 {
 	return Glib::RefPtr<ChildrenTreeStore>(new ChildrenTreeStore(canvas_interface_));
 }

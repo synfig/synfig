@@ -70,7 +70,7 @@ namespace synfig {
 class ValueNodeRegistry {
 public:
 	//! Type that represents a pointer to a ValueNode's constructor
-	typedef LinkableValueNode* (*Factory)(const ValueBase&, etl::loose_handle<Canvas>);
+	typedef LinkableValueNode* (*Factory)(const ValueBase&, std::shared_ptr<Canvas>);
 	//! Pointer to check_type method
 	typedef bool (*CheckType)(Type &type);
 

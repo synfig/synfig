@@ -50,7 +50,7 @@ public:
 
 	ValueNode_BoneInfluence(Type &x);
 
-	ValueNode_BoneInfluence(const ValueNode::Handle &x, etl::loose_handle<Canvas> canvas);
+	ValueNode_BoneInfluence(const ValueNode::Handle &x, std::shared_ptr<Canvas> canvas);
 
 //	static Handle create(Type &x);
 //	static Handle create(const ValueNode::Handle &x);
@@ -75,7 +75,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);
 	virtual Vocab get_children_vocab_vfunc()const;
-	static ValueNode_BoneInfluence* create(const ValueBase &x, etl::loose_handle<Canvas>);
+	static ValueNode_BoneInfluence* create(const ValueBase &x, std::shared_ptr<Canvas>);
 
 	Matrix calculate_transform(Time t)const;
 	Matrix& get_transform(bool rebuild=false, Time t=0)const;

@@ -119,7 +119,7 @@ Param::Param(const etl::handle<synfigapp::CanvasInterface>& x):
 	construct(&canvas_interface_, x);
 }
 
-Param::Param(const etl::loose_handle<synfigapp::CanvasInterface>& x):
+Param::Param(const std::shared_ptr<synfigapp::CanvasInterface>& x):
 
 	type_(TYPE_CANVASINTERFACE)
 {

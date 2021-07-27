@@ -491,7 +491,7 @@ ValueNode_StaticList::get_children_vocab_vfunc() const
 }
 
 void
-ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // line 723
+ValueNode_StaticList::set_member_canvas(std::shared_ptr<Canvas> canvas) // line 723
 {
 	for (vector<ReplaceableListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
 	{

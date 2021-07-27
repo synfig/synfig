@@ -52,25 +52,25 @@ class ValueNode_Bone : public LinkableValueNode
 
 protected:
 	ValueNode_Bone();
-	ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas = nullptr);
+	ValueNode_Bone(const ValueBase &value, std::shared_ptr<Canvas> canvas = nullptr);
 
 public:
 
 	typedef etl::handle<ValueNode_Bone> Handle;
 	typedef etl::handle<const ValueNode_Bone> ConstHandle;
-	typedef etl::loose_handle<ValueNode_Bone> LooseHandle;
+	typedef std::shared_ptr<ValueNode_Bone> LooseHandle;
 	typedef std::map<synfig::GUID, LooseHandle> BoneMap;
-	typedef std::map<etl::loose_handle<const Canvas>, BoneMap> CanvasMap;
+	typedef std::map<std::shared_ptr<const Canvas>, BoneMap> CanvasMap;
 	typedef std::set<LooseHandle> BoneSet;
 	typedef std::list<LooseHandle> BoneList;
 
 	virtual ValueBase operator()(Time t)const;
 
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual ValueNode::Handle clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	virtual ~ValueNode_Bone();
 	virtual void set_guid(const GUID& new_guid);
-	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
+	virtual void set_root_canvas(std::shared_ptr<Canvas> canvas);
 
 	virtual String get_name()const;
 	virtual String get_local_name()const;
@@ -93,11 +93,11 @@ public:
 
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);
-	static ValueNode_Bone* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = nullptr);
+	static ValueNode_Bone* create(const ValueBase &x, std::shared_ptr<Canvas> canvas = nullptr);
 	virtual Vocab get_children_vocab_vfunc()const;
 	ValueNode_Bone::LooseHandle find(String name)const;
 	String unique_name(String name)const;
-	static void show_bone_map(etl::loose_handle<Canvas> canvas, const char *file, int line, String text, Time t=0);
+	static void show_bone_map(std::shared_ptr<Canvas> canvas, const char *file, int line, String text, Time t=0);
 	static BoneMap get_bone_map(etl::handle<const Canvas> canvas);
 	static BoneList get_ordered_bones(etl::handle<const Canvas> canvas);
 
@@ -150,7 +150,7 @@ public:
 	virtual String get_bone_name(Time t)const;
 
 	virtual void set_guid(const GUID& new_guid);
-	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
+	virtual void set_root_canvas(std::shared_ptr<Canvas> canvas);
 
 	virtual int link_count()const;
 	virtual bool is_root()const { return true; }

@@ -481,7 +481,7 @@ Canvas::get_depth(etl::handle<Layer> layer)const
 }
 
 String
-Canvas::get_relative_id(etl::loose_handle<const Canvas> x)const
+Canvas::get_relative_id(std::shared_ptr<const Canvas> x)const
 {
 	if(x->get_root()==this)
 		return ":";
@@ -491,7 +491,7 @@ Canvas::get_relative_id(etl::loose_handle<const Canvas> x)const
 }
 
 String
-Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
+Canvas::_get_relative_id(std::shared_ptr<const Canvas> x)const
 {
 	if(is_inline() && parent_)
 		return parent_->_get_relative_id(x);
@@ -1156,7 +1156,7 @@ Canvas::set_file_name(const String &file_name_orig)
 		// we don't want to register the canvas' filename in the canvas map until it gets a real filename
 		if (old_name != "")
 		{
-			std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
+			std::map<synfig::String, std::shared_ptr<Canvas> >::iterator iter;
 			for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
 				if(iter->second==this)
 					break;
@@ -1591,13 +1591,13 @@ Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
 }
 
 void
-Canvas::add_connection(etl::loose_handle<Layer> layer, sigc::connection connection)
+Canvas::add_connection(std::shared_ptr<Layer> layer, sigc::connection connection)
 {
 	connections_[layer].push_back(connection);
 }
 
 void
-Canvas::disconnect_connections(etl::loose_handle<Layer> layer)
+Canvas::disconnect_connections(std::shared_ptr<Layer> layer)
 {
 	std::vector<sigc::connection>::iterator iter;
 	for(iter=connections_[layer].begin();iter!=connections_[layer].end();++iter)
@@ -1682,7 +1682,7 @@ Canvas::show_externals(String file, int line, String text) const
 	for (iter = externals_.begin(); iter != externals_.end(); iter++)
 	{
 		synfig::String first(iter->first);
-		etl::loose_handle<Canvas> second(iter->second);
+		std::shared_ptr<Canvas> second(iter->second);
 		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
 	}
 	printf("  `-----\n\n");

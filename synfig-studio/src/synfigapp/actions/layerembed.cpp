@@ -214,7 +214,7 @@ Action::LayerEmbed::prepare()
 
 		FileSystem::Handle file_system = get_canvas()->get_file_system();
 
-		etl::loose_handle<synfigapp::Instance> instance =
+		std::shared_ptr<synfigapp::Instance> instance =
 			get_canvas_interface()->get_instance();
 		etl::handle<Layer_Bitmap> layer_bitmap =
 			etl::handle<Layer_Bitmap>::cast_dynamic(layer_import);

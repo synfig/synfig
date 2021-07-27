@@ -56,7 +56,7 @@ static MetaDataTreeStore::Model& ModelHack()
 	return *model;
 }
 
-MetaDataTreeStore::MetaDataTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
+MetaDataTreeStore::MetaDataTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore	(ModelHack()),
 	canvas_interface_		(canvas_interface_)
 {
@@ -73,7 +73,7 @@ MetaDataTreeStore::~MetaDataTreeStore()
 }
 
 Glib::RefPtr<MetaDataTreeStore>
-MetaDataTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
+MetaDataTreeStore::create(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_)
 {
 	return Glib::RefPtr<MetaDataTreeStore>(new MetaDataTreeStore(canvas_interface_));
 }

@@ -15,7 +15,7 @@ Program received signal SIGSEGV, Segmentation fault.
 #0  0x000000000454a470 in ?? ()
 #1  0x0000000000705572 in handle (this=0x7fffe330f570, x=0x4549b10)
     at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:175
-#2  0x0000000000705593 in etl::loose_handle<synfig::Canvas>::operator etl::handle<synfig::Canvas> (this=0x81ae100)
+#2  0x0000000000705593 in std::shared_ptr<synfig::Canvas>::operator etl::handle<synfig::Canvas> (this=0x81ae100)
     at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:748
 #3  0x00007ff0da7db025 in synfig::ValueBase::clear (this=0x81f9888)
     at value.cpp:255
@@ -66,7 +66,7 @@ Here's valgrind output:
 
  Invalid read of size 8
     at 0x70556C: etl::handle<synfig::Canvas>::handle(synfig::Canvas*) (_handle.h:175)
-    by 0x7055A2: etl::loose_handle<synfig::Canvas>::operator etl::handle<synfig::Canvas>() const (_handle.h:748)
+    by 0x7055A2: std::shared_ptr<synfig::Canvas>::operator etl::handle<synfig::Canvas>() const (_handle.h:748)
     by 0x53F5244: synfig::ValueBase::clear() (value.cpp:255)
     by 0x53F5447: synfig::ValueBase::~ValueBase() (value.cpp:98)
     by 0x548ABE1: synfig::ValueNode_Const::~ValueNode_Const() (valuenode_const.cpp:112)
@@ -80,7 +80,7 @@ Here's valgrind output:
     by 0x4FB7ABD: void std::_Destroy<synfig::Waypoint*, synfig::Waypoint>(synfig::Waypoint*, synfig::Waypoint*, ...) (stl_construct.h:128)
     by 0x4FB95D0: std::vector<synfig::Waypoint, std::allocator<synfig::Waypoint> >::~vector() (stl_vector.h:300)
     by 0x5444054: synfig::ValueNode_Animated::~ValueNode_Animated() (valuenode_animated.cpp:1118)
-    by 0x544DFD6: _Constant<etl::loose_handle<synfig::Canvas> >::~_Constant() (valuenode_animated.cpp:536)
+    by 0x544DFD6: _Constant<std::shared_ptr<synfig::Canvas> >::~_Constant() (valuenode_animated.cpp:536)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
     by 0x6FD702: etl::handle<synfig::ValueNode>::detach() (_handle.h:240)
     by 0x751187: etl::rhandle<synfig::ValueNode>::detach() (_handle.h:553)

@@ -67,7 +67,7 @@ public:
 	Dock_Info();
 	~Dock_Info();
 
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	virtual void changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
 
 	//! Current render progress - 0.0 to 1.0
 	//  depends on n_passes_requested and current_pass

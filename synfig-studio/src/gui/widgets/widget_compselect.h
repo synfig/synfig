@@ -42,8 +42,8 @@ namespace studio {
 
 class Widget_CompSelect : public Gtk::ComboBoxText
 {
-	std::vector< etl::loose_handle<studio::Instance> > instances;
-	etl::loose_handle<studio::Instance>	selected_instance;
+	std::vector< std::shared_ptr<studio::Instance> > instances;
+	std::shared_ptr<studio::Instance>	selected_instance;
 
 	void set_selected_instance_(etl::handle<studio::Instance> x);
 
@@ -51,7 +51,7 @@ class Widget_CompSelect : public Gtk::ComboBoxText
 
 	void delete_instance(etl::handle<studio::Instance> x);
 
-	void set_selected_instance(etl::loose_handle<studio::Instance> x);
+	void set_selected_instance(std::shared_ptr<studio::Instance> x);
 
 	void set_selected_instance_signal(etl::handle<studio::Instance> x);
 
@@ -62,7 +62,7 @@ public:
 	Widget_CompSelect();
 	~Widget_CompSelect();
 
-	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
+	std::shared_ptr<studio::Instance> get_selected_instance() { return selected_instance; }
 
 	void refresh();
 }; // END of class Widget_CompSelect

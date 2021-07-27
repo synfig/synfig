@@ -67,10 +67,10 @@ public:
 
 private:
 	// Constructor is private to force the use of the "create()" constructor.
-	CanvasInterface(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	CanvasInterface(std::shared_ptr<Instance> instance,etl::handle<synfig::Canvas> canvas);
 
 private:
-	etl::loose_handle<Instance> instance_;
+	std::shared_ptr<Instance> instance_;
 	etl::handle<synfig::Canvas> canvas_;
 	etl::handle<SelectionManager> selection_manager_;
 	etl::handle<UIInterface> ui_interface_;
@@ -239,7 +239,7 @@ public:
 	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_; }
 
 	//! Returns the Instance associated with this interface
-	const etl::loose_handle<Instance>& get_instance()const { return instance_; }
+	const std::shared_ptr<Instance>& get_instance()const { return instance_; }
 
 	//! Changes the name of the canvas. Undoable.
 	void set_name(const synfig::String &x);
@@ -350,7 +350,7 @@ public:
 
 	~CanvasInterface();
 
-	static etl::handle<CanvasInterface> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static etl::handle<CanvasInterface> create(std::shared_ptr<Instance> instance,etl::handle<synfig::Canvas> canvas);
 }; // END of class CanvasInterface
 
 /*!	\class PushMode
@@ -361,7 +361,7 @@ class PushMode
 	CanvasInterface* canvas_interface_;
 	CanvasInterface::Mode old_mode_;
 public:
-	PushMode(etl::loose_handle<CanvasInterface> c, CanvasInterface::Mode mode):
+	PushMode(std::shared_ptr<CanvasInterface> c, CanvasInterface::Mode mode):
 		canvas_interface_(c.get()), old_mode_(canvas_interface_->get_mode())
 	{ canvas_interface_->set_mode(mode); }
 

@@ -67,7 +67,7 @@ Dock_Children::~Dock_Children()
 }
 
 void
-Dock_Children::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Children::init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	Glib::RefPtr<ChildrenTreeStore> children_tree_store;
 	children_tree_store=ChildrenTreeStore::create(canvas_view->canvas_interface());
@@ -81,7 +81,7 @@ Dock_Children::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 }
 
 void
-Dock_Children::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Children::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 {
 	if(canvas_view)
 	{

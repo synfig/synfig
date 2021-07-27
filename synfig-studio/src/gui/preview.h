@@ -94,7 +94,7 @@ private:
 
 	FlipBook frames;
 
-	etl::loose_handle<CanvasView> canvasview;
+	std::shared_ptr<CanvasView> canvasview;
 
 	//synfig::RendDesc		description; //for rendering the preview...
 	float	zoom,fps;
@@ -113,7 +113,7 @@ private:
 
 public:
 
-	explicit Preview(const etl::loose_handle<CanvasView> &h = etl::loose_handle<CanvasView>(),
+	explicit Preview(const std::shared_ptr<CanvasView> &h = std::shared_ptr<CanvasView>(),
 				float zoom = 0.5f, float fps = 15);
 	~Preview();
 
@@ -160,9 +160,9 @@ public:
 	void	set_quality(int i)	{quality = i;}
 
 	const etl::handle<synfig::Canvas>& get_canvas() const;
-	const etl::loose_handle<CanvasView>& get_canvasview() const;
+	const std::shared_ptr<CanvasView>& get_canvasview() const;
 
-	void set_canvasview(const etl::loose_handle<CanvasView> &h);
+	void set_canvasview(const std::shared_ptr<CanvasView> &h);
 
 	//signal interface
 	sigc::signal<void, Preview *> &	signal_destroyed() { return signal_destroyed_; }

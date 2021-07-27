@@ -73,7 +73,7 @@ class Target_Tile : public Target
 
 public:
 	typedef etl::handle<Target_Tile> Handle;
-	typedef etl::loose_handle<Target_Tile> LooseHandle;
+	typedef std::shared_ptr<Target_Tile> LooseHandle;
 	typedef etl::handle<const Target_Tile> ConstHandle;
 
 	Target_Tile();

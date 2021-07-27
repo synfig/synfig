@@ -61,7 +61,7 @@ public:
 			p0(p0), r0(r0), p1(p1), r1(r1) { }
 	};
 
-	// typedef etl::loose_handle<Bone> LooseHandle;
+	// typedef std::shared_ptr<Bone> LooseHandle;
 
 	/*
  --	** -- D A T A -------------------------------------------------------------

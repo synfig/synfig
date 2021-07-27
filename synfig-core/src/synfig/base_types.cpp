@@ -406,7 +406,7 @@ class TypeCanvas: public Type
 		bool fake_handle;
 #endif
 		etl::handle<Canvas> h;
-		etl::loose_handle<Canvas> lh;
+		std::shared_ptr<Canvas> lh;
 		mutable CanvasPtr p;
 #ifdef TRY_FIX_FOR_BUG_27
 		Inner(): fake_handle(false), p(NULL) { }
@@ -414,7 +414,7 @@ class TypeCanvas: public Type
 #else
 		Inner(): p(NULL) { }
 #endif
-		Inner& operator= (const etl::loose_handle<Canvas> &other)
+		Inner& operator= (const std::shared_ptr<Canvas> &other)
 		{
 #ifdef TRY_FIX_FOR_BUG_27
 			if (fake_handle) h->ref();
@@ -428,15 +428,15 @@ class TypeCanvas: public Type
 			return *this;
 		}
 		Inner& operator= (const etl::handle<Canvas> &other)
-			{ return *this = etl::loose_handle<Canvas>(other); }
+			{ return *this = std::shared_ptr<Canvas>(other); }
 		Inner& operator= (const CanvasPtr &other)
-			{ return *this = etl::loose_handle<Canvas>(other); }
+			{ return *this = std::shared_ptr<Canvas>(other); }
 		Inner& operator= (const Inner &other)
 			{ return *this = other.lh; }
 		bool operator== (const Inner &other) const
 			{ return lh == other.lh; }
 
-		operator const etl::loose_handle<Canvas>&() const { return lh; }
+		operator const std::shared_ptr<Canvas>&() const { return lh; }
 		operator const etl::handle<Canvas>&() const { return h; }
 		operator const CanvasPtr &() const { return p = &*lh; }
 	};
@@ -446,7 +446,7 @@ class TypeCanvas: public Type
 		Type::initialize_vfunc(description);
 		description.name = "canvas";
 		description.local_name = N_("canvas");
-		register_all<Inner, etl::loose_handle<Canvas>, to_string>();
+		register_all<Inner, std::shared_ptr<Canvas>, to_string>();
 		register_alias< Inner, etl::handle<Canvas> >();
 		register_alias<Inner, Canvas*>();
 	}
@@ -454,7 +454,7 @@ public:
 	static TypeCanvas instance;
 };
 TypeCanvas TypeCanvas::instance;
-SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::loose_handle<Canvas>, TypeCanvas)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(std::shared_ptr<Canvas>, TypeCanvas)
 SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::handle<Canvas>, TypeCanvas)
 SYNFIG_IMPLEMENT_TYPE_ALIAS(Canvas*, TypeCanvas)
 
@@ -536,12 +536,12 @@ class TypeBoneValueNode: public Type
 		typedef ValueNode_Bone *ValueNode_BonePtr;
 
 		etl::handle<ValueNode_Bone> h;
-		mutable etl::loose_handle<ValueNode_Bone> lh;
+		mutable std::shared_ptr<ValueNode_Bone> lh;
 		mutable ValueNode_BonePtr p;
 
 		Inner(): p(NULL) { }
 		Inner& operator= (const etl::handle<ValueNode_Bone> &other) { h = other; return *this; }
-		Inner& operator= (const etl::loose_handle<ValueNode_Bone> &other) { h = other; return *this; }
+		Inner& operator= (const std::shared_ptr<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const ValueNode_BonePtr &other) { h = other; return *this; }
 		Inner& operator= (const Inner &other) { return *this = other.h; }
 		bool operator== (const Inner &other) const { return h == other.h; }
@@ -556,7 +556,7 @@ class TypeBoneValueNode: public Type
 		Type::initialize_vfunc(description);
 		description.name = "bone_valuenode";
 		description.local_name = N_("bone_valuenode");
-		register_all<Inner, etl::loose_handle<ValueNode_Bone>, to_string>();
+		register_all<Inner, std::shared_ptr<ValueNode_Bone>, to_string>();
 		register_alias< Inner, etl::handle<ValueNode_Bone> >();
 		register_alias<Inner, ValueNode_Bone*>();
 	}
@@ -565,7 +565,7 @@ public:
 };
 TypeBoneValueNode TypeBoneValueNode::instance;
 SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::handle<ValueNode_Bone>, TypeBoneValueNode)
-SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::loose_handle<ValueNode_Bone>, TypeBoneValueNode)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(std::shared_ptr<ValueNode_Bone>, TypeBoneValueNode)
 SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueNode_Bone*, TypeBoneValueNode)
 
 

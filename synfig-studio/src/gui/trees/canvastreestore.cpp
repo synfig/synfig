@@ -68,7 +68,7 @@ static CanvasTreeStore::Model& ModelHack()
 	return *model;
 }
 
-CanvasTreeStore::CanvasTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
+CanvasTreeStore::CanvasTreeStore(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore(ModelHack()),
 	canvas_interface_		(canvas_interface_)
 {

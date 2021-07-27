@@ -102,7 +102,7 @@ class Target : public etl::shared_object
 {
 public:
 	typedef etl::handle<Target> Handle;
-	typedef etl::loose_handle<Target> LooseHandle;
+	typedef std::shared_ptr<Target> LooseHandle;
 	typedef etl::handle<const Target> ConstHandle;
 
 	/*

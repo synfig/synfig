@@ -100,7 +100,7 @@ ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
 
 
 ValueNode::Handle
-ValueNode_Const::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
+ValueNode_Const::clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 	ValueNode* ret(new ValueNode_Const(value));

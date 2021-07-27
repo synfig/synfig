@@ -44,21 +44,21 @@ class Instance;
 class Dock_CanvasSpecific : public Dockable
 {
 protected:
-	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
+	virtual void init_instance_vfunc(std::shared_ptr<Instance> instance);
 
-	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	virtual void init_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
+	virtual void changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view);
 
 private:
 	void init_canvas_view(CanvasView* canvas_view);
 	void init_instance(etl::handle<Instance> instance);
 	void delete_instance(etl::handle<Instance> instance);
 	void canvas_view_changed();
-	void changed_canvas_view(etl::loose_handle<CanvasView> canvas_view) { return changed_canvas_view_vfunc(canvas_view); }
+	void changed_canvas_view(std::shared_ptr<CanvasView> canvas_view) { return changed_canvas_view_vfunc(canvas_view); }
 public:
 
-	etl::loose_handle<studio::CanvasView> get_canvas_view();
-	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface();
+	std::shared_ptr<studio::CanvasView> get_canvas_view();
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface();
 
 	Dock_CanvasSpecific(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
 	virtual ~Dock_CanvasSpecific();

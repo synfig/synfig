@@ -124,10 +124,10 @@ private:
 
 	std::set<etl::handle<WorkAreaRenderer> > renderer_set_;
 
-	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 	etl::handle<synfig::Canvas> canvas;
-	etl::loose_handle<studio::Instance> instance;
-	etl::loose_handle<studio::CanvasView> canvas_view;
+	std::shared_ptr<studio::Instance> instance;
+	std::shared_ptr<studio::CanvasView> canvas_view;
 	etl::handle<Renderer_Canvas> renderer_canvas;
 
 	// Widgets
@@ -174,7 +174,7 @@ private:
 	synfig::Point previous_focus;
 
 	//! Active Bone
-	etl::loose_handle<synfig::ValueNode> active_bone_;
+	std::shared_ptr<synfig::ValueNode> active_bone_;
 	bool highlight_active_bone;
 
 	//! This flag is set if the grid should be drawn
@@ -214,7 +214,7 @@ private:
 	// render future and past frames in background
 	bool background_rendering;
 
-	etl::loose_handle<synfig::ValueNode> selected_value_node_;
+	std::shared_ptr<synfig::ValueNode> selected_value_node_;
 
 	bool allow_duck_clicks;
 	bool allow_bezier_clicks;
@@ -277,12 +277,12 @@ public:
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
 
-	WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
+	WorkArea(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface);
 	virtual ~WorkArea();
 
 	void view_window_changed() { signal_view_window_changed()(); }
 
-	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
+	const std::shared_ptr<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
 	const synfig::Point& get_drag_point()const { return drag_point; }
 
 	synfig::VectorInt get_windows_offset() const;
@@ -310,10 +310,10 @@ public:
 	void set_background_rendering(bool x);
 	bool get_background_rendering() const { return background_rendering; }
 
-	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
+	void set_selected_value_node(std::shared_ptr<synfig::ValueNode> x);
 
-	const etl::loose_handle<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
-	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
+	const std::shared_ptr<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
+	void set_active_bone_value_node(std::shared_ptr<synfig::ValueNode> x);
 	bool get_active_bone_display(){return highlight_active_bone;}
 	void set_active_bone_display(bool x){highlight_active_bone=x;}
 
@@ -331,12 +331,12 @@ public:
 	Glib::RefPtr<const Gtk::Adjustment> get_scrollx_adjustment() const { return scrollx_adjustment; }
 	Glib::RefPtr<const Gtk::Adjustment> get_scrolly_adjustment() const { return scrolly_adjustment; }
 
-	void set_instance(etl::loose_handle<studio::Instance> x) { instance=x; }
+	void set_instance(std::shared_ptr<studio::Instance> x) { instance=x; }
 	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }
-	void set_canvas_view(etl::loose_handle<studio::CanvasView> x) { canvas_view=x; }
+	void set_canvas_view(std::shared_ptr<studio::CanvasView> x) { canvas_view=x; }
 	const etl::handle<synfig::Canvas>& get_canvas() const { return canvas; }
-	const etl::loose_handle<studio::Instance>& get_instance() const { return instance; }
-	const etl::loose_handle<studio::CanvasView>& get_canvas_view() const { return canvas_view; }
+	const std::shared_ptr<studio::Instance>& get_instance() const { return instance; }
+	const std::shared_ptr<studio::CanvasView>& get_canvas_view() const { return canvas_view; }
 	const etl::handle<Renderer_Canvas>& get_renderer_canvas() const { return renderer_canvas; }
 
 	void refresh_dimension_info();

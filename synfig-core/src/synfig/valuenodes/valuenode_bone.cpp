@@ -236,7 +236,7 @@ ValueNode_Bone::ValueNode_Bone():
 		printf("%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
 }
 
-ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas):
+ValueNode_Bone::ValueNode_Bone(const ValueBase &value, std::shared_ptr<Canvas> canvas):
 	LinkableValueNode(value.get_type())
 {
 	if (getenv("SYNFIG_DEBUG_BONE_CONSTRUCTORS"))
@@ -340,7 +340,7 @@ ValueNode_Bone::set_guid(const GUID& new_guid)
 }
 
 void
-ValueNode_Bone::set_root_canvas(etl::loose_handle<Canvas> canvas)
+ValueNode_Bone::set_root_canvas(std::shared_ptr<Canvas> canvas)
 {
 	GUID guid(get_guid());
 	Canvas::LooseHandle old_canvas(get_root_canvas());
@@ -1097,7 +1097,7 @@ ValueNode_Bone_Root::set_guid(const GUID& new_guid)
 }
 
 void
-ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
+ValueNode_Bone_Root::set_root_canvas(std::shared_ptr<Canvas> canvas)
 {
 	if (getenv("SYNFIG_DEBUG_ROOT_BONE"))
 		printf("%s:%d bypass set_root_canvas() for root bone\n", __FILE__, __LINE__);

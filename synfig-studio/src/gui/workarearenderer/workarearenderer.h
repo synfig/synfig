@@ -48,7 +48,7 @@ class WorkAreaRenderer : public etl::shared_object, public sigc::trackable
 {
 public:
 	typedef etl::handle<WorkAreaRenderer> Handle;
-	typedef etl::loose_handle<WorkAreaRenderer> LooseHandle;
+	typedef std::shared_ptr<WorkAreaRenderer> LooseHandle;
 
 private:
 	bool enabled_;

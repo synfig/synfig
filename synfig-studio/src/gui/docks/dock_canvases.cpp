@@ -135,13 +135,13 @@ Dock_Canvases::create_canvas_tree()
 	return scrolledwindow;
 }
 
-etl::loose_handle<studio::CanvasView>
+std::shared_ptr<studio::CanvasView>
 Dock_Canvases::get_selected_canvas_view()
 {
 	return get_selected_instance()->find_canvas_view(get_selected_canvas());
 }
 
-etl::loose_handle<synfig::Canvas>
+std::shared_ptr<synfig::Canvas>
 Dock_Canvases::get_selected_canvas()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection=canvas_tree->get_selection();
@@ -182,7 +182,7 @@ Dock_Canvases::set_selected_instance_(etl::handle<studio::Instance> instance)
 }
 
 void
-Dock_Canvases::set_selected_instance(etl::loose_handle<studio::Instance> x)
+Dock_Canvases::set_selected_instance(std::shared_ptr<studio::Instance> x)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -202,11 +202,11 @@ Dock_Canvases::new_instance(etl::handle<studio::Instance> instance)
 
 	assert(instance);
 
-	etl::loose_handle<studio::Instance> loose_instance(instance);
+	std::shared_ptr<studio::Instance> loose_instance(instance);
 
 	instance->synfigapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&Dock_Canvases::refresh_instances));
 	instance->synfigapp::Instance::signal_filename_changed().connect(
-		sigc::bind<etl::loose_handle<studio::Instance> >(
+		sigc::bind<std::shared_ptr<studio::Instance> >(
 			sigc::mem_fun(*this,&Dock_Canvases::set_selected_instance),
 			loose_instance
 		)

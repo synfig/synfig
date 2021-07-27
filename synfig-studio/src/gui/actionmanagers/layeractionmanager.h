@@ -95,7 +95,7 @@ public:
 	void set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x);
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
-	etl::loose_handle<synfigapp::Instance> get_instance()const { return canvas_interface_->get_instance(); }
+	std::shared_ptr<synfigapp::Instance> get_instance()const { return canvas_interface_->get_instance(); }
 
 	void refresh();
 	void clear();
