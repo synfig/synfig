@@ -54,7 +54,7 @@ namespace {
 class TaskBlendGL: public TaskBlend, public TaskGL
 {
 public:
-	typedef etl::handle<TaskBlendGL> Handle;
+	typedef std::shared_ptr<TaskBlendGL> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

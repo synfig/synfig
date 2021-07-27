@@ -15,7 +15,7 @@ Program received signal SIGSEGV, Segmentation fault.
 #0  0x000000000454a470 in ?? ()
 #1  0x0000000000705572 in handle (this=0x7fffe330f570, x=0x4549b10)
     at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:175
-#2  0x0000000000705593 in std::shared_ptr<synfig::Canvas>::operator etl::handle<synfig::Canvas> (this=0x81ae100)
+#2  0x0000000000705593 in std::shared_ptr<synfig::Canvas>::operator std::shared_ptr<synfig::Canvas> (this=0x81ae100)
     at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:748
 #3  0x00007ff0da7db025 in synfig::ValueBase::clear (this=0x81f9888)
     at value.cpp:255
@@ -24,7 +24,7 @@ Program received signal SIGSEGV, Segmentation fault.
     at valuenode_const.cpp:112
 #6  0x00000000006e4699 in etl::shared_object::unref (this=0x81f9700)
     at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:115
-#7  0x00000000006fd6f3 in etl::handle<synfig::ValueNode>::detach (
+#7  0x00000000006fd6f3 in std::shared_ptr<synfig::ValueNode>::detach (
     this=0x83ae908)
     at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:240
 #8  0x0000000000751178 in etl::rhandle<synfig::ValueNode>::detach (
@@ -50,7 +50,7 @@ nt.h:57
     at valuenode_animated.cpp:536
 #17 0x00000000006e4699 in etl::shared_object::unref (this=0x83986b0)
     at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:115
-#18 0x00000000006fd6f3 in etl::handle<synfig::ValueNode>::detach (
+#18 0x00000000006fd6f3 in std::shared_ptr<synfig::ValueNode>::detach (
     this=0x81f9bd8)
     at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:240
 #19 0x0000000000751178 in etl::rhandle<synfig::ValueNode>::detach (
@@ -65,13 +65,13 @@ dooglus, Sun Jan  4 18:21:26 CET 2009
 Here's valgrind output:
 
  Invalid read of size 8
-    at 0x70556C: etl::handle<synfig::Canvas>::handle(synfig::Canvas*) (_handle.h:175)
-    by 0x7055A2: std::shared_ptr<synfig::Canvas>::operator etl::handle<synfig::Canvas>() const (_handle.h:748)
+    at 0x70556C: std::shared_ptr<synfig::Canvas>::handle(synfig::Canvas*) (_handle.h:175)
+    by 0x7055A2: std::shared_ptr<synfig::Canvas>::operator std::shared_ptr<synfig::Canvas>() const (_handle.h:748)
     by 0x53F5244: synfig::ValueBase::clear() (value.cpp:255)
     by 0x53F5447: synfig::ValueBase::~ValueBase() (value.cpp:98)
     by 0x548ABE1: synfig::ValueNode_Const::~ValueNode_Const() (valuenode_const.cpp:112)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6FD702: etl::handle<synfig::ValueNode>::detach() (_handle.h:240)
+    by 0x6FD702: std::shared_ptr<synfig::ValueNode>::detach() (_handle.h:240)
     by 0x751187: etl::rhandle<synfig::ValueNode>::detach() (_handle.h:553)
     by 0x7511AD: etl::rhandle<synfig::ValueNode>::~rhandle() (_handle.h:466)
     by 0x751465: synfig::Waypoint::~Waypoint() (waypoint.h:57)
@@ -82,7 +82,7 @@ Here's valgrind output:
     by 0x5444054: synfig::ValueNode_Animated::~ValueNode_Animated() (valuenode_animated.cpp:1118)
     by 0x544DFD6: _Constant<std::shared_ptr<synfig::Canvas> >::~_Constant() (valuenode_animated.cpp:536)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6FD702: etl::handle<synfig::ValueNode>::detach() (_handle.h:240)
+    by 0x6FD702: std::shared_ptr<synfig::ValueNode>::detach() (_handle.h:240)
     by 0x751187: etl::rhandle<synfig::ValueNode>::detach() (_handle.h:553)
     by 0x7511AD: etl::rhandle<synfig::ValueNode>::~rhandle() (_handle.h:466)
     by 0x553B261: std::pair<std::string const, etl::rhandle<synfig::ValueNode> >::~pair() (stl_pair.h:73)
@@ -91,58 +91,58 @@ Here's valgrind output:
     by 0x5401F68: synfig::Layer_Composite::~Layer_Composite() (layer_composite.h:49)
     by 0x5412421: synfig::Layer_PasteCanvas::~Layer_PasteCanvas() (layer_pastecanvas.cpp:110)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6FD7C0: etl::handle<synfig::Layer>::detach() (_handle.h:240)
-    by 0x6FD7D8: etl::handle<synfig::Layer>::~handle() (_handle.h:186)
+    by 0x6FD7C0: std::shared_ptr<synfig::Layer>::detach() (_handle.h:240)
+    by 0x6FD7D8: std::shared_ptr<synfig::Layer>::~handle() (_handle.h:186)
     by 0x55283D0: synfig::Canvas::clear() (canvas.cpp:158)
     by 0x552BF7D: synfig::Canvas::~Canvas() (canvas.cpp:121)
 
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
-    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
-    by 0x5001164: __gnu_cxx::new_allocator<etl::handle<synfig::Canvas> >::destroy(etl::handle<synfig::Canvas>*) (new_allocator.h:118)
-    by 0x5001FDB: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::_M_clear() (list.tcc:78)
-    by 0x5002045: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
-    by 0x50020A0: std::list<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~list() (stl_list.h:417)
+    by 0x6FD818: std::shared_ptr<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: std::shared_ptr<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x5001164: __gnu_cxx::new_allocator<std::shared_ptr<synfig::Canvas> >::destroy(std::shared_ptr<synfig::Canvas>*) (new_allocator.h:118)
+    by 0x5001FDB: std::_List_base<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::_M_clear() (list.tcc:78)
+    by 0x5002045: std::_List_base<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
+    by 0x50020A0: std::list<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::~list() (stl_list.h:417)
     by 0x552C636: synfig::Canvas::~Canvas() (canvas.cpp:123)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
-    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x6FD818: std::shared_ptr<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: std::shared_ptr<synfig::Canvas>::~handle() (_handle.h:186)
     by 0x8BFEFA: studio::WorkArea::~WorkArea() (workarea.cpp:833)
     by 0x7F49B7: std::auto_ptr<studio::WorkArea>::~auto_ptr() (auto_ptr.h:173)
     by 0x7E9934: studio::CanvasView::~CanvasView() (in /home/chris/programs/synfig/git/install/bin/synfigstudio)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6E7269: etl::handle<studio::CanvasView>::detach() (_handle.h:240)
-    by 0x6E7280: etl::handle<studio::CanvasView>::~handle() (_handle.h:186)
+    by 0x6E7269: std::shared_ptr<studio::CanvasView>::detach() (_handle.h:240)
+    by 0x6E7280: std::shared_ptr<studio::CanvasView>::~handle() (_handle.h:186)
 
   Address 0x17484b50 is 0 bytes inside a block of size 1,080 free'd
     at 0x4C24DAD: operator delete(void*) (vg_replace_malloc.c:342)
     by 0x552CB46: synfig::Canvas::~Canvas() (canvas.cpp:123)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
-    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
-    by 0x5001164: __gnu_cxx::new_allocator<etl::handle<synfig::Canvas> >::destroy(etl::handle<synfig::Canvas>*) (new_allocator.h:118)
-    by 0x5001FDB: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::_M_clear() (list.tcc:78)
-    by 0x5002045: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
-    by 0x50020A0: std::list<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~list() (stl_list.h:417)
+    by 0x6FD818: std::shared_ptr<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: std::shared_ptr<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x5001164: __gnu_cxx::new_allocator<std::shared_ptr<synfig::Canvas> >::destroy(std::shared_ptr<synfig::Canvas>*) (new_allocator.h:118)
+    by 0x5001FDB: std::_List_base<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::_M_clear() (list.tcc:78)
+    by 0x5002045: std::_List_base<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
+    by 0x50020A0: std::list<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::~list() (stl_list.h:417)
     by 0x552C636: synfig::Canvas::~Canvas() (canvas.cpp:123)
 
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
-    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
-    by 0x5001164: __gnu_cxx::new_allocator<etl::handle<synfig::Canvas> >::destroy(etl::handle<synfig::Canvas>*) (new_allocator.h:118)
-    by 0x5001FDB: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::_M_clear() (list.tcc:78)
-    by 0x5002045: std::_List_base<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
-    by 0x50020A0: std::list<etl::handle<synfig::Canvas>, std::allocator<etl::handle<synfig::Canvas> > >::~list() (stl_list.h:417)
+    by 0x6FD818: std::shared_ptr<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: std::shared_ptr<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x5001164: __gnu_cxx::new_allocator<std::shared_ptr<synfig::Canvas> >::destroy(std::shared_ptr<synfig::Canvas>*) (new_allocator.h:118)
+    by 0x5001FDB: std::_List_base<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::_M_clear() (list.tcc:78)
+    by 0x5002045: std::_List_base<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::~_List_base() (stl_list.h:358)
+    by 0x50020A0: std::list<std::shared_ptr<synfig::Canvas>, std::allocator<std::shared_ptr<synfig::Canvas> > >::~list() (stl_list.h:417)
     by 0x552C636: synfig::Canvas::~Canvas() (canvas.cpp:123)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6FD818: etl::handle<synfig::Canvas>::detach() (_handle.h:240)
-    by 0x6FD830: etl::handle<synfig::Canvas>::~handle() (_handle.h:186)
+    by 0x6FD818: std::shared_ptr<synfig::Canvas>::detach() (_handle.h:240)
+    by 0x6FD830: std::shared_ptr<synfig::Canvas>::~handle() (_handle.h:186)
     by 0x8BFEFA: studio::WorkArea::~WorkArea() (workarea.cpp:833)
     by 0x7F49B7: std::auto_ptr<studio::WorkArea>::~auto_ptr() (auto_ptr.h:173)
     by 0x7E9934: studio::CanvasView::~CanvasView() (in /home/chris/programs/synfig/git/install/bin/synfigstudio)
     by 0x6E46A8: etl::shared_object::unref() const (_handle.h:115)
-    by 0x6E7269: etl::handle<studio::CanvasView>::detach() (_handle.h:240)
-    by 0x6E7280: etl::handle<studio::CanvasView>::~handle() (_handle.h:186)
+    by 0x6E7269: std::shared_ptr<studio::CanvasView>::detach() (_handle.h:240)
+    by 0x6E7280: std::shared_ptr<studio::CanvasView>::~handle() (_handle.h:186)
     by 0x86A1DF: studio::Instance::safe_close() (instance.cpp:709)
     by 0x77C2D5: studio::App::quit() (app.cpp:1776)
 

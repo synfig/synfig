@@ -98,7 +98,7 @@ GroupActionManager::set_group_tree(LayerGroupTree* x)
 }
 
 void
-GroupActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x)
+GroupActionManager::set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface> &x)
 {
 	canvas_interface_=x;
 }

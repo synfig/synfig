@@ -130,7 +130,7 @@ Renderer_Canvas::on_tile_finished_callback(bool success, Renderer_Canvas *obj, T
 }
 
 void
-Renderer_Canvas::on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj, Tile::Handle tile) {
+Renderer_Canvas::on_post_tile_finished_callback(std::shared_ptr<Renderer_Canvas> obj, Tile::Handle tile) {
 	// this function should be called in main thread
 	// Handle will protect 'obj' from deletion before this call
 	// zero 'work_area' means that 'work_area' is destructed and here is a last Handle of 'obj'
@@ -246,7 +246,7 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 	// or object is already in destruction phase
 	if (shared_object::count())
 		Glib::signal_idle().connect_once(
-			sigc::bind(sigc::ptr_fun(&on_post_tile_finished_callback), etl::handle<Renderer_Canvas>(this), tile),
+			sigc::bind(sigc::ptr_fun(&on_post_tile_finished_callback), std::shared_ptr<Renderer_Canvas>(this), tile),
 			visible_frames.count(tile->frame_id) ? Glib::PRIORITY_DEFAULT : Glib::PRIORITY_DEFAULT_IDLE );
 }
 
@@ -536,8 +536,8 @@ Renderer_Canvas::enqueue_render()
 		RectInt        window_rect    = get_work_area()->get_window_rect();
 		bool           bg_rendering   = get_work_area()->get_background_rendering();
 		Canvas::Handle canvas         = get_work_area()->get_canvas();
-		etl::handle<CanvasView> canvas_view = get_work_area()->get_canvas_view();
-		etl::handle<TimeModel> time_model = canvas_view->time_model();
+		std::shared_ptr<CanvasView> canvas_view = get_work_area()->get_canvas_view();
+		std::shared_ptr<TimeModel> time_model = canvas_view->time_model();
 		bool			is_playing = canvas_view->is_playing();
 		bool			is_bounded = time_model->get_play_bounds_enabled();
 

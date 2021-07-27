@@ -91,7 +91,7 @@ namespace synfig {
 	class ZReadStream : public FileSystem::ReadStream
 	{
 	public:
-		typedef etl::handle<ZReadStream> Handle;
+		typedef std::shared_ptr<ZReadStream> Handle;
 
 	private:
 		FileSystem::ReadStream::Handle stream_;
@@ -115,7 +115,7 @@ namespace synfig {
 	class ZWriteStream : public FileSystem::WriteStream
 	{
 	public:
-		typedef etl::handle<ZWriteStream> Handle;
+		typedef std::shared_ptr<ZWriteStream> Handle;
 
 	private:
 		FileSystem::WriteStream::Handle stream_;

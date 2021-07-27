@@ -68,7 +68,7 @@ class Widget_Waypoint : public Gtk::Box
 	Glib::RefPtr<Gtk::Adjustment> adj_tension, adj_continuity, adj_bias, adj_temporal_tension;
 
 public:
-	Widget_Waypoint(etl::handle<synfig::Canvas> canvas);
+	Widget_Waypoint(std::shared_ptr<synfig::Canvas> canvas);
 	void set_canvas(synfig::Canvas::Handle x);
 	void set_waypoint(synfig::Waypoint &x);
 	void set_valuedesc(synfigapp::ValueDesc &x);

@@ -80,7 +80,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::CanvasInterface> canvas_interface):
+RenderSettings::RenderSettings(Gtk::Window& parent, std::shared_ptr<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Dialog(_("Render Settings"),parent),
 	canvas_interface_(canvas_interface),
 	adjustment_quality(Gtk::Adjustment::create(3,0,9)),
@@ -232,7 +232,7 @@ RenderSettings::set_entry_filename()
 	String filename(filename_sans_extension(canvas_interface_->get_canvas()->get_file_name()));
 
 	// if this isn't the root canvas, append (<canvasname>) to the filename
-	etl::handle<synfig::Canvas> canvas = canvas_interface_->get_canvas();
+	std::shared_ptr<synfig::Canvas> canvas = canvas_interface_->get_canvas();
 	if (!canvas->is_root())
 	{
 		if(canvas->get_name().empty())

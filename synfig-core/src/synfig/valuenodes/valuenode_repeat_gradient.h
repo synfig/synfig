@@ -40,8 +40,8 @@ namespace synfig {
 class ValueNode_Repeat_Gradient : public LinkableValueNode
 {
 public:
-	typedef etl::handle<ValueNode_Repeat_Gradient> Handle;
-	typedef etl::handle<const ValueNode_Repeat_Gradient> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Repeat_Gradient> Handle;
+	typedef std::shared_ptr<const ValueNode_Repeat_Gradient> ConstHandle;
 
 protected:
 

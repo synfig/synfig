@@ -54,7 +54,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, etl::handle<synfigapp::CanvasInterface> canvas_interface):
+Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, std::shared_ptr<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Dialog(_("Keyframe Dialog"),parent),
 	canvas_interface(canvas_interface)
 {

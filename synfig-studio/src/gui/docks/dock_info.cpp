@@ -225,7 +225,7 @@ void studio::Dock_Info::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> ca
 	}
 }
 
-void studio::Dock_Info::set_async_render(etl::handle<studio::AsyncRenderer> ar)
+void studio::Dock_Info::set_async_render(std::shared_ptr<studio::AsyncRenderer> ar)
 {
 	if(!ar)
 		stop_button.set_sensitive(false);

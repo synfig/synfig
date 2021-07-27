@@ -169,11 +169,11 @@ private:
 	std::list<ValueNode::Handle> parse_canvas_bones(xmlpp::Element *node,Canvas::Handle canvas);
 
 	//! Layer Parsing Function
-	etl::handle<Layer> parse_layer(xmlpp::Element *node,Canvas::Handle canvas);
+	std::shared_ptr<Layer> parse_layer(xmlpp::Element *node,Canvas::Handle canvas);
 	//! Generic Value Base Parsing Function
 	ValueBase parse_value(xmlpp::Element *node,Canvas::Handle canvas);
 	//! Generic Value Node Parsing Function
-	etl::handle<ValueNode> parse_value_node(xmlpp::Element *node,Canvas::Handle canvas);
+	std::shared_ptr<ValueNode> parse_value_node(xmlpp::Element *node,Canvas::Handle canvas);
 
 	//! Real Value Base Parsing Function
 	Real parse_real(xmlpp::Element *node);
@@ -217,15 +217,15 @@ private:
 	Keyframe parse_keyframe(xmlpp::Element *node,Canvas::Handle canvas);
 
 	//! ValueNode Animated Parsing Function
-	etl::handle<ValueNode_Animated> parse_animated(xmlpp::Element *node,Canvas::Handle canvas);
+	std::shared_ptr<ValueNode_Animated> parse_animated(xmlpp::Element *node,Canvas::Handle canvas);
 	//! Linkable ValueNode Parsing Function
-	etl::handle<LinkableValueNode> parse_linkable_value_node(xmlpp::Element *node,Canvas::Handle canvas);
+	std::shared_ptr<LinkableValueNode> parse_linkable_value_node(xmlpp::Element *node,Canvas::Handle canvas);
 
 	//! Static List Parsnig Function
-	etl::handle<ValueNode_StaticList> parse_static_list(xmlpp::Element *node,Canvas::Handle canvas);
+	std::shared_ptr<ValueNode_StaticList> parse_static_list(xmlpp::Element *node,Canvas::Handle canvas);
 
 	//! Dynamic List Parsnig Function
-	etl::handle<ValueNode_DynamicList> parse_dynamic_list(xmlpp::Element *node,Canvas::Handle canvas);
+	std::shared_ptr<ValueNode_DynamicList> parse_dynamic_list(xmlpp::Element *node,Canvas::Handle canvas);
 
 	//! Interpolation option for ValueBase parsing function
 	Interpolation parse_interpolation(xmlpp::Element *node, String attribute);

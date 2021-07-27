@@ -216,9 +216,9 @@ public:
 	//! The module cleanup function
 	virtual void destructor_() { }
 
-	typedef etl::handle<Module> Handle;
+	typedef std::shared_ptr<Module> Handle;
 	typedef std::shared_ptr<Module> LooseHandle;
-	typedef etl::handle<const Module> ConstHandle;
+	typedef std::shared_ptr<const Module> ConstHandle;
 
 	//! Type that represents a pointer to a Module's constructor by name.
 	//! As a pointer to the member, it represents a constructor of the module.

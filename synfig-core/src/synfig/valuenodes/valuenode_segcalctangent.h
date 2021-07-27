@@ -45,8 +45,8 @@ class ValueNode_SegCalcTangent : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_SegCalcTangent> Handle;
-	typedef etl::handle<const ValueNode_SegCalcTangent> ConstHandle;
+	typedef std::shared_ptr<ValueNode_SegCalcTangent> Handle;
+	typedef std::shared_ptr<const ValueNode_SegCalcTangent> ConstHandle;
 
 	//static Handle create(Type &x=type_vector);
 

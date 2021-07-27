@@ -43,7 +43,7 @@ namespace rendering
 class RendererPreviewSW: public Renderer
 {
 public:
-	typedef etl::handle<RendererPreviewSW> Handle;
+	typedef std::shared_ptr<RendererPreviewSW> Handle;
 
 	RendererPreviewSW();
 	virtual String get_name() const;

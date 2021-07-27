@@ -47,8 +47,8 @@ class ValueNode_IntString : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_IntString> Handle;
-	typedef etl::handle<const ValueNode_IntString> ConstHandle;
+	typedef std::shared_ptr<ValueNode_IntString> Handle;
+	typedef std::shared_ptr<const ValueNode_IntString> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

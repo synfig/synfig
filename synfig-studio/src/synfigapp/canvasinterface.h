@@ -67,13 +67,13 @@ public:
 
 private:
 	// Constructor is private to force the use of the "create()" constructor.
-	CanvasInterface(std::shared_ptr<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	CanvasInterface(std::shared_ptr<Instance> instance,std::shared_ptr<synfig::Canvas> canvas);
 
 private:
 	std::shared_ptr<Instance> instance_;
-	etl::handle<synfig::Canvas> canvas_;
-	etl::handle<SelectionManager> selection_manager_;
-	etl::handle<UIInterface> ui_interface_;
+	std::shared_ptr<synfig::Canvas> canvas_;
+	std::shared_ptr<SelectionManager> selection_manager_;
+	std::shared_ptr<UIInterface> ui_interface_;
 	synfig::Time cur_time_;
 	Mode mode_;
 	synfig::String state_;
@@ -143,10 +143,10 @@ public:	// Signal Interface
 	sigc::signal<void,synfig::Layer::Handle,bool>& signal_layer_z_range_changed() { return signal_layer_z_range_changed_; }
 	
 	//! Signal called when a canvas has been added.
-	sigc::signal<void,etl::handle<synfig::Canvas> >& signal_canvas_added() { return signal_canvas_added_; }
+	sigc::signal<void,std::shared_ptr<synfig::Canvas> >& signal_canvas_added() { return signal_canvas_added_; }
 
 	//! Signal called when a canvas has been removed.
-	sigc::signal<void,etl::handle<synfig::Canvas> >& signal_canvas_removed() { return signal_canvas_removed_; }
+	sigc::signal<void,std::shared_ptr<synfig::Canvas> >& signal_canvas_removed() { return signal_canvas_removed_; }
 
 	//! Signal called when a layer's parameter has been changed
 	sigc::signal<void,synfig::Layer::Handle,synfig::String>& signal_layer_param_changed() { return signal_layer_param_changed_; }
@@ -155,25 +155,25 @@ public:	// Signal Interface
 	//sigc::signal<void>& signal_dirty_preview() { return signal_dirty_preview_; }
 	sigc::signal<void>& signal_dirty_preview() { return get_canvas()->signal_dirty(); }
 
-	sigc::signal<void,etl::handle<synfig::ValueNode>,etl::handle<synfig::ValueNode> >&
+	sigc::signal<void,std::shared_ptr<synfig::ValueNode>,std::shared_ptr<synfig::ValueNode> >&
 		signal_value_node_child_added() { return get_canvas()->signal_value_node_child_added(); }
-	sigc::signal<void,etl::handle<synfig::ValueNode>,etl::handle<synfig::ValueNode> >&
+	sigc::signal<void,std::shared_ptr<synfig::ValueNode>,std::shared_ptr<synfig::ValueNode> >&
 		signal_value_node_child_removed() { return get_canvas()->signal_value_node_child_removed(); }
 
 	//! Signal called when a ValueNode has changed
-	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_added() { return signal_value_node_added_; }
+	sigc::signal<void,std::shared_ptr<synfig::ValueNode> >& signal_value_node_added() { return signal_value_node_added_; }
 
 	//! Signal called when a ValueNode has been deleted
-	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_deleted() { return signal_value_node_deleted_; }
+	sigc::signal<void,std::shared_ptr<synfig::ValueNode> >& signal_value_node_deleted() { return signal_value_node_deleted_; }
 
 	//! Signal called when a ValueNode has been changed
-	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_changed() { return get_canvas()->signal_value_node_changed(); }
+	sigc::signal<void,std::shared_ptr<synfig::ValueNode> >& signal_value_node_changed() { return get_canvas()->signal_value_node_changed(); }
 
 	//! Signal called when a ValueDesc has been set
 	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase>& signal_value_desc_set() { return signal_value_desc_set_; }
 
 	//! Signal called when a ValueNode has been renamed
-	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_renamed() { return get_canvas()->signal_value_node_renamed(); }
+	sigc::signal<void,std::shared_ptr<synfig::ValueNode> >& signal_value_node_renamed() { return get_canvas()->signal_value_node_renamed(); }
 
 	//! Signal called when the mode has changed
 	sigc::signal<void,Mode> signal_mode_changed() { return signal_mode_changed_; }
@@ -218,25 +218,25 @@ public:
 	void erase_meta_data(const synfig::String& key);
 
 	//! Changes the current SelectionManager object
-	void set_selection_manager(const etl::handle<SelectionManager> &sm) { selection_manager_=sm; }
+	void set_selection_manager(const std::shared_ptr<SelectionManager> &sm) { selection_manager_=sm; }
 
 	//! Disables the selection manager
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
 
 	//! Returns a handle to the current SelectionManager
-	const etl::handle<SelectionManager> &get_selection_manager()const { return selection_manager_; }
+	const std::shared_ptr<SelectionManager> &get_selection_manager()const { return selection_manager_; }
 
 	//! Changes the current UIInterface object
-	void set_ui_interface(const etl::handle<UIInterface> &uim) { ui_interface_=uim; }
+	void set_ui_interface(const std::shared_ptr<UIInterface> &uim) { ui_interface_=uim; }
 
 	//! Disables the UIInterface
 	void unset_ui_interface() { ui_interface_=new DefaultUIInterface(); }
 
 	//! Returns a handle to the current UIInterface
-	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }
+	const std::shared_ptr<UIInterface> &get_ui_interface() { return ui_interface_; }
 
 	//! Returns the Canvas associated with this interface
-	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_; }
+	const std::shared_ptr<synfig::Canvas>& get_canvas()const { return canvas_; }
 
 	//! Returns the Instance associated with this interface
 	const std::shared_ptr<Instance>& get_instance()const { return instance_; }
@@ -350,7 +350,7 @@ public:
 
 	~CanvasInterface();
 
-	static etl::handle<CanvasInterface> create(std::shared_ptr<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static std::shared_ptr<CanvasInterface> create(std::shared_ptr<Instance> instance,std::shared_ptr<synfig::Canvas> canvas);
 }; // END of class CanvasInterface
 
 /*!	\class PushMode

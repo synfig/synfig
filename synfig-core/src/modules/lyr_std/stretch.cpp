@@ -143,7 +143,7 @@ Layer_Stretch::get_color(Context context, const Point &pos)const
 
 class lyr_std::Stretch_Trans : public Transform
 {
-	etl::handle<const Layer_Stretch> layer;
+	std::shared_ptr<const Layer_Stretch> layer;
 public:
 	Stretch_Trans(const Layer_Stretch* x):Transform(x->get_guid()),layer(x) { }
 
@@ -170,7 +170,7 @@ public:
 		return "stretch";
 	}
 };
-etl::handle<Transform>
+std::shared_ptr<Transform>
 Layer_Stretch::get_transform()const
 {
 	return new Stretch_Trans(this);

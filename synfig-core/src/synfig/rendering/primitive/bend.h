@@ -50,7 +50,7 @@ namespace rendering
 class Bend: public etl::shared_object
 {
 public:
-	typedef etl::handle<Bend> Handle;
+	typedef std::shared_ptr<Bend> Handle;
 
 	enum Mode
 	{

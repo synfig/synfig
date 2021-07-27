@@ -286,10 +286,10 @@ protected:
 synfig::Node* find_node(const synfig::GUID& guid);
 
 //! Returns a Handle to the Node by its GUID
-template<typename T> etl::handle<T>
+template<typename T> std::shared_ptr<T>
 guid_cast(const synfig::GUID& guid)
 {
-	return etl::handle<T>::cast_dynamic(synfig::find_node(guid));
+	return std::shared_ptr<T>::cast_dynamic(synfig::find_node(guid));
 }
 
 #ifdef _DEBUG
@@ -318,7 +318,7 @@ synfig::String set_string(T set)
 }
 #endif // _DEBUG
 
-typedef etl::handle<Node> NodeHandle;
+typedef std::shared_ptr<Node> NodeHandle;
 
 }; // END of namespace synfig
 

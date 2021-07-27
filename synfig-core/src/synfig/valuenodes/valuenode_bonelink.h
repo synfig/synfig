@@ -46,8 +46,8 @@ class ValueNode_BoneLink : public LinkableValueNode
 	ValueNode::RHandle scale_y_;
 
 public:
-	typedef etl::handle<ValueNode_BoneLink> Handle;
-	typedef etl::handle<const ValueNode_BoneLink> ConstHandle;
+	typedef std::shared_ptr<ValueNode_BoneLink> Handle;
+	typedef std::shared_ptr<const ValueNode_BoneLink> ConstHandle;
 
 	ValueNode_BoneLink(const ValueBase &x);
 

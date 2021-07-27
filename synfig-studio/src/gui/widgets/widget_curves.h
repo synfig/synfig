@@ -108,7 +108,7 @@ public:
 
 	const Glib::RefPtr<Gtk::Adjustment>& get_range_adjustment() const { return range_adjustment; }
 
-	void set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list< std::pair<std::string, synfigapp::ValueDesc> > &data);
+	void set_value_descs(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_, const std::list< std::pair<std::string, synfigapp::ValueDesc> > &data);
 	void clear();
 	void refresh();
 

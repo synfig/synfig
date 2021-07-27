@@ -78,8 +78,8 @@ public:
 	Widget_Timeslider();
 	~Widget_Timeslider();
 
-	const etl::handle<TimeModel>& get_time_model() const;
-	void set_time_model(const etl::handle<TimeModel> &x);
+	const std::shared_ptr<TimeModel>& get_time_model() const;
+	void set_time_model(const std::shared_ptr<TimeModel> &x);
 };
 
 }; // END of namespace studio

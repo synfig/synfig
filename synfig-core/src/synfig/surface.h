@@ -161,9 +161,9 @@ public:
 
 
 //! Creates a target that will render to \a surface by specified \a renderer
-etl::handle<Target_Tile> surface_target(Surface *surface, const String &renderer = String());
+std::shared_ptr<Target_Tile> surface_target(Surface *surface, const String &renderer = String());
 //! Creates a target that will render to \a surface by specified \a renderer
-etl::handle<Target_Scanline> surface_target_scanline(Surface *surface);
+std::shared_ptr<Target_Scanline> surface_target_scanline(Surface *surface);
 
 }; // END of namespace synfig
 

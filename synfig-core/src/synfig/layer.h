@@ -254,11 +254,11 @@ public:
 	//! Map of Value Base parameters indexed by name
 	typedef std::map<String,ValueBase> ParamList;
 
-	typedef etl::handle<Layer> Handle;
+	typedef std::shared_ptr<Layer> Handle;
 
 	typedef std::shared_ptr<Layer> LooseHandle;
 
-	typedef etl::handle<const Layer> ConstHandle;
+	typedef std::shared_ptr<const Layer> ConstHandle;
 
 	//! Map of parameters that are animated Value Nodes indexed by the param name
 	typedef std::map<String,etl::rhandle<ValueNode> > DynamicParamList;
@@ -337,7 +337,7 @@ private:
 	sigc::signal<void> signal_description_changed_;
 
 	//!	Moved
-	sigc::signal<void, int, etl::handle<Canvas> > signal_moved_;
+	sigc::signal<void, int, std::shared_ptr<Canvas> > signal_moved_;
 
 	sigc::signal<void, String> signal_added_to_group_;
 
@@ -363,7 +363,7 @@ public:
 	sigc::signal<void>& signal_description_changed() { return signal_description_changed_;}
 
 	//!	Moved
-	sigc::signal<void, int, etl::handle<Canvas> >& signal_moved() { return signal_moved_; }
+	sigc::signal<void, int, std::shared_ptr<Canvas> >& signal_moved() { return signal_moved_; }
 
 	sigc::signal<void, String>& signal_added_to_group() { return signal_added_to_group_; }
 
@@ -515,7 +515,7 @@ public:
 
 	//! Returns a handle to the Transform class of the layer
 	//! \see synfig::Transform
-	virtual etl::handle<Transform> get_transform()const;
+	virtual std::shared_ptr<Transform> get_transform()const;
 
 	//! Sets the virtual version to use for backwards-compatibility
 	/*!

@@ -65,7 +65,7 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 	Layer::Handle hit_check(Context context, const Point &point)const;
 	virtual Vocab get_param_vocab()const;
-	virtual etl::handle<Transform> get_transform()const;
+	virtual std::shared_ptr<Transform> get_transform()const;
 
 protected:
 	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;

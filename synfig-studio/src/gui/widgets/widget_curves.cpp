@@ -556,7 +556,7 @@ void Widget_Curves::select_all_points()
 }
 
 void
-Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list< std::pair<std::string, ValueDesc> > &data)
+Widget_Curves::set_value_descs(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_, const std::list< std::pair<std::string, ValueDesc> > &data)
 {
 	if (canvas_interface_ != canvas_interface) {
 		canvas_interface = canvas_interface_;

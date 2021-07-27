@@ -182,14 +182,14 @@ Widget_Timeslider::~Widget_Timeslider()
 	delete time_plot_data;
 }
 
-const etl::handle<TimeModel>&
+const std::shared_ptr<TimeModel>&
 Widget_Timeslider::get_time_model() const
 {
 	return time_plot_data->time_model;
 }
 
 void
-Widget_Timeslider::set_time_model(const etl::handle<TimeModel> &x)
+Widget_Timeslider::set_time_model(const std::shared_ptr<TimeModel> &x)
 {
 	time_plot_data->set_time_model(x);
 }
@@ -223,7 +223,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	if (!time_plot_data->time_model || get_width() <= 0 || get_height() <= 0) return true;
 
-	const etl::handle<TimeModel> & time_model = time_plot_data->time_model;
+	const std::shared_ptr<TimeModel> & time_model = time_plot_data->time_model;
 
 	// Draw the time line...
 	double tpx = time_plot_data->get_pixel_t_coord(time_plot_data->time) + 0.5;
@@ -394,7 +394,7 @@ bool
 Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+	std::shared_ptr<TimeModel> &time_model = time_plot_data->time_model;
 
 	if (!time_model || get_width() <= 0 || get_height() <= 0)
 		return false;

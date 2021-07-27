@@ -123,7 +123,7 @@ Rect
 Layer_MeshTransform::get_bounding_rect()const
 	{ return mesh->get_target_rectangle(); }
 
-etl::handle<synfig::Transform>
+std::shared_ptr<synfig::Transform>
 Layer_MeshTransform::get_transform()const
 	{ return new MeshTransform(get_guid(), mesh); }
 

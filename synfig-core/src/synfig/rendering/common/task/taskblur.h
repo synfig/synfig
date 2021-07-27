@@ -44,7 +44,7 @@ namespace rendering
 class TaskBlur: public Task
 {
 public:
-	typedef etl::handle<TaskBlur> Handle;
+	typedef std::shared_ptr<TaskBlur> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

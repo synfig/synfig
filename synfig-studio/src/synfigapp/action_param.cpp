@@ -111,7 +111,7 @@ Param::Param(const Param &rhs)
 	set(rhs);
 }
 
-Param::Param(const etl::handle<synfigapp::CanvasInterface>& x):
+Param::Param(const std::shared_ptr<synfigapp::CanvasInterface>& x):
 
 	type_(TYPE_CANVASINTERFACE)
 {

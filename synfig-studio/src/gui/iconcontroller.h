@@ -66,7 +66,7 @@ Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
 Gtk::StockID value_icon(synfig::Type &type);
 Gtk::StockID interpolation_icon(synfig::Interpolation type);
-Gtk::StockID valuenode_icon(etl::handle<synfig::ValueNode> value_node);
+Gtk::StockID valuenode_icon(std::shared_ptr<synfig::ValueNode> value_node);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
 Glib::RefPtr<Gdk::Pixbuf> get_interpolation_pixbuf(synfig::Interpolation itype);
 Gtk::StockID get_action_stock_id(const synfigapp::Action::BookEntry& action);

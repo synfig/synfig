@@ -205,7 +205,7 @@ public:
 	Waypoint(ValueBase value, Time time);
 	//! Constructor for animated Waypoint
 	//! Is is called anytime?
-	Waypoint(etl::handle<ValueNode> value_node, Time time);
+	Waypoint(std::shared_ptr<ValueNode> value_node, Time time);
 
 	//! Default constructor. Leaves unset the Value Node
 	Waypoint();
@@ -238,7 +238,7 @@ public:
 	//! Returns the handle to the value node
 	const etl::rhandle<ValueNode> &get_value_node()const { return value_node; }
 	//! Sets the value node by handle
-	void set_value_node(const etl::handle<ValueNode> &x);
+	void set_value_node(const std::shared_ptr<ValueNode> &x);
 
 	//! Gets tension
 	const Real &get_tension()const { return tension; }

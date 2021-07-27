@@ -104,7 +104,7 @@ get_time_offset_from_vdesc(const ValueDesc &v)
 
 	synfig::Layer::Handle layer = v.get_layer();
 
-	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if (!std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 		return Time::zero();
 
 	return layer->get_param("time_offset").get(Time());
@@ -128,7 +128,7 @@ get_time_dilation_from_vdesc(const ValueDesc &v)
 
 	Layer::Handle layer = v.get_layer();
 
-	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if (!std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 		return Time(1.0);
 
 	return layer->get_param("time_dilation").get(Time());
@@ -241,7 +241,7 @@ CellRenderer_TimeTrack::~CellRenderer_TimeTrack()
 	{ }
 
 void
-CellRenderer_TimeTrack::set_time_model(const etl::handle<TimeModel> &x)
+CellRenderer_TimeTrack::set_time_model(const std::shared_ptr<TimeModel> &x)
 	{ time_model = x; }
 
 void
@@ -578,9 +578,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 				sel_times.insert(stime);
 				if (sel_times.size() == 1 && event->type == GDK_2BUTTON_PRESS) {
 					ValueBase v = value_desc.get_value(stime);
-					etl::handle<Node> node = v.get_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
-					               ? etl::handle<Node>(v.get(Canvas::Handle()))
-					               : etl::handle<Node>(value_desc.get_value_node());
+					std::shared_ptr<Node> node = v.get_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
+					               ? std::shared_ptr<Node>(v.get(Canvas::Handle()))
+					               : std::shared_ptr<Node>(value_desc.get_value_node());
 					if (node)
 						signal_waypoint_clicked_cellrenderer()(node, stime, time_offset, time_dilation, -1);
 				} 
@@ -594,9 +594,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 		} else
 		if (event->button.button == 3) {
 			ValueBase v = value_desc.get_value(stime);
-			etl::handle<Node> node = v.get_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
-					               ? etl::handle<Node>(v.get(Canvas::Handle()))
-					               : etl::handle<Node>(value_desc.get_value_node());
+			std::shared_ptr<Node> node = v.get_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
+					               ? std::shared_ptr<Node>(v.get(Canvas::Handle()))
+					               : std::shared_ptr<Node>(value_desc.get_value_node());
 			if (clickfound && node)
 				signal_waypoint_clicked_cellrenderer()(node, stime, time_offset, time_dilation, 2); // button was replaced
 		}
@@ -632,14 +632,14 @@ CellRenderer_TimeTrack::activate_vfunc(
 					param_list.add("deltatime", deltatime);
 
 				if (mode & COPY_MASK) { // copy
-					etl::handle<studio::Instance>::cast_dynamic(canvas_interface->get_instance())
+					std::shared_ptr<studio::Instance>::cast_dynamic(canvas_interface->get_instance())
 						->process_action("TimepointsCopy", param_list);
 				} else
 				if (delete_mode) { // delete
-					etl::handle<studio::Instance>::cast_dynamic(canvas_interface->get_instance())
+					std::shared_ptr<studio::Instance>::cast_dynamic(canvas_interface->get_instance())
 						->process_action("TimepointsDelete", param_list);
 				} else { // move
-					etl::handle<studio::Instance>::cast_dynamic(canvas_interface->get_instance())
+					std::shared_ptr<studio::Instance>::cast_dynamic(canvas_interface->get_instance())
 						->process_action("TimepointsMove", param_list);
 				}
 

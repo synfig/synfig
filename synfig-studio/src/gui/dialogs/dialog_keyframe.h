@@ -46,7 +46,7 @@ class Widget_WaypointModel;
 
 class Dialog_Keyframe : public Gtk::Dialog
 {
-	etl::handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 
 	synfig::Keyframe keyframe_;
 
@@ -60,7 +60,7 @@ class Dialog_Keyframe : public Gtk::Dialog
 	void on_delete_pressed();
 
 public:
-	Dialog_Keyframe(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
+	Dialog_Keyframe(Gtk::Window& parent,std::shared_ptr<synfigapp::CanvasInterface> canvas_interface);
 	~Dialog_Keyframe();
 
 	const synfig::Keyframe& get_keyframe()const;

@@ -1698,7 +1698,7 @@ static SkeletonGraph *skeletonize(ContourFamily &regionContours,
 
 //--------------------------------------------------------------------------
 
-SkeletonList* studio::skeletonize(Contours &contours, const etl::handle<synfigapp::UIInterface> &ui_interface, VectorizerCoreGlobals &g) {
+SkeletonList* studio::skeletonize(Contours &contours, const std::shared_ptr<synfigapp::UIInterface> &ui_interface, VectorizerCoreGlobals &g) {
   VectorizationContext context(&g);
 
   SkeletonList *res = new SkeletonList;

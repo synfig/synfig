@@ -96,7 +96,7 @@ AutoRecover::auto_backup()
 	int count = 0;
 	try
 	{
-		for(std::list< etl::handle<Instance> >::iterator i = App::instance_list.begin(); i != App::instance_list.end(); ++i)
+		for(std::list< std::shared_ptr<Instance> >::iterator i = App::instance_list.begin(); i != App::instance_list.end(); ++i)
 			try
 			{
 				if ((*i)->backup())

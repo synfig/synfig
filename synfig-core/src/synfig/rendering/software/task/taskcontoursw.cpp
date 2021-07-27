@@ -57,7 +57,7 @@ class TaskContourSW: public TaskContour, public TaskSW,
 	public TaskInterfaceSplit
 {
 public:
-	typedef etl::handle<TaskContourSW> Handle;
+	typedef std::shared_ptr<TaskContourSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

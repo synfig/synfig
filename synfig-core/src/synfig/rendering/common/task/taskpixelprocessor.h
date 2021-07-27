@@ -50,7 +50,7 @@ class TaskPixelProcessor: public Task,
 	public TaskInterfaceSplit
 {
 public:
-	typedef etl::handle<TaskPixelProcessor> Handle;
+	typedef std::shared_ptr<TaskPixelProcessor> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -88,7 +88,7 @@ public:
 class TaskPixelGamma: public TaskPixelProcessor
 {
 public:
-	typedef etl::handle<TaskPixelGamma> Handle;
+	typedef std::shared_ptr<TaskPixelGamma> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -107,7 +107,7 @@ public:
 class TaskPixelColorMatrix: public TaskPixelProcessor
 {
 public:
-	typedef etl::handle<TaskPixelColorMatrix> Handle;
+	typedef std::shared_ptr<TaskPixelColorMatrix> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

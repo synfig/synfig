@@ -158,7 +158,7 @@ Renderer_Ducks::render_vfunc(
 	const bool solid_lines(get_work_area()->solid_lines);
 	bool alternative = get_work_area()->get_alternative_mode();
 
-	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
+	const std::list<std::shared_ptr<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
 	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
@@ -250,7 +250,7 @@ Renderer_Ducks::render_vfunc(
 	std::list<ScreenDuck> screen_duck_list;
 	const float radius((abs(pw)+abs(ph))*4);
 
-	etl::handle<Duck> hover_duck(get_work_area()->find_duck(get_work_area()->get_cursor_pos(),radius, get_work_area()->get_type_mask()));
+	std::shared_ptr<Duck> hover_duck(get_work_area()->find_duck(get_work_area()->get_cursor_pos(),radius, get_work_area()->get_type_mask()));
 
 	// Render the ducks
 	for(std::list<handle<Duck> >::const_iterator iter=duck_list.begin();iter!=duck_list.end();++iter)

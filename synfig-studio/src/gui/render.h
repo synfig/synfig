@@ -59,7 +59,7 @@ class ProgressLogger;
 
 class RenderSettings : public Gtk::Dialog
 {
-	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 	Widget_RendDesc widget_rend_desc;
 
 	Gtk::Entry entry_filename;
@@ -83,7 +83,7 @@ class RenderSettings : public Gtk::Dialog
 
 	void set_target(synfig::String name);
 
-	etl::handle<AsyncRenderer> async_renderer;
+	std::shared_ptr<AsyncRenderer> async_renderer;
 	std::unique_ptr<ProgressLogger> progress_logger;
 
 	synfig::TargetParam tparam;
@@ -91,7 +91,7 @@ class RenderSettings : public Gtk::Dialog
 	static std::map<synfig::String, Dialog_TargetParam *> dialog_book;
 
 public:
-	RenderSettings(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
+	RenderSettings(Gtk::Window& parent,std::shared_ptr<synfigapp::CanvasInterface> canvas_interface);
 	~RenderSettings();
 	void set_entry_filename();
 

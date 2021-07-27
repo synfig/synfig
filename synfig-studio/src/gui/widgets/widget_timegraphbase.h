@@ -61,8 +61,8 @@ public:
 
 	const Glib::RefPtr<Gtk::Adjustment>& get_range_adjustment() const { return range_adjustment; }
 
-	virtual const etl::handle<TimeModel>& get_time_model() const;
-	virtual void set_time_model(const etl::handle<TimeModel> &x);
+	virtual const std::shared_ptr<TimeModel>& get_time_model() const;
+	virtual void set_time_model(const std::shared_ptr<TimeModel> &x);
 
 	//! Zoom in along vertical-axis. \sa Widget_TimeGraphBase#zoom_changing_factor
 	virtual void zoom_in();
@@ -86,11 +86,11 @@ public:
 
 	virtual void pan(int dx, int dy, int /*total_dx*/, int /*total_dy*/);
 
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() const;
-	void set_canvas_interface(const etl::handle<synfigapp::CanvasInterface>& value);
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface() const;
+	void set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface>& value);
 
 protected:
-	etl::handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 	virtual void on_canvas_interface_changed();
 
 	Glib::RefPtr<Gtk::Adjustment> range_adjustment;

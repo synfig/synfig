@@ -73,7 +73,7 @@ Widget_Sublayer::set_value_desc(const synfigapp::ValueDesc &x)
 	// First clear the current items in the ComboBox
 	enum_TreeModel->clear();
 	cout << value_desc.get_layer() << endl;
-	etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+	std::shared_ptr<synfig::Layer_PasteCanvas> p = std::shared_ptr<synfig::Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
 	if(p)
 	{
 		synfig::Canvas::Handle canvas = p->get_sub_canvas();

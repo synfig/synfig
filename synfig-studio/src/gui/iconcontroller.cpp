@@ -443,7 +443,7 @@ studio::interpolation_icon(synfig::Interpolation type)
 
 
 Gtk::StockID
-studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
+studio::valuenode_icon(std::shared_ptr<synfig::ValueNode> value_node)
 {
 	if(handle<ValueNode_Const>::cast_dynamic(value_node))
 	{

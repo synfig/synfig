@@ -177,7 +177,7 @@ Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle conta
 }
 
 handle<CanvasView>
-Instance::find_canvas_view(etl::handle<synfig::Canvas> canvas)
+Instance::find_canvas_view(std::shared_ptr<synfig::Canvas> canvas)
 {
 	if(!canvas)
 		return 0;
@@ -195,7 +195,7 @@ Instance::find_canvas_view(etl::handle<synfig::Canvas> canvas)
 }
 
 void
-Instance::focus(etl::handle<synfig::Canvas> canvas)
+Instance::focus(std::shared_ptr<synfig::Canvas> canvas)
 {
 	handle<CanvasView> canvas_view=find_canvas_view(canvas);
 	assert(canvas_view);
@@ -349,13 +349,13 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 			return;
 		}
 
-		etl::handle<Instance> new_instance = App::instance_list.back();
+		std::shared_ptr<Instance> new_instance = App::instance_list.back();
 		if (!new_instance) {
 			synfig::error("run_plugin(): Cannot retrieve new instance");
 		} else {
 			// Restore time cursor position
 			canvas = new_instance->get_canvas();
-			etl::handle<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
+			std::shared_ptr<synfigapp::CanvasInterface> new_canvas_interface(new_instance->find_canvas_interface(canvas));
 			if (!new_canvas_interface) {
 				synfig::error("run_plugin(): Cannot retrieve canvas interface");
 			} else {
@@ -373,7 +373,7 @@ studio::Instance::save_as(const synfig::String &file_name)
 		// after changing the filename, update the render settings with the new filename
 		for(list<handle<CanvasView> >::iterator iter = canvas_view_list().begin(); iter!=canvas_view_list().end(); iter++)
 			(*iter)->render_settings.set_entry_filename();
-		App::add_recent_file(etl::handle<Instance>(this));
+		App::add_recent_file(std::shared_ptr<Instance>(this));
 
 		// check for unsaved layers (external bitmaps, etc)
 		std::vector<Layer::Handle> layers;
@@ -637,7 +637,7 @@ Instance::close(bool remove_temporary_files)
 		studio::App::set_selected_instance(0);
 
 	// Remove us from the active instance list
-	std::list<etl::handle<studio::Instance> >::iterator iter;
+	std::list<std::shared_ptr<studio::Instance> >::iterator iter;
 	for(iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end();iter++)
 		if(*iter==this)
 			break;
@@ -649,7 +649,7 @@ Instance::close(bool remove_temporary_files)
 	studio::App::signal_instance_deleted()(this);
 
 	// Hide all of the canvas views
-	for(std::list<etl::handle<CanvasView> >::iterator iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
+	for(std::list<std::shared_ptr<CanvasView> >::iterator iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
 		(*iter)->hide();
 
 	// Consume pending events before deleting the canvas views
@@ -1079,8 +1079,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 {
 	Gtk::Menu& parammenu(*menu);
 	synfigapp::ValueDesc value_desc2(value_desc);
-	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
-	etl::handle<CanvasView> canvas_view(find_canvas_view(canvas));
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
+	std::shared_ptr<CanvasView> canvas_view(find_canvas_view(canvas));
 	if(!canvas_interface)
 		return;
 
@@ -1354,9 +1354,9 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 }
 
 void
-edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp::ValueDesc> value_desc_list)
+edit_several_waypoints(std::shared_ptr<CanvasView> canvas_view, std::list<synfigapp::ValueDesc> value_desc_list)
 {
-	etl::handle<synfigapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
 
 	Gtk::Dialog dialog(
 		_("Edit Multiple Waypoints"),
@@ -1484,7 +1484,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 void
 Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const std::list<synfigapp::ValueDesc>& value_desc_list, const synfigapp::ValueDesc &value_desc)
 {
-	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
 
 	synfigapp::Action::ParamList param_list;
 	param_list=canvas_interface->generate_param_list(value_desc_list);
@@ -1573,10 +1573,10 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 	}
 	
 	// This required to allow "Edit Image/Open File" commands to appear when clicked on a switch group
-	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(layer))
+	if (std::shared_ptr<Layer_Switch> layer_switch = std::shared_ptr<Layer_Switch>::cast_dynamic(layer))
 		gather_uri(x, layer_inside_switch(layer_switch));
 
-	//if (etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	//if (std::shared_ptr<Layer_PasteCanvas> paste = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 	//	gather_uri(x, paste->get_param("canvas").get(Canvas::Handle()));
 }
 
@@ -1666,7 +1666,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 	}
 	if(layers.size()==1)
 	{
-		if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layers.front()))
+		if(std::shared_ptr<Layer_Bitmap> my_layer_bitmap = std::shared_ptr<Layer_Bitmap>::cast_dynamic(layers.front()))
 		{
 				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
 				item2->set_label( (String(_("Convert to Vector"))).c_str() );
@@ -1675,10 +1675,10 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 				item2->show();
 				menu->append(*item2);
 		}
-		else if(etl::handle<Layer_Switch> reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front()))
+		else if(std::shared_ptr<Layer_Switch> reference_layer = std::shared_ptr<Layer_Switch>::cast_dynamic(layers.front()))
 		{
 			//the layer selected is a switch group
-			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
+			if(std::shared_ptr<Layer_Bitmap> my_layer_bitmap = std::shared_ptr<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
 			{
 				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
 				item2->set_label( (String(_("Convert to Vector"))).c_str() );
@@ -1730,10 +1730,10 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 	{
 		String local_name2 = String(_("Convert to Vector"));
 		String action_name2 = etl::strprintf("special-action-open-file-vectorizer-%d",index);
-		if(etl::handle<Layer_Switch> reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front()))
+		if(std::shared_ptr<Layer_Switch> reference_layer = std::shared_ptr<Layer_Switch>::cast_dynamic(layers.front()))
 		{
 			//the layer selected is a switch group
-			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
+			if(std::shared_ptr<Layer_Bitmap> my_layer_bitmap = std::shared_ptr<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
 			{
 				action_group->add(
 			 	Gtk::Action::create(
@@ -1745,7 +1745,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 
 			} 
 		}
-		if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layers.front()))
+		if(std::shared_ptr<Layer_Bitmap> my_layer_bitmap = std::shared_ptr<Layer_Bitmap>::cast_dynamic(layers.front()))
 		{
 				action_group->add(
 			 	Gtk::Action::create(

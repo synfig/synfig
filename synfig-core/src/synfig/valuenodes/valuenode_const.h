@@ -38,8 +38,8 @@ namespace synfig {
 class ValueNode_Const : public ValueNode
 {
 public:
-	typedef etl::handle<ValueNode_Const> Handle;
-	typedef etl::handle<const ValueNode_Const> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Const> Handle;
+	typedef std::shared_ptr<const ValueNode_Const> ConstHandle;
 
 private:
 	ValueBase value;

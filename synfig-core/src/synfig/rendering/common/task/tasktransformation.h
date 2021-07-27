@@ -63,7 +63,7 @@ public:
 class TaskTransformation: public Task, public TaskInterfaceTransformation
 {
 public:
-	typedef etl::handle<TaskTransformation> Handle;
+	typedef std::shared_ptr<TaskTransformation> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -90,7 +90,7 @@ public:
 class TaskTransformationAffine: public TaskTransformation
 {
 public:
-	typedef etl::handle<TaskTransformationAffine> Handle;
+	typedef std::shared_ptr<TaskTransformationAffine> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

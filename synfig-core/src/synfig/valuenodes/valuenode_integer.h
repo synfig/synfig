@@ -42,8 +42,8 @@ class ValueNode_Integer : public LinkableValueNode
 	ValueNode::RHandle integer_;
 
 public:
-	typedef etl::handle<ValueNode_Integer> Handle;
-	typedef etl::handle<const ValueNode_Integer> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Integer> Handle;
+	typedef std::shared_ptr<const ValueNode_Integer> ConstHandle;
 
 	ValueNode_Integer(Type &x);
 	ValueNode_Integer(const ValueBase &x);

@@ -87,8 +87,8 @@ Action::LayerEmbed::is_candidate(const ParamList &x)
 	Layer::Handle layer=x.find("layer")->second.get_layer();
 	if(!layer) return false;
 
-	etl::handle<synfig::Layer_PasteCanvas> layer_pastecanvas
-		= etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(layer);
+	std::shared_ptr<synfig::Layer_PasteCanvas> layer_pastecanvas
+		= std::shared_ptr<synfig::Layer_PasteCanvas>::cast_dynamic(layer);
 	if (layer_pastecanvas)
 	{
 		Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();
@@ -115,8 +115,8 @@ Action::LayerEmbed::set_param(const synfig::String& name, const Action::Param &p
 	{
 		Layer::Handle layer = param.get_layer();
 
-		etl::handle<synfig::Layer_PasteCanvas> layer_pastecanvas
-			= etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(layer);
+		std::shared_ptr<synfig::Layer_PasteCanvas> layer_pastecanvas
+			= std::shared_ptr<synfig::Layer_PasteCanvas>::cast_dynamic(layer);
 		if (layer_pastecanvas)
 		{
 			Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();
@@ -216,8 +216,8 @@ Action::LayerEmbed::prepare()
 
 		std::shared_ptr<synfigapp::Instance> instance =
 			get_canvas_interface()->get_instance();
-		etl::handle<Layer_Bitmap> layer_bitmap =
-			etl::handle<Layer_Bitmap>::cast_dynamic(layer_import);
+		std::shared_ptr<Layer_Bitmap> layer_bitmap =
+			std::shared_ptr<Layer_Bitmap>::cast_dynamic(layer_import);
 		if (layer_bitmap && layer_bitmap->is_surface_modified()) {
 			// save surface to new place
 			instance->save_surface(layer_bitmap->rendering_surface, new_filename);

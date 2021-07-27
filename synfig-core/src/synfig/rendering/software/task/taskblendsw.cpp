@@ -54,7 +54,7 @@ class TaskBlendSW: public TaskBlend,
                    public TaskInterfaceTargetAsSource
 {
 public:
-	typedef etl::handle<TaskBlendSW> Handle;
+	typedef std::shared_ptr<TaskBlendSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

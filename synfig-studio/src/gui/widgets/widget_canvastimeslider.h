@@ -50,7 +50,7 @@ class Widget_CanvasTimeslider : public Widget_Timeslider
 protected:
 	sigc::connection rendering_change;
 	std::shared_ptr<CanvasView> canvas_view;
-	etl::handle<LockDucks> lock_ducks;
+	std::shared_ptr<LockDucks> lock_ducks;
 	Gtk::Window tooltip;
 	Gtk::DrawingArea thumb;
 	Cairo::RefPtr<Cairo::SurfacePattern> thumb_background;

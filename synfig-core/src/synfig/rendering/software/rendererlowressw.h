@@ -45,7 +45,7 @@ class RendererLowResSW: public Renderer
 private:
 	int level;
 public:
-	typedef etl::handle<RendererLowResSW> Handle;
+	typedef std::shared_ptr<RendererLowResSW> Handle;
 	explicit RendererLowResSW(int level);
 	virtual String get_name() const;
 };

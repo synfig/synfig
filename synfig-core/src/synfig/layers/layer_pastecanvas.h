@@ -53,7 +53,7 @@ namespace synfig {
 class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 {
 public:
-	typedef etl::handle<Layer_PasteCanvas> Handle;
+	typedef std::shared_ptr<Layer_PasteCanvas> Handle;
 
 private:
 	//! Parameter: (Origin) Position offset
@@ -138,10 +138,10 @@ public:
 
 	//! Gets the canvas parameter. It is called sub_canvas to avoid confusion
 	//! with the get_canvas from the Layer class.
-	etl::handle<synfig::Canvas> get_sub_canvas()const { return sub_canvas; }
+	std::shared_ptr<synfig::Canvas> get_sub_canvas()const { return sub_canvas; }
 	//! Sets the canvas parameter.
 	//! \see get_sub_canvas()
-	void set_sub_canvas(etl::handle<synfig::Canvas> x);
+	void set_sub_canvas(std::shared_ptr<synfig::Canvas> x);
 	//! Gets time dilation parameter
 	Real get_time_dilation()const { return param_time_dilation.get(Real()); }
 	//! Gets time offset parameter

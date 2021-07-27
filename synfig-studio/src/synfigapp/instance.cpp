@@ -119,8 +119,8 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 	return false;
 }
 
-etl::handle<Instance>
-synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
+std::shared_ptr<Instance>
+synfigapp::find_instance(std::shared_ptr<synfig::Canvas> canvas)
 {
 	if(instance_map_.count(canvas)==0)
 		return 0;
@@ -129,7 +129,7 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container):
+Instance::Instance(std::shared_ptr<synfig::Canvas> canvas, synfig::FileSystem::Handle container):
 	canvas_(canvas),
 	container_(container)
 {
@@ -141,7 +141,7 @@ Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handl
 } // END of synfigapp::Instance::Instance()
 
 handle<Instance>
-Instance::create(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container)
+Instance::create(std::shared_ptr<synfig::Canvas> canvas, synfig::FileSystem::Handle container)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));
@@ -189,11 +189,11 @@ Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 bool
 Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas::Handle> &imported)
 {
-	etl::handle<CanvasInterface> canvas_interface;
+	std::shared_ptr<CanvasInterface> canvas_interface;
 
 	for(IndependentContext i = canvas->get_independent_context(); *i; i++)
 	{
-		etl::handle<Layer_PasteCanvas> paste_canvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+		std::shared_ptr<Layer_PasteCanvas> paste_canvas = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(*i);
 		if (!paste_canvas) continue;
 
 		Canvas::Handle sub_canvas = paste_canvas->get_sub_canvas();
@@ -283,7 +283,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 	return false;
 }
 
-etl::handle<Action::Group>
+std::shared_ptr<Action::Group>
 Instance::import_external_canvases()
 {
 	synfigapp::Action::PassiveGrouper group(this, _("Import external canvases"));
@@ -311,8 +311,8 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	ext.erase(0, 1);
 	String tmpfile = FileSystemTemporary::generate_system_temporary_filename("surface");
 
-	etl::handle<Target_Scanline> target =
-		etl::handle<Target_Scanline>::cast_dynamic(
+	std::shared_ptr<Target_Scanline> target =
+		std::shared_ptr<Target_Scanline>::cast_dynamic(
 			Target::create(Target::ext_book()[ext],tmpfile,TargetParam()) );
 	if (!target)
 		return false;
@@ -671,7 +671,7 @@ Instance::save_as(const synfig::String &file_name)
 	bool embed_files = (bool)new_container_zip;
 	bool save_files = true;
 
-	etl::handle<Action::Group> import_external_canvases_action;
+	std::shared_ptr<Action::Group> import_external_canvases_action;
 	if (embed_files)
 		import_external_canvases_action = import_external_canvases();
 

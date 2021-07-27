@@ -45,7 +45,7 @@ namespace rendering
 class TaskLayer: public Task
 {
 public:
-	typedef etl::handle<TaskLayer> Handle;
+	typedef std::shared_ptr<TaskLayer> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

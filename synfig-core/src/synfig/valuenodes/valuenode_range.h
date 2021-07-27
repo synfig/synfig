@@ -49,8 +49,8 @@ class ValueNode_Range : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_Range> Handle;
-	typedef etl::handle<const ValueNode_Range> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Range> Handle;
+	typedef std::shared_ptr<const ValueNode_Range> ConstHandle;
 
 	virtual ValueBase operator()(Time t)const;
 

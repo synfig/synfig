@@ -40,8 +40,8 @@ namespace synfig {
 class ValueNode_Subtract : public LinkableValueNode
 {
 public:
-	typedef etl::handle<ValueNode_Subtract> Handle;
-	typedef etl::handle<const ValueNode_Subtract> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Subtract> Handle;
+	typedef std::shared_ptr<const ValueNode_Subtract> ConstHandle;
 
 protected:
 	ValueNode_Subtract(const ValueBase &value);

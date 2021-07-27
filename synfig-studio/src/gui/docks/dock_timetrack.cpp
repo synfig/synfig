@@ -277,7 +277,7 @@ public:
 		param_list.add("waypoint", waypoint);
 	//	param_list.add("time", canvas_interface()->get_time());
 
-		etl::handle<studio::Instance>::cast_static(store->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
+		std::shared_ptr<studio::Instance>::cast_static(store->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
 	}
 
 	void mimic(Gtk::TreeView *tree_view)
@@ -309,7 +309,7 @@ public:
 	}
 
 	void
-	on_waypoint_clicked_timetrackview(const etl::handle<synfig::Node>& node,
+	on_waypoint_clicked_timetrackview(const std::shared_ptr<synfig::Node>& node,
 									  const synfig::Time& time,
 									  const synfig::Time& /*time_offset*/,
 									  const synfig::Time& /*time_dilation*/,
@@ -395,7 +395,7 @@ Dock_Timetrack_Old::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas
 
 		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
-		widget_kf_list_.set_time_model( etl::handle<TimeModel>() );
+		widget_kf_list_.set_time_model( std::shared_ptr<TimeModel>() );
 		widget_kf_list_.set_canvas_interface( std::shared_ptr<synfigapp::CanvasInterface>() );
 
 		delete grid_;

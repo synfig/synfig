@@ -67,13 +67,13 @@ Widget_CompSelect::~Widget_CompSelect()
 }
 
 void
-Widget_CompSelect::set_selected_instance_signal(etl::handle<studio::Instance> x)
+Widget_CompSelect::set_selected_instance_signal(std::shared_ptr<studio::Instance> x)
 {
 	set_selected_instance(x);
 }
 
 void
-Widget_CompSelect::set_selected_instance_(etl::handle<studio::Instance> instance)
+Widget_CompSelect::set_selected_instance_(std::shared_ptr<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -100,7 +100,7 @@ Widget_CompSelect::set_selected_instance(std::shared_ptr<studio::Instance> x)
 	if (x==selected_instance)
 		return;
 
-	std::list<etl::handle<studio::Instance> >::iterator iter;
+	std::list<std::shared_ptr<studio::Instance> >::iterator iter;
 
 	if(x)
 	{
@@ -123,7 +123,7 @@ Widget_CompSelect::set_selected_instance(std::shared_ptr<studio::Instance> x)
 }
 
 void
-Widget_CompSelect::new_instance(etl::handle<studio::Instance> instance)
+Widget_CompSelect::new_instance(std::shared_ptr<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -149,7 +149,7 @@ Widget_CompSelect::new_instance(etl::handle<studio::Instance> instance)
 }
 
 void
-Widget_CompSelect::delete_instance(etl::handle<studio::Instance> instance)
+Widget_CompSelect::delete_instance(std::shared_ptr<studio::Instance> instance)
 {
 	refresh();
 
@@ -170,7 +170,7 @@ Widget_CompSelect::refresh()
 	if(studio::App::shutdown_in_progress)
 		return;
 
-	std::list<etl::handle<studio::Instance> >::iterator iter;
+	std::list<std::shared_ptr<studio::Instance> >::iterator iter;
 	for(iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end();iter++)
 	{
 		std::string name=basename((*iter)->get_file_name());

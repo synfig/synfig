@@ -528,7 +528,7 @@ Super::undo()
 }
 
 void
-Super::add_action(etl::handle<Undoable> action)
+Super::add_action(std::shared_ptr<Undoable> action)
 {
 	action_list_.push_back(action);
 	CanvasSpecific *specific_action=dynamic_cast<CanvasSpecific *>(action.get());
@@ -537,7 +537,7 @@ Super::add_action(etl::handle<Undoable> action)
 }
 
 void
-Super::add_action_front(etl::handle<Undoable> action)
+Super::add_action_front(std::shared_ptr<Undoable> action)
 {
 	assert(action);
 	action_list_.push_front(action);

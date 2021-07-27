@@ -47,8 +47,8 @@ class ValueNode_BLineRevTangent : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_BLineRevTangent> Handle;
-	typedef etl::handle<const ValueNode_BLineRevTangent> ConstHandle;
+	typedef std::shared_ptr<ValueNode_BLineRevTangent> Handle;
+	typedef std::shared_ptr<const ValueNode_BLineRevTangent> ConstHandle;
 
 	virtual ValueBase operator()(Time t)const;
 

@@ -67,9 +67,9 @@ private:
 
 public:
 
-	typedef etl::handle<ValueNode_WPList> Handle;
-	typedef etl::handle<const ValueNode_WPList> ConstHandle;
-	typedef etl::handle<const ValueNode_WPList> LooseHandle;
+	typedef std::shared_ptr<ValueNode_WPList> Handle;
+	typedef std::shared_ptr<const ValueNode_WPList> ConstHandle;
+	typedef std::shared_ptr<const ValueNode_WPList> LooseHandle;
 	ValueNode_WPList();
 
 public:

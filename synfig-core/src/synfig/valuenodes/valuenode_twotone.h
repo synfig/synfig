@@ -46,8 +46,8 @@ class ValueNode_TwoTone : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_TwoTone> Handle;
-	typedef etl::handle<const ValueNode_TwoTone> ConstHandle;
+	typedef std::shared_ptr<ValueNode_TwoTone> Handle;
+	typedef std::shared_ptr<const ValueNode_TwoTone> ConstHandle;
 
 	virtual ~ValueNode_TwoTone();
 

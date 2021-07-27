@@ -45,8 +45,8 @@ class ValueNode_VectorLength : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_VectorLength> Handle;
-	typedef etl::handle<const ValueNode_VectorLength> ConstHandle;
+	typedef std::shared_ptr<ValueNode_VectorLength> Handle;
+	typedef std::shared_ptr<const ValueNode_VectorLength> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

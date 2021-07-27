@@ -131,7 +131,7 @@ ValueNode_Bone::get_bone_map(Canvas::ConstHandle canvas)
 }
 
 ValueNode_Bone::BoneList
-ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
+ValueNode_Bone::get_ordered_bones(std::shared_ptr<const Canvas> canvas)
 {
 	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> uses;
 	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> is_used_by;

@@ -99,7 +99,7 @@ public:
 	bool end_duck_drag(Duckmatic* duckmatic);
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 };
 
 
@@ -107,7 +107,7 @@ class studio::StateNormal_Context : public sigc::trackable
 {
 	CanvasView* canvas_view_;
 
-	etl::handle<DuckDrag_Combo> duck_dragger_;
+	std::shared_ptr<DuckDrag_Combo> duck_dragger_;
 
 	Gtk::Grid options_grid;
 	Gtk::Label title_label;
@@ -179,7 +179,7 @@ public:
 	~StateNormal_Context();
 
 	CanvasView* get_canvas_view()const{return canvas_view_;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 
@@ -363,7 +363,7 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<std::shared_ptr<Duck> >::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)

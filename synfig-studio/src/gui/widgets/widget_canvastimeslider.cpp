@@ -87,7 +87,7 @@ Widget_CanvasTimeslider::set_canvas_view(const CanvasView::LooseHandle &x)
 	lock_ducks.reset();
 	canvas_view = x;
 
-	set_time_model(canvas_view ? canvas_view->time_model() : etl::handle<TimeModel>());
+	set_time_model(canvas_view ? canvas_view->time_model() : std::shared_ptr<TimeModel>());
 
 	if (canvas_view && canvas_view->get_work_area())
 		rendering_change = canvas_view->get_work_area()->signal_rendering().connect(
@@ -166,7 +166,7 @@ Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->button == 1 && canvas_view && canvas_view->get_work_area()) {
-		lock_ducks = new LockDucks(etl::handle<CanvasView>(canvas_view));
+		lock_ducks = new LockDucks(std::shared_ptr<CanvasView>(canvas_view));
 		canvas_view->get_work_area()->clear_ducks();
 		canvas_view->queue_rebuild_ducks();
 	}

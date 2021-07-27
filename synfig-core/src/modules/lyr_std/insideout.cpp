@@ -126,7 +126,7 @@ InsideOut::get_color(Context context, const Point &p)const
 
 class lyr_std::InsideOut_Trans : public Transform
 {
-	etl::handle<const InsideOut> layer;
+	std::shared_ptr<const InsideOut> layer;
 public:
 	InsideOut_Trans(const InsideOut* x):Transform(x->get_guid()),layer(x) { }
 
@@ -155,7 +155,7 @@ public:
 		return "insideout";
 	}
 };
-etl::handle<Transform>
+std::shared_ptr<Transform>
 InsideOut::get_transform()const
 {
 	return new InsideOut_Trans(this);

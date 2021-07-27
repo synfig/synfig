@@ -87,25 +87,25 @@ class DuckDrag_Rotate : public DuckDrag_Base
 	bool move_only;
 
 public:
-	etl::handle<CanvasView> canvas_view_;
+	std::shared_ptr<CanvasView> canvas_view_;
 	bool use_magnitude;
 	DuckDrag_Rotate();
 	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
 	bool end_duck_drag(Duckmatic* duckmatic);
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 };
 
 
 class studio::StateRotate_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	std::shared_ptr<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	synfigapp::Settings& settings;
 
-	etl::handle<DuckDrag_Rotate> duck_dragger_;
+	std::shared_ptr<DuckDrag_Rotate> duck_dragger_;
 
 	Gtk::Grid options_grid;
 	Gtk::Label title_label;
@@ -130,8 +130,8 @@ public:
 
 	~StateRotate_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	const std::shared_ptr<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 
@@ -317,7 +317,7 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<std::shared_ptr<Duck> >::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -348,7 +348,7 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	if(bad_drag)
 		return;
 
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<std::shared_ptr<Duck> >::iterator iter;
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center+snap);
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());

@@ -40,8 +40,8 @@ namespace synfig {
 class ValueNode_Stripes : public LinkableValueNode
 {
 public:
-	typedef etl::handle<ValueNode_Stripes> Handle;
-	typedef etl::handle<const ValueNode_Stripes> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Stripes> Handle;
+	typedef std::shared_ptr<const ValueNode_Stripes> ConstHandle;
 
 protected:
 

@@ -43,7 +43,7 @@ namespace rendering
 class RendererDraftSW: public Renderer
 {
 public:
-	typedef etl::handle<RendererDraftSW> Handle;
+	typedef std::shared_ptr<RendererDraftSW> Handle;
 	RendererDraftSW();
 	virtual String get_name() const;
 };

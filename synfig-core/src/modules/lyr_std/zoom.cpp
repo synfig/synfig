@@ -133,7 +133,7 @@ Zoom::get_color(Context context, const Point &pos)const
 
 class lyr_std::Zoom_Trans : public Transform
 {
-	etl::handle<const Zoom> layer;
+	std::shared_ptr<const Zoom> layer;
 public:
 	Zoom_Trans(const Zoom* x):Transform(x->get_guid()),layer(x) { }
 
@@ -157,7 +157,7 @@ public:
 	}
 };
 
-etl::handle<Transform>
+std::shared_ptr<Transform>
 Zoom::get_transform()const
 {
 	return new Zoom_Trans(this);

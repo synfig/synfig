@@ -44,7 +44,7 @@ namespace rendering
 class Transformation: public etl::shared_object
 {
 public:
-	typedef etl::handle<Transformation> Handle;
+	typedef std::shared_ptr<Transformation> Handle;
 	
 	struct Bounds {
 		Rect rect;
@@ -140,7 +140,7 @@ public:
 class TransformationVoid: public Transformation
 {
 public:
-	typedef etl::handle<TransformationVoid> Handle;
+	typedef std::shared_ptr<TransformationVoid> Handle;
 protected:
 	virtual Transformation* clone_vfunc() const
 		{ return new TransformationVoid(); }
@@ -161,7 +161,7 @@ protected:
 class TransformationNone: public Transformation
 {
 public:
-	typedef etl::handle<TransformationNone> Handle;
+	typedef std::shared_ptr<TransformationNone> Handle;
 protected:
 	virtual Transformation* clone_vfunc() const
 		{ return new TransformationNone(); }

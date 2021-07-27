@@ -220,7 +220,7 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	return true;
 }
 
-void Widget_SoundWave::set_time_model(const etl::handle<TimeModel>& x)
+void Widget_SoundWave::set_time_model(const std::shared_ptr<TimeModel>& x)
 {
 	if (x) {
 		previous_lower_time = x->get_lower();

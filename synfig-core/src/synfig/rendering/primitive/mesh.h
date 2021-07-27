@@ -51,7 +51,7 @@ namespace rendering
 class Mesh: public etl::shared_object
 {
 public:
-	typedef etl::handle<Mesh> Handle;
+	typedef std::shared_ptr<Mesh> Handle;
 
 	struct Vertex
 	{

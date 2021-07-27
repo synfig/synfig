@@ -74,7 +74,7 @@ Action::System::~System()
 	{ }
 
 void
-Action::System::request_redraw(etl::handle<CanvasInterface> x)
+Action::System::request_redraw(std::shared_ptr<CanvasInterface> x)
 {
 	if (!x) return;
 	if (!group_stack_.empty())
@@ -83,13 +83,13 @@ Action::System::request_redraw(etl::handle<CanvasInterface> x)
 }
 
 bool
-Action::System::perform_action(etl::handle<Action::Base> action)
+Action::System::perform_action(std::shared_ptr<Action::Base> action)
 {
 	assert(action);
 	if (getenv("SYNFIG_DEBUG_ACTIONS"))
 		synfig::info("%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
 
-	etl::handle<UIInterface> uim = get_ui_interface();
+	std::shared_ptr<UIInterface> uim = get_ui_interface();
 	if (!action->is_ready()) {
 		uim->error(action->get_local_name()+": "+_("Action is not ready."));
 		return false;
@@ -108,7 +108,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 
 	// If we cannot undo this action, make sure
 	// that the user knows this.
-	etl::handle<Action::Undoable> undoable_action = etl::handle<Action::Undoable>::cast_dynamic(action);
+	std::shared_ptr<Action::Undoable> undoable_action = std::shared_ptr<Action::Undoable>::cast_dynamic(action);
 	assert(!undoable_action || undoable_action->is_active());
 	if (!undoable_action) {
 		String message = etl::strprintf(_("Do you want to do action \"%s\"?"), action->get_local_name().c_str());
@@ -184,9 +184,9 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 }
 
 bool
-synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
+synfigapp::Action::System::undo_(std::shared_ptr<UIInterface> uim)
 {
-	etl::handle<Action::Undoable> action = undo_action_stack().front();
+	std::shared_ptr<Action::Undoable> action = undo_action_stack().front();
 	most_recent_action_name_ = action->get_name();
 
 	try { if (action->is_active()) action->undo(); }
@@ -233,10 +233,10 @@ synfigapp::Action::System::undo()
 	if (undo_action_stack().empty())
 		return false;
 
-	etl::handle<Action::Undoable> action = undo_action_stack().front();
+	std::shared_ptr<Action::Undoable> action = undo_action_stack().front();
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
-	etl::handle<UIInterface> uim = get_ui_interface();
+	std::shared_ptr<UIInterface> uim = get_ui_interface();
 	if (canvas_specific && canvas_specific->get_canvas())
 		uim = static_cast<Instance*>(this)->find_canvas_interface(canvas_specific->get_canvas())->get_ui_interface();
 
@@ -253,9 +253,9 @@ synfigapp::Action::System::undo()
 }
 
 bool
-Action::System::redo_(etl::handle<UIInterface> uim)
+Action::System::redo_(std::shared_ptr<UIInterface> uim)
 {
-	etl::handle<Action::Undoable> action = redo_action_stack().front();
+	std::shared_ptr<Action::Undoable> action = redo_action_stack().front();
 	most_recent_action_name_ = action->get_name();
 
 	try { if(action->is_active()) action->perform(); }
@@ -302,10 +302,10 @@ Action::System::redo()
 	if (redo_action_stack_.empty())
 		return false;
 
-	etl::handle<Action::Undoable> action = redo_action_stack().front();
+	std::shared_ptr<Action::Undoable> action = redo_action_stack().front();
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
-	etl::handle<UIInterface> uim = get_ui_interface();
+	std::shared_ptr<UIInterface> uim = get_ui_interface();
 	if (canvas_specific && canvas_specific->get_canvas())
 		uim = static_cast<Instance*>(this)->find_canvas_interface(canvas_specific->get_canvas())->get_ui_interface();
 
@@ -369,15 +369,15 @@ Action::System::clear_redo_stack()
 }
 
 bool
-Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
+Action::System::set_action_status(std::shared_ptr<Action::Undoable> action, bool x)
 {
 	if (action->is_active() == x)
 		return true;
 
-	etl::handle<Action::Undoable> cur_pos = undo_action_stack_.front();
+	std::shared_ptr<Action::Undoable> cur_pos = undo_action_stack_.front();
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
-	etl::handle<UIInterface> uim = new ConfidentUIInterface();
+	std::shared_ptr<UIInterface> uim = new ConfidentUIInterface();
 
 	Stack::iterator iter = std::find(undo_action_stack_.begin(), undo_action_stack_.end(), action);
 	if (iter != undo_action_stack_.end()) {
@@ -428,27 +428,27 @@ Action::PassiveGrouper::PassiveGrouper(std::shared_ptr<System> instance_,synfig:
 }
 
 void
-Action::PassiveGrouper::request_redraw(etl::handle<CanvasInterface> x)
+Action::PassiveGrouper::request_redraw(std::shared_ptr<CanvasInterface> x)
 	{ if (x) redraw_set_.insert(x); }
 
 Action::PassiveGrouper::~PassiveGrouper()
 	{ if (!finished_) finish(); }
 
-etl::handle<Action::Group>
+std::shared_ptr<Action::Group>
 Action::PassiveGrouper::finish()
 {
 	assert(!finished_);
-	if (finished_) return etl::handle<Action::Group>();
+	if (finished_) return std::shared_ptr<Action::Group>();
 	finished_ = true;
 
 	// Remove this group from the group stack
 	assert(instance_->group_stack_.front() == this);
 	instance_->group_stack_.pop_front();
 
-	etl::handle<Action::Group> group;
+	std::shared_ptr<Action::Group> group;
 	if (depth_ == 1) {
-		etl::handle<Action::Undoable> action = instance_->undo_action_stack_.front();
-		group = etl::handle<Action::Group>::cast_dynamic(action);
+		std::shared_ptr<Action::Undoable> action = instance_->undo_action_stack_.front();
+		group = std::shared_ptr<Action::Group>::cast_dynamic(action);
 		if (group) {
 			// If the only action inside of us is a group,
 			// then we should rename the group to our name.
@@ -469,7 +469,7 @@ Action::PassiveGrouper::finish()
 		group = new Action::Group(name_);
 
 		for(int i=0; i < depth_; i++) {
-			etl::handle<Action::Undoable> action = instance_->undo_action_stack_.front();
+			std::shared_ptr<Action::Undoable> action = instance_->undo_action_stack_.front();
 
 			if (Action::CanvasSpecific* canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get()))
 				if (canvas_specific->is_dirty()) {

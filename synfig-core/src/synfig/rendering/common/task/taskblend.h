@@ -67,7 +67,7 @@ class TaskBlend: public Task,
 	public TaskInterfaceSplit
 {
 public:
-	typedef etl::handle<TaskBlend> Handle;
+	typedef std::shared_ptr<TaskBlend> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

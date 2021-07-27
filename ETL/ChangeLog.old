@@ -1,6 +1,6 @@
 1.4.0 (git tag "v1.4.0") - Major release.
 
-  * Improve etl::handle - use atomic refcounter instead of mutex
+  * Improve std::shared_ptr - use atomic refcounter instead of mutex
   * Refactor etl::rect
   * Vstrprintf clean and performance improvements
   * Removed virtually empty and unused ETL _curve file

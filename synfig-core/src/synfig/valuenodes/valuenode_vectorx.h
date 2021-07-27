@@ -45,8 +45,8 @@ class ValueNode_VectorX : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_VectorX> Handle;
-	typedef etl::handle<const ValueNode_VectorX> ConstHandle;
+	typedef std::shared_ptr<ValueNode_VectorX> Handle;
+	typedef std::shared_ptr<const ValueNode_VectorX> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

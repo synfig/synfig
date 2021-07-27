@@ -43,8 +43,8 @@ class ValueNode_Real : public LinkableValueNode
 	ValueNode::RHandle real_;
 
 public:
-	typedef etl::handle<ValueNode_Real> Handle;
-	typedef etl::handle<const ValueNode_Real> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Real> Handle;
+	typedef std::shared_ptr<const ValueNode_Real> ConstHandle;
 
 	ValueNode_Real(Type &x);
 	ValueNode_Real(const ValueBase &x);

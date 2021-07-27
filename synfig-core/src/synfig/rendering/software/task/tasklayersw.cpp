@@ -56,7 +56,7 @@ namespace {
 class TaskLayerSW: public TaskLayer, public TaskSW
 {
 public:
-	typedef etl::handle<TaskLayerSW> Handle;
+	typedef std::shared_ptr<TaskLayerSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -78,7 +78,7 @@ public:
 		desc.set_wh(target_surface->get_width(), target_surface->get_height());
 		desc.set_antialias(1);
 
-		etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
+		std::shared_ptr<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
 		sub_layer->tasks = sub_tasks;
 
 		CanvasBase fake_canvas_base;

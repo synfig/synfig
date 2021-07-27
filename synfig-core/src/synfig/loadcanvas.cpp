@@ -1852,7 +1852,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 	return value_node;
 }
 
-etl::handle<LinkableValueNode>
+std::shared_ptr<LinkableValueNode>
 CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d parse_linkable_value_node\n", __FILE__, __LINE__);
@@ -2783,7 +2783,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->set_exclude_from_rendering(!is_false(element->get_attribute("exclude_from_rendering")->get_value()));
 
 	// Load old groups
-	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_Group>::cast_dynamic(layer);
+	std::shared_ptr<Layer_PasteCanvas> layer_pastecanvas = std::shared_ptr<Layer_Group>::cast_dynamic(layer);
 	bool old_pastecanvas = layer_pastecanvas && version=="0.1";
 	ValueNode::Handle origin_node;
 	ValueNode_Composite::Handle transformation_node;

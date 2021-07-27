@@ -52,7 +52,7 @@ namespace {
 class TaskBlurSW: public TaskBlur, public TaskSW, public TaskInterfaceBlendToTarget
 {
 public:
-	typedef etl::handle<TaskBlurSW> Handle;
+	typedef std::shared_ptr<TaskBlurSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

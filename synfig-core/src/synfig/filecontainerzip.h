@@ -43,12 +43,12 @@ namespace synfig
 	class FileContainerZip: public FileContainer
 	{
 	public:
-		typedef etl::handle<FileContainerZip> Handle;
+		typedef std::shared_ptr<FileContainerZip> Handle;
 
 		class WholeZipReadStream : public FileSystem::ReadStream
 		{
 		public:
-			typedef etl::handle<WholeZipReadStream> Handle;
+			typedef std::shared_ptr<WholeZipReadStream> Handle;
 		protected:
 			friend class FileContainerZip;
 			WholeZipReadStream(FileSystem::Handle file_system);

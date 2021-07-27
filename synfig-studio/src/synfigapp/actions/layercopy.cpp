@@ -172,7 +172,7 @@ Action::LayerCopy::prepare()
 		new_layer->set_description(description);
 
 		// copy file
-		etl::handle<Layer_Bitmap> layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer);
+		std::shared_ptr<Layer_Bitmap> layer_bitmap = std::shared_ptr<Layer_Bitmap>::cast_dynamic(layer);
 		if (layer_bitmap && !filename.empty())
 		{
 			get_canvas_interface()

@@ -210,8 +210,8 @@ ValueNode_Random::check_type(Type &type)
 ValueNode::Handle
 ValueNode_Random::clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid)const
 {
-	etl::handle<ValueNode_Random> ret =
-		etl::handle<ValueNode_Random>::cast_dynamic(
+	std::shared_ptr<ValueNode_Random> ret =
+		std::shared_ptr<ValueNode_Random>::cast_dynamic(
 			LinkableValueNode::clone(canvas, deriv_guid) );
 	ret->randomize_seed();
 	return ret;

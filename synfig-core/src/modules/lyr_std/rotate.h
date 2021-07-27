@@ -72,7 +72,7 @@ public:
 	virtual Vocab get_param_vocab()const;
 	virtual Rect get_full_bounding_rect(Context context)const;
 
-	virtual etl::handle<Transform> get_transform()const;
+	virtual std::shared_ptr<Transform> get_transform()const;
 
 protected:
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;

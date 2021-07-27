@@ -39,8 +39,8 @@ class ValueNode_Average : public ValueNode_DynamicList
 {
 public:
 
-	typedef etl::handle<ValueNode_Average> Handle;
-	typedef etl::handle<const ValueNode_Average> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Average> Handle;
+	typedef std::shared_ptr<const ValueNode_Average> ConstHandle;
 
 
 	ValueNode_Average(const ValueBase &value, std::shared_ptr<Canvas> canvas);

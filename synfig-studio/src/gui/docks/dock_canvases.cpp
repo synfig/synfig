@@ -151,19 +151,19 @@ Dock_Canvases::get_selected_canvas()
 
 	studio::Instance::CanvasTreeModel canvas_tree_model;
 
-	return static_cast<etl::handle<synfig::Canvas> >((*selection->get_selected())[canvas_tree_model.canvas]);
+	return static_cast<std::shared_ptr<synfig::Canvas> >((*selection->get_selected())[canvas_tree_model.canvas]);
 }
 
 
 
 void
-Dock_Canvases::set_selected_instance_signal(etl::handle<studio::Instance> x)
+Dock_Canvases::set_selected_instance_signal(std::shared_ptr<studio::Instance> x)
 {
 	set_selected_instance(x);
 }
 
 void
-Dock_Canvases::set_selected_instance_(etl::handle<studio::Instance> instance)
+Dock_Canvases::set_selected_instance_(std::shared_ptr<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -195,7 +195,7 @@ Dock_Canvases::set_selected_instance(std::shared_ptr<studio::Instance> x)
 }
 
 void
-Dock_Canvases::new_instance(etl::handle<studio::Instance> instance)
+Dock_Canvases::new_instance(std::shared_ptr<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -214,7 +214,7 @@ Dock_Canvases::new_instance(etl::handle<studio::Instance> instance)
 }
 
 void
-Dock_Canvases::delete_instance(etl::handle<studio::Instance> instance)
+Dock_Canvases::delete_instance(std::shared_ptr<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;

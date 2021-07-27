@@ -51,7 +51,7 @@ namespace rendering
 class Intersector: public etl::shared_object
 {
 public:
-	typedef etl::handle<Intersector> Handle;
+	typedef std::shared_ptr<Intersector> Handle;
 
 	class MonoSegment;
 	class CurveArray;

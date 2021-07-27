@@ -149,7 +149,7 @@ public:
 	*/
 
 private:
-	//static etl::handle<synfigapp::UIInterface> ui_interface_;
+	//static std::shared_ptr<synfigapp::UIInterface> ui_interface_;
 	//static int max_recent_files;
 
 /*      //declared as globals in app.cpp
@@ -170,14 +170,14 @@ private:
 	etl::smart_ptr<synfigapp::Main> synfigapp_main;
 
 
-	static etl::handle<Instance> selected_instance;
-	static etl::handle<CanvasView> selected_canvas_view;
+	static std::shared_ptr<Instance> selected_instance;
+	static std::shared_ptr<CanvasView> selected_canvas_view;
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
 
 	static int jack_locks_;
 
-//	static std::list< etl::handle< Module > > module_list_;
+//	static std::list< std::shared_ptr< Module > > module_list_;
 
 	static WorkspaceHandler *workspaces;
 
@@ -206,7 +206,7 @@ public:
 	static MainWindow *main_window;
 	static Dock_Toolbox *dock_toolbox;
 
-	static std::list<etl::handle<Instance> > instance_list;
+	static std::list<std::shared_ptr<Instance> > instance_list;
 
 	static bool shutdown_in_progress;
 
@@ -257,15 +257,15 @@ public:
 	> signal_canvas_view_focus_;
 	static sigc::signal<
 		void,
-		etl::handle<Instance>
+		std::shared_ptr<Instance>
 	> signal_instance_selected_;
 	static sigc::signal<
 		void,
-		etl::handle<Instance>
+		std::shared_ptr<Instance>
 	> signal_instance_created_;
 	static sigc::signal<
 		void,
-		etl::handle<Instance>
+		std::shared_ptr<Instance>
 	> signal_instance_deleted_;
 	static sigc::signal<void> signal_recent_files_changed_;
 	static sigc::signal<void> signal_present_all_;
@@ -285,17 +285,17 @@ public:
 
 	static sigc::signal<
 		void,
-		etl::handle<Instance>
+		std::shared_ptr<Instance>
 	> &signal_instance_selected();
 
 	static sigc::signal<
 		void,
-		etl::handle<Instance>
+		std::shared_ptr<Instance>
 	> &signal_instance_created();
 
 	static sigc::signal<
 		void,
-		etl::handle<Instance>
+		std::shared_ptr<Instance>
 	> &signal_instance_deleted();
 
 	/*
@@ -324,7 +324,7 @@ public:
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
 
-	static void add_recent_file(const etl::handle<Instance> instance);
+	static void add_recent_file(const std::shared_ptr<Instance> instance);
 
 	static Gtk::Box* scale_imported_box();
 
@@ -353,13 +353,13 @@ public:
 
 	static const std::vector<std::string> get_workspaces();
 
-	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
+	static const std::shared_ptr<synfigapp::UIInterface>& get_ui_interface();
 
 
 	static void set_selected_instance(std::shared_ptr<Instance> instance);
 	static void set_selected_canvas_view(std::shared_ptr<CanvasView>);
 
-	static std::shared_ptr<Instance> get_instance(etl::handle<synfig::Canvas> canvas);
+	static std::shared_ptr<Instance> get_instance(std::shared_ptr<synfig::Canvas> canvas);
 
 	static std::shared_ptr<Instance> get_selected_instance() { return selected_instance; }
 	static std::shared_ptr<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
@@ -463,8 +463,8 @@ public:
 
 	static void open_uri(const std::string &uri);
 	static void open_img_in_external(const std::string &uri);
-	static void open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-	const etl::handle<synfig::Layer> reference_layer);
+	static void open_vectorizerpopup(const std::shared_ptr<synfig::Layer_Bitmap> my_layer_bitmap,
+	const std::shared_ptr<synfig::Layer> reference_layer);
 
 
 

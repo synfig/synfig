@@ -45,8 +45,8 @@ class ValueNode_VectorAngle : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_VectorAngle> Handle;
-	typedef etl::handle<const ValueNode_VectorAngle> ConstHandle;
+	typedef std::shared_ptr<ValueNode_VectorAngle> Handle;
+	typedef std::shared_ptr<const ValueNode_VectorAngle> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

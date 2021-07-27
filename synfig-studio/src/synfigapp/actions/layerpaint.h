@@ -66,7 +66,7 @@ public:
 		PaintStroke *prev, *next;
 		PaintStroke *prevSameLayer, *nextSameLayer;
 
-		etl::handle<synfig::Layer_Bitmap> layer;
+		std::shared_ptr<synfig::Layer_Bitmap> layer;
 		brushlib::Brush brush_;
 
 		synfig::Surface surface;
@@ -88,8 +88,8 @@ public:
 		PaintStroke();
 		~PaintStroke();
 
-		void set_layer(etl::handle<synfig::Layer_Bitmap> layer) { assert(!prepared); this->layer = layer; }
-		etl::handle<synfig::Layer_Bitmap> get_layer() const { return layer; }
+		void set_layer(std::shared_ptr<synfig::Layer_Bitmap> layer) { assert(!prepared); this->layer = layer; }
+		std::shared_ptr<synfig::Layer_Bitmap> get_layer() const { return layer; }
 
 		brushlib::Brush &brush() { assert(!prepared); return brush_; }
 		const brushlib::Brush &get_brush() const { return brush_; }

@@ -43,8 +43,8 @@ class ValueNode_Switch : public LinkableValueNode
 	ValueNode::RHandle link_on_;
 	ValueNode::RHandle switch_;
 public:
-	typedef etl::handle<ValueNode_Switch> Handle;
-	typedef etl::handle<const ValueNode_Switch> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Switch> Handle;
+	typedef std::shared_ptr<const ValueNode_Switch> ConstHandle;
 
 	ValueNode_Switch(Type &x);
 

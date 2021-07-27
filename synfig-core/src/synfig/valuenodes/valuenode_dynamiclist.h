@@ -158,8 +158,8 @@ public:
 		ListEntry(const ValueNode::Handle &value_node,Time begin, Time end);
 	}; // END of struct ValueNode_DynamicList::ListEntry
 
-	typedef etl::handle<ValueNode_DynamicList> Handle;
-	typedef etl::handle<const ValueNode_DynamicList> ConstHandle;
+	typedef std::shared_ptr<ValueNode_DynamicList> Handle;
+	typedef std::shared_ptr<const ValueNode_DynamicList> ConstHandle;
 
 protected:
 	ValueNode_DynamicList(Type &container_type=type_nil, std::shared_ptr<Canvas> canvas = 0);

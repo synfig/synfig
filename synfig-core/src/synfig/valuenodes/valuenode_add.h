@@ -40,8 +40,8 @@ namespace synfig {
 class ValueNode_Add : public LinkableValueNode
 {
 public:
-	typedef etl::handle<ValueNode_Add> Handle;
-	typedef etl::handle<const ValueNode_Add> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Add> Handle;
+	typedef std::shared_ptr<const ValueNode_Add> ConstHandle;
 
 protected:
 	ValueNode_Add(const ValueBase &value);

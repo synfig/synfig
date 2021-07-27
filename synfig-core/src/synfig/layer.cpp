@@ -408,7 +408,7 @@ Layer::set_param(const String &param, const ValueBase &value)
 	return false;
 }
 
-etl::handle<Transform>
+std::shared_ptr<Transform>
 Layer::get_transform()const
 {
 	return 0;
@@ -898,7 +898,7 @@ Layer::build_rendering_task_vfunc(Context context)const
 	if (approximate_not_equal(amount, 1.0) && task->layer.type_is<Layer_Composite>())
 	{
 		//task->layer = task->layer->clone(NULL);
-		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(task->layer);
+		std::shared_ptr<Layer_Composite> composite = std::shared_ptr<Layer_Composite>::cast_dynamic(task->layer);
 		composite->set_amount( composite->get_amount()*amount );
 	}
 

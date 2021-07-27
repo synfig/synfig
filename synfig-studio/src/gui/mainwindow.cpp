@@ -261,7 +261,7 @@ MainWindow::toggle_show_toolbar()
 {
 	App::enable_mainwin_toolbar = !App::enable_mainwin_toolbar;
 	
-	for(std::list<etl::handle<Instance> >::iterator iter1 = App::instance_list.begin(); iter1 != App::instance_list.end(); iter1++){
+	for(std::list<std::shared_ptr<Instance> >::iterator iter1 = App::instance_list.begin(); iter1 != App::instance_list.end(); iter1++){
 			const Instance::CanvasViewList &views = (*iter1)->canvas_view_list();
 			for(Instance::CanvasViewList::const_iterator iter2 = views.begin(); iter2 != views.end(); ++iter2)
 				(*iter2)->toggle_show_toolbar();

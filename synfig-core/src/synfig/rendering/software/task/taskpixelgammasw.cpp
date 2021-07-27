@@ -53,7 +53,7 @@ namespace {
 class TaskPixelGammaSW: public TaskPixelGamma, public TaskSW
 {
 public:
-	typedef etl::handle<TaskPixelGammaSW> Handle;
+	typedef std::shared_ptr<TaskPixelGammaSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

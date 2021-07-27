@@ -88,7 +88,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
 {
-	set_time_model(etl::handle<TimeModel>());
+	set_time_model(std::shared_ptr<TimeModel>());
 	set_kf_list(NULL);
 	set_canvas_interface(std::shared_ptr<CanvasInterface>());
 }
@@ -447,7 +447,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 }
 
 
-void Widget_Keyframe_List::set_time_model(const etl::handle<TimeModel> &x)
+void Widget_Keyframe_List::set_time_model(const std::shared_ptr<TimeModel> &x)
 {
 	if (time_model == x) return;
 	time_model_change.disconnect();

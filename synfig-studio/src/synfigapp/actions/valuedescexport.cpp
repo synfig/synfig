@@ -176,7 +176,7 @@ void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, sy
 		const ValueNodeList &value_node_list = canvas->value_node_list();
 		for(ValueNodeList::const_iterator i = value_node_list.begin(); i != value_node_list.end(); i++)
 		{
-			LinkableValueNode::Handle linkable_value_node = etl::handle<LinkableValueNode>::cast_dynamic(*i);
+			LinkableValueNode::Handle linkable_value_node = std::shared_ptr<LinkableValueNode>::cast_dynamic(*i);
 			if (linkable_value_node)
 				scan_linkable_value_node(prev_canvas, new_canvas, linkable_value_node);
 		}
@@ -203,7 +203,7 @@ void Action::ValueDescExport::scan_layer(synfig::Canvas::Handle prev_canvas, syn
 
 		if (!i->second->get_parent_canvas())
 		{
-			LinkableValueNode::Handle linkable_value_node = etl::handle<LinkableValueNode>::cast_dynamic(i->second);
+			LinkableValueNode::Handle linkable_value_node = std::shared_ptr<LinkableValueNode>::cast_dynamic(i->second);
 			if (linkable_value_node)
 				scan_linkable_value_node(prev_canvas, new_canvas, linkable_value_node);
 		}
@@ -230,7 +230,7 @@ void Action::ValueDescExport::scan_linkable_value_node(synfig::Canvas::Handle pr
 			}
 			if (!link->get_parent_canvas())
 			{
-				LinkableValueNode::Handle sub_linkable_value_node = etl::handle<LinkableValueNode>::cast_dynamic(link);
+				LinkableValueNode::Handle sub_linkable_value_node = std::shared_ptr<LinkableValueNode>::cast_dynamic(link);
 				if (sub_linkable_value_node)
 					scan_linkable_value_node(prev_canvas, new_canvas, sub_linkable_value_node);
 			}

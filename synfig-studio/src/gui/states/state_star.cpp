@@ -84,14 +84,14 @@ StateStar studio::state_star;
 
 class studio::StateStar_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	std::shared_ptr<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	Duckmatic::Push duckmatic_push;
 
 	Point point_holder;
 
-	etl::handle<Duck> point2_duck;
+	std::shared_ptr<Duck> point2_duck;
 
 	void refresh_ducks();
 
@@ -284,8 +284,8 @@ public:
 	~StateStar_Context();
 
 	//Canvas interaction
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	const std::shared_ptr<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 
@@ -1438,7 +1438,7 @@ StateStar_Context::event_mouse_click_handler(const Smach::event& x)
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DOWN && event.button==BUTTON_LEFT)
 	{
 		point_holder=get_work_area()->snap_point_to_grid(event.pos);
-		etl::handle<Duck> duck=new Duck();
+		std::shared_ptr<Duck> duck=new Duck();
 		duck->set_point(point_holder);
 		duck->set_name("p1");
 		duck->set_type(Duck::TYPE_POSITION);

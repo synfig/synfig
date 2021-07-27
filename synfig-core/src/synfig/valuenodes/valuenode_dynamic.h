@@ -85,8 +85,8 @@ private:
 	void reset_state(Time t)const;
 public:
 
-	typedef etl::handle<ValueNode_Dynamic> Handle;
-	typedef etl::handle<const ValueNode_Dynamic> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Dynamic> Handle;
+	typedef std::shared_ptr<const ValueNode_Dynamic> ConstHandle;
 
 	virtual ValueBase operator()(Time t)const;
 
@@ -113,7 +113,7 @@ public:
 
 class Oscillator
 {
-	etl::handle<const ValueNode_Dynamic> d;
+	std::shared_ptr<const ValueNode_Dynamic> d;
 public:
     Oscillator(const ValueNode_Dynamic* x) : d(x) { }
     void operator() ( const std::vector<double> &x , std::vector<double> &dxdt , const double t )

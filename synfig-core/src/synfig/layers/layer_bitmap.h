@@ -52,7 +52,7 @@ class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 
 	GUID surface_modification_id;
 public:
-	typedef etl::handle<Layer_Bitmap> Handle;
+	typedef std::shared_ptr<Layer_Bitmap> Handle;
 
 	ValueBase param_tl;
 	ValueBase param_br;

@@ -146,7 +146,7 @@ class GUID;
 class Canvas;
 class SoundProcessor;
 
-typedef        etl::handle<Canvas>     CanvasHandle;
+typedef        std::shared_ptr<Canvas>     CanvasHandle;
 
 //! Optimize layers based on its calculated Z depth to perform a quick
 //! render of the layers to the output.
@@ -167,9 +167,9 @@ class Canvas : public CanvasBase, public Node
 	*/
 
 public:
-	typedef etl::handle<Canvas> Handle;
+	typedef std::shared_ptr<Canvas> Handle;
 	typedef std::shared_ptr<Canvas> LooseHandle;
-	typedef etl::handle<const Canvas> ConstHandle;
+	typedef std::shared_ptr<const Canvas> ConstHandle;
 
 	typedef std::list<Handle> Children;
 
@@ -255,7 +255,7 @@ private:
 	bool op_flag_;
 
 	//! Layer Group database
-	std::map<String,std::set<etl::handle<Layer> > > group_db_;
+	std::map<String,std::set<std::shared_ptr<Layer> > > group_db_;
 
 	//! Layer Signal Connection database. Seems to be unused.
 	std::map<std::shared_ptr<Layer>,std::vector<sigc::connection> > connections_;
@@ -280,8 +280,8 @@ private:
 	//! Group Changed
 	sigc::signal<void,String> signal_group_changed_;
 
-	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_added_;
-	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_removed_;
+	sigc::signal<void,String,std::shared_ptr<synfig::Layer> > signal_group_pair_added_;
+	sigc::signal<void,String,std::shared_ptr<synfig::Layer> > signal_group_pair_removed_;
 
 	//!	Layers Reordered
 	sigc::signal<void,int*> signal_layers_reordered_;
@@ -306,13 +306,13 @@ private:
 
 
 	//!	ValueBasenode Changed
-	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_changed_;
+	sigc::signal<void, std::shared_ptr<ValueNode> > signal_value_node_changed_;
 	//!	ValueBasenode Renamed
-	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_renamed_;
+	sigc::signal<void, std::shared_ptr<ValueNode> > signal_value_node_renamed_;
 	//!	Child Value Node Added. Used in Dynamic List Value Nodes
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_added_;
+	sigc::signal<void, std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode> > signal_value_node_child_added_;
 	//!	Child Value Node Removed. Used in Dynamic List Value Nodes
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_removed_;
+	sigc::signal<void, std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode> > signal_value_node_child_removed_;
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
@@ -320,8 +320,8 @@ private:
 
 public:
 
-	sigc::signal<void,String,etl::handle<synfig::Layer> >& signal_group_pair_added() { return signal_group_pair_added_; }
-	sigc::signal<void,String,etl::handle<synfig::Layer> >& signal_group_pair_removed() { return signal_group_pair_removed_; }
+	sigc::signal<void,String,std::shared_ptr<synfig::Layer> >& signal_group_pair_added() { return signal_group_pair_added_; }
+	sigc::signal<void,String,std::shared_ptr<synfig::Layer> >& signal_group_pair_removed() { return signal_group_pair_removed_; }
 
 	//!	Group Added
 	sigc::signal<void,String>& signal_group_added() { return signal_group_added_; }
@@ -351,20 +351,20 @@ public:
 	sigc::signal<void>& signal_meta_data_changed(const String& key) { return signal_map_meta_data_changed_[key]; }
 
 	//! Value Node Changed
-	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_changed() { return signal_value_node_changed_; }
+	sigc::signal<void, std::shared_ptr<ValueNode> >& signal_value_node_changed() { return signal_value_node_changed_; }
 	//! Value Node Renamed
-	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_renamed() { return signal_value_node_renamed_; }
+	sigc::signal<void, std::shared_ptr<ValueNode> >& signal_value_node_renamed() { return signal_value_node_renamed_; }
 
 	//! Dirty
 	sigc::signal<void>& signal_dirty() { return signal_changed();	}
 
 	//! Child Value Node Added
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> >& signal_value_node_child_added() { return signal_value_node_child_added_; }
+	sigc::signal<void, std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode> >& signal_value_node_child_added() { return signal_value_node_child_added_; }
 
 	//! Child Value Node Removed
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> >& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
+	sigc::signal<void, std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode> >& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
 
-	void invoke_signal_value_node_child_removed(etl::handle<ValueNode>, etl::handle<ValueNode>);
+	void invoke_signal_value_node_child_removed(std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode>);
 
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
@@ -385,7 +385,7 @@ public:
 public:
 
 	//! Returns the set of layers in group
-	std::set<etl::handle<Layer> > get_layers_in_group(const String&group);
+	std::set<std::shared_ptr<Layer> > get_layers_in_group(const String&group);
 
 	//! Gets all the groups
 	std::set<String> get_groups()const;
@@ -588,10 +588,10 @@ public:
 
 	//! Finds a Layer by its position.
 	//! \see get_context()
-	etl::handle<Layer> find_layer(const ContextParams &context_params, const Point &pos);
+	std::shared_ptr<Layer> find_layer(const ContextParams &context_params, const Point &pos);
 
 	//! Gets the depth of a particular Layer by its handle
-	int get_depth(etl::handle<Layer>)const;
+	int get_depth(std::shared_ptr<Layer>)const;
 
 	//! Retireves the first layer of the double queue of Layers
 	IndependentContext get_independent_context()const;
@@ -612,8 +612,8 @@ public:
 	iterator byindex(int index);
 	const_iterator byindex(int index) const;
 	
-	iterator find_index(const etl::handle<Layer> &layer, int &index);
-	const_iterator find_index(const etl::handle<Layer> &layer, int &index) const;
+	iterator find_index(const std::shared_ptr<Layer> &layer, int &index);
+	const_iterator find_index(const std::shared_ptr<Layer> &layer, int &index) const;
 	
 	//! Returns the last Canvas layer queue iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
@@ -632,21 +632,21 @@ public:
 	 * just past the last element of the queue.*/
 	const_reverse_iterator rbegin()const;
 	//! Returns last layer in Canvas layer stack
-	etl::handle<Layer> &back();
+	std::shared_ptr<Layer> &back();
 	//! Returns last layer in Canvas layer stack
-	const etl::handle<Layer> &back()const;
+	const std::shared_ptr<Layer> &back()const;
 	//! Inserts a layer just before the last layer.
-	//! \see end(), insert(iterator iter,etl::handle<Layer> x)
-	void push_back(etl::handle<Layer> x);
+	//! \see end(), insert(iterator iter,std::shared_ptr<Layer> x)
+	void push_back(std::shared_ptr<Layer> x);
 	//! Inserts a layer just at the beginning of the Canvas layer dqueue
-	void push_front(etl::handle<Layer> x);
+	void push_front(std::shared_ptr<Layer> x);
 	//! Inserts a layer in the last position of the Canvas layer dqueue
 	//! Uses the standard methods and doesn't perform any parentship
 	//! or signal update
-	void push_back_simple(etl::handle<Layer> x);
+	void push_back_simple(std::shared_ptr<Layer> x);
 	//! Inserts a layer before the given position by \iter and performs
 	//! the proper child parent relationships and signals update
-	void insert(iterator iter,etl::handle<Layer> x);
+	void insert(iterator iter,std::shared_ptr<Layer> x);
 	//! Removes a layer from the Canvas layer dqueue and its group and parent
 	//! relatioship. Although it is not already used, it clears the connections
 	//! see connections_
@@ -685,10 +685,10 @@ private:
 	void set_parent(const Canvas::LooseHandle &parent);
 	//! Adds a \layer to a group given by its \group string to the group
 	//! database
-	void add_group_pair(String group, etl::handle<Layer> layer);
+	void add_group_pair(String group, std::shared_ptr<Layer> layer);
 	//! Removes a \layer from a group given by its \group string to the group
 	//! database
-	void remove_group_pair(String group, etl::handle<Layer> layer);
+	void remove_group_pair(String group, std::shared_ptr<Layer> layer);
 	//! Seems to be used to add the stored signals connections of the layers.
 	//! \see connections_
 	void add_connection(std::shared_ptr<Layer> layer, sigc::connection connection);

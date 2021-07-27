@@ -50,8 +50,8 @@ class Canvas;
 class ValueNode_StaticList : public LinkableValueNode
 {
 public:
-	typedef etl::handle<ValueNode_StaticList> Handle;
-	typedef etl::handle<const ValueNode_StaticList> ConstHandle;
+	typedef std::shared_ptr<ValueNode_StaticList> Handle;
+	typedef std::shared_ptr<const ValueNode_StaticList> ConstHandle;
 	typedef ValueNode::Handle ListEntry;
 	typedef ValueNode::RHandle ReplaceableListEntry;
 

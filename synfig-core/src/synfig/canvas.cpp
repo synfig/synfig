@@ -166,7 +166,7 @@ Canvas::byindex(int index) const
 }
 
 Canvas::iterator
-Canvas::find_index(const etl::handle<Layer> &layer, int &index)
+Canvas::find_index(const std::shared_ptr<Layer> &layer, int &index)
 {
 	index = -1;
 	int idx = 0;
@@ -176,7 +176,7 @@ Canvas::find_index(const etl::handle<Layer> &layer, int &index)
 }
 
 Canvas::const_iterator
-Canvas::find_index(const etl::handle<Layer> &layer, int &index) const
+Canvas::find_index(const std::shared_ptr<Layer> &layer, int &index) const
 {
 	index = -1;
 	int idx = 0;
@@ -342,7 +342,7 @@ Canvas::keyframe_list()const
 	return keyframe_list_;
 }
 
-etl::handle<Layer>
+std::shared_ptr<Layer>
 Canvas::find_layer(const ContextParams &context_params, const Point &pos)
 {
 	return get_context(context_params).hit_check(pos);
@@ -468,7 +468,7 @@ Canvas::get_non_inline_ancestor()const
 }
 
 int
-Canvas::get_depth(etl::handle<Layer> layer)const
+Canvas::get_depth(std::shared_ptr<Layer> layer)const
 {
 	const_iterator iter;
 	int i(0);
@@ -851,7 +851,7 @@ Canvas::create()
 }
 
 void
-Canvas::push_back(etl::handle<Layer> x)
+Canvas::push_back(std::shared_ptr<Layer> x)
 {
 //	int i(x->count());
 	insert(end(),x);
@@ -859,7 +859,7 @@ Canvas::push_back(etl::handle<Layer> x)
 }
 
 void
-Canvas::push_front(etl::handle<Layer> x)
+Canvas::push_front(std::shared_ptr<Layer> x)
 {
 //	int i(x->count());
 	insert(begin(),x);
@@ -867,7 +867,7 @@ Canvas::push_front(etl::handle<Layer> x)
 }
 
 void
-Canvas::insert(iterator iter,etl::handle<Layer> x)
+Canvas::insert(iterator iter,std::shared_ptr<Layer> x)
 {
 //	int i(x->count());
 	CanvasBase::insert(iter,x);
@@ -911,7 +911,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 }
 
 void
-Canvas::push_back_simple(etl::handle<Layer> x)
+Canvas::push_back_simple(std::shared_ptr<Layer> x)
 {
 	CanvasBase::insert(end(),x);
 	changed();
@@ -1019,7 +1019,7 @@ Canvas::set_inline(LooseHandle parent)
 	is_inline_=true;
 
 	// Have the parent inherit all of the group stuff
-	std::map<String,std::set<etl::handle<Layer> > >::const_iterator iter;
+	std::map<String,std::set<std::shared_ptr<Layer> > >::const_iterator iter;
 	for(iter=group_db_.begin();iter!=group_db_.end();++iter)
 		parent->group_db_[iter->first].insert(iter->second.begin(),iter->second.end());
 	rend_desc()=parent->rend_desc();
@@ -1410,8 +1410,8 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				{ }
 #endif	// SYNFIG_OPTIMIZE_PASTE_CANVAS
 
-			etl::handle<Layer_PasteCanvas> new_layer =
-				etl::handle<Layer_PasteCanvas>::cast_dynamic( Layer::create(paste_canvas->get_name()) );
+			std::shared_ptr<Layer_PasteCanvas> new_layer =
+				std::shared_ptr<Layer_PasteCanvas>::cast_dynamic( Layer::create(paste_canvas->get_name()) );
 			new_layer->set_optimized(true);
 			if (motion_blurred)
 			{
@@ -1434,7 +1434,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			 */
 
 			// \todo: this code probably needs modification to work properly with motionblur and duplicate
-//			etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
+//			std::shared_ptr<Layer_Composite> composite = std::shared_ptr<Layer_Composite>::cast_dynamic(layer);
 
 			/* some layers (such as circle) don't touch pixels that aren't
 			 * part of the circle, so they don't get blended correctly when
@@ -1470,14 +1470,14 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		}
 		// Alright, the layer is included in the sorted list
 		// let's look if it is a composite and if it is partially visible
-		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
+		std::shared_ptr<Layer_Composite> composite = std::shared_ptr<Layer_Composite>::cast_dynamic(layer);
 		if(composite && layer_visibility < 1.0)
 		{
 			// Let's clone the composite layer if it is not a Paste Canvas
 			// (because paste will always be new layer)
 			// Oops... not always...
 			//if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
-				composite = etl::handle<Layer_Composite>::cast_dynamic(composite->simple_clone());
+				composite = std::shared_ptr<Layer_Composite>::cast_dynamic(composite->simple_clone());
 			// Let's scale the amount parameter by the z depth visibility
 			ValueNode::Handle amount;
 			// First look if amount is dynamic:
@@ -1523,14 +1523,14 @@ Canvas::get_times_vfunc(Node::time_set &set) const
 	}
 }
 
-std::set<etl::handle<Layer> >
+std::set<std::shared_ptr<Layer> >
 Canvas::get_layers_in_group(const String&group)
 {
 	if(is_inline() && parent_)
 		return parent_->get_layers_in_group(group);
 
 	if(group_db_.count(group)==0)
-		return std::set<etl::handle<Layer> >();
+		return std::set<std::shared_ptr<Layer> >();
 	return group_db_.find(group)->second;
 }
 
@@ -1541,7 +1541,7 @@ Canvas::get_groups()const
 		return parent_->get_groups();
 
 	std::set<String> ret;
-	std::map<String,std::set<etl::handle<Layer> > >::const_iterator iter;
+	std::map<String,std::set<std::shared_ptr<Layer> > >::const_iterator iter;
 	for(iter=group_db_.begin();iter!=group_db_.end();++iter)
 		ret.insert(iter->first);
 	return ret;
@@ -1557,7 +1557,7 @@ Canvas::get_group_count()const
 }
 
 void
-Canvas::add_group_pair(String group, etl::handle<Layer> layer)
+Canvas::add_group_pair(String group, std::shared_ptr<Layer> layer)
 {
 	group_db_[group].insert(layer);
 	if(group_db_[group].size()==1)
@@ -1572,7 +1572,7 @@ Canvas::add_group_pair(String group, etl::handle<Layer> layer)
 }
 
 void
-Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
+Canvas::remove_group_pair(String group, std::shared_ptr<Layer> layer)
 {
 	group_db_[group].erase(layer);
 
@@ -1621,11 +1621,11 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	{
 		size_t pos = 0;
 		while ((pos = new_name.find(GROUP_NEST_CHAR, pos)) != string::npos) {
-			std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
+			std::map<String,std::set<std::shared_ptr<Layer> > >::iterator iter;
 			String name(new_name, 0, pos);
 			iter=group_db_.find(name);
 			if (iter == group_db_.end()) {
-				group_db_[name] = std::set<etl::handle<Layer> >();
+				group_db_[name] = std::set<std::shared_ptr<Layer> >();
 				signal_group_added()(name);
 			}
 			pos++;
@@ -1636,7 +1636,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	{
 		const string old_name_prefix = old_name + GROUP_NEST_CHAR;
 
-		std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
+		std::map<String,std::set<std::shared_ptr<Layer> > >::iterator iter;
 
 		iter=group_db_.find(old_name);
 		if(iter!=group_db_.end()) {
@@ -1649,8 +1649,8 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 		}
 	}
 
-	std::set<etl::handle<Layer> > layers(get_layers_in_group(old_name));
-	std::set<etl::handle<Layer> >::iterator iter;
+	std::set<std::shared_ptr<Layer> > layers(get_layers_in_group(old_name));
+	std::set<std::shared_ptr<Layer> >::iterator iter;
 
 	for(iter=layers.begin();iter!=layers.end();++iter)
 	{
@@ -1660,7 +1660,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	// if empty group, rename it
 	if (layers.size() == 0) {
 		group_db_.erase(group_db_.find(old_name));
-		group_db_[new_name] = std::set<etl::handle<Layer> >();
+		group_db_[new_name] = std::set<std::shared_ptr<Layer> >();
 		signal_group_removed()(old_name);
 		signal_group_added()(new_name);
 	}
@@ -1698,7 +1698,7 @@ Canvas::show_structure(int i) const
 	{
 		Layer::Handle layer=*iter;
 		printf("%d: %s : %s", i, layer->get_name().c_str(), layer->get_non_empty_description().c_str());
-		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
+		std::shared_ptr<Layer_Composite> composite = std::shared_ptr<Layer_Composite>::cast_dynamic(layer);
 		if(composite)
 			printf(": %d: %f", composite->get_blend_method(), composite->get_amount());
 		else
@@ -1719,7 +1719,7 @@ Canvas::show_structure(int i) const
 // the container is a ValueNode_{Static,Dynamic}List
 // the content is the entry
 void
-Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container, etl::handle<ValueNode> content)
+Canvas::invoke_signal_value_node_child_removed(std::shared_ptr<ValueNode> container, std::shared_ptr<ValueNode> content)
 {
 	signal_value_node_child_removed()(container, content);
 	Canvas::Handle canvas(this);

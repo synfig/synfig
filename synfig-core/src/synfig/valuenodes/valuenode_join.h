@@ -48,8 +48,8 @@ class ValueNode_Join : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_Join> Handle;
-	typedef etl::handle<const ValueNode_Join> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Join> Handle;
+	typedef std::shared_ptr<const ValueNode_Join> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

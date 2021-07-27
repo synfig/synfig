@@ -56,8 +56,8 @@ protected:
 
 public:
 
-	typedef etl::handle<ValueNode_Bone> Handle;
-	typedef etl::handle<const ValueNode_Bone> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Bone> Handle;
+	typedef std::shared_ptr<const ValueNode_Bone> ConstHandle;
 	typedef std::shared_ptr<ValueNode_Bone> LooseHandle;
 	typedef std::map<synfig::GUID, LooseHandle> BoneMap;
 	typedef std::map<std::shared_ptr<const Canvas>, BoneMap> CanvasMap;
@@ -98,8 +98,8 @@ public:
 	ValueNode_Bone::LooseHandle find(String name)const;
 	String unique_name(String name)const;
 	static void show_bone_map(std::shared_ptr<Canvas> canvas, const char *file, int line, String text, Time t=0);
-	static BoneMap get_bone_map(etl::handle<const Canvas> canvas);
-	static BoneList get_ordered_bones(etl::handle<const Canvas> canvas);
+	static BoneMap get_bone_map(std::shared_ptr<const Canvas> canvas);
+	static BoneList get_ordered_bones(std::shared_ptr<const Canvas> canvas);
 
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
 	virtual bool is_root()const { return false; }

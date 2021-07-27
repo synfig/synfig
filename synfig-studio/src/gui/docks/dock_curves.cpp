@@ -183,7 +183,7 @@ Dock_Curves::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canvas_view)
 
 		widget_timeslider_.set_canvas_view( CanvasView::Handle() );
 
-		widget_kf_list_.set_time_model( etl::handle<TimeModel>() );
+		widget_kf_list_.set_time_model( std::shared_ptr<TimeModel>() );
 		widget_kf_list_.set_canvas_interface( std::shared_ptr<synfigapp::CanvasInterface>() );
 	}
 

@@ -55,9 +55,9 @@ private:
 	ValueNode::RHandle bline_;
 public:
 
-	typedef etl::handle<ValueNode_DIList> Handle;
-	typedef etl::handle<const ValueNode_DIList> ConstHandle;
-	typedef etl::handle<const ValueNode_DIList> LooseHandle;
+	typedef std::shared_ptr<ValueNode_DIList> Handle;
+	typedef std::shared_ptr<const ValueNode_DIList> ConstHandle;
+	typedef std::shared_ptr<const ValueNode_DIList> LooseHandle;
 	ValueNode_DIList();
 
 public:

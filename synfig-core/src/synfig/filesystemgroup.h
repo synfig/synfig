@@ -42,7 +42,7 @@ namespace synfig
 	class FileSystemGroup : public FileSystem
 	{
 	public:
-		typedef etl::handle<FileSystemGroup> Handle;
+		typedef std::shared_ptr<FileSystemGroup> Handle;
 
 		struct Entry
 		{

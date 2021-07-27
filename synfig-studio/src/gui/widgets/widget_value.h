@@ -89,7 +89,7 @@ class Widget_ValueBase : public Gtk::HBox
 	synfig::ParamDesc param_desc;
 	synfigapp::ValueDesc value_desc;
 	synfig::ParamDesc child_param_desc;
-	etl::handle<synfig::Canvas> canvas;
+	std::shared_ptr<synfig::Canvas> canvas;
 	sigc::signal<void> signal_value_changed_;
 	sigc::signal<void> signal_activate_;
 
@@ -122,7 +122,7 @@ public:
 	//void set_hint(std::string x) { hint=x; }
 //	std::string get_hint() { return hint; }
 
-	void set_canvas(etl::handle<synfig::Canvas> x);
+	void set_canvas(std::shared_ptr<synfig::Canvas> x);
 	void inside_cellrenderer();
 	Widget_ValueBase();
 	~Widget_ValueBase();

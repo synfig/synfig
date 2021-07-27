@@ -59,7 +59,7 @@ TaskLayer::calc_bounds() const
 	if (!layer)
 		return Rect::zero();
 
-	etl::handle<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
+	std::shared_ptr<Layer_RenderingTask> sub_layer(new Layer_RenderingTask());
 	sub_layer->tasks.push_back(sub_task());
 
 	CanvasBase fake_canvas_base;

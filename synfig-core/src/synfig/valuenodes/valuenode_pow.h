@@ -46,8 +46,8 @@ class ValueNode_Pow : public LinkableValueNode
 	ValueNode::RHandle infinite_;
 
 public:
-	typedef etl::handle<ValueNode_Pow> Handle;
-	typedef etl::handle<const ValueNode_Pow> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Pow> Handle;
+	typedef std::shared_ptr<const ValueNode_Pow> ConstHandle;
 
 	ValueNode_Pow(const ValueBase &x);
 

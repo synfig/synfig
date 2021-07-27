@@ -38,7 +38,7 @@ namespace synfig {
 
 class Layer;
 
-typedef std::list< etl::handle< Layer > > CanvasBase;
+typedef std::list< std::shared_ptr< Layer > > CanvasBase;
 
 }; // END of namespace synfig
 

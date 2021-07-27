@@ -398,7 +398,7 @@ LayerTree::on_waypoint_changed(synfig::Waypoint& waypoint , synfig::ValueNode::H
 	param_list.add("waypoint", waypoint);
 //	param_list.add("time",canvas_interface()->get_time());
 
-	etl::handle<studio::Instance>::cast_static(layer_tree_store_->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
+	std::shared_ptr<studio::Instance>::cast_static(layer_tree_store_->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
 }
 
 void
@@ -620,7 +620,7 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 }
 
 void
-LayerTree::set_time_model(const etl::handle<TimeModel> &x)
+LayerTree::set_time_model(const std::shared_ptr<TimeModel> &x)
 {
 	#ifdef TIMETRACK_IN_PARAMS_PANEL
 	cellrenderer_time_track->set_time_model(x);
@@ -704,7 +704,7 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 void
-LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node,
+LayerTree::on_waypoint_clicked_layertree(const std::shared_ptr<synfig::Node>& node,
 										 const synfig::Time& time,
 										 const synfig::Time& time_offset,
 										 const synfig::Time& time_dilation,

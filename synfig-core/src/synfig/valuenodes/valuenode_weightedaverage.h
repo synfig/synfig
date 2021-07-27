@@ -40,8 +40,8 @@ namespace types_namespace { class TypeWeightedValueBase; }
 class ValueNode_WeightedAverage : public ValueNode_DynamicList
 {
 public:
-	typedef etl::handle<ValueNode_WeightedAverage> Handle;
-	typedef etl::handle<const ValueNode_WeightedAverage> ConstHandle;
+	typedef std::shared_ptr<ValueNode_WeightedAverage> Handle;
+	typedef std::shared_ptr<const ValueNode_WeightedAverage> ConstHandle;
 
 	ValueNode_WeightedAverage(const ValueBase &value, std::shared_ptr<Canvas> canvas = 0);
 	ValueNode_WeightedAverage(Type &type, std::shared_ptr<Canvas> canvas = 0);

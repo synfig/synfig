@@ -101,9 +101,9 @@ enum TargetAlphaMode
 class Target : public etl::shared_object
 {
 public:
-	typedef etl::handle<Target> Handle;
+	typedef std::shared_ptr<Target> Handle;
 	typedef std::shared_ptr<Target> LooseHandle;
-	typedef etl::handle<const Target> ConstHandle;
+	typedef std::shared_ptr<const Target> ConstHandle;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -167,7 +167,7 @@ public:
 	/*!
 	 ** \sa set_canvas()
 	 */
-	etl::handle<Canvas> canvas;
+	std::shared_ptr<Canvas> canvas;
 
 	//! Render quality used for the render process of the target.
 	int quality_;
@@ -203,9 +203,9 @@ public:
 	//! Sets how to handle alpha
 	void set_alpha_mode(TargetAlphaMode x=TARGET_ALPHA_MODE_KEEP) { alpha_mode=x; }
 	//! Sets the target canvas. Must be defined by derived targets
-	virtual void set_canvas(etl::handle<Canvas> c);
+	virtual void set_canvas(std::shared_ptr<Canvas> c);
 	//! Gets the target canvas.
-	const etl::handle<Canvas> &get_canvas()const { return canvas; }
+	const std::shared_ptr<Canvas> &get_canvas()const { return canvas; }
 	//! Gets the target particular render description
 	RendDesc &rend_desc() { return desc; }
 	//! Gets the target particular render description

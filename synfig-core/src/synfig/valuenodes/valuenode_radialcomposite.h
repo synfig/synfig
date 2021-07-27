@@ -42,8 +42,8 @@ class ValueNode_RadialComposite : public LinkableValueNode
 	ValueNode_RadialComposite(const ValueBase &value);
 
 public:
-	typedef etl::handle<ValueNode_RadialComposite> Handle;
-	typedef etl::handle<const ValueNode_RadialComposite> ConstHandle;
+	typedef std::shared_ptr<ValueNode_RadialComposite> Handle;
+	typedef std::shared_ptr<const ValueNode_RadialComposite> ConstHandle;
 
 	virtual ~ValueNode_RadialComposite();
 

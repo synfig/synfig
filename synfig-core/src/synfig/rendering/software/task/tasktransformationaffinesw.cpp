@@ -62,7 +62,7 @@ class TaskTransformationAffineSW: public TaskTransformationAffine, public TaskSW
 private:
 	class Helper;
 public:
-	typedef etl::handle<TaskTransformationAffineSW> Handle;
+	typedef std::shared_ptr<TaskTransformationAffineSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

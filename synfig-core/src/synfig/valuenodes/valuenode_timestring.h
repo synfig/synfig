@@ -45,8 +45,8 @@ class ValueNode_TimeString : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_TimeString> Handle;
-	typedef etl::handle<const ValueNode_TimeString> ConstHandle;
+	typedef std::shared_ptr<ValueNode_TimeString> Handle;
+	typedef std::shared_ptr<const ValueNode_TimeString> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

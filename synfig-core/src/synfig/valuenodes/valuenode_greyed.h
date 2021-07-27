@@ -39,7 +39,7 @@ namespace synfig {
 class ValueNode_Greyed : public ValueNode_Reference
 {
 public:
-	typedef etl::handle<ValueNode_Greyed> Handle;
+	typedef std::shared_ptr<ValueNode_Greyed> Handle;
 	ValueNode_Greyed(Type &x);
 	ValueNode_Greyed(const ValueNode::Handle &x);
 

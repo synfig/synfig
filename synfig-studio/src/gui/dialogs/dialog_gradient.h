@@ -96,7 +96,7 @@ public:
 	~Dialog_Gradient();
 	//! Interface to external calls to fill in the Gradient Editor Dialog
 	//! when a Constant ValueNode or a Animated ValueNode is double cliked.
-	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time time=0);
+	void edit(const synfigapp::ValueDesc &x, std::shared_ptr<synfigapp::CanvasInterface> canvas_interface, synfig::Time time=0);
 }; // END of Dialog_Gradient
 
 }; // END of namespace studio

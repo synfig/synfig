@@ -125,10 +125,10 @@ class Dock_Keyframes;
 
 class LockDucks: public etl::shared_object {
 private:
-	etl::handle<CanvasView> canvas_view_handle;
+	std::shared_ptr<CanvasView> canvas_view_handle;
 	CanvasView *canvas_view;
 public:
-	explicit LockDucks(const etl::handle<CanvasView> &canvas_view);
+	explicit LockDucks(const std::shared_ptr<CanvasView> &canvas_view);
 	explicit LockDucks(CanvasView &canvas_view);
 	~LockDucks();
 };
@@ -152,8 +152,8 @@ class CanvasView : public Dockable, public etl::shared_object
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
 	*/
 public:
-	typedef etl::handle<CanvasView> Handle;
-	typedef etl::handle<const CanvasView> ConstHandle;
+	typedef std::shared_ptr<CanvasView> Handle;
+	typedef std::shared_ptr<const CanvasView> ConstHandle;
 	typedef std::shared_ptr<CanvasView> LooseHandle;
 	typedef LayerTreeStore::Model LayerTreeModel;
 	typedef ChildrenTreeStore::Model ChildrenTreeModel;
@@ -249,7 +249,7 @@ private:
 	Smach smach_;
 
 	std::shared_ptr<Instance> instance_;
-	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 	synfig::ContextParams context_params_;
 
 	//! TreeModel for the layers
@@ -263,7 +263,7 @@ private:
 	AdjustmentGroupBook adjustment_group_book_;
 
 	//! The time_window adjustment governs the position of the time window on the whole time line
-	etl::handle<TimeModel> time_model_;
+	std::shared_ptr<TimeModel> time_model_;
 
 	LayerTree *layer_tree;
 	ChildrenTree *children_tree;
@@ -349,10 +349,10 @@ private:
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	bool _action_group_removed;
 
-	etl::handle<synfigapp::UIInterface> ui_interface_;
-	etl::handle<synfigapp::SelectionManager> selection_manager_;
+	std::shared_ptr<synfigapp::UIInterface> ui_interface_;
+	std::shared_ptr<synfigapp::SelectionManager> selection_manager_;
 
-	etl::handle<LockDucks> ducks_playing_lock;
+	std::shared_ptr<LockDucks> ducks_playing_lock;
 	sigc::connection playing_connection;
 	etl::clock playing_timer;
 	synfig::Time playing_time;
@@ -415,7 +415,7 @@ public:
 private:
 
 	// Constructor is private to force the use of the "create()" constructor
-	CanvasView(std::shared_ptr<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
+	CanvasView(std::shared_ptr<Instance> instance,std::shared_ptr<synfigapp::CanvasInterface> canvas_interface);
 
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
@@ -548,11 +548,11 @@ public:
 	void set_mode(Mode x) { canvas_interface()->set_mode(x); }
 	Mode get_mode()const { return canvas_interface()->get_mode(); }
 
-	etl::handle<TimeModel> time_model() { return time_model_; }
+	std::shared_ptr<TimeModel> time_model() { return time_model_; }
 
-	etl::handle<synfigapp::UIInterface> get_ui_interface() { return ui_interface_;}
+	std::shared_ptr<synfigapp::UIInterface> get_ui_interface() { return ui_interface_;}
 
-	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return selection_manager_; }
+	std::shared_ptr<synfigapp::SelectionManager> get_selection_manager() { return selection_manager_; }
 
 	Glib::RefPtr<Gtk::TreeModel> layer_tree_store() { return get_tree_model("layers"); }
 	Glib::RefPtr<Gtk::TreeModel> children_tree_store() { return get_tree_model("children"); }
@@ -561,11 +561,11 @@ public:
 	void set_time(synfig::Time t) { time_model()->set_time(t); }
 	synfig::Time get_time() { return time_model()->get_time(); }
 
-	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_interface_->get_canvas(); }
+	const std::shared_ptr<synfig::Canvas>& get_canvas()const { return canvas_interface_->get_canvas(); }
 	const std::shared_ptr<Instance>& get_instance()const { return instance_; }
 
-	const etl::handle<synfigapp::CanvasInterface>& canvas_interface() { return canvas_interface_; }
-	etl::handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	const std::shared_ptr<synfigapp::CanvasInterface>& canvas_interface() { return canvas_interface_; }
+	std::shared_ptr<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
 	void add_actions_to_menu(Gtk::Menu *menu,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
 
@@ -696,7 +696,7 @@ protected:
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 public:
-	static etl::handle<studio::CanvasView> create(std::shared_ptr<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static std::shared_ptr<studio::CanvasView> create(std::shared_ptr<Instance> instance,std::shared_ptr<synfig::Canvas> canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:

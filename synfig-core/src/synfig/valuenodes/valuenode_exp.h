@@ -45,8 +45,8 @@ class ValueNode_Exp : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_Exp> Handle;
-	typedef etl::handle<const ValueNode_Exp> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Exp> Handle;
+	typedef std::shared_ptr<const ValueNode_Exp> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

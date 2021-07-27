@@ -57,7 +57,7 @@ using namespace synfig;
 int
 synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 						 const Time								&time,
-						 const etl::handle<Node>				&node)
+						 const std::shared_ptr<Node>				&node)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 
@@ -92,7 +92,7 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		ValueBase canvas_value(layer->get_param("canvas"));
 		if(canvas_value.get_type()==type_canvas)
 		{
-			etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+			std::shared_ptr<Layer_PasteCanvas> p = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer);
 			if (p)
 				ret+=waypoint_collect(waypoint_set, time + p->get_time_offset(),
 									  Canvas::Handle(canvas_value.get(Canvas::Handle())));
@@ -140,7 +140,7 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 }
 
 bool
-synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const etl::handle<Node> &node)
+synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const std::shared_ptr<Node> &node)
 {
 	// Check if we are a linkable value node
 	LinkableValueNode::Handle linkable_value_node;
@@ -211,7 +211,7 @@ synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const etl::hand
 
 //! \writeme
 int
-synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Time& time, const etl::handle<Node>& node)
+synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Time& time, const std::shared_ptr<Node>& node)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 

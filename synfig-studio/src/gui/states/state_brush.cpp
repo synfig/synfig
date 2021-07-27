@@ -116,14 +116,14 @@ public:
 	};
 
 private:
-	etl::handle<CanvasView> canvas_view_;
+	std::shared_ptr<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 	WorkArea::PushState push_state;
 
 	Gtk::Menu menu;
 
 	Glib::TimeVal time;
-	etl::handle<synfigapp::Action::LayerPaint> action;
+	std::shared_ptr<synfigapp::Action::LayerPaint> action;
 	TransformStack transform_stack;
 	BrushConfig selected_brush_config;
 	Gtk::ToggleToolButton *selected_brush_button;
@@ -161,8 +161,8 @@ public:
 	StateBrush_Context(CanvasView* canvas_view);
 	~StateBrush_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	const std::shared_ptr<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -714,7 +714,7 @@ StateBrush_Context::build_transform_stack(
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if(etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i))
+		if(std::shared_ptr<Layer_PasteCanvas> layer_pastecanvas = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(*i))
 		{
 			transform_stack.push_back(
 				new Transform_Matrix(
@@ -742,11 +742,11 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 		{
 			// Enter the stroke state to get the stroke
 			Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-			etl::handle<Layer_Bitmap> layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
+			std::shared_ptr<Layer_Bitmap> layer = std::shared_ptr<Layer_Bitmap>::cast_dynamic(selected_layer);
 			if (!layer)
 			{
-				etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
-				if (layer_switch) layer = etl::handle<Layer_Bitmap>::cast_dynamic(layer_switch->get_current_layer());
+				std::shared_ptr<Layer_Switch> layer_switch = std::shared_ptr<Layer_Switch>::cast_dynamic(selected_layer);
+				if (layer_switch) layer = std::shared_ptr<Layer_Bitmap>::cast_dynamic(layer_switch->get_current_layer());
 			}
 
 			// No image found to draw in, add it.
@@ -754,7 +754,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 			{
 				canvas_view_->add_layer("import");
 				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-				layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
+				layer = std::shared_ptr<Layer_Bitmap>::cast_dynamic(selected_layer);
 
 				// Set temporary description to generate the name
 				String temp_description(_("brush image"));
@@ -787,7 +787,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 				transform_stack.clear();
 				if (build_transform_stack(get_canvas(), layer, get_canvas_view(), transform_stack))
 				{
-					etl::handle<synfigapp::Action::LayerPaint> action = new synfigapp::Action::LayerPaint();
+					std::shared_ptr<synfigapp::Action::LayerPaint> action = new synfigapp::Action::LayerPaint();
 					action->set_param("canvas",get_canvas());
 					action->set_param("canvas_interface",get_canvas_interface());
 					action->stroke.set_layer(layer);

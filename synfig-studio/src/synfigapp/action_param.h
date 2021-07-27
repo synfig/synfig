@@ -119,7 +119,7 @@ public:
 
 	Param():type_(TYPE_NIL) { }
 	Param(const Param &x);
-	Param(const etl::handle<synfigapp::CanvasInterface>& x);
+	Param(const std::shared_ptr<synfigapp::CanvasInterface>& x);
 	Param(const std::shared_ptr<synfigapp::CanvasInterface>& x);
 //	Param(synfigapp::CanvasInterface* x);
 	Param(const synfig::Canvas::Handle& x);

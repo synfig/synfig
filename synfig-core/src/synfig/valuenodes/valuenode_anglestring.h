@@ -48,8 +48,8 @@ class ValueNode_AngleString : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_AngleString> Handle;
-	typedef etl::handle<const ValueNode_AngleString> ConstHandle;
+	typedef std::shared_ptr<ValueNode_AngleString> Handle;
+	typedef std::shared_ptr<const ValueNode_AngleString> ConstHandle;
 
 	virtual ValueBase operator()(Time t)const;
 	virtual ~ValueNode_AngleString();

@@ -151,7 +151,7 @@ ValueNode::on_changed()
 }
 
 int
-ValueNode::replace(etl::handle<ValueNode> x)
+ValueNode::replace(std::shared_ptr<ValueNode> x)
 {
 	if(x.get()==this)
 		return 0;

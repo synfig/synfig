@@ -80,7 +80,7 @@ TimePlotData::~TimePlotData()
 }
 
 void
-TimePlotData::set_time_model(const etl::handle<studio::TimeModel>& time_model)
+TimePlotData::set_time_model(const std::shared_ptr<studio::TimeModel>& time_model)
 {
 	if (this->time_model == time_model)
 		return;

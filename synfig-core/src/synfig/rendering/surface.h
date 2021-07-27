@@ -55,7 +55,7 @@ namespace rendering
 class Surface: public etl::shared_object
 {
 public:
-	typedef etl::handle<Surface> Handle;
+	typedef std::shared_ptr<Surface> Handle;
 	typedef Surface* (*Fabric)();
 
 	class DescBase {
@@ -167,7 +167,7 @@ public:
 class SurfaceResource: public etl::shared_object
 {
 public:
-	typedef etl::handle<SurfaceResource> Handle;
+	typedef std::shared_ptr<SurfaceResource> Handle;
 	typedef std::map<Surface::Token::Handle, Surface::Handle> Map;
 
 	template<typename TypeSurface, bool write, bool exclusive>
@@ -234,8 +234,8 @@ public:
 		const Surface::Handle& get_handle() const
 			{ return surface; }
 		template<typename T>
-		etl::handle<T> cast() const
-			{ return etl::handle<T>::cast_dynamic(surface); }
+		std::shared_ptr<T> cast() const
+			{ return std::shared_ptr<T>::cast_dynamic(surface); }
 		TypeSurface* get_surface() const
 			{ return surface.get(); }
 		operator bool() const
@@ -262,7 +262,7 @@ public:
 		LockRead(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
 			LockReadBase(resource, rect, token)
 			{ convert(get_lock_token()); }
-		etl::handle<Type> cast_handle() const
+		std::shared_ptr<Type> cast_handle() const
 			{ return cast<Type>(); }
 		const Type* get() const
 			{ return dynamic_cast<Type*>(get_handle().get()); }
@@ -288,7 +288,7 @@ public:
 		LockWrite(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
 			LockWriteBase(resource, rect, token)
 			{ convert(get_lock_token()); }
-		etl::handle<Type> cast_handle() const
+		std::shared_ptr<Type> cast_handle() const
 			{ return cast<Type>(); }
 		Type* get() const
 			{ return dynamic_cast<Type*>(get_handle().get()); }
@@ -314,7 +314,7 @@ public:
 		SemiLockWrite(const Handle &resource, const RectInt &rect, const Surface::Token::Handle &token):
 			SemiLockWriteBase(resource, rect, token)
 			{ convert(get_lock_token()); }
-		etl::handle<Type> cast_handle() const
+		std::shared_ptr<Type> cast_handle() const
 			{ return cast<Type>(); }
 		Type* get() const
 			{ return dynamic_cast<Type*>(get_handle().get()); }

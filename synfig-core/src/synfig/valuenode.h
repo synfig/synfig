@@ -100,11 +100,11 @@ class ValueNode : public synfig::Node
 
 public:
 
-	typedef etl::handle<ValueNode> Handle;
+	typedef std::shared_ptr<ValueNode> Handle;
 
 	typedef std::shared_ptr<ValueNode> LooseHandle;
 
-	typedef etl::handle<const ValueNode> ConstHandle;
+	typedef std::shared_ptr<const ValueNode> ConstHandle;
 
 	typedef etl::rhandle<ValueNode> RHandle;
 
@@ -250,7 +250,7 @@ public:
 	//! Notice that it is called twice and the second time it uses
 	//! a replaceable handle to the Node
 	//! \see etl::rhandle
-	int replace(etl::handle<ValueNode> x);
+	int replace(std::shared_ptr<ValueNode> x);
 	
 	//! Get the default interpolation for Value Nodes
 	virtual Interpolation get_interpolation()const { return INTERPOLATION_UNDEFINED; }
@@ -317,9 +317,9 @@ protected:
 class PlaceholderValueNode : public ValueNode
 {
 public:
-	typedef etl::handle<PlaceholderValueNode> Handle;
+	typedef std::shared_ptr<PlaceholderValueNode> Handle;
 	typedef std::shared_ptr<PlaceholderValueNode> LooseHandle;
-	typedef etl::handle<const PlaceholderValueNode> ConstHandle;
+	typedef std::shared_ptr<const PlaceholderValueNode> ConstHandle;
 	typedef etl::rhandle<PlaceholderValueNode> RHandle;
 
 private:
@@ -358,11 +358,11 @@ class LinkableValueNode : public ValueNode
 	friend class ValueNode;
 public:
 
-	typedef etl::handle<LinkableValueNode> Handle;
+	typedef std::shared_ptr<LinkableValueNode> Handle;
 
 	typedef std::shared_ptr<LinkableValueNode> LooseHandle;
 
-	typedef etl::handle<const LinkableValueNode> ConstHandle;
+	typedef std::shared_ptr<const LinkableValueNode> ConstHandle;
 
 	typedef etl::rhandle<LinkableValueNode> RHandle;
 

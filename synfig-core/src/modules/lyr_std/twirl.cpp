@@ -186,7 +186,7 @@ Twirl::get_color(Context context, const Point &pos)const
 
 class lyr_std::Twirl_Trans : public Transform
 {
-	etl::handle<const Twirl> layer;
+	std::shared_ptr<const Twirl> layer;
 public:
 	Twirl_Trans(const Twirl* x):Transform(x->get_guid()),layer(x) { }
 
@@ -205,7 +205,7 @@ public:
 		return "twirl";
 	}
 };
-etl::handle<Transform>
+std::shared_ptr<Transform>
 Twirl::get_transform()const
 {
 	return new Twirl_Trans(this);

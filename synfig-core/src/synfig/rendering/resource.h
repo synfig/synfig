@@ -53,13 +53,13 @@ private:
 	static Id last_id;
 
 public:
-	typedef etl::handle<Resource> Handle;
+	typedef std::shared_ptr<Resource> Handle;
 	typedef std::vector<Handle> List;
 
 	class Storage: public etl::virtual_shared_object
 	{
 	public:
-		typedef etl::handle<Storage> Handle;
+		typedef std::shared_ptr<Storage> Handle;
 
 	private:
 		mutable std::atomic<int> refcount;
@@ -97,20 +97,20 @@ public:
 	void unset_alternative() const;
 
 	template<typename T>
-	etl::handle<T> find_alternative() const
+	std::shared_ptr<T> find_alternative() const
 	{
 		const List &resources = get_alternatives();
 		for(List::const_iterator i = resources.begin(); i != resources.end(); ++i)
-			if (etl::handle<T> alternative = etl::handle<T>::cast_dynamic(*i))
+			if (std::shared_ptr<T> alternative = std::shared_ptr<T>::cast_dynamic(*i))
 				return alternative;
-		return etl::handle<T>();
+		return std::shared_ptr<T>();
 	}
 
 	template<typename T>
-	etl::handle<T> get_alternative() const
+	std::shared_ptr<T> get_alternative() const
 	{
 		std::lock_guard<std::mutex> lock(get_alternative_mtx);
-		etl::handle<T> alternative = find_alternative<T>();
+		std::shared_ptr<T> alternative = find_alternative<T>();
 		if (!alternative)
 		{
 			alternative = new T(*this);

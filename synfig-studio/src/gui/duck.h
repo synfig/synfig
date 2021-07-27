@@ -100,7 +100,7 @@ public:
 
 		STRUCT_DEFAULT				=	0x44 //STRUCT_RADIUS+STRUCT_WIDTHPOINT
 	};
-	typedef etl::handle<Duck> Handle;
+	typedef std::shared_ptr<Duck> Handle;
 	typedef std::shared_ptr<Duck> LooseHandle;
 
 private:
@@ -469,9 +469,9 @@ inline Duck::Type
 operator&(const Duck::Type lhs, const Duck::Type rhs)
 { return static_cast<Duck::Type>(int(lhs)&int(rhs)); }
 
-class DuckMap : public std::map<synfig::GUID,etl::handle<studio::Duck> >
+class DuckMap : public std::map<synfig::GUID,std::shared_ptr<studio::Duck> >
 {
-	typedef std::map<synfig::GUID,etl::handle<studio::Duck> > PARENT_TYPE;
+	typedef std::map<synfig::GUID,std::shared_ptr<studio::Duck> > PARENT_TYPE;
 public:
 	void insert(const Duck::Handle& x) { operator[](x->get_guid())=x;  }
 }; // END of class DuckMap

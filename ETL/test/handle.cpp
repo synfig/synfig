@@ -89,7 +89,7 @@ int handle_basic_test()
         return 1;
     }
 
-    /*etl::handle<my_test_obj> obj_handle(new my_test_obj(rand()));
+    /*std::shared_ptr<my_test_obj> obj_handle(new my_test_obj(rand()));
 
     if(obj_handle != obj_handle.constant())
     {

@@ -40,11 +40,11 @@ namespace studio {
 class Transform_Origin : public synfig::Transform
 {
 private:
-	etl::handle<Duck> origin;
+	std::shared_ptr<Duck> origin;
 	std::vector<synfig::Vector> positions;
 
 public:
-	Transform_Origin(const synfig::GUID& guid, const etl::handle<Duck>& origin):Transform(guid), origin(origin) { }
+	Transform_Origin(const synfig::GUID& guid, const std::shared_ptr<Duck>& origin):Transform(guid), origin(origin) { }
 	synfig::Vector perform(const synfig::Vector& x)const { return x+origin->get_point(); }
 	synfig::Vector unperform(const synfig::Vector& x)const { return x-origin->get_point(); }
 

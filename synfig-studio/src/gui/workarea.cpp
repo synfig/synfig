@@ -1165,7 +1165,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 	// Handle the renderables
 	{
-		std::set<etl::handle<WorkAreaRenderer> >::iterator iter;
+		std::set<std::shared_ptr<WorkAreaRenderer> >::iterator iter;
 		for(iter=renderer_set_.begin();iter!=renderer_set_.end();++iter)
 		{
 			if((*iter)->get_enabled())
@@ -1190,7 +1190,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	case GDK_BUTTON_PRESS: {
 		switch(button_pressed) {
 		case 1:	{ // Attempt to click on a duck
-			etl::handle<Duck> duck;
+			std::shared_ptr<Duck> duck;
 			set_drag_mode(DRAG_NONE);
 
 			if(allow_duck_clicks) {
@@ -1323,8 +1323,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 2:	{ // Attempt to drag and move the window
-			etl::handle<Duck> duck = find_duck(mouse_pos, radius);
-			etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos);
+			std::shared_ptr<Duck> duck = find_duck(mouse_pos, radius);
+			std::shared_ptr<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos);
 			if (duck)
 				duck->signal_user_click(1)();
 			else
@@ -1343,7 +1343,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 3:	{ // Attempt to either get info on a duck, or open the menu
-			if (etl::handle<Duck> duck = find_duck(mouse_pos, radius)) {
+			if (std::shared_ptr<Duck> duck = find_duck(mouse_pos, radius)) {
 				if (get_selected_ducks().size() <= 1)
 					duck->signal_user_click(2)();
 				else
@@ -1351,7 +1351,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 
-			if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
+			if (std::shared_ptr<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
 				bezier->signal_user_click(2)(bezier_click_pos);
 				return true;
 			}
@@ -1401,7 +1401,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
                 drawing_area->queue_draw();
             }
 
-            etl::handle<Duck> duck = find_duck(mouse_pos, radius);
+            std::shared_ptr<Duck> duck = find_duck(mouse_pos, radius);
             if (duck != hover_duck) {
                 hover_duck = duck;
                 drawing_area->queue_draw();
@@ -1797,7 +1797,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 }
 
 void
-WorkArea::on_duck_selection_single(const etl::handle<Duck>& duck)
+WorkArea::on_duck_selection_single(const std::shared_ptr<Duck>& duck)
 {
 	if (get_drag_mode() == DRAG_NONE) {
 		studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
@@ -1928,7 +1928,7 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 
 	// Draw out the renderables
 	{
-		std::set<etl::handle<WorkAreaRenderer> >::iterator iter;
+		std::set<std::shared_ptr<WorkAreaRenderer> >::iterator iter;
 		for(iter=renderer_set_.begin();iter!=renderer_set_.end();++iter)
 		{
 			if((*iter)->get_enabled())
@@ -2204,7 +2204,7 @@ WorkArea::set_selected_value_node(std::shared_ptr<synfig::ValueNode> x)
 void
 WorkArea::set_active_bone_value_node(std::shared_ptr<synfig::ValueNode> x)
 {
-	if(x!=active_bone_ && etl::handle<synfig::ValueNode_Bone>::cast_dynamic(x))
+	if(x!=active_bone_ && std::shared_ptr<synfig::ValueNode_Bone>::cast_dynamic(x))
 	{
 		active_bone_=x;
 		queue_draw();
@@ -2212,7 +2212,7 @@ WorkArea::set_active_bone_value_node(std::shared_ptr<synfig::ValueNode> x)
 }
 
 void
-WorkArea::insert_renderer(const etl::handle<WorkAreaRenderer> &x)
+WorkArea::insert_renderer(const std::shared_ptr<WorkAreaRenderer> &x)
 {
 	renderer_set_.insert(x);
 	x->set_work_area(this);
@@ -2220,14 +2220,14 @@ WorkArea::insert_renderer(const etl::handle<WorkAreaRenderer> &x)
 }
 
 void
-WorkArea::insert_renderer(const etl::handle<WorkAreaRenderer> &x, int priority)
+WorkArea::insert_renderer(const std::shared_ptr<WorkAreaRenderer> &x, int priority)
 {
 	x->set_priority(priority);
 	insert_renderer(x);
 }
 
 void
-WorkArea::erase_renderer(const etl::handle<WorkAreaRenderer> &x)
+WorkArea::erase_renderer(const std::shared_ptr<WorkAreaRenderer> &x)
 {
 	x->set_work_area(0);
 	renderer_set_.erase(x);
@@ -2239,7 +2239,7 @@ WorkArea::erase_renderer(const etl::handle<WorkAreaRenderer> &x)
 void
 WorkArea::resort_render_set()
 {
-	std::set<etl::handle<WorkAreaRenderer> > tmp(
+	std::set<std::shared_ptr<WorkAreaRenderer> > tmp(
 		renderer_set_.begin(),
 		renderer_set_.end()
 	);

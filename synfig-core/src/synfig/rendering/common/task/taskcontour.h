@@ -45,7 +45,7 @@ namespace rendering
 class TaskContour: public Task, public TaskInterfaceTransformation
 {
 public:
-	typedef etl::handle<TaskContour> Handle;
+	typedef std::shared_ptr<TaskContour> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

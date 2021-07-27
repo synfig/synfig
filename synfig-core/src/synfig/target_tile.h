@@ -66,15 +66,15 @@ class Target_Tile : public Target
 	struct TileGroup;
 
 	bool call_renderer(
-		const etl::handle<rendering::SurfaceResource> &surface,
+		const std::shared_ptr<rendering::SurfaceResource> &surface,
 		Canvas &canvas,
 		const ContextParams &context_params,
 		const RendDesc &renddesc );
 
 public:
-	typedef etl::handle<Target_Tile> Handle;
+	typedef std::shared_ptr<Target_Tile> Handle;
 	typedef std::shared_ptr<Target_Tile> LooseHandle;
-	typedef etl::handle<const Target_Tile> ConstHandle;
+	typedef std::shared_ptr<const Target_Tile> ConstHandle;
 
 	Target_Tile();
 
@@ -82,7 +82,7 @@ public:
 	virtual bool render(ProgressCallback *cb=NULL);
 
 	virtual bool async_render_tile(
-		etl::handle<Canvas> canvas,
+		std::shared_ptr<Canvas> canvas,
 		ContextParams context_params,
 		RectInt rect,
 		RendDesc tile_desc,
@@ -137,7 +137,7 @@ public:
 
 private:
 	//! Renders the context to the surface
-	bool render_frame_(etl::handle<Canvas> canvas, ContextParams context_params, ProgressCallback *cb);
+	bool render_frame_(std::shared_ptr<Canvas> canvas, ContextParams context_params, ProgressCallback *cb);
 
 }; // END of class Target_Tile
 

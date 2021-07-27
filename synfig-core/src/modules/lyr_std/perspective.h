@@ -96,7 +96,7 @@ public:
 
 	virtual Color get_color(Context context, const Point &pos) const;
 	virtual Layer::Handle hit_check(Context context, const Point &point) const;
-	virtual etl::handle<Transform> get_transform() const;
+	virtual std::shared_ptr<Transform> get_transform() const;
 
 protected:
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;

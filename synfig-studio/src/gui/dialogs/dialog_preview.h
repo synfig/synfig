@@ -60,13 +60,13 @@ class Dialog_Preview : public Gtk::Window
 	Widget_Preview 	preview;
 	DialogSettings	settings;
 
-	//etl::handle<synfig::Canvas> canvas;
+	//std::shared_ptr<synfig::Canvas> canvas;
 
 public:
 	Dialog_Preview();
 	~Dialog_Preview();
 
-	void set_preview(etl::handle<Preview> prev);
+	void set_preview(std::shared_ptr<Preview> prev);
 
 	Widget_Preview &get_widget() {return preview;}
 	const Widget_Preview &get_widget() const {return preview;}

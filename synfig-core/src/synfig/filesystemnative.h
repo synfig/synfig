@@ -41,12 +41,12 @@ namespace synfig
 	class FileSystemNative : public FileSystem
 	{
 	public:
-		typedef etl::handle<FileSystemNative> Handle;
+		typedef std::shared_ptr<FileSystemNative> Handle;
 
 		class ReadStream : public FileSystem::ReadStream
 		{
 		public:
-			typedef etl::handle<ReadStream> Handle;
+			typedef std::shared_ptr<ReadStream> Handle;
 		protected:
 			friend class FileSystemNative;
 			FILE *file_;
@@ -59,7 +59,7 @@ namespace synfig
 		class WriteStream : public FileSystem::WriteStream
 		{
 		public:
-			typedef etl::handle<ReadStream> Handle;
+			typedef std::shared_ptr<ReadStream> Handle;
 		protected:
 			friend class FileSystemNative;
 			FILE *file_;

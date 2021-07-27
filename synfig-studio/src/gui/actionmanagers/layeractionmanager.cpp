@@ -166,7 +166,7 @@ LayerActionManager::set_layer_tree(LayerTree* x)
 }
 
 void
-LayerActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x)
+LayerActionManager::set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface> &x)
 {
 	canvas_interface_=x;
 }
@@ -262,7 +262,7 @@ LayerActionManager::refresh()
 
 				action_amount_inc_->set_sensitive(!layer_list.empty());
 				action_amount_dec_->set_sensitive(!layer_list.empty());
-				if (etl::handle<Layer_Skeleton>::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
+				if (std::shared_ptr<Layer_Skeleton>::cast_dynamic(layer) || std::shared_ptr<Layer_Composite>::cast_dynamic(layer)) {
 					action_amount_inc_->set_label(_("Increase Opacity"));
 					action_amount_dec_->set_label(_("Decrease Opacity"));
 				} else {
@@ -294,7 +294,7 @@ LayerActionManager::refresh()
 				}
 			}
 
-			if(!multiple_selected && etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+			if(!multiple_selected && std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 			{
 				if (select_all_child_layers_connection)
 					select_all_child_layers_connection.disconnect();
@@ -426,7 +426,7 @@ LayerActionManager::paste()
 			return;
 		}
 
-		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+		std::shared_ptr<Layer_PasteCanvas> paste = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer);
 		if (paste) paste->update_renddesc();
 
 		// synfig::info("DEPTH=%d",depth);

@@ -235,7 +235,7 @@ public:
 	static int z_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 	static int index_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 
-	//void set_row_param(Gtk::TreeRow &row,synfig::Layer::Handle &handle,const std::string& name, const std::string& local_name, const synfig::ValueBase &value, etl::handle<synfig::ValueNode> value_node,synfig::ParamDesc *param_desc);
+	//void set_row_param(Gtk::TreeRow &row,synfig::Layer::Handle &handle,const std::string& name, const std::string& local_name, const synfig::ValueBase &value, std::shared_ptr<synfig::ValueNode> value_node,synfig::ParamDesc *param_desc);
 
 	//virtual void set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc);
 	static bool search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustring&,const TreeModel::iterator&);

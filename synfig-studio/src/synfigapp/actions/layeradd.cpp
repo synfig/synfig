@@ -127,7 +127,7 @@ Action::LayerAdd::perform()
 	// Mark ourselves as dirty if necessary
 	//set_dirty(layer->active());
 
-	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer)
+	if (std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer)
 	 && layer->dynamic_param_list().count("transformation") == 0)
 			layer->connect_dynamic_param("transformation",
 				ValueNode_Composite::create(

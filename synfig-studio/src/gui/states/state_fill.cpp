@@ -71,8 +71,8 @@ public:
 	Smach::event_result event_workarea_layer_clicked_handler(const Smach::event& x);
 
 
-	etl::handle<CanvasView> get_canvas_view()const{return canvas_view;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view->canvas_interface();}
+	std::shared_ptr<CanvasView> get_canvas_view()const{return canvas_view;}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view->get_work_area();}
 

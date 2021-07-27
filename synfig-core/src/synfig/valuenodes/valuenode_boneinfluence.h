@@ -45,8 +45,8 @@ class ValueNode_BoneInfluence : public LinkableValueNode
 	mutable bool checked_inverse_, has_inverse_;
 
 public:
-	typedef etl::handle<ValueNode_BoneInfluence> Handle;
-	typedef etl::handle<const ValueNode_BoneInfluence> ConstHandle;
+	typedef std::shared_ptr<ValueNode_BoneInfluence> Handle;
+	typedef std::shared_ptr<const ValueNode_BoneInfluence> ConstHandle;
 
 	ValueNode_BoneInfluence(Type &x);
 

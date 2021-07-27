@@ -50,8 +50,8 @@ public:
 	static void save_to_file(const void *buffer, int width, int height, int stride, const String &filename, bool overwrite = false);
 	static void save_to_file(const Surface &surface, const String &filename, bool overwrite = false);
 	static void save_to_file(const rendering::Surface &surface, const String &filename, bool overwrite = false);
-	static void save_to_file(const etl::handle<rendering::Surface> &surface, const String &filename, bool overwrite = false);
-	static void save_to_file(const etl::handle<rendering::SurfaceResource> &surface, const String &filename, bool overwrite = false);
+	static void save_to_file(const std::shared_ptr<rendering::Surface> &surface, const String &filename, bool overwrite = false);
+	static void save_to_file(const std::shared_ptr<rendering::SurfaceResource> &surface, const String &filename, bool overwrite = false);
 };
 
 }; // END of namespace debug

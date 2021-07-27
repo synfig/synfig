@@ -45,7 +45,7 @@ namespace rendering
 class TaskMesh: public Task, public TaskInterfaceTransformation
 {
 public:
-	typedef etl::handle<TaskMesh> Handle;
+	typedef std::shared_ptr<TaskMesh> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

@@ -55,7 +55,7 @@ class Dialog_SoundSelect : public Gtk::Dialog
 	Widget_Time			offset;
 	Gtk::Button			*okbutton;
 
-	etl::handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 
 	sigc::signal<void,const std::string &>	signal_file_changed_;
 	sigc::signal<void,const synfig::Time &>	signal_offset_changed_;
@@ -65,7 +65,7 @@ class Dialog_SoundSelect : public Gtk::Dialog
 	void on_ok();
 
 public:
-	Dialog_SoundSelect(Gtk::Window &parent,etl::handle<synfigapp::CanvasInterface> ci );
+	Dialog_SoundSelect(Gtk::Window &parent,std::shared_ptr<synfigapp::CanvasInterface> ci );
 	~Dialog_SoundSelect();
 
 	//float get_global_fps() const { return globalfps; }

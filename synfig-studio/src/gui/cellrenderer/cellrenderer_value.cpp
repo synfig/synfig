@@ -187,7 +187,7 @@ public:
 		//valuewidget->grab_focus();
 	}
 
-	void set_canvas(const etl::handle<synfig::Canvas> &data)
+	void set_canvas(const std::shared_ptr<synfig::Canvas> &data)
 	{
 		assert(data);
 		if (valuewidget)
@@ -240,7 +240,7 @@ bool get_paragraph(synfig::String& text)
 CellRenderer_ValueBase::CellRenderer_ValueBase():
 	Glib::ObjectBase          (typeid(CellRenderer_ValueBase)),
 	property_value_	          (*this, "value",                   synfig::ValueBase()),
-	property_canvas_          (*this, "canvas",      etl::handle<synfig::Canvas>()),
+	property_canvas_          (*this, "canvas",      std::shared_ptr<synfig::Canvas>()),
 	property_param_desc_      (*this, "param_desc",              synfig::ParamDesc()),
 	property_value_desc_      (*this, "value_desc",           synfigapp::ValueDesc()),
 	property_child_param_desc_(*this, "child_param_desc",        synfig::ParamDesc()),
@@ -427,12 +427,12 @@ CellRenderer_ValueBase::render_vfunc(
 	else
 	if (type == type_canvas)
 	{
-		if ( data.get(etl::handle<synfig::Canvas>()) )
+		if ( data.get(std::shared_ptr<synfig::Canvas>()) )
 		{
-			if (data.get( etl::handle<synfig::Canvas>())->is_inline() )
+			if (data.get( std::shared_ptr<synfig::Canvas>())->is_inline() )
 				property_text() = _("<Group>");
 			else
-				property_text() = data.get(etl::handle<synfig::Canvas>())->get_id();
+				property_text() = data.get(std::shared_ptr<synfig::Canvas>())->get_id();
 		}
 		else
 			property_text() = _("<No Image Selected>");

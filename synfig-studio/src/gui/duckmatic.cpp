@@ -157,7 +157,7 @@ Duckmatic::clear_ducks()
 */
 
 bool
-Duckmatic::duck_is_selected(const etl::handle<Duck> &duck)const
+Duckmatic::duck_is_selected(const std::shared_ptr<Duck> &duck)const
 {
 	return duck && selected_ducks.count(duck->get_guid());
 }
@@ -169,7 +169,7 @@ Duckmatic::clear_selected_ducks()
 	signal_duck_selection_changed_();
 }
 
-etl::handle<Duckmatic::Duck>
+std::shared_ptr<Duckmatic::Duck>
 Duckmatic::get_selected_duck()const
 {
 	if(selected_ducks.empty() || duck_map.empty())
@@ -177,7 +177,7 @@ Duckmatic::get_selected_duck()const
 	return duck_map.find(*selected_ducks.begin())->second;
 }
 
-etl::handle<Duckmatic::Bezier>
+std::shared_ptr<Duckmatic::Bezier>
 Duckmatic::get_selected_bezier()const
 {
 	return selected_bezier;
@@ -187,8 +187,8 @@ void
 Duckmatic::refresh_selected_ducks()
 {
 /*
-	std::set<etl::handle<Duck> >::iterator iter;
-	std::set<etl::handle<Duck> > new_set;
+	std::set<std::shared_ptr<Duck> >::iterator iter;
+	std::set<std::shared_ptr<Duck> > new_set;
 	if(duck_list().empty())
 	{
 		selected_duck_list.clear();
@@ -198,7 +198,7 @@ Duckmatic::refresh_selected_ducks()
 
 	for(iter=selected_duck_list.begin();iter!=selected_duck_list.end();++iter)
 	{
-		etl::handle<Duck> similar(find_similar_duck(*iter));
+		std::shared_ptr<Duck> similar(find_similar_duck(*iter));
 		if(similar)
 		{
 			new_set.insert(similar);
@@ -219,7 +219,7 @@ Duckmatic::refresh_selected_ducks()
 }
 
 bool
-Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
+Duckmatic::is_duck_group_selectable(const std::shared_ptr<Duck>& x)const
 {
 	const Type type(get_type_mask());
 
@@ -237,7 +237,7 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 			layer_name == "polygon" || layer_name == "curve_gradient" || layer_name == "advanced_outline")
 			return false;
 
-		if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) &&
+		if(std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer) &&
 			!layer->get_param("children_lock").get(bool()))
 			return false;
 	}
@@ -346,7 +346,7 @@ Duckmatic::count_selected_ducks()const
 }
 
 void
-Duckmatic::select_duck(const etl::handle<Duck> &duck)
+Duckmatic::select_duck(const std::shared_ptr<Duck> &duck)
 {
 	if(duck)
 	{
@@ -428,7 +428,7 @@ Duckmatic::get_duck_list()const
 }
 
 void
-Duckmatic::unselect_duck(const etl::handle<Duck> &duck)
+Duckmatic::unselect_duck(const std::shared_ptr<Duck> &duck)
 {
 	if(duck && selected_ducks.count(duck->get_guid()))
 	{
@@ -438,7 +438,7 @@ Duckmatic::unselect_duck(const etl::handle<Duck> &duck)
 }
 
 void
-Duckmatic::toggle_select_duck(const etl::handle<Duck> &duck)
+Duckmatic::toggle_select_duck(const std::shared_ptr<Duck> &duck)
 {
 	if(duck_is_selected(duck))
 		unselect_duck(duck);
@@ -480,8 +480,8 @@ Duckmatic::update_ducks()
 	DuckList::const_iterator selected_iter;
 	if(get_selected_bezier())
 	{
-		etl::handle<Duck> c1(get_selected_bezier()->c1);
-		etl::handle<Duck> c2(get_selected_bezier()->c2);
+		std::shared_ptr<Duck> c1(get_selected_bezier()->c1);
+		std::shared_ptr<Duck> c2(get_selected_bezier()->c2);
 		if(c1->get_value_desc().parent_is_linkable_value_node())
 		{
 			ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(c1->get_value_desc().get_parent_value_node()));
@@ -490,7 +490,7 @@ Duckmatic::update_ducks()
 			if(composite && composite->get_type() == type_bline_point && duck_value_node)
 			{
 				int index(c1->get_value_desc().get_index());
-				etl::handle<Duck> origin_duck=c1->get_origin_duck();
+				std::shared_ptr<Duck> origin_duck=c1->get_origin_duck();
 				// Search all the rest of ducks
 				DuckList::iterator iter;
 				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
@@ -539,7 +539,7 @@ Duckmatic::update_ducks()
 			if(composite && composite->get_type() == type_bline_point && duck_value_node)
 			{
 				int index(c2->get_value_desc().get_index());
-				etl::handle<Duck> origin_duck=c2->get_origin_duck();
+				std::shared_ptr<Duck> origin_duck=c2->get_origin_duck();
 				// Search all the rest of ducks
 				DuckList::iterator iter;
 				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
@@ -583,7 +583,7 @@ Duckmatic::update_ducks()
 	}
 	for (selected_iter=selected_ducks.begin(); selected_iter!=selected_ducks.end(); ++selected_iter)
 	{
-		etl::handle<Duck> duck(*selected_iter);
+		std::shared_ptr<Duck> duck(*selected_iter);
 		if(!duck)
 			return;
 		if (duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
@@ -674,7 +674,7 @@ Duckmatic::update_ducks()
 					if (duck_value_node)
 					{
 						int index(duck->get_value_desc().get_index());
-						etl::handle<Duck> origin_duck=duck->get_origin_duck();
+						std::shared_ptr<Duck> origin_duck=duck->get_origin_duck();
 						// Search all the rest of ducks
 						DuckList::iterator iter;
 						for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
@@ -909,7 +909,7 @@ Duckmatic::signal_user_click_selected_ducks(int button)
 }
 
 void
-Duckmatic::signal_edited_duck(const etl::handle<Duck> &duck, bool moving)
+Duckmatic::signal_edited_duck(const std::shared_ptr<Duck> &duck, bool moving)
 {
 	if (moving && !duck->get_edit_immediatelly()) return;
 
@@ -993,8 +993,8 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 	{
 		if (value_desc.parent_is_value_node())
 		{
-			etl::handle<ValueNode_Bone> bone_node =
-				etl::handle<ValueNode_Bone>::cast_dynamic(
+			std::shared_ptr<ValueNode_Bone> bone_node =
+				std::shared_ptr<ValueNode_Bone>::cast_dynamic(
 					value_desc.get_parent_value_node());
 			if (bone_node)
 			{
@@ -1039,7 +1039,7 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		  && duck.get_origin_duck()
 		  && duck.get_value_desc().is_valid()
 		  && duck.get_value_desc().parent_is_layer()
-		  && etl::handle<Layer_PasteCanvas>::cast_dynamic(duck.get_value_desc().get_layer())
+		  && std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(duck.get_value_desc().get_layer())
 		  && duck.get_value_desc().get_param_name() == "origin" )
 		{
 			Point origin = duck.get_value_desc().get_value(get_time()).get(Point());
@@ -1151,7 +1151,7 @@ Duckmatic::connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc&
 -- ** -- DUCK BEZIER STOKE ADD/ERASE/FIND...  M E T H O D S----------------------------
 */
 void
-Duckmatic::add_duck(const etl::handle<Duck> &duck)
+Duckmatic::add_duck(const std::shared_ptr<Duck> &duck)
 {
 	//if(!duck_map.count(duck->get_guid()))
 	{
@@ -1173,7 +1173,7 @@ Duckmatic::add_duck(const etl::handle<Duck> &duck)
 }
 
 void
-Duckmatic::add_bezier(const etl::handle<Bezier> &bezier)
+Duckmatic::add_bezier(const std::shared_ptr<Bezier> &bezier)
 {
 	bezier_list_.push_back(bezier);
 }
@@ -1183,7 +1183,7 @@ Duckmatic::add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_lis
 {
 	assert(stroke_point_list);
 
-	std::list<etl::handle<Stroke> >::iterator iter;
+	std::list<std::shared_ptr<Stroke> >::iterator iter;
 
 	for(iter=stroke_list_.begin();iter!=stroke_list_.end();++iter)
 	{
@@ -1191,7 +1191,7 @@ Duckmatic::add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_lis
 			return;
 	}
 
-	etl::handle<Stroke> stroke(new Stroke());
+	std::shared_ptr<Stroke> stroke(new Stroke());
 
 	stroke->stroke_data=stroke_point_list;
 	stroke->color=color;
@@ -1226,13 +1226,13 @@ Duckmatic::set_show_persistent_strokes(bool x)
 }
 
 void
-Duckmatic::erase_duck(const etl::handle<Duck> &duck)
+Duckmatic::erase_duck(const std::shared_ptr<Duck> &duck)
 {
 	duck_map.erase(duck->get_guid());
 }
 
-etl::handle<Duckmatic::Duck>
-Duckmatic::find_similar_duck(etl::handle<Duck> duck)
+std::shared_ptr<Duckmatic::Duck>
+Duckmatic::find_similar_duck(std::shared_ptr<Duck> duck)
 {
 	DuckMap::const_iterator iter(duck_map.find(duck->get_guid()));
 	if(iter!=duck_map.end())
@@ -1253,10 +1253,10 @@ Duckmatic::find_similar_duck(etl::handle<Duck> duck)
 */
 }
 
-etl::handle<Duckmatic::Duck>
-Duckmatic::add_similar_duck(etl::handle<Duck> duck)
+std::shared_ptr<Duckmatic::Duck>
+Duckmatic::add_similar_duck(std::shared_ptr<Duck> duck)
 {
-	etl::handle<Duck> similar(find_similar_duck(duck));
+	std::shared_ptr<Duck> similar(find_similar_duck(duck));
 	if(!similar)
 	{
 		add_duck(duck);
@@ -1266,7 +1266,7 @@ Duckmatic::add_similar_duck(etl::handle<Duck> duck)
 }
 
 void
-Duckmatic::erase_bezier(const etl::handle<Bezier> &bezier)
+Duckmatic::erase_bezier(const std::shared_ptr<Bezier> &bezier)
 {
 	std::list<handle<Bezier> >::iterator iter;
 
@@ -1281,7 +1281,7 @@ Duckmatic::erase_bezier(const etl::handle<Bezier> &bezier)
 	synfig::warning("Unable to find bezier to erase!");
 }
 
-etl::handle<Duckmatic::Duck>
+std::shared_ptr<Duckmatic::Duck>
 Duckmatic::last_duck()const
 {
 	DuckMap::const_iterator iter(duck_map.find(last_duck_guid));
@@ -1290,13 +1290,13 @@ Duckmatic::last_duck()const
 	return 0;
 }
 
-etl::handle<Duckmatic::Bezier>
+std::shared_ptr<Duckmatic::Bezier>
 Duckmatic::last_bezier()const
 {
 	return bezier_list_.back();
 }
 
-etl::handle<Duckmatic::Duck>
+std::shared_ptr<Duckmatic::Duck>
 Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 {
 	if(radius==0)radius=10000000;
@@ -1305,8 +1305,8 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 		type=get_type_mask();
 
 	Real closest(10000000);
-	etl::handle<Duck> ret;
-	std::vector< etl::handle<Duck> > ret_vector;
+	std::shared_ptr<Duck> ret;
+	std::vector< std::shared_ptr<Duck> > ret_vector;
 
 	DuckMap::const_iterator iter;
 
@@ -1408,18 +1408,18 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 	return 0;
 }
 
-etl::handle<Duckmatic::Bezier>
+std::shared_ptr<Duckmatic::Bezier>
 Duckmatic::find_bezier(synfig::Point point, synfig::Real radius,float* location)
 {
 	return find_bezier(point,radius,radius,location);
 }
 
-etl::handle<Duckmatic::Bezier>
+std::shared_ptr<Duckmatic::Bezier>
 Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location)
 {
 	if(radius==0)radius=10000000;
 	Real closest(10000000);
-	etl::handle<Bezier> ret;
+	std::shared_ptr<Bezier> ret;
 
 	bezier<Point>	curve;
 
@@ -1485,7 +1485,7 @@ Duckmatic::save_sketch(const synfig::String& filename)const
 
 	file<<"SKETCH"<<endl;
 
-	std::list<etl::handle<Stroke> >::const_iterator iter;
+	std::list<std::shared_ptr<Stroke> >::const_iterator iter;
 
 	for(iter=persistent_stroke_list_.begin();iter!=persistent_stroke_list_.end();++iter)
 	{
@@ -1576,7 +1576,7 @@ Duckmatic::load_sketch(const synfig::String& filename)
 
 
 void
-Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *out_transform_count)
+Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, std::shared_ptr<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *out_transform_count)
 {
 	int transforms(0);
 
@@ -1606,7 +1606,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 			synfig::Rect& bbox = canvas_view->get_bbox();
 
 			// special calculations for Layer_PasteCanvas
-			etl::handle<Layer_PasteCanvas> layer_pastecanvas( etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) );
+			std::shared_ptr<Layer_PasteCanvas> layer_pastecanvas( std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer) );
 			synfig::Rect layer_bounds = layer_pastecanvas
 									  ? layer_pastecanvas->get_bounding_rect_context_dependent(canvas_view->get_context_params())
 									  : layer->get_bounding_rect();
@@ -1641,7 +1641,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if(etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		if(std::shared_ptr<Layer_PasteCanvas> layer_pastecanvas = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 		{
 			transform_stack.push_back(
 				new Transform_Matrix(
@@ -1653,7 +1653,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
 
 			// keep stack
-			if ( etl::handle<Layer_FilterGroup>::cast_dynamic(layer_pastecanvas)
+			if ( std::shared_ptr<Layer_FilterGroup>::cast_dynamic(layer_pastecanvas)
 			  && layer_pastecanvas->get_amount() > 0.5 )
 			{
 				transforms++;
@@ -1690,7 +1690,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 -- ** -- -----------------------------------------------------------------------
 */
 bool
-Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack, synfig::ParamDesc *param_desc)
+Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,std::shared_ptr<CanvasView> canvas_view, const synfig::TransformStack& transform_stack, synfig::ParamDesc *param_desc)
 {
 	synfig::Type &type=value_desc.get_value_type();
 #define REAL_COOKIE		reinterpret_cast<synfig::ParamDesc*>(28)
@@ -1699,7 +1699,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	{
 		if(!param_desc || param_desc==REAL_COOKIE || !param_desc->get_origin().empty())
 		{
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			set_duck_value_desc(*duck, value_desc, transform_stack);
 			duck->set_radius(true);
 			duck->set_type(Duck::TYPE_RADIUS);
@@ -1738,7 +1738,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					add_to_ducks(value_desc_origin,canvas_view, transform_stack);
 
 					Layer::Handle layer=value_desc.get_layer();
-					if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+					if(std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 					{
 						Vector focus(layer->get_param("focus").get(Vector()));
 						duck->set_origin(last_duck()->get_point() + focus);
@@ -1778,7 +1778,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	{
 		if(!param_desc || param_desc==REAL_COOKIE || !param_desc->get_origin().empty())
 		{
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_ANGLE);
 			set_duck_value_desc(*duck, value_desc, transform_stack);
 			synfig::Angle angle;
@@ -1843,11 +1843,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	else
 	if (type == type_vector)
 	{
-		etl::handle<Layer_PasteCanvas> layer;
+		std::shared_ptr<Layer_PasteCanvas> layer;
 		if (value_desc.parent_is_layer())
-			layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+			layer = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
 		if (!layer) {
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			set_duck_value_desc(*duck, value_desc, transform_stack);
 			ValueNode_Composite::Handle blinepoint_value_node;
 			int index;
@@ -1965,7 +1965,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	{
 		if (value_desc.parent_is_layer() && param_desc != NULL)
 		{
-			etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+			std::shared_ptr<Layer_PasteCanvas> layer = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
 			if (layer)
 			{
 				synfigapp::ValueDesc origin_value_desc(value_desc.get_layer(), "origin");
@@ -2004,7 +2004,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
-				etl::handle<Duck> origin_duck = duck;
+				std::shared_ptr<Duck> origin_duck = duck;
 
 				// add angle duck
 				duck=new Duck();
@@ -2017,7 +2017,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
-				etl::handle<Duck> angle_duck = duck;
+				std::shared_ptr<Duck> angle_duck = duck;
 
 				// add skew duck
 				duck=new Duck();
@@ -2032,7 +2032,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
-				etl::handle<Duck> skew_duck = duck;
+				std::shared_ptr<Duck> skew_duck = duck;
 
 				// add scale-x duck
 				duck=new Duck();
@@ -2046,7 +2046,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
-				etl::handle<Duck> scale_x_duck = duck;
+				std::shared_ptr<Duck> scale_x_duck = duck;
 
 				// add scale-y duck
 				duck=new Duck();
@@ -2060,7 +2060,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 				add_duck(duck);
 
-				etl::handle<Duck> scale_y_duck = duck;
+				std::shared_ptr<Duck> scale_y_duck = duck;
 
 				// add scale duck
 				duck=new Duck();
@@ -2102,7 +2102,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	if (type == type_segment)
 	{
 		int index;
-		etl::handle<Bezier> bezier(new Bezier());
+		std::shared_ptr<Bezier> bezier(new Bezier());
 		ValueNode_Composite::Handle value_node;
 
 		if(value_desc.is_value_node() &&
@@ -2150,7 +2150,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		else if(value_desc.get_value().is_valid())
 		{
 			Segment segment=value_desc.get_value().get(Segment());
-			etl::handle<Duck> duck_p,duck_c;
+			std::shared_ptr<Duck> duck_p,duck_c;
 			synfig::String name;
 			if(param_desc)
 				name=param_desc->get_local_name();
@@ -2210,7 +2210,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		connect_signals(duck, duck->get_value_desc(), *canvas_view);
 		add_duck(duck);
 
-		etl::handle<Duck> vertex_duck = duck;
+		std::shared_ptr<Duck> vertex_duck = duck;
 
 		// add tangent1 duck
 		duck=new Duck();
@@ -2247,8 +2247,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			int i,first=-1;
 
-			etl::handle<Bezier> bezier;
-			etl::handle<Duck> first_duck, first_tangent2_duck;
+			std::shared_ptr<Bezier> bezier;
+			std::shared_ptr<Duck> first_duck, first_tangent2_duck;
 
 			for (i = 0; i < value_node->link_count(); i++)
 			{
@@ -2539,7 +2539,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			if (contained_type == type_vector)
 			{
 				Bezier bezier;
-				etl::handle<Duck> first_duck, duck;
+				std::shared_ptr<Duck> first_duck, duck;
 				int first = -1;
 				for(i=0;i<value_node->link_count();i++)
 				{
@@ -2698,7 +2698,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)));
 				if(composite_width_point_value_node) // Add the position
 				{
-					etl::handle<Duck> pduck=new Duck();
+					std::shared_ptr<Duck> pduck=new Duck();
 					synfigapp::ValueDesc wpoint_value_desc(value_node, i); // The i-widthpoint on WPList
 					pduck->set_type(Duck::TYPE_WIDTHPOINT_POSITION);
 					set_duck_value_desc(*pduck, wpoint_value_desc, transform_stack);
@@ -2741,7 +2741,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					int index=composite_width_point_value_node->get_link_index_from_name("width");
 					if (add_to_ducks(synfigapp::ValueDesc(composite_width_point_value_node,index),canvas_view,transform_stack))
 					{
-						etl::handle<Duck> wduck;
+						std::shared_ptr<Duck> wduck;
 						wduck=last_duck();
 						wduck->set_origin(pduck);
 						wduck->set_type(Duck::TYPE_WIDTH);
@@ -2778,7 +2778,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			if(value_node->get_contained_type()==type_vector)
 			{
 				Bezier bezier;
-				etl::handle<Duck> first_duck, duck;
+				std::shared_ptr<Duck> first_duck, duck;
 				int first = -1;
 				for(i=0;i<value_node->link_count();i++)
 				{
@@ -2954,7 +2954,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 		}
 
-		etl::handle<Bezier> bezier = new Bezier();
+		std::shared_ptr<Bezier> bezier = new Bezier();
 
 		bone_transform_stack.push(new Transform_Rotate(guid, bone.get_angle()));
 
@@ -2962,7 +2962,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("origin"), orig_value_desc);
 
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_POSITION);
 			set_duck_value_desc(*duck, value_desc, origin_transform_stack);
 			duck->set_point(value_desc.get_value(time).get(Point()));
@@ -3011,7 +3011,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 					synfigapp::ValueDesc scale_value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalex" : "scalelx"), orig_value_desc);
 
-					etl::handle<Duck> duck=new Duck();
+					std::shared_ptr<Duck> duck=new Duck();
 					duck->set_type(Duck::TYPE_VERTEX);
 					set_duck_value_desc(*duck, scale_value_desc, bone_transform_stack);
 					duck->set_point(origin);
@@ -3026,7 +3026,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("name"), orig_value_desc);
 
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_NONE);
 			set_duck_value_desc(*duck, value_desc, bone_transform_stack);
 			duck->set_point(Point(0, 0));
@@ -3040,7 +3040,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("angle"), orig_value_desc);
 
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_ANGLE);
 			set_duck_value_desc(*duck, value_desc, bone_transform_stack);
 
@@ -3067,7 +3067,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalex" : "scalelx"), orig_value_desc);
 
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_VERTEX);
 			set_duck_value_desc(*duck, value_desc, bone_transform_stack);
 			//Real length = bone.get_length()*bone.get_scalex()*bone.get_scalelx();
@@ -3106,7 +3106,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("width"), orig_value_desc);
 
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_WIDTH);
 			set_duck_value_desc(*duck, value_desc, bone_transform_stack);
 			duck->set_radius(true);
@@ -3134,7 +3134,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("tipwidth"), orig_value_desc);
 
-			etl::handle<Duck> duck=new Duck();
+			std::shared_ptr<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_WIDTH);
 			set_duck_value_desc(*duck, value_desc, bone_transform_stack);
 			duck->set_radius(true);
@@ -3261,8 +3261,8 @@ BezierDrag_Default::begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector
 	drag_offset_=offset;
 	click_pos_=bezier_click_pos;
 
-	etl::handle<Duck> c1(duckmatic->get_selected_bezier()->c1);
-	etl::handle<Duck> c2(duckmatic->get_selected_bezier()->c2);
+	std::shared_ptr<Duck> c1(duckmatic->get_selected_bezier()->c1);
+	std::shared_ptr<Duck> c2(duckmatic->get_selected_bezier()->c2);
 
 	c1_initial = c1->get_trans_point();
 	c2_initial = c2->get_trans_point();
@@ -3307,8 +3307,8 @@ BezierDrag_Default::bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vect
 	synfig::Vector c1_offset(vect[0]*c1_ratio, vect[1]*c1_ratio);
 	synfig::Vector c2_offset(vect[0]*c2_ratio, vect[1]*c2_ratio);
 
-	etl::handle<Duck> c1(duckmatic->get_selected_bezier()->c1);
-	etl::handle<Duck> c2(duckmatic->get_selected_bezier()->c2);
+	std::shared_ptr<Duck> c1(duckmatic->get_selected_bezier()->c1);
+	std::shared_ptr<Duck> c2(duckmatic->get_selected_bezier()->c2);
 
 	c1->set_trans_point(c1_initial+c1_offset, time);
 	c2->set_trans_point(c2_initial+c2_offset, time);
@@ -3330,8 +3330,8 @@ BezierDrag_Default::end_bezier_drag(Duckmatic* duckmatic)
 {
 	if(is_moving)
 	{
-		etl::handle<Duck> c1(duckmatic->get_selected_bezier()->c1);
-		etl::handle<Duck> c2(duckmatic->get_selected_bezier()->c2);
+		std::shared_ptr<Duck> c1(duckmatic->get_selected_bezier()->c1);
+		std::shared_ptr<Duck> c2(duckmatic->get_selected_bezier()->c2);
 
 		duckmatic->signal_edited_duck(c1);
 		duckmatic->signal_edited_duck(c2);

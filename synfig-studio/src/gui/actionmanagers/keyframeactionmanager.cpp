@@ -94,7 +94,7 @@ KeyframeActionManager::set_keyframe_tree(KeyframeTree* x)
 }
 
 void
-KeyframeActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x)
+KeyframeActionManager::set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface> &x)
 {
 	time_changed_connection.disconnect();
 	canvas_interface_ = x;

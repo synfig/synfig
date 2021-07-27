@@ -48,7 +48,7 @@ class Bone: public UniqueID
 	*/
 
 public:
-	typedef etl::handle<Bone> Handle;
+	typedef std::shared_ptr<Bone> Handle;
 
 	struct Shape {
 		Vector p0;

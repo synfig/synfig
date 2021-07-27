@@ -85,7 +85,7 @@ public:
 		}
 	};
 
-	etl::handle<studio::AsyncRenderer>	renderer;
+	std::shared_ptr<studio::AsyncRenderer>	renderer;
 
 	sigc::signal<void, Preview *>	signal_destroyed_;	//so things can reference us without fear
 
@@ -159,7 +159,7 @@ public:
 	int		get_quality() const {return quality;}
 	void	set_quality(int i)	{quality = i;}
 
-	const etl::handle<synfig::Canvas>& get_canvas() const;
+	const std::shared_ptr<synfig::Canvas>& get_canvas() const;
 	const std::shared_ptr<CanvasView>& get_canvasview() const;
 
 	void set_canvasview(const std::shared_ptr<CanvasView> &h);
@@ -201,7 +201,7 @@ class Widget_Preview : public Gtk::Table
 	//double				audiotime;
 
 	//preview encapsulation
-	etl::handle<Preview>	preview;
+	std::shared_ptr<Preview>	preview;
 	sigc::connection	prevchanged;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_sound;
@@ -251,7 +251,7 @@ public:
 	~Widget_Preview();
 
 	//sets a signal to identify disconnection (so we don't hold onto it)...
-	void set_preview(etl::handle<Preview> prev);
+	void set_preview(std::shared_ptr<Preview> prev);
 
 	void clear();
 

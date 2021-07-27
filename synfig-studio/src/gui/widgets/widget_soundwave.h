@@ -49,7 +49,7 @@ public:
 	void set_delay(synfig::Time delay);
 	const synfig::Time& get_delay() const;
 
-	virtual void set_time_model(const etl::handle<TimeModel> &x) override;
+	virtual void set_time_model(const std::shared_ptr<TimeModel> &x) override;
 
 	sigc::signal<void, const std::string&> & signal_file_loaded() { return signal_file_loaded_; }
 	sigc::signal<void> & signal_delay_changed() { return signal_delay_changed_; }

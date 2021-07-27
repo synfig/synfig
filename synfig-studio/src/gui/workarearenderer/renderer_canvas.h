@@ -49,7 +49,7 @@ namespace studio {
 class Renderer_Canvas : public studio::WorkAreaRenderer
 {
 public:
-	typedef etl::handle<Renderer_Canvas> Handle;
+	typedef std::shared_ptr<Renderer_Canvas> Handle;
 	typedef std::shared_ptr<Renderer_Canvas> LooseHandle;
 
 	enum FrameStatus {
@@ -112,7 +112,7 @@ public:
 
 	class Tile: public etl::shared_object {
 	public:
-		typedef etl::handle<Tile> Handle;
+		typedef std::shared_ptr<Tile> Handle;
 
 		const FrameId frame_id;
 		const synfig::RectInt rect;
@@ -176,7 +176,7 @@ private:
 	// don't try to pass arguments to callbacks by reference, it cannot be properly saved in signal
 	// Renderer_Canvas is non-thread-safe sigc::trackable, so use static callback methods in signals
 	static void on_tile_finished_callback(bool success, Renderer_Canvas *obj, Tile::Handle tile);
-	static void on_post_tile_finished_callback(etl::handle<Renderer_Canvas> obj, Tile::Handle tile);
+	static void on_post_tile_finished_callback(std::shared_ptr<Renderer_Canvas> obj, Tile::Handle tile);
 
 	//! this method may be called from the other threads
 	void on_tile_finished(bool success, const Tile::Handle &tile);

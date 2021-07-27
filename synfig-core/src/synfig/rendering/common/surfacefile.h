@@ -45,7 +45,7 @@ namespace rendering
 class SurfaceFile: public Surface
 {
 public:
-	typedef etl::handle<SurfaceFile> Handle;
+	typedef std::shared_ptr<SurfaceFile> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const
 		{ return token.handle(); }

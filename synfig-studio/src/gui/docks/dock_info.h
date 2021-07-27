@@ -51,7 +51,7 @@ class Dock_Info : public Dock_CanvasSpecific
 	Gtk::Label       render_percentage;
 	Gtk::Button      stop_button;
 
-	etl::handle<AsyncRenderer> async_renderer;
+	std::shared_ptr<AsyncRenderer> async_renderer;
 
 	//! Number of passes request - 1 or 2 (if alpha)
 	int              n_passes_requested;
@@ -71,7 +71,7 @@ public:
 
 	//! Current render progress - 0.0 to 1.0
 	//  depends on n_passes_requested and current_pass
-	void set_async_render(etl::handle<AsyncRenderer> ar);
+	void set_async_render(std::shared_ptr<AsyncRenderer> ar);
 	void set_render_progress   (float value);
 	void set_n_passes_requested(int   value);
 	void set_n_passes_pending  (int   value);

@@ -125,7 +125,7 @@ void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tli
 {
 	// iterate through the layers
 	//check for special case of paste canvas
-	etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(h);
+	std::shared_ptr<synfig::Layer_PasteCanvas> p = std::shared_ptr<synfig::Layer_PasteCanvas>::cast_dynamic(h);
 
 	//synfig::info("Layer...");
 
@@ -288,7 +288,7 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 
 	//the linkable case...
 	{
-		etl::handle<synfig::LinkableValueNode> p = etl::handle<synfig::LinkableValueNode>::cast_dynamic(h.get_value_node());
+		std::shared_ptr<synfig::LinkableValueNode> p = std::shared_ptr<synfig::LinkableValueNode>::cast_dynamic(h.get_value_node());
 
 		if(p)
 		{

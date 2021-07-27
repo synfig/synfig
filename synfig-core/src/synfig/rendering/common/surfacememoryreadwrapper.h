@@ -43,7 +43,7 @@ namespace rendering
 class SurfaceMemoryReadWrapper: public Surface
 {
 public:
-	typedef etl::handle<SurfaceMemoryReadWrapper> Handle;
+	typedef std::shared_ptr<SurfaceMemoryReadWrapper> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const
 		{ return token.handle(); }

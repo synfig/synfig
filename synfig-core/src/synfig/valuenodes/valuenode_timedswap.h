@@ -40,8 +40,8 @@ namespace synfig {
 class ValueNode_TimedSwap : public LinkableValueNode
 {
 public:
-	typedef etl::handle<ValueNode_TimedSwap> Handle;
-	typedef etl::handle<const ValueNode_TimedSwap> ConstHandle;
+	typedef std::shared_ptr<ValueNode_TimedSwap> Handle;
+	typedef std::shared_ptr<const ValueNode_TimedSwap> ConstHandle;
 
 private:
 

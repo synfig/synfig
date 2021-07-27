@@ -83,10 +83,10 @@ public:
 
 class studio::StateMirror_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	std::shared_ptr<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
-	etl::handle<DuckDrag_Mirror> duck_dragger_;
+	std::shared_ptr<DuckDrag_Mirror> duck_dragger_;
 
 	Gtk::Grid options_grid;
 	Gtk::Label title_label;
@@ -127,8 +127,8 @@ public:
 
 	~StateMirror_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	const std::shared_ptr<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 

@@ -63,7 +63,7 @@ class CellRenderer_TimeTrack :
 private:
 
 	//! Time model
-	etl::handle<TimeModel> time_model;
+	std::shared_ptr<TimeModel> time_model;
 
 	synfig::UniqueID selected;
 
@@ -93,7 +93,7 @@ private:
 private:
 
 	//! Signal for when the user clicks on a waypoint
-	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, const synfig::Time&, int> signal_waypoint_clicked_cellrenderer_;
+	sigc::signal<void, const std::shared_ptr<synfig::Node>&, const synfig::Time&, const synfig::Time&, const synfig::Time&, int> signal_waypoint_clicked_cellrenderer_;
 	sigc::signal<void, synfig::Waypoint&, synfig::ValueNode::Handle> signal_waypoint_changed_;
 
 	/*
@@ -109,7 +109,7 @@ public:
 	*/
 public:
 
-	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, const synfig::Time&, int>& signal_waypoint_clicked_cellrenderer()
+	sigc::signal<void, const std::shared_ptr<synfig::Node>&, const synfig::Time&, const synfig::Time&, const synfig::Time&, int>& signal_waypoint_clicked_cellrenderer()
 		{ return signal_waypoint_clicked_cellrenderer_; }
 	sigc::signal<void, synfig::Waypoint&, synfig::ValueNode::Handle>& signal_waypoint_changed()
 		{ return signal_waypoint_changed_; }
@@ -122,8 +122,8 @@ public:
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
 
-	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
-	void set_time_model(const etl::handle<TimeModel> &x);
+	const std::shared_ptr<TimeModel>& get_time_model() const { return time_model; }
+	void set_time_model(const std::shared_ptr<TimeModel> &x);
 
 	const std::shared_ptr<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }
 	void set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface> &x);

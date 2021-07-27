@@ -71,8 +71,8 @@ class ValueNode_BLine : public ValueNode_DynamicList
 {
 public:
 
-	typedef etl::handle<ValueNode_BLine> Handle;
-	typedef etl::handle<const ValueNode_BLine> ConstHandle;
+	typedef std::shared_ptr<ValueNode_BLine> Handle;
+	typedef std::shared_ptr<const ValueNode_BLine> ConstHandle;
 
 
 	ValueNode_BLine(std::shared_ptr<Canvas> canvas = 0);

@@ -295,7 +295,7 @@ Dock_History::clear_undo_and_redo()
 void
 Dock_History::update_undo_redo()
 {
-	etl::handle<Instance> instance=App::get_selected_instance();
+	std::shared_ptr<Instance> instance=App::get_selected_instance();
 	if(instance)
 	{
 		action_group->get_action("undo")->set_sensitive(instance->get_undo_status());
@@ -335,7 +335,7 @@ Dock_History::on_undo_tree_changed()
 }
 
 void
-Dock_History::set_selected_instance_(etl::handle<studio::Instance> instance)
+Dock_History::set_selected_instance_(std::shared_ptr<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -363,7 +363,7 @@ Dock_History::set_selected_instance_(etl::handle<studio::Instance> instance)
 }
 
 void
-Dock_History::set_selected_instance_signal(etl::handle<studio::Instance> x)
+Dock_History::set_selected_instance_signal(std::shared_ptr<studio::Instance> x)
 {
 	set_selected_instance(x);
 }
@@ -378,13 +378,13 @@ Dock_History::set_selected_instance(std::shared_ptr<studio::Instance> x)
 	if (x==selected_instance)
 		return;
 
-	std::list<etl::handle<studio::Instance> >::iterator iter;
+	std::list<std::shared_ptr<studio::Instance> >::iterator iter;
 
 	set_selected_instance_(x);
 }
 
 void
-Dock_History::delete_instance(etl::handle<studio::Instance> instance)
+Dock_History::delete_instance(std::shared_ptr<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
@@ -420,7 +420,7 @@ Dock_History::on_action_event(GdkEvent *event)
 			//signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
-				etl::handle<synfigapp::Action::Undoable> action(row[model.action]);
+				std::shared_ptr<synfigapp::Action::Undoable> action(row[model.action]);
 				try{
 				if((bool)row[model.is_undo])
 				{

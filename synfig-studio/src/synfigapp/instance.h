@@ -60,7 +60,7 @@ class Instance : public Action::System
 
 public:
 
-	typedef std::list< etl::handle<CanvasInterface> > CanvasInterfaceList;
+	typedef std::list< std::shared_ptr<CanvasInterface> > CanvasInterfaceList;
 
 	struct FileReference
 	{
@@ -96,12 +96,12 @@ private:
 
 	sigc::signal<void> signal_filename_changed_;
 	sigc::signal<void> signal_saved_;
-	etl::handle<SelectionManager> selection_manager_;
+	std::shared_ptr<SelectionManager> selection_manager_;
 
 	std::list< synfig::Layer::Handle > layers_to_save;
 
 	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Canvas::Handle> &imported);
-	etl::handle<Action::Group> import_external_canvases();
+	std::shared_ptr<Action::Group> import_external_canvases();
 
 	struct ProcessFilenamesParams
 	{
@@ -139,7 +139,7 @@ private:
 	void process_filenames_undo(const ProcessFilenamesParams &params);
 
 protected:
-	Instance(etl::handle<synfig::Canvas>, synfig::FileSystem::Handle container);
+	Instance(std::shared_ptr<synfig::Canvas>, synfig::FileSystem::Handle container);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -148,9 +148,9 @@ protected:
 public:
 	~Instance();
 
-	void set_selection_manager(const etl::handle<SelectionManager> &sm) { assert(sm); selection_manager_=sm; }
+	void set_selection_manager(const std::shared_ptr<SelectionManager> &sm) { assert(sm); selection_manager_=sm; }
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
-	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
+	const std::shared_ptr<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
 	synfig::FileSystem::Handle get_container() const { return container_; };
 	bool save_surface(const synfig::rendering::SurfaceResource::Handle &surface, const synfig::String &filename);
@@ -161,7 +161,7 @@ public:
 	void find_unsaved_layers(std::vector<synfig::Layer::Handle> &out_layers)
 		{ find_unsaved_layers(out_layers, get_canvas()); }
 
-	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
+	std::shared_ptr<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
 
 	const synfig::Canvas::Handle& get_canvas()const { return canvas_; }
 
@@ -200,10 +200,10 @@ public:
 
 
 public:	// Constructor interfaces
-	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container);
+	static std::shared_ptr<Instance> create(std::shared_ptr<synfig::Canvas> canvas, synfig::FileSystem::Handle container);
 }; // END class Instance
 
-etl::handle<Instance> find_instance(etl::handle<synfig::Canvas> canvas);
+std::shared_ptr<Instance> find_instance(std::shared_ptr<synfig::Canvas> canvas);
 
 bool is_editable(synfig::ValueNode::Handle value_node);
 

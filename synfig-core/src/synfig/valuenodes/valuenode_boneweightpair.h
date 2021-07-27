@@ -46,8 +46,8 @@ class ValueNode_BoneWeightPair : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_BoneWeightPair> Handle;
-	typedef etl::handle<const ValueNode_BoneWeightPair> ConstHandle;
+	typedef std::shared_ptr<ValueNode_BoneWeightPair> Handle;
+	typedef std::shared_ptr<const ValueNode_BoneWeightPair> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

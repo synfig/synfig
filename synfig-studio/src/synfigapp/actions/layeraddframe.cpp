@@ -93,7 +93,7 @@ Action::LayerAddFrame::is_candidate(const ParamList &x)
 	Layer::Handle layer=x.find("layer")->second.get_layer();
 	if(!layer) return false;
 
-	if (!etl::handle<Layer_Switch>::cast_dynamic(layer)) return false;
+	if (!std::shared_ptr<Layer_Switch>::cast_dynamic(layer)) return false;
 
 	return true;
 }
@@ -103,7 +103,7 @@ Action::LayerAddFrame::set_param(const synfig::String& name, const Action::Param
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
-		layer_switch = etl::handle<Layer_Switch>::cast_dynamic(param.get_layer());
+		layer_switch = std::shared_ptr<Layer_Switch>::cast_dynamic(param.get_layer());
 		if (layer_switch)
 		{
 			layer_base = layer_switch->get_current_layer();

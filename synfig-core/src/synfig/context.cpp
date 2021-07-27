@@ -231,7 +231,7 @@ Context::get_full_bounding_rect()const
 */
 
 
-etl::handle<Layer>
+std::shared_ptr<Layer>
 Context::hit_check(const Point &pos)const
 {
 	Context context(*this);
@@ -276,7 +276,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	// nothing, but it's a straight blend with non-zero amount, and so
 	// it has an effect anyway
 	bool straight_and_empty = false;
-	etl::handle<Layer_Composite> composite;
+	std::shared_ptr<Layer_Composite> composite;
 	Context context(*this);
 	// Run all layers until context is empty
 	for(;!(context)->empty();++context)
@@ -286,7 +286,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 			continue;
 		const Rect layer_bounds(Transformation::transform_bounds(transfromation_matrix, (*context)->get_bounding_rect()));
 		// Cast current layer to composite
-		composite = etl::handle<Layer_Composite>::cast_dynamic(*context);
+		composite = std::shared_ptr<Layer_Composite>::cast_dynamic(*context);
 		// If the box area is less than zero or the boxes do not
 		// intersect then move on to next layer, unless the layer is
 		// using a straight blend and has a non-zero amount, in which

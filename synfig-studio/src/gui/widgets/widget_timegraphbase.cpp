@@ -59,12 +59,12 @@ Widget_TimeGraphBase::~Widget_TimeGraphBase()
 	delete time_plot_data;
 }
 
-const etl::handle<TimeModel>& Widget_TimeGraphBase::get_time_model() const
+const std::shared_ptr<TimeModel>& Widget_TimeGraphBase::get_time_model() const
 {
 	return time_plot_data->time_model;
 }
 
-void Widget_TimeGraphBase::set_time_model(const etl::handle<TimeModel>& x)
+void Widget_TimeGraphBase::set_time_model(const std::shared_ptr<TimeModel>& x)
 {
 	if (x == time_plot_data->time_model)
 		return;
@@ -116,7 +116,7 @@ void Widget_TimeGraphBase::zoom_horizontal_in()
 	int x, y;
 	get_pointer(x, y);
 
-	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+	std::shared_ptr<TimeModel> &time_model = time_plot_data->time_model;
 
 	if(!time_model || get_width() <= 0 || get_height() <= 0)
 		return;
@@ -129,7 +129,7 @@ void Widget_TimeGraphBase::zoom_horizontal_out()
 	int x, y;
 	get_pointer(x, y);
 
-	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+	std::shared_ptr<TimeModel> &time_model = time_plot_data->time_model;
 
 	if(!time_model || get_width() <= 0 || get_height() <= 0)
 		return;
@@ -156,7 +156,7 @@ void Widget_TimeGraphBase::scroll_right()
 	int x, y;
 	get_pointer(x, y);
 
-	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+	std::shared_ptr<TimeModel> &time_model = time_plot_data->time_model;
 
 	if(!time_model || get_width() <= 0 || get_height() <= 0)
 		return;
@@ -171,7 +171,7 @@ void Widget_TimeGraphBase::scroll_left()
 	int x, y;
 	get_pointer(x, y);
 
-	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
+	std::shared_ptr<TimeModel> &time_model = time_plot_data->time_model;
 
 	if(!time_model || get_width() <= 0 || get_height() <= 0)
 		return;
@@ -193,12 +193,12 @@ void Widget_TimeGraphBase::pan(int dx, int dy, int /*total_dx*/, int /*total_dy*
 			.finish();
 }
 
-etl::handle<synfigapp::CanvasInterface> Widget_TimeGraphBase::get_canvas_interface() const
+std::shared_ptr<synfigapp::CanvasInterface> Widget_TimeGraphBase::get_canvas_interface() const
 {
 	return canvas_interface;
 }
 
-void Widget_TimeGraphBase::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface>& value)
+void Widget_TimeGraphBase::set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface>& value)
 {
 	if (canvas_interface.get() == value.get())
 		return;

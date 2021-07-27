@@ -70,7 +70,7 @@ private:
 	std::list<sigc::connection> activity_connection_list;
 	
 	//! The target that is going to be asynchronously rendered.
-	etl::handle<synfig::Target> target;
+	std::shared_ptr<synfig::Target> target;
 
 	//! Current rendering status
 	//! Undefined if not finished
@@ -95,7 +95,7 @@ private:
 	*/
 public:
 
-	AsyncRenderer(etl::handle<synfig::Target> target,synfig::ProgressCallback *cb=0);
+	AsyncRenderer(std::shared_ptr<synfig::Target> target,synfig::ProgressCallback *cb=0);
 	virtual ~AsyncRenderer();
 
 	void start();

@@ -92,7 +92,7 @@ public:
 	  unsigned int modifiers;
 	};
 
-	typedef etl::handle<InputDevice> Handle;
+	typedef std::shared_ptr<InputDevice> Handle;
 
 private:
 	synfig::String id_;

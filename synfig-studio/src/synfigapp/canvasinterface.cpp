@@ -93,7 +93,7 @@ using namespace synfigapp;
 
 /* === M E T H O D S ======================================================= */
 
-CanvasInterface::CanvasInterface(std::shared_ptr<Instance> instance,etl::handle<synfig::Canvas> canvas):
+CanvasInterface::CanvasInterface(std::shared_ptr<Instance> instance,std::shared_ptr<synfig::Canvas> canvas):
 	instance_(instance),
 	canvas_(canvas),
 	cur_time_(canvas->rend_desc().get_frame_start()),
@@ -148,10 +148,10 @@ CanvasInterface::refresh_current_values()
 	signal_dirty_preview()();
 }
 
-etl::handle<CanvasInterface>
-CanvasInterface::create(std::shared_ptr<Instance> instance, etl::handle<synfig::Canvas> canvas)
+std::shared_ptr<CanvasInterface>
+CanvasInterface::create(std::shared_ptr<Instance> instance, std::shared_ptr<synfig::Canvas> canvas)
 {
-	etl::handle<CanvasInterface> intrfc;
+	std::shared_ptr<CanvasInterface> intrfc;
 	intrfc=new CanvasInterface(instance,canvas);
 	instance->canvas_interface_list().push_front(intrfc);
 	return intrfc;
@@ -232,7 +232,7 @@ CanvasInterface::layer_create(
 		}
 
 	layer->set_canvas(canvas);
-	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if (std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 		layer->set_param("canvas", Canvas::create_inline(canvas));
 
 	return layer;
@@ -528,7 +528,7 @@ CanvasInterface::generate_param_list(const ValueDesc &value_desc)
 {
 	synfigapp::Action::ParamList param_list;
 	param_list.add("time",get_time());
-	param_list.add("canvas_interface",etl::handle<CanvasInterface>(this));
+	param_list.add("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	param_list.add("canvas",get_canvas());
 
 	param_list.add("value_desc",value_desc);
@@ -576,7 +576,7 @@ CanvasInterface::generate_param_list(const std::list<synfigapp::ValueDesc> &valu
 {
 	synfigapp::Action::ParamList param_list;
 	param_list.add("time",get_time());
-	param_list.add("canvas_interface",etl::handle<CanvasInterface>(this));
+	param_list.add("canvas_interface",std::shared_ptr<CanvasInterface>(this));
 	param_list.add("canvas",get_canvas());
 
 	std::list<synfigapp::ValueDesc>::const_iterator iter;
@@ -918,8 +918,8 @@ CanvasInterface::import(
 
 		//get_selection_manager()->set_selected_layer(layer);
 
-		//etl::handle<synfig::Canvas> canvas = get_canvas();
-		//etl::handle<CanvasView> view = get_instance()->find_canvas_view(canvas);
+		//std::shared_ptr<synfig::Canvas> canvas = get_canvas();
+		//std::shared_ptr<CanvasView> view = get_instance()->find_canvas_view(canvas);
 		//view->layer_tree->select_layer(layer);
 
 		// add imported layer into switch
@@ -1307,7 +1307,7 @@ bool CanvasInterface::change_value_at_time(ValueDesc value_desc, ValueBase new_v
 	{
 		if (value_desc.get_canvas()->get_root() != get_canvas()->get_root())
 		{
-			etl::handle<Instance> instance;
+			std::shared_ptr<Instance> instance;
 			instance=find_instance(value_desc.get_canvas()->get_root());
 
 			if(instance)

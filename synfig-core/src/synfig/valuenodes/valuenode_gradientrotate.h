@@ -40,8 +40,8 @@ namespace synfig {
 class ValueNode_GradientRotate : public LinkableValueNode
 {
 public:
-	typedef etl::handle<ValueNode_GradientRotate> Handle;
-	typedef etl::handle<const ValueNode_GradientRotate> ConstHandle;
+	typedef std::shared_ptr<ValueNode_GradientRotate> Handle;
+	typedef std::shared_ptr<const ValueNode_GradientRotate> ConstHandle;
 
 protected:
 

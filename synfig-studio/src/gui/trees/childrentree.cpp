@@ -186,7 +186,7 @@ ChildrenTree::set_model(Glib::RefPtr<ChildrenTreeStore> children_tree_store)
 }
 
 void
-ChildrenTree::set_time_model(const etl::handle<TimeModel> &x)
+ChildrenTree::set_time_model(const std::shared_ptr<TimeModel> &x)
 	{ cellrenderer_time_track->set_time_model(x); }
 
 void
@@ -211,7 +211,7 @@ ChildrenTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase 
 }
 
 void
-ChildrenTree::on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node,
+ChildrenTree::on_waypoint_clicked_childrentree(const std::shared_ptr<synfig::Node>& node,
 											   const synfig::Time& time,
 											   const synfig::Time& time_offset,
 											   const synfig::Time& time_dilation,

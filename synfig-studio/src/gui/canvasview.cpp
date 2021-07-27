@@ -496,7 +496,7 @@ LockDucks::~LockDucks() {
 
 CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
 
-CanvasView::CanvasView(std::shared_ptr<Instance> instance,etl::handle<CanvasInterface> canvas_interface_):
+CanvasView::CanvasView(std::shared_ptr<Instance> instance,std::shared_ptr<CanvasInterface> canvas_interface_):
 	Dockable(synfig::GUID().get_string(),_("Canvas View")),
 	work_area                (),
 	activation_index_        (true),
@@ -713,7 +713,7 @@ CanvasView::~CanvasView()
 
 void CanvasView::save_all()
 {
-	std::list<etl::handle<Instance> >::iterator iter;
+	std::list<std::shared_ptr<Instance> >::iterator iter;
 	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
 		(*iter)->save();
 }
@@ -1762,7 +1762,7 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 
 	//parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
 
-	if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if(std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 	{
 		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
 			*manage(new Gtk::Image(
@@ -1905,7 +1905,7 @@ CanvasView::close_view()
 	return false;
 }
 
-static bool _close_instance(etl::handle<studio::Instance> instance)
+static bool _close_instance(std::shared_ptr<studio::Instance> instance)
 {
 	if (instance->safe_close())
 		info("closed");
@@ -1918,13 +1918,13 @@ CanvasView::close_instance()
 	Glib::signal_timeout().connect(
 		sigc::bind(
 			sigc::ptr_fun(_close_instance),
-			(etl::handle<Instance>)get_instance() ),
+			(std::shared_ptr<Instance>)get_instance() ),
 		250 );
 	return false;
 }
 
-etl::handle<CanvasView>
-CanvasView::create(std::shared_ptr<Instance> instance, etl::handle<Canvas> canvas)
+std::shared_ptr<CanvasView>
+CanvasView::create(std::shared_ptr<Instance> instance, std::shared_ptr<Canvas> canvas)
 	{ return new CanvasView(instance,instance->Instance::find_canvas_interface(canvas)); }
 
 void
@@ -2182,7 +2182,7 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 				build_new_layer_menu(*newlayers);
 
 				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
-				if(!multiple_selected && etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+				if(!multiple_selected && std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 				{
 					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Children"),
 						sigc::bind(
@@ -3605,7 +3605,7 @@ void
 CanvasView::on_preview_create(const PreviewInfo &info)
 {
 	//set all the options
-	etl::handle<Preview>	prev = new Preview;
+	std::shared_ptr<Preview>	prev = new Preview;
 
 	prev->set_canvasview(this);
 	prev->set_zoom(info.zoom);

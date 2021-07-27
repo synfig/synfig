@@ -46,7 +46,7 @@ namespace rendering
 class SurfaceSW: public Surface
 {
 public:
-	typedef etl::handle<SurfaceSW> Handle;
+	typedef std::shared_ptr<SurfaceSW> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const
 		{ return token.handle(); }

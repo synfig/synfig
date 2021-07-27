@@ -79,7 +79,7 @@ Dialog_Preview::~Dialog_Preview()
 {
 }
 
-void Dialog_Preview::set_preview(etl::handle<Preview> prev)
+void Dialog_Preview::set_preview(std::shared_ptr<Preview> prev)
 {
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> window = get_window();

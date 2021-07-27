@@ -51,14 +51,14 @@ class Dock_History : public Dock_CanvasSpecific
 
 	void on_undo_tree_changed();
 
-	void set_selected_instance_(etl::handle<studio::Instance> x);
+	void set_selected_instance_(std::shared_ptr<studio::Instance> x);
 
 
 	void set_selected_instance(std::shared_ptr<studio::Instance> x);
 
-	void set_selected_instance_signal(etl::handle<studio::Instance> x);
+	void set_selected_instance_signal(std::shared_ptr<studio::Instance> x);
 
-	void delete_instance(etl::handle<studio::Instance> x);
+	void delete_instance(std::shared_ptr<studio::Instance> x);
 
 	Gtk::Widget* create_action_tree();
 

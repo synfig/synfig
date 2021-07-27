@@ -125,7 +125,7 @@ Translate::get_color(Context context, const Point &pos)const
 
 class lyr_std::Translate_Trans : public Transform
 {
-	etl::handle<const Translate> layer;
+	std::shared_ptr<const Translate> layer;
 public:
 	Translate_Trans(const Translate* x):Transform(x->get_guid()),layer(x) { }
 
@@ -145,7 +145,7 @@ public:
 	}
 };
 
-etl::handle<Transform>
+std::shared_ptr<Transform>
 Translate::get_transform()const
 {
 	return new Translate_Trans(this);

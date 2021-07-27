@@ -41,8 +41,8 @@ namespace synfig {
 class ValueNode_AnimatedFile : public LinkableValueNode, public ValueNode_AnimatedInterfaceConst
 {
 public:
-	typedef etl::handle<ValueNode_AnimatedFile> Handle;
-	typedef etl::handle<const ValueNode_AnimatedFile> ConstHandle;
+	typedef std::shared_ptr<ValueNode_AnimatedFile> Handle;
+	typedef std::shared_ptr<const ValueNode_AnimatedFile> ConstHandle;
 
 private:
 	class Internal;

@@ -161,8 +161,8 @@ Action::LayerZDepthRangeSet::prepare()
 
 	Layer::Handle layer=layers.front();
 
-	etl::handle<Layer_Group> paste=
-		etl::handle<Layer_Group>::cast_dynamic(
+	std::shared_ptr<Layer_Group> paste=
+		std::shared_ptr<Layer_Group>::cast_dynamic(
 			layer->get_parent_paste_canvas_layer() );
 	if(!paste)
 		throw Error(_("No Parent Group found!"));

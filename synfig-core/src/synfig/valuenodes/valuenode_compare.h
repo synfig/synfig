@@ -47,8 +47,8 @@ class ValueNode_Compare : public LinkableValueNode
 	ValueNode::RHandle less_;
 
 public:
-	typedef etl::handle<ValueNode_Compare> Handle;
-	typedef etl::handle<const ValueNode_Compare> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Compare> Handle;
+	typedef std::shared_ptr<const ValueNode_Compare> ConstHandle;
 
 	ValueNode_Compare(const ValueBase &x);
 

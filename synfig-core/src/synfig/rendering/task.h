@@ -61,7 +61,7 @@ class Holder
 {
 public:
 	typedef T Type;
-	typedef etl::handle<Type> Handle;
+	typedef std::shared_ptr<Type> Handle;
 
 private:
 	Handle value;
@@ -130,7 +130,7 @@ typedef std::vector<ModeToken::Handle> ModeList;
 class Task: public etl::shared_object
 {
 public:
-	typedef etl::handle<Task> Handle;
+	typedef std::shared_ptr<Task> Handle;
 	typedef std::vector<Handle> List;
 	typedef std::set<Handle> Set;
 
@@ -265,11 +265,11 @@ public:
 	};
 
 	struct RunParams {
-		etl::handle<etl::shared_object> rendererHolder;
+		std::shared_ptr<etl::shared_object> rendererHolder;
 		Renderer *renderer;
 		mutable Task::List sub_queue;
 		RunParams(): renderer() { }
-		explicit RunParams(const etl::handle<Renderer> &renderer);
+		explicit RunParams(const std::shared_ptr<Renderer> &renderer);
 	};
 
 	struct RendererData
@@ -350,7 +350,7 @@ public:
 	SYNFIG_EXPORT static synfig::Token token;
 	virtual Token::Handle get_token() const = 0;
 
-	SYNFIG_EXPORT static const etl::handle<Task> blank;
+	SYNFIG_EXPORT static const std::shared_ptr<Task> blank;
 
 private:
 	mutable bool bounds_calculated;
@@ -507,7 +507,7 @@ public:
 class TaskSurface: public Task
 {
 public:
-	typedef etl::handle<TaskSurface> Handle;
+	typedef std::shared_ptr<TaskSurface> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 };
@@ -516,7 +516,7 @@ public:
 class TaskLockSurface: public TaskSurface
 {
 public:
-	typedef etl::handle<TaskLockSurface> Handle;
+	typedef std::shared_ptr<TaskLockSurface> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -546,7 +546,7 @@ public:
 class TaskList: public Task
 {
 public:
-	typedef etl::handle<TaskList> Handle;
+	typedef std::shared_ptr<TaskList> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 	virtual bool run(RunParams&) const
@@ -561,7 +561,7 @@ public:
 class TaskEvent: public Task
 {
 public:
-	typedef etl::handle<TaskEvent> Handle;
+	typedef std::shared_ptr<TaskEvent> Handle;
 	typedef std::vector<Handle> List;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }

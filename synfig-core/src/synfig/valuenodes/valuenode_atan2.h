@@ -46,8 +46,8 @@ class ValueNode_Atan2 : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_Atan2> Handle;
-	typedef etl::handle<const ValueNode_Atan2> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Atan2> Handle;
+	typedef std::shared_ptr<const ValueNode_Atan2> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

@@ -47,7 +47,7 @@ class Dock_Canvases : public Dockable
 
 private:
 
-	void set_selected_instance_(etl::handle<studio::Instance> x);
+	void set_selected_instance_(std::shared_ptr<studio::Instance> x);
 
 	std::shared_ptr<studio::Instance> get_selected_instance() { return selected_instance; }
 
@@ -57,11 +57,11 @@ private:
 
 	void set_selected_instance(std::shared_ptr<studio::Instance> x);
 
-	void set_selected_instance_signal(etl::handle<studio::Instance> x);
+	void set_selected_instance_signal(std::shared_ptr<studio::Instance> x);
 
-	void new_instance(etl::handle<studio::Instance> x);
+	void new_instance(std::shared_ptr<studio::Instance> x);
 
-	void delete_instance(etl::handle<studio::Instance> x);
+	void delete_instance(std::shared_ptr<studio::Instance> x);
 
 	void refresh_instances();
 

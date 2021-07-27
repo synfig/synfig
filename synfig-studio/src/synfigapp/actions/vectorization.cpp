@@ -239,8 +239,8 @@ Action::Vectorization::perform()
     Gamma gamma = layer->get_canvas()->get_root()->rend_desc().get_gamma();
 	gamma.invert();
 
-    const etl::handle<UIInterface> ui_interface = get_canvas_interface()->get_ui_interface();
-    std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(image_layer,ui_interface, configuration, gamma);
+    const std::shared_ptr<UIInterface> ui_interface = get_canvas_interface()->get_ui_interface();
+    std::vector< std::shared_ptr<synfig::Layer> > Result = vCore.vectorize(image_layer,ui_interface, configuration, gamma);
 
     synfig::Canvas::Handle child_canvas;
     child_canvas=synfig::Canvas::create_inline(layer->get_canvas());
@@ -249,7 +249,7 @@ Action::Vectorization::perform()
     int move_depth = 0;
 
     // if the vectorizer option was selected for switch group
-    if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(reference_layer))
+    if(std::shared_ptr<synfig::Layer_PasteCanvas> paste = std::shared_ptr<synfig::Layer_PasteCanvas>::cast_dynamic(reference_layer))
     {
         // apply the transformation from switch group to result group
         new_layer->set_param("transformation",paste->get_param("transformation"));

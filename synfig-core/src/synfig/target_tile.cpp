@@ -118,7 +118,7 @@ Target_Tile::next_tile(RectInt& rect)
 
 bool
 synfig::Target_Tile::call_renderer(
-	const etl::handle<rendering::SurfaceResource> &surface,
+	const std::shared_ptr<rendering::SurfaceResource> &surface,
 	Canvas &canvas,
 	const ContextParams &context_params,
 	const RendDesc &renddesc )
@@ -226,7 +226,7 @@ synfig::Target_Tile::render_frame_(Canvas::Handle canvas, ContextParams context_
 
 bool
 synfig::Target_Tile::async_render_tile(
-	etl::handle<Canvas> canvas,
+	std::shared_ptr<Canvas> canvas,
 	ContextParams context_params,
 	RectInt rect,
 	RendDesc tile_desc,

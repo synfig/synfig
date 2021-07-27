@@ -107,7 +107,7 @@ private:
 
 	void on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value);
 
-	void on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node,const synfig::Time&,const synfig::Time&, const synfig::Time&,int button);
+	void on_waypoint_clicked_childrentree(const std::shared_ptr<synfig::Node>& node,const synfig::Time&,const synfig::Time&, const synfig::Time&,int button);
 
 	bool on_tree_view_query_tooltip(int x, int y, bool keyboard_tooltip, const Glib::RefPtr<Gtk::Tooltip>& tooltip);
 
@@ -135,7 +135,7 @@ public:
 
 	void set_model(Glib::RefPtr<ChildrenTreeStore> children_tree_store_);
 
-	void set_time_model(const etl::handle<TimeModel> &x);
+	void set_time_model(const std::shared_ptr<TimeModel> &x);
 
 	void set_show_timetrack(bool x=true);
 
@@ -146,7 +146,7 @@ public:
 
 	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int>& signal_waypoint_clicked_childrentree() { return signal_waypoint_clicked_childrentree_; }
 
-	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return children_tree_store_->canvas_interface()->get_selection_manager(); }
+	std::shared_ptr<synfigapp::SelectionManager> get_selection_manager() { return children_tree_store_->canvas_interface()->get_selection_manager(); }
 
 }; // END of ChildrenTree
 

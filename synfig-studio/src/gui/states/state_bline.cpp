@@ -92,7 +92,7 @@ StateBLine studio::state_bline;
 
 class studio::StateBLine_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	std::shared_ptr<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	bool prev_table_status;
@@ -106,9 +106,9 @@ class studio::StateBLine_Context : public sigc::trackable
 
 	Duckmatic::Push duckmatic_push;
 
-	etl::handle<Duck> curr_duck;
+	std::shared_ptr<Duck> curr_duck;
 
-	etl::handle<Duck> next_duck;
+	std::shared_ptr<Duck> next_duck;
 
 	std::list<synfig::ValueNode_Const::Handle> bline_point_list;
 
@@ -258,8 +258,8 @@ public:
 
 	~StateBLine_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	const std::shared_ptr<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	const synfig::TransformStack& get_transform_stack()const { return get_work_area()->get_curr_transform_stack(); }

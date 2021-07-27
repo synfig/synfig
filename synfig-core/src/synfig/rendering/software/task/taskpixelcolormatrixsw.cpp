@@ -52,7 +52,7 @@ namespace {
 class TaskPixelColorMatrixSW: public TaskPixelColorMatrix, public TaskSW
 {
 public:
-	typedef etl::handle<TaskPixelColorMatrixSW> Handle;
+	typedef std::shared_ptr<TaskPixelColorMatrixSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

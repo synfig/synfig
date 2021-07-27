@@ -221,7 +221,7 @@ Layer_PasteCanvas::childs_changed()
 }
 
 void
-Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
+Layer_PasteCanvas::set_sub_canvas(std::shared_ptr<synfig::Canvas> x)
 {
 	if (sub_canvas)
 		remove_child(sub_canvas.get());
@@ -268,7 +268,7 @@ Layer_PasteCanvas::update_renddesc()
 	sub_canvas->rend_desc()=get_canvas()->rend_desc();
 	for (IndependentContext iter = sub_canvas->get_independent_context(); !iter->empty(); iter++)
 	{
-		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(*iter);
+		std::shared_ptr<Layer_PasteCanvas> paste = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(*iter);
 		if (paste) paste->update_renddesc();
 	}
 }

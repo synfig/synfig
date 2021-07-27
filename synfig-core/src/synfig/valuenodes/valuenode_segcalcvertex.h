@@ -45,8 +45,8 @@ class ValueNode_SegCalcVertex : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_SegCalcVertex> Handle;
-	typedef etl::handle<const ValueNode_SegCalcVertex> ConstHandle;
+	typedef std::shared_ptr<ValueNode_SegCalcVertex> Handle;
+	typedef std::shared_ptr<const ValueNode_SegCalcVertex> ConstHandle;
 
 	virtual ValueBase operator()(Time t)const;
 

@@ -161,25 +161,25 @@ private:
 
 	DuckDataMap duck_data_share_map;
 
-	std::list<etl::handle<Stroke> > stroke_list_;
+	std::list<std::shared_ptr<Stroke> > stroke_list_;
 
-	std::list<etl::handle<Stroke> > persistent_stroke_list_;
+	std::list<std::shared_ptr<Stroke> > persistent_stroke_list_;
 
 	synfig::GUIDSet selected_ducks;
 
 	synfig::GUID last_duck_guid;
 
-	std::list<etl::handle<Bezier> > bezier_list_;
+	std::list<std::shared_ptr<Bezier> > bezier_list_;
 
 	//! I cannot recall what this is for
 	//synfig::Vector snap;
 
-	etl::handle<DuckDrag_Base> duck_dragger_;
+	std::shared_ptr<DuckDrag_Base> duck_dragger_;
 
-	etl::handle<BezierDrag_Base> bezier_dragger_;
+	std::shared_ptr<BezierDrag_Base> bezier_dragger_;
 
 	sigc::signal<void> signal_duck_selection_changed_;
-	sigc::signal<void, const etl::handle<Duck>& > signal_duck_selection_single_;
+	sigc::signal<void, const std::shared_ptr<Duck>& > signal_duck_selection_single_;
 
 	sigc::signal<void> signal_strokes_changed_;
 
@@ -205,7 +205,7 @@ private:
 
 protected:
 
-	etl::handle<Bezier> selected_bezier;
+	std::shared_ptr<Bezier> selected_bezier;
 
 	synfig::Time cur_time;
 
@@ -240,7 +240,7 @@ private:
 	synfig::Vector last_translate_;
 	synfig::Vector drag_offset_;
 
-	//etl::handle<Duck> selected_duck;
+	//std::shared_ptr<Duck> selected_duck;
 
 	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
 
@@ -260,7 +260,7 @@ public:
 	bool get_lock_animation_mode()const { return lock_animation_mode_; }
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
-	sigc::signal<void, const etl::handle<Duck>& >& signal_duck_selection_single() { return signal_duck_selection_single_; }
+	sigc::signal<void, const std::shared_ptr<Duck>& >& signal_duck_selection_single() { return signal_duck_selection_single_; }
 	sigc::signal<void>& signal_strokes_changed() { return signal_strokes_changed_; }
 	sigc::signal<void>& signal_grid_changed() { return signal_grid_changed_; }
 	sigc::signal<void>& signal_sketch_saved() { return signal_sketch_saved_; }
@@ -312,25 +312,25 @@ public:
 
 	void set_time(synfig::Time x) { cur_time=x; }
 
-	bool is_duck_group_selectable(const etl::handle<Duck>& x)const;
+	bool is_duck_group_selectable(const std::shared_ptr<Duck>& x)const;
 
 	//const DuckMap& duck_map()const { return duck_map; }
 	DuckList get_duck_list()const;
 
-	const std::list<etl::handle<Bezier> >& bezier_list()const { return bezier_list_; }
+	const std::list<std::shared_ptr<Bezier> >& bezier_list()const { return bezier_list_; }
 
-	const std::list<etl::handle<Stroke> >& stroke_list()const { return stroke_list_; }
+	const std::list<std::shared_ptr<Stroke> >& stroke_list()const { return stroke_list_; }
 
-	const std::list<etl::handle<Stroke> >& persistent_stroke_list()const { return persistent_stroke_list_; }
+	const std::list<std::shared_ptr<Stroke> >& persistent_stroke_list()const { return persistent_stroke_list_; }
 
-	std::list<etl::handle<Stroke> >& persistent_stroke_list() { return persistent_stroke_list_; }
+	std::list<std::shared_ptr<Stroke> >& persistent_stroke_list() { return persistent_stroke_list_; }
 
     /*
  -- ** -- D U C K  S E L E C T I O N  M E T H O D S----------------------------
     */
 
-    //! Return first selected duck (handle) has const Duck etl::handle
-	etl::handle<Duck> get_selected_duck()const;
+    //! Return first selected duck (handle) has const Duck std::shared_ptr
+	std::shared_ptr<Duck> get_selected_duck()const;
 	//! Return list of selected ducks (handles)
 	/*!
      ** \return ducks (handles) has const DuckList
@@ -358,22 +358,22 @@ public:
     /*!
      ** \return \a true if the given duck (handle) is currently selected
      */
-    bool duck_is_selected(const etl::handle<Duck> &duck)const;
+    bool duck_is_selected(const std::shared_ptr<Duck> &duck)const;
 	//! Toggle the duck (handle)
     /*!
-     ** \param duck The duck (handle) to toggle has etl::handle parameter
+     ** \param duck The duck (handle) to toggle has std::shared_ptr parameter
      */
-	void toggle_select_duck(const etl::handle<Duck> &duck);
+	void toggle_select_duck(const std::shared_ptr<Duck> &duck);
     //! Select the duck (handle)
     /*!
-     ** \param duck The duck (handle) to select has etl::handle parameter
+     ** \param duck The duck (handle) to select has std::shared_ptr parameter
      */
-	void select_duck(const etl::handle<Duck> &duck);
+	void select_duck(const std::shared_ptr<Duck> &duck);
     //! Unselect the duck (handle)
     /*!
-     ** \param duck The duck (handle) to unselect has etl::handle parameter
+     ** \param duck The duck (handle) to unselect has std::shared_ptr parameter
      */
-	void unselect_duck(const etl::handle<Duck> &duck);
+	void unselect_duck(const std::shared_ptr<Duck> &duck);
 
     //! Toggle the ducks (handles) contained in the box defined by a pair of vectors
     /*!
@@ -396,7 +396,7 @@ public:
 	inline void clear_curr_transform_stack() { curr_transform_stack.clear(); curr_transform_stack_set=false; }
 
 
-	etl::handle<Bezier> get_selected_bezier()const;
+	std::shared_ptr<Bezier> get_selected_bezier()const;
 
 	//! Begin dragging ducks
 	/*!
@@ -431,7 +431,7 @@ public:
 
 	//! Calls a single duck's edited signal
 	/*! Updates the corresponding valuenodes after a drag */
-	void signal_edited_duck(const etl::handle<Duck> &duck, bool moving = false);
+	void signal_edited_duck(const std::shared_ptr<Duck> &duck, bool moving = false);
 
 	//! Calls all of the ducks' edited signals
 	/*! Updates corresponding valuenodes after a drag */
@@ -439,8 +439,8 @@ public:
 
 	bool on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& value_desc);
 
-	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
-	etl::handle<Duck> add_similar_duck(etl::handle<Duck> duck);
+	std::shared_ptr<Duck> find_similar_duck(std::shared_ptr<Duck> duck);
+	std::shared_ptr<Duck> add_similar_duck(std::shared_ptr<Duck> duck);
 
 	void add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
@@ -448,22 +448,22 @@ public:
 
 	void clear_persistent_strokes();
 
-	void add_duck(const etl::handle<Duck> &duck);
+	void add_duck(const std::shared_ptr<Duck> &duck);
 
-	void add_bezier(const etl::handle<Bezier> &bezier);
+	void add_bezier(const std::shared_ptr<Bezier> &bezier);
 
-	void erase_duck(const etl::handle<Duck> &duck);
+	void erase_duck(const std::shared_ptr<Duck> &duck);
 
-	void erase_bezier(const etl::handle<Bezier> &bezier);
+	void erase_bezier(const std::shared_ptr<Bezier> &bezier);
 
 	//! Returns the last duck added
-	etl::handle<Duck> last_duck()const;
+	std::shared_ptr<Duck> last_duck()const;
 
-	etl::handle<Bezier> last_bezier()const;
+	std::shared_ptr<Bezier> last_bezier()const;
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
-	etl::handle<Duck> find_duck(synfig::Point pos, synfig::Real radius=0, Duck::Type type=Duck::TYPE_DEFAULT);
+	std::shared_ptr<Duck> find_duck(synfig::Point pos, synfig::Real radius=0, Duck::Type type=Duck::TYPE_DEFAULT);
 
 	GuideList::iterator find_guide_x(synfig::Point pos, float radius=0.1);
 	GuideList::iterator find_guide_y(synfig::Point pos, float radius=0.1);
@@ -472,18 +472,18 @@ public:
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
-	//etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0);
+	//std::shared_ptr<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0);
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
-	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0, float* location=0);
+	std::shared_ptr<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0, float* location=0);
 
-	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
+	std::shared_ptr<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
 
 	//! if transform_count is set function will not restore transporm stack
-	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *transform_count = NULL);
+	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, std::shared_ptr<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *transform_count = NULL);
 
-	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
+	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,std::shared_ptr<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
 
 	//! Set the type mask, which determines what types of ducks are shown
 	//! \Param[in]   x   Duck::Type set to backup when toggling handles
@@ -510,13 +510,13 @@ public:
 	bool load_sketch(const synfig::String& filename);
 	const synfig::String& get_sketch_filename()const { return sketch_filename_; }
 
-	void set_duck_dragger(etl::handle<DuckDrag_Base> x) { duck_dragger_=x; }
-	etl::handle<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }
+	void set_duck_dragger(std::shared_ptr<DuckDrag_Base> x) { duck_dragger_=x; }
+	std::shared_ptr<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }
 	void clear_duck_dragger() { duck_dragger_=new DuckDrag_Translate(); }
 
 
-	void set_bezier_dragger(etl::handle<BezierDrag_Base> x) { bezier_dragger_=x; }
-	etl::handle<BezierDrag_Base> get_bezier_dragger()const { return bezier_dragger_; }
+	void set_bezier_dragger(std::shared_ptr<BezierDrag_Base> x) { bezier_dragger_=x; }
+	std::shared_ptr<BezierDrag_Base> get_bezier_dragger()const { return bezier_dragger_; }
 	void clear_bezier_dragger() { bezier_dragger_=new BezierDrag_Default(); }
 }; // END of class Duckmatic
 
@@ -527,10 +527,10 @@ class Duckmatic::Push
 {
 	Duckmatic *duckmatic_;
 	DuckMap duck_map;
-	std::list<etl::handle<Bezier> > bezier_list_;
-	std::list<etl::handle<Stroke> > stroke_list_;
+	std::list<std::shared_ptr<Bezier> > bezier_list_;
+	std::list<std::shared_ptr<Stroke> > stroke_list_;
 	DuckDataMap duck_data_share_map;
-	etl::handle<DuckDrag_Base> duck_dragger_;
+	std::shared_ptr<DuckDrag_Base> duck_dragger_;
 
 	bool needs_restore;
 
@@ -548,7 +548,7 @@ private:
 	sigc::signal<void,float> signal_user_click_[5];
 public:
 
-	etl::handle<Duck> p1,p2,c1,c2;
+	std::shared_ptr<Duck> p1,p2,c1,c2;
 	bool is_valid()const { return p1 && p2 && c1 && c2; }
 
 	sigc::signal<void,float> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }

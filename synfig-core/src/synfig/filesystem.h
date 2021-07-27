@@ -48,13 +48,13 @@ namespace synfig
 	class FileSystem : public etl::shared_object
 	{
 	public:
-		typedef etl::handle<FileSystem> Handle;
+		typedef std::shared_ptr<FileSystem> Handle;
 		typedef std::vector<String> FileList;
 
 		class Stream : public etl::shared_object
 		{
 		public:
-			typedef etl::handle<Stream> Handle;
+			typedef std::shared_ptr<Stream> Handle;
 
 		protected:
 			FileSystem::Handle file_system_;
@@ -70,7 +70,7 @@ namespace synfig
 			public std::istream
 		{
 		public:
-			typedef etl::handle<ReadStream> Handle;
+			typedef std::shared_ptr<ReadStream> Handle;
 
 		protected:
 			char buffer_;
@@ -94,7 +94,7 @@ namespace synfig
 			public std::ostream
 		{
 		public:
-			typedef etl::handle<WriteStream> Handle;
+			typedef std::shared_ptr<WriteStream> Handle;
 
 		protected:
 			WriteStream(FileSystem::Handle file_system);
@@ -208,7 +208,7 @@ namespace synfig
 	class FileSystemEmpty : public FileSystem
 	{
 	public:
-		typedef etl::handle<FileSystemEmpty> Handle;
+		typedef std::shared_ptr<FileSystemEmpty> Handle;
 
 		FileSystemEmpty();
 		virtual ~FileSystemEmpty();

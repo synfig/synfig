@@ -54,7 +54,7 @@ namespace {
 class TaskTransformationAffineGL: public TaskTransformationAffine, public TaskGL
 {
 public:
-	typedef etl::handle<TaskTransformationAffineGL> Handle;
+	typedef std::shared_ptr<TaskTransformationAffineGL> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

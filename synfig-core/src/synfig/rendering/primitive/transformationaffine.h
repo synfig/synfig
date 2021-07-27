@@ -45,7 +45,7 @@ namespace rendering
 class TransformationAffine: public Transformation
 {
 public:
-	typedef etl::handle<TransformationAffine> Handle;
+	typedef std::shared_ptr<TransformationAffine> Handle;
 
 	Matrix matrix;
 

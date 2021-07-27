@@ -56,7 +56,7 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 
 	//! Time model
-	etl::handle<TimeModel> time_model;
+	std::shared_ptr<TimeModel> time_model;
 
 	//! True if it is editable. Keyframes can be moved.
 	bool editable;
@@ -109,8 +109,8 @@ public:
 	const std::shared_ptr<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }
 
 	//! Set the time model and proper connects its change signals
-	void set_time_model(const etl::handle<TimeModel> &x);
-	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	void set_time_model(const std::shared_ptr<TimeModel> &x);
+	const std::shared_ptr<TimeModel>& get_time_model() const { return time_model; }
 
 	void set_editable(bool x = true) { editable = x; }
 	bool get_editable() const { return editable; }

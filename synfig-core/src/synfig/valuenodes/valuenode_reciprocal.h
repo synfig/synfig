@@ -44,8 +44,8 @@ class ValueNode_Reciprocal : public LinkableValueNode
 	ValueNode::RHandle infinite_;
 
 public:
-	typedef etl::handle<ValueNode_Reciprocal> Handle;
-	typedef etl::handle<const ValueNode_Reciprocal> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Reciprocal> Handle;
+	typedef std::shared_ptr<const ValueNode_Reciprocal> ConstHandle;
 
 	ValueNode_Reciprocal(const ValueBase &x);
 

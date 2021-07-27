@@ -52,7 +52,7 @@ public:
 	enum State {POINTER_NONE, POINTER_DRAGGING, POINTER_SELECTING, POINTER_PANNING};
 
 private:
-	etl::handle<synfigapp::CanvasInterface> canvas_interface;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 	const std::string drag_action_name;
 	synfigapp::Action::PassiveGrouper *action_group_drag;
 
@@ -129,8 +129,8 @@ public:
 	SelectDragHelper(const char *drag_action_name);
 	virtual ~SelectDragHelper() {delete action_group_drag;}
 
-	void set_canvas_interface(etl::handle<synfigapp::CanvasInterface> canvas_interface);
-	etl::handle<synfigapp::CanvasInterface>& get_canvas_interface();
+	void set_canvas_interface(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface);
+	std::shared_ptr<synfigapp::CanvasInterface>& get_canvas_interface();
 
 	bool has_hovered_item() const;
 	/// The item whose pointer/mouse is hovering over
@@ -255,7 +255,7 @@ SelectDragHelper<T>::SelectDragHelper(const char* drag_action_name)
 }
 
 template<class T>
-void SelectDragHelper<T>::set_canvas_interface(etl::handle<synfigapp::CanvasInterface> canvas_interface)
+void SelectDragHelper<T>::set_canvas_interface(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface)
 {
 	if (pointer_state == POINTER_DRAGGING) {
 		cancel_dragging();
@@ -264,7 +264,7 @@ void SelectDragHelper<T>::set_canvas_interface(etl::handle<synfigapp::CanvasInte
 }
 
 template<class T>
-etl::handle<synfigapp::CanvasInterface>& SelectDragHelper<T>::get_canvas_interface()
+std::shared_ptr<synfigapp::CanvasInterface>& SelectDragHelper<T>::get_canvas_interface()
 {
 	return canvas_interface;
 }

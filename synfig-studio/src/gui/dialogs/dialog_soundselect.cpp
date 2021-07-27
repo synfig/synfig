@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === E N T R Y P O I N T ================================================= */
 
-studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<synfigapp::CanvasInterface> ci)
+studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, std::shared_ptr<synfigapp::CanvasInterface> ci)
 :Dialog(_("Sound Select"), parent),
 canvas_interface(ci)
 {

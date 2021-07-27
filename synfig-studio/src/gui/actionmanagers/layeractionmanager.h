@@ -44,7 +44,7 @@ class LayerActionManager
 {
 	Glib::RefPtr<Gtk::UIManager> ui_manager_;
 	LayerTree* layer_tree_;
-	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
 	Gtk::UIManager::ui_merge_id 	menu_popup_id_;
@@ -92,8 +92,8 @@ public:
 	void set_layer_tree(LayerTree* x);
 	LayerTree* get_layer_tree()const { return layer_tree_; }
 
-	void set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x);
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	void set_canvas_interface(const std::shared_ptr<synfigapp::CanvasInterface> &x);
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
 	std::shared_ptr<synfigapp::Instance> get_instance()const { return canvas_interface_->get_instance(); }
 

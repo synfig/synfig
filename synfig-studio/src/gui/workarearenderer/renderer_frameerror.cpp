@@ -48,7 +48,7 @@ void Renderer_FrameError::render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable
 	if (!get_work_area())
 		return;
 
-	const etl::handle<Renderer_Canvas> renderer_canvas = get_work_area()->get_renderer_canvas();
+	const std::shared_ptr<Renderer_Canvas> renderer_canvas = get_work_area()->get_renderer_canvas();
 	if (renderer_canvas) {
 		std::set<std::string> message_set;
 		renderer_canvas->get_rendering_error_messages_for_time(get_work_area()->get_time(), message_set);

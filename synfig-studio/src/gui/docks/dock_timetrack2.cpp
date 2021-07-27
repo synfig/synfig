@@ -119,7 +119,7 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canv
 	}
 
 	if( !canvas_view ) {
-		widget_kf_list.set_time_model( etl::handle<TimeModel>() );
+		widget_kf_list.set_time_model( std::shared_ptr<TimeModel>() );
 		widget_kf_list.set_canvas_interface( std::shared_ptr<synfigapp::CanvasInterface>() );
 
 		widget_timeslider.set_canvas_view( CanvasView::Handle() );

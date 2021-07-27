@@ -572,7 +572,7 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 
 class lyr_std::Spherize_Trans : public Transform
 {
-	etl::handle<const Layer_SphereDistort> layer;
+	std::shared_ptr<const Layer_SphereDistort> layer;
 public:
 	Spherize_Trans(const Layer_SphereDistort* x):Transform(x->get_guid()),layer(x) { }
 
@@ -592,7 +592,7 @@ public:
 	}
 };
 
-etl::handle<Transform>
+std::shared_ptr<Transform>
 Layer_SphereDistort::get_transform()const
 {
 	return new Spherize_Trans(this);

@@ -44,8 +44,8 @@ class ValueNode_Composite : public LinkableValueNode
 	ValueNode_Composite(const ValueBase &value, std::shared_ptr<Canvas> canvas = 0);
 
 public:
-	typedef etl::handle<ValueNode_Composite> Handle;
-	typedef etl::handle<const ValueNode_Composite> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Composite> Handle;
+	typedef std::shared_ptr<const ValueNode_Composite> ConstHandle;
 
 
 	~ValueNode_Composite();

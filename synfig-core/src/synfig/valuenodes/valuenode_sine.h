@@ -46,8 +46,8 @@ class ValueNode_Sine : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_Sine> Handle;
-	typedef etl::handle<const ValueNode_Sine> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Sine> Handle;
+	typedef std::shared_ptr<const ValueNode_Sine> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

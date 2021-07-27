@@ -58,7 +58,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface):
+CanvasProperties::CanvasProperties(Gtk::Window& parent,std::shared_ptr<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Dialog(_("Canvas Properties"),parent),
 	canvas_interface_(canvas_interface)
 {

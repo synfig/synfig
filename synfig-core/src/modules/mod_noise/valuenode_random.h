@@ -53,8 +53,8 @@ class ValueNode_Random : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_Random> Handle;
-	typedef etl::handle<const ValueNode_Random> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Random> Handle;
+	typedef std::shared_ptr<const ValueNode_Random> ConstHandle;
 
 	virtual ValueBase operator()(Time t)const;
 

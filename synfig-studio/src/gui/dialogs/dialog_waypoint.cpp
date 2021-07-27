@@ -49,7 +49,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas> canvas):
+Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,std::shared_ptr<synfig::Canvas> canvas):
 	Dialog(_("Waypoint Editor"),parent),
 	canvas(canvas)
 {

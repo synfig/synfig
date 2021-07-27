@@ -66,7 +66,7 @@ Waypoint::Waypoint(ValueBase value, Time time):
 		after=before=INTERPOLATION_LINEAR;
 }
 
-Waypoint::Waypoint(etl::handle<ValueNode> value_node, Time time):
+Waypoint::Waypoint(std::shared_ptr<ValueNode> value_node, Time time):
 	priority_(0),
 	before(INTERPOLATION_TCB),
 	after(INTERPOLATION_TCB),
@@ -104,7 +104,7 @@ Waypoint::set_value(const ValueBase &x)
 }
 
 void
-Waypoint::set_value_node(const etl::handle<ValueNode> &x)
+Waypoint::set_value_node(const std::shared_ptr<ValueNode> &x)
 {
 
 	// printf("%s:%d Waypoint::set_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(x), x->get_string().c_str());

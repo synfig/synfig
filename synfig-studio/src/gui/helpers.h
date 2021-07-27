@@ -80,7 +80,7 @@ public:
 
 class AdjustmentGroup: public etl::shared_object {
 public:
-	typedef etl::handle<AdjustmentGroup> Handle;
+	typedef std::shared_ptr<AdjustmentGroup> Handle;
 
 	struct Item {
 		Glib::RefPtr<Gtk::Adjustment> adjustment;

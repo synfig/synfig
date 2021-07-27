@@ -71,7 +71,7 @@ public:
 	Layer::Handle hit_check(Context context, const Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
-	virtual etl::handle<Transform> get_transform()const;
+	virtual std::shared_ptr<Transform> get_transform()const;
 	virtual Rect get_full_bounding_rect(Context context)const;
 
 protected:

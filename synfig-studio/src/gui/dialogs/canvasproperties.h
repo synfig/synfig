@@ -48,7 +48,7 @@ namespace studio
 
 class CanvasProperties  :  public Gtk::Dialog
 {
-	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface_;
 	Widget_RendDesc widget_rend_desc;
 	Gtk::Entry entry_id;
 	Gtk::Entry entry_name;
@@ -61,7 +61,7 @@ class CanvasProperties  :  public Gtk::Dialog
 	//void on_button_meta_data_delete();
 
 public:
-	CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
+	CanvasProperties(Gtk::Window& parent,std::shared_ptr<synfigapp::CanvasInterface> canvas_interface);
 	~CanvasProperties();
 
 	void refresh();

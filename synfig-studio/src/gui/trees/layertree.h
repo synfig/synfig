@@ -146,7 +146,7 @@ private:
 
 	void on_layer_toggle(const Glib::ustring& path_string);
 
-	void on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node, const synfig::Time&, const synfig::Time&, const synfig::Time&, int button);
+	void on_waypoint_clicked_layertree(const std::shared_ptr<synfig::Node>& node, const synfig::Time&, const synfig::Time&, const synfig::Time&, int button);
 
 	void on_waypoint_changed(synfig::Waypoint& waypoint , synfig::ValueNode::Handle value_node);
 
@@ -182,7 +182,7 @@ public:
 
 	void set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store_);
 
-	void set_time_model(const etl::handle<TimeModel> &x);
+	void set_time_model(const std::shared_ptr<TimeModel> &x);
 
 	void set_show_timetrack(bool x=true);
 
@@ -204,7 +204,7 @@ public:
 	/*! \see LayerTree::update_param_tree_header_height() */
 	sigc::signal<void,int>& signal_param_tree_header_height_changed() { return signal_param_tree_header_height_changed_; }
 
-	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
+	std::shared_ptr<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
 
 	void select_layer(synfig::Layer::Handle layer);
 	void select_layers(const LayerList& layer_list);

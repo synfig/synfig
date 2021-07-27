@@ -54,7 +54,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
+Widget_Waypoint::Widget_Waypoint(std::shared_ptr<synfig::Canvas> canvas):
 	Gtk::Box(Gtk::ORIENTATION_VERTICAL),
 	waypoint(synfig::ValueBase(),0),
 	adj_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),
@@ -227,7 +227,7 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	{
 		value_widget->set_value_desc(
 			synfigapp::ValueDesc(
-				etl::handle<ValueNode_Const>::cast_dynamic(
+				std::shared_ptr<ValueNode_Const>::cast_dynamic(
 					waypoint.get_parent_value_node() )));
 		value_widget->set_value(waypoint.get_value());
 		value_widget->show();

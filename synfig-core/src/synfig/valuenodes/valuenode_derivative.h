@@ -64,8 +64,8 @@ public:
 		FIRST     =0,
 		SECOND    =1
 	};
-	typedef etl::handle<ValueNode_Derivative> Handle;
-	typedef etl::handle<const ValueNode_Derivative> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Derivative> Handle;
+	typedef std::shared_ptr<const ValueNode_Derivative> ConstHandle;
 
 	virtual ValueBase operator()(Time t)const;
 

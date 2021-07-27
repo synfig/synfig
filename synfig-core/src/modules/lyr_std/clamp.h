@@ -51,7 +51,7 @@ namespace lyr_std
 class TaskClamp: public rendering::TaskPixelProcessor
 {
 public:
-	typedef etl::handle<TaskClamp> Handle;
+	typedef std::shared_ptr<TaskClamp> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -78,7 +78,7 @@ public:
 class TaskClampSW: public TaskClamp, public rendering::TaskSW
 {
 public:
-	typedef etl::handle<TaskClampSW> Handle;
+	typedef std::shared_ptr<TaskClampSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

@@ -43,7 +43,7 @@ namespace rendering
 class RendererSW: public Renderer
 {
 public:
-	typedef etl::handle<RendererSW> Handle;
+	typedef std::shared_ptr<RendererSW> Handle;
 
 	RendererSW();
 	~RendererSW();

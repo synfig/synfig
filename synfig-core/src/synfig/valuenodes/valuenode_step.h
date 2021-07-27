@@ -47,8 +47,8 @@ class ValueNode_Step : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_Step> Handle;
-	typedef etl::handle<const ValueNode_Step> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Step> Handle;
+	typedef std::shared_ptr<const ValueNode_Step> ConstHandle;
 
 
 	virtual ValueBase operator()(Time t)const;

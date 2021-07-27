@@ -122,13 +122,13 @@ private:
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
 
-	std::set<etl::handle<WorkAreaRenderer> > renderer_set_;
+	std::set<std::shared_ptr<WorkAreaRenderer> > renderer_set_;
 
 	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
-	etl::handle<synfig::Canvas> canvas;
+	std::shared_ptr<synfig::Canvas> canvas;
 	std::shared_ptr<studio::Instance> instance;
 	std::shared_ptr<studio::CanvasView> canvas_view;
-	etl::handle<Renderer_Canvas> renderer_canvas;
+	std::shared_ptr<Renderer_Canvas> renderer_canvas;
 
 	// Widgets
 	Gtk::DrawingArea *drawing_area;
@@ -162,8 +162,8 @@ private:
 	/*! \see drag_point */
 	DragMode drag_mode;
 
-	etl::handle<Duckmatic::Duck> clicked_duck;
-	etl::handle<Duckmatic::Duck> hover_duck;
+	std::shared_ptr<Duckmatic::Duck> clicked_duck;
+	std::shared_ptr<Duckmatic::Duck> hover_duck;
 
 	//! When dragging the viewport, this is set to the origin of the drag
 	synfig::Point drag_point;
@@ -221,7 +221,7 @@ private:
 	bool allow_layer_clicks;
 	bool curr_guide_is_x;
 
-	etl::handle<LockDucks> lock_ducks;
+	std::shared_ptr<LockDucks> lock_ducks;
 
 public:
 	/*
@@ -252,7 +252,7 @@ private:
 	sigc::signal<void, GdkDevice*> signal_input_device_changed_;
 	sigc::signal<void> signal_popup_menu_;
 	sigc::signal<void, synfig::Point> signal_user_click_[5]; //!< One signal per button
-	sigc::signal<void, etl::handle<synfig::Layer> > signal_layer_selected_; //!< Signal for when the user clicks on a layer
+	sigc::signal<void, std::shared_ptr<synfig::Layer> > signal_layer_selected_; //!< Signal for when the user clicks on a layer
 
 public:
 	sigc::signal<void>& signal_rendering() { return signal_rendering_; }
@@ -263,7 +263,7 @@ public:
 	sigc::signal<void, GdkDevice*>& signal_input_device_changed() { return signal_input_device_changed_; }
 	sigc::signal<void> &signal_popup_menu() { return signal_popup_menu_; }
 	sigc::signal<void, synfig::Point> &signal_user_click(int button=0){ return signal_user_click_[button]; } //!< One signal per button (5 buttons)
-	sigc::signal<void, etl::handle<synfig::Layer> >& signal_layer_selected() { return signal_layer_selected_; }
+	sigc::signal<void, std::shared_ptr<synfig::Layer> >& signal_layer_selected() { return signal_layer_selected_; }
 
 private:
 	/*
@@ -297,9 +297,9 @@ public:
 	bool get_allow_bezier_clicks() { return allow_bezier_clicks; }
 	void set_allow_bezier_clicks(bool value) { allow_bezier_clicks=value; }
 
-	void insert_renderer(const etl::handle<WorkAreaRenderer> &x);
-	void insert_renderer(const etl::handle<WorkAreaRenderer> &x,int priority);
-	void erase_renderer(const etl::handle<WorkAreaRenderer> &x);
+	void insert_renderer(const std::shared_ptr<WorkAreaRenderer> &x);
+	void insert_renderer(const std::shared_ptr<WorkAreaRenderer> &x,int priority);
+	void erase_renderer(const std::shared_ptr<WorkAreaRenderer> &x);
 	void resort_render_set();
 
 	void set_onion_skin(bool x);
@@ -332,12 +332,12 @@ public:
 	Glib::RefPtr<const Gtk::Adjustment> get_scrolly_adjustment() const { return scrolly_adjustment; }
 
 	void set_instance(std::shared_ptr<studio::Instance> x) { instance=x; }
-	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }
+	void set_canvas(std::shared_ptr<synfig::Canvas> x) { canvas=x; }
 	void set_canvas_view(std::shared_ptr<studio::CanvasView> x) { canvas_view=x; }
-	const etl::handle<synfig::Canvas>& get_canvas() const { return canvas; }
+	const std::shared_ptr<synfig::Canvas>& get_canvas() const { return canvas; }
 	const std::shared_ptr<studio::Instance>& get_instance() const { return instance; }
 	const std::shared_ptr<studio::CanvasView>& get_canvas_view() const { return canvas_view; }
-	const etl::handle<Renderer_Canvas>& get_renderer_canvas() const { return renderer_canvas; }
+	const std::shared_ptr<Renderer_Canvas>& get_renderer_canvas() const { return renderer_canvas; }
 
 	void refresh_dimension_info();
 
@@ -463,7 +463,7 @@ private:
 	bool on_drawing_area_event(GdkEvent* event);
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
-	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
+	void on_duck_selection_single(const std::shared_ptr<Duck>& duck_guid);
 }; // END of class WorkArea
 
 

@@ -66,7 +66,7 @@ using namespace studio;
 class AsyncTarget_Tile : public synfig::Target_Tile
 {
 public:
-	etl::handle<synfig::Target_Tile> warm_target;
+	std::shared_ptr<synfig::Target_Tile> warm_target;
 
 	struct tile_t
 	{
@@ -92,7 +92,7 @@ public:
 	sigc::connection ready_connection;
 
 public:
-	AsyncTarget_Tile(etl::handle<synfig::Target_Tile> warm_target):
+	AsyncTarget_Tile(std::shared_ptr<synfig::Target_Tile> warm_target):
 		warm_target(warm_target), err(false)
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
@@ -122,7 +122,7 @@ public:
 	}
 
 	virtual bool async_render_tile(
-		etl::handle<Canvas> canvas,
+		std::shared_ptr<Canvas> canvas,
 		ContextParams context_params,
 		RectInt rect,
 		RendDesc tile_desc,
@@ -149,7 +149,7 @@ public:
 	}
 
 	bool sync_render_tile(
-		etl::handle<Canvas> canvas,
+		std::shared_ptr<Canvas> canvas,
 		ContextParams context_params,
 		RectInt rect,
 		RendDesc tile_desc,
@@ -289,7 +289,7 @@ public:
 class AsyncTarget_Scanline : public synfig::Target_Scanline
 {
 public:
-	etl::handle<synfig::Target_Scanline> warm_target;
+	std::shared_ptr<synfig::Target_Scanline> warm_target;
 
 	int scanline_;
 	Surface surface;
@@ -307,7 +307,7 @@ public:
 	ProgressCallback *cb;
 
 public:
-	AsyncTarget_Scanline(etl::handle<synfig::Target_Scanline> warm_target):
+	AsyncTarget_Scanline(std::shared_ptr<synfig::Target_Scanline> warm_target):
 		warm_target(warm_target),
 		scanline_(),
 		alive_flag(),
@@ -426,7 +426,7 @@ public:
 
 /* === M E T H O D S ======================================================= */
 
-AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
+AsyncRenderer::AsyncRenderer(std::shared_ptr<synfig::Target> target_,synfig::ProgressCallback *cb):
 	status(RENDERING_UNDEFINED),
 	cb(cb),
 	start_clock(0),
@@ -437,7 +437,7 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 	render_thread=0;
 	if(auto cast_target = synfig::Target_Tile::Handle::cast_dynamic(target_))
 	{
-		etl::handle<AsyncTarget_Tile> wrap_target(
+		std::shared_ptr<AsyncTarget_Tile> wrap_target(
 			new AsyncTarget_Tile(cast_target)
 		);
 
@@ -445,9 +445,9 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 
 		target=wrap_target;
 	}
-	else if(auto cast_target = etl::handle<synfig::Target_Scanline>::cast_dynamic(target_))
+	else if(auto cast_target = std::shared_ptr<synfig::Target_Scanline>::cast_dynamic(target_))
 	{
-		etl::handle<AsyncTarget_Scanline> wrap_target(
+		std::shared_ptr<AsyncTarget_Scanline> wrap_target(
 			new AsyncTarget_Scanline(cast_target)
 		);
 
@@ -570,7 +570,7 @@ AsyncRenderer::start_()
 void
 AsyncRenderer::render_target()
 {
-	etl::handle<Target> target(AsyncRenderer::target);
+	std::shared_ptr<Target> target(AsyncRenderer::target);
 
 	std::string error_str;
 	try {

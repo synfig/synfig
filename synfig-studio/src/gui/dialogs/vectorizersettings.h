@@ -77,16 +77,16 @@ class VectorizerSettings : public Gtk::Dialog
   	Gtk::Separator Separator;
 
 	Gtk::ComboBoxText comboboxtext_mode;
-	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
-	etl::handle<synfig::Layer> reference_layer_;
-	const etl::handle<Instance> instance;
+	const std::shared_ptr<synfig::Layer_Bitmap> layer_bitmap_;
+	std::shared_ptr<synfig::Layer> reference_layer_;
+	const std::shared_ptr<Instance> instance;
 	std::unordered_map <std::string,int>* config_map;
 
 public:
 
 	bool isOutline;
-	VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
+	VectorizerSettings(Gtk::Window& parent, std::shared_ptr<synfig::Layer_Bitmap> my_layer_bitmap,
+			std::shared_ptr<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,std::shared_ptr<synfig::Layer> reference_layer);
 	~VectorizerSettings();
 
 	// CenterlineConfiguration getCenterlineConfiguration() const;

@@ -45,8 +45,8 @@ class ValueNode_TimeLoop : public LinkableValueNode
 	ValueNode::RHandle duration_;
 
 public:
-	typedef etl::handle<ValueNode_TimeLoop> Handle;
-	typedef etl::handle<const ValueNode_TimeLoop> ConstHandle;
+	typedef std::shared_ptr<ValueNode_TimeLoop> Handle;
+	typedef std::shared_ptr<const ValueNode_TimeLoop> ConstHandle;
 
 	ValueNode_TimeLoop(Type &x);
 	ValueNode_TimeLoop(const ValueNode::Handle &x);

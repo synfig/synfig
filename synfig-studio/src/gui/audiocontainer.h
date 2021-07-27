@@ -76,8 +76,8 @@ public: //
 
 	double get_offset() const;
 
-	etl::handle<AudioContainer>	get_parent() const;
-	void set_parent(etl::handle<AudioContainer> i);
+	std::shared_ptr<AudioContainer>	get_parent() const;
+	void set_parent(std::shared_ptr<AudioContainer> i);
 	friend class AudioContainer;
 };
 
@@ -86,7 +86,7 @@ public: //
 */
 class AudioContainer : public sigc::trackable, public etl::shared_object
 {
-	etl::handle<AudioProfile>	prof;
+	std::shared_ptr<AudioProfile>	prof;
 
 	struct	AudioImp;
 	AudioImp *imp;
@@ -104,7 +104,7 @@ public: //accessor interface
 	double get_offset() const;
 
 public: //info gather interface
-	etl::handle<AudioProfile>	get_profile(float samplerate = DEF_DISPLAYSAMPLERATE);
+	std::shared_ptr<AudioProfile>	get_profile(float samplerate = DEF_DISPLAYSAMPLERATE);
 	bool get_current_time(double &out);
 
 public: //operational interface

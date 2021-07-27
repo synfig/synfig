@@ -56,7 +56,7 @@ public:
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual Rect get_bounding_rect()const;
-	virtual etl::handle<synfig::Transform> get_transform()const;
+	virtual std::shared_ptr<synfig::Transform> get_transform()const;
 
 protected:
 	virtual rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle sub_task)const;

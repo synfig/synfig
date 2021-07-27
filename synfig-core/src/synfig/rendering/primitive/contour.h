@@ -53,7 +53,7 @@ class Intersector;
 class Contour: public etl::shared_object
 {
 public:
-	typedef etl::handle<Contour> Handle;
+	typedef std::shared_ptr<Contour> Handle;
 
 	enum WindingStyle
 	{
@@ -107,7 +107,7 @@ private:
 	mutable Rect bounds;
 	
 	mutable std::mutex intersector_read_mutex;
-	mutable etl::handle<Intersector> intersector;
+	mutable std::shared_ptr<Intersector> intersector;
 
 	//! call this when 'chunks' or 'first' was changed
 	void touch_chunks();
@@ -173,7 +173,7 @@ public:
 	Rect get_bounds() const;
 	
 	void to_intersector(Intersector &intersector) const;
-	etl::handle<Intersector> crerate_intersector() const;
+	std::shared_ptr<Intersector> crerate_intersector() const;
 
 	//! actualize internal copy of intersector (if needed) and return it
 	//! method is thread-safe for constant contours - you must not modify a contour while this call

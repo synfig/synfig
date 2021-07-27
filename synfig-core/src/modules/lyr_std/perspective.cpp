@@ -327,7 +327,7 @@ namespace {
 	class TransformationPerspective: public rendering::Transformation
 	{
 	public:
-		typedef etl::handle<TransformationPerspective> Handle;
+		typedef std::shared_ptr<TransformationPerspective> Handle;
 		
 		class Layer {
 		public:
@@ -625,7 +625,7 @@ namespace {
 	class TaskTransformationPerspective: public rendering::TaskTransformation
 	{
 	public:
-		typedef etl::handle<TaskTransformationPerspective> Handle;
+		typedef std::shared_ptr<TaskTransformationPerspective> Handle;
 		static Token token;
 		virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -690,7 +690,7 @@ namespace {
 	class TaskTransformationPerspectiveSW: public TaskTransformationPerspective, public rendering::TaskSW
 	{
 	public:
-		typedef etl::handle<TaskTransformationPerspectiveSW> Handle;
+		typedef std::shared_ptr<TaskTransformationPerspectiveSW> Handle;
 		static Token token;
 		virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -862,7 +862,7 @@ namespace {
 class lyr_std::Perspective_Trans: public Transform
 {
 private:
-	etl::handle<const Perspective> layer;
+	std::shared_ptr<const Perspective> layer;
 public:
 	Perspective_Trans(const Perspective* x):
 		Transform(x->get_guid()), layer(x) { }
@@ -1095,7 +1095,7 @@ Perspective::get_param_vocab()const
 	return ret;
 }
 
-etl::handle<Transform>
+std::shared_ptr<Transform>
 Perspective::get_transform()const
 	{ return new Perspective_Trans(this); }
 

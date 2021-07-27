@@ -371,7 +371,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 }
 
 void
-Widget_ValueBase::set_canvas(etl::handle<synfig::Canvas> x)
+Widget_ValueBase::set_canvas(std::shared_ptr<synfig::Canvas> x)
 {
 	assert(x);
 	canvas=x;

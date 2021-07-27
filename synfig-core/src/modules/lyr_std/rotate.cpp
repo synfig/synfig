@@ -137,7 +137,7 @@ Rotate::get_param_vocab()const
 
 class lyr_std::Rotate_Trans : public Transform
 {
-	etl::handle<const Rotate> layer;
+	std::shared_ptr<const Rotate> layer;
 public:
 	Rotate_Trans(const Rotate* x):Transform(x->get_guid()),layer(x) { }
 
@@ -160,7 +160,7 @@ public:
 		return "rotate";
 	}
 };
-etl::handle<Transform>
+std::shared_ptr<Transform>
 Rotate::get_transform()const
 {
 	return new Rotate_Trans(this);

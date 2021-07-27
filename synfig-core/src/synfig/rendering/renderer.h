@@ -50,7 +50,7 @@ class RenderQueue;
 class Renderer: public etl::shared_object
 {
 public:
-	typedef etl::handle<Renderer> Handle;
+	typedef std::shared_ptr<Renderer> Handle;
 	typedef std::multimap<Real, ModeToken::Handle> ModeMap;
 
 	struct DebugOptions {

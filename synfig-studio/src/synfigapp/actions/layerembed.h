@@ -47,8 +47,8 @@ class LayerEmbed :
 	public Super
 {
 private:
-	etl::handle<synfig::Layer_PasteCanvas> layer_pastecanvas;
-	etl::handle<synfig::Layer> layer_import;
+	std::shared_ptr<synfig::Layer_PasteCanvas> layer_pastecanvas;
+	std::shared_ptr<synfig::Layer> layer_import;
 
 public:
 	static ParamVocab get_param_vocab();

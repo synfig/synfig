@@ -45,8 +45,8 @@ class ValueNode_Duplicate : public LinkableValueNode
 	mutable Real index;
 
 public:
-	typedef etl::handle<ValueNode_Duplicate> Handle;
-	typedef etl::handle<const ValueNode_Duplicate> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Duplicate> Handle;
+	typedef std::shared_ptr<const ValueNode_Duplicate> ConstHandle;
 
 	ValueNode_Duplicate(Type &x);
 	ValueNode_Duplicate(const ValueBase &x);

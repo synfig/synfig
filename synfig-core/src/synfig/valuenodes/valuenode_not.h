@@ -42,8 +42,8 @@ class ValueNode_Not : public LinkableValueNode
 	ValueNode::RHandle link_;
 
 public:
-	typedef etl::handle<ValueNode_Not> Handle;
-	typedef etl::handle<const ValueNode_Not> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Not> Handle;
+	typedef std::shared_ptr<const ValueNode_Not> ConstHandle;
 
 	ValueNode_Not(const ValueBase &x);
 

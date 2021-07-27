@@ -225,7 +225,7 @@ void studio::Preview::render()
 		desc.set_time_end(desc.get_time_end() + 1.000001/fps);
 
 		// Render using a Preview target
-		etl::handle<Preview_Target> target = new Preview_Target;
+		std::shared_ptr<Preview_Target> target = new Preview_Target;
 		target->signal_frame_done().connect(sigc::mem_fun(*this, &Preview::frame_finish));
 
 		//set the options
@@ -249,7 +249,7 @@ void studio::Preview::clear()
 	frames.clear();
 }
 
-const etl::handle<synfig::Canvas>&
+const std::shared_ptr<synfig::Canvas>&
 studio::Preview::get_canvas() const
 	{return canvasview->get_canvas();}
 
@@ -883,7 +883,7 @@ void studio::Widget_Preview::disconnect_preview(Preview *prev)
 	}
 }
 
-void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
+void studio::Widget_Preview::set_preview(std::shared_ptr<Preview>	prev)
 {
 	disconnect_preview(preview.get());
 

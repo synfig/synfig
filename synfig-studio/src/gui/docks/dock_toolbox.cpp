@@ -179,7 +179,7 @@ Dock_Toolbox::set_active_state(const synfig::String& statename)
 void
 Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 {
-	etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
+	std::shared_ptr<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
 	if(canvas_view)
 	{
 		if(!force && statename==canvas_view->get_smach().get_state_name())
@@ -207,7 +207,7 @@ Dock_Toolbox::change_state_(const Smach::state_base *state)
 
 	try
 	{
-		etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
+		std::shared_ptr<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
 		if(canvas_view)
 				canvas_view->get_smach().enter(state);
 		else
@@ -271,8 +271,8 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 void
 Dock_Toolbox::update_tools()
 {
-	etl::handle<Instance> instance = App::get_selected_instance();
-	etl::handle<CanvasView> canvas_view = App::get_selected_canvas_view();
+	std::shared_ptr<Instance> instance = App::get_selected_instance();
+	std::shared_ptr<CanvasView> canvas_view = App::get_selected_canvas_view();
 
 	// These next several lines just adjust the tool buttons
 	// so that they are only clickable when they should be.

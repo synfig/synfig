@@ -49,8 +49,8 @@ class ValueNode_BLineCalcWidth : public LinkableValueNode
 
 public:
 
-	typedef etl::handle<ValueNode_BLineCalcWidth> Handle;
-	typedef etl::handle<const ValueNode_BLineCalcWidth> ConstHandle;
+	typedef std::shared_ptr<ValueNode_BLineCalcWidth> Handle;
+	typedef std::shared_ptr<const ValueNode_BLineCalcWidth> ConstHandle;
 
 	virtual ValueBase operator()(Time t, Real amount)const;
 	virtual ValueBase operator()(Time t)const;

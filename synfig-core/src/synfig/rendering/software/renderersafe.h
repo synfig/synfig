@@ -43,7 +43,7 @@ namespace rendering
 class RendererSafe: public Renderer
 {
 public:
-	typedef etl::handle<RendererSafe> Handle;
+	typedef std::shared_ptr<RendererSafe> Handle;
 
 	RendererSafe();
 	~RendererSafe();

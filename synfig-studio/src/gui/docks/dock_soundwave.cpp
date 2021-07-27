@@ -70,7 +70,7 @@ class Grid_SoundWave : public Gtk::Grid {
 	bool open_dialog_disabled;
 
 	// guid -> layer
-	std::map<std::string, etl::handle<synfig::Layer_Sound>> layer_map;
+	std::map<std::string, std::shared_ptr<synfig::Layer_Sound>> layer_map;
 
 	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface;
 
@@ -167,7 +167,7 @@ private:
 
 	void setup_canvas_layer_signals(std::shared_ptr<synfigapp::CanvasInterface> canvas_interface) {
 		canvas_interface->signal_layer_inserted().connect([&](synfig::Layer::Handle layer, int /*pos*/) {
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+			std::shared_ptr<synfig::Layer_Sound> layer_sound = std::shared_ptr<synfig::Layer_Sound>::cast_dynamic(layer);
 			if (!layer_sound)
 				return;
 
@@ -180,7 +180,7 @@ private:
 		});
 
 		canvas_interface->signal_layer_removed().connect([&](synfig::Layer::Handle layer) {
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+			std::shared_ptr<synfig::Layer_Sound> layer_sound = std::shared_ptr<synfig::Layer_Sound>::cast_dynamic(layer);
 			if (!layer_sound)
 				return;
 			std::string guid = layer_sound->get_guid().get_string();
@@ -210,7 +210,7 @@ private:
 		canvas_interface->signal_layer_param_changed().connect([&](synfig::Layer::Handle layer, std::string param_name) {
 			if (param_name != "filename" && param_name != "delay")
 				return;
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+			std::shared_ptr<synfig::Layer_Sound> layer_sound = std::shared_ptr<synfig::Layer_Sound>::cast_dynamic(layer);
 			if (!layer_sound)
 				return;
 			Gtk::TreeModel::iterator found_iter = find_layer_iter(layer_sound);
@@ -235,7 +235,7 @@ private:
 		});
 
 		canvas_interface->signal_layer_new_description().connect([&](synfig::Layer::Handle layer, std::string new_description) {
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+			std::shared_ptr<synfig::Layer_Sound> layer_sound = std::shared_ptr<synfig::Layer_Sound>::cast_dynamic(layer);
 			if (!layer_sound)
 				return;
 			Gtk::TreeModel::iterator found_iter = find_layer_iter(layer_sound);
@@ -382,7 +382,7 @@ private:
 
 	void fill_sound_layer_combo(synfig::Canvas::LooseHandle canvas)
 	{
-		std::vector<etl::handle<synfig::Layer_Sound>> layers;
+		std::vector<std::shared_ptr<synfig::Layer_Sound>> layers;
 		fetch_sound_layers(canvas, layers);
 		for (auto &layer : layers) {
 			add_layer_to_combo(layer);
@@ -395,10 +395,10 @@ private:
 		layer_map[layer->get_guid().get_string()] = layer;
 	}
 
-	static void fetch_sound_layers(synfig::Canvas::LooseHandle canvas, std::vector<etl::handle<synfig::Layer_Sound>> &layers)
+	static void fetch_sound_layers(synfig::Canvas::LooseHandle canvas, std::vector<std::shared_ptr<synfig::Layer_Sound>> &layers)
 	{
 		for (auto layer_it = canvas->begin(); layer_it != canvas->end(); ++layer_it ) {
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(*layer_it);
+			std::shared_ptr<synfig::Layer_Sound> layer_sound = std::shared_ptr<synfig::Layer_Sound>::cast_dynamic(*layer_it);
 			if (layer_sound) {
 				layers.push_back(layer_sound);
 			}
@@ -413,7 +413,7 @@ private:
 	Gtk::TreeModel::iterator find_layer_iter(synfig::Layer::Handle layer)
 	{
 		Gtk::TreeModel::iterator found_iter;
-		etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+		std::shared_ptr<synfig::Layer_Sound> layer_sound = std::shared_ptr<synfig::Layer_Sound>::cast_dynamic(layer);
 		if (!layer_sound)
 			return found_iter;
 
@@ -493,7 +493,7 @@ void Dock_SoundWave::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> canva
 	}
 
 	if( !canvas_view ) {
-		widget_kf_list.set_time_model( etl::handle<TimeModel>() );
+		widget_kf_list.set_time_model( std::shared_ptr<TimeModel>() );
 		widget_kf_list.set_canvas_interface( std::shared_ptr<synfigapp::CanvasInterface>() );
 
 		widget_timeslider.set_canvas_view( CanvasView::Handle() );

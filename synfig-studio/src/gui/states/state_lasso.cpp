@@ -98,7 +98,7 @@ class studio::StateLasso_Context : public sigc::trackable
 	StrokeQueue stroke_queue;
 
 
-	etl::handle<CanvasView> canvas_view_;
+	std::shared_ptr<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	WorkArea::PushState push_state;
@@ -335,8 +335,8 @@ public:
 
 	~StateLasso_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	const std::shared_ptr<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	std::shared_ptr<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -1109,8 +1109,8 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 	// but having loops auto-connect can be useful as well)
 	if(get_auto_extend_flag() || get_auto_link_flag())
 	{
-		etl::handle<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
-		etl::handle<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
+		std::shared_ptr<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
+		std::shared_ptr<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
 
 		// check whether the start of the new line extends an
 		// existing line.  this is only the case if the new
@@ -1557,7 +1557,7 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
                 
                 synfigapp::Action::Handle action(synfigapp::Action::create("LayerEncapsulate"));
                
-                etl::handle<synfig::Canvas> cv( layer_list.back()->get_canvas() );
+                std::shared_ptr<synfig::Canvas> cv( layer_list.back()->get_canvas() );
                         
                 action->set_param("layer",*(layer_list.rbegin()));
                 layer_list.pop_back();
@@ -1770,7 +1770,7 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 		std::list<synfig::BLinePoint>::iterator iter;
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{
-			etl::handle<Duck> duck(get_work_area()->find_duck(iter->get_vertex(),0,Duck::TYPE_VERTEX));
+			std::shared_ptr<Duck> duck(get_work_area()->find_duck(iter->get_vertex(),0,Duck::TYPE_VERTEX));
 
 			if(!duck)
 			{

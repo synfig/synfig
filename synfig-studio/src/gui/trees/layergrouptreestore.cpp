@@ -863,7 +863,7 @@ LayerGroupTreeStore::on_group_changed(synfig::String /*group*/)
 }
 
 void
-LayerGroupTreeStore::on_group_pair_added(synfig::String group, etl::handle<synfig::Layer> layer)
+LayerGroupTreeStore::on_group_pair_added(synfig::String group, std::shared_ptr<synfig::Layer> layer)
 {
 	if(!layer->get_canvas())
 		return;
@@ -880,7 +880,7 @@ LayerGroupTreeStore::on_group_pair_added(synfig::String group, etl::handle<synfi
 }
 
 void
-LayerGroupTreeStore::on_group_pair_removed(synfig::String group, etl::handle<synfig::Layer> layer)
+LayerGroupTreeStore::on_group_pair_removed(synfig::String group, std::shared_ptr<synfig::Layer> layer)
 {
 	if(!layer->get_canvas())
 		return;

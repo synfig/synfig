@@ -42,12 +42,12 @@ namespace synfig
 	class FileContainer : public FileSystem
 	{
 	public:
-		typedef etl::handle<FileContainer> Handle;
+		typedef std::shared_ptr<FileContainer> Handle;
 
 		class ReadStream : public FileSystem::ReadStream
 		{
 		public:
-			typedef etl::handle<ReadStream> Handle;
+			typedef std::shared_ptr<ReadStream> Handle;
 		protected:
 			friend class FileContainer;
 			ReadStream(FileSystem::Handle file_system);
@@ -59,7 +59,7 @@ namespace synfig
 		class WriteStream : public FileSystem::WriteStream
 		{
 		public:
-			typedef etl::handle<WriteStream> Handle;
+			typedef std::shared_ptr<WriteStream> Handle;
 		protected:
 			friend class FileContainer;
 			WriteStream(FileSystem::Handle file_system);

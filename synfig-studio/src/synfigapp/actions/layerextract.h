@@ -47,7 +47,7 @@ class LayerExtract :
 	public Super
 {
 private:
-	etl::handle<synfig::Layer> layer;
+	std::shared_ptr<synfig::Layer> layer;
 	std::string filename;
 
 public:

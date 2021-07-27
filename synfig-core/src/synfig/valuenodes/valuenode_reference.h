@@ -40,8 +40,8 @@ class ValueNode_Reference : public LinkableValueNode
 {
 	ValueNode::RHandle link_;
 public:
-	typedef etl::handle<ValueNode_Reference> Handle;
-	typedef etl::handle<const ValueNode_Reference> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Reference> Handle;
+	typedef std::shared_ptr<const ValueNode_Reference> ConstHandle;
 
 	ValueNode_Reference(Type &x);
 

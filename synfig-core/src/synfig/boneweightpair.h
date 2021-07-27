@@ -50,7 +50,7 @@ namespace synfig {
 class BoneWeightPair
 {
 private:
-	// etl::handle<ValueNode_Bone> bone;
+	// std::shared_ptr<ValueNode_Bone> bone;
 	Bone bone;
 	Real weight;
 

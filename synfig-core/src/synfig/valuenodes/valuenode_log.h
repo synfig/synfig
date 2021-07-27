@@ -44,8 +44,8 @@ class ValueNode_Logarithm : public LinkableValueNode
 	ValueNode::RHandle infinite_;
 
 public:
-	typedef etl::handle<ValueNode_Logarithm> Handle;
-	typedef etl::handle<const ValueNode_Logarithm> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Logarithm> Handle;
+	typedef std::shared_ptr<const ValueNode_Logarithm> ConstHandle;
 
 	ValueNode_Logarithm(const ValueBase &x);
 

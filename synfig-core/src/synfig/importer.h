@@ -138,9 +138,9 @@ public:
 	//! importers
 	static bool subsys_stop();
 
-	typedef etl::handle<Importer> Handle;
+	typedef std::shared_ptr<Importer> Handle;
 	typedef std::shared_ptr<Importer> LooseHandle;
-	typedef etl::handle<const Importer> ConstHandle;
+	typedef std::shared_ptr<const Importer> ConstHandle;
 
 private:
 	rendering::Surface::Handle last_surface_;

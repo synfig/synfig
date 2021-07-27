@@ -83,7 +83,7 @@ Target_Scanline::next_frame(Time& time)
 
 bool
 synfig::Target_Scanline::call_renderer(
-	const etl::handle<rendering::SurfaceResource> &surface,
+	const std::shared_ptr<rendering::SurfaceResource> &surface,
 	Canvas &canvas,
 	const ContextParams &context_params,
 	const RendDesc &renddesc )

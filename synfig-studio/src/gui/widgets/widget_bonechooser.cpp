@@ -133,7 +133,7 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 		set_active(0);
 }
 
-const etl::handle<synfig::ValueNode_Bone> &
+const std::shared_ptr<synfig::ValueNode_Bone> &
 Widget_BoneChooser::get_value()
 {
 	return bone;

@@ -43,8 +43,8 @@ class ValueNode_Or : public LinkableValueNode
 	ValueNode::RHandle link2_;
 
 public:
-	typedef etl::handle<ValueNode_Or> Handle;
-	typedef etl::handle<const ValueNode_Or> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Or> Handle;
+	typedef std::shared_ptr<const ValueNode_Or> ConstHandle;
 
 	ValueNode_Or(const ValueBase &x);
 

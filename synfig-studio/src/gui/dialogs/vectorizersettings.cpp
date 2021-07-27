@@ -44,8 +44,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
- etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
+VectorizerSettings::VectorizerSettings(Gtk::Window& parent,std::shared_ptr<synfig::Layer_Bitmap> my_layer_bitmap,
+ std::shared_ptr<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, std::shared_ptr<synfig::Layer> reference_layer):
 	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
 	adjustment_accuracy(Gtk::Adjustment::create(configmap["accuracy"],1,10)),
 	entry_accuracy(adjustment_accuracy,1,0),
@@ -280,12 +280,12 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2);
 	action->set_param("pparea",toggle_pparea.get_state());
 	action->set_param("addborder",toggle_add_border.get_state());
-	etl::handle<synfig::Canvas> canvas;
+	std::shared_ptr<synfig::Canvas> canvas;
 
 	// in case the "convert to vector" was clicked for layer inside a switch
 	// and pass canvas accordingly
 	
-	if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(reference_layer_))
+	if(std::shared_ptr<synfig::Layer_PasteCanvas> paste = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(reference_layer_))
 	{
 			canvas = layer_bitmap_->get_canvas()->parent();
 			action->set_param("reference_layer",reference_layer_);
@@ -295,7 +295,7 @@ VectorizerSettings::on_convert_pressed()
 		canvas = layer_bitmap_->get_canvas();
 	}
 
-	etl::handle<synfigapp::CanvasInterface> canvas_interface = instance->find_canvas_interface( canvas->get_non_inline_ancestor() );
+	std::shared_ptr<synfigapp::CanvasInterface> canvas_interface = instance->find_canvas_interface( canvas->get_non_inline_ancestor() );
 	action->set_param("canvas", canvas); 
 	action->set_param("canvas_interface", canvas_interface);
 

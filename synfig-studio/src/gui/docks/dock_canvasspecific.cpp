@@ -89,14 +89,14 @@ Dock_CanvasSpecific::changed_canvas_view_vfunc(std::shared_ptr<CanvasView> /*can
 }
 
 void
-Dock_CanvasSpecific::init_instance(etl::handle<Instance> instance)
+Dock_CanvasSpecific::init_instance(std::shared_ptr<Instance> instance)
 {
 	instance->signal_canvas_view_created().connect(sigc::mem_fun(*this,&Dock_CanvasSpecific::init_canvas_view));
 	init_instance_vfunc(instance);
 }
 
 void
-Dock_CanvasSpecific::delete_instance(etl::handle<Instance> /*instance*/)
+Dock_CanvasSpecific::delete_instance(std::shared_ptr<Instance> /*instance*/)
 {
 	changed_canvas_view_vfunc(0);
 }

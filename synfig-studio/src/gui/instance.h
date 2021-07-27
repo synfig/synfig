@@ -55,7 +55,7 @@ class CanvasView;
 class Instance : public synfigapp::Instance
 {
 public:
-	typedef std::list< etl::handle<CanvasView> > CanvasViewList;
+	typedef std::list< std::shared_ptr<CanvasView> > CanvasViewList;
 
 	enum Status
 	{
@@ -168,12 +168,12 @@ public:
 	//! Returns the number of instances that are currently open in the program
 	static int get_count() { return instance_count_; }
 
-	//etl::handle<synfig::Canvas> get_canvas()const { return synfigapp::Instance::get_canvas(); }
+	//std::shared_ptr<synfig::Canvas> get_canvas()const { return synfigapp::Instance::get_canvas(); }
 
-	etl::handle<CanvasView>	find_canvas_view(etl::handle<synfig::Canvas> canvas);
+	std::shared_ptr<CanvasView>	find_canvas_view(std::shared_ptr<synfig::Canvas> canvas);
 
 	//! Sets the focus to a specific canvas
-	void focus(etl::handle<synfig::Canvas> canvas);
+	void focus(std::shared_ptr<synfig::Canvas> canvas);
 
 	CanvasViewList & canvas_view_list() { return canvas_view_list_; }
 
@@ -239,7 +239,7 @@ private:
 	void insert_canvas(Gtk::TreeRow row,synfig::Canvas::Handle canvas);
 
 public:
-	static etl::handle<Instance> create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle container);
+	static std::shared_ptr<Instance> create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle container);
 }; // END class Instance
 
 }; // END namespace studio

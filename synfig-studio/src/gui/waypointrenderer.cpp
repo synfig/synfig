@@ -410,7 +410,7 @@ get_time_offset_from_vdesc(const ValueDesc &v)
 
 	synfig::Layer::Handle layer = v.get_layer();
 
-	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if (!std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 		return Time::zero();
 
 	return layer->get_param("time_offset").get(Time());
@@ -434,7 +434,7 @@ get_time_dilation_from_vdesc(const ValueDesc &v)
 
 	Layer::Handle layer = v.get_layer();
 
-	if (!etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if (!std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
 		return Time(1.0);
 
 	return layer->get_param("time_dilation").get(Time());

@@ -59,7 +59,7 @@ class System;
 //! Passive action grouping class
 class PassiveGrouper
 {
-	typedef std::set< etl::handle<CanvasInterface> > RedrawSet;
+	typedef std::set< std::shared_ptr<CanvasInterface> > RedrawSet;
 
 	std::shared_ptr<System> instance_;
 	synfig::String name_;
@@ -78,9 +78,9 @@ public:
 
 	std::shared_ptr<System> get_instance() { return instance_; }
 
-	void request_redraw(etl::handle<CanvasInterface>);
+	void request_redraw(std::shared_ptr<CanvasInterface>);
 
-	etl::handle<Action::Group> finish();
+	std::shared_ptr<Action::Group> finish();
 
 	void cancel();
 
@@ -91,7 +91,7 @@ public:
 	const int &get_depth()const { return depth_; }
 }; // END of class Action::PassiveGrouper
 
-typedef std::list< etl::handle<Action::Undoable> > Stack;
+typedef std::list< std::shared_ptr<Action::Undoable> > Stack;
 
 class System : public etl::shared_object, public sigc::trackable
 {
@@ -124,19 +124,19 @@ private:
 
 	sigc::signal<void,bool> signal_undo_status_;
 	sigc::signal<void,bool> signal_redo_status_;
-	sigc::signal<void,etl::handle<Action::Undoable> > signal_new_action_;
+	sigc::signal<void,std::shared_ptr<Action::Undoable> > signal_new_action_;
 	sigc::signal<void> signal_undo_stack_cleared_;
 	sigc::signal<void> signal_redo_stack_cleared_;
 	sigc::signal<void> signal_undo_;
 	sigc::signal<void> signal_redo_;
-	sigc::signal<void,etl::handle<Action::Undoable> > signal_action_status_changed_;
+	sigc::signal<void,std::shared_ptr<Action::Undoable> > signal_action_status_changed_;
 
 	mutable sigc::signal<void,bool> signal_unsaved_status_changed_;
 
 	//! If this is non-zero, then the changes have not yet been saved.
 	mutable int action_count_;
 
-	etl::handle<UIInterface> ui_interface_;
+	std::shared_ptr<UIInterface> ui_interface_;
 
 	bool clear_redo_stack_on_new_action_;
 
@@ -146,8 +146,8 @@ private:
 
 private:
 
-	bool undo_(etl::handle<UIInterface> uim);
-	bool redo_(etl::handle<UIInterface> uim);
+	bool undo_(std::shared_ptr<UIInterface> uim);
+	bool redo_(std::shared_ptr<UIInterface> uim);
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
@@ -168,7 +168,7 @@ public:
 	template <typename T> bool
 	perform_action(T x)
 	{
-		etl::handle<Action::Base> action((Action::Base*)new T(x));
+		std::shared_ptr<Action::Base> action((Action::Base*)new T(x));
 		return perform_action(action);
 	}
 	*/
@@ -179,11 +179,11 @@ public:
 
 	void set_clear_redo_stack_on_new_action(bool x) { clear_redo_stack_on_new_action_=x; }
 
-	void request_redraw(etl::handle<CanvasInterface>);
+	void request_redraw(std::shared_ptr<CanvasInterface>);
 
-	bool perform_action(etl::handle<Action::Base> action);
+	bool perform_action(std::shared_ptr<Action::Base> action);
 
-	bool set_action_status(etl::handle<Action::Undoable> action, bool x);
+	bool set_action_status(std::shared_ptr<Action::Undoable> action, bool x);
 
 	const Stack &undo_action_stack()const { return undo_action_stack_; }
 
@@ -220,9 +220,9 @@ public:
 	/*!	\see inc_action_count(), dec_action_count(), reset_action_count() */
 	int get_action_count()const { return action_count_; }
 
-	void set_ui_interface(const etl::handle<UIInterface> &uim) { assert(uim); ui_interface_=uim; }
+	void set_ui_interface(const std::shared_ptr<UIInterface> &uim) { assert(uim); ui_interface_=uim; }
 	void unset_ui_interface() { ui_interface_=new DefaultUIInterface(); }
-	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }
+	const std::shared_ptr<UIInterface> &get_ui_interface() { return ui_interface_; }
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E S -----------------------------------
@@ -245,9 +245,9 @@ public:
 	sigc::signal<void>& signal_redo() { return signal_redo_; }
 
 	//!	Called whenever an undoable action is processed and added to the stack.
-	sigc::signal<void,etl::handle<Action::Undoable> >& signal_new_action() { return signal_new_action_; }
+	sigc::signal<void,std::shared_ptr<Action::Undoable> >& signal_new_action() { return signal_new_action_; }
 
-	sigc::signal<void,etl::handle<Action::Undoable> >& signal_action_status_changed() { return signal_action_status_changed_; }
+	sigc::signal<void,std::shared_ptr<Action::Undoable> >& signal_action_status_changed() { return signal_action_status_changed_; }
 
 }; // END of class Action::System
 

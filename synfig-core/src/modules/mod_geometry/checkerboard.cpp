@@ -72,7 +72,7 @@ namespace {
 class TaskCheckerBoard: public rendering::Task, public rendering::TaskInterfaceTransformation
 {
 public:
-	typedef etl::handle<TaskCheckerBoard> Handle;
+	typedef std::shared_ptr<TaskCheckerBoard> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -91,7 +91,7 @@ class TaskCheckerBoardSW: public TaskCheckerBoard, public rendering::TaskSW,
 	public rendering::TaskInterfaceSplit
 {
 public:
-	typedef etl::handle<TaskCheckerBoardSW> Handle;
+	typedef std::shared_ptr<TaskCheckerBoardSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

@@ -48,7 +48,7 @@ class LayerAddFrame :
 {
 private:
 	synfig::Time time;
-	etl::handle<synfig::Layer_Switch> layer_switch;
+	std::shared_ptr<synfig::Layer_Switch> layer_switch;
 	synfig::Layer::Handle layer_base;
 
 public:

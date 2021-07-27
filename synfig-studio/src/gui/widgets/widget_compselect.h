@@ -45,15 +45,15 @@ class Widget_CompSelect : public Gtk::ComboBoxText
 	std::vector< std::shared_ptr<studio::Instance> > instances;
 	std::shared_ptr<studio::Instance>	selected_instance;
 
-	void set_selected_instance_(etl::handle<studio::Instance> x);
+	void set_selected_instance_(std::shared_ptr<studio::Instance> x);
 
-	void new_instance(etl::handle<studio::Instance> x);
+	void new_instance(std::shared_ptr<studio::Instance> x);
 
-	void delete_instance(etl::handle<studio::Instance> x);
+	void delete_instance(std::shared_ptr<studio::Instance> x);
 
 	void set_selected_instance(std::shared_ptr<studio::Instance> x);
 
-	void set_selected_instance_signal(etl::handle<studio::Instance> x);
+	void set_selected_instance_signal(std::shared_ptr<studio::Instance> x);
 
 protected:
 	virtual void on_changed();

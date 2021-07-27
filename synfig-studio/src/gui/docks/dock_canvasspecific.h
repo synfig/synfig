@@ -51,8 +51,8 @@ protected:
 
 private:
 	void init_canvas_view(CanvasView* canvas_view);
-	void init_instance(etl::handle<Instance> instance);
-	void delete_instance(etl::handle<Instance> instance);
+	void init_instance(std::shared_ptr<Instance> instance);
+	void delete_instance(std::shared_ptr<Instance> instance);
 	void canvas_view_changed();
 	void changed_canvas_view(std::shared_ptr<CanvasView> canvas_view) { return changed_canvas_view_vfunc(canvas_view); }
 public:

@@ -75,7 +75,7 @@ handle<AudioContainer>	studio::AudioProfile::get_parent() const
 	return parent;
 }
 
-void studio::AudioProfile::set_parent(etl::handle<AudioContainer> i)
+void studio::AudioProfile::set_parent(std::shared_ptr<AudioContainer> i)
 {
 	parent = i;
 }

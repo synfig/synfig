@@ -50,7 +50,7 @@ namespace {
 
 class TaskMeshSW: public TaskMesh, public TaskSW
 {
-	typedef etl::handle<TaskMeshSW> Handle;
+	typedef std::shared_ptr<TaskMeshSW> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 

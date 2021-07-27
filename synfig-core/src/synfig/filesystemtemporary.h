@@ -46,7 +46,7 @@ namespace synfig
 	class FileSystemTemporary: public FileSystem
 	{
 	public:
-		typedef etl::handle<FileSystemTemporary> Handle;
+		typedef std::shared_ptr<FileSystemTemporary> Handle;
 
 	private:
 		struct FileInfo

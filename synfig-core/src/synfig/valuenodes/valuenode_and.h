@@ -43,8 +43,8 @@ class ValueNode_And : public LinkableValueNode
 	ValueNode::RHandle link2_;
 
 public:
-	typedef etl::handle<ValueNode_And> Handle;
-	typedef etl::handle<const ValueNode_And> ConstHandle;
+	typedef std::shared_ptr<ValueNode_And> Handle;
+	typedef std::shared_ptr<const ValueNode_And> ConstHandle;
 
 	ValueNode_And(const ValueBase &x);
 	virtual ValueBase operator()(Time t)const;

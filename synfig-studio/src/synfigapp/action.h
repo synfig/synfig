@@ -202,7 +202,7 @@ typedef Action::Base* (*Factory)();
 typedef bool (*CandidateChecker)(const ParamList &x);
 typedef ParamVocab (*GetParamVocab)();
 
-typedef etl::handle<Base> Handle;
+typedef std::shared_ptr<Base> Handle;
 
 //! Undoable Action Base Class
 class Undoable : public Base
@@ -272,7 +272,7 @@ public:
 
 }; // END of class Action::CanvasSpecific
 
-typedef std::list< etl::handle<Action::Undoable> > ActionList;
+typedef std::list< std::shared_ptr<Action::Undoable> > ActionList;
 
 /*!	\class synfigapp::Action::Super
 **	\brief Super-Action base class for actions composed of several other actions.
@@ -295,19 +295,19 @@ public:
 
 	bool first_time()const { return action_list_.empty(); }
 
-	void add_action(etl::handle<Undoable> action);
-	void add_action_front(etl::handle<Undoable> action);
+	void add_action(std::shared_ptr<Undoable> action);
+	void add_action_front(std::shared_ptr<Undoable> action);
 
-	void add_action(etl::handle<Base> action)
+	void add_action(std::shared_ptr<Base> action)
 	{
-		etl::handle<Undoable> undoable = etl::handle<Undoable>::cast_dynamic(action);
+		std::shared_ptr<Undoable> undoable = std::shared_ptr<Undoable>::cast_dynamic(action);
 		assert(undoable);
 		add_action(undoable);
 	}
 
-	void add_action_front(etl::handle<Base> action)
+	void add_action_front(std::shared_ptr<Base> action)
 	{
-		etl::handle<Undoable> undoable = etl::handle<Undoable>::cast_dynamic(action);
+		std::shared_ptr<Undoable> undoable = std::shared_ptr<Undoable>::cast_dynamic(action);
 		assert(undoable);
 		add_action_front(undoable);
 	}

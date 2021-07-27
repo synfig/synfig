@@ -49,7 +49,7 @@ using namespace etl;
 using namespace studio;
 using namespace synfig;
 
-typedef etl::handle<synfig::Layer_Bitmap> Handle;
+typedef std::shared_ptr<synfig::Layer_Bitmap> Handle;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -887,7 +887,7 @@ inline void reduceBorders(BorderList &borders, Contours &result,bool ambiguities
 
 //Extracts a polygonal, minimal yet faithful representation of image contours
 
-void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons, VectorizerCoreGlobals &g)
+void studio::polygonize(const std::shared_ptr<synfig::Layer_Bitmap> &ras, Contours &polygons, VectorizerCoreGlobals &g)
 {
 	
 	BorderList *borders;

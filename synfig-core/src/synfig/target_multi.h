@@ -56,7 +56,7 @@ public:
 	virtual Color * start_scanline(int scanline);
 	virtual bool end_scanline();
 
-	virtual void set_canvas(etl::handle<Canvas> c);
+	virtual void set_canvas(std::shared_ptr<Canvas> c);
 	virtual bool set_rend_desc(RendDesc *d);
 	virtual bool init();
 }; // END of class Target_Multi

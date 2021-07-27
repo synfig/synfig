@@ -44,8 +44,8 @@ class ValueNode_Reverse : public LinkableValueNode
 	ValueNode::RHandle link_;
 
 public:
-	typedef etl::handle<ValueNode_Reverse> Handle;
-	typedef etl::handle<const ValueNode_Reverse> ConstHandle;
+	typedef std::shared_ptr<ValueNode_Reverse> Handle;
+	typedef std::shared_ptr<const ValueNode_Reverse> ConstHandle;
 
 	ValueNode_Reverse(Type &x);
 	ValueNode_Reverse(const ValueBase &x);

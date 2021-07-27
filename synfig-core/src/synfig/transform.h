@@ -46,7 +46,7 @@ class Transform : public etl::shared_object
 	GUID guid_;
 
 public:
-	typedef etl::handle<Transform> Handle;
+	typedef std::shared_ptr<Transform> Handle;
 
 protected:
 	Transform(const GUID& guid):guid_(guid) { }

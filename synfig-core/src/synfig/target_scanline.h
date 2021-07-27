@@ -52,15 +52,15 @@ class Target_Scanline : public Target
 	String engine_;
 
 	bool call_renderer(
-		const etl::handle<rendering::SurfaceResource> &surface,
+		const std::shared_ptr<rendering::SurfaceResource> &surface,
 		Canvas &canvas,
 		const ContextParams &context_params,
 		const RendDesc &renddesc );
 
 public:
-	typedef etl::handle<Target_Scanline> Handle;
+	typedef std::shared_ptr<Target_Scanline> Handle;
 	typedef std::shared_ptr<Target_Scanline> LooseHandle;
-	typedef etl::handle<const Target_Scanline> ConstHandle;
+	typedef std::shared_ptr<const Target_Scanline> ConstHandle;
 	//! Default constructor (threads = 2 current frame = 0)
 	Target_Scanline();
 

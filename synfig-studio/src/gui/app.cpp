@@ -193,16 +193,16 @@ static sigc::signal<void,std::shared_ptr<CanvasView> > signal_canvas_view_focus_
 sigc::signal<void,std::shared_ptr<CanvasView> >&
 App::signal_canvas_view_focus() { return signal_canvas_view_focus_; }
 
-static sigc::signal<void,etl::handle<Instance> > signal_instance_selected_;
-sigc::signal<void,etl::handle<Instance> >&
+static sigc::signal<void,std::shared_ptr<Instance> > signal_instance_selected_;
+sigc::signal<void,std::shared_ptr<Instance> >&
 App::signal_instance_selected() { return signal_instance_selected_; }
 
-static sigc::signal<void,etl::handle<Instance> > signal_instance_created_;
-sigc::signal<void,etl::handle<Instance> >&
+static sigc::signal<void,std::shared_ptr<Instance> > signal_instance_created_;
+sigc::signal<void,std::shared_ptr<Instance> >&
 App::signal_instance_created() { return signal_instance_created_; }
 
-static sigc::signal<void,etl::handle<Instance> > signal_instance_deleted_;
-sigc::signal<void,etl::handle<Instance> >&
+static sigc::signal<void,std::shared_ptr<Instance> > signal_instance_deleted_;
+sigc::signal<void,std::shared_ptr<Instance> >&
 App::signal_instance_deleted() { return signal_instance_deleted_; }
 
 /* === G L O B A L S ======================================================= */
@@ -227,13 +227,13 @@ Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
 
-std::list<etl::handle<Instance> > App::instance_list;
+std::list<std::shared_ptr<Instance> > App::instance_list;
 
-static etl::handle<synfigapp::UIInterface>           ui_interface_;
-const  etl::handle<synfigapp::UIInterface>& App::get_ui_interface() { return ui_interface_; }
+static std::shared_ptr<synfigapp::UIInterface>           ui_interface_;
+const  std::shared_ptr<synfigapp::UIInterface>& App::get_ui_interface() { return ui_interface_; }
 
-etl::handle<Instance>   App::selected_instance;
-etl::handle<CanvasView> App::selected_canvas_view;
+std::shared_ptr<Instance>   App::selected_instance;
+std::shared_ptr<CanvasView> App::selected_canvas_view;
 
 studio::About              *studio::App::about          = nullptr;
 studio::AutoRecover        *studio::App::auto_recover   = nullptr;
@@ -267,7 +267,7 @@ static studio::Dock_Timetrack_Old *dock_timetrack_old;
 static studio::Dock_Timetrack2    *dock_timetrack;
        studio::Dock_Toolbox  *App::dock_toolbox = nullptr;
 
-static std::list< etl::handle< studio::Module > > module_list_;
+static std::list< std::shared_ptr< studio::Module > > module_list_;
 
 bool   studio::App::restrict_radius_ducks        = true;
 bool   studio::App::resize_imported_images       = false;
@@ -1817,7 +1817,7 @@ App::get_config_file(const synfig::String& file)
 }
 
 void
-App::add_recent_file(const etl::handle<Instance> instance)
+App::add_recent_file(const std::shared_ptr<Instance> instance)
 {
 	add_recent_file(absolute_path(instance->get_file_name()), true);
 }
@@ -1879,7 +1879,7 @@ void App::jack_lock()
 	if (jack_locks_ == 1)
 	{
 		// lock jack in instances
-		for(std::list< etl::handle<Instance> >::const_iterator i = instance_list.begin(); i != instance_list.end(); ++i)
+		for(std::list< std::shared_ptr<Instance> >::const_iterator i = instance_list.begin(); i != instance_list.end(); ++i)
 		{
 			const Instance::CanvasViewList &views = (*i)->canvas_view_list();
 			for(Instance::CanvasViewList::const_iterator j = views.begin(); j != views.end(); ++j)
@@ -1895,7 +1895,7 @@ void App::jack_unlock()
 	if (jack_locks_ == 0)
 	{
 		// unlock jack in instances
-		for(std::list< etl::handle<Instance> >::const_iterator i = instance_list.begin(); i != instance_list.end(); ++i)
+		for(std::list< std::shared_ptr<Instance> >::const_iterator i = instance_list.begin(); i != instance_list.end(); ++i)
 		{
 			const Instance::CanvasViewList &views = (*i)->canvas_view_list();
 			for(Instance::CanvasViewList::const_iterator j = views.begin(); j != views.end(); ++j)
@@ -3635,7 +3635,7 @@ void App::open_img_in_external(const std::string &uri)
 
 static std::unordered_map<std::string, int> vectorizer_configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
 
-void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
+void App::open_vectorizerpopup(const std::shared_ptr<synfig::Layer_Bitmap> my_layer_bitmap, const std::shared_ptr<synfig::Layer> reference_layer)
 {
 	String desc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+desc);
@@ -3852,7 +3852,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename);
 
-		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
+		std::shared_ptr<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3954,7 +3954,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 		// file to open inside canvas file system
 		String canvas_filename = CanvasFileNaming::project_file(canvas_file_system);
 
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
+		std::shared_ptr<synfig::Canvas> canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -4155,7 +4155,7 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 			FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
 			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename_processed, filename, 0);
 			String canvas_filename = CanvasFileNaming::project_file(filename_processed);
-			etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
+			std::shared_ptr<synfig::Canvas> canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
 			if ( !canvas )
 			{
 				errors += strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str());
@@ -4300,12 +4300,12 @@ App::set_selected_canvas_view(std::shared_ptr<CanvasView> canvas_view)
 }
 
 std::shared_ptr<Instance>
-App::get_instance(etl::handle<synfig::Canvas> canvas)
+App::get_instance(std::shared_ptr<synfig::Canvas> canvas)
 {
 	if(!canvas) return nullptr;
 	canvas=canvas->get_root();
 
-	std::list<etl::handle<Instance> >::iterator iter;
+	std::list<std::shared_ptr<Instance> >::iterator iter;
 	for(iter=instance_list.begin();iter!=instance_list.end();++iter)
 	{
 		if((*iter)->get_canvas()==canvas)
@@ -4374,11 +4374,11 @@ studio::App::get_base_path()
 void
 studio::App::setup_changed()
 {
-	std::list<etl::handle<Instance> >::iterator iter;
+	std::list<std::shared_ptr<Instance> >::iterator iter;
 	for(iter=instance_list.begin();iter!=instance_list.end();++iter)
 	{
-		std::list< etl::handle<synfigapp::CanvasInterface> >::iterator citer;
-		std::list< etl::handle<synfigapp::CanvasInterface> >& cilist((*iter)->canvas_interface_list());
+		std::list< std::shared_ptr<synfigapp::CanvasInterface> >::iterator citer;
+		std::list< std::shared_ptr<synfigapp::CanvasInterface> >& cilist((*iter)->canvas_interface_list());
 		for(citer=cilist.begin();citer!=cilist.end();++citer)
 			{
 				(*citer)->signal_rend_desc_changed()();

@@ -43,7 +43,7 @@ namespace rendering
 class RendererGL: public Renderer
 {
 public:
-	typedef etl::handle<RendererGL> Handle;
+	typedef std::shared_ptr<RendererGL> Handle;
 
 	RendererGL();
 	~RendererGL();

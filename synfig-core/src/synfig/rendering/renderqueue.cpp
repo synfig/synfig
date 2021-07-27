@@ -70,7 +70,7 @@ namespace {
 class TaskSubQueue: public TaskEvent
 {
 public:
-	typedef etl::handle<TaskSubQueue> Handle;
+	typedef std::shared_ptr<TaskSubQueue> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 	const Task::Handle& sub_task() const { return Task::sub_task(0); }

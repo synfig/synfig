@@ -58,7 +58,7 @@ class TimePlotData {
 	bool invalid;
 
 public:
-	etl::handle<TimeModel> time_model;
+	std::shared_ptr<TimeModel> time_model;
 
 	/// Current Time \sa TimeModel::get_time
 	synfig::Time time;
@@ -101,7 +101,7 @@ public:
 	TimePlotData(Gtk::Widget & widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment = Glib::RefPtr<Gtk::Adjustment>());
 	virtual ~TimePlotData();
 
-	void set_time_model(const etl::handle<TimeModel> &time_model);
+	void set_time_model(const std::shared_ptr<TimeModel> &time_model);
 
 	/// Sets an extra margin, creating a new and wider range. \sa is_time_visible_extra()
 	void set_extra_time_margin(double margin);

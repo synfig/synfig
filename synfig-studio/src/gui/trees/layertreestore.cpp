@@ -236,19 +236,19 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 			{
 				Pango::Weight weight = Pango::WEIGHT_NORMAL;
 
-				etl::handle<Layer_PasteCanvas> paste=
-					etl::handle<Layer_PasteCanvas>::cast_dynamic(
+				std::shared_ptr<Layer_PasteCanvas> paste=
+					std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(
 						layer->get_parent_paste_canvas_layer() );
 				if(paste)
 				{
-					//etl::handle<synfig::Canvas> sub_canvas=paste->get_param("canvas").get(sub_canvas);
+					//std::shared_ptr<synfig::Canvas> sub_canvas=paste->get_param("canvas").get(sub_canvas);
 					Canvas::Handle sub_canvas=paste->get_param("canvas").get(Canvas::Handle());
 					if(sub_canvas && !sub_canvas->is_inline())
 					{
 						Gtk::TreeRow row=*iter;
 						if(*row.parent() && RECORD_TYPE_LAYER == (RecordType)(*row.parent())[model.record_type])
 						{
-							paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(
+							paste = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(
 									Layer::Handle((*row.parent())[model.layer]) );
 						}
 					}
@@ -297,8 +297,8 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 					RecordType parent_record_type((*iter->parent())[model.record_type]);
 					Layer::Handle parent_layer((*iter->parent())[model.layer]);
 
-					etl::handle<Layer_Switch> layer_switch=
-						etl::handle<Layer_Switch>::cast_dynamic(parent_layer);
+					std::shared_ptr<Layer_Switch> layer_switch=
+						std::shared_ptr<Layer_Switch>::cast_dynamic(parent_layer);
 					if (parent_record_type == RECORD_TYPE_LAYER && layer_switch)
 						if (ghost_label == layer_switch->get_param("layer_name").get(String()))
 							weight = Pango::WEIGHT_BOLD;
@@ -642,7 +642,7 @@ LayerTreeStore::drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk:
 			// TODO: check RecordType for parent
 			dest_canvas = (Canvas::Handle)(*row.parent())[model.contained_canvas];
 			dest_layer_depth = dest_canvas->size();
-			if (dropped_layers.size() == 1 && etl::handle<Layer_Group>::cast_dynamic(dropped_layers.front()))
+			if (dropped_layers.size() == 1 && std::shared_ptr<Layer_Group>::cast_dynamic(dropped_layers.front()))
 			{
 				Layer::Handle src = dropped_layers.front();
 				synfigapp::Action::Handle action;
@@ -835,14 +835,14 @@ LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 void
 LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle)
 {
-	if (etl::handle<Layer_PasteCanvas> layer_paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(handle))
+	if (std::shared_ptr<Layer_PasteCanvas> layer_paste = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(handle))
 	{
 		subcanvas_changed_connections[layer_paste].disconnect();
 		subcanvas_changed_connections[layer_paste] =
 			layer_paste->signal_subcanvas_changed().connect(
 				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
 	}
-	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(handle))
+	if (std::shared_ptr<Layer_Switch> layer_switch = std::shared_ptr<Layer_Switch>::cast_dynamic(handle))
 	{
 		switch_changed_connections[layer_switch].disconnect();
 		switch_changed_connections[layer_switch] =
@@ -891,7 +891,7 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 
 			std::set<String> possible_new_layers;
 			std::set<String> impossible_existant_layers;
-			if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(handle))
+			if (std::shared_ptr<Layer_Switch> layer_switch = std::shared_ptr<Layer_Switch>::cast_dynamic(handle))
 			{
 				if (!layer_switch->get_param("layer_name").get(String()).empty())
 				{
@@ -919,7 +919,7 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 		}
 
 		/*
-		etl::handle<ValueNode> value_node;
+		std::shared_ptr<ValueNode> value_node;
 		if(handle.constant()->dynamic_param_list().count(iter->get_name()))
 			value_node=handle->dynamic_param_list()[iter->get_name()];
 
@@ -970,12 +970,12 @@ LayerTreeStore::on_layer_added(synfig::Layer::Handle layer)
 void
 LayerTreeStore::on_layer_removed(synfig::Layer::Handle handle)
 {
-	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(handle))
+	if (std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(handle))
 	{
 		subcanvas_changed_connections[handle].disconnect();
 		subcanvas_changed_connections.erase(handle);
 	}
-	if (etl::handle<Layer_Switch>::cast_dynamic(handle))
+	if (std::shared_ptr<Layer_Switch>::cast_dynamic(handle))
 	{
 		switch_changed_connections[handle].disconnect();
 		switch_changed_connections.erase(handle);

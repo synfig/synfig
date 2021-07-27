@@ -43,7 +43,7 @@ class Renderer;
 class Optimizer: public etl::shared_object
 {
 public:
-	typedef etl::handle<Optimizer> Handle;
+	typedef std::shared_ptr<Optimizer> Handle;
 	typedef std::vector<Handle> List;
 	typedef unsigned int Category;
 	typedef unsigned int Mode;
