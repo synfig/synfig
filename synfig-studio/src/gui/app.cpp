@@ -2338,7 +2338,7 @@ App::quit()
 			return;
 	process_all_events();
 
-	Gtk::Main::quit();
+	// Gtk::Main::quit();
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
