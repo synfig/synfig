@@ -1346,19 +1346,19 @@ App::get_default_accel_map()
 
 	return default_accel_map;
 }
-
-/* === M E T H O D S ======================================================= */
-
-Glib::RefPtr<App> App::create(const synfig::String& basepath)
-{
-	app_base_path_=etl::dirname(basepath);
-	return new App();
+Glib::RefPtr<App> App::create() {
+	return Glib::RefPtr<App>(new App("", nullptr, nullptr));
 }
 
-void App::on_startup()
+/* === M E T H O D S ======================================================= */
+App::App(const synfig::String& basepath, int *argc, char ***argv) :
+	Gtk::Application("org.synfig.SynfigStudio") {}
+
+void App::init(const synfig::String& basepath, int *argc, char ***argv)
 {
-	
+
 	Glib::init(); // need to use Gio functions before app is started
+	app_base_path_=etl::dirname(basepath);
 
 	// Set ui language
 	load_language_settings();
@@ -1374,7 +1374,7 @@ void App::on_startup()
 
 	String path_to_user_plugins = synfigapp::Main::get_user_app_directory()
 		+ ETL_DIRECTORY_SEPARATOR + "plugins";
-
+	
 	// icons
 	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
 
@@ -1386,7 +1386,7 @@ void App::on_startup()
 	//	Glib::thread_init();
 
 	distance_system=Distance::SYSTEM_PIXELS;
-
+	
 #ifdef _WIN32
 	// Do not show "No disc in drive" errors
 	// - https://github.com/synfig/synfig/issues/489
@@ -1399,6 +1399,7 @@ void App::on_startup()
 	} else {
 		synfig::error("UNABLE TO CREATE \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
 	}
+
 
 	ipc=new IPC();
 
@@ -1417,7 +1418,6 @@ void App::on_startup()
 
 		throw 40;
 	}
-
 	Glib::set_application_name(_("Synfig Studio"));
 
 	Splash splash_screen;
@@ -1428,7 +1428,7 @@ void App::on_startup()
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
 
 	// Initialize the Synfig library
-	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(app_base_path_,&synfig_init_cb)); }
+	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(basepath,&synfig_init_cb)); }
 	catch(std::runtime_error &x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
@@ -1642,7 +1642,7 @@ void App::on_startup()
 
 		studio_init_cb.amount_complete(9900,10000);
 
-		// bool opened_any = false;
+		bool opened_any = false;
 		if (!getenv("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
@@ -1667,8 +1667,8 @@ void App::on_startup()
 						"The files just recovered are NOT YET SAVED."),
 						_("Thanks"));
 
-				// if (number_recovered)
-				// 	opened_any = true;
+				if (number_recovered)
+					opened_any = true;
 			}
 			else
 			{
@@ -1677,11 +1677,66 @@ void App::on_startup()
 			splash_screen.show();
 		}
 
+		// Look for any files given on the command line,
+		// and load them if found.
+		for(;*argc>=1;(*argc)--)
+			if((*argv)[*argc] && (*argv)[*argc][0]!='-')
+			{
+				studio_init_cb.task(_("Loading files..."));
+				splash_screen.hide();
+				open((*argv)[*argc]);
+				opened_any = true;
+				splash_screen.show();
+			}
+
+		// if no file was specified to be opened, create a new document to help new users get started more easily
+		if (!opened_any && !getenv("SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION"))
+			new_instance();
+
 		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
 
+		// To avoid problems with some window managers and gtk >= 2.18
+		// we should show dock dialogs after the settings load.
+		// If dock dialogs are shown before the settings are loaded,
+		// the windows manager can act over it.
+		// See discussions here:
+		// * https://synfig.org/forums/viewtopic.php?f=1&t=1131&st=0&sk=t&sd=a&start=30
+		// * https://synfig.org/forums/viewtopic.php?f=15&t=1062
+		dock_manager->show_all_dock_dialogs();
+
+		main_window->present();
+
 		splash_screen.hide();
 
+		String message;
+		String details;
+		/*
+		if (App::enable_experimental_features) {
+			message = _("Following experimental features are enabled: ");
+			message += ("Skeleton Layer");
+			detials = _("The experimental features are NOT intended for production use. "
+					"It is quite posiible their functionality will change in the "
+					"future versions, which can break compatibility for your "
+					"files. Use for testing purposes only. You can disable "
+					"experimental features on the \"Misc\" tab of Setup dialog.");
+		}
+		*/
+#ifdef _WIN32
+		if (message!=""){
+			message = _("There is a bug, which can cause computer to hang/freeze when "
+					"resizing the canvas window.");
+			details = _("If you got affected by this issue, consider pressing ALT+TAB "
+					"to unfreeze your system and get it back to the working "
+					"state. Please accept our apologies for inconvenience, we "
+					"hope to get this issue resolved in the future versions.");
+		}
+#endif
+		if (message!="")
+			dialog_message_1b("WARNING",
+					message,
+					details,
+					_("Got it"));
 	}
 	catch(String &x)
 	{
@@ -1703,51 +1758,6 @@ void App::on_startup()
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable."));
 	}
 
-}
-
-void App::on_hide_window(Gtk::Window* window)
-{
-	delete window;
-}
-
-studio::MainWindow* App::create_main_window()
-{
-	auto new_window = new MainWindow();
-
-	add_window(*new_window);
-
-	new_window->signal_hide().connect(sigc::bind<Gtk::Window*>(sigc::mem_fun(*this,
-    &App::on_hide_window), new_window));
-
-	return new_window;
-
-}
-
-void App::on_activate()
-{
-	main_window = create_main_window();
-	main_window->present();
-	dock_manager->show_all_dock_dialogs();
-
-	String message;
-	String details;
-		
-#ifdef _WIN32
-	if (message!=""){
-		message = _("There is a bug, which can cause computer to hang/freeze when "
-				"resizing the canvas window.");
-		details = _("If you got affected by this issue, consider pressing ALT+TAB "
-				"to unfreeze your system and get it back to the working "
-				"state. Please accept our apologies for inconvenience, we "
-				"hope to get this issue resolved in the future versions.");
-	}
-#endif
-	if (message!="")
-		dialog_message_1b("WARNING",
-				message,
-				details,
-				_("Got it"));
-
 	// Load sound effects
 	sound_render_done = new SoundProcessor();
 	sound_render_done->addSound(
@@ -1755,34 +1765,12 @@ void App::on_activate()
 		SoundProcessor::Sound(ResourceHelper::get_sound_path("renderdone.wav")));
 
 	App::dock_info_ = dock_info;
-
-}
-
-void App::on_open(const Gio::Application::type_vec_files& files, const Glib::ustring& hint)
-{
-	auto windows = get_windows();
-
-	if(windows.size() > 0)
-		main_window = dynamic_cast<studio::MainWindow*>(windows[0]);
-
-	if(!main_window)
-		main_window = create_main_window();
-
-	for(const auto& file : files )
-		main_window->open_file_view(file);
-
-	main_window->present();
-	dock_manager->show_all_dock_dialogs();
-
-}
-
-App::App():Gtk::Application("",Gio::APPLICATION_HANDLES_OPEN)
-{
+	add_window(*main_window);
 }
 
 StateManager* App::get_state_manager() { return state_manager; }
 
-void App::on_shutdown()
+App::~App()
 {
 	shutdown_in_progress=true;
 
@@ -2328,6 +2316,8 @@ App::quit()
 		if (!instance_list.front()->safe_close())
 			return;
 	process_all_events();
+
+	Gtk::Main::quit();
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
@@ -4404,7 +4394,12 @@ studio::App::setup_changed()
 void
 studio::App::process_all_events(long unsigned int us)
 {
-	Glib::usleep(us);
+	/*Glib::usleep(us);
+	while(studio::App::events_pending()) {
+		while(studio::App::events_pending())
+			studio::App::iteration(false);
+		Glib::usleep(us);
+	}*/
 }
 
 bool
