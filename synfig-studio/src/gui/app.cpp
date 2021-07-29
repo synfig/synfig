@@ -4394,12 +4394,12 @@ studio::App::setup_changed()
 void
 studio::App::process_all_events(long unsigned int us)
 {
-	/*Glib::usleep(us);
+	Glib::usleep(us);
 	while(studio::App::events_pending()) {
 		while(studio::App::events_pending())
 			studio::App::iteration(false);
 		Glib::usleep(us);
-	}*/
+	}
 }
 
 bool
