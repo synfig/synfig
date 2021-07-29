@@ -2318,6 +2318,7 @@ App::quit()
 	process_all_events();
 
 	// Gtk::Main::quit();
+	Gio::Application::quit();
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
