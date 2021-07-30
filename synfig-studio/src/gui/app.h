@@ -32,7 +32,7 @@
 #include <ETL/smart_ptr>
 
 #include <gtkmm/box.h>
-#include <gtkmm/main.h>
+// #include <gtkmm/main.h>
 #include <gtkmm/uimanager.h>
 
 #include <gui/iconcontroller.h>
