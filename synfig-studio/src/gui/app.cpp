@@ -1770,9 +1770,7 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 
 StateManager* App::get_state_manager() { return state_manager; }
 
-App::~App(){}
-
-void App::on_shutdown()
+App::~App()
 {
 	shutdown_in_progress=true;
 
@@ -2319,8 +2317,8 @@ App::quit()
 			return;
 	process_all_events();
 
-	Gtk::Main::quit();
-	// remove_window(*main_window);
+	// Gtk::Main::quit();
+	App::create()->remove_window(*main_window);
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
