@@ -97,7 +97,7 @@
 #include <gui/docks/dock_toolbox.h>
 
 #include <gui/instance.h>
-#include <gui/ipc.h>
+// #include <gui/ipc.h>
 #include <gui/localization.h>
 #include <gui/modules/mod_palette/mod_palette.h>
 #include <gui/onemoment.h>
