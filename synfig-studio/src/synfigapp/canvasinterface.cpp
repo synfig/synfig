@@ -867,7 +867,8 @@ CanvasInterface::import(
 		layer->monitor(filename);
 		if(w&&h)
 		{
-			Vector x, size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
+			const RendDesc& rend_desc = get_canvas()->rend_desc();
+			Vector x, size = rend_desc.get_br()-rend_desc.get_tl();
 
 			// vector from top left of canvas to bottom right
 			if (resize_image)
@@ -889,8 +890,8 @@ CanvasInterface::import(
 			}
 			else
 			{
-				x[0] = w/60.0;
-				x[1] = h/60.0;
+				x[0] = w*rend_desc.get_pw();
+				x[1] = h*rend_desc.get_ph();
 				if((size[0]<0)) x[0]=-x[0];
 				if((size[1]<0)) x[1]=-x[1];
 			}
@@ -1042,7 +1043,8 @@ CanvasInterface::import_sequence(
 				h = layer->get_param("_height").get(int());
 				layer->monitor(filename);
 				if (w && h) {
-					Vector x, size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
+					const RendDesc& rend_desc = get_canvas()->rend_desc();
+					Vector x, size = rend_desc.get_br()-rend_desc.get_tl();
 					// vector from top left of canvas to bottom right
 					if (resize_image) {
 						if(abs(size[0])<abs(size[1])) {// if canvas is tall and thin
@@ -1055,8 +1057,8 @@ CanvasInterface::import_sequence(
 							if ((size[0]<0) ^ (size[1]<0)) x[0] = -x[0];
 						}
 					} else {
-						x[0] = w/60.0;
-						x[1] = h/60.0;
+						x[0] = w*rend_desc.get_pw();
+						x[1] = h*rend_desc.get_ph();
 						if((size[0]<0)) x[0]=-x[0];
 						if((size[1]<0)) x[1]=-x[1];
 					}
