@@ -315,7 +315,6 @@ public:
 
 	App(const synfig::String& basepath, int *argc, char ***argv);
 	virtual ~App();
-	void on_shutdown() ;
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------

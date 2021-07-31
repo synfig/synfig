@@ -1772,9 +1772,7 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 
 StateManager* App::get_state_manager() { return state_manager; }
 
-App::~App()	{}
-
-void App::on_shutdown()
+App::~App()
 {
 	shutdown_in_progress=true;
 
