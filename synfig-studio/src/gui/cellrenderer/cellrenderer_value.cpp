@@ -63,7 +63,7 @@ using namespace studio;
 /* === G L O B A L S ======================================================= */
 
 // Number of decimal places for real values
-static constexpr int real_num_decimals = 6;
+static constexpr int real_num_decimals = 1;
 static constexpr int angle_num_decimals = 2;
 
 class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
