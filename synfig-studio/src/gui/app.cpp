@@ -314,7 +314,7 @@ bool App::use_render_done_sound = true;
 static StateManager* state_manager;
 
 studio::WorkspaceHandler *studio::App::workspaces = nullptr;
-Glib::RefPtr<studio::App> app_reference ;
+Glib::RefPtr<studio::App> app_reference;
 
 static bool
 really_delete_widget(Gtk::Widget *widget)
@@ -1348,12 +1348,12 @@ App::get_default_accel_map()
 	return default_accel_map;
 }
 Glib::RefPtr<App> App::create() {
-	app_reference = Glib::RefPtr<App>(new App("", nullptr, nullptr));
+	static Glib::RefPtr<App>app_reference = Glib::RefPtr<App>(new App());
 	return app_reference;
 }
 
 /* === M E T H O D S ======================================================= */
-App::App(const synfig::String& basepath, int *argc, char ***argv) :
+App::App() :
 	Gtk::Application("org.synfig.SynfigStudio") {}
 
 void App::init(const synfig::String& basepath, int *argc, char ***argv)
