@@ -32,7 +32,6 @@
 #include <ETL/smart_ptr>
 
 #include <gtkmm/box.h>
-// #include <gtkmm/main.h>
 #include <gtkmm/uimanager.h>
 
 #include <gui/iconcontroller.h>
@@ -308,10 +307,10 @@ private:
 	static void add_recent_file(const std::string &filename, bool emit_signal);
 
 	/*
- -- ** -- P U B L I C   M E T H O D S -----------------------------------------
+ -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------------
 	*/
 
-public:
+protected:
 
 	App();
 	virtual ~App();
