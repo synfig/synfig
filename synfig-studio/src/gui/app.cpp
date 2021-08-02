@@ -1348,7 +1348,7 @@ App::get_default_accel_map()
 	return default_accel_map;
 }
 Glib::RefPtr<App> App::create() {
-	static Glib::RefPtr<App>app_reference = Glib::RefPtr<App>(new App());
+	app_reference = Glib::RefPtr<App>(new App());
 	return app_reference;
 }
 
