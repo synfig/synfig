@@ -1,3 +1,6 @@
+- [`798bfbf`](https://github.com/synfig/synfig/commit/798bfbf95983ff6c01ca019ac72b390fbc259eab) Fixed a crash when trying to import a file into yourself ([#2239](https://github.com/synfig/synfig/issues/2239)) [studio]
+- [`247909c`](https://github.com/synfig/synfig/commit/247909c2cd07a4121192f8ee8eddeb31c800fb86) [Core] ValueNode_AnimatedFile now supports more data types ([#2240](https://github.com/synfig/synfig/issues/2240)) [core]
+- [`4b26b30`](https://github.com/synfig/synfig/commit/4b26b30a6ae4f76bbc3ce8ac21f915f9c1f14b9e) Refresh rend_desc of canvas interface when end time is changed from toolbar ([#2213](https://github.com/synfig/synfig/issues/2213)) [studio]
 - [`101a5aa`](https://github.com/synfig/synfig/commit/101a5aa178019fddcaadf6436ea0c37cc1f5162f) Merge PR [#2236](https://github.com/synfig/synfig/issues/2236): [Lottie exporter] Add animation to addtion/deletion of Bline points [studio]
 - [`fb80f27`](https://github.com/synfig/synfig/commit/fb80f27e956d5a8dcc0b1b03db9262bd76388d24) Added Synfig tests to Github CI workflow ([#2238](https://github.com/synfig/synfig/issues/2238))
 - [`4717669`](https://github.com/synfig/synfig/commit/4717669e5b5f8aabe272a8013607c060adcd9409) Disabled some Travis CI build jobs ([#2237](https://github.com/synfig/synfig/issues/2237))
