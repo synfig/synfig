@@ -307,10 +307,10 @@ private:
 	static void add_recent_file(const std::string &filename, bool emit_signal);
 
 	/*
- -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------------
+ -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
 
-protected:
+public:
 
 	App();
 	virtual ~App();
