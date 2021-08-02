@@ -31,6 +31,9 @@
 #include <gui/smach.h>
 #include <vector>
 
+#include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -38,6 +41,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace Gtk { class ActionGroup; }
+namespace Gio { class SimpleActionGroup; }
 
 typedef unsigned int guint;
 
@@ -45,7 +49,7 @@ namespace studio {
 	class StateManager
 {
 private:
-	Glib::RefPtr<Gtk::ActionGroup> state_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> state_group;
 
 	guint merge_id;
 	std::vector<guint> merge_id_list;
@@ -59,7 +63,7 @@ public:
 
 	void add_state(const Smach::state_base *state);
 
-	Glib::RefPtr<Gtk::ActionGroup> get_action_group();
+	Glib::RefPtr<Gio::SimpleActionGroup> get_action_group();
 };
 
 }; // END of namespace studio

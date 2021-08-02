@@ -55,10 +55,10 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 StateManager::StateManager():
-	state_group(Gtk::ActionGroup::create("action_group_state_manager")),
+	state_group(Gio::SimpleActionGroup::create()),
 	merge_id(App::ui_manager()->new_merge_id())
 {
-	App::ui_manager()->insert_action_group(get_action_group());
+	App::ui_manager()->insert_action_group("action_group_state_manager",get_action_group());
 }
 
 StateManager::~StateManager()
@@ -112,7 +112,7 @@ StateManager::add_state(const Smach::state_base *state)
 	App::dock_toolbox->add_state(state);
 }
 
-Glib::RefPtr<Gtk::ActionGroup>
+Glib::RefPtr<Gio::SimpleActionGroup>
 StateManager::get_action_group()
 {
 	return state_group;

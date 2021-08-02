@@ -848,35 +848,62 @@ static ::Preferences _preferences;
 void
 init_ui_manager()
 {
-	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
+	// "menus"
+	Glib::RefPtr<Gio::SimpleActionGroup> menus_action_group = Gio::SimpleActionGroup::create();
 
-	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
+	// "actions"
+	Glib::RefPtr<Gio::SimpleActionGroup> actions_action_group = Gio::SimpleActionGroup::create();
 
-	menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
-	menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
+	// _("_File")
+	menus_action_group->add( Gio::SimpleAction::create("menu-file"));
 
-	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
+	// _("Open Recent")
+	menus_action_group->add( Gio::SimpleAction::create("menu-open-recent"));
 
-	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
-	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
-	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
+	// _("_Edit")
+	menus_action_group->add( Gio::SimpleAction::create("menu-edit"));
 
-	menus_action_group->add( Gtk::Action::create("menu-canvas",          _("_Canvas")));
+	// _("_View")
+	menus_action_group->add( Gio::SimpleAction::create("menu-view"));
 
-	menus_action_group->add( Gtk::Action::create("menu-layer",           _("_Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-layer-new",       _("New Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-toolbox",         _("Toolbox")));
-	menus_action_group->add( Gtk::Action::create("menu-plugins",         _("Plug-Ins")));
+	// _("Show/Hide Handles")
+	menus_action_group->add( Gio::SimpleAction::create("menu-duck-mask"));
 
-	menus_action_group->add( Gtk::Action::create("menu-window",          _("_Window")));
-	menus_action_group->add( Gtk::Action::create("menu-arrange",         _("_Arrange")));
-	menus_action_group->add( Gtk::Action::create("menu-workspace",       _("Work_space")));
+	// _("Low-Res Pixel Size")
+	menus_action_group->add( Gio::SimpleAction::create("menu-lowres-pixel"));
 
-	menus_action_group->add( Gtk::Action::create("menu-help",            _("_Help")));
+	// _("_Canvas")
+	menus_action_group->add( Gio::SimpleAction::create("menu-canvas"));
 
-	menus_action_group->add(Gtk::Action::create("menu-keyframe",          _("Keyframe")));
+	// _("_Layer")
+	menus_action_group->add( Gio::SimpleAction::create("menu-layer"));
 
-	menus_action_group->add( Gtk::Action::create("menu-navigation",      _("_Navigation")));
+	// _("New Layer")
+	menus_action_group->add( Gio::SimpleAction::create("menu-layer-new"));
+
+	// _("Toolbox")
+	menus_action_group->add( Gio::SimpleAction::create("menu-toolbox"));
+
+	// _("Plug-Ins")
+	menus_action_group->add( Gio::SimpleAction::create("menu-plugins"));
+
+	// _("_Window")
+	menus_action_group->add( Gio::SimpleAction::create("menu-window"));
+
+	// _("_Arrange")
+	menus_action_group->add( Gio::SimpleAction::create("menu-arrange"));
+
+	// _("Work_space")
+	menus_action_group->add( Gio::SimpleAction::create("menu-workspace"));
+
+	// _("_Help")
+	menus_action_group->add( Gio::SimpleAction::create("menu-help"));
+
+	// _("Keyframe")
+	menus_action_group->add(Gio::SimpleAction::create("menu-keyframe"));
+
+	// _("_Navigation")
+	menus_action_group->add( Gio::SimpleAction::create("menu-navigation"));
 
 	// Add the synfigapp actions (layer panel toolbar items, etc...)
 	synfigapp::Action::Book::iterator iter;
