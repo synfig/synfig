@@ -58,7 +58,7 @@ StateManager::StateManager():
 	state_group(Gio::SimpleActionGroup::create()),
 	merge_id(App::ui_manager()->new_merge_id())
 {
-	App::ui_manager()->insert_action_group("action_group_state_manager",get_action_group());
+	App::builder()->insert_action_group("action_group_state_manager",get_action_group());
 }
 
 StateManager::~StateManager()
