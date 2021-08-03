@@ -314,7 +314,6 @@ bool App::use_render_done_sound = true;
 static StateManager* state_manager;
 
 studio::WorkspaceHandler *studio::App::workspaces = nullptr;
-Glib::RefPtr<studio::App> app_reference;
 
 static bool
 really_delete_widget(Gtk::Widget *widget)
@@ -1347,8 +1346,8 @@ App::get_default_accel_map()
 
 	return default_accel_map;
 }
-Glib::RefPtr<App> App::create() {
-	app_reference = Glib::RefPtr<App>(new App());
+Glib::RefPtr<App> App::instance() {
+	Glib::RefPtr<studio::App> app_reference = Glib::RefPtr<App>(new App());
 	return app_reference;
 }
 
@@ -2320,7 +2319,7 @@ App::quit()
 	process_all_events();
 
 	// Gtk::Main::quit();
-	app_reference->remove_window(*main_window);
+	App::instance()->remove_window(*main_window);
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
