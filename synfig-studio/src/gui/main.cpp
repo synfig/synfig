@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	
 	// studio::App app(etl::dirname(binary_path), &argc, &argv);
-	Glib::RefPtr<studio::App> app = studio::App::create();
+	Glib::RefPtr<studio::App> app = studio::App::instance();
 
 	app->signal_startup().connect([app, binary_path, argc, argv]() {
 		app->init(etl::dirname(binary_path), const_cast<int *>(&argc), const_cast<char ***>(&argv));

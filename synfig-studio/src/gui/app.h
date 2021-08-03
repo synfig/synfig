@@ -129,7 +129,7 @@ class App : public Gtk::Application, private IconController
 	*/
 
 public:
-	static Glib::RefPtr<App> create();
+	static Glib::RefPtr<App> instance();
 	void init(const synfig::String& basepath, int *argc, char ***argv);
 
 	struct Busy
