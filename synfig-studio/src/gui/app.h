@@ -179,7 +179,6 @@ private:
 	static etl::handle<CanvasView> selected_canvas_view;
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
-	static Glib::RefPtr<Gtk::Builder> builder_;
 
 	static int jack_locks_;
 
@@ -329,7 +328,6 @@ public:
 	static StateManager* get_state_manager();
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
-	static Glib::RefPtr<Gtk::Builder>& builder() { return builder_; }
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 
