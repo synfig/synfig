@@ -847,51 +847,53 @@ static ::Preferences _preferences;
 void
 init_ui_manager()
 {
-	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
+	Glib::RefPtr<Gio::SimpleActionGroup> menus_action_group = Gio::SimpleActionGroup::create();
 
-	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
+	Glib::RefPtr<Gio::SimpleActionGroup> actions_action_group = Gio::SimpleActionGroup::create();
 
-	menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
-	menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-file"));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-open-recent"));
 
-	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-edit"));
 
-	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
-	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
-	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-view"));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-duck-mask"));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-lowres-pixel"));
 
-	menus_action_group->add( Gtk::Action::create("menu-canvas",          _("_Canvas")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-canvas"));
 
-	menus_action_group->add( Gtk::Action::create("menu-layer",           _("_Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-layer-new",       _("New Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-toolbox",         _("Toolbox")));
-	menus_action_group->add( Gtk::Action::create("menu-plugins",         _("Plug-Ins")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-layer"));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-layer-new"));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-toolbox"));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-plugins"));
 
-	menus_action_group->add( Gtk::Action::create("menu-window",          _("_Window")));
-	menus_action_group->add( Gtk::Action::create("menu-arrange",         _("_Arrange")));
-	menus_action_group->add( Gtk::Action::create("menu-workspace",       _("Work_space")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-window"));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-arrange"));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-workspace"));
 
-	menus_action_group->add( Gtk::Action::create("menu-help",            _("_Help")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-help"));
 
-	menus_action_group->add(Gtk::Action::create("menu-keyframe",          _("Keyframe")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-keyframe"));
 
-	menus_action_group->add( Gtk::Action::create("menu-navigation",      _("_Navigation")));
+	menus_action_group->add_action( Gio::SimpleAction::create("menu-navigation"));
 
 	// Add the synfigapp actions (layer panel toolbar items, etc...)
 	synfigapp::Action::Book::iterator iter;
 	for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
 	{
-		actions_action_group->add(Gtk::Action::create(
-			"action-"+iter->second.name,
+		Glib::RefPtr<Gio::SimpleAction> action = Gio::SimpleAction::create("action-"+iter->second.name);
+		action->set_enabled(false);
+		actions_action_group->add_action(action);
+		/*
 			get_action_stock_id(iter->second),
 			iter->second.local_name,iter->second.local_name
-		));
+		*/
 	}
 
 // predefined actions to initial menu items, so that there is all menu items listing
 // even there is no any canvas instance existed, for example, when app just opened.
 // the menu items (action names) should be named consistently with those in canvasview.cpp and others.
-#define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
+#define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gio::SimpleAction> action(Gio::SimpleAction::create(x) ); actions_action_group->add_action(action); action->set_enabled(false); }
 
 // actions in File menu
 DEFINE_ACTION("new",            Gtk::StockID("synfig-new"))
@@ -1230,12 +1232,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 	try
 	{
-		actions_action_group->set_sensitive(false);
-		App::ui_manager()->set_add_tearoffs(false);
-		App::ui_manager()->insert_action_group(menus_action_group,1);
-		App::ui_manager()->insert_action_group(actions_action_group,1);
-		App::ui_manager()->add_ui_from_string(ui_info);
-		App::ui_manager()->add_ui_from_string(hidden_ui_info);
+		// actions_action_group->set_sensitive(false);
+		// App::ui_manager()->set_add_tearoffs(false);
+		insert_action_group("menus",menus_action_group);
+		insert_action_group("actions",actions_action_group);
+		App::ui_manager()->add_from_string(ui_info);
+		App::ui_manager()->add_from_string(hidden_ui_info);
 
 		//App::ui_manager()->get_accel_group()->unlock();
 	}

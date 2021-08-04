@@ -33,6 +33,10 @@
 
 #include <gtkmm/box.h>
 #include <gtkmm/uimanager.h>
+#include <gtkmm/builder.h>
+
+#include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
 
 #include <gui/iconcontroller.h>
 #include <gui/mainwindow.h>
@@ -80,7 +84,7 @@ class Preferences;
 
 namespace studio {
 
-typedef Gtk::UIManager UIManager;
+typedef Gtk::Builder UIManager;
 
 class About;
 class MainWindow;
