@@ -223,6 +223,7 @@ int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
+Glib::RefPtr<studio::Builder>	App::builder_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -843,6 +844,47 @@ public:
 };
 
 static ::Preferences _preferences;
+
+void
+init_builder()
+{
+	Glib::RefPtr<Gio::SimpleActionGroup> menus_action_group = Gio::SimpleActionGroup::create();
+
+	Glib::RefPtr<Gio::SimpleActionGroup> actions_action_group = Gio::SimpleActionGroup::create();
+
+	//Glib::RefPtr<Gio::SimpleAction> preferences_action = Gio::SimpleAction::create("preferences", _("Preferences"));
+	//Glib::RefPtr<Gio::SimpleAction> quit_action = Gio::SimpleAction::create("quit", _("Quit"));
+	//preferences_action->signal_activate().connect(sigc::mem_fun(_preferences, &Preferences::show));
+	//quit_action->signal_activate().connect(sigc::mem_fun(synfigapp::App::get_instance(), &synfigapp::App::quit));
+	//Glib::RefPtr<Gio::SimpleAction> about_action = Gio::SimpleAction::create("about", _("About"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-file"));
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-open-recent"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-edit"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-view"));
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-duck-mask"));
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-lowres-pixel"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-canvas"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-layer"));
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-layer-new"));
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-toolbox"));
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-plugins"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-window"));
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-arrange"));
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-workspace"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-help"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-keyframe"));
+
+	menus_action_group->add_action(Gio::SimpleAction::create("menu-navigation"));
+
+}
 
 void
 init_ui_manager()
