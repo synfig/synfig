@@ -55,6 +55,9 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/uimanager.h>
 
+#include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
+
 #include <ETL/clock>
 
 #include <synfig/canvas.h>
@@ -346,7 +349,7 @@ private:
 
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group;
 	bool _action_group_removed;
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;

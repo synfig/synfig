@@ -688,7 +688,7 @@ CanvasView::~CanvasView()
 	// and this code is required to rewrite.
 
 	if (!this->_action_group_removed)
-		App::ui_manager()->remove_action_group(action_group);
+		App::main_window->remove_action_group("canvasview");
 
 	// Shut down the smach
 	smach_.egress();
@@ -722,7 +722,8 @@ void CanvasView::activate()
 {
 	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
-	App::ui_manager()->insert_action_group(action_group);
+	App::main_window->insert_action_group("canvasview",action_group);
+	// App::ui_manager()->insert_action_group(action_group);
 	this->_action_group_removed = false;
 	update_title();
 	present();
@@ -732,7 +733,7 @@ void CanvasView::activate()
 void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
-	App::ui_manager()->remove_action_group(action_group);
+	App::main_window->remove_action_group("canvasview");
 	this->_action_group_removed = true;
 	update_title();
 }
@@ -1453,114 +1454,205 @@ CanvasView::init_menus()
 	- canvasmenu
 	- viewmenu
 	*/
-	action_group = Gtk::ActionGroup::create("canvasview");
 
-	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
-		hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save))
-	);
-	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As..."), _("Save As")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
-	);
-	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
-	);
-	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
-		sigc::ptr_fun(save_all)
-	);
-	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
-	);
-	action_group->add( Gtk::Action::create("import", _("Import...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
-	);
-	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence))
-	);
-	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
-		sigc::mem_fun0(render_settings,&RenderSettings::present)
-	);
-	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
-		sigc::mem_fun(*this,&CanvasView::on_preview_option)
-	);
-	action_group->add( Gtk::Action::create("options", _("Options...")),
-		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
-	);
-	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
-		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
-	);
-	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
-		sigc::hide_return(sigc::ptr_fun(&App::quit))
-	);
+	// action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
+	// 	hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save))
+	// );
 
-	action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Handles")),
-		sigc::mem_fun(*work_area,&WorkArea::select_all_ducks)
-	);
+	Glib::RefPtr<Gio::SimpleAction> save = Gio::SimpleAction::create("save");
+	action_group->add_action("save",hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save)));
 
-	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Handles")),
-		sigc::mem_fun(*work_area,&WorkArea::unselect_all_ducks)
-	);
+	// action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As..."), _("Save As")),
+	// 	sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
+	// );
 
-	action_group->add( Gtk::Action::create("select-all-layers", _("Select All Layers")),
-		sigc::mem_fun(*this,&CanvasView::on_select_layers)
-	);
+	Glib::RefPtr<Gio::SimpleAction> save_as_ = Gio::SimpleAction::create("save-as");
+	action_group->add_action("save-as",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as)));
 
-	action_group->add( Gtk::Action::create("unselect-all-layers", _("Unselect All Layers")),
-		sigc::mem_fun(*this,&CanvasView::on_unselect_layers)
-	);
+	// action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
+	// 	sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
+	// );
 
-	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
-		sigc::mem_fun(*this, &CanvasView::stop_async)
-	);
+	Glib::RefPtr<Gio::SimpleAction> export_ = Gio::SimpleAction::create("export");
+	action_group->add_action("export",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export)));;
 
-	action_group->add( Gtk::Action::create("refresh", Gtk::StockID("gtk-refresh")),
-		SLOT_EVENT(EVENT_REFRESH)
-	);
+	// action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
+	// 	sigc::ptr_fun(save_all)
+	// );
 
-	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
-		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
-	);
+	Glib::RefPtr<Gio::SimpleAction> save_all_ = Gio::SimpleAction::create("save-all");
+	action_group->add_action("save_all",sigc::ptr_fun(save_all));
 
+	// action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
+	// 	sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> revert_ = Gio::SimpleAction::create("revert");
+	action_group->add_action("revert",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert)));
+
+	// action_group->add( Gtk::Action::create("import", _("Import...")),
+	// 	sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> import_ = Gio::SimpleAction::create("import");
+	action_group->add_action("import",sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)));
+
+	// action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
+	// 	sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence))
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> import_sequence_ = Gio::SimpleAction::create("import-sequence");
+	action_group->add_action("import-sequence",sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)));
+
+	// action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
+	// 	sigc::mem_fun0(render_settings,&RenderSettings::present)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> render_ = Gio::SimpleAction::create("render");
+	action_group->add_action("render",sigc::mem_fun0(render_settings,&RenderSettings::present));
+
+	// action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
+	// 	sigc::mem_fun(*this,&CanvasView::on_preview_option)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> preview_ = Gio::SimpleAction::create("preview");
+	action_group->add_action("preview",sigc::mem_fun(*this,&CanvasView::on_preview_option));
+
+	// action_group->add( Gtk::Action::create("options", _("Options...")),
+	// 	sigc::mem_fun0(canvas_options,&CanvasOptions::present)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> options_ = Gio::SimpleAction::create("options");
+	action_group->add_action("options",sigc::mem_fun0(canvas_options,&CanvasOptions::present));
+
+	// action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
+	// 	sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> close_document_ = Gio::SimpleAction::create("close-document");
+	action_group->add_action("close-document",sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance)));
+
+	// action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
+	// 	sigc::hide_return(sigc::ptr_fun(&App::quit))
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> quit_ = Gio::SimpleAction::create("quit");
+	action_group->add_action("quit",sigc::hide_return(sigc::ptr_fun(&App::quit)));
+
+	// action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Handles")),
+	// 	sigc::mem_fun(*work_area,&WorkArea::select_all_ducks)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> select_all_ducks_ = Gio::SimpleAction::create("select-all-ducks");
+	action_group->add_action("select-all-ducks",sigc::mem_fun(*work_area,&WorkArea::select_all_ducks));
+
+	// action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Handles")),
+	// 	sigc::mem_fun(*work_area,&WorkArea::unselect_all_ducks)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> unselect_all_ducks_ = Gio::SimpleAction::create("unselect-all-ducks");
+	action_group->add_action("unselect-all-ducks",sigc::mem_fun(*work_area,&WorkArea::unselect_all_ducks));
+
+	// action_group->add( Gtk::Action::create("select-all-layers", _("Select All Layers")),
+	// 	sigc::mem_fun(*this,&CanvasView::on_select_layers)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> select_all_layers_ = Gio::SimpleAction::create("select-all-layers");
+	action_group->add_action("select-all-layers",sigc::mem_fun(*this,&CanvasView::on_select_layers));
+
+	// action_group->add( Gtk::Action::create("unselect-all-layers", _("Unselect All Layers")),
+	// 	sigc::mem_fun(*this,&CanvasView::on_unselect_layers)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> unselect_all_layers_ = Gio::SimpleAction::create("unselect-all-layers");
+	action_group->add_action("unselect-all-layers",sigc::mem_fun(*this,&CanvasView::on_unselect_layers));
+
+	// action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
+	// 	sigc::mem_fun(*this, &CanvasView::stop_async)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> pause_ = Gio::SimpleAction::create("pause");
+	action_group->add_action("pause",sigc::mem_fun(*this, &CanvasView::stop_async));
+
+	// action_group->add( Gtk::Action::create("refresh", Gtk::StockID("gtk-refresh")),
+	// 	SLOT_EVENT(EVENT_REFRESH)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> refresh_ = Gio::SimpleAction::create("refresh");
+	action_group->add_action("refresh",SLOT_EVENT(EVENT_REFRESH));
+
+	// action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
+	// 	sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
+	// );
+
+	Glib::RefPtr<Gio::SimpleAction> properties = Gio::SimpleAction::create("properties");
+	action_group->add_action("properties",sigc::mem_fun0(canvas_properties,&CanvasProperties::present));
+
+	// LOOK HERE
     auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )
     {
 		std::string id = plugin.id;
-		action_group->add(
-			Gtk::Action::create(id, plugin.name.get()),
-			[instance, id](){instance->run_plugin(id, true);}
-        );
+		Glib::RefPtr<Gio::SimpleAction> action = Gio::SimpleAction::create(id);
+		action_group->add_action(id,[instance, id](){instance->run_plugin(id, true);});
+
+		// action_group->add(
+		// 	Gtk::Action::create(id, plugin.name.get()),
+		// 	[instance, id](){instance->run_plugin(id, true);}
+        // );
     }
 
 	// Low-Res Quality Menu
 	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {
-		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
-			low_res_pixel_size_group,
-			etl::strprintf("lowres-pixel-%d", *i),
-			etl::strprintf(_("Set Low-Res pixel size to %d"), *i) );
+		
+		// Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
+		// 	low_res_pixel_size_group,
+		// 	etl::strprintf("lowres-pixel-%d", *i),
+		// 	etl::strprintf(_("Set Low-Res pixel size to %d"), *i) );
+
+		Glib::RefPtr<Gio::SimpleAction> action = Gio::SimpleAction::create_bool(low_res_pixel_size_group,false);
+
 		if (*i == 2) { // default pixel size
 			action->set_active();
 			work_area->set_low_res_pixel_size(*i);
 		}
-		action_group->add(
+		action_group->add_action(
 			action,
 			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), *i) );
 	}
-	action_group->add(
-		Gtk::Action::create("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size")),
-		sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) );
-	action_group->add(
-		Gtk::Action::create("increase-low-res-pixel-size",  _("Increase Low-Res Pixel Size")),
-		sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) );
+
+	// action_group->add(
+	// 	Gtk::Action::create("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size")),
+	// 	sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) );
+
+	Glib::RefPtr<Gio::SimpleAction> decrease_low_res_pixel_size_ = Gio::SimpleAction::create("decrease-low-res-pixel-size");
+	action_group->add_action("decrease-low-res-pixel-size",sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size));
+
+	// action_group->add(
+	// 	Gtk::Action::create("increase-low-res-pixel-size",  _("Increase Low-Res Pixel Size")),
+	// 	sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) );
+
+	Glib::RefPtr<Gio::SimpleAction> increase_low_res_pixel_size_ = Gio::SimpleAction::create("increase-low-res-pixel-size");
+	action_group->add_action("increase-low-res-pixel-size",sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size));
 
 
-	action_group->add(
-		Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
-		sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) );
-	action_group->add(
-		Gtk::Action::create("dialog-flipbook", _("Preview Window")),
-		sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) );
+	// action_group->add(
+	// 	Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
+	// 	sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) );
+
+	Glib::RefPtr<Gio::SimpleAction> play_ = Gio::SimpleAction::create("play");
+	action_group->add_action("play",sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed));
+
+	// action_group->add(
+	// 	Gtk::Action::create("dialog-flipbook", _("Preview Window")),
+	// 	sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) );
+
+	Glib::RefPtr<Gio::SimpleAction> dialog_flipbook_ = Gio::SimpleAction::create("dialog-flipbook");
+	action_group->add_action("dialog-flipbook",sigc::mem_fun0(preview_dialog, &Dialog_Preview::present));
+	dialog_flipbook_->set_enabled(false);
 
 	// Prevent call to preview window before preview option has created the preview window
-	action_group->get_action("dialog-flipbook")->set_sensitive(false);
+	// action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;

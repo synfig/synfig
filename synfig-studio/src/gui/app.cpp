@@ -223,10 +223,10 @@ int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
-	Glib::RefPtr<Gio::SimpleActionGroup> menus_action_group;
-	Glib::RefPtr<Gio::SimpleActionGroup> actions_action_group;
+Glib::RefPtr<Gio::SimpleActionGroup> menus_action_group;
+Glib::RefPtr<Gio::SimpleActionGroup> actions_action_group;
 
-int        App::jack_locks_ = 0;
+int App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
 
 std::list<etl::handle<Instance> > App::instance_list;
@@ -1237,6 +1237,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 		// App::ui_manager()->set_add_tearoffs(false);
 		// insert_action_group("menus",menus_action_group);
 		// insert_action_group("actions",actions_action_group);
+		App::main_window->insert_action_group("menus",menus_action_group);
+		App::main_window->insert_action_group("actions",actions_action_group);
 		App::ui_manager()->add_from_string(ui_info);
 		App::ui_manager()->add_from_string(hidden_ui_info);
 
@@ -1488,8 +1490,6 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 		studio_init_cb.task(_("Init Main Window..."));
 		main_window=new studio::MainWindow();
 		// main_window->add_accel_group(App::ui_manager_->get_accel_group());
-		main_window->insert_action_group("menus",menus_action_group);
-		main_window->insert_action_group("actions",actions_action_group);
 
 		studio_init_cb.task(_("Init Toolbox..."));
 		dock_toolbox=new studio::Dock_Toolbox();
