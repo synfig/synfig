@@ -91,13 +91,19 @@ enum TextWeight{
 	TEXT_WEIGHT_ULTRAHEAVY = 1000
 };
 
+enum TextDirection{
+	TEXT_DIRECTION_AUTO = 0,
+	TEXT_DIRECTION_LTR = 1,
+	TEXT_DIRECTION_RTL = 2,
+};
+
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Layer_Freetype);
 SYNFIG_LAYER_SET_NAME(Layer_Freetype,"text");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,N_("Text"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.3");
+SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.4");
 
 #ifndef __APPLE__
 static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".ttc"};
@@ -440,6 +446,7 @@ Layer_Freetype::Layer_Freetype()
 	param_vcompress=ValueBase(Real(1.0));
 	param_weight=ValueBase(TEXT_WEIGHT_NORMAL);
 	param_style=ValueBase(TEXT_STYLE_NORMAL);
+	param_direction=ValueBase(TEXT_DIRECTION_AUTO);
 	param_family=ValueBase((const char*)"Sans Serif");
 	param_use_kerning=ValueBase(true);
 	param_grid_fit=ValueBase(false);
@@ -742,6 +749,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 			new_font(family,style,weight);
 		}
 		);
+	IMPORT_VALUE_PLUS(param_direction,needs_sync=true);
 	IMPORT_VALUE_PLUS(param_size,
 		{
 			if(old_version)
@@ -794,6 +802,7 @@ Layer_Freetype::get_param(const String& param)const
 	EXPORT_VALUE(param_family);
 	EXPORT_VALUE(param_style);
 	EXPORT_VALUE(param_weight);
+	EXPORT_VALUE(param_direction);
 	EXPORT_VALUE(param_size);
 	EXPORT_VALUE(param_text);
 	EXPORT_VALUE(param_color);
@@ -856,6 +865,17 @@ Layer_Freetype::get_param_vocab(void)const
 		.add_enum_value(TEXT_WEIGHT_HEAVY, "heavy" ,_("Heavy"))
 		.add_enum_value(TEXT_WEIGHT_ULTRAHEAVY, "ultraheavy" ,_("Ultraheavy"))
 	);
+
+	ret.push_back(ParamDesc("direction")
+		.set_local_name(_("Direction"))
+		.set_description(_("The text direction: left-to-right or right-to-left"))
+		.set_hint("enum")
+		.set_static(true)
+		.add_enum_value(TEXT_DIRECTION_AUTO, "auto" ,_("Automatic"))
+		.add_enum_value(TEXT_DIRECTION_LTR, "ltr" ,_("LTR"))
+		.add_enum_value(TEXT_DIRECTION_RTL, "rtl" ,_("RTL"))
+	);
+
 	ret.push_back(ParamDesc("compress")
 		.set_local_name(_("Horizontal Spacing"))
 		.set_description(_("Defines how close the glyphs are horizontally"))
@@ -919,7 +939,7 @@ Layer_Freetype::sync()
 	if(param_text.get(std::string())=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
 	{
 		auto text=basename(get_canvas()->get_file_name());
-		lines = fetch_text_lines(text);
+		lines = fetch_text_lines(text, param_direction.get(0));
 	}
 }
 
@@ -1242,7 +1262,7 @@ Layer_Freetype::on_param_text_changed()
 {
 	std::lock_guard<std::mutex> lock(sync_mtx);
 
-	lines = fetch_text_lines(param_text.get(std::string()));
+	lines = fetch_text_lines(param_text.get(std::string()), param_direction.get(0));
 }
 
 static std::vector<uint32_t>
@@ -1287,7 +1307,7 @@ utf8_to_utf32(const std::string& text)
 }
 
 std::vector<Layer_Freetype::TextLine>
-Layer_Freetype::fetch_text_lines(const std::string& text)
+Layer_Freetype::fetch_text_lines(const std::string& text, int direction)
 {
 	std::vector<TextLine> new_lines;
 
@@ -1338,7 +1358,7 @@ Layer_Freetype::fetch_text_lines(const std::string& text)
 	// 3. Handle BiDirectional text
 #if HAVE_FRIBIDI
 	for (auto& line : base_lines) {
-		FriBidiParType base_dir = FRIBIDI_TYPE_ON;
+		FriBidiParType base_dir = direction == TEXT_DIRECTION_AUTO ? FRIBIDI_TYPE_ON : direction == TEXT_DIRECTION_LTR ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_RTL;
 # if HAVE_HARFBUZZ // FriBiDi + HarfBuzz: don't use FriBiDi simple shaper, just get the BiDi info / character reordering
 		size_t line_size = line.size();
 		std::vector<FriBidiCharType> bidi_types(line_size);

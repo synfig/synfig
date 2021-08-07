@@ -62,6 +62,8 @@ private:
 	synfig::ValueBase param_style;
 	//!Parameter: (int) weight used in the font
 	synfig::ValueBase param_weight;
+	//!Parameter: (int) diretion of the text
+	synfig::ValueBase param_direction;
 	//!Parameter: (synfig::Real) horizontal spacing
 	synfig::ValueBase param_compress;
 	//!Parameter: (synfig::Real) vertical spacing
@@ -134,7 +136,7 @@ private:
 
 	void on_param_text_changed();
 
-	static std::vector<TextLine> fetch_text_lines(const std::string& text);
+	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
 };
 
 /* === E N D =============================================================== */
