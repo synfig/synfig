@@ -1126,19 +1126,33 @@ CanvasView::create_top_toolbar()
 
 	// File buttons
 	if (App::show_file_toolbar) {
-		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
-		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save-as")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save-all")));
+		
+		// displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
+		displaybar->append(*create_action_toolbutton(action_group->lookup_action("new")));
+
+		// displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
+		displaybar->append(*create_action_toolbutton(action_group->lookup_action("open")));
+
+		// displaybar->append(*create_action_toolbutton(action_group->get_action("save")));
+		displaybar->append(*create_action_toolbutton(action_group->lookup_action("save")));
+
+		// displaybar->append(*create_action_toolbutton(action_group->get_action("save-as")));
+		displaybar->append(*create_action_toolbutton(action_group->lookup_action("save-as")));
+
+		// displaybar->append(*create_action_toolbutton(action_group->get_action("save-all")));
+		displaybar->append(*create_action_toolbutton(action_group->lookup_action("save-all")));
 
 		// Separator
 		displaybar->append( *create_tool_separator() );
 	}
 
 	// Undo/Redo buttons
-	displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
-	displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+
+	// displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
+	displaybar->append(*create_action_toolbutton(action_group->lookup_action("undo")));
+
+	// displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+	displaybar->append(*create_action_toolbutton(action_group->lookup_action("redo")));
 
 	// Separator
 	displaybar->append(*create_tool_separator());
@@ -1691,21 +1705,21 @@ CanvasView::init_menus()
 		// action->set_active(work_area->get_low_resolution_flag());
 		// action_group->add(action, sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
 
-		Gio::SimpleAction::create_bool("toggle-low-res");
+		Gio::SimpleAction::create_bool("toggle-low-res",work_area->get_low_resolution_flag());
 		action_group->add_action("toggle-low-res",sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
 
 		// background_rendering_toggle = Gtk::ToggleAction::create("toggle-background-rendering", _("Enable rendering in background"));
 		// background_rendering_toggle->set_active(work_area->get_background_rendering());
 		// action_group->add(background_rendering_toggle, sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
 
-		Gio::SimpleAction::create_bool("toggle-background-rendering");
+		Gio::SimpleAction::create_bool("toggle-background-rendering",work_area->get_background_rendering());
 		action_group->add_action("toggle-background-rendering",sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
 
 		// onion_skin_toggle = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
 		// onion_skin_toggle->set_active(work_area->get_onion_skin());
 		// action_group->add(onion_skin_toggle, sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
 
-		Gio::SimpleAction::create_bool("toggle-onion-skin");
+		Gio::SimpleAction::create_bool("toggle-onion-skin",work_area->get_onion_skin());
 		action_group->add_action("toggle-onion-skin",sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
 
 	}
@@ -2010,7 +2024,9 @@ CanvasView::build_new_layer_menu(Gtk::Menu &/*menu*/)
 void
 CanvasView::popup_main_menu()
 {
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-main"));
+	// Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-main"));
+	Gtk::Menu* menu = nullptr;
+	App::ui_manager()->get_widget("menu-main",menu);
 	if(menu)
 	{
 		//menu->set_accel_group(App::ui_manager()->get_accel_group());
@@ -2203,11 +2219,11 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 		switch (event->keyval) {
 		case GDK_KEY_Home:
 		case GDK_KEY_KP_Home:
-			action_group->get_action("seek-begin")->activate();
+			action_group->lookup_action("seek-begin")->activate();
 			return  true;
 		case GDK_KEY_End:
 		case GDK_KEY_KP_End:
-			action_group->get_action("seek-end")->activate();
+			action_group->lookup_action("seek-end")->activate();
 			return  true;
 		}
 	}
@@ -2290,7 +2306,9 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 	{
 	case 3:
 		{
-			Gtk::MenuItem* menu = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menu-main/menu-layer"));
+			// Gtk::MenuItem* menu = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("menu-layer"));
+			Gtk::MenuItem* menu = nullptr;
+			App::ui_manager()->get_widget("menu-layer",menu);
 			if(menu && menu->get_submenu())
 			{
 				//menu->set_accel_group(App::ui_manager()->get_accel_group());
@@ -2742,7 +2760,8 @@ CanvasView::decrease_low_res_pixel_size()
 				work_area->set_low_resolution_flag(false);
 			} else {
 				--iter;
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				// Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				Glib::RefPtr<Gio::SimpleAction> action = action_group->lookup_action(etl::strprintf("lowres-pixel-%d", *iter));
 				assert(action);
 				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
@@ -2750,8 +2769,9 @@ CanvasView::decrease_low_res_pixel_size()
 			break;
 		}
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
+	// Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	Glib::RefPtr<Gio::SimpleAction> action = action_group->lookup_action("toggle-low-res");
+	action->change_state(work_area->get_low_resolution_flag());
 	// Update toggle low res button
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
@@ -2770,8 +2790,9 @@ CanvasView::increase_low_res_pixel_size()
 		// We were using "hi res" so change it to low res.
 		work_area->set_low_resolution_flag(true);
 		// Update the "toggle-low-res" action
-		Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-		action->set_active(true);
+		// Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+		Glib::RefPtr<Gio::SimpleAction> action = action_group->lookup_action("toggle-low-res");
+		action->change_state(true);
 		// Update the toggle low res button
 		resolutiondial.update_lowres(true);
 		changing_resolution_=false;
@@ -2781,7 +2802,8 @@ CanvasView::increase_low_res_pixel_size()
 	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
 		if (*iter == pixel_size) {
 			if (++iter != sizes.end()) {
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				// Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				Glib::RefPtr<Gio::SimpleAction> action = action_group->lookup_action(etl::strprintf("lowres-pixel-%d", *iter));
 				assert(action);
 				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
@@ -2789,8 +2811,13 @@ CanvasView::increase_low_res_pixel_size()
 			break;
 		}
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
+	
+	// Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	// action->set_active(work_area->get_low_resolution_flag());
+
+	Glib::RefPtr<Gio::SimpleAction> action = action_group->lookup_action("toggle-low-res");
+	action->change_state(work_area->get_low_resolution_flag());
+
 	// Update toggle low res button
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
@@ -2806,8 +2833,13 @@ CanvasView::toggle_low_res_pixel_flag()
 	// Update the toggle low res button
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
+
+	// Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	// action->set_active(work_area->get_low_resolution_flag());
+	
+	Glib::RefPtr<Gio::SimpleAction> action = action_group->lookup_action("toggle-low-res");
+	action->change_state(work_area->get_low_resolution_flag());
+	
 	changing_resolution_=false;
 }
 
@@ -3558,21 +3590,41 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	try
 	{
 		// Update the toggle ducks actions
-		Glib::RefPtr<Gtk::ToggleAction> action;
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-position-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-tangent-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-vertex-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-radius-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_RADIUS));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-width-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+		// Glib::RefPtr<Gtk::ToggleAction> action;
+		Glib::RefPtr<Gio::SimpleAction> action;
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-position-ducks"));
+		// action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
+		action = action_group->lookup_action("mask-position-ducks");
+		action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-tangent-ducks"));
+		// action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
+		action = action_group->lookup_action("mask-tangent-ducks");
+		action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-vertex-ducks"));
+		// action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
+		action = action_group->lookup_action("mask-vertex-ducks");
+		action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-radius-ducks"));
+		// action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_RADIUS));
+		action = action_group->lookup_action("mask-radius-ducks");
+		action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_RADIUS));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-width-ducks"));
+		// action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
+		action = action_group->lookup_action("mask-width-ducks");
+		action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
+		// action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+		action = action_group->lookup_action("mask-angle-ducks");
+		action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+
 		// Update toggle ducks buttons
-		action->get_active();
+		// action->get_active();
 		toggleducksdial.update_toggles(work_area->get_type_mask());
 	}
 	catch(...)
@@ -3607,11 +3659,17 @@ CanvasView::mask_bone_ducks()
 
 	if (recursive)
 	{
-		action_mask_bone_setup_ducks->set_active(true);
-		action_mask_bone_recursive_ducks->set_active(false);
+		// action_mask_bone_setup_ducks->set_active(true);
+		action_mask_bone_setup_ducks->change_state(true);
+
+		// action_mask_bone_recursive_ducks->set_active(false);
+		action_mask_bone_recursive_ducks->change_state(false);
 	}
 	else
-		action_mask_bone_recursive_ducks->set_active(true);
+	{
+		// action_mask_bone_recursive_ducks->set_active(true);
+		action_mask_bone_recursive_ducks->change_state(true);
+	}
 }
 
 void
@@ -3627,17 +3685,39 @@ CanvasView::on_meta_data_changed()
 	try
 	{
 		// Update the toggle ducks actions
-		Glib::RefPtr<Gtk::ToggleAction> action;
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
-		action->set_active((bool)(work_area->get_onion_skin()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-show"));
-		action->set_active((bool)(work_area->grid_status()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-snap"));
-		action->set_active((bool)(work_area->get_grid_snap()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-show"));
-		action->set_active((bool)(work_area->get_show_guides()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-snap"));
-		action->set_active((bool)(work_area->get_guide_snap()));
+		// Glib::RefPtr<Gtk::ToggleAction> action;
+		Glib::RefPtr<Gio::SimpleAction> action;
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
+		// action->set_active((bool)(work_area->get_onion_skin()));
+
+		action = action_group->lookup_action("toggle-onion-skin");
+		action->change_state((bool)(work_area->get_onion_skin()));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-show"));
+		// action->set_active((bool)(work_area->grid_status()));
+
+		action = action_group->lookup_action("toggle-grid-show");
+		action->change_state((bool)(work_area->grid_status()));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-snap"));
+		// action->set_active((bool)(work_area->get_grid_snap()));
+
+		action = action_group->lookup_action("toggle-grid-snap");
+		action->change_state((bool)(work_area->get_grid_snap()));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-show"));
+		// action->set_active((bool)(work_area->get_show_guides()));
+
+		action = action_group->lookup_action("toggle-guide-show");
+		action->change_state((bool)(work_area->get_show_guides()));
+
+		// action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-snap"));
+		// action->set_active((bool)(work_area->get_guide_snap()));
+
+		action = action_group->lookup_action("toggle-guide-snap");
+		action->change_state((bool)(work_area->get_guide_snap()));
+
 		// Update the toggle buttons
 		onion_skin->set_active(work_area->get_onion_skin());
 		snap_grid->set_active(work_area->get_grid_snap());
@@ -3800,8 +3880,10 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 
 	// Preview Window created, the action can be enabled
 	{
-		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
-		action->set_sensitive(true);
+		// Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
+		// action->set_sensitive(true);
+		Glib::RefPtr<Gio::SimpleAction> action = action_group->lookup_action("dialog-flipbook");
+		action->set_enabled(true);
 	}
 
 }

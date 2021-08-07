@@ -1219,7 +1219,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "	<menu action='menu-file'>"
 "	</menu>"
 "	</popup>"
-"	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
+"	<popup name='menu-main' id='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
 "	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
 "	<toolbar name='toolbar-main'>" + ui_info_main_tool + "</toolbar>"
 "</ui>";
