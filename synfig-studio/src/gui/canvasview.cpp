@@ -3505,14 +3505,20 @@ CanvasView::import_file()
 		{
 			bool is_same_file = get_canvas()->get_file_name() == filename;
 			if (!is_same_file) {
-				Glib::RefPtr<Gio::File> current_file = Gio::File::create_for_path(get_canvas()->get_file_name());
-				Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename);
-				is_same_file = current_file->equal(import_file);
-				if (!is_same_file) {
-					// One more sanity check
-					Glib::RefPtr<Gio::FileInfo> current_file_info = current_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
-					Glib::RefPtr<Gio::FileInfo> import_file_info = import_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
-					is_same_file = current_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE) == import_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE);
+				Glib::RefPtr<Gio::File> current_file;
+				try {
+					current_file = Gio::File::create_for_path(get_canvas()->get_file_name());
+					if (current_file) {
+						Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename);
+						is_same_file = current_file->equal(import_file);
+						if (!is_same_file && import_file) {
+							// One more sanity check
+							Glib::RefPtr<Gio::FileInfo> current_file_info = current_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
+							Glib::RefPtr<Gio::FileInfo> import_file_info = import_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
+							is_same_file = current_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE) == import_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE);
+						}
+					}
+				} catch (...) {
 				}
 			}
 			if (is_same_file) {
