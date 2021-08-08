@@ -1,6 +1,6 @@
 name: synfigstudio
 title: 'Synfig Studio'
-version: '1.4.0'
+version: '1.4.2'
 summary: Create and edit 2D animations and compositions
 description: |
   Synfig Studio is a free and open-source 2D animation software, designed as
@@ -97,16 +97,16 @@ parts:
   etl:
     after: [synfig-deps]
     plugin: autotools
-    source: https://github.com/synfig/synfig/releases/download/v1.4.0/ETL-1.4.0.tar.gz
-    source-checksum: sha256/d43396c0ac356114713469216a9257247c2588d5475590a46db63cf201d1a011
+    source: https://github.com/synfig/synfig/releases/download/v1.4.2/ETL-1.4.2.tar.gz
+    source-checksum: sha256/e54192d284df16305ddfdfcc5bdfe93e139e6db5bc283dd4bab2413ebbead7c7
     configflags: &cfgflags
       - --prefix=/usr
 
   synfig-core:
     after: [etl]
     plugin: autotools
-    source: https://github.com/synfig/synfig/releases/download/v1.4.0/synfig-1.4.0.tar.gz
-    source-checksum: sha256/7f36d57eba9dc959e1deae89e6908585a08db7f2d9399915a46a9eff33080c9c
+    source: https://github.com/synfig/synfig/releases/download/v1.4.2/synfig-1.4.2.tar.gz
+    source-checksum: sha256/e66688b908ab2f05f87cc5a364f958a1351f101ccab3b3ade33a926453002f4e
     configflags: *cfgflags
     override-build: &build |
       set -xe
@@ -117,8 +117,8 @@ parts:
   synfig-studio:
     after: [synfig-core]
     plugin: autotools
-    source: https://github.com/synfig/synfig/releases/download/v1.4.0/synfigstudio-1.4.0.tar.gz
-    source-checksum: sha256/ca1eb1a3e2264c57974a576d1995e005079d96cee19d3dffaacded72c93fbd56
+    source: https://github.com/synfig/synfig/releases/download/v1.4.2/synfigstudio-1.4.2.tar.gz
+    source-checksum: sha256/4e86d4d8def6675fc92855a411795cc4062a1669cda82535d18b48a68b4d5497
     configflags: *cfgflags
     override-build: *build
     override-stage: |
