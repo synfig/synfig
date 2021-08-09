@@ -1,3 +1,5 @@
+- [`4c3f97d`](https://github.com/synfig/synfig/commit/4c3f97dfd4340b74e72f0b2a033aeed70b6efc5a) fix importing into unsaved SIF file ([#2243](https://github.com/synfig/synfig/issues/2243)) [studio]
+- [`736bc77`](https://github.com/synfig/synfig/commit/736bc7775325270275cd294d5b8f04983a186e09) Updated snap to 1.4.2 ([#2249](https://github.com/synfig/synfig/issues/2249))
 - [`798bfbf`](https://github.com/synfig/synfig/commit/798bfbf95983ff6c01ca019ac72b390fbc259eab) Fixed a crash when trying to import a file into yourself ([#2239](https://github.com/synfig/synfig/issues/2239)) [studio]
 - [`247909c`](https://github.com/synfig/synfig/commit/247909c2cd07a4121192f8ee8eddeb31c800fb86) [Core] ValueNode_AnimatedFile now supports more data types ([#2240](https://github.com/synfig/synfig/issues/2240)) [core]
 - [`4b26b30`](https://github.com/synfig/synfig/commit/4b26b30a6ae4f76bbc3ce8ac21f915f9c1f14b9e) Refresh rend_desc of canvas interface when end time is changed from toolbar ([#2213](https://github.com/synfig/synfig/issues/2213)) [studio]
