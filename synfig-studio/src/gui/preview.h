@@ -64,7 +64,7 @@ namespace studio {
 class AsyncRenderer;
 class CanvasView;
 
-class Preview : public sigc::trackable, public etl::shared_object
+class Preview : public sigc::trackable
 {
 public:
 	class FlipbookElem

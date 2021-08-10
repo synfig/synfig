@@ -48,7 +48,7 @@ namespace synfig
 namespace rendering
 {
 
-class Mesh: public etl::shared_object
+class Mesh
 {
 public:
 	typedef std::shared_ptr<Mesh> Handle;

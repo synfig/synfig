@@ -41,7 +41,7 @@ namespace rendering
 {
 
 
-class Transformation: public etl::shared_object
+class Transformation
 {
 public:
 	typedef std::shared_ptr<Transformation> Handle;

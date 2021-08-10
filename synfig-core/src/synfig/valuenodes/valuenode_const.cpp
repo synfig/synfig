@@ -71,39 +71,39 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 }
 
 
-ValueNode*
+std::shared_ptr<ValueNode>
 ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
 	// this is nasty - shouldn't it be done somewhere else?
 	if (x.get_type() == type_bone_object)
 	{
 		printf("%s:%d forcing convert to ValueNode_Bone\n", __FILE__, __LINE__);
-		return ValueNode_Bone::create(x, canvas);
+		return std::shared_ptr<ValueNode>(ValueNode_Bone::create(x, canvas));
 	}
 
 	// this too
 	if (x.get_type() == type_bone_weight_pair)
 	{
 		printf("%s:%d forcing convert to ValueNode_BoneWeightPair\n", __FILE__, __LINE__);
-		return ValueNode_BoneWeightPair::create(x, canvas);
+		return std::shared_ptr<ValueNode>(ValueNode_BoneWeightPair::create(x, canvas));
 	}
 
 	// and this
 	if (dynamic_cast<types_namespace::TypePairBase*>(&x.get_type()))
 	{
 		printf("%s:%d forcing convert to ValueNode_Composite\n", __FILE__, __LINE__);
-		return ValueNode_Composite::create(x, canvas);
+		return std::shared_ptr<ValueNode>(ValueNode_Composite::create(x, canvas));
 	}
 
-	return new ValueNode_Const(x, canvas);
+	return std::shared_ptr<ValueNode>(new ValueNode_Const(x, canvas));
 }
 
 
 ValueNode::Handle
 ValueNode_Const::clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid)const
 {
-	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
-	ValueNode* ret(new ValueNode_Const(value));
+	{ std::shared_ptr<ValueNode> x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
+    std::shared_ptr<ValueNode> ret(new ValueNode_Const(value));
 	ret->set_guid(get_guid()^deriv_guid);
 	ret->set_parent_canvas(canvas);
 	return ret;

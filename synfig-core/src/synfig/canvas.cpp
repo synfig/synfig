@@ -456,7 +456,7 @@ Canvas::get_root()const
 	if (parent_)
 		return parent_->get_root();
 	// printf("%lx\n", uintptr_t(this));
-	return const_cast<synfig::Canvas *>(this);
+	return LooseHandle(const_cast<synfig::Canvas *>(this));
 }
 
 Canvas::LooseHandle
@@ -464,7 +464,7 @@ Canvas::get_non_inline_ancestor()const
 {
 	if (is_inline() && parent_)
 		return parent_->get_non_inline_ancestor();
-	return const_cast<synfig::Canvas *>(this);
+	return LooseHandle (const_cast<synfig::Canvas *>(this));
 }
 
 int
@@ -536,7 +536,7 @@ ValueNode::Handle
 Canvas::find_value_node(const String &id, bool might_fail)
 {
 	return
-		ValueNode::Handle::cast_const(
+		std::const_pointer_cast<ValueNode>(
 			const_cast<const Canvas*>(this)->find_value_node(id, might_fail)
 		);
 }
@@ -610,7 +610,7 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 
 	try
 	{
-		if(PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id, true)))
+		if(std::dynamic_pointer_cast<Canvas>(value_node_list_.find(id, true)))
 			throw Exception::IDNotFound("add_value_node()");
 
 		throw Exception::IDAlreadyExists(id);
@@ -619,7 +619,7 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 	{
 		x->set_id(id);
 
-		x->set_parent_canvas(this);
+		x->set_parent_canvas(shared_ptr<Canvas>(this));
 
 		if(!value_node_list_.add(x))
 		{
@@ -687,7 +687,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 		return parent_->surefind_canvas(id,warnings);
 
 	if(id.empty())
-		return this;
+		return Handle (this);
 
 	// If the ID contains a "#" character, then a filename is
 	// expected on the left side.
@@ -711,7 +711,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 		// Before look up the external canvases
 		// let's check if this is the current canvas
 		if(get_file_name() == file_name)
-			return this;
+			return Handle (this);
 		// If the composition is already open, then use it.
 		if(externals_.count(file_name))
 			external_canvas=externals_[file_name];
@@ -724,7 +724,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 			externals_[file_name]=external_canvas;
 		}
 
-		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id, warnings));
+		return const_pointer_cast<Canvas>(external_canvas->find_canvas(external_id, warnings));
 	}
 
 	// If we do not have any resolution, then we assume that the
@@ -764,7 +764,7 @@ Canvas::Handle
 Canvas::find_canvas(const String &id, String &warnings)
 {
 	return
-		Canvas::Handle::cast_const(
+		const_pointer_cast<Canvas>(
 			const_cast<const Canvas*>(this)->find_canvas(id, warnings)
 		);
 }
@@ -776,7 +776,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 		return parent_->find_canvas(id, warnings);
 
 	if(id.empty())
-		return this;
+		return ConstHandle (this);
 
 	// If the ID contains a "#" character, then a filename is
 	// expected on the left side.
@@ -810,7 +810,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 			externals_[file_name]=external_canvas;
 		}
 
-		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id, warnings));
+		return const_pointer_cast<const Canvas>(external_canvas->find_canvas(external_id, warnings));
 	}
 
 	// If we do not have any resolution, then we assume that the
@@ -847,7 +847,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 Canvas::Handle
 Canvas::create()
 {
-	return new Canvas("Untitled");
+	return Handle (new Canvas("Untitled"));
 }
 
 void
@@ -879,7 +879,7 @@ Canvas::insert(iterator iter,std::shared_ptr<Layer> x)
 		//throw runtime_error("Canvas Insertion Failed");
 	}*/
 
-	x->set_canvas(this);
+	x->set_canvas(Handle (this));
 
 	add_child(x.get());
 
@@ -973,7 +973,7 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 
 	canvas->set_guid(get_guid()^deriv_guid);
 
-	if (canvas->parent().empty())
+	if (canvas->parent()== nullptr)
 		canvas->set_file_name(get_file_name());
 
 	const_iterator iter;
@@ -982,18 +982,18 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 		Layer::Handle layer((*iter)->clone(canvas, deriv_guid));
 		if(layer)
 		{
-			assert(layer.count()==1);
+			assert(layer.unique());
 			int presize(size());
 			canvas->push_back(layer);
-			if(!(layer.count()>1))
+			if(layer.use_count() <= 1)
 			{
 				synfig::error("Canvas::clone(): Cloned layer insertion failure!");
-				synfig::error("Canvas::clone(): \tlayer.count()=%d",layer.count());
+				synfig::error("Canvas::clone(): \tlayer.count()=%d",layer.use_count());
 				synfig::error("Canvas::clone(): \tlayer->get_name()=%s",layer->get_name().c_str());
 				synfig::error("Canvas::clone(): \tbefore size()=%d",presize);
 				synfig::error("Canvas::clone(): \tafter size()=%d",size());
 			}
-			assert(layer.count()>1);
+			assert(layer.use_count()>1);
 		}
 		else
 		{
@@ -1028,7 +1028,7 @@ Canvas::set_inline(LooseHandle parent)
 }
 
 Canvas::Handle
-Canvas::create_inline(Handle parent)
+Canvas::create_inline(const Handle& parent)
 {
 	assert(parent);
 	//if(parent->is_inline())
@@ -1050,7 +1050,7 @@ Canvas::new_child_canvas()
 	Canvas::Handle canvas(children().back());
 
 	canvas->rend_desc()=rend_desc();
-	canvas->set_parent(this);
+	canvas->set_parent(Handle(this));
 
 	return canvas;
 }
@@ -1067,7 +1067,7 @@ Canvas::new_child_canvas(const String &id)
 
 	canvas->set_id(id);
 	canvas->rend_desc()=rend_desc();
-	canvas->set_parent(this);
+	canvas->set_parent(Handle (this));
 
 	return canvas;
 }
@@ -1096,7 +1096,7 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 			child_canvas->is_inline_=false;
 		child_canvas->id_=id;
 		children().push_back(child_canvas);
-		child_canvas->set_parent(this);
+		child_canvas->set_parent(Handle(this));
 	}
 
 	return child_canvas;
@@ -1132,8 +1132,8 @@ Canvas::on_parent_set()
 {
 	// parent canvas is important field,
 	// so assume that canvas replaced for layers
-	for(std::list<Handle>::iterator i = children().begin(); i != children().end(); ++i)
-		(*i)->on_parent_set();
+	for(auto & i : children())
+		i->on_parent_set();
 	for(iterator i = begin(); *i; ++i)
 		(*i)->on_canvas_set();
 }
@@ -1161,7 +1161,7 @@ Canvas::set_file_name(const String &file_name_orig)
 				if(iter->second==this)
 					break;
 			if (iter == get_open_canvas_map().end())
-				CanvasParser::register_canvas_in_map(this, file_name);
+				CanvasParser::register_canvas_in_map(Handle (this), file_name);
 			else
 				signal_file_name_changed_();
 		}
@@ -1411,7 +1411,7 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 #endif	// SYNFIG_OPTIMIZE_PASTE_CANVAS
 
 			std::shared_ptr<Layer_PasteCanvas> new_layer =
-				std::shared_ptr<Layer_PasteCanvas>::cast_dynamic( Layer::create(paste_canvas->get_name()) );
+				std::dynamic_pointer_cast<Layer_PasteCanvas>( Layer::create(paste_canvas->get_name()) );
 			new_layer->set_optimized(true);
 			if (motion_blurred)
 			{
@@ -1470,14 +1470,14 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 		}
 		// Alright, the layer is included in the sorted list
 		// let's look if it is a composite and if it is partially visible
-		std::shared_ptr<Layer_Composite> composite = std::shared_ptr<Layer_Composite>::cast_dynamic(layer);
+		std::shared_ptr<Layer_Composite> composite = std::dynamic_pointer_cast<Layer_Composite>(layer);
 		if(composite && layer_visibility < 1.0)
 		{
 			// Let's clone the composite layer if it is not a Paste Canvas
 			// (because paste will always be new layer)
 			// Oops... not always...
 			//if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
-				composite = std::shared_ptr<Layer_Composite>::cast_dynamic(composite->simple_clone());
+				composite = std::dynamic_pointer_cast<Layer_Composite>(composite->simple_clone());
 			// Let's scale the amount parameter by the z depth visibility
 			ValueNode::Handle amount;
 			// First look if amount is dynamic:
@@ -1488,13 +1488,13 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			else
 			// It is normal constant parameter
 			{
-				amount=ValueNode_Const::create(layer->get_param("amount").get(Real()));
+				amount=shared_ptr<ValueNode>(ValueNode_Const::create(layer->get_param("amount").get(Real())));
 			}
 			// Connect a ValueNode_Scale to the amount parameter with the right sub-parameters
 			ValueNode::Handle value_node=ValueNodeRegistry::create("scale", ValueBase(Real()));
-			ValueNode_Scale::Handle scale=ValueNode_Scale::Handle::cast_dynamic(value_node);
+			ValueNode_Scale::Handle scale=dynamic_pointer_cast<ValueNode_Scale>(value_node);
 			scale->set_link("link", amount);
-			scale->set_link("scalar", ValueNode_Const::create(layer_visibility));
+			scale->set_link("scalar", std::shared_ptr<ValueNode>(ValueNode_Const::create(layer_visibility)));
 			composite->connect_dynamic_param("amount", value_node);
 			layer=composite;
 		}
@@ -1719,7 +1719,7 @@ Canvas::show_structure(int i) const
 // the container is a ValueNode_{Static,Dynamic}List
 // the content is the entry
 void
-Canvas::invoke_signal_value_node_child_removed(std::shared_ptr<ValueNode> container, std::shared_ptr<ValueNode> content)
+Canvas::invoke_signal_value_node_child_removed(ValueNode* container, std::shared_ptr<ValueNode> content)
 {
 	signal_value_node_child_removed()(container, content);
 	Canvas::Handle canvas(this);

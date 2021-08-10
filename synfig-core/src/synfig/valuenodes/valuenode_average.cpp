@@ -65,9 +65,9 @@ ValueNode_Average::ValueNode_Average(const ValueBase &value, Canvas::LooseHandle
 		throw std::runtime_error(get_local_name()+_(":Bad type ")+value.get_type().description.local_name);
 	}
 
-	ref();
+	/*ref();*/
 	add(ValueNode::Handle(ValueNode_Const::create(value, canvas)));
-	unref_inactive();
+	/*unref_inactive();*/
 }
 
 ValueNode_Average::ValueNode_Average(Type &type, Canvas::LooseHandle canvas):

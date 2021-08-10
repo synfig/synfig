@@ -77,7 +77,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 	if (type == type_vector || type == type_bline_point)
 	{
 		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create_on_canvas(type_bone_weight_pair, canvas));
-		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
+		bone_weight_list->add(std::shared_ptr<ValueNode>(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas)));
 		set_link("bone_weight_list",	bone_weight_list);
 		set_link("link",				x);
 
@@ -95,7 +95,7 @@ ValueNode_BoneInfluence*
 ValueNode_BoneInfluence::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
 	if (x.get_type() == type_bline_point)
-		return new ValueNode_BoneInfluence(ValueNode_Composite::create(x, canvas), canvas);
+		return new ValueNode_BoneInfluence(std::shared_ptr<ValueNode>(ValueNode_Composite::create(x, canvas)), canvas);
 
 	return new ValueNode_BoneInfluence(ValueNode_Const::create(x, canvas), canvas);
 }

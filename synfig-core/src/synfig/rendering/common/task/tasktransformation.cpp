@@ -105,7 +105,7 @@ TaskTransformation::set_coords_sub_tasks()
 	{
 		if (Transformation::Handle transformation = get_transformation())
 		{
-			if (Transformation::Handle back_transformation = transformation->create_inverted())
+			if (Transformation::Handle back_transformation = std::shared_ptr<Transformation>(transformation->create_inverted()))
 			{
 				Transformation::DiscreteBounds discrete_bounds =
 					Transformation::make_discrete_bounds(

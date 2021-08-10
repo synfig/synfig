@@ -117,7 +117,7 @@ Mesh::Handle
 Transformation::build_mesh_vfunc(const Rect &target_rect, const Vector &precision) const
 {
 	typedef std::pair<int, Mesh::Vertex> GridPoint;
-	Transformation::Handle back_transform = create_inverted();
+	Transformation::Handle back_transform = std::shared_ptr<Transformation>(create_inverted());
 	if (!back_transform)
 		return Mesh::Handle();
 

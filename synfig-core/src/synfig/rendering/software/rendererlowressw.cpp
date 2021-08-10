@@ -63,16 +63,16 @@ RendererLowResSW::RendererLowResSW(int level):
 	register_mode(TaskSW::mode_token.handle());
 
 	// register optimizers
-	register_optimizer(new OptimizerDraftLowRes(level));
-	register_optimizer(new OptimizerTransformation());
-	register_optimizer(new OptimizerDraftTransformation());
+	register_optimizer(std::make_shared<OptimizerDraftLowRes>(level));
+	register_optimizer(std::make_shared<OptimizerTransformation>());
+	register_optimizer(std::make_shared<OptimizerDraftTransformation>());
 
-	register_optimizer(new OptimizerPass(false));
-	register_optimizer(new OptimizerPass(true));
-	register_optimizer(new OptimizerBlendMerge());
-	register_optimizer(new OptimizerBlendToTarget());
-	register_optimizer(new OptimizerList());
-	register_optimizer(new OptimizerBlendAssociative());
+	register_optimizer(std::make_shared<OptimizerPass>(false));
+	register_optimizer(std::make_shared<OptimizerPass>(true));
+	register_optimizer(std::make_shared<OptimizerBlendMerge>());
+	register_optimizer(std::make_shared<OptimizerBlendToTarget>());
+	register_optimizer(std::make_shared<OptimizerList>());
+	register_optimizer(std::make_shared<OptimizerBlendAssociative>());
 	//register_optimizer(new OptimizerSplit());
 }
 

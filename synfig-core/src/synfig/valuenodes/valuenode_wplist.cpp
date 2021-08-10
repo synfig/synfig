@@ -274,7 +274,7 @@ ValueNode_WPList::create_list_entry(int index, Time time, Real /*origin*/)
 		inserted.set_width(1.0);
 	}
 	ret.index=0;
-	ret.set_parent_value_node(this);
+	ret.set_parent_value_node(std::shared_ptr<ValueNode>(this));
 	ret.value_node=ValueNode_Composite::create(inserted);
 	ret.value_node->set_parent_canvas(get_parent_canvas());
 	return ret;
@@ -409,7 +409,7 @@ ValueNode_WPList::find_prev_valid_entry_by_position(Real position, Time time)con
 	// This means that no previous has been found.
 	// Let's consider if the bline is looped.
 	{
-		bool blineloop(ValueNode_BLine::Handle::cast_dynamic(get_bline())->get_loop());
+		bool blineloop(dynamic_pointer_cast<ValueNode_BLine>(get_bline())->get_loop());
 		if(blineloop)
 			prev_ret =find_prev_valid_entry_by_position(2.0, time);
 		else

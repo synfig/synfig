@@ -52,7 +52,7 @@ namespace rendering
 {
 
 
-class Surface: public etl::shared_object
+class Surface
 {
 public:
 	typedef std::shared_ptr<Surface> Handle;
@@ -164,7 +164,7 @@ public:
 };
 
 
-class SurfaceResource: public etl::shared_object
+class SurfaceResource
 {
 public:
 	typedef std::shared_ptr<SurfaceResource> Handle;
@@ -216,7 +216,8 @@ public:
 		bool convert(const Surface::Token::Handle &token, bool create = true, bool any = false) {
 			if (!resource) return false;
 			if (lock_token && token != this->token) return false;
-			return surface = resource->get_surface(token, exclusive, full, rect, create, any);
+            surface = resource->get_surface(token, exclusive, full, rect, create, any);
+			return (bool)surface;
 		}
 
 		template<typename T>
@@ -235,11 +236,11 @@ public:
 			{ return surface; }
 		template<typename T>
 		std::shared_ptr<T> cast() const
-			{ return std::shared_ptr<T>::cast_dynamic(surface); }
+			{ return std::dynamic_pointer_cast<T>(surface); }
 		TypeSurface* get_surface() const
 			{ return surface.get(); }
 		operator bool() const
-			{ return surface; }
+			{ return (bool)surface; }
 	};
 
 	typedef LockBase<const Surface, false, false> LockReadBase;

@@ -43,7 +43,7 @@ namespace studio {
 class AudioContainer;
 
 //Note: Might want to abstract something to share data between profile and parent
-class AudioProfile : public etl::shared_object
+class AudioProfile
 {
 public:
 	typedef std::vector<char>	SampleProfile;
@@ -84,7 +84,7 @@ public: //
 /*	Audio container actually implements all the cool stuff
 	Note: May be a bit too monolithic...
 */
-class AudioContainer : public sigc::trackable, public etl::shared_object
+class AudioContainer : public sigc::trackable
 {
 	std::shared_ptr<AudioProfile>	prof;
 

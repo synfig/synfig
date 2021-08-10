@@ -127,7 +127,7 @@ typedef std::vector<ModeToken::Handle> ModeList;
 // Task
 
 
-class Task: public etl::shared_object
+class Task
 {
 public:
 	typedef std::shared_ptr<Task> Handle;
@@ -265,7 +265,7 @@ public:
 	};
 
 	struct RunParams {
-		std::shared_ptr<etl::shared_object> rendererHolder;
+		std::shared_ptr<void> rendererHolder;
 		Renderer *renderer;
 		mutable Task::List sub_queue;
 		RunParams(): renderer() { }

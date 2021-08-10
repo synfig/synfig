@@ -54,14 +54,14 @@ FileContainer::ReadStream::ReadStream(FileSystem::Handle file_system):
 
 FileContainer::ReadStream::~ReadStream()
 {
-	FileContainer::Handle container( FileContainer::Handle::cast_static(file_system_) );
+	FileContainer::Handle container( static_pointer_cast<FileContainer>(file_system_) );
 	if (container->stream_valid_) container->file_close();
 	container->stream_opened_ = false;
 }
 
 size_t FileContainer::ReadStream::internal_read(void *buffer, size_t size)
 {
-	FileContainer::Handle container( FileContainer::Handle::cast_static(file_system_) );
+	FileContainer::Handle container( static_pointer_cast<FileContainer>(file_system_) );
 	if (!container->stream_valid_) return 0;
 	return container->file_read(buffer, size);
 }
@@ -74,14 +74,14 @@ FileContainer::WriteStream::WriteStream(FileSystem::Handle file_system):
 
 FileContainer::WriteStream::~WriteStream()
 {
-	FileContainer::Handle container( FileContainer::Handle::cast_static(file_system_) );
+	FileContainer::Handle container( static_pointer_cast<FileContainer>(file_system_) );
 	if (container->stream_valid_) container->file_close();
 	container->stream_opened_ = false;
 }
 
 size_t FileContainer::WriteStream::internal_write(const void *buffer, size_t size)
 {
-	FileContainer::Handle container( FileContainer::Handle::cast_static(file_system_) );
+	FileContainer::Handle container( static_pointer_cast<FileContainer>(file_system_) );
 	if (!container->stream_valid_) return 0;
 	return container->file_write(buffer, size);
 }
@@ -103,7 +103,7 @@ FileSystem::ReadStream::Handle FileContainer::get_read_stream_whole_container()
 		return ReadStream::Handle();
 	stream_opened_ = true;
 	stream_valid_ = true;
-	return ReadStream::Handle(new ReadStream(this));
+	return ReadStream::Handle(new ReadStream(std::shared_ptr<FileSystem>(this)));
 }
 
 FileSystem::ReadStream::Handle FileContainer::get_read_stream(const String &filename)
@@ -112,7 +112,7 @@ FileSystem::ReadStream::Handle FileContainer::get_read_stream(const String &file
 		return ReadStream::Handle();
 	stream_opened_ = true;
 	stream_valid_ = true;
-	return ReadStream::Handle(new ReadStream(this));
+	return ReadStream::Handle(new ReadStream(std::shared_ptr<FileSystem>(this)));
 }
 
 FileSystem::WriteStream::Handle FileContainer::get_write_stream(const String &filename)
@@ -121,7 +121,7 @@ FileSystem::WriteStream::Handle FileContainer::get_write_stream(const String &fi
 		return WriteStream::Handle();
 	stream_opened_ = true;
 	stream_valid_ = true;
-	return WriteStream::Handle(new WriteStream(this));
+	return WriteStream::Handle(new WriteStream(std::shared_ptr<FileSystem>(this)));
 }
 
 

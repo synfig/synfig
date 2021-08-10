@@ -40,7 +40,7 @@ namespace rendering
 
 class Renderer;
 
-class Optimizer: public etl::shared_object
+class Optimizer
 {
 public:
 	typedef std::shared_ptr<Optimizer> Handle;

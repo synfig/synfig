@@ -130,7 +130,7 @@ static void _remove_from_open_canvas_map(Canvas *x) {
     map.erase(found);
 }
 
-static void _canvas_file_name_changed(Canvas *x)
+static void _canvas_file_name_changed(shared_ptr<Canvas> x)
 {
 	std::map<synfig::String, std::shared_ptr<Canvas> >::iterator iter;
 
@@ -1702,12 +1702,12 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				if (type==type_canvas)
 				{
 					String warnings;
-					waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(child->get_attribute("use")->get_value(), warnings));
+					waypoint_value_node=ValueNode::Handle(ValueNode_Const::create(canvas->surefind_canvas(child->get_attribute("use")->get_value(), warnings)));
 					warnings_text += warnings;
 				}
 				else
 					waypoint_value_node=canvas->surefind_value_node(child->get_attribute("use")->get_value());
-				if(PlaceholderValueNode::Handle::cast_dynamic(waypoint_value_node))
+				if(std::dynamic_pointer_cast<PlaceholderValueNode>(waypoint_value_node))
 					error(child, strprintf(_("Unknown ID (%s) referenced in waypoint"),child->get_attribute("use")->get_value().c_str()));
 			}
 			else
@@ -1874,9 +1874,9 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), type.description.name.c_str());
-	handle<LinkableValueNode> value_node=ValueNodeRegistry::create(element->get_name(),type);
+	shared_ptr<LinkableValueNode> value_node=ValueNodeRegistry::create(element->get_name(),type);
  	//handle<ValueNode> c[value_node->link_count()]; changed because of clang complain
-	std::vector<handle<ValueNode> > c(value_node->link_count());
+	std::vector<shared_ptr<ValueNode> > c(value_node->link_count());
 
 	if(!value_node)
 	{
@@ -1912,7 +1912,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 			try {
 				bool load_old_weighted_bonelink = false;
-				if (ValueNode_BoneLink::Handle::cast_dynamic(value_node) && name == "bone_weight_list")
+				if (std::dynamic_pointer_cast<ValueNode_BoneLink>(value_node) && name == "bone_weight_list")
 				{
 					name = "bone";
 					load_old_weighted_bonelink = true;
@@ -1930,7 +1930,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				int placeholders(canvas->value_node_list().placeholder_count());
 				c[index] = canvas->surefind_value_node(id);
 				if(placeholders == canvas->value_node_list().placeholder_count())
-					if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) )
+					if(std::dynamic_pointer_cast<PlaceholderValueNode>(c[index]) )
 						throw Exception::IDNotFound("parse_linkable_value_noode()");
 
 				if (!c[index])
@@ -1944,8 +1944,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 				if (load_old_weighted_bonelink)
 				{
-					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(c[index]);
-					ValueNode_BoneWeightPair::Handle wp = ValueNode_BoneWeightPair::Handle::cast_dynamic(list->get_link_vfunc(0));
+					ValueNode_StaticList::Handle list = std::dynamic_pointer_cast<ValueNode_StaticList>(c[index]);
+					ValueNode_BoneWeightPair::Handle wp = std::dynamic_pointer_cast<ValueNode_BoneWeightPair>(list->get_link_vfunc(0));
 					ValueNode::Handle bone = wp->get_link_vfunc(0);
 					
 					c[index] = bone;
@@ -1999,7 +1999,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				child_name = child->get_name();
 
 				bool load_old_weighted_bonelink = false;
-				if (ValueNode_BoneLink::Handle::cast_dynamic(value_node) && child_name == "bone_weight_list"){
+				if (std::dynamic_pointer_cast<ValueNode_BoneLink>(value_node) && child_name == "bone_weight_list"){
 					synfig::info("!!!");
 					child_name = "bone";
 					load_old_weighted_bonelink = true;
@@ -2040,8 +2040,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 				if (load_old_weighted_bonelink)
 				{
-					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(c[index]);
-					ValueNode_BoneWeightPair::Handle wp = ValueNode_BoneWeightPair::Handle::cast_dynamic(list->get_link_vfunc(0));
+					ValueNode_StaticList::Handle list = std::dynamic_pointer_cast<ValueNode_StaticList>(c[index]);
+					ValueNode_BoneWeightPair::Handle wp = std::dynamic_pointer_cast<ValueNode_BoneWeightPair>(list->get_link_vfunc(0));
 					ValueNode::Handle bone = wp->get_link_vfunc(0);
 					
 					c[index] = bone;
@@ -2128,7 +2128,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				value_node->link_name(i) == "homogeneous")
 			{
 				// old versions aren't homogeneous (new versions are homogeneous by default)
-				value_node->set_link("homogeneous", ValueNode_Const::create(bool(false)));
+				value_node->set_link("homogeneous", std::shared_ptr<ValueNode>(ValueNode_Const::create(bool(false))));
 				continue;
 			}
 			// 'lower_bound' was added while canvas 0.8 was in use and
@@ -2137,7 +2137,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				(element->get_name() == "composite") && value_node->link_name(i) =="lower_bound")
 			{
 				// old versions have lower boundary set to 0.0
-				value_node->set_link("lower_bound", ValueNode_Const::create(Real(0.0)));
+				value_node->set_link("lower_bound", std::shared_ptr<ValueNode>(ValueNode_Const::create(Real(0.0))));
 				continue;
 			}
 			// 'upper_bound' was added while canvas 0.8 was in use and
@@ -2146,7 +2146,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				(element->get_name() == "composite") && value_node->link_name(i) =="upper_bound")
 			{
 				// old versions have upper boundary set to 1.0
-				value_node->set_link("upper_bound", ValueNode_Const::create(Real(1.0)));
+				value_node->set_link("upper_bound", std::shared_ptr<ValueNode>(ValueNode_Const::create(Real(1.0))));
 				continue;
 			}
 			// 'split_radius' was added while canvas 0.9 was in use and
@@ -2181,9 +2181,9 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	{
 		if (version == "0.1" || version == "0.2" || version == "0.3")
 		{
-			handle<LinkableValueNode> scale_value_node=ValueNodeRegistry::create("scale",type);
+			std::shared_ptr<LinkableValueNode> scale_value_node=ValueNodeRegistry::create("scale",type);
 			scale_value_node->set_link("link", value_node);
-			scale_value_node->set_link("scalar", ValueNode_Const::create(Real(0.5)));
+			scale_value_node->set_link("scalar", std::shared_ptr<ValueNode>(ValueNode_Const::create(Real(0.5))));
 
 			value_node = scale_value_node;
 		}
@@ -2193,7 +2193,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	return value_node;
 }
 
-handle<ValueNode_StaticList>
+std::shared_ptr<ValueNode_StaticList>
 CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="static_list");
@@ -2201,7 +2201,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!element->get_attribute("type"))
 	{
 		error(element,"Missing attribute \"type\" in <list>");
-		return handle<ValueNode_StaticList>();
+		return std::shared_ptr<ValueNode_StaticList>();
 	}
 
 	Type &type=ValueBase::ident_type(element->get_attribute("type")->get_value());
@@ -2209,17 +2209,17 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(type == type_nil)
 	{
 		error(element,"Bad type in <list>");
-		return handle<ValueNode_StaticList>();
+		return std::shared_ptr<ValueNode_StaticList>();
 	}
 
-	handle<ValueNode_StaticList> value_node;
+	std::shared_ptr<ValueNode_StaticList> value_node;
 
 	value_node=ValueNode_StaticList::create_on_canvas(type);
 
 	if(!value_node)
 	{
 		error(element,strprintf(_("Unable to create <list>")));
-		return handle<ValueNode_StaticList>();
+		return std::shared_ptr<ValueNode_StaticList>();
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
@@ -2292,7 +2292,7 @@ static bool is_bool_attribute_true(xmlpp::Element* element, const char* name) {
 }
 
 // This will also parse a bline
-handle<ValueNode_DynamicList>
+std::shared_ptr<ValueNode_DynamicList>
 CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="dynamic_list" ||
@@ -2307,7 +2307,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!element->get_attribute("type"))
 	{
 		error(element,"Missing attribute \"type\" in <dynamic_list>");
-		return handle<ValueNode_DynamicList>();
+		return std::shared_ptr<ValueNode_DynamicList>();
 	}
 
 	Type &type = ValueBase::ident_type(element->get_attribute("type")->get_value());
@@ -2315,16 +2315,16 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(type == type_nil)
 	{
 		error(element,"Bad type in <dynamic_list>");
-		return handle<ValueNode_DynamicList>();
+		return std::shared_ptr<ValueNode_DynamicList>();
 	}
 
-	handle<ValueNode_DynamicList> value_node;
+    std::shared_ptr<ValueNode_DynamicList> value_node;
 
 	bool must_rotate_point_list = false;
 
 	if(element->get_name()=="bline")
 	{
-		value_node = ValueNode_BLine::create(type_list, canvas);
+		value_node = std::shared_ptr<ValueNode_DynamicList>(ValueNode_BLine::create(type_list, canvas));
 		if (is_bool_attribute_true(element, "loop")) {
 			std::string version = canvas->get_version();
 			if (version == "1.0" || (version[0] == '0' && version[1] == '.'))
@@ -2333,18 +2333,18 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 	else if(element->get_name()=="wplist")
 	{
-		value_node = ValueNode_WPList::create();
+		value_node = std::shared_ptr<ValueNode_DynamicList>(ValueNode_WPList::create());
 	}
 	else if(element->get_name()=="dilist")
 	{
-		value_node = ValueNode_DIList::create();
+		value_node = std::shared_ptr<ValueNode_DynamicList>(ValueNode_DIList::create());
 	}
 	else if(element->get_name()=="weighted_average")
 	{
 		Type& contained_type = ValueAverage::get_type_from_weighted(type);
-		value_node = new ValueNode_WeightedAverage(contained_type, canvas);
+		value_node = make_shared<ValueNode_WeightedAverage>(contained_type, canvas);
 	} else if (element->get_name()=="average") {
-		value_node = new synfig::ValueNode_Average(type, canvas);
+		value_node = make_shared<synfig::ValueNode_Average>(type, canvas);
 	}
 	else
 		value_node = ValueNode_DynamicList::create_on_canvas(type);
@@ -2352,7 +2352,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!value_node)
 	{
 		error(element,strprintf(_("Unable to create <dynamic_list>")));
-		return handle<ValueNode_DynamicList>();
+		return std::shared_ptr<ValueNode_DynamicList>();
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
@@ -2500,7 +2500,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				try
 				{
 					list_entry.value_node=canvas->surefind_value_node(id);
-					if(PlaceholderValueNode::Handle::cast_dynamic(list_entry.value_node))
+					if(std::dynamic_pointer_cast<PlaceholderValueNode>(list_entry.value_node.obj))
 						throw Exception::IDNotFound("parse_dynamic_list()");
 				}
 				catch(Exception::IDNotFound&)
@@ -2545,11 +2545,11 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	return value_node;
 }
 
-handle<ValueNode>
+shared_ptr<ValueNode>
 CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d parse_value_node\n", __FILE__, __LINE__);
-	handle<ValueNode> value_node;
+	std::shared_ptr<ValueNode> value_node;
 	assert(element);
 
 	GUID guid;
@@ -2567,7 +2567,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 			{
 				if (element->get_name() == "bone_valuenode")
 				{
-					ValueNode_Bone::Handle value_node_bone(ValueNode_Bone::Handle::cast_dynamic(value_node));
+					ValueNode_Bone::Handle value_node_bone(dynamic_pointer_cast<ValueNode_Bone>(value_node));
 					if (!value_node_bone)
 					{
 						if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d bone_valuenode isn't a ValueNode_Bone?  It's a placeholder?\n", __FILE__, __LINE__);
@@ -2783,7 +2783,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->set_exclude_from_rendering(!is_false(element->get_attribute("exclude_from_rendering")->get_value()));
 
 	// Load old groups
-	std::shared_ptr<Layer_PasteCanvas> layer_pastecanvas = std::shared_ptr<Layer_Group>::cast_dynamic(layer);
+	std::shared_ptr<Layer_PasteCanvas> layer_pastecanvas = dynamic_pointer_cast<Layer_Group>(layer);
 	bool old_pastecanvas = layer_pastecanvas && version=="0.1";
 	ValueNode::Handle origin_node;
 	ValueNode_Composite::Handle transformation_node;
@@ -2792,19 +2792,19 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 	ValueNode_Exp::Handle scale_node;
 	bool origin_const=true, focus_const=true, zoom_const=true;
 	if (old_pastecanvas) {
-		transformation_node = ValueNode_Composite::create(ValueBase(Transformation()), canvas);
+		transformation_node = std::shared_ptr<ValueNode_Composite>(ValueNode_Composite::create(ValueBase(Transformation()), canvas));
 		layer->connect_dynamic_param("transformation", ValueNode::Handle(transformation_node));
 
-		offset_node = ValueNode_Add::create(ValueBase(Vector(0,0)));
+		offset_node = std::shared_ptr<ValueNode_Add>(ValueNode_Add::create(ValueBase(Vector(0,0))));
 		transformation_node->set_link("offset", offset_node);
 
 		origin_node = offset_node->get_link("rhs");
 		layer->connect_dynamic_param("origin", ValueNode::Handle(origin_node));
 
-		scale_scalar_node = ValueNode_Scale::create(ValueBase(Vector(1,1)));
+		scale_scalar_node = std::shared_ptr<ValueNode_Scale>(ValueNode_Scale::create(ValueBase(Vector(1,1))));
 		transformation_node->set_link("scale", scale_scalar_node);
 
-		scale_node = ValueNode_Exp::create(ValueBase(Real(1)));
+		scale_node = std::shared_ptr<ValueNode_Exp>(ValueNode_Exp::create(ValueBase(Real(1))));
 		scale_scalar_node->set_link("scalar", scale_node);
 	}
 
@@ -2866,8 +2866,8 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				else
 				try
 				{
-					handle<ValueNode> value_node=canvas->surefind_value_node(str);
-					if(PlaceholderValueNode::Handle::cast_dynamic(value_node))
+					std::shared_ptr<ValueNode> value_node=canvas->surefind_value_node(str);
+					if(dynamic_pointer_cast<PlaceholderValueNode>(value_node))
 						throw Exception::IDNotFound("parse_layer()");
 
 					// Assign the value_node to the dynamic parameter list
@@ -2931,7 +2931,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			}
 
 			ValueBase data;
-			handle<ValueNode> value_node;
+			std::shared_ptr<ValueNode> value_node;
 
 			// If we recognize the element name as a
 			// ValueBase, then treat is at one
@@ -3094,7 +3094,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			Real amplifier = 1.0 / ::Blur::get_size_amplifier(type);
 			if (layer->dynamic_param_list().count("size") && layer->dynamic_param_list().find("size")->second)
 			{
-				ValueNode_Scale::Handle scale = ValueNode_Scale::create(layer->get_param("size"));
+				ValueNode_Scale::Handle scale = std::shared_ptr<ValueNode_Scale>(ValueNode_Scale::create(layer->get_param("size")));
 				scale->set_link("link", ValueNode::Handle(layer->dynamic_param_list().find("size")->second));
 				scale->set_link("scalar", ValueNode_Const::create(amplifier));
 				layer->connect_dynamic_param("size", ValueNode::LooseHandle(scale));
@@ -3437,7 +3437,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	{
 		String nodes;
 		for (ValueNodeList::const_iterator iter = canvas->value_node_list().begin(); iter != canvas->value_node_list().end(); iter++)
-			if(PlaceholderValueNode::Handle::cast_dynamic(*iter))
+			if(dynamic_pointer_cast<PlaceholderValueNode>(iter->obj))
 			{
 				if (nodes != "") nodes += ", ";
 				nodes += "'" + (*iter)->get_id() + "'";
@@ -3457,7 +3457,7 @@ CanvasParser::register_canvas_in_map(Canvas::Handle canvas, String as)
 {
 	get_open_canvas_map()[etl::absolute_path(as)]=canvas;
 	canvas->signal_deleted().connect(sigc::bind(sigc::ptr_fun(_remove_from_open_canvas_map),canvas.get()));
-	canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas.get()));
+	canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas));
 }
 
 #ifdef _DEBUG

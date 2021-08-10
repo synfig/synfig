@@ -100,14 +100,14 @@ Renderer::initialize_renderers()
 #endif
 
 	// register renderers
-	register_renderer("software", new RendererSW());
-	register_renderer("software-preview", new RendererPreviewSW());
-	register_renderer("software-draft", new RendererDraftSW());
-	register_renderer("software-low2",  new RendererLowResSW(2));
-	register_renderer("software-low4",  new RendererLowResSW(4));
-	register_renderer("software-low8",  new RendererLowResSW(8));
-	register_renderer("software-low16", new RendererLowResSW(16));
-	register_renderer("safe", new RendererSafe());
+	register_renderer("software", std::make_shared<RendererSW>());
+	register_renderer("software-preview", std::make_shared<RendererPreviewSW>());
+	register_renderer("software-draft", std::make_shared<RendererDraftSW>());
+	register_renderer("software-low2",  std::make_shared<RendererLowResSW>(2));
+	register_renderer("software-low4",  std::make_shared<RendererLowResSW>(4));
+	register_renderer("software-low8",  std::make_shared<RendererLowResSW>(8));
+	register_renderer("software-low16", std::make_shared<RendererLowResSW>(16));
+	register_renderer("safe", std::make_shared<RendererSafe>());
 #ifdef WITH_OPENGL
 	register_renderer("gl", new RendererGL());
 #endif
@@ -243,8 +243,8 @@ Renderer::remove_dummy(Task::List &list) const
 	// remove dummy tasks
 	for(Task::List::iterator i = list.begin(); i != list.end();)
 		if ( !*i
-		  || i->type_is<TaskSurface>()
-		  || i->type_is<TaskList>() )
+		  || std::dynamic_pointer_cast<TaskSurface>(*i)
+		  || std::dynamic_pointer_cast<TaskList>(*i) )
 			i = list.erase(i); else ++i;
 }
 
@@ -258,7 +258,7 @@ Renderer::linearize(Task::List &list) const
 	// convert task-tree to linear list
 	for(Task::List::iterator i = list.begin(); i != list.end();)
 	{
-		if (*i && !i->type_is<TaskSurface>())
+		if (*i && !std::dynamic_pointer_cast<TaskSurface>(*i))
 		{
 			// remember current position
 			int index = i - list.begin();
@@ -267,7 +267,7 @@ Renderer::linearize(Task::List &list) const
 			for(Task::List::iterator j = (*i)->sub_tasks.begin(); j != (*i)->sub_tasks.end(); ++j)
 			{
 				if ( *j
-				  && !TaskSurface::Handle::cast_dynamic(*j) )
+				  && !std::dynamic_pointer_cast<TaskSurface>(*j) )
 				{
 					i = list.insert(i, *j);
 					++i;
@@ -794,7 +794,7 @@ Renderer::run(const Task::List &list, bool quiet) const
 	if (!quiet) debug::Measure t("Renderer::run");
 	#endif
 
-	TaskEvent::Handle task_event = new TaskEvent();
+	TaskEvent::Handle task_event = std::make_shared<TaskEvent>();
 	enqueue(list, task_event, quiet);
 
 	{

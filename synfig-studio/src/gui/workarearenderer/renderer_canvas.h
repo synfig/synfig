@@ -110,7 +110,7 @@ public:
 				id(time, width, height), alpha(alpha) { }
 	};
 
-	class Tile: public etl::shared_object {
+	class Tile{
 	public:
 		typedef std::shared_ptr<Tile> Handle;
 

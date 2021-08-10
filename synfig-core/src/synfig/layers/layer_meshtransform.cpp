@@ -125,7 +125,7 @@ Layer_MeshTransform::get_bounding_rect()const
 
 std::shared_ptr<synfig::Transform>
 Layer_MeshTransform::get_transform()const
-	{ return new MeshTransform(get_guid(), mesh); }
+	{ return std::shared_ptr<MeshTransform>(new MeshTransform(get_guid(), mesh)); }
 
 rendering::Task::Handle
 Layer_MeshTransform::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task)const
@@ -133,7 +133,7 @@ Layer_MeshTransform::build_composite_fork_task_vfunc(ContextParams /* context_pa
 	if (!sub_task) return rendering::Task::Handle();
 	
 	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
-	task_contour->contour = new rendering::Contour();
+	task_contour->contour = std::make_shared<rendering::Contour>();
 	task_contour->contour->assign(*mask);
 	task_contour->contour->color = Color(1, 1, 1, 1);
 	task_contour->contour->invert = !mask->invert;
@@ -144,7 +144,7 @@ Layer_MeshTransform::build_composite_fork_task_vfunc(ContextParams /* context_pa
 	task_blend->sub_task_b() = task_contour;
 
 	rendering::TaskMesh::Handle task_mesh(new rendering::TaskMesh());
-	task_mesh->mesh = new rendering::Mesh();
+	task_mesh->mesh = std::make_shared<rendering::Mesh>();
 	task_mesh->mesh->assign(*mesh);
 	task_mesh->sub_task() = task_blend;
 	return task_mesh;

@@ -93,7 +93,7 @@ public:
 
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(Type &type);
-	static ValueNode_Bone* create(const ValueBase &x, std::shared_ptr<Canvas> canvas = nullptr);
+	static std::shared_ptr<ValueNode_Bone> create(const ValueBase &x, std::shared_ptr<Canvas> canvas = nullptr);
 	virtual Vocab get_children_vocab_vfunc()const;
 	ValueNode_Bone::LooseHandle find(String name)const;
 	String unique_name(String name)const;

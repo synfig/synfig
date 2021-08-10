@@ -123,7 +123,7 @@ class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
 
-class LockDucks: public etl::shared_object {
+class LockDucks {
 private:
 	std::shared_ptr<CanvasView> canvas_view_handle;
 	CanvasView *canvas_view;
@@ -138,7 +138,7 @@ public:
 **
 **	\writeme
 */
-class CanvasView : public Dockable, public etl::shared_object
+class CanvasView : public Dockable
 {
 	friend class Dock_Layers;
 	friend class Dock_Children;
@@ -637,7 +637,7 @@ public:
 
 	void preview_option() {on_preview_option();}
 
-	bool is_playing() { return ducks_playing_lock; }
+	bool is_playing() { return (bool)ducks_playing_lock; }
 
 	//! Toggle given handle type
 	//! \Param[in]  type The Duckmatic::Type to toggle
@@ -696,7 +696,7 @@ protected:
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 public:
-	static std::shared_ptr<studio::CanvasView> create(std::shared_ptr<Instance> instance,std::shared_ptr<synfig::Canvas> canvas);
+	static std::shared_ptr<studio::CanvasView> create(const std::shared_ptr<Instance>& instance,std::shared_ptr<synfig::Canvas> canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:

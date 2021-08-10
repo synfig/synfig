@@ -121,7 +121,7 @@ ValueNode_DIList::create_list_entry(int index, Time time, Real /*origin*/)
 	{
 		ret.index=index;
 	}
-	ret.set_parent_value_node(this);
+	ret.set_parent_value_node(std::shared_ptr<ValueNode>(this));
 	ret.value_node=ValueNode_Composite::create(inserted);
 	ret.value_node->set_parent_canvas(get_parent_canvas());
 	return ret;

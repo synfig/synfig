@@ -78,7 +78,7 @@ public:
 };
 
 
-class AdjustmentGroup: public etl::shared_object {
+class AdjustmentGroup {
 public:
 	typedef std::shared_ptr<AdjustmentGroup> Handle;
 

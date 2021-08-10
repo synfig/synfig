@@ -127,8 +127,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 	}
 
 	try {
-		Importer::Handle importer;
-		importer=Importer::book()[ext].factory(identifier);
+		Importer::Handle importer(Importer::book()[ext].factory(identifier));
 		(*__open_importers)[identifier]=importer;
 		return importer;
 	}
@@ -155,7 +154,7 @@ Importer::~Importer()
 	// Remove ourselves from the open importer list
 	map<FileSystem::Identifier,Importer::LooseHandle>::iterator iter;
 	for(iter=__open_importers->begin();iter!=__open_importers->end();)
-		if(iter->second==this)
+		if(iter->second.get()==this)
 			__open_importers->erase(iter++); else ++iter;
 }
 
@@ -171,9 +170,9 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 
 	const char *s = getenv("SYNFIG_PACK_IMAGES");
 	if (s == nullptr || atoi(s) != 0)
-		last_surface_ = new rendering::SurfaceSWPacked();
+		last_surface_ = std::shared_ptr<rendering::Surface>(new rendering::SurfaceSWPacked());
 	else
-		last_surface_ = new rendering::SurfaceSW();
+		last_surface_ = std::shared_ptr<rendering::Surface>(new rendering::SurfaceSW());
 
 	if (surface.is_valid())
 		last_surface_->assign(surface[0], surface.get_w(), surface.get_h());

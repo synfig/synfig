@@ -208,7 +208,7 @@ class ProgressCallback;
 * plain-text file called "synfig_modules.cfg" or that defined by envvar SYNFIG_MODULE_LIST.
 * See synfig::Main for further details.
 */
-class Module : public etl::shared_object
+class Module
 {
 public:
 	//! The initializer of the module. Default implementation does nothing

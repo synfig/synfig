@@ -222,7 +222,7 @@ Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) cons
 		if (Color::is_onto(blend_method)) {
 			//if there's something in the lower layer then we're set...
 			if (context.hit_check(point))
-				return const_cast<Layer_Shape*>(this);
+				return std::shared_ptr<Layer_Shape>(const_cast<Layer_Shape*>(this));
 		} else
 		if (blend_method == Color::BLEND_ALPHA_OVER) {
 			synfig::info("layer_shape::hit_check - we've got alphaover");
@@ -232,7 +232,7 @@ Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) cons
 				return Handle();
 			}
 		} else
-			return const_cast<Layer_Shape*>(this);
+			return std::shared_ptr<Layer_Shape>(const_cast<Layer_Shape*>(this));
 	}
 
 	return context.hit_check(point);
@@ -341,7 +341,7 @@ Layer_Shape::build_composite_task_vfunc(ContextParams /*context_params*/)const
 	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
 	// TODO: multithreading without this copying
 	task_contour->transformation->matrix.set_translate( param_origin.get(Vector()) );
-	task_contour->contour = new rendering::Contour();
+	task_contour->contour = std::make_shared<rendering::Contour>();
 	task_contour->contour->assign(*contour);
 	task_contour->contour->color = param_color.get(Color());
 	task_contour->contour->invert = param_invert.get(bool());

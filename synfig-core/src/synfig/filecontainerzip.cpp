@@ -845,7 +845,7 @@ FileSystem::ReadStream::Handle FileContainerZip::get_read_stream(const String &f
 	 && file_is_opened_for_read()
 	 && !file_reading_whole_container_
 	 && file_->second.compression > 0)
-		return new ZReadStream(stream);
+		return std::shared_ptr<FileSystem::ReadStream>(new ZReadStream(stream));
 	return stream;
 }
 

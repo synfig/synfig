@@ -70,7 +70,7 @@ public:
 public:
 	// create a new ValueNode_Const object with the given value.
 	// Unless the given value is a Bone, in which case make a ValueNode_Bone.
-	static ValueNode* create(const ValueBase &x=ValueBase(), std::shared_ptr<Canvas> canvas = 0);
+	static std::shared_ptr<ValueNode> create(const ValueBase &x=ValueBase(), std::shared_ptr<Canvas> canvas = nullptr);
 
 protected:
 	virtual void get_times_vfunc(Node::time_set &set) const;

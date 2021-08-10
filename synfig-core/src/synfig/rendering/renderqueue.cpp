@@ -141,7 +141,7 @@ RenderQueue::process(int thread_index)
 			  task->get_token()->name.c_str() );
 		#endif
 
-		if (TaskSubQueue::Handle task_sub_queue = TaskSubQueue::Handle::cast_dynamic(task))
+		if (TaskSubQueue::Handle task_sub_queue = std::dynamic_pointer_cast<TaskSubQueue>(task))
 		{
 			done(thread_index, task_sub_queue->sub_task());
 			done(thread_index, task_sub_queue);
@@ -295,7 +295,7 @@ RenderQueue::remove_if_orphan(const Task::Handle &task, bool in_queue)
 			return true;
 	}
 
-	if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(task))
+	if (TaskEvent::Handle task_event = std::dynamic_pointer_cast<TaskEvent>(task))
 		if (!task_event->is_finished())
 			return false;
 
@@ -428,7 +428,7 @@ RenderQueue::cancel(const Task::Handle &task)
 			remove_orphans();
 	}
 
-	if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(task))
+	if (TaskEvent::Handle task_event = std::dynamic_pointer_cast<TaskEvent>(task))
 		task_event->finish(false);
 }
 
@@ -445,7 +445,7 @@ RenderQueue::cancel(const Task::List &list)
 		for(Task::List::const_iterator i = list.begin(); i != list.end(); ++i) {
 			if (remove_task(*i))
 				found = true;
-			if (TaskEvent::Handle task_event = TaskEvent::Handle::cast_dynamic(*i))
+			if (TaskEvent::Handle task_event = std::dynamic_pointer_cast<TaskEvent>(*i))
 				events.push_back(task_event);
 		}
 		if (found) remove_orphans();

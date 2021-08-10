@@ -151,11 +151,11 @@ bool FileSystem::remove_recursive(const String &filename)
 
 bool FileSystem::copy(Handle from_file_system, const String &from_filename, Handle to_file_system, const String &to_filename)
 {
-	if (from_file_system.empty() || to_file_system.empty()) return false;
+	if (from_file_system== nullptr || to_file_system== nullptr) return false;
 	ReadStream::Handle read_stream = from_file_system->get_read_stream(from_filename);
-	if (read_stream.empty()) return false;
+	if (read_stream==nullptr) return false;
 	WriteStream::Handle write_stream = to_file_system->get_write_stream(to_filename);
-	if (write_stream.empty()) return false;
+	if (write_stream== nullptr) return false;
 	return write_stream->write_whole_stream(read_stream);
 }
 

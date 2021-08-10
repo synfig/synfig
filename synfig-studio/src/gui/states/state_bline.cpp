@@ -113,8 +113,8 @@ class studio::StateBLine_Context : public sigc::trackable
 	std::list<synfig::ValueNode_Const::Handle> bline_point_list;
 
 	bool on_vertex_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent1_change(const studio::Duck &duck, std::shared_ptr<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent2_change(const studio::Duck &duck, std::shared_ptr<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
 
 	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
 	void popup_vertex_menu(synfig::ValueNode_Const::Handle value_node);
@@ -764,7 +764,7 @@ StateBLine_Context::run_()
 	{
 
 		// Create the action group
-		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Spline"));
+		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance(),_("New Spline"));
 
 		std::vector<BLinePoint> new_list;
 		std::list<synfig::ValueNode_Const::Handle>::iterator iter;
@@ -1309,7 +1309,7 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 			bline_point.set_split_tangent_radius(false);
 			bline_point.set_split_tangent_angle(false);
 			bline_point.set_tangent(Vector(0,0));
-			bline_point_list.push_back(ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
+			bline_point_list.push_back(std::dynamic_pointer_cast<ValueNode_Const>(ValueNode_Const::create(bline_point)));
 
 			refresh_ducks();
 			return Smach::RESULT_ACCEPT;
@@ -1346,8 +1346,8 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 	std::list<ValueNode_Const::Handle>::iterator iter;
 
-	handle<WorkArea::Bezier> bezier;
-	handle<WorkArea::Duck> duck,tduck1,tduck2,first_tduck1,first_tduck2;
+	std::shared_ptr<WorkArea::Bezier> bezier;
+	std::shared_ptr<WorkArea::Duck> duck,tduck1,tduck2,first_tduck1,first_tduck2;
 	BLinePoint bline_point;
 
 	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
@@ -1357,7 +1357,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		assert(value_node);
 
 		// First add the duck associated with this vertex
-		duck=new WorkArea::Duck(bline_point.get_vertex());
+		duck=std::shared_ptr<WorkArea::Duck>(new WorkArea::Duck(bline_point.get_vertex()));
 		duck->set_editable(true);
 #ifdef DISTINGUISH_FIRST_DUCK
 		if (iter==bline_point_list.begin())
@@ -1386,8 +1386,8 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 		get_work_area()->add_duck(duck);
 
-		tduck1=new WorkArea::Duck(bline_point.get_tangent1());
-		tduck2=new WorkArea::Duck(bline_point.get_tangent2());
+		tduck1=std::shared_ptr<WorkArea::Duck>(new WorkArea::Duck(bline_point.get_tangent1()));
+		tduck2=std::shared_ptr<WorkArea::Duck>(new WorkArea::Duck(bline_point.get_tangent2()));
 		if (!first_tduck1) first_tduck1 = tduck1;
 		if (!first_tduck2) first_tduck2 = tduck2;
 
@@ -1431,7 +1431,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		std::list<ValueNode_Const::Handle>::iterator next(iter);
 		next++;
 
-		bezier=new WorkArea::Bezier();
+		bezier=std::shared_ptr<WorkArea::Bezier>(new WorkArea::Bezier());
 
 		// Add the tangent2 duck
 		tduck2->set_editable(true);
@@ -1464,7 +1464,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		curr_duck=0;
 		BLinePoint bline_point(bline_point_list.front()->get_value().get(BLinePoint()));
 
-		duck=new WorkArea::Duck(bline_point.get_vertex());
+		duck=std::shared_ptr<WorkArea::Duck>(new WorkArea::Duck(bline_point.get_vertex()));
 		duck->set_editable(true);
 #ifndef DISTINGUISH_FIRST_DUCK
 		duck->set_type(Duck::TYPE_VERTEX);
@@ -1514,12 +1514,12 @@ StateBLine_Context::refresh_ducks(bool button_down)
 	}
 	if(bezier && !loop_)
 	{
-		duck=new WorkArea::Duck(bline_point.get_vertex());
+		duck=std::shared_ptr<WorkArea::Duck>(new WorkArea::Duck(bline_point.get_vertex()));
 		duck->set_ignore(true);
 		duck->set_name("temp");
 
 		// Add the tangent1 duck
-		tduck1=new WorkArea::Duck(Vector(0,0));
+		tduck1=std::shared_ptr<WorkArea::Duck>(new WorkArea::Duck(Vector(0,0)));
 		tduck1->set_ignore(true);
 		tduck1->set_name("ttemp");
 		tduck1->set_origin(duck);
@@ -1563,7 +1563,7 @@ StateBLine_Context::on_vertex_change(const studio::Duck &duck, synfig::ValueNode
 }
 
 bool
-StateBLine_Context::on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent1_change(const studio::Duck &duck, std::shared_ptr<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1(duck.get_point());
@@ -1578,7 +1578,7 @@ StateBLine_Context::on_tangent1_change(const studio::Duck &duck, handle<WorkArea
 }
 
 bool
-StateBLine_Context::on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent2_change(const studio::Duck &duck, std::shared_ptr<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 
@@ -1795,7 +1795,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 			bline_point.set_tangent1(deriv(origin)*std::min(1.0f-origin,origin));
 			bline_point.set_tangent2(bline_point.get_tangent1());
 			bline_point.set_origin(origin);
-			bline_point_list.insert(iter,ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
+			bline_point_list.insert(iter,std::dynamic_pointer_cast<ValueNode_Const>(ValueNode_Const::create(bline_point)));
 
 			break;
 		}

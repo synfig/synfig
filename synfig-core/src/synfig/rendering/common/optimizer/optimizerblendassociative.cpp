@@ -74,20 +74,20 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 	int max_count = 50;
 
 	if ( !params.parent
-	  || !params.parent->ref_task.type_is<TaskList>()
+	  || !std::dynamic_pointer_cast<TaskList>(params.parent->ref_task)
 	  || (int)params.parent->ref_task->sub_tasks.size() >= max_count )
 		return;
 
 	max_count -= params.parent->ref_task->sub_tasks.size();
 
-	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
+	TaskBlend::Handle blend = std::dynamic_pointer_cast<TaskBlend>(params.ref_task);
 	if ( blend
 	  && ( !blend->sub_task_a()
 		|| blend->sub_task_a()->target_surface == blend->target_surface )
 	  && ((1 << blend->blend_method) & Color::BLEND_METHODS_ASSOCIATIVE)
 	  && approximate_equal_lp(blend->amount, ColorReal(1.0)) )
 	{
-		if (TaskList::Handle list = TaskList::Handle::cast_dynamic(blend->sub_task_b()))
+		if (TaskList::Handle list = std::dynamic_pointer_cast<TaskList>(blend->sub_task_b()))
 		if ((int)list->sub_tasks.size() <= max_count)
 		{
 			// check each task in list
@@ -95,10 +95,10 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 			for(Task::List::iterator i = list->sub_tasks.begin(); i != list->sub_tasks.end(); ++i)
 			{
 				if (!*i) { fix_list = true; continue; }
-				if (TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(*i))
+				if (TaskBlend::Handle sub_blend = std::dynamic_pointer_cast<TaskBlend>(*i))
 					if ( sub_blend->blend_method == blend->blend_method )
 						continue;
-				if (TaskInterfaceBlendToTarget *interface = i->type_pointer<TaskInterfaceBlendToTarget>()) {
+				if (std::shared_ptr<TaskInterfaceBlendToTarget> interface = std::dynamic_pointer_cast<TaskInterfaceBlendToTarget>(*i)) {
 					if (!interface->blend) { fix_list = true; continue; }
 					if (interface->blend_method == blend->blend_method )
 						continue;
@@ -116,15 +116,15 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 				for(Task::List::iterator i = new_list->sub_tasks.begin(); i != new_list->sub_tasks.end();)
 				{
 					if (!*i) { i = new_list->sub_tasks.erase(i); continue; }
-					if (!i->type_is<TaskBlend>())
-						if (TaskInterfaceBlendToTarget *interface = i->type_pointer<TaskInterfaceBlendToTarget>())
+					if (!std::dynamic_pointer_cast<TaskBlend>(*i))
+						if (std::shared_ptr<TaskInterfaceBlendToTarget> interface = std::dynamic_pointer_cast<TaskInterfaceBlendToTarget>(*i))
 							if (!interface->blend) {
 								*i = (*i)->clone();
-								interface = i->type_pointer<TaskInterfaceBlendToTarget>();
+								interface = std::dynamic_pointer_cast<TaskInterfaceBlendToTarget>(*i);
 								interface->blend = true;
 								interface->blend_method = blend->blend_method;
 								interface->amount = 1.0;
-								Task::Handle surface = new TaskSurface();
+								Task::Handle surface = std::make_shared<TaskSurface>();
 								surface->assign_target(**i);
 								interface->target_subtask() = surface;
 								interface->on_target_set_as_source();
@@ -135,7 +135,7 @@ OptimizerBlendAssociative::run(const RunParams& params) const
 
 			// insert sub-task A in front
 			if ( blend->sub_task_a()
-			 && !blend->sub_task_a().type_is<TaskSurface>() )
+			 && !std::dynamic_pointer_cast<TaskSurface>(blend->sub_task_a()) )
 			{
 				if (new_list == list) new_list = list->clone();
 				new_list->sub_tasks.insert(new_list->sub_tasks.begin(), blend->sub_task_a());

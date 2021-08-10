@@ -61,7 +61,7 @@ OptimizerSplit::run(const RunParams &params) const
 	const int min_area = 256*256;
 	for(Task::List::iterator i = params.list->begin(); i != params.list->end(); ++i)
 	{
-		if (TaskInterfaceSplit *split = i->type_pointer<TaskInterfaceSplit>())
+		if (TaskInterfaceSplit *split = dynamic_cast<TaskInterfaceSplit*>(i->get()))
 		if (split->is_splittable())
 		{
 			RectInt r = (*i)->target_rect;

@@ -69,7 +69,7 @@ ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(Type &x):
 		throw Exception::BadType(x.description.local_name);
 
 	ValueNode_BLine* value_node(new ValueNode_BLine());
-	set_link("bline",value_node);
+	set_link("bline",std::shared_ptr<ValueNode>(value_node));
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
 	set_link("offset",ValueNode_Const::create(Angle::deg(0)));

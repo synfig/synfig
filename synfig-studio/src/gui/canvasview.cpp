@@ -72,6 +72,7 @@
 #include <pangomm.h>
 #include <sstream>
 #include <string>
+#include <utility>
 
 #include <synfig/valuenodes/valuenode_animated.h>
 
@@ -652,7 +653,7 @@ CanvasView::CanvasView(std::shared_ptr<Instance> instance,std::shared_ptr<Canvas
 	hide_tables();
 	show();
 
-	instance->canvas_view_list().push_front(this);
+	instance->canvas_view_list().push_front(std::shared_ptr<CanvasView>(this));
 	instance->signal_canvas_view_created()(this);
 	//info("Canvasview: Constructor Done");
 
@@ -668,7 +669,7 @@ CanvasView::CanvasView(std::shared_ptr<Instance> instance,std::shared_ptr<Canvas
 
 	time_model()->all_changed();
 	present();
-	App::set_selected_canvas_view(this);
+	App::set_selected_canvas_view(std::shared_ptr<CanvasView>(this));
 }
 
 CanvasView::~CanvasView()
@@ -740,7 +741,7 @@ void CanvasView::deactivate()
 void CanvasView::present()
 {
 	show(); // gtk_widget_show also checks visibility, so there is no need to call `is_visible()`
-	App::set_selected_canvas_view(this);
+	App::set_selected_canvas_view(std::shared_ptr<CanvasView>(this));
 	update_title();
 	Dockable::present();
 }
@@ -857,7 +858,7 @@ CanvasView::create_time_bar()
 	widget_kf_list->show();
 
 	// Setup Time Slider
-	timeslider->set_canvas_view(this);
+	timeslider->set_canvas_view(std::shared_ptr<CanvasView>(this));
 	timeslider->set_can_focus(true);
 	timeslider->show();
 
@@ -1068,7 +1069,7 @@ CanvasView::create_work_area()
 	work_area = manage(new WorkArea(canvas_interface_));
 	work_area->set_instance(get_instance());
 	work_area->set_canvas(get_canvas());
-	work_area->set_canvas_view(this);
+	work_area->set_canvas_view(std::shared_ptr<CanvasView>(this));
 	work_area->set_progress_callback(get_ui_interface().get());
 	work_area->signal_popup_menu().connect(sigc::mem_fun(*this, &CanvasView::popup_main_menu));
 	work_area->set_hexpand();
@@ -1762,7 +1763,7 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 
 	//parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
 
-	if(std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
+	if(std::dynamic_pointer_cast<Layer_PasteCanvas>(layer))
 	{
 		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
 			*manage(new Gtk::Image(
@@ -1924,8 +1925,8 @@ CanvasView::close_instance()
 }
 
 std::shared_ptr<CanvasView>
-CanvasView::create(std::shared_ptr<Instance> instance, std::shared_ptr<Canvas> canvas)
-	{ return new CanvasView(instance,instance->Instance::find_canvas_interface(canvas)); }
+CanvasView::create(const std::shared_ptr<Instance>& instance, std::shared_ptr<Canvas> canvas)
+	{ return std::shared_ptr<CanvasView>(new CanvasView(instance,instance->Instance::find_canvas_interface(std::move(canvas)))); }
 
 void
 CanvasView::update_title()
@@ -2001,8 +2002,8 @@ bool
 CanvasView::on_button_press_event(GdkEventButton * /* event */)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if (this != App::get_selected_canvas_view())
-		App::set_selected_canvas_view(this);
+	if (this != App::get_selected_canvas_view().get())
+		App::set_selected_canvas_view(std::shared_ptr<CanvasView>(this));
 	return false;
 	//return Dockable::on_button_press_event(event);
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
@@ -2543,13 +2544,13 @@ CanvasView::rebuild_ducks()
 	TransformStack transform_stack;
 	SelectionManager::LayerList selected_layers(get_selection_manager()->get_selected_layers());
 	std::set<Layer::Handle> layer_set(selected_layers.begin(), selected_layers.end());
-	work_area->add_ducks_layers(get_canvas(), layer_set, this, transform_stack);
+	work_area->add_ducks_layers(get_canvas(), layer_set, std::shared_ptr<CanvasView>(this), transform_stack);
 
 	// Now do the children
 	transform_stack.clear();
 	SelectionManager::ChildrenList selected_children = get_selection_manager()->get_selected_children();
 	for(SelectionManager::ChildrenList::iterator i = selected_children.begin(); i != selected_children.end(); ++i)
-		work_area->add_to_ducks(*i, this, transform_stack);
+		work_area->add_to_ducks(*i, std::shared_ptr<CanvasView>(this), transform_stack);
 	work_area->refresh_selected_ducks();
 	work_area->queue_draw();
 }
@@ -2750,7 +2751,7 @@ CanvasView::play_async()
 	if (playing_time >= time_model()->get_actual_play_bounds_upper())
 		playing_time = time_model()->get_actual_play_bounds_lower();
 
-	ducks_playing_lock = new LockDucks(*this);
+	ducks_playing_lock = std::shared_ptr<LockDucks>(new LockDucks(*this));
 
 	work_area->clear_ducks();
 
@@ -2880,7 +2881,7 @@ set_waypoint_model(std::set<Waypoint, std::less<UniqueID> > waypoints,
 				   std::shared_ptr<CanvasInterface> canvas_interface)
 {
 	// Create the action group
-	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Change Waypoint Group"));
+	Action::PassiveGrouper group(canvas_interface->get_instance(),_("Change Waypoint Group"));
 
 	std::set<Waypoint, std::less<UniqueID> >::const_iterator iter;
 	for(iter=waypoints.begin();iter!=waypoints.end();++iter)
@@ -2911,7 +2912,7 @@ duplicate_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 					std::shared_ptr<CanvasInterface> canvas_interface)
 {
 	// Create the action group
-	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Duplicate Waypoints"));
+	Action::PassiveGrouper group(canvas_interface->get_instance(),_("Duplicate Waypoints"));
 
 	std::set<Waypoint, std::less<UniqueID> >::const_iterator iter;
 	for (iter = waypoints.begin(); iter != waypoints.end(); iter++)
@@ -2927,7 +2928,7 @@ remove_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 				 std::shared_ptr<CanvasInterface> canvas_interface)
 {
 	// Create the action group
-	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Remove Waypoints"));
+	Action::PassiveGrouper group(canvas_interface->get_instance(),_("Remove Waypoints"));
 
 	std::set<Waypoint, std::less<UniqueID> >::const_iterator iter;
 	for (iter = waypoints.begin(); iter != waypoints.end(); iter++)
@@ -2971,7 +2972,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		// ------------------------------------------------------------------------
 		if (size == 1)
 		{
-			const ValueDesc value_desc(ValueNode_Animated::Handle::cast_reinterpret(waypoint.get_parent_value_node()), time);
+			const ValueDesc value_desc(std::shared_ptr<ValueNode_Animated>(reinterpret_cast<ValueNode_Animated*>(waypoint.get_parent_value_node().get())), time);
 			get_instance()->make_param_menu(waypoint_menu,canvas_interface()->get_canvas(),value_desc,0.5f);
 
 			// ------------------------------------------------------------------------
@@ -3605,9 +3606,9 @@ void
 CanvasView::on_preview_create(const PreviewInfo &info)
 {
 	//set all the options
-	std::shared_ptr<Preview>	prev = new Preview;
+	std::shared_ptr<Preview>	prev = std::make_shared<Preview>();
 
-	prev->set_canvasview(this);
+	prev->set_canvasview(std::shared_ptr<CanvasView>(this));
 	prev->set_zoom(info.zoom);
 	prev->set_fps(info.fps);
 	prev->set_overbegin(info.overbegin);
@@ -3622,7 +3623,7 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	prev->render();
 
 	preview_dialog.set_default_size(700,510);
-	preview_dialog.set_preview(prev.get());
+	preview_dialog.set_preview(prev);
 	preview_dialog.present();
 
 	// Preview Window created, the action can be enabled

@@ -125,7 +125,7 @@ Waypoint::set_value_node(const std::shared_ptr<ValueNode> &x)
 		return;
 	}
 
-	ValueNode_Animated::Handle parent(ValueNode_Animated::Handle::cast_dynamic(vn_parent));
+	ValueNode_Animated::Handle parent(std::dynamic_pointer_cast<ValueNode_Animated>(vn_parent));
 	if (!parent)
 	{
 		value_node=x;
@@ -164,7 +164,7 @@ Waypoint::set_parent_value_node(const std::shared_ptr<ValueNode> &x)
 bool
 Waypoint::is_static()const
 {
-	return static_cast<bool>(ValueNode_Const::Handle::cast_dynamic(value_node)) && value_node && !value_node->is_exported();
+	return static_cast<bool>(std::dynamic_pointer_cast<ValueNode_Const>(value_node.obj)) && value_node && !value_node->is_exported();
 }
 
 void

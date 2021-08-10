@@ -114,13 +114,13 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		set_link("position",ValueNode_Const::create(wpoint.get_position()));
 		set_link("width",ValueNode_Const::create(wpoint.get_width()));
 		ValueNode_Const::Handle value_node;
-		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_side_type_before()));
+		value_node=std::dynamic_pointer_cast<ValueNode_Const>(ValueNode_Const::create(wpoint.get_side_type_before()));
 		if(value_node)
 		{
 			value_node->set_static(true);
 			set_link("side_before",value_node);
 		}
-		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_side_type_after()));
+		value_node=std::dynamic_pointer_cast<ValueNode_Const>(ValueNode_Const::create(wpoint.get_side_type_after()));
 		if(value_node)
 		{
 			value_node->set_static(true);
@@ -131,13 +131,13 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 			value_node->set_static(true);
 			set_link("lower_bound",value_node);
 		}
-		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_lower_bound()));
+		value_node=std::dynamic_pointer_cast<ValueNode_Const>(ValueNode_Const::create(wpoint.get_lower_bound()));
 		if(value_node)
 		{
 			value_node->set_static(true);
 			set_link("lower_bound",value_node);
 		}
-		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(wpoint.get_upper_bound()));
+		value_node=std::dynamic_pointer_cast<ValueNode_Const>(ValueNode_Const::create(wpoint.get_upper_bound()));
 		if(value_node)
 		{
 			value_node->set_static(true);
@@ -151,13 +151,13 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		set_link("offset",ValueNode_Const::create(ditem.get_offset()));
 		set_link("length",ValueNode_Const::create(ditem.get_length()));
 		ValueNode_Const::Handle value_node;
-		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(ditem.get_side_type_before()));
+		value_node=std::dynamic_pointer_cast<ValueNode_Const>(ValueNode_Const::create(ditem.get_side_type_before()));
 		if(value_node)
 		{
 			value_node->set_static(true);
 			set_link("side_before",value_node);
 		}
-		value_node=ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(ditem.get_side_type_after()));
+		value_node=std::dynamic_pointer_cast<ValueNode_Const>(ValueNode_Const::create(ditem.get_side_type_after()));
 		if(value_node)
 		{
 			value_node->set_static(true);
@@ -327,7 +327,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0 && i<link_count());
 
-	if(PlaceholderValueNode::Handle::cast_dynamic(x))
+	if((bool)std::dynamic_pointer_cast<PlaceholderValueNode>(x))
 	{
 		components[i]=x;
 		return true;
@@ -336,7 +336,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 	Type &type(get_type());
 	if (type == type_vector)
 	{
-		if(x->get_type()==ValueBase(Real()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
+		if(x->get_type()==ValueBase(Real()).get_type() || (bool)std::dynamic_pointer_cast<PlaceholderValueNode>(x))
 		{
 			components[i]=x;
 			return true;
@@ -345,7 +345,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 	else
 	if (type == type_color)
 	{
-		if(x->get_type()==ValueBase(Real()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
+		if(x->get_type()==ValueBase(Real()).get_type() || (bool)std::dynamic_pointer_cast<PlaceholderValueNode>(x))
 		{
 			components[i]=x;
 			return true;
@@ -354,7 +354,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 	else
 	if (type == type_segment)
 	{
-		if(x->get_type()==ValueBase(Point()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
+		if(x->get_type()==ValueBase(Point()).get_type() || (bool)std::dynamic_pointer_cast<PlaceholderValueNode>(x))
 		{
 			components[i]=x;
 			return true;
@@ -395,7 +395,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 		}
 		if((i==4 || i==5) && x->get_type()==ValueBase(Real()).get_type())
 		{
-			if(ValueNode_Const::Handle::cast_dynamic(x))
+			if((bool)std::dynamic_pointer_cast<ValueNode_Const>(x))
 			{
 				if(i==4 && components[5])
 				{
@@ -426,7 +426,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 	else
 	if (type == type_transformation)
 	{
-		if( PlaceholderValueNode::Handle::cast_dynamic(x)
+		if( (bool)std::dynamic_pointer_cast<PlaceholderValueNode>(x)
 		 || (i == 0 && x->get_type()==ValueBase(Vector()).get_type())
 		 || (i == 1 && x->get_type()==ValueBase(Angle()).get_type())
 		 || (i == 2 && x->get_type()==ValueBase(Angle()).get_type())
@@ -439,7 +439,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 	else
 	if (types_namespace::TypeWeightedValueBase *tp = dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type))
 	{
-		if( PlaceholderValueNode::Handle::cast_dynamic(x)
+		if( (bool)std::dynamic_pointer_cast<PlaceholderValueNode>(x)
 		 || (i == 0 && x->get_type()==ValueBase(Real()).get_type())
 		 || (i == 1 && x->get_type()==tp->get_contained_type())
 		) {
@@ -450,7 +450,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 	else
 	if (types_namespace::TypePairBase *tp = dynamic_cast<types_namespace::TypePairBase*>(&type))
 	{
-		if( PlaceholderValueNode::Handle::cast_dynamic(x)
+		if( (bool)std::dynamic_pointer_cast<PlaceholderValueNode>(x)
 		 || (i == 0 && x->get_type()==tp->get_first_type())
 		 || (i == 1 && x->get_type()==tp->get_second_type())
 		) {

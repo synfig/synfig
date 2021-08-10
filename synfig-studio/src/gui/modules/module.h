@@ -37,7 +37,7 @@
 
 namespace studio {
 
-class Module : public etl::shared_object
+class Module
 {
 	bool status_;
 

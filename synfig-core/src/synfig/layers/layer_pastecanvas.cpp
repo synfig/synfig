@@ -227,8 +227,8 @@ Layer_PasteCanvas::set_sub_canvas(std::shared_ptr<synfig::Canvas> x)
 		remove_child(sub_canvas.get());
 
 	// if(sub_canvas && (sub_canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=sub_canvas->get_root()))
-	if (extra_reference)
-		sub_canvas->unref();
+	/*if (extra_reference)
+		sub_canvas->unref();*/
 
 	childs_changed_connection.disconnect();
 
@@ -245,7 +245,7 @@ Layer_PasteCanvas::set_sub_canvas(std::shared_ptr<synfig::Canvas> x)
 
 	if (sub_canvas && (sub_canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=sub_canvas->get_root()))
 	{
-		sub_canvas->ref();
+		/*sub_canvas->ref();*/
 		extra_reference = true;
 	}
 	else
@@ -266,9 +266,9 @@ Layer_PasteCanvas::update_renddesc()
 	if(!get_canvas() || !sub_canvas || !sub_canvas->is_inline()) return;
 
 	sub_canvas->rend_desc()=get_canvas()->rend_desc();
-	for (IndependentContext iter = sub_canvas->get_independent_context(); !iter->empty(); iter++)
+	for (IndependentContext iter = sub_canvas->get_independent_context(); *iter!= nullptr; iter++)
 	{
-		std::shared_ptr<Layer_PasteCanvas> paste = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(*iter);
+		std::shared_ptr<Layer_PasteCanvas> paste = std::dynamic_pointer_cast<Layer_PasteCanvas>(*iter);
 		if (paste) paste->update_renddesc();
 	}
 }
@@ -373,7 +373,7 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 	Context subcontext = build_context_queue(context, queue);
 	if (subcontext.get_color(target_pos).get_a() >= 0.25)
 		return param_children_lock.get(bool(true))
-			 ? const_cast<Layer_PasteCanvas*>(this)
+			 ? std::shared_ptr<Layer_PasteCanvas>(const_cast<Layer_PasteCanvas*>(this))
 			 : subcontext.hit_check(target_pos);
 	return context.hit_check(pos);
 }

@@ -155,7 +155,7 @@ Context::get_color(const Point &pos)const
 {
 	Context context(*this);
 
-	while(!context->empty())
+	while(*(context)!=nullptr)
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
@@ -169,7 +169,7 @@ Context::get_color(const Point &pos)const
 	}
 
 	// If this layer isn't defined, return alpha
-	if((context)->empty()) return Color::alpha();
+	if(*(context)==nullptr) return Color::alpha();
 
 	Glib::Threads::RWLock::ReaderLock lock((*context)->get_rw_lock());
 
@@ -183,7 +183,7 @@ Context::get_full_bounding_rect()const
 {
 	Context context(*this);
 
-	while(!context->empty())
+	while(*(context)!=nullptr)
 	{
 		// If this layer is active and visible in z_depth range,
 		// then go ahead and break out of the loop
@@ -197,7 +197,7 @@ Context::get_full_bounding_rect()const
 	}
 
 	// If this layer isn't defined, return zero-sized rectangle
-	if(context->empty()) return Rect::zero();
+	if(*(context)==nullptr) return Rect::zero();
 
 	return (*context)->get_full_bounding_rect(context.get_next());
 }
@@ -236,7 +236,7 @@ Context::hit_check(const Point &pos)const
 {
 	Context context(*this);
 
-	while(!context->empty() && context.in_z_range())
+	while(*(context)!=nullptr && context.in_z_range())
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
@@ -250,7 +250,7 @@ Context::hit_check(const Point &pos)const
 	}
 
 	// If this layer isn't defined, return an empty handle
-	if((context)->empty()) return 0;
+	if(*(context)==nullptr) return 0;
 
 	return (*context)->hit_check(context.get_next(), pos);
 }
@@ -279,14 +279,14 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	std::shared_ptr<Layer_Composite> composite;
 	Context context(*this);
 	// Run all layers until context is empty
-	for(;!(context)->empty();++context)
+	for(;*(context)!=nullptr;++context)
 	{
 		// If we are not active then move on to next layer
 		if(!context.active())
 			continue;
 		const Rect layer_bounds(Transformation::transform_bounds(transfromation_matrix, (*context)->get_bounding_rect()));
 		// Cast current layer to composite
-		composite = std::shared_ptr<Layer_Composite>::cast_dynamic(*context);
+		composite = std::dynamic_pointer_cast<Layer_Composite>(*context);
 		// If the box area is less than zero or the boxes do not
 		// intersect then move on to next layer, unless the layer is
 		// using a straight blend and has a non-zero amount, in which
@@ -311,14 +311,14 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 			!composite->reads_context())
 		{
 			Layer::Handle layer = *context;
-			while (!context->empty()) context++; // skip the context
+			while (*(context)!=nullptr) context++; // skip the context
 			return layer->accelerated_render(context,surface,quality,renddesc, cb);
 		}
 		// Break out of the loop--we have found a good layer
 		break;
 	}
 	// If this layer isn't defined, return alpha
-	if (context->empty() || (straight_and_empty && composite->get_amount() == 1.0f))
+	if (*(context)==nullptr || (straight_and_empty && composite->get_amount() == 1.0f))
 	{
 #ifdef SYNFIG_DEBUG_LAYERS
 		synfig::info("Context::accelerated_render(): Hit end of list");

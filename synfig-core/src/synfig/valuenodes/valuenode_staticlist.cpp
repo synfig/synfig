@@ -99,7 +99,7 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 	if (type == type_color)
 	{
 		Color a(prev.get(Color())), b(next.get(Color()));
-		ret=ValueNode_Composite::create((b-a)*origin+a);
+		ret=std::shared_ptr<ValueNode>(ValueNode_Composite::create((b-a)*origin+a));
 	}
 	else
 	if (type == type_angle)
@@ -117,7 +117,7 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 	if (type == type_bone_object)
 	{
 		ValueNode::Handle value_node(list[index]);
-		if (ValueNode_Bone::Handle value_node_bone = ValueNode_Bone::Handle::cast_dynamic(value_node))
+		if (ValueNode_Bone::Handle value_node_bone = std::dynamic_pointer_cast<ValueNode_Bone>(value_node))
 		{
 			Bone new_bone;
 			new_bone.set_parent(value_node_bone.get());
@@ -144,10 +144,10 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 	if (type == types_namespace::TypePair<Bone, Bone>::instance)
 	{
 		ValueNode::Handle value_node(list[index]);
-		if (ValueNode_Composite::Handle value_node_composite = ValueNode_Composite::Handle::cast_dynamic(value_node))
+		if (ValueNode_Composite::Handle value_node_composite = std::dynamic_pointer_cast<ValueNode_Composite>(value_node))
 		{
-			ValueNode_Bone::Handle fisrt_bone_node = ValueNode_Bone::Handle::cast_dynamic(value_node_composite->get_link("first"));
-			ValueNode_Bone::Handle second_bone_node = ValueNode_Bone::Handle::cast_dynamic(value_node_composite->get_link("second"));
+			ValueNode_Bone::Handle fisrt_bone_node = std::dynamic_pointer_cast<ValueNode_Bone>(value_node_composite->get_link("first"));
+			ValueNode_Bone::Handle second_bone_node = std::dynamic_pointer_cast<ValueNode_Bone>(value_node_composite->get_link("second"));
 			if (fisrt_bone_node && second_bone_node)
 			{
 				std::pair<Bone, Bone> new_pair;
@@ -298,7 +298,7 @@ ValueNode_StaticList::~ValueNode_StaticList()
 ValueNode_StaticList::Handle
 ValueNode_StaticList::create_on_canvas(Type &type, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_StaticList(type, canvas);
+	return std::shared_ptr<ValueNode_StaticList>(new ValueNode_StaticList(type, canvas));
 }
 
 ValueNode_StaticList*
@@ -405,9 +405,9 @@ ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 {
 	ValueNode_Bone::show_bone_map(get_root_canvas(), __FILE__, __LINE__, "before cloning staticlist");
 
-	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
+	{ std::shared_ptr<ValueNode> x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 
-	ValueNode_StaticList* ret=dynamic_cast<ValueNode_StaticList*>(create_new());
+	std::shared_ptr<ValueNode_StaticList> ret=std::shared_ptr<ValueNode_StaticList>(dynamic_cast<ValueNode_StaticList*>(create_new()));
 	ret->set_guid(get_guid()^deriv_guid);
 
 	puts(get_contained_type().description.name.c_str());
@@ -427,10 +427,10 @@ ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 				clone_map[iter->get()] = item_clone;
 			else if (is_actually_skeleton_deform) {
 				ValueNode_Composite::Handle value_node_composite =
-					ValueNode_Composite::Handle::cast_dynamic(*iter);
+					std::dynamic_pointer_cast<ValueNode_Composite>(iter->obj);
 				if (value_node_composite) {
-					clone_map[value_node_composite->get_link("first").get()] = ValueNode_Composite::Handle::cast_static(item_clone)->get_link("first").get();
-					clone_map[value_node_composite->get_link("second").get()] = ValueNode_Composite::Handle::cast_static(item_clone)->get_link("second").get();
+					clone_map[value_node_composite->get_link("first").get()] = std::static_pointer_cast<ValueNode_Composite>(item_clone)->get_link("first");
+					clone_map[value_node_composite->get_link("second").get()] = std::static_pointer_cast<ValueNode_Composite>(item_clone)->get_link("second");
 				}
 			}
 		}

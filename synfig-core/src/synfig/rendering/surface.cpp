@@ -259,7 +259,7 @@ SurfaceResource::get_surface(
 		return Surface::Handle();
 
 	if (!surface) {
-		surface = token->fabric();
+		surface = std::shared_ptr<Surface>(token->fabric());
 		if (!surface)
 			return Surface::Handle();
 

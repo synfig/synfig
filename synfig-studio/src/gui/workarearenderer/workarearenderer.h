@@ -44,7 +44,7 @@
 namespace studio {
 class WorkArea;
 
-class WorkAreaRenderer : public etl::shared_object, public sigc::trackable
+class WorkAreaRenderer : public sigc::trackable
 {
 public:
 	typedef std::shared_ptr<WorkAreaRenderer> Handle;
@@ -107,8 +107,8 @@ public:
 inline bool operator<(const WorkAreaRenderer::Handle &lhs,const WorkAreaRenderer::Handle &rhs)
 	{ return lhs->get_priority() < rhs->get_priority(); }
 
-inline bool operator<(const WorkAreaRenderer::LooseHandle &lhs,const WorkAreaRenderer::LooseHandle &rhs)
-	{ return lhs->get_priority() < rhs->get_priority(); }
+/*inline bool operator<(const WorkAreaRenderer::LooseHandle &lhs,const WorkAreaRenderer::LooseHandle &rhs)
+	{ return lhs->get_priority() < rhs->get_priority(); }*/
 
 }; // END of namespace studio
 

@@ -435,7 +435,7 @@ AsyncRenderer::AsyncRenderer(std::shared_ptr<synfig::Target> target_,synfig::Pro
 	finish_time(0, 0)
 {
 	render_thread=0;
-	if(auto cast_target = synfig::Target_Tile::Handle::cast_dynamic(target_))
+	if(auto cast_target = std::dynamic_pointer_cast<synfig::Target_Tile>(target_))
 	{
 		std::shared_ptr<AsyncTarget_Tile> wrap_target(
 			new AsyncTarget_Tile(cast_target)
@@ -445,7 +445,7 @@ AsyncRenderer::AsyncRenderer(std::shared_ptr<synfig::Target> target_,synfig::Pro
 
 		target=wrap_target;
 	}
-	else if(auto cast_target = std::shared_ptr<synfig::Target_Scanline>::cast_dynamic(target_))
+	else if(auto cast_target = std::dynamic_pointer_cast<synfig::Target_Scanline>(target_))
 	{
 		std::shared_ptr<AsyncTarget_Scanline> wrap_target(
 			new AsyncTarget_Scanline(cast_target)

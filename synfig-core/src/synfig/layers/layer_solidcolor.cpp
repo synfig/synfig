@@ -122,14 +122,14 @@ Layer_SolidColor::hit_check(synfig::Context context, const synfig::Point &point)
 {
 	Color color=param_color.get(Color());
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
-		return const_cast<Layer_SolidColor*>(this);
+		return std::shared_ptr<synfig::Layer>(const_cast<Layer_SolidColor*>(this));
 	else
 	if(get_blend_method()==Color::BLEND_COMPOSITE && get_amount()*color.get_a()>=0.5)
-		return const_cast<Layer_SolidColor*>(this);
+		return std::shared_ptr<synfig::Layer>(const_cast<Layer_SolidColor*>(this));
 
 	Layer::Handle layer(context.hit_check(point));
 
-	return layer?layer:const_cast<Layer_SolidColor*>(this);
+	return layer?layer:std::shared_ptr<synfig::Layer>(const_cast<Layer_SolidColor*>(this));
 }
 
 Color

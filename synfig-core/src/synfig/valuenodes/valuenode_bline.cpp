@@ -444,7 +444,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 #define CURR_POINT	curr->get_value().get(BLinePoint())
 				if(iter==segments.begin())
 				{
-					prev = ValueNode_Const::Handle::cast_dynamic(
+					prev = std::dynamic_pointer_cast<ValueNode_Const>(
 							ValueNode_Const::create(type_bline_point, canvas) );
 					{
 						BLinePoint prev_point(PREV_POINT);
@@ -472,7 +472,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 				}
 
 				ValueNode_Const::Handle curr =
-					ValueNode_Const::Handle::cast_dynamic(
+					std::dynamic_pointer_cast<ValueNode_Const>(
 						ValueNode_Const::create(type_bline_point, canvas) );
 				{
 					BLinePoint curr_point(CURR_POINT);
@@ -541,7 +541,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		bline_point.set_origin(origin);
 	}
 	ret.index=index;
-	ret.set_parent_value_node(this);
+	ret.set_parent_value_node(std::shared_ptr<ValueNode>(this));
 	ret.value_node=ValueNode_Composite::create(bline_point);
 	ret.value_node->set_parent_canvas(get_parent_canvas());
 	return ret;

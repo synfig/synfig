@@ -61,7 +61,7 @@ namespace studio
 class CanvasView;
 class Duckmatic;
 
-class DuckDrag_Base : public etl::shared_object
+class DuckDrag_Base
 {
 public:
 	virtual void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin)=0;
@@ -83,7 +83,7 @@ public:
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
-class BezierDrag_Base : public etl::shared_object
+class BezierDrag_Base
 {
 public:
 	virtual void begin_bezier_drag(Duckmatic* duckmatic, const synfig::Vector& begin, float bezier_click_pos)=0;
@@ -512,12 +512,12 @@ public:
 
 	void set_duck_dragger(std::shared_ptr<DuckDrag_Base> x) { duck_dragger_=x; }
 	std::shared_ptr<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }
-	void clear_duck_dragger() { duck_dragger_=new DuckDrag_Translate(); }
+	void clear_duck_dragger() { duck_dragger_=std::shared_ptr<DuckDrag_Base>(new DuckDrag_Translate()); }
 
 
 	void set_bezier_dragger(std::shared_ptr<BezierDrag_Base> x) { bezier_dragger_=x; }
 	std::shared_ptr<BezierDrag_Base> get_bezier_dragger()const { return bezier_dragger_; }
-	void clear_bezier_dragger() { bezier_dragger_=new BezierDrag_Default(); }
+	void clear_bezier_dragger() { bezier_dragger_=std::shared_ptr<BezierDrag_Base>(new BezierDrag_Default()); }
 }; // END of class Duckmatic
 
 
@@ -542,7 +542,7 @@ public:
 
 /*! \struct Duckmatic::Bezier
 **	\writeme */
-struct Duckmatic::Bezier : public etl::shared_object
+struct Duckmatic::Bezier
 {
 private:
 	sigc::signal<void,float> signal_user_click_[5];
@@ -556,7 +556,7 @@ public:
 
 /*! \struct Duckmatic::Stroke
 **	\writeme */
-struct Duckmatic::Stroke : public etl::shared_object
+struct Duckmatic::Stroke
 {
 private:
 	sigc::signal<void,float> signal_user_click_[5];

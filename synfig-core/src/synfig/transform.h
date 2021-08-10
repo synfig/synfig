@@ -41,7 +41,7 @@
 
 namespace synfig {
 
-class Transform : public etl::shared_object
+class Transform
 {
 	GUID guid_;
 

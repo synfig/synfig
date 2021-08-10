@@ -56,7 +56,7 @@ class Settings;
 **   state (e.g., outline color). An object of this class can be saved and
 **   restored using its Settings object, provided by the settings method.
 */
-class InputDevice : public etl::shared_object
+class InputDevice
 {
 public:
 	enum Type

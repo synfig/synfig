@@ -42,7 +42,7 @@
 
 namespace synfigapp {
 
-class SelectionManager : public etl::shared_object
+class SelectionManager
 {
 public:
 	typedef std::pair<synfig::Layer::Handle,synfig::String> LayerParam;

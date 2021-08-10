@@ -211,7 +211,7 @@ ValueNode::Handle
 ValueNode_Random::clone(std::shared_ptr<Canvas> canvas, const GUID& deriv_guid)const
 {
 	std::shared_ptr<ValueNode_Random> ret =
-		std::shared_ptr<ValueNode_Random>::cast_dynamic(
+		std::dynamic_pointer_cast<ValueNode_Random>(
 			LinkableValueNode::clone(canvas, deriv_guid) );
 	ret->randomize_seed();
 	return ret;

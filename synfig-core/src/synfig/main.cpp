@@ -380,7 +380,7 @@ synfig::Main::~Main()
 		std::map<synfig::String, std::shared_ptr<Canvas> >::iterator iter;
 		for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
 		{
-			synfig::warning("%s: count()=%d",iter->first.c_str(), iter->second.count());
+			synfig::warning("%s: count()=%d",iter->first.c_str(), iter->second.use_count());
 		}
 	}
 

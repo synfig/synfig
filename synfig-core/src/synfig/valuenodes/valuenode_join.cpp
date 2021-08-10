@@ -70,7 +70,7 @@ ValueNode_Join::ValueNode_Join(const ValueBase &value):
 		// add an extra element at the end to allow the easy insertion of text after the given value's string
 		v.push_back(String());
 
-		set_link("strings",ValueNode_DynamicList::create(v));
+		set_link("strings",std::shared_ptr<ValueNode>(ValueNode_DynamicList::create(v)));
 		set_link("before",ValueNode_Const::create(String("")));
 		set_link("separator",ValueNode_Const::create(String("")));
 		set_link("after",ValueNode_Const::create(String("")));

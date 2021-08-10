@@ -70,11 +70,11 @@ OptimizerDraftLowRes::OptimizerDraftLowRes(Real scale): scale(scale)
 void
 OptimizerDraftLowRes::run(const RunParams &params) const
 {
-	if (!params.parent && params.ref_task && !params.ref_task.type_is<TaskSurface>())
+	if (!params.parent && params.ref_task && !std::dynamic_pointer_cast<TaskSurface>(params.ref_task))
 	{
 		Task::Handle sub_task = params.ref_task->clone();
 
-		TaskTransformationAffine::Handle affine = new TaskTransformationAffine();
+		TaskTransformationAffine::Handle affine = std::make_shared<TaskTransformationAffine>();
 		affine->sub_task() = sub_task;
 		affine->supersample = Vector(1.0/scale, 1.0/scale);
 		affine->interpolation = Color::INTERPOLATION_NEAREST;
@@ -96,15 +96,15 @@ OptimizerDraftLowRes::run(const RunParams &params) const
 void
 OptimizerDraftTransformation::run(const RunParams &params) const
 {
-	if (TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task))
+	if (TaskTransformation::Handle transformation = std::dynamic_pointer_cast<TaskTransformation>(params.ref_task))
 	{
-		const bool affine = transformation->get_transformation().type_is<TransformationAffine>();
+		const bool affine = (bool)std::dynamic_pointer_cast<TransformationAffine>(transformation->get_transformation());
 		const Real supersample_max = affine ? 1 : 0.5;
 		if ( transformation->interpolation != Color::INTERPOLATION_NEAREST
 		  || approximate_greater_lp(transformation->supersample[0], supersample_max)
 		  || approximate_greater_lp(transformation->supersample[1], supersample_max) )
 		{
-			transformation = TaskTransformation::Handle::cast_dynamic( transformation->clone() );
+			transformation = std::dynamic_pointer_cast<TaskTransformation>( transformation->clone() );
 			transformation->interpolation = Color::INTERPOLATION_NEAREST;
 			transformation->supersample[0] = std::min(transformation->supersample[0], supersample_max);
 			transformation->supersample[1] = std::min(transformation->supersample[1], supersample_max);
@@ -122,7 +122,7 @@ OptimizerDraftContour::OptimizerDraftContour(Real detail, bool antialias):
 void
 OptimizerDraftContour::run(const RunParams &params) const
 {
-	if (TaskContour::Handle contour = TaskContour::Handle::cast_dynamic(params.ref_task))
+	if (TaskContour::Handle contour = std::dynamic_pointer_cast<TaskContour>(params.ref_task))
 	{
 		if ( approximate_less_lp(contour->detail, detail)
 		 || ( !antialias
@@ -130,7 +130,7 @@ OptimizerDraftContour::run(const RunParams &params) const
 		   && contour->contour->antialias
 		   && contour->allow_antialias ))
 		{
-			contour = TaskContour::Handle::cast_dynamic(contour->clone());
+			contour = std::dynamic_pointer_cast<TaskContour>(contour->clone());
 			if (contour->detail < detail) contour->detail = detail;
 			if (!antialias) contour->allow_antialias = false;
 			apply(params, contour);
@@ -144,11 +144,11 @@ OptimizerDraftContour::run(const RunParams &params) const
 void
 OptimizerDraftBlur::run(const RunParams &params) const
 {
-	if (TaskBlur::Handle blur = TaskBlur::Handle::cast_dynamic(params.ref_task))
+	if (TaskBlur::Handle blur = std::dynamic_pointer_cast<TaskBlur>(params.ref_task))
 	{
 		if (blur->blur.type != Blur::BOX && blur->blur.type != Blur::CROSS)
 		{
-			blur = TaskBlur::Handle::cast_dynamic(blur->clone());
+			blur = std::dynamic_pointer_cast<TaskBlur>(blur->clone());
 			blur->blur.type = Blur::BOX;
 			apply(params, blur);
 		}
@@ -164,7 +164,7 @@ OptimizerDraftLayerRemove::OptimizerDraftLayerRemove(const String &layername):
 void
 OptimizerDraftLayerRemove::run(const RunParams &params) const
 {
-	if (TaskLayer::Handle layer = TaskLayer::Handle::cast_dynamic(params.ref_task))
+	if (TaskLayer::Handle layer = std::dynamic_pointer_cast<TaskLayer>(params.ref_task))
 		if (layer->layer && layer->layer->get_name() == layername)
 			apply(params, Task::Handle());
 }
@@ -179,7 +179,7 @@ OptimizerDraftLayerSkip::OptimizerDraftLayerSkip(const String &layername):
 void
 OptimizerDraftLayerSkip::run(const RunParams &params) const
 {
-	if (TaskLayer::Handle layer = TaskLayer::Handle::cast_dynamic(params.ref_task))
+	if (TaskLayer::Handle layer = std::dynamic_pointer_cast<TaskLayer>(params.ref_task))
 		if (layer->layer && layer->layer->get_name() == layername)
 			apply(params, layer->sub_task());
 }

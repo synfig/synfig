@@ -69,7 +69,7 @@ Layer_Duplicate::Layer_Duplicate():
 	Layer_CompositeFork(1.0,Color::BLEND_COMPOSITE)
 {
 	LinkableValueNode* index_value_node = ValueNode_Duplicate::create(Real(3));
-	connect_dynamic_param("index", index_value_node);
+	connect_dynamic_param("index", std::shared_ptr<ValueNode>(index_value_node));
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -113,7 +113,7 @@ Layer_Duplicate::get_param(const String &param)const
 Color
 Layer_Duplicate::get_color(Context context, const Point &pos)const
 {
-	handle<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
+	std::shared_ptr<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
 	if (!duplicate_param) return context.get_color(pos);
 
 	Color::BlendMethod blend_method(get_blend_method());
@@ -154,13 +154,13 @@ Layer_Duplicate::get_duplicate_param()const
 	DynamicParamList::const_iterator iter = dpl.find("index");
 	if (iter == dpl.end()) return NULL;
 	etl::rhandle<ValueNode> param(iter->second);
-	return ValueNode_Duplicate::Handle::cast_dynamic(param);
+	return std::dynamic_pointer_cast<ValueNode_Duplicate>(param.obj);
 }
 
 rendering::Task::Handle
 Layer_Duplicate::build_rendering_task_vfunc(Context context) const
 {
-	handle<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
+	std::shared_ptr<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
 	if (!duplicate_param)
 		return context.build_rendering_task();
 

@@ -214,13 +214,13 @@ public:
 
 	//! Returns \c true if layer is active in this context
 	inline bool active()const {
-		return !(operator*()).empty()
+		return (bool)(operator*())
 			 && active(params, *(operator*()));
 	}
 
 	//! Returns \c true if layer is visible in z_depth range in this context
 	inline bool in_z_range()const {
-		return !(operator*()).empty()
+		return (bool)(operator*())
 			 && z_depth_visibility(params, *(operator*()));
 	}
 	

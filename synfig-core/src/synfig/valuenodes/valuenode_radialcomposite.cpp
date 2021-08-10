@@ -89,10 +89,10 @@ ValueNode_RadialComposite::~ValueNode_RadialComposite()
 	unlink_all();
 }
 
-ValueNode_RadialComposite*
+std::shared_ptr<ValueNode_RadialComposite>
 ValueNode_RadialComposite::create(const ValueBase &value)
 {
-	return new ValueNode_RadialComposite(value);
+	return std::shared_ptr<ValueNode_RadialComposite>(new ValueNode_RadialComposite(value));
 }
 
 LinkableValueNode*
@@ -139,7 +139,7 @@ ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0 && i<link_count());
 
-	if(PlaceholderValueNode::Handle::cast_dynamic(x))
+	if(std::dynamic_pointer_cast<PlaceholderValueNode>(x))
 	{
 		components[i]=x;
 		return true;

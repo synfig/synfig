@@ -108,7 +108,7 @@ class Surface;
 *	\see module.h
 **	\
 */
-class Importer : public etl::shared_object
+class Importer
 {
 public:
 	//! Type that represents a pointer to a Importer's constructor.

@@ -161,7 +161,7 @@ Layer_Composite::get_param(const String & param)const
 rendering::Task::Handle
 Layer_Composite::build_composite_task_vfunc(ContextParams /*context_params*/)const
 {
-	return new rendering::TaskLayer();
+	return make_shared<rendering::TaskLayer>();
 	//rendering::TaskLayer::Handle task = new rendering::TaskLayer();
 	//// TODO: This is not thread-safe
 	//task->layer = const_cast<Layer_Composite*>(this);//clone(NULL);
@@ -172,7 +172,7 @@ rendering::Task::Handle
 Layer_Composite::build_rendering_task_vfunc(Context context)const
 {
 	rendering::Task::Handle sub_task = build_composite_task_vfunc(context.get_params());
-	if (sub_task.type_is<rendering::TaskLayer>())
+	if ((bool)std::dynamic_pointer_cast<const rendering::TaskLayer>(sub_task))
 		return Layer::build_rendering_task_vfunc(context);
 
 	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());

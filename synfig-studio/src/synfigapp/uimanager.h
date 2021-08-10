@@ -41,7 +41,7 @@
 
 namespace synfigapp {
 
-class UIInterface : public etl::shared_object, public synfig::ProgressCallback, public sigc::trackable
+class UIInterface : public synfig::ProgressCallback, public sigc::trackable
 {
 public:
 	enum Response

@@ -143,7 +143,7 @@ Import::set_param(const String & param, const ValueBase &value)
 
 		this->independent_filename = independent_filename;
 
-		handle<Importer> newimporter;
+		std::shared_ptr<Importer> newimporter;
 		newimporter = Importer::open(get_canvas()->get_file_system()->get_identifier(full_filename));
 
 		if (!newimporter)
@@ -165,8 +165,8 @@ Import::set_param(const String & param, const ValueBase &value)
 		if (!newimporter->is_animated())
 			time = Time(0);
 
-		rendering_surface = new rendering::SurfaceResource(
-			newimporter->get_frame(get_canvas()->rend_desc(), time) );
+		rendering_surface = std::shared_ptr<rendering::SurfaceResource>(new rendering::SurfaceResource(
+			newimporter->get_frame(get_canvas()->rend_desc(), time) ));
 		importer=newimporter;
 		param_filename.set(filename);
 

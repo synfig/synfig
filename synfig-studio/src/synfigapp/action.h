@@ -174,7 +174,7 @@ inline Category operator|(Category lhs, Category rhs)
 **		-	Factory for creating this action from a ParamList
 **
 */
-class Base : public etl::shared_object
+class Base
 {
 protected:
 	Base() { }
@@ -300,14 +300,14 @@ public:
 
 	void add_action(std::shared_ptr<Base> action)
 	{
-		std::shared_ptr<Undoable> undoable = std::shared_ptr<Undoable>::cast_dynamic(action);
+		std::shared_ptr<Undoable> undoable = std::dynamic_pointer_cast<Undoable>(action);
 		assert(undoable);
 		add_action(undoable);
 	}
 
 	void add_action_front(std::shared_ptr<Base> action)
 	{
-		std::shared_ptr<Undoable> undoable = std::shared_ptr<Undoable>::cast_dynamic(action);
+		std::shared_ptr<Undoable> undoable = std::dynamic_pointer_cast<Undoable>(action);
 		assert(undoable);
 		add_action_front(undoable);
 	}

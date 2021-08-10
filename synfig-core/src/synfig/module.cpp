@@ -171,7 +171,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(constructor)
 	{
-		mod=handle<Module>((*constructor)(callback));
+		mod=shared_ptr<Module>((*constructor)(callback));
 	}
 	else
 	{

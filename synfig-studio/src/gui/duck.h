@@ -57,7 +57,7 @@ class Duckmatic;
 
 /*! \class Duck
 **	\writeme */
-class Duck : public etl::shared_object
+class Duck
 {
 	friend class Duckmatic;
 

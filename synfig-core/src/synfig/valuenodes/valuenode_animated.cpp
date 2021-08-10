@@ -58,7 +58,7 @@ ValueNode_Animated::ValueNode_Animated(Type &type):
 
 ValueNode_Animated::Handle
 ValueNode_Animated::create(Type &type)
-	{ return new ValueNode_Animated(type); }
+	{ return std::shared_ptr<ValueNode_Animated>(new ValueNode_Animated (type)); }
 
 ValueNode_Animated::Handle
 ValueNode_Animated::create(const ValueBase& value, const Time& time)
@@ -76,7 +76,7 @@ ValueNode_Animated::create(ValueNode::Handle value_node, const Time& time)
 ValueNode::Handle
 ValueNode_Animated::clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 {
-	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
+	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return std::shared_ptr<ValueNode>(x); }
 	ValueNode_Animated::Handle ret(new ValueNode_Animated(get_type()));
 	ret->set_guid(get_guid()^deriv_guid);
 	ret->set_parent_canvas(canvas);

@@ -47,7 +47,7 @@ namespace rendering
 
 class RenderQueue;
 
-class Renderer: public etl::shared_object
+class Renderer
 {
 public:
 	typedef std::shared_ptr<Renderer> Handle;

@@ -98,7 +98,7 @@ enum TargetAlphaMode
 *	to import. Also it creates a virtual member render() that must be declared in
 *	the inherited classes.
 */
-class Target : public etl::shared_object
+class Target
 {
 public:
 	typedef std::shared_ptr<Target> Handle;

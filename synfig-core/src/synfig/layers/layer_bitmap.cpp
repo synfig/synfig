@@ -198,7 +198,7 @@ Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 		surface_pos[1]/=br[1]-tl[1];
 		if(surface_pos[1]<=1.0 && surface_pos[1]>=0.0)
 		{
-			return const_cast<Layer_Bitmap*>(this);
+			return std::shared_ptr<Layer>(const_cast<Layer_Bitmap*>(this));
 		}
 	}
 
@@ -269,7 +269,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				typedef rendering::software::PackedSurface PackedSurface;
 				typedef PackedSurface::Sampler Sampler;
 
-				assert(lsurf.get_handle().type_is<rendering::SurfaceSWPacked>());
+				assert((bool)std::dynamic_pointer_cast<const rendering::SurfaceSWPacked>(lsurf.get_handle()));
 				reader.open( lsurf.cast<rendering::SurfaceSWPacked>()->get_surface() );
 				switch(c)
 				{
@@ -295,7 +295,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 			else
 			if (lsurf.convert<rendering::SurfaceSW>())
 			{
-				assert(lsurf.get_handle().type_is<rendering::SurfaceSW>());
+				assert((bool)std::dynamic_pointer_cast<const rendering::SurfaceSW>(lsurf.get_handle()));
 				const Surface &surface = lsurf.cast<rendering::SurfaceSW>()->get_surface();
 				switch(c)
 				{
@@ -368,13 +368,13 @@ Layer_Bitmap::build_composite_task_vfunc(ContextParams /* context_params */) con
 	task_surface->source_rect = Rect(0.0, 0.0, 1.0, 1.0);
 	task = task_surface;
 
-	rendering::TaskTransformationAffine::Handle task_transform = new rendering::TaskTransformationAffine();
+	rendering::TaskTransformationAffine::Handle task_transform = std::make_shared<rendering::TaskTransformationAffine>();
 	task_transform->interpolation = (Color::Interpolation)param_c.get(int());
 	task_transform->transformation->matrix = m;
 	task_transform->sub_task() = task;
 	task = task_transform;
 
-	rendering::TaskPixelGamma::Handle task_gamma = new rendering::TaskPixelGamma();
+	rendering::TaskPixelGamma::Handle task_gamma = std::make_shared<rendering::TaskPixelGamma>();
 	task_gamma->gamma = get_canvas()->get_root()->rend_desc().get_gamma() / gamma;
 	task_gamma->sub_task() = task;
 	if (!task_gamma->is_transparent())

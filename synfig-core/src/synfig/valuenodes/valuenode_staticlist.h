@@ -61,6 +61,7 @@ protected:
 	virtual ~ValueNode_StaticList();
 
 	Type *container_type;
+	Handle this_ptr;
 
 	bool loop_;
 

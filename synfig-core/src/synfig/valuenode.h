@@ -55,7 +55,7 @@
 	}																	\
 	if (get_type() != type_nil &&										\
 		!(ValueBase::can_copy(value->get_type(), type)) &&				\
-		!PlaceholderValueNode::Handle::cast_dynamic(value)) {			\
+		!std::dynamic_pointer_cast<PlaceholderValueNode>(value)) {			\
 		error(_("%s:%d wrong type for %s: need %s but got %s"),			\
 			  __FILE__, __LINE__,										\
 			  link_local_name(i).c_str(),								\

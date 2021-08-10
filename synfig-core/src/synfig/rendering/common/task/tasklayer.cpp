@@ -118,7 +118,7 @@ TaskLayer::set_coords_sub_tasks()
 
 		Task::Handle t = task->clone();
 		if (!matrix.is_identity()) {
-			TaskTransformationAffine::Handle ta = new TaskTransformationAffine();
+			TaskTransformationAffine::Handle ta = std::make_shared<TaskTransformationAffine>();
 			ta->transformation->matrix = matrix;
 			ta->sub_task() = t;
 			t = ta;

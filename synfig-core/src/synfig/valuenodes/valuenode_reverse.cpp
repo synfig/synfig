@@ -89,17 +89,17 @@ ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 	{
 		Type &c_type(x.get_contained_type());
 		if(c_type == type_bline_point)
-			set_link("link", ValueNode_BLine::create(x));
+			set_link("link", std::shared_ptr<ValueNode>(ValueNode_BLine::create(x)));
 		else if(c_type == type_dash_item)
-			set_link("link", ValueNode_DIList::create(x));
+			set_link("link", std::shared_ptr<ValueNode>(ValueNode_DIList::create(x)));
 		else if(c_type == type_width_point)
-			set_link("link", ValueNode_WPList::create(x));
+			set_link("link", std::shared_ptr<ValueNode>(ValueNode_WPList::create(x)));
 		else
-			set_link("link", ValueNode_DynamicList::create(x));
+			set_link("link", std::shared_ptr<ValueNode>(ValueNode_DynamicList::create(x)));
 	}
 	else
 	if(ValueNode_Composite::check_type(type)) {
-		set_link("link", ValueNode_Composite::create(x));
+		set_link("link", std::shared_ptr<ValueNode>(ValueNode_Composite::create(x)));
 	}
 	else
 	{

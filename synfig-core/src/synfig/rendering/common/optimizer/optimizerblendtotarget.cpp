@@ -75,14 +75,14 @@ OptimizerBlendToTarget::run(const RunParams& params) const
 	//  - taskB(targetA)
 	//
 
-	if (TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task))
-	if (TaskInterfaceTargetAsSource *sourcetarget = blend.type_pointer<TaskInterfaceTargetAsSource>())
+	if (TaskBlend::Handle blend = std::dynamic_pointer_cast<TaskBlend>(params.ref_task))
+	if (std::shared_ptr<TaskInterfaceTargetAsSource> sourcetarget = std::dynamic_pointer_cast<TaskInterfaceBlendToTarget>(blend))
 	{
 		if ( sourcetarget->get_target_subtask_index() == 0
 		  && ( !blend->sub_task_a()
 			|| blend->sub_task_a()->target_surface == blend->target_surface ))
 		{
-			TaskInterfaceBlendToTarget *interface = blend->sub_task_b().type_pointer<TaskInterfaceBlendToTarget>();
+			std::shared_ptr<TaskInterfaceBlendToTarget> interface = std::dynamic_pointer_cast<TaskInterfaceBlendToTarget>(blend->sub_task_b());
 			if ( interface
 			  && interface->is_blend_method_supported(blend->blend_method)
 			  && (!interface->target_subtask())
@@ -91,7 +91,7 @@ OptimizerBlendToTarget::run(const RunParams& params) const
 			{
 				Task::Handle new_task = blend->sub_task_b()->clone();
 
-				interface = new_task.type_pointer<TaskInterfaceBlendToTarget>();
+				interface = std::dynamic_pointer_cast<TaskInterfaceBlendToTarget>(new_task);
 				assert(interface);
 				if (!interface->blend) interface->amount = 1.0;
 				interface->amount *= blend->amount;

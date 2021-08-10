@@ -48,7 +48,7 @@ namespace synfig
 namespace rendering
 {
 
-class Intersector: public etl::shared_object
+class Intersector
 {
 public:
 	typedef std::shared_ptr<Intersector> Handle;

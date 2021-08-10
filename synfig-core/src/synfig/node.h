@@ -289,7 +289,7 @@ synfig::Node* find_node(const synfig::GUID& guid);
 template<typename T> std::shared_ptr<T>
 guid_cast(const synfig::GUID& guid)
 {
-	return std::shared_ptr<T>::cast_dynamic(synfig::find_node(guid));
+	return std::shared_ptr<T>(dynamic_cast<T*>(synfig::find_node(guid)));
 }
 
 #ifdef _DEBUG

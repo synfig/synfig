@@ -148,7 +148,7 @@ synfig::Target_Tile::call_renderer(
 			Matrix m;
 			if (p0[0] > p1[0]) { m.m00 = -1.0; m.m20 = p0[0] + p1[0]; std::swap(p0[0], p1[0]); }
 			if (p0[1] > p1[1]) { m.m11 = -1.0; m.m21 = p0[1] + p1[1]; std::swap(p0[1], p1[1]); }
-			TaskTransformationAffine::Handle t = new TaskTransformationAffine();
+			TaskTransformationAffine::Handle t = std::make_shared<TaskTransformationAffine>();
 			t->transformation->matrix = m;
 			t->sub_task() = task;
 			task = t;
@@ -232,7 +232,7 @@ synfig::Target_Tile::async_render_tile(
 	RendDesc tile_desc,
 	ProgressCallback *cb)
 {
-	SurfaceResource::Handle surface = new rendering::SurfaceResource();
+	SurfaceResource::Handle surface = std::make_shared<rendering::SurfaceResource>();
 
 	if (!call_renderer(surface, *canvas, context_params, tile_desc))
 	{

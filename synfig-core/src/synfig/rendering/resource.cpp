@@ -122,7 +122,7 @@ Resource::set_alternative(Handle other) const
 	else
 	{
 		// new storage
-		alternatives = new Storage();
+		alternatives = std::make_shared<Storage>();
 		alternatives->resources.push_back(Handle(const_cast<Resource*>(this)));
 		alternatives->resources.push_back(other);
 	}

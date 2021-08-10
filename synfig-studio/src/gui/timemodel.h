@@ -46,7 +46,7 @@ namespace studio {
 //!  - full time track
 //!  - visible part of time track (when it zoomed/scrolled)
 //!  - playing bounds at time track
-class TimeModel: public etl::shared_object, public sigc::trackable
+class TimeModel: public sigc::trackable
 {
 private:
 	bool in_sync;

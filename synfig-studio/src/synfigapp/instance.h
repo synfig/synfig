@@ -72,9 +72,6 @@ public:
 
 	typedef std::list< FileReference > FileReferenceList;
 
-	using etl::shared_object::ref;
-	using etl::shared_object::unref;
-
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------
 	*/
@@ -149,7 +146,7 @@ public:
 	~Instance();
 
 	void set_selection_manager(const std::shared_ptr<SelectionManager> &sm) { assert(sm); selection_manager_=sm; }
-	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
+	void unset_selection_manager() { selection_manager_=std::shared_ptr<SelectionManager>(new NullSelectionManager()); }
 	const std::shared_ptr<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
 	synfig::FileSystem::Handle get_container() const { return container_; };

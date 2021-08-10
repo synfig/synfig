@@ -68,7 +68,7 @@ ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(Type &x):
 		throw Exception::BadType(x.description.local_name);
 
 	ValueNode_BLine* value_node(new ValueNode_BLine());
-	set_link("bline",value_node);
+	set_link("bline",std::shared_ptr<ValueNode_BLine>(value_node));
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
 	set_link("scale",ValueNode_Const::create(Real(1.0)));

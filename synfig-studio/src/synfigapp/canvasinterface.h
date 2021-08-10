@@ -56,7 +56,7 @@ namespace Action { class ParamList; class Param; class EditModeSet; };
 class Instance;
 class ValueDesc;
 
-class CanvasInterface : public etl::shared_object, public sigc::trackable
+class CanvasInterface : public sigc::trackable
 {
 	friend class Instance;
 	friend class Action::EditModeSet;
@@ -221,7 +221,7 @@ public:
 	void set_selection_manager(const std::shared_ptr<SelectionManager> &sm) { selection_manager_=sm; }
 
 	//! Disables the selection manager
-	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
+	void unset_selection_manager() { selection_manager_=std::shared_ptr<SelectionManager>(new NullSelectionManager()); }
 
 	//! Returns a handle to the current SelectionManager
 	const std::shared_ptr<SelectionManager> &get_selection_manager()const { return selection_manager_; }
@@ -230,7 +230,7 @@ public:
 	void set_ui_interface(const std::shared_ptr<UIInterface> &uim) { ui_interface_=uim; }
 
 	//! Disables the UIInterface
-	void unset_ui_interface() { ui_interface_=new DefaultUIInterface(); }
+	void unset_ui_interface() { ui_interface_=std::shared_ptr<UIInterface>(new DefaultUIInterface()); }
 
 	//! Returns a handle to the current UIInterface
 	const std::shared_ptr<UIInterface> &get_ui_interface() { return ui_interface_; }

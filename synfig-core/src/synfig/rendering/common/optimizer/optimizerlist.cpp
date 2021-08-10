@@ -47,13 +47,13 @@ using namespace rendering;
 // these tasks should be removed from list
 static bool
 can_be_skipped(const Task::Handle &task)
-	{ return !task || task.type_is<TaskSurface>(); }
+	{ return !task || std::dynamic_pointer_cast<TaskSurface>(task); }
 
 // can we make list with two or more elements?
 static bool
 can_build_list(const Task::Handle &task)
 {
-	const TaskInterfaceTargetAsSource *interface = task.type_pointer<TaskInterfaceTargetAsSource>();
+    std::shared_ptr<const TaskInterfaceTargetAsSource> interface = std::dynamic_pointer_cast<TaskInterfaceTargetAsSource>(task);
 	return interface
 		&& interface->is_allowed_target_as_source()
 	    && !can_be_skipped( interface->target_subtask() );
@@ -63,7 +63,7 @@ static bool
 can_be_modified(const Task::Handle &task)
 {
 	if (can_be_skipped(task)) return false; // don't try to modify empty tasks
-	if (task.type_is<TaskList>())
+	if (std::dynamic_pointer_cast<TaskList>(task))
 	{ // can we modify any task in list?
 		if ((int)task->sub_tasks.size() < 50)
 			for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
@@ -79,7 +79,7 @@ add_task(
 	const TaskList::Handle &list,
 	const Task::Handle &task )
 {
-	if (task.type_is<TaskList>()) {
+	if (std::dynamic_pointer_cast<TaskList>(task)) {
 		for(Task::List::const_iterator i = task->sub_tasks.begin(); i != task->sub_tasks.end(); ++i)
 			if (!can_be_skipped(*i)) add_task(list, *i);
 		return;
@@ -89,13 +89,13 @@ add_task(
 	if (can_build_list(task))
 	{
 		if (new_task == task) new_task = task->clone();
-		TaskInterfaceTargetAsSource *new_interface = new_task.type_pointer<TaskInterfaceTargetAsSource>();
+		std::shared_ptr<TaskInterfaceTargetAsSource> new_interface = std::dynamic_pointer_cast<TaskInterfaceTargetAsSource>(new_task);
 		assert(new_interface);
 
 		Task::Handle &target_subtask = new_interface->target_subtask();
 		add_task(list, target_subtask);
 
-		target_subtask = new TaskSurface();
+		target_subtask = std::make_shared<TaskSurface>();
 		target_subtask->assign_target(*new_task);
 		new_interface->on_target_set_as_source();
 	}
@@ -149,7 +149,7 @@ OptimizerList::run(const RunParams& params) const
 	const Task::Handle &task = params.ref_task;
 	if (can_be_modified(task))
 	{
-		TaskList::Handle list = new TaskList();
+		TaskList::Handle list = std::make_shared<TaskList>();
 		list->assign_target(*task);
 		add_task(list, task);
 		apply(params, list);

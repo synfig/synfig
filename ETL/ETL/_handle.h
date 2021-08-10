@@ -192,7 +192,7 @@ public:
 	}
 
 	//! Default copy constructor
-	rhandle(const rhandle<value_type> &x):obj(x.obj())
+	rhandle(const rhandle<value_type> &x):obj(x.obj)
 	{
 		if(obj)add_to_rlist();
 	}
@@ -209,7 +209,7 @@ public:
 
 		detach(); // tests are needed
 
-		obj=x.obj();
+		obj=x.obj;
 		if(obj)add_to_rlist();
 		return *this;
 	}
@@ -234,6 +234,16 @@ public:
     { return rhandle<const value_type>(static_cast<const_pointer>(obj)); }
 
     operator std::shared_ptr<value_type>() const { return obj; }
+
+    template <class U> rhandle<T> cast_static	   (const rhandle<U>& x);
+    template <class U> rhandle<T> cast_dynamic	   (const rhandle<U>& x);
+    template <class U> rhandle<T> cast_const	   (const rhandle<U>& x);
+    template <class U> rhandle<T> cast_reinterpret(const rhandle<U>& x);
+
+    template <class U> rhandle<T> cast_static	   (const std::shared_ptr<U>& x);
+    template <class U> rhandle<T> cast_dynamic	   (const std::shared_ptr<U>& x);
+    template <class U> rhandle<T> cast_const	   (const std::shared_ptr<U>& x);
+    template <class U> rhandle<T> cast_reinterpret(const std::shared_ptr<U>& x);
 
 	//! Handle release procedure
 	void
@@ -317,6 +327,19 @@ public:
     }
 }; // END of template class rhandle
 
+template <class T, class U> bool operator==(const std::shared_ptr<T>& lhs, const etl::rhandle<U>& rhs){ return (lhs.get()==rhs.get()); }
+template <class T, class U> bool operator==(const rhandle<T>& lhs, const std::shared_ptr<U>& rhs)     { return (lhs.get()==rhs.get()); }
+template <class T>          bool operator==(const std::shared_ptr<T>& lhs, const T* rhs)              { return (lhs.get()==rhs); }
+template <class T>          bool operator==(const rhandle<T>& lhs, const T* rhs)                      { return (lhs.get()==rhs); }
+template <class T>          bool operator==(const T* lhs, const std::shared_ptr<T>& rhs)              { return (lhs==rhs.get()); }
+template <class T>          bool operator==(const T* lhs, const rhandle<T>& rhs)                      { return (lhs==rhs.get()); }
+
+template <class T, class U> bool operator!=(const std::shared_ptr<T>& lhs, const etl::rhandle<U>& rhs) { return (lhs.get()!=rhs.get()); }
+template <class T, class U> bool operator!=(const rhandle<T>& lhs, const std::shared_ptr<U>& rhs)      { return (lhs.get()!=rhs.get()); }
+template <class T>          bool operator!=(const std::shared_ptr<T>& lhs, const T* rhs)               { return (lhs.get()!=rhs); }
+template <class T>          bool operator!=(const rhandle<T>& lhs, const T* rhs)                       { return (lhs.get()!=rhs); }
+template <class T>          bool operator!=(const T* lhs, const std::shared_ptr<T>& rhs)               { return (lhs!=rhs.get()); }
+template <class T>          bool operator!=(const T* lhs, const rhandle<T>& rhs)                       { return (lhs!=rhs.get()); }
 };
 
 /* === E N D =============================================================== */

@@ -528,7 +528,7 @@ FileSystemTemporary::save_temporary() const
 		  + get_temporary_filename_base() );
 	if (!stream) return false;
 
-	stream = new ZWriteStream(stream);
+	stream = std::shared_ptr<FileSystem::WriteStream>(new ZWriteStream(stream));
 	try
 	{
 		document.write_to_stream_formatted(*stream, "UTF-8");
@@ -574,7 +574,7 @@ FileSystemTemporary::open_temporary(const String &filename)
 
 	FileSystem::ReadStream::Handle stream = file_system->get_read_stream(filename);
 	if (!stream) return false;
-	stream = new ZReadStream(stream);
+	stream = std::shared_ptr<FileSystem::ReadStream>(new ZReadStream(stream));
 
 	xmlpp::DomParser parser;
 	parser.parse_stream(*stream);

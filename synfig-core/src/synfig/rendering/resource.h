@@ -44,7 +44,7 @@ namespace rendering
 {
 
 // TODO: move to ::synfig or to ::etl
-class Resource: public etl::shared_object
+class Resource
 {
 public:
 	typedef unsigned long long Id;

@@ -81,8 +81,7 @@ ValueNodeRegistry::create(const String &name, const ValueBase& x)
 		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), ValueNodeRegistry::book()[name].local_name.c_str(), x.get_type().description.local_name.c_str());
 		return nullptr;
 	}
-
-	return ValueNodeRegistry::book()[name].factory(x, nullptr);
+	return std::shared_ptr<LinkableValueNode>(ValueNodeRegistry::book()[name].factory(x, nullptr));
 }
 
 bool

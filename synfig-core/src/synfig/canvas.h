@@ -310,9 +310,9 @@ private:
 	//!	ValueBasenode Renamed
 	sigc::signal<void, std::shared_ptr<ValueNode> > signal_value_node_renamed_;
 	//!	Child Value Node Added. Used in Dynamic List Value Nodes
-	sigc::signal<void, std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode> > signal_value_node_child_added_;
+	sigc::signal<void, ValueNode*, std::shared_ptr<ValueNode> > signal_value_node_child_added_;
 	//!	Child Value Node Removed. Used in Dynamic List Value Nodes
-	sigc::signal<void, std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode> > signal_value_node_child_removed_;
+	sigc::signal<void, ValueNode*, std::shared_ptr<ValueNode> > signal_value_node_child_removed_;
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
@@ -359,12 +359,12 @@ public:
 	sigc::signal<void>& signal_dirty() { return signal_changed();	}
 
 	//! Child Value Node Added
-	sigc::signal<void, std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode> >& signal_value_node_child_added() { return signal_value_node_child_added_; }
+	sigc::signal<void, ValueNode*, std::shared_ptr<ValueNode> >& signal_value_node_child_added() { return signal_value_node_child_added_; }
 
 	//! Child Value Node Removed
-	sigc::signal<void, std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode> >& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
+	sigc::signal<void, ValueNode*, std::shared_ptr<ValueNode> >& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
 
-	void invoke_signal_value_node_child_removed(std::shared_ptr<ValueNode>, std::shared_ptr<ValueNode>);
+	void invoke_signal_value_node_child_removed(ValueNode*, std::shared_ptr<ValueNode>);
 
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
@@ -658,7 +658,7 @@ public:
 	//! Returns a Canvas handle with "Untitled" as ID
 	static Handle create();
 	//! Creates an inline Canvas for a given Canvas \parent
-	static Handle create_inline(Handle parent);
+	static Handle create_inline(const Handle& parent);
 
 	//! Clones (copies) the Canvas
 	Handle clone(const GUID& deriv_guid=GUID(), bool for_export=false)const;

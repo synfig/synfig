@@ -67,32 +67,32 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 
 	// Check if we are a linkable value node
 	LinkableValueNode::Handle linkable_value_node;
-	linkable_value_node=linkable_value_node.cast_dynamic(node);
+	linkable_value_node=std::dynamic_pointer_cast<LinkableValueNode>(node);
 	if(linkable_value_node)
 	{
 		const int link_count(linkable_value_node->link_count());
 		int i,ret(0);
 		for(i=0;i<link_count;i++)
-			ret+=waypoint_collect(waypoint_set,time,linkable_value_node->get_link(i).get());
+			ret+=waypoint_collect(waypoint_set,time,linkable_value_node->get_link(i));
 
 		return ret;
 	}
 
 	// Check if we are a layer
 	Layer::Handle layer;
-	layer=layer.cast_dynamic(node);
+	layer=std::dynamic_pointer_cast<Layer>(node);
 	if(layer)
 	{
 		const Layer::DynamicParamList& dyn_param_list(layer->dynamic_param_list());
 		Layer::DynamicParamList::const_iterator iter;
 		int ret(0);
 		for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
-			ret+=waypoint_collect(waypoint_set,time,iter->second);
+			ret+=waypoint_collect(waypoint_set,time,iter->second.obj);
 
 		ValueBase canvas_value(layer->get_param("canvas"));
 		if(canvas_value.get_type()==type_canvas)
 		{
-			std::shared_ptr<Layer_PasteCanvas> p = std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer);
+			std::shared_ptr<Layer_PasteCanvas> p = std::dynamic_pointer_cast<Layer_PasteCanvas>(layer);
 			if (p)
 				ret+=waypoint_collect(waypoint_set, time + p->get_time_offset(),
 									  Canvas::Handle(canvas_value.get(Canvas::Handle())));
@@ -105,7 +105,7 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 
 	// Check if we are a canvas
 	Canvas::Handle canvas;
-	canvas=canvas.cast_dynamic(node);
+	canvas=std::dynamic_pointer_cast<Canvas>(node);
 	if(canvas)
 	{
 		Canvas::const_iterator iter;
@@ -117,7 +117,7 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 
 	// Check if we are an animated value node
 	ValueNode_Animated::Handle value_node_animated;
-	value_node_animated=value_node_animated.cast_dynamic(node);
+	value_node_animated=std::dynamic_pointer_cast<ValueNode_Animated>(node);
 	if(value_node_animated)
 	{
 		try{
@@ -144,12 +144,12 @@ synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const std::shar
 {
 	// Check if we are a linkable value node
 	LinkableValueNode::Handle linkable_value_node;
-	linkable_value_node=linkable_value_node.cast_dynamic(node);
+	linkable_value_node=dynamic_pointer_cast<LinkableValueNode>(node);
 	if(linkable_value_node)
 	{
 		const int link_count(linkable_value_node->link_count());
 		for(int i=0; i < link_count; i++) {
-			bool ret = waypoint_search(waypoint, uid, linkable_value_node->get_link(i).get());
+			bool ret = waypoint_search(waypoint, uid, linkable_value_node->get_link(i));
 			if (ret)
 				return true;
 		}
@@ -158,13 +158,13 @@ synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const std::shar
 
 	// Check if we are a layer
 	Layer::Handle layer;
-	layer=layer.cast_dynamic(node);
+	layer=std::dynamic_pointer_cast<Layer>(node);
 	if(layer)
 	{
 		const Layer::DynamicParamList& dyn_param_list(layer->dynamic_param_list());
 
 		for(Layer::DynamicParamList::const_iterator iter=dyn_param_list.begin(); iter!=dyn_param_list.end(); ++iter) {
-			bool ret = waypoint_search(waypoint, uid, iter->second);
+			bool ret = waypoint_search(waypoint, uid, iter->second.obj);
 			if (ret)
 				return true;
 		}
@@ -182,7 +182,7 @@ synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const std::shar
 
 	// Check if we are a canvas
 	Canvas::Handle canvas;
-	canvas=canvas.cast_dynamic(node);
+	canvas=std::dynamic_pointer_cast<Canvas>(node);
 	if(canvas)
 	{
 		for(Canvas::const_iterator iter = canvas->begin(); iter!=canvas->end(); ++iter) {
@@ -195,7 +195,7 @@ synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const std::shar
 
 	// Check if we are an animated value node
 	ValueNode_Animated::Handle value_node_animated;
-	value_node_animated=value_node_animated.cast_dynamic(node);
+	value_node_animated=std::dynamic_pointer_cast<ValueNode_Animated>(node);
 	if(value_node_animated)
 	{
 		ValueNode_AnimatedInterfaceConst::const_findresult result = value_node_animated->find_uid(uid);

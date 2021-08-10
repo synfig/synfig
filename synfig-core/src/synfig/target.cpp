@@ -110,7 +110,7 @@ Target::create(const String &name, const String &filename,
 			   const synfig::TargetParam& params)
 {
 	if(!book().count(name))
-		return handle<Target>();
+		return std::shared_ptr<Target>();
 
 	return Target::Handle(book()[name].factory(filename.c_str(), params));
 }

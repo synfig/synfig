@@ -50,7 +50,7 @@ namespace rendering
 
 class Intersector;
 
-class Contour: public etl::shared_object
+class Contour
 {
 public:
 	typedef std::shared_ptr<Contour> Handle;

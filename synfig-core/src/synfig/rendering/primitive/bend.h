@@ -47,7 +47,7 @@ namespace synfig
 namespace rendering
 {
 
-class Bend: public etl::shared_object
+class Bend
 {
 public:
 	typedef std::shared_ptr<Bend> Handle;

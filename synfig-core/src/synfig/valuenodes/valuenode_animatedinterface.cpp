@@ -354,7 +354,7 @@ public:
 		{
 			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 			Waypoint waypoint(value, t);
-			waypoint.set_parent_value_node(&animated.node());
+			waypoint.set_parent_value_node(std::shared_ptr<ValueNode>(&animated.node()));
 
 			animated.waypoint_list_.push_back(waypoint);
 			WaypointList::iterator ret=animated.waypoint_list_.end();
@@ -376,7 +376,7 @@ public:
 			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 			Waypoint waypoint(value_node,t);
-			waypoint.set_parent_value_node(&animated.node());
+			waypoint.set_parent_value_node(std::shared_ptr<ValueNode>(&animated.node()));
 
 			animated.waypoint_list_.push_back(waypoint);
 			WaypointList::iterator ret=animated.waypoint_list_.end();
@@ -696,7 +696,7 @@ public:
 			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 			Waypoint waypoint(value,t);
-			waypoint.set_parent_value_node(&animated.node());
+			waypoint.set_parent_value_node(std::shared_ptr<ValueNode>(&animated.node()));
 
 			animated.waypoint_list_.push_back(waypoint);
 			WaypointList::iterator ret=animated.waypoint_list_.end();
@@ -714,7 +714,7 @@ public:
 			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 			Waypoint waypoint(value_node,t);
-			waypoint.set_parent_value_node(&animated.node());
+			waypoint.set_parent_value_node(std::shared_ptr<ValueNode>(&animated.node()));
 
 			animated.waypoint_list_.push_back(waypoint);
 			WaypointList::iterator ret=animated.waypoint_list_.end();
@@ -787,7 +787,7 @@ public:
 
 
 			Waypoint waypoint(value,t);
-			waypoint.set_parent_value_node(&animated.node());
+			waypoint.set_parent_value_node(std::shared_ptr<ValueNode>(&animated.node()));
 
 			animated.waypoint_list_.push_back(waypoint);
 			WaypointList::iterator ret=animated.waypoint_list_.end();
@@ -805,7 +805,7 @@ public:
 			try { animated.find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound&) { };
 
 			Waypoint waypoint(value_node,t);
-			waypoint.set_parent_value_node(&animated.node());
+			waypoint.set_parent_value_node(std::shared_ptr<ValueNode>(&animated.node()));
 
 			animated.waypoint_list_.push_back(waypoint);
 			WaypointList::iterator ret=animated.waypoint_list_.end();
@@ -999,7 +999,7 @@ ValueNode_AnimatedInterfaceConst::new_waypoint_at_time(const Time& time)const
 		}
 	}
 	waypoint.set_time(time);
-	waypoint.set_parent_value_node(&const_cast<ValueNode_AnimatedInterfaceConst*>(this)->node());
+	waypoint.set_parent_value_node(std::shared_ptr<ValueNode>(&const_cast<ValueNode_AnimatedInterfaceConst*>(this)->node()));
 
 	return waypoint;
 }
@@ -1125,7 +1125,7 @@ ValueNode_AnimatedInterfaceConst::WaypointList::iterator
 ValueNode_AnimatedInterfaceConst::add(const Waypoint &x)
 {
 	Waypoint waypoint(x);
-	waypoint.set_parent_value_node(&node());
+	waypoint.set_parent_value_node(std::shared_ptr<ValueNode>(&node()));
 	waypoint_list_.push_back(waypoint);
 	//assert(waypoint_list_.back().get_parent_value_node()==this);
 	WaypointList::iterator ret=waypoint_list_.end();

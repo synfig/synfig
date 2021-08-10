@@ -118,7 +118,7 @@ ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int 
 		printf("    %-20s : parent %-20s (%d refs, %d rrefs)%s\n",
 			   GET_NODE_DESC_CSTR(bone,t),
 			   GET_NODE_DESC_CSTR(parent,t),
-			   bone->count(), bone->rcount(),
+			   bone.use_count(), bone->rcount(),
 			   id.c_str());
 	}
 	printf("\n");
@@ -269,13 +269,13 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, std::shared_ptr<Canvas> c
 		set_link("tipwidth",ValueNode_Const::create(bone.get_tipwidth()));
 		set_link("bone_depth",ValueNode_Const::create(bone.get_depth()));
 #endif
-		ValueNode_Bone::ConstHandle parent(ValueNode_Bone::Handle::cast_const(bone.get_parent()));
+		ValueNode_Bone::ConstHandle parent(const_cast<ValueNode_Bone*>(bone.get_parent()));
 		if (!parent) parent = get_root_bone();
-		set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_const(parent)));
+		set_link("parent",ValueNode_Const::create(parent));
 
 		if (getenv("SYNFIG_DEBUG_BONE_MAP"))
 			printf("%s:%d adding to canvas_map\n", __FILE__, __LINE__);
-		canvas_map[get_root_canvas()][get_guid()] = this;
+		canvas_map[get_root_canvas()][get_guid()] = shared_ptr<ValueNode_Bone>(this);
 
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 			printf("%s:%d set parent canvas for bone %p to %p\n", __FILE__, __LINE__, this, canvas.get());
@@ -303,10 +303,10 @@ ValueNode_Bone::create_new()const
 	return new ValueNode_Bone(get_type());
 }
 
-ValueNode_Bone*
+std::shared_ptr<ValueNode_Bone>
 ValueNode_Bone::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_Bone(x, canvas);
+	return std::shared_ptr<ValueNode_Bone>(new ValueNode_Bone(x, canvas));
 }
 
 ValueNode_Bone::~ValueNode_Bone()
@@ -423,7 +423,7 @@ ValueNode_Bone::get_parent(Time t)const
 		return parent;
 	}
 	assert(0);
-	return ValueNode_Bone::ConstHandle::cast_dynamic(new ValueNode_Bone_Root);
+	return std::dynamic_pointer_cast<ValueNode_Bone>(make_shared<ValueNode_Bone_Root>());
 }
 
 ValueBase
@@ -478,7 +478,7 @@ ValueNode_Bone::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 
 	if (!name_link->is_exported())
 	{
-		const_name_link = ValueNode_Const::Handle::cast_dynamic(name_link);
+		const_name_link = std::dynamic_pointer_cast<ValueNode_Const>(name_link);
 		if (const_name_link)
 		{
 			String name(old_name = const_name_link->get_value().get(String()));
@@ -529,7 +529,7 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 
 		// check for loops
 		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(value));
-		if (parents.count(this))
+		if (parents.count(std::shared_ptr<ValueNode_Bone>(this)))
 		{
 			error("creating potential loops in the bone ancestry isn't allowed");
 			return false;
@@ -763,7 +763,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 	}
 
 	// if it's a ValueNode_Const
-	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value_node))
+	if (ValueNode_Const::Handle value_node_const = std::dynamic_pointer_cast<ValueNode_Const>(value_node))
 	{
 		ValueBase value_node(value_node_const->get_value());
 		if (value_node.get_type() == type_bone_valuenode)
@@ -783,7 +783,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 	}
 
 	// if it's a ValueNode_Animated
-	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
+	if (ValueNode_Animated::Handle value_node_animated = std::dynamic_pointer_cast<ValueNode_Animated>(value_node))
 	{
 		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(type_bone_object);
 		const ValueNode_Animated::WaypointList& list(value_node_animated->waypoint_list());
@@ -799,7 +799,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 	}
 
 	// if it's a LinkableValueNode
-	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node))
+	if (LinkableValueNode::Handle linkable_value_node = std::dynamic_pointer_cast<LinkableValueNode>(value_node))
 	{
 		for (int i = 0; i < linkable_value_node->link_count(); i++)
 		{
@@ -809,7 +809,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 		return ret;
 	}
 
-	if (PlaceholderValueNode::Handle linkable_value_node = PlaceholderValueNode::Handle::cast_dynamic(value_node))
+	if (PlaceholderValueNode::Handle linkable_value_node = std::dynamic_pointer_cast<PlaceholderValueNode>(value_node))
 	{
 		// todo: while loading we might be setting up an ancestry loop by ignoring the placeholder valuenode here
 		// can we check for loops in badly formatted .sifz files somehow?
@@ -865,7 +865,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 					new_nodes.insert(node);
 					// and if it's a ValueNode_Bone, add it to the set to be returned
 					if (dynamic_cast<ValueNode_Bone*>(node))
-						ret.insert(dynamic_cast<ValueNode_Bone*>(node));
+						ret.insert(shared_ptr<ValueNode_Bone>(dynamic_cast<ValueNode_Bone*>(node)));
 				}
 			}
 		}
@@ -916,7 +916,7 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 		ValueNode_Bone::Handle bone_value_node(iter->second);
 
 		// if the bone would be affected by our editing, skip it - it would cause a loop if the user selected it
-		if (affected_bones.count(bone_value_node.get()))
+		if (affected_bones.count(bone_value_node))
 			continue;
 
 		// loop through the list of bones referenced by this bone's parent link;
@@ -926,7 +926,7 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 
 			ValueNode_Bone::BoneSet::iterator iter;
 			for (iter = parents.begin(); iter != parents.end(); iter++)
-				if (affected_bones.count(iter->get()))
+				if (affected_bones.count(*iter))
 					break;
 			if (iter == parents.end())
 				ret.insert(bone_value_node);
@@ -940,7 +940,7 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 ValueNode_Bone::Handle
 ValueNode_Bone::get_root_bone()
 {
-	if (!rooot) rooot = new ValueNode_Bone_Root();
+	if (!rooot) rooot = make_shared<ValueNode_Bone_Root>();
 	return rooot;
 }
 
@@ -958,9 +958,9 @@ ValueNode_Bone::fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode:
 	}
 
 	// if it's a ValueNode_Const
-	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value_node))
+	if (ValueNode_Const::Handle value_node_const = std::dynamic_pointer_cast<ValueNode_Const>(value_node))
 	{
-		ValueNode_Const::Handle cloned_value_node_const = ValueNode_Const::Handle::cast_dynamic(cloned_value_node);
+		ValueNode_Const::Handle cloned_value_node_const = std::dynamic_pointer_cast<ValueNode_Const>(cloned_value_node);
 		ValueBase inner_value_node(value_node_const->get_value());
 		if (inner_value_node.get_type() == type_bone_valuenode)
 			if (ValueNode_Bone::Handle bone = inner_value_node.get(ValueNode_Bone::Handle()))
@@ -975,7 +975,7 @@ ValueNode_Bone::fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode:
 				if (!bone->is_root()) {
 					auto replace_iter = clone_map.find(bone.get());
 					if (replace_iter != clone_map.end()) {
-						ValueBase ret_vb(ValueNode_Bone::Handle::cast_dynamic(replace_iter->second));
+						ValueBase ret_vb(std::dynamic_pointer_cast<ValueNode_Bone>(replace_iter->second));
 						ret_vb.copy_properties_of(bone);
 						cloned_value_node_const->set_value(ret_vb);
 					}
@@ -985,9 +985,9 @@ ValueNode_Bone::fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode:
 	}
 
 	// if it's a ValueNode_Animated
-	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
+	if (ValueNode_Animated::Handle value_node_animated = std::dynamic_pointer_cast<ValueNode_Animated>(value_node))
 	{
-		ValueNode_Animated::Handle cloned_value_node_animated = ValueNode_Animated::Handle::cast_dynamic(cloned_value_node);
+		ValueNode_Animated::Handle cloned_value_node_animated = std::dynamic_pointer_cast<ValueNode_Animated>(cloned_value_node);
 		const ValueNode_Animated::WaypointList& list(value_node_animated->waypoint_list());
 		const ValueNode_Animated::WaypointList& cloned_list(cloned_value_node_animated->waypoint_list());
 		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(), cloned_iter = cloned_list.cbegin(); iter != list.cend(); ++iter, ++cloned_iter)
@@ -998,9 +998,9 @@ ValueNode_Bone::fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode:
 	}
 
 	// if it's a LinkableValueNode
-	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node))
+	if (LinkableValueNode::Handle linkable_value_node = std::dynamic_pointer_cast<LinkableValueNode>(value_node))
 	{
-		LinkableValueNode::Handle cloned_linkable_value_node = LinkableValueNode::Handle::cast_dynamic(cloned_value_node);
+		LinkableValueNode::Handle cloned_linkable_value_node = dynamic_pointer_cast<LinkableValueNode>(cloned_value_node);
 		for (int i = 0; i < linkable_value_node->link_count(); i++)
 		{
 			fix_bones_referenced_by(linkable_value_node->get_link(i), cloned_linkable_value_node->get_link(i), recursive, clone_map);
@@ -1008,7 +1008,7 @@ ValueNode_Bone::fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode:
 		return;
 	}
 
-	if (PlaceholderValueNode::Handle linkable_value_node = PlaceholderValueNode::Handle::cast_dynamic(value_node))
+	if (PlaceholderValueNode::Handle linkable_value_node = dynamic_pointer_cast<PlaceholderValueNode>(value_node))
 	{
 		// todo: while loading we might be setting up an ancestry loop by ignoring the placeholder valuenode here
 		// can we check for loops in badly formatted .sifz files somehow?

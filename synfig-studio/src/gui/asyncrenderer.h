@@ -44,7 +44,7 @@
 
 namespace studio {
 
-class AsyncRenderer : public etl::shared_object, public sigc::trackable
+class AsyncRenderer : public sigc::trackable
 {
 public:
 	enum Status {

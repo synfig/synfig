@@ -143,7 +143,7 @@ ValueNode_Dynamic::operator()(Time t)const
 	step=(t1-t0)/4.0;
 	// Before call the integrator we need to be sure that the derivative of the
 	// origin is properly set. Maybe the user changed the origin
-	ValueNode::RHandle value_node(ValueNode::RHandle::cast_dynamic(origin_d_->get_link("link")));
+	ValueNode::RHandle value_node(std::dynamic_pointer_cast<ValueNode>(origin_d_->get_link("link")));
 	value_node->replace(origin_);
 	Oscillator oscillator(this);
 	std::vector<double> x(state.begin(), state.end());

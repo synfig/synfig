@@ -142,10 +142,10 @@ ValueNode::on_changed()
 	std::shared_ptr<Canvas> parent_canvas = get_parent_canvas();
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
-			parent_canvas->signal_value_node_changed()(this);
+			parent_canvas->signal_value_node_changed()(shared_ptr<ValueNode>(this));
 		while ( (parent_canvas = parent_canvas->parent()) );
 	else if(get_root_canvas())
-		get_root_canvas()->signal_value_node_changed()(this);
+		get_root_canvas()->signal_value_node_changed()(shared_ptr<ValueNode>(this));
 
 	Node::on_changed();
 }
@@ -208,7 +208,7 @@ ValueNode::is_descendant(ValueNode::Handle value_node_dest)
     ValueNode::Handle value_node_parent;
     for (set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
     {
-        value_node_parent = ValueNode::Handle::cast_dynamic(*iter);
+        value_node_parent = shared_ptr<ValueNode>(dynamic_cast<ValueNode*>(*iter));
         if(Handle(this) == value_node_parent)
             break;
     }
@@ -411,7 +411,7 @@ ValueNodeList::find(const String &id, bool might_fail)const
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
 	}
 
-	return *iter;
+	return shared_ptr<const synfig::ValueNode>(iter->obj);
 }
 
 ValueNode::Handle
@@ -448,7 +448,7 @@ ValueNodeList::erase(ValueNode::Handle value_node)
 		if(value_node.get()==iter->get())
 		{
 			std::list<ValueNode::RHandle>::erase(iter);
-			if(PlaceholderValueNode::Handle::cast_dynamic(value_node))
+			if(std::dynamic_pointer_cast<PlaceholderValueNode>(value_node))
 				placeholder_count_--;
 			return true;
 		}
@@ -466,7 +466,7 @@ ValueNodeList::add(ValueNode::Handle value_node)
 	try
 	{
 		ValueNode::RHandle other_value_node=find(value_node->get_id(), true);
-		if(PlaceholderValueNode::Handle::cast_dynamic(other_value_node))
+		if(std::dynamic_pointer_cast<PlaceholderValueNode>(other_value_node.obj))
 		{
 			other_value_node->replace(value_node);
 			placeholder_count_--;
@@ -490,7 +490,7 @@ ValueNodeList::audit()
 	iterator iter,next;
 
 	for(next=begin(),iter=next++;iter!=end();iter=next++)
-		if(iter->count()==1)
+		if(iter->use_count()==1)
 			std::list<ValueNode::RHandle>::erase(iter);
 }
 
@@ -519,7 +519,7 @@ PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 	ValueNode* ret(new PlaceholderValueNode());
 	ret->set_guid(get_guid()^deriv_guid);
 	ret->set_parent_canvas(canvas);
-	return ret;
+	return shared_ptr<ValueNode>(ret);
 }
 
 PlaceholderValueNode::Handle
@@ -527,7 +527,7 @@ PlaceholderValueNode::create(Type &type)
 {
 	if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
 		printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
-	return new PlaceholderValueNode(type);
+	return std::shared_ptr<PlaceholderValueNode>(new PlaceholderValueNode(type));
 }
 
 ValueBase
@@ -548,7 +548,7 @@ LinkableValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)cons
 	{
 		ValueNode* x(find_value_node(get_guid()^deriv_guid).get());
 		if(x)
-			return x;
+			return shared_ptr<ValueNode>(x);
 	}
 
 	int i;
@@ -570,7 +570,7 @@ LinkableValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)cons
 	}
 
 	ret->set_parent_canvas(canvas);
-	return ret;
+	return shared_ptr<ValueNode>(ret);
 }
 
 String

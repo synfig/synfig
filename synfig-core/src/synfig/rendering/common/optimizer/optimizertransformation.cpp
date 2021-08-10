@@ -59,7 +59,7 @@ OptimizerTransformation::OptimizerTransformation()
 void
 OptimizerTransformation::run(const RunParams& params) const
 {
-	TaskTransformation::Handle transformation = TaskTransformation::Handle::cast_dynamic(params.ref_task);
+	TaskTransformation::Handle transformation = std::dynamic_pointer_cast<TaskTransformation>(params.ref_task);
 	if (!transformation || !transformation->is_simple()) return;
 
 	// no trasgormation
@@ -79,7 +79,7 @@ OptimizerTransformation::run(const RunParams& params) const
 		return;
 	
 	// transformation of solid is solid
-	if (TaskInterfaceConstant *constant = sub_task.type_pointer<TaskInterfaceConstant>())
+	if (std::shared_ptr<TaskInterfaceConstant> constant = std::dynamic_pointer_cast<TaskInterfaceConstant>(sub_task))
 	{
 		if (constant->is_constant())
 		{
@@ -91,7 +91,7 @@ OptimizerTransformation::run(const RunParams& params) const
 	}
 	
 	// merge into sub-task
-	if (TaskInterfaceTransformation *interface = sub_task.type_pointer<TaskInterfaceTransformation>())
+	if (std::shared_ptr<TaskInterfaceTransformation> interface = std::dynamic_pointer_cast<TaskInterfaceTransformation>(sub_task))
 	{
 		if ( interface->get_transformation()
 		  && interface->get_transformation()->can_merge_outer( transformation->get_transformation() ) )
@@ -99,7 +99,7 @@ OptimizerTransformation::run(const RunParams& params) const
 			sub_task = sub_task->clone();
 			sub_task->assign_target(*transformation);
 
-			interface = sub_task.type_pointer<TaskInterfaceTransformation>();
+			interface = std::dynamic_pointer_cast<TaskInterfaceTransformation>(sub_task);
 			assert( interface
 			     && interface->get_transformation()->can_merge_outer( transformation->get_transformation()) );
 			interface->get_transformation()->merge_outer( transformation->get_transformation() );
@@ -110,14 +110,14 @@ OptimizerTransformation::run(const RunParams& params) const
 	}
 
 	// merge sub-task into current task
-	if (TaskTransformation::Handle sub_transformation = TaskTransformation::Handle::cast_dynamic(sub_task))
+	if (TaskTransformation::Handle sub_transformation = std::dynamic_pointer_cast<TaskTransformation>(sub_task))
 	{
 		if ( sub_transformation->is_simple()
 		  && sub_transformation->sub_task()
 		  && !sub_transformation->target_surface // exclude tasks with prerendered source
 		  && transformation->get_transformation()->can_merge_inner(sub_transformation->get_transformation()) )
 		{
-			transformation = TaskTransformation::Handle::cast_dynamic(transformation->clone());
+			transformation = std::dynamic_pointer_cast<TaskTransformation>(transformation->clone());
 			// recheck ability to merge after clone
 			assert( transformation->get_transformation()->can_merge_inner( transformation->get_transformation()) );
 			transformation->get_transformation()->merge_inner( sub_transformation->get_transformation() );
@@ -128,9 +128,9 @@ OptimizerTransformation::run(const RunParams& params) const
 	}
 	
 	// fall deeper in tree to make a chance to merge with others (for affine only)
-	if ( transformation->get_transformation().type_is<TransformationAffine>() )
+	if ( std::dynamic_pointer_cast<TransformationAffine>(transformation->get_transformation()) )
 	{
-		if ( sub_task.type_is<TaskInterfaceTransformationPass>() )
+		if ( std::dynamic_pointer_cast<TaskInterfaceTransformationPass>(sub_task) )
 		{
 			sub_task = sub_task->clone();
 			sub_task->assign_target(*transformation);

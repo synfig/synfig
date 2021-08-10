@@ -45,13 +45,13 @@
 namespace synfig
 {
 
-	class FileSystem : public etl::shared_object
+	class FileSystem
 	{
 	public:
 		typedef std::shared_ptr<FileSystem> Handle;
 		typedef std::vector<String> FileList;
 
-		class Stream : public etl::shared_object
+		class Stream
 		{
 		public:
 			typedef std::shared_ptr<Stream> Handle;
@@ -129,7 +129,7 @@ namespace synfig
 			Identifier(const FileSystem::Handle &file_system, const String &filename):
 				file_system(file_system), filename(filename) { }
 
-			bool empty() const { return file_system; }
+			bool empty() const { return (bool)file_system; }
 			operator bool () const { return !empty(); }
 
 			bool operator < (const Identifier &other) const
@@ -190,7 +190,7 @@ namespace synfig
 		inline bool is_exists(const String filename) { return is_file(filename) || is_directory(filename); }
 
 		String get_real_filename(const String &filename);
-		Identifier get_identifier(const String &filename) { return Identifier(this, filename); }
+		Identifier get_identifier(const String &filename) { return Identifier(Handle(this), filename); }
 
 		bool directory_create_recursive(const String &dirname);
 		bool remove_recursive(const String &filename);

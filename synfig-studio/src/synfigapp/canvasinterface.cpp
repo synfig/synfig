@@ -126,7 +126,7 @@ CanvasInterface::set_time(synfig::Time x)
 
 	// update the time in all the child canvases
 	Canvas::Children children = get_canvas()->get_root()->children();
-	handle<CanvasInterface> interface;
+	std::shared_ptr<CanvasInterface> interface;
 	for (Canvas::Children::iterator iter = children.begin(); iter != children.end(); iter++)
 		if ((interface = get_instance()->find_canvas_interface(*iter)) != this)
 			interface->set_time(interface->get_canvas()->get_time());
@@ -152,7 +152,7 @@ std::shared_ptr<CanvasInterface>
 CanvasInterface::create(std::shared_ptr<Instance> instance, std::shared_ptr<synfig::Canvas> canvas)
 {
 	std::shared_ptr<CanvasInterface> intrfc;
-	intrfc=new CanvasInterface(instance,canvas);
+	intrfc=std::shared_ptr<CanvasInterface>(new CanvasInterface(instance,canvas));
 	instance->canvas_interface_list().push_front(intrfc);
 	return intrfc;
 }
@@ -232,7 +232,7 @@ CanvasInterface::layer_create(
 		}
 
 	layer->set_canvas(canvas);
-	if (std::shared_ptr<Layer_PasteCanvas>::cast_dynamic(layer))
+	if (std::dynamic_pointer_cast<Layer_PasteCanvas>(layer))
 		layer->set_param("canvas", Canvas::create_inline(canvas));
 
 	return layer;
@@ -321,7 +321,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						if (type == type_bline_point)
 						{
 							value_node=ValueNodeRegistry::create("bline",iter->second);
-							ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+							std::dynamic_pointer_cast<ValueNode_BLine>(value_node)->set_member_canvas(canvas);
 						}
 						else
 						if (type == type_bone_object)
@@ -329,12 +329,12 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
 								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
-								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+								std::dynamic_pointer_cast<ValueNode_DynamicList>(value_node)->set_member_canvas(canvas);
 							}
 							else // this is the default
 							{
 								value_node=ValueNodeRegistry::create("static_list",iter->second);
-								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+								std::dynamic_pointer_cast<ValueNode_StaticList>(value_node)->set_member_canvas(canvas);
 							}
 						}
 						else
@@ -343,12 +343,12 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
 								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
-								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+								std::dynamic_pointer_cast<ValueNode_DynamicList>(value_node)->set_member_canvas(canvas);
 							}
 							else // this is the default
 							{
 								value_node=ValueNodeRegistry::create("static_list",iter->second);
-								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+								std::dynamic_pointer_cast<ValueNode_StaticList>(value_node)->set_member_canvas(canvas);
 							}
 						}
 						else
@@ -357,12 +357,12 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 							if (getenv("SYNFIG_USE_STATIC_LIST_FOR_VECTORS"))
 							{
 								value_node=ValueNodeRegistry::create("static_list",iter->second);
-								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+								std::dynamic_pointer_cast<ValueNode_StaticList>(value_node)->set_member_canvas(canvas);
 							}
 							else // this is the default
 							{
 								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
-								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+								std::dynamic_pointer_cast<ValueNode_DynamicList>(value_node)->set_member_canvas(canvas);
 							}
 						}
 					}
@@ -372,7 +372,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 					if (iter2 == list.end())
 					{
 						value_node=ValueNodeRegistry::create("wplist",iter->second);
-						ValueNode_WPList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+                        std::dynamic_pointer_cast<ValueNode_WPList>(value_node)->set_member_canvas(canvas);
 					}
 					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
 						if (iter2->get_type() != type_dash_item)
@@ -380,7 +380,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 					if (iter2 == list.end())
 					{
 						value_node=ValueNodeRegistry::create("dilist",iter->second);
-						ValueNode_DIList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+                        std::dynamic_pointer_cast<ValueNode_DIList>(value_node)->set_member_canvas(canvas);
 					}
 				}
 				// it has something else so just insert the dynamic list
@@ -449,7 +449,7 @@ CanvasInterface::layer_move_action(const synfig::Layer::Handle &layer, int depth
 Layer::Handle
 CanvasInterface::add_layer_to(const synfig::String &id, const synfig::Canvas::Handle &canvas, int depth)
 {
-	synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Add Layer To"));
+	synfigapp::Action::PassiveGrouper group(get_instance(),_("Add Layer To"));
 
 	Layer::Handle layer = layer_create(id, canvas);
 	if (!layer) return Layer::Handle();
@@ -706,7 +706,7 @@ CanvasInterface::import(
 	synfig::String &warnings,
 	bool resize_image )
 {
-	Action::PassiveGrouper group(get_instance().get(),_("Import"));
+	Action::PassiveGrouper group(get_instance(),_("Import"));
 
 	synfig::info("Attempting to import %s", filename.c_str());
 	
@@ -727,7 +727,7 @@ CanvasInterface::import(
 
 	if (ext=="pgo" || ext=="tsv" || ext=="xml")
 	{
-		synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Import Lipsync"));
+		synfigapp::Action::PassiveGrouper group(get_instance(),_("Import Lipsync"));
 
 		// switch
 
@@ -738,7 +738,7 @@ CanvasInterface::import(
 		layer_set_defaults(layer_switch);
 		layer_switch->set_description(etl::basename(filename));
 
-		ValueNode_AnimatedFile::Handle animatedfile_node = ValueNode_AnimatedFile::create(String());
+		ValueNode_AnimatedFile::Handle animatedfile_node = std::shared_ptr<ValueNode_AnimatedFile>(ValueNode_AnimatedFile::create(String()));
 		animatedfile_node->set_link("filename", ValueNode_Const::create(short_filename));
 		layer_switch->connect_dynamic_param("layer_name", ValueNode::LooseHandle(animatedfile_node));
 
@@ -959,7 +959,7 @@ CanvasInterface::import_sequence(
 	bool resize_image,
 	bool remove_dups)
 {
-	Action::PassiveGrouper group(get_instance().get(),_("Import sequence"));
+	Action::PassiveGrouper group(get_instance(),_("Import sequence"));
 
 	float fps = get_canvas()->rend_desc().get_frame_rate();
 	
@@ -1017,7 +1017,7 @@ CanvasInterface::import_sequence(
 					throw int();
 
 				if(remove_dups){
-					curr_layer= Layer_Bitmap::Handle::cast_dynamic(layer);
+					curr_layer= std::dynamic_pointer_cast<Layer_Bitmap>(layer);
 					if(!curr_layer){
 						throw int();
 					}
@@ -1416,15 +1416,15 @@ _process_value_desc(const synfigapp::ValueDesc& value_desc,std::vector<synfigapp
 			return ret;
 		guid_set.insert(value_node->get_guid());
 
-		if(LinkableValueNode::Handle::cast_dynamic(value_node))
+		if(std::dynamic_pointer_cast<LinkableValueNode>(value_node))
 		{
-			if(ValueNode_DynamicList::Handle::cast_dynamic(value_node))
+			if(std::dynamic_pointer_cast<ValueNode_DynamicList>(value_node))
 			{
 				out.push_back(value_desc);
 				ret++;
 			}
 			// Process the linkable ValueNode's children
-			LinkableValueNode::Handle value_node_copy(LinkableValueNode::Handle::cast_dynamic(value_node));
+			LinkableValueNode::Handle value_node_copy(std::dynamic_pointer_cast<LinkableValueNode>(value_node));
 			int i;
 			for(i=0;i<value_node_copy->link_count();i++)
 			{
@@ -1433,7 +1433,7 @@ _process_value_desc(const synfigapp::ValueDesc& value_desc,std::vector<synfigapp
 					ret+=_process_value_desc(ValueDesc(value_node_copy,i),out,guid_set);
 			}
 		}
-		else if(ValueNode_Animated::Handle::cast_dynamic(value_node))
+		else if(std::dynamic_pointer_cast<ValueNode_Animated>(value_node))
 		{
 			out.push_back(value_desc);
 			ret++;

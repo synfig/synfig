@@ -200,7 +200,7 @@ rendering::Surface::Handle
 ListImporter::get_frame(const RendDesc &renddesc, const Time &time)
 {
 	Importer::Handle importer = get_sub_importer(renddesc, time, NULL);
-	return importer ? importer->get_frame(renddesc, 0) : new rendering::SurfaceSW();
+	return importer ? importer->get_frame(renddesc, 0) : std::make_shared<rendering::SurfaceSW>();
 }
 
 bool

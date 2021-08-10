@@ -130,10 +130,10 @@ ValueNode_DynamicList::reindex()
 			for(iter2=iter->timing_info.begin();iter2!=iter->timing_info.end();++iter2)
 			{
 				iter2->set_parent_index(i);
-				iter2->set_parent_value_node(this);
+				iter2->set_parent_value_node(std::shared_ptr<ValueNode>(this));
 			}
 			iter->index=i;
-			iter->set_parent_value_node(this);
+			iter->set_parent_value_node(std::shared_ptr<ValueNode>(this));
 		}
 	}
 }
@@ -153,7 +153,7 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 	assert(index>=0);
 
 	ret.index=index;
-	ret.set_parent_value_node(this);
+	ret.set_parent_value_node(std::shared_ptr<ValueNode>(this));
 
 	if(c)
 	{
@@ -612,7 +612,7 @@ ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Type &type, C
 ValueNode_DynamicList::Handle
 ValueNode_DynamicList::create_on_canvas(Type &type, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_DynamicList(type, canvas);
+	return std::shared_ptr<ValueNode_DynamicList>(new ValueNode_DynamicList(type, canvas));
 }
 
 ValueNode_DynamicList::~ValueNode_DynamicList()
@@ -723,9 +723,9 @@ ValueNode_DynamicList::link_local_name(int i)const
 ValueNode::Handle
 ValueNode_DynamicList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
-	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
+	{ std::shared_ptr<ValueNode> x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 
-	ValueNode_DynamicList* ret=dynamic_cast<ValueNode_DynamicList*>(create_new());
+	std::shared_ptr<ValueNode_DynamicList> ret=std::shared_ptr<ValueNode_DynamicList>(dynamic_cast<ValueNode_DynamicList*>(create_new()));
 	ret->set_guid(get_guid()^deriv_guid);
 
 	std::vector<ListEntry>::const_iterator iter;

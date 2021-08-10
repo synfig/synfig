@@ -155,7 +155,7 @@ Task::convert_to_any() const
 
 	Task::Handle task;
 	for(Token::Map::const_iterator i = token->alternatives().begin(); i != token->alternatives().end(); ++i) {
-		task = i->second->convert(*this);
+		task = std::shared_ptr<Task>(i->second->convert(*this));
 		if (task) return task;
 	}
 
@@ -268,7 +268,7 @@ Task::set_coords(const Rect &source_rect, const VectorInt &target_size)
 	}
 
 	if (!target_surface)
-		target_surface = new SurfaceResource();
+		target_surface = std::make_shared<SurfaceResource>();
 
 	// allocate surface by incoming target_size without truncation,
 	// it's significant for transformation antialiasing

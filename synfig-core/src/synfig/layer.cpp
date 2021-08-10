@@ -256,7 +256,7 @@ Layer::get_depth()const
 {
 	if(!get_canvas())
 		return -1;
-	return get_canvas()->get_depth(const_cast<synfig::Layer*>(this));
+	return get_canvas()->get_depth(std::shared_ptr<Layer>(const_cast<synfig::Layer*>(this)));
 }
 
 void
@@ -440,7 +440,7 @@ Layer::Handle
 Layer::simple_clone()const
 {
 	if(!book().count(get_name())) return 0;
-	Handle ret = create(get_name()).get();
+	Handle ret = Handle(create(get_name()).get());
 	ret->group_=group_;
 	//ret->set_canvas(get_canvas());
 	ret->set_description(get_description());
@@ -459,7 +459,7 @@ Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 	if(!book().count(get_name())) return 0;
 
 	//Layer *ret = book()[get_name()].factory();//create(get_name()).get();
-	Handle ret = create(get_name()).get();
+	Handle ret = Handle(create(get_name()).get());
 
 	ret->group_=group_;
 	//ret->set_canvas(get_canvas());
@@ -835,7 +835,7 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 {
 	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
-	handle<Target_Scanline> target=surface_target_scanline(surface);
+	std::shared_ptr<Target_Scanline> target=surface_target_scanline(surface);
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));
@@ -888,17 +888,17 @@ Layer::get_sub_renddesc(const RendDesc &renddesc, int index) const
 rendering::Task::Handle
 Layer::build_rendering_task_vfunc(Context context)const
 {
-	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
+	rendering::TaskLayer::Handle task = std::make_shared<rendering::TaskLayer>();
 	// TODO: This is not thread-safe
 	//task->layer = const_cast<Layer*>(this);//clone(NULL);
 	task->layer = clone(NULL);
 	task->layer->set_canvas(get_canvas());
 
 	Real amount = Context::z_depth_visibility(context.get_params(), *this);
-	if (approximate_not_equal(amount, 1.0) && task->layer.type_is<Layer_Composite>())
+    std::shared_ptr<Layer_Composite> composite = std::dynamic_pointer_cast<Layer_Composite>(task->layer);
+	if (approximate_not_equal(amount, 1.0) && (bool)composite)
 	{
 		//task->layer = task->layer->clone(NULL);
-		std::shared_ptr<Layer_Composite> composite = std::shared_ptr<Layer_Composite>::cast_dynamic(task->layer);
 		composite->set_amount( composite->get_amount()*amount );
 	}
 
@@ -1007,7 +1007,7 @@ synfig::Layer::get_parent_paste_canvas_layer()const
 		Canvas::iterator iter;
 		for(iter=parent_canvas->begin();iter!=parent_canvas->end();++iter)
 		{
-			Layer::LooseHandle layer=iter->get();
+			Layer::LooseHandle layer=*iter;
 			if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
 			{
 				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));

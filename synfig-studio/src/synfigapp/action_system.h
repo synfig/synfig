@@ -93,7 +93,7 @@ public:
 
 typedef std::list< std::shared_ptr<Action::Undoable> > Stack;
 
-class System : public etl::shared_object, public sigc::trackable
+class System : public sigc::trackable
 {
 	friend class PassiveGrouper;
 
@@ -221,7 +221,7 @@ public:
 	int get_action_count()const { return action_count_; }
 
 	void set_ui_interface(const std::shared_ptr<UIInterface> &uim) { assert(uim); ui_interface_=uim; }
-	void unset_ui_interface() { ui_interface_=new DefaultUIInterface(); }
+	void unset_ui_interface() { ui_interface_=std::shared_ptr<UIInterface>(new DefaultUIInterface()); }
 	const std::shared_ptr<UIInterface> &get_ui_interface() { return ui_interface_; }
 
 	/*

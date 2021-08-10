@@ -62,42 +62,42 @@ RendererDraftSW::RendererDraftSW()
 	register_mode(TaskSW::mode_token.handle());
 
 	// register optimizers
-	register_optimizer(new OptimizerDraftContour(2.0, true));
-	register_optimizer(new OptimizerDraftBlur());
-	register_optimizer(new OptimizerDraftLayerSkip("MotionBlur"));
-	register_optimizer(new OptimizerDraftLayerSkip("radial_blur"));
-	register_optimizer(new OptimizerDraftLayerSkip("curve_warp"));
-	register_optimizer(new OptimizerDraftLayerSkip("inside_out"));
-	register_optimizer(new OptimizerDraftLayerSkip("noise_distort"));
-	register_optimizer(new OptimizerDraftLayerSkip("spherize"));
-	register_optimizer(new OptimizerDraftLayerSkip("twirl"));
-	register_optimizer(new OptimizerDraftLayerSkip("warp"));
-	register_optimizer(new OptimizerDraftLayerSkip("metaballs"));
-	register_optimizer(new OptimizerDraftLayerSkip("clamp"));
-	register_optimizer(new OptimizerDraftLayerSkip("colorcorrect"));
-	register_optimizer(new OptimizerDraftLayerSkip("halftone2"));
-	register_optimizer(new OptimizerDraftLayerSkip("halftone3"));
-	register_optimizer(new OptimizerDraftLayerSkip("lumakey"));
-	register_optimizer(new OptimizerDraftLayerSkip("julia"));
-	register_optimizer(new OptimizerDraftLayerSkip("mandelbrot"));
-	register_optimizer(new OptimizerDraftLayerSkip("conical_gradient"));
-	register_optimizer(new OptimizerDraftLayerSkip("curve_gradient"));
-	register_optimizer(new OptimizerDraftLayerSkip("noise"));
-	register_optimizer(new OptimizerDraftLayerSkip("spiral_gradient"));
-	register_optimizer(new OptimizerDraftLayerSkip("duplicate"));
-	register_optimizer(new OptimizerDraftLayerSkip("plant"));
-	register_optimizer(new OptimizerDraftLayerSkip("text"));
-	register_optimizer(new OptimizerDraftLayerSkip("xor_pattern"));
+	register_optimizer(std::make_shared<OptimizerDraftContour>(2.0, true));
+	register_optimizer(std::make_shared<OptimizerDraftBlur>());
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("MotionBlur"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("radial_blur"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("curve_warp"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("inside_out"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("noise_distort"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("spherize"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("twirl"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("warp"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("metaballs"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("clamp"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("colorcorrect"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("halftone2"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("halftone3"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("lumakey"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("julia"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("mandelbrot"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("conical_gradient"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("curve_gradient"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("noise"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("spiral_gradient"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("duplicate"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("plant"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("text"));
+	register_optimizer(std::make_shared<OptimizerDraftLayerSkip>("xor_pattern"));
 
-	register_optimizer(new OptimizerTransformation());
-	register_optimizer(new OptimizerDraftTransformation());
+	register_optimizer(std::make_shared<OptimizerTransformation>());
+	register_optimizer(std::make_shared<OptimizerDraftTransformation>());
 
-	register_optimizer(new OptimizerPass(false));
-	register_optimizer(new OptimizerPass(true));
-	register_optimizer(new OptimizerBlendMerge());
-	register_optimizer(new OptimizerBlendToTarget());
-	register_optimizer(new OptimizerList());
-	register_optimizer(new OptimizerBlendAssociative());
+	register_optimizer(std::make_shared<OptimizerPass>(false));
+	register_optimizer(std::make_shared<OptimizerPass>(true));
+	register_optimizer(std::make_shared<OptimizerBlendMerge>());
+	register_optimizer(std::make_shared<OptimizerBlendToTarget>());
+	register_optimizer(std::make_shared<OptimizerList>());
+	register_optimizer(std::make_shared<OptimizerBlendAssociative>());
 	//register_optimizer(new OptimizerSplit());
 }
 

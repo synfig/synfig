@@ -78,16 +78,16 @@ OptimizerBlendMerge::run(const RunParams& params) const
 	//  - taskD(targetD)
 	//
 
-	TaskBlend::Handle blend = TaskBlend::Handle::cast_dynamic(params.ref_task);
+	TaskBlend::Handle blend = std::dynamic_pointer_cast<TaskBlend>(params.ref_task);
 	if ( blend
 	  && blend->blend_method == Color::BLEND_COMPOSITE )
 	{
-		TaskBlend::Handle sub_blend = TaskBlend::Handle::cast_dynamic(blend->sub_task_b());
+		TaskBlend::Handle sub_blend = std::dynamic_pointer_cast<TaskBlend>(blend->sub_task_b());
 		if ( sub_blend
 		  && (!sub_blend->sub_task_a())
 		  && blend->blend_method == sub_blend->blend_method )
 		{
-			TaskBlend::Handle new_blend = TaskBlend::Handle::cast_dynamic(blend->clone());
+			TaskBlend::Handle new_blend = std::dynamic_pointer_cast<TaskBlend>(blend->clone());
 			new_blend->amount *= sub_blend->amount;
 			new_blend->sub_task_b() = sub_blend->sub_task_b();
 			apply(params, new_blend);
