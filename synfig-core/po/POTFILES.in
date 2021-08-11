@@ -38,8 +38,8 @@ src/modules/lyr_std/translate.cpp
 src/modules/lyr_std/translate.h
 src/modules/lyr_std/twirl.cpp
 src/modules/lyr_std/twirl.h
-src/modules/lyr_std/warp.cpp
-src/modules/lyr_std/warp.h
+src/modules/lyr_std/perspective.cpp
+src/modules/lyr_std/perspective.h
 src/modules/lyr_std/xorpattern.cpp
 src/modules/lyr_std/xorpattern.h
 src/modules/lyr_std/zoom.cpp
