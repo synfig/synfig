@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
-# Alexander Gabilondo <alexgabi@disroot.org>, 2020
+# Alexander Gabilondo <alexgabi@disroot.org>, 2020-2021
 # Alexander Gabilondo <alexgabi@disroot.org>, 2013,2016
 # Alexander Gabilondo <alexgabi@disroot.org>, 2013,2016
 # Alexander Gabilondo <alexgabi@disroot.org>, 2013
@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2021-05-28 22:52+0700\n"
-"PO-Revision-Date: 2021-05-28 15:52+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"PO-Revision-Date: 2021-08-07 23:39+0000\n"
+"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>\n"
 "Language-Team: Basque (http://www.transifex.com/morevnaproject/synfig/language/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,7 +36,7 @@ msgid ""
 "using a vector and bitmap artwork. It eliminates the need to create "
 "animation frame-by frame, allowing you to produce 2D animation of a higher "
 "quality with fewer people and resources."
-msgstr ""
+msgstr "Synfig Studio 2D animazioko doako eta kode irekiko softwarea da, bektore eta bitmap artelanen bidez filmaren kalitateko animazioa sortzeko industria-sendotasuneko irtenbide indartsu gisa diseinatua. Animazioa fotogramaz fotograma sortzeko beharra ezabatzen du, kalitate altuko 2D animazioak pertsona eta baliabide gutxiagorekin ekoizteko aukera ematen du."
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:2
 msgid "Features:"
@@ -44,7 +44,7 @@ msgstr "Ezaugarriak:"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:3
 msgid "Can manipulate vector and bitmap artwork"
-msgstr ""
+msgstr "Landu daitezke bektore edota bitmapa artelanak"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:4
 msgid "Automatic tweening (independent from FPS)"
@@ -76,7 +76,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:10
 msgid "Sound support"
-msgstr ""
+msgstr "Soinua onartzen du"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:11
 msgid "Linking data on file- or parameter-level"
@@ -84,7 +84,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:12
 msgid "Automatic animation using mathematical functions"
-msgstr ""
+msgstr "Animazio automatikoa funtzio matematikoen bidez"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:13
 msgid "Synfig Studio workspace"
@@ -219,13 +219,13 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:551
 #: ../src/gui/states/state_star.cpp:673 ../src/gui/states/state_text.cpp:435
 msgid "Opacity"
-msgstr ""
+msgstr "Opakutasuna"
 
 #: ../src/brushlib/brushsettings.py:44
 msgid ""
 "0 means brush is transparent, 1 fully visible\n"
 "(also known as alpha or opacity)"
-msgstr ""
+msgstr "0-k adierazten du erabat gardena, 1-ek guztiz ikusgai\n(alfa edo opakutasuna bezala ezaguna)"
 
 #: ../src/brushlib/brushsettings.py:45
 msgid "Opacity multiply"
@@ -258,7 +258,7 @@ msgid ""
 "Basic brush radius (logarithmic)\n"
 " 0.7 means 2 pixels\n"
 " 3.0 means 20 pixels"
-msgstr ""
+msgstr "Pintzelaren oinarrizko erradioa (logaritmikoa)\n 0,7-k esan nahi du 2 pixel\n 3,0 -k esan nahi du 20 pixel"
 
 #: ../src/brushlib/brushsettings.py:48
 msgid "Hardness"
@@ -272,7 +272,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:49
 msgid "Anti-aliasing"
-msgstr ""
+msgstr "Anti-aliasing"
 
 #: ../src/brushlib/brushsettings.py:49
 msgid ""
@@ -698,11 +698,11 @@ msgstr "Hautatu geruza ume guztiak"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:268
 msgid "Increase Opacity"
-msgstr ""
+msgstr "Handitu opakutasuna"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:269
 msgid "Decrease Opacity"
-msgstr ""
+msgstr "Txikitu opakutasuna"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:392
 msgid "Paste"
@@ -745,7 +745,7 @@ msgstr "Bisitatu Synfig-en webgunea"
 msgid ""
 "Copyright (c) 2001-2021\n"
 "Synfig developers & contributors"
-msgstr ""
+msgstr "Copyright (c) 2001-2021\nSynfig garatzaileak eta laguntzaileak"
 
 #: ../src/gui/dialogs/about.cpp:109
 msgid "Original developers:"
@@ -1015,11 +1015,11 @@ msgstr "Aurrebista leihoa"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:80
 msgid "Synfig Studio Preferences"
-msgstr ""
+msgstr "Synfig Studio ezarpenak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:93
 msgid "Interface"
-msgstr ""
+msgstr "Interfazea"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:94
 msgid "Document"
@@ -1027,7 +1027,7 @@ msgstr "Dokumentua"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:95
 msgid "Editing"
-msgstr ""
+msgstr "Editatzen"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:96 ../src/gui/canvasview.cpp:1176
 #: ../src/gui/render.cpp:192
@@ -1036,11 +1036,11 @@ msgstr "Errendatzea"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:97
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:98
 msgid "Shortcuts"
-msgstr ""
+msgstr "Lasterbideak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:136
 #: ../src/gui/dialogs/dialog_setup.cpp:164
@@ -1085,7 +1085,7 @@ msgstr "Azken fitxategiak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:186
 msgid "Autosave"
-msgstr ""
+msgstr "Gordetze automatikoa"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:193
 msgid "Interval"
@@ -1114,7 +1114,7 @@ msgstr "Dokumentu sortu berrien aurrizki-izena"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:267
 msgid "FPS"
-msgstr ""
+msgstr "FPS (fotograma segunduko)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:270
 msgid "Frames per second of the new created document"
@@ -1122,11 +1122,11 @@ msgstr "Dokumentu sortu berriaren fotograma segundoko (FPS)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:292
 msgid "Size"
-msgstr ""
+msgstr "Tamaina"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:297
 msgid "Width"
-msgstr ""
+msgstr "Zabalera"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:302
 msgid "Width in pixels of the new created document"
@@ -1134,11 +1134,11 @@ msgstr "Dokumentu sortu berriaren zabalera"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:313
 msgid "Height"
-msgstr ""
+msgstr "Altura"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:316
 msgid "Height in pixels of the new created document"
-msgstr ""
+msgstr "Sortu berri den dokumentuaren pisua pixeletan"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:325
 msgid "4096x3112 Full Aperture 4K"
@@ -1198,15 +1198,15 @@ msgstr "360x203 Web 360x HD"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:343
 msgid "Default Background"
-msgstr ""
+msgstr "Atzeko plano lehenetsia"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:350
 msgid "None (Transparent)"
-msgstr ""
+msgstr "Bat ere ez (gardena)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:355
 msgid "Solid Color"
-msgstr ""
+msgstr "Kolore solidoa"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:369 ../src/gui/renddesc.cpp:231
 msgid "Image"
@@ -1215,21 +1215,21 @@ msgstr "Irudia"
 #: ../src/gui/dialogs/dialog_setup.cpp:374
 #: ../src/gui/dialogs/dialog_setup.cpp:555
 msgid "Select"
-msgstr ""
+msgstr "Hautatu"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:417
 msgid "Imported Image"
-msgstr ""
+msgstr "Inportatutako irudia"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:420
 msgid "Scale to fit canvas"
-msgstr ""
+msgstr "Eskalatu oihala betetzeko"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:422
 msgid ""
 "When you import images, check this option if you want they fit the Canvas "
 "size."
-msgstr ""
+msgstr "Irudiak inportatzean, markatu aukera hau nahi baduzu irudiek oihalaren neurria hartzea."
 
 #: ../src/gui/dialogs/dialog_setup.cpp:427 ../src/gui/renddesc.cpp:234
 msgid "Other"
@@ -1253,7 +1253,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:441
 msgid "Preferred image editor"
-msgstr ""
+msgstr "Irudi editore hobetsia"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:444 ../src/gui/render.cpp:117
 msgid "Choose..."
@@ -1304,7 +1304,7 @@ msgstr "Lehenetsia"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:605
 msgid "Preview Background Color"
-msgstr ""
+msgstr "Aurre-ikusi atzeko planoaren kolorea"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:643
 msgid "System Language"
@@ -1312,11 +1312,11 @@ msgstr "Sistemaren hizkuntza"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:655
 msgid "Language"
-msgstr ""
+msgstr "Hizkuntza"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:661
 msgid "Color Theme"
-msgstr ""
+msgstr "Gaiaren kolorea"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:663
 msgid "Dark UI theme (if available)"
@@ -1324,7 +1324,7 @@ msgstr "Interfaze iluna (balego)"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:669
 msgid "Toolbars"
-msgstr ""
+msgstr "Tresna-barrak"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:671
 msgid "Show file toolbar (requires restart)"
@@ -1360,7 +1360,7 @@ msgstr "Balioa"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:1167
 msgid "Select a new path for brush"
-msgstr ""
+msgstr "Hautatu bide berri bat pintzelarentzat"
 
 #: ../src/gui/dialogs/dialog_setup.h:63
 msgid "Custom Size"
@@ -1428,7 +1428,7 @@ msgstr "Berrezarri lehenetsitakoak"
 
 #: ../src/gui/dialogs/dialog_template.cpp:117
 msgid "Category"
-msgstr ""
+msgstr "Kategoria"
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:66
 msgid "Waypoint Editor"
@@ -1521,7 +1521,7 @@ msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:69
 msgid "Repeat"
-msgstr ""
+msgstr "Errepikatu"
 
 #: ../src/gui/dials/framedial.cpp:70
 msgid "Left bound"
@@ -1546,11 +1546,11 @@ msgstr "JACK desplazamendua"
 
 #: ../src/gui/dials/keyframedial.cpp:58
 msgid "Unlock past keyframe"
-msgstr ""
+msgstr "Desblokeatu pasatako gako-fotograma"
 
 #: ../src/gui/dials/keyframedial.cpp:59
 msgid "Unlock future keyframe"
-msgstr ""
+msgstr "Desblokeatu datorren gako-fotograma"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Increase Resolution"
@@ -1785,7 +1785,7 @@ msgstr "A: "
 
 #: ../src/gui/docks/dock_info.cpp:137
 msgid "Render Progress: "
-msgstr ""
+msgstr "Errendatzearen aurrerapena:"
 
 #: ../src/gui/docks/dock_keyframes.cpp:65 ../src/gui/app.cpp:1054
 #: ../src/gui/iconcontroller.cpp:275
@@ -1832,7 +1832,7 @@ msgstr "Ezabatu hautatutako metadatu-sarrera"
 
 #: ../src/gui/docks/dock_metadata.cpp:84
 msgid "Remove the selected MetaData entry"
-msgstr ""
+msgstr "Kendu hautatutako metadatuen sarrera"
 
 #: ../src/gui/docks/dock_metadata.cpp:150
 msgid "New Metadata entry"
@@ -1854,7 +1854,7 @@ msgstr "Parametroak"
 
 #: ../src/gui/docks/dock_soundwave.cpp:44 ../src/gui/app.cpp:1065
 msgid "Sound"
-msgstr ""
+msgstr "Soinua"
 
 #: ../src/gui/docks/dock_soundwave.cpp:66
 msgid "What sound channel to display"
@@ -1862,7 +1862,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_soundwave.cpp:69
 msgid "Delay:"
-msgstr ""
+msgstr "Atzerapena:"
 
 #: ../src/gui/docks/dock_soundwave.cpp:260
 #, c-format
@@ -1886,11 +1886,11 @@ msgstr "Tresnak"
 
 #: ../src/gui/docks/dockbook.cpp:288
 msgid "Undock panel"
-msgstr ""
+msgstr "Askatu panela"
 
 #: ../src/gui/docks/dockdialog.cpp:106 ../src/gui/docks/dockmanager.cpp:828
 msgid "Dock Panel"
-msgstr "Atrakatze panela"
+msgstr "Atrakatu panela"
 
 #: ../src/gui/docks/dockmanager.cpp:828 ../src/gui/docks/dockmanager.cpp:838
 #: ../src/gui/app.cpp:1503
@@ -1980,14 +1980,14 @@ msgstr "Itxi"
 #: ../src/gui/instance.cpp:601
 #, c-format
 msgid "A file named \"%s\" already exists. Do you want to replace it?"
-msgstr ""
+msgstr " \"%s\" izeneko fitxategi bat badago lehendik. Ordeztu nahi duzu?"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:265
 #: ../src/gui/instance.cpp:605
 #, c-format
 msgid ""
 "The file already exists in \"%s\". Replacing it will overwrite its contents."
-msgstr ""
+msgstr " \"%s\"-n badago fitxategi hori. Ordezten baduzu edukia gainidatziko da."
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:273
 #: ../src/gui/instance.cpp:613
@@ -2009,7 +2009,7 @@ msgstr "Ezin da fitxategia ireki"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:306
 msgid "Unknown error"
-msgstr ""
+msgstr "Errore ezezaguna"
 
 #: ../src/gui/states/state_bline.cpp:343
 msgid "NewSpline"
