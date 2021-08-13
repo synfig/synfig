@@ -35,6 +35,7 @@
 #include <cassert>
 #include <typeinfo>
 #include <atomic>
+#include <memory>
 
 /* === M A C R O S ========================================================= */
 
@@ -371,21 +372,14 @@ public:
 	typedef int size_type;
 
 
-	using handle<value_type>::count;
-	using handle<value_type>::unique;
-	using handle<value_type>::operator bool;
-	using handle<value_type>::get;
-	using handle<value_type>::operator*;
-	using handle<value_type>::operator->;
 
-	/*
-	operator const handle<value_type>&()const
-	{ return *this; }
-	*/
+protected:
+#ifdef _DEBUG
+        public:
+#endif
+    std::shared_ptr<value_type> obj;
 
 private:
-	using handle<value_type>::obj;
-
 	rhandle<value_type> *prev_;
 	rhandle<value_type> *next_;
 
@@ -400,12 +394,12 @@ private:
 		if(!obj->front_)
 		{
 			obj->front_=obj->back_=this;
-			prev_=next_=0;
+			prev_=next_=nullptr;
 			return;
 		}
 
 		prev_=reinterpret_cast<rhandle<value_type>*>(obj->back_);
-		next_=0;
+		next_= nullptr;
 		prev_->next_=this;
 		obj->back_=this;
 	}
@@ -419,7 +413,7 @@ private:
 		// If this is the last reversible handle
 		if(obj->front_==obj->back_)
 		{
-			obj->front_=obj->back_=0;
+			obj->front_=obj->back_= nullptr;
 			prev_=next_=0;
 			return;
 		}
@@ -438,23 +432,23 @@ private:
 public:
 
 	//! Default constructor - empty handle
-	rhandle() {}
+	rhandle():obj(nullptr) {}
 
 	//! Constructor that constructs from a pointer to new object
-	rhandle(pointer x):handle<T>(x)
+	rhandle(pointer x):obj(x)
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
-	rhandle(const handle<value_type> &x):handle<T>(x)
+	rhandle(const handle<value_type> &x):obj(x.get())
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
 	//! Default copy constructor
-	rhandle(const rhandle<value_type> &x):handle<T>(x)
+	rhandle(const rhandle<value_type> &x):obj(x.obj)
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
@@ -491,12 +485,12 @@ public:
 	operator=(const rhandle<value_type> &x)
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(x.get()==obj)
+		if(x.obj==obj)
 			return *this;
 
 		detach();
 
-		obj=x.get();
+		obj=x.obj;
 		if(obj)
 		{
 			obj->ref();
@@ -509,12 +503,12 @@ public:
 	operator=(const handle<value_type> &x)
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(x.get()==obj)
+		if(x.get()==obj.get())
 			return *this;
 
 		detach();
 
-		obj=x.get();
+		obj=std::shared_ptr<value_type>(x.get());
 		if(obj)
 		{
 			obj->ref();
@@ -527,12 +521,12 @@ public:
 	operator=(value_type* x)
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(x==obj)
+		if(x==obj.get())
 			return *this;
 
 		detach();
 
-		obj=x;
+		obj=std::shared_ptr<value_type>(x);
 		if(obj)
 		{
 			obj->ref();
@@ -548,8 +542,10 @@ public:
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)del_from_rlist();
-		handle<value_type>::detach();
-		obj=0;
+		if(obj) {
+            obj->unref();
+        }
+		obj= nullptr;
 	}
 
 	// This will be reintroduced with a new function
@@ -569,6 +565,34 @@ public:
 		return obj?obj->rcount():0;
 	}
 
+    count_type
+    count()const
+    { return obj?obj->count():0; }
+
+    bool
+    unique()const
+    { assert(obj); return count()==1; }
+
+    operator bool()const
+    { return obj!= nullptr; }
+
+    pointer get()const { return obj.get(); }
+
+    reference
+    operator*()const
+    { assert(obj); return *obj.get(); }
+
+    pointer
+    operator->()const
+    { assert(obj); return obj.get(); }
+
+    operator handle<value_type>()const
+    { return handle<value_type>(obj.get()); }
+    operator rhandle<const value_type>()const
+    { return rhandle<const value_type>(static_cast<const_pointer>(obj.get())); }
+    operator loose_handle<value_type>()const { return loose_handle<value_type>(obj.get()); }
+
+
 	//! Returns true if there is only one instance of the object
 	bool
 	runique()const
@@ -582,9 +606,9 @@ public:
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
-		assert(x.get()!=obj);
+		assert(x.get()!=obj.get());
 
-		if(x.get()==obj)
+		if(x.get()==obj.get())
 			return 0;
 
 		rhandle<value_type> *iter;
@@ -598,16 +622,16 @@ public:
 
 		int i=0;
 		#ifndef NDEBUG
-		pointer obj_=obj;
+		pointer obj_=obj.get();
 		#endif
 
-		for(;iter;iter=next,next=iter?iter->next_:0,i++)
+		for(;iter;iter=next,next=iter?iter->next_:nullptr,i++)
 		{
 			assert(iter->get()==obj_);
 			(*iter)=x;
 		}
 
-		assert(obj==x.get());
+		assert(obj.get()==x.get());
 
 		return i;
 	}
