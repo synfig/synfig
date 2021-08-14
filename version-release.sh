@@ -29,3 +29,5 @@ git push upstream testing
 
 #git tag v${VERSION_CURRENT}
 #git push --tags upstream
+
+echo "Done! Now go and create a PR from branch 'testing' to 'master' or 'relevant stable branch."
