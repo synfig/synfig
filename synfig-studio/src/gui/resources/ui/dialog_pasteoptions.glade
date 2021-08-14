@@ -101,7 +101,10 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Some layers have exported values from another file.
-Do you want to create a copy of them or link them to their source files? Choose below for each value node.
+
+Use checkboxes below to choose which exported values should be copied (transferred) to current document.
+
+If checkbox is turned off for particular value, then this exported value will not be copied, it will be linked to the exported value in original file.
 
 &lt;b&gt;Note&lt;/b&gt;: If you choose to keep an exported value linked to another file, then your current file will become dependent of the source (referenced) file.
 In other words, it means you will not be able to load this file if any source file is deleted, moved or renamed.</property>
