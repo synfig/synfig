@@ -6,6 +6,11 @@ DIRNAME=`dirname "$0"`
 cd $DIRNAME
 DIRNAME=`pwd`
 
+if ! ( git branch |grep "* testing" ); then
+	echo "ERROR: You should be on branch 'testing' to invoke this command."
+	exit 1
+fi
+
 # Update NEWS files
 ./ChangeLog-split.sh
 git add ETL/NEWS synfig-core/NEWS synfig-studio/NEWS
@@ -22,5 +27,7 @@ git add \
 git commit -m "Release version ${VERSION_CURRENT}"
 git push upstream testing
 
-git tag v${VERSION_CURRENT}
-git push --tags upstream
+#git tag v${VERSION_CURRENT}
+#git push --tags upstream
+
+echo "Done! Now go and create a PR from branch 'testing' to 'master' or 'relevant stable branch."
