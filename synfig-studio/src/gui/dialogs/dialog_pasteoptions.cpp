@@ -94,7 +94,9 @@ Dialog_PasteOptions::Dialog_PasteOptions(Gtk::Dialog::BaseObjectType* cobject, c
 		cellrendererer_name->signal_edited().connect(sigc::mem_fun(*this, &Dialog_PasteOptions::on_valuenode_name_edited));
 	}
 
-	pixbuf_link = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-value_node"), Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	// if via icon-theme : no equivalent!
+	pixbuf_link = Gtk::Button().render_icon_pixbuf(Gtk::StockID("gtk-connect"), Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	pixbuf_external_link = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-value_node"), Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	// if via icon-theme : dialog-error only
 	pixbuf_conflict = Gtk::Button().render_icon_pixbuf(Gtk::StockID("gtk-dialog-error"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	pixbuf_empty = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, true, pixbuf_link->get_bits_per_sample(), pixbuf_link->get_width(), pixbuf_link->get_height());
@@ -438,6 +440,8 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 		status_icon = pixbuf_conflict;
 	else if (status == "link")
 		status_icon = pixbuf_link;
+	else if (status == "external-link")
+		status_icon = pixbuf_external_link;
 	else
 		status_icon = pixbuf_empty;
 

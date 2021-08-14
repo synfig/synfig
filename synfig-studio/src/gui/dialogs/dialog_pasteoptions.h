@@ -78,6 +78,7 @@ class Dialog_PasteOptions : public Gtk::Dialog
 
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_empty;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_link;
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf_external_link;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_conflict;
 
 
