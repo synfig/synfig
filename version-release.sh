@@ -6,6 +6,11 @@ DIRNAME=`dirname "$0"`
 cd $DIRNAME
 DIRNAME=`pwd`
 
+if ! ( git branch |grep "* testing" ); then
+	echo "ERROR: You should be on branch 'testing' to invoke this command."
+	exit 1
+fi
+
 # Update NEWS files
 ./ChangeLog-split.sh
 git add ETL/NEWS synfig-core/NEWS synfig-studio/NEWS
