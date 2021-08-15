@@ -1580,7 +1580,7 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 
 		studio_init_cb.task(_("Init Builder..."));
 		App::builder_=studio::Builder::create();
-		init_builder();
+		// init_builder();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
