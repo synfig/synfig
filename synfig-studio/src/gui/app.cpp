@@ -867,7 +867,7 @@ init_builder()
 	simple_actions_action_group->add_action("close-document");
 	simple_actions_action_group->add_action("quit");
 
-	
+
 
 }
 
@@ -1205,15 +1205,15 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	Glib::ustring ui_info_main_tool =
 "		<toolitem action='new'/>"
 "		<toolitem action='open'/>"
-"		<toolitem action='save'/>"
-"		<toolitem action='save-as'/>"
-"		<toolitem action='save-all'/>"
+// "		<toolitem action='save'/>"
+// "		<toolitem action='save-as'/>"
+// "		<toolitem action='save-all'/>"
 "		<separator />"
 "		<toolitem action='undo'/>"
 "		<toolitem action='redo'/>"
-"		<separator />"
-"		<toolitem action='render'/>"
-"		<toolitem action='preview'/>";
+"		<separator />";
+// "		<toolitem action='render'/>"
+// "		<toolitem action='preview'/>";
 
 	Glib::ustring hidden_ui_info_menu =
 "	<menu action='menu-navigation'>"
