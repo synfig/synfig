@@ -150,6 +150,16 @@ MainWindow::show_dialog_input()
 }
 
 void
+MainWindow::init_builder_menus()
+{
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group = Gio::SimpleActionGroup::create();
+	action_group->add_action("new",sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance)));
+	action_group->add_action("open",sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), "")));
+	action_group->add_action("quit",sigc::hide_return(sigc::ptr_fun(&studio::App::quit)));
+	App::main_window->insert_action_group("mainwindow",action_group);
+}
+
+void
 MainWindow::init_menus()
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow");

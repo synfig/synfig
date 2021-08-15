@@ -1456,6 +1456,8 @@ CanvasView::init_builder_menus()
 	simple_action_group->add_action("close-document",sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance)));
 	simple_action_group->add_action("quit",sigc::hide_return(sigc::ptr_fun(&App::quit)));
 
+	App::main_window->insert_action_group("canvas",simple_action_group);
+
 }
 
 void
