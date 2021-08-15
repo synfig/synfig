@@ -127,7 +127,7 @@ MainWindow::MainWindow() :
 	if(!App::enable_mainwin_menubar && visible_menubar) visible_menubar->hide();
 
 	add(*visible_vbox);
-	init_builder_menus();
+	// init_builder_menus();
 	init_menus();
 	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
 	App::ui_manager()->insert_action_group(window_action_group);
