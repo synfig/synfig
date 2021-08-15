@@ -845,6 +845,14 @@ public:
 static ::Preferences _preferences;
 
 void
+init_builder()
+{
+	
+	Glib::RefPtr<Gio::SimpleActionGroup> simple_menus_action_group = Gio::SimpleActionGroup::create();
+	simple_menus_action_group->add_action("menu-file");
+}
+
+void
 init_ui_manager()
 {
 	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
@@ -1475,6 +1483,10 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
+
+		studio_init_cb.task(_("Init Builder"));
+		App::builder_= Gtk::Builder::create();
+		init_builder();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
