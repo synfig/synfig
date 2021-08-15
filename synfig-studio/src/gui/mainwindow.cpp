@@ -108,7 +108,7 @@ MainWindow::MainWindow() :
 	if(gmenu)
 	{
 		auto menuBar = Gtk::manage(new Gtk::MenuBar(gmenu));
-		hidden_box->add(*menuBar);
+		// hidden_box->add(*menuBar);
 	}
 
 	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
