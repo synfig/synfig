@@ -868,8 +868,8 @@ init_builder()
 	simple_actions_action_group->add_action("close-document");
 	simple_actions_action_group->add_action("quit");
 
-	App::main_window->insert_action_group("menus",simple_menus_action_group);
-	App::main_window->insert_action_group("actions",simple_actions_action_group);
+	// App::main_window->insert_action_group("menus",simple_menus_action_group);
+	// App::main_window->insert_action_group("actions",simple_actions_action_group);
 
 	Glib::ustring ui_info = 
 		"<interface>"
