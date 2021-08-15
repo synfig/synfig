@@ -1240,7 +1240,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	{
 		actions_action_group->set_sensitive(false);
 		App::ui_manager()->set_add_tearoffs(false);
-		App::ui_manager()->insert_action_group(menus_action_group,1);
+		// App::ui_manager()->insert_action_group(menus_action_group,1);
 		App::ui_manager()->insert_action_group(actions_action_group,1);
 		App::ui_manager()->add_ui_from_string(ui_info);
 		App::ui_manager()->add_ui_from_string(hidden_ui_info);
