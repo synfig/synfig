@@ -935,14 +935,14 @@ init_builder()
 		"  </menu>"
 		"</interface>";
 
-	try
-	{
-		App::builder()->add_from_string(ui_info);	
-	}
-	catch(const std::exception& e)
-    {
-        std::cerr << "unable to build menus" << std::endl;
-    }
+	// try
+	// {
+	// 	App::builder()->add_from_string(ui_info);	
+	// }
+	// catch(const std::exception& e)
+    // {
+    //     std::cerr << "unable to build menus" << std::endl;
+    // }
 
 }
 
@@ -1580,7 +1580,7 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 
 		studio_init_cb.task(_("Init Builder..."));
 		App::builder_=studio::Builder::create();
-		// init_builder();
+		init_builder();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
