@@ -862,7 +862,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
 	menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
 
-	// menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
+	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
 
 	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
 	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
