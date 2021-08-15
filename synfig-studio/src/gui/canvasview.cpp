@@ -580,7 +580,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	Gtk::Widget *widget_work_area = create_work_area();
 	widget_work_area->set_margin_top(4);
 	init_menus();
-	
+	init_builder_menus();
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
 	Gtk::Widget *widget_right_bar = create_right_toolbar();
