@@ -424,10 +424,10 @@ MainWindow::on_recent_files_changed()
 		);
 	}
 
-	std::string ui_info =
-		"<menu action='menu-file'><menu action='menu-open-recent'>"
-	  + menu_items
-	  + "</menu></menu>";
+	std::string ui_info = "";
+	// 	"<menu action='menu-file'><menu action='menu-open-recent'>"
+	//   + menu_items
+	//   + "</menu></menu>";
 	std::string ui_info_popup =
 		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
 	std::string ui_info_menubar =
