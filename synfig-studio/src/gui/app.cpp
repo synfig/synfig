@@ -1484,10 +1484,6 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
 
-		studio_init_cb.task(_("Init Builder"));
-		App::builder_= Gtk::Builder::create();
-		init_builder();
-
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
 
