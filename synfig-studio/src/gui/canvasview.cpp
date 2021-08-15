@@ -580,6 +580,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	Gtk::Widget *widget_work_area = create_work_area();
 	widget_work_area->set_margin_top(4);
 	init_menus();
+	init_builder_menus();
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
 	Gtk::Widget *widget_right_bar = create_right_toolbar();
@@ -1440,6 +1441,24 @@ CanvasView::on_set_end_time_widget_changed()
 }
 
 void
+CanvasView::init_builder_menus()
+{
+	simple_action_group = Gio::SimpleActionGroup::create();
+
+	simple_action_group->add_action("save",hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save)));
+	simple_action_group->add_action("save_as",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as)));
+	simple_action_group->add_action("export",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export)));
+	simple_action_group->add_action("revert",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert)));
+	simple_action_group->add_action("import",sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)));
+	simple_action_group->add_action("import-sequence",sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)));
+	simple_action_group->add_action("render",sigc::mem_fun0(render_settings,&RenderSettings::present));
+	simple_action_group->add_action("preview",sigc::mem_fun(*this,&CanvasView::on_preview_option));
+	simple_action_group->add_action("close-document",sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance)));
+	simple_action_group->add_action("quit",sigc::hide_return(sigc::ptr_fun(&App::quit)));
+
+}
+
+void
 CanvasView::init_menus()
 {
 	//cache the position of desired widgets
@@ -1464,7 +1483,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
 	);
-	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
+	action_group->add( Gtk::Action::create("", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(save_all)
 	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),

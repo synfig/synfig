@@ -849,7 +849,26 @@ init_builder()
 {
 	
 	Glib::RefPtr<Gio::SimpleActionGroup> simple_menus_action_group = Gio::SimpleActionGroup::create();
-	// simple_menus_action_group->add_action("menu-file");
+	Glib::RefPtr<Gio::SimpleActionGroup> simple_actions_action_group = Gio::SimpleActionGroup::create();
+
+	simple_menus_action_group->add_action("menu-file");
+
+	simple_actions_action_group->add_action("new");
+	simple_actions_action_group->add_action("open");
+	simple_actions_action_group->add_action("save");
+	simple_actions_action_group->add_action("save-as");
+	simple_actions_action_group->add_action("save-all");
+	simple_actions_action_group->add_action("export");
+	simple_actions_action_group->add_action("revert");
+	simple_actions_action_group->add_action("import");
+	simple_actions_action_group->add_action("import-sequence");
+	simple_actions_action_group->add_action("render");
+	simple_actions_action_group->add_action("preview");
+	simple_actions_action_group->add_action("close-document");
+	simple_actions_action_group->add_action("quit");
+
+	
+
 }
 
 void
@@ -902,19 +921,19 @@ init_ui_manager()
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 // actions in File menu
-DEFINE_ACTION("new",            Gtk::StockID("synfig-new"))
-DEFINE_ACTION("open",           Gtk::StockID("synfig-open"))
-DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
-DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
-DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
-DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
-DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
-DEFINE_ACTION("import",         _("Import..."))
-DEFINE_ACTION("import-sequence",_("Import Sequence..."))
-DEFINE_ACTION("render",         _("Render..."))
-DEFINE_ACTION("preview",        _("Preview..."))
-DEFINE_ACTION("close-document", _("Close Document"))
-DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
+// DEFINE_ACTION("new",            Gtk::StockID("synfig-new"))
+// DEFINE_ACTION("open",           Gtk::StockID("synfig-open"))
+// DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
+// DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
+// DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
+// DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
+// DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
+// DEFINE_ACTION("import",         _("Import..."))
+// DEFINE_ACTION("import-sequence",_("Import Sequence..."))
+// DEFINE_ACTION("render",         _("Render..."))
+// DEFINE_ACTION("preview",        _("Preview..."))
+// DEFINE_ACTION("close-document", _("Close Document"))
+// DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
 
 // actions in Edit menu
 DEFINE_ACTION("undo",                     Gtk::StockID("synfig-undo"))
