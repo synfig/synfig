@@ -849,7 +849,7 @@ init_builder()
 {
 	
 	Glib::RefPtr<Gio::SimpleActionGroup> simple_menus_action_group = Gio::SimpleActionGroup::create();
-	simple_menus_action_group->add_action("menu-file");
+	// simple_menus_action_group->add_action("menu-file");
 }
 
 void
@@ -859,7 +859,7 @@ init_ui_manager()
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
-	menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
+	// menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
 	menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
 
 	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
@@ -1032,27 +1032,27 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
-"	<menu action='menu-file'>"
-"		<menuitem action='new' />"
-"		<menuitem action='open' />"
-"		<menu action='menu-open-recent' />"
-"		<separator name='sep-file1'/>"
-"		<menuitem action='save' />"
-"		<menuitem action='save-as' />"
-"		<menuitem action='save-all' />"
-"		<menuitem action='export' />"
-"		<menuitem action='revert' />"
-"		<separator name='sep-file2'/>"
-"		<menuitem action='import' />"
-"		<menuitem action='import-sequence' />"
-"		<separator name='sep-file4'/>"
-"		<menuitem action='preview' />"
-"		<menuitem action='render' />"
-"		<separator name='sep-file5'/>"
-"		<menuitem action='close-document' />"
-"		<separator name='sep-file6'/>"
-"		<menuitem action='quit' />"
-"	</menu>"
+// "	<menu action='menu-file'>"
+// "		<menuitem action='new' />"
+// "		<menuitem action='open' />"
+// "		<menu action='menu-open-recent' />"
+// "		<separator name='sep-file1'/>"
+// "		<menuitem action='save' />"
+// "		<menuitem action='save-as' />"
+// "		<menuitem action='save-all' />"
+// "		<menuitem action='export' />"
+// "		<menuitem action='revert' />"
+// "		<separator name='sep-file2'/>"
+// "		<menuitem action='import' />"
+// "		<menuitem action='import-sequence' />"
+// "		<separator name='sep-file4'/>"
+// "		<menuitem action='preview' />"
+// "		<menuitem action='render' />"
+// "		<separator name='sep-file5'/>"
+// "		<menuitem action='close-document' />"
+// "		<separator name='sep-file6'/>"
+// "		<menuitem action='quit' />"
+// "	</menu>"
 "	<menu action='menu-edit'>"
 "		<menuitem action='undo'/>"
 "		<menuitem action='redo'/>"
@@ -1221,8 +1221,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	Glib::ustring ui_info =
 "<ui>"
 "   <popup name='menu-toolbox' action='menu-toolbox'>"
-"	<menu action='menu-file'>"
-"	</menu>"
+// "	<menu action='menu-file'>"
+// "	</menu>"
 "	</popup>"
 "	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
 "	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
