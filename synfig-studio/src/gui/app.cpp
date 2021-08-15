@@ -868,7 +868,81 @@ init_builder()
 	simple_actions_action_group->add_action("close-document");
 	simple_actions_action_group->add_action("quit");
 
+	App::main_window->insert_action_group("menus",simple_menus_action_group);
+	App::main_window->insert_action_group("actions",simple_actions_action_group);
 
+	Glib::ustring ui_info = 
+		"<interface>"
+		"  <menu id='menubar'>"
+		"    <submenu>"
+		"      <attribute name='label' translatable='yes'>_File</attribute>"
+		"      <attribute name='action'>menus.menu-file</attribute>"
+		"      <section>"
+		"        <item>"
+		"          <attribute name='action'>actions.new</attribute>"
+		"          <attribute name='label' translatable='yes'>_New</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.open</attribute>"
+		"          <attribute name='label' translatable='yes'>_Open</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.save</attribute>"
+		"          <attribute name='label' translatable='yes'>_Save</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.save-as</attribute>"
+		"          <attribute name='label' translatable='yes'>_Save _As...</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.save-all</attribute>"
+		"          <attribute name='label' translatable='yes'>_Save _All</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.export</attribute>"
+		"          <attribute name='label' translatable='yes'>_Export...</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.revert</attribute>"
+		"          <attribute name='label' translatable='yes'>_Revert</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.import</attribute>"
+		"          <attribute name='label' translatable='yes'>_Import...</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.import-sequence</attribute>"
+		"          <attribute name='label' translatable='yes'>_Import Sequence...</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.render</attribute>"
+		"          <attribute name='label' translatable='yes'>_Render...</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.preview</attribute>"
+		"          <attribute name='label' translatable='yes'>_Preview...</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.close-document</attribute>"	
+		"          <attribute name='label' translatable='yes'>_Close</attribute>"
+		"        </item>"
+		"        <item>"
+		"          <attribute name='action'>actions.quit</attribute>"
+		"          <attribute name='label' translatable='yes'>_Quit</attribute>"
+		"        </item>"
+		"      </section>"
+		"    </submenu>"
+		"  </menu>"
+		"</interface>";
+
+	try
+	{
+		App::builder()->add_from_string(ui_info);	
+	}
+	catch(const std::exception& e)
+    {
+        std::cerr << "unable to build menus" << std::endl;
+    }
 
 }
 

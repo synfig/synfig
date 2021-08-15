@@ -34,6 +34,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/menubar.h>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -101,6 +102,15 @@ MainWindow::MainWindow() :
 	auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	auto hidden_box   = manage(new Gtk::Box());
 
+	auto builder_menubar = App::builder()->get_object("menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder_menubar);
+
+	if(gmenu)
+	{
+		auto menuBar = Gtk::manage(new Gtk::MenuBar(gmenu));
+		hidden_box->pack_start(*menuBar, Gtk::PACK_SHRINK);
+	}
+
 	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
 	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
 	if (visible_menubar != NULL)
@@ -117,7 +127,7 @@ MainWindow::MainWindow() :
 	if(!App::enable_mainwin_menubar && visible_menubar) visible_menubar->hide();
 
 	add(*visible_vbox);
-
+	init_builder_menus();
 	init_menus();
 	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
 	App::ui_manager()->insert_action_group(window_action_group);
