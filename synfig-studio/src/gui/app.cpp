@@ -223,6 +223,7 @@ int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
+Glib::RefPtr<studio::Builder> App::builder_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -1502,6 +1503,10 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
+
+		studio_init_cb.task(_("Init Builder..."));
+		App::builder_=studio::Builder::create();
+		init_builder();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
