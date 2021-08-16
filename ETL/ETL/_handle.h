@@ -375,7 +375,7 @@ public:
 
 protected:
 #ifdef _DEBUG
-        public:
+public:
 #endif
     std::shared_ptr<value_type> obj;
 
@@ -414,7 +414,7 @@ private:
 		if(obj->front_==obj->back_)
 		{
 			obj->front_=obj->back_= nullptr;
-			prev_=next_=0;
+			prev_=next_=nullptr;
 			return;
 		}
 
@@ -438,20 +438,29 @@ public:
 	rhandle(pointer x):obj(x)
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(obj)add_to_rlist();
+        if (obj){
+            obj->ref();
+            add_to_rlist();
+        }
 	}
 
 	rhandle(const handle<value_type> &x):obj(x.get())
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(obj)add_to_rlist();
+        if (obj){
+            obj->ref();
+            add_to_rlist();
+        }
 	}
 
 	//! Default copy constructor
 	rhandle(const rhandle<value_type> &x):obj(x.obj)
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-		if(obj)add_to_rlist();
+        if (obj){
+            obj->ref();
+            add_to_rlist();
+        }
 	}
 
 	//! Handle is released on deletion
@@ -542,10 +551,10 @@ public:
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)del_from_rlist();
-		if(obj) {
-            obj->unref();
-        }
-		obj= nullptr;
+		pointer xobj(obj.get());
+		obj=nullptr;
+        if(xobj)
+            xobj->unref();
 	}
 
 	// This will be reintroduced with a new function
