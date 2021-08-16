@@ -969,7 +969,7 @@ init_builder()
 	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 
 	if(gmenu)
-		App::instance()->set_menubar(gmenu);
+		App::instance()->set_app_menu(gmenu);
 
 }
 
