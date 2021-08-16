@@ -1611,6 +1611,7 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 		studio_init_cb.task(_("Init Builder..."));
 		App::builder_=studio::Builder::create();
 		init_builder();
+		main_window->create_builder_menu();
 
 		studio_init_cb.task(_("Init Toolbox..."));
 		dock_toolbox=new studio::Dock_Toolbox();

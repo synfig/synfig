@@ -89,6 +89,8 @@ namespace studio {
 			const std::vector<synfig::String> &fullnames,
 			std::vector<synfig::String> &shortnames );
 
+		void create_builder_menu();
+
 	};
 }; // END of namespace studio
 

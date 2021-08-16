@@ -102,15 +102,6 @@ MainWindow::MainWindow() :
 	auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	auto hidden_box   = manage(new Gtk::Box());
 
-	// auto builder_menubar = App::builder()->get_object("menubar");
-	// auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder_menubar);
-
-	// if(gmenu)
-	// {
-	// 	auto menuBar = Gtk::manage(new Gtk::MenuBar(gmenu));
-	// 	hidden_box->add(*menuBar);
-	// }
-
 	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
 	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
 	if (visible_menubar != NULL)
@@ -151,6 +142,26 @@ MainWindow::MainWindow() :
 }
 
 MainWindow::~MainWindow() = default;
+
+void
+MainWindow::create_builder_menu()
+{
+
+	auto builder_box = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	
+	auto builder_menubar = App::builder()->get_object("menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder_menubar);
+
+	if(gmenu)
+	{
+		auto menuBar = Gtk::manage(new Gtk::MenuBar(gmenu));
+		builder_box->add(*menuBar);
+		builder_box->pack_start(*menuBar, false, false, 0);
+	}
+
+	builder_box->show();
+	
+}
 
 void
 MainWindow::show_dialog_input()
