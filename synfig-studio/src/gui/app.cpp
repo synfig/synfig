@@ -866,14 +866,14 @@ init_builder()
 	// simple_action_group->add_action("close-document");
 	simple_action_group->add_action("quit");
 
-	try
-	{
-		App::main_window->insert_action_group("actions",simple_action_group);
-	}
-	catch(Glib::Error& error)
-	{
-		std::cerr << "Error while inserting in the main_window : " << error.what() << std::endl;
-	}
+	// try
+	// {
+	// 	App::main_window->insert_action_group("actions",simple_action_group);
+	// }
+	// catch(Glib::Error& error)
+	// {
+	// 	std::cerr << "Error while inserting in the main_window : " << error.what() << std::endl;
+	// }
 
 	// Glib::ustring ui_info = 
 	// 	"<interface>"
