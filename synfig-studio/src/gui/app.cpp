@@ -849,34 +849,31 @@ void
 init_builder()
 {
 	
-	Glib::RefPtr<Gio::SimpleActionGroup> simple_menus_action_group = Gio::SimpleActionGroup::create();
-	Glib::RefPtr<Gio::SimpleActionGroup> simple_actions_action_group = Gio::SimpleActionGroup::create();
+	Glib::RefPtr<Gio::SimpleActionGroup> simple_action_group = Gio::SimpleActionGroup::create();
 
-	simple_menus_action_group->add_action("menu-file");
+	simple_action_group->add_action("menu-file");
+	simple_action_group->add_action("new");
+	simple_action_group->add_action("open");
+	simple_action_group->add_action("save");
+	simple_action_group->add_action("save-as");
+	simple_action_group->add_action("save-all");
+	simple_action_group->add_action("export");
+	simple_action_group->add_action("revert");
+	simple_action_group->add_action("import");
+	simple_action_group->add_action("import-sequence");
+	simple_action_group->add_action("render");
+	simple_action_group->add_action("preview");
+	simple_action_group->add_action("close-document");
+	simple_action_group->add_action("quit");
 
-	simple_actions_action_group->add_action("new");
-	simple_actions_action_group->add_action("open");
-	simple_actions_action_group->add_action("save");
-	simple_actions_action_group->add_action("save-as");
-	simple_actions_action_group->add_action("save-all");
-	simple_actions_action_group->add_action("export");
-	simple_actions_action_group->add_action("revert");
-	simple_actions_action_group->add_action("import");
-	simple_actions_action_group->add_action("import-sequence");
-	simple_actions_action_group->add_action("render");
-	simple_actions_action_group->add_action("preview");
-	simple_actions_action_group->add_action("close-document");
-	simple_actions_action_group->add_action("quit");
-
-	App::main_window->insert_action_group("menus",simple_menus_action_group);
-	App::main_window->insert_action_group("actions",simple_actions_action_group);
+	App::main_window->insert_action_group("actions",simple_action_group);
 
 	Glib::ustring ui_info = 
 		"<interface>"
 		"  <menu id='menubar'>"
 		"    <submenu>"
 		"      <attribute name='label' translatable='yes'>_File</attribute>"
-		"      <attribute name='action'>menus.menu-file</attribute>"
+		"      <attribute name='action'>actions.menu-file</attribute>"
 		"      <section>"
 		"        <item>"
 		"          <attribute name='action'>actions.new</attribute>"
@@ -939,9 +936,10 @@ init_builder()
 	{
 		App::builder()->add_from_string(ui_info);	
 	}
-	catch(const std::exception& e)
+	catch(const Glib::Error& error)
     {
-        std::cerr << "unable to build menus" << std::endl;
+        std::cerr << "ExampleApplication::on_startup(): " << error.what() << std::endl;
+    	return;
     }
 
 }
