@@ -851,7 +851,7 @@ init_builder()
 	
 	Glib::RefPtr<Gio::SimpleActionGroup> simple_action_group = Gio::SimpleActionGroup::create();
 
-	// simple_action_group->add_action("menu-file");
+	simple_action_group->add_action("menu-file");
 	// simple_action_group->add_action("new");
 	// simple_action_group->add_action("open");
 	// simple_action_group->add_action("save");
