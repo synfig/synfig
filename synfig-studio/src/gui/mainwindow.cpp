@@ -160,7 +160,7 @@ MainWindow::create_builder_menu()
 	}
 
 	builder_box->show();
-	add(*builder_box);
+	App::main_window->add(*builder_box);
 	
 }
 
