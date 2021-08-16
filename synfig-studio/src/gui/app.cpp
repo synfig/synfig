@@ -64,6 +64,7 @@
 #endif
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/menu.h>
 
 #include <gui/app.h>
 #include <gui/autorecover.h>
@@ -866,14 +867,14 @@ init_builder()
 	// simple_action_group->add_action("close-document");
 	simple_action_group->add_action("quit");
 
-	try
-	{
-		App::main_window->insert_action_group("actions",simple_action_group);
-	}
-	catch(Glib::Error& error)
-	{
-		std::cerr << "Error while inserting in the main_window : " << error.what() << std::endl;
-	}
+	// try
+	// {
+	// 	App::main_window->insert_action_group("actions",simple_action_group);
+	// }
+	// catch(Glib::Error& error)
+	// {
+	// 	std::cerr << "Error while inserting in the main_window : " << error.what() << std::endl;
+	// }
 
 	// Glib::ustring ui_info = 
 	// 	"<interface>"
@@ -962,8 +963,13 @@ init_builder()
 	catch(const Glib::Error& error)
     {
         std::cerr << "ExampleApplication::on_startup(): " << error.what() << std::endl;
-    	return;
     }
+
+	auto object = App::builder()->get_object("menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+
+	if(gmenu)
+		App::instance()->set_menubar(gmenu);
 
 }
 
@@ -1611,7 +1617,7 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 
 		studio_init_cb.task(_("Init Builder..."));
 		App::builder_=studio::Builder::create();
-		// init_builder();
+		init_builder();
 		// main_window->create_builder_menu();
 
 		studio_init_cb.task(_("Init Toolbox..."));

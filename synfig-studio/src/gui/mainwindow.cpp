@@ -99,67 +99,25 @@ MainWindow::MainWindow() :
 	bin_->add(*main_dock_book_);
 	bin_->show();
 
-	Glib::RefPtr<Gio::SimpleActionGroup> simple_action_group = Gio::SimpleActionGroup::create();
-	simple_action_group->add_action("menu-file");
-	simple_action_group->add_action("quit");
+	auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	auto hidden_box   = manage(new Gtk::Box());
 
-	Glib::RefPtr<Gtk::Builder> builder;
-	builder = Gtk::Builder::create();
-
-	Glib::ustring ui_info = 
-		"<interface>"
-		"  <menu id='menubar'>"
-		"    <submenu>"
-		"      <attribute name='label' translatable='yes'>_File</attribute>"
-		"      <attribute name='action'>actions.menu-file</attribute>"
-		"      <section>"
-		"        <item>"
-		"          <attribute name='action'>actions.quit</attribute>"
-		"          <attribute name='label' translatable='yes'>_Quit</attribute>"
-		"        </item>"
-		"      </section>"
-		"    </submenu>"
-		"  </menu>"
-		"</interface>";
-
-	try
+	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
+	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
+	if (visible_menubar != NULL)
 	{
-		insert_action_group("actions",simple_action_group);
-		builder->add_from_string(ui_info);
-	}
-	catch(Glib::Error& error)
-	{
-		std::cerr << "Error while building the menus : " << error.what() << std::endl;
-	}
-	
-	auto builder_menubar = builder->get_object("menubar");
-	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder_menubar);
+		hidden_box->add(*hidden_menubar);
+		hidden_box->hide();
 
-	if(gmenu)
-	{
-		auto menuBar = Gtk::manage(new Gtk::MenuBar(gmenu));
-		add(*menuBar);
+		visible_vbox->add(*hidden_box);
+		visible_vbox->pack_start(*visible_menubar, false, false, 0);
 	}
 
-	// auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	// auto hidden_box   = manage(new Gtk::Box());
+	visible_vbox->pack_end(*bin_, true, true, 0);
+	visible_vbox->show();
+	if(!App::enable_mainwin_menubar && visible_menubar) visible_menubar->hide();
 
-	// auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
-	// auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
-	// if (visible_menubar != NULL)
-	// {
-	// 	hidden_box->add(*hidden_menubar);
-	// 	hidden_box->hide();
-
-	// 	visible_vbox->add(*hidden_box);
-	// 	visible_vbox->pack_start(*visible_menubar, false, false, 0);
-	// }
-
-	// visible_vbox->pack_end(*bin_, true, true, 0);
-	// visible_vbox->show();
-	// if(!App::enable_mainwin_menubar && visible_menubar) visible_menubar->hide();
-
-	// add(*visible_vbox);
+	add(*visible_vbox);
 	// init_builder_menus();
 	init_menus();
 	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
