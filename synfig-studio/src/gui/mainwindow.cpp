@@ -160,6 +160,7 @@ MainWindow::create_builder_menu()
 	}
 
 	builder_box->show();
+	add(*builder_box);
 	
 }
 
