@@ -131,8 +131,6 @@ MainWindow::MainWindow() :
 	{
 		std::cerr << "Error while building the menus : " << error.what() << std::endl;
 	}
-
-	auto builder_box = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	
 	auto builder_menubar = builder->get_object("menubar");
 	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder_menubar);
@@ -140,12 +138,8 @@ MainWindow::MainWindow() :
 	if(gmenu)
 	{
 		auto menuBar = Gtk::manage(new Gtk::MenuBar(gmenu));
-		builder_box->add(*menuBar);
-		builder_box->pack_start(*menuBar, false, false, 0);
+		add(*menuBar);
 	}
-
-	builder_box->show();
-	add(*builder_box);
 
 	// auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	// auto hidden_box   = manage(new Gtk::Box());
