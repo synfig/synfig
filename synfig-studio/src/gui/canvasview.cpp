@@ -1485,7 +1485,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
 	);
-	action_group->add( Gtk::Action::create("", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
+	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(save_all)
 	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
