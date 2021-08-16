@@ -944,6 +944,7 @@ init_builder()
 		"  <menu id='menubar'>"
 		"    <submenu>"
 		"      <attribute name='label' translatable='yes'>_File</attribute>"
+		"      <attribute name='action'>actions.menu-file</attribute>"
 		"      <section>"
 		"        <item>"
 		"          <attribute name='action'>actions.quit</attribute>"
