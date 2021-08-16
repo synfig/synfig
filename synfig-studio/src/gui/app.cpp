@@ -868,8 +868,8 @@ init_builder()
 	simple_actions_action_group->add_action("close-document");
 	simple_actions_action_group->add_action("quit");
 
-	insert_action_group("menus",simple_menus_action_group);
-	insert_action_group("actions",simple_actions_action_group);
+	App::main_window->insert_action_group("menus",simple_menus_action_group);
+	App::main_window->insert_action_group("actions",simple_actions_action_group);
 
 	Glib::ustring ui_info = 
 		"<interface>"
@@ -935,14 +935,14 @@ init_builder()
 		"  </menu>"
 		"</interface>";
 
-	// try
-	// {
-	// 	App::builder()->add_from_string(ui_info);	
-	// }
-	// catch(const std::exception& e)
-    // {
-    //     std::cerr << "unable to build menus" << std::endl;
-    // }
+	try
+	{
+		App::builder()->add_from_string(ui_info);	
+	}
+	catch(const std::exception& e)
+    {
+        std::cerr << "unable to build menus" << std::endl;
+    }
 
 }
 
