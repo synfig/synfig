@@ -124,7 +124,7 @@ MainWindow::MainWindow() :
 
 	try
 	{
-		App::main_window->insert_action_group("actions",simple_action_group);
+		insert_action_group("actions",simple_action_group);
 		builder->add_from_string(ui_info);
 	}
 	catch(Glib::Error& error)
@@ -134,7 +134,7 @@ MainWindow::MainWindow() :
 
 	auto builder_box = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	
-	auto builder_menubar = App::builder()->get_object("menubar");
+	auto builder_menubar = builder->get_object("menubar");
 	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder_menubar);
 
 	if(gmenu)
