@@ -866,14 +866,14 @@ init_builder()
 	// simple_action_group->add_action("close-document");
 	simple_action_group->add_action("quit");
 
-	// try
-	// {
-	// 	App::main_window->insert_action_group("actions",simple_action_group);
-	// }
-	// catch(Glib::Error& error)
-	// {
-	// 	std::cerr << "Error while inserting in the main_window : " << error.what() << std::endl;
-	// }
+	try
+	{
+		App::main_window->insert_action_group("actions",simple_action_group);
+	}
+	catch(Glib::Error& error)
+	{
+		std::cerr << "Error while inserting in the main_window : " << error.what() << std::endl;
+	}
 
 	// Glib::ustring ui_info = 
 	// 	"<interface>"
@@ -1598,10 +1598,6 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
 
-		studio_init_cb.task(_("Init Builder..."));
-		App::builder_=studio::Builder::create();
-		init_builder();
-
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
 
@@ -1611,6 +1607,10 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 		studio_init_cb.task(_("Init Main Window..."));
 		main_window=new studio::MainWindow();
 		main_window->add_accel_group(App::ui_manager_->get_accel_group());
+
+		studio_init_cb.task(_("Init Builder..."));
+		App::builder_=studio::Builder::create();
+		init_builder();
 
 		studio_init_cb.task(_("Init Toolbox..."));
 		dock_toolbox=new studio::Dock_Toolbox();
