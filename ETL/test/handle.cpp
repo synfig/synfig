@@ -327,6 +327,24 @@ int rhandle_general_use_test(void)
 		printf(__FILE__":%d: On clear, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
 		return 1;
 	}
+    obj_handle obj1;
+    {
+        robj_handle robj(new my_test_obj(rand()));
+        obj1 = robj;
+    }
+    if(obj1.count()!=1){
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy, handle count=%d, should be %d.\n",__LINE__,obj.count(),1);
+        return 1;
+    }
+    obj1.detach();
+
+    my_test_obj::instance_count=0;
+    { robj_handle robj = obj_handle(etl::loose_handle<my_test_obj>()); }
+    if(my_test_obj::instance_count){
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On clear, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
+    }
 
 	printf("PASSED\n");
 
