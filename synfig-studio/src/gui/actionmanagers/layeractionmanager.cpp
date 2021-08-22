@@ -141,7 +141,7 @@ search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, std::list<La
 static void
 replace_exported_value_nodes(Layer::LooseHandle layer, const std::map<ValueNode::Handle,std::pair<ValueNode::Handle, std::string>>& valuenode_replacements)
 {
-	auto search_clone = [valuenode_replacements](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
+	auto get_correspondent_clone = [valuenode_replacements](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
 		auto iter = valuenode_replacements.find(vn);
 		if (iter != valuenode_replacements.end()) {
 			auto replacement = iter->second.first;
@@ -149,7 +149,7 @@ replace_exported_value_nodes(Layer::LooseHandle layer, const std::map<ValueNode:
 		}
 		return nullptr;
 	};
-	replace_value_nodes(layer, search_clone);
+	replace_value_nodes(layer, get_correspondent_clone);
 }
 
 // COPIED FROM synfigapp/actions/layerduplicate.cpp
@@ -726,6 +726,19 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 				}
 			}
 		}
+
+		// Now we fix the valuenode copies that should refer to other valuenode that were copied as well
+		// as they should not be linked to external file
+		auto get_correspondent_clone = [valuenode_replacements](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
+			auto iter = valuenode_replacements.find(vn);
+			if (iter != valuenode_replacements.end()) {
+				auto replacement = iter->second.first;
+				return replacement;
+			}
+			return nullptr;
+		};
+		for (auto item : valuenode_replacements)
+			replace_value_nodes(item.second.first, get_correspondent_clone);
 	}
 	return true;
 }
