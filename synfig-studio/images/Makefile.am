@@ -437,15 +437,15 @@ CLEANDIRS = \
 	128x128 \
 	256x256
 
-appicondir="${datadir}/icons/hicolor"
+appicondir= $(datadir)/icons/hicolor
 
-imagedir="${synfig_datadir}/images"
+imagedir = $(synfig_datadir)/images
 image_DATA = $(IMAGES)
 
-iconsdir="${synfig_datadir}/icons/classic"
+iconsdir = $(synfig_datadir)/icons/classic
 icons_DATA = $(ICONS)
 
-win32iconsdir="${datadir}/pixmaps"
+win32iconsdir = $(datadir)/pixmaps
 win32icons_DATA = $(WIN32_ICONS)
 
 all: $(IMAGES) $(ICONS)
