@@ -137,16 +137,16 @@ EXTRA_DIST = \
 	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
 	\
-	resize_disabled_icon \
-	resize_up_left_icon \
-	resize_up_icon \
-	resize_up_right_icon \
-	resize_left_icon \
-	resize_right_icon \
-	resize_down_left_icon \
-	resize_down_icon \
-	resize_down_right_icon \
-	resize_transparent_icon \
+	resize_disabled_icon.sif \
+	resize_up_left_icon.sif \
+	resize_up_icon.sif \
+	resize_up_right_icon.sif \
+	resize_left_icon.sif \
+	resize_right_icon.sif \
+	resize_down_left_icon.sif \
+	resize_down_icon.sif \
+	resize_down_right_icon.sif \
+	resize_transparent_icon.sif \
 	\
 	tool_brush_icon.sif \
 	tool_cutout_icon.sif \
