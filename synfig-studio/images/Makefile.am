@@ -733,8 +733,8 @@ icons128_DATA = 128x128/synfig_icon.$(EXT)
 	-mkdir 256x256
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 256 -h 256
 
-+icons256dir = $(appicondir)/256x256/apps
-+icons256_DATA = 256x256/synfig_icon.$(EXT)
+icons256dir = $(appicondir)/256x256/apps
+icons256_DATA = 256x256/synfig_icon.$(EXT)
 
 iconsscalabledir = $(appicondir)/scalable/apps
 iconsscalable_DATA = org.synfig.SynfigStudio.svg
