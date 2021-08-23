@@ -328,13 +328,29 @@ int rhandle_general_use_test(void)
 		return 1;
 	}
     obj_handle obj1;
-    {
-        robj_handle robj(new my_test_obj(rand()));
-        obj1 = robj;
+	if(!obj1.empty()){ //! default handle constructor should return an empty pointer
+        printf("FAILED!\n");
+        printf(__FILE__":%d: on create an empty handle, the number of instances=%d must be zero.\n",__LINE__,obj.count());
+        return 1;
+	}
+    robj_handle_old robj1(new my_test_obj(rand()));
+	if(robj1.count()!=1){
+        printf("FAILED!\n");
+        printf(__FILE__":%d: on create rhandle instance count=%d, should be 1.\n",__LINE__,obj1.count());
+        return 1;
+	}
+	obj1 = robj1;
+    if(obj1.count()!=2){ //! on copy "handle" , counter should increase by 1
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy, handle count=%d, should be 2.\n",__LINE__,obj1.count());
+        return 1;
     }
+	robj1.detach();
+    //! After detaching, the object should not be destroyed if it is referenced by other pointers
+    //! and the counter should be one less than its previous value.
     if(obj1.count()!=1){
         printf("FAILED!\n");
-        printf(__FILE__":%d: On copy, handle count=%d, should be %d.\n",__LINE__,obj.count(),1);
+        printf(__FILE__":%d: On copy, handle count=%d, should be 1.\n",__LINE__,obj1.count());
         return 1;
     }
     obj1.detach();
