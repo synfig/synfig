@@ -361,6 +361,274 @@ public:
 **	\see rshared_object, handle, loose_handle
 **	\writeme
 */
+    template <class T>
+class rhandle_old : public handle<T>
+    {
+        friend class rshared_object;
+    public:
+
+        typedef T value_type;
+        typedef T& reference;
+        typedef const T& const_reference;
+        typedef T* pointer;
+        typedef const T* const_pointer;
+        typedef int count_type;
+        typedef int size_type;
+
+
+        using handle<value_type>::count;
+        using handle<value_type>::unique;
+        using handle<value_type>::operator bool;
+        using handle<value_type>::get;
+        using handle<value_type>::operator*;
+        using handle<value_type>::operator->;
+
+        /*
+        operator const handle<value_type>&()const
+        { return *this; }
+        */
+
+    private:
+        using handle<value_type>::obj;
+
+        rhandle_old<value_type> *prev_;
+        rhandle_old<value_type> *next_;
+
+        void add_to_rlist()
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+
+            assert(obj);
+            obj->rref();
+
+            // If this is the first reversible handle
+            if(!obj->front_)
+            {
+                obj->front_=obj->back_=this;
+                prev_=next_=0;
+                return;
+            }
+
+            prev_=reinterpret_cast<rhandle_old<value_type>*>(obj->back_);
+            next_=0;
+            prev_->next_=this;
+            obj->back_=this;
+        }
+
+        void del_from_rlist()
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            assert(obj);
+            obj->runref();
+
+            // If this is the last reversible handle
+            if(obj->front_==obj->back_)
+            {
+                obj->front_=obj->back_=0;
+                prev_=next_=0;
+                return;
+            }
+
+            if(!prev_)
+                obj->front_=(void*)next_;
+            else
+                prev_->next_=next_;
+
+            if(!next_)
+                obj->back_=(void*)prev_;
+            else
+                next_->prev_=prev_;
+        }
+
+    public:
+
+        //! Default constructor - empty handle
+        rhandle_old() {}
+
+        //! Constructor that constructs from a pointer to new object
+        rhandle_old(pointer x):handle<T>(x)
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            if(obj)add_to_rlist();
+        }
+
+        rhandle_old(const handle<value_type> &x):handle<T>(x)
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            if(obj)add_to_rlist();
+        }
+
+        //! Default copy constructor
+        rhandle_old(const rhandle_old<value_type> &x):handle<T>(x)
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            if(obj)add_to_rlist();
+        }
+
+        //! Handle is released on deletion
+        ~rhandle_old() { detach(); }
+
+        //! Template Assignment operator
+        /*! \note This class may not be necessary, and may be removed
+        **		at some point in the future.
+        */
+        /*
+        template <class U> const handle<value_type> &
+        operator=(const handle<U> &x)
+        {
+            if(x.get()==obj)
+                return *this;
+            detach();
+            obj=static_cast<value_type*>(x.get());
+            if(obj)
+            {
+                obj->ref();
+                add_to_rlist();
+            }
+            return *this;
+        }
+        */
+
+        //! Assignment operator
+        rhandle_old<value_type> &
+        operator=(const rhandle_old<value_type> &x)
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            if(x.get()==obj)
+                return *this;
+
+            detach();
+
+            obj=x.get();
+            if(obj)
+            {
+                obj->ref();
+                add_to_rlist();
+            }
+            return *this;
+        }
+
+        rhandle_old<value_type>&
+        operator=(const handle<value_type> &x)
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            if(x.get()==obj)
+                return *this;
+
+            detach();
+
+            obj=x.get();
+            if(obj)
+            {
+                obj->ref();
+                add_to_rlist();
+            }
+            return *this;
+        }
+
+        rhandle_old<value_type>&
+        operator=(value_type* x)
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            if(x==obj)
+                return *this;
+
+            detach();
+
+            obj=x;
+            if(obj)
+            {
+                obj->ref();
+                add_to_rlist();
+            }
+            return *this;
+        }
+
+        //! Handle release procedure
+        /*! unref()'s the object and sets the internal object pointer to \c NULL */
+        void
+        detach()
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            if(obj)del_from_rlist();
+            handle<value_type>::detach();
+            obj=0;
+        }
+
+        // This will be reintroduced with a new function
+        //void release() { detach(); }
+
+        void reset() { detach(); }
+
+        //! Creates a new instance of a T object and puts it in the handle.
+        /*! Uses the default constructor */
+        void spawn() { operator=(handle<value_type>(new T())); }
+
+        //! Returns number of reversible instances
+        count_type
+        rcount()const
+        {
+//		value_type*const& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            return obj?obj->rcount():0;
+        }
+
+        //! Returns true if there is only one instance of the object
+        bool
+        runique()const
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            assert(obj); return obj->front_==obj->back_;
+        }
+
+        //! \writeme
+        int replace(const handle<value_type> &x)
+        {
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
+            assert(obj);
+            assert(x.get()!=obj);
+
+            if(x.get()==obj)
+                return 0;
+
+            rhandle_old<value_type> *iter;
+            rhandle_old<value_type> *next;
+
+            iter=reinterpret_cast<rhandle_old<value_type>*>(obj->front_);
+
+            assert(iter);
+
+            next=iter->next_;
+
+            int i=0;
+#ifndef NDEBUG
+            pointer obj_=obj;
+#endif
+
+            for(;iter;iter=next,next=iter?iter->next_:0,i++)
+            {
+                assert(iter->get()==obj_);
+                (*iter)=x;
+            }
+
+            assert(obj==x.get());
+
+            return i;
+        }
+
+        //! Swaps the values of two handles without reference counts
+        /*!	\warning not yet implemented. \writeme */
+        handle<value_type> &
+        swap(handle<value_type> &x);
+        /*
+        {
+            assert(0);
+            pointer ptr=x.obj;
+            x.obj=obj;
+            obj=ptr;
+            return *this;
+        }
+        */
+    }; // END of template class rhandle
 template <class T>
 class rhandle_new : public handle<T>
 {
@@ -664,274 +932,6 @@ public:
 	*/
 }; // END of template class rhandle
 
-template <class T>
-class rhandle_old : public handle<T>
-{
-    friend class rshared_object;
-public:
-
-    typedef T value_type;
-    typedef T& reference;
-    typedef const T& const_reference;
-    typedef T* pointer;
-    typedef const T* const_pointer;
-    typedef int count_type;
-    typedef int size_type;
-
-
-    using handle<value_type>::count;
-    using handle<value_type>::unique;
-    using handle<value_type>::operator bool;
-    using handle<value_type>::get;
-    using handle<value_type>::operator*;
-    using handle<value_type>::operator->;
-
-    /*
-    operator const handle<value_type>&()const
-    { return *this; }
-    */
-
-private:
-    using handle<value_type>::obj;
-
-    rhandle_old<value_type> *prev_;
-    rhandle_old<value_type> *next_;
-
-    void add_to_rlist()
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-
-        assert(obj);
-        obj->rref();
-
-        // If this is the first reversible handle
-        if(!obj->front_)
-        {
-            obj->front_=obj->back_=this;
-            prev_=next_=0;
-            return;
-        }
-
-        prev_=reinterpret_cast<rhandle_old<value_type>*>(obj->back_);
-        next_=0;
-        prev_->next_=this;
-        obj->back_=this;
-    }
-
-    void del_from_rlist()
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        assert(obj);
-        obj->runref();
-
-        // If this is the last reversible handle
-        if(obj->front_==obj->back_)
-        {
-            obj->front_=obj->back_=0;
-            prev_=next_=0;
-            return;
-        }
-
-        if(!prev_)
-            obj->front_=(void*)next_;
-        else
-            prev_->next_=next_;
-
-        if(!next_)
-            obj->back_=(void*)prev_;
-        else
-            next_->prev_=prev_;
-    }
-
-public:
-
-    //! Default constructor - empty handle
-    rhandle_old() {}
-
-    //! Constructor that constructs from a pointer to new object
-    rhandle_old(pointer x):handle<T>(x)
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        if(obj)add_to_rlist();
-    }
-
-    rhandle_old(const handle<value_type> &x):handle<T>(x)
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        if(obj)add_to_rlist();
-    }
-
-    //! Default copy constructor
-    rhandle_old(const rhandle_old<value_type> &x):handle<T>(x)
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        if(obj)add_to_rlist();
-    }
-
-    //! Handle is released on deletion
-    ~rhandle_old() { detach(); }
-
-    //! Template Assignment operator
-    /*! \note This class may not be necessary, and may be removed
-    **		at some point in the future.
-    */
-    /*
-    template <class U> const handle<value_type> &
-    operator=(const handle<U> &x)
-    {
-        if(x.get()==obj)
-            return *this;
-        detach();
-        obj=static_cast<value_type*>(x.get());
-        if(obj)
-        {
-            obj->ref();
-            add_to_rlist();
-        }
-        return *this;
-    }
-    */
-
-    //! Assignment operator
-    rhandle_old<value_type> &
-    operator=(const rhandle_old<value_type> &x)
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        if(x.get()==obj)
-            return *this;
-
-        detach();
-
-        obj=x.get();
-        if(obj)
-        {
-            obj->ref();
-            add_to_rlist();
-        }
-        return *this;
-    }
-
-    rhandle_old<value_type>&
-    operator=(const handle<value_type> &x)
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        if(x.get()==obj)
-            return *this;
-
-        detach();
-
-        obj=x.get();
-        if(obj)
-        {
-            obj->ref();
-            add_to_rlist();
-        }
-        return *this;
-    }
-
-    rhandle_old<value_type>&
-    operator=(value_type* x)
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        if(x==obj)
-            return *this;
-
-        detach();
-
-        obj=x;
-        if(obj)
-        {
-            obj->ref();
-            add_to_rlist();
-        }
-        return *this;
-    }
-
-    //! Handle release procedure
-    /*! unref()'s the object and sets the internal object pointer to \c NULL */
-    void
-    detach()
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        if(obj)del_from_rlist();
-        handle<value_type>::detach();
-        obj=0;
-    }
-
-    // This will be reintroduced with a new function
-    //void release() { detach(); }
-
-    void reset() { detach(); }
-
-    //! Creates a new instance of a T object and puts it in the handle.
-    /*! Uses the default constructor */
-    void spawn() { operator=(handle<value_type>(new T())); }
-
-    //! Returns number of reversible instances
-    count_type
-    rcount()const
-    {
-//		value_type*const& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        return obj?obj->rcount():0;
-    }
-
-    //! Returns true if there is only one instance of the object
-    bool
-    runique()const
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        assert(obj); return obj->front_==obj->back_;
-    }
-
-    //! \writeme
-    int replace(const handle<value_type> &x)
-    {
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-        assert(obj);
-        assert(x.get()!=obj);
-
-        if(x.get()==obj)
-            return 0;
-
-        rhandle_old<value_type> *iter;
-        rhandle_old<value_type> *next;
-
-        iter=reinterpret_cast<rhandle_old<value_type>*>(obj->front_);
-
-        assert(iter);
-
-        next=iter->next_;
-
-        int i=0;
-#ifndef NDEBUG
-        pointer obj_=obj;
-#endif
-
-        for(;iter;iter=next,next=iter?iter->next_:0,i++)
-        {
-            assert(iter->get()==obj_);
-            (*iter)=x;
-        }
-
-        assert(obj==x.get());
-
-        return i;
-    }
-
-    //! Swaps the values of two handles without reference counts
-    /*!	\warning not yet implemented. \writeme */
-    handle<value_type> &
-    swap(handle<value_type> &x);
-    /*
-    {
-        assert(0);
-        pointer ptr=x.obj;
-        x.obj=obj;
-        obj=ptr;
-        return *this;
-    }
-    */
-}; // END of template class rhandle
 // ========================================================================
 /*!	\class	loose_handle _handle.h	ETL/handle
 **	\brief	Loose Object Handle
