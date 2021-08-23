@@ -76,11 +76,13 @@ int my_test_obj::instance_count=0;
 int my_other_test_obj::instance_count=0;
 
 typedef etl::handle<my_test_obj> obj_handle;
-typedef etl::rhandle<my_test_obj> robj_handle;
+typedef etl::rhandle_old<my_test_obj> robj_handle_old;
+typedef etl::rhandle_new<my_test_obj> robj_handle_new;
 typedef etl::handle<my_other_test_obj> other_obj_handle;
 typedef list< obj_handle > obj_list;
 typedef list< other_obj_handle > other_obj_list;
-typedef list< robj_handle > robj_list;
+typedef list< robj_handle_old > robj_list_old;
+typedef list< robj_handle_new > robj_list_new;
 
 int handle_basic_test()
 {
@@ -190,26 +192,35 @@ int handle_general_use_test(void)
 	return 0;
 }
 
-	struct ListItem
+	struct ListItem_old
 	{
-		robj_handle obj;
+		robj_handle_old obj;
 		int bleh;
 		int blah;
-		ListItem(robj_handle obj,int bleh=1, int blah=2):
+		ListItem_old(robj_handle_old obj,int bleh=1, int blah=2):
 			obj(obj),bleh(bleh),blah(blah) { }
 	};
 
-int rhandle_general_use_test(void)
+    struct ListItem_new
+    {
+        robj_handle_new obj;
+        int bleh;
+        int blah;
+        ListItem_new(robj_handle_new obj,int bleh=1, int blah=2):
+        obj(obj),bleh(bleh),blah(blah) { }
+    };
+
+int rhandle_old_general_use_test(void)
 {
 
 
-	printf("rhandle: General-use test: ");
+	printf("rhandle_old: General-use test: ");
 	my_test_obj::instance_count=0;
 
-	robj_list my_list;
+	robj_list_old my_list;
 	int i;
 
-	robj_handle obj=	new my_test_obj(rand());
+	robj_handle_old obj=	new my_test_obj(rand());
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
 		my_list.push_back(obj);
 
@@ -239,7 +250,7 @@ int rhandle_general_use_test(void)
 		return 1;
 	}
 
-	{robj_handle bleh(obj);}
+	{robj_handle_old bleh(obj);}
 
 	if(obj.rcount()!=NUMBER_OF_OBJECTS+1)
 	{
@@ -264,7 +275,7 @@ int rhandle_general_use_test(void)
 		return 1;
 	}
 
-	robj_handle new_obj=	new my_test_obj(rand());
+	robj_handle_old new_obj=	new my_test_obj(rand());
 
 	int replacements=obj.replace(new_obj);
 
@@ -283,8 +294,8 @@ int rhandle_general_use_test(void)
 	}
 
 	{
-		robj_handle bleh(obj);
-		robj_handle blah(obj.get());
+		robj_handle_old bleh(obj);
+		robj_handle_old blah(obj.get());
 	}
 
 
@@ -301,9 +312,9 @@ int rhandle_general_use_test(void)
 
 
 
-	std::vector<ListItem> my_item_list;
+	std::vector<ListItem_old> my_item_list;
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
-		my_item_list.push_back(ListItem(new my_test_obj(rand()),3,4));
+		my_item_list.push_back(ListItem_old(new my_test_obj(rand()),3,4));
 
 
 	for(i=0;i<100;i++)
@@ -311,7 +322,7 @@ int rhandle_general_use_test(void)
 		int src,dest;
 		src=rand()%NUMBER_OF_OBJECTS;
 		dest=rand()%NUMBER_OF_OBJECTS;
-		ListItem tmp(my_item_list[src]);
+		ListItem_old tmp(my_item_list[src]);
 		assert(tmp.obj.rcount()>=2);
 		my_item_list.erase(my_item_list.begin()+src);
 		assert(tmp.obj.rcount()>=1);
@@ -356,7 +367,175 @@ int rhandle_general_use_test(void)
     obj1.detach();
 
     my_test_obj::instance_count=0;
-    { robj_handle robj = obj_handle(etl::loose_handle<my_test_obj>()); }
+    { robj_handle_old robj = obj_handle(etl::loose_handle<my_test_obj>()); }
+    if(my_test_obj::instance_count){
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On clear, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
+    }
+
+	printf("PASSED\n");
+
+	return 0;
+}
+
+int rhandle_new_general_use_test(void)
+{
+
+
+    printf("rhandle_new: General-use test: ");
+    my_test_obj::instance_count=0;
+
+    robj_list_new my_list;
+    int i;
+
+    robj_handle_new obj=	new my_test_obj(rand());
+    for(i=0;i<NUMBER_OF_OBJECTS;i++)
+        my_list.push_back(obj);
+
+    obj_list my_other_list(my_list.begin(),my_list.end());
+
+
+
+    if(obj.count()!=NUMBER_OF_OBJECTS*2+1)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy, handle count=%d, should be %d.\n",__LINE__,obj.count(),NUMBER_OF_OBJECTS*2+1);
+        return 1;
+    }
+
+    if(obj.rcount()!=NUMBER_OF_OBJECTS+1)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy, rhandle count=%d, should be %d.\n",__LINE__,obj.rcount(),NUMBER_OF_OBJECTS+1);
+        return 1;
+    }
+
+    my_list.sort();
+    if(obj.rcount()!=NUMBER_OF_OBJECTS+1)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy, instance count=%d, should be %d.\n",__LINE__,obj.rcount(),NUMBER_OF_OBJECTS+1);
+        return 1;
+    }
+
+    {robj_handle_new bleh(obj);}
+
+    if(obj.rcount()!=NUMBER_OF_OBJECTS+1)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy, instance count=%d, should be %d.\n",__LINE__,obj.rcount(),NUMBER_OF_OBJECTS+1);
+        return 1;
+    }
+
+    my_other_list.clear();
+
+    if(obj.rcount()!=obj.count())
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy's clear, handle count (%d) != rhandle count (%d)\n",__LINE__,obj.count(),obj.rcount());
+        return 1;
+    }
+
+    if(obj.rcount()!=NUMBER_OF_OBJECTS+1)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy's clear, instance count=%d, should be %d.\n",__LINE__,obj.rcount(),NUMBER_OF_OBJECTS+1);
+        return 1;
+    }
+
+    robj_handle_new new_obj=	new my_test_obj(rand());
+
+    int replacements=obj.replace(new_obj);
+
+    if(replacements!=NUMBER_OF_OBJECTS+1)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: Only managed to replace %d, should have replaced %d\n",__LINE__,replacements,NUMBER_OF_OBJECTS+1);
+        return 1;
+    }
+
+    if(obj!=new_obj)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On replace, handles should be equal.\n",__LINE__);
+        return 1;
+    }
+
+    {
+        robj_handle_new bleh(obj);
+        robj_handle_new blah(obj.get());
+    }
+
+
+    my_list.clear();
+    obj.detach();
+    new_obj.detach();
+
+    if(my_test_obj::instance_count)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On clear, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
+        return 1;
+    }
+
+
+
+    std::vector<ListItem_new> my_item_list;
+    for(i=0;i<NUMBER_OF_OBJECTS;i++)
+        my_item_list.push_back(ListItem_new(new my_test_obj(rand()),3,4));
+
+
+    for(i=0;i<100;i++)
+    {
+        int src,dest;
+        src=rand()%NUMBER_OF_OBJECTS;
+        dest=rand()%NUMBER_OF_OBJECTS;
+        ListItem_new tmp(my_item_list[src]);
+        assert(tmp.obj.rcount()>=2);
+        my_item_list.erase(my_item_list.begin()+src);
+        assert(tmp.obj.rcount()>=1);
+        my_item_list.insert(my_item_list.begin()+dest,tmp);
+        assert(tmp.obj.rcount()>=2);
+    }
+
+    my_item_list.clear();
+
+    if(my_test_obj::instance_count)
+    {
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On clear, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
+        return 1;
+    }
+    obj_handle obj1;
+    if(!obj1.empty()){ //! default handle constructor should return an empty pointer
+        printf("FAILED!\n");
+        printf(__FILE__":%d: on create an empty handle, instances count=%d must be zero.\n",__LINE__,obj.count());
+        return 1;
+    }
+    robj_handle_old robj1(new my_test_obj(rand()));
+    if(robj1.count()!=1){
+        printf("FAILED!\n");
+        printf(__FILE__":%d: on create rhandle instance count=%d, should be 1.\n",__LINE__,obj1.count());
+        return 1;
+    }
+    obj1 = robj1;
+    if(obj1.count()!=2){ //! on copy "handle" , counter should increase by 1
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy, handle count=%d, should be 2.\n",__LINE__,obj1.count());
+        return 1;
+    }
+    robj1.detach();
+    //! After detaching, the object should not be destroyed if it is referenced by other pointers
+    //! and the counter should be one less than its previous value.
+    if(obj1.count()!=1){
+        printf("FAILED!\n");
+        printf(__FILE__":%d: On copy, handle count=%d, should be 1.\n",__LINE__,obj1.count());
+        return 1;
+    }
+    obj1.detach();
+
+    my_test_obj::instance_count=0;
+    { robj_handle_new robj = obj_handle(etl::loose_handle<my_test_obj>()); }
     if(my_test_obj::instance_count){
         printf("FAILED!\n");
         printf(__FILE__":%d: On clear, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
@@ -531,7 +710,8 @@ int main()
 	error+=handle_general_use_test();
 	error+=handle_inheritance_test();
 	error+=loose_handle_test();
-	error+=rhandle_general_use_test();
+	error+=rhandle_old_general_use_test();
+    error+=rhandle_new_general_use_test();
 
 	return error;
 }
