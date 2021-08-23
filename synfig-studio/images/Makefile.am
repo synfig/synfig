@@ -137,16 +137,16 @@ EXTRA_DIST = \
 	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
 	\
-	resize_disabled_icon \
-	resize_up_left_icon \
-	resize_up_icon \
-	resize_up_right_icon \
-	resize_left_icon \
-	resize_right_icon \
-	resize_down_left_icon \
-	resize_down_icon \
-	resize_down_right_icon \
-	resize_transparent_icon \
+	resize_disabled_icon.sif \
+	resize_up_left_icon.sif \
+	resize_up_icon.sif \
+	resize_up_right_icon.sif \
+	resize_left_icon.sif \
+	resize_right_icon.sif \
+	resize_down_left_icon.sif \
+	resize_down_icon.sif \
+	resize_down_right_icon.sif \
+	resize_transparent_icon.sif \
 	\
 	tool_brush_icon.sif \
 	tool_cutout_icon.sif \
@@ -437,15 +437,15 @@ CLEANDIRS = \
 	128x128 \
 	256x256
 
-appicondir="${datadir}/icons/hicolor"
+appicondir= $(datadir)/icons/hicolor
 
-imagedir="${synfig_datadir}/images"
+imagedir = $(synfig_datadir)/images
 image_DATA = $(IMAGES)
 
-iconsdir="${synfig_datadir}/icons/classic"
+iconsdir = $(synfig_datadir)/icons/classic
 icons_DATA = $(ICONS)
 
-win32iconsdir="${datadir}/pixmaps"
+win32iconsdir = $(datadir)/pixmaps
 win32icons_DATA = $(WIN32_ICONS)
 
 all: $(IMAGES) $(ICONS)
@@ -733,8 +733,8 @@ icons128_DATA = 128x128/synfig_icon.$(EXT)
 	-mkdir 256x256
 	$(SYNFIG) --quiet $< -o $@ --time 0f -w 256 -h 256
 
-+icons256dir = $(appicondir)/256x256/apps
-+icons256_DATA = 256x256/synfig_icon.$(EXT)
+icons256dir = $(appicondir)/256x256/apps
+icons256_DATA = 256x256/synfig_icon.$(EXT)
 
 iconsscalabledir = $(appicondir)/scalable/apps
 iconsscalable_DATA = org.synfig.SynfigStudio.svg
