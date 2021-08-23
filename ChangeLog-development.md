@@ -1,3 +1,8 @@
+- [`c29dddf`](https://github.com/synfig/synfig/commit/c29dddf3485204724f407a211888085cf734efac) Merge PR [#2278](https://github.com/synfig/synfig/issues/2278): Fix "files left after uninstall" error for "distuninstallcheck" target [studio]
+- [`f62997a`](https://github.com/synfig/synfig/commit/f62997ab0e426a7b46b41273fd73c665c1fc345c) Added glibmm dependency PR [#2278](https://github.com/synfig/synfig/issues/2278) [ETL]
+- [`5c930dc`](https://github.com/synfig/synfig/commit/5c930dc8a3d71f7bcba9d4b71deed297642baf74) Fix image size when importing onto canvas with non-standard size ([#2252](https://github.com/synfig/synfig/issues/2252)) [studio]
+- [`bd50192`](https://github.com/synfig/synfig/commit/bd50192679428ee10371c2a78d072e7bd4b731cd) Update release scripts ([#2269](https://github.com/synfig/synfig/issues/2269))
+
 ## Version 1.5.0 [ETL] [core] [studio]
 
 - [`4c3f97d`](https://github.com/synfig/synfig/commit/4c3f97dfd4340b74e72f0b2a033aeed70b6efc5a) fix importing into unsaved SIF file ([#2243](https://github.com/synfig/synfig/issues/2243)) [studio]
