@@ -1,3 +1,4 @@
+- [`3ede603`](https://github.com/synfig/synfig/commit/3ede60357ad029f4376519fb2a1b85bd74e36624) Extracted layer size update as a separate function ([#2282](https://github.com/synfig/synfig/issues/2282)) [studio]
 - [`c29dddf`](https://github.com/synfig/synfig/commit/c29dddf3485204724f407a211888085cf734efac) Merge PR [#2278](https://github.com/synfig/synfig/issues/2278): Fix "files left after uninstall" error for "distuninstallcheck" target [studio]
 - [`f62997a`](https://github.com/synfig/synfig/commit/f62997ab0e426a7b46b41273fd73c665c1fc345c) Added glibmm dependency PR [#2278](https://github.com/synfig/synfig/issues/2278) [ETL]
 - [`5c930dc`](https://github.com/synfig/synfig/commit/5c930dc8a3d71f7bcba9d4b71deed297642baf74) Fix image size when importing onto canvas with non-standard size ([#2252](https://github.com/synfig/synfig/issues/2252)) [studio]
