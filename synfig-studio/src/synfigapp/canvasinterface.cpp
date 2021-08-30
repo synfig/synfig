@@ -699,6 +699,49 @@ CanvasInterface::jump_to_prev_keyframe()
 	//catch(...) { synfig::warning("Unable to find prev keyframe"); }
 }
 
+static void update_layer_size(const RendDesc& rend_desc, Layer::Handle& layer, bool resize_image) {
+	int w = layer->get_param("_width").get(int());
+	int h = layer->get_param("_height").get(int());
+
+	if (w && h) {
+		Vector x, size = rend_desc.get_br() - rend_desc.get_tl();
+
+		// vector from top left of canvas to bottom right
+		if (resize_image) {
+			if (abs(size[0]) < abs(size[1])) { // if canvas is tall and thin (portrait)
+				x[0]=size[0];	// use full width
+				x[1]=size[0]/w*h; // and scale for height
+
+				if ((size[0]<0) ^ (size[1]<0))
+					x[1] = -x[1];
+			} else { // else canvas is short and fat (or maybe square) (landscape)
+				x[1]=size[1];	// use full height
+				x[0]=size[1]/h*w; // and scale for width
+
+				if ((size[0]<0) ^ (size[1]<0))
+					x[0] = -x[0];
+			}
+		} else {
+			x[0] = w*rend_desc.get_pw();
+			x[1] = h*rend_desc.get_ph();
+			if ((size[0] < 0))
+				x[0] = -x[0];
+			if ((size[1] < 0))
+				x[1] = -x[1];
+		}
+
+		if(!layer->set_param("tl",ValueBase(-x/2)))
+			throw int();
+		if(!layer->set_param("br",ValueBase(x/2)))
+			throw int();
+	} else {
+		if(!layer->set_param("tl",ValueBase(rend_desc.get_tl())))
+			throw int();
+		if(!layer->set_param("br",ValueBase(rend_desc.get_br())))
+			throw int();
+	}
+}
+
 bool
 CanvasInterface::import(
 	const synfig::String &filename,
@@ -857,61 +900,15 @@ CanvasInterface::import(
 	try
 	{
 		Layer::Handle layer(add_layer_to("Import",get_canvas()));
-		int w,h;
 		if(!layer)
 			throw int();
 		if(!layer->set_param("filename",ValueBase(short_filename)))
 			throw int();
-		w=layer->get_param("_width").get(int());
-		h=layer->get_param("_height").get(int());
+		update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 		layer->monitor(filename);
-		if(w&&h)
-		{
-			const RendDesc& rend_desc = get_canvas()->rend_desc();
-			Vector x, size = rend_desc.get_br()-rend_desc.get_tl();
-
-			// vector from top left of canvas to bottom right
-			if (resize_image)
-			{
-				if(abs(size[0])<abs(size[1]))	// if canvas is tall and thin
-				{
-					x[0]=size[0];	// use full width
-					x[1]=size[0]/w*h; // and scale for height
-					if((size[0]<0) ^ (size[1]<0))
-						x[1]=-x[1];
-				}
-				else				// else canvas is short and fat (or maybe square)
-				{
-					x[1]=size[1];	// use full height
-					x[0]=size[1]/h*w; // and scale for width
-					if((size[0]<0) ^ (size[1]<0))
-						x[0]=-x[0];
-				}
-			}
-			else
-			{
-				x[0] = w*rend_desc.get_pw();
-				x[1] = h*rend_desc.get_ph();
-				if((size[0]<0)) x[0]=-x[0];
-				if((size[1]<0)) x[1]=-x[1];
-			}
-
-			if(!layer->set_param("tl",ValueBase(-x/2)))
-				throw int();
-			if(!layer->set_param("br",ValueBase(x/2)))
-				throw int();
-		}
-		else
-		{
-			if(!layer->set_param("tl",ValueBase(get_canvas()->rend_desc().get_tl())))
-				throw int();
-			if(!layer->set_param("br",ValueBase(get_canvas()->rend_desc().get_br())))
-				throw int();
-		}
-
-		layer->set_description(etl::basename(filename));
-		signal_layer_new_description()(layer,etl::basename(filename));
-
+		String desc = etl::basename(filename);
+		layer->set_description(desc);
+		signal_layer_new_description()(layer, desc);
 		//get_instance()->set_selected_layer(get_canvas(), layer);
 		//get_instance()->set_selected_layer(layer, get_canvas());
 
@@ -1011,7 +1008,6 @@ CanvasInterface::import_sequence(
 			
 			try {
 				layer = add_layer_to("Import",get_canvas());
-				int w, h;
 				if (!layer)
 					throw int();
 				if (!layer->set_param("filename", ValueBase(short_filename)))
@@ -1038,41 +1034,8 @@ CanvasInterface::import_sequence(
 						first_time = false;
 					}
 				}
-
-				w = layer->get_param("_width").get(int());
-				h = layer->get_param("_height").get(int());
+				update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 				layer->monitor(filename);
-				if (w && h) {
-					const RendDesc& rend_desc = get_canvas()->rend_desc();
-					Vector x, size = rend_desc.get_br()-rend_desc.get_tl();
-					// vector from top left of canvas to bottom right
-					if (resize_image) {
-						if(abs(size[0])<abs(size[1])) {// if canvas is tall and thin
-							x[0]=size[0];	// use full width
-							x[1]=size[0]/w*h; // and scale for height
-							if ((size[0]<0) ^ (size[1]<0)) x[1] = -x[1];
-						} else { // else canvas is short and fat (or maybe square)
-							x[1]=size[1];	// use full height
-							x[0]=size[1]/h*w; // and scale for width
-							if ((size[0]<0) ^ (size[1]<0)) x[0] = -x[0];
-						}
-					} else {
-						x[0] = w*rend_desc.get_pw();
-						x[1] = h*rend_desc.get_ph();
-						if((size[0]<0)) x[0]=-x[0];
-						if((size[1]<0)) x[1]=-x[1];
-					}
-					if(!layer->set_param("tl",ValueBase(-x/2)))
-						throw int();
-					if(!layer->set_param("br",ValueBase(x/2)))
-						throw int();
-				} else {
-					if(!layer->set_param("tl",ValueBase(get_canvas()->rend_desc().get_tl())))
-						throw int();
-					if(!layer->set_param("br",ValueBase(get_canvas()->rend_desc().get_br())))
-						throw int();
-				}
-
 				String desc = etl::basename(filename);
 				layer->set_description(desc);
 				signal_layer_new_description()(layer, desc);
