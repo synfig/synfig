@@ -40,7 +40,6 @@
 
 #endif
 
-using namespace std;
 using namespace synfig;
 using namespace etl;
 

@@ -44,7 +44,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
