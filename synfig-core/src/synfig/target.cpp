@@ -36,7 +36,6 @@
 
 using namespace synfig;
 using namespace etl;
-using namespace std;
 
 synfig::Target::Book* synfig::Target::book_;
 synfig::Target::ExtBook* synfig::Target::ext_book_;

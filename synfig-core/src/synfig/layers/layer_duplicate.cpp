@@ -53,7 +53,6 @@
 
 using namespace synfig;
 using namespace etl;
-using namespace std;
 
 /* === G L O B A L S ======================================================= */
 

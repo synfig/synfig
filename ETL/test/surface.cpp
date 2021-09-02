@@ -21,7 +21,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <iostream>
 #include <ETL/surface>
 #include <ETL/gaussian>
 #include <cstdio>
@@ -29,7 +28,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace etl;
-using namespace std;
 
 /* === C L A S S E S ======================================================= */
 
