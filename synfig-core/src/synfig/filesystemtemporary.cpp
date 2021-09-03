@@ -45,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -455,7 +454,7 @@ FileSystemTemporary::reset_temporary_filename_base(const String &tag, const Stri
 String
 FileSystemTemporary::get_meta(const String &key) const
 {
-	map<String, String>::const_iterator i = meta.find(key);
+	std::map<String, String>::const_iterator i = meta.find(key);
 	return i == meta.end() ? String() : i->second;
 }
 
@@ -503,7 +502,7 @@ FileSystemTemporary::save_temporary() const
 	xmlpp::Element *root = document.create_root_node("temporary-file-system");
 
 	xmlpp::Element *meta_node = root->add_child("meta");
-	for(map<String, String>::const_iterator i = meta.begin(); i != meta.end(); i++)
+	for(std::map<String, String>::const_iterator i = meta.begin(); i != meta.end(); i++)
 	{
 		xmlpp::Element *entry = meta_node->add_child("entry");
 		entry->add_child("key")->set_child_text(i->first);

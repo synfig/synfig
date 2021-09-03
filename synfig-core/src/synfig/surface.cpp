@@ -46,7 +46,6 @@
 #endif
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === M A C R O S ========================================================= */
@@ -163,12 +162,12 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		}
 
 		//clip width against dest width
-		w = min((long)w,(long)(pen.end_x()-pen.x()));
-		h = min((long)h,(long)(pen.end_y()-pen.y()));
+		w = std::min((long)w,(long)(pen.end_x()-pen.x()));
+		h = std::min((long)h,(long)(pen.end_y()-pen.y()));
 
 		//clip width against src width
-		w = min(w,get_w()-x);
-		h = min(h,get_h()-y);
+		w = std::min(w,get_w()-x);
+		h = std::min(h,get_h()-y);
 
 		if(w<=0 || h<=0)
 			return;

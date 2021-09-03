@@ -50,7 +50,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -323,10 +322,10 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		Point p((*iter)->get_trans_point());
-		vmin[0]=min(vmin[0],p[0]);
-		vmin[1]=min(vmin[1],p[1]);
-		vmax[0]=max(vmax[0],p[0]);
-		vmax[1]=max(vmax[1],p[1]);
+		vmin[0]=std::min(vmin[0],p[0]);
+		vmin[1]=std::min(vmin[1],p[1]);
+		vmax[0]=std::max(vmax[0],p[0]);
+		vmax[1]=std::max(vmax[1],p[1]);
 		positions.push_back(p);
 	}
 	center=(vmin+vmax)*0.5;

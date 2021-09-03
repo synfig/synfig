@@ -66,7 +66,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -485,7 +484,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -516,7 +515,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -688,7 +687,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -719,7 +718,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -2069,7 +2068,7 @@ studio::WorkArea::zoom_out()
 void
 studio::WorkArea::zoom_fit()
 {
-	float new_zoom(min(drawing_area->get_width() * zoom / w,
+	float new_zoom(std::min(drawing_area->get_width() * zoom / w,
 					   drawing_area->get_height() * zoom / h) * 0.995);
 	if (zoom / new_zoom > 0.995 && new_zoom / zoom > 0.995)
 	{
@@ -2176,7 +2175,7 @@ studio::WorkArea::reset_cursor()
 void
 studio::WorkArea::set_zoom(float z)
 {
-	z=max(1.0f/128.0f,min(128.0f,z));
+	z=std::max(1.0f/128.0f,std::min(128.0f,z));
 	zoomdial->set_zoom(z);
 	if(z==zoom)
 		return;

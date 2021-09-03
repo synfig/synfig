@@ -80,7 +80,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -345,7 +344,7 @@ void
 Instance::process_filename(const ProcessFilenamesParams &params, const synfig::String &filename, synfig::String &out_filename)
 {
 	String full_filename = CanvasFileNaming::make_full_filename(params.previous_canvas_filename, filename);
-	map<String, String>::const_iterator i = params.processed_files.find(full_filename);
+	std::map<String, String>::const_iterator i = params.processed_files.find(full_filename);
 	if (i != params.processed_files.end())
 		{ out_filename = i->second; return; }
 

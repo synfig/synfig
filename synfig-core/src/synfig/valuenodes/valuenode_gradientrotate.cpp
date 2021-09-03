@@ -43,7 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -79,7 +78,7 @@ ValueNode_GradientRotate::create(const ValueBase& x)
 	if(type!=type_gradient)
 	{
 		assert(0);
-		throw runtime_error(String(_("Gradient Rotate"))+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(String(_("Gradient Rotate"))+_(":Bad type ")+type.description.local_name);
 	}
 
 	ValueNode_GradientRotate* value_node=new ValueNode_GradientRotate(x.get(Gradient()));

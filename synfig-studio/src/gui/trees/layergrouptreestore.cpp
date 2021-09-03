@@ -47,7 +47,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -126,7 +125,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 
 		if((bool)(*iter)[model.is_group])
 		{
-			set<Layer::Handle> layer_set(canvas_interface()->get_canvas()->get_layers_in_group((Glib::ustring)(*iter)[model.group_name]));
+			std::set<Layer::Handle> layer_set(canvas_interface()->get_canvas()->get_layers_in_group((Glib::ustring)(*iter)[model.group_name]));
 
 			x.set(LayerList(layer_set.begin(),layer_set.end()));
 		}
@@ -813,7 +812,7 @@ LayerGroupTreeStore::on_group_added(synfig::String group)
 		{
 			if(parent_name.size())
 				parent_name+=GROUP_NEST_CHAR;
-			parent_name+=string(group,0,group.find(GROUP_NEST_CHAR));
+			parent_name+=std::string(group,0,group.find(GROUP_NEST_CHAR));
 
 			if(!find_group_row(parent_name, iter))
 				iter=on_group_added(parent_name);

@@ -56,7 +56,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -797,8 +796,8 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 
 					Real epsilon = 0.00000001;
 					Real r(color.get_r()), g(color.get_g()), b(color.get_b());
-					Real max_rgb = max(r, max(g, b));
-					Real min_rgb = min(r, min(g, b));
+					Real max_rgb = std::max(r, std::max(g, b));
+					Real min_rgb = std::min(r, std::min(g, b));
 					Real diff = max_rgb-min_rgb;
 
 					Real val = max_rgb;

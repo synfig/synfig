@@ -43,7 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -64,7 +63,7 @@ ValueNode_Join::ValueNode_Join(const ValueBase &value):
 	set_children_vocab(ret);
 	if (value.get_type() == type_string)
 	{
-		vector<ValueBase> v(1, value.get(String()));
+		std::vector<ValueBase> v(1, value.get(String()));
 
 		// "insert item (smart)" inserts before the selected entry, making it hard to append to the end
 		// add an extra element at the end to allow the easy insertion of text after the given value's string

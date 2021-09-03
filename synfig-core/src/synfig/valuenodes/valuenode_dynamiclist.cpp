@@ -47,7 +47,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -624,9 +623,9 @@ ValueNode_DynamicList*
 ValueNode_DynamicList::create(const ValueBase &value)
 {
 	//vector<ValueBase> value_list(value.operator vector<ValueBase>());
-	vector<ValueBase> value_list(value.get_list());
+	std::vector<ValueBase> value_list(value.get_list());
 
-	vector<ValueBase>::iterator iter;
+	std::vector<ValueBase>::iterator iter;
 
 	if(value_list.empty())
 		return 0;
@@ -669,16 +668,16 @@ ValueNode_DynamicList::operator()(Time t)const
 				ret_list.push_back((*iter->value_node)(t));
 			else
 			{
-				synfig::warning(string("ValueNode_DynamicList::operator()():")+_("List type/item type mismatch, throwing away mismatch"));
+				synfig::warning(std::string("ValueNode_DynamicList::operator()():")+_("List type/item type mismatch, throwing away mismatch"));
 			}
 		}
 	}
 
 	if(list.empty())
-		synfig::warning(string("ValueNode_DynamicList::operator()():")+_("No entries in list"));
+		synfig::warning(std::string("ValueNode_DynamicList::operator()():")+_("No entries in list"));
 	else
 	if(ret_list.empty())
-		synfig::warning(string("ValueNode_DynamicList::operator()():")+_("No entries in ret_list"));
+		synfig::warning(std::string("ValueNode_DynamicList::operator()():")+_("No entries in ret_list"));
 
 	return ret_list;
 }
@@ -774,7 +773,7 @@ ValueNode_DynamicList::check_type(Type &type)
 void
 ValueNode_DynamicList::set_member_canvas(etl::loose_handle<Canvas> canvas)
 {
-	for (vector<ListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
+	for (std::vector<ListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
 		iter->value_node->set_parent_canvas(canvas);
 }
 

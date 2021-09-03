@@ -48,7 +48,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -105,7 +104,7 @@ Layer_Mime::get_param(const String &param)const
 		return ValueBase(name);
 
 	// Otherwise, return the stored parameter value
-	map<string,ValueBase>::const_iterator iter=param_list.find(param);
+	std::map<std::string, ValueBase>::const_iterator iter=param_list.find(param);
 	if(iter!=param_list.end())
 		return iter->second;
 	return ValueBase();
@@ -115,7 +114,7 @@ Layer::Vocab
 Layer_Mime::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	map<string,ValueBase>::const_iterator iter;
+	std::map<std::string, ValueBase>::const_iterator iter;
 
 	// Construct the vocabulary from the stored
 	// parameters

@@ -48,7 +48,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -90,7 +89,7 @@ ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 	else
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 
 	assert(value_node);
@@ -122,7 +121,7 @@ synfig::ValueNode_Scale::operator()(Time t)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!value_node || !scalar)
-		throw runtime_error(strprintf("ValueNode_Scale: %s",_("One or both of my parameters aren't set!")));
+		throw std::runtime_error(strprintf("ValueNode_Scale: %s",_("One or both of my parameters aren't set!")));
 	else if(get_type()==type_angle)
 		return (*value_node)(t).get(Angle())*(*scalar)(t).get(Real());
 	else if(get_type()==type_color)
@@ -152,7 +151,7 @@ synfig::ValueNode_Scale::get_inverse(const Time& t, const synfig::ValueBase &tar
 {
 	Real scalar_value((*scalar)(t).get(Real()));
 	if(approximate_zero(scalar_value))
-		throw runtime_error(strprintf("ValueNode_%s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Scalar is zero")));
+		throw std::runtime_error(strprintf("ValueNode_%s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Scalar is zero")));
 	const Type& target_type = target_value.get_type();
 	if (target_type == type_real)
 		return target_value.get(Real()) / scalar_value;
@@ -166,7 +165,7 @@ synfig::ValueNode_Scale::get_inverse(const Time& t, const synfig::ValueBase &tar
 			return Angle::tan(target_vector[1] / scalar_value ,target_vector[0] / scalar_value);
 		return target_vector / scalar_value;
 	}
-	throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
+	throw std::runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
 }
 
 LinkableValueNode::InvertibleStatus

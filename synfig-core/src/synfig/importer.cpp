@@ -57,12 +57,11 @@
 /* === G L O B A L S ======================================================= */
 
 using namespace etl;
-using namespace std;
 using namespace synfig;
 
 Importer::Book* synfig::Importer::book_;
 
-static map<FileSystem::Identifier,Importer::LooseHandle> *__open_importers;
+static std::map<FileSystem::Identifier,Importer::LooseHandle> *__open_importers;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -72,7 +71,7 @@ bool
 Importer::subsys_init()
 {
 	book_=new Book();
-	__open_importers=new map<FileSystem::Identifier,Importer::LooseHandle>();
+	__open_importers=new std::map<FileSystem::Identifier,Importer::LooseHandle>();
 	return true;
 }
 
@@ -153,7 +152,7 @@ Importer::Importer(const FileSystem::Identifier &identifier):
 Importer::~Importer()
 {
 	// Remove ourselves from the open importer list
-	map<FileSystem::Identifier,Importer::LooseHandle>::iterator iter;
+	std::map<FileSystem::Identifier,Importer::LooseHandle>::iterator iter;
 	for(iter=__open_importers->begin();iter!=__open_importers->end();)
 		if(iter->second==this)
 			__open_importers->erase(iter++); else ++iter;

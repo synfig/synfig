@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -324,7 +323,7 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 		SC[i]=new AT[w_half_n];
 		if(!SC[i])
 		{
-			throw(runtime_error(strprintf(__FILE__":%d:Malloc failure",__LINE__)));
+			throw(std::runtime_error(strprintf(__FILE__":%d:Malloc failure",__LINE__)));
 			return;
 		}
 	}

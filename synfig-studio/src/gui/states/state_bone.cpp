@@ -57,7 +57,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace studio;
 using namespace synfig;
@@ -232,7 +231,7 @@ StateBone_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
-		string value;
+		std::string value;
 		if(c_layer==0){
 			if(settings.get_value("bone.skel_id",value))
 				set_id(value);
@@ -870,7 +869,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								bone2.set_angle((releaseOrigin - clickOrigin).angle());
 							}
 
-							ValueNode_Composite::Handle bone_pair = ValueNode_Composite::create(pair<Bone,Bone>(bone1,bone2),get_canvas());
+							ValueNode_Composite::Handle bone_pair = ValueNode_Composite::create(std::pair<Bone,Bone>(bone1,bone2),get_canvas());
 
 							action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
 							action->set_param("value_desc",ValueDesc(list_node,0));
@@ -996,7 +995,7 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
 	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
-	string value;
+	std::string value;
 
 	if(cnt<=1){
 		if((skel_layer || deform_layer) || cnt==0)
@@ -1042,7 +1041,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 	if(lay==0){
 		layer = Layer_Skeleton::Handle::cast_dynamic(layer);
 		ValueDesc list_desc(layer,"bones");
-		vector<Bone> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(Bone());
+		std::vector<Bone> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(Bone());
 		Real close_line(10000000),close_origin(10000000);
 		Vector direction;
 		Angle angle;
@@ -1083,7 +1082,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 	else if(lay==1){
 		layer = Layer_SkeletonDeformation::Handle::cast_dynamic(layer);
 		ValueDesc list_desc(layer,"bones");
-		vector<pair<Bone,Bone>> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(pair<Bone,Bone>());
+		std::vector<std::pair<Bone,Bone>> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(std::pair<Bone,Bone>());
 		Real close_line(10000000),close_origin(10000000);
 		Vector direction;
 		Angle angle;
