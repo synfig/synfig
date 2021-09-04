@@ -42,11 +42,10 @@
 #include "lyr_freetype.h"
 
 #include <algorithm>
-#if HAVE_FRIBIDI
-#include <fribidi/fribidi.h>
-#endif
 #include <glibmm.h>
+
 #if HAVE_HARFBUZZ
+#include <fribidi/fribidi.h>
 #include <harfbuzz/hb-ft.h>
 #endif
 
@@ -1070,11 +1069,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 #if HAVE_HARFBUZZ
 			hb_buffer_clear_contents(span_buffer);
 
-#if HAVE_FRIBIDI
 			hb_direction_t direction = HB_DIRECTION_LTR; // character order already fixed by FriBiDi
-#else
-			hb_direction_t direction = hb_script_get_horizontal_direction(span.script);
-#endif
 			hb_buffer_set_direction(span_buffer, direction);
 			hb_buffer_set_script(span_buffer, span.script);
 //			hb_buffer_set_language(span_buffer, hb_language_from_string(language.c_str(), -1));
@@ -1269,7 +1264,7 @@ static std::vector<uint32_t>
 utf8_to_utf32(const std::string& text)
 {
 	std::vector<uint32_t> unicode;
-#if HAVE_FRIBIDI
+#if HAVE_HARFBUZZ
 	unicode.resize(text.size()+1);
 	FriBidiStrIndex unicode_len = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8, text.c_str(), text.size(), unicode.data());
 	unicode.resize(unicode_len);
@@ -1356,10 +1351,10 @@ Layer_Freetype::fetch_text_lines(const std::string& text, int direction)
 	}
 
 	// 3. Handle BiDirectional text
-#if HAVE_FRIBIDI
+#if HAVE_HARFBUZZ
 	for (auto& line : base_lines) {
 		FriBidiParType base_dir = direction == TEXT_DIRECTION_AUTO ? FRIBIDI_TYPE_ON : direction == TEXT_DIRECTION_LTR ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_RTL;
-# if HAVE_HARFBUZZ // FriBiDi + HarfBuzz: don't use FriBiDi simple shaper, just get the BiDi info / character reordering
+		// FriBiDi + HarfBuzz: don't use FriBiDi simple shaper, just get the BiDi info / character reordering
 		size_t line_size = line.size();
 		std::vector<FriBidiCharType> bidi_types(line_size);
 		fribidi_get_bidi_types(line.data(), line_size, bidi_types.data());
@@ -1377,39 +1372,12 @@ Layer_Freetype::fetch_text_lines(const std::string& text, int direction)
 			return new_lines;
 		}
 
-		std::vector<int> l2v(line_size);
-		std::vector<int> v2l(line_size);
 		fribidi_result = fribidi_reorder_line(FRIBIDI_FLAGS_DEFAULT|FRIBIDI_FLAGS_ARABIC, bidi_types.data(), line_size, 0, base_dir,
-							 bidi_levels.data(), line.data(), v2l.data());
+							 bidi_levels.data(), line.data(), nullptr);
 		if (fribidi_result == 0) {
 			error("Layer_FreeType: error running FriBiDi (reordering line)");
 			return new_lines;
 		}
-
-		std::reverse(bidi_levels.begin(), bidi_levels.end());
-		for (size_t i = 0; i < line_size; i++)
-			l2v[v2l[i]] = i;
-# else // use FriBiDi simple shaper (and it'll already solve BiDi, but give us some shape errors)
-		std::vector<uint32_t> visual_line(line.size());
-		FriBidiLevel fribidi_result = fribidi_log2vis(
-			/* input */
-			line.data(),
-			line.size(),
-			&base_dir,
-			/* output */
-			visual_line.data(),
-			nullptr,
-			nullptr,
-			nullptr
-		);
-
-		if (fribidi_result == 0) {
-			error("Layer_FreeType: error running FriBiDi (getting visual unicode)");
-			return new_lines;
-		}
-
-		line = visual_line;
-# endif
 	}
 #endif
 

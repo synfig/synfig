@@ -46,11 +46,6 @@ liblyr_freetype_la_LIBADD += @HARFBUZZ_LIBS@
 liblyr_freetype_la_CXXFLAGS += @HARFBUZZ_CFLAGS@
 endif
 
-if WITH_FRIBIDI
-liblyr_freetype_la_LIBADD += @FRIBIDI_LIBS@
-liblyr_freetype_la_CXXFLAGS += @FRIBIDI_CFLAGS@
-endif
-
 endif
 
 

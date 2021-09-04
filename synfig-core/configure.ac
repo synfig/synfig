@@ -247,65 +247,31 @@ if test $with_fontconfig = "yes" ; then {
 	AM_CONDITIONAL(WITH_FONTCONFIG,false)
 } ; fi
 
-
-# FRIBIDI CHECK--------------------
-
-AC_ARG_WITH([fribidi],
-	[AS_HELP_STRING([--with-fribidi], [support bidirectional text rendering @<:@default=check@:>@])],
-	[],
-	[with_fribidi=check]
-)
-AS_IF([test "x$with_fribidi" = xyes],
-	[
-		if test "x$with_freetype" != xyes; then
-			AC_MSG_FAILURE(
-				[--with-fribidi was given, but it only makes sense if --with-freetype too])
-		fi
-	]
-)
-
-AS_IF([test "x$with_fribidi" != xno],
-	[PKG_CHECK_MODULES(FRIBIDI, fribidi,
-		[
-			with_fribidi="yes"
-			AC_DEFINE(HAVE_FRIBIDI, [1],[Enable fribidi support])
-		],[
-			if test "x$with_fribidi" != xcheck; then
-				AC_MSG_FAILURE(
-					[--with-fribidi was given, but it couldn't be found])
-			fi
-		]
-	)]
-)
-
-AM_CONDITIONAL(WITH_FRIBIDI, test $with_fribidi = yes)
-
 # HARFBUZZ CHECK--------------------
 
 AC_ARG_WITH([harfbuzz],
-	[AS_HELP_STRING([--with-harfbuzz], [support text rendering for non-latin scripts @<:@default=check@:>@])],
+	[AS_HELP_STRING([--without-harfbuzz], [disable support text rendering for non-latin scripts])],
 	[],
-	[with_harfbuzz=check]
+	[with_harfbuzz=yes]
 )
-AS_IF([test "x$with_harfbuzz" = xyes],
+
+AS_IF([test "x$with_harfbuzz" != xno],
 	[
-		if test "x$with_freetype" != xyes; then
+		AS_IF([test "x$with_freetype" != xyes],
 			AC_MSG_FAILURE(
 				[--with-harfbuzz was given, but it depends on --with-freetype])
-		fi
+		)
 	]
 )
 
 AS_IF([test "x$with_harfbuzz" != xno],
-	[PKG_CHECK_MODULES(HARFBUZZ, harfbuzz,
+	[PKG_CHECK_MODULES(HARFBUZZ, [harfbuzz fribidi],
 		[
 			with_harfbuzz="yes"
 			AC_DEFINE(HAVE_HARFBUZZ, [1],[Enable harfbuzz support])
 		],[
-			if test "x$with_harfbuzz" != xcheck; then
-				AC_MSG_FAILURE(
-					[--with-harfbuzz was given, but it couldn't be found])
-			fi
+			AC_MSG_FAILURE(
+				[--with-harfbuzz was given, but harfbuzz or fribidi development files were not found])
 		]
 	)]
 )

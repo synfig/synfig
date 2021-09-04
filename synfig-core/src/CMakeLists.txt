@@ -180,8 +180,8 @@ else()
 		pkg_check_modules(FONT_CONFIG fontconfig) # for FontConfig
 
 		## TODO: move to module where it is actually required
-		pkg_check_modules(HARFBUZZ harfbuzz)
-		pkg_check_modules(FRIBIDI fribidi)
+		pkg_check_modules(HARFBUZZ REQUIRED harfbuzz)
+		pkg_check_modules(FRIBIDI REQUIRED fribidi)
 	endif()
 endif()
 
