@@ -182,14 +182,14 @@ void Dialog_Workspaces::on_rename_clicked()
 	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
 	name_entry->set_margin_start(16);
 	name_entry->set_margin_end(16);
-	name_entry->signal_changed().connect([&](){
+	name_entry->signal_changed().connect(sigc::track_obj([&](){
 		std::string name = name_entry->get_text();
 		synfig::trim(name);
 		bool has_equal_sign = name.find("=") != std::string::npos;
 		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
 		if (ok_button->is_sensitive())
 			ok_button->grab_default();
-	});
+	}, *this));
 	name_entry->signal_activate().connect(sigc::mem_fun(*ok_button, &Gtk::Button::clicked));
 	name_entry->set_text(old_name);
 

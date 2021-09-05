@@ -70,7 +70,7 @@ public:
 
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
 private:
-	virtual void on_changed();
+	virtual void on_changed() override;
 
 	sigc::signal<void> signal_activate_;
 }; // END of class Widget_FontFamily

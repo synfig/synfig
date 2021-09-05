@@ -2197,13 +2197,13 @@ void App::save_custom_workspace()
 	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
 	name_entry->set_margin_start(16);
 	name_entry->set_margin_end(16);
-	name_entry->signal_changed().connect([&](){
+	name_entry->signal_changed().connect(sigc::track_obj([&](){
 		std::string name = synfig::trim(name_entry->get_text());
 		bool has_equal_sign = name.find("=") != std::string::npos;
 		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
 		if (ok_button->is_sensitive())
 			ok_button->grab_default();
-	});
+	}, dialog));
 	name_entry->signal_activate().connect(sigc::mem_fun(*ok_button, &Gtk::Button::clicked));
 
 	dialog.get_content_area()->set_spacing(12);

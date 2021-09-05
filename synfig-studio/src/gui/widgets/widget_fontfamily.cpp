@@ -153,11 +153,7 @@ Widget_FontFamily::Widget_FontFamily()
 	set_wrap_width(1); // https://github.com/synfig/synfig/issues/650
 
 	if (get_has_entry())
-		static_cast<Gtk::Entry*>(get_child())->signal_activate().connect([=](){ signal_activate().emit(); });
-	signal_changed().connect([=]() {
-		if (!get_has_entry() || get_active_row_number() != -1)
-			signal_activate().emit();
-	});
+		static_cast<Gtk::Entry*>(get_child())->signal_activate().connect(sigc::mem_fun(signal_activate(), &sigc::signal<void>::emit));
 }
 
 Widget_FontFamily::~Widget_FontFamily()
@@ -192,4 +188,7 @@ Widget_FontFamily::on_changed()
 		Gtk::TreeModel::Row row = *iter;
 		value = row.get_value(enum_model.value);
 	}
+
+	if (!get_has_entry() || get_active_row_number() != -1)
+		signal_activate().emit();
 }
