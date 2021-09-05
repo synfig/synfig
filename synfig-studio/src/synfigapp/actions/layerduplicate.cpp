@@ -38,6 +38,7 @@
 #include <synfig/context.h>
 #include <synfig/general.h>
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/synfig_iterations.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 
 #include <synfigapp/actions/layeradd.h>
@@ -64,10 +65,6 @@ ACTION_SET_VERSION(Action::LayerDuplicate,"0.0");
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
-
-/// Search for all duplicates of explicit layers (those set as action parameter) and implicit layers too (contents of layer of group type)
-static void
-traverse_layers(synfig::Layer::Handle layer, synfig::Layer::Handle cloned_layer, std::map<synfig::Layer::Handle, synfig::Layer::Handle>& cloned_layer_map);
 
 /// Get value nodes that are special cases when duplicating
 /// Attention: The order of returned value nodes MUST be deterministic!
@@ -298,7 +295,18 @@ Action::LayerDuplicate::prepare()
 		last_index[canvas_with_exported_valuenodes] = index;
 
 		// include this layer and all of its inner layers in a list
-		traverse_layers(layer, new_layer, cloned_layer_map);
+		std::list<Layer::Handle> src_layer_list;
+		TraverseLayerCallback add_src_layer = [&src_layer_list] (Layer::LooseHandle layer, const TraverseLayerStatus&) {
+			src_layer_list.push_back(layer);
+		};
+		traverse_layers(layer, add_src_layer);
+
+		// as the traversed layer ordering is deterministic... we know how to map "src layer" -> "cloned layer"
+		TraverseLayerCallback map_clones = [&cloned_layer_map, &src_layer_list] (Layer::LooseHandle layer, const TraverseLayerStatus&) {
+			cloned_layer_map[src_layer_list.front()] = layer;
+			src_layer_list.pop_front();
+		};
+		traverse_layers(new_layer, map_clones);
 	}
 
 	// search cloned layers for special parameter valuenodes that need to be remapped to those cloned ones
@@ -377,36 +385,6 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 					warning("%s:%d not yet implemented - do we need to export duplicate valuenodes in dynamic canvas parameters?", __FILE__, __LINE__);
 			}
 	}
-}
-
-static void
-traverse_layers(synfig::Layer::Handle layer, synfig::Layer::Handle cloned_layer, std::map<synfig::Layer::Handle, synfig::Layer::Handle>& cloned_layer_map)
-{
-	cloned_layer_map[layer] = cloned_layer;
-
-	Layer::ParamList param_list(layer->get_param_list());
-	for (Layer::ParamList::const_iterator iter(param_list.begin())
-			 ; iter != param_list.end()
-			 ; iter++)
-		if (layer->dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==type_canvas)
-		{
-			Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
-			auto cloned_subcanvas = cloned_layer->get_param_list().find(iter->first)->second.get(Canvas::Handle());
-			if (subcanvas && subcanvas->is_inline())
-				for (IndependentContext iter = subcanvas->get_independent_context(), cloned_iter = cloned_subcanvas->get_independent_context(); iter != subcanvas->end(); ++iter, ++cloned_iter)
-					traverse_layers(*iter, *cloned_iter, cloned_layer_map);
-		}
-
-	for (Layer::DynamicParamList::const_iterator iter(layer->dynamic_param_list().begin())
-			 ; iter != layer->dynamic_param_list().end()
-			 ; iter++)
-		if (iter->second->get_type()==type_canvas)
-		{
-			Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
-			if (canvas->is_inline())
-				//! \todo do we need to implement this?  and if so, shouldn't we check all canvases, not just the one at t=0s?
-				warning("%s:%d not yet implemented - do we need to export duplicate valuenodes in dynamic canvas parameters?", __FILE__, __LINE__);
-		}
 }
 
 void
