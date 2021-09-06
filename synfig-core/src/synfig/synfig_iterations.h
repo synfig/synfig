@@ -31,6 +31,7 @@
 #include <vector>
 
 #include <synfig/layer.h>
+#include <synfig/valuenode.h>
 
 namespace synfig
 {
@@ -60,6 +61,32 @@ typedef std::function<void(Layer::LooseHandle, const TraverseLayerStatus&)> Trav
 /// \param layer The starting point to scannning
 /// \param callback A functor called at each layer found
 void traverse_layers(Layer::Handle layer, TraverseLayerCallback callback);
+
+
+/// Useful for parameter fetch_replacement_for of replace_value_nodes()
+/// When you have a simple std::map that maps source-value-node to replacement-value-node
+/// instead of a function to map this relationship.
+struct SimpleValueNodeReplaceFunctor {
+	SimpleValueNodeReplaceFunctor(const std::map<ValueNode::LooseHandle, ValueNode::LooseHandle>& replacer_map);
+	ValueNode::LooseHandle operator()(const ValueNode::LooseHandle&);
+private:
+	const std::map<ValueNode::LooseHandle, ValueNode::LooseHandle>& replacer_map;
+};
+
+/// Scans for value nodes in value_node to replace them according to fetch_replacement_for functor.
+/// It is useful, for example, for fixing links after cloning value nodes.
+/// Concrete example: skeleton-type layers need it after cloning.
+/// \param value_node starting point to scan
+/// \param fetch_replacement_for functor to return the value-node replacement for a given value node
+void
+replace_value_nodes(ValueNode::LooseHandle value_node, std::function<ValueNode::LooseHandle(const ValueNode::LooseHandle&)> fetch_replacement_for);
+
+/// Scans for value nodes in layer parameters to replace them according to fetch_replacement_for functor.
+/// It is useful, for example, for fixing links after cloning a layer.
+/// \param layer Where to look for replaceable value nodes
+/// \param fetch_replacement_for functor to return the value-node replacement for a given value node
+void
+replace_value_nodes(Layer::LooseHandle layer, std::function<ValueNode::LooseHandle(const ValueNode::LooseHandle&)> fetch_replacement_for);
 
 }; // namespace synfig
 

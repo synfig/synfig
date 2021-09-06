@@ -36,8 +36,12 @@
 #include "synfig_iterations.h"
 
 #include <synfig/canvas.h>
-#include <synfig/general.h>
 #include <synfig/context.h>
+#include <synfig/general.h>
+#include <synfig/localization.h>
+#include <synfig/valuenodes/valuenode_animated.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_const.h>
 
 #endif
 
@@ -120,4 +124,100 @@ synfig::traverse_layers(Layer::Handle layer, TraverseLayerCallback callback)
 {
 	TraverseLayerStatus status;
 	do_traverse_layers(layer, status, callback);
+}
+
+
+struct ReplaceValueNodeStatus {
+	std::set<ValueNode::LooseHandle> visited_value_nodes;
+};
+
+static void
+do_replace_value_nodes(ValueNode::LooseHandle value_node, ReplaceValueNodeStatus& status, std::function<ValueNode::LooseHandle(ValueNode::LooseHandle)> fetch_replacement_for)
+{
+	if (!value_node) {
+		synfig::warning("%s:%d null valuenode?!\n", __FILE__, __LINE__);
+		assert(false);
+		return;
+	}
+
+	// avoid loops
+	if (status.visited_value_nodes.count(value_node))
+		return;
+	status.visited_value_nodes.insert(value_node);
+
+	// search for replaceable value nodes
+
+	if (auto linkable_vn = LinkableValueNode::Handle::cast_dynamic(value_node)) {
+		for (int i=0; i < linkable_vn->link_count(); i++) {
+			auto ith_link = linkable_vn->get_link(i);
+			if (auto replacement = fetch_replacement_for(ith_link)) {
+				linkable_vn->set_link(i, replacement);
+			} else {
+				replace_value_nodes(ith_link, fetch_replacement_for);
+			}
+		}
+	} else if (auto const_vn = ValueNode_Const::Handle::cast_dynamic(value_node)) {
+		if (const_vn->get_type() == type_bone_valuenode) {
+			ValueNode_Bone::Handle bone_vn = const_vn->get_value().get(ValueNode_Bone::Handle());
+			if (auto replacement = fetch_replacement_for(bone_vn.get())) {
+				ValueBase vb(ValueNode_Bone::Handle::cast_dynamic(replacement));
+				vb.copy_properties_of(bone_vn);
+				const_vn->set_value(vb);
+			} else {
+				replace_value_nodes(bone_vn.get(), fetch_replacement_for);
+			}
+		}
+	} else if (auto animated_vn = ValueNode_Animated::Handle::cast_dynamic(value_node)) {
+		ValueNode_Animated::WaypointList& list(animated_vn->editable_waypoint_list());
+		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); ++iter) {
+			ValueNode::Handle vn = iter->get_value_node();
+			if (auto replacement = fetch_replacement_for(vn))
+				iter->set_value_node(replacement);
+			else
+				replace_value_nodes(vn, fetch_replacement_for);
+		}
+	} else {
+		// actually there is a known case: PlaceholderValueNode
+		// but maybe user has custom valuenode modules...
+		synfig::warning(_("Unknown value node type (%s) to search/replace into it. Ignoring it."), value_node->get_local_name().c_str());
+	}
+}
+
+void
+synfig::replace_value_nodes(ValueNode::LooseHandle value_node, std::function<ValueNode::LooseHandle(const ValueNode::LooseHandle&)> fetch_replacement_for)
+{
+	ReplaceValueNodeStatus status;
+	do_replace_value_nodes(value_node, status, fetch_replacement_for);
+}
+
+void
+synfig::replace_value_nodes(Layer::LooseHandle layer, std::function<ValueNode::LooseHandle(const ValueNode::LooseHandle&)> fetch_replacement_for)
+{
+	auto replace_value_nodes_from_layer = [fetch_replacement_for](Layer::LooseHandle layer, const TraverseLayerStatus& /*status*/) {
+		const auto dyn_param_list = layer->dynamic_param_list();
+		for (auto dyn_param : dyn_param_list) {
+			if (auto new_vn = fetch_replacement_for(dyn_param.second)) {
+				layer->disconnect_dynamic_param(dyn_param.first);
+				layer->connect_dynamic_param(dyn_param.first, new_vn);
+			} else {
+				replace_value_nodes(dyn_param.second, fetch_replacement_for);
+			}
+		}
+	};
+	traverse_layers(layer, replace_value_nodes_from_layer);
+}
+
+SimpleValueNodeReplaceFunctor::SimpleValueNodeReplaceFunctor(const std::map<ValueNode::LooseHandle, ValueNode::LooseHandle> &replacer_map)
+	: replacer_map(replacer_map)
+{
+}
+
+ValueNode::LooseHandle
+SimpleValueNodeReplaceFunctor::operator()(const ValueNode::LooseHandle& vn)
+{
+	auto found = replacer_map.find(vn);
+	if (found == replacer_map.end()) {
+		return nullptr;
+	}
+	return found->second;
 }

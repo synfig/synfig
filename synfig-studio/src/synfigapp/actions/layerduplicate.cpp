@@ -102,45 +102,6 @@ get_special_layer_valuenodes(synfig::Layer::Handle layer, synfig::Canvas::Handle
 	return valuenodes;
 }
 
-/// Scan a ValueNode parameter tree and replaces special valuenodes with their respective duplicates (clones)
-static void
-do_replace_valuenodes(ValueNode::Handle vn, const std::pair<ValueNode::RHandle, ValueNode::RHandle>& vn_pair)
-{
-	if (!vn)
-		warning(_("Can't replace a null valuenode"));
-
-	if (auto const_vn = ValueNode_Const::Handle::cast_dynamic(vn)) {
-		// Check and replace value with special cloned valuenode
-		if (const_vn->get_type() == type_bone_valuenode) {
-			if (const_vn->get_value().get(ValueNode_Bone::Handle()) == vn_pair.first)
-				if (ValueNode_Bone::Handle bone_valuenode = ValueNode_Bone::Handle::cast_dynamic(vn_pair.second)) {
-					ValueBase ret_vb(bone_valuenode);
-					ret_vb.copy_properties_of(bone_valuenode);
-					const_vn->set_value(ret_vb);
-				}
-		} else {
-			// There isn't any other value node that can be placed into a ValueBase (see type_*)
-		}
-	} else if (auto link_vn = LinkableValueNode::Handle::cast_dynamic(vn)) {
-		// Check and replace every link with special cloned valuenode
-		for (int i = 0; i < link_vn->link_count(); i++)
-		{
-			if (link_vn->get_link(i) == vn_pair.first) {
-				link_vn->set_link(i, vn_pair.second);
-			} else {
-				do_replace_valuenodes(link_vn->get_link(i), vn_pair);
-			}
-		}
-	} else if (auto animated_vn = ValueNode_Animated::Handle::cast_dynamic(vn)) {
-		// Check and replace every waypoint value with special cloned valuenode
-		const ValueNode_Animated::WaypointList& list(animated_vn->waypoint_list());
-		for (ValueNode_Animated::WaypointList::const_iterator iter = list.cbegin(); iter != list.cend(); ++iter)
-		{
-			do_replace_valuenodes(iter->get_value_node(), vn_pair);
-		}
-	}
-}
-
 /// Go up in Canvas tree to the first parent canvas that is not inline or root canvas
 /// Valuenodes are exported to this canvas via Canvas::add_value_node()
 static Canvas::Handle get_top_parent_if_inline_canvas(Canvas::Handle canvas)
@@ -396,21 +357,13 @@ LayerDuplicate::replace_valuenodes(const std::map<synfig::Layer::Handle,synfig::
 	for (const auto& layer_pair : cloned_layer_map) {
 
 		auto cloned_layer = layer_pair.second;
-
-		// disconnect_dynamic_param/connect_dynamic_param can change dynamic_param_list() while iterating
-		// which makes iter invalid, so we create a copy of dynamic_param_list() first
-		auto param_list = cloned_layer->dynamic_param_list();
-
-		for (auto iter=param_list.cbegin();iter!=param_list.cend();++iter)
-		{
-			for (const auto& vn_pair : cloned_valuenode_map) {
-				if (iter->second == vn_pair.first) {
-					cloned_layer->disconnect_dynamic_param(iter->first);
-					cloned_layer->connect_dynamic_param(iter->first, vn_pair.second);
-				} else {
-					do_replace_valuenodes(iter->second, vn_pair);
-				}
+		replace_value_nodes(cloned_layer,
+							[cloned_valuenode_map](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
+			auto found = cloned_valuenode_map.find(vn);
+			if (found == cloned_valuenode_map.end()) {
+				return nullptr;
 			}
-		}
+			return found->second;
+		});
 	}
 }
