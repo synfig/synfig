@@ -1,3 +1,6 @@
+- [`3c8ae63`](https://github.com/synfig/synfig/commit/3c8ae63c0fa0fa8a47c5cc213e012753f8098efe) Merge PR [#2166](https://github.com/synfig/synfig/issues/2166): Add Onion Skin ability to choose between Keyframes and Frames [studio]
+- [`e074b30`](https://github.com/synfig/synfig/commit/e074b30da70e61b8b95ad9be2698f72853b4f1e0) Removed unused std/etl namespaces ([#2290](https://github.com/synfig/synfig/issues/2290)) [ETL] [core] [studio]
+- [`9a86ba4`](https://github.com/synfig/synfig/commit/9a86ba492f04d23b1bb9a8410a49a2ac47750c8e) Fix crash when moving origin point of child bone in Skeleton Deformation Layer using Bone Tool ([#2049](https://github.com/synfig/synfig/issues/2049)) [studio]
 - [`3ede603`](https://github.com/synfig/synfig/commit/3ede60357ad029f4376519fb2a1b85bd74e36624) Extracted layer size update as a separate function ([#2282](https://github.com/synfig/synfig/issues/2282)) [studio]
 - [`c29dddf`](https://github.com/synfig/synfig/commit/c29dddf3485204724f407a211888085cf734efac) Merge PR [#2278](https://github.com/synfig/synfig/issues/2278): Fix "files left after uninstall" error for "distuninstallcheck" target [studio]
 - [`f62997a`](https://github.com/synfig/synfig/commit/f62997ab0e426a7b46b41273fd73c665c1fc345c) Added glibmm dependency PR [#2278](https://github.com/synfig/synfig/issues/2278) [ETL]
