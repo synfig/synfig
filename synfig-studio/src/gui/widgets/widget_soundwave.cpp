@@ -179,6 +179,9 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	if (buffer.empty())
 		return true;
 
+	if (!frequency || !n_channels)
+		return true;
+
 	cr->save();
 
 	std::lock_guard<std::mutex> lock(mutex);
@@ -296,10 +299,19 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 	unsigned char *outbuffer = nullptr;
 	int bytes_written = 0;
 
+	frequency = 0;
+	n_channels = 0;
+
 	for (int i = start_frame; i < end_frame; ++i) {
 		Mlt::Frame *frame = track->get_frame(0);
 		if (!frame)
 			break;
+
+		if (!frequency)
+			frequency = std::stoi(frame->get("audio_frequency"));
+		if (!n_channels)
+			n_channels = std::stoi(frame->get("audio_channels"));
+
 		mlt_audio_format format = mlt_audio_u8;
 		int bytes_per_sample = 1;
 		int _frequency = frequency? frequency : default_frequency;
@@ -307,10 +319,12 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 		int _n_samples = 0;
 		void * _buffer = frame->get_audio(format, _frequency, _channels, _n_samples);
 		if (_buffer == nullptr) {
+			synfig::warning("couldn't get sound frame #%i", i);
 			delete frame;
 			break;
 		}
 		if (buffer.empty()) {
+			synfig::warning("sound frame #%i got empty buffer", i);
 			int buffer_length = (end_frame - start_frame + 1) * _channels * bytes_per_sample * std::round(_frequency/fps);
 			buffer.resize(buffer_length);
 		}
@@ -327,6 +341,6 @@ bool Widget_SoundWave::do_load(const std::string& filename)
 		channel_idx = 0;
 	queue_draw();
 	delete track;
-#endif	
+#endif
 	return true;
 }
