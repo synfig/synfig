@@ -129,7 +129,7 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as,String &errors,String &warnings)
+synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, std::map<String, String> *broken_links)
 {
 	String filename = FileSystem::fix_slashes(as);
 	if (CanvasParser::loading_.count(identifier))
@@ -153,14 +153,20 @@ synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as
 	try
 	{
 		CanvasParser::loading_.insert(identifier);
+		if (broken_links)
+			parser.set_broken_use_ids(*broken_links);
 		canvas=parser.parse_from_file_as(identifier,filename,errors);
 	}
 	catch (...)
 	{
 		CanvasParser::loading_.erase(identifier);
+		if (broken_links)
+			*broken_links = parser.get_broken_use_ids();
 		throw;
 	}
 	CanvasParser::loading_.erase(identifier);
+	if (broken_links)
+		*broken_links = parser.get_broken_use_ids();
 
 	warnings = parser.get_warnings_text();
 
@@ -1454,7 +1460,6 @@ CanvasParser::parse_static(xmlpp::Element *element)
 	return false;
 }
 
-
 ValueBase
 CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 {
@@ -1674,26 +1679,35 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 			ValueNode::Handle waypoint_value_node;
 			xmlpp::Element::NodeList list = child->get_children();
 
-			if(child->get_attribute("use"))
+			if(const auto use_attr = child->get_attribute("use"))
 			{
 				if(!list.empty())
 					warning(child,_("Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring contents..."));
+
+				std::string use_id = use_attr->get_value();
+				fix_broken_use_id(use_id);
 
 				// the waypoint might look like this, in which case we won't find "mycanvas" in the list of valuenodes, 'cos it's a canvas
 				//
 				//      <animated type="canvas">
 				//        <waypoint time="0s" use="mycanvas"/>
 				//      </animated>
-				if (type==type_canvas)
+				try
 				{
-					String warnings;
-					waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(child->get_attribute("use")->get_value(), warnings));
-					warnings_text += warnings;
+					if (type==type_canvas)
+					{
+						String warnings;
+						waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(use_id, warnings));
+						warnings_text += warnings;
+					}
+					else
+						waypoint_value_node=canvas->surefind_value_node(use_id);
+				} catch (Exception::IDNotFound&) {
+					register_broken_use_id(use_id);
 				}
-				else
-					waypoint_value_node=canvas->surefind_value_node(child->get_attribute("use")->get_value());
+
 				if(PlaceholderValueNode::Handle::cast_dynamic(waypoint_value_node))
-					error(child, strprintf(_("Unknown ID (%s) referenced in waypoint"),child->get_attribute("use")->get_value().c_str()));
+					error(child, strprintf(_("Unknown ID (%s) referenced in waypoint"),use_id.c_str()));
 			}
 			else
 			{
@@ -1889,6 +1903,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		for (xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); ++iter) {
 			name = (*iter)->get_name();
 			id = (*iter)->get_value();
+			fix_broken_use_id(id);
 
 			if (name == "guid" || name == "id" || name == "type")
 				continue;
@@ -1911,13 +1926,27 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 					continue;
 				}
 				int placeholders(canvas->value_node_list().placeholder_count());
-				c[index] = canvas->surefind_value_node(id);
-				// Don't accept links for unsolved exported Value Nodes.
-				// Except if it is parsing <bones>, as this section is defined before <defs>
-				if (!in_bones_section) {
-					if(placeholders == canvas->value_node_list().placeholder_count())
-						if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) )
-							throw Exception::IDNotFound("parse_linkable_value_noode()");
+				try {
+					c[index] = canvas->surefind_value_node(id);
+					// Don't accept links for unsolved exported Value Nodes.
+					// Except if it is parsing <bones>, as this section is defined before <defs>
+					if (!in_bones_section) {
+						if(placeholders == canvas->value_node_list().placeholder_count())
+							if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) )
+								throw Exception::IDNotFound("parse_linkable_value_node()");
+					}
+				} catch (Exception::IDNotFound&) {
+					register_broken_use_id(id);
+				} catch(...) {
+					register_broken_use_id(id);
+				}
+
+				if(placeholders == canvas->value_node_list().placeholder_count()) {
+					if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) ) {
+						synfig::error("broken value node link 2");
+						register_broken_use_id(id);
+						throw Exception::IDNotFound("parse_linkable_value_node()");
+					}
 				}
 
 				if (!c[index])
@@ -2222,17 +2251,20 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 		{
 			ValueNode::Handle list_entry;
 
-			if(child->get_attribute("use"))
+			if(const auto use_attr = child->get_attribute("use"))
 			{
 				// \todo does this need to be able to read 'use="canvas"', like waypoints can now?  (see 'surefind_canvas' in this file)
-				std::string id=child->get_attribute("use")->get_value();
+				std::string use_id = use_attr->get_value();
+				fix_broken_use_id(use_id);
+
 				try
 				{
-					list_entry=canvas->surefind_value_node(id);
+					list_entry=canvas->surefind_value_node(use_id);
 				}
 				catch(Exception::IDNotFound&)
 				{
-					error(child,"\"use\" attribute in <entry> references unknown ID -- "+id);
+					error(child,"\"use\" attribute in <entry> references unknown ID -- "+use_id);
+					register_broken_use_id(use_id);
 					continue;
 				}
 			}
@@ -2480,19 +2512,21 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				timing_info.sort();
 			}
 
-			if(child->get_attribute("use"))
+			if(const auto use_attr = child->get_attribute("use"))
 			{
 				// \todo does this need to be able to read 'use="canvas"', like waypoints can now?  (see 'surefind_canvas' in this file)
-				std::string id=child->get_attribute("use")->get_value();
+				std::string use_id = use_attr->get_value();
+				fix_broken_use_id(use_id);
 				try
 				{
-					list_entry.value_node=canvas->surefind_value_node(id);
+					list_entry.value_node=canvas->surefind_value_node(use_id);
 					if(PlaceholderValueNode::Handle::cast_dynamic(list_entry.value_node))
 						throw Exception::IDNotFound("parse_dynamic_list()");
 				}
 				catch(Exception::IDNotFound&)
 				{
-					error(child,"\"use\" attribute in <entry> references unknown ID -- "+id);
+					error(child,"\"use\" attribute in <entry> references unknown ID -- "+use_id);
+					register_broken_use_id(use_id);
 					continue;
 				}
 			}
@@ -2827,7 +2861,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			if (param_name == "pos" || param_name == "offset")
 				param_name = "origin";
 
-			if(child->get_attribute("use"))
+			if(const auto use_attr = child->get_attribute("use"))
 			{
 				// If the "use" attribute is used, then the
 				// element should be empty. Warn the user if
@@ -2835,27 +2869,33 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				if(!list.empty())
 					warning(child,_("Found \"use\" attribute for <param>, but it wasn't empty. Ignoring contents..."));
 
-				String str=	child->get_attribute("use")->get_value();
+				std::string use_id = use_attr->get_value();
+				fix_broken_use_id(use_id);
 
-				if (str.empty())
+				if (use_id.empty())
 					error(child,_("Empty use=\"\" value in <param>"));
 				else if(layer->get_param(param_name).get_type()==type_canvas)
 				{
 					String warnings;
-					Canvas::Handle c(canvas->surefind_canvas(str, warnings));
-					warnings_text += warnings;
-					if(!c) error((*iter),strprintf(_("Failed to load subcanvas '%s'"), str.c_str()));
-					if(!layer->set_param(param_name,c))
-						error((*iter),_("Layer rejected canvas link"));
-					//Parse the static option and sets it to the canvas ValueBase
-					ValueBase v=layer->get_param(param_name);
-					v.set_static(parse_static(child));
-					layer->set_param(param_name, v);
+					try {
+						Canvas::Handle c(canvas->surefind_canvas(use_id, warnings));
+						warnings_text += warnings;
+						if(!c) error(child,strprintf(_("Failed to load subcanvas '%s'"), use_id.c_str()));
+						if(!layer->set_param(param_name,c))
+							error(child,_("Layer rejected canvas link"));
+						//Parse the static option and sets it to the canvas ValueBase
+						ValueBase v=layer->get_param(param_name);
+						v.set_static(parse_static(child));
+						layer->set_param(param_name, v);
+					} catch (Exception::IDNotFound& ex) {
+						error(child,strprintf(_("Failed to load subcanvas '%s' referenced in parameter \"%s\""), use_id.c_str(), param_name.c_str()));
+						register_broken_use_id(use_id);
+					}
 				}
 				else
 				try
 				{
-					ValueNode::Handle value_node=canvas->surefind_value_node(str);
+					ValueNode::Handle value_node = canvas->surefind_value_node(use_id);
 					if(PlaceholderValueNode::Handle::cast_dynamic(value_node))
 						throw Exception::IDNotFound("parse_layer()");
 
@@ -2899,7 +2939,8 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
     			}
 				catch(Exception::IDNotFound&)
 				{
-					error(child,strprintf(_("Unknown ID (%s) referenced in parameter \"%s\""),str.c_str(), param_name.c_str()));
+					error(child,strprintf(_("Unknown ID (%s) referenced in parameter \"%s\""),use_id.c_str(), param_name.c_str()));
+					register_broken_use_id(use_id);
 				}
 
 				continue;
@@ -3626,4 +3667,42 @@ synfig::open_canvas(xmlpp::Element* node,String &errors,String &warnings){
 	return canvas;
 }
 
+const std::map<std::string, std::string>&
+CanvasParser::get_broken_use_ids() const
+{
+	return filepath_fix_map;
+}
 
+void
+CanvasParser::set_broken_use_ids(const std::map<std::string, std::string>& map)
+{
+	filepath_fix_map = map;
+}
+
+bool
+CanvasParser::fix_broken_use_id(std::string &use_id) const
+{
+	auto pos = use_id.find('#');
+	if (pos == std::string::npos || pos == 0)
+		return false;
+
+	try {
+		std::string filepath = use_id.substr(0, pos);
+		filepath = filepath_fix_map.at(filepath);
+		use_id = filepath + use_id.substr(pos);
+		return true;
+	} catch (...) {
+		return false;
+	}
+}
+
+bool
+CanvasParser::register_broken_use_id(const std::string &use_id)
+{
+	auto pos = use_id.find('#');
+	if (pos == std::string::npos || pos == 0)
+		return false;
+
+	filepath_fix_map[use_id.substr(0, pos)] = "";
+	return true;
+}

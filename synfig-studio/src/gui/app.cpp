@@ -3575,7 +3575,9 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename.u8string());
 
-		Canvas::Handle canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings);
+		std::map<String, String> broken_links;
+		broken_links["DupBug-simplified.sif"] = "DupBug-simplified.sif_";
+		Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3584,8 +3586,12 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 		}
 		else
 		{
-			if(!canvas)
+			if (!canvas) {
+				for (const auto& pair : broken_links) {
+					warning("Missing file: %s", pair.first.c_str());
+				}
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
+			}
 
 			// Set new pixel ratio
 			canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());

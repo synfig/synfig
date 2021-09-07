@@ -88,6 +88,11 @@ private:
 	//
 	bool in_bones_section;
 
+	//! Map to fix broken links due to missing files
+	//! (original_file_path, new_file_path)
+	//! If new_file_path is null, there is no replacement file path to that item
+	std::map<std::string, std::string> filepath_fix_map;
+
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -133,6 +138,11 @@ public:
 	const synfig::String& get_errors_text()const { return errors_text; }
 	//! Gets warning text string
 	const synfig::String& get_warnings_text()const { return warnings_text; }
+
+	//! Gets the list of the broken use id due to missing files
+	const std::map<std::string, std::string>& get_broken_use_ids() const;
+	//! Sets the map of (missing file, replacement file)
+	void set_broken_use_ids(const std::map<std::string, std::string>& map);
 
 	//! Register a canvas in the canvas map
 	/*! \param canvas The handle to the canvas to register
@@ -236,6 +246,12 @@ private:
 	//! Static option for ValueBase parsing function
 	bool parse_static(xmlpp::Element *node);
 
+	//! Replace file path in use_id with the correspondent one in filepath_fix_map
+	//! \return true if replacement was done or use_id does not refer to an external canvas file
+	bool fix_broken_use_id(std::string& use_id) const;
+	//! Register file path in use_id as broken
+	//! \return true if use_id refers to an external canvas file.
+	bool register_broken_use_id(const std::string& use_id);
 }; // END of CanvasParser
 
 /* === E X T E R N S ======================================================= */
@@ -245,7 +261,7 @@ private:
 extern Canvas::Handle open_canvas(xmlpp::Element* node,String &errors,String &warnings);
 //!	Loads a canvas from \a filename and its absolute path
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier,const String &as,String &errors,String &warnings);
+extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, std::map<String, String>*broken_links = nullptr);
 
 //! Returns the Open Canvases Map.
 //! \see open_canvas_map_

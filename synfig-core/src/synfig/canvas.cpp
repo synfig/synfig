@@ -55,8 +55,6 @@
 
 using namespace synfig;
 
-namespace synfig { extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings); };
-
 /* === M A C R O S ========================================================= */
 
 //#define DEBUG_SET_TIME_MEASURE
