@@ -53,7 +53,7 @@ struct SVGMatrix {
 	SVGMatrix(float a, float b, float c, float d, float e, float f);
 	SVGMatrix(const String& mvector);
 
-	static const SVGMatrix indentity;
+	static const SVGMatrix identity;
 	static const SVGMatrix zero;
 
 	bool is_identity() const;

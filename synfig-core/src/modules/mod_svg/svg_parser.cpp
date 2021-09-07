@@ -191,7 +191,7 @@ Svg_parser::parser_node(const xmlpp::Node* node)
 			parser_defs (node);
 		}else{
 			if(!set_canvas) parser_canvas(node);
-			parser_graphics(node,nodeRoot,"",SVGMatrix::indentity);
+			parser_graphics(node,nodeRoot,"",SVGMatrix::identity);
 			if(nodename.compare("g")==0) return;
 		}
   	}
@@ -339,7 +339,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			child_fill=child_layer;
 			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
 			if(typeFill == FILL_TYPE_GRADIENT){
-				build_fill (child_fill,fill,SVGMatrix::indentity);
+				build_fill (child_fill,fill,SVGMatrix::identity);
 			}
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 			return;
@@ -363,9 +363,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			}
 		} else {
 			if(nodename.compare("path")==0){
-				k = parser_path_d(nodeElement->get_attribute_value("d"),SVGMatrix::indentity);
+				k = parser_path_d(nodeElement->get_attribute_value("d"),SVGMatrix::identity);
 			} else if(nodename.compare("polygon")==0){
-				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::indentity);
+				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::identity);
 			}
 		}
 		
@@ -398,7 +398,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			if (SVG_RESOLVE_BLINE)
 				build_fill(child_fill,fill,mtx);
 			else
-				build_fill(child_fill,fill,SVGMatrix::indentity);
+				build_fill(child_fill,fill,SVGMatrix::identity);
 		}
 
 		if(typeStroke!=FILL_TYPE_NONE){//outline layer
@@ -444,12 +444,12 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				if (SVG_RESOLVE_BLINE)
 					build_fill(child_stroke,stroke,mtx);
 				else
-					build_fill(child_stroke,stroke,SVGMatrix::indentity);
+					build_fill(child_stroke,stroke,SVGMatrix::identity);
 			}	
 		}
 
 		if (SVG_RESOLVE_BLINE)
-			parser_effects(nodeElement,child_layer,parent_style,SVGMatrix::indentity);
+			parser_effects(nodeElement,child_layer,parent_style,SVGMatrix::identity);
 		else
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 	}
@@ -499,7 +499,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String p
 				parser_graphics (*iter,child_canvas,layer_style,mtx);
     		}
   		}
-		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,SVGMatrix::indentity);
+		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,SVGMatrix::identity);
 		else parser_effects(nodeElement,child_canvas,parent_style,mtx);
 	}
 }
@@ -1609,7 +1609,7 @@ SVGMatrix::SVGMatrix(const String& mvector)
 	}
 }
 
-const SVGMatrix SVGMatrix::indentity(1,0,0,1,0,0);
+const SVGMatrix SVGMatrix::identity(1,0,0,1,0,0);
 const SVGMatrix SVGMatrix::zero(0,0,0,0,0,0);
 
 bool
