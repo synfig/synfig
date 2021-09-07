@@ -114,7 +114,7 @@ String
 Layer_PasteCanvas::get_local_name()const
 {
 	if(!sub_canvas || sub_canvas->is_inline()) return String();
-	if(sub_canvas->get_root()==get_canvas()->get_root()) return sub_canvas->get_id();
+	if(get_canvas() && sub_canvas->get_root()==get_canvas()->get_root()) return sub_canvas->get_id();
 	return sub_canvas->get_file_name();
 }
 
