@@ -248,8 +248,6 @@ src/gui/app.cpp
 src/gui/app.h
 src/gui/asyncrenderer.cpp
 src/gui/asyncrenderer.h
-src/gui/audiocontainer.cpp
-src/gui/audiocontainer.h
 src/gui/autorecover.cpp
 src/gui/autorecover.h
 src/gui/canvasview.cpp
@@ -296,8 +294,6 @@ src/gui/splash.cpp
 src/gui/splash.h
 src/gui/statemanager.cpp
 src/gui/statemanager.h
-src/gui/valuelink.cpp
-src/gui/valuelink.h
 src/gui/workarea.cpp
 src/gui/workarea.h
 src/gui/workarearenderer/workarearenderer.cpp
