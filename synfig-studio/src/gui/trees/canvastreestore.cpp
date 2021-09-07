@@ -49,7 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -267,7 +266,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 				if (value_node) {
 					stype+=" (" + value_node->get_local_name() + ")";
 				} else {
-					stype+=" (> " + string(_("Invalid ValueNode")) + " <)";
+					stype+=" (> " + std::string(_("Invalid ValueNode")) + " <)";
 					synfig::error(_("Invalid ValueNode"));
 				}
 			}
@@ -314,7 +313,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 				else
 					x.set(Glib::ustring((*iter)[model.name])+" ("+value_node->get_id()+')');
 			} else {
-				x.set(" (> " + string(_("Invalid ValueNode")) + " <)");
+				x.set(" (> " + std::string(_("Invalid ValueNode")) + " <)");
 				synfig::error(_("Invalid ValueNode"));
 			}
 		}

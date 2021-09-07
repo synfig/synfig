@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -403,7 +402,7 @@ Palette::load_from_file(const synfig::String& filename)
 			PaletteItem item;
 			float r, g, b;
 
-			stringstream ss;
+			std::stringstream ss;
 			getline(*file, line);
 
 			if (!line.empty())

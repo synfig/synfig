@@ -74,7 +74,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -771,8 +770,8 @@ Layer::render_transformed(const Layer *layer, Context context,Surface *surface,i
 	int right  = (int)ceil (pixels_outer_bounds.maxx);
 	int bottom = (int)ceil (pixels_outer_bounds.maxy);
 
-	int w = min(surface->get_w(), renddesc.get_w());
-	int h = min(surface->get_h(), renddesc.get_h());
+	int w = std::min(surface->get_w(), renddesc.get_w());
+	int h = std::min(surface->get_h(), renddesc.get_h());
 
 	if (left < 0) left = 0;
 	if (top < 0) top = 0;

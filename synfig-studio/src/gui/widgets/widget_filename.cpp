@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -94,7 +93,7 @@ Widget_Filename::set_value(const std::string &data)
 	entry_filename->set_text(data);
 }
 
-string
+std::string
 Widget_Filename::get_value() const
 {
 	try
@@ -103,7 +102,7 @@ Widget_Filename::get_value() const
 	}
 	catch(...)
 	{
-		throw string("Caught unknown exception");
+		throw std::string("Caught unknown exception");
 	}
 }
 
@@ -116,7 +115,7 @@ Widget_Filename::on_value_changed()
 void
 Widget_Filename::on_button_choose_pressed()
 {
-	string filename=entry_filename->get_text();
+	std::string filename=entry_filename->get_text();
 	filename = synfig::CanvasFileNaming::make_full_filename(canvas->get_file_name(), filename);
 
 	if(filename.empty())

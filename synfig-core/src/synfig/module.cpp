@@ -47,7 +47,6 @@
 
 /* === G L O B A L S ======================================================= */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -146,7 +145,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(callback)callback->task(strprintf(_("Attempting to register \"%s\""),module_name.c_str()));
 
-	module=lt_dlopenext((string("lib")+module_name).c_str());
+	module=lt_dlopenext((std::string("lib")+module_name).c_str());
 	if(!module)module=lt_dlopenext(module_name.c_str());
 	Type::initialize_all();
 

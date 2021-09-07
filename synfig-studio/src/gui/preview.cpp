@@ -54,7 +54,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -1105,10 +1104,10 @@ void Widget_Preview::on_zoom_entry_activated()
 {
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	String str(entry->get_text());
-	string digi = "0123456789";
+	std::string digi = "0123456789";
 	size_t first = str.find_first_of(digi);
 
-	if (first == string::npos)
+	if (first == std::string::npos)
 	{
 		entry->set_text(_("Fit"));
 
@@ -1120,7 +1119,7 @@ void Widget_Preview::on_zoom_entry_activated()
 
 	size_t last = str.find_first_not_of(digi);
 
-	if (last == string::npos)
+	if (last == std::string::npos)
 	{
 		last = str.find_last_of(digi) + 1;
 	}

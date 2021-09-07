@@ -42,7 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -128,18 +127,18 @@ public:
 
 	void get_axes_value(synfig::String & value) const
 	{
-		vector<InputDevice::AxisUse> axes = input_device->get_axes();
+		std::vector<InputDevice::AxisUse> axes = input_device->get_axes();
 		value = strprintf("%zu", axes.size());
-		vector<InputDevice::AxisUse>::const_iterator itr;
+		std::vector<InputDevice::AxisUse>::const_iterator itr;
 		for (itr = axes.begin(); itr != axes.end(); itr++)
 			value += strprintf(" %u", (unsigned int) *itr);
 	}
 
 	void get_keys_value(synfig::String & value) const
 	{
-		vector<InputDevice::DeviceKey> keys = input_device->get_keys();
+		std::vector<InputDevice::DeviceKey> keys = input_device->get_keys();
 		value = strprintf("%zu", keys.size());
-		vector<InputDevice::DeviceKey>::const_iterator itr;
+		std::vector<InputDevice::DeviceKey>::const_iterator itr;
 		for (itr = keys.begin(); itr != keys.end(); itr++)
 			value += strprintf(" %u %u", itr->keyval, itr->modifiers);
 	}

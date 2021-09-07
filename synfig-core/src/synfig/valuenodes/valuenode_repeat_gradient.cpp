@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -85,7 +84,7 @@ ValueNode_Repeat_Gradient::create(const ValueBase& x)
 	if(type!=type_gradient)
 	{
 		assert(0);
-		throw runtime_error(String(_("Repeat Gradient"))+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(String(_("Repeat Gradient"))+_(":Bad type ")+type.description.local_name);
 	}
 
 	ValueNode_Repeat_Gradient* value_node=new ValueNode_Repeat_Gradient(x.get(Gradient()));
@@ -114,7 +113,7 @@ synfig::ValueNode_Repeat_Gradient::operator()(Time t)const
 		return ret;
 
 	const Gradient gradient((*gradient_)(t).get(Gradient()));
-	const float width(max(0.0,min(1.0,(*width_)(t).get(Real()))));
+	const float width(std::max(0.0, std::min(1.0,(*width_)(t).get(Real()))));
 	const bool specify_start((*specify_start_)(t).get(bool()));
 	const bool specify_end((*specify_end_)(t).get(bool()));
 

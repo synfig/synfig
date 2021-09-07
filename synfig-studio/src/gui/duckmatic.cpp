@@ -77,7 +77,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -1446,8 +1445,8 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 
 		step = d/(2*scale); //want to make the distance between lines happy
 
-		step = max(step,0.01); //100 samples should be plenty
-		step = min(step,0.1); //10 is minimum
+		step = std::max(step,0.01); //100 samples should be plenty
+		step = std::min(step,0.1); //10 is minimum
 
 		d = find_closest(curve,pos,step,&closest,&time);
 #endif
@@ -1483,7 +1482,7 @@ Duckmatic::save_sketch(const synfig::String& filename)const
 
 	if(!file)return false;
 
-	file<<"SKETCH"<<endl;
+	file<<"SKETCH"<<std::endl;
 
 	std::list<etl::handle<Stroke> >::const_iterator iter;
 
@@ -1493,14 +1492,14 @@ Duckmatic::save_sketch(const synfig::String& filename)const
 			<<(*iter)->color.get_r()<<' '
 			<<(*iter)->color.get_g()<<' '
 			<<(*iter)->color.get_b()
-		<<endl;
+		<< std::endl;
 		std::list<synfig::Point>::const_iterator viter;
 		for(viter=(*iter)->stroke_data->begin();viter!=(*iter)->stroke_data->end();++viter)
 		{
 			file<<"V "
 				<<(*viter)[0]<<' '
 				<<(*viter)[1]
-			<<endl;
+			<< std::endl;
 		}
 	}
 	if(!file)return false;

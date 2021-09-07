@@ -44,8 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -64,7 +62,7 @@ ValueNode_WeightedAverage::ValueNode_WeightedAverage(const ValueBase &value, Can
 	if (!check_type(value.get_type()))
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+value.get_type().description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+value.get_type().description.local_name);
 	}
 }
 
@@ -74,7 +72,7 @@ ValueNode_WeightedAverage::ValueNode_WeightedAverage(Type &type, Canvas::LooseHa
 	if (!check_type(type))
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 }
 

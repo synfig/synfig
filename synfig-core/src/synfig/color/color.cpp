@@ -47,7 +47,6 @@
 
 using namespace synfig;
 using namespace etl;
-using namespace std;
 
 #define COLOR_EPSILON	(0.000001f)
 
@@ -59,7 +58,7 @@ Color::hex2real(String s)
 	std::istringstream i(s);
 	int n;
 	i.fill('0');
-	if (!(i >> hex >> n))
+	if (!(i >> std::hex >> n))
 		throw String("bad conversion from hex string \"") + s + String("\"");
 	return n / 255.0f;
 }
@@ -72,7 +71,7 @@ Color::real2hex(ColorReal c)
 	o.fill('0');
 	if (c<0) c = 0;
 	if (c>1) c = 1;
-	o << hex << int(c*255.0f);
+	o << std::hex << int(c*255.0f);
 	return o.str();
 }
 
@@ -109,7 +108,7 @@ Color::set_hex(String& str)
 			r_ = r; g_ = g; b_ = b;
 		}
 	}
-	catch (const string& s)
+	catch (const std::string& s)
 	{
 		synfig::warning("caught <%s>\n", s.c_str());
 		return;

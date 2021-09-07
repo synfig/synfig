@@ -46,7 +46,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -79,7 +78,7 @@ static synfig::Distance bline_width_;
 //static Real opacity_;
 
 static synfigapp::InputDevice::Handle selected_input_device_;
-static list<synfigapp::InputDevice::Handle> input_devices_;
+static std::list<synfigapp::InputDevice::Handle> input_devices_;
 
 sigc::signal<void> signal_outline_color_changed_;
 sigc::signal<void> signal_fill_color_changed_;
@@ -360,7 +359,7 @@ synfigapp::Main::add_input_device(const synfig::String id, InputDevice::Type typ
 InputDevice::Handle
 synfigapp::Main::find_input_device(const synfig::String id)
 {
-	list<InputDevice::Handle>::iterator iter;
+	std::list<InputDevice::Handle>::iterator iter;
 	for(iter=input_devices_.begin();iter!=input_devices_.end();++iter)
 		if((*iter)->get_id()==id)
 			return *iter;

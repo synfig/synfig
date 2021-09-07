@@ -43,7 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -129,7 +128,7 @@ synfig::ValueNode_RadialComposite::operator()(Time t)const
 		);
 	}
 
-	synfig::error(string("ValueNode_RadialComposite::operator():")+_("Bad type for radialcomposite"));
+	synfig::error(std::string("ValueNode_RadialComposite::operator():")+_("Bad type for radialcomposite"));
 	assert(components[0]);
 	return (*components[0])(t);
 }

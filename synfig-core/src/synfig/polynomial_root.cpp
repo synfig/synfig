@@ -36,14 +36,11 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-//using namespace etl;
-//using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
-typedef complex<float>	Complex;
+typedef std::complex<float>	Complex;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -168,7 +165,7 @@ void laguer(Complex a[], int m, Complex *x, int *its)
 		}
 
 		//if the denominator is positive do one thing, otherwise do the other
-		dx = (abp > 0.0) ? (float)m / gp : polar((1+abx),(float)iter);
+		dx = (abp > 0.0) ? (float)m / gp : std::polar((1+abx),(float)iter);
 		x1 = *x - dx;
 
 		//Have we converged?

@@ -42,7 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -72,7 +71,7 @@ Widget_Sublayer::set_value_desc(const synfigapp::ValueDesc &x)
 	value_desc=x;
 	// First clear the current items in the ComboBox
 	enum_TreeModel->clear();
-	cout << value_desc.get_layer() << endl;
+	std::cout << value_desc.get_layer() << std::endl;
 	etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
 	if(p)
 	{
@@ -113,13 +112,13 @@ Widget_Sublayer::refresh()
 }
 
 void
-Widget_Sublayer::set_value(string data)
+Widget_Sublayer::set_value(std::string data)
 {
 	value=data;
 	refresh();
 }
 
-string
+std::string
 Widget_Sublayer::get_value() const
 {
 	return value;
