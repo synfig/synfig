@@ -4,6 +4,7 @@ UIFILES     = \
   canvas_options.glade \
   canvas_resize.glade \
   dialog_canvasdependencies.glade \
+  dialog_fixmissingfiles.glade \
   dialog_pasteoptions.glade \
   dialog_workspaces.glade \
   preview_options.glade \

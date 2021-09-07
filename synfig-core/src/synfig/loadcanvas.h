@@ -56,12 +56,80 @@ namespace xmlpp { class Node; class Element; };
 
 namespace synfig {
 
+
+
+struct CanvasMissingId
+{
+	std::string id;
+	std::string type_name;
+
+	bool operator==(const CanvasMissingId& other) const
+	{
+		return id == other.id && type_name == other.type_name;
+	}
+};
+
+typedef std::vector<CanvasMissingId> CanvasMissingIdList;
+
+struct BrokenUseIdInfo
+{
+	filesystem::Path replacement;
+	CanvasMissingIdList missing_items;
+};
+
+//! Map to fix broken links due to missing files
+//! (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
+//! If new_file_path is null, there is no replacement file path to that item
+struct CanvasBrokenUseIdMap : std::map<filesystem::Path, BrokenUseIdInfo>
+{
+	bool fix(std::string& use_id) const
+	{
+		auto pos = use_id.find('#');
+		if (pos == std::string::npos || pos == 0)
+			return false;
+
+		try {
+			filesystem::Path filepath = use_id.substr(0, pos);
+			filepath = this->at(filepath).replacement;
+			use_id = filepath.u8string() + use_id.substr(pos);
+			return true;
+		} catch (...) {
+			return false;
+		}
+	}
+
+	bool add(const std::string& use_id, const std::string& type_name)
+	{
+		auto pos = use_id.find('#');
+		if (pos == std::string::npos || pos == 0)
+			return false;
+
+		const CanvasMissingId item {use_id.substr(pos+1), type_name};
+
+		auto missing_file = filesystem::Path(use_id.substr(0, pos));
+		auto missing_file_iter = find(missing_file);
+		if (missing_file_iter == end()) {
+			(*this)[missing_file] = {{}, {item}};
+		} else {
+			CanvasMissingIdList& missing_items = missing_file_iter->second.missing_items;
+			if (missing_items.end() == std::find(missing_items.begin(), missing_items.end(), item))
+				missing_items.push_back(item);
+		}
+		return true;
+	}
+
+};
+
+
+
 /*!	\class CanvasParser
 **	\brief Class that handles xmlpp elements from a sif file and converts
 * them into Synfig objects
 */
 class CanvasParser
 {
+public:
+
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/
@@ -88,6 +156,7 @@ private:
 	//
 	bool in_bones_section;
 
+	CanvasBrokenUseIdMap filepath_fix_map;
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -133,6 +202,11 @@ public:
 	const synfig::String& get_errors_text()const { return errors_text; }
 	//! Gets warning text string
 	const synfig::String& get_warnings_text()const { return warnings_text; }
+
+	//! Gets the list of the broken use id due to missing files
+	const CanvasBrokenUseIdMap& get_broken_use_ids() const;
+	//! Sets the map of (missing file, replacement file)
+	void set_broken_use_ids(const CanvasBrokenUseIdMap& map);
 
 	//! Register a canvas in the canvas map
 	/*! \param canvas The handle to the canvas to register
@@ -236,6 +310,12 @@ private:
 	//! Static option for ValueBase parsing function
 	bool parse_static(xmlpp::Element *node);
 
+	//! Replace file path in use_id with the correspondent one in filepath_fix_map
+	//! \return true if replacement was done or use_id does not refer to an external canvas file
+	bool fix_broken_use_id(const filesystem::Path& canvas_path, std::string& use_id) const;
+	//! Register file path in use_id as broken
+	//! \return true if use_id refers to an external canvas file.
+	bool register_broken_use_id(const std::string& use_id, const std::string& type);
 }; // END of CanvasParser
 
 /* === E X T E R N S ======================================================= */
@@ -245,7 +325,7 @@ private:
 extern Canvas::Handle open_canvas(xmlpp::Element* node,String &errors,String &warnings);
 //!	Loads a canvas from \a filename and its absolute path
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier,const String &as,String &errors,String &warnings);
+extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, CanvasBrokenUseIdMap*broken_links = nullptr);
 
 //! Returns the Open Canvases Map.
 //! \see open_canvas_map_
