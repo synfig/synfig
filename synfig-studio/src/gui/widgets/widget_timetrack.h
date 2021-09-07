@@ -232,6 +232,7 @@ private:
 
 	WaypointScaleInfo compute_scale_params() const;
 	synfig::Time compute_scaled_time(const WaypointItem &item, const WaypointScaleInfo &scale_info) const;
+	sigc::connection keyframe_changed_connection_;
 };
 
 }
