@@ -47,29 +47,28 @@ class ValueNode_AngleString : public LinkableValueNode
 	ValueNode::RHandle precision_;
 	ValueNode::RHandle zero_pad_;
 
-	ValueNode_AngleString(const ValueBase &value);
+	ValueNode_AngleString(const ValueBase &x);
 
 public:
-
 	typedef etl::handle<ValueNode_AngleString> Handle;
 	typedef etl::handle<const ValueNode_AngleString> ConstHandle;
 
-	virtual ValueBase operator()(Time t)const;
+	static ValueNode_AngleString* create(const ValueBase &x);
 	virtual ~ValueNode_AngleString();
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+
+	virtual ValueBase operator()(Time t) const override;
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_AngleString* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual LinkableValueNode::Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_AngleString
 
 }; // END of namespace synfig

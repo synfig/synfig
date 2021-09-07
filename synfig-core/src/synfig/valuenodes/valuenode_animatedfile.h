@@ -43,10 +43,6 @@ namespace synfig {
 /** \class ValueNode_AnimatedFile */
 class ValueNode_AnimatedFile : public LinkableValueNode, public ValueNode_AnimatedInterfaceConst
 {
-public:
-	typedef etl::handle<ValueNode_AnimatedFile> Handle;
-	typedef etl::handle<const ValueNode_AnimatedFile> ConstHandle;
-
 private:
 	class Internal;
 
@@ -62,29 +58,31 @@ private:
 	void file_changed();
 
 public:
-	~ValueNode_AnimatedFile();
+	typedef etl::handle<ValueNode_AnimatedFile> Handle;
+	typedef etl::handle<const ValueNode_AnimatedFile> ConstHandle;
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
-	virtual ValueNode::LooseHandle get_link_vfunc(int i) const;
-
-	static bool check_type(Type &type);
 	static ValueNode_AnimatedFile* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc() const;
+	virtual ~ValueNode_AnimatedFile();
 
-	virtual ValueBase operator()(Time t) const;
-	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
+	virtual ValueBase operator()(Time t) const override;
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
 	String get_file_field(Time t, const String &field_name) const;
 
 protected:
-	LinkableValueNode* create_new() const;
+	LinkableValueNode* create_new() const override;
 
-	virtual void on_changed();
-	virtual bool set_link_vfunc(int i, ValueNode::Handle x);
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual LinkableValueNode::Vocab get_children_vocab_vfunc() const override;
+
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const override;
+
+	virtual void on_changed() override;
 };
 
 }; // END of namespace synfig
