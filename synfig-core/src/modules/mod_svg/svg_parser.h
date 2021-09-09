@@ -120,6 +120,34 @@ struct BLine {
 	BLine(std::list<Vertex> points, bool loop);
 };
 
+struct Style {
+	/// Merge with style definitions from elem (style attribute and presentation attributes)
+	void merge(const xmlpp::Element* elem);
+	/// Merge with style property
+	void merge(const std::string& property, const std::string& value);
+
+	/// Retrieve a style property
+	/// \param property Property name.
+	/// \param default_value The value to be used, if this Style does not have this property explicitly set
+	std::string get(const std::string& property, std::string default_value) const;
+	/// This method retrieve a property value, like get() does, but it returns
+	/// its numeric value (and it should be used only for numeric properties.
+	///
+	/// If property is a numerical number, its value should be parsed and computed.
+	/// \param property Property name.
+	/// \param default_value The value to be used, if this Style does not have this property explicitly set
+	/// \param reference_value If property may be percentual, what is the percentage reference (what '100%' means)
+	/// \return the property value as a real number
+	double compute(const std::string& property, std::string default_value, double reference_value = 1.0) const;
+private:
+	 std::map<std::string, std::string> data;
+
+	 void merge_presentation_attributes(const xmlpp::Element* elem);
+	 void merge_style_string(const std::string& style_str);
+
+	 void push(const std::string& property, const std::string& value);
+};
+
 class Svg_parser
 {
 		//this is inkscape oriented in some cases
@@ -155,17 +183,17 @@ private:
 		//parser headers
 		void parser_svg(const xmlpp::Node* node);
 		void parser_canvas(const xmlpp::Node* node);
-		void parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx_parent);
+		void parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent);
 
 		/* === LAYER PARSERS ============================== */
-		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx);
-		void parser_rect(const xmlpp::Element* nodeElement, xmlpp::Element* root, const String& fill, const String& fill_opacity, const String& opacity);
+		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx);
+		void parser_rect(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style);
 		/* === CONVERT TO PATH PARSERS ==================== */
 		std::list<BLine> parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx);
 		std::list<BLine> parser_path_d(const String& path_d, const SVGMatrix& mtx);
 
 		/* === EFFECTS PARSERS ============================ */
-		void parser_effects(const xmlpp::Element* nodeElement, xmlpp::Element* root, const String& parent_style, const SVGMatrix& mtx);
+		void parser_effects(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& parent_style, const SVGMatrix& mtx);
 
 		/* === DEFS PARSERS =============================== */
 		void parser_defs(const xmlpp::Node* node);
