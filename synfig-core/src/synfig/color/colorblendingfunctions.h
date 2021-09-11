@@ -401,6 +401,17 @@ C blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 	return blendfunc_STRAIGHT(rm,b,amount);
 }
 
+template <class C>
+C blendfunc_ALPHA_INTERSECTION(C& fg, C& bg, float amount)
+{
+	const bool fg_transparent = fg.get_a() == C::floor;
+	const bool bg_transparent = bg.get_a() == C::floor;
+
+	if (bg_transparent || fg_transparent)
+		return blendfunc_COMPOSITE(fg, bg, amount);
+	return blendfunc_ALPHA_OVER(fg, bg, amount);
+}
+
 } // synfig namespace
 
 
