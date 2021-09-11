@@ -1,3 +1,7 @@
+- [`2cbce01`](https://github.com/synfig/synfig/commit/2cbce018087fe63227afa099760ce83ecb4005f3) Fixed soundwave for some audio files that couldn't be loaded ([#2301](https://github.com/synfig/synfig/issues/2301)) [studio]
+- [`c0bebf6`](https://github.com/synfig/synfig/commit/c0bebf68b97fbc0b5451da07b9291234a9197793) Fix possible crash on get_local_name() of Layer_PasteCanvas ([#2300](https://github.com/synfig/synfig/issues/2300)) [core]
+- [`1e94508`](https://github.com/synfig/synfig/commit/1e94508a38e0f14800dabea9fe6a86baa24ae99f) Remove unused classes ([#2298](https://github.com/synfig/synfig/issues/2298)) [studio]
+- [`0cb03f3`](https://github.com/synfig/synfig/commit/0cb03f306ce8f12c92faa0349434177801dbb511) Replaced using std/etl namespaces with explicit namespace name ([#2292](https://github.com/synfig/synfig/issues/2292)) [ETL] [core] [studio]
 - [`3c8ae63`](https://github.com/synfig/synfig/commit/3c8ae63c0fa0fa8a47c5cc213e012753f8098efe) Merge PR [#2166](https://github.com/synfig/synfig/issues/2166): Add Onion Skin ability to choose between Keyframes and Frames [studio]
 - [`e074b30`](https://github.com/synfig/synfig/commit/e074b30da70e61b8b95ad9be2698f72853b4f1e0) Removed unused std/etl namespaces ([#2290](https://github.com/synfig/synfig/issues/2290)) [ETL] [core] [studio]
 - [`9a86ba4`](https://github.com/synfig/synfig/commit/9a86ba492f04d23b1bb9a8410a49a2ac47750c8e) Fix crash when moving origin point of child bone in Skeleton Deformation Layer using Bone Tool ([#2049](https://github.com/synfig/synfig/issues/2049)) [studio]
