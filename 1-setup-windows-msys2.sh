@@ -44,13 +44,11 @@ $MINGW_PACKAGE_PREFIX-libxml++2.6 \
 $MINGW_PACKAGE_PREFIX-pango \
 $MINGW_PACKAGE_PREFIX-gtkmm3 \
 $MINGW_PACKAGE_PREFIX-openexr \
-$MINGW_PACKAGE_PREFIX-libmng
-
-# build mlt
-bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
+$MINGW_PACKAGE_PREFIX-libmng \
+$MINGW_PACKAGE_PREFIX-mlt \
 
 # Apply patch to libintl.h. This required because libintl.h redefines sprintf
-# and std::sprintf is stop working. But std::sprintf is used by Boost::Odeint library
+# and std::sprintf stops working. But std::sprintf is used by Boost::Odeint library
 # so we need it.
 
 patch $MINGW_PREFIX/include/libintl.h < ${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch

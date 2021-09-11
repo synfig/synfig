@@ -89,45 +89,16 @@ file(GLOB MINGW_LIBS
 	    ${MINGW_BIN}/libwinpthread-[0-9]*.dll
 	    ${MINGW_BIN}/libxml++-2.6-[0-9]*.dll
 	    ${MINGW_BIN}/libxml2-[0-9]*.dll
+	    ${MINGW_BIN}/libmlt*.dll
 	    ${MINGW_BIN}/zlib[0-9]*.dll
 	    )
 #    file(COPY ${MINGW_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
 install(FILES ${MINGW_LIBS} DESTINATION bin)
 
-find_program(CYGPATH_EXECUTABLE cygpath ${MINGW_PATH}/../usr/bin/)
-if(CYGPATH_EXECUTABLE)
-    set(MLT_PATH "/opt/mlt-6.16.0")
-    execute_process(
-		    COMMAND ${CYGPATH_EXECUTABLE} -m ${MLT_PATH}
-		    OUTPUT_VARIABLE MLT_DIRECTORY
-		    ERROR_QUIET
-		    OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    message(${MLT_DIRECTORY})
-else()
-    message(WARNING "-- cygpath tool not found, using relative path for MLT.")
-    set(MLT_DIRECTORY "${MINGW_PATH}/../opt/mlt-6.16.0")
-endif()
-
-file(GLOB MLT_FILES
-	    ${MLT_DIRECTORY}/libmlt++-3.dll
-	    ${MLT_DIRECTORY}/libmlt-6.dll
-	    ${MLT_DIRECTORY}/melt.exe
-	    )
-file(COPY ${MLT_FILES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
-install(FILES ${MLT_FILES} DESTINATION bin)
-
-file(GLOB MLT_DIRECTORIES
-	    ${MLT_DIRECTORY}/lib
-	    ${MLT_DIRECTORY}/share
-	    )
-file(COPY ${MLT_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
-install(DIRECTORY ${MLT_DIRECTORIES} DESTINATION bin)
-
 # /output/etc
 file(GLOB ETC_DIRECTORIES
 	    ${MINGW_PATH}/etc/ImageMagick-[0-9]*
-		${MINGW_PATH}/etc/fonts
+	    ${MINGW_PATH}/etc/fonts
 	    ${MINGW_PATH}/etc/gtk-3.[0-9]*
 	    )
 #    file(COPY ${ETC_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/etc)
@@ -138,6 +109,7 @@ file(GLOB LIB_DIRECTORIES
 	    ${MINGW_LIB}/gdk-pixbuf-2.[0-9]
 	    ${MINGW_LIB}/gtk-3.[0-9]
 	    ${MINGW_LIB}/ImageMagick-*
+	    ${MINGW_LIB}/mlt
 	    )
 #    file(COPY ${LIB_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
 install(DIRECTORY ${LIB_DIRECTORIES} DESTINATION lib)
@@ -150,6 +122,7 @@ file(GLOB SHARE_DIRECTORIES
 	${MINGW_SHARE}/icons
 	${MINGW_SHARE}/ImageMagick-*
 	${MINGW_SHARE}/mime
+	${MINGW_SHARE}/mlt
 	${MINGW_SHARE}/xml
 )
 
