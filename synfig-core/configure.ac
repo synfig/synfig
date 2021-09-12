@@ -386,10 +386,15 @@ PKG_CHECK_MODULES(LIBFFTW, fftw3,,[
 ])
 CONFIG_DEPS="$CONFIG_DEPS fftw3"
 
-PKG_CHECK_MODULES(MLTPP, mlt++,,[
-	AC_MSG_ERROR([ ** You need to install mlt++.])
+PKG_CHECK_MODULES(MLTPP, mlt++-7,[
+	CONFIG_DEPS="$CONFIG_DEPS mlt++-7"
+],[
+	PKG_CHECK_MODULES(MLTPP, mlt++,[
+		CONFIG_DEPS="$CONFIG_DEPS mlt++"
+	],[
+		AC_MSG_ERROR([ ** You need to install mlt++.])
+	])
 ])
-CONFIG_DEPS="$CONFIG_DEPS mlt++"
 
 AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
 #AX_BOOST_SYSTEM
