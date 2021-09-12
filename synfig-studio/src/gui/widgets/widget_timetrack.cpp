@@ -533,6 +533,15 @@ void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 void Widget_Timetrack::on_canvas_interface_changed()
 {
 	waypoint_sd.set_canvas_interface(canvas_interface);
+
+	// Update time track area when keyframe is changed from keyframe_list
+	keyframe_changed_connection_.disconnect();
+
+	if (!canvas_interface) return;
+	
+	keyframe_changed_connection_ = canvas_interface->signal_keyframe_changed().connect([this](synfig::Keyframe) {
+		this->queue_draw();
+	});
 }
 
 void Widget_Timetrack::displace_selected_waypoint_items(const synfig::Time& offset)
