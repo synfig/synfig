@@ -742,7 +742,7 @@ static void update_layer_size(const RendDesc& rend_desc, Layer::Handle& layer, b
 	}
 }
 
-bool
+Layer::Handle
 CanvasInterface::import(
 	const synfig::String &filename,
 	synfig::String &errors,
@@ -758,7 +758,7 @@ CanvasInterface::import(
 	if (ext == "")
 	{
 		get_ui_interface()->error(_("File name must have an extension!"));
-		return false;
+		return nullptr;
 	}
 
 	
@@ -809,7 +809,7 @@ CanvasInterface::import(
 				throw String(_("Unable to add \"Sound\" layer"));
 		}
 
-		return true;
+		return layer_switch;
 	}
 
 	if (ext=="wav" || ext=="ogg" || ext=="mp3")
@@ -825,7 +825,7 @@ CanvasInterface::import(
 		if (!layer_add_action(layer))
 			throw String(_("Unable to add \"Sound\" layer"));
 
-		return true;
+		return layer;
 	}
 
 	if (ext=="svg") //I don't like it, but worse is nothing
@@ -853,7 +853,7 @@ CanvasInterface::import(
 			}
 		}
 		signal_layer_new_description()(_new_layer,etl::basename(filename));
-		return true;
+		return _new_layer;
 	}
 
 	// If this is a SIF file, then we need to do things slightly differently
@@ -878,23 +878,23 @@ CanvasInterface::import(
 
 		//layer->set_description(basename(filename));
 		signal_layer_new_description()(layer,etl::basename(filename));
-		return true;
+		return layer;
 	}
 	catch (const String& x)
 	{
 		get_ui_interface()->error(filename + ": " + x);
-		return false;
+		return nullptr;
 	}
 	catch (...)
 	{
 		get_ui_interface()->error(_("Uncaught exception when attempting\nto open this composition -- ")+filename);
-		return false;
+		return nullptr;
 	}
 
 	if(!Importer::book().count(ext))
 	{
 		get_ui_interface()->error(_("I don't know how to open images of this type -- ")+ext);
-		return false;
+		return nullptr;
 	}
 
 	try
@@ -923,28 +923,28 @@ CanvasInterface::import(
 		// add imported layer into switch
 		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
 		assert(action);
-		if(!action) return false;
+		if(!action) return nullptr;
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 		action->set_param("layer",layer);
 		action->set_param("description",layer->get_description());
 		if(!action->is_ready())
-			{ get_ui_interface()->error(_("Action Not Ready")); return false; }
+			{ get_ui_interface()->error(_("Action Not Ready")); return nullptr; }
 		if(!get_instance()->perform_action(action))
-			{ get_ui_interface()->error(_("Action Failed.")); return false; }
+			{ get_ui_interface()->error(_("Action Failed.")); return nullptr; }
 
 		Layer::LooseHandle l = layer->get_parent_paste_canvas_layer(); // get parent layer, because image is incapsulated into action switch
 		
 		get_selection_manager()->clear_selected_layers();
 		get_selection_manager()->set_selected_layer(l);
 
-		return true;
+		return layer;
 	}
 	catch(...)
 	{
 		get_ui_interface()->error("Unable to import "+filename);
 		group.cancel();
-		return false;
+		return nullptr;
 	}
 }
 
