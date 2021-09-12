@@ -111,6 +111,7 @@ static GlobalNodeMap& global_node_map()
 	return map;
 }
 
+std::mutex Node::parent_set_mtx_;
 /* === P R O C E D U R E S ================================================= */
 
 Node* synfig::find_node(const GUID &guid) {
@@ -242,6 +243,7 @@ Node::get_time_last_changed()const
 void
 Node::add_child(Node*x)
 {
+	std::lock_guard<std::mutex> lock(parent_set_mtx_);
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
 		printf("%s:%d adding %p (%s) as parent of %p (%s) (%zd -> ", __FILE__, __LINE__,
 			   this, get_string().c_str(),
@@ -257,6 +259,7 @@ Node::add_child(Node*x)
 void
 Node::remove_child(Node*x)
 {
+	std::lock_guard<std::mutex> lock(parent_set_mtx_);
 	if(x->parent_set.count(this) == 0)
 	{
 		if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))

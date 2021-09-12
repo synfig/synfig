@@ -325,7 +325,7 @@ public:
 	};
 
 private:
-	static int last_id;
+	static std::atomic<int> last_id;
 
 	int id;
 	int width;

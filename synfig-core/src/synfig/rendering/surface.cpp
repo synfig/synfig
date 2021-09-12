@@ -49,7 +49,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 synfig::Token Surface::token;
-int SurfaceResource::last_id = 0;
+std::atomic<int> SurfaceResource::last_id{0};
 
 Surface::Surface():
 	blank(true),

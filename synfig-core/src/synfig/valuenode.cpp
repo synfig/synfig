@@ -49,7 +49,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-static int value_node_count(0);
+static std::atomic<int> value_node_count{0};
 
 /* === P R O C E D U R E S ================================================= */
 
