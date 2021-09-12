@@ -178,7 +178,10 @@ public:
 		dialog.set_default_response(dflt);
 
 		dialog.show_all();
-		return (Response) dialog.run();
+		int response = dialog.run();
+		if (response != Gtk::RESPONSE_OK)
+			return RESPONSE_CANCEL;
+		return RESPONSE_OK;
 	}
 
 	virtual Response yes_no_cancel(
@@ -207,7 +210,10 @@ public:
 
 		dialog.set_default_response(dflt);
 		dialog.show();
-		return (Response)dialog.run();
+		int response = dialog.run();
+		if (response != Gtk::RESPONSE_YES && response != Gtk::RESPONSE_NO)
+			return RESPONSE_CANCEL;
+		return Response(response);
 	}
 
 	virtual bool

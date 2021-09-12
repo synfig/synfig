@@ -130,7 +130,7 @@ void Dialog_Workspaces::on_delete_clicked()
 	char msg[256];
 	snprintf(msg, 255, _("Are you sure you want to delete %d workspaces?"), current_selection->count_selected_rows());
 	Gtk::MessageDialog confirm_dlg(*this, msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO, true);
-	if (confirm_dlg.run() == Gtk::RESPONSE_NO)
+	if (confirm_dlg.run() != Gtk::RESPONSE_YES)
 		return;
 
 	// get_selected_rows() return TreePath not TreeIter
@@ -179,7 +179,7 @@ void Dialog_Workspaces::on_rename_clicked()
 	dialog.show_all();
 
 	int response = dialog.run();
-	if (response == Gtk::RESPONSE_CANCEL)
+	if (response != Gtk::RESPONSE_OK)
 		return;
 
 	std::string name = name_entry->get_text();
