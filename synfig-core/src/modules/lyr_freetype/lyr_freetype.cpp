@@ -1047,13 +1047,13 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		face,						// handle to face object
 		(int)CHAR_RESOLUTION,	// char_width in 1/64th of points
 		(int)CHAR_RESOLUTION,	// char_height in 1/64th of points
-		round_to_int(std::abs(size[0]*pw*CHAR_RESOLUTION)),						// horizontal device resolution
-		round_to_int(std::abs(size[1]*ph*CHAR_RESOLUTION)) );						// vertical device resolution
+		round_to_int(std::fabs(size[0]*pw*CHAR_RESOLUTION)),						// horizontal device resolution
+		round_to_int(std::fabs(size[1]*ph*CHAR_RESOLUTION)) );						// vertical device resolution
 
 	// Here is where we can compensate for the
 	// error in freetype's rendering engine.
-	const Real xerror(std::abs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13f/0.996);
-	const Real yerror(std::abs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13f/0.996);
+	const Real xerror(std::fabs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13f/0.996);
+	const Real yerror(std::fabs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13f/0.996);
 	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
 	const Real compress(Layer_Freetype::param_compress.get(Real())*xerror);
 	const Real vcompress(Layer_Freetype::param_vcompress.get(Real())*yerror);

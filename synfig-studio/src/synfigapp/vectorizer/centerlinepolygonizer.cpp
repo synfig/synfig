@@ -367,7 +367,7 @@ static RawBorder *extractPath(Signaturemap &ras, int x0, int y0, int pathType,
 
   // If the inner region's overall area is under a given threshold,
   // then erase it (intended as image noise).
-  if (abs(area) < despeckling) 
+  if (std::abs(area) < despeckling)
   {
     setSignature(ras, *path, invalid);
     delete path;
@@ -598,7 +598,7 @@ inline std::unique_ptr<int[]> furthestKs(RawBorder &path, std::unique_ptr<int[]>
       }
 
       // Update constraints
-      if (abs(shift[0]) > 1 || abs(shift[1]) > 1) {
+      if (std::abs(shift[0]) > 1 || std::abs(shift[1]) > 1) {
         newLeftConstraint[0] =
             shift[0] + (shift[1] < 0 || (shift[1] == 0 && shift[0] < 0) ? 1 : -1);
         newLeftConstraint[1] =

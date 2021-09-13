@@ -52,7 +52,7 @@ using namespace synfig;
 #define CENTIMETERS_PER_METER (100.0)
 #define MILLIMETERS_PER_METER (1000.0)
 
-#define METERS_PER_UNIT		  (rend_desc.get_physical_w()/abs(rend_desc.get_tl()[0]-rend_desc.get_br()[0]))
+#define METERS_PER_UNIT		  (rend_desc.get_physical_w()/std::abs(rend_desc.get_tl()[0]-rend_desc.get_br()[0]))
 
 /* === G L O B A L S ======================================================= */
 

@@ -527,23 +527,23 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 	Real used_length = max_along - min_along;
 	Real render_width = max_dist - min_dist;
 
-	int src_w = (abs(used_length*Angle::cos(ab_angle).get()) +
-				 abs(render_width*Angle::sin(ab_angle).get())) / abs(pw);
-	int src_h = (abs(used_length*Angle::sin(ab_angle).get()) +
-				 abs(render_width*Angle::cos(ab_angle).get())) / abs(ph);
+	int src_w = (std::fabs(used_length*Angle::cos(ab_angle).get()) +
+				 std::fabs(render_width*Angle::sin(ab_angle).get())) / std::fabs(pw);
+	int src_h = (std::fabs(used_length*Angle::sin(ab_angle).get()) +
+				 std::fabs(render_width*Angle::cos(ab_angle).get())) / std::fabs(ph);
 
 	Real src_pw((src_br[0] - src_tl[0]) / src_w);
 	Real src_ph((src_br[1] - src_tl[1]) / src_h);
 
-	if (src_pw > abs(pw))
+	if (src_pw > std::fabs(pw))
 	{
-		src_w = int((src_br[0] - src_tl[0]) / abs(pw));
+		src_w = int((src_br[0] - src_tl[0]) / std::fabs(pw));
 		src_pw = (src_br[0] - src_tl[0]) / src_w;
 	}
 
-	if (src_ph > abs(ph))
+	if (src_ph > std::fabs(ph))
 	{
-		src_h = int((src_br[1] - src_tl[1]) / abs(ph));
+		src_h = int((src_br[1] - src_tl[1]) / std::fabs(ph));
 		src_ph = (src_br[1] - src_tl[1]) / src_h;
 	}
 

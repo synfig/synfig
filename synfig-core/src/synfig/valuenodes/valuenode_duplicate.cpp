@@ -131,7 +131,7 @@ ValueNode_Duplicate::step(Time t)const
 
 	if (step == 0) return false;
 
-	step = abs(step);
+	step = std::fabs(step);
 
 	if (from < to)
 	{
@@ -154,7 +154,7 @@ ValueNode_Duplicate::count_steps(Time t)const
 
 	if (step == 0) return 1;
 
-	return abs((from - to) / step) + 1;
+	return std::fabs((from - to) / step) + 1;
 }
 
 ValueBase

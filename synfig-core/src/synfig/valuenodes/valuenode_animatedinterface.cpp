@@ -88,11 +88,11 @@ struct subtractor<Angle>: public std::binary_function<Angle, Angle, Angle>
 
 template<class T>
 struct magnitude: public std::unary_function<float, T>
-	{ float operator()(const T &a)const { return abs(a); } };
+	{ float operator()(const T &a)const { return std::fabs(a); } };
 
 template<>
 struct magnitude<Angle>: public std::unary_function<float, Angle>
-	{ float operator()(const Angle &a)const { return abs(Angle::rad(a).get()); } };
+	{ float operator()(const Angle &a)const { return std::fabs(Angle::rad(a).get()); } };
 
 template<>
 struct magnitude<Vector>: public std::unary_function<float, Vector>
@@ -100,7 +100,7 @@ struct magnitude<Vector>: public std::unary_function<float, Vector>
 
 template<>
 struct magnitude<Color>: public std::unary_function<float, Color>
-	{ float operator()(const Color &a)const { return abs(a.get_y()); } };
+	{ float operator()(const Color &a)const { return std::fabs(a.get_y()); } };
 
 template<>
 struct magnitude<Gradient> : public std::unary_function<float, Gradient>

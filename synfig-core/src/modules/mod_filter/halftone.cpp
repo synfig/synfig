@@ -106,8 +106,8 @@ Halftone::mask(synfig::Point point)const
 	if(type==TYPE_STRIPE)
 	{
 		Point pnt(fmod(point[0],size[0]),fmod(point[1],size[1]));
-		while(pnt[0]<0)pnt[0]+=abs(size[0]);
-		while(pnt[1]<0)pnt[1]+=abs(size[1]);
+		while(pnt[0]<0)pnt[0]+=std::fabs(size[0]);
+		while(pnt[1]<0)pnt[1]+=std::fabs(size[1]);
 
 		float x(pnt[1]/size[1]);
 		if(x>0.5)x=1.0-x;
@@ -117,8 +117,8 @@ Halftone::mask(synfig::Point point)const
 
 	{
 		Point pnt(fmod(point[0],size[0]),fmod(point[1],size[1]));
-		while(pnt[0]<0)pnt[0]+=abs(size[0]);
-		while(pnt[1]<0)pnt[1]+=abs(size[1]);
+		while(pnt[0]<0)pnt[0]+=std::fabs(size[0]);
+		while(pnt[1]<0)pnt[1]+=std::fabs(size[1]);
 		pnt-=Vector(size[0]*0.5,size[1]*0.5);
 		pnt*=2.0;
 		pnt[0]/=size[0];
@@ -132,8 +132,8 @@ Halftone::mask(synfig::Point point)const
 
 	{
 		Point pnt(fmod(point[0]+size[0]*0.5,size[0]),fmod(point[1]+size[0]*0.5,size[1]));
-		while(pnt[0]<0)pnt[0]+=abs(size[0]);
-		while(pnt[1]<0)pnt[1]+=abs(size[1]);
+		while(pnt[0]<0)pnt[0]+=std::fabs(size[0]);
+		while(pnt[1]<0)pnt[1]+=std::fabs(size[1]);
 		pnt-=Vector(size[0]*0.5,size[1]*0.5);
 		pnt*=2.0;
 		pnt[0]/=size[0];

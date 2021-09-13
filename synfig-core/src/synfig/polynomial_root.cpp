@@ -41,6 +41,7 @@
 
 /* === G L O B A L S ======================================================= */
 typedef std::complex<float>	Complex;
+// MacOS only overloads std::abs for std::complex
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -115,10 +116,10 @@ void laguer(Complex a[], int m, Complex *x, int *its)
 		*its = iter; //number of iterations so far
 
 		b 	= a[m]; 	//the highest coefficient
-		err	= abs(b);	//its magnitude
+		err	= std::abs(b);	//its magnitude
 
 		d = f = Complex(0,0); //clear variables for use
-		abx = abs(*x);	//the magnitude of the current root
+		abx = std::abs(*x);	//the magnitude of the current root
 
 		//Efficient computation of the polynomial and its first 2 derivatives
 		for(j = m-1; j >= 0; --j)
@@ -127,14 +128,14 @@ void laguer(Complex a[], int m, Complex *x, int *its)
 			d = (*x)*d + b;
 			b = (*x)*b + a[j];
 
-			err = abs(b) + abx*err;
+			err = std::abs(b) + abx*err;
 		}
 
 		//Estimate the roundoff error in evaluation polynomial
 		err *= EPSS;
 
 		//Are we on the root?
-		if(abs(b) < err)
+		if(std::abs(b) < err)
 		{
 			return;
 		}
@@ -154,8 +155,8 @@ void laguer(Complex a[], int m, Complex *x, int *its)
 		gp = g + sq;
 		gm = g - sq;
 
-		abp = abs(gp);
-		abm = abs(gm);
+		abp = std::abs(gp);
+		abm = std::abs(gm);
 
 		//get the denominator with the highest magnitude
 		if(abp < abm)
@@ -222,7 +223,7 @@ void RootFinder::find_all_roots(bool polish)
 		laguer(&workcoefs[0],j+1,&x,&its); //must add 1 to get the degree
 
 		//if it is close enough to a real root, then make it so
-		if(abs(x.imag()) <= 2.0*EPS*abs(x.real()))
+		if(std::abs(x.imag()) <= 2.0*EPS*std::abs(x.real()))
 		{
 			x = Complex(x.real());
 		}

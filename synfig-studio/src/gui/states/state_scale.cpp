@@ -361,11 +361,11 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	if(!lock_aspect)
 	{
-		if(abs(drag_offset[0]-center[0])>EPSILON)
+		if(std::fabs(drag_offset[0]-center[0])>EPSILON)
 			vect[0]/=drag_offset[0]-center[0];
 		else
 			vect[0]=1;
-		if(abs(drag_offset[1]-center[1])>EPSILON)
+		if(std::fabs(drag_offset[1]-center[1])>EPSILON)
 			vect[1]/=drag_offset[1]-center[1];
 		else
 			vect[1]=1;

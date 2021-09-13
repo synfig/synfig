@@ -241,9 +241,9 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 			int e;
 			int w(tmp_surface_width), h(tmp_surface_height);
 
-			dx = abs(x1 - x0);
+			dx = std::abs(x1 - x0);
 			sx = ((x1 - x0) > 0) ? 1 : -1;
-			dy = abs(y1 - y0);
+			dy = std::abs(y1 - y0);
 			sy = ((y1 - y0) > 0) ? 1 : -1;
 			if (dy > dx)
 			{
