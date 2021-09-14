@@ -451,6 +451,8 @@ private:
 	//! Pop up menu for the tools but not the bezier ones.
 	void popup_param_menu(synfigapp::ValueDesc value_desc, float location=0, bool bezier=false);
 
+	void create_new_vertex_on_bline(float location, synfigapp::ValueDesc value_desc);
+
 	void workarea_layer_selected(synfig::Layer::Handle layer);
 
 	void selected_layer_color_set(synfig::Color color);

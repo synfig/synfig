@@ -1202,8 +1202,18 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_2BUTTON_PRESS: {
 		if (event->button.button == 1) {
-			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT) {
+			auto event_result = canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier));
+			if (event_result == Smach::RESULT_ACCEPT) {
 				return true;
+			} else if (event_result == Smach::RESULT_OK) {
+				set_drag_mode(DRAG_NONE);
+
+				if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
+					if (selected_bezier == bezier) {
+						bezier->signal_user_doubleclick(1)(bezier_click_pos);
+						return true;
+					}
+				}
 			}
 		}
 		break;

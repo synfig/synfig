@@ -2367,6 +2367,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								&studio::CanvasView::popup_param_menu_bezier),
 							synfigapp::ValueDesc(value_node,i)));
 
+					bezier->signal_user_doubleclick(1).connect(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::create_new_vertex_on_bline),
+							synfigapp::ValueDesc(value_node,i)));
+
 					add_bezier(bezier);
 					bezier=0;
 					tangent1_duck = duck;
@@ -2490,6 +2497,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						sigc::mem_fun(
 							*canvas_view,
 							&studio::CanvasView::popup_param_menu_bezier),
+						synfigapp::ValueDesc(value_node,first)));
+
+				bezier->signal_user_doubleclick(1).connect(
+					sigc::bind(
+						sigc::mem_fun(
+							*canvas_view,
+							&studio::CanvasView::create_new_vertex_on_bline),
 						synfigapp::ValueDesc(value_node,first)));
 
 				add_bezier(bezier);
