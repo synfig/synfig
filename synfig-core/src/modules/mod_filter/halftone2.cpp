@@ -100,7 +100,7 @@ Halftone2::color_func(const Point &point, float supersample,const Color& color)c
 inline float
 Halftone2::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
-	return abs(pw/(halftone.param_size.get(Vector())).mag());
+	return std::fabs(pw/(halftone.param_size.get(Vector())).mag());
 }
 
 synfig::Layer::Handle
@@ -209,7 +209,7 @@ Halftone2::accelerated_render(Context context,Surface *surface,int quality, cons
 	const Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	const float supersample_size(abs(pw/(halftone.param_size.get(Vector())).mag()));
+	const float supersample_size(std::fabs(pw/(halftone.param_size.get(Vector())).mag()));
 
 	Surface::pen pen(surface->begin());
 	Point pos;

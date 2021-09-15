@@ -1029,7 +1029,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	const float radius(
 		// synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()) +
 		get_bline_width() +
-		(abs(get_work_area()->get_pw())+ abs(get_work_area()->get_ph()))*5);
+		(std::fabs(get_work_area()->get_pw())+ std::fabs(get_work_area()->get_ph()))*5);
 
 	// If we aren't using pressure width,
 	// then set all the width to 1
@@ -1119,7 +1119,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 					iter->set_position(iter->get_position()+1/(size-1));
 		}
 
-		if(abs(bline.front().get_tangent1().norm()*tangent.norm().perp())>SIMILAR_TANGENT_THRESHOLD)
+		if(std::fabs(bline.front().get_tangent1().norm()*tangent.norm().perp())>SIMILAR_TANGENT_THRESHOLD)
 		{
 			// If the tangents are not similar, then
 			// split the tangents

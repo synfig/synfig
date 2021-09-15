@@ -1053,10 +1053,10 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 			Point orig = m.get_transformed(Vector(0,0));
 			angle = Angle::rad(atan2(m.axis(0)[1],m.axis(0)[0]));
 			Real orig_dist((point-orig).mag());
-			Real dist=abs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
+			Real dist=std::fabs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
 			Real length = iter->get_length()*iter->get_scalelx();
 			if(Angle::cos((point-orig).angle()-angle).get()>0 && orig_dist<=length){
-				dist = abs(dist);
+				dist = std::fabs(dist);
 				if(dist<close_line){
 					close_line=dist;
 					close_origin=orig_dist;
@@ -1070,7 +1070,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 			}
 
 		}
-		if(abs(close_line)<=0.2){
+		if(std::fabs(close_line)<=0.2){
 			if (ret < static_cast<int>(list.size()))
 				return ret;
 			else
@@ -1094,10 +1094,10 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 			Point orig = m.get_transformed(Vector(0,0));
 			angle = Angle::rad(atan2(m.axis(0)[1],m.axis(0)[0]));
 			Real orig_dist((point-orig).mag());
-			Real dist=abs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
+			Real dist=std::fabs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
 			Real length = iter->second.get_length()*iter->second.get_scalelx();
 			if(Angle::cos((point-orig).angle()-angle).get()>0 && orig_dist<=length){
-				dist = abs(dist);
+				dist = std::fabs(dist);
 				if(dist<close_line){
 					close_line=dist;
 					close_origin=orig_dist;
@@ -1111,7 +1111,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
 			}
 
 		}
-		if(abs(close_line)<=0.2){
+		if(std::fabs(close_line)<=0.2){
 			if(ret<list.size())return ret;
 			else return -1;
 		}else{

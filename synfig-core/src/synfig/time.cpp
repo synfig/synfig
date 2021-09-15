@@ -279,7 +279,7 @@ Time::get_string(float fps, Time::Format format)const
 			started = true;
 		}
 
-		if(format<=FORMAT_FULL || abs(frame) > epsilon_() || !started)
+		if(format<=FORMAT_FULL || std::fabs(frame) > epsilon_() || !started)
 		{
 			if (!(format<=FORMAT_NOSPACES) && started)
 				ret += " ";
@@ -299,7 +299,7 @@ Time::get_string(float fps, Time::Format format)const
 			if (!(format<=FORMAT_NOSPACES) && started)
 				ret += " ";
 
-			if(abs(second-floor(second))>=epsilon_())
+			if(std::fabs(second-floor(second))>=epsilon_())
 			{
 				String seconds(strprintf("%0.8f",second));
 

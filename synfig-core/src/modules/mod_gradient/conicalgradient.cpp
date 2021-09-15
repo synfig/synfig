@@ -158,7 +158,7 @@ ConicalGradient::calc_supersample(const synfig::Point &x, Real pw, Real ph)const
 	Point center=param_center.get(Point());
 
 	Point adj(x-center);
-	if(abs(adj[0])<abs(pw*0.5) && abs(adj[1])<abs(ph*0.5))
+	if(std::fabs(adj[0])<std::fabs(pw*0.5) && std::fabs(adj[1])<std::fabs(ph*0.5))
 		return 0.5;
 	return (pw/Point(x-center).mag())/(PI*2);
 }

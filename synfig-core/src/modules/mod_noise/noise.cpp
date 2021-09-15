@@ -143,8 +143,8 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 				if(turbulent)
 				{
-					amount2=abs(amount2);
-					amount3=abs(amount3);
+					amount2=std::fabs(amount2);
+					amount3=std::fabs(amount3);
 				}
 
 				x2*=0.5f;
@@ -160,8 +160,8 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 			if(turbulent)
 			{
-				amount=abs(amount);
-				alpha=abs(alpha);
+				amount=std::fabs(amount);
+				alpha=std::fabs(alpha);
 			}
 
 			x*=0.5f;
@@ -346,7 +346,7 @@ Noise::accelerated_render(Context context,Surface *surface,int quality, const Re
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	float supersampleradius((abs(pw)+abs(ph))*0.5f);
+	float supersampleradius((std::fabs(pw)+std::fabs(ph))*0.5f);
 	if(quality>=8)
 		supersampleradius=0;
 

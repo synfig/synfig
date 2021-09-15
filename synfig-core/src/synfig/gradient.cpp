@@ -227,9 +227,9 @@ Gradient::proximity(const Real &x)
 		Real new_dist;
 
 		if(prev_pos==iter->pos)
-			new_dist=(abs(x-iter->pos-0.00001));
+			new_dist=(std::fabs(x-iter->pos-0.00001));
 		else
-			new_dist=(abs(x-iter->pos));
+			new_dist=(std::fabs(x-iter->pos));
 
 		if(new_dist>dist)
 		{

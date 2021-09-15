@@ -132,9 +132,9 @@ ValueNode_Pow::operator()(Time t)const
 
 	//Filters for special/undefined cases
 
-	if (abs(power) < epsilon) //x^0 = 1
+	if (std::fabs(power) < epsilon) //x^0 = 1
 		return 1;
-	if (abs(base) < epsilon)
+	if (std::fabs(base) < epsilon)
 	{
 		if (power > 0) //0^x=0
 			return Real(0);

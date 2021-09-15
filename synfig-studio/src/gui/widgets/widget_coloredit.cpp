@@ -468,9 +468,9 @@ bool are_close_colors(Gdk::Color const& a, Gdk::Color const& b) {
 	static const int eps = 1;
 	if (a == b)
 		return true;
-	return std::abs(a.get_red()-b.get_red()) <= eps
-		&& std::abs(a.get_green()-b.get_green()) <= eps
-		&& std::abs(a.get_blue()-b.get_blue()) <= eps;
+	return std::fabs(a.get_red()-b.get_red()) <= eps
+		&& std::fabs(a.get_green()-b.get_green()) <= eps
+		&& std::fabs(a.get_blue()-b.get_blue()) <= eps;
 }
 
 void Widget_ColorEdit::setHVSColor(synfig::Color color)

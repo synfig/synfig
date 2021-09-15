@@ -1045,7 +1045,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	synfig::Point mouse_pos;
     float bezier_click_pos(0);
-	const float radius((abs(pw)+abs(ph))*4);
+	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 	int button_pressed(0);
 	float pressure(0);
 	Gdk::ModifierType modifier(Gdk::ModifierType(0));

@@ -708,7 +708,7 @@ static void update_layer_size(const RendDesc& rend_desc, Layer::Handle& layer, b
 
 		// vector from top left of canvas to bottom right
 		if (resize_image) {
-			if (abs(size[0]) < abs(size[1])) { // if canvas is tall and thin (portrait)
+			if (std::fabs(size[0]) < std::fabs(size[1])) { // if canvas is tall and thin (portrait)
 				x[0]=size[0];	// use full width
 				x[1]=size[0]/w*h; // and scale for height
 

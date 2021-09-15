@@ -355,7 +355,7 @@ gif::end_frame()
 
 					// Lossy
 					if(
-						abs( ( iter->color-prev_palette[prev_frame[cur_scanline][i]-1].color ).get_y() ) > (1.0/16.0) ||
+						std::fabs( ( iter->color-prev_palette[prev_frame[cur_scanline][i]-1].color ).get_y() ) > (1.0/16.0) ||
 //						abs((int)value-(int)prev_frame[cur_scanline][i])>2||
 //						(value<=2 && value!=prev_frame[cur_scanline][i]) ||
 						(imagecount%iframe_density)==0 || imagecount==desc.get_frame_end()-1 ) // lossy version

@@ -815,7 +815,7 @@ Duckmatic::find_guide_x(synfig::Point pos, float radius)
 	float dist(radius);
 	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
 	{
-		float amount(abs(*iter-pos[0]));
+		float amount(std::fabs(*iter-pos[0]));
 		if(amount<dist)
 		{
 			dist=amount;
@@ -832,7 +832,7 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 	float dist(radius);
 	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)
 	{
-		float amount(abs(*iter-pos[1]));
+		float amount(std::fabs(*iter-pos[1]));
 		if(amount<=dist)
 		{
 			dist=amount;
@@ -865,9 +865,9 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 			floor(ret[0]/get_grid_size()[0]+0.5)*get_grid_size()[0],
 			floor(ret[1]/get_grid_size()[1]+0.5)*get_grid_size()[1]);
 
-		if(abs(snap[0]-ret[0])<=radius && (!has_guide_x || abs(snap[0]-ret[0])<=abs(*guide_x-ret[0])))
+		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide_x || std::fabs(snap[0]-ret[0])<=std::fabs(*guide_x-ret[0])))
 			ret[0]=snap[0],has_guide_x=false;
-		if(abs(snap[1]-ret[1])<=radius && (!has_guide_y || abs(snap[1]-ret[1])<=abs(*guide_y-ret[1])))
+		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide_y || std::fabs(snap[1]-ret[1])<=std::fabs(*guide_y-ret[1])))
 			ret[1]=snap[1],has_guide_y=false;
 	}
 
@@ -882,7 +882,7 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 	if(axis_lock)
 	{
 		ret-=drag_offset_;
-		if(abs(ret[0])<abs(ret[1]))
+		if(std::fabs(ret[0])<std::fabs(ret[1]))
 			ret[0]=0;
 		else
 			ret[1]=0;
