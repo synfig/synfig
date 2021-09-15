@@ -2127,6 +2127,17 @@ CanvasView::popup_param_menu(ValueDesc value_desc, float location, bool bezier)
 }
 
 void
+CanvasView::create_new_vertex_on_bline(float location, synfigapp::ValueDesc value_desc)
+{
+	synfigapp::Action::Handle action = synfigapp::Action::create("ValueNodeDynamicListInsertSmartKeepShape");
+	auto param_list = canvas_interface()->generate_param_list(value_desc);
+	param_list.add("origin", location);
+	action->set_param_list(param_list);
+	if (action->is_ready())
+		canvas_interface()->get_instance()->perform_action(action);
+}
+
+void
 CanvasView::add_actions_to_menu(Gtk::Menu *menu, const Action::ParamList &param_list,Action::Category category)const
 {
 	get_instance()->add_actions_to_menu(menu, param_list, category);
