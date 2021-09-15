@@ -306,7 +306,7 @@ public:
 		if(s.data_)
 		{
 			assert(data_);
-			memcpy(data_,s.data_,abs(pitch_)*h_);
+			memcpy(data_,s.data_,std::abs(pitch_)*h_);
 		}
 	}
 

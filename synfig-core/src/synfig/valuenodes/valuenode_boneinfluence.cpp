@@ -254,7 +254,7 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 		DEBUG_LOG("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING", "%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);
 	}
 
-	if (abs(total_weight) > epsilon)
+	if (std::fabs(total_weight) > epsilon)
 		transform *= (1.0/total_weight);
 	else
 		transform = Matrix();

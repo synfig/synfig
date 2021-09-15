@@ -117,7 +117,7 @@ Widget_Time::refresh_value()
 	try
 	{
 		Time newtime(get_text(),fps_);
-		if(abs(newtime-time_)>=0.001)
+		if(std::fabs(newtime-time_)>=0.001)
 		{
 			time_=newtime;
 			refresh_text();
