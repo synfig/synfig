@@ -788,19 +788,16 @@ Advanced_Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("dash_enabled")
 		.set_local_name(_("Dashed Outline"))
-		.set_hint("dash")
 		.set_description(_("When checked, outline is dashed"))
 	);
 	ret.push_back(ParamDesc("dilist")
 		.set_local_name(_("Dash Item List"))
-		.set_hint("dash")
 		.set_origin("origin")
 		.set_description(_("List of dash items that defines the dashed outline"))
 	);
 	ret.push_back(ParamDesc("dash_offset")
 		.set_local_name(_("Dash Items Offset"))
 		.set_is_distance()
-		.set_hint("dash")
 		.set_description(_("Distance to Offset the Dash Items"))
 	);
 	return ret;
