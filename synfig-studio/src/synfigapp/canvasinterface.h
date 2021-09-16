@@ -319,7 +319,7 @@ public:
 
 	void set_rend_desc(const synfig::RendDesc &rend_desc);
 
-	bool import(
+	synfig::Layer::Handle import(
 		const synfig::String &filename,
 		synfig::String &errors,
 		synfig::String &warnings,

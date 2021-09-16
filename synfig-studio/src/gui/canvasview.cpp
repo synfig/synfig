@@ -1726,6 +1726,7 @@ CanvasView::add_layer(String x)
 	Canvas::Handle canvas;
 	SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
 	int target_depth(0);
+	Layer::Handle layer;
 
 	if (layer_list.empty()) {
 		canvas = get_canvas();
@@ -1738,29 +1739,33 @@ CanvasView::add_layer(String x)
 	// check if import or sound layer then show an input dialog window
 	if(x=="import"||x=="sound")
 	{
-		String filename="";
+		String filename;
 		bool selected = false;
-		x == "sound" ? selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE): 
-		selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
+		if (x == "sound") {
+			selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE);
+		} else {
+			selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
+		}
 		if (selected)
 		{
 			String errors, warnings;
-			canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
-			if (warnings != "")
-			App::dialog_message_1b("WARNING", etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
-				"details",	_("Close"));
+			layer = canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
+			if (!warnings.empty()) {
+				App::dialog_message_1b("WARNING", etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+					"details",	_("Close"));
+			}
 		}		
 	}
 	else
 	{
-		Layer::Handle layer(canvas_interface()->add_layer_to(x,canvas,target_depth));
-		if(layer)
-		{
-			get_selection_manager()->clear_selected_layers();
-			get_selection_manager()->set_selected_layer(layer);
-		}
+		layer = canvas_interface()->add_layer_to(x,canvas,target_depth);
 	}
-	
+
+	if(layer)
+	{
+		get_selection_manager()->clear_selected_layers();
+		get_selection_manager()->set_selected_layer(layer);
+	}
 }
 
 void
@@ -3587,7 +3592,7 @@ CanvasView::import_file()
 		}
 
 		// Import
-		canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
+		Layer::Handle layer = canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
 		if (!errors.empty())
 			App::dialog_message_1b(
 				"ERROR",
@@ -3600,6 +3605,11 @@ CanvasView::import_file()
 				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 				"details",
 				_("Close"));
+
+		if (layer) {
+			get_selection_manager()->clear_selected_layers();
+			get_selection_manager()->set_selected_layer(layer);
+		}
 	}
 }
 
