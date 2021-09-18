@@ -1,3 +1,8 @@
+- [`039ec6f`](https://github.com/synfig/synfig/commit/039ec6f690bfa74126dac92c3527c6458bfdf712) When the user imports the file the imported layer becomes selected ([#2308](https://github.com/synfig/synfig/issues/2308)) [studio]
+- [`db9db14`](https://github.com/synfig/synfig/commit/db9db14fb9d1513c8c84c68dab7c5aeba3b8b35b) Create a new vertex on a Spline on double-click ([#2312](https://github.com/synfig/synfig/issues/2312)) [studio]
+- [`feb62c5`](https://github.com/synfig/synfig/commit/feb62c586f9b8c5378ce724854c7180d674e8326) Replaced `abs` with `std::fabs` for float values and `std::abs` for templates and int values ([#2311](https://github.com/synfig/synfig/issues/2311)) [ETL] [core] [studio]
+- [`54ba18f`](https://github.com/synfig/synfig/commit/54ba18f2ff9a222b1bd8eb01f04cd88d4a54e188) Added support MLT++-7 in Autotools ([#2306](https://github.com/synfig/synfig/issues/2306)) [core]
+- [`96f9856`](https://github.com/synfig/synfig/commit/96f9856dda598a3d6a5baeac557613ffe4708d04) Update time track area when keyframe is changed from keyframe header ([#2289](https://github.com/synfig/synfig/issues/2289)) [studio]
 - [`2cbce01`](https://github.com/synfig/synfig/commit/2cbce018087fe63227afa099760ce83ecb4005f3) Fixed soundwave for some audio files that couldn't be loaded ([#2301](https://github.com/synfig/synfig/issues/2301)) [studio]
 - [`c0bebf6`](https://github.com/synfig/synfig/commit/c0bebf68b97fbc0b5451da07b9291234a9197793) Fix possible crash on get_local_name() of Layer_PasteCanvas ([#2300](https://github.com/synfig/synfig/issues/2300)) [core]
 - [`1e94508`](https://github.com/synfig/synfig/commit/1e94508a38e0f14800dabea9fe6a86baa24ae99f) Remove unused classes ([#2298](https://github.com/synfig/synfig/issues/2298)) [studio]
