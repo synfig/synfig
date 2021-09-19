@@ -632,8 +632,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		get_canvas_view()->rebuild_ducks();
 	}
 
-	Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
-
 	switch(event.button)
 	{
 		case BUTTON_LEFT:
@@ -973,6 +971,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				drawing = false;
 			}
 			else{
+				Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
 				if(duck){
 				    ValueNode::Handle parent = duck->get_value_desc().get_parent_desc().get_value_node();
 					if(duck->get_value_desc().is_parent_desc_declared() && ValueNode_Bone::Handle::cast_dynamic(parent)){
