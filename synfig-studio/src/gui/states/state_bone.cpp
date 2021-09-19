@@ -124,6 +124,7 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::RadioButton radiobutton_skel_deform;
 	Gtk::Button create_layer;
 
+	void update_width_duck_status(SkeletonLayerType type);
 
 public:
 
@@ -637,12 +638,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 			if(drawing){ //! if the user was not modifying a duck
 				if(skel_layer || deform_layer){ // if selected layer is a Skeleton Layer or a Skeleton Deformation Layer
 					update_tool_options(skel_layer? SKELETON_TYPE : SKELETON_DEFORMATION_TYPE);
-
-					bool is_width_duck_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
-					if ((skel_layer && is_width_duck_currently_on)
-						|| (deform_layer && !is_width_duck_currently_on)) {
-						get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
-					}
+					update_width_duck_status(skel_layer? SKELETON_TYPE : SKELETON_DEFORMATION_TYPE);
 
 					createChild->set_param("canvas",layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
@@ -793,12 +789,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					ValueDesc value_desc= ValueDesc(list_node,0,list_desc);
 					ValueNode_Bone::Handle bone_node;
 					update_tool_options(c_layer);
-					if(c_layer==SKELETON_TYPE){
+					update_width_duck_status(c_layer);
 
-						bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
-						if(is_currently_on){
-							get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
-						}
+					if(c_layer==SKELETON_TYPE){
 						get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
 						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 						{
@@ -807,11 +800,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						}
 					}else if(c_layer==SKELETON_DEFORMATION_TYPE){
 						new_skel->disable();
-
-						bool is_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
-						if(!is_currently_on){
-							get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
-						}
 
 						ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
 
@@ -961,20 +949,25 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer) const
 }
 
 void
+StateBone_Context::update_width_duck_status(SkeletonLayerType type)
+{
+	bool is_width_duck_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
+	if ((type == SKELETON_TYPE && is_width_duck_currently_on)
+		|| (type == SKELETON_DEFORMATION_TYPE && !is_width_duck_currently_on)) {
+		get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
+	}
+}
+
+void
 StateBone_Context::make_layer(){
 	egress_on_selection_change=false;
 
 	update_tool_options(c_layer);
+	update_width_duck_status(c_layer);
 	if(c_layer==SKELETON_TYPE){
-		if(is_currently_on){
-			get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
-		}
 		get_canvas_view()->add_layer("skeleton");
 	}
 	else if(c_layer==SKELETON_DEFORMATION_TYPE){
-		if(!is_currently_on){
-			get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
-		}
 		get_canvas_view()->add_layer("skeleton_deformation");
 	}
 	Layer::Handle new_skel= get_canvas_interface()->get_selection_manager()->get_selected_layer();
