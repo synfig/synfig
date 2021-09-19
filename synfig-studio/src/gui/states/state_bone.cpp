@@ -190,7 +190,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() const {return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas() const {return canvas_view_->get_canvas();}
 	WorkArea * get_work_area() const {return canvas_view_->get_work_area();}
-	int find_bone(Point point,Layer::Handle layer,int lay=0)const;
+	int find_bone(Point point, Layer::Handle layer) const;
 	void _on_signal_change_active_bone(ValueNode::Handle node);
 	void _on_signal_value_desc_set(ValueDesc value_desc,ValueBase value);
 	int change_active_bone(ValueNode::Handle node);
@@ -773,7 +773,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					ValueDesc list_desc(layer,"bones");
 					int b = -1;
 					if((clickOrigin-releaseOrigin).mag()<0.01)
-						b=find_bone(clickOrigin,layer,1);
+						b=find_bone(clickOrigin,layer);
 
 					if(b!=-1){ //! if bone found around the release point --> set active bone
 						active_bone=b;
@@ -1036,89 +1036,48 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 }
 
 int
-StateBone_Context::find_bone(Point point,Layer::Handle layer,int lay)const
+StateBone_Context::find_bone(Point point,Layer::Handle layer) const
 {
-	if(lay==0){
-		layer = Layer_Skeleton::Handle::cast_dynamic(layer);
-		ValueDesc list_desc(layer,"bones");
-		std::vector<Bone> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(Bone());
-		Real close_line(10000000),close_origin(10000000);
-		Vector direction;
-		Angle angle;
-		int ret;
-		Matrix m;
-		for(auto iter=list.begin();iter!=list.end();++iter){
-
-			m=iter->get_animated_matrix();
-			Point orig = m.get_transformed(Vector(0,0));
-			angle = Angle::rad(atan2(m.axis(0)[1],m.axis(0)[0]));
-			Real orig_dist((point-orig).mag());
-			Real dist=std::fabs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
-			Real length = iter->get_length()*iter->get_scalelx();
-			if(Angle::cos((point-orig).angle()-angle).get()>0 && orig_dist<=length){
-				dist = std::fabs(dist);
-				if(dist<close_line){
-					close_line=dist;
-					close_origin=orig_dist;
-					ret = iter-list.begin();
-				}else if(fabs(dist-close_line)<0.0000001 && close_line!= 10000000){
-					if(orig_dist<close_origin){
-						close_origin=orig_dist;
-						ret = iter-list.begin();
-					}
-				}
-			}
-
-		}
-		if(std::fabs(close_line)<=0.2){
-			if (ret < static_cast<int>(list.size()))
-				return ret;
-			else
-				return -1;
-		}else{
-			return -1;
-		}
-	}
-	else if(lay==1){
-		layer = Layer_SkeletonDeformation::Handle::cast_dynamic(layer);
-		ValueDesc list_desc(layer,"bones");
-		std::vector<std::pair<Bone,Bone>> list=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node())->operator()(get_canvas()->get_time()).get_list_of(std::pair<Bone,Bone>());
-		Real close_line(10000000),close_origin(10000000);
-		Vector direction;
-		Angle angle;
-		unsigned long ret;
-		Matrix m;
-		for(auto iter=list.begin();iter!=list.end();++iter){
-
-			m=iter->second.get_animated_matrix();
-			Point orig = m.get_transformed(Vector(0,0));
-			angle = Angle::rad(atan2(m.axis(0)[1],m.axis(0)[0]));
-			Real orig_dist((point-orig).mag());
-			Real dist=std::fabs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
-			Real length = iter->second.get_length()*iter->second.get_scalelx();
-			if(Angle::cos((point-orig).angle()-angle).get()>0 && orig_dist<=length){
-				dist = std::fabs(dist);
-				if(dist<close_line){
-					close_line=dist;
-					close_origin=orig_dist;
-					ret = iter-list.begin();
-				}else if(fabs(dist-close_line)<0.0000001 && close_line!= 10000000){
-					if(orig_dist<close_origin){
-						close_origin=orig_dist;
-						ret = iter-list.begin();
-					}
-				}
-			}
-
-		}
-		if(std::fabs(close_line)<=0.2){
-			if(ret<list.size())return ret;
-			else return -1;
-		}else{
-			return -1;
-		}
+	std::vector<Bone> bone_list;
+	ValueDesc list_desc(layer,"bones");
+	if(Layer_Skeleton::Handle::cast_dynamic(layer)){
+		bone_list = (*list_desc.get_value_node())(get_canvas()->get_time()).get_list_of(Bone());
+	} else if (Layer_SkeletonDeformation::Handle::cast_dynamic(layer)) {
+		std::vector<std::pair<Bone,Bone>> bone_pair_list = (*list_desc.get_value_node())(get_canvas()->get_time()).get_list_of(std::pair<Bone,Bone>());
+		for (const auto& item : bone_pair_list)
+			bone_list.push_back(item.second);
+	} else {
 		return -1;
 	}
+
+	Real close_line(10000000),close_origin(10000000);
+	int ret;
+	for(auto iter=bone_list.begin();iter!=bone_list.end();++iter){
+		Matrix m=iter->get_animated_matrix();
+		Point orig = m.get_transformed(Vector(0,0));
+		Angle angle = Angle::rad(atan2(m.axis(0)[1],m.axis(0)[0]));
+		Real orig_dist((point-orig).mag());
+		Real dist=std::fabs(orig_dist*Angle::sin((point-orig).angle()-angle).get());
+		Real length = iter->get_length()*iter->get_scalelx();
+		if(Angle::cos((point-orig).angle()-angle).get()>0 && orig_dist<=length){
+			dist = std::fabs(dist);
+			if(dist<close_line){
+				close_line=dist;
+				close_origin=orig_dist;
+				ret = iter-bone_list.begin();
+			}else if(fabs(dist-close_line)<0.0000001 && close_line!= 10000000){
+				if(orig_dist<close_origin){
+					close_origin=orig_dist;
+					ret = iter-bone_list.begin();
+				}
+			}
+		}
+	}
+	if(std::fabs(close_line)<=0.2){
+		if (ret < bone_list.size())
+			return ret;
+	}
+
 	return -1;
 }
 
