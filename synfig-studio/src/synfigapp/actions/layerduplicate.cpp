@@ -151,28 +151,28 @@ static Canvas::Handle get_top_parent_if_inline_canvas(Canvas::Handle canvas)
 }
 
 /// Remove the layers that are inside an already listed group-kind layer, as they would be duplicated twice
-static std::list<Layer::LooseHandle>
+static std::list<Layer::Handle>
 remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_list)
 {
-	std::vector<Layer::LooseHandle> layerpastecanvas_list;
+	std::vector<Layer::Handle> layerpastecanvas_list;
 	for (const auto& layer : layer_list) {
 		if (Layer_PasteCanvas* pastecanvas = dynamic_cast<Layer_PasteCanvas*>(layer.get())) {
 			layerpastecanvas_list.push_back(layer);
 		}
 	}
 
-	std::list<Layer::LooseHandle> clean_layer_list;
-	for (const Layer::LooseHandle layer : layer_list) {
-		bool is_inside_a_selected_pastelayer = false;
-		auto pastelayer = layer->get_parent_paste_canvas_layer();
-		while (pastelayer) {
-			if (std::find(layerpastecanvas_list.begin(), layerpastecanvas_list.end(), pastelayer) != layerpastecanvas_list.end()) {
-				is_inside_a_selected_pastelayer = true;
+	std::list<Layer::Handle> clean_layer_list;
+	for (const Layer::Handle layer : layer_list) {
+		bool is_inside_a_selected_pastecanvas = false;
+		auto parent_paste_canvas = layer->get_parent_paste_canvas_layer();
+		while (parent_paste_canvas) {
+			if (std::find(layerpastecanvas_list.begin(), layerpastecanvas_list.end(), parent_paste_canvas) != layerpastecanvas_list.end()) {
+				is_inside_a_selected_pastecanvas = true;
 				break;
 			}
-			pastelayer = pastelayer->get_parent_paste_canvas_layer();
+			parent_paste_canvas = parent_paste_canvas->get_parent_paste_canvas_layer();
 		}
-		if (!is_inside_a_selected_pastelayer)
+		if (!is_inside_a_selected_pastecanvas)
 			clean_layer_list.push_back(layer);
 	}
 	return clean_layer_list;
@@ -238,7 +238,7 @@ Action::LayerDuplicate::prepare()
 		return;
 
 	// remove layers that would be duplicated twice
-	std::list<Layer::LooseHandle> clean_layer_list = remove_layers_inside_included_pastelayers(layers);
+	std::list<Layer::Handle> clean_layer_list = remove_layers_inside_included_pastelayers(layers);
 
 	// pair (original layer, cloned layer)
 	std::map<synfig::Layer::Handle,synfig::Layer::Handle> cloned_layer_map;
