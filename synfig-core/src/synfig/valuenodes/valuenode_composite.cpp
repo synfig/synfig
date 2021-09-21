@@ -737,7 +737,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		);
 		ret.push_back(ParamDesc(ValueBase(),"width")
 			.set_local_name(_("Width"))
-			.set_description(_("The width of the Width Point"))
+			.set_description(_("The relative width of the Width Point"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"side_before")
 			.set_local_name(_("Side Type Before"))
@@ -781,10 +781,12 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"offset")
 			.set_local_name(_("Offset"))
 			.set_description(_("The offset length of the Dash Item over the Spline"))
+			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"length")
 			.set_local_name(_("Length"))
 			.set_description(_("The length of the Dash Item"))
+			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"side_before")
 			.set_local_name(_("Side Type Before"))
