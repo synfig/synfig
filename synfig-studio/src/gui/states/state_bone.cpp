@@ -623,9 +623,12 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	setActiveBone->set_param("canvas",get_canvas());
 	setActiveBone->set_param("canvas_interface",get_canvas_interface());
 	if(drawing){
-		get_work_area()->erase_duck(point1_duck);
-		get_work_area()->erase_duck(point2_duck);
-		get_work_area()->erase_bezier(bone_bezier);
+		if (point1_duck)
+			get_work_area()->erase_duck(point1_duck);
+		if (point2_duck)
+			get_work_area()->erase_duck(point2_duck);
+		if (bone_bezier)
+			get_work_area()->erase_bezier(bone_bezier);
 		get_canvas_view()->rebuild_ducks();
 	}
 
