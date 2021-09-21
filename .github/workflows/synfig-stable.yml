@@ -26,8 +26,8 @@ jobs:
           name: MacOS 10.15 Catalina (Autotools)
           toolchain: autotools-release
           allow_failures: false
-        - os: ubuntu-16.04
-          name: Ubuntu 16.04 Xenial (Autotools)
+        - os: ubuntu-18.04
+          name: Ubuntu 18.04 Bionic (Autotools)
           allow_failures: false
           toolchain: autotools-release
 

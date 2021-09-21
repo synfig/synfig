@@ -34,8 +34,8 @@ jobs:
           name: MacOS 10.15 Catalina (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
-        - os: ubuntu-16.04
-          name: Ubuntu 16.04 Xenial (Autotools)
+        - os: ubuntu-18.04
+          name: Ubuntu 18.04 Bionic (Autotools)
           allow_failures: false
           toolchain: autotools
         - os: ubuntu-20.04
@@ -47,11 +47,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-    
+
       - name: Prepare ccache timestamp
         id: ccache_timestamp
         run: echo "::set-output name=timestamp::`date "+%Y%m%d-%H%M%S"`"
-        
+
       - name: Download ccache archive
         id: ccache-archive
         uses: actions/cache@v2.1.3
