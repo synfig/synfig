@@ -90,7 +90,7 @@ class studio::StateBone_Context : public sigc::trackable
 
 	Gtk::Menu menu;
 
-	int active_bone;
+	synfig::ValueNode::Handle active_bone;
 	enum SkeletonLayerType {SKELETON_TYPE, SKELETON_DEFORMATION_TYPE};
 	SkeletonLayerType c_layer;
 	bool drawing;
@@ -125,6 +125,8 @@ class studio::StateBone_Context : public sigc::trackable
 	Gtk::Button create_layer;
 
 	void update_width_duck_status(SkeletonLayerType type);
+
+	void set_active_bone(ValueNode::Handle value_node);
 
 public:
 
@@ -187,10 +189,10 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() const {return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas() const {return canvas_view_->get_canvas();}
 	WorkArea * get_work_area() const {return canvas_view_->get_work_area();}
-	int find_bone(Point point, Layer::Handle layer) const;
+	int find_bone_index(SkeletonLayerType type, ValueNode_StaticList::Handle list, ValueNode::Handle bone) const;
+	ValueNode_Bone::Handle find_bone(Point point, Layer::Handle layer) const;
 	void _on_signal_change_active_bone(ValueNode::Handle node);
 	void _on_signal_value_desc_set(ValueDesc value_desc,ValueBase value);
-	int change_active_bone(ValueNode::Handle node);
 
 	void load_settings();
 	void save_settings();
@@ -280,7 +282,7 @@ StateBone_Context::save_settings()
 void
 StateBone_Context::reset()
 {
-	active_bone = -1;
+	active_bone = nullptr;
 	set_id(_("NewSkeleton"));
 	set_skel_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
 	set_skel_deform_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
@@ -336,7 +338,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	prev_table_status(false),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	//depth(-1),
-	active_bone(change_active_bone(get_work_area()->get_active_bone_value_node())),
+	active_bone(get_work_area()->get_active_bone_value_node()),
 	c_layer(SKELETON_TYPE),
 	drawing(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
@@ -619,9 +621,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	createChild->set_param("canvas_interface",get_canvas_interface());
 	createChild->set_param("highlight",true);
 
-	Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
-	setActiveBone->set_param("canvas",get_canvas());
-	setActiveBone->set_param("canvas_interface",get_canvas_interface());
 	if(drawing){
 		if (point1_duck)
 			get_work_area()->erase_duck(point1_duck);
@@ -638,7 +637,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		{
 			clickOrigin = transform.unperform(clickOrigin);
 			releaseOrigin = transform.unperform(releaseOrigin);
-			if(drawing){ //! if the user was not modifying a duck
+			if(drawing){ // if the user was not modifying a duck
 				if(skel_layer || deform_layer){ // if selected layer is a Skeleton Layer or a Skeleton Deformation Layer
 					update_tool_options(skel_layer? SKELETON_TYPE : SKELETON_DEFORMATION_TYPE);
 					update_width_duck_status(skel_layer? SKELETON_TYPE : SKELETON_DEFORMATION_TYPE);
@@ -646,51 +645,48 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					createChild->set_param("canvas",layer->get_canvas());
 					ValueDesc list_desc(layer,"bones");
 
-					int b = -1;
+					ValueNode::Handle b = nullptr;
 					if((clickOrigin-releaseOrigin).mag()<0.01)
 						b=find_bone(clickOrigin,layer);
 
-					if(b!=-1){ // if bone found around the release point, then set it as active bone
-						active_bone=b;
-						ValueNode_StaticList::Handle list_node;
-						list_node = ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-						ValueDesc value_desc = ValueDesc(list_node,active_bone,list_desc);
-						ValueNode::Handle bone_value_node = value_desc.get_value_node();
+					if(b){ // if bone found around the release point, then set it as active bone
+						ValueNode::Handle bone_value_node = b;
 						if (deform_layer) {
-							ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+							ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(b);
 							bone_value_node = comp->get_link("first");
 						}
-						setActiveBone->set_param("active_bone_node",bone_value_node);
-						setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
-						if(setActiveBone->is_ready()){
-							try{
-								get_canvas_interface()->get_instance()->perform_action(setActiveBone);
-							} catch (...) {
-								get_canvas_interface()->get_ui_interface()->error(_("Error setting the new active bone"));
-							}
-						}
+						set_active_bone(bone_value_node);
 					}
 					else{ // create a child bone
 						ValueNode_StaticList::Handle list_node;
 						list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-						if(active_bone!=-1 && !list_node->list.empty()){ //! if active bone is already set
-							ValueDesc value_desc= ValueDesc(list_node,active_bone,list_desc);
-							ValueNode_Bone::Handle bone_node;
+						int item_index = find_bone_index(skel_layer? SKELETON_TYPE : SKELETON_DEFORMATION_TYPE, list_node, active_bone);
+						ValueDesc value_desc = ValueDesc(list_node,item_index,list_desc);
+						if(active_bone && item_index >= 0 && !list_node->list.empty()){ // if active bone is already set
+							ValueNode_Bone::Handle bone_node = ValueNode_Bone::Handle::cast_dynamic(active_bone);
 							if (deform_layer) {
-								ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
+								ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(active_bone);
+								if (!comp)
+								{
+									get_canvas_interface()->get_ui_interface()->error(_("Expected a ValueNode_Composite with a BonePair"));
+									assert(0);
+									return Smach::RESULT_ERROR;
+								}
 								value_desc = ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
+								bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
 							}
 
-							if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+							if (!bone_node)
 							{
 								error("expected a ValueNode_Bone");
 								drawing = false;
+								get_canvas_interface()->get_ui_interface()->error(_("Expected a ValueNode_Bone"));
 								assert(0);
 								return Smach::RESULT_ERROR;
 							}
 							ValueDesc v_d = ValueDesc(bone_node,bone_node->get_link_index_from_name("origin"),value_desc);
 							Real sx = bone_node->get_link("scalelx")->operator()(get_canvas()->get_time()).get(Real());
-							Matrix matrix = value_desc.get_value(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
+							Matrix matrix = (*bone_node)(get_canvas()->get_time()).get(Bone()).get_animated_matrix();
 							Real angle = atan2(matrix.axis(0)[1],matrix.axis(0)[0]);
 							Real a =acos(0.0);
 							matrix = matrix.get_inverted();
@@ -720,7 +716,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								}
 							}
 						} else {
-							Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),"Add Bone");
+							Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Add Bone"));
 
 							Action::Handle action = Action::create("ValueNodeStaticListInsert");
 							action->set_param("canvas", get_canvas());
@@ -758,26 +754,14 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 								}
 							}
 
-							Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
-							setActiveBone->set_param("canvas",get_canvas());
-							setActiveBone->set_param("canvas_interface",get_canvas_interface());
-
-							setActiveBone->set_param("active_bone_node",new_active_bone_node);
-							setActiveBone->set_param("prev_active_bone_node",get_work_area()->get_active_bone_value_node());
-
-							if (setActiveBone->is_ready()){
-								try{
-									get_canvas_interface()->get_instance()->perform_action(setActiveBone);
-								} catch (...) {
-									info("Error performing action");
-								}
-							}
+							set_active_bone(new_active_bone_node);
 						}
 
 					}
 				}
 				else
-				{ //! Creating empty layer as there's no active skeleton layer of any type
+				{ // Creating empty layer as there's no active skeleton layer of any type
+					Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Create Skeleton"));
 					egress_on_selection_change=false;
 					if(c_layer==SKELETON_TYPE)
 						get_canvas_view()->add_layer("skeleton");
@@ -795,11 +779,12 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					update_width_duck_status(c_layer);
 
 					if(c_layer==SKELETON_TYPE){
-						get_work_area()->set_active_bone_value_node(value_desc.get_value_node());
+						set_active_bone(value_desc.get_value_node());
 						if (!(bone_node = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
 						{
 							error("expected a ValueNode_Bone");
 							assert(0);
+							return Smach::RESULT_ERROR;
 						}
 					}else if(c_layer==SKELETON_DEFORMATION_TYPE){
 						new_skel->disable();
@@ -810,6 +795,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						{
 							error("expected a ValueNode_Bone");
 							assert(0);
+							return Smach::RESULT_ERROR;
 						}
 						bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
 						bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
@@ -820,7 +806,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 							bone_node->set_link("scalelx",ValueNode_Const::create((releaseOrigin-clickOrigin).mag()));
 						}
 						bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
-						get_work_area()->set_active_bone_value_node(comp->get_link("first"));
+						set_active_bone(comp->get_link("first"));
 					}
 					bone_node->set_link("origin",ValueNode_Const::create(clickOrigin));
 					bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
@@ -835,19 +821,19 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					get_canvas_interface()->get_selection_manager()->set_selected_layer(new_skel);
 					egress_on_selection_change=true;
 
-					active_bone = 0;
 
 					get_canvas_view()->queue_rebuild_ducks();
 				}
 				drawing = false;
 			}
-			else{
+			else{ // user clicked on a duck. Is it a bone?
 				Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
 				if(duck){
-				    ValueNode::Handle parent = duck->get_value_desc().get_parent_desc().get_value_node();
-					if(duck->get_value_desc().is_parent_desc_declared() && ValueNode_Bone::Handle::cast_dynamic(parent)){
-						_on_signal_change_active_bone(parent);
-						get_work_area()->set_active_bone_value_node(parent);
+					if(duck->get_value_desc().is_parent_desc_declared()) {
+						ValueNode::Handle parent = duck->get_value_desc().get_parent_desc().get_value_node();
+						if (ValueNode_Bone::Handle::cast_dynamic(parent)){
+							set_active_bone(parent);
+						}
 					}
 				}
 			}
@@ -896,8 +882,7 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 
 	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 	if(egress_on_selection_change){
-		active_bone=-1;
-		get_work_area()->set_active_bone_value_node(0);
+			set_active_bone(nullptr);
 	}
 	get_work_area()->queue_draw();
 	get_canvas_view()->queue_rebuild_ducks();
@@ -906,22 +891,49 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 }
 
 int
+StateBone_Context::find_bone_index(SkeletonLayerType type, ValueNode_StaticList::Handle list, ValueNode::Handle bone) const
+{
+	const int num = list->link_count();
+	if (type == SKELETON_TYPE) {
+		for (int i = 0; i < num; i++) {
+			if (list->get_link(i) == bone)
+				return i;
+		}
+	} else if (type == SKELETON_DEFORMATION_TYPE) {
+		for (int i = 0; i < num; i++) {
+			ValueNode::LooseHandle vn = list->get_link(i);
+			if (auto composite = ValueNode_Composite::Handle::cast_dynamic(vn)) {
+				if (composite == bone)
+					return i;
+				if (composite->get_link("first") == bone)
+					return i;
+				if (composite->get_link("second") == bone)
+					return i;
+			}
+		}
+	}
+	return -1;
+}
+
+ValueNode_Bone::Handle
 StateBone_Context::find_bone(Point point,Layer::Handle layer) const
 {
+	bool is_skeleton_deform_layer = false;
 	std::vector<Bone> bone_list;
 	ValueDesc list_desc(layer,"bones");
 	if(Layer_Skeleton::Handle::cast_dynamic(layer)){
 		bone_list = (*list_desc.get_value_node())(get_canvas()->get_time()).get_list_of(Bone());
 	} else if (Layer_SkeletonDeformation::Handle::cast_dynamic(layer)) {
+		is_skeleton_deform_layer = true;
 		std::vector<std::pair<Bone,Bone>> bone_pair_list = (*list_desc.get_value_node())(get_canvas()->get_time()).get_list_of(std::pair<Bone,Bone>());
 		for (const auto& item : bone_pair_list)
 			bone_list.push_back(item.second);
 	} else {
-		return -1;
+		return nullptr;
 	}
 
 	Real close_line(10000000),close_origin(10000000);
-	int ret;
+	int ret = -1;
 	for(auto iter=bone_list.begin();iter!=bone_list.end();++iter){
 		Matrix m=iter->get_animated_matrix();
 		Point orig = m.get_transformed(Vector(0,0));
@@ -944,11 +956,14 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer) const
 		}
 	}
 	if(std::fabs(close_line)<=0.2){
-		if (ret < bone_list.size())
-			return ret;
+		if (ret >=0 && ret < bone_list.size()) {
+			ValueNode_StaticList::Handle list_node;
+			list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
+			return ValueNode_Bone::Handle::cast_dynamic(list_node->get_link(ret));
+		}
 	}
 
-	return -1;
+	return nullptr;
 }
 
 void
@@ -958,6 +973,26 @@ StateBone_Context::update_width_duck_status(SkeletonLayerType type)
 	if ((type == SKELETON_TYPE && is_width_duck_currently_on)
 		|| (type == SKELETON_DEFORMATION_TYPE && !is_width_duck_currently_on)) {
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
+	}
+}
+
+void
+StateBone_Context::set_active_bone(ValueNode::Handle bone_value_node)
+{
+	if (active_bone == bone_value_node)
+		return;
+	Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+	setActiveBone->set_param("canvas", get_canvas());
+	setActiveBone->set_param("canvas_interface", get_canvas_interface());
+	setActiveBone->set_param("prev_active_bone_node", get_work_area()->get_active_bone_value_node());
+	setActiveBone->set_param("active_bone_node", bone_value_node);
+
+	if(setActiveBone->is_ready()){
+		try{
+			get_canvas_interface()->get_instance()->perform_action(setActiveBone);
+		} catch (...) {
+			get_canvas_interface()->get_ui_interface()->error(_("Error setting the new active bone"));
+		}
 	}
 }
 
@@ -988,6 +1023,7 @@ StateBone_Context::make_layer(){
 		{
 			error("expected a ValueNode_Bone");
 			assert(0);
+			return;
 		}
 		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
@@ -1000,6 +1036,7 @@ StateBone_Context::make_layer(){
 		{
 			error("expected a ValueNode_Bone");
 			assert(0);
+			return;
 		}
 		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
@@ -1008,6 +1045,7 @@ StateBone_Context::make_layer(){
 		{
 			error("expected a ValueNode_Bone");
 			assert(0);
+			return;
 		}
 		bone_node->set_link("width",ValueNode_Const::create(get_bone_width()));
 		bone_node->set_link("tipwidth",ValueNode_Const::create(get_bone_width()));
@@ -1023,64 +1061,33 @@ StateBone_Context::make_layer(){
 
 void
 StateBone_Context::_on_signal_change_active_bone(ValueNode::Handle node){
-	ValueNode_Bone::Handle bone;
-	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
-	
+	active_bone = nullptr;
+	if(ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(node)){
+		Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+		Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
+		Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
 
-	if(bone = ValueNode_Bone::Handle::cast_dynamic(node)){
 		ValueDesc list_desc(layer,"bones");
 		ValueNode_StaticList::Handle list_node;
 		list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 		if(list_node){
 			for(int i=0;i<list_node->link_count();i++){
-				ValueDesc value_desc(list_node,i,list_desc);
+				ValueNode::Handle value_node = list_node->get_link(i);
 				if(skel_layer){
-					if(value_desc.get_value_node()==node){
-						active_bone = i;
+					if(value_node==node){
+						active_bone = node;
 						return;
 					}
 				}else if(deform_layer){
-					ValueNode_Composite::Handle v_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-					if(v_node->get_link("first")==node || v_node->get_link("second")==node){
-						active_bone = i;
+					ValueNode_Composite::Handle v_node = ValueNode_Composite::Handle::cast_dynamic(value_node);
+					if(v_node && (v_node->get_link("first")==node || v_node->get_link("second")==node)){
+						active_bone = v_node;
 						return;
 					}
 				}
 			}
 		}
 	}
-}
-
-int
-StateBone_Context::change_active_bone(ValueNode::Handle node){
-	ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(node);
-	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
-
-
-	if((skel_layer || deform_layer) && bone ){
-		ValueDesc list_desc(layer,"bones");
-		ValueNode_StaticList::Handle list_node;
-		list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-		for(int i=0;i<list_node->link_count();i++){
-			ValueDesc value_desc(list_node,i,list_desc);
-			if(skel_layer){
-				if(value_desc.get_value_node()==node){
-					return i;
-				}
-			}else if(deform_layer){
-				ValueNode_Composite::Handle v_node = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-				if(v_node->get_link("first")==node || v_node->get_link("second")==node){
-					return i ;
-				}
-			}
-		}
-		return -1;
-	}
-	return -1;
 }
 
 void

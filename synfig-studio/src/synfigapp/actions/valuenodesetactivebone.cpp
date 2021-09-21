@@ -63,12 +63,9 @@ ACTION_SET_VERSION(Action::ValueNodeSetActiveBone,"0.0");
 Action::ValueNodeSetActiveBone::ValueNodeSetActiveBone(){}
 
 void
-Action::ValueNodeSetActiveBone::undo(){
-	
-	if(prev_active_bone){
-		get_canvas_interface()->signal_active_bone_changed()(prev_active_bone);
-	}
-	
+Action::ValueNodeSetActiveBone::undo()
+{
+	get_canvas_interface()->signal_active_bone_changed()(prev_active_bone);
 }
 
 
@@ -116,7 +113,7 @@ Action::ValueNodeSetActiveBone::set_param(const synfig::String& name, const Acti
 bool
 Action::ValueNodeSetActiveBone::is_ready()const
 {
-	if (!active_bone_node)
+	if (active_bone_node == prev_active_bone)
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -125,5 +122,4 @@ void
 Action::ValueNodeSetActiveBone::perform()
 {
 	get_canvas_interface()->signal_active_bone_changed()(active_bone_node);
-
 }
