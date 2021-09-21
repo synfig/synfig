@@ -62,11 +62,6 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 //attributes
-static bool extractSubAttribute(const String& attribute, const String& name, String& value);
-/// Get a named subattribute in style attribute. If not found, search in master_style.
-/// If not found in both styles, look up the elem attributes themselves (if elem is not NULL).
-/// Otherwise use the provided defaultVal
-static String loadAttribute(const String& name, const String& path_style, const String& master_style, const xmlpp::Element* elem, String defaultVal);
 static std::vector<String> get_tokens_path(const String& path);
 static int getRed(const String& hex);
 static int getGreen(const String& hex);
@@ -191,7 +186,7 @@ Svg_parser::parser_node(const xmlpp::Node* node)
 			parser_defs (node);
 		}else{
 			if(!set_canvas) parser_canvas(node);
-			parser_graphics(node,nodeRoot,"",SVGMatrix::indentity);
+			parser_graphics(node,nodeRoot,Style(),SVGMatrix::identity);
 			if(nodename.compare("g")==0) return;
 		}
   	}
@@ -271,7 +266,7 @@ Svg_parser::parser_canvas(const xmlpp::Node* node)
 }
 
 void
-Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx_parent)
+Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring nodename = node->get_name();
@@ -292,22 +287,22 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			mtx.compose(mtx_parent, mtx);
 		}
 		if(nodename.compare("g")==0){
-			parser_layer (node,root->add_child("layer"),parent_style,mtx);
+			parser_layer(node,root->add_child("layer"),style,mtx);
 			return;
 		}
 
-		Glib::ustring obj_style = nodeElement->get_attribute_value("style");
+		style.merge(nodeElement);
 
 		//style
-		String fill			    =loadAttribute("fill",obj_style,parent_style,nodeElement,"none");
-		String fill_rule		=loadAttribute("fill-rule",obj_style,parent_style,nodeElement,"evenodd");
-		String stroke			=loadAttribute("stroke",obj_style,parent_style,nodeElement,"none");
-		String stroke_width		=loadAttribute("stroke-width",obj_style,parent_style,nodeElement,"1px");
-		String stroke_linecap	=loadAttribute("stroke-linecap",obj_style,parent_style,nodeElement,"butt");
-		String stroke_linejoin	=loadAttribute("stroke-linejoin",obj_style,parent_style,nodeElement,"miter");
-		String stroke_opacity	=loadAttribute("stroke-opacity",obj_style,parent_style,nodeElement,"1");
-		String fill_opacity		=loadAttribute("fill-opacity",obj_style,parent_style,nodeElement,"1");
-		String opacity			=loadAttribute("opacity",obj_style,parent_style,nodeElement,"1");
+		String fill			    = style.get("fill", "none");
+		String fill_rule		= style.get("fill-rule", "evenodd");
+		String stroke			= style.get("stroke", "none");
+		String stroke_width		= style.get("stroke-width", "1px");
+		String stroke_linecap	= style.get("stroke-linecap", "butt");
+		String stroke_linejoin	= style.get("stroke-linejoin", "miter");
+		String stroke_opacity	= style.get("stroke-opacity", "1");
+		String fill_opacity		= style.get("fill-opacity", "1");
+		String opacity			= style.get("opacity", "1");
 
 		//Fill
 		FillType typeFill = FILL_TYPE_NONE;
@@ -337,11 +332,11 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			if (!mtx.is_identity())
 				child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 			child_fill=child_layer;
-			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
+			parser_rect(nodeElement,child_fill,style);
 			if(typeFill == FILL_TYPE_GRADIENT){
-				build_fill (child_fill,fill,SVGMatrix::indentity);
+				build_fill (child_fill,fill,SVGMatrix::identity);
 			}
-			parser_effects(nodeElement,child_layer,parent_style,mtx);
+			parser_effects(nodeElement,child_layer,style,mtx);
 			return;
 		}
 		if ((!SVG_RESOLVE_BLINE) || typeFill == FILL_TYPE_GRADIENT || typeStroke == FILL_TYPE_GRADIENT)
@@ -363,9 +358,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			}
 		} else {
 			if(nodename.compare("path")==0){
-				k = parser_path_d(nodeElement->get_attribute_value("d"),SVGMatrix::indentity);
+				k = parser_path_d(nodeElement->get_attribute_value("d"),SVGMatrix::identity);
 			} else if(nodename.compare("polygon")==0){
-				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::indentity);
+				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::identity);
 			}
 		}
 		
@@ -398,7 +393,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 			if (SVG_RESOLVE_BLINE)
 				build_fill(child_fill,fill,mtx);
 			else
-				build_fill(child_fill,fill,SVGMatrix::indentity);
+				build_fill(child_fill,fill,SVGMatrix::identity);
 		}
 
 		if(typeStroke!=FILL_TYPE_NONE){//outline layer
@@ -444,37 +439,28 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Strin
 				if (SVG_RESOLVE_BLINE)
 					build_fill(child_stroke,stroke,mtx);
 				else
-					build_fill(child_stroke,stroke,SVGMatrix::indentity);
+					build_fill(child_stroke,stroke,SVGMatrix::identity);
 			}	
 		}
 
 		if (SVG_RESOLVE_BLINE)
-			parser_effects(nodeElement,child_layer,parent_style,SVGMatrix::indentity);
+			parser_effects(nodeElement,child_layer,style,SVGMatrix::identity);
 		else
-			parser_effects(nodeElement,child_layer,parent_style,mtx);
+			parser_effects(nodeElement,child_layer,style,mtx);
 	}
 }
 
 /* === LAYER PARSERS ======================================================= */
 
 void
-Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String parent_style, const SVGMatrix& mtx)
+Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring label		=nodeElement->get_attribute_value("label", "inkscape");
 		Glib::ustring id		=nodeElement->get_attribute_value("id");
-		Glib::ustring style		=nodeElement->get_attribute_value("style");
-		Glib::ustring fill		=nodeElement->get_attribute_value("fill");
 
-		String layer_style;
-		if(!style.empty()){
-			layer_style=style;
-		}else if(!fill.empty()){
-			layer_style.append("fill:");
-			layer_style.append(fill);
-		}else if(!parent_style.empty()){
-			layer_style=parent_style;
-		}
+		style.merge(nodeElement);
+
 		// group attributes
 		root->set_attribute("type","group");
 		root->set_attribute("active","true");
@@ -496,22 +482,23 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, String p
     		xmlpp::Node::NodeList list = node->get_children();
     		for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
 				Glib::ustring name =(*iter)->get_name();
-				parser_graphics (*iter,child_canvas,layer_style,mtx);
+				parser_graphics (*iter,child_canvas,style,mtx);
     		}
   		}
-		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,SVGMatrix::indentity);
-		else parser_effects(nodeElement,child_canvas,parent_style,mtx);
+		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,style,SVGMatrix::identity);
+		else parser_effects(nodeElement,child_canvas,style,mtx);
 	}
 }
 
 void
-Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, const String& fill, const String& fill_opacity, const String& opacity)
+Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, const Style& style)
 {
 	Glib::ustring rect_id		=nodeElement->get_attribute_value("id");
 	Glib::ustring rect_x		=nodeElement->get_attribute_value("x");
 	Glib::ustring rect_y		=nodeElement->get_attribute_value("y");
 	Glib::ustring rect_width	=nodeElement->get_attribute_value("width");
 	Glib::ustring rect_height	=nodeElement->get_attribute_value("height");
+	Glib::ustring fill       	= style.get("fill", "#000");
 
 	xmlpp::Element *child_rect=root->add_child("layer");
 	child_rect->set_attribute("type","rectangle");
@@ -522,7 +509,7 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, 
 	build_real(child_rect->add_child("param"),"z_depth",0.0);
 	build_real(child_rect->add_child("param"),"amount",1.0);
 	build_integer(child_rect->add_child("param"),"blend_method",0);
-	build_color (child_rect->add_child("param"),getRed (fill),getGreen (fill),getBlue(fill),atof(opacity.data())*atof(fill_opacity.data()));
+	build_color(child_rect->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),style.compute("opacity", "1")*style.compute("fill_opacity", "1"));
 
 	float auxx=atof(rect_x.c_str());
 	float auxy=atof(rect_y.c_str());
@@ -902,7 +889,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 /* === EFFECTS PARSERS ===================================================== */
 
 void
-Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/, xmlpp::Element* root, const String& /*parent_style*/, const SVGMatrix& mtx)
+Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/, xmlpp::Element* root, const Style & /*parent_style*/, const SVGMatrix& mtx)
 {
 	build_transform(root, mtx);
 }
@@ -1183,10 +1170,11 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node)
 					Glib::ustring name =(*iter)->get_name();
 					if(name.compare("stop")==0){
 						const xmlpp::Element* nodeIter = dynamic_cast<const xmlpp::Element*>(*iter);
-						Glib::ustring style	=nodeIter->get_attribute_value("style");
+						Style style;
+						style.merge(nodeIter);
 						float offset=atof(nodeIter->get_attribute_value("offset").data());
-						String stop_color = loadAttribute("stop-color", style, "", nodeIter, "#000000");
-						String opacity = loadAttribute("stop-opacity", style, "", nodeIter, "1");
+						String stop_color = style.get("stop-color", "#000000");
+						String opacity = style.get("stop-opacity", "1");
 						stops.push_back(ColorStop(stop_color, atof(opacity.data()), gamma, offset));
 					}
     			}
@@ -1609,7 +1597,7 @@ SVGMatrix::SVGMatrix(const String& mvector)
 	}
 }
 
-const SVGMatrix SVGMatrix::indentity(1,0,0,1,0,0);
+const SVGMatrix SVGMatrix::identity(1,0,0,1,0,0);
 const SVGMatrix SVGMatrix::zero(0,0,0,0,0,0);
 
 bool
@@ -1657,44 +1645,6 @@ SVGMatrix::multiply(const SVGMatrix &mtx2)
 }
 
 /* === EXTRA METHODS ======================================================= */
-
-static bool
-extractSubAttribute(const String& attribute, const String& name, String& value)
-{
-	if (!attribute.empty()) {
-		String str = synfig::trim(attribute);
-		std::vector<String> tokens=tokenize(str,";");
-		for (const String& token : tokens) {
-			auto mid = token.find_first_of(":");
-			if (mid == String::npos)
-				continue;
-			if (token.substr(0,mid) == name) {
-				auto end = token.size();
-				value = token.substr(mid+1,end-mid);
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-static String
-loadAttribute(const String& name, const String& path_style, const String& master_style, const xmlpp::Element* elem, String defaultVal)
-{
-	String value;
-	bool found=false;
-	if(!path_style.empty())
-		found=extractSubAttribute(path_style,name,value);
-	if(!found && elem) {
-		value=elem->get_attribute_value(name);
-		found = !value.empty();
-	}
-	if (!found && !master_style.empty())
-		found=extractSubAttribute(master_style,name,value);
-	if(!found)
-		value=defaultVal;
-	return value;
-}
 
 static std::vector<String>
 get_tokens_path(const String& path) //mini path lexico-parser
@@ -2112,4 +2062,185 @@ get_inkscape_version(const xmlpp::Element* svgNodeElement)
 	} catch (...) {
 	}
 	return 0; // not inkscape ;)
+}
+
+void
+Style::merge(const xmlpp::Element *elem)
+{
+	if (elem->get_name() == "style")
+		return;
+
+	// stores the style defined for this element
+	// lower priority: style property values defined by presentation-kind attributes
+	// medium priority: those values from CSS selectors (TODO)
+	// highest priority: those values in "style" attribute contents
+
+	Style style;
+
+	style.merge_presentation_attributes(elem);
+
+	// now CSS info - TODO
+
+	// and then "style" attribute
+	std::string style_str = elem->get_attribute_value("style");
+
+	if (!style_str.empty()) {
+		style.merge_style_string(style_str);
+	}
+
+	// merge properties with current style
+	// Normally, we just replace them with new values
+	// However, there are some special cases (SVG 1.1 6.14):
+	//   - relative values will have the same units as the value to which it is relative
+	//      and percentage lengths are relative to current viewport or bounding box dimensions
+	//   - if a 'clip-path' property is specified on an ancestor element, and the current element
+	//       has a 'clip-path' of none, the ancestor's clipping path still applies to current element
+
+	for (auto prop : style.data) {
+		if (prop.first == "clip-path" && prop.second == "none")
+			continue;
+		// TODO: Relative values?
+		data[prop.first] = prop.second;
+	}
+}
+
+std::string
+Style::get(const std::string &property, std::string default_value) const
+{
+	auto item = data.find(property);
+	if (item == data.end() || item->second.empty())
+		return default_value;
+	return item->second;
+}
+
+static bool
+parse_number_or_percent(const std::string& value, double& out)
+{
+	std::size_t pos;
+	try {
+		ChangeLocale l(LC_NUMERIC, "C");
+		out = std::stod(value, &pos);
+		if (pos && value[pos] == '%') {
+			out = out * 0.01;
+		}
+		return true;
+	} catch (...) {
+		return false;
+	}
+}
+
+double
+Style::compute(const std::string &property, std::string default_value, double reference_value) const
+{
+	std::string value = get(property, default_value);
+
+	double d_value;
+	if (parse_number_or_percent(value, d_value)) {
+		return d_value * reference_value;
+	}
+
+	warning("Layer_Svg: %s",
+		etl::strprintf(_("Invalid number for '%s': %s. Trying default value..."), property.c_str(), value.c_str()).c_str());
+
+	if (parse_number_or_percent(default_value, d_value)) {
+		return d_value * reference_value;
+	}
+
+	error("Layer_Svg: %s", etl::strprintf(_("... No, invalid number for '%s': %s"), property.c_str(), default_value.c_str()).c_str());
+	return 0;
+}
+
+void
+Style::merge_presentation_attributes(const xmlpp::Element *elem)
+{
+	// presentation attributes: https://www.w3.org/TR/SVG/styling.html#ElementSpecificStyling
+	// this list won't increase in new versions. phew!
+
+	static const std::vector<std::string> circle_ellipse_props {"cx","cy"};
+	// geometry_props is for 'foreignObject', 'image', 'rect', 'svg', 'symbol', and 'use'
+	static const std::vector<std::string> geometry_props {"height", "width", "x", "y"};
+	//static const std::vector<std::string> circle_props {"r"};
+	static const std::vector<std::string> ellipse_rect_props {"rx", "ry"};
+
+	//static const std::vector<std::string> path_props {"d"};
+
+	//static const std::vector<std::string> non_animation_elem_props {"fill"};
+
+	//static const std::vector<std::string> almost_all_elem_props {"transform"};
+	//static const std::vector<std::string> pattern_elem_props {"patternTransform"};
+	//static const std::vector<std::string> linear_radial_elem_props {"gradientTransform"};
+
+	static const std::vector<std::string> general_props {"alignment-baseline", "baseline-shift", "clip-path", "clip-rule",
+		"color", "color-interpolation", "color-interpolation-filters", "color-rendering",
+		"cursor", "direction", "display", "dominant-baseline",
+		"fill-opacity", "fill-rule", "filter", "flood-color", "flood-opacity",
+		"font-family", "font-size", "font-size-adjust", "font-stretch", "font-style", "font-variant", "font-weight",
+		"glyph-orientation-horizontal", "glyph-orientation-vertical",
+		"image-rendering", "letter-spacing", "lighting-color",
+		"marker-end", "marker-mid", "marker-start", "mask", "opacity", "overflow", "paint-order", "pointer-events",
+		"shape-rendering", "stop-color", "stop-opacity",
+		"stroke", "stroke-dasharray", "stroke-dashoffset", "stroke-linecap", "stroke-linejoin", "stroke-miterlimit", "stroke-opacity", "stroke-width",
+		"text-anchor", "text-decoration", "text-overflow", "text-rendering", "unicode-bidi",
+		"vector-effect", "visibility", "white-space", "word-spacing", "writing-mode"};
+
+	for (const auto& prop : general_props)
+		push(prop, elem->get_attribute_value(prop));
+
+	const std::string elem_name = elem->get_name();
+	if (elem_name == "circle" || elem_name == "ellipse") {
+		for (const auto& prop : circle_ellipse_props)
+			push(prop, elem->get_attribute_value(prop));
+	}
+	if (elem_name == "foreignObject" || elem_name == "image" || elem_name == "rect" || elem_name == "svg" || elem_name == "symbol" || elem_name == "use") {
+		for (const auto& prop : geometry_props)
+			push(prop, elem->get_attribute_value(prop));
+	}
+	if (elem_name == "circle") {
+		push("r", elem->get_attribute_value("r"));
+	}
+	if (elem_name == "ellipse" || elem_name == "rect") {
+		for (const auto& prop : ellipse_rect_props)
+			push(prop, elem->get_attribute_value(prop));
+	}
+	if (elem_name == "path") {
+		push("d", elem->get_attribute_value("d"));
+	}
+	// 'fill' for all non-animation elements
+	if (elem_name != "animate" && elem_name != "animateMotion" && elem_name != "animateTransform" && elem_name != "discard" && elem_name != "set") {
+		push("fill", elem->get_attribute_value("fill"));
+	}
+	// transform
+	if (elem_name == "pattern") {
+		push("transform", elem->get_attribute_value("patternTransform"));
+	} else if (elem_name == "linearGradient" || elem_name == "radialGradient") {
+		push("transform", elem->get_attribute_value("gradientTransform"));
+	} else {
+		push("transform", elem->get_attribute_value("transform"));
+	}
+}
+
+void
+Style::merge_style_string(const std::string &style_str)
+{
+	size_t previous_pos = 0;
+	size_t pos = 0;
+	while ((pos = style_str.find(';', pos)) != std::string::npos) {
+		std::string token = style_str.substr(previous_pos, pos-previous_pos);
+		size_t separator_pos = token.find(':');
+		if (separator_pos != std::string::npos && separator_pos != token.size()-1) {
+			std::string prop = synfig::trim(token.substr(0, separator_pos));
+			std::string value = synfig::trim(token.substr(separator_pos+1));
+			if (!prop.empty() && !value.empty())
+				push(prop, value);
+		}
+		previous_pos = pos;
+		pos++;
+	}
+}
+
+void
+Style::push(const std::string &property, const std::string &value)
+{
+	if (!value.empty() && value != "inherit" && !property.empty())
+		data[property] = value;
 }
