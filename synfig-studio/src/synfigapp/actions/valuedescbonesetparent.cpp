@@ -32,7 +32,6 @@
 #include <synfig/general.h>
 
 #include "valuedescbonesetparent.h"
-#include "valuenodestaticlistinsertsmart.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_bone.h>
