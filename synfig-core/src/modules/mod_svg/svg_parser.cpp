@@ -566,7 +566,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 	int lower_command='m';
 	float ax,ay,tgx,tgy,tgx2,tgy2;//each method
 	ax=ay=0;
-	float actual_x=0,actual_y=0; //in svg coordinate space
+	float current_x=0,current_y=0; //in svg coordinate space
 	float old_x=0,old_y=0; //needed in rare cases
 	float init_x=0,init_y=0; //for closepath commands
 
@@ -591,12 +591,12 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			if (i >= tokens.size()) { report_incomplete(command); break; }
 		}
 
-		old_x=actual_x;
-		old_y=actual_y;
+		old_x=current_x;
+		old_y=current_y;
 		//if command is absolute, set actual_x/y to zero
 		if(std::isupper(command[0])) {
-			actual_x=0;
-			actual_y=0;
+			current_x=0;
+			current_y=0;
 		}
 
 		if (lower_command != 'c' && lower_command != 's')
@@ -612,14 +612,14 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				k1.clear();
 			}
 			//read
-			actual_x+=atof(tokens.at(i).data());
+			current_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			actual_y+=atof(tokens.at(i).data());
+			current_y+=atof(tokens.at(i).data());
 
-			init_x=actual_x;
-			init_y=actual_y;
-			ax=actual_x;
-			ay=actual_y;
+			init_x=current_x;
+			init_y=current_y;
+			ax=current_x;
+			ay=current_y;
 			//operate and save
 			mtx.transformPoint2D(ax,ay);
 			coor2vect(&ax,&ay);
@@ -637,9 +637,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		case 's':{ //curveto
 			if (lower_command == 'c') {
 				//tg2
-				tgx2=actual_x+atof(tokens.at(i).data());
+				tgx2=current_x+atof(tokens.at(i).data());
 				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-				tgy2=actual_y+atof(tokens.at(i).data());
+				tgy2=current_y+atof(tokens.at(i).data());
 			} else { // 's'
 				if (is_old_cubic_tg_valid) {
 					tgx2 = 2*old_x - old_tgx;
@@ -653,21 +653,21 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			if (lower_command == 'c') {
 				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			}
-			tgx=actual_x+atof(tokens.at(i).data());
+			tgx=current_x+atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			tgy=actual_y+atof(tokens.at(i).data());
+			tgy=current_y+atof(tokens.at(i).data());
 			//point
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			actual_x+=atof(tokens.at(i).data());
+			current_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			actual_y+=atof(tokens.at(i).data());
+			current_y+=atof(tokens.at(i).data());
 
 			old_tgx = tgx;
 			old_tgy = tgy;
 			is_old_cubic_tg_valid = true;
 
-			ax=actual_x;
-			ay=actual_y;
+			ax=current_x;
+			ay=current_y;
 			//mtx
 			if(!mtx.is_identity()){
 				mtx.transformPoint2D(tgx2,tgy2);
@@ -693,9 +693,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		case 't':{ //quadractic curve
 				//tg1 and tg2 : they must be decreased 2/3 to correct representation
 			if (lower_command == 'q') {
-				tgx=actual_x+atof(tokens.at(i).data());
+				tgx=current_x+atof(tokens.at(i).data());
 				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-				tgy=actual_y+atof(tokens.at(i).data());
+				tgy=current_y+atof(tokens.at(i).data());
 			} else { // 't'
 				if (is_old_quadratic_tg_valid) {
 					tgx = 2*old_x - old_tgx;
@@ -709,16 +709,16 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			if (lower_command == 'q') {
 				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			}
-			actual_x+=atof(tokens.at(i).data());
+			current_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			actual_y+=atof(tokens.at(i).data());
+			current_y+=atof(tokens.at(i).data());
 
 			old_tgx = tgx;
 			old_tgy = tgy;
 			is_old_quadratic_tg_valid = true;
 
-			ax=actual_x;
-			ay=actual_y;
+			ax=current_x;
+			ay=current_y;
 			//mtx
 			if (!mtx.is_identity()) {
 				mtx.transformPoint2D(ax,ay);
@@ -743,19 +743,19 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		case 'v':{ //line to
 			//point
 			if (command == "L" || command == "l") {
-				actual_x+=atof(tokens.at(i).data());
+				current_x+=atof(tokens.at(i).data());
 				i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-				actual_y+=atof(tokens.at(i).data());
+				current_y+=atof(tokens.at(i).data());
 			} else if (command == "H" || command == "h") { // horizontal move
-				actual_x+=atof(tokens.at(i).data());
-				actual_y=old_y;
+				current_x+=atof(tokens.at(i).data());
+				current_y=old_y;
 			} else if (command == "V" || command == "v") { //vertical
-				actual_x=old_x;
-				actual_y+=atof(tokens.at(i).data());
+				current_x=old_x;
+				current_y+=atof(tokens.at(i).data());
 			}
 
-			ax=actual_x;
-			ay=actual_y;
+			ax=current_x;
+			ay=current_y;
 			//mtx
 			mtx.transformPoint2D(ax,ay);
 			//adjust
@@ -794,19 +794,19 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			sweep=atoi(tokens.at(i).data());
 			//point
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			actual_x+=atof(tokens.at(i).data());
+			current_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			actual_y+=atof(tokens.at(i).data());
+			current_y+=atof(tokens.at(i).data());
 			//how to draw?
 			if(!large && !sweep){
 				//points
 				tgx2 = old_x + radius_x*0.5;
 				tgy2 = old_y ;
-				tgx  = actual_x;
-				tgy  = actual_y + radius_y*0.5;
+				tgx  = current_x;
+				tgy  = current_y + radius_y*0.5;
 
-				ax=actual_x;
-				ay=actual_y;
+				ax=current_x;
+				ay=current_y;
 				//transformations
 				if(!mtx.is_identity()){
 					mtx.transformPoint2D(tgx2,tgy2);
@@ -830,11 +830,11 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				//points
 				tgx2 = old_x;
 				tgy2 = old_y + radius_y*0.5;
-				tgx  = actual_x + radius_x*0.5;
-				tgy  = actual_y ;
+				tgx  = current_x + radius_x*0.5;
+				tgy  = current_y ;
 
-				ax=actual_x;
-				ay=actual_y;
+				ax=current_x;
+				ay=current_y;
 				//transformations
 				if(!mtx.is_identity()){
 					mtx.transformPoint2D(tgx2,tgy2);
@@ -859,9 +859,9 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			}else if( large &&  sweep){//circles in inkscape are made with this kind of arc
 				//intermediate point
 				int sense=1;
-				if(old_x>actual_x) sense =-1;
+				if(old_x>current_x) sense =-1;
 				float in_x,in_y,in_tgx1,in_tgy1,in_tgx2,in_tgy2;
-				in_x = (old_x+actual_x)/2;
+				in_x = (old_x+current_x)/2;
 				in_y = old_y - sense*radius_y;
 				in_tgx1 = in_x - sense*(radius_x*0.5);
 				in_tgx2 = in_x + sense*(radius_x*0.5);
@@ -869,12 +869,12 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 				in_tgy2 = in_y;
 				//start/end points
 				tgx2=old_x;
-				tgy2=actual_y - sense*(radius_y*0.5);
-				tgx =actual_x;
-				tgy =actual_y - sense*(radius_y*0.5);
+				tgy2=current_y - sense*(radius_y*0.5);
+				tgx =current_x;
+				tgy =current_y - sense*(radius_y*0.5);
 
-				ax=actual_x;
-				ay=actual_y;
+				ax=current_x;
+				ay=current_y;
 				//transformations
 				if(!mtx.is_identity()){
 					mtx.transformPoint2D(tgx2,tgy2);
@@ -915,12 +915,12 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 		case 'z':{
 			k.push_front(BLine(k1, true));
 			k1.clear();
-			actual_x=init_x;
-			actual_y=init_y;
+			current_x=init_x;
+			current_y=init_y;
 			if (i<tokens.size() && tokens[i] != "M" && tokens[i] != "m") {
 				//starting a new path, but not with a moveto, so it uses the same initial point
-				ax=actual_x;
-				ay=actual_y;
+				ax=current_x;
+				ay=current_y;
 				//operate and save
 				mtx.transformPoint2D(ax,ay);
 				coor2vect(&ax,&ay);
