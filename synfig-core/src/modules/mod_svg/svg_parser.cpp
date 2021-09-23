@@ -2228,7 +2228,7 @@ Style::merge_style_string(const std::string &style_str)
 {
 	size_t previous_pos = 0;
 	size_t pos = 0;
-	while ((pos = style_str.find(';', pos)) != std::string::npos) {
+	auto push_property = [&] (size_t& pos) {
 		std::string token = style_str.substr(previous_pos, pos-previous_pos);
 		size_t separator_pos = token.find(':');
 		if (separator_pos != std::string::npos && separator_pos != token.size()-1) {
@@ -2237,9 +2237,17 @@ Style::merge_style_string(const std::string &style_str)
 			if (!prop.empty() && !value.empty())
 				push(prop, value);
 		}
-		previous_pos = pos;
 		pos++;
+		previous_pos = pos;
+	};
+
+	while ((pos = style_str.find(';', pos)) != std::string::npos) {
+		push_property(pos);
 	}
+
+	// last item
+	pos = style_str.length();
+	push_property(pos);
 }
 
 void
