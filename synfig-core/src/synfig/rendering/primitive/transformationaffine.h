@@ -51,6 +51,7 @@ public:
 
 	TransformationAffine() { }
 	explicit TransformationAffine(const Matrix &matrix): matrix(matrix) { }
+	TransformationAffine& operator= (const TransformationAffine& other) { matrix = other.matrix; return *this; }
 	
 	static Vector calc_optimal_resolution(const Matrix2 &matrix);
 	static Bounds transform_bounds_affine(const Matrix &matrix, const Bounds &bounds);

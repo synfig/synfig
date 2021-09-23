@@ -352,6 +352,7 @@ namespace {
 		
 		TransformationPerspective() { }
 		explicit TransformationPerspective(const Matrix &matrix): matrix(matrix) { }
+		TransformationPerspective& operator= (const TransformationPerspective& other) { matrix = other.matrix; return *this; }
 		
 	protected:
 		virtual Transformation* clone_vfunc() const
