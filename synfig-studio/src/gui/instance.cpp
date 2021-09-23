@@ -1368,11 +1368,11 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 
 	dialog.get_content_area()->pack_start(widget_waypoint_model);
 
-	dialog.add_button(_("Cancel"), 0);
-	dialog.add_button(_("Apply"), 1);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog.add_button(_("Apply"), Gtk::RESPONSE_APPLY);
 	dialog.show();
 
-	if(dialog.run()==0 || widget_waypoint_model.get_waypoint_model().is_trivial())
+	if(dialog.run()!=Gtk::RESPONSE_APPLY || widget_waypoint_model.get_waypoint_model().is_trivial())
 		return;
 	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Set Waypoints"));
 

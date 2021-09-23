@@ -359,7 +359,10 @@ public:
 		dialog.set_default_response(dflt);
 
 		dialog.show_all();
-		return (Response) dialog.run();
+		int response = dialog.run();
+		if (response != Gtk::RESPONSE_OK)
+			return RESPONSE_CANCEL;
+		return RESPONSE_OK;
 	}
 
 
@@ -387,7 +390,10 @@ public:
 
 		dialog.set_default_response(dflt);
 		dialog.show();
-		return (Response)dialog.run();
+		int response = dialog.run();
+		if (response != Gtk::RESPONSE_YES && response != Gtk::RESPONSE_NO)
+			return RESPONSE_CANCEL;
+		return Response(response);
 	}
 
 
@@ -2206,7 +2212,7 @@ void App::save_custom_workspace()
 	dialog.show_all();
 
 	int response = dialog.run();
-	if (response == Gtk::RESPONSE_CANCEL)
+	if (response != Gtk::RESPONSE_OK)
 		return;
 
 	std::string name = synfig::trim(name_entry->get_text());
@@ -2216,7 +2222,7 @@ void App::save_custom_workspace()
 		workspaces->add_workspace(name, tpl);
 	else {
 		Gtk::MessageDialog confirm_dlg(dialog, _("Do you want to overwrite this workspace?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
-		if (confirm_dlg.run() == Gtk::RESPONSE_CANCEL)
+		if (confirm_dlg.run() != Gtk::RESPONSE_OK)
 			return;
 		workspaces->set_workspace(name, tpl);
 	}
@@ -3450,12 +3456,11 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 	dialog.set_default_size(300, 450);
 	dialog.show_all();
 
-	if (dialog.run() == Gtk::RESPONSE_ACCEPT) {
-		item_index = tree->get_selection()->get_selected()->get_value(model_columns.column_index);
-		return true;
-	}
+	if (dialog.run() != Gtk::RESPONSE_ACCEPT)
+		return false;
 
-	return false;
+	item_index = tree->get_selection()->get_selected()->get_value(model_columns.column_index);
+	return true;
 }
 
 
