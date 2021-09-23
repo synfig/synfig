@@ -25,7 +25,6 @@ libmod_magickpp_la_SOURCES = \
 
 libmod_magickpp_la_LDFLAGS = \
 	-module \
-	@MAGICKPP_LIBS@ \
 	-no-undefined \
 	-avoid-version
 
