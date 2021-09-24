@@ -179,7 +179,7 @@ public:
 
 		dialog.show_all();
 		int response = dialog.run();
-		if (response != Gtk::RESPONSE_OK)
+		if (response != RESPONSE_OK)
 			return RESPONSE_CANCEL;
 		return RESPONSE_OK;
 	}
@@ -211,7 +211,7 @@ public:
 		dialog.set_default_response(dflt);
 		dialog.show();
 		int response = dialog.run();
-		if (response != Gtk::RESPONSE_YES && response != Gtk::RESPONSE_NO)
+		if (response != RESPONSE_YES && response != RESPONSE_NO)
 			return RESPONSE_CANCEL;
 		return Response(response);
 	}

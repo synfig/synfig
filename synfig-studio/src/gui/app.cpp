@@ -360,7 +360,7 @@ public:
 
 		dialog.show_all();
 		int response = dialog.run();
-		if (response != Gtk::RESPONSE_OK)
+		if (response != RESPONSE_OK)
 			return RESPONSE_CANCEL;
 		return RESPONSE_OK;
 	}
@@ -391,7 +391,7 @@ public:
 		dialog.set_default_response(dflt);
 		dialog.show();
 		int response = dialog.run();
-		if (response != Gtk::RESPONSE_YES && response != Gtk::RESPONSE_NO)
+		if (response != RESPONSE_YES && response != RESPONSE_NO)
 			return RESPONSE_CANCEL;
 		return Response(response);
 	}
@@ -2507,7 +2507,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
@@ -2562,7 +2562,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	else
 	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -2603,7 +2603,7 @@ App::dialog_open_file_sketch(const std::string &title, std::string &filename, st
 	else
 	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -2664,7 +2664,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -2718,7 +2718,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	else
 	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -2779,7 +2779,7 @@ App::dialog_open_file_image_sequence(const std::string &title, std::set<synfig::
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
 	filenames.clear();
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		std::vector<std::string> files = dialog->get_filenames();
 		filenames.insert(files.begin(), files.end());
 		_preferences.set_value(preference, dirname(dialog->get_filename()));
@@ -2980,7 +2980,7 @@ App::dialog_open_folder(const std::string &title, std::string &foldername, std::
 	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT)
 	{
 		foldername = dialog->get_filename();
 		delete dialog;
@@ -3139,7 +3139,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(basename(filename));
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		if (preference == ANIMATION_DIR_PREFERENCE)
 			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
@@ -3210,7 +3210,7 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 	// set focus to the file name entry(box) of dialog instead to avoid the name
 	// we are going to save changes while changing file filter each time.
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		filename = dialog->get_filename();
 
@@ -3281,7 +3281,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(basename(filename));
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		// add file extension according to file filter selected by user
 		filename = dialog->get_filename();
@@ -3343,7 +3343,7 @@ App::dialog_save_file_sketch(const std::string &title, std::string &filename, st
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(basename(filename));
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		// add file extension according to file filter selected by user
 		filename = dialog->get_filename();
@@ -3393,7 +3393,7 @@ App::dialog_save_file_render(const std::string &title, std::string &filename, st
 
 	}
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT)
 	{
 		filename = dialog->get_filename();
 
