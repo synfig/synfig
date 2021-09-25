@@ -44,33 +44,33 @@ namespace synfig {
 class ValueNode_Composite : public LinkableValueNode
 {
 	ValueNode::RHandle components[MAX_LINKS];
+
 	ValueNode_Composite(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
 
 public:
 	typedef etl::handle<ValueNode_Composite> Handle;
 	typedef etl::handle<const ValueNode_Composite> ConstHandle;
 
+	static ValueNode_Composite* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = nullptr);
+	virtual ~ValueNode_Composite();
 
-	~ValueNode_Composite();
+	virtual ValueBase operator()(Time t) const override;
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual String link_name(int i)const;
-	virtual ValueBase operator()(Time t)const;
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-	virtual int get_link_index_from_name(const String &name)const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
+
+	String link_name(int i) const override;
+	int get_link_index_from_name(const String &name) const override;
 
 protected:
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-	LinkableValueNode* create_new()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-public:
-	using synfig::LinkableValueNode::set_link_vfunc;
-	using synfig::LinkableValueNode::get_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_Composite* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = 0);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
+
 }; // END of class ValueNode_Composite
 
 }; // END of namespace synfig
