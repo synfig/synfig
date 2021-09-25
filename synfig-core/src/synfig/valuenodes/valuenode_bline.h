@@ -33,13 +33,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <vector>
-#include <list>
 
-#include <synfig/valuenode.h>
-#include <synfig/time.h>
-#include <synfig/uniqueid.h>
 #include <synfig/blinepoint.h>
-#include "valuenode_dynamiclist.h"
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -72,43 +68,37 @@ Real bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> *le
 */
 class ValueNode_BLine : public ValueNode_DynamicList
 {
-public:
-
-	typedef etl::handle<ValueNode_BLine> Handle;
-	typedef etl::handle<const ValueNode_BLine> ConstHandle;
-
-
 	ValueNode_BLine(etl::loose_handle<Canvas> canvas = 0);
-
-public:
-
- 	virtual ValueBase operator()(Time t)const;
-
-	virtual ~ValueNode_BLine();
-
-	virtual String link_local_name(int i)const;
-
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
-
-protected:
-
-	LinkableValueNode* create_new()const;
-
-public:
-	//using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_BLine* create(const ValueBase &x=type_list, etl::loose_handle<Canvas> canvas = 0);
 
 	//! Returns the BlinePoint at time t, with the tangents modified if
 	//! the vertex is boned influenced, otherwise returns the Blinepoint at time t.
-	BLinePoint get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t)const;
-	virtual Vocab get_children_vocab_vfunc()const;
+	BLinePoint get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t) const;
+
+public:
+	typedef etl::handle<ValueNode_BLine> Handle;
+	typedef etl::handle<const ValueNode_BLine> ConstHandle;
+
+	static ValueNode_BLine* create(const ValueBase &x=type_list, etl::loose_handle<Canvas> canvas = 0);
+	virtual ~ValueNode_BLine();
+
+	virtual ValueBase operator()(Time t) const override;
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	virtual String link_local_name(int i) const override;
+	static bool check_type(Type &type);
+
+	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5) override;
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
+
+public:
 #ifdef _DEBUG
-	virtual void ref()const;
-	virtual bool unref()const;
+	virtual void ref() const override;
+	virtual bool unref() const override;
 #endif
 }; // END of class ValueNode_BLine
 

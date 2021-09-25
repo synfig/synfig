@@ -51,30 +51,26 @@ class ValueNode_BLineCalcWidth : public LinkableValueNode
 	ValueNode_BLineCalcWidth(Type &x=type_real);
 
 public:
-
 	typedef etl::handle<ValueNode_BLineCalcWidth> Handle;
 	typedef etl::handle<const ValueNode_BLineCalcWidth> ConstHandle;
 
-	virtual ValueBase operator()(Time t, Real amount)const;
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_BLineCalcWidth* create(const ValueBase &x=type_real);
 	virtual ~ValueNode_BLineCalcWidth();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual ValueBase operator()(Time t) const override;
+	virtual ValueBase operator()(Time t, Real amount) const;
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_BLineCalcWidth* create(const ValueBase &x=type_real);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_BLineCalcWidth
 
 }; // END of namespace synfig

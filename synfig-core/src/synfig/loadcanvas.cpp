@@ -1939,7 +1939,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				{
 					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(c[index]);
 					ValueNode_BoneWeightPair::Handle wp = ValueNode_BoneWeightPair::Handle::cast_dynamic(list->get_link_vfunc(0));
-					ValueNode::Handle bone = wp->get_link_vfunc(0);
+					ValueNode::Handle bone = wp->get_link(0);
 					
 					c[index] = bone;
 				}
@@ -2035,7 +2035,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				{
 					ValueNode_StaticList::Handle list = ValueNode_StaticList::Handle::cast_dynamic(c[index]);
 					ValueNode_BoneWeightPair::Handle wp = ValueNode_BoneWeightPair::Handle::cast_dynamic(list->get_link_vfunc(0));
-					ValueNode::Handle bone = wp->get_link_vfunc(0);
+					ValueNode::Handle bone = wp->get_link(0);
 					
 					c[index] = bone;
 				}

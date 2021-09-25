@@ -426,7 +426,7 @@ ValueNode_Bone::get_parent(Time t)const
 		return parent;
 	}
 	assert(0);
-	return ValueNode_Bone::ConstHandle::cast_dynamic(new ValueNode_Bone_Root);
+	return new ValueNode_Bone_Root();
 }
 
 ValueBase
