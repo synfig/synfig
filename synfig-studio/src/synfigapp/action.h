@@ -34,16 +34,16 @@
 
 #define ACTION_MODULE_EXT public: \
 	static const char name__[], local_name__[], version__[], task__[]; \
-	static const Category category__; \
+	static const synfigapp::Action::Category category__; \
 	static const int priority__; \
-	static Action::Base *create(); \
+	static synfigapp::Action::Base *create(); \
 	virtual synfig::String get_name()const;	\
 	virtual synfig::String get_local_name()const;
 
 
 #define ACTION_SET_NAME(class,x) const char class::name__[]=x
 
-#define ACTION_SET_CATEGORY(class,x) const Category class::category__(x)
+#define ACTION_SET_CATEGORY(class,x) const synfigapp::Action::Category class::category__(x)
 
 #define ACTION_SET_TASK(class,x) const char class::task__[]=x
 
@@ -55,7 +55,7 @@
 
 //! don't define get_local_name() - allow the action code to define its own
 #define ACTION_INIT_NO_GET_LOCAL_NAME(class)			  \
-	Action::Base* class::create() { return new class(); } \
+	synfigapp::Action::Base* class::create() { return new class(); } \
 	synfig::String class::get_name()const { return name__; }
 
 #define ACTION_INIT(class)				 \
