@@ -40,6 +40,7 @@
 #include <synfig/segment.h>
 #include <synfig/gradient.h>
 #include <synfig/blinepoint.h>
+#include <synfig/dashitem.h>
 
 #include "valuenode_bline.h"
 #include "valuenode_dilist.h"

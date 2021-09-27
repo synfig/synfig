@@ -32,11 +32,11 @@
 
 #include <synfig/valuenode.h>
 #include "valuenode_derivative.h"
-#include "valuenode_const.h"
 #include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 #define MASS_INERTIA_MINIMUM 0.0000001
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
@@ -86,37 +86,34 @@ private:
 		*/
 	mutable std::vector<double> state;
 	void reset_state(Time t)const;
-public:
 
+public:
 	typedef etl::handle<ValueNode_Dynamic> Handle;
 	typedef etl::handle<const ValueNode_Dynamic> ConstHandle;
 
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_Dynamic* create(const ValueBase &x);
 	virtual ~ValueNode_Dynamic();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_Dynamic* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Dynamic
 
 
 class Oscillator
 {
 	etl::handle<const ValueNode_Dynamic> d;
+
 public:
     Oscillator(const ValueNode_Dynamic* x) : d(x) { }
     void operator() ( const std::vector<double> &x , std::vector<double> &dxdt , const double t )

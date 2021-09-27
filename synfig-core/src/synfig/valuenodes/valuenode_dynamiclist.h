@@ -34,10 +34,9 @@
 #include <vector>
 #include <list>
 
-#include <synfig/valuenode.h>
-#include <synfig/time.h>
-#include <synfig/uniqueid.h>
 #include <synfig/activepoint.h>
+#include <synfig/uniqueid.h>
+#include <synfig/valuenode.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -78,7 +77,16 @@ class Canvas;
 */
 class ValueNode_DynamicList : public LinkableValueNode
 {
+	Type *container_type;
+	bool loop_;
+
+protected:
+	ValueNode_DynamicList(Type &container_type=type_nil, etl::loose_handle<Canvas> canvas = 0);
+	ValueNode_DynamicList(Type &container_type, Type &type, etl::loose_handle<Canvas> canvas = 0);
+
 public:
+	typedef etl::handle<ValueNode_DynamicList> Handle;
+	typedef etl::handle<const ValueNode_DynamicList> ConstHandle;
 
 	/*! \class ListEntry
 	**	\brief Contains a potential list item, and associated timing information
@@ -161,54 +169,56 @@ public:
 		ListEntry(const ValueNode::Handle &value_node,Time begin, Time end);
 	}; // END of struct ValueNode_DynamicList::ListEntry
 
-	typedef etl::handle<ValueNode_DynamicList> Handle;
-	typedef etl::handle<const ValueNode_DynamicList> ConstHandle;
-
-protected:
-	ValueNode_DynamicList(Type &container_type=type_nil, etl::loose_handle<Canvas> canvas = 0);
-	ValueNode_DynamicList(Type &container_type, Type &type, etl::loose_handle<Canvas> canvas = 0);
-
-	Type *container_type;
-
-	bool loop_;
-
-
-public:
 	std::vector<ListEntry> list;
 
+	static ValueNode_DynamicList* create(const ValueBase &x=type_gradient);
+	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID()) const override;
+	virtual ~ValueNode_DynamicList();
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
+
+	virtual int link_count() const override;
+	virtual String link_local_name(int i) const override;
+	virtual String link_name(int i) const override;
+	virtual int get_link_index_from_name(const String &name) const override;
+
+	virtual ValueBase operator()(Time t) const override;
+
+	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual void get_times_vfunc(Node::time_set &set) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
+
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
 public:
+	/*! \note The construction parameter (\a type) is the type that the list
+	**	contains, rather than the type that it will yield
+	**	(which is ValueBase::TYPE_LIST)
+	*/
+	static Handle create_on_canvas(Type &type=type_nil, etl::loose_handle<Canvas> canvas = 0);
 
 	void add(const ValueNode::Handle &value_node, int index=-1) { add(ListEntry(value_node), index); }
 	void add(const ListEntry &value_node, int index=-1);
 	void erase(const ValueNode::Handle &value_node);
 	void reindex();
 
-	int find_next_valid_entry(int x, Time t)const;
-	int find_prev_valid_entry(int x, Time t)const;
+	int find_next_valid_entry(int x, Time t) const;
+	int find_prev_valid_entry(int x, Time t) const;
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual int link_count()const;
-
-	virtual String link_name(int i)const;
-
- 	virtual ValueBase operator()(Time t)const;
-
-	virtual ~ValueNode_DynamicList();
-
-	virtual String link_local_name(int i)const;
-	virtual int get_link_index_from_name(const String &name)const;
-
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-	bool get_loop()const { return loop_; }
+	bool get_loop() const { return loop_; }
 	void set_loop(bool x) { loop_=x; }
 
 	void set_member_canvas(etl::loose_handle<Canvas>);
 
-	Type& get_contained_type()const;
-
+	Type& get_contained_type() const;
 
 	// TODO: better type-checking
 	template <typename iterator> static Handle
@@ -221,30 +231,6 @@ public:
 	}
 
 	void insert_time(const Time& location, const Time& delta);
-	//void manipulate_time(const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end);
-
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
-
-	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
-
-protected:
-
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	LinkableValueNode* create_new()const;
-
-	virtual void get_times_vfunc(Node::time_set &set) const;
-
-public:
-	/*! \note The construction parameter (\a id) is the type that the list
-	**	contains, rather than the type that it will yield
-	**	(which is ValueBase::TYPE_LIST)
-	*/
-	static Handle create_on_canvas(Type &type=type_nil, etl::loose_handle<Canvas> canvas = 0);
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_DynamicList* create(const ValueBase &x=type_gradient);
-	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_DynamicList
 
 typedef ValueNode_DynamicList::ListEntry::Activepoint Activepoint;

@@ -43,6 +43,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/curve.h>
+#include <synfig/dashitem.h>
 
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>

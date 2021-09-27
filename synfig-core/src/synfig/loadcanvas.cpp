@@ -56,6 +56,7 @@
 
 #include "blur.h"
 #include "boneweightpair.h"
+#include "dashitem.h"
 #include "exception.h"
 #include "importer.h"
 #include "gradient.h"

@@ -47,36 +47,33 @@ class ValueNode_Duplicate : public LinkableValueNode
 	ValueNode::RHandle step_;
 	mutable Real index;
 
+	ValueNode_Duplicate(Type &x);
+	ValueNode_Duplicate(const ValueBase &x);
+
 public:
 	typedef etl::handle<ValueNode_Duplicate> Handle;
 	typedef etl::handle<const ValueNode_Duplicate> ConstHandle;
 
-	ValueNode_Duplicate(Type &x);
-	ValueNode_Duplicate(const ValueBase &x);
-
-	virtual ValueBase operator()(Time t)const;
-	void reset_index(Time t)const;
-	bool step(Time t)const;
-	int count_steps(Time t)const;
-
+	static ValueNode_Duplicate* create(const ValueBase &x);
 	virtual ~ValueNode_Duplicate();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual ValueBase operator()(Time t) const override;
+
+	void reset_index(Time t) const;
+	bool step(Time t) const;
+	int count_steps(Time t) const;
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_Duplicate* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Duplicate
 
 }; // END of namespace synfig
