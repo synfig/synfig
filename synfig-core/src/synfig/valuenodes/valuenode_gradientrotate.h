@@ -42,43 +42,31 @@ namespace synfig {
 
 class ValueNode_GradientRotate : public LinkableValueNode
 {
+	ValueNode::RHandle ref_gradient;
+	ValueNode::RHandle ref_offset;
+
+	ValueNode_GradientRotate(const Gradient& x);
+
 public:
 	typedef etl::handle<ValueNode_GradientRotate> Handle;
 	typedef etl::handle<const ValueNode_GradientRotate> ConstHandle;
 
-protected:
-
-	ValueNode_GradientRotate(const Gradient& x);
-
-private:
-
-	ValueNode::RHandle ref_gradient;
-	ValueNode::RHandle ref_offset;
-
-public:
-
+	static ValueNode_GradientRotate* create(const ValueBase &x=type_gradient);
 	virtual ~ValueNode_GradientRotate();
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual ValueBase operator()(Time t)const;
-
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-//	static bool check_type(Type &type);
-protected:
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-
-	LinkableValueNode* create_new()const;
-
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-
-	using synfig::LinkableValueNode::set_link_vfunc;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
 	static bool check_type(Type &type);
-	static ValueNode_GradientRotate* create(const ValueBase &x=type_gradient);
-	virtual Vocab get_children_vocab_vfunc()const;
+
+	virtual ValueBase operator()(Time t) const override;
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_GradientRotate
 
 }; // END of namespace synfig

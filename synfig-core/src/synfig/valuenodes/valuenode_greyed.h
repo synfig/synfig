@@ -41,20 +41,21 @@ namespace synfig {
 
 class ValueNode_Greyed : public ValueNode_Reference
 {
-public:
-	typedef etl::handle<ValueNode_Greyed> Handle;
 	ValueNode_Greyed(Type &x);
 	ValueNode_Greyed(const ValueNode::Handle &x);
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+public:
+	typedef etl::handle<ValueNode_Greyed> Handle;
+
+	static ValueNode_Greyed* create(const ValueBase &x);
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
 
 protected:
-	LinkableValueNode* create_new()const;
+	LinkableValueNode* create_new() const override;
 
-public:
-	static ValueNode_Greyed* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Greyed
 
 }; // END of namespace synfig
