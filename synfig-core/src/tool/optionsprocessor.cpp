@@ -36,16 +36,12 @@
 #include <synfig/localization.h>
 #include <synfig/canvas.h>
 #include <synfig/canvasfilenaming.h>
-#include <synfig/context.h>
 #include <synfig/target.h>
 #include <synfig/layer.h>
 #include <synfig/module.h>
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/valuenode_registry.h>
-#include <synfig/filesystemgroup.h>
-#include <synfig/filesystemnative.h>
-#include <synfig/filecontainerzip.h>
 
 #include "definitions.h"
 #include "job.h"
@@ -420,7 +416,6 @@ void SynfigCommandLineParser::process_trivial_info_options()
 
 }
 
-//void OptionsProcessor::process_info_options()
 void SynfigCommandLineParser::process_info_options()
 {
 	if (show_layers_list) {
@@ -494,7 +489,6 @@ void SynfigCommandLineParser::process_info_options()
 	}
 }
 
-//RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 {
 	RendDesc desc = renddesc;
@@ -581,7 +575,6 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 	return desc;
 }
 
-//TargetParam OptionsProcessor::extract_targetparam()
 TargetParam SynfigCommandLineParser::extract_targetparam()
 {
 	TargetParam params;
@@ -639,7 +632,6 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 	return params;
 }
 
-//Job OptionsProcessor::extract_job()
 Job SynfigCommandLineParser::extract_job()
 {
 	Job job;
@@ -799,7 +791,6 @@ Job SynfigCommandLineParser::extract_job()
 	return job;
 }
 
-//void OptionsProcessor::print_target_video_codecs_help() const
 void SynfigCommandLineParser::print_target_video_codecs_help() const
 {
 	for (std::vector<VideoCodec>::const_iterator itr = _allowed_video_codecs.begin();
@@ -841,8 +832,7 @@ void signal_test()
 }
 
 // DEBUG options ----------------------------------------------
-//void OptionsProcessor::process_debug_options() throw (SynfigToolException&)
-void SynfigCommandLineParser::process_debug_options() throw (SynfigToolException&)
+void SynfigCommandLineParser::process_debug_options()
 {
 	if (debug_signal)
 	{
@@ -858,4 +848,3 @@ void SynfigCommandLineParser::process_debug_options() throw (SynfigToolException
 }
 
 #endif
-
