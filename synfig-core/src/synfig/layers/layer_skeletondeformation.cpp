@@ -97,7 +97,7 @@ Layer_SkeletonDeformation::get_param_vocab()const
 
 	ret.push_back(ParamDesc("bones")
 		.set_local_name(_("Bones"))
-		.set_description(_("List of bones"))
+		.set_description(_("List of bone pairs. The first value in the pair is the bone in rest position; the second one represents the pose"))
 		.set_static(true)
 	);
 
