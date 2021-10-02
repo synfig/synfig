@@ -52,36 +52,33 @@ class ValueNode_Random : public LinkableValueNode
 
 	mutable RandomNoise random;
 	//RandomNoise::SmoothType smooth;
+
 	ValueNode_Random(const ValueBase &value);
 
 public:
-
 	typedef etl::handle<ValueNode_Random> Handle;
 	typedef etl::handle<const ValueNode_Random> ConstHandle;
 
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_Random* create(const ValueBase &x);
+	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID()) const override;
 	virtual ~ValueNode_Random();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
-
-	void randomize_seed();
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_Random* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
+
+private:
+	void randomize_seed();
 }; // END of class ValueNode_Random
 
 }; // END of namespace synfig
