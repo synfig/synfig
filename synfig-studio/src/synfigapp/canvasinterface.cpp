@@ -934,7 +934,7 @@ CanvasInterface::import(
 		get_selection_manager()->clear_selected_layers();
 		get_selection_manager()->set_selected_layer(l);
 
-		return layer;
+		return l;
 	}
 	catch(...)
 	{
