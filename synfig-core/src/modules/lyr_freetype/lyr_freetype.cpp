@@ -521,29 +521,37 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 
 	FaceCache &face_cache = FaceCache::instance();
 
-	FaceInfo face_info = face_cache.get(meta);
-	FT_Face tmp_face = face_info.face;
-	if (tmp_face) {
-		face = tmp_face;
+	{
+		FaceInfo face_info = face_cache.get(meta);
+		FT_Face tmp_face = face_info.face;
+		if (tmp_face) {
+			face = tmp_face;
+	#if HAVE_HARFBUZZ
+			font = face_info.font;
+	#endif
+			return true;
+		}
+	}
+
+	auto cache_face = [&](FT_Face face) {
+		if (!font_path_from_canvas)
+			meta.canvas_path.clear();
+		FaceInfo face_info(face);
+		face_cache.put(meta, FaceInfo(face));
 #if HAVE_HARFBUZZ
 		font = face_info.font;
 #endif
-		return true;
-	}
+	};
 
 	if (has_valid_font_extension(font_fam_))
 		if (new_face(font_fam_)) {
-			if (!font_path_from_canvas)
-				meta.canvas_path.clear();
-			face_cache.put(meta, FaceInfo(face));
+			cache_face(face);
 			return true;
 		}
 
 #ifdef WITH_FONTCONFIG
 	if (new_face(fontconfig_get_filename(font_fam_, style, weight))) {
-		if (!font_path_from_canvas)
-			meta.canvas_path.clear();
-		face_cache.put(meta, FaceInfo(face));
+		cache_face(face);
 		return true;
 	}
 #endif
@@ -553,16 +561,12 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 
 	for (std::string& filename : filename_list) {
 		if (new_face(filename)) {
-			if (!font_path_from_canvas)
-				meta.canvas_path.clear();
-			face_cache.put(meta, FaceInfo(face));
+			cache_face(face);
 			return true;
 		}
 	}
 	if (new_face(font_fam_)) {
-		if (!font_path_from_canvas)
-			meta.canvas_path.clear();
-		face_cache.put(meta, FaceInfo(face));
+		cache_face(face);
 		return true;
 	}
 
