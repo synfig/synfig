@@ -416,7 +416,11 @@ LayerDuplicate::replace_valuenodes(const std::map<synfig::Layer::Handle,synfig::
 
 		auto cloned_layer = layer_pair.second;
 
-		for(auto iter=cloned_layer->dynamic_param_list().cbegin();iter!=cloned_layer->dynamic_param_list().cend();++iter)
+		// disconnect_dynamic_param/connect_dynamic_param can change dynamic_param_list() while iterating
+		// which makes iter invalid, so we create a copy of dynamic_param_list() first
+		auto param_list = cloned_layer->dynamic_param_list();
+
+		for (auto iter=param_list.cbegin();iter!=param_list.cend();++iter)
 		{
 			for (const auto& vn_pair : cloned_valuenode_map) {
 				if (iter->second == vn_pair.first) {
