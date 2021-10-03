@@ -242,12 +242,12 @@ StateBone_Context::load_settings()
 		}
 
 		if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
-			set_skel_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
+			set_skel_bone_width(Distance(value));
 		else
 			set_skel_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
 
 		if(settings.get_value("bone.skel_deform_bone_width",value) && !value.empty())
-			set_skel_deform_bone_width(Distance(atof(value.c_str()),Distance::SYSTEM_UNITS));
+			set_skel_deform_bone_width(Distance(value));
 		else
 			set_skel_deform_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
 	}
