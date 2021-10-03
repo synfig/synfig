@@ -291,7 +291,7 @@ LayerActionManager::refresh()
 
 				action_amount_inc_->set_sensitive(!layer_list.empty());
 				action_amount_dec_->set_sensitive(!layer_list.empty());
-				if (etl::handle<Layer_Skeleton>::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
+				if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
 					action_amount_inc_->set_label(_("Increase Opacity"));
 					action_amount_dec_->set_label(_("Decrease Opacity"));
 				} else {

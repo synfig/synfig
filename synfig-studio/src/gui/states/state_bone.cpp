@@ -436,7 +436,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	//ducks
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 
-	if(etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer)){
+	if(Layer_SkeletonDeformation::Handle::cast_dynamic(layer)){
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH));
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		layer->disable();
@@ -612,8 +612,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 	Point releaseOrigin(get_work_area()->snap_point_to_grid(event.pos));
 
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-	Layer_Skeleton::Handle skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
+	Layer_Skeleton::Handle skel_layer = Layer_Skeleton::Handle::cast_dynamic(layer);
+	Layer_SkeletonDeformation::Handle deform_layer = Layer_SkeletonDeformation::Handle::cast_dynamic(layer);
 	const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 
 	Action::Handle createChild(Action::Handle(Action::create("ValueDescCreateChildBone")));
@@ -849,8 +849,8 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 {
 	int cnt = get_canvas_interface()->get_selection_manager()->get_selected_layer_count();
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-	Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-	Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
+	Layer_Skeleton::Handle skel_layer = Layer_Skeleton::Handle::cast_dynamic(layer);
+	Layer_SkeletonDeformation::Handle deform_layer = Layer_SkeletonDeformation::Handle::cast_dynamic(layer);
 	std::string value;
 
 	if(cnt<=1){
@@ -1064,8 +1064,8 @@ StateBone_Context::_on_signal_change_active_bone(ValueNode::Handle node){
 	active_bone = nullptr;
 	if(ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(node)){
 		Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-		Layer_Skeleton::Handle  skel_layer = etl::handle<Layer_Skeleton>::cast_dynamic(layer);
-		Layer_SkeletonDeformation::Handle deform_layer = etl::handle<Layer_SkeletonDeformation>::cast_dynamic(layer);
+		Layer_Skeleton::Handle skel_layer = Layer_Skeleton::Handle::cast_dynamic(layer);
+		Layer_SkeletonDeformation::Handle deform_layer = Layer_SkeletonDeformation::Handle::cast_dynamic(layer);
 
 		ValueDesc list_desc(layer,"bones");
 		ValueNode_StaticList::Handle list_node;
