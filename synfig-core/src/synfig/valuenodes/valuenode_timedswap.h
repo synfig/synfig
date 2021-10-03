@@ -42,12 +42,6 @@ namespace synfig {
 
 class ValueNode_TimedSwap : public LinkableValueNode
 {
-public:
-	typedef etl::handle<ValueNode_TimedSwap> Handle;
-	typedef etl::handle<const ValueNode_TimedSwap> ConstHandle;
-
-private:
-
 	ValueNode::RHandle before;
 	ValueNode::RHandle after;
 	ValueNode::RHandle swap_time;
@@ -56,30 +50,25 @@ private:
 	ValueNode_TimedSwap(const ValueBase &value);
 
 public:
+	typedef etl::handle<ValueNode_TimedSwap> Handle;
+	typedef etl::handle<const ValueNode_TimedSwap> ConstHandle;
 
-//	static Handle create(Type &type);
-
+	static ValueNode_TimedSwap* create(const ValueBase &x);
 	virtual ~ValueNode_TimedSwap();
 
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual ValueBase operator()(Time t)const;
-
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-//	static bool check_type(Type &type);
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
+	virtual LinkableValueNode* create_new() const override;
 
-	virtual LinkableValueNode* create_new()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_TimedSwap* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_TimedSwap
 
 }; // END of namespace synfig

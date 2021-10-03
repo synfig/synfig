@@ -47,39 +47,35 @@ class ValueNode_TimeLoop : public LinkableValueNode
 	ValueNode::RHandle local_time_;
 	ValueNode::RHandle duration_;
 
+	ValueNode_TimeLoop(Type &x);
+	ValueNode_TimeLoop(const ValueNode::Handle &x);
+
 public:
 	typedef etl::handle<ValueNode_TimeLoop> Handle;
 	typedef etl::handle<const ValueNode_TimeLoop> ConstHandle;
 
-	ValueNode_TimeLoop(Type &x);
-	ValueNode_TimeLoop(const ValueNode::Handle &x);
-
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_TimeLoop* create(const ValueBase &x);
 	virtual ~ValueNode_TimeLoop();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-
-	using synfig::LinkableValueNode::set_link_vfunc;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
 	static bool check_type(Type &type);
-	static ValueNode_TimeLoop* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+
+	virtual ValueBase operator()(Time t) const override;
 
 	//! Checks if it is possible to call get_inverse() for target_value at time t.
 	//! If so, return the link_index related to the return value provided by get_inverse()
-	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const;
+	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const override;
 	//! Returns the modified Link to match the target value at time t
-	virtual ValueBase get_inverse(const Time& t, const synfig::ValueBase &target_value) const;
+	virtual ValueBase get_inverse(const Time& t, const synfig::ValueBase &target_value) const override;
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_TimeLoop
 
 }; // END of namespace synfig

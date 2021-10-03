@@ -47,31 +47,25 @@ class ValueNode_TimeString : public LinkableValueNode
 	ValueNode_TimeString(const ValueBase &value);
 
 public:
-
 	typedef etl::handle<ValueNode_TimeString> Handle;
 	typedef etl::handle<const ValueNode_TimeString> ConstHandle;
 
-
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_TimeString* create(const ValueBase &x);
 	virtual ~ValueNode_TimeString();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_TimeString* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_TimeString
 
 }; // END of namespace synfig
