@@ -42,44 +42,33 @@ namespace synfig {
 
 class ValueNode_Stripes : public LinkableValueNode
 {
-public:
-	typedef etl::handle<ValueNode_Stripes> Handle;
-	typedef etl::handle<const ValueNode_Stripes> ConstHandle;
-
-protected:
-
-	ValueNode_Stripes();
-
-private:
-
 	ValueNode::RHandle color1_;
 	ValueNode::RHandle color2_;
 	ValueNode::RHandle stripes_;
 	ValueNode::RHandle width_;
 
-public:
+	ValueNode_Stripes();
 
+public:
+	typedef etl::handle<ValueNode_Stripes> Handle;
+	typedef etl::handle<const ValueNode_Stripes> ConstHandle;
+
+	static ValueNode_Stripes* create(const ValueBase &x=type_gradient);
 	virtual ~ValueNode_Stripes();
 
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual ValueBase operator()(Time t)const;
-
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-//	static bool check_type(Type &type);
-
-	LinkableValueNode* create_new()const;
-
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
 	static bool check_type(Type &type);
-	static ValueNode_Stripes* create(const ValueBase &x=type_gradient);
-	virtual Vocab get_children_vocab_vfunc()const;
+
+	virtual ValueBase operator()(Time t) const override;
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Stripes
 
 }; // END of namespace synfig

@@ -42,39 +42,42 @@ namespace synfig {
 
 class ValueNode_Subtract : public LinkableValueNode
 {
-public:
-	typedef etl::handle<ValueNode_Subtract> Handle;
-	typedef etl::handle<const ValueNode_Subtract> ConstHandle;
-
-protected:
-	ValueNode_Subtract(const ValueBase &value);
-
-private:
 	ValueNode::RHandle ref_a;
 	ValueNode::RHandle ref_b;
 	ValueNode::RHandle scalar;
 
+	ValueNode_Subtract(const ValueBase &value);
+
 public:
-	LinkableValueNode* create_new()const;
+	typedef etl::handle<ValueNode_Subtract> Handle;
+	typedef etl::handle<const ValueNode_Subtract> ConstHandle;
+
 	static ValueNode_Subtract* create(const ValueBase &value=ValueBase());
 	virtual ~ValueNode_Subtract();
-	virtual ValueBase operator()(Time t)const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
 	static bool check_type(Type &type);
 
+	virtual ValueBase operator()(Time t) const override;
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
+
+public:
 	//! Gets the left-hand-side value_node
-	ValueNode::Handle get_lhs()const { return ref_a; }
+	ValueNode::Handle get_lhs() const { return ref_a; }
 
 	//! Gets the right-hand-side value_node
-	ValueNode::Handle get_rhs()const { return ref_b; }
+	ValueNode::Handle get_rhs() const { return ref_b; }
 
 	//! Gets the scalar value_node
-	ValueNode::Handle get_scalar()const { return scalar; }
-
-	virtual Vocab get_children_vocab_vfunc()const;
+	ValueNode::Handle get_scalar() const { return scalar; }
 }; // END of class ValueNode_Subtract
 
 }; // END of namespace synfig
