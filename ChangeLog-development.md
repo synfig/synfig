@@ -1,3 +1,8 @@
+- [`61a290b`](https://github.com/synfig/synfig/commit/61a290b1aaf58366149662ae0ad224127711aea8) Fixed crash of test on Void Linux ([#2265](https://github.com/synfig/synfig/issues/2265)) [studio]
+- [`269d895`](https://github.com/synfig/synfig/commit/269d895a128b947130f4b91a3e498b6070a5b4fd) Select parent group after image import ([#2339](https://github.com/synfig/synfig/issues/2339)) [studio]
+- [`84f1241`](https://github.com/synfig/synfig/commit/84f124171763b449efb9dca024b1ba4abaa79051) Bone Tool: fix default bone width preference loading ([#2343](https://github.com/synfig/synfig/issues/2343)) [studio]
+- [`5312fea`](https://github.com/synfig/synfig/commit/5312fea69f2bbbca5c8f552990a1f8c16d506ccc) Merge PR [#2232](https://github.com/synfig/synfig/issues/2232): Add better support for RTL text to Text Layer [core]
+- [`fcaa6fb`](https://github.com/synfig/synfig/commit/fcaa6fb5f05886e48ffac315ead3767a1104c0b2) Merge PR [#2325](https://github.com/synfig/synfig/issues/2325): Skeleton Tool cleanup [studio]
 - [`fb374ca`](https://github.com/synfig/synfig/commit/fb374cabd9db10cd4d49e1ad83ffbb5bb5d0be91) minor cleanup in ValueDescBoneSetParent action ([#2331](https://github.com/synfig/synfig/issues/2331)) [studio]
 - [`dda0317`](https://github.com/synfig/synfig/commit/dda03175bad54c445fdf671636335c6cd59380ec) Fix regression: importing image making it upside-down ([#2333](https://github.com/synfig/synfig/issues/2333)) [studio]
 - [`cbdc86a`](https://github.com/synfig/synfig/commit/cbdc86ad63aefe27253a883a49435fbd8eebe44b) Fix *again* dialog responses. Mistakes made in 5ffa7928dd55ae66f77b8ea4e61f2864f0f72b10 ([#2329](https://github.com/synfig/synfig/issues/2329)) [studio]
