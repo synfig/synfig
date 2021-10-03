@@ -36,6 +36,10 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
+
+#if HAVE_HARFBUZZ
+#include <harfbuzz/hb.h>
+#endif
 #include <vector>
 
 /* === M A C R O S ========================================================= */
@@ -58,6 +62,8 @@ private:
 	synfig::ValueBase param_style;
 	//!Parameter: (int) weight used in the font
 	synfig::ValueBase param_weight;
+	//!Parameter: (int) diretion of the text
+	synfig::ValueBase param_direction;
 	//!Parameter: (synfig::Real) horizontal spacing
 	synfig::ValueBase param_compress;
 	//!Parameter: (synfig::Real) vertical spacing
@@ -78,39 +84,59 @@ private:
 	synfig::ValueBase param_invert;
 
 	FT_Face face;
+#if HAVE_HARFBUZZ
+	hb_font_t *font;
+#endif
+	struct TextSpan
+	{
+		std::vector<uint32_t> codepoints;
+#if HAVE_HARFBUZZ
+		hb_script_t script;
+#endif
+	};
+
+	typedef std::vector<TextSpan> TextLine;
+	std::vector<TextLine> lines;
 
 	bool font_path_from_canvas;
 
 	bool old_version;
-	bool needs_sync_;
+	std::atomic<bool> needs_sync {false};
 
 	void sync();
 
 	synfig::Color color_func(const synfig::Point &x, int quality=10, synfig::ColorReal supersample=0)const;
 
 	mutable std::mutex mutex;
+	mutable std::mutex sync_mtx;
 
 public:
 	Layer_Freetype();
-	virtual ~Layer_Freetype();
+	~Layer_Freetype() override = default;
 
-	virtual void on_canvas_set();
-	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	void on_canvas_set() override;
+	bool set_param(const synfig::String & param, const synfig::ValueBase &value) override;
+	synfig::ValueBase get_param(const synfig::String & param) const override;
+	synfig::Color get_color(synfig::Context context, const synfig::Point &pos) const override;
+	bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb) const override;
 
-	virtual Vocab get_param_vocab()const;
+	Vocab get_param_vocab() const override;
 
-	virtual bool set_version(const synfig::String &ver){if(ver=="0.1")old_version=true;return true;}
-	virtual void reset_version(){old_version=false;}
+	bool set_version(const synfig::String &ver) override { if (ver=="0.1") old_version=true; return true; }
+	void reset_version() override {old_version=false;}
 
-	virtual synfig::Rect get_bounding_rect()const;
+	synfig::Rect get_bounding_rect() const override;
 
 private:
 	void new_font(const synfig::String &family, int style=0, int weight=400);
 	bool new_font_(const synfig::String &family, int style=0, int weight=400);
 	bool new_face(const synfig::String &newfont);
+
+	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);
+
+	void on_param_text_changed();
+
+	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
 };
 
 /* === E N D =============================================================== */

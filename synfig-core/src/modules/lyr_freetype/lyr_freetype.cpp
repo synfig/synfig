@@ -41,24 +41,18 @@
 
 #include "lyr_freetype.h"
 
-#include <synfig/localization.h>
-#include <synfig/general.h>
-
-#include <synfig/canvasfilenaming.h>
-
-#include <synfig/context.h>
-
-//#ifdef __APPLE__
-//#define USE_MAC_FT_FUNCS	(1)
-//#endif
-
-#ifdef USE_MAC_FT_FUNCS
-	#include <CoreServices/CoreServices.h>
-	#include FT_MAC_H
-#endif
-
 #include <algorithm>
 #include <glibmm.h>
+
+#if HAVE_HARFBUZZ
+#include <fribidi/fribidi.h>
+#include <harfbuzz/hb-ft.h>
+#endif
+
+#include <synfig/canvasfilenaming.h>
+#include <synfig/context.h>
+#include <synfig/general.h>
+#include <synfig/localization.h>
 
 #endif
 
@@ -66,8 +60,6 @@ using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
-
-#define MAX_GLYPHS		2000
 
 // Copy of PangoStyle
 // It is necessary to keep original values if Pango ever change them
@@ -98,13 +90,19 @@ enum TextWeight{
 	TEXT_WEIGHT_ULTRAHEAVY = 1000
 };
 
+enum TextDirection{
+	TEXT_DIRECTION_AUTO = 0,
+	TEXT_DIRECTION_LTR = 1,
+	TEXT_DIRECTION_RTL = 2,
+};
+
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Layer_Freetype);
 SYNFIG_LAYER_SET_NAME(Layer_Freetype,"text");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,N_("Text"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.3");
+SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.4");
 
 #ifndef __APPLE__
 static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".ttc"};
@@ -114,34 +112,32 @@ static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", 
 
 extern FT_Library ft_library;
 
+/// NL/LF, VT, FF, CR, NEL, LS and PS
+static const std::vector<uint32_t> line_endings{'\n', '\v', '\f', '\r', 0x0085, 0x2028, 0x2029};
+
 /* === C L A S S E S ======================================================= */
 
 struct Glyph
 {
 	FT_Glyph glyph;
 	FT_Vector pos;
-	//int width;
 };
 
-struct TextLine
+struct VisualTextLine
 {
-	int width;
+	int width = 0;
 	std::vector<Glyph> glyph_table;
 
-	TextLine():width(0) { }
-	void clear_and_free();
-
-	int actual_height()const
+	uint32_t actual_height() const
 	{
-		int height(0);
+		uint32_t height(0);
 
-		std::vector<Glyph>::const_iterator iter;
-		for(iter=glyph_table.begin();iter!=glyph_table.end();++iter)
+		for (const auto& glyph : glyph_table)
 		{
 			FT_BBox   glyph_bbox;
 
 			//FT_Glyph_Get_CBox( glyphs[n], ft_glyph_bbox_pixels, &glyph_bbox );
-			FT_Glyph_Get_CBox( iter->glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
+			FT_Glyph_Get_CBox( glyph.glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
 
 			if(glyph_bbox.yMax>height)
 				height=glyph_bbox.yMax;
@@ -153,7 +149,7 @@ struct TextLine
 #ifdef WITH_FONTCONFIG
 // Allow proper finalization of FontConfig
 struct FontConfigWrap {
-	static FcConfig* init() {
+	static FcConfig* instance() {
 		static FontConfigWrap obj;
 		return obj.config;
 	}
@@ -193,8 +189,8 @@ struct FontMeta {
 	//!  Empty string otherwise
 	std::string canvas_path;
 
-	FontMeta(synfig::String family, int style=0, int weight=400)
-		: family(family), style(style), weight(weight)
+	explicit FontMeta(synfig::String family, int style=0, int weight=400)
+		: family(std::move(family)), style(style), weight(weight)
 	{}
 
 	bool operator==(const FontMeta& other) const
@@ -226,18 +222,35 @@ struct FontMeta {
 	}
 };
 
+struct FaceInfo {
+	FT_Face face = nullptr;
+#if HAVE_HARFBUZZ
+	hb_font_t *font = nullptr;
+#endif
+
+	FaceInfo() = default;
+	explicit FaceInfo(FT_Face ft_face)
+		: face(ft_face)
+	{
+#if HAVE_HARFBUZZ
+		font = hb_ft_font_create(face, nullptr);
+#endif
+	}
+};
+
 /// Cache font faces for speeding up the text layer rendering
 class FaceCache {
-	std::map<FontMeta, FT_Face> cache;
+	std::map<FontMeta, FaceInfo> cache;
+	FaceCache() = default; // Make constructor private to prevent instancing
 public:
-	FT_Face get(const FontMeta &meta) const {
+	FaceInfo get(const FontMeta &meta) const {
 		auto iter = cache.find(meta);
 		if (iter != cache.end())
 			return iter->second;
-		return nullptr;
+		return FaceInfo();
 	}
 
-	void put(const FontMeta &meta, FT_Face face) {
+	void put(const FontMeta &meta, FaceInfo face) {
 		cache[meta] = face;
 	}
 
@@ -247,8 +260,12 @@ public:
 	}
 
 	void clear() {
-		for (auto item : cache)
-			FT_Done_Face(item.second);
+		for (const auto& item : cache) {
+			FT_Done_Face(item.second.face);
+#if HAVE_HARFBUZZ
+			hb_font_destroy(item.second.font);
+#endif
+		}
 		cache.clear();
 	}
 
@@ -257,9 +274,9 @@ public:
 		return obj;
 	}
 
-private:
-	FaceCache() {}
-	FaceCache(const FaceCache&) = delete;
+	FaceCache(const FaceCache&) = delete; // Copy prohibited
+	void operator=(const FaceCache&) = delete; // Assignment prohibited
+	FaceCache& operator=(FaceCache&&) = delete; // Move assignment prohibited
 
 	~FaceCache() {
 		clear();
@@ -268,29 +285,11 @@ private:
 
 /* === P R O C E D U R E S ================================================= */
 
-/*Glyph::~Glyph()
-{
-	if(glyph)FT_Done_Glyph(glyph);
-}
-*/
-void
-TextLine::clear_and_free()
-{
-	std::vector<Glyph>::iterator iter;
-	for(iter=glyph_table.begin();iter!=glyph_table.end();++iter)
-	{
-		if(iter->glyph)FT_Done_Glyph(iter->glyph);
-		iter->glyph=0;
-	}
-	glyph_table.clear();
-}
-
 static bool
 has_valid_font_extension(const std::string &filename) {
 	std::string extension = etl::filename_extension(filename);
 	return std::find(known_font_extensions.begin(), known_font_extensions.end(), extension) != known_font_extensions.end();
 }
-
 
 /// Try to map a font family to a filename (without extension nor directory)
 static void
@@ -422,7 +421,7 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 				list.push_back(filename);
 
 				filename = entry.preffix;
-				filename += entry.get_alternative_suffix(style, weight);
+				filename += FontFileNameEntry::get_alternative_suffix(style, weight);
 				list.push_back(filename);
 			}
 		}
@@ -432,9 +431,11 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 /* === M E T H O D S ======================================================= */
 
 Layer_Freetype::Layer_Freetype()
+	: face(nullptr)
 {
-	face=0;
-
+#if HAVE_HARFBUZZ
+	font = nullptr;
+#endif
 	param_size=ValueBase(Vector(0.25,0.25));
 	param_text=ValueBase(_("Text Layer"));
 	param_color=ValueBase(Color::black());
@@ -444,6 +445,7 @@ Layer_Freetype::Layer_Freetype()
 	param_vcompress=ValueBase(Real(1.0));
 	param_weight=ValueBase(TEXT_WEIGHT_NORMAL);
 	param_style=ValueBase(TEXT_STYLE_NORMAL);
+	param_direction=ValueBase(TEXT_DIRECTION_AUTO);
 	param_family=ValueBase((const char*)"Sans Serif");
 	param_use_kerning=ValueBase(true);
 	param_grid_fit=ValueBase(false);
@@ -455,7 +457,7 @@ Layer_Freetype::Layer_Freetype()
 	old_version=false;
 
 	set_blend_method(Color::BLEND_COMPOSITE);
-	needs_sync_=true;
+	needs_sync=true;
 
 	synfig::String family=param_family.get(synfig::String());
 	int style=param_style.get(int());
@@ -467,10 +469,6 @@ Layer_Freetype::Layer_Freetype()
 	SET_STATIC_DEFAULTS();
 
 	set_description(param_text.get(String()));
-}
-
-Layer_Freetype::~Layer_Freetype()
-{
 }
 
 void
@@ -518,19 +516,21 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 
 	FaceCache &face_cache = FaceCache::instance();
 
-	FT_Face tmp_face = face_cache.get(meta);
+	FaceInfo face_info = face_cache.get(meta);
+	FT_Face tmp_face = face_info.face;
 	if (tmp_face) {
 		face = tmp_face;
+#if HAVE_HARFBUZZ
+		font = face_info.font;
+#endif
 		return true;
 	}
-
-	synfig::String font_fam(font_fam_);
 
 	if (has_valid_font_extension(font_fam_))
 		if (new_face(font_fam_)) {
 			if (!font_path_from_canvas)
 				meta.canvas_path.clear();
-			face_cache.put(meta, face);
+			face_cache.put(meta, FaceInfo(face));
 			return true;
 		}
 
@@ -538,7 +538,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if (new_face(fontconfig_get_filename(font_fam_, style, weight))) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		face_cache.put(meta, face);
+		face_cache.put(meta, FaceInfo(face));
 		return true;
 	}
 #endif
@@ -550,14 +550,14 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		if (new_face(filename)) {
 			if (!font_path_from_canvas)
 				meta.canvas_path.clear();
-			face_cache.put(meta, face);
+			face_cache.put(meta, FaceInfo(face));
 			return true;
 		}
 	}
 	if (new_face(font_fam_)) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		face_cache.put(meta, face);
+		face_cache.put(meta, FaceInfo(face));
 		return true;
 	}
 
@@ -568,7 +568,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 
 static std::string fontconfig_get_filename(const std::string& font_fam, int style, int weight) {
 	std::string filename;
-	FcConfig* fc = FontConfigWrap::init();
+	FcConfig* fc = FontConfigWrap::instance();
 	if( !fc )
 	{
 		synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
@@ -618,37 +618,6 @@ static std::string fontconfig_get_filename(const std::string& font_fam, int styl
 }
 #endif
 
-#ifdef USE_MAC_FT_FUNCS
-void fss2path(char *path, FSSpec *fss)
-{
-  int l;             //fss->name contains name of last item in path
-  for(l=0; l<(fss->name[0]); l++) path[l] = fss->name[l + 1];
-  path[l] = 0;
-
-  if(fss->parID != fsRtParID) //path is more than just a volume name
-  {
-    int i, len;
-    CInfoPBRec pb;
-
-    pb.dirInfo.ioNamePtr = fss->name;
-    pb.dirInfo.ioVRefNum = fss->vRefNum;
-    pb.dirInfo.ioDrParID = fss->parID;
-    do
-    {
-      pb.dirInfo.ioFDirIndex = -1;  //get parent directory name
-      pb.dirInfo.ioDrDirID = pb.dirInfo.ioDrParID;
-      if(PBGetCatInfoSync(&pb) != noErr) break;
-
-      len = fss->name[0] + 1;
-      for(i=l; i>=0;  i--) path[i + len] = path[i];
-      for(i=1; i<len; i++) path[i - 1] = fss->name[i]; //add to start of path
-      path[i - 1] = ':';
-      l += len;
-} while(pb.dirInfo.ioDrDirID != fsRtDirID); //while more directory levels
-  }
-}
-#endif
-
 bool
 Layer_Freetype::new_face(const String &newfont)
 {
@@ -672,12 +641,46 @@ Layer_Freetype::new_face(const String &newfont)
 	if (! has_valid_font_extension(newfont))
 		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
 
-	std::vector<std::string> possible_font_directories = {""};
 	std::string canvas_path;
-	if (get_canvas()) {
+	if (get_canvas())
 		canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
-		possible_font_directories.push_back( canvas_path );
+
+	std::vector<std::string> possible_font_directories = get_possible_font_directories(canvas_path);
+
+	for (const std::string& directory : possible_font_directories) {
+		for (const char *extension : possible_font_extensions) {
+			std::string path = (directory + newfont + extension);
+			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
+			if (!error) {
+				font_path_from_canvas = !canvas_path.empty() && directory == canvas_path;
+				break;
+			}
+		}
+		if (!error)
+			break;
 	}
+
+	if(error)
+	{
+		if (!newfont.empty())
+			synfig::error(strprintf("Layer_Freetype: %s (err=%d): %s",_("Unable to open font face."),error,newfont.c_str()));
+		return false;
+	}
+
+	// ???
+	font=newfont;
+
+	needs_sync=true;
+	return true;
+}
+
+std::vector<std::string>
+Layer_Freetype::get_possible_font_directories(const std::string& canvas_path)
+{
+	std::vector<std::string> possible_font_directories = {""};
+
+	if (!canvas_path.empty())
+		possible_font_directories.push_back(canvas_path);
 
 #ifdef _WIN32
 	// All users fonts
@@ -695,7 +698,8 @@ Layer_Freetype::new_face(const String &newfont)
 #else
 
 #ifdef __APPLE__
-	possible_font_directories.push_back("~/Library/Fonts/");
+	std::string userdir = Glib::getenv("HOME");
+	possible_font_directories.push_back(userdir + "/Library/Fonts/");
 	possible_font_directories.push_back("/Library/Fonts/");
 #endif
 
@@ -704,54 +708,7 @@ Layer_Freetype::new_face(const String &newfont)
 
 #endif
 
-	for (std::string directory : possible_font_directories) {
-		for (const char *extension : possible_font_extensions) {
-			std::string path = (directory + newfont + extension);
-			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
-			if (!error) {
-				font_path_from_canvas = !canvas_path.empty() && directory == canvas_path;
-				break;
-			}
-		}
-		if (!error)
-			break;
-	}
-
-#ifdef USE_MAC_FT_FUNCS
-	if(error)
-	{
-		FSSpec fs_spec;
-		error=FT_GetFile_From_Mac_Name(newfont.c_str(),&fs_spec,&face_index);
-		if(!error)
-		{
-			char filename[512];
-			fss2path(filename,&fs_spec);
-			//FSSpecToNativePathName(fs_spec,filename,sizeof(filename)-1, 0);
-
-			error=FT_New_Face(ft_library, filename, face_index,&face);
-			//error=FT_New_Face_From_FSSpec(ft_library, &fs_spec, face_index,&face);
-			synfig::info(__FILE__":%d: \"%s\" (%s) -- ft_error=%d",__LINE__,newfont.c_str(),filename,error);
-		}
-		else
-		{
-			synfig::info(__FILE__":%d: \"%s\" -- ft_error=%d",__LINE__,newfont.c_str(),error);
-			// Unable to generate fs_spec
-		}
-	}
-#endif
-
-	if(error)
-	{
-		if (!newfont.empty())
-			synfig::error(strprintf("Layer_Freetype: %s (err=%d): %s",_("Unable to open font face."),error,newfont.c_str()));
-		return false;
-	}
-
-	// ???
-	font=newfont;
-
-	needs_sync_=true;
-	return true;
+	return possible_font_directories;
 }
 
 bool
@@ -791,6 +748,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 			new_font(family,style,weight);
 		}
 		);
+	IMPORT_VALUE_PLUS(param_direction,needs_sync=true);
 	IMPORT_VALUE_PLUS(param_size,
 		{
 			if(old_version)
@@ -799,15 +757,20 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 				size/=2.0;
 				param_size.set(size);
 			}
-			needs_sync_=true;
+			needs_sync=true;
 		}
 		);
-	IMPORT_VALUE_PLUS(param_text,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_origin,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_text,
+		{
+			on_param_text_changed();
+			needs_sync=true;
+		}
+		);
+	IMPORT_VALUE_PLUS(param_origin,needs_sync=true);
 	IMPORT_VALUE_PLUS(param_color,
 		{
 			Color color=param_color.get(Color());
-			if (color.get_a() == 0)
+			if (approximate_zero(color.get_a()))
 			{
 				if (converted_blend_)
 				{
@@ -819,11 +782,11 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 		}
 		);
 	IMPORT_VALUE(param_invert);
-	IMPORT_VALUE_PLUS(param_orient,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_compress,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_vcompress,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_use_kerning,needs_sync_=true);
-	IMPORT_VALUE_PLUS(param_grid_fit,needs_sync_=true);
+	IMPORT_VALUE_PLUS(param_orient,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_compress,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_vcompress,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_use_kerning,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_grid_fit,needs_sync=true);
 
 	if(param=="pos")
 		return set_param("origin", value);
@@ -838,6 +801,7 @@ Layer_Freetype::get_param(const String& param)const
 	EXPORT_VALUE(param_family);
 	EXPORT_VALUE(param_style);
 	EXPORT_VALUE(param_weight);
+	EXPORT_VALUE(param_direction);
 	EXPORT_VALUE(param_size);
 	EXPORT_VALUE(param_text);
 	EXPORT_VALUE(param_color);
@@ -900,6 +864,17 @@ Layer_Freetype::get_param_vocab(void)const
 		.add_enum_value(TEXT_WEIGHT_HEAVY, "heavy" ,_("Heavy"))
 		.add_enum_value(TEXT_WEIGHT_ULTRAHEAVY, "ultraheavy" ,_("Ultraheavy"))
 	);
+
+	ret.push_back(ParamDesc("direction")
+		.set_local_name(_("Direction"))
+		.set_description(_("The text direction: left-to-right or right-to-left"))
+		.set_hint("enum")
+		.set_static(true)
+		.add_enum_value(TEXT_DIRECTION_AUTO, "auto" ,_("Automatic"))
+		.add_enum_value(TEXT_DIRECTION_LTR, "ltr" ,_("LTR"))
+		.add_enum_value(TEXT_DIRECTION_RTL, "rtl" ,_("RTL"))
+	);
+
 	ret.push_back(ParamDesc("compress")
 		.set_local_name(_("Horizontal Spacing"))
 		.set_description(_("Defines how close the glyphs are horizontally"))
@@ -956,7 +931,15 @@ Layer_Freetype::get_param_vocab(void)const
 void
 Layer_Freetype::sync()
 {
-	needs_sync_=false;
+	std::lock_guard<std::mutex> lock(sync_mtx);
+
+	needs_sync=false;
+
+	if(param_text.get(std::string())=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
+	{
+		auto text=basename(get_canvas()->get_file_name());
+		lines = fetch_text_lines(text, param_direction.get(0));
+	}
 }
 
 inline Color
@@ -972,15 +955,15 @@ Layer_Freetype::color_func(const Point &/*point_*/, int /*quality*/, ColorReal /
 Color
 Layer_Freetype::get_color(Context context, const synfig::Point &pos)const
 {
-	if(needs_sync_)
+	if(needs_sync)
 		const_cast<Layer_Freetype*>(this)->sync();
-
-	const Color color(color_func(pos,0));
 
 	if(!face)
 		return context.get_color(pos);
 
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+	const Color color(color_func(pos,0));
+
+	if(get_amount()==1.0f && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
 	else
 		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
@@ -1000,16 +983,17 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	static std::recursive_mutex freetype_mutex;
 
-	if(needs_sync_)
+	if(needs_sync)
 		const_cast<Layer_Freetype*>(this)->sync();
 
+	std::lock_guard<std::mutex> lock1(sync_mtx);
 	int error;
 	Vector size(Layer_Freetype::param_size.get(synfig::Vector())*2);
 
 	if(!context.accelerated_render(surface,quality,renddesc,cb))
 		return false;
 
-	if(is_disabled() || param_text.get(synfig::String()).empty())
+	if(is_disabled() || param_text.get(synfig::String()).empty() || lines.empty())
 		return true;
 
 	// If there is no font loaded, just bail
@@ -1017,12 +1001,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	{
 		if(cb)cb->warning(std::string("Layer_Freetype:")+_("No face loaded, no text will be rendered."));
 		return true;
-	}
-
-	String text(Layer_Freetype::param_text.get(synfig::String()));
-	if(text=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
-	{
-		text=basename(get_canvas()->get_file_name());
 	}
 
 	// Width and Height of a pixel
@@ -1045,16 +1023,15 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 #define CHAR_RESOLUTION		(64)
 	error = FT_Set_Char_Size(
 		face,						// handle to face object
-		(int)CHAR_RESOLUTION,	// char_width in 1/64th of points
-		(int)CHAR_RESOLUTION,	// char_height in 1/64th of points
-		round_to_int(std::fabs(size[0]*pw*CHAR_RESOLUTION)),						// horizontal device resolution
-		round_to_int(std::fabs(size[1]*ph*CHAR_RESOLUTION)) );						// vertical device resolution
+		CHAR_RESOLUTION,	// char_width in 1/64th of points
+		CHAR_RESOLUTION,	// char_height in 1/64th of points
+		round_to_int(std::fabs(size[0]*pw*CHAR_RESOLUTION)),   // horizontal device resolution
+		round_to_int(std::fabs(size[1]*ph*CHAR_RESOLUTION)) ); // vertical device resolution
 
 	// Here is where we can compensate for the
 	// error in freetype's rendering engine.
-	const Real xerror(std::fabs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13f/0.996);
-	const Real yerror(std::fabs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13f/0.996);
-	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
+	const Real xerror(std::fabs(size[0]*pw)/(Real)face->size->metrics.x_ppem/1.13/0.996);
+	const Real yerror(std::fabs(size[1]*ph)/(Real)face->size->metrics.y_ppem/1.13/0.996);
 	const Real compress(Layer_Freetype::param_compress.get(Real())*xerror);
 	const Real vcompress(Layer_Freetype::param_vcompress.get(Real())*yerror);
 
@@ -1066,80 +1043,64 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	FT_GlyphSlot  slot = face->glyph;  // a small shortcut
 	FT_UInt       glyph_index(0);
 	FT_UInt       previous(0);
-	int u,v;
 
-	std::list<TextLine> lines;
+	std::list<VisualTextLine> visual_lines;
 
 	/*
  --	** -- CREATE GLYPHS -------------------------------------------------------
 	*/
 
-	mbstate_t ps;
-	memset(&ps, 0, sizeof(ps));
-
-	lines.push_front(TextLine());
-	std::string::const_iterator iter;
 	int bx=0;
 	int by=0;
 
-	for (iter=text.begin(); iter!=text.end(); ++iter)
+#if HAVE_HARFBUZZ
+	hb_buffer_t *span_buffer = hb_buffer_create();
+	std::unique_ptr<hb_buffer_t, decltype(&hb_buffer_destroy)> safe_buf(span_buffer, hb_buffer_destroy); // auto delete
+#endif
+
+	for (const TextLine& line : lines)
 	{
-		int multiplier(1);
-		if(*iter=='\n')
-		{
-			lines.push_front(TextLine());
-			bx=0;
-			by=0;
-			previous=0;
-			continue;
-		}
-		if(*iter=='\t')
-		{
-			multiplier=8;
-			glyph_index = FT_Get_Char_Index( face, ' ' );
-		}
-		else
-		{
-			// read uft8 char
-			unsigned int c = (unsigned char)*iter;
-			unsigned int code = c;
-			int bytes = 0;
-			while ((c & 0x80) != 0) { c = (c << 1) & 0xff; bytes++; }
-			bool bad_char = (bytes == 1);
-			if (bytes > 1)
-			{
-				bytes--;
-				code = c << (5*bytes - 1);
-				while (bytes > 0) {
-					iter++;
-					bytes--;
-					c = (unsigned char)*iter;
-					if (iter >= text.end() || (c & 0xc0) != 0x80) { bad_char = true; break; }
-					code |= (c & 0x3f) << (6 * bytes);
-				}
-			}
+		visual_lines.push_front(VisualTextLine());
+		bx=0;
+		by=0;
+		previous=0;
 
-			if (bad_char)
-			{
-				synfig::warning("Layer_Freetype: multibyte: %s",
-								_("Can't parse multibyte character.\n"));
-				continue;
-			}
+		for (const TextSpan& span : line) {
+#if HAVE_HARFBUZZ
+			hb_buffer_clear_contents(span_buffer);
 
-			glyph_index = FT_Get_Char_Index( face, code );
-		}
+			hb_direction_t direction = HB_DIRECTION_LTR; // character order already fixed by FriBiDi
+			hb_buffer_set_direction(span_buffer, direction);
+			hb_buffer_set_script(span_buffer, span.script);
+//			hb_buffer_set_language(span_buffer, hb_language_from_string(language.c_str(), -1));
 
-        // retrieve kerning distance and move pen position
+			hb_buffer_add_utf32(span_buffer, span.codepoints.data(), span.codepoints.size(), 0, -1);
+
+			hb_shape(font, span_buffer, nullptr, 0);
+
+			unsigned int glyph_count;
+			hb_glyph_info_t *glyph_info = hb_buffer_get_glyph_infos(span_buffer, &glyph_count);
+#else
+			size_t glyph_count = span.codepoints.size();
+#endif
+
+			for (size_t i = 0; i < glyph_count; i++) {
+#if HAVE_HARFBUZZ
+				glyph_index = glyph_info[i].codepoint;
+#else
+				glyph_index = FT_Get_Char_Index(face, span.codepoints[i]);
+#endif
+		// retrieve kerning distance and move pen position
 		if ( FT_HAS_KERNING(face) && use_kerning && previous && glyph_index )
 		{
 			FT_Vector  delta;
 
 			if(grid_fit)
-				FT_Get_Kerning( face, previous, glyph_index, ft_kerning_default, &delta );
+				FT_Get_Kerning( face, previous, glyph_index, FT_KERNING_DEFAULT, &delta );
 			else
-				FT_Get_Kerning( face, previous, glyph_index, ft_kerning_unfitted, &delta );
+				FT_Get_Kerning( face, previous, glyph_index, FT_KERNING_UNFITTED, &delta );
 
-			if(compress<1.0f)
+			if(compress<1.0)
 			{
 				bx += round_to_int(delta.x*compress);
 				by += round_to_int(delta.y*compress);
@@ -1158,7 +1119,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
         curr_glyph.pos.y = by;
 
         // load glyph image into the slot. DO NOT RENDER IT !!
-        if(grid_fit)
+		if(grid_fit)
 			error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT);
 		else
 			error = FT_Load_Glyph( face, glyph_index, FT_LOAD_DEFAULT|FT_LOAD_NO_HINTING );
@@ -1172,39 +1133,28 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
         previous = glyph_index;
 
 		// Update the line width
-		lines.front().width=bx+slot->advance.x;
+		visual_lines.front().width=bx+slot->advance.x;
 
 		// increment pen position
-		if(multiplier>1)
-			bx += round_to_int(slot->advance.x*multiplier*compress)-bx%round_to_int(slot->advance.x*multiplier*compress);
-		else
-			bx += round_to_int(slot->advance.x*compress*multiplier);
+		bx += round_to_int(slot->advance.x*compress);
 
-		//bx += round_to_int(slot->advance.x*compress*multiplier);
-		//by += round_to_int(slot->advance.y*compress);
-		by += slot->advance.y*multiplier;
+		by += slot->advance.y;
 
-		lines.front().glyph_table.push_back(curr_glyph);
+		visual_lines.front().glyph_table.push_back(curr_glyph);
 
 	}
+}
+}
 
-	//Real	string_height;
-	//string_height=(((lines.size()-1)*face->size->metrics.height+lines.back().actual_height()));
-
-	//int string_height=face->size->metrics.ascender;
-//#define METRICS_SCALE_ONE		(65536.0f)
 #define METRICS_SCALE_ONE		((Real)(1<<16))
 
-	Real line_height = vcompress*((Real)face->height*(((Real)face->size->metrics.y_scale/METRICS_SCALE_ONE)));
-	Real text_height = (lines.size() - 1)*line_height + lines.back().actual_height();
+	Real line_height = vcompress*(face->height*(face->size->metrics.y_scale/METRICS_SCALE_ONE));
+	Real text_height = (visual_lines.size() - 1)*line_height + visual_lines.back().actual_height();
 
 	// This module sees to expect pixel height to be negative, as it
 	// usually is.  But rendering to .bmp format causes ph to be
 	// positive, which was causing text to be rendered upside down.
 	//if (ph>0) line_height = -line_height;
-
-	//synfig::info("string_height=%d",string_height);
-	//synfig::info("line_height=%f",line_height);
 
 	/*
  --	** -- RENDER THE GLYPHS ---------------------------------------------------
@@ -1231,9 +1181,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		Real offset_y = (origin[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION
 				      - sign_y*text_height*(1.0 - orient[1]);
 
-		std::list<TextLine>::iterator iter;
+		std::list<VisualTextLine>::iterator iter;
 		int curr_line;
-		for(curr_line=0,iter=lines.begin();iter!=lines.end();++iter,curr_line++)
+		for(curr_line=0,iter=visual_lines.begin();iter!=visual_lines.end();++iter,curr_line++)
 		{
 			bx=round_to_int(offset_x - orient[0]*iter->width);
 			// I've no idea why 1.5, but it kind of works.  Otherwise,
@@ -1260,15 +1210,13 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 				pen.x = bx + iter2->pos.x;
 				pen.y = by + iter2->pos.y;
 
-				//synfig::info("GLYPH: line %d, pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
-
-				error = FT_Glyph_To_Bitmap( &image, ft_render_mode_normal,0/*&pen*/, 1 );
+				error = FT_Glyph_To_Bitmap( &image, FT_RENDER_MODE_NORMAL, nullptr/*&pen*/, 1 );
 				if(error) { FT_Done_Glyph( image ); continue; }
 
 				bit = (FT_BitmapGlyph)image;
 
-				for(v=0;v<(int)bit->bitmap.rows;v++)
-					for(u=0;u<(int)bit->bitmap.width;u++)
+				for(size_t v=0; v<bit->bitmap.rows; v++)
+					for(size_t u=0; u<bit->bitmap.width; u++)
 					{
 						int x=u+((pen.x+32)>>6)+ bit->left;
 						int y=((pen.y+32)>>6) + (bit->top - v) * sign_y;
@@ -1277,16 +1225,15 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 							y<surface->get_h() &&
 							x<surface->get_w())
 						{
-							Real myamount=(Real)bit->bitmap.buffer[v*bit->bitmap.pitch+u]/255.0f;
+							Real myamount=bit->bitmap.buffer[v*bit->bitmap.pitch+u]/Real(255.0);
 							if(invert)
-								myamount=1.0f-myamount;
+								myamount=1.0-myamount;
 							(*surface)[y][x]=Color::blend(color,(*src_surface)[y][x],myamount*get_amount(),get_blend_method());
 						}
 					}
 
 				FT_Done_Glyph( image );
 			}
-			//iter->clear_and_free();
 		}
 	}
 
@@ -1299,8 +1246,176 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 synfig::Rect
 Layer_Freetype::get_bounding_rect()const
 {
-	if(needs_sync_)
+	if(needs_sync)
 		const_cast<Layer_Freetype*>(this)->sync();
 //	if(!is_disabled())
 	return synfig::Rect::full_plane();
+}
+
+void
+Layer_Freetype::on_param_text_changed()
+{
+	std::lock_guard<std::mutex> lock(sync_mtx);
+
+	lines = fetch_text_lines(param_text.get(std::string()), param_direction.get(0));
+}
+
+static std::vector<uint32_t>
+utf8_to_utf32(const std::string& text)
+{
+	std::vector<uint32_t> unicode;
+#if HAVE_HARFBUZZ
+	unicode.resize(text.size()+1);
+	FriBidiStrIndex unicode_len = fribidi_charset_to_unicode(FRIBIDI_CHAR_SET_UTF8, text.c_str(), text.size(), unicode.data());
+	unicode.resize(unicode_len);
+#else
+	for (auto iter = text.cbegin(); iter != text.cend(); ++iter) {
+		unsigned int c = (unsigned char)*iter;
+		unsigned int code = c;
+		int bytes = 0;
+		while ((c & 0x80) != 0) { c = (c << 1) & 0xff; bytes++; }
+		bool bad_char = (bytes == 1);
+		if (bytes > 1)
+		{
+			bytes--;
+			code = c << (5*bytes - 1);
+			while (bytes > 0) {
+				++iter;
+				bytes--;
+				c = (unsigned char)*iter;
+				if (iter >= text.end() || (c & 0xc0) != 0x80) { bad_char = true; break; }
+				code |= (c & 0x3f) << (6 * bytes);
+			}
+		}
+
+		if (bad_char)
+		{
+			synfig::warning("Layer_Freetype: multibyte: %s",
+							_("Can't parse multibyte character.\n"));
+			continue;
+		}
+
+		unicode.push_back(code);
+	}
+#endif
+	return unicode;
+}
+
+std::vector<Layer_Freetype::TextLine>
+Layer_Freetype::fetch_text_lines(const std::string& text, int direction)
+{
+	std::vector<TextLine> new_lines;
+
+	if (text.empty())
+		return new_lines;
+
+	std::vector<uint32_t> unicode;
+
+	{
+		std::string parsed_text = text;
+		// 0. Do some pre-parsing still in UTF-8
+		{
+			// 0.1 \r\n -> \n
+			// 0.2 \t -> 8 blank spaces
+			auto pos = parsed_text.find_first_of("\r\t");
+			while (pos != std::string::npos) {
+				if (parsed_text[pos] == '\t') {
+					const char *tab = "        ";
+					const int tab_length = 8;
+					parsed_text.replace(pos, 1, tab);
+					pos += tab_length;
+				} else if (/*parsed_text[pos] == '\r' &&*/ pos+1 != std::string::npos && parsed_text[pos+1] == '\n') {
+					parsed_text.erase(pos, 1);
+				}
+				pos = parsed_text.find_first_of("\r\t", pos);
+			}
+		}
+
+		// 1. Convert to unicode codepoints
+		unicode = utf8_to_utf32(parsed_text);
+	}
+
+	// 2. Split into lines
+	std::vector<std::vector<uint32_t>> base_lines;
+	{
+		auto it = unicode.begin();
+		while (true) {
+			auto new_it = std::find_first_of(it, unicode.end(), line_endings.begin(), line_endings.end());
+			std::vector<uint32_t> line{it, new_it};
+			base_lines.push_back(line);
+
+			if (new_it == unicode.end())
+				break;
+			it = new_it+1;
+		}
+	}
+
+	// 3. Handle BiDirectional text
+#if HAVE_HARFBUZZ
+	for (auto& line : base_lines) {
+		FriBidiParType base_dir = direction == TEXT_DIRECTION_AUTO ? FRIBIDI_TYPE_ON : direction == TEXT_DIRECTION_LTR ? FRIBIDI_TYPE_LTR : FRIBIDI_TYPE_RTL;
+		// FriBiDi + HarfBuzz: don't use FriBiDi simple shaper, just get the BiDi info / character reordering
+		size_t line_size = line.size();
+		std::vector<FriBidiCharType> bidi_types(line_size);
+		fribidi_get_bidi_types(line.data(), line_size, bidi_types.data());
+		std::vector<FriBidiLevel> bidi_levels(line_size);
+#if FRIBIDI_MAJOR_VERSION >= 1
+		std::vector<FriBidiBracketType> bracket_types(line_size);
+		FriBidiLevel fribidi_result = fribidi_get_par_embedding_levels_ex(bidi_types.data(), bracket_types.data(), line_size,
+															  &base_dir, bidi_levels.data());
+#else
+		FriBidiLevel fribidi_result = fribidi_get_par_embedding_levels(bidi_types.data(), line_size,
+																	   &base_dir, bidi_levels.data());
+#endif
+		if (fribidi_result == 0) {
+			error("Layer_FreeType: error running FriBiDi (getting embedding levels)");
+			return new_lines;
+		}
+
+		fribidi_result = fribidi_reorder_line(FRIBIDI_FLAGS_DEFAULT|FRIBIDI_FLAGS_ARABIC, bidi_types.data(), line_size, 0, base_dir,
+							 bidi_levels.data(), line.data(), nullptr);
+		if (fribidi_result == 0) {
+			error("Layer_FreeType: error running FriBiDi (reordering line)");
+			return new_lines;
+		}
+	}
+#endif
+
+	// 4. Split text into lines (and text spans according to their script if we know them)
+#if not HAVE_HARFBUZZ
+	for (const auto& line : base_lines) {
+		TextLine current_line;
+
+		for (uint32_t codepoint : line) {
+			if (!current_line.empty()) {
+				current_line.back().codepoints.push_back(codepoint);
+			} else {
+				current_line.push_back(TextSpan{{codepoint}});
+			}
+		}
+		new_lines.push_back(current_line);
+	}
+#else
+	hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
+	for (const auto& line : base_lines) {
+		TextLine current_line;
+		hb_script_t current_script = HB_SCRIPT_INVALID;
+
+		for (uint32_t codepoint : line) {
+			hb_script_t script = hb_unicode_script(ufuncs, codepoint);
+
+			if (!current_line.empty() && (script == current_script || script == HB_SCRIPT_INHERITED)) {
+				current_line.back().codepoints.push_back(codepoint);
+			} else {
+				current_line.push_back(TextSpan{
+										   {codepoint},
+										   script
+									   });
+				current_script = script;
+			}
+		}
+		new_lines.push_back(current_line);
+	}
+#endif
+	return new_lines;
 }
