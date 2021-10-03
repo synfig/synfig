@@ -241,9 +241,11 @@ struct FaceInfo {
 /// Cache font faces for speeding up the text layer rendering
 class FaceCache {
 	std::map<FontMeta, FaceInfo> cache;
+	mutable std::mutex cache_mutex;
 	FaceCache() = default; // Make constructor private to prevent instancing
 public:
 	FaceInfo get(const FontMeta &meta) const {
+		std::lock_guard<std::mutex> lock(cache_mutex);
 		auto iter = cache.find(meta);
 		if (iter != cache.end())
 			return iter->second;
@@ -251,15 +253,18 @@ public:
 	}
 
 	void put(const FontMeta &meta, FaceInfo face) {
+		std::lock_guard<std::mutex> lock(cache_mutex);
 		cache[meta] = face;
 	}
 
 	bool has(const FontMeta &meta) const {
+		std::lock_guard<std::mutex> lock(cache_mutex);
 		auto iter = cache.find(meta);
 		return iter != cache.end();
 	}
 
 	void clear() {
+		std::lock_guard<std::mutex> lock(cache_mutex);
 		for (const auto& item : cache) {
 			FT_Done_Face(item.second.face);
 #if HAVE_HARFBUZZ
