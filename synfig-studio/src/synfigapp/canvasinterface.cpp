@@ -878,8 +878,6 @@ CanvasInterface::import(
 			{
 				x[0] = w*rend_desc.get_pw();
 				x[1] = h*rend_desc.get_ph();
-				if((size[0]<0)) x[0]=-x[0];
-				if((size[1]<0)) x[1]=-x[1];
 			}
 
 			if(!layer->set_param("tl",ValueBase(-x/2)))
@@ -1012,8 +1010,6 @@ CanvasInterface::import_sequence(
 					} else {
 						x[0] = w*rend_desc.get_pw();
 						x[1] = h*rend_desc.get_ph();
-						if((size[0]<0)) x[0]=-x[0];
-						if((size[1]<0)) x[1]=-x[1];
 					}
 
 					if(!layer->set_param("tl",ValueBase(-x/2)))
