@@ -274,6 +274,8 @@ private:
 
 	void set_drag_mode(DragMode mode);
 
+	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
+
 public:
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -317,7 +319,6 @@ public:
 	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
 
 	const etl::loose_handle<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
-	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
 	bool get_active_bone_display(){return highlight_active_bone;}
 	void set_active_bone_display(bool x){highlight_active_bone=x;}
 
