@@ -652,8 +652,8 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					if(b){ // if bone found around the release point, then set it as active bone
 						ValueNode::Handle bone_value_node = b;
 						if (deform_layer) {
-							ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(b);
-							bone_value_node = comp->get_link("first");
+							if (ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(b))
+								bone_value_node = comp->get_link("first");
 						}
 						set_active_bone(bone_value_node);
 					}
@@ -665,15 +665,16 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						if(active_bone && item_index >= 0 && !list_node->list.empty()){ // if active bone is already set
 							ValueNode_Bone::Handle bone_node = ValueNode_Bone::Handle::cast_dynamic(active_bone);
 							if (deform_layer) {
-								ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(active_bone);
-								if (!comp)
-								{
+								if (ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(active_bone)) {
+									value_desc = ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
+									bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
+								} else if ((comp = ValueNode_Composite::Handle::cast_dynamic(list_node->get_link(item_index)))) {
+									value_desc = ValueDesc(comp, comp->get_link_index_from_name("first"),value_desc);
+								} else {
 									get_canvas_interface()->get_ui_interface()->error(_("Expected a ValueNode_Composite with a BonePair"));
 									assert(0);
 									return Smach::RESULT_ERROR;
 								}
-								value_desc = ValueDesc(comp,comp->get_link_index_from_name("first"),value_desc);
-								bone_node = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
 							}
 
 							if (!bone_node)
@@ -959,7 +960,10 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer) const
 		if (ret >=0 && ret < bone_list.size()) {
 			ValueNode_StaticList::Handle list_node;
 			list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
-			return ValueNode_Bone::Handle::cast_dynamic(list_node->get_link(ret));
+			if (is_skeleton_deform_layer)
+				return ValueNode_Bone::Handle::cast_dynamic(ValueNode_Composite::Handle::cast_dynamic(list_node->get_link(ret))->get_link("first"));
+			else
+				return ValueNode_Bone::Handle::cast_dynamic(list_node->get_link(ret));
 		}
 	}
 
