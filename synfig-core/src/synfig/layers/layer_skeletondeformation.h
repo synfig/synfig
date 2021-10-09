@@ -61,6 +61,10 @@ private:
 	static Real distance_to_line(const Vector &p0, const Vector &p1, const Vector &x);
 
 public:
+	typedef etl::handle<Layer_SkeletonDeformation> Handle;
+	typedef etl::handle<const Layer_SkeletonDeformation> ConstHandle;
+	typedef etl::loose_handle<Layer_SkeletonDeformation> LooseHandle;
+
 	typedef std::pair<Bone, Bone> BonePair;
 
 	//! Default constructor
