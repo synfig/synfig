@@ -1,3 +1,5 @@
+- [`d7fcc40`](https://github.com/synfig/synfig/commit/d7fcc40d177250ae3a5b646b2dac8889e6c3f6d7) Bone Tool: Fix crash when undoing Child Bone until first one ([#2341](https://github.com/synfig/synfig/issues/2341)) [studio]
+- [`21e1a3e`](https://github.com/synfig/synfig/commit/21e1a3e0e7e42dafc8c959d54ac461d325f680d2) Fix regression on Link To Spline: Vertex should be linkable ([#2345](https://github.com/synfig/synfig/issues/2345)). Closes [#2344](https://github.com/synfig/synfig/issues/2344). [studio]
 - [`61a290b`](https://github.com/synfig/synfig/commit/61a290b1aaf58366149662ae0ad224127711aea8) Fixed crash of test on Void Linux ([#2265](https://github.com/synfig/synfig/issues/2265)) [studio]
 - [`269d895`](https://github.com/synfig/synfig/commit/269d895a128b947130f4b91a3e498b6070a5b4fd) Select parent group after image import ([#2339](https://github.com/synfig/synfig/issues/2339)) [studio]
 - [`84f1241`](https://github.com/synfig/synfig/commit/84f124171763b449efb9dca024b1ba4abaa79051) Bone Tool: fix default bone width preference loading ([#2343](https://github.com/synfig/synfig/issues/2343)) [studio]
