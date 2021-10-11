@@ -1789,7 +1789,12 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 	param_list.add("time",canvas_interface()->get_time());
 	param_list.add("canvas",Canvas::Handle(layer->get_canvas()));
 	param_list.add("canvas_interface",canvas_interface());
-	param_list.add("layer",layer);
+
+	SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+	SelectionManager::LayerList::iterator iter;
+
+	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+		param_list.add("layer",Layer::Handle(*iter));
 
 	//Gtk::Menu *newlayers(manage(new Gtk::Menu()));
 	//build_new_layer_menu(*newlayers);
