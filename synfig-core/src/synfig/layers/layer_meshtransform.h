@@ -29,8 +29,6 @@
 
 #include "layer_composite_fork.h"
 
-#include <synfig/polygon.h>
-
 #include <synfig/rendering/primitive/mesh.h>
 #include <synfig/rendering/primitive/contour.h>
 
