@@ -416,8 +416,8 @@ Intersector::clear()
 	curves.clear();
 	flags = 0;
 	cur_pos = close_pos = Point();
-	prim = TYPE_NONE;
-	initaabb = true;
+	previous_primitive_type = TYPE_NONE;
+	invalid_aabb = true;
 }
 
 
@@ -426,11 +426,11 @@ Intersector::move_to(const Point &p)
 {
 	close();
 	close_pos = cur_pos = p;
-	if (initaabb) {
+	if (invalid_aabb) {
 		aabb.set_point(p[0], p[1]);
-		initaabb = false;
+		invalid_aabb = false;
 	} else aabb.expand(p[0], p[1]);
-	prim = TYPE_NONE;
+	previous_primitive_type = TYPE_NONE;
 }
 
 void
@@ -440,7 +440,7 @@ Intersector::line_to(const Point &p)
 	        : p[1] < cur_pos[1] ? -1 : 0;
 
 	// check for context (if not line start a new segment)
-	if (prim != TYPE_LINE || (dir && segs.back().ydir != dir)) {
+	if (previous_primitive_type != TYPE_LINE || (dir && segs.back().ydir != dir)) {
 		// if we're not in line mode (covers 0 set case), or if directions are different (not valid for 0 direction)
 		segs.push_back(MonoSegment(dir, cur_pos, cur_pos));
 		segs.back().pointlist.push_back(cur_pos);
@@ -452,14 +452,14 @@ Intersector::line_to(const Point &p)
 	cur_pos = p;
 	aabb.expand(cur_pos[0], cur_pos[1]); // expand the entire thing's bounding box
 	flags |= NotClosed;
-	prim = TYPE_LINE;
+	previous_primitive_type = TYPE_LINE;
 }
 
 void
 Intersector::conic_to(const Point &p, const Point &p1)
 {
 	// if we're not already a curve start one
-	if (prim != TYPE_CURVE) {
+	if (previous_primitive_type != TYPE_CURVE) {
 		curves.push_back(CurveArray());
 		curves.back().start(cur_pos);
 	}
@@ -469,14 +469,14 @@ Intersector::conic_to(const Point &p, const Point &p1)
 	aabb.expand(p[0], p[1]);
 	aabb.expand(p1[0], p1[1]);
 	flags |= NotClosed;
-	prim = TYPE_CURVE;
+	previous_primitive_type = TYPE_CURVE;
 }
 
 void
 Intersector::cubic_to(const Point &p, const Point &p1, const Point &p2)
 {
 	// if we're not already a curve start one
-	if (prim != TYPE_CURVE) {
+	if (previous_primitive_type != TYPE_CURVE) {
 		curves.push_back(CurveArray());
 		curves.back().start(cur_pos);
 	}
@@ -487,7 +487,7 @@ Intersector::cubic_to(const Point &p, const Point &p1, const Point &p2)
 	aabb.expand(p1[0], p1[1]);
 	aabb.expand(p2[0], p2[1]);
 	flags |= NotClosed;
-	prim = TYPE_CURVE;
+	previous_primitive_type = TYPE_CURVE;
 }
 
 void

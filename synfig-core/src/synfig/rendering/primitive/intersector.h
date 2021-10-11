@@ -70,9 +70,9 @@ private:
 	};
 	
 	Rect aabb;
-	bool initaabb; //<! true iff aabb hasn't been initialized yet
+	bool invalid_aabb; //<! true iff aabb hasn't been initialized yet
 	int flags;
-	int prim;
+	PrimitiveType previous_primitive_type;
 
 	Point cur_pos;
 	Point close_pos;
@@ -97,7 +97,7 @@ public:
 	int	intersect(const Point &p) const;
 
 	Rect get_bounds() const
-		{ return initaabb ? Rect::zero() : aabb; }
+		{ return invalid_aabb ? Rect::zero() : aabb; }
 };
 
 } /* end namespace rendering */
