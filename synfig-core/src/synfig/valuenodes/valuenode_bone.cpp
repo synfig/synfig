@@ -589,6 +589,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	ret.push_back(ParamDesc(ValueBase(),"parent")
 		.set_local_name(_("Parent"))
 		.set_description(_("The parent bone of the bone"))
+		.set_static(true)
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"origin")
