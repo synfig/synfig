@@ -32,6 +32,7 @@
 #endif
 
 #include "state_text.h"
+#include "widgets/widget_fontfamily.h"
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -113,9 +114,8 @@ class studio::StateText_Context
 	Gtk::Label opacity_label;
 	Gtk::Scale opacity_hscl;
 
-	Gtk::Label paragraph_label;
-	Gtk::CheckButton paragraph_checkbutton;
-	Gtk::Box paragraph_box;
+	Gtk::Label family_label;
+	Widget_FontFamily fontfamily_widget;
 
 	Gtk::Label size_label;
 	Widget_Vector size_widget;
@@ -123,9 +123,9 @@ class studio::StateText_Context
 	Gtk::Label orientation_label;
 	Widget_Vector orientation_widget;
 
-	Gtk::Label family_label;
-	Gtk::Entry family_entry;
-
+	Gtk::Label paragraph_label;
+	Gtk::CheckButton paragraph_checkbutton;
+	Gtk::Box paragraph_box;
 
 public:
 
@@ -150,10 +150,10 @@ public:
 	Vector get_orientation() { return orientation_widget.get_value(); }
 	void set_orientation(Vector s) { return orientation_widget.set_value(s); }
 
-	String get_family()const { return family_entry.get_text(); }
-	void set_family(String s) { return family_entry.set_text(s); }
+	String get_family()const { return fontfamily_widget.get_value(); }
+	void set_family(String s) { return fontfamily_widget.set_value(s); }
 
-  bool layer_text_flag;
+	bool layer_text_flag;
 
 	void refresh_tool_options(); //to refresh the toolbox
 
@@ -413,11 +413,9 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	paragraph_label.set_label(_("Multiline Text"));
-	paragraph_label.set_halign(Gtk::ALIGN_START);
-	paragraph_label.set_valign(Gtk::ALIGN_CENTER);
-	paragraph_box.pack_start(paragraph_label, true, true, 0);
-	paragraph_box.pack_start(paragraph_checkbutton, false, false, 0);
+	family_label.set_label(_("Font Family:"));
+	family_label.set_halign(Gtk::ALIGN_START);
+	family_label.set_valign(Gtk::ALIGN_CENTER);
 
 	size_label.set_label(_("Size:"));
 	size_label.set_halign(Gtk::ALIGN_START);
@@ -432,9 +430,11 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 
 	orientation_widget.set_digits(2);
 
-	family_label.set_label(_("Family:"));
-	family_label.set_halign(Gtk::ALIGN_START);
-	family_label.set_valign(Gtk::ALIGN_CENTER);
+	paragraph_label.set_label(_("Multiline Text"));
+	paragraph_label.set_halign(Gtk::ALIGN_START);
+	paragraph_label.set_valign(Gtk::ALIGN_CENTER);
+	paragraph_box.pack_start(paragraph_label, true, true, 0);
+	paragraph_box.pack_start(paragraph_checkbutton, false, false, 0);
 
 	// Toolbox layout
 	options_grid.attach(title_label,
@@ -453,8 +453,10 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 		0, 5, 1, 1);
 	options_grid.attach(opacity_hscl,
 		1, 5, 1, 1);
-	options_grid.attach(paragraph_box,
-		0, 6, 2, 1);
+	options_grid.attach(family_label,
+		0, 6, 1, 1);
+	options_grid.attach(fontfamily_widget,
+		1, 6, 1, 1);
 	options_grid.attach(size_label,
 		0, 7, 1, 1);
 	options_grid.attach(size_widget,
@@ -463,10 +465,8 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 		0, 8, 1, 1);
 	options_grid.attach(orientation_widget,
 		1, 8, 1, 1);
-	options_grid.attach(family_label,
-		0, 9, 1, 1);
-	options_grid.attach(family_entry,
-		1, 9, 1, 1);
+	options_grid.attach(paragraph_box,
+		0, 9, 2, 1);
 
 	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
