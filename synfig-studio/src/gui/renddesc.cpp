@@ -242,6 +242,9 @@ void Widget_RendDesc::set_rend_desc(const synfig::RendDesc &rend_desc)
 {
 	if(update_lock)return;
 	rend_desc_=rend_desc;
+
+	// Activate link width and height by default
+	activate_ratio_wh();
 	refresh();
 }
 
@@ -519,15 +522,21 @@ Widget_RendDesc::on_ratio_wh_toggled()
 
 	if(toggle_wh_ratio->get_active())
 	{
-		rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
-		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
-		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::PX_ASPECT);
+		activate_ratio_wh();
 	}
 	else
 	{
 		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
 		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::PX_ASPECT);
 	}
+}
+
+void
+Widget_RendDesc::activate_ratio_wh()
+{
+	rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
+	rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
+	rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::PX_ASPECT);
 }
 
 void
