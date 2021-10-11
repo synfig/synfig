@@ -64,12 +64,12 @@ class Intersector: public etl::shared_object
 public:
 	typedef etl::handle<Intersector> Handle;
 
+private:
 	class MonoSegment;
 	class CurveArray;
 	typedef std::vector<MonoSegment> MonoSegmentList;
 	typedef std::vector<CurveArray> CurveArrayList;
 
-private:
 	enum IntersectorFlags {
 		NotClosed = 0x8000
 	};
