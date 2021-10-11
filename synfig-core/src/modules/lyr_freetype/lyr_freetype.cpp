@@ -53,6 +53,8 @@
 #include <synfig/context.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/rendering/common/task/taskcontour.h>
+#include <synfig/string_helper.h>
 
 #endif
 
@@ -102,7 +104,7 @@ SYNFIG_LAYER_INIT(Layer_Freetype);
 SYNFIG_LAYER_SET_NAME(Layer_Freetype,"text");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,N_("Text"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.4");
+SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.5");
 
 #ifndef __APPLE__
 static const std::vector<const char *> known_font_extensions = {".ttf", ".otf", ".ttc"};
@@ -766,7 +768,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 				size/=2.0;
 				param_size.set(size);
 			}
-			needs_sync=true;
+//			needs_sync=true;
 		}
 		);
 	IMPORT_VALUE_PLUS(param_text,
@@ -775,7 +777,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 			needs_sync=true;
 		}
 		);
-	IMPORT_VALUE_PLUS(param_origin,needs_sync=true);
+	IMPORT_VALUE_PLUS(param_origin,/*needs_sync=true*/);
 	IMPORT_VALUE_PLUS(param_color,
 		{
 			Color color=param_color.get(Color());
@@ -941,14 +943,190 @@ void
 Layer_Freetype::sync()
 {
 	std::lock_guard<std::mutex> lock(sync_mtx);
-
+warning("sync");
 	needs_sync=false;
 
-	if(param_text.get(std::string())=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
+	metrics.clear();
+
+	std::string text = param_text.get(std::string());
+
+	if (synfig::trim(text).empty() || !face) {
+		lines.clear();
+		return;
+	}
+
+
+
+//	FT_Set_Char_Size(face, 0, 64*1,0, 72);
+
+
+
+	warning("sync2 %u", face->units_per_EM);
+
+	const bool use_kerning = param_use_kerning.get(bool());
+	const bool grid_fit    = param_grid_fit.get(bool());
+	const Vector orient    = param_orient.get(Vector());
+	const Real compress    = param_compress.get(Real());
+	const Real vcompress   = param_vcompress.get(Real());
+	const int direction    = param_direction.get(0);
+//	Vector size(param_size.get(synfig::Vector())*2);
+
+	if(text=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
 	{
 		auto text=basename(get_canvas()->get_file_name());
-		lines = fetch_text_lines(text, param_direction.get(0));
+		lines = fetch_text_lines(text, direction);
 	}
+	warning("sync3");
+
+
+#if HAVE_HARFBUZZ
+	hb_buffer_t *span_buffer = hb_buffer_create();
+	std::unique_ptr<hb_buffer_t, decltype(&hb_buffer_destroy)> safe_buf(span_buffer, hb_buffer_destroy); // auto delete
+#endif
+
+	int line_num = 0;
+	bool first_line = true;
+
+	for (const TextLine& line : lines)
+	{
+		warning("linha");
+
+		LineMetrics line_metrics;
+		int first_line_height = 0;
+
+		Vector offset;
+		offset[1] = -vcompress*(line_num++)*face->height/*/64.*/;
+		uint32_t previous_glyph_index = 0;
+
+		for (const TextSpan& span : line) {
+#if HAVE_HARFBUZZ
+			hb_buffer_clear_contents(span_buffer);
+
+			hb_direction_t direction = HB_DIRECTION_LTR; // character order already fixed by FriBiDi
+			hb_buffer_set_direction(span_buffer, direction);
+			hb_buffer_set_script(span_buffer, span.script);
+//			hb_buffer_set_language(span_buffer, hb_language_from_string(language.c_str(), -1));
+
+			hb_buffer_add_utf32(span_buffer, span.codepoints.data(), span.codepoints.size(), 0, -1);
+
+			hb_shape(font, span_buffer, nullptr, 0);
+
+			unsigned int glyph_count;
+			hb_glyph_info_t *glyph_info = hb_buffer_get_glyph_infos(span_buffer, &glyph_count);
+#else
+			size_t glyph_count = span.codepoints.size();
+#endif
+
+			for (size_t i = 0; i < glyph_count; i++) {
+				uint32_t glyph_index;
+#if HAVE_HARFBUZZ
+				glyph_index = glyph_info[i].codepoint;
+#else
+				glyph_index = FT_Get_Char_Index(face, span.codepoints[i]);
+#endif
+
+				// retrieve kerning distance and move pen position
+				if ( FT_HAS_KERNING(face) && use_kerning && previous_glyph_index && glyph_index )
+				{
+					FT_Vector delta;
+
+					if(grid_fit)
+						FT_Get_Kerning( face, previous_glyph_index, glyph_index, FT_KERNING_DEFAULT, &delta );
+					else
+						FT_Get_Kerning( face, previous_glyph_index, glyph_index, FT_KERNING_UNFITTED, &delta );
+
+					if(compress<1.0)
+					{
+						offset[0] += delta.x*compress;
+						offset[1] += delta.y*compress;
+					}
+					else
+					{
+						offset[0] += delta.x;
+						offset[1] += delta.y;
+					}
+				}
+
+				GlyphMetrics glyph_metrics;
+
+				// store current pen position
+				glyph_metrics.offset = offset;
+
+				// load glyph image into the slot. DO NOT RENDER IT !!
+				FT_Error error;
+				if(grid_fit)
+					error = FT_Load_Glyph( face, glyph_index, FT_LOAD_NO_SCALE);
+				else
+					error = FT_Load_Glyph( face, glyph_index, FT_LOAD_NO_SCALE|FT_LOAD_NO_HINTING );
+				if (error) continue;  // ignore errors, jump to next glyph
+
+				// extract glyph image and store it in our table
+				FT_Glyph glyph;
+				error = FT_Get_Glyph( face->glyph, &glyph );
+				if (error) continue;  // ignore errors, jump to next glyph
+
+				// record current glyph index
+				previous_glyph_index = glyph_index;
+
+				// Update the line width
+				line_metrics.size[0] = offset[0]+face->glyph->advance.x;
+
+				// increment pen position
+				offset[0] += round_to_int(face->glyph->advance.x*compress);
+				offset[1] += face->glyph->advance.y;
+
+				if (glyph->format == FT_GLYPH_FORMAT_OUTLINE) {
+					FT_OutlineGlyph outline_glyph = FT_OutlineGlyph(glyph);
+					if (first_line) {
+						FT_BBox glyph_bbox;
+						FT_Glyph_Get_CBox( glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
+						if (first_line_height < glyph_bbox.yMax)
+							first_line_height = glyph_bbox.yMax;
+					}
+					convert_outline_to_contours(outline_glyph, glyph_metrics.contours, glyph_metrics.offset);
+					warning("num-contours: %zu", glyph_metrics.contours.size());
+				} else {
+					synfig::warning("Layer_FreeType: glyph format not yet supported");
+				}
+
+				if (!glyph_metrics.contours.empty()) {
+if (line_metrics.glyphs.empty())
+					line_metrics.glyphs.push_back(glyph_metrics);
+else {
+//	line_metrics.glyphs[0].contours[0]->add_chunk(rendering::Contour::Chunk(rendering::Contour::MOVE, glyph_metrics.offset));
+	line_metrics.glyphs[0].contours[0]->add_chunks(glyph_metrics.contours[0]->get_chunks());
+}
+				}
+			}
+		}
+
+		info("height: %i y_scale: %i  u_per_EM: %u vcompress: %f", face->height, face->size->metrics.y_scale, face->units_per_EM, vcompress);
+		if (first_line) {
+			line_metrics.size[1] = first_line_height;
+		} else {
+			Real line_height = vcompress*(face->height*(/*face->size->metrics.y_scale*/1./face->units_per_EM));
+			line_metrics.size[1] = line_height;
+		}
+
+		metrics.push_back(line_metrics);
+
+		first_line = false;
+
+		warning("linha: %zu glifos | %zu (%f, %f)", line_metrics.glyphs.size(), line.size(), line_metrics.size[0], line_metrics.size[1]);
+	}
+	warning("fim sync");
+
+
+	for (const LineMetrics& line : metrics) {
+		warning("linha #: %zu", line.glyphs.size());
+		for (auto i : line.glyphs) {
+			warning("\tcontornos #: %zu", i.contours.size());
+			for (auto contour : i.contours) {
+				warning("\t\tteste");
+			}
+		}
+	}
+
 }
 
 inline Color
@@ -1013,8 +1191,8 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	}
 
 	// Width and Height of a pixel
-	Vector::value_type pw=renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
-	Vector::value_type ph=renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
+	const Vector::value_type pw=renddesc.get_pw()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
+	const Vector::value_type ph=renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
 
     // Calculate character width and height
 	int w=std::abs(round_to_int(size[0]*pw));
@@ -1255,10 +1433,21 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 synfig::Rect
 Layer_Freetype::get_bounding_rect()const
 {
+	if(is_disabled())
+		return synfig::Rect::full_plane();
+
 	if(needs_sync)
 		const_cast<Layer_Freetype*>(this)->sync();
-//	if(!is_disabled())
-	return synfig::Rect::full_plane();
+
+	if (metrics.empty() || param_invert.get(bool()))
+		return synfig::Rect::full_plane();
+
+	synfig::Rect r;
+//	for (auto line : metrics) {
+//		r = line.glyphs[0].contours[0]->get_bounds();
+//	}
+//info("rect: %f,%f  %f,%f", r.get_min()[0],r.get_min()[1], r.get_max()[0],r.get_max()[1]);
+	return r;
 }
 
 void
@@ -1427,4 +1616,266 @@ Layer_Freetype::fetch_text_lines(const std::string& text, int direction)
 	}
 #endif
 	return new_lines;
+}
+
+void
+Layer_Freetype::convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, std::vector<rendering::Contour::Handle>& contours, const Vector& offset)
+{
+	auto get_vector = [offset] (const FT_OutlineGlyphRec* glyph, short index) -> Vector {
+		const FT_Vector& ft_v = glyph->outline.points[index];
+		return Vector(ft_v.x, ft_v.y) + offset;
+	};
+
+	contours.clear();
+
+	short p = 0;
+	if (glyph->outline.n_contours > 0) {
+		rendering::Contour::Handle contour = new rendering::Contour();
+		contours.push_back(contour);
+		for (int nc = 0; nc < glyph->outline.n_contours; nc++) {
+			if (glyph->outline.n_points == 0)
+				continue;
+
+			warning("- contour - ");
+			const short first_p = p;
+			const short last_p = std::min(glyph->outline.contours[nc], glyph->outline.n_points);
+
+			{
+				const Vector v = get_vector(glyph, p);
+warning("point: %f %f", v[0], v[1]);
+				const char tag = FT_CURVE_TAG(glyph->outline.tags[p]);
+
+				switch (tag) {
+				case FT_CURVE_TAG_ON:
+					contour->move_to(v);
+					break;
+				case FT_CURVE_TAG_CONIC: {
+					char last_tag = FT_CURVE_TAG(glyph->outline.tags[last_p]);
+					Vector last_v = get_vector(glyph, last_p);
+					switch (last_tag) {
+					case FT_CURVE_TAG_ON:
+						contour->move_to(last_v);
+						break;
+					case FT_CURVE_TAG_CONIC:
+						last_v = (v + last_v)/2;
+						contour->move_to(last_v);
+						break;
+					case FT_CURVE_TAG_CUBIC:
+						synfig::error("Layer_Freetype: %s", _("the glyph outline contour cannot end with cubic bezier control point"));
+						continue;
+					default:
+						synfig::error("Layer_Freetype: %s", _("unknown previous tag for the glyph outline contour"));
+						continue;
+					}
+					break;
+				}
+				case FT_CURVE_TAG_CUBIC:
+					synfig::error("Layer_Freetype: %s", _("the glyph outline contour cannot start with cubic bezier control point"));
+					continue;
+				default:
+					synfig::error("Layer_Freetype: %s", _("unknown tag for the glyph outline contour"));
+					continue;
+				}
+			}
+
+			while (p <= last_p) {
+				short next_p = p + 1;
+				if (next_p > last_p)
+					next_p = first_p;
+				short next2_p = next_p + 1;
+				if (next2_p > last_p)
+					next2_p = first_p;
+
+				const Vector v = get_vector(glyph, p);
+				const Vector next_v = get_vector(glyph, next_p);
+				const Vector next2_v = get_vector(glyph, next2_p);
+
+				const char tag = FT_CURVE_TAG(glyph->outline.tags[p]);
+				const char next_tag = FT_CURVE_TAG(glyph->outline.tags[next_p]);
+				const char next2_tag = FT_CURVE_TAG(glyph->outline.tags[next2_p]);
+
+				if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_ON) {
+					contour->line_to(next_v);
+					p += 1;
+//							warning("on - on %f,%f\t%f,%f", v[0], v[1], next_v[0], next_v[1]);
+				} else if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_CONIC && next2_tag == FT_CURVE_TAG_ON) {
+					contour->conic_to(next2_v, next_v);
+					p += 2;
+//							warning("on - conic - on %f,%f\t%f,%f\t%f,%f", v[0], v[1], next_v[0], next_v[1], next_v[2], next_v[2]);
+				} else if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_CONIC && next2_tag == FT_CURVE_TAG_CONIC) {
+					Vector target_v = (next_v + next2_v)/2;
+					contour->conic_to(target_v, next_v);
+					p += 2;
+//							warning("on - conic - conic %f,%f\t%f,%f\t%f,%f", v[0], v[1], next_v[0], next_v[1], next_v[2], next_v[2]);
+				} else if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_CUBIC && next2_tag == FT_CURVE_TAG_CUBIC) {
+					short next3_p = next2_p + 1;
+					if (next3_p > last_p)
+						next3_p = first_p;
+
+					const char next3_tag = FT_CURVE_TAG(glyph->outline.tags[next3_p]);
+					if (next3_tag == FT_CURVE_TAG_ON) {
+						const Vector next3_v = get_vector(glyph, next3_p);
+						contour->cubic_to(next3_v, next_v, next2_v);
+					}
+					p += 3;
+//							warning("on - cubic - cubic - on %f,%f\t%f,%f\t%f,%f", v[0], v[1], next_v[0], next_v[1], next_v[2], next_v[2], next_v[3], next_v[3]);
+				} else if (tag == FT_CURVE_TAG_CONIC && next_tag == FT_CURVE_TAG_ON) {
+					contour->conic_to(next_v, v);
+					p += 1;
+//							warning("conic - on %f,%f\t%f,%f", v[0], v[1], next_v[0], next_v[1]);
+				} else if (tag == FT_CURVE_TAG_CONIC && next_tag == FT_CURVE_TAG_CONIC) {
+					Vector middle = (v + next_v)/2;
+					contour->conic_to(middle, v);
+					p += 1;
+//							warning("conic - conic %f,%f\t%f,%f", v[0], v[1], next_v[0], next_v[1]);
+				} else { // cuBIC?!
+					synfig::warning("Layer_Freetype: %s", _("strange glyph vertex component... Aborting"));
+					break;
+				}
+			}
+
+			contour->close();
+		}
+	} else {
+		synfig::warning("Layer_Freetype: %s", etl::strprintf(_("Glyph without contour!? %d points"), glyph->outline.n_points).c_str());
+	}
+}
+
+
+struct TaskContourList : public rendering::Task {
+	SYNFIG_EXPORT static Token token;
+
+	TaskContourList() {}
+
+	virtual Token::Handle get_token() const override {
+		return token.handle();
+	}
+	virtual bool run(RunParams &params) const override {
+		error("RUUUUUUUN");
+		return true;
+	}
+};
+
+SYNFIG_EXPORT rendering::Task::Token TaskContourList::token(
+	DescAbstract<TaskContourList>("ContourList") );
+
+rendering::Task::Handle
+Layer_Freetype::build_composite_task_vfunc(ContextParams /*context_params*/)const
+{
+	warning("inicio");
+	rendering::Task::Handle task;
+
+	if (is_disabled())
+		return task;
+	error("pre-sync");
+
+	if (needs_sync)
+		const_cast<Layer_Freetype*>(this)->sync();
+
+	error("post-sync");
+
+	for (const LineMetrics& line : metrics) {
+		warning("linha #: %zu", line.glyphs.size());
+		for (const GlyphMetrics& i : line.glyphs) {
+			warning("\tcontornos #: %zu  [%f,%f]", i.contours.size(), i.offset[0], i.offset[1]);
+			for (auto contour : i.contours) {
+				warning("\t\tcontour");
+			}
+		}
+	}
+	error("end");
+
+	// TODO: multithreading without this copying
+
+
+
+//	TaskContourList::Handle task_contour_list = new TaskContourList;
+	rendering::TaskList::Handle contour_tasks = new rendering::TaskList() ;
+
+	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
+	// TODO: multithreading without this copying
+//	task_contour->transformation->matrix.set_translate( glyph.offset + line_offset);
+info("offset %f %f", task_contour->transformation->matrix.offset()[0], task_contour->transformation->matrix.offset()[1]);
+	task_contour->contour = new rendering::Contour();
+	task_contour->contour->color = param_color.get(Color());
+	task_contour->contour->invert = param_invert.get(bool());
+	task_contour->contour->antialias = true;//param_antialias.get(bool());
+//				task_contour->contour->winding_style = (rendering::Contour::WindingStyle::WINDING_EVEN_ODD);//param_winding_style.get(int());
+
+	int num_task = 0;
+	int n_line = 0;
+	for (const LineMetrics& line : metrics) {
+		warning("linha");
+
+		Vector line_offset = line.size;
+		line_offset[0] = 0;
+		line_offset[1] /***/= n_line++;
+
+int n_gly = 0;
+		for (const GlyphMetrics& glyph : line.glyphs) {
+			warning("glifo : %zu", glyph.contours.size());
+line_offset[1] = n_gly++;
+			for (auto contour : glyph.contours) {
+				warning("contorno");
+				task_contour->contour->add_chunks(contour->get_chunks());
+
+//contour_tasks->sub_tasks.push_back(task_contour);
+//				task_contour->sub_task(0) = task;
+				task = task_contour;
+
+			}
+//			goto a;
+
+
+		}
+
+
+
+	}
+
+
+
+//	task = task_contour_list;
+
+
+
+a:
+//	rendering::Blur::Type blurtype = (rendering::Blur::Type)param_blurtype.get(int());
+//	Vector feather = get_feather();
+//	if (feather != Vector::zero())
+//	{
+//		rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
+//		task_blur->blur.size = feather;
+//		task_blur->blur.type = blurtype;
+//		task_blur->sub_task() = task;
+//		task = task_blur;
+//	}
+
+	Vector size(param_size.get(synfig::Vector())*2);
+	Real line_height = size[1]*(param_vcompress.get(Real())*face->height)/face->units_per_EM;
+	Real first_line_height = metrics.front().size[1]/face->units_per_EM;
+
+	Real text_height = (lines.size()-1)*line_height + first_line_height;
+	Real y_shift = /*size[1]**/(param_orient.get(Vector())[1] * text_height - line_height);
+
+	auto rect = task_contour->contour->get_bounds();
+	rect = rect.multiply_coords(size/face->units_per_EM);
+	warning("bounds %f %f %f %f | %f %f ", rect.get_min()[0], rect.get_min()[1], rect.get_max()[0], rect.get_max()[1], rect.get_width(), rect.get_height());
+	auto ora = param_origin.get(Vector());
+	warning("origin: %f %f", ora[0], ora[1]);
+
+
+
+	error("line H: %f\ttext H: %f\torient: %f\ty shift: %f", line_height, text_height, param_orient.get(Vector())[1], y_shift);
+
+	Matrix matrix = Matrix().set_translate(param_origin.get(Vector())+Vector(0, y_shift))
+					* Matrix().set_scale(size/(face->units_per_EM));
+
+	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+	task_transformation->sub_task() = task;//contour_tasks;//() = task;
+//	task_transformation->interpolation = Color::INTERPOLATION_LINEAR;
+	task_transformation->transformation->matrix = matrix;
+
+	task = task_transformation;
+	return task;
 }

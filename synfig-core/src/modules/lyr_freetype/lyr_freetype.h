@@ -40,6 +40,7 @@
 #if HAVE_HARFBUZZ
 #include <harfbuzz/hb.h>
 #endif
+#include <synfig/rendering/primitive/contour.h>
 #include <vector>
 
 /* === M A C R O S ========================================================= */
@@ -98,6 +99,20 @@ private:
 	typedef std::vector<TextSpan> TextLine;
 	std::vector<TextLine> lines;
 
+	struct GlyphMetrics
+	{
+		std::vector<synfig::rendering::Contour::Handle> contours;
+		synfig::Vector offset;
+		synfig::Vector advance;
+	};
+	struct LineMetrics
+	{
+		std::vector<GlyphMetrics> glyphs;
+		synfig::Vector size;
+	};
+
+	std::vector<LineMetrics> metrics;
+
 	bool font_path_from_canvas;
 
 	bool old_version;
@@ -127,6 +142,9 @@ public:
 
 	synfig::Rect get_bounding_rect() const override;
 
+protected:
+	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams) const override;
+
 private:
 	void new_font(const synfig::String &family, int style=0, int weight=400);
 	bool new_font_(const synfig::String &family, int style=0, int weight=400);
@@ -137,6 +155,8 @@ private:
 	void on_param_text_changed();
 
 	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
+
+	static void convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, std::vector<synfig::rendering::Contour::Handle>& contours, const synfig::Vector& offset);
 };
 
 /* === E N D =============================================================== */
