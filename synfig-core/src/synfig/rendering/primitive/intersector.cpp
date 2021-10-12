@@ -161,8 +161,13 @@ public:
 			return 0;
 
 		// degenerate accept - to the right and crossing the base line
-		if (p[0] > xmax)
-			return (p[1] <= ymax && p[1] >= ymin);
+		if (p[0] > xmax) {
+			if (points[2][1] > points[0][1])
+				return 1;
+			if (points[2][1] < points[0][1])
+				return -1;
+			return 0;
+		}
 
 		// solve for curve = y
 
@@ -188,8 +193,8 @@ public:
 			// if there are double/no roots - no intersections (in real #s that is)
 			if (b2_4ac <= 0) return 0;
 			b2_4ac = sqrt(b2_4ac);
-			t1 = (-b - b2_4ac)/2*a,
-			t2 = (-b + b2_4ac)/2*a;
+			t1 = (-b - b2_4ac)/(2*a),
+			t2 = (-b + b2_4ac)/(2*a);
 		}
 
 		// calculate number of intersections
