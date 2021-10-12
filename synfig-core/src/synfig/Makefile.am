@@ -127,7 +127,6 @@ SYNFIGHEADERS = \
 	valueoperations.h \
 	valuetransformation.h \
 	soundprocessor.h \
-	polygon.h \
 	canvasfilenaming.h \
 	token.h \
 	threadpool.h
