@@ -57,8 +57,6 @@ public:
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
 	virtual Vocab get_param_vocab()const;
-	
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 };
 
 /* -- E X T E R N S --------------------------------------------------------- */
