@@ -242,7 +242,6 @@ inline IndexTable::IndexColumn::iterator IndexTable::find(ContourNode *sought) {
 // Handles active contour merging due to split/vertex events
 void IndexTable::merge(IndexColumn::iterator index1,
                        IndexColumn::iterator index2) {
-  IndexColumn::iterator current;
 
   int identifier1 = m_identifiers[(*index1)->m_ancestorContour],
       identifier2 = m_identifiers[(*index2)->m_ancestorContour];

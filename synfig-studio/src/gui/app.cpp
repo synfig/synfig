@@ -2042,7 +2042,6 @@ App::load_file_window_size()
 			while(file)
 			{
 				std::string recent_file;
-				std::string recent_file_window_size;
 				getline(file,recent_file);
 				if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
 					add_recent_file(recent_file, false);

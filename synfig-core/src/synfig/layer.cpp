@@ -320,7 +320,6 @@ Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> v
 	if (previous == value_node)
 		return true;
 
-	String param_noref = param;
 	dynamic_param_list_[param]=ValueNode::Handle(value_node);
 
 	if (previous)

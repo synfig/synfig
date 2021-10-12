@@ -370,9 +370,6 @@ public:
 			//int ci,i1,i2,size;
 			//float t1,t2;
 
-			CurveSet::region	current;
-			CurvePoint	cp;
-
 			cur = &lhs; other = &rhs;
 			curin = in1; otherin = in2;
 			delcur = true;
