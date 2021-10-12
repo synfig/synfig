@@ -110,21 +110,17 @@ std::set<FileSystem::Identifier> CanvasParser::loading_;
 
 /* === P R O C E D U R E S ================================================= */
 
-static std::map<String, Canvas::LooseHandle>* open_canvas_map_(0);
-
-std::map<synfig::String, etl::loose_handle<Canvas> >& synfig::get_open_canvas_map()
+OpenCanvasMap& synfig::get_open_canvas_map()
 {
-	if(!open_canvas_map_)
-		open_canvas_map_=new std::map<String, Canvas::LooseHandle>;
-	return *open_canvas_map_;
+	static OpenCanvasMap open_canvas_map_;
+	return open_canvas_map_;
 }
 
 static void _remove_from_open_canvas_map(Canvas *x) {
     auto& map = get_open_canvas_map();
-    const std::string filename = etl::absolute_path(x->get_file_name());
-    const auto& found = map.find(filename);
+    const auto& found = map.find(x);
     if (found == map.end()) {
-        synfig::error(_("Cannot find canvas for delete '%s'"), filename.c_str());
+        synfig::error(_("Cannot find canvas for delete '%s'"), x->get_file_name().c_str());
         return;
     }
     map.erase(found);
@@ -132,17 +128,11 @@ static void _remove_from_open_canvas_map(Canvas *x) {
 
 static void _canvas_file_name_changed(Canvas *x)
 {
-	std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
-
-	for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
-		if(iter->second==x)
-			break;
-	assert(iter!=get_open_canvas_map().end());
-	if(iter==get_open_canvas_map().end())
+	auto& canvas_map = get_open_canvas_map();
+	if (canvas_map.find(x) == canvas_map.end()) {
 		return;
-	get_open_canvas_map().erase(iter->first);
-	get_open_canvas_map()[etl::absolute_path(x->get_file_name())]=x;
-
+	}
+	canvas_map[x] = etl::absolute_path(x->get_file_name());
 }
 
 Canvas::Handle
@@ -3455,7 +3445,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 void
 CanvasParser::register_canvas_in_map(Canvas::Handle canvas, String as)
 {
-	get_open_canvas_map()[etl::absolute_path(as)]=canvas;
+	get_open_canvas_map()[canvas.get()]=etl::absolute_path(as);
 	canvas->signal_deleted().connect(sigc::bind(sigc::ptr_fun(_remove_from_open_canvas_map),canvas.get()));
 	canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas.get()));
 }
@@ -3466,13 +3456,10 @@ CanvasParser::show_canvas_map(String file, int line, String text)
 {
 	return;
 	printf("  .-----\n  |  %s:%d %s\n", file.c_str(), line, text.c_str());
-	std::map<synfig::String, etl::loose_handle<Canvas> > canvas_map(synfig::get_open_canvas_map());
-	std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
-	for (iter = canvas_map.begin(); iter != canvas_map.end(); iter++)
+	const auto& canvas_map = synfig::get_open_canvas_map();
+	for (const auto& iter : canvas_map)
 	{
-		synfig::String first(iter->first);
-		etl::loose_handle<Canvas> second(iter->second);
-		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
+		printf("  |    %40s : %lx (%d)\n", iter.second.c_str(), uintptr_t(iter.first.get()), iter.first->count());
 	}
 	printf("  `-----\n\n");
 }
@@ -3485,8 +3472,12 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 
 	try
 	{
-		if(get_open_canvas_map().count(etl::absolute_path(as)))
-			return get_open_canvas_map()[etl::absolute_path(as)];
+		const std::string absolute_path = etl::absolute_path(as);
+		for (const auto& it : get_open_canvas_map()) {
+			if (it.second == absolute_path) {
+				return it.first;
+			}
+		}
 
 		filename=as;
 		total_warnings_=0;
