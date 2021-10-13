@@ -214,6 +214,7 @@ private:
 	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath &path, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
 	void draw_selected_background(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath &path, const RowInfo &row_info) const;
 
+	bool fetch_waypoints(const WaypointItem &wi, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > &waypoint_set) const;
 	void on_waypoint_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_double_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 
