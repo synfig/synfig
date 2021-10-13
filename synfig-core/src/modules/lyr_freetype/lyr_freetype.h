@@ -31,7 +31,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_composite.h>
+#include <synfig/layers/layer_shape.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -40,8 +40,6 @@
 #if HAVE_HARFBUZZ
 #include <harfbuzz/hb.h>
 #endif
-#include <synfig/rendering/primitive/contour.h>
-#include <vector>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,14 +47,14 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Layer_Freetype : public synfig::Layer_Composite, public synfig::Layer_NoDeform
+class Layer_Freetype : public synfig::Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
 	//!Parameter: (synfig::String) text of the layer;
 	synfig::ValueBase param_text;
-	//!Parameter: (synfig::Color) color of the text;
-	synfig::ValueBase param_color;
+//	//!Parameter: (synfig::Color) color of the text;
+//	synfig::ValueBase param_color;
 	//!Parameter: (synfig::String) font family used in the text
 	synfig::ValueBase param_family;
 	//!Parameter: (int) style used in the font
@@ -73,16 +71,16 @@ private:
 	synfig::ValueBase param_size;
 	//!Parameter: (synfig::Vector) text orientation
 	synfig::ValueBase param_orient;
-	//!Parameter: (synfig::Point) text position
-	synfig::ValueBase param_origin;
+//	//!Parameter: (synfig::Point) text position
+//	synfig::ValueBase param_origin;
 	//!Parameter: (synfig::String) font used in the text
 	synfig::ValueBase param_font;
 	//!Parameter: (bool)
 	synfig::ValueBase param_use_kerning;
 	//!Parameter: (bool)
 	synfig::ValueBase param_grid_fit;
-	//!Parameter: (bool) inverts the rendered text
-	synfig::ValueBase param_invert;
+//	//!Parameter: (bool) inverts the rendered text
+//	synfig::ValueBase param_invert;
 
 	FT_Face face;
 #if HAVE_HARFBUZZ
@@ -99,26 +97,11 @@ private:
 	typedef std::vector<TextSpan> TextLine;
 	std::vector<TextLine> lines;
 
-	struct GlyphMetrics
-	{
-		std::vector<synfig::rendering::Contour::Handle> contours;
-		synfig::Vector offset;
-		synfig::Vector advance;
-	};
-	struct LineMetrics
-	{
-		std::vector<GlyphMetrics> glyphs;
-		synfig::Vector size;
-	};
-
-	std::vector<LineMetrics> metrics;
-
 	bool font_path_from_canvas;
 
 	bool old_version;
-	std::atomic<bool> needs_sync {false};
 
-	void sync();
+	void sync_vfunc() override;
 
 	synfig::Color color_func(const synfig::Point &x, int quality=10, synfig::ColorReal supersample=0)const;
 
@@ -130,22 +113,29 @@ public:
 	~Layer_Freetype() override = default;
 
 	void on_canvas_set() override;
+
+	bool set_simple_shape_param(const synfig::String & param, const synfig::ValueBase &value);
+	bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value) override;
 	bool set_param(const synfig::String & param, const synfig::ValueBase &value) override;
 	synfig::ValueBase get_param(const synfig::String & param) const override;
+
 	synfig::Color get_color(synfig::Context context, const synfig::Point &pos) const override;
-	bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb) const override;
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point) const override;
+	synfig::Rect get_bounding_rect() const override;
 
 	Vocab get_param_vocab() const override;
 
 	bool set_version(const synfig::String &ver) override { if (ver=="0.1") old_version=true; return true; }
 	void reset_version() override {old_version=false;}
 
-	synfig::Rect get_bounding_rect() const override;
-
 protected:
 	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams) const override;
 
 private:
+	/*! The new_font() function try to load a font file
+	** until it works by simplyfing font style and weight.
+	** As last resource, it loads "sans serif" with Normal font style and weight.
+	*/
 	void new_font(const synfig::String &family, int style=0, int weight=400);
 	bool new_font_(const synfig::String &family, int style=0, int weight=400);
 	bool new_face(const synfig::String &newfont);
@@ -156,7 +146,24 @@ private:
 
 	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
 
-	static void convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, std::vector<synfig::rendering::Contour::Handle>& contours, const synfig::Vector& offset);
+	static void convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, synfig::rendering::Contour::ChunkList& chunks);
+
+	static void shift_contour_chunks(synfig::rendering::Contour::ChunkList &chunks, const synfig::Vector &offset);
+
+	synfig::Point world_to_contour(const synfig::Point& p) const;
+	synfig::Point contour_to_world(const synfig::Point& p) const;
+
+	enum SyncFlags {
+		SYNC_FONT,
+		SYNC_TEXT,
+		SYNC_DIRECTION,
+		SYNC_COMPRESS,
+		SYNC_ORIENTATION,
+		SYNC_KERNING,
+		SYNC_GRID_FIT
+	};
+
+	std::atomic<int> need_sync;
 };
 
 /* === E N D =============================================================== */
