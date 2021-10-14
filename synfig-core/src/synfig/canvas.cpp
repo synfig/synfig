@@ -1260,7 +1260,7 @@ Canvas::get_meta_data_keys()const
 		  refer to "motion blur", they mean either of these two
 		  layers. */
 void
-synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
+Canvas::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
 {
 	Context iter;
 

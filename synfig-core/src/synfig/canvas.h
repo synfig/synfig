@@ -146,12 +146,6 @@ class GUID;
 class Canvas;
 class SoundProcessor;
 
-typedef        etl::handle<Canvas>     CanvasHandle;
-
-//! Optimize layers based on its calculated Z depth to perform a quick
-//! render of the layers to the output.
-void optimize_layers(Time, Context, CanvasHandle, bool seen_motion_blur=false);
-
 /*!	\class Canvas
 **	\brief Canvas is a double ended queue of Layers. It is the base class
 * for a Synfig document.
@@ -172,8 +166,6 @@ public:
 	typedef etl::handle<const Canvas> ConstHandle;
 
 	typedef std::list<Handle> Children;
-
-	friend void synfig::optimize_layers(Time, Context, Canvas::Handle, bool seen_motion_blur);
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -695,6 +687,10 @@ private:
 	//! Seems to be used to disconnect the stored signals connections of the layers.
 	//! \see connections_
 	void disconnect_connections(etl::loose_handle<Layer> layer);
+
+	//! Optimize layers based on its calculated Z depth to perform a quick
+	//! render of the layers to the output.
+	static void optimize_layers(Time, Context, Canvas::Handle, bool seen_motion_blur=false);
 
 protected:
 	//! Parent changed
