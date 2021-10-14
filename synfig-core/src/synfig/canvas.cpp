@@ -186,6 +186,18 @@ Canvas::find_index(const etl::handle<Layer> &layer, int &index) const
 }
 
 Canvas::iterator
+Canvas::begin()
+{
+	return CanvasBase::begin();
+}
+
+Canvas::const_iterator
+Canvas::begin() const
+{
+	return CanvasBase::begin();
+}
+
+Canvas::iterator
 Canvas::end()
 {
 	Canvas::iterator i = CanvasBase::end();
@@ -211,6 +223,18 @@ Canvas::rbegin()const
 {
 	Canvas::const_reverse_iterator i = CanvasBase::rbegin();
 	return ++i;
+}
+
+Canvas::reverse_iterator
+Canvas::rend()
+{
+	return CanvasBase::rend();
+}
+
+Canvas::const_reverse_iterator
+Canvas::rend() const
+{
+	return CanvasBase::rend();
 }
 
 int

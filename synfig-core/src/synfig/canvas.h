@@ -154,7 +154,7 @@ class SoundProcessor;
 * methods. As a double queue it allows insertion and deletion of Layers
 * and can access to the layers on the queue easily.
 */
-class Canvas : public CanvasBase, public Node
+class Canvas : private CanvasBase, public Node
 {
 	/*
  --	** -- T Y P E S -----------------------------------------------------------
@@ -166,6 +166,11 @@ public:
 	typedef etl::handle<const Canvas> ConstHandle;
 
 	typedef std::list<Handle> Children;
+
+	typedef CanvasBase::iterator               iterator;
+	typedef CanvasBase::const_iterator         const_iterator;
+	typedef CanvasBase::reverse_iterator       reverse_iterator;
+	typedef CanvasBase::const_reverse_iterator const_reverse_iterator;
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -607,6 +612,12 @@ public:
 	iterator find_index(const etl::handle<Layer> &layer, int &index);
 	const_iterator find_index(const etl::handle<Layer> &layer, int &index) const;
 	
+	//! Return the first Canvas layer queue iterator.
+	/*! It is just a wrap to std::begin() for CanvasBase. */
+	iterator begin();
+	//! Return the first Canvas layer queue const_iterator.
+	/*! It is just a wrap to std::begin() for CanvasBase. */
+	const_iterator begin() const;
 	//! Returns the last Canvas layer queue iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
 	 * just past the last element of the queue.*/
@@ -623,6 +634,12 @@ public:
 	/*! overrides the std::rbegin() member that would return an iterator
 	 * just past the last element of the queue.*/
 	const_reverse_iterator rbegin()const;
+	//! Returns the first Canvas layer queue reverse iterator.
+	/*! It is just a wrap to std::rend() for CanvasBase.*/
+	reverse_iterator rend();
+	//! Returns the first Canvas layer queue reverse const iterator.
+	/*! It is just a wrap to std::rend() for CanvasBase.*/
+	const_reverse_iterator rend()const;
 	//! Returns last layer in Canvas layer stack
 	etl::handle<Layer> &back();
 	//! Returns last layer in Canvas layer stack
