@@ -270,22 +270,18 @@ Canvas::size() const noexcept
 void
 Canvas::clear() noexcept
 {
-	while(!empty())
+	while (!empty())
 	{
-		Layer::Handle layer(front());
-		//if(layer->count()>2)synfig::info("before layer->count()=%d",layer->count());
-
 		erase(begin());
-		//if(layer->count()>1)synfig::info("after layer->count()=%d",layer->count());
 	}
-	//CanvasBase::clear();
 
 	// We need to keep a blank handle at the
 	// end of the image list, and acts at
 	// the bottom. Without it, the layers
 	// would just continue going when polled
 	// for a color.
-	CanvasBase::push_back(Layer::Handle());
+	if (CanvasBase::empty())
+		CanvasBase::push_back(Layer::Handle());
 
 	changed();
 }
