@@ -147,12 +147,15 @@ class Canvas;
 class SoundProcessor;
 
 /*!	\class Canvas
-**	\brief Canvas is a double ended queue of Layers. It is the base class
-* for a Synfig document.
+**	\brief Canvas is a list of Layers. It is the base class for a Synfig
+* document.
 *
-* As a node it inherits all the parent child relationship and the GUID
-* methods. As a double queue it allows insertion and deletion of Layers
-* and can access to the layers on the queue easily.
+* As a node, it inherits all the parent child relationship and the GUID
+* methods. As a list, it allows insertion and deletion of Layers and can
+* access to the layers on the list easily.
+*
+* Note: the last list element is always a null Layer. It helps iterative
+* methods to know when it reaches end of layer list.
 */
 class Canvas : private CanvasBase, public Node
 {
@@ -590,17 +593,17 @@ public:
 	//! Gets the depth of a particular Layer by its handle
 	int get_depth(etl::handle<Layer>)const;
 
-	//! Retireves the first layer of the double queue of Layers
+	//! Retrieves the first layer of the list of Layers
 	IndependentContext get_independent_context()const;
 
-	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
+	//! Retrieves the first layer of the list of Layers assigned with rendering parameters
 	Context get_context(const ContextParams &params)const;
 
-	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
+	//! Retrieves the first layer of the list of Layers assigned with rendering parameters
 	Context get_context(const Context &parent_context)const;
 
-	//! Retireves sorted double queue of Layers and Context of the first layer with rendering parameters
-	Context get_context_sorted(const ContextParams &params, CanvasBase &out_queue) const;
+	//! Retrieves sorted list of Layers and Context of the first layer with rendering parameters
+	Context get_context_sorted(const ContextParams &params, CanvasBase &out_list) const;
 
 	//! Creates sorted context and builds task for rendering based on it with applied gamma
 	rendering::Task::Handle build_rendering_task(const ContextParams &context_params) const;
@@ -612,35 +615,35 @@ public:
 	iterator find_index(const etl::handle<Layer> &layer, int &index);
 	const_iterator find_index(const etl::handle<Layer> &layer, int &index) const;
 	
-	//! Return the first Canvas layer queue iterator.
+	//! Return the first Canvas layer list iterator.
 	/*! It is just a wrap to std::begin() for CanvasBase. */
 	iterator begin() noexcept;
-	//! Return the first Canvas layer queue const_iterator.
+	//! Return the first Canvas layer list const_iterator.
 	/*! It is just a wrap to std::begin() for CanvasBase. */
 	const_iterator begin() const noexcept;
 	const_iterator cbegin() const noexcept;
-	//! Returns the last Canvas layer queue iterator. Notice that it
+	//! Returns the last Canvas layer list iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
-	 * just past the last element of the queue.*/
+	 * just past the last element of the list.*/
 	iterator end() noexcept;
-	//! Returns the last Canvas layer queue const_iterator. Notice that it
+	//! Returns the last Canvas layer list const_iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
-	 * just past the last element of the queue.*/
+	 * just past the last element of the list.*/
 	const_iterator end() const noexcept;
 	const_iterator cend() const noexcept;
-	//! Returns the last Canvas layer queue reverse iterator. Notice that it
+	//! Returns the last Canvas layer list reverse iterator. Notice that it
 	/*! overrides the std::rbegin() member that would return an iterator
-	 * just past the last element of the queue.*/
+	 * just past the last element of the list.*/
 	reverse_iterator rbegin() noexcept;
-	//! Returns the last Canvas layer queue reverse const iterator. Notice that it
+	//! Returns the last Canvas layer list reverse const iterator. Notice that it
 	/*! overrides the std::rbegin() member that would return an iterator
-	 * just past the last element of the queue.*/
+	 * just past the last element of the list.*/
 	const_reverse_iterator rbegin() const noexcept;
 	const_reverse_iterator crbegin() const noexcept;
-	//! Returns the first Canvas layer queue reverse iterator.
+	//! Returns the first Canvas layer list reverse iterator.
 	/*! It is just a wrap to std::rend() for CanvasBase.*/
 	reverse_iterator rend() noexcept;
-	//! Returns the first Canvas layer queue reverse const iterator.
+	//! Returns the first Canvas layer list reverse const iterator.
 	/*! It is just a wrap to std::rend() for CanvasBase.*/
 	const_reverse_iterator rend() const noexcept;
 	const_reverse_iterator crend() const noexcept;
@@ -655,16 +658,16 @@ public:
 	//! Inserts a layer just before the last layer.
 	//! \see end(), insert(iterator iter,etl::handle<Layer> x)
 	void push_back(etl::handle<Layer> x);
-	//! Inserts a layer just at the beginning of the Canvas layer dqueue
+	//! Inserts a layer just at the beginning of the Canvas layer list
 	void push_front(etl::handle<Layer> x);
-	//! Inserts a layer in the last position of the Canvas layer dqueue
+	//! Inserts a layer in the last position of the Canvas layer list
 	//! Uses the standard methods and doesn't perform any parentship
 	//! or signal update
 	void push_back_simple(etl::handle<Layer> x);
 	//! Inserts a layer before the given position by \iter and performs
 	//! the proper child parent relationships and signals update
 	void insert(iterator iter,etl::handle<Layer> x);
-	//! Removes a layer from the Canvas layer dqueue and its group and parent
+	//! Removes a layer from the Canvas layer list and its group and parent
 	//! relatioship. Although it is not already used, it clears the connections
 	//! see connections_
 	void erase(iterator iter);

@@ -337,7 +337,7 @@ Canvas::get_context(const Context &parent_context)const
 }
 
 Context
-Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue) const
+Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_list) const
 {
 	multimap<Real, Layer::Handle> layers;
 	int index = 0;
@@ -349,19 +349,19 @@ Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue) c
 		layers.insert(pair<Real, Layer::Handle>(depth, *i));
 	}
 
-	out_queue.clear();
+	out_list.clear();
 	for(multimap<Real, Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
-		out_queue.push_back(i->second);
-	out_queue.push_back(Layer::Handle());
+		out_list.push_back(i->second);
+	out_list.push_back(Layer::Handle());
 
-	return Context(out_queue.begin(), params);
+	return Context(out_list.begin(), params);
 }
 
 rendering::Task::Handle
 Canvas::build_rendering_task(const ContextParams &context_params) const
 {
-	CanvasBase sub_queue;
-	Context context = get_context_sorted(context_params, sub_queue);
+	CanvasBase sub_list;
+	Context context = get_context_sorted(context_params, sub_list);
 	rendering::Task::Handle task = context.build_rendering_task();
 	
 	rendering::TaskPixelGamma::Handle task_gamma(new rendering::TaskPixelGamma());
