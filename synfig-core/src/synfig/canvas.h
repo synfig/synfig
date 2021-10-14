@@ -254,7 +254,9 @@ private:
 	//! Layer Group database
 	std::map<String,std::set<etl::handle<Layer> > > group_db_;
 
-	//! Layer Signal Connection database. Seems to be unused.
+	//! Layer Signal Connection database.
+	//! Required to properly disconnect them when a layer is removed from canvas
+	//! (and not necessarily deleted).
 	std::map<etl::loose_handle<Layer>,std::vector<sigc::connection> > connections_;
 
 	//! Value to store temporarily the grow value for the child outline type layers
@@ -665,7 +667,8 @@ public:
 	//! the proper child parent relationships and signals update
 	void insert(iterator iter,etl::handle<Layer> x);
 	//! Removes a layer from the Canvas layer list and its group and parent
-	//! relatioship. Although it is not already used, it clears the connections
+	//! relatioship.
+	//! It also clears the connections this canvas made on that layer.
 	//! see connections_
 	void erase(iterator iter);
 	//! Sets to be a inline canvas of a given Canvas \parent. The inline
@@ -706,10 +709,11 @@ private:
 	//! Removes a \layer from a group given by its \group string to the group
 	//! database
 	void remove_group_pair(String group, etl::handle<Layer> layer);
-	//! Seems to be used to add the stored signals connections of the layers.
+	//! Connect layer signals related to layer groups and register these
+	//! connections.
 	//! \see connections_
-	void add_connection(etl::loose_handle<Layer> layer, sigc::connection connection);
-	//! Seems to be used to disconnect the stored signals connections of the layers.
+	void add_connections(etl::loose_handle<Layer> layer);
+	//! Disconnect the stored signals connections of the layer.
 	//! \see connections_
 	void disconnect_connections(etl::loose_handle<Layer> layer);
 

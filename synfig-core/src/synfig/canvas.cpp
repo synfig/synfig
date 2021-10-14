@@ -938,26 +938,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 
 	add_child(x.get());
 
-	LooseHandle correct_canvas(this);
-	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
-	Layer::LooseHandle loose_layer(x);
-
-	add_connection(loose_layer,
-				   sigc::connection(
-					   x->signal_added_to_group().connect(
-						   sigc::bind(
-							   sigc::mem_fun(
-								   *correct_canvas,
-								   &Canvas::add_group_pair),
-							   loose_layer))));
-	add_connection(loose_layer,
-				   sigc::connection(
-					   x->signal_removed_from_group().connect(
-						   sigc::bind(
-							   sigc::mem_fun(
-								   *correct_canvas,
-								   &Canvas::remove_group_pair),
-							   loose_layer))));
+	add_connections(x);
 
 	if(!x->get_group().empty())
 		add_group_pair(x->get_group(),x);
@@ -1390,17 +1371,33 @@ Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
 }
 
 void
-Canvas::add_connection(etl::loose_handle<Layer> layer, sigc::connection connection)
+Canvas::add_connections(etl::loose_handle<Layer> layer)
 {
-	connections_[layer].push_back(connection);
+	LooseHandle correct_canvas(this);
+	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
+	std::vector<sigc::connection>& layer_connections = connections_[layer];
+
+	layer_connections.push_back(
+					   layer->signal_added_to_group().connect(
+						   sigc::bind(
+							   sigc::mem_fun(
+								   *correct_canvas,
+								   &Canvas::add_group_pair),
+							   layer)));
+	layer_connections.push_back(
+					   layer->signal_removed_from_group().connect(
+						   sigc::bind(
+							   sigc::mem_fun(
+								   *correct_canvas,
+								   &Canvas::remove_group_pair),
+							   layer)));
 }
 
 void
 Canvas::disconnect_connections(etl::loose_handle<Layer> layer)
 {
-	std::vector<sigc::connection>::iterator iter;
-	for(iter=connections_[layer].begin();iter!=connections_[layer].end();++iter)
-		iter->disconnect();
+	for(sigc::connection& connection : connections_[layer])
+		connection.disconnect();
 	connections_[layer].clear();
 }
 
