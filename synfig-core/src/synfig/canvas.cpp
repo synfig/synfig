@@ -186,65 +186,65 @@ Canvas::find_index(const etl::handle<Layer> &layer, int &index) const
 }
 
 Canvas::iterator
-Canvas::begin()
+Canvas::begin() noexcept
 {
 	return CanvasBase::begin();
 }
 
 Canvas::const_iterator
-Canvas::begin() const
+Canvas::begin() const noexcept
 {
 	return CanvasBase::begin();
 }
 
 Canvas::iterator
-Canvas::end()
+Canvas::end() noexcept
 {
 	Canvas::iterator i = CanvasBase::end();
 	return --i;
 }
 
 Canvas::const_iterator
-Canvas::end() const
+Canvas::end() const noexcept
 {
 	Canvas::const_iterator i = CanvasBase::end();
 	return --i;
 }
 
 Canvas::reverse_iterator
-Canvas::rbegin()
+Canvas::rbegin() noexcept
 {
 	Canvas::reverse_iterator i = CanvasBase::rbegin();
 	return ++i;
 }
 
 Canvas::const_reverse_iterator
-Canvas::rbegin()const
+Canvas::rbegin() const noexcept
 {
 	Canvas::const_reverse_iterator i = CanvasBase::rbegin();
 	return ++i;
 }
 
 Canvas::reverse_iterator
-Canvas::rend()
+Canvas::rend() noexcept
 {
 	return CanvasBase::rend();
 }
 
 Canvas::const_reverse_iterator
-Canvas::rend() const
+Canvas::rend() const noexcept
 {
 	return CanvasBase::rend();
 }
 
 int
-Canvas::size()const
+Canvas::size() const noexcept
 {
 	return CanvasBase::size()-1;
 }
 
 void
-Canvas::clear()
+Canvas::clear() noexcept
 {
 	while(!empty())
 	{
@@ -267,7 +267,7 @@ Canvas::clear()
 }
 
 bool
-Canvas::empty()const
+Canvas::empty() const noexcept
 {
 	return CanvasBase::size()<=1;
 }

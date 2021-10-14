@@ -483,13 +483,13 @@ public:
 	Time get_time()const { return cur_time_; }
 
 	//! Returns the number of layers in the canvas
-	int size()const;
+	int size() const noexcept;
 
 	//! Removes all the layers from the canvas
-	void clear();
+	void clear() noexcept;
 
 	//! Returns true if the canvas has no layers
-	bool empty()const;
+	bool empty() const noexcept;
 
 	//! Returns a reference to the ValueNodeList for this Canvas
 	// ValueNodeList &value_node_list() { return value_node_list_; }
@@ -614,32 +614,32 @@ public:
 	
 	//! Return the first Canvas layer queue iterator.
 	/*! It is just a wrap to std::begin() for CanvasBase. */
-	iterator begin();
+	iterator begin() noexcept;
 	//! Return the first Canvas layer queue const_iterator.
 	/*! It is just a wrap to std::begin() for CanvasBase. */
-	const_iterator begin() const;
+	const_iterator begin() const noexcept;
 	//! Returns the last Canvas layer queue iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
 	 * just past the last element of the queue.*/
-	iterator end();
+	iterator end() noexcept;
 	//! Returns the last Canvas layer queue const_iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
 	 * just past the last element of the queue.*/
-	const_iterator end()const;
+	const_iterator end() const noexcept;
 	//! Returns the last Canvas layer queue reverse iterator. Notice that it
 	/*! overrides the std::rbegin() member that would return an iterator
 	 * just past the last element of the queue.*/
-	reverse_iterator rbegin();
+	reverse_iterator rbegin() noexcept;
 	//! Returns the last Canvas layer queue reverse const iterator. Notice that it
 	/*! overrides the std::rbegin() member that would return an iterator
 	 * just past the last element of the queue.*/
-	const_reverse_iterator rbegin()const;
+	const_reverse_iterator rbegin() const noexcept;
 	//! Returns the first Canvas layer queue reverse iterator.
 	/*! It is just a wrap to std::rend() for CanvasBase.*/
-	reverse_iterator rend();
+	reverse_iterator rend() noexcept;
 	//! Returns the first Canvas layer queue reverse const iterator.
 	/*! It is just a wrap to std::rend() for CanvasBase.*/
-	const_reverse_iterator rend()const;
+	const_reverse_iterator rend() const noexcept;
 	//! Returns last layer in Canvas layer stack
 	etl::handle<Layer> &back();
 	//! Returns last layer in Canvas layer stack
