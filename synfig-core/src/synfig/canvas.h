@@ -251,9 +251,6 @@ private:
 	//! True if the Canvas properties has changed
 	mutable bool is_dirty_;
 
-	//! It is set to true when synfig::optimize_layers is called
-	bool op_flag_;
-
 	//! Layer Group database
 	std::map<String,std::set<etl::handle<Layer> > > group_db_;
 
@@ -715,10 +712,6 @@ private:
 	//! Seems to be used to disconnect the stored signals connections of the layers.
 	//! \see connections_
 	void disconnect_connections(etl::loose_handle<Layer> layer);
-
-	//! Optimize layers based on its calculated Z depth to perform a quick
-	//! render of the layers to the output.
-	static void optimize_layers(Time, Context, Canvas::Handle, bool seen_motion_blur=false);
 
 protected:
 	//! Parent changed
