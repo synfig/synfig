@@ -618,6 +618,7 @@ public:
 	//! Return the first Canvas layer queue const_iterator.
 	/*! It is just a wrap to std::begin() for CanvasBase. */
 	const_iterator begin() const noexcept;
+	const_iterator cbegin() const noexcept;
 	//! Returns the last Canvas layer queue iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
 	 * just past the last element of the queue.*/
@@ -626,6 +627,7 @@ public:
 	/*! overrides the std::end() member that would return an iterator
 	 * just past the last element of the queue.*/
 	const_iterator end() const noexcept;
+	const_iterator cend() const noexcept;
 	//! Returns the last Canvas layer queue reverse iterator. Notice that it
 	/*! overrides the std::rbegin() member that would return an iterator
 	 * just past the last element of the queue.*/
@@ -634,12 +636,14 @@ public:
 	/*! overrides the std::rbegin() member that would return an iterator
 	 * just past the last element of the queue.*/
 	const_reverse_iterator rbegin() const noexcept;
+	const_reverse_iterator crbegin() const noexcept;
 	//! Returns the first Canvas layer queue reverse iterator.
 	/*! It is just a wrap to std::rend() for CanvasBase.*/
 	reverse_iterator rend() noexcept;
 	//! Returns the first Canvas layer queue reverse const iterator.
 	/*! It is just a wrap to std::rend() for CanvasBase.*/
 	const_reverse_iterator rend() const noexcept;
+	const_reverse_iterator crend() const noexcept;
 	//! Returns last layer in Canvas layer stack
 	etl::handle<Layer> &back();
 	//! Returns last layer in Canvas layer stack

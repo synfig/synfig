@@ -197,6 +197,12 @@ Canvas::begin() const noexcept
 	return CanvasBase::begin();
 }
 
+Canvas::const_iterator
+Canvas::cbegin() const noexcept
+{
+	return CanvasBase::begin();
+}
+
 Canvas::iterator
 Canvas::end() noexcept
 {
@@ -207,8 +213,14 @@ Canvas::end() noexcept
 Canvas::const_iterator
 Canvas::end() const noexcept
 {
-	Canvas::const_iterator i = CanvasBase::end();
+	Canvas::const_iterator i = CanvasBase::cend();
 	return --i;
+}
+
+Canvas::const_iterator
+Canvas::cend() const noexcept
+{
+	return end();
 }
 
 Canvas::reverse_iterator
@@ -225,6 +237,12 @@ Canvas::rbegin() const noexcept
 	return ++i;
 }
 
+Canvas::const_reverse_iterator
+Canvas::crbegin() const noexcept
+{
+	return rbegin();
+}
+
 Canvas::reverse_iterator
 Canvas::rend() noexcept
 {
@@ -233,6 +251,12 @@ Canvas::rend() noexcept
 
 Canvas::const_reverse_iterator
 Canvas::rend() const noexcept
+{
+	return CanvasBase::rend();
+}
+
+Canvas::const_reverse_iterator
+Canvas::crend() const noexcept
 {
 	return CanvasBase::rend();
 }
