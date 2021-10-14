@@ -1266,14 +1266,14 @@ Layer_Freetype::fetch_text_lines(const std::string& text, int direction)
 																	   &base_dir, bidi_levels.data());
 #endif
 		if (fribidi_result == 0) {
-			error("Layer_FreeType: error running FriBiDi (getting embedding levels)");
+			synfig::error("Layer_Freetype: %s", _("error running FriBiDi (getting embedding levels)"));
 			return new_lines;
 		}
 
 		fribidi_result = fribidi_reorder_line(FRIBIDI_FLAGS_DEFAULT|FRIBIDI_FLAGS_ARABIC, bidi_types.data(), line_size, 0, base_dir,
 							 bidi_levels.data(), line.data(), nullptr);
 		if (fribidi_result == 0) {
-			error("Layer_FreeType: error running FriBiDi (reordering line)");
+			synfig::error("Layer_Freetype: %s", _("Layer_FreeType: error running FriBiDi (reordering line)"));
 			return new_lines;
 		}
 	}
