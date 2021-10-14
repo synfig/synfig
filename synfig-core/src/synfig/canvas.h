@@ -117,18 +117,18 @@
  * 1.0: git 06a75a5
  *
  *      Added a canvas component called
- * 
+ *
  * 1.1: git a4bbdd7
  *
  *      Added gamma into a canvas rend_desc.
- * 
- *      Looped outline now uses different order 
+ *
+ *      Looped outline now uses different order
  *      for calculating positions of widthpoints (see #1284).
- * 
+ *
  * 1.2: git e2adcad
  *
  *      Added 'alpha' blend method
- * 
+ *
  */
 
 #define CURRENT_CANVAS_VERSION "1.2"
@@ -237,7 +237,7 @@ private:
 
 	//! Render Description for Canvas
 	/*!	\see rend_desc() */
-    RendDesc desc_;
+	RendDesc desc_;
 
 	//! Contains the value of the last call to set_time()
 	Time cur_time_;
@@ -475,7 +475,7 @@ public:
 
 	//! Sets the time for all the layers in the canvas
 	void set_time(Time t)const;
-	
+
 	//! Loads resources (frames) for all the external layers in the canvas
 	void load_resources(Time t)const;
 
@@ -604,14 +604,14 @@ public:
 
 	//! Creates sorted context and builds task for rendering based on it with applied gamma
 	rendering::Task::Handle build_rendering_task(const ContextParams &context_params) const;
-	
+
 	int indexof(const const_iterator &iter) const;
 	iterator byindex(int index);
 	const_iterator byindex(int index) const;
-	
+
 	iterator find_index(const etl::handle<Layer> &layer, int &index);
 	const_iterator find_index(const etl::handle<Layer> &layer, int &index) const;
-	
+
 	//! Return the first Canvas layer list iterator.
 	/*! It is just a wrap to std::begin() for CanvasBase. */
 	iterator begin() noexcept;
