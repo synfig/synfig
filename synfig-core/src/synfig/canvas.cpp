@@ -297,6 +297,18 @@ Canvas::empty() const noexcept
 }
 
 Layer::Handle &
+Canvas::front()
+{
+	return CanvasBase::front();
+}
+
+const Layer::Handle &
+Canvas::front() const
+{
+	return CanvasBase::front();
+}
+
+Layer::Handle &
 Canvas::back()
 {
 	iterator i = end();

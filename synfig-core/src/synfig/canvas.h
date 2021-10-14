@@ -644,6 +644,10 @@ public:
 	/*! It is just a wrap to std::rend() for CanvasBase.*/
 	const_reverse_iterator rend() const noexcept;
 	const_reverse_iterator crend() const noexcept;
+	//! Returns first layer in Canvas layer stack
+	etl::handle<Layer> &front();
+	//! Returns first layer in Canvas layer stack
+	const etl::handle<Layer> &front()const;
 	//! Returns last layer in Canvas layer stack
 	etl::handle<Layer> &back();
 	//! Returns last layer in Canvas layer stack
