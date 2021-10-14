@@ -337,7 +337,6 @@ Palette::load_from_file(const synfig::String& filename)
 
 		while(!file->eof())	{
 			PaletteItem item;
-			String n;
 			float r, g, b, a;
 			getline(*file, item.name);
 			*file >> r >> g >> b >> a;

@@ -869,8 +869,6 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 	//row[model.canvas] = handle->get_canvas();
 	//row[model.icon] = layer_icon;
 
-	synfig::Layer::ParamList paramlist=handle->get_param_list();
-
 	synfig::Layer::Vocab vocab=handle->get_param_vocab();
 	synfig::Layer::Vocab::iterator iter;
 

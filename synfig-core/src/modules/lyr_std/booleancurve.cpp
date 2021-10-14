@@ -71,7 +71,6 @@ bool BooleanCurve::set_param(const String & param, const ValueBase &value)
 {
 	if(param=="regions" && value.same_type_as(ValueBase::List()))
 	{
-		std::vector<BLinePoint> bv;
 		int size = value.get_list().size();
 
 		const std::vector<ValueBase> &vlist = value.get_list();

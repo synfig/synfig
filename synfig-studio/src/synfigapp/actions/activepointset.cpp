@@ -140,7 +140,6 @@ void
 Action::ActivepointSet::perform()
 {
 	typedef ValueNode_DynamicList::ListEntry::ActivepointList AList;
-	AList::iterator iter;
 
 #if 1
 	vector<AList::iterator>	iters;
@@ -206,6 +205,7 @@ Action::ActivepointSet::perform()
 	}
 
 #else
+	AList::iterator iter;
 	try { iter=value_node->list[index].find(activepoint); }
 	catch(synfig::Exception::NotFound)
 	{

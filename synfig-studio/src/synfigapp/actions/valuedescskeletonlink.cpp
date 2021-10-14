@@ -181,7 +181,6 @@ Action::ValueDescSkeletonLink::prepare()
 
 	// bones list
 	typedef std::set<ValueNode_Bone::Handle> Set;
-	ValueBase::List value_bone_list = (*bone_list_value_node)(time).get_list();
 	Set list;
 	for(int i = 0; i < bone_list_value_node->link_count(); ++i)
 	{

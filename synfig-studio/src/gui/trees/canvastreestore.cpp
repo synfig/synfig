@@ -247,7 +247,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 	if(column==model.type.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
-		String stype, lname;
+		String stype;
 
 		Glib::Value<Glib::ustring> x;
 		g_value_init(x.gobj(),x.value_type());

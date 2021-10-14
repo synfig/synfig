@@ -791,7 +791,7 @@ CanvasInterface::import(
 		{
 			soundfile = etl::solve_relative_path(etl::dirname(full_filename), soundfile);
 			String short_soundfile = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), soundfile);
-			String full_soundfile = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_soundfile);
+			//String full_soundfile = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_soundfile);
 
 			Layer::Handle layer_sound = layer_create("sound", get_canvas());
 			if(!layer_sound)

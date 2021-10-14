@@ -290,7 +290,6 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		if (!stream_in)
 		{
 			synfig::error(strprintf("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext).c_str()));
-			String previous_canvas_filename = canvas->get_file_name();
 			FileSystemTemporary::Identifier identifier(temporary_filesystem, filename_processed);
 			if ( !save_canvas(identifier, get_canvas(), true) )
 			{
