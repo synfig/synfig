@@ -927,7 +927,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer) const
 		is_skeleton_deform_layer = true;
 		std::vector<std::pair<Bone,Bone>> bone_pair_list = (*list_desc.get_value_node())(get_canvas()->get_time()).get_list_of(std::pair<Bone,Bone>());
 		for (const auto& item : bone_pair_list)
-			bone_list.push_back(item.second);
+			bone_list.push_back(item.first);
 	} else {
 		return nullptr;
 	}
