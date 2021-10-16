@@ -1256,19 +1256,19 @@ Dialog_Setup::refresh()
 	//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 	String value;
 	Gtk::TreeIter ui_iter;
-	bool bvalue(input_settings.get_value("brush.path_count",value));
-	int i(atoi(value.c_str()));
+	int brush_path_count = input_settings.get_value("brush.path_count", 0);
 	App::brushes_path.clear();
 	liststore->clear();
-	if(!bvalue || (bvalue && i<=0))
+	if(brush_path_count == 0)
 	{
 		App::brushes_path.insert(ResourceHelper::get_brush_path());
 	}
 	else
 	{
-		for(int j = 0; j<i;j++)
+		for(int j = 0; j<brush_path_count;j++)
 		{
-			if(input_settings.get_value(strprintf("brush.path_%d", j),value))
+			std::string path = input_settings.get_value(strprintf("brush.path_%d", j), "");
+			if(!path.empty())
 			{
 				App::brushes_path.insert(value);
 			}

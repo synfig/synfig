@@ -223,62 +223,32 @@ StateText_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
 		Vector v;
 
 		//parse the arguments yargh!
-		if(settings.get_value("text.id",value))
-			set_id(value);
-		else
-			set_id("Text");
+		set_id(settings.get_value("text.id", "Text"));
 
-		if(settings.get_value("text.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+		set_blend(settings.get_value("text.blend", Color::BLEND_COMPOSITE));
 
-		if(settings.get_value("text.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_opacity(settings.get_value("text.opacity", 1.0));
 
-		if(settings.get_value("text.paragraph",value) && value=="1")
-			set_paragraph_flag(true);
-		else
-			set_paragraph_flag(false);
+		set_paragraph_flag(settings.get_value("text.paragraph", false));
 
-		if(settings.get_value("text.size_x",value))
-			v[0] = atof(value.c_str());
-		else
-			v[0] = 0.25;
-		if(settings.get_value("text.size_y",value))
-			v[1] = atof(value.c_str());
-		else
-			v[1] = 0.25;
+		v[0] = settings.get_value("text.size_x", 0.25);
+		v[1] = settings.get_value("text.size_y", 0.25);
 		set_size(v);
 
-		if(settings.get_value("text.orient_x",value))
-			v[0] = atof(value.c_str());
-		else
-			v[0] = 0.5;
-		if(settings.get_value("text.orient_y",value))
-			v[1] = atof(value.c_str());
-		else
-			v[1] = 0.5;
+		v[0] = settings.get_value("text.orient_x", 0.5);
+		v[1] = settings.get_value("text.orient_y", 0.5);
 		set_orientation(v);
 
-		if(settings.get_value("text.family",value))
-			set_family(value);
-		else
-			set_family("Sans Serif");
+		set_family(settings.get_value("text.family", "Sans Serif"));
 
 		// since we have only text layer creation button, always turn it on.
-		if(settings.get_value("text.layer_text",value) && value=="0")
-			set_layer_text_flag(true);
-		else
-			set_layer_text_flag(true);
+//		set_layer_text_flag(settings.get_value("text.layer_text", true));
+		set_layer_text_flag(true);
 
-	  // determine layer flags
+		// determine layer flags
 		layer_text_flag = get_layer_text_flag();
 	}
 	catch(...)

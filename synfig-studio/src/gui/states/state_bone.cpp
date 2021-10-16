@@ -233,28 +233,21 @@ StateBone_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
-		std::string value;
 		if(c_layer==SKELETON_TYPE){
-			if(settings.get_value("bone.skel_id",value))
-				set_id(value);
-			else
-				set_id(_("NewSkeleton"));
+			set_id(settings.get_value("bone.skel_id", _("NewSkeleton")));
 		}else{
-			if(settings.get_value("bone.skel_deform_id",value))
-				set_id(value);
-			else
-				set_id(_("NewSkeletonDeformation"));
+			set_id(settings.get_value("bone.skel_deform_id", _("NewSkeletonDeformation")));
 		}
 
-		if(settings.get_value("bone.skel_bone_width",value) && !value.empty())
-			set_skel_bone_width(Distance(value));
-		else
-			set_skel_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+		set_skel_bone_width(Distance(
+							settings.get_value("bone.skel_bone_width", DEFAULT_WIDTH),
+							Distance::SYSTEM_UNITS)
+						);
 
-		if(settings.get_value("bone.skel_deform_bone_width",value) && !value.empty())
-			set_skel_deform_bone_width(Distance(value));
-		else
-			set_skel_deform_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+		set_skel_deform_bone_width(Distance(
+							settings.get_value("bone.skel_deform_bone_width", DEFAULT_WIDTH),
+							Distance::SYSTEM_UNITS)
+						);
 	}
 	catch(...)
 	{
@@ -855,7 +848,6 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	Layer_Skeleton::Handle skel_layer = Layer_Skeleton::Handle::cast_dynamic(layer);
 	Layer_SkeletonDeformation::Handle deform_layer = Layer_SkeletonDeformation::Handle::cast_dynamic(layer);
-	std::string value;
 
 	if(cnt<=1){
 		if((skel_layer || deform_layer) || cnt==0)
@@ -864,17 +856,11 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 
 
 	if(skel_layer){
-		if(settings.get_value("bone.skel_id",value))
-			set_id(value);
-		else
-			set_id(_("NewSkeleton"));
+		set_id(settings.get_value("bone.skel_id", _("NewSkeleton")));
 		update_tool_options(SKELETON_TYPE);
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
 	}else if(deform_layer){
-		if(settings.get_value("bone.skel_deform_id",value))
-			set_id(value);
-		else
-			set_id(_("NewSkeletonDeformation"));
+		set_id(settings.get_value("bone.skel_deform_id", _("NewSkeletonDeformation")));
 		update_tool_options(SKELETON_DEFORMATION_TYPE);
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH));
 		layer->disable();

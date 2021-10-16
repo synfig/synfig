@@ -49,9 +49,9 @@ public:
 	DialogSettings(Gtk::Window* window,const synfig::String& name);
 	virtual ~DialogSettings();
 
-	virtual bool get_value(const synfig::String& key, synfig::String& value)const;
-	virtual bool set_value(const synfig::String& key,const synfig::String& value);
-	virtual KeyList get_key_list()const;
+	virtual bool get_raw_value(const synfig::String& key, synfig::String& value) const override;
+	virtual bool set_value(const synfig::String& key,const synfig::String& value) override;
+	virtual KeyList get_key_list() const override;
 };
 
 }; // END of namespace studio

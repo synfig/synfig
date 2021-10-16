@@ -71,7 +71,7 @@ synfig::String
 Settings::get_value(const synfig::String& key)const
 {
 	synfig::String value;
-	if(!get_value(key,value))
+	if(!get_raw_value(key,value))
 		return synfig::String();
 	return value;
 }
@@ -89,7 +89,7 @@ Settings::remove_domain(const synfig::String& name)
 }
 
 bool
-Settings::get_value(const synfig::String& key, synfig::String& value)const
+Settings::get_raw_value(const synfig::String& key, synfig::String& value)const
 {
 	// Search for the value in any children domains
 	DomainMap::const_iterator iter;
@@ -101,7 +101,7 @@ Settings::get_value(const synfig::String& key, synfig::String& value)const
 			synfig::String key_(key.begin()+iter->first.size()+1,key.end());
 
 			// If the domain has it, then we have got a hit
-			if(iter->second->get_value(key_,value))
+			if(iter->second->get_raw_value(key_,value))
 				return true;
 		}
 	}
@@ -280,4 +280,51 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& k
 	if (!key_filter.empty() && !loaded_filter)
 		return false;
 	return true;
+}
+
+double
+Settings::get_value(const synfig::String& key, double default_value) const {
+	synfig::String value;
+	if (!get_raw_value(key, value))
+		return default_value;
+	try {
+		synfig::ChangeLocale l(LC_NUMERIC, "C");
+		return stod(value);
+	} catch (const std::invalid_argument&) {
+		synfig::error("Settings: Invalid argument for %s: %s. Using default value: %s", key.c_str(), value.c_str(), default_value);
+		return default_value;
+	}
+}
+
+int
+Settings::get_value(const synfig::String& key, int default_value) const {
+	synfig::String value;
+	if (!get_raw_value(key, value))
+		return default_value;
+	try {
+		return stoi(value);
+	} catch (const std::invalid_argument&) {
+		synfig::error("Settings: Invalid argument for %s: %s. Using default value: %s", key.c_str(), value.c_str(), default_value);
+		return default_value;
+	}
+}
+
+bool
+Settings::get_value(const synfig::String& key, bool default_value) const {
+	synfig::String value;
+	if (!get_raw_value(key, value) || value.empty())
+		return default_value;
+	return value == "1" || value == "true";
+}
+
+synfig::String
+Settings::get_value(const synfig::String& key, const synfig::String& default_value) const {
+	synfig::String value;
+	return get_raw_value(key, value) ? value : default_value;
+}
+
+synfig::String
+Settings::get_value(const synfig::String &key, const char* default_value) const
+{
+	return get_value(key, synfig::String(default_value));
 }

@@ -245,48 +245,26 @@ StateGradient_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
 
-		if(settings.get_value("gradient.id",value))
-			set_id(value);
-		else
-			set_id("Gradient");
+		set_id(settings.get_value("gradient.id", "Gradient"));
 
-		if(settings.get_value("gradient.layer_linear_gradient",value) && value=="0")
-			set_layer_linear_gradient_flag(false);
-		else
-			set_layer_linear_gradient_flag(true);
+		set_layer_linear_gradient_flag(settings.get_value("gradient.layer_linear_gradient", true));
 
-		if(settings.get_value("gradient.layer_radial_gradient",value) && value=="0")
-			set_layer_radial_gradient_flag(false);
-		else
-			set_layer_radial_gradient_flag(true);
+		set_layer_radial_gradient_flag(settings.get_value("gradient.layer_radial_gradient", true));
 
-		if(settings.get_value("gradient.layer_conical_gradient",value) && value=="0")
-			set_layer_conical_gradient_flag(false);
-		else
-			set_layer_conical_gradient_flag(true);
+		set_layer_conical_gradient_flag(settings.get_value("gradient.layer_conical_gradient", true));
 
-		if(settings.get_value("gradient.layer_spiral_gradient",value) && value=="0")
-			set_layer_spiral_gradient_flag(false);
-		else
-			set_layer_spiral_gradient_flag(true);
+		set_layer_spiral_gradient_flag(settings.get_value("gradient.layer_spiral_gradient", true));
 
-		if(settings.get_value("gradient.blend",value))
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(Color::BLEND_COMPOSITE);
+		set_blend(settings.get_value("gradient.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("gradient.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_opacity(settings.get_value("gradient.opacity", 1.0));
 
-	  // determine layer flags
+		// determine layer flags
 		layer_linear_gradient_flag = get_layer_linear_gradient_flag();
-	  layer_radial_gradient_flag = get_layer_radial_gradient_flag();
-	  layer_conical_gradient_flag = get_layer_conical_gradient_flag();
-	  layer_spiral_gradient_flag = get_layer_spiral_gradient_flag();
+		layer_radial_gradient_flag = get_layer_radial_gradient_flag();
+		layer_conical_gradient_flag = get_layer_conical_gradient_flag();
+		layer_spiral_gradient_flag = get_layer_spiral_gradient_flag();
 	}
 	catch(...)
 	{

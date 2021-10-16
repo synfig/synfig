@@ -374,125 +374,59 @@ StateDraw_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
 
-		if(settings.get_value("draw.id",value))
-			set_id(value);
-		else
-			set_id("NewDrawing");
+		set_id(settings.get_value("draw.id","NewDrawing"));
 
-		if(settings.get_value("draw.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+		set_blend(settings.get_value("draw.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("draw.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_opacity(settings.get_value("draw.opacity", 1.0));
 
-		if(settings.get_value("draw.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_bline_width(Distance(1, App::distance_system)); // default width
+		set_bline_width(Distance(
+							settings.get_value("draw.bline_width", 1.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("draw.pressure_width",value) && value=="0")
-			set_pressure_width_flag(false);
-		else
-			set_pressure_width_flag(true);
+		set_pressure_width_flag(settings.get_value("draw.pressure_width", true));
 
-		if(settings.get_value("draw.auto_loop",value) && value=="0")
-			set_auto_loop_flag(false);
-		else
-			set_auto_loop_flag(true);
+		set_auto_loop_flag(settings.get_value("draw.auto_loop", true));
 
-		if(settings.get_value("draw.auto_extend",value) && value=="0")
-			set_auto_extend_flag(false);
-		else
-			set_auto_extend_flag(true);
+		set_auto_extend_flag(settings.get_value("draw.auto_extend", true));
 
-		if(settings.get_value("draw.auto_link",value) && value=="0")
-			set_auto_link_flag(false);
-		else
-			set_auto_link_flag(true);
+		set_auto_link_flag(settings.get_value("draw.auto_link", true));
 
-		if(settings.get_value("draw.region",value) && value=="0")
-			set_layer_region_flag(false);
-		else
-			set_layer_region_flag(true);
+		set_layer_region_flag(settings.get_value("draw.region", true));
 
-		if(settings.get_value("draw.outline",value) && value=="0")
-			set_layer_outline_flag(false);
-		else
-			set_layer_outline_flag(true);
+		set_layer_outline_flag(settings.get_value("draw.outline", true));
 
-		if(settings.get_value("draw.advanced_outline",value) && value=="0")
-			set_layer_advanced_outline_flag(false);
-		else
-			set_layer_advanced_outline_flag(true);
+		set_layer_advanced_outline_flag(settings.get_value("draw.advanced_outline", true));
 
-		if(settings.get_value("draw.layer_link_origins",value) && value=="0")
-			set_layer_link_origins_flag(false);
-		else
-			set_layer_link_origins_flag(true);
+		set_layer_link_origins_flag(settings.get_value("draw.layer_link_origins", true));
 
-		if(settings.get_value("draw.auto_export",value) && value=="1")
-			set_auto_export_flag(true);
-		else
-			set_auto_export_flag(false);
+		set_auto_export_flag(settings.get_value("draw.auto_export", false));
 
-		if(settings.get_value("draw.min_pressure_on",value) && value=="0")
-			set_min_pressure_flag(false);
-		else
-			set_min_pressure_flag(true);
+		set_min_pressure_flag(settings.get_value("draw.min_pressure_on", true));
 
-		if(settings.get_value("draw.min_pressure",value))
-		{
-			Real n = atof(value.c_str());
-			set_min_pressure(n);
-		}else
-			set_min_pressure(0);
+		set_min_pressure(settings.get_value("draw.min_pressure", 0.0));
 
-		if(settings.get_value("draw.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_feather_size(Distance(0, App::distance_system));
+		set_feather_size(Distance(
+							settings.get_value("draw.feather", 0.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("draw.gthreshold",value))
-		{
-			Real n = atof(value.c_str());
-			set_gthres(n);
-		}
+		set_gthres(settings.get_value("draw.gthreshold", 0.7));
 
-		if(settings.get_value("draw.widthmaxerror",value))
-		{
-			Real n = atof(value.c_str());
-			set_width_max_error(n);
-		}
+		set_width_max_error(settings.get_value("draw.widthmaxerror", 1.0));
 
-		if(settings.get_value("draw.lthreshold",value))
-		{
-			Real n = atof(value.c_str());
-			set_lthres(n);
-		}
+		set_lthres(settings.get_value("draw.lthreshold", 20.0));
 
-		if(settings.get_value("draw.localize",value) && value == "1")
-			//set_local_error_flag(true);
-			set_local_threshold_flag(true);
-		else
-			//set_local_error_flag(false);
-			//set_local_threshold_flag(false);
-			set_global_threshold_flag(true);
+		set_local_threshold_flag(settings.get_value("draw.localize", false));
 
-		if(settings.get_value("draw.round_ends", value) && value == "1")
-			set_round_ends_flag(true);
-		else
-			set_round_ends_flag(false);
+		set_round_ends_flag(settings.get_value("draw.round_ends", false));
 
-	  // determine layer flags
-	  layer_region_flag = get_layer_region_flag();
-	  layer_outline_flag = get_layer_outline_flag();
-	  layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+		// determine layer flags
+		layer_region_flag = get_layer_region_flag();
+		layer_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_advanced_outline_flag();
 	}
 	catch(...)
 	{

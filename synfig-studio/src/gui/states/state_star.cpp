@@ -341,126 +341,67 @@ StateStar_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
 
 		//parse the arguments yargh!
-		if(settings.get_value("star.id",value))
-			set_id(value);
-		else
-			set_id("Star");
+		set_id(settings.get_value("star.id", "Star"));
 
-		if(settings.get_value("star.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+		set_blend(settings.get_value("star.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("star.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_opacity(settings.get_value("star.opacity", 1.0));
 
-		if(settings.get_value("star.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_bline_width(Distance(1, App::distance_system)); // default width
+		set_bline_width(Distance(
+							settings.get_value("star.bline_width", 1.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("star.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_feather_size(Distance(0, App::distance_system)); // default feather
+		set_feather_size(Distance(
+							settings.get_value("star.feather", 0.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("star.number_of_points",value))
-			set_number_of_points(atof(value.c_str()));
-		else
-			set_number_of_points(5);
 
-		if(settings.get_value("star.inner_tangent",value))
-			set_inner_tangent(atof(value.c_str()));
-		else
-			set_inner_tangent(0);
+		set_number_of_points(settings.get_value("star.number_of_points", 5));
 
-		if(settings.get_value("star.outer_tangent",value))
-			set_outer_tangent(atof(value.c_str()));
-		else
-			set_outer_tangent(0);
+		set_inner_tangent(settings.get_value("star.inner_tangent", 0.0));
 
-		if(settings.get_value("star.inner_width",value))
-			set_inner_width(atof(value.c_str()));
-		else
-			set_inner_width(1);
+		set_outer_tangent(settings.get_value("star.outer_tangent", 0.0));
 
-		if(settings.get_value("star.outer_width",value))
-			set_outer_width(atof(value.c_str()));
-		else
-			set_outer_width(1);
+		set_inner_width(settings.get_value("star.inner_width", 1.0));
 
-		if(settings.get_value("star.radius_ratio",value))
-			set_radius_ratio(atof(value.c_str()));
-		else
-			set_radius_ratio(0.5);
+		set_outer_width(settings.get_value("star.outer_width", 1.0));
 
-		//if(settings.get_value("star.angle_offset",value))
-		//	set_angle_offset(atof(value.c_str()));
-		//else
-			set_angle_offset(90.0);
+		set_radius_ratio(settings.get_value("star.radius_ratio", 0.5));
 
-		if(settings.get_value("star.invert",value) && value != "0")
-			set_invert(true);
-		else
-			set_invert(false);
+		//set_angle_offset(settings.get_value("star.angle_offset", 90.0));
+		set_angle_offset(90.0);
 
-		if(settings.get_value("star.regular_polygon",value) && value != "0")
-			set_regular_polygon(true);
-		else
-			set_regular_polygon(false);
+		set_invert(settings.get_value("star.invert", false));
 
-		if(settings.get_value("star.layer_star",value) && value=="0")
-			set_layer_star_flag(false);
-		else
-			set_layer_star_flag(true);
+		set_regular_polygon(settings.get_value("star.regular_polygon", false));
 
-		if(settings.get_value("star.layer_region",value) && value=="1")
-			set_layer_region_flag(true);
-		else
-			set_layer_region_flag(false);
+		set_layer_star_flag(settings.get_value("star.layer_star", true));
 
-		if(settings.get_value("star.layer_outline",value) && value=="1")
-			set_layer_outline_flag(true);
-		else
-			set_layer_outline_flag(false);
+		set_layer_region_flag(settings.get_value("star.layer_region", false));
 
-		if(settings.get_value("star.layer_advanced_outline",value) && value=="1")
-			set_layer_advanced_outline_flag(true);
-		else
-			set_layer_advanced_outline_flag(false);
+		set_layer_outline_flag(settings.get_value("star.layer_outline", false));
 
-		if(settings.get_value("star.layer_curve_gradient",value) && value=="1")
-			set_layer_curve_gradient_flag(true);
-		else
-			set_layer_curve_gradient_flag(false);
+		set_layer_advanced_outline_flag(settings.get_value("star.layer_advanced_outline", false));
 
-		if(settings.get_value("star.layer_plant",value) && value=="1")
-			set_layer_plant_flag(true);
-		else
-			set_layer_plant_flag(false);
+		set_layer_curve_gradient_flag(settings.get_value("star.layer_curve_gradient", false));
 
-		if(settings.get_value("star.layer_link_origins",value) && value=="0")
-			set_layer_link_origins_flag(false);
-		else
-			set_layer_link_origins_flag(true);
+		set_layer_plant_flag(settings.get_value("star.layer_plant", false));
 
-		if(settings.get_value("star.layer_origins_at_center",value) && value=="0")
-			set_layer_origins_at_center_flag(false);
-		else
-			set_layer_origins_at_center_flag(true);
+		set_layer_link_origins_flag(settings.get_value("star.layer_link_origins", true));
 
-	  // determine layer flags
+		set_layer_origins_at_center_flag(settings.get_value("star.layer_origins_at_center", true));
+
+		// determine layer flags
 		layer_star_flag = get_layer_star_flag();
-	  layer_region_flag = get_layer_region_flag();
-	  layer_outline_flag = get_layer_outline_flag();
-	  layer_advanced_outline_flag = get_layer_outline_flag();
-	  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
-	  layer_plant_flag = get_layer_plant_flag();
+		layer_region_flag = get_layer_region_flag();
+		layer_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_outline_flag();
+		layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+		layer_plant_flag = get_layer_plant_flag();
 	}
 	catch(...)
 	{

@@ -67,7 +67,7 @@ DialogSettings::~DialogSettings()
 }
 
 bool
-DialogSettings::get_value(const synfig::String& key, synfig::String& value)const
+DialogSettings::get_raw_value(const synfig::String& key, synfig::String& value) const
 {
 	if(key=="pos")
 	{
@@ -113,7 +113,7 @@ DialogSettings::get_value(const synfig::String& key, synfig::String& value)const
 		return true;
 	}
 
-	return synfigapp::Settings::get_value(key,value);
+	return synfigapp::Settings::get_raw_value(key,value);
 }
 
 bool
@@ -196,7 +196,7 @@ DialogSettings::set_value(const synfig::String& key,const synfig::String& value)
 }
 
 synfigapp::Settings::KeyList
-DialogSettings::get_key_list()const
+DialogSettings::get_key_list() const
 {
 	synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
 

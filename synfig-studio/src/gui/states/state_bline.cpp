@@ -322,74 +322,43 @@ StateBLine_Context::load_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
 
-		if(settings.get_value("bline.id",value))
-			set_id(value);
-		else
-			set_id(_("NewSpline"));
+		set_id(settings.get_value("bline.id", _("NewSpline")));
 
-		if(settings.get_value("bline.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+		set_blend(settings.get_value("bline.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("bline.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_opacity(settings.get_value("bline.opacity", 1.0));
 
-		if(settings.get_value("bline.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_bline_width(Distance(1, App::distance_system)); // default width
+		set_bline_width(Distance(
+							settings.get_value("bline.bline_width", 1.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("bline.layer_region",value) && value=="0")
-			set_layer_region_flag(false);
-		else
-			set_layer_region_flag(true);
+		set_layer_region_flag(settings.get_value("bline.layer_region", true));
 
-		if(settings.get_value("bline.layer_outline",value) && value=="1")
-			set_layer_outline_flag(true);
-		else
-			set_layer_outline_flag(false);
+		set_layer_outline_flag(settings.get_value("bline.layer_outline", false));
 
-		if(settings.get_value("bline.layer_advanced_outline",value) && value=="0")
-			set_layer_advanced_outline_flag(false);
-		else
-			set_layer_advanced_outline_flag(true);
+		set_layer_advanced_outline_flag(settings.get_value("bline.layer_advanced_outline", true));
 
-		if(settings.get_value("bline.layer_curve_gradient",value) && value=="1")
-			set_layer_curve_gradient_flag(true);
-		else
-			set_layer_curve_gradient_flag(false);
+		set_layer_curve_gradient_flag(settings.get_value("bline.layer_curve_gradient", false));
 
-		if(settings.get_value("bline.layer_plant",value) && value=="1")
-			set_layer_plant_flag(true);
-		else
-			set_layer_plant_flag(false);
+		set_layer_plant_flag(settings.get_value("bline.layer_plant", false));
 
-		if(settings.get_value("bline.layer_link_origins",value) && value=="0")
-			set_layer_link_origins_flag(false);
-		else
-			set_layer_link_origins_flag(true);
+		set_layer_link_origins_flag(settings.get_value("bline.layer_link_origins", true));
 
-		if(settings.get_value("bline.auto_export",value) && value=="1")
-			set_auto_export_flag(true);
-		else
-			set_auto_export_flag(false);
+		set_auto_export_flag(settings.get_value("bline.auto_export", false));
 
-		if(settings.get_value("bline.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_feather_size(Distance(0, App::distance_system));
+		set_feather_size(Distance(
+							settings.get_value("bline.feather", 0.0),
+							App::distance_system)
+						);
 
-	  // determine layer flags
-	  layer_region_flag = get_layer_region_flag();
-	  layer_outline_flag = get_layer_outline_flag();
-	  layer_advanced_outline_flag = get_layer_outline_flag();
-	  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
-	  layer_plant_flag = get_layer_plant_flag();
+		// determine layer flags
+		layer_region_flag = get_layer_region_flag();
+		layer_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_outline_flag();
+		layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+		layer_plant_flag = get_layer_plant_flag();
 
 		sanity_check();
 	}

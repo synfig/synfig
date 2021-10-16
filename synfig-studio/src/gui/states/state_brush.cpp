@@ -443,15 +443,14 @@ StateBrush_Context::load_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 
-		String value;
-		bool bvalue(settings.get_value("brush.path_count",value));
-		int count = atoi(value.c_str());
-		if(bvalue && count>0)
+		int brush_path_count = settings.get_value("brush.path_count", 0);
+		if (brush_path_count > 0)
 		{
+			String value;
 			App::brushes_path.clear();
 			int count = atoi(value.c_str());
-			for(int i = 0; i < count; ++i)
-				if(settings.get_value(strprintf("brush.path_%d", i),value))
+			for(int i = 0; i < brush_path_count; ++i)
+				if(settings.get_raw_value(strprintf("brush.path_%d", i),value))
 					App::brushes_path.insert(value);
 		}
 		else
@@ -461,12 +460,12 @@ StateBrush_Context::load_settings()
 		}
 		refresh_tool_options();
 
-		if (settings.get_value("brush.selected_brush_filename",value))
+		std::string value;
+		if (settings.get_raw_value("brush.selected_brush_filename", value))
 			if (brush_buttons.count(value))
 				brush_buttons[value]->set_active(true);
 
-		if (settings.get_value("brush.eraser",value))
-			eraser_checkbox.set_active(value == "true");
+		eraser_checkbox.set_active(settings.get_value("brush.eraser", false));
 	}
 	catch(...)
 	{

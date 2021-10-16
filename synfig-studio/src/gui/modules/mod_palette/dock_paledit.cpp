@@ -80,7 +80,7 @@ public:
 		dialog_palette->dialog_settings.remove_domain(name);
 	}
 
-	virtual bool get_value(const synfig::String& key, synfig::String& value)const
+	virtual bool get_value(const synfig::String& key, synfig::String& value)const override
 	{
 		int i(atoi(key.c_str()));
 		if(i<0 || i>=dialog_palette->size())
@@ -90,7 +90,7 @@ public:
 		return true;
 	}
 
-	virtual bool set_value(const synfig::String& key,const synfig::String& value)
+	virtual bool set_value(const synfig::String& key,const synfig::String& value) override
 	{
 		int i(atoi(key.c_str()));
 		if(i<0)
@@ -104,7 +104,7 @@ public:
 		return true;
 	}
 
-	virtual KeyList get_key_list()const
+	virtual KeyList get_key_list()const override
 	{
 		synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
 

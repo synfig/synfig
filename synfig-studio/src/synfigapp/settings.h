@@ -30,11 +30,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/string.h>
-#include <map>
 #include <list>
+#include <map>
+
 #include <ETL/stringf>
-#include <string.h>
+#include <synfig/general.h>
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -61,11 +62,17 @@ public:
 	Settings();
 	virtual ~Settings();
 
-	virtual bool get_value(const synfig::String& key, synfig::String& value)const;
+	virtual bool get_raw_value(const synfig::String& key, synfig::String& value)const;
 	virtual bool set_value(const synfig::String& key,const synfig::String& value);
 	virtual KeyList get_key_list()const;
 
 	synfig::String get_value(const synfig::String& key)const;
+	double get_value(const synfig::String& key, double default_value) const;
+	int get_value(const synfig::String& key, int default_value) const;
+	bool get_value(const synfig::String& key, bool default_value) const;
+	synfig::String get_value(const synfig::String& key, const synfig::String& default_value) const;
+	synfig::String get_value(const synfig::String& key, const char* default_value) const;
+
 	void add_domain(Settings* domain, const synfig::String& name);
 	void remove_domain(const synfig::String& name);
 
