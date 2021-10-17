@@ -679,7 +679,6 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	attach_label(pi.grid, _("Number of threads used"), row);
 	number_of_threads_select = Gtk::manage(new Gtk::SpinButton(adj_number_of_threads,0,0));
 	pi.grid->attach(*number_of_threads_select, 1, row, 1, 1);
-	number_of_threads_select->set_tooltip_text(_("Number of threads change"));
 	number_of_threads_select->signal_changed().connect(sigc::mem_fun(*this, &Dialog_Setup::on_number_of_thread_changed) );
 	number_of_threads_select->set_hexpand(true);
 	// Render - Image sequence separator

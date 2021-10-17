@@ -585,13 +585,13 @@ AsyncRenderer::render_target()
 #endif
 		}
 	} catch (std::runtime_error &err) {
-		error_str = std::string(_("AsynRenderer: ")) + _("runtime error: ") + err.what();
+		error_str = std::string(_("AsyncRenderer: ")) + _("runtime error: ") + err.what();
 	} catch (std::exception &ex) {
-		error_str = std::string(_("AsynRenderer: ")) + _("exception: ") + ex.what();
+		error_str = std::string(_("AsyncRenderer: ")) + _("exception: ") + ex.what();
 	} catch (std::string &str) {
-		error_str = std::string(_("AsynRenderer: ")) + _("string exception: ") + str;
+		error_str = std::string(_("AsyncRenderer: ")) + _("string exception: ") + str;
 	} catch (...) {
-		error_str = std::string(_("AsynRenderer: ")) + _("internal error: ") + _("some exception has been thrown while rendering");
+		error_str = std::string(_("AsyncRenderer: ")) + _("internal error: ") + _("some exception has been thrown while rendering");
 	}
 
 	if (!error_str.empty()) {
