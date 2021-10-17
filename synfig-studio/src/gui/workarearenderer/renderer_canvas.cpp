@@ -433,16 +433,25 @@ Renderer_Canvas::build_onion_frames()
 			onion_frames.push_back(FrameDesc(future_times[future_times.size() - i], w, h, alpha));
 		}
 
-		// Add current time Frame
-		onion_frames.push_back(FrameDesc(current_frame, base_alpha + 1.f + current_alpha));
-
-		// normalize
+		// Normalize onion skin frames alpha
 		ColorReal summary = 0.f;
-		for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
-			summary += i->alpha;
+
+		// If there's more than one onion frame, normalize using their cumulative alpha value
+		if (onion_frames.size() > 1) {
+			for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
+				summary += i->alpha;
+		}
+		// Otherwise normalize by the maximum possible alpha value
+		else {
+			summary = base_alpha + 1.f + current_alpha;
+		}
+
 		ColorReal k = approximate_greater(summary, ColorReal(1.f)) ? 1.f/summary : 1.f;
 		for(FrameList::iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
 			i->alpha *= k;
+
+		// Add current time Frame at last keeping its full opacity
+		onion_frames.push_back(FrameDesc(current_frame, 1.f));
 	} else {
 		onion_frames.push_back(FrameDesc(current_frame, 1.f));
 	}
