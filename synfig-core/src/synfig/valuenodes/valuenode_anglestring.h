@@ -53,7 +53,7 @@ public:
 	typedef etl::handle<ValueNode_AngleString> Handle;
 	typedef etl::handle<const ValueNode_AngleString> ConstHandle;
 
-	static ValueNode_AngleString* create(const ValueBase &x);
+	static ValueNode_AngleString* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_AngleString();
 
 	virtual ValueBase operator()(Time t) const override;

@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<ValueNode_Sine> Handle;
 	typedef etl::handle<const ValueNode_Sine> ConstHandle;
 
-	static ValueNode_Sine* create(const ValueBase &x);
+	static ValueNode_Sine* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Sine();
 
 	virtual String get_name() const override;

@@ -80,7 +80,7 @@ ValueNode_Repeat_Gradient::create_new()const
 }
 
 ValueNode_Repeat_Gradient*
-ValueNode_Repeat_Gradient::create(const ValueBase& x)
+ValueNode_Repeat_Gradient::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	Type &type(x.get_type());
 

@@ -80,7 +80,7 @@ ValueNode_Exp::create_new()const
 }
 
 ValueNode_Exp*
-ValueNode_Exp::create(const ValueBase &x)
+ValueNode_Exp::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Exp(x);
 }

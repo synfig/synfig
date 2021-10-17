@@ -73,7 +73,7 @@ ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueNode::Handle &x):
 }
 
 ValueNode_TimeLoop*
-ValueNode_TimeLoop::create(const ValueBase &x)
+ValueNode_TimeLoop::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_TimeLoop(ValueNode_Const::create(x));
 }

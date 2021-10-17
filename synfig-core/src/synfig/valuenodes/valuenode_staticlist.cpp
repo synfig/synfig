@@ -305,7 +305,7 @@ ValueNode_StaticList::create_on_canvas(Type &type, Canvas::LooseHandle canvas)
 }
 
 ValueNode_StaticList*
-ValueNode_StaticList::create(const ValueBase &value)
+ValueNode_StaticList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	std::vector<ValueBase> value_list(value.get_list());
 

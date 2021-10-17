@@ -52,7 +52,7 @@ public:
 	typedef etl::handle<ValueNode_Reciprocal> Handle;
 	typedef etl::handle<const ValueNode_Reciprocal> ConstHandle;
 
-	static ValueNode_Reciprocal* create(const ValueBase &x);
+	static ValueNode_Reciprocal* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Reciprocal();
 
 	virtual String get_name() const override;

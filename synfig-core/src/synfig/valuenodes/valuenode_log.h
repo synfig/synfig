@@ -52,7 +52,7 @@ public:
 	typedef etl::handle<ValueNode_Logarithm> Handle;
 	typedef etl::handle<const ValueNode_Logarithm> ConstHandle;
 
-	static ValueNode_Logarithm* create(const ValueBase &x);
+	static ValueNode_Logarithm* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Logarithm();
 
 	virtual String get_name() const override;

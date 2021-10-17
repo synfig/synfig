@@ -54,7 +54,7 @@ public:
 	typedef etl::handle<ValueNode_Duplicate> Handle;
 	typedef etl::handle<const ValueNode_Duplicate> ConstHandle;
 
-	static ValueNode_Duplicate* create(const ValueBase &x);
+	static ValueNode_Duplicate* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Duplicate();
 
 	virtual String get_name() const override;

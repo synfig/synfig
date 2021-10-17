@@ -75,7 +75,7 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 
 
 ValueNode*
-ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
+ValueNode_Const::create(const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	// this is nasty - shouldn't it be done somewhere else?
 	if (x.get_type() == type_bone_object)

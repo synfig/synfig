@@ -72,7 +72,7 @@ ValueNode_Or::ValueNode_Or(const ValueBase &x):
 }
 
 ValueNode_Or*
-ValueNode_Or::create(const ValueBase &x)
+ValueNode_Or::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Or(x);
 }

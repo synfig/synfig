@@ -52,7 +52,7 @@ public:
 	typedef etl::handle<ValueNode_IntString> Handle;
 	typedef etl::handle<const ValueNode_IntString> ConstHandle;
 
-	static ValueNode_IntString* create(const ValueBase &x);
+	static ValueNode_IntString* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_IntString();
 
 	virtual String get_name()const;

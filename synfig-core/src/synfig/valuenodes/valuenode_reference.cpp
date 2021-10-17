@@ -71,7 +71,7 @@ ValueNode_Reference::ValueNode_Reference(const ValueNode::Handle &x):
 }
 
 ValueNode_Reference*
-ValueNode_Reference::create(const ValueBase &x)
+ValueNode_Reference::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Reference(ValueNode_Const::create(x));
 }

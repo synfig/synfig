@@ -80,7 +80,7 @@ ValueNode_Atan2::create_new()const
 }
 
 ValueNode_Atan2*
-ValueNode_Atan2::create(const ValueBase &x)
+ValueNode_Atan2::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Atan2(x);
 }

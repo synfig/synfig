@@ -53,7 +53,7 @@ public:
 	typedef etl::handle<ValueNode_Join> Handle;
 	typedef etl::handle<const ValueNode_Join> ConstHandle;
 
-	static ValueNode_Join* create(const ValueBase &x);
+	static ValueNode_Join* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Join();
 
 	virtual String get_name() const override;

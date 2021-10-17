@@ -52,7 +52,7 @@ public:
 	typedef etl::handle<ValueNode_BLineCalcVertex> Handle;
 	typedef etl::handle<const ValueNode_BLineCalcVertex> ConstHandle;
 
-	static ValueNode_BLineCalcVertex* create(const ValueBase &x=type_vector);
+	static ValueNode_BLineCalcVertex* create(const ValueBase& x=type_vector, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_BLineCalcVertex();
 
 	virtual ValueBase operator()(Time t) const override;

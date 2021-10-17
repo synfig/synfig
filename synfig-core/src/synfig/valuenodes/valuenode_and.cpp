@@ -72,7 +72,7 @@ ValueNode_And::ValueNode_And(const ValueBase &x):
 }
 
 ValueNode_And*
-ValueNode_And::create(const ValueBase &x)
+ValueNode_And::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_And(x);
 }

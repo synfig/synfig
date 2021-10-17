@@ -48,7 +48,7 @@ public:
 	typedef etl::handle<const ValueNode_WeightedAverage> ConstHandle;
 
 	ValueNode_WeightedAverage(Type &type, etl::loose_handle<Canvas> canvas = 0);
-	static ValueNode_WeightedAverage* create(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
+	static ValueNode_WeightedAverage* create(const ValueBase& value, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_WeightedAverage();
 
 	virtual ValueBase operator()(Time t) const override;

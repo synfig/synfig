@@ -47,7 +47,7 @@ public:
 	typedef etl::handle<const ValueNode_Average> ConstHandle;
 
 	ValueNode_Average(Type &type, etl::loose_handle<Canvas> canvas);
-	static ValueNode_Average* create(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
+	static ValueNode_Average* create(const ValueBase& value, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Average();
 
 	virtual ValueBase operator()(Time t) const override;

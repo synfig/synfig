@@ -85,7 +85,7 @@ ValueNode_BLineCalcWidth::create_new()const
 }
 
 ValueNode_BLineCalcWidth*
-ValueNode_BLineCalcWidth::create(const ValueBase &x)
+ValueNode_BLineCalcWidth::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_BLineCalcWidth(x.get_type());
 }

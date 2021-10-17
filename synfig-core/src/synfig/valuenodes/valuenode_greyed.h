@@ -47,7 +47,7 @@ class ValueNode_Greyed : public ValueNode_Reference
 public:
 	typedef etl::handle<ValueNode_Greyed> Handle;
 
-	static ValueNode_Greyed* create(const ValueBase &x);
+	static ValueNode_Greyed* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 
 	virtual String get_name() const override;
 	virtual String get_local_name() const override;

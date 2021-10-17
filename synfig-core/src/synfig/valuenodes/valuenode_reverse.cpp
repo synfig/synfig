@@ -111,7 +111,7 @@ ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 }
 
 ValueNode_Reverse*
-ValueNode_Reverse::create(const ValueBase &x)
+ValueNode_Reverse::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Reverse(x);
 }

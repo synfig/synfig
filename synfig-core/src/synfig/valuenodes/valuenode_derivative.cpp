@@ -180,7 +180,7 @@ ValueNode_Derivative::create_new()const
 }
 
 ValueNode_Derivative*
-ValueNode_Derivative::create(const ValueBase &x)
+ValueNode_Derivative::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Derivative(x);
 }

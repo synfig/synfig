@@ -52,7 +52,7 @@ public:
 	typedef etl::handle<ValueNode_Subtract> Handle;
 	typedef etl::handle<const ValueNode_Subtract> ConstHandle;
 
-	static ValueNode_Subtract* create(const ValueBase &value=ValueBase());
+	static ValueNode_Subtract* create(const ValueBase& value=ValueBase(), etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Subtract();
 
 	virtual String get_name() const override;

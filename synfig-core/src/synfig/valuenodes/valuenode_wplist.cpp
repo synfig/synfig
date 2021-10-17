@@ -221,7 +221,7 @@ ValueNode_WPList::~ValueNode_WPList()
 }
 
 ValueNode_WPList*
-ValueNode_WPList::create(const ValueBase &value)
+ValueNode_WPList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	// if the parameter is not a list type, return null
 	if(value.get_type()!=type_list)

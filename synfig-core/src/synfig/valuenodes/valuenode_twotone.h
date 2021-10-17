@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<ValueNode_TwoTone> Handle;
 	typedef etl::handle<const ValueNode_TwoTone> ConstHandle;
 
-	static ValueNode_TwoTone* create(const ValueBase &x);
+	static ValueNode_TwoTone* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_TwoTone();
 
 	virtual String get_name() const override;

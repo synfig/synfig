@@ -50,7 +50,7 @@ public:
 	typedef etl::handle<ValueNode_SegCalcTangent> Handle;
 	typedef etl::handle<const ValueNode_SegCalcTangent> ConstHandle;
 
-	static ValueNode_SegCalcTangent* create(const ValueBase &x=type_vector);
+	static ValueNode_SegCalcTangent* create(const ValueBase& x=type_vector, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_SegCalcTangent();
 
 	virtual String get_name() const override;

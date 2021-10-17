@@ -63,7 +63,7 @@ public:
 
 	std::vector<ReplaceableListEntry> list;
 
-	static ValueNode_StaticList* create(const ValueBase &x=type_gradient);
+	static ValueNode_StaticList* create(const ValueBase& x=type_gradient, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID()) const override;
 	virtual ~ValueNode_StaticList();
 

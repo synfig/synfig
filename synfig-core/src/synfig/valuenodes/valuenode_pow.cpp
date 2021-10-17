@@ -74,7 +74,7 @@ ValueNode_Pow::ValueNode_Pow(const ValueBase &x):
 }
 
 ValueNode_Pow*
-ValueNode_Pow::create(const ValueBase &x)
+ValueNode_Pow::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Pow(x);
 }

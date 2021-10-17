@@ -74,7 +74,7 @@ ValueNode_Logarithm::ValueNode_Logarithm(const ValueBase &x):
 }
 
 ValueNode_Logarithm*
-ValueNode_Logarithm::create(const ValueBase &x)
+ValueNode_Logarithm::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Logarithm(x);
 }

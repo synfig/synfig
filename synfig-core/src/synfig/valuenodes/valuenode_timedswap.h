@@ -53,7 +53,7 @@ public:
 	typedef etl::handle<ValueNode_TimedSwap> Handle;
 	typedef etl::handle<const ValueNode_TimedSwap> ConstHandle;
 
-	static ValueNode_TimedSwap* create(const ValueBase &x);
+	static ValueNode_TimedSwap* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_TimedSwap();
 
 	virtual String get_name() const override;

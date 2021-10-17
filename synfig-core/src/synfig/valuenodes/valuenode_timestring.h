@@ -50,7 +50,7 @@ public:
 	typedef etl::handle<ValueNode_TimeString> Handle;
 	typedef etl::handle<const ValueNode_TimeString> ConstHandle;
 
-	static ValueNode_TimeString* create(const ValueBase &x);
+	static ValueNode_TimeString* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_TimeString();
 
 	virtual String get_name() const override;

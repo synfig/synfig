@@ -52,7 +52,7 @@ public:
 	typedef etl::handle<ValueNode_BLineRevTangent> Handle;
 	typedef etl::handle<const ValueNode_BLineRevTangent> ConstHandle;
 
-	static ValueNode_BLineRevTangent* create(const ValueBase &x=type_vector);
+	static ValueNode_BLineRevTangent* create(const ValueBase& x=type_vector, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_BLineRevTangent();
 
 	virtual ValueBase operator()(Time t) const override;

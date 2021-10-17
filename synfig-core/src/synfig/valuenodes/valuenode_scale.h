@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<ValueNode_Scale> Handle;
 	typedef etl::handle<const ValueNode_Scale> ConstHandle;
 
-	static ValueNode_Scale* create(const ValueBase &x);
+	static ValueNode_Scale* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Scale();
 
 	virtual String get_name() const override;

@@ -90,7 +90,7 @@ ValueNode_Real::ValueNode_Real(const ValueBase &x):
 }
 
 ValueNode_Real*
-ValueNode_Real::create(const ValueBase &x)
+ValueNode_Real::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Real(x);
 }

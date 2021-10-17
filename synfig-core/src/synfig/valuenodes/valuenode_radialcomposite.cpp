@@ -92,7 +92,7 @@ ValueNode_RadialComposite::~ValueNode_RadialComposite()
 }
 
 ValueNode_RadialComposite*
-ValueNode_RadialComposite::create(const ValueBase &value)
+ValueNode_RadialComposite::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_RadialComposite(value);
 }

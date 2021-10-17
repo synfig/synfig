@@ -307,7 +307,7 @@ ValueNode_Bone::create_new()const
 }
 
 ValueNode_Bone*
-ValueNode_Bone::create(const ValueBase &x, Canvas::LooseHandle canvas)
+ValueNode_Bone::create(const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_Bone(x, canvas);
 }
@@ -1032,7 +1032,7 @@ ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
 }
 
 ValueNode_Bone*
-ValueNode_Bone_Root::create(const ValueBase &x)
+ValueNode_Bone_Root::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return get_root_bone().get();
 }

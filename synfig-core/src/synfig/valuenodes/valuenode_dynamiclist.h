@@ -171,7 +171,7 @@ public:
 
 	std::vector<ListEntry> list;
 
-	static ValueNode_DynamicList* create(const ValueBase &x=type_gradient);
+	static ValueNode_DynamicList* create(const ValueBase& x=type_gradient, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID()) const override;
 	virtual ~ValueNode_DynamicList();
 

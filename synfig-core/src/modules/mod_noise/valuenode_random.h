@@ -59,7 +59,7 @@ public:
 	typedef etl::handle<ValueNode_Random> Handle;
 	typedef etl::handle<const ValueNode_Random> ConstHandle;
 
-	static ValueNode_Random* create(const ValueBase &x);
+	static ValueNode_Random* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID()) const override;
 	virtual ~ValueNode_Random();
 

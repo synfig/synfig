@@ -66,7 +66,7 @@ public:
 	typedef std::set<LooseHandle> BoneSet;
 	typedef std::list<LooseHandle> BoneList;
 
-	static ValueNode_Bone* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = nullptr);
+	static ValueNode_Bone* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Bone();
 
 	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID()) const override;
@@ -138,7 +138,7 @@ private:
 class ValueNode_Bone_Root : public ValueNode_Bone
 {
 public:
-	static ValueNode_Bone* create(const ValueBase &x);
+	static ValueNode_Bone* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	ValueNode_Bone_Root();
 	virtual ~ValueNode_Bone_Root();
 

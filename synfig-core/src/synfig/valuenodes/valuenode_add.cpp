@@ -131,7 +131,7 @@ ValueNode_Add::create_new()const
 }
 
 ValueNode_Add*
-ValueNode_Add::create(const ValueBase& value)
+ValueNode_Add::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Add(value);
 }

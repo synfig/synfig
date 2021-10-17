@@ -87,7 +87,7 @@ ValueNode_BLineCalcTangent::create_new()const
 }
 
 ValueNode_BLineCalcTangent*
-ValueNode_BLineCalcTangent::create(const ValueBase &x)
+ValueNode_BLineCalcTangent::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_BLineCalcTangent(x.get_type());
 }

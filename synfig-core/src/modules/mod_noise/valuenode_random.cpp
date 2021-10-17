@@ -106,7 +106,7 @@ ValueNode_Random::create_new()const
 }
 
 ValueNode_Random*
-ValueNode_Random::create(const ValueBase &x)
+ValueNode_Random::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Random(x);
 }

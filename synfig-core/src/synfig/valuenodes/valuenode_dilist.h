@@ -57,7 +57,7 @@ public:
 	typedef etl::handle<const ValueNode_DIList> LooseHandle;
 
 	// Creates a Value Node Width Point List from another compatible list
-	static ValueNode_DIList* create(const ValueBase &x=type_list);
+	static ValueNode_DIList* create(const ValueBase& x=type_list, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_DIList();
 
 	virtual String get_name() const override;

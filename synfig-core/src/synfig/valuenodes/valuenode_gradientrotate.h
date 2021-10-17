@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<ValueNode_GradientRotate> Handle;
 	typedef etl::handle<const ValueNode_GradientRotate> ConstHandle;
 
-	static ValueNode_GradientRotate* create(const ValueBase &x=type_gradient);
+	static ValueNode_GradientRotate* create(const ValueBase& x=type_gradient, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_GradientRotate();
 
 	virtual String get_name() const override;

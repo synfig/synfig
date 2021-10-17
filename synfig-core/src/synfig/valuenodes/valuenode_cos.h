@@ -52,7 +52,7 @@ public:
 	typedef etl::handle<ValueNode_Cos> Handle;
 	typedef etl::handle<const ValueNode_Cos> ConstHandle;
 
-	static ValueNode_Cos* create(const ValueBase &x);
+	static ValueNode_Cos* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Cos();
 
 	virtual ValueBase operator()(Time t) const override;

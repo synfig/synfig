@@ -53,7 +53,7 @@ public:
 	typedef etl::handle<ValueNode_Stripes> Handle;
 	typedef etl::handle<const ValueNode_Stripes> ConstHandle;
 
-	static ValueNode_Stripes* create(const ValueBase &x=type_gradient);
+	static ValueNode_Stripes* create(const ValueBase& x=type_gradient, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Stripes();
 
 	virtual String get_name() const override;

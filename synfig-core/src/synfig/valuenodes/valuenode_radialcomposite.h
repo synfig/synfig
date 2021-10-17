@@ -49,7 +49,7 @@ public:
 	typedef etl::handle<ValueNode_RadialComposite> Handle;
 	typedef etl::handle<const ValueNode_RadialComposite> ConstHandle;
 
-	static ValueNode_RadialComposite* create(const ValueBase &x);
+	static ValueNode_RadialComposite* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_RadialComposite();
 
 	virtual String get_name() const override;

@@ -90,7 +90,7 @@ ValueNode_Join::create_new()const
 }
 
 ValueNode_Join*
-ValueNode_Join::create(const ValueBase &x)
+ValueNode_Join::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Join(x);
 }

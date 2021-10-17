@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<ValueNode_Atan2> Handle;
 	typedef etl::handle<const ValueNode_Atan2> ConstHandle;
 
-	static ValueNode_Atan2* create(const ValueBase &value=ValueBase());
+	static ValueNode_Atan2* create(const ValueBase& value=ValueBase(), etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Atan2();
 
 	virtual String get_name() const override;

@@ -205,7 +205,7 @@ ValueNode_Composite::~ValueNode_Composite()
 }
 
 ValueNode_Composite*
-ValueNode_Composite::create(const ValueBase &value, Canvas::LooseHandle canvas)
+ValueNode_Composite::create(const ValueBase& value, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_Composite(value, canvas);
 }

@@ -54,7 +54,7 @@ public:
 	typedef etl::handle<ValueNode_BLineCalcWidth> Handle;
 	typedef etl::handle<const ValueNode_BLineCalcWidth> ConstHandle;
 
-	static ValueNode_BLineCalcWidth* create(const ValueBase &x=type_real);
+	static ValueNode_BLineCalcWidth* create(const ValueBase& x=type_real, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_BLineCalcWidth();
 
 	virtual ValueBase operator()(Time t) const override;

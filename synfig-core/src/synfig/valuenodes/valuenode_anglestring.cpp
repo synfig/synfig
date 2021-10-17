@@ -83,7 +83,7 @@ ValueNode_AngleString::create_new()const
 }
 
 ValueNode_AngleString*
-ValueNode_AngleString::create(const ValueBase &x)
+ValueNode_AngleString::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_AngleString(x);
 }

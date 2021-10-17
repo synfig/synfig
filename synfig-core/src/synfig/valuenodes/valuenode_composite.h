@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<ValueNode_Composite> Handle;
 	typedef etl::handle<const ValueNode_Composite> ConstHandle;
 
-	static ValueNode_Composite* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = nullptr);
+	static ValueNode_Composite* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Composite();
 
 	virtual ValueBase operator()(Time t) const override;

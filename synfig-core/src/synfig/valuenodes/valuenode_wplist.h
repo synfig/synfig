@@ -69,7 +69,7 @@ public:
 	typedef etl::handle<const ValueNode_WPList> LooseHandle;
 
 	// Creates a Value Node Width Point List from another compatible list
-	static ValueNode_WPList* create(const ValueBase &x=type_list);
+	static ValueNode_WPList* create(const ValueBase& x=type_list, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_WPList();
 
 	virtual String get_name() const override;

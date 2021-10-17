@@ -76,7 +76,7 @@ ValueNode_VectorLength::create_new()const
 }
 
 ValueNode_VectorLength*
-ValueNode_VectorLength::create(const ValueBase &x)
+ValueNode_VectorLength::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_VectorLength(x);
 }

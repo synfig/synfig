@@ -52,7 +52,7 @@ public:
 	typedef etl::handle<ValueNode_GradientColor> Handle;
 	typedef etl::handle<const ValueNode_GradientColor> ConstHandle;
 
-	static ValueNode_GradientColor* create(const ValueBase &x);
+	static ValueNode_GradientColor* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_GradientColor();
 
 	virtual String get_name() const override;

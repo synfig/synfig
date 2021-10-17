@@ -54,7 +54,7 @@ public:
 	typedef etl::handle<ValueNode_TimeLoop> Handle;
 	typedef etl::handle<const ValueNode_TimeLoop> ConstHandle;
 
-	static ValueNode_TimeLoop* create(const ValueBase &x);
+	static ValueNode_TimeLoop* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_TimeLoop();
 
 	virtual String get_name() const override;

@@ -86,7 +86,7 @@ ValueNode_Average::ValueNode_Average(Type &type, Canvas::LooseHandle canvas):
 ValueNode_Average::~ValueNode_Average() { }
 
 ValueNode_Average*
-ValueNode_Average::create(const ValueBase &value, Canvas::LooseHandle canvas)
+ValueNode_Average::create(const ValueBase& value, Canvas::LooseHandle canvas)
 	{ return new ValueNode_Average(value, canvas); }
 
 ValueBase

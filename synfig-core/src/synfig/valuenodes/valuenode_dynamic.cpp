@@ -111,7 +111,7 @@ ValueNode_Dynamic::create_new()const
 }
 
 ValueNode_Dynamic*
-ValueNode_Dynamic::create(const ValueBase &x)
+ValueNode_Dynamic::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Dynamic(x);
 }

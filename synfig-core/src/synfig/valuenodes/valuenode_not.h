@@ -50,7 +50,7 @@ public:
 	typedef etl::handle<ValueNode_Not> Handle;
 	typedef etl::handle<const ValueNode_Not> ConstHandle;
 
-	static ValueNode_Not* create(const ValueBase &x);
+	static ValueNode_Not* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Not();
 
 	virtual String get_name() const override;

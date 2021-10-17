@@ -70,7 +70,7 @@ public:
 	typedef etl::handle<ValueNode_Derivative> Handle;
 	typedef etl::handle<const ValueNode_Derivative> ConstHandle;
 
-	static ValueNode_Derivative* create(const ValueBase &x);
+	static ValueNode_Derivative* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Derivative();
 
 	virtual String get_name() const override;

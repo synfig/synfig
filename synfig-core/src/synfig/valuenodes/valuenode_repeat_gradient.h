@@ -56,7 +56,7 @@ public:
 	typedef etl::handle<ValueNode_Repeat_Gradient> Handle;
 	typedef etl::handle<const ValueNode_Repeat_Gradient> ConstHandle;
 
-	static ValueNode_Repeat_Gradient* create(const ValueBase &x=type_gradient);
+	static ValueNode_Repeat_Gradient* create(const ValueBase& x=type_gradient, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Repeat_Gradient();
 
 	virtual String get_name() const override;

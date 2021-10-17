@@ -84,7 +84,7 @@ ValueNode_BLineCalcVertex::create_new()const
 }
 
 ValueNode_BLineCalcVertex*
-ValueNode_BLineCalcVertex::create(const ValueBase &x)
+ValueNode_BLineCalcVertex::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_BLineCalcVertex(x.get_type());
 }

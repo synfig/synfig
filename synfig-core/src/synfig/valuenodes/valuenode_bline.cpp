@@ -393,7 +393,7 @@ ValueNode_BLine::~ValueNode_BLine()
 }
 
 ValueNode_BLine*
-ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
+ValueNode_BLine::create(const ValueBase& value, Canvas::LooseHandle canvas)
 {
 	if(value.get_type()!=type_list)
 		return 0;
