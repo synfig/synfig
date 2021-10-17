@@ -201,10 +201,6 @@ private:
 	/*!	\see set_author(), get_author() */
 	String author_;
 
-	//! Contains the author's email address
-	/*!	\todo This private parameter has no binding, so it's unusable at the moment */
-	String email_;
-
 	//! File name of Canvas
 	/*! \see get_file_name(), set_file_name() */
 	String file_name_;
@@ -282,9 +278,6 @@ private:
 	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_added_;
 	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_removed_;
 
-	//!	Layers Reordered
-	sigc::signal<void,int*> signal_layers_reordered_;
-
 	//!	RendDesc Changed
 	sigc::signal<void> signal_rend_desc_changed_;
 
@@ -330,9 +323,6 @@ public:
 
 	//! Group Changed
 	sigc::signal<void,String>& signal_group_changed() { return signal_group_changed_; }
-
-	//!	Layers Reordered
-	sigc::signal<void,int*>& signal_layers_reordered() { return signal_layers_reordered_; }
 
 	//!	RendDesc Changed
 	sigc::signal<void>& signal_rend_desc_changed() { return signal_rend_desc_changed_; }
@@ -464,6 +454,7 @@ public:
 	//! Returns a handle to the root Canvas
 	LooseHandle get_root()const;
 
+	//! Starting from itself, search for first non-inline canvas in parent-tree
 	LooseHandle get_non_inline_ancestor()const;
 
 	//! Returns a list of all child canvases in this canvas
