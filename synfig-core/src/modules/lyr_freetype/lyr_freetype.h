@@ -53,8 +53,6 @@ class Layer_Freetype : public synfig::Layer_Shape
 private:
 	//!Parameter: (synfig::String) text of the layer;
 	synfig::ValueBase param_text;
-//	//!Parameter: (synfig::Color) color of the text;
-//	synfig::ValueBase param_color;
 	//!Parameter: (synfig::String) font family used in the text
 	synfig::ValueBase param_family;
 	//!Parameter: (int) style used in the font
@@ -71,16 +69,12 @@ private:
 	synfig::ValueBase param_size;
 	//!Parameter: (synfig::Vector) text orientation
 	synfig::ValueBase param_orient;
-//	//!Parameter: (synfig::Point) text position
-//	synfig::ValueBase param_origin;
 	//!Parameter: (synfig::String) font used in the text
 	synfig::ValueBase param_font;
 	//!Parameter: (bool)
 	synfig::ValueBase param_use_kerning;
 	//!Parameter: (bool)
 	synfig::ValueBase param_grid_fit;
-//	//!Parameter: (bool) inverts the rendered text
-//	synfig::ValueBase param_invert;
 
 	FT_Face face;
 #if HAVE_HARFBUZZ

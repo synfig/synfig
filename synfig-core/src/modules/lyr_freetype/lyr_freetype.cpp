@@ -751,32 +751,15 @@ Layer_Freetype::set_shape_param(const String & param, const ValueBase &value)
 			on_param_text_changed();
 		}
 		);
-//	IMPORT_VALUE_PLUS(param_origin,/*needs_sync=true*/);
-//	IMPORT_VALUE_PLUS(param_color,
-//		{
-//			Color color=param_color.get(Color());
-//			if (approximate_zero(color.get_a()))
-//			{
-//				if (converted_blend_)
-//				{
-//					set_blend_method(Color::BLEND_ALPHA_OVER);
-//					color.set_a(1);
-//					param_color.set(color);
-//				} else transparent_color_ = true;
-//			}
-//		}
-//		);
-//	IMPORT_VALUE(param_invert);
 	IMPORT_VALUE_PLUS(param_orient,need_sync |= SYNC_ORIENTATION;);
 	IMPORT_VALUE_PLUS(param_compress,need_sync |= SYNC_COMPRESS);
 	IMPORT_VALUE_PLUS(param_vcompress,need_sync |= SYNC_COMPRESS);
 	IMPORT_VALUE_PLUS(param_use_kerning,need_sync |= SYNC_KERNING);
 	IMPORT_VALUE_PLUS(param_grid_fit,need_sync |= SYNC_GRID_FIT);
 
-//	if(param=="pos")
-//		return set_param("origin", value);
+	if(param=="pos")
+		return set_param("origin", value);
 
-//	return Layer_Shape::set_param(param,value);
 	return false;
 }
 
@@ -799,14 +782,11 @@ Layer_Freetype::get_param(const String& param)const
 	EXPORT_VALUE(param_direction);
 	EXPORT_VALUE(param_size);
 	EXPORT_VALUE(param_text);
-//	EXPORT_VALUE(param_color);
-//	EXPORT_VALUE(param_origin);
 	EXPORT_VALUE(param_orient);
 	EXPORT_VALUE(param_compress);
 	EXPORT_VALUE(param_vcompress);
 	EXPORT_VALUE(param_use_kerning);
 	EXPORT_VALUE(param_grid_fit);
-//	EXPORT_VALUE(param_invert);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -817,7 +797,8 @@ Layer_Freetype::get_param(const String& param)const
 Layer::Vocab
 Layer_Freetype::get_param_vocab(void)const
 {
-	Layer::Vocab ret(Layer_Shape::get_param_vocab());
+	Layer::Vocab ret(Layer_Composite::get_param_vocab());
+	// Ignore the Layer_Shape params
 
 	ret.push_back(ParamDesc("text")
 		.set_local_name(_("Text"))
@@ -825,10 +806,10 @@ Layer_Freetype::get_param_vocab(void)const
 		.set_hint("paragraph")
 	);
 
-//	ret.push_back(ParamDesc("color")
-//		.set_local_name(_("Color"))
-//		.set_description(_("Color of the text"))
-//	);
+	ret.push_back(ParamDesc("color")
+		.set_local_name(_("Color"))
+		.set_description(_("Color of the text"))
+	);
 
 	ret.push_back(ParamDesc("family")
 		.set_local_name(_("Font Family"))
@@ -894,11 +875,11 @@ Layer_Freetype::get_param_vocab(void)const
 		.set_invisible_duck()
 	);
 
-//	ret.push_back(ParamDesc("origin")
-//		.set_local_name(_("Origin"))
-//		.set_description(_("Text Position"))
-//		.set_is_distance()
-//	);
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
+		.set_description(_("Text Position"))
+		.set_is_distance()
+	);
 
 	ret.push_back(ParamDesc("font")
 		.set_local_name(_("Font"))
@@ -917,9 +898,10 @@ Layer_Freetype::get_param_vocab(void)const
 		.set_local_name(_("Sharpen Edges"))
 		.set_description(_("Turn this off if you are animating the text"))
 	);
-//	ret.push_back(ParamDesc("invert")
-//		.set_local_name(_("Invert"))
-//	);
+
+	ret.push_back(ParamDesc("invert")
+		.set_local_name(_("Invert"))
+	);
 	return ret;
 }
 
