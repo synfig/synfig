@@ -421,6 +421,9 @@ Renderer_Canvas::build_onion_frames()
 			}
 		}
 
+		// Add current time Frame keeping its full opacity
+		onion_frames.push_back(FrameDesc(current_frame, 1.f));
+
 		// Cycle through past_times and retrieve their Time values
 		for(int i = past_times.size(); i > 0; --i) {
 			ColorReal alpha = base_alpha + (ColorReal)(past_times.size() - i + 1)/(ColorReal)(past_times.size() + 1);
@@ -437,9 +440,10 @@ Renderer_Canvas::build_onion_frames()
 		ColorReal summary = 0.f;
 
 		// If there's more than one onion frame, normalize using their cumulative alpha value
-		if (onion_frames.size() > 1) {
-			for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
-				summary += i->alpha;
+		if (onion_frames.size() > 2) {
+			for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); i++)
+				if (i->id.time != current_frame.time)
+					summary += i->alpha;
 		}
 		// Otherwise normalize by the maximum possible alpha value
 		else {
@@ -447,11 +451,10 @@ Renderer_Canvas::build_onion_frames()
 		}
 
 		ColorReal k = approximate_greater(summary, ColorReal(1.f)) ? 1.f/summary : 1.f;
-		for(FrameList::iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
-			i->alpha *= k;
-
-		// Add current time Frame at last keeping its full opacity
-		onion_frames.push_back(FrameDesc(current_frame, 1.f));
+		for(FrameList::iterator i = onion_frames.begin(); i != onion_frames.end(); i++)
+			// Don't modify current frame opacity
+			if (i->id.time != current_frame.time)
+				i->alpha *= k;
 	} else {
 		onion_frames.push_back(FrameDesc(current_frame, 1.f));
 	}
@@ -902,7 +905,7 @@ Renderer_Canvas::render_vfunc(
 		if ( onion_frames.size() > 1
 		  || !approximate_equal_lp(onion_frames.front().alpha, ColorReal(1.f)) )
 		{
-			canvas_context->set_operator(Cairo::OPERATOR_ADD);
+			canvas_context->set_operator(Cairo::OPERATOR_OVER);
 
 			// prepare background to tune alpha
 			alpha_context->set_operator(canvas_context->get_operator());
