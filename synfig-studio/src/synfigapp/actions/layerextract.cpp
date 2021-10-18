@@ -72,7 +72,7 @@ Action::LayerExtract::get_param_vocab()
 
 	ret.push_back(ParamDesc("filename",Param::TYPE_STRING)
 		.set_local_name(_("File name"))
-		.set_desc(_("File name witch path to store exported file"))
+		.set_desc(_("File name with path to store exported file"))
 		.set_user_supplied()
 	);
 

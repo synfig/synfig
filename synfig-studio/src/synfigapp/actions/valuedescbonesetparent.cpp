@@ -173,12 +173,12 @@ Action::ValueDescBoneSetParent::perform()
 				child_bone->set_link("origin",ValueNode_Const::create(origin));
 				child_bone->set_link("angle",ValueNode_Const::create(angle));
 			}else{
-				get_canvas_interface()->get_ui_interface()->error("Can't make it the parent to the current active bone.");
+				get_canvas_interface()->get_ui_interface()->error(_("Can't make it the parent to the current active bone"));
 			}
 
 		}
 	}else{
-		get_canvas_interface()->get_ui_interface()->error("Please set an active bone");
+		get_canvas_interface()->get_ui_interface()->error(_("Please set an active bone"));
 	}
 
 }
@@ -213,6 +213,6 @@ Action::ValueDescBoneSetParent::undo() {
 			child_bone->set_link("angle",ValueNode_Const::create(angle));
 		}
 	}else{
-		get_canvas_interface()->get_ui_interface()->error("Couldn't find parent to active bone");
+		get_canvas_interface()->get_ui_interface()->error(_("Couldn't find parent to active bone"));
 	}
 }
