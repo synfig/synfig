@@ -1177,11 +1177,11 @@ Canvas::on_parent_set()
 void
 Canvas::set_file_name(const String &file_name_orig)
 {
-	String file_name = FileSystem::fix_slashes(file_name_orig);
 	if(parent())
-		parent()->set_file_name(file_name);
+		parent()->set_file_name(file_name_orig);
 	else
 	{
+		String file_name = FileSystem::fix_slashes(file_name_orig);
 		if (file_name_ == file_name)
 			return;
 		String old_name(file_name_);
@@ -1192,11 +1192,8 @@ Canvas::set_file_name(const String &file_name_orig)
 		// we don't want to register the canvas' filename in the canvas map until it gets a real filename
 		if (old_name != "")
 		{
-			std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
-			for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
-				if(iter->second==this)
-					break;
-			if (iter == get_open_canvas_map().end())
+			const auto& canvas_map = get_open_canvas_map();
+			if (canvas_map.find(this) == canvas_map.end())
 				CanvasParser::register_canvas_in_map(this, file_name);
 			else
 				signal_file_name_changed_();
