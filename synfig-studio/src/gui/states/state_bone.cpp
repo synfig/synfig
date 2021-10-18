@@ -259,7 +259,6 @@ StateBone_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
 		if(c_layer==SKELETON_TYPE)
 			settings.set_value("bone.skel_id",get_id());
 		else

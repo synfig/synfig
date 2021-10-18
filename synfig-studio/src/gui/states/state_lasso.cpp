@@ -440,27 +440,26 @@ StateLasso_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("lasso.id",get_id());
-		settings.set_value("lasso.blend",strprintf("%d",19));
-		settings.set_value("lasso.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("lasso.blend",int(Color::BLEND_ALPHA_OVER));
+		settings.set_value("lasso.opacity",get_opacity());
 		settings.set_value("lasso.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("lasso.pressure_width",get_pressure_width_flag()?"1":"0");
-		settings.set_value("lasso.auto_loop",get_auto_loop_flag()?"1":"0");
-		settings.set_value("lasso.auto_extend",get_auto_extend_flag()?"1":"0");
-		settings.set_value("lasso.auto_link",get_auto_link_flag()?"1":"0");
-		settings.set_value("lasso.region",get_layer_region_flag()?"1":"0");
-		settings.set_value("lasso.outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("lasso.advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("lasso.auto_export",get_auto_export_flag()?"1":"0");
-		settings.set_value("lasso.min_pressure",strprintf("%f",get_min_pressure()));
+		settings.set_value("lasso.pressure_width",get_pressure_width_flag());
+		settings.set_value("lasso.auto_loop",get_auto_loop_flag());
+		settings.set_value("lasso.auto_extend",get_auto_extend_flag());
+		settings.set_value("lasso.auto_link",get_auto_link_flag());
+		settings.set_value("lasso.region",get_layer_region_flag());
+		settings.set_value("lasso.outline",get_layer_outline_flag());
+		settings.set_value("lasso.advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("lasso.auto_export",get_auto_export_flag());
+		settings.set_value("lasso.min_pressure",get_min_pressure());
 		settings.set_value("lasso.feather",feather_dist.get_value().get_string());
-		settings.set_value("lasso.min_pressure_on",get_min_pressure_flag()?"1":"0");
-		settings.set_value("lasso.gthreshold",strprintf("%f",get_gthres()));
-		settings.set_value("lasso.widthmaxerror",strprintf("%f",get_width_max_error()));
-		settings.set_value("lasso.lthreshold",strprintf("%f",get_lthres()));
-		settings.set_value("lasso.localize",get_local_threshold_flag()?"1":"0");
-		settings.set_value("lasso.round_ends", get_round_ends_flag()?"1":"0");
+		settings.set_value("lasso.min_pressure_on",get_min_pressure_flag());
+		settings.set_value("lasso.gthreshold",get_gthres());
+		settings.set_value("lasso.widthmaxerror",get_width_max_error());
+		settings.set_value("lasso.lthreshold",get_lthres());
+		settings.set_value("lasso.localize",get_local_threshold_flag());
+		settings.set_value("lasso.round_ends", get_round_ends_flag());
 	}
 	catch(...)
 	{

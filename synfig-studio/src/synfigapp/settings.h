@@ -73,6 +73,13 @@ public:
 	synfig::String get_value(const synfig::String& key, const synfig::String& default_value) const;
 	synfig::String get_value(const synfig::String& key, const char* default_value) const;
 
+	bool set_value(const synfig::String& key, double value);
+	bool set_value(const synfig::String& key, int value);
+	bool set_value(const synfig::String& key, bool value);
+	bool set_value(const synfig::String& key, const char* value);
+	// avoid implicit conversion
+	template <typename T> bool set_value(const synfig::String& key, T value) = delete;
+
 	void add_domain(Settings* domain, const synfig::String& name);
 	void remove_domain(const synfig::String& name);
 

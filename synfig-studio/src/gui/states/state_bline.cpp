@@ -371,20 +371,19 @@ StateBLine_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		sanity_check();
 		settings.set_value("bline.id",get_id());
-		settings.set_value("bline.layer_outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("bline.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("bline.layer_region",get_layer_region_flag()?"1":"0");
-		settings.set_value("bline.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-		settings.set_value("bline.layer_plant",get_layer_plant_flag()?"1":"0");
-		settings.set_value("bline.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		settings.set_value("bline.blend",strprintf("%d",get_blend()));
-		settings.set_value("bline.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("bline.layer_outline",get_layer_outline_flag());
+		settings.set_value("bline.layer_advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("bline.layer_region",get_layer_region_flag());
+		settings.set_value("bline.layer_curve_gradient",get_layer_curve_gradient_flag());
+		settings.set_value("bline.layer_plant",get_layer_plant_flag());
+		settings.set_value("bline.layer_link_origins",get_layer_link_origins_flag());
+		settings.set_value("bline.blend",get_blend());
+		settings.set_value("bline.opacity",get_opacity());
 		settings.set_value("bline.bline_width", bline_width_dist.get_value().get_string());
 		settings.set_value("bline.feather", feather_dist.get_value().get_string());
-		settings.set_value("bline.auto_export",get_auto_export_flag()?"1":"0");
+		settings.set_value("bline.auto_export",get_auto_export_flag());
 
 	}
 	catch(...)

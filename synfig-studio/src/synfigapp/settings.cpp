@@ -328,3 +328,32 @@ Settings::get_value(const synfig::String &key, const char* default_value) const
 {
 	return get_value(key, synfig::String(default_value));
 }
+
+bool
+Settings::set_value(const synfig::String &key, double value)
+{
+	std::string v;
+	{
+		synfig::ChangeLocale l(LC_NUMERIC, "C");
+		v = std::to_string(value);
+	}
+	return set_value(key, v);
+}
+
+bool
+Settings::set_value(const synfig::String &key, int value)
+{
+	return set_value(key, strprintf("%d", value));
+}
+
+bool
+Settings::set_value(const synfig::String &key, bool value)
+{
+	return set_value(key, value? "1" : "0");
+}
+
+bool
+Settings::set_value(const synfig::String &key, const char *value)
+{
+	return set_value(key, String(value));
+}

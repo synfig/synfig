@@ -328,20 +328,19 @@ StatePolygon_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("polygon.id",get_id());
-		settings.set_value("polygon.blend",strprintf("%d",get_blend()));
-		settings.set_value("polygon.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("polygon.blend",get_blend());
+		settings.set_value("polygon.opacity",get_opacity());
 		settings.set_value("polygon.bline_width", bline_width_dist.get_value().get_string());
 		settings.set_value("polygon.feather", feather_dist.get_value().get_string());
-		settings.set_value("polygon.invert",get_invert()?"1":"0");
-		settings.set_value("polygon.layer_polygon",get_layer_polygon_flag()?"1":"0");
-		settings.set_value("polygon.layer_outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("polygon.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("polygon.layer_region",get_layer_region_flag()?"1":"0");
-		settings.set_value("polygon.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-		settings.set_value("polygon.layer_plant",get_layer_plant_flag()?"1":"0");
-		settings.set_value("polygon.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+		settings.set_value("polygon.invert",get_invert());
+		settings.set_value("polygon.layer_polygon",get_layer_polygon_flag());
+		settings.set_value("polygon.layer_outline",get_layer_outline_flag());
+		settings.set_value("polygon.layer_advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("polygon.layer_region",get_layer_region_flag());
+		settings.set_value("polygon.layer_curve_gradient",get_layer_curve_gradient_flag());
+		settings.set_value("polygon.layer_plant",get_layer_plant_flag());
+		settings.set_value("polygon.layer_link_origins",get_layer_link_origins_flag());
 	}
 	catch(...)
 	{

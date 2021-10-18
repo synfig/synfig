@@ -165,8 +165,7 @@ StateScale_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("scale.lock_aspect",get_aspect_lock_flag()?"1":"0");
+		settings.set_value("scale.lock_aspect",get_aspect_lock_flag());
 	}
 	catch(...)
 	{

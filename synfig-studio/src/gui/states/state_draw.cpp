@@ -437,28 +437,27 @@ StateDraw_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("draw.id",get_id());
-		settings.set_value("draw.blend",strprintf("%d",get_blend()));
-		settings.set_value("draw.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("draw.blend",get_blend());
+		settings.set_value("draw.opacity",get_opacity());
 		settings.set_value("draw.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
-		settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
-		settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
-		settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
-		settings.set_value("draw.region",get_layer_region_flag()?"1":"0");
-		settings.set_value("draw.outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("draw.advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("draw.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
-		settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
+		settings.set_value("draw.pressure_width",get_pressure_width_flag());
+		settings.set_value("draw.auto_loop",get_auto_loop_flag());
+		settings.set_value("draw.auto_extend",get_auto_extend_flag());
+		settings.set_value("draw.auto_link",get_auto_link_flag());
+		settings.set_value("draw.region",get_layer_region_flag());
+		settings.set_value("draw.outline",get_layer_outline_flag());
+		settings.set_value("draw.advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("draw.layer_link_origins",get_layer_link_origins_flag());
+		settings.set_value("draw.auto_export",get_auto_export_flag());
+		settings.set_value("draw.min_pressure",get_min_pressure());
 		settings.set_value("draw.feather",feather_dist.get_value().get_string());
-		settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
-		settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
-		settings.set_value("draw.widthmaxerror",strprintf("%f",get_width_max_error()));
-		settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
-		settings.set_value("draw.localize",get_local_threshold_flag()?"1":"0");
-		settings.set_value("draw.round_ends", get_round_ends_flag()?"1":"0");
+		settings.set_value("draw.min_pressure_on",get_min_pressure_flag());
+		settings.set_value("draw.gthreshold",get_gthres());
+		settings.set_value("draw.widthmaxerror",get_width_max_error());
+		settings.set_value("draw.lthreshold",get_lthres());
+		settings.set_value("draw.localize",get_local_threshold_flag());
+		settings.set_value("draw.round_ends", get_round_ends_flag());
 	}
 	catch(...)
 	{

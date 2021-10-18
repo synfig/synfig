@@ -261,16 +261,15 @@ StateText_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("text.id",get_id());
-		settings.set_value("text.layer_polygon",get_layer_text_flag()?"1":"0");
-		settings.set_value("text.blend",strprintf("%d",get_blend()));
-		settings.set_value("text.opacity",strprintf("%f",(float)get_opacity()));
-		settings.set_value("text.paragraph",get_paragraph_flag()?"1":"0");
-		settings.set_value("text.size_x",strprintf("%f",(float)get_size()[0]));
-		settings.set_value("text.size_y",strprintf("%f",(float)get_size()[1]));
-		settings.set_value("text.orient_x",strprintf("%f",(float)get_orientation()[0]));
-		settings.set_value("text.orient_y",strprintf("%f",(float)get_orientation()[1]));
+		settings.set_value("text.layer_polygon",get_layer_text_flag());
+		settings.set_value("text.blend",get_blend());
+		settings.set_value("text.opacity",get_opacity());
+		settings.set_value("text.paragraph",get_paragraph_flag());
+		settings.set_value("text.size_x",get_size()[0]);
+		settings.set_value("text.size_y",get_size()[1]);
+		settings.set_value("text.orient_x",get_orientation()[0]);
+		settings.set_value("text.orient_y",get_orientation()[1]);
 		settings.set_value("text.family",get_family());
 	}
 	catch(...)

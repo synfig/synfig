@@ -199,10 +199,9 @@ StateWidth_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("width.delta",strprintf("%f",get_delta()));
+		settings.set_value("width.delta",get_delta());
 		settings.set_value("width.radius",influence_radius->get_value().get_string());
-		settings.set_value("width.relative",get_relative()?"1":"0");
+		settings.set_value("width.relative",get_relative());
 	}
 	catch(...)
 	{

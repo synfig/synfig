@@ -959,7 +959,7 @@ Dialog_Setup::on_apply_pressed()
 			input_settings.set_value(strprintf("brush.path_%d", path_count++), path);
 			App::brushes_path.insert(path);
 		}
-		input_settings.set_value("brush.path_count", strprintf("%d", path_count));
+		input_settings.set_value("brush.path_count", path_count);
 	}
 
 	// Set the preferred file name prefix

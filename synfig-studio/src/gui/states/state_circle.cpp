@@ -368,23 +368,22 @@ StateCircle_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("circle.id",get_id());
-		settings.set_value("circle.blend",strprintf("%d",get_blend()));
-		settings.set_value("circle.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("circle.blend",get_blend());
+		settings.set_value("circle.opacity",get_opacity());
 		settings.set_value("circle.bline_width", bline_width_dist.get_value().get_string());
 		settings.set_value("circle.feather", feather_dist.get_value().get_string());
-		settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
-		settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
-		settings.set_value("circle.invert",get_invert()?"1":"0");
-		settings.set_value("circle.layer_circle",get_layer_circle_flag()?"1":"0");
-		settings.set_value("circle.layer_outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("circle.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("circle.layer_region",get_layer_region_flag()?"1":"0");
-		settings.set_value("circle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-		settings.set_value("circle.layer_plant",get_layer_plant_flag()?"1":"0");
-		settings.set_value("circle.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		settings.set_value("circle.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
+		settings.set_value("circle.number_of_bline_points",(int)(get_number_of_bline_points() + 0.5));
+		settings.set_value("circle.bline_point_angle_offset",get_bline_point_angle_offset());
+		settings.set_value("circle.invert",get_invert());
+		settings.set_value("circle.layer_circle",get_layer_circle_flag());
+		settings.set_value("circle.layer_outline",get_layer_outline_flag());
+		settings.set_value("circle.layer_advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("circle.layer_region",get_layer_region_flag());
+		settings.set_value("circle.layer_curve_gradient",get_layer_curve_gradient_flag());
+		settings.set_value("circle.layer_plant",get_layer_plant_flag());
+		settings.set_value("circle.layer_link_origins",get_layer_link_origins_flag());
+		settings.set_value("circle.layer_origins_at_center",get_layer_origins_at_center_flag());
 	}
 	catch(...)
 	{

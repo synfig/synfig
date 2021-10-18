@@ -172,8 +172,7 @@ StateSmoothMove_Context::save_settings()
 {
 	try
 	{
-	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("smooth_move.radius",strprintf("%f",get_radius()));
+		settings.set_value("smooth_move.radius",double(get_radius()));
 	}
 	catch(...)
 	{

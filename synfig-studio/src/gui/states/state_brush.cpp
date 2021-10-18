@@ -476,15 +476,13 @@ StateBrush_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
-		settings.set_value("brush.path_count", strprintf("%d", (int)App::brushes_path.size()));
+		settings.set_value("brush.path_count", (int)App::brushes_path.size());
 		int j = 0;
 		for(std::set<String>::const_iterator i = App::brushes_path.begin(); i != App::brushes_path.end(); ++i)
 			settings.set_value(strprintf("brush.path_%d", j++), *i);
 
 		settings.set_value("brush.selected_brush_filename", selected_brush_config.filename);
-		settings.set_value("brush.eraser", eraser_checkbox.get_active() ? "true" : "false");
+		settings.set_value("brush.eraser", eraser_checkbox.get_active());
 	}
 	catch(...)
 	{

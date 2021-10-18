@@ -412,29 +412,28 @@ StateStar_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("star.id",get_id());
-		settings.set_value("star.blend",strprintf("%d",get_blend()));
-		settings.set_value("star.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("star.blend",get_blend());
+		settings.set_value("star.opacity",get_opacity());
 		settings.set_value("star.bline_width", bline_width_dist.get_value().get_string());
 		settings.set_value("star.feather", feather_dist.get_value().get_string());
-		settings.set_value("star.number_of_points",strprintf("%d",(int)(get_number_of_points() + 0.5)));
-		settings.set_value("star.inner_tangent",strprintf("%f",(float)get_inner_tangent()));
-		settings.set_value("star.outer_tangent",strprintf("%f",(float)get_outer_tangent()));
-		settings.set_value("star.inner_width",strprintf("%f",(float)get_inner_width()));
-		settings.set_value("star.outer_width",strprintf("%f",(float)get_outer_width()));
-		settings.set_value("star.radius_ratio",strprintf("%f",(float)get_radius_ratio()));
-		//settings.set_value("star.angle_offset",strprintf("%f",(float)get_angle_offset()));
-		settings.set_value("star.invert",get_invert()?"1":"0");
-		settings.set_value("star.regular_polygon",get_regular_polygon()?"1":"0");
-		settings.set_value("star.layer_star",get_layer_star_flag()?"1":"0");
-		settings.set_value("star.layer_outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("star.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("star.layer_region",get_layer_region_flag()?"1":"0");
-		settings.set_value("star.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-		settings.set_value("star.layer_plant",get_layer_plant_flag()?"1":"0");
-		settings.set_value("star.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		settings.set_value("star.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
+		settings.set_value("star.number_of_points",(int)(get_number_of_points() + 0.5));
+		settings.set_value("star.inner_tangent",get_inner_tangent());
+		settings.set_value("star.outer_tangent",get_outer_tangent());
+		settings.set_value("star.inner_width",get_inner_width());
+		settings.set_value("star.outer_width",get_outer_width());
+		settings.set_value("star.radius_ratio",get_radius_ratio());
+		//settings.set_value("star.angle_offset",get_angle_offset()));
+		settings.set_value("star.invert",get_invert());
+		settings.set_value("star.regular_polygon",get_regular_polygon());
+		settings.set_value("star.layer_star",get_layer_star_flag());
+		settings.set_value("star.layer_outline",get_layer_outline_flag());
+		settings.set_value("star.layer_advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("star.layer_region",get_layer_region_flag());
+		settings.set_value("star.layer_curve_gradient",get_layer_curve_gradient_flag());
+		settings.set_value("star.layer_plant",get_layer_plant_flag());
+		settings.set_value("star.layer_link_origins",get_layer_link_origins_flag());
+		settings.set_value("star.layer_origins_at_center",get_layer_origins_at_center_flag());
 	}
 	catch(...)
 	{
