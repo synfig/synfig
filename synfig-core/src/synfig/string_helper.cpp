@@ -39,20 +39,27 @@
 #include "general.h"
 #endif
 
+static char
+get_locale_decimal_point()
+{
+	// TODO(ice0): move all the locale related code to the initialization part
+	// MinGW C++ std::locale accepts "C" and "POSIX" it does not support other locales.
+	synfig::ChangeLocale changeLocale(LC_NUMERIC, "");
+	#ifdef __MINGW32__
+		struct lconv *locale_info = localeconv();
+		const char decimal_point = *locale_info->decimal_point;
+	#else
+		std::locale l(setlocale(LC_NUMERIC, nullptr));
+		const char decimal_point = std::use_facet< std::numpunct<char> >(l).decimal_point();
+	#endif
+	return decimal_point;
+}
+
 std::string
 synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point)
 {
 	std::string result(text);
-// TODO(ice0): move all the locale related code to the initialization part
-// MinGW C++ std::locale accepts "C" and "POSIX" it does not support other locales.
-	ChangeLocale changeLocale(LC_NUMERIC, "");
-#ifdef __MINGW32__
-	struct lconv *locale_info = localeconv();
-	const char* decimal_point = locale_info->decimal_point;
-#else
-	std::locale l(setlocale(LC_NUMERIC, nullptr));
-	const char decimal_point = std::use_facet< std::numpunct<char> >(l).decimal_point();
-#endif
+	auto decimal_point = get_locale_decimal_point();
 	const size_t decimal_point_pos = text.find(decimal_point);
 
 	if (decimal_point_pos == std::string::npos) {
