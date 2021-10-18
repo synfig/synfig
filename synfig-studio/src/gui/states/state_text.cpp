@@ -222,7 +222,6 @@ StateText_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		Vector v;
 
 		//parse the arguments yargh!

@@ -321,8 +321,6 @@ StateBLine_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
 		set_id(settings.get_value("bline.id", _("NewSpline")));
 
 		set_blend(settings.get_value("bline.blend", int(Color::BLEND_COMPOSITE)));

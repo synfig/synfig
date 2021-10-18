@@ -178,8 +178,6 @@ StateWidth_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
 		//parse the arguments yargh!
 		set_delta(settings.get_value("width.delta", 6.0));
 

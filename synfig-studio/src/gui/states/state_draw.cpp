@@ -373,8 +373,6 @@ StateDraw_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
 		set_id(settings.get_value("draw.id","NewDrawing"));
 
 		set_blend(settings.get_value("draw.blend", int(Color::BLEND_COMPOSITE)));

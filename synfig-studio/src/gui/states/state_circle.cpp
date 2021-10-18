@@ -308,8 +308,6 @@ StateCircle_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
 		//parse the arguments yargh!
 		set_id(settings.get_value("circle.id", "Circle"));
 

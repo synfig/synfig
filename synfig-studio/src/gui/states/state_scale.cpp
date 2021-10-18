@@ -152,7 +152,6 @@ StateScale_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		set_aspect_lock_flag(settings.get_value("scale.lock_aspect", true));
 	}
 	catch(...)

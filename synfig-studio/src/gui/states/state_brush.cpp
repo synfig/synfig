@@ -441,8 +441,6 @@ StateBrush_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
 		int brush_path_count = settings.get_value("brush.path_count", 0);
 		if (brush_path_count > 0)
 		{

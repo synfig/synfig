@@ -378,8 +378,6 @@ StateLasso_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
 		set_id(settings.get_value("lasso.id", "NewDrawing"));
 
 		set_opacity(settings.get_value("lasso.opacity", 1.0));

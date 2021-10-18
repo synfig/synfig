@@ -277,8 +277,6 @@ StatePolygon_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
 		set_id(settings.get_value("polygon.id", "Polygon"));
 
 		set_blend(settings.get_value("polygon.blend", int(Color::BLEND_COMPOSITE)));

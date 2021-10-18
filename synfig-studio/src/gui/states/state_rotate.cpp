@@ -164,7 +164,6 @@ StateRotate_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		set_scale_flag(settings.get_value("rotate.scale", true));
 	}
 	catch(...)

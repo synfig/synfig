@@ -244,8 +244,6 @@ StateGradient_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-
 		set_id(settings.get_value("gradient.id", "Gradient"));
 
 		set_layer_linear_gradient_flag(settings.get_value("gradient.layer_linear_gradient", true));
