@@ -151,10 +151,6 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
-	Gtk::Label falloff_label;
-	Widget_Enum falloff_enum;
-	Gtk::Box falloff_box;
-
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
 	Gtk::Box link_origins_box;
@@ -179,9 +175,6 @@ public:
 
 	synfig::String get_id()const { return id_entry.get_text(); }
 	void set_id(const synfig::String& x) { return id_entry.set_text(x); }
-
-	int get_falloff()const { return falloff_enum.get_value(); }
-	void set_falloff(int x) { return falloff_enum.set_value(x); }
 
 	int get_blend()const { return blend_enum.get_value(); }
 	void set_blend(int x) { return blend_enum.set_value(x); }
@@ -321,11 +314,6 @@ StateCircle_Context::load_settings()
 		else
 			set_id("Circle");
 
-		if(settings.get_value("circle.fallofftype",value) && value != "")
-			set_falloff(atoi(value.c_str()));
-		else
-			set_falloff(2);
-
 		if(settings.get_value("circle.blend",value) && value != "")
 			set_blend(atoi(value.c_str()));
 		else
@@ -423,7 +411,6 @@ StateCircle_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("circle.id",get_id());
-		settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
 		settings.set_value("circle.blend",strprintf("%d",get_blend()));
 		settings.set_value("circle.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("circle.bline_width", bline_width_dist.get_value().get_string());
@@ -613,24 +600,6 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	feather_dist.set_range(0,10000000);
 	feather_dist.set_sensitive(false);
 
-	falloff_label.set_label(_("Falloff:"));
-	falloff_label.set_halign(Gtk::ALIGN_START);
-	falloff_label.set_valign(Gtk::ALIGN_CENTER);
-	falloff_label.set_sensitive(false);
-	falloff_label.get_style_context()->add_class("indentation");
-	falloff_box.pack_start(falloff_label, false, false, 0);
-
-	falloff_enum.set_param_desc(ParamDesc("falloff")
-		.set_local_name(_("Falloff"))
-		.set_description(_("Determines the falloff function for the feather"))
-		.set_hint("enum")
-		.add_enum_value(CIRCLE_INTERPOLATION_LINEAR,"linear",_("Linear"))
-		.add_enum_value(CIRCLE_SQUARED,"squared",_("Squared"))
-		.add_enum_value(CIRCLE_SQRT,"sqrt",_("Square Root"))
-		.add_enum_value(CIRCLE_SIGMOND,"sigmond",_("Sigmond"))
-		.add_enum_value(CIRCLE_COSINE,"cosine",_("Cosine")));
-	falloff_enum.set_sensitive(false);
-
 	link_origins_label.set_label(_("Link Origins"));
 	link_origins_label.set_halign(Gtk::ALIGN_START);
 	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
@@ -684,14 +653,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		0, 10, 1, 1);
 	options_grid.attach(feather_dist,
 		1, 10, 1, 1);
-	options_grid.attach(falloff_box,
-		0, 11, 1, 1);
-	options_grid.attach(falloff_enum,
-		1, 11, 1, 1);
 	options_grid.attach(link_origins_box,
-		0, 12, 2, 1);
+		0, 11, 2, 1);
 	options_grid.attach(origins_at_center_box,
-		0, 13, 2, 1);
+		0, 12, 2, 1);
 
 	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
@@ -847,8 +812,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	//   C I R C L E
 	///////////////////////////////////////////////////////////////////////////
 
-	if (get_layer_circle_flag() &&
-		get_falloff() >= 0 && get_falloff() < CIRCLE_NUM_FALLOFF)
+	if (get_layer_circle_flag())
 	{
 		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("circle",canvas,depth);
@@ -863,9 +827,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 		layer->set_param("radius",(p2-p1).mag());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"radius");
-
-		layer->set_param("falloff",get_falloff());
-		get_canvas_interface()->signal_layer_param_changed()(layer,"falloff");
 
 		layer->set_param("amount",get_opacity());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"amount");
@@ -1453,7 +1414,6 @@ StateCircle_Context::toggle_layer_creation()
 
 	// feather size
 	if (get_layer_circle_flag() ||
-		//get_layer_circle_flag() ||
 		get_layer_region_flag() ||
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag())
@@ -1465,21 +1425,6 @@ StateCircle_Context::toggle_layer_creation()
 	{
 		feather_label.set_sensitive(false);
 		feather_dist.set_sensitive(false);
-	}
-
-	// falloff type for circle layer only
-	if (get_layer_circle_flag())
-	{
-		feather_dist.set_sensitive(true);
-		feather_label.set_sensitive(true);
-
-		falloff_label.set_sensitive(true);
-		falloff_enum.set_sensitive(true);
-	}
-	else
-	{
-		falloff_label.set_sensitive(false);
-		falloff_enum.set_sensitive(false);
 	}
 
 	// orignis at center
