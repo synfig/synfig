@@ -69,6 +69,10 @@ FileSystemNative::ReadStream::~ReadStream()
 size_t FileSystemNative::ReadStream::internal_read(void *buffer, size_t size)
 	{ return fread(buffer, 1, size, file_); }
 
+std::istream::pos_type FileSystemNative::ReadStream::seekpos(std::istream::pos_type pos, std::ios_base::openmode which) {
+	fseek(file_, pos, SEEK_SET);
+	return ftell(file_);
+}
 
 // WriteStream
 
