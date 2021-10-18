@@ -440,7 +440,7 @@ StateDraw_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("draw.id",get_id().c_str());
+		settings.set_value("draw.id",get_id());
 		settings.set_value("draw.blend",strprintf("%d",get_blend()));
 		settings.set_value("draw.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("draw.bline_width", bline_width_dist.get_value().get_string());

@@ -262,9 +262,9 @@ StateBone_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC,"C");
 		if(c_layer==SKELETON_TYPE)
-			settings.set_value("bone.skel_id",get_id().c_str());
+			settings.set_value("bone.skel_id",get_id());
 		else
-			settings.set_value("bone.skel_deform_id",get_id().c_str());
+			settings.set_value("bone.skel_deform_id",get_id());
 
 		settings.set_value("bone.skel_bone_width",skel_bone_width_dist.get_value().get_string());
 		settings.set_value("bone.skel_deform_bone_width",skel_deform_bone_width_dist.get_value().get_string());

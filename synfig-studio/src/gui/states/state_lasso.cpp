@@ -443,7 +443,7 @@ StateLasso_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("lasso.id",get_id().c_str());
+		settings.set_value("lasso.id",get_id());
 		settings.set_value("lasso.blend",strprintf("%d",19));
 		settings.set_value("lasso.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("lasso.bline_width", bline_width_dist.get_value().get_string());

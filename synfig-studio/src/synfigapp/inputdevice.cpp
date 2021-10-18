@@ -73,7 +73,7 @@ public:
 			}
 			if(key=="bline_width")
 			{
-				value=strprintf("%s",input_device->get_bline_width().get_string().c_str());
+				value=input_device->get_bline_width().get_string();
 				return true;
 			}
 			if(key=="opacity")

@@ -348,7 +348,7 @@ StateRectangle_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("rectangle.id",get_id().c_str());
+		settings.set_value("rectangle.id",get_id());
 		settings.set_value("rectangle.blend",strprintf("%d",get_blend()));
 		settings.set_value("rectangle.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("rectangle.bline_width", bline_width_dist.get_value().get_string());

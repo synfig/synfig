@@ -331,7 +331,7 @@ StatePolygon_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("polygon.id",get_id().c_str());
+		settings.set_value("polygon.id",get_id());
 		settings.set_value("polygon.blend",strprintf("%d",get_blend()));
 		settings.set_value("polygon.opacity",strprintf("%f",(float)get_opacity()));
 		settings.set_value("polygon.bline_width", bline_width_dist.get_value().get_string());

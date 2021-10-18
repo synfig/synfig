@@ -278,7 +278,7 @@ StateGradient_Context::save_settings()
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("gradient.id",get_id().c_str());
+		settings.set_value("gradient.id",get_id());
 		settings.set_value("gradient.layer_linear_gradient",get_layer_linear_gradient_flag()?"1":"0");
 		settings.set_value("gradient.layer_radial_gradient",get_layer_radial_gradient_flag()?"1":"0");
 		settings.set_value("gradient.layer_conical_gradient",get_layer_conical_gradient_flag()?"1":"0");

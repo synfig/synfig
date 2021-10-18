@@ -375,7 +375,7 @@ StateBLine_Context::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		sanity_check();
-		settings.set_value("bline.id",get_id().c_str());
+		settings.set_value("bline.id",get_id());
 		settings.set_value("bline.layer_outline",get_layer_outline_flag()?"1":"0");
 		settings.set_value("bline.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
 		settings.set_value("bline.layer_region",get_layer_region_flag()?"1":"0");
