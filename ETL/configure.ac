@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 AC_PREREQ(2.60)
-AC_INIT([Extended Template Library],[1.7.0],[https://github.com/synfig/synfig/issues],[ETL])
+AC_INIT([Extended Template Library],[1.5.1],[https://github.com/synfig/synfig/issues],[ETL])
 AC_REVISION
 
 AM_SILENT_RULES([yes])
